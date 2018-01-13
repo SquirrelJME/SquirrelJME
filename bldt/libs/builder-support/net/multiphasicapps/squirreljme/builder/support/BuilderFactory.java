@@ -107,7 +107,7 @@ public class BuilderFactory
 					binbuild = Paths.get(parse[1]);
 					break;
 				
-					// {@squirreljme.error AU08 Unknown argument.
+					// {@squirreljme.error AU0d Unknown argument.
 					// Usage: [-s path] [-o path] [-r path] [-j path] [-b path]
 					// command (command arguments...);
 					// -s: The project source path;
@@ -120,7 +120,7 @@ public class BuilderFactory
 					// .(The switch)}
 				default:
 					throw new IllegalArgumentException(
-						String.format("AU08 %s", parse[1]));
+						String.format("AU0d %s", parse[1]));
 			}
 		
 		// Fill with defaults if missing
@@ -131,10 +131,10 @@ public class BuilderFactory
 		if (binbuild == null)
 			binbuild = binroot.resolve("bbld");
 		
-		// {@squirreljme.error AU04 No command given.}
+		// {@squirreljme.error AU0e No command given.}
 		String command = args.pollFirst();
 		if (command == null)
-			throw new IllegalArgumentException("AU04");
+			throw new IllegalArgumentException("AU0e");
 		this.command = command;
 		
 		// Set paths
@@ -193,10 +193,10 @@ public class BuilderFactory
 			bm = binaryManager(__t);
 		}
 		
-		// {@squirreljme.error AU09 Could not obtain the binary manager.}
+		// {@squirreljme.error AU0f Could not obtain the binary manager.}
 		catch (IOException e)
 		{
-			throw new RuntimeException("AU09", e);
+			throw new RuntimeException("AU0f", e);
 		}
 		
 		// Get binaries
@@ -256,7 +256,7 @@ public class BuilderFactory
 								space = TimeSpaceType.BUILD;
 								break;
 							
-								// {@squirreljme.error AU06 Unknown argument.
+								// {@squirreljme.error AU0g Unknown argument.
 								// Usage: build [-r] [-j] [-b] (projects...);
 								// -r: Build for run-time;
 								// -j: Build for jit-time;
@@ -264,7 +264,7 @@ public class BuilderFactory
 								// (The switch)}
 							default:
 								throw new IllegalArgumentException(
-									String.format("AU06 %s", parse[1]));
+									String.format("AU0g %s", parse[1]));
 						}
 					
 					// Run the builder
@@ -285,10 +285,10 @@ public class BuilderFactory
 					args.<String>toArray(new String[args.size()]));
 				break;
 			
-				// {@squirreljme.error AU05 The specified command is not
+				// {@squirreljme.error AU0h The specified command is not
 				// valid. (The command)}
 			default:
-				throw new IllegalArgumentException(String.format("AU05 %s",
+				throw new IllegalArgumentException(String.format("AU0h %s",
 					command));
 		}
 	}
@@ -408,12 +408,12 @@ public class BuilderFactory
 				// in the following switch
 				if (i == n - 1)
 				{
-					// {@squirreljme.error AU07 The specified option argument
+					// {@squirreljme.error AU0i The specified option argument
 					// requires a value set to it. (The option argument)}
 					String next = __q.peekFirst();
 					if (next == null)
 						throw new IllegalArgumentException(
-							String.format("AU07 %c", c));
+							String.format("AU0i %c", c));
 					
 					return new String[]{rva, __q.removeFirst()};
 				}
