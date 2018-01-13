@@ -8,15 +8,15 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.rms.file;
+package cc.squirreljme.runtime.rms.file;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import javax.microedition.rms.RecordStoreException;
-import net.multiphasicapps.squirreljme.runtime.rms.RecordCluster;
-import net.multiphasicapps.squirreljme.runtime.rms.RecordClusterManager;
-import net.multiphasicapps.squirreljme.runtime.rms.RecordStoreOwner;
+import cc.squirreljme.runtime.rms.RecordCluster;
+import cc.squirreljme.runtime.rms.RecordClusterManager;
+import cc.squirreljme.runtime.rms.RecordStoreOwner;
 
 /**
  * This is a record store manager which uses the local file system to manage
@@ -29,12 +29,12 @@ public class FileRecordClusterManager
 {
 	/**
 	 * {@squirreljme.property
-	 * net.multiphasicapps.squirreljme.rms.file.recordstorepath=path
+	 * cc.squirreljme.rms.file.recordstorepath=path
 	 * This is used to specify an alternative default path where record stores
 	 * will be located.}
 	 */
 	public static final String RECORD_STORE_PATH_PROPERTY =
-		"net.multiphasicapps.squirreljme.rms.file.recordstorepath";
+		"cc.squirreljme.rms.file.recordstorepath";
 	
 	/** The path where records are stored. */
 	protected final Path path;

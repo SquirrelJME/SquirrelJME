@@ -14,5 +14,5 @@
  * @since 2017/02/27
  */
 
-package net.multiphasicapps.squirreljme.runtime.rms.file;
+package cc.squirreljme.runtime.rms.file;
 

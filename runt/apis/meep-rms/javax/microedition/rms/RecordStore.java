@@ -11,13 +11,13 @@
 package javax.microedition.rms;
 
 import javax.microedition.midlet.MIDlet;
-import net.multiphasicapps.squirreljme.midlet.ActiveMidlet;
-import net.multiphasicapps.squirreljme.rms.RecordCluster;
-import net.multiphasicapps.squirreljme.rms.RecordClusterManager;
-import net.multiphasicapps.squirreljme.rms.RecordStoreOwner;
-import net.multiphasicapps.squirreljme.midlet.MidletSuiteName;
-import net.multiphasicapps.squirreljme.midlet.MidletSuiteVendor;
-import net.multiphasicapps.squirreljme.unsafe.SystemEnvironment;
+import cc.squirreljme.midlet.ActiveMidlet;
+import cc.squirreljme.rms.RecordCluster;
+import cc.squirreljme.rms.RecordClusterManager;
+import cc.squirreljme.rms.RecordStoreOwner;
+import cc.squirreljme.midlet.MidletSuiteName;
+import cc.squirreljme.midlet.MidletSuiteVendor;
+import cc.squirreljme.unsafe.SystemEnvironment;
 
 /**
  * This is a record store which may be used by an application to store

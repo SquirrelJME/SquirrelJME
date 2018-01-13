@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.rms;
+package cc.squirreljme.runtime.rms;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -16,9 +16,9 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.rms.RecordStoreException;
-import net.multiphasicapps.squirreljme.runtime.midlet.ActiveMidlet;
-import net.multiphasicapps.squirreljme.runtime.midlet.MidletSuiteName;
-import net.multiphasicapps.squirreljme.runtime.midlet.MidletSuiteVendor;
+import cc.squirreljme.runtime.midlet.ActiveMidlet;
+import cc.squirreljme.runtime.midlet.MidletSuiteName;
+import cc.squirreljme.runtime.midlet.MidletSuiteVendor;
 
 /**
  * This is the base class for a manager which provides access to a record
