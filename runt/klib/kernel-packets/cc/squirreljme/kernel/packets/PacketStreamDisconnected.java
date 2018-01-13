@@ -8,34 +8,37 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel.packets;
+package cc.squirreljme.kernel.packets;
 
 /**
- * This interface is used by the incoming side to handle incoming requests
- * which were sent by the remote end.
+ * This is thrown when the packet stream has been disconnected.
  *
  * @since 2018/01/01
  */
-public interface PacketStreamHandler
+public class PacketStreamDisconnected
+	extends RuntimeException
 {
 	/**
-	 * This is called when the remote side has ended the connection.
+	 * Initializes exception with the given message.
 	 *
+	 * @param __m The message.
 	 * @since 2018/01/01
 	 */
-	public abstract void end();
+	public PacketStreamDisconnected(String __m)
+	{
+		super(__m);
+	}
 	
 	/**
-	 * Handles a request sent from the remote end.
+	 * Initializes exception with the given message and cause.
 	 *
-	 * @param __p The packet received from the remote end.
-	 * @return The packet to respond with, this may be {@code null} if there
-	 * is no response. The return value is ignored if the type is not one
-	 * which generates a response.
-	 * @throws NullPointerException On null arguments.
+	 * @param __m The message.
+	 * @param __c The cause.
 	 * @since 2018/01/01
 	 */
-	public abstract Packet handle(Packet __p)
-		throws NullPointerException;
+	public PacketStreamDisconnected(String __m, Throwable __c)
+	{
+		super(__m, __c);
+	}
 }
 

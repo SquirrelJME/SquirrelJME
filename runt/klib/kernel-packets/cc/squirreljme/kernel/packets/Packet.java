@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel.packets;
+package cc.squirreljme.kernel.packets;
 
 import java.io.Closeable;
 import java.io.DataInputStream;
