@@ -14,5 +14,5 @@
  * @since 2018/01/04
  */
 
-package net.multiphasicapps.squirreljme.kernel.callerbase;
+package cc.squirreljme.kernel.callerbase;
 

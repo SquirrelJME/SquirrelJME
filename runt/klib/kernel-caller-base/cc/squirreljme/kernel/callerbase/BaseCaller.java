@@ -8,23 +8,23 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel.callerbase;
+package cc.squirreljme.kernel.callerbase;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
-import net.multiphasicapps.squirreljme.kernel.ipc.base.PacketTypes;
-import net.multiphasicapps.squirreljme.kernel.packets.Packet;
-import net.multiphasicapps.squirreljme.kernel.packets.PacketStream;
-import net.multiphasicapps.squirreljme.kernel.packets.PacketStreamHandler;
-import net.multiphasicapps.squirreljme.kernel.service.ClientInstance;
-import net.multiphasicapps.squirreljme.kernel.service.ClientInstanceAccessor;
-import net.multiphasicapps.squirreljme.kernel.service.ClientInstanceFactory;
-import net.multiphasicapps.squirreljme.kernel.service.ServicePacketStream;
-import net.multiphasicapps.squirreljme.runtime.cldc.NoSuchServiceException;
-import net.multiphasicapps.squirreljme.runtime.cldc.OperatingSystemType;
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemCaller;
+import cc.squirreljme.kernel.ipc.base.PacketTypes;
+import cc.squirreljme.kernel.packets.Packet;
+import cc.squirreljme.kernel.packets.PacketStream;
+import cc.squirreljme.kernel.packets.PacketStreamHandler;
+import cc.squirreljme.kernel.service.ClientInstance;
+import cc.squirreljme.kernel.service.ClientInstanceAccessor;
+import cc.squirreljme.kernel.service.ClientInstanceFactory;
+import cc.squirreljme.kernel.service.ServicePacketStream;
+import cc.squirreljme.runtime.cldc.NoSuchServiceException;
+import cc.squirreljme.runtime.cldc.OperatingSystemType;
+import cc.squirreljme.runtime.cldc.SystemCaller;
 
 /**
  * This represents the base for the client and server system callers which
