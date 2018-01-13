@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.builder.support;
+package cc.squirreljme.builder.support;
 
 /**
  * This represents the type of library or application that the project is, this

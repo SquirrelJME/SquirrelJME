@@ -8,22 +8,22 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.builder.support;
+package cc.squirreljme.builder.support;
 
 /**
- * This is thrown when the specified binary is not valid.
+ * This is thrown when the dependency for a project is not valid.
  *
- * @since 2017/11/29
+ * @since 2017/11/21
  */
-public class OutOfDateBinaryException
-	extends InvalidBinaryException
+public class InvalidDependencyException
+	extends ProjectException
 {
 	/**
 	 * Initialize the exception with no message or cause.
 	 *
-	 * @since 2017/11/29
+	 * @since 2017/11/21
 	 */
-	public OutOfDateBinaryException()
+	public InvalidDependencyException()
 	{
 	}
 	
@@ -31,9 +31,9 @@ public class OutOfDateBinaryException
 	 * Initialize the exception with a message and no cause.
 	 *
 	 * @param __m The message.
-	 * @since 2017/11/29
+	 * @since 2017/11/21
 	 */
-	public OutOfDateBinaryException(String __m)
+	public InvalidDependencyException(String __m)
 	{
 		super(__m);
 	}
@@ -43,9 +43,9 @@ public class OutOfDateBinaryException
 	 *
 	 * @param __m The message.
 	 * @param __c The cause.
-	 * @since 2017/11/29
+	 * @since 2017/11/21
 	 */
-	public OutOfDateBinaryException(String __m, Throwable __c)
+	public InvalidDependencyException(String __m, Throwable __c)
 	{
 		super(__m, __c);
 	}
@@ -54,9 +54,9 @@ public class OutOfDateBinaryException
 	 * Initialize the exception with no message and with a cause.
 	 *
 	 * @param __c The cause.
-	 * @since 2017/11/29
+	 * @since 2017/11/21
 	 */
-	public OutOfDateBinaryException(Throwable __c)
+	public InvalidDependencyException(Throwable __c)
 	{
 		super(__c);
 	}

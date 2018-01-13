@@ -14,5 +14,5 @@
  * @since 2017/11/09
  */
 
-package net.multiphasicapps.squirreljme.builder.support;
+package cc.squirreljme.builder.support;
 

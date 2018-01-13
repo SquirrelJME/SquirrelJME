@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.builder.support;
+package cc.squirreljme.builder.support;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -68,11 +68,11 @@ public class BuilderFactory
 		
 		// Use default paths based on system properties
 		Path sourceroot = Paths.get(
-			System.getProperty("net.multiphasicapps.squirreljme.builder.root",
+			System.getProperty("cc.squirreljme.builder.root",
 				System.getProperty("user.dir", "squirreljme"))),
 			binroot = Paths.get(
 				System.getProperty(
-					"net.multiphasicapps.squirreljme.builder.output", "bins")),
+					"cc.squirreljme.builder.output", "bins")),
 			binruntime = null,
 			binjit = null,
 			binbuild = null;
