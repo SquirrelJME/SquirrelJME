@@ -338,7 +338,7 @@ public abstract class KernelTask
 			
 			Packet rv = __p.respond();
 			rv.writeString(0,
-				KernelTask.this.kernel().operatingSystemType().toString());
+				KernelTask.this.kernel().operatingSystemType().name());
 			return rv;
 		}
 		

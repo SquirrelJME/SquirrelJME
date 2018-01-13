@@ -40,7 +40,25 @@ public final class JavaKernel
 	@Override
 	public final OperatingSystemType operatingSystemType()
 	{
-		throw new todo.TODO();
+		String osname = System.getProperty("os.name", "").toLowerCase();
+		
+		// Java 7 does not run on Windows 98, so just return NT
+		if (osname.contains("windows"))
+			return OperatingSystemType.WINDOWS_NT;
+		
+		// Linux
+		else if (osname.contains("linux"))
+			return OperatingSystemType.LINUX;
+		
+		// Solaris
+		else if (osname.contains("solaris"))
+			return OperatingSystemType.SOLARIS;
+		
+		// Mac OS X
+		else if (osname.contains("mac os x"))
+			return OperatingSystemType.MAC_OS_X;
+		
+		return OperatingSystemType.UNKNOWN;
 	}
 }
 

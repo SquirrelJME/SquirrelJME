@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirreljme.runtime.cldc;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+
 /**
  * This represents the type of operating system SquirrelJME is running on.
  *
@@ -19,14 +22,72 @@ package net.multiphasicapps.squirreljme.runtime.cldc;
  */
 public enum OperatingSystemType
 {
+	/** Unknown. */
+	UNKNOWN,
+	
 	/** Linux. */
 	LINUX,
 	
-	/** Windows. */
-	WINDOWS,
+	/** Mac OS X. */
+	MAC_OS_X,
+	
+	/** MS-DOS and compatibles. */
+	MS_DOS,
+	
+	/** Solaris. */
+	SOLARIS,
+	
+	/** Windows 16-bit. */
+	WINDOWS_WIN16,
+	
+	/** Windows 9x. */
+	WINDOWS_9X,
+	
+	/** Windows NT. */
+	WINDOWS_NT,
 	
 	/** End. */
 	;
+	
+	/** Lowercase form of the type . */
+	private volatile Reference<String> _lower;
+	
+	/**
+	 * Is this a DOS system?
+	 *
+	 * @return {@code true} if it is a DOS system.
+	 * @since 2018/01/13
+	 */
+	public final boolean isDOS()
+	{
+		switch (this)
+		{
+			case MS_DOS:
+				return true;
+			
+			default:
+				return false;
+		}
+	}
+	
+	/**
+	 * Is this a modern Windows system?
+	 *
+	 * @return {@code true} if it is a modern Windows system.
+	 * @since 2018/01/13
+	 */
+	public final boolean isModernWindows()
+	{
+		switch (this)
+		{
+			case WINDOWS_9X:
+			case WINDOWS_NT:
+				return true;
+			
+			default:
+				return false;
+		}
+	}
 	
 	/**
 	 * Is this a UNIX system?
@@ -39,11 +100,30 @@ public enum OperatingSystemType
 		switch (this)
 		{
 			case LINUX:
+			case MAC_OS_X:
+			case SOLARIS:
 				return true;
 			
 			default:
 				return false;
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/01/13
+	 */
+	@Override
+	public final String toString()
+	{
+		Reference<String> ref = this._lower;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._lower = new WeakReference<>(
+				rv = this.name().toLowerCase().replace('_', '-'));
+		
+		return rv;
 	}
 }
 
