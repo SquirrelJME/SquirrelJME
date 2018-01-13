@@ -9,10 +9,10 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This contains tests for the extra math library.
+ * This contains basic tests.
  *
- * @since 2017/07/25
+ * @since 2017/03/27
  */
 
-package net.multiphasicapps.squirreljme.test.extramath;
+package cc.squirreljme.test.basic;
 

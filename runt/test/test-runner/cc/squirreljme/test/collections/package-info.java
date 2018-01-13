@@ -8,28 +8,11 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.test.collections;
-
-import java.util.Map;
-import net.multiphasicapps.squirreljme.test.TestResult;
-import net.multiphasicapps.collections.SortedTreeMap;
-
 /**
- * This tests the sorted tree map to see if it operates correctly.
+ * This contains tests for collections.
  *
  * @since 2017/03/28
  */
-public class TestSortedTreeMap
-	extends __BaseMap__
-{
-	/**
-	 * Initializes the test.
-	 *
-	 * @since 2017/03/28
-	 */
-	public TestSortedTreeMap()
-	{
-		super(true, new SortedTreeMap<String, String>());
-	}
-}
+
+package cc.squirreljme.test.collections;
 

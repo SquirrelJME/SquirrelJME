@@ -8,31 +8,28 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.test;
+package cc.squirreljme.test.collections;
+
+import java.util.Hashtable;
+import java.util.Map;
+import cc.squirreljme.test.TestResult;
 
 /**
- * This contains the profile of a test and its results.
+ * This tests the old hash table which is just a synchronized {@link HashMap}.
  *
  * @since 2017/03/28
  */
-public class TestProfile
+public class TestHashtable
+	extends __BaseMap__
 {
 	/**
-	 * Gets the result for the specified test with the given name.
+	 * Initializes the test.
 	 *
-	 * @param __n The name of the test to get the result for.
-	 * @return The result of this test.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2017/03/28
 	 */
-	public TestResult get(TestName __n)
-		throws NullPointerException
+	public TestHashtable()
 	{
-		// Check
-		if (__n == null)
-			throw new NullPointerException("NARG");
-		
-		throw new todo.TODO();
+		super(false, new Hashtable<String, String>());
 	}
 }
 

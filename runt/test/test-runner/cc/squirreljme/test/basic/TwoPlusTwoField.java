@@ -8,11 +8,11 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.test.basic;
+package cc.squirreljme.test.basic;
 
-import net.multiphasicapps.squirreljme.test.TestDefaultFunction;
-import net.multiphasicapps.squirreljme.test.TestFunction;
-import net.multiphasicapps.squirreljme.test.TestResult;
+import cc.squirreljme.test.TestDefaultFunction;
+import cc.squirreljme.test.TestFunction;
+import cc.squirreljme.test.TestResult;
 
 /**
  * This adds two plus two. This reads from a field so that the compiler does

@@ -8,28 +8,27 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.test.collections;
-
-import java.util.HashMap;
-import java.util.Map;
-import net.multiphasicapps.squirreljme.test.TestResult;
+package cc.squirreljme.test;
 
 /**
- * This tests the standard hash map.
+ * This is used to provide a default profile for results within tests. Since
+ * tests are completely comparison based, if there is no other test sequence to
+ * compare to then this interface provides a specially defined.
  *
- * @since 2017/03/28
+ * @see TestFunction
+ * @since 2017/03/27
  */
-public class TestHashMap
-	extends __BaseMap__
+public interface TestDefaultFunction
 {
 	/**
-	 * Initializes the test.
+	 * May potentially run a test or just places the expected result of the
+	 * test.
 	 *
-	 * @since 2017/03/28
+	 * @param __r Where the result of the test is to be stored.
+	 * @throws Throwable On any errors or exceptions.
+	 * @since 2017/03/27
 	 */
-	public TestHashMap()
-	{
-		super(false, new HashMap<String, String>());
-	}
+	public abstract void defaultRun(TestResult __r)
+		throws Throwable;
 }
 

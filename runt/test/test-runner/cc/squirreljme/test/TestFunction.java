@@ -8,27 +8,24 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.test;
+package cc.squirreljme.test;
 
 /**
- * This is used to provide a default profile for results within tests. Since
- * tests are completely comparison based, if there is no other test sequence to
- * compare to then this interface provides a specially defined.
+ * This is used to describe a test that may be ran.
  *
- * @see TestFunction
+ * @see TestDefaultFunction
  * @since 2017/03/27
  */
-public interface TestDefaultFunction
+public interface TestFunction
 {
 	/**
-	 * May potentially run a test or just places the expected result of the
-	 * test.
+	 * Runs the specified test and places the result in the specified result.
 	 *
 	 * @param __r Where the result of the test is to be stored.
 	 * @throws Throwable On any errors or exceptions.
 	 * @since 2017/03/27
 	 */
-	public abstract void defaultRun(TestResult __r)
+	public abstract void run(TestResult __r)
 		throws Throwable;
 }
 

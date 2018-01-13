@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.test;
+package cc.squirreljme.test;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -127,7 +127,7 @@ public final class TestName
 		if (ref == null || null == (rv = ref.get()))
 		{
 			// Never end in a dot
-			rv = "net.multiphasicapps.squirreljme.test." + toString();
+			rv = "cc.squirreljme.test." + toString();
 			if (rv.charAt(rv.length() - 1) == '.')
 				rv = rv.substring(0, rv.length() - 1);
 			

@@ -8,18 +8,20 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.test.collections;
+package cc.squirreljme.test.collections;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import net.multiphasicapps.squirreljme.test.TestResult;
+import cc.squirreljme.test.TestResult;
 
 /**
- * This tests the linked hash map.
+ * This tests the linked hash map but with the iteration order determined by
+ * the access order. Put an get operations specify the access order of the
+ * values in the set.
  *
  * @since 2017/03/28
  */
-public class TestLinkedHashMapInsert
+public class TestLinkedHashMapAccess
 	extends __BaseMap__
 {
 	/**
@@ -27,9 +29,9 @@ public class TestLinkedHashMapInsert
 	 *
 	 * @since 2017/03/28
 	 */
-	public TestLinkedHashMapInsert()
+	public TestLinkedHashMapAccess()
 	{
-		super(true, new LinkedHashMap<String, String>(16, 0.75F, false));
+		super(true, new LinkedHashMap<String, String>(16, 0.75F, true));
 	}
 }
 
