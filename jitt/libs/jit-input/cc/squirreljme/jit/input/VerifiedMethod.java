@@ -8,15 +8,15 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.input;
+package cc.squirreljme.jit.input;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import net.multiphasicapps.squirreljme.jit.classfile.ByteCode;
-import net.multiphasicapps.squirreljme.jit.classfile.Instruction;
-import net.multiphasicapps.squirreljme.jit.classfile.MethodHandle;
-import net.multiphasicapps.squirreljme.jit.program.BasicProgram;
-import net.multiphasicapps.squirreljme.jit.program.ByteCodeParser;
+import cc.squirreljme.jit.classfile.ByteCode;
+import cc.squirreljme.jit.classfile.Instruction;
+import cc.squirreljme.jit.classfile.MethodHandle;
+import cc.squirreljme.jit.program.BasicProgram;
+import cc.squirreljme.jit.program.ByteCodeParser;
 
 /**
  * This is a single method which has been verified.
