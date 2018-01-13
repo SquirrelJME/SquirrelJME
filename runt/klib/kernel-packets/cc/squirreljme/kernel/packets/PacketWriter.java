@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel.packets;
+package cc.squirreljme.kernel.packets;
 
 /**
  * This class is used to write to a packet in a stream like manner.

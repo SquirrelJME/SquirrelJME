@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel.packets;
+package cc.squirreljme.kernel.packets;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -22,7 +22,7 @@ import java.io.OutputStream;
 import java.util.Objects;
 import java.util.HashMap;
 import java.util.Map;
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
+import cc.squirreljme.runtime.cldc.SystemCall;
 
 /**
  * This represents a packet stream which is used to read and write events from

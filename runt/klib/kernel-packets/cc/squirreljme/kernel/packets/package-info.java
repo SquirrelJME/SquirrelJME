@@ -8,37 +8,12 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel.packets;
-
 /**
- * This is thrown when the packet stream has been disconnected.
+ * This package contains the packet interface which is used primarily by the
+ * kernel and sub-processes to communicate with each other as needed.
  *
  * @since 2018/01/01
  */
-public class PacketStreamDisconnected
-	extends RuntimeException
-{
-	/**
-	 * Initializes exception with the given message.
-	 *
-	 * @param __m The message.
-	 * @since 2018/01/01
-	 */
-	public PacketStreamDisconnected(String __m)
-	{
-		super(__m);
-	}
-	
-	/**
-	 * Initializes exception with the given message and cause.
-	 *
-	 * @param __m The message.
-	 * @param __c The cause.
-	 * @since 2018/01/01
-	 */
-	public PacketStreamDisconnected(String __m, Throwable __c)
-	{
-		super(__m, __c);
-	}
-}
+
+package cc.squirreljme.kernel.packets;
 
