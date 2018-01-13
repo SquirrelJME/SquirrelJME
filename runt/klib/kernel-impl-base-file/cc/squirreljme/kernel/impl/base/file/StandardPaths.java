@@ -8,12 +8,12 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel.impl.base.file;
+package cc.squirreljme.kernel.impl.base.file;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import net.multiphasicapps.squirreljme.runtime.cldc.OperatingSystemType;
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
+import cc.squirreljme.runtime.cldc.OperatingSystemType;
+import cc.squirreljme.runtime.cldc.SystemCall;
 
 /**
  * This class contains the standard set of paths which is where SquirrelJME's

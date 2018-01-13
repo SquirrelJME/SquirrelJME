@@ -8,9 +8,9 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel.impl.base.file;
+package cc.squirreljme.kernel.impl.base.file;
 
-import net.multiphasicapps.squirreljme.kernel.lib.server.LibrariesProvider;
+import cc.squirreljme.kernel.lib.server.LibrariesProvider;
 
 /**
  * This provides access to installed libraries which have been compiled and
