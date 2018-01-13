@@ -32,6 +32,20 @@ public abstract class SystemCaller
 		throws NullPointerException, SecurityException;
 	
 	/**
+	 * Obtains the specified environment variable.
+	 *
+	 * This will always return {@code null} when not invoked by the kernel.
+	 *
+	 * @param __v The variable to obtain.
+	 * @return The value of the variable or {@code null} if it has not been
+	 * set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/013
+	 */
+	public abstract String getEnv(String __v)
+		throws NullPointerException;
+	
+	/**
 	 * Lists tasks which are currently running within the system.
 	 *
 	 * @param __incsys If {@code true} then system tasks are included.
@@ -41,6 +55,14 @@ public abstract class SystemCaller
 	 */
 	public abstract SystemTask[] listTasks(boolean __incsys)
 		throws SecurityException;
+	
+	/**
+	 * Returns the operating system type that SquirrelJME is running on.
+	 *
+	 * @return The operating system type SquirrelJME is running on.
+	 * @since 2018/01/13
+	 */
+	public abstract OperatingSystemType operatingSystemType();
 	
 	/**
 	 * Returns the kernel service for the given class.

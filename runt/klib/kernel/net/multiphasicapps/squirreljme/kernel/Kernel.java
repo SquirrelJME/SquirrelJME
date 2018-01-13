@@ -21,6 +21,7 @@ import java.util.Set;
 import net.multiphasicapps.collections.SortedTreeMap;
 import net.multiphasicapps.squirreljme.kernel.service.ServiceProvider;
 import net.multiphasicapps.squirreljme.kernel.service.ServiceProviderFactory;
+import net.multiphasicapps.squirreljme.runtime.cldc.OperatingSystemType;
 
 /**
  * This class represents the micro-kernel which manages the entire SquirrelJME
@@ -162,6 +163,14 @@ public abstract class Kernel
 		_tasks.put(0, systemtask);
 		this.systemtask = systemtask;
 	}
+	
+	/**
+	 * Returns the operating system type that SquirrelJME is running on.
+	 *
+	 * @return The operating system type SquirrelJME is running on.
+	 * @since 2018/01/13
+	 */
+	public abstract OperatingSystemType operatingSystemType();
 	
 	/**
 	 * Returns the kernel's loopback stream.

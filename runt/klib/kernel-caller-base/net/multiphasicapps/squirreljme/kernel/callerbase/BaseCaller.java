@@ -23,6 +23,7 @@ import net.multiphasicapps.squirreljme.kernel.service.ClientInstanceAccessor;
 import net.multiphasicapps.squirreljme.kernel.service.ClientInstanceFactory;
 import net.multiphasicapps.squirreljme.kernel.service.ServicePacketStream;
 import net.multiphasicapps.squirreljme.runtime.cldc.NoSuchServiceException;
+import net.multiphasicapps.squirreljme.runtime.cldc.OperatingSystemType;
 import net.multiphasicapps.squirreljme.runtime.cldc.SystemCaller;
 
 /**
@@ -43,6 +44,9 @@ public abstract class BaseCaller
 	
 	/** Services which have been initialized for clients. */
 	private final ClientInstanceAccessor[] _instances;
+	
+	/** The detected operating system type. */
+	private volatile OperatingSystemType _ostype;
 	
 	/**
 	 * Initializes the base caller.
@@ -84,6 +88,29 @@ public abstract class BaseCaller
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/01/13
+	 */
+	@Override
+	public final OperatingSystemType operatingSystemType()
+	{
+		// Cached?
+		OperatingSystemType rv = this._ostype;
+		if (rv != null)
+			return rv;
+		
+		PacketStream stream = this.stream;
+		try (Packet p = stream.farm().create(PacketTypes.OS_TYPE);
+			Packet r = stream.send(p))
+		{
+			rv = OperatingSystemType.valueOf(r.readString(0));
+		}
+		
+		this._ostype = rv;
+		return rv;
 	}
 	
 	/**

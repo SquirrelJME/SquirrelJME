@@ -250,6 +250,9 @@ public abstract class KernelTask
 				case PacketTypes.SERVICE_NO_RESULT:
 					return this.__servicePacket(__p);
 				
+				case PacketTypes.OS_TYPE:
+					return this.__osType(__p);
+				
 					// {@squirreljme.error AP09 Unknown packet. (The packet)}
 				default:
 					throw new IllegalArgumentException(
@@ -316,6 +319,26 @@ public abstract class KernelTask
 			// Record the response
 			w.writeInteger(svdx);
 			w.writeString(sv.clientFactoryClass().getName());
+			return rv;
+		}
+		
+		/**
+		 * Returns the operating system type.
+		 *
+		 * @param __p The incoming packet, which is ignored.
+		 * @return The operating system type.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2018/01/13
+		 */
+		private final Packet __osType(Packet __p)
+			throws NullPointerException
+		{
+			if (__p == null)
+				throw new NullPointerException("NARG");
+			
+			Packet rv = __p.respond();
+			rv.writeString(0,
+				KernelTask.this.kernel().operatingSystemType().toString());
 			return rv;
 		}
 		
