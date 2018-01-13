@@ -13,11 +13,11 @@ package javax.microedition.swm;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemCall;
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemTask;
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemTaskFlag;
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemTaskMetric;
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemTaskStatus;
+import cc.squirreljme.runtime.cldc.SystemCall;
+import cc.squirreljme.runtime.cldc.SystemTask;
+import cc.squirreljme.runtime.cldc.SystemTaskFlag;
+import cc.squirreljme.runtime.cldc.SystemTaskMetric;
+import cc.squirreljme.runtime.cldc.SystemTaskStatus;
 
 /**
  * This describes a task which is currently running on the system. Each task

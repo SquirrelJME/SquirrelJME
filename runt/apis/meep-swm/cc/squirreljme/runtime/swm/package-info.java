@@ -15,5 +15,5 @@
  * @since 2017/12/07
  */
 
-package net.multiphasicapps.squirreljme.runtime.swm;
+package cc.squirreljme.runtime.swm;
 
