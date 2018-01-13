@@ -50,11 +50,31 @@ then
 	fi
 fi
 
+# JamVM on older Debian versions has trouble when tools.jar is dynamically
+# loaded, it cannot find the resources JAR.
+__flaw="$("$JAVA" $JAVA_OPTIONS "$BOOTSTRAP_CLASS" "--toolsflaw" |
+	grep '\.jar$' | head -n 1)"
+
+# No flaw was detected, operate normally
+if [ -z "$__flaw" ]
+then
+	__cpflaw="."
+	__bsflaw="sjmeboot.jar"
+
+# Otherwise use the library which was found
+else
+	__cpflaw=".:$__flaw"
+	__bsflaw="$__flaw:sjmeboot.jar"
+	
+	# Add a note that the flaw is being worked around
+	echo "Working around tools.jar flaw ($__flaw)." 1>&2
+fi
+
 # Run it once to build the bootstrap
 if ! "$JAVA" $JAVA_OPTIONS \
 	"-Dnet.multiphasicapps.squirreljme.bootstrap.binary=$(pwd)" \
 	"-Dnet.multiphasicapps.squirreljme.builder.root=$__exedir" \
-	"$BOOTSTRAP_CLASS" "$@"
+	-classpath "$__cpflaw" "$BOOTSTRAP_CLASS" "$@"
 then
 	exit 1
 fi
@@ -65,7 +85,7 @@ if ! "$JAVA" $JAVA_OPTIONS \
 	"-Dnet.multiphasicapps.squirreljme.builder.root=$__exedir" \
 	"-Dnet.multiphasicapps.squirreljme.runtime.javase.java=$JAVA" \
 	"-Dnet.multiphasicapps.squirreljme.runtime.javase.bootpath=sjmeboot.jar" \
-	-jar "sjmeboot.jar" "$@"
+	-cp "$__bsflaw" "net.multiphasicapps.squirreljme.runtime.javase.Main" "$@"
 then
 	exit 1
 fi
