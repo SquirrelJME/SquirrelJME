@@ -55,5 +55,9 @@ public interface PacketTypes
 	/** Service with a result. */
 	public static final int SERVICE_WITH_RESULT =
 		3;
+	
+	/** Operating System type. */
+	public static final int OS_TYPE =
+		4;
 }
 

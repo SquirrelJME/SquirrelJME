@@ -12,6 +12,7 @@ package net.multiphasicapps.squirreljme.runtime.javase;
 
 import net.multiphasicapps.squirreljme.kernel.Kernel;
 import net.multiphasicapps.squirreljme.kernel.KernelTask;
+import net.multiphasicapps.squirreljme.runtime.cldc.OperatingSystemType;
 
 /**
  * This implements the kernel which is used on the initial Java SE
@@ -30,6 +31,16 @@ public final class JavaKernel
 	public JavaKernel()
 	{
 		super(new JavaConfiguration());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/01/13
+	 */
+	@Override
+	public final OperatingSystemType operatingSystemType()
+	{
+		throw new todo.TODO();
 	}
 }
 

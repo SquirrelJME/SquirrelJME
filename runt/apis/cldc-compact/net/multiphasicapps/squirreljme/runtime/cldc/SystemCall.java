@@ -85,6 +85,26 @@ public final class SystemCall
 	}
 	
 	/**
+	 * Obtains the specified environment variable.
+	 *
+	 * This will always return {@code null} when not invoked by the kernel.
+	 *
+	 * @param __v The variable to obtain.
+	 * @return The value of the variable or {@code null} if it has not been
+	 * set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/013
+	 */
+	public static final String getEnv(String __v)
+		throws NullPointerException
+	{
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		return SystemCall._CALLER.getEnv(__v);
+	}
+	
+	/**
 	 * Lists tasks which currently exist and may be running on the system.
 	 *
 	 * @param __incsys If {@code true} then system tasks are included.
@@ -105,6 +125,17 @@ public final class SystemCall
 	public static final long nanoTime()
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the operating system type that SquirrelJME is running on.
+	 *
+	 * @return The operating system type SquirrelJME is running on.
+	 * @since 2018/01/13
+	 */
+	public static final OperatingSystemType operatingSystemType()
+	{
+		return SystemCall._CALLER.operatingSystemType();
 	}
 	
 	/**

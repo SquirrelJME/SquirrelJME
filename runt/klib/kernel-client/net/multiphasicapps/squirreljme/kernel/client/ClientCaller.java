@@ -54,6 +54,20 @@ public abstract class ClientCaller
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2018/01/013
+	 */
+	@Override
+	public final String getEnv(String __v)
+		throws NullPointerException
+	{
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		return null;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/01/03
 	 */
 	@Override

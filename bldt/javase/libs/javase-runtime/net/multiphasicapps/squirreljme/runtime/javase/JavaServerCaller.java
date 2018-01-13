@@ -33,6 +33,20 @@ public class JavaServerCaller
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2018/01/013
+	 */
+	@Override
+	public final String getEnv(String __v)
+		throws NullPointerException
+	{
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		return System.getenv(__v);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/01/06
 	 */
 	@Override
