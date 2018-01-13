@@ -82,9 +82,9 @@ public class HostCompiler
 				targver = "1.7";
 				break;
 			
-				// {@squirreljme.error BM03 Unsupported Java version.}
+				// {@squirreljme.error BM01 Unsupported Java version.}
 			default:
-				throw new CompilerException("BM03");
+				throw new CompilerException("BM01");
 		}
 		options.add("-source");
 		options.add(targver);

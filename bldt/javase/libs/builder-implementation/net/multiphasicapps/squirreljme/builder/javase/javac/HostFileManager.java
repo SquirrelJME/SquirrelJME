@@ -217,10 +217,10 @@ public class HostFileManager
 					}
 			}
 			
-			// {@squirreljme.error BM07 Do not know how to handle getting a
+			// {@squirreljme.error BM05 Do not know how to handle getting a
 			// file object from the given file name. (The name of the file)}
 			else
-				throw new IllegalArgumentException(String.format("BM07 %s",
+				throw new IllegalArgumentException(String.format("BM05 %s",
 					s));
 		
 		// Return
