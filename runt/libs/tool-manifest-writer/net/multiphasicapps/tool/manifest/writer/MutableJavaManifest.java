@@ -196,10 +196,10 @@ public class MutableJavaManifest
 		if (__k == null || __v == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AB01 The specified value is of the wrong
+		// {@squirreljme.error AB02 The specified value is of the wrong
 		// class type.}
 		if (!(__v instanceof MutableJavaManifestAttributes))
-			throw new ClassCastException("AB01");
+			throw new ClassCastException("AB02");
 		
 		// Put
 		return this.attributes.put(__k, __v);
