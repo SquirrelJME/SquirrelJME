@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.builder.support;
+package cc.squirreljme.builder.support;
 
 import java.io.Closeable;
 import java.io.InputStream;
@@ -46,15 +46,15 @@ import net.multiphasicapps.javac.DefaultCompiler;
 import net.multiphasicapps.javac.FilePathSet;
 import net.multiphasicapps.javac.ZipCompilerOutput;
 import net.multiphasicapps.javac.ZipPathSet;
-import net.multiphasicapps.squirreljme.kernel.lib.client.DependencyInfo;
-import net.multiphasicapps.squirreljme.kernel.lib.client.MatchResult;
-import net.multiphasicapps.squirreljme.kernel.lib.client.ProvidedInfo;
-import net.multiphasicapps.squirreljme.kernel.lib.client.SuiteDependency;
-import net.multiphasicapps.squirreljme.kernel.lib.client.SuiteDependencyLevel;
-import net.multiphasicapps.squirreljme.kernel.lib.client.SuiteDependencyType;
-import net.multiphasicapps.squirreljme.kernel.lib.client.SuiteName;
-import net.multiphasicapps.squirreljme.kernel.lib.client.SuiteVersion;
-import net.multiphasicapps.squirreljme.kernel.lib.client.SuiteVersionRange;
+import cc.squirreljme.kernel.lib.client.DependencyInfo;
+import cc.squirreljme.kernel.lib.client.MatchResult;
+import cc.squirreljme.kernel.lib.client.ProvidedInfo;
+import cc.squirreljme.kernel.lib.client.SuiteDependency;
+import cc.squirreljme.kernel.lib.client.SuiteDependencyLevel;
+import cc.squirreljme.kernel.lib.client.SuiteDependencyType;
+import cc.squirreljme.kernel.lib.client.SuiteName;
+import cc.squirreljme.kernel.lib.client.SuiteVersion;
+import cc.squirreljme.kernel.lib.client.SuiteVersionRange;
 import net.multiphasicapps.strings.StringUtils;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;

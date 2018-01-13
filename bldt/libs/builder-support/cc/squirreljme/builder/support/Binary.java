@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.builder.support;
+package cc.squirreljme.builder.support;
 
 import java.io.InputStream;
 import java.io.IOException;
@@ -28,13 +28,13 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import net.multiphasicapps.collections.SortedTreeSet;
-import net.multiphasicapps.squirreljme.kernel.lib.client.DependencyInfo;
-import net.multiphasicapps.squirreljme.kernel.lib.client.MatchResult;
-import net.multiphasicapps.squirreljme.kernel.lib.client.ProvidedInfo;
-import net.multiphasicapps.squirreljme.kernel.lib.client.SuiteInfo;
-import net.multiphasicapps.squirreljme.kernel.lib.client.SuiteName;
-import net.multiphasicapps.squirreljme.kernel.lib.client.SuiteVendor;
-import net.multiphasicapps.squirreljme.kernel.lib.client.SuiteVersion;
+import cc.squirreljme.kernel.lib.client.DependencyInfo;
+import cc.squirreljme.kernel.lib.client.MatchResult;
+import cc.squirreljme.kernel.lib.client.ProvidedInfo;
+import cc.squirreljme.kernel.lib.client.SuiteInfo;
+import cc.squirreljme.kernel.lib.client.SuiteName;
+import cc.squirreljme.kernel.lib.client.SuiteVendor;
+import cc.squirreljme.kernel.lib.client.SuiteVersion;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 import net.multiphasicapps.tool.manifest.JavaManifestKey;

@@ -8,22 +8,22 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.builder.support;
+package cc.squirreljme.builder.support;
 
 /**
- * This is thrown when the dependency for a project is not valid.
+ * This exception is thrown when there is a problem with the project system.
  *
- * @since 2017/11/21
+ * @since 2017/10/31
  */
-public class InvalidDependencyException
-	extends ProjectException
+public class ProjectException
+	extends RuntimeException
 {
 	/**
 	 * Initialize the exception with no message or cause.
 	 *
-	 * @since 2017/11/21
+	 * @since 2017/10/31
 	 */
-	public InvalidDependencyException()
+	public ProjectException()
 	{
 	}
 	
@@ -31,9 +31,9 @@ public class InvalidDependencyException
 	 * Initialize the exception with a message and no cause.
 	 *
 	 * @param __m The message.
-	 * @since 2017/11/21
+	 * @since 2017/10/31
 	 */
-	public InvalidDependencyException(String __m)
+	public ProjectException(String __m)
 	{
 		super(__m);
 	}
@@ -43,9 +43,9 @@ public class InvalidDependencyException
 	 *
 	 * @param __m The message.
 	 * @param __c The cause.
-	 * @since 2017/11/21
+	 * @since 2017/10/31
 	 */
-	public InvalidDependencyException(String __m, Throwable __c)
+	public ProjectException(String __m, Throwable __c)
 	{
 		super(__m, __c);
 	}
@@ -54,9 +54,9 @@ public class InvalidDependencyException
 	 * Initialize the exception with no message and with a cause.
 	 *
 	 * @param __c The cause.
-	 * @since 2017/11/21
+	 * @since 2017/10/31
 	 */
-	public InvalidDependencyException(Throwable __c)
+	public ProjectException(Throwable __c)
 	{
 		super(__c);
 	}

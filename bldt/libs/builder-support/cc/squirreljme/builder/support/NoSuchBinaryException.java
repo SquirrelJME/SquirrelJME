@@ -8,22 +8,22 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.builder.support;
+package cc.squirreljme.builder.support;
 
 /**
- * This is thrown when the source project is not valid.
+ * This is thrown when the specified binary does not exist.
  *
- * @since 2017/10/31
+ * @since 2017/11/02
  */
-public class InvalidSourceException
-	extends ProjectException
+public class NoSuchBinaryException
+	extends InvalidBinaryException
 {
 	/**
 	 * Initialize the exception with no message or cause.
 	 *
-	 * @since 2017/10/31
+	 * @since 2017/11/02
 	 */
-	public InvalidSourceException()
+	public NoSuchBinaryException()
 	{
 	}
 	
@@ -31,9 +31,9 @@ public class InvalidSourceException
 	 * Initialize the exception with a message and no cause.
 	 *
 	 * @param __m The message.
-	 * @since 2017/10/31
+	 * @since 2017/11/02
 	 */
-	public InvalidSourceException(String __m)
+	public NoSuchBinaryException(String __m)
 	{
 		super(__m);
 	}
@@ -43,9 +43,9 @@ public class InvalidSourceException
 	 *
 	 * @param __m The message.
 	 * @param __c The cause.
-	 * @since 2017/10/31
+	 * @since 2017/11/02
 	 */
-	public InvalidSourceException(String __m, Throwable __c)
+	public NoSuchBinaryException(String __m, Throwable __c)
 	{
 		super(__m, __c);
 	}
@@ -54,9 +54,9 @@ public class InvalidSourceException
 	 * Initialize the exception with no message and with a cause.
 	 *
 	 * @param __c The cause.
-	 * @since 2017/10/31
+	 * @since 2017/11/02
 	 */
-	public InvalidSourceException(Throwable __c)
+	public NoSuchBinaryException(Throwable __c)
 	{
 		super(__c);
 	}
