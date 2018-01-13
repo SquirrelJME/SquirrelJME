@@ -1,0 +1,17 @@
+# 2018/01/13
+
+## 00:28
+
+And the workaround for `tools.jar` works and I can now build again on JamVM
+on my rather ancient PowerPC container. At least it works for the most part
+anyway.
+
+## 00:30
+
+Well after awhile it loses track of the compiler, so maybe I should cache it
+rather than always getting it.
+
+## 00:35
+
+Then it fails because it cannot find the builder class, will need to
+investigate since it exists within the JAR.
