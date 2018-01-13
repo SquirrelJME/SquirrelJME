@@ -103,6 +103,9 @@ public class NewBootstrap
 			}
 		};
 	
+	/** Cache of the compiler so it does not need to be read multiple times. */
+	private static volatile JavaCompiler _javac;
+	
 	/** The binary path. */
 	protected final Path binarypath;
 	
@@ -991,9 +994,14 @@ public class NewBootstrap
 			// to make sure that tools.jar is loaded into your classpath
 			// either manually (although in most installations it should be
 			// automatic).}
-			JavaCompiler javac = ToolProvider.getSystemJavaCompiler();
+			JavaCompiler javac = NewBootstrap._javac;
 			if (javac == null)
-				throw new IllegalStateException("NB07");
+			{
+				javac = ToolProvider.getSystemJavaCompiler();
+				if (javac == null)
+					throw new IllegalStateException("NB07");
+				NewBootstrap._javac = javac;
+			}
 			
 			// Need to clear files
 			Path tempdir = null;
