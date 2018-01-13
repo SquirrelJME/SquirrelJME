@@ -8,37 +8,35 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
-
-import java.io.PrintStream;
+package cc.squirreljme.jit;
 
 /**
- * This is a progress notifier which outputs to the given stream.
+ * This is a progress notifier which catches exceptions.
  *
  * @since 2017/08/29
  */
-public class PrintStreamProgressNotifier
+public class CatchingProgressNotifier
 	implements JITProgressNotifier
 {
-	/** The target stream to print to. */
-	protected final PrintStream out;
+	/** The notifier to forward to. */
+	protected final JITProgressNotifier forward;
 	
 	/**
-	 * Initializes the progress notifier which writes to the given output
-	 * stream.
+	 * Initializes the catching progress notifier.
 	 *
-	 * @param __out The stream to write to.
+	 * @param __f The notifier to forward to.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/29
 	 */
-	public PrintStreamProgressNotifier(PrintStream __out)
+	public CatchingProgressNotifier(JITProgressNotifier __f)
 		throws NullPointerException
 	{
 		// Check
-		if (__out == null)
+		if (__f == null)
 			throw new NullPointerException("NARG");
 		
-		this.out = __out;
+		// Set
+		this.forward = __f;
 	}
 	
 	/**
@@ -48,9 +46,13 @@ public class PrintStreamProgressNotifier
 	@Override
 	public void beginJar(String __n)
 	{
-		// {@squirreljme.error AI01 Starting processing of the specified JAR.
-		// (The name of the JAR)}
-		this.out.printf("AI01 %s%n", __n);
+		try
+		{
+			this.forward.beginJar(__n);
+		}
+		catch (Exception e)
+		{
+		}
 	}
 	
 	/**
@@ -60,10 +62,13 @@ public class PrintStreamProgressNotifier
 	@Override
 	public void endJar(String __n, long __ns, int __lr, int __lc)
 	{
-		// {@squirreljme.error AI02 Finished processing the specified JAR.
-		// (The name of the JAR; The number of nanoseconds it took to
-		// process; The number of resources; The number of classes)}
-		this.out.printf("AI02 %s %d %d %d%n", __n, __ns, __lr, __lc);
+		try
+		{
+			this.forward.endJar(__n, __ns, __lr, __lc);
+		}
+		catch (Exception e)
+		{
+		}
 	}
 	
 	/**
@@ -73,10 +78,13 @@ public class PrintStreamProgressNotifier
 	@Override
 	public void processClass(String __n, String __cl, int __num)
 	{
-		// {@squirreljme.error AI03 Processing the specified class. (The name
-		// of the JAR; The name of the class; The number of classes which
-		// are being processed)}
-		this.out.printf("AI03 %s %s %d%n", __n, __cl, __num);
+		try
+		{
+			this.forward.processClass(__n, __cl, __num);
+		}
+		catch (Exception e)
+		{
+		}
 	}
 	
 	/**
@@ -86,10 +94,13 @@ public class PrintStreamProgressNotifier
 	@Override
 	public void processResource(String __n, String __rc, int __num)
 	{
-		// {@squirreljme.error AI04 Processing the specified resource. (The
-		// name of the JAR; The name of the resource; The number of resource
-		// which are being processed)}
-		this.out.printf("AI04 %s %s %d%n", __n, __rc, __num);
+		try
+		{
+			this.forward.processResource(__n, __rc, __num);
+		}
+		catch (Exception e)
+		{
+		}
 	}
 }
 
