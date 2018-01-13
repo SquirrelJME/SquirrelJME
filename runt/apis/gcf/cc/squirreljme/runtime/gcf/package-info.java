@@ -14,5 +14,5 @@
  * @since 2016/10/12
  */
 
-package net.multiphasicapps.squirreljme.gcf;
+package cc.squirreljme.gcf;
 
