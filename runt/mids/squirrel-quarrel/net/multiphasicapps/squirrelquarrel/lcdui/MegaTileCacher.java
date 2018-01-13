@@ -20,7 +20,7 @@ import javax.microedition.lcdui.Image;
 import net.multiphasicapps.squirrelquarrel.Level;
 import net.multiphasicapps.squirrelquarrel.MegaTile;
 import net.multiphasicapps.squirrelquarrel.TerrainType;
-import net.multiphasicapps.squirreljme.runtime.lcdui.image.XPMReader;
+import cc.squirreljme.runtime.lcdui.image.XPMReader;
 
 /**
  * This is used to cache mega tiles as single large images since drawing a
