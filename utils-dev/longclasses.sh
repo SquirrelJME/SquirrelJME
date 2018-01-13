@@ -16,7 +16,7 @@ export LC_ALL=C
 # Directory of this script
 __exedir="$(dirname -- "$0")"
 
-find "$__exedir/.." -type f | grep '\.java' | while read __file
+find "$__exedir/.." -type f | grep '\.java$' | while read __file
 do
 	__classname="$("$__exedir/longclass.sh" "$__file")"
 	__charlen="$(echo -n "$__classname" | wc -c)"
