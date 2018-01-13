@@ -85,7 +85,8 @@ if ! "$JAVA" $JAVA_OPTIONS \
 	"-Dnet.multiphasicapps.squirreljme.builder.root=$__exedir" \
 	"-Dnet.multiphasicapps.squirreljme.runtime.javase.java=$JAVA" \
 	"-Dnet.multiphasicapps.squirreljme.runtime.javase.bootpath=sjmeboot.jar" \
-	-cp "$__bsflaw" "net.multiphasicapps.squirreljme.runtime.javase.Main" "$@"
+	-classpath "$__bsflaw" \
+	"net.multiphasicapps.squirreljme.runtime.javase.Main" "$@"
 then
 	exit 1
 fi
