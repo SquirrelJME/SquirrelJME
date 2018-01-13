@@ -8,12 +8,12 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.rms;
+package cc.squirreljme.runtime.rms;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import net.multiphasicapps.squirreljme.runtime.midlet.MidletSuiteName;
-import net.multiphasicapps.squirreljme.runtime.midlet.MidletSuiteVendor;
+import cc.squirreljme.runtime.midlet.MidletSuiteName;
+import cc.squirreljme.runtime.midlet.MidletSuiteVendor;
 
 /**
  * This represents the owner of a record store and is used to access record

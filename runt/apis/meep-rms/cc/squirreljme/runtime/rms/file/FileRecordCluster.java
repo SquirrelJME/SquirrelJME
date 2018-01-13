@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.rms.file;
+package cc.squirreljme.runtime.rms.file;
 
 import java.io.InputStream;
 import java.io.IOException;
@@ -30,10 +30,10 @@ import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 import net.multiphasicapps.tool.manifest.JavaManifestKey;
 import net.multiphasicapps.tool.manifest.writer.MutableJavaManifest;
 import net.multiphasicapps.tool.manifest.writer.MutableJavaManifestAttributes;
-import net.multiphasicapps.squirreljme.runtime.rms.RecordCluster;
-import net.multiphasicapps.squirreljme.runtime.rms.RecordStoreOwner;
-import net.multiphasicapps.squirreljme.runtime.midlet.MidletSuiteName;
-import net.multiphasicapps.squirreljme.runtime.midlet.MidletSuiteVendor;
+import cc.squirreljme.runtime.rms.RecordCluster;
+import cc.squirreljme.runtime.rms.RecordStoreOwner;
+import cc.squirreljme.runtime.midlet.MidletSuiteName;
+import cc.squirreljme.runtime.midlet.MidletSuiteVendor;
 
 /**
  * This is a cluster which is backed by the filesystem.
