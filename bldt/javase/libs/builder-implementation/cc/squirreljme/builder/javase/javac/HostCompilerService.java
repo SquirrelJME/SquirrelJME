@@ -8,11 +8,32 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-/**
- * This package contains the support for Java SE based systems.
- *
- * @since 2017/11/09
- */
+package cc.squirreljme.builder.javase.javac;
 
-package net.multiphasicapps.squirreljme.builder.javase;
+import javax.tools.JavaCompiler;
+import javax.tools.ToolProvider;
+import net.multiphasicapps.javac.Compiler;
+import net.multiphasicapps.javac.CompilerService;
+
+/**
+ * This provides the host compiler as a service.
+ *
+ * @since 2017/11/28
+ */
+public class HostCompilerService
+	implements CompilerService
+{
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/11/28
+	 */
+	@Override
+	public Compiler createInstance()
+	{
+		JavaCompiler javac = ToolProvider.getSystemJavaCompiler();
+		if (javac == null)
+			return null;
+		return new HostCompiler(javac);
+	}
+}
 

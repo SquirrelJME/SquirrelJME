@@ -8,44 +8,43 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.builder.javase.javac;
+package cc.squirreljme.builder.javase.javac;
 
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
-import net.multiphasicapps.javac.CompilerOutput;
+import net.multiphasicapps.javac.CompilerInput;
 
 /**
- * This is a file object which is used for output.
+ * This is a file object which is used for input.
  *
  * @since 2017/11/29
  */
-public class OutputHostFileObject
+public class InputHostFileObject
 	extends HostFileObject
 {
-	/** The output to write to. */
-	protected final CompilerOutput output;
+	/** The file to source input from. */
+	protected final CompilerInput input;
 	
 	/**
-	 * Initializes the file output.
+	 * Initializes the file object for input.
 	 *
-	 * @param __out The output to write to.
-	 * @param __name The output file name.
+	 * @param __i The stream for input of classes and sources.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/29
 	 */
-	public OutputHostFileObject(CompilerOutput __out, String __name)
+	public InputHostFileObject(CompilerInput __i)
 		throws NullPointerException
 	{
-		super(__name);
+		super(__i.name());
 		
-		if (__out == null)
+		if (__i == null)
 			throw new NullPointerException("NARG");
 		
-		this.output = __out;
+		this.input = __i;
 	}
 	
 	/**
@@ -56,9 +55,26 @@ public class OutputHostFileObject
 	public CharSequence getCharContent(boolean __a)
 		throws IOException
 	{
-		// {@squirreljme.error BM09 Cannot get character content for an output
-		// file.}
-		throw new IllegalStateException("BM09");
+		// Read in all the characters
+		StringBuilder sb = new StringBuilder();
+		try (Reader r = new InputStreamReader(openInputStream(), "utf-8"))
+		{
+			char[] buf = new char[2048];
+			for (;;)
+			{
+				int rc = r.read(buf);
+				
+				// EOF?
+				if (rc < 0)
+					break;
+				
+				// Write
+				sb.append(buf, 0, rc);
+			}
+		}
+		
+		// Return it
+		return sb;
 	}
 	
 	/**
@@ -69,9 +85,7 @@ public class OutputHostFileObject
 	public InputStream openInputStream()
 		throws IOException
 	{
-		// {@squirreljme.error BM0a Cannot open an input stream for an output
-		// file.}
-		throw new IllegalStateException("BM0a");
+		return this.input.open();
 	}
 	
 	/**
@@ -82,7 +96,8 @@ public class OutputHostFileObject
 	public OutputStream openOutputStream()
 		throws IOException
 	{
-		return this.output.output(this.name);
+		// {@squirreljme.error BM07 Attempted to open input file as output.}
+		throw new IllegalStateException("BM07");
 	}
 	
 	/**
@@ -93,9 +108,7 @@ public class OutputHostFileObject
 	public Reader openReader(boolean __a)
 		throws IOException
 	{
-		// {@squirreljme.error BM0b Cannot open a reader for an output
-		// file.}
-		throw new IllegalStateException("BM0b");
+		return new InputStreamReader(openInputStream(), "utf-8");
 	}
 	
 	/**
@@ -106,7 +119,8 @@ public class OutputHostFileObject
 	public Writer openWriter()
 		throws IOException
 	{
-		return new OutputStreamWriter(this.openOutputStream(), "utf-8");
+		// {@squirreljme.error BM08 Cannot open a writer for an input file.}
+		throw new IllegalStateException("BM08");
 	}
 }
 
