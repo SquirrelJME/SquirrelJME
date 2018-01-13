@@ -133,7 +133,7 @@ public abstract class BaseCaller
 				}
 		}
 		
-		// {@squirreljme.error BG02 No such service for the given class exists.
+		// {@squirreljme.error BG03 No such service for the given class exists.
 		// (The class to provide a service for)}
 		if (svdx <= 0)
 			throw new NoSuchServiceException(String.format("BG03 %s", __cl));
@@ -155,13 +155,13 @@ public abstract class BaseCaller
 					(Class.forName(rawcif).newInstance());
 			}
 			
-			// {@squirreljme.error BG04 Failed to initialize the factory for
+			// {@squirreljme.error BG02 Failed to initialize the factory for
 			// creating the client instance for a service. (The requested
 			// service)}
 			catch (ClassNotFoundException|IllegalAccessException|
 				InstantiationException e)
 			{
-				throw new RuntimeException(String.format("BG04 %s", __cl), e);
+				throw new RuntimeException(String.format("BG02 %s", __cl), e);
 			}
 			
 			// Create instance of the client service
@@ -202,10 +202,10 @@ public abstract class BaseCaller
 			
 			switch (__p.type())
 			{
-					// {@squirreljme.error BG01 Unknown packet. (The packet)}
+					// {@squirreljme.error BG03 Unknown packet. (The packet)}
 				default:
 					throw new IllegalArgumentException(
-						String.format("BG01 %s", __p));
+						String.format("BG03 %s", __p));
 			}
 		}
 	}
