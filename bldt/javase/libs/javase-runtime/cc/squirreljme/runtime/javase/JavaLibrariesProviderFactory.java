@@ -8,13 +8,28 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-/**
- * This package contains the support for SquirrelJME which runs on an existing
- * Java SE run-time by providing basic support for implemented classes and
- * such.
- *
- * @since 2017/11/09
- */
+package cc.squirreljme.runtime.javase;
 
-package net.multiphasicapps.squirreljme.runtime.javase;
+import cc.squirreljme.kernel.lib.server.LibrariesProvider;
+import cc.squirreljme.kernel.lib.server.
+	LibrariesProviderFactory;
+
+/**
+ * This allows the Java kernel to manage libraries as needed.
+ *
+ * @since 2018/01/05
+ */
+public class JavaLibrariesProviderFactory
+	extends LibrariesProviderFactory
+{
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/01/05
+	 */
+	@Override
+	protected LibrariesProvider createLibrariesProvider()
+	{
+		return new JavaLibrariesProvider();
+	}
+}
 

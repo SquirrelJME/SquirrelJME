@@ -15,5 +15,5 @@
  * @since 2017/11/09
  */
 
-package net.multiphasicapps.squirreljme.runtime.javase.lcdui;
+package cc.squirreljme.runtime.javase.lcdui;
 

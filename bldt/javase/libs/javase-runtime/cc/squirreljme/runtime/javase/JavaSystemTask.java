@@ -8,14 +8,14 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.javase;
+package cc.squirreljme.runtime.javase;
 
 import java.lang.ref.Reference;
-import net.multiphasicapps.squirreljme.kernel.Kernel;
-import net.multiphasicapps.squirreljme.kernel.KernelTask;
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemTaskFlag;
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemTaskMetric;
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemTaskStatus;
+import cc.squirreljme.kernel.Kernel;
+import cc.squirreljme.kernel.KernelTask;
+import cc.squirreljme.runtime.cldc.SystemTaskFlag;
+import cc.squirreljme.runtime.cldc.SystemTaskMetric;
+import cc.squirreljme.runtime.cldc.SystemTaskStatus;
 
 /**
  * This task represents the kernel itself.

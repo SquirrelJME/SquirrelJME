@@ -8,46 +8,35 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.javase;
+package cc.squirreljme.runtime.javase;
 
-import net.multiphasicapps.squirreljme.kernel.server.ServerCaller;
+import java.io.InputStream;
+import java.io.OutputStream;
+import cc.squirreljme.kernel.client.ClientCaller;
 
 /**
- * This supports system calls on the kernel itself.
+ * This is the Java implementation of the client caller.
  *
- * @since 2018/01/03
+ * @since 2017/12/31
  */
-public class JavaServerCaller
-	extends ServerCaller
+public class JavaClientCaller
+	extends ClientCaller
 {
 	/**
-	 * Initializes the server caller.
+	 * Initializes the caller.
 	 *
-	 * @param __k The kernel to call into.
-	 * @since 2018/01/03
+	 * @param __in The input stream.
+	 * @param __out The output stream.
+	 * @since 2017/12/31
 	 */
-	public JavaServerCaller(JavaKernel __k)
+	public JavaClientCaller(InputStream __in, OutputStream __out)
 	{
-		super(__k);
+		super(__in, __out);
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/01/013
-	 */
-	@Override
-	public final String getEnv(String __v)
-		throws NullPointerException
-	{
-		if (__v == null)
-			throw new NullPointerException("NARG");
-		
-		return System.getenv(__v);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/01/06
+	 * @since 2017/12/31
 	 */
 	@Override
 	public void setDaemonThread(Thread __t)

@@ -8,35 +8,22 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.javase;
+package cc.squirreljme.runtime.javase;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import net.multiphasicapps.squirreljme.kernel.client.ClientCaller;
+import cc.squirreljme.runtime.cldc.DaemonThreadSetter;
 
 /**
- * This is the Java implementation of the client caller.
+ * This sets the daemon thread before the caller is ready, this is needed by
+ * the packet interfaces.
  *
- * @since 2017/12/31
+ * @since 2018/01/05
  */
-public class JavaClientCaller
-	extends ClientCaller
+public final class DaemonSetter
+	implements DaemonThreadSetter
 {
 	/**
-	 * Initializes the caller.
-	 *
-	 * @param __in The input stream.
-	 * @param __out The output stream.
-	 * @since 2017/12/31
-	 */
-	public JavaClientCaller(InputStream __in, OutputStream __out)
-	{
-		super(__in, __out);
-	}
-	
-	/**
 	 * {@inheritDoc}
-	 * @since 2017/12/31
+	 * @since 2018/01/05
 	 */
 	@Override
 	public void setDaemonThread(Thread __t)
