@@ -8,9 +8,9 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.program;
+package cc.squirreljme.jit.program;
 
-import net.multiphasicapps.squirreljme.jit.JITException;
+import cc.squirreljme.jit.JITException;
 
 /**
  * This is thrown when the instruction parser has not performed a correct

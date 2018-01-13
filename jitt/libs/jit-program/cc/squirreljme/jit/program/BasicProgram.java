@@ -8,32 +8,15 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.program;
+package cc.squirreljme.jit.program;
 
 /**
- * This represents the basic type that a variable may be, it only contains
- * basic information.
+ * This contains the representation of the program which may be compiled
+ * further or executed as such.
  *
- * @since 2017/10/17
+ * @since 2017/10/16
  */
-enum __BasicType__
+public class BasicProgram
 {
-	/** Integer. */
-	INTEGER,
-	
-	/** Long. */
-	LONG,
-	
-	/** Float. */
-	FLOAT,
-	
-	/** Double. */
-	DOUBLE,
-	
-	/** Object. */
-	OBJECT,
-	
-	/** End. */
-	;
 }
 
