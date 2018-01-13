@@ -402,6 +402,11 @@ public abstract class KernelTask
 			{
 				__p.readPacketData(8, q);
 				
+				// The incoming packet data is no longer needed, since
+				// services could be sending large packets they might consume
+				// extra memory
+				__p.close();
+				
 				return i.handlePacket(q);
 			}
 		}

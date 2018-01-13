@@ -183,7 +183,28 @@ public final class PacketStream
 		if (__p == null)
 			throw new NullPointerException("NARG");
 		
-		return this.__send(0, false, __p);
+		return this.send(__p, false);
+	}
+	
+	/**
+	 * Sends the specified packet to the remote end and optionally closes it
+	 * once the packet has been written to the target stream.
+	 *
+	 * @param __p The packet to send to the remote end.
+	 * @return The resulting packet, if the type of one that does not generate
+	 * a response then this will be {@code null}. The return value of a
+	 * response should be used with try-with-resources.
+	 * @throws NullPointerException On null arguments.
+	 * @throws RemoteThrowable If the remote handler threw an exception.
+	 * @since 2018/01/13
+	 */
+	public final Packet send(Packet __p, boolean __close)
+		throws NullPointerException
+	{
+		if (__p == null)
+			throw new NullPointerException("NARG");
+		
+		return this.__send(0, false, __p, __close);
 	}
 	
 	/**
@@ -192,6 +213,9 @@ public final class PacketStream
 	 * @param __key The key to use, if {@code 0} then one is generated.
 	 * @param __forceresponse Force a response type to be used?
 	 * @param __p The packet to send to the remote end.
+	 * @param __close Should the packet be closed right after it is written to
+	 * the target stream? This can be used when it is not really needed
+	 * anymore.
 	 * @return The resulting packet, if the type of one that does not generate
 	 * a response then this will be {@code null}. The return value of a
 	 * response should be used with try-with-resources.
@@ -199,7 +223,8 @@ public final class PacketStream
 	 * @throws RemoteThrowable If the remote handler threw an exception.
 	 * @since 2018/01/01
 	 */
-	final Packet __send(int __key, boolean __forceresponse, Packet __p)
+	final Packet __send(int __key, boolean __forceresponse, Packet __p,
+		boolean __close)
 		throws NullPointerException
 	{
 		if (__p == null)
@@ -235,6 +260,12 @@ public final class PacketStream
 				// Write the packet data
 				int len = __p.length();
 				__p.__writeToOutput(out);
+				
+				// If doing a close after send, close it now before the
+				// flush because the other side might pick it up instantly
+				// and there could be three copies of it in memory!
+				if (__close)
+					__p.close();
 				
 				// Flush to force data through
 				out.flush();
@@ -445,7 +476,8 @@ public final class PacketStream
 					// Send response packet to the remote end
 					if (rv != null)
 					{
-						PacketStream.this.__send(pkey, wantsresponse, rv);
+						PacketStream.this.__send(pkey, wantsresponse, rv,
+							true);
 						
 						// Response sent, so no longer is it needed
 						rv.close();

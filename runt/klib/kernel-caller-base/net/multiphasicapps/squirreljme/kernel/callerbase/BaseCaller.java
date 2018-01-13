@@ -69,7 +69,7 @@ public abstract class BaseCaller
 		// services which are available
 		try (Packet p = stream.farm().create(PacketTypes.SERVICE_COUNT, 0))
 		{
-			try (Packet r = stream.send(p))
+			try (Packet r = stream.send(p, true))
 			{
 				this._instances = new ClientInstanceAccessor[r.readInteger(0)];
 			}
@@ -104,7 +104,7 @@ public abstract class BaseCaller
 		
 		PacketStream stream = this.stream;
 		try (Packet p = stream.farm().create(PacketTypes.OS_TYPE);
-			Packet r = stream.send(p))
+			Packet r = stream.send(p, true))
 		{
 			rv = OperatingSystemType.valueOf(r.readString(0));
 		}
@@ -147,7 +147,7 @@ public abstract class BaseCaller
 					p.writeString(0, __cl.getName());
 					
 					// Tell server to map it
-					try (Packet r = stream.send(p))
+					try (Packet r = stream.send(p, true))
 					{
 						svdx = r.readInteger(0);
 						

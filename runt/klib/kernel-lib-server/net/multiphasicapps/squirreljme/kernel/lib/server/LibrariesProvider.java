@@ -17,6 +17,8 @@ import net.multiphasicapps.collections.SortedTreeMap;
 import net.multiphasicapps.squirreljme.kernel.lib.client.LibrariesClient;
 import net.multiphasicapps.squirreljme.kernel.lib.client.LibrariesClientFactory;
 import net.multiphasicapps.squirreljme.kernel.lib.client.Library;
+import net.multiphasicapps.squirreljme.kernel.lib.client.
+	LibraryInstallationReport;
 import net.multiphasicapps.squirreljme.kernel.service.ClientInstance;
 import net.multiphasicapps.squirreljme.kernel.service.ServerInstance;
 import net.multiphasicapps.squirreljme.kernel.service.ServicePacketStream;
@@ -66,6 +68,30 @@ public abstract class LibrariesProvider
 			throw new NullPointerException("NARG");
 		
 		return new LibrariesServer(__task, __sps, this);
+	}
+	
+	/**
+	 * Installs the specified JAR file.
+	 *
+	 * @param __b The data for the JAR file.
+	 * @param __o The offset to the JAR data.
+	 * @param __l The length of the JAR.
+	 * @return The installation report.
+	 * @throws ArrayIndexOutOfBoundsException If the offset and/or length
+	 * are negative or exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/13
+	 */
+	public final LibraryInstallationReport install(byte[] __b, int __o,
+		int __l)
+		throws ArrayIndexOutOfBoundsException, NullPointerException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new ArrayIndexOutOfBoundsException("IOOB");
+		
+		throw new todo.TODO();
 	}
 	
 	/**
