@@ -8,9 +8,9 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel;
+package cc.squirreljme.kernel;
 
-import net.multiphasicapps.squirreljme.runtime.cldc.SystemTrustGroup;
+import cc.squirreljme.runtime.cldc.SystemTrustGroup;
 
 /**
  * This represents a trust group within the kernel, tasks are assigned to

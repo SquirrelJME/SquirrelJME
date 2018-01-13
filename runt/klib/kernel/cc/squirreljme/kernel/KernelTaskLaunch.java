@@ -8,15 +8,26 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel;
+package cc.squirreljme.kernel;
 
 /**
- * This interface describes an object which is launchable by the kernel, it
- * is up the the kernel implementation to correctly interpret this class.
+ * This stores the information which is needed to launch a new task.
+ *
+ * This class is immutable.
  *
  * @since 2018/01/02
  */
-public interface KernelTaskLaunchable
+public final class KernelTaskLaunch
 {
+	/**
+	 * Returns the trust group the task will be under.
+	 *
+	 * @return The trust group of the task.
+	 * @since 2018/01/11
+	 */
+	public final KernelTrustGroup trustGroup()
+	{
+		throw new todo.TODO();
+	}
 }
 
