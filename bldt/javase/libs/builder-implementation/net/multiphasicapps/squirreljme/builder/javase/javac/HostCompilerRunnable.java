@@ -50,15 +50,15 @@ public class HostCompilerRunnable
 	{
 		try
 		{
-			// {@squirreljme.error BM01 Compilation failed.}
+			// {@squirreljme.error BM03 Compilation failed.}
 			if (!this.task.call())
-				throw new CompilationFailedException("BM01");
+				throw new CompilationFailedException("BM03");
 		}
 		
-		// {@squirreljme.error BM02 The compiler has failed.}
+		// {@squirreljme.error BM03 The compiler has failed.}
 		catch (RuntimeException e)
 		{
-			throw new CompilerException("BM02", e);
+			throw new CompilerException("BM03", e);
 		}
 	}
 }

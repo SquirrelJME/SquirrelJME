@@ -96,8 +96,8 @@ public class InputHostFileObject
 	public OutputStream openOutputStream()
 		throws IOException
 	{
-		// {@squirreljme.error BM05 Attempted to open input file as output.}
-		throw new IllegalStateException("BM05");
+		// {@squirreljme.error BM07 Attempted to open input file as output.}
+		throw new IllegalStateException("BM07");
 	}
 	
 	/**
@@ -119,8 +119,8 @@ public class InputHostFileObject
 	public Writer openWriter()
 		throws IOException
 	{
-		// {@squirreljme.error BM0c Cannot open a writer for an input file.}
-		throw new IllegalStateException("BM0c");
+		// {@squirreljme.error BM08 Cannot open a writer for an input file.}
+		throw new IllegalStateException("BM08");
 	}
 }
 
