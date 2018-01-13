@@ -14,5 +14,5 @@
  * @since 2016/10/10
  */
 
-package net.multiphasicapps.squirreljme.runtime.opengles;
+package cc.squirreljme.runtime.opengles;
 

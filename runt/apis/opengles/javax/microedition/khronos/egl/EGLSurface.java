@@ -10,8 +10,8 @@
 
 package javax.microedition.khronos.egl;
 
-import net.multiphasicapps.squirreljme.compat.AccessChange;
-import net.multiphasicapps.squirreljme.compat.AccessType;
+import cc.squirreljme.compat.AccessChange;
+import cc.squirreljme.compat.AccessType;
 
 /**
  * This represents an OpenGL ES Surface.

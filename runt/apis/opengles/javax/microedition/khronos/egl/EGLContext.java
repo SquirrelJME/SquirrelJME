@@ -13,9 +13,9 @@ package javax.microedition.khronos.egl;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import javax.microedition.khronos.opengles.GL;
-import net.multiphasicapps.squirreljme.compat.AccessChange;
-import net.multiphasicapps.squirreljme.compat.AccessType;
-import net.multiphasicapps.squirreljme.opengles.DefaultEGL;
+import cc.squirreljme.compat.AccessChange;
+import cc.squirreljme.compat.AccessType;
+import cc.squirreljme.opengles.DefaultEGL;
 
 /**
  * This class encapsulates the OpenGL context which is used to obtain instances
