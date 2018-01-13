@@ -14,5 +14,5 @@
  * @since 2016/10/16
  */
 
-package net.multiphasicapps.squirreljme.runtime.midlet;
+package cc.squirreljme.runtime.midlet;
 

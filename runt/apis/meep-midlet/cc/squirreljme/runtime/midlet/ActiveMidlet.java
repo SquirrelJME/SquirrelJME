@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.runtime.midlet;
+package cc.squirreljme.runtime.midlet;
 
 import javax.microedition.midlet.MIDlet;
 
