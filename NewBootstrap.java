@@ -31,6 +31,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Pattern;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -338,6 +339,15 @@ public class NewBootstrap
 	public static void main(String... __args)
 		throws IOException
 	{
+		// Compiling under JamVM fails because it cannot find a resource
+		// bundle for the Java compiler
+		if (__args != null && __args.length >= 1 &&
+			"--toolsflaw".equals(__args[0]))
+		{
+			__detectToolsFlaw();
+			return;
+		}
+		
 		// Get directories for input and output
 		Path bin = Paths.get(System.getProperty(
 			"net.multiphasicapps.squirreljme.bootstrap.binary")),
@@ -412,6 +422,80 @@ public class NewBootstrap
 		
 		// Use that
 		return sb.toString();
+	}
+	
+	/**
+	 * This method detects if the virtual machine has a flaw where it cannot
+	 * find the javac resource because of odd handling of JARs dynamically
+	 * loaded at run-time.
+	 *
+	 * If the flaw needs to have a work-around then a JAR will be printed
+	 * to standard output.
+	 *
+	 * @sine 2018/01/13
+	 */
+	private static final void __detectToolsFlaw()
+	{
+		String vmname = System.getProperty("java.vm.name", "");
+		
+		// JamVM has an issue where when tools.jar is dynamically loaded it
+		// will fail to find the named resource. This will cause all
+		// compilation with the system Java compiler to fail.
+		if (vmname.equalsIgnoreCase("jamvm"))
+		{
+			// The JAR to locate will be in the specified location, likely
+			// /usr/lib/jvm/java-7-openjdk-powerpc/lib/tools.jar
+			Path jhome = Paths.get(System.getProperty("java.home", ""));
+			
+			// Maybe it is here?
+			Path mightbe = jhome.resolve("tools.jar");
+			if (Files.exists(mightbe))
+			{
+				System.out.println(mightbe);
+				return;
+			}
+			
+			// Try to see if we can get in the library directory
+			jhome = jhome.getParent();
+			if (jhome != null)
+				jhome = jhome.resolve("lib");
+				
+			// It could be here
+			mightbe = jhome.resolve("tools.jar");
+			if (Files.exists(mightbe))
+			{
+				System.out.println(mightbe);
+				return;
+			}
+			
+			// These paths will need to be searched for the tools.jar
+			// It will be in a path like:
+			String[] bootpaths = System.getProperty("sun.boot.class.path", "").
+				split(Pattern.quote(
+				System.getProperty("path.separator", ":")));
+			
+			// Go through each path and try to find tools.jar
+			for (String rbp : bootpaths)
+			{
+				Path p = Paths.get(rbp);
+				
+				// If this refers to a file then try to its directory
+				if (!Files.isDirectory(p))
+					p = p.getParent();
+				
+				// Ignore it because it could not be found
+				if (p == null || !Files.isDirectory(p))
+					continue;
+				
+				// If there is a tools.jar here, indicate that
+				p = p.resolve("tools.jar");
+				if (Files.exists(p))
+				{
+					System.out.println(p);
+					return;
+				}
+			}
+		}
 	}
 	
 	/**
