@@ -8,24 +8,24 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.input;
+package cc.squirreljme.jit.input;
 
-import net.multiphasicapps.squirreljme.jit.JITException;
+import cc.squirreljme.jit.JITException;
 
 /**
- * This is thrown when the specified class was not found.
+ * This is thrown when the verification check fails.
  *
- * @since 2017/10/08
+ * @since 2017/10/04
  */
-public class NoSuchClassException
+public class VerificationException
 	extends JITException
 {
 	/**
 	 * Initialize the exception with no message or cause.
 	 *
-	 * @since 2017/10/08
+	 * @since 2017/10/04
 	 */
-	public NoSuchClassException()
+	public VerificationException()
 	{
 	}
 	
@@ -33,9 +33,9 @@ public class NoSuchClassException
 	 * Initialize the exception with a message and no cause.
 	 *
 	 * @param __m The message.
-	 * @since 2017/10/08
+	 * @since 2017/10/04
 	 */
-	public NoSuchClassException(String __m)
+	public VerificationException(String __m)
 	{
 		super(__m);
 	}
@@ -45,9 +45,9 @@ public class NoSuchClassException
 	 *
 	 * @param __m The message.
 	 * @param __c The cause.
-	 * @since 2017/10/08
+	 * @since 2017/10/04
 	 */
-	public NoSuchClassException(String __m, Throwable __c)
+	public VerificationException(String __m, Throwable __c)
 	{
 		super(__m, __c);
 	}
@@ -56,9 +56,9 @@ public class NoSuchClassException
 	 * Initialize the exception with no message and with a cause.
 	 *
 	 * @param __c The cause.
-	 * @since 2017/10/08
+	 * @since 2017/10/04
 	 */
-	public NoSuchClassException(Throwable __c)
+	public VerificationException(Throwable __c)
 	{
 		super(__c);
 	}

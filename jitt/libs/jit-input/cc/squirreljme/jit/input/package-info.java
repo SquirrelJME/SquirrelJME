@@ -15,5 +15,5 @@
  * @since 2017/11/09
  */
 
-package net.multiphasicapps.squirreljme.jit.input;
+package cc.squirreljme.jit.input;
 

@@ -8,18 +8,18 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.input;
+package cc.squirreljme.jit.input;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import net.multiphasicapps.squirreljme.jit.classfile.ByteCode;
-import net.multiphasicapps.squirreljme.jit.classfile.ClassFile;
-import net.multiphasicapps.squirreljme.jit.classfile.ClassName;
-import net.multiphasicapps.squirreljme.jit.classfile.Method;
-import net.multiphasicapps.squirreljme.jit.classfile.MethodHandle;
+import cc.squirreljme.jit.classfile.ByteCode;
+import cc.squirreljme.jit.classfile.ClassFile;
+import cc.squirreljme.jit.classfile.ClassName;
+import cc.squirreljme.jit.classfile.Method;
+import cc.squirreljme.jit.classfile.MethodHandle;
 import net.multiphasicapps.collections.SortedTreeMap;
 import net.multiphasicapps.collections.UnmodifiableList;
 

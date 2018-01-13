@@ -8,12 +8,12 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.input;
+package cc.squirreljme.jit.input;
 
 import java.io.InputStream;
 import java.util.Map;
-import net.multiphasicapps.squirreljme.jit.classfile.ClassFile;
-import net.multiphasicapps.squirreljme.jit.classfile.ClassName;
+import cc.squirreljme.jit.classfile.ClassFile;
+import cc.squirreljme.jit.classfile.ClassName;
 import net.multiphasicapps.collections.SortedTreeMap;
 import net.multiphasicapps.collections.UnmodifiableMap;
 import net.multiphasicapps.collections.UnmodifiableSet;

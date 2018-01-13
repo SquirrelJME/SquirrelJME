@@ -8,9 +8,9 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.input;
+package cc.squirreljme.jit.input;
 
-import net.multiphasicapps.squirreljme.jit.JITException;
+import cc.squirreljme.jit.JITException;
 
 /**
  * This is thrown when a requested group was not found.

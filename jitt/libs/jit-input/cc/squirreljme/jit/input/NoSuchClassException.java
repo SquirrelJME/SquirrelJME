@@ -8,24 +8,24 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.input;
+package cc.squirreljme.jit.input;
 
-import net.multiphasicapps.squirreljme.jit.JITException;
+import cc.squirreljme.jit.JITException;
 
 /**
- * This is thrown when a resource has not been found.
+ * This is thrown when the specified class was not found.
  *
- * @since 2017/10/05
+ * @since 2017/10/08
  */
-public class NoSuchResourceException
+public class NoSuchClassException
 	extends JITException
 {
 	/**
 	 * Initialize the exception with no message or cause.
 	 *
-	 * @since 2017/10/05
+	 * @since 2017/10/08
 	 */
-	public NoSuchResourceException()
+	public NoSuchClassException()
 	{
 	}
 	
@@ -33,9 +33,9 @@ public class NoSuchResourceException
 	 * Initialize the exception with a message and no cause.
 	 *
 	 * @param __m The message.
-	 * @since 2017/10/05
+	 * @since 2017/10/08
 	 */
-	public NoSuchResourceException(String __m)
+	public NoSuchClassException(String __m)
 	{
 		super(__m);
 	}
@@ -45,9 +45,9 @@ public class NoSuchResourceException
 	 *
 	 * @param __m The message.
 	 * @param __c The cause.
-	 * @since 2017/10/05
+	 * @since 2017/10/08
 	 */
-	public NoSuchResourceException(String __m, Throwable __c)
+	public NoSuchClassException(String __m, Throwable __c)
 	{
 		super(__m, __c);
 	}
@@ -56,9 +56,9 @@ public class NoSuchResourceException
 	 * Initialize the exception with no message and with a cause.
 	 *
 	 * @param __c The cause.
-	 * @since 2017/10/05
+	 * @since 2017/10/08
 	 */
-	public NoSuchResourceException(Throwable __c)
+	public NoSuchClassException(Throwable __c)
 	{
 		super(__c);
 	}

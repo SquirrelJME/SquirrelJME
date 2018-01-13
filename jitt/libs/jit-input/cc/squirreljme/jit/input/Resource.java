@@ -8,14 +8,14 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit.input;
+package cc.squirreljme.jit.input;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import net.multiphasicapps.squirreljme.jit.Groupable;
+import cc.squirreljme.jit.Groupable;
 import net.multiphasicapps.util.bytedeque.ByteDeque;
 
 /**
