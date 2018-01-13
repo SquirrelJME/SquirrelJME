@@ -8,16 +8,16 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.interpreter;
+package cc.squirreljme.interpreter;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import net.multiphasicapps.squirreljme.jit.cff.ClassName;
-import net.multiphasicapps.squirreljme.jit.cff.MethodDescriptor;
-import net.multiphasicapps.squirreljme.jit.cff.MethodName;
+import cc.squirreljme.jit.cff.ClassName;
+import cc.squirreljme.jit.cff.MethodDescriptor;
+import cc.squirreljme.jit.cff.MethodName;
 import net.multiphasicapps.collections.SortedTreeMap;
 
 /**

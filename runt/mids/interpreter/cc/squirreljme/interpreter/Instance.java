@@ -8,10 +8,10 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.interpreter;
+package cc.squirreljme.interpreter;
 
 import java.lang.ref.Reference;
-import net.multiphasicapps.squirreljme.jit.cff.ClassName;
+import cc.squirreljme.jit.cff.ClassName;
 
 /**
  * This represents an instance of an object within the virtual machine.
