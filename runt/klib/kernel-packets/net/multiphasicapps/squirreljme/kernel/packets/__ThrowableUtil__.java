@@ -155,8 +155,8 @@ final class __ThrowableUtil__
 		__w.writeString(__ThrowableUtil__.__baseType(tcl).getName());
 		
 		// Message, if there is any
-		// {@squirreljme.error AT0g Throwable has no message.}
-		__w.writeString(Objects.toString(__t.getLocalizedMessage(), "AT0g"));
+		// {@squirreljme.error AT0h Throwable has no message.}
+		__w.writeString(Objects.toString(__t.getLocalizedMessage(), "AT0h"));
 		
 		// Write the stack trace, this is the one which is printed in the
 		// printStackTrace call

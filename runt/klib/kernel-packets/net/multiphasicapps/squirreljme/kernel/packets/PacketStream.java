@@ -211,9 +211,9 @@ public final class PacketStream
 		// time
 		synchronized (this.lock)
 		{
-			// {@squirreljme.error AT05 The stream has been disconnected.}
+			// {@squirreljme.error AT0e The stream has been disconnected.}
 			if (this._done)
-				throw new PacketStreamDisconnected("AT05");
+				throw new PacketStreamDisconnected("AT0e");
 			
 			try
 			{
@@ -247,10 +247,10 @@ public final class PacketStream
 					return null;
 			}
 			
-			// {@squirreljme.error AT06 Could not write to the remote end.}
+			// {@squirreljme.error AT0f Could not write to the remote end.}
 			catch (IOException e)
 			{
-				throw new PacketStreamDisconnected("AT06", e);
+				throw new PacketStreamDisconnected("AT0f", e);
 			}
 		}
 		
@@ -453,11 +453,11 @@ public final class PacketStream
 				}
 			}
 			
-			// {@squirreljme.error AT03 IOException in the input packet stream
+			// {@squirreljme.error AT0g IOException in the input packet stream
 			// handler.}
 			catch (IOException e)
 			{
-				throw new RuntimeException("AT03", e);
+				throw new RuntimeException("AT0g", e);
 			}
 		}
 	}

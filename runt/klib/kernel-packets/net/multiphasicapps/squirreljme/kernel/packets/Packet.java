@@ -103,10 +103,10 @@ public final class Packet
 		if (__farm == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AT0d Cannot have an outside of field packet with
+		// {@squirreljme.error AT01 Cannot have an outside of field packet with
 		// an offset which is not zero.}
 		if (!__infield && __o != 0)
-			throw new IllegalArgumentException("AT0d");
+			throw new IllegalArgumentException("AT01");
 		
 		this.farm = __farm;
 		this.type = __type;
@@ -361,9 +361,9 @@ public final class Packet
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AT0h Cannot read into a variable sized packet.}
+		// {@squirreljme.error AT03 Cannot read into a variable sized packet.}
 		if (__v.variable)
-			throw new IllegalArgumentException("AT0h");
+			throw new IllegalArgumentException("AT03");
 		
 		// Forward to the array reading method
 		this.readBytes(__p, __v._data, __v._offset, __v._length);
@@ -482,10 +482,10 @@ public final class Packet
 	public final Packet respond(int __l)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error AT02 Cannot respond with a negative length
+		// {@squirreljme.error AT03 Cannot respond with a negative length
 		// packet.}
 		if (__l < 0)
-			throw new IllegalArgumentException("AT02");
+			throw new IllegalArgumentException("AT03");
 		
 		return this.farm.create(0, __l);
 	}
@@ -714,19 +714,19 @@ public final class Packet
 	private final byte[] __check(int __p, int __l)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error AT0e Cannot read from a negative position or
+		// {@squirreljme.error AT0a Cannot read from a negative position or
 		// a negative length.}
 		if (__p < 0 || __l < 0)
-			throw new IndexOutOfBoundsException("AT0e");
+			throw new IndexOutOfBoundsException("AT0a");
 		
-		// {@squirreljme.error AT0f Read exceeds the packet bounds.
+		// {@squirreljme.error AT05 Read exceeds the packet bounds.
 		// (The position; The read length; The length of the packet;
 		// The end position)}
 		int endpos = __p + __l,
 			plen = this._length;
 		if (endpos > plen)
 			throw new IndexOutOfBoundsException(
-				String.format("AT0f %d %d %d %d", __p, __l, plen, endpos));
+				String.format("AT05 %d %d %d %d", __p, __l, plen, endpos));
 		
 		return this._data;
 	}
@@ -748,13 +748,13 @@ public final class Packet
 	private final byte[] __ensure(int __p, int __l)
 		throws IllegalArgumentException, IndexOutOfBoundsException
 	{
-		// {@squirreljme.error AT0b Cannot write at a negative position.}
+		// {@squirreljme.error AT06 Cannot write at a negative position.}
 		if (__p < 0)
-			throw new IndexOutOfBoundsException("AT0b");
+			throw new IndexOutOfBoundsException("AT06");
 		
-		// {@squirreljme.error AT0a Cannot write negative length.}
+		// {@squirreljme.error AT07 Cannot write negative length.}
 		if (__l < 0)
-			throw new IllegalArgumentException("AT0a");
+			throw new IllegalArgumentException("AT07");
 		
 		int length = this._length,
 			endpos = __p + __l,
@@ -826,9 +826,9 @@ public final class Packet
 		// Fixed length packet
 		else
 		{
-			// {@squirreljme.error AT0c Write exceeds the packet bounds.}
+			// {@squirreljme.error AT08 Write exceeds the packet bounds.}
 			if (endpos > length)
-				throw new IndexOutOfBoundsException("AT0c");
+				throw new IndexOutOfBoundsException("AT08");
 			return data;
 		}
 	}
@@ -850,9 +850,9 @@ public final class Packet
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AT04 Direct input read packet length mismatch.}
+		// {@squirreljme.error AT0a Direct input read packet length mismatch.}
 		if (this.length() != __len)
-			throw new IllegalArgumentException("AT04");
+			throw new IllegalArgumentException("AT0a");
 		
 		__in.readFully(this._data, this._offset, this._length);
 	}
@@ -881,11 +881,11 @@ public final class Packet
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AT09 The string length is too long to write to
+		// {@squirreljme.error AT0a The string length is too long to write to
 		// the packet.}
 		int strlen = __v.length();
 		if (strlen > Packet._STRING_LIMIT)
-			throw new IndexOutOfBoundsException("AT09");
+			throw new IndexOutOfBoundsException("AT0a");
 		
 		// Determine if this is a long string
 		boolean longstr = false;

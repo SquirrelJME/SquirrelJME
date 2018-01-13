@@ -81,10 +81,10 @@ public final class PacketFarm
 	public PacketFarm(int __l, int __cs)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error AT07 Invalid farm and/or crop size specified.}
+		// {@squirreljme.error AT0b Invalid farm and/or crop size specified.}
 		if (__l <= 0 || __cs <= 0 || (__l % __cs) != 0 ||
 			Integer.bitCount(__cs) != 1)
-			throw new IllegalArgumentException("AT07");
+			throw new IllegalArgumentException("AT0b");
 		
 		this.farmsize = __l;
 		this._field = new byte[__l];
@@ -126,10 +126,10 @@ public final class PacketFarm
 	public final Packet create(int __t, int __l)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error AT01 Cannot have a packet with a negative
+		// {@squirreljme.error AT0c Cannot have a packet with a negative
 		// length.}
 		if (__l < 0)
-			throw new IllegalArgumentException("AT01");
+			throw new IllegalArgumentException("AT0c");
 		
 		return __create(false, __t, __l, __l);
 	}
@@ -150,10 +150,10 @@ public final class PacketFarm
 			cropmask = this.cropmask,
 			numcrops = this.numcrops;
 		
-		// {@squirreljme.error AT08 The crop mask or allocation size is not
+		// {@squirreljme.error AT0d The crop mask or allocation size is not
 		// a multiple of the crop size.}
 		if ((__o & cropmask) != 0 || (__a & cropmask) != 0)
-			throw new IllegalStateException("AT08");
+			throw new IllegalStateException("AT0d");
 		
 		// Determine allocation positions
 		int pivot = __o / cropsize,
