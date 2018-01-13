@@ -214,19 +214,19 @@ public final class BinaryManager
 			// Temporary output file to be cleaned
 			Path temp = null;
 			
-			// {@squirreljme.error AU0h Cannot compile the specified project
+			// {@squirreljme.error AU05 Cannot compile the specified project
 			// because it has no source code. (The name of the project)}
 			Source src = __b.source();
 			if (src == null)
 				throw new InvalidBinaryException(
-					String.format("AU0h %s", __b.name()));
+					String.format("AU05 %s", __b.name()));
 			
 			// Need to close everything that is opened
 			try (CloseableList<Closeable> closing = new CloseableList<>())
 			{
-				// {@squirreljme.error AU0f Compiling the given project.
+				// {@squirreljme.error AU06 Compiling the given project.
 				// (The project name)}
-				System.err.printf("AU0f %s%n", __b.name());
+				System.err.printf("AU06 %s%n", __b.name());
 			
 				// Setup compiler instance
 				Compiler javac = DefaultCompiler.createInstance();
@@ -315,12 +315,12 @@ public final class BinaryManager
 					StandardCopyOption.REPLACE_EXISTING);
 			}
 			
-			// {@squirreljme.error AU0g Could not compile the specified
+			// {@squirreljme.error AU07 Could not compile the specified
 			// project. (The project which failed to compile)}
 			catch (CompilerException|IOException e)
 			{
 				throw new InvalidBinaryException(
-					String.format("AU0g %s", __b.name()));
+					String.format("AU07 %s", __b.name()));
 			}
 			
 			// Clean output temporary file as needed
@@ -379,10 +379,10 @@ public final class BinaryManager
 		// Locate
 		Binary rv = this._binaries.get(__n);
 		
-		// {@squirreljme.error AU0d The specified binary does not exist.
+		// {@squirreljme.error AU08 The specified binary does not exist.
 		// (The name of the binary)}
 		if (rv == null)
-			throw new NoSuchBinaryException(String.format("AU0d %s"));
+			throw new NoSuchBinaryException(String.format("AU08 %s"));
 		return rv;
 	}
 	
@@ -402,10 +402,10 @@ public final class BinaryManager
 		if (__p == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AU01 Cannot open the specified path as a project
+		// {@squirreljme.error AU09 Cannot open the specified path as a project
 		// because it does not exist. (The path to open as a binary)}
 		if (!Files.exists(__p))
-			throw new NoSuchBinaryException(String.format("AU01 %s", __p));
+			throw new NoSuchBinaryException(String.format("AU09 %s", __p));
 		
 		// Just create the binary
 		return new Binary(SourceName.ofBinaryPath(__p), null, __p);
@@ -476,11 +476,11 @@ public final class BinaryManager
 				break;
 		}
 		
-		// {@squirreljme.error AU0c Could not locate the binary which
+		// {@squirreljme.error AU0a Could not locate the binary which
 		// statifies the given dependency. (The dependency to look for)}
 		if (rv.isEmpty())
 			throw new InvalidBinaryException(
-				String.format("AU0c %s", __set));
+				String.format("AU0a %s", __set));
 		
 		return rv.<Binary>toArray(new Binary[rv.size()]);
 	}
@@ -554,12 +554,12 @@ public final class BinaryManager
 				continue;
 			}
 			
-			// {@squirreljme.error AU0k Expected at sign in
+			// {@squirreljme.error AU0b Expected at sign in
 			// {@code squirreljme.project} type dependency. (This project)}
 			int at = name.indexOf('@');
 			if (at < 0)
 				throw new InvalidBinaryException(
-					String.format("AU0k %s", __bin.name()));
+					String.format("AU0b %s", __bin.name()));
 			SourceName sname = new SourceName(name.substring(at + 1).trim());
 			
 			// Find the dependency using the given project
@@ -571,11 +571,11 @@ public final class BinaryManager
 					break;
 				}
 			
-			// {@squirreljme.error AU0l Could not locate the project with the
+			// {@squirreljme.error AU0c Could not locate the project with the
 			// specified dependency. (This project; The dependency)}
 			if (found == null)
 				throw new InvalidBinaryException(
-					String.format("AU0l %s %s", __bin.name(), sname));
+					String.format("AU0c %s %s", __bin.name(), sname));
 			
 			// Depending on an API, use configuration, standard, or profile
 			if (found.type() == ProjectType.API)

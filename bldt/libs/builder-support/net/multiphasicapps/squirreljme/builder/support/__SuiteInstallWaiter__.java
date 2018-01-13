@@ -67,11 +67,11 @@ class __SuiteInstallWaiter__
 				if (suite != null)
 					return suite;
 				
-				// {@squirreljme.error AU0z The suite installation failed with
+				// {@squirreljme.error AU0w The suite installation failed with
 				// the given error code. (The error code)}
 				InstallErrorCodes error = this._error;
 				if (error != null)
-					throw new RuntimeException(String.format("AU0z %s",
+					throw new RuntimeException(String.format("AU0w %s",
 						error));
 				
 				// Installation can be notified from another thread
