@@ -8,47 +8,41 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.kernel.service;
+package cc.squirreljme.kernel.service;
 
-import net.multiphasicapps.squirreljme.kernel.packets.Packet;
+import cc.squirreljme.kernel.packets.Packet;
+import cc.squirreljme.runtime.cldc.SystemTask;
 
 /**
- * This class enables access to the client instance along with allowing the
- * handler to be called without exposing the method in the implementing
- * class.
+ * This class represents an instance of a service which has been created for
+ * a given task from within the kernel.
  *
- * @since 2018/01/05
+ * @since 2018/01/03
  */
-public final class ClientInstanceAccessor
+public abstract class ServerInstance
 {
-	/** The client instance. */
-	protected final ClientInstance instance;
+	/** The task this provides an instance for. */
+	protected final SystemTask task;
+	
+	/** The communication to the client. */
+	protected final ServicePacketStream stream;
 	
 	/**
-	 * Initializes the client instance accessor.
+	 * Initializes the base instance.
 	 *
-	 * @param __ci The client to be accessed.
+	 * @param __task The task this is an instance for.
+	 * @param __stream The stream used to communicate with the client.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/05
 	 */
-	public ClientInstanceAccessor(ClientInstance __ci)
+	public ServerInstance(SystemTask __task, ServicePacketStream __stream)
 		throws NullPointerException
 	{
-		if (__ci == null)
+		if (__task == null || __stream == null)
 			throw new NullPointerException("NARG");
 		
-		this.instance = __ci;
-	}
-	
-	/**
-	 * Returns the instance of the client.
-	 *
-	 * @return The client instance.
-	 * @since 2018/01/05
-	 */
-	public final ClientInstance instance()
-	{
-		return this.instance;
+		this.task = __task;
+		this.stream = __stream;
 	}
 	
 	/**
@@ -60,13 +54,7 @@ public final class ClientInstanceAccessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/05
 	 */
-	public final Packet handlePacket(Packet __p)
-		throws NullPointerException
-	{
-		if (__p == null)
-			throw new NullPointerException("NARG");
-		
-		return this.instance.__handlePacket(__p);
-	}
+	public abstract Packet handlePacket(Packet __p)
+		throws NullPointerException;
 }
 
