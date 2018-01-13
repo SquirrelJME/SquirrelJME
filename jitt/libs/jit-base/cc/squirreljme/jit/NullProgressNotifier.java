@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
+package cc.squirreljme.jit;
 
 /**
  * This is a progress notifier which has no output anywhere.

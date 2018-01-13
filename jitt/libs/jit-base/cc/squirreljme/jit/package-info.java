@@ -8,22 +8,11 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
-
 /**
- * This interface is used to refer to classes and resources which may be
- * part of a group.
+ * This contains the base JIT support.
  *
- * @since 2017/10/09
+ * @since 2017/11/09
  */
-public interface Groupable
-{
-	/**
-	 * Returns the group that this instance belongs to.
-	 *
-	 * @return The owning group.
-	 * @since 2017/10/09
-	 */
-	public abstract String group();
-}
+
+package cc.squirreljme.jit;
 

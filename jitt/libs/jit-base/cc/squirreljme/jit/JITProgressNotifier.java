@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirreljme.jit;
+package cc.squirreljme.jit;
 
 /**
  * This is an optional interface which may be called when there has been an
