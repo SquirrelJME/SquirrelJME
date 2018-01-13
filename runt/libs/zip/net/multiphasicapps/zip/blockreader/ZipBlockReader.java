@@ -168,11 +168,11 @@ public class ZipBlockReader
 		long cdirbase = endat - cdirsize;
 		this.cdirbase = cdirbase;
 		
-		// {@squirreljme.error BF0g The central directory is larger than the
+		// {@squirreljme.error BF0p The central directory is larger than the
 		// ZIP file, the ZIP is truncated. (The central directory size; The
 		// size of the ZIP file)}
 		if (cdirsize > csz)
-			throw new ZipException(String.format("BF0g %d %d", cdirsize, csz));
+			throw new ZipException(String.format("BF0p %d %d", cdirsize, csz));
 		
 		// Determine the base address of the ZIP file since all entries
 		// are relative from the start point
@@ -181,11 +181,11 @@ public class ZipBlockReader
 			(csz - endat));
 		this._zipbaseaddr = zipbaseaddr;
 		
-		// {@squirreljme.error BF0h The base address of the ZIP file exceeds
+		// {@squirreljme.error BF0q The base address of the ZIP file exceeds
 		// the bound of the ZIP file. (The central directory size; The size of
 		// the ZIP file)}
 		if (zipbaseaddr < 0 || zipbaseaddr > csz)
-			throw new ZipException(String.format("BF0h %d %d", zipbaseaddr,
+			throw new ZipException(String.format("BF0q %d %d", zipbaseaddr,
 				csz));
 		
 		// Setup entry list
@@ -251,9 +251,9 @@ public class ZipBlockReader
 			if (e.toString().equals(__s))
 				return e;
 		
-		// {@squirreljme.error BF0i Could not find the entry with the
+		// {@squirreljme.error BF0o Could not find the entry with the
 		// specified name. (The name of the entry)}
-		throw new ZipEntryNotFoundException(String.format("BF0i %s", __s));
+		throw new ZipEntryNotFoundException(String.format("BF0o %s", __s));
 	}
 	
 	/**
@@ -281,11 +281,11 @@ public class ZipBlockReader
 	public InputStream open(String __s)
 		throws IOException, NullPointerException, ZipEntryNotFoundException
 	{
-		// {@squirreljme.error BF0j The specified entry does not exist
+		// {@squirreljme.error BF0p The specified entry does not exist
 		// within the ZIP file. (The entry name)}
 		ZipBlockEntry ent = get(__s);
 		if (ent == null)
-			throw new ZipEntryNotFoundException(String.format("BF0j %s", __s));
+			throw new ZipEntryNotFoundException(String.format("BF0p %s", __s));
 		
 		// Open it
 		return ent.open();
@@ -325,19 +325,19 @@ public class ZipBlockReader
 			// Entry is placed at this position
 			rv[i] = at;
 			
-			// {@squirreljme.error BF0k Central directory extends past the end
+			// {@squirreljme.error BF0q Central directory extends past the end
 			// of the file. (The current entry; The current read position; The
 			// size of the file)}
 			if (accessor.read(at, cdirent, 0, _CENTRAL_DIRECTORY_MIN_LENGTH) !=
 				_CENTRAL_DIRECTORY_MIN_LENGTH)
-				throw new ZipException(String.format("BF0k %d %d %d", i, at,
+				throw new ZipException(String.format("BF0q %d %d %d", i, at,
 					accessor.size()));
 			
-			// {@squirreljme.error BF0l The entry does not have a valid
+			// {@squirreljme.error BF0o The entry does not have a valid
 			// magic number. (The entry index)}
 			if (__ArrayData__.readSignedInt(0, cdirent) !=
 				_CENTRAL_DIRECTORY_MAGIC_NUMBER)
-				throw new ZipException(String.format("BF0l %d", i));
+				throw new ZipException(String.format("BF0o %d", i));
 			
 			// Read lengths for file name, comment, and extra data
 			int fnl = __ArrayData__.readUnsignedShort(
@@ -374,11 +374,11 @@ public class ZipBlockReader
 		if (__b == null || __db == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error BF0m The file is too small to be a ZIP file.
+		// {@squirreljme.error BF0p The file is too small to be a ZIP file.
 		// (The size of file)}
 		long size = __b.size();
 		if (size < _END_DIRECTORY_MIN_LENGTH)
-			throw new ZipException(String.format("BF0m %d", size));
+			throw new ZipException(String.format("BF0p %d", size));
 		
 		// Constantly search for the end of the central directory
 		for (long at = size - _END_DIRECTORY_MIN_LENGTH, end =
@@ -406,9 +406,9 @@ public class ZipBlockReader
 			return at;
 		}
 		
-		// {@squirreljme.error BF0n Could not find the end of the central
+		// {@squirreljme.error BF0q Could not find the end of the central
 		// directory in the ZIP file.}
-		throw new ZipException("BF0n");
+		throw new ZipException("BF0q");
 	}
 	
 	/**

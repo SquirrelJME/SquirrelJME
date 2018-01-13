@@ -98,11 +98,11 @@ class __CRCInputStream__
 		CRC32Calculator crccalc = this.crccalc;
 		if (rv < 0)
 		{
-			// {@squirreljme.error BF0p CRC mismatch. (The expected CRC; The
+			// {@squirreljme.error BF0s CRC mismatch. (The expected CRC; The
 			// calculated CRC; The number of read bytes})
 			int thiscrc = crccalc.checksum(), wantcrc = this.crc;
 			if (thiscrc != wantcrc)
-				throw new IOException(String.format("BF0p %08x %08x %d",
+				throw new IOException(String.format("BF0s %08x %08x %d",
 					wantcrc, thiscrc, this._count));
 			
 			// EOF
@@ -139,11 +139,11 @@ class __CRCInputStream__
 		CRC32Calculator crccalc = this.crccalc;
 		if (rv < 0)
 		{
-			// {@squirreljme.error BF0q CRC mismatch. (The expected CRC; The
+			// {@squirreljme.error BF0t CRC mismatch. (The expected CRC; The
 			// calculated CRC; The number of read bytes})
 			int thiscrc = crccalc.checksum(), wantcrc = this.crc;
 			if (thiscrc != wantcrc)
-				throw new IOException(String.format("BF0q %08x %08x %d",
+				throw new IOException(String.format("BF0t %08x %08x %d",
 					wantcrc, thiscrc, this._count));
 			
 			// EOF
