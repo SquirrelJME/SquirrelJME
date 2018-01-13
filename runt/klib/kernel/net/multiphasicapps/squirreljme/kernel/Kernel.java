@@ -108,25 +108,25 @@ public abstract class Kernel
 						// Make sure that the client class for the server
 						// matches the service string, otherwise odd things
 						// will happen
-						// {@squirreljme.error AP05 The server provides a
+						// {@squirreljme.error AP03 The server provides a
 						// service for a different client than than the one
 						// which was expected. (The server class; The expected
 						// client class; The actual client class)}
 						Class<?> clclass = s.clientClass();
 						if (!sv.equals(clclass.getName()))
 							throw new RuntimeException(String.format(
-								"AP05 %s %s %s", svclass, sv, clclass));
+								"AP03 %s %s %s", svclass, sv, clclass));
 						
 						// Is okay!
 						rv = s;
 					}
 				
-					// {@squirreljme.error AP01 Could not initialize the
+					// {@squirreljme.error AP03 Could not initialize the
 					// service. (The service class)}
 					catch (IllegalAccessException|InstantiationException e)
 					{
 						throw new RuntimeException(
-							String.format("AP01 %s", sv), e);
+							String.format("AP03 %s", sv), e);
 					}
 				
 					// No such class exists
@@ -153,10 +153,10 @@ public abstract class Kernel
 		this.loopback = new LoopbackStreams();
 		KernelTask systemtask = __config.systemTask(new WeakReference<>(this));
 		
-		// {@squirreljme.error AP02 System task initialized with the wrong
+		// {@squirreljme.error AP03 System task initialized with the wrong
 		// properties.}
 		if (systemtask == null || systemtask.index() != 0)
-			throw new RuntimeException("AP02");
+			throw new RuntimeException("AP03");
 		
 		// Need to remember this task
 		_tasks.put(0, systemtask);
@@ -196,11 +196,11 @@ public abstract class Kernel
 	public final ServiceProvider serviceGet(int __dx)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error AP06 Invalid service index. (The index)}
+		// {@squirreljme.error AP04 Invalid service index. (The index)}
 		ServiceProvider[] servers = this._servers;
 		if (__dx <= 0 || __dx > servers.length)
 			throw new IndexOutOfBoundsException(
-				String.format("AP06 %d", __dx));
+				String.format("AP04 %d", __dx));
 		return this._servers[__dx];
 	}
 	
@@ -243,12 +243,12 @@ public abstract class Kernel
 		Map<Integer, KernelTask> tasks = this._tasks;
 		synchronized (tasks)
 		{
-			// {@squirreljme.error AP0g The specified task does not exist.
+			// {@squirreljme.error AP05 The specified task does not exist.
 			// (The task index)}
 			KernelTask rv = tasks.get(__id);
 			if (rv == null)
 				throw new NoSuchKernelTaskException(
-					String.format("AP0g %d", __id));
+					String.format("AP05 %d", __id));
 			return rv;
 		}
 	}
