@@ -10,11 +10,11 @@
 
 package javax.microedition.midlet;
 
+import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestKey;
 
