@@ -10,6 +10,9 @@
 
 package cc.squirreljme.builder.support;
 
+import cc.squirreljme.jit.input.JITInput;
+import cc.squirreljme.jit.input.JITInputGroup;
+import cc.squirreljme.jit.input.VerifiedJITInput;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,9 +25,6 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-import cc.squirreljme.jit.input.JITInput;
-import cc.squirreljme.jit.input.JITInputGroup;
-import cc.squirreljme.jit.input.VerifiedJITInput;
 import net.multiphasicapps.zip.streamreader.ZipStreamReader;
 
 /**

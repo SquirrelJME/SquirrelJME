@@ -10,9 +10,18 @@
 
 package cc.squirreljme.builder.support;
 
+import cc.squirreljme.kernel.lib.client.DependencyInfo;
+import cc.squirreljme.kernel.lib.client.MatchResult;
+import cc.squirreljme.kernel.lib.client.ProvidedInfo;
+import cc.squirreljme.kernel.lib.client.SuiteDependency;
+import cc.squirreljme.kernel.lib.client.SuiteDependencyLevel;
+import cc.squirreljme.kernel.lib.client.SuiteDependencyType;
+import cc.squirreljme.kernel.lib.client.SuiteName;
+import cc.squirreljme.kernel.lib.client.SuiteVersion;
+import cc.squirreljme.kernel.lib.client.SuiteVersionRange;
 import java.io.Closeable;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -46,15 +55,6 @@ import net.multiphasicapps.javac.DefaultCompiler;
 import net.multiphasicapps.javac.FilePathSet;
 import net.multiphasicapps.javac.ZipCompilerOutput;
 import net.multiphasicapps.javac.ZipPathSet;
-import cc.squirreljme.kernel.lib.client.DependencyInfo;
-import cc.squirreljme.kernel.lib.client.MatchResult;
-import cc.squirreljme.kernel.lib.client.ProvidedInfo;
-import cc.squirreljme.kernel.lib.client.SuiteDependency;
-import cc.squirreljme.kernel.lib.client.SuiteDependencyLevel;
-import cc.squirreljme.kernel.lib.client.SuiteDependencyType;
-import cc.squirreljme.kernel.lib.client.SuiteName;
-import cc.squirreljme.kernel.lib.client.SuiteVersion;
-import cc.squirreljme.kernel.lib.client.SuiteVersionRange;
 import net.multiphasicapps.strings.StringUtils;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
