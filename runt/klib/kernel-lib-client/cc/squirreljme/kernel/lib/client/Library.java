@@ -13,6 +13,10 @@ package cc.squirreljme.kernel.lib.client;
 import cc.squirreljme.runtime.cldc.SystemTaskLaunchable;
 import cc.squirreljme.runtime.cldc.SystemTrustGroup;
 import java.io.InputStream;
+import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import net.multiphasicapps.tool.manifest.JavaManifest;
 
 /**
  * This represents a single program which exists within the kernel and maps
@@ -28,6 +32,12 @@ public abstract class Library
 {
 	/** The index of the library. */
 	protected final int index;
+	
+	/** The manifest of this library. */
+	private volatile Reference<JavaManifest> _manifest;
+	
+	/** The suite information. */
+	private volatile Reference<SuiteInfo> _suiteinfo;
 	
 	/**
 	 * Initializes the base library.
@@ -106,6 +116,56 @@ public abstract class Library
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the manifest for this library.
+	 *
+	 * @return The library manifest.
+	 * @since 2018/01/14
+	 */
+	public final JavaManifest manifest()
+	{
+		Reference<JavaManifest> ref = this._manifest;
+		JavaManifest rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			try (InputStream in = this.loadResource("META-INF/MANIFEST.MF"))
+			{
+				// {@squirreljme.error AV0q No manifest exists within the
+				// library.}
+				if (in == null)
+					throw new InvalidSuiteException("AV0q");
+				
+				this._manifest = new WeakReference<>(
+					(rv = new JavaManifest(in)));
+			}
+			
+			// {@squirreljme.error AV0p Could not load the manifest.}
+			catch (IOException e)
+			{
+				throw new InvalidSuiteException("AV0p", e);
+			}
+		
+		return rv;
+	}
+	
+	/**
+	 * Returns the information about this suite.
+	 *
+	 * @return The suite informtion.
+	 * @since 2018/01/04
+	 */
+	public final SuiteInfo suiteInfo()
+	{
+		Reference<SuiteInfo> ref = this._suiteinfo;
+		SuiteInfo rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._suiteinfo = new WeakReference<>(
+				(rv = new SuiteInfo(this.manifest())));
+		
+		return rv;
 	}
 	
 	/**
