@@ -13,8 +13,8 @@ package jdk.dio.counter;
 import java.io.IOException;
 import jdk.dio.ClosedDeviceException;
 import jdk.dio.Device;
-import jdk.dio.UnavailableDeviceException;
 import jdk.dio.gpio.GPIOPin;
+import jdk.dio.UnavailableDeviceException;
 
 public interface PulseCounter
 	extends Device<PulseCounter>
