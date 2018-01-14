@@ -10,11 +10,11 @@
 
 package cc.squirreljme.jit.input;
 
-import cc.squirreljme.jit.JITException;
 import cc.squirreljme.jit.classfile.ClassFile;
 import cc.squirreljme.jit.classfile.ClassName;
-import java.io.IOException;
+import cc.squirreljme.jit.JITException;
 import java.io.InputStream;
+import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Collection;

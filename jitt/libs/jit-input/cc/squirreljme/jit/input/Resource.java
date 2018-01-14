@@ -12,8 +12,8 @@ package cc.squirreljme.jit.input;
 
 import cc.squirreljme.jit.Groupable;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.util.bytedeque.ByteDeque;
