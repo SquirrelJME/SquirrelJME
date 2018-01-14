@@ -10,8 +10,8 @@
 
 package cc.squirreljme.interpreter;
 
-import java.lang.ref.Reference;
 import cc.squirreljme.jit.cff.ClassName;
+import java.lang.ref.Reference;
 
 /**
  * This represents an instance of an object within the virtual machine.
