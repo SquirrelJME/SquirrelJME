@@ -10,13 +10,13 @@
 
 package cc.squirreljme.runtime.rms.file;
 
+import cc.squirreljme.runtime.rms.RecordCluster;
+import cc.squirreljme.runtime.rms.RecordClusterManager;
+import cc.squirreljme.runtime.rms.RecordStoreOwner;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import javax.microedition.rms.RecordStoreException;
-import cc.squirreljme.runtime.rms.RecordCluster;
-import cc.squirreljme.runtime.rms.RecordClusterManager;
-import cc.squirreljme.runtime.rms.RecordStoreOwner;
 
 /**
  * This is a record store manager which uses the local file system to manage

@@ -10,6 +10,10 @@
 
 package cc.squirreljme.runtime.rms.file;
 
+import cc.squirreljme.runtime.midlet.MidletSuiteName;
+import cc.squirreljme.runtime.midlet.MidletSuiteVendor;
+import cc.squirreljme.runtime.rms.RecordCluster;
+import cc.squirreljme.runtime.rms.RecordStoreOwner;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -30,10 +34,6 @@ import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 import net.multiphasicapps.tool.manifest.JavaManifestKey;
 import net.multiphasicapps.tool.manifest.writer.MutableJavaManifest;
 import net.multiphasicapps.tool.manifest.writer.MutableJavaManifestAttributes;
-import cc.squirreljme.runtime.rms.RecordCluster;
-import cc.squirreljme.runtime.rms.RecordStoreOwner;
-import cc.squirreljme.runtime.midlet.MidletSuiteName;
-import cc.squirreljme.runtime.midlet.MidletSuiteVendor;
 
 /**
  * This is a cluster which is backed by the filesystem.
