@@ -10,11 +10,11 @@
 
 package cc.squirreljme.runtime.javase;
 
-import java.lang.ref.Reference;
-import java.util.Arrays;
 import cc.squirreljme.kernel.Kernel;
 import cc.squirreljme.kernel.KernelConfiguration;
 import cc.squirreljme.kernel.KernelTask;
+import java.lang.ref.Reference;
+import java.util.Arrays;
 
 /**
  * This is used to specify instances of services as required.

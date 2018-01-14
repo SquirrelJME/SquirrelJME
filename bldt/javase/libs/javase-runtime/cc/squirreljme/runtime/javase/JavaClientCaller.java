@@ -10,9 +10,9 @@
 
 package cc.squirreljme.runtime.javase;
 
+import cc.squirreljme.kernel.client.ClientCaller;
 import java.io.InputStream;
 import java.io.OutputStream;
-import cc.squirreljme.kernel.client.ClientCaller;
 
 /**
  * This is the Java implementation of the client caller.

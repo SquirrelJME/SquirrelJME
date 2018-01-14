@@ -10,7 +10,17 @@
 
 package cc.squirreljme.runtime.javase.lcdui;
 
+import cc.squirreljme.runtime.lcdui.DisplayHardwareState;
+import cc.squirreljme.runtime.lcdui.DisplayHead;
+import cc.squirreljme.runtime.lcdui.DisplayOrientation;
+import cc.squirreljme.runtime.lcdui.DisplayState;
+import cc.squirreljme.runtime.lcdui.gfx.IntArrayGraphics;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
@@ -18,13 +28,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.Graphics2D;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
 import java.lang.ref.Reference;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Displayable;
@@ -33,11 +38,6 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import cc.squirreljme.runtime.lcdui.DisplayHardwareState;
-import cc.squirreljme.runtime.lcdui.DisplayHead;
-import cc.squirreljme.runtime.lcdui.DisplayOrientation;
-import cc.squirreljme.runtime.lcdui.DisplayState;
-import cc.squirreljme.runtime.lcdui.gfx.IntArrayGraphics;
 
 /**
  * This is a display head which outputs to Swing.
