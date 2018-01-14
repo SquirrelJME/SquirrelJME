@@ -10,8 +10,8 @@
 
 package javax.microedition.media;
 
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.IOException;
 import javax.microedition.media.protocol.DataSource;
 
 public final class Manager
