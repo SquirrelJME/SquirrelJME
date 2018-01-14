@@ -10,8 +10,8 @@
 
 package cc.squirreljme.builder.entry;
 
-import java.io.PrintStream;
 import cc.squirreljme.builder.support.BuilderFactory;
+import java.io.PrintStream;
 
 /**
  * Main entry point for the builder.
