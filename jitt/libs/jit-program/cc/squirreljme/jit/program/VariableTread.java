@@ -10,9 +10,9 @@
 
 package cc.squirreljme.jit.program;
 
+import cc.squirreljme.jit.classfile.JavaType;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import cc.squirreljme.jit.classfile.JavaType;
 
 /**
  * This contains a single tread of variables and may optionally be used as
