@@ -15,9 +15,9 @@ import java.nio.IntBuffer;
 import jdk.dio.BufferAccess;
 import jdk.dio.ClosedDeviceException;
 import jdk.dio.Device;
+import jdk.dio.gpio.GPIOPin;
 import jdk.dio.UnavailableDeviceException;
 import jdk.dio.UnsupportedByteOrderException;
-import jdk.dio.gpio.GPIOPin;
 
 public interface PWMChannel
 	extends Device<PWMChannel>, BufferAccess<IntBuffer>
