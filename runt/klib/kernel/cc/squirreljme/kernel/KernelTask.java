@@ -10,12 +10,6 @@
 
 package cc.squirreljme.kernel;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.Map;
 import cc.squirreljme.kernel.ipc.base.PacketTypes;
 import cc.squirreljme.kernel.packets.Packet;
 import cc.squirreljme.kernel.packets.PacketReader;
@@ -27,6 +21,12 @@ import cc.squirreljme.kernel.service.ServicePacketStream;
 import cc.squirreljme.kernel.service.ServiceProvider;
 import cc.squirreljme.runtime.cldc.SystemTask;
 import cc.squirreljme.runtime.cldc.SystemTrustGroup;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This represents a task which is running within SquirrelJME.

@@ -10,10 +10,10 @@
 
 package cc.squirreljme.kernel;
 
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import net.multiphasicapps.util.bytedeque.ByteDeque;
 
 /**
