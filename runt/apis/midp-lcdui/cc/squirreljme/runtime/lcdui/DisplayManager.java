@@ -10,11 +10,11 @@
 
 package cc.squirreljme.runtime.lcdui;
 
+import cc.squirreljme.runtime.cldc.SystemCall;
+import cc.squirreljme.runtime.lcdui.event.EventQueue;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import javax.microedition.lcdui.Displayable;
-import cc.squirreljme.runtime.lcdui.event.EventQueue;
-import cc.squirreljme.runtime.cldc.SystemCall;
 
 /**
  * This is a provider which always returns a fixed set of display heads that

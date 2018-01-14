@@ -10,16 +10,16 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.lcdui.DisplayHead;
+import cc.squirreljme.runtime.lcdui.DisplayManager;
+import cc.squirreljme.runtime.lcdui.font.FontHandle;
+import cc.squirreljme.runtime.lcdui.font.FontManager;
 import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-import cc.squirreljme.runtime.lcdui.DisplayHead;
-import cc.squirreljme.runtime.lcdui.DisplayManager;
-import cc.squirreljme.runtime.lcdui.font.FontHandle;
-import cc.squirreljme.runtime.lcdui.font.FontManager;
 
 /**
  * This class represents a font which is a representation of the glyphs which

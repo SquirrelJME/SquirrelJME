@@ -10,10 +10,10 @@
 
 package javax.microedition.lcdui.game;
 
+import cc.squirreljme.runtime.lcdui.gfx.ForwardingGraphics;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
-import cc.squirreljme.runtime.lcdui.gfx.ForwardingGraphics;
 
 public abstract class GameCanvas
 	extends Canvas

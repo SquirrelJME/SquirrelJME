@@ -10,12 +10,12 @@
 
 package cc.squirreljme.runtime.lcdui.font;
 
+import cc.squirreljme.runtime.cldc.SystemCall;
+import cc.squirreljme.runtime.lcdui.DisplayManager;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Map;
 import javax.microedition.lcdui.Font;
-import cc.squirreljme.runtime.cldc.SystemCall;
-import cc.squirreljme.runtime.lcdui.DisplayManager;
 import net.multiphasicapps.collections.SortedTreeMap;
 
 /**

@@ -10,15 +10,15 @@
 
 package javax.microedition.lcdui;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import cc.squirreljme.runtime.lcdui.gfx.BasicGraphics;
 import cc.squirreljme.runtime.lcdui.gfx.IntArrayGraphics;
 import cc.squirreljme.runtime.lcdui.gfx.PixelArrayGraphics;
 import cc.squirreljme.runtime.lcdui.image.ImageReaderDispatcher;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.InputStream;
+import java.io.IOException;
 
 public class Image
 {
