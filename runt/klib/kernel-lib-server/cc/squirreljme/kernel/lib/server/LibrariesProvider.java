@@ -10,19 +10,27 @@
 
 package cc.squirreljme.kernel.lib.server;
 
+import cc.squirreljme.kernel.lib.client.InstallErrorCodes;
 import cc.squirreljme.kernel.lib.client.LibrariesClient;
 import cc.squirreljme.kernel.lib.client.LibrariesClientFactory;
 import cc.squirreljme.kernel.lib.client.Library;
 import cc.squirreljme.kernel.lib.client.LibraryInstallationReport;
+import cc.squirreljme.kernel.lib.client.SuiteInfo;
 import cc.squirreljme.kernel.service.ClientInstance;
 import cc.squirreljme.kernel.service.ServerInstance;
 import cc.squirreljme.kernel.service.ServicePacketStream;
 import cc.squirreljme.kernel.service.ServiceProvider;
-import cc.squirreljme.runtime.cldc.SystemTask;	
+import cc.squirreljme.runtime.cldc.SystemTask;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import net.multiphasicapps.collections.SortedTreeMap;
+import net.multiphasicapps.tool.manifest.JavaManifest;
+import net.multiphasicapps.zip.blockreader.ZipBlockReader;
+import net.multiphasicapps.zip.blockreader.ZipEntryNotFoundException;
 
 /**
  * This is the base class which manages the library of installed programs
@@ -90,7 +98,25 @@ public abstract class LibrariesProvider
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
-		throw new todo.TODO();
+		// Need to process the ZIP
+		try (ZipBlockReader zip = new ZipBlockReader(__b, __o, __l))
+		{
+			// Need to parse the info so the trust group and to see if it is
+			// replacing another program
+			SuiteInfo info;
+			try (InputStream in = zip.open("META-INF/MANIFEST.MF"))
+			{
+				info = new SuiteInfo(new JavaManifest(in));
+			}
+			
+			throw new todo.TODO();
+		}
+		
+		// Map the thrown exception to an error code
+		catch (Exception t)
+		{
+			return __mapThrowable(t);
+		}
 	}
 	
 	/**
@@ -139,6 +165,35 @@ public abstract class LibrariesProvider
 			// Store it
 			libraries.put(idx, __l);
 		}
+	}
+	
+	/**
+	 * Maps the given throwable to a report.
+	 *
+	 * @param __t The input throwable.
+	 * @return The resulting throwable.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/14
+	 */
+	private static final LibraryInstallationReport __mapThrowable(
+		Throwable __t)
+		throws NullPointerException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Determine error code
+		int code;
+		if (__t instanceof IOException)
+			code = InstallErrorCodes.IO_FILE_ERROR;
+		else if (__t instanceof ZipEntryNotFoundException)
+			code = InstallErrorCodes.CORRUPT_JAR;
+		else
+			code = InstallErrorCodes.OTHER_ERROR;
+		
+		// {@squirreljme.error BC04 No message specified in the throwable.}
+		return new LibraryInstallationReport(code,
+			Objects.toString(__t.getMessage(), "BC04"));
 	}
 }
 
