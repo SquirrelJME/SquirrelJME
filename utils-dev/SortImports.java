@@ -16,6 +16,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -26,6 +27,29 @@ import java.util.List;
  */
 public class SortImports
 {
+	public static final Comparator<String> INSENSITIVE_COMPARATOR =
+		new Comparator<String>()
+		{
+			/**
+			 * {@inheritDoc}
+			 * @since 2018/01/04
+			 */
+			@Override
+			public int compare(String __a, String __b)
+			{
+				// Use case insensitive comparison first
+				int rv = __a.compareToIgnoreCase(__b);
+				if (rv != 0)
+					return rv;
+				
+				// If two strings are the same case, wise, sort it again
+				// using case sensitive, so that two similar strings with
+				// the same case still sort accordingly as if there were no
+				// case, but capital letters are first.
+				return __a.compareTo(__b);
+			}
+		};
+	
 	/** The file to sort. */
 	protected final Path path;
 	
@@ -108,7 +132,7 @@ public class SortImports
 		List<String> sub = inlines.subList(start, end);
 		
 		// Sort that
-		Collections.sort(sub);
+		Collections.sort(sub, INSENSITIVE_COMPARATOR);
 		
 		// Write out entire file again
 		Files.write(path, inlines, Charset.forName("utf-8"),
