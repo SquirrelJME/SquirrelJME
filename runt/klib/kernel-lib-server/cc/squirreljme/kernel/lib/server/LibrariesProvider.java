@@ -10,10 +10,6 @@
 
 package cc.squirreljme.kernel.lib.server;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import net.multiphasicapps.collections.SortedTreeMap;
 import cc.squirreljme.kernel.lib.client.LibrariesClient;
 import cc.squirreljme.kernel.lib.client.LibrariesClientFactory;
 import cc.squirreljme.kernel.lib.client.Library;
@@ -23,6 +19,10 @@ import cc.squirreljme.kernel.service.ServerInstance;
 import cc.squirreljme.kernel.service.ServicePacketStream;
 import cc.squirreljme.kernel.service.ServiceProvider;
 import cc.squirreljme.runtime.cldc.SystemTask;	
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import net.multiphasicapps.collections.SortedTreeMap;
 
 /**
  * This is the base class which manages the library of installed programs
