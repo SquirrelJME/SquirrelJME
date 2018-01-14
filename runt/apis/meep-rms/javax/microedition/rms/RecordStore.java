@@ -10,14 +10,14 @@
 
 package javax.microedition.rms;
 
-import javax.microedition.midlet.MIDlet;
 import cc.squirreljme.midlet.ActiveMidlet;
+import cc.squirreljme.midlet.MidletSuiteName;
+import cc.squirreljme.midlet.MidletSuiteVendor;
 import cc.squirreljme.rms.RecordCluster;
 import cc.squirreljme.rms.RecordClusterManager;
 import cc.squirreljme.rms.RecordStoreOwner;
-import cc.squirreljme.midlet.MidletSuiteName;
-import cc.squirreljme.midlet.MidletSuiteVendor;
 import cc.squirreljme.unsafe.SystemEnvironment;
+import javax.microedition.midlet.MIDlet;
 
 /**
  * This is a record store which may be used by an application to store
