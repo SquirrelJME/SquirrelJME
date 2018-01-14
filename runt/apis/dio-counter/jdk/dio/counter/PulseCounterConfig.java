@@ -10,8 +10,8 @@
 
 package jdk.dio.counter;
 
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import jdk.dio.DeviceConfig;
 import jdk.dio.gpio.GPIOPin;
