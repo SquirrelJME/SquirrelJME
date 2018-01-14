@@ -10,8 +10,7 @@
 
 package cc.squirreljme.runtime.javase;
 
-import cc.squirreljme.kernel.impl.base.file.
-	FileLibrariesProvider;
+import cc.squirreljme.kernel.impl.base.file.FileLibrariesProvider;
 import cc.squirreljme.kernel.lib.server.LibrariesProvider;
 
 /**

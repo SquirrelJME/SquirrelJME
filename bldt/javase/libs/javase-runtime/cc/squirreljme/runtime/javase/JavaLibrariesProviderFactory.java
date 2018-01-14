@@ -11,8 +11,7 @@
 package cc.squirreljme.runtime.javase;
 
 import cc.squirreljme.kernel.lib.server.LibrariesProvider;
-import cc.squirreljme.kernel.lib.server.
-	LibrariesProviderFactory;
+import cc.squirreljme.kernel.lib.server.LibrariesProviderFactory;
 
 /**
  * This allows the Java kernel to manage libraries as needed.
