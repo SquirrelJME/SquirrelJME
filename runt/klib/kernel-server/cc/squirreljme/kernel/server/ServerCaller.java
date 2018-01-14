@@ -10,6 +10,11 @@
 
 package cc.squirreljme.kernel.server;
 
+import cc.squirreljme.kernel.callerbase.BaseCaller;
+import cc.squirreljme.kernel.Kernel;
+import cc.squirreljme.kernel.LoopbackStreams;
+import cc.squirreljme.runtime.cldc.SystemCaller;
+import cc.squirreljme.runtime.cldc.SystemTask;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -17,11 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
-import cc.squirreljme.kernel.callerbase.BaseCaller;
-import cc.squirreljme.kernel.Kernel;
-import cc.squirreljme.kernel.LoopbackStreams;
-import cc.squirreljme.runtime.cldc.SystemCaller;
-import cc.squirreljme.runtime.cldc.SystemTask;
 
 /**
  * This class provides the system call interfaces to the kernel by directly
