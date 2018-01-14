@@ -10,13 +10,13 @@
 
 package cc.squirreljme.interpreter;
 
+import cc.squirreljme.jit.cff.ClassName;
+import cc.squirreljme.jit.VerifiedJITInput;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import cc.squirreljme.jit.cff.ClassName;
-import cc.squirreljme.jit.VerifiedJITInput;
 import net.multiphasicapps.collections.SortedTreeMap;
 
 /**

@@ -10,6 +10,10 @@
 
 package cc.squirreljme.interpreter;
 
+import cc.squirreljme.jit.cff.ClassFile;
+import cc.squirreljme.jit.cff.ClassName;
+import cc.squirreljme.jit.NoSuchClassException;
+import cc.squirreljme.jit.VerifiedJITInput;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayDeque;
@@ -19,10 +23,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import cc.squirreljme.jit.cff.ClassFile;
-import cc.squirreljme.jit.cff.ClassName;
-import cc.squirreljme.jit.NoSuchClassException;
-import cc.squirreljme.jit.VerifiedJITInput;
 
 /**
  * This represents a thread within the virtual machine.

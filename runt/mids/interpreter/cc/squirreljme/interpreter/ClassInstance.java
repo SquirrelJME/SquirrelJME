@@ -10,13 +10,13 @@
 
 package cc.squirreljme.interpreter;
 
-import java.lang.ref.Reference;
-import java.util.Collection;
-import java.util.Deque;
 import cc.squirreljme.jit.cff.ClassName;
 import cc.squirreljme.jit.cff.MethodDescriptor;
 import cc.squirreljme.jit.cff.MethodName;
 import cc.squirreljme.jit.VerifiedJITInput;
+import java.lang.ref.Reference;
+import java.util.Collection;
+import java.util.Deque;
 
 /**
  * This represents the instance of a class object. This is specially handled
