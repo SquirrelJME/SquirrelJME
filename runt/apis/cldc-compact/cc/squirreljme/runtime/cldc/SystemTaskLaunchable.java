@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.kernel;
+package cc.squirreljme.runtime.cldc;
 
 /**
  * This interface describes an object which is launchable by the kernel, it
@@ -16,7 +16,7 @@ package cc.squirreljme.kernel;
  *
  * @since 2018/01/02
  */
-public interface KernelTaskLaunchable
+public interface SystemTaskLaunchable
 {
 }
 

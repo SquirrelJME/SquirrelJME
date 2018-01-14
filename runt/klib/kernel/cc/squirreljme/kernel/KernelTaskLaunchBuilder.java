@@ -10,6 +10,8 @@
 
 package cc.squirreljme.kernel;
 
+import cc.squirreljme.runtime.cldc.SystemTaskLaunchable;
+
 /**
  * This class is used to build information needed to launch a task.
  *

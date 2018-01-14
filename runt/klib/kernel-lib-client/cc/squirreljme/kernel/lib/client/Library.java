@@ -10,6 +10,7 @@
 
 package cc.squirreljme.kernel.lib.client;
 
+import cc.squirreljme.runtime.cldc.SystemTaskLaunchable;
 import cc.squirreljme.runtime.cldc.SystemTrustGroup;
 import java.io.InputStream;
 
@@ -23,8 +24,8 @@ import java.io.InputStream;
  * @since 2017/12/11
  */
 public abstract class Library
+	implements SystemTaskLaunchable
 {
-	
 	/** The index of the library. */
 	protected final int index;
 	
