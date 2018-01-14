@@ -13,11 +13,11 @@ package cc.squirreljme.jit.classfile;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 
 /**
  * This class represents the byte code within a method.
