@@ -10,8 +10,8 @@
 
 package jdk.dio.i2cbus;
 
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import jdk.dio.DeviceConfig;
 
