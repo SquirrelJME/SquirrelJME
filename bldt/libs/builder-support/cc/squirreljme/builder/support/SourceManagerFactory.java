@@ -10,8 +10,8 @@
 
 package cc.squirreljme.builder.support;
 
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
