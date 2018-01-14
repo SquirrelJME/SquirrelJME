@@ -10,9 +10,9 @@
 
 package javax.microedition.swm;
 
+import cc.squirreljme.runtime.swm.JarStreamSupplier;
 import java.util.Set;
 import net.multiphasicapps.collections.IdentityLinkedHashSet;
-import cc.squirreljme.runtime.swm.JarStreamSupplier;
 
 /**
  * This class is created when a suite is to be installed.

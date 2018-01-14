@@ -10,6 +10,11 @@
 
 package javax.microedition.swm;
 
+import cc.squirreljme.kernel.lib.client.LibrariesClient;
+import cc.squirreljme.kernel.lib.client.Library;
+import cc.squirreljme.kernel.lib.client.LibraryType;
+import cc.squirreljme.runtime.cldc.SystemCall;
+import cc.squirreljme.runtime.swm.ByteArrayJarStreamSupplier;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -17,11 +22,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
-import cc.squirreljme.kernel.lib.client.LibrariesClient;
-import cc.squirreljme.kernel.lib.client.Library;
-import cc.squirreljme.kernel.lib.client.LibraryType;
-import cc.squirreljme.runtime.cldc.SystemCall;
-import cc.squirreljme.runtime.swm.ByteArrayJarStreamSupplier;
 
 /**
  * This class manages the bridge for the suite manager to the native program
