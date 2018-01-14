@@ -14,8 +14,8 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.AbstractMap;
 import java.util.Collection;
-import java.util.Set;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * This is a map which contains no entries.
