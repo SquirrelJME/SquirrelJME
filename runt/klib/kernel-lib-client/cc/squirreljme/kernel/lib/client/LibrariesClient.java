@@ -10,13 +10,13 @@
 
 package cc.squirreljme.kernel.lib.client;
 
+import cc.squirreljme.kernel.packets.Packet;
+import cc.squirreljme.kernel.service.ClientInstance;
+import cc.squirreljme.kernel.service.ServicePacketStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Map;
 import net.multiphasicapps.collections.SortedTreeMap;
-import cc.squirreljme.kernel.packets.Packet;
-import cc.squirreljme.kernel.service.ClientInstance;
-import cc.squirreljme.kernel.service.ServicePacketStream;
 
 /**
  * This class is used to manage libraries as needed by client tasks.
