@@ -10,6 +10,9 @@
 
 package javax.microedition.swm;
 
+import cc.squirreljme.kernel.lib.client.Library;
+import cc.squirreljme.runtime.cldc.SystemCall;
+import cc.squirreljme.runtime.cldc.SystemTask;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -21,9 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
-import cc.squirreljme.kernel.lib.client.Library;
-import cc.squirreljme.runtime.cldc.SystemCall;
-import cc.squirreljme.runtime.cldc.SystemTask;
 
 /**
  * This is the task manager which interfaces with the CLDC system support

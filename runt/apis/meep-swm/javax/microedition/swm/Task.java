@@ -10,14 +10,14 @@
 
 package javax.microedition.swm;
 
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
-import java.util.Objects;
 import cc.squirreljme.runtime.cldc.SystemCall;
 import cc.squirreljme.runtime.cldc.SystemTask;
 import cc.squirreljme.runtime.cldc.SystemTaskFlag;
 import cc.squirreljme.runtime.cldc.SystemTaskMetric;
 import cc.squirreljme.runtime.cldc.SystemTaskStatus;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.Objects;
 
 /**
  * This describes a task which is currently running on the system. Each task

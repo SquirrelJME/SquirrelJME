@@ -10,6 +10,14 @@
 
 package javax.microedition.swm;
 
+import cc.squirreljme.kernel.lib.client.EntryPoint;
+import cc.squirreljme.kernel.lib.client.EntryPoints;
+import cc.squirreljme.kernel.lib.client.LibrariesClient;
+import cc.squirreljme.kernel.lib.client.Library;
+import cc.squirreljme.kernel.lib.client.LibraryControlKey;
+import cc.squirreljme.kernel.lib.client.LibraryType;
+import cc.squirreljme.kernel.lib.client.SuiteInfo;
+import cc.squirreljme.runtime.cldc.SystemCall;
 import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
@@ -22,14 +30,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import net.multiphasicapps.collections.EmptyIterator;
-import cc.squirreljme.kernel.lib.client.EntryPoint;
-import cc.squirreljme.kernel.lib.client.EntryPoints;
-import cc.squirreljme.kernel.lib.client.LibrariesClient;
-import cc.squirreljme.kernel.lib.client.Library;
-import cc.squirreljme.kernel.lib.client.LibraryControlKey;
-import cc.squirreljme.kernel.lib.client.LibraryType;
-import cc.squirreljme.kernel.lib.client.SuiteInfo;
-import cc.squirreljme.runtime.cldc.SystemCall;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 import net.multiphasicapps.tool.manifest.JavaManifestKey;
