@@ -10,8 +10,8 @@
 
 package jdk.dio.spi;
 
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.IOException;
 import jdk.dio.Device;
 import jdk.dio.DeviceConfig;
 import jdk.dio.DeviceNotFoundException;
