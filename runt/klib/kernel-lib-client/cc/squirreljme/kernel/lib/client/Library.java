@@ -10,8 +10,8 @@
 
 package cc.squirreljme.kernel.lib.client;
 
-import java.io.InputStream;
 import cc.squirreljme.runtime.cldc.SystemTrustGroup;
+import java.io.InputStream;
 
 /**
  * This represents a single program which exists within the kernel and maps
