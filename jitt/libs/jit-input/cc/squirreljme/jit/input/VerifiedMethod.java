@@ -10,13 +10,13 @@
 
 package cc.squirreljme.jit.input;
 
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 import cc.squirreljme.jit.classfile.ByteCode;
 import cc.squirreljme.jit.classfile.Instruction;
 import cc.squirreljme.jit.classfile.MethodHandle;
 import cc.squirreljme.jit.program.BasicProgram;
 import cc.squirreljme.jit.program.ByteCodeParser;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 
 /**
  * This is a single method which has been verified.

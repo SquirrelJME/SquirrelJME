@@ -10,8 +10,14 @@
 
 package cc.squirreljme.jit.input;
 
-import java.io.InputStream;
+import cc.squirreljme.jit.CatchingProgressNotifier;
+import cc.squirreljme.jit.JITException;
+import cc.squirreljme.jit.JITProgressNotifier;
+import cc.squirreljme.jit.NullProgressNotifier;
+import cc.squirreljme.jit.classfile.ClassFile;
+import cc.squirreljme.jit.classfile.ClassName;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Collection;
@@ -23,12 +29,6 @@ import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.collections.SortedTreeMap;
 import net.multiphasicapps.collections.UnmodifiableMap;
-import cc.squirreljme.jit.CatchingProgressNotifier;
-import cc.squirreljme.jit.classfile.ClassFile;
-import cc.squirreljme.jit.classfile.ClassName;
-import cc.squirreljme.jit.JITException;
-import cc.squirreljme.jit.JITProgressNotifier;
-import cc.squirreljme.jit.NullProgressNotifier;
 import net.multiphasicapps.zip.streamreader.ZipStreamEntry;
 import net.multiphasicapps.zip.streamreader.ZipStreamReader;
 
