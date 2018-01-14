@@ -10,11 +10,11 @@
 
 package cc.squirreljme.jit.program;
 
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 import cc.squirreljme.jit.classfile.JavaType;
 import cc.squirreljme.jit.classfile.StackMapTableEntry;
 import cc.squirreljme.jit.classfile.StackMapTableState;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 
 /**
  * This class contains the variable treads for the stack, local, and
