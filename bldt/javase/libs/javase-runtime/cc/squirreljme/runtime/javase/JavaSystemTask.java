@@ -10,12 +10,12 @@
 
 package cc.squirreljme.runtime.javase;
 
-import java.lang.ref.Reference;
 import cc.squirreljme.kernel.Kernel;
 import cc.squirreljme.kernel.KernelTask;
 import cc.squirreljme.runtime.cldc.SystemTaskFlag;
 import cc.squirreljme.runtime.cldc.SystemTaskMetric;
 import cc.squirreljme.runtime.cldc.SystemTaskStatus;
+import java.lang.ref.Reference;
 
 /**
  * This task represents the kernel itself.

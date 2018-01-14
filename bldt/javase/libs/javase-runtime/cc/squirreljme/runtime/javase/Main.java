@@ -10,6 +10,11 @@
 
 package cc.squirreljme.runtime.javase;
 
+import cc.squirreljme.kernel.Kernel;
+import cc.squirreljme.runtime.cldc.DaemonThreadSetter;
+import cc.squirreljme.runtime.cldc.StandardOutput;
+import cc.squirreljme.runtime.cldc.SystemCall;
+import cc.squirreljme.runtime.cldc.SystemCaller;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -22,11 +27,6 @@ import java.util.HashMap;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import javax.microedition.midlet.MIDlet;
-import cc.squirreljme.kernel.Kernel;
-import cc.squirreljme.runtime.cldc.DaemonThreadSetter;
-import cc.squirreljme.runtime.cldc.StandardOutput;
-import cc.squirreljme.runtime.cldc.SystemCall;
-import cc.squirreljme.runtime.cldc.SystemCaller;
 
 /**
  * This initializes the SquirrelJME CLDC run-time interfaces and provides a

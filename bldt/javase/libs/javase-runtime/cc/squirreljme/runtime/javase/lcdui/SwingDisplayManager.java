@@ -10,10 +10,10 @@
 
 package cc.squirreljme.runtime.javase.lcdui;
 
-import java.lang.ref.Reference;
-import javax.microedition.lcdui.Displayable;
 import cc.squirreljme.runtime.lcdui.DisplayHead;
 import cc.squirreljme.runtime.lcdui.DisplayManager;
+import java.lang.ref.Reference;
+import javax.microedition.lcdui.Displayable;
 
 /**
  * This provides access to Swing display heads for displaying graphics.
