@@ -15,3 +15,33 @@ rather than always getting it.
 
 Then it fails because it cannot find the builder class, will need to
 investigate since it exists within the JAR.
+
+## 14:46
+
+Actually what will be useful is an auto-close after send for large packets
+such as JAR files.
+
+## 14:54
+
+Since installation can take awhile, I should probably step up the wait time
+for response packets before the monitor is hit.
+
+## 16:31
+
+The really long imports are a bit of a problem to be honest.
+
+## 18:02
+
+Okay, so I purchased `squirreljme.cc` which means that everything
+in the `net.multiphasicapps.squirreljme` package will be dropped
+down to that package:
+
+ * `net.multiphasicapps.squirreljme`
+ * `cc.squirreljme`
+
+So this means a 17 character saving! Joy!
+
+## 18:51
+
+The stack traces are like all the way to the left, which is quite
+something. More screen space saved!
