@@ -10,10 +10,10 @@
 
 package cc.squirreljme.runtime.lcdui;
 
-import java.lang.ref.Reference;
-import javax.microedition.lcdui.Displayable;
 import cc.squirreljme.runtime.lcdui.DisplayHead;
 import cc.squirreljme.runtime.lcdui.DisplayManager;
+import java.lang.ref.Reference;
+import javax.microedition.lcdui.Displayable;
 
 /**
  * This class contains an implementation of a display manager which wraps an

@@ -10,6 +10,12 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.lcdui.CompatibilityDisplayManager;
+import cc.squirreljme.runtime.lcdui.DisplayHead;
+import cc.squirreljme.runtime.lcdui.DisplayManager;
+import cc.squirreljme.runtime.lcdui.DisplayOrientation;
+import cc.squirreljme.runtime.lcdui.DisplayState;
+import cc.squirreljme.runtime.lcdui.HeadlessDisplayManager;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -22,12 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.microedition.midlet.MIDlet;
-import cc.squirreljme.runtime.lcdui.CompatibilityDisplayManager;
-import cc.squirreljme.runtime.lcdui.DisplayHead;
-import cc.squirreljme.runtime.lcdui.DisplayManager;
-import cc.squirreljme.runtime.lcdui.DisplayOrientation;
-import cc.squirreljme.runtime.lcdui.DisplayState;
-import cc.squirreljme.runtime.lcdui.HeadlessDisplayManager;
 
 public class Display
 {

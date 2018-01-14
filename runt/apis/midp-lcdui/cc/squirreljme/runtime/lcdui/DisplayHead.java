@@ -10,10 +10,10 @@
 
 package cc.squirreljme.runtime.lcdui;
 
+import cc.squirreljme.runtime.lcdui.event.EventQueue;
 import java.util.Objects;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
-import cc.squirreljme.runtime.lcdui.event.EventQueue;
 
 /**
  * This class represents a display head where instances of
