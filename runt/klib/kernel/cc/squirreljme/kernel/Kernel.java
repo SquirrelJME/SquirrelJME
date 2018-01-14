@@ -10,6 +10,9 @@
 
 package cc.squirreljme.kernel;
 
+import cc.squirreljme.kernel.service.ServiceProvider;
+import cc.squirreljme.kernel.service.ServiceProviderFactory;
+import cc.squirreljme.runtime.cldc.OperatingSystemType;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -19,9 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.collections.SortedTreeMap;
-import cc.squirreljme.kernel.service.ServiceProvider;
-import cc.squirreljme.kernel.service.ServiceProviderFactory;
-import cc.squirreljme.runtime.cldc.OperatingSystemType;
 
 /**
  * This class represents the micro-kernel which manages the entire SquirrelJME
