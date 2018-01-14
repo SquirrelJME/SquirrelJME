@@ -10,10 +10,10 @@
 
 package cc.squirreljme.kernel.impl.base.file;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import cc.squirreljme.runtime.cldc.OperatingSystemType;
 import cc.squirreljme.runtime.cldc.SystemCall;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * This class contains the standard set of paths which is where SquirrelJME's
