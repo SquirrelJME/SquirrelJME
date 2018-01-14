@@ -11,8 +11,8 @@
 package cc.squirreljme.builder.support;
 
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,9 +25,9 @@ import java.util.Iterator;
 import javax.microedition.swm.InstallErrorCodes;
 import javax.microedition.swm.ManagerFactory;
 import javax.microedition.swm.Suite;
-import javax.microedition.swm.SuiteInstaller;
 import javax.microedition.swm.SuiteInstallListener;
 import javax.microedition.swm.SuiteInstallStage;
+import javax.microedition.swm.SuiteInstaller;
 import javax.microedition.swm.SuiteManagementTracker;
 import javax.microedition.swm.SuiteManager;
 import javax.microedition.swm.SuiteStateFlag;

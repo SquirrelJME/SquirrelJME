@@ -10,23 +10,23 @@
 
 package cc.squirreljme.builder.support;
 
-import java.io.InputStream;
+import cc.squirreljme.kernel.lib.client.DependencyInfo;
+import cc.squirreljme.kernel.lib.client.InvalidSuiteException;
+import cc.squirreljme.kernel.lib.client.ProvidedInfo;
+import cc.squirreljme.kernel.lib.client.SuiteInfo;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import java.nio.file.attribute.FileTime;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.nio.file.attribute.FileTime;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Map;
-import cc.squirreljme.kernel.lib.client.DependencyInfo;
-import cc.squirreljme.kernel.lib.client.InvalidSuiteException;
-import cc.squirreljme.kernel.lib.client.ProvidedInfo;
-import cc.squirreljme.kernel.lib.client.SuiteInfo;
 import net.multiphasicapps.strings.StringUtils;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
