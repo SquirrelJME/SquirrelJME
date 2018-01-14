@@ -10,8 +10,8 @@
 
 package java.nio.file;
 
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.channels.SeekableByteChannel;
 import java.nio.file.attribute.BasicFileAttributes;
