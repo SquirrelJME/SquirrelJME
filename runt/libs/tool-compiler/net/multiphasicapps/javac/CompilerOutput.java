@@ -10,8 +10,8 @@
 
 package net.multiphasicapps.javac;
 
-import java.io.IOException;
 import java.io.Flushable;
+import java.io.IOException;
 import java.io.OutputStream;
 
 /**
