@@ -10,13 +10,13 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.SystemCall;
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.WeakHashMap;
-import cc.squirreljme.runtime.cldc.SystemCall;
 
 public final class String
 	implements Comparable<String>, CharSequence
