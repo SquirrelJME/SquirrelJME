@@ -10,11 +10,11 @@
 
 package cc.squirreljme.test.collections;
 
-import java.util.Map;
-import java.util.Objects;
 import cc.squirreljme.test.CommonData;
 import cc.squirreljme.test.TestFunction;
 import cc.squirreljme.test.TestResult;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Since all maps follow a common interface, this is able to handle multiple
