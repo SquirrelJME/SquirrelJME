@@ -15,8 +15,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.util.Set;
 import cc.squirreljme.kernel.lib.client.LibrariesClient;
-import cc.squirreljme.kernel.lib.client.
-	LibraryInstallationReport;
+import cc.squirreljme.kernel.lib.client.LibraryInstallationReport;
 import cc.squirreljme.runtime.cldc.SystemCall;
 import cc.squirreljme.runtime.swm.JarStreamSupplier;
 

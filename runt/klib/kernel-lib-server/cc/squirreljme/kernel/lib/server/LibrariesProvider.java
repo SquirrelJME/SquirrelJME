@@ -17,8 +17,7 @@ import net.multiphasicapps.collections.SortedTreeMap;
 import cc.squirreljme.kernel.lib.client.LibrariesClient;
 import cc.squirreljme.kernel.lib.client.LibrariesClientFactory;
 import cc.squirreljme.kernel.lib.client.Library;
-import cc.squirreljme.kernel.lib.client.
-	LibraryInstallationReport;
+import cc.squirreljme.kernel.lib.client.LibraryInstallationReport;
 import cc.squirreljme.kernel.service.ClientInstance;
 import cc.squirreljme.kernel.service.ServerInstance;
 import cc.squirreljme.kernel.service.ServicePacketStream;

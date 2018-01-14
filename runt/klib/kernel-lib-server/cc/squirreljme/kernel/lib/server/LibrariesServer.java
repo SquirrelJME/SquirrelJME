@@ -11,8 +11,7 @@
 package cc.squirreljme.kernel.lib.server;
 
 import cc.squirreljme.kernel.lib.client.Library;
-import cc.squirreljme.kernel.lib.client.
-	LibraryInstallationReport;
+import cc.squirreljme.kernel.lib.client.LibraryInstallationReport;
 import cc.squirreljme.kernel.lib.client.PacketTypes;
 import cc.squirreljme.kernel.packets.Packet;
 import cc.squirreljme.kernel.service.ServerInstance;
