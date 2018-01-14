@@ -12,8 +12,8 @@ package cc.squirreljme.jit.classfile;
 
 import cc.squirreljme.jit.Groupable;
 import java.io.DataInputStream;
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.IOException;
 import net.multiphasicapps.io.SizeLimitedInputStream;
 
 /**
