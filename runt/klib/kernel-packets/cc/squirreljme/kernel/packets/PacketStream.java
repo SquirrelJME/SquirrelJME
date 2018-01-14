@@ -10,8 +10,7 @@
 
 package cc.squirreljme.kernel.packets;
 
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
+import cc.squirreljme.runtime.cldc.SystemCall;
 import java.io.Closeable;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -19,10 +18,11 @@ import java.io.EOFException;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Objects;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
-import cc.squirreljme.runtime.cldc.SystemCall;
+import java.util.Objects;
 
 /**
  * This represents a packet stream which is used to read and write events from
