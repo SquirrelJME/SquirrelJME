@@ -10,9 +10,9 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.SystemCall;
 import java.io.IOException;
 import java.io.OutputStream;
-import cc.squirreljme.runtime.cldc.SystemCall;
 
 /**
  * This wraps the standard default error stream.

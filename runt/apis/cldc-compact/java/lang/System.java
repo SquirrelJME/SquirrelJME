@@ -10,12 +10,12 @@
 
 package java.lang;
 
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.security.Permission;
 import cc.squirreljme.runtime.cldc.StandardOutput;
 import cc.squirreljme.runtime.cldc.SystemCall;
 import cc.squirreljme.runtime.cldc.SystemVersion;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.security.Permission;
 
 public final class System
 {
