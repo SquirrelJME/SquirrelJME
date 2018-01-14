@@ -10,11 +10,11 @@
 
 package cc.squirreljme.jit.input;
 
+import cc.squirreljme.jit.classfile.ClassFile;
+import cc.squirreljme.jit.classfile.ClassName;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Map;
-import cc.squirreljme.jit.classfile.ClassFile;
-import cc.squirreljme.jit.classfile.ClassName;
 import net.multiphasicapps.collections.SortedTreeMap;
 
 /**

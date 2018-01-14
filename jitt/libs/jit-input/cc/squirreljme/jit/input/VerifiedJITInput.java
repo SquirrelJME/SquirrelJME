@@ -10,10 +10,10 @@
 
 package cc.squirreljme.jit.input;
 
-import java.io.InputStream;
-import java.util.Map;
 import cc.squirreljme.jit.classfile.ClassFile;
 import cc.squirreljme.jit.classfile.ClassName;
+import java.io.InputStream;
+import java.util.Map;
 import net.multiphasicapps.collections.SortedTreeMap;
 import net.multiphasicapps.collections.UnmodifiableMap;
 import net.multiphasicapps.collections.UnmodifiableSet;

@@ -10,8 +10,11 @@
 
 package cc.squirreljme.jit.input;
 
-import java.io.InputStream;
+import cc.squirreljme.jit.JITException;
+import cc.squirreljme.jit.classfile.ClassFile;
+import cc.squirreljme.jit.classfile.ClassName;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Collection;
@@ -24,9 +27,6 @@ import java.util.Map;
 import net.multiphasicapps.collections.SortedTreeMap;
 import net.multiphasicapps.collections.UnmodifiableCollection;
 import net.multiphasicapps.collections.UnmodifiableSet;
-import cc.squirreljme.jit.classfile.ClassFile;
-import cc.squirreljme.jit.classfile.ClassName;
-import cc.squirreljme.jit.JITException;
 import net.multiphasicapps.zip.streamreader.ZipStreamEntry;
 import net.multiphasicapps.zip.streamreader.ZipStreamReader;
 

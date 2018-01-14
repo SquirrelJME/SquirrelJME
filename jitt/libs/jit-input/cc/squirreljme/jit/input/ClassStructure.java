@@ -10,12 +10,6 @@
 
 package cc.squirreljme.jit.input;
 
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.List;
-import java.util.Objects;
 import cc.squirreljme.jit.classfile.AccessibleFlags;
 import cc.squirreljme.jit.classfile.ClassName;
 import cc.squirreljme.jit.classfile.Field;
@@ -25,6 +19,12 @@ import cc.squirreljme.jit.classfile.Method;
 import cc.squirreljme.jit.classfile.MethodFlags;
 import cc.squirreljme.jit.classfile.MethodName;
 import cc.squirreljme.jit.classfile.MethodNameAndType;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import net.multiphasicapps.collections.SortedTreeMap;
 import net.multiphasicapps.collections.UnmodifiableMap;
 

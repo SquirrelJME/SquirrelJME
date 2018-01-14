@@ -10,16 +10,16 @@
 
 package cc.squirreljme.jit.input;
 
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import cc.squirreljme.jit.classfile.ByteCode;
 import cc.squirreljme.jit.classfile.ClassFile;
 import cc.squirreljme.jit.classfile.ClassName;
 import cc.squirreljme.jit.classfile.Method;
 import cc.squirreljme.jit.classfile.MethodHandle;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import net.multiphasicapps.collections.SortedTreeMap;
 import net.multiphasicapps.collections.UnmodifiableList;
 
