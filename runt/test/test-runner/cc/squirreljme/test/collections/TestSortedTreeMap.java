@@ -10,8 +10,8 @@
 
 package cc.squirreljme.test.collections;
 
-import java.util.Map;
 import cc.squirreljme.test.TestResult;
+import java.util.Map;
 import net.multiphasicapps.collections.SortedTreeMap;
 
 /**

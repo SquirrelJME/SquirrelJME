@@ -10,9 +10,9 @@
 
 package cc.squirreljme.test.collections;
 
+import cc.squirreljme.test.TestResult;
 import java.util.Hashtable;
 import java.util.Map;
-import cc.squirreljme.test.TestResult;
 
 /**
  * This tests the old hash table which is just a synchronized {@link HashMap}.

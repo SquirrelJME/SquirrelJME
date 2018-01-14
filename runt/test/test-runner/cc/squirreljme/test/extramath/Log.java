@@ -10,10 +10,10 @@
 
 package cc.squirreljme.test.extramath;
 
-import net.multiphasicapps.math.ExtraMath;
 import cc.squirreljme.test.TestDefaultFunction;
 import cc.squirreljme.test.TestFunction;
 import cc.squirreljme.test.TestResult;
+import net.multiphasicapps.math.ExtraMath;
 
 /**
  * This tests the logarithms in the math library.
