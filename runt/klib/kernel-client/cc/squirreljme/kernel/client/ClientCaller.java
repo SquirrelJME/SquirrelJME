@@ -10,12 +10,6 @@
 
 package cc.squirreljme.kernel.client;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.Map;
 import cc.squirreljme.kernel.callerbase.BaseCaller;
 import cc.squirreljme.kernel.ipc.base.PacketTypes;
 import cc.squirreljme.kernel.packets.Packet;
@@ -23,6 +17,12 @@ import cc.squirreljme.kernel.packets.PacketStream;
 import cc.squirreljme.kernel.packets.PacketWriter;
 import cc.squirreljme.runtime.cldc.SystemCaller;
 import cc.squirreljme.runtime.cldc.SystemTask;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This is a system caller which uses a basic input stream and a basic output
