@@ -10,11 +10,11 @@
 
 package cc.squirreljme.jit.classfile;
 
-import java.io.DataInputStream;
-import java.io.InputStream;
-import java.io.IOException;
-import net.multiphasicapps.io.SizeLimitedInputStream;
 import cc.squirreljme.jit.Groupable;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import net.multiphasicapps.io.SizeLimitedInputStream;
 
 /**
  * This represents a single class file.
