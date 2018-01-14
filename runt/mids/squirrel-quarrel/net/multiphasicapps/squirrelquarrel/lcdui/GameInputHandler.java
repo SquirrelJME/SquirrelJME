@@ -12,8 +12,8 @@ package net.multiphasicapps.squirrelquarrel.lcdui;
 
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.KeyListener;
-import net.multiphasicapps.squirrelquarrel.MegaTile;
 import net.multiphasicapps.squirrelquarrel.Level;
+import net.multiphasicapps.squirrelquarrel.MegaTile;
 
 /**
  * This handles the input for the game such as which keys are held down and
