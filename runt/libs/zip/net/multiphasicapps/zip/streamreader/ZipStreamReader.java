@@ -130,10 +130,10 @@ public class ZipStreamReader
 	public ZipStreamEntry nextEntry()
 		throws IOException
 	{
-		// {@squirreljme.error BF12 An entry is currently being read, it
+		// {@squirreljme.error BF0z An entry is currently being read, it
 		// must first be closed.}
 		if (this._entry != null)
-			throw new IOException("BF12");
+			throw new IOException("BF0z");
 		
 		// End of file reached?
 		if (this._eof)
@@ -200,10 +200,10 @@ public class ZipStreamReader
 			boolean deny = false;
 			deny |= (xver < 0 || xver > _MAX_EXTRACT_VERSION);
 			
-			// {@squirreljme.error BF13 Zip version not suppored. (The
+			// {@squirreljme.error BF10 Zip version not suppored. (The
 			// version)}
 			if (defer == null && deny)
-				defer = new ZipException(String.format("BF13 %d",
+				defer = new ZipException(String.format("BF10 %d",
 					xver));
 			
 			// Read bit flags
@@ -214,9 +214,9 @@ public class ZipStreamReader
 			// Cannot read encrypted entries
 			deny |= (0 != (gpfs & 1));
 			
-			// {@squirreljme.error BF14 Encrypted entries not supported.}
+			// {@squirreljme.error BF11 Encrypted entries not supported.}
 			if (defer == null && deny)
-				defer = new ZipException("BF14");
+				defer = new ZipException("BF11");
 			
 			// Read the compression method
 			ZipCompressionType cmeth = ZipCompressionType.forMethod(

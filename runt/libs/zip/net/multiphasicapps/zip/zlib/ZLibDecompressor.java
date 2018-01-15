@@ -222,13 +222,13 @@ public class ZLibDecompressor
 					// must be set for every byte which was read.
 					this._basecomp += current.compressedBytes();
 					
-					// {@squirreljme.error BF2a The checksum for the ZLib
+					// {@squirreljme.error BF27 The checksum for the ZLib
 					// stream is not valid. (The desired checksum; The actual
 					// checksum)}
 					int want = in.readInt(),
 						was = checksum.checksum();
 					if (want != was)
-						throw new IOException(String.format("BF2a %08x %08x",
+						throw new IOException(String.format("BF27 %08x %08x",
 							want, was));
 					
 					// This is the checksum
@@ -270,11 +270,11 @@ public class ZLibDecompressor
 				// Count single compressed byte
 				this._basecomp++;
 				
-				// {@squirreljme.error BF2b Only deflate compressed ZLib
+				// {@squirreljme.error BF28 Only deflate compressed ZLib
 				// streams are supported. (The compression method used)}
 				int method = (cmf & _CMF_COMPRESSION_METHOD_MASK);
 				if (_CMF_METHOD_DEFLATE != method)
-					throw new IOException(String.format("BF2b %d", method));
+					throw new IOException(String.format("BF28 %d", method));
 				
 				// {@squirreljme.error BF29 The specified binary logarithm
 				// specified for the sliding window is not valid. (The binary

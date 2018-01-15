@@ -286,7 +286,7 @@ public final class ZipStreamEntry
 			// Mark EOF
 			this._eof = true;
 			
-			// {@squirreljme.error BF0x Reached end of file in the entry
+			// {@squirreljme.error BF0u Reached end of file in the entry
 			// however the size it consumes and/or its CRC does not match
 			// the expected values. (The expected CRC; The actual CRC;
 			// The expected uncompressed size; The actual uncompressed
@@ -300,7 +300,7 @@ public final class ZipStreamEntry
 				expectedcompsize != cincsz ||
 				expectedcrc != crc.checksum())
 				throw new ZipException(String.format(
-					"BF0x %08x %08x %d %d %d %d", expectedcrc,
+					"BF0u %08x %08x %d %d %d %d", expectedcrc,
 					crc.checksum(), expecteduncompsize, cinusz,
 					expectedcompsize, cincsz));
 			
@@ -342,12 +342,12 @@ public final class ZipStreamEntry
 		// Mark EOF so future reads fail
 		this._eof = true;
 		
-		// {@squirreljme.error BF0y Could not find end of entry because the
+		// {@squirreljme.error BF0v Could not find end of entry because the
 		// entry exceeds the bounds of the ZIP file. (The number of read
 		// bytes)}
 		int probed = dhin.peek(0, peeking, 0, _MAX_DESCRIPTOR_SIZE);
 		if (probed < _HEADERLESS_DESCRIPTOR_SIZE)
-			throw new ZipException(String.format("BF0y %d", probed));
+			throw new ZipException(String.format("BF0v %d", probed));
 		
 		// The specification says the descriptor is optional
 		int offset = (_DESCRIPTOR_MAGIC_NUMBER ==

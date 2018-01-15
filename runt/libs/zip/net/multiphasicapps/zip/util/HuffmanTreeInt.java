@@ -23,7 +23,7 @@ import java.util.NoSuchElementException;
  * Iteration of values goes through the internal value table in no particular
  * order. The iterator is fail-fast.
  *
- * {@squirreljme.error BF1q The huffman tree was modified in the middle of
+ * {@squirreljme.error BF1n The huffman tree was modified in the middle of
  * iteration.}
  *
  * @param <int> The type of values to store in the tree.
