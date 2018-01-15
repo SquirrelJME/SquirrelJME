@@ -14,6 +14,7 @@ import cc.squirreljme.kernel.service.ClientInstance;
 import cc.squirreljme.kernel.service.ServicePacketStream;
 import cc.squirreljme.kernel.service.ServiceProvider;
 import cc.squirreljme.kernel.service.ServiceProviderFactory;
+import cc.squirreljme.runtime.cldc.SystemKernel;
 
 /**
  * This acts as the base class for the library server which is required to be
@@ -27,19 +28,27 @@ public abstract class LibrariesProviderFactory
 	/**
 	 * Creates a library server instance.
 	 *
+	 * @param __k The kernel which created this service.
 	 * @return The instance of the library server.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/05
 	 */
-	protected abstract LibrariesProvider createLibrariesProvider();
+	protected abstract LibrariesProvider createLibrariesProvider(
+		SystemKernel __k)
+		throws NullPointerException;
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/01/05
 	 */
 	@Override
-	public final ServiceProvider createProvider()
+	public final ServiceProvider createProvider(SystemKernel __k)
+		throws NullPointerException
 	{
-		return this.createLibrariesProvider();
+		if (__k == null)
+			throw new NullPointerException("NARG");
+		
+		return this.createLibrariesProvider(__k);
 	}
 }
 

@@ -13,6 +13,7 @@ package cc.squirreljme.kernel;
 import cc.squirreljme.kernel.service.ServiceProvider;
 import cc.squirreljme.kernel.service.ServiceProviderFactory;
 import cc.squirreljme.runtime.cldc.OperatingSystemType;
+import cc.squirreljme.runtime.cldc.SystemKernel;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ import net.multiphasicapps.collections.SortedTreeMap;
  * @since 2017/12/08
  */
 public abstract class Kernel
+	implements SystemKernel
 {
 	/** The task which represents the kernel itself. */
 	protected final KernelTask systemtask;
@@ -104,7 +106,7 @@ public abstract class Kernel
 					{
 						Class<?> svclass = Class.forName(mapped);
 						ServiceProvider s = ((ServiceProviderFactory)svclass.
-							newInstance()).createProvider();
+							newInstance()).createProvider(this);
 						
 						// Make sure that the client class for the server
 						// matches the service string, otherwise odd things

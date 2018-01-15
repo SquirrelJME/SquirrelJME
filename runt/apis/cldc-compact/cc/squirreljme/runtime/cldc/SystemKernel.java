@@ -8,28 +8,14 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.javase;
-
-import cc.squirreljme.kernel.lib.server.LibrariesProvider;
-import cc.squirreljme.kernel.lib.server.LibrariesProviderFactory;
-import cc.squirreljme.runtime.cldc.SystemKernel;
+package cc.squirreljme.runtime.cldc;
 
 /**
- * This allows the Java kernel to manage libraries as needed.
+ * This interface represents the kernel.
  *
- * @since 2018/01/05
+ * @since 2018/01/15
  */
-public class JavaLibrariesProviderFactory
-	extends LibrariesProviderFactory
+public interface SystemKernel
 {
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/01/05
-	 */
-	@Override
-	protected LibrariesProvider createLibrariesProvider(SystemKernel __k)
-	{
-		return new JavaLibrariesProvider(__k);
-	}
 }
 

@@ -10,6 +10,7 @@
 
 package cc.squirreljme.kernel.lib.server;
 
+import cc.squirreljme.kernel.Kernel;
 import cc.squirreljme.kernel.lib.client.InstallErrorCodes;
 import cc.squirreljme.kernel.lib.client.LibrariesClient;
 import cc.squirreljme.kernel.lib.client.LibrariesClientFactory;
@@ -25,6 +26,7 @@ import cc.squirreljme.kernel.service.ClientInstance;
 import cc.squirreljme.kernel.service.ServerInstance;
 import cc.squirreljme.kernel.service.ServicePacketStream;
 import cc.squirreljme.kernel.service.ServiceProvider;
+import cc.squirreljme.runtime.cldc.SystemKernel;
 import cc.squirreljme.runtime.cldc.SystemTask;
 import java.io.IOException;
 import java.io.InputStream;
@@ -56,6 +58,9 @@ public abstract class LibrariesProvider
 	protected final Object lock =
 		new Object();
 	
+	/** The owning kernel. */
+	protected final SystemKernel kernel;
+	
 	/** Libraries which are availble for usage. */
 	private final Map<Integer, Library> _libraries =
 		new SortedTreeMap<>();
@@ -63,11 +68,19 @@ public abstract class LibrariesProvider
 	/**
 	 * Initializes the base library server.
 	 *
+	 * @param __k The kernel which created this provider.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/05
 	 */
-	public LibrariesProvider()
+	public LibrariesProvider(SystemKernel __k)
+		throws NullPointerException
 	{
 		super(LibrariesClient.class, LibrariesClientFactory.class);
+		
+		if (__k == null)
+			throw new NullPointerException("NARG");
+		
+		this.kernel = __k;
 	}
 	
 	/**
