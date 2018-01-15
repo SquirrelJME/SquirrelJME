@@ -97,12 +97,12 @@ public abstract class RecordClusterManager
 			// Need to build the MIDlet name
 			MIDlet mid = ActiveMidlet.get();
 			
-			// {@squirreljme.error DC02 Could not get the name and/or
+			// {@squirreljme.error DC01 Could not get the name and/or
 			// vendor of the current MIDlet}
 			String name = mid.getAppProperty("midlet-name"),
 				vend = mid.getAppProperty("midlet-vendor");
 			if (name == null || vend == null)
-				throw new RuntimeException("DC02");
+				throw new RuntimeException("DC01");
 			
 			// Set
 			_THIS_OWNER = new WeakReference<>((rv = new RecordStoreOwner(
