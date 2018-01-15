@@ -162,10 +162,10 @@ public final class UnitInfo
 		String path = "units/" + TerrainType.__lower(__t.name()) + "/info";
 		try (InputStream is = UnitInfo.class.getResourceAsStream(path))
 		{
-			// {@squirreljme.error BE0g No information resource exists for the
+			// {@squirreljme.error BE0d No information resource exists for the
 			// given unit type. (The unit type; The attempted path)}
 			if (is == null)
-				throw new IOException(String.format("BE0g %s %s", __t, path));
+				throw new IOException(String.format("BE0d %s %s", __t, path));
 			
 			// Load manifest
 			JavaManifest man = new JavaManifest(is);
@@ -205,9 +205,9 @@ public final class UnitInfo
 				case "medium": this.size = UnitSize.MEDIUM; break;
 				case "large": this.size = UnitSize.LARGE; break;
 				
-					// {@squirreljme.error BE0h Unknown unit size. (Unit size)}
+					// {@squirreljme.error BE0e Unknown unit size. (Unit size)}
 				default:
-					throw new IOException(String.format("BE0h %s", vsize));
+					throw new IOException(String.format("BE0e %s", vsize));
 			}
 			
 			// Parse unit dimensions and potential offsets

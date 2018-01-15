@@ -112,9 +112,9 @@ public class Unit
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error BE0c Cannot morph a linked unit.}
+		// {@squirreljme.error BE08 Cannot morph a linked unit.}
 		if (this._islinked)
-			throw new IllegalStateException("BE0c");
+			throw new IllegalStateException("BE08");
 		
 		// If the type remains the same, do nothing
 		UnitType oldtype = this._type;
