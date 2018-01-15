@@ -71,10 +71,10 @@ public final class JavaSystemLibrary
 				return out.toByteArray();
 			}
 			
-			// {@squirreljme.error AF04 Could not read the system resource.}
+			// {@squirreljme.error AF01 Could not read the system resource.}
 			catch (IOException e)
 			{
-				throw new RuntimeException("AF04", e);
+				throw new RuntimeException("AF01", e);
 			}
 		
 		// All other resources do not exist
