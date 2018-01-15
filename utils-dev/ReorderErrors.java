@@ -131,7 +131,9 @@ public class ReorderErrors
 		StringBuilder out = new StringBuilder(sdata.length());
 		
 		// Go through all bytes to find sequences for replacing
-		boolean replacedsomething = false;
+		boolean replacedsomething = false,
+			replacedthiserrorcode = false,
+			firstrun = true;
 		Code replaceme = new Code(projectprefix, 0),
 			withthis = new Code(projectprefix, 0),
 			nextcode = this._nextcode;
@@ -154,6 +156,9 @@ public class ReorderErrors
 					replacedsomething = true;
 					out.append(withthis.toString());
 					i += 3;
+					
+					// Mark for debugging
+					replacedthiserrorcode = true;
 				}
 				
 				// Copy as is
@@ -183,6 +188,13 @@ public class ReorderErrors
 					// Is a valid code position
 					if (codepos >= 0)
 					{
+						// Used to detect potentially misused codes
+						if (!firstrun && !replacedthiserrorcode)
+							System.err.printf("!!!!! NEVER USED %s in %s?%n",
+								replaceme, __p);
+						replacedthiserrorcode = false;
+						firstrun = false;
+						
 						replaceme = new Code(
 							sdata.substring(codepos, codepos + 4));
 						withthis = nextcode;
@@ -202,6 +214,9 @@ public class ReorderErrors
 			else
 				out.append(c);
 		}
+		
+		if (replacedsomething && !replacedthiserrorcode)
+			System.err.printf("!!!!! NEVER USED %s in %s?%n", replaceme, __p);
 		
 		// Store next code for later
 		this._nextcode = nextcode;
