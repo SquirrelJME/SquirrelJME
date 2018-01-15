@@ -16,6 +16,7 @@ import cc.squirreljme.kernel.lib.client.LibrariesClientFactory;
 import cc.squirreljme.kernel.lib.client.Library;
 import cc.squirreljme.kernel.lib.client.LibraryInstallationReport;
 import cc.squirreljme.kernel.lib.client.SuiteInfo;
+import cc.squirreljme.kernel.lib.client.SuiteType;
 import cc.squirreljme.kernel.service.ClientInstance;
 import cc.squirreljme.kernel.service.ServerInstance;
 import cc.squirreljme.kernel.service.ServicePacketStream;
@@ -145,11 +146,26 @@ public abstract class LibrariesProvider
 				info = new SuiteInfo(new JavaManifest(in));
 			}
 			
+			// {@squirreljme.error BC07 Cannot install applications which are
+			// SquirrelJME APIs, they must be pre-installed by the system.}
+			if (info.type() == SuiteType.SQUIRRELJME_API)
+				throw new __PlainInstallError__(
+					InstallErrorCodes.APPLICATION_BLACKLISTED, "BC07");
+			
 			// Lock because we need to go through each library to see if this
 			// one is a duplicate.
 			// Additionally, dependencies for this suite need to be handled.
+			// Then after compilation, etc. it needs to be registered after
+			// it is created
 			synchronized (this.lock)
 			{
+				// First check to see if this library is a duplicate
+				// {@squirreljme.error BC06 The library to be installed is
+				// a duplicate.}
+				if (this.__checkInstallDuplicate(info))
+					throw new __PlainInstallError__(
+						InstallErrorCodes.ALREADY_INSTALLED, "BC06");
+				
 				throw new todo.TODO();
 			}
 		}
@@ -210,6 +226,29 @@ public abstract class LibrariesProvider
 	}
 	
 	/**
+	 * Checks if the specified suite information to see if a library which
+	 * is considered a duplicate exists.
+	 *
+	 * @param __info The library information.
+	 * @return {@code true} if it is a duplicate.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/15
+	 */
+	private final boolean __checkInstallDuplicate(SuiteInfo __info)
+		throws NullPointerException
+	{
+		if (__info == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		Map<Integer, Library> libraries = this._libraries;
+		synchronized (this.lock)
+		{
+			throw new todo.TODO();
+		}
+	}
+	
+	/**
 	 * Maps the given throwable to a report.
 	 *
 	 * @param __t The input throwable.
@@ -226,7 +265,9 @@ public abstract class LibrariesProvider
 		
 		// Determine error code
 		int code;
-		if (__t instanceof IOException)
+		if (__t instanceof __PlainInstallError__)
+			code = ((__PlainInstallError__)__t).code();
+		else if (__t instanceof IOException)
 			code = InstallErrorCodes.IO_FILE_ERROR;
 		else if (__t instanceof ZipEntryNotFoundException)
 			code = InstallErrorCodes.CORRUPT_JAR;
