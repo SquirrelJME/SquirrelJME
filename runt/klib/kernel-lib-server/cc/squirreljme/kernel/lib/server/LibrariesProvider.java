@@ -177,6 +177,10 @@ public abstract class LibrariesProvider
 		// Map the thrown exception to an error code
 		catch (Exception t)
 		{
+			// Print stack trace so it is better known why it failed
+			t.printStackTrace();
+			
+			// Throw it
 			return __mapThrowable(t);
 		}
 	}

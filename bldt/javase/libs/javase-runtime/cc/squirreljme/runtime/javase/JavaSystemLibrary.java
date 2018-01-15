@@ -13,6 +13,8 @@ package cc.squirreljme.runtime.javase;
 import cc.squirreljme.kernel.lib.client.Library;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.IOException;
 
 /**
  * This is the system library which just provides the special overridden
@@ -46,9 +48,34 @@ public final class JavaSystemLibrary
 		
 		// Load the system manifest resource
 		if (__n.equals("META-INF/MANIFEST.MF"))
-		{
-			throw new todo.TODO();
-		}
+			try (ByteArrayOutputStream out = new ByteArrayOutputStream();
+				InputStream in = JavaSystemLibrary.class.getResourceAsStream(
+					"SYSTEM.MF"))
+			{
+				// Write single byte to say it is not compressed
+				out.write(0);
+				
+				// Copy data
+				byte[] buf = new byte[512];
+				for (;;)
+				{
+					int rc = in.read(buf);
+					
+					if (rc < 0)
+						break;
+					
+					out.write(buf, 0, rc);
+				}
+				
+				out.flush();
+				return out.toByteArray();
+			}
+			
+			// {@squirreljme.error AF04 Could not read the system resource.}
+			catch (IOException e)
+			{
+				throw new RuntimeException("AF04", e);
+			}
 		
 		// All other resources do not exist
 		return null;
