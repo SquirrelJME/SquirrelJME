@@ -75,10 +75,10 @@ public final class LibrariesServer
 			case PacketTypes.INSTALL_PROGRAM:
 				return this.__install(__p);
 			
-				// {@squirreljme.error BC02 Unknown packet. (The packet)}
+				// {@squirreljme.error BC09 Unknown packet. (The packet)}
 			default:
 				throw new IllegalArgumentException(
-					String.format("BC02 %s", __p));
+					String.format("BC09 %s", __p));
 		}
 	}
 	
@@ -96,11 +96,11 @@ public final class LibrariesServer
 		if (__p == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error BC03 The task is not permitted to install new
+		// {@squirreljme.error BC0a The task is not permitted to install new
 		// applications.}
 		LibrariesAccessMode accessmode = this.__accessMode("installation");
 		if (accessmode == LibrariesAccessMode.NONE)
-			throw new SecurityException("BC03");
+			throw new SecurityException("BC0a");
 		
 		SystemTask task = this.task;
 		SystemTrustGroup mygroup = task.trustGroup();

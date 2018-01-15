@@ -91,11 +91,11 @@ public abstract class LibrariesProvider
 		Map<Integer, Library> libraries = this._libraries;
 		synchronized (this.lock)
 		{
-			// {@squirreljme.error BC05 Registration of a library with a
+			// {@squirreljme.error BC01 Registration of a library with a
 			// duplicate index. (The index)}
 			Library exists = libraries.get(idx);
 			if (exists != null)
-				throw new IllegalStateException(String.format("BC05 %d", idx));
+				throw new IllegalStateException(String.format("BC01 %d", idx));
 			
 			// Store it
 			libraries.put(idx, __l);
@@ -150,11 +150,11 @@ public abstract class LibrariesProvider
 				info = new SuiteInfo(new JavaManifest(in));
 			}
 			
-			// {@squirreljme.error BC07 Cannot install applications which are
+			// {@squirreljme.error BC02 Cannot install applications which are
 			// SquirrelJME APIs, they must be pre-installed by the system.}
 			if (info.type() == SuiteType.SQUIRRELJME_API)
 				throw new __PlainInstallError__(
-					InstallErrorCodes.INVALID_JAR_TYPE, "BC07");
+					InstallErrorCodes.INVALID_JAR_TYPE, "BC02");
 			
 			// Lock because we need to go through each library to see if this
 			// one is a duplicate.
@@ -164,11 +164,11 @@ public abstract class LibrariesProvider
 			synchronized (this.lock)
 			{
 				// First check to see if this library is a duplicate
-				// {@squirreljme.error BC06 The library to be installed is
+				// {@squirreljme.error BC03 The library to be installed is
 				// a duplicate.}
 				if (this.__checkInstallDuplicate(info))
 					throw new __PlainInstallError__(
-						InstallErrorCodes.ALREADY_INSTALLED, "BC06");
+						InstallErrorCodes.ALREADY_INSTALLED, "BC03");
 				
 				throw new todo.TODO();
 			}
@@ -221,11 +221,11 @@ public abstract class LibrariesProvider
 		Map<Integer, Library> libraries = this._libraries;
 		synchronized (this.lock)
 		{
-			// {@squirreljme.error BC01 The library with the specified index
+			// {@squirreljme.error BC04 The library with the specified index
 			// has already been registered. (The library index)}
 			Integer idx = __l.index();
 			if (libraries.containsKey(idx))
-				throw new IllegalArgumentException(String.format("BC01 %d",
+				throw new IllegalArgumentException(String.format("BC04 %d",
 					idx));
 			
 			// Store it
@@ -269,23 +269,23 @@ public abstract class LibrariesProvider
 				
 				if (myname.equals(othername) && myvendor.equals(othervendor))
 				{
-					// {@squirreljme.error BC09 Installing library which has
+					// {@squirreljme.error BC05 Installing library which has
 					// an older version.}
 					int comp = myversion.compareTo(otherversion);
 					if (comp < 0)
 						throw new __PlainInstallError__(
-							InstallErrorCodes.VERSION_MISMATCH, "BC09");
+							InstallErrorCodes.VERSION_MISMATCH, "BC05");
 					
-					// {@squirreljme.error BC08 Installing library which has
+					// {@squirreljme.error BC06 Installing library which has
 					// a newer version.}
 					else if (comp > 0)
 						throw new __PlainInstallError__(
-							InstallErrorCodes.NEW_VERSION, "BC08");
+							InstallErrorCodes.NEW_VERSION, "BC06");
 					
-					// {@squirreljme.error BC0a The library has already been
+					// {@squirreljme.error BC07 The library has already been
 					// installed.}
 					throw new __PlainInstallError__(
-						InstallErrorCodes.ALREADY_INSTALLED, "BC0a");
+						InstallErrorCodes.ALREADY_INSTALLED, "BC07");
 				}
 			}
 		}
@@ -320,9 +320,9 @@ public abstract class LibrariesProvider
 		else
 			code = InstallErrorCodes.OTHER_ERROR;
 		
-		// {@squirreljme.error BC04 No message specified in the throwable.}
+		// {@squirreljme.error BC08 No message specified in the throwable.}
 		return new LibraryInstallationReport(code,
-			Objects.toString(__t.getMessage(), "BC04"));
+			Objects.toString(__t.getMessage(), "BC08"));
 	}
 }
 
