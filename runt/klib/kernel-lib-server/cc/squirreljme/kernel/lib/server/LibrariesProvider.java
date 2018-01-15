@@ -15,8 +15,12 @@ import cc.squirreljme.kernel.lib.client.LibrariesClient;
 import cc.squirreljme.kernel.lib.client.LibrariesClientFactory;
 import cc.squirreljme.kernel.lib.client.Library;
 import cc.squirreljme.kernel.lib.client.LibraryInstallationReport;
+import cc.squirreljme.kernel.lib.client.SuiteIdentifier;
 import cc.squirreljme.kernel.lib.client.SuiteInfo;
+import cc.squirreljme.kernel.lib.client.SuiteName;
 import cc.squirreljme.kernel.lib.client.SuiteType;
+import cc.squirreljme.kernel.lib.client.SuiteVendor;
+import cc.squirreljme.kernel.lib.client.SuiteVersion;
 import cc.squirreljme.kernel.service.ClientInstance;
 import cc.squirreljme.kernel.service.ServerInstance;
 import cc.squirreljme.kernel.service.ServicePacketStream;
@@ -150,7 +154,7 @@ public abstract class LibrariesProvider
 			// SquirrelJME APIs, they must be pre-installed by the system.}
 			if (info.type() == SuiteType.SQUIRRELJME_API)
 				throw new __PlainInstallError__(
-					InstallErrorCodes.APPLICATION_BLACKLISTED, "BC07");
+					InstallErrorCodes.INVALID_JAR_TYPE, "BC07");
 			
 			// Lock because we need to go through each library to see if this
 			// one is a duplicate.
@@ -229,23 +233,61 @@ public abstract class LibrariesProvider
 	 * Checks if the specified suite information to see if a library which
 	 * is considered a duplicate exists.
 	 *
-	 * @param __info The library information.
+	 * @param __myinfo The library information.
 	 * @return {@code true} if it is a duplicate.
 	 * @throws NullPointerException On null arguments.
+	 * @throws __PlainInstallError__ If the library is duplicated.
 	 * @since 2018/01/15
 	 */
-	private final boolean __checkInstallDuplicate(SuiteInfo __info)
-		throws NullPointerException
+	private final boolean __checkInstallDuplicate(SuiteInfo __myinfo)
+		throws NullPointerException, __PlainInstallError__
 	{
-		if (__info == null)
+		if (__myinfo == null)
 			throw new NullPointerException("NARG");
+		
+		SuiteName myname = __myinfo.name();
+		SuiteVendor myvendor = __myinfo.vendor();
+		SuiteVersion myversion = __myinfo.version();
 		
 		// Lock
 		Map<Integer, Library> libraries = this._libraries;
 		synchronized (this.lock)
 		{
-			throw new todo.TODO();
+			// Go through libraries and check to see if there are any
+			// duplicates
+			for (Library otherlib : libraries.values())
+			{
+				SuiteInfo otherinfo = otherlib.suiteInfo();
+				
+				SuiteName othername = otherinfo.name();
+				SuiteVendor othervendor = otherinfo.vendor();
+				SuiteVersion otherversion = otherinfo.version();
+				
+				if (myname.equals(othername) && myvendor.equals(othervendor))
+				{
+					// {@squirreljme.error BC09 Installing library which has
+					// an older version.}
+					int comp = myversion.compareTo(otherversion);
+					if (comp < 0)
+						throw new __PlainInstallError__(
+							InstallErrorCodes.VERSION_MISMATCH, "BC09");
+					
+					// {@squirreljme.error BC08 Installing library which has
+					// a newer version.}
+					else if (comp > 0)
+						throw new __PlainInstallError__(
+							InstallErrorCodes.NEW_VERSION, "BC08");
+					
+					// {@squirreljme.error BC0a The library has already been
+					// installed.}
+					throw new __PlainInstallError__(
+						InstallErrorCodes.ALREADY_INSTALLED, "BC0a");
+				}
+			}
 		}
+		
+		// Is okay
+		return false;
 	}
 	
 	/**
