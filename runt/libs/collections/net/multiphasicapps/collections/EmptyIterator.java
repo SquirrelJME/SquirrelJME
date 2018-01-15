@@ -52,8 +52,8 @@ public final class EmptyIterator
 	@Override
 	public Object next()
 	{
-		// {@squirreljme.error AC03 The empty iterator contains no elements.}
-		throw new NoSuchElementException("AC03");
+		// {@squirreljme.error AC02 The empty iterator contains no elements.}
+		throw new NoSuchElementException("AC02");
 	}
 	
 	/**
