@@ -361,9 +361,9 @@ public final class Packet
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AT03 Cannot read into a variable sized packet.}
+		// {@squirreljme.error AT02 Cannot read into a variable sized packet.}
 		if (__v.variable)
-			throw new IllegalArgumentException("AT03");
+			throw new IllegalArgumentException("AT02");
 		
 		// Forward to the array reading method
 		this.readBytes(__p, __v._data, __v._offset, __v._length);
@@ -714,10 +714,10 @@ public final class Packet
 	private final byte[] __check(int __p, int __l)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error AT0a Cannot read from a negative position or
+		// {@squirreljme.error AT04 Cannot read from a negative position or
 		// a negative length.}
 		if (__p < 0 || __l < 0)
-			throw new IndexOutOfBoundsException("AT0a");
+			throw new IndexOutOfBoundsException("AT04");
 		
 		// {@squirreljme.error AT05 Read exceeds the packet bounds.
 		// (The position; The read length; The length of the packet;
@@ -850,9 +850,9 @@ public final class Packet
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AT0a Direct input read packet length mismatch.}
+		// {@squirreljme.error AT09 Direct input read packet length mismatch.}
 		if (this.length() != __len)
-			throw new IllegalArgumentException("AT0a");
+			throw new IllegalArgumentException("AT09");
 		
 		__in.readFully(this._data, this._offset, this._length);
 	}
