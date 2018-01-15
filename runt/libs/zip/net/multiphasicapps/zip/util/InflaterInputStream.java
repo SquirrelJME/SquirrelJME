@@ -412,9 +412,9 @@ public class InflaterInputStream
 				// Error or unknown
 			case _TYPE_ERROR:
 			default:
-				// {@squirreljme.error BF23 Unknown type or the error type
+				// {@squirreljme.error BF1r Unknown type or the error type
 				// was reached. (The type code used in the stream)}
-				throw new IOException(String.format("BF23 %d", type));
+				throw new IOException(String.format("BF1r %d", type));
 		}
 		
 		// If this was the last block to read, then return EOF if no data
@@ -473,10 +473,10 @@ public class InflaterInputStream
 				__decompressWindow(__handleLength(code),
 					distancetree.getValue(this._bitsource));
 			
-			// {@squirreljme.error BF1y Illegal dynamic huffman code. (The
+			// {@squirreljme.error BF1s Illegal dynamic huffman code. (The
 			// code.)}
 			else
-				throw new IOException(String.format("BF1y %d", code));
+				throw new IOException(String.format("BF1s %d", code));
 		}
 	}
 	
@@ -511,12 +511,12 @@ public class InflaterInputStream
 				next += __readCodeBits(__cltree, rawlitdistlens, next);
 		}
 
-		// {@squirreljme.error BF21 The compressed stream is
+		// {@squirreljme.error BF1t The compressed stream is
 		// damaged by being too short or having an illegal tree
 		// access.}				
 		catch (NoSuchElementException e)
 		{
-			throw new IOException("BF21", e);
+			throw new IOException("BF1t", e);
 		}
 		
 		// Initialize both trees
@@ -537,10 +537,10 @@ public class InflaterInputStream
 		// Target tree
 		HuffmanTreeInt codelentree = __obtainCodeLenTree();
 		
-		// {@squirreljme.error BF23 There may only be at most 19 used
+		// {@squirreljme.error BF1u There may only be at most 19 used
 		// code lengths. (The number of code lengths)}
 		if (__dhclen > 19)
-			throw new IOException(String.format("BF23 %d", __dhclen));
+			throw new IOException(String.format("BF1u %d", __dhclen));
 		
 		// The same array is used for reading code lengths but the next time
 		// around it is possible that less code lengths are read, so if the
@@ -588,10 +588,10 @@ public class InflaterInputStream
 			else if (code >= 257 && code <= 285)
 				__decompressWindow(__handleLength(code), Integer.MIN_VALUE);
 		
-			// {@squirreljme.error BF1y Illegal fixed huffman code. (The
+			// {@squirreljme.error BF1v Illegal fixed huffman code. (The
 			// code.)}
 			else
-				throw new IOException(String.format("BF1y %d", code));
+				throw new IOException(String.format("BF1v %d", code));
 		}
 	}
 	
@@ -615,11 +615,11 @@ public class InflaterInputStream
 		int com = __readBits(16, false);
 		
 		// The complemented length must be equal to the complement
-		// {@squirreljme.error BF22 Value mismatch reading the number of
+		// {@squirreljme.error BF1w Value mismatch reading the number of
 		// uncompressed symbols that exist. (The length; The complement;
 		// The complemented input length; The complemented input complement)}
 		if ((len ^ 0xFFFF) != com)
-			throw new IOException(String.format("BF22 %04x %04x %04x %04x",
+			throw new IOException(String.format("BF1w %04x %04x %04x %04x",
 				len, com, len ^ 0xFFFF, com ^ 0xFFFF));
 		
 		// Read all bytes
@@ -659,10 +659,10 @@ public class InflaterInputStream
 		// Bad window read
 		catch (IndexOutOfBoundsException ioobe)
 		{
-			// {@squirreljme.error BF23 Window access out of range.
+			// {@squirreljme.error BF1x Window access out of range.
 			// (The distance; The length)}
 			throw new IOException(String.format(
-				"BF23 %d %d", __dist, __len), ioobe);
+				"BF1x %d %d", __dist, __len), ioobe);
 		}
 	
 		// Add those bytes to the output, handle wrapping around if the
@@ -738,9 +738,9 @@ public class InflaterInputStream
 		// Get the base code
 		int base = __c - 257;
 		
-		// {@squirreljme.error BF22 Illegal length code. (The length code)}
+		// {@squirreljme.error BF1z Illegal length code. (The length code)}
 		if (base < 0)
-			throw new IOException(String.format("BF22 %d", __c));
+			throw new IOException(String.format("BF1z %d", __c));
 		
 		// Calculate the required length to use
 		int rv = 3;
@@ -875,10 +875,10 @@ public class InflaterInputStream
 			byte[] readin = this._readin;
 			int rc = this.in.read(readin, 0, bc);
 			
-			// {@squirreljme.error BF23 Reached EOF while reading bytes to
+			// {@squirreljme.error BF20 Reached EOF while reading bytes to
 			// decompress. (Bits in the queue; Requested number of bits)}
 			if (rc < 0)
-				throw new IOException(String.format("BF23 %d %d", minisize,
+				throw new IOException(String.format("BF20 %d %d", minisize,
 					__n));
 			
 			// Shift in the read bytes to the higher positions

@@ -168,11 +168,11 @@ public class ZipBlockReader
 		long cdirbase = endat - cdirsize;
 		this.cdirbase = cdirbase;
 		
-		// {@squirreljme.error BF0p The central directory is larger than the
+		// {@squirreljme.error BF0j The central directory is larger than the
 		// ZIP file, the ZIP is truncated. (The central directory size; The
 		// size of the ZIP file)}
 		if (cdirsize > csz)
-			throw new ZipException(String.format("BF0p %d %d", cdirsize, csz));
+			throw new ZipException(String.format("BF0j %d %d", cdirsize, csz));
 		
 		// Determine the base address of the ZIP file since all entries
 		// are relative from the start point
@@ -181,11 +181,11 @@ public class ZipBlockReader
 			(csz - endat));
 		this._zipbaseaddr = zipbaseaddr;
 		
-		// {@squirreljme.error BF0q The base address of the ZIP file exceeds
+		// {@squirreljme.error BF0k The base address of the ZIP file exceeds
 		// the bound of the ZIP file. (The central directory size; The size of
 		// the ZIP file)}
 		if (zipbaseaddr < 0 || zipbaseaddr > csz)
-			throw new ZipException(String.format("BF0q %d %d", zipbaseaddr,
+			throw new ZipException(String.format("BF0k %d %d", zipbaseaddr,
 				csz));
 		
 		// Setup entry list
@@ -251,9 +251,9 @@ public class ZipBlockReader
 			if (e.toString().equals(__s))
 				return e;
 		
-		// {@squirreljme.error BF0o Could not find the entry with the
+		// {@squirreljme.error BF0l Could not find the entry with the
 		// specified name. (The name of the entry)}
-		throw new ZipEntryNotFoundException(String.format("BF0o %s", __s));
+		throw new ZipEntryNotFoundException(String.format("BF0l %s", __s));
 	}
 	
 	/**
@@ -281,11 +281,11 @@ public class ZipBlockReader
 	public InputStream open(String __s)
 		throws IOException, NullPointerException, ZipEntryNotFoundException
 	{
-		// {@squirreljme.error BF0p The specified entry does not exist
+		// {@squirreljme.error BF0m The specified entry does not exist
 		// within the ZIP file. (The entry name)}
 		ZipBlockEntry ent = get(__s);
 		if (ent == null)
-			throw new ZipEntryNotFoundException(String.format("BF0p %s", __s));
+			throw new ZipEntryNotFoundException(String.format("BF0m %s", __s));
 		
 		// Open it
 		return ent.open();
@@ -325,12 +325,12 @@ public class ZipBlockReader
 			// Entry is placed at this position
 			rv[i] = at;
 			
-			// {@squirreljme.error BF0q Central directory extends past the end
+			// {@squirreljme.error BF0n Central directory extends past the end
 			// of the file. (The current entry; The current read position; The
 			// size of the file)}
 			if (accessor.read(at, cdirent, 0, _CENTRAL_DIRECTORY_MIN_LENGTH) !=
 				_CENTRAL_DIRECTORY_MIN_LENGTH)
-				throw new ZipException(String.format("BF0q %d %d %d", i, at,
+				throw new ZipException(String.format("BF0n %d %d %d", i, at,
 					accessor.size()));
 			
 			// {@squirreljme.error BF0o The entry does not have a valid
