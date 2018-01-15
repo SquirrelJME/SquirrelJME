@@ -1,0 +1,13 @@
+# 2018/01/14
+
+## 10:38
+
+Okay so, what I need now is basically a script which can go through all of the
+import statements and sort them. They get unsorted over time sometimes and it
+would be nice if they could be resorted again. I will need a more complex
+program for this to work rather than doing it in shell scripts.
+
+## 16:15
+
+And that program was actually quite simple to write, so now all the import
+statements are sorted. Which is nice.
