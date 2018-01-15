@@ -153,11 +153,11 @@ public class MutableJavaManifest
 			}
 		}
 		
-		// {@squirreljme.error AB02 Failed to build the immutable manifest
+		// {@squirreljme.error AB01 Failed to build the immutable manifest
 		// from the mutable one.}
 		catch (IOException e)
 		{
-			throw new JavaManifestException("AB02", e);
+			throw new JavaManifestException("AB01", e);
 		}
 	}
 	
