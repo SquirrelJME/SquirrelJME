@@ -92,12 +92,12 @@ public class FileRecordCluster
 			this.path = use;
 		}
 		
-		// {@squirreljme.error DC03 Could not initialize the file backed
+		// {@squirreljme.error DC02 Could not initialize the file backed
 		// record cluster. (The owner to initialize for)}
 		catch (IOException e)
 		{
 			RecordStoreException t = new RecordStoreException(String.format(
-				"DC03 %s", __o));
+				"DC02 %s", __o));
 			t.initCause(e);
 			throw t;
 		}
@@ -153,10 +153,10 @@ public class FileRecordCluster
 				return output.<String>toArray(new String[output.size()]);
 			}
 		
-			// {@squirreljme.error DC04 Could not list record store contents}
+			// {@squirreljme.error DC03 Could not list record store contents}
 			catch (IOException e)
 			{
-				throw new RecordStoreException("DC04");
+				throw new RecordStoreException("DC03");
 			}
 		}
 	}

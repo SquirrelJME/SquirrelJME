@@ -63,11 +63,11 @@ public class RecordStore
 	 */
 	static
 	{
-		// {@squirreljme.error DC01 No record store manager exists.}
+		// {@squirreljme.error DC04 No record store manager exists.}
 		_MANAGER = SystemEnvironment.<RecordClusterManager>systemService(
 			RecordClusterManager.class);
 		if (_MANAGER == null)
-			throw new RuntimeException("DC01");
+			throw new RuntimeException("DC04");
 	}
 	
 	/**
