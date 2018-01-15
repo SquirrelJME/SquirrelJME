@@ -144,7 +144,7 @@ public class ReorderErrors
 			// Potentially a code to be replaced
 			if (i + 4 < n && c == firstchar &&
 				!Character.isAlphabetic(lastchar) &&
-				!Character.isDigit(lastchar))
+				!Character.isDigit(lastchar) && lastchar != '_')
 			{
 				// Replacing code
 				if (sdata.substring(i, i + 4).
@@ -208,12 +208,16 @@ public class ReorderErrors
 		// Rewrite to file
 		if (replacedsomething)
 		{
-			System.out.println("----------------------------------");
-			System.out.printf("FILE: %s%n", __p);
-			System.out.println(out);
-			/*Files.write(__p, out.toString().getBytes("utf-8"),
-				StandardOpenOption.WRITE,
-				StandardOpenOption.TRUNCATE_EXISTING);*/
+			if (false)
+			{
+				System.out.println("----------------------------------");
+				System.out.printf("FILE: %s%n", __p);
+				System.out.println(out);
+			}
+			else
+				Files.write(__p, out.toString().getBytes("utf-8"),
+					StandardOpenOption.WRITE,
+					StandardOpenOption.TRUNCATE_EXISTING);
 		}
 	}
 	
