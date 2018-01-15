@@ -52,12 +52,12 @@ public final class StackMapTableState
 		if (__l == null || __s == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JC1n The depth of the stack is not within the
+		// {@squirreljme.error JC1l The depth of the stack is not within the
 		// bounds of the stack. (The stack depth; The stack size)}
 		int ns = __s.length;
 		if (__d < 0 || __d > ns)
 			throw new InvalidClassFormatException(
-				String.format("JC1n %d %d", __d, ns));
+				String.format("JC1l %d %d", __d, ns));
 		
 		// Duplicate
 		__l = __l.clone();
