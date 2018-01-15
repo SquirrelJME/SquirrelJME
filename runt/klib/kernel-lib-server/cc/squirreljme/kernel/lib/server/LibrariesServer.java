@@ -120,7 +120,7 @@ public final class LibrariesServer
 			install(jardata, 0, jarlen);
 		
 		Library lib = r.library();
-		int ldx = lib.index(),
+		int ldx = (lib != null ? lib.index() : -1),
 			error = r.error();
 		String message = r.message();
 		
