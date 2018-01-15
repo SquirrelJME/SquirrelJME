@@ -75,10 +75,10 @@ public enum SuiteType
 	 */
 	public JavaManifestKey dependencyKey(int __i)
 	{
-		// {@squirreljme.error AV0f Cannot have a zero or negative dependency
+		// {@squirreljme.error AV0h Cannot have a zero or negative dependency
 		// index.}
 		if (__i <= 0)
-			throw new IllegalArgumentException("AV0f");
+			throw new IllegalArgumentException("AV0h");
 		
 		return new JavaManifestKey(this.prefix + "-Dependency-" + __i);
 	}
@@ -175,9 +175,9 @@ public enum SuiteType
 			if (attr.definesValue(t.nameKey()))
 				return t;
 		
-		// {@squirreljme.error AV0g Could not obtain the type of suite from
+		// {@squirreljme.error AV0i Could not obtain the type of suite from
 		// the input manifest.}
-		throw new InvalidSuiteException("AV0g");
+		throw new InvalidSuiteException("AV0i");
 	}
 }
 

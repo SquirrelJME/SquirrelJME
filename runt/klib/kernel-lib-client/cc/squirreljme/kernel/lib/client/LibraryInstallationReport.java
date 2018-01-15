@@ -59,10 +59,10 @@ public final class LibraryInstallationReport
 		if (__m == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AV06 Cannot initialize an error report with no
+		// {@squirreljme.error AV08 Cannot initialize an error report with no
 		// error.}
 		if (__e == 0)
-			throw new IllegalArgumentException("AV06");
+			throw new IllegalArgumentException("AV08");
 		
 		this.library = null;
 		this.error = __e;

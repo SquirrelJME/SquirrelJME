@@ -180,19 +180,19 @@ public abstract class Library
 		if (ref == null || null == (rv = ref.get()))
 			try (InputStream in = this.loadResource("META-INF/MANIFEST.MF"))
 			{
-				// {@squirreljme.error AV0q No manifest exists within the
+				// {@squirreljme.error AV06 No manifest exists within the
 				// library.}
 				if (in == null)
-					throw new InvalidSuiteException("AV0q");
+					throw new InvalidSuiteException("AV06");
 				
 				this._manifest = new WeakReference<>(
 					(rv = new JavaManifest(in)));
 			}
 			
-			// {@squirreljme.error AV0p Could not load the manifest.}
+			// {@squirreljme.error AV07 Could not load the manifest.}
 			catch (IOException e)
 			{
-				throw new InvalidSuiteException("AV0p", e);
+				throw new InvalidSuiteException("AV07", e);
 			}
 		
 		return rv;

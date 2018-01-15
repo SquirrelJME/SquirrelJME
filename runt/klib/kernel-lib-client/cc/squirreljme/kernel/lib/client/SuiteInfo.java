@@ -69,22 +69,22 @@ public final class SuiteInfo
 		SuiteType type = SuiteType.ofManifest(__man);
 		this.type = type;
 		
-		// {@squirreljme.error AV0b No suite name was specified.}
+		// {@squirreljme.error AV0d No suite name was specified.}
 		SuiteName name = new SuiteName(
 			Objects.<String>requireNonNull(attr.getValue(type.nameKey()),
-			"AV0b"));
+			"AV0d"));
 		this.name = name;
 		
-		// {@squirreljme.error AV0c No suite vendor was specified.}
+		// {@squirreljme.error AV0e No suite vendor was specified.}
 		SuiteVendor vendor = new SuiteVendor(
 			Objects.<String>requireNonNull(attr.getValue(type.vendorKey()),
-			"AV0c"));
+			"AV0e"));
 		this.vendor = vendor;
 		
-		// {@squirreljme.error AV0d No suite version was specified.}
+		// {@squirreljme.error AV0f No suite version was specified.}
 		SuiteVersion version = new SuiteVersion(
 			Objects.<String>requireNonNull(attr.getValue(type.versionKey()),
-			"AV0d"));
+			"AV0f"));
 		this.version = version;
 	}
 	
