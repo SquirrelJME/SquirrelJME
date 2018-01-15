@@ -118,10 +118,10 @@ public class LinkedList<E>
 	public E getFirst()
 		throws NoSuchElementException
 	{
-		// {@squirreljme.error ZZ07 Cannot get the first element because the
+		// {@squirreljme.error ZZ08 Cannot get the first element because the
 		// linked list is empty.}
 		if (size() == 0)
-			throw new NoSuchElementException("ZZ07");
+			throw new NoSuchElementException("ZZ08");
 		
 		// Get it
 		return get(0);
@@ -134,11 +134,11 @@ public class LinkedList<E>
 	@Override
 	public E getLast()
 	{
-		// {@squirreljme.error ZZ07 Cannot get the last element because the
+		// {@squirreljme.error ZZ09 Cannot get the last element because the
 		// linked list is empty.}
 		int sz;
 		if ((sz = size()) == 0)
-			throw new NoSuchElementException("ZZ07");
+			throw new NoSuchElementException("ZZ09");
 		
 		// Get it
 		return get(sz - 1);

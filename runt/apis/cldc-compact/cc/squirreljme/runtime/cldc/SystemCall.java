@@ -212,12 +212,12 @@ public final class SystemCall
 		SystemCaller caller = SystemCall._CALLER;
 		if (caller == null)
 		{
-			// {@squirreljme.error ZZ0c Cannot set daemon thread because
+			// {@squirreljme.error ZZ01 Cannot set daemon thread because
 			// the system caller has not been set yet.}
 			String altname = System.getProperty(
 				DaemonThreadSetter.class.getName());
 			if (altname == null)
-				throw new IllegalThreadStateException("ZZ0c");
+				throw new IllegalThreadStateException("ZZ01");
 			
 			try
 			{
@@ -230,13 +230,13 @@ public final class SystemCall
 				return;
 			}
 			
-			// {@squirreljme.error ZZ0c Could not set the daemon thread using
+			// {@squirreljme.error ZZ02 Could not set the daemon thread using
 			// the alternative means.}
 			catch (ClassCastException|ClassNotFoundException|
 				IllegalAccessException|InstantiationException e)
 			{
 				IllegalThreadStateException t =
-					new IllegalThreadStateException("ZZ0c");
+					new IllegalThreadStateException("ZZ02");
 				t.initCause(e);
 				throw t;
 			}
