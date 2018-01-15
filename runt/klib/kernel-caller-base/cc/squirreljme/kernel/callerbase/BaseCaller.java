@@ -160,10 +160,10 @@ public abstract class BaseCaller
 				}
 		}
 		
-		// {@squirreljme.error BG03 No such service for the given class exists.
+		// {@squirreljme.error BG01 No such service for the given class exists.
 		// (The class to provide a service for)}
 		if (svdx <= 0)
-			throw new NoSuchServiceException(String.format("BG03 %s", __cl));
+			throw new NoSuchServiceException(String.format("BG01 %s", __cl));
 		
 		// Use a pre-initialized instance or setup a new one
 		ClientInstanceAccessor[] instances = this._instances;
