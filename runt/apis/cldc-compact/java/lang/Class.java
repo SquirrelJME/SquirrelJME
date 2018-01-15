@@ -250,13 +250,13 @@ public final class Class<T>
 		if (__a == null)
 			throw new NullPointerException();
 		
-		// {@squirreljme.error ZZ01 Could not find the specified class. (The
+		// {@squirreljme.error ZZ03 Could not find the specified class. (The
 		// name of the class)}
 		Class<?> rv = null;
 		if (true)
 			throw new todo.TODO();
 		if (rv == null)
-			throw new ClassNotFoundException(String.format("ZZ01 %s", __a));
+			throw new ClassNotFoundException(String.format("ZZ03 %s", __a));
 		return rv;
 	}
 	
