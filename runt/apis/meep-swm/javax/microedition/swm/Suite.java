@@ -415,9 +415,9 @@ public class Suite
 		
 		throw new todo.TODO();
 		/*
-		// {@squirreljme.error DG02 The current suite has been removed.}
+		// {@squirreljme.error DG01 The current suite has been removed.}
 		if (!isInstalled())
-			throw new IllegalStateException("DG02");
+			throw new IllegalStateException("DG01");
 		
 		// {@squirreljme.error DG02 The given state flag cannot be set.
 		// (The state flag)}
