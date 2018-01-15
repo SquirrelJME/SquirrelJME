@@ -92,11 +92,11 @@ public class TaskFactory
 						__getopts(":?", args)))
 						switch (parse[0])
 						{
-								// {@squirreljme.error AU0u Unknown argument.
+								// {@squirreljme.error AU0r Unknown argument.
 								// Usage: launch [suite] (class name).
 								// }
 							default:
-								throw new IllegalArgumentException("AU0u");
+								throw new IllegalArgumentException("AU0r");
 						}
 					
 					// {@squirreljme.error AU0s Expected name of class to
