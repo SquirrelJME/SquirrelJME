@@ -12,11 +12,15 @@ package cc.squirreljme.kernel.lib.client;
 
 import cc.squirreljme.runtime.cldc.SystemTaskLaunchable;
 import cc.squirreljme.runtime.cldc.SystemTrustGroup;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
 import net.multiphasicapps.tool.manifest.JavaManifest;
+import net.multiphasicapps.zip.util.InflaterInputStream;
 
 /**
  * This represents a single program which exists within the kernel and maps
@@ -32,6 +36,10 @@ public abstract class Library
 {
 	/** The index of the library. */
 	protected final int index;
+	
+	/** Cached resource data. */
+	private final Map<String, Reference<byte[]>> _bytescache =
+		new HashMap<>();
 	
 	/** The manifest of this library. */
 	private volatile Reference<JavaManifest> _manifest;
@@ -56,6 +64,22 @@ public abstract class Library
 		
 		this.index = __dx;
 	}
+	
+	/**
+	 * Loads the bytes which make up the resource, this will be cached.
+	 *
+	 * The first byte of the returned resource is treated as a special value
+	 * and is not part of the input data. If the first byte is zero then the
+	 * data is uncompressed, otherwise it will be compressed with deflate.
+	 *
+	 * @param __n The name of the resource to load.
+	 * @return The bytes for the given resource or {@code null} if it does not
+	 * exist, note that the first byte of the resource is treated as special.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/15
+	 */
+	protected abstract byte[] loadResourceBytes(String __n)
+		throws NullPointerException;
 	
 	/**
 	 * Returns the value of the given control key.
@@ -115,7 +139,31 @@ public abstract class Library
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Since resources could be potentially requested multiple times and
+		// seeing that the IPC will cause some data to be duplicated when a
+		// resource is read.
+		Map<String, Reference<byte[]>> bytescache = this._bytescache;
+		synchronized (bytescache)
+		{
+			Reference<byte[]> ref = bytescache.get(__n);
+			byte[] rv;
+			
+			if (ref == null || null == (rv = ref.get()))
+			{
+				rv = this.loadResourceBytes(__n);
+				if (rv == null)
+					return null;
+				
+				bytescache.put(__n, new WeakReference<>(rv));
+			}
+			
+			// If the first byte is non-zero, this means that compression
+			// is used so the kernel can save some transmission space
+			InputStream in = new ByteArrayInputStream(rv, 1, rv.length - 1);
+			if (rv[0] != 0)
+				return new InflaterInputStream(in);
+			return in;
+		}
 	}
 	
 	/**

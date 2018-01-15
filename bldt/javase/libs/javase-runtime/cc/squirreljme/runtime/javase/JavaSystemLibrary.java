@@ -11,6 +11,8 @@
 package cc.squirreljme.runtime.javase;
 
 import cc.squirreljme.kernel.lib.client.Library;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 
 /**
  * This is the system library which just provides the special overridden
@@ -29,6 +31,27 @@ public final class JavaSystemLibrary
 	public JavaSystemLibrary()
 	{
 		super(0);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/01/15
+	 */
+	@Override
+	protected final byte[] loadResourceBytes(String __n)
+		throws NullPointerException
+	{
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		// Load the system manifest resource
+		if (__n.equals("META-INF/MANIFEST.MF"))
+		{
+			throw new todo.TODO();
+		}
+		
+		// All other resources do not exist
+		return null;
 	}
 }
 
