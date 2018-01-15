@@ -195,13 +195,13 @@ public final class JavaManifest
 							continue;
 						}
 						
-						// {@squirreljme.error BB03 The specified character is
+						// {@squirreljme.error BB01 The specified character is
 						// not a valid key character. (The character; The
 						// character code)}
 						if ((!js && !__isKeyChar(c)) ||
 							(js && !__isAlphaNum(c)))
 							throw new JavaManifestException(
-								String.format("BB03 %c %04x", c, (int)c));
+								String.format("BB01 %c %04x", c, (int)c));
 						
 						// Add to key
 						curkey.append(c);
