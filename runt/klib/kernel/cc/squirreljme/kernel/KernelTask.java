@@ -253,10 +253,10 @@ public abstract class KernelTask
 				case PacketTypes.OS_TYPE:
 					return this.__osType(__p);
 				
-					// {@squirreljme.error AP09 Unknown packet. (The packet)}
+					// {@squirreljme.error AP07 Unknown packet. (The packet)}
 				default:
 					throw new IllegalArgumentException(
-						String.format("AP09 %s", __p));
+						String.format("AP07 %s", __p));
 			}
 		}
 		
@@ -284,11 +284,11 @@ public abstract class KernelTask
 				clclass = Class.forName(r.readString());
 			}
 			
-			// {@squirreljme.error AP0a Could not obtain the class
+			// {@squirreljme.error AP08 Could not obtain the class
 			// for the client type.}
 			catch (ClassNotFoundException e)
 			{
-				throw new RuntimeException("AP0a", e);
+				throw new RuntimeException("AP08", e);
 			}
 			
 			Packet rv = __p.respond();
