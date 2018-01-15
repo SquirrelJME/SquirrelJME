@@ -94,11 +94,11 @@ public class Main
 			// Use a main method instead
 			else
 			{
-				// {@squirreljme.error AF03 The main method is not static.}
+				// {@squirreljme.error AF02 The main method is not static.}
 				Method mainmethod = mainclass.getMethod("main",
 					String[].class);
 				if ((mainmethod.getModifiers() & Modifier.STATIC) == 0)
-					throw new RuntimeException("AF03");
+					throw new RuntimeException("AF02");
 			
 				// Call it
 				mainmethod.invoke(null, new Object[]{__args});
@@ -227,11 +227,11 @@ public class Main
 			if (is == null)
 				throw new RuntimeException("AF03");
 		
-			// {@squirreljme.error AF03 No main class is available?}
+			// {@squirreljme.error AF04 No main class is available?}
 			String mainclassname = new Manifest(is).getMainAttributes().
 				getValue("Main-Class");
 			if (mainclassname == null || mainclassname.isEmpty())
-				throw new RuntimeException("AF03");
+				throw new RuntimeException("AF04");
 			return mainclassname;
 		}
 	}
