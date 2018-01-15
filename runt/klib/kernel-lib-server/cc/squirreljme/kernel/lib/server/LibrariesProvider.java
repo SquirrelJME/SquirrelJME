@@ -24,9 +24,11 @@ import cc.squirreljme.runtime.cldc.SystemTask;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import net.multiphasicapps.collections.SortedTreeMap;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;
@@ -36,8 +38,9 @@ import net.multiphasicapps.zip.blockreader.ZipEntryNotFoundException;
  * This is the base class which manages the library of installed programs
  * on the server.
  *
- * The first library should always have an index of zero and be the library
- * which represents the system.
+ * The first library must always have an index of zero and be the library
+ * which represents the system. The system manifest must be returned by it in
+ * order for it to function.
  *
  * @since 2018/01/05
  */
@@ -60,6 +63,38 @@ public abstract class LibrariesProvider
 	public LibrariesProvider()
 	{
 		super(LibrariesClient.class, LibrariesClientFactory.class);
+	}
+	
+	/**
+	 * Registers the specified library to the library provider.
+	 *
+	 * @param __l The library to register.
+	 * @throws IllegalStateException If the library was already registered
+	 * with the given index.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/15
+	 */
+	protected final void regsiterLibrary(Library __l)
+		throws IllegalStateException, NullPointerException
+	{
+		if (__l == null)
+			throw new NullPointerException("NARG");
+		
+		Integer idx = __l.index();
+		
+		// Lock
+		Map<Integer, Library> libraries = this._libraries;
+		synchronized (this.lock)
+		{
+			// {@squirreljme.error BC05 Registration of a library with a
+			// duplicate index. (The index)}
+			Library exists = libraries.get(idx);
+			if (exists != null)
+				throw new IllegalStateException(String.format("BC05 %d", idx));
+			
+			// Store it
+			libraries.put(idx, __l);
+		}
 	}
 	
 	/**
@@ -99,6 +134,7 @@ public abstract class LibrariesProvider
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
 		// Need to process the ZIP
+		Map<Integer, Library> libraries = this._libraries;
 		try (ZipBlockReader zip = new ZipBlockReader(__b, __o, __l))
 		{
 			// Need to parse the info so the trust group and to see if it is
@@ -109,7 +145,13 @@ public abstract class LibrariesProvider
 				info = new SuiteInfo(new JavaManifest(in));
 			}
 			
-			throw new todo.TODO();
+			// Lock because we need to go through each library to see if this
+			// one is a duplicate.
+			// Additionally, dependencies for this suite need to be handled.
+			synchronized (this.lock)
+			{
+				throw new todo.TODO();
+			}
 		}
 		
 		// Map the thrown exception to an error code

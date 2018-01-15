@@ -10,27 +10,25 @@
 
 package cc.squirreljme.runtime.javase;
 
-import cc.squirreljme.kernel.impl.base.file.FileLibrariesProvider;
-import cc.squirreljme.kernel.lib.server.LibrariesProvider;
+import cc.squirreljme.kernel.lib.client.Library;
 
 /**
- * This is used to manage programs which are natively installed on the Java
- * SE virtualized system.
+ * This is the system library which just provides the special overridden
+ * manifest for server usage.
  *
- * @since 2018/01/05
+ * @since 2018/01/15
  */
-public class JavaLibrariesProvider
-	extends FileLibrariesProvider
+public final class JavaSystemLibrary
+	extends Library
 {
 	/**
-	 * Initializes the server.
+	 * Initializes the library.
 	 *
-	 * @since 2018/01/05
+	 * @since 2018/01/15
 	 */
-	public JavaLibrariesProvider()
+	public JavaSystemLibrary()
 	{
-		// Register system library
-		super.registerLibrary(new JavaSystemLibrary());
+		super(0);
 	}
 }
 
