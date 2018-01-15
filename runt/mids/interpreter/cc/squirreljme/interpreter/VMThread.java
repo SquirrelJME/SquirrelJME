@@ -186,11 +186,11 @@ public class VMThread
 	private Interpreter __interpreter()
 		throws IllegalStateException
 	{
-		// {@squirreljme.error AH05 The interpreter has been garbage
+		// {@squirreljme.error AH04 The interpreter has been garbage
 		// collected.}
 		Interpreter rv = this._interpreterref.get();
 		if (rv == null)
-			throw new IllegalStateException("AH05");
+			throw new IllegalStateException("AH04");
 		return rv;
 	}
 	
