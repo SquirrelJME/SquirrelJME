@@ -70,10 +70,10 @@ class __MapIterator__<K, V>
 	@Override
 	public Map.Entry<K, V> next()
 	{
-		// {@squirreljme.error AC08 No more elements to iterate over.}
+		// {@squirreljme.error AC06 No more elements to iterate over.}
 		__Data__<K, V> rv = this._at;
 		if (rv == null)
-			throw new NoSuchElementException("AC08");
+			throw new NoSuchElementException("AC06");
 		
 		// Make sure the value was not removed
 		rv = __detect(rv);
@@ -92,10 +92,10 @@ class __MapIterator__<K, V>
 	@Override
 	public void remove()
 	{
-		// {@squirreljme.error AC08 No last entry exists for deletion.}
+		// {@squirreljme.error AC07 No last entry exists for deletion.}
 		__Data__<K, V> last = this._last;
 		if (last == null)
-			throw new IllegalStateException("AC08");
+			throw new IllegalStateException("AC07");
 		
 		// Remove the entry
 		this._last = null;
