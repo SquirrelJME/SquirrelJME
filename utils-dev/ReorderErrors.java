@@ -32,35 +32,34 @@ import java.util.TreeSet;
  */
 public class ReorderErrors
 {
+	/** The error specifier. */
+	private static final String _ERROR_SPECIFIER =
+		"@squirreljme.error";
+	
 	/** The path to reorder errors for. */
 	protected final Path path;
+	
+	/** The prefix for this project. */
+	protected final String projectprefix;
+	
+	/** The next available error code. */
+	private volatile Code _nextcode;
 	
 	/**
 	 * Initializes the error reordering on the given path.
 	 *
 	 * @param __p The path to reorder.
+	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/10/26
 	 */
 	public ReorderErrors(Path __p)
-		throws NullPointerException
+		throws IOException, NullPointerException
 	{
 		if (__p == null)
 			throw new NullPointerException("NARG");
 		
 		this.path = __p;
-	}
-	
-	/**
-	 * Processes everything.
-	 *
-	 * @throws IOException On read/write errors.
-	 * @since 2017/10/26
-	 */
-	public void run()
-		throws IOException
-	{
-		Path path = this.path;
 		
 		// Read in manifest
 		Manifest man;
@@ -75,7 +74,23 @@ public class ReorderErrors
 		String prefix = attr.getValue("X-SquirrelJME-Error");
 		if (prefix == null)
 			throw new IOException("No error prefix");
-		prefix = prefix.trim();
+		String projectprefix = prefix.trim();
+		this.projectprefix = projectprefix;
+		
+		// The initial code to work with
+		this._nextcode = new Code(projectprefix, 1);
+	}
+	
+	/**
+	 * Processes everything.
+	 *
+	 * @throws IOException On read/write errors.
+	 * @since 2017/10/26
+	 */
+	public void run()
+		throws IOException
+	{
+		Path path = this.path;
 		
 		// Obtain Java source files
 		Set<Path> files = new TreeSet<>();
@@ -83,102 +98,122 @@ public class ReorderErrors
 			filter((__p) -> __p.toString().endsWith(".java")).
 			forEach(files::add);
 		
-		// The next prefix to use
-		int next = 1;
-		
 		// Go through all files since they must be parsed to recode versions
 		for (Path file : files)
+			__process(file);
+	}
+	
+	/**
+	 * Processes the given path.
+	 *
+	 * @param __p The file to process.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/15
+	 */
+	private void __process(Path __p)
+		throws IOException, NullPointerException
+	{
+		if (__p == null)
+			throw new NullPointerException("NARG");
+		
+		// Read in all bytes from the file since they will be managed and
+		// handled specially depending on which error codes were found
+		// Treat as string to extract all the error codes
+		String sdata = new String(Files.readAllBytes(__p), "utf-8");
+		
+		// The first character of the prefix
+		String projectprefix = this.projectprefix;
+		char firstchar = projectprefix.charAt(0);
+		
+		// The output string
+		StringBuilder out = new StringBuilder(sdata.length());
+		
+		// Go through all bytes to find sequences for replacing
+		boolean replacedsomething = false;
+		Code replaceme = new Code(projectprefix, 0),
+			withthis = new Code(projectprefix, 0),
+			nextcode = this._nextcode;
+		char reallylastchar = 0;
+		for (int i = 0, n = sdata.length(); i < n; i++)
 		{
-			// Read in all bytes from the file since they will be managed and
-			// handled specially depending on which error codes were found
-			byte[] data = Files.readAllBytes(file);
+			char c = sdata.charAt(i),
+				lastchar = reallylastchar;
+			reallylastchar = c;
 			
-			// Treat as string to extract all the error codes
-			String sdata = new String(data, "utf-8");
-			
-			// This is the remapping of input error codes to the output error
-			// codes
-			Map<Bi, Bi> errormap = new LinkedHashMap<>();
-			
-			// Use simple index search to find the error indicator
-			for (int pos = 0; pos >= 0; pos++)
+			// Potentially a code to be replaced
+			if (i + 4 < n && c == firstchar &&
+				!Character.isAlphabetic(lastchar) &&
+				!Character.isDigit(lastchar))
 			{
-				// Search for string index
-				pos = sdata.indexOf("{@squirreljme.error", pos);
-				
-				// End of search
-				if (pos < 0)
-					break;
-				
-				// Start and skip any non-whitespace, then skip all whitespace
-				// until a character is found
-				boolean flag = false;
-				for (;;)
+				// Replacing code
+				if (sdata.substring(i, i + 4).
+					equalsIgnoreCase(replaceme.toString()))
 				{
-					char c = sdata.charAt(pos);
-					
-					if (flag !=
-						(c == ' ' || c == '\t' || c == '\r' || c == '\n'))
+					replacedsomething = true;
+					out.append(withthis.toString());
+					i += 3;
+				}
+				
+				// Copy as is
+				else
+					out.append(c);
+			}
+			
+			// Declaration of a new prefix to replace
+			else if (c == '@')
+			{
+				// This is an error declaration
+				if (sdata.substring(i).startsWith(_ERROR_SPECIFIER))
+				{
+					// Ignore whitespace until the code
+					int codepos = -1;
+					for (int j = i + _ERROR_SPECIFIER.length(); j < n; j++)
 					{
-						if (flag)
-							break;
-						flag = true;
-					}
-					else
-						pos++;
-				}
-				
-				// Generate code
-				System.err.printf("Code == %s%n",
-					sdata.substring(pos, pos + 4));
-				errormap.put(new Bi(sdata.substring(pos, pos + 4)),
-					new Bi(prefix, next++));
-			}
-			
-			// Nothing needs to be done?
-			if (errormap.isEmpty())
-				continue;
-			
-			// Note
-			System.err.printf("Recoding %s%n", file);
-			
-			// Although this is not as fast or elegant, it is quick to write
-			// and does what it needs to do. This is really just what is
-			// needed really
-			// This program is really only ran when it needs to be anyway
-			StringBuilder rework = new StringBuilder(sdata);
-			for (Map.Entry<Bi, Bi> e : errormap.entrySet())
-			{
-				Bi from = e.getKey(),
-					to = e.getValue();
-				String sfrom = from.toString(),
-					sto = to.toString();
-				
-				// Replace whenever it appears
-				for (int pos = 0;; pos++)
-				{
-					// Sequence appears?
-					pos = rework.indexOf(sfrom, pos);
-					if (pos < 0)
+						// Ignore whitespace
+						char d = sdata.charAt(j);
+						if (Character.isWhitespace(d))
+							continue;
+						
+						codepos = j;
 						break;
+					}
 					
-					// To prevent changing other characters which might match
-					// the error code (such as hex values), the previous
-					// character must be a quote or whitespace
-					char before = rework.charAt(pos - 1);
-					if ((before != '"' && !(before == ' ' || before == '\t')))
-						continue;
+					// Is a valid code position
+					if (codepos >= 0)
+					{
+						replaceme = new Code(
+							sdata.substring(codepos, codepos + 4));
+						withthis = nextcode;
+						nextcode = nextcode.next();
+					}
 					
-					// Replace it
-					rework.replace(pos, pos + 4, sto);
+					// Always copy the character
+					out.append(c);
 				}
+				
+				// Not an error sequence
+				else
+					out.append(c);
 			}
 			
-			// Print codes for debugging
-			//System.err.printf("Remap %s%n", errormap);
-			
-			// Rewrite to file
-			Files.write(file, rework.toString().getBytes("utf-8"));
+			// Unknown, just pass it through
+			else
+				out.append(c);
+		}
+		
+		// Store next code for later
+		this._nextcode = nextcode;
+		
+		// Rewrite to file
+		if (replacedsomething)
+		{
+			System.out.println("----------------------------------");
+			System.out.printf("FILE: %s%n", __p);
+			System.out.println(out);
+			/*Files.write(__p, out.toString().getBytes("utf-8"),
+				StandardOpenOption.WRITE,
+				StandardOpenOption.TRUNCATE_EXISTING);*/
 		}
 	}
 	
@@ -209,7 +244,7 @@ public class ReorderErrors
 	 *
 	 * @since 2017/10/27
 	 */
-	public static final class Bi
+	public static final class Code
 	{
 		/** The prefix code. */
 		protected final String prefix;
@@ -226,7 +261,7 @@ public class ReorderErrors
 		 * @throws NullPointerException On null arguments.
 		 * @since 2017/10/27
 		 */
-		public Bi(String __full)
+		public Code(String __full)
 			throws IllegalArgumentException, NullPointerException
 		{
 			this(__full.substring(0, 2), __full.substring(2, 4));
@@ -242,7 +277,7 @@ public class ReorderErrors
 		 * @throws NullPointerException On null arguments.
 		 * @since 2017/10/27
 		 */
-		public Bi(String __pre, String __num)
+		public Code(String __pre, String __num)
 			throws IllegalArgumentException, NullPointerException
 		{
 			this(__pre, Integer.parseInt(
@@ -258,7 +293,7 @@ public class ReorderErrors
 		 * @throws NullPointerException On null arguments.
 		 * @since 2017/10/27
 		 */
-		public Bi(String __pre, int __num)
+		public Code(String __pre, int __num)
 			throws IllegalArgumentException, NullPointerException
 		{
 			if (__pre == null)
@@ -284,10 +319,10 @@ public class ReorderErrors
 		@Override
 		public boolean equals(Object __o)
 		{
-			if (!(__o instanceof Bi))
+			if (!(__o instanceof Code))
 				return false;
 			
-			Bi o = (Bi)__o;
+			Code o = (Code)__o;
 			return this.prefix.equals(o.prefix) &&
 				this.number == o.number;
 		}
@@ -300,6 +335,17 @@ public class ReorderErrors
 		public int hashCode()
 		{
 			return this.prefix.hashCode() + this.number;
+		}
+		
+		/**
+		 * Returns the next index.
+		 *
+		 * @return The next index.
+		 * @since 2018/01/15
+		 */
+		public Code next()
+		{
+			return new Code(this.prefix, this.number + 1);
 		}
 		
 		/**
