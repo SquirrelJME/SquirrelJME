@@ -28,5 +28,19 @@ final class __ClientLibrary__
 	{
 		super(__dx);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/01/15
+	 */
+	@Override
+	protected final byte[] loadResourceBytes(String __n)
+		throws NullPointerException
+	{
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 }
 
