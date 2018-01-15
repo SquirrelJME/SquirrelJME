@@ -75,10 +75,10 @@ public class ByteDeque
 	 */
 	static
 	{
-		// {@squirreljme.error AE02 The block size of the data deque is not
+		// {@squirreljme.error AE01 The block size of the data deque is not
 		// a power of two. (The specified block size)}
 		if (Integer.bitCount(_BLOCK_SIZE) != 1)
-			throw new RuntimeException(String.format("AE02 %d", _BLOCK_SIZE));
+			throw new RuntimeException(String.format("AE01 %d", _BLOCK_SIZE));
 	}
 	
 	/**
@@ -167,12 +167,12 @@ public class ByteDeque
 		if (__l == 0)
 			return;
 		
-		// {@squirreljme.error AE0c Adding bytes to the start would exceed
+		// {@squirreljme.error AE03 Adding bytes to the start would exceed
 		// the capacity of the queue.}
 		int total = this._total;
 		int newtotal = total + __l;
 		if (newtotal < 0 || newtotal > this.capacity)
-			throw new IllegalStateException("AE0c");
+			throw new IllegalStateException("AE03");
 		
 		// Get some things
 		LinkedList<byte[]> blocks = this._blocks;
@@ -414,18 +414,18 @@ public class ByteDeque
 	public final byte get(int __a)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error AE0b Request get at a negative index.}
+		// {@squirreljme.error AE06 Request get at a negative index.}
 		if (__a < 0)
-			throw new IndexOutOfBoundsException("AE0b");
+			throw new IndexOutOfBoundsException("AE06");
 		
 		byte[] solo = this._solo;
 		int rv = get(__a, solo, 0, 1);
 		if (rv == 1)
 			return solo[0];
 		
-		// {@squirreljme.error AE0a Could not get the byte at the
+		// {@squirreljme.error AE07 Could not get the byte at the
 		// given position because it exceeds the deque bounds. (The index)}
-		throw new IndexOutOfBoundsException(String.format("AE0a %d", __a));
+		throw new IndexOutOfBoundsException(String.format("AE07 %d", __a));
 	}
 	
 	/**
@@ -464,9 +464,9 @@ public class ByteDeque
 	public final int get(int __a, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
-		// {@squirreljme.error AE0d Request get at a negative index.}
+		// {@squirreljme.error AE08 Request get at a negative index.}
 		if (__a < 0)
-			throw new IndexOutOfBoundsException("AE0d");
+			throw new IndexOutOfBoundsException("AE08");
 		
 		// Check
 		if (__b == null)
