@@ -41,10 +41,10 @@ public class Main
 			runTestDirectory(null, true, new TestName(""));
 		}
 		
-		// {@squirreljme.error BA02 Failed to run the test framework.}
+		// {@squirreljme.error BA01 Failed to run the test framework.}
 		catch (Throwable e)
 		{
-			throw new RuntimeException("BA02", e);
+			throw new RuntimeException("BA01", e);
 		}
 	}
 	

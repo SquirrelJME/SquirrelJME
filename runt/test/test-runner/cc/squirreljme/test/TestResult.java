@@ -81,11 +81,11 @@ public class TestResult
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error BA04 There is no result for the specified
+		// {@squirreljme.error BA03 There is no result for the specified
 		// sub-test. (The sub-test name)}
 		Map<String, Object> results = this.results;
 		if (!results.containsKey(__n))
-			throw new NoSuchElementException(String.format("BA04 %s", __n));
+			throw new NoSuchElementException(String.format("BA03 %s", __n));
 		return results.get(__n);
 	}
 	
