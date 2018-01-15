@@ -118,10 +118,10 @@ public abstract class GameCanvas
 		if (__w <= 0 || __h <= 0)
 			return;
 		
-		// {@squirreljme.error EB0w Cannot flush the graphics if the buffer
+		// {@squirreljme.error EB1v Cannot flush the graphics if the buffer
 		// is not preserved.}
 		if (!this._preservebuffer)
-			throw new IllegalStateException("EB0w");
+			throw new IllegalStateException("EB1v");
 		
 		// Just tell the canvas to repaint because it is final and our paint
 		// method just draws the backing buffer to the screen

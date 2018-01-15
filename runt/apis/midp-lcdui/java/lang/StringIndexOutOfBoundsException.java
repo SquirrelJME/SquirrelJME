@@ -42,9 +42,9 @@ public class StringIndexOutOfBoundsException
 	 */
 	public StringIndexOutOfBoundsException(int __dx)
 	{
-		// {@squirreljme.error EB01 The specified index is not within the
+		// {@squirreljme.error EB10 The specified index is not within the
 		// bounds of the string. (The string index)}
-		super(String.format("EB01 %d", __dx));
+		super(String.format("EB10 %d", __dx));
 	}
 	
 	/**

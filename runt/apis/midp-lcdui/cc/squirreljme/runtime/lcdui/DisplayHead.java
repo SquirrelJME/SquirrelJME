@@ -247,11 +247,11 @@ public abstract class DisplayHead
 	public final DisplayHardwareState hardwareState()
 		throws RuntimeException
 	{
-		// {@squirreljme.error EB0x The hardware state has not been set by
+		// {@squirreljme.error EB01 The hardware state has not been set by
 		// the display driver.}
 		DisplayHardwareState rv = this._hwstate;
 		if (rv == null)
-			throw new RuntimeException("EB0x");
+			throw new RuntimeException("EB01");
 		return rv;
 	}
 	
