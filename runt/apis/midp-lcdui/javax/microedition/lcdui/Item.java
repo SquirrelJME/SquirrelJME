@@ -169,10 +169,10 @@ public abstract class Item
 	public void setLabel(String __l)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB0u Cannot set the label of an item which is
+		// {@squirreljme.error EB1t Cannot set the label of an item which is
 		// contained within an Alert.}
 		if (this._screen instanceof Alert)
-			throw new IllegalArgumentException("EB0u");
+			throw new IllegalArgumentException("EB1t");
 		
 		// Set
 		this._label = __l;

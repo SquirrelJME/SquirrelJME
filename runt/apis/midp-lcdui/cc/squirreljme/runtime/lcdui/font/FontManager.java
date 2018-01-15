@@ -137,11 +137,11 @@ public abstract class FontManager
 			if (rv != null)
 				return rv;
 			
-			// {@squirreljme.error EB14 Could not load the specified font
+			// {@squirreljme.error EB08 Could not load the specified font
 			// family because it does not exist. (The name of the family)}
 			rv = loadFamily(fn);
 			if (rv == null)
-				throw new IllegalArgumentException(String.format("EB14 %s",
+				throw new IllegalArgumentException(String.format("EB08 %s",
 					fn));
 			
 			// Debug
@@ -222,11 +222,11 @@ public abstract class FontManager
 		Map<Integer, FontHandle> handles = this._handles;
 		synchronized (handles)
 		{
-			// {@squirreljme.error EB15 Attempt to get the handle for a font
+			// {@squirreljme.error EB09 Attempt to get the handle for a font
 			// which does not have a valid handle mapping.}
 			FontHandle rv = handles.get(__f.hashCode());
 			if (rv == null)
-				throw new RuntimeException("EB15");
+				throw new RuntimeException("EB09");
 			return rv;
 		}
 	}
