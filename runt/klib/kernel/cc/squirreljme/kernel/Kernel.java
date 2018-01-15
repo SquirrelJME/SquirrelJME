@@ -109,25 +109,25 @@ public abstract class Kernel
 						// Make sure that the client class for the server
 						// matches the service string, otherwise odd things
 						// will happen
-						// {@squirreljme.error AP03 The server provides a
+						// {@squirreljme.error AP01 The server provides a
 						// service for a different client than than the one
 						// which was expected. (The server class; The expected
 						// client class; The actual client class)}
 						Class<?> clclass = s.clientClass();
 						if (!sv.equals(clclass.getName()))
 							throw new RuntimeException(String.format(
-								"AP03 %s %s %s", svclass, sv, clclass));
+								"AP01 %s %s %s", svclass, sv, clclass));
 						
 						// Is okay!
 						rv = s;
 					}
 				
-					// {@squirreljme.error AP03 Could not initialize the
+					// {@squirreljme.error AP02 Could not initialize the
 					// service. (The service class)}
 					catch (IllegalAccessException|InstantiationException e)
 					{
 						throw new RuntimeException(
-							String.format("AP03 %s", sv), e);
+							String.format("AP02 %s", sv), e);
 					}
 				
 					// No such class exists
