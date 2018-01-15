@@ -12,6 +12,7 @@ package cc.squirreljme.runtime.javase;
 
 import cc.squirreljme.kernel.impl.base.file.FileLibrariesProvider;
 import cc.squirreljme.kernel.lib.server.LibrariesProvider;
+import cc.squirreljme.runtime.cldc.SystemKernel;
 
 /**
  * This is used to manage programs which are natively installed on the Java
@@ -25,10 +26,13 @@ public class JavaLibrariesProvider
 	/**
 	 * Initializes the server.
 	 *
+	 * @param __k The creating kernel.
 	 * @since 2018/01/05
 	 */
-	public JavaLibrariesProvider()
+	public JavaLibrariesProvider(SystemKernel __k)
 	{
+		super(__k);
+		
 		// Register system library
 		super.registerLibrary(new JavaSystemLibrary());
 	}
