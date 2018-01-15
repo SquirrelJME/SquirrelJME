@@ -133,12 +133,12 @@ public final class SuiteVersion
 	public SuiteVersion(int __maj, int __min, int __rel)
 		throws InvalidSuiteException
 	{
-		// {@squirreljme.error AV0i Input version number is out of range, only
+		// {@squirreljme.error AV0k Input version number is out of range, only
 		// 0 through 99 are valid. (The major version; The minor version; The
 		// release version)}
 		if (__maj < 0 || __maj > 99 || __min < 0 || __min > 99 ||
 			__rel < 0 || __rel > 99)
-			throw new InvalidSuiteException(String.format("AV0i %d %d %d",
+			throw new InvalidSuiteException(String.format("AV0k %d %d %d",
 				__maj, __min, __rel));
 		
 		// Set
@@ -311,10 +311,10 @@ public final class SuiteVersion
 			{
 				rv[at++] = Integer.parseInt(sb.toString(), 10);
 				
-				// {@squirreljme.error AV0j Too many version fields in the
+				// {@squirreljme.error AV0l Too many version fields in the
 				// specified string. (The input string)}
 				if (c != -1 && at >= 4)
-					throw new InvalidSuiteException(String.format("AV0j %s",
+					throw new InvalidSuiteException(String.format("AV0l %s",
 						__v));
 				
 				// Clear
@@ -325,10 +325,10 @@ public final class SuiteVersion
 			else if (c >= '0' && c <= '9')
 				sb.append((char)c);
 			
-			// {@squirreljme.error AV0k An illegal character is in the
+			// {@squirreljme.error AV0m An illegal character is in the
 			// version string. (The input string; The illegal character)}
 			else
-				throw new InvalidSuiteException(String.format("AV0k %s %04x",
+				throw new InvalidSuiteException(String.format("AV0m %s %04x",
 					__v, c));
 		}
 		
