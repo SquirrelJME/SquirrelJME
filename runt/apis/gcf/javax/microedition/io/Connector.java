@@ -221,10 +221,10 @@ public class Connector
 		if (__opts == null)
 			__opts = new ConnectionOption<?>[0];
 		
-		// {@squirreljme.error EC03 The URI does not have a scheme. (The URI)}
+		// {@squirreljme.error EC01 The URI does not have a scheme. (The URI)}
 		int fc = __uri.indexOf(':');
 		if (fc < 0)
-			throw new IllegalArgumentException(String.format("EC03 %s",
+			throw new IllegalArgumentException(String.format("EC01 %s",
 				__uri));
 		String scheme = __uri.substring(0, fc), part = __uri.substring(fc + 1);
 		
@@ -271,9 +271,9 @@ public class Connector
 			case "ssl":
 				throw new todo.TODO();
 				
-				// {@squirreljme.error EC04 Unhandled URI protocol. (The URI)}.
+				// {@squirreljme.error EC02 Unhandled URI protocol. (The URI)}.
 			default:
-				throw new ConnectionNotFoundException(String.format("EC04 %s",
+				throw new ConnectionNotFoundException(String.format("EC02 %s",
 					__uri));
 		}
 	}
