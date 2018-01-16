@@ -10,7 +10,6 @@
 
 package cc.squirreljme.kernel.lib.server;
 
-import cc.squirreljme.kernel.Kernel;
 import cc.squirreljme.kernel.lib.client.InstallErrorCodes;
 import cc.squirreljme.kernel.lib.client.LibrariesClient;
 import cc.squirreljme.kernel.lib.client.LibrariesClientFactory;
