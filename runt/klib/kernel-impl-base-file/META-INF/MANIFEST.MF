@@ -8,6 +8,6 @@ X-SquirrelJME-Description: This implements the basis of the kernel using
  the native NIO methods to store configuration, records, libraries, and
  other such things as needed. It only requires a native filesystem 
  implementation for it to function properly.
-X-SquirrelJME-Depends: kernel kernel-lib-server kernel-service
+X-SquirrelJME-Depends: kernel kernel-lib-server kernel-trust-server
 Microedition-Configuration: CLDC-1.8
 
