@@ -4,3 +4,65 @@
 
 I should be sleeping but I am not. Okay so there is an error code for newer
 version of libraries, but not older ones so I am not sure what to choose.
+
+## 03:13
+
+Due to the way `ByteArrayOutputStream` works, I will need a variant of it
+which is secure in that `writeTo` does not expose the internally backed byte
+array because that would be bad.
+
+## 10:32
+
+Okay, I need to fix the error script because it created a bunch of duplicate
+error codes and that needs to be fixed. I think I know what I can do.
+Basically for any read error code, change error codes which match following
+it but change the error code once a new code is read. Basically treat it
+linearly in a way.
+
+## 10:34
+
+Basically rewrite the entire things to be much cleaner.
+
+## 16:20
+
+Some services will need access to the kernel.
+
+## 16:47
+
+Okay so trust groups are by vendor perhaps? But also by signed key. Should
+applications from the same vendor be allowed to modify each other? Well any
+installed application should be in its own trust group for the most part.
+Then I would also need a trust group manager server/provider thing. But having
+client access can be a bit insecure. Maybe instead, trust groups are managed
+by the kernel and are accessed as needed, on demand. But, trust groups will
+need to be stored and cached by the system because libraries will be
+associated with groups by their ID.
+
+## 19:33
+
+Actually, I can have trust groups be managed by a service which could then
+be placed in the base file implementation. There are permissions, so
+applications could be blocked from modifying trust groups and such so I do
+not have to make some complicated mixingand setup.
+
+## 20:41
+
+Okay so things to do. Get an entier mapping of services and factory instances
+and lazily initialize providers when they are used. This way there does not
+need to be manual adjustment of load order when some services depend on other
+services. That otherwise would be a giant pain. Make `KernelTrustGroup` final
+and package private constructed and keep it only within the kernel.
+
+## 20:48
+
+Okay, kernel trust group already is that.
+
+## 21:01
+
+What if a static initializer for a class causes problems when it is
+requested? Well, the class is requested but it does not have to
+actually have its static initializer called until it gets constructed
+or a method is called for the first time. But, with the model of how
+SquirrelJME works, static initializers will be called in sequence so
+that means there is potential for a class to be used before it is
+actually initialized.
