@@ -12,7 +12,6 @@ package cc.squirreljme.runtime.javase;
 
 import cc.squirreljme.kernel.lib.server.LibrariesProvider;
 import cc.squirreljme.kernel.lib.server.LibrariesProviderFactory;
-import cc.squirreljme.runtime.cldc.SystemKernel;
 
 /**
  * This allows the Java kernel to manage libraries as needed.
@@ -27,9 +26,9 @@ public class JavaLibrariesProviderFactory
 	 * @since 2018/01/05
 	 */
 	@Override
-	protected LibrariesProvider createLibrariesProvider(SystemKernel __k)
+	protected LibrariesProvider createLibrariesProvider()
 	{
-		return new JavaLibrariesProvider(__k);
+		return new JavaLibrariesProvider();
 	}
 }
 

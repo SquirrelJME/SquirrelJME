@@ -11,7 +11,6 @@
 package cc.squirreljme.kernel.impl.base.file;
 
 import cc.squirreljme.kernel.lib.server.LibrariesProvider;
-import cc.squirreljme.runtime.cldc.SystemKernel;
 
 /**
  * This provides access to installed libraries which have been compiled and
@@ -25,12 +24,10 @@ public abstract class FileLibrariesProvider
 	/**
 	 * Initializes the file library provider.
 	 *
-	 * @param __k The creating kernel.
 	 * @since 2018/01/03
 	 */
-	public FileLibrariesProvider(SystemKernel __k)
+	public FileLibrariesProvider()
 	{
-		super(__k);
 	}
 }
 

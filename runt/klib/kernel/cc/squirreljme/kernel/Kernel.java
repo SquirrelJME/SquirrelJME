@@ -19,8 +19,10 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import net.multiphasicapps.collections.SortedTreeMap;
 
@@ -44,20 +46,21 @@ public abstract class Kernel
 	/** The kernel's loopback stream. */
 	protected final LoopbackStreams loopback;
 	
-	/** Tasks which exist within the kernel. */
-	private final Map<Integer, KernelTask> _tasks =
-		new SortedTreeMap<>();
-	
 	/** Trust group for the system. */
 	private final KernelTrustGroup _systemtrustgroup =
 		new KernelTrustGroup(true, 0);
 	
-	/**
-	 * Servers which are available for usage by the kernel.
-	 * Services are indexed by an integer value for speed to prevent massive
-	 * lookups based on class types or strings every time they are used.
-	 */
-	private final ServiceProvider[] _servers;
+	/** Tasks which exist within the kernel. */
+	private final Map<Integer, KernelTask> _tasks =
+		new SortedTreeMap<>();
+	
+	/** Services which are available for usage. */
+	private final Map<Class<?>, __Service__> _services =
+		new LinkedHashMap<>();
+	
+	/** Index to service mapping. */
+	private final Map<Integer, __Service__> _servicesindex =
+		new SortedTreeMap<>();
 	
 	/**
 	 * Initializes the base kernel.
@@ -83,74 +86,46 @@ public abstract class Kernel
 			if (s != null)
 				serviceclasses.add(s);
 		
-		// Always make the zero index server invalid
-		List<ServiceProvider> servers = new ArrayList<>();
-		servers.add(null);
-		
-		// Go through and attempt to locate implementations of services that
-		// clients can use, the mapping is the client used class to the server
-		// factory class. This means that for each client class, there may
-		// only be one server which exists for it
-		for (String sv : serviceclasses)
+		// Setup service providers and map them all to the same index
+		Map<Class<?>, __Service__> services = this._services;
+		Map<Integer, __Service__> servicesindex = this._servicesindex;
+		synchronized (services)
 		{
-			// The created server service
-			ServiceProvider rv = null;
+			// Always put a blank index in
+			services.put(null, null);
+			servicesindex.put(0, null);
 			
-			// Map to the config and the default
-			for (int i = 0; i < 2; i++)
-			{
-				String mapped = (i == 0 ? __config.mapService(sv) :
-					DefaultKernelServices.mapService(sv));
-				if (mapped != null)
-					try
-					{
-						Class<?> svclass = Class.forName(mapped);
-						ServiceProvider s = ((ServiceProviderFactory)svclass.
-							newInstance()).createProvider(this);
-						
-						// Make sure that the client class for the server
-						// matches the service string, otherwise odd things
-						// will happen
-						// {@squirreljme.error AP01 The server provides a
-						// service for a different client than than the one
-						// which was expected. (The server class; The expected
-						// client class; The actual client class)}
-						Class<?> clclass = s.clientClass();
-						if (!sv.equals(clclass.getName()))
-							throw new RuntimeException(String.format(
-								"AP01 %s %s %s", svclass, sv, clclass));
-						
-						// Is okay!
-						rv = s;
-					}
+			// Load in providers
+			int nextdx = 1;
+			for (String sv : serviceclasses)
+				try
+				{
+					// Find the custom service provider or just fall back to
+					// the default
+					String mapped = Objects.toString(__config.mapService(sv),
+						DefaultKernelServices.mapService(sv));
+					
+					// Make a service for it
+					__Service__ made = new __Service__(nextdx,
+						Class.forName(sv),
+						Class.forName(mapped));
+					
+					// If it worked, record it
+					services.put(made._client, made);
+					servicesindex.put(nextdx, made);
+					
+					// All services have unique IDs
+					nextdx++;
+				}
 				
-					// {@squirreljme.error AP02 Could not initialize the
-					// service. (The service class)}
-					catch (IllegalAccessException|InstantiationException e)
-					{
-						throw new RuntimeException(
-							String.format("AP02 %s", sv), e);
-					}
-				
-					// No such class exists
-					catch (ClassNotFoundException e)
-					{
-						mapped = null;
-					}
-				
-				// Service mapped
-				if (rv != null)
-					break;
-			}
-			
-			// Store service and make its instance available
-			if (rv != null)
-				servers.add(rv);
+				// {@squirreljme.error AP0b Could not locate a class for the
+				// specified service. (The service class)}
+				catch (ClassNotFoundException e)
+				{
+					throw new RuntimeException(
+						String.format("AP0b %s", sv), e);
+				}
 		}
-		
-		// Store services for later usage by tasks
-		this._servers = servers.<ServiceProvider>toArray(
-			new ServiceProvider[servers.size()]);
 		
 		// Initialize the system task, which acts as a special task
 		this.loopback = new LoopbackStreams();
@@ -193,7 +168,13 @@ public abstract class Kernel
 	 */
 	public final int serviceCount()
 	{
-		return this._servers.length;
+		// This may changed during initialization
+		Map<Class<?>, __Service__> services = this._services;
+		synchronized (services)
+		{
+			System.err.printf("DEBUG -- Services %d%n", services.size());
+			return services.size();
+		}
 	}
 	
 	/**
@@ -207,12 +188,25 @@ public abstract class Kernel
 	public final ServiceProvider serviceGet(int __dx)
 		throws IndexOutOfBoundsException
 	{
+		__Service__ sv;
+		
+		// Services may be lazily initialized, and the service index shares
+		// the same map set
+		Map<Class<?>, __Service__> services = this._services;
+		Map<Integer, __Service__> servicesindex = this._servicesindex;
+		synchronized (services)
+		{
+			sv = servicesindex.get(__dx);
+		}
+		
 		// {@squirreljme.error AP04 Invalid service index. (The index)}
-		ServiceProvider[] servers = this._servers;
-		if (__dx <= 0 || __dx > servers.length)
+		if (sv == null)
 			throw new IndexOutOfBoundsException(
 				String.format("AP04 %d", __dx));
-		return this._servers[__dx];
+		
+		// The service can be initialize outside of the lock because there is
+		// another lock in the service itself
+		return sv.__provider();
 	}
 	
 	/**
@@ -229,15 +223,16 @@ public abstract class Kernel
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		// Go through services and ask them each if they implement for the
-		// given class.
-		ServiceProvider[] servers = this._servers;
-		for (int i = 1, n = servers.length; i < n; i++)
-			if (__cl == servers[i].clientClass())
-				return i;
-		
-		// No service found
-		return 0;
+		// Lock on the services map because this could be lazily initialized
+		Map<Class<?>, __Service__> services = this._services;
+		synchronized (services)
+		{
+			__Service__ sv = services.get(__cl);
+			if (sv == null)
+				return 0;
+			
+			return sv._index;
+		}
 	}
 	
 	/**
@@ -311,6 +306,91 @@ public abstract class Kernel
 	final KernelTrustGroup __systemTrustGroup()
 	{
 		return this._systemtrustgroup;
+	}
+	
+	/**
+	 * This represents an available service.
+	 *
+	 * @since 2018/01/15
+	 */
+	private static class __Service__
+	{
+		/** The index of the service. */
+		final int _index;
+		
+		/** The client class */
+		final Class<?> _client;
+		
+		/** The provider class. */
+		final Class<?> _provider;
+		
+		/** The provider for the service. */
+		private volatile ServiceProvider _instance;
+		
+		/**
+		 * Initializes the service.
+		 *
+		 * @param __dx The service index.
+		 * @param __client The client class.
+		 * @param __provider The server provider class.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2018/01/15
+		 */
+		private __Service__(int __dx, Class<?> __client, Class<?> __provider)
+			throws NullPointerException
+		{
+			if (__client == null || __provider == null)
+				throw new NullPointerException("NARG");
+			
+			this._index = __dx;
+			this._client = __client;
+			this._provider = __provider;
+		}
+		
+		/**
+		 * Initializes the service provider.
+		 *
+		 * @return The service provider.
+		 * @since 2018/01/15
+		 */
+		final ServiceProvider __provider()
+		{
+			// The service may need to be initialized accordingly
+			synchronized (this)
+			{
+				// Is lazilly initialized
+				ServiceProvider rv = this._instance;
+				if (rv == null)
+					try
+					{
+						rv = ((ServiceProviderFactory)this._provider.
+							newInstance()).createProvider();
+						
+						// {@squirreljme.error AP01 The server provides a
+						// service for a different client than than the one
+						// which was expected. (The expected client class;
+						// The one the service provides)}
+						Class<?> clclass = rv.clientClass(),
+							wantcl = this._client;
+						if (wantcl != clclass)
+							throw new RuntimeException(String.format(
+								"AP01 %s %s", wantcl, clclass));
+						
+						// It now exists, so it may be used again
+						this._instance = rv;
+					}
+					
+					// {@squirreljme.error AP02 Could not initialize the
+					// service. (The service class)}
+					catch (IllegalAccessException|InstantiationException e)
+					{
+						throw new RuntimeException(
+							String.format("AP02 %s", this._client), e);
+					}
+				
+				return rv;
+			}
+		}
 	}
 }
 
