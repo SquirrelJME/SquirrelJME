@@ -11,6 +11,7 @@
 package cc.squirreljme.kernel.lib.client;
 
 import cc.squirreljme.kernel.packets.Packet;
+import cc.squirreljme.kernel.packets.PacketFarm;
 import cc.squirreljme.kernel.service.ClientInstance;
 import cc.squirreljme.kernel.service.ServicePacketStream;
 import java.lang.ref.Reference;
@@ -100,7 +101,7 @@ public final class LibrariesClient
 		
 		// Need to send the JAR to the server so it may install it
 		ServicePacketStream stream = this.stream;
-		try (Packet p = stream.farm().create(PacketTypes.INSTALL_PROGRAM,
+		try (Packet p = PacketFarm.createPacket(PacketTypes.INSTALL_PROGRAM,
 			4 + __l))
 		{
 			// Write the JAR file data
@@ -143,7 +144,7 @@ public final class LibrariesClient
 		
 		// Read library indexes from the server
 		ServicePacketStream stream = this.stream;
-		try (Packet p = stream.farm().create(
+		try (Packet p = PacketFarm.createPacket(
 			PacketTypes.LIST_PROGRAMS, 4))
 		{
 			// Just send the mask used to filter programs
