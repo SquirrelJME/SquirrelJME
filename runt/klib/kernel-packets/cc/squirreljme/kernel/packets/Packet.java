@@ -186,7 +186,8 @@ public final class Packet
 	 */
 	public final Packet duplicate()
 	{
-		throw new todo.TODO();
+		// Does the same thing as this, except it just has the same type
+		return this.duplicateAsType(this.type);
 	}
 	
 	/**
@@ -198,7 +199,26 @@ public final class Packet
 	 */
 	public final Packet duplicateAsType(int __t)
 	{
-		throw new todo.TODO();
+		boolean variable = this.variable;
+		PacketFarm farm = this.farm;
+		int len = this.length();
+		
+		// Setup new packet
+		Packet rv;
+		if (this.isglobalpacket)
+			if (variable)
+				rv = PacketFarm.createPacket(__t);
+			else
+				rv = PacketFarm.createPacket(__t, len);
+		else
+			if (variable)
+				rv = farm.createPacket(__t);
+			else
+				rv = farm.createPacket(__t, len);
+		
+		rv.writePacketData(0, this);
+		
+		return rv;
 	}
 	
 	/**
