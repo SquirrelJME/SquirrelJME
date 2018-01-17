@@ -173,7 +173,6 @@ public abstract class Kernel
 		Map<Class<?>, __Service__> services = this._services;
 		synchronized (services)
 		{
-			System.err.printf("DEBUG -- Services %d%n", services.size());
 			return services.size();
 		}
 	}
