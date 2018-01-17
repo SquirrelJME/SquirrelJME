@@ -12,7 +12,6 @@ package cc.squirreljme.kernel.server;
 
 import cc.squirreljme.kernel.callerbase.BaseCaller;
 import cc.squirreljme.kernel.Kernel;
-import cc.squirreljme.kernel.LoopbackStreams;
 import cc.squirreljme.runtime.cldc.SystemCaller;
 import cc.squirreljme.runtime.cldc.SystemTask;
 import java.lang.ref.Reference;

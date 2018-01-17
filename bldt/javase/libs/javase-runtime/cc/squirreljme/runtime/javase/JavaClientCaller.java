@@ -11,8 +11,8 @@
 package cc.squirreljme.runtime.javase;
 
 import cc.squirreljme.kernel.client.ClientCaller;
-import java.io.InputStream;
-import java.io.OutputStream;
+import cc.squirreljme.kernel.packets.DatagramIn;
+import cc.squirreljme.kernel.packets.DatagramOut;
 
 /**
  * This is the Java implementation of the client caller.
@@ -29,7 +29,7 @@ public class JavaClientCaller
 	 * @param __out The output stream.
 	 * @since 2017/12/31
 	 */
-	public JavaClientCaller(InputStream __in, OutputStream __out)
+	public JavaClientCaller(DatagramIn __in, DatagramOut __out)
 	{
 		super(__in, __out);
 	}

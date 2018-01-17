@@ -10,6 +10,7 @@
 
 package cc.squirreljme.kernel;
 
+import cc.squirreljme.kernel.packets.LoopbackDatagramDuplex;
 import cc.squirreljme.kernel.service.ServiceProvider;
 import cc.squirreljme.kernel.service.ServiceProviderFactory;
 import cc.squirreljme.runtime.cldc.OperatingSystemType;
@@ -44,7 +45,8 @@ public abstract class Kernel
 	protected final KernelTask systemtask;
 	
 	/** The kernel's loopback stream. */
-	protected final LoopbackStreams loopback;
+	protected final LoopbackDatagramDuplex loopback =
+		new LoopbackDatagramDuplex();
 	
 	/** Trust group for the system. */
 	private final KernelTrustGroup _systemtrustgroup =
@@ -128,7 +130,6 @@ public abstract class Kernel
 		}
 		
 		// Initialize the system task, which acts as a special task
-		this.loopback = new LoopbackStreams();
 		KernelTask systemtask = __config.systemTask(new WeakReference<>(this));
 		
 		// {@squirreljme.error AP03 System task initialized with the wrong
@@ -150,12 +151,12 @@ public abstract class Kernel
 	public abstract OperatingSystemType operatingSystemType();
 	
 	/**
-	 * Returns the kernel's loopback stream.
+	 * Returns the kernel's loopback datagram duplex.
 	 *
-	 * @return The kernel loopback stream.
+	 * @return The kernel loopback datagram duplex.
 	 * @since 2018/01/04
 	 */
-	public final LoopbackStreams loopback()
+	public final LoopbackDatagramDuplex loopback()
 	{
 		return this.loopback;
 	}
