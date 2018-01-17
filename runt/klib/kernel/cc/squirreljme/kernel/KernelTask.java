@@ -12,6 +12,7 @@ package cc.squirreljme.kernel;
 
 import cc.squirreljme.kernel.ipc.base.PacketTypes;
 import cc.squirreljme.kernel.packets.Packet;
+import cc.squirreljme.kernel.packets.PacketFarm;
 import cc.squirreljme.kernel.packets.PacketReader;
 import cc.squirreljme.kernel.packets.PacketStream;
 import cc.squirreljme.kernel.packets.PacketStreamHandler;
@@ -398,7 +399,7 @@ public abstract class KernelTask
 			}
 			
 			// Send to service
-			try (Packet q = __p.farm().create(type, plen))
+			try (Packet q = PacketFarm.createPacket(type, plen))
 			{
 				__p.readPacketData(8, q);
 				

@@ -190,17 +190,6 @@ public final class Packet
 	}
 	
 	/**
-	 * Returns the farm used to create this packet.
-	 *
-	 * @return The farm which created this packet.
-	 * @since 2018/01/05
-	 */
-	public final PacketFarm farm()
-	{
-		return this.farm;
-	}
-	
-	/**
 	 * Returns {@code true} if the packet generates a response.
 	 *
 	 * @return {@code true} if the packet generates a response.
