@@ -269,3 +269,11 @@ nature because their bright white fur stands out). Then when _SquirrelJME_ has
 come around I decided to keep the same mascot but make him a squirrel instead.
 So the green tunic that Link wears is a reference to the Zelda series.
 
+It was difficult finding a name for him, as such I initially decided on just
+placeholder name for awhile. I thought about _Lexer_ but that was quite long
+and slightly complicated, so I shorted it to _Lex_. It was nice and for the
+most part the name stuck since I was happy with it. Therefor it was never
+changed.
+
+He was uploaded on 2016/05/07 to the repository.
+
