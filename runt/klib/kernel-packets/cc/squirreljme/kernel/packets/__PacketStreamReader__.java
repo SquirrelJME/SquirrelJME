@@ -106,8 +106,16 @@ final class __PacketStreamReader__
 				Packet rv = null;
 				try
 				{
+					// Print exception thrown by remote end
+					if (isexception)
+					{
+						((Throwable)__ThrowableUtil__.__decode(
+							p.createReader())).printStackTrace(System.err);
+					}
+					
 					// Handle response
-					rv = eventhandler.handle(p);
+					else
+						rv = eventhandler.handle(p);
 					
 					// A packet was returned when none was expected
 					if (ptype <= 0)

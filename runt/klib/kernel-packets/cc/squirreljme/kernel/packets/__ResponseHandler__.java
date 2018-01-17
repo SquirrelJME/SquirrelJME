@@ -105,7 +105,7 @@ final class __ResponseHandler__
 				// Otherwait, wait for the packet to appear
 				try
 				{
-					responses.wait(100);
+					responses.wait();
 				}
 				catch (InterruptedException e)
 				{
