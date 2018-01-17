@@ -336,5 +336,34 @@ public final class PacketFarm
 				isglobalfarm);
 		}
 	}
+	
+	/**
+	 * Creates a new variable length packet.
+	 *
+	 * @param __t The type of the packet, if the type is negative then no
+	 * response will be used.
+	 * @return The newly created packet of a variable length.
+	 * @since 2018/01/17
+	 */
+	public static final Packet createPacket(int __t)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Creates a new fixed length packet with the specified length.
+	 *
+	 * @param __t The type of the packet, if the type is negative then no
+	 * response will be used.
+	 * @param __l The length of the packet to create.
+	 * @return The newly created packet of the given length.
+	 * @throws IllegalArgumentException If the length is negative.
+	 * @since 2018/01/17
+	 */
+	public static final Packet createPacket(int __t, int __l)
+		throws IllegalArgumentException
+	{
+		throw new todo.TODO();
+	}
 }
 
