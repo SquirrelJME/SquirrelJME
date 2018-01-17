@@ -34,7 +34,7 @@ public final class PacketFarm
 	 * will be used to have these farms initialized. This value must be
 	 * positive.}
 	 */
-	public static final String DEFAULT_FARM_COUNT_PROPERTY =
+	public static final String FARM_COUNT_PROPERTY =
 		"cc.squirreljme.kernel.packets.defaultfarmcount";
 	
 	/**
@@ -58,8 +58,8 @@ public final class PacketFarm
 		"cc.squirreljme.kernel.packets.defaultcropsize";
 	
 	/** The default number of global farms. */
-	public static final int DEFAULT_FARM_COUNT =
-		Math.max(1, Integer.getInteger(DEFAULT_FARM_COUNT_PROPERTY, 8));
+	public static final int FARM_COUNT =
+		Math.max(1, Integer.getInteger(FARM_COUNT_PROPERTY, 8));
 	
 	/** The default size for individual farms. */
 	public static final int DEFAULT_FARM_SIZE =
@@ -112,7 +112,7 @@ public final class PacketFarm
 	 */
 	static
 	{
-		int n = DEFAULT_FARM_COUNT;
+		int n = FARM_COUNT;
 		PacketFarm[] gf = new PacketFarm[n];
 		for (int i = 0; i < n; i++)
 			gf[i] = new PacketFarm(true, DEFAULT_FARM_SIZE, DEFAULT_CROP_SIZE);
@@ -347,7 +347,7 @@ public final class PacketFarm
 	 */
 	public static final Packet createPacket(int __t)
 	{
-		throw new todo.TODO();
+		return PacketFarm.__nextFarm().create(__t);
 	}
 	
 	/**
@@ -363,7 +363,25 @@ public final class PacketFarm
 	public static final Packet createPacket(int __t, int __l)
 		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		return PacketFarm.__nextFarm().create(__t, __l);
+	}
+	
+	/**
+	 * Returns the next packet farm to use.
+	 *
+	 * @return The next packet farm.
+	 * @since 2018/01/17
+	 */
+	private static final PacketFarm __nextFarm()
+	{
+		// Cycle to the next farm
+		int next = PacketFarm._nextglobalfarm + 1;
+		if (next >= FARM_COUNT)
+			next = 0;
+		PacketFarm._nextglobalfarm = next;
+		
+		// Use that farm
+		return PacketFarm._GLOBAL_FARMS[next];
 	}
 }
 
