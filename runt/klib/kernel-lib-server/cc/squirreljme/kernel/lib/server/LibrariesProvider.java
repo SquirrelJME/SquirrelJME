@@ -25,6 +25,8 @@ import cc.squirreljme.kernel.service.ClientInstance;
 import cc.squirreljme.kernel.service.ServerInstance;
 import cc.squirreljme.kernel.service.ServicePacketStream;
 import cc.squirreljme.kernel.service.ServiceProvider;
+import cc.squirreljme.kernel.trust.client.TrustClient;
+import cc.squirreljme.runtime.cldc.SystemCall;
 import cc.squirreljme.runtime.cldc.SystemTask;
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,6 +57,10 @@ public abstract class LibrariesProvider
 	/** Thread safety lock. */
 	protected final Object lock =
 		new Object();
+	
+	/** The trust client which is needed to determine how to secure tasks. */
+	private final TrustClient _trusts =
+		SystemCall.<TrustClient>service(TrustClient.class);
 	
 	/** Libraries which are availble for usage. */
 	private final Map<Integer, Library> _libraries =
