@@ -25,6 +25,7 @@ import net.multiphasicapps.util.bytedeque.ByteDeque;
  *
  * @since 2018/01/04
  */
+@Deprecated
 public final class LoopbackStreams
 {
 	/** A double deque is used from one side to another. */
