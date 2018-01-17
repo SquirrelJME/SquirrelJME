@@ -48,17 +48,6 @@ public final class ServicePacketStream
 	}
 	
 	/**
-	 * Returns the packet farm for creating packets.
-	 *
-	 * @return The packet farm.
-	 * @since 2018/01/05
-	 */
-	public final PacketFarm farm()
-	{
-		return this.stream.farm();
-	}
-	
-	/**
 	 * Sends the given packet to the remote server.
 	 *
 	 * @param __p The packet to send to the remote.
@@ -100,7 +89,7 @@ public final class ServicePacketStream
 		boolean wantresponse = (ptype > 0);
 		
 		// Build the appropriate packet that can fit this packet
-		try (Packet p = stream.farm().create(
+		try (Packet p = PacketFarm.createPacket(
 			(wantresponse ? PacketTypes.SERVICE_WITH_RESULT :
 				PacketTypes.SERVICE_NO_RESULT), 4 + 4 + plen))
 		{
