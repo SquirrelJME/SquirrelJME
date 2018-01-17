@@ -80,6 +80,9 @@ public final class PacketFarm
 	/** Lock to protect access to the crops. */
 	protected final Object lock =
 		new Object();
+		
+	/** Is this a global farm? */
+	protected final boolean isglobalfarm;
 	
 	/** The size of the farm. */
 	protected final int farmsize;
@@ -112,7 +115,7 @@ public final class PacketFarm
 		int n = DEFAULT_FARM_COUNT;
 		PacketFarm[] gf = new PacketFarm[n];
 		for (int i = 0; i < n; i++)
-			gf[i] = new PacketFarm();
+			gf[i] = new PacketFarm(true, DEFAULT_FARM_SIZE, DEFAULT_CROP_SIZE);
 		_GLOBAL_FARMS = gf;
 	}
 	
@@ -123,7 +126,7 @@ public final class PacketFarm
 	 */
 	public PacketFarm()
 	{
-		this(DEFAULT_FARM_SIZE, DEFAULT_CROP_SIZE);
+		this(false, DEFAULT_FARM_SIZE, DEFAULT_CROP_SIZE);
 	}
 	
 	/**
@@ -138,6 +141,23 @@ public final class PacketFarm
 	public PacketFarm(int __l, int __cs)
 		throws IllegalArgumentException
 	{
+		this(false, __l, __cs);
+	}
+	
+	/**
+	 * Initializes the packet farm with the given farm size.
+	 *
+	 * @param __global Is this a global packet farm? This is used as a key for
+	 * packets so they know where to source new packets from.
+	 * @param __l The size of the farm.
+	 * @param __cs The size of individual crops within the farm.
+	 * @throws IllegalArgumentException If the farm and or crop size is
+	 * zero, negative, or is not a power of two.
+	 * @since 2018/01/17
+	 */
+	private PacketFarm(boolean __global, int __l, int __cs)
+		throws IllegalArgumentException
+	{
 		// {@squirreljme.error AT0b Invalid farm and/or crop size specified.
 		// (The farm size; The crop size)}
 		if (__l <= 0 || __cs <= 0 || (__l % __cs) != 0 ||
@@ -145,6 +165,7 @@ public final class PacketFarm
 			throw new IllegalArgumentException(
 				String.format("AT0b %d %d", __l, __cs));
 		
+		this.isglobalfarm = __global;
 		this.farmsize = __l;
 		this._field = new byte[__l];
 		
@@ -250,11 +271,14 @@ public final class PacketFarm
 		if (__a == 0 || (__a & cropmask) != 0)
 			__a = ((__a + cropsize) & (~cropmask));
 		
+		// Is this a global farm?
+		boolean isglobalfarm = this.isglobalfarm;
+		
 		// Determine if this packet is just way to large to fit
 		boolean cropless = (__a > this.maxcropuse);
 		if (cropless)
 			return new Packet(this, __t, __var, new byte[__l], 0, __l, __l,
-				false);
+				false, isglobalfarm);
 		
 		// Lock to prevent contention among the field
 		synchronized (this.lock)
@@ -292,7 +316,7 @@ public final class PacketFarm
 			// packet outside of the farm
 			if (pivot < 0)
 				return new Packet(this, __t, __var, new byte[__l], 0, __l, __l,
-					false);
+					false, isglobalfarm);
 			
 			// The end of crop usage
 			int endpivot = pivot + usecrops;
@@ -308,7 +332,8 @@ public final class PacketFarm
 				field[woff] = 0;
 			
 			// Use that area in the field
-			return new Packet(this, __t, __var, field, doff, __a, __l, true);
+			return new Packet(this, __t, __var, field, doff, __a, __l, true,
+				isglobalfarm);
 		}
 	}
 }
