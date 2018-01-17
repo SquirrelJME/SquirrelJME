@@ -89,7 +89,29 @@ final class __ResponseHandler__
 	 */
 	final Packet __await(int __key)
 	{
-		throw new todo.TODO();
+		Integer ikey = __key;
+		
+		// Lock on the response group
+		Map<Integer, Packet> responses = this._responses[__key & this.mask];
+		synchronized (responses)
+		{
+			for (;;)
+			{
+				// Use read packet
+				Packet rv = responses.get(ikey);
+				if (rv != null)
+					return rv;
+				
+				// Otherwait, wait for the packet to appear
+				try
+				{
+					responses.wait(100);
+				}
+				catch (InterruptedException e)
+				{
+				}
+			}
+		}
 	}
 	
 	/**
@@ -105,8 +127,20 @@ final class __ResponseHandler__
 	{
 		if (__p == null)
 			throw new NullPointerException("NARG");
-		
-		throw new todo.TODO();
+			
+		// Lock on the response group
+		Map<Integer, Packet> responses = this._responses[__key & this.mask];
+		synchronized (responses)
+		{
+			// Store packet
+			responses.put(__key, __p);
+			
+			// Signal all, note that if two threads are waiting on a single
+			// group then both threads will wake up, however one will not find
+			// its key so it will go back to waiting. This wastes some CPU
+			// but it does work.
+			responses.notifyAll();
+		}
 	}
 	
 	/**
