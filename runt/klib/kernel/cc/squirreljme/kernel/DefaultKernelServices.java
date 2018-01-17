@@ -44,6 +44,10 @@ public final class DefaultKernelServices
 		
 		switch (__sv)
 		{
+			case "cc.squirreljme.kernel.trust.client.TrustClient":
+				return "cc.squirreljme.kernel.trust.server.noop." +
+					"NoOpTrustProviderFactory";
+				
 			default:
 				return null;
 		}
@@ -57,7 +61,8 @@ public final class DefaultKernelServices
 	 */
 	public static final Iterable<String> services()
 	{
-		return Arrays.<String>asList(new String[0]);
+		return Arrays.<String>asList(
+			"cc.squirreljme.kernel.trust.client.TrustClient");
 	}
 }
 
