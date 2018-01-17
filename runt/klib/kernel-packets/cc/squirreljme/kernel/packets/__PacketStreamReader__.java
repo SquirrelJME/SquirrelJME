@@ -96,66 +96,125 @@ final class __PacketStreamReader__
 					continue;
 				}
 				
-				// Is this information about a remote exception which was
-				// thrown during a response?
-				boolean isexception = (ptype == Packet._RESPONSE_EXCEPTION),
-					wantsresponse = (ptype > 0);
-				
-				// Allow all exceptions to be caught so that
-				// responses can be generated for them
-				Packet rv = null;
-				try
+				// Remote side threw an exception, so just print it to the
+				// console to let someone know
+				else if (ptype == Packet._RESPONSE_EXCEPTION)
 				{
-					// Print exception thrown by remote end
-					if (isexception)
-					{
-						((Throwable)__ThrowableUtil__.__decode(
-							p.createReader())).printStackTrace(System.err);
-					}
-					
-					// Handle response
-					else
-						rv = eventhandler.handle(p);
-					
-					// A packet was returned when none was expected
-					if (ptype <= 0)
-						rv = null;
-					
-					// A response was expected, but none was given
-					// Force one to exist
-					else if (rv == null)
-						rv = PacketFarm.createPacket(0, 0);
+					((Throwable)__ThrowableUtil__.__decode(
+						p.createReader())).printStackTrace(System.err);
+					continue;
 				}
 				
-				// Send failure response
-				catch (Throwable t)
-				{
-					// Do not generate exception responses if the
-					// exception type was not handled because it will
-					// end up being a gigantic recursive mess
-					if (!isexception)
-					{
-						rv = PacketFarm.createPacket((wantsresponse ?
-							Packet._RESPONSE_FAIL :
-							Packet._RESPONSE_EXCEPTION));
-						
-						// Write in details about the exception as they
-						// are known
-						__ThrowableUtil__.__encode(t, rv.createWriter());
-					}
-				}
+				// Since this is only a single thread handling events, another
+				// thread needs to be created to handle the request otherwise
+				// there could only be a single thing using services at a time
+				// and they additionally could never layer on top of each
+				// other. This makes it completely asynchronous for the most
+				// part and as soon as more packets are ready they will be
+				// processed.
+				Thread runner = new Thread(new __Runner__(pkey, p, out,
+					eventhandler), "Packet-Stream-Runner");
+				runner.start();
+			}
+		}
+	}
+	
+	/**
+	 * This actually handles requests which are sent from the remote side
+	 *
+	 * @since 2018/01/17
+	 */
+	private static final class __Runner__
+		implements Runnable
+	{
+		/** The key. */
+		protected final int key;
+		
+		/** The packet. */
+		protected final Packet packet;
+		
+		/** The output where responses go. */
+		protected final DatagramOut out;
+		
+		/** The event handler. */
+		protected final PacketStreamHandler eventhandler;
+		
+		/**
+		 * Initializes the runner for running events and returning their
+		 * result.
+		 *
+		 * @param __key The key.
+		 * @param __p The input packet data.
+		 * @param __out The stream to write responses to.
+		 * @param __eh The handler for events.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2018/01/17
+		 */
+		private __Runner__(int __key, Packet __p, DatagramOut __out,
+			PacketStreamHandler __eh)
+			throws NullPointerException
+		{
+			if (__p == null || __out == null || __eh == null)
+				throw new NullPointerException("NARG");
+			
+			this.key = __key;
+			this.packet = __p;
+			this.out = __out;
+			this.eventhandler = __eh;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/01/17
+		 */
+		@Override
+		public final void run()
+		{
+			Packet packet = this.packet;
+			
+			// Does the remote end want a response to this?
+			boolean wantsresponse = (packet.type() > 0);
+			
+			// Allow all exceptions to be caught so that
+			// responses can be generated for them
+			Packet rv = null;
+			try
+			{
+				// Handle response
+				rv = this.eventhandler.handle(packet);
 				
-				// Close the source packet, it is not needed anymore
-				p.close();
+				// A packet was returned when none was expected
+				if (!wantsresponse)
+					rv = null;
 				
-				// Send response packet to the remote end
-				if (rv != null)
-				{
-					out.write(pkey, rv);
-					
-					// Response sent, so no longer is it needed
-					rv.close();
-				}
+				// A response was expected, but none was given
+				// Force one to exist
+				else if (rv == null)
+					rv = PacketFarm.createPacket(0, 0);
+			}
+			
+			// Send failure response
+			catch (Throwable t)
+			{
+				rv = PacketFarm.createPacket((wantsresponse ?
+					Packet._RESPONSE_FAIL :
+					Packet._RESPONSE_EXCEPTION));
+				
+				// Write in details about the exception as they
+				// are known
+				__ThrowableUtil__.__encode(t, rv.createWriter());
+			}
+			
+			// Close the source packet, it is not needed anymore
+			packet.close();
+			
+			// Send response packet to the remote end
+			if (rv != null)
+			{
+				this.out.write(this.key, rv);
+				
+				// Response sent, so no longer is it needed
+				rv.close();
 			}
 		}
 	}
