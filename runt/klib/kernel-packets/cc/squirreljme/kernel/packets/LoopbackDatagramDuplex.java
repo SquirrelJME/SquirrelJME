@@ -254,7 +254,32 @@ public final class LoopbackDatagramDuplex
 			if (__key.length < 1)
 				throw new ArrayIndexOutOfBoundsException("IOOB");
 			
-			throw new todo.TODO();
+			__Datagram__ rv;
+			
+			// Constantly try reading input datagrams
+			Deque<__Datagram__> in = this.in;
+			synchronized (in)
+			{
+				for (;;)
+				{
+					// If there is a datagram stop
+					rv = in.pollFirst();
+					if (rv != null)
+						break;
+					
+					// Wait for a signal
+					try
+					{
+						in.wait();
+					}
+					catch (InterruptedException e)
+					{
+					}
+				}
+			}
+			
+			__key[0] = rv._key;
+			return rv._packet;
 		}
 	}
 	
@@ -307,7 +332,12 @@ public final class LoopbackDatagramDuplex
 			if (__p == null)
 				throw new NullPointerException("NARG");
 			
-			throw new todo.TODO();
+			// Add datagram to the queue
+			Deque<__Datagram__> out = this.out;
+			synchronized (out)
+			{
+				out.addLast(new __Datagram__(__key, __p.duplicate()));
+			}
 		}
 	}
 }
