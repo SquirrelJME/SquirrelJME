@@ -200,6 +200,18 @@ public final class LoopbackDatagramDuplex
 			this._key = __key;
 			this._packet = __packet;
 		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/01/17
+		 */
+		@Override
+		public final String toString()
+		{
+			return String.format("D#%08x: key=%08x p=%s",
+				System.identityHashCode(this),
+				this._key, this._packet);
+		}
 	}
 	
 	/**
@@ -278,6 +290,9 @@ public final class LoopbackDatagramDuplex
 				}
 			}
 			
+			// Debug
+			System.err.printf("DEBUG -- recv %s%n", rv);
+			
 			__key[0] = rv._key;
 			return rv._packet;
 		}
@@ -332,11 +347,17 @@ public final class LoopbackDatagramDuplex
 			if (__p == null)
 				throw new NullPointerException("NARG");
 			
+			// Build datagram before locking
+			__Datagram__ d = new __Datagram__(__key, __p.duplicate());
+			
+			// Debug
+			System.err.printf("DEBUG -- send %s%n", d);
+			
 			// Add datagram to the queue
 			Deque<__Datagram__> out = this.out;
 			synchronized (out)
 			{
-				out.addLast(new __Datagram__(__key, __p.duplicate()));
+				out.addLast(d);
 				
 				// The read side will be waiting for this signal
 				out.notify();

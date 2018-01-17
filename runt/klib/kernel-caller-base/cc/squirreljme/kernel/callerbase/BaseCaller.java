@@ -143,7 +143,8 @@ public abstract class BaseCaller
 			
 			// Request it from the server
 			else
-				try (Packet p =PacketFarm.createPacket(
+			{
+				try (Packet p = PacketFarm.createPacket(
 					PacketTypes.MAP_SERVICE))
 				{
 					p.writeString(0, __cl.getName());
@@ -160,6 +161,7 @@ public abstract class BaseCaller
 							rawcif = null;
 					}
 				}
+			}
 		}
 		
 		// {@squirreljme.error BG01 No such service for the given class exists.

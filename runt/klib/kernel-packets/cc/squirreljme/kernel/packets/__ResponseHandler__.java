@@ -78,7 +78,7 @@ final class __ResponseHandler__
 		
 		this.count = __kc;
 		this.mask = __kc - 1;
-		this._responses = __initResponses(__kc);
+		this._responses = __ResponseHandler__.__initResponses(__kc);
 	}
 	
 	/**
@@ -98,7 +98,7 @@ final class __ResponseHandler__
 			for (;;)
 			{
 				// Use read packet
-				Packet rv = responses.get(ikey);
+				Packet rv = responses.remove(ikey);
 				if (rv != null)
 					return rv;
 				
@@ -127,7 +127,7 @@ final class __ResponseHandler__
 	{
 		if (__p == null)
 			throw new NullPointerException("NARG");
-			
+		
 		// Lock on the response group
 		Map<Integer, Packet> responses = this._responses[__key & this.mask];
 		synchronized (responses)
