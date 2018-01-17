@@ -321,6 +321,8 @@ public abstract class LibrariesProvider
 		if (__zip == null || __info == null)
 			throw new NullPointerException("NARG");
 		
+		TrustClient trusts = this.__trusts();
+		
 		throw new todo.TODO();
 	}
 	

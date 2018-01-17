@@ -65,7 +65,8 @@ public final class PacketStream
 		
 		// Create thread which reads the input side and allows for handling
 		Thread thread = new Thread(new __PacketStreamReader__(__in, __out,
-			this._rhandler, __handler, this.counter), this.toString());
+			this._rhandler, __handler, this.counter),
+			String.format("Packet-Stream-%s", __handler.getClass().getName()));
 		
 		// Make sure it is a daemon thread so that it terminates when every
 		// other thread is terminated
