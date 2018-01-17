@@ -58,10 +58,6 @@ public abstract class LibrariesProvider
 	protected final Object lock =
 		new Object();
 	
-	/** The trust client which is needed to determine how to secure tasks. */
-	private final TrustClient _trusts =
-		SystemCall.<TrustClient>service(TrustClient.class);
-	
 	/** Libraries which are availble for usage. */
 	private final Map<Integer, Library> _libraries =
 		new SortedTreeMap<>();
