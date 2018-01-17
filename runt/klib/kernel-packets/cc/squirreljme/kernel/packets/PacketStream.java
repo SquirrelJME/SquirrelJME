@@ -207,6 +207,13 @@ public final class PacketStream
 		// Count it for statistics
 		this.counter.__countWrite(__p.length());
 		
+		// Close after send?
+		if (__close)
+		{
+			__p.close();
+			__p = null;
+		}
+		
 		// Wait for a response if one is desired
 		if (ptype > 0)
 		{

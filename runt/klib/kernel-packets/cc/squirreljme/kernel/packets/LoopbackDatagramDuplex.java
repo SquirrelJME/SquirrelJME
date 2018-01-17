@@ -337,6 +337,9 @@ public final class LoopbackDatagramDuplex
 			synchronized (out)
 			{
 				out.addLast(new __Datagram__(__key, __p.duplicate()));
+				
+				// The read side will be waiting for this signal
+				out.notify();
 			}
 		}
 	}
