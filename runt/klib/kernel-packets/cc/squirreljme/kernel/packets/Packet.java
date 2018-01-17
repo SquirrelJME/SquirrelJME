@@ -190,6 +190,18 @@ public final class Packet
 	}
 	
 	/**
+	 * Duplicate the packet but as the given type instead.
+	 *
+	 * @param __t The new type to use.
+	 * @return The duplicated packet.
+	 * @since 2018/01/01
+	 */
+	public final Packet duplicateAsType(int __t)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Returns {@code true} if the packet generates a response.
 	 *
 	 * @return {@code true} if the packet generates a response.

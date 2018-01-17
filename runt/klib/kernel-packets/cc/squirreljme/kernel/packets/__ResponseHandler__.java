@@ -75,5 +75,33 @@ final class __ResponseHandler__
 		
 		throw new todo.TODO();
 	}
+	
+	/**
+	 * Awaits a response for the given key.
+	 *
+	 * @param __key The key to wait on.
+	 * @since 2018/01/17
+	 */
+	final Packet __await(int __key)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Gives the specified packet to the response handler.
+	 *
+	 * @param __key The key to respond to.
+	 * @param __p The packet to give
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/17
+	 */
+	final void __give(int __key, Packet __p)
+		throws NullPointerException
+	{
+		if (__p == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 }
 

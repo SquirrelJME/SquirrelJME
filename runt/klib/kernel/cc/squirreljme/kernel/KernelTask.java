@@ -11,6 +11,8 @@
 package cc.squirreljme.kernel;
 
 import cc.squirreljme.kernel.ipc.base.PacketTypes;
+import cc.squirreljme.kernel.packets.DatagramIn;
+import cc.squirreljme.kernel.packets.DatagramOut;
 import cc.squirreljme.kernel.packets.Packet;
 import cc.squirreljme.kernel.packets.PacketFarm;
 import cc.squirreljme.kernel.packets.PacketReader;
@@ -22,8 +24,6 @@ import cc.squirreljme.kernel.service.ServicePacketStream;
 import cc.squirreljme.kernel.service.ServiceProvider;
 import cc.squirreljme.runtime.cldc.SystemTask;
 import cc.squirreljme.runtime.cldc.SystemTrustGroup;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -64,13 +64,13 @@ public abstract class KernelTask
 	 * @param __k The owning kernel.
 	 * @param __id The index of the task.
 	 * @param __l Launch parameters of the task.
-	 * @param __in The input stream from the task.
-	 * @param __out The output stream to the task.
+	 * @param __in The input from the task.
+	 * @param __out The output to the task.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/02
 	 */
 	protected KernelTask(Reference<Kernel> __k, int __id, KernelTaskLaunch __l,
-		InputStream __in, OutputStream __out)
+		DatagramIn __in, DatagramOut __out)
 		throws NullPointerException
 	{
 		if (__k == null ||
