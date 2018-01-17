@@ -52,6 +52,9 @@ public final class Packet
 	private static final int _GROW_MASK =
 		_GROW_SIZE - 1;
 	
+	/** Is this a global packet? */
+	protected final boolean isglobalpacket;
+	
 	/** The owning packet farm. */
 	protected final PacketFarm farm;
 	
@@ -91,13 +94,14 @@ public final class Packet
 	 * @param __l The length of the packet.
 	 * @param __infield If {@code true} then the packet is in the field and
 	 * it may grow within it.
+	 * @param __global Is this a global packet?
 	 * @throws IllegalArgumentException If this is not an infield packet and
 	 * the offset is non-zero.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/01
 	 */
 	Packet(PacketFarm __farm, int __type, boolean __var, byte[] __b, int __o,
-		int __a, int __l, boolean __infield)
+		int __a, int __l, boolean __infield, boolean __global)
 		throws IllegalArgumentException, NullPointerException
 	{
 		if (__farm == null)
@@ -108,6 +112,7 @@ public final class Packet
 		if (!__infield && __o != 0)
 			throw new IllegalArgumentException("AT01");
 		
+		this.isglobalpacket = __global;
 		this.farm = __farm;
 		this.type = __type;
 		this.variable = __var;
