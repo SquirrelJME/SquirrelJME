@@ -23,7 +23,8 @@ import java.util.Deque;
 public final class LoopbackDatagramDuplex
 {
 	/** A double deque is used from one side to another. */
-	private final Deque<__Datagram__>[] _queues;
+	private final Deque<__Datagram__>[] _queues =
+		__newQueues();
 	
 	/** Side A reference. */
 	private volatile Reference<Side> _a;
@@ -38,7 +39,6 @@ public final class LoopbackDatagramDuplex
 	 */
 	public LoopbackDatagramDuplex()
 	{
-		throw new todo.TODO();
 	}
 	
 	/**
@@ -81,6 +81,19 @@ public final class LoopbackDatagramDuplex
 		}
 		
 		return rv;
+	}
+	
+	/**
+	 * Initializes the datagram queues.
+	 *
+	 * @return The datagram queues.
+	 * @since 2018/01/17
+	 */
+	@SuppressWarnings({"unchecked"})
+	private static final Deque<__Datagram__>[] __newQueues()
+	{
+		return (Deque<__Datagram__>[])
+			((Object)(new Deque[]{new ArrayDeque(), new ArrayDeque()}));
 	}
 	
 	/**
