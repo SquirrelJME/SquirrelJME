@@ -462,6 +462,8 @@ public final class Packet
 	 */
 	public final Packet respond()
 	{
+		if (this.isglobalpacket)
+			return PacketFarm.createPacket(0);
 		return this.farm.create(0);
 	}
 	
@@ -481,6 +483,8 @@ public final class Packet
 		if (__l < 0)
 			throw new IllegalArgumentException("AT03");
 		
+		if (this.isglobalpacket)
+			return PacketFarm.createPacket(0, __l);
 		return this.farm.create(0, __l);
 	}
 	
