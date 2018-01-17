@@ -71,6 +71,12 @@ public final class PacketFarm
 		Math.min(DEFAULT_FARM_SIZE / 2, Integer.highestOneBit(Math.max(32,
 			Integer.getInteger(DEFAULT_CROP_SIZE_PROPERTY, 128))));
 	
+	/** Globally initialized farms. */
+	private static final PacketFarm[] _GLOBAL_FARMS;
+	
+	/** The next global farm to create a packet from. */
+	private static volatile int _nextglobalfarm;
+	
 	/** Lock to protect access to the crops. */
 	protected final Object lock =
 		new Object();
@@ -95,6 +101,20 @@ public final class PacketFarm
 	
 	/** The bytes which make up the farm. */
 	private final byte[] _field;
+	
+	/**
+	 * Initializes the global farms.
+	 *
+	 * @since 2018/01/17
+	 */
+	static
+	{
+		int n = DEFAULT_FARM_COUNT;
+		PacketFarm[] gf = new PacketFarm[n];
+		for (int i = 0; i < n; i++)
+			gf[i] = new PacketFarm();
+		_GLOBAL_FARMS = gf;
+	}
 	
 	/**
 	 * Initializes the packet farm with the default farm size.
