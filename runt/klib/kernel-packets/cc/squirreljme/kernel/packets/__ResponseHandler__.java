@@ -10,6 +10,9 @@
 
 package cc.squirreljme.kernel.packets;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * This handles responses and additionally gives the ability to wait on
  * incoming responses to packets according to the key index. This allows
@@ -43,6 +46,9 @@ final class __ResponseHandler__
 	/** The key mask. */
 	protected final int mask;
 	
+	/** Responses which are waiting for each key in each group. */
+	private final Map<Integer, Packet>[] _responses;
+	
 	/**
 	 * Initializes the response handler using the default key lock count.
 	 *
@@ -72,8 +78,7 @@ final class __ResponseHandler__
 		
 		this.count = __kc;
 		this.mask = __kc - 1;
-		
-		throw new todo.TODO();
+		this._responses = __initResponses(__kc);
 	}
 	
 	/**
@@ -102,6 +107,22 @@ final class __ResponseHandler__
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Initializes the responses array.
+	 *
+	 * @param __n The number of responses to store.
+	 * @since 2018/01/17
+	 */
+	@SuppressWarnings({"unchecked"})
+	private static final Map<Integer, Packet>[] __initResponses(int __n)
+	{
+		Map<Integer, Packet>[] rv =
+			(Map<Integer, Packet>[])((Object)new Map[__n]);
+		for (int i = 0; i < __n; i++)
+			rv[i] = new HashMap<>();
+		return rv;
 	}
 }
 
