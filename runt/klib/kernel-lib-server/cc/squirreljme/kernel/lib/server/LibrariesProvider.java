@@ -28,6 +28,7 @@ import cc.squirreljme.kernel.service.ServiceProvider;
 import cc.squirreljme.kernel.trust.client.TrustClient;
 import cc.squirreljme.runtime.cldc.SystemCall;
 import cc.squirreljme.runtime.cldc.SystemTask;
+import cc.squirreljme.runtime.cldc.SystemTrustGroup;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -61,6 +62,9 @@ public abstract class LibrariesProvider
 	/** Libraries which are availble for usage. */
 	private final Map<Integer, Library> _libraries =
 		new SortedTreeMap<>();
+	
+	/** The trust client. */
+	private volatile TrustClient _trustsclient;
 	
 	/**
 	 * Initializes the base library server.
@@ -172,6 +176,9 @@ public abstract class LibrariesProvider
 				if (this.__checkInstallDuplicate(info))
 					throw new __PlainInstallError__(
 						InstallErrorCodes.ALREADY_INSTALLED, "BC03");
+				
+				// Determine the trust group
+				SystemTrustGroup trustgroup = this.__getTrustGroup(zip, info);
 				
 				throw new todo.TODO();
 			}
@@ -295,6 +302,41 @@ public abstract class LibrariesProvider
 		
 		// Is okay
 		return false;
+	}
+	
+	/**
+	 * Returns the trust group which is associated with the given program.
+	 *
+	 * @param __zip The input ZIP for verification, if signed.
+	 * @param __info The suite information.
+	 * @return The trust group of the application.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/17
+	 */
+	private final SystemTrustGroup __getTrustGroup(ZipBlockReader __zip,
+		SuiteInfo __info)
+		throws IOException, NullPointerException
+	{
+		if (__zip == null || __info == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the trust client.
+	 *
+	 * @return The trust client.
+	 * @since 2018/01/17
+	 */
+	private final TrustClient __trusts()
+	{
+		TrustClient rv = this._trustsclient;
+		if (rv == null)
+			this._trustsclient = (rv =
+				SystemCall.<TrustClient>service(TrustClient.class));
+		return rv;
 	}
 	
 	/**
