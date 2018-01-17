@@ -10,13 +10,25 @@
 
 package cc.squirreljme.kernel.packets;
 
+import java.io.Closeable;
+
 /**
  * This interface represents a destination for output datagrams.
  *
  * @since 2018/01/17
  */
 public interface DatagramOut
+	extends Closeable
 {
+	/**
+	 * {@inheritDoc}
+	 * @throws DatagramIOException If the output could not be closed.
+	 * @since 2018/01/17
+	 */
+	@Override
+	public abstract void close()
+		throws DatagramIOException;
+	
 	/**
 	 * Writes the specified packet to the output source which will be written
 	 * to the other side.

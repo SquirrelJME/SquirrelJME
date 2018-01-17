@@ -48,6 +48,26 @@ public final class DatagramInputStream
 	 * @since 2018/01/17
 	 */
 	@Override
+	public final void close()
+		throws DatagramIOException
+	{
+		try
+		{
+			this.in.close();
+		}
+		
+		// {@squirreljme.error AT0j Could not close the input stream.}
+		catch (IOException e)
+		{
+			throw new DatagramIOException("AT0j", e);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/01/17
+	 */
+	@Override
 	public final Packet read(int[] __key)
 		throws ArrayIndexOutOfBoundsException, DatagramIOException,
 			NullPointerException

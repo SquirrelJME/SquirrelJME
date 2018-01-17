@@ -10,13 +10,25 @@
 
 package cc.squirreljme.kernel.packets;
 
+import java.io.Closeable;
+
 /**
  * This interface represents a source for incoming datagrams.
  *
  * @since 2018/01/17
  */
 public interface DatagramIn
+	extends Closeable
 {
+	/**
+	 * {@inheritDoc}
+	 * @throws DatagramIOException If the input could not be closed.
+	 * @since 2018/01/17
+	 */
+	@Override
+	public abstract void close()
+		throws DatagramIOException;
+	
 	/**
 	 * Reads an incoming packet and key from the datagram source.
 	 *

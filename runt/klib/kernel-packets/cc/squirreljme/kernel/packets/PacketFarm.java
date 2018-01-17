@@ -27,13 +27,49 @@ import java.util.List;
  */
 public final class PacketFarm
 {
-	/** The default farm size */
-	private static final int _FARM_SIZE =
-		2048;
+	/**
+	 * {@squirreljme.property cc.squirreljme.kernel.packets.defaultfarmcount=n
+	 * This represents the number of global farms which exist by default and
+	 * are available to use as needed. The higher this value the more memory
+	 * will be used to have these farms initialized. This value must be
+	 * positive.}
+	 */
+	public static final String DEFAULT_FARM_COUNT_PROPERTY =
+		"cc.squirreljme.kernel.packets.defaultfarmcount";
 	
-	/** The size of a sub-division in the farm. */
-	private static final int _CROP_SIZE =
-		128;
+	/**
+	 * {@squirreljme.property cc.squirreljme.kernel.packets.defaultfarmsize=n
+	 * This represents the default size that farms initialized without a size
+	 * will be. The higher this value the more memory will be used when
+	 * default farms are initialized. This value must be a power of two and
+	 * be positive.}
+	 */
+	public static final String DEFAULT_FARM_SIZE_PROPERTY =
+		"cc.squirreljme.kernel.packets.defaultfarmsize";
+	
+	/**
+	 * {@squirreljme.property cc.squirreljme.kernel.packets.defaultcroptsize=n
+	 * This represents the default size of each crop within the farm. Fields
+	 * are split into crops. Each crop can be used to contain the space of a
+	 * packet. This value must be a power of two and be positive, it must not
+	 * be greater than the farm size.}
+	 */
+	public static final String DEFAULT_CROP_SIZE_PROPERTY =
+		"cc.squirreljme.kernel.packets.defaultcropsize";
+	
+	/** The default number of global farms. */
+	public static final int DEFAULT_FARM_COUNT =
+		Math.max(1, Integer.getInteger(DEFAULT_FARM_COUNT_PROPERTY, 8));
+	
+	/** The default size for individual farms. */
+	public static final int DEFAULT_FARM_SIZE =
+		Integer.highestOneBit(Math.max(8,
+			Integer.getInteger(DEFAULT_FARM_SIZE_PROPERTY, 2048)));
+	
+	/** The default crop size. */
+	public static final int DEFAULT_CROP_SIZE =
+		Math.min(DEFAULT_FARM_SIZE / 2, Integer.highestOneBit(Math.max(32,
+			Integer.getInteger(DEFAULT_CROP_SIZE_PROPERTY, 128))));
 	
 	/** Lock to protect access to the crops. */
 	protected final Object lock =
@@ -67,7 +103,7 @@ public final class PacketFarm
 	 */
 	public PacketFarm()
 	{
-		this(PacketFarm._FARM_SIZE, PacketFarm._CROP_SIZE);
+		this(DEFAULT_FARM_SIZE, DEFAULT_CROP_SIZE);
 	}
 	
 	/**
@@ -75,16 +111,19 @@ public final class PacketFarm
 	 *
 	 * @param __l The size of the farm.
 	 * @param __cs The size of individual crops within the farm.
-	 * @throws IllegalArgumentException If the farm size is zero or negative.
+	 * @throws IllegalArgumentException If the farm and or crop size is
+	 * zero, negative, or is not a power of two.
 	 * @since 2018/01/01
 	 */
 	public PacketFarm(int __l, int __cs)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error AT0b Invalid farm and/or crop size specified.}
+		// {@squirreljme.error AT0b Invalid farm and/or crop size specified.
+		// (The farm size; The crop size)}
 		if (__l <= 0 || __cs <= 0 || (__l % __cs) != 0 ||
-			Integer.bitCount(__cs) != 1)
-			throw new IllegalArgumentException("AT0b");
+			Integer.bitCount(__l) != 1 || Integer.bitCount(__cs) != 1)
+			throw new IllegalArgumentException(
+				String.format("AT0b %d %d", __l, __cs));
 		
 		this.farmsize = __l;
 		this._field = new byte[__l];
