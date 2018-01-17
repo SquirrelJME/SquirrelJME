@@ -48,6 +48,26 @@ public final class DatagramOutputStream
 	 * @since 2018/01/17
 	 */
 	@Override
+	public final void close()
+		throws DatagramIOException
+	{
+		try
+		{
+			this.out.close();
+		}
+		
+		// {@squirreljme.error AT0k Could not close the output stream.}
+		catch (IOException e)
+		{
+			throw new DatagramIOException("AT0k", e);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/01/17
+	 */
+	@Override
 	public final void write(int __key, Packet __p)
 		throws DatagramIOException, NullPointerException
 	{
