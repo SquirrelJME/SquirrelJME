@@ -11,6 +11,10 @@
 package cc.squirreljme.runtime.javase;
 
 import cc.squirreljme.kernel.Kernel;
+import cc.squirreljme.kernel.packets.DatagramIn;
+import cc.squirreljme.kernel.packets.DatagramInputStream;
+import cc.squirreljme.kernel.packets.DatagramOut;
+import cc.squirreljme.kernel.packets.DatagramOutputStream;
 import cc.squirreljme.runtime.cldc.DaemonThreadSetter;
 import cc.squirreljme.runtime.cldc.StandardOutput;
 import cc.squirreljme.runtime.cldc.SystemCall;
@@ -169,7 +173,8 @@ public class Main
 			System.setOut(new PrintStream(new StandardOutput(), true));
 			
 			// Use the original streams instead
-			syscaller = new JavaClientCaller(win, wout);
+			syscaller = new JavaClientCaller(new DatagramInputStream(win),
+				new DatagramOutputStream(wout));
 		}
 		
 		// The server uses the actual kernel

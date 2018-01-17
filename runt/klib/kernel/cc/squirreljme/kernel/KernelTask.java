@@ -13,6 +13,7 @@ package cc.squirreljme.kernel;
 import cc.squirreljme.kernel.ipc.base.PacketTypes;
 import cc.squirreljme.kernel.packets.DatagramIn;
 import cc.squirreljme.kernel.packets.DatagramOut;
+import cc.squirreljme.kernel.packets.LoopbackDatagramDuplex;
 import cc.squirreljme.kernel.packets.Packet;
 import cc.squirreljme.kernel.packets.PacketFarm;
 import cc.squirreljme.kernel.packets.PacketReader;
@@ -94,7 +95,7 @@ public abstract class KernelTask
 			this.mainclass = Kernel.class.getName();
 			
 			// Set the stream for this side to side A
-			LoopbackStreams.Side side = kernel.loopback().sideA();
+			LoopbackDatagramDuplex.Side side = kernel.loopback().sideA();
 			__in = side.input();
 			__out = side.output();
 			

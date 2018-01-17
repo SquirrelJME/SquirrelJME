@@ -11,7 +11,10 @@
 package cc.squirreljme.kernel.callerbase;
 
 import cc.squirreljme.kernel.ipc.base.PacketTypes;
+import cc.squirreljme.kernel.packets.DatagramIn;
+import cc.squirreljme.kernel.packets.DatagramOut;
 import cc.squirreljme.kernel.packets.Packet;
+import cc.squirreljme.kernel.packets.PacketFarm;
 import cc.squirreljme.kernel.packets.PacketStream;
 import cc.squirreljme.kernel.packets.PacketStreamHandler;
 import cc.squirreljme.kernel.service.ClientInstance;
@@ -21,8 +24,6 @@ import cc.squirreljme.kernel.service.ServicePacketStream;
 import cc.squirreljme.runtime.cldc.NoSuchServiceException;
 import cc.squirreljme.runtime.cldc.OperatingSystemType;
 import cc.squirreljme.runtime.cldc.SystemCaller;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,7 +57,7 @@ public abstract class BaseCaller
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/04
 	 */
-	protected BaseCaller(InputStream __in, OutputStream __out)
+	protected BaseCaller(DatagramIn __in, DatagramOut __out)
 		throws NullPointerException
 	{
 		if (__in == null || __out == null)
@@ -67,7 +68,7 @@ public abstract class BaseCaller
 		
 		// Initializes the client instance set with the fixed number of
 		// services which are available
-		try (Packet p = stream.farm().create(PacketTypes.SERVICE_COUNT, 0))
+		try (Packet p = PacketFarm.createPacket(PacketTypes.SERVICE_COUNT, 0))
 		{
 			try (Packet r = stream.send(p, true))
 			{
@@ -103,7 +104,7 @@ public abstract class BaseCaller
 			return rv;
 		
 		PacketStream stream = this.stream;
-		try (Packet p = stream.farm().create(PacketTypes.OS_TYPE);
+		try (Packet p = PacketFarm.createPacket(PacketTypes.OS_TYPE);
 			Packet r = stream.send(p, true))
 		{
 			rv = OperatingSystemType.valueOf(r.readString(0));
@@ -142,7 +143,8 @@ public abstract class BaseCaller
 			
 			// Request it from the server
 			else
-				try (Packet p = stream.farm().create(PacketTypes.MAP_SERVICE))
+				try (Packet p =PacketFarm.createPacket(
+					PacketTypes.MAP_SERVICE))
 				{
 					p.writeString(0, __cl.getName());
 					

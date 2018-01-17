@@ -12,14 +12,13 @@ package cc.squirreljme.kernel.client;
 
 import cc.squirreljme.kernel.callerbase.BaseCaller;
 import cc.squirreljme.kernel.ipc.base.PacketTypes;
+import cc.squirreljme.kernel.packets.DatagramIn;
+import cc.squirreljme.kernel.packets.DatagramOut;
 import cc.squirreljme.kernel.packets.Packet;
 import cc.squirreljme.kernel.packets.PacketStream;
 import cc.squirreljme.kernel.packets.PacketWriter;
 import cc.squirreljme.runtime.cldc.SystemCaller;
 import cc.squirreljme.runtime.cldc.SystemTask;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,7 +43,7 @@ public abstract class ClientCaller
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/03
 	 */
-	protected ClientCaller(InputStream __in, OutputStream __out)
+	protected ClientCaller(DatagramIn __in, DatagramOut __out)
 		throws NullPointerException
 	{
 		super(__in, __out);
