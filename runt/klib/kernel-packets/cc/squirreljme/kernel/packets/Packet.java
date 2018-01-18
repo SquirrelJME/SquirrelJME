@@ -44,6 +44,10 @@ public final class Packet
 	static final int _RESPONSE_EXCEPTION =
 		-32767;
 	
+	/** Ping request to the remote end, used to check transmission time. */
+	static final int _PING =
+		-32766;
+	
 	/** The grow step for the packet. */
 	private static final int _GROW_SIZE =
 		128;

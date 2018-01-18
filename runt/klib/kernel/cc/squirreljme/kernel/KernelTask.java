@@ -117,7 +117,8 @@ public abstract class KernelTask
 		
 		// Initialize the packet stream which is used to communicate between
 		// the process and the kernel
-		this._stream = new PacketStream(__in, __out, new __Handler__());
+		this._stream = new PacketStream(__in, __out, new __Handler__(),
+			"Kernel-Task-" + __id);
 		
 		// Initialize a base array for instances of services when they are
 		// initialized when they are needed to

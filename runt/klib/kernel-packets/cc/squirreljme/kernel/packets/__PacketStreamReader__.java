@@ -31,6 +31,12 @@ final class __PacketStreamReader__
 	/** The counter for packet streams. */
 	protected final PacketStreamCounter counter;
 	
+	/** The local name. */
+	protected final String localname;
+	
+	/** The remote name. */
+	private final String[] _remotename;
+	
 	/** The response handler where responses go. */
 	private final __ResponseHandler__ _rhandler;
 	
@@ -42,23 +48,28 @@ final class __PacketStreamReader__
 	 * @param __rhandler The bridge for handling responses.
 	 * @param __handler The handler for input events.
 	 * @param __counter The counter for packet streams.
+	 * @param __ln The local name.
+	 * @param __rn The remote name.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/17
 	 */
 	__PacketStreamReader__(DatagramIn __in, DatagramOut __out,
 		__ResponseHandler__ __rh, PacketStreamHandler __handler,
-		PacketStreamCounter __counter)
+		PacketStreamCounter __counter, String __ln, String[] __rn)
 		throws NullPointerException
 	{
 		if (__in == null || __out == null || __rh == null ||
-			__handler == null || __counter == null)
+			__handler == null || __counter == null || __ln == null ||
+			__rn == null)
 			throw new NullPointerException("");
 		
 		this.in = __in;
 		this.out = __out;
 		this.eventhandler = __handler;
 		this.counter = __counter;
+		this.localname = __ln;
 		this._rhandler = __rh;
+		this._remotename = __rn;
 	}
 	
 	/**
@@ -78,6 +89,27 @@ final class __PacketStreamReader__
 		int[] pkeya = new int[1];
 		try (DatagramIn in = this.in)
 		{
+			// Receive name from the remote end
+			int[] key = new int[1];
+			String remotename;
+			try (Packet p = in.read(key))
+			{
+				// {@squirreljme.error AT0l Could not read the remote packet
+				// stream name.}
+				if (key[0] != PacketStream._SPECIAL_NAME_KEY)
+					throw new DatagramIOException("AT0l");
+			
+				remotename = p.readString(0);
+				
+				// Store remote name so the local side knows it
+				String[] srname = this._remotename;
+				synchronized (srname)
+				{
+					srname[0] = remotename;
+				}
+			}
+			
+			// Read loop now that the initial stream header has been read
 			for (;;)
 			{
 				// Read in datagram
@@ -101,7 +133,8 @@ final class __PacketStreamReader__
 				else if (ptype == Packet._RESPONSE_EXCEPTION)
 				{
 					((Throwable)__ThrowableUtil__.__decode(
-						p.createReader())).printStackTrace(System.err);
+						p.createReader(), this.localname, remotename)).
+						printStackTrace(System.err);
 					continue;
 				}
 				

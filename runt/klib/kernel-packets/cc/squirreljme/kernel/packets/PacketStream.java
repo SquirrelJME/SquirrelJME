@@ -12,6 +12,7 @@ package cc.squirreljme.kernel.packets;
 
 import cc.squirreljme.runtime.cldc.SystemCall;
 import java.io.Closeable;
+import java.util.Objects;
 
 /**
  * This represents a packet stream which is used to read and write events from
@@ -24,6 +25,10 @@ import java.io.Closeable;
 public final class PacketStream
 	implements Closeable
 {
+	/** Special key for name transmission. */
+	static final int _SPECIAL_NAME_KEY =
+		-1;
+	
 	/** Lock used to generate unique keys. */
 	protected final Object lock =
 		new Object();
@@ -34,6 +39,12 @@ public final class PacketStream
 	
 	/** The output datagram sink. */
 	protected final DatagramOut out;
+	
+	/** The name of the local packet stream. */
+	protected final String localname;
+	
+	/** The name fo the remote packet stream. */
+	private final String[] _remotename;
 	
 	/** The response handler. */
 	private final __ResponseHandler__ _rhandler =
@@ -49,23 +60,38 @@ public final class PacketStream
 	 * @param __in The input source for datagrams.
 	 * @param __out The output sink for datagrams.
 	 * @param __handler The handler which is called on all input events.
+	 * @param __name The local name of this packet stream.
+	 * @throws DatagramIOException If the connection could not be established.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/01
 	 */
 	public PacketStream(DatagramIn __in, DatagramOut __out,
-		PacketStreamHandler __handler)
-		throws NullPointerException
+		PacketStreamHandler __handler, String __name)
+		throws DatagramIOException, NullPointerException
 	{
-		if (__in == null || __out == null || __handler == null)
+		if (__in == null || __out == null || __handler == null ||
+			__name == null)
 			throw new NullPointerException("NARG");
 		
 		// This class on the outside just sends responses to the remote end
 		// while another thread handles input events
 		this.out = __out;
 		
+		// Transmit name to the remote end
+		this.localname = __name;
+		try (Packet p = PacketFarm.createPacket(0))
+		{
+			p.writeString(0, __name);
+			__out.write(PacketStream._SPECIAL_NAME_KEY, p);
+		}
+		
+		// Let the reader handle it so the constructor does not lock
+		String[] remotename = new String[1];
+		this._remotename = remotename;
+		
 		// Create thread which reads the input side and allows for handling
 		Thread thread = new Thread(new __PacketStreamReader__(__in, __out,
-			this._rhandler, __handler, this.counter),
+			this._rhandler, __handler, this.counter, __name, remotename),
 			String.format("Packet-Stream-%s", __handler.getClass().getName()));
 		
 		// Make sure it is a daemon thread so that it terminates when every
@@ -107,6 +133,32 @@ public final class PacketStream
 	public final PacketStreamCounter counter()
 	{
 		return this.counter;
+	}
+	
+	/**
+	 * Returns the local name of the stream.
+	 *
+	 * @return The stream local name.
+	 * @since 2018/01/18
+	 */
+	public final String localName()
+	{
+		return this.localname;
+	}
+	
+	/**
+	 * Returns the remote name of the stream.
+	 *
+	 * @return The stream remote name.
+	 * @since 2018/01/18
+	 */
+	public final String remoteName()
+	{
+		String[] remotename = this._remotename;
+		synchronized (remotename)
+		{
+			return Objects.toString(remotename[0], "Unknown-Remote");
+		}
 	}
 	
 	/**
@@ -224,7 +276,7 @@ public final class PacketStream
 			if (rv.type() == Packet._RESPONSE_FAIL)
 			{
 				RemoteThrowable t = __ThrowableUtil__.__decode(
-					rv.createReader());
+					rv.createReader(), this.localname, this.remoteName());
 				
 				// Make sure the exception does not leak resources
 				rv.close();
