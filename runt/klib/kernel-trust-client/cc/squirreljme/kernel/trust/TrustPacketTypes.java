@@ -1,0 +1,24 @@
+// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
+// ---------------------------------------------------------------------------
+// Multi-Phasic Applications: SquirrelJME
+//     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
+// ---------------------------------------------------------------------------
+// SquirrelJME is under the GNU General Public License v3+, or later.
+// See license.mkd for licensing and copyright information.
+// ---------------------------------------------------------------------------
+
+package cc.squirreljme.kernel.trust;
+
+/**
+ * This contains the packet types for trusts.
+ *
+ * @since 2018/01/18
+ */
+public interface TrustPacketTypes
+{
+	/** Obtain an untrusted trust. */
+	public static final int GET_UNTRUSTED_TRUST =
+		1;
+}
+

@@ -11,9 +11,16 @@
 package cc.squirreljme.kernel.trust.client;
 
 import cc.squirreljme.kernel.packets.Packet;
+import cc.squirreljme.kernel.packets.PacketFarm;
+import cc.squirreljme.kernel.packets.PacketReader;
+import cc.squirreljme.kernel.packets.PacketWriter;
 import cc.squirreljme.kernel.service.ClientInstance;
 import cc.squirreljme.kernel.service.ServicePacketStream;
+import cc.squirreljme.kernel.trust.InvalidTrustException;
+import cc.squirreljme.kernel.trust.TrustPacketTypes;
 import cc.squirreljme.runtime.cldc.SystemTrustGroup;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This is the client which manages trusts which are stored on the remote end
@@ -24,6 +31,10 @@ import cc.squirreljme.runtime.cldc.SystemTrustGroup;
 public final class TrustClient
 	extends ClientInstance
 {
+	/** Local trusts. */
+	private final Map<Integer, __LocalTrust__> _trusts =
+		new HashMap<>();
+	
 	/**
 	 * Initializes the trust client.
 	 *
@@ -92,7 +103,31 @@ public final class TrustClient
 		if (__name == null || __vendor == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		Map<Integer, __LocalTrust__> trusts = this._trusts;
+		synchronized (trusts)
+		{
+			ServicePacketStream stream = this.stream;
+			try (Packet p = PacketFarm.createPacket(
+				TrustPacketTypes.GET_UNTRUSTED_TRUST))
+			{
+				PacketWriter w = p.createWriter();
+				
+				w.writeString(__name);
+				w.writeString(__vendor);
+				
+				try (Packet r = stream.send(p, true))
+				{
+					// {@squirreljme.error BI02 The specified untrusted
+					// trust group is not valid. (The name; The vendor)}
+					int dx = r.readInteger(0);
+					if (dx < 0)
+						throw new InvalidTrustException(
+							String.format("BI02 %s %s", __name, __vendor));
+					
+					throw new todo.TODO();
+				}
+			}
+		}
 	}
 }
 
