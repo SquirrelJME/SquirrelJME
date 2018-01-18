@@ -1,0 +1,73 @@
+# 2018/01/17
+
+## 10:28
+
+I have an idea. Instead of using direct `InputStream` and `OutputStream` for
+the packet service, instead use interfaces. Basically what I can do instead
+is have a `InputDatagrams` and `OutputDatagrams`. Of course the datagrams
+can be layered on top of input and output streams, but the main purpose of
+it would be to encode and decode accordingly as such. Of course this will
+need a slight adjustment because packets may need to have their keys encoded
+into them for the sending and receiving to work properly. But basically it
+will allow for the transport to be implemnted with other means rather than
+just basic streams. But at least the initial implementation will use basic
+streams.
+
+## 12:05
+
+Would there be lots of contention if I had a global static packet farm? I
+could have a volatile int field so that there are multiple packet farms
+which are handled in some kind of sequence.
+
+## 12:09
+
+Also, it would be best to have an alternative class instead for responses
+so that way the receiving end of the packet stream does not need to keep
+references around. But it still does for sending packets. But actually no
+it does not because the locking would be handled by the datagram output
+so it no longer needed. The response handler can just be given the output
+datagram.
+
+## 13:01
+
+Okay so switching to the datagrams and having other interfaces handle locking
+will basically make `PacketStream` really simple.
+
+## 13:41
+
+The code I am refactoring definitely looks much nicer now compared to
+before.
+
+## 14:32
+
+So the packet stream for the most part has been refactored, it seems a bit
+faster now. I suppose especially since there are less locks there is less
+contention among threads.
+
+## 17:16
+
+I definitely have a dead lock.
+
+## 17:47
+
+Okay, so I get why it deadlocks. Basically I have a single thread which handles
+events. Then I send another request to handle that request, which does not
+work properly. So basically what I need to do is to make a thread which can
+handle requests when they come in.
+
+## 17:49
+
+So I am going to need a packet stream thread pool which can handle tasks. The
+thread pool can be global though and internal, or at least one per
+`PacketStream`. The kernel has two packet streams and each client will have a
+single packet stream to the server. So basically when an event needs to be
+handled, a new thread should be created or recycled to run and then respond
+to the request.
+
+## 18:17
+
+Some systems have a limit on the number of threads which can run at once
+though. So I will definitely need to make some kind of pseudo thread system
+because SquirrelJME will require quite a number of threads to work properly.
+This means that the more requests being done, the higher the CPU load will
+be, so this will definitely need to be considered.
