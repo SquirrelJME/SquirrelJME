@@ -36,6 +36,9 @@ import java.util.Map;
 public abstract class BaseCaller
 	extends SystemCaller
 {
+	/** The ID of this task. */
+	protected final int taskid;
+	
 	/** The packet stream which links to the kernel. */
 	protected final PacketStream stream;
 	
@@ -57,14 +60,16 @@ public abstract class BaseCaller
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/04
 	 */
-	protected BaseCaller(DatagramIn __in, DatagramOut __out)
+	protected BaseCaller(int __id, DatagramIn __in, DatagramOut __out)
 		throws NullPointerException
 	{
 		if (__in == null || __out == null)
 			throw new NullPointerException("NARG");
 		
+		this.taskid = __id;
+		
 		PacketStream stream = new PacketStream(__in, __out, new __Handler__(),
-			"Client-Task");
+			"Client-Task-" + __id);
 		this.stream = stream;
 		
 		// Initializes the client instance set with the fixed number of
@@ -201,6 +206,17 @@ public abstract class BaseCaller
 			instances[svdx] = rv;
 			return __cl.cast(rv.instance());
 		}
+	}
+	
+	/**
+	 * Returns the current task id.
+	 *
+	 * @return The task id.
+	 * @since 2018/01/18
+	 */
+	public final int taskId()
+	{
+		return this.taskid;
 	}
 	
 	/**

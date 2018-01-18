@@ -44,7 +44,7 @@ public abstract class ServerCaller
 	protected ServerCaller(Kernel __k)
 		throws NullPointerException
 	{
-		super(__k.loopback().sideB().input(),
+		super(0, __k.loopback().sideB().input(),
 			__k.loopback().sideB().output());
 		
 		if (__k == null)

@@ -38,15 +38,16 @@ public abstract class ClientCaller
 	/**
 	 * Initializes the client caller with a stream to the kernel IPC.
 	 *
+	 * @param __tid The ID of this task.
 	 * @param __in The input stream from the kernel.
 	 * @param __out The output stream to the kernel.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/03
 	 */
-	protected ClientCaller(DatagramIn __in, DatagramOut __out)
+	protected ClientCaller(int __tid, DatagramIn __in, DatagramOut __out)
 		throws NullPointerException
 	{
-		super(__in, __out);
+		super(__tid, __in, __out);
 		
 		throw new todo.TODO();
 	}

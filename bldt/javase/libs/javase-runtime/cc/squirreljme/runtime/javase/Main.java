@@ -30,6 +30,7 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
+import java.util.Objects;
 import javax.microedition.midlet.MIDlet;
 
 /**
@@ -173,7 +174,11 @@ public class Main
 			System.setOut(new PrintStream(new StandardOutput(), true));
 			
 			// Use the original streams instead
-			syscaller = new JavaClientCaller(new DatagramInputStream(win),
+			if (true)
+				throw new todo.TODO();
+			syscaller = new JavaClientCaller(
+				Objects.<Integer>requireNonNull(null),
+				new DatagramInputStream(win),
 				new DatagramOutputStream(wout));
 		}
 		
