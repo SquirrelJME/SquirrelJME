@@ -88,5 +88,13 @@ public abstract class SystemCaller
 	 */
 	public abstract void setDaemonThread(Thread __t)
 		throws IllegalThreadStateException, NullPointerException;
+	
+	/**
+	 * Returns the current task id.
+	 *
+	 * @return The task id.
+	 * @since 2018/01/18
+	 */
+	public abstract int taskId();
 }
 

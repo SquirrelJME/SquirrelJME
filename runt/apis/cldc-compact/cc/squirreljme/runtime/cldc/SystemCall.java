@@ -246,6 +246,17 @@ public final class SystemCall
 	}
 	
 	/**
+	 * Returns the current task id.
+	 *
+	 * @return The task id.
+	 * @since 2018/01/18
+	 */
+	public static final int taskId()
+	{
+		return SystemCall._CALLER.taskId();
+	}
+	
+	/**
 	 * This returns the instance of the system caller which is to be used.
 	 *
 	 * @return The system caller interface.

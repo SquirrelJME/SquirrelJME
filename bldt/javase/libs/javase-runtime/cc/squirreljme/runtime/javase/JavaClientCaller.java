@@ -25,13 +25,14 @@ public class JavaClientCaller
 	/**
 	 * Initializes the caller.
 	 *
+	 * @param __tid The task ID.
 	 * @param __in The input stream.
 	 * @param __out The output stream.
 	 * @since 2017/12/31
 	 */
-	public JavaClientCaller(DatagramIn __in, DatagramOut __out)
+	public JavaClientCaller(int __tid, DatagramIn __in, DatagramOut __out)
 	{
-		super(__in, __out);
+		super(__tid, __in, __out);
 	}
 	
 	/**
