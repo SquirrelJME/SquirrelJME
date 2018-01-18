@@ -280,7 +280,6 @@ public final class LoopbackDatagramDuplex
 						break;
 					
 					// Wait for a signal
-					System.err.println("DEBUG -- Waiting for recv.");
 					try
 					{
 						in.wait();
@@ -290,9 +289,6 @@ public final class LoopbackDatagramDuplex
 					}
 				}
 			}
-			
-			// Debug
-			System.err.printf("DEBUG -- recv %s%n", rv);
 			
 			__key[0] = rv._key;
 			return rv._packet;
@@ -350,9 +346,6 @@ public final class LoopbackDatagramDuplex
 			
 			// Build datagram before locking
 			__Datagram__ d = new __Datagram__(__key, __p.duplicate());
-			
-			// Debug
-			System.err.printf("DEBUG -- send %s%n", d);
 			
 			// Add datagram to the queue
 			Deque<__Datagram__> out = this.out;
