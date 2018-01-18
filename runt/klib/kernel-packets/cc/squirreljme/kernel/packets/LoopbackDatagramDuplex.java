@@ -280,6 +280,7 @@ public final class LoopbackDatagramDuplex
 						break;
 					
 					// Wait for a signal
+					System.err.println("DEBUG -- Waiting for recv.");
 					try
 					{
 						in.wait();

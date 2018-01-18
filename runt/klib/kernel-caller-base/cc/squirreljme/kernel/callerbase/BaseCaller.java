@@ -63,7 +63,8 @@ public abstract class BaseCaller
 		if (__in == null || __out == null)
 			throw new NullPointerException("NARG");
 		
-		PacketStream stream = new PacketStream(__in, __out, new __Handler__());
+		PacketStream stream = new PacketStream(__in, __out, new __Handler__(),
+			"Client-Task");
 		this.stream = stream;
 		
 		// Initializes the client instance set with the fixed number of

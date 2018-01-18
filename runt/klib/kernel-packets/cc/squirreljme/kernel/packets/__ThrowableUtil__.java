@@ -60,26 +60,30 @@ final class __ThrowableUtil__
 	 * This decodes a throwable which was stored in a packet.
 	 *
 	 * @param __r The reader to decode from.
+	 * @param __ln The local name.
+	 * @param __rn The remote name.
 	 * @return The decoded throwable from the remote end.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/05
 	 */
-	static final RemoteThrowable __decode(PacketReader __r)
+	static final RemoteThrowable __decode(PacketReader __r, String __ln,
+		String __rn)
 		throws NullPointerException
 	{
-		if (__r == null)
+		if (__r == null || __ln == null || __rn == null)
 			throw new NullPointerException("NARG");
 		
 		// Read suppressed exceptions
 		int n = __r.readUnsignedByte();
 		Throwable[] suppressed = new Throwable[n];
 		for (int i = 0; i < n; i++)
-			suppressed[i] = (Throwable)__ThrowableUtil__.__decode(__r);
+			suppressed[i] = (Throwable)__ThrowableUtil__.__decode(__r,
+				__ln, __rn);
 		
 		// Is there a cause?
 		Throwable cause = null;
 		if (__r.readBoolean())
-			cause = (Throwable)__ThrowableUtil__.__decode(__r);
+			cause = (Throwable)__ThrowableUtil__.__decode(__r, __ln, __rn);
 		
 		// Read class type
 		String type = __r.readString();
@@ -103,7 +107,7 @@ final class __ThrowableUtil__
 		
 		// Build detail which is given to the exception
 		RemoteThrowableDetail detail = new RemoteThrowableDetail(message,
-			cause, type, basetype.getName(), trace);
+			cause, type, basetype.getName(), trace, __ln, __rn);
 		
 		// Build exception
 		RemoteThrowable rv;
@@ -196,17 +200,22 @@ final class __ThrowableUtil__
 		if (__ps == null || __t == null)
 			throw new NullPointerException("NARG");
 		
+		// Need the detail
+		RemoteThrowableDetail detail = __t.detail();
+		
 		// Print a message saying this is from another process
 		__ps.println("------------------------------");
-		String trace = __t.detail().trace();
+		String trace = detail.trace();
 		if (trace != null)
 		{
-			__ps.println("REMOTE STACK TRACE:");
+			__ps.print("REMOTE STACK TRACE: ");
+			__ps.println(detail.remoteName());
 			__ps.println(trace);
 		}
 		
 		// Also print the local side because that can be important!
-		__ps.println("LOCAL STACK TRACE:");
+		__ps.print("LOCAL STACK TRACE: ");
+		__ps.println(detail.localName());
 		__t.printLocalStackTrace(__ps);
 		__ps.println("------------------------------");
 	}

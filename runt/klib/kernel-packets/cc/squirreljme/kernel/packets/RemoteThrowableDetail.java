@@ -32,6 +32,12 @@ public final class RemoteThrowableDetail
 	/** The trace. */
 	protected final String trace;
 	
+	/** The local name. */
+	protected final String localname;
+	
+	/** The remote name. */
+	protected final String remotename;
+	
 	/**
 	 * This contains the details for the remotely thrown exception.
 	 *
@@ -40,14 +46,15 @@ public final class RemoteThrowableDetail
 	 * @param __l The class type of the thrown exception.
 	 * @param __bl The base class type of the thrown exception.
 	 * @param __t The remote trace of the exception.
-	 * @throws NullPointerException If {@code __l} is null.
+	 * @throws NullPointerException If {@code __l}, {@code __ln}, or
+	 * {@code __rn} is null.
 	 * @since 2018/01/07
 	 */
 	public RemoteThrowableDetail(String __m, Throwable __c,
-		String __l, String __bl, String __t)
+		String __l, String __bl, String __t, String __ln, String __rn)
 		throws NullPointerException
 	{
-		if (__l == null)
+		if (__l == null || __ln == null || __rn == null)
 			throw new NullPointerException("NARG");
 		
 		this.message = __m;
@@ -55,6 +62,8 @@ public final class RemoteThrowableDetail
 		this.type = __l;
 		this.basetype = (__bl != null ? __bl : __l);
 		this.trace = __t;
+		this.localname = __ln;
+		this.remotename = __rn;
 	}
 	
 	/**
@@ -80,6 +89,17 @@ public final class RemoteThrowableDetail
 	}
 	
 	/**
+	 * Returns the local name of the stream.
+	 *
+	 * @return The stream local name.
+	 * @since 2018/01/18
+	 */
+	public final String localName()
+	{
+		return this.localname;
+	}
+	
+	/**
 	 * Returns the message for the exception.
 	 *
 	 * @return The message for the exception.
@@ -88,6 +108,17 @@ public final class RemoteThrowableDetail
 	public final String message()
 	{
 		return this.message;
+	}
+	
+	/**
+	 * Returns the remote name of the stream.
+	 *
+	 * @return The stream remote name.
+	 * @since 2018/01/18
+	 */
+	public final String remoteName()
+	{
+		return this.remotename;
 	}
 	
 	/**
