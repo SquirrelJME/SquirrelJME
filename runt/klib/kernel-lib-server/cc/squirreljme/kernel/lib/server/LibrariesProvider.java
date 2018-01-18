@@ -322,6 +322,8 @@ public abstract class LibrariesProvider
 			throw new NullPointerException("NARG");
 		
 		TrustClient trusts = this.__trusts();
+		SystemTrustGroup trust = trusts.untrustedTrust(
+			__info.name().toString(), __info.vendor().toString());
 		
 		throw new todo.TODO();
 	}
