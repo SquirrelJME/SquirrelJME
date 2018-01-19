@@ -1624,7 +1624,7 @@
 [**`15`**](stephanie-gawroriski/2018/01/15.mkd)
 `16`
 [**`17`**](stephanie-gawroriski/2018/01/17.mkd)
-`18`
+[**`18`**](stephanie-gawroriski/2018/01/18.mkd)
 `19`
 `20`
  * `21`

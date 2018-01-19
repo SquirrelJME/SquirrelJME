@@ -1,0 +1,8 @@
+# 2018/01/18
+
+## 13:51
+
+Okay so what would be useful would be if the exceptions being printed, it
+could be known which side they came from. So naming `PacketStream`s would be
+useful for debugging. Also I should move the library stuff around into a
+base package so that it is not all mixed up.
