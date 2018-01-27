@@ -81,11 +81,18 @@ do
 	# Nothing left to add
 	if [ -z "$__b" ]
 	then
-		break;
+		break
 	fi
 	
 	# Add that element
-	echo -n "$__b/"
+	echo -n "$__b"
+	
+	# If this is not the last element, add the slash
+	__zb="$(echo "$__targ" | cut -d '/' -f "$__j")"
+	if ! [ -z "$__zb" ]
+	then
+		echo -n "/"
+	fi
 done
 
 # Ending newline

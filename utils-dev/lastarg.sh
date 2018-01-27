@@ -4,10 +4,10 @@
 #     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 #     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 # ---------------------------------------------------------------------------
-# SquirrelJME is under the GNU General Public License v3, or later.
-# For more information see license.txt.
+# SquirrelJME is under the GNU General Public License v3+, or later.
+# See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
-# DESCRIPTION: Performs a complex fossil move.
+# DESCRIPTION: Returns the last argument.
 
 # Force C locale
 export LC_ALL=C
@@ -15,14 +15,12 @@ export LC_ALL=C
 # Directory of this script
 __exedir="$(dirname -- "$0")"
 
-# Only two args
-if [ "$#" -ne "2" ]
-then
-	echo "Usage: $0 (src) (dest)" 1>&2
-	exit 1
-fi
+# Shift down everything
+while [ "$#" -gt 1 ]
+do
+	shift
+done
 
-# Forward to other move script
-"$__exedir/fmv.sh" "$1" "$2"
-exit $?
+# Echo it
+echo "$1"
 

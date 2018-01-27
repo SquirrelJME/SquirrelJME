@@ -233,9 +233,6 @@ public abstract class Library
 	 * @return The library type.
 	 * @since 2018/01/02
 	 */
-	public final int type()
-	{
-		throw new todo.TODO();
-	}
+	public abstract int type();
 }
 
