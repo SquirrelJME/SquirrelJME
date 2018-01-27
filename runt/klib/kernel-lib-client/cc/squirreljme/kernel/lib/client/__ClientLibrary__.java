@@ -10,6 +10,9 @@
 
 package cc.squirreljme.kernel.lib.client;
 
+import cc.squirreljme.kernel.lib.LibrariesPacketTypes;
+import cc.squirreljme.kernel.lib.Library;
+
 /**
  * This class represents a library as seen by the client.
  *
@@ -40,6 +43,16 @@ final class __ClientLibrary__
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/01/27
+	 */
+	@Override
+	public final int type()
+	{
 		throw new todo.TODO();
 	}
 }
