@@ -10,15 +10,15 @@
 
 package cc.squirreljme.builder.support;
 
-import cc.squirreljme.kernel.lib.client.DependencyInfo;
-import cc.squirreljme.kernel.lib.client.MatchResult;
-import cc.squirreljme.kernel.lib.client.ProvidedInfo;
-import cc.squirreljme.kernel.lib.client.SuiteDependency;
-import cc.squirreljme.kernel.lib.client.SuiteDependencyLevel;
-import cc.squirreljme.kernel.lib.client.SuiteDependencyType;
-import cc.squirreljme.kernel.lib.client.SuiteName;
-import cc.squirreljme.kernel.lib.client.SuiteVersion;
-import cc.squirreljme.kernel.lib.client.SuiteVersionRange;
+import cc.squirreljme.kernel.lib.DependencyInfo;
+import cc.squirreljme.kernel.lib.MatchResult;
+import cc.squirreljme.kernel.lib.ProvidedInfo;
+import cc.squirreljme.kernel.lib.SuiteDependency;
+import cc.squirreljme.kernel.lib.SuiteDependencyLevel;
+import cc.squirreljme.kernel.lib.SuiteDependencyType;
+import cc.squirreljme.kernel.lib.SuiteName;
+import cc.squirreljme.kernel.lib.SuiteVersion;
+import cc.squirreljme.kernel.lib.SuiteVersionRange;
 import java.io.Closeable;
 import java.io.InputStream;
 import java.io.IOException;
