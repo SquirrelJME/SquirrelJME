@@ -10,9 +10,9 @@
 
 package cc.squirreljme.kernel.lib.server;
 
-import cc.squirreljme.kernel.lib.client.Library;
-import cc.squirreljme.kernel.lib.client.LibraryInstallationReport;
-import cc.squirreljme.kernel.lib.client.PacketTypes;
+import cc.squirreljme.kernel.lib.LibrariesPacketTypes;
+import cc.squirreljme.kernel.lib.Library;
+import cc.squirreljme.kernel.lib.LibraryInstallationReport;
 import cc.squirreljme.kernel.packets.Packet;
 import cc.squirreljme.kernel.service.ServerInstance;
 import cc.squirreljme.kernel.service.ServicePacketStream;
@@ -69,10 +69,10 @@ public final class LibrariesServer
 		
 		switch (__p.type())
 		{
-			case PacketTypes.LIST_PROGRAMS:
+			case LibrariesPacketTypes.LIST_PROGRAMS:
 				return this.__list(__p);
 			
-			case PacketTypes.INSTALL_PROGRAM:
+			case LibrariesPacketTypes.INSTALL_PROGRAM:
 				return this.__install(__p);
 			
 				// {@squirreljme.error BC09 Unknown packet. (The packet)}
