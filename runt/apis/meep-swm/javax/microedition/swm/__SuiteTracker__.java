@@ -11,7 +11,7 @@
 package javax.microedition.swm;
 
 import cc.squirreljme.kernel.lib.client.LibrariesClient;
-import cc.squirreljme.kernel.lib.client.LibraryInstallationReport;
+import cc.squirreljme.kernel.lib.LibraryInstallationReport;
 import cc.squirreljme.runtime.cldc.SystemCall;
 import cc.squirreljme.runtime.swm.JarStreamSupplier;
 import java.io.ByteArrayOutputStream;

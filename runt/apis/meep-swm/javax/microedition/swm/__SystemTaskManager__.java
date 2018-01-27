@@ -10,7 +10,7 @@
 
 package javax.microedition.swm;
 
-import cc.squirreljme.kernel.lib.client.Library;
+import cc.squirreljme.kernel.lib.Library;
 import cc.squirreljme.runtime.cldc.SystemCall;
 import cc.squirreljme.runtime.cldc.SystemTask;
 import java.lang.ref.Reference;
