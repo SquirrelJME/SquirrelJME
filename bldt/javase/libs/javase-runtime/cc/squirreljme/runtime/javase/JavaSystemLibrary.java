@@ -10,7 +10,8 @@
 
 package cc.squirreljme.runtime.javase;
 
-import cc.squirreljme.kernel.lib.client.Library;
+import cc.squirreljme.kernel.lib.Library;
+import cc.squirreljme.kernel.lib.LibraryType;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -79,6 +80,16 @@ public final class JavaSystemLibrary
 		
 		// All other resources do not exist
 		return null;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/01/27
+	 */
+	@Override
+	public final int type()
+	{
+		return LibraryType.SYSTEM;
 	}
 }
 

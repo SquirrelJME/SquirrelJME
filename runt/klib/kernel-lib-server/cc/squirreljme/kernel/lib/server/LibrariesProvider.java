@@ -10,17 +10,17 @@
 
 package cc.squirreljme.kernel.lib.server;
 
-import cc.squirreljme.kernel.lib.client.InstallErrorCodes;
 import cc.squirreljme.kernel.lib.client.LibrariesClient;
 import cc.squirreljme.kernel.lib.client.LibrariesClientFactory;
-import cc.squirreljme.kernel.lib.client.Library;
-import cc.squirreljme.kernel.lib.client.LibraryInstallationReport;
-import cc.squirreljme.kernel.lib.client.SuiteIdentifier;
-import cc.squirreljme.kernel.lib.client.SuiteInfo;
-import cc.squirreljme.kernel.lib.client.SuiteName;
-import cc.squirreljme.kernel.lib.client.SuiteType;
-import cc.squirreljme.kernel.lib.client.SuiteVendor;
-import cc.squirreljme.kernel.lib.client.SuiteVersion;
+import cc.squirreljme.kernel.lib.InstallErrorCodes;
+import cc.squirreljme.kernel.lib.Library;
+import cc.squirreljme.kernel.lib.LibraryInstallationReport;
+import cc.squirreljme.kernel.lib.SuiteIdentifier;
+import cc.squirreljme.kernel.lib.SuiteInfo;
+import cc.squirreljme.kernel.lib.SuiteName;
+import cc.squirreljme.kernel.lib.SuiteType;
+import cc.squirreljme.kernel.lib.SuiteVendor;
+import cc.squirreljme.kernel.lib.SuiteVersion;
 import cc.squirreljme.kernel.service.ClientInstance;
 import cc.squirreljme.kernel.service.ServerInstance;
 import cc.squirreljme.kernel.service.ServicePacketStream;
