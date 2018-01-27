@@ -10,13 +10,13 @@
 
 package javax.microedition.swm;
 
-import cc.squirreljme.kernel.lib.client.EntryPoint;
-import cc.squirreljme.kernel.lib.client.EntryPoints;
 import cc.squirreljme.kernel.lib.client.LibrariesClient;
-import cc.squirreljme.kernel.lib.client.Library;
-import cc.squirreljme.kernel.lib.client.LibraryControlKey;
-import cc.squirreljme.kernel.lib.client.LibraryType;
-import cc.squirreljme.kernel.lib.client.SuiteInfo;
+import cc.squirreljme.kernel.lib.EntryPoint;
+import cc.squirreljme.kernel.lib.EntryPoints;
+import cc.squirreljme.kernel.lib.Library;
+import cc.squirreljme.kernel.lib.LibraryControlKey;
+import cc.squirreljme.kernel.lib.LibraryType;
+import cc.squirreljme.kernel.lib.SuiteInfo;
 import cc.squirreljme.runtime.cldc.SystemCall;
 import java.io.InputStream;
 import java.io.IOException;
