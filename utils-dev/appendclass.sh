@@ -7,7 +7,7 @@
 # SquirrelJME is under the GNU General Public License v3+, or later.
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
-# DESCRIPTION: This runs the error reordering script.
+# DESCRIPTION: Stores a bunch of classes into a list.
 
 # Force C locale
 export LC_ALL=C
@@ -16,7 +16,7 @@ export LC_ALL=C
 __exedir="$(dirname -- "$0")"
 
 # Need to compile the program
-__cls="ReorderErrors"
+__cls="AppendClass"
 __src="$__exedir/$__cls.java"
 __odr="/tmp"
 __out="$__odr/$__cls.class"
