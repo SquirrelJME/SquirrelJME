@@ -1,0 +1,22 @@
+# 2018/01/27
+
+## 10:53
+
+I believe I will move some of the library code over to make it a bit more
+clean. Note that I have not touched my code in a week because I was doing
+another programming job.
+
+## 12:23
+
+I hope this refactored moving script works, I did test it with a bunch of
+cases, but I will test it out now.
+
+## 21:31
+
+I have an idea, I can make a SDK for SquirrelJME which can be imported via
+Maven or whatever. Pretty much anyone who wants to use it will probably best
+use it this way rather than using SquirrelJME directly due to the custom
+build system. It will make things easier to say the least. I can just for the
+most part just include every API and such into a library. I suppose the best
+thing to do. The only thing to figure out is how can the platform classpath
+be set?
