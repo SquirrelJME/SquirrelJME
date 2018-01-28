@@ -198,6 +198,7 @@ public class SuiteFactory
 				// ls, list;
 				// install (path);
 				// . (The command)}
+			case "help":
 			default:
 				throw new IllegalArgumentException(String.format("AU0p %s",
 					command));
