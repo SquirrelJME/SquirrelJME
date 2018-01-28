@@ -155,6 +155,7 @@ public class TaskFactory
 				// valid. Valid commands are:
 				// ls, list, launch
 				// .(The command)}
+			case "help":
 			default:
 				throw new IllegalArgumentException(String.format("AU0u %s",
 					command));

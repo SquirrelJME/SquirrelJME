@@ -116,7 +116,7 @@ public class BuilderFactory
 					// -j: The binary path for the jit-time;
 					// -b: The binary path for the build-time;
 					// Valid commands are:
-					// build, suite, task
+					// build, sdk, suite, task
 					// .(The switch)}
 				default:
 					throw new IllegalArgumentException(
@@ -190,7 +190,7 @@ public class BuilderFactory
 		BinaryManager bm;
 		try
 		{
-			bm = binaryManager(__t);
+			bm = this.binaryManager(__t);
 		}
 		
 		// {@squirreljme.error AU0f Could not obtain the binary manager.}
@@ -273,6 +273,12 @@ public class BuilderFactory
 				}
 				break;
 				
+				// Perform SDK actions
+			case "sdk":
+				this.sdk(
+					args.<String>toArray(new String[args.size()]));
+				break;
+				
 				// Perform suite related operations
 			case "suite":
 				this.suite(
@@ -315,6 +321,27 @@ public class BuilderFactory
 			sourcemanagers[i] =
 				(rv = new SourceManagerFactory(this.sourceroot).get(__t));
 		return rv;
+	}
+	
+	/**
+	 * Performs SDK related actions.
+	 *
+	 * @param __args Arguments to the SDK command.
+	 * @since 2018/01/27
+	 */
+	public void sdk(String... __args)
+	{
+		try
+		{
+			new SDKFactory(this.binaryManager(TimeSpaceType.JIT), __args).
+				run();
+		}
+		
+		// {@squirreljme.error AU0x Could not initialize the SDK factory.}
+		catch (IOException e)
+		{
+			throw new RuntimeException("AU0x", e);
+		}
 	}
 	
 	/**
