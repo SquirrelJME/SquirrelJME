@@ -24,7 +24,7 @@ __out="$__odr/$__cls.class"
 # Need to compile?
 if [ ! -f "$__out" ] || [ "$__src" -nt "$__out" ]
 then
-	if ! javac -d "$__odr" "$__src"
+	if ! javac -d "$__odr" "$__src" < /dev/null
 	then
 		echo "Failed to compile"
 		exit 1

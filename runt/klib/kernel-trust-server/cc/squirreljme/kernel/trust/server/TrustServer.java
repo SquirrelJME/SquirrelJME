@@ -13,6 +13,7 @@ package cc.squirreljme.kernel.trust.server;
 import cc.squirreljme.kernel.packets.Packet;
 import cc.squirreljme.kernel.service.ServerInstance;
 import cc.squirreljme.kernel.service.ServicePacketStream;
+import cc.squirreljme.kernel.trust.TrustPacketTypes;
 import cc.squirreljme.runtime.cldc.SystemTask;
 
 /**
@@ -60,11 +61,32 @@ public final class TrustServer
 		
 		switch (__p.type())
 		{
+				// Get an untrusted trust
+			case TrustPacketTypes.GET_UNTRUSTED_TRUST:
+				return this.__untrustedTrust(__p);
+			
 				// {@squirreljme.error BK01 Unknown packet. (The packet)}
 			default:
 				throw new IllegalArgumentException(
 					String.format("BK01 %s", __p));
 		}
+	}
+	
+	/**
+	 * Returns the untrusted trust for the given client.
+	 *
+	 * @param __p The packet.
+	 * @return The resulting packet.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/31
+	 */
+	private final Packet __untrustedTrust(Packet __p)
+		throws NullPointerException
+	{
+		if (__p == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 }
 
