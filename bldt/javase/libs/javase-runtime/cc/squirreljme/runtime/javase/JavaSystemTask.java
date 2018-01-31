@@ -15,6 +15,7 @@ import cc.squirreljme.kernel.KernelTask;
 import cc.squirreljme.runtime.cldc.SystemTaskFlag;
 import cc.squirreljme.runtime.cldc.SystemTaskMetric;
 import cc.squirreljme.runtime.cldc.SystemTaskStatus;
+import java.io.InputStream;
 import java.lang.ref.Reference;
 
 /**
@@ -45,6 +46,20 @@ public class JavaSystemTask
 	{
 		return SystemTaskFlag.SYSTEM |
 			SystemTaskStatus.RUNNING;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/01/31
+	 */
+	@Override
+	public final InputStream loadSpecialResource(String __name)
+		throws NullPointerException
+	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 	
 	/**
