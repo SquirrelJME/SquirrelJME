@@ -54,7 +54,7 @@ public class JavaSystemTask
 	 */
 	@Override
 	public final InputStream loadSpecialResource(String __name)
-		throws NullPointerException
+		throws NullPointerException, SecurityException
 	{
 		if (__name == null)
 			throw new NullPointerException("NARG");
