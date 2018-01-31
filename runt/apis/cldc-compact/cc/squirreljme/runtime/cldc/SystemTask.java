@@ -64,10 +64,12 @@ public interface SystemTask
 	 * @return The input stream of the special resource or {@code null} if it
 	 * does not exist.
 	 * @throws NullPointerException On null arguments.
+	 * @throws SecurityException If special resources cannot be obtained for
+	 * this task.
 	 * @since 2018/01/31
 	 */
 	public abstract InputStream loadSpecialResource(String __name)
-		throws NullPointerException;
+		throws NullPointerException, SecurityException;
 	
 	/**
 	 * Returns the main entry point of this task.
