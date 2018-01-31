@@ -38,5 +38,29 @@ public interface SystemTrustGroup
 	 * @since 2018/01/11
 	 */
 	public abstract int index();
+	
+	/**
+	 * Is this trust group trusted?
+	 *
+	 * @return If the group is a trusted group.
+	 * @since 2018/01/31
+	 */
+	public abstract boolean isTrusted();
+	
+	/**
+	 * The group name.
+	 *
+	 * @return The name of the group.
+	 * @since 2018/01/31
+	 */
+	public abstract String name();
+	
+	/**
+	 * The vendor name.
+	 *
+	 * @return The vendor of the group.
+	 * @since 2018/01/31
+	 */
+	public abstract String vendor();
 }
 

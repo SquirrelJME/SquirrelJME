@@ -11,10 +11,13 @@
 package cc.squirreljme.kernel.trust.server;
 
 import cc.squirreljme.kernel.packets.Packet;
+import cc.squirreljme.kernel.packets.PacketReader;
 import cc.squirreljme.kernel.service.ServerInstance;
 import cc.squirreljme.kernel.service.ServicePacketStream;
 import cc.squirreljme.kernel.trust.TrustPacketTypes;
+import cc.squirreljme.kernel.trust.TrustPermission;
 import cc.squirreljme.runtime.cldc.SystemTask;
+import cc.squirreljme.runtime.cldc.SystemTrustGroup;
 
 /**
  * This implements the server for a trust service and provides the
@@ -86,7 +89,22 @@ public final class TrustServer
 		if (__p == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Read name and vendor
+		PacketReader r = __p.createReader();
+		String name = r.readString(),
+			vendor = r.readString();
+		
+		// Need to be allowed to do this
+		super.checkPermission(TrustPermission.class, name + ":" + vendor,
+			TrustPermission.ACTION_GET_UNTRUSTED);
+		
+		// Obtain the trust (or create it)
+		SystemTrustGroup trust = this.provider.untrustedTrust(name, vendor);
+		
+		// Tell client about the trust
+		Packet rv = __p.respond(4);
+		rv.writeInteger(0, (trust == null ? -1 : trust.index()));
+		return rv;
 	}
 }
 

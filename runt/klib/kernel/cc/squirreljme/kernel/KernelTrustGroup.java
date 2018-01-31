@@ -21,39 +21,13 @@ import cc.squirreljme.runtime.cldc.SystemTrustGroup;
 public final class KernelTrustGroup
 	implements SystemTrustGroup
 {
-	/** The trust group index. */
-	protected final int index;
-	
-	/** Should all permissions be allowed? */
-	protected final boolean allpermissions;
-	
-	/** Permissions for this task. */
-	protected final KernelPermissions permissions =
-		new KernelPermissions();
-	
 	/**
 	 * Initializes the trust group.
 	 *
-	 * @param __dx The trust group index.
 	 * @since 2018/01/11
 	 */
-	KernelTrustGroup(int __dx)
+	KernelTrustGroup()
 	{
-		this(false, __dx);
-	}
-	
-	/**
-	 * Initializes the trust group, care should be taken when calling this
-	 * constructor as it can be set to ignore permission checks.
-	 *
-	 * @param __allperm Should all permissions be enabled?
-	 * @param __dx The trust group index.
-	 * @since 2018/01/11
-	 */
-	KernelTrustGroup(boolean __allperm, int __dx)
-	{
-		this.allpermissions = __allperm;
-		this.index = __dx;
 	}
 	
 	/**
@@ -67,9 +41,7 @@ public final class KernelTrustGroup
 		if (__cl == null || __n == null || __a == null)
 			throw new NullPointerException("NARG");
 		
-		// Only perform the permission check if they are not ignored
-		if (!this.allpermissions)
-			this.permissions.checkPermission(__cl, __n, __a);
+		// All kernel permissions are valid
 	}
 	
 	/**
@@ -79,18 +51,39 @@ public final class KernelTrustGroup
 	@Override
 	public final int index()
 	{
-		return this.index;
+		// Always uses the zero index
+		return 0;
 	}
 	
 	/**
-	 * Provides access to the permissions.
-	 *
-	 * @return The permissions for this group.
-	 * @since 2018/01/11
+	 * {@inheritDoc}
+	 * @since 2018/01/31
 	 */
-	final KernelPermissions __permissions()
+	@Override
+	public final boolean isTrusted()
 	{
-		return this.permissions;
+		// Always is trusted
+		return true;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/01/31
+	 */
+	@Override
+	public final String name()
+	{
+		return "SquirrelJME Kernel";
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/01/31
+	 */
+	@Override
+	public final String vendor()
+	{
+		return "Stephanie Gawroriski";
 	}
 }
 

@@ -57,5 +57,35 @@ final class __LocalTrust__
 	{
 		throw new todo.TODO();
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/01/31
+	 */
+	@Override
+	public final boolean isTrusted()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/01/31
+	 */
+	@Override
+	public final String name()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/01/31
+	 */
+	@Override
+	public final String vendor()
+	{
+		throw new todo.TODO();
+	}
 }
 
