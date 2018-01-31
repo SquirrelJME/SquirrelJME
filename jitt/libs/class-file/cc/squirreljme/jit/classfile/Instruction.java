@@ -18,7 +18,7 @@ import java.lang.ref.WeakReference;
  *
  * @since 2017/10/15
  */
-public class Instruction
+public final class Instruction
 {
 	/** The instruction address. */
 	protected final int address;
