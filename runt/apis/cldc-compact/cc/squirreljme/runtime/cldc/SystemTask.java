@@ -10,6 +10,8 @@
 
 package cc.squirreljme.runtime.cldc;
 
+import java.io.InputStream;
+
 /**
  * This interface is used to represent generic access to a task which exists
  * and may be running within the kernel.
@@ -54,6 +56,18 @@ public interface SystemTask
 	 * @since 2018/01/03
 	 */
 	public abstract int index();
+	
+	/**
+	 * Loads a special resource from the given task's classpath.
+	 *
+	 * @param __name The name of the resource to load.
+	 * @return The input stream of the special resource or {@code null} if it
+	 * does not exist.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/31
+	 */
+	public abstract InputStream loadSpecialResource(String __name)
+		throws NullPointerException;
 	
 	/**
 	 * Returns the main entry point of this task.
