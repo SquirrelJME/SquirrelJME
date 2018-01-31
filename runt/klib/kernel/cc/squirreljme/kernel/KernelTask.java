@@ -48,7 +48,7 @@ public abstract class KernelTask
 	protected final String mainclass;
 	
 	/** The trust group this task is within. */
-	protected final KernelTrustGroup trustgroup;
+	protected final SystemTrustGroup trustgroup;
 	
 	/** The packet stream to the child process. */
 	private final PacketStream _stream;

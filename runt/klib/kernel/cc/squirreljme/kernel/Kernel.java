@@ -50,7 +50,7 @@ public abstract class Kernel
 	
 	/** Trust group for the system. */
 	private final KernelTrustGroup _systemtrustgroup =
-		new KernelTrustGroup(true, 0);
+		new KernelTrustGroup();
 	
 	/** Tasks which exist within the kernel. */
 	private final Map<Integer, KernelTask> _tasks =
