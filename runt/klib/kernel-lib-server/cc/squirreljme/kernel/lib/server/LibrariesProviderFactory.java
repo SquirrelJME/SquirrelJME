@@ -30,16 +30,16 @@ public abstract class LibrariesProviderFactory
 	 * @return The instance of the library server.
 	 * @since 2018/01/05
 	 */
-	protected abstract LibrariesProvider createLibrariesProvider();
+	protected abstract LibrariesProvider createLibraries();
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/01/05
 	 */
 	@Override
-	public final ServiceProvider createProvider()
+	public final ServiceProvider create()
 	{
-		return this.createLibrariesProvider();
+		return this.createLibraries();
 	}
 }
 

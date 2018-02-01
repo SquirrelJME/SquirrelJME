@@ -8,29 +8,36 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.javase;
+package cc.squirreljme.kernel.impl.base.file;
 
-import cc.squirreljme.kernel.impl.base.file.FileLibrariesProvider;
-import cc.squirreljme.kernel.impl.base.file.FileLibrariesProviderFactory;
 import cc.squirreljme.kernel.lib.server.LibrariesProvider;
 import cc.squirreljme.kernel.lib.server.LibrariesProviderFactory;
 
 /**
- * This allows the Java kernel to manage libraries as needed.
+ * This is used as a base for initializing the file library provider.
  *
- * @since 2018/01/05
+ * @since 2018/01/31
  */
-public class JavaLibrariesProviderFactory
-	extends FileLibrariesProviderFactory
+public abstract class FileLibrariesProviderFactory
+	extends LibrariesProviderFactory
 {
 	/**
+	 * Creates an instance of the provider which is implementation
+	 * dependent.
+	 *
+	 * @return The provider instance.
+	 * @since 2018/01/31
+	 */
+	protected abstract FileLibrariesProvider createFileLibraries();
+	
+	/**
 	 * {@inheritDoc}
-	 * @since 2018/01/05
+	 * @since 2018/01/31
 	 */
 	@Override
-	protected FileLibrariesProvider createFileLibraries()
+	protected final LibrariesProvider createLibraries()
 	{
-		return new JavaLibrariesProvider();
+		return this.createFileLibraries();
 	}
 }
 

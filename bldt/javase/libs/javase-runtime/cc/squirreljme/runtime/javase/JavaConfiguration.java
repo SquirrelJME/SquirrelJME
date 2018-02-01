@@ -10,6 +10,7 @@
 
 package cc.squirreljme.runtime.javase;
 
+import cc.squirreljme.kernel.impl.base.file.FileLibrariesProviderFactory;
 import cc.squirreljme.kernel.Kernel;
 import cc.squirreljme.kernel.KernelConfiguration;
 import cc.squirreljme.kernel.KernelTask;
@@ -37,9 +38,11 @@ public class JavaConfiguration
 		
 		switch (__sv)
 		{
-			case "cc.squirreljme.kernel.lib.client." +
-				"LibrariesClient":
+			case "cc.squirreljme.kernel.lib.client.LibrariesClient":
 				return JavaLibrariesProviderFactory.class.getName();
+			
+			case "cc.squirreljme.kernel.trust.client.TrustClient":
+				return FileLibrariesProviderFactory.class.getName();
 				
 			default:
 				return null;

@@ -27,6 +27,6 @@ public interface ServiceProviderFactory
 	 * @return The newly created service provider.
 	 * @since 2018/01/03
 	 */
-	public abstract ServiceProvider createProvider();
+	public abstract ServiceProvider create();
 }
 

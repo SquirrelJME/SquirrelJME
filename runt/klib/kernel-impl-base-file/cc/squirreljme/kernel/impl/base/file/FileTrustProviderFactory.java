@@ -8,27 +8,40 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.kernel.trust.server.noop;
+package cc.squirreljme.kernel.impl.base.file;
 
 import cc.squirreljme.kernel.trust.server.TrustProvider;
 import cc.squirreljme.kernel.trust.server.TrustProviderFactory;
 
 /**
- * This is used to obtain instances of the noop trust service.
+ * This class is used to initialize the trust provider which backs the trusts
+ * on the local filesystem.
  *
- * @since 2018/01/17
+ * @since 2018/01/31
  */
-public final class NoOpTrustProviderFactory
+public class FileTrustProviderFactory
 	extends TrustProviderFactory
 {
 	/**
+	 * Creates an instance of the provider which is implementation
+	 * dependent.
+	 *
+	 * @return The provider instance.
+	 * @since 2018/01/31
+	 */
+	protected FileTrustProvider createFileTrust()
+	{
+		return new FileTrustProvider();
+	}
+	
+	/**
 	 * {@inheritDoc}
-	 * @since 2018/01/17
+	 * @since 2018/01/31
 	 */
 	@Override
 	protected final TrustProvider createTrust()
 	{
-		return new NoOpTrustProvider();
+		return this.createFileTrust();
 	}
 }
 
