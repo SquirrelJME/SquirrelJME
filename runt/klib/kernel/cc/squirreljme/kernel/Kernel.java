@@ -364,7 +364,7 @@ public abstract class Kernel
 					try
 					{
 						rv = ((ServiceProviderFactory)this._provider.
-							newInstance()).createProvider();
+							newInstance()).create();
 						
 						// {@squirreljme.error AP01 The server provides a
 						// service for a different client than than the one

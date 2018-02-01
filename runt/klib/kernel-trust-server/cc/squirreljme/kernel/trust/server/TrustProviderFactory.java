@@ -28,16 +28,16 @@ public abstract class TrustProviderFactory
 	 * @return The provider instance.
 	 * @since 2018/01/17
 	 */
-	protected abstract TrustProvider protectedCreate();
+	protected abstract TrustProvider createTrust();
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/01/17
 	 */
 	@Override
-	public final TrustProvider createProvider()
+	public final TrustProvider create()
 	{
-		return protectedCreate();
+		return this.createTrust();
 	}
 }
 
