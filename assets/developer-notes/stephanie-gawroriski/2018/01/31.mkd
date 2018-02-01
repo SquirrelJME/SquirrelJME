@@ -1,0 +1,85 @@
+# 2018/01/31
+
+## 02:18
+
+Suppose I can work on the trust server.
+
+## 11:45
+
+One thing that will be an issue are permissions. Basically when I need to do
+implies and such, I can either have duplicate code or create instances of the
+permission classes. So basically for the trust group I will need a way for it
+to create a temporary `Permission` instance. But there is potential for it to
+be not trusted. Like there could be a user made permission, which could do
+evil things, which would then be initialized and evil things done in the
+kernel potentially with as many permissions as possible. So there is great
+potential for abuse to occur. So either the trust server will have to
+implement implies for certain permissions, or it would fall within the client
+task to verify permissions that are valid. Of course then an exploited client
+would then be able to say that all permissions are valid. Like they could
+make a `Permission` which always implies other `Permission`s which would be
+a bad thing. So the big question is, how do permissions get checked the way
+they are with all of the varying classes.
+
+## 12:20
+
+So permissions will definitely need to be handled somehow, cannot trust the
+client and cannot trust the classes to be okay for initialization in the
+server. One thing I could potentially do however, is have a virtual machine
+of sorts in the client context. One which consist of classes for the client
+and then initialize a fake Java object of sorts to check a permission in.
+So the implies would run in that mini-VM of sorts. This would be quite slow
+but it would technically be secure. This would work at a cost of speed since
+the VM would not really be that fast. It is really the only way I can think
+of that would allow the kernel to check permissions and such. Technically
+what I can do is have a very limited VM with a minimal set of hardcoded
+classes and methods which permissions must execute under. The only thing
+would be, how the classes execute. I may also need to load super-classes too
+so that those can be handled accordingly. It will just be a very very basic
+VM for the most part. Since I do not want these to be actual resources, I
+will need a special protected resources provided by a task. So I create a
+means of having these resources accessible to tasks accordingly so that way
+the VM can run for the permission class. Each task can cache the resources
+and the VM state. Unlike the normal VM which is mostly checked, this will
+be very simple and not support all considerations of things. Basically it
+is intended to be fast because I do not want to pull in a complete
+interpreter with full VM support. So then this will mean that any class
+which extends `Permission` when compiled will need a compilation of the
+light VM code. I think this is the best way to do it and the classes
+which implement `implies` should not be doing very complex things
+either. Also, I suppose as a rule the permission checker should never
+imply another permission exists unless it is of the same class. This way
+one cannot create a super-permission which implies all other permissions
+to exploit it. So for the permission manager I will need to write and
+implement a compiler. I would suppose that this would go in the JIT and
+it would just be a very basic VM for the most part. But since it would be
+part of the JIT I can use classes such as the class thing. I will just
+use a different handler of the byte code.
+
+## 12:40
+
+Only thing is, how do I link the trust group and the system task so that way
+it knows where to get resources from? I suppose it could be handled in the
+kernel or really just the trust group server for the most part.
+
+## 13:42
+
+Since there will be shared JIT code, I will need code which can provide access
+to class file data and such accordingly.
+
+## 13:49
+
+It would also be good if the there were a way for packets to send streams for
+input and output to each other. That would actually be slower than sending a
+gigantic bulk byte array but for some really large resources and such, there
+might not be enough memory when not all of it needs to be used. I should use
+that instead of having gigantic byte arrays. It would really be useful for
+installing JARs and such. It could just for the most part linearly process
+the files.
+
+## 13:53
+
+I would basically need another service which can use the packet based
+interface, but allows for streams to be sent to the server and such. Then
+when the kernel requests a read from a client it can be sent as an actual
+request back and it can continue reading.
