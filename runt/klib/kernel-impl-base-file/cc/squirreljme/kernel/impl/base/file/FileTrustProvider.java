@@ -10,44 +10,60 @@
 
 package cc.squirreljme.kernel.impl.base.file;
 
-import cc.squirreljme.kernel.lib.server.LibrariesProvider;
+import cc.squirreljme.kernel.trust.server.TrustProvider;
+import cc.squirreljme.runtime.cldc.SystemTrustGroup;
 
 /**
- * This provides access to installed libraries which have been compiled and
- * stores on the filesystem using the standard SquirrelJME storage areas.
+ * This contains the trust provider which uses the backed filesystem to
+ * store the trust information.
  *
- * @since 2018/01/13
+ * @since 2018/01/31
  */
-public abstract class FileLibrariesProvider
-	extends LibrariesProvider
+public final class FileTrustProvider
+	extends TrustProvider
 {
-	/** The paths to used to store libraries. */
+	/** The paths to use for the trusts. */
 	protected final StandardPaths paths;
 	
 	/**
-	 * Initializes the file library provider.
+	 * Initializes the trust provider using the default set of paths.
 	 *
-	 * @since 2018/01/03
+	 * @since 2018/01/31
 	 */
-	public FileLibrariesProvider()
+	public FileTrustProvider()
 	{
 		this(StandardPaths.DEFAULT);
 	}
 	
 	/**
-	 * Initializes the file library provider using the given paths.
+	 * Initializes the trust provider using the specified path set.
 	 *
 	 * @param __sp The paths to use.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/31
 	 */
-	public FileLibrariesProvider(StandardPaths __sp)
+	public FileTrustProvider(StandardPaths __sp)
 		throws NullPointerException
 	{
 		if (__sp == null)
 			throw new NullPointerException("NARG");
-		
+			
 		this.paths = __sp;
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/01/31
+	 */
+	@Override
+	protected final SystemTrustGroup createTrustGroup(boolean __trusted,
+		int __dx, String __name, String __vendor)
+		throws NullPointerException
+	{
+		if (__name == null || __vendor == null)
+			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
 	}
