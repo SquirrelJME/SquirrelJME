@@ -14,6 +14,7 @@ import cc.squirreljme.runtime.cldc.OperatingSystemType;
 import cc.squirreljme.runtime.cldc.SystemCall;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 
 /**
  * This class contains the standard set of paths which is where SquirrelJME's
@@ -23,6 +24,22 @@ import java.nio.file.Paths;
  */
 public final class StandardPaths
 {
+	/**
+	 * {@squirreljme.property cc.squirreljme.home=path
+	 * This specifies the singular base for where the user configuration,
+	 * library, and cache data is stored.}
+	 */
+	public static final String HOME_PROPERTY =
+		"cc.squirreljme.home";
+	
+	/**
+	 * {@squirreljme.env SQUIRRELJME_HOME=path
+	 * This specifies the singular base for where the user configuration,
+	 * library, and cache data is stored.}
+	 */
+	public static final String HOME_ENV =
+		"SQUIRRELJME_HOME";
+	
 	/** Determines the default paths to use. */
 	public static final StandardPaths DEFAULT =
 		__defaultPaths();
@@ -78,6 +95,13 @@ public final class StandardPaths
 	 */
 	private static StandardPaths __defaultPaths()
 	{
+		// Using a basic home path
+		String basichome = Objects.toString(System.getProperty(HOME_PROPERTY),
+			SystemCall.getEnv(HOME_ENV));
+		if (basichome != null)
+			return new StandardPaths(Paths.get(basichome));
+		
+		// Based on OS
 		OperatingSystemType ostype = SystemCall.operatingSystemType();
 		
 		Path userhome = StandardPaths.__getPropertyPath("user.home");
