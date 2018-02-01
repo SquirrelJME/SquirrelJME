@@ -40,6 +40,47 @@ public final class StandardPaths
 	public static final String HOME_ENV =
 		"SQUIRRELJME_HOME";
 	
+	/**
+	 * {@squirreljme.property cc.squirreljme.path.config=path
+	 * This specifies the location where configuration files are stored.}
+	 */
+	public static final String CONFIG_PATH_PROPERTY =
+		"cc.squirreljme.path.config";
+	
+	/**
+	 * {@squirreljme.env SQUIRRELJME_CONFIG_PATH=path
+	 * This specifies the location where configuration files are stored.}
+	 */
+	public static final String CONFIG_PATH_ENV =
+		"SQUIRRELJME_CONFIG_PATH";
+	
+	/**
+	 * {@squirreljme.property cc.squirreljme.path.data=path
+	 * This specifies the location where data files are stored.}
+	 */
+	public static final String DATA_PATH_PROPERTY =
+		"cc.squirreljme.path.data";
+	
+	/**
+	 * {@squirreljme.env SQUIRRELJME_DATA_PATH=path
+	 * This specifies the location where data files are stored.}
+	 */
+	public static final String DATA_PATH_ENV =
+		"SQUIRRELJME_DATA_PATH";
+	/**
+	 * {@squirreljme.property cc.squirreljme.path.cache=path
+	 * This specifies the location where cache files are stored.}
+	 */
+	public static final String CACHE_PATH_PROPERTY =
+		"cc.squirreljme.path.cache";
+	
+	/**
+	 * {@squirreljme.env SQUIRRELJME_CACHE_PATH=path
+	 * This specifies the location where cache files are stored.}
+	 */
+	public static final String CACHE_PATH_ENV =
+		"SQUIRRELJME_CACHE_PATH";
+	
 	/** Determines the default paths to use. */
 	public static final StandardPaths DEFAULT =
 		__defaultPaths();
@@ -95,12 +136,47 @@ public final class StandardPaths
 	 */
 	private static StandardPaths __defaultPaths()
 	{
+		Path[] rv = null;
+		
 		// Using a basic home path
 		String basichome = Objects.toString(System.getProperty(HOME_PROPERTY),
 			SystemCall.getEnv(HOME_ENV));
 		if (basichome != null)
-			return new StandardPaths(Paths.get(basichome));
+			rv = new Path[]{Paths.get(basichome)};
 		
+		// If no basic path was used, detect more paths
+		if (rv == null)
+			rv = __defaultPathsOs();
+		
+		// If only a single path is returned then expand it to
+		// multiple ones
+		if (rv.length == 1)
+			rv = new Path[]
+				{
+					rv[0].resolve("config"),
+					rv[1].resolve("data"),
+					rv[2].resolve("cache"),
+				};
+		
+		// Setup paths
+		return new StandardPaths(
+			__triple(rv[0], System.getProperty(CONFIG_PATH_PROPERTY),
+				SystemCall.getEnv(CONFIG_PATH_ENV)),
+			__triple(rv[1], System.getProperty(DATA_PATH_PROPERTY),
+				SystemCall.getEnv(DATA_PATH_ENV)),
+			__triple(rv[2], System.getProperty(CACHE_PATH_PROPERTY),
+				SystemCall.getEnv(CACHE_PATH_ENV)));
+	}
+	
+	/**
+	 * Use paths specific to the operation system.
+	 *
+	 * @return The set of paths, either 1 for singular or 3 for config, data,
+	 * and cache.
+	 * @since 2018/01/31
+	 */
+	private static Path[] __defaultPathsOs()
+	{
 		// Based on OS
 		OperatingSystemType ostype = SystemCall.operatingSystemType();
 		
@@ -138,6 +214,26 @@ public final class StandardPaths
 		if (v != null)
 			return Paths.get(v);
 		return null;
+	}
+	
+	/**
+	 * Prefers path A, then B, and if neither the default is used.
+	 *
+	 * @param __default The default path.
+	 * @param __a The first path.
+	 * @param __b The second path.
+	 * @return The path to use.
+	 * @since 2018/01/31
+	 */
+	private static Path __triple(Path __default, String __a, String __b)
+	{
+		if (__a != null)
+			return Paths.get(__a);
+		
+		else if (__b != null)
+			return Paths.get(__b);
+		
+		return __default;
 	}
 }
 
