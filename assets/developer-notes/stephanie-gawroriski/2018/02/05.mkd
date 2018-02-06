@@ -1,0 +1,9 @@
+# 2018/02/05
+
+## 21:52
+
+I have an idea, I think for profiling it would be best to output in a format
+that can be used in VisualVM even though VisualVM might not be able to
+initially connect to SquirrelJME. I definitely will want a means to connect
+it to client processes though.
+
