@@ -1,0 +1,9 @@
+# 2018/02/08
+
+## 22:51
+
+An issue in Java 9 will be that `newInstance()` has been deprecated so the
+main interface that I use will be potentially be unable to be used in the
+future for Java. So basically one thing which will be important to do would
+be to have a virtual machine which runs Java SE which I do not have to worry
+about losing support from a mainstream system.
