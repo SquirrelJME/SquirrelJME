@@ -99,6 +99,9 @@ public final class StandardPaths
 	/** Library path. */
 	private volatile Reference<Path> _libpath;
 	
+	/** Trusts path. */
+	private volatile Reference<Path> _trustpath;
+	
 	/**
 	 * Initializes a standard path using the specified path as a base for
 	 * the required directories.
@@ -147,6 +150,24 @@ public final class StandardPaths
 		if (ref == null || null == (rv = ref.get()))
 			this._libpath = new WeakReference<>(
 				(rv = this.data.resolve("lib")));
+		
+		return rv;
+	}
+	
+	/**
+	 * Returns the path where trusts are located.
+	 *
+	 * @return The path where trusts are stored.
+	 * @since 2018/02/10
+	 */
+	public final Path trustPath()
+	{
+		Reference<Path> ref = this._trustpath;
+		Path rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._trustpath = new WeakReference<>(
+				(rv = this.data.resolve("trusts")));
 		
 		return rv;
 	}

@@ -12,6 +12,12 @@ package cc.squirreljme.kernel.impl.base.file;
 
 import cc.squirreljme.kernel.trust.server.TrustProvider;
 import cc.squirreljme.runtime.cldc.SystemTrustGroup;
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * This contains the trust provider which uses the backed filesystem to
@@ -22,8 +28,8 @@ import cc.squirreljme.runtime.cldc.SystemTrustGroup;
 public final class FileTrustProvider
 	extends TrustProvider
 {
-	/** The paths to use for the trusts. */
-	protected final StandardPaths paths;
+	/** The path where trusts are located. */
+	protected final Path trustpath;
 	
 	/**
 	 * Initializes the trust provider using the default set of paths.
@@ -47,10 +53,33 @@ public final class FileTrustProvider
 	{
 		if (__sp == null)
 			throw new NullPointerException("NARG");
-			
-		this.paths = __sp;
 		
-		throw new todo.TODO();
+		Path trustpath = __sp.trustPath();
+		this.trustpath = trustpath;
+		
+		// Scan the directory for trusts
+		try (DirectoryStream<Path> ds = Files.newDirectoryStream(trustpath))
+		{
+			for (Path p : ds)
+			{
+				// Only consider files	
+				if (!Files.isRegularFile(p))
+					continue;
+				
+				throw new todo.TODO();
+			}
+		}
+		
+		// Ignore this as no libraries are actually installed then
+		catch (NoSuchFileException e)
+		{
+		}
+		
+		// {@squirreljme.error BH02 Could not read installed trusts.}
+		catch (IOException e)
+		{
+			throw new RuntimeException("BH02", e);
+		}
 	}
 	
 	/**
@@ -65,7 +94,11 @@ public final class FileTrustProvider
 		if (__name == null || __vendor == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Lock
+		synchronized (this.lock)
+		{
+			throw new todo.TODO();
+		}
 	}
 }
 
