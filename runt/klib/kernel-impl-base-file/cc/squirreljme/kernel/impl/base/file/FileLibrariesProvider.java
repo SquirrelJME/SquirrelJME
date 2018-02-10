@@ -11,6 +11,12 @@
 package cc.squirreljme.kernel.impl.base.file;
 
 import cc.squirreljme.kernel.lib.server.LibrariesProvider;
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * This provides access to installed libraries which have been compiled and
@@ -21,8 +27,8 @@ import cc.squirreljme.kernel.lib.server.LibrariesProvider;
 public abstract class FileLibrariesProvider
 	extends LibrariesProvider
 {
-	/** The paths to used to store libraries. */
-	protected final StandardPaths paths;
+	/** The base path for installed JAR files. */
+	protected final Path librarypath;
 	
 	/**
 	 * Initializes the file library provider.
@@ -47,9 +53,32 @@ public abstract class FileLibrariesProvider
 		if (__sp == null)
 			throw new NullPointerException("NARG");
 		
-		this.paths = __sp;
+		Path librarypath;
+		this.librarypath = (librarypath = __sp.libraryPath());
 		
-		throw new todo.TODO();
+		// Scan the directory for installed libararies
+		try (DirectoryStream<Path> ds = Files.newDirectoryStream(librarypath))
+		{
+			for (Path p : ds)
+			{
+				// Only consider files	
+				if (!Files.isRegularFile(p))
+					continue;
+				
+				throw new todo.TODO();
+			}
+		}
+		
+		// Ignore this as no libraries are actually installed then
+		catch (NoSuchFileException e)
+		{
+		}
+		
+		// {@squirreljme.error BH01 Could not read installed libraries.}
+		catch (IOException e)
+		{
+			throw new RuntimeException("BH01", e);
+		}
 	}
 }
 

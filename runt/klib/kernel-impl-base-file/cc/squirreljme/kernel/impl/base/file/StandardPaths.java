@@ -12,6 +12,8 @@ package cc.squirreljme.kernel.impl.base.file;
 
 import cc.squirreljme.runtime.cldc.OperatingSystemType;
 import cc.squirreljme.runtime.cldc.SystemCall;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
@@ -94,6 +96,9 @@ public final class StandardPaths
 	/** The cache path. */
 	protected final Path cache;
 	
+	/** Library path. */
+	private volatile Reference<Path> _libpath;
+	
 	/**
 	 * Initializes a standard path using the specified path as a base for
 	 * the required directories.
@@ -126,6 +131,24 @@ public final class StandardPaths
 		this.config = __conf;
 		this.data = __data;
 		this.cache = __cache;
+	}
+	
+	/**
+	 * Returns the library path where JARs are installed.
+	 *
+	 * @return The JAR installation path.
+	 * @since 2018/02/10
+	 */
+	public final Path libraryPath()
+	{
+		Reference<Path> ref = this._libpath;
+		Path rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._libpath = new WeakReference<>(
+				(rv = this.data.resolve("lib")));
+		
+		return rv;
 	}
 	
 	/**
