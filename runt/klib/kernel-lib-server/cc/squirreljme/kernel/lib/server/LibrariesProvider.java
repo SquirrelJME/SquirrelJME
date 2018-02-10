@@ -325,7 +325,7 @@ public abstract class LibrariesProvider
 		SystemTrustGroup trust = trusts.untrustedTrust(
 			__info.name().toString(), __info.vendor().toString());
 		
-		throw new todo.TODO();
+		return trust;
 	}
 	
 	/**
