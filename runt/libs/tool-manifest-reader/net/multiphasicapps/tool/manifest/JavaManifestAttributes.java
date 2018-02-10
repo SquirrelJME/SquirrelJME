@@ -14,6 +14,7 @@ import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import net.multiphasicapps.collections.EmptyMap;
 import net.multiphasicapps.collections.UnmodifiableMap;
 
 /**
@@ -28,6 +29,16 @@ public final class JavaManifestAttributes
 {
 	/** The key value pairs. */
 	protected final Map<JavaManifestKey, String> pairs;
+	
+	/**
+	 * Initializes empty manifest attributes.
+	 *
+	 * @since 2018/02/10
+	 */
+	JavaManifestAttributes()
+	{
+		this.pairs = EmptyMap.<JavaManifestKey, String>empty();
+	}
 	
 	/**
 	 * Initializes the manifest attributes.

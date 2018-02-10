@@ -56,6 +56,23 @@ public final class JavaManifest
 	protected final Map<String, JavaManifestAttributes> attributes;
 	
 	/**
+	 * Initializes a blank manifest.
+	 *
+	 * @since 2018/02/10
+	 */
+	public JavaManifest()
+	{
+		// Initialize a blank set of main attributes
+		Map<String, JavaManifestAttributes> backing =
+			new HashMap<>();
+		backing.put("", new JavaManifestAttributes());
+		
+		// Lock in the backing map
+		this.attributes = UnmodifiableMap.<String, JavaManifestAttributes>
+			of(backing);
+	}
+	
+	/**
 	 * Decodes the manifest from the given input stream, it is treated as
 	 * UTF-8 as per the JAR specification.
 	 *

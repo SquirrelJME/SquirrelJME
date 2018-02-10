@@ -66,7 +66,7 @@ public final class FileTrustProvider
 				if (!Files.isRegularFile(p))
 					continue;
 				
-				throw new todo.TODO();
+				this.register(new FileTrustGroup(p));
 			}
 		}
 		
@@ -94,10 +94,19 @@ public final class FileTrustProvider
 		if (__name == null || __vendor == null)
 			throw new NullPointerException("NARG");
 		
+		// Determine path where the data will be stored
+		Path path = this.trustpath.resolve(Integer.toString(__dx));
+		
 		// Lock
 		synchronized (this.lock)
 		{
-			throw new todo.TODO();
+			FileTrustGroup rv = new FileTrustGroup(path);
+			
+			rv.__set(FileTrustGroup.IS_TRUSTED, Boolean.toString(__trusted));
+			rv.__set(FileTrustGroup.NAME, __name);
+			rv.__set(FileTrustGroup.VENDOR, __vendor);
+			
+			return rv;
 		}
 	}
 }
