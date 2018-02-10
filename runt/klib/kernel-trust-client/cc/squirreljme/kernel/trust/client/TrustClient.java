@@ -19,6 +19,8 @@ import cc.squirreljme.kernel.service.ServicePacketStream;
 import cc.squirreljme.kernel.trust.InvalidTrustException;
 import cc.squirreljme.kernel.trust.TrustPacketTypes;
 import cc.squirreljme.runtime.cldc.SystemTrustGroup;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,7 +34,7 @@ public final class TrustClient
 	extends ClientInstance
 {
 	/** Local trusts. */
-	private final Map<Integer, __LocalTrust__> _trusts =
+	private final Map<Integer, Reference<__LocalTrust__>> _trusts =
 		new HashMap<>();
 	
 	/**
@@ -103,7 +105,9 @@ public final class TrustClient
 		if (__name == null || __vendor == null)
 			throw new NullPointerException("NARG");
 		
-		Map<Integer, __LocalTrust__> trusts = this._trusts;
+		int rvdx;
+		
+		Map<Integer, Reference<__LocalTrust__>> trusts = this._trusts;
 		synchronized (trusts)
 		{
 			ServicePacketStream stream = this.stream;
@@ -119,14 +123,40 @@ public final class TrustClient
 				{
 					// {@squirreljme.error BI02 The specified untrusted
 					// trust group is not valid. (The name; The vendor)}
-					int dx = r.readInteger(0);
-					if (dx < 0)
+					rvdx = r.readInteger(0);
+					if (rvdx < 0)
 						throw new InvalidTrustException(
 							String.format("BI02 %s %s", __name, __vendor));
-					
-					throw new todo.TODO();
 				}
 			}
+			
+			return this.__map(rvdx);
+		}
+	}
+	
+	/**
+	 * Maps the index to a local trust.
+	 *
+	 * @param __dx The trust to map.
+	 * @return The mapped trust.
+	 * @since 2018/02/10
+	 */
+	private final __LocalTrust__ __map(int __dx)
+	{
+		Integer idx = __dx;
+		
+		// Lock
+		Map<Integer, Reference<__LocalTrust__>> trusts = this._trusts;
+		synchronized (trusts)
+		{
+			Reference<__LocalTrust__> ref = trusts.get(idx);
+			__LocalTrust__ rv;
+			
+			if (ref == null || null == (rv = ref.get()))
+				trusts.put(idx, new WeakReference<>((rv =
+					new __LocalTrust__(__dx, this))));
+			
+			return rv;
 		}
 	}
 }

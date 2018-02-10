@@ -23,15 +23,25 @@ final class __LocalTrust__
 	/** The trust index. */
 	protected final int index;
 	
+	/** The owning trust client. */
+	protected final TrustClient client;
+	
 	/**
 	 * Initializes the local trust.
 	 *
 	 * @param __dx The trust index.
+	 * @param __cl The trust client which created this.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/18
 	 */
-	__LocalTrust__(int __dx)
+	__LocalTrust__(int __dx, TrustClient __cl)
+		throws NullPointerException
 	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
 		this.index = __dx;
+		this.client = __cl;
 	}
 	
 	/**
