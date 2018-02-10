@@ -381,11 +381,13 @@ public abstract class Kernel
 					}
 					
 					// {@squirreljme.error AP02 Could not initialize the
-					// service. (The service class)}
-					catch (IllegalAccessException|InstantiationException e)
+					// service. (The service class; The provider class)}
+					catch (ClassCastException|IllegalAccessException|
+						InstantiationException e)
 					{
 						throw new RuntimeException(
-							String.format("AP02 %s", this._client), e);
+							String.format("AP02 %s %s", this._client,
+							this._provider), e);
 					}
 				
 				return rv;

@@ -11,6 +11,7 @@
 package cc.squirreljme.runtime.javase;
 
 import cc.squirreljme.kernel.impl.base.file.FileLibrariesProviderFactory;
+import cc.squirreljme.kernel.impl.base.file.FileTrustProviderFactory;
 import cc.squirreljme.kernel.Kernel;
 import cc.squirreljme.kernel.KernelConfiguration;
 import cc.squirreljme.kernel.KernelTask;
@@ -42,7 +43,7 @@ public class JavaConfiguration
 				return JavaLibrariesProviderFactory.class.getName();
 			
 			case "cc.squirreljme.kernel.trust.client.TrustClient":
-				return FileLibrariesProviderFactory.class.getName();
+				return FileTrustProviderFactory.class.getName();
 				
 			default:
 				return null;
