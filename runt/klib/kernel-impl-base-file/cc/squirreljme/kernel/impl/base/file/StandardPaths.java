@@ -146,17 +146,27 @@ public final class StandardPaths
 		
 		// If no basic path was used, detect more paths
 		if (rv == null)
+		{
 			rv = __defaultPathsOs();
+			
+			// Still could not be used?
+			if (rv == null)
+				rv = new Path[]{StandardPaths.__getPropertyPath("user.dir").
+					resolve("squirreljme")};
+		}
 		
 		// If only a single path is returned then expand it to
 		// multiple ones
 		if (rv.length == 1)
+		{
+			Path base = rv[0];
 			rv = new Path[]
 				{
-					rv[0].resolve("config"),
-					rv[1].resolve("data"),
-					rv[2].resolve("cache"),
+					base.resolve("config"),
+					base.resolve("data"),
+					base.resolve("cache"),
 				};
+		}
 		
 		// Setup paths
 		return new StandardPaths(
@@ -180,20 +190,54 @@ public final class StandardPaths
 		// Based on OS
 		OperatingSystemType ostype = SystemCall.operatingSystemType();
 		
+		// These may be used by either OS
 		Path userhome = StandardPaths.__getPropertyPath("user.home");
 		Path userdir = StandardPaths.__getPropertyPath("user.dir");
 		
 		// Unix systems
 		if (ostype.isUnix())
 		{
-			throw new todo.TODO();
+			Path[] rv = new Path[]
+				{
+					StandardPaths.__getEnv("XDG_CONFIG_HOME"),
+					StandardPaths.__getEnv("XDG_DATA_HOME"),
+					StandardPaths.__getEnv("XDG_CACHE_HOME"),
+				};
+			
+			if (rv[0] == null)
+				rv[0] = userhome.resolve(".config").resolve("squirreljme");
+			
+			if (rv[1] == null)
+				rv[1] = userhome.resolve(".local").resolve("share").
+					resolve("squirreljme");
+			
+			if (rv[2] == null)
+				rv[2] = userhome.resolve(".cache").resolve("squirreljme");
+			
+			return rv;
 		}
 		
 		// Unknown
-		else
-		{
-			throw new todo.TODO();
-		}
+		return null;
+	}
+	
+	/**
+	 * Returns the path of an environment variable.
+	 *
+	 * @param __s The environment variable to get.
+	 * @return The path of the property or {@code null} if it is not set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/02/09
+	 */
+	private static Path __getEnv(String __s)
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		String v = SystemCall.getEnv(__s);
+		if (v != null)
+			return Paths.get(v);
+		return null;
 	}
 	
 	/**
