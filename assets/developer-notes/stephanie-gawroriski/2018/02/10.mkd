@@ -1,0 +1,19 @@
+# 2018/02/10
+
+## 00:45
+
+I have an idea for RPC, I can have modified stack traces. Basically allow me
+getting and setting of a stack trace for `Throwable` so I can have a more
+cleanly shaped traced and such. So basically in the decode of an exception
+handle the parent call depth and such and have a trace that is like this:
+
+	Exception: Foo
+		at cc.squirreljme.example.Foo.bar
+		at cc.squirreljme.example.Foo.com
+		at !REMOTE.Kernel-Task-0
+
+It would just be shaped like that mostly, then instead of sending down entire
+exceptions, just the trace is sent to the other side for the most part. It can
+then recursively handle and continue building trace elements after that. It
+would be a bit complicated, but there would just be single stack traces
+though. But that could be a thing for another time.
