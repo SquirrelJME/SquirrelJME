@@ -116,7 +116,7 @@ public class BuilderFactory
 					// -j: The binary path for the jit-time;
 					// -b: The binary path for the build-time;
 					// Valid commands are:
-					// build, sdk, suite, task
+					// build, c, sdk, suite, task
 					// .(The switch)}
 				default:
 					throw new IllegalArgumentException(
@@ -272,6 +272,10 @@ public class BuilderFactory
 						args.<String>toArray(new String[args.size()]));
 				}
 				break;
+				
+				// Compile project to C code for bootstrap purposes
+			case "c":
+				throw new todo.TODO();
 				
 				// Perform SDK actions
 			case "sdk":
