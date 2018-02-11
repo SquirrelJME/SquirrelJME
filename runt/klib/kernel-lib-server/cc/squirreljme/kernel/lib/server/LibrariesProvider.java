@@ -32,6 +32,7 @@ import cc.squirreljme.runtime.cldc.SystemTrustGroup;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -180,6 +181,9 @@ public abstract class LibrariesProvider
 				// Determine the trust group
 				SystemTrustGroup trustgroup = this.__getTrustGroup(zip, info);
 				
+				// Determine dependencies for this library
+				Library[] depends = this.__getDepends(info);
+				
 				throw new todo.TODO();
 			}
 		}
@@ -302,6 +306,31 @@ public abstract class LibrariesProvider
 		
 		// Is okay
 		return false;
+	}
+	
+	/**
+	 * Obtains dependencies for the given information.
+	 *
+	 * @param __info The information.
+	 * @return The libraries which are dependencies of this one.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/02/11
+	 */
+	private final Library[] __getDepends(SuiteInfo __info)
+		throws NullPointerException
+	{
+		if (__info == null)
+			throw new NullPointerException("NARG");
+		
+		Collection<Library> rv = new ArrayList<>();
+		
+		synchronized (this.lock)
+		{
+			if (true)
+				throw new todo.TODO();
+		}
+		
+		return rv.<Library>toArray(new Library[rv.size()]);
 	}
 	
 	/**
