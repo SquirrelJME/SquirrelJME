@@ -75,6 +75,7 @@ REM the JVM is performed.
 	-Dcc.squirreljme.builder.root=%__EXEDIR% ^
 	-Dcc.squirreljme.runtime.javase.java=%JAVA% ^
 	-Dcc.squirreljme.runtime.javase.bootpath=sjmeboot.jar ^
+	-Dcc.squirreljme.home=home ^
 	-jar sjmeboot.jar %*
 
 REM Failed?
