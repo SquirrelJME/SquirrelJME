@@ -17,6 +17,7 @@ import cc.squirreljme.kernel.lib.InstallErrorCodes;
 import cc.squirreljme.kernel.lib.Library;
 import cc.squirreljme.kernel.lib.LibraryInstallationReport;
 import cc.squirreljme.kernel.lib.MatchResult;
+import cc.squirreljme.kernel.lib.ProvidedInfo;
 import cc.squirreljme.kernel.lib.SuiteIdentifier;
 import cc.squirreljme.kernel.lib.SuiteInfo;
 import cc.squirreljme.kernel.lib.SuiteName;
@@ -327,7 +328,8 @@ public abstract class LibrariesProvider
 		Collection<Library> rv = new LinkedHashSet<>();
 		
 		// Do not consider optional dependencies at all
-		DependencyInfo depends = __info.dependencies().noOptionals();
+		DependencyInfo depends = __info.dependencies().noOptionals(),
+			left = depends;
 		
 		Map<Integer, Library> libraries = this._libraries;
 		synchronized (this.lock)
@@ -342,7 +344,8 @@ public abstract class LibrariesProvider
 				
 				// If the library has matching dependencies then add it
 				SuiteInfo subinfo = lib.suiteInfo();
-				MatchResult mr = depends.match(subinfo.provided());
+				ProvidedInfo provinfo = subinfo.provided();
+				MatchResult mr = depends.match(provinfo);
 				if (mr.hasMatches())
 				{
 					// Need to go through the dependencies of that library and
@@ -354,9 +357,21 @@ public abstract class LibrariesProvider
 					
 					// Add the base library to the dependency chain
 					rv.add(lib);
+					
+					// This is used to detect dependencies which have not been
+					// matched at all
+					left = left.match(provinfo).unmatched();
 				}
 			}
 		}
+		
+		// {@squirreljme.error BC0b Cannot install the given application
+		// because a dependency it requires is missing. (The application
+		// attempted to be installed; The missing dependencies)}
+		if (!left.isEmpty())
+			throw new __PlainInstallError__(
+				InstallErrorCodes.APP_INTEGRITY_FAILURE_DEPENDENCY_MISMATCH,
+				String.format("BC0b %s %s", __info.suite(), left));
 		
 		return rv.<Library>toArray(new Library[rv.size()]);
 	}
