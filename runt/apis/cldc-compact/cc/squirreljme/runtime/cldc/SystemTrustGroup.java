@@ -32,6 +32,29 @@ public interface SystemTrustGroup
 		throws NullPointerException, SecurityException;
 	
 	/**
+	 * Compares this trust group against another object. The method
+	 * {@link SystemTrustGroupUtils#equals(SystemTrustGroup, SystemTrustGroup)}
+	 * may be used to compare.
+	 *
+	 * @param __o The object to compare against.
+	 * @return If the trust group is equal to another.
+	 * @since 2018/02/12
+	 */
+	@Override
+	public abstract boolean equals(Object __o);
+	
+	/**
+	 * Returns the hash code of this trust group. The method
+	 * {@link SystemTrustGroupUtils#hashCode(SystemTrustGroup)}
+	 * may be used to generate it.
+	 *
+	 * @return The hash code for this group.
+	 * @since 2018/02/12
+	 */
+	@Override
+	public abstract int hashCode();
+	
+	/**
 	 * Returns the index of the trust group.
 	 *
 	 * @return The trust group index.

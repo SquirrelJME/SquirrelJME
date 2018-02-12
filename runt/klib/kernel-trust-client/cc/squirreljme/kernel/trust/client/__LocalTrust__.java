@@ -11,6 +11,7 @@
 package cc.squirreljme.kernel.trust.client;
 
 import cc.squirreljme.runtime.cldc.SystemTrustGroup;
+import cc.squirreljme.runtime.cldc.SystemTrustGroupUtils;
 
 /**
  * This represents the client side of a trust.
@@ -56,6 +57,32 @@ final class __LocalTrust__
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/02/12
+	 */
+	@Override
+	public boolean equals(Object __o)
+	{
+		if (__o == this)
+			return true;
+		
+		if (!(__o instanceof SystemTrustGroup))
+			return false;
+		
+		return SystemTrustGroupUtils.equals(this, (SystemTrustGroup)__o);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/02/12
+	 */
+	@Override
+	public int hashCode()
+	{
+		return SystemTrustGroupUtils.hashCode(this);
 	}
 	
 	/**
