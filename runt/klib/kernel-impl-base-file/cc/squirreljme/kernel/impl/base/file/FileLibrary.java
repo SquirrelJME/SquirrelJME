@@ -13,6 +13,7 @@ package cc.squirreljme.kernel.impl.base.file;
 import cc.squirreljme.kernel.lib.Library;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import net.multiphasicapps.tool.manifest.JavaManifestKey;
 
 /**
  * This is the base class for libraries which are backed by the filesystem.
@@ -22,6 +23,10 @@ import java.nio.file.Paths;
 public abstract class FileLibrary
 	extends Library
 {
+	/** Lock to prevent mismashed read/writes. */
+	protected final Object lock =
+		new Object();
+	
 	/** The path to the library binary. */
 	protected final Path binpath;
 	
@@ -53,9 +58,29 @@ public abstract class FileLibrary
 	 * @since 2018/02/11
 	 */
 	@Override
-	public final int type()
+	public final String controlGet(String __k)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__k == null)
+			throw new NullPointerException("NARG");
+		
+		return __Utils__.__get(this.lock, this.controlpath,
+			new JavaManifestKey(__k));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/02/11
+	 */
+	@Override
+	public final void controlSet(String __k, String __v)
+		throws NullPointerException
+	{
+		if (__k == null)
+			throw new NullPointerException("NARG");
+		
+		__Utils__.__set(this.lock, this.controlpath, new JavaManifestKey(__k),
+			__v);
 	}
 	
 	/**

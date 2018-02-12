@@ -185,6 +185,10 @@ public abstract class LibrariesProvider
 					lib.controlSet(LibraryControlKey.DEPENDENCY_PREFIX + i,
 						Integer.toString(depends[i].index()));
 				
+				// The trust group is important
+				lib.controlSet(LibraryControlKey.TRUST_GROUP,
+					Integer.toString(trustgroup.index()));
+				
 				// These are pretty much always set
 				lib.controlSet(LibraryControlKey.STATE_FLAG_AVAILABLE, "true");
 				lib.controlSet(LibraryControlKey.STATE_FLAG_ENABLED, "true");

@@ -39,6 +39,36 @@ public final class JavaSystemLibrary
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2018/02/12
+	 */
+	@Override
+	public final String controlGet(String __k)
+		throws NullPointerException
+	{
+		if (__k == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/02/12
+	 */
+	@Override
+	public final void controlSet(String __k, String __v)
+		throws NullPointerException
+	{
+		if (__k == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirrejme.error AF05 Cannot set system properties for the
+		// Java system library.}
+		throw new SecurityException("AF05");
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/01/15
 	 */
 	@Override
@@ -82,16 +112,6 @@ public final class JavaSystemLibrary
 		
 		// All other resources do not exist
 		return null;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/01/27
-	 */
-	@Override
-	public final int type()
-	{
-		return LibraryType.SYSTEM;
 	}
 }
 

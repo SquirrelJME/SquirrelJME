@@ -68,6 +68,28 @@ public abstract class Library
 	}
 	
 	/**
+	 * Returns the value of the given control key.
+	 *
+	 * @param __k The control key.
+	 * @return The value of the key or {@code null} if it is not set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/01/02
+	 */
+	public abstract String controlGet(String __k)
+		throws NullPointerException;
+	
+	/**
+	 * Sets the value of the given control key.
+	 *
+	 * @param __k The control key.
+	 * @param __v The new value to set, {@code null} clears it.
+	 * @throws NullPointerException If no key was specified.
+	 * @since 2018/01/02
+	 */
+	public abstract void controlSet(String __k, String __v)
+		throws NullPointerException;
+	
+	/**
 	 * Loads the bytes which make up the resource, this will be cached.
 	 *
 	 * The first byte of the returned resource is treated as a special value
@@ -84,48 +106,6 @@ public abstract class Library
 	protected abstract byte[] loadResourceBytes(SystemResourceScope __scope,
 		String __n)
 		throws NullPointerException;
-	
-	/**
-	 * Returns the library type.
-	 *
-	 * @return The library type.
-	 * @since 2018/01/02
-	 */
-	public abstract int type();
-	
-	/**
-	 * Returns the value of the given control key.
-	 *
-	 * @param __k The control key.
-	 * @return The value of the key or {@code null} if it is not set.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/01/02
-	 */
-	public final String controlGet(String __k)
-		throws NullPointerException
-	{
-		if (__k == null)
-			throw new NullPointerException("NARG");
-		
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * Sets the value of the given control key.
-	 *
-	 * @param __k The control key.
-	 * @param __v The new value to set, {@code null} clears it.
-	 * @throws NullPointerException If no key was specified.
-	 * @since 2018/01/02
-	 */
-	public final void controlSet(String __k, String __v)
-		throws NullPointerException
-	{
-		if (__k == null)
-			throw new NullPointerException("NARG");
-		
-		throw new todo.TODO();
-	}
 	
 	/**
 	 * Returns the library index.
@@ -239,6 +219,17 @@ public abstract class Library
 	 * @since 2018/01/11
 	 */
 	public final SystemTrustGroup trustGroup()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the library type.
+	 *
+	 * @return The library type.
+	 * @since 2018/01/02
+	 */
+	public final int type()
 	{
 		throw new todo.TODO();
 	}

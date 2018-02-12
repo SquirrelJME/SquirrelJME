@@ -35,6 +35,34 @@ final class __ClientLibrary__
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2018/02/11
+	 */
+	@Override
+	public final String controlGet(String __k)
+		throws NullPointerException
+	{
+		if (__k == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/02/11
+	 */
+	@Override
+	public final void controlSet(String __k, String __v)
+		throws NullPointerException
+	{
+		if (__k == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/01/15
 	 */
 	@Override
@@ -45,16 +73,6 @@ final class __ClientLibrary__
 		if (__scope == null || __n == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/01/27
-	 */
-	@Override
-	public final int type()
-	{
 		throw new todo.TODO();
 	}
 }
