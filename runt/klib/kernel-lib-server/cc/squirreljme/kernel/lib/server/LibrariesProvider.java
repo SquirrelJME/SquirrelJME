@@ -15,6 +15,7 @@ import cc.squirreljme.kernel.lib.client.LibrariesClientFactory;
 import cc.squirreljme.kernel.lib.DependencyInfo;
 import cc.squirreljme.kernel.lib.InstallErrorCodes;
 import cc.squirreljme.kernel.lib.Library;
+import cc.squirreljme.kernel.lib.LibraryControlKey;
 import cc.squirreljme.kernel.lib.LibraryInstallationReport;
 import cc.squirreljme.kernel.lib.MatchResult;
 import cc.squirreljme.kernel.lib.ProvidedInfo;
@@ -82,36 +83,15 @@ public abstract class LibrariesProvider
 	}
 	
 	/**
-	 * Registers the specified library to the library provider.
+	 * Compiles and creates an installation for the given library.
 	 *
-	 * @param __l The library to register.
-	 * @throws IllegalStateException If the library was already registered
-	 * with the given index.
+	 * @param __lci Input for the compiler.
+	 * @return The compiled library.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2018/01/15
+	 * @since 2018/02/11
 	 */
-	protected final void regsiterLibrary(Library __l)
-		throws IllegalStateException, NullPointerException
-	{
-		if (__l == null)
-			throw new NullPointerException("NARG");
-		
-		Integer idx = __l.index();
-		
-		// Lock
-		Map<Integer, Library> libraries = this._libraries;
-		synchronized (this.lock)
-		{
-			// {@squirreljme.error BC01 Registration of a library with a
-			// duplicate index. (The index)}
-			Library exists = libraries.get(idx);
-			if (exists != null)
-				throw new IllegalStateException(String.format("BC01 %d", idx));
-			
-			// Store it
-			libraries.put(idx, __l);
-		}
-	}
+	protected abstract Library compileLibrary(LibraryCompilerInput __lci)
+		throws NullPointerException;
 	
 	/**
 	 * {@inheritDoc}
@@ -181,13 +161,40 @@ public abstract class LibrariesProvider
 					throw new __PlainInstallError__(
 						InstallErrorCodes.ALREADY_INSTALLED, "BC03");
 				
+				// Need to determine the library's index so it does not collide
+				int nextdx = 1;
+				for (Library otherlib : libraries.values())
+				{
+					int ldx = otherlib.index();
+					if (ldx >= nextdx)
+						nextdx = ldx + 1;
+				}
+				
 				// Determine the trust group
 				SystemTrustGroup trustgroup = this.__getTrustGroup(zip, info);
 				
 				// Determine dependencies for this library
 				Library[] depends = this.__getDepends(info);
 				
-				throw new todo.TODO();
+				// Compile the library
+				Library lib = this.compileLibrary(new LibraryCompilerInput(
+					info, zip, depends, nextdx));
+				
+				// Record dependencies
+				for (int i = 0, n = depends.length; i < n; i++)
+					lib.controlSet(LibraryControlKey.DEPENDENCY_PREFIX + i,
+						Integer.toString(depends[i].index()));
+				
+				// These are pretty much always set
+				lib.controlSet(LibraryControlKey.STATE_FLAG_AVAILABLE, "true");
+				lib.controlSet(LibraryControlKey.STATE_FLAG_ENABLED, "true");
+				
+				// Is now fully installed so register it
+				lib.controlSet(LibraryControlKey.IS_INSTALLED, "true");
+				this.registerLibrary(lib);
+				
+				// All is well, build a report
+				return new LibraryInstallationReport(lib);
 			}
 		}
 		
@@ -235,6 +242,9 @@ public abstract class LibrariesProvider
 	protected final void registerLibrary(Library __l)
 		throws NullPointerException
 	{
+		if (__l == null)
+			throw new NullPointerException("NARG");
+		
 		Map<Integer, Library> libraries = this._libraries;
 		synchronized (this.lock)
 		{

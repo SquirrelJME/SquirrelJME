@@ -86,6 +86,14 @@ public abstract class Library
 		throws NullPointerException;
 	
 	/**
+	 * Returns the library type.
+	 *
+	 * @return The library type.
+	 * @since 2018/01/02
+	 */
+	public abstract int type();
+	
+	/**
 	 * Returns the value of the given control key.
 	 *
 	 * @param __k The control key.
@@ -234,14 +242,6 @@ public abstract class Library
 	{
 		throw new todo.TODO();
 	}
-	
-	/**
-	 * Returns the library type.
-	 *
-	 * @return The library type.
-	 * @since 2018/01/02
-	 */
-	public abstract int type();
 	
 	/**
 	 * Initializes the bytes cache for each scope.
