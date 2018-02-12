@@ -70,7 +70,7 @@ public abstract class FileLibrariesProvider
 				if (!Files.isRegularFile(p))
 					continue;
 				
-				throw new todo.TODO();
+				this.registerLibrary(this.loadPath(p));
 			}
 		}
 		
@@ -100,6 +100,17 @@ public abstract class FileLibrariesProvider
 	protected abstract Library compileLibrary(LibraryCompilerInput __lci,
 		Path __p, OutputStream __out)
 		throws IOException, NullPointerException;
+	
+	/**
+	 * Loads the given library path.
+	 *
+	 * @param __p The path to load.
+	 * @return The library for the given path.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/02/12
+	 */
+	protected abstract Library loadPath(Path __p)
+		throws NullPointerException;
 	
 	/**
 	 * {@inheritDoc}

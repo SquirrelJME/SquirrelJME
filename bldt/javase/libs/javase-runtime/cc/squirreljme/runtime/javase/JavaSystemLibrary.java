@@ -11,6 +11,7 @@
 package cc.squirreljme.runtime.javase;
 
 import cc.squirreljme.kernel.lib.Library;
+import cc.squirreljme.kernel.lib.LibraryControlKey;
 import cc.squirreljme.kernel.lib.LibraryType;
 import cc.squirreljme.runtime.cldc.SystemResourceScope;
 import java.io.ByteArrayInputStream;
@@ -48,7 +49,14 @@ public final class JavaSystemLibrary
 		if (__k == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		switch (__k)
+		{
+			case LibraryControlKey.TYPE:
+				return Integer.toString(LibraryType.SYSTEM);
+				
+			default:
+				return null;
+		}
 	}
 	
 	/**

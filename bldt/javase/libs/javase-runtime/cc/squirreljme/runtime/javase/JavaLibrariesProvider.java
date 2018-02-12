@@ -78,5 +78,19 @@ public class JavaLibrariesProvider
 		// Setup library for it
 		return new JavaLibrary(__p);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/02/11
+	 */
+	@Override
+	protected final Library loadPath(Path __p)
+		throws NullPointerException
+	{
+		if (__p == null)
+			throw new NullPointerException("NARG");
+		
+		return new JavaLibrary(__p);
+	}
 }
 

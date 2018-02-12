@@ -17,6 +17,7 @@ import cc.squirreljme.kernel.lib.InstallErrorCodes;
 import cc.squirreljme.kernel.lib.Library;
 import cc.squirreljme.kernel.lib.LibraryControlKey;
 import cc.squirreljme.kernel.lib.LibraryInstallationReport;
+import cc.squirreljme.kernel.lib.LibraryType;
 import cc.squirreljme.kernel.lib.MatchResult;
 import cc.squirreljme.kernel.lib.ProvidedInfo;
 import cc.squirreljme.kernel.lib.SuiteIdentifier;
@@ -179,6 +180,11 @@ public abstract class LibrariesProvider
 				// Compile the library
 				Library lib = this.compileLibrary(new LibraryCompilerInput(
 					info, zip, depends, nextdx));
+				
+				// Either an application or library
+				lib.controlSet(LibraryControlKey.TYPE,
+					Integer.toString((info.type() == SuiteType.MIDLET ?
+					LibraryType.APPLICATION : LibraryType.LIBRARY)));
 				
 				// Record dependencies
 				for (int i = 0, n = depends.length; i < n; i++)
