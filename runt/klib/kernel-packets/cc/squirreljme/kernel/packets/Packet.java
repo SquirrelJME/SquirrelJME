@@ -796,9 +796,13 @@ public final class Packet
 			offsetbase = offset + __p,
 			offsetlength = offset + length,
 			offsetendpos = offset + endpos;
+		
+		// Write is within bounds
+		byte[] data = this._data;
+		if (endpos <= length)
+			return data;
 			
 		// Variable length packet
-		byte[] data = this._data;
 		if (this.variable)
 		{
 			// Still fits within the allocation
