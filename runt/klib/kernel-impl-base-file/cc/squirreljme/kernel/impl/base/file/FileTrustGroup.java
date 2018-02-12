@@ -11,18 +11,8 @@
 package cc.squirreljme.kernel.impl.base.file;
 
 import cc.squirreljme.runtime.cldc.SystemTrustGroup;
-import java.io.InputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.nio.file.StandardOpenOption;
-import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestKey;
-import net.multiphasicapps.tool.manifest.writer.MutableJavaManifest;
-import net.multiphasicapps.tool.manifest.writer.MutableJavaManifestAttributes;
 
 /**
  * This represents a trust group which is backed by the file system.
@@ -102,7 +92,8 @@ public final class FileTrustGroup
 	@Override
 	public final boolean isTrusted()
 	{
-		return Boolean.valueOf(this.__get(FileTrustGroup.IS_TRUSTED));
+		return Boolean.valueOf(__Utils__.__get(this.lock, this.path,
+			FileTrustGroup.IS_TRUSTED));
 	}
 	
 	/**
@@ -112,7 +103,7 @@ public final class FileTrustGroup
 	@Override
 	public final String name()
 	{
-		return this.__get(FileTrustGroup.NAME);
+		return __Utils__.__get(this.lock, this.path, FileTrustGroup.NAME);
 	}
 	
 	/**
@@ -122,72 +113,14 @@ public final class FileTrustGroup
 	@Override
 	public final String vendor()
 	{
-		return this.__get(FileTrustGroup.VENDOR);
-	}
-	
-	/**
-	 * Gets the given value.
-	 *
-	 * @param __k The key to get the value for.
-	 * @return The value for the given key.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/02/10
-	 */
-	final String __get(JavaManifestKey __k)
-		throws NullPointerException
-	{
-		if (__k == null)
-			throw new NullPointerException("NARG");
-		
-		return this.__openManifest().getMainAttributes().get(__k);
-	}
-	
-	/**
-	 * Opens the manifest for this trust.
-	 *
-	 * @return The trust manifest data.
-	 * @since 2018/02/10
-	 */
-	final JavaManifest __openManifest()
-	{
-		// Lock to prevent mixed read/write
-		synchronized (this.lock)
-		{
-			// Could fail
-			try (InputStream in = Files.newInputStream(this.path,
-				StandardOpenOption.READ))
-			{
-				return new JavaManifest(in);
-			}
-		
-			// Does not exist, use a blank manifest
-			catch (NoSuchFileException e)
-			{
-				return new JavaManifest();
-			}
-		
-			// {@squirreljme.error BH03 Failed to read the trust manifest.}
-			catch (IOException e)
-			{
-				throw new RuntimeException("BH03", e);
-			}
-		}
-	}
-	
-	/**
-	 * Opens the mutable manifest so that it may be modified.
-	 *
-	 * @return The mutable manifest for writing.
-	 * @since 2018/02/10
-	 */
-	final MutableJavaManifest __openMutableManifest()
-	{
-		return new MutableJavaManifest(this.__openManifest());
+		return __Utils__.__get(this.lock, this.path, FileTrustGroup.VENDOR);
 	}
 	
 	/**
 	 * Sets the given key to the specified value.
 	 *
+	 * @param __lock The locking object.
+	 * @param __p The manifest path.
 	 * @param __k The key to set.
 	 * @param __v The value to set, {@code null} clears it.
 	 * @throws NullPointerException If no key was specified.
@@ -199,75 +132,7 @@ public final class FileTrustGroup
 		if (__k == null)
 			throw new NullPointerException("NARG");
 		
-		// Lock to prevent mixed read/write
-		synchronized (this.lock)
-		{
-			MutableJavaManifest man = this.__openMutableManifest();
-			MutableJavaManifestAttributes attr = man.getMainAttributes();
-			
-			if (__v == null)
-				attr.remove(__k);
-			else
-				attr.put(__k, __v);
-			
-			this.__writeManifest(man);
-		}
-	}
-	
-	/**
-	 * Writes the manifest to the target file.
-	 *
-	 * @param __man The manifest to write.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/02/10
-	 */
-	final void __writeManifest(MutableJavaManifest __man)
-		throws NullPointerException
-	{
-		if (__man == null)
-			throw new NullPointerException("NARG");
-		
-		// Lock to prevent mixed read/write
-		synchronized (this.lock)
-		{
-			Path temp = null;
-			try
-			{
-				// Need temporary file for working replacement
-				temp = Files.createTempFile("trust", ".MF");
-				try (OutputStream os = Files.newOutputStream(temp,
-					StandardOpenOption.TRUNCATE_EXISTING,
-					StandardOpenOption.WRITE))
-				{
-					__man.write(os);
-				}
-				
-				// Overwrite file with new manifest
-				Path path = this.path;
-				Files.createDirectories(path.getParent());
-				Files.move(temp, path,
-					StandardCopyOption.REPLACE_EXISTING);
-			}
-			
-			// {@squirreljme.error BH04 Could not write the manifest.}
-			catch (IOException e)
-			{
-				throw new RuntimeException("BH04", e);
-			}
-			
-			// Make sure temporary file is cleaned up
-			finally
-			{
-				if (temp != null)
-					try
-					{
-						Files.delete(temp);
-					}
-					catch (IOException e)
-					{
-					}
-			}
-		}
+		__Utils__.__set(this.lock, this.path, __k, __v);
 	}
 }
 

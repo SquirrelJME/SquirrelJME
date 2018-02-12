@@ -29,6 +29,10 @@ public interface LibraryControlKey
 	public static final String IS_TRUSTED =
 		"X-SquirrelJME-Is-Trusted";
 	
+	/** The trust group for this library. */
+	public static final String TRUST_GROUP =
+		"X-SquirrelJME-Trust-Group";
+	
 	/** Prefix for state flags. */
 	public static final String STATE_FLAG_PREFIX =
 		"X-SquirrelJME-State-Flag-";
