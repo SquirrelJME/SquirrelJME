@@ -167,14 +167,18 @@ public final class LibrariesServer
 		
 		// Write the library indexes
 		int counted = 0;
-		for (int i = 0, o = 2; i < n; i++, o += 2)
+		for (int i = 0, o = 2; i < n; i++)
 		{
 			Library lib = libs[i];
 			SystemTrustGroup libgroup = lib.trustGroup();
 			
 			// If the library belongs to another group
 			if (accessmode.isAccessible(mygroup, libgroup))
+			{
 				rv.writeInteger(o, libs[i].index());
+				counted++;
+				o += 4;
+			}
 		}
 		
 		// Write library count
