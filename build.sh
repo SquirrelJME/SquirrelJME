@@ -85,6 +85,7 @@ if ! "$JAVA" $JAVA_OPTIONS \
 	"-Dcc.squirreljme.builder.root=$__exedir" \
 	"-Dcc.squirreljme.runtime.javase.java=$JAVA" \
 	"-Dcc.squirreljme.runtime.javase.bootpath=sjmeboot.jar" \
+	"-Dcc.squirreljme.home=home" \
 	-classpath "$__bsflaw" \
 	"cc.squirreljme.runtime.javase.Main" "$@"
 then
