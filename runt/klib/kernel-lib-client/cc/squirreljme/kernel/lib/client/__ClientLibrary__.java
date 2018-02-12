@@ -12,6 +12,7 @@ package cc.squirreljme.kernel.lib.client;
 
 import cc.squirreljme.kernel.lib.LibrariesPacketTypes;
 import cc.squirreljme.kernel.lib.Library;
+import cc.squirreljme.runtime.cldc.SystemResourceScope;
 
 /**
  * This class represents a library as seen by the client.
@@ -37,10 +38,11 @@ final class __ClientLibrary__
 	 * @since 2018/01/15
 	 */
 	@Override
-	protected final byte[] loadResourceBytes(String __n)
+	protected final byte[] loadResourceBytes(SystemResourceScope __scope,
+		String __n)
 		throws NullPointerException
 	{
-		if (__n == null)
+		if (__scope == null || __n == null)
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();

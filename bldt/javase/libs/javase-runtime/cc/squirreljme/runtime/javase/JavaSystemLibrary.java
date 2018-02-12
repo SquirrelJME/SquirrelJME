@@ -12,6 +12,7 @@ package cc.squirreljme.runtime.javase;
 
 import cc.squirreljme.kernel.lib.Library;
 import cc.squirreljme.kernel.lib.LibraryType;
+import cc.squirreljme.runtime.cldc.SystemResourceScope;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -41,10 +42,11 @@ public final class JavaSystemLibrary
 	 * @since 2018/01/15
 	 */
 	@Override
-	protected final byte[] loadResourceBytes(String __n)
+	protected final byte[] loadResourceBytes(SystemResourceScope __scope,
+		String __n)
 		throws NullPointerException
 	{
-		if (__n == null)
+		if (__scope == null || __n == null)
 			throw new NullPointerException("NARG");
 		
 		// Load the system manifest resource

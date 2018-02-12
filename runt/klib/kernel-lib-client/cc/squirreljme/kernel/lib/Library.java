@@ -10,6 +10,8 @@
 
 package cc.squirreljme.kernel.lib;
 
+import cc.squirreljme.runtime.cldc.SystemResourceProvider;
+import cc.squirreljme.runtime.cldc.SystemResourceScope;
 import cc.squirreljme.runtime.cldc.SystemTaskLaunchable;
 import cc.squirreljme.runtime.cldc.SystemTrustGroup;
 import java.io.ByteArrayInputStream;
@@ -32,14 +34,14 @@ import net.multiphasicapps.zip.util.InflaterInputStream;
  * @since 2017/12/11
  */
 public abstract class Library
-	implements SystemTaskLaunchable
+	implements SystemResourceProvider, SystemTaskLaunchable
 {
 	/** The index of the library. */
 	protected final int index;
 	
 	/** Cached resource data. */
-	private final Map<String, Reference<byte[]>> _bytescache =
-		new HashMap<>();
+	private final Map<String, Reference<byte[]>>[] _bytescache =
+		Library.__newBytesCache();
 	
 	/** The manifest of this library. */
 	private volatile Reference<JavaManifest> _manifest;
@@ -72,13 +74,15 @@ public abstract class Library
 	 * and is not part of the input data. If the first byte is zero then the
 	 * data is uncompressed, otherwise it will be compressed with deflate.
 	 *
+	 * @param __scope The scope of the resource.
 	 * @param __n The name of the resource to load.
 	 * @return The bytes for the given resource or {@code null} if it does not
 	 * exist, note that the first byte of the resource is treated as special.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/15
 	 */
-	protected abstract byte[] loadResourceBytes(String __n)
+	protected abstract byte[] loadResourceBytes(SystemResourceScope __scope,
+		String __n)
 		throws NullPointerException;
 	
 	/**
@@ -129,20 +133,23 @@ public abstract class Library
 	/**
 	 * Loads the specified resource from the given library.
 	 *
+	 * @param __scope The scope of the resource.
 	 * @param __n The name of the resource to load.
 	 * @return The resource data or {@code null} if not found.
 	 * @since 2018/01/02
 	 */
-	public final InputStream loadResource(String __n)
+	public final InputStream loadResource(SystemResourceScope __scope,
+		String __n)
 		throws NullPointerException
 	{
-		if (__n == null)
+		if (__scope == null || __n == null)
 			throw new NullPointerException("NARG");
 		
 		// Since resources could be potentially requested multiple times and
 		// seeing that the IPC will cause some data to be duplicated when a
 		// resource is read.
-		Map<String, Reference<byte[]>> bytescache = this._bytescache;
+		Map<String, Reference<byte[]>> bytescache = this._bytescache[
+			__scope.ordinal()];
 		synchronized (bytescache)
 		{
 			Reference<byte[]> ref = bytescache.get(__n);
@@ -150,7 +157,7 @@ public abstract class Library
 			
 			if (ref == null || null == (rv = ref.get()))
 			{
-				rv = this.loadResourceBytes(__n);
+				rv = this.loadResourceBytes(__scope, __n);
 				if (rv == null)
 					return null;
 				
@@ -178,7 +185,8 @@ public abstract class Library
 		JavaManifest rv;
 		
 		if (ref == null || null == (rv = ref.get()))
-			try (InputStream in = this.loadResource("META-INF/MANIFEST.MF"))
+			try (InputStream in = this.loadResource(
+				SystemResourceScope.RESOURCE, "META-INF/MANIFEST.MF"))
 			{
 				// {@squirreljme.error AV06 No manifest exists within the
 				// library.}
@@ -234,5 +242,21 @@ public abstract class Library
 	 * @since 2018/01/02
 	 */
 	public abstract int type();
+	
+	/**
+	 * Initializes the bytes cache for each scope.
+	 *
+	 * @return The bytes cache array.
+	 * @since 2018/02/11
+	 */
+	@SuppressWarnings({"unchecked"})
+	private static final Map<String, Reference<byte[]>>[] __newBytesCache()
+	{
+		int n = SystemResourceScope.values().length;
+		Map[] rv = new Map[n];
+		for (int i = 0; i < n; i++)
+			rv[i] = new HashMap();
+		return (Map<String, Reference<byte[]>>[])((Object)rv);
+	}
 }
 
