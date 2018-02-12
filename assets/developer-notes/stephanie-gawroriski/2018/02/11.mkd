@@ -1,0 +1,62 @@
+# 2018/02/11
+
+## 11:35
+
+What would be useful for me in SquirrelJME and another program I am working on
+would be a Java to C compiler. I will need it eventually for SquirrelJME so
+that it can self host on systems with no Java compiler but with a C compiler.
+Also, I have another project to be written in C but I would rather have it in
+Java, but it needs to be a static binary so that would be problematic. I can
+simulate the virtual machine in C code. It will not be as elegant but it would
+work for the most part. It could just produce lots of code rather than be
+clean and optimized. It can pretty much simulate a Java stack for the most
+part along with locals in C code. I would just design it to be simple for the
+most part.
+
+## 12:19
+
+Well really, what I could do is just expand the byte code into functions and
+stack machines with support for brancing. So basically the Java operations are
+just reimplemented with descriptors for fields, classes, and other things. So
+really I just perform a number of function calls. But really this is just
+needed for some things more than others. However I do need to consider garbage
+collection and such.
+
+## 18:44
+
+I should definitely setup the input stream and such, so that way resources can
+read from them and such rather than having all the bytes loaded at once. The
+only problem will be there can be resource leaks in the kernel when the data
+requested but never closed by the client.
+
+## 18:47
+
+I think what would be better is a resource manager of sorts.
+
+## 19:11
+
+Okay, I need access to resources in the system. Then also I would need support
+for resource domains and such too. So what I then need is just an interface
+which gives that. Then for the library manager, I just need one that gives the
+system resource. But actually that one is already provided. So what I really
+just need are domains from within libraries. Additionally the get resource as
+stream methods will need to know this information.
+
+## 19:51
+
+Okay, so I rather have two choices. I could run a sub-process in a kind of
+virtualized sub-process or I can just make new VMs which run at native speed.
+
+## 20:19
+
+Okay so actually I was thinking of something. Oh yes the configuration. Having
+it in the build system is going to interfere, so I need to export some
+variables so the build system's configuration does not interfere with native
+ones, since that would be bad. Pristine state would be best. Also, one thing
+would be instead that libraries are installed into architecture and os
+specific locations, that would also however include trusts too though. Will
+have to think about it for the most part, or at least remember the library.
+
+## 23:44
+
+The manifest reading/writing code is going to be very familiar.
