@@ -68,11 +68,42 @@ public final class TrustServer
 			case TrustPacketTypes.GET_UNTRUSTED_TRUST:
 				return this.__untrustedTrust(__p);
 			
+				// Check if a trust exists
+			case TrustPacketTypes.CHECK_TRUST_ID:
+				return this.__checkTrustId(__p);
+			
 				// {@squirreljme.error BK01 Unknown packet. (The packet)}
 			default:
 				throw new IllegalArgumentException(
 					String.format("BK01 %s", __p));
 		}
+	}
+	
+	/**
+	 * Returns the untrusted trust for the given client.
+	 *
+	 * @param __p The packet.
+	 * @return The resulting packet.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/02/12
+	 */
+	private final Packet __checkTrustId(Packet __p)
+		throws NullPointerException
+	{
+		if (__p == null)
+			throw new NullPointerException("NARG");
+		
+		// Read ID
+		int dx = __p.readInteger(0);
+		
+		// Need to be allowed to do this
+		super.checkPermission(TrustPermission.class, Integer.toString(dx),
+			TrustPermission.ACTION_CHECK_TRUST_ID);
+		
+		// Only give success if it exists
+		Packet rv = __p.respond(4);
+		rv.writeInteger(0, (this.provider.byIndex(dx) == null ? -1 : dx));
+		return rv;
 	}
 	
 	/**

@@ -35,7 +35,7 @@ public interface LibraryControlKey
 	
 	/** The type of library this is. */
 	public static final String TYPE =
-		"X-SquirrelJME-Trust-Type";
+		"X-SquirrelJME-Type";
 	
 	/** Prefix for state flags. */
 	public static final String STATE_FLAG_PREFIX =

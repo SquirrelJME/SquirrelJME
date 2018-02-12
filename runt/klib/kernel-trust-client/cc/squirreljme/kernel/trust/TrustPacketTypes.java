@@ -20,5 +20,9 @@ public interface TrustPacketTypes
 	/** Obtain an untrusted trust. */
 	public static final int GET_UNTRUSTED_TRUST =
 		1;
+	
+	/** Check if the trust exists by its id. */
+	public static final int CHECK_TRUST_ID =
+		2;
 }
 
