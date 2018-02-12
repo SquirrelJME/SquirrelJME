@@ -61,6 +61,23 @@ public abstract class TrustProvider
 		throws NullPointerException;
 	
 	/**
+	 * Returns the trust by the given index.
+	 *
+	 * @param __dx The index of the trust to get.
+	 * @return The given trust or {@code null} if it does not exist.
+	 * @since 2018/02/12
+	 */
+	public final SystemTrustGroup byIndex(int __dx)
+	{
+		// Lock
+		Map<Integer, SystemTrustGroup> trusts = this._trusts;
+		synchronized (this.lock)
+		{
+			return trusts.get(__dx);
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/01/17
 	 */

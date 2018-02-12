@@ -49,6 +49,48 @@ public final class TrustClient
 	}
 	
 	/**
+	 * Returns the trust group for the given index.
+	 *
+	 * @param __dx The index to get.
+	 * @return The trust group or {@code null} if it does not exist.
+	 * @since 2018/02/12
+	 */
+	public final SystemTrustGroup byIndex(int __dx)
+	{
+		Integer idx = __dx;
+		
+		// Could be cached
+		Map<Integer, Reference<__LocalTrust__>> trusts = this._trusts;
+		synchronized (trusts)
+		{
+			Reference<__LocalTrust__> ref = trusts.get(idx);
+			__LocalTrust__ rv;
+			
+			if (ref == null || null == (rv = ref.get()))
+			{
+				ServicePacketStream stream = this.stream;
+				try (Packet p = PacketFarm.createPacket(
+					TrustPacketTypes.CHECK_TRUST_ID, 4))
+				{
+					p.writeInteger(0, __dx);
+					
+					try (Packet r = stream.send(p, true))
+					{
+						int val = r.readInteger(0);
+						if (val < 0)
+							return null;
+					}
+				}
+				
+				// Cache it
+				trusts.put(idx, new WeakReference<>((rv = this.__map(__dx))));
+			}
+			
+			return rv;
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/01/17
 	 */

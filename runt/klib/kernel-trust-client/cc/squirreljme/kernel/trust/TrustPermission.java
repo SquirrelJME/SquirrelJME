@@ -23,6 +23,10 @@ import java.security.PermissionCollection;
 public final class TrustPermission
 	extends Permission
 {
+	/** Get trust ID. */
+	public static final String ACTION_CHECK_TRUST_ID =
+		"check-trust-id";
+	
 	/** The untrusted action. */
 	public static final String ACTION_GET_UNTRUSTED =
 		"get-untrusted";

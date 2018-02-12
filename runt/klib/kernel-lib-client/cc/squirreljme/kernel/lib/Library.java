@@ -10,6 +10,8 @@
 
 package cc.squirreljme.kernel.lib;
 
+import cc.squirreljme.kernel.trust.client.TrustClient;
+import cc.squirreljme.runtime.cldc.SystemCall;
 import cc.squirreljme.runtime.cldc.SystemResourceProvider;
 import cc.squirreljme.runtime.cldc.SystemResourceScope;
 import cc.squirreljme.runtime.cldc.SystemTaskLaunchable;
@@ -220,7 +222,9 @@ public abstract class Library
 	 */
 	public final SystemTrustGroup trustGroup()
 	{
-		throw new todo.TODO();
+		return SystemCall.<TrustClient>service(TrustClient.class).byIndex(
+			Integer.parseInt(this.controlGet(LibraryControlKey.TRUST_GROUP),
+			10));
 	}
 	
 	/**
