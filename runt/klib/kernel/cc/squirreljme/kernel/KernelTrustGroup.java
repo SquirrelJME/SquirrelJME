@@ -11,6 +11,7 @@
 package cc.squirreljme.kernel;
 
 import cc.squirreljme.runtime.cldc.SystemTrustGroup;
+import cc.squirreljme.runtime.cldc.SystemTrustGroupUtils;
 
 /**
  * This represents a trust group within the kernel, tasks are assigned to
@@ -42,6 +43,32 @@ public final class KernelTrustGroup
 			throw new NullPointerException("NARG");
 		
 		// All kernel permissions are valid
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/02/12
+	 */
+	@Override
+	public boolean equals(Object __o)
+	{
+		if (__o == this)
+			return true;
+		
+		if (!(__o instanceof SystemTrustGroup))
+			return false;
+		
+		return SystemTrustGroupUtils.equals(this, (SystemTrustGroup)__o);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/02/12
+	 */
+	@Override
+	public int hashCode()
+	{
+		return SystemTrustGroupUtils.hashCode(this);
 	}
 	
 	/**
