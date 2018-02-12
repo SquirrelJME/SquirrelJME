@@ -18,6 +18,7 @@ import cc.squirreljme.kernel.lib.LibraryControlKey;
 import cc.squirreljme.kernel.lib.LibraryType;
 import cc.squirreljme.kernel.lib.SuiteInfo;
 import cc.squirreljme.runtime.cldc.SystemCall;
+import cc.squirreljme.runtime.cldc.SystemResourceScope;
 import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
@@ -457,7 +458,8 @@ public class Suite
 		
 		if (ref == null || null == (rv = ref.get()))
 			try (InputStream in =
-				this._library.loadResource("META-INF/MANIFEST.MF"))
+				this._library.loadResource(SystemResourceScope.RESOURCE,
+				"META-INF/MANIFEST.MF"))
 			{
 				// {@squirreljme.error DG04 Suite has no manifest file.}
 				if (in == null)
