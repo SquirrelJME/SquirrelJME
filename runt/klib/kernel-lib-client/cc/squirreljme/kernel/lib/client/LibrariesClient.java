@@ -16,8 +16,10 @@ import cc.squirreljme.kernel.lib.LibraryInstallationReport;
 import cc.squirreljme.kernel.lib.NoSuchLibraryException;
 import cc.squirreljme.kernel.packets.Packet;
 import cc.squirreljme.kernel.packets.PacketFarm;
+import cc.squirreljme.kernel.packets.PacketWriter;
 import cc.squirreljme.kernel.service.ClientInstance;
 import cc.squirreljme.kernel.service.ServicePacketStream;
+import cc.squirreljme.runtime.cldc.SystemResourceScope;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Map;
@@ -180,6 +182,41 @@ public final class LibrariesClient
 	}
 	
 	/**
+	 * Loads the bytes for the given library.
+	 *
+	 * @param __dx The index of the library.
+	 * @param __scope The scope of the library.
+	 * @param __name The name of the resource to load.
+	 * @return The bytes for the resource or {@code null} if it does not
+	 * exist.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/02/12
+	 */
+	final byte[] __loadResourceBytes(int __dx, SystemResourceScope __scope,
+		String __name)
+		throws NullPointerException
+	{
+		if (__scope == null || __name == null)
+			throw new NullPointerException("NARG");
+		
+		ServicePacketStream stream = this.stream;
+		try (Packet p = PacketFarm.createPacket(
+			LibrariesPacketTypes.LOAD_RESOURCE_BYTES))
+		{
+			PacketWriter w = p.createWriter();
+			
+			w.writeInteger(__dx);
+			w.writeString(__scope.name());
+			w.writeString(__name);
+			
+			try (Packet r = stream.send(p, true))
+			{
+				throw new todo.TODO();
+			}
+		}
+	}
+	
+	/**
 	 * Maps the index to a cached library.
 	 *
 	 * @param __dx The library index.
@@ -197,7 +234,7 @@ public final class LibrariesClient
 			
 			if (ref == null || null == (rv = ref.get()))
 				libraries.put(idx, new WeakReference<>(
-					(rv = new __ClientLibrary__(__dx))));
+					(rv = new __ClientLibrary__(__dx, this))));
 			
 			return rv;
 		}
