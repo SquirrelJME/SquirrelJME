@@ -24,5 +24,9 @@ public interface LibrariesPacketTypes
 	/** Install a program. */
 	public static final int INSTALL_PROGRAM =
 		2;
+	
+	/** Load bytes from a resource. */
+	public static final int LOAD_RESOURCE_BYTES =
+		3;
 }
 

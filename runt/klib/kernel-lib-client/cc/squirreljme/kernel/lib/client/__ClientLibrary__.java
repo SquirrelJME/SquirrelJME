@@ -22,15 +22,26 @@ import cc.squirreljme.runtime.cldc.SystemResourceScope;
 final class __ClientLibrary__
 	extends Library
 {
+	/** The client which created this. */
+	protected final LibrariesClient client;
+	
 	/**
 	 * Initializes the library.
 	 *
 	 * @param __dx The library index.
+	 * @param __cl The client library.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/12
 	 */
-	__ClientLibrary__(int __dx)
+	__ClientLibrary__(int __dx, LibrariesClient __cl)
+		throws NullPointerException
 	{
 		super(__dx);
+		
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		this.client = __cl;
 	}
 	
 	/**
@@ -73,7 +84,7 @@ final class __ClientLibrary__
 		if (__scope == null || __n == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		return this.client.__loadResourceBytes(this.index, __scope, __n);
 	}
 }
 

@@ -75,6 +75,9 @@ public final class LibrariesServer
 			case LibrariesPacketTypes.INSTALL_PROGRAM:
 				return this.__install(__p);
 			
+			case LibrariesPacketTypes.LOAD_RESOURCE_BYTES:
+				throw new todo.TODO();
+			
 				// {@squirreljme.error BC09 Unknown packet. (The packet)}
 			default:
 				throw new IllegalArgumentException(
