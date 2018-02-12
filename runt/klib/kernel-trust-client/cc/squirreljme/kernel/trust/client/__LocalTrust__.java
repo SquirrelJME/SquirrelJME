@@ -65,7 +65,7 @@ final class __LocalTrust__
 	@Override
 	public final int index()
 	{
-		throw new todo.TODO();
+		return this.index;
 	}
 	
 	/**

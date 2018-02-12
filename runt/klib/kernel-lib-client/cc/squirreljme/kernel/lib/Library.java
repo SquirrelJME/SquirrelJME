@@ -231,7 +231,7 @@ public abstract class Library
 	 */
 	public final int type()
 	{
-		throw new todo.TODO();
+		return Integer.parseInt(this.controlGet(LibraryControlKey.TYPE), 10);
 	}
 	
 	/**
