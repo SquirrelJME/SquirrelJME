@@ -12,9 +12,11 @@ package cc.squirreljme.kernel.lib.server;
 
 import cc.squirreljme.kernel.lib.client.LibrariesClient;
 import cc.squirreljme.kernel.lib.client.LibrariesClientFactory;
+import cc.squirreljme.kernel.lib.DependencyInfo;
 import cc.squirreljme.kernel.lib.InstallErrorCodes;
 import cc.squirreljme.kernel.lib.Library;
 import cc.squirreljme.kernel.lib.LibraryInstallationReport;
+import cc.squirreljme.kernel.lib.MatchResult;
 import cc.squirreljme.kernel.lib.SuiteIdentifier;
 import cc.squirreljme.kernel.lib.SuiteInfo;
 import cc.squirreljme.kernel.lib.SuiteName;
@@ -322,12 +324,38 @@ public abstract class LibrariesProvider
 		if (__info == null)
 			throw new NullPointerException("NARG");
 		
-		Collection<Library> rv = new ArrayList<>();
+		Collection<Library> rv = new LinkedHashSet<>();
 		
+		// Do not consider optional dependencies at all
+		DependencyInfo depends = __info.dependencies().noOptionals();
+		
+		Map<Integer, Library> libraries = this._libraries;
 		synchronized (this.lock)
 		{
-			if (true)
-				throw new todo.TODO();
+			for (Library lib : libraries.values())
+			{
+				// If this library happens to be in the return list then that
+				// means it has been already calculated and their dependencies
+				// recursed
+				if (rv.contains(lib))
+					continue;
+				
+				// If the library has matching dependencies then add it
+				SuiteInfo subinfo = lib.suiteInfo();
+				MatchResult mr = depends.match(subinfo.provided());
+				if (mr.hasMatches())
+				{
+					// Need to go through the dependencies of that library and
+					// make sure they are added before this one is
+					// It also has to be recursive because the dependency chain
+					// can potentially go deep.
+					for (Library dep : this.__getDepends(subinfo))
+						rv.add(dep);
+					
+					// Add the base library to the dependency chain
+					rv.add(lib);
+				}
+			}
 		}
 		
 		return rv.<Library>toArray(new Library[rv.size()]);
@@ -391,10 +419,10 @@ public abstract class LibrariesProvider
 		int code;
 		if (__t instanceof __PlainInstallError__)
 			code = ((__PlainInstallError__)__t).code();
-		else if (__t instanceof IOException)
-			code = InstallErrorCodes.IO_FILE_ERROR;
 		else if (__t instanceof ZipEntryNotFoundException)
 			code = InstallErrorCodes.CORRUPT_JAR;
+		else if (__t instanceof IOException)
+			code = InstallErrorCodes.IO_FILE_ERROR;
 		else
 			code = InstallErrorCodes.OTHER_ERROR;
 		
