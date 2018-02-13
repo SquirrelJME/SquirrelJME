@@ -14,8 +14,11 @@ import cc.squirreljme.kernel.lib.LibrariesPacketTypes;
 import cc.squirreljme.kernel.lib.Library;
 import cc.squirreljme.kernel.lib.LibraryInstallationReport;
 import cc.squirreljme.kernel.packets.Packet;
+import cc.squirreljme.kernel.packets.PacketReader;
+import cc.squirreljme.kernel.packets.PacketWriter;
 import cc.squirreljme.kernel.service.ServerInstance;
 import cc.squirreljme.kernel.service.ServicePacketStream;
+import cc.squirreljme.runtime.cldc.SystemResourceScope;
 import cc.squirreljme.runtime.cldc.SystemTask;
 import cc.squirreljme.runtime.cldc.SystemTrustGroup;
 
@@ -76,12 +79,60 @@ public final class LibrariesServer
 				return this.__install(__p);
 			
 			case LibrariesPacketTypes.LOAD_RESOURCE_BYTES:
-				throw new todo.TODO();
+				return this.__loadResourceBytes(__p);
 			
 				// {@squirreljme.error BC09 Unknown packet. (The packet)}
 			default:
 				throw new IllegalArgumentException(
 					String.format("BC09 %s", __p));
+		}
+	}
+	
+	/**
+	 * Returns the access mode for the current task which specifies which
+	 * libraries it may access.
+	 *
+	 * @param __act The action to check.
+	 * @return The permitted access mode.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/01/11
+	 */
+	private final LibrariesAccessMode __accessMode(String __act)
+		throws NullPointerException
+	{
+		if (__act == null)
+			throw new NullPointerException("NARG");
+		
+		SystemTask task = this.task;
+		
+		// "crossClient" is the most important and it will for the most part
+		// imply "client" because it would be rather pointless if a program
+		// could modify other clients but not its own
+		try
+		{
+			task.checkPermission(LibrariesServer._PERMISSION_CLASS,
+				"crossClient", __act);
+			
+			return LibrariesAccessMode.ANY;
+		}
+		
+		// Cannot access other clients, try in our same trust group
+		catch (SecurityException e)
+		{
+			// This can also fail
+			try
+			{
+				task.checkPermission(LibrariesServer._PERMISSION_CLASS,
+					"client", __act);
+				
+				return LibrariesAccessMode.SAME_GROUP;
+			}
+			
+			// No access at all
+			catch (SecurityException f)
+			{
+				return LibrariesAccessMode.NONE;
+			}
 		}
 	}
 	
@@ -106,7 +157,6 @@ public final class LibrariesServer
 			throw new SecurityException("BC0a");
 		
 		SystemTask task = this.task;
-		SystemTrustGroup mygroup = task.trustGroup();
 		
 		// Read in the packet data, but close it so its data is not consumed
 		// as it will be wasted data in memory
@@ -191,51 +241,51 @@ public final class LibrariesServer
 	}
 	
 	/**
-	 * Returns the access mode for the current task which specifies which
-	 * libraries it may access.
+	 * Loads the bytes for the resource data.
 	 *
-	 * @param __act The action to check.
-	 * @return The permitted access mode.
+	 * @param __p The request.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2019/01/11
+	 * @since 2018/02/13
 	 */
-	private final LibrariesAccessMode __accessMode(String __act)
+	private final Packet __loadResourceBytes(Packet __p)
 		throws NullPointerException
 	{
-		if (__act == null)
+		if (__p == null)
 			throw new NullPointerException("NARG");
 		
-		SystemTask task = this.task;
+		PacketReader r = __p.createReader();
 		
-		// "crossClient" is the most important and it will for the most part
-		// imply "client" because it would be rather pointless if a program
-		// could modify other clients but not its own
-		try
+		// {@squirreljme.error BC0a The task is not permitted to install new
+		// applications.}
+		LibrariesAccessMode accessmode = this.__accessMode("manageSuite");
+		if (accessmode == LibrariesAccessMode.NONE)
+			throw new SecurityException("BC0a");
+		
+		// Read the library wanting to be read, make sure it exists
+		int dx = r.readInteger();
+		Library lib = this.provider.byIndex(dx);
+		if (lib == null)
 		{
-			task.checkPermission(LibrariesServer._PERMISSION_CLASS,
-				"crossClient", __act);
-			
-			return LibrariesAccessMode.ANY;
+			Packet rv = __p.respond(1);
+			rv.writeByte(0, Library.DATA_NONE);
+			return rv;
 		}
 		
-		// Cannot access other clients, try in our same trust group
-		catch (SecurityException e)
-		{
-			// This can also fail
-			try
-			{
-				task.checkPermission(LibrariesServer._PERMISSION_CLASS,
-					"client", __act);
-				
-				return LibrariesAccessMode.SAME_GROUP;
-			}
-			
-			// No access at all
-			catch (SecurityException f)
-			{
-				return LibrariesAccessMode.NONE;
-			}
-		}
+		// Read the scope and name
+		SystemResourceScope scope = SystemResourceScope.valueOf(
+			r.readString());
+		String name = r.readString();
+		
+		// Load resource data
+		byte[] data = lib.loadResourceAsBytes(scope, name);
+		
+		// Send it
+		int n = data.length;
+		Packet rv = __p.respond(data.length);
+		
+		rv.writeBytes(0, data, 0, n);
+		
+		return rv;
 	}
 }
 

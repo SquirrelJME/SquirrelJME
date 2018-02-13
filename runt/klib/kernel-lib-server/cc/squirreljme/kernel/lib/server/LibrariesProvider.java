@@ -95,6 +95,23 @@ public abstract class LibrariesProvider
 		throws NullPointerException;
 	
 	/**
+	 * Returns the library indicated by the given index.
+	 *
+	 * @param __dx The index to get the library for.
+	 * @return The library for the given index or {@code null} if it does not
+	 * exist.
+	 * @since 2018/02/13
+	 */
+	public final Library byIndex(int __dx)
+	{
+		Map<Integer, Library> libraries = this._libraries;
+		synchronized (this.lock)
+		{
+			return libraries.get(__dx);
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/01/05
 	 */

@@ -38,6 +38,18 @@ import net.multiphasicapps.zip.util.InflaterInputStream;
 public abstract class Library
 	implements SystemResourceProvider, SystemTaskLaunchable
 {
+	/** Data does not exist. */
+	public static final int DATA_NONE =
+		0;
+	
+	/** Data is not compressed. */
+	public static final int DATA_NORMAL =
+		1;
+	
+	/** Data is compressed. */
+	public static final int DATA_COMPRESSED =
+		2;
+	
 	/** The index of the library. */
 	protected final int index;
 	
@@ -95,8 +107,9 @@ public abstract class Library
 	 * Loads the bytes which make up the resource, this will be cached.
 	 *
 	 * The first byte of the returned resource is treated as a special value
-	 * and is not part of the input data. If the first byte is zero then the
-	 * data is uncompressed, otherwise it will be compressed with deflate.
+	 * and is not part of the input data. If the first byte is
+	 * {@link #DATA_NORMAL} then the data is uncompressed, otherwise it will be
+	 * compressed with deflate if it is {@link #DATA_COMPRESSED}.
 	 *
 	 * @param __scope The scope of the resource.
 	 * @param __n The name of the resource to load.
@@ -154,12 +167,66 @@ public abstract class Library
 				bytescache.put(__n, new WeakReference<>(rv));
 			}
 			
+			// The first byte is special and indicates the data type
+			int type = rv[0];
+			if (type == Library.DATA_NONE)
+				return null;
+			
 			// If the first byte is non-zero, this means that compression
 			// is used so the kernel can save some transmission space
 			InputStream in = new ByteArrayInputStream(rv, 1, rv.length - 1);
-			if (rv[0] != 0)
+			if (type == Library.DATA_COMPRESSED)
 				return new InflaterInputStream(in);
 			return in;
+		}
+	}
+	
+	/**
+	 * Loads the specified resource from the given library as a byte array.
+	 *
+	 * The first byte of the returned resource is treated as a special value
+	 * and is not part of the input data. If the first byte is zero then the
+	 * data is uncompressed, otherwise it will be compressed with deflate.
+	 *
+	 * @param __scope The scope of the resource.
+	 * @param __n The name of the resource to load.
+	 * @return The bytes for the given resource or {@code null} if it does not
+	 * exist, note that the first byte of the resource is treated as special.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/02/13
+	 */
+	public final byte[] loadResourceAsBytes(SystemResourceScope __scope,
+		String __n)
+		throws NullPointerException
+	{
+		if (__scope == null || __n == null)
+			throw new NullPointerException("NARG");
+		
+		// Since resources could be potentially requested multiple times and
+		// seeing that the IPC will cause some data to be duplicated when a
+		// resource is read.
+		Map<String, Reference<byte[]>> bytescache = this._bytescache[
+			__scope.ordinal()];
+		synchronized (bytescache)
+		{
+			Reference<byte[]> ref = bytescache.get(__n);
+			byte[] rv;
+			
+			if (ref == null || null == (rv = ref.get()))
+			{
+				rv = this.loadResourceBytes(__scope, __n);
+				if (rv == null)
+					return null;
+				
+				bytescache.put(__n, new WeakReference<>(rv));
+			}
+			
+			// Treat it asit did not exist
+			if (rv[0] == Library.DATA_NONE)
+				return null;
+			
+			// Just clone the byte array
+			return rv.clone();
 		}
 	}
 	
