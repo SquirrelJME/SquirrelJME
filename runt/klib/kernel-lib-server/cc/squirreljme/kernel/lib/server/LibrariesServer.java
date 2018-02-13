@@ -277,7 +277,7 @@ public final class LibrariesServer
 		String name = r.readString();
 		
 		// Load resource data
-		byte[] data = lib.loadResourceAsBytes(scope, name);
+		byte[] data = lib.loadResourceRawData(scope, name);
 		
 		// Send it
 		int n = data.length;
