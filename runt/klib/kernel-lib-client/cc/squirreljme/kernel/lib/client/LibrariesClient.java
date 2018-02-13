@@ -214,6 +214,7 @@ public final class LibrariesClient
 				int n = r.length();
 				byte[] rv = new byte[n];
 				r.writeBytes(0, rv, 0, n);
+				System.err.printf("DEBUG -- Read %d %d%n", rv[0], n);
 				return rv;
 			}
 		}

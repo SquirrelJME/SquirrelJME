@@ -182,11 +182,12 @@ public abstract class Library
 	}
 	
 	/**
-	 * Loads the specified resource from the given library as a byte array.
+	 * Loads the specified resource from the given library as a raw byte array.
 	 *
 	 * The first byte of the returned resource is treated as a special value
-	 * and is not part of the input data. If the first byte is zero then the
-	 * data is uncompressed, otherwise it will be compressed with deflate.
+	 * and is not part of the input data. If the first byte is
+	 * {@link #DATA_NORMAL} then the data is uncompressed, otherwise it will be
+	 * compressed with deflate if it is {@link #DATA_COMPRESSED}.
 	 *
 	 * @param __scope The scope of the resource.
 	 * @param __n The name of the resource to load.
@@ -195,7 +196,7 @@ public abstract class Library
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/02/13
 	 */
-	public final byte[] loadResourceAsBytes(SystemResourceScope __scope,
+	public final byte[] loadResourceRawData(SystemResourceScope __scope,
 		String __n)
 		throws NullPointerException
 	{
