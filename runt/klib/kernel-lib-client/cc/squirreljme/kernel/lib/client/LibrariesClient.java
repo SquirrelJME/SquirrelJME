@@ -211,7 +211,10 @@ public final class LibrariesClient
 			
 			try (Packet r = stream.send(p, true))
 			{
-				throw new todo.TODO();
+				int n = r.length();
+				byte[] rv = new byte[n];
+				r.writeBytes(0, rv, 0, n);
+				return rv;
 			}
 		}
 	}
