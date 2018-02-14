@@ -1,0 +1,20 @@
+# 2018/02/13
+
+## 17:52
+
+Definitely need to solve the stream issue! Sending in gigantic chunks of bytes
+is rather annoying and kinda wasteful, need a kind of raw resource data
+accessor.
+
+## 18:19
+
+Definitely in the library or system code I will make a raw data accessor so
+that way I can access the raw data of a resource which could be potentially
+compressed and such. It will have to be in CLDC. The main thing is that
+resources will just be chunks of data. The plan is for resources to have
+a known fixed size. Everything I plan will be in ROM so the communication
+used to read things will not be an issue. But, each process can share a
+resource for the most part. Basically it would just be a collection of
+resource accessors. This will definitely be much better and it will be much
+cleaner than sending clients a gigantic chunk of the resource data. It would
+also reduce all the duplicate data that is used as needed too.
