@@ -247,9 +247,10 @@ public abstract class Library
 				SystemResourceScope.RESOURCE, "META-INF/MANIFEST.MF"))
 			{
 				// {@squirreljme.error AV06 No manifest exists within the
-				// library.}
+				// library. (The library index; The library class)}
 				if (in == null)
-					throw new InvalidSuiteException("AV06");
+					throw new InvalidSuiteException(String.format("AV06 %d %s",
+						this.index, this.getClass()));
 				
 				this._manifest = new WeakReference<>(
 					(rv = new JavaManifest(in)));
