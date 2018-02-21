@@ -88,13 +88,14 @@ public final class JavaSystemLibrary
 			throw new NullPointerException("NARG");
 		
 		// Load the system manifest resource
-		if (__n.equals("META-INF/MANIFEST.MF"))
+		if (__scope == SystemResourceScope.RESOURCE &&
+			__n.equals("META-INF/MANIFEST.MF"))
 			try (ByteArrayOutputStream out = new ByteArrayOutputStream();
 				InputStream in = JavaSystemLibrary.class.getResourceAsStream(
 					"SYSTEM.MF"))
 			{
 				// Write single byte to say it is not compressed
-				out.write(0);
+				out.write(Library.DATA_NORMAL);
 				
 				// Copy data
 				byte[] buf = new byte[512];
