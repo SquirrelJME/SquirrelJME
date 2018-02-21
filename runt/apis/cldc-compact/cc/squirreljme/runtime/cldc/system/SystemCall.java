@@ -18,6 +18,10 @@ package cc.squirreljme.runtime.cldc.system;
  */
 public final class SystemCall
 {
+	/** The implementation of the system call, this is specially set. */
+	private static final SystemCallImplementation _IMPLEMENTATION =
+		SystemCall.__systemCallImplementation();
+	
 	/**
 	 * Performs the specified system call.
 	 *
@@ -71,11 +75,29 @@ public final class SystemCall
 		if (__cl == null || __func == null)
 			throw new NullPointerException("NARG");
 		
+		// {@squirreljme.error ZZ0d The end of local calls is special.}
+		if (__func == SystemFunction.END_OF_LOCAL_CALLS)
+			throw new InvalidSystemCallException("ZZ0d");
+		boolean islocal = (__func.ordinal() <
+			SystemFunction.END_OF_LOCAL_CALLS.ordinal());
+		
 		// Force arguments to always be valid, but null is an empty array
 		if (__args == null)
 			__args = new Object[0];
 		
-		throw new todo.TODO();
+		SystemCallImplementation impl = SystemCall._IMPLEMENTATION;
+		
+		// Forward local calls to do special things
+		Object rv;
+		if (islocal)
+			rv = impl.localCall(__func, __args);
+		
+		// Otherwise use remote system call
+		else
+			rv = impl.remoteCall(__func, __args);
+		
+		// Return value
+		return __cl.cast(rv);
 	}
 	
 	/**
@@ -291,6 +313,18 @@ public final class SystemCall
 		throws InvalidSystemCallException, NullPointerException
 	{
 		SystemCall.<VoidType>call(VoidType.class, __func, __args);
+	}
+	
+	/**
+	 * This may potentially be intercepted to initialize the system call
+	 * implementation class.
+	 *
+	 * @return The system call implementation class.
+	 * @since 2018/02/21
+	 */
+	private static final SystemCallImplementation __systemCallImplementation()
+	{
+		return SystemCall._IMPLEMENTATION;
 	}
 }
 
