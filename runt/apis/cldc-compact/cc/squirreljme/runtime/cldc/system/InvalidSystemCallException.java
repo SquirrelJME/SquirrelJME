@@ -18,5 +18,47 @@ package cc.squirreljme.runtime.cldc.system;
 public class InvalidSystemCallException
 	extends RuntimeException
 {
+	/**
+	 * Initialize the exception with no message or cause.
+	 *
+	 * @since 2018/02/21
+	 */
+	public InvalidSystemCallException()
+	{
+	}
+	
+	/**
+	 * Initialize the exception with a message and no cause.
+	 *
+	 * @param __m The message.
+	 * @since 2018/02/21
+	 */
+	public InvalidSystemCallException(String __m)
+	{
+		super(__m);
+	}
+	
+	/**
+	 * Initialize the exception with a message and cause.
+	 *
+	 * @param __m The message.
+	 * @param __c The cause.
+	 * @since 2018/02/21
+	 */
+	public InvalidSystemCallException(String __m, Throwable __c)
+	{
+		super(__m, __c);
+	}
+	
+	/**
+	 * Initialize the exception with no message and with a cause.
+	 *
+	 * @param __c The cause.
+	 * @since 2018/02/21
+	 */
+	public InvalidSystemCallException(Throwable __c)
+	{
+		super(__c);
+	}
 }
 

@@ -17,10 +17,17 @@ package cc.squirreljme.runtime.cldc.system;
  * All system calls should be prefixed by a name then followed by the
  * arguments the call takes in standard Java descriptors.
  *
+ * System functions are either local or require access to the kernel. Local
+ * ones may be implemented locally, but they could potentially go to the
+ * kernel accordingly.
+ *
  * @since 2018/02/21
  */
 public enum SystemFunction
 {
+	/** End of local calls. */
+	END_OF_LOCAL_CALLS,
+	
 	/** End. */
 	;
 }
