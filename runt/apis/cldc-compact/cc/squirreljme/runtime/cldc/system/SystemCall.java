@@ -19,8 +19,8 @@ package cc.squirreljme.runtime.cldc.system;
 public final class SystemCall
 {
 	/** The implementation of the system call, this is specially set. */
-	private static final SystemCallImplementation _IMPLEMENTATION =
-		SystemCall.__systemCallImplementation();
+	private static final SystemCallImplementation[] _IMPLEMENTATIONS =
+		SystemCall.__implementations();
 	
 	/**
 	 * Performs the specified system call.
@@ -64,6 +64,7 @@ public final class SystemCall
 	 * @param __args The arguments to the system call.
 	 * @return The result from the system call.
 	 * @throws ClassCastException If the return type is of the wrong class.
+	 * @throws InvalidSystemCallException If the system call is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/02/21
 	 */
@@ -75,29 +76,20 @@ public final class SystemCall
 		if (__cl == null || __func == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ0d The end of local calls is special.}
-		if (__func == SystemFunction.END_OF_LOCAL_CALLS)
-			throw new InvalidSystemCallException("ZZ0d");
-		boolean islocal = (__func.ordinal() <
-			SystemFunction.END_OF_LOCAL_CALLS.ordinal());
-		
 		// Force arguments to always be valid, but null is an empty array
 		if (__args == null)
 			__args = new Object[0];
 		
-		SystemCallImplementation impl = SystemCall._IMPLEMENTATION;
+		// {@squirreljme.error ZZ0d Unimplemented system call. (The system
+		// call)}.
+		SystemCallImplementation impl = SystemCall._IMPLEMENTATIONS[
+			__func.ordinal()];
+		if (impl == null)
+			throw new InvalidSystemCallException(String.format("ZZ0d %s",
+				__func));
 		
-		// Forward local calls to do special things
-		Object rv;
-		if (islocal)
-			rv = impl.localCall(__func, __args);
-		
-		// Otherwise use remote system call
-		else
-			rv = impl.remoteCall(__func, __args);
-		
-		// Return value
-		return __cl.cast(rv);
+		// Perform the call
+		return __cl.cast(impl.call(__func, __args));
 	}
 	
 	/**
@@ -322,9 +314,9 @@ public final class SystemCall
 	 * @return The system call implementation class.
 	 * @since 2018/02/21
 	 */
-	private static final SystemCallImplementation __systemCallImplementation()
+	private static final SystemCallImplementation[] __implementations()
 	{
-		return SystemCall._IMPLEMENTATION;
+		return SystemCall._IMPLEMENTATIONS;
 	}
 }
 
