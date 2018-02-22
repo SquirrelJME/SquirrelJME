@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-UUID: a6744c99-927a-4573-954d-9c714ff631c3
+X-SquirrelJME-Error: AJ
+X-SquirrelJME-Name: JIT Compiler
+X-SquirrelJME-Vendor: Stephanie Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This project contains the JIT compiler which 
+ reads the input class file code and translates it to target machine 
+ code.
+X-SquirrelJME-Depends: jit-library
+Microedition-Configuration: CLDC-1.8-Compact
+
