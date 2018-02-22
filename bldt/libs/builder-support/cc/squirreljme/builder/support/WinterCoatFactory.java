@@ -10,6 +10,7 @@
 
 package cc.squirreljme.builder.support;
 
+import cc.squirreljme.jit.library.Library;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -104,12 +105,18 @@ public class WinterCoatFactory
 					System.err.printf("AU15 %s%n", bin.name());
 					
 					// Compile binary and get all the needed dependencies
-					Binary deps[] = binarymanager.compile(bin);
+					Binary[] deps = binarymanager.compile(bin);
 					int numdeps = deps.length;
 					
 					// Split off active binary and the dependencies
-					bin = deps[numdeps - 1];
-					deps = Arrays.copyOf(deps, numdeps - 1);
+					bin = deps[--numdeps];
+					deps = Arrays.copyOf(deps, numdeps);
+					
+					// Translate binaries to JIT libraries
+					Library[] ldeps = new Library[numdeps];
+					for (int i = 0; i < numdeps; i++)
+						ldeps[i] = deps[i].library();
+					Library lbin = bin.library();
 					
 					throw new todo.TODO();
 				}
