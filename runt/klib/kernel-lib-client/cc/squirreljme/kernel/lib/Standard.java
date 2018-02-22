@@ -13,6 +13,7 @@ package cc.squirreljme.kernel.lib;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
+import net.multiphasicapps.strings.StringUtils;
 
 /**
  * This represents a standard which is provided by an API.
@@ -58,16 +59,34 @@ public final class Standard
 	 * Decodes the standard from the specified string.
 	 *
 	 * @param __s The string to decode the standard from.
+	 * @throws InvalidSuiteException If the input string is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/30
 	 */
 	public Standard(String __s)
-		throws NullPointerException
+		throws InvalidSuiteException, NullPointerException
 	{
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// {@squirreljme.error AV0r Expected input standard string to
+		// contain three fields separated by semi-colon. (The input string)}
+		String[] splice = StringUtils.fieldSplitAndTrim(';', __s);
+		if (splice.length != 3)
+			throw new InvalidSuiteException(String.format("AV0r %s", __s));
+		
+		// {@squirreljme.error AV0s Name in standard string is empty. (The
+		// input string)}
+		String name = splice[0];
+		if (name.isEmpty())
+			throw new InvalidSuiteException(String.format("AV0s %s", __s));
+		this.name = new SuiteName(name);
+		
+		String vendor = splice[1];
+		this.vendor = (vendor.isEmpty() ? null : new SuiteVendor(vendor));
+		
+		String version = splice[2];
+		this.version = (version.isEmpty() ? null : new SuiteVersion(version));
 	}
 	
 	/**
