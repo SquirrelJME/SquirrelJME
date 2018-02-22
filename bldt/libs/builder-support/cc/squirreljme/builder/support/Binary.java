@@ -65,6 +65,9 @@ public final class Binary
 	/** The suite information. */
 	private volatile Reference<SuiteInfo> _suiteinfo;
 	
+	/** The wrapped JIT library. */
+	private volatile Reference<Library> _library;
+	
 	/**
 	 * Initializes the binary.
 	 *
@@ -158,7 +161,14 @@ public final class Binary
 	 */
 	public final Library library()
 	{
-		throw new todo.TODO();
+		Reference<Library> ref = this._library;
+		Library rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._library = new WeakReference<>(
+				(rv = new BinaryLibrary(this)));
+		
+		return rv;
 	}
 	
 	/**
