@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-UUID: 7e0d6ef3-cb1e-4c61-9733-9a9d26a7105f
+X-SquirrelJME-Error: BP
+X-SquirrelJME-Name: JIT Library Provider
+X-SquirrelJME-Vendor: Stephanie Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This class contains the interfaces which are 
+ used to provide libraries which provide class files and resources for 
+ the JIT to use.
+X-SquirrelJME-Depends: class-file
+Microedition-Configuration: CLDC-1.8-Compact
+
