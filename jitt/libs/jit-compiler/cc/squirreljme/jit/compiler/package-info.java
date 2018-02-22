@@ -8,20 +8,11 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jit.library;
-
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
- * This class represents a library within the JIT which is used to provide
- * access to class files and resources.
+ * This package contains the JIT compiler.
  *
  * @since 2018/02/21
  */
-public abstract class Library
-{
-}
+
+package cc.squirreljme.jit.compiler;
 

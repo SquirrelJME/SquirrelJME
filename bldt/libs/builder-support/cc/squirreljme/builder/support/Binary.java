@@ -10,6 +10,7 @@
 
 package cc.squirreljme.builder.support;
 
+import cc.squirreljme.jit.library.Library;
 import cc.squirreljme.kernel.lib.DependencyInfo;
 import cc.squirreljme.kernel.lib.MatchResult;
 import cc.squirreljme.kernel.lib.ProvidedInfo;
@@ -147,6 +148,17 @@ public final class Binary
 		{
 			return Long.MIN_VALUE;
 		}
+	}
+	
+	/**
+	 * Returns the library to use as input for the JIT compiler.
+	 *
+	 * @return The library used for JIT compilation.
+	 * @since 2018/02/21
+	 */
+	public final Library library()
+	{
+		throw new todo.TODO();
 	}
 	
 	/**

@@ -7,6 +7,6 @@ X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This project contains the just in time 
  compiler which is used to recompile Java class files to native 
  machine code.
-X-SquirrelJME-Depends: jit-base
+X-SquirrelJME-Depends: jit-compiler
 Microedition-Configuration: CLDC-1.8-Compact
 

@@ -5,7 +5,7 @@ X-SquirrelJME-Name: Build System Support
 X-SquirrelJME-Vendor: Stephanie Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Depends: collections tool-manifest-reader meep-swm 
- tool-manifest-writer zip jit meep-midlet tool-compiler 
+ tool-manifest-writer zip jit-library meep-midlet tool-compiler 
  java-to-c
 X-SquirrelJME-Description: This contains basic support for the build 
  system and project manager. The interfaces declared by this class 
