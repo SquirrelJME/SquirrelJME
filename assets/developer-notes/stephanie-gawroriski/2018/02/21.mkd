@@ -1,0 +1,128 @@
+# 2018/02/21
+
+## 17:26
+
+I have been thinking now about IPC and such between processes and system
+calls. Most processes will need to interact with the kernel process by
+calling command and also potentially will need to read and write data in
+a memory mapped means. Basically I want it to be fast. The input stream
+and output stream and the communication buffer works, however there is
+latency and it requires that the data be serialized back and forth from
+the processes. This works for the most part, but it can get a bit iffy in
+a way. Most of the overhead would be spent deserializing and such. I think
+what would be faster on the kernel end is if there was a system call
+interface based on specific indexes, perhaps an enumeration of system
+calls. There of course would need to be a way to reverse the index of a
+system call so it is known what there is. This can be done with all
+services for the most part. Basically instead of some way over the top
+abstract service system it can instead be simplified to just being
+method calls for the most part. The main issue though is that system
+calls would have to be done with interfaces and connectors for those
+interfaces. Pretty much it will be similar to the socket code in a way
+however, it will be mostly static. So for instance say there is something
+that is implemented as a remote system call that provides an interface. It
+could go for any interface really, although it would be nice if there
+were default interfaces I could use. But anyway I can use any interface
+in which case: `List`. Of course it would work with generics in a way
+but the object type would need to be an interface. Basically the system
+call could only pass interfaces, boxed types, arrays, and primitive types.
+It sort of acts like a gigantic set of proxy methods and objects for
+example. It cannot work with concrete classes though, which is the main
+thing. But, there could be a special handle interfaces and additionally
+factories which can be used to initialize interfaces. So really the client
+can do what I already similarly have: client side factories. Something
+that knows how to create the interfaces for the client. Each interface
+though for a unique object would need a handle so that way it is known
+what maps to what though, which could become complicated.
+
+## 17:35
+
+But my goal would be to just have like a single method for the most part:
+
+	SystemCall.call(int __id, Object... __args);
+
+I suppose it would be simple like POSIX for the most part. Do I really
+need super complex interfaces and service protocols to do things? There
+are permissions and such to consider too though. But essentially I want
+to make it easy. Also there could be an abstract `SystemCall` class but
+then one which exposes all of the system calls with the correct
+arguments too. But the primary goal of this is to make it so that the
+code is simple and there are no complex things to consider. The streaming
+stuff is nice, but it is just going to be too slow and have tons of
+overhead for the most part anyway.
+
+## 17:41
+
+Also, when it comes to sending byte arrays, they could be transformed into
+a special kind of `ByteBuffer` but not like the one there, more like a
+`ByteArray` that way it can get and set accordingly. At least when sending
+things on remote ends to the kernel, it will map accordingly.
+
+## 17:44
+
+There would be services on the kernel side, but they would just associate
+themselves with system calls and then they would be forwarded the call
+information as needed (which task made the call for example). When it
+comes to Java SE, this could still be wrapped in the input and output
+streams but it would only really do system calls. On a real compiled
+environment it would be more smart and allow for a more direct means of
+sharing data.
+
+## 18:01
+
+At least with this system call code, I can have it where the client can
+perform some special things without needing to interact with the kernel. So
+for example to get the identity hash code of an object. Instead of it going
+through the kernel or some special interface it can just access internal
+things directly. Well the identity hash code is a bad example, but say I
+wanted to get the raw length of a given array, it does not have to go through
+the kernel. So really it is a special call. But basically, I will have it
+where there can be local overrides for a system call which are never passed
+to the kernel. This would make the Java SE and other interfaces easier to
+implement without requiring magic at all.
+
+## 19:31
+
+I really want to work on the JIT now and write to some binary format. What
+if for speed I just assume that the classes are fully verified and the
+imports and such are correct for the most part. Well thinking about volatiles
+the main thing I always worried about is that the base class could change
+and the volatiles would be broken. But the thing is if the JIT has cached
+libraries that were recompiled then it would detect (I would hope anyway)
+that the dependency has changed and thus recompile it. And I am going to
+enforce that dependencies not be replaced as such. If the program unique ID
+changes then the program will need to be recompiled anyway.
+
+## 19:37
+
+So I really just need an interface which stores source class information. But
+for the JIT I can just have direct access to the source class files. I could
+write some compact exported JIT fields, or I can just store the original class
+files which potentially have been stripped. Even then I could pack200 the
+JARs anyway and cache them. I do not really need to store the original JAR in
+any way only the classes and resources matter.
+
+## 19:49
+
+Pack200 is quite a squashed and complex format however, but it is a good way
+to store JAR files in a packed way to reduce disk space until the JARs
+themselves are needed for classes for JIT purposes.
+
+## 19:50
+
+But, my own Pack200 could just operate on the class file that I have myself.
+I could also have an export for the class file format too.
+
+## 19:53
+
+But definitely for now, if there is a JIT I will just assume that there is the
+original JAR or something that contains all the class information for JIT
+purposes. That will simplify everything and I do not have to worry about
+constants or volatiles. I just need a means to uniquely identify classes but
+at least in the initial stage I need not worry about that.
+
+## 20:33
+
+Actually when it comes to the library manager, there will need to be a basic
+one which is rather minimal. Then there will need to be one which can perform
+JIT operations.
