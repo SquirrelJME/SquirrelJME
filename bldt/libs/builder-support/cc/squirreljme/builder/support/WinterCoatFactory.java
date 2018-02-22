@@ -10,6 +10,7 @@
 
 package cc.squirreljme.builder.support;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -21,6 +22,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
+import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
 /**
  * The class provides factory access to the WinterCoat functionalities such
@@ -86,7 +88,36 @@ public class WinterCoatFactory
 	public byte[] build()
 		throws IOException
 	{
-		throw new todo.TODO();
+		BinaryManager binarymanager = this.binarymanager;
+		
+		// The ROM is basically just a ZIP file
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
+		{
+			// Write library entries for each compiled library
+			try (ZipStreamWriter zsw = new ZipStreamWriter(baos))
+			{
+				// The ROM contains every single project compiled into a single
+				// binary and as such is fully featured
+				for (Binary bin : binarymanager)
+				{
+					// Debug to indicate where things are
+					System.err.printf("AU15 %s%n", bin.name());
+					
+					// Compile binary and get all the needed dependencies
+					Binary deps[] = binarymanager.compile(bin);
+					int numdeps = deps.length;
+					
+					// Split off active binary and the dependencies
+					bin = deps[numdeps - 1];
+					deps = Arrays.copyOf(deps, numdeps - 1);
+					
+					throw new todo.TODO();
+				}
+			}
+			
+			// This is the generated ROM file.
+			return baos.toByteArray();
+		}
 	}
 	
 	/**
