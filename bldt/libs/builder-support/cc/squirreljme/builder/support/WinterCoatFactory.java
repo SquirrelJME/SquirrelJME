@@ -10,7 +10,14 @@
 
 package cc.squirreljme.builder.support;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
@@ -70,6 +77,19 @@ public class WinterCoatFactory
 	}
 	
 	/**
+	 * Builds the winter coat ROM file.
+	 *
+	 * @return The bytes which make up the ROM file.
+	 * @throws IOException If there was a read error or write error.
+	 * @since 2018/02/21
+	 */
+	public byte[] build()
+		throws IOException
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/02/21
 	 */
@@ -86,7 +106,56 @@ public class WinterCoatFactory
 		{
 				// Build winter coat ROM
 			case "build":
-				throw new todo.TODO();
+				{
+					// {@squirreljme.error AU14 Expected a path to which the
+					// target ROM will be stored.}
+					String spath = args.removeFirst();
+					if (spath == null)
+						throw new IllegalArgumentException("AU14");
+					Path path = Paths.get(spath);
+					
+					// Generate ROM, or try to
+					Path temp = null;
+					try
+					{
+						// Generate ROM
+						byte[] rom = this.build();
+						
+						// Write ROM to file
+						temp = Files.createTempFile("wintercoat", ".rom");
+						try (OutputStream os = Files.newOutputStream(temp,
+							StandardOpenOption.WRITE,
+							StandardOpenOption.TRUNCATE_EXISTING))
+						{
+							os.write(rom);
+						}
+						
+						// Replace real file
+						Files.move(temp, path,
+							StandardCopyOption.REPLACE_EXISTING);
+					}
+				
+					// {@squirreljme.error AU13 Could not generate the
+					// wintercoat ROM file.}
+					catch (IOException e)
+					{
+						throw new RuntimeException("AU13", e);
+					}
+					
+					// Cleanup temporary file
+					finally
+					{
+						if (temp != null)
+							try
+							{
+								Files.delete(temp);
+							}
+							catch (IOException e)
+							{
+							}
+					}
+				}
+				break;
 				
 				// {@squirreljme.error AU11 The specified wintercoat command is
 				// not valid. Valid commands are:
