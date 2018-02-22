@@ -116,7 +116,7 @@ public class BuilderFactory
 					// -j: The binary path for the jit-time;
 					// -b: The binary path for the build-time;
 					// Valid commands are:
-					// build, c, sdk, suite, task
+					// build, c, sdk, suite, task, wintercoat
 					// .(The switch)}
 				default:
 					throw new IllegalArgumentException(
@@ -294,6 +294,12 @@ public class BuilderFactory
 				this.task(
 					args.<String>toArray(new String[args.size()]));
 				break;
+				
+				// Generate wintercoat ROM file (the emulator/simulator)
+			case "wintercoat":
+				this.winterCoat(
+					args.<String>toArray(new String[args.size()]));
+				break;
 			
 				// {@squirreljme.error AU0h The specified command is not
 				// valid. (The command)}
@@ -368,6 +374,28 @@ public class BuilderFactory
 	public void task(String... __args)
 	{
 		new TaskFactory(__args).run();
+	}
+	
+	/**
+	 * Performs WinterCoat related operations.
+	 *
+	 * @param __args Arguments to the command.
+	 * @since 2018/02/21
+	 */
+	public void winterCoat(String... __args)
+	{
+		try
+		{
+			new WinterCoatFactory(this.binaryManager(TimeSpaceType.RUNTIME),
+				__args).run();
+		}
+		
+		// {@squirreljme.error AU12 Could not obtain the binary manager for
+		// WinterCoat operations.}
+		catch (IOException e)
+		{
+			throw new RuntimeException("AU12", e);
+		}
 	}
 	
 	/**
