@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+X-SquirrelJME-UUID: f3ebaf43-fb50-475d-bc17-391a57dcdb3b
+X-SquirrelJME-Error: AK
+X-SquirrelJME-Name: JIT Compiler for Wintercoat
+X-SquirrelJME-Vendor: Stephanie Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This is the compiler for the WinterCoat 
+ virtualized environment.
+X-SquirrelJME-Depends: jit-compiler
+Microedition-Configuration: CLDC-1.8-Compact
+
