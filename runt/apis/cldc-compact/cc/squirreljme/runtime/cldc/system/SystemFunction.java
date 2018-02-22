@@ -25,9 +25,6 @@ package cc.squirreljme.runtime.cldc.system;
  */
 public enum SystemFunction
 {
-	/** End of local calls. */
-	END_OF_LOCAL_CALLS,
-	
 	/** End. */
 	;
 }
