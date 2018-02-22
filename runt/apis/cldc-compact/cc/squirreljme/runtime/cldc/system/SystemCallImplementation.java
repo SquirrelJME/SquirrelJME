@@ -35,18 +35,7 @@ public interface SystemCallImplementation
 	 * @return The value returned from the call.
 	 * @since 2018/02/21
 	 */
-	public abstract Object localCall(SystemFunction __func, Object... __args)
-		throws NullPointerException;
-		
-	/**
-	 * Performs the given system call intended to be sent to the remote end.
-	 *
-	 * @param __func The function being called.
-	 * @param __args The arguments to the function.
-	 * @return The value returned from the call.
-	 * @since 2018/02/21
-	 */
-	public abstract Object remoteCall(SystemFunction __func, Object... __args)
+	public abstract Object call(SystemFunction __func, Object... __args)
 		throws NullPointerException;
 }
 
