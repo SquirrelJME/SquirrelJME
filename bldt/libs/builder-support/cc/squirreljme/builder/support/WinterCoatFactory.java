@@ -10,6 +10,7 @@
 
 package cc.squirreljme.builder.support;
 
+import cc.squirreljme.jit.compiler.LibraryState;
 import cc.squirreljme.jit.library.Library;
 import cc.squirreljme.jit.objectfile.ObjectFile;
 import java.io.ByteArrayOutputStream;
@@ -119,7 +120,11 @@ public class WinterCoatFactory
 					ldeps[i] = deps[i].library();
 				Library lbin = bin.library();
 				
-				throw new todo.TODO();
+				// Setup state
+				LibraryState libstate = new LibraryState(ldeps, lbin);
+				
+				// Compile into the target object file
+				libstate.compile(object);
 			}
 			
 			// Link the binary together into a single executable

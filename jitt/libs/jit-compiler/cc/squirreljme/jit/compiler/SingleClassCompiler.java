@@ -11,6 +11,7 @@
 package cc.squirreljme.jit.compiler;
 
 import cc.squirreljme.jit.classfile.ClassFile;
+import cc.squirreljme.jit.library.Library;
 import cc.squirreljme.jit.objectfile.ObjectFile;
 
 /**
@@ -25,14 +26,16 @@ public final class SingleClassCompiler
 	 * Initializes the compiler for the class.
 	 *
 	 * @param __cf The input class to compile.
+	 * @param __lib The state of the libraries being compiled.
 	 * @param __of The object file to write to for compilation.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/02/23
 	 */
-	public SingleClassCompiler(ClassFile __cf, ObjectFile __of)
+	public SingleClassCompiler(ClassFile __cf, LibraryState __lib,
+		ObjectFile __of)
 		throws NullPointerException
 	{
-		if (__cf == null || __of == null)
+		if (__cf == null || __lib == null || __of == null)
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
