@@ -12,10 +12,13 @@ package cc.squirreljme.jit.library;
 
 import cc.squirreljme.jit.classfile.ClassFile;
 import java.io.InputStream;
+import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 /**
  * This class represents a library within the JIT which is used to provide
@@ -27,6 +30,13 @@ public abstract class Library
 {
 	/** The name of this library. */
 	protected final String name;
+	
+	/** Iterable over classes. */
+	private volatile Reference<Iterable<ClassFile>> _classesiterable;
+	
+	/** Class file cache. */
+	private volatile Map<String, Reference<ClassFile>> _classcache =
+		new HashMap<>();
 	
 	/**
 	 * Initializes the base library.
@@ -72,7 +82,14 @@ public abstract class Library
 	 */
 	public final Iterable<ClassFile> classes()
 	{
-		throw new todo.TODO();
+		Reference<Iterable<ClassFile>> ref = this._classesiterable;
+		Iterable<ClassFile> rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._classesiterable = new WeakReference<>((rv =
+				new __ClassesIterable__(this.entries())));
+		
+		return rv;
 	}
 	
 	/**
@@ -90,7 +107,169 @@ public abstract class Library
 		if (__name == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		Map<String, Reference<ClassFile>> classcache = this._classcache;
+		synchronized (classcache)
+		{
+			Reference<ClassFile> ref = classcache.get(__name);
+			ClassFile rv;
+			
+			if (ref == null || null == (rv = ref.get()))
+			{
+				try (InputStream is = this.open(__name + ".class"))
+				{
+					// {@squirreljme.error BP02 No such class exists. (The
+					// name of the requested class)}.
+					if (is == null)
+						throw new NoSuchClassException(String.format(
+							"BP02 %s", __name));
+					
+					rv = ClassFile.decode(is);
+				}
+				
+				// {@squirreljme.error BP01 Could not load the class data.}
+				catch (IOException e)
+				{
+					throw new RuntimeException("BP01", e);
+				}
+				
+				classcache.put(__name, new WeakReference<>(rv));
+			}
+			
+			return rv;
+		}
+	}
+	
+	/**
+	 * This provides an iterable over class files.
+	 *
+	 * @return The iterable over class files.
+	 * @since 2018/02/24
+	 */
+	private final class __ClassesIterable__
+		implements Iterable<ClassFile>
+	{
+		/** The source iterator. */
+		protected final Iterable<String> entries;
+		
+		/**
+		 * Initializes the iterable classes.
+		 *
+		 * @param __entries The entries to source from.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2018/02/24
+		 */
+		private __ClassesIterable__(Iterable<String> __entries)
+			throws NullPointerException
+		{
+			if (__entries == null)
+				throw new NullPointerException("NARG");
+			
+			this.entries = __entries;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/02/24
+		 */
+		@Override
+		public final Iterator<ClassFile> iterator()
+		{
+			return new __ClassesIterator__(this.entries.iterator());
+		}
+	}
+	
+	/**
+	 * This iterates over class files which exist within the library.
+	 *
+	 * @since 2018/02/24
+	 */
+	private final class __ClassesIterator__
+		implements Iterator<ClassFile>
+	{
+		/** The iterator of class names to source from. */
+		protected final Iterator<String> entries;
+		
+		/** The next entry to consider. */
+		private volatile String _next;
+		
+		/**
+		 * Initializes the classes iterator.
+		 *
+		 * @param __entries The entries to iterate over.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2018/02/24
+		 */
+		private __ClassesIterator__(Iterator<String> __entries)
+			throws NullPointerException
+		{
+			if (__entries == null)
+				throw new NullPointerException("NARG");
+			
+			this.entries = __entries;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/02/24
+		 */
+		@Override
+		public final boolean hasNext()
+		{
+			// Pre-cached
+			if (this._next != null)
+				return true;
+			
+			Iterator<String> entries = this.entries;
+			
+			// Only consider classes
+			for (;;)
+			{
+				String next;
+				try
+				{
+					next = entries.next();
+				}
+				catch (NoSuchElementException e)
+				{
+					return false;
+				}
+				
+				// Ignore non-classes
+				if (!next.endsWith(".class"))
+					continue;
+				
+				this._next = next.substring(0, next.length() - 6);
+				return true;
+			}
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/02/24
+		 */
+		@Override
+		public final ClassFile next()
+		{
+			if (!this.hasNext())
+				throw new NoSuchElementException("NSEE");
+			
+			// Clear cache
+			String next = this._next;
+			this._next = null;
+			
+			// Load that class
+			return Library.this.loadClass(next);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/02/24
+		 */
+		@Override
+		public final void remove()
+		{
+			throw new UnsupportedOperationException("RORO");
+		}
 	}
 }
 
