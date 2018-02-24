@@ -11,6 +11,7 @@
 package cc.squirreljme.jit.compiler;
 
 import cc.squirreljme.jit.classfile.ClassFile;
+import cc.squirreljme.jit.objectfile.ObjectFile;
 
 /**
  * This is a compiler which only transforms a single class that has been
@@ -24,13 +25,14 @@ public final class SingleClassCompiler
 	 * Initializes the compiler for the class.
 	 *
 	 * @param __cf The input class to compile.
+	 * @param __of The object file to write to for compilation.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/02/23
 	 */
-	public SingleClassCompiler(ClassFile __cf)
+	public SingleClassCompiler(ClassFile __cf, ObjectFile __of)
 		throws NullPointerException
 	{
-		if (__cf == null)
+		if (__cf == null || __of == null)
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
