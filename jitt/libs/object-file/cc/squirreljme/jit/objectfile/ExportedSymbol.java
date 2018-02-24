@@ -40,6 +40,17 @@ public final class ExportedSymbol
 	}
 	
 	/**
+	 * Imports the symbol so that it may be used as such.
+	 *
+	 * @return The imported variant of this symbol.
+	 * @since 2018/02/23
+	 */
+	public final ImportedSymbol importSymbol()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/02/23
 	 */
