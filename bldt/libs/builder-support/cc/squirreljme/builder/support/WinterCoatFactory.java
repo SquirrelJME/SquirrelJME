@@ -11,6 +11,7 @@
 package cc.squirreljme.builder.support;
 
 import cc.squirreljme.jit.library.Library;
+import cc.squirreljme.jit.objectfile.ObjectFile;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -91,36 +92,39 @@ public class WinterCoatFactory
 	{
 		BinaryManager binarymanager = this.binarymanager;
 		
-		// The ROM is basically just a ZIP file
+		// The ROM is basically just a binary file
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
 		{
-			// Write library entries for each compiled library
-			try (ZipStreamWriter zsw = new ZipStreamWriter(baos))
+			// All classes and strings are compiled into a single executable
+			ObjectFile object = new ObjectFile();
+			
+			// The ROM contains every single project compiled into a single
+			// binary and as such is fully featured
+			for (Binary bin : binarymanager)
 			{
-				// The ROM contains every single project compiled into a single
-				// binary and as such is fully featured
-				for (Binary bin : binarymanager)
-				{
-					// Debug to indicate where things are
-					System.err.printf("AU15 %s%n", bin.name());
-					
-					// Compile binary and get all the needed dependencies
-					Binary[] deps = binarymanager.compile(bin);
-					int numdeps = deps.length;
-					
-					// Split off active binary and the dependencies
-					bin = deps[--numdeps];
-					deps = Arrays.copyOf(deps, numdeps);
-					
-					// Translate binaries to JIT libraries
-					Library[] ldeps = new Library[numdeps];
-					for (int i = 0; i < numdeps; i++)
-						ldeps[i] = deps[i].library();
-					Library lbin = bin.library();
-					
-					throw new todo.TODO();
-				}
+				// Debug to indicate where things are
+				System.err.printf("AU15 %s%n", bin.name());
+				
+				// Compile binary and get all the needed dependencies
+				Binary[] deps = binarymanager.compile(bin);
+				int numdeps = deps.length;
+				
+				// Split off active binary and the dependencies
+				bin = deps[--numdeps];
+				deps = Arrays.copyOf(deps, numdeps);
+				
+				// Translate binaries to JIT libraries
+				Library[] ldeps = new Library[numdeps];
+				for (int i = 0; i < numdeps; i++)
+					ldeps[i] = deps[i].library();
+				Library lbin = bin.library();
+				
+				throw new todo.TODO();
 			}
+			
+			// Link the binary together into a single executable
+			if (true)
+				throw new todo.TODO();
 			
 			// This is the generated ROM file.
 			return baos.toByteArray();

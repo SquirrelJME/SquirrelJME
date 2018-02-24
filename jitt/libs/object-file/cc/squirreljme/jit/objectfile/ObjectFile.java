@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import net.multiphasicapps.collections.SortedTreeMap;
 
 /**
@@ -25,12 +27,20 @@ import net.multiphasicapps.collections.SortedTreeMap;
 public final class ObjectFile
 {
 	/** Sections within the object file. */
-	private final Map<String, Symbol> _symbols =
+	private final Map<String, Section> _sections =
 		new SortedTreeMap<>();
 	
-	/** Strings which have been added to the object file. */
-	private final Map<String, Symbol> _strings =
-		new LinkedHashMap<>();
+	/** Imported symbols. */
+	private final Set<ImportedSymbol> _imports =
+		new LinkedHashSet<>();
+	
+	/** Exported symbols. */
+	private final Set<ExportedSymbol> _exports =
+		new LinkedHashSet<>();
+	
+	/** Virtual table of strings that exist within the object file. */
+	private final Map<String, ImportedSymbol> _strings =
+		new SortedTreeMap<>();
 	
 	/**
 	 * Initializes the object file.
@@ -39,9 +49,6 @@ public final class ObjectFile
 	 */
 	public ObjectFile()
 	{
-		// Create an initial strings section always since that is where
-		// string data will be stored
-		this.addSection(".strings", SectionFlag.READ);
 	}
 	
 	/**
@@ -65,15 +72,16 @@ public final class ObjectFile
 	}
 	
 	/**
-	 * Adds a string to the object file and returns the symbol which points
-	 * to that given string.
+	 * Adds a string to the virtual string table, note that strings are not
+	 * actually added to the output binary they are just referred to as
+	 * global imports.
 	 *
 	 * @param __v The string value to add.
 	 * @return The symbol to the string data.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/02/23
 	 */
-	public final Symbol addString(String __v)
+	public final ImportedSymbol addString(String __v)
 		throws NullPointerException
 	{
 		if (__v == null)

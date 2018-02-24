@@ -11,20 +11,20 @@
 package cc.squirreljme.jit.objectfile;
 
 /**
- * This represents a symbol which is used to refer to a section, an absolute
- * address, or an address relative to a section. Symbols may either be
- * exported or they may be imported.
+ * This represents a symbol which is imported from another object file or
+ * potentially the same object file.
  *
  * @since 2018/02/23
  */
-public abstract class Symbol
+public final class ImportedSymbol
+	extends Symbol
 {
 	/**
-	 * Internally initialized.
-	 *
+	 * {@inheritDoc}
 	 * @since 2018/02/23
 	 */
-	Symbol()
+	@Override
+	public final boolean equals(Object __o)
 	{
 		throw new todo.TODO();
 	}
@@ -34,20 +34,39 @@ public abstract class Symbol
 	 * @since 2018/02/23
 	 */
 	@Override
-	public abstract boolean equals(Object __o);
+	public final int hashCode()
+	{
+		throw new todo.TODO();
+	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/02/23
 	 */
 	@Override
-	public abstract int hashCode();
+	public final String toString()
+	{
+		throw new todo.TODO();
+	}
 	
 	/**
-	 * {@inheritDoc}
+	 * This represents the scope of the imported symbol.
+	 *
 	 * @since 2018/02/23
 	 */
-	@Override
-	public abstract String toString();
+	public static enum Scope
+	{
+		/** An import from the global space in the object. */
+		GLOBAL,
+		
+		/** An import from the local static space. */
+		STATIC,
+		
+		/** Dynamically imported at runtime. */
+		DYNAMIC,
+		
+		/** End. */
+		;
+	}
 }
 
