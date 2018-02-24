@@ -7,6 +7,6 @@ X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This project contains the JIT compiler which 
  reads the input class file code and translates it to target machine 
  code.
-X-SquirrelJME-Depends: jit-library
+X-SquirrelJME-Depends: jit-library object-file
 Microedition-Configuration: CLDC-1.8-Compact
 
