@@ -11,8 +11,18 @@
 package cc.squirreljme.builder.support;
 
 import cc.squirreljme.jit.library.Library;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
+import net.multiphasicapps.collections.UnmodifiableList;
+import net.multiphasicapps.zip.blockreader.ZipBlockReader;
+import net.multiphasicapps.zip.blockreader.ZipBlockEntry;
+import net.multiphasicapps.zip.blockreader.ZipEntryNotFoundException;
 
 /**
  * This wraps a binary and provides a library used by the JIT.
@@ -24,6 +34,9 @@ public final class BinaryLibrary
 {
 	/** The binary to wrap. */
 	protected final Binary binary;
+	
+	/** Iterable data source. */
+	private volatile Reference<Iterable<String>> _entries;
 	
 	/**
 	 * Initializes the library.
@@ -50,7 +63,29 @@ public final class BinaryLibrary
 	@Override
 	public final Iterable<String> entries()
 	{
-		throw new todo.TODO();
+		Reference<Iterable<String>> ref = this._entries;
+		Iterable<String> rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			try (ZipBlockReader zip = this.binary.zipBlock())
+			{
+				List<String> list = new ArrayList<>();
+				
+				for (ZipBlockEntry e : zip)
+					list.add(e.name());
+				
+				// Store 
+				this._entries = new WeakReference<>(
+					(rv = UnmodifiableList.<String>of(list)));
+			}
+			
+			// {@squirreljme.error AU15 Could not get entry list for library.}
+			catch (IOException e)
+			{
+				throw new RuntimeException("AU15");
+			}
+		
+		return rv;
 	}
 	
 	/**
@@ -64,7 +99,36 @@ public final class BinaryLibrary
 		if (__name == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		try (ZipBlockReader zip = this.binary.zipBlock();
+			InputStream is = zip.open(__name))
+		{
+			try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
+			{
+				byte[] buf = new byte[512];
+				
+				for (;;)
+				{
+					int rc = is.read(buf);
+					
+					if (rc < 0)
+						return new ByteArrayInputStream(baos.toByteArray());
+					
+					baos.write(buf, 0, rc);
+				}
+			}
+		}
+		
+		// No entry exists
+		catch (ZipEntryNotFoundException e)
+		{
+			return null;
+		}
+		
+		// {@squirreljme.error AU16 Could not read the ZIP entry.}
+		catch (IOException e)
+		{
+			throw new RuntimeException("AU16", e);
+		}
 	}
 }
 
