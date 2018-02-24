@@ -11,6 +11,8 @@
 package cc.squirreljme.builder.support;
 
 import cc.squirreljme.jit.library.Library;
+import java.io.InputStream;
+import java.io.IOException;
 
 /**
  * This wraps a binary and provides a library used by the JIT.
@@ -37,6 +39,30 @@ public final class BinaryLibrary
 			throw new NullPointerException("NARG");
 		
 		this.binary = __bin;	
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/02/23
+	 */
+	@Override
+	public final Iterable<String> entries()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/02/23
+	 */
+	@Override
+	public final InputStream open(String __name)
+		throws NullPointerException
+	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 }
 

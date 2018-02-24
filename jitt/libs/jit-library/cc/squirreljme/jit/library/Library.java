@@ -10,6 +10,8 @@
 
 package cc.squirreljme.jit.library;
 
+import cc.squirreljme.jit.classfile.ClassFile;
+import java.io.InputStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -23,5 +25,42 @@ import java.util.Map;
  */
 public abstract class Library
 {
+	/**
+	 * Iterates over the entries available within this library.
+	 *
+	 * @return The entries which are available for usage.
+	 * @since 2018/02/23
+	 */
+	public abstract Iterable<String> entries();
+	
+	/**
+	 * Opens the entry with the specified name.
+	 *
+	 * @param __name The entry to open.
+	 * @return The input stream to the entry data or {@code null} if no
+	 * such entry exists.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/02/23
+	 */
+	public abstract InputStream open(String __name)
+		throws NullPointerException;
+	
+	/**
+	 * Loads the class by the specified name.
+	 *
+	 * @param __name The name of the class to load.
+	 * @return The class file for the given class.
+	 * @throws NoSuchClassException If the specified class does not exist.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/02/23
+	 */
+	public final ClassFile loadClass(String __name)
+		throws NoSuchClassException, NullPointerException
+	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 }
 
