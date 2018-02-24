@@ -35,6 +35,8 @@ public final class BinaryLibrary
 	public BinaryLibrary(Binary __bin)
 		throws NullPointerException
 	{
+		super(__bin.name().toString());
+		
 		if (__bin == null)
 			throw new NullPointerException("NARG");
 		

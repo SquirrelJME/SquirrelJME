@@ -25,6 +25,25 @@ import java.util.Map;
  */
 public abstract class Library
 {
+	/** The name of this library. */
+	protected final String name;
+	
+	/**
+	 * Initializes the base library.
+	 *
+	 * @param __name The name of this library.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/02/24
+	 */
+	public Library(String __name)
+		throws NullPointerException
+	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		this.name = __name;
+	}
+	
 	/**
 	 * Iterates over the entries available within this library.
 	 *
@@ -44,6 +63,17 @@ public abstract class Library
 	 */
 	public abstract InputStream open(String __name)
 		throws NullPointerException;
+	
+	/**
+	 * Iterates through the classes which are available in this library.
+	 *
+	 * @return The input classes available in this library.
+	 * @since 2018/02/24
+	 */
+	public final Iterable<ClassFile> classes()
+	{
+		throw new todo.TODO();
+	}
 	
 	/**
 	 * Loads the class by the specified name.
