@@ -1,0 +1,6 @@
+# 2018/02/23
+
+## 21:04
+
+I need a class which is basically an object file which contains a bunch of
+code along with sections and symbols to use.
