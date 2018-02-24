@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-UUID: 1f03d5dd-714c-4071-ab50-82d41bc2a9de
+X-SquirrelJME-Error: BN
+X-SquirrelJME-Name: Object File
+X-SquirrelJME-Vendor: Stephanie Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This project contains the representation of 
+ the output temporary object file which contains all of the machine 
+ code, program data, symbols, and strings used for linking.
+X-SquirrelJME-Depends: jit-base
+Microedition-Configuration: CLDC-1.8-Compact
+
