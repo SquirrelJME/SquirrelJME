@@ -14,11 +14,12 @@ import cc.squirreljme.jit.classfile.ClassFile;
 import cc.squirreljme.jit.classfile.Field;
 import cc.squirreljme.jit.classfile.Method;
 import cc.squirreljme.jit.library.Library;
-import cc.squirreljme.jit.objectfile.CommonSectionNames;
 import cc.squirreljme.jit.objectfile.DataProperties;
 import cc.squirreljme.jit.objectfile.ObjectFile;
 import cc.squirreljme.jit.objectfile.Section;
 import cc.squirreljme.jit.objectfile.SectionFlag;
+import cc.squirreljme.jit.objectfile.SectionNames;
+import cc.squirreljme.jit.objectfile.SectionWriter;
 
 /**
  * This is a compiler which only transforms a single class that has been
@@ -77,11 +78,19 @@ public final class SingleClassCompiler
 		DataProperties dataproperties = targetproperties.dataProperties();
 		
 		// Make sure the section for class table data exists
-		Section classtable = objectfile.getSection(CommonSectionNames.CLASSES);
+		Section classtable = objectfile.getSection(SectionNames.CLASSES);
 		if (classtable == null)
-			classtable = objectfile.addSection(CommonSectionNames.CLASSES,
+			classtable = objectfile.addSection(SectionNames.CLASSES,
 				SectionFlag.READ);
 		
+		// May need to write out interfaces
+		Section impltable = objectfile.getSection(SectionNames.IMPLEMENTED);
+		if (impltable == null)
+			impltable = objectfile.addSection(SectionNames.IMPLEMENTED,
+				SectionFlag.READ);
+		
+		// Write out the class data
+		SectionWriter sw = classtable.createWriter(dataproperties);
 		if (true)
 			throw new todo.TODO();
 		

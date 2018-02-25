@@ -15,10 +15,14 @@ package cc.squirreljme.jit.objectfile;
  *
  * @since 2018/02/24
  */
-public interface CommonSectionNames
+public interface SectionNames
 {
 	/** Static class information. */
 	public static final String CLASSES =
 		".squirreljme.classes";
+	
+	/** Table of class pointers which are implemented by classes. */
+	public static final String IMPLEMENTED =
+		".squirreljme.implemented";
 }
 
