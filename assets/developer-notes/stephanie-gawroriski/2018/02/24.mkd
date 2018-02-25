@@ -1,0 +1,26 @@
+# 2018/02/24
+
+## 19:01
+
+Since everything will be pretty static along with dependencies, I just need a
+class which initializes the class structure accordingly so I know offsets of
+fields and such along with global data areas.
+
+## 19:02
+
+Of course when it comes to global symbols and their offsets I can do symbols.
+But then I can just do symbols for everything, then calculate that information
+later for the most part.
+
+## 23:02
+
+Well really, when it comes to fields which are static they are always offset
+from a global table of data.
+
+## 23:42
+
+I believe when it comes to sections that they should be written in slices of
+binary data and additionally data which refers to sections. So basically
+instead of maintaining two growing arrays, it is just a list of addresses
+and the size of things. That way things can refer to symbols or instructions
+as needed at link time.
