@@ -26,17 +26,13 @@ import net.multiphasicapps.collections.SortedTreeMap;
  */
 public final class ObjectFile
 {
+	/** The symbol table for this class. */
+	protected final SymbolTable symbols =
+		new SymbolTable();
+	
 	/** Sections within the object file. */
 	private final Map<String, Section> _sections =
 		new SortedTreeMap<>();
-	
-	/** Imported symbols. */
-	private final Set<ImportedSymbol> _imports =
-		new LinkedHashSet<>();
-	
-	/** Exported symbols. */
-	private final Set<ExportedSymbol> _exports =
-		new LinkedHashSet<>();
 	
 	/** Virtual table of strings that exist within the object file. */
 	private final Map<String, ImportedSymbol> _strings =
@@ -88,6 +84,28 @@ public final class ObjectFile
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the section named under the given name.
+	 *
+	 * @param __name The section name to obtain.
+	 * @return The section for that name or {@code null} if it does not
+	 * exist.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/02/24
+	 */
+	public final Section getSection(String __name)
+		throws NullPointerException
+	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		Map<String, Section> sections = this._sections;
+		synchronized (sections)
+		{
+			return sections.get(__name);
+		}
 	}
 }
 

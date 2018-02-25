@@ -60,7 +60,7 @@ public final class LibraryState
 		
 		// Compile all classes to the given object file
 		for (ClassFile cl : this.current.classes())
-			new SingleClassCompiler(cl, this, __of);
+			new SingleClassCompiler(cl, this, __of).run();
 	}
 }
 
