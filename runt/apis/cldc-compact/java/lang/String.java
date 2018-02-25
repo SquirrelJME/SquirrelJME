@@ -10,6 +10,8 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.string.BasicSequence;
+import cc.squirreljme.runtime.cldc.string.EmptySequence;
 import cc.squirreljme.runtime.cldc.SystemCall;
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.Reference;
@@ -45,9 +47,17 @@ public final class String
 	private static final Map<String, Object> _INTERNS =
 		new WeakHashMap<>();
 	
+	/** The basic character sequence data. */
+	private final BasicSequence _sequence;
+	
+	/**
+	 * Initializes a new empty string.
+	 *
+	 * @since 2018/02/24
+	 */
 	public String()
 	{
-		throw new todo.TODO();
+		this(EmptySequence.INSTANCE);
 	}
 	
 	public String(String __a)
@@ -117,6 +127,22 @@ public final class String
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Initializes the string using the given sequence for characters.
+	 *
+	 * @param __bs The sequence of characters to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/02/24
+	 */
+	private String(BasicSequence __bs)
+		throws NullPointerException
+	{
+		if (__bs == null)
+			throw new NullPointerException("NARG");
+		
+		this._sequence = __bs;
 	}
 	
 	public char charAt(int __a)
