@@ -41,5 +41,21 @@ public final class Section
 		this.name = __name;
 		this.symbols = __st;
 	}
+	
+	/**
+	 * Creates a writer for writing the section data.
+	 *
+	 * @param __dp The properties for writing data.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/02/24
+	 */
+	public final SectionWriter createWriter(DataProperties __dp)
+		throws NullPointerException
+	{
+		if (__dp == null)
+			throw new NullPointerException("NARG");
+		
+		return new SectionWriter(this, __dp);
+	}
 }
 

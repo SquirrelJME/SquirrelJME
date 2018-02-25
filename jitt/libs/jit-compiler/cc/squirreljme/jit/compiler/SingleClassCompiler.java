@@ -15,6 +15,7 @@ import cc.squirreljme.jit.classfile.Field;
 import cc.squirreljme.jit.classfile.Method;
 import cc.squirreljme.jit.library.Library;
 import cc.squirreljme.jit.objectfile.CommonSectionNames;
+import cc.squirreljme.jit.objectfile.DataProperties;
 import cc.squirreljme.jit.objectfile.ObjectFile;
 import cc.squirreljme.jit.objectfile.Section;
 import cc.squirreljme.jit.objectfile.SectionFlag;
@@ -37,25 +38,30 @@ public final class SingleClassCompiler
 	/** The target object file. */
 	protected final ObjectFile objectfile;
 	
+	/** Properties of the target compiler. */
+	protected final TargetProperties targetproperties;
+	
 	/**
 	 * Initializes the compiler for the class.
 	 *
 	 * @param __cf The input class to compile.
 	 * @param __lib The state of the libraries being compiled.
 	 * @param __of The object file to write to for compilation.
+	 * @param __tp Properties of the target compiler.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/02/23
 	 */
 	public SingleClassCompiler(ClassFile __cf, LibraryState __lib,
-		ObjectFile __of)
+		ObjectFile __of, TargetProperties __tp)
 		throws NullPointerException
 	{
-		if (__cf == null || __lib == null || __of == null)
+		if (__cf == null || __lib == null || __of == null || __tp == null)
 			throw new NullPointerException("NARG");
 		
 		this.classfile = __cf;
 		this.libstate = __lib;
 		this.objectfile = __of;
+		this.targetproperties = __tp;
 	}
 	
 	/**
@@ -67,6 +73,8 @@ public final class SingleClassCompiler
 	{
 		ClassFile classfile = this.classfile;
 		ObjectFile objectfile = this.objectfile;
+		TargetProperties targetproperties = this.targetproperties;
+		DataProperties dataproperties = targetproperties.dataProperties();
 		
 		// Make sure the section for class table data exists
 		Section classtable = objectfile.getSection(CommonSectionNames.CLASSES);

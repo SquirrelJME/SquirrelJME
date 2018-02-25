@@ -49,18 +49,19 @@ public final class LibraryState
 	 * Compiles all classes in this library to the given object file.
 	 *
 	 * @param __of The object file to compile into.
+	 * @param __tp Properties of the target compiler.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/02/24
 	 */
-	public void compile(ObjectFile __of)
+	public void compile(ObjectFile __of, TargetProperties __tp)
 		throws NullPointerException
 	{
-		if (__of == null)
+		if (__of == null || __tp == null)
 			throw new NullPointerException("NARG");
 		
 		// Compile all classes to the given object file
 		for (ClassFile cl : this.current.classes())
-			new SingleClassCompiler(cl, this, __of).run();
+			new SingleClassCompiler(cl, this, __of, __tp).run();
 	}
 }
 
