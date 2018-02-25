@@ -11,6 +11,7 @@
 package cc.squirreljme.builder.support;
 
 import cc.squirreljme.jit.compiler.LibraryState;
+import cc.squirreljme.jit.compiler.wintercoat.WinterCoatProperties;
 import cc.squirreljme.jit.library.Library;
 import cc.squirreljme.jit.objectfile.ObjectFile;
 import java.io.ByteArrayOutputStream;
@@ -124,7 +125,7 @@ public class WinterCoatFactory
 				LibraryState libstate = new LibraryState(ldeps, lbin);
 				
 				// Compile into the target object file
-				libstate.compile(object);
+				libstate.compile(object, new WinterCoatProperties());
 			}
 			
 			// Link the binary together into a single executable
