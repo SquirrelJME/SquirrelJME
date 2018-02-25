@@ -64,7 +64,19 @@ public final class ObjectFile
 		if (__name == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		Map<String, Section> sections = this._sections;
+		synchronized (sections)
+		{
+			// {@squirreljme.error BN01 A section by the specified name
+			// already exists. (The section name)}
+			if (sections.containsKey(__name))
+				throw new IllegalStateException(
+					String.format("BN01 %s", __name));
+			
+			Section rv;
+			sections.put(__name, (rv = new Section(__name, this.symbols)));
+			return rv;
+		}
 	}
 	
 	/**

@@ -18,5 +18,28 @@ package cc.squirreljme.jit.objectfile;
  */
 public final class Section
 {
+	/** The name of this section. */
+	protected final String name;
+	
+	/** The symbol table for sections. */
+	protected final SymbolTable symbols;
+	
+	/**
+	 * Initializes the section.
+	 *
+	 * @param __name The name of the section.
+	 * @param __st The symbol table.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/02/24
+	 */
+	Section(String __name, SymbolTable __st)
+		throws NullPointerException
+	{
+		if (__name == null || __st == null)
+			throw new NullPointerException("NARG");
+		
+		this.name = __name;
+		this.symbols = __st;
+	}
 }
 
