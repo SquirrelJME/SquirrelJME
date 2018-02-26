@@ -40,5 +40,82 @@ public final class SectionWriter
 		this.section = __s;
 		this.dataproperties = __dp;
 	}
+	
+	/**
+	 * Writes the specified byte value.
+	 *
+	 * @param __v The value to write.
+	 * @since 2018/02/25
+	 */
+	public final void writeByte(int __v)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Writes the specified double value.
+	 *
+	 * @param __v The value to write.
+	 * @since 2018/02/25
+	 */
+	public final void writeDouble(double __v)
+	{
+		this.writeLong(Double.doubleToRawLongBits(__v));
+	}
+	
+	/**
+	 * Writes the specified float value.
+	 *
+	 * @param __v The value to write.
+	 * @since 2018/02/25
+	 */
+	public final void writeFloat(float __v)
+	{
+		this.writeInteger(Float.floatToRawIntBits(__v));
+	}
+	
+	/**
+	 * Writes the specified integer value.
+	 *
+	 * @param __v The value to write.
+	 * @since 2018/02/25
+	 */
+	public final void writeInteger(int __v)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Writes the specified long value.
+	 *
+	 * @param __v The value to write.
+	 * @since 2018/02/25
+	 */
+	public final void writeLong(long __v)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Writes the specified pointer value.
+	 *
+	 * @param __v The value to write.
+	 * @since 2018/02/25
+	 */
+	public final void writePointer(long __v)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Writes the specified short value.
+	 *
+	 * @param __v The value to write.
+	 * @since 2018/02/25
+	 */
+	public final void writeShort(int __v)
+	{
+		throw new todo.TODO();
+	}
 }
 
