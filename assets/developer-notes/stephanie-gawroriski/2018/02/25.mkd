@@ -1,0 +1,13 @@
+# 2018/02/25
+
+## 19:43
+
+Okay so, I will need a class which can manage structures and such along with
+having the right sizes and such. I initially need a class structure.
+
+## 19:56
+
+Keeping up a naming convention for symbols is going to be complex so it is
+better if there were just a class which represents a symbol name and
+information. It would definitely be much easier to maintain in the long
+run and it would prevent errors where I refer to the wrong symbol.
