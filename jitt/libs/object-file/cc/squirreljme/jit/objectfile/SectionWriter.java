@@ -50,7 +50,7 @@ public final class SectionWriter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/02/25
 	 */
-	public final ExportedSymbol exportSymbol(String __name,
+	public final ExportedSymbol exportSymbol(SymbolName __name,
 		ExportedSymbol.Scope __scope)
 		throws NullPointerException
 	{

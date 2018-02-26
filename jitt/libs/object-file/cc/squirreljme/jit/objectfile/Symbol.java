@@ -19,14 +19,23 @@ package cc.squirreljme.jit.objectfile;
  */
 public abstract class Symbol
 {
+	/** The name of this symbol. */
+	protected final SymbolName name;
+	
 	/**
 	 * Internally initialized.
 	 *
+	 * @param __name The name of this symbol.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2018/02/23
 	 */
-	Symbol()
+	Symbol(SymbolName __name)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		this.name = __name;
 	}
 	
 	/**
@@ -42,6 +51,17 @@ public abstract class Symbol
 	 */
 	@Override
 	public abstract int hashCode();
+	
+	/**
+	 * Returns the name of this symbol.
+	 *
+	 * @return The symbol name.
+	 * @since 2018/02/25
+	 */
+	public final SymbolName name()
+	{
+		return this.name;
+	}
 	
 	/**
 	 * {@inheritDoc}
