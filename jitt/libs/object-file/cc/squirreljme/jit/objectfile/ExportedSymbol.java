@@ -19,6 +19,28 @@ package cc.squirreljme.jit.objectfile;
 public final class ExportedSymbol
 	extends Symbol
 {
+	/** The scope of this symbol. */
+	protected final ExportedSymbol.Scope scope;
+	
+	/**
+	 * Initializes the symbol.
+	 *
+	 * @param __name The name of the symbol.
+	 * @param __scope The scope of the symbol.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/02/25
+	 */
+	public ExportedSymbol(SymbolName __name, ExportedSymbol.Scope __scope)
+		throws NullPointerException
+	{
+		super(__name);
+		
+		if (__scope == null)
+			throw new NullPointerException("NARG");
+		
+		this.scope = __scope;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/02/23
@@ -48,6 +70,17 @@ public final class ExportedSymbol
 	public final ImportedSymbol importSymbol()
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the scope of this symbol.
+	 *
+	 * @return The symbol scope.
+	 * @since 2018/02/25
+	 */
+	public final ExportedSymbol.Scope scope()
+	{
+		return this.scope;
 	}
 	
 	/**
