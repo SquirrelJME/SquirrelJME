@@ -66,6 +66,9 @@ public enum ClassStructure
 	/** Offsets to fields in the global space representing enum fields. */
 	ENUM_FIELD_OFFSETS,
 	
+	/** The static initializer method. */
+	STATIC_INITIALIZER,
+	
 	/** End. */
 	;
 }
