@@ -27,6 +27,14 @@ public abstract class SymbolName
 	private volatile Reference<String> _string;
 	
 	/**
+	 * Returns the string representation of the symbol.
+	 *
+	 * @return The string representation of the symbol.
+	 * @since 2018/02/26
+	 */
+	protected abstract String internalToString();
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/02/25
 	 */
@@ -73,7 +81,13 @@ public abstract class SymbolName
 	@Override
 	public final String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>((rv = this.internalToString()));
+		
+		return rv;
 	}
 }
 
