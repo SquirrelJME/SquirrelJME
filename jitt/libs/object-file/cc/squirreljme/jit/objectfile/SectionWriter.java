@@ -42,6 +42,25 @@ public final class SectionWriter
 	}
 	
 	/**
+	 * Exports the given symbol by the given name.
+	 *
+	 * @param __name The name of the symbol.
+	 * @param __scope The scope of the symbol.
+	 * @return The exported symbol.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/02/25
+	 */
+	public final ExportedSymbol exportSymbol(String __name,
+		ExportedSymbol.Scope __scope)
+		throws NullPointerException
+	{
+		if (__name == null || __scope == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Writes the specified byte value.
 	 *
 	 * @param __v The value to write.
