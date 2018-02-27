@@ -12,6 +12,37 @@ functionality for SquirrelJME.
 
 ## Specifications
 
+All of these listed specifications are not obsolete or implemented by other
+specifications.
+
+ * **JSR184** -- Mobile 3D Graphics API for J2ME
+   * Needed by a number of games.
+ * **JSR211** -- Content Handler API
+   * Content handling, essentially say you install a JAR that is a media
+     player for MIDI files. Effectively if you "launch" a MIDI, that given JAR
+     will open to view the given content.
+ * **JSR226** -- Scalable 2D Vector Graphics API for J2ME 1.1
+   * SVG Tiny Support.
+   * Relies on LCDUI.
+   * Some classes can just forward calls to MIDP 3.
+ * **JSR238** -- Mobile Internationalization API
+   * Internationalization of text.
+ * **JSR239** -- Java Binding for the OpenGL ES API
+   * Required for some games.
+   * Can be more easily bridged to native OpenGL implementations compared to
+     M3G.
+ * **JSR256** -- Mobile Sensor API 1.2
+   * Sensors are useful.
+ * **JSR360** -- Connected Limited Device Configuration 8
+   * This is SquirrelJME's target.
+ * **JSR361** -- Java ME Embedded Profile
+   * MEEP 8.
+   * This is SquirrelJME's target.
+
+## Obsolete
+
+These specifications are obsolete and are implemented by newer specifications.
+
  * **JSR030** -- J2ME Connected, Limited Device Configuration.
    * _Implemented by newer JSR_.
    * CLDC 1.0.
@@ -30,42 +61,19 @@ functionality for SquirrelJME.
    * Implemented by MIDP 3.
  * **JSR139** -- Connected Limited Device Configuration 1.1
    * _Implemented by newer JSR_.
-   * CLDC 1.1.
- * **JSR184** -- Mobile 3D Graphics API for J2ME
-   * Needed by a number of games.
  * **JSR195** -- Information Module Profile Documentation
    * _Implemented by newer JSR_.
    * Essentially `HTTPConnection` and MEEP-8's _rms_.
- * **JSR211** -- Content Handler API
-   * Content handling, essentially say you install a JAR that is a media
-     player for MIDI files. Effectively if you "launch" a MIDI, that given JAR
-     will open to view the given content.
- * **JSR226** -- Scalable 2D Vector Graphics API for J2ME 1.1
-   * SVG Tiny Support.
-   * Relies on LCDUI.
-   * Some classes can just forward calls to MIDP 3.
+   * CLDC 1.1.
  * **JSR228** -- Information Module Profile - Next Generation (IMP-NG)
    * _Implemented by newer JSR_.
    * An early ancestor to MIDP 3 and MEEP.
  * **JSR234** -- Advanced Multimedia Supplements.
    * _Implemented by newer JSR_.
    * Included by MIDP 3.
- * **JSR238** -- Mobile Internationalization API
-   * Internationalization of text.
- * **JSR239** -- Java Binding for the OpenGL ES API
-   * Required for some games.
-   * Can be more easily bridged to native OpenGL implementations compared to
-     M3G.
  * **JSR246** -- Device Management API
    * _Implemented by newer JSR_.
    * Included by Java ME 8.
- * **JSR256** -- Mobile Sensor API 1.2
-   * Sensors are useful.
- * **JSR360** -- Connected Limited Device Configuration 8
-   * This is SquirrelJME's target.
- * **JSR361** -- Java ME Embedded Profile
-   * MEEP 8.
-   * This is SquirrelJME's target.
 
 # Considering
 
@@ -82,6 +90,7 @@ Specifications that may be considered for inclusion.
    * Similar to Palm OS's HotSync.
  * **JSR257** -- Contactless Communication API
    * Can be used for RFID and such.
+   * May also include NFC.
 
 # Out of Scope
 
@@ -153,6 +162,10 @@ third parties libraries.
    * Essentially VoIP.
  * **JSR332** -- Email Client API for Java ME
    * E-mail.
+ * **JSR927** -- Java TV API 1.1
+   * Depends upon _JSR129_ (Personal Basis Profile).
+   * Used in BD-J (Blu-Ray Discs) to provide interactive menus.
+   * Includes `javax.tv.xlet`.
 
 # Unknown
 
