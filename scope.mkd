@@ -33,6 +33,9 @@ specifications.
      M3G.
  * **JSR256** -- Mobile Sensor API 1.2
    * Sensors are useful.
+ * **JSR271** -- Mobile Information Device Profile 3
+   * Enhances support for MIDlets by adding more features.
+   * MIDP 3.0
  * **JSR360** -- Connected Limited Device Configuration 8
    * This is SquirrelJME's target.
  * **JSR361** -- Java ME Embedded Profile
