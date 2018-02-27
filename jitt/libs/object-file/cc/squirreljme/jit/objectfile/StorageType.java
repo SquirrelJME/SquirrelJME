@@ -8,14 +8,37 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.jit.compiler;
+package cc.squirreljme.jit.objectfile;
 
 /**
- * This represents a type used by a structure.
+ * Represents the type of value which can be stored in a variable.
  *
  * @since 2018/02/26
  */
-public interface StructureType
+public enum StorageType
 {
+	/** Byte. */
+	BYTE,
+	
+	/** Short. */
+	SHORT,
+	
+	/** Integer. */
+	INTEGER,
+	
+	/** Long. */
+	LONG,
+	
+	/** Pointer. */
+	POINTER,
+	
+	/** Float. */
+	FLOAT,
+	
+	/** Double. */
+	DOUBLE,
+	
+	/** End. */
+	;
 }
 
