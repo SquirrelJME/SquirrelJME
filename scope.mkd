@@ -137,6 +137,8 @@ third parties libraries.
    * Requires CDC.
  * **JSR214** -- Micro BPSS for J2ME Devices.
    * Rejected.
+ * **JSR217** -- Personal Basis Profile 1.1.2
+   * Effectively Java SE Embedded.
  * **JSR216** -- Personal Profile.
    * Effectively Java SE Embedded.
  * **JSR218** -- Connected Device Configuration (CDC) 1.1
@@ -163,9 +165,12 @@ third parties libraries.
  * **JSR332** -- Email Client API for Java ME
    * E-mail.
  * **JSR927** -- Java TV API 1.1
-   * Depends upon _JSR129_ (Personal Basis Profile).
-   * Used in BD-J (Blu-Ray Discs) to provide interactive menus.
+   * Depends upon _JSR127_ (Personal Basis Profile).
+   * Precedes _BD-J_.
    * Includes `javax.tv.xlet`.
+ * **BD-J** -- Blu-ray Disc Java (Blu-ray Disc Association)
+   * Extends on Java TV (includes the Personal Basis Profile).
+   * Not a JSR, standardized by the specified association.
 
 # Unknown
 
