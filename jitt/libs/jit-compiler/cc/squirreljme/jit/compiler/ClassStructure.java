@@ -28,7 +28,7 @@ public enum ClassStructure
 	SUPER,
 	
 	/** Number of implemented interfaces. */
-	INTERFACES_COUNT.
+	INTERFACES_COUNT,
 	
 	/** Pointer to implemented interfaces. */
 	INTERFACES,
