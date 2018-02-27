@@ -1,0 +1,6 @@
+# 2018/02/26
+
+## 09:16
+
+The static class information definitely will contain a bunch of important
+information.
