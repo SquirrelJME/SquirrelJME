@@ -10,6 +10,9 @@
 
 package cc.squirreljme.jit.compiler;
 
+import cc.squirreljme.jit.objectfile.StorageType;
+import cc.squirreljme.jit.objectfile.StructureType;
+
 /**
  * This specifies the fields which are part of the class structure and is used
  * to store class information.
@@ -17,6 +20,7 @@ package cc.squirreljme.jit.compiler;
  * @since 2018/02/26
  */
 public enum ClassStructure
+	implements StructureType
 {
 	/** Name of the class. */
 	NAME,
@@ -71,5 +75,25 @@ public enum ClassStructure
 	
 	/** End. */
 	;
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/02/26
+	 */
+	@Override
+	public final StructureType previousStruct()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/02/26
+	 */
+	@Override
+	public final StorageType storageType()
+	{
+		throw new todo.TODO();
+	}
 }
 
