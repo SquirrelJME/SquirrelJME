@@ -19,12 +19,14 @@ package cc.squirreljme.jit.objectfile;
 public interface StructureType
 {
 	/**
-	 * The element which is at the previous structure entry.
+	 * The elemnent which is offset from the specified current ordinal.
 	 *
-	 * @return The previous structure entry.
+	 * @param __o The offset for the current element.
+	 * @return The structure element which is at the given offset or
+	 * {@code null} if there is none.
 	 * @since 2018/02/26
 	 */
-	public abstract StructureType previousStruct();
+	public abstract StructureType offsetStructElement(int __o);
 	
 	/**
 	 * Returns the used storage type.
