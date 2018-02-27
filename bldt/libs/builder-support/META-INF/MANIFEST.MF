@@ -6,7 +6,7 @@ X-SquirrelJME-Vendor: Stephanie Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Depends: collections tool-manifest-reader meep-swm 
  tool-manifest-writer zip jit-library meep-midlet tool-compiler 
- java-to-c jit-compiler-wintercoat
+ java-to-c jit-compiler-wintercoat basic-interpreter
 X-SquirrelJME-Description: This contains basic support for the build 
  system and project manager. The interfaces declared by this class 
  must be implemented in order for the build system to be functional.
