@@ -16,7 +16,7 @@ package cc.squirreljme.runtime.cldc.system;
  *
  * @since 2018/02/27
  */
-public final MnemonicCall
+public final class MnemonicCall
 {
 	/**
 	 * Not used.

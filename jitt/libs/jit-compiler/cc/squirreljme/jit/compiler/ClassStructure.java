@@ -76,14 +76,22 @@ public enum ClassStructure
 	/** End. */
 	;
 	
+	/** Used for previous element determination. */
+	private static final ClassStructure[] _VALUES =
+		ClassStructure.values();
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/02/26
 	 */
 	@Override
-	public final StructureType previousStruct()
+	public final ClassStructure offsetStructElement(int __o)
 	{
-		throw new todo.TODO();
+		int now = this.ordinal() + __o;
+		ClassStructure[] values = ClassStructure._VALUES;
+		if (now < 0 || now >= values.length)
+			return null;
+		return values[now];
 	}
 	
 	/**
@@ -93,7 +101,62 @@ public enum ClassStructure
 	@Override
 	public final StorageType storageType()
 	{
-		throw new todo.TODO();
+		switch (this)
+		{
+			case NAME:
+				return StorageType.POINTER;
+			
+			case HASHCODE:
+				return StorageType.INTEGER;
+			
+			case SUPER:
+				return StorageType.POINTER;
+			
+			case INTERFACES_COUNT:
+				return StorageType.INTEGER;
+			
+			case INTERFACES:
+				return StorageType.POINTER;
+			
+			case INTERFACES_METHODS_TABLE:
+				return StorageType.POINTER;
+			
+			case FLAGS:
+				return StorageType.INTEGER;
+			
+			case DEFAULT_CONSTRUCTOR:
+				return StorageType.POINTER;
+			
+			case DEFAULT_CONSTRUCTOR_FLAGS:
+				return StorageType.INTEGER;
+			
+			case MAIN_METHOD:
+				return StorageType.POINTER;
+			
+			case MAIN_METHOD_FLAGS:
+				return StorageType.INTEGER;
+			
+			case ALLOCATION_SIZE:
+				return StorageType.POINTER;
+			
+			case GLOBAL_OBJECT_OFFSET:
+				return StorageType.OFFSET;
+			
+			case RESOURCE_GROUP:
+				return StorageType.POINTER;
+			
+			case ENUM_COUNT:
+				return StorageType.INTEGER;
+			
+			case ENUM_FIELD_OFFSETS:
+				return StorageType.POINTER;
+			
+			case STATIC_INITIALIZER:
+				return StorageType.POINTER;
+			
+			default:
+				throw new RuntimeException("OOPS");
+		}
 	}
 }
 

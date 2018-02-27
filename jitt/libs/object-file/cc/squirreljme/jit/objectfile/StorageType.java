@@ -32,6 +32,9 @@ public enum StorageType
 	/** Pointer. */
 	POINTER,
 	
+	/** Offset. */
+	OFFSET,
+	
 	/** Float. */
 	FLOAT,
 	
