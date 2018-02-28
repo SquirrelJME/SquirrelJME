@@ -1,0 +1,16 @@
+# 2018/02/27
+
+## 10:55
+
+I think it would be best if `Library` had the libraries it depended on
+that way compilation through libraries could be done recursively and in a way
+where if multiple libraries are attempted to be compiled they are correctly
+handled in a single state which allows for static optimization.
+
+## 11:01
+
+One of the big main things though is the staticness vs the dynamicness of
+Java. Perhaps my first goal should be to write an actual interpreter for the
+byte code, a kind of mini-virtual machine for testing purposes. Basically
+make that work before I even start work on the JIT. That way I can get a
+sort of pseudo environment as such.
