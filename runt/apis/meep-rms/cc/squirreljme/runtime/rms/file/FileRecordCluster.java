@@ -10,8 +10,8 @@
 
 package cc.squirreljme.runtime.rms.file;
 
-import cc.squirreljme.runtime.midlet.MidletSuiteName;
-import cc.squirreljme.runtime.midlet.MidletSuiteVendor;
+import cc.squirreljme.kernel.lib.SuiteName;
+import cc.squirreljme.kernel.lib.SuiteVendor;
 import cc.squirreljme.runtime.rms.RecordCluster;
 import cc.squirreljme.runtime.rms.RecordStoreOwner;
 import java.io.InputStream;
@@ -79,12 +79,12 @@ public class FileRecordCluster
 			Path use = __p;
 			
 			// Locate the vendor directory (or create)
-			MidletSuiteVendor vendor = __o.vendor();
+			SuiteVendor vendor = __o.vendor();
 			use = __scanPath(use, vendor.hashCode(), "vendor",
 				vendor.toString());
 			
 			// Locate the name directory (or create)
-			MidletSuiteName name = __o.name();
+			SuiteName name = __o.name();
 			use = __scanPath(use, name.hashCode(), "name",
 				name.toString());
 			

@@ -379,7 +379,26 @@ public final class SuiteDependency
 				// Standard
 			case STANDARD:
 				if (__mp instanceof Standard)
-					throw new todo.TODO();
+				{
+					Standard other = (Standard)__mp;
+					
+					// Must match name
+					if (!name.equals(other.name()))
+						return false;
+					
+					// Match vendor if specified
+					if (vendor != null)
+						if (!vendor.equals(other.vendor()))
+							return false;
+					
+					// Check if version in range if specified
+					if (version != null)
+						if (!version.inRange(other.version()))
+							return false;
+					
+					// Matches!
+					return true;
+				}
 				
 				// Not a standard
 				else
