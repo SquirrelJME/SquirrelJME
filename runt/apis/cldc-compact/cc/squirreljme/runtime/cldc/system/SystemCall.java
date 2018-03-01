@@ -18,6 +18,10 @@ package cc.squirreljme.runtime.cldc.system;
  */
 public final class SystemCall
 {
+	/** System call mnemonics. */
+	public static final MnemonicCall MNEMONIC =
+		new __SystemMnemonicCall__();
+	
 	/** The implementation of the system call, this is specially set. */
 	private static final SystemCallImplementation[] _IMPLEMENTATIONS =
 		SystemCall.__implementations();

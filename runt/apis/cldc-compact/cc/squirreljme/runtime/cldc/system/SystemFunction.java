@@ -21,12 +21,33 @@ package cc.squirreljme.runtime.cldc.system;
  * @since 2018/02/21
  */
 public enum SystemFunction
-{
+{	
+	/** Client initialization complete. */
+	CLIENT_INITIALIZATION_COMPLETE,
+	
+	/** Current time in milliseconds since UTC. */
+	CURRENT_TIME_MILLIS,
+	
+	/** Exits the current process. */
+	EXIT,
+	
+	/** Hint that garbage collection should be done. */
+	GARBAGE_COLLECTION_HINT,
+	
 	/** Invoke public static void main method of a class. */
 	INVOKE_STATIC_MAIN,
 	
-	/** Client initialization complete. */
-	CLIENT_INITIALIZATION_COMPLETE,
+	/** Returns the current monotonic clock time. */
+	NANOTIME,
+	
+	/** Pipe single byte to stdout or stderr. */
+	PIPE_OUTPUT_ZI,
+	
+	/** Pipe multiple bytes to stdout or stderr. */
+	PIPE_OUTPUT_ZABII,
+	
+	/** Set thread as daemon thread. */
+	SET_DAEMON_THREAD,
 	
 	/** End. */
 	;

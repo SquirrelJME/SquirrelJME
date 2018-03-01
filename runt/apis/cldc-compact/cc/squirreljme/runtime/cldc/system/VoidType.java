@@ -17,6 +17,10 @@ package cc.squirreljme.runtime.cldc.system;
  */
 public final class VoidType
 {
+	/** Single instance of the void type. */
+	public static final VoidType INSTANCE =
+		new VoidType();
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/02/21

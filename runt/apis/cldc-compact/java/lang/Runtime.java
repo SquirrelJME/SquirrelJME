@@ -10,7 +10,7 @@
 
 package java.lang;
 
-import cc.squirreljme.runtime.cldc.SystemCall;
+import cc.squirreljme.runtime.cldc.system.SystemCall;
 
 public class Runtime
 {
@@ -32,7 +32,7 @@ public class Runtime
 	 */
 	public void exit(int __v)
 	{
-		SystemCall.exit(__v);
+		SystemCall.MNEMONIC.exit(__v);
 	}
 	
 	public long freeMemory()
@@ -48,7 +48,7 @@ public class Runtime
 	 */
 	public void gc()
 	{
-		SystemCall.gc();
+		SystemCall.MNEMONIC.garbageCollectionHint();
 	}
 	
 	public long maxMemory()
@@ -61,9 +61,16 @@ public class Runtime
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the single instance of this class.
+	 *
+	 * Only a single runtime is valid and there will only be one.
+	 *
+	 * @since 2018/03/01
+	 */
 	public static Runtime getRuntime()
 	{
-		throw new todo.TODO();
+		return Runtime._INSTANCE;
 	}
 }
 

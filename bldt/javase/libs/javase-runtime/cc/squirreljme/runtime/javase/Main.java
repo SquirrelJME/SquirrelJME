@@ -98,7 +98,7 @@ public class Main
 				startmethod.setAccessible(true);
 				
 				// Initialization complete
-				MnemonicCall.clientInitializationComplete();
+				MnemonicCall.MNEMONIC.clientInitializationComplete();
 				
 				// Invoke the start method
 				startmethod.invoke(mid);
@@ -114,7 +114,7 @@ public class Main
 					throw new RuntimeException("AF02");
 				
 				// Initialization complete
-				MnemonicCall.clientInitializationComplete();
+				MnemonicCall.MNEMONIC.clientInitializationComplete();
 				
 				// Call it
 				mainmethod.invoke(null, new Object[]{__args});

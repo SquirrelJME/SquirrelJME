@@ -8,26 +8,38 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.cldc;
+package cc.squirreljme.runtime.cldc.io;
+
+import cc.squirreljme.runtime.cldc.system.SystemCall;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
- * This interface is used to set a daemon thread before the system call
- * interface has been initialized, this is needed by the packet interface.
+ * This wraps the standard default error stream.
  *
- * @since 2018/01/05
+ * @since 2016/06/16
  */
-@Deprecated
-public interface DaemonThreadSetter
+public final class StandardError
+	extends OutputStream
 {
 	/**
-	 * Sets the specified thread to be a daemon thread.
-	 *
-	 * @param __t The thread to set as a daemon.
-	 * @throws IllegalThreadStateException If it could not be set.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/01/05
+	 * {@inheritDoc}
+	 * @since 2016/06/16
 	 */
-	public abstract void setDaemonThread(Thread __t)
-		throws IllegalThreadStateException, NullPointerException;
+	@Override
+	public void write(int __b)
+	{
+		SystemCall.MNEMONIC.pipeOutput(true, __b);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/08/07
+	 */
+	@Override
+	public void write(byte[] __b, int __o, int __l)
+	{
+		SystemCall.MNEMONIC.pipeOutput(true, __b, __o, __l);
+	}
 }
 

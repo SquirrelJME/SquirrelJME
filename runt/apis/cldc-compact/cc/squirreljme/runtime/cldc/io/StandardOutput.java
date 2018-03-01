@@ -8,18 +8,19 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package java.lang;
+package cc.squirreljme.runtime.cldc.io;
 
-import cc.squirreljme.runtime.cldc.SystemCall;
+import cc.squirreljme.runtime.cldc.system.SystemCall;
 import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * This wraps the standard default error stream.
+ * This wraps the standard default output stream and writes to the system
+ * call interface.
  *
  * @since 2016/06/16
  */
-final class __StandardError__
+public final class StandardOutput
 	extends OutputStream
 {
 	/**
@@ -29,7 +30,7 @@ final class __StandardError__
 	@Override
 	public void write(int __b)
 	{
-		SystemCall.pipeOutput(true, (byte)__b);
+		SystemCall.MNEMONIC.pipeOutput(false, __b);
 	}
 	
 	/**
@@ -39,7 +40,7 @@ final class __StandardError__
 	@Override
 	public void write(byte[] __b, int __o, int __l)
 	{
-		SystemCall.pipeOutput(true, __b, __o, __l);
+		SystemCall.MNEMONIC.pipeOutput(false, __b, __o, __l);
 	}
 }
 

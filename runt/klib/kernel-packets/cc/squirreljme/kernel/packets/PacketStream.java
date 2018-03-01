@@ -10,7 +10,7 @@
 
 package cc.squirreljme.kernel.packets;
 
-import cc.squirreljme.runtime.cldc.SystemCall;
+import cc.squirreljme.runtime.cldc.system.SystemCall;
 import java.io.Closeable;
 import java.util.Objects;
 
@@ -98,7 +98,7 @@ public final class PacketStream
 		// other thread is terminated
 		try
 		{
-			SystemCall.setDaemonThread(thread);
+			SystemCall.MNEMONIC.setDaemonThread(thread);
 		}
 		catch (IllegalThreadStateException e)
 		{
