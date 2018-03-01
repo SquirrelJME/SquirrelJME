@@ -34,6 +34,8 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -487,6 +489,20 @@ public final class BinaryManager
 	}
 	
 	/**
+	 * Returns the dependency key to use for the manifest.
+	 *
+	 * @param __ismidlet Is this a midlet?
+	 * @param __i The dependency index.
+	 * @return The key to use in the manifest for the dependency.
+	 * @since 2018/02/28
+	 */
+	private static JavaManifestKey __dependencyKey(boolean __ismidlet, int __i)
+	{
+		return new JavaManifestKey((__ismidlet ?
+			"MIDlet-Dependency-" : "LIBlet-Dependency-") + __i);
+	}
+	
+	/**
 	 * Writes the real manifest to the output binary with non-proprietary
 	 * SquirrelJME dependencies.
 	 *
@@ -519,8 +535,7 @@ public final class BinaryManager
 		Set<SuiteDependency> mdeps = new LinkedHashSet<>();
 		for (int i = 1; i >= 1; i++)
 		{
-			JavaManifestKey key = new JavaManifestKey((ismidlet ?
-				"MIDlet-Dependency-" : "LIBlet-Dependency-") + i);
+			JavaManifestKey key = __dependencyKey(ismidlet, i);
 			
 			// No more values to parse
 			String value = outattr.get(key);
@@ -534,10 +549,10 @@ public final class BinaryManager
 		
 		// Go through and remap dependencies
 		int next = 1;
+		Collection<Binary> apideps = new ArrayList<>();
 		for (SuiteDependency dep : mdeps)
 		{
-			JavaManifestKey key = new JavaManifestKey((ismidlet ?
-				"MIDlet-Dependency-" : "LIBlet-Dependency-") + next);
+			JavaManifestKey key = __dependencyKey(ismidlet, next);
 			
 			// Debug
 			System.err.printf("DEBUG -- Dep: %s%n", dep);
@@ -581,9 +596,7 @@ public final class BinaryManager
 			// Depending on an API, use configuration, standard, or profile
 			SuiteInfo foundinfo = found.suiteInfo();
 			if (found.type() == ProjectType.API)
-			{
-				throw new todo.TODO();
-			}
+				apideps.add(found);
 			
 			// Relying on a liblet
 			else
@@ -599,6 +612,12 @@ public final class BinaryManager
 				// Use next key
 				next++;
 			}
+		}
+		
+		// Handle API dependencies since they require a more complex setup
+		if (!apideps.isEmpty())
+		{
+			throw new todo.TODO();
 		}
 		
 		// Debug
