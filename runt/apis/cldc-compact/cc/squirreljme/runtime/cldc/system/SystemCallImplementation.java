@@ -35,7 +35,7 @@ public interface SystemCallImplementation
 	 * @return The value returned from the call.
 	 * @since 2018/02/21
 	 */
-	public abstract Object call(SystemFunction __func, Object... __args)
+	public abstract Object systemCall(SystemFunction __func, Object... __args)
 		throws NullPointerException;
 }
 

@@ -23,6 +23,8 @@ import cc.squirreljme.kernel.packets.PacketWriter;
 import cc.squirreljme.kernel.service.ServerInstance;
 import cc.squirreljme.kernel.service.ServicePacketStream;
 import cc.squirreljme.kernel.service.ServiceProvider;
+import cc.squirreljme.runtime.cldc.system.SystemCallImplementation;
+import cc.squirreljme.runtime.cldc.system.SystemFunction;
 import cc.squirreljme.runtime.cldc.SystemTask;
 import cc.squirreljme.runtime.cldc.SystemTrustGroup;
 import java.lang.ref.Reference;
@@ -36,7 +38,7 @@ import java.util.Map;
  * @since 2017/12/10
  */
 public abstract class KernelTask
-	implements SystemTask
+	implements SystemCallImplementation, SystemTask
 {
 	/** Reference to the owning kernel. */
 	protected final Reference<Kernel> kernel;
@@ -51,6 +53,7 @@ public abstract class KernelTask
 	protected final SystemTrustGroup trustgroup;
 	
 	/** The packet stream to the child process. */
+	@Deprecated
 	private final PacketStream _stream;
 	
 	/** Instances of each service which is mapped to the kernel service set. */
@@ -184,6 +187,20 @@ public abstract class KernelTask
 	public final String mainClass()
 	{
 		return this.mainclass;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/02/21
+	 */
+	@Override
+	public final Object systemCall(SystemFunction __func, Object... __args)
+		throws NullPointerException
+	{
+		if (__func == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 	
 	/**

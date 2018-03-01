@@ -16,6 +16,7 @@ package cc.squirreljme.runtime.cldc;
  *
  * @since 2018/01/05
  */
+@Deprecated
 public interface DaemonThreadSetter
 {
 	/**

@@ -11,14 +11,12 @@
 package cc.squirreljme.runtime.javase;
 
 import cc.squirreljme.kernel.Kernel;
-import cc.squirreljme.kernel.packets.DatagramIn;
-import cc.squirreljme.kernel.packets.DatagramInputStream;
-import cc.squirreljme.kernel.packets.DatagramOut;
-import cc.squirreljme.kernel.packets.DatagramOutputStream;
-import cc.squirreljme.runtime.cldc.DaemonThreadSetter;
+import cc.squirreljme.kernel.KernelTask;
 import cc.squirreljme.runtime.cldc.StandardOutput;
-import cc.squirreljme.runtime.cldc.SystemCall;
-import cc.squirreljme.runtime.cldc.SystemCaller;
+import cc.squirreljme.runtime.cldc.system.MnemonicCall;
+import cc.squirreljme.runtime.cldc.system.SystemCall;
+import cc.squirreljme.runtime.cldc.system.SystemCallImplementation;
+import cc.squirreljme.runtime.cldc.system.SystemFunction;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -67,7 +65,7 @@ public class Main
 		
 		// Initialize the run-time which sets up the SquirrelJME specific
 		// APIs
-		SystemCaller caller = __initializeRunTime(isclient);
+		__initializeRunTime(isclient);
 		
 		// The client just uses the specified main class
 		String mainclassname;
@@ -93,12 +91,14 @@ public class Main
 				// Construct new object but only say start is valid once it
 				// has been fully constructed
 				MIDlet mid = (MIDlet)mainclass.newInstance();
-				((JavaClientCaller)caller).sendInitializationComplete();
 				
 				// startApp is protected so it has to be made callable
 				Method startmethod = MIDlet.class.getDeclaredMethod(
 					"startApp");
 				startmethod.setAccessible(true);
+				
+				// Initialization complete
+				MnemonicCall.clientInitializationComplete();
 				
 				// Invoke the start method
 				startmethod.invoke(mid);
@@ -112,7 +112,10 @@ public class Main
 					String[].class);
 				if ((mainmethod.getModifiers() & Modifier.STATIC) == 0)
 					throw new RuntimeException("AF02");
-			
+				
+				// Initialization complete
+				MnemonicCall.clientInitializationComplete();
+				
 				// Call it
 				mainmethod.invoke(null, new Object[]{__args});
 			}
@@ -133,20 +136,19 @@ public class Main
 	 * Initializes the run-time.
 	 *
 	 * @param __client If {@code true} then it is initialized for the client.
-	 * @return The system caller used.
 	 * @throws Throwable On any throwable.
 	 * @since 2017/12/07
 	 */
-	private static SystemCaller __initializeRunTime(boolean __client)
+	private static void __initializeRunTime(boolean __client)
 		throws Throwable
 	{
-		// Initialize the daemon setter
-		System.setProperty(DaemonThreadSetter.class.getName(),
-			DaemonSetter.class.getName());
+		// System calls may be performed on single objects or multiple objects
+		SystemFunction[] functions = SystemFunction.values();
+		int numf = functions.length;
+		SystemCallImplementation[] impls = new SystemCallImplementation[numf];
 		
-		// Clients use a bi-directional bridge on top of the standard
-		// input and output streams to interact with the system
-		SystemCaller syscaller;
+		// Clients for Java SE use a bi-directional stream attached to the
+		// input and output streams so that there is portable RPC
 		if (__client)
 		{
 			System.err.println("SquirrelJME Client Launch!");
@@ -182,23 +184,28 @@ public class Main
 			System.setOut(new PrintStream(new StandardOutput(), true));
 			
 			// Use the original streams instead
-			if (true)
-				throw new todo.TODO();
-			syscaller = new JavaClientCaller(
+			throw new todo.TODO();
+			/*syscaller = new JavaClientCaller(
 				Objects.<Integer>requireNonNull(null),
 				new DatagramInputStream(win),
-				new DatagramOutputStream(wout));
+				new DatagramOutputStream(wout));*/
 		}
 		
 		// The server uses the actual kernel
 		else
 		{
+			// Initialize the kernel
 			JavaKernel kernel = new JavaKernel();
-			syscaller = new JavaServerCaller(kernel);
+			
+			// Set all calls to be implemented to this system task
+			KernelTask ktask = kernel.systemTask();
+			for (int i = 0; i < numf; i++)
+				impls[i] = ktask;
 		}
 		
 		// Need to obtain the interface field so that it is initialized
-		Field callerfield = SystemCall.class.getDeclaredField("_CALLER");
+		Field callerfield = SystemCall.class.getDeclaredField(
+			"_IMPLEMENTATIONS");
 		
 		// There is an internal modifiers field which needs to be cleared so
 		// that the data can be accessed as such
@@ -214,16 +221,12 @@ public class Main
 		callerfield.setAccessible(true);
 		
 		// Set the interface used to interact with the kernel
-		callerfield.set(null, syscaller);
+		callerfield.set(null, impls);
 		
 		// Protect everything again
 		modifiersfield.setInt(callerfield, oldmods);
 		modifiersfield.setAccessible(false);
 		callerfield.setAccessible(false);
-		
-		// Return the system caller, used to send initialization complete
-		// message
-		return syscaller;
 	}
 	
 	/**
