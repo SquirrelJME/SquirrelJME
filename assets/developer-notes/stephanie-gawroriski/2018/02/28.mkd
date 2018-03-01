@@ -1,0 +1,71 @@
+# 2018/02/28
+
+## 16:41
+
+I think what I could use is a kind of library processor which loads every
+class file and just builds a large tree of information. I want the
+interpreter to act like how I would have the JIT act and such.
+
+## 16:50
+
+But thinking about it, I really want a JIT for as many platforms as I can but
+having one which is small and light. And that JIT could be shared with an
+interpreter. Like I have limited targets and the JIT needs to be small.
+
+## 21:16
+
+Okay I have an idea for exception handling. This idea would basically allow me
+to have a single return register without the need to check for an exception
+every time a method is returned from. Basically there would be the return to
+address in a method. By default it would return to a non-exceptional case but
+in the event there is an exception it can be set to the exception handler.
+The return value of any method is lost when an exception is thrown so I never
+actually need two registers which I always thought of before. So there would
+always be somewhere that tells the calling method that there is a normal
+return address and an exceptional return address. When `athrow` is called
+there would just be the exception thrown as the return value but instead it
+returns to the exceptional address rather than the normal one. Well actually
+no, same idea but that happens if an exception is not handled which is
+simple. When `athrow` is called it will just set the return value register
+and then just jump to the exception handler. This means that every method
+will need to have an exception handler.
+
+Additionally, I should write a generic dynamic byte stream similar to
+`ByteDeque` but with dynamic data, I could combine it into a single project
+and call it byte based utilities or similar. Or I can just combine it into
+collections perhaps. Not sure yet.
+
+## 21:23
+
+Also, when writing the JIT I never considered this to make working on it
+easier, but instead of having complex classes being compiled I can include
+a basic set of instructions generated using Jasmin. Instead of just running
+through some random code, at first I will do basic code to do very simple
+things then keep adding on top of that. I just need to write a Base64 decoder
+so that I do not have text code. I can just put that in a special test package
+which literally just tests the compiler. So then I suppose what this means is
+that the test system should be moved up the the build-system level since at
+run-time there will never really be the need to run tests like all the time.
+
+## 21:42
+
+Okay so things to do:
+
+ 1. Fix hostedlaunch.sh so I can run arbitrary programs.
+ 2. Correct up testing system so I can run tests again.
+ 3. Implement base64 decoding with the standard base64 format, use tests.
+ 4. Write up a bunch of mock classes with Jasmin and encode them.
+ 5. Write tests where they just decode those classes and compile them.
+
+## 22:08
+
+Okay so now I need to write API dependencies, these can be a bit complex
+so I am basically going to need rulesets in the project to be decoded.
+Basically they will have a complex provided information with weights
+and priorities. However, this will mean that APIs must be handled last
+after dependencies so it knows CLDC stuff and things.
+
+## 23:18
+
+Okay so now I just need to modify likely the main entry point from
+`HostedLaunch` to the one I use. It should work I believe.
