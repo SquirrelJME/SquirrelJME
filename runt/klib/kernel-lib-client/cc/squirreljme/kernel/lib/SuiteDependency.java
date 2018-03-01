@@ -342,8 +342,42 @@ public final class SuiteDependency
 				// No matches
 				return false;
 				
-				// {@squirreljme.error A0t Unimplemented check. (The dependency
-				// type; The target class)}
+				// Library
+			case LIBLET:
+				// Typed suite information
+				if (__mp instanceof TypedSuite)
+				{
+					TypedSuite other = (TypedSuite)__mp;
+					SuiteIdentifier ident = other.suite();
+					
+					// Only match other libraries
+					if (other.type() != SuiteType.LIBLET)
+						return false;
+					
+					// Must match name
+					if (!name.equals(ident.name()))
+						return false;
+					
+					// Match vendor if specified
+					if (vendor != null)
+						if (!vendor.equals(ident.vendor()))
+							return false;
+					
+					// Check if version in range if specified
+					if (version != null)
+						if (!version.inRange(ident.version()))
+							return false;
+					
+					// Is okay!
+					return true;
+				}
+				
+				// Unknown
+				else
+					return false;
+				
+				// {@squirreljme.error AV0t Illegal dependency check.
+				// (The dependency type; The target class)}
 			default:
 				throw new RuntimeException(String.format("AV0t %s %s",
 					type, mpclass));
