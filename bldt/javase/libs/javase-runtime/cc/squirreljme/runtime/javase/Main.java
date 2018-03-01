@@ -45,6 +45,10 @@ public class Main
 	public static final String CLIENT_MAIN =
 		"cc.squirreljme.runtime.javase.clientmain";
 	
+	/** Property specifying the main entry point for server entries. */
+	public static final String SERVER_MAIN =
+		"cc.squirreljme.runtime.javase.servermain";
+	
 	/**
 	 * Wrapped main entry point.
 	 *
@@ -57,8 +61,9 @@ public class Main
 	{
 		// These are launch parameters which are used by the actual Java SE
 		// wrappers to spawn new tasks
-		String clientmain = System.getProperty(CLIENT_MAIN);
-		boolean isclient = (clientmain != null);
+		String servermain = System.getProperty(SERVER_MAIN),
+			clientmain = System.getProperty(CLIENT_MAIN);
+		boolean isclient = (servermain != null ? false : clientmain != null);
 		
 		// Initialize the run-time which sets up the SquirrelJME specific
 		// APIs
@@ -71,7 +76,10 @@ public class Main
 		
 		// Determines the class name via manifest
 		else
-			mainclassname = __mainClassByManifest();
+			if (servermain != null)
+				mainclassname = servermain;
+			else
+				mainclassname = __mainClassByManifest();
 		
 		// Exceptions generated as of the result of the method call are
 		// wrapped so they must be unwrapped

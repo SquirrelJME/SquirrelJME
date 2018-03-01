@@ -26,6 +26,14 @@ fi
 then
 	unzip -p "$1" META-INF/MANIFEST.MF
 else
-	cat "$__exedir/projectwhere.sh" "$1"
-fi ) | grep -i '^ *main-class :' | cut -d ':' -f 2 | sed 's/^ *; *$//g'
+	cat "$("$__exedir/projectwhere.sh" "$1")/META-INF/MANIFEST.MF"
+fi ) | tr -d '\r' | tr '\n' '\v' | sed 's/\v //g' | tr '\v' '\n' | \
+	while read __line
+do
+	echo "$__line" | grep -i '^ *main-class' | cut -d ':' -f 2 | \
+		sed 's/^ *//g;s/ *$//g'
+	echo "$__line" | grep -i '^ *midlet-1' | cut -d ':' -f 2 | \
+		cut -d ',' -f 3 | sed 's/^ *//g;s/ *$//g'
+done
+
 
