@@ -26,5 +26,15 @@ public final class MnemonicCall
 	private MnemonicCall()
 	{
 	}
+	
+	/**
+	 * Specifies that the client was successfully initialized.
+	 *
+	 * @since 2018/03/01
+	 */
+	public static final void clientInitializationComplete()
+	{
+		SystemCall.voidCall(SystemFunction.CLIENT_INITIALIZATION_COMPLETE);
+	}
 }
 

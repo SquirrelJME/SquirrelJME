@@ -45,6 +45,7 @@ public abstract class Kernel
 	protected final KernelTask systemtask;
 	
 	/** The kernel's loopback stream. */
+	@Deprecated
 	protected final LoopbackDatagramDuplex loopback =
 		new LoopbackDatagramDuplex();
 	
@@ -233,6 +234,17 @@ public abstract class Kernel
 			
 			return sv._index;
 		}
+	}
+	
+	/**
+	 * Returns the task which represents the kernel.
+	 *
+	 * @return The task representing the kernel.
+	 * @since 2018/03/01
+	 */
+	public final KernelTask systemTask()
+	{
+		return this.systemtask;
 	}
 	
 	/**

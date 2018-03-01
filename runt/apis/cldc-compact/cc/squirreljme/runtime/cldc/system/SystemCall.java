@@ -35,7 +35,7 @@ public final class SystemCall
 	public static boolean booleanCall(SystemFunction __func, Object... __args)
 		throws InvalidSystemCallException, NullPointerException
 	{
-		return SystemCall.<Boolean>call(Boolean.class, __func, __args);
+		return SystemCall.<Boolean>systemCall(Boolean.class, __func, __args);
 	}
 	
 	/**
@@ -52,7 +52,213 @@ public final class SystemCall
 		Object... __args)
 		throws InvalidSystemCallException, NullPointerException
 	{
-		return SystemCall.<BooleanArray>call(BooleanArray.class, __func,
+		return SystemCall.<BooleanArray>systemCall(BooleanArray.class, __func,
+			__args);
+	}
+	
+	/**
+	 * Performs the specified system call.
+	 *
+	 * @param __func The function to call.
+	 * @param __args The arguments to the call.
+	 * @return The return value of the system call.
+	 * @throws InvalidSystemCallException If the system call is not valid.
+	 * @throws NullPointerException If no function was specified.
+	 * @since 2018/02/21
+	 */
+	public static char charCall(SystemFunction __func, Object... __args)
+		throws InvalidSystemCallException, NullPointerException
+	{
+		return SystemCall.<Character>systemCall(Character.class, __func,
+			__args);
+	}
+	
+	/**
+	 * Performs the specified system call.
+	 *
+	 * @param __func The function to call.
+	 * @param __args The arguments to the call.
+	 * @return The return value of the system call.
+	 * @throws InvalidSystemCallException If the system call is not valid.
+	 * @throws NullPointerException If no function was specified.
+	 * @since 2018/02/21
+	 */
+	public static CharacterArray charArrayCall(SystemFunction __func,
+		Object... __args)
+		throws InvalidSystemCallException, NullPointerException
+	{
+		return SystemCall.<CharacterArray>systemCall(CharacterArray.class,
+			__func, __args);
+	}
+	
+	/**
+	 * Performs the specified system call.
+	 *
+	 * @param __func The function to call.
+	 * @param __args The arguments to the call.
+	 * @return The return value of the system call.
+	 * @throws InvalidSystemCallException If the system call is not valid.
+	 * @throws NullPointerException If no function was specified.
+	 * @since 2018/02/21
+	 */
+	public static double doubleCall(SystemFunction __func, Object... __args)
+		throws InvalidSystemCallException, NullPointerException
+	{
+		return SystemCall.<Double>systemCall(Double.class, __func, __args);
+	}
+	
+	/**
+	 * Performs the specified system call.
+	 *
+	 * @param __func The function to call.
+	 * @param __args The arguments to the call.
+	 * @return The return value of the system call.
+	 * @throws InvalidSystemCallException If the system call is not valid.
+	 * @throws NullPointerException If no function was specified.
+	 * @since 2018/02/21
+	 */
+	public static DoubleArray doubleArrayCall(SystemFunction __func,
+		Object... __args)
+		throws InvalidSystemCallException, NullPointerException
+	{
+		return SystemCall.<DoubleArray>systemCall(DoubleArray.class, __func,
+			__args);
+	}
+	
+	/**
+	 * Performs the specified system call.
+	 *
+	 * @param __func The function to call.
+	 * @param __args The arguments to the call.
+	 * @return The return value of the system call.
+	 * @throws InvalidSystemCallException If the system call is not valid.
+	 * @throws NullPointerException If no function was specified.
+	 * @since 2018/02/21
+	 */
+	public static float floatCall(SystemFunction __func, Object... __args)
+		throws InvalidSystemCallException, NullPointerException
+	{
+		return SystemCall.<Float>systemCall(Float.class, __func, __args);
+	}
+	
+	/**
+	 * Performs the specified system call.
+	 *
+	 * @param __func The function to call.
+	 * @param __args The arguments to the call.
+	 * @return The return value of the system call.
+	 * @throws InvalidSystemCallException If the system call is not valid.
+	 * @throws NullPointerException If no function was specified.
+	 * @since 2018/02/21
+	 */
+	public static FloatArray floatArrayCall(SystemFunction __func,
+		Object... __args)
+		throws InvalidSystemCallException, NullPointerException
+	{
+		return SystemCall.<FloatArray>systemCall(FloatArray.class, __func,
+			__args);
+	}
+	
+	/**
+	 * Performs the specified system call.
+	 *
+	 * @param __func The function to call.
+	 * @param __args The arguments to the call.
+	 * @return The return value of the system call.
+	 * @throws InvalidSystemCallException If the system call is not valid.
+	 * @throws NullPointerException If no function was specified.
+	 * @since 2018/02/21
+	 */
+	public static int integerCall(SystemFunction __func, Object... __args)
+		throws InvalidSystemCallException, NullPointerException
+	{
+		return SystemCall.<Integer>systemCall(Integer.class, __func,
+			__args);
+	}
+	
+	/**
+	 * Performs the specified system call.
+	 *
+	 * @param __func The function to call.
+	 * @param __args The arguments to the call.
+	 * @return The return value of the system call.
+	 * @throws InvalidSystemCallException If the system call is not valid.
+	 * @throws NullPointerException If no function was specified.
+	 * @since 2018/02/21
+	 */
+	public static IntegerArray integerArrayCall(SystemFunction __func,
+		Object... __args)
+		throws InvalidSystemCallException, NullPointerException
+	{
+		return SystemCall.<IntegerArray>systemCall(IntegerArray.class, __func,
+			__args);
+	}
+	
+	/**
+	 * Performs the specified system call.
+	 *
+	 * @param __func The function to call.
+	 * @param __args The arguments to the call.
+	 * @return The return value of the system call.
+	 * @throws InvalidSystemCallException If the system call is not valid.
+	 * @throws NullPointerException If no function was specified.
+	 * @since 2018/02/21
+	 */
+	public static long longCall(SystemFunction __func, Object... __args)
+		throws InvalidSystemCallException, NullPointerException
+	{
+		return SystemCall.<Long>systemCall(Long.class, __func, __args);
+	}
+	
+	/**
+	 * Performs the specified system call.
+	 *
+	 * @param __func The function to call.
+	 * @param __args The arguments to the call.
+	 * @return The return value of the system call.
+	 * @throws InvalidSystemCallException If the system call is not valid.
+	 * @throws NullPointerException If no function was specified.
+	 * @since 2018/02/21
+	 */
+	public static LongArray longArrayCall(SystemFunction __func,
+		Object... __args)
+		throws InvalidSystemCallException, NullPointerException
+	{
+		return SystemCall.<LongArray>systemCall(LongArray.class, __func,
+			__args);
+	}
+	
+	/**
+	 * Performs the specified system call.
+	 *
+	 * @param __func The function to call.
+	 * @param __args The arguments to the call.
+	 * @return The return value of the system call.
+	 * @throws InvalidSystemCallException If the system call is not valid.
+	 * @throws NullPointerException If no function was specified.
+	 * @since 2018/02/21
+	 */
+	public static short shortCall(SystemFunction __func, Object... __args)
+		throws InvalidSystemCallException, NullPointerException
+	{
+		return SystemCall.<Short>systemCall(Short.class, __func, __args);
+	}
+	
+	/**
+	 * Performs the specified system call.
+	 *
+	 * @param __func The function to call.
+	 * @param __args The arguments to the call.
+	 * @return The return value of the system call.
+	 * @throws InvalidSystemCallException If the system call is not valid.
+	 * @throws NullPointerException If no function was specified.
+	 * @since 2018/02/21
+	 */
+	public static ShortArray shortArrayCall(SystemFunction __func,
+		Object... __args)
+		throws InvalidSystemCallException, NullPointerException
+	{
+		return SystemCall.<ShortArray>systemCall(ShortArray.class, __func,
 			__args);
 	}
 	
@@ -68,7 +274,7 @@ public final class SystemCall
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/02/21
 	 */
-	public static <R> R call(Class<R> __cl, SystemFunction __func,
+	public static <R> R systemCall(Class<R> __cl, SystemFunction __func,
 		Object... __args)
 		throws ClassCastException, InvalidSystemCallException,
 			NullPointerException
@@ -89,207 +295,7 @@ public final class SystemCall
 				__func));
 		
 		// Perform the call
-		return __cl.cast(impl.call(__func, __args));
-	}
-	
-	/**
-	 * Performs the specified system call.
-	 *
-	 * @param __func The function to call.
-	 * @param __args The arguments to the call.
-	 * @return The return value of the system call.
-	 * @throws InvalidSystemCallException If the system call is not valid.
-	 * @throws NullPointerException If no function was specified.
-	 * @since 2018/02/21
-	 */
-	public static char charCall(SystemFunction __func, Object... __args)
-		throws InvalidSystemCallException, NullPointerException
-	{
-		return SystemCall.<Character>call(Character.class, __func, __args);
-	}
-	
-	/**
-	 * Performs the specified system call.
-	 *
-	 * @param __func The function to call.
-	 * @param __args The arguments to the call.
-	 * @return The return value of the system call.
-	 * @throws InvalidSystemCallException If the system call is not valid.
-	 * @throws NullPointerException If no function was specified.
-	 * @since 2018/02/21
-	 */
-	public static CharacterArray charArrayCall(SystemFunction __func,
-		Object... __args)
-		throws InvalidSystemCallException, NullPointerException
-	{
-		return SystemCall.<CharacterArray>call(CharacterArray.class, __func,
-			__args);
-	}
-	
-	/**
-	 * Performs the specified system call.
-	 *
-	 * @param __func The function to call.
-	 * @param __args The arguments to the call.
-	 * @return The return value of the system call.
-	 * @throws InvalidSystemCallException If the system call is not valid.
-	 * @throws NullPointerException If no function was specified.
-	 * @since 2018/02/21
-	 */
-	public static double doubleCall(SystemFunction __func, Object... __args)
-		throws InvalidSystemCallException, NullPointerException
-	{
-		return SystemCall.<Double>call(Double.class, __func, __args);
-	}
-	
-	/**
-	 * Performs the specified system call.
-	 *
-	 * @param __func The function to call.
-	 * @param __args The arguments to the call.
-	 * @return The return value of the system call.
-	 * @throws InvalidSystemCallException If the system call is not valid.
-	 * @throws NullPointerException If no function was specified.
-	 * @since 2018/02/21
-	 */
-	public static DoubleArray doubleArrayCall(SystemFunction __func,
-		Object... __args)
-		throws InvalidSystemCallException, NullPointerException
-	{
-		return SystemCall.<DoubleArray>call(DoubleArray.class, __func, __args);
-	}
-	
-	/**
-	 * Performs the specified system call.
-	 *
-	 * @param __func The function to call.
-	 * @param __args The arguments to the call.
-	 * @return The return value of the system call.
-	 * @throws InvalidSystemCallException If the system call is not valid.
-	 * @throws NullPointerException If no function was specified.
-	 * @since 2018/02/21
-	 */
-	public static float floatCall(SystemFunction __func, Object... __args)
-		throws InvalidSystemCallException, NullPointerException
-	{
-		return SystemCall.<Float>call(Float.class, __func, __args);
-	}
-	
-	/**
-	 * Performs the specified system call.
-	 *
-	 * @param __func The function to call.
-	 * @param __args The arguments to the call.
-	 * @return The return value of the system call.
-	 * @throws InvalidSystemCallException If the system call is not valid.
-	 * @throws NullPointerException If no function was specified.
-	 * @since 2018/02/21
-	 */
-	public static FloatArray floatArrayCall(SystemFunction __func,
-		Object... __args)
-		throws InvalidSystemCallException, NullPointerException
-	{
-		return SystemCall.<FloatArray>call(FloatArray.class, __func, __args);
-	}
-	
-	/**
-	 * Performs the specified system call.
-	 *
-	 * @param __func The function to call.
-	 * @param __args The arguments to the call.
-	 * @return The return value of the system call.
-	 * @throws InvalidSystemCallException If the system call is not valid.
-	 * @throws NullPointerException If no function was specified.
-	 * @since 2018/02/21
-	 */
-	public static int integerCall(SystemFunction __func, Object... __args)
-		throws InvalidSystemCallException, NullPointerException
-	{
-		return SystemCall.<Integer>call(Integer.class, __func, __args);
-	}
-	
-	/**
-	 * Performs the specified system call.
-	 *
-	 * @param __func The function to call.
-	 * @param __args The arguments to the call.
-	 * @return The return value of the system call.
-	 * @throws InvalidSystemCallException If the system call is not valid.
-	 * @throws NullPointerException If no function was specified.
-	 * @since 2018/02/21
-	 */
-	public static IntegerArray integerArrayCall(SystemFunction __func,
-		Object... __args)
-		throws InvalidSystemCallException, NullPointerException
-	{
-		return SystemCall.<IntegerArray>call(IntegerArray.class, __func,
-			__args);
-	}
-	
-	/**
-	 * Performs the specified system call.
-	 *
-	 * @param __func The function to call.
-	 * @param __args The arguments to the call.
-	 * @return The return value of the system call.
-	 * @throws InvalidSystemCallException If the system call is not valid.
-	 * @throws NullPointerException If no function was specified.
-	 * @since 2018/02/21
-	 */
-	public static long longCall(SystemFunction __func, Object... __args)
-		throws InvalidSystemCallException, NullPointerException
-	{
-		return SystemCall.<Long>call(Long.class, __func, __args);
-	}
-	
-	/**
-	 * Performs the specified system call.
-	 *
-	 * @param __func The function to call.
-	 * @param __args The arguments to the call.
-	 * @return The return value of the system call.
-	 * @throws InvalidSystemCallException If the system call is not valid.
-	 * @throws NullPointerException If no function was specified.
-	 * @since 2018/02/21
-	 */
-	public static LongArray longArrayCall(SystemFunction __func,
-		Object... __args)
-		throws InvalidSystemCallException, NullPointerException
-	{
-		return SystemCall.<LongArray>call(LongArray.class, __func, __args);
-	}
-	
-	/**
-	 * Performs the specified system call.
-	 *
-	 * @param __func The function to call.
-	 * @param __args The arguments to the call.
-	 * @return The return value of the system call.
-	 * @throws InvalidSystemCallException If the system call is not valid.
-	 * @throws NullPointerException If no function was specified.
-	 * @since 2018/02/21
-	 */
-	public static short shortCall(SystemFunction __func, Object... __args)
-		throws InvalidSystemCallException, NullPointerException
-	{
-		return SystemCall.<Short>call(Short.class, __func, __args);
-	}
-	
-	/**
-	 * Performs the specified system call.
-	 *
-	 * @param __func The function to call.
-	 * @param __args The arguments to the call.
-	 * @return The return value of the system call.
-	 * @throws InvalidSystemCallException If the system call is not valid.
-	 * @throws NullPointerException If no function was specified.
-	 * @since 2018/02/21
-	 */
-	public static ShortArray shortArrayCall(SystemFunction __func,
-		Object... __args)
-		throws InvalidSystemCallException, NullPointerException
-	{
-		return SystemCall.<ShortArray>call(ShortArray.class, __func, __args);
+		return __cl.cast(impl.systemCall(__func, __args));
 	}
 	
 	/**
@@ -304,7 +310,7 @@ public final class SystemCall
 	public static void voidCall(SystemFunction __func, Object... __args)
 		throws InvalidSystemCallException, NullPointerException
 	{
-		SystemCall.<VoidType>call(VoidType.class, __func, __args);
+		SystemCall.<VoidType>systemCall(VoidType.class, __func, __args);
 	}
 	
 	/**

@@ -25,6 +25,9 @@ public enum SystemFunction
 	/** Invoke public static void main method of a class. */
 	INVOKE_STATIC_MAIN,
 	
+	/** Client initialization complete. */
+	CLIENT_INITIALIZATION_COMPLETE,
+	
 	/** End. */
 	;
 }
