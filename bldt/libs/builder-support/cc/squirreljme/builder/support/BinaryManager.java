@@ -10,9 +10,13 @@
 
 package cc.squirreljme.builder.support;
 
+import cc.squirreljme.kernel.lib.Configuration;
 import cc.squirreljme.kernel.lib.DependencyInfo;
+import cc.squirreljme.kernel.lib.MarkedProvided;
 import cc.squirreljme.kernel.lib.MatchResult;
+import cc.squirreljme.kernel.lib.Profile;
 import cc.squirreljme.kernel.lib.ProvidedInfo;
+import cc.squirreljme.kernel.lib.Standard;
 import cc.squirreljme.kernel.lib.SuiteDependency;
 import cc.squirreljme.kernel.lib.SuiteDependencyLevel;
 import cc.squirreljme.kernel.lib.SuiteDependencyType;
@@ -549,7 +553,7 @@ public final class BinaryManager
 		
 		// Go through and remap dependencies
 		int next = 1;
-		Collection<Binary> apideps = new ArrayList<>();
+		Map<Binary, SuiteDependency> apideps = new LinkedHashMap<>();
 		for (SuiteDependency dep : mdeps)
 		{
 			JavaManifestKey key = __dependencyKey(ismidlet, next);
@@ -596,7 +600,7 @@ public final class BinaryManager
 			// Depending on an API, use configuration, standard, or profile
 			SuiteInfo foundinfo = found.suiteInfo();
 			if (found.type() == ProjectType.API)
-				apideps.add(found);
+				apideps.put(found, dep);
 			
 			// Relying on a liblet
 			else
@@ -615,10 +619,45 @@ public final class BinaryManager
 		}
 		
 		// Handle API dependencies since they require a more complex setup
+		System.err.printf("DEBUG -- API Depends: %s%n", apideps);
 		if (!apideps.isEmpty())
-		{
-			throw new todo.TODO();
-		}
+			for (Map.Entry<Binary, SuiteDependency> e : apideps.entrySet())
+			{
+				Binary bin = e.getKey();
+				SuiteDependency dep = e.getValue();
+				
+				// Go through provided dependencies and try to handle them
+				for (MarkedProvided mp : bin.suiteInfo().provided().provided())
+				{
+					// Standard
+					if (mp instanceof Standard)
+					{
+						Standard s = (Standard)mp;
+						SuiteVersion v = s.version();
+						outattr.put(__dependencyKey(ismidlet, next++),
+							new SuiteDependency(
+								SuiteDependencyType.STANDARD,
+								dep.level(),
+								s.name(),
+								s.vendor(),
+								(v == null ? null :
+									SuiteVersionRange.exactly(v))).
+							toString());
+					}
+					
+					// Configuration
+					else if (mp instanceof Configuration)
+						throw new todo.TODO();
+					
+					// Profile
+					else if (mp instanceof Profile)
+						throw new todo.TODO();
+					
+					// Unknown, ignore
+					else
+						continue;
+				}
+			}
 		
 		// Debug
 		System.err.println("DEBUG -- Begin manifest...");
