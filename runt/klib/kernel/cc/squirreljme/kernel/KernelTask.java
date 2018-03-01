@@ -234,6 +234,7 @@ public abstract class KernelTask
 	 *
 	 * @since 2018/01/02
 	 */
+	@Deprecated
 	private final class __Handler__
 		implements PacketStreamHandler
 	{
