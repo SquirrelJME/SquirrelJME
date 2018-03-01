@@ -69,7 +69,7 @@ __proj="$(basename "$__file" .jar)"
 # Build these projects because they are standard and may be relied upon
 for __maybe in midp-lcdui meep-rms media-api
 do
-	if ! "$__exedir/../build.sh" build "$__maybe"
+	if ! "$__exedir/../build.sh" build -b "$__maybe"
 	then
 		echo "Failed to build $__maybe" 1>&2
 		exit 1
@@ -78,7 +78,7 @@ done
 
 # Attempt building it, but ignore if it does not work because we might be
 # running a non-SquirrelJME JAR
-if ! "$__exedir/../build.sh" build "$__proj"
+if ! "$__exedir/../build.sh" build -b "$__proj"
 then
 	echo "Did not build $__proj, ignoring." 1>&2
 fi
@@ -88,7 +88,7 @@ __gen_classpath()
 {
 	# Build classpath
 	__rv=""
-	for __jar in sjmeboot.jar bins/*.jar
+	for __jar in sjmeboot.jar bins/bbld/*.jar
 	do
 		if [ "$__rv" != "" ]
 		then
@@ -113,18 +113,19 @@ __gen_classpath()
 if [ -f "$__file" ]
 then
 	__run="$__file"
-elif [ -f "bins/$__proj.jar" ]
+elif [ -f "bins/bbld/$__proj.jar" ]
 then
-	__run="bins/$__proj.jar"
+	__run="bins/bbld/$__proj.jar"
 else
 	__run="$__file"
 fi
 
 # Run the JVM with the bootstrap followed
+__main="$("$__exedir/mainclass.sh" "$__run")"
+echo "Executing $__main..." 1>&2
 "$__javacmd" -classpath "$(__gen_classpath "$__run")" \
 	$HOSTED_JAVA_OPTIONS \
-	-Dcc.squirreljme.runtime.javase.clientmain="$("$__exedir/")" \
-	cc.squirreljme.runtime.javase.Main \
-	"-$__numb" "$__run" "$@"
+	"-Dcc.squirreljme.runtime.javase.servermain=$__main" \
+	cc.squirreljme.runtime.javase.Main "$@"
 exit $?
 
