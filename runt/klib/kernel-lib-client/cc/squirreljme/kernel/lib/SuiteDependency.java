@@ -375,6 +375,15 @@ public final class SuiteDependency
 				// Unknown
 				else
 					return false;
+					
+				// Standard
+			case STANDARD:
+				if (__mp instanceof Standard)
+					throw new todo.TODO();
+				
+				// Not a standard
+				else
+					return false;
 				
 				// {@squirreljme.error AV0t Illegal dependency check.
 				// (The dependency type; The target class)}
