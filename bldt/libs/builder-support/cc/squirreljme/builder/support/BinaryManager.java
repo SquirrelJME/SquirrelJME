@@ -16,6 +16,7 @@ import cc.squirreljme.kernel.lib.ProvidedInfo;
 import cc.squirreljme.kernel.lib.SuiteDependency;
 import cc.squirreljme.kernel.lib.SuiteDependencyLevel;
 import cc.squirreljme.kernel.lib.SuiteDependencyType;
+import cc.squirreljme.kernel.lib.SuiteInfo;
 import cc.squirreljme.kernel.lib.SuiteName;
 import cc.squirreljme.kernel.lib.SuiteVersion;
 import cc.squirreljme.kernel.lib.SuiteVersionRange;
@@ -578,6 +579,7 @@ public final class BinaryManager
 					String.format("AU0c %s %s", __bin.name(), sname));
 			
 			// Depending on an API, use configuration, standard, or profile
+			SuiteInfo foundinfo = found.suiteInfo();
 			if (found.type() == ProjectType.API)
 			{
 				throw new todo.TODO();
@@ -586,19 +588,16 @@ public final class BinaryManager
 			// Relying on a liblet
 			else
 			{
-				throw new todo.TODO();
-				/*
-				MidletSuiteID sid = found.suiteId();
 				outattr.put(key, new SuiteDependency(
 					SuiteDependencyType.LIBLET,
 					dep.level(),
-					sid.name(),
-					sid.vendor(),
-					SuiteVersionRange.exactly(sid.version())).toString());
+					foundinfo.name(),
+					foundinfo.vendor(),
+					SuiteVersionRange.exactly(foundinfo.version())).
+					toString());
 				
 				// Use next key
 				next++;
-				*/
 			}
 		}
 		
