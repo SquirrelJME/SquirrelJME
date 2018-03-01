@@ -8,38 +8,15 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.cldc;
-
-import java.io.IOException;
-import java.io.OutputStream;
+package cc.squirreljme.runtime.cldc.system;
 
 /**
- * This wraps the standard default output stream and writes to the system
- * call interface.
+ * This represents a wrapped byte array.
  *
- * @since 2016/06/16
+ * @since 2018/03/01
  */
-public final class StandardOutput
-	extends OutputStream
+public interface ByteArray
+	extends Array
 {
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/06/16
-	 */
-	@Override
-	public void write(int __b)
-	{
-		SystemCall.pipeOutput(false, (byte)__b);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2016/08/07
-	 */
-	@Override
-	public void write(byte[] __b, int __o, int __l)
-	{
-		SystemCall.pipeOutput(false, __b, __o, __l);
-	}
 }
 

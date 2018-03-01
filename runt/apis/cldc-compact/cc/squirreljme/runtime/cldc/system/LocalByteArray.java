@@ -11,18 +11,40 @@
 package cc.squirreljme.runtime.cldc.system;
 
 /**
- * This represents the base class for all array accessors.
+ * This represents a byte array which is local to the current task.
  *
- * @since 2018/02/21
+ * @since 2018/03/01
  */
-public interface Array
+public final class LocalByteArray
+	implements ByteArray
 {
+	/** The byte array to read/write. */
+	protected final byte[] array;
+	
 	/**
-	 * Returns the length of the array.
+	 * Initializes the local byte array.
 	 *
-	 * @return The array length.
+	 * @param __a The array to wrap.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/01
 	 */
-	public abstract int length();
+	public LocalByteArray(byte[] __a)
+		throws NullPointerException
+	{
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
+		this.array = __a;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/01
+	 */
+	@Override
+	public final int length()
+	{
+		return this.array.length;
+	}
 }
 

@@ -10,8 +10,9 @@
 
 package java.lang;
 
-import cc.squirreljme.runtime.cldc.StandardOutput;
-import cc.squirreljme.runtime.cldc.SystemCall;
+import cc.squirreljme.runtime.cldc.io.StandardError;
+import cc.squirreljme.runtime.cldc.io.StandardOutput;
+import cc.squirreljme.runtime.cldc.system.SystemCall;
 import cc.squirreljme.runtime.cldc.SystemVersion;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -21,16 +22,21 @@ public final class System
 {
 	/** Standard error stream (stderr). */
 	public static final PrintStream err =
-		new __CanSetPrintStream__(new PrintStream(new __StandardError__(),
-			true));
+		new __CanSetPrintStream__(new PrintStream(new StandardError(), true));
 	
 	/** Standard output stream (stdout). */
 	public static final PrintStream out =
 		new __CanSetPrintStream__(new PrintStream(new StandardOutput(), true));
 	
+	/**
+	 * Not used.
+	 *
+	 * @since 2018/03/01
+	 */
 	private System()
 	{
-		throw new Error();
+		// {@squirreljme.error ZZ0g The system class cannot be initialized.}
+		throw new Error("ZZ0g");
 	}
 	
 	public static void arraycopy(Object __a, int __b, Object __c, int __d,
@@ -56,7 +62,7 @@ public final class System
 	public static long currentTimeMillis()
 	{
 		// Returns the current time in UTC, not local time zone.
-		return SystemCall.currentTimeMillis();
+		return SystemCall.MNEMONIC.currentTimeMillis();
 	}
 	
 	/**
@@ -366,7 +372,7 @@ public final class System
 	 */
 	public static long nanoTime()
 	{
-		return SystemCall.nanoTime();
+		return SystemCall.MNEMONIC.nanoTime();
 	}
 	
 	/**

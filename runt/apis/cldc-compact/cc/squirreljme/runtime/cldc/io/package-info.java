@@ -8,14 +8,11 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.cldc;
-
 /**
- * This interface represents the kernel.
+ * This package contains I/O related classes.
  *
- * @since 2018/01/15
+ * @since 2018/03/01
  */
-public interface SystemKernel
-{
-}
+
+package cc.squirreljme.runtime.cldc.io;
 

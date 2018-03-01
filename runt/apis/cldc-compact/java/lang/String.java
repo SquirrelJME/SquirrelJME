@@ -12,7 +12,6 @@ package java.lang;
 
 import cc.squirreljme.runtime.cldc.string.BasicSequence;
 import cc.squirreljme.runtime.cldc.string.EmptySequence;
-import cc.squirreljme.runtime.cldc.SystemCall;
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
