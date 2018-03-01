@@ -308,7 +308,46 @@ public final class SuiteDependency
 		if (__mp == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		SuiteDependencyType type = this.type;
+		Class<?> mpclass = __mp.getClass();
+		SuiteName name = this.name;
+		SuiteVendor vendor = this.vendor;
+		SuiteVersionRange version = this.version;
+		
+		// Depends
+		switch (type)
+		{
+				// Proprietary match
+			case PROPRIETARY:
+				// Potential internal project name
+				if (__mp instanceof InternalName)
+				{
+					String myname = name.toString();
+					
+					// Needs at sign
+					int dxat;
+					if ((dxat = myname.indexOf('@')) < 0)
+						return false;
+					
+					// Prefix must be project reference
+					if (!myname.substring(0, dxat).
+						equals("squirreljme.project"))
+						return false;
+					
+					// Otherwise the project name must match
+					return myname.substring(dxat + 1).
+						equals(((InternalName)__mp).name());
+				}
+				
+				// No matches
+				return false;
+				
+				// {@squirreljme.error A0t Unimplemented check. (The dependency
+				// type; The target class)}
+			default:
+				throw new RuntimeException(String.format("AV0t %s %s",
+					type, mpclass));
+		}
 	}
 	
 	/**
