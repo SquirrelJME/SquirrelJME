@@ -25,6 +25,7 @@ import cc.squirreljme.kernel.service.ServicePacketStream;
 import cc.squirreljme.kernel.service.ServiceProvider;
 import cc.squirreljme.runtime.cldc.system.SystemCallImplementation;
 import cc.squirreljme.runtime.cldc.system.SystemFunction;
+import cc.squirreljme.runtime.cldc.system.VoidType;
 import cc.squirreljme.runtime.cldc.SystemTask;
 import cc.squirreljme.runtime.cldc.SystemTrustGroup;
 import java.lang.ref.Reference;
@@ -61,6 +62,9 @@ public abstract class KernelTask
 	
 	/** String representation. */
 	private volatile Reference<String> _string;
+	
+	/** Has the task been initialized? */
+	private volatile boolean _isinitialized;
 	
 	/**
 	 * Initializes the kernel task.
@@ -197,7 +201,18 @@ public abstract class KernelTask
 		if (__func == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		switch (__func)
+		{
+				// Client has been initialized
+			case CLIENT_INITIALIZATION_COMPLETE:
+				this._isinitialized = true;
+				return new VoidType();
+			
+				// {@squirreljme.error AP0c Unimplemented system call.
+				// (The function)}
+			default:
+				throw new RuntimeException(String.format("AP0c %s", __func));
+		}
 	}
 	
 	/**
