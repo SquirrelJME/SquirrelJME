@@ -10,13 +10,12 @@
 
 package javax.microedition.rms;
 
-import cc.squirreljme.midlet.ActiveMidlet;
-import cc.squirreljme.midlet.MidletSuiteName;
-import cc.squirreljme.midlet.MidletSuiteVendor;
-import cc.squirreljme.rms.RecordCluster;
-import cc.squirreljme.rms.RecordClusterManager;
-import cc.squirreljme.rms.RecordStoreOwner;
-import cc.squirreljme.unsafe.SystemEnvironment;
+import cc.squirreljme.kernel.lib.SuiteName;
+import cc.squirreljme.kernel.lib.SuiteVendor;
+import cc.squirreljme.runtime.midlet.ActiveMidlet;
+import cc.squirreljme.runtime.rms.RecordCluster;
+import cc.squirreljme.runtime.rms.RecordClusterManager;
+import cc.squirreljme.runtime.rms.RecordStoreOwner;
 import javax.microedition.midlet.MIDlet;
 
 /**
@@ -63,11 +62,15 @@ public class RecordStore
 	 */
 	static
 	{
+		if (true)
+			throw new todo.TODO();
+		/*
 		// {@squirreljme.error DC04 No record store manager exists.}
 		_MANAGER = SystemEnvironment.<RecordClusterManager>systemService(
 			RecordClusterManager.class);
 		if (_MANAGER == null)
 			throw new RuntimeException("DC04");
+		*/
 	}
 	
 	/**
