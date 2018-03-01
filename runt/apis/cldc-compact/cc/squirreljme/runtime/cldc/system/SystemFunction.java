@@ -14,9 +14,6 @@ package cc.squirreljme.runtime.cldc.system;
  * This class contains the list of functions which are available to the client
  * processes when it needs to interact with the kernel or perform an action.
  *
- * All system calls should be prefixed by a name then followed by the
- * arguments the call takes in standard Java descriptors.
- *
  * System functions are either local or require access to the kernel. Local
  * ones may be implemented locally, but they could potentially go to the
  * kernel accordingly.
@@ -25,6 +22,9 @@ package cc.squirreljme.runtime.cldc.system;
  */
 public enum SystemFunction
 {
+	/** Invoke public static void main method of a class. */
+	INVOKE_STATIC_MAIN,
+	
 	/** End. */
 	;
 }
