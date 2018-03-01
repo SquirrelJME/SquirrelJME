@@ -281,6 +281,16 @@ public final class Binary
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2018/02/28
+	 */
+	@Override
+	public final String toString()
+	{
+		return this.name.toString();
+	}
+	
+	/**
 	 * Returns the type of project that this is.
 	 *
 	 * @return The project type.
