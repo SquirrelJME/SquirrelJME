@@ -86,9 +86,6 @@ public abstract class KernelTask
 		
 		Kernel kernel = __k.get();
 		
-		// Permissions will be setup accordingly
-		KernelPermissions permissions = new KernelPermissions();
-		
 		// The server requires special initialization especially with the
 		// streams because of the pipe nature.
 		if (__id == 0)
