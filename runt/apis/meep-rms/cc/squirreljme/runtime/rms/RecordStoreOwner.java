@@ -10,8 +10,8 @@
 
 package cc.squirreljme.runtime.rms;
 
-import cc.squirreljme.runtime.midlet.MidletSuiteName;
-import cc.squirreljme.runtime.midlet.MidletSuiteVendor;
+import cc.squirreljme.kernel.lib.SuiteName;
+import cc.squirreljme.kernel.lib.SuiteVendor;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -24,10 +24,10 @@ import java.lang.ref.WeakReference;
 public final class RecordStoreOwner
 {
 	/** The name of the suite. */
-	protected final MidletSuiteName name;
+	protected final SuiteName name;
 	
 	/** The vendor of the suite. */
-	protected final MidletSuiteVendor vendor;
+	protected final SuiteVendor vendor;
 	
 	/** String representation. */
 	private volatile Reference<String> _string;
@@ -40,7 +40,7 @@ public final class RecordStoreOwner
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/27
 	 */
-	public RecordStoreOwner(MidletSuiteName __n, MidletSuiteVendor __v)
+	public RecordStoreOwner(SuiteName __n, SuiteVendor __v)
 		throws NullPointerException
 	{
 		// Check
@@ -85,7 +85,7 @@ public final class RecordStoreOwner
 	 * @return The suite name.
 	 * @since 2017/02/27
 	 */
-	public MidletSuiteName name()
+	public SuiteName name()
 	{
 		return this.name;
 	}
@@ -114,7 +114,7 @@ public final class RecordStoreOwner
 	 * @return The suite vendor.
 	 * @since 2017/02/27
 	 */
-	public MidletSuiteVendor vendor()
+	public SuiteVendor vendor()
 	{
 		return this.vendor;
 	}

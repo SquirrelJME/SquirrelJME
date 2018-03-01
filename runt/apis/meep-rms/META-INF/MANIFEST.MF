@@ -9,5 +9,6 @@ X-SquirrelJME-Description: This contains the implementation of the
 X-SquirrelJME-Error: DC
 X-SquirrelJME-DefinedStandards: microedition.rms;;
 X-SquirrelJME-UUID: e4276324-c1ea-4e3e-b264-ffac3b0e235d
-X-SquirrelJME-Depends: meep-midlet tool-manifest-writer
+X-SquirrelJME-Depends: meep-midlet tool-manifest-writer 
+ kernel-lib-client
 Microedition-Configuration: CLDC-1.8

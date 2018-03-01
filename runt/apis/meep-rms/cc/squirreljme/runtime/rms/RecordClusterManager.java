@@ -10,9 +10,9 @@
 
 package cc.squirreljme.runtime.rms;
 
+import cc.squirreljme.kernel.lib.SuiteName;
+import cc.squirreljme.kernel.lib.SuiteVendor;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
-import cc.squirreljme.runtime.midlet.MidletSuiteName;
-import cc.squirreljme.runtime.midlet.MidletSuiteVendor;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -106,7 +106,7 @@ public abstract class RecordClusterManager
 			
 			// Set
 			_THIS_OWNER = new WeakReference<>((rv = new RecordStoreOwner(
-				new MidletSuiteName(name), new MidletSuiteVendor(vend))));
+				new SuiteName(name), new SuiteVendor(vend))));
 		}
 		
 		return rv;
