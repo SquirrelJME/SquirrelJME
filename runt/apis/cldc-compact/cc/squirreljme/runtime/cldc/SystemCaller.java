@@ -16,6 +16,7 @@ package cc.squirreljme.runtime.cldc;
  *
  * @since 2017/12/10
  */
+@Deprecated
 public abstract class SystemCaller
 {
 	/**

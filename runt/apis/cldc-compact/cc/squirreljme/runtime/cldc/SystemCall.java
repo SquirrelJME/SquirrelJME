@@ -16,6 +16,7 @@ package cc.squirreljme.runtime.cldc;
  *
  * @since 2017/12/10
  */
+@Deprecated
 public final class SystemCall
 {
 	/** The caller to use when making system calls. */
