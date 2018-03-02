@@ -8,8 +8,9 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.cldc;
+package cc.squirreljme.runtime.cldc.task;
 
+import cc.squirreljme.runtime.cldc.SystemTrustGroup;
 import java.io.InputStream;
 
 /**
@@ -86,7 +87,7 @@ public interface SystemTask
 	 * @return The value for this metric.
 	 * @since 2017/12/10
 	 */
-	public abstract long metric(int __m);
+	public abstract long metric(SystemTaskMetric __m);
 	
 	/**
 	 * Attempts to restart the specified task, if permitted to.
@@ -97,6 +98,14 @@ public interface SystemTask
 	 * @since 2017/12/10
 	 */
 	public abstract void restart();
+	
+	/**
+	 * Returns the status of the task.
+	 *
+	 * @return The task status.
+	 * @since 2018/03/02
+	 */
+	public abstract SystemTaskStatus status();
 	
 	/**
 	 * Returns the trust group which this task runs under.

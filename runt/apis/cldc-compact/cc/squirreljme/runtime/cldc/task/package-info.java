@@ -8,21 +8,11 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.cldc;
-
 /**
- * This represents the flags which may be used to represent a task.
+ * This package contains the task related classes.
  *
- * @since 2017/12/27
+ * @since 2018/03/02
  */
-public interface SystemTaskFlag
-{
-	/** The mask which is used for the process status. */
-	public static final int STATUS_MASK =
-		0x0000_0007;
-	
-	/** Is this a system task? */
-	public static final int SYSTEM =
-		0x0000_0008;
-}
+
+package cc.squirreljme.runtime.cldc.task;
 
