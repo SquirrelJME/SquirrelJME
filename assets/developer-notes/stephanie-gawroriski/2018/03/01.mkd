@@ -1,0 +1,28 @@
+# 2018/03/01
+
+## 04:18
+
+Yay a new month! I think one thing I can do is write a basic abstract class
+which is just a forwarding system call, but that might be a bit ugly
+especially if other system calls need to be made by the code.
+
+## 04:19
+
+But I can have a class which is basically just basic system calls with
+names for everything and then just require implementation of the simple
+methods. The packet system will be adjusted to where it provides the usual
+packet interface but over some kind of stream. But most I intend to just be
+system calls as such.
+
+## 04:23
+
+So tomorrow will be setting up new system calls and such as a base then
+working on a new test system so that I can run tests and such. I definitely
+believe I should have a main method system call.
+
+## 12:44
+
+The system calling interface and the packet stream stuff is going to be
+simplified now. Services are no longer going to use packet streams they will
+just use direct method calls since that is faster, but it has the same
+function for the most part.
