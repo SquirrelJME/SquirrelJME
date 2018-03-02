@@ -10,6 +10,9 @@
 
 package cc.squirreljme.runtime.cldc.service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * This class provides access to services which are available to the system
  * for clients to use.
@@ -25,6 +28,25 @@ public final class ServiceAccessor
 	 */
 	private ServiceAccessor()
 	{
+	}
+	
+	/**
+	 * Obtains the specified service instance.
+	 *
+	 * @param __cl The class of the client service interface.
+	 * @return The instance of the client interface.
+	 * @throws NoSuchServiceException If the specified service does not
+	 * exist.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/02
+	 */
+	public static final <R> R service(Class<R> __cl)
+		throws NoSuchServiceException, NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 }
 

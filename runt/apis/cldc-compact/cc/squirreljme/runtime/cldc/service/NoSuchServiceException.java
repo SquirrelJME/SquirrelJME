@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.cldc;
+package cc.squirreljme.runtime.cldc.service;
 
 /**
  * This is thrown when there is no service available.
