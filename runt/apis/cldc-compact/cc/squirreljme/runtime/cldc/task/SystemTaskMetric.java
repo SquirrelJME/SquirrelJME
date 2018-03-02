@@ -8,15 +8,28 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.cldc;
+package cc.squirreljme.runtime.cldc.task;
 
 /**
- * This interface describes an object which is launchable by the kernel, it
- * is up the the kernel implementation to correctly interpret this class.
+ * This is used to specify which kind of metric to obtain from a task.
  *
- * @since 2018/01/02
+ * @since 2017/12/10
  */
-public interface SystemTaskLaunchable
+public enum SystemTaskMetric
 {
+	/** The task priority. */
+	PRIORITY,
+	
+	/** Used memory. */
+	MEMORY_USED,
+	
+	/** Free memory. */
+	MEMORY_FREE,
+	
+	/** Total memory. */
+	MEMORY_TOTAL,
+	
+	/** End. */
+	;
 }
 
