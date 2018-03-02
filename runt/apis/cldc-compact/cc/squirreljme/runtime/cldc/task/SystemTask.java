@@ -10,7 +10,7 @@
 
 package cc.squirreljme.runtime.cldc.task;
 
-import cc.squirreljme.runtime.cldc.SystemTrustGroup;
+import cc.squirreljme.runtime.cldc.trust.SystemTrustGroup;
 import java.io.InputStream;
 
 /**

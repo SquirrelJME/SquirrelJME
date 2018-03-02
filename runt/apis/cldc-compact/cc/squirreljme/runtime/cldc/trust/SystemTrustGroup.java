@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.cldc;
+package cc.squirreljme.runtime.cldc.trust;
 
 /**
  * This represents a group which tasks run under and which libraries are
