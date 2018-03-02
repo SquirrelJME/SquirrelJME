@@ -15,14 +15,15 @@ package cc.squirreljme.kernel.trust.client;
  *
  * @since 2018/01/18
  */
-public interface TrustFunction
+public enum TrustFunction
 {
 	/** Obtain an untrusted trust. */
-	public static final int GET_UNTRUSTED_TRUST =
-		1;
+	GET_UNTRUSTED_TRUST,
 	
 	/** Check if the trust exists by its id. */
-	public static final int CHECK_TRUST_ID =
-		2;
+	CHECK_TRUST_ID,
+	
+	/** End. */
+	;
 }
 
