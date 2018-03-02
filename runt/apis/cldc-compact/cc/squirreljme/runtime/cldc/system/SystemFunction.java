@@ -46,6 +46,15 @@ public enum SystemFunction
 	/** Pipe multiple bytes to stdout or stderr. */
 	PIPE_OUTPUT_ZABII,
 	
+	/** Perform a call into a service. */
+	SERVICE_CALL,
+	
+	/** Quert which client class implements the service functions. */
+	SERVICE_QUERY_CLASS,
+	
+	/** Query a service index which is available. */
+	SERVICE_QUERY_INDEX,
+	
 	/** Set thread as daemon thread. */
 	SET_DAEMON_THREAD,
 	

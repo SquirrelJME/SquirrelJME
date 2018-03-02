@@ -10,6 +10,8 @@
 
 package cc.squirreljme.runtime.cldc.system;
 
+import cc.squirreljme.runtime.cldc.service.SystemService;
+
 /**
  * This is the mnemonic call which just uses the system's actual system call
  * interface rather than implementing it.
@@ -97,6 +99,56 @@ public class __SystemMnemonicCall__
 	{
 		SystemCall.voidCall(
 			SystemFunction.PIPE_OUTPUT_ZABII, __err, __b, __o, __l);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/01
+	 */
+	@Override
+	public final Object serviceCall(int __dx, Enum<?> __func,
+		Object... __args)
+		throws NullPointerException
+	{
+		// Force to exist
+		if (__args == null)
+			__args = new Object[0];
+		
+		// Expand to full array
+		int nargs = __args.length;
+		Object[] xargs = new Object[nargs + 2];
+		xargs[0] = __dx;
+		xargs[1] = __func;
+		for (int i = 0, o = 2; i < nargs; i++, o++)
+			xargs[o] = __args[i];
+		
+		// Forward call
+		return SystemCall.<Object>systemCall(Object.class,
+			SystemFunction.SERVICE_CALL, xargs);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/01
+	 */
+	@Override
+	@SuppressWarnings({"unchecked"})
+	public final Class<? extends SystemService> serviceQueryClass(int __dx)
+	{
+		return (Class<? extends SystemService>)SystemCall.<Class>systemCall(
+			Class.class,
+			SystemFunction.SERVICE_QUERY_CLASS, __dx);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/01
+	 */
+	@Override
+	public final int serviceQueryIndex(Class<?> __cl)
+	{
+		return SystemCall.integerCall(
+			SystemFunction.SERVICE_QUERY_INDEX, __cl);
 	}
 	
 	/**

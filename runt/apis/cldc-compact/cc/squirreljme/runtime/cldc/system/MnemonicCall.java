@@ -10,6 +10,8 @@
 
 package cc.squirreljme.runtime.cldc.system;
 
+import cc.squirreljme.runtime.cldc.service.SystemService;
+
 /**
  * This is a system call handler which handles any incoming system calls and
  * wraps them accordingly to safe methods for implementation.
@@ -68,6 +70,17 @@ public abstract class MnemonicCall
 					__int(__args[2]),
 					__int(__args[3]));
 				return voidtype;
+			
+			case SERVICE_CALL:
+				return this.__serviceCall(__args);
+			
+			case SERVICE_QUERY_CLASS:
+				return this.serviceQueryClass(
+					__int(__args[0]));
+			
+			case SERVICE_QUERY_INDEX:
+				return this.serviceQueryIndex(
+					(Class<?>)__args[0]);
 			
 			case SET_DAEMON_THREAD:
 				this.setDaemonThread(
@@ -150,6 +163,36 @@ public abstract class MnemonicCall
 		throws IndexOutOfBoundsException, NullPointerException;
 	
 	/**
+	 * Performs a call into a service.
+	 *
+	 * @param __dx The service index.
+	 * @param __func The function in the service.
+	 * @param __args The function arguments.
+	 * @return The return value of the call.
+	 * @since 2018/03/02
+	 */
+	public abstract Object serviceCall(int __dx, Enum<?> __func,
+		Object... __args);
+	
+	/**
+	 * Queries which class the client should use for the given service index.
+	 *
+	 * @param __dx The index to get the client class for.
+	 * @return The client class for the given index.
+	 * @since 2018/03/02
+	 */
+	public abstract Class<? extends SystemService> serviceQueryClass(int __dx);
+	
+	/**
+	 * Queries the index of the service which implements the given class.
+	 *
+	 * @param __cl The class type to check the local service for.
+	 * @return The index of the service which implements the given class.
+	 * @since 2018/03/02
+	 */
+	public abstract int serviceQueryIndex(Class<?> __cl);
+	
+	/**
 	 * Set thread as daemon thread.
 	 *
 	 * @param __t The thread to daemonize.
@@ -176,6 +219,28 @@ public abstract class MnemonicCall
 		throws IndexOutOfBoundsException, NullPointerException
 	{
 		this.pipeOutput(__err, new LocalByteArray(__b), __o, __l);
+	}
+	
+	/**
+	 * Extracts and forwards calls made to services.
+	 *
+	 * @param __args Input arguments.
+	 * @return The service return value.
+	 * @sicne 2018/03/02
+	 */
+	private final Object __serviceCall(Object... __args)
+	{
+		// Extract arguments
+		int nargs = __args.length,
+			alen = nargs - 2;
+		Object[] fargs = new Object[alen];
+		System.arraycopy(__args, 2, fargs, 0, alen);
+		
+		// Perform the call
+		return this.serviceCall(
+			__int(__args[0]),
+			(Enum<?>)__args[1],
+			fargs);
 	}
 	
 	/**
