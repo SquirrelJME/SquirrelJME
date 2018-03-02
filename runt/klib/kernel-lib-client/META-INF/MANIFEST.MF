@@ -7,6 +7,6 @@ X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This contains the client portion of the library 
  manager which provides access to a remote library server.
 X-SquirrelJME-Depends: tool-manifest-reader collections strings 
- kernel-service zip kernel-trust-client
+ zip kernel-trust-client
 Microedition-Configuration: CLDC-1.8-Compact
 

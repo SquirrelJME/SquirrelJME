@@ -7,6 +7,5 @@ X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This is the client for the kernel trust 
  system which allows permissions to be checked and managed 
  accordingly.
-X-SquirrelJME-Depends: kernel-service
 Microedition-Configuration: CLDC-1.8-Compact
 
