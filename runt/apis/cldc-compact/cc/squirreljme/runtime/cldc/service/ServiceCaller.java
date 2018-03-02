@@ -10,8 +10,16 @@
 
 package cc.squirreljme.runtime.cldc.service;
 
+import cc.squirreljme.runtime.cldc.system.BooleanArray;
+import cc.squirreljme.runtime.cldc.system.CharacterArray;
+import cc.squirreljme.runtime.cldc.system.DoubleArray;
+import cc.squirreljme.runtime.cldc.system.FloatArray;
+import cc.squirreljme.runtime.cldc.system.IntegerArray;
+import cc.squirreljme.runtime.cldc.system.LongArray;
+import cc.squirreljme.runtime.cldc.system.ShortArray;
 import cc.squirreljme.runtime.cldc.system.SystemCall;
 import cc.squirreljme.runtime.cldc.system.SystemFunction;
+import cc.squirreljme.runtime.cldc.system.VoidType;
 
 /**
  * This class allows simpler access to performing system calls into services
@@ -37,17 +45,227 @@ public final class ServiceCaller
 	}
 	
 	/**
+	 * Performs the specified service call.
+	 *
+	 * @param __func The function to call.
+	 * @param __args The arguments to the call.
+	 * @return The return value of the system call.
+	 * @throws InvalidServiceCallException If the system call is not valid.
+	 * @throws NullPointerException If no function was specified.
+	 * @since 2018/03/02
+	 */
+	public final boolean booleanCall(SystemFunction __func, Object... __args)
+		throws InvalidServiceCallException, NullPointerException
+	{
+		return this.<Boolean>serviceCall(Boolean.class, __func, __args);
+	}
+	
+	/**
+	 * Performs the specified service call.
+	 *
+	 * @param __func The function to call.
+	 * @param __args The arguments to the call.
+	 * @return The return value of the system call.
+	 * @throws InvalidServiceCallException If the system call is not valid.
+	 * @throws NullPointerException If no function was specified.
+	 * @since 2018/03/02
+	 */
+	public final BooleanArray booleanArrayCall(SystemFunction __func,
+		Object... __args)
+		throws InvalidServiceCallException, NullPointerException
+	{
+		return this.<BooleanArray>serviceCall(BooleanArray.class, __func,
+			__args);
+	}
+	
+	/**
+	 * Performs the specified service call.
+	 *
+	 * @param __func The function to call.
+	 * @param __args The arguments to the call.
+	 * @return The return value of the system call.
+	 * @throws InvalidServiceCallException If the system call is not valid.
+	 * @throws NullPointerException If no function was specified.
+	 * @since 2018/03/02
+	 */
+	public final char charCall(SystemFunction __func, Object... __args)
+		throws InvalidServiceCallException, NullPointerException
+	{
+		return this.<Character>serviceCall(Character.class, __func,
+			__args);
+	}
+	
+	/**
+	 * Performs the specified service call.
+	 *
+	 * @param __func The function to call.
+	 * @param __args The arguments to the call.
+	 * @return The return value of the system call.
+	 * @throws InvalidServiceCallException If the system call is not valid.
+	 * @throws NullPointerException If no function was specified.
+	 * @since 2018/03/02
+	 */
+	public final CharacterArray charArrayCall(SystemFunction __func,
+		Object... __args)
+		throws InvalidServiceCallException, NullPointerException
+	{
+		return this.<CharacterArray>serviceCall(CharacterArray.class,
+			__func, __args);
+	}
+	
+	/**
+	 * Performs the specified service call.
+	 *
+	 * @param __func The function to call.
+	 * @param __args The arguments to the call.
+	 * @return The return value of the system call.
+	 * @throws InvalidServiceCallException If the system call is not valid.
+	 * @throws NullPointerException If no function was specified.
+	 * @since 2018/03/02
+	 */
+	public final double doubleCall(SystemFunction __func, Object... __args)
+		throws InvalidServiceCallException, NullPointerException
+	{
+		return this.<Double>serviceCall(Double.class, __func, __args);
+	}
+	
+	/**
+	 * Performs the specified service call.
+	 *
+	 * @param __func The function to call.
+	 * @param __args The arguments to the call.
+	 * @return The return value of the system call.
+	 * @throws InvalidServiceCallException If the system call is not valid.
+	 * @throws NullPointerException If no function was specified.
+	 * @since 2018/03/02
+	 */
+	public final DoubleArray doubleArrayCall(SystemFunction __func,
+		Object... __args)
+		throws InvalidServiceCallException, NullPointerException
+	{
+		return this.<DoubleArray>serviceCall(DoubleArray.class, __func,
+			__args);
+	}
+	
+	/**
+	 * Performs the specified service call.
+	 *
+	 * @param __func The function to call.
+	 * @param __args The arguments to the call.
+	 * @return The return value of the system call.
+	 * @throws InvalidServiceCallException If the system call is not valid.
+	 * @throws NullPointerException If no function was specified.
+	 * @since 2018/03/02
+	 */
+	public final float floatCall(SystemFunction __func, Object... __args)
+		throws InvalidServiceCallException, NullPointerException
+	{
+		return this.<Float>serviceCall(Float.class, __func, __args);
+	}
+	
+	/**
+	 * Performs the specified service call.
+	 *
+	 * @param __func The function to call.
+	 * @param __args The arguments to the call.
+	 * @return The return value of the system call.
+	 * @throws InvalidServiceCallException If the system call is not valid.
+	 * @throws NullPointerException If no function was specified.
+	 * @since 2018/03/02
+	 */
+	public final FloatArray floatArrayCall(SystemFunction __func,
+		Object... __args)
+		throws InvalidServiceCallException, NullPointerException
+	{
+		return this.<FloatArray>serviceCall(FloatArray.class, __func,
+			__args);
+	}
+	
+	/**
+	 * Performs the specified service call.
+	 *
+	 * @param __func The function to call.
+	 * @param __args The arguments to the call.
+	 * @return The return value of the system call.
+	 * @throws InvalidServiceCallException If the system call is not valid.
+	 * @throws NullPointerException If no function was specified.
+	 * @since 2018/03/02
+	 */
+	public final int integerCall(SystemFunction __func, Object... __args)
+		throws InvalidServiceCallException, NullPointerException
+	{
+		return this.<Integer>serviceCall(Integer.class, __func,
+			__args);
+	}
+	
+	/**
+	 * Performs the specified service call.
+	 *
+	 * @param __func The function to call.
+	 * @param __args The arguments to the call.
+	 * @return The return value of the system call.
+	 * @throws InvalidServiceCallException If the system call is not valid.
+	 * @throws NullPointerException If no function was specified.
+	 * @since 2018/03/02
+	 */
+	public final IntegerArray integerArrayCall(SystemFunction __func,
+		Object... __args)
+		throws InvalidServiceCallException, NullPointerException
+	{
+		return this.<IntegerArray>serviceCall(IntegerArray.class, __func,
+			__args);
+	}
+	
+	/**
+	 * Performs the specified service call.
+	 *
+	 * @param __func The function to call.
+	 * @param __args The arguments to the call.
+	 * @return The return value of the system call.
+	 * @throws InvalidServiceCallException If the system call is not valid.
+	 * @throws NullPointerException If no function was specified.
+	 * @since 2018/03/02
+	 */
+	public final long longCall(SystemFunction __func, Object... __args)
+		throws InvalidServiceCallException, NullPointerException
+	{
+		return this.<Long>serviceCall(Long.class, __func, __args);
+	}
+	
+	/**
+	 * Performs the specified service call.
+	 *
+	 * @param __func The function to call.
+	 * @param __args The arguments to the call.
+	 * @return The return value of the system call.
+	 * @throws InvalidServiceCallException If the system call is not valid.
+	 * @throws NullPointerException If no function was specified.
+	 * @since 2018/03/02
+	 */
+	public final LongArray longArrayCall(SystemFunction __func,
+		Object... __args)
+		throws InvalidServiceCallException, NullPointerException
+	{
+		return this.<LongArray>serviceCall(LongArray.class, __func,
+			__args);
+	}
+	
+	/**
 	 * Calls the service with the given arguments.
 	 *
 	 * @param <R> The return type of the call.
 	 * @param __rv The class for the return type.
 	 * @param
 	 * @throws ClassCastException If the return type is not valid.
+	 * @throws InvalidServiceCallException If the service call was not
+	 * valid.
 	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/02
 	 */
 	public final <R> R serviceCall(Class<R> __rv, Enum<?> __func,
 		Object... __args)
-		throws ClassCastException, NullPointerException
+		throws ClassCastException, InvalidServiceCallException,
+			NullPointerException
 	{
 		if (__func == null)
 			throw new NullPointerException("NARG");
@@ -67,6 +285,55 @@ public final class ServiceCaller
 		// Perform the call
 		return SystemCall.<R>systemCall(__rv, SystemFunction.SERVICE_CALL,
 			xargs);
+	}
+	
+	/**
+	 * Performs the specified service call.
+	 *
+	 * @param __func The function to call.
+	 * @param __args The arguments to the call.
+	 * @return The return value of the system call.
+	 * @throws InvalidServiceCallException If the system call is not valid.
+	 * @throws NullPointerException If no function was specified.
+	 * @since 2018/03/02
+	 */
+	public final short shortCall(SystemFunction __func, Object... __args)
+		throws InvalidServiceCallException, NullPointerException
+	{
+		return this.<Short>serviceCall(Short.class, __func, __args);
+	}
+	
+	/**
+	 * Performs the specified service call.
+	 *
+	 * @param __func The function to call.
+	 * @param __args The arguments to the call.
+	 * @return The return value of the system call.
+	 * @throws InvalidServiceCallException If the system call is not valid.
+	 * @throws NullPointerException If no function was specified.
+	 * @since 2018/03/02
+	 */
+	public final ShortArray shortArrayCall(SystemFunction __func,
+		Object... __args)
+		throws InvalidServiceCallException, NullPointerException
+	{
+		return this.<ShortArray>serviceCall(ShortArray.class, __func,
+			__args);
+	}
+	
+	/**
+	 * Performs the specified service call.
+	 *
+	 * @param __func The function to call.
+	 * @param __args The arguments to the call.
+	 * @throws InvalidServiceCallException If the system call is not valid.
+	 * @throws NullPointerException If no function was specified.
+	 * @since 2018/03/02
+	 */
+	public final void voidCall(SystemFunction __func, Object... __args)
+		throws InvalidServiceCallException, NullPointerException
+	{
+		this.<VoidType>serviceCall(VoidType.class, __func, __args);
 	}
 }
 

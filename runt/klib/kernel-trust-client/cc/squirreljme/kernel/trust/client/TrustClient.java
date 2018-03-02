@@ -10,15 +10,9 @@
 
 package cc.squirreljme.kernel.trust.client;
 
-import cc.squirreljme.kernel.packets.Packet;
-import cc.squirreljme.kernel.packets.PacketFarm;
-import cc.squirreljme.kernel.packets.PacketReader;
-import cc.squirreljme.kernel.packets.PacketWriter;
-import cc.squirreljme.kernel.service.ClientInstance;
-import cc.squirreljme.kernel.service.ServicePacketStream;
-import cc.squirreljme.kernel.trust.InvalidTrustException;
-import cc.squirreljme.kernel.trust.TrustPacketTypes;
-import cc.squirreljme.runtime.cldc.SystemTrustGroup;
+import cc.squirreljme.runtime.cldc.service.ServiceCaller;
+import cc.squirreljme.runtime.cldc.trust.InvalidTrustException;
+import cc.squirreljme.runtime.cldc.trust.SystemTrustGroup;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -31,7 +25,6 @@ import java.util.Map;
  * @since 2018/01/17
  */
 public final class TrustClient
-	extends ClientInstance
 {
 	/** Local trusts. */
 	private final Map<Integer, Reference<__LocalTrust__>> _trusts =
@@ -40,12 +33,17 @@ public final class TrustClient
 	/**
 	 * Initializes the trust client.
 	 *
-	 * @param __ps The packet stream to the server.
+	 * @param __sc The caller for the trust client.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/17
 	 */
-	public TrustClient(ServicePacketStream __ps)
+	public TrustClient(ServiceCaller __sc)
+		throws NullPointerException
 	{
-		super(__ps);
+		if (__sc == null)
+			throw new NullPointerException("NARG");
+		
+		this.caller = __sc;
 	}
 	
 	/**
@@ -87,26 +85,6 @@ public final class TrustClient
 			}
 			
 			return rv;
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/01/17
-	 */
-	@Override
-	protected Packet handlePacket(Packet __p)
-		throws NullPointerException
-	{
-		if (__p == null)
-			throw new NullPointerException("NARG");
-		
-		switch (__p.type())
-		{
-				// {@squirreljme.error BI01 Unknown packet. (The packet)}
-			default:
-				throw new IllegalArgumentException(
-					String.format("BI01 %s", __p));
 		}
 	}
 	
