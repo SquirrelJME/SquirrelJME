@@ -30,6 +30,9 @@ public final class TrustClient
 	private final Map<Integer, Reference<__LocalTrust__>> _trusts =
 		new HashMap<>();
 	
+	/** The service caller. */
+	protected final ServiceCaller caller;
+	
 	/**
 	 * Initializes the trust client.
 	 *
@@ -56,6 +59,7 @@ public final class TrustClient
 	public final SystemTrustGroup byIndex(int __dx)
 	{
 		Integer idx = __dx;
+		ServiceCaller caller = this.caller;
 		
 		// Could be cached
 		Map<Integer, Reference<__LocalTrust__>> trusts = this._trusts;
@@ -66,19 +70,9 @@ public final class TrustClient
 			
 			if (ref == null || null == (rv = ref.get()))
 			{
-				ServicePacketStream stream = this.stream;
-				try (Packet p = PacketFarm.createPacket(
-					TrustPacketTypes.CHECK_TRUST_ID, 4))
-				{
-					p.writeInteger(0, __dx);
-					
-					try (Packet r = stream.send(p, true))
-					{
-						int val = r.readInteger(0);
-						if (val < 0)
-							return null;
-					}
-				}
+				int val = caller.integerCall(TrustFunction.CHECK_TRUST_ID);
+				if (val < 0)
+					return null;
 				
 				// Cache it
 				trusts.put(idx, new WeakReference<>((rv = this.__map(__dx))));
@@ -126,29 +120,19 @@ public final class TrustClient
 			throw new NullPointerException("NARG");
 		
 		int rvdx;
+		ServiceCaller caller = this.caller;
 		
 		Map<Integer, Reference<__LocalTrust__>> trusts = this._trusts;
 		synchronized (trusts)
 		{
-			ServicePacketStream stream = this.stream;
-			try (Packet p = PacketFarm.createPacket(
-				TrustPacketTypes.GET_UNTRUSTED_TRUST))
-			{
-				PacketWriter w = p.createWriter();
-				
-				w.writeString(__name);
-				w.writeString(__vendor);
-				
-				try (Packet r = stream.send(p, true))
-				{
-					// {@squirreljme.error BI02 The specified untrusted
-					// trust group is not valid. (The name; The vendor)}
-					rvdx = r.readInteger(0);
-					if (rvdx < 0)
-						throw new InvalidTrustException(
-							String.format("BI02 %s %s", __name, __vendor));
-				}
-			}
+			rvdx = caller.integerCall(TrustFunction.GET_UNTRUSTED_TRUST,
+				__name, __vendor);
+			
+			// {@squirreljme.error BI02 The specified untrusted
+			// trust group is not valid. (The name; The vendor)}
+			if (rvdx < 0)
+				throw new InvalidTrustException(
+					String.format("BI02 %s %s", __name, __vendor));
 			
 			return this.__map(rvdx);
 		}

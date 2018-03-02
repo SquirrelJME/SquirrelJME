@@ -10,8 +10,8 @@
 
 package cc.squirreljme.kernel.trust.client;
 
-import cc.squirreljme.runtime.cldc.SystemTrustGroup;
-import cc.squirreljme.runtime.cldc.SystemTrustGroupUtils;
+import cc.squirreljme.runtime.cldc.trust.SystemTrustGroup;
+import cc.squirreljme.runtime.cldc.trust.SystemTrustGroupUtils;
 
 /**
  * This represents the client side of a trust.

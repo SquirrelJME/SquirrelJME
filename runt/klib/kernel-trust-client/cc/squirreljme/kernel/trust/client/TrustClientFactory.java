@@ -19,17 +19,17 @@ import cc.squirreljme.runtime.cldc.service.ServiceClientProvider;
  * @since 2018/01/17
  */
 public final class TrustClientFactory
-	extends ClientInstanceFactory
+	implements ServiceClientProvider
 {
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/01/17
 	 */
 	@Override
-	protected final TrustClient initializeClient(ServiceCaller __sc)
+	public final TrustClient initializeClient(ServiceCaller __sc)
 		throws NullPointerException
 	{
-		if (__ps == null)
+		if (__sc == null)
 			throw new NullPointerException("NARG");
 		
 		return new TrustClient(__sc);

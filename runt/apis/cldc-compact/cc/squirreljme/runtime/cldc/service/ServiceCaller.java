@@ -54,7 +54,7 @@ public final class ServiceCaller
 	 * @throws NullPointerException If no function was specified.
 	 * @since 2018/03/02
 	 */
-	public final boolean booleanCall(SystemFunction __func, Object... __args)
+	public final boolean booleanCall(Enum<?> __func, Object... __args)
 		throws InvalidServiceCallException, NullPointerException
 	{
 		return this.<Boolean>serviceCall(Boolean.class, __func, __args);
@@ -70,7 +70,7 @@ public final class ServiceCaller
 	 * @throws NullPointerException If no function was specified.
 	 * @since 2018/03/02
 	 */
-	public final BooleanArray booleanArrayCall(SystemFunction __func,
+	public final BooleanArray booleanArrayCall(Enum<?> __func,
 		Object... __args)
 		throws InvalidServiceCallException, NullPointerException
 	{
@@ -88,7 +88,7 @@ public final class ServiceCaller
 	 * @throws NullPointerException If no function was specified.
 	 * @since 2018/03/02
 	 */
-	public final char charCall(SystemFunction __func, Object... __args)
+	public final char charCall(Enum<?> __func, Object... __args)
 		throws InvalidServiceCallException, NullPointerException
 	{
 		return this.<Character>serviceCall(Character.class, __func,
@@ -105,7 +105,7 @@ public final class ServiceCaller
 	 * @throws NullPointerException If no function was specified.
 	 * @since 2018/03/02
 	 */
-	public final CharacterArray charArrayCall(SystemFunction __func,
+	public final CharacterArray charArrayCall(Enum<?> __func,
 		Object... __args)
 		throws InvalidServiceCallException, NullPointerException
 	{
@@ -123,7 +123,7 @@ public final class ServiceCaller
 	 * @throws NullPointerException If no function was specified.
 	 * @since 2018/03/02
 	 */
-	public final double doubleCall(SystemFunction __func, Object... __args)
+	public final double doubleCall(Enum<?> __func, Object... __args)
 		throws InvalidServiceCallException, NullPointerException
 	{
 		return this.<Double>serviceCall(Double.class, __func, __args);
@@ -139,7 +139,7 @@ public final class ServiceCaller
 	 * @throws NullPointerException If no function was specified.
 	 * @since 2018/03/02
 	 */
-	public final DoubleArray doubleArrayCall(SystemFunction __func,
+	public final DoubleArray doubleArrayCall(Enum<?> __func,
 		Object... __args)
 		throws InvalidServiceCallException, NullPointerException
 	{
@@ -157,7 +157,7 @@ public final class ServiceCaller
 	 * @throws NullPointerException If no function was specified.
 	 * @since 2018/03/02
 	 */
-	public final float floatCall(SystemFunction __func, Object... __args)
+	public final float floatCall(Enum<?> __func, Object... __args)
 		throws InvalidServiceCallException, NullPointerException
 	{
 		return this.<Float>serviceCall(Float.class, __func, __args);
@@ -173,7 +173,7 @@ public final class ServiceCaller
 	 * @throws NullPointerException If no function was specified.
 	 * @since 2018/03/02
 	 */
-	public final FloatArray floatArrayCall(SystemFunction __func,
+	public final FloatArray floatArrayCall(Enum<?> __func,
 		Object... __args)
 		throws InvalidServiceCallException, NullPointerException
 	{
@@ -191,7 +191,7 @@ public final class ServiceCaller
 	 * @throws NullPointerException If no function was specified.
 	 * @since 2018/03/02
 	 */
-	public final int integerCall(SystemFunction __func, Object... __args)
+	public final int integerCall(Enum<?> __func, Object... __args)
 		throws InvalidServiceCallException, NullPointerException
 	{
 		return this.<Integer>serviceCall(Integer.class, __func,
@@ -208,7 +208,7 @@ public final class ServiceCaller
 	 * @throws NullPointerException If no function was specified.
 	 * @since 2018/03/02
 	 */
-	public final IntegerArray integerArrayCall(SystemFunction __func,
+	public final IntegerArray integerArrayCall(Enum<?> __func,
 		Object... __args)
 		throws InvalidServiceCallException, NullPointerException
 	{
@@ -226,7 +226,7 @@ public final class ServiceCaller
 	 * @throws NullPointerException If no function was specified.
 	 * @since 2018/03/02
 	 */
-	public final long longCall(SystemFunction __func, Object... __args)
+	public final long longCall(Enum<?> __func, Object... __args)
 		throws InvalidServiceCallException, NullPointerException
 	{
 		return this.<Long>serviceCall(Long.class, __func, __args);
@@ -242,7 +242,7 @@ public final class ServiceCaller
 	 * @throws NullPointerException If no function was specified.
 	 * @since 2018/03/02
 	 */
-	public final LongArray longArrayCall(SystemFunction __func,
+	public final LongArray longArrayCall(Enum<?> __func,
 		Object... __args)
 		throws InvalidServiceCallException, NullPointerException
 	{
@@ -297,7 +297,7 @@ public final class ServiceCaller
 	 * @throws NullPointerException If no function was specified.
 	 * @since 2018/03/02
 	 */
-	public final short shortCall(SystemFunction __func, Object... __args)
+	public final short shortCall(Enum<?> __func, Object... __args)
 		throws InvalidServiceCallException, NullPointerException
 	{
 		return this.<Short>serviceCall(Short.class, __func, __args);
@@ -313,7 +313,7 @@ public final class ServiceCaller
 	 * @throws NullPointerException If no function was specified.
 	 * @since 2018/03/02
 	 */
-	public final ShortArray shortArrayCall(SystemFunction __func,
+	public final ShortArray shortArrayCall(Enum<?> __func,
 		Object... __args)
 		throws InvalidServiceCallException, NullPointerException
 	{
@@ -330,7 +330,7 @@ public final class ServiceCaller
 	 * @throws NullPointerException If no function was specified.
 	 * @since 2018/03/02
 	 */
-	public final void voidCall(SystemFunction __func, Object... __args)
+	public final void voidCall(Enum<?> __func, Object... __args)
 		throws InvalidServiceCallException, NullPointerException
 	{
 		this.<VoidType>serviceCall(VoidType.class, __func, __args);
