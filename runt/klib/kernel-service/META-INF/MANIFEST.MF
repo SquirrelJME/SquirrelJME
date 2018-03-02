@@ -7,6 +7,5 @@ X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This project contains support for kernel 
  services. Kernel services are used by the clients (and by the kernel 
  itself when needed) and provide access to useful classes.
-X-SquirrelJME-Depends: kernel-packets kernel-ipc-base
 Microedition-Configuration: CLDC-1.8-Compact
 
