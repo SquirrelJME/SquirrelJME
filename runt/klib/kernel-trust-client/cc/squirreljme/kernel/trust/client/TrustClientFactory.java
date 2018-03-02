@@ -10,8 +10,8 @@
 
 package cc.squirreljme.kernel.trust.client;
 
-import cc.squirreljme.kernel.service.ClientInstanceFactory;
-import cc.squirreljme.kernel.service.ServicePacketStream;
+import cc.squirreljme.runtime.cldc.service.ServiceCaller;
+import cc.squirreljme.runtime.cldc.service.ServiceClientProvider;
 
 /**
  * This is a factory which initializes trust clients.
@@ -26,13 +26,13 @@ public final class TrustClientFactory
 	 * @since 2018/01/17
 	 */
 	@Override
-	protected final TrustClient initializeClient(ServicePacketStream __ps)
+	protected final TrustClient initializeClient(ServiceCaller __sc)
 		throws NullPointerException
 	{
 		if (__ps == null)
 			throw new NullPointerException("NARG");
 		
-		return new TrustClient(__ps);
+		return new TrustClient(__sc);
 	}
 }
 

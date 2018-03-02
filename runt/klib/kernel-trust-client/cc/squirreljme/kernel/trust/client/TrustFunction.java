@@ -8,14 +8,14 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.kernel.trust;
+package cc.squirreljme.kernel.trust.client;
 
 /**
- * This contains the packet types for trusts.
+ * Functions for the trust manager.
  *
  * @since 2018/01/18
  */
-public interface TrustPacketTypes
+public interface TrustFunction
 {
 	/** Obtain an untrusted trust. */
 	public static final int GET_UNTRUSTED_TRUST =
