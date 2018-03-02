@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.kernel.trust;
+package cc.squirreljme.runtime.cldc.trust;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
