@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.cldc;
+package cc.squirreljme.runtime.cldc.io;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
