@@ -15,5 +15,5 @@
  * @since 2018/01/01
  */
 
-package cc.squirreljme.kernel.packets;
+package net.multiphasicapps.datagrampackets;
 

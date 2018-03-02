@@ -8,39 +8,39 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.kernel.packets;
+package net.multiphasicapps.datagrampackets;
 
-import java.io.DataInputStream;
-import java.io.InputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 /**
- * This wraps an input stream and provides input for datagrams sent from a
- * remote stream.
+ * This wraps an output stream and allows datagrams to be written to the
+ * remote side.
  *
  * @since 2018/01/17
  */
-public final class DatagramInputStream
-	implements DatagramIn
+public final class DatagramOutputStream
+	implements DatagramOut
 {
-	/** The input data source. */
-	protected final DataInputStream in;
+	/** The output data sink. */
+	protected final DataOutputStream out;
 	
 	/**
-	 * Initializes the datagram input.
+	 * Initializes the datagram output.
 	 *
-	 * @param __in The stream to read datagrams from.
+	 * @param __out The stream to write datagrams to.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/17
 	 */
-	public DatagramInputStream(InputStream __in)
+	public DatagramOutputStream(OutputStream __out)
 		throws NullPointerException
 	{
-		if (__in == null)
+		if (__out == null)
 			throw new NullPointerException("NARG");
 		
-		this.in = ((__in instanceof DataInputStream) ?
-			(DataInputStream)__in : new DataInputStream(__in));
+		this.out = ((__out instanceof DataOutputStream) ?
+			(DataOutputStream)__out : new DataOutputStream(__out));
 	}
 	
 	/**
@@ -53,13 +53,13 @@ public final class DatagramInputStream
 	{
 		try
 		{
-			this.in.close();
+			this.out.close();
 		}
 		
-		// {@squirreljme.error AT0j Could not close the input stream.}
+		// {@squirreljme.error AT0k Could not close the output stream.}
 		catch (IOException e)
 		{
-			throw new DatagramIOException("AT0j", e);
+			throw new DatagramIOException("AT0k", e);
 		}
 	}
 	
@@ -68,14 +68,11 @@ public final class DatagramInputStream
 	 * @since 2018/01/17
 	 */
 	@Override
-	public final Packet read(int[] __key)
-		throws ArrayIndexOutOfBoundsException, DatagramIOException,
-			NullPointerException
+	public final void write(int __key, Packet __p)
+		throws DatagramIOException, NullPointerException
 	{
-		if (__key == null)
+		if (__p == null)
 			throw new NullPointerException("NARG");
-		if (__key.length < 1)
-			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
 		throw new todo.TODO();
 	}
