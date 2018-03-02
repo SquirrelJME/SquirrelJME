@@ -10,7 +10,7 @@
 
 package cc.squirreljme.runtime.cldc.system;
 
-import cc.squirreljme.runtime.cldc.service.SystemService;
+import cc.squirreljme.runtime.cldc.service.ServiceClientProvider;
 
 /**
  * This is the mnemonic call which just uses the system's actual system call
@@ -129,15 +129,26 @@ public class __SystemMnemonicCall__
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2018/03/02
+	 */
+	@Override
+	public final int serviceCount()
+	{
+		return SystemCall.integerCall(
+			SystemFunction.SERVICE_COUNT);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/03/01
 	 */
 	@Override
 	@SuppressWarnings({"unchecked"})
-	public final Class<? extends SystemService> serviceQueryClass(int __dx)
+	public final Class<? extends ServiceClientProvider> serviceQueryClass(
+		int __dx)
 	{
-		return (Class<? extends SystemService>)SystemCall.<Class>systemCall(
-			Class.class,
-			SystemFunction.SERVICE_QUERY_CLASS, __dx);
+		return (Class<? extends ServiceClientProvider>)SystemCall.<Class>
+			systemCall(Class.class, SystemFunction.SERVICE_QUERY_CLASS, __dx);
 	}
 	
 	/**

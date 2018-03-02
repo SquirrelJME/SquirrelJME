@@ -49,6 +49,9 @@ public enum SystemFunction
 	/** Perform a call into a service. */
 	SERVICE_CALL,
 	
+	/** Returns the number of available services. */
+	SERVICE_COUNT,
+	
 	/** Quert which client class implements the service functions. */
 	SERVICE_QUERY_CLASS,
 	

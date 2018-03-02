@@ -11,22 +11,11 @@
 package cc.squirreljme.runtime.cldc.service;
 
 /**
- * This interface is used to initialize client interfaces to services available
- * to the system.
+ * This interface is used on the server end to handle incoming requests.
  *
  * @since 2018/03/02
  */
-public interface SystemService
+public interface ServiceServer
 {
-	/**
-	 * Initializes the client object for the given service.
-	 *
-	 * @param __c The caller interface to use for system calls.
-	 * @return The client object for the service.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/03/02
-	 */
-	public abstract Object initializeClient(ServiceCaller __c)
-		throws NullPointerException;
 }
 

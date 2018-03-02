@@ -10,6 +10,7 @@
 
 package cc.squirreljme.runtime.cldc.service;
 
+import cc.squirreljme.runtime.cldc.system.SystemCall;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,6 +22,14 @@ import java.util.Map;
  */
 public final class ServiceAccessor
 {
+	/** Mapping of client classes to instances. */
+	private static final Map<Class<?>, Integer> _INSTANCEMAP =
+		new HashMap<>();
+	
+	/** Services which have been initialized for clients. */
+	private static final Map<Integer, Object> _INSTANCES =
+		new HashMap<>();
+	
 	/**
 	 * Not used.
 	 *
@@ -46,7 +55,57 @@ public final class ServiceAccessor
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		Map<Class<?>, Integer> instancemap = ServiceAccessor._INSTANCEMAP;
+		Map<Integer, Object> instances = ServiceAccessor._INSTANCES;
+		
+		// Need to obtain the service index first
+		Integer svdx;
+		synchronized (instancemap)
+		{
+			svdx = instancemap.get(__cl);
+			if (svdx == null)
+			{
+				svdx = SystemCall.MNEMONIC.serviceQueryIndex(__cl);
+				
+				// {@squirreljme.error ZZ0h No such service exists for the
+				// given class. (The service class)}
+				if (svdx < 0)
+					throw new NoSuchServiceException(String.format("ZZ0h %s",
+						__cl));
+				
+				instancemap.put(__cl, svdx);
+			}
+		}
+		
+		// Obtain service instance
+		Object rv;
+		synchronized (instances)
+		{
+			rv = instances.get(svdx);
+			if (rv == null)
+			{
+				// Create instance
+				int dx = svdx;
+				try
+				{
+					rv = SystemCall.MNEMONIC.serviceQueryClass(dx).
+						newInstance().initializeClient(new ServiceCaller(dx));
+				}
+				
+				// {@squirreljme.error ZZ0i Could not initialize the service.
+				// (The client class)}
+				catch (IllegalAccessException|InstantiationException e)
+				{
+					throw new IllegalStateException(String.format("ZZ0i %s",
+						__cl), e);
+				}
+				
+				// Cache it
+				instances.put(svdx, rv);
+			}
+		}
+		
+		return __cl.cast(rv);
 	}
 }
 

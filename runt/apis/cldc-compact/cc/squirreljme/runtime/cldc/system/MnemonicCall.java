@@ -10,7 +10,7 @@
 
 package cc.squirreljme.runtime.cldc.system;
 
-import cc.squirreljme.runtime.cldc.service.SystemService;
+import cc.squirreljme.runtime.cldc.service.ServiceClientProvider;
 
 /**
  * This is a system call handler which handles any incoming system calls and
@@ -73,6 +73,9 @@ public abstract class MnemonicCall
 			
 			case SERVICE_CALL:
 				return this.__serviceCall(__args);
+			
+			case SERVICE_COUNT:
+				return this.serviceCount();
 			
 			case SERVICE_QUERY_CLASS:
 				return this.serviceQueryClass(
@@ -175,13 +178,22 @@ public abstract class MnemonicCall
 		Object... __args);
 	
 	/**
+	 * Returns the number of available services.
+	 *
+	 * @return The number of available services.
+	 * @since 2018/03/02
+	 */
+	public abstract int serviceCount();
+	
+	/**
 	 * Queries which class the client should use for the given service index.
 	 *
 	 * @param __dx The index to get the client class for.
 	 * @return The client class for the given index.
 	 * @since 2018/03/02
 	 */
-	public abstract Class<? extends SystemService> serviceQueryClass(int __dx);
+	public abstract Class<? extends ServiceClientProvider> serviceQueryClass(
+		int __dx);
 	
 	/**
 	 * Queries the index of the service which implements the given class.
