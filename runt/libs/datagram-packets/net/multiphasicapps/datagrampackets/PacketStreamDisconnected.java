@@ -8,58 +8,37 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.kernel.packets;
+package net.multiphasicapps.datagrampackets;
 
 /**
- * This exception is thrown when a datagram could not be transmitted or
- * received.
+ * This is thrown when the packet stream has been disconnected.
  *
- * @since 2018/01/17
+ * @since 2018/01/01
  */
-public final class DatagramIOException
+public class PacketStreamDisconnected
 	extends RuntimeException
 {
 	/**
-	 * Initialize the exception with no message or cause.
-	 *
-	 * @since 2018/01/17
-	 */
-	public DatagramIOException()
-	{
-	}
-	
-	/**
-	 * Initialize the exception with a message and no cause.
+	 * Initializes exception with the given message.
 	 *
 	 * @param __m The message.
-	 * @since 2018/01/17
+	 * @since 2018/01/01
 	 */
-	public DatagramIOException(String __m)
+	public PacketStreamDisconnected(String __m)
 	{
 		super(__m);
 	}
 	
 	/**
-	 * Initialize the exception with a message and cause.
+	 * Initializes exception with the given message and cause.
 	 *
 	 * @param __m The message.
 	 * @param __c The cause.
-	 * @since 2018/01/17
+	 * @since 2018/01/01
 	 */
-	public DatagramIOException(String __m, Throwable __c)
+	public PacketStreamDisconnected(String __m, Throwable __c)
 	{
 		super(__m, __c);
-	}
-	
-	/**
-	 * Initialize the exception with no message and with a cause.
-	 *
-	 * @param __c The cause.
-	 * @since 2018/01/17
-	 */
-	public DatagramIOException(Throwable __c)
-	{
-		super(__c);
 	}
 }
 

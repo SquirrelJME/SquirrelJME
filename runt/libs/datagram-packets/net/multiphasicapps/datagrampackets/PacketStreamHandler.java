@@ -8,39 +8,34 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.kernel.packets;
-
-import java.io.PrintStream;
+package net.multiphasicapps.datagrampackets;
 
 /**
- * This class is thrown by the {@link PacketStream#send(Packet)} method if the
- * remote end threw an exception while handling a packet.
- *
- * This will wrap as much detail as needed from the exception which was caught
- * on the remote end.
- *
- * Responseless packets do not respond with this exception.
+ * This interface is used by the incoming side to handle incoming requests
+ * which were sent by the remote end.
  *
  * @since 2018/01/01
  */
-public interface RemoteThrowable
+public interface PacketStreamHandler
 {
 	/**
-	 * Returns the details of the thrown exception.
+	 * This is called when the remote side has ended the connection.
 	 *
-	 * @return The exception details.
-	 * @since 2018/01/07
+	 * @since 2018/01/01
 	 */
-	public abstract RemoteThrowableDetail detail();
+	public abstract void end();
 	
 	/**
-	 * Prints the local stack trace.
+	 * Handles a request sent from the remote end.
 	 *
-	 * @param __ps The stream to print to.
+	 * @param __p The packet received from the remote end.
+	 * @return The packet to respond with, this may be {@code null} if there
+	 * is no response. The return value is ignored if the type is not one
+	 * which generates a response.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2018/01/07
+	 * @since 2018/01/01
 	 */
-	public abstract void printLocalStackTrace(PrintStream __ps)
+	public abstract Packet handle(Packet __p)
 		throws NullPointerException;
 }
 

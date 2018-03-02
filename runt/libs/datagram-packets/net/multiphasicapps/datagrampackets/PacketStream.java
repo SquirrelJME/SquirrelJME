@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.kernel.packets;
+package net.multiphasicapps.datagrampackets;
 
 import cc.squirreljme.runtime.cldc.system.SystemCall;
 import java.io.Closeable;

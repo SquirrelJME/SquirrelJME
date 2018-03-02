@@ -8,17 +8,17 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.kernel.packets;
+package net.multiphasicapps.datagrampackets;
 
 import java.io.PrintStream;
 
 /**
- * This is thrown when the specified action cannot be performed.
+ * This is thrown when there is a fatal error.
  *
  * @since 2018/01/07
  */
-public class RemoteSecurityException
-	extends SecurityException
+public class RemoteError
+	extends Error
 	implements RemoteThrowable
 {
 	/** The exception detail. */
@@ -31,7 +31,7 @@ public class RemoteSecurityException
 	 * @throws NullPointerException On null arguments.
 	 * @sicne 2018/01/07
 	 */
-	public RemoteSecurityException(RemoteThrowableDetail __d)
+	public RemoteError(RemoteThrowableDetail __d)
 		throws NullPointerException
 	{
 		super(__d.message(), __d.cause());

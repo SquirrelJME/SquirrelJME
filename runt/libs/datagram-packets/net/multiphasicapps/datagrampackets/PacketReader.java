@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.kernel.packets;
+package net.multiphasicapps.datagrampackets;
 
 /**
  * This class is used to read from packets in a stream like manner.

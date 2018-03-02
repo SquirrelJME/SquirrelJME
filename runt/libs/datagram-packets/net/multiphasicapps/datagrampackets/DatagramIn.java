@@ -8,21 +8,21 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.kernel.packets;
+package net.multiphasicapps.datagrampackets;
 
 import java.io.Closeable;
 
 /**
- * This interface represents a destination for output datagrams.
+ * This interface represents a source for incoming datagrams.
  *
  * @since 2018/01/17
  */
-public interface DatagramOut
+public interface DatagramIn
 	extends Closeable
 {
 	/**
 	 * {@inheritDoc}
-	 * @throws DatagramIOException If the output could not be closed.
+	 * @throws DatagramIOException If the input could not be closed.
 	 * @since 2018/01/17
 	 */
 	@Override
@@ -30,19 +30,21 @@ public interface DatagramOut
 		throws DatagramIOException;
 	
 	/**
-	 * Writes the specified packet to the output source which will be written
-	 * to the other side.
+	 * Reads an incoming packet and key from the datagram source.
 	 *
-	 * Datagrams may be sent out of order and they must not be duplicated.
+	 * Incoming datagrams are permitted to be out of order but they must not
+	 * be duplicated.
 	 *
-	 * @param __key The key which is associated with the packet, this is used
-	 * to handle responses from the remote stream.
-	 * @param __p The packet to write.
-	 * @throws DatagramIOException If the packet could not be written.
+	 * @param __key The key which read read from the datagram, only the first
+	 * element is written to and this must have a size of at least 1.
+	 * @return The read packet.
+	 * @throws ArrayIndexOutOfBoundsException If the array is empty.
+	 * @throws DatagramIOException If the datagram could not be read.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/17
 	 */
-	public abstract void write(int __key, Packet __p)
-		throws DatagramIOException, NullPointerException;
+	public abstract Packet read(int[] __key)
+		throws ArrayIndexOutOfBoundsException, DatagramIOException,
+			NullPointerException;
 }
 
