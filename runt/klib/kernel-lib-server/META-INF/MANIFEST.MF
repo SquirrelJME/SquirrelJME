@@ -7,6 +7,6 @@ X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This project contains the service which is 
  used to manage programs which are currently installed. It enables
  installation, removal, upgrade, and other tasks related to programs.
-X-SquirrelJME-Depends: zip kernel-lib-client kernel-trust-client
+X-SquirrelJME-Depends: zip kernel-trust-client meep-swm
 Microedition-Configuration: CLDC-1.8-Compact
 
