@@ -173,5 +173,16 @@ public class __SystemMnemonicCall__
 		SystemCall.voidCall(
 			SystemFunction.SET_DAEMON_THREAD, __t);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/02
+	 */
+	@Override
+	public final IntegerArray taskList(boolean __incsys)
+	{
+		return SystemCall.integerArrayCall(
+			SystemFunction.TASK_LIST, __incsys);
+	}
 }
 

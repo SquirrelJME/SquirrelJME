@@ -90,6 +90,10 @@ public abstract class MnemonicCall
 					(Thread)__args[0]);
 				return voidtype;
 			
+			case TASK_LIST:
+				return this.taskList(
+					__boolean(__args[0]));
+			
 				// {@squirreljme.error ZZ0f Unimplemented system call.
 				// (The function being called)}
 			default:
@@ -214,6 +218,15 @@ public abstract class MnemonicCall
 	 */
 	public abstract void setDaemonThread(Thread __t)
 		throws IllegalThreadStateException, NullPointerException;
+	
+	/**
+	 * Returns the list of tasks which are available on the system.
+	 *
+	 * @param __incsys Include system tasks?
+	 * @return The array of tasks available to the system.
+	 * @since 2018/03/02
+	 */
+	public abstract IntegerArray taskList(boolean __incsys);
 	
 	/**
 	 * Pipes multiple bytes to standard output or standard error.
