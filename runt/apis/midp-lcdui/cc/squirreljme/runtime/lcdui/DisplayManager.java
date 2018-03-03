@@ -10,7 +10,7 @@
 
 package cc.squirreljme.runtime.lcdui;
 
-import cc.squirreljme.runtime.cldc.SystemCall;
+import cc.squirreljme.runtime.cldc.service.ServiceAccessor;
 import cc.squirreljme.runtime.lcdui.event.EventQueue;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -51,7 +51,7 @@ public abstract class DisplayManager
 	static
 	{
 		// Use the default display head manager
-		DisplayManager dhp = SystemCall.
+		DisplayManager dhp = ServiceAccessor.
 			<DisplayManager>service(DisplayManager.class);
 		
 		// If no manager is available, use a null display manager that does

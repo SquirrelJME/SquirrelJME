@@ -10,7 +10,7 @@
 
 package cc.squirreljme.runtime.lcdui.font;
 
-import cc.squirreljme.runtime.cldc.SystemCall;
+import cc.squirreljme.runtime.cldc.service.ServiceAccessor;
 import cc.squirreljme.runtime.lcdui.DisplayManager;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -52,7 +52,8 @@ public abstract class FontManager
 	static
 	{
 		// Use either the provided font manager or a default if none was set
-		FontManager fm = SystemCall.<FontManager>service(FontManager.class);
+		FontManager fm = ServiceAccessor.<FontManager>service(
+			FontManager.class);
 		FONT_MANAGER = (fm == null ? new DefaultFontManager() : fm);
 	}
 	
