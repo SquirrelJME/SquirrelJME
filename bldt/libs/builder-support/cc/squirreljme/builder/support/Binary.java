@@ -11,13 +11,13 @@
 package cc.squirreljme.builder.support;
 
 import cc.squirreljme.jit.library.Library;
-import cc.squirreljme.kernel.lib.DependencyInfo;
-import cc.squirreljme.kernel.lib.MatchResult;
-import cc.squirreljme.kernel.lib.ProvidedInfo;
-import cc.squirreljme.kernel.lib.SuiteInfo;
-import cc.squirreljme.kernel.lib.SuiteName;
-import cc.squirreljme.kernel.lib.SuiteVendor;
-import cc.squirreljme.kernel.lib.SuiteVersion;
+import cc.squirreljme.kernel.suiteinfo.DependencyInfo;
+import cc.squirreljme.kernel.suiteinfo.MatchResult;
+import cc.squirreljme.kernel.suiteinfo.ProvidedInfo;
+import cc.squirreljme.kernel.suiteinfo.SuiteInfo;
+import cc.squirreljme.kernel.suiteinfo.SuiteName;
+import cc.squirreljme.kernel.suiteinfo.SuiteVendor;
+import cc.squirreljme.kernel.suiteinfo.SuiteVersion;
 import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
