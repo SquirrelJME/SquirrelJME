@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+X-SquirrelJME-UUID: d169f5fb-29cd-4908-a194-855f5a75684d
+X-SquirrelJME-Error: AR
+X-SquirrelJME-Name: Suite Information
+X-SquirrelJME-Vendor: Stephanie Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This project contains classes which pertain to
+ information for parsing information about suites.
+X-SquirrelJME-Depends: tool-manifest-reader collections strings
+Microedition-Configuration: CLDC-1.8-Compact
+
