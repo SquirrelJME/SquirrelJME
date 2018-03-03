@@ -10,20 +10,20 @@
 
 package cc.squirreljme.builder.support;
 
-import cc.squirreljme.kernel.lib.Configuration;
-import cc.squirreljme.kernel.lib.DependencyInfo;
-import cc.squirreljme.kernel.lib.MarkedProvided;
-import cc.squirreljme.kernel.lib.MatchResult;
-import cc.squirreljme.kernel.lib.Profile;
-import cc.squirreljme.kernel.lib.ProvidedInfo;
-import cc.squirreljme.kernel.lib.Standard;
-import cc.squirreljme.kernel.lib.SuiteDependency;
-import cc.squirreljme.kernel.lib.SuiteDependencyLevel;
-import cc.squirreljme.kernel.lib.SuiteDependencyType;
-import cc.squirreljme.kernel.lib.SuiteInfo;
-import cc.squirreljme.kernel.lib.SuiteName;
-import cc.squirreljme.kernel.lib.SuiteVersion;
-import cc.squirreljme.kernel.lib.SuiteVersionRange;
+import cc.squirreljme.kernel.suiteinfo.Configuration;
+import cc.squirreljme.kernel.suiteinfo.DependencyInfo;
+import cc.squirreljme.kernel.suiteinfo.MarkedProvided;
+import cc.squirreljme.kernel.suiteinfo.MatchResult;
+import cc.squirreljme.kernel.suiteinfo.Profile;
+import cc.squirreljme.kernel.suiteinfo.ProvidedInfo;
+import cc.squirreljme.kernel.suiteinfo.Standard;
+import cc.squirreljme.kernel.suiteinfo.SuiteDependency;
+import cc.squirreljme.kernel.suiteinfo.SuiteDependencyLevel;
+import cc.squirreljme.kernel.suiteinfo.SuiteDependencyType;
+import cc.squirreljme.kernel.suiteinfo.SuiteInfo;
+import cc.squirreljme.kernel.suiteinfo.SuiteName;
+import cc.squirreljme.kernel.suiteinfo.SuiteVersion;
+import cc.squirreljme.kernel.suiteinfo.SuiteVersionRange;
 import java.io.Closeable;
 import java.io.InputStream;
 import java.io.IOException;

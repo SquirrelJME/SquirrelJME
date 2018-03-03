@@ -10,10 +10,10 @@
 
 package cc.squirreljme.builder.support;
 
-import cc.squirreljme.kernel.lib.DependencyInfo;
-import cc.squirreljme.kernel.lib.InvalidSuiteException;
-import cc.squirreljme.kernel.lib.ProvidedInfo;
-import cc.squirreljme.kernel.lib.SuiteInfo;
+import cc.squirreljme.kernel.suiteinfo.DependencyInfo;
+import cc.squirreljme.kernel.suiteinfo.InvalidSuiteException;
+import cc.squirreljme.kernel.suiteinfo.ProvidedInfo;
+import cc.squirreljme.kernel.suiteinfo.SuiteInfo;
 import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
