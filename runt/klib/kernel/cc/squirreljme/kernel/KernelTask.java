@@ -53,12 +53,8 @@ public abstract class KernelTask
 	/** The trust group this task is within. */
 	protected final SystemTrustGroup trustgroup;
 	
-	/** The packet stream to the child process. */
-	@Deprecated
-	private final PacketStream _stream;
-	
-	/** Instances of each service which is mapped to the kernel service set. */
-	private final ServerInstance[] _instances;
+	/** Service instances for this task. */
+	protected final ServiceManager.Instances services;
 	
 	/** String representation. */
 	private volatile Reference<String> _string;
@@ -72,13 +68,10 @@ public abstract class KernelTask
 	 * @param __k The owning kernel.
 	 * @param __id The index of the task.
 	 * @param __l Launch parameters of the task.
-	 * @param __in The input from the task.
-	 * @param __out The output to the task.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/02
 	 */
-	protected KernelTask(Reference<Kernel> __k, int __id, KernelTaskLaunch __l,
-		DatagramIn __in, DatagramOut __out)
+	protected KernelTask(Reference<Kernel> __k, int __id, KernelTaskLaunch __l)
 		throws NullPointerException
 	{
 		if (__k == null ||
