@@ -11,9 +11,10 @@
 package javax.microedition.swm;
 
 import cc.squirreljme.kernel.lib.client.LibrariesClient;
-import cc.squirreljme.kernel.lib.Library;
-import cc.squirreljme.kernel.lib.LibraryType;
-import cc.squirreljme.runtime.cldc.SystemCall;
+import cc.squirreljme.runtime.cldc.library.Library;
+import cc.squirreljme.runtime.cldc.library.LibraryType;
+import cc.squirreljme.runtime.cldc.service.ServiceAccessor;
+import cc.squirreljme.runtime.cldc.system.SystemCall;
 import cc.squirreljme.runtime.swm.ByteArrayJarStreamSupplier;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -38,7 +39,7 @@ final class __SystemSuiteManager__
 	
 	/** The library manager. */
 	final LibrariesClient _manager =
-		SystemCall.<LibrariesClient>service(LibrariesClient.class);
+		ServiceAccessor.<LibrariesClient>service(LibrariesClient.class);
 	
 	/** Cached suites. */
 	protected final Map<Library, Reference<Suite>> _suites =
@@ -103,7 +104,7 @@ final class __SystemSuiteManager__
 		LibrariesClient manager = this._manager;
 		
 		// The system call can be masked to filter out unwanted suites
-		int mask;
+		LibraryType mask;
 		if (__t == SuiteType.APPLICATION)
 			mask = LibraryType.APPLICATION;
 		else if (__t == SuiteType.LIBRARY)

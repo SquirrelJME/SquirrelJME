@@ -127,25 +127,25 @@ public final class Task
 	 */
 	public TaskStatus getStatus()
 	{
-		int status = (this._task.flags() & SystemTaskFlag.STATUS_MASK);
+		SystemTaskStatus status = this._task.status();
 		switch (status)
 		{
-			case SystemTaskStatus.EXITED_FATAL:
+			case EXITED_FATAL:
 				return TaskStatus.EXITED_FATAL;
 
-			case SystemTaskStatus.EXITED_REGULAR:
+			case EXITED_REGULAR:
 				return TaskStatus.EXITED_REGULAR;
 
-			case SystemTaskStatus.EXITED_TERMINATED:
+			case EXITED_TERMINATED:
 				return TaskStatus.EXITED_TERMINATED;
 
-			case SystemTaskStatus.RUNNING:
+			case RUNNING:
 				return TaskStatus.RUNNING;
 
-			case SystemTaskStatus.START_FAILED:
+			case START_FAILED:
 				return TaskStatus.START_FAILED;
 
-			case SystemTaskStatus.STARTING:
+			case STARTING:
 				return TaskStatus.STARTING;
 			
 				// {@squirreljme.error DG06 Task is in an invalid status

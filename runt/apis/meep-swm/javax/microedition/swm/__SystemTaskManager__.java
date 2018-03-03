@@ -81,7 +81,7 @@ final class __SystemTaskManager__
 		Task[] rv;
 		synchronized (this.lock)
 		{
-			IntegerArray[] tids = SystemCall.MNEMONIC.taskList(__incsys);
+			IntegerArray tids = SystemCall.MNEMONIC.taskList(__incsys);
 			int n = tids.length();
 			
 			// Wrap all the tasks

@@ -10,6 +10,7 @@
 
 package cc.squirreljme.runtime.cldc.task;
 
+import cc.squirreljme.runtime.cldc.library.Library;
 import cc.squirreljme.runtime.cldc.trust.SystemTrustGroup;
 import java.io.InputStream;
 
@@ -23,7 +24,7 @@ import java.io.InputStream;
  * Instances of this class will be used as keys so it must implement
  * {@link #equals(Object)} and {@link #hashCode()} to where even two
  * instances of this class which point to the same program refer to that
- * instance.
+ * instance. As such the comparison is performed with the task index.
  *
  * @since 2017/12/10
  */
@@ -43,12 +44,26 @@ public interface SystemTask
 		throws NullPointerException, SecurityException;
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/03
+	 */
+	@Override
+	public abstract boolean equals(Object __o);
+	
+	/**
 	 * Returns the task flags.
 	 *
 	 * @return The flags for the task.
 	 * @since 2017/12/27
 	 */
 	public abstract int flags();
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/03
+	 */
+	@Override
+	public abstract int hashCode();
 	
 	/**
 	 * Returns the index of the task.
@@ -59,18 +74,14 @@ public interface SystemTask
 	public abstract int index();
 	
 	/**
-	 * Loads a special resource from the given task's classpath.
+	 * Returns the classpath of this task.
 	 *
-	 * @param __name The name of the resource to load.
-	 * @return The input stream of the special resource or {@code null} if it
-	 * does not exist.
-	 * @throws NullPointerException On null arguments.
-	 * @throws SecurityException If special resources cannot be obtained for
-	 * this task.
-	 * @since 2018/01/31
+	 * @return The libraries which make up the classpath for the task.
+	 * @throws SecurityException If the libraries could not be obtained.
+	 * @since 2018/03/03
 	 */
-	public abstract InputStream loadSpecialResource(String __name)
-		throws NullPointerException, SecurityException;
+	public abstract Library[] libraryClassPath()
+		throws SecurityException;
 	
 	/**
 	 * Returns the main entry point of this task.
@@ -85,9 +96,11 @@ public interface SystemTask
 	 *
 	 * @param __m The metric to get.
 	 * @return The value for this metric.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/10
 	 */
-	public abstract long metric(SystemTaskMetric __m);
+	public abstract long metric(SystemTaskMetric __m)
+		throws NullPointerException;
 	
 	/**
 	 * Attempts to restart the specified task, if permitted to.

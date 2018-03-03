@@ -18,7 +18,7 @@ package cc.squirreljme.runtime.cldc.library;
 public enum LibraryControlKey
 {
 	/** Download URL. */
-	DOWNLOAD_UR,
+	DOWNLOAD_URL,
 	
 	/** Is the program installed? */
 	IS_INSTALLED,
@@ -37,6 +37,18 @@ public enum LibraryControlKey
 	
 	/** Is the program enabled? */
 	STATE_FLAG_ENABLED,
+
+	/** The application or library is pre-installed with the system. */
+	STATE_FLAG_PREINSTALLED,
+	
+	/** Remove is not supported. */
+	STATE_FLAG_REMOVE_DENIED,
+	
+	/** A suite provided by the system. */
+	STATE_FLAG_SYSTEM,
+	
+	/** The suite cannot be updated. */
+	STATE_FLAG_UPDATE_DENIED,
 	
 	/** Dependencies. */
 	DEPENDENCIES,
