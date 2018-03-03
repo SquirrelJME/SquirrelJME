@@ -26,3 +26,19 @@ The system calling interface and the packet stream stuff is going to be
 simplified now. Services are no longer going to use packet streams they will
 just use direct method calls since that is faster, but it has the same
 function for the most part.
+
+## 13:31
+
+Okay so next thing to do is simplify the service infrastructure. It can
+actually be done much simpler. I believe initially I will make the existing
+service code on top of the packet stream code via the system calls. And it
+will work because of `DatagramIn` and `DatagramOut` for the most part. The
+only thing that is not around are means for the kernel to ask clients for
+things. Well, that actually does exist in a way it can just wait on a queue
+of sorts.
+
+## 14:34
+
+I think for services I will want to do something similar to system calls and
+have instead of packets and such I just send parameters and things. That
+could work well and would likely be faster and have less overhead.
