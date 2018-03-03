@@ -8,25 +8,25 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.kernel.lib;
+package cc.squirreljme.kernel.lib.client;
 
 /**
- * Packet types for the library.
+ * Functions for the library interface.
  *
  * @since 2018/01/05
  */
-public interface LibrariesPacketTypes
+public enum LibrariesFunction
 {
 	/** List programs which are available. */
-	public static final int LIST_PROGRAMS =
-		1;
+	LIST_PROGRAMS,
 	
 	/** Install a program. */
-	public static final int INSTALL_PROGRAM =
-		2;
+	INSTALL_PROGRAM,
 	
 	/** Load bytes from a resource. */
-	public static final int LOAD_RESOURCE_BYTES =
-		3;
+	LOAD_RESOURCE_BYTES,
+	
+	/** End. */
+	;
 }
 

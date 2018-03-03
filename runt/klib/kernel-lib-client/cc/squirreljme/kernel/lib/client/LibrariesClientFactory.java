@@ -10,9 +10,8 @@
 
 package cc.squirreljme.kernel.lib.client;
 
-import cc.squirreljme.kernel.service.ClientInstance;
-import cc.squirreljme.kernel.service.ClientInstanceFactory;
-import cc.squirreljme.kernel.service.ServicePacketStream;
+import cc.squirreljme.runtime.cldc.service.ServiceCaller;
+import cc.squirreljme.runtime.cldc.service.ServiceClientProvider;
 
 /**
  * This factory is used by the client and enables communication with the
@@ -21,20 +20,20 @@ import cc.squirreljme.kernel.service.ServicePacketStream;
  * @since 2018/01/05
  */
 public final class LibrariesClientFactory
-	extends ClientInstanceFactory
+	implements ServiceClientProvider
 {
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/01/05
+	 * @since 2018/03/02
 	 */
 	@Override
-	protected final ClientInstance initializeClient(ServicePacketStream __sps)
+	public final Object initializeClient(ServiceCaller __c)
 		throws NullPointerException
 	{
-		if (__sps == null)
+		if (__c == null)
 			throw new NullPointerException("NARG");
 		
-		return new LibrariesClient(__sps);
+		return new LibrariesClient(__c);
 	}
 }
 

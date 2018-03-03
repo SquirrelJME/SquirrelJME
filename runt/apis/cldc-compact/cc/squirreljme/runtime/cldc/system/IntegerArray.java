@@ -18,5 +18,15 @@ package cc.squirreljme.runtime.cldc.system;
 public interface IntegerArray
 	extends Array
 {
+	/**
+	 * Returns the integer at the given index.
+	 *
+	 * @param __i The index to get.
+	 * @return The value.
+	 * @throws ArrayIndexOutOfBoundsException If out of bounds.
+	 * @since 2018/03/02
+	 */
+	public abstract int get(int __i)
+		throws ArrayIndexOutOfBoundsException;
 }
 

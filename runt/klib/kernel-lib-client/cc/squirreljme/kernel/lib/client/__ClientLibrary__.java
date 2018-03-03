@@ -10,9 +10,12 @@
 
 package cc.squirreljme.kernel.lib.client;
 
-import cc.squirreljme.kernel.lib.LibrariesPacketTypes;
-import cc.squirreljme.kernel.lib.Library;
-import cc.squirreljme.runtime.cldc.SystemResourceScope;
+import cc.squirreljme.runtime.cldc.library.Library;
+import cc.squirreljme.runtime.cldc.library.LibraryControlKey;
+import cc.squirreljme.runtime.cldc.library.LibraryResourceScope;
+import cc.squirreljme.runtime.cldc.library.LibraryType;
+import cc.squirreljme.runtime.cldc.service.ServiceCaller;
+import java.io.InputStream;
 
 /**
  * This class represents a library as seen by the client.
@@ -20,28 +23,30 @@ import cc.squirreljme.runtime.cldc.SystemResourceScope;
  * @since 2018/01/12
  */
 final class __ClientLibrary__
-	extends Library
+	implements Library
 {
-	/** The client which created this. */
-	protected final LibrariesClient client;
+	/** The system caller. */
+	protected final ServiceCaller caller;
+	
+	/** The library index. */
+	protected final int index;
 	
 	/**
 	 * Initializes the library.
 	 *
 	 * @param __dx The library index.
-	 * @param __cl The client library.
+	 * @param __sc The client library.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/12
 	 */
-	__ClientLibrary__(int __dx, LibrariesClient __cl)
+	__ClientLibrary__(int __dx, ServiceCaller __sc)
 		throws NullPointerException
 	{
-		super(__dx);
-		
-		if (__cl == null)
+		if (__sc == null)
 			throw new NullPointerException("NARG");
 		
-		this.client = __cl;
+		this.index = __dx;
+		this.caller = __sc;
 	}
 	
 	/**
@@ -49,7 +54,7 @@ final class __ClientLibrary__
 	 * @since 2018/02/11
 	 */
 	@Override
-	public final String controlGet(String __k)
+	public final String controlGet(LibraryControlKey __k)
 		throws NullPointerException
 	{
 		if (__k == null)
@@ -63,7 +68,7 @@ final class __ClientLibrary__
 	 * @since 2018/02/11
 	 */
 	@Override
-	public final void controlSet(String __k, String __v)
+	public final void controlSet(LibraryControlKey __k, String __v)
 		throws NullPointerException
 	{
 		if (__k == null)
@@ -74,17 +79,27 @@ final class __ClientLibrary__
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/01/15
+	 * @since 2018/03/02
 	 */
 	@Override
-	protected final byte[] loadResourceBytes(SystemResourceScope __scope,
-		String __n)
+	public final InputStream loadResource(LibraryResourceScope __scope,
+		String __name)
 		throws NullPointerException
 	{
-		if (__scope == null || __n == null)
+		if (__scope == null || __name == null)
 			throw new NullPointerException("NARG");
 		
-		return this.client.__loadResourceBytes(this.index, __scope, __n);
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/02
+	 */
+	@Override
+	public final LibraryType type()
+	{
+		throw new todo.TODO();
 	}
 }
 

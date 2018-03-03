@@ -10,16 +10,11 @@
 
 package cc.squirreljme.kernel.lib.client;
 
-import cc.squirreljme.kernel.lib.LibrariesPacketTypes;
-import cc.squirreljme.kernel.lib.Library;
-import cc.squirreljme.kernel.lib.LibraryInstallationReport;
-import cc.squirreljme.kernel.lib.NoSuchLibraryException;
-import cc.squirreljme.kernel.packets.Packet;
-import cc.squirreljme.kernel.packets.PacketFarm;
-import cc.squirreljme.kernel.packets.PacketWriter;
-import cc.squirreljme.kernel.service.ClientInstance;
-import cc.squirreljme.kernel.service.ServicePacketStream;
-import cc.squirreljme.runtime.cldc.SystemResourceScope;
+import cc.squirreljme.runtime.cldc.library.Library;
+import cc.squirreljme.runtime.cldc.library.LibraryResourceScope;
+import cc.squirreljme.runtime.cldc.library.NoSuchLibraryException;
+import cc.squirreljme.runtime.cldc.service.ServiceCaller;
+import cc.squirreljme.runtime.cldc.system.IntegerArray;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Map;
@@ -31,8 +26,10 @@ import net.multiphasicapps.collections.SortedTreeMap;
  * @since 2018/01/02
  */
 public final class LibrariesClient
-	extends ClientInstance
 {
+	/** The caller for the library server. */
+	protected final ServiceCaller caller;
+	
 	/** Mapping of libraries. */
 	private final Map<Integer, Reference<Library>> _libraries =
 		new SortedTreeMap<>();
@@ -40,12 +37,17 @@ public final class LibrariesClient
 	/**
 	 * Initializes the library client.
 	 *
-	 * @param __sps The stream to the server.
+	 * @param __sc The service caller to use.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/05
 	 */
-	public LibrariesClient(ServicePacketStream __sps)
+	public LibrariesClient(ServiceCaller __sc)
+		throws NullPointerException
 	{
-		super(__sps);
+		if (__sc == null)
+			throw new NullPointerException("NARG");
+		
+		this.caller = __sc;
 	}
 	
 	/**
@@ -60,26 +62,6 @@ public final class LibrariesClient
 		throws NoSuchLibraryException
 	{
 		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/01/05
-	 */
-	@Override
-	protected Packet handlePacket(Packet __p)
-		throws NullPointerException
-	{
-		if (__p == null)
-			throw new NullPointerException("NARG");
-		
-		switch (__p.type())
-		{
-				// {@squirreljme.error AV04 Unknown packet. (The packet)}
-			default:
-				throw new IllegalArgumentException(
-					String.format("AV04 %s", __p));
-		}
 	}
 	
 	/**
@@ -103,37 +85,19 @@ public final class LibrariesClient
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
-		LibraryInstallationReport report;
+		// Send entire program to the server
+		int result = this.caller.integerCall(LibrariesFunction.INSTALL_PROGRAM,
+			__b, __o, __l);
 		
-		// Need to send the JAR to the server so it may install it
-		ServicePacketStream stream = this.stream;
-		try (Packet p = PacketFarm.createPacket(
-			LibrariesPacketTypes.INSTALL_PROGRAM, 4 + __l))
-		{
-			// Write the JAR file data
-			p.writeInteger(0, __l);
-			p.writeBytes(4, __b, __o, __l);
-			
-			// Send to server to install
-			try (Packet r = stream.send(p, true))
-			{
-				// Reload report data
-				int ldx = r.readInteger(0);
-				
-				// It failed
-				if (ldx < 0)
-					report = new LibraryInstallationReport(
-						r.readInteger(4), r.readString(8));
-				
-				// Was okay
-				else
-					report = new LibraryInstallationReport(
-						this.__mapLibrary(ldx));
-			}
-		}
+		// {@squirreljme.error AV01 Failed to install the library.
+		// (Result code)}
+		if (result < 0)
+			return new LibraryInstallationReport(result,
+				String.format("AV01 %d", result));
 		
-		// Return the report
-		return report;
+		// Success!
+		else
+			return new LibraryInstallationReport(this.__mapLibrary(result));
 	}
 	
 	/**
@@ -145,79 +109,22 @@ public final class LibrariesClient
 	 */
 	public final Library[] list(int __mask)
 	{
-		int[] indexes;
-		Library[] rv;
+		// Request library indexes
+		IntegerArray dxrv = this.caller.integerArrayCall(
+			LibrariesFunction.LIST_PROGRAMS, __mask);
 		
-		// Read library indexes from the server
-		ServicePacketStream stream = this.stream;
-		try (Packet p = PacketFarm.createPacket(
-			LibrariesPacketTypes.LIST_PROGRAMS, 4))
-		{
-			// Just send the mask used to filter programs
-			p.writeInteger(0, __mask);
-			
-			// Send to server
-			try (Packet r = stream.send(p, true))
-			{
-				// Read count
-				int n = r.readUnsignedShort(0);
-				indexes = new int[n];
-				rv = new Library[n];
-				
-				// Read in values
-				for (int i = 0, q = 2; i < n; i++, q += 4)
-					indexes[i] = r.readInteger(q);
-			}
-		}
+		// Setup return value
+		int n = dxrv.length();
+		Library[] rv = new Library[n];
 		
-		// Map libraries
-		Map<Integer, Reference<Library>> libraries = this._libraries;
-		synchronized (libraries)
+		// Map all libraries
+		synchronized (this._libraries)
 		{
-			for (int i = 0, n = indexes.length; i < n; i++)
-				rv[i] = this.__mapLibrary(indexes[i]);
+			for (int i = 0; i < n; i++)
+				rv[i] = this.__mapLibrary(dxrv.get(i));
 		}
 		
 		return rv;
-	}
-	
-	/**
-	 * Loads the bytes for the given library.
-	 *
-	 * @param __dx The index of the library.
-	 * @param __scope The scope of the library.
-	 * @param __name The name of the resource to load.
-	 * @return The bytes for the resource or {@code null} if it does not
-	 * exist.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/02/12
-	 */
-	final byte[] __loadResourceBytes(int __dx, SystemResourceScope __scope,
-		String __name)
-		throws NullPointerException
-	{
-		if (__scope == null || __name == null)
-			throw new NullPointerException("NARG");
-		
-		ServicePacketStream stream = this.stream;
-		try (Packet p = PacketFarm.createPacket(
-			LibrariesPacketTypes.LOAD_RESOURCE_BYTES))
-		{
-			PacketWriter w = p.createWriter();
-			
-			w.writeInteger(__dx);
-			w.writeString(__scope.name());
-			w.writeString(__name);
-			
-			try (Packet r = stream.send(p, true))
-			{
-				int n = r.length();
-				byte[] rv = new byte[n];
-				r.writeBytes(0, rv, 0, n);
-				System.err.printf("DEBUG -- Read %d %d%n", rv[0], n);
-				return rv;
-			}
-		}
 	}
 	
 	/**
@@ -238,7 +145,7 @@ public final class LibrariesClient
 			
 			if (ref == null || null == (rv = ref.get()))
 				libraries.put(idx, new WeakReference<>(
-					(rv = new __ClientLibrary__(__dx, this))));
+					(rv = new __ClientLibrary__(__dx, this.caller))));
 			
 			return rv;
 		}

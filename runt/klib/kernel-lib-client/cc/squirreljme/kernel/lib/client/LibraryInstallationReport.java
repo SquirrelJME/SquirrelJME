@@ -8,7 +8,9 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.kernel.lib;
+package cc.squirreljme.kernel.lib.client;
+
+import cc.squirreljme.runtime.cldc.library.Library;
 
 /**
  * This is called after a library has been installed and is used as a report.
