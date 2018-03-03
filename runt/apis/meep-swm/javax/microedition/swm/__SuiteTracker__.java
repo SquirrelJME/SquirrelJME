@@ -11,8 +11,8 @@
 package javax.microedition.swm;
 
 import cc.squirreljme.kernel.lib.client.LibrariesClient;
-import cc.squirreljme.kernel.lib.LibraryInstallationReport;
-import cc.squirreljme.runtime.cldc.SystemCall;
+import cc.squirreljme.kernel.lib.client.LibraryInstallationReport;
+import cc.squirreljme.runtime.cldc.system.SystemCall;
 import cc.squirreljme.runtime.swm.JarStreamSupplier;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -50,7 +50,7 @@ final class __SuiteTracker__
 		// Setup thread which performs the actual installation
 		Thread thread = new Thread(new __Runner__(this, __i),
 			"SquirrelJME-Suite-Installer");
-		SystemCall.setDaemonThread(thread);
+		SystemCall.MNEMONIC.setDaemonThread(thread);
 		thread.start();
 	}
 	

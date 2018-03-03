@@ -11,14 +11,14 @@
 package javax.microedition.swm;
 
 import cc.squirreljme.kernel.lib.client.LibrariesClient;
-import cc.squirreljme.kernel.lib.EntryPoint;
-import cc.squirreljme.kernel.lib.EntryPoints;
-import cc.squirreljme.kernel.lib.Library;
-import cc.squirreljme.kernel.lib.LibraryControlKey;
-import cc.squirreljme.kernel.lib.LibraryType;
-import cc.squirreljme.kernel.lib.SuiteInfo;
-import cc.squirreljme.runtime.cldc.SystemCall;
-import cc.squirreljme.runtime.cldc.SystemResourceScope;
+import cc.squirreljme.kernel.suiteinfo.EntryPoint;
+import cc.squirreljme.kernel.suiteinfo.EntryPoints;
+import cc.squirreljme.kernel.suiteinfo.SuiteInfo;
+import cc.squirreljme.runtime.cldc.library.Library;
+import cc.squirreljme.runtime.cldc.library.LibraryControlKey;
+import cc.squirreljme.runtime.cldc.library.LibraryResourceScope;
+import cc.squirreljme.runtime.cldc.library.LibraryType;
+import cc.squirreljme.runtime.cldc.system.SystemCall;
 import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import net.multiphasicapps.collections.EmptyIterator;
+import net.multiphasicapps.strings.StringUtils;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 import net.multiphasicapps.tool.manifest.JavaManifestKey;
@@ -171,23 +172,19 @@ public class Suite
 		LibrariesClient manager = ssm._manager;
 		
 		// Dependencies are internally provided in the control interface
-		for (int i = 1; i >= 0; i++)
-		{
-			// Read all dependency values
-			String val = program.controlGet(
-				LibraryControlKey.DEPENDENCY_PREFIX + i);
-			if (val == null)
-				break;
-			
-			// Try to find the system program for each index
-			Library sp = manager.byIndex(Integer.parseInt(val));
-			if (sp != null)
+		String val = program.controlGet(LibraryControlKey.DEPENDENCIES);
+		if (val != null)
+			for (String spl : StringUtils.fieldSplitAndTrim(' ', val))
 			{
-				Suite su = ssm.__ofProgram(sp);
-				if (su.getSuiteType() != SuiteType.SYSTEM)
-					rv.add(su);
+				int ddx = Integer.valueOf(spl);
+				Library sp = manager.byIndex(Integer.parseInt(val));
+				if (sp != null)
+				{
+					Suite su = ssm.__ofProgram(sp);
+					if (su.getSuiteType() != SuiteType.SYSTEM)
+						rv.add(su);
+				}
 			}
-		}
 		
 		return rv.iterator();
 	}
@@ -265,13 +262,13 @@ public class Suite
 		
 		switch (program.type())
 		{
-			case LibraryType.APPLICATION:
+			case APPLICATION:
 				return SuiteType.APPLICATION;
 				
-			case LibraryType.LIBRARY:
+			case LIBRARY:
 				return SuiteType.LIBRARY;
 				
-			case LibraryType.SYSTEM:
+			case SYSTEM:
 				return SuiteType.SYSTEM;
 			
 			default:
@@ -369,9 +366,7 @@ public class Suite
 					return false;
 			}
 		
-		return Boolean.valueOf(
-			program.controlGet(LibraryControlKey.STATE_FLAG_PREFIX +
-				__f.name()));
+		return Boolean.valueOf(program.controlGet(__f.__controlKey()));
 	}
 	
 	/**
@@ -458,8 +453,8 @@ public class Suite
 		
 		if (ref == null || null == (rv = ref.get()))
 			try (InputStream in =
-				this._library.loadResource(SystemResourceScope.RESOURCE,
-				"META-INF/MANIFEST.MF"))
+				this._library.loadResource(LibraryResourceScope.RESOURCE,
+					"META-INF/MANIFEST.MF"))
 			{
 				// {@squirreljme.error DG04 Suite has no manifest file.}
 				if (in == null)

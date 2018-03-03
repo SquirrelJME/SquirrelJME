@@ -12,6 +12,7 @@ package cc.squirreljme.kernel.lib.client;
 
 import cc.squirreljme.runtime.cldc.library.Library;
 import cc.squirreljme.runtime.cldc.library.LibraryResourceScope;
+import cc.squirreljme.runtime.cldc.library.LibraryType;
 import cc.squirreljme.runtime.cldc.library.NoSuchLibraryException;
 import cc.squirreljme.runtime.cldc.service.ServiceCaller;
 import cc.squirreljme.runtime.cldc.system.IntegerArray;
@@ -107,7 +108,7 @@ public final class LibrariesClient
 	 * @return The list of libraries available under the given mask.
 	 * @since 2018/01/02
 	 */
-	public final Library[] list(int __mask)
+	public final Library[] list(LibraryType __mask)
 	{
 		// Request library indexes
 		IntegerArray dxrv = this.caller.integerArrayCall(
