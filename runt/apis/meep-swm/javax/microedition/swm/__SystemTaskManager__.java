@@ -10,9 +10,14 @@
 
 package javax.microedition.swm;
 
-import cc.squirreljme.kernel.lib.Library;
-import cc.squirreljme.runtime.cldc.SystemCall;
-import cc.squirreljme.runtime.cldc.SystemTask;
+import cc.squirreljme.runtime.cldc.library.Library;
+import cc.squirreljme.runtime.cldc.service.ServiceAccessor;
+import cc.squirreljme.runtime.cldc.system.IntegerArray;
+import cc.squirreljme.runtime.cldc.system.MnemonicCall;
+import cc.squirreljme.runtime.cldc.system.SystemCall;
+import cc.squirreljme.runtime.cldc.system.SystemFunction;
+import cc.squirreljme.runtime.cldc.task.SystemTask;
+import cc.squirreljme.runtime.cldc.task.WrappedTask;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -76,13 +81,13 @@ final class __SystemTaskManager__
 		Task[] rv;
 		synchronized (this.lock)
 		{
-			SystemTask[] tasks = SystemCall.listTasks(__incsys);
-			int n = tasks.length;
+			IntegerArray[] tids = SystemCall.MNEMONIC.taskList(__incsys);
+			int n = tids.length();
 			
-			// Return wrappers
+			// Wrap all the tasks
 			rv = new Task[n];
 			for (int i = 0; i < n; i++)
-				rv[i] = __ofTask(tasks[i]);
+				rv[i] = this.__ofTask(new WrappedTask(tids.get(i)));
 		}
 		
 		// Wrap array instead of creating a new list for speed

@@ -61,6 +61,9 @@ public enum SystemFunction
 	/** Set thread as daemon thread. */
 	SET_DAEMON_THREAD,
 	
+	/** List tasks running on the system. */
+	TASK_LIST,
+	
 	/** End. */
 	;
 }

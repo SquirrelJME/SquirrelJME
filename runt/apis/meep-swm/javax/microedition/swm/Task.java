@@ -10,11 +10,13 @@
 
 package javax.microedition.swm;
 
-import cc.squirreljme.runtime.cldc.SystemCall;
-import cc.squirreljme.runtime.cldc.SystemTask;
-import cc.squirreljme.runtime.cldc.SystemTaskFlag;
-import cc.squirreljme.runtime.cldc.SystemTaskMetric;
-import cc.squirreljme.runtime.cldc.SystemTaskStatus;
+import cc.squirreljme.runtime.cldc.system.MnemonicCall;
+import cc.squirreljme.runtime.cldc.system.SystemCall;
+import cc.squirreljme.runtime.cldc.system.SystemFunction;
+import cc.squirreljme.runtime.cldc.task.SystemTask;
+import cc.squirreljme.runtime.cldc.task.SystemTaskFlag;
+import cc.squirreljme.runtime.cldc.task.SystemTaskMetric;
+import cc.squirreljme.runtime.cldc.task.SystemTaskStatus;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
