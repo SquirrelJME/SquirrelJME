@@ -1,0 +1,35 @@
+# 2018/03/02
+
+## 13:15
+
+Okay, so continuing from yesterday I need to do the following things before I
+continue with testing:
+
+ 1. Change all services to use service calls instead and not the packet
+    stream.
+ 2. Remove `kernel-caller-base` it is not needed.
+    * Before removal move the stuff for services to `ServiceAccessor` since it
+      is the same exact code.
+ 3. Remove `kernel-client`, not needed.
+ 4. Remove `kernel-server`, not needed.
+ 5. Remove `kernel-ipc-base`, not needed.
+ 6. Move the MIDlet stuff out of `kernel-lib-client`.
+
+And continued from the other day:
+
+ 1. Correct up testing system so I can run tests again.
+ 2. Implement base64 decoding with the standard base64 format, use tests.
+ 3. Write up a bunch of mock classes with Jasmin and encode them.
+ 4. Write tests where they just decode those classes and compile them.
+
+## 13:21
+
+Also would be best to make the packet interface some common library I could
+use in the future for something. Probably Squirrel Quarrel or similar maybe
+for networking and replays.
+
+## 13:23
+
+Also `kernel-service` is pointless as it can now be folded into `kernel`
+itself. So removing the packet stream really simplifies things for the
+most part.
