@@ -47,7 +47,7 @@ public abstract class MnemonicCall
 				
 			case EXIT:
 				this.exit(
-					__int(__args[0]));
+					CallCast.asInteger(__args[0]));
 				return voidtype;
 			
 			case GARBAGE_COLLECTION_HINT:
@@ -59,16 +59,16 @@ public abstract class MnemonicCall
 				
 			case PIPE_OUTPUT_ZI:
 				this.pipeOutput(
-					__boolean(__args[0]),
-					__int(__args[1]));
+					CallCast.asBoolean(__args[0]),
+					CallCast.asInteger(__args[1]));
 				return voidtype;
 
 			case PIPE_OUTPUT_ZABII:
 				this.pipeOutput(
-					__boolean(__args[0]),
-					__byteArray(__args[1]),
-					__int(__args[2]),
-					__int(__args[3]));
+					CallCast.asBoolean(__args[0]),
+					CallCast.asByteArray(__args[1]),
+					CallCast.asInteger(__args[2]),
+					CallCast.asInteger(__args[3]));
 				return voidtype;
 			
 			case SERVICE_CALL:
@@ -79,20 +79,20 @@ public abstract class MnemonicCall
 			
 			case SERVICE_QUERY_CLASS:
 				return this.serviceQueryClass(
-					__int(__args[0]));
+					CallCast.asInteger(__args[0]));
 			
 			case SERVICE_QUERY_INDEX:
 				return this.serviceQueryIndex(
-					(Class<?>)__args[0]);
+					CallCast.<Object>asClass(Object.class, __args[0]));
 			
 			case SET_DAEMON_THREAD:
 				this.setDaemonThread(
-					(Thread)__args[0]);
+					CallCast.<Thread>as(Thread.class, __args[0]));
 				return voidtype;
 			
 			case TASK_LIST:
 				return this.taskList(
-					__boolean(__args[0]));
+					CallCast.asBoolean(__args[0]));
 			
 				// {@squirreljme.error ZZ0f Unimplemented system call.
 				// (The function being called)}
@@ -263,47 +263,9 @@ public abstract class MnemonicCall
 		
 		// Perform the call
 		return this.serviceCall(
-			__int(__args[0]),
+			CallCast.asInteger(__args[0]),
 			(Enum<?>)__args[1],
 			fargs);
-	}
-	
-	/**
-	 * Casts to boolean.
-	 *
-	 * @param __v The input value.
-	 * @return The boolean value.
-	 * @since 2018/03/01
-	 */
-	private static final boolean __boolean(Object __v)
-	{
-		return (Boolean)__v;
-	}
-	
-	/**
-	 * Casts to byte array.
-	 *
-	 * @param __v The input value.
-	 * @return The byte array.
-	 * @since 2018/03/01
-	 */
-	private static final ByteArray __byteArray(Object __v)
-	{
-		if (__v instanceof byte[])
-			return new LocalByteArray((byte[])__v);
-		return (ByteArray)__v;
-	}
-	
-	/**
-	 * Casts to integer.
-	 *
-	 * @param __v The input value.
-	 * @return The integer value.
-	 * @since 2018/03/01
-	 */
-	private static final int __int(Object __v)
-	{
-		return (Integer)__v;
 	}
 }
 
