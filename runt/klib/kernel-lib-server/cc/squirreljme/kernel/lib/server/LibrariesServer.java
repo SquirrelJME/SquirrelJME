@@ -10,9 +10,12 @@
 
 package cc.squirreljme.kernel.lib.server;
 
+import cc.squirreljme.kernel.lib.client.LibrariesFunction;
 import cc.squirreljme.runtime.cldc.library.Library;
 import cc.squirreljme.runtime.cldc.library.LibraryResourceScope;
+import cc.squirreljme.runtime.cldc.library.LibraryType;
 import cc.squirreljme.runtime.cldc.service.ServiceServer;
+import cc.squirreljme.runtime.cldc.system.CallCast;
 import cc.squirreljme.runtime.cldc.task.SystemTask;
 
 /**
@@ -58,27 +61,24 @@ public final class LibrariesServer
 		if (__func == null || __args == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
-		
-		/*if (__p == null)
-			throw new NullPointerException("NARG");
-		
-		switch (__p.type())
+		switch ((LibrariesFunction)__func)
 		{
-			case LibrariesPacketTypes.LIST_PROGRAMS:
-				return this.__list(__p);
+			case LIST_PROGRAMS:
+				return this.__list(
+					CallCast.<LibraryType>asEnum(LibraryType.class,
+						__args[0]));
 			
-			case LibrariesPacketTypes.INSTALL_PROGRAM:
+			case INSTALL_PROGRAM:
 				return this.__install(__p);
 			
-			case LibrariesPacketTypes.LOAD_RESOURCE_BYTES:
+			case LOAD_RESOURCE_BYTES:
 				return this.__loadResourceBytes(__p);
 			
 				// {@squirreljme.error BC09 Unknown packet. (The packet)}
 			default:
 				throw new IllegalArgumentException(
 					String.format("BC09 %s", __p));
-		}*/
+		}
 	}
 	
 	/**
@@ -188,14 +188,15 @@ public final class LibrariesServer
 	/**
 	 * Returns the list of libraries which are available.
 	 *
+	 * @param __t The type of libraries to list.
 	 * @return The library list.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/06
 	 */
-	private final Packet __list(Packet __p)
+	private final int[] __list(LibraryType __t)
 		throws NullPointerException
 	{
-		if (__p == null)
+		if (__t == null)
 			throw new NullPointerException("NARG");
 			
 		SystemTask task = this.task;
@@ -205,15 +206,13 @@ public final class LibrariesServer
 		LibrariesAccessMode accessmode = this.__accessMode("manageSuite");
 		
 		// Read the library set
-		Library[] libs = this.provider.list(__p.readInteger(0));
+		Library[] libs = this.provider.list(__t);
 		
-		// The response is just the library identifiers
+		// Map to indexes
 		int n = libs.length;
-		Packet rv = __p.respond();
-		
-		// Write the library indexes
+		int[] rv = new int[n];
 		int counted = 0;
-		for (int i = 0, o = 2; i < n; i++)
+		for (int i = 0, o = 0; i < n; i++)
 		{
 			Library lib = libs[i];
 			SystemTrustGroup libgroup = lib.trustGroup();
@@ -221,16 +220,12 @@ public final class LibrariesServer
 			// If the library belongs to another group
 			if (accessmode.isAccessible(mygroup, libgroup))
 			{
-				rv.writeInteger(o, libs[i].index());
+				rv[o++] = libs[i].index();
 				counted++;
-				o += 4;
 			}
 		}
 		
-		// Write library count
-		rv.writeShort(0, Math.min(counted, 65535));
-		
-		return rv;
+		return Arrays.copyOfRange(rv, counted);
 	}
 	
 	/**
