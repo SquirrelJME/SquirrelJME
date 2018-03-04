@@ -1,0 +1,44 @@
+# 2018/03/03
+
+## 15:52
+
+I have an idea for the compiler tester. I can have WinterCoat run the
+code that is output by the compiler. Then this way I will know if it
+works correctly. It can also support various register counts and
+instruction sizes too potentially. That way it can test a bunch of
+things on the same piece of code. This would be useful and it makes
+WinterCoat more useful.
+
+## 18:08
+
+The LCDUI code is definitely old and needs to be updated for how the
+new code works, with the better services now.
+
+## 18:13
+
+For the kernel, I am going to split the server code to another class
+and have that instead. That way for each created task, services and
+such can be initialized accordingly.
+
+## 18:38
+
+I think what could be better for the kernel instead of abstract
+interfaces would be a native kernel infrastructure kind of thing
+where the kernel and such refers to those things for task creation
+and other things as such.
+
+## 19:38
+
+This definitely should be better, along with having stuff such as a
+primitive process and thread set.
+
+## 19:43
+
+If I remove the ability for the Java SE environment to fork new
+processes, the design of the kernel could be a bit simpler. Although it
+could be done. For now I will intend to write it for real environments.
+
+## 20:51
+
+I need a class to easily extract system call arguments to the required
+types and casted for ease of use.
