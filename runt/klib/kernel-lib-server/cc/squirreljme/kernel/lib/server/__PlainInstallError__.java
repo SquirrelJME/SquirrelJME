@@ -10,6 +10,8 @@
 
 package cc.squirreljme.kernel.lib.server;
 
+import javax.microedition.swm.InstallErrorCodes;
+
 /**
  * This is thrown when the error during installation is very basic.
  *
@@ -19,18 +21,23 @@ class __PlainInstallError__
 	extends RuntimeException
 {
 	/** The error code. */
-	protected final int code;
+	protected final InstallErrorCodes code;
 	
 	/**
 	 * Initializes the plain error.
 	 *
 	 * @param __c The error code.
 	 * @param __m The error message.
+	 * @throws NullPointerException If no code was specified.
 	 * @since 2018/01/15
 	 */
-	public __PlainInstallError__(int __c, String __m)
+	public __PlainInstallError__(InstallErrorCodes __c, String __m)
+		throws NullPointerException
 	{
 		super(__m);
+		
+		if (__c == null)
+			throw new NullPointerException("NARG");
 		
 		this.code = __c;
 	}
@@ -41,7 +48,7 @@ class __PlainInstallError__
 	 * @return The error code.
 	 * @since 2018/01/15
 	 */
-	public final int code()
+	public final InstallErrorCodes code()
 	{
 		return this.code;
 	}

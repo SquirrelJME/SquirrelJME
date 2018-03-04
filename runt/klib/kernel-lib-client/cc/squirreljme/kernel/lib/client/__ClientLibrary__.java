@@ -79,6 +79,42 @@ final class __ClientLibrary__
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2018/03/03
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		if (this == __o)
+			return true;
+		
+		if (!(__o instanceof Library))
+			return false;
+		
+		return this.index == ((Library)__o).index();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/03
+	 */
+	@Override
+	public final int hashCode()
+	{
+		return this.index;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/03
+	 */
+	@Override
+	public final int index()
+	{
+		return this.index;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/03/02
 	 */
 	@Override

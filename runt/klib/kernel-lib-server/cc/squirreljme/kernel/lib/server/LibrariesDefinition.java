@@ -10,58 +10,49 @@
 
 package cc.squirreljme.kernel.lib.server;
 
-import cc.squirreljme.kernel.lib.client.LibrariesClient;
 import cc.squirreljme.kernel.lib.client.LibrariesClientFactory;
-import cc.squirreljme.kernel.lib.DependencyInfo;
-import cc.squirreljme.kernel.lib.InstallErrorCodes;
-import cc.squirreljme.kernel.lib.Library;
-import cc.squirreljme.kernel.lib.LibraryControlKey;
-import cc.squirreljme.kernel.lib.LibraryInstallationReport;
-import cc.squirreljme.kernel.lib.LibraryType;
-import cc.squirreljme.kernel.lib.MatchResult;
-import cc.squirreljme.kernel.lib.ProvidedInfo;
-import cc.squirreljme.kernel.lib.SuiteIdentifier;
-import cc.squirreljme.kernel.lib.SuiteInfo;
-import cc.squirreljme.kernel.lib.SuiteName;
-import cc.squirreljme.kernel.lib.SuiteType;
-import cc.squirreljme.kernel.lib.SuiteVendor;
-import cc.squirreljme.kernel.lib.SuiteVersion;
-import cc.squirreljme.kernel.service.ClientInstance;
-import cc.squirreljme.kernel.service.ServerInstance;
-import cc.squirreljme.kernel.service.ServicePacketStream;
-import cc.squirreljme.kernel.service.ServiceProvider;
+import cc.squirreljme.kernel.lib.client.LibraryInstallationReport;
+import cc.squirreljme.kernel.suiteinfo.DependencyInfo;
+import cc.squirreljme.kernel.suiteinfo.MatchResult;
+import cc.squirreljme.kernel.suiteinfo.ProvidedInfo;
+import cc.squirreljme.kernel.suiteinfo.SuiteInfo;
+import cc.squirreljme.kernel.suiteinfo.SuiteName;
+import cc.squirreljme.kernel.suiteinfo.SuiteType;
+import cc.squirreljme.kernel.suiteinfo.SuiteVendor;
+import cc.squirreljme.kernel.suiteinfo.SuiteVersion;
 import cc.squirreljme.kernel.trust.client.TrustClient;
-import cc.squirreljme.runtime.cldc.SystemCall;
-import cc.squirreljme.runtime.cldc.SystemTask;
-import cc.squirreljme.runtime.cldc.SystemTrustGroup;
-import java.io.IOException;
+import cc.squirreljme.runtime.cldc.library.Library;
+import cc.squirreljme.runtime.cldc.library.LibraryControlKey;
+import cc.squirreljme.runtime.cldc.library.LibraryResourceScope;
+import cc.squirreljme.runtime.cldc.library.LibraryType;
+import cc.squirreljme.runtime.cldc.service.ServiceAccessor;
+import cc.squirreljme.runtime.cldc.service.ServiceClientProvider;
+import cc.squirreljme.runtime.cldc.service.ServiceDefinition;
+import cc.squirreljme.runtime.cldc.service.ServiceServer;
+import cc.squirreljme.runtime.cldc.task.SystemTask;
+import cc.squirreljme.runtime.cldc.trust.SystemTrustGroup;
 import java.io.InputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
+import javax.microedition.swm.InstallErrorCodes;
 import net.multiphasicapps.collections.SortedTreeMap;
-import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;
 import net.multiphasicapps.zip.blockreader.ZipEntryNotFoundException;
 
 /**
- * This is the base class which manages the library of installed programs
- * on the server.
+ * This contains the primary manager for the library code.
  *
- * The first library must always have an index of zero and be the library
- * which represents the system. The system manifest must be returned by it in
- * order for it to function.
- *
- * @since 2018/01/05
+ * @since 2018/03/03
  */
-public abstract class LibrariesProvider
-	extends ServiceProvider
+public abstract class LibrariesDefinition
+	extends ServiceDefinition
 {
-	/** Thread safety lock. */
+	/** Lock for thread safety. */
 	protected final Object lock =
 		new Object();
 	
@@ -69,18 +60,17 @@ public abstract class LibrariesProvider
 	private final Map<Integer, Library> _libraries =
 		new SortedTreeMap<>();
 	
-	/** The trust client. */
-	private volatile TrustClient _trustsclient;
+	/** The trust client manager. */
+	private volatile TrustClient _trustclient;
 	
 	/**
-	 * Initializes the base library server.
+	 * Initializes the libraries definition.
 	 *
-	 * @since 2018/01/05
+	 * @since 2018/03/03
 	 */
-	public LibrariesProvider()
-		throws NullPointerException
+	public LibrariesDefinition()
 	{
-		super(LibrariesClient.class, LibrariesClientFactory.class);
+		super(LibrariesClientFactory.class);
 	}
 	
 	/**
@@ -109,21 +99,6 @@ public abstract class LibrariesProvider
 		{
 			return libraries.get(__dx);
 		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/01/05
-	 */
-	@Override
-	public final ServerInstance createInstance(SystemTask __task,
-		ServicePacketStream __sps)
-		throws NullPointerException
-	{
-		if (__task == null || __sps == null)
-			throw new NullPointerException("NARG");
-		
-		return new LibrariesServer(__task, __sps, this);
 	}
 	
 	/**
@@ -243,7 +218,7 @@ public abstract class LibrariesProvider
 	 * @return The list of libraries.
 	 * @since 2018/01/07
 	 */
-	public final Library[] list(int __mask)
+	public final Library[] list(LibraryType __mask)
 	{
 		List<Library> rv = new ArrayList<>();
 		
@@ -252,11 +227,25 @@ public abstract class LibrariesProvider
 		{
 			// Only add libraries which match the mask
 			for (Library l : libraries.values())
-				if ((l.type() & __mask) != 0)
+				if (__mask == l.type())
 					rv.add(l);
 		}
 		
 		return rv.<Library>toArray(new Library[rv.size()]);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/03
+	 */
+	@Override
+	public final ServiceServer newServer(SystemTask __task)
+		throws NullPointerException
+	{
+		if (__task == null)
+			throw new NullPointerException("NARG");
+		
+		return new LibrariesServer(this, __task);
 	}
 	
 	/**
@@ -445,10 +434,10 @@ public abstract class LibrariesProvider
 	 */
 	private final TrustClient __trusts()
 	{
-		TrustClient rv = this._trustsclient;
+		TrustClient rv = this._trustclient;
 		if (rv == null)
-			this._trustsclient = (rv =
-				SystemCall.<TrustClient>service(TrustClient.class));
+			this._trustclient = (rv =
+				ServiceAccessor.<TrustClient>service(TrustClient.class));
 		return rv;
 	}
 	
@@ -468,9 +457,15 @@ public abstract class LibrariesProvider
 			throw new NullPointerException("NARG");
 		
 		// Determine error code
-		int code;
+		InstallErrorCodes code;
 		if (__t instanceof __PlainInstallError__)
+		{
 			code = ((__PlainInstallError__)__t).code();
+			
+			// Force it to be valid
+			if (code == null)
+				code = InstallErrorCodes.OTHER_ERROR;
+		}
 		else if (__t instanceof ZipEntryNotFoundException)
 			code = InstallErrorCodes.CORRUPT_JAR;
 		else if (__t instanceof IOException)
@@ -479,7 +474,7 @@ public abstract class LibrariesProvider
 			code = InstallErrorCodes.OTHER_ERROR;
 		
 		// {@squirreljme.error BC08 No message specified in the throwable.}
-		return new LibraryInstallationReport(code,
+		return new LibraryInstallationReport(code.ordinal(),
 			Objects.toString(__t.getMessage(), "BC08"));
 	}
 }
