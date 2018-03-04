@@ -10,6 +10,8 @@
 
 package cc.squirreljme.kernel;
 
+import cc.squirreljme.runtime.cldc.system.SystemCallImplementation;
+
 import cc.squirreljme.runtime.cldc.OperatingSystemType;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -24,16 +26,48 @@ import java.util.Set;
 import net.multiphasicapps.collections.SortedTreeMap;
 
 /**
- * This class represents the micro-kernel which manages the entire SquirrelJME
+ * This class represents the kernel which manages the entire SquirrelJME
  * system and all of the needed IPC and running tasks/threads.
- *
- * There must be no way for an instance of this class to be obtained by any
- * client library, this means that once the kernel is initialized and passed to
- * an API bridge the pointer should be tossed out. It can however be
- * initialized as normal.
  *
  * @since 2017/12/08
  */
+public final class Kernel
+	implements SystemCallImplementation
+{
+	/** The owning primitive kernel. */
+	protected final PrimitiveKernel primitive;
+	
+	/**
+	 * Initializes the kernel.
+	 *
+	 * @param __pk The primitive kernel.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/03
+	 */
+	public Kernel(PrimitiveKernel __pk)
+		throws NullPointerException
+	{
+		if (__pk == null)
+			throw new NullPointerException("NARG");
+		
+		this.primitive = __pk;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/03
+	 */
+	@Override
+	public final Object systemCall(SystemFunction __func, Object... __args)
+		throws NullPointerException
+	{
+		if (__func == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+}
+ 
 public abstract class Kernel
 {
 	/** The task which represents the kernel itself. */

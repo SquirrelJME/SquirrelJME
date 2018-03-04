@@ -10,8 +10,8 @@
 
 package cc.squirreljme.runtime.javase;
 
+import cc.squirreljme.kernel.PrimitiveKernel;
 import cc.squirreljme.kernel.Kernel;
-import cc.squirreljme.kernel.KernelTask;
 import cc.squirreljme.runtime.cldc.StandardOutput;
 import cc.squirreljme.runtime.cldc.system.MnemonicCall;
 import cc.squirreljme.runtime.cldc.system.SystemCall;
@@ -195,12 +195,12 @@ public class Main
 		else
 		{
 			// Initialize the kernel
-			JavaKernel kernel = new JavaKernel();
+			JavaPrimitiveKernel jpk = new JavaPrimitiveKernel();
+			Kernel kernel = new Kernel(jpk);
 			
-			// Set all calls to be implemented to this system task
-			KernelTask ktask = kernel.systemTask();
+			// Set calls to be implemented by the kernel
 			for (int i = 0; i < numf; i++)
-				impls[i] = ktask;
+				impls[i] = kernel;
 		}
 		
 		// Need to obtain the interface field so that it is initialized
