@@ -24,7 +24,7 @@ import java.io.InputStream;
  * Instances of this class will be used as keys so it must implement
  * {@link #equals(Object)} and {@link #hashCode()} to where even two
  * instances of this class which point to the same program refer to that
- * instance. As such the comparison is performed with the task index.
+ * instance. The comparison as such is performed on the index.
  *
  * @since 2017/12/10
  */

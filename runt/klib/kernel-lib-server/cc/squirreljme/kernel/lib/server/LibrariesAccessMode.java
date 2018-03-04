@@ -10,7 +10,7 @@
 
 package cc.squirreljme.kernel.lib.server;
 
-import cc.squirreljme.runtime.cldc.SystemTrustGroup;
+import cc.squirreljme.runtime.cldc.trust.SystemTrustGroup;
 
 /**
  * This represents the type of access which can be performed.

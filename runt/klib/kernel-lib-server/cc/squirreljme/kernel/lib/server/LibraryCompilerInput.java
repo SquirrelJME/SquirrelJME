@@ -10,8 +10,8 @@
 
 package cc.squirreljme.kernel.lib.server;
 
-import cc.squirreljme.kernel.lib.Library;
-import cc.squirreljme.kernel.lib.SuiteInfo;
+import cc.squirreljme.kernel.suiteinfo.SuiteInfo;
+import cc.squirreljme.runtime.cldc.library.Library;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;
 
 /**

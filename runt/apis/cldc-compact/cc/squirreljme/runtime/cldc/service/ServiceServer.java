@@ -17,5 +17,16 @@ package cc.squirreljme.runtime.cldc.service;
  */
 public interface ServiceServer
 {
+	/**
+	 * Handles a service call from the client.
+	 *
+	 * @param __func The function to handle.
+	 * @param __args The arguments to the call.
+	 * @return The result of the call.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/03
+	 */
+	public abstract Object serviceCall(Enum<?> __func, Object... __args)
+		throws NullPointerException;
 }
 

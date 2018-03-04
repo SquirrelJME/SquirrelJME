@@ -21,6 +21,11 @@ import java.io.InputStream;
  * for the same program (unless that program has been changed). The index is
  * used to refer to the program slot.
  *
+ * Instances of this class will be used as keys so it must implement
+ * {@link #equals(Object)} and {@link #hashCode()} to where even two
+ * instances of this class which point to the same program refer to that
+ * instance. The comparison as such is performed on the index.
+ *
  * @since 2017/12/11
  */
 public interface Library
@@ -47,6 +52,28 @@ public interface Library
 	 */
 	public abstract void controlSet(LibraryControlKey __k, String __v)
 		throws NullPointerException;
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/03
+	 */
+	@Override
+	public abstract boolean equals(Object __o);
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/03
+	 */
+	@Override
+	public abstract int hashCode();
+	
+	/**
+	 * Returns the index of the library.
+	 *
+	 * @return The library index.
+	 * @since 2018/03/03
+	 */
+	public abstract int index();
 	
 	/**
 	 * Loads the specified resource in the given scope.

@@ -10,64 +10,57 @@
 
 package cc.squirreljme.kernel.lib.server;
 
-import cc.squirreljme.kernel.lib.LibrariesPacketTypes;
-import cc.squirreljme.kernel.lib.Library;
-import cc.squirreljme.kernel.lib.LibraryInstallationReport;
-import cc.squirreljme.kernel.packets.Packet;
-import cc.squirreljme.kernel.packets.PacketReader;
-import cc.squirreljme.kernel.packets.PacketWriter;
-import cc.squirreljme.kernel.service.ServerInstance;
-import cc.squirreljme.kernel.service.ServicePacketStream;
-import cc.squirreljme.runtime.cldc.SystemResourceScope;
-import cc.squirreljme.runtime.cldc.SystemTask;
-import cc.squirreljme.runtime.cldc.SystemTrustGroup;
+import cc.squirreljme.runtime.cldc.library.Library;
+import cc.squirreljme.runtime.cldc.library.LibraryResourceScope;
+import cc.squirreljme.runtime.cldc.service.ServiceServer;
+import cc.squirreljme.runtime.cldc.task.SystemTask;
 
 /**
- * This manages communication between the client process and the library
- * server.
+ * This provides access for a client to the given server.
  *
- * @since 2018/01/05
+ * @since 2018/03/03
  */
 public final class LibrariesServer
-	extends ServerInstance
+	implements ServiceServer
 {
-	/** The class where permissions are checked against. */
-	private static final String _PERMISSION_CLASS =
-		"javax.microedition.swm.SWMPermission";
+	/** The definition. */
+	protected final LibrariesDefinition definition;
 	
-	/** The library server since libraries are managed in unison. */
-	protected final LibrariesProvider provider;
+	/** The task. */
+	protected final SystemTask task;
 	
 	/**
-	 * Initializes the library instance.
+	 * Initializes the server for the given client.
 	 *
-	 * @param __task The task which has the instance open.
-	 * @param __stream The stream for communicating with the task.
-	 * @param __p The provider for the actual library service.
+	 * @param __ld The definition.
+	 * @param __task The task to listen for.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2018/01/05
+	 * @since 2018/03/03
 	 */
-	public LibrariesServer(SystemTask __task, ServicePacketStream __stream,
-		LibrariesProvider __p)
+	public LibrariesServer(LibrariesDefinition __ld, SystemTask __task)
 		throws NullPointerException
 	{
-		super(__task, __stream);
-		
-		if (__p == null)
+		if (__ld == null || __task == null)
 			throw new NullPointerException("NARG");
 		
-		this.provider = __p;
+		this.definition = __ld;
+		this.task = __task;
 	}
-	
+	 
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/01/05
+	 * @since 2018/03/03
 	 */
 	@Override
-	public Packet handlePacket(Packet __p)
+	public final Object serviceCall(Enum<?> __func, Object... __args)
 		throws NullPointerException
 	{
-		if (__p == null)
+		if (__func == null || __args == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+		
+		/*if (__p == null)
 			throw new NullPointerException("NARG");
 		
 		switch (__p.type())
@@ -85,7 +78,7 @@ public final class LibrariesServer
 			default:
 				throw new IllegalArgumentException(
 					String.format("BC09 %s", __p));
-		}
+		}*/
 	}
 	
 	/**
@@ -272,7 +265,7 @@ public final class LibrariesServer
 		}
 		
 		// Read the scope and name
-		SystemResourceScope scope = SystemResourceScope.valueOf(
+		LibraryResourceScope scope = LibraryResourceScope.valueOf(
 			r.readString());
 		String name = r.readString();
 		
