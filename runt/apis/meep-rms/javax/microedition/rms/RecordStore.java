@@ -10,8 +10,8 @@
 
 package javax.microedition.rms;
 
-import cc.squirreljme.kernel.lib.SuiteName;
-import cc.squirreljme.kernel.lib.SuiteVendor;
+import cc.squirreljme.kernel.suiteinfo.SuiteName;
+import cc.squirreljme.kernel.suiteinfo.SuiteVendor;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import cc.squirreljme.runtime.rms.RecordCluster;
 import cc.squirreljme.runtime.rms.RecordClusterManager;

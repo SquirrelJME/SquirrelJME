@@ -10,8 +10,8 @@
 
 package cc.squirreljme.runtime.rms.file;
 
-import cc.squirreljme.kernel.lib.SuiteName;
-import cc.squirreljme.kernel.lib.SuiteVendor;
+import cc.squirreljme.kernel.suiteinfo.SuiteName;
+import cc.squirreljme.kernel.suiteinfo.SuiteVendor;
 import cc.squirreljme.runtime.rms.RecordCluster;
 import cc.squirreljme.runtime.rms.RecordStoreOwner;
 import java.io.InputStream;
