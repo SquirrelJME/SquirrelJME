@@ -39,6 +39,28 @@ public final class LocalByteArray
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2018/03/04
+	 */
+	@Override
+	public final byte get(int __i)
+		throws ArrayIndexOutOfBoundsException
+	{
+		return this.array[__i];
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/04
+	 */
+	@Override
+	public final void get(int __i, byte[] __b, int __o, int __l)
+		throws ArrayIndexOutOfBoundsException, NullPointerException
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/03/01
 	 */
 	@Override

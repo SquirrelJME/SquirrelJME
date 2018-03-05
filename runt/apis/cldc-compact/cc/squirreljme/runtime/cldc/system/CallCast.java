@@ -137,5 +137,24 @@ public final class CallCast
 		
 		return (Integer)__v;
 	}
+	
+	/**
+	 * Casts to integer array.
+	 *
+	 * @param __v The input value.
+	 * @return The integer array.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/01
+	 */
+	public static final IntegerArray asIntegerArray(Object __v)
+		throws NullPointerException
+	{
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		if (__v instanceof int[])
+			throw new todo.TODO();/*return new LocalIntegerArray((int[])__v);*/
+		return (IntegerArray)__v;
+	}
 }
 
