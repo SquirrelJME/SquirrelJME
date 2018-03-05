@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-UUID: 24c42d7e-8681-4e75-a5fc-0cc7b5117d05
+X-SquirrelJME-Error: AZ
+X-SquirrelJME-Name: MIME File Decoder
+X-SquirrelJME-Vendor: Stephanie Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This decodes MIME encoded files (or base64 
+ data) and outputs to standard output.
+X-SquirrelJME-Depends: io
+Microedition-Configuration: CLDC-1.8
+Main-Class: net.multiphasicapps.uudecode.Main
+
