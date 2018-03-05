@@ -11,24 +11,24 @@
 package cc.squirreljme.runtime.cldc.system;
 
 /**
- * This represents a byte array which is local to the current task.
+ * Wraps a boolean array.
  *
- * @since 2018/03/01
+ * @since 2018/03/04
  */
-public final class LocalByteArray
-	implements ByteArray
+public class LocalBooleanArray
+	implements BooleanArray
 {
-	/** The byte array to read/write. */
-	protected final byte[] array;
+	/** The boolean array to read/write. */
+	protected final boolean[] array;
 	
 	/**
-	 * Initializes the local byte array.
+	 * Initializes the local boolean array.
 	 *
 	 * @param __a The array to wrap.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/01
 	 */
-	public LocalByteArray(byte[] __a)
+	public LocalBooleanArray(boolean[] __a)
 		throws NullPointerException
 	{
 		if (__a == null)
@@ -42,10 +42,10 @@ public final class LocalByteArray
 	 * @since 2018/03/04
 	 */
 	@Override
-	public final byte get(int __i)
+	public final boolean get(int __i)
 		throws ArrayIndexOutOfBoundsException
 	{
-		byte[] array = this.array;
+		boolean[] array = this.array;
 		if (__i < 0 || __i >= array.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
@@ -57,13 +57,13 @@ public final class LocalByteArray
 	 * @since 2018/03/04
 	 */
 	@Override
-	public final void get(int __i, byte[] __v, int __o, int __l)
+	public final void get(int __i, boolean[] __v, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, NullPointerException
 	{
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		byte[] array = this.array;
+		boolean[] array = this.array;
 		if (__o < 0 || __l < 0 || (__o + __l) > __v.length ||
 			__i < 0 || (__i + __l) > array.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
@@ -88,7 +88,7 @@ public final class LocalByteArray
 	 * @return The local array.
 	 * @since 2018/03/04
 	 */
-	public final byte[] localArray()
+	public final boolean[] localArray()
 	{
 		return this.array;
 	}
@@ -98,10 +98,10 @@ public final class LocalByteArray
 	 * @since 2018/03/04
 	 */
 	@Override
-	public final void set(int __i, byte __v)
+	public final void set(int __i, boolean __v)
 		throws ArrayIndexOutOfBoundsException
 	{
-		byte[] array = this.array;
+		boolean[] array = this.array;
 		if (__i < 0 || __i >= array.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
@@ -113,13 +113,13 @@ public final class LocalByteArray
 	 * @since 2018/03/04
 	 */
 	@Override
-	public final void set(int __i, byte[] __v, int __o, int __l)
+	public final void set(int __i, boolean[] __v, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, NullPointerException
 	{
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		byte[] array = this.array;
+		boolean[] array = this.array;
 		if (__o < 0 || __l < 0 || (__o + __l) > __v.length ||
 			__i < 0 || (__i + __l) > array.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
