@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+X-SquirrelJME-UUID: c8464ec8-bbbc-48fe-b885-f37c47d81138
+X-SquirrelJME-Error: BK
+X-SquirrelJME-Name: CLDC Compact Tests
+X-SquirrelJME-Vendor: Stephanie Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This performs tests on the CLDC classes.
+Main-Class: 
+Microedition-Configuration: CLDC-1.8-Compact
+
