@@ -37,6 +37,10 @@ public final class Base64Decoder
 	/** The ASCII map for quick lookup. */
 	private final byte[] _ascii;
 	
+	/** Output bytes to drain. */
+	private final byte[] _drain =
+		new byte[3];
+	
 	/** The current fill buffer. */
 	private volatile int _buffer;
 	
@@ -45,6 +49,10 @@ public final class Base64Decoder
 	
 	/** Has EOF been reached if the pad has been detected? */
 	private volatile boolean _paddedeof;
+	
+	/** The current output drain position. */
+	private volatile int _drained =
+		-1;
 	
 	/**
 	 * Initializes the decoder using the default alphabet.
@@ -218,30 +226,60 @@ public final class Base64Decoder
 		
 		// Did a previous read cause a padded EOF?
 		boolean paddedeof = this._paddedeof;
-		if (paddedeof)
-			return -1;
 		
 		// Need lookups
 		Reader in = this.in;
 		boolean ignorepadding = this.ignorepadding;
 		char[] alphabet = this._alphabet;
 		byte[] ascii = this._ascii;
+		byte[] drain = this._drain;
 		
 		// This buffer is filled into as needed when input characters are read
 		int buffer = this._buffer,
-			bits = this._bits;
+			bits = this._bits,
+			drained = this._drained;
 		
 		// Fill the input in as much as possible
 		int base = __o,
 			eo = __o + __l;
-		boolean goteof = false;
 		while (__o < eo)
 		{
+			// Enough bits were read to add to the output, so do so
+			if (bits >= 24)
+			{
+				drain[0] = (byte)((buffer & 0xFF0000) >>> 16);
+				drain[1] = (byte)((buffer & 0x00FF00) >>> 8);
+				drain[2] = (byte)((buffer & 0x0000FF));
+				
+				// Empty buffer
+				buffer = 0;
+				bits = 0;
+				drained = 0;
+			}
+			
+			// Bytes to drain to the output?
+			if (drained >= 0)
+			{
+				__b[__o++] = drain[drained++];
+				
+				// No more bytes to drain
+				if (drained == 3)
+					drained = -1;
+				
+				// Continue draining
+				else
+					continue;
+			}
+			
+			// Previous read ended in EOF of padded data
+			if (paddedeof)
+				break;
+			
 			// EOF
 			int ch = in.read();
 			if (ch < 0)
 			{
-				goteof = true;
+				paddedeof = true;
 				break;
 			}
 			
@@ -271,9 +309,6 @@ public final class Base64Decoder
 				
 				// Trigger padded EOF
 				paddedeof = true;
-				
-				// Finish with the bytes in the buffer
-				__b[__o++] = (byte)(buffer & 0xFF);
 			}
 			
 			else
@@ -282,14 +317,6 @@ public final class Base64Decoder
 				buffer <<= 6;
 				buffer |= val;
 				bits += 6;
-			
-				// Read enough bits to output data
-				if (bits >= 8)
-				{
-					__b[__o++] = (byte)(buffer & 0xFF);
-					buffer >>>= 8;
-					bits -= 8;
-				}
 			}
 		}
 		
@@ -297,10 +324,11 @@ public final class Base64Decoder
 		this._buffer = buffer;
 		this._bits = bits;
 		this._paddedeof = paddedeof;
+		this._drained = drained;
 		
 		// Return the read count
 		int rv = __o - base;
-		if (goteof && rv == 0)
+		if (paddedeof && rv == 0)
 			return -1;
 		return rv;
 	}
