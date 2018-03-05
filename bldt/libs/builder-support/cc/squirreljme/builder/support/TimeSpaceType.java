@@ -23,6 +23,9 @@ public enum TimeSpaceType
 	/** JIT time. */
 	JIT,
 	
+	/** Testing. */
+	TEST,
+	
 	/** Build time. */
 	BUILD,
 	
@@ -47,6 +50,7 @@ public enum TimeSpaceType
 		{
 			case "runtime":		return RUNTIME;
 			case "jit":			return JIT;
+			case "test":		return TEST;
 			case "build":		return BUILD;
 			
 			default:

@@ -167,7 +167,10 @@ public class NewBootstrap
 		// Build-time projects
 		__loadProjects(projects, __src.resolve("bldt/libs"));
 		__loadProjects(projects, __src.resolve("bldt/mids"));
-		__loadProjects(projects, __src.resolve("bldt/test"));
+		
+		// Tests
+		__loadProjects(projects, __src.resolve("test/libs"));
+		__loadProjects(projects, __src.resolve("test/mids"));
 		
 		// Use them
 		this.projects = projects;
