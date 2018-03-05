@@ -148,20 +148,10 @@ public final class Base64Decoder
 	 * @since 2018/03/05
 	 */
 	@Override
-	public void close()
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/03/05
-	 */
-	@Override
-	public int read()
+	public final void close()
 		throws IOException
 	{
-		throw new todo.TODO();
+		this.in.close();
 	}
 	
 	/**
@@ -169,7 +159,30 @@ public final class Base64Decoder
 	 * @since 2018/03/05
 	 */
 	@Override
-	public int read(byte[] __b, int __o, int __l)
+	public final int read()
+		throws IOException
+	{
+		byte[] next = new byte[1];
+		for (;;)
+		{
+			int rc = this.read(next, 0, 1);
+			if (rc < 0)
+				return -1;
+			else if (rc == 0)
+				continue;
+			else if (rc == 1)
+				return (next[0] & 0xFF);
+			else
+				throw new RuntimeException("OOPS");
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/05
+	 */
+	@Override
+	public final int read(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, IOException, NullPointerException
 	{
 		if (__b == null)
