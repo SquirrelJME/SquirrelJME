@@ -1679,7 +1679,7 @@
 [**`01`**](stephanie-gawroriski/2018/03/01.mkd)
 [**`02`**](stephanie-gawroriski/2018/03/02.mkd)
 [**`03`**](stephanie-gawroriski/2018/03/03.mkd)
- * `04`
+ * [**`04`**](stephanie-gawroriski/2018/03/04.mkd)
 `05`
 `06`
 `07`
