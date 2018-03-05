@@ -25,8 +25,17 @@ import java.io.Reader;
 public final class MIMEFileDecoder
 	extends InputStream
 {
-	/** The decoder for the data. */
-	protected final InputStream decoder;
+	/** The base reader. */
+	protected final Reader in;
+	
+	/** Read header? */
+	private volatile boolean _readheader;
+	
+	/** Read EOF? */
+	private volatile boolean _readeof;
+	
+	/** The input MIME data. */
+	private volatile InputStream _datain;
 	
 	/** The read mode. */
 	private volatile int _mode =
@@ -48,7 +57,7 @@ public final class MIMEFileDecoder
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		this.in = __in;
 	}
 	
 	/**
@@ -59,7 +68,7 @@ public final class MIMEFileDecoder
 	public final void close()
 		throws IOException
 	{
-		throw new todo.TODO();
+		this.in.close();
 	}
 	
 	/**
@@ -122,7 +131,62 @@ public final class MIMEFileDecoder
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		throw new todo.TODO();
+		// Read EOF, nothing needs to be done
+		if (this._readeof)
+			return -1;
+		
+		// Used to read the header and the data
+		Reader in = this.in;
+		InputStream datain = this._datain;
+		
+		// Need to read the MIME header?
+		if (!this._readheader)
+		{
+			// Read a single line from the input
+			StringBuilder sb = new StringBuilder();
+			for (;;)
+			{
+				int ch = in.read();
+				
+				// {@squirreljme.error BD0h Reached EOF trying to read the
+				// MIME file header.}
+				if (ch < 0)
+					throw new IOException("BD0h");
+				
+				// End of line
+				else if (ch == '\r' || ch == '\n')
+					break;
+				
+				sb.append((char)ch);
+			}
+			String header = sb.toString();
+			
+			// {@squirreljme.error BD0i First line of file does not start
+			// with "{@code begin-base64 }".}
+			if (!header.startsWith("begin-base64 "))
+				throw new IOException("BD0i");
+			
+			if (true)
+				throw new todo.TODO();
+			
+			// Header read
+			this._readheader = true;
+		}
+		
+		// Read wrapped data
+		int rc = datain.read(__b, __o, __l);
+		
+		// EOF reached? Attempt read of the footer data
+		if (rc < 0)
+		{
+			if (true)
+				throw new todo.TODO();
+			
+			this._readeof = true;
+		}
+		
+		// Return the read count
+		return rc;
 	}
 }
 
