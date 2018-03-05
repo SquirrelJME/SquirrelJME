@@ -37,6 +37,33 @@ public enum SystemFunction
 	/** Invoke public static void main method of a class. */
 	INVOKE_STATIC_MAIN,
 	
+	/** Memory map a boolean array. */
+	MEMORY_MAP_BOOLEAN_ARRAY,
+
+	/** Memory map a byte array. */
+	MEMORY_MAP_BYTE,
+
+	/** Memory map a char array. */
+	MEMORY_MAP_CHARACTER,
+
+	/** Memory map a double array. */
+	MEMORY_MAP_DOUBLE,
+
+	/** Memory map a float array. */
+	MEMORY_MAP_FLOAT,
+
+	/** Memory map a integer array. */
+	MEMORY_MAP_INTEGER,
+
+	/** Memory map a long array. */
+	MEMORY_MAP_LONG,
+
+	/** Memory map a short array. */
+	MEMORY_MAP_SHORT,
+
+	/** Memory map a String array. */
+	MEMORY_MAP_STRING,
+	
 	/** Returns the current monotonic clock time. */
 	NANOTIME,
 	
