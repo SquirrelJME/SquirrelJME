@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+X-SquirrelJME-UUID: a952791f-60bb-4764-a349-8848bf5b3a2a
+X-SquirrelJME-Error: AW
+X-SquirrelJME-Name: Test Base
+X-SquirrelJME-Vendor: Stephanie Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: The provides the base for the test framework 
+ and is the project which all tests rely upon for running code.
+Microedition-Configuration: CLDC-1.8-Compact
+
