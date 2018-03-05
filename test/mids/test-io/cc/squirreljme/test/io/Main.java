@@ -8,14 +8,27 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.build.test;
+package cc.squirreljme.test.io;
+
+import cc.squirreljme.test.TestRunner;
 
 /**
- * DESCRIBE THIS.
+ * Test Runner.
  *
  * @since 2018/03/05
  */
-public class SubTest
+public class Main
 {
+	/**
+	 * Main entry point.
+	 *
+	 * @param __args Test arguments.
+	 * @since 2018/03/05
+	 */
+	public static void main(String... __args)
+	{
+		new TestRunner(__args,
+			TestBase64Decoder.class).run();
+	}
 }
 

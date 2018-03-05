@@ -9,11 +9,10 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This package contains the test framework implementation used for running
- * tests.
+ * This project contains the IO utilities tests.
  *
- * @since 2018/03/04
+ * @since 2018/03/05
  */
 
-package cc.squirreljme.build.test;
+package cc.squirreljme.test.io;
 
