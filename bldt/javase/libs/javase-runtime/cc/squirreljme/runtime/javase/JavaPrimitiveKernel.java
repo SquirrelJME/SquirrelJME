@@ -11,6 +11,8 @@
 package cc.squirreljme.runtime.javase;
 
 import cc.squirreljme.kernel.PrimitiveKernel;
+import cc.squirreljme.kernel.PrimitiveProcess;
+import cc.squirreljme.kernel.PrimitiveThread;
 
 /**
  * This provides the primitive kernel interface used on host Java SE systems
@@ -22,5 +24,24 @@ import cc.squirreljme.kernel.PrimitiveKernel;
 public class JavaPrimitiveKernel
 	implements PrimitiveKernel
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/04
+	 */
+	@Override
+	public final PrimitiveProcess createProcess()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/04
+	 */
+	@Override
+	public final PrimitiveThread createThread()
+	{
+		throw new todo.TODO();
+	}
 }
 
