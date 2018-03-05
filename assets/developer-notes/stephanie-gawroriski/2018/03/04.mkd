@@ -1,0 +1,51 @@
+# 2018/03/04
+
+## 20:26
+
+Thinking about it, libraries and trust groups are very part of the core
+SquirrelJME and really should not be implemented as services since I
+can see many things dependingon them. So I will split them off and into
+the core system accordingly.
+
+## 20:46
+
+Now, what I need again is a way to install and utilize libraries and
+such so I can run and launch the test framework from the build system
+which would be quite useful for the most part.
+
+## 20:47
+
+Although it is not truly needed in a way. But one thing I do need is a system
+call argument encoder and decoder which checks things and can be used as a
+means to check and ensure that system call arguments are correct and well
+formed before they are sent over the wire.
+
+## 20:52
+
+But, I definitely want to work on the JIT and such so the test framework
+would be a big thing to do. Also I have an idea for less duplicated code and
+such. Instead of having there be separate clients and servers for everything
+instead there is just a single server in the server and where it is needed
+in the client the code is there. That way there are no two duplicates of
+the same code such as the library code for example.
+
+## 20:52
+
+But I think the first thing will be the array classes and such, but that
+can be done via a template for the most part.
+
+## 21:15
+
+But thinking about it. I think it might be best to work on the compiler and
+WinterCoat at the same time. The first thing would be testing and a basic
+interpreter and such for compiled WinterCoat code.
+
+## 21:17
+
+In the long run the Java SE environment rather limits me in implementation
+if I try to utilize it to the max. I think it would be best only for build
+system usage and not something that can launch real applications to do
+things. There is hosted launch for such environments though. This would
+simplify things and I can design the kernel around real-ish hardware rather
+than having it work on a Java SE environment where I really cannot do some
+things reliably.
