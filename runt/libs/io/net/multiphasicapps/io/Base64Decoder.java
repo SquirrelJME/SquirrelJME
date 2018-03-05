@@ -27,6 +27,9 @@ public final class Base64Decoder
 	/** The source reader. */
 	protected final Reader in;
 	
+	/** Ignore padding characters. */
+	protected final boolean ignorepadding;
+	
 	/** The alphabet to use for decoding. */
 	private final char[] _alphabet;
 	
@@ -41,7 +44,7 @@ public final class Base64Decoder
 	public Base64Decoder(Reader __in, Base64Alphabet __chars)
 		throws NullPointerException
 	{
-		this(__in, __chars._alphabet);
+		this(__in, __chars._alphabet, false);
 	}
 	
 	/**
@@ -57,7 +60,7 @@ public final class Base64Decoder
 	public Base64Decoder(Reader __in, String __chars)
 		throws IllegalArgumentException, NullPointerException
 	{
-		this(__in, __chars.toCharArray());
+		this(__in, __chars.toCharArray(), false);
 	}
 	
 	/**
@@ -73,6 +76,58 @@ public final class Base64Decoder
 	public Base64Decoder(Reader __in, char[] __chars)
 		throws IllegalArgumentException, NullPointerException
 	{
+		this(__in, __chars, false);
+	}
+	
+	/**
+	 * Initializes the decoder using the default alphabet.
+	 *
+	 * @param __in The input set of characters.
+	 * @param __chars The pre-defined character set to use for the alphabet.
+	 * @param __ip Ignore padding characters and do not treat them as the end
+	 * of the stream.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/05
+	 */
+	public Base64Decoder(Reader __in, Base64Alphabet __chars, boolean __ip)
+		throws NullPointerException
+	{
+		this(__in, __chars._alphabet, __ip);
+	}
+	
+	/**
+	 * Initializes the decoder using the specified custom alphabet.
+	 *
+	 * @param __in The input set of characters.
+	 * @param __chars The characters to use for the alphabet.
+	 * @param __ip Ignore padding characters and do not treat them as the end
+	 * of the stream.
+	 * @throws IllegalArgumentException If the alphabet is of the incorrect
+	 * size.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/05
+	 */
+	public Base64Decoder(Reader __in, String __chars, boolean __ip)
+		throws IllegalArgumentException, NullPointerException
+	{
+		this(__in, __chars.toCharArray(), __ip);
+	}
+	
+	/**
+	 * Initializes the decoder using the specified custom alphabet.
+	 *
+	 * @param __in The input set of characters.
+	 * @param __chars The characters to use for the alphabet.
+	 * @param __ip Ignore padding characters and do not treat them as the end
+	 * of the stream.
+	 * @throws IllegalArgumentException If the alphabet is of the incorrect
+	 * size.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/05
+	 */
+	public Base64Decoder(Reader __in, char[] __chars, boolean __ip)
+		throws IllegalArgumentException, NullPointerException
+	{
 		if (__in == null || __chars == null)
 			throw new NullPointerException("NARG");
 		
@@ -84,6 +139,7 @@ public final class Base64Decoder
 			throw new IllegalArgumentException(String.format("BD0g %d", n));
 		
 		this.in = __in;
+		this.ignorepadding = __ip;
 		this._alphabet = __chars.clone();
 	}
 	

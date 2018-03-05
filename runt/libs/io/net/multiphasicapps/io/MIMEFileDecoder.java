@@ -29,24 +29,21 @@ public final class MIMEFileDecoder
 	protected final InputStream decoder;
 	
 	/** The read mode. */
-	protected final int mode;
+	private volatile int _mode =
+		Integer.MIN_VALUE;
 	
 	/** The read filename. */
-	protected final String filename; 
+	private volatile String _filename; 
 	
 	/**
 	 * Initializes the MIME file decoder from the given set of characters.
 	 *
-	 * Note that the header of the file is read to determine the mode,
-	 * file name, and if it is a valid MIME header.
-	 *
 	 * @param __in The input source.
-	 * @throws IOException If the header could not be read or is not correct.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/05
 	 */
 	public MIMEFileDecoder(Reader __in)
-		throws IOException, NullPointerException
+		throws NullPointerException
 	{
 		if (__in == null)
 			throw new NullPointerException("NARG");
@@ -67,23 +64,25 @@ public final class MIMEFileDecoder
 	/**
 	 * Returns the filename which was read.
 	 *
-	 * @return The read filename.
+	 * @return The read filename, {@code null} will be returned if it has not
+	 * been read yet or has not been specified.
 	 * @since 2018/03/05
 	 */
 	public final String filename()
 	{
-		return this.filename;
+		return this._filename;
 	}
 	
 	/**
 	 * Returns the UNIX mode of the stream.
 	 *
-	 * @return The UNIX mode.
+	 * @return The UNIX mode, a negative value will be returned if it has not
+	 * been read yet.
 	 * @since 2018/03/05
 	 */
 	public final int mode()
 	{
-		return this.mode;
+		return this._mode;
 	}
 	
 	/**
