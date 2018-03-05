@@ -12,7 +12,7 @@ package cc.squirreljme.runtime.javase;
 
 import cc.squirreljme.kernel.PrimitiveKernel;
 import cc.squirreljme.kernel.Kernel;
-import cc.squirreljme.runtime.cldc.StandardOutput;
+import cc.squirreljme.runtime.cldc.io.StandardOutput;
 import cc.squirreljme.runtime.cldc.system.MnemonicCall;
 import cc.squirreljme.runtime.cldc.system.SystemCall;
 import cc.squirreljme.runtime.cldc.system.SystemCallImplementation;
@@ -98,7 +98,7 @@ public class Main
 				startmethod.setAccessible(true);
 				
 				// Initialization complete
-				MnemonicCall.MNEMONIC.clientInitializationComplete();
+				SystemCall.MNEMONIC.clientInitializationComplete();
 				
 				// Invoke the start method
 				startmethod.invoke(mid);
@@ -114,7 +114,7 @@ public class Main
 					throw new RuntimeException("AF02");
 				
 				// Initialization complete
-				MnemonicCall.MNEMONIC.clientInitializationComplete();
+				SystemCall.MNEMONIC.clientInitializationComplete();
 				
 				// Call it
 				mainmethod.invoke(null, new Object[]{__args});
