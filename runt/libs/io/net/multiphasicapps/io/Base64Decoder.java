@@ -338,6 +338,7 @@ public final class Base64Decoder
 				bits = 24;
 			}
 			
+			// Is valid character
 			else
 			{
 				// Shift in six bits
