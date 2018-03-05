@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Namespace-Title: Test Libraries
+X-SquirrelJME-Namespace-Type: liblet
+X-SquirrelJME-Namespace-Description: This contains the base support 
+ libraries used in testing.
+

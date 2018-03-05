@@ -75,11 +75,12 @@ public class BuilderFactory
 					"cc.squirreljme.builder.output", "bins")),
 			binruntime = null,
 			binjit = null,
+			bintest = null,
 			binbuild = null;
 		
 		// Allow paths to be modified
 		String[] parse;
-		while (null != (parse = __getopts(":?s:o:j:b:", args)))
+		while (null != (parse = __getopts(":?s:o:j:t:b:", args)))
 			switch (parse[0])
 			{
 					// Change source code root
@@ -102,6 +103,11 @@ public class BuilderFactory
 					binjit = Paths.get(parse[1]);
 					break;
 					
+					// Test-time build path
+				case "-t":
+					bintest = Paths.get(parse[1]);
+					break;
+					
 					// Build-time build path
 				case "-b":
 					binbuild = Paths.get(parse[1]);
@@ -114,6 +120,7 @@ public class BuilderFactory
 					// -o: The base directory for binary output;
 					// -r: The binary path for the run-time;
 					// -j: The binary path for the jit-time;
+					// -t: The binary path for the tests;
 					// -b: The binary path for the build-time;
 					// Valid commands are:
 					// build, c, sdk, suite, task, wintercoat
@@ -128,6 +135,8 @@ public class BuilderFactory
 			binruntime = binroot.resolve("brun");
 		if (binjit == null)
 			binjit = binroot.resolve("bjit");
+		if (bintest == null)
+			bintest = binroot.resolve("btst");
 		if (binbuild == null)
 			binbuild = binroot.resolve("bbld");
 		
@@ -241,7 +250,7 @@ public class BuilderFactory
 					// Try to determine the timespace to use, which determines
 					// the available projects
 					String[] parse;
-					while (null != (parse = __getopts(":?rjb", args)))
+					while (null != (parse = __getopts(":?rjtb", args)))
 						switch (parse[0])
 						{
 							case "r":
@@ -251,15 +260,21 @@ public class BuilderFactory
 							case "j":
 								space = TimeSpaceType.JIT;
 								break;
+								
+							case "t":
+								space = TimeSpaceType.TEST;
+								break;
 							
 							case "b":
 								space = TimeSpaceType.BUILD;
 								break;
 							
 								// {@squirreljme.error AU0g Unknown argument.
-								// Usage: build [-r] [-j] [-b] (projects...);
+								// Usage: build [-r] [-j] [-t] [-b]
+								// (projects...);
 								// -r: Build for run-time;
 								// -j: Build for jit-time;
+								// -t: Build for tests;
 								// -b: Build for build-time;
 								// (The switch)}
 							default:

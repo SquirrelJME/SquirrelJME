@@ -389,7 +389,7 @@ public final class BinaryManager
 		// {@squirreljme.error AU08 The specified binary does not exist.
 		// (The name of the binary)}
 		if (rv == null)
-			throw new NoSuchBinaryException(String.format("AU08 %s"));
+			throw new NoSuchBinaryException(String.format("AU08 %s", __n));
 		return rv;
 	}
 	
