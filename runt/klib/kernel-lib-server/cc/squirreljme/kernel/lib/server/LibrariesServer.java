@@ -11,12 +11,17 @@
 package cc.squirreljme.kernel.lib.server;
 
 import cc.squirreljme.kernel.lib.client.LibrariesFunction;
+import cc.squirreljme.kernel.lib.client.LibraryInstallationReport;
 import cc.squirreljme.runtime.cldc.library.Library;
+import cc.squirreljme.runtime.cldc.library.LibraryControlKey;
 import cc.squirreljme.runtime.cldc.library.LibraryResourceScope;
 import cc.squirreljme.runtime.cldc.library.LibraryType;
 import cc.squirreljme.runtime.cldc.service.ServiceServer;
+import cc.squirreljme.runtime.cldc.system.ByteArray;
 import cc.squirreljme.runtime.cldc.system.CallCast;
 import cc.squirreljme.runtime.cldc.task.SystemTask;
+import cc.squirreljme.runtime.cldc.trust.SystemTrustGroup;
+import java.util.Arrays;
 
 /**
  * This provides access for a client to the given server.
@@ -69,15 +74,15 @@ public final class LibrariesServer
 						__args[0]));
 			
 			case INSTALL_PROGRAM:
-				return this.__install(__p);
+				return this.__install(
+					CallCast.asByteArray(__args[0]),
+					CallCast.asInteger(__args[1]),
+					CallCast.asInteger(__args[2]));
 			
-			case LOAD_RESOURCE_BYTES:
-				return this.__loadResourceBytes(__p);
-			
-				// {@squirreljme.error BC09 Unknown packet. (The packet)}
+				// {@squirreljme.error BC09 Unknown function. (The function)}
 			default:
 				throw new IllegalArgumentException(
-					String.format("BC09 %s", __p));
+					String.format("BC09 %s", __func));
 		}
 	}
 	
@@ -103,7 +108,7 @@ public final class LibrariesServer
 		// could modify other clients but not its own
 		try
 		{
-			task.checkPermission(LibrariesServer._PERMISSION_CLASS,
+			task.checkPermission("javax.microedition.swm.SWMPermission",
 				"crossClient", __act);
 			
 			return LibrariesAccessMode.ANY;
@@ -115,7 +120,7 @@ public final class LibrariesServer
 			// This can also fail
 			try
 			{
-				task.checkPermission(LibrariesServer._PERMISSION_CLASS,
+				task.checkPermission("javax.microedition.swm.SWMPermission",
 					"client", __act);
 				
 				return LibrariesAccessMode.SAME_GROUP;
@@ -132,16 +137,22 @@ public final class LibrariesServer
 	/**
 	 * Reads the JAR from the specified packet and then installs it.
 	 *
-	 * @param __p The packet containing the JAR to be installed.
+	 * @param __b The JAR file data.
+	 * @param __o The offset.
+	 * @param __l The length.
 	 * @return The installation report.
+	 * @throws ArrayIndexOutOfBoundsException If the offset and/or length
+	 * are negative or exceed the array bounds.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/13
 	 */
-	private final Packet __install(Packet __p)
-		throws NullPointerException
+	private final int __install(ByteArray __b, int __o, int __l)
+		throws ArrayIndexOutOfBoundsException, NullPointerException
 	{
-		if (__p == null)
+		if (__b == null)
 			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length())
+			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
 		// {@squirreljme.error BC0a The task is not permitted to install new
 		// applications.}
@@ -151,38 +162,27 @@ public final class LibrariesServer
 		
 		SystemTask task = this.task;
 		
-		// Read in the packet data, but close it so its data is not consumed
-		// as it will be wasted data in memory
-		int jarlen = __p.readInteger(0);
-		byte[] jardata = new byte[jarlen];
-		__p.readBytes(4, jardata, 0, jarlen);
-		
-		// But we need a response packet before it goes away
-		Packet rv = __p.respond();
-		__p.close();
+		// Defensive copy the data
+		byte[] jardata = new byte[__l];
+		__b.get(__o, jardata, 0, __l);
 		
 		// Run the installation step
-		LibraryInstallationReport r = this.provider.
-			install(jardata, 0, jarlen);
+		LibraryInstallationReport r = this.definition.
+			install(jardata, 0, __l);
 		
 		Library lib = r.library();
 		int ldx = (lib != null ? lib.index() : -1),
 			error = r.error();
 		String message = r.message();
 		
-		// Failing?
-		if (error != 0)
-		{
-			rv.writeInteger(0, -1);
-			rv.writeInteger(4, error);
-			rv.writeString(8, message);
-		}
-		
-		// Success
+		// Return failure
+		if (ldx < 0)
+			if (error > 0)
+				return (-error) - 1;
+			else
+				return error;
 		else
-			rv.writeInteger(0, ldx);
-		
-		return rv;
+			return ldx;
 	}
 	
 	/**
@@ -206,7 +206,7 @@ public final class LibrariesServer
 		LibrariesAccessMode accessmode = this.__accessMode("manageSuite");
 		
 		// Read the library set
-		Library[] libs = this.provider.list(__t);
+		Library[] libs = this.definition.list(__t);
 		
 		// Map to indexes
 		int n = libs.length;
@@ -215,7 +215,9 @@ public final class LibrariesServer
 		for (int i = 0, o = 0; i < n; i++)
 		{
 			Library lib = libs[i];
-			SystemTrustGroup libgroup = lib.trustGroup();
+			SystemTrustGroup libgroup = LibrariesDefinition.__trusts().byIndex(
+				Integer.valueOf(lib.controlGet(
+				LibraryControlKey.TRUST_GROUP)));
 			
 			// If the library belongs to another group
 			if (accessmode.isAccessible(mygroup, libgroup))
@@ -225,55 +227,7 @@ public final class LibrariesServer
 			}
 		}
 		
-		return Arrays.copyOfRange(rv, counted);
-	}
-	
-	/**
-	 * Loads the bytes for the resource data.
-	 *
-	 * @param __p The request.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/02/13
-	 */
-	private final Packet __loadResourceBytes(Packet __p)
-		throws NullPointerException
-	{
-		if (__p == null)
-			throw new NullPointerException("NARG");
-		
-		PacketReader r = __p.createReader();
-		
-		// {@squirreljme.error BC0a The task is not permitted to install new
-		// applications.}
-		LibrariesAccessMode accessmode = this.__accessMode("manageSuite");
-		if (accessmode == LibrariesAccessMode.NONE)
-			throw new SecurityException("BC0a");
-		
-		// Read the library wanting to be read, make sure it exists
-		int dx = r.readInteger();
-		Library lib = this.provider.byIndex(dx);
-		if (lib == null)
-		{
-			Packet rv = __p.respond(1);
-			rv.writeByte(0, Library.DATA_NONE);
-			return rv;
-		}
-		
-		// Read the scope and name
-		LibraryResourceScope scope = LibraryResourceScope.valueOf(
-			r.readString());
-		String name = r.readString();
-		
-		// Load resource data
-		byte[] data = lib.loadResourceRawData(scope, name);
-		
-		// Send it
-		int n = data.length;
-		Packet rv = __p.respond(data.length);
-		
-		rv.writeBytes(0, data, 0, n);
-		
-		return rv;
+		return Arrays.<Library>copyOf(rv, counted);
 	}
 }
 

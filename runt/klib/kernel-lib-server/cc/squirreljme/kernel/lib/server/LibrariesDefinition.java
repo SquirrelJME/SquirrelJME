@@ -41,6 +41,7 @@ import java.util.Map;
 import java.util.Objects;
 import javax.microedition.swm.InstallErrorCodes;
 import net.multiphasicapps.collections.SortedTreeMap;
+import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;
 import net.multiphasicapps.zip.blockreader.ZipEntryNotFoundException;
 
@@ -52,6 +53,9 @@ import net.multiphasicapps.zip.blockreader.ZipEntryNotFoundException;
 public abstract class LibrariesDefinition
 	extends ServiceDefinition
 {
+	/** The trust client manager. */
+	private static volatile TrustClient _TRUSTCLIENT;
+	
 	/** Lock for thread safety. */
 	protected final Object lock =
 		new Object();
@@ -59,9 +63,6 @@ public abstract class LibrariesDefinition
 	/** Libraries which are availble for usage. */
 	private final Map<Integer, Library> _libraries =
 		new SortedTreeMap<>();
-	
-	/** The trust client manager. */
-	private volatile TrustClient _trustclient;
 	
 	/**
 	 * Initializes the libraries definition.
@@ -427,21 +428,6 @@ public abstract class LibrariesDefinition
 	}
 	
 	/**
-	 * Returns the trust client.
-	 *
-	 * @return The trust client.
-	 * @since 2018/01/17
-	 */
-	private final TrustClient __trusts()
-	{
-		TrustClient rv = this._trustclient;
-		if (rv == null)
-			this._trustclient = (rv =
-				ServiceAccessor.<TrustClient>service(TrustClient.class));
-		return rv;
-	}
-	
-	/**
 	 * Maps the given throwable to a report.
 	 *
 	 * @param __t The input throwable.
@@ -476,6 +462,21 @@ public abstract class LibrariesDefinition
 		// {@squirreljme.error BC08 No message specified in the throwable.}
 		return new LibraryInstallationReport(code.ordinal(),
 			Objects.toString(__t.getMessage(), "BC08"));
+	}
+	
+	/**
+	 * Returns the trust client.
+	 *
+	 * @return The trust client.
+	 * @since 2018/01/17
+	 */
+	static final TrustClient __trusts()
+	{
+		TrustClient rv = LibrariesDefinition._TRUSTCLIENT;
+		if (rv == null)
+			LibrariesDefinition._TRUSTCLIENT = (rv =
+				ServiceAccessor.<TrustClient>service(TrustClient.class));
+		return rv;
 	}
 }
 

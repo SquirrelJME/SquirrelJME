@@ -23,9 +23,6 @@ public enum LibrariesFunction
 	/** Install a program. */
 	INSTALL_PROGRAM,
 	
-	/** Load bytes from a resource. */
-	LOAD_RESOURCE_BYTES,
-	
 	/** End. */
 	;
 }
