@@ -123,6 +123,8 @@ public abstract class LibrariesDefinition
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
+		throw new todo.TODO();
+		/*
 		// Need to process the ZIP
 		Map<Integer, Library> libraries = this._libraries;
 		try (ZipBlockReader zip = new ZipBlockReader(__b, __o, __l))
@@ -209,7 +211,7 @@ public abstract class LibrariesDefinition
 			
 			// Throw it
 			return __mapThrowable(t);
-		}
+		}*/
 	}
 	
 	/**
@@ -293,6 +295,8 @@ public abstract class LibrariesDefinition
 		if (__myinfo == null)
 			throw new NullPointerException("NARG");
 		
+		throw new todo.TODO();
+		/*
 		SuiteName myname = __myinfo.name();
 		SuiteVendor myvendor = __myinfo.vendor();
 		SuiteVersion myversion = __myinfo.version();
@@ -335,7 +339,7 @@ public abstract class LibrariesDefinition
 		}
 		
 		// Is okay
-		return false;
+		return false;*/
 	}
 	
 	/**
@@ -352,6 +356,8 @@ public abstract class LibrariesDefinition
 		if (__info == null)
 			throw new NullPointerException("NARG");
 		
+		throw new todo.TODO();
+		/*
 		Collection<Library> rv = new LinkedHashSet<>();
 		
 		// Do not consider optional dependencies at all
@@ -401,6 +407,7 @@ public abstract class LibrariesDefinition
 				String.format("BC0b %s %s", __info.suite(), left));
 		
 		return rv.<Library>toArray(new Library[rv.size()]);
+		*/
 	}
 	
 	/**
