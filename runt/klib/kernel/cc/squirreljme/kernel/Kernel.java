@@ -10,8 +10,10 @@
 
 package cc.squirreljme.kernel;
 
+import cc.squirreljme.runtime.cldc.system.InvalidSystemCallException;
 import cc.squirreljme.runtime.cldc.system.SystemCallImplementation;
 import cc.squirreljme.runtime.cldc.system.SystemFunction;
+import cc.squirreljme.runtime.cldc.system.VoidType;
 
 /**
  * This class represents the kernel which manages the entire SquirrelJME
@@ -52,7 +54,19 @@ public final class Kernel
 		if (__func == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Depends
+		switch (__func)
+		{
+				// Ignore
+			case CLIENT_INITIALIZATION_COMPLETE:
+				return VoidType.INSTANCE;
+			
+				// {@squirreljme.error AP01 Unimplemented system call in
+				// kernel task. (The function)}
+			default:
+				throw new InvalidSystemCallException(
+					String.format("AP01 %s", __func));
+		}
 	}
 }
 
