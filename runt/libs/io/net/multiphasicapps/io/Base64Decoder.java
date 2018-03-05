@@ -54,6 +54,10 @@ public final class Base64Decoder
 	private volatile int _drained =
 		-1;
 	
+	/** The maximum value for drained values. */
+	private volatile int _drainedmax =
+		3;
+	
 	/**
 	 * Initializes the decoder using the default alphabet.
 	 *
@@ -237,7 +241,8 @@ public final class Base64Decoder
 		// This buffer is filled into as needed when input characters are read
 		int buffer = this._buffer,
 			bits = this._bits,
-			drained = this._drained;
+			drained = this._drained,
+			drainedmax = this._drainedmax;
 		
 		// Fill the input in as much as possible
 		int base = __o,
@@ -263,7 +268,7 @@ public final class Base64Decoder
 				__b[__o++] = drain[drained++];
 				
 				// No more bytes to drain
-				if (drained == 3)
+				if (drained == drainedmax)
 					drained = -1;
 				
 				// Continue draining
@@ -276,15 +281,15 @@ public final class Base64Decoder
 				break;
 			
 			// EOF
+			int val = 0;
 			int ch = in.read();
 			if (ch < 0)
 			{
 				paddedeof = true;
-				break;
+				continue;
 			}
 			
 			// Determine the value of the character
-			int val;
 			if (ch < 128)
 				val = ascii[ch];
 			else
@@ -309,6 +314,28 @@ public final class Base64Decoder
 				
 				// Trigger padded EOF
 				paddedeof = true;
+				
+				// Consume extra equal sign for missing bits
+				if (bits < 16)
+				{
+					int padchar,
+						gotchar;
+					
+					// {@squirreljme.error BD0g Expected padding character to
+					// follow for the last remaining bytes. (The expected
+					// character; The read character)}
+					if ((gotchar = in.read()) != (padchar = alphabet[64]))
+						throw new IOException(String.format("BD0g %c %c",
+							padchar, gotchar));
+				}
+				
+				// The number of valid bytes in the drained data is only
+				// equal to the number of read bytes
+				drainedmax = (bits / 8);
+				
+				// Fill to 24
+				buffer <<= (24 - bits);
+				bits = 24;
 			}
 			
 			else
@@ -325,6 +352,7 @@ public final class Base64Decoder
 		this._bits = bits;
 		this._paddedeof = paddedeof;
 		this._drained = drained;
+		this._drainedmax = drainedmax;
 		
 		// Return the read count
 		int rv = __o - base;
