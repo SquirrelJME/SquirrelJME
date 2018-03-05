@@ -57,6 +57,7 @@ public final class MIMEFileDecoder
 	 */
 	@Override
 	public final void close()
+		throws IOException
 	{
 		throw new todo.TODO();
 	}
@@ -93,7 +94,19 @@ public final class MIMEFileDecoder
 	public final int read()
 		throws IOException
 	{
-		throw new todo.TODO();
+		byte[] next = new byte[1];
+		for (;;)
+		{
+			int rc = this.read(next, 0, 1);
+			if (rc < 0)
+				return -1;
+			else if (rc == 0)
+				continue;
+			else if (rc == 1)
+				return (next[0] & 0xFF);
+			else
+				throw new RuntimeException("OOPS");
+		}
 	}
 	
 	/**
