@@ -58,7 +58,7 @@ public class Main
 		
 		// Try to parse command line options
 		boolean ignorepadding = false,
-			rawdata = true;
+			rawdata = false;
 __outer:
 		for (;;)
 		{
