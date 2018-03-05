@@ -135,13 +135,14 @@ public final class MIMEFileDecoder
 		if (this._readeof)
 			return -1;
 		
-		// Used to read the header and the data
-		Reader in = this.in;
+		// Reads the file data
 		InputStream datain = this._datain;
 		
 		// Need to read the MIME header?
 		if (!this._readheader)
 		{
+			Reader in = this.in;
+			
 			// Read a single line from the input
 			StringBuilder sb = new StringBuilder();
 			for (;;)
@@ -166,11 +167,35 @@ public final class MIMEFileDecoder
 			if (!header.startsWith("begin-base64 "))
 				throw new IOException("BD0i");
 			
-			if (true)
-				throw new todo.TODO();
+			// Read mode and filename potentially
+			header = header.substring(13).trim();
+			int fs = header.indexOf(' ');
+			
+			// Only if the space is valid
+			if (fs >= 1)
+			{
+				// Read mode
+				try
+				{
+					this._mode = Integer.parseInt(header.substring(0, fs), 8);
+				}
+			
+				// {@squirreljme.error BD0j Could not parse the mode.
+				catch (NumberFormatException e)
+				{
+					throw new IOException("BD0j", e);
+				}
+				
+				// Read filename
+				this._filename = header.substring(fs).trim();
+			}
 			
 			// Header read
 			this._readheader = true;
+			
+			// Start reading encoded data
+			datain = new Base64Decoder(in, Base64Alphabet.BASIC);
+			this._datain = datain;
 		}
 		
 		// Read wrapped data
@@ -179,8 +204,30 @@ public final class MIMEFileDecoder
 		// EOF reached? Attempt read of the footer data
 		if (rc < 0)
 		{
-			if (true)
-				throw new todo.TODO();
+			Reader in = this.in;
+			
+			// Read final data
+			StringBuilder sb = new StringBuilder();
+			for (;;)
+			{
+				int ch = in.read();
+				
+				if (ch < 0)
+					break;
+				
+				// Skip whitespace
+				else if (ch <= ' ')
+					continue;
+				
+				// Append sequence
+				sb.append((char)ch);
+			}
+			String end = sb.toString().trim();
+			
+			// {@squirreljme.error BD0k End of the mime file data must end
+			// with four equal signs on a single line.
+			if (!end.equals("===="))
+				throw new IOException("BD0k");
 			
 			this._readeof = true;
 		}

@@ -146,7 +146,7 @@ __outer:
 		
 		// Read of raw data?
 		if (__rd)
-			return new Base64Decoder(__in, Base64Alphabet.MIME, __ip);
+			return new Base64Decoder(__in, Base64Alphabet.BASIC, __ip);
 		
 		// Read MIME file
 		return new MIMEFileDecoder(__in);
