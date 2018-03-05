@@ -27,7 +27,7 @@ fi
 # to know if a passed input was really a directory or just a file, so just
 # for the most part try to guess
 __fn="$(basename -- "$__dir")"
-if echo "$__fn" | grep -e '\.java$' -e '\.class$' > /dev/null
+if echo "$__fn" | grep -e '\.java$' -e '\.class$' -e '\.jas$' -e '\.j$' > /dev/null
 then
 	__dir="$__dir/.."
 fi
