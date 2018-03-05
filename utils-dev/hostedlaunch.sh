@@ -66,21 +66,38 @@ shift
 
 __proj="$(basename "$__file" .jar)"
 
-# Build these projects because they are standard and may be relied upon
-for __maybe in midp-lcdui meep-rms media-api
-do
-	if ! "$__exedir/../build.sh" build -b "$__maybe"
+# The file to run
+if [ -f "$__file" ]
+then
+	__run="$__file"
+elif [ -f "bins/bbld/$__proj.jar" ]
+then
+	__run="bins/bbld/$__proj.jar"
+else
+	__run="$__file"
+fi
+
+# Attempt building it if it has not been detected to be a normal JAR but a
+# standard project
+if [ ! -f "$__file" ]
+then
+	if ! "$__exedir/../build.sh" build -b "$__proj"
 	then
-		echo "Failed to build $__maybe" 1>&2
+		echo "Could not build $__proj." 1>&2
 		exit 1
 	fi
-done
 
-# Attempt building it, but ignore if it does not work because we might be
-# running a non-SquirrelJME JAR
-if ! "$__exedir/../build.sh" build -b "$__proj"
-then
-	echo "Did not build $__proj, ignoring." 1>&2
+# Build these projects because they are standard and may be relied upon for
+# running a given file
+else
+	for __maybe in midp-lcdui meep-rms media-api
+	do
+		if ! "$__exedir/../build.sh" build -b "$__maybe"
+		then
+			echo "Failed to build $__maybe" 1>&2
+			exit 1
+		fi
+	done
 fi
 
 # Generates classpath
@@ -108,17 +125,6 @@ __gen_classpath()
 	# Use it
 	echo "$__rv"
 }
-
-# The file to run
-if [ -f "$__file" ]
-then
-	__run="$__file"
-elif [ -f "bins/bbld/$__proj.jar" ]
-then
-	__run="bins/bbld/$__proj.jar"
-else
-	__run="$__file"
-fi
 
 # Run the JVM with the bootstrap followed
 __main="$("$__exedir/mainclass.sh" "$__run")"
