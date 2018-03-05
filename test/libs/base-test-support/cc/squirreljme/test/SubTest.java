@@ -8,29 +8,15 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.build.test;
+package cc.squirreljme.test;
 
 /**
- * This represents a group of sub-tests which may be run together.
+ * This represents a single sub-test which defines a single test which performs
+ * a given test as it runs.
  *
  * @since 2018/03/05
  */
-public abstract class TestGroup
+public abstract class SubTest
 {
-	/**
-	 * Initializes the test group with the specified sub-tests.
-	 *
-	 * @param __subs Sub-tests which belong to this group.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/03/05
-	 */
-	public TestGroup(Class<? extends SubTest>... __subs)
-		throws NullPointerException
-	{
-		if (__subs == null)
-			throw new NullPointerException("NARG");
-		
-		throw new todo.TODO();
-	}
 }
 

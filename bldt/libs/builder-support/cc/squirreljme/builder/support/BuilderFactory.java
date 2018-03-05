@@ -148,7 +148,7 @@ public class BuilderFactory
 		
 		// Set paths
 		this.sourceroot = sourceroot;
-		this._bin = new Path[]{binruntime, binjit, binbuild};
+		this._bin = new Path[]{binruntime, binjit, bintest, binbuild};
 		
 		// Use remaining arguments as input
 		this._args = args.<String>toArray(new String[args.size()]);

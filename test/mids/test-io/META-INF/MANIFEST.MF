@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+X-SquirrelJME-UUID: e3ecdf03-182f-4a64-88f7-cd6fd418373e
+X-SquirrelJME-Error: BA
+X-SquirrelJME-Name: IO Utilities Tests
+X-SquirrelJME-Vendor: Stephanie Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This contains the test for the I/O utilities.
+X-SquirrelJME-Depends: base-test-support io
+Microedition-Configuration: CLDC-1.8-Compact
+Main-Class: cc.squirreljme.test.io.Main
+
