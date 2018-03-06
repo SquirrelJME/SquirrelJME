@@ -29,7 +29,8 @@ do
 		fi
 		
 		# If there is a project here, print that directory
-		if [ -f "$__file/META-INF/MANIFEST.MF" ]
+		if [ -f "$__file/META-INF/MANIFEST.MF" ] ||
+			[ -f "$__file/META-INF/TEST.MF" ]
 		then
 			"$__exedir/relative.sh" "$__root" "$__file"
 		fi
