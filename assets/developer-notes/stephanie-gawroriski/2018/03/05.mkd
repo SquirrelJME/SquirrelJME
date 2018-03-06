@@ -1,0 +1,152 @@
+# 2018/03/05
+
+## 08:52
+
+I think it would be good if the deflate decompressor were moved to the IO
+project that I have instead of just sitting in the ZIP code so it could be
+used in more places because it is versatile. That way stuff like the PNG
+decoder does not need to bring in the code for reading ZIPs.
+
+## 11:20
+
+Actually one issue with data which wraps input streams like for ZIP files and
+such is having a constructor which can throw `IOException`. This basically
+means that stuff like `new Wrapped(new Foo())` means if `Wrapped` throws the
+exception then the wrapped `Foo` will never be closed. This definitely needs
+fixing and I do need to refactor the ZIP code for this.
+
+## 11:56
+
+Okay, so this is my base64 decoded data:
+
+	Got: 86 15 6c c6 bc 60 76 fd  72 c6 90 61 a0 00 00     |..l..`v.r..a...|
+	Wnt: 48 65 6c 6c 6f 20 77 6f  72 6c 64 21 0a           |Hello world!.|
+
+So some bit sequences are correct but they seem to be in the wrong order so
+maybe the bit values are swapped perhaps? It would be as simple as reversing
+the alphabet to swap all the bits.
+
+## 12:05
+
+So now I reversed the bits and I get:
+
+	Got: 86 15 6c c6 bc 60 76 fd  72 c6 90 61 a0 00 00     |..l..`v.r..a...|
+	Old: 86 15 6c c6 bc 60 76 fd  72 c6 90 61 a0 00 00     |..l..`v.r..a...|
+
+So reversing the alphabet had no effect? It should have an effect.
+
+## 12:07
+
+Actually that is because after swapping everything I swapped it again because
+I stopped at the array end rather than the middle.
+
+## 12:08
+
+Now I get this:
+
+	Got: 79 ea 93 39 43 9f 89 02  8d 39 6f 9e 5f 0f 0f     |y..9C....9o._..|
+	Old: 86 15 6c c6 bc 60 76 fd  72 c6 90 61 a0 00 00     |..l..`v.r..a...|
+	Wnt: 48 65 6c 6c 6f 20 77 6f  72 6c 64 21 0a           |Hello world!.|
+
+And that is completely off, so that is wrong.
+
+## 12:10
+
+Maybe the bits are stacked on top, like... well my code does that already.
+
+## 12:12
+
+Okay, so maybe it is treated as groups of 24-bits and not 8-bits.
+
+## 12:14
+
+I should look at the actual algorithm so I can understand it better.
+
+## 12:21
+
+Moving the decoder around gets me:
+
+	Got: 86 15 6c c6 bc 60 76 fd  72 c6 90 61 a0 00        |..l..`v.r..a..|
+	Old: 86 15 6c c6 bc 60 76 fd  72 c6 90 61 a0 00 00     |..l..`v.r..a...|
+
+So not that bad.
+
+## 12:28
+
+Okay adding a drain worked, just need to make sure padding works.
+
+## 17:29
+
+I need a test framework which is not messy. Something that is easy to define
+and is not difficult for adding new tests. Some form of limited reflection for
+methods would be nice especially for test methods. It would need to run in the
+environment also.
+
+## 17:32
+
+Actually it could be a simple reflection which take a single set of input
+arguments or no arguments. But likely just `Object[]` would be the best thing
+to do because that would make a variable number of objects without needing to
+do complex things in native code for the call to work. It could also return an
+Object too. But I am not completely sure though. But actually what could be
+done for testing is instead having a thread local test storing thing then run
+a test in a thread. I think that would be a nice means of doing things. The
+only thing though would be that there would only be a single method of doing
+things for the most part. Although lambdas could be simulated with
+constructing with a bunch of classes. So basically there are test groups and
+then there are sub-tests which can operate on objects or specific input. I
+think that could work.
+
+## 17:57
+
+I have an idea, instead of putting tests in the build system, but them in
+their own timespace. That would be the test timespace.
+
+## 22:27
+
+Well, the thing is, I believe I need a better testing system which can test
+the code and such.
+
+## 22:30
+
+It would be nice though to include tests in the source code for files. I can
+have extra classes at the end of classes and I could perhaps throw tests
+there. Then during the compilation stage I can just ignore them for the most
+part.
+
+## 22:35
+
+But, it could be part of the source code itself, but in a different file.
+Basically just specially prefixed source code files. But the compiler
+normally does not handle files which end in a different extension. The
+baseline build system could just ignore these test sources. Then I can have
+some test framework stuff in the base CLDC. The build system could extract and
+not include the tests, but then make a JAR which includes the tests which
+could be ran at run-time (or at least compiled into the binary).
+
+## 22:41
+
+At least with the tests included with the source code, it could be easier to
+include them and to make sure everything is tested for the most part.
+
+## 22:45
+
+Well, this could be an idea. Instead of having a test timespace, well instead
+of having a bunch of test projects I can have a modified source project
+system which has a layering system which would allow tests to be inlined
+similar to how Maven does things. So basically there would be
+`cldc-compact.test` as a directory next to `cldc-compact` rather than having
+a `test/mids/test-cldc-compact`. Then I can have a script which just is able
+to run those tests or generate a JAR. Instead of a manifest there would just
+be an implied one automatically generated from an input source project. But
+to the build system itself when it comes to binaries these test projects.
+I really would only need to modify `SourceManager` and `Source` accordingly
+but it could be done like that simply. These projects could exist. I would
+get all the test projects accordingly. Also the source project for tests
+can automatically generate some special files that can take care of it.
+
+## 23:09
+
+I believe in the long run this will provide a better result and be easier to
+maintain. Also the way I wrote the compiler it would not really care where
+the files came from.
