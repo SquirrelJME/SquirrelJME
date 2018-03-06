@@ -13,6 +13,9 @@ package cc.squirreljme.jit.classfile;
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import net.multiphasicapps.io.SizeLimitedInputStream;
 
 /**
@@ -21,6 +24,7 @@ import net.multiphasicapps.io.SizeLimitedInputStream;
  * @since 2017/09/26
  */
 public final class ClassFile
+	implements Annotated
 {
 	/** The magic number of the class file. */
 	private static final int _MAGIC_NUMBER =
@@ -47,6 +51,9 @@ public final class ClassFile
 	/** The methods within this class. */
 	private final Method[] _methods;
 	
+	/** Annotated values. */
+	private final AnnotatedValue[] _annotatedvalues;
+	
 	/**
 	 * Initializes the class file.
 	 *
@@ -57,16 +64,18 @@ public final class ClassFile
 	 * @param __in The interfaces this class implements.
 	 * @param __fs The fields in this class.
 	 * @param __ms The methods in this class.
+	 * @param __avs Annotated values.
 	 * @throws InvalidClassFormatException If the class is not valid.
 	 * @throws NullPointerException On null arguments, except for {@code __sn}.
 	 * @since 2017/09/26
 	 */
 	ClassFile(ClassVersion __ver, ClassFlags __cf, ClassName __tn,
-		ClassName __sn, ClassName[] __in, Field[] __fs, Method[] __ms)
+		ClassName __sn, ClassName[] __in, Field[] __fs, Method[] __ms,
+		AnnotatedValue[] __avs)
 		throws InvalidClassFormatException, NullPointerException
 	{
 		if (__ver == null || __cf == null || __tn == null ||
-			__in == null || __fs == null || __ms == null)
+			__in == null || __fs == null || __ms == null || __avs == null)
 			throw new NullPointerException("NARG");
 		
 		// Check sub-arrays for null
@@ -90,6 +99,17 @@ public final class ClassFile
 		this._interfaces = __in;
 		this._fields = __fs;
 		this._methods = __ms;
+		this._annotatedvalues = __avs;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/06
+	 */
+	@Override
+	public final AnnotatedValue[] annotatedValues()
+	{
+		return this._annotatedvalues.clone();
 	}
 	
 	/**
@@ -186,7 +206,7 @@ public final class ClassFile
 			new ClassFlags(ClassFlag.PUBLIC, ClassFlag.FINAL, ClassFlag.SUPER,
 			ClassFlag.SYNTHETIC), new ClassName(__d.toString()),
 			new ClassName("java/lang/Object"), new ClassName[0], new Field[0],
-			new Method[0]);
+			new Method[0], new AnnotatedValue[0]);
 	}
 	
 	/**
@@ -252,6 +272,9 @@ public final class ClassFile
 		Method[] methods = Method.decode(version, thisname, classflags, pool,
 			in);
 		
+		// Annotated values
+		Set<AnnotatedValue> avs = new LinkedHashSet<>();
+		
 		// Handle attributes
 		int na = in.readUnsignedShort();
 		String[] attr = new String[1];
@@ -259,8 +282,11 @@ public final class ClassFile
 		for (int j = 0; j < na; j++)
 			try (DataInputStream ai = __nextAttribute(in, pool, attr, alen))
 			{
-				// Just do nothing with any attribute because to the VM none
-				// of the information is really that important anyway
+				// Parse annotations?
+				if (ClassFile.__maybeParseAnnotation(pool, attr[0], avs, ai))
+					continue;
+				
+				// Nothing else is parsed
 			}
 		
 		// {@squirreljme.error JC0g Expected end of the class to follow the
@@ -271,7 +297,8 @@ public final class ClassFile
 		
 		// Build
 		return new ClassFile(version, classflags, thisname, supername,
-			interfaces, fields, methods);
+			interfaces, fields, methods,
+			avs.<AnnotatedValue>toArray(new AnnotatedValue[avs.size()]));
 	}
 	
 	/**
@@ -312,6 +339,40 @@ public final class ClassFile
 		// Setup reader
 		return new DataInputStream(new SizeLimitedInputStream(__in, len, true,
 			false));
+	}
+	
+	/**
+	 * Parses the input class for annotations.
+	 *
+	 * @param __pool The constant pool used.
+	 * @param __key The key used for the attribute.
+	 * @param __target The target collection for annotations.
+	 * @param __in The input stream for the attribute data.
+	 * @return {@code true} if annotations were read.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/06
+	 */
+	static boolean __maybeParseAnnotation(Pool __pool, String __key, 
+		Collection<AnnotatedValue> __target, DataInputStream __in)
+		throws IOException, NullPointerException
+	{
+		if (__pool == null || __key == null || __target == null ||
+			__in == null)
+			throw new NullPointerException("NARG");
+		
+		// Only these keys are valid
+		if (__key.equals("RuntimeVisibleAnnotations") ||
+			__key.equals("RuntimeInvisibleAnnotations"))
+		{
+			for (AnnotatedValue av : AnnotatedValue.decode(__pool, __in))
+				__target.add(av);
+			
+			return true;
+		}
+		
+		// Not parsed
+		return false;
 	}
 }
 
