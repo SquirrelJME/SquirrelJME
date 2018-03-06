@@ -14,10 +14,13 @@ import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.collections.UnmodifiableList;
 import net.multiphasicapps.collections.UnmodifiableMap;
 import net.multiphasicapps.collections.UnmodifiableSet;
@@ -103,16 +106,86 @@ public class CuteRunnable
 		throws CompilerException
 	{
 		CompilerState state = new CompilerState(this.log, this.paths);
+		Set<ClassNode> did = new HashSet<>();
 		
-		// Compile all input files
-		for (CompilerInput ci : this.input)
+		// Forward catch all compiler exceptions so that they are logged before
+		// they are rethrown
+		CompilerInput lastfile = null;
+		try
 		{
-			// {@squirreljme.error AQ0m Currently compiling the specified
-			// input.}
-			state.message(MessageType.INFO, ci, "AQ0m");
+			// Compile all input files
+			for (CompilerInput ci : this.input)
+			{
+				// Ignore package-info since it can only contain attributes
+				String name = ci.name();
+				if (name.endsWith("package-info.java"))
+					continue;
 			
-			throw new todo.TODO();
+				// Lookup nodes so that they are parsed and added to the
+				// compiler
+				state.classNode(__fileToClassName(name));
+			
+				ClassNode next;
+				while (null != (next = state.nextCompile()))
+				{
+					// Only compile nodes once
+					if (did.contains(next))
+						continue;
+					did.add(next);
+					
+					// Used to use a generic throwing in case of error
+					lastfile = next.compilerInput();
+				
+					// {@squirreljme.error AQ0m Currently compiling the
+					// specified input.}
+					state.message(MessageType.INFO, ci, "AQ0m");
+				
+					throw new todo.TODO();
+				}
+			}
 		}
+		
+		// Caught compiler exception so report it and retoss
+		catch (CompilerException|InvalidClassFormatException e)
+		{
+			// {@squirreljme.error AQ0n Failed to compile.}
+			state.message(MessageType.ERROR, lastfile, "AQ0n %s",
+				e.getMessage());
+			
+			// Keep it going
+			throw e;
+		}
+	}
+	
+	/**
+	 * Converts a file name to a class name.
+	 *
+	 * @param __n The file name to convert.
+	 * @return The resulting class name.
+	 * @throws CompilerException If the name could not be converted to a
+	 * class name.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/06
+	 */
+	static final ClassName __fileToClassName(String __n)
+		throws CompilerException, NullPointerException
+	{
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AQ0o Cannot determine classname of file because
+		// it has an unknown suffix. (The file name)}
+		String suffix;
+		if (!__n.endsWith(".java"))
+			if (!__n.endsWith(".class"))
+				throw new CompilerException(String.format("AQ0o %s", __n));
+			else
+				suffix = ".class";
+		else
+			suffix = ".java";
+		
+		// Convert path form to class form
+		return new ClassName(__n.substring(0, __n.length() - suffix.length()));
 	}
 }
 
