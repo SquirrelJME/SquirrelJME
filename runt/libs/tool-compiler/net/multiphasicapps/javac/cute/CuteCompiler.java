@@ -20,7 +20,7 @@ import net.multiphasicapps.javac.CompilerOutput;
 import net.multiphasicapps.javac.CompilerPathSet;
 
 /**
- * This is used to create instances of the compiler.
+ * This is used to create instances of the cute compiler.
  *
  * @since 2017/11/28
  */
@@ -41,7 +41,7 @@ public class CuteCompiler
 			__paths == null || __input == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		return new CuteRunnable(__out, __log, __opt, __paths, __input);
 	}
 }
 
