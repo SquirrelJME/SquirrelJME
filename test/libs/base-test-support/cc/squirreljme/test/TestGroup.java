@@ -42,7 +42,7 @@ public abstract class TestGroup
 	 * @return The sub-tests in this group.
 	 * @since 2018/03/05
 	 */
-	public final void SubTest[] subTests()
+	public final SubTest[] subTests()
 	{
 		return this._tests.clone();
 	}
