@@ -126,7 +126,7 @@ public final class MergedPathSet
 			{
 			}
 		
-		// {@squirreljme.error AQ0i Could not find the specified file in the
+		// {@squirreljme.error AQ0i Could not find the specified input in the
 		// merged path set. (The input)}
 		throw new NoSuchInputException(String.format("AQ0i %s", __n));
 	}
