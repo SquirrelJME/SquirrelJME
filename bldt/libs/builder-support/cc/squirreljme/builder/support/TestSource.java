@@ -22,6 +22,8 @@ import net.multiphasicapps.javac.ByteArrayCompilerInput;
 import net.multiphasicapps.javac.CompilerInput;
 import net.multiphasicapps.javac.CompilerPathSet;
 import net.multiphasicapps.javac.DistinctPathSet;
+import net.multiphasicapps.javac.FilePathSet;
+import net.multiphasicapps.javac.MergedPathSet;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.writer.MutableJavaManifest;
 import net.multiphasicapps.tool.manifest.writer.MutableJavaManifestAttributes;
@@ -109,9 +111,10 @@ public final class TestSource
 			
 			// Build input, make sure to place it in the correct directory
 			ps.flush();
-			return new DistinctPathSet(new ByteArrayCompilerInput(
+			return new MergedPathSet(new FilePathSet(this.root),
+				new DistinctPathSet(new ByteArrayCompilerInput(
 				mainpackage.replace('.', '/') + "/TestMain.java",
-				baos.toByteArray()));
+				baos.toByteArray())));
 		}
 		
 		// {@squirreljme.error AU17 Could not generate the virtual test

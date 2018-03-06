@@ -33,6 +33,6 @@ public @interface DefaultParameters
 	 *
 	 * @since 2018/03/06
 	 */
-	Parameters[] parameters();
+	Parameters[] value();
 }
 
