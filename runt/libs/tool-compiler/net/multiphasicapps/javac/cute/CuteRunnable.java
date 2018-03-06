@@ -102,7 +102,17 @@ public class CuteRunnable
 	public void run()
 		throws CompilerException
 	{
-		throw new todo.TODO();
+		CompilerState state = new CompilerState(this.log);
+		
+		// Compile all input files
+		for (CompilerInput ci : this.input)
+		{
+			// {@squirreljme.error AQ0m Currently compiling the specified
+			// input.}
+			state.message(MessageType.INFO, ci, "AQ0m");
+			
+			throw new todo.TODO();
+		}
 	}
 }
 
