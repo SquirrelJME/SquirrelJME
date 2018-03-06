@@ -56,6 +56,10 @@ public final class SourcedClassNode
 		if (__input == null || __state == null)
 			throw new NullPointerException("NARG");
 		
+		// {@squirreljme.error AQ0s Parsing input source file for classes to
+		// compile.}
+		__state.message(MessageType.INFO, __input, "AQ0s");
+		
 		throw new todo.TODO();
 	}
 }
