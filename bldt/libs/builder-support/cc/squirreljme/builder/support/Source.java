@@ -26,38 +26,6 @@ import net.multiphasicapps.tool.manifest.JavaManifestKey;
 import net.multiphasicapps.tool.manifest.writer.MutableJavaManifest;
 import net.multiphasicapps.tool.manifest.writer.MutableJavaManifestAttributes;
 
-/*
-import cc.squirreljme.kernel.suiteinfo.DependencyInfo;
-import cc.squirreljme.kernel.suiteinfo.InvalidSuiteException;
-import cc.squirreljme.kernel.suiteinfo.ProvidedInfo;
-import cc.squirreljme.kernel.suiteinfo.SuiteInfo;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
-import java.nio.file.attribute.FileTime;
-import java.nio.file.Files;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.Map;
-import net.multiphasicapps.strings.StringUtils;
-import net.multiphasicapps.javac.ByteArrayCompilerInput;
-import net.multiphasicapps.javac.DistinctPathSet;
-import net.multiphasicapps.javac.CompilerPathSet;
-import net.multiphasicapps.javac.EmptyPathSet;
-import net.multiphasicapps.tool.manifest.JavaManifest;
-import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
-import net.multiphasicapps.tool.manifest.JavaManifestKey;
-import net.multiphasicapps.tool.manifest.writer.MutableJavaManifest;
-import net.multiphasicapps.tool.manifest.writer.MutableJavaManifestAttributes;
-*/
-
 /**
  * This represents a single source project which contains the source code for
  * a single project.
