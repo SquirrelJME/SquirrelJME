@@ -1,0 +1,16 @@
+# 2018/03/06
+
+## 00:42
+
+Okay, so this is going to work, I just need a way to merge and define custom
+file sets so I can include the virtual `TestMain` which does everything for
+me.
+
+## 02:13
+
+I was watching _Kurzgesagt In a Nutshell_ and there was a video on emergent
+properties. Basically ants have four simple tasks but with with some basic
+rules on how tasks are assigned they can build a successful colony. I think
+that would be a thing that could be done for AI in the game. Basically have
+units which are defending the base, expanding, or attacking the enemy at
+the basic level.
