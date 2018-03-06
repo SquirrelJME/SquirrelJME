@@ -229,8 +229,13 @@ public final class SourceManager
 					if (name.isTest())
 						continue;
 					
-					// Initialize source project
-					Source src = new Source(name, p, __type);
+					// Initialize source project, check that the manifest
+					// exists so invalid projects are not created
+					BasicSource src = new BasicSource(name, p, __type);
+					if (src.sourceManifest() == null)
+						continue;
+					
+					// Store it
 					__out.put(name, src);
 					
 					// If a test project exists, initialize it
@@ -238,11 +243,11 @@ public final class SourceManager
 					Path tr = p.resolveSibling(tn.name());
 					if (Files.isRegularFile(tr.resolve("META-INF").resolve(
 						"TEST.MF")))
-						__out.put(tn, new Source(tr, src));
+						__out.put(tn, new TestSource(tr, src));
 				}
 				
 				// Ignore
-				catch (NoSuchFileException|InvalidSourceException e)
+				catch (InvalidSourceException e)
 				{
 					continue;
 				}

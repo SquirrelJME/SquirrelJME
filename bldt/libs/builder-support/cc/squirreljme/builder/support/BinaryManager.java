@@ -240,10 +240,9 @@ public final class BinaryManager
 				Compiler javac = DefaultCompiler.createInstance();
 				
 				// Use the source root to lookup source code
-				FilePathSet srcps = closing.<FilePathSet>addThis(
-					new FilePathSet(src.root()), FilePathSet.class);
-				javac.setLocation(CompilerInputLocation.SOURCE,
-					new MergedPathSet(srcps, src.extraCompilerPathSet()));
+				CompilerPathSet srcps = closing.<CompilerPathSet>addThis(
+					src.pathSet(), CompilerPathSet.class);
+				javac.setLocation(CompilerInputLocation.SOURCE, srcps);
 				
 				// Explicitly compile every source file
 				Set<CompilerInput> noninput = new LinkedHashSet<>();

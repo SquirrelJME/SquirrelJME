@@ -66,6 +66,17 @@ public final class ZipInput
 	{
 		return this.name().hashCode();
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/06
+	 */
+	@Override
+	public final long lastModifiedTime()
+		throws CompilerException
+	{
+		return this.entry.lastModifiedTime();
+	}
 
 	/**
 	 * {@inheritDoc}

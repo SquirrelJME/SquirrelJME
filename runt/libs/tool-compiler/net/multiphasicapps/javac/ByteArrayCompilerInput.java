@@ -26,24 +26,43 @@ public final class ByteArrayCompilerInput
 	/** The name of the input. */
 	protected final String name;
 	
+	/** The last modified time. */
+	protected final long lastmodifiedtime;
+	
 	/** The data for the compiler. */
 	private final byte[] _data;
 	
 	/**
-	 * Initializes the compiler input.
+	 * Initializes the compiler input at the current time.
 	 *
 	 * @param __name The name of the input.
 	 * @param __data The data to use for the input.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/06
 	 */
-	public ByteArrayCompilerInput(String __name, byte... __data)
+	public ByteArrayCompilerInput(String __name, byte[] __data)
+		throws NullPointerException
+	{
+		this(__name, System.currentTimeMillis(), __data);
+	}
+	
+	/**
+	 * Initializes the compiler input.
+	 *
+	 * @param __name The name of the input.
+	 * @param __lmt The time this input was last modified.
+	 * @param __data The data to use for the input.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/06
+	 */
+	public ByteArrayCompilerInput(String __name, long __lmt, byte[] __data)
 		throws NullPointerException
 	{
 		if (__name == null || __data == null)
 			throw new NullPointerException("NARG");
 		
 		this.name = __name;
+		this.lastmodifiedtime = __lmt;
 		this._data = __data.clone();
 	}
 	
@@ -73,6 +92,17 @@ public final class ByteArrayCompilerInput
 	public final int hashCode()
 	{
 		return this.name.hashCode();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/06
+	 */
+	@Override
+	public final long lastModifiedTime()
+		throws CompilerException
+	{
+		return this.lastmodifiedtime;
 	}
 
 	/**
