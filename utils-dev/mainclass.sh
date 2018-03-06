@@ -26,7 +26,13 @@ fi
 then
 	unzip -p "$1" META-INF/MANIFEST.MF
 else
-	cat "$("$__exedir/projectwhere.sh" "$1")/META-INF/MANIFEST.MF"
+	__base="$("$__exedir/projectwhere.sh" "$1")"
+	if [ -f "$__base/META-INF/TEST.MF" ]
+	then
+		echo "Main-Class: MainTest"
+	else
+		cat "$__base/META-INF/MANIFEST.MF"
+	fi
 fi ) | tr -d '\r' | tr '\n' '\v' | sed 's/\v //g' | tr '\v' '\n' | \
 	while read __line
 do
