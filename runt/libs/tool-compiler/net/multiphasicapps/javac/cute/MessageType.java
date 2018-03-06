@@ -26,6 +26,9 @@ public enum MessageType
 	/** Error. */
 	ERROR,
 	
+	/** Lint to detect for possible errors. */
+	LINT,
+	
 	/** End. */
 	;
 }
