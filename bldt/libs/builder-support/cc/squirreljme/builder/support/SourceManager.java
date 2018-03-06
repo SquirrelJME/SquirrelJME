@@ -218,11 +218,13 @@ public final class SourceManager
 					continue;
 				
 				// Could fail
+				SourceName triedname = null;
 				try
 				{
 					// Determine source name
 					SourceName name = new SourceName(
 						p.getFileName().toString());
+					triedname = name;
 					
 					// Ignore test projects, they are only referred to once
 					// there is a base supporting project
@@ -249,6 +251,11 @@ public final class SourceManager
 				// Ignore
 				catch (InvalidSourceException e)
 				{
+					// {@squirreljme.error AU19 Tried to load a project but
+					// it was determined to not be a valid project, ignoring.
+					// (The project name; The exception message)}
+					System.err.printf("AU19 %s `%s`%n", triedname,
+						e.getMessage());
 					continue;
 				}
 			}
