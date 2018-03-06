@@ -37,11 +37,11 @@ public final class CompilerState
 	protected final Map<CompilerInputLocation, List<CompilerPathSet>> paths;
 	
 	/** Class nodes which have been loaded for structuring. */
-	private final Map<ClassName, ClassNode> _nodes =
+	final Map<ClassName, ClassNode> _nodes =
 		new SortedTreeMap<>();
 	
 	/** Class nodes which need to be compiled. */
-	private final Deque<ClassNode> _tocompile =
+	final Deque<SourcedClassNode> _tocompile =
 		new ArrayDeque<>();
 	
 	/**
@@ -115,31 +115,51 @@ public final class CompilerState
 			baselookname = sourcename.substring(0, ld);
 		
 		// Go through source files instead and try to find a node to compile
-		String baselookfilename = baselookname + ".java";
-		for (CompilerPathSet ps : paths.get(CompilerInputLocation.SOURCE))
-			try
-			{
-				CompilerInput ci = ps.input(baselookfilename);
-				
-				if (true)
-					throw new todo.TODO();
-				
-				// It is possible that an inner class was requested before
-				// an outer class was loaded so if that is the case then
-				if (!sourcename.equals(baselookname))
+		boolean badhit = false;
+		for (int z = 0; z < 2; z++)
+		{
+			// The loop goes through things twice because someone could be
+			// very evil and name a class a bunch of dollar signs despite not
+			// being an actual inner class. To to prevent these evil classes
+			// from being missed, go back around and try to find and load them
+			// as their normal name
+			String baselookfilename = (z == 0 ? baselookname + ".java" :
+				sourcename + ".java");
+			for (CompilerPathSet ps : paths.get(CompilerInputLocation.SOURCE))
+				try
 				{
-					throw new todo.TODO();
-				}
+					// Always use the base name because the requested thing
+					// could be an inner class and the outer class will need to
+					// be loaded before it can properly be used
+					CompilerInput ci = ps.input(baselookfilename);
 				
-				// Otherwise the directly loaded name was used for the node
-				else
-				{
-					throw new todo.TODO();
+					// Load in node, it is automatically added by the
+					// constructor
+					SourcedClassNode.__loadNodes(ci, this);
+				
+					// If the source file pertains to the given name then it
+					// will be returned here, otherwise it will fail for
+					// cases where evil dollar signs are used or if a class
+					// is in the wrong file.
+					rv = nodes.get(__cn);
+					if (rv != null)
+						return rv;
+					
+					// This is used to detect where the wrong class is
+					// declared in the wrong file.
+					badhit = true;
 				}
-			}
-			catch (NoSuchInputException e)
-			{
-			}
+				catch (NoSuchInputException e)
+				{
+				}
+		}
+		
+		// {@squirreljme.error AQ0r Could not locate the node for the given
+		// class name, the source file where the class should have been located
+		// did not actually contain the class. (The class name)}
+		if (badhit)
+			throw new MissingClassNodeException(
+				String.format("AQ0r %s", __cn));
 		
 		// {@squirreljme.error AQ0p Could not locate the node for the given
 		// class name. (The class name)}
@@ -153,9 +173,9 @@ public final class CompilerState
 	 * nodes to currently compile.
 	 * @since 2018/03/06
 	 */
-	public final ClassNode nextCompile()
+	public final SourcedClassNode nextCompile()
 	{
-		Deque<ClassNode> tocompile = this._tocompile;
+		Deque<SourcedClassNode> tocompile = this._tocompile;
 		return tocompile.pollFirst();
 	}
 	

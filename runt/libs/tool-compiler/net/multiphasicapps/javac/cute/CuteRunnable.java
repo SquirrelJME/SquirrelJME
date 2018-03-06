@@ -126,7 +126,7 @@ public class CuteRunnable
 				state.classNode(__fileToClassName(name));
 				
 				// Compile any nodes queued up for compilation
-				ClassNode next;
+				SourcedClassNode next;
 				while (null != (next = state.nextCompile()))
 				{
 					// Only compile nodes once
