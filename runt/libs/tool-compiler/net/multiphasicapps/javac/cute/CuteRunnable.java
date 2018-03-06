@@ -124,7 +124,8 @@ public class CuteRunnable
 				// Lookup nodes so that they are parsed and added to the
 				// compiler
 				state.classNode(__fileToClassName(name));
-			
+				
+				// Compile any nodes queued up for compilation
 				ClassNode next;
 				while (null != (next = state.nextCompile()))
 				{
