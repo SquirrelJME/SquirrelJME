@@ -83,8 +83,6 @@ public final class TestSource
 			ps.println("public static void main(String... __args)");
 			ps.println("{");
 			
-			ps.println("GENERATION IS WORKING!");
-			
 			// End main entry
 			ps.println("}");
 			

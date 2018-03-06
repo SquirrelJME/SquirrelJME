@@ -254,7 +254,7 @@ public abstract class Source
 	 */
 	public final CompilerPathSet pathSet()
 	{
-		throw new todo.TODO();
+		return this.internalPathSet();
 	}
 	
 	/**
