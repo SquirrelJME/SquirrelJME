@@ -123,7 +123,7 @@ public final class CompilerState
 			// being an actual inner class. To to prevent these evil classes
 			// from being missed, go back around and try to find and load them
 			// as their normal name
-			String baselookfilename = (z == 0 ? baselookname + ".java" :
+			String trylook = (z == 0 ? baselookname + ".java" :
 				sourcename + ".java");
 			for (CompilerPathSet ps : paths.get(CompilerInputLocation.SOURCE))
 				try
@@ -131,7 +131,7 @@ public final class CompilerState
 					// Always use the base name because the requested thing
 					// could be an inner class and the outer class will need to
 					// be loaded before it can properly be used
-					CompilerInput ci = ps.input(baselookfilename);
+					CompilerInput ci = ps.input(trylook);
 				
 					// Load in node, it is automatically added by the
 					// constructor

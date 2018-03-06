@@ -100,7 +100,7 @@ public final class FilePathSet
 		// {@squirreljme.error AQ0l The specified input does not exist in
 		// the path set filesystem. (The name; The expected path)}
 		if (Files.exists(path) && !Files.isDirectory(path))
-			return new FileInput(path, __n);
+			return new FileInput(path, origname);
 		throw new NoSuchInputException(String.format("AQ0l %s %s", origname,
 			path));
 	}
