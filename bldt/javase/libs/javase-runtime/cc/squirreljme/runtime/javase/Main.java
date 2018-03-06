@@ -85,27 +85,8 @@ public class Main
 		{
 			Class<?> mainclass = Class.forName(mainclassname);
 			
-			// Is an instance of MIDlet
-			if (MIDlet.class.isAssignableFrom(mainclass))
-			{
-				// Construct new object but only say start is valid once it
-				// has been fully constructed
-				MIDlet mid = (MIDlet)mainclass.newInstance();
-				
-				// startApp is protected so it has to be made callable
-				Method startmethod = MIDlet.class.getDeclaredMethod(
-					"startApp");
-				startmethod.setAccessible(true);
-				
-				// Initialization complete
-				SystemCall.MNEMONIC.clientInitializationComplete();
-				
-				// Invoke the start method
-				startmethod.invoke(mid);
-			}
-			
-			// Use a main method instead
-			else
+			// Try initializing with a main method
+			try
 			{
 				// {@squirreljme.error AF02 The main method is not static.}
 				Method mainmethod = mainclass.getMethod("main",
@@ -118,7 +99,30 @@ public class Main
 				
 				// Call it
 				mainmethod.invoke(null, new Object[]{__args});
+				
+				// All okay!
+				return;
 			}
+			
+			// Does not exist
+			catch (NoSuchMethodException e)
+			{
+			}
+			
+			// Construct new object but only say start is valid once it
+			// has been fully constructed
+			MIDlet mid = (MIDlet)mainclass.newInstance();
+			
+			// startApp is protected so it has to be made callable
+			Method startmethod = MIDlet.class.getDeclaredMethod(
+				"startApp");
+			startmethod.setAccessible(true);
+			
+			// Initialization complete
+			SystemCall.MNEMONIC.clientInitializationComplete();
+			
+			// Invoke the start method
+			startmethod.invoke(mid);
 		}
 		
 		// Completely hide call exceptions
