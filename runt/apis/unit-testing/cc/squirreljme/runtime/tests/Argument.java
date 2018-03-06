@@ -22,14 +22,14 @@ import java.lang.annotation.RetentionPolicy;
  */
 @Documented
 @Retention(RetentionPolicy.CLASS)
-public @interface Parameter
+public @interface Argument
 {
 	/**
 	 * Indicates the type of value this parameter stores.
 	 *
 	 * @since 2018/03/06
 	 */
-	ParameterType type();
+	ArgumentType type();
 	
 	/**
 	 * Specifies the boolean value.

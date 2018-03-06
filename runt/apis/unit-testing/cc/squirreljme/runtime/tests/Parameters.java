@@ -25,10 +25,17 @@ import java.lang.annotation.RetentionPolicy;
 public @interface Parameters
 {
 	/**
+	 * The return value for the parameters.
+	 *
+	 * @since 2018/03/06
+	 */
+	Argument returnValue();
+	
+	/**
 	 * The parameters which are used as default input for the test method.
 	 *
 	 * @since 2018/03/06
 	 */
-	Parameter[] parameters();
+	Argument[] args();
 }
 

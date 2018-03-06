@@ -32,6 +32,6 @@ public @interface TestsClass
 	 *
 	 * @since 2018/03/06
 	 */
-	Class<?> testedClass();
+	Class<?> value();
 }
 

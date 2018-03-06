@@ -16,7 +16,7 @@ package cc.squirreljme.runtime.tests;
  *
  * @since 2018/03/06
  */
-public enum ParameterType
+public enum ArgumentType
 {
 	/** Null. */
 	NULL,
