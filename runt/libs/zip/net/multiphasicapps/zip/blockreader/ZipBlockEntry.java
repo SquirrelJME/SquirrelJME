@@ -147,6 +147,18 @@ public final class ZipBlockEntry
 	}
 	
 	/**
+	 * Returns the time this entry was last modified.
+	 *
+	 * @return The last modified time or {@code Long.MIN_VALUE} if it is not
+	 * valid.
+	 * @since 2018/03/06
+	 */
+	public long lastModifiedTime()
+	{
+		return Long.MIN_VALUE;
+	}
+	
+	/**
 	 * Returns the name of this entry.
 	 *
 	 * @return The entry name.

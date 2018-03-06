@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.nio.file.attribute.FileTime;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
@@ -81,6 +82,31 @@ public final class FileInput
 	{
 		return this.path.hashCode() ^
 			this.name.hashCode();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/06
+	 */
+	@Override
+	public final long lastModifiedTime()
+		throws CompilerException
+	{
+		// Read the file time
+		try
+		{
+			FileTime ft = Files.getLastModifiedTime(this.path);
+			if (ft != null)
+				return ft.toMillis();
+			else
+				return Long.MIN_VALUE;
+		}
+		
+		// {@squirreljme.error AQ0k Could not obtain the last modified time.}
+		catch (IOException e)
+		{
+			throw new CompilerException("AQ0k", e);
+		}
 	}
 
 	/**

@@ -39,6 +39,17 @@ public interface CompilerInput
 	 */
 	@Override
 	public abstract int hashCode();
+	
+	/**
+	 * Returns the last modified date of the input file in UTC milliseconds
+	 * since the epoch.
+	 *
+	 * @return The last modfiied date of the input.
+	 * @throws CompilerException If it could not be determined.
+	 * @since 2018/03/06
+	 */
+	public abstract long lastModifiedTime()
+		throws CompilerException;
 
 	/**
 	 * Returns the name of the input file.

@@ -10,6 +10,23 @@
 
 package cc.squirreljme.builder.support;
 
+import cc.squirreljme.kernel.suiteinfo.InvalidSuiteException;
+import cc.squirreljme.kernel.suiteinfo.SuiteInfo;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.Map;
+import net.multiphasicapps.javac.ByteArrayCompilerInput;
+import net.multiphasicapps.javac.CompilerInput;
+import net.multiphasicapps.javac.CompilerPathSet;
+import net.multiphasicapps.javac.MergedPathSet;
+import net.multiphasicapps.strings.StringUtils;
+import net.multiphasicapps.tool.manifest.JavaManifest;
+import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
+import net.multiphasicapps.tool.manifest.JavaManifestKey;
+import net.multiphasicapps.tool.manifest.writer.MutableJavaManifest;
+import net.multiphasicapps.tool.manifest.writer.MutableJavaManifestAttributes;
+
+/*
 import cc.squirreljme.kernel.suiteinfo.DependencyInfo;
 import cc.squirreljme.kernel.suiteinfo.InvalidSuiteException;
 import cc.squirreljme.kernel.suiteinfo.ProvidedInfo;
@@ -21,8 +38,8 @@ import java.io.PrintStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.nio.file.attribute.FileTime;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -39,6 +56,7 @@ import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 import net.multiphasicapps.tool.manifest.JavaManifestKey;
 import net.multiphasicapps.tool.manifest.writer.MutableJavaManifest;
 import net.multiphasicapps.tool.manifest.writer.MutableJavaManifestAttributes;
+*/
 
 /**
  * This represents a single source project which contains the source code for
@@ -46,19 +64,10 @@ import net.multiphasicapps.tool.manifest.writer.MutableJavaManifestAttributes;
  *
  * @since 2017/10/31
  */
-public final class Source
+public abstract class Source
 {
-	/** The base project this provides tests for. */
-	protected final Source testingsource;
-	
-	/** The name of the source. */
+	/** The name of this project. */
 	protected final SourceName name;
-	
-	/** The path to the source code root. */
-	protected final Path root;
-	
-	/** The manifest for the source code. */
-	protected final JavaManifest manifest;
 	
 	/** The type of project this is. */
 	protected final ProjectType type;
@@ -74,125 +83,40 @@ public final class Source
 		Long.MIN_VALUE;
 	
 	/**
-	 * Initializes the project source.
+	 * Initializes the base source.
 	 *
-	 * @param __name The name of the source.
-	 * @param __p The path to the source code.
+	 * @param __n The name of the project.
 	 * @param __t The type of project this is.
-	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2017/10/31
+	 * @since 2018/03/06
 	 */
-	public Source(SourceName __name, Path __p, ProjectType __t)
-		throws IOException, NullPointerException
+	public Source(SourceName __n, ProjectType __t)
+		throws NullPointerException
 	{
-		if (__name == null || __p == null || __t == null)
+		if (__n == null || __t == null)
 			throw new NullPointerException("NARG");
 		
-		// Set
-		this.name = __name;
-		this.root = __p;
+		this.name = __n;
 		this.type = __t;
-		this.testingsource = null;
-		
-		// Load manifest
-		try (InputStream in = Files.newInputStream(__p.resolve("META-INF").
-			resolve("MANIFEST.MF"), StandardOpenOption.READ))
-		{
-			this.manifest = new JavaManifest(in);
-		}
 	}
 	
 	/**
-	 * Initializes a virtual source project which is based on the specified
-	 * real project.
+	 * Returns the input set which makes up the source project, internally
+	 * as the end result will be wrapped to add some special meta-files if
+	 * needed.
 	 *
-	 * @param __root The root for the test project.
-	 * @param __base The project to base off.
-	 * @throws IOException On read errors.
-	 * @throws NullPointerException On null arguments.
+	 * @return The input set.
 	 * @since 2018/03/06
 	 */
-	public Source(Path __root, Source __base)
-		throws IOException, NullPointerException
-	{
-		if (__root == null || __base == null)
-			throw new NullPointerException("NARG");
-		
-		// Test projects are always midlets because they are intended to be
-		// ran
-		this.type = ProjectType.MIDLET;
-		
-		// Use the virtual .test ending project
-		this.name = new SourceName(__base.name() + ".test");
-		
-		// Real files are still involved in tests so this is needed for dating
-		this.root = __root;
-		
-		// This specifies the source used for testing.
-		this.testingsource = __base;
-		
-		// Build virtual manifest intended to act as tests for the input
-		// library
-		MutableJavaManifest wman = new MutableJavaManifest();
-		MutableJavaManifestAttributes wattr = wman.getMainAttributes();
-		
-		SuiteInfo bs = __base.suiteInfo();
-		wattr.putValue("x-squirreljme-name",
-			"Tests for " + bs.name().toString());
-		wattr.putValue("x-squirreljme-vendor", bs.vendor().toString());
-		wattr.putValue("x-squirreljme-version", bs.version().toString());
-		wattr.putValue("x-squirreljme-depends", __base.name().name());
-		wattr.putValue("main-class", "TestMain");
-		
-		// Finalize
-		this.manifest = wman.build();
-	}
+	protected abstract CompilerPathSet internalPathSet();
 	
 	/**
-	 * Returns the extra path set for this source project.
+	 * The source manifest.
 	 *
-	 * @return The extra path set for this source project.
-	 * @since 2018/03/06
+	 * @return The source manifest.
+	 * @since 2017/11/17
 	 */
-	public CompilerPathSet extraCompilerPathSet()
-	{
-		// If this is not a test project then include nothing
-		Source testingsource = this.testingsource;
-		if (testingsource == null)
-			return EmptyPathSet.instance();
-		
-		// Generate input
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			PrintStream ps = new PrintStream(baos, true))
-		{
-			// Begin
-			ps.println("public class TestMain");
-			ps.println("{");
-			
-			// Main entry
-			ps.println("public static void main(String... __args)");
-			ps.println("{");
-			
-			// End main entry
-			ps.println("}");
-			
-			// End
-			ps.println("}");
-			
-			// Build input
-			ps.flush();
-			return new DistinctPathSet(new ByteArrayCompilerInput(
-				"TestMain.java", baos.toByteArray()));
-		}
-		
-		// {@squirreljme.error AU17 Could not generate the virtual test
-		// source project.}
-		catch (IOException e)
-		{
-			throw new RuntimeException("AU17", e);
-		}
-	}
+	public abstract JavaManifest sourceManifest();
 	
 	/**
 	 * Returns the time that the source code was last modified.
@@ -201,57 +125,25 @@ public final class Source
 	 * @throws IOException On read errors.
 	 * @since 2017/11/06
 	 */
-	public long lastModifiedTime()
+	public final long lastModifiedTime()
 	{
 		// Could be pre-cached
 		long rv = this._lastmodtime;
 		if (rv != Long.MIN_VALUE)
 			return rv;
 		
-		// Need to go through every single file in every directory, the date of
-		// the newest file is used
+		// Go through all input and compare the modified times
 		rv = Long.MIN_VALUE;
-		try
+		for (CompilerInput ci : this.internalPathSet())
 		{
-			// Start at the root directory
-			Deque<Path> queue = new ArrayDeque<>();
-			queue.add(this.root);
-			
-			// Process every directory
-			while (!queue.isEmpty())
-				try (DirectoryStream<Path> ds = Files.newDirectoryStream(
-					queue.removeFirst()))
-				{
-					for (Path p : ds)
-					{
-						// Handle directories later
-						if (Files.isDirectory(p))
-						{
-							queue.addLast(p);
-							continue;
-						}
-						
-						// Use the newer file time
-						FileTime ft = Files.getLastModifiedTime(p);
-						if (ft != null)
-						{
-							long now = ft.toMillis();
-							if (now > rv)
-								rv = now;
-						}
-					}
-				}
-			
-			// Cache for next time
-			this._lastmodtime = rv;
-			return rv;
+			long now = ci.lastModifiedTime();
+			if (now > rv)
+				rv = now;
 		}
 		
-		// Error so the time cannot be known
-		catch (IOException e)
-		{
-			return Long.MIN_VALUE;
-		}
+		// Cache for next time
+		this._lastmodtime = rv;
+		return rv;
 	}
 	
 	/**
@@ -387,25 +279,14 @@ public final class Source
 	}
 	
 	/**
-	 * Returns the root directory of the project source code.
+	 * Returns the path set to use for the source code.
 	 *
-	 * @return The project source code root.
-	 * @since 2017/11/28
+	 * @return The input set.
+	 * @since 2018/03/06
 	 */
-	public final Path root()
+	public final CompilerPathSet pathSet()
 	{
-		return this.root;
-	}
-	
-	/**
-	 * The source manifest.
-	 *
-	 * @return The source manifest.
-	 * @since 2017/11/17
-	 */
-	public final JavaManifest sourceManifest()
-	{
-		return this.manifest;
+		throw new todo.TODO();
 	}
 	
 	/**
