@@ -10,8 +10,10 @@
 
 package cc.squirreljme.test.io;
 
-import cc.squirreljme.test.io.SubTest;
-import cc.squirreljme.test.io.TestGroup;
+import cc.squirreljme.test.SubTest;
+import cc.squirreljme.test.TestGroup;
+
+import static cc.squirreljme.test.Parameters.parms;
 
 /**
  * This class tests the base64 decoder.
@@ -46,7 +48,10 @@ public class TestBase64Decoder
 		 */
 		public Decode()
 		{
-			super();
+			super(
+				parms("Hello World!", "SGVsbG8gV29ybGQh"),
+				parms("I love squirrels!", "SSBsb3ZlIHNxdWlycmVscyE="),
+				parms("I love you!!!", "SSBsb3ZlIHlvdSEhIQ=="));
 		}
 	}
 }

@@ -17,6 +17,9 @@ package cc.squirreljme.test;
  */
 public abstract class TestGroup
 {
+	/** Tests within this group. */
+	private final SubTest[] _tests;
+	
 	/**
 	 * Initializes the test group with the specified sub-tests.
 	 *
@@ -31,6 +34,17 @@ public abstract class TestGroup
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the tests which are in this group.
+	 *
+	 * @return The sub-tests in this group.
+	 * @since 2018/03/05
+	 */
+	public final void SubTest[] subTests()
+	{
+		return this._tests.clone();
 	}
 }
 
