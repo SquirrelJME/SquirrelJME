@@ -38,6 +38,11 @@ public final class SourceName
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
+		// Is test
+		boolean istest = __n.endsWith(".test");
+		if (istest)
+			__n = __n.substring(0, __n.length() - ".test".length());
+		
 		// Check for valid characters and lowercase
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0, n = __n.length(); i < n; i++)
@@ -56,6 +61,10 @@ public final class SourceName
 			
 			sb.append(c);
 		}
+		
+		// If this is a test, then add the test
+		if (istest)
+			sb.append(".test");
 		
 		// Set
 		this.name = sb.toString();
@@ -92,6 +101,28 @@ public final class SourceName
 	public int hashCode()
 	{
 		return this.name.hashCode();
+	}
+	
+	/**
+	 * Does this refer to a test project?
+	 *
+	 * @return If this refers to a test project.
+	 * @since 2018/03/06
+	 */
+	public final boolean isTest()
+	{
+		return this.name().endsWith(".test");
+	}
+	
+	/**
+	 * Returns the source name.
+	 *
+	 * @return The source name.
+	 * @since 2018/03/06
+	 */
+	public final String name()
+	{
+		return this.name;
 	}
 	
 	/**
