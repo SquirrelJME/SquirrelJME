@@ -11,8 +11,12 @@
 package net.multiphasicapps.javac.cute;
 
 import java.io.PrintStream;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.List;
 import java.util.Map;
+import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.collections.SortedTreeMap;
 import net.multiphasicapps.javac.CompilerInput;
 import net.multiphasicapps.javac.CompilerInputLocation;
 import net.multiphasicapps.javac.CompilerPathSet;
@@ -29,6 +33,14 @@ public final class CompilerState
 	
 	/** The class and source paths. */
 	protected final Map<CompilerInputLocation, List<CompilerPathSet>> paths;
+	
+	/** Class nodes which have been loaded for structuring. */
+	private final Map<ClassName, ClassNode> _nodes =
+		new SortedTreeMap<>();
+	
+	/** Class nodes which need to be compiled. */
+	private final Deque<ClassNode> _tocompile =
+		new ArrayDeque<>();
 	
 	/**
 	 * Initializes the compiler state.
@@ -51,10 +63,41 @@ public final class CompilerState
 	}
 	
 	/**
+	 * Returns the class node for the given class.
+	 *
+	 * @param __cn The class node to get.
+	 * @return The class node
+	 * @throws MissingClassNodeException If the class node does not exist.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/06
+	 */
+	public final ClassNode classNode(ClassName __cn)
+		throws MissingClassNodeException, NullPointerException
+	{
+		if (__cn == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the next class node to compile.
+	 *
+	 * @return The next node to compile or {@code null} if there are no
+	 * nodes to currently compile.
+	 * @since 2018/03/06
+	 */
+	public final ClassNode nextCompile()
+	{
+		Deque<ClassNode> tocompile = this._tocompile;
+		return tocompile.pollFirst();
+	}
+	
+	/**
 	 * Logs the specified message.
 	 *
 	 * @param __t The type of message to display.
-	 * @parma __i The current input file.
+	 * @parma __i The current input file, may be {@code null}.
 	 * @param __m The formatted message to show.
 	 * @param __args The arguments to the formatted message.
 	 * @throws NullPointerException On null arguments.
@@ -64,7 +107,7 @@ public final class CompilerState
 		Object... __args)
 		throws NullPointerException
 	{
-		if (__t == null || __i == null || __m == null)
+		if (__t == null || __m == null)
 			throw new NullPointerException("NARG");
 		
 		// Forward
@@ -75,7 +118,7 @@ public final class CompilerState
 	 * Logs the specified message.
 	 *
 	 * @param __t The type of message to display.
-	 * @parma __i The current input file.
+	 * @parma __i The current input file, may be {@code null}.
 	 * @param __row The current row, negative values are not valid.
 	 * @param __col The current column, negative values are not valid.
 	 * @param __m The formatted message to show.
@@ -87,7 +130,7 @@ public final class CompilerState
 		int __col, String __m, Object... __args)
 		throws NullPointerException
 	{
-		if (__t == null || __i == null || __m == null)
+		if (__t == null || __m == null)
 			throw new NullPointerException("NARG");
 		
 		// Force to exist
@@ -98,7 +141,10 @@ public final class CompilerState
 		PrintStream log = this.log;
 		
 		// File
-		log.print(__i.name());
+		if (__i != null)
+			log.print(__i.name());
+		else
+			log.print("<unknown>");
 		
 		// Printing row?
 		if (__row >= 0)
