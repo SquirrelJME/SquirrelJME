@@ -12,6 +12,7 @@ package cc.squirreljme.builder.support;
 
 import cc.squirreljme.kernel.suiteinfo.SuiteInfo;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.ref.Reference;
@@ -41,6 +42,9 @@ public final class TestSource
 	/** The project this is a test for. */
 	protected final BasicSource testfor;
 	
+	/** The virtual main package. */
+	protected final String mainpackage;
+	
 	/** Virtual manifest for this source. */
 	private volatile Reference<JavaManifest> _manifest;
 	
@@ -62,6 +66,10 @@ public final class TestSource
 		
 		this.root = __root;
 		this.testfor = __for;
+		
+		// Setup virtual main package
+		this.mainpackage = "cc.squirreljme.tests._" + __for.name().toString().
+			replace('-', '_');
 	}
 	
 	/**
@@ -75,24 +83,35 @@ public final class TestSource
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			PrintStream ps = new PrintStream(baos, true))
 		{
-			// Begin
-			ps.println("public class TestMain");
-			ps.println("{");
+			// Specify test package so the main entry always goes in its
+			// own package
+			// Do not end in newline so the line numbers match the template
+			String mainpackage = this.mainpackage;
+			ps.printf("package %s;", mainpackage);
 			
-			// Main entry
-			ps.println("public static void main(String... __args)");
-			ps.println("{");
+			// Include template test header with test information
+			try (InputStream in = TestSource.class.getResourceAsStream(
+				"testmain.template"))
+			{
+				byte[] buf = new byte[512];
+				for (;;)
+				{
+					int rc = in.read(buf);
+					
+					if (rc < 0)
+						break;
+					
+					ps.write(buf, 0, rc);
+				}
+			}
 			
-			// End main entry
-			ps.println("}");
+			// Store special auto-generated test information class
 			
-			// End
-			ps.println("}");
-			
-			// Build input
+			// Build input, make sure to place it in the correct directory
 			ps.flush();
 			return new DistinctPathSet(new ByteArrayCompilerInput(
-				"TestMain.java", baos.toByteArray()));
+				mainpackage.replace('.', '/') + "/TestMain.java",
+				baos.toByteArray()));
 		}
 		
 		// {@squirreljme.error AU17 Could not generate the virtual test
@@ -122,15 +141,19 @@ public final class TestSource
 			MutableJavaManifestAttributes wattr = wman.getMainAttributes();
 		
 			SuiteInfo bs = testfor.suiteInfo();
-			wattr.putValue("x-squirreljme-name",
-				"Tests for " + bs.name().toString());
+			
+			String coolname = "Tests for " + bs.name().toString();
+			
+			wattr.putValue("x-squirreljme-name", coolname);
 			wattr.putValue("x-squirreljme-vendor", bs.vendor().toString());
 			wattr.putValue("x-squirreljme-version", bs.version().toString());
-			wattr.putValue("x-squirreljme-description",
-				"Tests for " + bs.name().toString() + ".");
-			wattr.putValue("x-squirreljme-depends", testfor.name().name());
-			wattr.putValue("main-class", "TestMain");
-		
+			wattr.putValue("x-squirreljme-description", coolname);
+			wattr.putValue("x-squirreljme-depends", testfor.name().name() +
+				" meep-midlet");
+			wattr.putValue("main-class", this.mainpackage + ".TestMain");
+			wattr.putValue("midlet-1", bs.name() + ",, " +
+				this.mainpackage + ".TestMain");
+			
 			// Finalize
 			this._manifest = new WeakReference<>((rv = wman.build()));
 		}

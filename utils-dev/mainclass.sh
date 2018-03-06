@@ -29,7 +29,8 @@ else
 	__base="$("$__exedir/projectwhere.sh" "$1")"
 	if [ -f "$__base/META-INF/TEST.MF" ]
 	then
-		echo "Main-Class: MainTest"
+		echo "Main-Class: cc.squirreljme.tests._$(basename -- "$__base" .test |
+			sed 's/-/_/g').MainTest"
 	else
 		cat "$__base/META-INF/MANIFEST.MF"
 	fi
@@ -40,6 +41,6 @@ do
 		sed 's/^ *//g;s/ *$//g'
 	echo "$__line" | grep -i '^ *midlet-1' | cut -d ':' -f 2 | \
 		cut -d ',' -f 3 | sed 's/^ *//g;s/ *$//g'
-done
+done | sort
 
 
