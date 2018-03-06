@@ -60,6 +60,7 @@ import net.multiphasicapps.javac.CompilerOutput;
 import net.multiphasicapps.javac.CompilerPathSet;
 import net.multiphasicapps.javac.DefaultCompiler;
 import net.multiphasicapps.javac.FilePathSet;
+import net.multiphasicapps.javac.MergedPathSet;
 import net.multiphasicapps.javac.ZipCompilerOutput;
 import net.multiphasicapps.javac.ZipPathSet;
 import net.multiphasicapps.strings.StringUtils;
@@ -241,7 +242,8 @@ public final class BinaryManager
 				// Use the source root to lookup source code
 				FilePathSet srcps = closing.<FilePathSet>addThis(
 					new FilePathSet(src.root()), FilePathSet.class);
-				javac.setLocation(CompilerInputLocation.SOURCE, srcps);
+				javac.setLocation(CompilerInputLocation.SOURCE,
+					new MergedPathSet(srcps, src.extraCompilerPathSet()));
 				
 				// Explicitly compile every source file
 				Set<CompilerInput> noninput = new LinkedHashSet<>();

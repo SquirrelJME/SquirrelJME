@@ -28,6 +28,10 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Map;
 import net.multiphasicapps.strings.StringUtils;
+import net.multiphasicapps.javac.ByteArrayCompilerInput;
+import net.multiphasicapps.javac.DistinctPathSet;
+import net.multiphasicapps.javac.CompilerPathSet;
+import net.multiphasicapps.javac.EmptyPathSet;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 import net.multiphasicapps.tool.manifest.JavaManifestKey;
@@ -141,6 +145,22 @@ public final class Source
 		
 		// Finalize
 		this.manifest = wman.build();
+	}
+	
+	/**
+	 * Returns the extra path set for this source project.
+	 *
+	 * @return The extra path set for this source project.
+	 * @since 2018/03/06
+	 */
+	public CompilerPathSet extraCompilerPathSet()
+	{
+		// If this is not a test project then include nothing
+		Source testingsource = this.testingsource;
+		if (testingsource == null)
+			return EmptyPathSet.instance();
+		
+		throw new todo.TODO();
 	}
 	
 	/**
