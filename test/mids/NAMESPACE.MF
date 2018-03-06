@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-X-SquirrelJME-Namespace-Title: Tests
-X-SquirrelJME-Namespace-Type: midlet
-X-SquirrelJME-Namespace-Description: This namespace contains the actual 
- tests to be run.
-
