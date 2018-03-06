@@ -14,8 +14,10 @@ import cc.squirreljme.kernel.suiteinfo.DependencyInfo;
 import cc.squirreljme.kernel.suiteinfo.InvalidSuiteException;
 import cc.squirreljme.kernel.suiteinfo.ProvidedInfo;
 import cc.squirreljme.kernel.suiteinfo.SuiteInfo;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.nio.file.attribute.FileTime;
@@ -160,7 +162,36 @@ public final class Source
 		if (testingsource == null)
 			return EmptyPathSet.instance();
 		
-		throw new todo.TODO();
+		// Generate input
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			PrintStream ps = new PrintStream(baos, true))
+		{
+			// Begin
+			ps.println("public class TestMain");
+			ps.println("{");
+			
+			// Main entry
+			ps.println("public static void main(String... __args)");
+			ps.println("{");
+			
+			// End main entry
+			ps.println("}");
+			
+			// End
+			ps.println("}");
+			
+			// Build input
+			ps.flush();
+			return new DistinctPathSet(new ByteArrayCompilerInput(
+				"TestMain.java", baos.toByteArray()));
+		}
+		
+		// {@squirreljme.error AU17 Could not generate the virtual test
+		// source project.}
+		catch (IOException e)
+		{
+			throw new RuntimeException("AU17", e);
+		}
 	}
 	
 	/**
