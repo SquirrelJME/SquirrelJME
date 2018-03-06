@@ -42,6 +42,9 @@ import net.multiphasicapps.tool.manifest.writer.MutableJavaManifestAttributes;
  */
 public final class Source
 {
+	/** The base project this provides tests for. */
+	protected final Source testingsource;
+	
 	/** The name of the source. */
 	protected final SourceName name;
 	
@@ -84,6 +87,7 @@ public final class Source
 		this.name = __name;
 		this.root = __p;
 		this.type = __t;
+		this.testingsource = null;
 		
 		// Load manifest
 		try (InputStream in = Files.newInputStream(__p.resolve("META-INF").
@@ -91,6 +95,52 @@ public final class Source
 		{
 			this.manifest = new JavaManifest(in);
 		}
+	}
+	
+	/**
+	 * Initializes a virtual source project which is based on the specified
+	 * real project.
+	 *
+	 * @param __root The root for the test project.
+	 * @param __base The project to base off.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/06
+	 */
+	public Source(Path __root, Source __base)
+		throws IOException, NullPointerException
+	{
+		if (__root == null || __base == null)
+			throw new NullPointerException("NARG");
+		
+		// Test projects are always midlets because they are intended to be
+		// ran
+		this.type = ProjectType.MIDLET;
+		
+		// Use the virtual .test ending project
+		this.name = new SourceName(__base.name() + ".test");
+		
+		// Real files are still involved in tests so this is needed for dating
+		this.root = __root;
+		
+		// This specifies the source used for testing.
+		this.testingsource = __base;
+		
+		// Build virtual manifest intended to act as tests for the input
+		// library
+		MutableJavaManifest wman = new MutableJavaManifest();
+		MutableJavaManifestAttributes wattr = wman.getMainAttributes();
+		
+		SuiteInfo bs = __base.suiteInfo();
+		wattr.putValue("x-squirreljme-name",
+			"Tests for " + bs.name().toString());
+		wattr.putValue("x-squirreljme-vendor", bs.vendor().toString());
+		wattr.putValue("x-squirreljme-version", bs.version().toString());
+		wattr.putValue("x-squirreljme-depends", __base.name().name());
+		wattr.putValue("main-class", "TestMain");
+		
+		// Finalize
+		this.manifest = wman.build();
 	}
 	
 	/**

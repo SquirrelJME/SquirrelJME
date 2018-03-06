@@ -224,8 +224,21 @@ public final class SourceManager
 					SourceName name = new SourceName(
 						p.getFileName().toString());
 					
-					// Store into the map
-					__out.put(name, new Source(name, p, __type));
+					// Ignore test projects, they are only referred to once
+					// there is a base supporting project
+					if (name.isTest())
+						continue;
+					
+					// Initialize source project
+					Source src = new Source(name, p, __type);
+					__out.put(name, src);
+					
+					// If a test project exists, initialize it
+					SourceName tn = new SourceName(name.name() + ".test");
+					Path tr = p.resolveSibling(tn.name());
+					if (Files.isRegularFile(tr.resolve("META-INF").resolve(
+						"TEST.MF")))
+						__out.put(tn, new Source(tr, src));
 				}
 				
 				// Ignore
