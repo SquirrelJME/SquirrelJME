@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -25,6 +26,7 @@ import java.util.Set;
  */
 public final class Field
 	extends Member
+	implements Annotated
 {
 	/** The flags for the field. */
 	protected final FieldFlags flags;
@@ -38,6 +40,9 @@ public final class Field
 	/** The constant value, if there is none then this is {@code null}. */
 	protected final Object constval;
 	
+	/** Annotated values. */
+	private final AnnotatedValue[] _annotatedvalues;
+	
 	/** Name and type reference. */
 	private volatile Reference<FieldNameAndType> _nameandtype;
 	
@@ -48,19 +53,32 @@ public final class Field
 	 * @param __n The name of the field.
 	 * @param __t The type of the field.
 	 * @param __cv The constant value of the field, may be {@code null}.
+	 * @param __avs Annotated values.
 	 * @throws NullPointerException On null arguments, except for {@code __cv}.
 	 * @since 2017/10/02
 	 */
-	Field(FieldFlags __f, FieldName __n, FieldDescriptor __t, Object __cv)
+	Field(FieldFlags __f, FieldName __n, FieldDescriptor __t, Object __cv,
+		AnnotatedValue[] __avs)
 		throws NullPointerException
 	{
-		if (__f == null || __n == null || __t == null)
+		if (__f == null || __n == null || __t == null || __avs == null)
 			throw new NullPointerException("NARG");
 		
 		this.flags = __f;
 		this.name = __n;
 		this.type = __t;
 		this.constval = __cv;
+		this._annotatedvalues = __avs;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/06
+	 */
+	@Override
+	public final AnnotatedValue[] annotatedValues()
+	{
+		return this._annotatedvalues.clone();
 	}
 	
 	/**
@@ -134,6 +152,9 @@ public final class Field
 				throw new InvalidClassFormatException(String.format(
 					"JC0p %s %s", name, type));
 			
+			// Annotated values
+			Set<AnnotatedValue> avs = new LinkedHashSet<>();
+			
 			// Handle attributes
 			int na = __in.readUnsignedShort();
 			String[] attr = new String[1];
@@ -143,6 +164,11 @@ public final class Field
 				try (DataInputStream ai = ClassFile.__nextAttribute(__in,
 					__pool, attr, alen))
 				{
+					// Parse annotations?
+					if (ClassFile.__maybeParseAnnotation(__pool, attr[0], avs,
+						ai))
+						continue;
+					
 					// Only care about the constant value attribute
 					if (!"ConstantValue".equals(attr[0]))
 						continue;
@@ -168,7 +194,8 @@ public final class Field
 				}
 			
 			// Create field
-			rv[i] = new Field(flags, name, type, constval);
+			rv[i] = new Field(flags, name, type, constval,
+				avs.<AnnotatedValue>toArray(new AnnotatedValue[avs.size()]));
 		}
 		
 		// All done!

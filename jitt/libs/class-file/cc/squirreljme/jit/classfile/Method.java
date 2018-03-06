@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -24,6 +25,7 @@ import java.util.Set;
  */
 public final class Method
 	extends Member
+	implements Annotated
 {
 	/** The version of the class. */
 	protected final ClassVersion version;
@@ -48,6 +50,9 @@ public final class Method
 	
 	/** The code attribute data, which is optional. */
 	private final byte[] _rawcodeattr;
+	
+	/** Annotated values. */
+	private final AnnotatedValue[] _annotatedvalues;
 	
 	/** The method byte code. */
 	private volatile Reference<ByteCode> _bytecode;
@@ -74,11 +79,12 @@ public final class Method
 	 * @since 2017/09/30
 	 */
 	Method(ClassVersion __ver, ClassFlags __cf, ClassName __tn, Pool __pool,
-		MethodFlags __mf, MethodName __mn, MethodDescriptor __mt, byte[] __mc)
+		MethodFlags __mf, MethodName __mn, MethodDescriptor __mt, byte[] __mc,
+		AnnotatedValue[] __avs)
 		throws NullPointerException
 	{
 		if (__ver == null || __cf == null || __tn == null || __pool == null ||
-			__mf == null || __mn == null || __mt == null)
+			__mf == null || __mn == null || __mt == null || __avs == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
@@ -90,6 +96,17 @@ public final class Method
 		this.methodname = __mn;
 		this.methodtype = __mt;
 		this._rawcodeattr = __mc;
+		this._annotatedvalues = __avs;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/06
+	 */
+	@Override
+	public final AnnotatedValue[] annotatedValues()
+	{
+		return this._annotatedvalues.clone();
 	}
 	
 	/**
@@ -253,6 +270,9 @@ public final class Method
 				throw new InvalidClassFormatException(String.format(
 					"JC12 %s %s", name, type));
 			
+			// Annotated values
+			Set<AnnotatedValue> avs = new LinkedHashSet<>();
+			
 			// Handle attributes
 			int na = __in.readUnsignedShort();
 			String[] attr = new String[1];
@@ -262,6 +282,11 @@ public final class Method
 				try (DataInputStream ai = ClassFile.__nextAttribute(__in,
 					__pool, attr, alen))
 				{
+					// Parse annotations?
+					if (ClassFile.__maybeParseAnnotation(__pool, attr[0], avs,
+						ai))
+						continue;
+					
 					// Only care about the code attribute
 					if (!"Code".equals(attr[0]))
 						continue;
@@ -289,7 +314,8 @@ public final class Method
 			
 			// Create
 			rv[i] = new Method(__ver, __cf, __tn, __pool, flags, name, type,
-				code);
+				code,
+				avs.<AnnotatedValue>toArray(new AnnotatedValue[avs.size()]));
 		}
 		
 		// All done!
