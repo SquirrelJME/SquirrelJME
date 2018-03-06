@@ -11,42 +11,41 @@
 package cc.squirreljme.test;
 
 /**
- * This class is used to run the actual tests.
+ * Parameters for a test.
  *
  * @since 2018/03/05
  */
-public final class TestRunner
-	implements Runnable
+public final class Parameters
 {
+	/** Return value for the test. */
+	protected final Object returnvalue;
+	
+	/** Arguments for the test. */
+	private final Object[] _arguments;
+	
 	/**
-	 * Initializes the test runner.
+	 * Initializes test parameters.
 	 *
-	 * @param __args Arguments to the runner.
-	 * @param __groups Classes for test groups to run.
-	 * @throws NullPointerException If no groups were specified.
+	 * @param __rv The return value.
+	 * @param __args The arguments.
 	 * @since 2018/03/05
 	 */
-	public TestRunner(String[] __args, Class<? extends TestGroup>... __groups)
-		throws NullPointerException
+	public Parameters(Object __rv, Object... __args)
 	{
-		if (__groups == null)
-			throw new NullPointerException("NARG");
-		
-		// Use default if unspecified
-		if (__args == null)
-			__args = new String[0];
-		
-		throw new todo.TODO();
+		this.returnvalue = __rv;
+		this._arguments = (__args != null ? __args.clone() : new Object[0]);
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Initializes test parameters.
+	 *
+	 * @param __rv The return value.
+	 * @param __args The arguments.
 	 * @since 2018/03/05
 	 */
-	@Override
-	public void run()
+	public static final Parameters parms(Object __rv, Object... __args)
 	{
-		throw new todo.TODO();
+		return new Parameters(__rv, __args);
 	}
 }
 
