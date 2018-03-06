@@ -8,7 +8,7 @@ X-SquirrelJME-Description: This is an interpreter which interprets the byte
  code in the class file directly to run the programs it contains. It is
  intended for use in JIT development and testing to make sure thigns 
  work.
-X-SquirrelJME-Depends: class-file jit-library
+X-SquirrelJME-Depends: tool-classfile jit-library
 Main-Class: cc.squirreljme.jit.interpreter.Main
 Microedition-Configuration: CLDC-1.8-Compact
 

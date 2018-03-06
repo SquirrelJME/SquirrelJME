@@ -10,7 +10,7 @@
 
 package cc.squirreljme.jit.compiler;
 
-import cc.squirreljme.jit.classfile.ClassFile;
+import net.multiphasicapps.classfile.ClassFile;
 import cc.squirreljme.jit.library.Library;
 import cc.squirreljme.jit.objectfile.ObjectFile;
 
