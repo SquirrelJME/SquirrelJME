@@ -41,6 +41,6 @@ do
 		sed 's/^ *//g;s/ *$//g'
 	echo "$__line" | grep -i '^ *midlet-1' | cut -d ':' -f 2 | \
 		cut -d ',' -f 3 | sed 's/^ *//g;s/ *$//g'
-done | sort
+done | sort | head -n 1
 
 
