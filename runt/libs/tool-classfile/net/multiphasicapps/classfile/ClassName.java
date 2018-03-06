@@ -58,6 +58,18 @@ public class ClassName
 	}
 	
 	/**
+	 * Returns the binary name for this class.
+	 *
+	 * @return The class binary name or {@code null} if this is an array or
+	 * primitive type.
+	 * @since 2018/03/06
+	 */
+	public BinaryName binaryName()
+	{
+		return this.binary;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/09/27
 	 */
