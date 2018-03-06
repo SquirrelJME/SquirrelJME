@@ -74,7 +74,35 @@ public final class FilePathSet
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Store original name for the exception
+		String origname = __n;
+		
+		// Resolve path elements
+		Path path = this.root;
+		while (!__n.isEmpty())
+		{
+			// Get name sub-fragment
+			int sl = __n.indexOf('/');
+			if (sl < 0)
+				sl = __n.length();
+			
+			// Resolve it
+			path = path.resolve(Paths.get(__n.substring(0, sl)));
+			
+			// Split down
+			sl++;
+			if (sl < __n.length())
+				__n = __n.substring(sl);
+			else
+				break;
+		}
+		
+		// {@squirreljme.error AQ0l The specified input does not exist in
+		// the path set filesystem. (The name; The expected path)}
+		if (Files.exists(path) && !Files.isDirectory(path))
+			return new FileInput(path, __n);
+		throw new NoSuchInputException(String.format("AQ0l %s %s", origname,
+			path));
 	}
 	
 	/**
