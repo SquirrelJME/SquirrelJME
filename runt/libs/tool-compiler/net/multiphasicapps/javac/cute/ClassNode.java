@@ -18,8 +18,32 @@ import net.multiphasicapps.javac.CompilerInput;
  *
  * @since 2018/03/06
  */
-public final class ClassNode
+public abstract class ClassNode
 {
+	/** The file used for input. */
+	protected final CompilerInput input;
+	
+	/** The class this node provides information for. */
+	protected final ClassName name;
+	
+	/**
+	 * Initializes the base node.
+	 *
+	 * @param __name The name of the node.
+	 * @param __input The input which contains the node data.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/06
+	 */
+	ClassNode(ClassName __name, CompilerInput __input)
+		throws NullPointerException
+	{
+		if (__name == null || __input == null)
+			throw new NullPointerException("NARG");
+		
+		this.name = __name;
+		this.input = __input;
+	}
+	
 	/**
 	 * Returns the compiler input used as the source for node.
 	 *
@@ -28,7 +52,33 @@ public final class ClassNode
 	 */
 	public final CompilerInput compilerInput()
 	{
-		throw new todo.TODO();
+		return this.input;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/06
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		if (__o == this)
+			return true;
+		
+		if (!(__o instanceof ClassNode))
+			return false;
+		
+		return this.name.equals(((ClassNode)__o).name);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/06
+	 */
+	@Override
+	public final int hashCode()
+	{
+		return this.name.hashCode();
 	}
 	
 	/**
@@ -39,7 +89,7 @@ public final class ClassNode
 	 */
 	public final ClassName name()
 	{
-		throw new todo.TODO();
+		return this.name;
 	}
 }
 
