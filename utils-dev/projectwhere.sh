@@ -23,6 +23,9 @@ else
 	__name="$1"
 fi
 
+# Non-name test
+__ntname="$(basename -- "$__name" ".test")"
+
 # Go through all namespaces
 for __ns in $("$__exedir/lsnamespaces.sh")
 do
@@ -32,8 +35,11 @@ do
 		continue
 	fi
 	
+	# Try to find exact project name
 	__try="$__exedir/../$__ns/$__name"
-	if [ -f "$__try/META-INF/MANIFEST.MF" ]
+	__tst="$__exedir/../$__ns/$__ntname"
+	if [ -f "$__try/META-INF/MANIFEST.MF" ] ||
+		[ -f "$__try/META-INF/TEST.MF" ]
 	then
 		echo "$__try"
 		exit 0

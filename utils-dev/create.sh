@@ -307,6 +307,12 @@ do
 					# Cat
 					cat "$__exedir/crtmpl/manifest"
 				
+				# Test
+				elif [ "$__tfile" = "TEST.MF" ]
+				then
+					# Cat
+					cat "$__exedir/crtmpl/test"
+				
 				# Namespace
 				elif [ "$__tfile" = "NAMESPACE.MF" ]
 				then

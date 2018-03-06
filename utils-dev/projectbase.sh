@@ -32,6 +32,7 @@ do
 	
 	# Find the manifest for a project
 	if [ -f "$__base/META-INF/MANIFEST.MF" ] ||
+		[ -f "$__base/META-INF/TEST.MF" ] ||
 		[ -f "$("$__exedir/absolute.sh" "$__base/../NAMESPACE.MF")" ] ||
 		[ -f "$__base/squirreljme-version" ] ||
 		[ "$__base" = "/" ]
