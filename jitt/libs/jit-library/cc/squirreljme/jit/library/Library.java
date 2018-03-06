@@ -10,7 +10,7 @@
 
 package cc.squirreljme.jit.library;
 
-import cc.squirreljme.jit.classfile.ClassFile;
+import net.multiphasicapps.classfile.ClassFile;
 import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;

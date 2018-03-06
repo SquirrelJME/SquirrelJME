@@ -7,6 +7,6 @@ X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This class contains the interfaces which are 
  used to provide libraries which provide class files and resources for 
  the JIT to use.
-X-SquirrelJME-Depends: class-file
+X-SquirrelJME-Depends: tool-classfile jit-base
 Microedition-Configuration: CLDC-1.8-Compact
 

@@ -8,6 +8,6 @@ X-SquirrelJME-Description: This is used to translate Java class files to C
  source code. It does not generate optimized code and is intended to be 
  used by the bootstrap to setup a Java compiler and run-time for systems 
  which do not have a virtual machine at all but do have a C compiler.
-X-SquirrelJME-Depends: class-file
+X-SquirrelJME-Depends: tool-classfile
 Microedition-Configuration: CLDC-1.8-Compact
 
