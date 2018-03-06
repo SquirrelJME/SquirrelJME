@@ -149,7 +149,7 @@ public final class TestSource
 			wattr.putValue("x-squirreljme-version", bs.version().toString());
 			wattr.putValue("x-squirreljme-description", coolname);
 			wattr.putValue("x-squirreljme-depends", testfor.name().name() +
-				" meep-midlet");
+				" meep-midlet unit-testing");
 			wattr.putValue("main-class", this.mainpackage + ".TestMain");
 			wattr.putValue("midlet-1", bs.name() + ",, " +
 				this.mainpackage + ".TestMain");

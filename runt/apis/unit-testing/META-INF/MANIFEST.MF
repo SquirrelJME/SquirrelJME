@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+X-SquirrelJME-UUID: db74c991-9c06-48f8-b6db-47b3d67be2da
+X-SquirrelJME-Error: BR
+X-SquirrelJME-Name: SquirrelJME Unit Testing
+X-SquirrelJME-Vendor: Stephanie Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: unit-testing
+X-SquirrelJME-DefinedStandards: cc.squirreljme.runtime.tests;Stephanie 
+ Gawroriski;0.0.2
+Microedition-Configuration: CLDC-1.8-Compact
+
