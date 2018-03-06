@@ -102,7 +102,7 @@ public class CuteRunnable
 	public void run()
 		throws CompilerException
 	{
-		CompilerState state = new CompilerState(this.log);
+		CompilerState state = new CompilerState(this.log, this.paths);
 		
 		// Compile all input files
 		for (CompilerInput ci : this.input)

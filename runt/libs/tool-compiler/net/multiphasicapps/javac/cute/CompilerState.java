@@ -11,7 +11,11 @@
 package net.multiphasicapps.javac.cute;
 
 import java.io.PrintStream;
+import java.util.List;
+import java.util.Map;
 import net.multiphasicapps.javac.CompilerInput;
+import net.multiphasicapps.javac.CompilerInputLocation;
+import net.multiphasicapps.javac.CompilerPathSet;
 
 /**
  * This contains the current state of the compiler.
@@ -23,20 +27,27 @@ public final class CompilerState
 	/** Logging. */
 	protected final PrintStream log;
 	
+	/** The class and source paths. */
+	protected final Map<CompilerInputLocation, List<CompilerPathSet>> paths;
+	
 	/**
 	 * Initializes the compiler state.
 	 *
 	 * @param __log The logging output.
+	 * @param __ps Path sets for the compiler, used to build the class
+	 * structure before compilation is performed.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/06
 	 */
-	public CompilerState(PrintStream __log)
+	public CompilerState(PrintStream __log,
+		Map<CompilerInputLocation, List<CompilerPathSet>> __ps)
 		throws NullPointerException
 	{
-		if (__log == null)
+		if (__log == null || __ps == null)
 			throw new NullPointerException("NARG");
 		
 		this.log = __log;
+		this.paths = __ps;
 	}
 	
 	/**
