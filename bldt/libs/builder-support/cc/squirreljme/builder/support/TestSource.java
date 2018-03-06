@@ -126,6 +126,8 @@ public final class TestSource
 				"Tests for " + bs.name().toString());
 			wattr.putValue("x-squirreljme-vendor", bs.vendor().toString());
 			wattr.putValue("x-squirreljme-version", bs.version().toString());
+			wattr.putValue("x-squirreljme-description",
+				"Tests for " + bs.name().toString() + ".");
 			wattr.putValue("x-squirreljme-depends", testfor.name().name());
 			wattr.putValue("main-class", "TestMain");
 		
