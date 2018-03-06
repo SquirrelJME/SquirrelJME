@@ -21,6 +21,9 @@ public enum ArgumentType
 	/** Null. */
 	NULL,
 	
+	/** Wildcard object. */
+	OBJECT,
+	
 	/** Boolean. */
 	BOOLEAN,
 	
