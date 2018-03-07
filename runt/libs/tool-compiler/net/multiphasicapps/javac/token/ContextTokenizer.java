@@ -16,7 +16,8 @@ import java.io.IOException;
 import java.io.Reader;
 
 /**
- * This is a tokenizer.
+ * This is a tokenizer which generates tokens which are context sensitive in
+ * that it determine the types of tokens based on the prevously read tokens.
  *
  * @since 2018/03/07
  */

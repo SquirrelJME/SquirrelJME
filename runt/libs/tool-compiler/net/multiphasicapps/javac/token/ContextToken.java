@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.javac.token;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+
 /**
  * This represents a context sensitive token.
  *
@@ -18,6 +21,67 @@ package net.multiphasicapps.javac.token;
 public final class ContextToken
 	implements LineAndColumn
 {
+	/** The area the token was read from. */
+	protected final ContextArea area;
+	
+	/** The type of token that was read. */
+	protected final ContextType type;
+	
+	/** The token text. */
+	protected final String text;
+	
+	/** The line the token was read on. */
+	protected final int line;
+	
+	/** The column the token was read on. */
+	protected final int column;
+	
+	/** Comments attached to this token. */
+	private final String[] _comments;
+	
+	/** String representation. */
+	private volatile Reference<String> _string;
+	
+	/**
+	 * Initializes the token.
+	 *
+	 * @param __area The area the token was read from.
+	 * @param __type The type of token that was read.
+	 * @param __text The text for the token data.
+	 * @param __lin The line the column was read from.
+	 * @param __col The column the token was read from.
+	 * @param __comments Comments associated with this token.
+	 * @throws NullPointerException On null arguments, except for
+	 * {@code __comments}.
+	 * @since 2018/03/07
+	 */
+	public ContextToken(ContextArea __area, ContextType __type, String __text,
+		int __lin, int __col, String[] __comments)
+		throws NullPointerException
+	{
+		if (__area == null || __type == null || __type == null)
+			throw new NullPointerException("NARG");
+		
+		this.area = __area;
+		this.type = __type;
+		this.text = __text;
+		this.line = __lin;
+		this.column = __col;
+		this._comments = (__comments == null ? new String[0] :
+			__comments.clone());
+	}
+	
+	/**
+	 * Returns the area the token was read from.
+	 *
+	 * @return The area the token was read from.
+	 * @since 2018/03/07
+	 */
+	public final ContextArea area()
+	{
+		return this.area;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/07
@@ -25,7 +89,7 @@ public final class ContextToken
 	@Override
 	public final int column()
 	{
-		throw new todo.TODO();
+		return this.column;
 	}
 	
 	/**
@@ -36,7 +100,7 @@ public final class ContextToken
 	 */
 	public final String[] comments()
 	{
-		throw new todo.TODO();
+		return this._comments.clone();
 	}
 	
 	/**
@@ -66,7 +130,7 @@ public final class ContextToken
 	@Override
 	public final int line()
 	{
-		throw new todo.TODO();
+		return this.line;
 	}
 	
 	/**
@@ -76,7 +140,15 @@ public final class ContextToken
 	@Override
 	public final String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>((rv = String.format(
+				"%s(%s)@%d,%d: %s", this.type, this.area, this.line,
+				this.column, this.text)));
+		
+		return rv;
 	}
 	
 	/**
@@ -87,7 +159,7 @@ public final class ContextToken
 	 */
 	public final ContextType type()
 	{
-		throw new todo.TODO();
+		return this.type;
 	}
 }
 
