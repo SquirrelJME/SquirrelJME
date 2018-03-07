@@ -15,7 +15,7 @@ package net.multiphasicapps.javac.token;
  *
  * @since 2017/09/04
  */
-public enum TokenType
+public enum BottomTokenType
 {
 	/** A comment. */
 	COMMENT,
@@ -183,34 +183,34 @@ public enum TokenType
 	OPERATOR_TERNARY_QUESTION,
 	
 	/** Ternary colon operator. */
-	OPERATOR_TERNARY_COLON,
+	SYMBOL_COLON,
 	
 	/** Open parenthesis. */
-	SEPARATOR_OPEN_PARENTHESIS,
+	SYMBOL_OPEN_PARENTHESIS,
 	
 	/** Closed parenthesis. */
-	SEPARATOR_CLOSED_PARENTHESIS,
+	SYMBOL_CLOSED_PARENTHESIS,
 	
 	/** Open brace. */
-	SEPARATOR_OPEN_BRACE,
+	SYMBOL_OPEN_BRACE,
 	
 	/** Closed brace. */
-	SEPARATOR_CLOSED_BRACE,
+	SYMBOL_CLOSED_BRACE,
 	
 	/** Open bracket. */
-	SEPARATOR_OPEN_BRACKET,
+	SYMBOL_OPEN_BRACKET,
 	
 	/** Closed bracket. */
-	SEPARATOR_CLOSED_BRACKET,
+	SYMBOL_CLOSED_BRACKET,
 	
 	/** Semicolon. */
-	SEPARATOR_SEMICOLON,
+	SYMBOL_SEMICOLON,
 	
 	/** Comma. */
-	SEPARATOR_COMMA,
+	SYMBOL_COMMA,
 	
 	/** The dot separator. */
-	SEPARATOR_DOT,
+	SYMBOL_DOT,
 	
 	/** The null literal. */
 	LITERAL_NULL,

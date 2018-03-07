@@ -19,10 +19,10 @@ import java.lang.ref.WeakReference;
  *
  * @since 2017/09/04
  */
-public final class Token
+public final class BottomToken
 {
 	/** The type of token this is, */
-	protected final TokenType type;
+	protected final BottomTokenType type;
 	
 	/** The token string data. */
 	protected final String chars;
@@ -46,7 +46,7 @@ public final class Token
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/09/06
 	 */
-	public Token(TokenType __t, String __c, int __l, int __o)
+	public BottomToken(BottomTokenType __t, String __c, int __l, int __o)
 		throws NullPointerException
 	{
 		// Check
@@ -88,10 +88,10 @@ public final class Token
 	@Override
 	public boolean equals(Object __o)
 	{
-		if (!(__o instanceof Token))
+		if (!(__o instanceof BottomToken))
 			return false;
 		
-		Token o = (Token)__o;
+		BottomToken o = (BottomToken)__o;
 		return this.type.equals(o.type) &&
 			this.chars.equals(o.chars) &&
 			this.line == o.line &&
@@ -144,7 +144,7 @@ public final class Token
 	 * @return The token type.
 	 * @since 2017/09/06
 	 */
-	public TokenType type()
+	public BottomTokenType type()
 	{
 		return this.type;
 	}
