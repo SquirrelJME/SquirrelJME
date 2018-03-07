@@ -350,6 +350,9 @@ public enum BottomType
 	/** The ellipses. */
 	SYMBOL_ELLIPSES,
 	
+	/** Lambda symbol. */
+	SYMBOL_LAMBDA,
+	
 	/** End. */
 	;
 	

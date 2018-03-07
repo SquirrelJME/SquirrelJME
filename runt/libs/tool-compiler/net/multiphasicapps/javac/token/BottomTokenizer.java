@@ -31,17 +31,16 @@ import net.multiphasicapps.collections.UnmodifiableList;
 public class BottomTokenizer
 	implements Closeable, LineAndColumn
 {
-	/** The number of characters in the queue. */
-	private static final int _QUEUE_SIZE =
-		8;
-	
 	/** Operators used. */
 	private static final List<String> _OPERATORS =
 		UnmodifiableList.<String>of(Arrays.<String>asList("(", ")", "{", "}",
 			"[", "]", ";", ",", ".", "=", ">", "<", "!", "~", "?", ":", "::",
 			"==", "<=", ">=", "!=", "&&", "||", "++", "--", "+", "-", "*", "/",
 			"&", "|", "^", "%", "<<", ">>", ">>>", "+=", "-=", "*=", "/=",
-			"&=", "|=", "^=", "%=", "<<=", ">>=", ">>>="));
+			"&=", "|=", "^=", "%=", "<<=", ">>=", ">>>=", "->"));
+	
+	/** Operator character code merge. */
+	private static final int[] _OPERATOR_MERGE;
 	
 	/** Input character source. */
 	protected final LogicalReader in;
@@ -75,6 +74,35 @@ public class BottomTokenizer
 	/** The current token's column. */
 	private volatile int _atcolumn =
 		1;
+	
+	/**
+	 * Initializes the merged operator set.
+	 *
+	 * @since 2018/03/07
+	 */
+	static
+	{
+		List<String> operators = BottomTokenizer._OPERATORS;
+		int numops = operators.size();
+		int[] merge = new int[numops];
+		for (int i = 0; i < numops; i++)
+		{
+			// Start with empty space
+			int val = 0xFF_FF_FF_FF;
+			
+			// Go through all characters in the operation and shift them in
+			String op = operators.get(i);
+			for (int j = 0, opn = op.length(); j < opn; j++)
+			{
+				val <<= 8;
+				val |= ((int)op.charAt(j)) & 0x7F;
+			}
+			
+			merge[i] = val;
+		}
+		
+		_OPERATOR_MERGE = merge;
+	}
 	
 	/**
 	 * Initializes the tokenizer for Java source code.
@@ -218,10 +246,6 @@ public class BottomTokenizer
 				return this.__token(BottomType.SYMBOL_COLON, ":");
 			}
 			
-			// Is start is a potential symbol
-			else if (CharacterTest.isSymbolStart(c))
-				return this.__decideOperator(c);
-			
 			// Identifiers
 			else if (CharacterTest.isIdentifierStart((char)c))
 				return __getIdentifier((char)c);
@@ -233,6 +257,10 @@ public class BottomTokenizer
 			// String
 			else if (c == '\"')
 				return this.__getString();
+			
+			// Is start is a potential symbol
+			else if (CharacterTest.isSymbolStart(c))
+				return this.__decideOperator(c);
 			
 			// {@squirreljme.error AQ0e Unknown character while tokenizing the
 			// Java source code. (The character; The line; The column)}
@@ -313,7 +341,128 @@ public class BottomTokenizer
 	private BottomToken __decideOperator(int __c)
 		throws IOException
 	{
-		throw new todo.TODO();
+		List<String> operators = BottomTokenizer._OPERATORS;
+		int numops = operators.size();
+		int[] merge = BottomTokenizer._OPERATOR_MERGE;
+		
+		// Setup candidate list
+		boolean[] candidate = new boolean[numops],
+			oldcandidate = new boolean[numops];
+		for (int i = 0; i < numops; i++)
+		{
+			oldcandidate[i] = true;
+			candidate[i] = true;
+		}
+		
+		// Setup current fill
+		int fill = 0xFF_FF_FF_00 | (__c < 128 ? __c & 0x7F : 0xFE),
+			mask = 0x00_00_00_FF;
+		
+		// Determine which token is used for the character
+		boolean needconsume = false;
+		int foundop = -1,
+			newcandidates = 0,
+			tempfoundop = -1;
+		for (;;)
+		{
+			// Get old values which is used to determine a match
+			int oldnewcandidates = newcandidates,
+				oldtempfoundfop = tempfoundop;
+			
+			// Clear for a new run;
+			newcandidates = 0;
+			tempfoundop = -1;
+			
+			// Determine which characters map
+			for (int i = 0; i < numops; i++)
+			{
+				// Do not check this token
+				boolean iscandidate = candidate[i];
+				oldcandidate[i] = candidate[i];
+				if (!iscandidate)
+					continue;
+				
+				// Cannot be the character
+				if ((fill & mask) != (merge[i] & mask))
+					candidate[i] = false;
+				
+				// Could be the characters
+				else
+				{
+					newcandidates++;
+					tempfoundop = i;
+				}
+			}
+			
+			// Only one character is valid?
+			// The check here makes the search for single character sequences
+			// and >>>= valid
+			if (newcandidates == 1)
+			{
+				// Need to consume the character?
+				if (needconsume)
+					this.__next();
+				
+				foundop = tempfoundop;
+				break;
+			}
+			
+			// Nothing is valid, then an old one is valid
+			else if (newcandidates == 0)
+			{
+				// Unmask and unfill
+				int unfill = (fill >>> 8) | 0xFF_00_00_00,
+					unmask = (mask >>> 8);
+				
+				// Go through the old candidate list and determine the
+				// character to use.
+				for (int i = 0; i < numops; i++)
+				{
+					if (!oldcandidate[i])
+						continue;
+					
+					// Must match the sequence exactly including the upper
+					// bits because those are considered invalid
+					if (unfill == merge[i])
+					{
+						foundop = i;
+						break;
+					}
+				}
+				
+				// {@squirreljme.error AQ11 Could not determine the
+				// operator to decode.}
+				if (foundop < 0)
+					throw new TokenizerException("AQ11");
+				break;
+			}
+			
+			// Need to consume the character before trying again?
+			if (needconsume)
+				this.__next();
+			
+			// Peek in next character
+			needconsume = true;
+			__c = this.__peek();
+			
+			// Fill in character
+			fill <<= 8;
+			fill |= (__c >= 0 && __c < 128 ? __c & 0x7F : 0xFE);
+			
+			// Already at the maximum mask, nothing else to try
+			if (mask == 0xFF_FF_FF_FF)
+				break;
+			
+			// Increase mask to confirm checking area
+			mask <<= 8;
+			mask |= 0xFF;
+		}
+		
+		// {@squirreljme.error AQ10 Could not decode an operator.}
+		if (foundop < 0)
+			throw new TokenizerException("AQ10");
+		
+		return this.__tokenOperator(operators.get(foundop));
 	}
 	
 	/**
@@ -763,6 +912,7 @@ public class BottomTokenizer
 			case "|=":	type = BottomType.OPERATOR_OR_ASSIGN; break;
 			case "||":	type = BottomType.COMPARE_OR; break;
 			case "-":	type = BottomType.OPERATOR_MINUS; break;
+			case "->":	type = BottomType.SYMBOL_LAMBDA; break;
 			case "-=":	type = BottomType.OPERATOR_MINUS_ASSIGN; break;
 			case "--":	type = BottomType.OPERATOR_DECREMENT; break;
 			case ",":	type = BottomType.SYMBOL_COMMA; break;
