@@ -456,11 +456,14 @@ public class BottomTokenizer
 	 * @param __c The initial read character.
 	 * @return The decoded token.
 	 * @throws IOException On read errors.
-	 * @since 201709/11
+	 * @since 2017/09/11
 	 */
 	private BottomToken __getNumberLiteral(char __c)
 		throws IOException
 	{
+		// Read a decimal point?
+		boolean gotdec = (__c == '.');
+		
 		// All possibilities are available at start
 		boolean isbinint = true,
 			isoctint = true,
@@ -486,8 +489,103 @@ public class BottomTokenizer
 		// handling for state within this loop. One general thing to remember
 		// is that something which appears invalid for one state can be
 		// completely valid for another state.
+		// So this basically just tries to invalidate everything
+		for (int inchars = 1;;)
+		{
+			// If the next character is one of these then it cannot possibly
+			// part of a number
+			int peek = this.__peek();
+			if (peek < 0 || CharacterTest.isWhite(peek) ||
+				!CharacterTest.isPossibleNumberChar(peek))
+			{
+				// {@squirreljme.error AQ0u An identifier character cannot
+				// follow a numerical literal. (The next character)}
+				if (CharacterTest.isIdentifierPart(peek))
+					throw new TokenizerException(
+						String.format("AQ0u %c", peek));
+				break;
+			}
+			
+			// {@squirreljme.error AQ0v Number has multiple decimal points,
+			// only one is valid.}
+			if (peek == '.')
+			{
+				if (gotdec)
+					throw new TokenizerException("AQ0v");
+				gotdec = true;
+			}
+			
+			// Binary literal?
+			if (isbinint)
+			{
+				throw new todo.TODO();
+			}
+			
+			// Octal literal?
+			if (isoctint)
+			{
+				throw new todo.TODO();
+			}
+			
+			// Decimal literal?
+			if (isdecint)
+			{
+				throw new todo.TODO();
+			}
+			
+			// Hexadecimal literal?
+			if (ishexint)
+			{
+				throw new todo.TODO();
+			}
+			
+			// Float literal?
+			if (isdecfloat)
+			{
+				throw new todo.TODO();
+			}
+			
+			// Hexfloat literal?
+			if (ishexfloat)
+			{
+				throw new todo.TODO();
+			}
+			
+			// If this point is reached then the character is valid
+			sb.append((char)this.__next());
+			inchars++;
+			
+			// {@squirreljme.error AQ0x No numberal literals left to put
+			// the literal under as they have all been ruled out. (The
+			// current string sequence)}
+			if (!isbinint && !isbinint && !isoctint && !isdecint &&
+				!ishexint && !isdecfloat && !ishexfloat)
+				throw new TokenizerException(String.format("AQ0x %s", sb));
+		}
 		
-		throw new todo.TODO();
+		// Determine the best type for the token
+		BottomType type;
+		if (isbinint)
+			type = BottomType.LITERAL_BINARY_INTEGER;
+		else if (isoctint)
+			type = BottomType.LITERAL_OCTAL_INTEGER;
+		else if (isdecint)
+			type = BottomType.LITERAL_DECIMAL_INTEGER;
+		else if (ishexint)
+			type = BottomType.LITERAL_HEXADECIMAL_INTEGER;
+		else if (isdecfloat)
+			type = BottomType.LITERAL_DECIMAL_FLOAT;
+		else if (ishexfloat)
+			type = BottomType.LITERAL_HEXADECIMAL_FLOAT;
+		
+		// {@squirreljme.error AQ0w Could not determine type of number
+		// literal is used for the given string. (The token string)}
+		else
+			throw new TokenizerException(
+				String.format("AQ0w %s", sb.toString()));
+		
+		// Use that!
+		return __token(type, sb.toString());
 	}
 	
 	/**
