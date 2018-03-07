@@ -375,5 +375,120 @@ public enum BottomType
 				return false;
 		}
 	}
+	
+	/**
+	 * Is this an identifier?
+	 *
+	 * @return If this is an identifier.
+	 * @since 2018/03/07
+	 */
+	public final boolean isIdentifier()
+	{
+		return this == IDENTIFIER;
+	}
+	
+	/**
+	 * Is this a keyword?
+	 *
+	 * @return If this is a keyword.
+	 * @since 2018/03/07
+	 */
+	public final boolean isKeyword()
+	{
+		switch (this)
+		{
+			case KEYWORD_ABSTRACT:
+			case KEYWORD_ASSERT:
+			case KEYWORD_BOOLEAN:
+			case KEYWORD_BREAK:
+			case KEYWORD_BYTE:
+			case KEYWORD_CASE:
+			case KEYWORD_CATCH:
+			case KEYWORD_CHAR:
+			case KEYWORD_CLASS:
+			case KEYWORD_CONTINUE:
+			case KEYWORD_DEFAULT:
+			case KEYWORD_DO:
+			case KEYWORD_DOUBLE:
+			case KEYWORD_ELSE:
+			case KEYWORD_ENUM:
+			case KEYWORD_EXTENDS:
+			case KEYWORD_FINAL:
+			case KEYWORD_FINALLY:
+			case KEYWORD_FLOAT:
+			case KEYWORD_FOR:
+			case KEYWORD_IF:
+			case KEYWORD_IMPLEMENTS:
+			case KEYWORD_IMPORT:
+			case KEYWORD_INSTANCEOF:
+			case KEYWORD_INT:
+			case KEYWORD_INTERFACE:
+			case KEYWORD_LONG:
+			case KEYWORD_NATIVE:
+			case KEYWORD_NEW:
+			case KEYWORD_PACKAGE:
+			case KEYWORD_PRIVATE:
+			case KEYWORD_PROTECTED:
+			case KEYWORD_PUBLIC:
+			case KEYWORD_RETURN:
+			case KEYWORD_SHORT:
+			case KEYWORD_STATIC:
+			case KEYWORD_STRICTFP:
+			case KEYWORD_SUPER:
+			case KEYWORD_SWITCH:
+			case KEYWORD_SYNCHRONIZED:
+			case KEYWORD_THIS:
+			case KEYWORD_THROW:
+			case KEYWORD_THROWS:
+			case KEYWORD_TRANSIENT:
+			case KEYWORD_TRY:
+			case KEYWORD_VOID:
+			case KEYWORD_VOLATILE:
+			case KEYWORD_WHILE:
+				return true;
+			
+			default:
+				return false;
+		}	
+	}
+	
+	/**
+	 * Is this a literal?
+	 *
+	 * @return If this is a literal.
+	 * @since 2018/03/07
+	 */
+	public final boolean isLiteral()
+	{
+		switch (this)
+		{
+			case LITERAL_NULL:
+			case LITERAL_FALSE:
+			case LITERAL_TRUE:
+			case LITERAL_BINARY_INTEGER:
+			case LITERAL_OCTAL_INTEGER:
+			case LITERAL_DECIMAL_INTEGER:
+			case LITERAL_HEXADECIMAL_INTEGER:
+			case LITERAL_DECIMAL_FLOAT:
+			case LITERAL_HEXADECIMAL_FLOAT:
+			case LITERAL_STRING:
+				return true;
+			
+			default:
+				return false;
+		}
+	}
+	
+	/**
+	 * Is this a word?
+	 *
+	 * @return If this is a word.
+	 * @since 2018/03/07
+	 */
+	public final boolean isWord()
+	{
+		return this == IDENTIFIER ||
+			this.isKeyword();
+	}
 }
 

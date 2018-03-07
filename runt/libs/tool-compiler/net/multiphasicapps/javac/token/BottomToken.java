@@ -110,6 +110,17 @@ public final class BottomToken
 	}
 	
 	/**
+	 * Is this a comment?
+	 *
+	 * @return If this is a comment or not.
+	 * @since 2018/03/07
+	 */
+	public final boolean isComment()
+	{
+		return this.type == BottomType.COMMENT;
+	}
+	
+	/**
 	 * Returns the line this token is on.
 	 *
 	 * @return The line the token is on.
@@ -118,6 +129,24 @@ public final class BottomToken
 	public int line()
 	{
 		return this.line;
+	}
+	
+	/**
+	 * Does this token need a space following it to be valid?
+	 *
+	 * @return If a space is needed to follow to make it valid.
+	 * @since 2018/03/07
+	 */
+	public final boolean needFollowingSpace()
+	{
+		BottomType type = this.type;
+		return type.isIdentifier() ||
+			type.isKeyword() ||
+			type.isLiteral() ||
+			type == BottomType.OPERATOR_PLUS ||
+			type == BottomType.OPERATOR_MINUS ||
+			type == BottomType.OPERATOR_INCREMENT ||
+			type == BottomType.OPERATOR_DECREMENT;
 	}
 	
 	/**

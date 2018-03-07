@@ -76,9 +76,20 @@ public final class SourcedClassNode
 			__state._lineandcol = btkz;
 			
 			// Debug print all tokens
-			BottomToken next;
+			System.err.print("DEBUG -- ");
+			BottomToken next, prev = null;
 			while (null != (next = btkz.next()))
-				System.err.printf("DEBUG -- Token: %s%n", next);
+			{
+				if (!next.isComment())
+				{
+					if (prev != null && prev.needFollowingSpace() &&
+						next.needFollowingSpace())
+						System.err.print(' ');
+					System.err.print(next.characters());
+				}
+				prev = next;
+			}
+			System.err.println();
 		
 			throw new todo.TODO();
 		}
