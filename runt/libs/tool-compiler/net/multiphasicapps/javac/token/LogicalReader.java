@@ -21,7 +21,7 @@ import java.io.Reader;
  * @since 2017/09/09
  */
 public class LogicalReader
-	implements Closeable
+	implements Closeable, LineAndColumn
 {
 	/** The size of tabs. */
 	private static final int _TAB_SIZE =
@@ -76,22 +76,20 @@ public class LogicalReader
 	}
 	
 	/**
-	 * Returns the current column.
-	 *
-	 * @return The current column.
+	 * {@inheritDoc}
 	 * @since 2017/09/09
 	 */
+	@Override
 	public int column()
 	{
 		return this._column;
 	}
 	
 	/**
-	 * Returns the current line.
-	 *
-	 * @return The current line.
+	 * {@inheritDoc}
 	 * @since 2017/09/09
 	 */
+	@Override
 	public int line()
 	{
 		return this._line;
