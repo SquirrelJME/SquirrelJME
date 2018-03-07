@@ -14,6 +14,8 @@ import java.io.Closeable;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 /**
  * This is a tokenizer which generates tokens which are context sensitive in
@@ -26,6 +28,10 @@ public final class ContextTokenizer
 {
 	/** The bottom tokenizer to use. */
 	protected final BottomTokenizer bottom;
+	
+	/** The queue for the tokenizer. */
+	protected final Deque<ContextToken> _queue =
+		new ArrayDeque<>();
 	
 	/** The last read token. */
 	private volatile ContextToken _lasttoken;
@@ -113,9 +119,49 @@ public final class ContextTokenizer
 	 * Returns the next token that is available from the input.
 	 *
 	 * @return The next token or {@code null} if there is none.
+	 * @throws IOException On read errors.
 	 * @since 2018/03/07
 	 */
 	public final ContextToken next()
+		throws IOException
+	{
+		Deque<ContextToken> queue = this._queue;
+		if (queue.isEmpty())
+			this.__fill();
+		
+		// Use the last token to determine where errors may have occurred
+		ContextToken last = queue.pollFirst();
+		this._lasttoken = last;
+		return last;
+	}
+	
+	/**
+	 * Returns the token that will be returned on the next read without
+	 * removing it from the input queue.
+	 *
+	 * @return The next token that will be returned or {@code null} if there
+	 * is none.
+	 * @throws IOException On read errors.
+	 * @since 2018/03/07
+	 */
+	public final ContextToken peek()
+		throws IOException
+	{
+		Deque<ContextToken> queue = this._queue;
+		if (queue.isEmpty())
+			this.__fill();
+		
+		return queue.peekFirst();
+	}
+	
+	/**
+	 * Reads 
+	 *
+	 * @throws IOException On read errors.
+	 * @since 2018/03/07
+	 */
+	private final void __fill()
+		throws IOException
 	{
 		throw new todo.TODO();
 	}
