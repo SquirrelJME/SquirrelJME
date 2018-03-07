@@ -222,7 +222,7 @@ public class BottomTokenizer
 					// dots were expected but only two were read.}
 					p = this.__peek();
 					if (p != '.')
-						throw new TokenizerException("AQ0y");
+						throw new TokenizerException(this, "AQ0y");
 					
 					return this.__token(BottomType.SYMBOL_ELLIPSES, "...");
 				}
@@ -265,8 +265,8 @@ public class BottomTokenizer
 			// {@squirreljme.error AQ0e Unknown character while tokenizing the
 			// Java source code. (The character; The line; The column)}
 			else
-				throw new TokenizerException(String.format("AQ0e %c %d %d",
-					(char)c, line, column));
+				throw new TokenizerException(this,
+					String.format("AQ0e %c %d %d", (char)c, line, column));
 		}
 	}
 	
@@ -433,7 +433,7 @@ public class BottomTokenizer
 				// {@squirreljme.error AQ11 Could not determine the
 				// operator to decode.}
 				if (foundop < 0)
-					throw new TokenizerException("AQ11");
+					throw new TokenizerException(this, "AQ11");
 				break;
 			}
 			
@@ -460,7 +460,7 @@ public class BottomTokenizer
 		
 		// {@squirreljme.error AQ10 Could not decode an operator.}
 		if (foundop < 0)
-			throw new TokenizerException("AQ10");
+			throw new TokenizerException(this, "AQ10");
 		
 		return this.__tokenOperator(operators.get(foundop));
 	}
@@ -491,8 +491,8 @@ public class BottomTokenizer
 						// are reserved and not valid. (The keyword)}
 					case "const":
 					case "goto":
-						throw new TokenizerException(String.format("AQ0f %s",
-							__token(BottomType.IDENTIFIER, s)));
+						throw new TokenizerException(this, String.format(
+							"AQ0f %s", __token(BottomType.IDENTIFIER, s)));
 					
 					case "abstract":	t = BottomType.KEYWORD_ABSTRACT; break;
 					case "assert":		t = BottomType.KEYWORD_ASSERT; break;
@@ -580,7 +580,7 @@ public class BottomTokenizer
 			// multi-line comment.}
 			int c = __peek();
 			if (c < 0)
-				throw new TokenizerException("AQ0g");
+				throw new TokenizerException(this, "AQ0g");
 			
 			// Potential end of comment?
 			if (c == '*')
@@ -661,7 +661,7 @@ public class BottomTokenizer
 				// {@squirreljme.error AQ0u An identifier character cannot
 				// follow a numerical literal. (The next character)}
 				if (CharacterTest.isIdentifierPart(peek))
-					throw new TokenizerException(
+					throw new TokenizerException(this, 
 						String.format("AQ0u %c", peek));
 				break;
 			}
@@ -671,7 +671,7 @@ public class BottomTokenizer
 			if (peek == '.')
 			{
 				if (gotdec)
-					throw new TokenizerException("AQ0v");
+					throw new TokenizerException(this, "AQ0v");
 				gotdec = true;
 			}
 			
@@ -720,7 +720,8 @@ public class BottomTokenizer
 			// current string sequence)}
 			if (!isbinint && !isbinint && !isoctint && !isdecint &&
 				!ishexint && !isdecfloat && !ishexfloat)
-				throw new TokenizerException(String.format("AQ0x %s", sb));
+				throw new TokenizerException(this, 
+					String.format("AQ0x %s", sb));
 		}
 		
 		// Determine the best type for the token
@@ -741,7 +742,7 @@ public class BottomTokenizer
 		// {@squirreljme.error AQ0w Could not determine type of number
 		// literal is used for the given string. (The token string)}
 		else
-			throw new TokenizerException(
+			throw new TokenizerException(this, 
 				String.format("AQ0w %s", sb.toString()));
 		
 		// Use that!
@@ -946,7 +947,8 @@ public class BottomTokenizer
 				// {@squirreljme.error AQ0z Could not determine the used
 				// operator for the given sequence. (The sequence)}
 			default:
-				throw new TokenizerException(String.format("AQ0z %s", s));
+				throw new TokenizerException(this, 
+					String.format("AQ0z %s", s));
 		}
 		
 		// Generate

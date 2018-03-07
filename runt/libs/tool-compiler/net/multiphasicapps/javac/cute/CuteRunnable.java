@@ -31,6 +31,7 @@ import net.multiphasicapps.javac.CompilerInputLocation;
 import net.multiphasicapps.javac.CompilerOptions;
 import net.multiphasicapps.javac.CompilerOutput;
 import net.multiphasicapps.javac.CompilerPathSet;
+import net.multiphasicapps.javac.token.LineAndColumn;
 
 /**
  * This is the runnable which performs the actual compilation tasks and
@@ -154,8 +155,9 @@ public class CuteRunnable
 			while (t != null)
 			{
 				// {@squirreljme.error AQ0n Failed to compile.}
-				state.message(MessageType.ERROR, lastfile, "AQ0n %s",
-					t.getMessage());
+				state.message(MessageType.ERROR, lastfile,
+					(e instanceof LineAndColumn ? (LineAndColumn)e : null),
+					"AQ0n %s", t.getMessage());
 				
 				// Keep going down
 				t = t.getCause();
