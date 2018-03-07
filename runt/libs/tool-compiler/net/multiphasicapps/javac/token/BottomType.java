@@ -15,7 +15,7 @@ package net.multiphasicapps.javac.token;
  *
  * @since 2017/09/04
  */
-public enum BottomTokenType
+public enum BottomType
 {
 	/** A comment. */
 	COMMENT,
