@@ -14,3 +14,69 @@ rules on how tasks are assigned they can build a successful colony. I think
 that would be a thing that could be done for AI in the game. Basically have
 units which are defending the base, expanding, or attacking the enemy at
 the basic level.
+
+## 09:09
+
+I could do source projects a bit better since now that I have a fork.
+
+## 09:58
+
+Okay so this refactored source project code is much cleaner, smaller, and
+in general just way better.
+
+## 11:09
+
+For some reason it cannot find my main class and I am not sure why.
+
+## 11:11
+
+Oh that is why, the test has both a main class and MIDlet because I
+need it for running on two things, so there is a literal newline and
+the same class on it.
+
+## 11:54
+
+So my class filed decoder is going to need support for decoding
+annotations so that the test builder can use them.
+
+## 15:37
+
+Actually my changes to the class decoder really do nothing because for the
+test system no classes are actually compiled yet. So what I need is an
+actual compiler or parser to read the input class files. This means that
+the class decoder is going to be put in `libs` because it would be needed
+by the compiler and not just the JIT.
+
+## 15:45
+
+I suppose what I could do is write the Java compiler now then. As for the
+tokenizer I think the best thing to do would have two levels of tokenization
+so basically token types for that are just symbols, names, or whatever. Then
+on top of that is a bigger state context sensitive tokenizer. But basically
+for these low level tokens there would just be potential alternative
+interpretations of tokens. So basically something like sub-tokens
+potentially. Then an input iterator which is smart would be able to use either
+the sub-tokens or do other things depending on the context.
+
+## 16:06
+
+It would be best if the pathset for the input compiler just used a single path
+set instead of multiple ones, especially since there is the merged one that
+exists now. So there is no need to complicate it in a way. However, it would
+make initializing the class path a bit more complex, so bad idea.
+
+## 16:29
+
+I think a good thing for the compiler would be to load a structure first for
+an input file if it has not yet been determined, then compile that structure.
+
+## 18:51
+
+So the next thing to do is to go back to tokenization since the input files
+need to be parsed. The initial tokenizer pass will just be low-level ones with
+symbols and such with no context. Once the symbols are known then a basic
+state machine could be built on it.
+
+## 21:56
+
+This code is a bit old but there are better ways to do it.
