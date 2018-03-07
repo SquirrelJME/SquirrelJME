@@ -161,6 +161,9 @@ public class CuteRunnable
 				t = t.getCause();
 			}
 			
+			// Print trace
+			e.printStackTrace();
+			
 			// Keep it going
 			throw e;
 		}
