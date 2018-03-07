@@ -680,6 +680,23 @@ public final class CharacterTest
 	}
 	
 	/**
+	 * Is this character the start of a symbol.
+	 *
+	 * @param __c The character to test.
+	 * @return If it is the start of a symbol.
+	 * @since 2018/03/06
+	 */
+	public static boolean isSymbolStart(int __c)
+	{
+		return __c == '^' || __c == '~' || __c == '<' || __c == '=' ||
+			__c == '>' || __c == '|' || __c == '-' || __c == ',' ||
+			__c == ';' || __c == ':' || __c == '!' || __c == '?' ||
+			__c == '/' || __c == '.' || __c == '(' || __c == ')' ||
+			__c == '[' || __c == ']' || __c == '{' || __c == '}' ||
+			__c == '*' || __c == '&' || __c == '%' || __c == '+';
+	}
+	
+	/**
 	 * Is this a character which is possible being in a number literal.
 	 *
 	 * @param __c The character check.

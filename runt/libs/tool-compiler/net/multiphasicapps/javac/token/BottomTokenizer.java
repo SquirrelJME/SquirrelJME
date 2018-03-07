@@ -18,8 +18,10 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.List;
+import net.multiphasicapps.collections.UnmodifiableList;
 
 /**
  * This class is the tokenizer which is used to provide tokens.
@@ -32,6 +34,14 @@ public class BottomTokenizer
 	/** The number of characters in the queue. */
 	private static final int _QUEUE_SIZE =
 		8;
+	
+	/** Operators used. */
+	private static final List<String> _OPERATORS =
+		UnmodifiableList.<String>of(Arrays.<String>asList("(", ")", "{", "}",
+			"[", "]", ";", ",", ".", "=", ">", "<", "!", "~", "?", ":", "::",
+			"==", "<=", ">=", "!=", "&&", "||", "++", "--", "+", "-", "*", "/",
+			"&", "|", "^", "%", "<<", ">>", ">>>", "+=", "-=", "*=", "/=",
+			"&=", "|=", "^=", "%=", "<<=", ">>=", ">>>="));
 	
 	/** Input character source. */
 	protected final LogicalReader in;
@@ -168,42 +178,6 @@ public class BottomTokenizer
 			else if (c == '=')
 				return __decideEquals();
 			
-			// Open parenthesis
-			else if (c == '(')
-				return __token(BottomType.SYMBOL_OPEN_PARENTHESIS, "(");
-			
-			// Closed parenthesis
-			else if (c == ')')
-				return __token(BottomType.SYMBOL_CLOSED_PARENTHESIS, ")");
-			
-			// Open brace
-			else if (c == '{')
-				return __token(BottomType.SYMBOL_OPEN_BRACE, "{");
-			
-			// Closed brace
-			else if (c == '}')
-				return __token(BottomType.SYMBOL_CLOSED_BRACE, "}");
-			
-			// Open bracket
-			else if (c == '[')
-				return __token(BottomType.SYMBOL_OPEN_BRACKET, "[");
-			
-			// Closed bracket
-			else if (c == ']')
-				return __token(BottomType.SYMBOL_CLOSED_BRACKET, "]");
-			
-			// Open angle bracket
-			else if (c == '<')
-				return this.__decideAngleOpen();
-			
-			// Semi-colon
-			else if (c == ';')
-				return __token(BottomType.SYMBOL_SEMICOLON, ";");
-			
-			// Comma
-			else if (c == ',')
-				return __token(BottomType.SYMBOL_COMMA, ",");
-			
 			// Dot
 			else if (c == '.')
 			{
@@ -229,10 +203,6 @@ public class BottomTokenizer
 				return this.__token(BottomType.SYMBOL_DOT, ".");
 			}
 			
-			// Ternary question
-			else if (c == '?')
-				return __token(BottomType.OPERATOR_TERNARY_QUESTION, "?");
-			
 			// Ternary colon, case, label, or method reference
 			else if (c == ':')
 			{
@@ -248,9 +218,9 @@ public class BottomTokenizer
 				return this.__token(BottomType.SYMBOL_COLON, ":");
 			}
 			
-			// Not
-			else if (c == '!')
-				return __token(BottomType.OPERATOR_NOT, "!");
+			// Is start is a potential symbol
+			else if (CharacterTest.isSymbolStart(c))
+				return this.__decideOperator(c);
 			
 			// Identifiers
 			else if (CharacterTest.isIdentifierStart((char)c))
@@ -273,70 +243,6 @@ public class BottomTokenizer
 	}
 	
 	/**
-	 * Decides how to parse the opening angle bracket.
-	 *
-	 * @return The resulting token.
-	 * @throws IOException On read errors.
-	 * @since 2018/03/06
-	 */
-	private BottomToken __decideAngleOpen()
-		throws IOException
-	{
-		// Read in characters
-		StringBuilder sb = new StringBuilder("<");
-		int count = 1;
-		boolean hasequals = false;
-		for (;;)
-		{
-			int peek = this.__peek();
-			
-			// Is another one!
-			if (peek == '<')
-			{
-				// Too many, do not use it
-				if (count == 2)
-					break;
-				
-				// Increase count
-				this.__next();
-				sb.append('<');
-				count++;
-			}
-			
-			// Is just an equal sign
-			else if (peek == '=')
-			{
-				this.__next();
-				sb.append('=');
-				hasequals = true;
-				break;
-			}
-			
-			// Unknown
-			else
-				break;
-		}
-		
-		// Depends
-		BottomType type;
-		if (hasequals)
-			if (count == 1)
-				type = BottomType.OPERATOR_COMPARE_LESS_THAN_EQUALS;
-			else if (count == 2)
-				type = BottomType.OPERATOR_SHIFT_LEFT_ASSIGN;
-			else
-				throw new RuntimeException("OOPS");
-		else
-			if (count == 1)
-				type = BottomType.SYMBOL_OPEN_ANGLE;
-			else if (count == 2)
-				type = BottomType.OPERATOR_SHIFT_LEFT;
-			else
-				throw new RuntimeException("OOPS");
-		return this.__token(type, sb);
-	}
-	
-	/**
 	 * Decides how to parse an equal sign.
 	 *
 	 * @return The read token.
@@ -351,7 +257,7 @@ public class BottomTokenizer
 		if (d == '=')
 		{
 			__next();
-			return __token(BottomType.OPERATOR_COMPARE_EQUALS, "==");
+			return __token(BottomType.COMPARE_EQUALS, "==");
 		}
 		
 		// Just an assignment
@@ -387,13 +293,27 @@ public class BottomTokenizer
 		
 			// Divide and assign
 			else
-				return __token(BottomType.OPERATOR_DIVIDE_AND_ASSIGN,
+				return __token(BottomType.OPERATOR_DIVIDE_ASSIGN,
 					"/=");
 		}
 		
 		// Divide otherwise
 		else
 			return __token(BottomType.OPERATOR_DIVIDE, "/");
+	}
+	
+	/**
+	 * Decides how to decode a given sequence to read an operator from it.
+	 *
+	 * @param __c The starting character.
+	 * @return The resulting token.
+	 * @throws IOException On read errors.
+	 * @since 2018/03/06
+	 */
+	private BottomToken __decideOperator(int __c)
+		throws IOException
+	{
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -802,6 +722,84 @@ public class BottomTokenizer
 		
 		return new BottomToken(__t, __s.toString(), this._atline,
 			this._atcolumn);
+	}
+	
+	/**
+	 * Parses the specified sequence as an operator.
+	 *
+	 * @param __s The sequence to decode.
+	 * @return The token for the operator.
+	 * @throws NullPointerException On null arguments.
+	 * @throws TokenizerException If the sequence is not valid.
+	 * @since 2018/03/06
+	 */
+	private BottomToken __tokenOperator(CharSequence __s)
+		throws NullPointerException, TokenizerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Depends on the sequence
+		String s = __s.toString();
+		BottomType type;
+		switch (s)
+		{
+			case "^":	type = BottomType.OPERATOR_XOR; break;
+			case "^=":	type = BottomType.OPERATOR_XOR_ASSIGN; break;
+			case "~":	type = BottomType.OPERATOR_COMPLEMENT; break;
+			case "<":	type = BottomType.COMPARE_LESS_THAN; break;
+			case "<<":	type = BottomType.OPERATOR_SHIFT_LEFT; break;
+			case "<<=":	type = BottomType.OPERATOR_SHIFT_LEFT_ASSIGN; break;
+			case "<=":	type = BottomType.COMPARE_LESS_OR_EQUAL; break;
+			case "=":	type = BottomType.OPERATOR_ASSIGN; break;
+			case "==":	type = BottomType.COMPARE_EQUALS; break;
+			case ">":	type = BottomType.COMPARE_GREATER_THAN; break;
+			case ">=":	type = BottomType.COMPARE_GREATER_OR_EQUAL; break;
+			case ">>":	type = BottomType.OPERATOR_SSHIFT_RIGHT; break;
+			case ">>=":	type = BottomType.OPERATOR_SSHIFT_RIGHT_ASSIGN; break;
+			case ">>>":	type = BottomType.OPERATOR_USHIFT_RIGHT; break;
+			case ">>>=":type = BottomType.OPERATOR_USHIFT_RIGHT_ASSIGN; break;
+			case "|":	type = BottomType.OPERATOR_OR; break;
+			case "|=":	type = BottomType.OPERATOR_OR_ASSIGN; break;
+			case "||":	type = BottomType.COMPARE_OR; break;
+			case "-":	type = BottomType.OPERATOR_MINUS; break;
+			case "-=":	type = BottomType.OPERATOR_MINUS_ASSIGN; break;
+			case "--":	type = BottomType.OPERATOR_DECREMENT; break;
+			case ",":	type = BottomType.SYMBOL_COMMA; break;
+			case ";":	type = BottomType.SYMBOL_SEMICOLON; break;
+			case ":":	type = BottomType.SYMBOL_COLON; break;
+			case "::":	type = BottomType.SYMBOL_DOUBLE_COLON; break;
+			case "!":	type = BottomType.OPERATOR_NOT; break;
+			case "!=":	type = BottomType.COMPARE_NOT_EQUALS; break;
+			case "?":	type = BottomType.OPERATOR_TERNARY_QUESTION; break;
+			case "/":	type = BottomType.OPERATOR_DIVIDE; break;
+			case "/=":	type = BottomType.OPERATOR_DIVIDE_ASSIGN; break;
+			case ".":	type = BottomType.SYMBOL_DOT; break;
+			case "(":	type = BottomType.SYMBOL_OPEN_PARENTHESIS; break;
+			case ")":	type = BottomType.SYMBOL_CLOSED_PARENTHESIS; break;
+			case "[":	type = BottomType.SYMBOL_OPEN_BRACKET; break;
+			case "]":	type = BottomType.SYMBOL_CLOSED_BRACKET; break;
+			case "{":	type = BottomType.SYMBOL_OPEN_BRACE; break;
+			case "}":	type = BottomType.SYMBOL_CLOSED_BRACE; break;
+			case "*":	type = BottomType.OPERATOR_MULTIPLY; break;
+			case "*=":	type = BottomType.OPERATOR_MULTIPLY_ASSIGN; break;
+			case "&":	type = BottomType.OPERATOR_AND; break;
+			case "&=":	type = BottomType.OPERATOR_AND_ASSIGN; break;
+			case "&&":	type = BottomType.COMPARE_AND; break;
+			case "%":	type = BottomType.OPERATOR_REMAINDER; break;
+			case "%=":	type = BottomType.OPERATOR_REMAINDER_ASSIGN; break;
+			case "+":	type = BottomType.OPERATOR_PLUS; break;
+			case "+=":	type = BottomType.OPERATOR_PLUS_ASSIGN; break;
+			case "++":	type = BottomType.OPERATOR_INCREMENT; break;
+			
+				// {@squirreljme.error AQ0z Could not determine the used
+				// operator for the given sequence. (The sequence)}
+			default:
+				throw new TokenizerException(String.format("AQ0z %s", s));
+		}
+		
+		// Generate
+		return this.__token(type, s);
 	}
 
 	/**
