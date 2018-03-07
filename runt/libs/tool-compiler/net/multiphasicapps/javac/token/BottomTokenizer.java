@@ -37,7 +37,7 @@ public class BottomTokenizer
 			"[", "]", ";", ",", ".", "=", ">", "<", "!", "~", "?", ":", "::",
 			"==", "<=", ">=", "!=", "&&", "||", "++", "--", "+", "-", "*", "/",
 			"&", "|", "^", "%", "<<", ">>", ">>>", "+=", "-=", "*=", "/=",
-			"&=", "|=", "^=", "%=", "<<=", ">>=", ">>>=", "->"));
+			"&=", "|=", "^=", "%=", "<<=", ">>=", ">>>=", "->", "@"));
 	
 	/** Operator character code merge. */
 	private static final int[] _OPERATOR_MERGE;
@@ -941,6 +941,7 @@ public class BottomTokenizer
 			case "+":	type = BottomType.OPERATOR_PLUS; break;
 			case "+=":	type = BottomType.OPERATOR_PLUS_ASSIGN; break;
 			case "++":	type = BottomType.OPERATOR_INCREMENT; break;
+			case "@":	type = BottomType.SYMBOL_AT; break;
 			
 				// {@squirreljme.error AQ0z Could not determine the used
 				// operator for the given sequence. (The sequence)}

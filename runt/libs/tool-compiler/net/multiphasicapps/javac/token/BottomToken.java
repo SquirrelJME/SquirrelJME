@@ -20,6 +20,7 @@ import java.lang.ref.WeakReference;
  * @since 2017/09/04
  */
 public final class BottomToken
+	implements LineAndColumn
 {
 	/** The type of token this is, */
 	protected final BottomType type;
@@ -71,11 +72,10 @@ public final class BottomToken
 	}
 	
 	/**
-	 * Returns the column this token is on.
-	 *
-	 * @return The column the token is on.
+	 * {@inheritDoc}
 	 * @since 2017/09/09
 	 */
+	@Override
 	public int column()
 	{
 		return this.column;
@@ -121,11 +121,10 @@ public final class BottomToken
 	}
 	
 	/**
-	 * Returns the line this token is on.
-	 *
-	 * @return The line the token is on.
+	 * {@inheritDoc}
 	 * @since 2017/09/09
 	 */
+	@Override
 	public int line()
 	{
 		return this.line;
