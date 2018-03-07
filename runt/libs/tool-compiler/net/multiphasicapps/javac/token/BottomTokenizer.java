@@ -208,9 +208,13 @@ public class BottomTokenizer
 			else if (c == '?')
 				return __token(BottomTokenType.OPERATOR_TERNARY_QUESTION, "?");
 			
-			// Ternary colon
+			// Ternary colon, case, or label
 			else if (c == ':')
 				return __token(BottomTokenType.SYMBOL_COLON, ":");
+			
+			// Not
+			else if (c == '!')
+				return __token(BottomTokenType.OPERATOR_NOT, "!");
 			
 			// Identifiers
 			else if (CharacterTest.isIdentifierStart((char)c))
@@ -219,6 +223,10 @@ public class BottomTokenizer
 			// Integer/float literals
 			else if (c >= '0' && c <= '9')
 				return __getNumberLiteral((char)c);
+			
+			// String
+			else if (c == '\"')
+				return this.__getString();
 			
 			// {@squirreljme.error AQ0e Unknown character while tokenizing the
 			// Java source code. (The character; The line; The column)}
@@ -279,7 +287,8 @@ public class BottomTokenizer
 		
 			// Divide and assign
 			else
-				return __token(BottomTokenType.OPERATOR_DIVIDE_AND_ASSIGN, "/=");
+				return __token(BottomTokenType.OPERATOR_DIVIDE_AND_ASSIGN,
+					"/=");
 		}
 		
 		// Divide otherwise
@@ -492,6 +501,34 @@ public class BottomTokenizer
 			
 			// Otherwise consume it
 			sb.append((char)__next());
+		}
+	}
+	
+	/**
+	 * Decodes a string.
+	 *
+	 * @return The resulting string.
+	 * @throws IOException On read errors.
+	 * @since 2018/03/06
+	 */
+	private BottomToken __getString()
+		throws IOException
+	{
+		StringBuilder sb = new StringBuilder("\"");
+		boolean escaped = false;
+		for (;;)
+		{
+			int c = __next();
+			if (c == '\\')
+				escaped = true;
+			else if (!escaped && c == '\"')
+			{
+				sb.append((char)c);
+				return __token(BottomTokenType.LITERAL_STRING, sb);
+			}
+			
+			// Consume it
+			sb.append((char)c);
 		}
 	}
 	

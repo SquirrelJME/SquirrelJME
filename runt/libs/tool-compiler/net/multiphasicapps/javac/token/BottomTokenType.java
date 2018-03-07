@@ -182,6 +182,9 @@ public enum BottomTokenType
 	/** Ternary question operator. */
 	OPERATOR_TERNARY_QUESTION,
 	
+	/** The NOT operator. */
+	OPERATOR_NOT,
+	
 	/** Ternary colon operator. */
 	SYMBOL_COLON,
 	
@@ -238,6 +241,9 @@ public enum BottomTokenType
 	
 	/** Hexadecimal float literal. */
 	LITERAL_HEXADECIMAL_FLOAT,
+	
+	/** String literal. */
+	LITERAL_STRING,
 	
 	/** End. */
 	;
