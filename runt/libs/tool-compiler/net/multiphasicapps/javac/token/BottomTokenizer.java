@@ -27,7 +27,7 @@ import java.util.List;
  * @since 2017/09/04
  */
 public class BottomTokenizer
-	implements Closeable
+	implements Closeable, LineAndColumn
 {
 	/** The number of characters in the queue. */
 	private static final int _QUEUE_SIZE =
@@ -106,6 +106,26 @@ public class BottomTokenizer
 		throws IOException
 	{
 		this.in.close();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/06
+	 */
+	@Override
+	public int column()
+	{
+		return this._atcolumn;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/06
+	 */
+	@Override
+	public int line()
+	{
+		return this._atline;
 	}
 	
 	/**

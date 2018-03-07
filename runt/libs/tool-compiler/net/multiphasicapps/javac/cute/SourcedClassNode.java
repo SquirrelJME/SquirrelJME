@@ -61,6 +61,9 @@ public final class SourcedClassNode
 		if (__input == null || __state == null)
 			throw new NullPointerException("NARG");
 		
+		// Store last processed file for debug purposes
+		__state._lastinput = __input;
+		
 		// {@squirreljme.error AQ0s Parsing input source file for classes to
 		// compile.}
 		__state.message(MessageType.INFO, __input, "AQ0s");
@@ -69,6 +72,10 @@ public final class SourcedClassNode
 		try (InputStream in = __input.open();
 			BottomTokenizer btkz = new BottomTokenizer(in))
 		{
+			// Use this as a source for lines and columns
+			__state._lineandcol = btkz;
+			
+			// Debug print all tokens
 			BottomToken next;
 			while (null != (next = btkz.next()))
 				System.err.printf("DEBUG -- Token: %s%n", next);

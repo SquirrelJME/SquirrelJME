@@ -22,6 +22,7 @@ import net.multiphasicapps.javac.CompilerInputLocation;
 import net.multiphasicapps.javac.CompilerPathSet;
 import net.multiphasicapps.javac.CompilerInput;
 import net.multiphasicapps.javac.NoSuchInputException;
+import net.multiphasicapps.javac.token.LineAndColumn;
 
 /**
  * This contains the current state of the compiler.
@@ -43,6 +44,12 @@ public final class CompilerState
 	/** Class nodes which need to be compiled. */
 	final Deque<SourcedClassNode> _tocompile =
 		new ArrayDeque<>();
+	
+	/** Source to use for line and column information if it is missing. */
+	volatile LineAndColumn _lineandcol;
+	
+	/** Last processed input file. */
+	volatile CompilerInput _lastinput;
 	
 	/**
 	 * Initializes the compiler state.
@@ -205,14 +212,37 @@ public final class CompilerState
 	 *
 	 * @param __t The type of message to display.
 	 * @parma __i The current input file, may be {@code null}.
-	 * @param __row The current row, negative values are not valid.
+	 * @param __lc Line and column information.
+	 * @param __m The formatted message to show.
+	 * @param __args The arguments to the formatted message.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/06
+	 */
+	public final void message(MessageType __t, CompilerInput __i,
+		LineAndColumn __lc, String __m, Object... __args)
+		throws NullPointerException
+	{
+		if (__t == null || __m == null)
+			throw new NullPointerException("NARG");
+		
+		// Forward
+		this.message(__t, __i, (__lc == null ? -1 : __lc.line()),
+			(__lc == null ? -1 : __lc.column()), __m, __args);
+	}
+	
+	/**
+	 * Logs the specified message.
+	 *
+	 * @param __t The type of message to display.
+	 * @parma __i The current input file, may be {@code null}.
+	 * @param __line The current row, negative values are not valid.
 	 * @param __col The current column, negative values are not valid.
 	 * @param __m The formatted message to show.
 	 * @param __args The arguments to the formatted message.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/06
 	 */
-	public final void message(MessageType __t, CompilerInput __i, int __row,
+	public final void message(MessageType __t, CompilerInput __i, int __line,
 		int __col, String __m, Object... __args)
 		throws NullPointerException
 	{
@@ -229,14 +259,33 @@ public final class CompilerState
 		// File
 		if (__i != null)
 			log.print(__i.name());
+		
+		// Use a fallback name if it is possible
 		else
-			log.print("<unknown>");
+		{
+			CompilerInput lastinput = this._lastinput;
+			
+			if (lastinput != null)
+				log.print(lastinput.name());
+			else
+				log.print("<unknown>");
+		}
+		
+		// Use estimate line and column information if it was not specified
+		LineAndColumn lineandcol = this._lineandcol;
+		if (lineandcol != null)
+		{
+			if (__line < 0)
+				__line = lineandcol.line();
+			if (__col < 0)
+				__col = lineandcol.column();
+		}
 		
 		// Printing row?
-		if (__row >= 0)
+		if (__line >= 0)
 		{
 			log.print(':');
-			log.print(__row);
+			log.print(__line);
 			
 			// Add column also?
 			if (__col >= 0)
