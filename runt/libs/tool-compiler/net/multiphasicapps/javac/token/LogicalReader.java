@@ -134,7 +134,7 @@ public class LogicalReader
 				// {@squirreljme.error AQ0c Unicode sequence truncated at
 				// end of file.}
 				if (unicode)
-					throw new TokenizerException("AQ0c");
+					throw new TokenizerException(this, "AQ0c");
 				
 				// Make sure the escape is returned before EOF
 				if (escaped)
@@ -199,7 +199,7 @@ public class LogicalReader
 					// {@squirreljme.error AQ0d Invalid unicode escape
 					// sequence. (The line; The column)}
 					if (unicodemask != 0 || c != 'u')
-						throw new TokenizerException(
+						throw new TokenizerException(this, 
 							String.format("AQ0d %d %d", this._line,
 							this._column));
 					
