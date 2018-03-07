@@ -22,7 +22,7 @@ import java.lang.ref.WeakReference;
 public final class BottomToken
 {
 	/** The type of token this is, */
-	protected final BottomTokenType type;
+	protected final BottomType type;
 	
 	/** The token string data. */
 	protected final String chars;
@@ -46,7 +46,7 @@ public final class BottomToken
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/09/06
 	 */
-	public BottomToken(BottomTokenType __t, String __c, int __l, int __o)
+	public BottomToken(BottomType __t, String __c, int __l, int __o)
 		throws NullPointerException
 	{
 		// Check
@@ -144,7 +144,7 @@ public final class BottomToken
 	 * @return The token type.
 	 * @since 2017/09/06
 	 */
-	public BottomTokenType type()
+	public BottomType type()
 	{
 		return this.type;
 	}
