@@ -35,7 +35,7 @@ public final class CharacterTest
 	 * @return If this is valid for the part of an identifier.
 	 * @since 2017/09/09
 	 */
-	public static boolean isIdentifierPart(char __c)
+	public static boolean isIdentifierPart(int __c)
 	{
 		return (isIdentifierStart(__c) ||
 			(__c >= 0x0001 && __c < 0x0009) ||
@@ -272,7 +272,7 @@ public final class CharacterTest
 	 * @return If this is valid for the start of an identifier.
 	 * @since 2017/09/09
 	 */
-	public static boolean isIdentifierStart(char __c)
+	public static boolean isIdentifierStart(int __c)
 	{
 		return (__c == 0x0024 ||
 			(__c >= 0x0041 && __c < 0x005B) ||
@@ -677,6 +677,26 @@ public final class CharacterTest
 	public static boolean isNewline(int __c)
 	{
 		return __c < 0 || __c == '\r' || __c == '\n';
+	}
+	
+	/**
+	 * Is this a character which is possible being in a number literal.
+	 *
+	 * @param __c The character check.
+	 * @return If the character may be placed in a number literal.
+	 * @since 2018/03/06
+	 */
+	public static boolean isPossibleNumberChar(int __c)
+	{
+		return __c == 'l' || __c == 'L' ||
+			__c == 'x' || __c == 'X' ||
+			__c == '+' || __c == '-' ||
+			__c == 'p' || __c == 'P' ||
+			__c == 'e' || __c == 'E' ||
+			__c == '.' || __c == '_' ||
+			(__c >= '0' && __c <= '9') ||
+			(__c >= 'a' && __c <= 'f') ||	// includes bdf
+			(__c >= 'A' && __c <= 'F');		// includes BDF
 	}
 	
 	/**
