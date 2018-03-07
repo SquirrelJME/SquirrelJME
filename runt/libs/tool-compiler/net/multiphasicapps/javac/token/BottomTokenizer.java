@@ -192,6 +192,10 @@ public class BottomTokenizer
 			else if (c == ']')
 				return __token(BottomType.SYMBOL_CLOSED_BRACKET, "]");
 			
+			// Open angle bracket
+			else if (c == '<')
+				return this.__decideAngleOpen();
+			
 			// Semi-colon
 			else if (c == ';')
 				return __token(BottomType.SYMBOL_SEMICOLON, ";");
@@ -209,6 +213,18 @@ public class BottomTokenizer
 				if (p >= '0' && p <= '9')
 					return this.__getNumberLiteral((char)p);
 				
+				// If it is a dot then it could be ...
+				else if (p == '.')
+				{
+					// {@squirreljme.error AQ0y Invalid elipses, three
+					// dots were expected but only two were read.}
+					p = this.__peek();
+					if (p != '.')
+						throw new TokenizerException("AQ0y");
+					
+					return this.__token(BottomType.SYMBOL_ELLIPSES, "...");
+				}
+				
 				// Otherwise just a dot
 				return this.__token(BottomType.SYMBOL_DOT, ".");
 			}
@@ -217,9 +233,20 @@ public class BottomTokenizer
 			else if (c == '?')
 				return __token(BottomType.OPERATOR_TERNARY_QUESTION, "?");
 			
-			// Ternary colon, case, or label
+			// Ternary colon, case, label, or method reference
 			else if (c == ':')
-				return __token(BottomType.SYMBOL_COLON, ":");
+			{
+				// Could be a double colon
+				int peek = this.__peek();
+				if (peek == ':')
+				{
+					this.__next();
+					return this.__token(BottomType.SYMBOL_DOUBLE_COLON, "::");
+				}
+				
+				// Only a single one
+				return this.__token(BottomType.SYMBOL_COLON, ":");
+			}
 			
 			// Not
 			else if (c == '!')
@@ -243,6 +270,70 @@ public class BottomTokenizer
 				throw new TokenizerException(String.format("AQ0e %c %d %d",
 					(char)c, line, column));
 		}
+	}
+	
+	/**
+	 * Decides how to parse the opening angle bracket.
+	 *
+	 * @return The resulting token.
+	 * @throws IOException On read errors.
+	 * @since 2018/03/06
+	 */
+	private BottomToken __decideAngleOpen()
+		throws IOException
+	{
+		// Read in characters
+		StringBuilder sb = new StringBuilder("<");
+		int count = 1;
+		boolean hasequals = false;
+		for (;;)
+		{
+			int peek = this.__peek();
+			
+			// Is another one!
+			if (peek == '<')
+			{
+				// Too many, do not use it
+				if (count == 2)
+					break;
+				
+				// Increase count
+				this.__next();
+				sb.append('<');
+				count++;
+			}
+			
+			// Is just an equal sign
+			else if (peek == '=')
+			{
+				this.__next();
+				sb.append('=');
+				hasequals = true;
+				break;
+			}
+			
+			// Unknown
+			else
+				break;
+		}
+		
+		// Depends
+		BottomType type;
+		if (hasequals)
+			if (count == 1)
+				type = BottomType.OPERATOR_COMPARE_LESS_THAN_EQUALS;
+			else if (count == 2)
+				type = BottomType.OPERATOR_SHIFT_LEFT_ASSIGN;
+			else
+				throw new RuntimeException("OOPS");
+		else
+			if (count == 1)
+				type = BottomType.SYMBOL_OPEN_ANGLE;
+			else if (count == 2)
+				type = BottomType.OPERATOR_SHIFT_LEFT;
+			else
+				throw new RuntimeException("OOPS");
+		return this.__token(type, sb);
 	}
 	
 	/**
