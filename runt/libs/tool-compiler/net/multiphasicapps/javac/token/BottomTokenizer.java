@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.javac.token;
 
+import java.io.Closeable;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
@@ -25,7 +26,8 @@ import java.util.List;
  *
  * @since 2017/09/04
  */
-public class Tokenizer
+public class BottomTokenizer
+	implements Closeable
 {
 	/** The number of characters in the queue. */
 	private static final int _QUEUE_SIZE =
@@ -73,7 +75,7 @@ public class Tokenizer
 	 * not occur.
 	 * @since 2017/09/04
 	 */
-	public Tokenizer(InputStream __is)
+	public BottomTokenizer(InputStream __is)
 		throws NullPointerException, RuntimeException
 	{
 		this(__wrap(__is));
@@ -86,13 +88,24 @@ public class Tokenizer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/09/04
 	 */
-	public Tokenizer(Reader __r)
+	public BottomTokenizer(Reader __r)
 	{
 		// Check
 		if (__r == null)
 			throw new NullPointerException("NARG");
 		
 		this.in = new LogicalReader(__r);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/06
+	 */
+	@Override
+	public void close()
+		throws IOException
+	{
+		this.in.close();
 	}
 	
 	/**
@@ -103,7 +116,7 @@ public class Tokenizer
 	 * @throws TokenizerException If a token sequence is not valid.
 	 * @since 2017/09/05
 	 */
-	public Token next()
+	public BottomToken next()
 		throws IOException, TokenizerException
 	{
 		// Loop to skip whitespace
@@ -123,7 +136,7 @@ public class Tokenizer
 			if (CharacterTest.isWhite(c))
 				continue;
 			
-			// Token position, used for debugging
+			// BottomToken position, used for debugging
 			this._atline = line;
 			this._atcolumn = column;
 			
@@ -137,47 +150,47 @@ public class Tokenizer
 			
 			// Open parenthesis
 			else if (c == '(')
-				return __token(TokenType.SEPARATOR_OPEN_PARENTHESIS, "(");
+				return __token(BottomTokenType.SYMBOL_OPEN_PARENTHESIS, "(");
 			
 			// Closed parenthesis
 			else if (c == ')')
-				return __token(TokenType.SEPARATOR_CLOSED_PARENTHESIS, ")");
+				return __token(BottomTokenType.SYMBOL_CLOSED_PARENTHESIS, ")");
 			
 			// Open brace
 			else if (c == '{')
-				return __token(TokenType.SEPARATOR_OPEN_BRACE, "{");
+				return __token(BottomTokenType.SYMBOL_OPEN_BRACE, "{");
 			
 			// Closed brace
 			else if (c == '}')
-				return __token(TokenType.SEPARATOR_CLOSED_BRACE, "}");
+				return __token(BottomTokenType.SYMBOL_CLOSED_BRACE, "}");
 			
 			// Open bracket
 			else if (c == '[')
-				return __token(TokenType.SEPARATOR_OPEN_BRACKET, "[");
+				return __token(BottomTokenType.SYMBOL_OPEN_BRACKET, "[");
 			
 			// Closed bracket
 			else if (c == ']')
-				return __token(TokenType.SEPARATOR_CLOSED_BRACKET, "]");
+				return __token(BottomTokenType.SYMBOL_CLOSED_BRACKET, "]");
 			
 			// Semi-colon
 			else if (c == ';')
-				return __token(TokenType.SEPARATOR_SEMICOLON, ";");
+				return __token(BottomTokenType.SYMBOL_SEMICOLON, ";");
 			
 			// Comma
 			else if (c == ',')
-				return __token(TokenType.SEPARATOR_COMMA, ",");
+				return __token(BottomTokenType.SYMBOL_COMMA, ",");
 			
 			// Dot
 			else if (c == '.')
-				return __token(TokenType.SEPARATOR_DOT, ".");
+				return __token(BottomTokenType.SYMBOL_DOT, ".");
 			
 			// Ternary question
 			else if (c == '?')
-				return __token(TokenType.OPERATOR_TERNARY_QUESTION, "?");
+				return __token(BottomTokenType.OPERATOR_TERNARY_QUESTION, "?");
 			
 			// Ternary colon
 			else if (c == ':')
-				return __token(TokenType.OPERATOR_TERNARY_COLON, ":");
+				return __token(BottomTokenType.SYMBOL_COLON, ":");
 			
 			// Identifiers
 			else if (CharacterTest.isIdentifierStart((char)c))
@@ -202,7 +215,7 @@ public class Tokenizer
 	 * @throws IOException On read errors.
 	 * @since 2017/09/11
 	 */
-	private Token __decideEquals()
+	private BottomToken __decideEquals()
 		throws IOException
 	{
 		// Checking for equality?
@@ -210,12 +223,12 @@ public class Tokenizer
 		if (d == '=')
 		{
 			__next();
-			return __token(TokenType.OPERATOR_COMPARE_EQUALS, "==");
+			return __token(BottomTokenType.OPERATOR_COMPARE_EQUALS, "==");
 		}
 		
 		// Just an assignment
 		else
-			return __token(TokenType.OPERATOR_ASSIGN, "=");
+			return __token(BottomTokenType.OPERATOR_ASSIGN, "=");
 	}
 	
 	/**
@@ -225,7 +238,7 @@ public class Tokenizer
 	 * @throws IOException On read errors.
 	 * @since 2017/09/09
 	 */
-	private Token __decideForwardSlash()
+	private BottomToken __decideForwardSlash()
 		throws IOException
 	{
 		int c = __peek();
@@ -246,12 +259,12 @@ public class Tokenizer
 		
 			// Divide and assign
 			else
-				return __token(TokenType.OPERATOR_DIVIDE_AND_ASSIGN, "/=");
+				return __token(BottomTokenType.OPERATOR_DIVIDE_AND_ASSIGN, "/=");
 		}
 		
 		// Divide otherwise
 		else
-			return __token(TokenType.OPERATOR_DIVIDE, "/");
+			return __token(BottomTokenType.OPERATOR_DIVIDE, "/");
 	}
 	
 	/**
@@ -261,7 +274,7 @@ public class Tokenizer
 	 * @return The read identifier.
 	 * @since 2017/09/10
 	 */
-	private Token __getIdentifier(char __ic)
+	private BottomToken __getIdentifier(char __ic)
 		throws IOException
 	{
 		StringBuilder sb = new StringBuilder();
@@ -273,7 +286,7 @@ public class Tokenizer
 			if (c < 0 || !CharacterTest.isIdentifierPart((char)c))
 			{
 				String s = sb.toString();
-				TokenType t;
+				BottomTokenType t;
 				switch (s)
 				{
 						// {@squirreljme.error AQ0f The specified keywords
@@ -281,68 +294,68 @@ public class Tokenizer
 					case "const":
 					case "goto":
 						throw new TokenizerException(String.format("AQ0f %s",
-							__token(TokenType.IDENTIFIER, s)));
+							__token(BottomTokenType.IDENTIFIER, s)));
 					
-					case "abstract":	t = TokenType.KEYWORD_ABSTRACT; break;
-					case "assert":		t = TokenType.KEYWORD_ASSERT; break;
-					case "boolean":		t = TokenType.KEYWORD_BOOLEAN; break;
-					case "break":		t = TokenType.KEYWORD_BREAK; break;
-					case "byte":		t = TokenType.KEYWORD_BYTE; break;
-					case "case":		t = TokenType.KEYWORD_CASE; break;
-					case "catch":		t = TokenType.KEYWORD_CATCH; break;
-					case "char":		t = TokenType.KEYWORD_CHAR; break;
-					case "class":		t = TokenType.KEYWORD_CLASS; break;
-					case "continue":	t = TokenType.KEYWORD_CONTINUE; break;
-					case "default":		t = TokenType.KEYWORD_DEFAULT; break;
-					case "do":			t = TokenType.KEYWORD_DO; break;
-					case "double":		t = TokenType.KEYWORD_DOUBLE; break;
-					case "else":		t = TokenType.KEYWORD_ELSE; break;
-					case "enum":		t = TokenType.KEYWORD_ENUM; break;
-					case "extends":		t = TokenType.KEYWORD_EXTENDS; break;
-					case "final":		t = TokenType.KEYWORD_FINAL; break;
-					case "finally":		t = TokenType.KEYWORD_FINALLY; break;
-					case "float":		t = TokenType.KEYWORD_FLOAT; break;
-					case "for":			t = TokenType.KEYWORD_FOR; break;
-					case "if":			t = TokenType.KEYWORD_IF; break;
+					case "abstract":	t = BottomTokenType.KEYWORD_ABSTRACT; break;
+					case "assert":		t = BottomTokenType.KEYWORD_ASSERT; break;
+					case "boolean":		t = BottomTokenType.KEYWORD_BOOLEAN; break;
+					case "break":		t = BottomTokenType.KEYWORD_BREAK; break;
+					case "byte":		t = BottomTokenType.KEYWORD_BYTE; break;
+					case "case":		t = BottomTokenType.KEYWORD_CASE; break;
+					case "catch":		t = BottomTokenType.KEYWORD_CATCH; break;
+					case "char":		t = BottomTokenType.KEYWORD_CHAR; break;
+					case "class":		t = BottomTokenType.KEYWORD_CLASS; break;
+					case "continue":	t = BottomTokenType.KEYWORD_CONTINUE; break;
+					case "default":		t = BottomTokenType.KEYWORD_DEFAULT; break;
+					case "do":			t = BottomTokenType.KEYWORD_DO; break;
+					case "double":		t = BottomTokenType.KEYWORD_DOUBLE; break;
+					case "else":		t = BottomTokenType.KEYWORD_ELSE; break;
+					case "enum":		t = BottomTokenType.KEYWORD_ENUM; break;
+					case "extends":		t = BottomTokenType.KEYWORD_EXTENDS; break;
+					case "final":		t = BottomTokenType.KEYWORD_FINAL; break;
+					case "finally":		t = BottomTokenType.KEYWORD_FINALLY; break;
+					case "float":		t = BottomTokenType.KEYWORD_FLOAT; break;
+					case "for":			t = BottomTokenType.KEYWORD_FOR; break;
+					case "if":			t = BottomTokenType.KEYWORD_IF; break;
 					case "implements":
-						t = TokenType.KEYWORD_IMPLEMENTS;
+						t = BottomTokenType.KEYWORD_IMPLEMENTS;
 						break;
 						
-					case "import":		t = TokenType.KEYWORD_IMPORT; break;
+					case "import":		t = BottomTokenType.KEYWORD_IMPORT; break;
 					case "instanceof":
-						t = TokenType.KEYWORD_INSTANCEOF;
+						t = BottomTokenType.KEYWORD_INSTANCEOF;
 						break;
-					case "int":			t = TokenType.KEYWORD_INT; break;
-					case "interface":	t = TokenType.KEYWORD_INTERFACE; break;
-					case "long":		t = TokenType.KEYWORD_LONG; break;
-					case "native":		t = TokenType.KEYWORD_NATIVE; break;
-					case "new":			t = TokenType.KEYWORD_NEW; break;
-					case "package":		t = TokenType.KEYWORD_PACKAGE; break;
-					case "private":		t = TokenType.KEYWORD_PRIVATE; break;
-					case "protected":	t = TokenType.KEYWORD_PROTECTED; break;
-					case "public":		t = TokenType.KEYWORD_PUBLIC; break;
-					case "return":		t = TokenType.KEYWORD_RETURN; break;
-					case "short":		t = TokenType.KEYWORD_SHORT; break;
-					case "static":		t = TokenType.KEYWORD_STATIC; break;
-					case "strictfp":	t = TokenType.KEYWORD_STRICTFP; break;
-					case "super":		t = TokenType.KEYWORD_SUPER; break;
-					case "switch":		t = TokenType.KEYWORD_SWITCH; break;
+					case "int":			t = BottomTokenType.KEYWORD_INT; break;
+					case "interface":	t = BottomTokenType.KEYWORD_INTERFACE; break;
+					case "long":		t = BottomTokenType.KEYWORD_LONG; break;
+					case "native":		t = BottomTokenType.KEYWORD_NATIVE; break;
+					case "new":			t = BottomTokenType.KEYWORD_NEW; break;
+					case "package":		t = BottomTokenType.KEYWORD_PACKAGE; break;
+					case "private":		t = BottomTokenType.KEYWORD_PRIVATE; break;
+					case "protected":	t = BottomTokenType.KEYWORD_PROTECTED; break;
+					case "public":		t = BottomTokenType.KEYWORD_PUBLIC; break;
+					case "return":		t = BottomTokenType.KEYWORD_RETURN; break;
+					case "short":		t = BottomTokenType.KEYWORD_SHORT; break;
+					case "static":		t = BottomTokenType.KEYWORD_STATIC; break;
+					case "strictfp":	t = BottomTokenType.KEYWORD_STRICTFP; break;
+					case "super":		t = BottomTokenType.KEYWORD_SUPER; break;
+					case "switch":		t = BottomTokenType.KEYWORD_SWITCH; break;
 					case "synchronized":
-						t = TokenType.KEYWORD_SYNCHRONIZED;
+						t = BottomTokenType.KEYWORD_SYNCHRONIZED;
 						break;
 						
-					case "this":		t = TokenType.KEYWORD_THIS; break;
-					case "throw":		t = TokenType.KEYWORD_THROW; break;
-					case "throws":		t = TokenType.KEYWORD_THROWS; break;
-					case "transient":	t = TokenType.KEYWORD_TRANSIENT; break;
-					case "try":			t = TokenType.KEYWORD_TRY; break;
-					case "void":		t = TokenType.KEYWORD_VOID; break;
-					case "volatile":	t = TokenType.KEYWORD_VOLATILE; break;
-					case "while":		t = TokenType.KEYWORD_WHILE; break;
-					case "null":		t = TokenType.LITERAL_NULL; break;
-					case "false":		t = TokenType.LITERAL_FALSE; break;
-					case "true":		t = TokenType.LITERAL_TRUE; break;
-					default:			t = TokenType.IDENTIFIER; break;
+					case "this":		t = BottomTokenType.KEYWORD_THIS; break;
+					case "throw":		t = BottomTokenType.KEYWORD_THROW; break;
+					case "throws":		t = BottomTokenType.KEYWORD_THROWS; break;
+					case "transient":	t = BottomTokenType.KEYWORD_TRANSIENT; break;
+					case "try":			t = BottomTokenType.KEYWORD_TRY; break;
+					case "void":		t = BottomTokenType.KEYWORD_VOID; break;
+					case "volatile":	t = BottomTokenType.KEYWORD_VOLATILE; break;
+					case "while":		t = BottomTokenType.KEYWORD_WHILE; break;
+					case "null":		t = BottomTokenType.LITERAL_NULL; break;
+					case "false":		t = BottomTokenType.LITERAL_FALSE; break;
+					case "true":		t = BottomTokenType.LITERAL_TRUE; break;
+					default:			t = BottomTokenType.IDENTIFIER; break;
 				}
 				
 				return __token(t, s); 
@@ -359,7 +372,7 @@ public class Tokenizer
 	 * @throws IOException On read errors.
 	 * @since 2017/09/11
 	 */
-	private Token __getMultiLineComment()
+	private BottomToken __getMultiLineComment()
 		throws IOException
 	{
 		StringBuilder sb = new StringBuilder();
@@ -384,7 +397,7 @@ public class Tokenizer
 					// Eat the slash otherwise divide operators will always
 					// follow multi-line comments
 					__next();
-					return __token(TokenType.COMMENT, sb);
+					return __token(BottomTokenType.COMMENT, sb);
 				}
 				
 				// Just some asterisk
@@ -407,7 +420,7 @@ public class Tokenizer
 	 * @throws IOException On read errors.
 	 * @since 201709/11
 	 */
-	private Token __getNumberLiteral(char __c)
+	private BottomToken __getNumberLiteral(char __c)
 		throws IOException
 	{
 		// All possibilities are available at start
@@ -446,7 +459,7 @@ public class Tokenizer
 	 * @throws IOException On read errors.
 	 * @since 2017/09/09
 	 */
-	private Token __getSingleLineComment()
+	private BottomToken __getSingleLineComment()
 		throws IOException
 	{
 		StringBuilder sb = new StringBuilder();
@@ -455,7 +468,7 @@ public class Tokenizer
 			// Stop if it is consider the end of line
 			int c = __peek();
 			if (c < 0 || CharacterTest.isNewline(c))
-				return __token(TokenType.COMMENT, sb);
+				return __token(BottomTokenType.COMMENT, sb);
 			
 			// Otherwise consume it
 			sb.append((char)__next());
@@ -525,14 +538,14 @@ public class Tokenizer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/09/09
 	 */
-	private Token __token(TokenType __t, CharSequence __s)
+	private BottomToken __token(BottomTokenType __t, CharSequence __s)
 		throws NullPointerException
 	{
 		// Check
 		if (__t == null || __s == null)
 			throw new NullPointerException("NARG");
 		
-		return new Token(__t, __s.toString(), this._atline, this._atcolumn);
+		return new BottomToken(__t, __s.toString(), this._atline, this._atcolumn);
 	}
 
 	/**

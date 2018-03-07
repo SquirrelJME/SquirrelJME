@@ -149,9 +149,17 @@ public class CuteRunnable
 		// Caught compiler exception so report it and retoss
 		catch (CompilerException|InvalidClassFormatException e)
 		{
-			// {@squirreljme.error AQ0n Failed to compile.}
-			state.message(MessageType.ERROR, lastfile, "AQ0n %s",
-				e.getMessage());
+			// Print the root causes of the exception
+			Throwable t = e;
+			while (t != null)
+			{
+				// {@squirreljme.error AQ0n Failed to compile.}
+				state.message(MessageType.ERROR, lastfile, "AQ0n %s",
+					t.getMessage());
+				
+				// Keep going down
+				t = t.getCause();
+			}
 			
 			// Keep it going
 			throw e;

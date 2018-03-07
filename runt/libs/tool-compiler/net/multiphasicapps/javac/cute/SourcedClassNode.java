@@ -10,8 +10,13 @@
 
 package net.multiphasicapps.javac.cute;
 
+import java.io.InputStream;
+import java.io.IOException;
 import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.javac.CompilerException;
 import net.multiphasicapps.javac.CompilerInput;
+import net.multiphasicapps.javac.token.BottomToken;
+import net.multiphasicapps.javac.token.BottomTokenizer;
 
 /**
  * This is a class node which is based on input source code and is compiled
@@ -60,7 +65,24 @@ public final class SourcedClassNode
 		// compile.}
 		__state.message(MessageType.INFO, __input, "AQ0s");
 		
-		throw new todo.TODO();
+		// Setup streamlined tokenizers to parse the classes
+		try (InputStream in = __input.open();
+			BottomTokenizer btkz = new BottomTokenizer(in))
+		{
+			BottomToken next;
+			while (null != (next = btkz.next()))
+				System.err.printf("DEBUG -- Token: %s%n", next);
+		
+			throw new todo.TODO();
+		}
+		
+		// {@squirreljme.error AQ0t Could not read the input source file.
+		// (The input source file)}
+		catch (IOException e)
+		{
+			throw new CompilerException(
+				String.format("AQ0t %s", __input.name()), e);
+		}
 	}
 }
 
