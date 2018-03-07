@@ -167,20 +167,92 @@ public enum BottomType
 	/** Keyword while. */
 	KEYWORD_WHILE,
 	
+	/** The null literal. */
+	LITERAL_NULL,
+	
+	/** The false literal. */
+	LITERAL_FALSE,
+	
+	/** The true literal. */
+	LITERAL_TRUE,
+	
+	/** Binary integer literal. */
+	LITERAL_BINARY_INTEGER,
+	
+	/** Octal integer literal. */
+	LITERAL_OCTAL_INTEGER,
+	
+	/** Decimal integer literal. */
+	LITERAL_DECIMAL_INTEGER,
+	
+	/** Hexadecimal integer literal. */
+	LITERAL_HEXADECIMAL_INTEGER,
+	
+	/** Decimal float literal. */
+	LITERAL_DECIMAL_FLOAT,
+	
+	/** Hexadecimal float literal. */
+	LITERAL_HEXADECIMAL_FLOAT,
+	
+	/** String literal. */
+	LITERAL_STRING,
+	
+	/** Compare for equality. */
+	COMPARE_EQUALS,
+	
+	/** Compare for inequality. */
+	COMPARE_NOT_EQUALS,
+	
+	/** Compare less than. */
+	COMPARE_LESS_THAN,
+	
+	/** Compare less than or equals to. */
+	COMPARE_LESS_OR_EQUAL,
+	
+	/** Compare greater than. */
+	COMPARE_GREATER_THAN,
+	
+	/** Compare greater than or equal. */
+	COMPARE_GREATER_OR_EQUAL,
+	
+	/** Compare AND. */
+	COMPARE_AND,
+	
+	/** Compare OR. */
+	COMPARE_OR,
+	
 	/** Assign operator. */
 	OPERATOR_ASSIGN,
 	
-	/** Compare for equality. */
-	OPERATOR_COMPARE_EQUALS,
+	/** Add operator. */
+	OPERATOR_PLUS,
 	
-	/** Compare less than or equals to. */
-	OPERATOR_COMPARE_LESS_THAN_EQUALS,
+	/** Add and assign operator. */
+	OPERATOR_PLUS_ASSIGN,
+	
+	/** Subtract operator. */
+	OPERATOR_MINUS,
+	
+	/** Subtract and assign operator. */
+	OPERATOR_MINUS_ASSIGN,
+	
+	/** Multiply operator. */
+	OPERATOR_MULTIPLY,
+	
+	/** Multiply and assign operator. */
+	OPERATOR_MULTIPLY_ASSIGN,
 	
 	/** Divide operator. */
 	OPERATOR_DIVIDE,
 	
-	/** Dive and assign operator. */
-	OPERATOR_DIVIDE_AND_ASSIGN,
+	/** Divide and assign operator. */
+	OPERATOR_DIVIDE_ASSIGN,
+	
+	/** Remainder operator. */
+	OPERATOR_REMAINDER,
+	
+	/** Remainder and assign operator. */
+	OPERATOR_REMAINDER_ASSIGN,
 	
 	/** Shift left. */
 	OPERATOR_SHIFT_LEFT,
@@ -188,11 +260,53 @@ public enum BottomType
 	/** Shift left and assign. */
 	OPERATOR_SHIFT_LEFT_ASSIGN,
 	
+	/** Signed Shift right. */
+	OPERATOR_SSHIFT_RIGHT,
+	
+	/** Signed Shift right and assign. */
+	OPERATOR_SSHIFT_RIGHT_ASSIGN,
+	
+	/** Unsigned Shift right. */
+	OPERATOR_USHIFT_RIGHT,
+	
+	/** Unsigned Shift right and assign. */
+	OPERATOR_USHIFT_RIGHT_ASSIGN,
+	
 	/** Ternary question operator. */
 	OPERATOR_TERNARY_QUESTION,
 	
 	/** The NOT operator. */
 	OPERATOR_NOT,
+	
+	/** The NOT and assign operator. */
+	OPERATOR_NOT_ASSIGN,
+	
+	/** The AND operator. */
+	OPERATOR_AND,
+	
+	/** The AND and assign operator. */
+	OPERATOR_AND_ASSIGN,
+	
+	/** The XOR operator. */
+	OPERATOR_XOR,
+	
+	/** The XOR and assign operator. */
+	OPERATOR_XOR_ASSIGN,
+	
+	/** The OR operator. */
+	OPERATOR_OR,
+	
+	/** The OR and assign operator. */
+	OPERATOR_OR_ASSIGN,
+	
+	/** Bitwise complement. */
+	OPERATOR_COMPLEMENT,
+	
+	/** Increment. */
+	OPERATOR_INCREMENT,
+	
+	/** Decrement. */
+	OPERATOR_DECREMENT,
 	
 	/** Ternary colon operator or label. */
 	SYMBOL_COLON,
@@ -235,36 +349,6 @@ public enum BottomType
 	
 	/** The ellipses. */
 	SYMBOL_ELLIPSES,
-	
-	/** The null literal. */
-	LITERAL_NULL,
-	
-	/** The false literal. */
-	LITERAL_FALSE,
-	
-	/** The true literal. */
-	LITERAL_TRUE,
-	
-	/** Binary integer literal. */
-	LITERAL_BINARY_INTEGER,
-	
-	/** Octal integer literal. */
-	LITERAL_OCTAL_INTEGER,
-	
-	/** Decimal integer literal. */
-	LITERAL_DECIMAL_INTEGER,
-	
-	/** Hexadecimal integer literal. */
-	LITERAL_HEXADECIMAL_INTEGER,
-	
-	/** Decimal float literal. */
-	LITERAL_DECIMAL_FLOAT,
-	
-	/** Hexadecimal float literal. */
-	LITERAL_HEXADECIMAL_FLOAT,
-	
-	/** String literal. */
-	LITERAL_STRING,
 	
 	/** End. */
 	;
