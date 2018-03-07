@@ -173,11 +173,20 @@ public enum BottomType
 	/** Compare for equality. */
 	OPERATOR_COMPARE_EQUALS,
 	
+	/** Compare less than or equals to. */
+	OPERATOR_COMPARE_LESS_THAN_EQUALS,
+	
 	/** Divide operator. */
 	OPERATOR_DIVIDE,
 	
 	/** Dive and assign operator. */
 	OPERATOR_DIVIDE_AND_ASSIGN,
+	
+	/** Shift left. */
+	OPERATOR_SHIFT_LEFT,
+	
+	/** Shift left and assign. */
+	OPERATOR_SHIFT_LEFT_ASSIGN,
 	
 	/** Ternary question operator. */
 	OPERATOR_TERNARY_QUESTION,
@@ -185,8 +194,11 @@ public enum BottomType
 	/** The NOT operator. */
 	OPERATOR_NOT,
 	
-	/** Ternary colon operator. */
+	/** Ternary colon operator or label. */
 	SYMBOL_COLON,
+	
+	/** Double colon. */
+	SYMBOL_DOUBLE_COLON,
 	
 	/** Open parenthesis. */
 	SYMBOL_OPEN_PARENTHESIS,
@@ -206,6 +218,12 @@ public enum BottomType
 	/** Closed bracket. */
 	SYMBOL_CLOSED_BRACKET,
 	
+	/** Open angle bracket. */
+	SYMBOL_OPEN_ANGLE,
+	
+	/** Closed angle bracket. */
+	SYMBOL_CLOSED_ANLGE,
+	
 	/** Semicolon. */
 	SYMBOL_SEMICOLON,
 	
@@ -214,6 +232,9 @@ public enum BottomType
 	
 	/** The dot separator. */
 	SYMBOL_DOT,
+	
+	/** The ellipses. */
+	SYMBOL_ELLIPSES,
 	
 	/** The null literal. */
 	LITERAL_NULL,
