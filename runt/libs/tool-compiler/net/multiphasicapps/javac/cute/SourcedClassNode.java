@@ -15,8 +15,9 @@ import java.io.IOException;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.javac.CompilerException;
 import net.multiphasicapps.javac.CompilerInput;
-import net.multiphasicapps.javac.token.BottomToken;
-import net.multiphasicapps.javac.token.BottomTokenizer;
+import net.multiphasicapps.javac.token.ContextToken;
+import net.multiphasicapps.javac.token.ContextTokenizer;
+import net.multiphasicapps.javac.token.ContextType;
 
 /**
  * This is a class node which is based on input source code and is compiled
@@ -70,26 +71,15 @@ public final class SourcedClassNode
 		
 		// Setup streamlined tokenizers to parse the classes
 		try (InputStream in = __input.open();
-			BottomTokenizer btkz = new BottomTokenizer(in))
+			ContextTokenizer tokz = new ContextTokenizer(in))
 		{
 			// Use this as a source for lines and columns
-			__state._lineandcol = btkz;
+			__state._lineandcol = tokz;
 			
 			// Debug print all tokens
-			System.err.print("DEBUG -- ");
-			BottomToken next, prev = null;
-			while (null != (next = btkz.next()))
-			{
-				if (!next.isComment())
-				{
-					if (prev != null && prev.needFollowingSpace() &&
-						next.needFollowingSpace())
-						System.err.print(' ');
-					System.err.print(next.characters());
-				}
-				prev = next;
-			}
-			System.err.println();
+			ContextToken next, prev = null;
+			while (null != (next = tokz.next()))
+				System.err.printf("DEBUG -- %s%n", next);
 		
 			throw new todo.TODO();
 		}

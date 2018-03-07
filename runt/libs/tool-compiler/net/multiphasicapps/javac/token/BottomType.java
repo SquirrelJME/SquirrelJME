@@ -353,6 +353,9 @@ public enum BottomType
 	/** Lambda symbol. */
 	SYMBOL_LAMBDA,
 	
+	/** At symbol for annotations. */
+	SYMBOL_AT,
+	
 	/** End. */
 	;
 	
