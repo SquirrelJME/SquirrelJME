@@ -17,6 +17,9 @@ package net.multiphasicapps.javac.token;
  */
 public enum ContextType
 {
+	/** Represents a package declaration. */
+	PACKAGE_DECLARATION,
+	
 	/** End. */
 	;
 }
