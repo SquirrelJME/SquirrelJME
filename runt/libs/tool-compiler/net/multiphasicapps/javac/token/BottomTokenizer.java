@@ -724,6 +724,12 @@ public class BottomTokenizer
 					String.format("AQ0x %s", sb));
 		}
 		
+		// Token only had a length of one so these will never be valid
+		// because they require prefixes
+		int outlen = sb.length();
+		if (outlen == 1)
+			isbinint = ishexint = ishexfloat = false;
+		
 		// Determine the best type for the token
 		BottomType type;
 		if (isbinint)
