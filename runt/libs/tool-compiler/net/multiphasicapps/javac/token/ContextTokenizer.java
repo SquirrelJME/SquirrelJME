@@ -33,12 +33,22 @@ public final class ContextTokenizer
 	private final Deque<ContextToken> _queue =
 		new ArrayDeque<>();
 	
+	/** Comment tokens which have been queued. */
+	private final Deque<BottomToken> _commentqueue =
+		new ArrayDeque<>();
+	
 	/** The stack for context parsing. */
 	private final Deque<__Context__> _stack =
 		new ArrayDeque<>();
 	
+	/** The queue for the bottom tokens since it is peekless. */
+	private volatile BottomToken _bottomqueue;
+	
 	/** The last read token. */
 	private volatile ContextToken _lasttoken;
+	
+	/** The last bottom token. */
+	private volatile BottomToken _lastbottom;
 	
 	/**
 	 * Initializes the context stack.
@@ -113,6 +123,9 @@ public final class ContextTokenizer
 		ContextToken lasttoken = this._lasttoken;
 		if (lasttoken != null)
 			return lasttoken.column();
+		BottomToken lastbottom = this._lastbottom;
+		if (lastbottom != null)
+			return lastbottom.column();
 		return this.bottom.column();
 	}
 	
@@ -126,6 +139,9 @@ public final class ContextTokenizer
 		ContextToken lasttoken = this._lasttoken;
 		if (lasttoken != null)
 			return lasttoken.line();
+		BottomToken lastbottom = this._lastbottom;
+		if (lastbottom != null)
+			return lastbottom.line();
 		return this.bottom.line();
 	}
 	
@@ -169,6 +185,91 @@ public final class ContextTokenizer
 	}
 	
 	/**
+	 * Returns the next bottom token.
+	 *
+	 * @return The next bottom token.
+	 * @throws IOException On read errors.
+	 * @since 2018/03/07
+	 */
+	private final BottomToken __bottomNext()
+		throws IOException
+	{
+		return this.__bottomNext(false);
+	}
+	
+	/**
+	 * Returns the next bottom token.
+	 *
+	 * @param __caneof Can this EOF?
+	 * @return The next bottom token.
+	 * @throws IOException On read errors.
+	 * @since 2018/03/07
+	 */
+	private final BottomToken __bottomNext(boolean __caneof)
+		throws IOException
+	{
+		// {@squirreljme.error AQ13 Unexpected end of file while obtaining
+		// the next token.}
+		BottomToken next = this.__bottomPeek(__caneof);
+		if (next == null && !__caneof)
+			throw new TokenizerException(this.bottom, "AQ13");
+		
+		// Make sure it is consumed
+		this._bottomqueue = null;
+		return next;
+	}
+	
+	/**
+	 * Peeks the next bottom token.
+	 *
+	 * @return The peeked bottom token that would be returned.
+	 * @throws IOException On read errors.
+	 * @since 2018/03/07
+	 */
+	private final BottomToken __bottomPeek()
+		throws IOException
+	{
+		return this.__bottomPeek(false);
+	}
+	
+	/**
+	 * Peeks the next bottom token.
+	 *
+	 * @param __caneof Can this EOF?
+	 * @return The peeked bottom token that would be returned.
+	 * @throws IOException On read errors.
+	 * @since 2018/03/07
+	 */
+	private final BottomToken __bottomPeek(boolean __caneof)
+		throws IOException
+	{
+		BottomToken peek = this._bottomqueue;
+		Deque<BottomToken> commentqueue = this._commentqueue;
+		for (;;)
+		{
+			// There may be comments in the incoming token stream so store them
+			// accordingly
+			peek = this.bottom.next();
+			if (peek != null && peek.isComment())
+			{
+				commentqueue.addLast(peek);
+				peek = null;
+				continue;
+			}
+			
+			// Use this token
+			this._bottomqueue = peek;
+			
+			// {@squirreljme.error AQ14 Unexpected end of file while obtaining
+			// the next token.}
+			if (peek == null && !__caneof)
+				throw new TokenizerException(this.bottom, "AQ14");
+			break;
+		}
+		return peek;
+	}
+	
+	/**
 	 * Reads input tokens from the bottom tokenizer and generates context
 	 * based tokens for simpler parsing.
 	 *
@@ -179,30 +280,36 @@ public final class ContextTokenizer
 	private final ContextToken __fill()
 		throws IOException
 	{
-		// Used to detect EOF if the stack is empty
+		// Constantly try filling tokens
 		Deque<__Context__> stack = this._stack;
-		__Context__ context = stack.peekLast();
-		if (context == null)
-			return null;
-		
-		// Depends on the area
-		ContextArea area = context.area;
-		switch (area)
+		Deque<ContextToken> queue = this._queue;
+		for (;;)
 		{
-			case INTRO:
-				__runIntro((__ContextIntro__)context);
-				break;
+			// Used to detect EOF if the stack is empty
+			__Context__ context = stack.peekLast();
+			if (context == null)
+				return queue.peekFirst();
 			
-				// Not implemented
-			default:
-				throw new RuntimeException(String.format("OOPS %s", area));
+			// Depends on the area
+			ContextArea area = context.area;
+			switch (area)
+			{
+				case INTRO:
+					__runIntro((__ContextIntro__)context);
+					break;
+			
+					// Not implemented
+				default:
+					throw new RuntimeException(String.format("OOPS %s", area));
+			}
+		
+			// If no tokens were enqueued then try again because some
+			// parsers might switch state without generating any tokens
+			if (queue.isEmpty())
+				continue;
+			break;
 		}
 		
-		// {@squirreljme.error AQ12 Enqueued no input tokens during token
-		// parsing when not in the EOF state.}
-		Deque<ContextToken> queue = this._queue;
-		if (queue.isEmpty() && !stack.isEmpty())
-			throw new TokenizerException(this, "AQ12");
 		return queue.peekFirst();
 	}
 	
@@ -220,7 +327,31 @@ public final class ContextTokenizer
 		if (__context == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		BottomToken peek = this.__bottomPeek();
+		BottomType ptype = peek.type();
+		
+		// Package delaration
+		if (ptype == BottomType.KEYWORD_PACKAGE)
+		{
+			throw new todo.TODO();
+		}
+		
+		// Import statement
+		else if (ptype == BottomType.KEYWORD_IMPORT)
+		{
+			throw new todo.TODO();
+		}
+		
+		// Potential start of class
+		else if (ptype.isPotentialClassStart())
+		{
+			throw new todo.TODO();
+		}
+		
+		// {@squirreljme.error AQ15 Unexpected token while reading the
+		// introduction to a source file.}
+		else
+			throw new TokenizerException(peek, String.format("AQ15 %s", peek));
 	}
 	
 	/**

@@ -483,6 +483,17 @@ public enum BottomType
 	}
 	
 	/**
+	 * Is this the potential start of a class declaration?
+	 *
+	 * @return If this is the potential start of a class declaration.
+	 * @since 2018/03/07
+	 */
+	public final boolean isPotentialClassStart()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Is this a word?
 	 *
 	 * @return If this is a word.
