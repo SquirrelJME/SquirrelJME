@@ -1,0 +1,8 @@
+# 2018/03/07
+
+## 19:11
+
+For stuff like package statements and import statements, instead of prefixing
+them with tokens for `package` and `import`, they can just be what they are
+defining or importing. That would simplify things and be more logical on the
+actual compiler end of things.
