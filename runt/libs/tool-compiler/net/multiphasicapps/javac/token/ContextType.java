@@ -20,6 +20,18 @@ public enum ContextType
 	/** Represents a package declaration. */
 	PACKAGE_DECLARATION,
 	
+	/** Import a class. */
+	IMPORT_CLASS,
+	
+	/** Import package. */
+	IMPORT_PACKAGE,
+	
+	/** Static import, specific. */
+	IMPORT_STATIC,
+	
+	/** Static wildcard import. */
+	IMPORT_STATIC_WILDCARD,
+	
 	/** End. */
 	;
 }
