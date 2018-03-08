@@ -300,6 +300,10 @@ public final class ContextTokenizer
 				case INTRO_PACKAGE:
 					__runIntroPackage((__ContextIntroPackage__)context);
 					break;
+				
+				case INTRO_IMPORTS:
+					__runIntroImports((__ContextIntroImports__)context);
+					break;
 			
 					// Not implemented
 				default:
@@ -314,6 +318,23 @@ public final class ContextTokenizer
 		}
 		
 		return queue.peekFirst();
+	}
+	
+	/**
+	 * Parses import statements.
+	 *
+	 * @param __context THe input context.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/08
+	 */
+	private final void __runIntroImports(__ContextIntroImports__ __context)
+		throws IOException, NullPointerException
+	{
+		if (__context == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -390,7 +411,9 @@ public final class ContextTokenizer
 		// Import statement, switch
 		else if (type == BottomType.KEYWORD_IMPORT)
 		{
-			throw new todo.TODO();
+			// Go straight to import processing
+			this.__stackReplace(new __ContextIntroImports__());
+			return;
 		}
 		
 		// Potential start of class, switch
