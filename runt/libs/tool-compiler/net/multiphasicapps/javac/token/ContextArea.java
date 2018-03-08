@@ -17,8 +17,11 @@ package net.multiphasicapps.javac.token;
  */
 public enum ContextArea
 {
-	/** Introductory area, packages and imports. */
-	INTRO,
+	/** Potentially read package statement */
+	INTRO_PACKAGE,
+	
+	/** Read import statements. */
+	INTRO_IMPORTS,
 	
 	/** End. */
 	;

@@ -57,7 +57,7 @@ public final class ContextTokenizer
 	 */
 	{
 		Deque<__Context__> stack = this._stack;
-		stack.addLast(new __ContextIntro__());
+		stack.addLast(new __ContextIntroPackage__());
 	}
 	
 	/**
@@ -244,6 +244,9 @@ public final class ContextTokenizer
 		throws IOException
 	{
 		BottomToken peek = this._bottomqueue;
+		if (peek != null)
+			return peek;
+		
 		Deque<BottomToken> commentqueue = this._commentqueue;
 		for (;;)
 		{
@@ -294,8 +297,8 @@ public final class ContextTokenizer
 			ContextArea area = context.area;
 			switch (area)
 			{
-				case INTRO:
-					__runIntro((__ContextIntro__)context);
+				case INTRO_PACKAGE:
+					__runIntroPackage((__ContextIntroPackage__)context);
 					break;
 			
 					// Not implemented
@@ -321,29 +324,77 @@ public final class ContextTokenizer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/07
 	 */
-	private final void __runIntro(__ContextIntro__ __context)
+	private final void __runIntroPackage(__ContextIntroPackage__ __context)
 		throws IOException, NullPointerException
 	{
 		if (__context == null)
 			throw new NullPointerException("NARG");
 		
-		BottomToken peek = this.__bottomPeek();
-		BottomType ptype = peek.type();
+		BottomToken peek = this.__bottomPeek(),
+			base = peek;
+		BottomType type = peek.type();
 		
 		// Package delaration
-		if (ptype == BottomType.KEYWORD_PACKAGE)
+		if (type == BottomType.KEYWORD_PACKAGE)
+		{
+			// Consume package
+			this.__bottomNext();
+			
+			// Target string for the package identifier
+			StringBuilder sb = new StringBuilder();
+			
+			// Reading loop, identifier word followed by dot or semicolon
+			for (;;)
+			{
+				BottomToken next = this.__bottomNext();
+				
+				// {@squirreljme.error AQ16 Expected identifier while parsing
+				// the package. (The token)}
+				if (next.type != BottomType.IDENTIFIER)
+					throw new TokenizerException(next,
+						String.format("AQ16 %s", next));
+				
+				// Use this identifier
+				sb.append(next.characters());
+				
+				// Adding another identifier?
+				next = this.__bottomNext();
+				type = next.type();
+				if (type == BottomType.SYMBOL_DOT)
+				{
+					sb.append('.');
+					continue;
+				}
+				
+				// No more
+				else if (type == BottomType.SYMBOL_SEMICOLON)
+					break;
+				
+				// {@squirreljme.error AQ17 Expected either a dot or
+				// semi-colon in the package statement. (The token)}
+				else
+					throw new TokenizerException(next,
+						String.format("AQ17 %s", next));
+			}
+			
+			// Build token
+			this.__token(ContextType.PACKAGE_DECLARATION, base, sb);
+			
+			// Start reading imports
+			this.__stackReplace(new __ContextIntroImports__());
+			
+			// Done
+			return;
+		}
+		
+		// Import statement, switch
+		else if (type == BottomType.KEYWORD_IMPORT)
 		{
 			throw new todo.TODO();
 		}
 		
-		// Import statement
-		else if (ptype == BottomType.KEYWORD_IMPORT)
-		{
-			throw new todo.TODO();
-		}
-		
-		// Potential start of class
-		else if (ptype.isPotentialClassStart())
+		// Potential start of class, switch
+		else if (type.isPotentialClassStart())
 		{
 			throw new todo.TODO();
 		}
@@ -352,6 +403,64 @@ public final class ContextTokenizer
 		// introduction to a source file.}
 		else
 			throw new TokenizerException(peek, String.format("AQ15 %s", peek));
+	}
+	
+	/**
+	 * Adds the specified token to the queue.
+	 *
+	 * @param __t The type of token this is.
+	 * @param __w Hint to use for the location of the token, may be
+	 * {@code null}.
+	 * @param __sb The input string sequence.
+	 * @return The created token.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/08	 
+	 */
+	private final ContextToken __token(ContextType __t, LineAndColumn __w,
+		CharSequence __sb)
+		throws NullPointerException
+	{
+		if (__t == null || __sb == null)
+			throw new NullPointerException("NARG");
+		
+		// Did not say where the token was
+		if (__w == null)
+			__w = this.bottom;
+		
+		// Drain all comments for this token
+		Deque<BottomToken> commentqueue = this._commentqueue;
+		int cn = commentqueue.size();
+		String[] comments = new String[cn];
+		for (int i = 0; i < cn; i++)
+			comments[i] = commentqueue.removeFirst().characters();
+		
+		// Push new token to the queue
+		ContextToken rv = new ContextToken(this._stack.peekLast().area,
+			__t, __sb.toString(), __w.line(), __w.column(), comments);
+		this._queue.addLast(rv);
+		return rv;
+	}
+	
+	/**
+	 * Replaces the top stack entry with the new type.
+	 *
+	 * @param __new The new context.
+	 * @return The new context.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/08
+	 */
+	private final __Context__ __stackReplace(__Context__ __new)
+		throws NullPointerException
+	{
+		if (__new == null)
+			throw new NullPointerException("NARG");
+		
+		// Replace the top
+		Deque<__Context__> stack = this._stack;
+		stack.removeLast();
+		stack.addLast(__new);
+		
+		return __new;
 	}
 	
 	/**
@@ -383,12 +492,30 @@ public final class ContextTokenizer
 	}
 	
 	/**
-	 * This is the area for the introduction to the class file and is used
-	 * to store data for the package and imports.
+	 * Read of import statement.
+	 *
+	 * @since 2018/03/08
+	 */
+	private final class __ContextIntroImports__
+		extends __Context__
+	{
+		/**
+		 * Initializes the context.
+		 *
+		 * @since 2018/03/08
+		 */
+		private __ContextIntroImports__()
+		{
+			super(ContextArea.INTRO_IMPORTS);
+		}
+	}
+	
+	/**
+	 * Reading of the package statement.
 	 *
 	 * @since 2018/03/07
 	 */
-	private final class __ContextIntro__
+	private final class __ContextIntroPackage__
 		extends __Context__
 	{
 		/**
@@ -396,9 +523,9 @@ public final class ContextTokenizer
 		 *
 		 * @since 2018/03/07
 		 */
-		private __ContextIntro__()
+		private __ContextIntroPackage__()
 		{
-			super(ContextArea.INTRO);
+			super(ContextArea.INTRO_PACKAGE);
 		}
 	}
 }
