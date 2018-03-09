@@ -23,6 +23,9 @@ public enum ContextArea
 	/** Read import statements. */
 	INTRO_IMPORTS,
 	
+	/** Outside class area. */
+	INTRO_OUTSIDE_CLASS,
+	
 	/** End. */
 	;
 }

@@ -490,7 +490,23 @@ public enum BottomType
 	 */
 	public final boolean isPotentialClassStart()
 	{
-		throw new todo.TODO();
+		switch (this)
+		{
+			case KEYWORD_ABSTRACT:
+			case KEYWORD_ENUM:
+			case KEYWORD_FINAL:
+			case KEYWORD_INTERFACE:
+			case KEYWORD_PRIVATE:
+			case KEYWORD_PROTECTED:
+			case KEYWORD_PUBLIC:
+			case KEYWORD_STATIC:
+			case KEYWORD_STRICTFP:
+			case SYMBOL_AT:
+				return true;
+			
+			default:
+				return false;
+		}
 	}
 	
 	/**
