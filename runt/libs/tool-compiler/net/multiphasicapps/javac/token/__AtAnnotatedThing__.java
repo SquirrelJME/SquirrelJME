@@ -11,25 +11,32 @@
 package net.multiphasicapps.javac.token;
 
 /**
- * This represents the area in which a token was read from.
- *
- * @since 2018/03/07
- */
-public enum ContextArea
+* This represents a thing which is annotated.
+*
+* @since 2018/03/09
+*/
+final class __AtAnnotatedThing__
+	extends __At__
 {
-	/** Read of annotated things. */
-	ANNOTATED_THING,
+	/** The thing being annotated. */
+	public final __IsAnnotated__ annotating;
 	
-	/** Read of a class. */
-	CLASS,
-
-	/** Potentially read package statement */
-	INTRO_PACKAGE,
-	
-	/** Read import statements. */
-	INTRO_IMPORTS,
-	
-	/** End. */
-	;
+	/**
+	 * Initializes the state.
+	 *
+	 * @param __at The thing being annotated.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/09
+	 */
+	public __AtAnnotatedThing__(__IsAnnotated__ __at)
+		throws NullPointerException
+	{
+		super(ContextArea.ANNOTATED_THING);
+		
+		if (__at == null)
+			throw new NullPointerException("NARG");
+		
+		this.annotating = __at;
+	}
 }
 

@@ -11,25 +11,27 @@
 package net.multiphasicapps.javac.token;
 
 /**
- * This represents the area in which a token was read from.
+ * Read of a class.
  *
- * @since 2018/03/07
+ * @since 2018/03/09
  */
-public enum ContextArea
+final class __AtClass__
+	extends __At__
+	implements __IsAnnotated__
 {
-	/** Read of annotated things. */
-	ANNOTATED_THING,
+	/** Is this an inner class? */
+	public final boolean isinner;
 	
-	/** Read of a class. */
-	CLASS,
-
-	/** Potentially read package statement */
-	INTRO_PACKAGE,
-	
-	/** Read import statements. */
-	INTRO_IMPORTS,
-	
-	/** End. */
-	;
+	/**
+	 * Initializes the class context.
+	 *
+	 * @param __inner Is this an inner class?
+	 * @since 2018/03/09
+	 */
+	__AtClass__(boolean __inner)
+	{
+		super(ContextArea.CLASS);
+		
+		this.isinner = __inner;
+	}
 }
-

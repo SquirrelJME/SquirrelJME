@@ -11,25 +11,11 @@
 package net.multiphasicapps.javac.token;
 
 /**
- * This represents the area in which a token was read from.
+ * This represents something which is annotated.
  *
- * @since 2018/03/07
+ * @since 2018/03/09
  */
-public enum ContextArea
+interface __IsAnnotated__
 {
-	/** Read of annotated things. */
-	ANNOTATED_THING,
-	
-	/** Read of a class. */
-	CLASS,
-
-	/** Potentially read package statement */
-	INTRO_PACKAGE,
-	
-	/** Read import statements. */
-	INTRO_IMPORTS,
-	
-	/** End. */
-	;
 }
 

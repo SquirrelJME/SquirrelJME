@@ -11,25 +11,21 @@
 package net.multiphasicapps.javac.token;
 
 /**
- * This represents the area in which a token was read from.
+ * Read of import statement.
  *
- * @since 2018/03/07
+ * @since 2018/03/08
  */
-public enum ContextArea
+final class __AtIntroImports__
+	extends __At__
 {
-	/** Read of annotated things. */
-	ANNOTATED_THING,
-	
-	/** Read of a class. */
-	CLASS,
-
-	/** Potentially read package statement */
-	INTRO_PACKAGE,
-	
-	/** Read import statements. */
-	INTRO_IMPORTS,
-	
-	/** End. */
-	;
+	/**
+	 * Initializes the context.
+	 *
+	 * @since 2018/03/08
+	 */
+	__AtIntroImports__()
+	{
+		super(ContextArea.INTRO_IMPORTS);
+	}
 }
 
