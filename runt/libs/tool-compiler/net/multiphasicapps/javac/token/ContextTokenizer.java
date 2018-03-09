@@ -334,7 +334,107 @@ public final class ContextTokenizer
 		if (__context == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		BottomToken peek = this.__bottomPeek(),
+			base = peek;
+		BottomType type = peek.type();
+		
+		// Import statement
+		if (type == BottomType.KEYWORD_IMPORT)
+		{
+			// Consume import
+			this.__bottomNext();
+			
+			/** Static import. */
+			boolean isstatic = false;
+			peek = this.__bottomPeek();
+			if (peek.type() == BottomType.KEYWORD_STATIC)
+			{
+				isstatic = true;
+				this.__bottomNext();
+			}
+			
+			// Target string for the import identifier
+			StringBuilder sb = new StringBuilder();
+			
+			// Reading loop, identifier word followed by dot or semicolon
+			// May contain asterisk potentially
+			for (boolean firstrun = true;;)
+			{
+				BottomToken next = this.__bottomNext();
+				
+				// Need to detect wildcards
+				boolean iswildcard = false;
+				if (next.type != BottomType.IDENTIFIER)
+				{
+					// {@squirreljme.error AQ19 Expected identifier while
+					// parsing import statement. (The token)}
+					if (firstrun)
+						throw new TokenizerException(next,
+							String.format("AQ19 %s", next));
+					
+					// {@squirreljme.error AQ20 Expected either identifier
+					// or asterisk whule parsing import statement. (The token)}
+					if (next.type != BottomType.OPERATOR_MULTIPLY)
+						throw new TokenizerException(next,
+							String.format("AQ20 %s", next));
+					iswildcard = true;
+				}
+				
+				// Use this identifier
+				sb.append(next.characters());
+				
+				// Wildcard statements must end
+				next = this.__bottomNext();
+				type = next.type();
+				if (iswildcard)
+				{
+					// {@squirreljme.error AQ21 Expected semicolon to follow
+					// asterisk in wildcard import.}
+					if (type != BottomType.SYMBOL_SEMICOLON)
+						throw new TokenizerException(next,
+							String.format("AQ21 %s", next));
+					
+					// Either 
+					this.__token((isstatic ?
+						ContextType.IMPORT_STATIC_MEMBERS :
+						ContextType.IMPORT_PACKAGE), base, sb);
+					return;
+				}
+				
+				// Adding another identifier?
+				else if (type == BottomType.SYMBOL_DOT)
+				{
+					sb.append('.');
+					continue;
+				}
+				
+				// Import has finished
+				else if (type == BottomType.SYMBOL_SEMICOLON)
+				{
+					this.__token((isstatic ?
+						ContextType.IMPORT_STATIC_MEMBER :
+						ContextType.IMPORT_CLASS), base, sb);
+					return;
+				}
+				
+				// {@squirreljme.error AQ22 Expected either a dot or
+				// semi-colon in the import statement. (The token)}
+				else
+					throw new TokenizerException(next,
+						String.format("AQ22 %s", next));
+			}
+		}
+		
+		// Potential start of class, switch
+		else if (type.isPotentialClassStart())
+		{
+			throw new todo.TODO();
+		}
+		
+		// {@squirreljme.error AQ18 Unxpected token while looking for import
+		// statements.}
+		else
+			throw new TokenizerException(peek, String.format("AQ18 %s", peek));
 	}
 	
 	/**
@@ -408,7 +508,7 @@ public final class ContextTokenizer
 			return;
 		}
 		
-		// Import statement, switch
+		// Import statement
 		else if (type == BottomType.KEYWORD_IMPORT)
 		{
 			// Go straight to import processing
@@ -422,8 +522,8 @@ public final class ContextTokenizer
 			throw new todo.TODO();
 		}
 		
-		// {@squirreljme.error AQ15 Unexpected token while reading the
-		// introduction to a source file.}
+		// {@squirreljme.error AQ15 Unexpected token while searching for the
+		// package keyword or other parts.}
 		else
 			throw new TokenizerException(peek, String.format("AQ15 %s", peek));
 	}
