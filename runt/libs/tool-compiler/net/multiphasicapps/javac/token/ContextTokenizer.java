@@ -38,7 +38,7 @@ public final class ContextTokenizer
 		new ArrayDeque<>();
 	
 	/** The stack for context parsing. */
-	private final Deque<__Context__> _stack =
+	private final Deque<__At__> _stack =
 		new ArrayDeque<>();
 	
 	/** The queue for the bottom tokens since it is peekless. */
@@ -56,8 +56,8 @@ public final class ContextTokenizer
 	 * @since 2018/03/07
 	 */
 	{
-		Deque<__Context__> stack = this._stack;
-		stack.addLast(new __ContextIntroPackage__());
+		Deque<__At__> stack = this._stack;
+		stack.addLast(new __AtIntroPackage__());
 	}
 	
 	/**
@@ -284,25 +284,33 @@ public final class ContextTokenizer
 		throws IOException
 	{
 		// Constantly try filling tokens
-		Deque<__Context__> stack = this._stack;
+		Deque<__At__> stack = this._stack;
 		Deque<ContextToken> queue = this._queue;
 		for (;;)
 		{
 			// Used to detect EOF if the stack is empty
-			__Context__ context = stack.peekLast();
-			if (context == null)
+			__At__ at = stack.peekLast();
+			if (at == null)
 				return queue.peekFirst();
 			
 			// Depends on the area
-			ContextArea area = context.area;
+			ContextArea area = at.area;
 			switch (area)
 			{
+				case ANNOTATED_THING:
+					__runAnnotatedThing((__AtAnnotatedThing__)at);
+					break;
+					
+				case CLASS:
+					__runClass((__AtClass__)at);
+					break;
+					
 				case INTRO_PACKAGE:
-					__runIntroPackage((__ContextIntroPackage__)context);
+					__runIntroPackage((__AtIntroPackage__)at);
 					break;
 				
 				case INTRO_IMPORTS:
-					__runIntroImports((__ContextIntroImports__)context);
+					__runIntroImports((__AtIntroImports__)at);
 					break;
 			
 					// Not implemented
@@ -321,17 +329,60 @@ public final class ContextTokenizer
 	}
 	
 	/**
+	 * Parses things which are annotated.
+	 *
+	 * @param __at Annotated thing state.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/09
+	 */
+	private final void __runAnnotatedThing(__AtAnnotatedThing__ __at)
+		throws IOException, NullPointerException
+	{
+		if (__at == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Parses the introductory class statement.
+	 *
+	 * @param __at The input context.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/09
+	 */
+	private final void __runClass(__AtClass__ __at)
+		throws IOException, NullPointerException
+	{
+		if (__at == null)
+			throw new NullPointerException("NARG");
+		
+		// There might be a bunch of annotations to be processed here
+		BottomToken peek = this.__bottomPeek();
+		BottomType type = peek.type();
+		if (type == BottomType.SYMBOL_AT)
+		{
+			this.__stackPush(new __AtAnnotatedThing__(__at));
+			return;
+		}
+	
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Parses import statements.
 	 *
-	 * @param __context THe input context.
+	 * @param __at The input context.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/08
 	 */
-	private final void __runIntroImports(__ContextIntroImports__ __context)
+	private final void __runIntroImports(__AtIntroImports__ __at)
 		throws IOException, NullPointerException
 	{
-		if (__context == null)
+		if (__at == null)
 			throw new NullPointerException("NARG");
 		
 		BottomToken peek = this.__bottomPeek(),
@@ -428,7 +479,8 @@ public final class ContextTokenizer
 		// Potential start of class, switch
 		else if (type.isPotentialClassStart())
 		{
-			throw new todo.TODO();
+			this.__stackReplace(new __AtClass__(false));
+			return;
 		}
 		
 		// {@squirreljme.error AQ18 Unxpected token while looking for import
@@ -440,15 +492,15 @@ public final class ContextTokenizer
 	/**
 	 * Decodes the introductory sequence.
 	 *
-	 * @param __context The input context.
+	 * @param __at The input context.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/07
 	 */
-	private final void __runIntroPackage(__ContextIntroPackage__ __context)
+	private final void __runIntroPackage(__AtIntroPackage__ __at)
 		throws IOException, NullPointerException
 	{
-		if (__context == null)
+		if (__at == null)
 			throw new NullPointerException("NARG");
 		
 		BottomToken peek = this.__bottomPeek(),
@@ -502,7 +554,7 @@ public final class ContextTokenizer
 			this.__token(ContextType.PACKAGE_DECLARATION, base, sb);
 			
 			// Start reading imports
-			this.__stackReplace(new __ContextIntroImports__());
+			this.__stackReplace(new __AtIntroImports__());
 			
 			// Done
 			return;
@@ -512,14 +564,15 @@ public final class ContextTokenizer
 		else if (type == BottomType.KEYWORD_IMPORT)
 		{
 			// Go straight to import processing
-			this.__stackReplace(new __ContextIntroImports__());
+			this.__stackReplace(new __AtIntroImports__());
 			return;
 		}
 		
 		// Potential start of class, switch
 		else if (type.isPotentialClassStart())
 		{
-			throw new todo.TODO();
+			this.__stackReplace(new __AtClass__(false));
+			return;
 		}
 		
 		// {@squirreljme.error AQ15 Unexpected token while searching for the
@@ -565,6 +618,26 @@ public final class ContextTokenizer
 	}
 	
 	/**
+	 * Pushes a new state to the top.
+	 *
+	 * @param __new The new stack entry.
+	 * @throws NullPointerException
+	 * @since 2018/03/09
+	 */
+	private final __At__ __stackPush(__At__ __new)
+		throws NullPointerException
+	{
+		if (__new == null)
+			throw new NullPointerException("NARG");
+		
+		// Add to the top
+		Deque<__At__> stack = this._stack;
+		stack.addLast(__new);
+		
+		return __new;
+	}
+	
+	/**
 	 * Replaces the top stack entry with the new type.
 	 *
 	 * @param __new The new context.
@@ -572,84 +645,18 @@ public final class ContextTokenizer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/08
 	 */
-	private final __Context__ __stackReplace(__Context__ __new)
+	private final __At__ __stackReplace(__At__ __new)
 		throws NullPointerException
 	{
 		if (__new == null)
 			throw new NullPointerException("NARG");
 		
 		// Replace the top
-		Deque<__Context__> stack = this._stack;
+		Deque<__At__> stack = this._stack;
 		stack.removeLast();
 		stack.addLast(__new);
 		
 		return __new;
-	}
-	
-	/**
-	 * This is the base class for context sensitive parsers for input
-	 * tokens. This interface is just used as a base for state storage.
-	 *
-	 * @since 2018/03/07
-	 */
-	private abstract class __Context__
-	{
-		/** The context area. */
-		public final ContextArea area;
-		
-		/**
-		 * Initializes the base context.
-		 *
-		 * @param __a The area this is in.
-		 * @throws NullPointerException On null arguments.
-		 * @since 2018/03/07
-		 */
-		private __Context__(ContextArea __a)
-			throws NullPointerException
-		{
-			if (__a == null)
-				throw new NullPointerException("NARG");
-			
-			this.area = __a;
-		}
-	}
-	
-	/**
-	 * Read of import statement.
-	 *
-	 * @since 2018/03/08
-	 */
-	private final class __ContextIntroImports__
-		extends __Context__
-	{
-		/**
-		 * Initializes the context.
-		 *
-		 * @since 2018/03/08
-		 */
-		private __ContextIntroImports__()
-		{
-			super(ContextArea.INTRO_IMPORTS);
-		}
-	}
-	
-	/**
-	 * Reading of the package statement.
-	 *
-	 * @since 2018/03/07
-	 */
-	private final class __ContextIntroPackage__
-		extends __Context__
-	{
-		/**
-		 * Initializes the context.
-		 *
-		 * @since 2018/03/07
-		 */
-		private __ContextIntroPackage__()
-		{
-			super(ContextArea.INTRO_PACKAGE);
-		}
 	}
 }
 

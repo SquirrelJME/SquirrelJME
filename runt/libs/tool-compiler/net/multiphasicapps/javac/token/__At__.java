@@ -11,25 +11,30 @@
 package net.multiphasicapps.javac.token;
 
 /**
- * This represents the area in which a token was read from.
+ * This is the base class for context sensitive parsers for input
+ * tokens. This interface is just used as a base for state storage.
  *
  * @since 2018/03/07
  */
-public enum ContextArea
+abstract class __At__
 {
-	/** Read of annotated things. */
-	ANNOTATED_THING,
+	/** The context area. */
+	public final ContextArea area;
 	
-	/** Read of a class. */
-	CLASS,
-
-	/** Potentially read package statement */
-	INTRO_PACKAGE,
-	
-	/** Read import statements. */
-	INTRO_IMPORTS,
-	
-	/** End. */
-	;
+	/**
+	 * Initializes the base context.
+	 *
+	 * @param __a The area this is in.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/07
+	 */
+	__At__(ContextArea __a)
+		throws NullPointerException
+	{
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
+		this.area = __a;
+	}
 }
 
