@@ -26,11 +26,11 @@ public enum ContextType
 	/** Import package. */
 	IMPORT_PACKAGE,
 	
-	/** Static import, specific. */
-	IMPORT_STATIC,
+	/** Static import, specific to single member. */
+	IMPORT_STATIC_MEMBER,
 	
-	/** Static wildcard import. */
-	IMPORT_STATIC_WILDCARD,
+	/** Static wildcard import to import members. */
+	IMPORT_STATIC_MEMBERS,
 	
 	/** End. */
 	;
