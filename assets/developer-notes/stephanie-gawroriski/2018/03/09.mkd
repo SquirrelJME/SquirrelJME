@@ -1,0 +1,14 @@
+# 2018/03/09
+
+## 12:39
+
+Well, I might not write the compiler all at once since I could do other things
+too. The main thing I will be writing is the tokenizer then the class
+structure obtainer. I mostly need to get the class structure so I can have the
+build system know where all the tests are for running. So I am going to need
+a generic structure system with the potential for it to be used elsewhere.
+
+## 12:46
+
+I can actually have shared code for reading annotations too since that is the
+same for many types of things.
