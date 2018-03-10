@@ -360,6 +360,30 @@ public enum BottomType
 	;
 	
 	/**
+	 * Is this a modifier to a class?
+	 *
+	 * @return If this is a class modifier.
+	 * @since 2018/03/10
+	 */
+	public final boolean isClassModifier()
+	{
+		switch (this)
+		{
+			case KEYWORD_ABSTRACT:
+			case KEYWORD_FINAL:
+			case KEYWORD_PRIVATE:
+			case KEYWORD_PROTECTED:
+			case KEYWORD_PUBLIC:
+			case KEYWORD_STATIC:
+			case KEYWORD_STRICTFP:
+				return true;
+			
+			default:
+				return false;
+		}
+	}
+	
+	/**
 	 * Is this a comment?
 	 *
 	 * @return If this is a comment or not.

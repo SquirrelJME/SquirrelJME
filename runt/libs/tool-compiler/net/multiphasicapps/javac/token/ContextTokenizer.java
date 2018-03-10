@@ -16,6 +16,11 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import net.multiphasicapps.classfile.ClassFlag;
+import net.multiphasicapps.classfile.ClassFlags;
+import net.multiphasicapps.classfile.InvalidClassFormatException;
 
 /**
  * This is a tokenizer which generates tokens which are context sensitive in
@@ -120,13 +125,7 @@ public final class ContextTokenizer
 	@Override
 	public final int column()
 	{
-		ContextToken lasttoken = this._lasttoken;
-		if (lasttoken != null)
-			return lasttoken.column();
-		BottomToken lastbottom = this._lastbottom;
-		if (lastbottom != null)
-			return lastbottom.column();
-		return this.bottom.column();
+		return this.__lastLineAndColumn().column();
 	}
 	
 	/**
@@ -136,13 +135,7 @@ public final class ContextTokenizer
 	@Override
 	public final int line()
 	{
-		ContextToken lasttoken = this._lasttoken;
-		if (lasttoken != null)
-			return lasttoken.line();
-		BottomToken lastbottom = this._lastbottom;
-		if (lastbottom != null)
-			return lastbottom.line();
-		return this.bottom.line();
+		return this.__lastLineAndColumn().column();
 	}
 	
 	/**
@@ -283,49 +276,86 @@ public final class ContextTokenizer
 	private final ContextToken __fill()
 		throws IOException
 	{
-		// Constantly try filling tokens
-		Deque<__At__> stack = this._stack;
-		Deque<ContextToken> queue = this._queue;
-		for (;;)
+		try
 		{
-			// Used to detect EOF if the stack is empty
-			__At__ at = stack.peekLast();
-			if (at == null)
-				return queue.peekFirst();
-			
-			// Depends on the area
-			ContextArea area = at.area;
-			switch (area)
+			// Constantly try filling tokens
+			Deque<__At__> stack = this._stack;
+			Deque<ContextToken> queue = this._queue;
+			for (;;)
 			{
-				case ANNOTATED_THING:
-					__runAnnotatedThing((__AtAnnotatedThing__)at);
-					break;
-					
-				case CLASS:
-					__runClass((__AtClass__)at);
-					break;
-					
-				case INTRO_PACKAGE:
-					__runIntroPackage((__AtIntroPackage__)at);
-					break;
-				
-				case INTRO_IMPORTS:
-					__runIntroImports((__AtIntroImports__)at);
-					break;
+				// Used to detect EOF if the stack is empty
+				__At__ at = stack.peekLast();
+				if (at == null)
+					return queue.peekFirst();
 			
-					// Not implemented
-				default:
-					throw new RuntimeException(String.format("OOPS %s", area));
+				// Depends on the area
+				ContextArea area = at.area;
+				switch (area)
+				{
+					case ANNOTATED_THING:
+						__runAnnotatedThing((__AtAnnotatedThing__)at);
+						break;
+					
+					case CLASS:
+						__runClass((__AtClass__)at);
+						break;
+					
+					case INTRO_PACKAGE:
+						__runIntroPackage((__AtIntroPackage__)at);
+						break;
+				
+					case INTRO_IMPORTS:
+						__runIntroImports((__AtIntroImports__)at);
+						break;
+			
+						// Not implemented
+					default:
+						throw new RuntimeException(
+							String.format("OOPS %s", area));
+				}
+		
+				// If no tokens were enqueued then try again because some
+				// parsers might switch state without generating any tokens
+				if (queue.isEmpty())
+					continue;
+				break;
 			}
 		
-			// If no tokens were enqueued then try again because some
-			// parsers might switch state without generating any tokens
-			if (queue.isEmpty())
-				continue;
-			break;
+			return queue.peekFirst();
 		}
 		
-		return queue.peekFirst();
+		// {@squirreljme.error AQ23 The class being tokenizer would result in
+		// an illegal class.}
+		catch (InvalidClassFormatException e)
+		{
+			throw new TokenizerException(this, "AQ23", e);
+		}
+	}
+	
+	/**
+	 * Returns the last lien and column to use when reporting an exception.
+	 *
+	 * @return The last line and column to use for reporting.
+	 * @since 2018/03/10
+	 */
+	private final LineAndColumn __lastLineAndColumn()
+	{
+		LineAndColumn rv;
+		
+		// Prefer the last read bottom token since it would be usually
+		// around where the error is
+		rv = this._lastbottom;
+		if (rv != null)
+			return rv;
+		
+		// Use the last token pushed to the queue if this is EOF
+		Deque<ContextToken> queue = this._queue;
+		rv = queue.peekLast();
+		if (rv != null)
+			return rv;
+		
+		// Otherwise use the bottom tokenizer's position
+		return this.bottom;
 	}
 	
 	/**
@@ -367,7 +397,83 @@ public final class ContextTokenizer
 			this.__stackPush(new __AtAnnotatedThing__(__at));
 			return;
 		}
-	
+		
+		// Is this an inner class?
+		boolean isinner = __at.isinner;
+		
+		// Read input class flags and parse them, if there are any
+		Set<ClassFlag> rawflags = new LinkedHashSet<>();
+		for (;;)
+		{
+			peek = this.__bottomPeek();
+			type = peek.type();
+			
+			// Determine the flag which was 
+			ClassFlag which = null;
+			switch (type)
+			{
+				case KEYWORD_ABSTRACT:
+					which = ClassFlag.ABSTRACT;
+					break;
+					
+				case KEYWORD_FINAL:
+					which = ClassFlag.FINAL;
+					break;
+					
+				case KEYWORD_PRIVATE:
+					// {@squirreljme.error AQ26 Only inner classes may be
+					// private.}
+					if (!isinner)
+						throw new TokenizerException(peek, "AQ26");
+					throw new todo.TODO();
+					/*which = ClassFlag.INNER_PRIVATE;
+					break;*/
+					
+				case KEYWORD_PROTECTED:
+					// {@squirreljme.error AQ27 Only inner classes may be
+					// protected.}
+					if (!isinner)
+						throw new TokenizerException(peek, "AQ27");
+					throw new todo.TODO();
+					/*which = ClassFlag.INNER_PROTECTED;
+					break;*/
+					
+				case KEYWORD_PUBLIC:
+					which = ClassFlag.PUBLIC;
+					break;
+					
+				case KEYWORD_STATIC:
+					which = ClassFlag.STATIC;
+					break;
+					
+				case KEYWORD_STRICTFP:
+					which = ClassFlag.STRICTFP;
+					break;
+					
+					// {@squirreljme.error AQ24 Illegal token while parsing
+					// class flags.}
+				default:
+					throw new TokenizerException(peek,
+						String.format("AQ24 %s", peek));
+			}
+			
+			// No flag read, is something else
+			if (which == null)
+				break;
+			
+			// Consume that token
+			this.__bottomNext();
+			
+			// {@squirreljme.error AQ25 Duplicate class flag. (The flag which
+			// was duplicated; The currently parsed class flags)}
+			if (rawflags.contains(which))
+				throw new TokenizerException(peek,
+					String.format("AQ25 %s %s", which, rawflags));
+		}
+		
+		// Build class flags
+		ClassFlags cflags = new ClassFlags(rawflags);
+		
 		throw new todo.TODO();
 	}
 	
@@ -599,7 +705,8 @@ public final class ContextTokenizer
 		if (__t == null || __sb == null)
 			throw new NullPointerException("NARG");
 		
-		// Did not say where the token was
+		// Did not say where the token was, so use the position the bottom
+		// queue was at
 		if (__w == null)
 			__w = this.bottom;
 		
