@@ -18,8 +18,8 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import net.multiphasicapps.classfile.ClassFlag;
-import net.multiphasicapps.classfile.ClassFlags;
+import net.multiphasicapps.javac.struct.DefinedClassFlag;
+import net.multiphasicapps.javac.struct.DefinedClassFlags;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 
 /**
@@ -394,60 +394,63 @@ public final class ContextTokenizer
 		BottomType type = peek.type();
 		if (type == BottomType.SYMBOL_AT)
 		{
+			// Detect if this is declaring an annotation instead
+			if (true)
+				throw new todo.TODO();
+			
 			this.__stackPush(new __AtAnnotatedThing__(__at));
 			return;
 		}
 		
 		// Is this an inner class?
+		Set<DefinedClassFlag> rawflags = new LinkedHashSet<>();
 		boolean isinner = __at.isinner;
+		if (isinner)
+			rawflags.add(DefinedClassFlag.INNER_CLASS);
 		
 		// Read input class flags and parse them, if there are any
-		Set<ClassFlag> rawflags = new LinkedHashSet<>();
 		for (;;)
 		{
 			peek = this.__bottomPeek();
 			type = peek.type();
 			
 			// Determine the flag which was 
-			ClassFlag which = null;
+			DefinedClassFlag which = null;
 			switch (type)
 			{
 				case KEYWORD_ABSTRACT:
-					which = ClassFlag.ABSTRACT;
+					which = DefinedClassFlag.ABSTRACT;
 					break;
 					
 				case KEYWORD_FINAL:
-					which = ClassFlag.FINAL;
+					which = DefinedClassFlag.FINAL;
 					break;
 					
 				case KEYWORD_PRIVATE:
-					// {@squirreljme.error AQ26 Only inner classes may be
-					// private.}
-					if (!isinner)
-						throw new TokenizerException(peek, "AQ26");
-					throw new todo.TODO();
-					/*which = ClassFlag.INNER_PRIVATE;
-					break;*/
+					which = DefinedClassFlag.PRIVATE;
+					break;
 					
 				case KEYWORD_PROTECTED:
-					// {@squirreljme.error AQ27 Only inner classes may be
-					// protected.}
-					if (!isinner)
-						throw new TokenizerException(peek, "AQ27");
-					throw new todo.TODO();
-					/*which = ClassFlag.INNER_PROTECTED;
-					break;*/
+					which = DefinedClassFlag.PROTECTED;
+					break;
 					
 				case KEYWORD_PUBLIC:
-					which = ClassFlag.PUBLIC;
+					which = DefinedClassFlag.PUBLIC;
 					break;
 					
 				case KEYWORD_STATIC:
-					which = ClassFlag.STATIC;
+					which = DefinedClassFlag.STATIC;
 					break;
 					
 				case KEYWORD_STRICTFP:
-					which = ClassFlag.STRICTFP;
+					which = DefinedClassFlag.STRICTFP;
+					break;
+					
+					// These stop parsing because they are something else
+				case KEYWORD_CLASS:
+				case KEYWORD_ENUM:
+				case KEYWORD_INTERFACE:
+				case SYMBOL_AT:
 					break;
 					
 					// {@squirreljme.error AQ24 Illegal token while parsing
@@ -471,8 +474,12 @@ public final class ContextTokenizer
 					String.format("AQ25 %s %s", which, rawflags));
 		}
 		
+		// Determine which kind of class this is declaring
+		if (true)
+			throw new todo.TODO();
+		
 		// Build class flags
-		ClassFlags cflags = new ClassFlags(rawflags);
+		DefinedClassFlags cflags = new DefinedClassFlags(rawflags);
 		
 		throw new todo.TODO();
 	}
