@@ -1,0 +1,10 @@
+# 2018/03/10
+
+## 12:12
+
+Okay so what I need is a new enumeration to specify the class flags and such
+instead of using the one for the class file because there are inner flags
+and such that need to be considered. Also stuff like `strictfp` on classes
+is completely virtual. Additionally there are no static classes in the VM,
+so I suppose now I should work on a kind of compiler based class structure.
+
