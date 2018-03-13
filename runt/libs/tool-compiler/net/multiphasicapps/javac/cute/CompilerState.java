@@ -46,9 +46,6 @@ public final class CompilerState
 	final Deque<SourcedClassNode> _tocompile =
 		new ArrayDeque<>();
 	
-	/** Source to use for line and column information if it is missing. */
-	volatile LineAndColumn _lineandcol;
-	
 	/** Last processed input file. */
 	volatile CompilerInput _lastinput;
 	
@@ -172,6 +169,17 @@ public final class CompilerState
 		// {@squirreljme.error AQ0p Could not locate the node for the given
 		// class name. (The class name)}
 		throw new MissingClassNodeException(String.format("AQ0p %s", __cn));
+	}
+	
+	/**
+	 * Returns the output for compilation logs.
+	 *
+	 * @return The compilation log output.
+	 * @since 2018/03/12
+	 */
+	public final CompilerLogger log()
+	{
+		return this.log;
 	}
 	
 	/**

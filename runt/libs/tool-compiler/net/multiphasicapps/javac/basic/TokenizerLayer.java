@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.javac.basic;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import net.multiphasicapps.javac.LineAndColumn;
@@ -24,7 +26,7 @@ import net.multiphasicapps.javac.token.TokenType;
  * @since 2018/03/12
  */
 public final class TokenizerLayer
-	implements LineAndColumn
+	implements Closeable, LineAndColumn
 {
 	/** The tokenizer this is laid ontop of. */
 	protected final Tokenizer tokenizer;
@@ -41,13 +43,24 @@ public final class TokenizerLayer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/12
 	 */
-	public final TokenizerLayer(Tokenizer __t)
+	public TokenizerLayer(Tokenizer __t)
 		throws NullPointerException
 	{
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
 		this.tokenizer = __t;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/12
+	 */
+	@Override
+	public final void close()
+		throws IOException
+	{
+		this.tokenizer.close();
 	}
 	
 	/**

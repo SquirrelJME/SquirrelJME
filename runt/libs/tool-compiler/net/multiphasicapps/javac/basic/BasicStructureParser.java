@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.javac.basic;
 
+import java.io.Closeable;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.Reader;
@@ -22,9 +23,40 @@ import net.multiphasicapps.javac.token.Tokenizer;
  *
  * @since 2018/03/12
  */
-public class BasicStructureParser
-	implements FileNameLineAndColumn
+public final class BasicStructureParser
+	implements Closeable, FileNameLineAndColumn
 {
+	/** The layer to source tokens from. */
+	protected final TokenizerLayer layer;
+	
+	/**
+	 * Parses the given basic structure from the given tokenizer.
+	 *
+	 * @param __t The tokenizer to parse from.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/12
+	 */
+	public BasicStructureParser(Tokenizer __t)
+		throws NullPointerException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Initialize the parser layer
+		this.layer = new TokenizerLayer(__t);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/12
+	 */
+	@Override
+	public final void close()
+		throws IOException
+	{
+		throw new todo.TODO();
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/12
