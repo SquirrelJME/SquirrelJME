@@ -140,6 +140,16 @@ public final class BasicStructureParser
 				case PACKAGE:
 					this.__parsePackage((__StatePackage__)state);
 					break;
+					
+					// Import statement
+				case IMPORT:
+					this.__parseImport((__StateImport__)state);
+					break;
+					
+					// Class
+				case CLASS:
+					this.__parseClass((__StateClass__)state);
+					break;
 				
 					// {@squirreljme.error AQ13 Could not parse the structure
 					// because the specified state is not known. (The area)}
@@ -151,6 +161,49 @@ public final class BasicStructureParser
 		
 		// Build it
 		return this.builder.build();
+	}
+	
+	/**
+	 * Parses a class.
+	 *
+	 * @param __state The parsing state.
+	 * @throws BasicStructureException If the structure could not be parsed.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/13
+	 */
+	private final void __parseClass(__StateClass__ __state)
+		throws BasicStructureException, IOException, NullPointerException
+	{
+		if (__state == null)
+			throw new NullPointerException("NARG");
+		
+		TokenizerLayer layer = this.layer;
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Parses a single import statement.
+	 *
+	 * @param __state The parsing state.
+	 * @throws BasicStructureException If the structure could not be parsed.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/13
+	 */
+	private final void __parseImport(__StateImport__ __state)
+		throws BasicStructureException, IOException, NullPointerException
+	{
+		if (__state == null)
+			throw new NullPointerException("NARG");
+		
+		TokenizerLayer layer = this.layer;
+		
+		LayeredToken next = layer.peek();
+		TokenType type = next.type();
+		
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -221,27 +274,19 @@ public final class BasicStructureParser
 			this.builder.setPackage(new BinaryName(sb.toString()));
 			
 			// Start reading imports
-			throw new todo.TODO();
-			/*this.__stateReplace(new __AtIntroImports__());*/
+			this.__stateReplace(new __StateImport__());
 		}
 		
 		// Import statement
 		else if (type == TokenType.KEYWORD_IMPORT)
 		{
-			throw new todo.TODO();
-			/*
-			// Go straight to import processing
-			this.__stackReplace(new __AtIntroImports__());
-			return;*/
+			this.__stateReplace(new __StateImport__());
 		}
 		
 		// Potential start of class, switch
 		else if (type.isPotentialClassStart())
 		{
-			throw new todo.TODO();
-			/*
-			this.__stackReplace(new __AtClass__(false));
-			return;*/
+			this.__stateReplace(new __StateClass__(false));
 		}
 		
 		// {@squirreljme.error AQ15 Unexpected token while searching for the
