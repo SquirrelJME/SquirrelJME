@@ -85,7 +85,7 @@ public final class BasicStructureParser
 	@Override
 	public final int column()
 	{
-		throw new todo.TODO();
+		return this.layer.column();
 	}
 	
 	/**
@@ -95,7 +95,7 @@ public final class BasicStructureParser
 	@Override
 	public final String fileName()
 	{
-		throw new todo.TODO();
+		return this.layer.fileName();
 	}
 	
 	/**
@@ -105,7 +105,7 @@ public final class BasicStructureParser
 	@Override
 	public final int line()
 	{
-		throw new todo.TODO();
+		return this.layer.line();
 	}
 	
 	/**
@@ -167,7 +167,129 @@ public final class BasicStructureParser
 		if (__state == null)
 			throw new NullPointerException("NARG");
 		
+		BottomToken peek = this.__bottomPeek(),
+		base = peek;
+		BottomType type = peek.type();
+		
+		// Package delaration
+		if (type == BottomType.KEYWORD_PACKAGE)
+		{
+			// Consume package
+			this.__bottomNext();
+			
+			// Target string for the package identifier
+			StringBuilder sb = new StringBuilder();
+			
+			// Reading loop, identifier word followed by dot or semicolon
+			for (;;)
+			{
+				BottomToken next = this.__bottomNext();
+				
+				// {@squirreljme.error AQ16 Expected identifier while parsing
+				// the package. (The token)}
+				if (next.type != BottomType.IDENTIFIER)
+					throw new TokenizerException(next,
+						String.format("AQ16 %s", next));
+				
+				// Use this identifier
+				sb.append(next.characters());
+				
+				// Adding another identifier?
+				next = this.__bottomNext();
+				type = next.type();
+				if (type == BottomType.SYMBOL_DOT)
+				{
+					sb.append('.');
+					continue;
+				}
+				
+				// No more
+				else if (type == BottomType.SYMBOL_SEMICOLON)
+					break;
+				
+				// {@squirreljme.error AQ17 Expected either a dot or
+				// semi-colon in the package statement. (The token)}
+				else
+					throw new TokenizerException(next,
+						String.format("AQ17 %s", next));
+			}
+			
+			// Build token
+			this.__token(ContextType.PACKAGE_DECLARATION, base, sb);
+			
+			// Start reading imports
+			this.__stackReplace(new __AtIntroImports__());
+			
+			// Done
+			return;
+		}
+		
+		// Import statement
+		else if (type == BottomType.KEYWORD_IMPORT)
+		{
+			// Go straight to import processing
+			this.__stackReplace(new __AtIntroImports__());
+			return;
+		}
+		
+		// Potential start of class, switch
+		else if (type.isPotentialClassStart())
+		{
+			this.__stackReplace(new __AtClass__(false));
+			return;
+		}
+		
+		// {@squirreljme.error AQ15 Unexpected token while searching for the
+		// package keyword or other parts.}
+		else
+			throw new TokenizerException(peek, String.format("AQ15 %s", peek));
+		
+		
 		throw new todo.TODO();
+	}
+
+
+	/**
+	 * Pushes a new state to the top.
+	 *
+	 * @param __new The new state entry.
+	 * @return The new state.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/09
+	 */
+	private final __State__ __statePush(__State__ __new)
+		throws NullPointerException
+	{
+		if (__new == null)
+			throw new NullPointerException("NARG");
+		
+		// Add to the top
+		Deque<__State__> states = this._states;
+		states.addLast(__new);
+		
+		return __new;
+	}
+	
+	/**
+	 * Replaces the top stack entry with the new type.
+	 *
+	 * @param __new The new state.
+	 * @return The new state.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/08
+	 */
+	private final __State__ __stateReplace(__State__ __new)
+		throws NullPointerException
+	{
+		if (__new == null)
+			throw new NullPointerException("NARG");
+		
+		// Replace the top
+		Deque<__State__> states = this._states;
+		states.removeLast();
+		states.addLast(__new);
+		
+		return __new;
 	}
 }
 
