@@ -11,24 +11,21 @@
 package net.multiphasicapps.javac.basic;
 
 /**
- * This class is used to build the basic structure of a class file along with
- * any of its classes.
+ * Stores state for the package parser.
  *
- * @since 2018/03/12
+ * @since 2018/03/13
  */
-public final class BasicStructureBuilder
+final class __StatePackage__
+	extends __State__
 {
 	/**
-	 * Builds the structure.
+	 * Initializes the state.
 	 *
-	 * @return The resulting structure.
-	 * @throws BasicStructureException If the structure is not valid.
 	 * @since 2018/03/13
 	 */
-	public final BasicStructure build()
-		throws BasicStructureException
+	__StatePackage__()
 	{
-		throw new todo.TODO();
+		super(__State__.Area.PACKAGE);
 	}
 }
 
