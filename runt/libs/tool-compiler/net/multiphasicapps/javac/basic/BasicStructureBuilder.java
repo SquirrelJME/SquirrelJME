@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.javac.basic;
 
+import net.multiphasicapps.classfile.BinaryName;
+
 /**
  * This class is used to build the basic structure of a class file along with
  * any of its classes.
@@ -18,6 +20,9 @@ package net.multiphasicapps.javac.basic;
  */
 public final class BasicStructureBuilder
 {
+	/** The package this class is in. */
+	private volatile BinaryName _package;
+	
 	/**
 	 * Builds the structure.
 	 *
@@ -29,6 +34,17 @@ public final class BasicStructureBuilder
 		throws BasicStructureException
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Sets the package that this class is in.
+	 *
+	 * @param __bn The package the class is in.
+	 * @since 2018/03/13
+	 */
+	public final void setPackage(BinaryName __bn)
+	{
+		this._package = __bn;
 	}
 }
 
