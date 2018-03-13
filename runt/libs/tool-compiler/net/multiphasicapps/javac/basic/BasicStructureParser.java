@@ -206,6 +206,9 @@ public final class BasicStructureParser
 		// An import statement
 		if (type == TokenType.KEYWORD_IMPORT)
 		{
+			// Consume that token
+			layer.next();
+			
 			throw new todo.TODO();
 		}
 		
