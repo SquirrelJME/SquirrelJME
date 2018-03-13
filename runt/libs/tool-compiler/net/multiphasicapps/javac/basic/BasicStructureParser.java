@@ -14,6 +14,8 @@ import java.io.Closeable;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import net.multiphasicapps.javac.FileNameLineAndColumn;
 import net.multiphasicapps.javac.token.Token;
 import net.multiphasicapps.javac.token.Tokenizer;
@@ -28,8 +30,25 @@ import net.multiphasicapps.javac.token.TokenType;
 public final class BasicStructureParser
 	implements Closeable, FileNameLineAndColumn
 {
+	/** The builder which is used to store partial state. */
+	protected final BasicStructureBuilder builder =
+		new BasicStructureBuilder();
+	
 	/** The layer to source tokens from. */
 	protected final TokenizerLayer layer;
+	
+	/** Parser states which store the needed temporary data. */
+	private final Deque<__State__> _states =
+		new ArrayDeque<>();
+	
+	/**
+	 * Initializes the base state.
+	 *
+	 * @since 2018/03/13
+	 */
+	{
+		this._states.addLast(new __StatePackage__());
+	}
 	
 	/**
 	 * Parses the given basic structure from the given tokenizer.
@@ -93,23 +112,60 @@ public final class BasicStructureParser
 	 * Parses the input source file and builds the structure from it.
 	 *
 	 * @return The resulting structure.
+	 * @throws BasicStructureException If the structure could not be parsed.
 	 * @throws IOException On read errors.
 	 * @since 2018/03/12
 	 */
 	public final BasicStructure parse()
-		throws IOException
+		throws BasicStructureException, IOException
 	{
-		TokenizerLayer layer = this.layer;
-		for (;;)
+		Deque<__State__> states = this._states;
+		
+		// Parsing is done in a loop
+		for (boolean goteof = false; !goteof;)
 		{
-			LayeredToken t = layer.next();
-			if (t.type() == TokenType.END_OF_FILE)
-				break;
+			__State__ state = states.getLast();
+			
+			// Depends on the area
+			__State__.Area area = state.area;
+			switch (area)
+			{
+					// End of file
+				case END_OF_FILE:
+					goteof = true;
+					break;
 				
-			System.err.print(t.characters());
-			System.err.print(' ');
+					// Parse the package statement
+				case PACKAGE:
+					this.__parsePackage((__StatePackage__)state);
+					break;
+				
+					// {@squirreljme.error AQ13 Could not parse the structure
+					// because the specified state is not known. (The area)}
+				default:
+					throw new BasicStructureException(this,
+						String.format("AQ13 %s", area));
+			}
 		}
-		System.err.println();
+		
+		// Build it
+		return this.builder.build();
+	}
+	
+	/**
+	 * Parses the package statement.
+	 *
+	 * @param __state The parsing state.
+	 * @throws BasicStructureException If the structure could not be parsed.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/12
+	 */
+	private final void __parsePackage(__StatePackage__ __state)
+		throws BasicStructureException, IOException, NullPointerException
+	{
+		if (__state == null)
+			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
 	}
