@@ -203,7 +203,23 @@ public final class BasicStructureParser
 		LayeredToken next = layer.peek();
 		TokenType type = next.type();
 		
-		throw new todo.TODO();
+		// An import statement
+		if (type == TokenType.KEYWORD_IMPORT)
+		{
+			throw new todo.TODO();
+		}
+		
+		// Potential start of class, switch
+		else if (type.isPotentialClassStart())
+		{
+			this.__stateReplace(new __StateClass__(false));
+		}
+		
+		// {@squirreljme.error AQ18 Unxpected token while looking for import
+		// statements.}
+		else
+			throw new BasicStructureException(next,
+				String.format("AQ18 %s", next));
 	}
 	
 	/**

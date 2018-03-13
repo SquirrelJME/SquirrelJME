@@ -10,63 +10,67 @@
 
 package net.multiphasicapps.javac.basic;
 
-import java.util.ArrayList;
-import java.util.List;
 import net.multiphasicapps.classfile.BinaryName;
 
 /**
- * This class is used to build the basic structure of a class file along with
- * any of its classes.
+ * This represents a single import statement which has been parsed.
  *
- * @since 2018/03/12
+ * @since 2018/03/13
  */
-public final class BasicStructureBuilder
+public final class ImportStatement
 {
-	/** Import statements. */
-	private final List<ImportStatement> _imports =
-		new ArrayList<>();
-	
-	/** The package this class is in. */
-	private volatile BinaryName _package;
-	
 	/**
-	 * Adds an import statement to the structure.
+	 * Initializes the import statement.
 	 *
-	 * @param __i The import to add.
+	 * @param __static Is this import static?
+	 * @param __what What is being imported?
+	 * @param __wild Is this a wildcard import?
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/13
 	 */
-	public final void addImport(ImportStatement __i)
+	public ImportStatement(boolean __static, BinaryName __what, boolean __wild)
 		throws NullPointerException
 	{
-		if (__i == null)
+		if (__what == null)
 			throw new NullPointerException("NARG");
 		
-		this._imports.add(__i);
+		throw new todo.TODO();
 	}
 	
 	/**
-	 * Builds the structure.
-	 *
-	 * @return The resulting structure.
-	 * @throws BasicStructureException If the structure is not valid.
+	 * {@inheritDoc}
 	 * @since 2018/03/13
 	 */
-	public final BasicStructure build()
-		throws BasicStructureException
+	@Override
+	public final boolean equals(Object __o)
+	{
+		if (this == __o)
+			return true;
+		
+		if (!(__o instanceof ImportStatement))
+			return false;
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/13
+	 */
+	@Override
+	public final int hashCode()
 	{
 		throw new todo.TODO();
 	}
 	
 	/**
-	 * Sets the package that this class is in.
-	 *
-	 * @param __bn The package the class is in.
+	 * {@inheritDoc}
 	 * @since 2018/03/13
 	 */
-	public final void setPackage(BinaryName __bn)
+	@Override
+	public final String toString()
 	{
-		this._package = __bn;
+		throw new todo.TODO();
 	}
 }
 
