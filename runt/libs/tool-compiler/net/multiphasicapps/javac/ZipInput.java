@@ -56,6 +56,17 @@ public final class ZipInput
 		
 		return this.entry.equals(((ZipInput)__o).entry);
 	}
+
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/11/29
+	 */
+	@Override
+	public final String fileName()
+		throws CompilerException
+	{
+		return this.entry.name();
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -76,17 +87,6 @@ public final class ZipInput
 		throws CompilerException
 	{
 		return this.entry.lastModifiedTime();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/11/29
-	 */
-	@Override
-	public final String name()
-		throws CompilerException
-	{
-		return this.entry.name();
 	}
 	
 	/**

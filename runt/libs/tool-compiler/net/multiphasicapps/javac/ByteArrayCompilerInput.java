@@ -83,6 +83,17 @@ public final class ByteArrayCompilerInput
 		return this.name.equals(o.name) &&
 			Arrays.equals(this._data, o._data);
 	}
+
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/06
+	 */
+	@Override
+	public final String fileName()
+		throws CompilerException
+	{
+		return this.name;
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -103,17 +114,6 @@ public final class ByteArrayCompilerInput
 		throws CompilerException
 	{
 		return this.lastmodifiedtime;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/03/06
-	 */
-	@Override
-	public final String name()
-		throws CompilerException
-	{
-		return this.name;
 	}
 	
 	/**

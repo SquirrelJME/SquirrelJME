@@ -94,7 +94,7 @@ public final class MergedPathSet
 		// a given name
 		for (CompilerPathSet cps : this._sets)
 			for (CompilerInput in : cps)
-				rv.put(in.name(), in);
+				rv.put(in.fileName(), in);
 		
 		// Return view of the map
 		Collection<CompilerInput> values = rv.values();
