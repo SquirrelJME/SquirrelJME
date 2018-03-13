@@ -102,7 +102,7 @@ public final class BasicStructureParser
 		TokenizerLayer layer = this.layer;
 		for (;;)
 		{
-			Token t = layer.next();
+			LayeredToken t = layer.next();
 			if (t.type() == TokenType.END_OF_FILE)
 				break;
 				

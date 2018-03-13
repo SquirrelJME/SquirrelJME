@@ -13,8 +13,10 @@ package net.multiphasicapps.javac.basic;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.List;
 import net.multiphasicapps.javac.FileNameLineAndColumn;
 import net.multiphasicapps.javac.token.Token;
 import net.multiphasicapps.javac.token.Tokenizer;
@@ -36,12 +38,16 @@ public final class TokenizerLayer
 	protected final Tokenizer tokenizer;
 	
 	/** This stores the temporary token queue which allows for peeking. */
-	private final LinkedList<Token> _queue =
+	private final LinkedList<LayeredToken> _queue =
 		new LinkedList<>();
 	
 	/** Decomposed bracket tokens, if that is enabled. */
-	private final Deque<Token> _decompqueue =
+	private final Deque<LayeredToken> _decompqueue =
 		new ArrayDeque<>();
+	
+	/** Pusher for comment tokens. */
+	private final List<Token> _commentpush =
+		new ArrayList<>();
 	
 	/** Are brackets to be decomposed into simpler parts? */
 	private volatile boolean _decompose =
@@ -140,18 +146,24 @@ public final class TokenizerLayer
 	 * @throws IOException On read errors.
 	 * @since 2018/03/12
 	 */
-	public final Token next()
+	public final LayeredToken next()
 		throws IOException
 	{
+		LayeredToken rv;
+		
 		// If there are decomposed tokens waiting then return those first
 		// because they got generated
-		Deque<Token> decompqueue = this._decompqueue;
+		Deque<LayeredToken> decompqueue = this._decompqueue;
 		if (!decompqueue.isEmpty())
-			return decompqueue.removeFirst();
+		{
+			rv = decompqueue.removeFirst();
+			this._last = rv;
+			return rv;
+		}
 		
 		// Peek a single token and remove it from the queue
 		this.peek();
-		Token rv = this._queue.removeFirst();
+		rv = this._queue.removeFirst();
 		
 		// If decomposing, turn bitshifts into single angle brackets
 		if (this._decompose)
@@ -188,16 +200,18 @@ public final class TokenizerLayer
 					co = rv.column();
 				
 				for (int i = 0; i < decompcount; i++)
-					decompqueue.addLast(new Token(
-						TokenType.COMPARE_GREATER_THAN, ">", fn, ln, co));
+					decompqueue.addLast(new LayeredToken(new Token(
+						TokenType.COMPARE_GREATER_THAN, ">", fn, ln, co),
+						(i == 0 ? rv.comments() : new Token[0])));
 			}
 			
 			// Use decomposed tokens if any were added (check again)
 			if (!decompqueue.isEmpty())
-				return decompqueue.removeFirst();
+				rv = decompqueue.removeFirst();
 		}
 		
 		// Use that original token
+		this._last = rv;
 		return rv;
 	}
 	
@@ -208,7 +222,7 @@ public final class TokenizerLayer
 	 * @throws IOException On read errors.
 	 * @since 2018/03/12
 	 */
-	public final Token peek()
+	public final LayeredToken peek()
 		throws IOException
 	{
 		// Just read the first token
@@ -224,7 +238,7 @@ public final class TokenizerLayer
 	 * @throws IOException On read errors.
 	 * @since 2018/03/12
 	 */
-	public final Token peek(int __o)
+	public final LayeredToken peek(int __o)
 		throws IndexOutOfBoundsException, IOException
 	{
 		// {@squirreljme.error AQ12 Cannot peek a token with a negative
@@ -233,7 +247,8 @@ public final class TokenizerLayer
 			throw new IndexOutOfBoundsException("AQ12");
 		
 		// Keep filling the queue with tokens as needed
-		LinkedList<Token> queue = this._queue;
+		LinkedList<LayeredToken> queue = this._queue;
+		List<Token> commentpush = this._commentpush;
 		Tokenizer tokenizer = this.tokenizer;
 		int qsize;
 		while ((qsize = queue.size()) <= __o)
@@ -246,8 +261,27 @@ public final class TokenizerLayer
 					tokenizer.fileName(), tokenizer.line(),
 					tokenizer.column());
 			
+			// If this is a comment, push it because comments are never
+			// considered as parsing input (they are just notes)
+			if (next.type() == TokenType.COMMENT)
+			{
+				commentpush.add(next);
+				continue;
+			}
+			
+			// Generate token
+			LayeredToken gen;
+			if (commentpush.isEmpty())
+				gen = new LayeredToken(next);
+			else
+			{
+				gen = new LayeredToken(next, commentpush.<Token>toArray(
+					new Token[commentpush.size()]));
+				commentpush.clear();
+			}
+			
 			// Store token for later usage
-			queue.addLast(next);
+			queue.addLast(gen);
 		}
 		
 		// Use that given token
