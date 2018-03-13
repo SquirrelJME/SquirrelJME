@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.javac.token;
+package net.multiphasicapps.javac;
 
 /**
  * This interface specifies that the class provides row and column information
