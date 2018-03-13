@@ -62,6 +62,7 @@ public final class Token
 		
 		this.type = __t;
 		this.chars = __c;
+		this.filename = __fn;
 		this.line = __l;
 		this.column = __o;
 	}

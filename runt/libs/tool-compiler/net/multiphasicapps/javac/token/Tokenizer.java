@@ -117,7 +117,7 @@ public class Tokenizer
 	public Tokenizer(String __fn, InputStream __is)
 		throws NullPointerException, RuntimeException
 	{
-		this(__wrap(__fn, __is));
+		this(__fn, __wrap(__is));
 	}
 	
 	/**
@@ -975,7 +975,6 @@ public class Tokenizer
 	/**
 	 * Wraps the input stream for reading UTF-8.
 	 *
-	 * @param __fn The input file name.
 	 * @param __is The read to read from.
 	 * @return The wrapped reader.
 	 * @throws RuntimeException If UTF-8 is not supported but this should
@@ -983,17 +982,17 @@ public class Tokenizer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/09/04
 	 */
-	private static Reader __wrap(String __fn, InputStream __is)
+	private static Reader __wrap(InputStream __is)
 		throws RuntimeException, NullPointerException
 	{
 		// Check
-		if (__fn == null || __is == null)
+		if (__is == null)
 			throw new NullPointerException("NARG");
 
 		// Could fail, but it never should
 		try
 		{
-			return new InputStreamReader(__fn, __is, "utf-8");
+			return new InputStreamReader(__is, "utf-8");
 		}
 
 		// Should never happen

@@ -103,6 +103,11 @@ public class CompilerException
 			this.column = lc.column();
 			this.line = lc.line();
 		}
+		else
+		{
+			this.column = -1;
+			this.line = -1;
+		}
 	}
 	
 	/**
@@ -124,6 +129,11 @@ public class CompilerException
 			LineAndColumn lc = (LineAndColumn)__la;
 			this.column = lc.column();
 			this.line = lc.line();
+		}
+		else
+		{
+			this.column = -1;
+			this.line = -1;
 		}
 	}
 	
@@ -148,6 +158,11 @@ public class CompilerException
 			this.column = lc.column();
 			this.line = lc.line();
 		}
+		else
+		{
+			this.column = -1;
+			this.line = -1;
+		}
 	}
 	
 	/**
@@ -169,6 +184,11 @@ public class CompilerException
 			LineAndColumn lc = (LineAndColumn)__la;
 			this.column = lc.column();
 			this.line = lc.line();
+		}
+		else
+		{
+			this.column = -1;
+			this.line = -1;
 		}
 	}
 	

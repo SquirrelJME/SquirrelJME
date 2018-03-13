@@ -13,11 +13,13 @@ package net.multiphasicapps.javac.cute;
 import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.javac.basic.BasicStructure;
+import net.multiphasicapps.javac.basic.BasicStructureParser;
 import net.multiphasicapps.javac.CompilerException;
 import net.multiphasicapps.javac.CompilerInput;
-import net.multiphasicapps.javac.token.ContextToken;
-import net.multiphasicapps.javac.token.ContextTokenizer;
-import net.multiphasicapps.javac.token.ContextType;
+import net.multiphasicapps.javac.CompilerLogger;
+import net.multiphasicapps.javac.MessageType;
+import net.multiphasicapps.javac.token.Tokenizer;
 
 /**
  * This is a class node which is based on input source code and is compiled
@@ -61,36 +63,35 @@ public final class SourcedClassNode
 	{
 		if (__input == null || __state == null)
 			throw new NullPointerException("NARG");
+			
+		CompilerLogger log = __state.log();
 		
 		// Store last processed file for debug purposes
 		__state._lastinput = __input;
 		
 		// {@squirreljme.error AQ0s Parsing input source file for classes to
 		// compile.}
-		__state.message(MessageType.INFO, __input, "AQ0s");
+		log.message(MessageType.INFO, __input, "AQ0s");
 		
 		// Setup streamlined tokenizers to parse the classes
+		BasicStructure bs;
 		try (InputStream in = __input.open();
-			ContextTokenizer tokz = new ContextTokenizer(in))
+			BasicStructureParser bsp = new BasicStructureParser(
+				new Tokenizer(__input.fileName(), in)))
 		{
-			// Use this as a source for lines and columns
-			__state._lineandcol = tokz;
-			
-			// Debug print all tokens
-			ContextToken next, prev = null;
-			while (null != (next = tokz.next()))
-				System.err.printf("DEBUG -- %s%n", next);
-		
-			throw new todo.TODO();
+			// Load the structure
+			bs = bsp.parse();
 		}
 		
 		// {@squirreljme.error AQ0t Could not read the input source file.
 		// (The input source file)}
 		catch (IOException e)
 		{
-			throw new CompilerException(
+			throw new CompilerException(__input,
 				String.format("AQ0t %s", __input.fileName()), e);
 		}
+		
+		throw new todo.TODO();
 	}
 }
 
