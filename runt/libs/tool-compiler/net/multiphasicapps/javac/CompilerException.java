@@ -17,7 +17,17 @@ package net.multiphasicapps.javac;
  */
 public class CompilerException
 	extends RuntimeException
+	implements FileLineAndColumn
 {
+	/** The column where the error occured. */
+	protected final int column;
+	
+	/** The line where the error occured. */
+	protected final int line;
+	
+	/** The file being processed. */
+	protected final String filename;
+	
 	/**
 	 * Initialize the exception with no message or cause.
 	 *
@@ -25,6 +35,9 @@ public class CompilerException
 	 */
 	public CompilerException()
 	{
+		this.column = -1;
+		this.line = -1;
+		this.filename = null;
 	}
 	
 	/**
@@ -36,6 +49,10 @@ public class CompilerException
 	public CompilerException(String __m)
 	{
 		super(__m);
+		
+		this.column = -1;
+		this.line = -1;
+		this.filename = null;
 	}
 	
 	/**
@@ -48,6 +65,10 @@ public class CompilerException
 	public CompilerException(String __m, Throwable __c)
 	{
 		super(__m, __c);
+		
+		this.column = -1;
+		this.line = -1;
+		this.filename = null;
 	}
 	
 	/**
@@ -59,6 +80,142 @@ public class CompilerException
 	public CompilerException(Throwable __c)
 	{
 		super(__c);
+		
+		this.column = -1;
+		this.line = -1;
+		this.filename = null;
+	}
+	
+	/**
+	 * Initialize the exception with no message or cause.
+	 *
+	 * @param __lc The line and column information.
+	 * @since 2017/03/12
+	 */
+	public CompilerException(LineAndColumn __lc)
+	{
+		if (__lc == null)
+		{
+			this.column = -1;
+			this.line = -1;
+			this.filename = null;
+		}
+		else
+		{
+			this.column = __lc.column();
+			this.line = __lc.line();
+			this.filename = ((__lc instanceof FileLineAndColumn) ?
+				((FileLineAndColumn)__lc).fileName() : null);
+		}
+	}
+	
+	/**
+	 * Initialize the exception with a message and no cause.
+	 *
+	 * @param __lc The line and column information.
+	 * @param __m The message.
+	 * @since 2017/03/12
+	 */
+	public CompilerException(LineAndColumn __lc, String __m)
+	{
+		super(__m);
+		
+		if (__lc == null)
+		{
+			this.column = -1;
+			this.line = -1;
+			this.filename = null;
+		}
+		else
+		{
+			this.column = __lc.column();
+			this.line = __lc.line();
+			this.filename = ((__lc instanceof FileLineAndColumn) ?
+				((FileLineAndColumn)__lc).fileName() : null);
+		}
+	}
+	
+	/**
+	 * Initialize the exception with a message and cause.
+	 *
+	 * @param __lc The line and column information.
+	 * @param __m The message.
+	 * @param __c The cause.
+	 * @since 2017/03/12
+	 */
+	public CompilerException(LineAndColumn __lc, String __m, Throwable __c)
+	{
+		super(__m, __c);
+		
+		if (__lc == null)
+		{
+			this.column = -1;
+			this.line = -1;
+			this.filename = null;
+		}
+		else
+		{
+			this.column = __lc.column();
+			this.line = __lc.line();
+			this.filename = ((__lc instanceof FileLineAndColumn) ?
+				((FileLineAndColumn)__lc).fileName() : null);
+		}
+	}
+	
+	/**
+	 * Initialize the exception with no message and with a cause.
+	 *
+	 * @param __lc The line and column information.
+	 * @param __c The cause.
+	 * @since 2017/03/12
+	 */
+	public CompilerException(LineAndColumn __lc, Throwable __c)
+	{
+		super(__c);
+		
+		if (__lc == null)
+		{
+			this.column = -1;
+			this.line = -1;
+			this.filename = null;
+		}
+		else
+		{
+			this.column = __lc.column();
+			this.line = __lc.line();
+			this.filename = ((__lc instanceof FileLineAndColumn) ?
+				((FileLineAndColumn)__lc).fileName() : null);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/12
+	 */
+	@Override
+	public final int column()
+	{
+		return this.column;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/12
+	 */
+	@Override
+	public final String fileName()
+	{
+		return this.filename;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/12
+	 */
+	@Override
+	public final int line()
+	{
+		return this.line;
 	}
 }
 

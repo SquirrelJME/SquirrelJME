@@ -21,7 +21,7 @@ import java.io.Reader;
  * @since 2017/09/09
  */
 public class LogicalReader
-	implements Closeable, LineAndColumn
+	implements Closeable, FileLineAndColumn
 {
 	/** The size of tabs. */
 	private static final int _TAB_SIZE =
@@ -29,6 +29,9 @@ public class LogicalReader
 	
 	/** The reader to source from. */
 	protected final Reader in;
+	
+	/** The file name. */
+	protected final String filename;
 	
 	/** The current line. */
 	private volatile int _line =
@@ -48,18 +51,20 @@ public class LogicalReader
 	/**
 	 * Initializes the logical reader.
 	 *
+	 * @param __fn The name of the file.
 	 * @param __r The stream to read from.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/09/09
 	 */
-	public LogicalReader(Reader __r)
+	public LogicalReader(String __fn, Reader __r)
 		throws NullPointerException
 	{
 		// Check
-		if (__r == null)
+		if (__fn == null || __r == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
+		this.filename = __fn;
 		this.in = __r;
 	}
 	
@@ -93,6 +98,16 @@ public class LogicalReader
 	public int line()
 	{
 		return this._line;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/12
+	 */
+	@Override
+	public String fileName()
+	{
+		return this.filename;
 	}
 	
 	/**

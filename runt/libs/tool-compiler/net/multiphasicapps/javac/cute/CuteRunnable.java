@@ -31,7 +31,8 @@ import net.multiphasicapps.javac.CompilerInputLocation;
 import net.multiphasicapps.javac.CompilerOptions;
 import net.multiphasicapps.javac.CompilerOutput;
 import net.multiphasicapps.javac.CompilerPathSet;
-import net.multiphasicapps.javac.token.LineAndColumn;
+import net.multiphasicapps.javac.FileLineAndColumn;
+import net.multiphasicapps.javac.LineAndColumn;
 
 /**
  * This is the runnable which performs the actual compilation tasks and

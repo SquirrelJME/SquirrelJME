@@ -19,11 +19,11 @@ import java.lang.ref.WeakReference;
  *
  * @since 2017/09/04
  */
-public final class BottomToken
+public final class Token
 	implements LineAndColumn
 {
 	/** The type of token this is, */
-	protected final BottomType type;
+	protected final TokenType type;
 	
 	/** The token string data. */
 	protected final String chars;
@@ -47,7 +47,7 @@ public final class BottomToken
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/09/06
 	 */
-	public BottomToken(BottomType __t, String __c, int __l, int __o)
+	public Token(TokenType __t, String __c, int __l, int __o)
 		throws NullPointerException
 	{
 		// Check
@@ -88,10 +88,10 @@ public final class BottomToken
 	@Override
 	public boolean equals(Object __o)
 	{
-		if (!(__o instanceof BottomToken))
+		if (!(__o instanceof Token))
 			return false;
 		
-		BottomToken o = (BottomToken)__o;
+		Token o = (Token)__o;
 		return this.type.equals(o.type) &&
 			this.chars.equals(o.chars) &&
 			this.line == o.line &&
@@ -117,7 +117,7 @@ public final class BottomToken
 	 */
 	public final boolean isComment()
 	{
-		return this.type == BottomType.COMMENT;
+		return this.type == TokenType.COMMENT;
 	}
 	
 	/**
@@ -138,14 +138,14 @@ public final class BottomToken
 	 */
 	public final boolean needFollowingSpace()
 	{
-		BottomType type = this.type;
+		TokenType type = this.type;
 		return type.isIdentifier() ||
 			type.isKeyword() ||
 			type.isLiteral() ||
-			type == BottomType.OPERATOR_PLUS ||
-			type == BottomType.OPERATOR_MINUS ||
-			type == BottomType.OPERATOR_INCREMENT ||
-			type == BottomType.OPERATOR_DECREMENT;
+			type == TokenType.OPERATOR_PLUS ||
+			type == TokenType.OPERATOR_MINUS ||
+			type == TokenType.OPERATOR_INCREMENT ||
+			type == TokenType.OPERATOR_DECREMENT;
 	}
 	
 	/**
@@ -172,7 +172,7 @@ public final class BottomToken
 	 * @return The token type.
 	 * @since 2017/09/06
 	 */
-	public BottomType type()
+	public TokenType type()
 	{
 		return this.type;
 	}

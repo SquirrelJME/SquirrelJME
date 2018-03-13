@@ -21,8 +21,9 @@ import net.multiphasicapps.javac.CompilerInput;
 import net.multiphasicapps.javac.CompilerInputLocation;
 import net.multiphasicapps.javac.CompilerPathSet;
 import net.multiphasicapps.javac.CompilerInput;
+import net.multiphasicapps.javac.FileLineAndColumn;
+import net.multiphasicapps.javac.LineAndColumn;
 import net.multiphasicapps.javac.NoSuchInputException;
-import net.multiphasicapps.javac.token.LineAndColumn;
 
 /**
  * This contains the current state of the compiler.
@@ -184,124 +185,6 @@ public final class CompilerState
 	{
 		Deque<SourcedClassNode> tocompile = this._tocompile;
 		return tocompile.pollFirst();
-	}
-	
-	/**
-	 * Logs the specified message.
-	 *
-	 * @param __t The type of message to display.
-	 * @parma __i The current input file, may be {@code null}.
-	 * @param __m The formatted message to show.
-	 * @param __args The arguments to the formatted message.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/03/06
-	 */
-	public final void message(MessageType __t, CompilerInput __i, String __m,
-		Object... __args)
-		throws NullPointerException
-	{
-		if (__t == null || __m == null)
-			throw new NullPointerException("NARG");
-		
-		// Forward
-		this.message(__t, __i, -1, -1, __m, __args);
-	}
-	
-	/**
-	 * Logs the specified message.
-	 *
-	 * @param __t The type of message to display.
-	 * @parma __i The current input file, may be {@code null}.
-	 * @param __lc Line and column information.
-	 * @param __m The formatted message to show.
-	 * @param __args The arguments to the formatted message.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/03/06
-	 */
-	public final void message(MessageType __t, CompilerInput __i,
-		LineAndColumn __lc, String __m, Object... __args)
-		throws NullPointerException
-	{
-		if (__t == null || __m == null)
-			throw new NullPointerException("NARG");
-		
-		// Forward
-		this.message(__t, __i, (__lc == null ? -1 : __lc.line()),
-			(__lc == null ? -1 : __lc.column()), __m, __args);
-	}
-	
-	/**
-	 * Logs the specified message.
-	 *
-	 * @param __t The type of message to display.
-	 * @parma __i The current input file, may be {@code null}.
-	 * @param __line The current row, negative values are not valid.
-	 * @param __col The current column, negative values are not valid.
-	 * @param __m The formatted message to show.
-	 * @param __args The arguments to the formatted message.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/03/06
-	 */
-	public final void message(MessageType __t, CompilerInput __i, int __line,
-		int __col, String __m, Object... __args)
-		throws NullPointerException
-	{
-		if (__t == null || __m == null)
-			throw new NullPointerException("NARG");
-		
-		// Force to exist
-		if (__args == null)
-			__args = new String[0];
-		
-		// Print specially formatted messages
-		PrintStream log = this.log;
-		
-		// File
-		if (__i != null)
-			log.print(__i.name());
-		
-		// Use a fallback name if it is possible
-		else
-		{
-			CompilerInput lastinput = this._lastinput;
-			
-			if (lastinput != null)
-				log.print(lastinput.name());
-			else
-				log.print("<unknown>");
-		}
-		
-		// Use estimate line and column information if it was not specified
-		LineAndColumn lineandcol = this._lineandcol;
-		if (lineandcol != null)
-		{
-			if (__line < 0)
-				__line = lineandcol.line();
-			if (__col < 0)
-				__col = lineandcol.column();
-		}
-		
-		// Printing row?
-		if (__line >= 0)
-		{
-			log.print(':');
-			log.print(__line);
-			
-			// Add column also?
-			if (__col >= 0)
-			{
-				log.print(',');
-				log.print(__col);
-			}
-		}
-		
-		// Print spacer and the message type
-		log.print(": [");
-		log.print(__t);
-		log.print("] ");
-		
-		// Print the message itself
-		log.println(String.format(__m, __args));
 	}
 }
 
