@@ -17,7 +17,7 @@ package net.multiphasicapps.javac;
  */
 public class CompilerException
 	extends RuntimeException
-	implements FileLineAndColumn
+	implements FileNameLineAndColumn
 {
 	/** The column where the error occured. */
 	protected final int column;
@@ -104,8 +104,8 @@ public class CompilerException
 		{
 			this.column = __lc.column();
 			this.line = __lc.line();
-			this.filename = ((__lc instanceof FileLineAndColumn) ?
-				((FileLineAndColumn)__lc).fileName() : null);
+			this.filename = ((__lc instanceof FileName) ?
+				((FileName)__lc).fileName() : null);
 		}
 	}
 	
@@ -130,8 +130,8 @@ public class CompilerException
 		{
 			this.column = __lc.column();
 			this.line = __lc.line();
-			this.filename = ((__lc instanceof FileLineAndColumn) ?
-				((FileLineAndColumn)__lc).fileName() : null);
+			this.filename = ((__lc instanceof FileName) ?
+				((FileName)__lc).fileName() : null);
 		}
 	}
 	
@@ -157,8 +157,8 @@ public class CompilerException
 		{
 			this.column = __lc.column();
 			this.line = __lc.line();
-			this.filename = ((__lc instanceof FileLineAndColumn) ?
-				((FileLineAndColumn)__lc).fileName() : null);
+			this.filename = ((__lc instanceof FileName) ?
+				((FileName)__lc).fileName() : null);
 		}
 	}
 	
@@ -183,8 +183,146 @@ public class CompilerException
 		{
 			this.column = __lc.column();
 			this.line = __lc.line();
-			this.filename = ((__lc instanceof FileLineAndColumn) ?
-				((FileLineAndColumn)__lc).fileName() : null);
+			this.filename = ((__lc instanceof FileName) ?
+				((FileName)__lc).fileName() : null);
+		}
+	}
+	
+	/**
+	 * Initialize the exception with no message or cause.
+	 *
+	 * @param __fn The file name information.
+	 * @since 2017/03/12
+	 */
+	public CompilerException(FileName __fn)
+	{
+		if (__fn == null)
+		{
+			this.column = -1;
+			this.line = -1;
+			this.filename = null;
+		}
+		else
+		{
+			this.filename = __fn.fileName();
+			
+			if (__fn instanceof LineAndColumn)
+			{
+				LineAndColumn lc = (LineAndColumn)__fn;
+				this.column = lc.column();
+				this.line = lc.line();
+			}
+			else
+			{
+				this.column = -1;
+				this.line = -1;
+			}
+		}
+	}
+	
+	/**
+	 * Initialize the exception with a message and no cause.
+	 *
+	 * @param __fn The file name information.
+	 * @param __m The message.
+	 * @since 2017/03/12
+	 */
+	public CompilerException(FileName __fn, String __m)
+	{
+		super(__m);
+		
+		if (__fn == null)
+		{
+			this.column = -1;
+			this.line = -1;
+			this.filename = null;
+		}
+		else
+		{
+			this.filename = __fn.fileName();
+			
+			if (__fn instanceof LineAndColumn)
+			{
+				LineAndColumn lc = (LineAndColumn)__fn;
+				this.column = lc.column();
+				this.line = lc.line();
+			}
+			else
+			{
+				this.column = -1;
+				this.line = -1;
+			}
+		}
+	}
+	
+	/**
+	 * Initialize the exception with a message and cause.
+	 *
+	 * @param __fn The file name information.
+	 * @param __m The message.
+	 * @param __c The cause.
+	 * @since 2017/03/12
+	 */
+	public CompilerException(FileName __fn, String __m, Throwable __c)
+	{
+		super(__m, __c);
+		
+		if (__fn == null)
+		{
+			this.column = -1;
+			this.line = -1;
+			this.filename = null;
+		}
+		else
+		{
+			this.filename = __fn.fileName();
+			
+			if (__fn instanceof LineAndColumn)
+			{
+				LineAndColumn lc = (LineAndColumn)__fn;
+				this.column = lc.column();
+				this.line = lc.line();
+			}
+			else
+			{
+				this.column = -1;
+				this.line = -1;
+			}
+		}
+	}
+	
+	/**
+	 * Initialize the exception with no message and with a cause.
+	 *
+	 * @param __fn The file name information.
+	 * @param __c The cause.
+	 * @since 2017/03/12
+	 */
+	public CompilerException(FileName __fn, Throwable __c)
+	{
+		super(__c);
+		
+		if (__fn == null)
+		{
+			this.column = -1;
+			this.line = -1;
+			this.filename = null;
+		}
+		else
+		{
+			this.filename = __fn.fileName();
+			
+			if (__fn instanceof LineAndColumn)
+			{
+				LineAndColumn lc = (LineAndColumn)__fn;
+				this.column = lc.column();
+				this.line = lc.line();
+			}
+			else
+			{
+				this.column = -1;
+				this.line = -1;
+			}
 		}
 	}
 	
