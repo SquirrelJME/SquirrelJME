@@ -952,7 +952,7 @@ public class Tokenizer
 			case "::":	type = TokenType.SYMBOL_DOUBLE_COLON; break;
 			case "!":	type = TokenType.OPERATOR_NOT; break;
 			case "!=":	type = TokenType.COMPARE_NOT_EQUALS; break;
-			case "?":	type = TokenType.OPERATOR_TERNARY_QUESTION; break;
+			case "?":	type = TokenType.SYMBOL_QUESTION; break;
 			case "/":	type = TokenType.OPERATOR_DIVIDE; break;
 			case "/=":	type = TokenType.OPERATOR_DIVIDE_ASSIGN; break;
 			case ".":	type = TokenType.SYMBOL_DOT; break;

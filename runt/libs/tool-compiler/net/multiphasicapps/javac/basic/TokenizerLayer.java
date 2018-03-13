@@ -26,8 +26,8 @@ import net.multiphasicapps.javac.token.TokenType;
  * This layers on top of the tokenizer and allows for special handling of
  * comments and input tokens so that parsing of the input file is made simpler.
  *
- * Decomposing is enabled by default and it translate angle brackets from
- * their combined operator forms to simpler single symbols.
+ * The tokenizer keeps track of the number of angle brackets which are
+ * opened for generics so that it can properly decode closing sequences.
  *
  * @since 2018/03/12
  */
@@ -49,12 +49,14 @@ public final class TokenizerLayer
 	private final List<Token> _commentpush =
 		new ArrayList<>();
 	
-	/** Are brackets to be decomposed into simpler parts? */
-	private volatile boolean _decompose =
-		true;
-	
 	/** The last token which was read. */
 	private volatile FileNameLineAndColumn _last;
+	
+	/** The number of open angle brackets. */
+	private volatile int _opencount;
+	
+	/** Used for angle bracket decomposition. */
+	private volatile TokenType _lasttype;
 	
 	/**
 	 * This initializes the tokenizer layer which allows for slight
@@ -98,18 +100,6 @@ public final class TokenizerLayer
 	}
 	
 	/**
-	 * Sets whether tokens are to be decomposed.
-	 *
-	 * @param __d If {@code true} then brackets are decomposed into
-	 * simpler parts.
-	 * @since 2018/03/12
-	 */
-	public final void decompose(boolean __d)
-	{
-		this._decompose = __d;
-	}
-	
-	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/12
 	 */
@@ -149,70 +139,129 @@ public final class TokenizerLayer
 	public final LayeredToken next()
 		throws IOException
 	{
-		LayeredToken rv;
-		
-		// If there are decomposed tokens waiting then return those first
-		// because they got generated
-		Deque<LayeredToken> decompqueue = this._decompqueue;
-		if (!decompqueue.isEmpty())
+		int opencount = this._opencount;
+		try
 		{
-			rv = decompqueue.removeFirst();
-			this._last = rv;
-			return rv;
-		}
+			LayeredToken rv;
 		
-		// Peek a single token and remove it from the queue
-		this.peek();
-		rv = this._queue.removeFirst();
+			// If there are decomposed tokens waiting then return those first
+			// because they got generated
+			Deque<LayeredToken> decompqueue = this._decompqueue;
+			if (!decompqueue.isEmpty())
+			{
+				rv = decompqueue.removeFirst();
+				this._last = rv;
+				return rv;
+			}
 		
-		// If decomposing, turn bitshifts into single angle brackets
-		if (this._decompose)
-		{
-			// Only >> and >>> need to be decomposed. The comparison
-			// and assignment operators do not need to be included at all
-			// because in the normal code sense there will never be an
-			// assignment following a generic
-			// The left side does not need to be decomposed because it always
-			// will be split by another identifier.
+			// Peek a single token and remove it from the queue
+			this.peek();
+			rv = this._queue.removeFirst();
+			
+			// Determine if decomposition is to be performed
 			TokenType type = rv.type();
-			int decompcount;
+			TokenType lasttype = this._lasttype;
+			int maxdecouple = 0;
 			switch (type)
 			{
-				case OPERATOR_SSHIFT_RIGHT:
-					decompcount = 2;
-					break;
-					
-				case OPERATOR_USHIFT_RIGHT:
-					decompcount = 3;
+					// Count open angle brackets but only if they follow
+					// dots or identifiers
+					// Foo<Bar>
+					// foo.<Bar>boop()
+				case COMPARE_LESS_THAN:
+					if (lasttype != null &&
+						(lasttype == TokenType.IDENTIFIER ||
+						lasttype == TokenType.SYMBOL_DOT))
+						opencount++;
 					break;
 				
-					// Not decomposed
+					// Closing bracket, never close it negatively
+				case COMPARE_GREATER_THAN:
+					if (opencount > 0)
+						opencount--; 
+					break;
+				
+					// Decouple two closers
+				case OPERATOR_SSHIFT_RIGHT:
+					maxdecouple = 2;
+					break;
+				
+					// Decouple three closers
+				case OPERATOR_USHIFT_RIGHT:
+					maxdecouple = 3;
+					break;
+			
+					// These may appear in the middle of generic brackets so
+					// if they are read do not clear the count
+				case IDENTIFIER:
+				case KEYWORD_EXTENDS:
+				case KEYWORD_BOOLEAN:
+				case KEYWORD_BYTE:
+				case KEYWORD_SHORT:
+				case KEYWORD_CHAR:
+				case KEYWORD_INT:
+				case KEYWORD_LONG:
+				case KEYWORD_FLOAT:
+				case KEYWORD_DOUBLE:
+				case SYMBOL_OPEN_BRACKET:
+				case SYMBOL_CLOSED_BRACKET:
+				case SYMBOL_QUESTION:
+				case SYMBOL_DOT:
+				case SYMBOL_COMMA:
+					break;
+				
+					// Every other symbol cannot appear in a generic
+					// declaration so lose track of it completely
 				default:
-					decompcount = 0;
+					opencount = 0;
 					break;
 			}
 			
-			// Decompose the right angle brackets
-			if (decompcount > 0)
+			// Use for later processing
+			this._lasttype = type;
+			
+			// There are tokens which may be decoupled
+			if (maxdecouple > 0)
 			{
-				String fn = rv.fileName();
-				int ln = rv.line(),
-					co = rv.column();
+				// If there are more things to decouple than things which are
+				// open then it is possible there is something illegal like
+				// Foo<Bar>> 2 or similar
+				if (maxdecouple > opencount)
+					opencount = 0;
 				
-				for (int i = 0; i < decompcount; i++)
-					decompqueue.addLast(new LayeredToken(new Token(
-						TokenType.COMPARE_GREATER_THAN, ">", fn, ln, co),
-						(i == 0 ? rv.comments() : new Token[0])));
+				// Translate the >> or >>> into multiple tokens according to
+				// the decoupling count
+				else
+				{
+					String fn = rv.fileName();
+					int ln = rv.line(),
+						co = rv.column();
+				
+					for (int i = 0; i < maxdecouple; i++)
+						decompqueue.addLast(new LayeredToken(new Token(
+							TokenType.COMPARE_GREATER_THAN, ">", fn, ln, co),
+							(i == 0 ? rv.comments() : new Token[0])));
+					
+					// Treat decoupled tokens as closing statements
+					opencount -= maxdecouple;
+				}
 			}
 			
 			// Use decomposed tokens if any were added (check again)
 			if (!decompqueue.isEmpty())
 				rv = decompqueue.removeFirst();
+			
+			// Use that original token
+			this._last = rv;
+			return rv;
 		}
 		
-		// Use that original token
-		this._last = rv;
-		return rv;
+		// Always remember the open count because this needs to be stored
+		// for later runs during parsing
+		finally
+		{
+			this._opencount = opencount;
+		}
 	}
 	
 	/**

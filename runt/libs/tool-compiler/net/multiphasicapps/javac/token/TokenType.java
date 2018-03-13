@@ -276,7 +276,7 @@ public enum TokenType
 	OPERATOR_USHIFT_RIGHT_ASSIGN,
 	
 	/** Ternary question operator. */
-	OPERATOR_TERNARY_QUESTION,
+	SYMBOL_QUESTION,
 	
 	/** The NOT operator. */
 	OPERATOR_NOT,
@@ -334,12 +334,6 @@ public enum TokenType
 	
 	/** Closed bracket. */
 	SYMBOL_CLOSED_BRACKET,
-	
-	/** Open angle bracket. */
-	SYMBOL_OPEN_ANGLE,
-	
-	/** Closed angle bracket. */
-	SYMBOL_CLOSED_ANLGE,
 	
 	/** Semicolon. */
 	SYMBOL_SEMICOLON,
