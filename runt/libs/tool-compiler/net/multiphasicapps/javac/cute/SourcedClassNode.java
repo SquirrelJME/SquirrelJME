@@ -89,7 +89,7 @@ public final class SourcedClassNode
 		catch (IOException e)
 		{
 			throw new CompilerException(
-				String.format("AQ0t %s", __input.name()), e);
+				String.format("AQ0t %s", __input.fileName()), e);
 		}
 	}
 }
