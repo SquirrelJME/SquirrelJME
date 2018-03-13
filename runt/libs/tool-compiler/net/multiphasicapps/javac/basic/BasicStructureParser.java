@@ -15,7 +15,9 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.Reader;
 import net.multiphasicapps.javac.FileNameLineAndColumn;
+import net.multiphasicapps.javac.token.Token;
 import net.multiphasicapps.javac.token.Tokenizer;
+import net.multiphasicapps.javac.token.TokenType;
 
 /**
  * This class parses input tokens from the tokenizer and creates the basic
@@ -54,7 +56,7 @@ public final class BasicStructureParser
 	public final void close()
 		throws IOException
 	{
-		throw new todo.TODO();
+		this.layer.close();
 	}
 	
 	/**
@@ -97,6 +99,18 @@ public final class BasicStructureParser
 	public final BasicStructure parse()
 		throws IOException
 	{
+		TokenizerLayer layer = this.layer;
+		for (;;)
+		{
+			Token t = layer.next();
+			if (t.type() == TokenType.END_OF_FILE)
+				break;
+				
+			System.err.print(t.characters());
+			System.err.print(' ');
+		}
+		System.err.println();
+		
 		throw new todo.TODO();
 	}
 }
