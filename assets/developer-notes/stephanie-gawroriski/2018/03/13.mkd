@@ -1,0 +1,38 @@
+# 2018/03/13
+
+## 00:04
+
+Actually decomposition can be done automatically. Every `<` is closed by a
+`>` whether it be multiple ones or single ones. So basically I just need to
+keep track of how many pieces are opened. However that could potentially
+mess up for cases such as `s < 2 >>> 1`. But really what could be done is
+that if the right side group is less than what was opened then it is not
+decomposed. This could actually work out with a simple counter and some
+logic on the right group size.
+
+## 00:08
+
+Additionally, some tokens can reset the counter. For example everything
+within generics will either be `<`, `?`, or a word. So if anything is not
+those other types then the count can be reset and it can be assumed to be
+an operation instead.
+
+## 00:11
+
+Array symbols are included too.
+
+## 00:37
+
+And dot and commas.
+
+## 00:38
+
+Wierd operator usage should not occur such as `boop < baz < bar >> blip`
+and I suppose I should not worry about that because that would be an error
+anyway.
+
+## 00:42
+
+Even stuff like `a < b < c >> d` would not compile because you cannot
+right shift or compare boolean values. Any other token such as a parenthesis
+will end up just causing the count to reset accordingly.
