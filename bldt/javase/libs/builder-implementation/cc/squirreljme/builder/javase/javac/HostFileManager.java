@@ -398,7 +398,7 @@ public class HostFileManager
 		boolean issource = (__l == StandardLocation.SOURCE_PATH);
 		for (CompilerInput f : files)
 		{
-			String fname = f.name();
+			String fname = f.fileName();
 			
 			// Prefix does not match?
 			if (!fname.startsWith(prefix))
