@@ -16,6 +16,7 @@ package net.multiphasicapps.javac;
  * @since 2018/03/12
  */
 public interface FileName
+	extends LocationAware
 {
 	/**
 	 * Returns the file that is input represents or the file being processed.

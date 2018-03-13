@@ -17,6 +17,7 @@ package net.multiphasicapps.javac;
  * @since 2018/03/06
  */
 public interface LineAndColumn
+	extends LocationAware
 {
 	/**
 	 * Returns the current column.

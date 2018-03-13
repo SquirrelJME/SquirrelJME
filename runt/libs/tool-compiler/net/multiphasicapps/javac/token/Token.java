@@ -12,6 +12,8 @@ package net.multiphasicapps.javac.token;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Objects;
+import net.multiphasicapps.javac.FileNameLineAndColumn;
 
 /**
  * This represents a single token which contains a type and the characters
@@ -20,13 +22,16 @@ import java.lang.ref.WeakReference;
  * @since 2017/09/04
  */
 public final class Token
-	implements LineAndColumn
+	implements FileNameLineAndColumn
 {
 	/** The type of token this is, */
 	protected final TokenType type;
 	
 	/** The token string data. */
 	protected final String chars;
+	
+	/** The file name this token was read from. */
+	protected final String filename;
 	
 	/** The line the token is on. */
 	protected final int line;
@@ -42,16 +47,17 @@ public final class Token
 	 *
 	 * @param __t The type of token this is.
 	 * @param __c The characters which make up the token.
+	 * @param __fn The file name this was read from.
 	 * @param __l The line the token is on.
 	 * @param __o The column the token is on.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/09/06
 	 */
-	public Token(TokenType __t, String __c, int __l, int __o)
+	public Token(TokenType __t, String __c, String __fn, int __l, int __o)
 		throws NullPointerException
 	{
 		// Check
-		if (__t == null || __c == null)
+		if (__t == null || __c == null || __fn == null)
 			throw new NullPointerException("NARG");
 		
 		this.type = __t;
@@ -94,8 +100,19 @@ public final class Token
 		Token o = (Token)__o;
 		return this.type.equals(o.type) &&
 			this.chars.equals(o.chars) &&
+			Objects.equals(this.filename, o.filename) &&
 			this.line == o.line &&
 			this.column == o.column;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/12
+	 */
+	@Override
+	public final String fileName()
+	{
+		return this.filename;
 	}
 	
 	/**
@@ -106,6 +123,7 @@ public final class Token
 	public int hashCode()
 	{
 		return this.type.hashCode() ^ this.chars.hashCode() ^
+			Objects.hashCode(this.filename) ^
 			this.line ^ (~this.column);
 	}
 	
@@ -160,8 +178,8 @@ public final class Token
 		
 		if (ref == null || null == (rv = ref.get()))
 			this._string = new WeakReference<>((rv = String.format(
-				"%s@%d,%d: %s", this.type, this.line, this.column,
-				this.chars)));
+				"%s@%s:%d,%d: %s", this.type, this.filename, this.line,
+				this.column, this.chars)));
 		
 		return rv;
 	}
