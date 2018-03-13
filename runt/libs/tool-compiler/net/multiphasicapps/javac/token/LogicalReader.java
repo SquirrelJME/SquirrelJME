@@ -13,6 +13,7 @@ package net.multiphasicapps.javac.token;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.Reader;
+import net.multiphasicapps.javac.FileNameLineAndColumn;
 
 /**
  * This is a logical reader which provides line and column position information
@@ -21,7 +22,7 @@ import java.io.Reader;
  * @since 2017/09/09
  */
 public class LogicalReader
-	implements Closeable, FileLineAndColumn
+	implements Closeable, FileNameLineAndColumn
 {
 	/** The size of tabs. */
 	private static final int _TAB_SIZE =
