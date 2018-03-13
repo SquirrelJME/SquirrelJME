@@ -130,16 +130,6 @@ public final class SimpleFileNameLineAndColumn
 	}
 	
 	/**
-	 * Initializes this class with invalid information.
-	 *
-	 * @since 2018/03/12
-	 */
-	public SimpleFileNameLineAndColumn()
-	{
-		this(null, -1, -1);
-	}
-	
-	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/12
 	 */
