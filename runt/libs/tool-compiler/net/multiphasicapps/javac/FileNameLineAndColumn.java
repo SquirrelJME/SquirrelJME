@@ -16,7 +16,7 @@ package net.multiphasicapps.javac;
  *
  * @since 2018/03/12
  */
-public interface FileLineAndColumn
+public interface FileNameLineAndColumn
 	extends FileName, LineAndColumn
 {
 }
