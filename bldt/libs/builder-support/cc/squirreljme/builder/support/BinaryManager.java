@@ -249,7 +249,7 @@ public final class BinaryManager
 				boolean hasinput = false;
 				for (CompilerInput i : srcps)
 				{
-					String name = i.name();
+					String name = i.fileName();
 					
 					// Compile any source file
 					if (name.endsWith(".java"))
@@ -297,7 +297,7 @@ public final class BinaryManager
 					byte[] buf = new byte[512];
 					for (CompilerInput j : noninput)
 						try (InputStream ei = j.open();
-							OutputStream eo = out.output(j.name()))
+							OutputStream eo = out.output(j.fileName()))
 						{
 							for (;;)
 							{

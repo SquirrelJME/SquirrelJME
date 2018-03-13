@@ -39,7 +39,7 @@ public class InputHostFileObject
 	public InputHostFileObject(CompilerInput __i)
 		throws NullPointerException
 	{
-		super(__i.name());
+		super(__i.fileName());
 		
 		if (__i == null)
 			throw new NullPointerException("NARG");
