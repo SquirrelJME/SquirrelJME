@@ -81,7 +81,7 @@ public final class DistinctPathSet
 			throw new NullPointerException("NARG");
 		
 		for (CompilerInput ci : this._input)
-			if (__n.equals(ci.name()))
+			if (__n.equals(ci.fileName()))
 				return ci;
 		
 		// {@squirreljme.error AQ0j Could not find the specified input in the

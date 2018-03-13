@@ -72,6 +72,17 @@ public final class FileInput
 		return this.path.equals(o.path) &&
 			this.name.equals(o.name);
 	}
+
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/11/28
+	 */
+	@Override
+	public final String fileName()
+		throws CompilerException
+	{
+		return this.name;
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -107,17 +118,6 @@ public final class FileInput
 		{
 			throw new CompilerException("AQ0k", e);
 		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/11/28
-	 */
-	@Override
-	public final String name()
-		throws CompilerException
-	{
-		return this.name;
 	}
 	
 	/**
