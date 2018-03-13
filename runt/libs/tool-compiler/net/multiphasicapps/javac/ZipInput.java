@@ -75,7 +75,7 @@ public final class ZipInput
 	@Override
 	public final int hashCode()
 	{
-		return this.name().hashCode();
+		return this.fileName().hashCode();
 	}
 	
 	/**
@@ -107,7 +107,7 @@ public final class ZipInput
 		catch (IOException e)
 		{
 			throw new CompilerException(
-				String.format("AQ08 %s", this.name()), e);
+				String.format("AQ08 %s", this.fileName()), e);
 		}
 	}
 }
