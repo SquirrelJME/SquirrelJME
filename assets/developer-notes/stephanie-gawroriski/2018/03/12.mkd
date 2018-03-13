@@ -1,0 +1,36 @@
+# 2018/03/12
+
+## 20:47
+
+Okay so I have an idea. Basically undo the context tokenizer and make the
+bottom tokenizer just normal tokens again. Get rid of areas and then just
+have something which reads the input tokens and builds a state from it. I
+can have a special modified token state kind of thing where I can turn
+`<<<` into something such as `<`, `<`, and `<`. I do not really need two
+tokenizer depths and it would just be filling in basic class structure
+anyway. What I can do is have the lower level tokenizer and the basic
+structure on top. This will make things easier to use.
+
+## 21:59
+
+I think a location aware interface would be best to reduce duplicate
+constructors and such.
+
+## 22:30
+
+An EOF token would be useful so that null pointers are not used for the
+token, makes it easier to parse.
+
+## 22:34
+
+Actually, always generating EOF would probably be the best so that peeking
+could work on an infinite input stream. But this could be an artifact of the
+layering system.
+
+## 23:19
+
+Actually, I think decomposition could be automatic mostly if it follows a
+period because that would result in something like `Foo.<Bar<Baz>>boop`.
+However thinking about it, the left side of the generic will always have `<`
+be along since it will be split by another token so that is only needed for
+the right hand operations.
