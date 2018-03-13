@@ -11,13 +11,13 @@
 package net.multiphasicapps.javac;
 
 /**
- * This extends the line and column information and additionally provides
- * file information on top, if it is valid.
+ * This is a base interface which specifies that a given class may implement
+ * the file name and/or line and column location information. This is used to
+ * reduce the constructor count for some classes.
  *
  * @since 2018/03/12
  */
-public interface FileNameLineAndColumn
-	extends FileName, LineAndColumn, LocationAware
+public interface LocationAware
 {
 }
 

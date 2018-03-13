@@ -11,6 +11,7 @@
 package net.multiphasicapps.javac.token;
 
 import net.multiphasicapps.javac.CompilerException;
+import net.multiphasicapps.javac.LocationAware;
 
 /**
  * This is thrown when there is an issue with the tokenizer.
@@ -66,49 +67,49 @@ public class TokenizerException
 	/**
 	 * Initialize the exception with no message or cause.
 	 *
-	 * @param __lc The line and column information.
+	 * @param __la Location awareness information.
 	 * @since 2017/03/12
 	 */
-	public TokenizerException(LineAndColumn __lc)
+	public TokenizerException(LocationAware __la)
 	{
-		super(__lc);
+		super(__la);
 	}
 	
 	/**
 	 * Initialize the exception with a message and no cause.
 	 *
-	 * @param __lc The line and column information.
+	 * @param __la Location awareness information.
 	 * @param __m The message.
 	 * @since 2017/03/12
 	 */
-	public TokenizerException(LineAndColumn __lc, String __m)
+	public TokenizerException(LocationAware __la, String __m)
 	{
-		super(__lc, __m);
+		super(__la, __m);
 	}
 	
 	/**
 	 * Initialize the exception with a message and cause.
 	 *
-	 * @param __lc The line and column information.
+	 * @param __la Location awareness information.
 	 * @param __m The message.
 	 * @param __c The cause.
 	 * @since 2017/03/12
 	 */
-	public TokenizerException(LineAndColumn __lc, String __m, Throwable __c)
+	public TokenizerException(LocationAware __la, String __m, Throwable __c)
 	{
-		super(__lc, __m, __c);
+		super(__la, __m, __c);
 	}
 	
 	/**
 	 * Initialize the exception with no message and with a cause.
 	 *
-	 * @param __lc The line and column information.
+	 * @param __la Location awareness information.
 	 * @param __c The cause.
 	 * @since 2017/03/12
 	 */
-	public TokenizerException(LineAndColumn __lc, Throwable __c)
+	public TokenizerException(LocationAware __la, Throwable __c)
 	{
-		super(__lc, __c);
+		super(__la, __c);
 	}
 }
 

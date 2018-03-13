@@ -887,7 +887,7 @@ public class Tokenizer
 		if (__t == null || __s == null)
 			throw new NullPointerException("NARG");
 		
-		return new Token(__t, __s.toString(), this._atline,
+		return new Token(__t, __s.toString(), this.in.fileName(), this._atline,
 			this._atcolumn);
 	}
 	

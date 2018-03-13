@@ -89,240 +89,86 @@ public class CompilerException
 	/**
 	 * Initialize the exception with no message or cause.
 	 *
-	 * @param __lc The line and column information.
+	 * @param __la Location awareness information.
 	 * @since 2017/03/12
 	 */
-	public CompilerException(LineAndColumn __lc)
+	public CompilerException(LocationAware __la)
 	{
-		if (__lc == null)
+		this.filename = ((__la instanceof FileName) ?
+			((FileName)__la).fileName() : null);
+		
+		if (__la instanceof LineAndColumn)
 		{
-			this.column = -1;
-			this.line = -1;
-			this.filename = null;
-		}
-		else
-		{
-			this.column = __lc.column();
-			this.line = __lc.line();
-			this.filename = ((__lc instanceof FileName) ?
-				((FileName)__lc).fileName() : null);
+			LineAndColumn lc = (LineAndColumn)__la;
+			this.column = lc.column();
+			this.line = lc.line();
 		}
 	}
 	
 	/**
 	 * Initialize the exception with a message and no cause.
 	 *
-	 * @param __lc The line and column information.
+	 * @param __la Location awareness information.
 	 * @param __m The message.
 	 * @since 2017/03/12
 	 */
-	public CompilerException(LineAndColumn __lc, String __m)
+	public CompilerException(LocationAware __la, String __m)
 	{
 		super(__m);
 		
-		if (__lc == null)
+		this.filename = ((__la instanceof FileName) ?
+			((FileName)__la).fileName() : null);
+		
+		if (__la instanceof LineAndColumn)
 		{
-			this.column = -1;
-			this.line = -1;
-			this.filename = null;
-		}
-		else
-		{
-			this.column = __lc.column();
-			this.line = __lc.line();
-			this.filename = ((__lc instanceof FileName) ?
-				((FileName)__lc).fileName() : null);
+			LineAndColumn lc = (LineAndColumn)__la;
+			this.column = lc.column();
+			this.line = lc.line();
 		}
 	}
 	
 	/**
 	 * Initialize the exception with a message and cause.
 	 *
-	 * @param __lc The line and column information.
+	 * @param __la Location awareness information.
 	 * @param __m The message.
 	 * @param __c The cause.
 	 * @since 2017/03/12
 	 */
-	public CompilerException(LineAndColumn __lc, String __m, Throwable __c)
+	public CompilerException(LocationAware __la, String __m, Throwable __c)
 	{
 		super(__m, __c);
 		
-		if (__lc == null)
+		this.filename = ((__la instanceof FileName) ?
+			((FileName)__la).fileName() : null);
+		
+		if (__la instanceof LineAndColumn)
 		{
-			this.column = -1;
-			this.line = -1;
-			this.filename = null;
-		}
-		else
-		{
-			this.column = __lc.column();
-			this.line = __lc.line();
-			this.filename = ((__lc instanceof FileName) ?
-				((FileName)__lc).fileName() : null);
+			LineAndColumn lc = (LineAndColumn)__la;
+			this.column = lc.column();
+			this.line = lc.line();
 		}
 	}
 	
 	/**
 	 * Initialize the exception with no message and with a cause.
 	 *
-	 * @param __lc The line and column information.
+	 * @param __la Location awareness information.
 	 * @param __c The cause.
 	 * @since 2017/03/12
 	 */
-	public CompilerException(LineAndColumn __lc, Throwable __c)
+	public CompilerException(LocationAware __la, Throwable __c)
 	{
 		super(__c);
 		
-		if (__lc == null)
-		{
-			this.column = -1;
-			this.line = -1;
-			this.filename = null;
-		}
-		else
-		{
-			this.column = __lc.column();
-			this.line = __lc.line();
-			this.filename = ((__lc instanceof FileName) ?
-				((FileName)__lc).fileName() : null);
-		}
-	}
-	
-	/**
-	 * Initialize the exception with no message or cause.
-	 *
-	 * @param __fn The file name information.
-	 * @since 2017/03/12
-	 */
-	public CompilerException(FileName __fn)
-	{
-		if (__fn == null)
-		{
-			this.column = -1;
-			this.line = -1;
-			this.filename = null;
-		}
-		else
-		{
-			this.filename = __fn.fileName();
-			
-			if (__fn instanceof LineAndColumn)
-			{
-				LineAndColumn lc = (LineAndColumn)__fn;
-				this.column = lc.column();
-				this.line = lc.line();
-			}
-			else
-			{
-				this.column = -1;
-				this.line = -1;
-			}
-		}
-	}
-	
-	/**
-	 * Initialize the exception with a message and no cause.
-	 *
-	 * @param __fn The file name information.
-	 * @param __m The message.
-	 * @since 2017/03/12
-	 */
-	public CompilerException(FileName __fn, String __m)
-	{
-		super(__m);
+		this.filename = ((__la instanceof FileName) ?
+			((FileName)__la).fileName() : null);
 		
-		if (__fn == null)
+		if (__la instanceof LineAndColumn)
 		{
-			this.column = -1;
-			this.line = -1;
-			this.filename = null;
-		}
-		else
-		{
-			this.filename = __fn.fileName();
-			
-			if (__fn instanceof LineAndColumn)
-			{
-				LineAndColumn lc = (LineAndColumn)__fn;
-				this.column = lc.column();
-				this.line = lc.line();
-			}
-			else
-			{
-				this.column = -1;
-				this.line = -1;
-			}
-		}
-	}
-	
-	/**
-	 * Initialize the exception with a message and cause.
-	 *
-	 * @param __fn The file name information.
-	 * @param __m The message.
-	 * @param __c The cause.
-	 * @since 2017/03/12
-	 */
-	public CompilerException(FileName __fn, String __m, Throwable __c)
-	{
-		super(__m, __c);
-		
-		if (__fn == null)
-		{
-			this.column = -1;
-			this.line = -1;
-			this.filename = null;
-		}
-		else
-		{
-			this.filename = __fn.fileName();
-			
-			if (__fn instanceof LineAndColumn)
-			{
-				LineAndColumn lc = (LineAndColumn)__fn;
-				this.column = lc.column();
-				this.line = lc.line();
-			}
-			else
-			{
-				this.column = -1;
-				this.line = -1;
-			}
-		}
-	}
-	
-	/**
-	 * Initialize the exception with no message and with a cause.
-	 *
-	 * @param __fn The file name information.
-	 * @param __c The cause.
-	 * @since 2017/03/12
-	 */
-	public CompilerException(FileName __fn, Throwable __c)
-	{
-		super(__c);
-		
-		if (__fn == null)
-		{
-			this.column = -1;
-			this.line = -1;
-			this.filename = null;
-		}
-		else
-		{
-			this.filename = __fn.fileName();
-			
-			if (__fn instanceof LineAndColumn)
-			{
-				LineAndColumn lc = (LineAndColumn)__fn;
-				this.column = lc.column();
-				this.line = lc.line();
-			}
-			else
-			{
-				this.column = -1;
-				this.line = -1;
-			}
+			LineAndColumn lc = (LineAndColumn)__la;
+			this.column = lc.column();
+			this.line = lc.line();
 		}
 	}
 	
