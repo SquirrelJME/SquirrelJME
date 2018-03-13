@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import net.multiphasicapps.classfile.BinaryName;
 import net.multiphasicapps.javac.FileNameLineAndColumn;
 import net.multiphasicapps.javac.token.Token;
 import net.multiphasicapps.javac.token.Tokenizer;
@@ -167,15 +168,16 @@ public final class BasicStructureParser
 		if (__state == null)
 			throw new NullPointerException("NARG");
 		
-		BottomToken peek = this.__bottomPeek(),
-		base = peek;
-		BottomType type = peek.type();
+		TokenizerLayer layer = this.layer;
+		
+		LayeredToken next = layer.peek();
+		TokenType type = next.type();
 		
 		// Package delaration
-		if (type == BottomType.KEYWORD_PACKAGE)
+		if (type == TokenType.KEYWORD_PACKAGE)
 		{
 			// Consume package
-			this.__bottomNext();
+			layer.next();
 			
 			// Target string for the package identifier
 			StringBuilder sb = new StringBuilder();
@@ -183,69 +185,70 @@ public final class BasicStructureParser
 			// Reading loop, identifier word followed by dot or semicolon
 			for (;;)
 			{
-				BottomToken next = this.__bottomNext();
-				
 				// {@squirreljme.error AQ16 Expected identifier while parsing
 				// the package. (The token)}
-				if (next.type != BottomType.IDENTIFIER)
-					throw new TokenizerException(next,
+				next = layer.next();
+				type = next.type();
+				if (type != TokenType.IDENTIFIER)
+					throw new BasicStructureException(next,
 						String.format("AQ16 %s", next));
 				
 				// Use this identifier
 				sb.append(next.characters());
 				
 				// Adding another identifier?
-				next = this.__bottomNext();
+				next = layer.next();
 				type = next.type();
-				if (type == BottomType.SYMBOL_DOT)
+				if (type == TokenType.SYMBOL_DOT)
 				{
-					sb.append('.');
+					// Use slash because binary name
+					sb.append('/');
 					continue;
 				}
 				
 				// No more
-				else if (type == BottomType.SYMBOL_SEMICOLON)
+				else if (type == TokenType.SYMBOL_SEMICOLON)
 					break;
 				
 				// {@squirreljme.error AQ17 Expected either a dot or
 				// semi-colon in the package statement. (The token)}
 				else
-					throw new TokenizerException(next,
+					throw new BasicStructureException(next,
 						String.format("AQ17 %s", next));
 			}
 			
-			// Build token
-			this.__token(ContextType.PACKAGE_DECLARATION, base, sb);
+			// Set package
+			this.builder.setPackage(new BinaryName(sb.toString()));
 			
 			// Start reading imports
-			this.__stackReplace(new __AtIntroImports__());
-			
-			// Done
-			return;
+			throw new todo.TODO();
+			/*this.__stateReplace(new __AtIntroImports__());*/
 		}
 		
 		// Import statement
-		else if (type == BottomType.KEYWORD_IMPORT)
+		else if (type == TokenType.KEYWORD_IMPORT)
 		{
+			throw new todo.TODO();
+			/*
 			// Go straight to import processing
 			this.__stackReplace(new __AtIntroImports__());
-			return;
+			return;*/
 		}
 		
 		// Potential start of class, switch
 		else if (type.isPotentialClassStart())
 		{
+			throw new todo.TODO();
+			/*
 			this.__stackReplace(new __AtClass__(false));
-			return;
+			return;*/
 		}
 		
 		// {@squirreljme.error AQ15 Unexpected token while searching for the
-		// package keyword or other parts.}
+		// package keyword or other parts. (The next token)}
 		else
-			throw new TokenizerException(peek, String.format("AQ15 %s", peek));
-		
-		
-		throw new todo.TODO();
+			throw new BasicStructureException(next,
+				String.format("AQ15 %s", next));
 	}
 
 
