@@ -19,9 +19,9 @@ import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.collections.SortedTreeMap;
 import net.multiphasicapps.javac.CompilerInput;
 import net.multiphasicapps.javac.CompilerInputLocation;
+import net.multiphasicapps.javac.CompilerLogger;
 import net.multiphasicapps.javac.CompilerPathSet;
-import net.multiphasicapps.javac.CompilerInput;
-import net.multiphasicapps.javac.FileLineAndColumn;
+import net.multiphasicapps.javac.FileNameLineAndColumn;
 import net.multiphasicapps.javac.LineAndColumn;
 import net.multiphasicapps.javac.NoSuchInputException;
 
@@ -33,7 +33,7 @@ import net.multiphasicapps.javac.NoSuchInputException;
 public final class CompilerState
 {
 	/** Logging. */
-	protected final PrintStream log;
+	protected final CompilerLogger log;
 	
 	/** The class and source paths. */
 	protected final Map<CompilerInputLocation, List<CompilerPathSet>> paths;
@@ -61,7 +61,7 @@ public final class CompilerState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/06
 	 */
-	public CompilerState(PrintStream __log,
+	public CompilerState(CompilerLogger __log,
 		Map<CompilerInputLocation, List<CompilerPathSet>> __ps)
 		throws NullPointerException
 	{

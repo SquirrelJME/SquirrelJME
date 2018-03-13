@@ -44,7 +44,7 @@ public final class CompilerLogger
 	 *
 	 * @param __t The type of message to display.
 	 * @parma __fn The current input file, may be {@code null}.
-	 * @parma __fn The location in the input file, may be {@code null}.
+	 * @parma __lc The location in the input file, may be {@code null}.
 	 * @param __m The formatted message to show.
 	 * @param __args The arguments to the formatted message.
 	 * @throws NullPointerException On null arguments.
@@ -58,6 +58,27 @@ public final class CompilerLogger
 			throw new NullPointerException("NARG");
 		
 		this.message(__t, new SimpleFileNameLineAndColumn(__fn, __lc), __m,
+			__args);
+	}
+	
+	/**
+	 * Logs the specified message.
+	 *
+	 * @param __t The type of message to display.
+	 * @parma __fn The current input file, may be {@code null}.
+	 * @param __m The formatted message to show.
+	 * @param __args The arguments to the formatted message.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/06
+	 */
+	public final void message(MessageType __t, FileName __fn, String __m,
+		Object... __args)
+		throws NullPointerException
+	{
+		if (__t == null || __m == null)
+			throw new NullPointerException("NARG");
+		
+		this.message(__t, new SimpleFileNameLineAndColumn(__fn), __m,
 			__args);
 	}
 	

@@ -28,11 +28,13 @@ import net.multiphasicapps.javac.Compiler;
 import net.multiphasicapps.javac.CompilerException;
 import net.multiphasicapps.javac.CompilerInput;
 import net.multiphasicapps.javac.CompilerInputLocation;
+import net.multiphasicapps.javac.CompilerLogger;
 import net.multiphasicapps.javac.CompilerOptions;
 import net.multiphasicapps.javac.CompilerOutput;
 import net.multiphasicapps.javac.CompilerPathSet;
-import net.multiphasicapps.javac.FileLineAndColumn;
+import net.multiphasicapps.javac.FileNameLineAndColumn;
 import net.multiphasicapps.javac.LineAndColumn;
+import net.multiphasicapps.javac.MessageType;
 
 /**
  * This is the runnable which performs the actual compilation tasks and
@@ -47,7 +49,7 @@ public class CuteRunnable
 	protected final CompilerOutput out;
 	
 	/** Logging for the compiler. */
-	protected final PrintStream log;
+	protected final CompilerLogger log;
 	
 	/** Options for the compiler. */
 	protected final CompilerOptions options;
@@ -81,7 +83,7 @@ public class CuteRunnable
 			throw new NullPointerException("NARG");
 		
 		this.out = __out;
-		this.log = __log;
+		this.log = new CompilerLogger(__log);
 		this.options = __opt;
 		
 		// Copy paths
@@ -107,7 +109,8 @@ public class CuteRunnable
 	public void run()
 		throws CompilerException
 	{
-		CompilerState state = new CompilerState(this.log, this.paths);
+		CompilerLogger log = this.log;
+		CompilerState state = new CompilerState(log, this.paths);
 		Set<ClassNode> did = new HashSet<>();
 		
 		// Forward catch all compiler exceptions so that they are logged before
@@ -119,7 +122,7 @@ public class CuteRunnable
 			for (CompilerInput ci : this.input)
 			{
 				// Ignore package-info since it can only contain attributes
-				String name = ci.name();
+				String name = ci.fileName();
 				if (name.endsWith("package-info.java"))
 					continue;
 			
@@ -141,7 +144,7 @@ public class CuteRunnable
 				
 					// {@squirreljme.error AQ0m Currently compiling the
 					// specified input.}
-					state.message(MessageType.INFO, ci, "AQ0m");
+					log.message(MessageType.INFO, ci, "AQ0m");
 				
 					throw new todo.TODO();
 				}
@@ -156,8 +159,9 @@ public class CuteRunnable
 			while (t != null)
 			{
 				// {@squirreljme.error AQ0n Failed to compile.}
-				state.message(MessageType.ERROR, lastfile,
-					(e instanceof LineAndColumn ? (LineAndColumn)e : null),
+				log.message(MessageType.ERROR,
+					((t instanceof FileNameLineAndColumn) ?
+						(FileNameLineAndColumn)t : null),
 					"AQ0n %s", t.getMessage());
 				
 				// Keep going down

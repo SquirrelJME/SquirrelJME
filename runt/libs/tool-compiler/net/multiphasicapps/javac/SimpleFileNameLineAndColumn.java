@@ -110,6 +110,29 @@ public final class SimpleFileNameLineAndColumn
 	/**
 	 * Initializes with all of the given information.
 	 *
+	 * @param __fn The file name.
+	 * @since 2018/03/12
+	 */
+	public SimpleFileNameLineAndColumn(FileName __fn)
+	{
+		this.filename = (__fn == null ? null : __fn.fileName());
+		
+		if (__fn instanceof LineAndColumn)
+		{
+			LineAndColumn lc = (LineAndColumn)__fn;
+			this.line = lc.line();
+			this.column = lc.column();
+		}
+		else
+		{
+			this.line = -1;
+			this.column = -1;
+		}
+	}
+	
+	/**
+	 * Initializes with all of the given information.
+	 *
 	 * @param __flc The file name, line, and column information.
 	 * @since 2018/03/12
 	 */

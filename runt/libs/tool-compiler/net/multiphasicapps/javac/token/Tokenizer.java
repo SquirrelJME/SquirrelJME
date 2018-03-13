@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Deque;
 import java.util.List;
 import net.multiphasicapps.collections.UnmodifiableList;
+import net.multiphasicapps.javac.FileNameLineAndColumn;
 
 /**
  * This class is the tokenizer which is used to provide tokens.
@@ -29,7 +30,7 @@ import net.multiphasicapps.collections.UnmodifiableList;
  * @since 2017/09/04
  */
 public class Tokenizer
-	implements Closeable, LineAndColumn
+	implements Closeable, FileNameLineAndColumn
 {
 	/** Operators used. */
 	private static final List<String> _OPERATORS =
@@ -151,7 +152,7 @@ public class Tokenizer
 	 * @since 2018/03/06
 	 */
 	@Override
-	public int column()
+	public final int column()
 	{
 		return this._atcolumn;
 	}
@@ -171,7 +172,7 @@ public class Tokenizer
 	 * @since 2018/03/06
 	 */
 	@Override
-	public int line()
+	public final int line()
 	{
 		return this._atline;
 	}
@@ -974,6 +975,7 @@ public class Tokenizer
 	/**
 	 * Wraps the input stream for reading UTF-8.
 	 *
+	 * @param __fn The input file name.
 	 * @param __is The read to read from.
 	 * @return The wrapped reader.
 	 * @throws RuntimeException If UTF-8 is not supported but this should
@@ -981,17 +983,17 @@ public class Tokenizer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/09/04
 	 */
-	private static Reader __wrap(InputStream __is)
+	private static Reader __wrap(String __fn, InputStream __is)
 		throws RuntimeException, NullPointerException
 	{
 		// Check
-		if (__is == null)
+		if (__fn == null || __is == null)
 			throw new NullPointerException("NARG");
 
 		// Could fail, but it never should
 		try
 		{
-			return new InputStreamReader(__is, "utf-8");
+			return new InputStreamReader(__fn, __is, "utf-8");
 		}
 
 		// Should never happen
