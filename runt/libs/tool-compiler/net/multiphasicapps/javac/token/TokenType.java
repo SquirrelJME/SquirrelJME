@@ -17,6 +17,9 @@ package net.multiphasicapps.javac.token;
  */
 public enum TokenType
 {
+	/** End of file. */
+	END_OF_FILE,
+	
 	/** A comment. */
 	COMMENT,
 	
