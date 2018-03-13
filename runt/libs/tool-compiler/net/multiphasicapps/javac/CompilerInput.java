@@ -25,6 +25,7 @@ import java.io.InputStream;
  * @since 2017/11/28
  */
 public interface CompilerInput
+	extends FileName
 {
 	/**
 	 * {@inheritDoc}
@@ -58,7 +59,8 @@ public interface CompilerInput
 	 * @throws CompilerException If the name could not be obtained.
 	 * @since 2017/11/28
 	 */
-	public abstract String name()
+	@Override
+	public abstract String fileName()
 		throws CompilerException;
 	
 	/**

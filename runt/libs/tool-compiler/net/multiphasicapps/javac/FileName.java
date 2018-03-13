@@ -8,28 +8,21 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.javac.cute;
+package net.multiphasicapps.javac;
 
 /**
- * This indicates the message to display.
+ * This interface represents something which represents the name of a file.
  *
- * @since 2018/03/06
+ * @since 2018/03/12
  */
-public enum MessageType
+public interface FileName
 {
-	/** Information. */
-	INFO,
-	
-	/** Warning. */
-	WARNING,
-	
-	/** Error. */
-	ERROR,
-	
-	/** Lint to detect for possible errors. */
-	LINT,
-	
-	/** End. */
-	;
+	/**
+	 * Returns the file that is input represents or the file being processed.
+	 *
+	 * @return The file being process or {@code null} if it is not known.
+	 * @since 2018/03/12
+	 */
+	public abstract String fileName();
 }
 
