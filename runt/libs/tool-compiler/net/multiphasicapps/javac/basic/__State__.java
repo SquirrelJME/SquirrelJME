@@ -50,6 +50,12 @@ abstract class __State__
 		/** Parse the package statement. */
 		PACKAGE,
 		
+		/** Import statement(s). */
+		IMPORT,
+		
+		/** Class. */
+		CLASS,
+		
 		/** End. */
 		;
 	}
