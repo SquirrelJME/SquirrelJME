@@ -84,15 +84,15 @@ public final class CompilerLogger
 			__args = new String[0];
 		
 		// Print specially formatted messages
-		PrintStream log = this.log;
+		PrintStream out = this.out;
 		
 		// File
 		if (__flc != null)
-			log.print(__flc.fileName());
+			out.print(__flc.fileName());
 		
 		// Use a fallback name if it is possible
 		else
-			log.print("<unknown>");
+			out.print("<unknown>");
 		
 		// Use estimate line and column information if it was not specified
 		int line = -1,
@@ -104,33 +104,26 @@ public final class CompilerLogger
 		}
 		
 		// Printing row?
-		if (__line >= 0)
+		if (line >= 0)
 		{
-			log.print(':');
-			log.print(__line);
-			
-			// Add column also?
-			if (__col >= 0)
-			{
-				log.print(',');
-				log.print(__col);
-			}
+			out.print(':');
+			out.print(line);
 		}
 		
-		// Just the column?
-		else if (__col >= 0)
+		// Printing the column?
+		if (column >= 0)
 		{
-			log.print(',');
-			log.print(__col);
+			out.print(',');
+			out.print(column);
 		}
 		
 		// Print spacer and the message type
-		log.print(": [");
-		log.print(__t);
-		log.print("] ");
+		out.print(": [");
+		out.print(__t);
+		out.print("] ");
 		
 		// Print the message itself
-		log.println(String.format(__m, __args));
+		out.println(String.format(__m, __args));
 	}
 }
 

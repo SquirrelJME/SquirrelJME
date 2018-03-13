@@ -13,7 +13,7 @@ package net.multiphasicapps.javac.basic;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.Reader;
-import net.multiphasicapps.javac.FileLineAndColumn;
+import net.multiphasicapps.javac.FileNameLineAndColumn;
 import net.multiphasicapps.javac.token.Tokenizer;
 
 /**
@@ -23,7 +23,7 @@ import net.multiphasicapps.javac.token.Tokenizer;
  * @since 2018/03/12
  */
 public class BasicStructureParser
-	implements FileLineAndColumn
+	implements FileNameLineAndColumn
 {
 	/**
 	 * {@inheritDoc}

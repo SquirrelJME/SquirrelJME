@@ -56,11 +56,40 @@ public final class SimpleFileNameLineAndColumn
 	 * @param __lc The line and column information.
 	 * @since 2018/03/12
 	 */
+	public SimpleFileNameLineAndColumn(String __fn, LineAndColumn __lc)
+	{
+		this.filename = __fn;
+		this.line = (__lc == null ? -1 : __lc.line());
+		this.column = (__lc == null ? -1 : __lc.column());
+	}
+	
+	/**
+	 * Initializes with all of the given information.
+	 *
+	 * @param __fn The file name.
+	 * @param __lc The line and column information.
+	 * @since 2018/03/12
+	 */
 	public SimpleFileNameLineAndColumn(FileName __fn, LineAndColumn __lc)
 	{
 		this.filename = (__fn == null ? null : __fn.fileName());
 		this.line = (__lc == null ? -1 : __lc.line());
 		this.column = (__lc == null ? -1 : __lc.column());
+	}
+	
+	/**
+	 * Initializes with all of the given information.
+	 *
+	 * @param __fn The file name.
+	 * @param __lin The line.
+	 * @param __col The column.
+	 * @since 2018/03/12
+	 */
+	public SimpleFileNameLineAndColumn(String __fn, int __lin, int __col)
+	{
+		this.filename = __fn;
+		this.line = __lin;
+		this.column = __col;
 	}
 	
 	/**
@@ -94,9 +123,9 @@ public final class SimpleFileNameLineAndColumn
 		}
 		else
 		{
-			this.filename = __fn;
-			this.line = __lin;
-			this.column = __col;
+			this.filename = __flc.fileName();
+			this.line = __flc.line();
+			this.column = __flc.column();
 		}
 	}
 	
