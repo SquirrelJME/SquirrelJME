@@ -242,7 +242,8 @@ public final class BasicStructureParser
 						throw new BasicStructureException(next,
 							String.format("AQ1a %s", next));
 					
-					throw new todo.TODO();
+					sb.append('*');
+					wildcard = true;
 				}
 				
 				// {@squirreljme.error AQ19 Expected identifier in import
