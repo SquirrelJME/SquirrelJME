@@ -243,7 +243,7 @@ public final class BasicStructureParser
 							String.format("AQ1a %s", next));
 					
 					sb.append('*');
-					wildcard = true;
+					iswildcard = true;
 				}
 				
 				// {@squirreljme.error AQ19 Expected identifier in import
