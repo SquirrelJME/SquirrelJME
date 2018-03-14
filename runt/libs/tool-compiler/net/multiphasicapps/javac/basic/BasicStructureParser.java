@@ -209,7 +209,80 @@ public final class BasicStructureParser
 			// Consume that token
 			layer.next();
 			
-			throw new todo.TODO();
+			// Detect static imports
+			next = layer.peek();
+			type = next.type();
+			boolean isstatic = false;
+			if (type == TokenType.KEYWORD_STATIC)
+			{
+				isstatic = true;
+				
+				// Consume it
+				layer.next();
+			}
+			
+			// Go through and parse
+			StringBuilder sb = new StringBuilder();
+			boolean iswildcard = false;
+			for (boolean firstrun = true;; firstrun = false)
+			{
+				next = layer.next();
+				type = next.type();
+				
+				// Add identifier
+				if (type == TokenType.IDENTIFIER)
+					sb.append(next.characters());
+				
+				// Wildcard operation
+				else if (type == TokenType.OPERATOR_MULTIPLY)
+				{
+					// {@squirreljme.error AQ1s Did not expect the wildcard
+					// asterisk here. (The token)}
+					if (firstrun)
+						throw new BasicStructureException(next,
+							String.format("AQ1a %s", next));
+					
+					throw new todo.TODO();
+				}
+				
+				// {@squirreljme.error AQ19 Expected identifier in import
+				// statement. (The token)}
+				else
+					throw new BasicStructureException(next,
+						String.format("AQ19 %s", next));
+				
+				// Sequence will continue or end
+				next = layer.next();
+				type = next.type();
+				
+				// Continues
+				if (type == TokenType.SYMBOL_DOT)
+				{
+					// {@squirreljme.error AQ1b Imports which are wildcard
+					// must always have the asterisk followed by a semi-colon.
+					// (The next token)}
+					if (iswildcard)
+						throw new BasicStructureException(next,
+							String.format("AQ1b %s", next));
+					
+					// Is considered a binary name
+					sb.append('/');
+				}
+				
+				// Ends here
+				else if (type == TokenType.SYMBOL_SEMICOLON)
+				{
+					this.builder.addImport(new ImportStatement(isstatic,
+						new BinaryName(sb.toString()), iswildcard));
+					break;
+				}
+				
+				// {@squirreljme.error AQ1c Unexpected token while parsing
+				// the import statement. (The next token)}
+				else
+					throw new BasicStructureException(next,
+						String.format("AQ1c %s", next));
+			}
 		}
 		
 		// Potential start of class, switch
