@@ -19,6 +19,15 @@ import net.multiphasicapps.classfile.BinaryName;
  */
 public final class ImportStatement
 {
+	/** Is this static? */
+	protected final boolean isstatic;
+	
+	/** Is this wildcard? */
+	protected final boolean iswildcard;
+	
+	/** What is being imported? */
+	protected final BinaryName imported;
+	
 	/**
 	 * Initializes the import statement.
 	 *
@@ -34,7 +43,9 @@ public final class ImportStatement
 		if (__what == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		this.isstatic = __static;
+		this.iswildcard = __wild;
+		this.imported = __what;
 	}
 	
 	/**
@@ -61,6 +72,39 @@ public final class ImportStatement
 	public final int hashCode()
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the object or package being imported.
+	 *
+	 * @return The imported statement.
+	 * @since 2018/03/14
+	 */
+	public final BinaryName imported()
+	{
+		return this.imported;
+	}
+	
+	/**
+	 * Is this a static import?
+	 *
+	 * @return If this is a static import.
+	 * @since 2018/03/14
+	 */
+	public final boolean isStatic()
+	{
+		return this.isstatic;
+	}
+	
+	/**
+	 * Is this a wildcard import?
+	 *
+	 * @return If this is a wildcard import.
+	 * @since 2018/03/14
+	 */
+	public final boolean isWildcard()
+	{
+		return this.iswildcard;
 	}
 	
 	/**
