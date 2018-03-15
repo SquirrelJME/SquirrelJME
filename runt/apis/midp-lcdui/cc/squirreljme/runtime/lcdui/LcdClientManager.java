@@ -13,7 +13,8 @@ package cc.squirreljme.runtime.lcdui;
 import cc.squirreljme.runtime.cldc.service.ServiceAccessor;
 
 /**
- * This class contains the class whc.
+ * This class is the client to the LCDUI server on the kernel end and is
+ * used to manage each sub-display accordingly.
  *
  * @since 2018/03/15
  */
