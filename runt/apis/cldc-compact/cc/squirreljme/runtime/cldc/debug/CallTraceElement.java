@@ -85,6 +85,17 @@ public final class CallTraceElement
 	}
 	
 	/**
+	 * Encodes the call trace to binary data.
+	 *
+	 * @return The resulting encoded binary data.
+	 * @since 2018/03/14
+	 */
+	public final byte[] encode()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/02/21
 	 */
@@ -109,13 +120,46 @@ public final class CallTraceElement
 	 * @since 2018/02/21
 	 */
 	@Override
-	public int hashCode()
+	public final int hashCode()
 	{
 		long address = this.address;
 		return Objects.hashCode(this.classname) ^
 			Objects.hashCode(this.methodname) ^
 			Objects.hashCode(this.methoddescriptor) ^
 			(int)((address >>> 32) | address);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/14
+	 */
+	@Override
+	public final String toString()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Decodes the given byte sequence to a call trace element
+	 *
+	 * @param __b The array to decode.
+	 * @param __o The offset into the array.
+	 * @param __l The length of the input data.
+	 * @return The resulting call trace element.
+	 * @throws ArrayIndexOutOfBoundsException If the offset and/or length are
+	 * negative or exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/14
+	 */
+	public static final CallTraceElement decode(byte[] __b, int __o, int __l)
+		throws ArrayIndexOutOfBoundsException, NullPointerException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new ArrayIndexOutOfBoundsException("IOOB");
+		
+		throw new todo.TODO();
 	}
 }
 

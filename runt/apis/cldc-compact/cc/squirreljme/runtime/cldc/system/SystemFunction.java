@@ -91,7 +91,36 @@ public enum SystemFunction
 	/** List tasks running on the system. */
 	TASK_LIST,
 	
+	/** Gets the stack trace of a throwable. */
+	THROWABLE_GET_STACK,
+	
+	/** Sets the stack trace in a throwable. */
+	THROWABLE_SET_STACK,
+	
 	/** End. */
 	;
+	
+	/**
+	 * Is this function intended to be locally executed?
+	 *
+	 * This allows certain system calls to become very relaxed on how their
+	 * arguments are validated and any exceptions that may be thrown.
+	 *
+	 * @return If this is a function intended to be executed locally.
+	 * @since 2018/03/14
+	 */
+	public final boolean isLocal()
+	{
+		switch (this)
+		{
+			case SET_DAEMON_THREAD:
+			case THROWABLE_GET_STACK:
+			case THROWABLE_SET_STACK:
+				return true;
+			
+			default:
+				return false;
+		}
+	}
 }
 
