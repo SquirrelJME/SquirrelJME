@@ -52,6 +52,9 @@ public class JavaPrimitiveKernel
 	public final String[] serviceMap()
 	{
 		return new String[]{
+			// Graphics
+			"cc.squirreljme.runtime.lcdui.LcdClientManager",
+			"cc.squirreljme.runtime.javase.lcdui.SwingDefinition",
 			};
 	}
 }
