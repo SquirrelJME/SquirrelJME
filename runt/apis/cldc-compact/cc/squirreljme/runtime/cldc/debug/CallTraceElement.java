@@ -85,6 +85,28 @@ public final class CallTraceElement
 	}
 	
 	/**
+	 * Returns the address of the element.
+	 *
+	 * @return The element address.
+	 * @since 2018/03/15
+	 */
+	public final long address()
+	{
+		return this.address;
+	}
+	
+	/**
+	 * Returns the name of the associated class.
+	 *
+	 * @return The associated class.
+	 * @since 2018/03/15
+	 */
+	public final String className()
+	{
+		return this.classname;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/02/21
 	 */
@@ -116,6 +138,28 @@ public final class CallTraceElement
 			Objects.hashCode(this.methodname) ^
 			Objects.hashCode(this.methoddescriptor) ^
 			(int)((address >>> 32) | address);
+	}
+	
+	/**
+	 * Returns the descriptor of the method.
+	 *
+	 * @return The method descriptor.
+	 * @since 2018/03/15
+	 */
+	public final String methodDescriptor()
+	{
+		return this.methoddescriptor;
+	}
+	
+	/**
+	 * Returns the name of the method.
+	 *
+	 * @return The method name.
+	 * @since 2018/03/15
+	 */
+	public final String methodName()
+	{
+		return this.methodname;
 	}
 	
 	/**

@@ -36,6 +36,7 @@ import cc.squirreljme.runtime.cldc.system.api.SetDaemonThreadCall;
 import cc.squirreljme.runtime.cldc.system.api.TaskListCall;
 import cc.squirreljme.runtime.cldc.system.api.ThrowableGetStackCall;
 import cc.squirreljme.runtime.cldc.system.api.ThrowableSetStackCall;
+import cc.squirreljme.runtime.cldc.system.SystemFunction;
 import cc.squirreljme.runtime.cldc.system.type.BooleanArray;
 import cc.squirreljme.runtime.cldc.system.type.ByteArray;
 import cc.squirreljme.runtime.cldc.system.type.CharacterArray;
@@ -47,6 +48,7 @@ import cc.squirreljme.runtime.cldc.system.type.IntegerArray;
 import cc.squirreljme.runtime.cldc.system.type.LongArray;
 import cc.squirreljme.runtime.cldc.system.type.ShortArray;
 import cc.squirreljme.runtime.cldc.system.type.StringArray;
+import cc.squirreljme.runtime.cldc.system.type.VoidType;
 
 /**
  * This class is provided so that calls made into the remote system can be
@@ -128,7 +130,8 @@ public final class EasyCall
 	@Override
 	public final void initialized()
 	{
-		throw new todo.TODO();
+		SystemCall.<VoidType>systemCall(VoidType.class,
+			SystemFunction.INITIALIZED);
 	}
 	
 	/**
