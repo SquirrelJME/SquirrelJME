@@ -10,8 +10,10 @@
 
 package cc.squirreljme.kernel;
 
+import cc.squirreljme.runtime.cldc.service.NoSuchServiceException;
 import cc.squirreljme.runtime.cldc.system.SystemCallDispatch;
 import cc.squirreljme.runtime.cldc.system.SystemFunction;
+import cc.squirreljme.runtime.cldc.system.type.ClassType;
 import cc.squirreljme.runtime.cldc.system.type.VoidType;
 
 /**
@@ -58,11 +60,69 @@ public final class KernelSystemDispatch
 				// initialized and a main program is ready to execute
 			case INITIALIZED:
 				return VoidType.INSTANCE;
+				
+			case SERVICE_COUNT:
+				return __serviceCount();
+			
+			case SERVICE_QUERY_CLASS:
+				return __serviceQueryClass((Integer)__args[0]);
+			
+			case SERVICE_QUERY_INDEX:
+				return __serviceQueryIndex((ClassType)__args[0]);
 			
 				// {@squirreljme.error AP03 Unimplemented kernel function.
 				// (The kernel function)}
 			default:
 				throw new RuntimeException(String.format("AP03 %s", __func));
+		}
+	}
+	
+	/**
+	 * Returns the number of services which exist.
+	 *
+	 * @return The count of available services.
+	 * @since 2018/03/15
+	 */
+	private final int __serviceCount()
+	{
+		return this.services.count();
+	}
+	
+	/**
+	 * Queries the client class which is used to initialize a service.
+	 *
+	 * @param __dx The index of the class.
+	 * @return The class the client uses to initialize the service.
+	 * @since 2018/03/15
+	 */
+	private final ClassType __serviceQueryClass(int __dx)
+	{
+		return new ClassType(this.services.byIndex(__dx).
+			clientProviderClass());
+	}
+	
+	/**
+	 * Queries the index of the service that provides for the given class.
+	 *
+	 * @param __cl The class to query.
+	 * @return The index of the given service or a negative value if it is not
+	 * valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/15
+	 */
+	private final int __serviceQueryIndex(ClassType __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		try
+		{
+			return this.services.byClientClass(__cl.name()).index();
+		}
+		catch (NoSuchServiceException e)
+		{
+			return -1;
 		}
 	}
 }

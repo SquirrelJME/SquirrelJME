@@ -294,7 +294,8 @@ public final class EasyCall
 	@Override
 	public final ClassType serviceQueryClass(int __dx)
 	{
-		throw new todo.TODO();
+		return SystemCall.<ClassType>systemCall(ClassType.class,
+			SystemFunction.SERVICE_QUERY_CLASS, __dx);
 	}
 	
 	/**
@@ -304,7 +305,8 @@ public final class EasyCall
 	@Override
 	public final int serviceQueryIndex(ClassType __cl)
 	{
-		throw new todo.TODO();
+		return SystemCall.<Integer>systemCall(Integer.class,
+			SystemFunction.SERVICE_QUERY_INDEX, __cl);
 	}
 	
 	/**

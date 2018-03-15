@@ -51,7 +51,8 @@ public class JavaPrimitiveKernel
 	@Override
 	public final String[] serviceMap()
 	{
-		throw new todo.TODO();
+		return new String[]{
+			};
 	}
 }
 
