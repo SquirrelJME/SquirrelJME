@@ -12,6 +12,7 @@ package cc.squirreljme.kernel;
 
 import cc.squirreljme.runtime.cldc.system.SystemCallDispatch;
 import cc.squirreljme.runtime.cldc.system.SystemFunction;
+import cc.squirreljme.runtime.cldc.system.type.VoidType;
 
 /**
  * This implements dispatch to the kernel for system call related operations.
@@ -34,6 +35,11 @@ public final class KernelSystemDispatch
 		
 		switch (__func)
 		{
+				// This is not needed, it just indicates that the kernel is
+				// initialized and a main program is ready to execute
+			case INITIALIZED:
+				return VoidType.INSTANCE;
+			
 				// {@squirreljme.error AP03 Unimplemented kernel function.
 				// (The kernel function)}
 			default:
