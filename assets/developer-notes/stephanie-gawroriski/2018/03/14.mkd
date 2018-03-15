@@ -1,0 +1,17 @@
+# 2018/03/14
+
+## 19:40
+
+I think one thing I should definitely do is have a system call check in the
+code so passed arguments are correct and consistent. Currently just `Object`
+is passed but it would be great to be consistent for that.
+
+## 21:41
+
+A system call dispatch would probably be a bit easier to implement in a way
+so that way it could call into any of the API methods.
+
+## 22:23
+
+Okay, so I am going to have dispatch and then the regular system call that
+uses some of the API functions, if applicable.
