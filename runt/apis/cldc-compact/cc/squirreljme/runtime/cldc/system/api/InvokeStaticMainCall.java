@@ -28,6 +28,6 @@ public interface InvokeStaticMainCall
 	 * @param __args Arguments to the main method.
 	 * @since 2018/03/14
 	 */
-	public abstract void InvokeStaticMainCall(ClassType __c, String... __args);
+	public abstract void invokeStaticMainCall(ClassType __c, String... __args);
 }
 

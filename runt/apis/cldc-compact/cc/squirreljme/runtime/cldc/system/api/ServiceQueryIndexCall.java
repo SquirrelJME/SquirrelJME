@@ -11,6 +11,7 @@
 package cc.squirreljme.runtime.cldc.system.api;
 
 import cc.squirreljme.runtime.cldc.system.SystemFunction;
+import cc.squirreljme.runtime.cldc.system.type.ClassType;
 
 /**
  * Interface for {@link SystemFunction#SERVICE_QUERY_INDEX}.
@@ -27,6 +28,6 @@ public interface ServiceQueryIndexCall
 	 * @return The index of the service which implements the given class.
 	 * @since 2018/03/02
 	 */
-	public abstract int serviceQueryIndex(Class<?> __cl);
+	public abstract int serviceQueryIndex(ClassType __cl);
 }
 

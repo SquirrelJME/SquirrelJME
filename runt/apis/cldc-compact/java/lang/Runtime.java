@@ -32,7 +32,7 @@ public class Runtime
 	 */
 	public void exit(int __v)
 	{
-		SystemCall.MNEMONIC.exit(__v);
+		SystemCall.EASY.exit(__v);
 	}
 	
 	public long freeMemory()
@@ -48,7 +48,7 @@ public class Runtime
 	 */
 	public void gc()
 	{
-		SystemCall.MNEMONIC.garbageCollectionHint();
+		SystemCall.EASY.garbageCollectionHint();
 	}
 	
 	public long maxMemory()
