@@ -102,131 +102,17 @@ public abstract class MnemonicCall
 		}
 	}
 	
-	/**
-	 * Specifies that the client was successfully initialized.
-	 *
-	 * @since 2018/03/01
-	 */
-	public abstract void clientInitializationComplete();
 	
-	/**
-	 * Returns the current time in milliseconds UTC since the epoch.
-	 *
-	 * @return The since since the epoch in UTC milliseconds.
-	 * @since 2018/03/01
-	 */
-	public abstract long currentTimeMillis();
 	
-	/**
-	 * Exit the virtual machine with the given exit code.
-	 *
-	 * This function does not return unless an exception is thrown.
-	 *
-	 * @param __e The exit code to use.
-	 * @throws SecurityException If exit is not permitted.
-	 * @since 2018/03/01
-	 */
-	public abstract void exit(int __e)
-		throws SecurityException;
 	
-	/**
-	 * Hint that garbage collection should be performed.
-	 *
-	 * @since 2018/03/01
-	 */
-	public abstract void garbageCollectionHint();
 	
-	/**
-	 * Returns the current monotonic clock time.
-	 *
-	 * @return The current monotonic clock time.
-	 * @since 2018/03/01
-	 */
-	public abstract long nanoTime();
 	
-	/**
-	 * Pipe a single byte to standard output or standard error.
-	 *
-	 * @param __err To standard error?
-	 * @param __b The value to pipe.
-	 * @since 2018/03/01
-	 */
-	public abstract void pipeOutput(boolean __err, int __b);
 	
-	/**
-	 * Pipes multiple bytes to standard output or standard error.
-	 *
-	 * @param __err To standard error?
-	 * @param __b The values to pipe.
-	 * @param __o The offset.
-	 * @param __l The length.
-	 * @throws IndexOutOfBoundsException If the offset and/or length are
-	 * negative or exceed the array bounds.
-	 * @throws NullPointerException
-	 * @since 2018/03/01
-	 */
-	public abstract void pipeOutput(boolean __err, ByteArray __b, int __o,
-		int __l)
-		throws IndexOutOfBoundsException, NullPointerException;
 	
-	/**
-	 * Performs a call into a service.
-	 *
-	 * @param __dx The service index.
-	 * @param __func The function in the service.
-	 * @param __args The function arguments.
-	 * @return The return value of the call.
-	 * @since 2018/03/02
-	 */
-	public abstract Object serviceCall(int __dx, Enum<?> __func,
-		Object... __args);
 	
-	/**
-	 * Returns the number of available services.
-	 *
-	 * @return The number of available services.
-	 * @since 2018/03/02
-	 */
-	public abstract int serviceCount();
 	
-	/**
-	 * Queries which class the client should use for the given service index.
-	 *
-	 * @param __dx The index to get the client class for.
-	 * @return The client class for the given index.
-	 * @since 2018/03/02
-	 */
-	public abstract Class<? extends ServiceClientProvider> serviceQueryClass(
-		int __dx);
 	
-	/**
-	 * Queries the index of the service which implements the given class.
-	 *
-	 * @param __cl The class type to check the local service for.
-	 * @return The index of the service which implements the given class.
-	 * @since 2018/03/02
-	 */
-	public abstract int serviceQueryIndex(Class<?> __cl);
 	
-	/**
-	 * Set thread as daemon thread.
-	 *
-	 * @param __t The thread to daemonize.
-	 * @throws IllegalThreadStateException If it could not be set.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/03/01
-	 */
-	public abstract void setDaemonThread(Thread __t)
-		throws IllegalThreadStateException, NullPointerException;
-	
-	/**
-	 * Returns the list of tasks which are available on the system.
-	 *
-	 * @param __incsys Include system tasks?
-	 * @return The array of tasks available to the system.
-	 * @since 2018/03/02
-	 */
-	public abstract IntegerArray taskList(boolean __incsys);
 	
 	/**
 	 * Pipes multiple bytes to standard output or standard error.
