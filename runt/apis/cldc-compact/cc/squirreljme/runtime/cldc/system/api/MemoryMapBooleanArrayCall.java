@@ -11,6 +11,7 @@
 package cc.squirreljme.runtime.cldc.system.api;
 
 import cc.squirreljme.runtime.cldc.system.SystemFunction;
+import cc.squirreljme.runtime.cldc.system.type.BooleanArray;
 
 /**
  * Interface for {@link SystemFunction#MEMORY_MAP_BOOLEAN_ARRAY}.

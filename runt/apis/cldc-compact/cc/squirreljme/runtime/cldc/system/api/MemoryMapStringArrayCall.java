@@ -11,6 +11,7 @@
 package cc.squirreljme.runtime.cldc.system.api;
 
 import cc.squirreljme.runtime.cldc.system.SystemFunction;
+import cc.squirreljme.runtime.cldc.system.type.StringArray;
 
 /**
  * Interface for {@link SystemFunction#MEMORY_MAP_STRING_ARRAY}.
