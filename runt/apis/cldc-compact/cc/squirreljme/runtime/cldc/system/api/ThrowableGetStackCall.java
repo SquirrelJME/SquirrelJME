@@ -10,6 +10,7 @@
 
 package cc.squirreljme.runtime.cldc.system.api;
 
+import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.system.SystemFunction;
 
 /**

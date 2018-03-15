@@ -12,6 +12,9 @@ package cc.squirreljme.runtime.cldc.system;
 
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.system.api.Call;
+import cc.squirreljme.runtime.cldc.system.api.SetDaemonThreadCall;
+import cc.squirreljme.runtime.cldc.system.api.ThrowableGetStackCall;
+import cc.squirreljme.runtime.cldc.system.api.ThrowableSetStackCall;
 import cc.squirreljme.runtime.cldc.system.type.BooleanArray;
 import cc.squirreljme.runtime.cldc.system.type.ByteArray;
 import cc.squirreljme.runtime.cldc.system.type.CharacterArray;
@@ -75,18 +78,11 @@ public final class SystemCall
 		if (__args == null)
 			__args = new Object[0];
 		
-		// {@squirreljme.error ZZ0d Unimplemented system call. (The system
-		// call)}.
-		Call impl = SystemCall._CALLS[__func.ordinal()];
-		if (impl == null)
-			throw new InvalidSystemCallException(String.format("ZZ0d %s",
-				__func));
-		
 		// If this is intended to be a local system call then the arguments do
 		// not need to be checked or wrapped for validity as long as they are
 		// the write input and output types
 		if (__func.isLocal())
-			return __cl.cast(impl.systemCall(__func, __args));
+			return __cl.cast(SystemCall.__callLocal(__func, __args));
 		
 		// Check argument inputs
 		for (int i = 0, n = __args.length; i < n; i++)
@@ -173,7 +169,7 @@ public final class SystemCall
 		Object rv;
 		try
 		{
-			rv = impl.systemCall(__func, __args);
+			rv = SystemCall.__callRemote(__func, __args);
 		}
 		
 		// Wrap exceptions so that local interfaces are consistent
@@ -192,6 +188,91 @@ public final class SystemCall
 		
 		// Make sure the return value is correct
 		return __cl.cast(rv);
+	}
+	
+	/**
+	 * Performs a local system call which does not go to the kernel.
+	 *
+	 * @param __func The function to call.
+	 * @param __args The arguments to the call.
+	 * @return The result of the call.
+	 * @throws InvalidSystemCallException If the system call is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/14
+	 */
+	private static final Object __callLocal(SystemFunction __func,
+		Object... __args)
+		throws NullPointerException
+	{
+		if (__func == null)
+			throw new NullPointerException("NARG");
+		
+		// Force to be valid
+		if (__args == null)
+			__args = new Object[0];
+		
+		// {@squirreljme.error ZZ0m Unimplemented local call. (The function)}
+		Call[] calls = SystemCall._CALLS;
+		Call call = calls[__func.ordinal()];
+		if (call == null)
+			throw new InvalidSystemCallException(String.format("ZZ0n %s",
+				__func));
+		
+		// Depends on the function
+		switch (__func)
+		{
+			case SET_DAEMON_THREAD:
+				((SetDaemonThreadCall)call).setDaemonThread(
+					(Thread)__args[0]);
+				return VoidType.INSTANCE;
+				
+			case THROWABLE_GET_STACK:
+				return ((ThrowableGetStackCall)call).throwableGetStack(
+					(Throwable)__args[0]);
+				
+			case THROWABLE_SET_STACK:
+				((ThrowableSetStackCall)call).throwableSetStack(
+					(Throwable)__args[0], (CallTraceElement[])__args[1]);
+				return VoidType.INSTANCE;
+			
+			// {@squirreljme.error ZZ0m Unknown local call. (The function)}
+			default:
+				throw new InvalidSystemCallException(String.format("ZZ0m %s",
+					__func));
+		}
+	}
+	
+	/**
+	 * Performs a remote system call which is dispatched to a handler for
+	 * remote execution.
+	 *
+	 * @param __func The function to call.
+	 * @param __args The arguments to the call.
+	 * @return The result of the call.
+	 * @throws InvalidSystemCallException If the system call is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/14
+	 */
+	private static final Object __callRemote(SystemFunction __func,
+		Object... __args)
+		throws InvalidSystemCallException, NullPointerException
+	{
+		if (__func == null)
+			throw new NullPointerException("NARG");
+		
+		// Force to be valid
+		if (__args == null)
+			__args = new Object[0];
+		
+		// {@squirreljme.error ZZ0o Unimplemented remote call. (The function)}
+		Call[] calls = SystemCall._CALLS;
+		Call call = calls[__func.ordinal()];
+		if (!(call instanceof SystemCallDispatch))
+			throw new InvalidSystemCallException(String.format("ZZ0o %s",
+				__func));
+		
+		// Dispatch it
+		return ((SystemCallDispatch)call).dispatch(__func, __args);
 	}
 	
 	/**
