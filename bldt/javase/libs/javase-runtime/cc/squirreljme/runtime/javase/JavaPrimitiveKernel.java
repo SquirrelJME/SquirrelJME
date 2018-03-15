@@ -43,5 +43,15 @@ public class JavaPrimitiveKernel
 	{
 		throw new todo.TODO();
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/15
+	 */
+	@Override
+	public final String[] serviceMap()
+	{
+		throw new todo.TODO();
+	}
 }
 
