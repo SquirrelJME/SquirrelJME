@@ -34,5 +34,14 @@ public interface PrimitiveKernel
 	 * @since 2018/03/03
 	 */
 	public abstract PrimitiveThread createThread();
+	
+	/**
+	 * Returns the mapping of services available in the kernel, the returned
+	 * value are in key/value pairs.
+	 *
+	 * @return The service map for values.
+	 * @since 2018/03/15
+	 */
+	public abstract String[] serviceMap();
 }
 

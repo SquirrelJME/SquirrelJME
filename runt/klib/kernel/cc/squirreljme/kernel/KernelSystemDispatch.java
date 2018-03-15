@@ -22,6 +22,25 @@ import cc.squirreljme.runtime.cldc.system.type.VoidType;
 public final class KernelSystemDispatch
 	implements SystemCallDispatch
 {
+	/** Kernel service manager. */
+	protected final KernelServices services;
+	
+	/**
+	 * Initializes the system dispatch for the kernel side.
+	 *
+	 * @param __sv The service manager.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/15
+	 */
+	public KernelSystemDispatch(KernelServices __sv)
+		throws NullPointerException
+	{
+		if (__sv == null)
+			throw new NullPointerException("NARG");
+		
+		this.services = __sv;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/14

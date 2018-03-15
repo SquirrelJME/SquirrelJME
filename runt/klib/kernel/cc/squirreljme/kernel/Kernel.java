@@ -21,9 +21,11 @@ public final class Kernel
 	/** The owning primitive kernel. */
 	protected final PrimitiveKernel primitive;
 	
+	/** The manager for kernel services. */
+	protected final KernelServices services;
+	
 	/** Dispatch for the system calls coming from kernel space. */
-	protected final KernelSystemDispatch dispatch =
-		new KernelSystemDispatch();
+	protected final KernelSystemDispatch dispatch;
 	
 	/**
 	 * Initializes the kernel.
@@ -38,7 +40,15 @@ public final class Kernel
 		if (__pk == null)
 			throw new NullPointerException("NARG");
 		
+		// Make sure the primitive kernel is always set
 		this.primitive = __pk;
+		
+		// Initialize kernel side service information
+		KernelServices services = new KernelServices(__pk.serviceMap());
+		this.services = services;
+		
+		// Initialize the dispatcher
+		this.dispatch = new KernelSystemDispatch(services);
 	}
 	
 	/**
