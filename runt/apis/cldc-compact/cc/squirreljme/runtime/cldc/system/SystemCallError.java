@@ -10,6 +10,8 @@
 
 package cc.squirreljme.runtime.cldc.system;
 
+import cc.squirreljme.runtime.cldc.system.type.ClassType;
+
 /**
  * This is thrown when the remote end of a system call throws an error.
  *

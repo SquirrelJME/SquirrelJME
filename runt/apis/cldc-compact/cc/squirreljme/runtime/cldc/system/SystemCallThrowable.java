@@ -10,6 +10,8 @@
 
 package cc.squirreljme.runtime.cldc.system;
 
+import cc.squirreljme.runtime.cldc.system.type.ClassType;
+
 /**
  * This interface is associated with any exception or error which may be
  * thrown by a system call.
