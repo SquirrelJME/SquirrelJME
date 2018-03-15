@@ -36,6 +36,10 @@ import cc.squirreljme.runtime.cldc.system.api.SetDaemonThreadCall;
 import cc.squirreljme.runtime.cldc.system.api.TaskListCall;
 import cc.squirreljme.runtime.cldc.system.api.ThrowableGetStackCall;
 import cc.squirreljme.runtime.cldc.system.api.ThrowableSetStackCall;
+import cc.squirreljme.runtime.cldc.system.type.ClassType;
+import cc.squirreljme.runtime.cldc.system.type.ByteArray;
+import cc.squirreljme.runtime.cldc.system.type.EnumType;
+import cc.squirreljme.runtime.cldc.system.type.IntegerArray;
 
 /**
  * This class is provided so that calls made into the remote system can be

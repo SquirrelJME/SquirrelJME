@@ -11,6 +11,7 @@
 package cc.squirreljme.runtime.cldc.system.api;
 
 import cc.squirreljme.runtime.cldc.system.SystemFunction;
+import cc.squirreljme.runtime.cldc.system.type.ByteArray;
 
 /**
  * Interface for {@link SystemFunction#PIPE_OUTPUT_ZI} and {@link

@@ -27,7 +27,6 @@ import cc.squirreljme.runtime.cldc.system.type.LocalBooleanArray;
 import cc.squirreljme.runtime.cldc.system.type.LocalByteArray;
 import cc.squirreljme.runtime.cldc.system.type.LocalCharacterArray;
 import cc.squirreljme.runtime.cldc.system.type.LocalDoubleArray;
-import cc.squirreljme.runtime.cldc.system.type.LocalEnumType;
 import cc.squirreljme.runtime.cldc.system.type.LocalFloatArray;
 import cc.squirreljme.runtime.cldc.system.type.LocalIntegerArray;
 import cc.squirreljme.runtime.cldc.system.type.LocalLongArray;
@@ -251,10 +250,9 @@ public final class SystemCall
 		
 		// Perform the call but wrap any exceptions that may have been
 		// thrown by the remote end
-		Object rv;
 		try
 		{
-			rv = ((SystemCallDispatch)call).dispatch(__func, __args);
+			return ((SystemCallDispatch)call).dispatch(__func, __args);
 		}
 		
 		// Wrap exceptions so that local interfaces are consistent
@@ -270,9 +268,6 @@ public final class SystemCall
 				throw SystemCall.<Error>__wrapException(t);
 			throw SystemCall.<RuntimeException>__wrapException(t);
 		}
-		
-		// Make sure the return value is correct
-		return __cl.cast(rv);
 	}
 	
 	/**
