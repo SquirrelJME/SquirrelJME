@@ -54,6 +54,13 @@ public final class Kernel
 		if (__func == null)
 			throw new NullPointerException("NARG");
 		
+		// {@squirreljme.error AP02 A local system call has been passed to the
+		// kernel which is not valid, it cannot be handled by the kernel in any
+		// way. (The function)}
+		if (__func.isLocal())
+			throw new InvalidSystemCallException(
+				String.format("AP02 %s", __func));
+		
 		// Depends
 		switch (__func)
 		{
