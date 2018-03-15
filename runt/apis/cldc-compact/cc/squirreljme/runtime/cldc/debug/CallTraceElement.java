@@ -85,17 +85,6 @@ public final class CallTraceElement
 	}
 	
 	/**
-	 * Encodes the call trace to binary data.
-	 *
-	 * @return The resulting encoded binary data.
-	 * @since 2018/03/14
-	 */
-	public final byte[] encode()
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
 	 * {@inheritDoc}
 	 * @since 2018/02/21
 	 */
@@ -140,7 +129,7 @@ public final class CallTraceElement
 	}
 	
 	/**
-	 * Decodes the given byte sequence to a call trace element
+	 * Decodes the given byte sequence to call trace elements.
 	 *
 	 * @param __b The array to decode.
 	 * @param __o The offset into the array.
@@ -151,13 +140,35 @@ public final class CallTraceElement
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/14
 	 */
-	public static final CallTraceElement decode(byte[] __b, int __o, int __l)
+	public static final CallTraceElement[] decode(byte[] __b, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, NullPointerException
 	{
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Encodes all of the specified call trace elements to a byte array and
+	 * returns it.
+	 *
+	 * @param __e The elements to encode
+	 * @return The byte array containing encoded call trace information.
+	 * @since 2018/03/14
+	 */
+	public static final byte[] encode(CallTraceElement... __el)
+	{
+		// Decode each sequence.
+		__el = (__el == null ? new CallTraceElement[0] : __el.clone());
+		for (int i = 0, n = __el.length; i < n; i++)
+		{
+			CallTraceElement e = __el[i];
+			
+			throw new todo.TODO();
+		}
 		
 		throw new todo.TODO();
 	}
