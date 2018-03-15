@@ -298,8 +298,113 @@ public final class SystemCall
 			throw new InvalidSystemCallException(String.format("ZZ0d %s",
 				__func));
 		
-		// Perform the call
-		return __cl.cast(impl.systemCall(__func, __args));
+		// If this is intended to be a local system call then the arguments do
+		// not need to be checked or wrapped for validity as long as they are
+		// the write input and output types
+		if (__func.isLocal())
+			return __cl.cast(impl.systemCall(__func, __args));
+		
+		// Check argument inputs
+		for (int i = 0, n = __args.length; i < n; i++)
+		{
+			Object v = __args[i];
+			
+			// Nulls are always valid
+			if (v == null)
+				continue;
+			
+			// Primitive array types needs to be translated
+			if (v.getClass().isArray())
+			{
+				boolean isarray = true;
+				if (v instanceof boolean[])
+					v = new LocalBooleanArray((boolean[])v);
+				else if (v instanceof byte[])
+					v = new LocalByteArray((byte[])v);
+				else if (v instanceof short[])
+					v = new LocalShortArray((short[])v);
+				else if (v instanceof char[])
+					v = new LocalCharacterArray((char[])v);
+				else if (v instanceof int[])
+					v = new LocalIntegerArray((int[])v);
+				else if (v instanceof long[])
+					v = new LocalLongArray((long[])v);
+				else if (v instanceof float[])
+					v = new LocalFloatArray((float[])v);
+				else if (v instanceof double[])
+					v = new LocalDoubleArray((double[])v);
+				else if (v instanceof String[])
+					v = new LocalStringArray((String[])v);
+				
+				// {@squirreljme.error ZZ0k Cannot pass the specified array
+				// type as a system call. (The class type)}
+				else
+					throw new InvalidSystemCallException(
+						String.format("ZZ0k %s", v.getClass()));
+				
+				// Reset
+				__args[i] = v;
+			}
+			
+			// Wrap enumerated values
+			else if (v instanceof Enum)
+			{
+				Enum e = (Enum)v;
+				__args[i] = (v = new EnumType(e.getClass().getName(),
+					e.ordinal(), e.name()));
+			}
+			
+			// Wrap class types
+			else if (v instanceof Class)
+				__args[i] = (v = new ClassType(((Class)v).getName()));
+			
+			// {@squirreljme.error ZZ0j Cannot utilize the given class as
+			// an argument to a system call. (The class type)}
+			else if (!(v instanceof Boolean ||
+				v instanceof Byte ||
+				v instanceof Short ||
+				v instanceof Character ||
+				v instanceof Integer ||
+				v instanceof Long ||
+				v instanceof Float ||
+				v instanceof Double ||
+				v instanceof String ||
+				v instanceof EnumType ||
+				v instanceof ClassType ||
+				v instanceof LocalBooleanArray ||
+				v instanceof LocalByteArray ||
+				v instanceof LocalShortArray ||
+				v instanceof LocalCharacterArray ||
+				v instanceof LocalIntegerArray ||
+				v instanceof LocalLongArray ||
+				v instanceof LocalFloatArray ||
+				v instanceof LocalDoubleArray ||
+				v instanceof LocalStringArray))
+				throw new InvalidSystemCallException(String.format("ZZ0j %s",
+					v.getClass()));
+		}
+		
+		// Perform the call but wrap any exceptions that may have been
+		// thrown by the remote end
+		Object rv;
+		try
+		{
+			rv = impl.systemCall(__func, __args);
+		}
+		
+		// Wrap exceptions so that local interfaces are consistent
+		catch (RuntimeException|Error t)
+		{
+			// Already excpetions of the desired type
+			if (t instanceof SystemCallException ||
+				t instanceof SystemCallError)
+				throw t;
+			
+			throw new todo.TODO();
+		}
+		
+		// Make sure the return value is correct
+		return __cl.cast(rv);
 	}
 	
 	/**
