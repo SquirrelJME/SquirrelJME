@@ -10,7 +10,6 @@
 
 package javax.microedition.swm;
 
-import cc.squirreljme.runtime.cldc.system.MnemonicCall;
 import cc.squirreljme.runtime.cldc.system.SystemCall;
 import cc.squirreljme.runtime.cldc.system.SystemFunction;
 import cc.squirreljme.runtime.cldc.task.SystemTask;

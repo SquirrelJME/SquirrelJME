@@ -50,7 +50,7 @@ final class __SuiteTracker__
 		// Setup thread which performs the actual installation
 		Thread thread = new Thread(new __Runner__(this, __i),
 			"SquirrelJME-Suite-Installer");
-		SystemCall.MNEMONIC.setDaemonThread(thread);
+		SystemCall.EASY.setDaemonThread(thread);
 		thread.start();
 	}
 	

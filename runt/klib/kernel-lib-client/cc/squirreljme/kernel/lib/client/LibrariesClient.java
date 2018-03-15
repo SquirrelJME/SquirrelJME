@@ -15,7 +15,7 @@ import cc.squirreljme.runtime.cldc.library.LibraryResourceScope;
 import cc.squirreljme.runtime.cldc.library.LibraryType;
 import cc.squirreljme.runtime.cldc.library.NoSuchLibraryException;
 import cc.squirreljme.runtime.cldc.service.ServiceCaller;
-import cc.squirreljme.runtime.cldc.system.IntegerArray;
+import cc.squirreljme.runtime.cldc.system.type.IntegerArray;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Map;

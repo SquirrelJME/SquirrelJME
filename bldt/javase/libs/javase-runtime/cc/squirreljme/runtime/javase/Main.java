@@ -13,9 +13,10 @@ package cc.squirreljme.runtime.javase;
 import cc.squirreljme.kernel.PrimitiveKernel;
 import cc.squirreljme.kernel.Kernel;
 import cc.squirreljme.runtime.cldc.io.StandardOutput;
-import cc.squirreljme.runtime.cldc.system.MnemonicCall;
+import cc.squirreljme.runtime.cldc.system.api.Call;
+import cc.squirreljme.runtime.cldc.system.EasyCall;
 import cc.squirreljme.runtime.cldc.system.SystemCall;
-import cc.squirreljme.runtime.cldc.system.SystemCallImplementation;
+import cc.squirreljme.runtime.cldc.system.SystemCallDispatch;
 import cc.squirreljme.runtime.cldc.system.SystemFunction;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -95,7 +96,7 @@ public class Main
 					throw new RuntimeException("AF02");
 				
 				// Initialization complete
-				SystemCall.MNEMONIC.clientInitializationComplete();
+				SystemCall.EASY.initialized();
 				
 				// Call it
 				mainmethod.invoke(null, new Object[]{__args});
@@ -119,7 +120,7 @@ public class Main
 			startmethod.setAccessible(true);
 			
 			// Initialization complete
-			SystemCall.MNEMONIC.clientInitializationComplete();
+			SystemCall.EASY.initialized();
 			
 			// Invoke the start method
 			startmethod.invoke(mid);
@@ -149,7 +150,7 @@ public class Main
 		// System calls may be performed on single objects or multiple objects
 		SystemFunction[] functions = SystemFunction.values();
 		int numf = functions.length;
-		SystemCallImplementation[] impls = new SystemCallImplementation[numf];
+		Call[] impls = new Call[numf];
 		
 		// Clients for Java SE use a bi-directional stream attached to the
 		// input and output streams so that there is portable RPC
@@ -203,13 +204,14 @@ public class Main
 			Kernel kernel = new Kernel(jpk);
 			
 			// Set calls to be implemented by the kernel
+			Call dispatch = kernel.systemDispatch();
 			for (int i = 0; i < numf; i++)
-				impls[i] = kernel;
+				impls[i] = dispatch;
 		}
 		
 		// Need to obtain the interface field so that it is initialized
 		Field callerfield = SystemCall.class.getDeclaredField(
-			"_IMPLEMENTATIONS");
+			"_CALLS");
 		
 		// There is an internal modifiers field which needs to be cleared so
 		// that the data can be accessed as such
