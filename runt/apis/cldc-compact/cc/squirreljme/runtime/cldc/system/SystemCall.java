@@ -10,6 +10,8 @@
 
 package cc.squirreljme.runtime.cldc.system;
 
+import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
+
 /**
  * This contains the static access to the system call interface used by
  * clients to interact with the kernel.
@@ -400,7 +402,10 @@ public final class SystemCall
 				t instanceof SystemCallError)
 				throw t;
 			
-			throw new todo.TODO();
+			// Recursively initialize new exceptions accordingly
+			if (t instanceof Error)
+				throw SystemCall.<Error>__wrapException(t);
+			throw SystemCall.<RuntimeException>__wrapException(t);
 		}
 		
 		// Make sure the return value is correct
@@ -432,6 +437,60 @@ public final class SystemCall
 	private static final SystemCallImplementation[] __implementations()
 	{
 		return SystemCall._IMPLEMENTATIONS;
+	}
+	
+	/**
+	 * Recursively wraps the remote exception so that all call traces are of
+	 * the remote side.
+	 *
+	 * @param <T> The type of exception to return.
+	 * @param __t The throwable to wrap.
+	 * @return The wrapped exception.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/14
+	 */
+	@SuppressWarnings({"unchecked"})
+	private static final <T extends Throwable> T __wrapException(
+		Throwable __t)
+		throws NullPointerException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Is there a cause which needs to be wrapped?
+		Throwable cause = __t.getCause();
+		if (cause != null)
+			cause = SystemCall.<Throwable>__wrapException(cause);
+		
+		// Set base exception for returning
+		ClassType ct = new ClassType(__t.getClass().getName());
+		String m = __t.getMessage();
+		Throwable rv = (__t instanceof Error ?
+			new SystemCallError(ct, m, cause) :
+			new SystemCallException(ct, m, cause));
+		
+		// Wrap any exceptions which have been suppressed
+		Throwable[] sups = __t.getSuppressed();
+		for (int i = 0, n = sups.length; i < n; i++)
+		{
+			// This should not happen, but it might
+			Throwable sup = sups[i];
+			if (sup == null)
+				continue;
+			
+			// Record it
+			rv.addSuppressed(SystemCall.<Throwable>__wrapException(sup));
+		}
+		
+		// Before returning make sure the wrapped exception share the same
+		// stack trace as the remote one
+		SystemCall.<VoidType>systemCall(VoidType.class,
+			SystemFunction.THROWABLE_SET_STACK, rv,
+			SystemCall.<CallTraceElement[]>systemCall(CallTraceElement[].class,
+				SystemFunction.THROWABLE_GET_STACK, __t));
+		
+		// Unsafe cast for returning
+		return (T)((Object)rv);
 	}
 }
 
