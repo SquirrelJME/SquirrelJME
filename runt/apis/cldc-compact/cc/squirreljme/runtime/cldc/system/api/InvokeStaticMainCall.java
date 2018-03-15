@@ -18,6 +18,7 @@ import cc.squirreljme.runtime.cldc.system.SystemFunction;
  * @since 2018/03/14
  */
 public interface InvokeStaticMainCall
+	extends Call
 {
 	/**
 	 * Invokes the static main method in the specified class.

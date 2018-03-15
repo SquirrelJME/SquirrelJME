@@ -10,6 +10,8 @@
 
 package cc.squirreljme.runtime.cldc.system;
 
+import cc.squirreljme.runtime.cldc.system.api.Call;
+
 /**
  * This interface is used to implement system call bridges to be sent to the
  * remote kernel end.
@@ -25,6 +27,7 @@ package cc.squirreljme.runtime.cldc.system;
  * @since 2018/02/21
  */
 public interface SystemCallImplementation
+	extends Call
 {
 	/**
 	 * Performs the given system call intended to be implemented by the local

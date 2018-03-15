@@ -18,6 +18,7 @@ import cc.squirreljme.runtime.cldc.system.SystemFunction;
  * @since 2018/03/14
  */
 public interface ThrowableSetStackCall
+	extends Call
 {
 	/**
 	 * Set the stack trace for the given throwable.

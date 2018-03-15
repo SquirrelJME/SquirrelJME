@@ -19,6 +19,7 @@ import cc.squirreljme.runtime.cldc.system.SystemFunction;
  * @since 2018/03/14
  */
 public interface PipeOutputCall
+	extends Call
 {
 	/**
 	 * Pipe a single byte to standard output or standard error.

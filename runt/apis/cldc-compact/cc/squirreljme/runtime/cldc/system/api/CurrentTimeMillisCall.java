@@ -18,6 +18,7 @@ import cc.squirreljme.runtime.cldc.system.SystemFunction;
  * @since 2018/03/14
  */
 public interface CurrentTimeMillisCall
+	extends Call
 {
 	/**
 	 * Returns the current time in milliseconds UTC since the epoch.

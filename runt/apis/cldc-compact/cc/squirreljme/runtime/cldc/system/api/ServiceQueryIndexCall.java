@@ -18,6 +18,7 @@ import cc.squirreljme.runtime.cldc.system.SystemFunction;
  * @since 2018/03/14
  */
 public interface ServiceQueryIndexCall
+	extends Call
 {
 	/**
 	 * Queries the index of the service which implements the given class.

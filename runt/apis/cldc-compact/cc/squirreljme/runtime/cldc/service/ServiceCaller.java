@@ -10,16 +10,16 @@
 
 package cc.squirreljme.runtime.cldc.service;
 
-import cc.squirreljme.runtime.cldc.system.BooleanArray;
-import cc.squirreljme.runtime.cldc.system.CharacterArray;
-import cc.squirreljme.runtime.cldc.system.DoubleArray;
-import cc.squirreljme.runtime.cldc.system.FloatArray;
-import cc.squirreljme.runtime.cldc.system.IntegerArray;
-import cc.squirreljme.runtime.cldc.system.LongArray;
-import cc.squirreljme.runtime.cldc.system.ShortArray;
 import cc.squirreljme.runtime.cldc.system.SystemCall;
 import cc.squirreljme.runtime.cldc.system.SystemFunction;
-import cc.squirreljme.runtime.cldc.system.VoidType;
+import cc.squirreljme.runtime.cldc.system.type.BooleanArray;
+import cc.squirreljme.runtime.cldc.system.type.CharacterArray;
+import cc.squirreljme.runtime.cldc.system.type.DoubleArray;
+import cc.squirreljme.runtime.cldc.system.type.FloatArray;
+import cc.squirreljme.runtime.cldc.system.type.IntegerArray;
+import cc.squirreljme.runtime.cldc.system.type.LongArray;
+import cc.squirreljme.runtime.cldc.system.type.ShortArray;
+import cc.squirreljme.runtime.cldc.system.type.VoidType;
 
 /**
  * This class allows simpler access to performing system calls into services

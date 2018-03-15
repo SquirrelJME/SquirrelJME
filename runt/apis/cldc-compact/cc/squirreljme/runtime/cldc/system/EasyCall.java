@@ -11,15 +11,64 @@
 package cc.squirreljme.runtime.cldc.system;
 
 import cc.squirreljme.runtime.cldc.service.ServiceClientProvider;
+import cc.squirreljme.runtime.cldc.system.api.Call;
+import cc.squirreljme.runtime.cldc.system.api.CurrentTimeMillisCall;
+import cc.squirreljme.runtime.cldc.system.api.ExitCall;
+import cc.squirreljme.runtime.cldc.system.api.GarbageCollectionHintCall;
+import cc.squirreljme.runtime.cldc.system.api.InitializedCall;
+import cc.squirreljme.runtime.cldc.system.api.InvokeStaticMainCall;
+import cc.squirreljme.runtime.cldc.system.api.MemoryMapBooleanArrayCall;
+import cc.squirreljme.runtime.cldc.system.api.MemoryMapByteArrayCall;
+import cc.squirreljme.runtime.cldc.system.api.MemoryMapCharacterArrayCall;
+import cc.squirreljme.runtime.cldc.system.api.MemoryMapDoubleArrayCall;
+import cc.squirreljme.runtime.cldc.system.api.MemoryMapFloatArrayCall;
+import cc.squirreljme.runtime.cldc.system.api.MemoryMapIntegerArrayCall;
+import cc.squirreljme.runtime.cldc.system.api.MemoryMapLongArrayCall;
+import cc.squirreljme.runtime.cldc.system.api.MemoryMapShortArrayCall;
+import cc.squirreljme.runtime.cldc.system.api.MemoryMapStringArrayCall;
+import cc.squirreljme.runtime.cldc.system.api.NanoTimeCall;
+import cc.squirreljme.runtime.cldc.system.api.PipeOutputCall;
+import cc.squirreljme.runtime.cldc.system.api.ServiceCallCall;
+import cc.squirreljme.runtime.cldc.system.api.ServiceCountCall;
+import cc.squirreljme.runtime.cldc.system.api.ServiceQueryClassCall;
+import cc.squirreljme.runtime.cldc.system.api.ServiceQueryIndexCall;
+import cc.squirreljme.runtime.cldc.system.api.SetDaemonThreadCall;
+import cc.squirreljme.runtime.cldc.system.api.TaskListCall;
+import cc.squirreljme.runtime.cldc.system.api.ThrowableGetStackCall;
+import cc.squirreljme.runtime.cldc.system.api.ThrowableSetStackCall;
 
 /**
- * This is the mnemonic call which just uses the system's actual system call
- * interface rather than implementing it.
+ * This class is provided so that calls made into the remote system can be
+ * easily performed without needing to perform complex function and argument
+ * passing.
  *
  * @since 2018/03/01
  */
-public class __SystemMnemonicCall__
-	extends MnemonicCall
+public final class EasyCall
+	implements CurrentTimeMillisCall,
+		ExitCall,
+		GarbageCollectionHintCall,
+		InitializedCall,
+		InvokeStaticMainCall,
+		MemoryMapBooleanArrayCall,
+		MemoryMapByteArrayCall,
+		MemoryMapCharacterArrayCall,
+		MemoryMapDoubleArrayCall,
+		MemoryMapFloatArrayCall,
+		MemoryMapIntegerArrayCall,
+		MemoryMapLongArrayCall,
+		MemoryMapShortArrayCall,
+		MemoryMapStringArrayCall,
+		NanoTimeCall,
+		PipeOutputCall,
+		ServiceCallCall,
+		ServiceCountCall,
+		ServiceQueryClassCall,
+		ServiceQueryIndexCall,
+		SetDaemonThreadCall,
+		TaskListCall,
+		ThrowableGetStackCall,
+		ThrowableSetStackCall
 {
 	/**
 	 * {@inheritDoc}

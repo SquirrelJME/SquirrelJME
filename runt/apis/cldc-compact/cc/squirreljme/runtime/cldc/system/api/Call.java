@@ -10,23 +10,13 @@
 
 package cc.squirreljme.runtime.cldc.system.api;
 
-import cc.squirreljme.runtime.cldc.system.SystemFunction;
-
 /**
- * Interface for {@link SystemFunction#TASK_LIST}.
+ * This is the interface which acts as the base for all API calls and any
+ * calls which must be specially forwarded to the kernel for handling.
  *
  * @since 2018/03/14
  */
-public interface TaskListCall
-	extends Call
+public interface Call
 {
-	/**
-	 * Returns the list of tasks which are available on the system.
-	 *
-	 * @param __incsys Include system tasks?
-	 * @return The array of tasks available to the system.
-	 * @since 2018/03/02
-	 */
-	public abstract IntegerArray taskList(boolean __incsys);
 }
 

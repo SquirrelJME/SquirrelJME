@@ -18,6 +18,7 @@ import cc.squirreljme.runtime.cldc.system.SystemFunction;
  * @since 2018/03/14
  */
 public interface ServiceCallCall
+	extends Call
 {
 	/**
 	 * Performs a call into a service.
