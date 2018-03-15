@@ -18,6 +18,7 @@ import cc.squirreljme.runtime.cldc.system.SystemFunction;
  * @since 2018/03/14
  */
 public interface InitializedCall
+	extends Call
 {
 	/**
 	 * Specifies that the client was successfully initialized.

@@ -18,6 +18,7 @@ import cc.squirreljme.runtime.cldc.system.SystemFunction;
  * @since 2018/03/14
  */
 public interface ExitCall
+	extends Call
 {
 	/**
 	 * Exit the virtual machine with the given exit code.
