@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.cldc.system;
+package cc.squirreljme.runtime.cldc.system.type;
 
 /**
  * Accesses an interger array.

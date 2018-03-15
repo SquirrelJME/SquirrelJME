@@ -8,37 +8,21 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.cldc.system;
+package cc.squirreljme.runtime.cldc.system.type;
 
 /**
- * This is used by a system call which returns a void value.
+ * This represents the base class for all array accessors.
  *
  * @since 2018/02/21
  */
-public final class VoidType
+public interface Array
 {
-	/** Single instance of the void type. */
-	public static final VoidType INSTANCE =
-		new VoidType();
-	
 	/**
-	 * {@inheritDoc}
-	 * @since 2018/02/21
+	 * Returns the length of the array.
+	 *
+	 * @return The array length.
+	 * @since 2018/03/01
 	 */
-	@Override
-	public final boolean equals(Object __o)
-	{
-		return (__o instanceof VoidType);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/02/21
-	 */
-	@Override
-	public final int hashCode()
-	{
-		return 0;
-	}
+	public abstract int length();
 }
 

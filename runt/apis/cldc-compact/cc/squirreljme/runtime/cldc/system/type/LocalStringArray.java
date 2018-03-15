@@ -8,27 +8,27 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.cldc.system;
+package cc.squirreljme.runtime.cldc.system.type;
 
 /**
- * Wraps a char array.
+ * Wraps a string array.
  *
  * @since 2018/03/04
  */
-public class LocalCharacterArray
-	implements CharacterArray
+public class LocalStringArray
+	implements StringArray
 {
-	/** The char array to read/write. */
-	protected final char[] array;
+	/** The String array to read/write. */
+	protected final String[] array;
 	
 	/**
-	 * Initializes the local char array.
+	 * Initializes the local String array.
 	 *
 	 * @param __a The array to wrap.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/01
 	 */
-	public LocalCharacterArray(char[] __a)
+	public LocalStringArray(String[] __a)
 		throws NullPointerException
 	{
 		if (__a == null)
@@ -42,10 +42,10 @@ public class LocalCharacterArray
 	 * @since 2018/03/04
 	 */
 	@Override
-	public final char get(int __i)
+	public final String get(int __i)
 		throws ArrayIndexOutOfBoundsException
 	{
-		char[] array = this.array;
+		String[] array = this.array;
 		if (__i < 0 || __i >= array.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
@@ -57,13 +57,13 @@ public class LocalCharacterArray
 	 * @since 2018/03/04
 	 */
 	@Override
-	public final void get(int __i, char[] __v, int __o, int __l)
+	public final void get(int __i, String[] __v, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, NullPointerException
 	{
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		char[] array = this.array;
+		String[] array = this.array;
 		if (__o < 0 || __l < 0 || (__o + __l) > __v.length ||
 			__i < 0 || (__i + __l) > array.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
@@ -88,7 +88,7 @@ public class LocalCharacterArray
 	 * @return The local array.
 	 * @since 2018/03/04
 	 */
-	public final char[] localArray()
+	public final String[] localArray()
 	{
 		return this.array;
 	}
@@ -98,10 +98,10 @@ public class LocalCharacterArray
 	 * @since 2018/03/04
 	 */
 	@Override
-	public final void set(int __i, char __v)
+	public final void set(int __i, String __v)
 		throws ArrayIndexOutOfBoundsException
 	{
-		char[] array = this.array;
+		String[] array = this.array;
 		if (__i < 0 || __i >= array.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
@@ -113,13 +113,13 @@ public class LocalCharacterArray
 	 * @since 2018/03/04
 	 */
 	@Override
-	public final void set(int __i, char[] __v, int __o, int __l)
+	public final void set(int __i, String[] __v, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, NullPointerException
 	{
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		char[] array = this.array;
+		String[] array = this.array;
 		if (__o < 0 || __l < 0 || (__o + __l) > __v.length ||
 			__i < 0 || (__i + __l) > array.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
