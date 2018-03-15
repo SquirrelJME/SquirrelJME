@@ -11,6 +11,7 @@
 package cc.squirreljme.runtime.cldc.service;
 
 import cc.squirreljme.runtime.cldc.system.SystemCall;
+import cc.squirreljme.runtime.cldc.system.type.ClassType;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,7 +66,7 @@ public final class ServiceAccessor
 			svdx = instancemap.get(__cl);
 			if (svdx == null)
 			{
-				svdx = SystemCall.MNEMONIC.serviceQueryIndex(__cl);
+				svdx = SystemCall.EASY.serviceQueryIndex(new ClassType(__cl));
 				
 				// {@squirreljme.error ZZ0h No such service exists for the
 				// given class. (The service class)}
@@ -88,8 +89,9 @@ public final class ServiceAccessor
 				int dx = svdx;
 				try
 				{
-					rv = SystemCall.MNEMONIC.serviceQueryClass(dx).
-						newInstance().initializeClient(new ServiceCaller(dx));
+					rv = ((ServiceClientProvider)((ClassType)SystemCall.EASY.
+						serviceQueryClass(dx)).forClass().newInstance()).
+						initializeClient(new ServiceCaller(dx));
 				}
 				
 				// {@squirreljme.error ZZ0i Could not initialize the service.

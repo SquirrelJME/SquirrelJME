@@ -11,6 +11,7 @@
 package cc.squirreljme.runtime.cldc.io;
 
 import cc.squirreljme.runtime.cldc.system.SystemCall;
+import cc.squirreljme.runtime.cldc.system.type.LocalByteArray;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -30,7 +31,7 @@ public final class StandardOutput
 	@Override
 	public void write(int __b)
 	{
-		SystemCall.MNEMONIC.pipeOutput(false, __b);
+		SystemCall.EASY.pipeOutput(false, __b);
 	}
 	
 	/**
@@ -40,7 +41,10 @@ public final class StandardOutput
 	@Override
 	public void write(byte[] __b, int __o, int __l)
 	{
-		SystemCall.MNEMONIC.pipeOutput(false, __b, __o, __l);
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		SystemCall.EASY.pipeOutput(false, new LocalByteArray(__b), __o, __l);
 	}
 }
 

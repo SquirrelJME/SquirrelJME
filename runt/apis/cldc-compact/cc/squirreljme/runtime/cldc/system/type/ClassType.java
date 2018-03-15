@@ -38,6 +38,43 @@ public final class ClassType
 	}
 	
 	/**
+	 * Initializes the class type.
+	 *
+	 * @param __cl The class type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/14
+	 */
+	public ClassType(Class<?> __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		this.name = __cl.getName();
+	}
+	
+	/**
+	 * Searches the current classpath for the class and returns it.
+	 *
+	 * @return The given class.
+	 * @since 2018/03/14
+	 */
+	public final Class<?> forClass()
+	{
+		String name = this.name;
+		try
+		{
+			return Class.forName(name);
+		}
+		
+		// {@squirreljme.error ZZ0p No such class exists. (The given class)}
+		catch (ClassNotFoundException e)
+		{
+			throw new RuntimeException(String.format("ZZ0p %s", name), e);
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/14
 	 */

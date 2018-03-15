@@ -10,7 +10,7 @@
 
 package cc.squirreljme.runtime.cldc.system;
 
-import cc.squirreljme.runtime.cldc.service.ServiceClientProvider;
+import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.system.api.Call;
 import cc.squirreljme.runtime.cldc.system.api.CurrentTimeMillisCall;
 import cc.squirreljme.runtime.cldc.system.api.ExitCall;
@@ -36,10 +36,17 @@ import cc.squirreljme.runtime.cldc.system.api.SetDaemonThreadCall;
 import cc.squirreljme.runtime.cldc.system.api.TaskListCall;
 import cc.squirreljme.runtime.cldc.system.api.ThrowableGetStackCall;
 import cc.squirreljme.runtime.cldc.system.api.ThrowableSetStackCall;
-import cc.squirreljme.runtime.cldc.system.type.ClassType;
+import cc.squirreljme.runtime.cldc.system.type.BooleanArray;
 import cc.squirreljme.runtime.cldc.system.type.ByteArray;
+import cc.squirreljme.runtime.cldc.system.type.CharacterArray;
+import cc.squirreljme.runtime.cldc.system.type.ClassType;
+import cc.squirreljme.runtime.cldc.system.type.DoubleArray;
 import cc.squirreljme.runtime.cldc.system.type.EnumType;
+import cc.squirreljme.runtime.cldc.system.type.FloatArray;
 import cc.squirreljme.runtime.cldc.system.type.IntegerArray;
+import cc.squirreljme.runtime.cldc.system.type.LongArray;
+import cc.squirreljme.runtime.cldc.system.type.ShortArray;
+import cc.squirreljme.runtime.cldc.system.type.StringArray;
 
 /**
  * This class is provided so that calls made into the remote system can be
@@ -75,167 +82,270 @@ public final class EasyCall
 		ThrowableSetStackCall
 {
 	/**
-	 * {@inheritDoc}
-	 * @since 2018/03/01
+	 * Initializes internally only.
+	 *
+	 * @since 2018/03/14
 	 */
-	@Override
-	public final long currentTimeMillis()
+	EasyCall()
 	{
-		return SystemCall.longCall(
-			SystemFunction.CURRENT_TIME_MILLIS);
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/03/01
+	 * @since 2018/03/14
+	 */
+	@Override
+	public final long currentTimeMillis()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/14
 	 */
 	@Override
 	public final void exit(int __e)
 		throws SecurityException
 	{
-		SystemCall.voidCall(
-			SystemFunction.EXIT, __e);
+		throw new todo.TODO();
 	}
-	
+		
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/03/01
+	 * @since 2018/03/14
 	 */
 	@Override
 	public final void garbageCollectionHint()
 	{
-		SystemCall.voidCall(
-			SystemFunction.GARBAGE_COLLECTION_HINT);
+		throw new todo.TODO();
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/03/01
+	 * @since 2018/03/14
 	 */
 	@Override
 	public final void initialized()
 	{
-		SystemCall.voidCall(
-			SystemFunction.INITIALIZED);
+		throw new todo.TODO();
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/03/01
+	 * @since 2018/03/14
+	 */
+	@Override
+	public final void invokeStaticMainCall(ClassType __c, String... __args)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/14
+	 */
+	@Override
+	public final BooleanArray memoryMapBooleanArray(long __a, int __l)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/14
+	 */
+	@Override
+	public final ByteArray memoryMapByteArray(long __a, int __l)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/14
+	 */
+	@Override
+	public final CharacterArray memoryMapCharacterArray(long __a, int __l)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/14
+	 */
+	@Override
+	public final DoubleArray memoryMapDoubleArray(long __a, int __l)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/14
+	 */
+	@Override
+	public final FloatArray memoryMapFloatArray(long __a, int __l)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/14
+	 */
+	@Override
+	public final IntegerArray memoryMapIntegerArray(long __a, int __l)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/14
+	 */
+	@Override
+	public final LongArray memoryMapLongArray(long __a, int __l)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/14
+	 */
+	@Override
+	public final ShortArray memoryMapShortArray(long __a, int __l)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/14
+	 */
+	@Override
+	public final StringArray memoryMapStringArray(long __a, int __l)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/14
 	 */
 	@Override
 	public final long nanoTime()
 	{
-		return SystemCall.longCall(
-			SystemFunction.NANOTIME);
+		throw new todo.TODO();
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/03/01
+	 * @since 2018/03/14
 	 */
 	@Override
 	public final void pipeOutput(boolean __err, int __b)
 	{
-		SystemCall.voidCall(
-			SystemFunction.PIPE_OUTPUT_ZI, __err, __b);
+		throw new todo.TODO();
 	}
-	
+
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/03/01
+	 * @since 2018/03/14
 	 */
 	@Override
 	public final void pipeOutput(boolean __err, ByteArray __b, int __o,
 		int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
-		SystemCall.voidCall(
-			SystemFunction.PIPE_OUTPUT_ZABII, __err, __b, __o, __l);
+		throw new todo.TODO();
 	}
-	
+		
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/03/01
+	 * @since 2018/03/14
 	 */
 	@Override
-	public final Object serviceCall(int __dx, Enum<?> __func,
+	public final Object serviceCall(int __dx, EnumType __func,
 		Object... __args)
-		throws NullPointerException
 	{
-		// Force to exist
-		if (__args == null)
-			__args = new Object[0];
-		
-		// Expand to full array
-		int nargs = __args.length;
-		Object[] xargs = new Object[nargs + 2];
-		xargs[0] = __dx;
-		xargs[1] = __func;
-		for (int i = 0, o = 2; i < nargs; i++, o++)
-			xargs[o] = __args[i];
-		
-		// Forward call
-		return SystemCall.<Object>systemCall(Object.class,
-			SystemFunction.SERVICE_CALL, xargs);
+		throw new todo.TODO();
 	}
-	
+		
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/03/02
+	 * @since 2018/03/14
 	 */
 	@Override
 	public final int serviceCount()
 	{
-		return SystemCall.integerCall(
-			SystemFunction.SERVICE_COUNT);
+		throw new todo.TODO();
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/03/01
+	 * @since 2018/03/14
 	 */
 	@Override
-	@SuppressWarnings({"unchecked"})
-	public final Class<? extends ServiceClientProvider> serviceQueryClass(
-		int __dx)
+	public final ClassType serviceQueryClass(int __dx)
 	{
-		return (Class<? extends ServiceClientProvider>)SystemCall.<Class>
-			systemCall(Class.class, SystemFunction.SERVICE_QUERY_CLASS, __dx);
+		throw new todo.TODO();
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/03/01
+	 * @since 2018/03/14
 	 */
 	@Override
-	public final int serviceQueryIndex(Class<?> __cl)
+	public final int serviceQueryIndex(ClassType __cl)
 	{
-		return SystemCall.integerCall(
-			SystemFunction.SERVICE_QUERY_INDEX, __cl);
+		throw new todo.TODO();
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/03/01
+	 * @since 2018/03/14
 	 */
 	@Override
 	public final void setDaemonThread(Thread __t)
 		throws IllegalThreadStateException, NullPointerException
 	{
-		SystemCall.voidCall(
-			SystemFunction.SET_DAEMON_THREAD, __t);
+		throw new todo.TODO();
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/03/02
+	 * @since 2018/03/14
 	 */
 	@Override
 	public final IntegerArray taskList(boolean __incsys)
 	{
-		return SystemCall.integerArrayCall(
-			SystemFunction.TASK_LIST, __incsys);
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/14
+	 */
+	@Override
+	public final CallTraceElement[] throwableGetStack(Throwable __t)
+		throws NullPointerException
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/14
+	 */
+	@Override
+	public final void throwableSetStack(Throwable __t,
+		CallTraceElement[] __e)
+		throws NullPointerException
+	{
+		throw new todo.TODO();
 	}
 }
 

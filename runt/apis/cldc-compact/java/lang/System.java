@@ -62,7 +62,7 @@ public final class System
 	public static long currentTimeMillis()
 	{
 		// Returns the current time in UTC, not local time zone.
-		return SystemCall.MNEMONIC.currentTimeMillis();
+		return SystemCall.EASY.currentTimeMillis();
 	}
 	
 	/**
@@ -372,7 +372,7 @@ public final class System
 	 */
 	public static long nanoTime()
 	{
-		return SystemCall.MNEMONIC.nanoTime();
+		return SystemCall.EASY.nanoTime();
 	}
 	
 	/**
