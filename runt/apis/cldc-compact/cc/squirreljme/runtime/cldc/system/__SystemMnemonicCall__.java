@@ -26,17 +26,6 @@ public class __SystemMnemonicCall__
 	 * @since 2018/03/01
 	 */
 	@Override
-	public final void clientInitializationComplete()
-	{
-		SystemCall.voidCall(
-			SystemFunction.CLIENT_INITIALIZATION_COMPLETE);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/03/01
-	 */
-	@Override
 	public final long currentTimeMillis()
 	{
 		return SystemCall.longCall(
@@ -64,6 +53,17 @@ public class __SystemMnemonicCall__
 	{
 		SystemCall.voidCall(
 			SystemFunction.GARBAGE_COLLECTION_HINT);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/01
+	 */
+	@Override
+	public final void initialized()
+	{
+		SystemCall.voidCall(
+			SystemFunction.INITIALIZED);
 	}
 	
 	/**

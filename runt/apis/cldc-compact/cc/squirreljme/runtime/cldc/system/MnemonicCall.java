@@ -38,12 +38,8 @@ public abstract class MnemonicCall
 		// Forward calls
 		switch (__func)
 		{
-			case CLIENT_INITIALIZATION_COMPLETE:
-				this.clientInitializationComplete();
-				return voidtype;
-			
 			case CURRENT_TIME_MILLIS:
-				return this.currentTimeMillis();
+				throw new todo.TODO();
 				
 			case EXIT:
 				this.exit(
@@ -54,8 +50,12 @@ public abstract class MnemonicCall
 				this.garbageCollectionHint();
 				return voidtype;
 			
+			case INITIALIZED:
+				this.clientInitializationComplete();
+				return voidtype;
+			
 			case NANOTIME:
-				return this.nanoTime();
+				throw new todo.TODO();
 				
 			case PIPE_OUTPUT_ZI:
 				this.pipeOutput(
