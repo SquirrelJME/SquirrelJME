@@ -8,14 +8,14 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.cldc.system;
+package cc.squirreljme.runtime.cldc.system.type;
 
 /**
- * Accesses a long array.
+ * This represents a wrapped byte array.
  *
- * @since 2018/02/21
+ * @since 2018/03/04
  */
-public interface LongArray
+public interface ByteArray
 	extends Array
 {
 	/**
@@ -26,7 +26,7 @@ public interface LongArray
 	 * @throws ArrayIndexOutOfBoundsException If out of bounds.
 	 * @since 2018/03/04
 	 */
-	public abstract long get(int __i)
+	public abstract byte get(int __i)
 		throws ArrayIndexOutOfBoundsException;
 	
 	/**
@@ -41,7 +41,7 @@ public interface LongArray
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/04
 	 */
-	public abstract void get(int __i, long[] __v, int __o, int __l)
+	public abstract void get(int __i, byte[] __v, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, NullPointerException;
 	
 	/**
@@ -52,7 +52,7 @@ public interface LongArray
 	 * @throws ArrayIndexOutOfBoundsException If out of bounds.
 	 * @since 2018/03/04
 	 */
-	public abstract void set(int __i, long __v)
+	public abstract void set(int __i, byte __v)
 		throws ArrayIndexOutOfBoundsException;
 	
 	/**
@@ -67,7 +67,7 @@ public interface LongArray
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/04
 	 */
-	public abstract void set(int __i, long[] __v, int __o, int __l)
+	public abstract void set(int __i, byte[] __v, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, NullPointerException;
 }
 

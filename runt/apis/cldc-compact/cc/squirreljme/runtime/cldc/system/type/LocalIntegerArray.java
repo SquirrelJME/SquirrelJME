@@ -8,27 +8,27 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.cldc.system;
+package cc.squirreljme.runtime.cldc.system.type;
 
 /**
- * Wraps a short array.
+ * Wraps an int array.
  *
  * @since 2018/03/04
  */
-public class LocalShortArray
-	implements ShortArray
+public class LocalIntegerArray
+	implements IntegerArray
 {
-	/** The short array to read/write. */
-	protected final short[] array;
+	/** The int array to read/write. */
+	protected final int[] array;
 	
 	/**
-	 * Initializes the local short array.
+	 * Initializes the local int array.
 	 *
 	 * @param __a The array to wrap.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/01
 	 */
-	public LocalShortArray(short[] __a)
+	public LocalIntegerArray(int[] __a)
 		throws NullPointerException
 	{
 		if (__a == null)
@@ -42,10 +42,10 @@ public class LocalShortArray
 	 * @since 2018/03/04
 	 */
 	@Override
-	public final short get(int __i)
+	public final int get(int __i)
 		throws ArrayIndexOutOfBoundsException
 	{
-		short[] array = this.array;
+		int[] array = this.array;
 		if (__i < 0 || __i >= array.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
@@ -57,13 +57,13 @@ public class LocalShortArray
 	 * @since 2018/03/04
 	 */
 	@Override
-	public final void get(int __i, short[] __v, int __o, int __l)
+	public final void get(int __i, int[] __v, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, NullPointerException
 	{
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		short[] array = this.array;
+		int[] array = this.array;
 		if (__o < 0 || __l < 0 || (__o + __l) > __v.length ||
 			__i < 0 || (__i + __l) > array.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
@@ -88,7 +88,7 @@ public class LocalShortArray
 	 * @return The local array.
 	 * @since 2018/03/04
 	 */
-	public final short[] localArray()
+	public final int[] localArray()
 	{
 		return this.array;
 	}
@@ -98,10 +98,10 @@ public class LocalShortArray
 	 * @since 2018/03/04
 	 */
 	@Override
-	public final void set(int __i, short __v)
+	public final void set(int __i, int __v)
 		throws ArrayIndexOutOfBoundsException
 	{
-		short[] array = this.array;
+		int[] array = this.array;
 		if (__i < 0 || __i >= array.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
@@ -113,13 +113,13 @@ public class LocalShortArray
 	 * @since 2018/03/04
 	 */
 	@Override
-	public final void set(int __i, short[] __v, int __o, int __l)
+	public final void set(int __i, int[] __v, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, NullPointerException
 	{
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		short[] array = this.array;
+		int[] array = this.array;
 		if (__o < 0 || __l < 0 || (__o + __l) > __v.length ||
 			__i < 0 || (__i + __l) > array.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");

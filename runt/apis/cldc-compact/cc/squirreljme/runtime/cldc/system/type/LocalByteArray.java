@@ -8,27 +8,27 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.cldc.system;
+package cc.squirreljme.runtime.cldc.system.type;
 
 /**
- * Wraps a double array.
+ * This represents a byte array which is local to the current task.
  *
- * @since 2018/03/04
+ * @since 2018/03/01
  */
-public class LocalDoubleArray
-	implements DoubleArray
+public final class LocalByteArray
+	implements ByteArray
 {
-	/** The double array to read/write. */
-	protected final double[] array;
+	/** The byte array to read/write. */
+	protected final byte[] array;
 	
 	/**
-	 * Initializes the local double array.
+	 * Initializes the local byte array.
 	 *
 	 * @param __a The array to wrap.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/01
 	 */
-	public LocalDoubleArray(double[] __a)
+	public LocalByteArray(byte[] __a)
 		throws NullPointerException
 	{
 		if (__a == null)
@@ -42,10 +42,10 @@ public class LocalDoubleArray
 	 * @since 2018/03/04
 	 */
 	@Override
-	public final double get(int __i)
+	public final byte get(int __i)
 		throws ArrayIndexOutOfBoundsException
 	{
-		double[] array = this.array;
+		byte[] array = this.array;
 		if (__i < 0 || __i >= array.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
@@ -57,13 +57,13 @@ public class LocalDoubleArray
 	 * @since 2018/03/04
 	 */
 	@Override
-	public final void get(int __i, double[] __v, int __o, int __l)
+	public final void get(int __i, byte[] __v, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, NullPointerException
 	{
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		double[] array = this.array;
+		byte[] array = this.array;
 		if (__o < 0 || __l < 0 || (__o + __l) > __v.length ||
 			__i < 0 || (__i + __l) > array.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
@@ -88,7 +88,7 @@ public class LocalDoubleArray
 	 * @return The local array.
 	 * @since 2018/03/04
 	 */
-	public final double[] localArray()
+	public final byte[] localArray()
 	{
 		return this.array;
 	}
@@ -98,10 +98,10 @@ public class LocalDoubleArray
 	 * @since 2018/03/04
 	 */
 	@Override
-	public final void set(int __i, double __v)
+	public final void set(int __i, byte __v)
 		throws ArrayIndexOutOfBoundsException
 	{
-		double[] array = this.array;
+		byte[] array = this.array;
 		if (__i < 0 || __i >= array.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
@@ -113,13 +113,13 @@ public class LocalDoubleArray
 	 * @since 2018/03/04
 	 */
 	@Override
-	public final void set(int __i, double[] __v, int __o, int __l)
+	public final void set(int __i, byte[] __v, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, NullPointerException
 	{
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		double[] array = this.array;
+		byte[] array = this.array;
 		if (__o < 0 || __l < 0 || (__o + __l) > __v.length ||
 			__i < 0 || (__i + __l) > array.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");

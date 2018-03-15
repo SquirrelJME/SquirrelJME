@@ -8,14 +8,14 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.cldc.system;
+package cc.squirreljme.runtime.cldc.system.type;
 
 /**
- * Accesses a double array.
+ * Accesses a char array.
  *
  * @since 2018/02/21
  */
-public interface DoubleArray
+public interface CharacterArray
 	extends Array
 {
 	/**
@@ -26,7 +26,7 @@ public interface DoubleArray
 	 * @throws ArrayIndexOutOfBoundsException If out of bounds.
 	 * @since 2018/03/04
 	 */
-	public abstract double get(int __i)
+	public abstract char get(int __i)
 		throws ArrayIndexOutOfBoundsException;
 	
 	/**
@@ -41,7 +41,7 @@ public interface DoubleArray
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/04
 	 */
-	public abstract void get(int __i, double[] __v, int __o, int __l)
+	public abstract void get(int __i, char[] __v, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, NullPointerException;
 	
 	/**
@@ -52,7 +52,7 @@ public interface DoubleArray
 	 * @throws ArrayIndexOutOfBoundsException If out of bounds.
 	 * @since 2018/03/04
 	 */
-	public abstract void set(int __i, double __v)
+	public abstract void set(int __i, char __v)
 		throws ArrayIndexOutOfBoundsException;
 	
 	/**
@@ -67,7 +67,7 @@ public interface DoubleArray
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/04
 	 */
-	public abstract void set(int __i, double[] __v, int __o, int __l)
+	public abstract void set(int __i, char[] __v, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, NullPointerException;
 }
 

@@ -8,14 +8,14 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.cldc.system;
+package cc.squirreljme.runtime.cldc.system.type;
 
 /**
- * This represents a remotely accessible string array.
+ * Accesses a double array.
  *
- * @since 2018/03/04
+ * @since 2018/02/21
  */
-public interface StringArray
+public interface DoubleArray
 	extends Array
 {
 	/**
@@ -26,7 +26,7 @@ public interface StringArray
 	 * @throws ArrayIndexOutOfBoundsException If out of bounds.
 	 * @since 2018/03/04
 	 */
-	public abstract String get(int __i)
+	public abstract double get(int __i)
 		throws ArrayIndexOutOfBoundsException;
 	
 	/**
@@ -41,7 +41,7 @@ public interface StringArray
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/04
 	 */
-	public abstract void get(int __i, String[] __v, int __o, int __l)
+	public abstract void get(int __i, double[] __v, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, NullPointerException;
 	
 	/**
@@ -52,7 +52,7 @@ public interface StringArray
 	 * @throws ArrayIndexOutOfBoundsException If out of bounds.
 	 * @since 2018/03/04
 	 */
-	public abstract void set(int __i, String __v)
+	public abstract void set(int __i, double __v)
 		throws ArrayIndexOutOfBoundsException;
 	
 	/**
@@ -67,7 +67,7 @@ public interface StringArray
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/04
 	 */
-	public abstract void set(int __i, String[] __v, int __o, int __l)
+	public abstract void set(int __i, double[] __v, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, NullPointerException;
 }
 
