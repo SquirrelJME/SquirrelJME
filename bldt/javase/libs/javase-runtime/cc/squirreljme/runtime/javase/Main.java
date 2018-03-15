@@ -209,6 +209,12 @@ public class Main
 				impls[i] = dispatch;
 		}
 		
+		// Initialize the same user side calls
+		UserSideCalls usc = new UserSideCalls();
+		impls[SystemFunction.SET_DAEMON_THREAD.ordinal()] = usc;
+		impls[SystemFunction.THROWABLE_GET_STACK.ordinal()] = usc;
+		impls[SystemFunction.THROWABLE_SET_STACK.ordinal()] = usc;
+		
 		// Need to obtain the interface field so that it is initialized
 		Field callerfield = SystemCall.class.getDeclaredField(
 			"_CALLS");
