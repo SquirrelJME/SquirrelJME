@@ -13,20 +13,14 @@ package cc.squirreljme.runtime.cldc.system;
 import cc.squirreljme.runtime.cldc.system.api.Call;
 
 /**
- * This interface is used to implement system call bridges to be sent to the
- * remote kernel end.
+ * This interface is used for any system call which must be dispatched to the
+ * kernel.
  *
- * If the system call throws an exception, it should be attempted to be
- * initialized accordingly with the class thrown by the remote end and a
- * stack trace initialized to one which contains the remote trace on top of
- * a local stack trace.
- *
- * System calls which are intended to be used on the local end should not be
- * sent to the remote end but should be handled by the implementing class.
+ * Local system calls do not need to be dispatched however.
  *
  * @since 2018/02/21
  */
-public interface SystemCallImplementation
+public interface SystemCallDispatch
 	extends Call
 {
 	/**
@@ -38,7 +32,7 @@ public interface SystemCallImplementation
 	 * @return The value returned from the call.
 	 * @since 2018/02/21
 	 */
-	public abstract Object systemCall(SystemFunction __func, Object... __args)
+	public abstract Object dispatch(SystemFunction __func, Object... __args)
 		throws NullPointerException;
 }
 
