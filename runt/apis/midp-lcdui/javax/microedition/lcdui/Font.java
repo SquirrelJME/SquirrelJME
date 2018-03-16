@@ -10,8 +10,6 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.runtime.lcdui.DisplayHead;
-import cc.squirreljme.runtime.lcdui.DisplayManager;
 import cc.squirreljme.runtime.lcdui.font.FontHandle;
 import cc.squirreljme.runtime.lcdui.font.FontManager;
 import java.io.InputStream;
@@ -385,11 +383,13 @@ public final class Font
 			throw new IllegalArgumentException(String.format("EB1i %d",
 				__style));
 		
+		throw new todo.TODO();
+		/*
 		// Setup font to the given handle, the font size needs to be adjusted
 		// so that it uses pixel sizes rather than abstract sizes
 		DisplayHead dh = DisplayManager.defaultDisplayHead();
 		return new Font(FontManager.FONT_MANAGER.createFont(__face, __style,
-			dh.fontSizeToPixelSize(__size)));
+			dh.fontSizeToPixelSize(__size)));*/
 	}
 	
 	public static Font getFont(String __name, int __style, int __pxs)

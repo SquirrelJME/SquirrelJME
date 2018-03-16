@@ -10,12 +10,8 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.runtime.lcdui.CompatibilityDisplayManager;
-import cc.squirreljme.runtime.lcdui.DisplayHead;
-import cc.squirreljme.runtime.lcdui.DisplayManager;
 import cc.squirreljme.runtime.lcdui.DisplayOrientation;
 import cc.squirreljme.runtime.lcdui.DisplayState;
-import cc.squirreljme.runtime.lcdui.HeadlessDisplayManager;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -187,67 +183,19 @@ public class Display
 	public static final int TAB =
 		4;
 	
-	/** Display heads. */
-	private static final Display[] _DISPLAYS;
-	
-	/** The event loop thread. */
-	private static final Thread _EVENT_LOOP_THREAD;
-	
-	/** The head this display is attached to. */
-	final DisplayHead _head;
-	
 	/** The current displayable. */
 	private volatile Displayable _current;
 	
 	/** The displayable to show on exit. */
 	private volatile Displayable _exit;
 	
-	/** The current draw space. */
-	private volatile __DrawSpace__ _drawspace;
-	
-	/**
-	 * This initializes the native display which provides sub-display views.
-	 *
-	 * @since 2017/05/23
-	 */
-	static
-	{
-		// Use the display manager which was said to be used
-		DisplayManager dhp = DisplayManager.DISPLAY_MANAGER;
-		
-		// Initialize all displays for each head
-		DisplayHead[] heads = dhp.heads();
-		int n = heads.length;
-		Display[] displays = new Display[n];
-		for (int i = 0; i < n; i++)
-			displays[i] = new Display(heads[i]);
-		
-		// Set
-		_DISPLAYS = displays;
-		
-		// Setup event loop
-		Thread t;
-		_EVENT_LOOP_THREAD = (t = new Thread(
-			new __EventLoop__(), "LCDUIEventLoop"));
-		t.start();
-	}
-	
 	/**
 	 * Initializes the display instance.
 	 *
-	 * @param __h The head this display is attached to.
-	 * @throws NullPointerException On null arguments. 
-	 * @since 2016/10/08
+	 * @since 2018/03/16
 	 */
-	Display(DisplayHead __h)
-		throws NullPointerException
+	Display()
 	{
-		// Check
-		if (__h == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		this._head = __h;
 	}
 	
 	public void callSerially(Runnable __a)
@@ -483,7 +431,9 @@ public class Display
 	 */
 	public int getHeight()
 	{
-		return this._head.displayPhysicalHeightPixels();
+		throw new todo.TODO();
+		/*
+		return this._head.displayPhysicalHeightPixels();*/
 	}
 	
 	public IdleItem getIdleItem()
@@ -509,7 +459,9 @@ public class Display
 	 */
 	public int getOrientation()
 	{
-		return __drawSpace().orientation().lcduiValue();
+		throw new todo.TODO();
+		/*
+		return __drawSpace().orientation().lcduiValue();*/
 	}
 	
 	/**
@@ -520,7 +472,9 @@ public class Display
 	 */
 	public int getWidth()
 	{
-		return this._head.displayPhysicalWidthPixels();
+		throw new todo.TODO();
+		/*
+		return this._head.displayPhysicalWidthPixels();*/
 	}
 	
 	/**
@@ -564,7 +518,9 @@ public class Display
 	 */
 	public boolean isColor()
 	{
-		return this._head.isColor();
+		throw new todo.TODO();
+		/*
+		return this._head.isColor();*/
 	}
 	
 	/**
@@ -594,7 +550,9 @@ public class Display
 	 */
 	public int numColors()
 	{
-		return this._head.numColors();
+		throw new todo.TODO();
+		/*
+		return this._head.numColors();*/
 	}
 	
 	public void removeCurrent()
@@ -688,6 +646,8 @@ public class Display
 	public void setCurrent(Displayable __show)
 		throws DisplayCapabilityException, IllegalStateException
 	{
+		throw new todo.TODO();
+		/*
 		// Lock due to complex operations
 		synchronized (DisplayManager.GLOBAL_LOCK)
 		{
@@ -702,7 +662,7 @@ public class Display
 			// Forward
 			__setCurrent(__show,
 				(__show instanceof Alert) ? getCurrent() : null);
-		}
+		}*/
 	}
 	
 	public void setCurrentItem(Item __a)
@@ -747,13 +707,15 @@ public class Display
 		if (__d < 0)
 			throw new IllegalArgumentException("EB1a");
 		
+		throw new todo.TODO();
+		/*
 		// Do not vibrate in the background
 		DisplayHead head = this._head;
 		if (head.displayState() == DisplayState.BACKGROUND)
 			return false;
 		
 		// Vibrate the display head
-		return head.vibrate(__d);
+		return head.vibrate(__d);*/
 	}
 	
 	/**
@@ -814,20 +776,6 @@ public class Display
 	}
 	
 	/**
-	 * Returns the drawing space for this display.
-	 *
-	 * @return The drawing space.
-	 * @since 2017/10/27
-	 */
-	__DrawSpace__ __drawSpace()
-	{
-		__DrawSpace__ rv = this._drawspace;
-		if (rv == null || rv.isInvalid())
-			this._drawspace = rv = new __DrawSpace__(this);
-		return rv;
-	}
-	
-	/**
 	 * Sets the current item to be displayed.
 	 *
 	 * @param __show The displayable to show.
@@ -848,6 +796,8 @@ public class Display
 		if (__show == null)
 			throw new NullPointerException("NARG");
 		
+		throw new todo.TODO();
+		/*
 		// There area multiple displayables being modified potentially since
 		// new current sets will decurrent other ones.
 		synchronized (DisplayManager.GLOBAL_LOCK)
@@ -890,7 +840,7 @@ public class Display
 			
 			// Enter the foreground state always
 			head.setState(DisplayState.FOREGROUND);
-		}
+		}*/
 	}
 	
 	/**
@@ -949,6 +899,8 @@ public class Display
 	 */
 	public static Display[] getDisplays(int __caps)
 	{
+		throw new todo.TODO();
+		/*
 		// Go through all heads
 		Display[] displays = _DISPLAYS;
 		
@@ -963,7 +915,7 @@ public class Display
 				rv.add(d);
 		
 		// As an array
-		return rv.<Display>toArray(new Display[rv.size()]);
+		return rv.<Display>toArray(new Display[rv.size()]);*/
 	}
 	
 	public static void removeDisplayListener(DisplayListener __dl)
@@ -978,12 +930,15 @@ public class Display
 	 * @return The displayable for the given ID or null otherwise.
 	 * @since 2017/10/27
 	 */
+	@Deprecated
 	static Displayable __displayableByHeadId(int __id)
 	{
+		throw new todo.TODO();
+		/*
 		Display display = __displayByHeadId(__id);
 		if (display != null)
 			return display._current;
-		return null;
+		return null;*/
 	}
 	
 	/**
@@ -993,8 +948,11 @@ public class Display
 	 * @return The display for the given ID or null otherwise.
 	 * @since 2017/10/27
 	 */
+	@Deprecated
 	static Display __displayByHeadId(int __id)
 	{
+		throw new todo.TODO();
+		/*
 		Display[] displays = _DISPLAYS;
 		
 		// See if the head directory associates with a head
@@ -1012,7 +970,7 @@ public class Display
 				return d;
 		
 		// Not found
-		return null;
+		return null;*/
 	}
 }
 
