@@ -16,6 +16,7 @@ package cc.squirreljme.runtime.lcdui.font;
  *
  * @since 2017/10/21
  */
+@Deprecated
 public class DefaultFontFamily
 	extends FontFamily
 {

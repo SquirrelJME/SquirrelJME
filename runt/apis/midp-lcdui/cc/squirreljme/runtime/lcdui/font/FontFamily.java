@@ -16,6 +16,7 @@ package cc.squirreljme.runtime.lcdui.font;
  *
  * @since 2017/10/20
  */
+@Deprecated
 public abstract class FontFamily
 {
 	/** Used to represent that the string has an invalid width. */
