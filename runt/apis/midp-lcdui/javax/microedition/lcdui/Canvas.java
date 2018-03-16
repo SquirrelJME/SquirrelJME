@@ -10,7 +10,6 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.runtime.lcdui.DisplayManager;
 import cc.squirreljme.runtime.lcdui.event.EventType;
 import cc.squirreljme.runtime.lcdui.event.KeyNames;
 import cc.squirreljme.runtime.lcdui.gfx.BasicGraphics;
@@ -409,9 +408,11 @@ public abstract class Canvas
 		if (__w <= 0 || __h <= 0)
 			return;
 		
+		throw new todo.TODO();
+		/*
 		// Send repaint
 		DisplayManager.DISPLAY_MANAGER.eventQueue().repaint(
-			__headId(), __x, __y, __w, __h);
+			__headId(), __x, __y, __w, __h);*/
 	}
 	
 	public final void serviceRepaints()
@@ -436,6 +437,8 @@ public abstract class Canvas
 	 */
 	public void setFullScreenMode(boolean __f)
 	{
+		throw new todo.TODO();
+		/*
 		// Use global lock because there are many operations to be performed
 		// especially if this display is bound
 		synchronized (DisplayManager.GLOBAL_LOCK)
@@ -453,7 +456,7 @@ public abstract class Canvas
 			Display current = __currentDisplay();
 			if (current != null)
 				__doFullscreen(__f);
-		}
+		}*/
 	}
 	
 	/**
@@ -531,6 +534,8 @@ public abstract class Canvas
 	@Override
 	void __doRepaint(int __x, int __y, int __w, int __h)
 	{
+		throw new todo.TODO();
+		/*
 		// Get the drawspace to draw onto, which can be a Display or a
 		// TabbedPane
 		__DrawSpace__ drawspace = __drawSpace();
@@ -550,7 +555,7 @@ public abstract class Canvas
 		paint(g);
 		
 		// Tail paint call that goes up to indicate that things were drawn
-		drawspace.tailPaint(this._isfullscreen);
+		drawspace.tailPaint(this._isfullscreen);*/
 	}
 }
 

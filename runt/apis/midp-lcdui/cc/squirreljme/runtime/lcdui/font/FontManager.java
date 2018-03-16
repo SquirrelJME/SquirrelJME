@@ -11,7 +11,6 @@
 package cc.squirreljme.runtime.lcdui.font;
 
 import cc.squirreljme.runtime.cldc.service.ServiceAccessor;
-import cc.squirreljme.runtime.lcdui.DisplayManager;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Map;
@@ -27,11 +26,9 @@ import net.multiphasicapps.collections.SortedTreeMap;
  *
  * @since 2017/10/01
  */
+@Deprecated
 public abstract class FontManager
 {
-	/** The single instance font manager to use. */
-	public static final FontManager FONT_MANAGER;
-	
 	/** The handles of every font which has been created. */
 	private final Map<Integer, FontHandle> _handles =
 		new SortedTreeMap<>();
@@ -42,20 +39,6 @@ public abstract class FontManager
 	
 	/** The ID of the next font to create. */
 	private volatile int _nexthandle;
-	
-	/**
-	 * Locates the font manager to use in this instance or returns the
-	 * default font manager with a set of default provided fonts.
-	 *
-	 * @since 2017/10/20
-	 */
-	static
-	{
-		// Use either the provided font manager or a default if none was set
-		FontManager fm = ServiceAccessor.<FontManager>service(
-			FontManager.class);
-		FONT_MANAGER = (fm == null ? new DefaultFontManager() : fm);
-	}
 	
 	/**
 	 * Returns the alias for the given family name so that it always refers

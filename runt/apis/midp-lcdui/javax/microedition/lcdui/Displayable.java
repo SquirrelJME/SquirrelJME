@@ -10,8 +10,6 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.runtime.lcdui.DisplayHead;
-import cc.squirreljme.runtime.lcdui.DisplayManager;
 import cc.squirreljme.runtime.lcdui.event.EventType;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -177,10 +175,12 @@ public abstract class Displayable
 	{
 		this._title = __a;
 		
+		throw new todo.TODO();
+		/*
 		// TItle changed so an update is required
 		Display current = this._current;
 		if (current != null)
-			current.__update();
+			current.__update();*/
 	}
 	
 	/**
@@ -209,42 +209,6 @@ public abstract class Displayable
 	}
 	
 	/**
-	 * Returns the current display head.
-	 *
-	 * @return The current display head.
-	 * @since 2017/10/25
-	 */
-	final DisplayHead __currentHead()
-	{
-		return this._current._head;
-	}
-	
-	/**
-	 * Returns the draw space for this displayable as required.
-	 *
-	 * @return THe draw space to draw into.
-	 * @since 2017/10/27
-	 */
-	final __DrawSpace__ __drawSpace()
-	{
-		// If there is no current display then use a fake drawspace
-		Display d = __currentDisplay();
-		if (d == null)
-			return new __DrawSpace__();
-		
-		// Fullscreen?
-		boolean isfullscreen = (this instanceof Canvas &&
-			((Canvas)this)._isfullscreen);
-		
-		// Use the parent draw space for fullscreen but the content area
-		// otherwise
-		__DrawSpace__ rv = d.__drawSpace();
-		if (isfullscreen)
-			return rv;
-		return rv.contentArea();
-	}
-	
-	/**
 	 * Specifies that this canvas is to be repainted.
 	 *
 	 * @param __x The X coordinate.
@@ -269,13 +233,15 @@ public abstract class Displayable
 	 */
 	final int __getHeight()
 	{
+		throw new todo.TODO();
+		/*
 		// Use width of default head
 		Display d = __currentDisplay();
 		if (d == null)
 			return Display.getDisplays(0)[0].getHeight();
 		
 		// Use the draw space size
-		return __drawSpace().height();
+		return __drawSpace().height();*/
 	}
 	
 	/**
@@ -288,13 +254,15 @@ public abstract class Displayable
 	 */
 	final int __getWidth()
 	{
+		throw new todo.TODO();
+		/*
 		// Use width of default head
 		Display d = __currentDisplay();
 		if (d == null)
 			return Display.getDisplays(0)[0].getWidth();
 		
 		// Use the draw space size
-		return __drawSpace().width();
+		return __drawSpace().width();*/
 	}
 	
 	/**
@@ -303,13 +271,16 @@ public abstract class Displayable
 	 * @return The ID of the current display head.
 	 * @since 2017/10/27
 	 */
+	@Deprecated
 	final int __headId()
 	{
+		throw new todo.TODO();
+		/*
 		Display d = __currentDisplay();
 		if (d == null)
 			return -1;
 		
-		return d._head.headId();
+		return d._head.headId();*/
 	}
 }
 
