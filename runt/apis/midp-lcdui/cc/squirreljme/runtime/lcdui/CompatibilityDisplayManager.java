@@ -33,6 +33,7 @@ import javax.microedition.lcdui.Displayable;
  *
  * @since 2017/10/20
  */
+@Deprecated
 public class CompatibilityDisplayManager
 	extends DisplayManager
 {

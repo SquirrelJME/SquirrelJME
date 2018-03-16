@@ -24,6 +24,7 @@ import javax.microedition.lcdui.Displayable;
  *
  * @since 2017/08/19
  */
+@Deprecated
 public abstract class DisplayManager
 {
 	/**

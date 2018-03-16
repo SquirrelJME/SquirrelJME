@@ -13,7 +13,7 @@ package cc.squirreljme.runtime.lcdui.server;
 import cc.squirreljme.runtime.cldc.service.ServiceDefinition;
 import cc.squirreljme.runtime.cldc.service.ServiceServer;
 import cc.squirreljme.runtime.cldc.task.SystemTask;
-import cc.squirreljme.runtime.lcdui.LcdClientManagerProvider;
+import cc.squirreljme.runtime.lcdui.LcdServiceCall;
 
 /**
  * This class implements the base of the graphical LCDUI display system which
@@ -31,7 +31,7 @@ public abstract class LcdDefinition
 	 */
 	public LcdDefinition()
 	{
-		super(LcdClientManagerProvider.class);
+		super(LcdServiceCall.Provider.class);
 	}
 	
 	/**

@@ -21,6 +21,7 @@ import javax.microedition.lcdui.Displayable;
  *
  * @since 2017/08/21
  */
+@Deprecated
 public class HeadlessDisplayManager
 	extends DisplayManager
 {
