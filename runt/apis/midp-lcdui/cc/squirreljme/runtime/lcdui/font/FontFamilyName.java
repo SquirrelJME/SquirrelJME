@@ -15,6 +15,7 @@ package cc.squirreljme.runtime.lcdui.font;
  *
  * @since 2017/10/20
  */
+@Deprecated
 public final class FontFamilyName
 	implements Comparable<FontFamilyName>
 {

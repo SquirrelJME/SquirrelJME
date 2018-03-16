@@ -19,6 +19,7 @@ import javax.microedition.lcdui.Font;
  *
  * @since 2017/10/20
  */
+@Deprecated
 public class DefaultFontManager
 	extends FontManager
 {
