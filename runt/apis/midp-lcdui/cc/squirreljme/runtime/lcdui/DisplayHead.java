@@ -21,6 +21,7 @@ import javax.microedition.lcdui.Graphics;
  *
  * @since 2017/08/19
  */
+@Deprecated
 public abstract class DisplayHead
 {
 	/** The current hardware state of this head. */

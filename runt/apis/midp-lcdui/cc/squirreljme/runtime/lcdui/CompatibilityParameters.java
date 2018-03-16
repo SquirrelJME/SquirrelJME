@@ -15,6 +15,7 @@ package cc.squirreljme.runtime.lcdui;
  *
  * @since 2017/10/20
  */
+@Deprecated
 public final class CompatibilityParameters
 {
 	/**
