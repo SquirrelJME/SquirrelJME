@@ -1,0 +1,57 @@
+# 2018/03/15
+
+## 12:01
+
+Okay so the LCDUI code is going to be changed up a bit again to where the
+classes which provide the service and those that will connect to it are in
+the same project. This makes it simple as there will be things which will
+be needed for things to be implemented accordingly. When it comes to actual
+framebuffer stuff, the client will initialize a byte array which will then
+be mapped to the server that way the client has the speed when it comes to
+drawing. The server will just access the client byte array as needed.
+
+## 12:03
+
+Also, it would help if I looked up that Mode 7 video since it has simple
+formulas for translations that I can use for flipping and rotation which
+will be very useful to say the least. I also probably need to simplify the
+pixel array operations and such too so that way I can have things which
+are backed by say byte or short arrays for different color spaces. Will
+also need a way to handle color palettes too for indexed color spaces. So
+then the thing is, do I have RGB 8-bit and 16-bit values or force them to
+be palette values? It might be easier to use a palette so that blending
+could be cached potentially although there could be slowdown. Blending
+might actually be slower for 8-bit palettes than RGB ones.
+
+## 12:45
+
+I have work so I cannot really do anything now.
+
+## 13:14
+
+For Squirrel Quarrel I have some things which will make the game easier to
+play and simpler to implement too:
+
+ * Automatic resource gathering.
+   * It is really a pain to tell workers to gather resources.
+   * Use the most optimal resource gathering so it is not a hassle.
+ * Allow placement of buildings on units.
+   * It would require a bunch of collision checks to see if a building can
+     be placed somewhere, just basic terrain and routable checks can be
+     done.
+   * Units that are underneath will just move out of the way.
+   * Certain units will trigger specific actions:
+     * Underground bombs will detonate and damage anything nearby likely
+       taking the building that was about to be constructed with it.
+     * Burrowed units will unburrow and move out of the way.
+   * In busy areas it would be easier to construct because sometimes it is
+     impossible to build structures where they are needed because your own
+     units are in the way.
+   * Simplifies the AI because it will not need to be told to move units out
+     of the way for construction.
+
+## 22:40
+
+Okay so rotated graphics and otherwise will just be affine transformations and
+such, either possibly floating point and then additionally fixed point as
+needed.
