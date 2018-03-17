@@ -27,20 +27,25 @@ public abstract class LcdServer
 	/** The task this provides a service for. */
 	protected final SystemTask task;
 	
+	/** The owning definition. */
+	protected final LcdDefinition definition;
+	
 	/**
 	 * Initializes the base server for the task.
 	 *
 	 * @param __task The task this provides a service for.
+	 * @param __def The owning definition this directly will interact with.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/16
 	 */
-	public LcdServer(SystemTask __task)
+	public LcdServer(SystemTask __task, LcdDefinition __def)
 		throws NullPointerException
 	{
-		if (__task == null)
+		if (__task == null || __def == null)
 			throw new NullPointerException("NARG");
 		
 		this.task = __task;
+		this.definition = __def;
 	}
 	
 	/**
