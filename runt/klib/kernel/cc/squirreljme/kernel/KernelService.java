@@ -10,6 +10,8 @@
 
 package cc.squirreljme.kernel;
 
+import cc.squirreljme.runtime.cldc.service.ServiceDefinition;
+
 /**
  * This represents a single definition of a kernel service which manages that
  * are defined.
@@ -18,6 +20,10 @@ package cc.squirreljme.kernel;
  */
 public final class KernelService
 {
+	/** The lock for this service. */
+	protected final Object lock =
+		new Object();
+	
 	/** The service index. */
 	protected final int index;
 	
@@ -26,6 +32,9 @@ public final class KernelService
 	
 	/** The client class. */
 	protected final String clientclass;
+	
+	/** The initialized definition for this service. */
+	private volatile ServiceDefinition _definition;
 	
 	/**
 	 * Initializes the service information.
@@ -65,7 +74,7 @@ public final class KernelService
 	 */
 	public final String clientProviderClass()
 	{
-		throw new todo.TODO();
+		return this.__definition().clientProvider().getName();
 	}
 	
 	/**
@@ -77,6 +86,38 @@ public final class KernelService
 	public final int index()
 	{
 		return this.index;
+	}
+	
+	/**
+	 * Returns the definition for this server, it will load it if it has not
+	 * been specified.
+	 *
+	 * @return The definition for the service.
+	 * @since 2018/03/16
+	 */
+	private final ServiceDefinition __definition()
+	{
+		ServiceDefinition rv = this._definition;
+		if (rv == null)
+			synchronized (this.lock)
+			{
+				try
+				{
+					rv = (ServiceDefinition)Class.forName(this.serverclass).
+						newInstance();
+				}
+				
+				// {@squirreljme.error AP01 Could not initialize the service
+				// definition.}
+				catch (ClassCastException|ClassNotFoundException|
+					IllegalAccessException| InstantiationException e)
+				{
+					throw new RuntimeException("AP01", e);
+				}
+				
+				this._definition = rv;
+			}
+		return rv;
 	}
 }
 

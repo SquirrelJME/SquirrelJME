@@ -68,7 +68,7 @@ public final class LcdServiceCall
 				}
 			}
 			
-		return null;
+		return rv;
 	}
 	
 	/**
