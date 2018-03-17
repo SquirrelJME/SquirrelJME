@@ -11,8 +11,10 @@
 package cc.squirreljme.runtime.javase.lcdui;
 
 import cc.squirreljme.runtime.cldc.task.SystemTask;
+import cc.squirreljme.runtime.lcdui.DisplayableType;
 import cc.squirreljme.runtime.lcdui.server.LcdDefinition;
 import cc.squirreljme.runtime.lcdui.server.LcdDisplay;
+import cc.squirreljme.runtime.lcdui.server.LcdDisplayable;
 import cc.squirreljme.runtime.lcdui.server.LcdServer;
 
 /**
@@ -24,6 +26,21 @@ import cc.squirreljme.runtime.lcdui.server.LcdServer;
 public class SwingDefinition
 	extends LcdDefinition
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/17
+	 */
+	@Override
+	protected LcdDisplayable internalCreateDisplayable(Object __lock,
+		int __handle, SystemTask __task, DisplayableType __type)
+		throws NullPointerException
+	{
+		if (__lock == null || __task == null || __type == null)
+			throw new NullPointerException("NARG");
+		
+		return new SwingDisplayable(__lock, __handle, __task, __type);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/17

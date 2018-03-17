@@ -189,7 +189,7 @@ public abstract class Displayable
 		
 		// Set title remotely
 		LcdServiceCall.<VoidType>call(VoidType.class,
-			LcdFunction.DISPLAYABLE_SET_TITLE, __a);
+			LcdFunction.DISPLAYABLE_SET_TITLE, this._handle, __a);
 	}
 	
 	/**

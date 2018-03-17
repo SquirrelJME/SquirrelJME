@@ -107,7 +107,7 @@ public abstract class LcdServer
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		return this.definition.createDisplayable(this.task, __t).handle();
 	}
 	
 	/**
@@ -119,7 +119,7 @@ public abstract class LcdServer
 	 */
 	private final void __displayableSetTitle(int __handle, String __title)
 	{
-		throw new todo.TODO();
+		this.definition.getDisplayable(__handle, this.task).setTitle(__title);
 	}
 	
 	/**
