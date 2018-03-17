@@ -53,7 +53,7 @@ public class JavaPrimitiveKernel
 	{
 		return new String[]{
 			// Graphics
-			"cc.squirreljme.runtime.lcdui.LcdClientManager",
+			"cc.squirreljme.runtime.lcdui.LcdServiceCall",
 			"cc.squirreljme.runtime.javase.lcdui.SwingDefinition",
 			};
 	}

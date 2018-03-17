@@ -18,6 +18,9 @@ package cc.squirreljme.runtime.lcdui;
  */
 public enum LcdFunction
 {
+	/** Queries all of the display indexes which are available for usage. */
+	DISPLAY_QUERY,
+	
 	/** End. */
 	;
 }
