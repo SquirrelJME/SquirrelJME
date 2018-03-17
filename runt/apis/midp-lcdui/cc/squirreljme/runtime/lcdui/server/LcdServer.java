@@ -12,6 +12,8 @@ package cc.squirreljme.runtime.lcdui.server;
 
 import cc.squirreljme.runtime.cldc.service.ServiceServer;
 import cc.squirreljme.runtime.cldc.system.type.EnumType;
+import cc.squirreljme.runtime.cldc.system.type.IntegerArray;
+import cc.squirreljme.runtime.cldc.system.type.LocalIntegerArray;
 import cc.squirreljme.runtime.cldc.task.SystemTask;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
 
@@ -24,6 +26,9 @@ import cc.squirreljme.runtime.lcdui.LcdFunction;
 public abstract class LcdServer
 	implements ServiceServer
 {
+	/** The locking object. */
+	protected final Object lock;
+	
 	/** The task this provides a service for. */
 	protected final SystemTask task;
 	
@@ -44,8 +49,9 @@ public abstract class LcdServer
 		if (__task == null || __def == null)
 			throw new NullPointerException("NARG");
 		
-		this.task = __task;
+		this.lock = __def.lock();
 		this.definition = __def;
+		this.task = __task;
 	}
 	
 	/**
@@ -66,11 +72,33 @@ public abstract class LcdServer
 		LcdFunction func;
 		switch ((func = __func.<LcdFunction>asEnum(LcdFunction.class)))
 		{
+			case DISPLAY_QUERY:
+				return this.__displayQuery();
+			
 				// {@squirreljme.error EB1u Unknown or unimplemented LCDUI
 				// function. (The LCD function)}
 			default:
 				throw new RuntimeException(String.format("EB1u %s", func));
 		}
+	}
+	
+	/**
+	 * Queries the displays which are currently available.
+	 *
+	 * @return The available displays.
+	 * @since 2018/03/17
+	 */
+	private final IntegerArray __displayQuery()
+	{
+		LcdDisplay[] displays = this.definition.queryDisplays();
+		int n = displays.length;
+		int[] rv = new int[n];
+		
+		// Copy indexes
+		for (int i = 0; i < n; i++)
+			rv[i] = displays[i].index();
+		
+		return new LocalIntegerArray(rv);
 	}
 }
 
