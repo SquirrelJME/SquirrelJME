@@ -92,6 +92,12 @@ public final class ServiceAccessor
 					rv = ((ServiceClientProvider)((ClassType)SystemCall.EASY.
 						serviceQueryClass(dx)).forClass().newInstance()).
 						initializeClient(new ServiceCaller(dx));
+					
+					// {@squirreljme.error ZZ0q The client provider did not
+					// return an instance of the client. (The client class)}
+					if (rv == null)
+						throw new IllegalStateException(
+							String.format("ZZ0q %s", __cl));
 				}
 				
 				// {@squirreljme.error ZZ0i Could not initialize the service.
