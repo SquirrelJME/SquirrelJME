@@ -13,6 +13,7 @@ package cc.squirreljme.runtime.lcdui.server;
 import cc.squirreljme.runtime.cldc.service.ServiceServer;
 import cc.squirreljme.runtime.cldc.system.type.EnumType;
 import cc.squirreljme.runtime.cldc.task.SystemTask;
+import cc.squirreljme.runtime.lcdui.LcdFunction;
 
 /**
  * This class implements the base for the LCDUI interface used for the
@@ -56,7 +57,15 @@ public abstract class LcdServer
 		if (__args == null)
 			__args = new Object[0];
 		
-		throw new todo.TODO();
+		// Depends on the function
+		LcdFunction func;
+		switch ((func = __func.<LcdFunction>asEnum(LcdFunction.class)))
+		{
+				// {@squirreljme.error EB1u Unknown or unimplemented LCDUI
+				// function. (The LCD function)}
+			default:
+				throw new RuntimeException(String.format("EB1u %s", func));
+		}
 	}
 }
 
