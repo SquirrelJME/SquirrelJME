@@ -11,6 +11,8 @@
 package cc.squirreljme.runtime.javase;
 
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
+import cc.squirreljme.runtime.cldc.system.api.ClassEnumConstants;
+import cc.squirreljme.runtime.cldc.system.api.ClassEnumValueOf;
 import cc.squirreljme.runtime.cldc.system.api.SetDaemonThreadCall;
 import cc.squirreljme.runtime.cldc.system.api.ThrowableGetStackCall;
 import cc.squirreljme.runtime.cldc.system.api.ThrowableSetStackCall;
@@ -22,10 +24,48 @@ import cc.squirreljme.runtime.cldc.system.SystemFunction;
  * @since 2018/03/15
  */
 public final class UserSideCalls
-	implements SetDaemonThreadCall,
+	implements ClassEnumConstants,
+		ClassEnumValueOf,
+		SetDaemonThreadCall,
 		ThrowableGetStackCall,
 		ThrowableSetStackCall
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/17
+	 */
+	@Override
+	public final <E> E[] classEnumConstants(Class<E> __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		return __cl.getEnumConstants();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/17
+	 */
+	@Override
+	public final <E> E classEnumValueOf(Class<E> __cl, String __n)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__cl == null || __n == null)
+			throw new NullPointerException("NARG");
+		
+		for (E e : this.<E>classEnumConstants(__cl))
+			if (__n.equals(((Enum<?>)e).name()))
+				return e;
+		
+		// {@squirreljme.error AF01 Could not find the enumeration constant
+		// by the specified name in the given class. (The class name; The
+		// enum type)}
+		throw new IllegalArgumentException(
+			String.format("AF01 %s %s", __cl, __n));
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/14

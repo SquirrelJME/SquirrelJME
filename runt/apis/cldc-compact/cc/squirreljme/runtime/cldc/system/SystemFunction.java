@@ -22,6 +22,12 @@ package cc.squirreljme.runtime.cldc.system;
  */
 public enum SystemFunction
 {
+	/** The enumeration constants for the class. */
+	CLASS_ENUM_CONSTANTS,
+	
+	/** Search for an enumeration constants by name. */
+	CLASS_ENUM_VALUEOF,
+	
 	/** Current time in milliseconds since UTC. */
 	CURRENT_TIME_MILLIS,
 	
@@ -113,6 +119,8 @@ public enum SystemFunction
 	{
 		switch (this)
 		{
+			case CLASS_ENUM_CONSTANTS:
+			case CLASS_ENUM_VALUEOF:
 			case SET_DAEMON_THREAD:
 			case THROWABLE_GET_STACK:
 			case THROWABLE_SET_STACK:

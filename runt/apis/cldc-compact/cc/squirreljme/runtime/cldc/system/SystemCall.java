@@ -12,6 +12,8 @@ package cc.squirreljme.runtime.cldc.system;
 
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.system.api.Call;
+import cc.squirreljme.runtime.cldc.system.api.ClassEnumConstants;
+import cc.squirreljme.runtime.cldc.system.api.ClassEnumValueOf;
 import cc.squirreljme.runtime.cldc.system.api.SetDaemonThreadCall;
 import cc.squirreljme.runtime.cldc.system.api.ThrowableGetStackCall;
 import cc.squirreljme.runtime.cldc.system.api.ThrowableSetStackCall;
@@ -97,6 +99,7 @@ public final class SystemCall
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/14
 	 */
+	@SuppressWarnings({"unchecked"})
 	private static final Object __callLocal(SystemFunction __func,
 		Object... __args)
 		throws NullPointerException
@@ -118,6 +121,14 @@ public final class SystemCall
 		// Depends on the function
 		switch (__func)
 		{
+			case CLASS_ENUM_CONSTANTS:
+				return ((ClassEnumConstants)call).<Object>classEnumConstants(
+					(Class<Object>)__args[0]);
+			
+			case CLASS_ENUM_VALUEOF:
+				return ((ClassEnumValueOf)call).<Object>classEnumValueOf(
+					(Class<Object>)__args[0], (String)__args[1]);
+			
 			case SET_DAEMON_THREAD:
 				((SetDaemonThreadCall)call).setDaemonThread(
 					(Thread)__args[0]);
