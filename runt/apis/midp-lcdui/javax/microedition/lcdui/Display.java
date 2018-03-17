@@ -10,12 +10,17 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.service.ServiceCaller;
+import cc.squirreljme.runtime.cldc.system.type.IntegerArray;
 import cc.squirreljme.runtime.lcdui.DisplayOrientation;
 import cc.squirreljme.runtime.lcdui.DisplayState;
+import cc.squirreljme.runtime.lcdui.LcdFunction;
+import cc.squirreljme.runtime.lcdui.LcdServiceCall;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
+import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -182,6 +187,10 @@ public class Display
 
 	public static final int TAB =
 		4;
+	
+	/** The displays which currently exist based on their index. */
+	private static final Map<Integer, Reference<Display>> _DISPLAYS =
+		new HashMap<>();
 	
 	/** The current displayable. */
 	private volatile Displayable _current;
@@ -899,6 +908,30 @@ public class Display
 	 */
 	public static Display[] getDisplays(int __caps)
 	{
+		ServiceCaller caller = LcdServiceCall.caller();
+		
+		// This call will always refresh the displays which are currently
+		// available to the server
+		Map<Integer, Reference<Display>> displays = Display._DISPLAYS;
+		synchronized (displays)
+		{
+			IntegerArray dids = caller.<IntegerArray>serviceCall(
+				IntegerArray.class, LcdFunction.DISPLAY_QUERY);
+			
+			// Just check to see if the map knows about an index value
+			for (int i = 0, n = dids.length(); i < n; i++)
+			{
+				Integer did = dids.get(i);
+				
+				// If the map does not contain the ID then it is likely a new
+				// display which has been attached
+				// The value is handled later if a display needs to be
+				// initialized accordingly
+				if (!displays.containsKey(did))
+					displays.put(did, null);
+			}
+		}
+		
 		throw new todo.TODO();
 		/*
 		// Go through all heads
