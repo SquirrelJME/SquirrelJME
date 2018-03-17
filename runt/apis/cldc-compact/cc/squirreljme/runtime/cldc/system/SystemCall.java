@@ -311,14 +311,20 @@ public final class SystemCall
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
+		// Does not need wrapping
+		if (__t instanceof SystemCallException ||
+			__t instanceof SystemCallError)
+			return (T)__t;
+		
 		// Is there a cause which needs to be wrapped?
 		Throwable cause = __t.getCause();
 		if (cause != null)
 			cause = SystemCall.<Throwable>__wrapException(cause);
 		
 		// Set base exception for returning
-		ClassType ct = new ClassType(__t.getClass().getName());
-		String m = __t.getMessage();
+		Class<?> cl = __t.getClass();
+		ClassType ct = new ClassType(cl.getName());
+		String m = ct.name() + ": " + __t.getMessage();
 		Throwable rv = (__t instanceof Error ?
 			new SystemCallError(ct, m, cause) :
 			new SystemCallException(ct, m, cause));
