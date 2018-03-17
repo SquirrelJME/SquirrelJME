@@ -13,6 +13,7 @@ package cc.squirreljme.runtime.lcdui.server;
 import cc.squirreljme.runtime.cldc.service.ServiceDefinition;
 import cc.squirreljme.runtime.cldc.service.ServiceServer;
 import cc.squirreljme.runtime.cldc.task.SystemTask;
+import cc.squirreljme.runtime.lcdui.DisplayableType;
 import cc.squirreljme.runtime.lcdui.LcdServiceCall;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,6 +43,13 @@ public abstract class LcdDefinition
 	private final Map<Integer, LcdDisplay> _displays =
 		new SortedTreeMap<>();
 	
+	/** Displayables which currently exist. */
+	private final Map<Integer, LcdDisplayable> _displayables =
+		new SortedTreeMap<>();
+	
+	/** The next handle to use. */
+	private volatile int _nexthandle;
+	
 	/**
 	 * Initializes the base definition.
 	 *
@@ -51,6 +59,20 @@ public abstract class LcdDefinition
 	{
 		super(LcdServiceCall.Provider.class);
 	}
+	
+	/**
+	 * Initializes the base displayable.
+	 *
+	 * @param __lock The locking object used.
+	 * @param __handle The handle for this displayable.
+	 * @param __task The task owning this displayable.
+	 * @param __type The type of displayable this is.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/17
+	 */
+	protected abstract LcdDisplayable internalCreateDisplayable(Object __lock,
+		int __handle, SystemTask __task, DisplayableType __type)
+		throws NullPointerException;
 	
 	/**
 	 * Internally queries the displays which are present.
@@ -75,6 +97,73 @@ public abstract class LcdDefinition
 	 */
 	protected abstract LcdServer newLcdServer(SystemTask __task)
 		throws NullPointerException;
+	
+	/**
+	 * Creates the specified displayable.
+	 *
+	 * @param __task The owning task.
+	 * @param __type The type of displayable to create.
+	 * @return The create displayable.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/17
+	 */
+	public final LcdDisplayable createDisplayable(SystemTask __task,
+		DisplayableType __type)
+		throws NullPointerException
+	{
+		if (__task == null || __type == null)
+			throw new NullPointerException("NARG");
+		
+		Object lock = this.lock;
+		synchronized (lock)
+		{
+			// Generate a new handle
+			int handle = this._nexthandle++;
+			
+			// Internally create it
+			LcdDisplayable rv = this.internalCreateDisplayable(lock,
+				handle, __task, __type);
+			if (handle != rv.handle())
+				throw new RuntimeException("OOPS");
+			
+			// Store active displayables
+			this._displayables.put(handle, rv);
+			
+			// Use this
+			return rv;
+		}
+	}
+	
+	/**
+	 * Returns the displayable for the given handle.
+	 *
+	 * @param __handle The handle to get.
+	 * @param __task The owning task.
+	 * @return The displayable.
+	 * @throws IllegalStateException If the given displayable does not exist
+	 * or belongs to anothe task.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/17
+	 */
+	public final LcdDisplayable getDisplayable(int __handle, SystemTask __task)
+		throws IllegalStateException, NullPointerException
+	{
+		if (__task == null)
+			throw new NullPointerException("NARG");
+		
+		Map<Integer, LcdDisplayable> displayables = this._displayables;
+		synchronized (this.lock)
+		{
+			// {@squirreljme.error EB1y The specified handle does not exist
+			// for the given task. (The handle)}
+			LcdDisplayable rv = displayables.get(__handle);
+			if (rv == null || !__task.equals(rv.task()))
+				throw new IllegalStateException(String.format("EB1y %d",
+					__handle));
+			
+			return rv;
+		}
+	}
 	
 	/**
 	 * Returns the lock for the display.
