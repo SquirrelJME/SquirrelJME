@@ -10,7 +10,11 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.service.ServiceCaller;
+import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.lcdui.event.EventType;
+import cc.squirreljme.runtime.lcdui.LcdFunction;
+import cc.squirreljme.runtime.lcdui.LcdServiceCall;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -23,14 +27,17 @@ import java.lang.ref.WeakReference;
  */
 public abstract class Displayable
 {
+	/** The handle for this displayable. */
+	final int _handle;
+	
 	/** The display this is currently associated with. */
 	volatile Display _current;
 	
 	/** The command listener to call into when commands are generated. */
 	private volatile CommandListener _cmdlistener;
 	
-	/** The title of this displayable. */
-	private volatile String _title;
+	/** Cached title of the displayable. */
+	private volatile String _cachetitle;
 	
 	/**
 	 * Initializes the base displayable object.
@@ -39,6 +46,8 @@ public abstract class Displayable
 	 */
 	Displayable()
 	{
+		// Register this displayable
+		this._handle = __Queue__.INSTANCE.__register(this);
 	}
 	
 	/**
@@ -110,7 +119,9 @@ public abstract class Displayable
 	 */
 	public String getTitle()
 	{
-		return this._title;
+		// Return the cached title so that a remote call does not need to
+		// be performed
+		return this._cachetitle;
 	}
 	
 	public void invalidateCommandLayout()
@@ -173,14 +184,12 @@ public abstract class Displayable
 	 */
 	public void setTitle(String __a)
 	{
-		this._title = __a;
+		// Cache it for later return
+		this._cachetitle = __a;
 		
-		throw new todo.TODO();
-		/*
-		// TItle changed so an update is required
-		Display current = this._current;
-		if (current != null)
-			current.__update();*/
+		// Set title remotely
+		LcdServiceCall.<VoidType>call(VoidType.class,
+			LcdFunction.DISPLAYABLE_SET_TITLE, __a);
 	}
 	
 	/**

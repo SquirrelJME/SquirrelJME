@@ -11,21 +11,32 @@
 package cc.squirreljme.runtime.lcdui;
 
 /**
- * This represents a function for the LCDUI interface for system calls, all
- * service calls to the host interface server.
+ * This represents the type of a displayable that something is.
  *
- * @since 2018/03/16
+ * @since 2018/03/17
  */
-public enum LcdFunction
+public enum DisplayableType
 {
-	/** Queries all of the display indexes which are available for usage. */
-	DISPLAY_QUERY,
+	/** Canvas, */
+	CANVAS,
 	
-	/** Create a displayable of a given type and return the handle to it. */
-	CREATE_DISPLAYABLE,
+	/** Alert. */
+	ALERT,
 	
-	/** Sets the title of a displayable. */
-	DISPLAYABLE_SET_TITLE,
+	/** File selector. */
+	FILE_SELECTOR,
+	
+	/** Form. */
+	FORM,
+	
+	/** List. */
+	LIST,
+	
+	/** Tabbed pane. */
+	TABBED_PANE,
+	
+	/** Text Box. */
+	TEXT_BOX,
 	
 	/** End. */
 	;
