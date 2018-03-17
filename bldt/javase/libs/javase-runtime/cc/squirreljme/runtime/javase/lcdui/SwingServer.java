@@ -25,11 +25,12 @@ public class SwingServer
 	 * Initializes the server.
 	 *
 	 * @param __task The task which owns this server.
+	 * @param __def The owning definition.
 	 * @since 2018/03/16
 	 */
-	public SwingServer(SystemTask __task)
+	public SwingServer(SystemTask __task, SwingDefinition __def)
 	{
-		super(__task);
+		super(__task, __def);
 	}
 }
 

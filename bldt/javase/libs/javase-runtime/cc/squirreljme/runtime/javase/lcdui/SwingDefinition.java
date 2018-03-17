@@ -34,7 +34,7 @@ public class SwingDefinition
 		if (__task == null)
 			throw new NullPointerException("NARG");
 		
-		return new SwingServer(__task);
+		return new SwingServer(__task, this);
 	}
 }
 
