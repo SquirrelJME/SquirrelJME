@@ -12,6 +12,8 @@ package cc.squirreljme.runtime.cldc.system;
 
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.system.api.Call;
+import cc.squirreljme.runtime.cldc.system.api.ClassEnumConstants;
+import cc.squirreljme.runtime.cldc.system.api.ClassEnumValueOf;
 import cc.squirreljme.runtime.cldc.system.api.CurrentTimeMillisCall;
 import cc.squirreljme.runtime.cldc.system.api.ExitCall;
 import cc.squirreljme.runtime.cldc.system.api.GarbageCollectionHintCall;
@@ -58,7 +60,9 @@ import cc.squirreljme.runtime.cldc.system.type.VoidType;
  * @since 2018/03/01
  */
 public final class EasyCall
-	implements CurrentTimeMillisCall,
+	implements ClassEnumConstants,
+		ClassEnumValueOf,
+		CurrentTimeMillisCall,
 		ExitCall,
 		GarbageCollectionHintCall,
 		InitializedCall,
@@ -90,6 +94,38 @@ public final class EasyCall
 	 */
 	EasyCall()
 	{
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/17
+	 */
+	@Override
+	@SuppressWarnings({"unchecked"})
+	public final <E> E[] classEnumConstants(Class<E> __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		return (E[])SystemCall.<Object[]>systemCall(Object[].class,
+			SystemFunction.CLASS_ENUM_CONSTANTS, __cl);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/17
+	 */
+	@Override
+	@SuppressWarnings({"unchecked"})
+	public final <E> E classEnumValueOf(Class<E> __cl, String __n)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__cl == null || __n == null)
+			throw new NullPointerException("NARG");
+		
+		return SystemCall.<E>systemCall(__cl,
+			SystemFunction.CLASS_ENUM_VALUEOF, __cl, __n);
 	}
 	
 	/**

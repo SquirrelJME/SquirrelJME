@@ -10,10 +10,13 @@
 
 package cc.squirreljme.runtime.cldc.system.type;
 
+import cc.squirreljme.runtime.cldc.system.EasyCall;
+import cc.squirreljme.runtime.cldc.system.SystemCall;
+
 /**
  * This represents an enumerated type which is passed through system calls.
  * This class is intended to allow the enumerated type to be passed across
- * VMs 
+ * VMs.
  *
  * @since 2018/03/14
  */
@@ -76,11 +79,14 @@ public final class EnumType
 	 * @param __cl The type of enumeration to return.
 	 * @return The enumerated value.
 	 * @throws ClassCastException If the class type is not correct.
+	 * @throws IllegalArgumentException If the specified enumeration constant
+	 * is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/16
 	 */
 	public final <E extends Enum<E>> E asEnum(Class<E> __cl)
-		throws ClassCastException, NullPointerException
+		throws ClassCastException, IllegalArgumentException,
+			NullPointerException
 	{
 		if (__cl == null)
 			throw new NullPointerException("NARG");
@@ -93,7 +99,19 @@ public final class EnumType
 			throw new ClassCastException(String.format("ZZ0r %s %s",
 				inclass, __cl));
 		
-		throw new todo.TODO();
+		// See if there is a direct ordinal match
+		String name = this.name;
+		E[] vals = SystemCall.EASY.<E>classEnumConstants(__cl);
+		int ordinal = this.ordinal, n = vals.length;
+		if (ordinal >= 0 && ordinal < n)
+		{
+			E rv = vals[ordinal];
+			if (name.equals(rv.name()))
+				return rv;
+		}
+		
+		// Find the enumeration constants
+		return SystemCall.EASY.<E>classEnumValueOf(__cl, name);
 	}
 	
 	/**
