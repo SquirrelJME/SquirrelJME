@@ -25,36 +25,33 @@ import cc.squirreljme.runtime.lcdui.LcdFunction;
  *
  * @since 2018/03/16
  */
-public abstract class LcdServer
+public final class LcdServer
 	implements ServiceServer
 {
-	/** The locking object. */
-	protected final Object lock;
-	
 	/** The task this provides a service for. */
 	protected final SystemTask task;
 	
-	/** The owning definition. */
-	protected final LcdDefinition definition;
+	/** Request handler for events, everything goes through this. */
+	protected final LcdRequestHandler requesthandler;
 	
 	/**
-	 * Initializes the base server for the task.
+	 * Initializes the LCDUI server.
 	 *
 	 * @param __task The task this provides a service for.
-	 * @param __def The owning definition this directly will interact with.
+	 * @param __rh The request handler for events.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2018/03/16
+	 * @since 2018/03/17
 	 */
-	public LcdServer(SystemTask __task, LcdDefinition __def)
+	public LcdServer(SystemTask __task, LcdRequestHandler __rh)
 		throws NullPointerException
 	{
-		if (__task == null || __def == null)
+		if (__task == null || __rh == null)
 			throw new NullPointerException("NARG");
 		
-		this.lock = __def.lock();
-		this.definition = __def;
 		this.task = __task;
+		this.requesthandler = __rh;
 	}
+	
 	
 	/**
 	 * {@inheritDoc}
@@ -107,7 +104,7 @@ public abstract class LcdServer
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		return this.definition.createDisplayable(this.task, __t).handle();
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -119,7 +116,7 @@ public abstract class LcdServer
 	 */
 	private final void __displayableSetTitle(int __handle, String __title)
 	{
-		this.definition.getDisplayable(__handle, this.task).setTitle(__title);
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -130,15 +127,7 @@ public abstract class LcdServer
 	 */
 	private final IntegerArray __displayQuery()
 	{
-		LcdDisplay[] displays = this.definition.queryDisplays();
-		int n = displays.length;
-		int[] rv = new int[n];
-		
-		// Copy indexes
-		for (int i = 0; i < n; i++)
-			rv[i] = displays[i].index();
-		
-		return new LocalIntegerArray(rv);
+		throw new todo.TODO();
 	}
 }
 

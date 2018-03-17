@@ -35,6 +35,50 @@ import net.multiphasicapps.collections.SortedTreeMap;
 public abstract class LcdDefinition
 	extends ServiceDefinition
 {
+	/** The handler for requests to the LCD server. */
+	protected final LcdRequestHandler requesthandler =
+		new LcdRequestHandler();
+	
+	/**
+	 * Initializes the base definition.
+	 *
+	 * @since 2018/03/15
+	 */
+	public LcdDefinition()
+	{
+		super(LcdServiceCall.Provider.class);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/15
+	 */
+	@Override
+	public final ServiceServer newServer(SystemTask __task)
+		throws NullPointerException
+	{
+		if (__task == null)
+			throw new NullPointerException("NARG");
+		
+		return new LcdServer(__task, this.requesthandler);
+	}
+	
+	/**
+	 * Returns the request handler that is used to handle any requests made
+	 * to the LCDUI interface.
+	 *
+	 * @return The request handler for events.
+	 * @since 2018/03/17
+	 */
+	public final LcdRequestHandler requestHandler()
+	{
+		return this.requesthandler;
+	}
+	
+	
+	
+	
+	
 	/** The lock for all operations. */
 	protected final Object lock =
 		new Object();
@@ -49,16 +93,6 @@ public abstract class LcdDefinition
 	
 	/** The next handle to use. */
 	private volatile int _nexthandle;
-	
-	/**
-	 * Initializes the base definition.
-	 *
-	 * @since 2018/03/15
-	 */
-	public LcdDefinition()
-	{
-		super(LcdServiceCall.Provider.class);
-	}
 	
 	/**
 	 * Initializes the base displayable.
@@ -174,20 +208,6 @@ public abstract class LcdDefinition
 	public final Object lock()
 	{
 		return this.lock;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/03/15
-	 */
-	@Override
-	public final ServiceServer newServer(SystemTask __task)
-		throws NullPointerException
-	{
-		if (__task == null)
-			throw new NullPointerException("NARG");
-		
-		return this.newLcdServer(__task);
 	}
 	
 	/**
