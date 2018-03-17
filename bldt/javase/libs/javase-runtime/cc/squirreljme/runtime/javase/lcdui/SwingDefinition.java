@@ -15,6 +15,7 @@ import cc.squirreljme.runtime.lcdui.DisplayableType;
 import cc.squirreljme.runtime.lcdui.server.LcdDefinition;
 import cc.squirreljme.runtime.lcdui.server.LcdDisplay;
 import cc.squirreljme.runtime.lcdui.server.LcdDisplayable;
+import cc.squirreljme.runtime.lcdui.server.LcdRequestHandler;
 import cc.squirreljme.runtime.lcdui.server.LcdServer;
 
 /**
@@ -26,6 +27,20 @@ import cc.squirreljme.runtime.lcdui.server.LcdServer;
 public class SwingDefinition
 	extends LcdDefinition
 {
+	/**
+	 * Initializes the Swing LCDUI server.
+	 *
+	 * @since 2018/03/17
+	 */
+	public SwingDefinition()
+	{
+		// Have swing always invoke the request handler
+		SwingUtilities.invokeLater(this.requestHandler());
+	}
+	
+	
+	
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/17
