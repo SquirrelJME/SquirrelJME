@@ -181,6 +181,14 @@ For simplicity and in general having common interfaces, any instances of
 `Displayable` will internally be drawn and handled by SquirrelJME rather than
 having native widgets.
 
+The following are graphics systems which exist:
+
+ * Raw Framebuffer
+ * Wayland
+ * Win16
+ * Win32
+ * X11
+
 #### `javax.microedition.lcdui.Image`
 
 Since many systems may have varying image formats and supported native pixel
