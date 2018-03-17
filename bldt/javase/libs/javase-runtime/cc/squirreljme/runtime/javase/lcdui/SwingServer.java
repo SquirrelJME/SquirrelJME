@@ -11,30 +11,25 @@
 package cc.squirreljme.runtime.javase.lcdui;
 
 import cc.squirreljme.runtime.cldc.task.SystemTask;
-import cc.squirreljme.runtime.lcdui.server.LcdDefinition;
 import cc.squirreljme.runtime.lcdui.server.LcdServer;
 
 /**
- * This contains the implementation of the LCDUI server which utilizes Swing
- * to display graphics to the user.
+ * This provides the display server which is based on the Swing interface.
  *
- * @since 2018/03/15
+ * @since 2018/03/16
  */
-public class SwingDefinition
-	extends LcdDefinition
+public class SwingServer
+	extends LcdServer
 {
 	/**
-	 * {@inheritDoc}
+	 * Initializes the server.
+	 *
+	 * @param __task The task which owns this server.
 	 * @since 2018/03/16
 	 */
-	@Override
-	protected LcdServer newLcdServer(SystemTask __task)
-		throws NullPointerException
+	public SwingServer(SystemTask __task)
 	{
-		if (__task == null)
-			throw new NullPointerException("NARG");
-		
-		return new SwingServer(__task);
+		super(__task);
 	}
 }
 
