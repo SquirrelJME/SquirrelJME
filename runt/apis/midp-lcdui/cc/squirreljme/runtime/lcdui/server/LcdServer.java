@@ -14,7 +14,9 @@ import cc.squirreljme.runtime.cldc.service.ServiceServer;
 import cc.squirreljme.runtime.cldc.system.type.EnumType;
 import cc.squirreljme.runtime.cldc.system.type.IntegerArray;
 import cc.squirreljme.runtime.cldc.system.type.LocalIntegerArray;
+import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.cldc.task.SystemTask;
+import cc.squirreljme.runtime.lcdui.DisplayableType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
 
 /**
@@ -75,11 +77,49 @@ public abstract class LcdServer
 			case DISPLAY_QUERY:
 				return this.__displayQuery();
 			
+			case CREATE_DISPLAYABLE:
+				return this.__createDisplayable(((EnumType)__args[0]).
+					<DisplayableType>asEnum(DisplayableType.class));
+		
+			case DISPLAYABLE_SET_TITLE:
+				this.__displayableSetTitle((Integer)__args[0],
+					(String)__args[1]);
+				return VoidType.INSTANCE;
+			
 				// {@squirreljme.error EB1u Unknown or unimplemented LCDUI
 				// function. (The LCD function)}
 			default:
 				throw new RuntimeException(String.format("EB1u %s", func));
 		}
+	}
+	
+	/**
+	 * Creates a new displayable of the given type.
+	 *
+	 * @param __t The type of displayable to create.
+	 * @return The handle to the displayable.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/17
+	 */
+	private final int __createDisplayable(DisplayableType __t)
+		throws NullPointerException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Sets the title of the given displayable.
+	 *
+	 * @param __handle The handle of the displayable.
+	 * @param __title The title to use, {@code null} clears it.
+	 * @since 2018/03/17
+	 */
+	private final void __displayableSetTitle(int __handle, String __title)
+	{
+		throw new todo.TODO();
 	}
 	
 	/**

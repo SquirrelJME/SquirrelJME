@@ -49,6 +49,27 @@ public final class LcdServiceCall
 	}
 	
 	/**
+	 * Performs a service call.
+	 *
+	 * @param <R> The return type.
+	 * @param __cl The return type.
+	 * @param __func The function.
+	 * @param __args The arguments.
+	 * @return The result of the call.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/17
+	 */
+	public static final <R> R call(Class<R> __cl, LcdFunction __func,
+		Object... __args)
+		throws NullPointerException
+	{
+		if (__cl == null || __func == null)
+			throw new NullPointerException("NARG");
+		
+		return LcdServiceCall.caller().<R>serviceCall(__cl, __func, __args);
+	}
+	
+	/**
 	 * Returns the service caller.
 	 *
 	 * @return The service caller.
