@@ -1,0 +1,51 @@
+# 2018/03/16
+
+## 10:21
+
+Okay two things. The compatibility manager can just instead be like only for
+Canvas instead of the entire framebuffer thing. Additionally instead of having
+a `ClientManager` and everything going through it, I believe instead there
+can just be a class in `javax.microedition.lcdui` or similar if that could be
+initialized (will have to think about that) that instead of having all of the
+display widgets route to secondary classes in my package and instead just
+use single objects for everything instead. So every widget on the local end
+would be initialized with a `ServiceCaller` where that widget does the stuff.
+I mean one could access the `ServiceCaller` though and I do not believe I can
+do anything to stop that. But that would simplify cases where there are local
+and remote widgets. Well there would just be remote widgets that are
+referenced locally by indexes and such, rather than having 3 instances of
+classes for widget management. But it really does not matter if the
+`ServiceCaller` is exposed anyway because someone can just directly perform
+service calls using the system call interface so it is a moot point.
+
+## 10:50
+
+Okay so `Display` and `TabbedPane` will be `__Container__` which will, well
+sort of since the problem would be inheritence here. But they will be
+containers which can store `Displayables`. At least with a more direct
+approach I can have it where I do not need to juggle extra classes and objects
+client side. So this should be easier to implement now.
+
+## 10:53
+
+So do I want to keep `__DrawSpace__`? I think something that might help is
+having an extra container class which can be initialized with some
+information. I suppose it will need to be a ground up thing again.
+
+## 15:22
+
+I think when it comes to fonts, I am only going to have a built-in font
+but I could have adapters to system fonts potentially despite it being a
+bit complex. Actually, I think what I would need is system based font
+rendering. Like have the system able to render fonts and such. That would be
+a bit non-determinstic and less controlled though. Basically a system call
+would have to be made for rendering fonts. At least when it comes to system
+calls and such I will need to manage how glyphs are loaded and such. I could
+load them all client side and have duplicates in the process when they are
+all shared, that would be easier to do.
+
+## 20:00
+
+Okay this is very important, but I need an API which allows me to connect to
+UNIX sockets and such. So I will need to exploit GCF for this at least for a
+X11 connection to work properly.
