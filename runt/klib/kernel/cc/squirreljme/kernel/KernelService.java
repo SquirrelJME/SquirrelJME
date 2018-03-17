@@ -11,6 +11,10 @@
 package cc.squirreljme.kernel;
 
 import cc.squirreljme.runtime.cldc.service.ServiceDefinition;
+import cc.squirreljme.runtime.cldc.service.ServiceServer;
+import cc.squirreljme.runtime.cldc.task.SystemTask;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This represents a single definition of a kernel service which manages that
@@ -32,6 +36,10 @@ public final class KernelService
 	
 	/** The client class. */
 	protected final String clientclass;
+	
+	/** Active clients for services. */
+	private final Map<SystemTask, ServiceServer> _servers =
+		new HashMap<>();
 	
 	/** The initialized definition for this service. */
 	private volatile ServiceDefinition _definition;
@@ -86,6 +94,30 @@ public final class KernelService
 	public final int index()
 	{
 		return this.index;
+	}
+	
+	/**
+	 * Returns the server for the given task.
+	 *
+	 * @param __t The task to get the service for.
+	 * @return The server for the given task.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/16
+	 */
+	public final ServiceServer server(SystemTask __t)
+		throws NullPointerException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		Map<SystemTask, ServiceServer> servers = this._servers;
+		synchronized (servers)
+		{
+			ServiceServer rv = servers.get(__t);
+			if (rv == null)
+				servers.put(__t, (rv = this.__definition().newServer(__t)));
+			return rv;
+		}
 	}
 	
 	/**

@@ -14,7 +14,9 @@ import cc.squirreljme.runtime.cldc.service.NoSuchServiceException;
 import cc.squirreljme.runtime.cldc.system.SystemCallDispatch;
 import cc.squirreljme.runtime.cldc.system.SystemFunction;
 import cc.squirreljme.runtime.cldc.system.type.ClassType;
+import cc.squirreljme.runtime.cldc.system.type.EnumType;
 import cc.squirreljme.runtime.cldc.system.type.VoidType;
+import cc.squirreljme.runtime.cldc.task.KernelTask;
 
 /**
  * This implements dispatch to the kernel for system call related operations.
@@ -61,6 +63,9 @@ public final class KernelSystemDispatch
 			case INITIALIZED:
 				return VoidType.INSTANCE;
 				
+			case SERVICE_CALL:
+				return __serviceCall(__args);
+				
 			case SERVICE_COUNT:
 				return __serviceCount();
 			
@@ -75,6 +80,30 @@ public final class KernelSystemDispatch
 			default:
 				throw new RuntimeException(String.format("AP03 %s", __func));
 		}
+	}
+	
+	/**
+	 * Call into a service.
+	 *
+	 * @param __args The arguments to the service call.
+	 * @return The value return from the call.
+	 * @since 2018/03/16
+	 */
+	private final Object __serviceCall(Object[] __args)
+	{
+		// Extract arguments and function to the call
+		int svdx = (Integer)__args[0];
+		EnumType func = (EnumType)__args[1];
+		
+		// Expand arguments of the call
+		int n = __args.length;
+		Object[] passed = new Object[n - 2];
+		for (int i = 2, o = 0; i < n; i++, o++)
+			passed[o] = __args[i];
+		
+		// Forward the call to the service manager
+		return this.services.byIndex(svdx).server(KernelTask.INSTANCE).
+			serviceCall(func, passed);
 	}
 	
 	/**
