@@ -10,54 +10,53 @@
 
 package cc.squirreljme.runtime.lcdui.server;
 
-import cc.squirreljme.runtime.cldc.service.ServiceDefinition;
 import cc.squirreljme.runtime.cldc.service.ServiceServer;
+import cc.squirreljme.runtime.cldc.system.type.EnumType;
 import cc.squirreljme.runtime.cldc.task.SystemTask;
-import cc.squirreljme.runtime.lcdui.LcdServiceCall;
 
 /**
- * This class implements the base of the graphical LCDUI display system which
- * is used by the public facing LCDUI code to enable the use of graphics.
+ * This class implements the base for the LCDUI interface used for the
+ * server end which resides in the kernel.
  *
- * @since 2018/03/15
+ * @since 2018/03/16
  */
-public abstract class LcdDefinition
-	extends ServiceDefinition
+public abstract class LcdServer
+	implements ServiceServer
 {
-	/**
-	 * Initializes the base definition.
-	 *
-	 * @since 2018/03/15
-	 */
-	public LcdDefinition()
-	{
-		super(LcdServiceCall.Provider.class);
-	}
+	/** The task this provides a service for. */
+	protected final SystemTask task;
 	
 	/**
-	 * Initializes an implementation of the LCDUI server that clients
-	 * directly interact with.
+	 * Initializes the base server for the task.
 	 *
-	 * @param __task The task using the service.
-	 * @return The server for the task.
+	 * @param __task The task this provides a service for.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/16
 	 */
-	protected abstract LcdServer newLcdServer(SystemTask __task)
-		throws NullPointerException;
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/03/15
-	 */
-	@Override
-	public final ServiceServer newServer(SystemTask __task)
+	public LcdServer(SystemTask __task)
 		throws NullPointerException
 	{
 		if (__task == null)
 			throw new NullPointerException("NARG");
 		
-		return this.newLcdServer(__task);
+		this.task = __task;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/16
+	 */
+	@Override
+	public final Object serviceCall(EnumType __func, Object... __args)
+		throws NullPointerException
+	{
+		if (__func == null)
+			throw new NullPointerException("NARG");
+		
+		if (__args == null)
+			__args = new Object[0];
+		
+		throw new todo.TODO();
 	}
 }
 

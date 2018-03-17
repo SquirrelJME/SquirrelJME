@@ -70,6 +70,33 @@ public final class EnumType
 	}
 	
 	/**
+	 * Returns this enumeration as the given class type.
+	 *
+	 * @param <E> The type of enumeration to return.
+	 * @param __cl The type of enumeration to return.
+	 * @return The enumerated value.
+	 * @throws ClassCastException If the class type is not correct.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/16
+	 */
+	public final <E extends Enum<E>> E asEnum(Class<E> __cl)
+		throws ClassCastException, NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error ZZ0r Cannot cast the enumeration to the given
+		// class because it does not match. (The enumeration class; The passed
+		// class)}
+		ClassType inclass = this.inclass;
+		if (!inclass.name().equals(__cl.getName()))
+			throw new ClassCastException(String.format("ZZ0r %s %s",
+				inclass, __cl));
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Returns the class type of the enumeration.
 	 *
 	 * @return The class type of the enumeration.
