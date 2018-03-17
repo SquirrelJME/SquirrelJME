@@ -10,6 +10,8 @@
 
 package cc.squirreljme.runtime.cldc.service;
 
+import cc.squirreljme.runtime.cldc.system.type.EnumType;
+
 /**
  * This interface is used on the server end to handle incoming requests.
  *
@@ -26,7 +28,7 @@ public interface ServiceServer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/03
 	 */
-	public abstract Object serviceCall(Enum<?> __func, Object... __args)
+	public abstract Object serviceCall(EnumType __func, Object... __args)
 		throws NullPointerException;
 }
 
