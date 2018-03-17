@@ -12,6 +12,7 @@ package cc.squirreljme.runtime.javase.lcdui;
 
 import cc.squirreljme.runtime.cldc.task.SystemTask;
 import cc.squirreljme.runtime.lcdui.server.LcdDefinition;
+import cc.squirreljme.runtime.lcdui.server.LcdDisplay;
 import cc.squirreljme.runtime.lcdui.server.LcdServer;
 
 /**
@@ -23,6 +24,24 @@ import cc.squirreljme.runtime.lcdui.server.LcdServer;
 public class SwingDefinition
 	extends LcdDefinition
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/17
+	 */
+	@Override
+	protected LcdDisplay[] internalQueryDisplays(LcdDisplay[] __k)
+		throws NullPointerException
+	{
+		if (__k == null)
+			throw new NullPointerException("NARG");
+		
+		// Swing only uses a single display which is shared among all
+		// programs
+		if (__k.length == 0)
+			return new LcdDisplay[]{new SwingDisplay(this.lock, 0)};
+		return __k;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/16
