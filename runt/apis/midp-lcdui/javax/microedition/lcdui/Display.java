@@ -192,6 +192,9 @@ public class Display
 	private static final Map<Integer, Reference<Display>> _DISPLAYS =
 		new HashMap<>();
 	
+	/** The index of this display. */
+	final int _index;
+	
 	/** The current displayable. */
 	private volatile Displayable _current;
 	
@@ -201,10 +204,12 @@ public class Display
 	/**
 	 * Initializes the display instance.
 	 *
+	 * @param __dx The display index.
 	 * @since 2018/03/16
 	 */
-	Display()
+	Display(int __dx)
 	{
+		this._index = __dx;
 	}
 	
 	public void callSerially(Runnable __a)
@@ -932,28 +937,59 @@ public class Display
 			}
 		}
 		
-		throw new todo.TODO();
-		/*
-		// Go through all heads
-		Display[] displays = _DISPLAYS;
-		
 		// {@squirreljme.error EB1f No displays are available.}
-		if (displays.length <= 0)
+		if (displays.size() <= 0)
 			throw new IllegalStateException("EB1f");
 		
 		// Add any displays that meet the capabilities
 		List<Display> rv = new ArrayList<>();
-		for (Display d : displays)
+		for (int did : displays.keySet())
+		{
+			Display d = Display.__mapDisplay(did);
+			
 			if (__caps == 0 || (d.getCapabilities() & __caps) == __caps)
 				rv.add(d);
+		}
 		
 		// As an array
-		return rv.<Display>toArray(new Display[rv.size()]);*/
+		return rv.<Display>toArray(new Display[rv.size()]);
 	}
 	
 	public static void removeDisplayListener(DisplayListener __dl)
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Maps the specified display index to a display and creates an object
+	 * which represents and provides access to the display.
+	 *
+	 * @param __did The display index.
+	 * @return The display for the given index.
+	 * @since 2018/03/16
+	 */
+	static Display __mapDisplay(int __did)
+	{
+		// Displays must be premapped before they can be discovered
+		Map<Integer, Reference<Display>> displays = Display._DISPLAYS;
+		synchronized (displays)
+		{
+			Integer k = __did;
+			
+			// {@squirreljme.error EB1w Could not map the given display
+			// because it is not a known display key. (The display index)}
+			if (!displays.containsKey(k))
+				throw new IllegalStateException(String.format("EB1w %d", k));
+			
+			Reference<Display> ref = displays.get(k);
+			Display rv;
+			
+			if (ref == null || null == (rv = ref.get()))
+				displays.put(k, new WeakReference<>(
+					(rv = new Display(__did))));
+			
+			return rv;
+		}
 	}
 	
 	/**
