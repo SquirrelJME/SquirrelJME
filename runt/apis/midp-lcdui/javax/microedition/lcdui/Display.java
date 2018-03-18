@@ -195,11 +195,11 @@ public class Display
 	/** The index of this display. */
 	final int _index;
 	
-	/** The current displayable. */
-	private volatile Displayable _current;
+	/** Hold on the displayable to show. */
+	private volatile Displayable _heldcurrent;
 	
-	/** The displayable to show on exit. */
-	private volatile Displayable _exit;
+	/** Hold on the displayable to show on exit. */
+	private volatile Displayable _heldexit;
 	
 	/**
 	 * Initializes the display instance.

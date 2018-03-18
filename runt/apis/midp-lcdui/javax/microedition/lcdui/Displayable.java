@@ -47,7 +47,7 @@ public abstract class Displayable
 	Displayable()
 	{
 		// Register this displayable
-		this._handle = __Queue__.INSTANCE.__register(this);
+		this._handle = __Queue__.INSTANCE.__registerDisplayable(this);
 	}
 	
 	/**
