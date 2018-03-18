@@ -10,9 +10,12 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.lcdui.event.EventType;
 import cc.squirreljme.runtime.lcdui.event.KeyNames;
 import cc.squirreljme.runtime.lcdui.gfx.BasicGraphics;
+import cc.squirreljme.runtime.lcdui.LcdFunction;
+import cc.squirreljme.runtime.lcdui.LcdServiceCall;
 
 /**
  * The canvas acts as the base class for primary display interfaces that
@@ -381,7 +384,10 @@ public abstract class Canvas
 	 */
 	public final void repaint()
 	{
-		repaint(0, 0, getWidth(), getHeight());
+		// A remote repaint call is performed for the canvas so it is
+		// possible that the width/height are not valid. Internally the code
+		// will clip the rectangle to be in bounds.
+		this.repaint(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE);
 	}
 	
 	/**
@@ -408,11 +414,9 @@ public abstract class Canvas
 		if (__w <= 0 || __h <= 0)
 			return;
 		
-		throw new todo.TODO();
-		/*
 		// Send repaint
-		DisplayManager.DISPLAY_MANAGER.eventQueue().repaint(
-			__headId(), __x, __y, __w, __h);*/
+		LcdServiceCall.<VoidType>call(VoidType.class,
+			LcdFunction.DISPLAYABLE_REPAINT, this._handle, __x, __y, __w, __h);
 	}
 	
 	public final void serviceRepaints()

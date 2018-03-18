@@ -21,6 +21,9 @@ public enum LcdFunction
 	/** Create a displayable of a given type and return the handle to it. */
 	CREATE_DISPLAYABLE,
 	
+	/** Repaints a displayable. */
+	DISPLAYABLE_REPAINT,
+	
 	/** Sets the title of a displayable. */
 	DISPLAYABLE_SET_TITLE,
 	

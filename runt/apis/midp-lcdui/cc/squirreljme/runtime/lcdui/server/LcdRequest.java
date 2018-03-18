@@ -122,6 +122,12 @@ public final class LcdRequest
 						DisplayableType.class));
 					break;
 					
+				case DISPLAYABLE_REPAINT:
+					this.__displayableRepaint((Integer)args[0],
+						(Integer)args[1], (Integer)args[2],
+						(Integer)args[3], (Integer)args[4]);
+					break;
+					
 				case DISPLAYABLE_SET_TITLE:
 					this.__displayableSetTitle((Integer)args[0],
 						(String)args[1]);
@@ -180,6 +186,24 @@ public final class LcdRequest
 		LcdDisplayable disp = server.state().displayables().
 			createDisplayable(server.task(), __t);
 		return disp.handle();
+	}
+	
+	/**
+	 * Repaints the specified displayable.
+	 *
+	 * @param __id The displayable to repaint.
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @throws LcdException If it is not a canvas.
+	 * @since 2018/03/18
+	 */
+	private final void __displayableRepaint(int __id, int __x, int __y,
+		int __w, int __h)
+	{
+		this.server.state().displayables().get(server, __id).repaint(
+			__x, __y, __w, __h);
 	}
 	
 	/**

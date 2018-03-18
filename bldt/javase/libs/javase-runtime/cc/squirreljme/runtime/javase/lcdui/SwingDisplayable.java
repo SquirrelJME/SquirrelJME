@@ -49,7 +49,19 @@ public class SwingDisplayable
 	 * @since 2018/03/18
 	 */
 	@Override
-	public void setTitle(String __t)
+	public final void repaint(int __x, int __y, int __w, int __h)
+	{
+		JPanel panel = this._panel;
+		panel.repaint(Math.max(0, __x), Math.max(0, __y),
+			Math.min(panel.getWidth(), __w), Math.min(panel.getHeight(), __h));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/18
+	 */
+	@Override
+	public final void setTitle(String __t)
 	{
 		this._title = __t;
 		

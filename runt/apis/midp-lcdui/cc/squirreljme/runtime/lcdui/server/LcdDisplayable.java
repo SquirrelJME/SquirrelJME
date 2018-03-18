@@ -55,6 +55,17 @@ public abstract class LcdDisplayable
 	}
 	
 	/**
+	 * Specifies that the given region should be repainted.
+	 *
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @since 2018/03/18
+	 */
+	public abstract void repaint(int __x, int __y, int __w, int __h);
+	
+	/**
 	 * Sets the title of the displayable.
 	 *
 	 * @param __t The displayable title.
