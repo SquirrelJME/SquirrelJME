@@ -817,6 +817,16 @@ public class Display
 				this._index,
 				(__show != null ? __show._handle : 0),
 				(__exit != null ? __exit._handle : 0));
+			
+			// Hold these displayables so they are not garbage collected
+			this._heldcurrent = __show;
+			this._heldexit = __exit;
+			
+			// Have them hold the display so that this display is not GCed
+			if (__show != null)
+				__show._heldcurrent = this;
+			if (__exit != null)
+				__exit._heldcurrent = this;
 		}
 		
 		// {@squirreljme.error EB21 The displayable is already taken
