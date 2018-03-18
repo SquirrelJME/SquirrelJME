@@ -10,6 +10,9 @@
 
 package cc.squirreljme.runtime.lcdui.server;
 
+import cc.squirreljme.runtime.cldc.task.SystemTask;
+import cc.squirreljme.runtime.lcdui.DisplayableType;
+
 /**
  * This represents a single displayable which may be shown on a Display as
  * required.
@@ -18,5 +21,67 @@ package cc.squirreljme.runtime.lcdui.server;
  */
 public abstract class LcdDisplayable
 {
+	/** The displayable handle. */
+	protected final int handle;
+	
+	/** The task this owns this displayable. */
+	protected final SystemTask task;
+	
+	/** The type of displayable this is. */
+	protected final DisplayableType type;
+	
+	/**
+	 * Initializes the base displayable.
+	 *
+	 * @param __handle The handle for this displayable.
+	 * @param __task The task owning this displayable.
+	 * @param __type The type of displayable this is.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/17
+	 */
+	public LcdDisplayable(int __handle, SystemTask __task,
+		DisplayableType __type)
+		throws NullPointerException
+	{
+		if (__task == null || __type == null)
+			throw new NullPointerException("NARG");
+		
+		this.handle = __handle;
+		this.task = __task;
+		this.type = __type;
+	}
+	
+	/**
+	 * Returns the handle of the displayable.
+	 *
+	 * @return The handle used.
+	 * @since 2018/03/17
+	 */
+	public final int handle()
+	{
+		return this.handle;
+	}
+	
+	/**
+	 * Returns the type of displayable this is.
+	 *
+	 * @return The displayable type.
+	 * @since 2018/03/18
+	 */
+	public final DisplayableType type()
+	{
+		return this.type;
+	}
+	
+	/**
+	 * Returns the task which owns this displayable.
+	 *
+	 * @return The owning task.
+	 * @since 2018/03/18
+	 */
+	public final SystemTask task()
+	{
+		return this.task;
+	}
 }
 

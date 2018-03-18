@@ -103,5 +103,16 @@ public final class LcdServer
 	{
 		return this.state;
 	}
+	
+	/**
+	 * Returns the task which owns this server.
+	 *
+	 * @return The owning task.
+	 * @since 2018/03/18
+	 */
+	public final SystemTask task()
+	{
+		return this.task;
+	}
 }
 
