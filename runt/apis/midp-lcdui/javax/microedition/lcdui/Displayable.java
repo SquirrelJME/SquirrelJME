@@ -30,8 +30,8 @@ public abstract class Displayable
 	/** The handle for this displayable. */
 	final int _handle;
 	
-	/** The display this is currently associated with. */
-	volatile Display _current;
+	/** Held current display to prevent garbage collection. */
+	volatile Display _heldcurrent;
 	
 	/** The command listener to call into when commands are generated. */
 	private volatile CommandListener _cmdlistener;
@@ -98,7 +98,7 @@ public abstract class Displayable
 	 */
 	public Display getCurrentDisplay()
 	{
-		return this._current;
+		throw new todo.TODO();
 	}
 	
 	public Menu getMenu(int __p)
@@ -214,7 +214,7 @@ public abstract class Displayable
 	 */
 	final Display __currentDisplay()
 	{
-		return this._current;
+		throw new todo.TODO();
 	}
 	
 	/**
