@@ -37,6 +37,9 @@ public interface LcdRequestHandler
 	 * Invokes the specified request as soon as possible and blocks until
 	 * execution has finished.
 	 *
+	 * If the thread executing this method is the event handler thread then
+	 * this must directly execute the request and return the result of it.
+	 *
 	 * @param <R> The class type to return.
 	 * @param __cl The class type to return.
 	 * @param __r The request to handle.
