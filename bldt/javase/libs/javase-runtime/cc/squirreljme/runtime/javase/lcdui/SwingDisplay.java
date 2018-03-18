@@ -47,6 +47,9 @@ public class SwingDisplay
 		// Use a basic default title
 		frame.setTitle("SquirrelJME");
 		
+		// Exit on close
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
 		// Force minimum size to something more friendly
 		frame.setMinimumSize(new Dimension(160, 160));
 		frame.setPreferredSize(new Dimension(640, 480));
