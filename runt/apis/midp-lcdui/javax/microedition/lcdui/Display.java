@@ -817,7 +817,7 @@ public class Display
 		}
 		
 		// {@squirreljme.error EB21 The displayable is already taken
-		// by a display or tabbed pane.)
+		// by a display or tabbed pane.}
 		catch (LcdDisplayableTakenException e)
 		{
 			throw new IllegalStateException("EB21", e);
