@@ -26,6 +26,9 @@ public class SwingDisplay
 	/** The frame which acts as the display. */
 	final JFrame _frame;
 	
+	/** First initialization? */
+	private volatile boolean _first;
+	
 	/**
 	 * Initializes the display.
 	 *
@@ -71,6 +74,15 @@ public class SwingDisplay
 		// Set this display to use the displayable's panel
 		SwingDisplayable sd = (SwingDisplayable)__d;
 		frame.add(sd._panel);
+		
+		// Setup frame position
+		if (!this._first)
+		{
+			this._first = true;
+			
+			// Center it on screen
+			frame.setLocationRelativeTo(null);
+		}
 		
 		// Make it visible
 		frame.setVisible(true);
