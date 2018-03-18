@@ -15,19 +15,35 @@ package cc.squirreljme.runtime.lcdui.server;
  * enables client threads to call into the server from any thread while the
  * GUI remains in a single thread at all time.
  *
+ * It is up to the implementation to properly thread in these events as they
+ * are used.
+ *
  * @since 2018/03/17
  */
-public final class LcdRequestHandler
-	implements Runnable
+public interface LcdRequestHandler
 {
 	/**
-	 * {@inheritDoc}
+	 * Invokes the specified request at a future time within the thread which
+	 * is not specifically known.
+	 *
+	 * @param __r The request to handle.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/17
 	 */
-	@Override
-	public void run()
-	{
-		throw new todo.TODO();
-	}
+	public abstract void invokeLater(LcdRequest __r)
+		throws NullPointerException;
+	
+	/**
+	 * Invokes the specified request as soon as possible and blocks until
+	 * execution has finished.
+	 *
+	 * @param __r The request to handle.
+	 * @throws InterruptedException If the thread was interrupted while it
+	 * was waiting.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/17
+	 */
+	public abstract void invokeNow(LcdRequest __r)
+		throws InterruptedException, NullPointerException;
 }
 

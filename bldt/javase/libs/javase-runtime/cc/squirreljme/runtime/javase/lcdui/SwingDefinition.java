@@ -31,8 +31,7 @@ public class SwingDefinition
 	 */
 	public SwingDefinition()
 	{
-		// Have swing always invoke the request handler
-		SwingUtilities.invokeLater(this.requestHandler());
+		super(new SwingRequestHandler());
 	}
 }
 

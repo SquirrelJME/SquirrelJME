@@ -21,6 +21,7 @@ import cc.squirreljme.runtime.lcdui.LcdFunction;
  * @since 2018/03/17
  */
 public final class LcdRequest
+	implements Runnable
 {
 	/** The task performing the action. */
 	protected final SystemTask task;
@@ -49,6 +50,16 @@ public final class LcdRequest
 		this.task = __task;
 		this.function = __func;
 		this._args = (__args == null ? new Object[0] : __args.clone());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/17
+	 */
+	@Override
+	public final void run()
+	{
+		throw new todo.TODO();
 	}
 }
 

@@ -36,17 +36,24 @@ public abstract class LcdDefinition
 	extends ServiceDefinition
 {
 	/** The handler for requests to the LCD server. */
-	protected final LcdRequestHandler requesthandler =
-		new LcdRequestHandler();
+	protected final LcdRequestHandler requesthandler;
 	
 	/**
 	 * Initializes the base definition.
 	 *
+	 * @param __rh The handler for requests.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/15
 	 */
-	public LcdDefinition()
+	public LcdDefinition(LcdRequestHandler __rh)
+		throws NullPointerException
 	{
 		super(LcdServiceCall.Provider.class);
+		
+		if (__rh == null)
+			throw new NullPointerException("NARG");
+		
+		this.requesthandler = __rh;
 	}
 	
 	/**
