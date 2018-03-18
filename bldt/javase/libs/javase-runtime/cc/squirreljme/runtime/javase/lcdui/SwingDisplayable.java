@@ -190,11 +190,21 @@ public class SwingDisplayable
 			
 			// Have the remote end draw into our buffer as needed
 			Rectangle rect = __g.getClipBounds();
-			SwingDisplayable.this.callbacks.displayablePaint(
-				SwingDisplayable.this,
-				rect.x, rect.y, rect.width, rect.height, new LocalIntegerArray(
-				((DataBufferInt)image.getRaster().getDataBuffer()).getData()),
-				null, xw, xh, false, xw, 0);
+			try
+			{
+				SwingDisplayable.this.callbacks.displayablePaint(
+					SwingDisplayable.this,
+					rect.x, rect.y, rect.width, rect.height,
+					new LocalIntegerArray(((DataBufferInt)image.getRaster().
+					getDataBuffer()).getData()), null, xw, xh, false, xw, 0);
+			}
+			
+			// Remote end threw some exception, ignore it so that execution
+			// can continue
+			catch (Throwable t)
+			{
+				t.printStackTrace();
+			}
 			
 			// Draw the backed buffered image
 			__g.drawImage(image, 0, 0, xw, xh,
