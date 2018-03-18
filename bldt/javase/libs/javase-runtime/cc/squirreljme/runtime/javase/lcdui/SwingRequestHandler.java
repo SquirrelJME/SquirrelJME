@@ -44,15 +44,16 @@ public class SwingRequestHandler
 	 * @since 2018/03/17
 	 */
 	@Override
-	public void invokeNow(LcdRequest __r)
+	public <R> R invokeNow(Class<R> __cl, LcdRequest __r)
 		throws InterruptedException, NullPointerException
 	{
-		if (__r == null)
+		if (__cl == null || __r == null)
 			throw new NullPointerException("NARG");
 		
 		try
 		{
 			SwingUtilities.invokeAndWait(__r);
+			return __r.<R>result(__cl);
 		}
 		
 		// Retoss this so the caller stops

@@ -37,13 +37,16 @@ public interface LcdRequestHandler
 	 * Invokes the specified request as soon as possible and blocks until
 	 * execution has finished.
 	 *
+	 * @param <R> The class type to return.
+	 * @param __cl The class type to return.
 	 * @param __r The request to handle.
+	 * @return The result of the request;
 	 * @throws InterruptedException If the thread was interrupted while it
 	 * was waiting.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/17
 	 */
-	public abstract void invokeNow(LcdRequest __r)
+	public abstract <R> R invokeNow(Class<R> __cl, LcdRequest __r)
 		throws InterruptedException, NullPointerException;
 }
 
