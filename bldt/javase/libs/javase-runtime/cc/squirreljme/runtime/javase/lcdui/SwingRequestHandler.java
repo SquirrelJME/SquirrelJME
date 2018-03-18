@@ -50,10 +50,10 @@ public class SwingRequestHandler
 		if (__cl == null || __r == null)
 			throw new NullPointerException("NARG");
 		
+		// Run it
 		try
 		{
 			SwingUtilities.invokeAndWait(__r);
-			return __r.<R>result(__cl);
 		}
 		
 		// Retoss this so the caller stops
@@ -76,6 +76,9 @@ public class SwingRequestHandler
 			else
 				throw new RuntimeException("AF05", e);
 		}
+		
+		// Return the result of it
+		return __r.<R>result(__cl);
 	}
 }
 

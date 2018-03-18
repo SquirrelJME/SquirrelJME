@@ -40,5 +40,27 @@ public final class LcdState
 		this.requesthandler = __rh;
 		this.displays = __dm;
 	}
+	
+	/**
+	 * Returns the display manager.
+	 *
+	 * @return The display manager.
+	 * @since 2018/03/18
+	 */
+	public final LcdDisplays displays()
+	{
+		return this.displays;
+	}
+	
+	/**
+	 * Returns the request handler.
+	 *
+	 * @return The request handler.
+	 * @since 2018/03/18
+	 */
+	public final LcdRequestHandler requestHandler()
+	{
+		return this.requesthandler;
+	}
 }
 
