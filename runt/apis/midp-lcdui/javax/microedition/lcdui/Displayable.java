@@ -220,14 +220,11 @@ public abstract class Displayable
 	/**
 	 * Specifies that this canvas is to be repainted.
 	 *
-	 * @param __x The X coordinate.
-	 * @param __y The Y coordinate.
-	 * @param __w The width.
-	 * @param __h The height.
+	 * @param __g The graphics to draw in.
 	 * @since 2017/10/24
 	 */
 	@__SerializedEvent__
-	void __doRepaint(int __x, int __y, int __w, int __h)
+	void __doRepaint(Graphics __g)
 	{
 		// Default implementation does nothing
 	}

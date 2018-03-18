@@ -11,26 +11,12 @@
 package cc.squirreljme.runtime.cldc.system.type;
 
 /**
- * This represents the base class for all array accessors.
+ * This specifies that the given array is local to the system.
  *
- * @since 2018/02/21
+ * @since 2018/03/18
  */
-public interface Array
+public interface LocalArray
+	extends Array
 {
-	/**
-	 * Returns the length of the array.
-	 *
-	 * @return The array length.
-	 * @since 2018/03/01
-	 */
-	public abstract int length();
-	
-	/**
-	 * Returns the type of array that this is.
-	 *
-	 * @return The array type.
-	 * @since 2018/03/18
-	 */
-	public abstract ArrayType type();
 }
 
