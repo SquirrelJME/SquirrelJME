@@ -50,6 +50,15 @@ public class SwingRequestHandler
 		if (__cl == null || __r == null)
 			throw new NullPointerException("NARG");
 		
+		// If this is the event dispatching thread then invoke the request
+		// as is becuase it could be a request to return the size of a
+		// property or similar
+		if (SwingUtilities.isEventDispatchThread())
+		{
+			__r.run();
+			return __r.<R>result(__cl);
+		}
+		
 		// Run it
 		try
 		{
