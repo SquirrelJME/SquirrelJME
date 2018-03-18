@@ -921,7 +921,7 @@ public class Display
 		synchronized (displays)
 		{
 			IntegerArray dids = caller.<IntegerArray>serviceCall(
-				IntegerArray.class, LcdFunction.DISPLAY_QUERY);
+				IntegerArray.class, LcdFunction.QUERY_DISPLAYS);
 			
 			// Just check to see if the map knows about an index value
 			for (int i = 0, n = dids.length(); i < n; i++)

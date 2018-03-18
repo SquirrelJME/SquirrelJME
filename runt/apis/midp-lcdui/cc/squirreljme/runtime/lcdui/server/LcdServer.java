@@ -18,6 +18,7 @@ import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.cldc.task.SystemTask;
 import cc.squirreljme.runtime.lcdui.DisplayableType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
+import cc.squirreljme.runtime.lcdui.LcdFunctionInterrupted;
 
 /**
  * This class implements the base for the LCDUI interface used for the
@@ -65,67 +66,42 @@ public final class LcdServer
 		if (__args == null)
 			__args = new Object[0];
 		
-		// Depends on the function
-		LcdFunction func;
-		switch ((func = __func.<LcdFunction>asEnum(LcdFunction.class)))
-		{
-			case DISPLAY_QUERY:
-				return this.__displayQuery();
-			
-			case CREATE_DISPLAYABLE:
-				return this.__createDisplayable(((EnumType)__args[0]).
-					<DisplayableType>asEnum(DisplayableType.class));
+		// Build request to run in the future
+		LcdFunction func = __func.<LcdFunction>asEnum(LcdFunction.class);
+		LcdRequest r = new LcdRequest(this, func, __args);
 		
-			case DISPLAYABLE_SET_TITLE:
-				this.__displayableSetTitle((Integer)__args[0],
-					(String)__args[1]);
-				return VoidType.INSTANCE;
-			
-				// {@squirreljme.error EB1u Unknown or unimplemented LCDUI
-				// function. (The LCD function)}
-			default:
-				throw new RuntimeException(String.format("EB1u %s", func));
+		// If the function is a query then execute it now and return a value
+		LcdRequestHandler rh = this.state.requestHandler();
+		if (func.query())
+			for (;;)
+				try
+				{
+					return rh.<Object>invokeNow(Object.class, r);
+				}
+				catch (InterruptedException e)
+				{
+					// {@squirreljme.error EB1y The operation was interrupted.}
+					if (func.isInterruptable())
+						throw new LcdFunctionInterrupted("EB1y", e);
+				}
+		
+		// Otherwise execute it at some later time
+		else
+		{
+			rh.invokeLater(r);
+			return VoidType.INSTANCE;
 		}
 	}
 	
 	/**
-	 * Creates a new displayable of the given type.
+	 * Returns the state of this server.
 	 *
-	 * @param __t The type of displayable to create.
-	 * @return The handle to the displayable.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/03/17
+	 * @return The server state.
+	 * @since 2018/03/18
 	 */
-	private final int __createDisplayable(DisplayableType __t)
-		throws NullPointerException
+	public final LcdState state()
 	{
-		if (__t == null)
-			throw new NullPointerException("NARG");
-		
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * Sets the title of the given displayable.
-	 *
-	 * @param __handle The handle of the displayable.
-	 * @param __title The title to use, {@code null} clears it.
-	 * @since 2018/03/17
-	 */
-	private final void __displayableSetTitle(int __handle, String __title)
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * Queries the displays which are currently available.
-	 *
-	 * @return The available displays.
-	 * @since 2018/03/17
-	 */
-	private final IntegerArray __displayQuery()
-	{
-		throw new todo.TODO();
+		return this.state;
 	}
 }
 

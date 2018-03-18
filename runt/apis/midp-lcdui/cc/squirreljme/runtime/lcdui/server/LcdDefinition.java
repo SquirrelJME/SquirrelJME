@@ -15,9 +15,6 @@ import cc.squirreljme.runtime.cldc.service.ServiceServer;
 import cc.squirreljme.runtime.cldc.task.SystemTask;
 import cc.squirreljme.runtime.lcdui.DisplayableType;
 import cc.squirreljme.runtime.lcdui.LcdServiceCall;
-import java.util.HashMap;
-import java.util.Map;
-import net.multiphasicapps.collections.SortedTreeMap;
 
 /**
  * This class implements the base of the graphical LCDUI display system which

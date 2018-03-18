@@ -19,7 +19,7 @@ package cc.squirreljme.runtime.lcdui;
 public enum LcdFunction
 {
 	/** Queries all of the display indexes which are available for usage. */
-	DISPLAY_QUERY,
+	QUERY_DISPLAYS,
 	
 	/** Create a displayable of a given type and return the handle to it. */
 	CREATE_DISPLAYABLE,
@@ -29,5 +29,40 @@ public enum LcdFunction
 	
 	/** End. */
 	;
+	
+	/**
+	 * Is this function interruptable?
+	 *
+	 * @return If this function can be interrupted.
+	 * @since 2018/03/18
+	 */
+	public final boolean isInterruptable()
+	{
+		switch (this)
+		{
+			default:
+				return false;
+		}
+	}
+	
+	/**
+	 * Returns {@code true} if this is a function which queries and returns a
+	 * value.
+	 *
+	 * @return If this is to be queried and a value returned.
+	 * @since 2018/03/18
+	 */
+	public final boolean query()
+	{
+		switch (this)
+		{
+			case QUERY_DISPLAYS:
+			case CREATE_DISPLAYABLE:
+				return true;
+			
+			default:
+				return false;
+		}
+	}
 }
 

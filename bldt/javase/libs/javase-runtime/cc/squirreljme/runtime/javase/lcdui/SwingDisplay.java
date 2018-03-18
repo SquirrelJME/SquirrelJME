@@ -11,33 +11,24 @@
 package cc.squirreljme.runtime.javase.lcdui;
 
 import cc.squirreljme.runtime.lcdui.server.LcdDisplay;
-import cc.squirreljme.runtime.lcdui.server.LcdDisplays;
 
 /**
- * This provides a single display that uses the Swing widget system for
- * displaying graphics.
+ * This represents a display which utilizes Java's Swing.
  *
- * @since 2018/03/17
+ * @since 2018/03/18
  */
-public class SwingDisplays
-	extends LcdDisplays
+public class SwingDisplay
+	extends LcdDisplay
 {
 	/**
-	 * {@inheritDoc}
+	 * Initializes the display.
+	 *
+	 * @param __dx The display index.
 	 * @since 2018/03/17
 	 */
-	@Override
-	protected LcdDisplay[] internalQueryDisplays(LcdDisplay[] __k)
-		throws NullPointerException
+	public SwingDisplay(int __dx)
 	{
-		if (__k == null)
-			throw new NullPointerException("NARG");
-		
-		// Swing only uses a single display which is shared among all
-		// programs
-		if (__k.length == 0)
-			return new LcdDisplay[]{new SwingDisplay(0)};
-		return __k;
+		super(__dx);
 	}
 }
 
