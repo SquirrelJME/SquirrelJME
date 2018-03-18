@@ -13,6 +13,11 @@ package cc.squirreljme.runtime.javase.lcdui;
 import cc.squirreljme.runtime.cldc.task.SystemTask;
 import cc.squirreljme.runtime.lcdui.DisplayableType;
 import cc.squirreljme.runtime.lcdui.server.LcdDisplayable;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 import javax.swing.JPanel;
 
 /**
@@ -24,8 +29,7 @@ public class SwingDisplayable
 	extends LcdDisplayable
 {
 	/** The panel which makes up this displayable. */
-	final JPanel _panel =
-		new JPanel();
+	final JPanel _panel;
 	
 	/** The title to use. */
 	private volatile String _title;
@@ -42,6 +46,20 @@ public class SwingDisplayable
 		DisplayableType __type)
 	{
 		super(__handle, __task, __type);
+		
+		JPanel panel;
+		switch (__type)
+		{
+			case CANVAS:
+				panel = new SwingCanvasPanel();
+				break;
+			
+				// {@squirreljme.error AF06 Unknown displayable type. (The
+				// type)}
+			default:
+				throw new RuntimeException(String.format("AF06 %s", __type));
+		}
+		this._panel = panel;
 	}
 	
 	/**
@@ -69,6 +87,95 @@ public class SwingDisplayable
 		SwingDisplay display = (SwingDisplay)this.getCurrent();
 		if (display != null)
 			display._frame.setTitle(__t);
+	}
+	
+	/**
+	 * The panel for canvases for displaying basic graphics.
+	 *
+	 * @since 2018/03/18
+	 */
+	public final class SwingCanvasPanel
+		extends JPanel
+		implements ComponentListener
+	{
+		/** The image to display in the panel. */
+		private volatile BufferedImage _image =
+			new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
+		
+		/**
+		 * Handles events and resizing as needed.
+		 *
+		 * @since 2018/03/18
+		 */
+		{
+			this.addComponentListener(this);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/02/10
+		 */
+		@Override
+		public void componentHidden(ComponentEvent __e)
+		{
+		}
+
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/02/10
+		 */
+		@Override
+		public void componentMoved(ComponentEvent __e)
+		{
+		}
+
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/02/10
+		 */
+		@Override
+		public void componentResized(ComponentEvent __e)
+		{
+			BufferedImage image = this._image;
+			int oldw = image.getWidth(),
+				oldh = image.getHeight(),
+				neww = this.getWidth(),
+				newh = this.getHeight();
+		
+			// Recreate the image if it is larger
+			if (neww != oldw || newh != oldh)
+				this._image = new BufferedImage(neww, newh,
+					BufferedImage.TYPE_INT_RGB);
+		
+			// Send repaint event
+			this.repaint(0, 0, neww, newh);
+		}
+
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/02/10
+		 */
+		@Override
+		public void componentShown(ComponentEvent __e)
+		{
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2017/10/25
+		 */
+		@Override
+		protected void paintComponent(java.awt.Graphics __g)
+		{
+			// This must always be called
+			super.paintComponent(__g);
+			
+			// Draw the backed buffered image
+			int xw = getWidth(),
+				xh = getHeight();
+			__g.drawImage(this._image, 0, 0, xw, xh,
+				0, 0, xw, xh, null);
+		}
 	}
 }
 
