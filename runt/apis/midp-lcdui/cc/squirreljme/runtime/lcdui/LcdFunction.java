@@ -24,6 +24,9 @@ public enum LcdFunction
 	/** Sets the title of a displayable. */
 	DISPLAYABLE_SET_TITLE,
 	
+	/** Sets the current displayable. */
+	DISPLAY_SET_CURRENT,
+	
 	/** Queries all of the display indexes which are available for usage. */
 	QUERY_DISPLAYS,
 	
@@ -56,8 +59,9 @@ public enum LcdFunction
 	{
 		switch (this)
 		{
-			case QUERY_DISPLAYS:
 			case CREATE_DISPLAYABLE:
+			case DISPLAY_SET_CURRENT:
+			case QUERY_DISPLAYS:
 				return true;
 			
 			default:

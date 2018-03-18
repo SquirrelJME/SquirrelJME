@@ -10,7 +10,10 @@
 
 package cc.squirreljme.runtime.javase.lcdui;
 
+import cc.squirreljme.runtime.cldc.task.SystemTask;
 import cc.squirreljme.runtime.lcdui.server.LcdDisplay;
+import cc.squirreljme.runtime.lcdui.server.LcdDisplayable;
+import javax.swing.JFrame;
 
 /**
  * This represents a display which utilizes Java's Swing.
@@ -20,6 +23,9 @@ import cc.squirreljme.runtime.lcdui.server.LcdDisplay;
 public class SwingDisplay
 	extends LcdDisplay
 {
+	/** The frame which acts as the display. */
+	final JFrame _frame;
+	
 	/**
 	 * Initializes the display.
 	 *
@@ -29,6 +35,45 @@ public class SwingDisplay
 	public SwingDisplay(int __dx)
 	{
 		super(__dx);
+		
+		// Initialize the frame
+		JFrame frame = new JFrame();
+		this._frame = frame;
+		
+		// Use a basic default title
+		frame.setTitle("SquirrelJME");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/18
+	 */
+	@Override
+	protected final void internalSetCurrent(LcdDisplayable __d)
+	{
+		JFrame frame = this._frame;
+		
+		// If clearing displayable remove it from the frame and make it
+		// hidden
+		if (__d == null)
+		{
+			// Use default title
+			frame.setTitle("SquirrelJME");
+			
+			// Remove all components from the frame
+			frame.removeAll();
+			
+			// Hide it
+			frame.setVisible(false);
+			return;
+		}
+		
+		// Set this display to use the displayable's panel
+		SwingDisplayable sd = (SwingDisplayable)__d;
+		frame.add(sd._panel);
+		
+		// Make it visible
+		frame.setVisible(true);
 	}
 }
 

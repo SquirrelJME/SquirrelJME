@@ -13,6 +13,7 @@ package cc.squirreljme.runtime.lcdui;
 import cc.squirreljme.runtime.cldc.service.ServiceAccessor;
 import cc.squirreljme.runtime.cldc.service.ServiceCaller;
 import cc.squirreljme.runtime.cldc.service.ServiceClientProvider;
+import cc.squirreljme.runtime.cldc.system.SystemCallException;
 
 /**
  * This is used to provide access to the service caller for use in the
@@ -66,7 +67,22 @@ public final class LcdServiceCall
 		if (__cl == null || __func == null)
 			throw new NullPointerException("NARG");
 		
-		return LcdServiceCall.caller().<R>serviceCall(__cl, __func, __args);
+		try
+		{
+			return LcdServiceCall.caller().<R>serviceCall(
+				__cl, __func, __args);
+		}
+		
+		// Remote system call failure, try to extract an exception from it
+		catch (SystemCallException e)
+		{
+			String m = e.getMessage();
+			if (e.classType().isClass(LcdDisplayableTakenException.class))
+				throw new LcdDisplayableTakenException(m, e);
+			else if (e.classType().isClass(LcdException.class))
+				throw new LcdException(m, e);
+			throw e;
+		}
 	}
 	
 	/**
