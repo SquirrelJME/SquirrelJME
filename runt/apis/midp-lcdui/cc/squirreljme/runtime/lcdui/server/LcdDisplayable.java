@@ -55,6 +55,14 @@ public abstract class LcdDisplayable
 	}
 	
 	/**
+	 * Returns the title of the displayable.
+	 *
+	 * @return The displayable title.
+	 * @since 2018/03/18
+	 */
+	public abstract String getTitle();
+	
+	/**
 	 * Specifies that the given region should be repainted.
 	 *
 	 * @param __x The X coordinate.

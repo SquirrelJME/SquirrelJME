@@ -67,6 +67,16 @@ public class SwingDisplayable
 	 * @since 2018/03/18
 	 */
 	@Override
+	public final String getTitle()
+	{
+		return this._title;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/18
+	 */
+	@Override
 	public final void repaint(int __x, int __y, int __w, int __h)
 	{
 		JPanel panel = this._panel;

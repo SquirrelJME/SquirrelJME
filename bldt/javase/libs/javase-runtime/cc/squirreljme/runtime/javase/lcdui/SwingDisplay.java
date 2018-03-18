@@ -92,6 +92,10 @@ public class SwingDisplay
 			frame.setLocationRelativeTo(null);
 		}
 		
+		// Set the title of the frame to the displayable's title
+		String title = sd.getTitle();
+		frame.setTitle((title == null ? "SquirrelJME" : title));
+		
 		// Make it visible
 		frame.setVisible(true);
 	}
