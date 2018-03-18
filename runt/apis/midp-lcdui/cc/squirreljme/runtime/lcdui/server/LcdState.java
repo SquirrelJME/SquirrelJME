@@ -10,11 +10,6 @@
 
 package cc.squirreljme.runtime.lcdui.server;
 
-import cc.squirreljme.runtime.cldc.system.type.RemoteMethod;
-import cc.squirreljme.runtime.cldc.task.SystemTask;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * This class contains the entire state of the LCD subsystem.
  *
@@ -31,9 +26,9 @@ public final class LcdState
 	/** Displayables that exist. */
 	protected final LcdDisplayables displayables;
 	
-	/** Callbacks for each individual task. */
-	private final Map<SystemTask, RemoteMethod> _callbacks =
-		new HashMap<>();
+	/** The callback manager. */
+	protected final LcdCallbackManager callbacks =
+		new LcdCallbackManager();
 	
 	/**
 	 * Initializes the state storage for the LCDUI interface.
@@ -56,6 +51,17 @@ public final class LcdState
 	}
 	
 	/**
+	 * Returns the callback manager.
+	 *
+	 * @return The callback manager.
+	 * @since 2018/03/18
+	 */
+	public final LcdCallbackManager callbacks()
+	{
+		return this.callbacks;
+	}
+	
+	/**
 	 * Returns the displayable manager.
 	 *
 	 * @return The displayable manager.
@@ -75,24 +81,6 @@ public final class LcdState
 	public final LcdDisplays displays()
 	{
 		return this.displays;
-	}
-	
-	/**
-	 * Registers a callback for the given task.
-	 *
-	 * @param __task The owning task.
-	 * @param __m The method to callback to.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/03/18
-	 */
-	public final void registerCallback(SystemTask __task, RemoteMethod __m)
-		throws NullPointerException
-	{
-		if (__task == null || __m == null)
-			throw new NullPointerException("NARG");
-		
-		// Store the callback
-		this._callbacks.put(__task, __m);
 	}
 	
 	/**

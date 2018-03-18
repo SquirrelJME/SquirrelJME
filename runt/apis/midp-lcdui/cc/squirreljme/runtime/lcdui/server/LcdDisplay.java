@@ -36,9 +36,12 @@ public abstract class LcdDisplay
 	 * Initiazes the display.
 	 *
 	 * @param __dx The index of this display.
+	 * @param __cb The callback manager.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/18
 	 */
 	public LcdDisplay(int __dx)
+		throws NullPointerException
 	{
 		this.index = __dx;
 	}

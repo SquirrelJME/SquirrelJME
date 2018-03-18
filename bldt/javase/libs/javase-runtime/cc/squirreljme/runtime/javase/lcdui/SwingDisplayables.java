@@ -12,6 +12,7 @@ package cc.squirreljme.runtime.javase.lcdui;
 
 import cc.squirreljme.runtime.cldc.task.SystemTask;
 import cc.squirreljme.runtime.lcdui.DisplayableType;
+import cc.squirreljme.runtime.lcdui.server.LcdCallbackManager;
 import cc.squirreljme.runtime.lcdui.server.LcdDisplayable;
 import cc.squirreljme.runtime.lcdui.server.LcdDisplayables;
 
@@ -29,13 +30,13 @@ public class SwingDisplayables
 	 */
 	@Override
 	protected LcdDisplayable internalCreateDisplayable(int __handle,
-		SystemTask __task, DisplayableType __type)
+		SystemTask __task, DisplayableType __type, LcdCallbackManager __cb)
 		throws NullPointerException
 	{
 		if (__task == null || __type == null)
 			throw new NullPointerException("NARG");
 		
-		return new SwingDisplayable(__handle, __task, __type);
+		return new SwingDisplayable(__handle, __task, __type, __cb);
 	}
 }
 

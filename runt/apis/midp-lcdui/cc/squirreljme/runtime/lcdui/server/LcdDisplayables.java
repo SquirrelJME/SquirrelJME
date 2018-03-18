@@ -37,11 +37,12 @@ public abstract class LcdDisplayables
 	 * @param __handle The handle for this displayable.
 	 * @param __task The task owning this displayable.
 	 * @param __type The type of displayable this is.
+	 * @param __cb Callbacks for created displayables.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/17
 	 */
 	protected abstract LcdDisplayable internalCreateDisplayable(int __handle,
-		SystemTask __task, DisplayableType __type)
+		SystemTask __task, DisplayableType __type, LcdCallbackManager __cb)
 		throws NullPointerException;
 	
 	/**
@@ -49,14 +50,15 @@ public abstract class LcdDisplayables
 	 *
 	 * @param __task The owning task.
 	 * @param __type The type of displayable to create.
+	 * @param __cb The callback for created displayables.
 	 * @return The newly created displayable.
 	 * @since 2018/03/18
 	 */
 	public final LcdDisplayable createDisplayable(SystemTask __task,
-		DisplayableType __type)
+		DisplayableType __type, LcdCallbackManager __cb)
 		throws NullPointerException
 	{
-		if (__task == null || __type == null)
+		if (__task == null || __type == null || __cb == null)
 			throw new NullPointerException("NARG");
 		
 		// Generate a new handle
@@ -64,7 +66,7 @@ public abstract class LcdDisplayables
 		
 		// Internally create it
 		LcdDisplayable rv = this.internalCreateDisplayable(handle, __task,
-			__type);
+			__type, __cb);
 		if (handle != rv.handle())
 			throw new RuntimeException("OOPS");
 		

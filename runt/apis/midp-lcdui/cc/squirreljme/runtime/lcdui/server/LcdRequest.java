@@ -188,8 +188,9 @@ public final class LcdRequest
 			throw new NullPointerException("NARG");
 		
 		LcdServer server = this.server;
-		LcdDisplayable disp = server.state().displayables().
-			createDisplayable(server.task(), __t);
+		LcdState state = server.state();
+		LcdDisplayable disp = state.displayables().
+			createDisplayable(server.task(), __t, state.callbacks());
 		return disp.handle();
 	}
 	
@@ -281,7 +282,7 @@ public final class LcdRequest
 			throw new NullPointerException("NARG");
 		
 		LcdServer server = this.server;
-		server.state().registerCallback(server.task(), __m);
+		server.state().callbacks().registerCallback(server.task(), __m);
 	}
 }
 
