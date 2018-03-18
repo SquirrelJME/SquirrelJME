@@ -23,8 +23,8 @@ import cc.squirreljme.runtime.lcdui.LcdFunction;
 public final class LcdRequest
 	implements Runnable
 {
-	/** The task performing the action. */
-	protected final SystemTask task;
+	/** The server performing the action. */
+	protected final LcdServer server;
 	
 	/** The function to execute. */
 	protected final LcdFunction function;
@@ -35,21 +35,38 @@ public final class LcdRequest
 	/**
 	 * Initializes a request to the LCD display server.
 	 *
-	 * @param __task The task which is performing the request.
+	 * @param __server The server which is performing the request.
 	 * @param __func The function to execute.
 	 * @param __args The arguments to the function.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/17
 	 */
-	public LcdRequest(SystemTask __task, LcdFunction __func, Object... __args)
+	public LcdRequest(LcdServer __server, LcdFunction __func, Object... __args)
 		throws NullPointerException
 	{
-		if (__task == null || __func == null)
+		if (__server == null || __func == null)
 			throw new NullPointerException("NARG");
 		
-		this.task = __task;
+		this.server = __server;
 		this.function = __func;
 		this._args = (__args == null ? new Object[0] : __args.clone());
+	}
+	
+	/**
+	 * Returns the result of the request.
+	 *
+	 * @param <R> The type to return.
+	 * @param __cl The type to return.
+	 * @return The request result.
+	 * @since 2018/03/17
+	 */
+	public final <R> R result(Class<R> __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 	
 	/**
