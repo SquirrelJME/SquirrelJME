@@ -35,16 +35,14 @@ import net.multiphasicapps.collections.SortedTreeMap;
 public abstract class LcdDefinition
 	extends ServiceDefinition
 {
-	/** The handler for requests to the LCD server. */
-	protected final LcdRequestHandler requesthandler;
-	
-	/** The display manager. */
-	protected final LcdDisplays displays;
+	/** The state of the server. */
+	protected final LcdState state;
 	
 	/**
 	 * Initializes the base definition.
 	 *
 	 * @param __rh The handler for requests.
+	 * @param __dm The display manager.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/15
 	 */
@@ -56,8 +54,7 @@ public abstract class LcdDefinition
 		if (__rh == null || __dm == null)
 			throw new NullPointerException("NARG");
 		
-		this.requesthandler = __rh;
-		this.displays = __dm;
+		this.state = new LcdState(__rh, __dm);
 	}
 	
 	/**
@@ -71,19 +68,7 @@ public abstract class LcdDefinition
 		if (__task == null)
 			throw new NullPointerException("NARG");
 		
-		return new LcdServer(__task, this.requesthandler);
-	}
-	
-	/**
-	 * Returns the request handler that is used to handle any requests made
-	 * to the LCDUI interface.
-	 *
-	 * @return The request handler for events.
-	 * @since 2018/03/17
-	 */
-	public final LcdRequestHandler requestHandler()
-	{
-		return this.requesthandler;
+		return new LcdServer(__task, this.state);
 	}
 }
 
