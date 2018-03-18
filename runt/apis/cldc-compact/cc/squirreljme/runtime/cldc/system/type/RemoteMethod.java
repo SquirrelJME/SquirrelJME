@@ -11,6 +11,8 @@
 package cc.squirreljme.runtime.cldc.system.type;
 
 import cc.squirreljme.runtime.cldc.system.SystemCall;
+import cc.squirreljme.runtime.cldc.system.SystemCallError;
+import cc.squirreljme.runtime.cldc.system.SystemCallException;
 
 /**
  * This represents a method which allows another process such as the kernel or
@@ -71,8 +73,25 @@ public abstract class RemoteMethod
 		__args = SystemCall.validateArguments(__args);
 		
 		// Handle the call
-		return __cl.cast(SystemCall.validateArgument(
-			this.internalInvoke(__args)));
+		try
+		{
+			return __cl.cast(SystemCall.validateArgument(
+				this.internalInvoke(__args)));
+		}
+		
+		// Wrap exceptions so that local interfaces are consistent
+		catch (RuntimeException|Error t)
+		{
+			// Already excpetions of the desired type
+			if (t instanceof SystemCallException ||
+				t instanceof SystemCallError)
+				throw t;
+			
+			// Recursively initialize new exceptions accordingly
+			if (t instanceof Error)
+				throw SystemCall.<Error>wrapException(t);
+			throw SystemCall.<RuntimeException>wrapException(t);
+		}
 	}
 }
 
