@@ -1,0 +1,47 @@
+# 2018/03/17
+
+## 10:56
+
+Okay so what I want is where there is only a single thing that can be
+displayed on the screen regardless of the application. This simplifies
+things although it kind of messes up task switching but that is a
+something that can be solved by blocking things. In any case, I think it
+would be best if all the local LCDUI stuff was directly mapped to an index
+on the server end. The local end would need to remember all the stuff that
+is mapped to indexes for remote widgets. And the logic for most of everything
+will be in the server including stuff like `setCurrent` for displays. The
+only thing is that the server side display will have a current for each
+task but it will only have an active task. Any task which wants to set
+current will do it but it will not have the intended effect until that
+application is switched to. This means I do not have to worry about or
+implement conditions where multiple tasks are running and they all want to
+display something.
+
+## 18:52
+
+Okay, I am going to need a slight refactor. The first thing I want to do is
+to remove the locks on the display code so that they are never used or
+passed. Second I want to make it so that there is a GUI thread which does
+things. At least for Swing this is how it works because the AWT it is on top
+of is really not thread safe at all. Pretty much every modern and classic
+graphical thing is not thread safe either. So I will need a slight redesign
+and simplification. Also I should aim to reduce the number of arguments passed
+to displayables. But at least on the server end there will be a primary
+display loop, system calls will call into them and then wait for a response
+as required.
+
+## 19:16
+
+The main problem though will be calling the event responders on the client.
+When those happen they will definitely be outside of the thread. I suppose I
+will need a callback of sorts that allows the kernel to execute the client
+to do things, at least that is the only way I can think of things. It would
+simplify the design and allow for event handling though if I do support a
+callback. I should probably support it in the code anyway because it can
+be important to do things.
+
+## 19:45
+
+It would probably be easiest for event handling if there were just methods
+used for pushing to an event thread for eventual handling, that way it can
+match the Swing model which should work for every GUI framework.
