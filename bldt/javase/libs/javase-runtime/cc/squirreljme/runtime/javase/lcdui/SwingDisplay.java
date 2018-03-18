@@ -13,6 +13,7 @@ package cc.squirreljme.runtime.javase.lcdui;
 import cc.squirreljme.runtime.cldc.task.SystemTask;
 import cc.squirreljme.runtime.lcdui.server.LcdDisplay;
 import cc.squirreljme.runtime.lcdui.server.LcdDisplayable;
+import java.awt.Dimension;
 import javax.swing.JFrame;
 
 /**
@@ -45,6 +46,10 @@ public class SwingDisplay
 		
 		// Use a basic default title
 		frame.setTitle("SquirrelJME");
+		
+		// Force minimum size to something more friendly
+		frame.setMinimumSize(new Dimension(160, 160));
+		frame.setPreferredSize(new Dimension(640, 480));
 	}
 	
 	/**
