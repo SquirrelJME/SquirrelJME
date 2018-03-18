@@ -194,6 +194,9 @@ public class Display
 	private static final Map<Integer, Reference<Display>> _DISPLAYS =
 		new HashMap<>();
 	
+	/** Was the callback initialized? */
+	private static volatile boolean _MADECALLBACK;
+	
 	/** The index of this display. */
 	final int _index;
 	
@@ -880,14 +883,21 @@ public class Display
 	 */
 	public static Display[] getDisplays(int __caps)
 	{
-		ServiceCaller caller = LcdServiceCall.caller();
-		
 		// This call will always refresh the displays which are currently
 		// available to the server
 		Map<Integer, Reference<Display>> displays = Display._DISPLAYS;
 		synchronized (displays)
 		{
-			IntegerArray dids = caller.<IntegerArray>serviceCall(
+			// Was the callback registered?
+			if (!Display._MADECALLBACK)
+			{
+				LcdServiceCall.<VoidType>call(VoidType.class,
+					LcdFunction.REGISTER_CALLBACK, new __DisplayCallback__());
+				Display._MADECALLBACK = true;
+			}
+			
+			// Get all the displays
+			IntegerArray dids = LcdServiceCall.<IntegerArray>call(
 				IntegerArray.class, LcdFunction.QUERY_DISPLAYS);
 			
 			// Just check to see if the map knows about an index value

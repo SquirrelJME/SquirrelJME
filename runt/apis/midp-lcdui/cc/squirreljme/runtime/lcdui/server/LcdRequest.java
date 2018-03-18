@@ -13,6 +13,7 @@ package cc.squirreljme.runtime.lcdui.server;
 import cc.squirreljme.runtime.cldc.system.type.EnumType;
 import cc.squirreljme.runtime.cldc.system.type.IntegerArray;
 import cc.squirreljme.runtime.cldc.system.type.LocalIntegerArray;
+import cc.squirreljme.runtime.cldc.system.type.RemoteMethod;
 import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.cldc.task.SystemTask;
 import cc.squirreljme.runtime.lcdui.DisplayableType;
@@ -142,6 +143,10 @@ public final class LcdRequest
 					result = this.__queryDisplays();
 					break;
 				
+				case REGISTER_CALLBACK:
+					this.__registerCallback((RemoteMethod)args[0]);
+					break;
+				
 					// {@squirreljme.error EB20 Unimplemented function.
 					// (The function)}
 				default:
@@ -260,6 +265,23 @@ public final class LcdRequest
 			rv[i] = ld[i].index();
 		
 		return new LocalIntegerArray(rv);
+	}
+	
+	/**
+	 * Registers the callback for this task.
+	 *
+	 * @param __m The callback method.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/18
+	 */
+	private final void __registerCallback(RemoteMethod __m)
+		throws NullPointerException
+	{
+		if (__m == null)
+			throw new NullPointerException("NARG");
+		
+		LcdServer server = this.server;
+		server.state().registerCallback(server.task(), __m);
 	}
 }
 
