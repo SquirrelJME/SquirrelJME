@@ -30,6 +30,9 @@ public abstract class LcdDisplayable
 	/** The type of displayable this is. */
 	protected final DisplayableType type;
 	
+	/** The callback for this displayable. */
+	protected final LcdCallbackManager callbacks;
+	
 	/** The display this is attached to. */
 	volatile LcdDisplay _current;
 	
@@ -39,19 +42,21 @@ public abstract class LcdDisplayable
 	 * @param __handle The handle for this displayable.
 	 * @param __task The task owning this displayable.
 	 * @param __type The type of displayable this is.
+	 * @param __cb The callback manager.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/17
 	 */
 	public LcdDisplayable(int __handle, SystemTask __task,
-		DisplayableType __type)
+		DisplayableType __type, LcdCallbackManager __cb)
 		throws NullPointerException
 	{
-		if (__task == null || __type == null)
+		if (__task == null || __type == null || __cb == null)
 			throw new NullPointerException("NARG");
 		
 		this.handle = __handle;
 		this.task = __task;
 		this.type = __type;
+		this.callbacks = __cb;
 	}
 	
 	/**

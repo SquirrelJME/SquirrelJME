@@ -10,9 +10,12 @@
 
 package cc.squirreljme.runtime.javase.lcdui;
 
+import cc.squirreljme.runtime.cldc.system.type.LocalIntegerArray;
 import cc.squirreljme.runtime.cldc.task.SystemTask;
 import cc.squirreljme.runtime.lcdui.DisplayableType;
+import cc.squirreljme.runtime.lcdui.server.LcdCallbackManager;
 import cc.squirreljme.runtime.lcdui.server.LcdDisplayable;
+import java.awt.Rectangle;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.Graphics2D;
@@ -40,12 +43,13 @@ public class SwingDisplayable
 	 * @param __handle The handle for this displayable.
 	 * @param __task The task owning this displayable.
 	 * @param __type The type of displayable this is.
+	 * @param __cb The callback manager.
 	 * @since 2018/03/18
 	 */
 	public SwingDisplayable(int __handle, SystemTask __task,
-		DisplayableType __type)
+		DisplayableType __type, LcdCallbackManager __cb)
 	{
-		super(__handle, __task, __type);
+		super(__handle, __task, __type, __cb);
 		
 		JPanel panel;
 		switch (__type)
@@ -180,10 +184,20 @@ public class SwingDisplayable
 			// This must always be called
 			super.paintComponent(__g);
 			
-			// Draw the backed buffered image
+			BufferedImage image = this._image;
 			int xw = getWidth(),
 				xh = getHeight();
-			__g.drawImage(this._image, 0, 0, xw, xh,
+			
+			// Have the remote end draw into our buffer as needed
+			Rectangle rect = __g.getClipBounds();
+			SwingDisplayable.this.callbacks.displayablePaint(
+				SwingDisplayable.this,
+				rect.x, rect.y, rect.width, rect.height, new LocalIntegerArray(
+				((DataBufferInt)image.getRaster().getDataBuffer()).getData()),
+				null, xw, xh, false, xw, 0);
+			
+			// Draw the backed buffered image
+			__g.drawImage(image, 0, 0, xw, xh,
 				0, 0, xw, xh, null);
 		}
 	}
