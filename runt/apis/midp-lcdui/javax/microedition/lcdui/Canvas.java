@@ -536,30 +536,16 @@ public abstract class Canvas
 	 */
 	@__SerializedEvent__
 	@Override
-	void __doRepaint(int __x, int __y, int __w, int __h)
+	void __doRepaint(Graphics __g)
 	{
-		throw new todo.TODO();
-		/*
-		// Get the drawspace to draw onto, which can be a Display or a
-		// TabbedPane
-		__DrawSpace__ drawspace = __drawSpace();
-		
-		// Obtain graphics to draw in the drawing area
-		Graphics g = drawspace.graphics();
-		
-		// Clip to the area that needs to be redrawn
-		g.setClip(__x, __y, __w, __h);
-		
-		// If the canvas is transparent then it draws on top of some background
-		// such as perhaps the wallpaper or otherwise
+		// If this is transparent then fill the rectangle with the default
+		// color
 		if (this._transparent)
-			g.fillRect(__x, __y, __w, __h);
+			__g.fillRect(__g.getClipX(), __g.getClipY(),
+				__g.getClipWidth(), __g.getClipHeight());
 		
-		// Perform the client specific painting operations
-		paint(g);
-		
-		// Tail paint call that goes up to indicate that things were drawn
-		drawspace.tailPaint(this._isfullscreen);*/
+		// Forward paint call
+		this.paint(__g);
 	}
 }
 

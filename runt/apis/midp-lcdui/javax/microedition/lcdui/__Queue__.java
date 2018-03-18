@@ -31,9 +31,17 @@ final class __Queue__
 	/** Single queue instance. */
 	static final __Queue__ INSTANCE =
 		new __Queue__();
+		
+	/** Internal queue access lock. */
+	protected final Object lock =
+		new Object();
 	
 	/** Displayables to their ID. */
 	protected final Map<Reference<Displayable>, Integer> _distoid =
+		new HashMap<>();
+	
+	/** Reverse mapping for displayables. */
+	protected final Map<Integer, Reference<Displayable>> _idtodis =
 		new HashMap<>();
 	
 	/** Queue to tell the remote server that handles should be cleaned up. */
@@ -47,6 +55,23 @@ final class __Queue__
 	 */
 	private __Queue__()
 	{
+	}
+	
+	/**
+	 * Returns the displayable used for the given index.
+	 *
+	 * @param __dx The index to get.
+	 * @return The displayable for the given index.
+	 * @since 2018/03/18
+	 */
+	final Displayable __getDisplayable(int __dx)
+	{
+		Map<Integer, Reference<Displayable>> idtodis = this._idtodis;
+		synchronized (this.lock)
+		{
+			Reference<Displayable> ref = idtodis.get(__dx);
+			return (ref != null ? ref.get() : null);
+		}
 	}
 	
 	/**
@@ -92,9 +117,14 @@ final class __Queue__
 		
 		// Reference the displayable for future cleanup on the remote end
 		Map<Reference<Displayable>, Integer> distoid = this._distoid;
-		synchronized (distoid)
+		Map<Integer, Reference<Displayable>> idtodis = this._idtodis;
+		synchronized (this.lock)
 		{
-			distoid.put(new WeakReference<>(__d, this._disqueue), dx);
+			Reference<Displayable> ref =
+				new WeakReference<>(__d, this._disqueue);
+			Integer idx = dx;
+			distoid.put(ref, idx);
+			idtodis.put(idx, ref);
 		}
 		
 		// The displayable uses this index to interact with the server

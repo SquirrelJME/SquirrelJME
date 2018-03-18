@@ -82,12 +82,13 @@ public abstract class PixelArrayGraphics
 				__data.getClass()));
 		
 		// {@squirreljme.error EB0k The specified parameters exceed the bounds
-		// of the array. (The pitch; The height; The offset; The array length)}
+		// of the array. (The pitch; The height; The offset; The pitch;
+		// The array length; The number of elements in the image)}
 		int elementcount = (__pitch * __height);
 		if (__offset < 0 || (__offset + elementcount) > datalen)
 			throw new ArrayIndexOutOfBoundsException(
-				String.format("EB0k %d %d %d %d", __pitch, __height, __offset,
-				datalen));
+				String.format("EB0k %d %d %d %d %d %d", __pitch, __height,
+				__offset, __pitch, datalen, elementcount));
 		
 		// {@squirreljme.error EB0l Invalid width and/or height specified.}
 		if (__width <= 0 || __height <= 0)

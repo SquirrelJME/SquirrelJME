@@ -16,7 +16,7 @@ package cc.squirreljme.runtime.cldc.system.type;
  * @since 2018/03/01
  */
 public final class LocalByteArray
-	implements ByteArray
+	implements ByteArray, LocalArray
 {
 	/** The byte array to read/write. */
 	protected final byte[] array;
@@ -126,6 +126,16 @@ public final class LocalByteArray
 		
 		for (int c = 0, i = __i, o = __o; c < __l; c++, i++, o++)
 			array[i] = __v[o];
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/18
+	 */
+	@Override
+	public final ArrayType type()
+	{
+		return ArrayType.BYTE;
 	}
 }
 

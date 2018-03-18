@@ -16,7 +16,7 @@ package cc.squirreljme.runtime.cldc.system.type;
  * @since 2018/03/04
  */
 public class LocalLongArray
-	implements LongArray
+	implements LocalArray, LongArray
 {
 	/** The long array to read/write. */
 	protected final long[] array;
@@ -126,6 +126,16 @@ public class LocalLongArray
 		
 		for (int c = 0, i = __i, o = __o; c < __l; c++, i++, o++)
 			array[i] = __v[o];
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/18
+	 */
+	@Override
+	public final ArrayType type()
+	{
+		return ArrayType.LONG;
 	}
 }
 

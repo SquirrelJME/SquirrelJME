@@ -16,7 +16,7 @@ package cc.squirreljme.runtime.cldc.system.type;
  * @since 2018/03/04
  */
 public class LocalStringArray
-	implements StringArray
+	implements LocalArray, StringArray
 {
 	/** The String array to read/write. */
 	protected final String[] array;
@@ -126,6 +126,16 @@ public class LocalStringArray
 		
 		for (int c = 0, i = __i, o = __o; c < __l; c++, i++, o++)
 			array[i] = __v[o];
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/18
+	 */
+	@Override
+	public final ArrayType type()
+	{
+		return ArrayType.STRING;
 	}
 }
 
