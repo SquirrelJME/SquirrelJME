@@ -40,18 +40,20 @@ public abstract class LcdDefinition
 	 *
 	 * @param __rh The handler for requests.
 	 * @param __dm The display manager.
+	 * @param __dy Displayable manager.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/15
 	 */
-	public LcdDefinition(LcdRequestHandler __rh, LcdDisplays __dm)
+	public LcdDefinition(LcdRequestHandler __rh, LcdDisplays __dm,
+		LcdDisplayables __dy)
 		throws NullPointerException
 	{
 		super(LcdServiceCall.Provider.class);
 		
-		if (__rh == null || __dm == null)
+		if (__rh == null || __dm == null || __dy == null)
 			throw new NullPointerException("NARG");
 		
-		this.state = new LcdState(__rh, __dm);
+		this.state = new LcdState(__rh, __dm, __dy);
 	}
 	
 	/**

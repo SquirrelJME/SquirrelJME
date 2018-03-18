@@ -23,6 +23,9 @@ public final class LcdState
 	/** The display manager. */
 	protected final LcdDisplays displays;
 	
+	/** Displayables that exist. */
+	protected final LcdDisplayables displayables;
+	
 	/**
 	 * Initializes the state storage for the LCDUI interface.
 	 *
@@ -31,14 +34,27 @@ public final class LcdState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/15
 	 */
-	public LcdState(LcdRequestHandler __rh, LcdDisplays __dm)
+	public LcdState(LcdRequestHandler __rh, LcdDisplays __dm,
+		LcdDisplayables __ys)
 		throws NullPointerException
 	{
-		if (__rh == null || __dm == null)
+		if (__rh == null || __dm == null || __ys == null)
 			throw new NullPointerException("NARG");
 		
 		this.requesthandler = __rh;
 		this.displays = __dm;
+		this.displayables = __ys;
+	}
+	
+	/**
+	 * Returns the displayable manager.
+	 *
+	 * @return The displayable manager.
+	 * @since 2018/03/18
+	 */
+	public final LcdDisplayables displayables()
+	{
+		return this.displayables;
 	}
 	
 	/**
