@@ -10,6 +10,7 @@
 
 package cc.squirreljme.runtime.lcdui.server;
 
+import cc.squirreljme.runtime.lcdui.LcdException;
 import java.util.HashMap;
 import java.util.Map;
 import net.multiphasicapps.collections.SortedTreeMap;
@@ -38,6 +39,26 @@ public abstract class LcdDisplays
 	 */
 	protected abstract LcdDisplay[] internalQueryDisplays(LcdDisplay[] __k)
 		throws NullPointerException;
+	
+	/**
+	 * Returns the specified display.
+	 *
+	 * @param __dx The display to get.
+	 * @return The display.
+	 * @throws LcdException If the display does not exist.
+	 * @since 2018/03/18
+	 */
+	public final LcdDisplay get(int __dx)
+		throws LcdException
+	{
+		// {@squirreljme.error EB22 The specified display index is not
+		// valid. (The display index)}
+		Map<Integer, LcdDisplay> displays = this._displays;
+		LcdDisplay rv = displays.get(__dx);
+		if (rv == null)
+			throw new LcdException(String.format("EB22 %d", __dx));
+		return rv;
+	}
 	
 	/**
 	 * Queries all of the displays which are available for usage.

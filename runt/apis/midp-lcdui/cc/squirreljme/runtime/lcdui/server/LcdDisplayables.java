@@ -28,7 +28,8 @@ public abstract class LcdDisplayables
 		new SortedTreeMap<>();
 	
 	/** The next handle. */
-	private volatile int _nexthandle;
+	private volatile int _nexthandle =
+		1;
 	
 	/**
 	 * Initializes the base displayable.
@@ -78,39 +79,45 @@ public abstract class LcdDisplayables
 	 * Returns the displayable by the given handle.
 	 *
 	 * @param __server The server requesting the handle.
-	 * @param __handle The handle to obtain.
-	 * @return The displayable.
+	 * @param __handle The handle to obtain, if zero then {@code null} is
+	 * returned.
+	 * @return The displayable or {@code null} if {@code __handle} is zero.
 	 * @throws IllegalArgumentException If the displayable does not exist or
 	 * is of another task.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/18
 	 */
-	public final LcdDisplayable getDisplayable(LcdServer __server,
+	public final LcdDisplayable get(LcdServer __server,
 		int __handle)
 		throws IllegalArgumentException, NullPointerException
 	{
 		if (__server == null)
 			throw new NullPointerException("NARG");
 		
-		return this.getDisplayable(__server.task(), __handle);
+		return this.get(__server.task(), __handle);
 	}
 	
 	/**
 	 * Returns the displayable by the given handle.
 	 *
 	 * @param __task The task requesting the handle.
-	 * @param __handle The handle to obtain.
-	 * @return The displayable.
+	 * @param __handle The handle to obtain, if zero then {@code null} is
+	 * returned.
+	 * @return The displayable or {@code null} if {@code __handle} is zero.
 	 * @throws IllegalArgumentException If the displayable does not exist or
 	 * is of another task.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/18
 	 */
-	public final LcdDisplayable getDisplayable(SystemTask __task, int __handle)
+	public final LcdDisplayable get(SystemTask __task, int __handle)
 		throws IllegalArgumentException, NullPointerException
 	{
 		if (__task == null)
 			throw new NullPointerException("NARG");
+		
+		// Requesting the null displayable
+		if (__handle == 0)
+			return null;
 		
 		Map<Integer, LcdDisplayable> displayables = this._displayables;
 		

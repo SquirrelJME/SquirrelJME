@@ -127,6 +127,11 @@ public final class LcdRequest
 						(String)args[1]);
 					break;
 				
+				case DISPLAY_SET_CURRENT:
+					this.__displaySetCurrent((Integer)args[0],
+						(Integer)args[1], (Integer)args[2]);
+					break;
+				
 				case QUERY_DISPLAYS:
 					result = this.__queryDisplays();
 					break;
@@ -187,8 +192,30 @@ public final class LcdRequest
 	private final void __displayableSetTitle(int __handle, String __title)
 	{
 		LcdServer server = this.server;
-		server.state().displayables().getDisplayable(server, __handle).
+		server.state().displayables().get(server, __handle).
 			setTitle(__title);
+	}
+	
+	/**
+	 * Sets the current displayable to show.
+	 *
+	 * @param __did The display ID.
+	 * @param __show The disp'layable to show.
+	 * @param __exit The displayable to show on exit.
+	 * @since 2018/03/18
+	 */
+	private final void __displaySetCurrent(int __did, int __show, int __exit)
+	{
+		LcdServer server = this.server;
+		LcdState state = server.state();
+		LcdDisplayables displayables = state.displayables();
+		
+		// Get the displayables this refers to
+		LcdDisplayable show = displayables.get(server, __show),
+			exit = displayables.get(server, __exit);
+		
+		// Set the displayable to be shown
+		state.displays().get(__did).setCurrent(show, exit);
 	}
 	
 	/**

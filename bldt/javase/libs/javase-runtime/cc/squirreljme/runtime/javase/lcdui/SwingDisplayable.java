@@ -13,6 +13,7 @@ package cc.squirreljme.runtime.javase.lcdui;
 import cc.squirreljme.runtime.cldc.task.SystemTask;
 import cc.squirreljme.runtime.lcdui.DisplayableType;
 import cc.squirreljme.runtime.lcdui.server.LcdDisplayable;
+import javax.swing.JPanel;
 
 /**
  * This is a displayable which utilizes Swing.
@@ -22,6 +23,10 @@ import cc.squirreljme.runtime.lcdui.server.LcdDisplayable;
 public class SwingDisplayable
 	extends LcdDisplayable
 {
+	/** The panel which makes up this displayable. */
+	final JPanel _panel =
+		new JPanel();
+	
 	/** The title to use. */
 	private volatile String _title;
 	
@@ -49,6 +54,9 @@ public class SwingDisplayable
 		this._title = __t;
 		
 		// If this is bound to a display then update the title
+		SwingDisplay display = (SwingDisplay)this.getCurrent();
+		if (display != null)
+			display._frame.setTitle(__t);
 	}
 }
 

@@ -12,8 +12,10 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.service.ServiceCaller;
 import cc.squirreljme.runtime.cldc.system.type.IntegerArray;
+import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.lcdui.DisplayOrientation;
 import cc.squirreljme.runtime.lcdui.DisplayState;
+import cc.squirreljme.runtime.lcdui.LcdDisplayableTakenException;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
 import cc.squirreljme.runtime.lcdui.LcdServiceCall;
 import java.io.DataInputStream;
@@ -635,7 +637,7 @@ public class Display
 			throw new NullPointerException("NARG");
 		
 		// Forward
-		__setCurrent(__show, __exit);
+		this.__setCurrent(__show, __exit);
 	}
 	
 	/**
@@ -660,23 +662,17 @@ public class Display
 	public void setCurrent(Displayable __show)
 		throws DisplayCapabilityException, IllegalStateException
 	{
-		throw new todo.TODO();
-		/*
-		// Lock due to complex operations
-		synchronized (DisplayManager.GLOBAL_LOCK)
+		// Enter background state?
+		if (__show == null)
 		{
-			// Enter background state?
-			DisplayHead head = this._head;
-			if (__show == null)
-			{
-				head.setState(DisplayState.BACKGROUND);
-				return;
-			}
-			
-			// Forward
-			__setCurrent(__show,
-				(__show instanceof Alert) ? getCurrent() : null);
-		}*/
+			throw new todo.TODO();
+			/*head.setState(DisplayState.BACKGROUND);
+			return;*/
+		}
+		
+		// Forward
+		this.__setCurrent(__show,
+			(__show instanceof Alert) ? this.getCurrent() : null);
 	}
 	
 	public void setCurrentItem(Item __a)
@@ -810,51 +806,22 @@ public class Display
 		if (__show == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
-		/*
-		// There area multiple displayables being modified potentially since
-		// new current sets will decurrent other ones.
-		synchronized (DisplayManager.GLOBAL_LOCK)
+		try
 		{
-			Displayable wascurrent = this._current,
-				wasexit = this._exit;
-			
-			// {@squirreljme.error EB1c The displayable to display is currently
-			// bound to another display.}
-			if (__show._current != null)
-				throw new IllegalStateException("EB1c");
-			
-			// {@squirreljme.error EB1d The alert to be displayed is currently
-			// bound to another display.}
-			if (__exit != null && __exit._current != null)
-				throw new IllegalStateException("EB1d");
-			
-			// If any alert is currently being displayed then it will be
-			// removed along with its timer (if any)
-			if (wascurrent instanceof Alert)
-			{
-				throw new todo.TODO();
-			}
-			
-			// Remove the old current display
-			DisplayHead head = this._head;
-			if (wascurrent != null)
-			{
-				throw new todo.TODO();
-			}
-			
-			// Bind current display
-			this._current = __show;
-			__show._current = this;
-			
-			// And the exit display
-			this._exit = __exit;
-			if (__exit != null)
-				__exit._current = this;
-			
-			// Enter the foreground state always
-			head.setState(DisplayState.FOREGROUND);
-		}*/
+			// Set current
+			LcdServiceCall.<VoidType>call(VoidType.class,
+				LcdFunction.DISPLAY_SET_CURRENT,
+				this._index,
+				(__show != null ? __show._handle : 0),
+				(__exit != null ? __exit._handle : 0));
+		}
+		
+		// {@squirreljme.error EB21 The displayable is already taken
+		// by a display or tabbed pane.)
+		catch (LcdDisplayableTakenException e)
+		{
+			throw new IllegalStateException("EB21", e);
+		}
 	}
 	
 	/**

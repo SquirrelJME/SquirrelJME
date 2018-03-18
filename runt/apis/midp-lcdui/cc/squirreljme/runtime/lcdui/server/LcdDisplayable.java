@@ -30,6 +30,9 @@ public abstract class LcdDisplayable
 	/** The type of displayable this is. */
 	protected final DisplayableType type;
 	
+	/** The display this is attached to. */
+	volatile LcdDisplay _current;
+	
 	/**
 	 * Initializes the base displayable.
 	 *
@@ -58,6 +61,17 @@ public abstract class LcdDisplayable
 	 * @since 2018/03/18
 	 */
 	public abstract void setTitle(String __t);
+	
+	/**
+	 * Returns the display this is currently attached to.
+	 *
+	 * @return The currently attached display.
+	 * @since 2018/03/18
+	 */
+	public final LcdDisplay getCurrent()
+	{
+		return this._current;
+	}
 	
 	/**
 	 * Returns the handle of the displayable.
