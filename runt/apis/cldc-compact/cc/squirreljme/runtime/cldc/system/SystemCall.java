@@ -35,6 +35,7 @@ import cc.squirreljme.runtime.cldc.system.type.LocalLongArray;
 import cc.squirreljme.runtime.cldc.system.type.LocalShortArray;
 import cc.squirreljme.runtime.cldc.system.type.LocalStringArray;
 import cc.squirreljme.runtime.cldc.system.type.LongArray;
+import cc.squirreljme.runtime.cldc.system.type.RemoteMethod;
 import cc.squirreljme.runtime.cldc.system.type.ShortArray;
 import cc.squirreljme.runtime.cldc.system.type.StringArray;
 import cc.squirreljme.runtime.cldc.system.type.VoidType;
@@ -87,6 +88,125 @@ public final class SystemCall
 		
 		// Perform remote call where everything is checked and such
 		return __cl.cast(SystemCall.__callRemote(__func, __args));
+	}
+	
+	/**
+	 * Validates a single argument for a system call.
+	 *
+	 * @param __arg The input argument.
+	 * @return The resulting argument.
+	 * @throws InvalidSystemCallException If the argument is not valid.
+	 * @since 2018/03/18
+	 */
+	public static Object validateArgument(Object __arg)
+	{
+		// Nulls are always valid
+		if (__arg == null)
+			return null;
+		
+		// Primitive array types needs to be translated
+		if (__arg.getClass().isArray())
+		{
+			boolean isarray = true;
+			if (__arg instanceof boolean[])
+				__arg = new LocalBooleanArray((boolean[])__arg);
+			else if (__arg instanceof byte[])
+				__arg = new LocalByteArray((byte[])__arg);
+			else if (__arg instanceof short[])
+				__arg = new LocalShortArray((short[])__arg);
+			else if (__arg instanceof char[])
+				__arg = new LocalCharacterArray((char[])__arg);
+			else if (__arg instanceof int[])
+				__arg = new LocalIntegerArray((int[])__arg);
+			else if (__arg instanceof long[])
+				__arg = new LocalLongArray((long[])__arg);
+			else if (__arg instanceof float[])
+				__arg = new LocalFloatArray((float[])__arg);
+			else if (__arg instanceof double[])
+				__arg = new LocalDoubleArray((double[])__arg);
+			else if (__arg instanceof String[])
+				__arg = new LocalStringArray((String[])__arg);
+			
+			// {@squirreljme.error ZZ0k Cannot pass the specified array
+			// type as a system call. (The class type)}
+			else
+				throw new InvalidSystemCallException(
+					String.format("ZZ0k %s", __arg.getClass()));
+			
+			// Reset
+			return __arg;
+		}
+		
+		// Wrap enumerated values
+		else if (__arg instanceof Enum)
+		{
+			Enum e = (Enum)__arg;
+			return (__arg = new EnumType(e.getClass().getName(),
+				e.ordinal(), e.name()));
+		}
+		
+		// Wrap class types
+		else if (__arg instanceof Class)
+			return (__arg = new ClassType(((Class)__arg).getName()));
+		
+		// {@squirreljme.error ZZ0j Cannot utilize the given class as
+		// an argument to a system call. (The class type)}
+		else if (!(__arg instanceof Boolean ||
+			__arg instanceof Byte ||
+			__arg instanceof Short ||
+			__arg instanceof Character ||
+			__arg instanceof Integer ||
+			__arg instanceof Long ||
+			__arg instanceof Float ||
+			__arg instanceof Double ||
+			__arg instanceof String ||
+			__arg instanceof EnumType ||
+			__arg instanceof ClassType ||
+			__arg instanceof BooleanArray ||
+			__arg instanceof ByteArray ||
+			__arg instanceof ShortArray ||
+			__arg instanceof CharacterArray ||
+			__arg instanceof IntegerArray ||
+			__arg instanceof LongArray ||
+			__arg instanceof FloatArray ||
+			__arg instanceof DoubleArray ||
+			__arg instanceof StringArray ||
+			__arg instanceof RemoteMethod ||
+			__arg instanceof VoidType))
+			throw new InvalidSystemCallException(String.format("ZZ0j %s",
+				__arg.getClass()));
+		
+		// Is okay!
+		return __arg;
+	}
+	
+	/**
+	 * Validates the system call arguments to ensure they are valid.
+	 *
+	 * @param __args The arguments to call.
+	 * @return The input arguments.
+	 * @throws InvalidSystemCallException If the arguments are not valid.
+	 * @since 2018/03/18
+	 */
+	public static Object[] validateArguments(Object... __args)
+		throws InvalidSystemCallException
+	{
+		// Defensive copy always
+		__args = (__args == null ? new Object[0] : __args.clone());
+		
+		// Check argument inputs
+		for (int i = 0, n = __args.length; i < n; i++)
+		{
+			Object v = __args[i],
+				w = SystemCall.validateArgument(v);
+			
+			// Set if it has changed
+			if (v != w)
+				__args[i] = w;
+		}
+		
+		// Return the copy
+		return __args;
 	}
 	
 	/**
@@ -179,91 +299,15 @@ public final class SystemCall
 			throw new InvalidSystemCallException(String.format("ZZ0o %s",
 				__func));
 		
-		// Check argument inputs
-		for (int i = 0, n = __args.length; i < n; i++)
-		{
-			Object v = __args[i];
-			
-			// Nulls are always valid
-			if (v == null)
-				continue;
-			
-			// Primitive array types needs to be translated
-			if (v.getClass().isArray())
-			{
-				boolean isarray = true;
-				if (v instanceof boolean[])
-					v = new LocalBooleanArray((boolean[])v);
-				else if (v instanceof byte[])
-					v = new LocalByteArray((byte[])v);
-				else if (v instanceof short[])
-					v = new LocalShortArray((short[])v);
-				else if (v instanceof char[])
-					v = new LocalCharacterArray((char[])v);
-				else if (v instanceof int[])
-					v = new LocalIntegerArray((int[])v);
-				else if (v instanceof long[])
-					v = new LocalLongArray((long[])v);
-				else if (v instanceof float[])
-					v = new LocalFloatArray((float[])v);
-				else if (v instanceof double[])
-					v = new LocalDoubleArray((double[])v);
-				else if (v instanceof String[])
-					v = new LocalStringArray((String[])v);
-				
-				// {@squirreljme.error ZZ0k Cannot pass the specified array
-				// type as a system call. (The class type)}
-				else
-					throw new InvalidSystemCallException(
-						String.format("ZZ0k %s", v.getClass()));
-				
-				// Reset
-				__args[i] = v;
-			}
-			
-			// Wrap enumerated values
-			else if (v instanceof Enum)
-			{
-				Enum e = (Enum)v;
-				__args[i] = (v = new EnumType(e.getClass().getName(),
-					e.ordinal(), e.name()));
-			}
-			
-			// Wrap class types
-			else if (v instanceof Class)
-				__args[i] = (v = new ClassType(((Class)v).getName()));
-			
-			// {@squirreljme.error ZZ0j Cannot utilize the given class as
-			// an argument to a system call. (The class type)}
-			else if (!(v instanceof Boolean ||
-				v instanceof Byte ||
-				v instanceof Short ||
-				v instanceof Character ||
-				v instanceof Integer ||
-				v instanceof Long ||
-				v instanceof Float ||
-				v instanceof Double ||
-				v instanceof String ||
-				v instanceof EnumType ||
-				v instanceof ClassType ||
-				v instanceof LocalBooleanArray ||
-				v instanceof LocalByteArray ||
-				v instanceof LocalShortArray ||
-				v instanceof LocalCharacterArray ||
-				v instanceof LocalIntegerArray ||
-				v instanceof LocalLongArray ||
-				v instanceof LocalFloatArray ||
-				v instanceof LocalDoubleArray ||
-				v instanceof LocalStringArray))
-				throw new InvalidSystemCallException(String.format("ZZ0j %s",
-					v.getClass()));
-		}
+		// Validate all the arguments
+		__args = SystemCall.validateArguments(__args);
 		
 		// Perform the call but wrap any exceptions that may have been
 		// thrown by the remote end
 		try
 		{
-			return ((SystemCallDispatch)call).dispatch(__func, __args);
+			return SystemCall.validateArgument(
+				((SystemCallDispatch)call).dispatch(__func, __args));
 		}
 		
 		// Wrap exceptions so that local interfaces are consistent
