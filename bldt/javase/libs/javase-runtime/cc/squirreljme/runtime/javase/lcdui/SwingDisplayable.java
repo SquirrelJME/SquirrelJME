@@ -13,29 +13,27 @@ package cc.squirreljme.runtime.javase.lcdui;
 import cc.squirreljme.runtime.cldc.task.SystemTask;
 import cc.squirreljme.runtime.lcdui.DisplayableType;
 import cc.squirreljme.runtime.lcdui.server.LcdDisplayable;
-import cc.squirreljme.runtime.lcdui.server.LcdDisplayables;
 
 /**
- * The manager for Swing displayables.
+ * This is a displayable which utilizes Swing.
  *
  * @since 2018/03/18
  */
-public class SwingDisplayables
-	extends LcdDisplayables
+public class SwingDisplayable
+	extends LcdDisplayable
 {
 	/**
-	 * {@inheritDoc}
+	 * Initializes the swing displayable.
+	 *
+	 * @param __handle The handle for this displayable.
+	 * @param __task The task owning this displayable.
+	 * @param __type The type of displayable this is.
 	 * @since 2018/03/18
 	 */
-	@Override
-	protected LcdDisplayable internalCreateDisplayable(int __handle,
-		SystemTask __task, DisplayableType __type)
-		throws NullPointerException
+	public SwingDisplayable(int __handle, SystemTask __task,
+		DisplayableType __type)
 	{
-		if (__task == null || __type == null)
-			throw new NullPointerException("NARG");
-		
-		return new SwingDisplayable(__handle, __task, __type);
+		super(__handle, __task, __type);
 	}
 }
 

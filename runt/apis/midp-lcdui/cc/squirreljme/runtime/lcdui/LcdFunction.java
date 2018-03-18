@@ -18,14 +18,14 @@ package cc.squirreljme.runtime.lcdui;
  */
 public enum LcdFunction
 {
-	/** Queries all of the display indexes which are available for usage. */
-	QUERY_DISPLAYS,
-	
 	/** Create a displayable of a given type and return the handle to it. */
 	CREATE_DISPLAYABLE,
 	
 	/** Sets the title of a displayable. */
 	DISPLAYABLE_SET_TITLE,
+	
+	/** Queries all of the display indexes which are available for usage. */
+	QUERY_DISPLAYS,
 	
 	/** End. */
 	;

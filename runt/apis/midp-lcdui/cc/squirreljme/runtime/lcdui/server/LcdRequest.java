@@ -10,9 +10,12 @@
 
 package cc.squirreljme.runtime.lcdui.server;
 
+import cc.squirreljme.runtime.cldc.system.type.EnumType;
 import cc.squirreljme.runtime.cldc.system.type.IntegerArray;
 import cc.squirreljme.runtime.cldc.system.type.LocalIntegerArray;
+import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.cldc.task.SystemTask;
+import cc.squirreljme.runtime.lcdui.DisplayableType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
 
 /**
@@ -104,15 +107,21 @@ public final class LcdRequest
 	public final void run()
 	{
 		// Could fail
+		LcdFunction func = this.function;
 		try
 		{
-			LcdFunction func = this.function;
 			Object[] args = this._args;
 			
 			// Run function and store the result
-			Object result = null;
+			Object result = VoidType.INSTANCE;
 			switch (func)
 			{
+				case CREATE_DISPLAYABLE:
+					result = this.__createDisplayable(
+						((EnumType)args[0]).<DisplayableType>asEnum(
+						DisplayableType.class));
+					break;
+				
 				case QUERY_DISPLAYS:
 					result = this.__queryDisplays();
 					break;
@@ -132,10 +141,35 @@ public final class LcdRequest
 		catch (RuntimeException|Error e)
 		{
 			_tossed = e;
+			
+			// If this function is not a query then it has internally failed
+			// so print the trace
+			if (!func.query())
+				e.printStackTrace();
 		}
 		
 		// Finished execution
 		this._finished = true;
+	}
+	
+	/**
+	 * Creates a new displayable of the given type.
+	 *
+	 * @param __t The type of displayable to create.
+	 * @return The handle to the displayable.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/17
+	 */
+	private final int __createDisplayable(DisplayableType __t)
+		throws NullPointerException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		LcdServer server = this.server;
+		LcdDisplayable disp = server.state().displayables().
+			createDisplayable(server.task(), __t);
+		return disp.handle();
 	}
 	
 	/**
