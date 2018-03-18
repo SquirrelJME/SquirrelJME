@@ -185,8 +185,8 @@ public class SwingDisplayable
 			super.paintComponent(__g);
 			
 			BufferedImage image = this._image;
-			int xw = getWidth(),
-				xh = getHeight();
+			int xw = image.getWidth(),
+				xh = image.getHeight();
 			
 			// Have the remote end draw into our buffer as needed
 			Rectangle rect = __g.getClipBounds();
