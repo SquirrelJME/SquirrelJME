@@ -10,28 +10,16 @@
 
 package cc.squirreljme.runtime.javase.lcdui;
 
-import cc.squirreljme.runtime.cldc.task.SystemTask;
-import cc.squirreljme.runtime.lcdui.server.LcdDefinition;
-import cc.squirreljme.runtime.lcdui.server.LcdRequestHandler;
-import javax.swing.SwingUtilities;
+import cc.squirreljme.runtime.lcdui.server.LcdDisplays;
 
 /**
- * This contains the implementation of the LCDUI server which utilizes Swing
- * to display graphics to the user.
+ * This provides a single display that uses the Swing widget system for
+ * displaying graphics.
  *
- * @since 2018/03/15
+ * @since 2018/03/17
  */
-public class SwingDefinition
-	extends LcdDefinition
+public class SwingDisplays
+	extends LcdDisplays
 {
-	/**
-	 * Initializes the Swing LCDUI server.
-	 *
-	 * @since 2018/03/17
-	 */
-	public SwingDefinition()
-	{
-		super(new SwingRequestHandler(), new SwingDisplays());
-	}
 }
 
