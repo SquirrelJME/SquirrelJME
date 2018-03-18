@@ -10,7 +10,9 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.system.type.EnumType;
 import cc.squirreljme.runtime.cldc.system.type.RemoteMethod;
+import cc.squirreljme.runtime.lcdui.LcdCallback;
 
 /**
  * This is the callback used for displays so that the remote server can call
@@ -40,7 +42,15 @@ final class __DisplayCallback__
 		if (__args == null)
 			__args = new Object[0];
 		
-		throw new todo.TODO();
+		LcdCallback func = ((EnumType)__args[0]).<LcdCallback>asEnum(
+			LcdCallback.class);
+		switch (func)
+		{
+				// {@squirreljme.error EB23 Unknown LCDUI callback function.
+				// (The function)}
+			default:
+				throw new RuntimeException(String.format("EB23 %s", func));
+		}
 	}
 }
 
