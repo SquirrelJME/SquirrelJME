@@ -33,6 +33,9 @@ public enum LcdFunction
 	/** Queries all of the display indexes which are available for usage. */
 	QUERY_DISPLAYS,
 	
+	/** Registers the callback for this task. */
+	REGISTER_CALLBACK,
+	
 	/** End. */
 	;
 	
@@ -65,6 +68,7 @@ public enum LcdFunction
 			case CREATE_DISPLAYABLE:
 			case DISPLAY_SET_CURRENT:
 			case QUERY_DISPLAYS:
+			case REGISTER_CALLBACK:
 				return true;
 			
 			default:
