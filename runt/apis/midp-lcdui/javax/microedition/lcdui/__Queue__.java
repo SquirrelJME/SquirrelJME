@@ -37,7 +37,7 @@ final class __Queue__
 		new HashMap<>();
 	
 	/** Queue to tell the remote server that handles should be cleaned up. */
-	protected final ReferenceQueue<Displayable> _queue =
+	protected final ReferenceQueue<Displayable> _disqueue =
 		new ReferenceQueue<>();
 	
 	/**
@@ -57,7 +57,7 @@ final class __Queue__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/17
 	 */
-	final int __register(Displayable __d)
+	final int __registerDisplayable(Displayable __d)
 		throws NullPointerException
 	{
 		if (__d == null)
@@ -94,7 +94,7 @@ final class __Queue__
 		Map<Reference<Displayable>, Integer> distoid = this._distoid;
 		synchronized (distoid)
 		{
-			distoid.put(new WeakReference<>(__d, this._queue), dx);
+			distoid.put(new WeakReference<>(__d, this._disqueue), dx);
 		}
 		
 		// The displayable uses this index to interact with the server
