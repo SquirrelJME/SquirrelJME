@@ -52,6 +52,14 @@ public abstract class LcdDisplayable
 	}
 	
 	/**
+	 * Sets the title of the displayable.
+	 *
+	 * @param __t The displayable title.
+	 * @since 2018/03/18
+	 */
+	public abstract void setTitle(String __t);
+	
+	/**
 	 * Returns the handle of the displayable.
 	 *
 	 * @return The handle used.

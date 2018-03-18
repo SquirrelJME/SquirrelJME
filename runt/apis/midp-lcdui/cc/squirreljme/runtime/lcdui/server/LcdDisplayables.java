@@ -73,5 +73,55 @@ public abstract class LcdDisplayables
 		// Use this
 		return rv;
 	}
+	
+	/**
+	 * Returns the displayable by the given handle.
+	 *
+	 * @param __server The server requesting the handle.
+	 * @param __handle The handle to obtain.
+	 * @return The displayable.
+	 * @throws IllegalArgumentException If the displayable does not exist or
+	 * is of another task.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/18
+	 */
+	public final LcdDisplayable getDisplayable(LcdServer __server,
+		int __handle)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__server == null)
+			throw new NullPointerException("NARG");
+		
+		return this.getDisplayable(__server.task(), __handle);
+	}
+	
+	/**
+	 * Returns the displayable by the given handle.
+	 *
+	 * @param __task The task requesting the handle.
+	 * @param __handle The handle to obtain.
+	 * @return The displayable.
+	 * @throws IllegalArgumentException If the displayable does not exist or
+	 * is of another task.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/18
+	 */
+	public final LcdDisplayable getDisplayable(SystemTask __task, int __handle)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__task == null)
+			throw new NullPointerException("NARG");
+		
+		Map<Integer, LcdDisplayable> displayables = this._displayables;
+		
+		// {@squirreljme.error EB1y The specified handle does not exist
+		// for the given task. (The handle)}
+		LcdDisplayable rv = displayables.get(__handle);
+		if (rv == null || !__task.equals(rv.task()))
+			throw new IllegalStateException(String.format("EB1y %d",
+				__handle));
+		
+		return rv;
+	}
 }
 

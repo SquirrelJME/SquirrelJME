@@ -22,6 +22,9 @@ import cc.squirreljme.runtime.lcdui.server.LcdDisplayable;
 public class SwingDisplayable
 	extends LcdDisplayable
 {
+	/** The title to use. */
+	private volatile String _title;
+	
 	/**
 	 * Initializes the swing displayable.
 	 *
@@ -34,6 +37,18 @@ public class SwingDisplayable
 		DisplayableType __type)
 	{
 		super(__handle, __task, __type);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/18
+	 */
+	@Override
+	public void setTitle(String __t)
+	{
+		this._title = __t;
+		
+		// If this is bound to a display then update the title
 	}
 }
 

@@ -121,6 +121,11 @@ public final class LcdRequest
 						((EnumType)args[0]).<DisplayableType>asEnum(
 						DisplayableType.class));
 					break;
+					
+				case DISPLAYABLE_SET_TITLE:
+					this.__displayableSetTitle((Integer)args[0],
+						(String)args[1]);
+					break;
 				
 				case QUERY_DISPLAYS:
 					result = this.__queryDisplays();
@@ -170,6 +175,20 @@ public final class LcdRequest
 		LcdDisplayable disp = server.state().displayables().
 			createDisplayable(server.task(), __t);
 		return disp.handle();
+	}
+	
+	/**
+	 * Sets the title of the given displayable.
+	 *
+	 * @param __handle The handle of the displayable.
+	 * @param __title The title to use, {@code null} clears it.
+	 * @since 2018/03/17
+	 */
+	private final void __displayableSetTitle(int __handle, String __title)
+	{
+		LcdServer server = this.server;
+		server.state().displayables().getDisplayable(server, __handle).
+			setTitle(__title);
 	}
 	
 	/**
