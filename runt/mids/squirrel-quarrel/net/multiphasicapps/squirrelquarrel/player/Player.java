@@ -73,7 +73,7 @@ public class Player
 	 * @param __frame The current frame.
 	 * @since 2017/02/14
 	 */
-	void __run(int __frame)
+	public void run(int __frame)
 	{
 		throw new todo.TODO();
 	}

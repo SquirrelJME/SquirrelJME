@@ -32,7 +32,7 @@ public final class Players
 		// Initialize players
 		Player[] players = this._players;
 		for (int i = 0, n = players.length; i < n; i++)
-			players[i] = new Player(this, PlayerColor.of(i));
+			players[i] = new Player(PlayerColor.of(i));
 	}
 	
 	/**
@@ -63,7 +63,7 @@ public final class Players
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error BE01 Invalid player index. (The index)}
-		if (__i < 0 || __i >= PlayerColor.NUM_PLAYERS)
+		if (__i < 0 || __i >= PlayerColor.NUM_COLORS)
 			throw new IllegalArgumentException(String.format("BE01 %d", __i));
 		
 		return this._players[__i];
@@ -90,15 +90,15 @@ public final class Players
 	/**
 	 * Runs each individual player.
 	 *
-	 * @param __frame The current game frame.
+	 * @param __framenum The current game frame.
 	 * @since 2018/03/18
 	 */
-	public void run(int __frame)
+	public void run(int __framenum)
 	{
 		// Run the player logic for each player
 		Player[] players = this._players;
 		for (int i = 0, n = players.length; i < n; i++)
-			players[i].run(framenum);
+			players[i].run(__framenum);
 	}
 }
 

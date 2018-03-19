@@ -41,7 +41,7 @@ public class MegaTile
 		64;
 	
 	/** The size of megatiles in pixels. */
-	public static final int MEGA_TILE_PIXEL_SIZE =
+	public static final int PIXEL_SIZE =
 		256;
 	
 	/** The owning level */

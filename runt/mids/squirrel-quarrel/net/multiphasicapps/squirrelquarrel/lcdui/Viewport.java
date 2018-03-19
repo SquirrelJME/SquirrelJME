@@ -10,7 +10,8 @@
 
 package net.multiphasicapps.squirrelquarrel.lcdui;
 
-import net.multiphasicapps.squirrelquarrel.lcdui.world.MegaTile;
+import net.multiphasicapps.squirrelquarrel.world.MegaTile;
+import net.multiphasicapps.squirrelquarrel.world.Tile;
 
 /**
  * This represents a viewport into the level, it does not contain any
@@ -106,6 +107,8 @@ public final class Viewport
 	 */
 	public void setViewport(int __x, int __y)
 	{
+		throw new todo.TODO();
+		/*
 		// Translate the viewport
 		int viewx = __x,
 			viewy = __y,
@@ -153,6 +156,7 @@ public final class Viewport
 		this._msy = msy;
 		this._mex = mex;
 		this._mey = mey;
+		*/
 	}
 	
 	/**
