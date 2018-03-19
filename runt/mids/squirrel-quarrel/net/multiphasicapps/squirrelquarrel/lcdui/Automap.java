@@ -12,8 +12,8 @@ package net.multiphasicapps.squirrelquarrel.lcdui;
 
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
-import net.multiphasicapps.squirrelquarrel.Level;
-import net.multiphasicapps.squirrelquarrel.Player;
+import net.multiphasicapps.squirrelquarrel.world.World;
+import net.multiphasicapps.squirrelquarrel.players.Player;
 
 /**
  * This class is used to draw and update the automap which is used to give the
@@ -24,11 +24,11 @@ import net.multiphasicapps.squirrelquarrel.Player;
  */
 public class Automap
 {
-	/** The owning game interface. */
-	protected final GameInterface gameinterface;
+	/** The viewport which stores where the screen is looking. */
+	protected final Viewport viewport;
 	
 	/** The level to draw on. */
-	protected final Level level;
+	protected final World world;
 	
 	/** The background terrain image. */
 	protected final Image terrain;
