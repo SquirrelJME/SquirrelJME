@@ -40,18 +40,6 @@ public class MegaTile
 	public static final int TILES_IN_MEGA_TILE =
 		TILES_PER_MEGA_TILE * TILES_PER_MEGA_TILE;
 	
-	/** The shift for pixels. */
-	public static final int TILE_PIXEL_SHIFT =
-		5;
-	
-	/** The size of tiles in pixels. */
-	public static final int TILE_PIXEL_SIZE =
-		(1 << TILE_PIXEL_SHIFT);
-	
-	/** The mas for pixels. */
-	public static final int TILE_PIXEL_MASK =
-		TILE_PIXEL_SIZE - 1;
-	
 	/** The size of megatiles in pixels. */
 	public static final int MEGA_TILE_PIXEL_SIZE =
 		TILE_PIXEL_SIZE * TILES_PER_MEGA_TILE;
