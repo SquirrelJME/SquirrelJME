@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirrelquarrel;
+package net.multiphasicapps.squirrelquarrel.world;
 
 import java.io.DataInputStream;
 import java.io.InputStream;
@@ -20,8 +20,7 @@ import java.io.IOException;
  *
  * @since 2017/02/09
  */
-@Deprecated
-public class Level
+public class World
 {
 	/** The owning game. */
 	protected final Game game;
@@ -55,7 +54,7 @@ public class Level
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/10
 	 */
-	public Level(Game __g, InitialSettings __is)
+	public World(Game __g, InitialSettings __is)
 		throws NullPointerException
 	{
 		// Check
