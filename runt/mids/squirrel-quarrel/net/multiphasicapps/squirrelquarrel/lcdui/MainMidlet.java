@@ -69,8 +69,9 @@ public class MainMidlet
 			try (ByteArrayInputStream bais = new ByteArrayInputStream(
 				baos.toByteArray()))
 			{
-				// Setup new loop
-				looper = new GameLooper(null, ResumeMode.REPLAY, bais);
+				// Setup new loop resuming from the save game but using it
+				// as a replay
+				looper = GameLooper.resume(null, ResumeMode.REPLAY, bais);
 				
 				// Setup new canvas to show that game instead
 				gi = new GameInterface(looper);
