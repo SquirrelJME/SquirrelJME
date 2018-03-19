@@ -35,7 +35,7 @@ public class Player
 		throws NullPointerException
 	{
 		// Check
-		if (__g == null || __c == null)
+		if (__c == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
@@ -64,7 +64,7 @@ public class Player
 	 */
 	public int visionMask()
 	{
-		return this._vision;
+		return this._visionmask;
 	}
 	
 	/**

@@ -30,9 +30,6 @@ import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
  */
 public final class BaseUnitInfo
 {
-	/** The type of unit this has info for. */
-	public final UnitType type;
-	
 	/** Unit hitpoints. */
 	public final int hp;
 	
@@ -62,6 +59,9 @@ public final class BaseUnitInfo
 	
 	/** The dimension of the unit in pixels. */
 	public final Dimension pixeldimension;
+	
+	/** The offset. */
+	public final Point offset;
 	
 	/** Center point offset for the unit. */
 	public final Point centerpointoffset;
@@ -135,7 +135,7 @@ public final class BaseUnitInfo
 		this.pixeldimension = (pixeldimension = new Dimension(
 			attr.getValue("pixel-dimensions", "[0, 0]")));
 		Point offset;
-		this.centerpointoffset = (offset = new Point(
+		this.offset = (offset = new Point(
 			attr.getValue("pixel-offset", "(0, 0)")));
 		
 		// Parse size
@@ -148,7 +148,7 @@ public final class BaseUnitInfo
 			
 				// {@squirreljme.error BE0e Unknown unit size. (Unit size)}
 			default:
-				throw new IOException(String.format("BE0e %s", vsize));
+				throw new RuntimeException(String.format("BE0e %s", vsize));
 		}
 		
 		// Center point is just half the dimension

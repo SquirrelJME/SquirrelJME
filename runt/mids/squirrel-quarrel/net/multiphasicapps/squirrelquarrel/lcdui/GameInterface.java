@@ -11,7 +11,10 @@
 package net.multiphasicapps.squirrelquarrel.lcdui;
 
 import javax.microedition.lcdui.Canvas;
+import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.KeyListener;
 import net.multiphasicapps.squirrelquarrel.game.Game;
+import net.multiphasicapps.squirrelquarrel.game.GameLooper;
 
 /*import java.io.InputStream;
 import java.io.IOException;
@@ -24,7 +27,6 @@ import java.util.Map;
 import javax.microedition.lcdui.game.Sprite;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
-import javax.microedition.lcdui.KeyListener;
 import net.multiphasicapps.squirrelquarrel.Game;
 import net.multiphasicapps.squirrelquarrel.GameSpeed;
 import net.multiphasicapps.squirrelquarrel.Level;
@@ -46,7 +48,7 @@ public class GameInterface
 	extends Canvas
 {
 	/** The game being played. */
-	protected final Game game;
+	protected final GameLooper looper;
 	
 	/**
 	 * Initializes the game interface.
@@ -55,19 +57,21 @@ public class GameInterface
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/18
 	 */
-	public GameInterface(Game __g)
+	public GameInterface(GameLooper __g)
 		throws NullPointerException
 	{
 		if (__g == null)
 			throw new NullPointerException("NARG");
 		
-		this.game = __g;
+		this.looper = __g;
 		
 		// Setup details
 		setTitle("Squirrel Quarrel");
 		
 		// Use self as the key listener
-		this.setKeyListener(this.inputhandler);
+		throw new todo.TODO();
+		/*
+		this.setKeyListener(this.inputhandler);*/
 	}
 	
 	/**
@@ -77,8 +81,6 @@ public class GameInterface
 	@Override
 	public void paint(Graphics __g)
 	{
-		super.paint(__g);
-		
 		throw new todo.TODO();
 	}
 	
@@ -89,7 +91,9 @@ public class GameInterface
 	@Override
 	protected void pointerDragged(int __x, int __y)
 	{
-		this.inputhandler.pointerDragged(__x, __y);
+		throw new todo.TODO();
+		/*
+		this.inputhandler.pointerDragged(__x, __y);*/
 	}
 	
 	/**
@@ -99,7 +103,9 @@ public class GameInterface
 	@Override
 	protected void pointerPressed(int __x, int __y)
 	{
-		this.inputhandler.pointerPressed(__x, __y);
+		throw new todo.TODO();
+		/*
+		this.inputhandler.pointerPressed(__x, __y);*/
 	}
 	
 	/**
@@ -109,58 +115,9 @@ public class GameInterface
 	@Override
 	protected void pointerReleased(int __x, int __y)
 	{
-		this.inputhandler.pointerReleased(__x, __y);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/02/10
-	 */
-	@Override
-	public void run()
-	{
-		Game game = this.game;
-		GameInputHandler inputhandler = this.inputhandler;
-		for (;;)
-		{
-			// Get the current game speed and entry time
-			GameSpeed speed = this._speed;
-			long enter = System.nanoTime();
-			
-			// Run a single game cycle
-			game.run();
-			
-			// Perform local client event handling (commands and such)
-			inputhandler.run();
-			
-			// Request a repaint if there is enough time to draw
-			long exit = System.nanoTime();
-			if ((exit - enter) < speed.nanoFrameTime() && !this._inpaint)
-			{
-				int gameframe = game.frameCount(),
-					paintframe = this._renderframe;
-				
-				// Renderer seems to be a bit slow, skip the request
-				if (gameframe < paintframe - 1)
-					this._renderframe = gameframe;
-				
-				// Request repaint
-				else
-					repaint();
-			}
-			
-			// Delay thread for the next frame
-			exit = System.nanoTime();
-			long durr = (speed.nanoFrameTime() - (exit - enter)) / 1_000_000L;
-			if (durr > 0)
-				try
-				{
-					Thread.sleep(durr);
-				}
-				catch (InterruptedException e)
-				{
-				}
-		}
+		throw new todo.TODO();
+		/*
+		this.inputhandler.pointerReleased(__x, __y);*/
 	}
 	
 	/**

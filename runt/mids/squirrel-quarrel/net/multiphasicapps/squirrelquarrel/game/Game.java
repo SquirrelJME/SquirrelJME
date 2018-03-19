@@ -31,11 +31,10 @@ public class Game
 	implements Runnable
 {
 	/** The player manager. */
-	protected final Player players;
+	protected final Players players;
 	
 	/** The unit manager. */
-	protected final Units units =
-		new Units();
+	protected final Units units;
 	
 	/** Random number generator for games. */
 	protected final GameRandom random;
