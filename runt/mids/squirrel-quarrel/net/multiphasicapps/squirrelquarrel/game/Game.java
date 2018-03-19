@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirrelquarrel;
+package net.multiphasicapps.squirrelquarrel.game;
 
 import java.io.DataInputStream;
 import java.io.InputStream;
