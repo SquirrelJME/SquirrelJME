@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirrelquarrel.lcdui;
+package net.multiphasicapps.squirrelquarrel.ui;
 
 import net.multiphasicapps.squirrelquarrel.world.MegaTile;
 import net.multiphasicapps.squirrelquarrel.world.Tile;
