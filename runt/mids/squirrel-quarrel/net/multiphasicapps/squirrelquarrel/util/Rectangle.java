@@ -64,6 +64,19 @@ public final class Rectangle
 	}
 	
 	/**
+	 * Parses a rectanle from the given string.
+	 *
+	 * @param __s The string to parse.
+	 * @throws IllegalArgumentException If the string is not valid.
+	 * @since 2018/03/18
+	 */
+	public Rectangle(String __s)
+		throws IllegalArgumentException
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/02/17
 	 */
