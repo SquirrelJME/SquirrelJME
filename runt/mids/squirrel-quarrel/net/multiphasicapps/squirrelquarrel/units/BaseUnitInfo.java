@@ -18,9 +18,10 @@ import net.multiphasicapps.squirrelquarrel.util.Dimension;
 import net.multiphasicapps.squirrelquarrel.util.FixedPoint;
 import net.multiphasicapps.squirrelquarrel.util.Point;
 import net.multiphasicapps.squirrelquarrel.util.Rectangle;
+import net.multiphasicapps.squirrelquarrel.world.MegaTile;
+import net.multiphasicapps.squirrelquarrel.world.Tile;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
-import net.multiphasicapps.tool.manifest.JavaManifestKey;
 
 /**
  * This contains a cachable.
@@ -84,7 +85,7 @@ public final class BaseUnitInfo
 	public final int scoredestroy;
 	
 	/** The speed of this unit, in 16.16 fixed point. */
-	public final int speed;
+	public final ConstantFixedPoint speed;
 	
 	/**
 	 * Initializes the unit information from the given manifest.
@@ -100,162 +101,76 @@ public final class BaseUnitInfo
 		if (__m == null)
 			throw new NullPointerException("NARG");
 		
-			
-	/** Key for hitpoints. */
-	public static final JavaManifestKey HP_KEY =
-		new JavaManifestKey("hp");
+		// Need the attributes!
+		JavaManifestAttributes attr = __m.getMainAttributes();
 		
-	/** Key for shields. */
-	public static final JavaManifestKey SHIELDS_KEY =
-		new JavaManifestKey("shields");
-	
-	/** Key for armor. */
-	public static final JavaManifestKey ARMOR_KEY =
-		new JavaManifestKey("armor");
-	
-	/** Key for unit size. */
-	public static final JavaManifestKey SIZE_KEY =
-		new JavaManifestKey("size");
-	
-	/** Key for unit cost in salt. */
-	public static final JavaManifestKey SALT_COST_KEY =
-		new JavaManifestKey("salt-cost");
-	
-	/** Key for unit cost in peppers. */
-	public static final JavaManifestKey PEPPER_COST_KEY =
-		new JavaManifestKey("pepper-cost");
-	
-	/** Key for build time in frames. */
-	public static final JavaManifestKey BUILD_TIME_KEY =
-		new JavaManifestKey("build-time");
-	
-	/** Key for the amount of supply that is provided. */
-	public static final JavaManifestKey SUPPLY_PROVIDED_KEY =
-		new JavaManifestKey("supply-provided");
-	
-	/** Key for the amount of supply that is consumed. */
-	public static final JavaManifestKey SUPPLY_COST_KEY =
-		new JavaManifestKey("supply-cost");
-	
-	/** Key for the dimensions of the unit in pixels. */
-	public static final JavaManifestKey PIXEL_DIMENSIONS_KEY =
-		new JavaManifestKey("pixel-dimensions");
-	
-	/** Key for the offsets in dimensions (used for buildings). */
-	public static final JavaManifestKey OFFSET_DIMENSIONS_KEY =
-		new JavaManifestKey("offset-dimensions");
-	
-	/** The key for sight range. */
-	public static final JavaManifestKey SIGHT_RANGE_KEY =
-		new JavaManifestKey("sight");
-	
-	/** Key for the build score of the unit. */
-	public static final JavaManifestKey SCORE_BUILD_KEY =
-		new JavaManifestKey("score-build");
-	
-	/** Key for the destroy score of the unit. */
-	public static final JavaManifestKey SCORE_DESTROY_KEY =
-		new JavaManifestKey("score-destroy");
-	
-	/** Key for the speed of the unit. */
-	public static final JavaManifestKey SPEED_KEY =
-		new JavaManifestKey("speed");
-	
+		// Load these values directly
+		this.hp = Integer.parseInt(
+			attr.getValue("hp", "0"));
+		this.shields = Integer.parseInt(
+			attr.getValue("shields", "0"));
+		this.armor = Integer.parseInt(
+			attr.getValue("armor", "0"));
+		this.salt = Integer.parseInt(
+			attr.getValue("salt-cost", "0"));
+		this.methane = Integer.parseInt(
+			attr.getValue("methane-cost", "0"));
+		this.buildtime = Integer.parseInt(
+			attr.getValue("build-time", "0"));
+		this.supplyprovided = Integer.parseInt(
+			attr.getValue("supply-provided", "0"));
+		this.supplycost = Integer.parseInt(
+			attr.getValue("supply-cost", "0"));
+		this.sight = Integer.parseInt(
+			attr.getValue("sight", "0"));
+		this.scorebuild = Integer.parseInt(
+			attr.getValue("score-build", "0"));
+		this.scoredestroy = Integer.parseInt(
+			attr.getValue("score-destroy", "0"));
+		this.speed = new ConstantFixedPoint(
+			attr.getValue("speed", "0"));
 		
-		// Set
-		this.type = __t;
+		// Read dimensions
+		this.pixeldimension = new Dimension(
+			attr.getValue("pixel-dimensions", "[0, 0]"));
+		this.offset = new Dimension(
+			attr.getValue("pixel-offset", "(0, 0)"));
 		
-		// Could fail
-		String path = "units/" + TerrainType.__lower(__t.name()) + "/info";
-		try (InputStream is = BaseUnitInfo.class.getResourceAsStream(path))
+		// Parse size
+		String vsize = attr.getValue("size", "small");
+		switch (vsize)
 		{
-			// {@squirreljme.error BE0d No information resource exists for the
-			// given unit type. (The unit type; The attempted path)}
-			if (is == null)
-				throw new IOException(String.format("BE0d %s %s", __t, path));
+			case "small": this.size = UnitSize.SMALL; break;
+			case "medium": this.size = UnitSize.MEDIUM; break;
+			case "large": this.size = UnitSize.LARGE; break;
 			
-			// Load manifest
-			JavaManifest man = new JavaManifest(is);
-			JavaManifestAttributes attr = man.getMainAttributes();
-			
-			// Load these values directly
-			this.hp = Integer.parseInt(
-				Objects.toString(attr.get(HP_KEY), "0"));
-			this.shields = Integer.parseInt(
-				Objects.toString(attr.get(SHIELDS_KEY), "0"));
-			this.armor = Integer.parseInt(
-				Objects.toString(attr.get(ARMOR_KEY), "0"));
-			this.salt = Integer.parseInt(
-				Objects.toString(attr.get(SALT_COST_KEY), "0"));
-			this.pepper = Integer.parseInt(
-				Objects.toString(attr.get(PEPPER_COST_KEY), "0"));
-			this.buildtime = Integer.parseInt(
-				Objects.toString(attr.get(BUILD_TIME_KEY), "0"));
-			this.supplyprovided = Integer.parseInt(
-				Objects.toString(attr.get(SUPPLY_PROVIDED_KEY), "0"));
-			this.supplycost = Integer.parseInt(
-				Objects.toString(attr.get(SUPPLY_COST_KEY), "0"));
-			this.sight = Integer.parseInt(
-				Objects.toString(attr.get(SIGHT_RANGE_KEY), "0"));
-			this.scorebuild = Integer.parseInt(
-				Objects.toString(attr.get(SCORE_BUILD_KEY), "0"));
-			this.scoredestroy = Integer.parseInt(
-				Objects.toString(attr.get(SCORE_DESTROY_KEY), "0"));
-			this.speed = Integer.parseInt(
-				Objects.toString(attr.get(SPEED_KEY), "0"));
-			
-			// Parse size
-			String vsize = Objects.toString(attr.get(SIZE_KEY), "small");
-			switch (vsize)
-			{
-				case "small": this.size = UnitSize.SMALL; break;
-				case "medium": this.size = UnitSize.MEDIUM; break;
-				case "large": this.size = UnitSize.LARGE; break;
-				
-					// {@squirreljme.error BE0e Unknown unit size. (Unit size)}
-				default:
-					throw new IOException(String.format("BE0e %s", vsize));
-			}
-			
-			// Parse unit dimensions and potential offsets
-			Dimension pixeldimension = __parseDimension(
-				Objects.toString(attr.get(PIXEL_DIMENSIONS_KEY), "0 0"));
-			this.pixeldimension = pixeldimension;
-			
-			// Load offset to calculate building related details
-			Point offset = __parsePoint(
-				Objects.toString(attr.get(PIXEL_DIMENSIONS_KEY), "0 0"));
-			
-			// Center point is just half the dimension
-			this.centerpointoffset = new Point(pixeldimension.width / 2,
-				pixeldimension.height / 2);
-			
-			// Get total size of unit in tiles, rounded up to the megatile
-			int pxw = (pixeldimension.width + offset.x +
-					MegaTile.TILE_PIXEL_SIZE) & ~(MegaTile.TILE_PIXEL_MASK),
-				pxh = (pixeldimension.height + offset.y +
-					MegaTile.TILE_PIXEL_SIZE) & ~(MegaTile.TILE_PIXEL_MASK);
-			
-			// Determine tile dimension of unit
-			Dimension tiledimension = new Dimension(
-				pxw / MegaTile.TILE_PIXEL_SIZE,
-				pxh / MegaTile.TILE_PIXEL_SIZE);
-			this.tiledimension = tiledimension;
-			this.pixeltiledimension = new Dimension(
-				tiledimension.width / MegaTile.TILE_PIXEL_SIZE,
-				tiledimension.height / MegaTile.TILE_PIXEL_SIZE);
-			
-			// Offset to the center of the building is in the center of
-			// the tile dimensions
-			this.buildingcenterpointoffset = new Point(pxw / 2, pxh / 2);
+				// {@squirreljme.error BE0e Unknown unit size. (Unit size)}
+			default:
+				throw new IOException(String.format("BE0e %s", vsize));
 		}
 		
-		// {@squirreljme.error BE0f Failed to load information for the
-		// specified unit type. (The unit type)}
-		catch (IOException|NumberFormatException e)
-		{
-			throw new RuntimeException(String.format("BE0f %s", __t), e);
-		}
+		// Center point is just half the dimension
+		this.centerpointoffset = new Point(pixeldimension.width / 2,
+			pixeldimension.height / 2);
+		
+		// Get total size of unit in tiles, rounded up to the megatile
+		int pxw = (pixeldimension.width + offset.x +
+				Tile.PIXEL_SIZE) & ~(Tile.PIXEL_MASK),
+			pxh = (pixeldimension.height + offset.y +
+				Tile.PIXEL_SIZE) & ~(Tile.PIXEL_MASK);
+		
+		// Determine tile dimension of unit
+		Dimension tiledimension = new Dimension(
+			pxw / MegaTile.TILE_PIXEL_SIZE,
+			pxh / MegaTile.TILE_PIXEL_SIZE);
+		this.tiledimension = tiledimension;
+		this.pixeltiledimension = new Dimension(
+			tiledimension.width / MegaTile.TILE_PIXEL_SIZE,
+			tiledimension.height / MegaTile.TILE_PIXEL_SIZE);
+		
+		// Offset to the center of the building is in the center of
+		// the tile dimensions
+		this.buildingcenterpointoffset = new Point(pxw / 2, pxh / 2);
 	}
 	
 	/**
