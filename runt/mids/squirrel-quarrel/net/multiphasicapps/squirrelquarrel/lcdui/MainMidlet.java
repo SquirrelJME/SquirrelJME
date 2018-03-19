@@ -10,11 +10,15 @@
 
 package net.multiphasicapps.squirrelquarrel.lcdui;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import javax.microedition.lcdui.Display;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 import net.multiphasicapps.squirrelquarrel.game.Game;
 import net.multiphasicapps.squirrelquarrel.game.GameLooper;
+import net.multiphasicapps.squirrelquarrel.game.ResumeMode;
 
 /**
  * This is the main midlet entry point for Squirrel Quarrel.
@@ -45,16 +49,43 @@ public class MainMidlet
 		// Get the display for this MIDlet
 		Display disp = Display.getDisplay(this);
 		
-		// Setup game with the loop
-		GameLooper looper = new GameLooper(new Game());
+		// For initial testing purposes, this will setup and play a game
+		// then once it finishes it will reload it and allow watching the
+		// game which was just played
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
+		{
+			// Setup game with the loop
+			GameLooper looper = new GameLooper(baos);
+			
+			// Setup game canvas with an initial game
+			GameInterface gi = new GameInterface(looper);
+			disp.setCurrent(gi);
+			
+			// Run the game itself until it terminates
+			looper.run();
+			
+			// When the game finishes just play it back and hope it worked!
+			baos.flush();
+			try (ByteArrayInputStream bais = new ByteArrayInputStream(
+				baos.toByteArray()))
+			{
+				// Setup new loop
+				looper = new GameLooper(null, ResumeMode.REPLAY, bais);
+				
+				// Setup new canvas to show that game instead
+				gi = new GameInterface(looper);
+				disp.setCurrent(gi);
+				
+				// Run the game logic in that
+				looper.run();
+			}
+		}
 		
-		// Setup game canvas with an initial game
-		GameInterface gi = new GameInterface(looper);
-		disp.setCurrent(gi);
-		
-		// Run the game loop in the background
-		Thread t = new Thread(looper, "game-loop");
-		t.start();
+		// {@squirreljme.error BE0j Failed to rea/write something.}
+		catch (IOException e)
+		{
+			throw new RuntimeException("BE0j", e);
+		}
 	}
 }
 

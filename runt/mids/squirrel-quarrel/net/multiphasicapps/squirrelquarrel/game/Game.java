@@ -91,21 +91,17 @@ public class Game
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/10
 	 */
-	public Game(InputStream __is)
+	public Game(DataInputStream __is)
 		throws IOException, NullPointerException
 	{
 		// Check
 		if (__is == null)
 			throw new NullPointerException("NARG");
 		
-		// Wrap in a data input stream
-		DataInputStream input = ((__is instanceof DataInputStream) ?
-			(DataInputStream)__is : new DataInputStream(__is));
-		
 		// Re-initialize the random number generator
 		GameRandom random = new GameRandom(0);
-		random.setRawSeed((((long)input.readInt()) << 32L) |
-			input.readInt());
+		random.setRawSeed((((long)__is.readInt()) << 32L) |
+			__is.readInt());
 		
 		throw new todo.TODO();
 	}

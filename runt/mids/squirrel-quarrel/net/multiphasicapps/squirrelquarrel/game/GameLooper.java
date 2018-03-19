@@ -10,6 +10,12 @@
 
 package net.multiphasicapps.squirrelquarrel.game;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+
 /**
  * This manages and runs the game loop.
  *
@@ -22,19 +28,59 @@ public final class GameLooper
 	protected final Game game;
 	
 	/**
-	 * Initializes the game looper.
+	 * Initializes the game looper with the default settings.
 	 *
-	 * @param __g The game to run.
+	 * @param __out The stream to write replay data to.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/18
 	 */
-	public GameLooper(Game __g)
+	public GameLooper(OutputStream __out)
 		throws NullPointerException
 	{
-		if (__g == null)
+		this(__out, new InitialSettingsBuilder().build());
+	}
+	
+	/**
+	 * Initializes the game looper.
+	 *
+	 * @param __out The stream to write replay data to.
+	 * @param __i The initial settings for the game.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/18
+	 */
+	public GameLooper(OutputStream __out, InitialSettings __i)
+		throws NullPointerException
+	{
+		if (__out == null || __i == null)
 			throw new NullPointerException("NARG");
 		
-		this.game = __g;
+		this.game = new Game(__i);
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Initializes the game looper which decodes game state from the specified
+	 * stream.
+	 *
+	 * @param __out The stream to write replay data to.
+	 * @param __rm The resumption mode of the game.
+	 * @param __in The stream of serialized game data to read from.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/19
+	 */
+	public GameLooper(OutputStream __out, ResumeMode __rm, InputStream __in)
+		throws IOException, NullPointerException
+	{
+		if (__out == null || __rm == null || __in == null)
+			throw new todo.TODO();
+		
+		// Wrap in a data input stream
+		DataInputStream input = ((__in instanceof DataInputStream) ?
+			(DataInputStream)__in : new DataInputStream(__in));
+		
+		throw new todo.TODO();
 	}
 	
 	/**
