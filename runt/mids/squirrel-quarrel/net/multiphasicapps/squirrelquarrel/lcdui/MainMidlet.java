@@ -62,7 +62,7 @@ public class MainMidlet
 			disp.setCurrent(gi);
 			
 			// Run the game itself until it terminates
-			looper.run();
+			looper.run(gi);
 			
 			// When the game finishes just play it back and hope it worked!
 			baos.flush();
@@ -78,7 +78,7 @@ public class MainMidlet
 				disp.setCurrent(gi);
 				
 				// Run the game logic in that
-				looper.run();
+				looper.run(gi);
 			}
 		}
 		
