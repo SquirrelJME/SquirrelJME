@@ -14,6 +14,7 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import net.multiphasicapps.squirrelquarrel.world.World;
 import net.multiphasicapps.squirrelquarrel.players.Player;
+import net.multiphasicapps.squirrelquarrel.ui.Viewport;
 
 /**
  * This class is used to draw and update the automap which is used to give the
@@ -54,15 +55,17 @@ public class Automap
 	/**
 	 * Initializes the automap.
 	 *
-	 * @param __gi The owning game interface.
+	 * @param __v The viewport into the game.
 	 * @param __w The automap width.
 	 * @param __h The automap height.
 	 * @throws NullPointerException On null arguments
 	 * @since 2017/02/12
 	 */
-	public Automap(GameInterface __gi, int __w, int __h)
+	public Automap(Viewport __v, int __w, int __h)
 		throws NullPointerException
 	{
+		throw new todo.TODO();
+		/*
 		// Check
 		if (__gi == null)
 			throw new NullPointerException("NARG");
@@ -89,6 +92,7 @@ public class Automap
 		Image terrain = Image.createImage(__w, __h);
 		this.terrain = terrain;
 		__drawLayer(terrain.getGraphics(), false);
+		*/
 	}
 	
 	/**
@@ -110,6 +114,8 @@ public class Automap
 	 */
 	public Image update()
 	{
+		throw new todo.TODO();
+		/*
 		GameInterface gameinterface = this.gameinterface;
 		Image terrain = this.terrain;
 		Image active = this.active;
@@ -150,6 +156,7 @@ public class Automap
 		
 		// Return the active map
 		return this.active;
+		*/
 	}
 	
 	/**
@@ -173,6 +180,8 @@ public class Automap
 	private void __drawLayer(Graphics __g, boolean __fog)
 		throws NullPointerException
 	{
+		throw new todo.TODO();
+		/*
 		// Check
 		if (__g == null)
 			throw new NullPointerException("NARG");
@@ -213,6 +222,7 @@ public class Automap
 				// Draw single pixel as a line
 				__g.drawLine((int)dx, (int)dy, (int)dx + 1, (int)dy);
 			}
+		*/
 	}
 }
 
