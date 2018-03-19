@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirrelquarrel.game;
 
+import net.multiphasicapps.squirrelquarrel.world.MegaTile;
+
 /**
  * This is used to build the initial settings for the game.
  *
