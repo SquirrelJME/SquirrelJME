@@ -23,8 +23,8 @@ import net.multiphasicapps.squirrelquarrel.util.ReplayOutputStream;
 public final class GameLooper
 	implements Runnable
 {
-	/** The output for replays. */
-	protected final ReplayOutputStream replay;
+	/** The output for replay recordings. */
+	protected final ReplayOutputStream record;
 	
 	/** The game to loop for. */
 	protected final Game game;
@@ -55,6 +55,11 @@ public final class GameLooper
 	{
 		if (__out == null || __i == null)
 			throw new NullPointerException("NARG");
+		
+		// Setup replay output for consistent game recording
+		ReplayOutputStream record = new ReplayOutputStream(__out);
+		this.record = record;
+		__i.demoRecord(record);
 		
 		this.game = new Game(__i);
 		
@@ -132,7 +137,17 @@ public final class GameLooper
 		if (__out == null || __rm == null || __in == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Setup input replay strema
+		ReplayInputStream replay = new ReplayInputStream(__in);
+		
+		// Read initial settings from the replay and initialize the game
+		InitialSettings init = InitialSettings.demoReplay(replay);
+		GameLooper rv = new GameLooper(__out, init);
+		
+		if (true)
+			throw new todo.TODO();
+		
+		return rv;
 	}
 }
 

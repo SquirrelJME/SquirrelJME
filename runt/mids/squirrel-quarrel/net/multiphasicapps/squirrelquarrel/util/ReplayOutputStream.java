@@ -41,5 +41,52 @@ public final class ReplayOutputStream
 		this.out = (__out instanceof DataOutputStream ?
 			(DataOutputStream)__out : new DataOutputStream(__out));
 	}
+	
+	/**
+	 * Writes an integer value.
+	 *
+	 * @param __v The value to write.
+	 * @throws ReplayIOException If it could not be written.
+	 * @since 2018/03/19
+	 */
+	public void writeInt(int __v)
+		throws ReplayIOException
+	{
+		try
+		{
+			this.out.writeInt(__v);
+		}
+		
+		// {@squirreljme.error BE0o Could not write the integer value.
+		// (The value to write)}
+		catch (IOException e)
+		{
+			throw new ReplayIOException(String.format("BE0o %d", __v), e);
+		}
+	}
+	
+	/**
+	 * Writes a long value.
+	 *
+	 * @param __v The value to write.
+	 * @throws ReplayIOException If it could not be written.
+	 * @since 2018/03/19
+	 */
+	public void writeLong(long __v)
+		throws ReplayIOException
+	{
+		try
+		{
+			this.out.writeInt((int)(__v >> 32));
+			this.out.writeInt((int)__v);
+		}
+		
+		// {@squirreljme.error BE0p Could not write the long value.
+		// (The value to write)}
+		catch (IOException e)
+		{
+			throw new ReplayIOException(String.format("BE0p %d", __v), e);
+		}
+	}
 }
 
