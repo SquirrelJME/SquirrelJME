@@ -57,7 +57,7 @@ public final class UnitReference
 		if (!(__o instanceof UnitReference))
 			return false;
 		
-		return this.id == ((Unit)__o).id;
+		return this.id == ((UnitReference)__o).id;
 	}
 	
 	/**
@@ -70,6 +70,27 @@ public final class UnitReference
 		return this.id;
 	}
 	
-	public final
+	/**
+	 * Returns the unit this is a reference to or {@code null} if it has been
+	 * deleted/killed.
+	 *
+	 * @return The unit this points to or {@code null} if it has been
+	 * deleted/killed.
+	 * @since 2018/03/19
+	 */
+	public final Unit get()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/19
+	 */
+	@Override
+	public final String toString()
+	{
+		throw new todo.TODO();
+	}
 }
 

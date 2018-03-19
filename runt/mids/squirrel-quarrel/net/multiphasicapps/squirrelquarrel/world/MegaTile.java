@@ -38,11 +38,11 @@ public class MegaTile
 	
 	/** The number of tiles in mega tiles. */
 	public static final int TILES_IN_MEGA_TILE =
-		TILES_PER_MEGA_TILE * TILES_PER_MEGA_TILE;
+		64;
 	
 	/** The size of megatiles in pixels. */
 	public static final int MEGA_TILE_PIXEL_SIZE =
-		TILE_PIXEL_SIZE * TILES_PER_MEGA_TILE;
+		256;
 	
 	/** The owning level */
 	protected final Level level;
@@ -100,40 +100,6 @@ public class MegaTile
 			for (int x = 0; x < TILES_PER_MEGA_TILE; x++)
 				terrain[(y * TILES_PER_MEGA_TILE) + x] =
 					(byte)(((x + y) / 2) & 1);
-	}
-	
-	/**
-	 * Loads units to be drawn into the specified collection.
-	 *
-	 * @param __d The target collection.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/02/17
-	 */
-	public void loadLinkedUnits(Collection<Unit.Pointer> __d)
-		throws NullPointerException
-	{
-		// Check
-		if (__d == null)
-			throw new NullPointerException("NARG");
-		
-		// Could fail
-		try
-		{
-			for (Unit u : this._units)
-				try
-				{
-					__d.add(u.pointer());
-				}
-				catch (UnitDeletedException e)
-				{
-					// Ignore
-				}
-		}
-		
-		// Links were modified, stop reading
-		catch (ConcurrentModificationException e)
-		{
-		}
 	}
 	
 	/**
@@ -239,7 +205,7 @@ public class MegaTile
 	 * @param __frame The current frame.
 	 * @since 2017/02/14
 	 */
-	void __run(int __frame)
+	public void run(int __frame)
 	{
 		// Cycle the fog of war?
 		if ((__frame & _FOG_OF_WAR_CYCLE_MASK) == 0)
