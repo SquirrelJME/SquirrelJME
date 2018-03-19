@@ -20,6 +20,7 @@ import java.io.IOException;
  *
  * @since 2017/02/09
  */
+@Deprecated
 public class Level
 {
 	/** The owning game. */

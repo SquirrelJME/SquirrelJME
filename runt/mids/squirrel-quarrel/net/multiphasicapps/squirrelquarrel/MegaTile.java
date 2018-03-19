@@ -26,6 +26,7 @@ import java.util.Set;
  *
  * @since 2017/02/09
  */
+@Deprecated
 public class MegaTile
 {
 	/** The number of frames which must pass before fog of war is cycled. */
