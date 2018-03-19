@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.squirrelquarrel.lcdui;
 
+import javax.microedition.Graphics;
+import javax.microedition.Image;
+
 /**
  * This contains the renderer for the level and performs the actual drawing
  * of the game to the canvas.
@@ -18,9 +21,6 @@ package net.multiphasicapps.squirrelquarrel.lcdui;
  */
 public final class Renderer
 {
-	/** Debug image. */
-	protected final Image debugimage;
-	
 	/** The width of the level in pixels. */
 	protected final int levelpxw;
 	
@@ -41,39 +41,15 @@ public final class Renderer
 		new ArrayList<>();
 	
 	/**
-	 * Initializes some parts of the rendered.
+	 * Paints the game to the given graphics.
 	 *
-	 * @since 2018/03/18
-	 */
-	{
-		// Draw debug image
-		int ww = 200, hh = 100;
-		Image debugimage = Image.createImage(ww, hh, true, 0);
-		this.debugimage = debugimage;
-		ww--;
-		hh--;
-		Graphics g = debugimage.getGraphics();
-		g.setColor(0xFF0000);
-		g.drawLine(0, 0, ww, 0);
-		g.drawLine((ww / 2), (hh / 2), (ww / 2), 0);
-		g.setColor(0x00FF00);
-		g.drawLine(ww, 0, ww, hh);
-		g.drawLine((ww / 2), (hh / 2), ww, (hh / 2));
-		g.setColor(0x0000FF);
-		g.drawLine(ww, hh, 0, hh);
-		g.drawLine((ww / 2), (hh / 2), (ww / 2), hh);
-		g.setColor(0xFFFF00);
-		g.drawLine(0, hh, 0, 0);
-		g.drawLine((ww / 2), (hh / 2), 0, (hh / 2));
-	}
-	
-	/**
-	 * {@inheritDoc}
+	 * @param __g The graphics to draw on.
 	 * @since 2017/02/08
 	 */
-	@Override
 	public void paint(Graphics __g)
 	{
+		throw new todo.TODO();
+		/*
 		// If already painting, do not duplicate a paint
 		if (this._inpaint)
 			return;
@@ -171,8 +147,8 @@ public final class Renderer
 		int ww = debugimage.getWidth(), hh = debugimage.getHeight();
 		int sx = 50 - 5, sy = 50 - 5,
 			ex = sx + ((ww * 3) + 10), ey = sy + ((hh * 3) + 10);
-		/*__g.drawRegion(debugimage, 0, 0, ww, hh, Sprite.TRANS_NONE,
-			sx + 5, sy + 5, 0, ww * 3, hh * 3);*/
+		__g.drawRegion(debugimage, 0, 0, ww, hh, Sprite.TRANS_NONE,
+			sx + 5, sy + 5, 0, ww * 3, hh * 3);
 		__g.setColor(0xFF0000);
 		__g.drawLine(sx, sy, ex, sy);
 		__g.setColor(0x00FF00);
@@ -184,6 +160,7 @@ public final class Renderer
 		
 		// No longer painting
 		this._inpaint = false;
+		*/
 	}
 	
 	/**
@@ -195,6 +172,8 @@ public final class Renderer
 	 */
 	private void __drawUnits(Graphics __g, MegaTile __mt)
 	{
+		throw new todo.TODO();
+		/*
 		// Store the old clip
 		int oldcx = __g.getClipX(),
 			oldcy = __g.getClipY(),
@@ -243,6 +222,7 @@ public final class Renderer
 		
 		// Restore the old clip
 		__g.setClip(oldcx, oldcy, oldcw, oldch);
+		*/
 	}
 }
 
