@@ -21,6 +21,12 @@ public enum LcdFunction
 	/** Create a displayable of a given type and return the handle to it. */
 	CREATE_DISPLAYABLE,
 	
+	/** Returns the displayable height. */
+	DISPLAYABLE_GET_HEIGHT,
+	
+	/** Returns the displayable width. */
+	DISPLAYABLE_GET_WIDTH,
+	
 	/** Repaints a displayable. */
 	DISPLAYABLE_REPAINT,
 	
@@ -66,6 +72,8 @@ public enum LcdFunction
 		switch (this)
 		{
 			case CREATE_DISPLAYABLE:
+			case DISPLAYABLE_GET_HEIGHT:
+			case DISPLAYABLE_GET_WIDTH:
 			case DISPLAY_SET_CURRENT:
 			case QUERY_DISPLAYS:
 			case REGISTER_CALLBACK:

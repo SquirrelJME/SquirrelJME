@@ -70,6 +70,17 @@ public final class GameLooper
 	}
 	
 	/**
+	 * Returns the game this provides a loop for.
+	 *
+	 * @return The game being looped.
+	 * @since 2018/03/18
+	 */
+	public final Game game()
+	{
+		return this.game;
+	}
+	
+	/**
 	 * Runs multiple game frames.
 	 *
 	 * @param __fs Callback for when game frames are updated.

@@ -239,15 +239,11 @@ public abstract class Displayable
 	 */
 	final int __getHeight()
 	{
-		throw new todo.TODO();
-		/*
-		// Use width of default head
-		Display d = __currentDisplay();
-		if (d == null)
+		int rv = LcdServiceCall.<Integer>call(Integer.class,
+			LcdFunction.DISPLAYABLE_GET_HEIGHT, this._handle);
+		if (rv < 0)
 			return Display.getDisplays(0)[0].getHeight();
-		
-		// Use the draw space size
-		return __drawSpace().height();*/
+		return rv;
 	}
 	
 	/**
@@ -260,15 +256,11 @@ public abstract class Displayable
 	 */
 	final int __getWidth()
 	{
-		throw new todo.TODO();
-		/*
-		// Use width of default head
-		Display d = __currentDisplay();
-		if (d == null)
+		int rv = LcdServiceCall.<Integer>call(Integer.class,
+			LcdFunction.DISPLAYABLE_GET_WIDTH, this._handle);
+		if (rv < 0)
 			return Display.getDisplays(0)[0].getWidth();
-		
-		// Use the draw space size
-		return __drawSpace().width();*/
+		return rv;
 	}
 	
 	/**
