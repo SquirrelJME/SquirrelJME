@@ -18,5 +18,23 @@ package net.multiphasicapps.squirrelquarrel.units;
  */
 public final class ModifiedUnitInfo
 {
+	/** Basic unit information. */
+	protected final BaseUnitInfo base;
+	
+	/**
+	 * Initializes the modified unit information.
+	 *
+	 * @param __i The base unit information.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/19
+	 */
+	public ModifiedUnitInfo(BaseUnitInfo __i)
+		throws NullPointerException
+	{
+		if (__i == null)
+			throw new NullPointerException("NARG");
+		
+		this.base = __i;
+	}
 }
 

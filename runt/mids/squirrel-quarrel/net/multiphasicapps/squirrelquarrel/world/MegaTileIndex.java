@@ -78,5 +78,18 @@ public final class MegaTileIndex
 	{
 		throw new todo.TODO();
 	}
+	
+	/**
+	 * Translates a position to the position ordinal.
+	 *
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @return The ordinal in the tile map.
+	 * @since 2018/03/19
+	 */
+	public static final int positionToOrdinal(int __x, int __y)
+	{
+		throw new todo.TODO();
+	}
 }
 

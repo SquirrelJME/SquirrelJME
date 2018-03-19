@@ -20,23 +20,13 @@ import java.util.List;
  *
  * @since 2017/02/14
  */
-public class Unit
+public final class Unit
 {
-	/** The game which owns this unit. */
-	protected final Game game;
-	
-	/** The megatiles that this unit is in. */
-	final List<MegaTile> _linked =
-		new ArrayList<>();
+	/** The linker for units. */
+	protected final UnitLinker linker;
 	
 	/** The current unit type. */
 	private volatile UnitType _type;
-	
-	/** The unit information. */
-	private volatile UnitInfo _info;
-	
-	/** A pointer to this unit. */
-	private volatile Reference<Unit.Pointer> _pointer;
 	
 	/** Was this unit deleted? */
 	private volatile boolean _deleted;
@@ -47,8 +37,11 @@ public class Unit
 	/** Unit shields. */
 	private volatile int _shields;
 	
-	/** Is this unit linked? */
+	/** Is this unit linked into the megatile map? */
 	private volatile boolean _islinked;
+	
+	/** Reference to this unit via pointer. */
+	private volatile Reference<UnitReference> _ref;
 	
 	/** Actual center position. */
 	volatile int _cx, _cy;
@@ -59,19 +52,19 @@ public class Unit
 	/**
 	 * Initializes the unit.
 	 *
-	 * @param __g The owning game.
+	 * @param __id The ID of the unit.
+	 * @param __ln The linker for units.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2017/02/14
+	 * @since 2018/03/19
 	 */
-	Unit(Game __g)
+	public Unit(int __id, UnitLinker __ln)
 		throws NullPointerException
 	{
-		// Check
-		if (__g == null)
+		if (__ln == null)
 			throw new NullPointerException("NARG");
 		
-		// Set
-		this.game = __g;
+		this.id = __id;
+		this.linker = __ln;
 	}
 	
 	/**
@@ -94,6 +87,106 @@ public class Unit
 	public int centerY()
 	{
 		return this._cy;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/19
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		if (this == __o)
+			return true;
+		
+		if (!(__o instanceof Unit))
+			return false;
+		
+		return this.id == ((Unit)__o).id;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/19
+	 */
+	@Override
+	public final int hashCode()
+	{
+		return this.id;
+	}
+	
+	/**
+	 * Returns the ID of this unit.
+	 *
+	 * @return The unit ID.
+	 * @since 2018/03/19
+	 */
+	public final int id()
+	{
+		return this.id;
+	}
+	
+	/**
+	 * Runs the unit logic.
+	 *
+	 * @param __framenum The frame number.
+	 * @return {@code true} if the unit was deleted.
+	 * @since 2017/02/14
+	 */
+	boolean run(int __framenum)
+	{
+		// If the unit was deleted, do nothing
+		if (this._deleted)
+			return true;
+		
+		// Do not think for units which are not linked, but do not delete them
+		if (!this._islinked)
+			return false;
+		
+		// Not deleted
+		return false;
+	}
+	
+	/**
+	 * Returns the unit type.
+	 *
+	 * @return The unit type.
+	 * @since 2017/02/17
+	 */
+	public UnitType type()
+	{
+		return this._type;
+	}
+	
+	
+	
+	
+	/** The megatiles that this unit is in. */
+	final List<MegaTile> _linked =
+		new ArrayList<>();
+	
+	/** The unit information. */
+	private volatile UnitInfo _info;
+	
+	/** A pointer to this unit. */
+	private volatile Reference<Unit.Pointer> _pointer;
+	
+	/**
+	 * Initializes the unit.
+	 *
+	 * @param __g The owning game.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2017/02/14
+	 */
+	Unit(Game __g)
+		throws NullPointerException
+	{
+		// Check
+		if (__g == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.game = __g;
 	}
 	
 	/**
@@ -171,17 +264,6 @@ public class Unit
 			this._pointer = new WeakReference<>(rv = new Unit.Pointer(this));
 		
 		return rv;
-	}
-	
-	/**
-	 * Returns the unit type.
-	 *
-	 * @return The unit type.
-	 * @since 2017/02/17
-	 */
-	public UnitType type()
-	{
-		return this._type;
 	}
 	
 	/**
@@ -281,113 +363,6 @@ public class Unit
 		this._y1 = __y - mh;
 		this._x2 = __x + mw;
 		this._y2 = __y + mh;
-	}
-	
-	/**
-	 * Runs the unit logic.
-	 *
-	 * @param __framenum The frame number.
-	 * @return {@code true} if the unit was deleted.
-	 * @since 2017/02/14
-	 */
-	boolean __run(int __framenum)
-	{
-		// If the unit was deleted, do nothing
-		if (this._deleted)
-			return true;
-		
-		// Do not think for units which are not linked, but do not delete them
-		if (!this._islinked)
-			return false;
-		
-		// Not deleted
-		return false;
-	}
-	
-	/**
-	 * This is a pointer which points to a unit, it is used to allow units to
-	 * refer to other units and having it where they can be referenced without
-	 * needing to handle unit removal themselves. Since units would be garbage
-	 * collected, it would be unspecified using references when units actually
-	 * go away.
-	 *
-	 * @since 2017/02/14
-	 */
-	public static class Pointer
-	{
-		/** The unit hash code, needed because pointers can be hashmaps. */
-		protected final int hash;
-		
-		/** The unit this points to. */
-		private volatile Unit _unit;
-		
-		/**
-		 * Initializes the unit pointer.
-		 *
-		 * @param __u The unit to point to.
-		 * @throws NullPointerException On null arguments.
-		 * @since 2017/02/14
-		 */
-		private Pointer(Unit __u)
-			throws NullPointerException
-		{
-			// Check
-			if (__u == null)
-				throw new NullPointerException("NARG");
-			
-			// The unit it points to
-			this._unit = __u;
-			hash = __u.hashCode();
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2017/02/16
-		 */
-		@Override
-		public boolean equals(Object __o)
-		{
-			if (!(__o instanceof Pointer))
-				return false;
-			
-			Pointer o = (Pointer)__o;
-			Unit a = this._unit, b = o._unit;
-			
-			// Null pointers only compare to self
-			if (a == null || b == null)
-				return (this == __o);
-			
-			// Otherwise must be the same unit
-			return a == b;
-		}
-		
-		/**
-		 * Returns the unit that this pointer points to.
-		 *
-		 * @return The unit this points to.
-		 * @throws UnitDeletedException If the unit was deleted.
-		 * @since 2017/02/14
-		 */
-		public Unit get()
-			throws UnitDeletedException
-		{
-			// {@squirreljme.error BE0c The unit has been deleted.}
-			Unit rv = this._unit;
-			if (rv == null)
-				throw new UnitDeletedException("BE0c");
-			
-			return rv;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2017/02/16
-		 */
-		@Override
-		public int hashCode()
-		{
-			return this.hash;
-		}
 	}
 }
 
