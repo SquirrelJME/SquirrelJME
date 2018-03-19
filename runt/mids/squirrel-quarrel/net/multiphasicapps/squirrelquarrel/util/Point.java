@@ -48,10 +48,11 @@ public final class Point
 	 *
 	 * @param __s The string to parse.
 	 * @throws IllegalArgumentException If the string is not valid.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/18
 	 */
 	public Point(String __s)
-		throws IllegalArgumentException
+		throws IllegalArgumentException, NullPointerException
 	{
 		throw new todo.TODO();
 	}
