@@ -44,7 +44,7 @@ public final class MegaTileIndex
 	 * @since 2018/03/18
 	 */
 	@Override
-	public final boolean compareTo(MegaTileIndex __o)
+	public final int compareTo(MegaTileIndex __o)
 	{
 		throw new todo.TODO();
 	}

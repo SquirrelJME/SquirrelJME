@@ -18,9 +18,10 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
-import net.multiphasicapps.squirrelquarrel.Level;
-import net.multiphasicapps.squirrelquarrel.MegaTile;
-import net.multiphasicapps.squirrelquarrel.TerrainType;
+import net.multiphasicapps.squirrelquarrel.world.World;
+import net.multiphasicapps.squirrelquarrel.world.MegaTile;
+import net.multiphasicapps.squirrelquarrel.world.TerrainType;
+import net.multiphasicapps.squirrelquarrel.world.Tile;
 
 /**
  * This is used to cache mega tiles as single large images since drawing a
@@ -39,7 +40,7 @@ public class MegaTileCacher
 		new HashMap<>();
 	
 	/** The level to cache for. */
-	protected final Level level;
+	protected final World world;
 	
 	/** The cache of tiles. */
 	protected final Map<MegaTile, Reference<Image>> cache =
@@ -52,7 +53,7 @@ public class MegaTileCacher
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/10
 	 */
-	public MegaTileCacher(Level __l)
+	public MegaTileCacher(World __l)
 		throws NullPointerException
 	{
 		// Check
@@ -60,7 +61,7 @@ public class MegaTileCacher
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.level = __l;
+		this.world = __l;
 	}
 	
 	/**
@@ -73,7 +74,7 @@ public class MegaTileCacher
 	 */
 	public Image cacheMegaTile(int __x, int __y)
 	{
-		return cacheMegaTile(this.level.megaTile(__x, __y));
+		return cacheMegaTile(this.world.megaTile(__x, __y));
 	}
 	
 	/**
@@ -99,8 +100,8 @@ public class MegaTileCacher
 		if (ref == null || null == (rv = ref.get()))
 		{
 			// Create image to draw on
-			rv = Image.createImage(MegaTile.MEGA_TILE_PIXEL_SIZE,
-				MegaTile.MEGA_TILE_PIXEL_SIZE);
+			rv = Image.createImage(MegaTile.PIXEL_SIZE,
+				MegaTile.PIXEL_SIZE);
 			
 			// Draw on it
 			Graphics g = rv.getGraphics();
@@ -111,9 +112,9 @@ public class MegaTileCacher
 			
 			// Go through the megatile to draw
 			for (int ty = 0, dy = 0; ty < MegaTile.TILES_PER_MEGA_TILE;
-				ty++, dy += MegaTile.TILE_PIXEL_SIZE)
+				ty++, dy += Tile.PIXEL_SIZE)
 				for (int tx = 0, dx = 0; tx < MegaTile.TILES_PER_MEGA_TILE;
-					tx++, dx += MegaTile.TILE_PIXEL_SIZE)
+					tx++, dx += Tile.PIXEL_SIZE)
 				{
 					// If the terrain type is the same then use the existing
 					// image of it rather than checking the cache every
