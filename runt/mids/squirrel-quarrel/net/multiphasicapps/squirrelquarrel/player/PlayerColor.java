@@ -49,6 +49,10 @@ public enum PlayerColor
 	public static final int MAX_PLAYERS =
 		4;
 	
+	/** The number of player colors. */
+	public static final int NUM_COLORS =
+		6;
+	
 	/** Creeps that just annoy you. */
 	public static final PlayerColor CREEPS =
 		PlayerColor.PURPLE;

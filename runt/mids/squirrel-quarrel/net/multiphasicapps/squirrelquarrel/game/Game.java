@@ -15,6 +15,11 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import net.multiphasicapps.squirrelquarrel.player.Player;
+import net.multiphasicapps.squirrelquarrel.player.Players;
+import net.multiphasicapps.squirrelquarrel.player.PlayerColor;
+import net.multiphasicapps.squirrelquarrel.units.Units;
+import net.multiphasicapps.squirrelquarrel.world.World;
 
 /**
  * This class contains the state for a single game.
@@ -24,34 +29,22 @@ import java.util.List;
 public class Game
 	implements Runnable
 {
+	/** The player manager. */
+	protected final Player players =
+		new Players();
+	
+	/** The unit manager. */
+	protected final Units units =
+		new Units();
+	
 	/** Random number generator for games. */
 	protected final GameRandom random;
 	
-	/** The level data. */
-	protected final Level level;
-	
-	/** Units in the game. */
-	private final List<Unit> _units =
-		new ArrayList<>();
-	
-	/** Players in the game. */
-	private final Player[] _players =
-		new Player[PlayerColor.NUM_PLAYERS];
+	/** The level information. */
+	protected final World world;
 	
 	/** The current game frame. */
 	private volatile int _framenum;
-	
-	/**
-	 * Shared initialization.
-	 *
-	 * @since 2017/02/14
-	 */
-	{
-		// Initialize players
-		Player[] players = this._players;
-		for (int i = 0, n = players.length; i < n; i++)
-			players[i] = new Player(this, PlayerColor.of(i));
-	}
 	
 	/**
 	 * Initializes a game with the default initialization rules.
@@ -81,13 +74,8 @@ public class Game
 		this.random = new GameRandom(__is.seed());
 		
 		// Initialize the level using the initial settings
-		Level level = new Level(this, __is);
+		World level = new World(this, __is);
 		this.level = level;
-		
-		// Add start location for the first player as a test, which is
-		// transformed accordingly
-		__createUnit(SpawnPlacementType.BUILDING, UnitType.START_LOCATION,
-			(Unit.Pointer)null, 128, 128);
 	}
 	
 	/**
@@ -185,121 +173,13 @@ public class Game
 		// Get current frame
 		int framenum = this._framenum;
 		
-		// Run the level logic (includes the megatiles)
-		this.level.__run(framenum);
-		
-		// Run the player logic for each player
-		Player[] players = this._players;
-		for (int i = 0, n = players.length; i < n; i++)
-			players[i].__run(framenum);
-		
-		// Run the unit logic for every unit
-		List<Unit> units = this._units;
-		for (int i = 0, n = units.size(); i < n; i++)
-			if (units.get(i).__run(framenum))
-				units.set(i, null);
+		// Run all the sub-logic
+		world.run(framenum);
+		units.run(framenum);
+		players.run(framenum);
 		
 		// Increase the game frame
 		this._framenum = framenum + 1;
-	}
-	
-	/**
-	 * Creates a new unit.
-	 *
-	 * @param __spt How the unit should be placed on the map.
-	 * @param __t The type of unit to spawn.
-	 * @param __creator The creating unit, may be {@code null}.
-	 * @param __x The target X position.
-	 * @param __y The target Y position.
-	 * @return The created unit or {@code null} if it could not be created.
-	 * @throws NullPointerException If no spawn type or unit type was
-	 * specified.
-	 * @since 2017/02/16
-	 */
-	final Unit __createUnit(SpawnPlacementType __spt, UnitType __t,
-		Unit __creator, int __x, int __y)
-		throws NullPointerException
-	{
-		return __createUnit(__spt, __t, (__creator != null ?
-			__creator.pointer() : null), __x, __y);
-	}
-	
-	/**
-	 * Creates a new unit.
-	 *
-	 * @param __spt How the unit should be placed on the map.
-	 * @param __t The type of unit to spawn.
-	 * @param __creator The creating unit, may be {@code null}.
-	 * @param __x The target center X position.
-	 * @param __y The target center Y position.
-	 * @return The created unit or {@code null} if it could not be created.
-	 * @throws NullPointerException If no spawn type or unit type was
-	 * specified.
-	 * @since 2017/02/16
-	 */
-	final Unit __createUnit(SpawnPlacementType __spt, UnitType __t,
-		Unit.Pointer __creator, int __x, int __y)
-		throws NullPointerException
-	{
-		// Check
-		if (__spt == null || __t == null)
-			throw new NullPointerException("NARG");
-		
-		// Setup unit
-		Unit rv = new Unit(this);
-		UnitInfo info = __t.info();
-		
-		// Morph to the given unti type
-		rv.morph(__t);
-		
-		// Determine the location where the unit is to be placed
-		int px, py;
-		switch (__spt)
-		{
-				// No restriction
-			case FORCED:
-				px = __x;
-				py = __y;
-				break;
-				
-				// Building, 
-			case BUILDING:
-				px = info.placeBuilding(false, __x);
-				py = info.placeBuilding(true, __y);
-				break;
-				
-				// Normal placement
-			case NORMAL:
-				throw new todo.TODO();
-				
-				// Unknown
-			default:
-				throw new RuntimeException("OOPS");
-		}
-		
-		// Move unit to the specified position
-		rv.__move(px, py);
-		
-		// Try to replace an existing null with this new unit
-		List<Unit> units = this._units;
-		boolean didset = false;
-		for (int n = units.size(), i = n - 1; i >= 0; i++)
-			if (units.get(i) == null)
-			{
-				units.set(i, rv);
-				didset = true;
-				break;
-			}
-		
-		// Otherwise place at end
-		if (!didset)
-			units.add(rv);
-		
-		// Link unit into the map
-		rv.__link(true);
-		
-		// Return it
-		return rv;
 	}
 }
 

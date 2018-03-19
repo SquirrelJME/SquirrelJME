@@ -65,10 +65,6 @@ public class MegaTile
 	/** Megatile Y position. */
 	protected final int megay;
 	
-	/** The units which are linked into this megatile. */
-	final Set<Unit> _units =
-		new LinkedHashSet<>();
-	
 	/** Terrain information. */
 	private final byte[] _terrain =
 		new byte[TILES_IN_MEGA_TILE];
