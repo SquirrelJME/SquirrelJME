@@ -31,7 +31,7 @@ public final class Units
 		new ArrayList<>();
 	
 	/** The ID of the next unit to create. */
-	private final int _nextid;
+	private volatile int _nextid;
 	
 	/**
 	 * Initializes the units.
@@ -45,8 +45,6 @@ public final class Units
 	{
 		if (__is == null)
 			throw new NullPointerException("NARG");
-		
-		throw new todo.TODO();
 	}
 	
 	/**
