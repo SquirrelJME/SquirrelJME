@@ -41,5 +41,52 @@ public final class ReplayInputStream
 		this.in = (__in instanceof DataInputStream ? (DataInputStream)__in :
 			new DataInputStream(__in));
 	}
+	
+	/**
+	 * Reads an integer value.
+	 *
+	 * @return The read value.
+	 * @throws ReplayIOException On read errors.
+	 * @since 2018/03/29
+	 */
+	public final int readInt()
+		throws ReplayIOException
+	{
+		try
+		{
+			return this.in.readInt();
+		}
+		
+		// {@squirreljme.error BE0m Could not read integer from the input.}
+		catch (IOException e)
+		{
+			throw new ReplayIOException("BE0m", e);
+		}
+	}
+	
+	/**
+	 * Reads a long value.
+	 *
+	 * @return The read value.
+	 * @throws ReplayIOException On read errors.
+	 * @since 2018/03/29
+	 */
+	public final long readLong()
+		throws ReplayIOException
+	{
+		try
+		{
+			long rv = this.in.readInt();
+			rv <<= 32;
+			rv |= (this.in.readInt() & 0xFFFFFFFF);
+			return rv;
+		}
+		
+		// {@squirreljme.error BE0n Could not read long from the input.}
+		catch (IOException e)
+		{
+			throw new ReplayIOException("BE0n", e);
+		}
+	}
 }
 

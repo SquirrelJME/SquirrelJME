@@ -21,6 +21,10 @@ import net.multiphasicapps.squirrelquarrel.world.MegaTile;
  */
 public class InitialSettingsBuilder
 {
+	/** The time these settings were created. */
+	volatile long _timestamp =
+		System.currentTimeMillis();
+	
 	/** The width of the map in tiles. */
 	volatile int _mapwidth =
 		64;
@@ -69,6 +73,17 @@ public class InitialSettingsBuilder
 	public void seed(long __s)
 	{
 		this._seed = __s;
+	}
+	
+	/**
+	 * Sets the timestamp of the game start time.
+	 *
+	 * @param __t The time the game started.
+	 * @since 2018/03/19
+	 */
+	public void startTimeMillis(long __t)
+	{
+		this._timestamp = __t;
 	}
 }
 

@@ -82,10 +82,10 @@ public class MainMidlet
 			}
 		}
 		
-		// {@squirreljme.error BE0j Failed to rea/write something.}
+		// {@squirreljme.error BE0l Failed to rea/write something.}
 		catch (IOException e)
 		{
-			throw new RuntimeException("BE0j", e);
+			throw new RuntimeException("BE0l", e);
 		}
 	}
 }
