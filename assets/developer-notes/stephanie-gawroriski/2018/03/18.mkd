@@ -1,0 +1,85 @@
+# 2018/03/18
+
+## 13:56
+
+Okay so when it comes to displays, tabbed panes will also be able to own
+displayables so there should be a single class which can store that
+information along with an interface for safer handling. But at least for
+tabbed panes that is not really needed, it just needs to be able to get
+the display it is eventually attached to. Also the current and active
+displays will definitely vary. There will be a potentially delayed
+nature because the current display will only be set from the event loop
+and returned as such. However for local garbage collection purposes I
+will need to keep a virtual track of the current displayable.
+
+## 14:20
+
+Okay so there is a potential deadlock and that is the `invokeNow()` method,
+it is going to slightly be different from Swing so that if it is executing
+from the event thread itself it just runs whatever it was to run. That way
+when there are operations such as drawing which need to go back into the
+system call interface, that is correctly handled as such. For example if
+during drawing one wants to get the size of a widget, having it invoked
+and waiting will cause a deadlock just to read the size. And the size cannot
+be cached locally either, so this would fix that case.
+
+## 15:57
+
+Okay so for actual repainting logic I will need a callback into the program's
+drawing routine. So this requires a special callback method type in the system
+call interface. However I think it would be best an abstract class so that
+input arguments can be checked for validity then commonize those since they
+are shared the same for system calls. That way I can just use similar system
+calls and pointers and such.
+
+## 16:51
+
+Okay so the callback cannot of course be linked to a single display because
+of things, however it is best linked to a single process instead I suppose
+and displays there could be multiple ones. So I think the best thing to do
+would be to have task callbacks actually which are managed somewhere based
+on a task.
+
+## 17:20
+
+Okay so in order for the callbacks to not loop around I am going to need a
+callback manager in the server. Then once I have that I can call into the
+remote method for graphics drawing operations as needed. Since `Canvas` is
+always double buffered, I suppose I can draw on an internal canvas first
+and then when that is done I can really just copy it to a remote buffer and
+then that would be the double buffering! It would work too!
+
+## 19:14
+
+Squirrel Quarrel is definitely old and it definitely needs a refactor. I am
+going to clean it up definitely!
+
+## 19:16
+
+Okay so, definitely will refactor this. At least now the LCDUI code is where
+I like it and it is as it is intended to be implemented at least with the
+event loop, so that makes things nice. I think I will...
+
+## 20:48
+
+I think I will limit this to four players at most so the game can be more
+efficient when it comes to memory. It is designed for low memory systems and
+if I can squeeze even more bytes out of everything that will be quite good
+indeed. I am going to make it quite simple and use as little memory as I can
+since that would be a good thing. Since I really do want it to be used as a
+demonstration those extra bytes could really help in the long run.
+
+## 21:02
+
+Also going to remove the species distinction except when choosing a starting
+unit. All units will use the same amount of supply regardless of species.
+This will make it simpler to use.
+
+## 21:27
+
+I think instead of _Plantian_ that instead _Chlorophid_ would be better for
+the plant based species.
+
+## 21:30
+
+Also I think instead of pepper it will be methane.
