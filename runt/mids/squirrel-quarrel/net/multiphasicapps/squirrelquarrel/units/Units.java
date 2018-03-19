@@ -21,6 +21,10 @@ import java.util.List;
  */
 public final class Units
 {
+	/** Linked units into mega tiles. */
+	protected final UnitLinker linker =
+		new UnitLinker();
+	
 	/** Units in the game. */
 	private final List<Unit> _units =
 		new ArrayList<>();
