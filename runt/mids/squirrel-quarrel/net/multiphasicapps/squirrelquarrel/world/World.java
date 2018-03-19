@@ -22,9 +22,6 @@ import java.io.IOException;
  */
 public class World
 {
-	/** The owning game. */
-	protected final Game game;
-	
 	/** The mega tile array. */
 	protected final MegaTile[] _tiles;
 	
@@ -49,20 +46,16 @@ public class World
 	/**
 	 * Initializes the level with the given initial settings.
 	 *
-	 * @param __g The game which owns this.
 	 * @param __is The initial settings to use.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/10
 	 */
-	public World(Game __g, InitialSettings __is)
+	public World(InitialSettings __is)
 		throws NullPointerException
 	{
 		// Check
-		if (__g == null || __is == null)
+		if (__is == null)
 			throw new NullPointerException("NARG");
-		
-		// Set
-		this.game = __g;
 		
 		// Initialize the tile map
 		int mw = __is.mapWidth(),
@@ -74,8 +67,8 @@ public class World
 		this.tileh = mh;
 		this.megaw = mw / MegaTile.TILES_PER_MEGA_TILE;
 		this.megah = mh / MegaTile.TILES_PER_MEGA_TILE;
-		this.pixelw = mw * MegaTile.TILE_PIXEL_SIZE;
-		this.pixelh = mh * MegaTile.TILE_PIXEL_SIZE;
+		this.pixelw = mw * Tile.PIXEL_SIZE;
+		this.pixelh = mh * Tile.PIXEL_SIZE;
 	}
 	
 	/**
@@ -110,7 +103,7 @@ public class World
 	 */
 	public static int pixelCoordToMegaTile(int __c)
 	{
-		return __c / MegaTile.MEGA_TILE_PIXEL_SIZE;
+		return __c / MegaTile.PIXEL_SIZE;
 	}
 	
 	/**
@@ -134,7 +127,7 @@ public class World
 	 */
 	public static int pixelCoordToSubTile(int __c)
 	{
-		return (__c / MegaTile.TILE_PIXEL_SIZE) % MegaTile.TILES_PER_MEGA_TILE;
+		return (__c / Tile.PIXEL_SIZE) % MegaTile.TILES_PER_MEGA_TILE;
 	}
 	
 	/**

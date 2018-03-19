@@ -24,14 +24,11 @@ public enum UnitType
 	/** Starting location. */
 	START_LOCATION,
 	
-	/** Squirrel Headquarters. */
-	SQUIRREL_HQ,
-	
 	/** End. */
 	;
 	
 	/** A reference to the unit information. */
-	private volatile Reference<UnitInfo> _info;
+	private volatile Reference<BaseUnitInfo> _info;
 	
 	/**
 	 * Returns the information which is associated with the given unit.
@@ -39,14 +36,15 @@ public enum UnitType
 	 * @return The unit information.
 	 * @since 2017/02/14
 	 */
-	public UnitInfo info()
+	public BaseUnitInfo baseInfo()
 	{
-		Reference<UnitInfo> ref = this._info;
-		UnitInfo rv;
+		Reference<BaseUnitInfo> ref = this._info;
+		BaseUnitInfo rv;
 		
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
-			this._info = new WeakReference<>(rv = new UnitInfo(this));
+			throw new todo.TODO();
+			/*this._info = new WeakReference<>(rv = new UnitInfo(this));*/
 		
 		return rv;
 	}

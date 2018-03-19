@@ -131,10 +131,12 @@ public final class BaseUnitInfo
 			attr.getValue("speed", "0"));
 		
 		// Read dimensions
-		this.pixeldimension = new Dimension(
-			attr.getValue("pixel-dimensions", "[0, 0]"));
-		this.offset = new Dimension(
-			attr.getValue("pixel-offset", "(0, 0)"));
+		Dimension pixeldimension;
+		this.pixeldimension = (pixeldimension = new Dimension(
+			attr.getValue("pixel-dimensions", "[0, 0]")));
+		Point offset;
+		this.centerpointoffset = (offset = new Point(
+			attr.getValue("pixel-offset", "(0, 0)")));
 		
 		// Parse size
 		String vsize = attr.getValue("size", "small");
@@ -161,12 +163,12 @@ public final class BaseUnitInfo
 		
 		// Determine tile dimension of unit
 		Dimension tiledimension = new Dimension(
-			pxw / MegaTile.TILE_PIXEL_SIZE,
-			pxh / MegaTile.TILE_PIXEL_SIZE);
+			pxw / Tile.PIXEL_SIZE,
+			pxh / Tile.PIXEL_SIZE);
 		this.tiledimension = tiledimension;
 		this.pixeltiledimension = new Dimension(
-			tiledimension.width / MegaTile.TILE_PIXEL_SIZE,
-			tiledimension.height / MegaTile.TILE_PIXEL_SIZE);
+			tiledimension.width / Tile.PIXEL_SIZE,
+			tiledimension.height / Tile.PIXEL_SIZE);
 		
 		// Offset to the center of the building is in the center of
 		// the tile dimensions

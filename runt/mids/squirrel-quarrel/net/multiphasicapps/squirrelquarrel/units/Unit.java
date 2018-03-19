@@ -22,8 +22,8 @@ import java.util.List;
  */
 public final class Unit
 {
-	/** The linker for units. */
-	protected final UnitLinker linker;
+	/** The ID of this unit. */
+	protected final int id;
 	
 	/** The current unit type. */
 	private volatile UnitType _type;
@@ -36,9 +36,6 @@ public final class Unit
 	
 	/** Unit shields. */
 	private volatile int _shields;
-	
-	/** Is this unit linked into the megatile map? */
-	private volatile boolean _islinked;
 	
 	/** Reference to this unit via pointer. */
 	private volatile Reference<UnitReference> _ref;
@@ -53,18 +50,11 @@ public final class Unit
 	 * Initializes the unit.
 	 *
 	 * @param __id The ID of the unit.
-	 * @param __ln The linker for units.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/19
 	 */
-	public Unit(int __id, UnitLinker __ln)
-		throws NullPointerException
+	public Unit(int __id)
 	{
-		if (__ln == null)
-			throw new NullPointerException("NARG");
-		
 		this.id = __id;
-		this.linker = __ln;
 	}
 	
 	/**
@@ -127,69 +117,6 @@ public final class Unit
 	}
 	
 	/**
-	 * Runs the unit logic.
-	 *
-	 * @param __framenum The frame number.
-	 * @return {@code true} if the unit was deleted.
-	 * @since 2017/02/14
-	 */
-	boolean run(int __framenum)
-	{
-		// If the unit was deleted, do nothing
-		if (this._deleted)
-			return true;
-		
-		// Do not think for units which are not linked, but do not delete them
-		if (!this._islinked)
-			return false;
-		
-		// Not deleted
-		return false;
-	}
-	
-	/**
-	 * Returns the unit type.
-	 *
-	 * @return The unit type.
-	 * @since 2017/02/17
-	 */
-	public UnitType type()
-	{
-		return this._type;
-	}
-	
-	
-	
-	
-	/** The megatiles that this unit is in. */
-	final List<MegaTile> _linked =
-		new ArrayList<>();
-	
-	/** The unit information. */
-	private volatile UnitInfo _info;
-	
-	/** A pointer to this unit. */
-	private volatile Reference<Unit.Pointer> _pointer;
-	
-	/**
-	 * Initializes the unit.
-	 *
-	 * @param __g The owning game.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/02/14
-	 */
-	Unit(Game __g)
-		throws NullPointerException
-	{
-		// Check
-		if (__g == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		this.game = __g;
-	}
-	
-	/**
 	 * This morphs the current unit so that it is of the specified unit type.
 	 * Certain aspects are transferred and translation whiles others may be
 	 * reset.
@@ -205,6 +132,8 @@ public final class Unit
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
+		throw new todo.TODO();
+		/*
 		// {@squirreljme.error BE08 Cannot morph a linked unit.}
 		if (this._islinked)
 			throw new IllegalStateException("BE08");
@@ -239,130 +168,52 @@ public final class Unit
 			// Recenter
 			__move(this._cx, this._cy);
 		}
+		*/
 	}
 	
 	/**
-	 * This returns a pointer to this unit which is used to refer to other
-	 * units.
+	 * Returns a reference to this unit.
 	 *
-	 * @return A pointer to this unit.
-	 * @throws UnitDeletedException If this unit has been deleted.
+	 * @return The reference to this unit.
+	 * @since 2018/03/19
+	 */
+	public final UnitReference reference()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Runs the unit logic.
+	 *
+	 * @param __framenum The frame number.
+	 * @return {@code true} if the unit was deleted.
 	 * @since 2017/02/14
 	 */
-	public Unit.Pointer pointer()
-		throws UnitDeletedException
+	boolean run(int __framenum)
 	{
-		// {@squirreljme.error BE09 Cannot get the pointer of a deleted unit.}
+		// If the unit was deleted, do nothing
 		if (this._deleted)
-			throw new UnitDeletedException("BE09");
+			return true;
 		
-		Reference<Unit.Pointer> ref = this._pointer;
-		Unit.Pointer rv;
+		throw new todo.TODO();
+		/*
+		// Do not think for units which are not linked, but do not delete them
+		if (!this._islinked)
+			return false;
 		
-		// Cache?
-		if (ref == null || null == (rv = ref.get()))
-			this._pointer = new WeakReference<>(rv = new Unit.Pointer(this));
-		
-		return rv;
+		// Not deleted
+		return false;*/
 	}
 	
 	/**
-	 * Links or unlinks the unit into the mega tile unit list.
+	 * Returns the unit type.
 	 *
-	 * @param __link If {@code true} then the unit becomes linked, otherwise
-	 * it is unlinked.
-	 * @since 2017/02/16
-	 */
-	void __link(boolean __link)
-	{
-		// Do nothing if the link state is the same
-		if (this._islinked == __link)
-			return;
-		
-		// Linking in?
-		List<MegaTile> linked = this._linked;
-		if (__link)
-		{
-			// Determine start and ending megatiles where this unit is located
-			int sx = this._x1 / MegaTile.MEGA_TILE_PIXEL_SIZE,
-				sy = this._y1 / MegaTile.MEGA_TILE_PIXEL_SIZE,
-				ex = this._x2 / MegaTile.MEGA_TILE_PIXEL_SIZE,
-				ey = this._y2 / MegaTile.MEGA_TILE_PIXEL_SIZE;
-			
-			// Get map size
-			Level level = this.game.level();
-			int mtw = level.megaTileWidth(),
-				mth = level.megaTileHeight();
-			
-			// Force bounds within the map
-			if (sx < 0)
-				sx = 0;
-			if (sy < 0)
-				sy = 0;
-			if (ex >= mtw)
-				ex = mtw - 1;
-			if (ey >= mth)
-				ey = mth - 1;
-			
-			// Add this unit to the megatile chain
-			for (; sy <= ey; sy++)
-				for (int x = sx; x <= ex; x++)
-				{
-					MegaTile mt = level.megaTile(x, sy);
-					
-					// Link both sides
-					linked.add(mt);
-					mt._units.add(this);
-				}
-		}
-		
-		// Linking out
-		else
-		{
-			// Remove this unit from the tile links
-			for (int i = 0, n = linked.size(); i < n; i++)
-				linked.get(i)._units.remove(this);
-			
-			// Remove all links
-			linked.clear();
-		}
-		
-		// Set new link state
-		this._islinked = __link;
-	}
-	
-	/**
-	 * Moves the unit to the specified coordinates.
-	 *
-	 * @param __x The target X coordinate.
-	 * @param __y The target Y coordinate.
-	 * @throws IllegalStateException If the unit is linked.
+	 * @return The unit type.
 	 * @since 2017/02/17
 	 */
-	void __move(int __x, int __y)
-		throws IllegalStateException
+	public UnitType type()
 	{
-		// {@squirreljme.error BE0a Cannot move a linked unit.}
-		if (this._islinked)
-			throw new IllegalStateException("BE0a");
-		
-		// {@squirreljme.error BE0b Cannot move a unit of an unknown type.}
-		UnitInfo info = this._info;
-		if (info == null)
-			throw new IllegalStateException("BE0b");
-			
-		// Center unit size
-		Dimension d = info.pixeldimension;
-		int mw = d.width / 2,
-			mh = d.height / 2;
-		
-		// Set coordinates
-		this._cx = __x;
-		this._cy = __y;
-		this._x1 = __x - mw;
-		this._y1 = __y - mh;
-		this._x2 = __x + mw;
-		this._y2 = __y + mh;
+		return this._type;
 	}
 }
 

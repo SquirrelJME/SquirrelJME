@@ -19,6 +19,7 @@ import net.multiphasicapps.squirrelquarrel.player.Player;
 import net.multiphasicapps.squirrelquarrel.player.Players;
 import net.multiphasicapps.squirrelquarrel.player.PlayerColor;
 import net.multiphasicapps.squirrelquarrel.units.Units;
+import net.multiphasicapps.squirrelquarrel.util.GameRandom;
 import net.multiphasicapps.squirrelquarrel.world.World;
 
 /**
@@ -30,8 +31,7 @@ public class Game
 	implements Runnable
 {
 	/** The player manager. */
-	protected final Player players =
-		new Players();
+	protected final Player players;
 	
 	/** The unit manager. */
 	protected final Units units =
@@ -74,8 +74,13 @@ public class Game
 		this.random = new GameRandom(__is.seed());
 		
 		// Initialize the level using the initial settings
-		World level = new World(this, __is);
-		this.level = level;
+		this.world = new World(__is);
+		
+		// Initialize players
+		this.players = new Players(__is);
+		
+		// Initialize units
+		this.units = new Units(__is);
 	}
 	
 	/**
@@ -118,52 +123,6 @@ public class Game
 	}
 	
 	/**
-	 * Returns the level.
-	 *
-	 * @since 2017/02/10
-	 */
-	public Level level()
-	{
-		return this.level;
-	}
-	
-	/**
-	 * Returns the player by the given index.
-	 *
-	 * @param __i The index of the player to get.
-	 * @return The player for the given index.
-	 * @throws IllegalArgumentException If the index is not within bounds.
-	 * @since 2017/02/14
-	 */
-	public Player player(int __i)
-		throws IllegalArgumentException
-	{
-		// {@squirreljme.error BE01 Invalid player index. (The index)}
-		if (__i < 0 || __i >= PlayerColor.NUM_PLAYERS)
-			throw new IllegalArgumentException(String.format("BE01 %d", __i));
-		
-		return this._players[__i];
-	}
-	
-	/**
-	 * Returns the player by the given color.
-	 *
-	 * @param __p The color to get the player of.
-	 * @return The player for the given color.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/02/14
-	 */
-	public Player player(PlayerColor __p)
-		throws NullPointerException
-	{
-		// Check
-		if (__p == null)
-			throw new NullPointerException("NARG");
-		
-		return this._players[__p.ordinal()];
-	}
-	
-	/**
 	 * {@inheritDoc}
 	 * @since 2017/02/10
 	 */
@@ -180,6 +139,16 @@ public class Game
 		
 		// Increase the game frame
 		this._framenum = framenum + 1;
+	}
+	
+	/**
+	 * Returns the world.
+	 *
+	 * @since 2017/02/10
+	 */
+	public World world()
+	{
+		return this.world;
 	}
 }
 

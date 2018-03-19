@@ -12,6 +12,7 @@ package net.multiphasicapps.squirrelquarrel.units;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.multiphasicapps.squirrelquarrel.game.InitialSettings;
 
 /**
  * This class handles and manages all of the units in the game along with
@@ -33,6 +34,22 @@ public final class Units
 	private final int _nextid;
 	
 	/**
+	 * Initializes the units.
+	 *
+	 * @param __is The initial settings to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/19
+	 */
+	public Units(InitialSettings __is)
+		throws NullPointerException
+	{
+		if (__is == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Creates a new unit.
 	 *
 	 * @param __spt How the unit should be placed on the map.
@@ -49,8 +66,11 @@ public final class Units
 		Unit __creator, int __x, int __y)
 		throws NullPointerException
 	{
+		throw new todo.TODO();
+		/*
 		return this.createUnit(__spt, __t, (__creator != null ?
 			__creator.pointer() : null), __x, __y);
+		*/
 	}
 	
 	/**
@@ -67,13 +87,15 @@ public final class Units
 	 * @since 2017/02/16
 	 */
 	public final Unit createUnit(SpawnPlacementType __spt, UnitType __t,
-		Unit.Pointer __creator, int __x, int __y)
+		UnitReference __creator, int __x, int __y)
 		throws NullPointerException
 	{
 		// Check
 		if (__spt == null || __t == null)
 			throw new NullPointerException("NARG");
 		
+		throw new todo.TODO();
+		/*
 		// Setup unit
 		Unit rv = new Unit(this);
 		UnitInfo info = __t.info();
@@ -129,6 +151,7 @@ public final class Units
 		
 		// Return it
 		return rv;
+		*/
 	}
 	
 	/**
