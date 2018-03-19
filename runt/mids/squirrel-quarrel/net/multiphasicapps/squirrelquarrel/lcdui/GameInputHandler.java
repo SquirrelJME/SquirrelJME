@@ -10,10 +10,8 @@
 
 package net.multiphasicapps.squirrelquarrel.lcdui;
 
-import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.KeyListener;
-import net.multiphasicapps.squirrelquarrel.Level;
-import net.multiphasicapps.squirrelquarrel.MegaTile;
+import net.multiphasicapps.squirrelquarrel.world.Tile;
 
 /**
  * This handles the input for the game such as which keys are held down and
@@ -30,10 +28,7 @@ public class GameInputHandler
 	
 	/** Level panning speed. */
 	private static final int _PANNING_SPEED =
-		MegaTile.TILE_PIXEL_SIZE / 2;
-	
-	/** The game interface to interact with. */
-	protected final GameInterface gameinterface;
+		Tile.PIXEL_SIZE / 2;
 	
 	/** The game keys which are held down. */
 	protected final boolean[] gamekeys =
@@ -48,19 +43,10 @@ public class GameInputHandler
 	/**
 	 * Initializes the input handler for the game.
 	 *
-	 * @param __gi The owning game interface.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/12
 	 */
-	public GameInputHandler(GameInterface __gi)
-		throws NullPointerException
+	public GameInputHandler()
 	{
-		// Check
-		if (__gi == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		this.gameinterface = __gi;
 	}
 	
 	/**
@@ -70,6 +56,8 @@ public class GameInputHandler
 	@Override
 	public void keyPressed(int __code, int __mods)
 	{
+		throw new todo.TODO();
+		/*
 		// Parse key and set the game action as being pressed
 		try
 		{
@@ -81,7 +69,7 @@ public class GameInputHandler
 		// Ignore, not a valid game action
 		catch (IllegalArgumentException e)
 		{
-		}
+		}*/
 	}
 	
 	/**
@@ -91,6 +79,8 @@ public class GameInputHandler
 	@Override
 	public void keyReleased(int __code, int __mods)
 	{
+		throw new todo.TODO();
+		/*
 		// Parse key and set the game action as being released
 		GameInterface gameinterface = this.gameinterface;
 		try
@@ -111,7 +101,7 @@ public class GameInputHandler
 		
 		// Lower the game speed
 		else if (__code == '-' || __code == '_')
-			gameinterface.setGameSpeed(gameinterface.gameSpeed().slower());
+			gameinterface.setGameSpeed(gameinterface.gameSpeed().slower());*/
 	}
 	
 	/**
@@ -121,6 +111,7 @@ public class GameInputHandler
 	@Override
 	public void keyRepeated(int __code, int __mods)
 	{
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -132,7 +123,9 @@ public class GameInputHandler
 	 */
 	protected void pointerDragged(int __x, int __y)
 	{
-		__checkAutomapDrag(true, __x, __y);
+		throw new todo.TODO();
+		/*
+		__checkAutomapDrag(true, __x, __y);*/
 	}
 	
 	/**
@@ -144,7 +137,9 @@ public class GameInputHandler
 	 */
 	protected void pointerPressed(int __x, int __y)
 	{
-		__checkAutomapDrag(false, __x, __y);
+		throw new todo.TODO();
+		/*
+		__checkAutomapDrag(false, __x, __y);*/
 	}
 	
 	/**
@@ -156,9 +151,11 @@ public class GameInputHandler
 	 */
 	protected void pointerReleased(int __x, int __y)
 	{
+		throw new todo.TODO();
+		/*
 		// Cannot be dragging on the map
 		this._ondragmap = false;
-		this._nomapdrag = false;
+		this._nomapdrag = false;*/
 	}
 	
 	/**
@@ -168,6 +165,8 @@ public class GameInputHandler
 	@Override
 	public void run()
 	{
+		throw new todo.TODO();
+		/*
 		GameInterface gameinterface = this.gameinterface;
 		boolean[] gamekeys = this.gamekeys;
 		
@@ -177,7 +176,7 @@ public class GameInputHandler
 			(gamekeys[Canvas.RIGHT] ? gsratio : 0)),
 			ypan = _PANNING_SPEED * (gamekeys[Canvas.UP] ? -gsratio :
 			(gamekeys[Canvas.DOWN] ? gsratio : 0));
-		gameinterface.translateViewport((int)xpan, (int)ypan);
+		gameinterface.translateViewport((int)xpan, (int)ypan);*/
 	}
 	
 	/**
@@ -190,6 +189,8 @@ public class GameInputHandler
 	 */
 	private void __checkAutomapDrag(boolean __drag, int __x, int __y)
 	{
+		throw new todo.TODO();
+		/*
 		// Get the automap
 		GameInterface gameinterface = this.gameinterface;
 		Automap automap = gameinterface.automap();
@@ -229,7 +230,7 @@ public class GameInputHandler
 		{
 			if (!__drag)
 				this._nomapdrag = true;
-		}
+		}*/
 	}
 }
 

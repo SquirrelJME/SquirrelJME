@@ -13,6 +13,7 @@ package net.multiphasicapps.squirrelquarrel.world;
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import net.multiphasicapps.squirrelquarrel.game.InitialSettings;
 
 /**
  * This stores the mega tiles within the level along with storing level related
@@ -115,7 +116,7 @@ public class World
 	 */
 	public static int pixelCoordToTile(int __c)
 	{
-		return __c / MegaTile.TILE_PIXEL_SIZE;
+		return __c / Tile.PIXEL_SIZE;
 	}
 	
 	/**
@@ -189,23 +190,6 @@ public class World
 	}
 	
 	/**
-	 * This checks whether the given tile at the specified pixel is revealed
-	 * for the given player.
-	 *
-	 * @param __p The player to check if they can see the given tile.
-	 * @param __x The tile X position.
-	 * @param __y The tile Y position.
-	 * @return {@code true} if it is revealed.
-	 * @since 2017/02/13
-	 */
-	public boolean pixelRevealed(Player __p, int __x, int __y)
-	{
-		return megaTile(pixelCoordToMegaTile(__x), pixelCoordToMegaTile(__y)).
-			subTileRevealed(__p, pixelCoordToSubTile(__x),
-			pixelCoordToSubTile(__y));
-	}
-	
-	/**
 	 * Initializes the map tiles.
 	 *
 	 * @param __tw The tile width of the map.
@@ -221,7 +205,7 @@ public class World
 		// Initialize
 		MegaTile[] tiles = new MegaTile[megaw * megah];
 		for (int i = 0, n = tiles.length; i < n; i++)
-			tiles[i] = new MegaTile(this, i % megaw, i / megaw);
+			tiles[i] = new MegaTile(i % megaw, i / megaw);
 		
 		return tiles;
 	}
@@ -232,12 +216,12 @@ public class World
 	 * @param __frame The current frame.
 	 * @since 2017/02/14
 	 */
-	void __run(int __frame)
+	public void run(int __frame)
 	{
 		// Run the megatile loop
 		MegaTile[] tiles = this._tiles;
 		for (int i = 0, n = tiles.length; i < n; i++)
-			tiles[i].__run(__frame);
+			tiles[i].run(__frame);
 	}
 }
 

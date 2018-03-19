@@ -10,8 +10,12 @@
 
 package net.multiphasicapps.squirrelquarrel.lcdui;
 
-import javax.microedition.Graphics;
-import javax.microedition.Image;
+import java.util.ArrayList;
+import java.util.List;
+import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
+import net.multiphasicapps.squirrelquarrel.units.UnitReference;
+import net.multiphasicapps.squirrelquarrel.world.MegaTile;
 
 /**
  * This contains the renderer for the level and performs the actual drawing
@@ -37,8 +41,18 @@ public final class Renderer
 	protected final MegaTileCacher mtcacher;
 	
 	/** Units to draw. */
-	private final List<Unit.Pointer> _drawunits =
+	private final List<UnitReference> _drawunits =
 		new ArrayList<>();
+	
+	/**
+	 * Initializes the renderer.
+	 *
+	 * @since 2018/03/19
+	 */
+	public Renderer()
+	{
+		throw new todo.TODO();
+	}
 	
 	/**
 	 * Paints the game to the given graphics.

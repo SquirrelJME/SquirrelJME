@@ -44,9 +44,6 @@ public class MegaTile
 	public static final int PIXEL_SIZE =
 		256;
 	
-	/** The owning level */
-	protected final Level level;
-	
 	/** Megatile X position. */
 	protected final int megax;
 	
@@ -76,21 +73,13 @@ public class MegaTile
 	/**
 	 * Initializes a basic megatile.
 	 *
-	 * @param __l The owning level.
 	 * @param __x Megatile X position.
 	 * @param __y Megatile Y position.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/10
 	 */
-	public MegaTile(Level __l, int __mx, int __my)
-		throws NullPointerException
+	public MegaTile(int __mx, int __my)
 	{
-		// Check
-		if (__l == null)
-			throw new NullPointerException("NARG");
-		
 		// Set
-		this.level = __l;
 		this.megax = __mx;
 		this.megay = __my;
 		
@@ -124,37 +113,6 @@ public class MegaTile
 		// Depends
 		return TerrainType.of(
 			this._terrain[(__y * TILES_PER_MEGA_TILE) + __x]);
-	}
-	
-	/**
-	 * This checks whether the given sub-tile is revealed by the given player.
-	 *
-	 * @param __p The player to check if they can see the given tile.
-	 * @param __x The tile X position.
-	 * @param __y The tile Y position.
-	 * @return {@code true} if it is revealed.
-	 * @throws IndexOutOfBoundsException If the position is not in the megatile
-	 * bounds.
-	 * @throws NullPointerException On null arguments
-	 * @since 2017/02/13
-	 */
-	public boolean subTileRevealed(Player __p, int __x, int __y)
-		throws IndexOutOfBoundsException, NullPointerException
-	{
-		// Check
-		if (__p == null)
-			throw new NullPointerException("NARG");
-		
-		// {@squirreljme.error BE05 Cannot get revealed state because the tile
-		// is out of range.}
-		if (__x < 0 || __y < 0 || __x >= TILES_PER_MEGA_TILE ||
-			__y >= TILES_PER_MEGA_TILE)
-			throw new IndexOutOfBoundsException("BE05");
-		
-		// Fog of war revealing is done in two cycles
-		int vm = __p.visionMask(), dx = (__y * TILES_PER_MEGA_TILE) + __x;
-		return (this._fogcyclea[dx] & vm) != 0 ||
-			(this._fogcycleb[dx] & vm) != 0;
 	}
 	
 	/**

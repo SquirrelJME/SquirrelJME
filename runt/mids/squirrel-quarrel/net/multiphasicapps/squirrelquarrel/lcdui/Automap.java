@@ -13,7 +13,7 @@ package net.multiphasicapps.squirrelquarrel.lcdui;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import net.multiphasicapps.squirrelquarrel.world.World;
-import net.multiphasicapps.squirrelquarrel.players.Player;
+import net.multiphasicapps.squirrelquarrel.player.Player;
 import net.multiphasicapps.squirrelquarrel.ui.Viewport;
 
 /**

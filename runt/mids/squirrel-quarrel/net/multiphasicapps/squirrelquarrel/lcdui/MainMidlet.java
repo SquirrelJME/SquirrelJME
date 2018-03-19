@@ -13,7 +13,8 @@ package net.multiphasicapps.squirrelquarrel.lcdui;
 import javax.microedition.lcdui.Display;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
-import net.multiphasicapps.squirrelquarrel.Game;
+import net.multiphasicapps.squirrelquarrel.game.Game;
+import net.multiphasicapps.squirrelquarrel.game.GameLooper;
 
 /**
  * This is the main midlet entry point for Squirrel Quarrel.
@@ -44,12 +45,15 @@ public class MainMidlet
 		// Get the display for this MIDlet
 		Display disp = Display.getDisplay(this);
 		
+		// Setup game with the loop
+		GameLooper looper = new GameLooper(new Game());
+		
 		// Setup game canvas with an initial game
-		GameInterface gi = new GameInterface(new Game());
+		GameInterface gi = new GameInterface(looper);
 		disp.setCurrent(gi);
 		
-		// Run the game loop
-		Thread t = new Thread(gi, "game-loop");
+		// Run the game loop in the background
+		Thread t = new Thread(looper, "game-loop");
 		t.start();
 	}
 }
