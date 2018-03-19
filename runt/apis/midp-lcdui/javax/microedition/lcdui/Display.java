@@ -720,15 +720,14 @@ public class Display
 		if (__d < 0)
 			throw new IllegalArgumentException("EB1a");
 		
-		throw new todo.TODO();
-		/*
-		// Do not vibrate in the background
-		DisplayHead head = this._head;
-		if (head.displayState() == DisplayState.BACKGROUND)
-			return false;
+		// Send vibrate call
+		LcdServiceCall.<VoidType>call(VoidType.class,
+			LcdFunction.DISPLAY_VIBRATE, this._index, __d);
 		
-		// Vibrate the display head
-		return head.vibrate(__d);*/
+		// Always return true because it is faster to just return as quickly
+		// as possible than it is to vibrate the display and to see if it is
+		// supported or not
+		return true;
 	}
 	
 	/**
