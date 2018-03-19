@@ -12,6 +12,7 @@ package net.multiphasicapps.squirrelquarrel.game;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import net.multiphasicapps.squirrelquarrel.ui.FrameSync;
 import net.multiphasicapps.squirrelquarrel.util.ReplayInputStream;
 import net.multiphasicapps.squirrelquarrel.util.ReplayOutputStream;
 
@@ -21,13 +22,16 @@ import net.multiphasicapps.squirrelquarrel.util.ReplayOutputStream;
  * @since 2018/03/19
  */
 public final class GameLooper
-	implements Runnable
 {
 	/** The output for replay recordings. */
 	protected final ReplayOutputStream record;
 	
 	/** The game to loop for. */
 	protected final Game game;
+	
+	/** The speed the game runs at. */
+	private volatile GameSpeed _speed =
+		GameSpeed.NORMAL;
 	
 	/**
 	 * Initializes the game looper with the default settings.
@@ -66,16 +70,19 @@ public final class GameLooper
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Runs multiple game frames.
+	 *
+	 * @param __fs Callback for when game frames are updated.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/10
 	 */
-	@Override
-	public void run()
+	public void run(FrameSync __fs)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
-		/*
+		if (__fs == null)
+			throw new NullPointerException("NARG");
+		
 		Game game = this.game;
-		GameInputHandler inputhandler = this.inputhandler;
 		for (;;)
 		{
 			// Get the current game speed and entry time
@@ -83,26 +90,13 @@ public final class GameLooper
 			long enter = System.nanoTime();
 			
 			// Run a single game cycle
+			int nowframe = game.frameCount();
 			game.run();
-			
-			// Perform local client event handling (commands and such)
-			inputhandler.run();
 			
 			// Request a repaint if there is enough time to draw
 			long exit = System.nanoTime();
-			if ((exit - enter) < speed.nanoFrameTime() && !this._inpaint)
-			{
-				int gameframe = game.frameCount(),
-					paintframe = this._renderframe;
-				
-				// Renderer seems to be a bit slow, skip the request
-				if (gameframe < paintframe - 1)
-					this._renderframe = gameframe;
-				
-				// Request repaint
-				else
-					repaint();
-			}
+			if ((exit - enter) < speed.nanoFrameTime())
+				__fs.frameRepaintRequest(nowframe);
 			
 			// Delay thread for the next frame
 			exit = System.nanoTime();
@@ -116,7 +110,15 @@ public final class GameLooper
 				{
 				}
 		}
-		*/
+	}
+	
+	/**
+	 * Runs a single game frame.
+	 *
+	 * @since 2018/03/19
+	 */
+	public void runFrame()
+	{
 	}
 	
 	/**

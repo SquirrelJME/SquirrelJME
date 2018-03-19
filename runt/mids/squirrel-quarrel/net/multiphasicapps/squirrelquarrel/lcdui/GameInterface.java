@@ -15,6 +15,7 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.KeyListener;
 import net.multiphasicapps.squirrelquarrel.game.Game;
 import net.multiphasicapps.squirrelquarrel.game.GameLooper;
+import net.multiphasicapps.squirrelquarrel.ui.FrameSync;
 
 /**
  * This class provides an interface to the game, allowing for input to be
@@ -22,8 +23,9 @@ import net.multiphasicapps.squirrelquarrel.game.GameLooper;
  *
  * @since 2017/02/08
  */
-public class GameInterface
+public final class GameInterface
 	extends Canvas
+	implements FrameSync
 {
 	/** The game being played. */
 	protected final GameLooper looper;
@@ -45,6 +47,16 @@ public class GameInterface
 		
 		// Setup details
 		setTitle("Squirrel Quarrel");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/19
+	 */
+	public final void frameRepaintRequest(int __framenum)
+	{
+		// Just have it get repainted
+		this.repaint();
 	}
 	
 	/**
