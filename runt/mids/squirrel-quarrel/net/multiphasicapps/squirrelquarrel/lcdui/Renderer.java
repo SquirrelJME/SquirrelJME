@@ -40,18 +40,6 @@ public final class Renderer
 	private final List<Unit.Pointer> _drawunits =
 		new ArrayList<>();
 	
-	/** The starting X megatile. */
-	private volatile int _msx;
-	
-	/** The starting Y megatile. */
-	private volatile int _msy;
-	
-	/** The ending X megatile. */
-	private volatile int _mex;
-	
-	/** The ending Y megatile. */
-	private volatile int _mey;
-	
 	/**
 	 * Initializes some parts of the rendered.
 	 *
