@@ -10,7 +10,10 @@
 
 package net.multiphasicapps.squirrelquarrel.lcdui;
 
-import java.io.InputStream;
+import javax.microedition.lcdui.Canvas;
+import net.multiphasicapps.squirrelquarrel.game.Game;
+
+/*import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -18,8 +21,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.game.GameCanvas;
 import javax.microedition.lcdui.game.Sprite;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
@@ -33,7 +34,7 @@ import net.multiphasicapps.squirrelquarrel.TerrainType;
 import net.multiphasicapps.squirrelquarrel.Unit;
 import net.multiphasicapps.squirrelquarrel.UnitDeletedException;
 import net.multiphasicapps.squirrelquarrel.UnitInfo;
-import net.multiphasicapps.squirrelquarrel.UnitType;
+import net.multiphasicapps.squirrelquarrel.UnitType;*/
 
 /**
  * This class provides an interface to the game, allowing for input to be
@@ -43,123 +44,42 @@ import net.multiphasicapps.squirrelquarrel.UnitType;
  */
 public class GameInterface
 	extends Canvas
-	implements Runnable
 {
-	/** The game to draw and interact with. */
+	/** The game being played. */
 	protected final Game game;
 	
-	/** Input handler. */
-	protected final GameInputHandler inputhandler =
-		new GameInputHandler(this);
-	
-	/** The level to render and interact with. */
-	protected final Level level;
-	
-	/** The automap. */
-	protected final Automap automap;
-	
-	/** The current game speed. */
-	private volatile GameSpeed _speed =
-		GameSpeed.SLOWEST;
-	
-	/** The currently active view player. */
-	private volatile Player _viewplayer;
-	
-	/** The last frame the game was rendered on. */
-	private volatile int _renderframe;
-	
-	/** Is the game in a repaint? */
-	private volatile boolean _inpaint;
-	
 	/**
-	 * Initializes the game.
+	 * Initializes the game interface.
 	 *
+	 * @param __g The game being played.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2017/02/08
+	 * @since 2018/03/18
 	 */
 	public GameInterface(Game __g)
 		throws NullPointerException
 	{
-		//super(false, true);
-		
-		// Check
 		if (__g == null)
 			throw new NullPointerException("NARG");
 		
-		// Setup details
-		setTitle("Squirrel Quarrel");
-		
-		// Set
 		this.game = __g;
 		
-		// Set initial view player
-		this._viewplayer = __g.player(0);
-		
-		// Quicker to store pixel sizes here
-		Level level;
-		this.level = (level = __g.level());
-		this.levelpxw = level.pixelWidth();
-		this.levelpxh = level.pixelHeight();
-		this.levelmtw = level.megaTileWidth();
-		this.levelmth = level.megaTileHeight();
-		this.mtcacher = new MegaTileCacher(level);
+		// Setup details
+		setTitle("Squirrel Quarrel");
 		
 		// Use self as the key listener
 		this.setKeyListener(this.inputhandler);
 	}
 	
 	/**
-	 * Returns the automap.
-	 *
-	 * @return The automap.
-	 * @since 2017/02/12
-	 */
-	public Automap automap()
-	{
-		return this.automap;
-	}
-	
-	/**
-	 * Returns the game speed.
-	 *
-	 * @return The game speed.
-	 * @since 2017/02/12
-	 */
-	public GameSpeed gameSpeed()
-	{
-		return this._speed;
-	}
-	
-	/**
-	 * Returns the level being played.
-	 *
-	 * @return The current level.
-	 * @since 2017/02/12
-	 */
-	public Level level()
-	{
-		return this.level;
-	}
-	
-	/**
 	 * {@inheritDoc}
-	 * @since 2017/02/08
+	 * @since 2017/03/18
 	 */
 	@Override
 	public void paint(Graphics __g)
 	{
+		super.paint(__g);
+		
 		throw new todo.TODO();
-	}
-	
-	/**
-	 * Returns the current view player.
-	 *
-	 * @return The view player.
-	 * @since 2017/02/15
-	 */
-	public Player player()
-	{
-		return this._viewplayer;
 	}
 	
 	/**
@@ -241,24 +161,6 @@ public class GameInterface
 				{
 				}
 		}
-	}
-	
-	/**
-	 * Sets the game speed.
-	 *
-	 * @param __gs The game speed to use.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/02/12
-	 */
-	public void setGameSpeed(GameSpeed __gs)
-		throws NullPointerException
-	{
-		// Check
-		if (__gs == null)
-			throw new NullPointerException("NARG");
-		
-		// Set
-		this._speed = __gs;
 	}
 	
 	/**
