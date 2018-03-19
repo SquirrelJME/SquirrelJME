@@ -61,9 +61,8 @@ public final class GameLooper
 		this.record = record;
 		__i.demoRecord(record);
 		
+		// Initialize the game with basic settings
 		this.game = new Game(__i);
-		
-		throw new todo.TODO();
 	}
 	
 	/**
