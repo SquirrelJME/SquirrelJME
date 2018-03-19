@@ -13,6 +13,11 @@ package net.multiphasicapps.squirrelquarrel.units;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.Objects;
+import net.multiphasicapps.squirrelquarrel.util.ConstantFixedPoint;
+import net.multiphasicapps.squirrelquarrel.util.Dimension;
+import net.multiphasicapps.squirrelquarrel.util.FixedPoint;
+import net.multiphasicapps.squirrelquarrel.util.Point;
+import net.multiphasicapps.squirrelquarrel.util.Rectangle;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 import net.multiphasicapps.tool.manifest.JavaManifestKey;
@@ -24,6 +29,78 @@ import net.multiphasicapps.tool.manifest.JavaManifestKey;
  */
 public final class BaseUnitInfo
 {
+	/** The type of unit this has info for. */
+	public final UnitType type;
+	
+	/** Unit hitpoints. */
+	public final int hp;
+	
+	/** Unit shields. */
+	public final int shields;
+	
+	/** Armor. */
+	public final int armor;
+	
+	/** Unit size. */
+	public final UnitSize size;
+	
+	/** The cost in salt. */
+	public final int salt;
+	
+	/** The cost in methane. */
+	public final int methane;
+	
+	/** The build time in frames. */
+	public final int buildtime;
+	
+	/** The supply provided. */
+	public final int supplyprovided;
+	
+	/** The supply cost. */
+	public final int supplycost;
+	
+	/** The dimension of the unit in pixels. */
+	public final Dimension pixeldimension;
+	
+	/** Center point offset for the unit. */
+	public final Point centerpointoffset;
+	
+	/** The center point offset used for buildings (based on tile grid). */
+	public final Point buildingcenterpointoffset;
+	
+	/** The unit size in tiles (for buildings). */
+	public final Dimension tiledimension;
+	
+	/** The dimenion of the unit in pixels matching the tiled size. */
+	public final Dimension pixeltiledimension;
+	
+	/** The sight range. */
+	public final int sight;
+	
+	/** The score for creating this unit. */
+	public final int scorebuild;
+	
+	/** The score for destroying this unit. */
+	public final int scoredestroy;
+	
+	/** The speed of this unit, in 16.16 fixed point. */
+	public final int speed;
+	
+	/**
+	 * Initializes the unit information from the given manifest.
+	 *
+	 * @param __m The input unit manifest.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/18
+	 */
+	BaseUnitInfo(JavaManifest __m)
+		throws NullPointerException
+	{
+		// Check
+		if (__m == null)
+			throw new NullPointerException("NARG");
+		
+			
 	/** Key for hitpoints. */
 	public static final JavaManifestKey HP_KEY =
 		new JavaManifestKey("hp");
@@ -84,76 +161,6 @@ public final class BaseUnitInfo
 	public static final JavaManifestKey SPEED_KEY =
 		new JavaManifestKey("speed");
 	
-	/** The type of unit this has info for. */
-	public final UnitType type;
-	
-	/** Unit hitpoints. */
-	public final int hp;
-	
-	/** Unit shields. */
-	public final int shields;
-	
-	/** Armor. */
-	public final int armor;
-	
-	/** Unit size. */
-	public final UnitSize size;
-	
-	/** The cost in salt. */
-	public final int salt;
-	
-	/** The cost in pepper. */
-	public final int pepper;
-	
-	/** The build time in frames. */
-	public final int buildtime;
-	
-	/** The supply provided. */
-	public final int supplyprovided;
-	
-	/** The supply cost. */
-	public final int supplycost;
-	
-	/** The dimension of the unit in pixels. */
-	public final Dimension pixeldimension;
-	
-	/** Center point offset for the unit. */
-	public final Point centerpointoffset;
-	
-	/** The center point offset used for buildings (based on tile grid). */
-	public final Point buildingcenterpointoffset;
-	
-	/** The unit size in tiles (for buildings). */
-	public final Dimension tiledimension;
-	
-	/** The dimenion of the unit in pixels matching the tiled size. */
-	public final Dimension pixeltiledimension;
-	
-	/** The sight range. */
-	public final int sight;
-	
-	/** The score for creating this unit. */
-	public final int scorebuild;
-	
-	/** The score for destroying this unit. */
-	public final int scoredestroy;
-	
-	/** The speed of this unit, in 16.16 fixed point. */
-	public final int speed;
-	
-	/**
-	 * Initializes the unit information.
-	 *
-	 * @param __t The unit to load information for.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/02/15
-	 */
-	BaseUnitInfo(UnitType __t)
-		throws NullPointerException
-	{
-		// Check
-		if (__t == null)
-			throw new NullPointerException("NARG");
 		
 		// Set
 		this.type = __t;
@@ -263,79 +270,6 @@ public final class BaseUnitInfo
 	public int placeBuilding(boolean __y, int __v)
 	{
 		return __v;
-	}
-	
-	/**
-	 * Returns the unit type which this has informaton for.
-	 *
-	 * @return The unit type this has information for,
-	 * @since 2017/02/15
-	 */
-	public UnitType type()
-	{
-		return this.type;
-	}
-	
-	/**
-	 * Parses a dimension.
-	 *
-	 * @param __v The dimension to parse.
-	 * @return The resulting dimension.
-	 * @throws NullPointerException On null arguments.
-	 * @throws NumberFormatException If the format of the string is not
-	 * correct.
-	 * @since 2017/02/17
-	 */
-	static Dimension __parseDimension(String __v)
-		throws NullPointerException, NumberFormatException
-	{
-		// Check
-		if (__v == null)
-			throw new NullPointerException("NARG");
-		
-		// {@squirreljme.error BE0g Missing space between dimensions.}
-		__v = __v.trim();
-		int spdx = __v.indexOf(' ');
-		if (spdx < 0)
-			throw new NumberFormatException("BE0g");
-		
-		// Get both fragments
-		String fa = __v.substring(0, spdx).trim(),
-			fb = __v.substring(spdx + 1).trim();
-		
-		// Parse
-		return new Dimension(Integer.parseInt(fa), Integer.parseInt(fb));
-	}
-	
-	/**
-	 * Parses a point.
-	 *
-	 * @param __v The point to parse.
-	 * @return The resulting point.
-	 * @throws NullPointerException On null arguments.
-	 * @throws NumberFormatException If the format of the string is not
-	 * correct.
-	 * @since 2017/02/17
-	 */
-	static Point __parsePoint(String __v)
-		throws NullPointerException, NumberFormatException
-	{
-		// Check
-		if (__v == null)
-			throw new NullPointerException("NARG");
-		
-		// {@squirreljme.error BE0h Missing space between points.}
-		__v = __v.trim();
-		int spdx = __v.indexOf(' ');
-		if (spdx < 0)
-			throw new NumberFormatException("BE0h");
-		
-		// Get both fragments
-		String fa = __v.substring(0, spdx).trim(),
-			fb = __v.substring(spdx + 1).trim();
-		
-		// Parse
-		return new Point(Integer.parseInt(fa), Integer.parseInt(fb));
 	}
 }
 
