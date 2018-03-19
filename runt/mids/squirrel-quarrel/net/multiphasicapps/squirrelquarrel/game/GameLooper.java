@@ -10,11 +10,10 @@
 
 package net.multiphasicapps.squirrelquarrel.game;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.InputStream;
-import java.io.IOException;
 import java.io.OutputStream;
+import net.multiphasicapps.squirrelquarrel.util.ReplayInputStream;
+import net.multiphasicapps.squirrelquarrel.util.ReplayOutputStream;
 
 /**
  * This manages and runs the game loop.
@@ -24,6 +23,9 @@ import java.io.OutputStream;
 public final class GameLooper
 	implements Runnable
 {
+	/** The output for replays. */
+	protected final ReplayOutputStream replay;
+	
 	/** The game to loop for. */
 	protected final Game game;
 	
@@ -55,30 +57,6 @@ public final class GameLooper
 			throw new NullPointerException("NARG");
 		
 		this.game = new Game(__i);
-		
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * Initializes the game looper which decodes game state from the specified
-	 * stream.
-	 *
-	 * @param __out The stream to write replay data to.
-	 * @param __rm The resumption mode of the game.
-	 * @param __in The stream of serialized game data to read from.
-	 * @throws IOException On read errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/03/19
-	 */
-	public GameLooper(OutputStream __out, ResumeMode __rm, InputStream __in)
-		throws IOException, NullPointerException
-	{
-		if (__out == null || __rm == null || __in == null)
-			throw new todo.TODO();
-		
-		// Wrap in a data input stream
-		DataInputStream input = ((__in instanceof DataInputStream) ?
-			(DataInputStream)__in : new DataInputStream(__in));
 		
 		throw new todo.TODO();
 	}
@@ -135,6 +113,26 @@ public final class GameLooper
 				}
 		}
 		*/
+	}
+	
+	/**
+	 * Initialize a game loop which either resumes the game from the given
+	 * point or plays it back in a replay.
+	 *
+	 * @param __out The output for replay data.
+	 * @param __rm How will the game be resumed?
+	 * @param __in The input stream for replay/save data.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/19
+	 */
+	public static final GameLooper resume(OutputStream __out,
+		ResumeMode __rm, InputStream __in)
+		throws NullPointerException
+	{
+		if (__out == null || __rm == null || __in == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 }
 
