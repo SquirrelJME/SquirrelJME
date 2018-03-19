@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirrelquarrel.utils;
+package net.multiphasicapps.squirrelquarrel.util;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
