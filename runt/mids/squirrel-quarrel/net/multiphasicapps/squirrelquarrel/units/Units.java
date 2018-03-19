@@ -160,14 +160,11 @@ public final class Units
 	 */
 	public void run(int __frame)
 	{
-		throw new todo.TODO();
-		/*
 		// Run the unit logic for every unit
 		List<Unit> units = this._units;
 		for (int i = 0, n = units.size(); i < n; i++)
-			if (units.get(i).run(framenum))
+			if (units.get(i).run(__frame))
 				units.set(i, null);
-		*/
 	}
 }
 

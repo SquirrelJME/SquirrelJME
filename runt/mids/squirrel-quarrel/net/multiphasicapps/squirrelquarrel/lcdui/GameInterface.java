@@ -16,6 +16,7 @@ import javax.microedition.lcdui.KeyListener;
 import net.multiphasicapps.squirrelquarrel.game.Game;
 import net.multiphasicapps.squirrelquarrel.game.GameLooper;
 import net.multiphasicapps.squirrelquarrel.ui.FrameSync;
+import net.multiphasicapps.squirrelquarrel.ui.SplitScreen;
 
 /**
  * This class provides an interface to the game, allowing for input to be
@@ -30,6 +31,9 @@ public final class GameInterface
 	/** The game being played. */
 	protected final GameLooper looper;
 	
+	/** Splitscreen. */
+	protected final SplitScreen splitscreen;
+	
 	/**
 	 * Initializes the game interface.
 	 *
@@ -43,10 +47,12 @@ public final class GameInterface
 		if (__g == null)
 			throw new NullPointerException("NARG");
 		
-		this.looper = __g;
 		
 		// Setup details
 		setTitle("Squirrel Quarrel");
+		
+		this.looper = __g;
+		this.splitscreen = new SplitScreen(__g);
 	}
 	
 	/**
@@ -66,7 +72,15 @@ public final class GameInterface
 	@Override
 	public void paint(Graphics __g)
 	{
-		throw new todo.TODO();
+		// Get the canvas size
+		int cw = this.getWidth(),
+			ch = this.getHeight();
+		
+		// Configure splitscreens
+		SplitScreen splitscreen = this.splitscreen;
+		splitscreen.configure(cw, ch);
+		
+		//throw new todo.TODO();
 	}
 	
 	/**

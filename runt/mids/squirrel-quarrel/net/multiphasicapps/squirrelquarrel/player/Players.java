@@ -37,13 +37,14 @@ public final class Players
 			throw new NullPointerException("NARG");
 		
 		// Needed to initialize the team a player is on
+		int numplayers = __is.players();
 		int[] teams = __is.teams();
 		
 		// Initialize players
 		Player[] players = this._players;
 		for (int i = 0, n = players.length; i < n; i++)
 			players[i] = new Player(PlayerColor.of(i),
-				PlayerColor.of(teams[i]));
+				PlayerColor.of(teams[i]), i < numplayers);
 	}
 	
 	/**
@@ -54,7 +55,7 @@ public final class Players
 	 * @throws IllegalArgumentException If the index is not within bounds.
 	 * @since 2017/02/14
 	 */
-	public Player player(int __i)
+	public Player get(int __i)
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error BE01 Invalid player index. (The index)}
@@ -72,7 +73,7 @@ public final class Players
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/14
 	 */
-	public Player player(PlayerColor __p)
+	public Player get(PlayerColor __p)
 		throws NullPointerException
 	{
 		// Check

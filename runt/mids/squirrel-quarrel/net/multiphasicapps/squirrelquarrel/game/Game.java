@@ -112,9 +112,20 @@ public class Game
 	 * @return The game frame.
 	 * @since 2017/02/10
 	 */
-	public int frameCount()
+	public final int frameCount()
 	{
 		return this._framenum;
+	}
+	
+	/**
+	 * Returns the player manager.
+	 *
+	 * @return The player manager.
+	 * @since 2018/03/19
+	 */
+	public final Players players()
+	{
+		return this.players;
 	}
 	
 	/**
@@ -122,7 +133,7 @@ public class Game
 	 * @since 2017/02/10
 	 */
 	@Override
-	public void run()
+	public final void run()
 	{
 		// Get current frame
 		int framenum = this._framenum;
