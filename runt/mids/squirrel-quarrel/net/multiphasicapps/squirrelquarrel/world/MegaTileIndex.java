@@ -25,7 +25,7 @@ public final class MegaTileIndex
 	protected final int y;
 	
 	/** The ordinal index. */
-	protected final ordinal;
+	protected final int ordinal;
 	
 	/**
 	 * Initializes the mega tile index.
