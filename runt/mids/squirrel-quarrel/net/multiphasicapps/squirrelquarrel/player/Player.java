@@ -17,18 +17,11 @@ package net.multiphasicapps.squirrelquarrel.player;
  */
 public class Player
 {
-	/** The owning game. */
-	protected final Game game;
-	
 	/** The color of this player. */
 	protected final PlayerColor color;
 	
 	/** The vision mask for this player. */
-	private volatile int _vision;
-	
-	/** The species of the player. */
-	private volatile Species _species =
-		Species.NEUTRAL;
+	private volatile int _visionmask;
 	
 	/**
 	 * Initializes the game player.
@@ -38,7 +31,7 @@ public class Player
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/14
 	 */
-	public Player(Game __g, PlayerColor __c)
+	public Player(PlayerColor __c)
 		throws NullPointerException
 	{
 		// Check
@@ -46,11 +39,10 @@ public class Player
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.game = __g;
 		this.color = __c;
 		
 		// The player always has vision to self
-		this._vision = __c.mask();
+		this._visionmask = __c.mask();
 	}
 	
 	/**
@@ -62,17 +54,6 @@ public class Player
 	public PlayerColor color()
 	{
 		return this.color;
-	}
-	
-	/**
-	 * Returns the species of the this player.
-	 *
-	 * @return The player species.
-	 * @since 2017/02/16
-	 */
-	public Species species()
-	{
-		return this._species;
 	}
 	
 	/**
@@ -94,6 +75,7 @@ public class Player
 	 */
 	void __run(int __frame)
 	{
+		throw new todo.TODO();
 	}
 }
 
