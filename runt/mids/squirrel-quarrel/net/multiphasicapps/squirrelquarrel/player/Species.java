@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirrelquarrel;
+package net.multiphasicapps.squirrelquarrel.player;
 
 /**
  * The represents the species which are available in the game.
@@ -17,11 +17,11 @@ package net.multiphasicapps.squirrelquarrel;
  */
 public enum Species
 {
-	/** Not really a major species. */
-	NEUTRAL,
+	/** Not a major species. */
+	NONE,
 	
-	/** Squirrels. */
-	SQUIRREL,
+	/** Chlorophids, plant based species. */
+	CHLOROPHID,
 	
 	/** End. */
 	;
