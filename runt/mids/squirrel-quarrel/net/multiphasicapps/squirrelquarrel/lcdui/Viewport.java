@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirrelquarrel.lcdui;
 
+import net.multiphasicapps.squirrelquarrel.lcdui.world.MegaTile;
+
 /**
  * This represents a viewport into the level, it does not contain any
  * rendering information.
@@ -18,6 +20,12 @@ package net.multiphasicapps.squirrelquarrel.lcdui;
  */
 public final class Viewport
 {
+	/** The level width in pixels. */
+	protected final int levelwidth;
+	
+	/** The level height in pixels. */
+	protected final int levelheight;
+	
 	/** The viewport X position. */
 	private volatile int _viewx;
 	
@@ -29,6 +37,41 @@ public final class Viewport
 	
 	/** The view height. */
 	private volatile int _viewh;
+	
+	/** The starting X megatile. */
+	private volatile int _msx;
+	
+	/** The starting Y megatile. */
+	private volatile int _msy;
+	
+	/** The ending X megatile. */
+	private volatile int _mex;
+	
+	/** The ending Y megatile. */
+	private volatile int _mey;
+	
+	/**
+	 * Initializes the viewport information.
+	 *
+	 * @param __lw The level width.
+	 * @param __lh The level height.
+	 * @throws IllegalArgumentException If the width and/or height are zero or
+	 * negative.
+	 * @since 2018/03/18
+	 */
+	public Viewport(int __lw, int __lh)
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error BE0j The viewport cannot have a negative size.}
+		if (__lw <= 0 || __lh <= 0)
+			throw new IllegalArgumentException("BE0j");
+		
+		this.levelwidth = __lw;
+		this.levelheight = __lh;
+		
+		// Use a default size for the viewport
+		this.setSize(1, 1);
+	}
 	
 	/**
 	 * Converts a map X coordinate to a screen X coordinate.
@@ -94,10 +137,10 @@ public final class Viewport
 		this._viewy = viewy;
 		
 		// Recalculate tiles in view
-		int msx = screenToMapX(0) / MegaTile.MEGA_TILE_PIXEL_SIZE,
-			msy = screenToMapY(0) / MegaTile.MEGA_TILE_PIXEL_SIZE,
-			mex = (screenToMapX(vieww) / MegaTile.MEGA_TILE_PIXEL_SIZE) + 1,
-			mey = (screenToMapY(viewh) / MegaTile.MEGA_TILE_PIXEL_SIZE) + 1;
+		int msx = this.screenToMapX(0) / MegaTile.PIXEL_SIZE,
+			msy = this.screenToMapY(0) / MegaTile.PIXEL_SIZE,
+			mex = (this.screenToMapX(vieww) / MegaTile.PIXEL_SIZE) + 1,
+			mey = (this.screenToMapY(viewh) / MegaTile.PIXEL_SIZE) + 1;
 		
 		// Cap
 		if (mex > levelmtw)
@@ -110,18 +153,6 @@ public final class Viewport
 		this._msy = msy;
 		this._mex = mex;
 		this._mey = mey;
-	}
-	
-	/**
-	 * Translates the viewport.
-	 *
-	 * @param __x The relative X translation.
-	 * @param __y The relative Y translation.
-	 * @since 2017/02/10
-	 */
-	public void translateViewport(int __x, int __y)
-	{
-		setViewport(this._viewx + __x, this._viewy + __y);
 	}
 	
 	/**
@@ -149,19 +180,38 @@ public final class Viewport
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Sets the size of the viewport
+	 *
+	 * @param __w The new width.
+	 * @param __h The new height.
+	 * @throws IllegalArgumentException If the width and/or height is zero
+	 * or negative.
 	 * @since 2017/02/10
 	 */
-	@Override
-	protected void sizeChanged(int __w, int __h)
+	public void setSize(int __w, int __h)
+		throws IllegalArgumentException
 	{
-		// Super-class might do some things
-		super.sizeChanged(__w, __h);
+		// {@squirreljme.error BE0k Cannot set the viewport size to be zero
+		// or negative.}
+		if (__w <= 0 || __h <= 0)
+			throw new IllegalArgumentException("BE0k");
 		
 		// Correct the viewport
 		this._vieww = __w;
 		this._viewh = __h;
-		translateViewport(0, 0);
+		this.translateViewport(0, 0);
+	}
+	
+	/**
+	 * Translates the viewport.
+	 *
+	 * @param __x The relative X translation.
+	 * @param __y The relative Y translation.
+	 * @since 2017/02/10
+	 */
+	public void translateViewport(int __x, int __y)
+	{
+		this.setViewport(this._viewx + __x, this._viewy + __y);
 	}
 	
 	/**
