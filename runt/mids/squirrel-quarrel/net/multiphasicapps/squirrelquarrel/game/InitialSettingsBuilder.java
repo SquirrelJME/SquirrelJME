@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirrelquarrel.game;
 
+import net.multiphasicapps.squirrelquarrel.player.PlayerColor;
 import net.multiphasicapps.squirrelquarrel.world.MegaTile;
 
 /**
@@ -21,6 +22,10 @@ import net.multiphasicapps.squirrelquarrel.world.MegaTile;
  */
 public class InitialSettingsBuilder
 {
+	/** How the teams are laid out. */
+	final int[] _teams =
+		new int[PlayerColor.MAX_PLAYERS];
+	
 	/** The time these settings were created. */
 	volatile long _timestamp =
 		System.currentTimeMillis();
@@ -33,9 +38,25 @@ public class InitialSettingsBuilder
 	volatile int _mapheight =
 		64;
 	
+	/** The players playing in the game. */
+	volatile int _players =
+		2;
+	
 	/** The seed to use. */
 	volatile long _seed =
 		System.currentTimeMillis();
+	
+	/**
+	 * Initializes some more complex settings.
+	 *
+	 * @since 2018/03/19
+	 */
+	{
+		// Start off all players on their own team (FFA)
+		int[] teams = this._teams;
+		for (int i = 0, n = teams.length; i < n; i++)
+			teams[i] = i;
+	}
 	
 	/**
 	 * Builds the settings.
@@ -65,6 +86,19 @@ public class InitialSettingsBuilder
 	}
 	
 	/**
+	 * Sets the number of players that are playing in the game.
+	 *
+	 * @param __p The players that are playing in the game.
+	 * @since 2018/03/19
+	 */
+	public void players(int __p)
+	{
+		// Allow one player in the event one wants to play alone for any given
+		// reason
+		this._players = Math.max(1, Math.min(PlayerColor.MAX_PLAYERS, __p));
+	}
+	
+	/**
 	 * Sets the seed to use for random generation.
 	 *
 	 * @param __s The seed to use.
@@ -84,6 +118,25 @@ public class InitialSettingsBuilder
 	public void startTimeMillis(long __t)
 	{
 		this._timestamp = __t;
+	}
+	
+	/**
+	 * Sets how the teams are to be laid out.
+	 *
+	 * @param __t Array containing the teams to be laid out.
+	 * @since 2018/03/19
+	 */
+	public void teams(int... __t)
+	{
+		if (__t == null)
+			__t = new int[0];
+		
+		int[] teams = this._teams;
+		int n = __t.length;
+		for (int i = 0; i < n; i++)
+			teams[i] = __t[i];
+		for (int i = n; i < PlayerColor.MAX_PLAYERS; i++)
+			teams[i] = i;
 	}
 }
 

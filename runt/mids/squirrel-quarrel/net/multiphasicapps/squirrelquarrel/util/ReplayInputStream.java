@@ -43,6 +43,28 @@ public final class ReplayInputStream
 	}
 	
 	/**
+	 * Reads a byte value.
+	 *
+	 * @return The read value.
+	 * @throws ReplayIOException On read errors.
+	 * @since 2018/03/29
+	 */
+	public final int readByte()
+		throws ReplayIOException
+	{
+		try
+		{
+			return this.in.readByte();
+		}
+		
+		// {@squirreljme.error BE0r Could not read byte from the input.}
+		catch (IOException e)
+		{
+			throw new ReplayIOException("BE0r", e);
+		}
+	}
+	
+	/**
 	 * Reads an integer value.
 	 *
 	 * @return The read value.

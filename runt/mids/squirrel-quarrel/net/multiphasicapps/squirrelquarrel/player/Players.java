@@ -24,18 +24,6 @@ public final class Players
 		new Player[PlayerColor.NUM_COLORS];
 	
 	/**
-	 * Initializes the player mappings.
-	 *
-	 * @since 2018/03/18
-	 */
-	{
-		// Initialize players
-		Player[] players = this._players;
-		for (int i = 0, n = players.length; i < n; i++)
-			players[i] = new Player(PlayerColor.of(i));
-	}
-	
-	/**
 	 * Initializes the players.
 	 *
 	 * @param __is The initial settings to use.
@@ -48,7 +36,10 @@ public final class Players
 		if (__is == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Initialize players
+		Player[] players = this._players;
+		for (int i = 0, n = players.length; i < n; i++)
+			players[i] = new Player(PlayerColor.of(i));
 	}
 	
 	/**

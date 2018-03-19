@@ -43,6 +43,29 @@ public final class ReplayOutputStream
 	}
 	
 	/**
+	 * Writes a byte value.
+	 *
+	 * @param __v The value to write.
+	 * @throws ReplayIOException If it could not be written.
+	 * @since 2018/03/19
+	 */
+	public void writeByte(int __v)
+		throws ReplayIOException
+	{
+		try
+		{
+			this.out.writeByte(__v);
+		}
+		
+		// {@squirreljme.error BE0s Could not write the byte value.
+		// (The value to write)}
+		catch (IOException e)
+		{
+			throw new ReplayIOException(String.format("BE0s %d", __v), e);
+		}
+	}
+	
+	/**
 	 * Writes an integer value.
 	 *
 	 * @param __v The value to write.

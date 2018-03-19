@@ -26,17 +26,23 @@ public final class InitialSettings
 	private static final long _MAGIC_NUMBER =
 		0x53715872FF00FFFFL;
 	
-	/** The timestamp the game started. */
-	protected final long timestamp;
-	
 	/** The width of the map in tiles. */
 	protected final int mapwidth;
 	
 	/** The height of the map in tiles. */
 	protected final int mapheight;
 	
+	/** The number of players playing the game. */
+	protected final int players;
+	
 	/** The level seed. */
 	protected final long seed;
+	
+	/** The timestamp the game started. */
+	protected final long timestamp;
+	
+	/** How the teams are laid out. */
+	private final int[] _teams;
 	
 	/**
 	 * Initializes the initial settings.
@@ -57,6 +63,8 @@ public final class InitialSettings
 		this.mapheight = __b._mapheight;
 		this.seed = __b._seed;
 		this.timestamp = __b._timestamp;
+		this.players = __b._players;
+		this._teams = __b._teams.clone();
 	}
 	
 	/**
@@ -72,11 +80,19 @@ public final class InitialSettings
 		if (__out == null)
 			throw new NullPointerException("NARG");
 		
+		int players;
+		
 		__out.writeLong(InitialSettings._MAGIC_NUMBER);
 		__out.writeLong(this.timestamp);
 		__out.writeLong(this.seed);
 		__out.writeInt(this.mapwidth);
 		__out.writeInt(this.mapheight);
+		__out.writeByte((players = this.players));
+		
+		// Write team data
+		int[] teams = this._teams;
+		for (int i = 0; i < players; i++)
+			__out.writeByte(teams[i]);
 	}
 	
 	/**
@@ -102,6 +118,17 @@ public final class InitialSettings
 	}
 	
 	/**
+	 * Returns the number of players playing the game.
+	 *
+	 * @return The players playing the game.
+	 * @since 2018/03/19
+	 */
+	public final int players()
+	{
+		return this.players;
+	}
+	
+	/**
 	 * Returns the seed for the map and game events.
 	 *
 	 * @return The game seed.
@@ -124,6 +151,17 @@ public final class InitialSettings
 	}
 	
 	/**
+	 * Returns how the teams are laid out.
+	 *
+	 * @return The team layout.
+	 * @since 2018/03/19
+	 */
+	public final int[] teams()
+	{
+		return this._teams.clone();
+	}
+	
+	/**
 	 * Reads the initial settings from the replay input.
 	 *
 	 * @param __in The stream to read from.
@@ -143,11 +181,20 @@ public final class InitialSettings
 		if (magic != InitialSettings._MAGIC_NUMBER)
 			throw new ReplayFormatException(String.format("BE0q %08x", magic));
 		
+		int players;
+		
 		InitialSettingsBuilder rv = new InitialSettingsBuilder();
 		
 		rv.startTimeMillis(__in.readLong());
 		rv.seed(__in.readLong());
 		rv.mapSize(__in.readInt(), __in.readInt());
+		rv.players((players = __in.readByte()));
+		
+		// Read in teams
+		int[] teams = new int[players];
+		for (int i = 0; i < players; i++)
+			teams[i] = __in.readByte();
+		rv.teams(teams);
 		
 		return rv.build();
 	}
