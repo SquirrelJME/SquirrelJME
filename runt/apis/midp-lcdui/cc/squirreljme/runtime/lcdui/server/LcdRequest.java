@@ -147,6 +147,11 @@ public final class LcdRequest
 						(Integer)args[1], (Integer)args[2]);
 					break;
 				
+				case DISPLAY_VIBRATE:
+					this.__displayVibrate((Integer)args[0],
+						(Integer)args[1]);
+					break;
+				
 				case QUERY_DISPLAYS:
 					result = this.__queryDisplays();
 					break;
@@ -280,6 +285,19 @@ public final class LcdRequest
 		
 		// Set the displayable to be shown
 		state.displays().get(__did).setCurrent(show, exit);
+	}
+	
+	/**
+	 * Vibrates the display.
+	 *
+	 * @param __did The display to vibrate.
+	 * @param __ms The number of milliseconds to vibrate for, 0 will shut it
+	 * off.
+	 * @since 2018/03/19
+	 */
+	private final void __displayVibrate(int __did, int __ms)
+	{
+		this.server.state().displays().get(__did).vibrate(__ms);
 	}
 	
 	/**

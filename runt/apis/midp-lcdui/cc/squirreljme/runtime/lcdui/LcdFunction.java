@@ -36,6 +36,9 @@ public enum LcdFunction
 	/** Sets the current displayable. */
 	DISPLAY_SET_CURRENT,
 	
+	/** Vibrates the display. */
+	DISPLAY_VIBRATE,
+	
 	/** Queries all of the display indexes which are available for usage. */
 	QUERY_DISPLAYS,
 	

@@ -99,5 +99,15 @@ public class SwingDisplay
 		// Make it visible
 		frame.setVisible(true);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/19
+	 */
+	@Override
+	public final void vibrate(int __ms)
+	{
+		// Does nothing on Swing
+	}
 }
 

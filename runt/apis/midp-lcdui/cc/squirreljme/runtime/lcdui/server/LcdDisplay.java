@@ -56,6 +56,15 @@ public abstract class LcdDisplay
 	protected abstract void internalSetCurrent(LcdDisplayable __d);
 	
 	/**
+	 * Vibrates the display for the given duration.
+	 *
+	 * @param __ms The number of milliseconds to vibrate for, zero or negative
+	 * values should stop vibrating.
+	 * @since 2018/03/19
+	 */
+	public abstract void vibrate(int __ms);
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/18
 	 */
