@@ -22,7 +22,7 @@ import net.multiphasicapps.tool.manifest.JavaManifestKey;
  *
  * @since 2017/02/14
  */
-public final class UnitInfo
+public final class BaseUnitInfo
 {
 	/** Key for hitpoints. */
 	public static final JavaManifestKey HP_KEY =
@@ -148,7 +148,7 @@ public final class UnitInfo
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/15
 	 */
-	UnitInfo(UnitType __t)
+	BaseUnitInfo(UnitType __t)
 		throws NullPointerException
 	{
 		// Check
@@ -160,7 +160,7 @@ public final class UnitInfo
 		
 		// Could fail
 		String path = "units/" + TerrainType.__lower(__t.name()) + "/info";
-		try (InputStream is = UnitInfo.class.getResourceAsStream(path))
+		try (InputStream is = BaseUnitInfo.class.getResourceAsStream(path))
 		{
 			// {@squirreljme.error BE0d No information resource exists for the
 			// given unit type. (The unit type; The attempted path)}
