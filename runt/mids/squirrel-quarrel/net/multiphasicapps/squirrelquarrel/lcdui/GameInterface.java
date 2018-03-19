@@ -16,28 +16,6 @@ import javax.microedition.lcdui.KeyListener;
 import net.multiphasicapps.squirrelquarrel.game.Game;
 import net.multiphasicapps.squirrelquarrel.game.GameLooper;
 
-/*import java.io.InputStream;
-import java.io.IOException;
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.microedition.lcdui.game.Sprite;
-import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Image;
-import net.multiphasicapps.squirrelquarrel.Game;
-import net.multiphasicapps.squirrelquarrel.GameSpeed;
-import net.multiphasicapps.squirrelquarrel.Level;
-import net.multiphasicapps.squirrelquarrel.MegaTile;
-import net.multiphasicapps.squirrelquarrel.Player;
-import net.multiphasicapps.squirrelquarrel.TerrainType;
-import net.multiphasicapps.squirrelquarrel.Unit;
-import net.multiphasicapps.squirrelquarrel.UnitDeletedException;
-import net.multiphasicapps.squirrelquarrel.UnitInfo;
-import net.multiphasicapps.squirrelquarrel.UnitType;*/
-
 /**
  * This class provides an interface to the game, allowing for input to be
  * handled along with the game itself.
@@ -67,11 +45,6 @@ public class GameInterface
 		
 		// Setup details
 		setTitle("Squirrel Quarrel");
-		
-		// Use self as the key listener
-		throw new todo.TODO();
-		/*
-		this.setKeyListener(this.inputhandler);*/
 	}
 	
 	/**
