@@ -50,11 +50,11 @@ public enum PlayerColor
 		4;
 	
 	/** Creeps that just annoy you. */
-	public static final CREEPS =
+	public static final PlayerColor CREEPS =
 		PlayerColor.PURPLE;
 	
 	/** The neutral player. */
-	public static final NEUTRAL =
+	public static final PlayerColor NEUTRAL =
 		PlayerColor.GRAY;
 	
 	/** The ARGB color code. */
