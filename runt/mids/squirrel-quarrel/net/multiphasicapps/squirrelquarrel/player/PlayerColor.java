@@ -16,6 +16,7 @@ package net.multiphasicapps.squirrelquarrel.player;
  * The colors here are from Electronic Art's Accessibility account which
  * specify the set of colors which are best used for all kinds of color
  * blind users to they can differentiate between all the colors.
+ *
  * https://twitter.com/ea_accessible/status/968592657848193024
  * https://twitter.com/ea_accessible/status/968595073184092160
  *
