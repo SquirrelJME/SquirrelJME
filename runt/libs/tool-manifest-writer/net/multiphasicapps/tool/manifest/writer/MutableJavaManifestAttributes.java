@@ -124,6 +124,50 @@ public class MutableJavaManifestAttributes
 	}
 	
 	/**
+	 * Returns the value in the attributes or the specified value if it is not
+	 * set.
+	 *
+	 * @param __k The key to get.
+	 * @param __dv The default value to use.
+	 * @return The value for the given key or {@code __dv}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/18
+	 */
+	public String getValue(JavaManifestKey __k, String __dv)
+		throws NullPointerException
+	{
+		if (__k == null)
+			throw new NullPointerException("NARG");
+		
+		String rv = this.getValue(__k);
+		if (rv == null)
+			return __dv;
+		return rv;
+	}
+	
+	/**
+	 * Returns the value in the attributes or the specified value if it is not
+	 * set.
+	 *
+	 * @param __k The key to get.
+	 * @param __dv The default value to use.
+	 * @return The value for the given key or {@code __dv}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/18
+	 */
+	public String getValue(String __k, String __dv)
+		throws NullPointerException
+	{
+		if (__k == null)
+			throw new NullPointerException("NARG");
+		
+		String rv = this.getValue(__k);
+		if (rv == null)
+			return __dv;
+		return rv;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/09/19
 	 */
