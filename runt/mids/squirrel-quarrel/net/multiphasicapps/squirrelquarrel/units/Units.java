@@ -29,6 +29,9 @@ public final class Units
 	private final List<Unit> _units =
 		new ArrayList<>();
 	
+	/** The ID of the next unit to create. */
+	private final int _nextid;
+	
 	/**
 	 * Creates a new unit.
 	 *

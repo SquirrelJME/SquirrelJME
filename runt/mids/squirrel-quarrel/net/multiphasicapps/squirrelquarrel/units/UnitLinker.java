@@ -8,11 +8,12 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirrelquarrel.world;
+package net.multiphasicapps.squirrelquarrel.units;
 
 /**
  * This class is used to keep track of which units are near each other in
- * each of the given megatiles.
+ * each of the given megatiles. This increases rendering speed since only units
+ * that are linked into megatiles has to be used for the game logic.
  *
  * @since 2018/03/18
  */
