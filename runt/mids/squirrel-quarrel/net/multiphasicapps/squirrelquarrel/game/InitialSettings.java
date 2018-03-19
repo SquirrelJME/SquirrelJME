@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.squirrelquarrel.game;
 
+import net.multiphasicapps.squirrelquarrel.player.PlayerColor;
 import net.multiphasicapps.squirrelquarrel.util.ReplayInputStream;
 import net.multiphasicapps.squirrelquarrel.util.ReplayFormatException;
 import net.multiphasicapps.squirrelquarrel.util.ReplayOutputStream;
@@ -158,7 +159,17 @@ public final class InitialSettings
 	 */
 	public final int[] teams()
 	{
-		return this._teams.clone();
+		// Copy base teams first
+		int[] teams = this._teams,
+			rv = new int[PlayerColor.NUM_COLORS];
+		for (int i = 0, n = teams.length; i < n; i++)
+			rv[i] = teams[i];
+		
+		// Always place creeps and neutral players on their own team
+		rv[PlayerColor.CREEPS.ordinal()] = PlayerColor.CREEPS.ordinal();
+		rv[PlayerColor.NEUTRAL.ordinal()] = PlayerColor.NEUTRAL.ordinal();
+		
+		return rv;
 	}
 	
 	/**

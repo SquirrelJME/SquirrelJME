@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.squirrelquarrel.game;
 
+import java.util.HashMap;
+import java.util.Map;
 import net.multiphasicapps.squirrelquarrel.player.PlayerColor;
 import net.multiphasicapps.squirrelquarrel.world.MegaTile;
 
@@ -131,12 +133,27 @@ public class InitialSettingsBuilder
 		if (__t == null)
 			__t = new int[0];
 		
+		// Store input values first
 		int[] teams = this._teams;
 		int n = __t.length;
 		for (int i = 0; i < n; i++)
 			teams[i] = __t[i];
 		for (int i = n; i < PlayerColor.MAX_PLAYERS; i++)
 			teams[i] = i;
+		
+		// Store values into a normalization map to correct indexes
+		int next = 0;
+		Map<Integer, Integer> normalize = new HashMap<>();
+		for (int i = 0; i < PlayerColor.MAX_PLAYERS; i++)
+		{
+			Integer k = teams[i];
+			if (!normalize.containsKey(k))
+				normalize.put(k, i);
+		}
+		
+		// Map all values to their normalized values
+		for (int i = 0; i < PlayerColor.MAX_PLAYERS; i++)
+			teams[i] = normalize.get(teams[i]);
 	}
 }
 

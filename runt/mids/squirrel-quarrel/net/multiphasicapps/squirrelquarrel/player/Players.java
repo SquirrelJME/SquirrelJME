@@ -36,10 +36,14 @@ public final class Players
 		if (__is == null)
 			throw new NullPointerException("NARG");
 		
+		// Needed to initialize the team a player is on
+		int[] teams = __is.teams();
+		
 		// Initialize players
 		Player[] players = this._players;
 		for (int i = 0, n = players.length; i < n; i++)
-			players[i] = new Player(PlayerColor.of(i));
+			players[i] = new Player(PlayerColor.of(i),
+				PlayerColor.of(teams[i]));
 	}
 	
 	/**
