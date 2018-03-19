@@ -23,6 +23,9 @@ public final class Player
 	/** The team of this player. */
 	protected final PlayerColor team;
 	
+	/** Is this player playing? */
+	protected final boolean playing;
+	
 	/** The vision mask for this player. */
 	private volatile int _visionmask;
 	
@@ -31,10 +34,11 @@ public final class Player
 	 *
 	 * @param __c The player color.
 	 * @param __team The team this player is on.
+	 * @param __playing Is this player playing?
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/14
 	 */
-	public Player(PlayerColor __c, PlayerColor __team)
+	public Player(PlayerColor __c, PlayerColor __team, boolean __playing)
 		throws NullPointerException
 	{
 		// Check
@@ -44,6 +48,7 @@ public final class Player
 		// Set
 		this.color = __c;
 		this.team = __team;
+		this.playing = __playing;
 		
 		// The player always has vision to self
 		this._visionmask = __c.mask();
@@ -58,6 +63,17 @@ public final class Player
 	public final PlayerColor color()
 	{
 		return this.color;
+	}
+	
+	/**
+	 * Is this player playing?
+	 *
+	 * @return If this player is playing.
+	 * @since 2018/03/19
+	 */
+	public final boolean isPlaying()
+	{
+		return this.playing;
 	}
 	
 	/**
@@ -90,7 +106,6 @@ public final class Player
 	 */
 	public void run(int __frame)
 	{
-		throw new todo.TODO();
 	}
 }
 

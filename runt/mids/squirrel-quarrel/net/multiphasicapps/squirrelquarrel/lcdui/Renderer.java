@@ -62,7 +62,6 @@ public final class Renderer
 	 */
 	public void paint(Graphics __g)
 	{
-		throw new todo.TODO();
 		/*
 		// If already painting, do not duplicate a paint
 		if (this._inpaint)
