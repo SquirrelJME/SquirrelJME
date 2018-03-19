@@ -8,48 +8,53 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.squirrelquarrel;
+package net.multiphasicapps.squirrelquarrel.player;
 
 /**
  * The represents the color of a player.
+ *
+ * The colors here are from Electronic Art's Accessibility account which
+ * specify the set of colors which are best used for all kinds of color
+ * blind users to they can differentiate between all the colors.
+ * https://twitter.com/ea_accessible/status/968592657848193024
+ * https://twitter.com/ea_accessible/status/968595073184092160
  *
  * @since 2017/02/10
  */
 public enum PlayerColor
 {
 	/** Red. */
-	RED("Red", 0xFF0202),
+	RED("Red", 0xDE4949),
+	
+	/** Yellow. */
+	YELLOW("Yellow", 0xFFB937),
+	
+	/** Green. */
+	GREEN("Green", 0x30B06E),
 	
 	/** Blue. */
-	BLUE("Blue", 0x0041FF),
+	BLUE("Blue", 0x33521E1),
 	
-	/** Blue. */
-	TEAL("Teal", 0x18E6B9),
+	/** Purple. */
+	PURPLE("Purple", 0x533364),
 	
-	/** Blue. */
-	PURPLE("Purple", 0x530081),
-	
-	/** Blue. */
-	YELLOW("Yellow", 0xFFFB01),
-	
-	/** Blue. */
-	ORANGE("Orange", 0xFEB90D),
-	
-	/** Blue. */
-	GREEN("Green", 0x20C000),
-	
-	/** Blue. */
-	PINK("Pink", 0xE45BB0),
-	
-	/** Blue. */
-	NEUTRAL("Neutral", 0x7DBEF1),
+	/** Gray. */
+	GRAY("Gray", 0x5A7D8B),
 	
 	/** End. */
 	;
 	
-	/** The number of players available. */
-	public static final int NUM_PLAYERS =
-		PlayerColor.values().length;
+	/** The maximum number of players that can play at once. */
+	public static final int MAX_PLAYERS =
+		4;
+	
+	/** Creeps that just annoy you. */
+	public static final CREEPS =
+		PlayerColor.PURPLE;
+	
+	/** The neutral player. */
+	public static final NEUTRAL =
+		PlayerColor.GRAY;
 	
 	/** The ARGB color code. */
 	protected final int argb;
@@ -108,17 +113,18 @@ public enum PlayerColor
 	 *
 	 * The mask is used for stuff such as alliances, vision, and detection.
 	 *
+	 * Players outside of the basic four players have no mask.
+	 *
 	 * @return The player mask.
 	 * @since 2017/02/14
 	 */
 	public final int mask()
 	{
-		// Neutral has no mask
-		if (this == NEUTRAL)
-			return 0;
-		
-		// Otherwise it is the bit shift
-		return 1 << ordinal();
+		// Only use mask for players that are in the game
+		int i = this.ordinal();
+		if (i < PlayerColor.MAX_PLAYERS)
+			return 1 << i;
+		return 0;
 	}
 	
 	/**
@@ -145,14 +151,11 @@ public enum PlayerColor
 		{
 				// Normal colors;
 			case 0: return RED;
-			case 1: return BLUE;
-			case 2: return TEAL;
-			case 3: return PURPLE;
-			case 4: return YELLOW;
-			case 5: return ORANGE;
-			case 6: return GREEN;
-			case 7: return PINK;
-			case 8: return NEUTRAL;
+			case 1: return YELLOW;
+			case 2: return GREEN;
+			case 3: return BLUE;
+			case 4: return PURPLE;
+			case 5: return GRAY;
 			
 				// {@squirreljme.error BE06 Player index out of range. (The
 				// player index)}
