@@ -122,6 +122,14 @@ public final class LcdRequest
 						((EnumType)args[0]).<DisplayableType>asEnum(
 						DisplayableType.class));
 					break;
+				
+				case DISPLAYABLE_GET_HEIGHT:
+					result = this.__displayableGetHeight((Integer)args[0]);
+					break;
+					
+				case DISPLAYABLE_GET_WIDTH:
+					result = this.__displayableGetWidth((Integer)args[0]);
+					break;
 					
 				case DISPLAYABLE_REPAINT:
 					this.__displayableRepaint((Integer)args[0],
@@ -192,6 +200,32 @@ public final class LcdRequest
 		LcdDisplayable disp = state.displayables().
 			createDisplayable(server.task(), __t, state.callbacks());
 		return disp.handle();
+	}
+	
+	/**
+	 * Gets the height of the given displayable.
+	 *
+	 * @param __id The displayable to get the height for.
+	 * @return The height for the given displayable.
+	 * @since 2018/03/19
+	 */
+	private final int __displayableGetHeight(int __id)
+	{
+		return this.server.state().displayables().get(server, __id).
+			getHeight();
+	}
+	
+	/**
+	 * Gets the width of the given displayable.
+	 *
+	 * @param __id The displayable to get the width for.
+	 * @return The width for the given displayable.
+	 * @since 2018/03/19
+	 */
+	private final int __displayableGetWidth(int __id)
+	{
+		return this.server.state().displayables().get(server, __id).
+			getWidth();
 	}
 	
 	/**

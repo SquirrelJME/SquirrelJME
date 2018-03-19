@@ -68,6 +68,26 @@ public class SwingDisplayable
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2018/03/19
+	 */
+	@Override
+	protected final int internalGetHeight()
+	{
+		return this._panel.getHeight();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/19
+	 */
+	@Override
+	protected final int internalGetWidth()
+	{
+		return this._panel.getWidth();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/03/18
 	 */
 	@Override

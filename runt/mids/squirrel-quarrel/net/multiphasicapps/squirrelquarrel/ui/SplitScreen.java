@@ -12,6 +12,7 @@ package net.multiphasicapps.squirrelquarrel.ui;
 
 import net.multiphasicapps.squirrelquarrel.game.Game;
 import net.multiphasicapps.squirrelquarrel.game.GameLooper;
+import net.multiphasicapps.squirrelquarrel.player.Player;
 import net.multiphasicapps.squirrelquarrel.player.PlayerColor;
 import net.multiphasicapps.squirrelquarrel.player.Players;
 
@@ -67,10 +68,11 @@ public final class SplitScreen
 		{
 			Player p = players.get(i);
 			order[i] = p.color();
-			screens[i] = new GameScreen(__loop, p);
+			screens[i] = new GameScreen(__loop);
 			if (p.isPlaying())
 				playercount++;
 		}
+		this._numscreens = playercount;
 	}
 	
 	/**
@@ -82,7 +84,54 @@ public final class SplitScreen
 	 */
 	public final void configure(int __w, int __h)
 	{
-		throw new todo.TODO();
+		int numscreens = this._numscreens;
+		GameScreen[] screens = this._screens;
+		
+		// Just get all the player screens for now
+		GameScreen a = screens[0],
+			b = screens[1],
+			c = screens[2],
+			d = screens[3];
+		
+		// These will be used
+		int midx = __w >> 1,
+			midy = __h >> 1;
+		
+		// Depends on the screen space
+		switch (numscreens)
+		{
+				// Single player
+			case 1:
+				a.configure(0, 0, __w, __h);
+				break;
+				
+				// Two players
+			case 2:
+				// Split vertically for wider screens
+				if (__w > __h)
+				{
+					a.configure(0, 0, midx, __h);
+					b.configure(midx, 0, midx, __h);
+				}
+				
+				// Otherwise split horizontally
+				else
+				{
+					a.configure(0, 0, __w, midy);
+					b.configure(0, midy, __w, midy);
+				}
+				break;
+				
+				// 3/4 player split
+			case 3:
+			case 4:
+			default:
+				a.configure(0, 0, midx, midy);
+				b.configure(midx, 0, midx, midy);
+				c.configure(0, midy, midx, midy);
+				d.configure(midx, midy, midx, midy);
+				break;
+		}
 	}
 }
 

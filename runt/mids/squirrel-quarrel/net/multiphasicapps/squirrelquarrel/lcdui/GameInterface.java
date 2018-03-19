@@ -129,7 +129,8 @@ public final class GameInterface
 		// Super-class might do some things
 		super.sizeChanged(__w, __h);
 		
-		throw new todo.TODO();
+		// Reconfigure the screens
+		this.splitscreen.configure(__w, __h);
 	}
 }
 

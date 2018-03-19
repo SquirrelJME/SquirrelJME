@@ -60,6 +60,22 @@ public abstract class LcdDisplayable
 	}
 	
 	/**
+	 * Returns the height of the displayable.
+	 *
+	 * @return The displayable height.
+	 * @since 2018/03/19
+	 */
+	protected abstract int internalGetHeight();
+	
+	/**
+	 * Returns the width of the displayable.
+	 *
+	 * @return The displayable width.
+	 * @since 2018/03/19
+	 */
+	protected abstract int internalGetWidth();
+	
+	/**
 	 * Returns the title of the displayable.
 	 *
 	 * @return The displayable title.
@@ -95,6 +111,34 @@ public abstract class LcdDisplayable
 	public final LcdDisplay getCurrent()
 	{
 		return this._current;
+	}
+	
+	/**
+	 * Returns the height of the displayable.
+	 *
+	 * @return The displayable height or a negative value if the displayable
+	 * is not active.
+	 * @since 2018/03/19
+	 */
+	public final int getHeight()
+	{
+		if (this._current == null)
+			return Integer.MIN_VALUE;
+		return this.internalGetHeight();
+	}
+	
+	/**
+	 * Returns the width of the displayable.
+	 *
+	 * @return The displayable width or a negative value if the displayable
+	 * is not active.
+	 * @since 2018/03/19
+	 */
+	public final int getWidth()
+	{
+		if (this._current == null)
+			return Integer.MIN_VALUE;
+		return this.internalGetWidth();
 	}
 	
 	/**
