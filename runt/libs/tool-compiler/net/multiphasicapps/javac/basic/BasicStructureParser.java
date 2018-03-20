@@ -213,24 +213,127 @@ public final class BasicStructureParser
 		LayeredToken next = layer.peek();
 		TokenType type = next.type();
 		
+		// Is this an inner class?
+		Set<DefinedClassFlag> inflags = new HashSet<>();
+		if (__state.isinner)
+			inflags.add(DefinedClassFlag.INNER_CLASS);
+		
 		// Could this be an annotation or annotation declaration?
-		boolean isatinterface = false;
 		if (type == TokenType.SYMBOL_AT)
 		{
 			LayeredToken following = layer.peek(1);
 			TokenType followtype = following.type();
 			
-			// Is an annotation declaration
-			if (type != TokenType.KEYWORD_INTERFACE)
-				isatinterface = true;
-			
-			// Is an annotation to be parsed
-			else
+			// Parse annotation parameters
+			// If the next symbol is interface then the flag reading loop will
+			// just drop out
+			if (followtype != TokenType.KEYWORD_INTERFACE)
+			{
 				throw new todo.TODO();
+			}
 		}
 		
-		// 
+		// Parse keywords
+		for (boolean keepgoing = true; keepgoing;)
+		{
+			next = layer.peek();
+			type = next.type();
+			
+			// Determine the flag to use
+			DefinedClassFlag dfc = null;
+			switch (type)
+			{
+				case KEYWORD_PUBLIC:
+					dfc = DefinedClassFlag.PUBLIC;
+					break;
+				
+				case KEYWORD_PROTECTED:
+					dfc = DefinedClassFlag.PROTECTED;
+					break;
+				
+				case KEYWORD_PRIVATE:
+					dfc = DefinedClassFlag.PRIVATE;
+					break;
+				
+				case KEYWORD_ABSTRACT:
+					dfc = DefinedClassFlag.ABSTRACT;
+					break;
+				
+				case KEYWORD_STATIC:
+					dfc = DefinedClassFlag.STATIC;
+					break;
+				
+				case KEYWORD_FINAL:
+					dfc = DefinedClassFlag.FINAL;
+					break;
+				
+				case KEYWORD_STRICTFP:
+					dfc = DefinedClassFlag.STRICTFP;
+					break;
+					
+					// Declaring an annotation
+				case SYMBOL_AT:
+					dfc = DefinedClassFlag.ANNOTATION;
+					keepgoing = false;
+					break;
+				
+				case KEYWORD_ENUM:
+					dfc = DefinedClassFlag.ENUM;
+					keepgoing = false;
+					break;
+					
+				case KEYWORD_INTERFACE:
+					dfc = DefinedClassFlag.INTERFACE;
+					keepgoing = false;
+					break;
+					
+					// Plain class
+				case KEYWORD_CLASS:
+					keepgoing = false;
+					break;
+				
+					// {@squirreljme.error AQ1t The specified token was not
+					// expected while parsing the class flags. (The next
+					// token)}
+				default:
+					throw new BasicStructureException(next,
+						String.format("AQ1t %s", next));
+			}
+			
+			// Only add flags once
+			if (dfc != null)
+			{
+				// {@squirreljme.error AQ1u Duplicate flag in class.
+				// (The class flags)}
+				if (inflags.contains(dfc))
+					throw new BasicStructureException(next,
+						String.format("AQ1u %s", dfc));
+				
+				inflags.add(dfc);
+				
+				// Consume the token
+				layer.next();
+			}
+			
+			// This should not occur
+			else if (keepgoing)
+				throw new RuntimeException("OOPS");
+		}
+		DefinedClassFlags flags = new DefinedClassFlags(inflags);
 		
+		// If this is a plain class then consume the class keyword
+		if (true)
+			throw new todo.TODO();
+		
+		// Parse extends, if any.
+		if (true)
+			throw new todo.TODO();
+		
+		// Parse implements, if any for classes and enums
+		if (true)
+			throw new todo.TODO();
+		
+		// Parse open brace and enter the class body
 		throw new todo.TODO();
 	}
 	
