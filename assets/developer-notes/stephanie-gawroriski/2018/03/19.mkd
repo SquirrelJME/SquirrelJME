@@ -1,0 +1,78 @@
+# 2018/03/19
+
+## 10:13
+
+Okay, so I had an idea for units being visible. Basically instead of having a
+check that checks fog area, when a unit is linked into the map there can be
+a bunch of checks done to determine which players the unit is visible to at
+a basic level. Also based on vision range I can precache shapes and such for
+them so that I do not need to step through every time, just need to read
+coordinate data. This might increase speed or it might not even be worth it
+really, it depends.
+
+## 10:33
+
+For the mega tile ordinals I want something like this:
+
+	1 2 4 5
+	3 6 7 B
+    8 9 C D
+    A E F G
+
+I think that would be a good shape rather than keeping things a bit square
+and nearby megatiles might not be that far away.
+
+## 12:53
+
+Okay so replays are going to be the first thing that is supported because I
+definitely need that functionality for testing. Additionally for some replays
+which are built-in I can have it where the game hopefully is setup the exactly
+the same for execution runs. So that will be used for synchronization and will
+help in determining if some behavior changes subtly between two systems and
+such. Especially long games will be quite the test. But this will help too.
+
+## 13:43
+
+I will need an easy class to write byte data to, one where I never have to
+worry about `IOException` ever.
+
+## 15:03
+
+Actually with the replay system it can be quite simple, I only need to handle
+events and serialize just events and the initial game information. Although it
+will take longer to resume saved games it will work.
+
+## 21:36
+
+I have an idea for the array graphics. Instead of having duplicate code
+everywhere I can have base Java files with preprocessor stuff. That way I can
+write duplicate code and just generate it accordingly with the right macros
+and such. Manual copy and pasting and hardcore inline is not going to work
+otherwise.
+
+## 21:44
+
+But before I do that I will need something to run the graphics code, then I
+can work on making it very optimized according to certain situations as
+needed.
+
+## 21:49
+
+I do not need a game, I just need a very basic program which performs the
+drawing operations. Something that can time them would be nice too.
+
+## 21:52
+
+But as for the C preprocessed code, it would be best if each function were
+in its own source file, that way a composite source file can be made from
+everything. Basically it will just `#include` whatever fragements and call
+into them accordingly. Smaller methods will optimize better so make it where
+methods that branch like that instead of having multiple branches they just
+go into another method. That way the locals are kept to a minimum.
+
+## 21:55
+
+Actually, this would be a good test for MIDP, basically have stuff that
+checks the performance of operations as needed. So this is something that
+would improve with the testing system. So this means continuing work on
+the compiler to have working tests.
