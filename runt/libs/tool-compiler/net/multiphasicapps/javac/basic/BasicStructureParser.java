@@ -180,6 +180,11 @@ public final class BasicStructureParser
 		
 		TokenizerLayer layer = this.layer;
 		
+		LayeredToken next = layer.peek();
+		TokenType type = next.type();
+		
+		// Could this be an annotation or annotation declaration?
+		
 		throw new todo.TODO();
 	}
 	
