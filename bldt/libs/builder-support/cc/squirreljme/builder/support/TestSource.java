@@ -81,40 +81,60 @@ public final class TestSource
 	@Override
 	protected final CompilerPathSet internalPathSet()
 	{
-		// Generate input
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			PrintStream ps = new PrintStream(baos, true))
+		// Could fail to read
+		try
 		{
-			// Specify test package so the main entry always goes in its
-			// own package
-			// Do not end in newline so the line numbers match the template
-			String mainpackage = this.mainpackage;
-			ps.printf("package %s;", mainpackage);
+			FilePathSet rootset = new FilePathSet(this.root);
 			
-			// Include template test header with test information
-			try (InputStream in = TestSource.class.getResourceAsStream(
-				"testmain.template"))
+			// Parse every input class file and look for tests
+			DefinedTests dt = new DefinedTests();
+			for (CompilerInput ci : rootset)
 			{
-				byte[] buf = new byte[512];
-				for (;;)
+				String name = ci.fileName();
+				if (name.endsWith(".java"))
 				{
-					int rc = in.read(buf);
-					
-					if (rc < 0)
-						break;
-					
-					ps.write(buf, 0, rc);
+					// {@squirreljme.error AU20 Parsing the specified file and
+					// looking for tests. (The file name)}
+					System.err.printf("AU21 %s%n", name);
+					new TestParser(ci, dt).run();
 				}
 			}
-			
-			// Store special auto-generated test information class
-			
-			// Build input, make sure to place it in the correct directory
-			ps.flush();
-			return new MergedPathSet(new FilePathSet(this.root),
-				new DistinctPathSet(new ByteArrayCompilerInput(
-				mainpackage.replace('.', '/') + "/TestMain.java",
-				baos.toByteArray())));
+		
+			// Generate input
+			try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				PrintStream ps = new PrintStream(baos, true))
+			{
+				// Specify test package so the main entry always goes in its
+				// own package
+				// Do not end in newline so the line numbers match the template
+				String mainpackage = this.mainpackage;
+				ps.printf("package %s;", mainpackage);
+				
+				// Include template test header with test information
+				try (InputStream in = TestSource.class.getResourceAsStream(
+					"testmain.template"))
+				{
+					byte[] buf = new byte[512];
+					for (;;)
+					{
+						int rc = in.read(buf);
+						
+						if (rc < 0)
+							break;
+						
+						ps.write(buf, 0, rc);
+					}
+				}
+				
+				// Store special auto-generated test information class
+				
+				// Build input, make sure to place it in the correct directory
+				ps.flush();
+				return new MergedPathSet(rootset,
+					new DistinctPathSet(new ByteArrayCompilerInput(
+					mainpackage.replace('.', '/') + "/TestMain.java",
+					baos.toByteArray())));
+			}
 		}
 		
 		// {@squirreljme.error AU17 Could not generate the virtual test

@@ -52,6 +52,34 @@ public final class BasicStructureParser
 	}
 	
 	/**
+	 * Parses the given input stream for class structure data.
+	 *
+	 * @param __s The name of the file.
+	 * @param __in The input stream to read from.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/19
+	 */
+	public BasicStructureParser(String __s, InputStream __in)
+		throws NullPointerException
+	{
+		this(new Tokenizer(__s, __in));
+	}
+	
+	/**
+	 * Parses the given reader for class structure data.
+	 *
+	 * @param __s The name of the file.
+	 * @param __in The input stream to read from.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/19
+	 */
+	public BasicStructureParser(String __s, Reader __in)
+		throws NullPointerException
+	{
+		this(new Tokenizer(__s, __in));
+	}
+	
+	/**
 	 * Parses the given basic structure from the given tokenizer.
 	 *
 	 * @param __t The tokenizer to parse from.
@@ -184,6 +212,20 @@ public final class BasicStructureParser
 		TokenType type = next.type();
 		
 		// Could this be an annotation or annotation declaration?
+		boolean isatinterface = false;
+		if (type == TokenType.SYMBOL_AT)
+		{
+			LayeredToken following = layer.peek(1);
+			TokenType followtype = following.type();
+			
+			// Is an annotation declaration
+			if (type != TokenType.KEYWORD_INTERFACE)
+				isatinterface = true;
+			
+			// Is an annotation to be parsed
+			else
+				throw new todo.TODO();
+		}
 		
 		throw new todo.TODO();
 	}
