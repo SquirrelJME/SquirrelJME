@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.HashSet;
+import java.util.Set;
 import net.multiphasicapps.classfile.BinaryName;
 import net.multiphasicapps.javac.FileNameLineAndColumn;
 import net.multiphasicapps.javac.token.Token;
@@ -226,6 +228,8 @@ public final class BasicStructureParser
 			else
 				throw new todo.TODO();
 		}
+		
+		// 
 		
 		throw new todo.TODO();
 	}
