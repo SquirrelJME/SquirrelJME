@@ -331,6 +331,9 @@ public final class TokenizerLayer
 			
 			// Store token for later usage
 			queue.addLast(gen);
+			
+			// Debug print that token
+			System.err.printf("DEBUG -- Queued: %s%n", gen.characters());
 		}
 		
 		// Use that given token
