@@ -23,10 +23,16 @@ import java.util.Set;
  * @since 2018/03/21
  */
 public final class EnumSet<T extends Enum<T>>
-	extends AbstractSet
+	extends AbstractSet<T>
 {
 	/** The type of class being stored. */
 	protected final Class<T> type;
+	
+	/** The constants which are in the set. */
+	private final int[] _bits;
+	
+	/** Is the null element in this set? */
+	private volatile boolean _hasnull;
 	
 	/**
 	 * Initializes an empty enumeration set.
@@ -38,10 +44,7 @@ public final class EnumSet<T extends Enum<T>>
 	public EnumSet(Class<T> __cl)
 		throws NullPointerException
 	{
-		if (__cl == null)
-			throw new NullPointerException("NARG");
-		
-		this.type = __cl;
+		this(__cl, EmptySet.<T>empty());
 	}
 	
 	/**
@@ -52,13 +55,25 @@ public final class EnumSet<T extends Enum<T>>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/21
 	 */
-	public EnumSet(Class<T> __cl, Collection<T> __v)
+	public EnumSet(Class<T> __cl, Collection<? extends T> __v)
 		throws NullPointerException
 	{
 		if (__cl == null || __v == null)
 			throw new NullPointerException("NARG");
 		
 		this.type = __cl;
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/21
+	 */
+	@Override
+	public final boolean add(T __v)
+	{
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -77,6 +92,16 @@ public final class EnumSet<T extends Enum<T>>
 	 */
 	@Override
 	public final Iterator<T> iterator()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/21
+	 */
+	@Override
+	public final boolean remove(Object __v)
 	{
 		throw new todo.TODO();
 	}
