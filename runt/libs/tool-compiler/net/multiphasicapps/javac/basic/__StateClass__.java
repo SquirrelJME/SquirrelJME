@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.javac.basic;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 /**
  * This is used to store the state needed to parse classes.
  *
@@ -17,6 +20,7 @@ package net.multiphasicapps.javac.basic;
  */
 class __StateClass__
 	extends __State__
+	implements __IsAnnotated__
 {
 	/** Is this an inner class? */
 	public final boolean isinner;
@@ -24,6 +28,10 @@ class __StateClass__
 	/** The class to build. */
 	public final BasicClassBuilder builder =
 		new BasicClassBuilder();
+	
+	/** Parsed annotations for the next method. */
+	public final Collection<AttachedAnnotation> annotations =
+		new ArrayList<>();
 	
 	/**
 	 * Initializes the state.
@@ -36,6 +44,16 @@ class __StateClass__
 		super(__State__.Area.CLASS);
 		
 		this.isinner = __inner;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/21
+	 */
+	@Override
+	public final Collection<AttachedAnnotation> getAnnotations()
+	{
+		return this.annotations;
 	}
 }
 

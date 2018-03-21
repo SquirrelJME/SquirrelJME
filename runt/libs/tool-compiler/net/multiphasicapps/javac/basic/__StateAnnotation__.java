@@ -10,51 +10,34 @@
 
 package net.multiphasicapps.javac.basic;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 /**
- * This contains the state which is used to parse the class body.
+ * This stores the state for the annotation parser which is attached to
+ * something that is annotated.
  *
  * @since 2018/03/21
  */
-final class __StateClassBody__
+final class __StateAnnotation__
 	extends __State__
-	implements __IsAnnotated__
 {
-	/** The builder to read fields and methods into. */
-	public final BasicClassBuilder builder;
-	
-	/** Parsed annotations for the next member. */
-	public final Collection<AttachedAnnotation> annotations =
-		new ArrayList<>();
+	/** The thing being annotated. */
+	protected final __IsAnnotated__ what;
 	
 	/**
-	 * Initializes the class body parser.
+	 * Initializes the state.
 	 *
-	 * @param __builder Where class parts go.
+	 * @param __ia The thing that is annotated.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/21
 	 */
-	__StateClassBody__(BasicClassBuilder __builder)
+	__StateAnnotation__(__IsAnnotated__ __ia)
 		throws NullPointerException
 	{
-		super(__State__.Area.CLASS_BODY);
+		super(__State__.Area.ANNOTATION);
 		
-		if (__builder == null)
+		if (__ia == null)
 			throw new NullPointerException("NARG");
 		
-		this.builder = __builder;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/03/21
-	 */
-	@Override
-	public final Collection<AttachedAnnotation> getAnnotations()
-	{
-		return this.annotations;
+		this.what = __ia;
 	}
 }
 

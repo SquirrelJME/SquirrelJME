@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayDeque;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.Set;
@@ -163,19 +164,9 @@ public final class BasicStructureParser
 				__State__.Area area = state.area;
 				switch (area)
 				{
-						// End of file
-					case END_OF_FILE:
-						goteof = true;
-						break;
-					
-						// Parse the package statement
-					case PACKAGE:
-						this.__parsePackage((__StatePackage__)state);
-						break;
-						
-						// Import statement
-					case IMPORT:
-						this.__parseImport((__StateImport__)state);
+						// Annotation
+					case ANNOTATION:
+						this.__parseAnnotation((__StateAnnotation__)state);
 						break;
 						
 						// Class
@@ -186,6 +177,21 @@ public final class BasicStructureParser
 						// Body of a class
 					case CLASS_BODY:
 						this.__parseClassBody((__StateClassBody__)state);
+						break;
+						
+						// End of file
+					case END_OF_FILE:
+						goteof = true;
+						break;
+						
+						// Import statement
+					case IMPORT:
+						this.__parseImport((__StateImport__)state);
+						break;
+					
+						// Parse the package statement
+					case PACKAGE:
+						this.__parsePackage((__StatePackage__)state);
 						break;
 					
 						// {@squirreljme.error AQ13 Could not parse the structure
@@ -214,6 +220,38 @@ public final class BasicStructureParser
 	}
 	
 	/**
+	 * Parses a single annotation that is attached to something.
+	 *
+	 * @param __state The annotation state.
+	 * @throws BasicStructureException If the structure could not be parsed.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/21
+	 */
+	private final void __parseAnnotation(__StateAnnotation__ __state)
+		throws BasicStructureException, IOException, NullPointerException
+	{
+		if (__state == null)
+			throw new NullPointerException("NARG");
+		
+		TokenizerLayer layer = this.layer;
+		Collection<AttachedAnnotation> attached = __state.what.
+			getAnnotations();
+		
+		LayeredToken next = layer.peek();
+		TokenType type = next.type();
+		
+		// No more annotations being parsed
+		if (type != TokenType.SYMBOL_AT)
+		{
+			this.__statePop();
+			return;
+		}
+		
+		throw new todo.TODO();
+	}	
+	
+	/**
 	 * Parses a class.
 	 *
 	 * @param __state The parsing state.
@@ -234,11 +272,6 @@ public final class BasicStructureParser
 		LayeredToken next = layer.peek();
 		TokenType type = next.type();
 		
-		// Is this an inner class?
-		Set<DefinedClassFlag> inflags = new HashSet<>();
-		if (__state.isinner)
-			inflags.add(DefinedClassFlag.INNER_CLASS);
-		
 		// Could this be an annotation or annotation declaration?
 		if (type == TokenType.SYMBOL_AT)
 		{
@@ -250,9 +283,15 @@ public final class BasicStructureParser
 			// just drop out
 			if (followtype != TokenType.KEYWORD_INTERFACE)
 			{
-				throw new todo.TODO();
+				this.__statePush(new __StateAnnotation__(__state));
+				return;
 			}
 		}
+		
+		// Is this an inner class?
+		Set<DefinedClassFlag> inflags = new HashSet<>();
+		if (__state.isinner)
+			inflags.add(DefinedClassFlag.INNER_CLASS);
 		
 		// Parse keywords
 		for (boolean keepgoing = true; keepgoing;)
@@ -420,13 +459,18 @@ public final class BasicStructureParser
 		if (__state == null)
 			throw new NullPointerException("NARG");
 		
+		TokenizerLayer layer = this.layer;
+		BasicClassBuilder builder = __state.builder;
+		
 		LayeredToken next = layer.peek();
 		TokenType type = next.type();
 		
 		// Is the next member to parse annotated?
 		if (type == TokenType.SYMBOL_AT)
-			throw new todo.TODO();
-		
+		{
+			this.__statePush(new __StateAnnotation__(__state));
+			return;
+		}
 		
 		throw new todo.TODO();
 	}
@@ -636,7 +680,17 @@ public final class BasicStructureParser
 			throw new BasicStructureException(next,
 				String.format("AQ15 %s", next));
 	}
-
+	
+	/**
+	 * Pops the topmost state.
+	 *
+	 * @return The old topmost state.
+	 * @since 2018/03/21
+	 */
+	private final __State__ __statePop()
+	{
+		return this._states.removeLast();
+	}
 
 	/**
 	 * Pushes a new state to the top.
