@@ -19,6 +19,12 @@ import net.multiphasicapps.classfile.BinaryName;
  */
 public final class BasicClassBuilder
 {
+	/** The flags for the class. */
+	volatile DefinedClassFlags _flags;
+	
+	/** The name of this class. */
+	volatile BinaryName _name;
+	
 	/**
 	 * Adds an extend.
 	 *
@@ -79,7 +85,9 @@ public final class BasicClassBuilder
 		if (__f == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		this._flags = __f;
+		
+		return this;
 	}
 	
 	/**
@@ -96,7 +104,9 @@ public final class BasicClassBuilder
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		this._name = __n;
+		
+		return this;
 	}
 }
 
