@@ -388,8 +388,6 @@ public final class BasicStructureParser
 			throw new BasicStructureException(next,
 				String.format("AQ23 %s", next));
 		
-		next = layer.peek();
-		
 		// Parse open brace and enter the class body
 		throw new todo.TODO();
 	}
