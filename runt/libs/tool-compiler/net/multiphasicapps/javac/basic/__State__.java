@@ -56,6 +56,9 @@ abstract class __State__
 		/** Class. */
 		CLASS,
 		
+		/** Class body. */
+		CLASS_BODY,
+		
 		/** End. */
 		;
 	}

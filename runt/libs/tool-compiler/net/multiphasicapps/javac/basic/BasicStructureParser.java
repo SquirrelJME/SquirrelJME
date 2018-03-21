@@ -182,6 +182,11 @@ public final class BasicStructureParser
 					case CLASS:
 						this.__parseClass((__StateClass__)state);
 						break;
+						
+						// Body of a class
+					case CLASS_BODY:
+						this.__parseClassBody((__StateClassBody__)state);
+						break;
 					
 						// {@squirreljme.error AQ13 Could not parse the structure
 						// because the specified state is not known. (The area)}
@@ -393,7 +398,28 @@ public final class BasicStructureParser
 			throw new BasicStructureException(next,
 				String.format("AQ23 %s", next));
 		
-		// Parse open brace and enter the class body
+		// Enter the class body with this builder, enumerations need their
+		// constants parsed first
+		if (flags.isEnum())
+			throw new todo.TODO();
+		this.__stateReplace(new __StateClassBody__(builder));
+	}
+	
+	/**
+	 * Parses the class body.
+	 *
+	 * @param __state The parsing state.
+	 * @throws BasicStructureException If the structure could not be parsed.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/21
+	 */
+	private final void __parseClassBody(__StateClassBody__ __state)
+		throws BasicStructureException, IOException, NullPointerException
+	{
+		if (__state == null)
+			throw new NullPointerException("NARG");
+		
 		throw new todo.TODO();
 	}
 	
