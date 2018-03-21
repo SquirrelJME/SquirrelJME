@@ -28,6 +28,12 @@ public final class EnumSet<T extends Enum<T>>
 	/** The type of class being stored. */
 	protected final Class<T> type;
 	
+	/** The number of used bits. */
+	protected final int numbits;
+	
+	/** The number of ints to use. */
+	protected final int numints;
+	
 	/** The constants which are in the set. */
 	private final int[] _bits;
 	
@@ -63,7 +69,20 @@ public final class EnumSet<T extends Enum<T>>
 		
 		this.type = __cl;
 		
-		throw new todo.TODO();
+		// Determine the number of bits that are needed to store
+		int numbits = SystemCall.EASY.classEnumCount(__cl);
+		this.numbits = numbits;
+		
+		// Determine the number of integer values to use
+		int numints = (numbits + 31) / 32;
+		this.numints = numints;
+		
+		// Setup storage bits
+		this._bits = new int[numints];
+		
+		// Add values
+		for (T v : __v)
+			this.add(v);
 	}
 	
 	/**
@@ -73,7 +92,34 @@ public final class EnumSet<T extends Enum<T>>
 	@Override
 	public final boolean add(T __v)
 	{
-		throw new todo.TODO();
+		// Adding null element?
+		if (__v == null)
+		{
+			boolean hasnull = this._hasnull;
+			if (hasnull)
+				return false;
+			else
+			{
+				this._hasnull = true;
+				return true;
+			}
+		}
+		
+		// Determine bit position
+		int bit = __v.ordinal(),
+			high = bit >>> 5;
+		bit &= 0x1F;
+		int flag = (1 << bit);
+		
+		// Did it have it before?
+		int[] bits = this._bits;
+		boolean had = ((bits[high] & flag) != 0);
+		
+		// Set it
+		bits[high] |= flag;
+		
+		// The collection only changes if it did not have the bit
+		return !had;
 	}
 	
 	/**
@@ -83,7 +129,19 @@ public final class EnumSet<T extends Enum<T>>
 	@Override
 	public final boolean contains(Object __o)
 	{
-		throw new todo.TODO();
+		// Only has null if it was explicitely added
+		if (__o == null)
+			return this._hasnull;
+		
+		if (!this.type.isInstance(__o))
+			return false;
+		
+		// Determine bit position
+		int bit = ((Enum)__o).ordinal(),
+			high = bit >>> 5;
+		bit &= 0x1F;
+		
+		return 0 != (this._bits[high] & (1 << bit));
 	}
 	
 	/**
