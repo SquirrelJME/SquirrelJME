@@ -6,6 +6,6 @@ X-SquirrelJME-Vendor: Stephanie Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This project is used to compile and 
  document Java source code. 
-X-SquirrelJME-Depends: collections zip io tool-classfile
+X-SquirrelJME-Depends: collections zip io tool-classfile collections
 Microedition-Configuration: CLDC-1.8
 
