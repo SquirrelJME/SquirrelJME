@@ -224,6 +224,7 @@ public final class BasicStructureParser
 			throw new NullPointerException("NARG");
 		
 		TokenizerLayer layer = this.layer;
+		BasicClassBuilder builder = __state.builder;
 		
 		LayeredToken next = layer.peek();
 		TokenType type = next.type();
@@ -334,7 +335,10 @@ public final class BasicStructureParser
 			else if (keepgoing)
 				throw new RuntimeException("OOPS");
 		}
+		
+		// Store flags
 		DefinedClassFlags flags = new DefinedClassFlags(inflags);
+		builder.flags(flags);
 		
 		// If this is a plain class then consume the class keyword
 		if (type == TokenType.KEYWORD_CLASS)
@@ -348,6 +352,7 @@ public final class BasicStructureParser
 			throw new BasicStructureException(next,
 				String.format("AQ24 %s", next));
 		BinaryName cname = new BinaryName(next.characters());
+		builder.name(cname);
 		
 		// Parse extends, if any.
 		next = layer.peek();

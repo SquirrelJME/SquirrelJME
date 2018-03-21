@@ -33,16 +33,19 @@ public final class BasicStructureBuilder
 	 * Adds an import statement to the structure.
 	 *
 	 * @param __i The import to add.
+	 * @return {@code this}.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/13
 	 */
-	public final void addImport(ImportStatement __i)
+	public final BasicStructureBuilder addImport(ImportStatement __i)
 		throws NullPointerException
 	{
 		if (__i == null)
 			throw new NullPointerException("NARG");
 		
 		this._imports.add(__i);
+		
+		return this;
 	}
 	
 	/**
@@ -62,11 +65,14 @@ public final class BasicStructureBuilder
 	 * Sets the package that this class is in.
 	 *
 	 * @param __bn The package the class is in.
+	 * @return {@code this}.
 	 * @since 2018/03/13
 	 */
-	public final void setPackage(BinaryName __bn)
+	public final BasicStructureBuilder setPackage(BinaryName __bn)
 	{
 		this._package = __bn;
+		
+		return this;
 	}
 }
 
