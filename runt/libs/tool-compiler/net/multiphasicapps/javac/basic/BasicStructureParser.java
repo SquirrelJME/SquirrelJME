@@ -153,40 +153,55 @@ public final class BasicStructureParser
 		Deque<__State__> states = this._states;
 		
 		// Parsing is done in a loop
-		for (boolean goteof = false; !goteof;)
+		try
 		{
-			__State__ state = states.getLast();
-			
-			// Depends on the area
-			__State__.Area area = state.area;
-			switch (area)
+			for (boolean goteof = false; !goteof;)
 			{
-					// End of file
-				case END_OF_FILE:
-					goteof = true;
-					break;
+				__State__ state = states.getLast();
 				
-					// Parse the package statement
-				case PACKAGE:
-					this.__parsePackage((__StatePackage__)state);
-					break;
+				// Depends on the area
+				__State__.Area area = state.area;
+				switch (area)
+				{
+						// End of file
+					case END_OF_FILE:
+						goteof = true;
+						break;
 					
-					// Import statement
-				case IMPORT:
-					this.__parseImport((__StateImport__)state);
-					break;
+						// Parse the package statement
+					case PACKAGE:
+						this.__parsePackage((__StatePackage__)state);
+						break;
+						
+						// Import statement
+					case IMPORT:
+						this.__parseImport((__StateImport__)state);
+						break;
+						
+						// Class
+					case CLASS:
+						this.__parseClass((__StateClass__)state);
+						break;
 					
-					// Class
-				case CLASS:
-					this.__parseClass((__StateClass__)state);
-					break;
-				
-					// {@squirreljme.error AQ13 Could not parse the structure
-					// because the specified state is not known. (The area)}
-				default:
-					throw new BasicStructureException(this,
-						String.format("AQ13 %s", area));
+						// {@squirreljme.error AQ13 Could not parse the structure
+						// because the specified state is not known. (The area)}
+					default:
+						throw new BasicStructureException(this,
+							String.format("AQ13 %s", area));
+				}
 			}
+		}
+		
+		// Make sure there is a defined line at least
+		catch (BasicStructureException e)
+		{
+			// If there is no line information just initialize with the layer
+			// location so the error can at least be found
+			if (e.line() < 0)
+				throw new BasicStructureException(this.layer,
+					e.getMessage(), e);
+			
+			throw e;
 		}
 		
 		// Build it
@@ -322,16 +337,58 @@ public final class BasicStructureParser
 		DefinedClassFlags flags = new DefinedClassFlags(inflags);
 		
 		// If this is a plain class then consume the class keyword
-		if (true)
-			throw new todo.TODO();
+		if (type == TokenType.KEYWORD_CLASS)
+			layer.next();
+		
+		// {@squirreljme.error AQ24 Expected an identifier for the class name
+		// declaration. (The token which was read)}
+		next = layer.next();
+		type = next.type();
+		if (type != TokenType.IDENTIFIER)
+			throw new BasicStructureException(next,
+				String.format("AQ24 %s", next));
+		BinaryName cname = new BinaryName(next.characters());
 		
 		// Parse extends, if any.
-		if (true)
+		next = layer.peek();
+		type = next.type();
+		if (type == TokenType.KEYWORD_EXTENDS)
+		{
+			// {@squirreljme.error AQ23 An enumeration cannot extend any
+			// class.}
+			if (flags.isEnum())
+				throw new BasicStructureException(next, "AQ23");
+			
+			// Consume it
+			layer.next();
+			
 			throw new todo.TODO();
+		}
 		
 		// Parse implements, if any for classes and enums
-		if (true)
+		next = layer.peek();
+		type = next.type();
+		if (type == TokenType.KEYWORD_IMPLEMENTS)
+		{
+			// {@squirreljme.error AQ22 Interfaces cannot implement.}
+			if (flags.isInterface())
+				throw new BasicStructureException(next, "AQ22");
+			
+			// Consume it
+			layer.next();
+			
 			throw new todo.TODO();
+		}
+		
+		// {@squirreljme.error AQ23 Expected opening brace at start of class
+		// file. (The read token)}
+		next = layer.next();
+		type = next.type();
+		if (type != TokenType.SYMBOL_OPEN_BRACE)
+			throw new BasicStructureException(next,
+				String.format("AQ23 %s", next));
+		
+		next = layer.peek();
 		
 		// Parse open brace and enter the class body
 		throw new todo.TODO();
