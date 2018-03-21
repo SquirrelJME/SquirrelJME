@@ -13,6 +13,8 @@ package cc.squirreljme.runtime.cldc.system;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.system.api.Call;
 import cc.squirreljme.runtime.cldc.system.api.ClassEnumConstants;
+import cc.squirreljme.runtime.cldc.system.api.ClassEnumCount;
+import cc.squirreljme.runtime.cldc.system.api.ClassEnumIndexOf;
 import cc.squirreljme.runtime.cldc.system.api.ClassEnumValueOf;
 import cc.squirreljme.runtime.cldc.system.api.SetDaemonThreadCall;
 import cc.squirreljme.runtime.cldc.system.api.ThrowableGetStackCall;
@@ -302,12 +304,20 @@ public final class SystemCall
 		switch (__func)
 		{
 			case CLASS_ENUM_CONSTANTS:
-				return ((ClassEnumConstants)call).<Object>classEnumConstants(
-					(Class<Object>)__args[0]);
+				return ((ClassEnumConstants)call).<Enum>classEnumConstants(
+					(Class<Enum>)__args[0]);
+			
+			case CLASS_ENUM_COUNT:
+				return ((ClassEnumCount)call).classEnumCount(
+					(Class<Enum>)__args[0]);
+				
+			case CLASS_ENUM_INDEXOF:
+				return ((ClassEnumIndexOf)call).<Enum>classEnumIndexOf(
+					(Class<Enum>)__args[0], (Integer)__args[1]);
 			
 			case CLASS_ENUM_VALUEOF:
-				return ((ClassEnumValueOf)call).<Object>classEnumValueOf(
-					(Class<Object>)__args[0], (String)__args[1]);
+				return ((ClassEnumValueOf)call).<Enum>classEnumValueOf(
+					(Class<Enum>)__args[0], (String)__args[1]);
 			
 			case SET_DAEMON_THREAD:
 				((SetDaemonThreadCall)call).setDaemonThread(

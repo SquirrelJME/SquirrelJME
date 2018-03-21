@@ -10,26 +10,27 @@
 
 package cc.squirreljme.runtime.cldc.system.api;
 
-import cc.squirreljme.runtime.cldc.system.SystemFunction;
-
 /**
- * Interface for {@link SystemFunction#CLASS_ENUM_CONSTANTS}.
+ * Interface for {@link SystemFunction#CLASS_ENUM_INDEXOF}.
  *
- * @since 2018/03/17
+ * @since 2018/03/21
  */
-public interface ClassEnumConstants
+public interface ClassEnumIndexOf
 {
 	/**
-	 * Returns the enumeration constants for the given class.
+	 * Returns the enumeration which uses the specified index in the given
+	 * enumeration class.
 	 *
 	 * @param <E> The type of the class.
-	 * @param __cl The class to get the constants for.
-	 * @return The constants for the class or {@code null} if it is not an
-	 * enumeration.
+	 * @param __cl The class to get the constant for.
+	 * @param __i The index of the constant to get.
+	 * @return The enumeration constant.
+	 * @throws IllegalArgumentException If the enumeration is not valid.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2018/03/17
+	 * @since 2018/03/21
 	 */
-	public abstract <E extends Enum<E>> E[] classEnumConstants(Class<E> __cl)
-		throws NullPointerException;
+	public abstract <E extends Enum<E>> E classEnumIndexOf(
+		Class<E> __cl, int __i)
+		throws IllegalArgumentException, NullPointerException;
 }
 
