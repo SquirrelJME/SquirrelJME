@@ -212,6 +212,8 @@ public class Main
 		// Initialize the same user side calls
 		UserSideCalls usc = new UserSideCalls();
 		impls[SystemFunction.CLASS_ENUM_CONSTANTS.ordinal()] = usc;
+		impls[SystemFunction.CLASS_ENUM_COUNT.ordinal()] = usc;
+		impls[SystemFunction.CLASS_ENUM_INDEXOF.ordinal()] = usc;
 		impls[SystemFunction.CLASS_ENUM_VALUEOF.ordinal()] = usc;
 		impls[SystemFunction.SET_DAEMON_THREAD.ordinal()] = usc;
 		impls[SystemFunction.THROWABLE_GET_STACK.ordinal()] = usc;

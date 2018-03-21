@@ -25,6 +25,12 @@ public enum SystemFunction
 	/** The enumeration constants for the class. */
 	CLASS_ENUM_CONSTANTS,
 	
+	/** The number of elements in an enumeration. */
+	CLASS_ENUM_COUNT,
+	
+	/** Returns the enumerated element for the given ordinal. */
+	CLASS_ENUM_INDEXOF,
+	
 	/** Search for an enumeration constants by name. */
 	CLASS_ENUM_VALUEOF,
 	
@@ -120,6 +126,8 @@ public enum SystemFunction
 		switch (this)
 		{
 			case CLASS_ENUM_CONSTANTS:
+			case CLASS_ENUM_COUNT:
+			case CLASS_ENUM_INDEXOF:
 			case CLASS_ENUM_VALUEOF:
 			case SET_DAEMON_THREAD:
 			case THROWABLE_GET_STACK:

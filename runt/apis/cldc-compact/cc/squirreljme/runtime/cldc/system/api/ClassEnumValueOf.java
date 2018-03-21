@@ -31,7 +31,8 @@ public interface ClassEnumValueOf
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/17
 	 */
-	public abstract <E> E classEnumValueOf(Class<E> __cl, String __n)
+	public abstract <E extends Enum<E>> E classEnumValueOf(Class<E> __cl,
+		String __n)
 		throws IllegalArgumentException, NullPointerException;
 }
 

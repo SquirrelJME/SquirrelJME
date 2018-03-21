@@ -13,6 +13,8 @@ package cc.squirreljme.runtime.cldc.system;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.system.api.Call;
 import cc.squirreljme.runtime.cldc.system.api.ClassEnumConstants;
+import cc.squirreljme.runtime.cldc.system.api.ClassEnumCount;
+import cc.squirreljme.runtime.cldc.system.api.ClassEnumIndexOf;
 import cc.squirreljme.runtime.cldc.system.api.ClassEnumValueOf;
 import cc.squirreljme.runtime.cldc.system.api.CurrentTimeMillisCall;
 import cc.squirreljme.runtime.cldc.system.api.ExitCall;
@@ -61,6 +63,8 @@ import cc.squirreljme.runtime.cldc.system.type.VoidType;
  */
 public final class EasyCall
 	implements ClassEnumConstants,
+		ClassEnumCount,
+		ClassEnumIndexOf,
 		ClassEnumValueOf,
 		CurrentTimeMillisCall,
 		ExitCall,
@@ -102,7 +106,7 @@ public final class EasyCall
 	 */
 	@Override
 	@SuppressWarnings({"unchecked"})
-	public final <E> E[] classEnumConstants(Class<E> __cl)
+	public final <E extends Enum<E>> E[] classEnumConstants(Class<E> __cl)
 		throws NullPointerException
 	{
 		if (__cl == null)
@@ -114,11 +118,41 @@ public final class EasyCall
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2018/03/21
+	 */
+	@Override
+	public final int classEnumCount(Class<? extends Enum> __cl)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		return SystemCall.<Integer>systemCall(Integer.class,
+			SystemFunction.CLASS_ENUM_COUNT, __cl);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/21
+	 */
+	@Override
+	public final <E extends Enum<E>> E classEnumIndexOf(Class<E> __cl, int __i)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		return SystemCall.<E>systemCall(__cl,
+			SystemFunction.CLASS_ENUM_INDEXOF, __cl, __i);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/03/17
 	 */
 	@Override
-	@SuppressWarnings({"unchecked"})
-	public final <E> E classEnumValueOf(Class<E> __cl, String __n)
+	public final <E extends Enum<E>> E classEnumValueOf(Class<E> __cl,
+		String __n)
 		throws IllegalArgumentException, NullPointerException
 	{
 		if (__cl == null || __n == null)
