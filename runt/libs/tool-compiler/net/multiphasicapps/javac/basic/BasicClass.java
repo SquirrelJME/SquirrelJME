@@ -10,32 +10,14 @@
 
 package net.multiphasicapps.javac.basic;
 
+import net.multiphasicapps.classfile.BinaryName;
+
 /**
- * This is used to store the state needed to parse classes.
+ * This represents a basic class in the source code.
  *
- * @since 2018/03/13
+ * @since 2018/03/21
  */
-class __StateClass__
-	extends __State__
+public final class BasicClass
 {
-	/** Is this an inner class? */
-	public final boolean isinner;
-	
-	/** The class to build. */
-	public final BasicClassBuilder builder =
-		new BasicClassBuilder();
-	
-	/**
-	 * Initializes the state.
-	 *
-	 * @param __inner Is this an inner class?
-	 * @since 2018/03/13
-	 */
-	__StateClass__(boolean __inner)
-	{
-		super(__State__.Area.CLASS);
-		
-		this.isinner = __inner;
-	}
 }
 
