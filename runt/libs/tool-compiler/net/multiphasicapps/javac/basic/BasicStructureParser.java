@@ -420,6 +420,14 @@ public final class BasicStructureParser
 		if (__state == null)
 			throw new NullPointerException("NARG");
 		
+		LayeredToken next = layer.peek();
+		TokenType type = next.type();
+		
+		// Is the next member to parse annotated?
+		if (type == TokenType.SYMBOL_AT)
+			throw new todo.TODO();
+		
+		
 		throw new todo.TODO();
 	}
 	
