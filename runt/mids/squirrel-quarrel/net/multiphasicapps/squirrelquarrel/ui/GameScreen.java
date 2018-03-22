@@ -12,6 +12,7 @@ package net.multiphasicapps.squirrelquarrel.ui;
 
 import net.multiphasicapps.squirrelquarrel.game.GameLooper;
 import net.multiphasicapps.squirrelquarrel.player.Player;
+import net.multiphasicapps.squirrelquarrel.world.World;
 
 /**
  * This represents a single game screen which contains a viewport and
@@ -26,6 +27,9 @@ public final class GameScreen
 	
 	/** The player being drawn. */
 	protected final Player player;
+	
+	/** The viewport for the screen. */
+	protected final Viewport viewport;
 	
 	/** The screen X position. */
 	private volatile int _sx;
@@ -55,6 +59,11 @@ public final class GameScreen
 		
 		this.looper = __g;
 		this.player = __p;
+		
+		// Initialize the viewport
+		World world = __g.game().world();
+		this.viewport = new Viewport(world.pixelWidth(),
+			world.pixelHeight());
 	}
 	
 	/**
@@ -72,6 +81,9 @@ public final class GameScreen
 		this._sy = __y;
 		this._sw = __w;
 		this._sh = __h;
+		
+		// Adjust the viewport accordingly
+		this.viewport.setSize(__w, __h);
 	}
 	
 	/**
@@ -94,6 +106,17 @@ public final class GameScreen
 	public final Player player()
 	{
 		return this.player;
+	}
+	
+	/**
+	 * Returns the viewport of the view.
+	 *
+	 * @return The game viewport.
+	 * @since 2018/03/22
+	 */
+	public final Viewport viewport()
+	{
+		return this.viewport;
 	}
 	
 	/**
