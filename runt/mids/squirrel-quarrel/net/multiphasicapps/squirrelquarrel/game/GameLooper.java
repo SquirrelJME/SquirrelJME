@@ -104,6 +104,9 @@ public final class GameLooper
 			int nowframe = game.frameCount();
 			game.run();
 			
+			// Debug
+			System.err.printf("DEBUG -- Ran %d%n", nowframe);
+			
 			// Request a repaint if there is enough time to draw
 			long exit = System.nanoTime();
 			if ((exit - enter) < speed.nanoFrameTime())
