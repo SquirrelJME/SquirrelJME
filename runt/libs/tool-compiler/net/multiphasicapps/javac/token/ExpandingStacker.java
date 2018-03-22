@@ -11,6 +11,8 @@
 package net.multiphasicapps.javac.token;
 
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * This is an expanded token source which can be given an input queue of
@@ -21,6 +23,38 @@ import java.io.IOException;
 public final class ExpandingStacker
 	extends ExpandingSource
 {
+	/** The iterator for input expanded tokens. */
+	protected final Iterator<ExpandedToken> iterator;
+	
+	/**
+	 * Initializes the stacking expander.
+	 *
+	 * @param __i The input iterable.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/22
+	 */
+	public ExpandingStacker(Iterable<ExpandedToken> __i)
+		throws NullPointerException
+	{
+		this(__i.iterator());
+	}
+	
+	/**
+	 * Initializes the stacking expander.
+	 *
+	 * @param __i The input iterator.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/22
+	 */
+	public ExpandingStacker(Iterator<ExpandedToken> __i)
+		throws NullPointerException
+	{
+		if (__i == null)
+			throw new NullPointerException("NARG");
+		
+		this.iterator = __i;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/22
@@ -28,7 +62,6 @@ public final class ExpandingStacker
 	@Override
 	public final void close()
 	{
-		throw new todo.TODO();
 	}
 	
 	/**
@@ -39,7 +72,14 @@ public final class ExpandingStacker
 	protected final ExpandedToken readNext()
 		throws IOException
 	{
-		throw new todo.TODO();
+		try
+		{
+			return this.iterator.next();
+		}
+		catch (NoSuchElementException e)
+		{
+			return null;
+		}
 	}
 }
 
