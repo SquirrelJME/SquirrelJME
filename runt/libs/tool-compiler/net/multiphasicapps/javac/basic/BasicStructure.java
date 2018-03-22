@@ -16,6 +16,7 @@ package net.multiphasicapps.javac.basic;
  *
  * @since 2018/03/12
  */
+@Deprecated
 public final class BasicStructure
 {
 }

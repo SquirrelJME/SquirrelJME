@@ -15,6 +15,7 @@ package net.multiphasicapps.javac.basic;
  *
  * @since 2018/03/10
  */
+@Deprecated
 public enum DefinedClassFlag
 {
 	/** Public. */

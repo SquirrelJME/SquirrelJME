@@ -17,6 +17,7 @@ import java.util.Collection;
  *
  * @since 2018/03/21
  */
+@Deprecated
 interface __IsAnnotated__
 {
 	/**

@@ -16,6 +16,7 @@ package net.multiphasicapps.javac.basic;
  *
  * @since 2018/03/21
  */
+@Deprecated
 final class __StateAnnotation__
 	extends __State__
 {
