@@ -8,25 +8,26 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.javac.basic;
+package net.multiphasicapps.javac.layout;
 
 import net.multiphasicapps.javac.CompilerException;
 import net.multiphasicapps.javac.LocationAware;
 
 /**
- * This is thrown when the structure of a parsed class is not correct.
+ * This is thrown when the layout parser has reached a syntax error and the
+ * layout could not be parsed.
  *
- * @since 2018/03/12
+ * @since 2018/03/22
  */
-public class BasicStructureException
+public class LayoutParserException
 	extends CompilerException
 {
 	/**
 	 * Initialize the exception with no message or cause.
 	 *
-	 * @since 2018/03/12
+	 * @since 2018/03/22
 	 */
-	public BasicStructureException()
+	public LayoutParserException()
 	{
 	}
 	
@@ -34,9 +35,9 @@ public class BasicStructureException
 	 * Initialize the exception with a message and no cause.
 	 *
 	 * @param __m The message.
-	 * @since 2018/03/12
+	 * @since 2018/03/22
 	 */
-	public BasicStructureException(String __m)
+	public LayoutParserException(String __m)
 	{
 		super(__m);
 	}
@@ -46,9 +47,9 @@ public class BasicStructureException
 	 *
 	 * @param __m The message.
 	 * @param __c The cause.
-	 * @since 2018/03/12
+	 * @since 2018/03/22
 	 */
-	public BasicStructureException(String __m, Throwable __c)
+	public LayoutParserException(String __m, Throwable __c)
 	{
 		super(__m, __c);
 	}
@@ -57,9 +58,9 @@ public class BasicStructureException
 	 * Initialize the exception with no message and with a cause.
 	 *
 	 * @param __c The cause.
-	 * @since 2018/03/12
+	 * @since 2018/03/22
 	 */
-	public BasicStructureException(Throwable __c)
+	public LayoutParserException(Throwable __c)
 	{
 		super(__c);
 	}
@@ -68,9 +69,9 @@ public class BasicStructureException
 	 * Initialize the exception with no message or cause.
 	 *
 	 * @param __la Location awareness information.
-	 * @since 2018/03/12
+	 * @since 2018/03/22
 	 */
-	public BasicStructureException(LocationAware __la)
+	public LayoutParserException(LocationAware __la)
 	{
 		super(__la);
 	}
@@ -80,9 +81,9 @@ public class BasicStructureException
 	 *
 	 * @param __la Location awareness information.
 	 * @param __m The message.
-	 * @since 2018/03/12
+	 * @since 2018/03/22
 	 */
-	public BasicStructureException(LocationAware __la, String __m)
+	public LayoutParserException(LocationAware __la, String __m)
 	{
 		super(__la, __m);
 	}
@@ -93,9 +94,9 @@ public class BasicStructureException
 	 * @param __la Location awareness information.
 	 * @param __m The message.
 	 * @param __c The cause.
-	 * @since 2018/03/12
+	 * @since 2018/03/22
 	 */
-	public BasicStructureException(LocationAware __la, String __m,
+	public LayoutParserException(LocationAware __la, String __m,
 		Throwable __c)
 	{
 		super(__la, __m, __c);
@@ -106,9 +107,9 @@ public class BasicStructureException
 	 *
 	 * @param __la Location awareness information.
 	 * @param __c The cause.
-	 * @since 2018/03/12
+	 * @since 2018/03/22
 	 */
-	public BasicStructureException(LocationAware __la, Throwable __c)
+	public LayoutParserException(LocationAware __la, Throwable __c)
 	{
 		super(__la, __c);
 	}
