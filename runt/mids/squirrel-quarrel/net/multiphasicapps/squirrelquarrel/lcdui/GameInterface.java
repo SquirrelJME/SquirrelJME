@@ -34,6 +34,9 @@ public final class GameInterface
 	/** Splitscreen. */
 	protected final SplitScreen splitscreen;
 	
+	/** The renderer for the game. */
+	protected final Renderer renderer;
+	
 	/**
 	 * Initializes the game interface.
 	 *
@@ -52,7 +55,9 @@ public final class GameInterface
 		setTitle("Squirrel Quarrel");
 		
 		this.looper = __g;
-		this.splitscreen = new SplitScreen(__g);
+		SplitScreen splitscreen;
+		this.splitscreen = (splitscreen = new SplitScreen(__g));
+		this.renderer = new Renderer(__g, splitscreen);
 	}
 	
 	/**
@@ -80,7 +85,23 @@ public final class GameInterface
 		SplitScreen splitscreen = this.splitscreen;
 		splitscreen.configure(cw, ch);
 		
-		//throw new todo.TODO();
+		// Store the original clip
+		int ox = __g.getClipX(),
+			oy = __g.getClipY(),
+			ow = __g.getClipWidth(),
+			oh = __g.getClipHeight();
+		
+		// Draw every screen
+		Renderer renderer = this.renderer;
+		for (int i = 0, n = splitscreen.count(); i < n; i++)
+		{
+			// Restore drawing parameters
+			__g.translate(-__g.getTranslateX(), -__g.getTranslateY());
+			__g.setClip(ox, oy, ow, oh);
+			
+			// Draw the screen
+			renderer.paint(splitscreen.get(i), __g);
+		}
 	}
 	
 	/**
