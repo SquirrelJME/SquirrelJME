@@ -33,6 +33,7 @@ import net.multiphasicapps.javac.token.TokenType;
  *
  * @since 2018/03/12
  */
+@Deprecated
 public final class BasicStructureParser
 	implements Closeable, FileNameLineAndColumn
 {

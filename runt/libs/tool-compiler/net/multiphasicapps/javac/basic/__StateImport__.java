@@ -15,6 +15,7 @@ package net.multiphasicapps.javac.basic;
  *
  * @since 2018/03/13
  */
+@Deprecated
 class __StateImport__
 	extends __State__
 {

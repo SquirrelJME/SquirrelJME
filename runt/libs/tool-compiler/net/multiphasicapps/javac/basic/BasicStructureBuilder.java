@@ -20,6 +20,7 @@ import net.multiphasicapps.classfile.BinaryName;
  *
  * @since 2018/03/12
  */
+@Deprecated
 public final class BasicStructureBuilder
 {
 	/** Import statements. */

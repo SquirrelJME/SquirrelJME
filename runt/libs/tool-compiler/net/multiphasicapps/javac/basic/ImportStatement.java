@@ -17,6 +17,7 @@ import net.multiphasicapps.classfile.BinaryName;
  *
  * @since 2018/03/13
  */
+@Deprecated
 public final class ImportStatement
 {
 	/** Is this static? */

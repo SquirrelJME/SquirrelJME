@@ -17,6 +17,7 @@ import net.multiphasicapps.classfile.BinaryName;
  *
  * @since 2018/03/21
  */
+@Deprecated
 public final class BasicClass
 {
 }

@@ -16,6 +16,7 @@ package net.multiphasicapps.javac.basic;
  *
  * @since 2018/03/13
  */
+@Deprecated
 abstract class __State__
 {
 	/** The area being parsed. */

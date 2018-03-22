@@ -15,6 +15,7 @@ package net.multiphasicapps.javac.basic;
  *
  * @since 2018/03/21
  */
+@Deprecated
 public final class AttachedAnnotation
 {
 }

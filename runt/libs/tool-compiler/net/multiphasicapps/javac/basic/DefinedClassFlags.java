@@ -27,6 +27,7 @@ import net.multiphasicapps.collections.UnmodifiableSet;
  *
  * @since 2018/03/10
  */
+@Deprecated
 public final class DefinedClassFlags
 	extends AbstractSet<DefinedClassFlag>
 	implements AccessibleFlags

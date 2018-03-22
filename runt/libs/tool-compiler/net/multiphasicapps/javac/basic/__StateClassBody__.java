@@ -18,6 +18,7 @@ import java.util.Collection;
  *
  * @since 2018/03/21
  */
+@Deprecated
 final class __StateClassBody__
 	extends __State__
 	implements __IsAnnotated__
