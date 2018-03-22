@@ -11,7 +11,9 @@
 package net.multiphasicapps.javac.token;
 
 import java.io.Closeable;
+import java.io.InputStream;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -54,6 +56,34 @@ public final class ExpandingTokenizer
 	
 	/** Used for angle bracket decomposition. */
 	private volatile TokenType _lasttype;
+	
+	/**
+	 * Initializes the expanding tokenizer.
+	 *
+	 * @param __n The input name.
+	 * @param __in The input stream.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/22
+	 */
+	public ExpandingTokenizer(String __n, InputStream __in)
+		throws NullPointerException
+	{
+		this(new Tokenizer(__n, __in));
+	}
+	
+	/**
+	 * Initializes the expanding tokenizer.
+	 *
+	 * @param __n The input name.
+	 * @param __in The input stream.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/22
+	 */
+	public ExpandingTokenizer(String __n, Reader __in)
+		throws NullPointerException
+	{
+		this(new Tokenizer(__n, __in));
+	}
 	
 	/**
 	 * This initializes the tokenizer layer which allows for slight
