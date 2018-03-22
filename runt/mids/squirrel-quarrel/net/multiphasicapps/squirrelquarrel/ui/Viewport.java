@@ -107,17 +107,13 @@ public final class Viewport
 	 */
 	public void setViewport(int __x, int __y)
 	{
-		throw new todo.TODO();
-		/*
 		// Translate the viewport
 		int viewx = __x,
 			viewy = __y,
 			vieww = this._vieww,
 			viewh = this._viewh,
-			levelpxw = this.levelpxw,
-			levelpxh = this.levelpxh,
-			levelmtw = this.levelmtw,
-			levelmth = this.levelmth;
+			levelpxw = this.levelwidth,
+			levelpxh = this.levelheight;
 		
 		// Cap right side
 		if (viewx + vieww >= levelpxw - 1)
@@ -146,17 +142,14 @@ public final class Viewport
 			mey = (this.screenToMapY(viewh) / MegaTile.PIXEL_SIZE) + 1;
 		
 		// Cap
-		if (mex > levelmtw)
-			mex = levelmtw;
-		if (mey > levelmth)
-			mey = levelmth;
+		mex = Math.min(mex, levelpxw / MegaTile.PIXEL_SIZE);
+		mey = Math.min(mey, levelpxh / MegaTile.PIXEL_SIZE);
 		
 		// Set
 		this._msx = msx;
 		this._msy = msy;
 		this._mex = mex;
 		this._mey = mey;
-		*/
 	}
 	
 	/**

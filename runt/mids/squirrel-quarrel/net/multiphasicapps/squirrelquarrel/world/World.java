@@ -96,42 +96,6 @@ public class World
 	}
 	
 	/**
-	 * Converts a pixel coordinate to a mega tile.
-	 *
-	 * @param __c The coordinate to convert.
-	 * @return The converted coordinate.
-	 * @since 2017/02/13
-	 */
-	public static int pixelCoordToMegaTile(int __c)
-	{
-		return __c / MegaTile.PIXEL_SIZE;
-	}
-	
-	/**
-	 * Converts a pixel coordinate to a tile.
-	 *
-	 * @param __c The coordinate to convert.
-	 * @return The converted coordinate.
-	 * @since 2017/02/13
-	 */
-	public static int pixelCoordToTile(int __c)
-	{
-		return __c / Tile.PIXEL_SIZE;
-	}
-	
-	/**
-	 * Converts a pixel coordinate to a sub tile in a megatile.
-	 *
-	 * @param __c The coordinate to convert.
-	 * @return The converted coordinate.
-	 * @since 2017/02/13
-	 */
-	public static int pixelCoordToSubTile(int __c)
-	{
-		return (__c / Tile.PIXEL_SIZE) % MegaTile.TILES_PER_MEGA_TILE;
-	}
-	
-	/**
 	 * Returns the height of the map in megatiles.
 	 *
 	 * @return The map height in megatiles.
@@ -222,6 +186,42 @@ public class World
 		MegaTile[] tiles = this._tiles;
 		for (int i = 0, n = tiles.length; i < n; i++)
 			tiles[i].run(__frame);
+	}
+	
+	/**
+	 * Converts a pixel coordinate to a mega tile.
+	 *
+	 * @param __c The coordinate to convert.
+	 * @return The converted coordinate.
+	 * @since 2017/02/13
+	 */
+	public static int pixelCoordToMegaTile(int __c)
+	{
+		return __c / MegaTile.PIXEL_SIZE;
+	}
+	
+	/**
+	 * Converts a pixel coordinate to a tile.
+	 *
+	 * @param __c The coordinate to convert.
+	 * @return The converted coordinate.
+	 * @since 2017/02/13
+	 */
+	public static int pixelCoordToTile(int __c)
+	{
+		return __c / Tile.PIXEL_SIZE;
+	}
+	
+	/**
+	 * Converts a pixel coordinate to a sub tile in a megatile.
+	 *
+	 * @param __c The coordinate to convert.
+	 * @return The converted coordinate.
+	 * @since 2017/02/13
+	 */
+	public static int pixelCoordToSubTile(int __c)
+	{
+		return (__c / Tile.PIXEL_SIZE) % MegaTile.TILES_PER_MEGA_TILE;
 	}
 }
 
