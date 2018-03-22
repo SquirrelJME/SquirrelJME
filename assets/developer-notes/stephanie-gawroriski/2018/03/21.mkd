@@ -1,0 +1,25 @@
+# 2018/03/21
+
+## 09:16
+
+Okay so I had a dream about reverse execution. Not sure why I was doing
+that but I believe it was for debugging. Basically I would instead
+input return vaiues  or pass throwables to reverse methods and they
+would return their input arguments. That would require an insanely
+complex thing and would have to keep track of input arguments. But that
+would require lots of memory since pretty much every operation is not
+reversable.
+
+## 11:21
+
+An `EnumSet` would be useful to have.
+
+## 13:18
+
+I had an idea for the other race, instead of warping in buildings or
+similar they are just 3D printed right into the battlefield. I think that
+would be cool as 3D printing is quite new technology.
+
+## 13:20
+
+Maybe even have an animation for it too.
