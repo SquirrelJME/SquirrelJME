@@ -14,6 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
+import net.multiphasicapps.squirrelquarrel.game.Game;
+import net.multiphasicapps.squirrelquarrel.game.GameLooper;
+import net.multiphasicapps.squirrelquarrel.ui.FrameSync;
+import net.multiphasicapps.squirrelquarrel.ui.GameScreen;
+import net.multiphasicapps.squirrelquarrel.ui.SplitScreen;
 import net.multiphasicapps.squirrelquarrel.units.UnitReference;
 import net.multiphasicapps.squirrelquarrel.world.MegaTile;
 
@@ -25,43 +30,44 @@ import net.multiphasicapps.squirrelquarrel.world.MegaTile;
  */
 public final class Renderer
 {
-	/** The width of the level in pixels. */
-	protected final int levelpxw;
+	/** The game looper to draw. */
+	protected final GameLooper looper;
 	
-	/** The height of the level in pixels. */
-	protected final int levelpxh;
-	
-	/** The width of the level in megatiles. */
-	protected final int levelmtw;
-	
-	/** The height of the level in megatiles. */
-	protected final int levelmth;
-	
-	/** The mega tile cacher, used to combine megatiles into one image. */
-	protected final MegaTileCacher mtcacher;
-	
-	/** Units to draw. */
-	private final List<UnitReference> _drawunits =
-		new ArrayList<>();
+	/** The splitscreens to have viewports for. */
+	protected final SplitScreen splitscreen;
 	
 	/**
 	 * Initializes the renderer.
 	 *
+	 * @param __g The game looper to use.
+	 * @param __ss The splitscreen to use.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/19
 	 */
-	public Renderer()
+	public Renderer(GameLooper __g, SplitScreen __ss)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__g == null || __ss == null)
+			throw new NullPointerException("NARG");
+		
+		this.looper = __g;
+		this.splitscreen = __ss;
 	}
 	
 	/**
 	 * Paints the game to the given graphics.
 	 *
+	 * @param __src The screen to draw for.
 	 * @param __g The graphics to draw on.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/08
 	 */
-	public void paint(Graphics __g)
+	public void paint(GameScreen __scr, Graphics __g)
+		throws NullPointerException
 	{
+		if (__scr == null || __g == null)
+			throw new NullPointerException("NARG");
+		
 		/*
 		// If already painting, do not duplicate a paint
 		if (this._inpaint)

@@ -133,5 +133,31 @@ public final class SplitScreen
 				break;
 		}
 	}
+	
+	/**
+	 * Returns the number of screens to draw.
+	 *
+	 * @return The screen count.
+	 * @since 2018/03/22
+	 */
+	public final int count()
+	{
+		return this._numscreens;
+	}
+	
+	/**
+	 * Gets the screen from the given index.
+	 *
+	 * @param __i The screen to get.
+	 * @return The given screen.
+	 * @throws IndexOutOfBoundsException If the screen is outside of the
+	 * player bounds.
+	 * @since 2018/03/22
+	 */
+	public final GameScreen get(int __i)
+		throws IndexOutOfBoundsException
+	{
+		throw new todo.TODO();
+	}
 }
 
