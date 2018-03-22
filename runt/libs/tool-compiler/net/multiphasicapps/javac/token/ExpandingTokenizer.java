@@ -31,7 +31,8 @@ import net.multiphasicapps.javac.FileNameLineAndColumn;
  * @since 2018/03/12
  */
 public final class ExpandingTokenizer
-	implements Closeable, FileNameLineAndColumn
+	extends ExpandingSource
+	implements Closeable
 {
 	/** The tokenizer this is laid ontop of. */
 	protected final Tokenizer tokenizer;
@@ -47,9 +48,6 @@ public final class ExpandingTokenizer
 	/** Pusher for comment tokens. */
 	private final List<Token> _commentpush =
 		new ArrayList<>();
-	
-	/** The last token which was read. */
-	private volatile FileNameLineAndColumn _last;
 	
 	/** The number of open angle brackets. */
 	private volatile int _opencount;
@@ -118,52 +116,7 @@ public final class ExpandingTokenizer
 	 * @since 2018/03/12
 	 */
 	@Override
-	public final int column()
-	{
-		FileNameLineAndColumn last = this._last;
-		if (last != null)
-			return last.column();
-		return -1;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/03/12
-	 */
-	@Override
-	public final String fileName()
-	{
-		FileNameLineAndColumn last = this._last;
-		if (last != null)
-			return last.fileName();
-		return null;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/03/12
-	 */
-	@Override
-	public final int line()
-	{
-		FileNameLineAndColumn last = this._last;
-		if (last != null)
-			return last.line();
-		return -1;
-	}
-	
-	/**
-	 * Returns the next token in the queue.
-	 *
-	 * This method may return different sets of tokens from peeked tokens if
-	 * they are to be decomposed.
-	 *
-	 * @return The next token in the queue or end of file tokens if there are
-	 * no more tokens.
-	 * @throws IOException On read errors.
-	 * @since 2018/03/12
-	 */
-	public final ExpandedToken next()
+	protected final ExpandedToken readNext()
 		throws IOException
 	{
 		int opencount = this._opencount;
@@ -177,13 +130,11 @@ public final class ExpandingTokenizer
 			if (!decompqueue.isEmpty())
 			{
 				rv = decompqueue.removeFirst();
-				this._last = rv;
 				return rv;
 			}
 		
 			// Peek a single token and remove it from the queue
-			this.peek();
-			rv = this._queue.removeFirst();
+			rv = this.__read();
 			
 			// Determine if decomposition is to be performed
 			TokenType type = rv.type();
@@ -279,7 +230,6 @@ public final class ExpandingTokenizer
 				rv = decompqueue.removeFirst();
 			
 			// Use that original token
-			this._last = rv;
 			return rv;
 		}
 		
@@ -291,43 +241,19 @@ public final class ExpandingTokenizer
 		}
 	}
 	
-	/**
-	 * Returns the token that would be returned on the call to {@link #next()}
-	 *
-	 * @return The next token that would be returned.
-	 * @throws IOException On read errors.
-	 * @since 2018/03/12
-	 */
-	public final ExpandedToken peek()
-		throws IOException
-	{
-		// Just read the first token
-		return this.peek(0);
-	}
 	
 	/**
-	 * Returns the token which seen in the future from a given token offset.
+	 * Returns the next internal token which may be decomposed.
 	 *
-	 * @param __o The number of tokens to read into the future.
-	 * @return The next token that would be returned.
-	 * @throws IndexOutOfBoundsException If a negative index was specified.
+	 * @return The next input token.
 	 * @throws IOException On read errors.
 	 * @since 2018/03/12
 	 */
-	public final ExpandedToken peek(int __o)
-		throws IndexOutOfBoundsException, IOException
+	private final ExpandedToken __read()
+		throws IOException
 	{
-		// {@squirreljme.error AQ12 Cannot peek a token with a negative
-		// offset.}
-		if (__o < 0)
-			throw new IndexOutOfBoundsException("AQ12");
-		
-		// Keep filling the queue with tokens as needed
-		LinkedList<ExpandedToken> queue = this._queue;
 		List<Token> commentpush = this._commentpush;
-		Tokenizer tokenizer = this.tokenizer;
-		int qsize;
-		while ((qsize = queue.size()) <= __o)
+		for (;;)
 		{
 			// Consume a new token, if it returned null then there was an EOF
 			// so just return an infinite amount of EOF tokens
@@ -356,19 +282,9 @@ public final class ExpandingTokenizer
 				commentpush.clear();
 			}
 			
-			// Store token for later usage
-			queue.addLast(gen);
-			
-			// Debug print that token
-			System.err.printf("DEBUG -- Queued: %s%n", gen.characters());
+			// Use that token
+			return gen;
 		}
-		
-		// Use that given token
-		if (__o == 0)
-			return queue.getFirst();
-		else if (__o == qsize - 1)
-			return queue.getLast();
-		return queue.get(__o);
 	}
 }
 
