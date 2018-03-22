@@ -12,9 +12,8 @@ package cc.squirreljme.builder.support;
 
 import java.io.InputStream;
 import java.io.IOException;
-import net.multiphasicapps.javac.basic.BasicStructure;
-import net.multiphasicapps.javac.basic.BasicStructureParser;
 import net.multiphasicapps.javac.CompilerInput;
+import net.multiphasicapps.javac.layout.TopLevelLayout;
 
 /**
  * This is used to parse classes to look for tests that exist within source
@@ -56,14 +55,13 @@ public final class TestParser
 	@Override
 	public void run()
 	{
-		// Parse the structure for the file
 		CompilerInput input = this.input;
-		BasicStructure bs;
-		try (InputStream in = input.open();
-			BasicStructureParser bsp = new BasicStructureParser(
-				input.fileName(), in))
+		
+		// Parse the class layout
+		TopLevelLayout toplevel;
+		try (InputStream in = input.open())
 		{
-			bs = bsp.parse();
+			toplevel = TopLevelLayout.parse(input.fileName(), in);
 		}
 		
 		// {@squirreljme.error AU20 Could not parse file for tests.}
