@@ -47,44 +47,44 @@ public abstract class BasicGraphics
 	/** Is there an alpha channel? */
 	protected final boolean hasalpha;
 	
-	/** Pixel slice which is used for RGB-based drawing operations. */
-	private final int[] _slice =
-		new int[PIXEL_SLICE];
-	
 	/** The current blending mode. */
-	private volatile int _blendmode =
+	protected int blendmode =
 		SRC_OVER;
 	
 	/** The current color. */
-	private volatile int _color =
+	protected int color =
 		0xFF_000000;
 	
 	/** The current stroke style. */
-	private volatile int _strokestyle =
+	protected int strokestyle =
 		SOLID;
 	
 	/** Translated X coordinate. */
-	private volatile int _transx;
+	protected int transx;
 	
 	/** Translated Y coordinate. */
-	private volatile int _transy;
+	protected int transy;
 	
 	/** The starting X clip. */
-	private volatile int _clipsx;
+	protected int clipsx;
 	
 	/** The starting Y clip. */
-	private volatile int _clipsy;
+	protected int clipsy;
 	
 	/** The ending X clip. */
-	private volatile int _clipex =
+	protected int clipex =
 		Integer.MAX_VALUE;
 	
 	/** The ending Y clip. */
-	private volatile int _clipey =
+	protected int clipey =
 		Integer.MAX_VALUE;
 	
 	/** The current font, null means default. */
-	private volatile Font _font;
+	protected Font font;
+	
+	/** Pixel slice which is used for RGB-based drawing operations. */
+	private final int[] _slice =
+		new int[PIXEL_SLICE];
 	
 	/**
 	 * Returns the height of the surface.
@@ -124,7 +124,7 @@ public abstract class BasicGraphics
 	 * @param __y1 The start Y coordinate.
 	 * @param __x2 The end X coordinate.
 	 * @param __y2 The end Y coordinate.
-	 * @param __color The color to draw as, includes alpha.
+	 * @param _color The color to draw as, includes alpha.
 	 * @param __dotted If {@code true} then the line should be drawn dotted.
 	 * @param __blend If {@code true} then the {@link #SRC_OVER} blending mode
 	 * is to be used.
@@ -132,7 +132,7 @@ public abstract class BasicGraphics
 	 * @since 2017/02/10
 	 */
 	protected abstract void primitiveLine(int __x1, int __y1, int __x2,
-		int __y2, int __color, boolean __dotted, boolean __blend, int __bor);
+		int __y2, int _color, boolean __dotted, boolean __blend, int __bor);
 	
 	/**
 	 * Draws a primitive RGB slice.
@@ -239,8 +239,8 @@ public abstract class BasicGraphics
 			throw new IllegalArgumentException("EB0a");
 		
 		// Transform
-		__x += this._transx;
-		__y += this._transy;
+		__x += this.transx;
+		__y += this.transy;
 		
 		// Get image dimensions
 		int iw = __i.getWidth(),
@@ -255,9 +255,9 @@ public abstract class BasicGraphics
 			ey = __y + ih;
 		
 		// Get clipping region
-		int clipsx = this._clipsx, clipsy = this._clipsy,
-			clipex = Math.min(primitiveImageWidth(), this._clipex),
-			clipey = Math.min(primitiveImageHeight(), this._clipey);
+		int clipsx = this.clipsx, clipsy = this.clipsy,
+			clipex = Math.min(primitiveImageWidth(), this.clipex),
+			clipey = Math.min(primitiveImageHeight(), this.clipey);
 		
 		// Box is completely outside the bounds of the clip, do not draw
 		if (ex < clipsx || __x >= clipex || ey < clipsy || __y >= clipey)
@@ -349,17 +349,17 @@ public abstract class BasicGraphics
 	public final void drawLine(int __x1, int __y1, int __x2, int __y2)
 	{
 		// Translate all coordinates
-		int transx = this._transx,
-			transy = this._transy;
+		int transx = this.transx,
+			transy = this.transy;
 		__x1 += transx;
 		__y1 += transy;
 		__x2 += transx;
 		__y2 += transy;
 		
 		// Get clipping region
-		int clipsx = this._clipsx, clipsy = this._clipsy,
-			clipex = Math.min(primitiveImageWidth(), this._clipex),
-			clipey = Math.min(primitiveImageHeight(), this._clipey);
+		int clipsx = this.clipsx, clipsy = this.clipsy,
+			clipex = Math.min(primitiveImageWidth(), this.clipex),
+			clipey = Math.min(primitiveImageHeight(), this.clipey);
 		
 		// Perform Cohen-Sutherland line clipping
 		for (;;)
@@ -447,25 +447,25 @@ public abstract class BasicGraphics
 		}
 		
 		// Draw it
-		boolean dotted = (this._strokestyle == DOTTED);
+		boolean dotted = (this.strokestyle == DOTTED);
 		boolean blended = __blend();
 		int bor = __blendOr();
 		if (__y1 == __y2)
-			primitiveHorizontalLine(__x1, __y1, __x2 - __x1, this._color,
+			primitiveHorizontalLine(__x1, __y1, __x2 - __x1, this.color,
 				dotted, blended, bor);
 		else if (__x1 == __x2)
 		{
 			// Lines have a right facing direction, but they may also face up
 			// so handle this case
 			if (__y2 < __y1)
-				primitiveVerticalLine(__x1, __y2, __y1 - __y2, this._color,
+				primitiveVerticalLine(__x1, __y2, __y1 - __y2, this.color,
 					dotted, blended, bor);
 			else
-				primitiveVerticalLine(__x1, __y1, __y2 - __y1, this._color,
+				primitiveVerticalLine(__x1, __y1, __y2 - __y1, this.color,
 					dotted, blended, bor);
 		}
 		else
-			primitiveLine(__x1, __y1, __x2, __y2, this._color,
+			primitiveLine(__x1, __y1, __x2, __y2, this.color,
 				dotted, blended, bor);
 	}
 	
@@ -509,8 +509,8 @@ public abstract class BasicGraphics
 			ey = __y + __h;
 			
 		// Translate all coordinates
-		int transx = this._transx,
-			transy = this._transy;
+		int transx = this.transx,
+			transy = this.transy;
 		__x += transx;
 		__y += transy;
 		ex += transx;
@@ -533,9 +533,9 @@ public abstract class BasicGraphics
 		}
 		
 		// Get clipping region
-		int clipsx = this._clipsx, clipsy = this._clipsy,
-			clipex = Math.min(primitiveImageWidth(), this._clipex),
-			clipey = Math.min(primitiveImageHeight(), this._clipey);
+		int clipsx = this.clipsx, clipsy = this.clipsy,
+			clipex = Math.min(primitiveImageWidth(), this.clipex),
+			clipey = Math.min(primitiveImageHeight(), this.clipey);
 		
 		// Box is completely outside the bounds of the clip, do not draw
 		if (ex < clipsx || __x >= clipex || ey < clipsy || __y >= clipey)
@@ -570,8 +570,8 @@ public abstract class BasicGraphics
 			__h = ey - __y;
 		
 		// Calculate line properties
-		int color = this._color;
-		boolean dotted = (this._strokestyle == DOTTED);
+		int color = this.color;
+		boolean dotted = (this.strokestyle == DOTTED);
 		boolean blend = __blend();
 		int bor = __blendOr();
 		
@@ -633,8 +633,8 @@ public abstract class BasicGraphics
 			throw new IllegalArgumentException("EB0c");
 		
 		// Transform
-		__xdest += this._transx;
-		__ydest += this._transy;
+		__xdest += this.transx;
+		__ydest += this.transy;
 		
 		// The destination is anchored
 		__xdest = __anchorX(__xdest, __wdest, __anchor);
@@ -718,8 +718,8 @@ public abstract class BasicGraphics
 			ey = __y + __h;
 			
 		// Translate all coordinates
-		int transx = this._transx,
-			transy = this._transy;
+		int transx = this.transx,
+			transy = this.transy;
 		__x += transx;
 		__y += transy;
 		ex += transx;
@@ -742,9 +742,9 @@ public abstract class BasicGraphics
 		}
 		
 		// Get clipping region
-		int clipsx = this._clipsx, clipsy = this._clipsy,
-			clipex = Math.min(primitiveImageWidth(), this._clipex),
-			clipey = Math.min(primitiveImageHeight(), this._clipey);
+		int clipsx = this.clipsx, clipsy = this.clipsy,
+			clipex = Math.min(primitiveImageWidth(), this.clipex),
+			clipey = Math.min(primitiveImageHeight(), this.clipey);
 		
 		// Box is completely outside the bounds of the clip, do not draw
 		if (ex < clipsx || __x >= clipex || ey < clipsy || __y >= clipey)
@@ -775,7 +775,7 @@ public abstract class BasicGraphics
 			ey = clipey - 1;
 		
 		// Calculate line properties
-		int color = this._color;
+		int color = this.color;
 		boolean blend = __blend();
 		int bor = __blendOr();
 		
@@ -813,7 +813,7 @@ public abstract class BasicGraphics
 	@Override
 	public final int getAlpha()
 	{
-		return (this._color >> 24) & 0xFF;
+		return (this.color >> 24) & 0xFF;
 	}
 	
 	/**
@@ -823,7 +823,7 @@ public abstract class BasicGraphics
 	@Override
 	public final int getAlphaColor()
 	{
-		return this._color;
+		return this.color;
 	}
 	
 	/**
@@ -833,7 +833,7 @@ public abstract class BasicGraphics
 	@Override
 	public final int getBlendingMode()
 	{
-		return this._blendmode;
+		return this.blendmode;
 	}
 	
 	/**
@@ -843,7 +843,7 @@ public abstract class BasicGraphics
 	@Override
 	public final int getBlueComponent()
 	{
-		return (this._color) & 0xFF;
+		return (this.color) & 0xFF;
 	}
 	
 	/**
@@ -853,7 +853,7 @@ public abstract class BasicGraphics
 	@Override
 	public final int getClipHeight()
 	{
-		return this._clipey - this._clipsy;
+		return this.clipey - this.clipsy;
 	}
 	
 	/**
@@ -863,7 +863,7 @@ public abstract class BasicGraphics
 	@Override
 	public final int getClipWidth()
 	{
-		return this._clipex - this._clipsx;
+		return this.clipex - this.clipsx;
 	}
 	
 	/**
@@ -873,7 +873,7 @@ public abstract class BasicGraphics
 	@Override
 	public final int getClipX()
 	{
-		return this._clipsx - this._transx;
+		return this.clipsx - this.transx;
 	}
 	
 	/**
@@ -883,7 +883,7 @@ public abstract class BasicGraphics
 	@Override
 	public final int getClipY()
 	{
-		return this._clipsy - this._transy;
+		return this.clipsy - this.transy;
 	}
 	
 	/**
@@ -893,7 +893,7 @@ public abstract class BasicGraphics
 	@Override
 	public final int getColor()
 	{
-		return this._color & 0xFFFFFF;
+		return this.color & 0xFFFFFF;
 	}
 	
 	/**
@@ -913,7 +913,7 @@ public abstract class BasicGraphics
 	@Override
 	public final Font getFont()
 	{
-		return this._font;
+		return this.font;
 	}
 	
 	/**
@@ -934,7 +934,7 @@ public abstract class BasicGraphics
 	@Override
 	public final int getGreenComponent()
 	{
-		return (this._color >> 8) & 0xFF;
+		return (this.color >> 8) & 0xFF;
 	}
 	
 	/**
@@ -944,7 +944,7 @@ public abstract class BasicGraphics
 	@Override
 	public final int getRedComponent()
 	{
-		return (this._color >> 16) & 0xFF;
+		return (this.color >> 16) & 0xFF;
 	}
 	
 	/**
@@ -954,7 +954,7 @@ public abstract class BasicGraphics
 	@Override
 	public final int getStrokeStyle()
 	{
-		return this._strokestyle;
+		return this.strokestyle;
 	}
 	
 	/**
@@ -964,7 +964,7 @@ public abstract class BasicGraphics
 	@Override
 	public final int getTranslateX()
 	{
-		return this._transx;
+		return this.transx;
 	}
 	
 	/**
@@ -974,7 +974,7 @@ public abstract class BasicGraphics
 	@Override
 	public final int getTranslateY()
 	{
-		return this._transy;
+		return this.transy;
 	}
 	
 	/**
@@ -987,7 +987,7 @@ public abstract class BasicGraphics
 	 * @param __x The start X coordinate.
 	 * @param __y The start Y coordinate.
 	 * @param __w The width of the line.
-	 * @param __color The color to draw as, includes alpha.
+	 * @param _color The color to draw as, includes alpha.
 	 * @param __dotted If {@code true} then the line should be drawn dotted.
 	 * @param __blend If {@code true} then the {@link #SRC_OVER} blending mode
 	 * is to be used.
@@ -995,9 +995,9 @@ public abstract class BasicGraphics
 	 * @since 2017/02/10
 	 */
 	protected void primitiveHorizontalLine(int __x, int __y,
-		int __w, int __color, boolean __dotted, boolean __blend, int __bor)
+		int __w, int _color, boolean __dotted, boolean __blend, int __bor)
 	{
-		primitiveLine(__x, __y, __x + __w, __y, __color, __dotted, __blend,
+		primitiveLine(__x, __y, __x + __w, __y, _color, __dotted, __blend,
 			__bor);
 	}
 	
@@ -1011,7 +1011,7 @@ public abstract class BasicGraphics
 	 * @param __x The start X coordinate.
 	 * @param __y The start Y coordinate.
 	 * @param __h The height of the line.
-	 * @param __color The color to draw as, includes alpha.
+	 * @param _color The color to draw as, includes alpha.
 	 * @param __dotted If {@code true} then the line should be drawn dotted.
 	 * @param __blend If {@code true} then the {@link #SRC_OVER} blending mode
 	 * is to be used.
@@ -1019,9 +1019,9 @@ public abstract class BasicGraphics
 	 * @since 2017/02/10
 	 */
 	protected void primitiveVerticalLine(int __x, int __y,
-		int __h, int __color, boolean __dotted, boolean __blend, int __bor)
+		int __h, int _color, boolean __dotted, boolean __blend, int __bor)
 	{
-		primitiveLine(__x, __y, __x, __y + __h, __color, __dotted, __blend,
+		primitiveLine(__x, __y, __x, __y + __h, _color, __dotted, __blend,
 			__bor);
 	}
 	
@@ -1046,20 +1046,20 @@ public abstract class BasicGraphics
 	public void resetParameters(boolean __clip)
 	{
 		// Always reset these
-		this._blendmode = SRC_OVER;
-		this._color = 0xFF000000;
-		this._strokestyle = SOLID;
-		this._transx = 0;
-		this._transy = 0;
-		this._font = null;
+		this.blendmode = SRC_OVER;
+		this.color = 0xFF000000;
+		this.strokestyle = SOLID;
+		this.transx = 0;
+		this.transy = 0;
+		this.font = null;
 	
 		// Reset clip also
 		if (__clip)
 		{
-			this._clipsx = 0;
-			this._clipsy = 0;
-			this._clipex = Integer.MAX_VALUE;
-			this._clipey = Integer.MAX_VALUE;
+			this.clipsx = 0;
+			this.clipsy = 0;
+			this.clipex = Integer.MAX_VALUE;
+			this.clipey = Integer.MAX_VALUE;
 		}
 	}
 	
@@ -1092,7 +1092,7 @@ public abstract class BasicGraphics
 				"EB0d %d %d %d %d", __a, __r, __g, __b));
 		
 		// Set
-		this._color = (__a << 24) | (__r << 16) | (__g << 8) | __b;
+		this.color = (__a << 24) | (__r << 16) | (__g << 8) | __b;
 	}
 	
 	/**
@@ -1113,7 +1113,7 @@ public abstract class BasicGraphics
 			throw new IllegalArgumentException("EB0f");
 		
 		// Set
-		this._blendmode = __m;
+		this.blendmode = __m;
 	}
 	
 	/**
@@ -1124,8 +1124,8 @@ public abstract class BasicGraphics
 	public final void setClip(int __x, int __y, int __w, int __h)
 	{
 		// Translate
-		__x += this._transx;
-		__y += this._transy;
+		__x += this.transx;
+		__y += this.transy;
 		
 		// Get right end coordinates
 		int ex = __x + __w,
@@ -1155,10 +1155,10 @@ public abstract class BasicGraphics
 			__y = 0;
 		
 		// Set
-		this._clipsx = __x;
-		this._clipsy = __y;
-		this._clipex = ex;
-		this._clipey = ey;
+		this.clipsx = __x;
+		this.clipsy = __y;
+		this.clipex = ex;
+		this.clipey = ey;
 	}
 	
 	/**
@@ -1193,7 +1193,7 @@ public abstract class BasicGraphics
 	public final void setFont(Font __a)
 	{
 		// Just set it
-		this._font = __a;
+		this.font = __a;
 	}
 	
 	/**
@@ -1219,7 +1219,7 @@ public abstract class BasicGraphics
 			throw new IllegalArgumentException("EB0g");
 		
 		// Set
-		this._strokestyle = __a;
+		this.strokestyle = __a;
 	}
 	
 	/**
@@ -1229,8 +1229,8 @@ public abstract class BasicGraphics
 	@Override
 	public final void translate(int __x, int __y)
 	{
-		this._transx += __x;
-		this._transy += __y;
+		this.transx += __x;
+		this.transy += __y;
 	}
 	
 	/**
@@ -1325,7 +1325,7 @@ public abstract class BasicGraphics
 	{
 		// There must be an alpha channel along with the blend mode being
 		// actual blending
-		return /*this.hasalpha &&*/ (_blendmode == SRC_OVER);
+		return /*this.hasalpha &&*/ (blendmode == SRC_OVER);
 	}
 	
 	/**
