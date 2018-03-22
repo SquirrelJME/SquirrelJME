@@ -78,6 +78,49 @@ public final class TopLevelLayout
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
+		// Parse the package statement
+		if (true)
+			throw new todo.TODO();
+		
+		// Parse import statements
+		for (;;)
+		{
+			// No more import statements?
+			if (true)
+			{
+				if (true)
+					throw new todo.TODO();
+				break;
+			}
+			
+			// Parse statements
+			if (true)
+				throw new todo.TODO();
+		}
+		
+		// Read class modifiers
+		if (true)
+			throw new todo.TODO();
+		
+		// Parse class containers which contain modifiers (including
+		// annotations), classnames, possible generic type declarations,
+		// extends, and implements.
+		for (;;)
+		{
+			// No more class containers?
+			if (true)
+			{
+				if (true)
+					throw new todo.TODO();
+				break;
+			}
+			
+			// Parse container
+			if (true)
+				throw new todo.TODO();
+		}
+		
+		// Return the top level layout containing the entire class structure
 		throw new todo.TODO();
 	}
 }
