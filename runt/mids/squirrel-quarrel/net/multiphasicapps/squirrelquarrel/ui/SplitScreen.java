@@ -68,7 +68,7 @@ public final class SplitScreen
 		{
 			Player p = players.get(i);
 			order[i] = p.color();
-			screens[i] = new GameScreen(__loop);
+			screens[i] = new GameScreen(__loop, p);
 			if (p.isPlaying())
 				playercount++;
 		}
@@ -157,7 +157,12 @@ public final class SplitScreen
 	public final GameScreen get(int __i)
 		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error BE0t The game screen which was requested is
+		// outside of the player bounds.}
+		if (__i < 0 || __i >= this._numscreens)
+			throw new IndexOutOfBoundsException("BE0t");
+		
+		return this._screens[this._order[__i].ordinal()];
 	}
 }
 

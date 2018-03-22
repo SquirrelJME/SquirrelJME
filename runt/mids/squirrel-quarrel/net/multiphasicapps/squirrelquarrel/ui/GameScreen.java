@@ -11,6 +11,7 @@
 package net.multiphasicapps.squirrelquarrel.ui;
 
 import net.multiphasicapps.squirrelquarrel.game.GameLooper;
+import net.multiphasicapps.squirrelquarrel.player.Player;
 
 /**
  * This represents a single game screen which contains a viewport and
@@ -22,6 +23,9 @@ public final class GameScreen
 {
 	/** The game being looped. */
 	protected final GameLooper looper;
+	
+	/** The player being drawn. */
+	protected final Player player;
 	
 	/** The screen X position. */
 	private volatile int _sx;
@@ -39,16 +43,18 @@ public final class GameScreen
 	 * Initializes this game screen.
 	 *
 	 * @param __g The game to draw.
+	 * @param __p The player being drawn.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2108/03/19
 	 */
-	public GameScreen(GameLooper __g)
+	public GameScreen(GameLooper __g, Player __p)
 		throws NullPointerException
 	{
-		if (__g == null)
+		if (__g == null || __p == null)
 			throw new NullPointerException("NARG");
 		
 		this.looper = __g;
+		this.player = __p;
 	}
 	
 	/**
@@ -66,6 +72,61 @@ public final class GameScreen
 		this._sy = __y;
 		this._sw = __w;
 		this._sh = __h;
+	}
+	
+	/**
+	 * Returns the height.
+	 *
+	 * @return The height.
+	 * @since 2018/03/22
+	 */
+	public final int height()
+	{
+		return this._sh;
+	}
+	
+	/**
+	 * Returns the player being drawn.
+	 *
+	 * @return The player to draw.
+	 * @since 2018/03/22
+	 */
+	public final Player player()
+	{
+		return this.player;
+	}
+	
+	/**
+	 * Returns the width.
+	 *
+	 * @return The width.
+	 * @since 2018/03/22
+	 */
+	public final int width()
+	{
+		return this._sw;
+	}
+	
+	/**
+	 * Returns the X position.
+	 *
+	 * @return The X position.
+	 * @since 2018/03/22
+	 */
+	public final int x()
+	{
+		return this._sx;
+	}
+	
+	/**
+	 * Returns the Y position.
+	 *
+	 * @return The Y position.
+	 * @since 2018/03/22
+	 */
+	public final int y()
+	{
+		return this._sy;
 	}
 }
 

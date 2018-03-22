@@ -16,6 +16,8 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import net.multiphasicapps.squirrelquarrel.game.Game;
 import net.multiphasicapps.squirrelquarrel.game.GameLooper;
+import net.multiphasicapps.squirrelquarrel.player.Player;
+import net.multiphasicapps.squirrelquarrel.player.PlayerColor;
 import net.multiphasicapps.squirrelquarrel.ui.FrameSync;
 import net.multiphasicapps.squirrelquarrel.ui.GameScreen;
 import net.multiphasicapps.squirrelquarrel.ui.SplitScreen;
@@ -67,6 +69,18 @@ public final class Renderer
 	{
 		if (__scr == null || __g == null)
 			throw new NullPointerException("NARG");
+		
+		// Get basic information
+		Player player = __scr.player();
+		PlayerColor playercolor = player.color();
+		int sx = __scr.x(),
+			sy = __scr.y(),
+			sw = __scr.width(),
+			sh = __scr.height();
+		
+		// Draw a basic border around the screen
+		__g.setColor(playercolor.rgb());
+		__g.drawRect(sx, sy, sw - 2, sh - 2);
 		
 		/*
 		// If already painting, do not duplicate a paint
