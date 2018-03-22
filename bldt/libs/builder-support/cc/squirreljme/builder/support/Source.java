@@ -73,10 +73,11 @@ public abstract class Source
 	 * as the end result will be wrapped to add some special meta-files if
 	 * needed.
 	 *
+	 * @param __root Should only the root be considered?
 	 * @return The input set.
 	 * @since 2018/03/06
 	 */
-	protected abstract CompilerPathSet internalPathSet();
+	protected abstract CompilerPathSet internalPathSet(boolean __root);
 	
 	/**
 	 * The source manifest.
@@ -101,12 +102,15 @@ public abstract class Source
 			return rv;
 		
 		// Go through all input and compare the modified times
-		rv = Long.MIN_VALUE;
-		for (CompilerInput ci : this.internalPathSet())
+		try (CompilerPathSet ps = this.internalPathSet(true))
 		{
-			long now = ci.lastModifiedTime();
-			if (now > rv)
-				rv = now;
+			rv = Long.MIN_VALUE;
+			for (CompilerInput ci : ps)
+			{
+				long now = ci.lastModifiedTime();
+				if (now > rv)
+					rv = now;
+			}
 		}
 		
 		// Cache for next time
@@ -254,7 +258,7 @@ public abstract class Source
 	 */
 	public final CompilerPathSet pathSet()
 	{
-		return this.internalPathSet();
+		return this.internalPathSet(false);
 	}
 	
 	/**

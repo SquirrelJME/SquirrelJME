@@ -62,7 +62,7 @@ public final class BasicSource
 	 * @since 2018/03/06
 	 */
 	@Override
-	protected final CompilerPathSet internalPathSet()
+	protected final CompilerPathSet internalPathSet(boolean __root)
 	{
 		return new FilePathSet(this.root);
 	}
@@ -89,7 +89,7 @@ public final class BasicSource
 		JavaManifest rv;
 		
 		if (ref == null || null == (rv = ref.get()))
-			try (CompilerPathSet ps = this.internalPathSet();
+			try (CompilerPathSet ps = this.internalPathSet(false);
 				InputStream in = ps.input("META-INF/MANIFEST.MF").open())
 			{
 				this._manifest = new WeakReference<>(
