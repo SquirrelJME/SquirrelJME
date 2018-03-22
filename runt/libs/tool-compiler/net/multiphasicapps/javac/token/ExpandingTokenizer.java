@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.javac.basic;
+package net.multiphasicapps.javac.token;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -18,9 +18,6 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import net.multiphasicapps.javac.FileNameLineAndColumn;
-import net.multiphasicapps.javac.token.Token;
-import net.multiphasicapps.javac.token.Tokenizer;
-import net.multiphasicapps.javac.token.TokenType;
 
 /**
  * This layers on top of the tokenizer and allows for special handling of
@@ -31,18 +28,18 @@ import net.multiphasicapps.javac.token.TokenType;
  *
  * @since 2018/03/12
  */
-public final class TokenizerLayer
+public final class ExpandingTokenizer
 	implements Closeable, FileNameLineAndColumn
 {
 	/** The tokenizer this is laid ontop of. */
 	protected final Tokenizer tokenizer;
 	
 	/** This stores the temporary token queue which allows for peeking. */
-	private final LinkedList<LayeredToken> _queue =
+	private final LinkedList<ExpandedToken> _queue =
 		new LinkedList<>();
 	
 	/** Decomposed bracket tokens, if that is enabled. */
-	private final Deque<LayeredToken> _decompqueue =
+	private final Deque<ExpandedToken> _decompqueue =
 		new ArrayDeque<>();
 	
 	/** Pusher for comment tokens. */
@@ -66,7 +63,7 @@ public final class TokenizerLayer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/12
 	 */
-	public TokenizerLayer(Tokenizer __t)
+	public ExpandingTokenizer(Tokenizer __t)
 		throws NullPointerException
 	{
 		if (__t == null)
@@ -136,17 +133,17 @@ public final class TokenizerLayer
 	 * @throws IOException On read errors.
 	 * @since 2018/03/12
 	 */
-	public final LayeredToken next()
+	public final ExpandedToken next()
 		throws IOException
 	{
 		int opencount = this._opencount;
 		try
 		{
-			LayeredToken rv;
+			ExpandedToken rv;
 		
 			// If there are decomposed tokens waiting then return those first
 			// because they got generated
-			Deque<LayeredToken> decompqueue = this._decompqueue;
+			Deque<ExpandedToken> decompqueue = this._decompqueue;
 			if (!decompqueue.isEmpty())
 			{
 				rv = decompqueue.removeFirst();
@@ -238,7 +235,7 @@ public final class TokenizerLayer
 						co = rv.column();
 				
 					for (int i = 0; i < maxdecouple; i++)
-						decompqueue.addLast(new LayeredToken(new Token(
+						decompqueue.addLast(new ExpandedToken(new Token(
 							TokenType.COMPARE_GREATER_THAN, ">", fn, ln, co),
 							(i == 0 ? rv.comments() : new Token[0])));
 					
@@ -271,7 +268,7 @@ public final class TokenizerLayer
 	 * @throws IOException On read errors.
 	 * @since 2018/03/12
 	 */
-	public final LayeredToken peek()
+	public final ExpandedToken peek()
 		throws IOException
 	{
 		// Just read the first token
@@ -287,7 +284,7 @@ public final class TokenizerLayer
 	 * @throws IOException On read errors.
 	 * @since 2018/03/12
 	 */
-	public final LayeredToken peek(int __o)
+	public final ExpandedToken peek(int __o)
 		throws IndexOutOfBoundsException, IOException
 	{
 		// {@squirreljme.error AQ12 Cannot peek a token with a negative
@@ -296,7 +293,7 @@ public final class TokenizerLayer
 			throw new IndexOutOfBoundsException("AQ12");
 		
 		// Keep filling the queue with tokens as needed
-		LinkedList<LayeredToken> queue = this._queue;
+		LinkedList<ExpandedToken> queue = this._queue;
 		List<Token> commentpush = this._commentpush;
 		Tokenizer tokenizer = this.tokenizer;
 		int qsize;
@@ -319,12 +316,12 @@ public final class TokenizerLayer
 			}
 			
 			// Generate token
-			LayeredToken gen;
+			ExpandedToken gen;
 			if (commentpush.isEmpty())
-				gen = new LayeredToken(next);
+				gen = new ExpandedToken(next);
 			else
 			{
-				gen = new LayeredToken(next, commentpush.<Token>toArray(
+				gen = new ExpandedToken(next, commentpush.<Token>toArray(
 					new Token[commentpush.size()]));
 				commentpush.clear();
 			}

@@ -8,13 +8,11 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.javac.basic;
+package net.multiphasicapps.javac.token;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.javac.FileNameLineAndColumn;
-import net.multiphasicapps.javac.token.Token;
-import net.multiphasicapps.javac.token.TokenType;
 
 /**
  * This is a layered token which contains a basic token along with any comments
@@ -22,7 +20,7 @@ import net.multiphasicapps.javac.token.TokenType;
  *
  * @since 2018/03/12
  */
-public final class LayeredToken
+public final class ExpandedToken
 	implements FileNameLineAndColumn
 {
 	/** The base token. */
@@ -39,7 +37,7 @@ public final class LayeredToken
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/12
 	 */
-	public LayeredToken(Token __t, Token... __c)
+	public ExpandedToken(Token __t, Token... __c)
 		throws NullPointerException
 	{
 		if (__t == null)

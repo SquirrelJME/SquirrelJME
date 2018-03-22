@@ -21,6 +21,8 @@ import java.util.HashSet;
 import java.util.Set;
 import net.multiphasicapps.classfile.BinaryName;
 import net.multiphasicapps.javac.FileNameLineAndColumn;
+import net.multiphasicapps.javac.token.ExpandedToken;
+import net.multiphasicapps.javac.token.ExpandingTokenizer;
 import net.multiphasicapps.javac.token.Token;
 import net.multiphasicapps.javac.token.Tokenizer;
 import net.multiphasicapps.javac.token.TokenType;
@@ -39,7 +41,7 @@ public final class BasicStructureParser
 		new BasicStructureBuilder();
 	
 	/** The layer to source tokens from. */
-	protected final TokenizerLayer layer;
+	protected final ExpandingTokenizer layer;
 	
 	/** Parser states which store the needed temporary data. */
 	private final Deque<__State__> _states =
@@ -96,7 +98,7 @@ public final class BasicStructureParser
 			throw new NullPointerException("NARG");
 		
 		// Initialize the parser layer
-		this.layer = new TokenizerLayer(__t);
+		this.layer = new ExpandingTokenizer(__t);
 	}
 	
 	/**
@@ -234,11 +236,11 @@ public final class BasicStructureParser
 		if (__state == null)
 			throw new NullPointerException("NARG");
 		
-		TokenizerLayer layer = this.layer;
+		ExpandingTokenizer layer = this.layer;
 		Collection<AttachedAnnotation> attached = __state.what.
 			getAnnotations();
 		
-		LayeredToken next = layer.peek();
+		ExpandedToken next = layer.peek();
 		TokenType type = next.type();
 		
 		// No more annotations being parsed
@@ -266,16 +268,16 @@ public final class BasicStructureParser
 		if (__state == null)
 			throw new NullPointerException("NARG");
 		
-		TokenizerLayer layer = this.layer;
+		ExpandingTokenizer layer = this.layer;
 		BasicClassBuilder builder = __state.builder;
 		
-		LayeredToken next = layer.peek();
+		ExpandedToken next = layer.peek();
 		TokenType type = next.type();
 		
 		// Could this be an annotation or annotation declaration?
 		if (type == TokenType.SYMBOL_AT)
 		{
-			LayeredToken following = layer.peek(1);
+			ExpandedToken following = layer.peek(1);
 			TokenType followtype = following.type();
 			
 			// Parse annotation parameters
@@ -459,10 +461,10 @@ public final class BasicStructureParser
 		if (__state == null)
 			throw new NullPointerException("NARG");
 		
-		TokenizerLayer layer = this.layer;
+		ExpandingTokenizer layer = this.layer;
 		BasicClassBuilder builder = __state.builder;
 		
-		LayeredToken next = layer.peek();
+		ExpandedToken next = layer.peek();
 		TokenType type = next.type();
 		
 		// Is the next member to parse annotated?
@@ -490,9 +492,9 @@ public final class BasicStructureParser
 		if (__state == null)
 			throw new NullPointerException("NARG");
 		
-		TokenizerLayer layer = this.layer;
+		ExpandingTokenizer layer = this.layer;
 		
-		LayeredToken next = layer.peek();
+		ExpandedToken next = layer.peek();
 		TokenType type = next.type();
 		
 		// An import statement
@@ -606,9 +608,9 @@ public final class BasicStructureParser
 		if (__state == null)
 			throw new NullPointerException("NARG");
 		
-		TokenizerLayer layer = this.layer;
+		ExpandingTokenizer layer = this.layer;
 		
-		LayeredToken next = layer.peek();
+		ExpandedToken next = layer.peek();
 		TokenType type = next.type();
 		
 		// Package delaration
