@@ -50,6 +50,10 @@ public final class TestSource
 	/** Virtual manifest for this source. */
 	private volatile Reference<JavaManifest> _manifest;
 	
+	/** Last modified time of the source code. */
+	private volatile long _lastmodtime =
+		Long.MIN_VALUE;
+	
 	/**
 	 * Initializes the source for test projects.
 	 *
@@ -79,7 +83,7 @@ public final class TestSource
 	 * @since 2018/03/06
 	 */
 	@Override
-	protected final CompilerPathSet internalPathSet()
+	protected final CompilerPathSet internalPathSet(boolean __root)
 	{
 		// Could fail to read
 		try
@@ -88,17 +92,18 @@ public final class TestSource
 			
 			// Parse every input class file and look for tests
 			DefinedTests dt = new DefinedTests();
-			for (CompilerInput ci : rootset)
-			{
-				String name = ci.fileName();
-				if (name.endsWith(".java"))
+			if (!__root)
+				for (CompilerInput ci : rootset)
 				{
-					// {@squirreljme.error AU20 Parsing the specified file and
-					// looking for tests. (The file name)}
-					System.err.printf("AU21 %s%n", name);
-					new TestParser(ci, dt).run();
+					String name = ci.fileName();
+					if (name.endsWith(".java"))
+					{
+						// {@squirreljme.error AU20 Parsing the specified file
+						// and looking for tests. (The file name)}
+						System.err.printf("AU21 %s%n", name);
+						new TestParser(ci, dt).run();
+					}
 				}
-			}
 		
 			// Generate input
 			try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
