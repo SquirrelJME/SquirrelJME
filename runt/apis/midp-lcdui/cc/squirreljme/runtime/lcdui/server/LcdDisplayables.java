@@ -46,6 +46,28 @@ public abstract class LcdDisplayables
 		throws NullPointerException;
 	
 	/**
+	 * Cleans up the given displayable.
+	 *
+	 * @param __task The task owning it.
+	 * @param __handle The displayable ID.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/23
+	 */
+	public final void cleanup(SystemTask __task, int __handle)
+		throws NullPointerException
+	{
+		if (__task == null)
+			throw new NullPointerException("NARG");
+		
+		// Clear from the map first
+		LcdDisplayable disp = this.get(__task, __handle);
+		this._displayables.remove(__handle);
+		
+		// Tell it, it is being cleaned up
+		disp.cleanup();
+	}
+	
+	/**
 	 * Creates a new displayable.
 	 *
 	 * @param __task The owning task.

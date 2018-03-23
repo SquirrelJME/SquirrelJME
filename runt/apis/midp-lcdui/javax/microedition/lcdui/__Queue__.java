@@ -10,6 +10,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.lcdui.DisplayableType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
 import cc.squirreljme.runtime.lcdui.LcdServiceCall;
@@ -27,6 +28,7 @@ import java.util.Map;
  * @since 2018/03/17
  */
 final class __Queue__
+	implements Runnable
 {
 	/** Single queue instance. */
 	static final __Queue__ INSTANCE =
@@ -48,6 +50,9 @@ final class __Queue__
 	protected final ReferenceQueue<Displayable> _disqueue =
 		new ReferenceQueue<>();
 	
+	/** Terminate the queue? */
+	private volatile boolean _terminate;
+	
 	/**
 	 * Internally initialized.
 	 *
@@ -55,6 +60,69 @@ final class __Queue__
 	 */
 	private __Queue__()
 	{
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/23
+	 */
+	@Override
+	public void run()
+	{
+		Object lock = this.lock;
+		ReferenceQueue<Displayable> disqueue = this._disqueue;
+		Map<Reference<Displayable>, Integer> distoid = this._distoid;
+		Map<Integer, Reference<Displayable>> idtodis = this._idtodis;
+		
+		// Loop forever looking for displayable that are no longer
+		// referenced ever
+		for (;;)
+		{
+			// Terminate thread?
+			if (this._terminate)
+				return;
+			
+			// Get the next reference which went away
+			Reference<? extends Displayable> bye;
+			try
+			{
+				bye = disqueue.remove();
+			}
+			
+			// Ignore
+			catch (InterruptedException e)
+			{
+				continue;
+			}
+			
+			// Remove
+			int svdx;
+			synchronized (lock)
+			{
+				// Only cleanup valid references
+				Integer dx = distoid.get(bye);
+				if (dx == null)
+					continue;
+				
+				// Remove from mappings
+				distoid.remove(bye);
+				idtodis.remove(dx);
+				
+				// The server is notified of this
+				svdx = dx;
+			}
+			
+			// If the server failed to clean it up properly then just ignore it
+			try
+			{
+				LcdServiceCall.<VoidType>call(VoidType.class,
+					LcdFunction.DISPLAYABLE_CLEANUP, svdx);
+			}
+			catch (Throwable t)
+			{
+				t.printStackTrace();
+			}
+		}
 	}
 	
 	/**

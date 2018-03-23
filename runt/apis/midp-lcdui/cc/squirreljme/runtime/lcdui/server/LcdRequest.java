@@ -123,6 +123,10 @@ public final class LcdRequest
 						DisplayableType.class));
 					break;
 				
+				case DISPLAYABLE_CLEANUP:
+					this.__displayableCleanup((Integer)args[0]);
+					break;
+				
 				case DISPLAYABLE_GET_HEIGHT:
 					result = this.__displayableGetHeight((Integer)args[0]);
 					break;
@@ -205,6 +209,19 @@ public final class LcdRequest
 		LcdDisplayable disp = state.displayables().
 			createDisplayable(server.task(), __t, state.callbacks());
 		return disp.handle();
+	}
+	
+	/**
+	 * This is called when a displayable has been garbage collected by the
+	 * client and should be cleaned up.
+	 *
+	 * @param __id The index of the displayable.
+	 * @since 2018/03/23
+	 */
+	private final void __displayableCleanup(int __id)
+	{
+		LcdServer server = this.server;
+		server.state().displayables().cleanup(server.task(), __id);
 	}
 	
 	/**
