@@ -1,0 +1,34 @@
+# 2018/03/22
+
+## 11:28
+
+Okay so re-reading the language specification and annotations can be
+interspersed with modifiers so this definitely changes things around a bit
+so I suppose I will need a bit of a refactor of sorts.
+
+## 11:30
+
+Maybe what I can do though is instead of complex states for parsing where
+each one is a bit complex. Perhaps instead I can read a bunch of tokens in
+bulk at once and perform basic handling of their meaning based on their
+position. So basically instead of having it where I handle each token as it
+comes in it kind of queues up, sort of like a pre-read. At least when it
+comes to classes, once the declarations are read I can just read the entire
+class body because every single instance of opening and closing braces will
+be correct. Also my class parser, I forgot about generics so I would need to
+handle that to of course.
+
+## 11:33
+
+But this idea basically comes from the fact that I will be deferring checking
+of fields and methods to be done at compile time. Like my idea was that when
+a method was read it would just count braces and then pretty much just throw
+all the tokens in somewhere. I could easily simplify things if I just did that
+for classes too. It would be a bit easier since there would be less tokens to
+deal with for the most part. So definitely that is something to do.
+
+## 11:54
+
+I definitely am going to like this better, more exact. I do not need a bunch
+of extra classes to store state I can really just parse source code ad-hoc
+rather than having complex state machines and such.
