@@ -15,6 +15,7 @@ import cc.squirreljme.runtime.cldc.task.SystemTask;
 import cc.squirreljme.runtime.lcdui.DisplayableType;
 import cc.squirreljme.runtime.lcdui.server.LcdCallbackManager;
 import cc.squirreljme.runtime.lcdui.server.LcdDisplayable;
+import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
@@ -64,6 +65,10 @@ public class SwingDisplayable
 				throw new RuntimeException(String.format("AF06 %s", __type));
 		}
 		this._panel = panel;
+		
+		// Force minimum size to something more friendly
+		panel.setMinimumSize(new Dimension(160, 160));
+		panel.setPreferredSize(new Dimension(640, 480));
 	}
 	
 	/**
