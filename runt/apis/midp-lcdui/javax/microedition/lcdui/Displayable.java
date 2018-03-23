@@ -26,10 +26,8 @@ import java.lang.ref.WeakReference;
  * @since 2016/10/08
  */
 public abstract class Displayable
+	extends __Cleanupable__
 {
-	/** The handle for this displayable. */
-	final int _handle;
-	
 	/** Held current display to prevent garbage collection. */
 	volatile Display _heldcurrent;
 	
@@ -46,8 +44,6 @@ public abstract class Displayable
 	 */
 	Displayable()
 	{
-		// Register this displayable
-		this._handle = __Queue__.INSTANCE.__registerDisplayable(this);
 	}
 	
 	/**

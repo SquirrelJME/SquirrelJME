@@ -39,16 +39,16 @@ final class __Queue__
 	protected final Object lock =
 		new Object();
 	
-	/** Displayables to their ID. */
-	protected final Map<Reference<Displayable>, Integer> _distoid =
+	/** Reference to index mapping, for sending to the server. */
+	protected final Map<Reference<__Cleanupable__>, Integer> _distoid =
 		new HashMap<>();
 	
-	/** Reverse mapping for displayables. */
-	protected final Map<Integer, Reference<Displayable>> _idtodis =
+	/** Index to cleanupable so the client knows what the server wanted. */
+	protected final Map<Integer, Reference<__Cleanupable__>> _idtodis =
 		new HashMap<>();
 	
 	/** Queue to tell the remote server that handles should be cleaned up. */
-	protected final ReferenceQueue<Displayable> _disqueue =
+	protected final ReferenceQueue<__Cleanupable__> _disqueue =
 		new ReferenceQueue<>();
 	
 	/** Terminate the queue? */
@@ -61,7 +61,7 @@ final class __Queue__
 	 */
 	private __Queue__()
 	{
-		Thread cleanuper = new Thread(this, "LCDUI-Cleanup");
+		Thread cleanuper = new Thread(this, "LCDUI-Cleanup-Thread");
 		SystemCall.EASY.setDaemonThread(cleanuper);
 		cleanuper.start();
 	}
@@ -74,9 +74,9 @@ final class __Queue__
 	public void run()
 	{
 		Object lock = this.lock;
-		ReferenceQueue<Displayable> disqueue = this._disqueue;
-		Map<Reference<Displayable>, Integer> distoid = this._distoid;
-		Map<Integer, Reference<Displayable>> idtodis = this._idtodis;
+		ReferenceQueue<__Cleanupable__> disqueue = this._disqueue;
+		Map<Reference<__Cleanupable__>, Integer> distoid = this._distoid;
+		Map<Integer, Reference<__Cleanupable__>> idtodis = this._idtodis;
 		
 		// Loop forever looking for displayable that are no longer
 		// referenced ever
@@ -87,7 +87,7 @@ final class __Queue__
 				return;
 			
 			// Get the next reference which went away
-			Reference<? extends Displayable> bye;
+			Reference<? extends __Cleanupable__> bye;
 			try
 			{
 				bye = disqueue.remove();
@@ -116,13 +116,11 @@ final class __Queue__
 				svdx = dx;
 			}
 			
-			System.err.printf("DEBUG -- Collected %d%n", svdx);
-			
 			// If the server failed to clean it up properly then just ignore it
 			try
 			{
 				LcdServiceCall.<VoidType>call(VoidType.class,
-					LcdFunction.DISPLAYABLE_CLEANUP, svdx);
+					LcdFunction.CLEANUPABLE_CLEANUP, svdx);
 			}
 			catch (Throwable t)
 			{
@@ -134,67 +132,92 @@ final class __Queue__
 	/**
 	 * Returns the displayable used for the given index.
 	 *
+	 * @param <X> The type of cleanupable to get.
+	 * @param __cl The type of cleanupable to get.
 	 * @param __dx The index to get.
-	 * @return The displayable for the given index.
+	 * @return The cleanupable for the given index.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/18
 	 */
-	final Displayable __getDisplayable(int __dx)
+	final <X extends __Cleanupable__> X __get(Class<X> __cl, int __dx)
+		throws NullPointerException
 	{
-		Map<Integer, Reference<Displayable>> idtodis = this._idtodis;
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		Map<Integer, Reference<__Cleanupable__>> idtodis = this._idtodis;
 		synchronized (this.lock)
 		{
-			Reference<Displayable> ref = idtodis.get(__dx);
-			return (ref != null ? ref.get() : null);
+			Reference<__Cleanupable__> ref = idtodis.get(__dx);
+			
+			// Do not know what this is?
+			if (ref == null)
+				return;
+			__Cleanupable__ rv = ref.get();
+			
+			// If this is not the right kind of class, ignore
+			if (!__cl.isInstance(rv))
+				return null;
+			return __cl.cast(rv);
 		}
 	}
 	
 	/**
-	 * Registers the given displayable and returns the remote handle to it.
+	 * Registers the given cleanupable and returns the remote handle to it.
 	 *
-	 * @param __d The displayable to register.
-	 * @return The handle of the displayable on the remote end.
+	 * @param __d The cleanupable to register.
+	 * @return The handle of the cleanupable on the remote end.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/17
 	 */
-	final int __registerDisplayable(Displayable __d)
+	final int __register(__Cleanupable__ __d)
 		throws NullPointerException
 	{
 		if (__d == null)
 			throw new NullPointerException("NARG");
 		
-		// Determine the type of displayable this is first
-		DisplayableType type;
-		if (__d instanceof Canvas)
-			type = DisplayableType.CANVAS;
-		else if (__d instanceof Alert)
-			type = DisplayableType.ALERT;
-		else if (__d instanceof FileSelector)
-			type = DisplayableType.FILE_SELECTOR;
-		else if (__d instanceof Form)
-			type = DisplayableType.FORM;
-		else if (__d instanceof List)
-			type = DisplayableType.LIST;
-		else if (__d instanceof TabbedPane)
-			type = DisplayableType.TABBED_PANE;
-		else if (__d instanceof TextBox)
-			type = DisplayableType.TEXT_BOX;
+		// The remote index
+		int dx;
+		if (__d instanceof Displayable)
+		{
+			// Determine the type of displayable this is first
+			DisplayableType type;
+			if (__d instanceof Canvas)
+				type = DisplayableType.CANVAS;
+			else if (__d instanceof Alert)
+				type = DisplayableType.ALERT;
+			else if (__d instanceof FileSelector)
+				type = DisplayableType.FILE_SELECTOR;
+			else if (__d instanceof Form)
+				type = DisplayableType.FORM;
+			else if (__d instanceof List)
+				type = DisplayableType.LIST;
+			else if (__d instanceof TabbedPane)
+				type = DisplayableType.TABBED_PANE;
+			else if (__d instanceof TextBox)
+				type = DisplayableType.TEXT_BOX;
+			
+			// {@squirreljme.error EB1x Could not determine the type displayable
+			// that this is. (The displayable type)}
+			else
+				throw new RuntimeException(String.format(
+					"EB1x %s", __d.getClass()));
+			
+			// Register and get the index for it
+			dx = LcdServiceCall.<Integer>call(Integer.class,
+				LcdFunction.CREATE_DISPLAYABLE, type);
+		}
 		
-		// {@squirreljme.error EB1x Could not determine the type displayable
-		// that this is. (The displayable type)}
+		// Do not know what to do here
 		else
-			throw new RuntimeException(String.format(
-				"EB1x %s", __d.getClass()));
+			throw new RuntimeException("OOPS");
 		
-		// Register and get the index for it
-		int dx = LcdServiceCall.<Integer>call(Integer.class,
-			LcdFunction.CREATE_DISPLAYABLE, type);
-		
-		// Reference the displayable for future cleanup on the remote end
-		Map<Reference<Displayable>, Integer> distoid = this._distoid;
-		Map<Integer, Reference<Displayable>> idtodis = this._idtodis;
+		// Reference the cleanupable for future cleanup on the remote end
+		Map<Reference<__Cleanupable__>, Integer> distoid = this._distoid;
+		Map<Integer, Reference<__Cleanupable__>> idtodis = this._idtodis;
 		synchronized (this.lock)
 		{
-			Reference<Displayable> ref =
+			Reference<__Cleanupable__> ref =
 				new WeakReference<>(__d, this._disqueue);
 			Integer idx = dx;
 			distoid.put(ref, idx);
