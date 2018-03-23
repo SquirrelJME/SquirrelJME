@@ -37,8 +37,9 @@ public class DemoCanvas
 	 * @since 2018/03/23
 	 */
 	@Override
-	protected final void paint(Graphics __a)
+	protected final void paint(Graphics __g)
 	{
+		DemoParts.paint(__g);
 	}
 }
 
