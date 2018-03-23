@@ -12,6 +12,7 @@ package javax.microedition.lcdui;
 
 
 public abstract class Item
+	extends __Cleanupable__
 {
 	public static final int BUTTON =
 		2;

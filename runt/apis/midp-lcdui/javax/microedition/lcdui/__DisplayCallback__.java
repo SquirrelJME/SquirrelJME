@@ -112,9 +112,8 @@ final class __DisplayCallback__
 			throw new NullPointerException("NARG");
 		
 		// Only canvases are drawn on
-		Displayable on = __Queue__.INSTANCE.__getDisplayable(__d);
-		System.err.printf("DEBUG -- DID %d = %s%n", __d, on);
-		if (!(on instanceof Canvas))
+		Canvas on = __Queue__.INSTANCE.<Canvas>__get(Canvas.class, __d);
+		if (on == null)
 			return;
 		
 		// This will be set to the graphics to draw on
