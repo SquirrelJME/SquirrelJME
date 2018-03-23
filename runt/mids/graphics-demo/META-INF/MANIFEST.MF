@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-UUID: 63e1de74-9cde-45e4-878c-ce335f0288db
+X-SquirrelJME-Error: AW
+X-SquirrelJME-Name: LCDUI Graphics Demo
+X-SquirrelJME-Vendor: Stephanie Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Description: This is a demo which is used to demonstrate 
+ how the graphic operations operate.
+X-SquirrelJME-Depends: midp-lcdui
+Microedition-Configuration: CLDC-1.8-Compact
+MIDlet-1: Graphics Demo, , net.multiphasicapps.gfxdemo.Main
+
