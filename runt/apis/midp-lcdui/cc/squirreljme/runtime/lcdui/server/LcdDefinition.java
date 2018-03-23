@@ -15,6 +15,8 @@ import cc.squirreljme.runtime.cldc.service.ServiceServer;
 import cc.squirreljme.runtime.cldc.task.SystemTask;
 import cc.squirreljme.runtime.lcdui.DisplayableType;
 import cc.squirreljme.runtime.lcdui.LcdServiceCall;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class implements the base of the graphical LCDUI display system which
@@ -32,28 +34,34 @@ import cc.squirreljme.runtime.lcdui.LcdServiceCall;
 public abstract class LcdDefinition
 	extends ServiceDefinition
 {
-	/** The state of the server. */
-	protected final LcdState state;
+	/** The request handler. */
+	protected final LcdRequestHandler requesthandler;
+	
+	/** The factory for creating new widgets. */
+	protected final LcdWidgetFactory widgetfactory;
+	
+	/** States for each running server. */
+	private final Map<SystemTask, LcdServerState> _states =
+		new HashMap<>();
 	
 	/**
 	 * Initializes the base definition.
 	 *
-	 * @param __rh The handler for requests.
-	 * @param __dm The display manager.
-	 * @param __dy Displayable manager.
+	 * @param __rh The handler for requests to enqueue into the events thread.
+	 * @param __wf The factory for creating new widgets.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/15
 	 */
-	public LcdDefinition(LcdRequestHandler __rh, LcdDisplays __dm,
-		LcdDisplayables __dy)
+	public LcdDefinition(LcdRequestHandler __rh, LcdWidgetFactory __wf)
 		throws NullPointerException
 	{
 		super(LcdServiceCall.Provider.class);
 		
-		if (__rh == null || __dm == null || __dy == null)
+		if (__rh == null || __wf == null)
 			throw new NullPointerException("NARG");
 		
-		this.state = new LcdState(__rh, __dm, __dy);
+		this.requesthandler = __rh;
+		this.widgetfactory = __wf;
 	}
 	
 	/**
@@ -67,7 +75,13 @@ public abstract class LcdDefinition
 		if (__task == null)
 			throw new NullPointerException("NARG");
 		
-		return new LcdServer(__task, this.state);
+		Map<SystemTask, LcdServerState> states = this._states;
+		synchronized (this.states)
+		{
+			LcdServerState state = new LcdServerState(__task);
+			
+			throw new todo.TODO();
+		}
 	}
 }
 
