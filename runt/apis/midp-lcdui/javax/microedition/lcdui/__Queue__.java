@@ -40,15 +40,15 @@ final class __Queue__
 		new Object();
 	
 	/** Reference to index mapping, for sending to the server. */
-	protected final Map<Reference<__Cleanupable__>, Integer> _distoid =
+	protected final Map<Reference<__Widget__>, Integer> _distoid =
 		new HashMap<>();
 	
-	/** Index to cleanupable so the client knows what the server wanted. */
-	protected final Map<Integer, Reference<__Cleanupable__>> _idtodis =
+	/** Index to widget so the client knows what the server wanted. */
+	protected final Map<Integer, Reference<__Widget__>> _idtodis =
 		new HashMap<>();
 	
 	/** Queue to tell the remote server that handles should be cleaned up. */
-	protected final ReferenceQueue<__Cleanupable__> _disqueue =
+	protected final ReferenceQueue<__Widget__> _disqueue =
 		new ReferenceQueue<>();
 	
 	/** Terminate the queue? */
@@ -74,9 +74,9 @@ final class __Queue__
 	public void run()
 	{
 		Object lock = this.lock;
-		ReferenceQueue<__Cleanupable__> disqueue = this._disqueue;
-		Map<Reference<__Cleanupable__>, Integer> distoid = this._distoid;
-		Map<Integer, Reference<__Cleanupable__>> idtodis = this._idtodis;
+		ReferenceQueue<__Widget__> disqueue = this._disqueue;
+		Map<Reference<__Widget__>, Integer> distoid = this._distoid;
+		Map<Integer, Reference<__Widget__>> idtodis = this._idtodis;
 		
 		// Loop forever looking for displayable that are no longer
 		// referenced ever
@@ -87,7 +87,7 @@ final class __Queue__
 				return;
 			
 			// Get the next reference which went away
-			Reference<? extends __Cleanupable__> bye;
+			Reference<? extends __Widget__> bye;
 			try
 			{
 				bye = disqueue.remove();
@@ -120,7 +120,7 @@ final class __Queue__
 			try
 			{
 				LcdServiceCall.<VoidType>call(VoidType.class,
-					LcdFunction.CLEANUPABLE_CLEANUP, svdx);
+					LcdFunction.widget_CLEANUP, svdx);
 			}
 			catch (Throwable t)
 			{
@@ -132,28 +132,28 @@ final class __Queue__
 	/**
 	 * Returns the displayable used for the given index.
 	 *
-	 * @param <X> The type of cleanupable to get.
-	 * @param __cl The type of cleanupable to get.
+	 * @param <X> The type of widget to get.
+	 * @param __cl The type of widget to get.
 	 * @param __dx The index to get.
-	 * @return The cleanupable for the given index.
+	 * @return The widget for the given index.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/18
 	 */
-	final <X extends __Cleanupable__> X __get(Class<X> __cl, int __dx)
+	final <X extends __Widget__> X __get(Class<X> __cl, int __dx)
 		throws NullPointerException
 	{
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		Map<Integer, Reference<__Cleanupable__>> idtodis = this._idtodis;
+		Map<Integer, Reference<__Widget__>> idtodis = this._idtodis;
 		synchronized (this.lock)
 		{
-			Reference<__Cleanupable__> ref = idtodis.get(__dx);
+			Reference<__Widget__> ref = idtodis.get(__dx);
 			
 			// Do not know what this is?
 			if (ref == null)
 				return;
-			__Cleanupable__ rv = ref.get();
+			__Widget__ rv = ref.get();
 			
 			// If this is not the right kind of class, ignore
 			if (!__cl.isInstance(rv))
@@ -163,14 +163,14 @@ final class __Queue__
 	}
 	
 	/**
-	 * Registers the given cleanupable and returns the remote handle to it.
+	 * Registers the given widget and returns the remote handle to it.
 	 *
-	 * @param __d The cleanupable to register.
-	 * @return The handle of the cleanupable on the remote end.
+	 * @param __d The widget to register.
+	 * @return The handle of the widget on the remote end.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/17
 	 */
-	final int __register(__Cleanupable__ __d)
+	final int __register(__Widget__ __d)
 		throws NullPointerException
 	{
 		if (__d == null)
@@ -178,46 +178,40 @@ final class __Queue__
 		
 		// The remote index
 		int dx;
-		if (__d instanceof Displayable)
-		{
-			// Determine the type of displayable this is first
-			DisplayableType type;
-			if (__d instanceof Canvas)
-				type = DisplayableType.CANVAS;
-			else if (__d instanceof Alert)
-				type = DisplayableType.ALERT;
-			else if (__d instanceof FileSelector)
-				type = DisplayableType.FILE_SELECTOR;
-			else if (__d instanceof Form)
-				type = DisplayableType.FORM;
-			else if (__d instanceof List)
-				type = DisplayableType.LIST;
-			else if (__d instanceof TabbedPane)
-				type = DisplayableType.TABBED_PANE;
-			else if (__d instanceof TextBox)
-				type = DisplayableType.TEXT_BOX;
-			
-			// {@squirreljme.error EB1x Could not determine the type displayable
-			// that this is. (The displayable type)}
-			else
-				throw new RuntimeException(String.format(
-					"EB1x %s", __d.getClass()));
-			
-			// Register and get the index for it
-			dx = LcdServiceCall.<Integer>call(Integer.class,
-				LcdFunction.CREATE_DISPLAYABLE, type);
-		}
 		
-		// Do not know what to do here
+		// Determine the type of displayable this is first
+		WidgetType type;
+		if (__d instanceof Canvas)
+			type = WidgetType.CANVAS;
+		else if (__d instanceof Alert)
+			type = WidgetType.ALERT;
+		else if (__d instanceof FileSelector)
+			type = WidgetType.FILE_SELECTOR;
+		else if (__d instanceof Form)
+			type = WidgetType.FORM;
+		else if (__d instanceof List)
+			type = WidgetType.LIST;
+		else if (__d instanceof TabbedPane)
+			type = WidgetType.TABBED_PANE;
+		else if (__d instanceof TextBox)
+			type = WidgetType.TEXT_BOX;
+		
+		// {@squirreljme.error EB1x Could not determine the type displayable
+		// that this is. (The displayable type)}
 		else
-			throw new RuntimeException("OOPS");
+			throw new RuntimeException(String.format(
+				"EB1x %s", __d.getClass()));
 		
-		// Reference the cleanupable for future cleanup on the remote end
-		Map<Reference<__Cleanupable__>, Integer> distoid = this._distoid;
-		Map<Integer, Reference<__Cleanupable__>> idtodis = this._idtodis;
+		// Register and get the index for it
+		dx = LcdServiceCall.<Integer>call(Integer.class,
+			LcdFunction.CREATE_DISPLAYABLE, type);
+		
+		// Reference the widget for future cleanup on the remote end
+		Map<Reference<__Widget__>, Integer> distoid = this._distoid;
+		Map<Integer, Reference<__Widget__>> idtodis = this._idtodis;
 		synchronized (this.lock)
 		{
-			Reference<__Cleanupable__> ref =
+			Reference<__Widget__> ref =
 				new WeakReference<>(__d, this._disqueue);
 			Integer idx = dx;
 			distoid.put(ref, idx);

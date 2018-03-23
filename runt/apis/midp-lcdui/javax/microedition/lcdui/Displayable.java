@@ -26,7 +26,7 @@ import java.lang.ref.WeakReference;
  * @since 2016/10/08
  */
 public abstract class Displayable
-	extends __Cleanupable__
+	extends __Widget__
 {
 	/** Held current display to prevent garbage collection. */
 	volatile Display _heldcurrent;

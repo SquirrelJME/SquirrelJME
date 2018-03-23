@@ -15,28 +15,28 @@ package cc.squirreljme.runtime.lcdui;
  *
  * @since 2018/03/17
  */
-public enum DisplayableType
+public enum WidgetType
 {
 	/** Canvas, */
-	CANVAS,
+	DISPLAYABLE_CANVAS,
 	
 	/** Alert. */
-	ALERT,
+	DISPLAYABLE_ALERT,
 	
 	/** File selector. */
-	FILE_SELECTOR,
+	DISPLAYABLE_FILE_SELECTOR,
 	
 	/** Form. */
-	FORM,
+	DISPLAYABLE_FORM,
 	
 	/** List. */
-	LIST,
+	DISPLAYABLE_LIST,
 	
 	/** Tabbed pane. */
-	TABBED_PANE,
+	DISPLAYABLE_TABBED_PANE,
 	
 	/** Text Box. */
-	TEXT_BOX,
+	DISPLAYABLE_TEXT_BOX,
 	
 	/** End. */
 	;

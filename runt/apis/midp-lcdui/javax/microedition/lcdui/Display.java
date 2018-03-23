@@ -33,6 +33,7 @@ import java.util.Set;
 import javax.microedition.midlet.MIDlet;
 
 public class Display
+	extends __Widget__
 {
 	public static final int ALERT =
 		3;
@@ -197,9 +198,6 @@ public class Display
 	/** Was the callback initialized? */
 	private static volatile boolean _MADECALLBACK;
 	
-	/** The index of this display. */
-	final int _index;
-	
 	/** Hold on the displayable to show. */
 	private volatile Displayable _heldcurrent;
 	
@@ -209,12 +207,12 @@ public class Display
 	/**
 	 * Initializes the display instance.
 	 *
-	 * @param __dx The display index.
+	 * @param __handle The display handle.
 	 * @since 2018/03/16
 	 */
-	Display(int __dx)
+	Display(int __handle)
 	{
-		this._index = __dx;
+		super(__handle);
 	}
 	
 	public void callSerially(Runnable __a)

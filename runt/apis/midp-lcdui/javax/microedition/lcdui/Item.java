@@ -12,7 +12,7 @@ package javax.microedition.lcdui;
 
 
 public abstract class Item
-	extends __Cleanupable__
+	extends __Widget__
 {
 	public static final int BUTTON =
 		2;
