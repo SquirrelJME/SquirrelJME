@@ -21,6 +21,9 @@ public enum LcdFunction
 	/** Create a displayable of a given type and return the handle to it. */
 	CREATE_DISPLAYABLE,
 	
+	/** A displayable was garbage collected, so clean it up. */
+	DISPLAYABLE_CLEANUP,
+	
 	/** Returns the displayable height. */
 	DISPLAYABLE_GET_HEIGHT,
 	

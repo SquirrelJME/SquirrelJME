@@ -103,6 +103,16 @@ public abstract class LcdDisplayable
 	public abstract void setTitle(String __t);
 	
 	/**
+	 * This is called when the displayable is garbage collected.
+	 *
+	 * @since 2018/03/23
+	 */
+	public final void cleanup()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Returns the display this is currently attached to.
 	 *
 	 * @return The currently attached display.
