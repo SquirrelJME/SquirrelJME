@@ -29,15 +29,19 @@ import cc.squirreljme.runtime.lcdui.gfx.IntArrayGraphics;
  *
  * @since 2018/03/18
  */
-final class __DisplayCallback__
+final class __LocalCallback__
 	extends RemoteMethod
 {
+	/** The single instance of the local callback. */
+	final __LocalCallback__ INSTANCE =
+		new __LocalCallback__();
+	
 	/**
 	 * Initializes the display callback.
 	 *
 	 * @since 2018/03/18
 	 */
-	__DisplayCallback__()
+	private __LocalCallback__()
 	{
 	}
 	
