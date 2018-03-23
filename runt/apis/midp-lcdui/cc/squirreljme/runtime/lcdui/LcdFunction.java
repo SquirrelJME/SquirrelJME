@@ -21,6 +21,9 @@ public enum LcdFunction
 	/** Vibrates the display. */
 	DISPLAY_VIBRATE,
 	
+	/** Queries available displays and sets the local callback method. */
+	QUERY_DISPLAYS,
+	
 	/** Adds a widget to this widget. */
 	WIDGET_ADD,
 	
@@ -41,9 +44,6 @@ public enum LcdFunction
 	
 	/** Sets the title of a widget. */
 	WIDGET_SET_TITLE,
-	
-	/** Queries available displays and sets the local callback method. */
-	QUERY_DISPLAYS,
 	
 	/** End. */
 	;

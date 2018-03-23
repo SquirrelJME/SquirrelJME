@@ -98,7 +98,7 @@ public final class LcdServer
 		LcdRequest r = LcdRequest.create(this, func, __args);
 		
 		// If the function is a query then execute it now and return a value
-		LcdRequestHandler rh = this.state.requestHandler();
+		LcdDisplays rh = this.displays;
 		if (func.query())
 			for (;;)
 				try
