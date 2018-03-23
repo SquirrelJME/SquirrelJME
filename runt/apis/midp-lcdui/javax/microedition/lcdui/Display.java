@@ -191,7 +191,7 @@ public class Display
 		4;
 	
 	/** The displays which currently exist based on their index. */
-	private static final Map<Integer, Reference<Display>> _DISPLAYS =
+	private static final Map<Integer, Display> _DISPLAYS =
 		new HashMap<>();
 	
 	/** Was the callback initialized? */
@@ -894,7 +894,7 @@ public class Display
 	{
 		// This call will always refresh the displays which are currently
 		// available to the server
-		Map<Integer, Reference<Display>> displays = Display._DISPLAYS;
+		Map<Integer, Display> displays = Display._DISPLAYS;
 		synchronized (displays)
 		{
 			// Was the callback registered?
@@ -957,7 +957,7 @@ public class Display
 	static Display __mapDisplay(int __did)
 	{
 		// Displays must be premapped before they can be discovered
-		Map<Integer, Reference<Display>> displays = Display._DISPLAYS;
+		Map<Integer, Display> displays = Display._DISPLAYS;
 		synchronized (displays)
 		{
 			Integer k = __did;
@@ -967,12 +967,10 @@ public class Display
 			if (!displays.containsKey(k))
 				throw new IllegalStateException(String.format("EB1w %d", k));
 			
-			Reference<Display> ref = displays.get(k);
-			Display rv;
+			Display rv = displays.get(k);
 			
-			if (ref == null || null == (rv = ref.get()))
-				displays.put(k, new WeakReference<>(
-					(rv = new Display(__did))));
+			if (null == rv)
+				displays.put(k, (rv = new Display(__did)));
 			
 			return rv;
 		}
