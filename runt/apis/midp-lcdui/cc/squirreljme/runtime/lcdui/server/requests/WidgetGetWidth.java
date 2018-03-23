@@ -23,6 +23,19 @@ public class WidgetGetWidth
 	extends LcdRequest
 {
 	/**
+	 * Initializes the request.
+	 *
+	 * @param __sv The calling server.
+	 * @since 2018/03/23
+	 */
+	public WidgetGetWidth(LcdServer __sv)
+	{
+		super(__sv, LcdFunction.WIDGET_GET_WIDTH);
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
 	 */

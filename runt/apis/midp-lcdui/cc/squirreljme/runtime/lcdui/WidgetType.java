@@ -17,6 +17,9 @@ package cc.squirreljme.runtime.lcdui;
  */
 public enum WidgetType
 {
+	/** Display. */
+	DISPLAY,
+	
 	/** Canvas, */
 	DISPLAYABLE_CANVAS,
 	
@@ -37,6 +40,30 @@ public enum WidgetType
 	
 	/** Text Box. */
 	DISPLAYABLE_TEXT_BOX,
+	
+	/** Choice group. */
+	ITEM_CHOICE_GROUP,
+	
+	/** Custom item. */
+	ITEM_CUSTOM,
+	
+	/** Date field. */
+	ITEM_DATE,
+	
+	/** Gauge. */
+	ITEM_GAUGE,
+	
+	/** Image. */
+	ITEM_IMAGE,
+	
+	/** Spacer. */
+	ITEM_SPACER,
+	
+	/** String. */
+	ITEM_STRING,
+	
+	/** Text field. */
+	ITEM_TEXT_FIELD,
 	
 	/** End. */
 	;

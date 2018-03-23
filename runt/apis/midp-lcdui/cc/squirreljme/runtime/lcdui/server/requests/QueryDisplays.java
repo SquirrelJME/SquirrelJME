@@ -24,6 +24,19 @@ public class QueryDisplays
 	extends LcdRequest
 {
 	/**
+	 * Initializes the request.
+	 *
+	 * @param __sv The calling server.
+	 * @since 2018/03/23
+	 */
+	public QueryDisplays(LcdServer __sv)
+	{
+		super(__sv, LcdFunction.QUERY_DISPLAYS);
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
 	 */

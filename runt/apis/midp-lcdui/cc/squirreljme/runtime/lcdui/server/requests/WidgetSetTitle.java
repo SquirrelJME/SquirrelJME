@@ -23,6 +23,19 @@ public class WidgetSetTitle
 	extends LcdRequest
 {
 	/**
+	 * Initializes the request.
+	 *
+	 * @param __sv The calling server.
+	 * @since 2018/03/23
+	 */
+	public WidgetSetTitle(LcdServer __sv)
+	{
+		super(__sv, LcdFunction.WIDGET_SET_TITLE);
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
 	 */

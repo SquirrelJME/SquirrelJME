@@ -23,6 +23,19 @@ public class DisplayVibrate
 	extends LcdRequest
 {
 	/**
+	 * Initializes the request.
+	 *
+	 * @param __sv The calling server.
+	 * @since 2018/03/23
+	 */
+	public DisplayVibrate(LcdServer __sv)
+	{
+		super(__sv, LcdFunction.DISPLAY_VIBRATE);
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
 	 */
