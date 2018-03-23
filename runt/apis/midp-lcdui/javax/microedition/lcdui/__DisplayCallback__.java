@@ -113,6 +113,7 @@ final class __DisplayCallback__
 		
 		// Only canvases are drawn on
 		Displayable on = __Queue__.INSTANCE.__getDisplayable(__d);
+		System.err.printf("DEBUG -- DID %d = %s%n", __d, on);
 		if (!(on instanceof Canvas))
 			return;
 		
