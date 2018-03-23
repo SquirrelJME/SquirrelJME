@@ -16,7 +16,6 @@ import cc.squirreljme.runtime.cldc.system.type.LocalIntegerArray;
 import cc.squirreljme.runtime.cldc.system.type.RemoteMethod;
 import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.cldc.task.SystemTask;
-import cc.squirreljme.runtime.lcdui.DisplayableType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
 import cc.squirreljme.runtime.lcdui.server.requests.DisplayVibrate;
 import cc.squirreljme.runtime.lcdui.server.requests.QueryDisplays;
@@ -27,6 +26,7 @@ import cc.squirreljme.runtime.lcdui.server.requests.WidgetGetHeight;
 import cc.squirreljme.runtime.lcdui.server.requests.WidgetGetWidth;
 import cc.squirreljme.runtime.lcdui.server.requests.WidgetRepaint;
 import cc.squirreljme.runtime.lcdui.server.requests.WidgetSetTitle;
+import cc.squirreljme.runtime.lcdui.WidgetType;
 
 /**
  * This represents a single request to be made by the LCD server, it allows
@@ -171,8 +171,8 @@ public abstract class LcdRequest
 			
 			case WIDGET_CREATE:
 				return new WidgetCreate(__sv, 
-					((EnumType)__args[0]).<DisplayableType>asEnum(
-					DisplayableType.class));
+					((EnumType)__args[0]).<WidgetType>asEnum(
+					WidgetType.class));
 			
 			case WIDGET_CLEANUP:
 				return new WidgetCleanup(__sv, (Integer)__args[0]);
