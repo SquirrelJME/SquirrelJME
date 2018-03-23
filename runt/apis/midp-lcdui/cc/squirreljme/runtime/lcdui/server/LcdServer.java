@@ -19,6 +19,8 @@ import cc.squirreljme.runtime.cldc.task.SystemTask;
 import cc.squirreljme.runtime.lcdui.DisplayableType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
 import cc.squirreljme.runtime.lcdui.LcdFunctionInterrupted;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class implements the base for the LCDUI interface used for the
@@ -34,6 +36,9 @@ public final class LcdServer
 	
 	/** The displays which are available. */
 	protected final LcdDisplays displays;
+	
+	/** Widgets which are currently available to this server. */
+	private final Map<Integer, LcdWidget> _widgets;
 	
 	/**
 	 * Initializes the LCDUI server.
@@ -54,6 +59,27 @@ public final class LcdServer
 	}
 	
 	/**
+	 * Obtains the widget by the specified index and class type.
+	 *
+	 * @param <W> The class type to lookup.
+	 * @param __cl The class type to lookup.
+	 * @param __dx The handle of the widget.
+	 * @return The widget of the specified handle and class type or
+	 * {@code null} if the widget does not exist or is not of the specified
+	 * class type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/23
+	 */
+	public final <W extends LcdWidget> W getWidget(LcdWidget __cl, int __dx)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/16
 	 */
@@ -69,7 +95,7 @@ public final class LcdServer
 		
 		// Build request to run in the future
 		LcdFunction func = __func.<LcdFunction>asEnum(LcdFunction.class);
-		LcdRequest r = new LcdRequest(this, func, __args);
+		LcdRequest r = LcdRequest.create(this, func, __args);
 		
 		// If the function is a query then execute it now and return a value
 		LcdRequestHandler rh = this.state.requestHandler();
@@ -92,17 +118,6 @@ public final class LcdServer
 			rh.invokeLater(r);
 			return VoidType.INSTANCE;
 		}
-	}
-	
-	/**
-	 * Returns the state of this server.
-	 *
-	 * @return The server state.
-	 * @since 2018/03/18
-	 */
-	public final LcdState state()
-	{
-		return this.state;
 	}
 	
 	/**
