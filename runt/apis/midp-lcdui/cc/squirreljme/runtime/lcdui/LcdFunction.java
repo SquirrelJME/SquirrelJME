@@ -18,35 +18,32 @@ package cc.squirreljme.runtime.lcdui;
  */
 public enum LcdFunction
 {
-	/** Create a displayable of a given type and return the handle to it. */
-	CREATE_DISPLAYABLE,
-	
-	/** A displayable was garbage collected, so clean it up. */
-	DISPLAYABLE_CLEANUP,
-	
-	/** Returns the displayable height. */
-	DISPLAYABLE_GET_HEIGHT,
-	
-	/** Returns the displayable width. */
-	DISPLAYABLE_GET_WIDTH,
-	
-	/** Repaints a displayable. */
-	DISPLAYABLE_REPAINT,
-	
-	/** Sets the title of a displayable. */
-	DISPLAYABLE_SET_TITLE,
-	
-	/** Sets the current displayable. */
-	DISPLAY_SET_CURRENT,
-	
 	/** Vibrates the display. */
 	DISPLAY_VIBRATE,
 	
-	/** Queries all of the display indexes which are available for usage. */
-	QUERY_DISPLAYS,
+	/** Adds a widget to this widget. */
+	WIDGET_ADD,
 	
-	/** Registers the callback for this task. */
-	REGISTER_CALLBACK,
+	/** A widget was garbage collected, so clean it up. */
+	WIDGET_CLEANUP,
+	
+	/** Create a new widget. */
+	WIDGET_CREATE,
+	
+	/** Returns the widget height. */
+	WIDGET_GET_HEIGHT,
+	
+	/** Returns the widget width. */
+	WIDGET_GET_WIDTH,
+	
+	/** Repaints a widget. */
+	WIDGET_REPAINT,
+	
+	/** Sets the title of a widget. */
+	WIDGET_SET_TITLE,
+	
+	/** Queries available displays and sets the local callback method. */
+	QUERY_DISPLAYS,
 	
 	/** End. */
 	;
@@ -77,12 +74,11 @@ public enum LcdFunction
 	{
 		switch (this)
 		{
-			case CREATE_DISPLAYABLE:
-			case DISPLAYABLE_GET_HEIGHT:
-			case DISPLAYABLE_GET_WIDTH:
-			case DISPLAY_SET_CURRENT:
 			case QUERY_DISPLAYS:
-			case REGISTER_CALLBACK:
+			case WIDGET_ADD:
+			case WIDGET_CREATE:
+			case WIDGET_GET_HEIGHT:
+			case WIDGET_GET_WIDTH:
 				return true;
 			
 			default:

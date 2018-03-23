@@ -26,17 +26,14 @@ import cc.squirreljme.runtime.lcdui.LcdFunction;
  *
  * @since 2018/03/17
  */
-public final class LcdRequest
+public abstract class LcdRequest
 	implements Runnable
 {
-	/** The server performing the action. */
+	/** The server performing the call. */
 	protected final LcdServer server;
 	
-	/** The function to execute. */
+	/** The function being executed. */
 	protected final LcdFunction function;
-	
-	/** The arguments to the function. */
-	private final Object[] _args;
 	
 	/** Exception was thrown. */
 	private volatile Throwable _tossed;
@@ -48,24 +45,29 @@ public final class LcdRequest
 	private volatile boolean _finished;
 	
 	/**
-	 * Initializes a request to the LCD display server.
+	 * Initializes the base request.
 	 *
-	 * @param __server The server which is performing the request.
-	 * @param __func The function to execute.
-	 * @param __args The arguments to the function.
+	 * @param __sv The owning server.
+	 * @param __func The function being called.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2018/03/17
+	 * @since 2018/03/23
 	 */
-	public LcdRequest(LcdServer __server, LcdFunction __func, Object... __args)
+	public LcdRequest(LcdServer __sv, LcdFunction __func)
 		throws NullPointerException
 	{
-		if (__server == null || __func == null)
+		if (__sv == null || __func == null)
 			throw new NullPointerException("NARG");
 		
-		this.server = __server;
+		this.server = __sv;
 		this.function = __func;
-		this._args = (__args == null ? new Object[0] : __args.clone());
 	}
+	
+	/**
+	 * Invokes the given request.
+	 *
+	 * @since 2018/03/23
+	 */
+	protected abstract Object invoke();
 	
 	/**
 	 * Returns the result of the request.
@@ -98,6 +100,90 @@ public final class LcdRequest
 		
 		// Return the specified value
 		return __cl.cast(this._result);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/17
+	 */
+	@Override
+	public final void run()
+	{
+		// Could fail
+		try
+		{
+			this._result = this.invoke();
+		}
+		
+		// Failed
+		catch (RuntimeException|Error e)
+		{
+			_tossed = e;
+			
+			// If this function is not a query then it has internally failed
+			// so print the trace
+			if (!this.function.query())
+				e.printStackTrace();
+		}
+		
+		// Finished execution
+		this._finished = true;
+	}
+	
+	/**
+	 * Creates a new request which uses the given function and creates an
+	 * object that will later execute or run the specified request.
+	 *
+	 * @param __server The server which is performing the request.
+	 * @param __func The function to execute.
+	 * @param __args The arguments to the function.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/23
+	 */
+	public static final LcdRequest create(LcdServer __server,
+		LcdFunction __func, Object... __args)
+		throws NullPointerException
+	{
+		if (__server == null || __func == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	/** The server performing the action. */
+	protected final LcdServer server;
+	
+	/** The function to execute. */
+	protected final LcdFunction function;
+	
+	/** The arguments to the function. */
+	private final Object[] _args;
+	
+	/**
+	 * Initializes a request to the LCD display server.
+	 *
+	 * @param __server The server which is performing the request.
+	 * @param __func The function to execute.
+	 * @param __args The arguments to the function.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/17
+	 */
+	public LcdRequest(LcdServer __server, LcdFunction __func, Object... __args)
+		throws NullPointerException
+	{
+		if (__server == null || __func == null)
+			throw new NullPointerException("NARG");
+		
+		this.server = __server;
+		this.function = __func;
+		this._args = (__args == null ? new Object[0] : __args.clone());
 	}
 	
 	/**
