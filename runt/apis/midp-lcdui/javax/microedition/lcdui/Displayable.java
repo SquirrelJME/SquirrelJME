@@ -230,6 +230,18 @@ public abstract class Displayable
 	}
 	
 	/**
+	 * This is called when the displayable has changed size.
+	 *
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @since 2018/03/23
+	 */
+	void __doResize(int __w, int __h)
+	{
+		this.sizeChanged(__w, __h);
+	}
+	
+	/**
 	 * Returns the height of the displayable or the maximum size of the
 	 * default display.
 	 *

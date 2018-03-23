@@ -188,6 +188,20 @@ public class SwingDisplayable
 		
 			// Send repaint event
 			this.repaint(0, 0, neww, newh);
+			
+			// Send resize event
+			try
+			{
+				SwingDisplayable.this.callbacks.displayableSizeChanged(
+					SwingDisplayable.this, neww, newh);
+			}
+			
+			// Remote end threw some exception, ignore it so that execution
+			// can continue
+			catch (Throwable t)
+			{
+				t.printStackTrace();
+			}
 		}
 
 		/**

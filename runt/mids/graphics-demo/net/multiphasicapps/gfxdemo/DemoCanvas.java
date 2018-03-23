@@ -30,6 +30,9 @@ public class DemoCanvas
 	 */
 	{
 		this.setTitle("Graphics Demo");
+		
+		// Always clear the background
+		this.setPaintMode(false);
 	}
 	
 	/**

@@ -88,5 +88,29 @@ public final class LcdCallbackManager
 			__d.handle(), __cx, __cy, __cw, __ch, __buf, __pal, __bw, __bh,
 			__alpha, __pitch, __offset);
 	}
+	
+	/**
+	 * This is called when the size of a displayable has changed.
+	 *
+	 * @param __d The displayable which changed size.
+	 * @param __w The new width.
+	 * @param __h The new height.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/23
+	 */
+	public void displayableSizeChanged(LcdDisplayable __d, int __w, int __h)
+		throws NullPointerException
+	{
+		if (__d == null)
+			throw new NullPointerException("NARG");
+		
+		// Method to call
+		RemoteMethod rm = this._callbacks.get(__d.task());
+		if (rm == null)
+			return;
+		
+		rm.<VoidType>invoke(VoidType.class,
+			LcdCallback.DISPLAYABLE_SIZE_CHANGED, __d.handle(), __w, __h);
+	}
 }
 
