@@ -32,24 +32,25 @@ public final class LcdServer
 	/** The task this provides a service for. */
 	protected final SystemTask task;
 	
-	/** The server state. */
-	protected final LcdState state;
+	/** The displays which are available. */
+	protected final LcdDisplays displays;
 	
 	/**
 	 * Initializes the LCDUI server.
 	 *
 	 * @param __s The state of the server.
+	 * @param __ld The displays which are available for usage.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/17
 	 */
-	public LcdServer(SystemTask __task, LcdState __s)
+	public LcdServer(SystemTask __task, LcdDisplays __ld)
 		throws NullPointerException
 	{
-		if (__task == null || __s == null)
+		if (__task == null || __ld == null)
 			throw new NullPointerException("NARG");
 		
 		this.task = __task;
-		this.state = __s;
+		this.displays = __ld;
 	}
 	
 	/**

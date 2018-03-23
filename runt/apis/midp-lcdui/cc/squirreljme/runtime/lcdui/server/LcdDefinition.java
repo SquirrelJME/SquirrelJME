@@ -34,34 +34,26 @@ import java.util.Map;
 public abstract class LcdDefinition
 	extends ServiceDefinition
 {
-	/** The request handler. */
-	protected final LcdRequestHandler requesthandler;
-	
-	/** The factory for creating new widgets. */
-	protected final LcdWidgetFactory widgetfactory;
-	
-	/** States for each running server. */
-	private final Map<SystemTask, LcdServerState> _states =
-		new HashMap<>();
+	/** The displays that are available for usage. */
+	protected final LcdDisplays displays;
 	
 	/**
 	 * Initializes the base definition.
 	 *
-	 * @param __rh The handler for requests to enqueue into the events thread.
-	 * @param __wf The factory for creating new widgets.
+	 * @param __ld The display manager which is used to manager displays and
+	 * provide access to events for execution.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/15
 	 */
-	public LcdDefinition(LcdRequestHandler __rh, LcdWidgetFactory __wf)
+	public LcdDefinition(LcdDisplays __ld)
 		throws NullPointerException
 	{
 		super(LcdServiceCall.Provider.class);
 		
-		if (__rh == null || __wf == null)
+		if (__ld == null)
 			throw new NullPointerException("NARG");
 		
-		this.requesthandler = __rh;
-		this.widgetfactory = __wf;
+		this.displays = __ld;
 	}
 	
 	/**
@@ -75,13 +67,7 @@ public abstract class LcdDefinition
 		if (__task == null)
 			throw new NullPointerException("NARG");
 		
-		Map<SystemTask, LcdServerState> states = this._states;
-		synchronized (this.states)
-		{
-			LcdServerState state = new LcdServerState(__task);
-			
-			throw new todo.TODO();
-		}
+		return new LcdServer(__task, this.displays);
 	}
 }
 

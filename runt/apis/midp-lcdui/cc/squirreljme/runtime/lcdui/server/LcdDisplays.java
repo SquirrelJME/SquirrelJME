@@ -20,6 +20,13 @@ import net.multiphasicapps.collections.SortedTreeMap;
  * LCDUI subsystem which is used to contain displayables to be shown to the
  * user.
  *
+ * This also is the handler for any requests that are made to the LCD server,
+ * this enables client threads to call into the server from any thread while
+ * the GUI remains in a single thread at all time.
+ *
+ * It is up to the implementation to properly thread in these events as they
+ * are used.
+ *
  * @since 2018/03/17
  */
 public abstract class LcdDisplays
@@ -39,6 +46,36 @@ public abstract class LcdDisplays
 	 */
 	protected abstract LcdDisplay[] internalQueryDisplays(LcdDisplay[] __k)
 		throws NullPointerException;
+	
+	/**
+	 * Invokes the specified request at a future time within the thread which
+	 * is not specifically known.
+	 *
+	 * @param __r The request to handle.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/17
+	 */
+	public abstract void invokeLater(LcdRequest __r)
+		throws NullPointerException;
+	
+	/**
+	 * Invokes the specified request as soon as possible and blocks until
+	 * execution has finished.
+	 *
+	 * If the thread executing this method is the event handler thread then
+	 * this must directly execute the request and return the result of it.
+	 *
+	 * @param <R> The class type to return.
+	 * @param __cl The class type to return.
+	 * @param __r The request to handle.
+	 * @return The result of the request;
+	 * @throws InterruptedException If the thread was interrupted while it
+	 * was waiting.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/17
+	 */
+	public abstract <R> R invokeNow(Class<R> __cl, LcdRequest __r)
+		throws InterruptedException, NullPointerException;
 	
 	/**
 	 * Returns the specified display.
