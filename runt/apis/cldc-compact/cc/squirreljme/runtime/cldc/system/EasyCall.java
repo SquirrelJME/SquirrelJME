@@ -387,7 +387,8 @@ public final class EasyCall
 	public final void setDaemonThread(Thread __t)
 		throws IllegalThreadStateException, NullPointerException
 	{
-		throw new todo.TODO();
+		SystemCall.<VoidType>systemCall(VoidType.class,
+			SystemFunction.SET_DAEMON_THREAD, __t);
 	}
 	
 	/**

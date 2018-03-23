@@ -10,6 +10,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.system.SystemCall;
 import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.lcdui.DisplayableType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
@@ -60,6 +61,9 @@ final class __Queue__
 	 */
 	private __Queue__()
 	{
+		Thread cleanuper = new Thread(this, "LCDUI-Cleanup");
+		SystemCall.EASY.setDaemonThread(cleanuper);
+		cleanuper.start();
 	}
 	
 	/**
@@ -111,6 +115,8 @@ final class __Queue__
 				// The server is notified of this
 				svdx = dx;
 			}
+			
+			System.err.printf("DEBUG -- Collected %d%n", svdx);
 			
 			// If the server failed to clean it up properly then just ignore it
 			try
