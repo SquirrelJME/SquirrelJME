@@ -18,6 +18,15 @@ import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.cldc.task.SystemTask;
 import cc.squirreljme.runtime.lcdui.DisplayableType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
+import cc.squirreljme.runtime.lcdui.request.DisplayVibrate;
+import cc.squirreljme.runtime.lcdui.request.QueryDisplays;
+import cc.squirreljme.runtime.lcdui.request.WidgetAdd;
+import cc.squirreljme.runtime.lcdui.request.WidgetCleanup;
+import cc.squirreljme.runtime.lcdui.request.WidgetCreate;
+import cc.squirreljme.runtime.lcdui.request.WidgetGetHeight;
+import cc.squirreljme.runtime.lcdui.request.WidgetGetWidth;
+import cc.squirreljme.runtime.lcdui.request.WidgetRepaint;
+import cc.squirreljme.runtime.lcdui.request.WidgetSetTitle;
 
 /**
  * This represents a single request to be made by the LCD server, it allows
@@ -134,310 +143,61 @@ public abstract class LcdRequest
 	 * Creates a new request which uses the given function and creates an
 	 * object that will later execute or run the specified request.
 	 *
-	 * @param __server The server which is performing the request.
+	 * @param __sv The server which is performing the request.
 	 * @param __func The function to execute.
 	 * @param __args The arguments to the function.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/23
 	 */
-	public static final LcdRequest create(LcdServer __server,
+	public static final LcdRequest create(LcdServer __sv,
 		LcdFunction __func, Object... __args)
 		throws NullPointerException
 	{
-		if (__server == null || __func == null)
+		if (__sv == null || __func == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	/** The server performing the action. */
-	protected final LcdServer server;
-	
-	/** The function to execute. */
-	protected final LcdFunction function;
-	
-	/** The arguments to the function. */
-	private final Object[] _args;
-	
-	/**
-	 * Initializes a request to the LCD display server.
-	 *
-	 * @param __server The server which is performing the request.
-	 * @param __func The function to execute.
-	 * @param __args The arguments to the function.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/03/17
-	 */
-	public LcdRequest(LcdServer __server, LcdFunction __func, Object... __args)
-		throws NullPointerException
-	{
-		if (__server == null || __func == null)
-			throw new NullPointerException("NARG");
-		
-		this.server = __server;
-		this.function = __func;
-		this._args = (__args == null ? new Object[0] : __args.clone());
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/03/17
-	 */
-	@Override
-	public final void run()
-	{
-		// Could fail
-		LcdFunction func = this.function;
-		try
+		switch (__func)
 		{
-			Object[] args = this._args;
+			case DISPLAY_VIBRATE:
+				return new DisplayVibrate(__sv, (Integer)args[0],
+					(Integer)args[1]);
 			
-			// Run function and store the result
-			Object result = VoidType.INSTANCE;
-			switch (func)
-			{
-				case CREATE_DISPLAYABLE:
-					result = this.__createDisplayable(
-						((EnumType)args[0]).<DisplayableType>asEnum(
-						DisplayableType.class));
-					break;
-				
-				case DISPLAYABLE_CLEANUP:
-					this.__displayableCleanup((Integer)args[0]);
-					break;
-				
-				case DISPLAYABLE_GET_HEIGHT:
-					result = this.__displayableGetHeight((Integer)args[0]);
-					break;
-					
-				case DISPLAYABLE_GET_WIDTH:
-					result = this.__displayableGetWidth((Integer)args[0]);
-					break;
-					
-				case DISPLAYABLE_REPAINT:
-					this.__displayableRepaint((Integer)args[0],
-						(Integer)args[1], (Integer)args[2],
-						(Integer)args[3], (Integer)args[4]);
-					break;
-					
-				case DISPLAYABLE_SET_TITLE:
-					this.__displayableSetTitle((Integer)args[0],
-						(String)args[1]);
-					break;
-				
-				case DISPLAY_SET_CURRENT:
-					this.__displaySetCurrent((Integer)args[0],
-						(Integer)args[1], (Integer)args[2]);
-					break;
-				
-				case DISPLAY_VIBRATE:
-					this.__displayVibrate((Integer)args[0],
-						(Integer)args[1]);
-					break;
-				
-				case QUERY_DISPLAYS:
-					result = this.__queryDisplays();
-					break;
-				
-				case REGISTER_CALLBACK:
-					this.__registerCallback((RemoteMethod)args[0]);
-					break;
-				
-					// {@squirreljme.error EB20 Unimplemented function.
-					// (The function)}
-				default:
-					throw new RuntimeException(String.format("EB20 %s",
-						func));
-			}
+			case QUERY_DISPLAYS:
+				return new QueryDisplays(__sv, (RemoteMethod)args[0]);
 			
-			// Set
-			this._result = result;
+			case WIDGET_ADD:
+				return new WidgetAdd(__sv, (Integer)args[0],
+					(Integer)args[1], (Integer)args[2]);
+			
+			case WIDGET_CREATE:
+				return new WidgetCreate(__sv, 
+					((EnumType)args[0]).<DisplayableType>asEnum(
+					DisplayableType.class));
+			
+			case WIDGET_CLEANUP:
+				return new WidgetCleanup(__sv, (Integer)args[0]);
+			
+			case WIDGET_GET_HEIGHT:
+				return new WidgetGetHeight(__sv, (Integer)args[0]);
+				
+			case WIDGET_GET_WIDTH:
+				return new WidgetGetWidth(__sv, (Integer)args[0]);
+				
+			case WIDGET_REPAINT:
+				return new WidgetRepaint(__sv, (Integer)args[0],
+					(Integer)args[1], (Integer)args[2],
+					(Integer)args[3], (Integer)args[4]);
+				
+			case WIDGET_SET_TITLE:
+				return new WidgetSetTitle(__sv, (Integer)args[0],
+					(String)args[1]);
+				
+				// {@squirreljme.error EB20 Unimplemented function.
+				// (The function)}
+			default:
+				throw new RuntimeException(String.format("EB20 %s",
+					func));
 		}
-		
-		// Failed
-		catch (RuntimeException|Error e)
-		{
-			_tossed = e;
-			
-			// If this function is not a query then it has internally failed
-			// so print the trace
-			if (!func.query())
-				e.printStackTrace();
-		}
-		
-		// Finished execution
-		this._finished = true;
-	}
-	
-	/**
-	 * Creates a new displayable of the given type.
-	 *
-	 * @param __t The type of displayable to create.
-	 * @return The handle to the displayable.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/03/17
-	 */
-	private final int __createDisplayable(DisplayableType __t)
-		throws NullPointerException
-	{
-		if (__t == null)
-			throw new NullPointerException("NARG");
-		
-		LcdServer server = this.server;
-		LcdState state = server.state();
-		LcdDisplayable disp = state.displayables().
-			createDisplayable(server.task(), __t, state.callbacks());
-		return disp.handle();
-	}
-	
-	/**
-	 * This is called when a displayable has been garbage collected by the
-	 * client and should be cleaned up.
-	 *
-	 * @param __id The index of the displayable.
-	 * @since 2018/03/23
-	 */
-	private final void __displayableCleanup(int __id)
-	{
-		LcdServer server = this.server;
-		server.state().displayables().cleanup(server.task(), __id);
-	}
-	
-	/**
-	 * Gets the height of the given displayable.
-	 *
-	 * @param __id The displayable to get the height for.
-	 * @return The height for the given displayable.
-	 * @since 2018/03/19
-	 */
-	private final int __displayableGetHeight(int __id)
-	{
-		return this.server.state().displayables().get(server, __id).
-			getHeight();
-	}
-	
-	/**
-	 * Gets the width of the given displayable.
-	 *
-	 * @param __id The displayable to get the width for.
-	 * @return The width for the given displayable.
-	 * @since 2018/03/19
-	 */
-	private final int __displayableGetWidth(int __id)
-	{
-		return this.server.state().displayables().get(server, __id).
-			getWidth();
-	}
-	
-	/**
-	 * Repaints the specified displayable.
-	 *
-	 * @param __id The displayable to repaint.
-	 * @param __x The X coordinate.
-	 * @param __y The Y coordinate.
-	 * @param __w The width.
-	 * @param __h The height.
-	 * @throws LcdException If it is not a canvas.
-	 * @since 2018/03/18
-	 */
-	private final void __displayableRepaint(int __id, int __x, int __y,
-		int __w, int __h)
-	{
-		this.server.state().displayables().get(server, __id).repaint(
-			__x, __y, __w, __h);
-	}
-	
-	/**
-	 * Sets the title of the given displayable.
-	 *
-	 * @param __handle The handle of the displayable.
-	 * @param __title The title to use, {@code null} clears it.
-	 * @since 2018/03/17
-	 */
-	private final void __displayableSetTitle(int __handle, String __title)
-	{
-		LcdServer server = this.server;
-		server.state().displayables().get(server, __handle).
-			setTitle(__title);
-	}
-	
-	/**
-	 * Sets the current displayable to show.
-	 *
-	 * @param __did The display ID.
-	 * @param __show The disp'layable to show.
-	 * @param __exit The displayable to show on exit.
-	 * @since 2018/03/18
-	 */
-	private final void __displaySetCurrent(int __did, int __show, int __exit)
-	{
-		LcdServer server = this.server;
-		LcdState state = server.state();
-		LcdDisplayables displayables = state.displayables();
-		
-		// Get the displayables this refers to
-		LcdDisplayable show = displayables.get(server, __show),
-			exit = displayables.get(server, __exit);
-		
-		// Set the displayable to be shown
-		state.displays().get(__did).setCurrent(show, exit);
-	}
-	
-	/**
-	 * Vibrates the display.
-	 *
-	 * @param __did The display to vibrate.
-	 * @param __ms The number of milliseconds to vibrate for, 0 will shut it
-	 * off.
-	 * @since 2018/03/19
-	 */
-	private final void __displayVibrate(int __did, int __ms)
-	{
-		this.server.state().displays().get(__did).vibrate(__ms);
-	}
-	
-	/**
-	 * Queries the displays which are currently available.
-	 *
-	 * @return The available displays.
-	 * @since 2018/03/17
-	 */
-	private final IntegerArray __queryDisplays()
-	{
-		// Querie all displays
-		LcdDisplay[] ld = this.server.state().displays().queryDisplays();
-		
-		// Map indexes
-		int n = ld.length;
-		int[] rv = new int[n];
-		for (int i = 0; i < n; i++)
-			rv[i] = ld[i].index();
-		
-		return new LocalIntegerArray(rv);
-	}
-	
-	/**
-	 * Registers the callback for this task.
-	 *
-	 * @param __m The callback method.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/03/18
-	 */
-	private final void __registerCallback(RemoteMethod __m)
-		throws NullPointerException
-	{
-		if (__m == null)
-			throw new NullPointerException("NARG");
-		
-		LcdServer server = this.server;
-		server.state().callbacks().registerCallback(server.task(), __m);
 	}
 }
 
