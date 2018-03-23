@@ -71,6 +71,13 @@ final class __DisplayCallback__
 					(Integer)__args[12]);
 				return VoidType.INSTANCE;
 			
+			case DISPLAYABLE_SIZE_CHANGED:
+				this.__displayableSizeChanged(
+					(Integer)__args[1],
+					(Integer)__args[2],
+					(Integer)__args[3]);
+				return VoidType.INSTANCE;
+			
 				// {@squirreljme.error EB23 Unknown LCDUI callback function.
 				// (The function)}
 			default:
@@ -141,6 +148,23 @@ final class __DisplayCallback__
 		
 		// Perform the actual painting operation
 		on.__doRepaint(g);
+	}
+	
+	/**
+	 * Specifies that the given displayable has changed size.
+	 *
+	 * @param __d The displayable which had its size changed.
+	 * @param __w The new width.
+	 * @param __h The new height.
+	 * @since 2018/03/23
+	 */
+	private final void __displayableSizeChanged(int __d, int __w, int __h)
+	{
+		Displayable on = __Queue__.INSTANCE.__getDisplayable(__d);
+		if (on == null)
+			return;
+		
+		on.__doResize(__w, __h);
 	}
 }
 
