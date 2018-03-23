@@ -141,6 +141,10 @@ public class SwingDisplayable
 		private volatile BufferedImage _image =
 			new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
 		
+		/** First frame being drawn? */
+		private boolean _firstframe =
+			true;
+		
 		/**
 		 * Handles events and resizing as needed.
 		 *
@@ -223,6 +227,15 @@ public class SwingDisplayable
 			// This must always be called
 			super.paintComponent(__g);
 			
+			// If this is the first frame make sure when stuff is drawn that
+			// the image is initialized
+			if (this._firstframe)
+			{
+				this.componentResized(null);
+				this._firstframe = false;
+			}
+			
+			// Get image now
 			BufferedImage image = this._image;
 			int xw = image.getWidth(),
 				xh = image.getHeight();
