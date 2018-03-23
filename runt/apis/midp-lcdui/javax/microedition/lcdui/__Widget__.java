@@ -11,15 +11,36 @@
 package javax.microedition.lcdui;
 
 /**
- * This class acts as the base for classes which can be cleaned up when they
- * are no longer referenced so that the server can operate correctly.
+ * This class acts as the lowest base for displays and items.
  *
  * @since 2018/03/23
  */
-abstract class __Cleanupable__
+abstract class __Widget__
 {
 	/** The handle of this item. */
-	final int _handle =
-		__Queue__.INSTANCE.__register(this);
+	final int _handle;
+	
+	/**
+	 * Initializes the widget using a handle which is registered on the
+	 * remote end.
+	 *
+	 * @param __h The handle to use.
+	 * @since 2018/03/23
+	 */
+	__Widget__()
+	{
+		this._handle = __Queue__.INSTANCE.__register(this);
+	}
+	
+	/**
+	 * Initializes the widget using the given handle.
+	 *
+	 * @param __h The handle to use.
+	 * @since 2018/03/23
+	 */
+	__Widget__(int __h)
+	{
+		this._handle = __h;
+	}
 }
 
