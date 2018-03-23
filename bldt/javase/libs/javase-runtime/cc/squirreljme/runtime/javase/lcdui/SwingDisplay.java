@@ -83,6 +83,9 @@ public class SwingDisplay
 		SwingDisplayable sd = (SwingDisplayable)__d;
 		frame.add(sd._panel);
 		
+		// Pack it
+		frame.pack();
+		
 		// Setup frame position
 		if (!this._first)
 		{

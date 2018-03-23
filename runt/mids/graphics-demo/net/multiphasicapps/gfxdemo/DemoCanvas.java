@@ -24,6 +24,15 @@ public class DemoCanvas
 	extends Canvas
 {
 	/**
+	 * Initializes some base things.
+	 *
+	 * @since 2018/03/23
+	 */
+	{
+		this.setTitle("Graphics Demo");
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
 	 */
