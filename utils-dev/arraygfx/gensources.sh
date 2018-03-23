@@ -18,3 +18,12 @@ export LC_ALL=C
 # Directory of this script
 __exedir="$(dirname -- "$0")"
 
+# Go through all format types
+for __type in type/*.h
+do
+	gcc -nostdinc -nostdlib -include "$__type" -E -CC - < \
+		TemplateArrayGraphics.java | grep -v '^#' | astyle --style=allman \
+		--close-templates --max-code-length=79 --pad-oper -T4 \
+		--indent-after-parens
+done
+
