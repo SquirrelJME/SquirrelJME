@@ -181,20 +181,38 @@ final class __Queue__
 		
 		// Determine the type of displayable this is first
 		WidgetType type;
-		if (__d instanceof Canvas)
-			type = WidgetType.CANVAS;
+		if (__d instanceof Display)
+			type = WidgetType.DISPLAY;
+		else if (__d instanceof Canvas)
+			type = WidgetType.DISPLAYABLE_CANVAS;
 		else if (__d instanceof Alert)
-			type = WidgetType.ALERT;
+			type = WidgetType.DISPLAYABLE_ALERT;
 		else if (__d instanceof FileSelector)
-			type = WidgetType.FILE_SELECTOR;
+			type = WidgetType.DISPLAYABLE_FILE_SELECTOR;
 		else if (__d instanceof Form)
-			type = WidgetType.FORM;
+			type = WidgetType.DISPLAYABLE_FORM;
 		else if (__d instanceof List)
-			type = WidgetType.LIST;
+			type = WidgetType.DISPLAYABLE_LIST;
 		else if (__d instanceof TabbedPane)
-			type = WidgetType.TABBED_PANE;
+			type = WidgetType.DISPLAYABLE_TABBED_PANE;
 		else if (__d instanceof TextBox)
-			type = WidgetType.TEXT_BOX;
+			type = WidgetType.DISPLAYABLE_TEXT_BOX;
+		else if (__d instanceof ChoiceGruop)
+			type = WidgetType.ITEM_CHOICE_GROUP;
+		else if (__d instanceof CustomItem)
+			type = WidgetType.ITEM_CUSTOM;
+		else if (__d instanceof DateField)
+			type = WidgetType.ITEM_DATE;
+		else if (__d instanceof Gauge)
+			type = WidgetType.ITEM_GAUGE;
+		else if (__d instanceof ImageItem)
+			type = WidgetType.ITEM_IMAGE;
+		else if (__d instanceof Spacer)
+			type = WidgetType.ITEM_SPACER;
+		else if (__d instanceof StringItem)
+			type = WidgetType.ITEM_STRING;
+		else if (__d instanceof TextField)
+			type = WidgetType.ITEM_TEXT_FIELD;
 		
 		// {@squirreljme.error EB1x Could not determine the type displayable
 		// that this is. (The displayable type)}
@@ -204,7 +222,7 @@ final class __Queue__
 		
 		// Register and get the index for it
 		dx = LcdServiceCall.<Integer>call(Integer.class,
-			LcdFunction.CREATE_DISPLAYABLE, type);
+			LcdFunction.WIDGET_CREATE, type);
 		
 		// Reference the widget for future cleanup on the remote end
 		Map<Reference<__Widget__>, Integer> distoid = this._distoid;
