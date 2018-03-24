@@ -10,6 +10,9 @@
 
 package cc.squirreljme.runtime.lcdui.server;
 
+import cc.squirreljme.runtime.cldc.system.type.RemoteMethod;
+import cc.squirreljme.runtime.cldc.system.type.VoidType;
+import cc.squirreljme.runtime.lcdui.LcdCallback;
 import cc.squirreljme.runtime.lcdui.LcdWidgetOwnedException;
 import cc.squirreljme.runtime.lcdui.WidgetType;
 import java.util.ArrayList;
@@ -31,6 +34,9 @@ public abstract class LcdWidget
 	
 	/** The local display for this widget. */
 	LcdDisplay _localdisplay;
+	
+	/** The local callback for the display. */
+	RemoteMethod _localcallback;
 	
 	/** The parent widget. */
 	private LcdWidget _parent;
@@ -139,6 +145,35 @@ public abstract class LcdWidget
 		// to have something on its display
 		if (this.type == WidgetType.DISPLAY_HEAD)
 			this._localdisplay.setCurrent(__w);
+	}
+	
+	/**
+	 * Returns the callback method.
+	 *
+	 * @return The callback method.
+	 * @since 2018/03/24
+	 */
+	protected final RemoteMethod callback()
+	{
+		LcdWidget ld = this.getLocalDisplay();
+		if (ld != null)
+			return ld._localcallback;
+		return null;
+	}
+	
+	/**
+	 * Callback that the size of the widget has changed.
+	 *
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @since 2018/03/24
+	 */
+	protected final void callbackSizeChanged(int __w, int __h)
+	{
+		RemoteMethod callback = this.callback();
+		if (callback != null)
+			callback.<VoidType>invoke(VoidType.class,
+				LcdCallback.WIDGET_SIZE_CHANGED, this.handle, __w, __h);
 	}
 	
 	/**

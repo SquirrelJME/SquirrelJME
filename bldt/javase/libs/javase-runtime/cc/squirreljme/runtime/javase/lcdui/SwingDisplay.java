@@ -38,9 +38,9 @@ public class SwingDisplay
 	 * @param __cb The callback method for events.
 	 * @since 2018/03/17
 	 */
-	public SwingDisplay(int __dx, RemoteMethod __cb)
+	public SwingDisplay(int __dx)
 	{
-		super(__dx, __cb);
+		super(__dx);
 		
 		// Initialize the frame
 		JFrame frame = new JFrame();

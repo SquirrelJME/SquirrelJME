@@ -155,7 +155,7 @@ public final class LcdServer
 			throw new NullPointerException("NARG");
 		
 		LcdDisplays displays = this.displays;
-		LcdDisplay[] queried = displays.queryDisplays(__cb);
+		LcdDisplay[] queried = displays.queryDisplays();
 		
 		// The displays returned will be remapped accordingly
 		int n = queried.length;
@@ -178,6 +178,7 @@ public final class LcdServer
 				
 				// Link local display to real display
 				local._localdisplay = display;
+				local._localcallback = __cb;
 			}
 			
 			rv[i] = local;

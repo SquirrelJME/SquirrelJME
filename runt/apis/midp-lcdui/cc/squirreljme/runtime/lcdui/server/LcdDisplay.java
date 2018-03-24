@@ -25,9 +25,6 @@ import cc.squirreljme.runtime.lcdui.WidgetType;
 public abstract class LcdDisplay
 	extends LcdWidget
 {
-	/** The callback method for events. */
-	protected final RemoteMethod callback;
-	
 	/** The current widget being shown, owned by a task. */
 	volatile LcdWidget _current;
 	
@@ -35,19 +32,12 @@ public abstract class LcdDisplay
 	 * Initiazes the display.
 	 *
 	 * @param __handle The display handle.
-	 * @param __cb The callback method for events.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/18
 	 */
-	public LcdDisplay(int __handle, RemoteMethod __cb)
+	public LcdDisplay(int __handle)
 		throws NullPointerException
 	{
 		super(__handle, WidgetType.DISPLAY_HEAD);
-		
-		if (__cb == null)
-			throw new NullPointerException("NARG");
-		
-		this.callback = __cb;
 	}
 	
 	/**

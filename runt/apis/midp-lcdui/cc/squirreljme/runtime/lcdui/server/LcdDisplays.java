@@ -54,13 +54,11 @@ public abstract class LcdDisplays
 	 *
 	 * @param __k An array containing the displays which are currently known
 	 * about, this may be used to determine if any need to be re-initialized.
-	 * @param __cb The method to use for callbacks.
 	 * @return An array containing the displays that are present.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/17
 	 */
-	protected abstract LcdDisplay[] internalQueryDisplays(LcdDisplay[] __k,
-		RemoteMethod __cb)
+	protected abstract LcdDisplay[] internalQueryDisplays(LcdDisplay[] __k)
 		throws NullPointerException;
 	
 	/**
@@ -116,17 +114,11 @@ public abstract class LcdDisplays
 	/**
 	 * Queries all of the displays which are available for usage.
 	 *
-	 * @param __cb The callback method for making new calls.
 	 * @return The displays which are available.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/17
 	 */
-	public final LcdDisplay[] queryDisplays(RemoteMethod __cb)
-		throws NullPointerException
+	public final LcdDisplay[] queryDisplays()
 	{
-		if (__cb == null)
-			throw new NullPointerException("NARG");
-		
 		// Lock displays 
 		Map<Integer, LcdDisplay> displays = this._displays;
 		
@@ -136,7 +128,7 @@ public abstract class LcdDisplays
 			new LcdDisplay[displays.size()]);
 		
 		// Query all native displays
-		LcdDisplay[] active = this.internalQueryDisplays(known, __cb);
+		LcdDisplay[] active = this.internalQueryDisplays(known);
 		
 		// Cache all displays by their index
 		for (LcdDisplay d : active)
