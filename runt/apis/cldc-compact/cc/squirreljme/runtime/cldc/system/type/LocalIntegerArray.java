@@ -83,11 +83,10 @@ public class LocalIntegerArray
 	}
 	
 	/**
-	 * Returns the local access so that it is directly accessed.
-	 *
-	 * @return The local array.
+	 * {@inheritDoc}
 	 * @since 2018/03/04
 	 */
+	@Override
 	public final int[] localArray()
 	{
 		return this.array;

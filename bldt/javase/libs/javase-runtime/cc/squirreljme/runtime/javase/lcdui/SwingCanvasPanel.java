@@ -11,8 +11,7 @@
 package cc.squirreljme.runtime.javase.lcdui;
 
 import cc.squirreljme.runtime.cldc.system.type.Array;
-import cc.squirreljme.runtime.cldc.system.type.ByteArray;
-import cc.squirreljme.runtime.cldc.system.type.LocalIntegerArray;
+import cc.squirreljme.runtime.cldc.system.type.IntegerArray;
 import cc.squirreljme.runtime.lcdui.gfx.PixelFormat;
 import java.awt.Dimension;
 import java.awt.event.ComponentEvent;
@@ -95,8 +94,8 @@ public class SwingCanvasPanel
 		{
 			this.owner.callbackPaint(PixelFormat.INT_RGB888,
 				rect.x, rect.y, rect.width, rect.height,
-				new LocalIntegerArray(((DataBufferInt)image.getRaster().
-				getDataBuffer()).getData()), null, xw, xh, false, xw, 0);
+				ColorInfo.getArray(image), ColorInfo.getPalette(image),
+				xw, xh, false, xw, 0);
 		}
 		
 		// Remote end threw some exception, ignore it so that execution

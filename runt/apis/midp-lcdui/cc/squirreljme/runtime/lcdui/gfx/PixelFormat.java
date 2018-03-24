@@ -36,16 +36,16 @@ public enum PixelFormat
 	SHORT_INDEXED16,
 	
 	/** Short ARGB4444. */
-	SHORT_ARGB2222,
+	SHORT_ARGB4444,
 	
 	/** Short RGB565. */
 	SHORT_RGB565,
 	
 	/** Integer ARGB8888. */
-	INT_RGBA8888,
+	INTEGER_ARGB8888,
 	
 	/** Integer RGB888. */
-	INT_RGB888,
+	INTEGER_RGB888,
 	
 	/** End. */
 	;

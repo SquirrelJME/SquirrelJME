@@ -131,6 +131,7 @@ __gen_classpath()
 __main="$("$__exedir/mainclass.sh" "$__run")"
 "$__javacmd" -classpath "$(__gen_classpath "$__run")" \
 	$HOSTED_JAVA_OPTIONS \
+	$JAVA_OPTIONS \
 	"-Dcc.squirreljme.runtime.javase.servermain=$__main" \
 	"-Dcc.squirreljme.runtime.javase.program=$__numb" \
 	cc.squirreljme.runtime.javase.Main "$@"
