@@ -11,12 +11,12 @@
 package cc.squirreljme.runtime.lcdui;
 
 /**
- * This is thrown when a displayable is already taken by a display or tabbed
+ * This is thrown when a widget is already taken by a display or tabbed
  * pane.
  *
  * @since 2018/03/18
  */
-public class LcdDisplayableTakenException
+public class LcdWidgetOwnedException
 	extends LcdException
 {
 	/**
@@ -24,7 +24,7 @@ public class LcdDisplayableTakenException
 	 *
 	 * @since 2018/03/18
 	 */
-	public LcdDisplayableTakenException()
+	public LcdWidgetOwnedException()
 	{
 	}
 	
@@ -34,7 +34,7 @@ public class LcdDisplayableTakenException
 	 * @param __m The message.
 	 * @since 2018/03/18
 	 */
-	public LcdDisplayableTakenException(String __m)
+	public LcdWidgetOwnedException(String __m)
 	{
 		super(__m);
 	}
@@ -46,7 +46,7 @@ public class LcdDisplayableTakenException
 	 * @param __c The cause.
 	 * @since 2018/03/18
 	 */
-	public LcdDisplayableTakenException(String __m, Throwable __c)
+	public LcdWidgetOwnedException(String __m, Throwable __c)
 	{
 		super(__m, __c);
 	}
@@ -57,7 +57,7 @@ public class LcdDisplayableTakenException
 	 * @param __c The cause.
 	 * @since 2018/03/18
 	 */
-	public LcdDisplayableTakenException(Throwable __c)
+	public LcdWidgetOwnedException(Throwable __c)
 	{
 		super(__c);
 	}
