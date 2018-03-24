@@ -10,6 +10,7 @@
 
 package cc.squirreljme.runtime.javase.lcdui;
 
+import cc.squirreljme.runtime.cldc.system.type.RemoteMethod;
 import cc.squirreljme.runtime.cldc.task.SystemTask;
 import cc.squirreljme.runtime.lcdui.server.LcdDisplay;
 import cc.squirreljme.runtime.lcdui.server.LcdWidget;
@@ -34,11 +35,12 @@ public class SwingDisplay
 	 * Initializes the display.
 	 *
 	 * @param __dx The display index.
+	 * @param __cb The callback method for events.
 	 * @since 2018/03/17
 	 */
-	public SwingDisplay(int __dx)
+	public SwingDisplay(int __dx, RemoteMethod __cb)
 	{
-		super(__dx);
+		super(__dx, __cb);
 		
 		// Initialize the frame
 		JFrame frame = new JFrame();

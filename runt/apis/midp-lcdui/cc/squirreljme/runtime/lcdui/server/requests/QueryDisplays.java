@@ -10,8 +10,11 @@
 
 package cc.squirreljme.runtime.lcdui.server.requests;
 
+import cc.squirreljme.runtime.cldc.system.type.LocalIntegerArray;
 import cc.squirreljme.runtime.cldc.system.type.RemoteMethod;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
+import cc.squirreljme.runtime.lcdui.server.LcdDisplay;
+import cc.squirreljme.runtime.lcdui.server.LcdDisplays;
 import cc.squirreljme.runtime.lcdui.server.LcdRequest;
 import cc.squirreljme.runtime.lcdui.server.LcdServer;
 import cc.squirreljme.runtime.lcdui.server.LcdWidget;
@@ -54,7 +57,16 @@ public class QueryDisplays
 	@Override
 	protected final Object invoke()
 	{
-		throw new todo.TODO();
+		// Query the available displays
+		LcdDisplays displays = this.server.displays();
+		LcdDisplay[] query = displays.queryDisplays(this.callback);
+		
+		// Fill result with handles
+		int n = query.length;
+		int[] rv = new int[n];
+		for (int i = 0; i < n; i++)
+			rv[i] = query[i].handle();
+		return new LocalIntegerArray(rv);
 	}
 }
 

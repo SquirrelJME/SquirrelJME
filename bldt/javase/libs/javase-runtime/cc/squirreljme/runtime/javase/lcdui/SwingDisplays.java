@@ -10,6 +10,7 @@
 
 package cc.squirreljme.runtime.javase.lcdui;
 
+import cc.squirreljme.runtime.cldc.system.type.RemoteMethod;
 import cc.squirreljme.runtime.lcdui.server.LcdDisplay;
 import cc.squirreljme.runtime.lcdui.server.LcdDisplays;
 import cc.squirreljme.runtime.lcdui.server.LcdRequest;
@@ -30,16 +31,17 @@ public class SwingDisplays
 	 * @since 2018/03/17
 	 */
 	@Override
-	protected LcdDisplay[] internalQueryDisplays(LcdDisplay[] __k)
+	protected LcdDisplay[] internalQueryDisplays(LcdDisplay[] __k,
+		RemoteMethod __cb)
 		throws NullPointerException
 	{
-		if (__k == null)
+		if (__k == null || __cb == null)
 			throw new NullPointerException("NARG");
 		
 		// Swing only uses a single display which is shared among all
 		// programs
 		if (__k.length == 0)
-			return new LcdDisplay[]{new SwingDisplay(0)};
+			return new LcdDisplay[]{new SwingDisplay(-1, __cb)};
 		return __k;
 	}
 	
