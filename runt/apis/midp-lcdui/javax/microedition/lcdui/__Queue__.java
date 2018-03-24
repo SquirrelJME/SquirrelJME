@@ -197,7 +197,7 @@ final class __Queue__
 			type = WidgetType.DISPLAYABLE_TABBED_PANE;
 		else if (__d instanceof TextBox)
 			type = WidgetType.DISPLAYABLE_TEXT_BOX;
-		else if (__d instanceof ChoiceGruop)
+		else if (__d instanceof ChoiceGroup)
 			type = WidgetType.ITEM_CHOICE_GROUP;
 		else if (__d instanceof CustomItem)
 			type = WidgetType.ITEM_CUSTOM;
