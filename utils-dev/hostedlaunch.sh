@@ -103,8 +103,15 @@ fi
 # Generates classpath
 __gen_classpath()
 {
-	# Build classpath
 	__rv=""
+	
+	# Prepend target if it exists
+	if [ -f "$1" ]
+	then
+		__rv="$1"
+	fi
+	
+	# Build classpath
 	for __jar in sjmeboot.jar bins/bbld/*.jar
 	do
 		if [ "$__rv" != "" ]
@@ -115,12 +122,6 @@ __gen_classpath()
 		# Append
 		__rv="$__rv$__jar"
 	done
-	
-	# Add target file if it exists
-	if [ -f "$1" ]
-	then
-		__rv="$__rv$__sepchar$1"
-	fi
 	
 	# Use it
 	echo "$__rv"
