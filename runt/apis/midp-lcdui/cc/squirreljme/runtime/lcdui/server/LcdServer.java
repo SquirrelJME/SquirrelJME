@@ -60,6 +60,17 @@ public final class LcdServer
 	}
 	
 	/**
+	 * Returns the displays that are available.
+	 *
+	 * @return The displays that are available.
+	 * @since 2018/03/23
+	 */
+	public final LcdDisplays displays()
+	{
+		return this.displays;
+	}
+	
+	/**
 	 * Obtains a widget by an ID using a generic class type.
 	 *
 	 * @param __dx The handle of the widget.

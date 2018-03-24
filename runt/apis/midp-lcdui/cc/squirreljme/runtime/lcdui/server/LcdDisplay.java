@@ -10,17 +10,24 @@
 
 package cc.squirreljme.runtime.lcdui.server;
 
+import cc.squirreljme.runtime.cldc.system.type.RemoteMethod;
 import cc.squirreljme.runtime.lcdui.WidgetType;
 
 /**
  * This class represents a single display that is available, displayables may
  * be attached to it accordingly.
  *
+ * A display is a widget and as such it must have a unique handle in order for
+ * it to be found accordingly.
+ *
  * @since 2018/03/18
  */
 public abstract class LcdDisplay
 	extends LcdWidget
 {
+	/** The callback method for events. */
+	protected final RemoteMethod callback;
+	
 	/** The current widget being shown, owned by a task. */
 	volatile LcdWidget _current;
 	
@@ -28,12 +35,19 @@ public abstract class LcdDisplay
 	 * Initiazes the display.
 	 *
 	 * @param __handle The display handle.
+	 * @param __cb The callback method for events.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/18
 	 */
-	public LcdDisplay(int __handle)
+	public LcdDisplay(int __handle, RemoteMethod __cb)
 		throws NullPointerException
 	{
 		super(__handle, WidgetType.DISPLAY);
+		
+		if (__cb == null)
+			throw new NullPointerException("NARG");
+		
+		this.callback = __cb;
 	}
 	
 	/**
