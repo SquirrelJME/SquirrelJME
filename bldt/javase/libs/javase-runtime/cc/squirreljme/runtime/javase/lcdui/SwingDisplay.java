@@ -32,6 +32,16 @@ public class SwingDisplay
 	private volatile boolean _first;
 	
 	/**
+	 * This makes the JFrames look more matching.
+	 *
+	 * @since 2018/03/24
+	 */
+	static
+	{
+		JFrame.setDefaultLookAndFeelDecorated(true);
+	}
+	
+	/**
 	 * Initializes the display.
 	 *
 	 * @param __dx The display index.

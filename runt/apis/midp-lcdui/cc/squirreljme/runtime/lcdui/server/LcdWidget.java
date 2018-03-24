@@ -10,8 +10,11 @@
 
 package cc.squirreljme.runtime.lcdui.server;
 
+import cc.squirreljme.runtime.cldc.system.type.Array;
+import cc.squirreljme.runtime.cldc.system.type.IntegerArray;
 import cc.squirreljme.runtime.cldc.system.type.RemoteMethod;
 import cc.squirreljme.runtime.cldc.system.type.VoidType;
+import cc.squirreljme.runtime.lcdui.gfx.PixelFormat;
 import cc.squirreljme.runtime.lcdui.LcdCallback;
 import cc.squirreljme.runtime.lcdui.LcdWidgetOwnedException;
 import cc.squirreljme.runtime.lcdui.WidgetType;
@@ -168,12 +171,46 @@ public abstract class LcdWidget
 	 * @param __h The height.
 	 * @since 2018/03/24
 	 */
-	protected final void callbackSizeChanged(int __w, int __h)
+	public final void callbackSizeChanged(int __w, int __h)
 	{
 		RemoteMethod callback = this.callback();
 		if (callback != null)
 			callback.<VoidType>invoke(VoidType.class,
 				LcdCallback.WIDGET_SIZE_CHANGED, this.handle, __w, __h);
+	}
+	
+	/**
+	 * Specifies that the given displayable should be painted.
+	 *
+	 * @param __pf The format the pixels are in.
+	 * @param __cx The clipping X coordinate.
+	 * @param __cy The clipping Y coordinate.
+	 * @param __cw The clipping width.
+	 * @param __ch The clipping height.
+	 * @param __buf The buffer to send the result into after drawing.
+	 * @param __pal The palette to use for the remote buffer.
+	 * @param __bw The buffer width.
+	 * @param __bh The buffer height.
+	 * @param __alpha Is an alpha channel being used?
+	 * @param __pitch The number of elements for the width in the buffer.
+	 * @param __offset The offset into the buffer to the actual image data.
+	 * @throws NullPointerException On null arguments except for {@code __pal}.
+	 * @since 2018/03/18
+	 */
+	public final void callbackPaint(PixelFormat __pf, int __cx, int __cy,
+		int __cw, int __ch, Array __buf, IntegerArray __pal, int __bw,
+		int __bh, boolean __alpha, int __pitch, int __offset)
+		throws NullPointerException
+	{
+		if (__pf == null || __buf == null)
+			throw new NullPointerException("NARG");
+		
+		// Perform the call if it is attached
+		RemoteMethod callback = this.callback();
+		if (callback != null)
+			callback.<VoidType>invoke(VoidType.class, LcdCallback.WIDGET_PAINT,
+				this.handle, __pf, __cx, __cy, __cw, __ch, __buf, __pal,
+				__bw, __bh, __alpha, __pitch, __offset);
 	}
 	
 	/**

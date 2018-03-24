@@ -10,6 +10,10 @@
 
 package cc.squirreljme.runtime.javase.lcdui;
 
+import cc.squirreljme.runtime.cldc.system.type.Array;
+import cc.squirreljme.runtime.cldc.system.type.ByteArray;
+import cc.squirreljme.runtime.cldc.system.type.LocalIntegerArray;
+import cc.squirreljme.runtime.lcdui.gfx.PixelFormat;
 import java.awt.Dimension;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
@@ -68,41 +72,22 @@ public class SwingCanvasPanel
 		// This must always be called
 		super.paintComponent(__g);
 		
-		throw new todo.TODO();
-		/*
 		BufferedImage image = this._image;
 		int oldw = image.getWidth(),
 			oldh = image.getHeight(),
-			neww = this.getWidth(),
-			newh = this.getHeight();
+			xw = this.getWidth(),
+			xh = this.getHeight();
 	
-		// Recreate the image if it is larger
-		if (neww != oldw || newh != oldh)
-			this._image = new BufferedImage(neww, newh,
-				BufferedImage.TYPE_INT_RGB);
-	
-		// Send repaint event
-		this.repaint(0, 0, neww, newh);
-		
-		// If this is the first frame make sure when stuff is drawn that
-		// the image is initialized
-		if (this._firstframe)
-		{
-			this.componentResized(null);
-			this._firstframe = false;
-		}
-		
-		// Get image now
-		BufferedImage image = this._image;
-		int xw = image.getWidth(),
-			xh = image.getHeight();
+		// Recreate the image if the size has changed
+		if (xw != oldw || xh != oldh)
+			this._image = (image = new BufferedImage(xw, xh,
+				BufferedImage.TYPE_INT_RGB));
 		
 		// Have the remote end draw into our buffer as needed
 		Rectangle rect = __g.getClipBounds();
 		try
 		{
-			SwingWidget.this.callbacks.displayablePaint(
-				SwingWidget.this,
+			this.owner.callbackPaint(PixelFormat.INT_RGB888,
 				rect.x, rect.y, rect.width, rect.height,
 				new LocalIntegerArray(((DataBufferInt)image.getRaster().
 				getDataBuffer()).getData()), null, xw, xh, false, xw, 0);
@@ -118,7 +103,6 @@ public class SwingCanvasPanel
 		// Draw the backed buffered image
 		__g.drawImage(image, 0, 0, xw, xh,
 			0, 0, xw, xh, null);
-		*/
 	}
 }
 
