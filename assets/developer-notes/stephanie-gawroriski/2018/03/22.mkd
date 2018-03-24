@@ -32,3 +32,31 @@ deal with for the most part. So definitely that is something to do.
 I definitely am going to like this better, more exact. I do not need a bunch
 of extra classes to store state I can really just parse source code ad-hoc
 rather than having complex state machines and such.
+
+## 22:45
+
+So I had an idea, for the graphics have kind of an implementation static
+sub-class kind of thing. Basically I can sort of just have a single class or
+perhaps duplicate classes. Basically just like when I want to draw a line
+instead it just gets dispatched to a static-like implementation which in short
+performs the logic. So that way I do not need to complicate the code for
+brancing or performing blending, it can just have the code in there
+accordingly and be generated for that. That way I can have a reduced number of
+branches at the cost of a method call.
+
+## 22:55
+
+I should probably just get all the graphics drawing stuff done with fonts too
+so that way I can just really work on Squirrel Quarrel fully for the most
+part.
+
+## 22:59
+
+I need to see which sub-functions to implement first.
+
+## 23:00
+
+Okay so I need:
+
+ * SRC and SRC_OVER modes for alpha.
+ * For line drawing ones, I suppose DOTTED and SOLID.

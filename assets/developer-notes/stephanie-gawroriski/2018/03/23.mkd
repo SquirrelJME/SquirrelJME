@@ -1,0 +1,98 @@
+# 2018/03/23
+
+## 10:45
+
+I think having something simpler would be better. Just use regular branches,
+for blending I will just have a blending table be made for graphics. So when
+the alpha channel is set it will build a blending table. That might be a bit
+slow but in the end I wonder if it would be faster. But calculating gigantic
+tables might just be slow like if the alpha channel changes often during
+drawing for different effects. I will need to lookup ways to have fast and
+efficient alpha blending.
+
+## 10:55
+
+Found something on Stack Overflow which could help with increased alpha
+blending speed. I suppose to reduce the method calls per pixel it should be
+inline for the most part.
+
+## 10:56
+
+The call to `__blendOr()` could be removed since it can be calculated if the
+image has an alpha channel. I suppose `BasicGraphics` will be deprecated.
+Also I can perform some operations while setting which use the correct
+parameters and such so that I can remove some operations as needed. The only
+thing that would be really slow though I suppose would be alpha blending for
+8-bit images. But the blending table would only be a short kind of thing.
+But the colors would become distorted for the most part if an 8-bit image is
+blended because there would be pretty much no accuracy to it, at least for
+indexed images anyway.
+
+## 11:36
+
+So one big thing is, can I do Cohen-Sutherland without a for loop.
+
+## 12:22
+
+Looks like there are better algorithms which are smaller it seems so that
+would be a good thing to have. What I need though is a graphics demo rather
+than making temporary Squirrel Quarrel things, I think that would be the best
+thing to do.
+
+## 15:29
+
+Okay so it seems like after the Swing window is resized too much the image
+will just disappear and become black, need to figure out the cause of that.
+
+## 15:44
+
+I will need to support planar graphics too so instead of some complicated
+switch case which determines how to wrap arrays, instead just have a basic
+enumerated case which has the pixel format used. That would make the client
+side display easy to do.
+
+## 15:54
+
+Okay so after awhile, it seems the paint call stops even though a repaint is
+being performed.
+
+## 16:24
+
+The LCDUI server stuff actually is going to need a bit of a cleanup since
+items will need to be added. Additionally I think instead of having single
+indexes for everything that instead there are just `LcdDisplayables`
+associated with servers. Of course there would be a means to call the callback
+accordingly from the client for each given task. Basically there would be a
+kind of `TaskDescriptor` which allows one to call back into the callback.
+That way there is just a single set of IDs. If a task is cleared then it will
+be easier to clean things up. Additionally if a displayable link is lost it
+can just be ignored. Also when it comes to system calls back and forth it
+could be just done in the server code rather than the request perhaps. Or
+actually instead of just `LcdRequest` with arguments, there would actually be
+subclasses with the specified request things that can be run accordingly
+rather than just having it in the request handler itself. Then when it comes
+to things which can be cleaned up, I will have a base class which is for each
+item and displayable. Then that can be managed in the queue accordingly.
+
+## 16:53
+
+Actually I believe for simplicity, everything is going to be a widget which
+could contain other widgets as such. This makes the local hierachy a bit
+better for the most part as needed.
+
+## 17:15
+
+Actually on the remote end, widgets will work for displays. I thought I would
+just being doing something complex, but displays will just contain widgets
+anyway. Basically the display will be a top level container for everything,
+that way when a task uses a display along with every other task, there is no
+added complexity or mess as to which display is current. What I mean is like
+that if two programs are running and using the same display, programs will
+rely on `getCurrent()` returning the passed widget even if some other program
+changed their current display. So this works out actually and now I have an
+idea of how to refactor the server.
+
+## 17:19
+
+`RequestHandler` can be folded into `LcdDisplays` and that will be the primary
+thing.
