@@ -130,12 +130,26 @@ final class __Queue__
 	}
 	
 	/**
+	 * Returns the widget by the given handle.
+	 *
+	 * @param __h The handle of the widget.
+	 * @return The widget for the given handle or {@code null} if it does not
+	 * exist.
+	 * @since 2018/03/24
+	 */
+	final __Widget__ __get(int __dx)
+	{
+		return this.<__Widget__>__get(__Widget__.class, __dx);
+	}
+	
+	/**
 	 * Returns the displayable used for the given index.
 	 *
 	 * @param <X> The type of widget to get.
 	 * @param __cl The type of widget to get.
 	 * @param __dx The index to get.
-	 * @return The widget for the given index.
+	 * @return The widget for the given index or {@code null} if it does not
+	 * exist or is the wrong class type.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/18
 	 */

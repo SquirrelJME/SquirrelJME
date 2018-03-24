@@ -219,7 +219,7 @@ public abstract class Displayable
 	 */
 	@__SerializedEvent__
 	@Override
-	void __doSizeChanged(int __w, int __h)
+	final void __doSizeChanged(int __w, int __h)
 	{
 		this.sizeChanged(__w, __h);
 	}

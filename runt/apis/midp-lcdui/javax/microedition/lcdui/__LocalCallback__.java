@@ -78,6 +78,12 @@ final class __LocalCallback__
 					(Integer)__args[13]);
 				return VoidType.INSTANCE;
 			
+			case WIDGET_SHOWN:
+				this.__widgetShown(
+					(Integer)__args[1],
+					(Boolean)__args[2]);
+				return VoidType.INSTANCE;
+			
 			case WIDGET_SIZE_CHANGED:
 				this.__widgetSizeChanged(
 					(Integer)__args[1],
@@ -157,6 +163,21 @@ final class __LocalCallback__
 		
 		// Perform the actual painting operation
 		on.__doPaint(g, __bw, __bh);
+	}
+	
+	/**
+	 * This is called when the visibility state of a widget has changed.
+	 *
+	 * @param __d The widget which has changed.
+	 * @param __shown Is this widget shown?
+	 * @since 2018/03/24
+	 */
+	private final void __widgetShown(int __d, boolean __shown)
+	{
+		__Widget__ on = __Queue__.INSTANCE.__get(__d);
+		if (on == null)
+			return;
+		on.__doShown(__shown);
 	}
 	
 	/**

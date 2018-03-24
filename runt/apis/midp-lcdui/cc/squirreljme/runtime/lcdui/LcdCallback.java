@@ -21,6 +21,9 @@ public enum LcdCallback
 	/** Paint graphics in the widget. */
 	WIDGET_PAINT,
 	
+	/** The widget has been shown or hidden. */
+	WIDGET_SHOWN,
+	
 	/** The size of the widget changed. */
 	WIDGET_SIZE_CHANGED,
 	

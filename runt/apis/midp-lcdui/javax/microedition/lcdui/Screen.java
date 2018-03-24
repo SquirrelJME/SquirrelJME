@@ -29,6 +29,28 @@ public abstract class Screen
 	Screen()
 	{
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/24
+	 */
+	@__SerializedEvent__
+	@Override
+	final void __doPaint(Graphics __g, int __pw, int __ph)
+	{
+		// Not needed for screen elements
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/24
+	 */
+	@__SerializedEvent__
+	@Override
+	final void __doShown(boolean __shown)
+	{
+		// Not needed for screen elements
+	}
 }
 
 

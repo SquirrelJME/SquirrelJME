@@ -60,6 +60,15 @@ abstract class __Widget__
 		throws NullPointerException;
 	
 	/**
+	 * This is called when a widget's visibility has changed.
+	 *
+	 * @param __shown Is the widget shown?
+	 * @since 2018/03/24
+	 */
+	@__SerializedEvent__
+	abstract void __doShown(boolean __shown);
+	
+	/**
 	 * This is called when the size of the widget has changed.
 	 *
 	 * @param __w The new width.
@@ -68,7 +77,6 @@ abstract class __Widget__
 	 */
 	@__SerializedEvent__
 	abstract void __doSizeChanged(int __w, int __h);
-	
 	
 	/**
 	 * Returns the height of the displayable or the maximum size of the

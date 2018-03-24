@@ -73,6 +73,7 @@ public class SwingWidget
 	@Override
 	public void componentHidden(ComponentEvent __e)
 	{
+		this.callbackShown(false);
 	}
 
 	/**
@@ -101,6 +102,7 @@ public class SwingWidget
 	@Override
 	public void componentShown(ComponentEvent __e)
 	{
+		this.callbackShown(true);
 	}
 	
 	/**

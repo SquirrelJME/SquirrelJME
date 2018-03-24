@@ -177,6 +177,20 @@ public abstract class CustomItem
 	{
 		this.paint(__g, __pw, __ph);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/24
+	 */
+	@__SerializedEvent__
+	@Override
+	final void __doShown(boolean __shown)
+	{
+		if (__shown)
+			this.showNotify();
+		else
+			this.hideNotify();
+	}
 }
 
 
