@@ -42,7 +42,7 @@ public abstract class LcdDisplay
 	public LcdDisplay(int __handle, RemoteMethod __cb)
 		throws NullPointerException
 	{
-		super(__handle, WidgetType.DISPLAY);
+		super(__handle, WidgetType.DISPLAY_HEAD);
 		
 		if (__cb == null)
 			throw new NullPointerException("NARG");

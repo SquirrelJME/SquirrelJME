@@ -20,6 +20,9 @@ public enum WidgetType
 	/** Display. */
 	DISPLAY,
 	
+	/** The primary display head, these cannot be created at request. */
+	DISPLAY_HEAD,
+	
 	/** Canvas, */
 	DISPLAYABLE_CANVAS,
 	

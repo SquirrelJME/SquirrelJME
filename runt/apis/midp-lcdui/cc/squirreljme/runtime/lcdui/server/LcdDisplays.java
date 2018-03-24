@@ -12,6 +12,7 @@ package cc.squirreljme.runtime.lcdui.server;
 
 import cc.squirreljme.runtime.cldc.system.type.RemoteMethod;
 import cc.squirreljme.runtime.lcdui.LcdException;
+import cc.squirreljme.runtime.lcdui.WidgetType;
 import java.util.HashMap;
 import java.util.Map;
 import net.multiphasicapps.collections.SortedTreeMap;
@@ -35,6 +36,18 @@ public abstract class LcdDisplays
 	/** Displays which are currently available. */
 	private final Map<Integer, LcdDisplay> _displays =
 		new SortedTreeMap<>();
+	
+	/**
+	 * Internally creates the specified widget.
+	 *
+	 * @param __handle The handle to use for the widget.
+	 * @param __type The type of widget to create.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/24
+	 */
+	protected abstract LcdWidget internalCreateWidget(int __handle,
+		WidgetType __type)
+		throws NullPointerException;
 	
 	/**
 	 * Internally queries the displays which are present.
@@ -138,6 +151,18 @@ public abstract class LcdDisplays
 		// Return every display which is known about
 		return displays.values().<LcdDisplay>toArray(
 			new LcdDisplay[displays.size()]);
+	}
+	
+	/**
+	 * Forwards widget created to internal display logic.
+	 *
+	 * @param __handle The handle to use for the widget.
+	 * @param __type The type of widget to create.
+	 * @since 2018/03/24
+	 */
+	final LcdWidget __internalCreateWidget(int __handle, WidgetType __type)
+	{
+		return this.internalCreateWidget(__handle, __type);
 	}
 }
 
