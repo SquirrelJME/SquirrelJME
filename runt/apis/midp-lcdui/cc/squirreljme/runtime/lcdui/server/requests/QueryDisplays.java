@@ -57,15 +57,15 @@ public class QueryDisplays
 	@Override
 	protected final Object invoke()
 	{
-		// Query the available displays
-		LcdDisplays displays = this.server.displays();
-		LcdDisplay[] query = displays.queryDisplays(this.callback);
+		// Query the available displays, however for each server there is
+		// always a widget which acts as a virtual display on a real display
+		LcdWidget[] displays = this.server.queryDisplays(this.callback);
 		
 		// Fill result with handles
-		int n = query.length;
+		int n = displays.length;
 		int[] rv = new int[n];
 		for (int i = 0; i < n; i++)
-			rv[i] = query[i].handle();
+			rv[i] = displays[i].handle();
 		return new LocalIntegerArray(rv);
 	}
 }

@@ -10,18 +10,11 @@
 
 package cc.squirreljme.runtime.javase.lcdui;
 
-import cc.squirreljme.runtime.cldc.system.type.LocalIntegerArray;
-import cc.squirreljme.runtime.cldc.task.SystemTask;
 import cc.squirreljme.runtime.lcdui.server.LcdWidget;
 import cc.squirreljme.runtime.lcdui.WidgetType;
-import java.awt.Dimension;
-import java.awt.Rectangle;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
-import javax.swing.JPanel;
+import javax.swing.JComponent;
 
 /**
  * This is a displayable which utilizes Swing.
@@ -30,12 +23,13 @@ import javax.swing.JPanel;
  */
 public class SwingWidget
 	extends LcdWidget
+	implements ComponentListener
 {
-	/** The panel which makes up this displayable. */
-	final JPanel _panel;
+	/** The component which makes up this widget. */
+	final JComponent _component;
 	
 	/** The title to use. */
-	private volatile String _title;
+	private String _title;
 	
 	/**
 	 * Initializes the swing displayable.
@@ -50,13 +44,16 @@ public class SwingWidget
 	{
 		super(__handle, __type);
 		
-		throw new todo.TODO();
-		/*
-		JPanel panel;
+		// Create base component
+		JComponent component;
 		switch (__type)
 		{
-			case CANVAS:
-				panel = new SwingCanvasPanel();
+			case DISPLAY_HEAD:
+				component = new SwingDisplayHeadPanel();
+				break;
+			
+			case DISPLAYABLE_CANVAS:
+				component = new SwingCanvasPanel(this);
 				break;
 			
 				// {@squirreljme.error AF06 Unknown displayable type. (The
@@ -64,12 +61,49 @@ public class SwingWidget
 			default:
 				throw new RuntimeException(String.format("AF06 %s", __type));
 		}
-		this._panel = panel;
 		
-		// Force minimum size to something more friendly
-		panel.setMinimumSize(new Dimension(160, 160));
-		panel.setPreferredSize(new Dimension(640, 480));
-		*/
+		// Set
+		this._component = component;
+		
+		// Certain events always happen so always set them
+		component.addComponentListener(this);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/10
+	 */
+	@Override
+	public void componentHidden(ComponentEvent __e)
+	{
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/10
+	 */
+	@Override
+	public void componentMoved(ComponentEvent __e)
+	{
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/10
+	 */
+	@Override
+	public void componentResized(ComponentEvent __e)
+	{
+		throw new todo.TODO();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @since 2017/02/10
+	 */
+	@Override
+	public void componentShown(ComponentEvent __e)
+	{
 	}
 	
 	/**
@@ -79,7 +113,7 @@ public class SwingWidget
 	@Override
 	public final int getHeight()
 	{
-		return this._panel.getHeight();
+		return this._component.getHeight();
 	}
 	
 	/**
@@ -99,7 +133,7 @@ public class SwingWidget
 	@Override
 	public final int getWidth()
 	{
-		return this._panel.getWidth();
+		return this._component.getWidth();
 	}
 	
 	/**
@@ -109,9 +143,10 @@ public class SwingWidget
 	@Override
 	public final void repaint(int __x, int __y, int __w, int __h)
 	{
-		JPanel panel = this._panel;
-		panel.repaint(Math.max(0, __x), Math.max(0, __y),
-			Math.min(panel.getWidth(), __w), Math.min(panel.getHeight(), __h));
+		JComponent component = this._component;
+		component.repaint(Math.max(0, __x), Math.max(0, __y),
+			Math.min(component.getWidth(), __w),
+			Math.min(component.getHeight(), __h));
 	}
 	
 	/**
@@ -127,146 +162,6 @@ public class SwingWidget
 		SwingDisplay display = (SwingDisplay)this.getDisplay();
 		if (display != null)
 			display._frame.setTitle(__t);
-	}
-	
-	/**
-	 * The panel for canvases for displaying basic graphics.
-	 *
-	 * @since 2018/03/18
-	 */
-	public final class SwingCanvasPanel
-		extends JPanel
-		implements ComponentListener
-	{
-		/** The image to display in the panel. */
-		private volatile BufferedImage _image =
-			new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
-		
-		/** First frame being drawn? */
-		private boolean _firstframe =
-			true;
-		
-		/**
-		 * Handles events and resizing as needed.
-		 *
-		 * @since 2018/03/18
-		 */
-		{
-			this.addComponentListener(this);
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2017/02/10
-		 */
-		@Override
-		public void componentHidden(ComponentEvent __e)
-		{
-		}
-
-		/**
-		 * {@inheritDoc}
-		 * @since 2017/02/10
-		 */
-		@Override
-		public void componentMoved(ComponentEvent __e)
-		{
-		}
-
-		/**
-		 * {@inheritDoc}
-		 * @since 2017/02/10
-		 */
-		@Override
-		public void componentResized(ComponentEvent __e)
-		{
-			BufferedImage image = this._image;
-			int oldw = image.getWidth(),
-				oldh = image.getHeight(),
-				neww = this.getWidth(),
-				newh = this.getHeight();
-		
-			// Recreate the image if it is larger
-			if (neww != oldw || newh != oldh)
-				this._image = new BufferedImage(neww, newh,
-					BufferedImage.TYPE_INT_RGB);
-		
-			// Send repaint event
-			this.repaint(0, 0, neww, newh);
-			
-			// Send resize event
-			throw new todo.TODO();
-			/*try
-			{
-				SwingWidget.this.callbacks.displayableSizeChanged(
-					SwingWidget.this, neww, newh);
-			}
-			
-			// Remote end threw some exception, ignore it so that execution
-			// can continue
-			catch (Throwable t)
-			{
-				t.printStackTrace();
-			}*/
-		}
-
-		/**
-		 * {@inheritDoc}
-		 * @since 2017/02/10
-		 */
-		@Override
-		public void componentShown(ComponentEvent __e)
-		{
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2017/10/25
-		 */
-		@Override
-		protected void paintComponent(java.awt.Graphics __g)
-		{
-			// This must always be called
-			super.paintComponent(__g);
-			
-			throw new todo.TODO();
-			/*
-			// If this is the first frame make sure when stuff is drawn that
-			// the image is initialized
-			if (this._firstframe)
-			{
-				this.componentResized(null);
-				this._firstframe = false;
-			}
-			
-			// Get image now
-			BufferedImage image = this._image;
-			int xw = image.getWidth(),
-				xh = image.getHeight();
-			
-			// Have the remote end draw into our buffer as needed
-			Rectangle rect = __g.getClipBounds();
-			try
-			{
-				SwingWidget.this.callbacks.displayablePaint(
-					SwingWidget.this,
-					rect.x, rect.y, rect.width, rect.height,
-					new LocalIntegerArray(((DataBufferInt)image.getRaster().
-					getDataBuffer()).getData()), null, xw, xh, false, xw, 0);
-			}
-			
-			// Remote end threw some exception, ignore it so that execution
-			// can continue
-			catch (Throwable t)
-			{
-				t.printStackTrace();
-			}
-			
-			// Draw the backed buffered image
-			__g.drawImage(image, 0, 0, xw, xh,
-				0, 0, xw, xh, null);
-			*/
-		}
 	}
 }
 
