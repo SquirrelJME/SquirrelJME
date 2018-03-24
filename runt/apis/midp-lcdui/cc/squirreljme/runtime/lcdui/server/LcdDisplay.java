@@ -11,6 +11,7 @@
 package cc.squirreljme.runtime.lcdui.server;
 
 import cc.squirreljme.runtime.cldc.system.type.RemoteMethod;
+import cc.squirreljme.runtime.lcdui.gfx.PixelFormat;
 import cc.squirreljme.runtime.lcdui.WidgetType;
 
 /**
@@ -48,6 +49,14 @@ public abstract class LcdDisplay
 	 * @since 2018/03/23
 	 */
 	protected abstract void internalSetCurrent(LcdWidget __w);
+	
+	/**
+	 * Returns the pixel format of this display.
+	 *
+	 * @return The display pixel format.
+	 * @since 2018/03/24
+	 */
+	public abstract PixelFormat pixelFormat();
 	
 	/**
 	 * Vibrates the display for the given duration.
