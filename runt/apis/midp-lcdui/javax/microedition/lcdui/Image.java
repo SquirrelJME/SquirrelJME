@@ -300,7 +300,7 @@ public class Image
 	}
 	
 	/**
-	 * Same as {@code createImage(__w, __h, false, 0xFF000000)}.
+	 * Same as {@code createImage(__w, __h, false, 0x00FFFFFF)}.
 	 *
 	 * @param __w The width of the image.
 	 * @param __h The height of the image.
@@ -312,7 +312,7 @@ public class Image
 	public static Image createImage(int __w, int __h)
 		throws IllegalArgumentException
 	{
-		return createImage(__w, __h, false, 0xFF000000);
+		return createImage(__w, __h, false, 0x00FFFFFF);
 	}
 	
 	/**
