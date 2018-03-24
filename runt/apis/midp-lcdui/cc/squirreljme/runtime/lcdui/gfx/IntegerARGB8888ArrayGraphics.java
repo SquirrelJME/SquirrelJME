@@ -1,8 +1,8 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 // ---------------------------------------------------------------------------
 // Multi-Phasic Applications: SquirrelJME
-//     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
+// Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+// Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
@@ -21,6 +21,16 @@ import javax.microedition.lcdui.Text;
 public final class IntegerARGB8888ArrayGraphics
 	extends Graphics
 {
+	/** The width of the image. */
+	protected final int width;
+	/** The height of the image. */
+	protected final int height;
+	/** The pitch of the image. */
+	protected final int pitch;
+	/** The offset into the buffer data. */
+	protected final int offset;
+	/** The array containing the buffer data. */
+	private final int[] _buffer;
 	/**
 	 * Initializes the graphics drawer which draws into the given array.
 	 *
@@ -42,7 +52,14 @@ public final class IntegerARGB8888ArrayGraphics
 	{
 		if (__buf == null)
 			throw new NullPointerException("NARG");
-		throw new todo.TODO();
+		if (true)
+			throw new todo.TODO();
+		// Set parameters
+		this.buffer = __buf;
+		this.width = __width;
+		this.height = __height;
+		this.pitch = __pitch;
+		this.offset = __offset;
 	}
 	/**
 	 * {@inheritDoc}
