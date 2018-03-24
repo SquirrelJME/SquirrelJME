@@ -18,11 +18,11 @@ package cc.squirreljme.runtime.lcdui;
  */
 public enum LcdCallback
 {
-	/** Paint graphics in the displayable. */
-	DISPLAYABLE_PAINT,
+	/** Paint graphics in the widget. */
+	WIDGET_PAINT,
 	
-	/** The size of the displayable changed. */
-	DISPLAYABLE_SIZE_CHANGED,
+	/** The size of the widget changed. */
+	WIDGET_SIZE_CHANGED,
 	
 	/** End. */
 	;

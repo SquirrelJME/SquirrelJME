@@ -19,6 +19,7 @@ import cc.squirreljme.runtime.cldc.task.SystemTask;
 import cc.squirreljme.runtime.lcdui.DisplayableType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
 import cc.squirreljme.runtime.lcdui.LcdFunctionInterrupted;
+import cc.squirreljme.runtime.lcdui.WidgetType;
 import java.util.HashMap;
 import java.util.Map;
 
