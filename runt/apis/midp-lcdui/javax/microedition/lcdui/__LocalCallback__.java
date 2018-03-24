@@ -22,6 +22,7 @@ import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.lcdui.LcdCallback;
 import cc.squirreljme.runtime.lcdui.LcdException;
 import cc.squirreljme.runtime.lcdui.gfx.IntArrayGraphics;
+import cc.squirreljme.runtime.lcdui.gfx.PixelFormat;
 
 /**
  * This is the callback used for displays so that the remote server can call
@@ -62,17 +63,19 @@ final class __LocalCallback__
 			case WIDGET_PAINT:
 				this.__widgetPaint(
 					(Integer)__args[1],
-					(Integer)__args[2],
+					((EnumType)__args[2]).<PixelFormat>asEnum(
+						PixelFormat.class),
 					(Integer)__args[3],
 					(Integer)__args[4],
 					(Integer)__args[5],
-					(Array)__args[6],
-					(IntegerArray)__args[7],
-					(Integer)__args[8],
+					(Integer)__args[6],
+					(Array)__args[7],
+					(IntegerArray)__args[8],
 					(Integer)__args[9],
-					(Boolean)__args[10],
-					(Integer)__args[11],
-					(Integer)__args[12]);
+					(Integer)__args[10],
+					(Boolean)__args[11],
+					(Integer)__args[12],
+					(Integer)__args[13]);
 				return VoidType.INSTANCE;
 			
 			case WIDGET_SIZE_CHANGED:
@@ -93,6 +96,7 @@ final class __LocalCallback__
 	 * Specifies that the given widget should be painted.
 	 *
 	 * @param __d The widget to paint.
+	 * @param __pf Pixel format to use.
 	 * @param __cx The clipping X coordinate.
 	 * @param __cy The clipping Y coordinate.
 	 * @param __cw The clipping width.
@@ -107,12 +111,12 @@ final class __LocalCallback__
 	 * @throws NullPointerException On null arguments except for {@code __pal}.
 	 * @since 2018/03/18
 	 */
-	private void __widgetPaint(int __d, int __cx, int __cy,
+	private void __widgetPaint(int __d, PixelFormat __pf, int __cx, int __cy,
 		int __cw, int __ch, Array __buf, IntegerArray __pal, int __bw,
 		int __bh, boolean __alpha, int __pitch, int __offset)
 		throws NullPointerException
 	{
-		if (__buf == null)
+		if (__pf == null || __buf == null)
 			throw new NullPointerException("NARG");
 		
 		// Can be a canvas or custom item
