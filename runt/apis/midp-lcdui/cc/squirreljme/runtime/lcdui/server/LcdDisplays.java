@@ -119,7 +119,7 @@ public abstract class LcdDisplays
 		// Cache all displays by their index
 		for (LcdDisplay d : active)
 		{
-			Integer dx = d.index();
+			Integer dx = d.handle();
 			
 			// If a display is not known about then make it known
 			if (!displays.containsKey(dx))

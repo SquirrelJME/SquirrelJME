@@ -12,9 +12,8 @@ package cc.squirreljme.runtime.javase.lcdui;
 
 import cc.squirreljme.runtime.cldc.system.type.LocalIntegerArray;
 import cc.squirreljme.runtime.cldc.task.SystemTask;
-import cc.squirreljme.runtime.lcdui.DisplayableType;
-import cc.squirreljme.runtime.lcdui.server.LcdCallbackManager;
-import cc.squirreljme.runtime.lcdui.server.LcdDisplayable;
+import cc.squirreljme.runtime.lcdui.server.LcdWidget;
+import cc.squirreljme.runtime.lcdui.WidgetType;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.ComponentEvent;
@@ -29,8 +28,8 @@ import javax.swing.JPanel;
  *
  * @since 2018/03/18
  */
-public class SwingDisplayable
-	extends LcdDisplayable
+public class SwingWidget
+	extends LcdWidget
 {
 	/** The panel which makes up this displayable. */
 	final JPanel _panel;
@@ -47,11 +46,12 @@ public class SwingDisplayable
 	 * @param __cb The callback manager.
 	 * @since 2018/03/18
 	 */
-	public SwingDisplayable(int __handle, SystemTask __task,
-		DisplayableType __type, LcdCallbackManager __cb)
+	public SwingWidget(int __handle, WidgetType __type)
 	{
-		super(__handle, __task, __type, __cb);
+		super(__handle, __type);
 		
+		throw new todo.TODO();
+		/*
 		JPanel panel;
 		switch (__type)
 		{
@@ -69,6 +69,7 @@ public class SwingDisplayable
 		// Force minimum size to something more friendly
 		panel.setMinimumSize(new Dimension(160, 160));
 		panel.setPreferredSize(new Dimension(640, 480));
+		*/
 	}
 	
 	/**
@@ -76,19 +77,9 @@ public class SwingDisplayable
 	 * @since 2018/03/19
 	 */
 	@Override
-	protected final int internalGetHeight()
+	public final int getHeight()
 	{
 		return this._panel.getHeight();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/03/19
-	 */
-	@Override
-	protected final int internalGetWidth()
-	{
-		return this._panel.getWidth();
 	}
 	
 	/**
@@ -99,6 +90,16 @@ public class SwingDisplayable
 	public final String getTitle()
 	{
 		return this._title;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/19
+	 */
+	@Override
+	public final int getWidth()
+	{
+		return this._panel.getWidth();
 	}
 	
 	/**
@@ -123,7 +124,7 @@ public class SwingDisplayable
 		this._title = __t;
 		
 		// If this is bound to a display then update the title
-		SwingDisplay display = (SwingDisplay)this.getCurrent();
+		SwingDisplay display = (SwingDisplay)this.getDisplay();
 		if (display != null)
 			display._frame.setTitle(__t);
 	}
@@ -194,10 +195,11 @@ public class SwingDisplayable
 			this.repaint(0, 0, neww, newh);
 			
 			// Send resize event
-			try
+			throw new todo.TODO();
+			/*try
 			{
-				SwingDisplayable.this.callbacks.displayableSizeChanged(
-					SwingDisplayable.this, neww, newh);
+				SwingWidget.this.callbacks.displayableSizeChanged(
+					SwingWidget.this, neww, newh);
 			}
 			
 			// Remote end threw some exception, ignore it so that execution
@@ -205,7 +207,7 @@ public class SwingDisplayable
 			catch (Throwable t)
 			{
 				t.printStackTrace();
-			}
+			}*/
 		}
 
 		/**
@@ -227,6 +229,8 @@ public class SwingDisplayable
 			// This must always be called
 			super.paintComponent(__g);
 			
+			throw new todo.TODO();
+			/*
 			// If this is the first frame make sure when stuff is drawn that
 			// the image is initialized
 			if (this._firstframe)
@@ -244,8 +248,8 @@ public class SwingDisplayable
 			Rectangle rect = __g.getClipBounds();
 			try
 			{
-				SwingDisplayable.this.callbacks.displayablePaint(
-					SwingDisplayable.this,
+				SwingWidget.this.callbacks.displayablePaint(
+					SwingWidget.this,
 					rect.x, rect.y, rect.width, rect.height,
 					new LocalIntegerArray(((DataBufferInt)image.getRaster().
 					getDataBuffer()).getData()), null, xw, xh, false, xw, 0);
@@ -261,6 +265,7 @@ public class SwingDisplayable
 			// Draw the backed buffered image
 			__g.drawImage(image, 0, 0, xw, xh,
 				0, 0, xw, xh, null);
+			*/
 		}
 	}
 }
