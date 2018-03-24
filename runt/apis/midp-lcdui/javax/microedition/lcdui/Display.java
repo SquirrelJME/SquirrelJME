@@ -445,9 +445,7 @@ public class Display
 	 */
 	public int getHeight()
 	{
-		throw new todo.TODO();
-		/*
-		return this._head.displayPhysicalHeightPixels();*/
+		return this.__getHeight();
 	}
 	
 	public IdleItem getIdleItem()
@@ -486,9 +484,7 @@ public class Display
 	 */
 	public int getWidth()
 	{
-		throw new todo.TODO();
-		/*
-		return this._head.displayPhysicalWidthPixels();*/
+		return this.__getWidth();
 	}
 	
 	/**
@@ -754,7 +750,7 @@ public class Display
 		
 		// Send vibrate call
 		LcdServiceCall.<VoidType>call(VoidType.class,
-			LcdFunction.DISPLAY_VIBRATE, this._index, __d);
+			LcdFunction.DISPLAY_VIBRATE, this._handle, __d);
 		
 		// Always return true because it is faster to just return as quickly
 		// as possible than it is to vibrate the display and to see if it is
@@ -820,14 +816,26 @@ public class Display
 	}
 	
 	/**
-	 * Some kind of layout or otherwise changed on the display, so force it
-	 * to be updated and refreshed to reflect the latest Displayable changes.
-	 *
-	 * @since 2017/08/19
+	 * {@inheritDoc}
+	 * @since 2018/03/23
 	 */
-	void __update()
+	@__SerializedEvent__
+	@Override
+	final void __doPaint(Graphics __g, int __bw, int __bh)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		// Does nothing
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/23
+	 */
+	@__SerializedEvent__
+	@Override
+	final void __doSizeChanged(int __w, int __h)
+	{
+		// Does nothing
 	}
 	
 	public static void addDisplayListener(DisplayListener __dl)
@@ -880,17 +888,10 @@ public class Display
 		Map<Integer, Display> displays = Display._DISPLAYS;
 		synchronized (displays)
 		{
-			// Was the callback registered?
-			if (!Display._MADECALLBACK)
-			{
-				LcdServiceCall.<VoidType>call(VoidType.class,
-					LcdFunction.REGISTER_CALLBACK, new __DisplayCallback__());
-				Display._MADECALLBACK = true;
-			}
-			
 			// Get all the displays
 			IntegerArray dids = LcdServiceCall.<IntegerArray>call(
-				IntegerArray.class, LcdFunction.QUERY_DISPLAYS);
+				IntegerArray.class, LcdFunction.QUERY_DISPLAYS,
+				__LocalCallback__.INSTANCE);
 			
 			// Just check to see if the map knows about an index value
 			for (int i = 0, n = dids.length(); i < n; i++)

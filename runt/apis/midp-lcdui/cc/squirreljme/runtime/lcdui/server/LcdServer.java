@@ -16,7 +16,6 @@ import cc.squirreljme.runtime.cldc.system.type.IntegerArray;
 import cc.squirreljme.runtime.cldc.system.type.LocalIntegerArray;
 import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.cldc.task.SystemTask;
-import cc.squirreljme.runtime.lcdui.DisplayableType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
 import cc.squirreljme.runtime.lcdui.LcdFunctionInterrupted;
 import cc.squirreljme.runtime.lcdui.WidgetType;
@@ -39,7 +38,8 @@ public final class LcdServer
 	protected final LcdDisplays displays;
 	
 	/** Widgets which are currently available to this server. */
-	private final Map<Integer, LcdWidget> _widgets;
+	private final Map<Integer, LcdWidget> _widgets =
+		new HashMap<>();
 	
 	/**
 	 * Initializes the LCDUI server.

@@ -10,11 +10,6 @@
 
 package cc.squirreljme.runtime.lcdui.server;
 
-import cc.squirreljme.runtime.cldc.task.SystemTask;
-import cc.squirreljme.runtime.lcdui.DisplayableType;
-import cc.squirreljme.runtime.lcdui.LcdDisplayableTakenException;
-import java.util.Objects;
-
 /**
  * This class represents a single display that is available, displayables may
  * be attached to it accordingly.
