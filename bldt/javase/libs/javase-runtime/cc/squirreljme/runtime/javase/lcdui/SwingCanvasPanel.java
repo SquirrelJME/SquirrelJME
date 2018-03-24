@@ -19,7 +19,10 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBuffer;
+import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferInt;
+import java.awt.image.DataBufferShort;
 import java.awt.Rectangle;
 import javax.swing.JPanel;
 
@@ -34,9 +37,10 @@ public class SwingCanvasPanel
 	/** The owning widget. */
 	protected final SwingWidget owner;
 	
+	/** The buffered image type. */
+	
 	/** The image to display in the panel. */
-	private volatile BufferedImage _image =
-		new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
+	private volatile BufferedImage _image;
 	
 	/** First frame being drawn? */
 	private boolean _firstframe =
@@ -56,6 +60,9 @@ public class SwingCanvasPanel
 			throw new NullPointerException("NARG");
 		
 		this.owner = __o;
+		
+		// Setup basic image
+		this._image = ColorInfo.create(1, 1);
 		
 		// It is rather annoying when canvases are really tiny
 		this.setMinimumSize(new Dimension(160, 160));
@@ -80,8 +87,7 @@ public class SwingCanvasPanel
 	
 		// Recreate the image if the size has changed
 		if (xw != oldw || xh != oldh)
-			this._image = (image = new BufferedImage(xw, xh,
-				BufferedImage.TYPE_INT_RGB));
+			this._image = (image = ColorInfo.create(xw, xh));
 		
 		// Have the remote end draw into our buffer as needed
 		Rectangle rect = __g.getClipBounds();
