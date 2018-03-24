@@ -10,6 +10,8 @@
 
 package cc.squirreljme.runtime.lcdui.server;
 
+import cc.squirreljme.runtime.lcdui.WidgetType;
+
 /**
  * This is the base class for a widget which may have operations performed
  * on it through widget handles.
@@ -18,5 +20,23 @@ package cc.squirreljme.runtime.lcdui.server;
  */
 public abstract class LcdWidget
 {
+	/** The type of widget this is. */
+	protected final WidgetType type;
+	
+	/**
+	 * Initializes the base widget.
+	 *
+	 * @param __type The widget type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/23
+	 */
+	public LcdWidget(WidgetType __type)
+		throws NullPointerException
+	{
+		if (__type == null)
+			throw new NullPointerException("NARG");
+		
+		this.type = __type;
+	}
 }
 

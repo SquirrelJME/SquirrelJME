@@ -59,8 +59,8 @@ final class __LocalCallback__
 			LcdCallback.class);
 		switch (func)
 		{
-			case DISPLAYABLE_PAINT:
-				this.__displayablePaint(
+			case WIDGET_PAINT:
+				this.__widgetPaint(
 					(Integer)__args[1],
 					(Integer)__args[2],
 					(Integer)__args[3],
@@ -75,8 +75,8 @@ final class __LocalCallback__
 					(Integer)__args[12]);
 				return VoidType.INSTANCE;
 			
-			case DISPLAYABLE_SIZE_CHANGED:
-				this.__displayableSizeChanged(
+			case WIDGET_SIZE_CHANGED:
+				this.__widgetSizeChanged(
 					(Integer)__args[1],
 					(Integer)__args[2],
 					(Integer)__args[3]);
@@ -90,9 +90,9 @@ final class __LocalCallback__
 	}
 	
 	/**
-	 * Specifies that the given displayable should be painted.
+	 * Specifies that the given widget should be painted.
 	 *
-	 * @param __d The displayable to paint.
+	 * @param __d The widget to paint.
 	 * @param __cx The clipping X coordinate.
 	 * @param __cy The clipping Y coordinate.
 	 * @param __cw The clipping width.
@@ -107,7 +107,7 @@ final class __LocalCallback__
 	 * @throws NullPointerException On null arguments except for {@code __pal}.
 	 * @since 2018/03/18
 	 */
-	private void __displayablePaint(int __d, int __cx, int __cy,
+	private void __widgetPaint(int __d, int __cx, int __cy,
 		int __cw, int __ch, Array __buf, IntegerArray __pal, int __bw,
 		int __bh, boolean __alpha, int __pitch, int __offset)
 		throws NullPointerException
@@ -115,8 +115,8 @@ final class __LocalCallback__
 		if (__buf == null)
 			throw new NullPointerException("NARG");
 		
-		// Only canvases are drawn on
-		Canvas on = __Queue__.INSTANCE.<Canvas>__get(Canvas.class, __d);
+		// Can be a canvas or custom item
+		Widget on = __Queue__.INSTANCE.<Widget>__get(Widget.class, __d);
 		if (on == null)
 			return;
 		
@@ -151,7 +151,7 @@ final class __LocalCallback__
 		g.setClip(__cx, __cy, __cw, __ch);
 		
 		// Perform the actual painting operation
-		on.__doRepaint(g);
+		on.__doPaint(g, __bw, __bh);
 	}
 	
 	/**
@@ -162,10 +162,9 @@ final class __LocalCallback__
 	 * @param __h The new height.
 	 * @since 2018/03/23
 	 */
-	private final void __displayableSizeChanged(int __d, int __w, int __h)
+	private final void __widgetSizeChanged(int __d, int __w, int __h)
 	{
-		Displayable on = __Queue__.INSTANCE.<Displayable>__get(
-			Displayable.class, __d);
+		Widget on = __Queue__.INSTANCE.<Widget>__get(Widget.class, __d);
 		if (on == null)
 			return;
 		
