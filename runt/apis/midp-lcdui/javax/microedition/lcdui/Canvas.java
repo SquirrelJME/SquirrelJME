@@ -196,7 +196,7 @@ public abstract class Canvas
 	@Override
 	public int getHeight()
 	{
-		return __getHeight();
+		return this.__getHeight();
 	}
 	
 	public int getKeyCode(int __a)
@@ -230,7 +230,7 @@ public abstract class Canvas
 	@Override
 	public int getWidth()
 	{
-		return __getWidth();
+		return this.__getWidth();
 	}
 	
 	/**
@@ -546,6 +546,20 @@ public abstract class Canvas
 		
 		// Forward paint call
 		this.paint(__g);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/24
+	 */
+	@__SerializedEvent__
+	@Override
+	final void __doShown(boolean __shown)
+	{
+		if (__shown)
+			this.showNotify();
+		else
+			this.hideNotify();
 	}
 }
 

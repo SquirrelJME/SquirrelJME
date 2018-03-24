@@ -195,6 +195,10 @@ public class Display
 	private static final Map<Integer, Display> _DISPLAYS =
 		new HashMap<>();
 	
+	/** Listeners for the display. */
+	private static final List<DisplayListener> _listeners =
+		new ArrayList<>();
+	
 	/** Hold on the displayable to show. */
 	private volatile Displayable _heldcurrent;
 	
@@ -829,18 +833,59 @@ public class Display
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2018/03/24
+	 */
+	@__SerializedEvent__
+	@Override
+	final void __doShown(boolean __shown)
+	{
+		// Report that visibility has changed
+		int state = (__shown ? Display.STATE_VISIBLE :
+			Display.STATE_BACKGROUND);
+		for (DisplayListener dl : Display.__listeners())
+			dl.displayStateChanged(this, state);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/03/23
 	 */
 	@__SerializedEvent__
 	@Override
 	final void __doSizeChanged(int __w, int __h)
 	{
-		// Does nothing
+		// Report that the size changed for events
+		for (DisplayListener dl : Display.__listeners())
+			dl.sizeChanged(this, __w, __h);
 	}
 	
+	/**
+	 * Adds the specified listener for changes to displays.
+	 *
+	 * The order in which listeners are executed in is
+	 * implementation specified.
+	 *
+	 * @param __dl The listener to add.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/24
+	 */
 	public static void addDisplayListener(DisplayListener __dl)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__dl == null)
+			throw new NullPointerException("NARG");
+		
+		List<DisplayListener> listeners = Display._listeners;
+		synchronized (listeners)
+		{
+			// Do nothing if it is already in there
+			for (int i = 0, n = listeners.size(); i < n; i++)
+				if (listeners.get(i) == __dl)
+					return;
+			
+			// Add it, if it is not there
+			listeners.add(__dl);
+		}
 	}
 	
 	/**
@@ -925,9 +970,53 @@ public class Display
 		return rv.<Display>toArray(new Display[rv.size()]);
 	}
 	
+	/**
+	 * Removes the specified display listener so that it is no longer called
+	 * when events occur.
+	 *
+	 * @param __dl The listener to remove.
+	 * @throws IllegalStateException If the listener is not in the display.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/24
+	 */
 	public static void removeDisplayListener(DisplayListener __dl)
+		throws IllegalStateException, NullPointerException
 	{
-		throw new todo.TODO();
+		if (__dl == null)
+			throw new NullPointerException("NARG");	
+		
+		List<DisplayListener> listeners = Display._listeners;
+		synchronized (listeners)
+		{
+			boolean didremove = false;
+			for (int i = 0, n = listeners.size(); i < n; i++)
+				if (listeners.get(i) == __dl)
+				{
+					listeners.remove(i);
+					didremove = true;
+				}
+			
+			// {@squirreljme.error EB2c The listener was never added to the
+			// listener set.}
+			if (!didremove)
+				throw new IllegalStateException("EB2c");
+		}
+	}
+	
+	/**
+	 * Returns an array of all the attached listeners.
+	 *
+	 * @return An array of listeners.
+	 * @since 2018/03/24
+	 */
+	static DisplayListener[] __listeners()
+	{
+		List<DisplayListener> listeners = Display._listeners;
+		synchronized (listeners)
+		{
+			return listeners.<DisplayListener>toArray(new DisplayListener[
+				listeners.size()]);
+		}
 	}
 	
 	/**

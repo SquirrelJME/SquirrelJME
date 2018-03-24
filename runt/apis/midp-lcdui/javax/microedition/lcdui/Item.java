@@ -177,7 +177,7 @@ public abstract class Item
 		
 		// Set
 		this._label = __l;
-		__update();
+		throw new todo.TODO();
 	}
 	
 	public void setLayout(int __a)
@@ -196,16 +196,36 @@ public abstract class Item
 	}
 	
 	/**
-	 * Updates the item on the containing form so that it knows of any
-	 * changes which have occured.
-	 *
-	 * @since 2017/08/20
+	 * {@inheritDoc}
+	 * @since 2018/03/23
 	 */
-	void __update()
+	@__SerializedEvent__
+	@Override
+	void __doPaint(Graphics __g, int __pw, int __ph)
 	{
-		Screen f = this._screen;
-		if (f != null)
-			throw new todo.TODO();
+		// Not required
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/24
+	 */
+	@__SerializedEvent__
+	@Override
+	void __doShown(boolean __shown)
+	{
+		// Not required
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/23
+	 */
+	@__SerializedEvent__
+	@Override
+	void __doSizeChanged(int __w, int __h)
+	{
+		// Not required
 	}
 }
 

@@ -214,6 +214,20 @@ public abstract class LcdWidget
 	}
 	
 	/**
+	 * This is called when the component has been shown or hidden.
+	 *
+	 * @param __shown If the component has been shown.
+	 * @since 2018/03/24
+	 */
+	public final void callbackShown(boolean __shown)
+	{
+		RemoteMethod callback = this.callback();
+		if (callback != null)
+			callback.<VoidType>invoke(VoidType.class, LcdCallback.WIDGET_SHOWN,
+				this.handle, __shown);
+	}
+	
+	/**
 	 * Returns the container which eventually contains this widget.
 	 *
 	 * @return The container for this widget or {@code null} if this is not
