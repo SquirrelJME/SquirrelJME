@@ -10,9 +10,11 @@
 
 package cc.squirreljme.runtime.lcdui.server.requests;
 
+import cc.squirreljme.runtime.cldc.system.type.RemoteMethod;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
 import cc.squirreljme.runtime.lcdui.server.LcdRequest;
 import cc.squirreljme.runtime.lcdui.server.LcdServer;
+import cc.squirreljme.runtime.lcdui.server.LcdWidget;
 
 /**
  * This queries the displays which are currently available along with setting
@@ -23,17 +25,26 @@ import cc.squirreljme.runtime.lcdui.server.LcdServer;
 public class QueryDisplays
 	extends LcdRequest
 {
+	/** The remote handler method. */
+	protected final RemoteMethod callback;
+	
 	/**
 	 * Initializes the request.
 	 *
 	 * @param __sv The calling server.
+	 * @param __cb The callback method.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/23
 	 */
-	public QueryDisplays(LcdServer __sv)
+	public QueryDisplays(LcdServer __sv, RemoteMethod __cb)
+		throws NullPointerException
 	{
 		super(__sv, LcdFunction.QUERY_DISPLAYS);
 		
-		throw new todo.TODO();
+		if (__cb == null)
+			throw new NullPointerException("NARG");
+		
+		this.callback = __cb;
 	}
 	
 	/**

@@ -13,6 +13,7 @@ package cc.squirreljme.runtime.lcdui.server.requests;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
 import cc.squirreljme.runtime.lcdui.server.LcdRequest;
 import cc.squirreljme.runtime.lcdui.server.LcdServer;
+import cc.squirreljme.runtime.lcdui.server.LcdWidget;
 
 /**
  * Adds a widget to a widget.
@@ -22,17 +23,31 @@ import cc.squirreljme.runtime.lcdui.server.LcdServer;
 public class WidgetAdd
 	extends LcdRequest
 {
+	/** The destination widget. */
+	protected final LcdWidget destination;
+	
+	/** The widget to add. */
+	protected final LcdWidget add;
+	
 	/**
 	 * Initializes the request.
 	 *
 	 * @param __sv The calling server.
+	 * @param __dest The destination widget.
+	 * @param __add The widget to add.
+	 * @throws NullPointerException
 	 * @since 2018/03/23
 	 */
-	public WidgetAdd(LcdServer __sv)
+	public WidgetAdd(LcdServer __sv, LcdWidget __dest, LcdWidget __add)
+		throws NullPointerException
 	{
 		super(__sv, LcdFunction.WIDGET_ADD);
 		
-		throw new todo.TODO();
+		if (__dest == null || __add == null)
+			throw new NullPointerException("NARG");
+		
+		this.destination = __dest;
+		this.add = __add;
 	}
 	
 	/**
