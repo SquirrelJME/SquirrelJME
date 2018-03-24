@@ -52,7 +52,7 @@ public class WidgetGetWidth
 	@Override
 	protected final Object invoke()
 	{
-		throw new todo.TODO();
+		return this.widget.getWidth();
 	}
 }
 

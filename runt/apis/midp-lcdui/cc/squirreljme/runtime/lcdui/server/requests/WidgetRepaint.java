@@ -10,6 +10,7 @@
 
 package cc.squirreljme.runtime.lcdui.server.requests;
 
+import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
 import cc.squirreljme.runtime.lcdui.server.LcdRequest;
 import cc.squirreljme.runtime.lcdui.server.LcdServer;
@@ -73,7 +74,8 @@ public class WidgetRepaint
 	@Override
 	protected final Object invoke()
 	{
-		throw new todo.TODO();
+		this.widget.repaint(this.x, this.y, this.width, this.height);
+		return VoidType.INSTANCE;
 	}
 }
 
