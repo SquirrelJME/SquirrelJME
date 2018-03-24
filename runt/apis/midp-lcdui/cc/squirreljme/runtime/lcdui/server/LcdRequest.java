@@ -22,6 +22,7 @@ import cc.squirreljme.runtime.lcdui.server.requests.QueryDisplays;
 import cc.squirreljme.runtime.lcdui.server.requests.WidgetAdd;
 import cc.squirreljme.runtime.lcdui.server.requests.WidgetAlertShow;
 import cc.squirreljme.runtime.lcdui.server.requests.WidgetCleanup;
+import cc.squirreljme.runtime.lcdui.server.requests.WidgetClearAndSet;
 import cc.squirreljme.runtime.lcdui.server.requests.WidgetCreate;
 import cc.squirreljme.runtime.lcdui.server.requests.WidgetGetHeight;
 import cc.squirreljme.runtime.lcdui.server.requests.WidgetGetWidth;
@@ -184,6 +185,11 @@ public abstract class LcdRequest
 			case WIDGET_CLEANUP:
 				return new WidgetCleanup(__sv,
 					__sv.getWidget((Integer)__args[0]));
+			
+			case WIDGET_CLEAR_AND_SET:
+				return new WidgetClearAndSet(__sv,
+					__sv.getWidget((Integer)__args[0]),
+					__sv.getWidget((Integer)__args[1]));
 			
 			case WIDGET_GET_HEIGHT:
 				return new WidgetGetHeight(__sv,

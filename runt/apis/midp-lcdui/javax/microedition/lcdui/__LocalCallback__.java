@@ -164,7 +164,8 @@ final class __LocalCallback__
 	 */
 	private final void __displayableSizeChanged(int __d, int __w, int __h)
 	{
-		Displayable on = __Queue__.INSTANCE.__getDisplayable(__d);
+		Displayable on = __Queue__.INSTANCE.<Displayable>__get(
+			Displayable.class, __d);
 		if (on == null)
 			return;
 		

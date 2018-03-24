@@ -33,6 +33,9 @@ public enum LcdFunction
 	/** A widget was garbage collected, so clean it up. */
 	WIDGET_CLEANUP,
 	
+	/** Clears all widgets that are to be displayed then sets it. */
+	WIDGET_CLEAR_AND_SET,
+	
 	/** Create a new widget. */
 	WIDGET_CREATE,
 	

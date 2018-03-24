@@ -77,8 +77,8 @@ public final class LcdServiceCall
 		catch (SystemCallException e)
 		{
 			String m = e.getMessage();
-			if (e.classType().isClass(LcdDisplayableTakenException.class))
-				throw new LcdDisplayableTakenException(m, e);
+			if (e.classType().isClass(LcdWidgetOwnedException.class))
+				throw new LcdWidgetOwnedException(m, e);
 			else if (e.classType().isClass(LcdException.class))
 				throw new LcdException(m, e);
 			throw e;

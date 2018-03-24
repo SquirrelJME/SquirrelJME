@@ -15,9 +15,9 @@ import cc.squirreljme.runtime.cldc.system.type.IntegerArray;
 import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.lcdui.DisplayOrientation;
 import cc.squirreljme.runtime.lcdui.DisplayState;
-import cc.squirreljme.runtime.lcdui.LcdDisplayableTakenException;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
 import cc.squirreljme.runtime.lcdui.LcdServiceCall;
+import cc.squirreljme.runtime.lcdui.LcdWidgetOwnedException;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -194,9 +194,6 @@ public class Display
 	/** The displays which currently exist based on their index. */
 	private static final Map<Integer, Display> _DISPLAYS =
 		new HashMap<>();
-	
-	/** Was the callback initialized? */
-	private static volatile boolean _MADECALLBACK;
 	
 	/** Hold on the displayable to show. */
 	private volatile Displayable _heldcurrent;
@@ -637,8 +634,30 @@ public class Display
 		if (__show == null || __exit == null)
 			throw new NullPointerException("NARG");
 		
-		// Forward
-		this.__setCurrent(__show, __exit);
+		// {@squirreljme.error EB25 The displayable to show on exit after
+		// showing an alert cannot be an alert.}
+		if (__exit instanceof Alert)
+			throw new IllegalStateException("EB25");
+		
+		// Perform call on this display
+		try
+		{
+			// Set widgets
+			LcdServiceCall.<VoidType>call(VoidType.class,
+				LcdFunction.WIDGET_ALERT_SHOW, this._handle,
+				__show._handle, __exit._handle);
+				
+			// Hold onto these so they do not get GCed
+			this._heldcurrent = __show;
+			this._heldexit = __exit;
+		}
+		
+		// {@squirreljme.error EB25 Could not set the alert and its exit
+		// displayable because it is already set on a display.}
+		catch (LcdWidgetOwnedException e)
+		{
+			throw new IllegalStateException("EB25", e);
+		}
 	}
 	
 	/**
@@ -671,9 +690,24 @@ public class Display
 			return;*/
 		}
 		
-		// Forward
-		this.__setCurrent(__show,
-			(__show instanceof Alert) ? this.getCurrent() : null);
+		// Perform call on this display
+		try
+		{
+			// Set widgets
+			LcdServiceCall.<VoidType>call(VoidType.class,
+				LcdFunction.WIDGET_CLEAR_AND_SET, this._handle,
+				__show._handle);
+				
+			// Hold onto this so they do not get GCed
+			this._heldcurrent = __show;
+		}
+		
+		// {@squirreljme.error EB27 Could not set the displayable to be
+		// shown because it is already being shown on a display.}
+		catch (LcdWidgetOwnedException e)
+		{
+			throw new IllegalStateException("EB27", e);
+		}
 	}
 	
 	public void setCurrentItem(Item __a)
@@ -783,55 +817,6 @@ public class Display
 		// Get
 		return this._properties[p.ordinal()];
 		*/
-	}
-	
-	/**
-	 * Sets the current item to be displayed.
-	 *
-	 * @param __show The displayable to show.
-	 * @param __exit The displayable to show when the displayable that is
-	 * set is dismissed.
-	 * @throws DisplayCapabilityException If the display cannot show the given
-	 * displayable.
-	 * @throws IllegalStateException If the display hardware is missing; If
-	 * the displayables are associated with another display or tab pane. 
-	 * @throws NullPointerException If {@code __show} is null.
-	 * @since 2016/10/08
-	 */
-	private void __setCurrent(Displayable __show, Displayable __exit)
-		throws DisplayCapabilityException, IllegalStateException,
-			NullPointerException
-	{
-		// The displayable to show should never be null
-		if (__show == null)
-			throw new NullPointerException("NARG");
-		
-		try
-		{
-			// Set current
-			LcdServiceCall.<VoidType>call(VoidType.class,
-				LcdFunction.DISPLAY_SET_CURRENT,
-				this._index,
-				(__show != null ? __show._handle : 0),
-				(__exit != null ? __exit._handle : 0));
-			
-			// Hold these displayables so they are not garbage collected
-			this._heldcurrent = __show;
-			this._heldexit = __exit;
-			
-			// Have them hold the display so that this display is not GCed
-			if (__show != null)
-				__show._heldcurrent = this;
-			if (__exit != null)
-				__exit._heldcurrent = this;
-		}
-		
-		// {@squirreljme.error EB21 The displayable is already taken
-		// by a display or tabbed pane.}
-		catch (LcdDisplayableTakenException e)
-		{
-			throw new IllegalStateException("EB21", e);
-		}
 	}
 	
 	/**
@@ -972,56 +957,6 @@ public class Display
 			
 			return rv;
 		}
-	}
-	
-	/**
-	 * Returns the displayable associated with the given ID.
-	 *
-	 * @param __id The ID of the display.
-	 * @return The displayable for the given ID or null otherwise.
-	 * @since 2017/10/27
-	 */
-	@Deprecated
-	static Displayable __displayableByHeadId(int __id)
-	{
-		throw new todo.TODO();
-		/*
-		Display display = __displayByHeadId(__id);
-		if (display != null)
-			return display._current;
-		return null;*/
-	}
-	
-	/**
-	 * Returns the display associated with the given ID.
-	 *
-	 * @param __id The ID of the display.
-	 * @return The display for the given ID or null otherwise.
-	 * @since 2017/10/27
-	 */
-	@Deprecated
-	static Display __displayByHeadId(int __id)
-	{
-		throw new todo.TODO();
-		/*
-		Display[] displays = _DISPLAYS;
-		
-		// See if the head directory associates with a head
-		int n = displays.length;
-		if (__id >= 0 && __id < n)
-		{
-			Display rv = displays[__id];
-			if (rv._head.headId() == __id)
-				return rv;
-		}
-		
-		// Search through all heads otherwise
-		for (Display d : displays)
-			if (d._head.headId() == __id)
-				return d;
-		
-		// Not found
-		return null;*/
 	}
 }
 

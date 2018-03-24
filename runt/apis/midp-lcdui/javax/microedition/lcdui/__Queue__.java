@@ -120,7 +120,7 @@ final class __Queue__
 			try
 			{
 				LcdServiceCall.<VoidType>call(VoidType.class,
-					LcdFunction.widget_CLEANUP, svdx);
+					LcdFunction.WIDGET_CLEANUP, svdx);
 			}
 			catch (Throwable t)
 			{
@@ -152,7 +152,7 @@ final class __Queue__
 			
 			// Do not know what this is?
 			if (ref == null)
-				return;
+				return null;
 			__Widget__ rv = ref.get();
 			
 			// If this is not the right kind of class, ignore
