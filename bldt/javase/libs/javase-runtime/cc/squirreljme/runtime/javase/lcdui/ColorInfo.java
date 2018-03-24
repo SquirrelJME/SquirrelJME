@@ -10,6 +10,11 @@
 
 package cc.squirreljme.runtime.javase.lcdui;
 
+import cc.squirreljme.runtime.cldc.system.type.Array;
+import cc.squirreljme.runtime.cldc.system.type.IntegerArray;
+import cc.squirreljme.runtime.cldc.system.type.LocalByteArray;
+import cc.squirreljme.runtime.cldc.system.type.LocalIntegerArray;
+import cc.squirreljme.runtime.cldc.system.type.LocalShortArray;
 import cc.squirreljme.runtime.lcdui.gfx.PixelFormat;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
@@ -108,12 +113,12 @@ public final class ColorInfo
 				icm = null;
 				break;
 				
-			case INT_RGBA8888:
+			case INTEGER_ARGB8888:
 				btype = BufferedImage.TYPE_INT_ARGB;
 				icm = null;
 				break;
 				
-			case INT_RGB888:
+			case INTEGER_RGB888:
 				btype = BufferedImage.TYPE_INT_RGB;
 				icm = null;
 				break;
@@ -122,7 +127,7 @@ public final class ColorInfo
 				// format. (The pixel format to use)}
 			case BYTE_RGB332:
 			case SHORT_INDEXED16:
-			case SHORT_ARGB2222:
+			case SHORT_ARGB4444:
 				throw new RuntimeException(String.format("AF09 %s", pf));
 			
 			default:
@@ -148,6 +153,89 @@ public final class ColorInfo
 		if (icm != null)
 			return new BufferedImage(__w, __h, ColorInfo.IMAGE_TYPE, icm);
 		return new BufferedImage(__w, __h, ColorInfo.IMAGE_TYPE);
+	}
+	
+	/**
+	 * Returns the array for the given image.
+	 *
+	 * @param __bi The buffer to read from.
+	 * @return The array for the image data.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/24
+	 */
+	public static Array getArray(BufferedImage __bi)
+		throws NullPointerException
+	{
+		if (__bi == null)
+			throw new NullPointerException("NARG");
+		
+		DataBuffer db = __bi.getRaster().getDataBuffer();
+		PixelFormat pf;
+		switch ((pf = ColorInfo.PIXEL_FORMAT))
+		{
+			case BYTE_INDEXED1:
+			case BYTE_INDEXED2:
+			case BYTE_INDEXED4:
+			case BYTE_INDEXED8:
+			case BYTE_RGB332:
+				return new LocalByteArray(((DataBufferByte)db).getData());
+				
+			case SHORT_INDEXED16:
+			case SHORT_ARGB4444:
+			case SHORT_RGB565:
+				return new LocalShortArray(((DataBufferShort)db).getData());
+				
+			case INTEGER_ARGB8888:
+			case INTEGER_RGB888:
+				return new LocalIntegerArray(((DataBufferInt)db).getData());
+			
+				// {@squirreljme.error AF0a Unsupported pixel format.
+				// (The pixel format to use)}
+			default:
+				throw new RuntimeException(String.format("AF0a %s", pf));
+		}
+	}
+	
+	/**
+	 * Returns the palette to be used for the given image.
+	 *
+	 * @param __bi The palette to get for the image.
+	 * @return The resulting palette or {@code null} if there is none.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/02/24
+	 */
+	public static IntegerArray getPalette(BufferedImage __bi)
+		throws NullPointerException
+	{
+		if (__bi == null)
+			throw new NullPointerException("NARG");
+		
+		IndexColorModel model = ColorInfo.COLOR_MODEL;
+		PixelFormat pf;
+		switch ((pf = ColorInfo.PIXEL_FORMAT))
+		{
+			case BYTE_INDEXED1:
+			case BYTE_INDEXED2:
+			case BYTE_INDEXED4:
+			case BYTE_INDEXED8:
+			case SHORT_INDEXED16:
+				int n = model.getNumColorComponents();
+				int[] rv = new int[n];
+				model.getRGBs(rv);
+				return new LocalIntegerArray(rv);
+				
+			case BYTE_RGB332:
+			case SHORT_ARGB4444:
+			case SHORT_RGB565:
+			case INTEGER_ARGB8888:
+			case INTEGER_RGB888:
+				return null;
+			
+				// {@squirreljme.error AF0b Unsupported pixel format.
+				// (The pixel format to use)}
+			default:
+				throw new RuntimeException(String.format("AF0b %s", pf));
+		}
 	}
 }
 

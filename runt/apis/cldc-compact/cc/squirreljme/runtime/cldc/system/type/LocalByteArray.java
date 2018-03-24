@@ -83,11 +83,10 @@ public final class LocalByteArray
 	}
 	
 	/**
-	 * Returns the local access so that it is directly accessed.
-	 *
-	 * @return The local array.
+	 * {@inheritDoc}
 	 * @since 2018/03/04
 	 */
+	@Override
 	public final byte[] localArray()
 	{
 		return this.array;

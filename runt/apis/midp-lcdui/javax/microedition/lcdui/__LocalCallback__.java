@@ -15,14 +15,31 @@ import cc.squirreljme.runtime.cldc.system.type.ArrayType;
 import cc.squirreljme.runtime.cldc.system.type.ByteArray;
 import cc.squirreljme.runtime.cldc.system.type.EnumType;
 import cc.squirreljme.runtime.cldc.system.type.IntegerArray;
+import cc.squirreljme.runtime.cldc.system.type.LocalArray;
+import cc.squirreljme.runtime.cldc.system.type.LocalByteArray;
 import cc.squirreljme.runtime.cldc.system.type.LocalIntegerArray;
+import cc.squirreljme.runtime.cldc.system.type.LocalShortArray;
 import cc.squirreljme.runtime.cldc.system.type.RemoteMethod;
 import cc.squirreljme.runtime.cldc.system.type.ShortArray;
 import cc.squirreljme.runtime.cldc.system.type.VoidType;
+import cc.squirreljme.runtime.lcdui.gfx.ByteIndexed1ArrayGraphics;
+import cc.squirreljme.runtime.lcdui.gfx.ByteIndexed2ArrayGraphics;
+import cc.squirreljme.runtime.lcdui.gfx.ByteIndexed4ArrayGraphics;
+import cc.squirreljme.runtime.lcdui.gfx.ByteIndexed8ArrayGraphics;
+import cc.squirreljme.runtime.lcdui.gfx.ByteRGB332ArrayGraphics;
+import cc.squirreljme.runtime.lcdui.gfx.IntArrayGraphics;
+import cc.squirreljme.runtime.lcdui.gfx.IntArrayGraphics;
+import cc.squirreljme.runtime.lcdui.gfx.IntArrayGraphics;
+import cc.squirreljme.runtime.lcdui.gfx.IntegerARGB8888ArrayGraphics;
+import cc.squirreljme.runtime.lcdui.gfx.IntegerRGB888ArrayGraphics;
+import cc.squirreljme.runtime.lcdui.gfx.PixelArrayGraphics;
+import cc.squirreljme.runtime.lcdui.gfx.PixelFormat;
+import cc.squirreljme.runtime.lcdui.gfx.ShortARGB4444ArrayGraphics;
+import cc.squirreljme.runtime.lcdui.gfx.ShortIndexed16ArrayGraphics;
+import cc.squirreljme.runtime.lcdui.gfx.ShortRGB565ArrayGraphics;
 import cc.squirreljme.runtime.lcdui.LcdCallback;
 import cc.squirreljme.runtime.lcdui.LcdException;
-import cc.squirreljme.runtime.lcdui.gfx.IntArrayGraphics;
-import cc.squirreljme.runtime.lcdui.gfx.PixelFormat;
+
 
 /**
  * This is the callback used for displays so that the remote server can call
@@ -131,31 +148,22 @@ final class __LocalCallback__
 		if (on == null)
 			return;
 		
-		// This will be set to the graphics to draw on
-		Graphics g;
+		// Setup a new buffer to draw into locally for increased speed
+		Array original = __buf,
+			shadow = __LocalCallback__.__shadowBuffer(__buf);
 		
-		// Initialize the graphics to draw into, either directly or indirect
-		// via a second copy buffer
-		ArrayType buftype;
-		boolean local;
-		switch ((buftype = __buf.type()))
+		// Need to copy the palette too?
+		int[] pal = null;
+		if (__pal != null)
 		{
-			case INTEGER:
-				int[] ibuf;
-				if (local = (__buf instanceof LocalIntegerArray))
-					ibuf = ((LocalIntegerArray)__buf).localArray();
-				else
-					throw new todo.TODO();
-				
-				g = new IntArrayGraphics(ibuf, __bw, __bh, __alpha,
-					__pitch, __offset);
-				break;
-			
-				// {@squirreljme.error EB24 Do not know how to handle the
-				// specified pixel type. (The pixel type)}
-			default:
-				throw new LcdException(String.format("EB24 %s", buftype)); 
+			int n = __pal.length();
+			pal = new int[n];
+			__pal.get(0, pal, 0, n);
 		}
+		
+		// This will be set to the graphics to draw on
+		Graphics g = __LocalCallback__.__shadowGraphics(__pf,
+			(LocalArray)shadow, pal, __bw, __bh, __alpha, __pitch, __offset);
 		
 		// Set the clipping bounds so bytes outside of the area are not drawn
 		// into at all
@@ -163,6 +171,10 @@ final class __LocalCallback__
 		
 		// Perform the actual painting operation
 		on.__doPaint(g, __bw, __bh);
+		
+		// Buffer was shadowed, so copy the pixels back
+		if (original != shadow)
+			throw new todo.TODO();
 	}
 	
 	/**
@@ -196,6 +208,109 @@ final class __LocalCallback__
 			return;
 		
 		on.__doSizeChanged(__w, __h);
+	}
+	
+	/**
+	 * Setups up a new buffer that is drawn into instead of the original
+	 * source buffer.
+	 *
+	 * @param __a The buffer to shadow.
+	 * @return The shadowed buffer or {@code __a} if it is not shadowed.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/24
+	 */
+	private static final Array __shadowBuffer(Array __a)
+		throws NullPointerException
+	{
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
+		// Do not shadow local arrays
+		if (__a instanceof LocalArray)
+			return __a;
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Creates the graphics object for drawing graphics.
+	 *
+	 * @param __pf Pixel format to use.
+	 * @param __buf The buffer to send the result into after drawing.
+	 * @param __pal The palette to use for the remote buffer.
+	 * @param __bw The buffer width.
+	 * @param __bh The buffer height.
+	 * @param __alpha Is an alpha channel being used?
+	 * @param __pitch The number of elements for the width in the buffer.
+	 * @param __offset The offset into the buffer to the actual image data.
+	 * @return The graphics object for drawing graphics.
+	 * @throws NullPointerException On null arguments except for {@code __pal}.
+	 * @since 2018/03/23
+	 */
+	private static final Graphics __shadowGraphics(PixelFormat __pf,
+		LocalArray __buf, int[] __pal, int __bw,
+		int __bh, boolean __alpha, int __pitch, int __offset)
+	{
+		if (__pf == null || __buf == null)
+			throw new NullPointerException("NARG");
+		
+		// Depends on the format
+		switch (__pf)
+		{
+			case BYTE_INDEXED1:
+				return new ByteIndexed1ArrayGraphics(
+					(byte[])__buf.localArray(), __pal,
+					__bw, __bh, __pitch, __offset);
+					
+			case BYTE_INDEXED2:
+				return new ByteIndexed2ArrayGraphics(
+					(byte[])__buf.localArray(), pal,
+					__bw, __bh, __pitch, __offset);
+					
+			case BYTE_INDEXED4:
+				return new ByteIndexed4ArrayGraphics(
+					(byte[])__buf.localArray(), __pal,
+					__bw, __bh, __pitch, __offset);
+					
+			case BYTE_INDEXED8:
+				return new ByteIndexed8ArrayGraphics(
+					(byte[])__buf.localArray(), __pal,
+					__bw, __bh, __pitch, __offset);
+					
+			case SHORT_INDEXED16:
+				return new ByteIndexed16ArrayGraphics(
+					(short[])__buf.localArray(), __pal,
+					__bw, __bh, __pitch, __offset);
+			
+			case BYTE_RGB332:
+				return new ByteRGB332ArrayGraphics(
+					(byte[])__buf.localArray(),
+					__bw, __bh, __pitch, __offset);
+			
+			case SHORT_ARGB4444:
+				return new ShortARGB4444ArrayGraphics(
+					(short[])__buf.localArray(),
+					__bw, __bh, __pitch, __offset);
+			
+			case SHORT_RGB565:
+				return new ShortRGB565ArrayGraphics(
+					(short[])__buf.localArray(),
+					__bw, __bh, __pitch, __offset);
+			
+			case INTEGER_ARGB8888:
+				return new IntegerARGB8888ArrayGraphics(
+					(int[])__buf.localArray(),
+					__bw, __bh, __pitch, __offset);
+			
+			case INTEGER_RGB888:
+				return new IntegerRGB888ArrayGraphics(
+					(int[])__buf.localArray(),
+					__bw, __bh, __pitch, __offset);
+			
+				// Unknown
+			default:
+				throw new RuntimeException("OOPS");
+		}
 	}
 }
 

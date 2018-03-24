@@ -18,5 +18,12 @@ package cc.squirreljme.runtime.cldc.system.type;
 public interface LocalArray
 	extends Array
 {
+	/**
+	 * Returns the local access so that it is directly accessed.
+	 *
+	 * @return The local array.
+	 * @since 2018/03/24
+	 */
+	public abstract Object localArray();
 }
 
