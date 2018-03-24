@@ -1,4 +1,4 @@
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
 
-#define TemplateArrayGraphics ByteARGB2222ArrayGraphics
+#define TemplateArrayGraphics ByteIndexed4ArrayGraphics
 
