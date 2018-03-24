@@ -21,7 +21,7 @@ import javax.microedition.lcdui.Text;
  *
  * @since 2018/03/22
  */
-public final class ByteIndexedArrayGraphics
+public final class ByteIndexed2ArrayGraphics
 	extends Graphics
 {
 	/**

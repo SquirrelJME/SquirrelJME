@@ -17,6 +17,30 @@ package cc.squirreljme.runtime.lcdui.gfx;
  */
 public enum PixelFormat
 {
+	/** Byte Packed Indexed, 1-bit. */
+	BYTE_INDEXED1,
+	
+	/** Byte Packed Indexed, 2-bit. */
+	BYTE_INDEXED2,
+	
+	/** Byte Packed Indexed, 4-bit. */
+	BYTE_INDEXED4,
+	
+	/** Byte Indexed. */
+	BYTE_INDEXED8,
+	
+	/** Byte RGB332. */
+	BYTE_RGB332,
+	
+	/** Short Indexed. */
+	SHORT_INDEXED16,
+	
+	/** Short ARGB4444. */
+	SHORT_ARGB2222,
+	
+	/** Short RGB565. */
+	SHORT_RGB565,
+	
 	/** Integer ARGB8888. */
 	INT_RGBA8888,
 	
