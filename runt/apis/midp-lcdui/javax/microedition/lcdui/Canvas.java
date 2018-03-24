@@ -544,10 +544,6 @@ public abstract class Canvas
 			__g.fillRect(__g.getClipX(), __g.getClipY(),
 				__g.getClipWidth(), __g.getClipHeight());
 		
-		System.err.printf("DEBUG -- %d %d %d %d%n",
-			__g.getClipX(), __g.getClipY(),
-			__g.getClipWidth(), __g.getClipHeight());
-		
 		// Forward paint call
 		this.paint(__g);
 	}
