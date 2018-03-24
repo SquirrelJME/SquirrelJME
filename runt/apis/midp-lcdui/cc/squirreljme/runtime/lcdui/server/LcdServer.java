@@ -14,6 +14,7 @@ import cc.squirreljme.runtime.cldc.service.ServiceServer;
 import cc.squirreljme.runtime.cldc.system.type.EnumType;
 import cc.squirreljme.runtime.cldc.system.type.IntegerArray;
 import cc.squirreljme.runtime.cldc.system.type.LocalIntegerArray;
+import cc.squirreljme.runtime.cldc.system.type.RemoteMethod;
 import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.cldc.task.SystemTask;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
@@ -39,6 +40,10 @@ public final class LcdServer
 	
 	/** Widgets which are currently available to this server. */
 	private final Map<Integer, LcdWidget> _widgets =
+		new HashMap<>();
+	
+	/** Local widgets which wrap displays. */
+	private final Map<LcdDisplay, LcdWidget> _localwidgets =
 		new HashMap<>();
 	
 	/** The next handle to use. */
@@ -132,6 +137,51 @@ public final class LcdServer
 		if (!__cl.isInstance(rv))
 			return null;
 		return __cl.cast(rv);
+	}
+	
+	/**
+	 * Queries all of the displays which are available for usage, they will
+	 * be automatically wrapped in local widgets accordingly.
+	 *
+	 * @param __cb The callback method for making new calls.
+	 * @return The displays which are available.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/24
+	 */
+	public final LcdWidget[] queryDisplays(RemoteMethod __cb)
+		throws NullPointerException
+	{
+		if (__cb == null)
+			throw new NullPointerException("NARG");
+		
+		LcdDisplays displays = this.displays;
+		LcdDisplay[] queried = displays.queryDisplays(__cb);
+		
+		// The displays returned will be remapped accordingly
+		int n = queried.length;
+		LcdWidget[] rv = new LcdWidget[n];
+		
+		// Map local widgets if they are missing
+		Map<Integer, LcdWidget> widgets = this._widgets;
+		Map<LcdDisplay, LcdWidget> localwidgets = this._localwidgets;
+		for (int i = 0; i < n; i++)
+		{
+			LcdDisplay display = queried[i];
+			LcdWidget local = localwidgets.get(display);
+			if (local == null)
+			{
+				int handle = display.handle();
+				localwidgets.put(display, (local =
+					displays.__internalCreateWidget(handle,
+					WidgetType.DISPLAY_HEAD)));
+				widgets.put(handle, local);
+			}
+			
+			rv[i] = local;
+		}
+		
+		// use the remapped
+		return rv;
 	}
 	
 	/**
