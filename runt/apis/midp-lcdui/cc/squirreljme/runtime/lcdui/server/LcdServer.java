@@ -41,6 +41,9 @@ public final class LcdServer
 	private final Map<Integer, LcdWidget> _widgets =
 		new HashMap<>();
 	
+	/** The next handle to use. */
+	private int _nexthandle;
+	
 	/**
 	 * Initializes the LCDUI server.
 	 *
@@ -57,6 +60,29 @@ public final class LcdServer
 		
 		this.task = __task;
 		this.displays = __ld;
+	}
+	
+	/**
+	 * Creates a new widget of the specified type.
+	 *
+	 * @param __type The type of widget to create.
+	 * @return The newly created widget.
+	 * @throws IllegalArgumentException
+	 */
+	public final LcdWidget createWidget(WidgetType __type)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__type == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error EB29 Cannot create display heads.}
+		if (__type == WidgetType.DISPLAY_HEAD)
+			throw new IllegalArgumentException("EB29");
+		
+		LcdWidget rv = this.displays.__internalCreateWidget(++this._nexthandle,
+			__type);
+		this._widgets.put(rv.handle(), rv);
+		return rv;
 	}
 	
 	/**
@@ -95,14 +121,17 @@ public final class LcdServer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/23
 	 */
-	public final <W extends LcdWidget> W getWidget(Class<LcdWidget> __cl,
+	public final <W extends LcdWidget> W getWidget(Class<W> __cl,
 		int __dx)
 		throws NullPointerException
 	{
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		LcdWidget rv = this._widgets.get(__dx);
+		if (!__cl.isInstance(rv))
+			return null;
+		return __cl.cast(rv);
 	}
 	
 	/**

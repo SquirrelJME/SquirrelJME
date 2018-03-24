@@ -31,16 +31,22 @@ public class WidgetCreate
 	 * Initializes the request.
 	 *
 	 * @param __sv The calling server.
+	 * @throws IllegalStateException If the created widget is a display.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/23
 	 */
 	public WidgetCreate(LcdServer __sv, WidgetType __type)
-		throws NullPointerException
+		throws IllegalStateException, NullPointerException
 	{
 		super(__sv, LcdFunction.WIDGET_CREATE);
 		
 		if (__type == null)
 			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error EB28 Display heads cannot be created using the
+		// create widget function.}
+		if (__type == WidgetType.DISPLAY_HEAD)
+			throw new IllegalStateException("EB28");
 		
 		this.type = __type;
 	}
@@ -52,7 +58,7 @@ public class WidgetCreate
 	@Override
 	protected final Object invoke()
 	{
-		throw new todo.TODO();
+		return this.server.createWidget(this.type).handle();
 	}
 }
 
