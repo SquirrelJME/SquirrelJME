@@ -12,6 +12,7 @@ package cc.squirreljme.runtime.javase.lcdui;
 
 import cc.squirreljme.runtime.cldc.system.type.RemoteMethod;
 import cc.squirreljme.runtime.cldc.task.SystemTask;
+import cc.squirreljme.runtime.lcdui.gfx.PixelFormat;
 import cc.squirreljme.runtime.lcdui.server.LcdDisplay;
 import cc.squirreljme.runtime.lcdui.server.LcdWidget;
 import java.awt.Dimension;
@@ -25,6 +26,16 @@ import javax.swing.JFrame;
 public class SwingDisplay
 	extends LcdDisplay
 {
+	/**
+	 * {@squirreljme.error cc.squirreljme.runtime.javase.lcdui.pixelformat=f
+	 * This selects the format to use for the display when creating images.}
+	 */
+	public static final String PIXEL_FORMAT =
+		"cc.squirreljme.runtime.javase.lcdui.pixelformat";
+	
+	/** The pixel format of the frame. */
+	protected final PixelFormat pixelformat;
+	
 	/** The frame which acts as the display. */
 	final JFrame _frame;
 	
@@ -38,6 +49,7 @@ public class SwingDisplay
 	 */
 	static
 	{
+		// This makes everything much faster
 		JFrame.setDefaultLookAndFeelDecorated(true);
 	}
 	
@@ -51,6 +63,10 @@ public class SwingDisplay
 	public SwingDisplay(int __dx)
 	{
 		super(__dx);
+		
+		// Set the pixel format
+		this.pixelformat = PixelFormat.valueOf(
+			System.getProperty(PIXEL_FORMAT, "INT_RGB888"));
 		
 		// Initialize the frame
 		JFrame frame = new JFrame();
@@ -134,6 +150,16 @@ public class SwingDisplay
 			// Make it visible
 			frame.setVisible(true);
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/24
+	 */
+	@Override
+	public final PixelFormat pixelFormat()
+	{
+		return this.pixelformat;
 	}
 	
 	/**
