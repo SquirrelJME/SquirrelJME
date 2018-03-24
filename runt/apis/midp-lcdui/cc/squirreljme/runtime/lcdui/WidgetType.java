@@ -70,5 +70,27 @@ public enum WidgetType
 	
 	/** End. */
 	;
+	
+	/**
+	 * Is this considered a container for other widgets? Traversal to the
+	 * top stops at these.
+	 *
+	 * @return If this is considered a container.
+	 * @since 2018/03/24
+	 */
+	public final boolean isContainer()
+	{
+		switch (this)
+		{
+			case DISPLAY:
+			case DISPLAY_HEAD:
+			case DISPLAYABLE_FORM:
+			case DISPLAYABLE_TABBED_PANE:
+				return true;
+			
+			default:
+				return false;
+		}
+	}
 }
 

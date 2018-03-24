@@ -175,6 +175,9 @@ public final class LcdServer
 					displays.__internalCreateWidget(handle,
 					WidgetType.DISPLAY_HEAD)));
 				widgets.put(handle, local);
+				
+				// Link local display to real display
+				local._localdisplay = display;
 			}
 			
 			rv[i] = local;

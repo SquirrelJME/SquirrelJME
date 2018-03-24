@@ -28,7 +28,7 @@ public class SwingDisplay
 	/** The frame which acts as the display. */
 	final JFrame _frame;
 	
-	/** First initialization? */
+	/** First initialization, used to center initially? */
 	private volatile boolean _first;
 	
 	/**
@@ -72,16 +72,6 @@ public class SwingDisplay
 	 * @since 2018/03/23
 	 */
 	@Override
-	public final String getTitle()
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/03/23
-	 */
-	@Override
 	public final int getWidth()
 	{
 		throw new todo.TODO();
@@ -94,47 +84,46 @@ public class SwingDisplay
 	@Override
 	protected final void internalSetCurrent(LcdWidget __w)
 	{
-		throw new todo.TODO();
-		/*
 		JFrame frame = this._frame;
 		
-		// If clearing displayable remove it from the frame and make it
-		// hidden
-		if (__d == null)
+		// Clearing the frame
+		if (__w == null)
 		{
-			// Use default title
-			frame.setTitle("SquirrelJME");
-			
-			// Remove all components from the frame
+			// Remove all widgets
 			frame.removeAll();
+			
+			// Set default title
+			frame.setTitle("SquirrelJME");
 			
 			// Hide it
 			frame.setVisible(false);
-			return;
 		}
 		
-		// Set this display to use the displayable's panel
-		SwingDisplayable sd = (SwingDisplayable)__d;
-		frame.add(sd._panel);
-		
-		// Pack it
-		frame.pack();
-		
-		// Setup frame position
-		if (!this._first)
+		// Setting it up
+		else
 		{
-			this._first = true;
+			// Add the widget's component to the frame
+			frame.add(((SwingWidget)__w)._component);
+		
+			// Pack it
+			frame.pack();
 			
-			// Center it on screen
-			frame.setLocationRelativeTo(null);
+			// Setup frame position
+			if (!this._first)
+			{
+				this._first = true;
+				
+				// Center it on screen
+				frame.setLocationRelativeTo(null);
+			}
+			
+			// Set the title of the frame to the displayable's title
+			String title = __w.getTitle();
+			frame.setTitle((title == null ? "SquirrelJME" : title));
+			
+			// Make it visible
+			frame.setVisible(true);
 		}
-		
-		// Set the title of the frame to the displayable's title
-		String title = sd.getTitle();
-		frame.setTitle((title == null ? "SquirrelJME" : title));
-		
-		// Make it visible
-		frame.setVisible(true);*/
 	}
 	
 	/**
@@ -149,12 +138,12 @@ public class SwingDisplay
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/03/23
+	 * @since 2018/03/24
 	 */
 	@Override
-	public final void setTitle(String __t)
+	public void setContainedTitle(LcdWidget __w, String __t)
 	{
-		throw new todo.TODO();
+		this._frame.setTitle(__t);
 	}
 	
 	/**
