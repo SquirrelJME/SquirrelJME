@@ -28,9 +28,6 @@ public class SwingWidget
 	/** The component which makes up this widget. */
 	final JComponent _component;
 	
-	/** The title to use. */
-	private String _title;
-	
 	/**
 	 * Initializes the swing displayable.
 	 *
@@ -118,22 +115,27 @@ public class SwingWidget
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/03/18
-	 */
-	@Override
-	public final String getTitle()
-	{
-		return this._title;
-	}
-	
-	/**
-	 * {@inheritDoc}
 	 * @since 2018/03/19
 	 */
 	@Override
 	public final int getWidth()
 	{
 		return this._component.getWidth();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/24
+	 */
+	@Override
+	public final void internalAdd(LcdWidget __w)
+		throws NullPointerException
+	{
+		if (__w == null)
+			throw new NullPointerException("NARG");
+		
+		// Add that component's widget
+		this._component.add(((SwingWidget)__w)._component);
 	}
 	
 	/**
@@ -147,21 +149,6 @@ public class SwingWidget
 		component.repaint(Math.max(0, __x), Math.max(0, __y),
 			Math.min(component.getWidth(), __w),
 			Math.min(component.getHeight(), __h));
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/03/18
-	 */
-	@Override
-	public final void setTitle(String __t)
-	{
-		this._title = __t;
-		
-		// If this is bound to a display then update the title
-		SwingDisplay display = (SwingDisplay)this.getDisplay();
-		if (display != null)
-			display._frame.setTitle(__t);
 	}
 }
 

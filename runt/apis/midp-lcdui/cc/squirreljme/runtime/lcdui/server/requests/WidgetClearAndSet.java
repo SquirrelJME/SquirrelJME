@@ -10,6 +10,7 @@
 
 package cc.squirreljme.runtime.lcdui.server.requests;
 
+import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
 import cc.squirreljme.runtime.lcdui.server.LcdRequest;
 import cc.squirreljme.runtime.lcdui.server.LcdServer;
@@ -58,7 +59,16 @@ public class WidgetClearAndSet
 	@Override
 	protected final Object invoke()
 	{
-		throw new todo.TODO();
+		LcdWidget destination = this.destination,
+			set = this.set;
+		
+		// Clear widgets first
+		destination.removeAll();
+		
+		// Then add one back
+		destination.add(set);
+		
+		return VoidType.INSTANCE;
 	}
 }
 

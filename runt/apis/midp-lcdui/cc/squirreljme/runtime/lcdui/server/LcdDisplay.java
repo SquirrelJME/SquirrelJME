@@ -69,19 +69,45 @@ public abstract class LcdDisplay
 	public abstract void vibrate(int __ms);
 	
 	/**
-	 * Sets the widget to be shown on this display.
-	 *
-	 * @param __w The widget to show on the display.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/03/23
+	 * {@inheritDoc}
+	 * @since 2018/03/24
 	 */
-	public final void setCurrent(LcdWidget __w)
-		throws IllegalStateException, NullPointerException
+	@Override
+	public final void internalAdd(LcdWidget __w)
+		throws NullPointerException
 	{
 		if (__w == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// {@squirreljme.error EB2b Displays cannot have components added to
+		// them.}
+		throw new IllegalStateException("EB2b");
+	}
+	
+	/**
+	 * Sets the widget to be shown on this display.
+	 *
+	 * @param __w The widget to show on the display, if {@code null} then
+	 * it is removed.
+	 * @since 2018/03/23
+	 */
+	public final void setCurrent(LcdWidget __w)
+		throws IllegalStateException
+	{
+		// If there is already a widget, clear it
+		LcdWidget current = this._current;
+		if (current != null)
+		{
+			this.internalSetCurrent(null);
+			this._current = null;
+		}
+		
+		// Set new widget
+		if (__w != null)
+		{
+			this._current = __w;
+			this.internalSetCurrent(__w);
+		}
 	}
 }
 
