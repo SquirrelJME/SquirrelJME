@@ -33,6 +33,19 @@ public class EntryPoints
 	/**
 	 * Initializes the entry points the hosted launcher can find.
 	 *
+	 * @param __man The manifest to parse.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/24
+	 */
+	public EntryPoints(JavaManifest __man)
+		throws NullPointerException
+	{
+		this(__man.getMainAttributes());
+	}
+	
+	/**
+	 * Initializes the entry points the hosted launcher can find.
+	 *
 	 * @param __attr The attributes to parse.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/08/20

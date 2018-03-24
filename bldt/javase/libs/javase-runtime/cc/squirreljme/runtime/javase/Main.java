@@ -10,8 +10,10 @@
 
 package cc.squirreljme.runtime.javase;
 
-import cc.squirreljme.kernel.PrimitiveKernel;
 import cc.squirreljme.kernel.Kernel;
+import cc.squirreljme.kernel.PrimitiveKernel;
+import cc.squirreljme.kernel.suiteinfo.EntryPoint;
+import cc.squirreljme.kernel.suiteinfo.EntryPoints;
 import cc.squirreljme.runtime.cldc.io.StandardOutput;
 import cc.squirreljme.runtime.cldc.system.api.Call;
 import cc.squirreljme.runtime.cldc.system.EasyCall;
@@ -26,11 +28,16 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.net.URL;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.Objects;
 import javax.microedition.midlet.MIDlet;
+import net.multiphasicapps.tool.manifest.JavaManifest;
 
 /**
  * This initializes the SquirrelJME CLDC run-time interfaces and provides a
@@ -47,6 +54,13 @@ public class Main
 	/** Property specifying the main entry point for server entries. */
 	public static final String SERVER_MAIN =
 		"cc.squirreljme.runtime.javase.servermain";
+	
+	/**
+	 * {@squirreljme.property cc.squirreljme.runtime.javase.program=(id)
+	 * The program to run when launching.}
+	 */
+	public static final String PROGRAM =
+		"cc.squirreljme.runtime.javase.program";
 	
 	/**
 	 * Wrapped main entry point.
@@ -68,17 +82,67 @@ public class Main
 		// APIs
 		__initializeRunTime(isclient);
 		
-		// The client just uses the specified main class
+		// Search through programs to find the entry point desired
 		String mainclassname;
-		if (isclient)
-			mainclassname = clientmain;
+		int pdx = Integer.getInteger(Main.PROGRAM, -1);
+		if (pdx >= 0)
+		{
+			// Need to go through all the URLs and find the midlet containing
+			// entry points to be parsed. However since there is no way to
+			// know which manifest in the classpath refers to the midlet we
+			// kinda just have to guess
+			List<URL> urls = Collections.<URL>list(Main.class.getClassLoader().
+				getResources("META-INF/MANIFEST.MF"));
+			EntryPoints entries = null;
+			for (int i = 0, n = urls.size(); i < n; i++)
+			{
+				// Read in the manifest
+				JavaManifest man;
+				try (InputStream in = urls.get(i).openStream())
+				{
+					man = new JavaManifest(in);
+				}
+				
+				// If this refers to a midlet then use it
+				if (man.getMainAttributes().definesValue("midlet-name"))
+				{
+					entries = new EntryPoints(man);
+					break;
+				}
+			}
+			
+			// {@squirreljme.error AF08 No entry points were found.}
+			if (entries == null)
+				throw new IllegalArgumentException("AF08");
+			
+			// Print them out for debug
+			System.err.println("Entry points:");
+			int n = entries.size();
+			for (int i = 0; i < n; i++)
+				System.err.printf("    %d: %s%n", i, entries.get(i));
+			
+			// If the entry is out of bounds just use the first one
+			if (pdx < 0 || pdx >= n)
+				pdx = 0;
+			
+			// Use that entry point
+			mainclassname = entries.get(pdx).entryPoint();
+		}
 		
-		// Determines the class name via manifest
+		// Using the old standard method of launching
 		else
-			if (servermain != null)
-				mainclassname = servermain;
+		{
+			// The client just uses the specified main class
+			if (isclient)
+				mainclassname = clientmain;
+			
+			// Determines the class name via manifest
 			else
-				mainclassname = __mainClassByManifest();
+				if (servermain != null)
+					mainclassname = servermain;
+				else
+					mainclassname = __mainClassByManifest();
+		}
 		
 		// Exceptions generated as of the result of the method call are
 		// wrapped so they must be unwrapped

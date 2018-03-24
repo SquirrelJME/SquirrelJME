@@ -128,10 +128,10 @@ __gen_classpath()
 
 # Run the JVM with the bootstrap followed
 __main="$("$__exedir/mainclass.sh" "$__run")"
-echo "Executing $__main..." 1>&2
 "$__javacmd" -classpath "$(__gen_classpath "$__run")" \
 	$HOSTED_JAVA_OPTIONS \
 	"-Dcc.squirreljme.runtime.javase.servermain=$__main" \
+	"-Dcc.squirreljme.runtime.javase.program=$__numb" \
 	cc.squirreljme.runtime.javase.Main "$@"
 exit $?
 
