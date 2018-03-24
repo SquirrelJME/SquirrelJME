@@ -20,6 +20,7 @@ import cc.squirreljme.runtime.lcdui.LcdFunction;
 import cc.squirreljme.runtime.lcdui.server.requests.DisplayVibrate;
 import cc.squirreljme.runtime.lcdui.server.requests.QueryDisplays;
 import cc.squirreljme.runtime.lcdui.server.requests.WidgetAdd;
+import cc.squirreljme.runtime.lcdui.server.requests.WidgetAlertShow;
 import cc.squirreljme.runtime.lcdui.server.requests.WidgetCleanup;
 import cc.squirreljme.runtime.lcdui.server.requests.WidgetCreate;
 import cc.squirreljme.runtime.lcdui.server.requests.WidgetGetHeight;
@@ -159,15 +160,21 @@ public abstract class LcdRequest
 		switch (__func)
 		{
 			case DISPLAY_VIBRATE:
-				return new DisplayVibrate(__sv, (Integer)__args[0],
+				return new DisplayVibrate(__sv,
+					__sv.getWidget((Integer)__args[0]),
 					(Integer)__args[1]);
 			
 			case QUERY_DISPLAYS:
 				return new QueryDisplays(__sv, (RemoteMethod)__args[0]);
 			
 			case WIDGET_ADD:
-				return new WidgetAdd(__sv, (Integer)__args[0],
-					(Integer)__args[1], (Integer)__args[2]);
+				return new WidgetAdd(__sv, __sv.getWidget((Integer)__args[0]),
+					__sv.getWidget((Integer)__args[1]));
+			
+			case WIDGET_ALERT_SHOW:
+				return new WidgetAlertShow(__sv,
+					__sv.getWidget((Integer)__args[0]),
+					__sv.getWidget((Integer)__args[1]));
 			
 			case WIDGET_CREATE:
 				return new WidgetCreate(__sv, 
@@ -175,21 +182,26 @@ public abstract class LcdRequest
 					WidgetType.class));
 			
 			case WIDGET_CLEANUP:
-				return new WidgetCleanup(__sv, (Integer)__args[0]);
+				return new WidgetCleanup(__sv,
+					__sv.getWidget((Integer)__args[0]));
 			
 			case WIDGET_GET_HEIGHT:
-				return new WidgetGetHeight(__sv, (Integer)__args[0]);
+				return new WidgetGetHeight(__sv,
+					__sv.getWidget((Integer)__args[0]));
 				
 			case WIDGET_GET_WIDTH:
-				return new WidgetGetWidth(__sv, (Integer)__args[0]);
+				return new WidgetGetWidth(__sv,
+					__sv.getWidget((Integer)__args[0]));
 				
 			case WIDGET_REPAINT:
-				return new WidgetRepaint(__sv, (Integer)__args[0],
+				return new WidgetRepaint(__sv,
+					__sv.getWidget((Integer)__args[0]),
 					(Integer)__args[1], (Integer)__args[2],
 					(Integer)__args[3], (Integer)__args[4]);
 				
 			case WIDGET_SET_TITLE:
-				return new WidgetSetTitle(__sv, (Integer)__args[0],
+				return new WidgetSetTitle(__sv,
+					__sv.getWidget((Integer)__args[0]),
 					(String)__args[1]);
 				
 				// {@squirreljme.error EB20 Unimplemented function.

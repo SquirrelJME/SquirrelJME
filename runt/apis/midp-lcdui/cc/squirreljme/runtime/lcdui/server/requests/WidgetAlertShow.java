@@ -16,33 +16,40 @@ import cc.squirreljme.runtime.lcdui.server.LcdServer;
 import cc.squirreljme.runtime.lcdui.server.LcdWidget;
 
 /**
- * Gets the height of a widget.
+ * This shows an alert using a modal dialog, it is shown until it gets
+ * dismissed eventually.
  *
  * @since 2018/03/23
  */
-public class WidgetGetHeight
+public class WidgetAlertShow
 	extends LcdRequest
 {
-	/** The widget to get the height of. */
-	protected final LcdWidget widget;
+	/** The widget to show as an alert. */
+	protected final LcdWidget alert;
+	
+	/** The widget to show on exit. */
+	protected final LcdWidget exit;
 	
 	/**
 	 * Initializes the request.
 	 *
 	 * @param __sv The calling server.
-	 * @param __w The widget to get the property from.
+	 * @param __alert The widget to show as an alert.
+	 * @param __exit The widget to show on exit.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/23
 	 */
-	public WidgetGetHeight(LcdServer __sv, LcdWidget __w)
+	public WidgetAlertShow(LcdServer __sv, LcdWidget __alert,
+		LcdWidget __exit)
 		throws NullPointerException
 	{
-		super(__sv, LcdFunction.WIDGET_GET_HEIGHT);
+		super(__sv, LcdFunction.WIDGET_ALERT_SHOW);
 		
-		if (__w == null)
+		if (__alert == null || __exit == null)
 			throw new NullPointerException("NARG");
 		
-		this.widget = __w;
+		this.alert = __alert;
+		this.exit = __exit;
 	}
 	
 	/**

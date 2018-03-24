@@ -27,6 +27,9 @@ public enum LcdFunction
 	/** Adds a widget to this widget. */
 	WIDGET_ADD,
 	
+	/** Shows a widget which is an alert, the alert is considered modal. */
+	WIDGET_ALERT_SHOW,
+	
 	/** A widget was garbage collected, so clean it up. */
 	WIDGET_CLEANUP,
 	

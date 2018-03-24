@@ -13,6 +13,7 @@ package cc.squirreljme.runtime.lcdui.server.requests;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
 import cc.squirreljme.runtime.lcdui.server.LcdRequest;
 import cc.squirreljme.runtime.lcdui.server.LcdServer;
+import cc.squirreljme.runtime.lcdui.server.LcdWidget;
 
 /**
  * Cleans up after a widget.
@@ -22,17 +23,26 @@ import cc.squirreljme.runtime.lcdui.server.LcdServer;
 public class WidgetCleanup
 	extends LcdRequest
 {
+	/** The widget to cleanup. */
+	protected final LcdWidget cleanup;
+	
 	/**
 	 * Initializes the request.
 	 *
 	 * @param __sv The calling server.
+	 * @param __cl The widget to clean up.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/23
 	 */
-	public WidgetCleanup(LcdServer __sv)
+	public WidgetCleanup(LcdServer __sv, LcdWidget __cl)
+		throws NullPointerException
 	{
 		super(__sv, LcdFunction.WIDGET_CLEANUP);
 		
-		throw new todo.TODO();
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		this.cleanup = __cl;
 	}
 	
 	/**

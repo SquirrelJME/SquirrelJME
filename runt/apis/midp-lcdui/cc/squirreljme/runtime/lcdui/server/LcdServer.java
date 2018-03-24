@@ -59,6 +59,19 @@ public final class LcdServer
 	}
 	
 	/**
+	 * Obtains a widget by an ID using a generic class type.
+	 *
+	 * @param __dx The handle of the widget.
+	 * @return The widget of the specified handle or {@code null} if it does
+	 * not exist.
+	 * @since 2018/03/23
+	 */
+	public final LcdWidget getWidget(int __dx)
+	{
+		return this.<LcdWidget>getWidget(LcdWidget.class, __dx);
+	}
+	
+	/**
 	 * Obtains the widget by the specified index and class type.
 	 *
 	 * @param <W> The class type to lookup.
@@ -70,7 +83,8 @@ public final class LcdServer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/23
 	 */
-	public final <W extends LcdWidget> W getWidget(LcdWidget __cl, int __dx)
+	public final <W extends LcdWidget> W getWidget(Class<LcdWidget> __cl,
+		int __dx)
 		throws NullPointerException
 	{
 		if (__cl == null)
