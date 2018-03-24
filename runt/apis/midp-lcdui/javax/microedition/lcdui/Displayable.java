@@ -185,7 +185,7 @@ public abstract class Displayable
 		
 		// Set title remotely
 		LcdServiceCall.<VoidType>call(VoidType.class,
-			LcdFunction.DISPLAYABLE_SET_TITLE, this._handle, __a);
+			LcdFunction.WIDGET_SET_TITLE, this._handle, __a);
 	}
 	
 	/**
@@ -214,79 +214,14 @@ public abstract class Displayable
 	}
 	
 	/**
-	 * Specifies that this canvas is to be repainted.
-	 *
-	 * @param __g The graphics to draw in.
-	 * @since 2017/10/24
-	 */
-	@__SerializedEvent__
-	void __doRepaint(Graphics __g)
-	{
-		// Default implementation does nothing
-	}
-	
-	/**
-	 * This is called when the displayable has changed size.
-	 *
-	 * @param __w The width.
-	 * @param __h The height.
+	 * {@inheritDoc}
 	 * @since 2018/03/23
 	 */
-	void __doResize(int __w, int __h)
+	@__SerializedEvent__
+	@Override
+	void __doSizeChanged(int __w, int __h)
 	{
 		this.sizeChanged(__w, __h);
-	}
-	
-	/**
-	 * Returns the height of the displayable or the maximum size of the
-	 * default display.
-	 *
-	 * @return The displayable height or the maximum height of the default
-	 * display.
-	 * @since 2017/05/24
-	 */
-	final int __getHeight()
-	{
-		int rv = LcdServiceCall.<Integer>call(Integer.class,
-			LcdFunction.DISPLAYABLE_GET_HEIGHT, this._handle);
-		if (rv < 0)
-			return Display.getDisplays(0)[0].getHeight();
-		return rv;
-	}
-	
-	/**
-	 * Returns the width of the displayable or the maximum size of the
-	 * default display.
-	 *
-	 * @return The displayable width or the maximum width of the default
-	 * display.
-	 * @since 2017/05/24
-	 */
-	final int __getWidth()
-	{
-		int rv = LcdServiceCall.<Integer>call(Integer.class,
-			LcdFunction.DISPLAYABLE_GET_WIDTH, this._handle);
-		if (rv < 0)
-			return Display.getDisplays(0)[0].getWidth();
-		return rv;
-	}
-	
-	/**
-	 * Returns the display head identifier.
-	 *
-	 * @return The ID of the current display head.
-	 * @since 2017/10/27
-	 */
-	@Deprecated
-	final int __headId()
-	{
-		throw new todo.TODO();
-		/*
-		Display d = __currentDisplay();
-		if (d == null)
-			return -1;
-		
-		return d._head.headId();*/
 	}
 }
 

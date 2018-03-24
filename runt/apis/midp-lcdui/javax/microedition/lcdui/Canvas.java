@@ -416,7 +416,7 @@ public abstract class Canvas
 		
 		// Send repaint
 		LcdServiceCall.<VoidType>call(VoidType.class,
-			LcdFunction.DISPLAYABLE_REPAINT, this._handle, __x, __y, __w, __h);
+			LcdFunction.WIDGET_REPAINT, this._handle, __x, __y, __w, __h);
 	}
 	
 	public final void serviceRepaints()
@@ -536,7 +536,7 @@ public abstract class Canvas
 	 */
 	@__SerializedEvent__
 	@Override
-	void __doRepaint(Graphics __g)
+	void __doPaint(Graphics __g, int __pw, int __ph)
 	{
 		// If this is transparent then fill the rectangle with the default
 		// color

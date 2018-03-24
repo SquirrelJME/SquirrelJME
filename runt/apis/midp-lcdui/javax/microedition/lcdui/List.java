@@ -59,7 +59,7 @@ public class List
 	@Override
 	public int getHeight()
 	{
-		return __getHeight();
+		return this.__getHeight();
 	}
 	
 	public Image getImage(int __a)
@@ -89,7 +89,7 @@ public class List
 	@Override
 	public int getWidth()
 	{
-		return __getWidth();
+		return this.__getWidth();
 	}
 	
 	public void insert(int __a, String __b, Image __c)
@@ -141,6 +141,28 @@ public class List
 	public int size()
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/23
+	 */
+	@__SerializedEvent__
+	@Override
+	final void __doPaint(Graphics __g, int __pw, int __ph)
+	{
+		// Not required
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/23
+	 */
+	@__SerializedEvent__
+	@Override
+	final void __doSizeChanged(int __w, int __h)
+	{
+		// Not required
 	}
 }
 

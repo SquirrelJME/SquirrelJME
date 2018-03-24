@@ -10,6 +10,9 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.lcdui.LcdFunction;
+import cc.squirreljme.runtime.lcdui.LcdServiceCall;
+
 /**
  * This class acts as the lowest base for displays and items.
  *
@@ -52,6 +55,7 @@ abstract class __Widget__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/23
 	 */
+	@__SerializedEvent__
 	abstract void __doPaint(Graphics __g, int __bw, int __bh)
 		throws NullPointerException;
 	
@@ -62,6 +66,42 @@ abstract class __Widget__
 	 * @param __h The new height.
 	 * @since 2018/03/23
 	 */
+	@__SerializedEvent__
 	abstract void __doSizeChanged(int __w, int __h);
+	
+	
+	/**
+	 * Returns the height of the displayable or the maximum size of the
+	 * default display.
+	 *
+	 * @return The displayable height or the maximum height of the default
+	 * display.
+	 * @since 2017/05/24
+	 */
+	final int __getHeight()
+	{
+		int rv = LcdServiceCall.<Integer>call(Integer.class,
+			LcdFunction.WIDGET_GET_HEIGHT, this._handle);
+		if (rv < 0)
+			return Display.getDisplays(0)[0].getHeight();
+		return rv;
+	}
+	
+	/**
+	 * Returns the width of the displayable or the maximum size of the
+	 * default display.
+	 *
+	 * @return The displayable width or the maximum width of the default
+	 * display.
+	 * @since 2017/05/24
+	 */
+	final int __getWidth()
+	{
+		int rv = LcdServiceCall.<Integer>call(Integer.class,
+			LcdFunction.WIDGET_GET_WIDTH, this._handle);
+		if (rv < 0)
+			return Display.getDisplays(0)[0].getWidth();
+		return rv;
+	}
 }
 

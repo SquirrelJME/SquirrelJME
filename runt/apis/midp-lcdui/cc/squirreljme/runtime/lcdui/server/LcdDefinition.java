@@ -13,8 +13,8 @@ package cc.squirreljme.runtime.lcdui.server;
 import cc.squirreljme.runtime.cldc.service.ServiceDefinition;
 import cc.squirreljme.runtime.cldc.service.ServiceServer;
 import cc.squirreljme.runtime.cldc.task.SystemTask;
-import cc.squirreljme.runtime.lcdui.DisplayableType;
 import cc.squirreljme.runtime.lcdui.LcdServiceCall;
+import cc.squirreljme.runtime.lcdui.WidgetType;
 import java.util.HashMap;
 import java.util.Map;
 

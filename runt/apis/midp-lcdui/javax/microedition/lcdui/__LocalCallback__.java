@@ -33,7 +33,7 @@ final class __LocalCallback__
 	extends RemoteMethod
 {
 	/** The single instance of the local callback. */
-	final __LocalCallback__ INSTANCE =
+	static final __LocalCallback__ INSTANCE =
 		new __LocalCallback__();
 	
 	/**
@@ -116,7 +116,8 @@ final class __LocalCallback__
 			throw new NullPointerException("NARG");
 		
 		// Can be a canvas or custom item
-		Widget on = __Queue__.INSTANCE.<Widget>__get(Widget.class, __d);
+		__Widget__ on = __Queue__.INSTANCE.<__Widget__>__get(
+			__Widget__.class, __d);
 		if (on == null)
 			return;
 		
@@ -164,11 +165,12 @@ final class __LocalCallback__
 	 */
 	private final void __widgetSizeChanged(int __d, int __w, int __h)
 	{
-		Widget on = __Queue__.INSTANCE.<Widget>__get(Widget.class, __d);
+		__Widget__ on = __Queue__.INSTANCE.<__Widget__>__get(
+			__Widget__.class, __d);
 		if (on == null)
 			return;
 		
-		on.__doResize(__w, __h);
+		on.__doSizeChanged(__w, __h);
 	}
 }
 
