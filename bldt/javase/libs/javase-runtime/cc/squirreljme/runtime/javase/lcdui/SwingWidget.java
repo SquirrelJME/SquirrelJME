@@ -91,7 +91,7 @@ public class SwingWidget
 	@Override
 	public void componentResized(ComponentEvent __e)
 	{
-		throw new todo.TODO();
+		this.callbackSizeChanged(this.getWidth(), this.getHeight());
 	}
 
 	/**

@@ -47,17 +47,16 @@ public class SwingDisplays
 	 * @since 2018/03/17
 	 */
 	@Override
-	protected LcdDisplay[] internalQueryDisplays(LcdDisplay[] __k,
-		RemoteMethod __cb)
+	protected LcdDisplay[] internalQueryDisplays(LcdDisplay[] __k)
 		throws NullPointerException
 	{
-		if (__k == null || __cb == null)
+		if (__k == null)
 			throw new NullPointerException("NARG");
 		
 		// Swing only uses a single display which is shared among all
 		// programs
 		if (__k.length == 0)
-			return new LcdDisplay[]{new SwingDisplay(-1, __cb)};
+			return new LcdDisplay[]{new SwingDisplay(-1)};
 		return __k;
 	}
 	
