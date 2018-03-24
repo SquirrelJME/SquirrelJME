@@ -264,7 +264,7 @@ final class __LocalCallback__
 					
 			case BYTE_INDEXED2:
 				return new ByteIndexed2ArrayGraphics(
-					(byte[])__buf.localArray(), pal,
+					(byte[])__buf.localArray(), __pal,
 					__bw, __bh, __pitch, __offset);
 					
 			case BYTE_INDEXED4:
@@ -278,7 +278,7 @@ final class __LocalCallback__
 					__bw, __bh, __pitch, __offset);
 					
 			case SHORT_INDEXED16:
-				return new ByteIndexed16ArrayGraphics(
+				return new ShortIndexed16ArrayGraphics(
 					(short[])__buf.localArray(), __pal,
 					__bw, __bh, __pitch, __offset);
 			

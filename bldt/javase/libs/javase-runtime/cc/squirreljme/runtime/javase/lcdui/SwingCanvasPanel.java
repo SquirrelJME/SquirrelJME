@@ -92,7 +92,7 @@ public class SwingCanvasPanel
 		Rectangle rect = __g.getClipBounds();
 		try
 		{
-			this.owner.callbackPaint(PixelFormat.INT_RGB888,
+			this.owner.callbackPaint(ColorInfo.PIXEL_FORMAT,
 				rect.x, rect.y, rect.width, rect.height,
 				ColorInfo.getArray(image), ColorInfo.getPalette(image),
 				xw, xh, false, xw, 0);

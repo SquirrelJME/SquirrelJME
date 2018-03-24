@@ -22,7 +22,9 @@ __exedir="$(dirname -- "$0")"
 for __type in type/*.h
 do
 	gcc -nostdinc -nostdlib -include "$__type" -E -CC - < \
-		TemplateArrayGraphics.java | grep -v '^#' | astyle --style=allman \
+		TemplateArrayGraphics.java | \
+		sed '/^\#/d' | sed '/^$/d' | tr '$' '/' | \
+		astyle --style=allman \
 		--close-templates --max-code-length=79 --pad-oper -T4 \
 		--indent-after-parens > /tmp/$$.java
 	

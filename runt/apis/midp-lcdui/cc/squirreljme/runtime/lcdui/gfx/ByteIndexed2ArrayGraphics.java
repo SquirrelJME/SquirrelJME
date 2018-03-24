@@ -7,14 +7,11 @@
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
-
 package cc.squirreljme.runtime.lcdui.gfx;
-
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.Text;
-
 /**
  * This class is automatically generated to from a template to support
  * multiple pixel formats which are backed by arrays.
@@ -25,6 +22,33 @@ public final class ByteIndexed2ArrayGraphics
 	extends Graphics
 {
 	/**
+	 * Initializes the graphics drawer which draws into the given array.
+	 *
+	 * @param __buf The buffer to draw into.
+	 * @param __pal The palette data.
+	 * @param __width The width of the image.
+	 * @param __height The height of the image.
+	 * @param __pitch The image pitch.
+	 * @param __offset The data buffer offset.
+	 * @throws ArrayIndexOutOfBoundsException If the image dimensions exceeds
+	 * the array bounds.
+	 * @throws IllegalArgumentException If the width or height is negative.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/24
+	 */
+	public ByteIndexed2ArrayGraphics(byte[] __buf,
+		int[] __pal,
+		int __width, int __height, int __pitch, int __offset)
+	throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+		   NullPointerException
+	{
+		if (__buf == null)
+			throw new NullPointerException("NARG");
+		if (__pal == null)
+			throw new NullPointerException("NARG");
+		throw new todo.TODO();
+	}
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
 	 */
@@ -33,7 +57,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -45,7 +68,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -56,7 +78,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -68,7 +89,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -78,7 +98,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -90,7 +109,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -101,7 +119,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -111,7 +128,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -123,7 +139,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -135,7 +150,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -145,7 +159,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -158,7 +171,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -171,7 +183,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -182,7 +193,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -194,7 +204,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -206,7 +215,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -216,7 +224,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -227,7 +234,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -237,7 +243,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -248,7 +253,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -259,7 +263,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -269,7 +272,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -279,7 +281,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -289,7 +290,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -299,7 +299,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -309,7 +308,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -319,7 +317,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -329,7 +326,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -339,7 +335,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -349,7 +344,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -359,7 +353,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -369,7 +362,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -379,7 +371,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -389,7 +380,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -399,7 +389,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -409,7 +398,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -419,7 +407,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -429,7 +416,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -440,7 +426,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -450,7 +435,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -461,7 +445,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -472,7 +455,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -482,7 +464,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -492,7 +473,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -503,7 +483,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -513,7 +492,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -523,7 +501,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -534,7 +511,6 @@ public final class ByteIndexed2ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
