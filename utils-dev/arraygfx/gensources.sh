@@ -24,6 +24,14 @@ do
 	gcc -nostdinc -nostdlib -include "$__type" -E -CC - < \
 		TemplateArrayGraphics.java | grep -v '^#' | astyle --style=allman \
 		--close-templates --max-code-length=79 --pad-oper -T4 \
-		--indent-after-parens
+		--indent-after-parens > /tmp/$$.java
+	
+	# Determine name of the file
+	__name="$(cat /tmp/$$.java | grep 'public.*class' | head -n 1 |
+		sed 's/.*class[ \t]*\([a-zA-Z0-9_]\{1,\}\).*/\1/')"
+	mv -v /tmp/$$.java "$__exedir/../../runt/apis/midp-lcdui/cc/squirreljme/runtime/lcdui/gfx/$__name.java"
 done
+
+# Cleanup
+rm -f /tmp/$$.java
 
