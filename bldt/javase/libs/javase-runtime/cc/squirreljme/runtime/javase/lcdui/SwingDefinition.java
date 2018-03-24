@@ -12,7 +12,6 @@ package cc.squirreljme.runtime.javase.lcdui;
 
 import cc.squirreljme.runtime.cldc.task.SystemTask;
 import cc.squirreljme.runtime.lcdui.server.LcdDefinition;
-import cc.squirreljme.runtime.lcdui.server.LcdRequestHandler;
 import javax.swing.SwingUtilities;
 
 /**
@@ -31,8 +30,7 @@ public class SwingDefinition
 	 */
 	public SwingDefinition()
 	{
-		super(new SwingRequestHandler(), new SwingDisplays(),
-			new SwingDisplayables());
+		super(new SwingDisplays());
 	}
 }
 

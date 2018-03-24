@@ -12,7 +12,7 @@ package cc.squirreljme.runtime.javase.lcdui;
 
 import cc.squirreljme.runtime.cldc.task.SystemTask;
 import cc.squirreljme.runtime.lcdui.server.LcdDisplay;
-import cc.squirreljme.runtime.lcdui.server.LcdDisplayable;
+import cc.squirreljme.runtime.lcdui.server.LcdWidget;
 import java.awt.Dimension;
 import javax.swing.JFrame;
 
@@ -57,11 +57,43 @@ public class SwingDisplay
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2018/03/23
+	 */
+	@Override
+	public final int getHeight()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/23
+	 */
+	@Override
+	public final String getTitle()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/23
+	 */
+	@Override
+	public final int getWidth()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/03/18
 	 */
 	@Override
-	protected final void internalSetCurrent(LcdDisplayable __d)
+	protected final void internalSetCurrent(LcdWidget __w)
 	{
+		throw new todo.TODO();
+		/*
 		JFrame frame = this._frame;
 		
 		// If clearing displayable remove it from the frame and make it
@@ -100,7 +132,27 @@ public class SwingDisplay
 		frame.setTitle((title == null ? "SquirrelJME" : title));
 		
 		// Make it visible
-		frame.setVisible(true);
+		frame.setVisible(true);*/
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/23
+	 */
+	@Override
+	public final void repaint(int __x, int __y, int __w, int __h)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/23
+	 */
+	@Override
+	public final void setTitle(String __t)
+	{
+		throw new todo.TODO();
 	}
 	
 	/**

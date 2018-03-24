@@ -10,6 +10,8 @@
 
 package cc.squirreljme.runtime.lcdui.server;
 
+import cc.squirreljme.runtime.lcdui.WidgetType;
+
 /**
  * This class represents a single display that is available, displayables may
  * be attached to it accordingly.
@@ -17,26 +19,31 @@ package cc.squirreljme.runtime.lcdui.server;
  * @since 2018/03/18
  */
 public abstract class LcdDisplay
+	extends LcdWidget
 {
-	/** The index of this display. */
-	protected final int index;
-	
 	/** The current widget being shown, owned by a task. */
 	volatile LcdWidget _current;
 	
 	/**
 	 * Initiazes the display.
 	 *
-	 * @param __dx The index of this display.
-	 * @param __cb The callback manager.
-	 * @throws NullPointerException On null arguments.
+	 * @param __handle The display handle.
 	 * @since 2018/03/18
 	 */
-	public LcdDisplay(int __dx)
+	public LcdDisplay(int __handle)
 		throws NullPointerException
 	{
-		this.index = __dx;
+		super(__handle, WidgetType.DISPLAY);
 	}
+	
+	/**
+	 * This is called after a widget is made current on a display.
+	 *
+	 * @param __w The widget which is now shown, if this is {@code null} then
+	 * the old one should be cleared.
+	 * @since 2018/03/23
+	 */
+	protected abstract void internalSetCurrent(LcdWidget __w);
 	
 	/**
 	 * Vibrates the display for the given duration.
@@ -46,27 +53,6 @@ public abstract class LcdDisplay
 	 * @since 2018/03/19
 	 */
 	public abstract void vibrate(int __ms);
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/03/18
-	 */
-	@Override
-	public final int hashCode()
-	{
-		return this.index;
-	}
-	
-	/**
-	 * Returns the display index.
-	 *
-	 * @return The display index.
-	 * @since 2018/03/18
-	 */
-	public final int index()
-	{
-		return this.index;
-	}
 	
 	/**
 	 * Sets the widget to be shown on this display.
