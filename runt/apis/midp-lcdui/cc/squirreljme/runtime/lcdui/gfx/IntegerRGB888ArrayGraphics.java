@@ -14,11 +14,6 @@ import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.Text;
-
-
-
-
-
 /**
  * This class is automatically generated to from a template to support
  * multiple pixel formats which are backed by arrays.
@@ -46,22 +41,17 @@ public final class IntegerRGB888ArrayGraphics
 	/** Physical end of the buffer. */
 	protected final int lastelement;
 
-
 	/** The array containing the buffer data. */
 	private final int[] _buffer;
-
-
-
-
-
-
 	/** The current blending mode. */
 	protected int blendmode =
 		SRC_OVER;
 
 	/** The current color. */
-	protected int color =
-		0xFF_000000;
+	protected int color;
+
+	/** The color to paint. */
+	protected int paintcolor;
 
 	/** The current stroke style. */
 	protected int strokestyle =
@@ -147,6 +137,8 @@ public final class IntegerRGB888ArrayGraphics
 		// Initially clip to the image bounds
 		this.clipex = __width;
 		this.clipey = __height;
+		// Initialize the color
+		this.setAlphaColor(0xFF000000);
 	}
 
 	/**
@@ -415,6 +407,77 @@ public final class IntegerRGB888ArrayGraphics
 	public final void fillRect(int __x, int __y, int __w, int __h)
 	{
 		throw new todo.TODO();
+		/*
+		// Get actual end points
+		int ex = __x + __w,
+		 ey = __y + __h;
+
+		// Translate all coordinates
+		int transx = this.transx,
+		 transy = this.transy;
+		__x += transx;
+		__y += transy;
+		ex += transx;
+		ey += transy;
+
+		// Force lower X
+		if (ex < __x)
+		{
+		 int boop = ex;
+		 ex = __x;
+		 __x = boop;
+		}
+
+		// Force lower Y
+		if (ey < __y)
+		{
+		 int boop = ey;
+		 ey = __y;
+		 __y = boop;
+		}
+
+		// Get clipping region
+		int clipsx = this.clipsx, clipsy = this.clipsy,
+		 clipex = Math.min(primitiveImageWidth(), this.clipex),
+		 clipey = Math.min(primitiveImageHeight(), this.clipey);
+
+		// Box is completely outside the bounds of the clip, do not draw
+		if (ex < clipsx || __x >= clipex || ey < clipsy || __y >= clipey)
+		 return;
+
+		// Left vertical shortening
+		boolean lvs = (__x < clipsx);
+		if (lvs)
+		 __x = clipsx;
+
+		// Right vertical shortening
+		boolean rvs = (ex >= clipex);
+		if (rvs)
+		 ex = clipex - 1;
+
+		// Calculate new width
+		if (lvs || rvs)
+		 __w = ex - __x;
+
+		// Bottom horizontal shortening
+		boolean bhs = (__y < clipsy);
+		if (bhs)
+		 __y = clipsy;
+
+		// Top horizontal shortening
+		boolean ths = (ey >= clipey);
+		if (ths)
+		 ey = clipey - 1;
+
+		// Calculate line properties
+		int color = this.color;
+		boolean blend = __blend();
+		int bor = __blendOr();
+
+		// Draw horizontal spans
+		for (int y = __y; y < ey; y++)
+		 primitiveHorizontalLine(__x, y, __w, color, false, blend, bor);
+		*/
 	}
 
 	/**

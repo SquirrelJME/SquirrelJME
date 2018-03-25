@@ -18,6 +18,15 @@ import javax.microedition.lcdui.Text;
 	#define TYPE_SHIFT 0
 #endif
 
+#if defined(HAS_PALETTE)
+	#define __divThree(n) (((n) * 341) >> 10)
+	#define __fakeAvgL(n) ((n) >>> 16)
+	#define __fakeAvgR(n) ((n) & 0xFFFF)
+	#define __fakeAvg(n) (((__fakeAvgL(n) ^ __fakeAvgR(n)) >> 1) + \
+		(__fakeAvgL(n) & __fakeAvgR(n)))
+	#define __codeColor(n) __fakeAvg(n)
+#endif
+
 /**
  * This class is automatically generated to from a template to support
  * multiple pixel formats which are backed by arrays.
@@ -180,9 +189,13 @@ public final class TemplateArrayGraphics
 		int[] palscores = new int[numcolors];
 		for (int i = 0; i < numcolors; i++)
 		{
-			throw new todo.TODO(); 
+			int v = __pal[i] & 0xFFFFFF;
+			palscores[i] = __codeColor(v);
 		}
 		this._palscores = palscores;
+		
+		// The blend table is just pre-allocated
+		this._blendcolors = new TYPE[numcolors];
 #endif
 		
 		// Initialize the color
