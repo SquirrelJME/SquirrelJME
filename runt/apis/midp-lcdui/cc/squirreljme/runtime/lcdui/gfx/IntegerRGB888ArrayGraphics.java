@@ -48,6 +48,9 @@ public final class IntegerRGB888ArrayGraphics
 			throw new NullPointerException("NARG");
 		
 		this.buffer = __buf;
+		
+		// Use default settings
+		this.resetParameters(true);
 	}
 }
 

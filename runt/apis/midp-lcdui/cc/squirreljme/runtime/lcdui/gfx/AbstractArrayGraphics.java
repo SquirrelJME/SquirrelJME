@@ -35,6 +35,51 @@ public abstract class AbstractArrayGraphics
 	/** The buffer offset. */
 	protected final int offset;
 	
+	/** The number of elements that consist of pixel data. */
+	protected final int numelements;
+	
+	/** Physical end of the buffer. */
+	protected final int lastelement;
+	
+	/** Is there an alpha channel? */
+	protected final boolean hasalphachannel;
+	
+	/** The current stroke style. */
+	protected int strokestyle;
+	
+	/** Translated X coordinate. */
+	protected int transx;
+	
+	/** Translated Y coordinate. */
+	protected int transy;
+	
+	/** The starting X clip. */
+	protected int clipsx;
+	
+	/** The starting Y clip. */
+	protected int clipsy;
+	
+	/** The ending X clip. */
+	protected int clipex;
+	
+	/** The ending Y clip. */
+	protected int clipey;
+	
+	/** The clip width. */
+	protected int clipw;
+	
+	/** The clip height. */
+	protected int cliph;
+	
+	/** The current font, null means default. */
+	protected Font font;
+	
+	/** The current blending mode. */
+	protected int blendmode;
+	
+	/** The current color. */
+	protected int color;
+	
 	/**
 	 * Initializes the base graphics.
 	 *
@@ -44,12 +89,13 @@ public abstract class AbstractArrayGraphics
 	 * @param __o The buffer offset.
 	 * @param __l The length of the buffer.
 	 * @param __ppe Pixels per element.
+	 * @param __alpha Is there an alpha channel?
 	 * @throws IllegalArgumentException If the width, height, or pitch are
 	 * zero or negative; or pitch is lower than the width.
 	 * @since 2018/03/25
 	 */
 	public AbstractArrayGraphics(int __w, int __h, int __p, int __o, int __l,
-		int __ppe)
+		int __ppe, boolean __alpha)
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error EB2d Invalid width and/or height specified.}
@@ -75,6 +121,9 @@ public abstract class AbstractArrayGraphics
 		this.height = __h;
 		this.pitch = __p;
 		this.offset = __o;
+		this.numelements = numelements;
+		this.lastelement = lastelement;
+		this.hasalphachannel = __alpha;
 	}
 	
 	/**
@@ -84,7 +133,65 @@ public abstract class AbstractArrayGraphics
 	@Override
 	public final void clipRect(int __x, int __y, int __w, int __h)
 	{
-		throw new todo.TODO();
+		// Translate
+		__x += this.transx;
+		__y += this.transy;
+		
+		// Get right end coordinates
+		int ex = __x + __w,
+			ey = __y + __h;
+		
+		// Swap X if lower
+		if (ex < __x)
+		{
+			int boop = __x;
+			__x = ex;
+			ex = boop;
+		}
+		
+		// Same for Y
+		if (ey < __y)
+		{
+			int boop = __y;
+			__y = ey;
+			ey = boop;
+		}
+		
+		// Never go past the end of the viewport because pixels will never
+		// be drawn in negative regions
+		if (__x < 0)
+			__x = 0;
+		if (__y < 0)
+			__y = 0;
+		
+		// Additionally do not go past the edge ever that way the end
+		// clipping point is always valid
+		int width = this.width,
+			height = this.height;
+		if (ex > width)
+			ex = width;
+		if (ey > height)
+			ey = height;
+		
+		// Get the old clipping bounds
+		int oldclipsx = this.clipsx,
+			oldclipsy = this.clipsy,
+			oldclipex = this.clipex,
+			oldclipey = this.clipey;
+		
+		// Only set the clipping bounds if they exceed the previous ones
+		if (__x > oldclipsx)
+			this.clipsx = __x;
+		if (__y > oldclipsy)
+			this.clipsy = __y;
+		if (ex < clipex)
+			this.clipex = ex;
+		if (ey < clipey)
+			this.clipey = ey;
+		
+		// Set width/height
+		this.clipw = ex - __x;
+		this.cliph = ey - __y;
 	}
 	
 	/**
@@ -320,7 +427,7 @@ public abstract class AbstractArrayGraphics
 	@Override
 	public final int getAlpha()
 	{
-		throw new todo.TODO();
+		return (this.color >> 24) & 0xFF;
 	}
 	
 	/**
@@ -330,7 +437,7 @@ public abstract class AbstractArrayGraphics
 	@Override
 	public final int getAlphaColor()
 	{
-		throw new todo.TODO();
+		return this.color;
 	}
 	
 	/**
@@ -340,7 +447,7 @@ public abstract class AbstractArrayGraphics
 	@Override
 	public final int getBlendingMode()
 	{
-		throw new todo.TODO();
+		return this.blendmode;
 	}
 	
 	/**
@@ -350,7 +457,7 @@ public abstract class AbstractArrayGraphics
 	@Override
 	public final int getBlueComponent()
 	{
-		throw new todo.TODO();
+		return (this.color) & 0xFF;
 	}
 	
 	/**
@@ -360,7 +467,7 @@ public abstract class AbstractArrayGraphics
 	@Override
 	public final int getClipHeight()
 	{
-		throw new todo.TODO();
+		return this.cliph;
 	}
 	
 	/**
@@ -370,7 +477,7 @@ public abstract class AbstractArrayGraphics
 	@Override
 	public final int getClipWidth()
 	{
-		throw new todo.TODO();
+		return this.clipw;
 	}
 	
 	/**
@@ -380,7 +487,7 @@ public abstract class AbstractArrayGraphics
 	@Override
 	public final int getClipX()
 	{
-		throw new todo.TODO();
+		return this.clipsx - this.transx;
 	}
 	
 	/**
@@ -390,7 +497,7 @@ public abstract class AbstractArrayGraphics
 	@Override
 	public final int getClipY()
 	{
-		throw new todo.TODO();
+		return this.clipsy - this.transy;
 	}
 	
 	/**
@@ -400,7 +507,7 @@ public abstract class AbstractArrayGraphics
 	@Override
 	public final int getColor()
 	{
-		throw new todo.TODO();
+		return this.color & 0xFFFFFF;
 	}
 	
 	/**
@@ -420,7 +527,7 @@ public abstract class AbstractArrayGraphics
 	@Override
 	public final Font getFont()
 	{
-		throw new todo.TODO();
+		return this.font;
 	}
 	
 	/**
@@ -430,7 +537,8 @@ public abstract class AbstractArrayGraphics
 	@Override
 	public final int getGrayScale()
 	{
-		throw new todo.TODO();
+		return (getRedComponent() + getGreenComponent() +
+			getBlueComponent()) / 3;
 	}
 	
 	/**
@@ -440,7 +548,7 @@ public abstract class AbstractArrayGraphics
 	@Override
 	public final int getGreenComponent()
 	{
-		throw new todo.TODO();
+		return (this.color >> 8) & 0xFF;
 	}
 	
 	/**
@@ -450,7 +558,7 @@ public abstract class AbstractArrayGraphics
 	@Override
 	public final int getRedComponent()
 	{
-		throw new todo.TODO();
+		return (this.color >> 16) & 0xFF;
 	}
 	
 	/**
@@ -460,7 +568,7 @@ public abstract class AbstractArrayGraphics
 	@Override
 	public final int getStrokeStyle()
 	{
-		throw new todo.TODO();
+		return this.strokestyle;
 	}
 	
 	/**
@@ -470,7 +578,7 @@ public abstract class AbstractArrayGraphics
 	@Override
 	public final int getTranslateX()
 	{
-		throw new todo.TODO();
+		return this.transx;
 	}
 	
 	/**
@@ -480,7 +588,40 @@ public abstract class AbstractArrayGraphics
 	@Override
 	public final int getTranslateY()
 	{
-		throw new todo.TODO();
+		return this.transy;
+	}
+	
+	/**
+	 * Resets all parameters of the graphics output.
+	 *
+	 * @param __clip If {@code true} then the clip is also reset.
+	 * @since 2017/02/12
+	 */
+	public void resetParameters(boolean __clip)
+	{
+		// Clear translation
+		this.transx = 0;
+		this.transy = 0;
+	
+		// Reset clip also
+		if (__clip)
+		{
+			int width = this.width,
+				height = this.height;
+			
+			this.clipsx = 0;
+			this.clipsy = 0;
+			this.clipex = width;
+			this.clipey = height;
+			this.clipw = width;
+			this.cliph = height;
+		}
+		
+		// Always reset these
+		this.setBlendingMode(SRC_OVER);
+		this.setAlphaColor(0xFF000000);
+		this.setStrokeStyle(SOLID);
+		this.setFont(null);
 	}
 	
 	/**
@@ -491,7 +632,8 @@ public abstract class AbstractArrayGraphics
 	public final void setAlpha(int __a)
 		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		this.setAlphaColor(__a, getRedComponent(), getGreenComponent(),
+			getBlueComponent());
 	}
 	
 	/**
@@ -512,7 +654,15 @@ public abstract class AbstractArrayGraphics
 	public final void setAlphaColor(int __a, int __r, int __g, int __b)
 		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error EB2h Color out of range. (Alpha; Red; Green;
+		// Blue)}
+		if (__a < 0 || __a > 255 || __r < 0 || __r > 255 ||
+			__g < 0 || __g > 255 || __b < 0 || __b > 255)
+			throw new IllegalArgumentException(String.format(
+				"EB2h %d %d %d %d", __a, __r, __g, __b));
+		
+		// Set
+		this.setAlphaColor((__a << 24) | (__r << 16) | (__g << 8) | __b);
 	}
 	
 	/**
@@ -523,6 +673,19 @@ public abstract class AbstractArrayGraphics
 	public final void setBlendingMode(int __m)
 		throws IllegalArgumentException
 	{
+		// {@squirreljme.error EB2i Unknown blending mode.}
+		if (__m != SRC_OVER && __m != SRC)
+			throw new IllegalArgumentException("EB2i");
+		
+		// {@squirreljme.error EB2j Cannot set the overlay blending mode
+		// because this graphics context does not have the alpha channel.}
+		if (!this.hasalphachannel && __m == SRC)
+			throw new IllegalArgumentException("EB2j");
+		
+		// Set
+		this.blendmode = __m;
+		
+		// Calculate some things
 		throw new todo.TODO();
 	}
 	
@@ -533,7 +696,55 @@ public abstract class AbstractArrayGraphics
 	@Override
 	public final void setClip(int __x, int __y, int __w, int __h)
 	{
-		throw new todo.TODO();
+		// Translate
+		__x += this.transx;
+		__y += this.transy;
+		
+		// Get right end coordinates
+		int ex = __x + __w,
+			ey = __y + __h;
+		
+		// Swap X if lower
+		if (ex < __x)
+		{
+			int boop = __x;
+			__x = ex;
+			ex = boop;
+		}
+		
+		// Same for Y
+		if (ey < __y)
+		{
+			int boop = __y;
+			__y = ey;
+			ey = boop;
+		}
+		
+		// Never go past the end of the viewport because pixels will never
+		// be drawn in negative regions
+		if (__x < 0)
+			__x = 0;
+		if (__y < 0)
+			__y = 0;
+		
+		// Additionally do not go past the edge ever that way the end
+		// clipping point is always valid
+		int width = this.width,
+			height = this.height;
+		if (ex > width)
+			ex = width;
+		if (ey > height)
+			ey = height;
+		
+		// Set
+		this.clipsx = __x;
+		this.clipsy = __y;
+		this.clipex = ex;
+		this.clipey = ey;
+		
+		// Set width/height
+		this.clipw = ex - __x;
+		this.cliph = ey - __y;
 	}
 	
 	/**
@@ -543,7 +754,8 @@ public abstract class AbstractArrayGraphics
 	@Override
 	public final void setColor(int __rgb)
 	{
-		throw new todo.TODO();
+		this.setAlphaColor((this.getAlphaColor() & 0xFF_000000) |
+			(__rgb & 0x00_FFFFFF));
 	}
 	
 	/**
@@ -554,7 +766,7 @@ public abstract class AbstractArrayGraphics
 	public final void setColor(int __r, int __g, int __b)
 		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		this.setAlphaColor(getAlpha(), __r, __g, __b);
 	}
 	
 	/**
@@ -564,7 +776,8 @@ public abstract class AbstractArrayGraphics
 	@Override
 	public final void setFont(Font __a)
 	{
-		throw new todo.TODO();
+		// Just set it
+		this.font = __a;
 	}
 	
 	/**
@@ -574,7 +787,7 @@ public abstract class AbstractArrayGraphics
 	@Override
 	public final void setGrayScale(int __v)
 	{
-		throw new todo.TODO();
+		this.setAlphaColor(getAlpha(), __v, __v, __v);
 	}
 	
 	/**
@@ -585,6 +798,13 @@ public abstract class AbstractArrayGraphics
 	public final void setStrokeStyle(int __a)
 		throws IllegalArgumentException
 	{
+		// {@squirreljme.error EB0g Illegal stroke style.}
+		if (__a != SOLID && __a != DOTTED)
+			throw new IllegalArgumentException("EB0g");
+		
+		// Set
+		this.strokestyle = __a;
+		
 		throw new todo.TODO();
 	}
 	
@@ -595,7 +815,8 @@ public abstract class AbstractArrayGraphics
 	@Override
 	public final void translate(int __x, int __y)
 	{
-		throw new todo.TODO();
+		this.transx += __x;
+		this.transy += __y;
 	}
 }
 

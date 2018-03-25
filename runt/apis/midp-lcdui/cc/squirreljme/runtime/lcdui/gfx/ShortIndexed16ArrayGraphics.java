@@ -45,6 +45,9 @@ public final class ShortIndexed16ArrayGraphics
 			throw new NullPointerException("NARG");
 		
 		this.buffer = __buf;
+		
+		// Use default settings
+		this.resetParameters(true);
 	}
 }
 
