@@ -42,7 +42,7 @@ public final class DemoParts
 			throw new NullPointerException("NARG");
 		
 		// Draw lines
-		DemoParts.paintLines(__g);
+		//DemoParts.paintLines(__g);
 	}
 	
 	/**

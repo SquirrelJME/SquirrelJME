@@ -74,6 +74,9 @@ public abstract class AbstractRGBArrayGraphics
 	/** The color to use for painting. */
 	protected int paintcolor;
 	
+	/** Paint color with the alpha channel set to the max. */
+	protected int paintcolorhigh;
+	
 	/** The alpha color and normal color for painting. */
 	protected int paintalphacolor;
 	
@@ -159,6 +162,7 @@ public abstract class AbstractRGBArrayGraphics
 			paintalphacolor = paintcolor |
 				((__a & this.alphavalmask) << this.alphashift);
 		this.paintcolor = paintcolor;
+		this.paintcolorhigh = paintcolor | 0xFF000000;
 		this.paintalphacolor = paintalphacolor;
 	}
 }

@@ -49,5 +49,27 @@ public final class ByteIndexed8ArrayGraphics
 		// Use default settings
 		this.resetParameters(true);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/25
+	 */
+	@Override
+	protected final void internalFillRectBlend(int __x, int __y, int __ex,
+		int __ey, int __w, int __h)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/25
+	 */
+	@Override
+	protected final void internalFillRectSolid(int __x, int __y, int __ex,
+		int __ey, int __w, int __h)
+	{
+		throw new todo.TODO();
+	}
 }
 
