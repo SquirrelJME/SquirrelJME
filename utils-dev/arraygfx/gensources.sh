@@ -18,6 +18,9 @@ export LC_ALL=C
 # Directory of this script
 __exedir="$(dirname -- "$0")"
 
+echo "This script has been retired and should never be called." 1>&2
+exit 1
+
 # Go through all format types
 for __type in type/*.h
 do
