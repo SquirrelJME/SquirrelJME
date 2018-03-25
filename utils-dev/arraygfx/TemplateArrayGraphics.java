@@ -45,13 +45,18 @@ public final class TemplateArrayGraphics
 	/** Physical end of the buffer. */
 	protected final int lastelement;
 	
-	
 	/** The array containing the buffer data. */
 	private final TYPE[] _buffer;
 	
 #if defined(HAS_PALETTE)
+	/** Number of colors in the palette. */
+	protected final int numcolors;
+	
 	/** The palette used for drawing. */
 	private final int[] _palette;
+	
+	/** The scores for each palettized item. */
+	private final int[] _palscores;
 	
 	/** The colors which are pre-calculated for blending colors. */
 	private final TYPE[] _blendcolors;
@@ -126,11 +131,9 @@ public final class TemplateArrayGraphics
 		
 		// {@squirreljme.error EBT7 The input palette does not have enough
 		// entries to store color information.}
-		if (__pal.length < PALETTE_SIZE)
+		int numcolors = __pal.length;
+		if (numcolors < PALETTE_SIZE)
 			throw new IllegalArgumentException("EBT7");
-		
-		// The palette is directly used and may change!
-		this._palette = __pal;
 #endif
 		
 		// {@squirreljme.error EBT0 Invalid width and/or height specified.}
@@ -165,6 +168,22 @@ public final class TemplateArrayGraphics
 		// Initially clip to the image bounds
 		this.clipex = __width;
 		this.clipey = __height;
+
+#if defined(HAS_PALETTE)
+		// The palette is directly used and may change, although it will
+		// result in undefined behavior if it is changed and a graphics object
+		// is still valid
+		this._palette = __pal;
+		this.numcolors = numcolors;
+		
+		// Initialize the score for each color in the palette
+		int[] palscores = new int[numcolors];
+		for (int i = 0; i < numcolors; i++)
+		{
+			throw new todo.TODO(); 
+		}
+		this._palscores = palscores;
+#endif
 		
 		// Initialize the color
 		this.setAlphaColor(0xFF000000);
