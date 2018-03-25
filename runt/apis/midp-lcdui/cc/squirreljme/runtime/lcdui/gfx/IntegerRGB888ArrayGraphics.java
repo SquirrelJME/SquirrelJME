@@ -61,7 +61,47 @@ public final class IntegerRGB888ArrayGraphics
 	protected final void internalFillRectBlend(int __x, int __y, int __ex,
 		int __ey, int __w, int __h)
 	{
-		throw new todo.TODO();
+		int pac = this.paintalphacolor;
+		int[] buffer = this.buffer;
+		int pitch = this.pitch,
+			offset = this.offset;
+		
+		// Source color
+		int a = pac >>> 24,
+			na = 255 - a,
+			bgrb = (pac & 0x00FF00FF),
+			bggg = (pac & 0x0000FF00);
+		
+		// Just a simple color fill
+		for (int y = __y; y < __ey; y++)
+			for (int dest = offset + (y * pitch) + __x, pex = dest + __w;
+				dest < pex; dest++)
+			{
+				// Blend this color with the color at the orignal source
+				int dpp = buffer[dest] | 0xFF000000,
+					rb, g;
+				
+				if (true)
+				{
+					buffer[dest] = (__blend(pac, dpp, 0xFF000000, a)) & 0xFFFFFF;
+				}
+				else
+				{
+					int what = 0;
+					if (what == 0)
+					{
+						rb = ((bgrb * a) + ((dpp & 0x00FF00FF) * na)) & 0xFF00FF00;
+						g = ((bggg * a) + ((dpp & 0x0000FF00) * na)) & 0x00FF0000;
+					}
+					else
+					{	
+						rb = (((dpp & 0x00FF00FF) * a) + (bgrb * na)) & 0xFF00FF00;
+						g = (((dpp & 0x0000FF00) * a) + (bggg * na)) & 0x00FF0000;
+					}
+					
+					buffer[dest] = (((rb | g) >>> 8)) & 0xFFFFFF;
+				}
+			}
 	}
 	
 	/**
@@ -82,6 +122,43 @@ public final class IntegerRGB888ArrayGraphics
 			for (int dest = offset + (y * pitch) + __x, pex = dest + __w;
 				dest < pex; dest++)
 				buffer[dest] = b;
+	}
+	
+	/**
+	 * Blends two colors.
+	 *
+	 * @param __src The source color.
+	 * @param __dest The destination color.
+	 * @param __bor The blended OR value on the destination.
+	 * @param __alpha Alpha value which modifies the source.
+	 * @return The resulting blended color.
+	 * @since 2017/02/12
+	 */
+	private static final int __blend(int __src, int __dest, int __bor,
+		int __alpha)
+	{
+		int sa = (((__src >> 24) & 0xFF) * __alpha) / 255;
+		
+		// Split into RGB
+		int sr = (__src >> 16) & 0xFF,
+			sg = (__src >> 8) & 0xFF,
+			sb = (__src) & 0xFF,
+			da = ((__dest >> 24) & 0xFF) | __bor,
+			dr = (__dest >> 16) & 0xFF,
+			dg = (__dest >> 8) & 0xFF,
+			db = (__dest) & 0xFF;
+	
+		// Difference of alpha values
+		int qq = 255 - sa;
+		
+		// Perform blending
+		int xa = (sa + da - ((sa * da) / 255)) | __bor,
+			xr = ((sr * sa) + (dr * qq)) / 255,
+			xg = ((sg * sa) + (dg * qq)) / 255,
+			xb = ((sb * sa) + (db * qq)) / 255;
+	
+		// Recompile
+		return (xa << 24) | (xr << 16) | (xg << 8) | xb;
 	}
 }
 
