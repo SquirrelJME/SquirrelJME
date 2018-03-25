@@ -16,6 +16,8 @@ import cc.squirreljme.runtime.cldc.system.type.LocalByteArray;
 import cc.squirreljme.runtime.cldc.system.type.LocalIntegerArray;
 import cc.squirreljme.runtime.cldc.system.type.LocalShortArray;
 import cc.squirreljme.runtime.lcdui.gfx.PixelFormat;
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
@@ -144,15 +146,29 @@ public final class ColorInfo
 	 *
 	 * @param __w The width.
 	 * @param __h The height.
+	 * @param __c The initial color.
 	 * @return The resulting image.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/24
 	 */
-	public static BufferedImage create(int __w, int __h)
+	public static BufferedImage create(int __w, int __h, Color __c)
+		throws NullPointerException
 	{
+		BufferedImage rv;
+		
+		// Setup image
 		IndexColorModel icm = ColorInfo.COLOR_MODEL;
 		if (icm != null)
-			return new BufferedImage(__w, __h, ColorInfo.IMAGE_TYPE, icm);
-		return new BufferedImage(__w, __h, ColorInfo.IMAGE_TYPE);
+			rv = new BufferedImage(__w, __h, ColorInfo.IMAGE_TYPE, icm);
+		else
+			rv = new BufferedImage(__w, __h, ColorInfo.IMAGE_TYPE);
+		
+		// Fill the background with the default background color
+		Graphics2D g = (Graphics2D)rv.getGraphics();
+		g.setColor(__c);
+		g.fillRect(0, 0, __w, __h);
+		
+		return rv;
 	}
 	
 	/**

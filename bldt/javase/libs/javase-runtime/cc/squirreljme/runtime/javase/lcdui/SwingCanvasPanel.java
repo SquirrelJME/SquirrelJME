@@ -23,6 +23,7 @@ import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferInt;
 import java.awt.image.DataBufferShort;
 import java.awt.Rectangle;
+import java.awt.SystemColor;
 import javax.swing.JPanel;
 
 /**
@@ -61,7 +62,7 @@ public class SwingCanvasPanel
 		this.owner = __o;
 		
 		// Setup basic image
-		this._image = ColorInfo.create(1, 1);
+		this._image = ColorInfo.create(1, 1, SystemColor.window);
 		
 		// It is rather annoying when canvases are really tiny
 		this.setMinimumSize(new Dimension(160, 160));
@@ -86,7 +87,8 @@ public class SwingCanvasPanel
 	
 		// Recreate the image if the size has changed
 		if (xw != oldw || xh != oldh)
-			this._image = (image = ColorInfo.create(xw, xh));
+			this._image = (image = ColorInfo.create(xw, xh,
+				SystemColor.window));
 		
 		// Have the remote end draw into our buffer as needed
 		Rectangle rect = __g.getClipBounds();
