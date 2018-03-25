@@ -101,21 +101,22 @@ public final class DemoParts
 		for (int z = 0; z < 2; z++)
 		{
 			int off = (z == 0 ? 0 : 40),
-				mask = (z == 0 ? 0xFF000000 : 0x7F000000);
+				mask = (z == 0 ? 0xFF000000 : 0x7F000000),
+				and = (z == 0 ? 0xFFFFFFFF : 0x7F7F7F7F);
 			
-			__g.setAlphaColor(0xFFFFFF | mask);
+			__g.setAlphaColor((0xFFFFFF | mask) & and);
 			__g.fillRect(off + -10, off + -10, off + 20, off + 20);
 			
-			__g.setAlphaColor(0xFF0000 | mask);
+			__g.setAlphaColor((0xFF0000 | mask) & and);
 			__g.fillRect(off + 30, off + 0, off + 10, off + 10);
 			
-			__g.setAlphaColor(0x00FFFF | mask);
+			__g.setAlphaColor((0x00FFFF | mask) & and);
 			__g.fillRect(off + 45, off + 10, off + 10, off + 20);
 			
-			__g.setAlphaColor(0x0000FF | mask);
+			__g.setAlphaColor((0x0000FF | mask) & and);
 			__g.fillRect(off + 60, off + 20, off + 10, off + 9000);
 			
-			__g.setAlphaColor(0xFF00FF | mask);
+			__g.setAlphaColor((0xFF00FF | mask) & and);
 			__g.fillRect(off + -40, off + 50, off + 9000, off + 70);
 		}
 	}	
