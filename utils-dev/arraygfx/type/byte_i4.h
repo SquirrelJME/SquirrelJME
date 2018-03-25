@@ -4,4 +4,5 @@
 #define TYPE byte
 #define HAS_PALETTE
 #define TYPE_SHIFT 1
+#define PALETTE_SIZE 16
 

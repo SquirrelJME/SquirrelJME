@@ -3,4 +3,5 @@
 #define TemplateArrayGraphics ShortIndexed16ArrayGraphics
 #define TYPE short
 #define HAS_PALETTE
+#define PALETTE_SIZE 65536
 

@@ -3,4 +3,5 @@
 #define TemplateArrayGraphics ByteIndexed8ArrayGraphics
 #define TYPE byte
 #define HAS_PALETTE
+#define PALETTE_SIZE 256
 
