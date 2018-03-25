@@ -1,0 +1,59 @@
+# 2018/03/25
+
+## 00:01
+
+So now I have a good enough divide by 3, now I need to figure out a good way
+to average 0xRRGGBB values.
+
+## 00:06
+
+So this is my initial code:
+
+ * `((n >>> 16) & 0xFF) + ((n >>> 8) & 0xFF) + (n & 0xFF)`
+ * 7 operations.
+
+But what I can do is shift some values up the alpha range which will basically
+not need a mask.
+
+ * `((n << 8) + (n << 16) + (n << 24)) >>> 24`
+ * 6 operations.
+
+Of course I lose overflow in this.
+
+## 00:16
+
+But the result I want is: `average` which I can then do some other things with
+it accordingly.
+
+## 00:23
+
+Actually I could use that average thing. Basically I can just shift down the red
+and average. That means...
+
+ * Red averages into green.
+ * Green averages into blue.
+
+Blue is like the least sensitive color so it might not be so bad.
+
+## 01:01
+
+Maybe using this C preprocessor and such is too ugly. It would probably be
+much easier to write a program which can output Java source code accordingly
+and do that. I think in the long run that would be easier to maintain and I
+could do some insane things in a hopefully safe means. The code generator
+could also be a bit safer and portable too. I think one thing I could avoid
+is comments. But one thing I could do though, although it would result in lots
+of code duplication which I do not want would be write it all in Jasmin. I
+could do it but I would end up with lots of duplicated code. One of the big
+things is duplicated code, definitely I should probably just drop the
+generators and instead have a base class which does all the things. But then
+once the actual drawing has to be done another method is called which does
+the thing. That would be a bit duplicated but it would work out. It would
+be easier to maintain in the long run. Additionally I can make most of the
+graphics methods final or abstract as needed. The complex code generator
+would work but personally it is far too complex for my tastes. It would
+reduce duplicate code but that too complicates things. One thing that I will
+never do though is call a method from within a loop, because that would be
+a really bad thing to do. That is where most of the slowdown is, so if I
+call a method it must only be called once for each invocation and that is
+it.
