@@ -52,6 +52,9 @@ public final class TemplateArrayGraphics
 #if defined(HAS_PALETTE)
 	/** The palette used for drawing. */
 	private final int[] _palette;
+	
+	/** The colors which are pre-calculated for blending colors. */
+	private final TYPE[] _blendcolors;
 #endif
 	
 	/** The current blending mode. */
@@ -59,8 +62,10 @@ public final class TemplateArrayGraphics
 		SRC_OVER;
 	
 	/** The current color. */
-	protected int color =
-		0xFF_000000;
+	protected int color;
+	
+	/** The color to paint. */
+	protected int paintcolor;
 	
 	/** The current stroke style. */
 	protected int strokestyle =
@@ -160,6 +165,9 @@ public final class TemplateArrayGraphics
 		// Initially clip to the image bounds
 		this.clipex = __width;
 		this.clipey = __height;
+		
+		// Initialize the color
+		this.setAlphaColor(0xFF000000);
 	}
 	
 	/**
