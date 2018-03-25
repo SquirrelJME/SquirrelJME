@@ -29,6 +29,10 @@ public final class ByteIndexed2ArrayGraphics
 	protected final int pitch;
 	/** The offset into the buffer data. */
 	protected final int offset;
+	/** The number of elements that consist of pixel data. */
+	protected final int numelements;
+	/** Physical end of the buffer. */
+	protected final int lastelement;
 	/** The array containing the buffer data. */
 	private final byte[] _buffer;
 	/** The palette used for drawing. */
@@ -60,14 +64,31 @@ public final class ByteIndexed2ArrayGraphics
 			throw new NullPointerException("NARG");
 		// The palette is directly used and may change!
 		this._palette = __pal;
-		if (true)
-			throw new todo.TODO();
+		// {@squirreljme.error EBT0 Invalid width and/or height specified.}
+		if (__width <= 0 || __height <= 0)
+			throw new IllegalArgumentException("EBT0");
+		// {@squirreljme.error EBT1 The pitch is less than the width.}
+		if (__pitch < __width)
+			throw new IllegalArgumentException("EBT1");
+		// Count the number of actual elements which may be shifted down
+		// if there are more pixels per element
+		// {@squirreljme.error EBT2 The specified parameters exceed the bounds
+		// of the array. (The pitch; The height; The offset; The pitch;
+		// The array length; The number of elements in the image)}
+		int numelements = (__pitch * __height) >>> 2,
+		lastelement = __offset + numelements;
+		if (__offset < 0 || lastelement > __buf.length)
+			throw new ArrayIndexOutOfBoundsException(
+				String.format("EBT2 %d %d %d %d %d %d", __pitch, __height,
+					__offset, __pitch, __buf.length, numelements));
 		// Set parameters
-		this.buffer = __buf;
+		this._buffer = __buf;
 		this.width = __width;
 		this.height = __height;
 		this.pitch = __pitch;
 		this.offset = __offset;
+		this.numelements = numelements;
+		this.lastelement = lastelement;
 	}
 	/**
 	 * {@inheritDoc}
