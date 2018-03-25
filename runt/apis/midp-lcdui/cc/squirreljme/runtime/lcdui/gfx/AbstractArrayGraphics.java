@@ -489,8 +489,9 @@ public abstract class AbstractArrayGraphics
 		if (ey > clipey)
 			ey = clipey;
 		
-		// Calculate actual width used
+		// Calculate actual dimensions used
 		__w = ex - __x;
+		__h = ey - __y;
 		
 		// Perform drawing
 		if (this.doblending)

@@ -108,6 +108,9 @@ public final class DemoParts
 		
 		__g.setAlphaColor(0xFF0000FF);
 		__g.fillRect(60, 20, 10, 9000);
+		
+		__g.setAlphaColor(0xFFFF00FF);
+		__g.fillRect(-40, 50, 9000, 70);
 	}	
 }
 
