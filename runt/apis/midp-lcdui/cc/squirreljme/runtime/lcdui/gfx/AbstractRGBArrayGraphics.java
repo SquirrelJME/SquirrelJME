@@ -23,9 +23,6 @@ import javax.microedition.lcdui.Text;
 public abstract class AbstractRGBArrayGraphics
 	extends AbstractArrayGraphics
 {
-	/** Is there an alpha channel for this. */
-	protected final boolean hasalpha;
-	
 	/** The alpha mask. */
 	protected final int alphamask;
 	
@@ -74,9 +71,7 @@ public abstract class AbstractRGBArrayGraphics
 		int __gmask, int __bmask)
 		throws IllegalArgumentException, NullPointerException
 	{
-		super(__w, __h, __p, __o, __l, __ppe);
-		
-		this.hasalpha = __alpha;
+		super(__w, __h, __p, __o, __l, __ppe, __alpha);
 		
 		// Set shifts and masks
 		this.alphamask = __amask;

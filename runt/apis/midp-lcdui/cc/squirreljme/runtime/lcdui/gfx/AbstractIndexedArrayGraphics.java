@@ -49,7 +49,7 @@ public abstract class AbstractIndexedArrayGraphics
 		int __l, int __ppe, int[] __pal, int __numc)
 		throws IllegalArgumentException, NullPointerException
 	{
-		super(__w, __h, __p, __o, __l, __ppe);
+		super(__w, __h, __p, __o, __l, __ppe, false);
 		
 		if (__pal == null)
 			throw new NullPointerException("NARG");
