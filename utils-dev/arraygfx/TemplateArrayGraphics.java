@@ -119,6 +119,11 @@ public final class TemplateArrayGraphics
 		if (__pal == null)
 			throw new NullPointerException("NARG");
 		
+		// {@squirreljme.error EBT7 The input palette does not have enough
+		// entries to store color information.}
+		if (__pal.length < PALETTE_SIZE)
+			throw new IllegalArgumentException("EBT7");
+		
 		// The palette is directly used and may change!
 		this._palette = __pal;
 #endif
