@@ -1,0 +1,87 @@
+# 2018/03/24
+
+## 03:43
+
+Using the look and feel (Swing's default Metal) and using it for frames too
+results in really fast rendering. I suppose there is a slowdown for the GTK
+based widgets.
+
+## 12:13
+
+I really like how LCDUI is turning out now. I think I can really implement all
+of it using these methods. The code is clean and quite concise.
+
+## 12:48
+
+Okay so this will be the one spot I have always had difficulty doing because I
+was not sure how it would be handled. But right now I will have to work on
+fonts. Currently how the font system works is a bit complicated. Fonts and their
+glyphs need to be visible for rendering. But I cannot really render anything
+right now. So before I go into fonts I need to implement all of the graphics
+drawing routines. Then develop the font rasterization routines when I get there
+and develop the fonts. I will also need to draw all the glyphs by hand too for
+the most part, but at least with FontForge that is just tedious.
+
+## 14:22
+
+When it comes to indexed mode, I still need to support alpha levels even for
+indexed things when drawing graphics. So I think for indexed modes, that when a
+color is set there are pre-calculated alpha blended values for each palette
+entry. Since I will make these always opaque (having alpha indexed values does
+not really make sense and these indexed ones will in most cases be used for
+target device drawing in pretty much all cases) there would only be about a
+given amount based on the size of the palette calculations to be done when a
+color is actually changed. But this could be done regardless but for speed
+purposes I will not do that.
+
+## 20:44
+
+Oh yeah, so removing the primitive horizontal line will make rendering faster
+because I want to avoid method calls whereever possible when it comes to the
+bulk drawing operations. But in the end, the code will be far faster although
+lots of it will be duplicated. At least I only need to change a single class
+now.
+
+## 22:10
+
+Next thing to do after this base code is setting of colors since that is
+really important first step. I need a way for indexed code to have a kind of
+scoring system based on HSV or similar. But I think I want to move the bits
+around so that some bits have more effect. So it will basically be a speed
+code for a value.
+
+## 22:13
+
+Before that though, I should choose a better color for the initial canvas
+color and such.
+
+## 23:03
+
+Well, HSV would be more accurate, but I think something which would be fastest
+would be if it just operated on the integer parts. Would want it to work in
+whole bits first. But basically HSV would be more accurate, but for indexed
+modes where colors might not be matched, I want something fast and simple to
+calculate.
+
+## 23:22
+
+Okay so I have an idea, basically I can compare colors by lightness first and
+have that as a higher part of the score. Then there can be a kind of color
+component additionally to hopefully find a better match after that.
+
+## 23:41
+
+Okay so my initial setup will be turning 0xRRGGBB, adding them together and
+then dividing that by three. But division by three can be done with basically
+some magic: `(n * 0x5555556) >> 32`. So I need to do some tests to see if I
+can avoid 64-bit math.
+
+## 23:45
+
+Okay so according to Stack Overflow a good fast divide by three would be
+this: `(n * 341) >> 10`. So let me see.
+
+## 23:59
+
+A bit inaccurate and off by one, but it is good enough for me as it is only
+being used as a score of sorts.
