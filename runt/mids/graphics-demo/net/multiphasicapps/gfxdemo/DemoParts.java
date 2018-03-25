@@ -97,20 +97,27 @@ public final class DemoParts
 		if (__g == null)
 			throw new NullPointerException("NARG");
 		
-		__g.setAlphaColor(0xFFFFFFFF);
-		__g.fillRect(-10, -10, 20, 20);
-		
-		__g.setAlphaColor(0xFFFF0000);
-		__g.fillRect(30, 0, 10, 10);
-		
-		__g.setAlphaColor(0xFF00FFFF);
-		__g.fillRect(45, 10, 10, 20);
-		
-		__g.setAlphaColor(0xFF0000FF);
-		__g.fillRect(60, 20, 10, 9000);
-		
-		__g.setAlphaColor(0xFFFF00FF);
-		__g.fillRect(-40, 50, 9000, 70);
+		// Draw solid then alpha bits
+		for (int z = 0; z < 2; z++)
+		{
+			int off = (z == 0 ? 0 : 40),
+				mask = (z == 0 ? 0xFF000000 : 0x7F000000);
+			
+			__g.setAlphaColor(0xFFFFFF | mask);
+			__g.fillRect(off + -10, off + -10, off + 20, off + 20);
+			
+			__g.setAlphaColor(0xFF0000 | mask);
+			__g.fillRect(off + 30, off + 0, off + 10, off + 10);
+			
+			__g.setAlphaColor(0x00FFFF | mask);
+			__g.fillRect(off + 45, off + 10, off + 10, off + 20);
+			
+			__g.setAlphaColor(0x0000FF | mask);
+			__g.fillRect(off + 60, off + 20, off + 10, off + 9000);
+			
+			__g.setAlphaColor(0xFF00FF | mask);
+			__g.fillRect(off + -40, off + 50, off + 9000, off + 70);
+		}
 	}	
 }
 
