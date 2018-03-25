@@ -66,7 +66,7 @@ public final class ByteIndexed8ArrayGraphics
 	protected int color;
 
 	/** The color to paint. */
-	protected int paintcolor;
+	protected byte paintcolor;
 
 	/** The current stroke style. */
 	protected int strokestyle =
@@ -741,6 +741,12 @@ public final class ByteIndexed8ArrayGraphics
 	@Override
 	public final void setAlphaColor(int __argb)
 	{
+		// Always store the original used color
+		this.color = __argb;
+
+
+		// Find the closest matching color to use as the paint color, also
+		// initialize the blending table for blending operations
 		throw new todo.TODO();
 	}
 
