@@ -26,6 +26,9 @@ public abstract class AbstractRGBArrayGraphics
 	/** The alpha mask. */
 	protected final int alphamask;
 	
+	/** The alpha value mask. */
+	protected final int alphavalmask;
+	
 	/** The alpha shift. */
 	protected final int alphashift;
 	
@@ -35,17 +38,44 @@ public abstract class AbstractRGBArrayGraphics
 	/** The red shift. */
 	protected final int redshift;
 	
+	/** The red value mask. */
+	protected final int redvalmask;
+	
+	/** Downshift for red. */
+	protected final int reddownshift;
+	
 	/** The green mask. */
 	protected final int greenmask;
 	
 	/** The green shift. */
 	protected final int greenshift;
 	
+	/** The green value mask. */
+	protected final int greenvalmask;
+	
+	/** Downshift for green. */
+	protected final int greendownshift;
+	
 	/** The blue mask. */
 	protected final int bluemask;
 	
 	/** The blue shift. */
 	protected final int blueshift;
+	
+	/** The blue value mask. */
+	protected final int bluevalmask;
+	
+	/** Downshift for blue. */
+	protected final int bluedownshift;
+	
+	/** The painting alpha color. */
+	protected int paintalpha;
+	
+	/** The color to use for painting. */
+	protected int paintcolor;
+	
+	/** The alpha color and normal color for painting. */
+	protected int paintalphacolor;
 	
 	/**
 	 * Initializes the base graphics.
@@ -73,15 +103,63 @@ public abstract class AbstractRGBArrayGraphics
 	{
 		super(__w, __h, __p, __o, __l, __ppe, __alpha);
 		
-		// Set shifts and masks
-		this.alphamask = __amask;
-		this.alphashift = Integer.numberOfTrailingZeros(__amask);
+		// The alpha mask is only valid if there is an alpha channel
+		if (__alpha)
+		{
+			int alphashift = Integer.numberOfTrailingZeros(__amask);
+			
+			this.alphamask = __amask;
+			this.alphashift = alphashift;
+			this.alphavalmask = __amask >>> alphashift;
+		}
+		else
+		{
+			this.alphamask = 0;
+			this.alphashift = 0;
+			this.alphavalmask = 0;
+		}
+		
+		int redshift = Integer.numberOfTrailingZeros(__rmask),
+			greenshift = Integer.numberOfTrailingZeros(__gmask),
+			blueshift = Integer.numberOfTrailingZeros(__bmask);
+		
+		// Red
 		this.redmask = __rmask;
-		this.redshift = Integer.numberOfTrailingZeros(__rmask);
+		this.redshift = redshift;
+		this.redvalmask = __rmask >>> redshift;
+		this.reddownshift = 16 - redshift;
+		
+		// Green
 		this.greenmask = __gmask;
-		this.greenshift = Integer.numberOfTrailingZeros(__gmask);
+		this.greenshift = greenshift;
+		this.greenvalmask = __gmask >>> greenshift;
+		this.greendownshift = 8 - greenshift;
+		
+		// Blue
 		this.bluemask = __bmask;
-		this.blueshift = Integer.numberOfTrailingZeros(__bmask);
+		this.blueshift = blueshift;
+		this.bluevalmask = __bmask >>> blueshift;
+		this.bluedownshift = 0 - blueshift;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/25
+	 */
+	@Override
+	protected final void internalSetColor(int __a, int __rgb, boolean __blend)
+	{
+		// Set plain alpha color
+		this.paintalpha = __a;
+		
+		// Shift the component arround correctly
+		int paintcolor = ((__rgb >>> this.reddownshift) & this.redmask) |
+				((__rgb >>> this.greendownshift) & this.greenmask) |
+				((__rgb >>> this.bluedownshift) & this.bluemask),
+			paintalphacolor = paintcolor |
+				((__a & this.alphavalmask) << this.alphashift);
+		this.paintcolor = paintcolor;
+		this.paintalphacolor = paintalphacolor;
 	}
 }
 

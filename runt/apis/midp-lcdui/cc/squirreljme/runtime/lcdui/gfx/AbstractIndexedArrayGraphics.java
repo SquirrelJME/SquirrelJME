@@ -27,6 +27,9 @@ public abstract class AbstractIndexedArrayGraphics
 	/** The palette data. */
 	protected final int[] palette;
 	
+	/** The scores for quick color lookup. */
+	protected final int[] scores;
+	
 	/** The number of colors in the palette. */
 	protected final int numcolors;
 	
@@ -59,7 +62,48 @@ public abstract class AbstractIndexedArrayGraphics
 		if (__pal.length < __numc)
 			throw new IllegalArgumentException("EB2f");
 		
+		// Score all colors in the palette for faster lookup potentially
+		int[] scores = new int[__numc];
+		for (int i = 0; i < __numc; i++)
+			scores[i] = scoreColor(__pal[i]);
+		
+		this.palette = __pal;
+		this.scores = scores;
+		this.numcolors = __numc;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/25
+	 */
+	@Override
+	protected final void internalSetColor(int __a, int __rgb, boolean __blend)
+	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * This creates a score for the given color which is used to approximate
+	 * and quickly for finding a color in a palette.
+	 *
+	 * @param __rgb The input RGB color.
+	 * @since 2018/03/25
+	 */
+	public static final int scoreColor(int __rgb)
+	{
+		// Mask out alpha always
+		__rgb &= 0xFF000000;
+		
+		// Average the three color channels and set them as the high priority
+		// bits so that the average of the color is chosen first
+		// Then mix in an average of the red/green and green/blue components
+		// The lowest 8-bits is set to red so that similar red/green matches
+		// better
+		int red = (__rgb >>> 16);
+		return (((((red + ((__rgb >>> 16) & 0xFF) + (__rgb & 0xFF))
+			* 341) >> 10) << 24) |
+			((((__rgb >>> 8) + (__rgb & 0xFFFF))) >>> 1) << 8) |
+			red;
 	}
 }
 
