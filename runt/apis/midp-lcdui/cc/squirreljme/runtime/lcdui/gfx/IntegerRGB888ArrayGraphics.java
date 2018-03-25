@@ -78,9 +78,9 @@ public final class IntegerRGB888ArrayGraphics
 			offset = this.offset;
 		
 		// Just a simple color fill
-		for (int y = __y; y != __ey; y++)
-			for (int dest = offset + (__y * pitch) + __x, pex = dest + __w;
-				dest != pex; dest++)
+		for (int y = __y; y < __ey; y++)
+			for (int dest = offset + (y * pitch) + __x, pex = dest + __w;
+				dest < pex; dest++)
 				buffer[dest] = b;
 	}
 }
