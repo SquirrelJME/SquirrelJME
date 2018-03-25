@@ -7,11 +7,18 @@
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
+
 package cc.squirreljme.runtime.lcdui.gfx;
+
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.Text;
+
+
+
+
+
 /**
  * This class is automatically generated to from a template to support
  * multiple pixel formats which are backed by arrays.
@@ -23,25 +30,71 @@ public final class ByteIndexed8ArrayGraphics
 {
 	/** The width of the image. */
 	protected final int width;
+
 	/** The height of the image. */
 	protected final int height;
+
 	/** The pitch of the image. */
 	protected final int pitch;
+
 	/** The offset into the buffer data. */
 	protected final int offset;
+
 	/** The number of elements that consist of pixel data. */
 	protected final int numelements;
+
 	/** Physical end of the buffer. */
 	protected final int lastelement;
+
+
 	/** The array containing the buffer data. */
 	private final byte[] _buffer;
+
+
 	/** The palette used for drawing. */
 	private final int[] _palette;
+
+
+	/** The current blending mode. */
+	protected int blendmode =
+		SRC_OVER;
+
+	/** The current color. */
+	protected int color =
+		0xFF_000000;
+
+	/** The current stroke style. */
+	protected int strokestyle =
+		SOLID;
+
+	/** Translated X coordinate. */
+	protected int transx;
+
+	/** Translated Y coordinate. */
+	protected int transy;
+
+	/** The starting X clip. */
+	protected int clipsx;
+
+	/** The starting Y clip. */
+	protected int clipsy;
+
+	/** The ending X clip. */
+	protected int clipex;
+
+	/** The ending Y clip. */
+	protected int clipey;
+
+	/** The current font, null means default. */
+	protected Font font;
+
 	/**
 	 * Initializes the graphics drawer which draws into the given array.
 	 *
 	 * @param __buf The buffer to draw into.
+
 	 * @param __pal The palette data.
+
 	 * @param __width The width of the image.
 	 * @param __height The height of the image.
 	 * @param __pitch The image pitch.
@@ -53,23 +106,32 @@ public final class ByteIndexed8ArrayGraphics
 	 * @since 2018/03/24
 	 */
 	public ByteIndexed8ArrayGraphics(byte[] __buf,
+
 		int[] __pal,
+
 		int __width, int __height, int __pitch, int __offset)
 	throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
 		   NullPointerException
 	{
 		if (__buf == null)
 			throw new NullPointerException("NARG");
+
+
 		if (__pal == null)
 			throw new NullPointerException("NARG");
+
 		// The palette is directly used and may change!
 		this._palette = __pal;
+
+
 		// {@squirreljme.error EBT0 Invalid width and/or height specified.}
 		if (__width <= 0 || __height <= 0)
 			throw new IllegalArgumentException("EBT0");
+
 		// {@squirreljme.error EBT1 The pitch is less than the width.}
 		if (__pitch < __width)
 			throw new IllegalArgumentException("EBT1");
+
 		// Count the number of actual elements which may be shifted down
 		// if there are more pixels per element
 		// {@squirreljme.error EBT2 The specified parameters exceed the bounds
@@ -81,6 +143,7 @@ public final class ByteIndexed8ArrayGraphics
 			throw new ArrayIndexOutOfBoundsException(
 				String.format("EBT2 %d %d %d %d %d %d", __pitch, __height,
 					__offset, __pitch, __buf.length, numelements));
+
 		// Set parameters
 		this._buffer = __buf;
 		this.width = __width;
@@ -89,7 +152,12 @@ public final class ByteIndexed8ArrayGraphics
 		this.offset = __offset;
 		this.numelements = numelements;
 		this.lastelement = lastelement;
+
+		// Initially clip to the image bounds
+		this.clipex = __width;
+		this.clipey = __height;
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -97,8 +165,63 @@ public final class ByteIndexed8ArrayGraphics
 	@Override
 	public final void clipRect(int __x, int __y, int __w, int __h)
 	{
-		throw new todo.TODO();
+		// Translate
+		__x += this.transx;
+		__y += this.transy;
+
+		// Get right end coordinates
+		int ex = __x + __w,
+			ey = __y + __h;
+
+		// Swap X if lower
+		if (ex < __x)
+		{
+			int boop = __x;
+			__x = ex;
+			ex = boop;
+		}
+
+		// Same for Y
+		if (ey < __y)
+		{
+			int boop = __y;
+			__y = ey;
+			ey = boop;
+		}
+
+		// Never go past the end of the viewport because pixels will never
+		// be drawn in negative regions
+		if (__x < 0)
+			__x = 0;
+		if (__y < 0)
+			__y = 0;
+
+		// Additionally do not go past the edge ever that way the end
+		// clipping point is always valid
+		int width = this.width,
+			height = this.height;
+		if (ex > width)
+			ex = width;
+		if (ey > height)
+			ey = height;
+
+		// Get the old clipping bounds
+		int oldclipsx = this.clipsx,
+			oldclipsy = this.clipsy,
+			oldclipex = this.clipex,
+			oldclipey = this.clipey;
+
+		// Only set the clipping bounds if they exceed the previous ones
+		if (__x > oldclipsx)
+			this.clipsx = __x;
+		if (__y > oldclipsy)
+			this.clipsy = __y;
+		if (ex < clipex)
+			this.clipex = ex;
+		if (ey < clipey)
+			this.clipey = ey;
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -110,6 +233,7 @@ public final class ByteIndexed8ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -120,6 +244,7 @@ public final class ByteIndexed8ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -131,6 +256,7 @@ public final class ByteIndexed8ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -140,6 +266,7 @@ public final class ByteIndexed8ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -151,6 +278,7 @@ public final class ByteIndexed8ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -161,6 +289,7 @@ public final class ByteIndexed8ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -170,6 +299,7 @@ public final class ByteIndexed8ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -181,6 +311,7 @@ public final class ByteIndexed8ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -192,6 +323,7 @@ public final class ByteIndexed8ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -201,6 +333,7 @@ public final class ByteIndexed8ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -213,6 +346,7 @@ public final class ByteIndexed8ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -225,6 +359,7 @@ public final class ByteIndexed8ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -235,6 +370,7 @@ public final class ByteIndexed8ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -246,6 +382,7 @@ public final class ByteIndexed8ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -257,6 +394,7 @@ public final class ByteIndexed8ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -266,6 +404,7 @@ public final class ByteIndexed8ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -276,6 +415,7 @@ public final class ByteIndexed8ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -285,6 +425,7 @@ public final class ByteIndexed8ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -295,6 +436,7 @@ public final class ByteIndexed8ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -305,6 +447,7 @@ public final class ByteIndexed8ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -312,8 +455,9 @@ public final class ByteIndexed8ArrayGraphics
 	@Override
 	public final int getAlpha()
 	{
-		throw new todo.TODO();
+		return (this.color >> 24) & 0xFF;
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -321,8 +465,9 @@ public final class ByteIndexed8ArrayGraphics
 	@Override
 	public final int getAlphaColor()
 	{
-		throw new todo.TODO();
+		return this.color;
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -330,8 +475,9 @@ public final class ByteIndexed8ArrayGraphics
 	@Override
 	public final int getBlendingMode()
 	{
-		throw new todo.TODO();
+		return this.blendmode;
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -339,8 +485,9 @@ public final class ByteIndexed8ArrayGraphics
 	@Override
 	public final int getBlueComponent()
 	{
-		throw new todo.TODO();
+		return (this.color) & 0xFF;
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -348,8 +495,9 @@ public final class ByteIndexed8ArrayGraphics
 	@Override
 	public final int getClipHeight()
 	{
-		throw new todo.TODO();
+		return this.clipey - this.clipsy;
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -357,8 +505,9 @@ public final class ByteIndexed8ArrayGraphics
 	@Override
 	public final int getClipWidth()
 	{
-		throw new todo.TODO();
+		return this.clipex - this.clipsx;
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -366,8 +515,9 @@ public final class ByteIndexed8ArrayGraphics
 	@Override
 	public final int getClipX()
 	{
-		throw new todo.TODO();
+		return this.clipsx - this.transx;
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -375,8 +525,9 @@ public final class ByteIndexed8ArrayGraphics
 	@Override
 	public final int getClipY()
 	{
-		throw new todo.TODO();
+		return this.clipsy - this.transy;
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -384,8 +535,9 @@ public final class ByteIndexed8ArrayGraphics
 	@Override
 	public final int getColor()
 	{
-		throw new todo.TODO();
+		return this.color & 0xFFFFFF;
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -395,6 +547,7 @@ public final class ByteIndexed8ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -402,8 +555,9 @@ public final class ByteIndexed8ArrayGraphics
 	@Override
 	public final Font getFont()
 	{
-		throw new todo.TODO();
+		return this.font;
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -411,8 +565,10 @@ public final class ByteIndexed8ArrayGraphics
 	@Override
 	public final int getGrayScale()
 	{
-		throw new todo.TODO();
+		return (getRedComponent() + getGreenComponent() +
+				getBlueComponent()) / 3;
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -420,8 +576,9 @@ public final class ByteIndexed8ArrayGraphics
 	@Override
 	public final int getGreenComponent()
 	{
-		throw new todo.TODO();
+		return (this.color >> 8) & 0xFF;
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -429,8 +586,9 @@ public final class ByteIndexed8ArrayGraphics
 	@Override
 	public final int getRedComponent()
 	{
-		throw new todo.TODO();
+		return (this.color >> 16) & 0xFF;
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -438,8 +596,9 @@ public final class ByteIndexed8ArrayGraphics
 	@Override
 	public final int getStrokeStyle()
 	{
-		throw new todo.TODO();
+		return this.strokestyle;
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -447,8 +606,9 @@ public final class ByteIndexed8ArrayGraphics
 	@Override
 	public final int getTranslateX()
 	{
-		throw new todo.TODO();
+		return this.transx;
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -456,8 +616,9 @@ public final class ByteIndexed8ArrayGraphics
 	@Override
 	public final int getTranslateY()
 	{
-		throw new todo.TODO();
+		return this.transy;
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -466,8 +627,10 @@ public final class ByteIndexed8ArrayGraphics
 	public final void setAlpha(int __a)
 	throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		this.setAlphaColor(__a, getRedComponent(), getGreenComponent(),
+			getBlueComponent());
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -477,6 +640,7 @@ public final class ByteIndexed8ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -485,8 +649,17 @@ public final class ByteIndexed8ArrayGraphics
 	public final void setAlphaColor(int __a, int __r, int __g, int __b)
 	throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error EBT4 Color out of range. (Alpha; Red; Green;
+		// Blue)}
+		if (__a < 0 || __a > 255 || __r < 0 || __r > 255 ||
+			__g < 0 || __g > 255 || __b < 0 || __b > 255)
+			throw new IllegalArgumentException(String.format(
+					"EBT4 %d %d %d %d", __a, __r, __g, __b));
+
+		// Set
+		this.setAlphaColor((__a << 24) | (__r << 16) | (__g << 8) | __b);
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -495,8 +668,24 @@ public final class ByteIndexed8ArrayGraphics
 	public final void setBlendingMode(int __m)
 	throws IllegalArgumentException
 	{
+		// {@squirreljme.error EBT5 Unknown blending mode.}
+		if (__m != SRC_OVER && __m != SRC)
+			throw new IllegalArgumentException("EBT5");
+
+
+		// {@squirreljme.error EBT6 Cannot set the overlay blending mode
+		// because this graphics context does not have the alpha channel.}
+		if (__m == SRC)
+			throw new IllegalArgumentException("EBT6");
+
+
+		// Set
+		this.blendmode = __m;
+
+		// Calculate some things
 		throw new todo.TODO();
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -504,8 +693,53 @@ public final class ByteIndexed8ArrayGraphics
 	@Override
 	public final void setClip(int __x, int __y, int __w, int __h)
 	{
-		throw new todo.TODO();
+		// Translate
+		__x += this.transx;
+		__y += this.transy;
+
+		// Get right end coordinates
+		int ex = __x + __w,
+			ey = __y + __h;
+
+		// Swap X if lower
+		if (ex < __x)
+		{
+			int boop = __x;
+			__x = ex;
+			ex = boop;
+		}
+
+		// Same for Y
+		if (ey < __y)
+		{
+			int boop = __y;
+			__y = ey;
+			ey = boop;
+		}
+
+		// Never go past the end of the viewport because pixels will never
+		// be drawn in negative regions
+		if (__x < 0)
+			__x = 0;
+		if (__y < 0)
+			__y = 0;
+
+		// Additionally do not go past the edge ever that way the end
+		// clipping point is always valid
+		int width = this.width,
+			height = this.height;
+		if (ex > width)
+			ex = width;
+		if (ey > height)
+			ey = height;
+
+		// Set
+		this.clipsx = __x;
+		this.clipsy = __y;
+		this.clipex = ex;
+		this.clipey = ey;
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -513,8 +747,12 @@ public final class ByteIndexed8ArrayGraphics
 	@Override
 	public final void setColor(int __rgb)
 	{
-		throw new todo.TODO();
+		this.setAlphaColor(getAlpha(),
+			(__rgb >> 16) & 0xFF,
+			(__rgb >>> 8) & 0xFF,
+			__rgb & 0xFF);
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -523,8 +761,9 @@ public final class ByteIndexed8ArrayGraphics
 	public final void setColor(int __r, int __g, int __b)
 	throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		this.setAlphaColor(getAlpha(), __r, __g, __b);
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -532,8 +771,10 @@ public final class ByteIndexed8ArrayGraphics
 	@Override
 	public final void setFont(Font __a)
 	{
-		throw new todo.TODO();
+		// Just set it
+		this.font = __a;
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -541,8 +782,9 @@ public final class ByteIndexed8ArrayGraphics
 	@Override
 	public final void setGrayScale(int __v)
 	{
-		throw new todo.TODO();
+		this.setAlphaColor(getAlpha(), __v, __v, __v);
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -551,8 +793,16 @@ public final class ByteIndexed8ArrayGraphics
 	public final void setStrokeStyle(int __a)
 	throws IllegalArgumentException
 	{
+		// {@squirreljme.error EB0g Illegal stroke style.}
+		if (__a != SOLID && __a != DOTTED)
+			throw new IllegalArgumentException("EB0g");
+
+		// Set
+		this.strokestyle = __a;
+
 		throw new todo.TODO();
 	}
+
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/23
@@ -560,6 +810,7 @@ public final class ByteIndexed8ArrayGraphics
 	@Override
 	public final void translate(int __x, int __y)
 	{
-		throw new todo.TODO();
+		this.transx += __x;
+		this.transy += __y;
 	}
 }
