@@ -47,6 +47,9 @@ public abstract class AbstractArrayGraphics
 	/** The current stroke style. */
 	protected int strokestyle;
 	
+	/** Is a dot stroke being used? */
+	protected boolean dotstroke;
+	
 	/** Translated X coordinate. */
 	protected int transx;
 	
@@ -76,6 +79,12 @@ public abstract class AbstractArrayGraphics
 	
 	/** The current blending mode. */
 	protected int blendmode;
+	
+	/** Could blending be done? */
+	protected boolean candoblending;
+	
+	/** Is blending actually going to be done? */
+	protected boolean doblending;
 	
 	/** The current color. */
 	protected int color;
@@ -125,6 +134,17 @@ public abstract class AbstractArrayGraphics
 		this.lastelement = lastelement;
 		this.hasalphachannel = __alpha;
 	}
+	
+	/**
+	 * Internally sets the color to be used for drawing.
+	 *
+	 * @param __a The alpha level.
+	 * @param __rgb The RGB color.
+	 * @param __blend Is blending to be performed?
+	 * @since 2018/03/25
+	 */
+	protected abstract void internalSetColor(int __a, int __rgb,
+		boolean __blend);
 	
 	/**
 	 * {@inheritDoc}
@@ -618,8 +638,8 @@ public abstract class AbstractArrayGraphics
 		}
 		
 		// Always reset these
-		this.setBlendingMode(SRC_OVER);
 		this.setAlphaColor(0xFF000000);
+		this.setBlendingMode(SRC_OVER);
 		this.setStrokeStyle(SOLID);
 		this.setFont(null);
 	}
@@ -643,7 +663,20 @@ public abstract class AbstractArrayGraphics
 	@Override
 	public final void setAlphaColor(int __argb)
 	{
-		throw new todo.TODO();
+		// Set the original color directly
+		this.color = __argb;
+		
+		// Determine if blending is to be performed or it is just directly
+		// setting values, blending is only performed if the alpha channel
+		// is not fully opaque and blending is permitted
+		int alpha = (__argb >>> 24);
+		boolean doblending = (this.candoblending && alpha != 0xFF);
+		
+		// Set internal blend mode
+		this.doblending = doblending;
+		
+		// Setting the color is internally implemented
+		this.internalSetColor(alpha, __argb & 0xFFFFFF, doblending);
 	}
 	
 	/**
@@ -673,20 +706,38 @@ public abstract class AbstractArrayGraphics
 	public final void setBlendingMode(int __m)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB2i Unknown blending mode.}
-		if (__m != SRC_OVER && __m != SRC)
-			throw new IllegalArgumentException("EB2i");
+		boolean candoblending,
+			oldcandoblending = this.candoblending;
 		
-		// {@squirreljme.error EB2j Cannot set the overlay blending mode
-		// because this graphics context does not have the alpha channel.}
-		if (!this.hasalphachannel && __m == SRC)
-			throw new IllegalArgumentException("EB2j");
+		// Just use source pixels
+		if (__m == SRC)
+		{
+			// {@squirreljme.error EB2j Cannot set the overlay blending mode
+			// because this graphics context does not have the alpha channel.}
+			if (!this.hasalphachannel)
+				throw new IllegalArgumentException("EB2j");
+			
+			candoblending = false;
+		}
+		
+		// Perform blending since this is the default mode
+		else if (__m == SRC_OVER)
+		{
+			candoblending = true;
+		}
+		
+		// {@squirreljme.error EB2i Unknown blending mode.}
+		else
+			throw new IllegalArgumentException("EB2i");
 		
 		// Set
 		this.blendmode = __m;
+		this.candoblending = candoblending;
 		
-		// Calculate some things
-		throw new todo.TODO();
+		// If the blending mode has changed then possible blending tables
+		// need to be recalculated accordingly
+		if (candoblending != oldcandoblending)
+			this.setAlphaColor(this.getAlphaColor());
 	}
 	
 	/**
@@ -804,8 +855,7 @@ public abstract class AbstractArrayGraphics
 		
 		// Set
 		this.strokestyle = __a;
-		
-		throw new todo.TODO();
+		this.dotstroke = (__a == DOTTED);
 	}
 	
 	/**
