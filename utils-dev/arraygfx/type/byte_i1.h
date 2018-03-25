@@ -3,4 +3,5 @@
 #define TemplateArrayGraphics ByteIndexed1ArrayGraphics
 #define TYPE byte
 #define HAS_PALETTE
+#define TYPE_SHIFT 3
 
