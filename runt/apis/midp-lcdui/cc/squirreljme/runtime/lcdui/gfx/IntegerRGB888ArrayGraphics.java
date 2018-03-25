@@ -52,5 +52,36 @@ public final class IntegerRGB888ArrayGraphics
 		// Use default settings
 		this.resetParameters(true);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/25
+	 */
+	@Override
+	protected final void internalFillRectBlend(int __x, int __y, int __ex,
+		int __ey, int __w, int __h)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/25
+	 */
+	@Override
+	protected final void internalFillRectSolid(int __x, int __y, int __ex,
+		int __ey, int __w, int __h)
+	{
+		int b = this.paintcolorhigh;
+		int[] buffer = this.buffer;
+		int pitch = this.pitch,
+			offset = this.offset;
+		
+		// Just a simple color fill
+		for (int y = __y; y != __ey; y++)
+			for (int dest = offset + (__y * pitch) + __x, pex = dest + __w;
+				dest != pex; dest++)
+				buffer[dest] = b;
+	}
 }
 

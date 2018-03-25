@@ -136,6 +136,34 @@ public abstract class AbstractArrayGraphics
 	}
 	
 	/**
+	 * Internal rectangle fill with blending.
+	 *
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __ex The end X coordinate.
+	 * @param __ey The end Y coordinate.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @since 2018/03/25
+	 */
+	protected abstract void internalFillRectBlend(int __x, int __y, int __ex,
+		int __ey, int __w, int __h);
+	
+	/**
+	 * Internal rectangle fill with blending.
+	 *
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __ex The end X coordinate.
+	 * @param __ey The end Y coordinate.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @since 2018/03/25
+	 */
+	protected abstract void internalFillRectSolid(int __x, int __y, int __ex,
+		int __ey, int __w, int __h);
+	
+	/**
 	 * Internally sets the color to be used for drawing.
 	 *
 	 * @param __a The alpha level.
@@ -415,7 +443,60 @@ public abstract class AbstractArrayGraphics
 	@Override
 	public final void fillRect(int __x, int __y, int __w, int __h)
 	{
-		throw new todo.TODO();
+		// Get actual end points
+		int ex = __x + __w,
+			ey = __y + __h;
+			
+		// Translate all coordinates
+		int transx = this.transx,
+			transy = this.transy;
+		__x += transx;
+		__y += transy;
+		ex += transx;
+		ey += transy;
+		
+		// Force lower X
+		if (ex < __x)
+		{
+			int boop = ex;
+			ex = __x;
+			__x = boop;
+		}
+		
+		// Force lower Y
+		if (ey < __y)
+		{
+			int boop = ey;
+			ey = __y;
+			__y = boop;
+		}
+		
+		// Get clipping region
+		int clipsx = this.clipsx,
+			clipsy = this.clipsy,
+			clipex = this.clipex - 1,
+			clipey = this.clipey - 1;
+		
+		// Never clip past the left/top
+		if (__x < clipsx)
+			__x = clipsx;
+		if (__y < clipsy)
+			__y = clipsy;
+		
+		// Never clip past the right/bottom
+		if (ex > clipex)
+			ex = clipex;
+		if (ey > clipey)
+			ey = clipey;
+		
+		// Calculate actual width used
+		__w = ex - __x;
+		
+		// Perform drawing
+		if (this.doblending)
+			this.internalFillRectBlend(__x, __y, ex, ey, __w, __h);
+		else
+			this.internalFillRectSolid(__x, __y, ex, ey, __w, __h);
 	}
 	
 	/**
