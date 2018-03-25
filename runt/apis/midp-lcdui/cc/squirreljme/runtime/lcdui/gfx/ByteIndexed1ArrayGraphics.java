@@ -1,4 +1,11 @@
+
+
+
+
+
 // -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
+
+
 // ---------------------------------------------------------------------------
 // Multi-Phasic Applications: SquirrelJME
 // Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
@@ -14,6 +21,7 @@ import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.Text;
+
 /**
  * This class is automatically generated to from a template to support
  * multiple pixel formats which are backed by arrays.
@@ -64,6 +72,9 @@ public final class ByteIndexed1ArrayGraphics
 
 	/** The current color. */
 	protected int color;
+
+	/** Is blending to be performed when painting a solid color? */
+	protected boolean colorisblending;
 
 	/** The color to paint. */
 	protected byte paintcolor;
@@ -455,15 +466,13 @@ public final class ByteIndexed1ArrayGraphics
 	@Override
 	public final void fillRect(int __x, int __y, int __w, int __h)
 	{
-		throw new todo.TODO();
-		/*
 		// Get actual end points
 		int ex = __x + __w,
-		 ey = __y + __h;
+			ey = __y + __h;
 
 		// Translate all coordinates
 		int transx = this.transx,
-		 transy = this.transy;
+			transy = this.transy;
 		__x += transx;
 		__y += transy;
 		ex += transx;
@@ -472,52 +481,51 @@ public final class ByteIndexed1ArrayGraphics
 		// Force lower X
 		if (ex < __x)
 		{
-		 int boop = ex;
-		 ex = __x;
-		 __x = boop;
+			int boop = ex;
+			ex = __x;
+			__x = boop;
 		}
 
 		// Force lower Y
 		if (ey < __y)
 		{
-		 int boop = ey;
-		 ey = __y;
-		 __y = boop;
+			int boop = ey;
+			ey = __y;
+			__y = boop;
 		}
 
 		// Get clipping region
-		int clipsx = this.clipsx, clipsy = this.clipsy,
-		 clipex = Math.min(primitiveImageWidth(), this.clipex),
-		 clipey = Math.min(primitiveImageHeight(), this.clipey);
+		int clipsx = this.clipsx,
+			clipsy = this.clipsy,
+			clipex = this.clipex - 1,
+			clipey = this.clipey - 1;
 
-		// Box is completely outside the bounds of the clip, do not draw
-		if (ex < clipsx || __x >= clipex || ey < clipsy || __y >= clipey)
-		 return;
+		// Never clip past the left/top
+		__x = ((clipsx) + (((__x) - (clipsx)) & (((__x) - (clipsx)) >> 31)));
+		__y = ((clipsy) + (((__y) - (clipsy)) & (((__y) - (clipsy)) >> 31)));
 
-		// Left vertical shortening
-		boolean lvs = (__x < clipsx);
-		if (lvs)
-		 __x = clipsx;
+		// Never clip past the right/bottom
+		ex = ((clipex) + (((ex) - (clipex)) & (((ex) - (clipex)) >> 31)));
+		ey = ((clipey) + (((ey) - (clipey)) & (((ey) - (clipey)) >> 31)));
 
-		// Right vertical shortening
-		boolean rvs = (ex >= clipex);
-		if (rvs)
-		 ex = clipex - 1;
+		// Calculate actual width used
+		__w = ex - __x;
 
-		// Calculate new width
-		if (lvs || rvs)
-		 __w = ex - __x;
+		// Paint rectangle
+		byte paintcolor = this.paintcolor;
 
-		// Bottom horizontal shortening
-		boolean bhs = (__y < clipsy);
-		if (bhs)
-		 __y = clipsy;
+		// Blending colors
+		if (colorisblending)
+		{
+			throw new todo.TODO();
+		}
 
-		// Top horizontal shortening
-		boolean ths = (ey >= clipey);
-		if (ths)
-		 ey = clipey - 1;
-
+		// Not blending
+		else
+		{
+			throw new todo.TODO();
+		}
+		/*
 		// Calculate line properties
 		int color = this.color;
 		boolean blend = __blend();
@@ -744,10 +752,15 @@ public final class ByteIndexed1ArrayGraphics
 		// Always store the original used color
 		this.color = __argb;
 
+		// Perform blending only if the color
+		this.colorisblending = (this.blendmode == SRC_OVER &&
+				((__argb & 0xFF000000) != 0xFF000000));
+
 
 		// Find the closest matching color to use as the paint color, also
 		// initialize the blending table for blending operations
 		throw new todo.TODO();
+
 	}
 
 	/**
