@@ -79,7 +79,7 @@ public final class TemplateArrayGraphics
 	protected int color;
 	
 	/** The color to paint. */
-	protected int paintcolor;
+	protected TYPE paintcolor;
 	
 	/** The current stroke style. */
 	protected int strokestyle =
@@ -753,7 +753,26 @@ public final class TemplateArrayGraphics
 	@Override
 	public final void setAlphaColor(int __argb)
 	{
+		// Always store the original used color
+		this.color = __argb;
+		
+#if defined(HAS_PALETTE)
+		// Find the closest matching color to use as the paint color, also
+		// initialize the blending table for blending operations
 		throw new todo.TODO();
+		
+#elif defined(FORMAT_INTEGER_ARGB8888)
+		// Uses this color directly
+		this.paintcolor = __argb;
+		
+#elif defined(FORMAT_INTEGER_RGB888)
+		// For 24-bit color, just set the paint color to the removed alpha
+		// color
+		this.paintcolor = (__argb | 0xFF000000);
+		
+#else
+		throw new todo.TODO();
+#endif
 	}
 	
 	/**

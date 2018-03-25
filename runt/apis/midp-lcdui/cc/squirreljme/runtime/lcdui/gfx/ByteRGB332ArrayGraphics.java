@@ -51,7 +51,7 @@ public final class ByteRGB332ArrayGraphics
 	protected int color;
 
 	/** The color to paint. */
-	protected int paintcolor;
+	protected byte paintcolor;
 
 	/** The current stroke style. */
 	protected int strokestyle =
@@ -692,7 +692,10 @@ public final class ByteRGB332ArrayGraphics
 	@Override
 	public final void setAlphaColor(int __argb)
 	{
+		// Always store the original used color
+		this.color = __argb;
 		throw new todo.TODO();
+
 	}
 
 	/**

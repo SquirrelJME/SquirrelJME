@@ -692,7 +692,17 @@ public final class IntegerARGB8888ArrayGraphics
 	@Override
 	public final void setAlphaColor(int __argb)
 	{
-		throw new todo.TODO();
+		// Always store the original used color
+		this.color = __argb;
+
+
+
+
+
+
+
+		// Uses this color directly
+		this.paintcolor = __argb;
 	}
 
 	/**
