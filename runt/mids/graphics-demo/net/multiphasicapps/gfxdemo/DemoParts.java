@@ -43,6 +43,9 @@ public final class DemoParts
 		
 		// Draw lines
 		//DemoParts.paintLines(__g);
+		
+		// Rectangles
+		DemoParts.paintRectangles(__g);
 	}
 	
 	/**
@@ -80,5 +83,31 @@ public final class DemoParts
 			__g.drawLine(20, 30, 2000, 50);
 		}
 	}
+	
+	/**
+	 * Paints a bunch of rectangles.
+	 *
+	 * @param __g The graphics to paint o.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/25
+	 */
+	public static final void paintRectangles(Graphics __g)
+		throws NullPointerException
+	{
+		if (__g == null)
+			throw new NullPointerException("NARG");
+		
+		__g.setAlphaColor(0xFFFFFFFF);
+		__g.fillRect(-10, -10, 20, 20);
+		
+		__g.setAlphaColor(0xFFFF0000);
+		__g.fillRect(30, 0, 10, 10);
+		
+		__g.setAlphaColor(0xFF00FFFF);
+		__g.fillRect(45, 10, 10, 20);
+		
+		__g.setAlphaColor(0xFF0000FF);
+		__g.fillRect(60, 20, 10, 9000);
+	}	
 }
 
