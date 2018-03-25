@@ -2,4 +2,5 @@
 
 #define TemplateArrayGraphics IntegerARGB8888ArrayGraphics
 #define TYPE int
+#define HAS_ALPHA_CHANNEL
 

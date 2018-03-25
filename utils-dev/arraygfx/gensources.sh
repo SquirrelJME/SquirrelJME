@@ -23,7 +23,7 @@ for __type in type/*.h
 do
 	tr '/' '$' < TemplateArrayGraphics.java | \
 	gcc -nostdinc -nostdlib -include "$__type" -E -CC - | \
-		sed '/^\#/d' | sed '/^$/d' | tr '$' '/' | \
+		sed '/^\#/d' | tr '$' '/' | \
 		astyle --style=allman \
 		--close-templates --max-code-length=79 --pad-oper -T4 \
 		--indent-after-parens > /tmp/$$.java

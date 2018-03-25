@@ -2,4 +2,5 @@
 
 #define TemplateArrayGraphics ShortARGB4444ArrayGraphics
 #define TYPE short
+#define HAS_ALPHA_CHANNEL
 
