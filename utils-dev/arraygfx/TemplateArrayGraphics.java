@@ -27,6 +27,14 @@ import javax.microedition.lcdui.Text;
 	#define __codeColor(n) __fakeAvg(n)
 #endif
 
+#if 0
+	#define __min(x, y) ((x) < (y) ? (x) : (y))
+	#define __max(x, y) ((x) > (y) ? (x) : (y))
+#else
+	#define __min(x, y) ((y) + (((x) - (y)) & (((x) - (y)) >> 31)))
+	#define __max(x, y) ((y) + (((x) - (y)) & (((x) - (y)) >> 31)))
+#endif
+
 /**
  * This class is automatically generated to from a template to support
  * multiple pixel formats which are backed by arrays.
@@ -77,6 +85,9 @@ public final class TemplateArrayGraphics
 	
 	/** The current color. */
 	protected int color;
+	
+	/** Is blending to be performed when painting a solid color? */
+	protected boolean colorisblending;
 	
 	/** The color to paint. */
 	protected TYPE paintcolor;
@@ -467,8 +478,6 @@ public final class TemplateArrayGraphics
 	@Override
 	public final void fillRect(int __x, int __y, int __w, int __h)
 	{
-		throw new todo.TODO();
-		/*
 		// Get actual end points
 		int ex = __x + __w,
 			ey = __y + __h;
@@ -498,38 +507,37 @@ public final class TemplateArrayGraphics
 		}
 		
 		// Get clipping region
-		int clipsx = this.clipsx, clipsy = this.clipsy,
-			clipex = Math.min(primitiveImageWidth(), this.clipex),
-			clipey = Math.min(primitiveImageHeight(), this.clipey);
+		int clipsx = this.clipsx,
+			clipsy = this.clipsy,
+			clipex = this.clipex - 1,
+			clipey = this.clipey - 1;
 		
-		// Box is completely outside the bounds of the clip, do not draw
-		if (ex < clipsx || __x >= clipex || ey < clipsy || __y >= clipey)
-			return;
+		// Never clip past the left/top
+		__x = __max(__x, clipsx);
+		__y = __max(__y, clipsy);
 		
-		// Left vertical shortening
-		boolean lvs = (__x < clipsx);
-		if (lvs)
-			__x = clipsx;
+		// Never clip past the right/bottom
+		ex = __min(ex, clipex);
+		ey = __min(ey, clipey);
 		
-		// Right vertical shortening
-		boolean rvs = (ex >= clipex);
-		if (rvs)
-			ex = clipex - 1;
+		// Calculate actual width used
+		__w = ex - __x;
 		
-		// Calculate new width
-		if (lvs || rvs)
-			__w = ex - __x;
+		// Paint rectangle
+		TYPE paintcolor = this.paintcolor;
 		
-		// Bottom horizontal shortening
-		boolean bhs = (__y < clipsy);
-		if (bhs)
-			__y = clipsy;
+		// Blending colors
+		if (colorisblending)
+		{
+			throw new todo.TODO();
+		}
 		
-		// Top horizontal shortening
-		boolean ths = (ey >= clipey);
-		if (ths)
-			ey = clipey - 1;
-		
+		// Not blending
+		else
+		{
+			throw new todo.TODO();
+		}
+		/*
 		// Calculate line properties
 		int color = this.color;
 		boolean blend = __blend();
@@ -755,6 +763,10 @@ public final class TemplateArrayGraphics
 	{
 		// Always store the original used color
 		this.color = __argb;
+		
+		// Perform blending only if the color
+		this.colorisblending = (this.blendmode == SRC_OVER &&
+			((__argb & 0xFF000000) != 0xFF000000));
 		
 #if defined(HAS_PALETTE)
 		// Find the closest matching color to use as the paint color, also
