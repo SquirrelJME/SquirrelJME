@@ -14,11 +14,6 @@ import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.Text;
-
-
-
-
-
 /**
  * This class is automatically generated to from a template to support
  * multiple pixel formats which are backed by arrays.
@@ -46,13 +41,21 @@ public final class ByteIndexed4ArrayGraphics
 	/** Physical end of the buffer. */
 	protected final int lastelement;
 
-
 	/** The array containing the buffer data. */
 	private final byte[] _buffer;
 
 
+	/** Number of colors in the palette. */
+	protected final int numcolors;
+
 	/** The palette used for drawing. */
 	private final int[] _palette;
+
+	/** The scores for each palettized item. */
+	private final int[] _palscores;
+
+	/** The colors which are pre-calculated for blending colors. */
+	private final byte[] _blendcolors;
 
 
 	/** The current blending mode. */
@@ -60,8 +63,10 @@ public final class ByteIndexed4ArrayGraphics
 		SRC_OVER;
 
 	/** The current color. */
-	protected int color =
-		0xFF_000000;
+	protected int color;
+
+	/** The color to paint. */
+	protected int paintcolor;
 
 	/** The current stroke style. */
 	protected int strokestyle =
@@ -120,8 +125,11 @@ public final class ByteIndexed4ArrayGraphics
 		if (__pal == null)
 			throw new NullPointerException("NARG");
 
-		// The palette is directly used and may change!
-		this._palette = __pal;
+		// {@squirreljme.error EBT7 The input palette does not have enough
+		// entries to store color information.}
+		int numcolors = __pal.length;
+		if (numcolors < 16)
+			throw new IllegalArgumentException("EBT7");
 
 
 		// {@squirreljme.error EBT0 Invalid width and/or height specified.}
@@ -156,6 +164,30 @@ public final class ByteIndexed4ArrayGraphics
 		// Initially clip to the image bounds
 		this.clipex = __width;
 		this.clipey = __height;
+
+
+		// The palette is directly used and may change, although it will
+		// result in undefined behavior if it is changed and a graphics object
+		// is still valid
+		this._palette = __pal;
+		this.numcolors = numcolors;
+
+		// Initialize the score for each color in the palette
+		int[] palscores = new int[numcolors];
+		for (int i = 0; i < numcolors; i++)
+		{
+			int v = __pal[i] & 0xFFFFFF;
+			palscores[i] = (((((v) >>> 16) ^ ((v) & 0xFFFF)) >> 1) + (((v) >>> 16) & ((
+							v) & 0xFFFF)));
+		}
+		this._palscores = palscores;
+
+		// The blend table is just pre-allocated
+		this._blendcolors = new byte[numcolors];
+
+
+		// Initialize the color
+		this.setAlphaColor(0xFF000000);
 	}
 
 	/**
@@ -424,6 +456,77 @@ public final class ByteIndexed4ArrayGraphics
 	public final void fillRect(int __x, int __y, int __w, int __h)
 	{
 		throw new todo.TODO();
+		/*
+		// Get actual end points
+		int ex = __x + __w,
+		 ey = __y + __h;
+
+		// Translate all coordinates
+		int transx = this.transx,
+		 transy = this.transy;
+		__x += transx;
+		__y += transy;
+		ex += transx;
+		ey += transy;
+
+		// Force lower X
+		if (ex < __x)
+		{
+		 int boop = ex;
+		 ex = __x;
+		 __x = boop;
+		}
+
+		// Force lower Y
+		if (ey < __y)
+		{
+		 int boop = ey;
+		 ey = __y;
+		 __y = boop;
+		}
+
+		// Get clipping region
+		int clipsx = this.clipsx, clipsy = this.clipsy,
+		 clipex = Math.min(primitiveImageWidth(), this.clipex),
+		 clipey = Math.min(primitiveImageHeight(), this.clipey);
+
+		// Box is completely outside the bounds of the clip, do not draw
+		if (ex < clipsx || __x >= clipex || ey < clipsy || __y >= clipey)
+		 return;
+
+		// Left vertical shortening
+		boolean lvs = (__x < clipsx);
+		if (lvs)
+		 __x = clipsx;
+
+		// Right vertical shortening
+		boolean rvs = (ex >= clipex);
+		if (rvs)
+		 ex = clipex - 1;
+
+		// Calculate new width
+		if (lvs || rvs)
+		 __w = ex - __x;
+
+		// Bottom horizontal shortening
+		boolean bhs = (__y < clipsy);
+		if (bhs)
+		 __y = clipsy;
+
+		// Top horizontal shortening
+		boolean ths = (ey >= clipey);
+		if (ths)
+		 ey = clipey - 1;
+
+		// Calculate line properties
+		int color = this.color;
+		boolean blend = __blend();
+		int bor = __blendOr();
+
+		// Draw horizontal spans
+		for (int y = __y; y < ey; y++)
+		 primitiveHorizontalLine(__x, y, __w, color, false, blend, bor);
+		*/
 	}
 
 	/**
