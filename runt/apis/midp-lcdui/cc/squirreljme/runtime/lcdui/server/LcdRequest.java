@@ -22,12 +22,16 @@ import cc.squirreljme.runtime.lcdui.server.requests.CollectableCleanup;
 import cc.squirreljme.runtime.lcdui.server.requests.CollectableCreate;
 import cc.squirreljme.runtime.lcdui.server.requests.DisplayVibrate;
 import cc.squirreljme.runtime.lcdui.server.requests.QueryDisplays;
+import cc.squirreljme.runtime.lcdui.server.requests.TickerGetString;
+import cc.squirreljme.runtime.lcdui.server.requests.TickerSetString;
 import cc.squirreljme.runtime.lcdui.server.requests.WidgetAdd;
 import cc.squirreljme.runtime.lcdui.server.requests.WidgetAlertShow;
 import cc.squirreljme.runtime.lcdui.server.requests.WidgetClearAndSet;
 import cc.squirreljme.runtime.lcdui.server.requests.WidgetGetHeight;
+import cc.squirreljme.runtime.lcdui.server.requests.WidgetGetTicker;
 import cc.squirreljme.runtime.lcdui.server.requests.WidgetGetWidth;
 import cc.squirreljme.runtime.lcdui.server.requests.WidgetRepaint;
+import cc.squirreljme.runtime.lcdui.server.requests.WidgetSetTicker;
 import cc.squirreljme.runtime.lcdui.server.requests.WidgetSetTitle;
 
 /**
@@ -204,7 +208,9 @@ public abstract class LcdRequest
 					__sv.getWidget((Integer)__args[0]),
 					(Integer)__args[1], (Integer)__args[2],
 					(Integer)__args[3], (Integer)__args[4]);
-				
+			
+			
+			
 			case WIDGET_SET_TITLE:
 				return new WidgetSetTitle(__sv,
 					__sv.getWidget((Integer)__args[0]),

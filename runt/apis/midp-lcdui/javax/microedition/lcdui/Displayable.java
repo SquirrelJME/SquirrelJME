@@ -37,6 +37,9 @@ public abstract class Displayable
 	/** Cached title of the displayable. */
 	private volatile String _cachetitle;
 	
+	/** The cached ticker being shown. */
+	private volatile Ticker _cacheticker;
+	
 	/**
 	 * Initializes the base displayable object.
 	 *
@@ -102,9 +105,17 @@ public abstract class Displayable
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Gets the ticker which is being shown on this displayable.
+	 *
+	 * @return The ticker being shown or {@code null} if there is none.
+	 * @since 2018/03/26
+	 */
 	public Ticker getTicker()
 	{
-		throw new todo.TODO();
+		return __Queue__.<Ticker>get(Ticker.class,
+			LcdServiceCall.<Integer>call(Integer.class,
+			LcdFunction.WIDGET_GET_TICKER, this._handle);
 	}
 	
 	/**
@@ -167,9 +178,21 @@ public abstract class Displayable
 		throw new todo.TODO();
 	}
 	
-	public void setTicker(Ticker __a)
+	/**
+	 * Sets or clears the ticker to be shown on this displayable.
+	 *
+	 * @param __t The ticker to be shown on the displayable or {@code null}
+	 * to clear it.
+	 * @since 2018/03/26
+	 */
+	public void setTicker(Ticker __t)
 	{
-		throw new todo.TODO();
+		LcdServiceCall.<VoidType>call(VoidType.class,
+			LcdFunction.WIDGET_SET_TICKER, this._handle, (__t == null ?
+				Integer.MIN_VALUE : __t._handle));
+		
+		// Cache it
+		this._cacheticker = __t;
 	}
 	
 	/**
