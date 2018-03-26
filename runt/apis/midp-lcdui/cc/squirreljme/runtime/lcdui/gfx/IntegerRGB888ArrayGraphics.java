@@ -104,42 +104,5 @@ public final class IntegerRGB888ArrayGraphics
 				dest < pex; dest++)
 				buffer[dest] = b;
 	}
-	
-	/**
-	 * Blends two colors.
-	 *
-	 * @param __src The source color.
-	 * @param __dest The destination color.
-	 * @param __bor The blended OR value on the destination.
-	 * @param __alpha Alpha value which modifies the source.
-	 * @return The resulting blended color.
-	 * @since 2017/02/12
-	 */
-	private static final int __blend(int __src, int __dest, int __bor,
-		int __alpha)
-	{
-		int sa = (((__src >> 24) & 0xFF) * __alpha) / 255;
-		
-		// Split into RGB
-		int sr = (__src >> 16) & 0xFF,
-			sg = (__src >> 8) & 0xFF,
-			sb = (__src) & 0xFF,
-			da = ((__dest >> 24) & 0xFF) | __bor,
-			dr = (__dest >> 16) & 0xFF,
-			dg = (__dest >> 8) & 0xFF,
-			db = (__dest) & 0xFF;
-	
-		// Difference of alpha values
-		int qq = 255 - sa;
-		
-		// Perform blending
-		int xa = ((sa + da - ((sa * da) / 255)) | __bor) & 0xFF,
-			xr = (((sr * sa) + (dr * qq)) / 255) & 0xFF,
-			xg = (((sg * sa) + (dg * qq)) / 255) & 0xFF,
-			xb = (((sb * sa) + (db * qq)) / 255) & 0xFF;
-	
-		// Recompile
-		return (xa << 24) | (xr << 16) | (xg << 8) | xb;
-	}
 }
 
