@@ -113,9 +113,9 @@ public abstract class Displayable
 	 */
 	public Ticker getTicker()
 	{
-		return __Queue__.<Ticker>get(Ticker.class,
+		return __Queue__.INSTANCE.<Ticker>__get(Ticker.class,
 			LcdServiceCall.<Integer>call(Integer.class,
-			LcdFunction.WIDGET_GET_TICKER, this._handle);
+			LcdFunction.WIDGET_GET_TICKER, this._handle));
 	}
 	
 	/**

@@ -189,6 +189,15 @@ public abstract class LcdRequest
 			case COLLECTABLE_CLEANUP:
 				return new CollectableCleanup(__sv,
 					__sv.getCollectable((Integer)__args[0]));
+				
+			case TICKER_GET_STRING:
+				return new TickerGetString(__sv,
+					__sv.<LcdTicker>get(LcdTicker.class, (Integer)__args[0]));
+				
+			case TICKER_SET_STRING:
+				return new TickerSetString(__sv,
+					__sv.<LcdTicker>get(LcdTicker.class, (Integer)__args[0]),
+					(String)__args[1]);
 			
 			case WIDGET_CLEAR_AND_SET:
 				return new WidgetClearAndSet(__sv,
@@ -198,7 +207,11 @@ public abstract class LcdRequest
 			case WIDGET_GET_HEIGHT:
 				return new WidgetGetHeight(__sv,
 					__sv.getWidget((Integer)__args[0]));
-				
+			
+			case WIDGET_GET_TICKER:
+				return new WidgetGetTicker(__sv,
+					__sv.getWidget((Integer)__args[0]));
+			
 			case WIDGET_GET_WIDTH:
 				return new WidgetGetWidth(__sv,
 					__sv.getWidget((Integer)__args[0]));
@@ -209,7 +222,10 @@ public abstract class LcdRequest
 					(Integer)__args[1], (Integer)__args[2],
 					(Integer)__args[3], (Integer)__args[4]);
 			
-			
+			case WIDGET_SET_TICKER:
+				return new WidgetSetTicker(__sv,
+					__sv.getWidget((Integer)__args[0]),
+					__sv.<LcdTicker>get(LcdTicker.class, (Integer)__args[1]));
 			
 			case WIDGET_SET_TITLE:
 				return new WidgetSetTitle(__sv,

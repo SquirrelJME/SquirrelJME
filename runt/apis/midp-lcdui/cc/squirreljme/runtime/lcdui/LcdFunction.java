@@ -48,6 +48,9 @@ public enum LcdFunction
 	/** Returns the widget height. */
 	WIDGET_GET_HEIGHT,
 	
+	/** Gets the ticker of a widget. */
+	WIDGET_GET_TICKER,
+	
 	/** Returns the widget width. */
 	WIDGET_GET_WIDTH,
 	
@@ -94,6 +97,7 @@ public enum LcdFunction
 			case TICKER_GET_STRING:
 			case WIDGET_ADD:
 			case WIDGET_GET_HEIGHT:
+			case WIDGET_GET_TICKER:
 			case WIDGET_GET_WIDTH:
 				return true;
 			

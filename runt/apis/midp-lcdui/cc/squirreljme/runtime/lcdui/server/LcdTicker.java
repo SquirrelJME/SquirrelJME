@@ -59,7 +59,11 @@ public abstract class LcdTicker
 			throw new NullPointerException("NARG");
 		
 		this._text = __t;
+		
+		throw new todo.TODO();
+		/*
 		this.internalSetText(__t);
+		*/
 	}
 	
 	/**
