@@ -8,31 +8,29 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.gfxdemo;
+package net.multiphasicapps.lcduidemo;
 
-import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Image;
+import javax.microedition.lcdui.Display;
+import javax.microedition.midlet.MIDlet;
+import javax.microedition.midlet.MIDletStateChangeException;
 
 /**
- * This is the demonstration canvas which renders all of the kinds of graphics
- * to the screen for demonstration and testing purposes.
+ * This is the main entry point for the graphics demo which initializes the
+ * canvas for rendering.
  *
  * @since 2018/03/23
  */
-public class DemoCanvas
-	extends Canvas
+public final class Main
+	extends MIDlet
 {
 	/**
-	 * Initializes some base things.
-	 *
+	 * {@inheritDoc}
 	 * @since 2018/03/23
 	 */
+	@Override
+	protected void destroyApp(boolean __uc)
+		throws MIDletStateChangeException
 	{
-		this.setTitle("Graphics Demo");
-		
-		// Always clear the background
-		this.setPaintMode(false);
 	}
 	
 	/**
@@ -40,9 +38,10 @@ public class DemoCanvas
 	 * @since 2018/03/23
 	 */
 	@Override
-	protected final void paint(Graphics __g)
+	protected void startApp()
+		throws MIDletStateChangeException
 	{
-		DemoParts.paint(__g);
+		Display.getDisplay(this).setCurrent(new DemoCanvas());
 	}
 }
 
