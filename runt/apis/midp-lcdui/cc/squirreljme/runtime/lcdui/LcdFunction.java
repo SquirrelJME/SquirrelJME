@@ -54,6 +54,9 @@ public enum LcdFunction
 	/** Repaints a widget. */
 	WIDGET_REPAINT,
 	
+	/** Sets the ticker of a widget. */
+	WIDGET_SET_TICKER,
+	
 	/** Sets the title of a widget. */
 	WIDGET_SET_TITLE,
 	
