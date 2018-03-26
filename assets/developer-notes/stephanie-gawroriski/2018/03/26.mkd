@@ -1,0 +1,68 @@
+# 2018/03/26
+
+## 00:11
+
+Okay so working on alpha blending:
+
+	DEBUG -- 00000000 > 000000ff == (00000080, !000000c0!)
+	DEBUG -- 0000ffff > 00000000 == (00007f7f, !00003f3f!)
+	DEBUG -- 00ff0000 > 00407fff == (009e3fa0, !006f5fc0!)
+	DEBUG -- 00ffff00 > 00be3fc0 == (00dd9ebf, !00ce6e90!)
+	DEBUG -- 0000ff00 > 00ff00ff == (00807f80, !00c03fc0!)
+	DEBUG -- 00000000 > 000000ff == (00000080, !000000c0!)
+	DEBUG -- 0000ffff > 00000000 == (00007f7f, !00003f3f!)
+	DEBUG -- 00ff0000 > 00407fff == (009e3fa0, !006f5fc0!)
+	DEBUG -- 00ffff00 > 00be3fc0 == (00dd9ebf, !00ce6e90!)
+	DEBUG -- 0000ff00 > 00ff00ff == (00807f80, !00c03fc0!)
+	DEBUG -- 00000000 > 000000ff == (00000080, !000000c0!)
+	DEBUG -- 0000ffff > 00000000 == (00007f7f, !00003f3f!)
+	DEBUG -- 00ff0000 > 00407fff == (009e3fa0, !006f5fc0!)
+	DEBUG -- 00ffff00 > 00be3fc0 == (00dd9ebf, !00ce6e90!)
+	DEBUG -- 0000ff00 > 00ff00ff == (00807f80, !00c03fc0!)
+
+The right values are correct and it would seem that the left ones are not
+being divided enough so they are larger than usual. They quite literally
+almost double the correct values.
+
+## 00:54
+
+Okay so my color blending results in the wrong results even if the 
+formula is copied directly to the code. So something is very wrong if the
+same code that would execute causes issues like that.
+
+## 00:59
+
+Actually dumb mistake due to how the method was. I was having doubly used
+alpha values in the call which would explain why the colors are much
+darker.
+
+## 01:01
+
+So that took a bit to solve and it is quite late now, but hopefully I can
+move on now and have a fast method I can work on.
+
+## 01:15
+
+I believe it is accurate enough, although I should really divide by 255
+rather than right shifting. I do wonder if within a given range I can
+perform such a division.
+
+## 01:26
+
+Okay I have an idea, flesh out the graphics demo and use stuff like tab
+panes and canvases, that way I can test out all the various drawing
+operations without them needing to be all shown in one place. This would
+be a really great thing for me personally.
+
+## 01:32
+
+But `TabbedPane` cannot be initialized with canvases, only forms and lists.
+However one can add a CustomItem which uses graphics drawing operations to
+allow a canvas be used on an item.
+
+## 01:35
+
+So that is the next goal, using custom items in forms in tabbed panes to show
+off those tab panes and additionally all the various drawing operations as
+needed. It would also act as a good test when implementing other graphics
+things.
