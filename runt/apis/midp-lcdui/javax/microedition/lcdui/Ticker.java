@@ -10,23 +10,63 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.system.type.VoidType;
+import cc.squirreljme.runtime.lcdui.LcdFunction;
+import cc.squirreljme.runtime.lcdui.LcdServiceCall;
+
+/**
+ * A ticker contains an infinitely scrolling message.
+ *
+ * Any {@link Displayable} may have tickers associated with them in which
+ * they will be shown at the top of the screen accordingly. As such these can
+ * be used to convey information as needed.
+ *
+ * @since 2018/03/26
+ */
 public class Ticker
 	extends __Collectable__
 {
-	public Ticker(String __a)
+	/**
+	 * Initializes the ticker with the given string.
+	 *
+	 * @param __s The string to use for the ticker.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/26
+	 */
+	public Ticker(String __s)
+		throws NullPointerException
 	{
-		super();
-		throw new todo.TODO();
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Use internal title set
+		this.setString(__s);
 	}
 	
+	/**
+	 * Returns the string which is currently being displayed in the ticker.
+	 *
+	 * @return The string contained within the ticker.
+	 * @since 2018/03/26
+	 */
 	public String getString()
 	{
-		throw new todo.TODO();
+		return LcdServiceCall.<String>call(String.class,
+			LcdFunction.TICKER_GET_STRING, this._handle);
 	}
 	
-	public void setString(String __a)
+	/**
+	 * Sets the string that is displayed within the ticker.
+	 *
+	 * @param __s The string to use for the ticker.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/26
+	 */
+	public void setString(String __s)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		LcdServiceCall.<VoidType>call(VoidType.class,
+			LcdFunction.TICKER_SET_STRING, this._handle, __s);
 	}
 }
 
