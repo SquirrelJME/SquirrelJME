@@ -11,11 +11,12 @@
 package cc.squirreljme.runtime.javase.lcdui;
 
 import cc.squirreljme.runtime.cldc.system.type.RemoteMethod;
+import cc.squirreljme.runtime.lcdui.CollectableType;
+import cc.squirreljme.runtime.lcdui.server.LcdCollectable;
 import cc.squirreljme.runtime.lcdui.server.LcdDisplay;
 import cc.squirreljme.runtime.lcdui.server.LcdDisplays;
 import cc.squirreljme.runtime.lcdui.server.LcdRequest;
 import cc.squirreljme.runtime.lcdui.server.LcdWidget;
-import cc.squirreljme.runtime.lcdui.WidgetType;
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.SwingUtilities;
 
@@ -33,13 +34,20 @@ public class SwingDisplays
 	 * @since 2018/03/24
 	 */
 	@Override
-	protected LcdWidget internalCreateWidget(int __handle, WidgetType __type)
+	protected LcdCollectable internalCreateCollectable(int __handle,
+		CollectableType __type)
 		throws NullPointerException
 	{
 		if (__type == null)
 			throw new NullPointerException("NARG");
 		
-		return new SwingWidget(__handle, __type);
+		if (__type.isWidget())
+			return new SwingWidget(__handle, __type);
+		
+		// {@squirreljme.error AF0c Do not know how to create the given
+		// collectable. (The collectable type)}
+		else
+			throw new RuntimeException(String.format("AF0c %s", __type));
 	}
 	
 	/**
