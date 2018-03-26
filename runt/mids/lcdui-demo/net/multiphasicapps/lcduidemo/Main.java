@@ -42,11 +42,7 @@ public final class Main
 	protected void startApp()
 		throws MIDletStateChangeException
 	{
-		// Setup tabbed pane
-		TabbedPane tabs = new TabbedPane("Graphics Demo", true, false);
-		
-		// Use those tabs
-		Display.getDisplay(this).setCurrent(tabs);
+		Display.getDisplay(this).setCurrent(new DemoCanvas());
 	}
 }
 
