@@ -10,8 +10,8 @@
 
 package cc.squirreljme.runtime.javase.lcdui;
 
+import cc.squirreljme.runtime.lcdui.CollectableType;
 import cc.squirreljme.runtime.lcdui.server.LcdWidget;
-import cc.squirreljme.runtime.lcdui.WidgetType;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import javax.swing.JComponent;
@@ -37,7 +37,7 @@ public class SwingWidget
 	 * @param __cb The callback manager.
 	 * @since 2018/03/18
 	 */
-	public SwingWidget(int __handle, WidgetType __type)
+	public SwingWidget(int __handle, CollectableType __type)
 	{
 		super(__handle, __type);
 		
