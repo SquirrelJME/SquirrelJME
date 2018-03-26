@@ -61,12 +61,71 @@ public final class IntegerRGB888ArrayGraphics
 	protected final void internalFillRectBlend(int __x, int __y, int __ex,
 		int __ey, int __w, int __h)
 	{
+		int[] buffer = this.buffer;
+		
+		int paintcolor = this.paintcolor,
+			sa = this.paintalpha,
+			qq = (sa ^ 0xFF),
+			srb = ((paintcolor & 0xFF00FF) * sa),
+			sgg = ((paintcolor & 0x00FF00) * sa);
+		
+		// Blend each color
+		for (int y = __y; y < __ey; y++)
+			for (int dest = offset + (y * pitch) + __x, pex = dest + __w;
+				dest < pex; dest++)
+			{
+				int dcc = buffer[dest],
+					xrb = (srb + ((dcc & 0xFF00FF) * qq)) >>> 8,
+					xgg = (sgg + ((dcc & 0x00FF00) * qq)) >>> 8;
+				
+				buffer[dest] = (xrb & 0xFF00FF) | (xgg & 0x00FF00);
+			}
+			
+				/*((rb1 | rb2) & 0xFF00FF) + ((g1 | g2) & 0x00FF00);*/
+				
+				/*
+				drb = (;
+				dgg = ;
+				
+				xr = ((sr * sa) + (dr * qq)) / 255,
+				xg = ((sg * sa) + (dg * qq)) / 255,
+				xb = ((sb * sa) + (db * qq)) / 255;
+				
+				buffer[dest] = (__blend(pac, dpp, 0xFF000000, a)) & 0xFFFFFF;
+			}
+				*/
+		/*
+		int sa = (((__src >> 24) & 0xFF) * __alpha) / 255;
+		
+		// Split into RGB
+		int sr = (__src >> 16) & 0xFF,
+			sg = (__src >> 8) & 0xFF,
+			sb = (__src) & 0xFF,
+			da = ((__dest >> 24) & 0xFF) | __bor,
+			dr = (__dest >> 16) & 0xFF,
+			dg = (__dest >> 8) & 0xFF,
+			db = (__dest) & 0xFF;
+	
+		// Difference of alpha values
+		int qq = 255 - sa;
+		
+		// Perform blending
+		int xa = (sa + da - ((sa * da) / 255)) | __bor,
+			xr = ((sr * sa) + (dr * qq)) / 255,
+			xg = ((sg * sa) + (dg * qq)) / 255,
+			xb = ((sb * sa) + (db * qq)) / 255;
+	
+		// Recompile
+		return (xa << 24) | (xr << 16) | (xg << 8) | xb;
+		
+		
+		
 		// The original alpha color is lost because there is no alpha channel
 		// so it must be restored accordingly
-		int[] buffer = this.buffer;
 		int pac = this.paintalphacolor | (this.paintalpha << 24),
 			pitch = this.pitch,
 			offset = this.offset;
+			
 		
 		// Source color
 		int a = pac >>> 24,
@@ -85,6 +144,7 @@ public final class IntegerRGB888ArrayGraphics
 				
 				buffer[dest] = (__blend(pac, dpp, 0xFF000000, a)) & 0xFFFFFF;
 			}
+		*/
 	}
 	
 	/**
