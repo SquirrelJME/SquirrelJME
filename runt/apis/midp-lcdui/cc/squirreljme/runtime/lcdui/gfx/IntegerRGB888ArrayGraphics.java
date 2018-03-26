@@ -61,14 +61,17 @@ public final class IntegerRGB888ArrayGraphics
 	protected final void internalFillRectBlend(int __x, int __y, int __ex,
 		int __ey, int __w, int __h)
 	{
-		int pac = this.paintalphacolor;
+		// The original alpha color is lost because there is no alpha channel
+		// so it must be restored accordingly
 		int[] buffer = this.buffer;
-		int pitch = this.pitch,
+		int pac = this.paintalphacolor | (this.paintalpha << 24),
+			pitch = this.pitch,
 			offset = this.offset;
 		
 		// Source color
 		int a = pac >>> 24,
-			na = 255 - a,
+			na = a ^ 0xFF,
+			nap = na + 1,
 			bgrb = (pac & 0x00FF00FF),
 			bggg = (pac & 0x0000FF00);
 		
@@ -77,30 +80,10 @@ public final class IntegerRGB888ArrayGraphics
 			for (int dest = offset + (y * pitch) + __x, pex = dest + __w;
 				dest < pex; dest++)
 			{
-				// Blend this color with the color at the orignal source
-				int dpp = buffer[dest] | 0xFF000000,
-					rb, g;
+				// Blend this color with the color at the original source
+				int dpp = buffer[dest] | 0xFF000000;
 				
-				if (true)
-				{
-					buffer[dest] = (__blend(pac, dpp, 0xFF000000, a)) & 0xFFFFFF;
-				}
-				else
-				{
-					int what = 0;
-					if (what == 0)
-					{
-						rb = ((bgrb * a) + ((dpp & 0x00FF00FF) * na)) & 0xFF00FF00;
-						g = ((bggg * a) + ((dpp & 0x0000FF00) * na)) & 0x00FF0000;
-					}
-					else
-					{	
-						rb = (((dpp & 0x00FF00FF) * a) + (bgrb * na)) & 0xFF00FF00;
-						g = (((dpp & 0x0000FF00) * a) + (bggg * na)) & 0x00FF0000;
-					}
-					
-					buffer[dest] = (((rb | g) >>> 8)) & 0xFFFFFF;
-				}
+				buffer[dest] = (__blend(pac, dpp, 0xFF000000, a)) & 0xFFFFFF;
 			}
 	}
 	
