@@ -78,7 +78,7 @@ public final class IntegerRGB888ArrayGraphics
 			{
 				int dcc = buffer[dest],
 					xrb = (srb + ((dcc & 0xFF00FF) * na)) >>> 8,
-					xgg = (((sgg + (((dcc >>> 8) & 0xFF) * na)) + 1) * 256)
+					xgg = (((sgg + (((dcc >>> 8) & 0xFF) * na)) + 1) * 257)
 						>>> 16;
 				
 				buffer[dest] = ((xrb & 0xFF00FF) | ((xgg & 0xFF) << 8));
