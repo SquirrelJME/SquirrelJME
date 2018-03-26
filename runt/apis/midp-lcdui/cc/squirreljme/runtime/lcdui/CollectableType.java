@@ -15,7 +15,7 @@ package cc.squirreljme.runtime.lcdui;
  *
  * @since 2018/03/17
  */
-public enum WidgetType
+public enum CollectableType
 {
 	/** Display. */
 	DISPLAY,
@@ -68,6 +68,9 @@ public enum WidgetType
 	/** Text field. */
 	ITEM_TEXT_FIELD,
 	
+	/** A ticker. */
+	TICKER,
+	
 	/** End. */
 	;
 	
@@ -90,6 +93,27 @@ public enum WidgetType
 			
 			default:
 				return false;
+		}
+	}
+	
+	/**
+	 * Is this a widget?
+	 *
+	 * @return If this is a widget.
+	 * @since 2018/03/26
+	 */
+	public final boolean isWidget()
+	{
+		// Use a false based approach since most collectables are going to be
+		// widgets.
+		switch (this)
+		{
+			case TICKER:
+				return false;
+			
+				// Everything else is considered a widget
+			default:
+				return true;
 		}
 	}
 }

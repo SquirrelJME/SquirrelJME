@@ -10,39 +10,45 @@
 
 package cc.squirreljme.runtime.lcdui.server.requests;
 
+import cc.squirreljme.runtime.lcdui.CollectableType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
+import cc.squirreljme.runtime.lcdui.server.LcdCollectable;
 import cc.squirreljme.runtime.lcdui.server.LcdRequest;
 import cc.squirreljme.runtime.lcdui.server.LcdServer;
-import cc.squirreljme.runtime.lcdui.server.LcdWidget;
 
 /**
- * Cleans up after a widget.
+ * Creates a new collectable.
  *
  * @since 2018/03/23
  */
-public class WidgetCleanup
+public class CollectableCreate
 	extends LcdRequest
 {
-	/** The widget to cleanup. */
-	protected final LcdWidget cleanup;
+	/** The type of collectable to create. */
+	protected final CollectableType type;
 	
 	/**
 	 * Initializes the request.
 	 *
 	 * @param __sv The calling server.
-	 * @param __cl The widget to clean up.
+	 * @throws IllegalStateException If the created widget is a display.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/23
 	 */
-	public WidgetCleanup(LcdServer __sv, LcdWidget __cl)
-		throws NullPointerException
+	public CollectableCreate(LcdServer __sv, CollectableType __type)
+		throws IllegalStateException, NullPointerException
 	{
-		super(__sv, LcdFunction.WIDGET_CLEANUP);
+		super(__sv, LcdFunction.COLLECTABLE_CREATE);
 		
-		if (__cl == null)
+		if (__type == null)
 			throw new NullPointerException("NARG");
 		
-		this.cleanup = __cl;
+		// {@squirreljme.error EB28 Display heads cannot be created using the
+		// create collectable function.}
+		if (__type == CollectableType.DISPLAY_HEAD)
+			throw new IllegalStateException("EB28");
+		
+		this.type = __type;
 	}
 	
 	/**
@@ -52,7 +58,7 @@ public class WidgetCleanup
 	@Override
 	protected final Object invoke()
 	{
-		throw new todo.TODO();
+		return this.server.createCollectable(this.type).handle();
 	}
 }
 

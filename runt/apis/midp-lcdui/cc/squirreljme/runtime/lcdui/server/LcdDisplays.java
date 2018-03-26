@@ -11,8 +11,8 @@
 package cc.squirreljme.runtime.lcdui.server;
 
 import cc.squirreljme.runtime.cldc.system.type.RemoteMethod;
+import cc.squirreljme.runtime.lcdui.CollectableType;
 import cc.squirreljme.runtime.lcdui.LcdException;
-import cc.squirreljme.runtime.lcdui.WidgetType;
 import java.util.HashMap;
 import java.util.Map;
 import net.multiphasicapps.collections.SortedTreeMap;
@@ -38,15 +38,15 @@ public abstract class LcdDisplays
 		new SortedTreeMap<>();
 	
 	/**
-	 * Internally creates the specified widget.
+	 * Internally creates the specified collectable.
 	 *
-	 * @param __handle The handle to use for the widget.
-	 * @param __type The type of widget to create.
+	 * @param __handle The handle to use for the collectable.
+	 * @param __type The type of collectable to create.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/24
 	 */
-	protected abstract LcdWidget internalCreateWidget(int __handle,
-		WidgetType __type)
+	protected abstract LcdCollectable internalCreateCollectable(int __handle,
+		CollectableType __type)
 		throws NullPointerException;
 	
 	/**
@@ -146,15 +146,16 @@ public abstract class LcdDisplays
 	}
 	
 	/**
-	 * Forwards widget created to internal display logic.
+	 * Forwards collectable created to internal display logic.
 	 *
 	 * @param __handle The handle to use for the widget.
-	 * @param __type The type of widget to create.
+	 * @param __type The type of collectable to create.
 	 * @since 2018/03/24
 	 */
-	final LcdWidget __internalCreateWidget(int __handle, WidgetType __type)
+	final LcdCollectable __internalCreateCollectable(int __handle,
+		CollectableType __type)
 	{
-		return this.internalCreateWidget(__handle, __type);
+		return this.internalCreateCollectable(__handle, __type);
 	}
 }
 

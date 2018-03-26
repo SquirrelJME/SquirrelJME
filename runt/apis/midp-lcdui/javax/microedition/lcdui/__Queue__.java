@@ -12,9 +12,9 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.system.SystemCall;
 import cc.squirreljme.runtime.cldc.system.type.VoidType;
+import cc.squirreljme.runtime.lcdui.CollectableType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
 import cc.squirreljme.runtime.lcdui.LcdServiceCall;
-import cc.squirreljme.runtime.lcdui.WidgetType;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
@@ -40,15 +40,15 @@ final class __Queue__
 		new Object();
 	
 	/** Reference to index mapping, for sending to the server. */
-	protected final Map<Reference<__Widget__>, Integer> _distoid =
+	protected final Map<Reference<__Collectable__>, Integer> _distoid =
 		new HashMap<>();
 	
 	/** Index to widget so the client knows what the server wanted. */
-	protected final Map<Integer, Reference<__Widget__>> _idtodis =
+	protected final Map<Integer, Reference<__Collectable__>> _idtodis =
 		new HashMap<>();
 	
 	/** Queue to tell the remote server that handles should be cleaned up. */
-	protected final ReferenceQueue<__Widget__> _disqueue =
+	protected final ReferenceQueue<__Collectable__> _disqueue =
 		new ReferenceQueue<>();
 	
 	/** Terminate the queue? */
@@ -74,9 +74,9 @@ final class __Queue__
 	public void run()
 	{
 		Object lock = this.lock;
-		ReferenceQueue<__Widget__> disqueue = this._disqueue;
-		Map<Reference<__Widget__>, Integer> distoid = this._distoid;
-		Map<Integer, Reference<__Widget__>> idtodis = this._idtodis;
+		ReferenceQueue<__Collectable__> disqueue = this._disqueue;
+		Map<Reference<__Collectable__>, Integer> distoid = this._distoid;
+		Map<Integer, Reference<__Collectable__>> idtodis = this._idtodis;
 		
 		// Loop forever looking for displayable that are no longer
 		// referenced ever
@@ -87,7 +87,7 @@ final class __Queue__
 				return;
 			
 			// Get the next reference which went away
-			Reference<? extends __Widget__> bye;
+			Reference<? extends __Collectable__> bye;
 			try
 			{
 				bye = disqueue.remove();
@@ -120,12 +120,46 @@ final class __Queue__
 			try
 			{
 				LcdServiceCall.<VoidType>call(VoidType.class,
-					LcdFunction.WIDGET_CLEANUP, svdx);
+					LcdFunction.COLLECTABLE_CLEANUP, svdx);
 			}
 			catch (Throwable t)
 			{
 				t.printStackTrace();
 			}
+		}
+	}
+	
+	/**
+	 * Returns the collectable used for the given index.
+	 *
+	 * @param <X> The type of collectable to get.
+	 * @param __cl The type of collectable to get.
+	 * @param __dx The index to get.
+	 * @return The collectable for the given index or {@code null} if it does
+	 * not exist or is the wrong class type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/18
+	 */
+	final <X extends __Collectable__> X __get(Class<X> __cl, int __dx)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		Map<Integer, Reference<__Collectable__>> idtodis = this._idtodis;
+		synchronized (this.lock)
+		{
+			Reference<__Collectable__> ref = idtodis.get(__dx);
+			
+			// Do not know what this is?
+			if (ref == null)
+				return null;
+			__Collectable__ rv = ref.get();
+			
+			// If this is not the right kind of class, ignore
+			if (!__cl.isInstance(rv))
+				return null;
+			return __cl.cast(rv);
 		}
 	}
 	
@@ -137,43 +171,9 @@ final class __Queue__
 	 * exist.
 	 * @since 2018/03/24
 	 */
-	final __Widget__ __get(int __dx)
+	final __Widget__ __getWidget(int __dx)
 	{
 		return this.<__Widget__>__get(__Widget__.class, __dx);
-	}
-	
-	/**
-	 * Returns the displayable used for the given index.
-	 *
-	 * @param <X> The type of widget to get.
-	 * @param __cl The type of widget to get.
-	 * @param __dx The index to get.
-	 * @return The widget for the given index or {@code null} if it does not
-	 * exist or is the wrong class type.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/03/18
-	 */
-	final <X extends __Widget__> X __get(Class<X> __cl, int __dx)
-		throws NullPointerException
-	{
-		if (__cl == null)
-			throw new NullPointerException("NARG");
-		
-		Map<Integer, Reference<__Widget__>> idtodis = this._idtodis;
-		synchronized (this.lock)
-		{
-			Reference<__Widget__> ref = idtodis.get(__dx);
-			
-			// Do not know what this is?
-			if (ref == null)
-				return null;
-			__Widget__ rv = ref.get();
-			
-			// If this is not the right kind of class, ignore
-			if (!__cl.isInstance(rv))
-				return null;
-			return __cl.cast(rv);
-		}
 	}
 	
 	/**
@@ -184,7 +184,7 @@ final class __Queue__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/17
 	 */
-	final int __register(__Widget__ __d)
+	final int __register(__Collectable__ __d)
 		throws NullPointerException
 	{
 		if (__d == null)
@@ -194,39 +194,41 @@ final class __Queue__
 		int dx;
 		
 		// Determine the type of displayable this is first
-		WidgetType type;
+		CollectableType type;
 		if (__d instanceof Display)
-			type = WidgetType.DISPLAY;
+			type = CollectableType.DISPLAY;
 		else if (__d instanceof Canvas)
-			type = WidgetType.DISPLAYABLE_CANVAS;
+			type = CollectableType.DISPLAYABLE_CANVAS;
 		else if (__d instanceof Alert)
-			type = WidgetType.DISPLAYABLE_ALERT;
+			type = CollectableType.DISPLAYABLE_ALERT;
 		else if (__d instanceof FileSelector)
-			type = WidgetType.DISPLAYABLE_FILE_SELECTOR;
+			type = CollectableType.DISPLAYABLE_FILE_SELECTOR;
 		else if (__d instanceof Form)
-			type = WidgetType.DISPLAYABLE_FORM;
+			type = CollectableType.DISPLAYABLE_FORM;
 		else if (__d instanceof List)
-			type = WidgetType.DISPLAYABLE_LIST;
+			type = CollectableType.DISPLAYABLE_LIST;
 		else if (__d instanceof TabbedPane)
-			type = WidgetType.DISPLAYABLE_TABBED_PANE;
+			type = CollectableType.DISPLAYABLE_TABBED_PANE;
 		else if (__d instanceof TextBox)
-			type = WidgetType.DISPLAYABLE_TEXT_BOX;
+			type = CollectableType.DISPLAYABLE_TEXT_BOX;
 		else if (__d instanceof ChoiceGroup)
-			type = WidgetType.ITEM_CHOICE_GROUP;
+			type = CollectableType.ITEM_CHOICE_GROUP;
 		else if (__d instanceof CustomItem)
-			type = WidgetType.ITEM_CUSTOM;
+			type = CollectableType.ITEM_CUSTOM;
 		else if (__d instanceof DateField)
-			type = WidgetType.ITEM_DATE;
+			type = CollectableType.ITEM_DATE;
 		else if (__d instanceof Gauge)
-			type = WidgetType.ITEM_GAUGE;
+			type = CollectableType.ITEM_GAUGE;
 		else if (__d instanceof ImageItem)
-			type = WidgetType.ITEM_IMAGE;
+			type = CollectableType.ITEM_IMAGE;
 		else if (__d instanceof Spacer)
-			type = WidgetType.ITEM_SPACER;
+			type = CollectableType.ITEM_SPACER;
 		else if (__d instanceof StringItem)
-			type = WidgetType.ITEM_STRING;
+			type = CollectableType.ITEM_STRING;
 		else if (__d instanceof TextField)
-			type = WidgetType.ITEM_TEXT_FIELD;
+			type = CollectableType.ITEM_TEXT_FIELD;
+		else if (__d instanceof Ticker)
+			type = CollectableType.TICKER;
 		
 		// {@squirreljme.error EB1x Could not determine the type displayable
 		// that this is. (The displayable type)}
@@ -236,14 +238,14 @@ final class __Queue__
 		
 		// Register and get the index for it
 		dx = LcdServiceCall.<Integer>call(Integer.class,
-			LcdFunction.WIDGET_CREATE, type);
+			LcdFunction.COLLECTABLE_CREATE, type);
 		
 		// Reference the widget for future cleanup on the remote end
-		Map<Reference<__Widget__>, Integer> distoid = this._distoid;
-		Map<Integer, Reference<__Widget__>> idtodis = this._idtodis;
+		Map<Reference<__Collectable__>, Integer> distoid = this._distoid;
+		Map<Integer, Reference<__Collectable__>> idtodis = this._idtodis;
 		synchronized (this.lock)
 		{
-			Reference<__Widget__> ref =
+			Reference<__Collectable__> ref =
 				new WeakReference<>(__d, this._disqueue);
 			Integer idx = dx;
 			distoid.put(ref, idx);

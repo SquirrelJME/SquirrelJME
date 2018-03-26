@@ -14,10 +14,10 @@ import cc.squirreljme.runtime.cldc.system.type.Array;
 import cc.squirreljme.runtime.cldc.system.type.IntegerArray;
 import cc.squirreljme.runtime.cldc.system.type.RemoteMethod;
 import cc.squirreljme.runtime.cldc.system.type.VoidType;
+import cc.squirreljme.runtime.lcdui.CollectableType;
 import cc.squirreljme.runtime.lcdui.gfx.PixelFormat;
 import cc.squirreljme.runtime.lcdui.LcdCallback;
 import cc.squirreljme.runtime.lcdui.LcdWidgetOwnedException;
-import cc.squirreljme.runtime.lcdui.WidgetType;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,13 +28,8 @@ import java.util.List;
  * @since 2018/03/23
  */
 public abstract class LcdWidget
+	extends LcdCollectable
 {
-	/** The handle of this widget. */
-	protected final int handle;
-	
-	/** The type of widget this is. */
-	protected final WidgetType type;
-	
 	/** The local display for this widget. */
 	LcdDisplay _localdisplay;
 	
@@ -59,14 +54,10 @@ public abstract class LcdWidget
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/23
 	 */
-	public LcdWidget(int __handle, WidgetType __type)
+	public LcdWidget(int __handle, CollectableType __type)
 		throws NullPointerException
 	{
-		if (__type == null)
-			throw new NullPointerException("NARG");
-		
-		this.handle = __handle;
-		this.type = __type;
+		super(__handle, __type);
 	}
 	
 	/**
@@ -146,7 +137,7 @@ public abstract class LcdWidget
 		
 		// If this is a display head then since something was added it gets
 		// to have something on its display
-		if (this.type == WidgetType.DISPLAY_HEAD)
+		if (this.type == CollectableType.DISPLAY_HEAD)
 			this._localdisplay.setCurrent(__w);
 	}
 	
@@ -285,7 +276,7 @@ public abstract class LcdWidget
 				return null;
 			
 			// If it is a display then stop
-			if (w.type == WidgetType.DISPLAY_HEAD)
+			if (w.type == CollectableType.DISPLAY_HEAD)
 				return w;
 			
 			// Go to the parent widget
@@ -302,17 +293,6 @@ public abstract class LcdWidget
 	public final String getTitle()
 	{
 		return this._title;
-	}
-	
-	/**
-	 * Returns the widget handle.
-	 *
-	 * @return The widget handle.
-	 * @since 2018/03/18
-	 */
-	public final int handle()
-	{
-		return this.handle;
 	}
 	
 	/**

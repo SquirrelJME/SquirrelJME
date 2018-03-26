@@ -11,8 +11,8 @@
 package cc.squirreljme.runtime.lcdui.server;
 
 import cc.squirreljme.runtime.cldc.system.type.RemoteMethod;
+import cc.squirreljme.runtime.lcdui.CollectableType;
 import cc.squirreljme.runtime.lcdui.gfx.PixelFormat;
-import cc.squirreljme.runtime.lcdui.WidgetType;
 
 /**
  * This class represents a single display that is available, displayables may
@@ -38,7 +38,7 @@ public abstract class LcdDisplay
 	public LcdDisplay(int __handle)
 		throws NullPointerException
 	{
-		super(__handle, WidgetType.DISPLAY_HEAD);
+		super(__handle, CollectableType.DISPLAY_HEAD);
 	}
 	
 	/**
