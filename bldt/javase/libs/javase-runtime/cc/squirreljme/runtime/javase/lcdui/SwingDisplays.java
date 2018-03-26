@@ -44,6 +44,9 @@ public class SwingDisplays
 		if (__type.isWidget())
 			return new SwingWidget(__handle, __type);
 		
+		else if (__type == CollectableType.TICKER)
+			return new SwingTicker(__handle);
+		
 		// {@squirreljme.error AF0c Do not know how to create the given
 		// collectable. (The collectable type)}
 		else

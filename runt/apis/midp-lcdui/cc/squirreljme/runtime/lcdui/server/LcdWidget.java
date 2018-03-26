@@ -46,6 +46,9 @@ public abstract class LcdWidget
 	/** The title to use. */
 	private String _title;
 	
+	/** The ticker to use. */
+	private LcdTicker _ticker;
+	
 	/**
 	 * Initializes the base widget.
 	 *
@@ -219,6 +222,22 @@ public abstract class LcdWidget
 	}
 	
 	/**
+	 * Returns the display that this is visible under or {@code null} if it is
+	 * not associated with a display.
+	 *
+	 * @return The associated display or {@code null} if it is not associated
+	 * with a display.
+	 * @since 2018/03/23
+	 */
+	public final LcdDisplay getActualDisplay()
+	{
+		LcdWidget ld = this.getLocalDisplay();
+		if (ld != null)
+			return ld._localdisplay;
+		return null;
+	}
+	
+	/**
 	 * Returns the container which eventually contains this widget.
 	 *
 	 * @return The container for this widget or {@code null} if this is not
@@ -244,22 +263,6 @@ public abstract class LcdWidget
 	}
 	
 	/**
-	 * Returns the display that this is visible under or {@code null} if it is
-	 * not associated with a display.
-	 *
-	 * @return The associated display or {@code null} if it is not associated
-	 * with a display.
-	 * @since 2018/03/23
-	 */
-	public final LcdDisplay getActualDisplay()
-	{
-		LcdWidget ld = this.getLocalDisplay();
-		if (ld != null)
-			return ld._localdisplay;
-		return null;
-	}
-	
-	/**
 	 * Returns the local widget for the display head this is visible under.
 	 *
 	 * @return The associated display or {@code null} if it is not associated
@@ -282,6 +285,17 @@ public abstract class LcdWidget
 			// Go to the parent widget
 			w = w._parent;
 		}
+	}
+	
+	/**
+	 * Returns the ticker being used on the widget.
+	 *
+	 * @return The ticker being displayed.
+	 * @since 2018/03/26
+	 */
+	public final LcdTicker getTicker()
+	{
+		return this._ticker;
 	}
 	
 	/**
@@ -343,6 +357,17 @@ public abstract class LcdWidget
 	public void setContainedTitle(LcdWidget __w, String __t)
 	{
 		// Does nothing unless this is replaced
+	}
+	
+	/**
+	 * Sets the ticker for this widget.
+	 *
+	 * @param __t The ticker to set, if {@code null} then it is cleared.
+	 * @since 2018/03/26
+	 */
+	public final void setTicker(LcdTicker __t)
+	{
+		throw new todo.TODO();
 	}
 	
 	/**

@@ -97,6 +97,30 @@ public enum CollectableType
 	}
 	
 	/**
+	 * Is this displayable?
+	 *
+	 * @return If this is displayable.
+	 * @since 2018/03/26
+	 */
+	public final boolean isDisplayable()
+	{
+		switch (this)
+		{
+			case DISPLAYABLE_ALERT:
+			case DISPLAYABLE_CANVAS:
+			case DISPLAYABLE_FILE_SELECTOR:
+			case DISPLAYABLE_FORM:
+			case DISPLAYABLE_LIST:
+			case DISPLAYABLE_TABBED_PANE:
+			case DISPLAYABLE_TEXT_BOX:
+				return true;
+			
+			default:
+				return false;
+		}
+	}
+	
+	/**
 	 * Is this a widget?
 	 *
 	 * @return If this is a widget.
