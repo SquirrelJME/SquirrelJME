@@ -11,6 +11,7 @@
 package net.multiphasicapps.lcduidemo;
 
 import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.TabbedPane;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
@@ -41,7 +42,11 @@ public final class Main
 	protected void startApp()
 		throws MIDletStateChangeException
 	{
-		Display.getDisplay(this).setCurrent(new DemoCanvas());
+		// Setup tabbed pane
+		TabbedPane tabs = new TabbedPane("Graphics Demo", true, false);
+		
+		// Use those tabs
+		Display.getDisplay(this).setCurrent(tabs);
 	}
 }
 
