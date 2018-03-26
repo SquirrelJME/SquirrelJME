@@ -118,6 +118,9 @@ public final class DemoParts
 			
 			__g.setAlphaColor(((0xFF00FF ^ xor) | mask));
 			__g.fillRect(off + -40, off + 50, off + 9000, off + 70);
+			
+			__g.setAlphaColor(((0x000000 ^ xor) | mask));
+			__g.fillRect(off + -100, off + 10, off + 9000, off + 15);
 		}
 	}	
 }
