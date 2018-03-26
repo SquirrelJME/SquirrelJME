@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.gfxdemo;
+package net.multiphasicapps.lcduidemo;
 
 import javax.microedition.lcdui.Graphics;
 

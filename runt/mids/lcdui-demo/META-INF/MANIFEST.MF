@@ -8,5 +8,5 @@ X-SquirrelJME-Description: This is a demo which is used to demonstrate
  how the graphic operations operate.
 X-SquirrelJME-Depends: midp-lcdui
 Microedition-Configuration: CLDC-1.8-Compact
-MIDlet-1: Graphics Demo, , net.multiphasicapps.gfxdemo.Main
+MIDlet-1: Graphics Demo, , net.multiphasicapps.lcduidemo.Main
 

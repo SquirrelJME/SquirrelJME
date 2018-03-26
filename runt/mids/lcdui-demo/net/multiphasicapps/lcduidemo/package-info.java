@@ -15,5 +15,5 @@
  * @since 2018/03/23
  */
 
-package net.multiphasicapps.gfxdemo;
+package net.multiphasicapps.lcduidemo;
 
