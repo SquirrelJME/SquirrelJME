@@ -76,68 +76,12 @@ public final class IntegerRGB888ArrayGraphics
 			for (int dest = offset + (y * pitch) + __x, pex = dest + __w;
 				dest < pex; dest++)
 			{
-				int dcc = buffer[dest];
+				int dcc = buffer[dest],
+					xrb = (srb + ((dcc & 0xFF00FF) * na)) >>> 8,
+					xgg = (sgg + ((dcc & 0x00FF00) * na)) >>> 8;
 				
-				// Quick
-				int xrb = srb + (((dcc & 0xFF00FF) * na) >>> 8),
-					xgg = sgg + (((dcc & 0x00FF00) * na) >>> 8);
-				int ra = ((xrb & 0xFF00FF) | (xgg & 0x00FF00));
-				
-				// Slower
-				int sr = (pac >>> 16) & 0xFF,
-					sg = (pac >>> 8) & 0xFF,
-					sb = (pac) & 0xFF,
-					dr = (dcc >>> 16) & 0xFF,
-					dg = (dcc >>> 8) & 0xFF,
-					db = (dcc) & 0xFF;
-				int xr = ((sr * sa) + (dr * na)) / 255,
-					xg = ((sg * sa) + (dg * na)) / 255,
-					xb = ((sb * sa) + (db * na)) / 255;
-				int rb = (xr << 16) | (xg << 8) | xb;
-				
-				// Identity
-				int rc = __blend(pac | 0xFF000000, dcc | 0xFF000000, 0xFF,
-					sa) & 0xFFFFFF;
-				
-				
-				buffer[dest] = (mod == 0 ? ra : (mod == 1 ? rb : rc));
-				mod++;
-				if (mod >= 3)
-					mod = 0;
-				
-				if (!did && (ra != rb || ra != rc))
-				{
-					did = true;
-					System.err.printf("DEBUG -- %02x%06x > ff%06x == (ra=%06x, rb=%06x, rc=%06x)%n",
-						sa, pac, dcc, ra, rb, rc);
-				}
+				buffer[dest] = ((xrb & 0xFF00FF) | (xgg & 0x00FF00));
 			}
-		/*
-		buffer[dest] = (__blend(pac, dpp, 0xFF000000, a)) & 0xFFFFFF
-		
-		int sa = (((__src >> 24) & 0xFF) * __alpha) / 255;
-		
-		// Split into RGB
-		int sr = (__src >> 16) & 0xFF,
-			sg = (__src >> 8) & 0xFF,
-			sb = (__src) & 0xFF,
-			da = ((__dest >> 24) & 0xFF) | __bor,
-			dr = (__dest >> 16) & 0xFF,
-			dg = (__dest >> 8) & 0xFF,
-			db = (__dest) & 0xFF;
-	
-		// Difference of alpha values
-		int qq = 255 - sa;
-		
-		// Perform blending
-		int xa = (sa + da - ((sa * da) / 255)) | __bor,
-			xr = ((sr * sa) + (dr * qq)) / 255,
-			xg = ((sg * sa) + (dg * qq)) / 255,
-			xb = ((sb * sa) + (db * qq)) / 255;
-	
-		// Recompile
-		return (xa << 24) | (xr << 16) | (xg << 8) | xb;
-		*/
 	}
 	
 	/**

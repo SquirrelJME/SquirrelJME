@@ -300,7 +300,9 @@ public class IntArrayGraphics
 	/**
 	 * Blends two colors.
 	 *
-	 * @param __src The source color.
+	 * @param __src The source color, this includes the alpha channel so if a
+	 * fully opaque color which should then become transparent is drawn this
+	 * should be set to {@code 255}.
 	 * @param __dest The destination color.
 	 * @param __bor The blended OR value on the destination.
 	 * @param __alpha Alpha value which modifies the source.
