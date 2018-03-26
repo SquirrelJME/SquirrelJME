@@ -67,7 +67,7 @@ public final class IntegerRGB888ArrayGraphics
 			sa = this.paintalpha,
 			na = (sa ^ 0xFF),
 			srb = ((pac & 0xFF00FF) * sa),
-			sgg = ((pac & 0x00FF00) * sa);
+			sgg = (((pac >>> 8) & 0xFF) * sa);
 		
 		// Blend each color
 		int mod = 0;
@@ -78,9 +78,10 @@ public final class IntegerRGB888ArrayGraphics
 			{
 				int dcc = buffer[dest],
 					xrb = (srb + ((dcc & 0xFF00FF) * na)) >>> 8,
-					xgg = (sgg + ((dcc & 0x00FF00) * na)) >>> 8;
+					xgg = (((sgg + (((dcc >>> 8) & 0xFF) * na)) + 1) * 256)
+						>>> 16;
 				
-				buffer[dest] = ((xrb & 0xFF00FF) | (xgg & 0x00FF00));
+				buffer[dest] = ((xrb & 0xFF00FF) | ((xgg & 0xFF) << 8));
 			}
 	}
 	
