@@ -30,6 +30,12 @@ public enum LcdFunction
 	/** Queries available displays and sets the local callback method. */
 	QUERY_DISPLAYS,
 	
+	/** Gets the string from a ticker. */
+	TICKER_GET_STRING,
+	
+	/** Sets the ticker to the given string. */
+	TICKER_SET_STRING,
+	
 	/** Adds a widget to this widget. */
 	WIDGET_ADD,
 	
@@ -82,6 +88,7 @@ public enum LcdFunction
 		{
 			case COLLECTABLE_CREATE:
 			case QUERY_DISPLAYS:
+			case TICKER_GET_STRING:
 			case WIDGET_ADD:
 			case WIDGET_GET_HEIGHT:
 			case WIDGET_GET_WIDTH:

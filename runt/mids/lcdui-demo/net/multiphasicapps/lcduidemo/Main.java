@@ -10,8 +10,10 @@
 
 package net.multiphasicapps.lcduidemo;
 
+import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.TabbedPane;
+import javax.microedition.lcdui.Ticker;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
@@ -42,7 +44,13 @@ public final class Main
 	protected void startApp()
 		throws MIDletStateChangeException
 	{
-		Display.getDisplay(this).setCurrent(new DemoCanvas());
+		Canvas hello = new DemoCanvas();
+		
+		Ticker ticky = new Ticker("Hello from SquirrelJME! " +
+			"Squirrels are super cuties! <3");
+		hello.setTicker(ticky);
+		
+		Display.getDisplay(this).setCurrent(hello);
 	}
 }
 
