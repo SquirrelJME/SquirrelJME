@@ -18,6 +18,12 @@ package cc.squirreljme.runtime.lcdui;
  */
 public enum LcdFunction
 {
+	/** A collectable was garbage collected, so clean it up. */
+	COLLECTABLE_CLEANUP,
+	
+	/** Create a new collectable. */
+	COLLECTABLE_CREATE,
+	
 	/** Vibrates the display. */
 	DISPLAY_VIBRATE,
 	
@@ -30,14 +36,8 @@ public enum LcdFunction
 	/** Shows a widget which is an alert, the alert is considered modal. */
 	WIDGET_ALERT_SHOW,
 	
-	/** A widget was garbage collected, so clean it up. */
-	WIDGET_CLEANUP,
-	
 	/** Clears all widgets that are to be displayed then sets it. */
 	WIDGET_CLEAR_AND_SET,
-	
-	/** Create a new widget. */
-	WIDGET_CREATE,
 	
 	/** Returns the widget height. */
 	WIDGET_GET_HEIGHT,
@@ -80,9 +80,9 @@ public enum LcdFunction
 	{
 		switch (this)
 		{
+			case COLLECTABLE_CREATE:
 			case QUERY_DISPLAYS:
 			case WIDGET_ADD:
-			case WIDGET_CREATE:
 			case WIDGET_GET_HEIGHT:
 			case WIDGET_GET_WIDTH:
 				return true;

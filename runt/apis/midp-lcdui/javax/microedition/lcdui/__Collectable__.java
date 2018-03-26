@@ -10,24 +10,38 @@
 
 package javax.microedition.lcdui;
 
-public class Ticker
-	extends __Collectable__
+/**
+ * This acts as the base for anything which is to be garbage collected by the
+ * remote end when it is no longer referenced.
+ *
+ * @since 2018/03/26
+ */
+abstract class __Collectable__
 {
-	public Ticker(String __a)
+	/** The handle of this item. */
+	final int _handle;
+	
+	/**
+	 * Initializes the collectable using a handle which is registered on the
+	 * remote end.
+	 *
+	 * @param __h The handle to use.
+	 * @since 2018/03/23
+	 */
+	__Collectable__()
 	{
-		super();
-		throw new todo.TODO();
+		this._handle = __Queue__.INSTANCE.__register(this);
 	}
 	
-	public String getString()
+	/**
+	 * Initializes the collectable using the given handle.
+	 *
+	 * @param __h The handle to use.
+	 * @since 2018/03/23
+	 */
+	__Collectable__(int __h)
 	{
-		throw new todo.TODO();
-	}
-	
-	public void setString(String __a)
-	{
-		throw new todo.TODO();
+		this._handle = __h;
 	}
 }
-
 

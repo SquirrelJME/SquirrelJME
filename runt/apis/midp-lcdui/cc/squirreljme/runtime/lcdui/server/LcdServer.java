@@ -17,9 +17,9 @@ import cc.squirreljme.runtime.cldc.system.type.LocalIntegerArray;
 import cc.squirreljme.runtime.cldc.system.type.RemoteMethod;
 import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.cldc.task.SystemTask;
+import cc.squirreljme.runtime.lcdui.CollectableType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
 import cc.squirreljme.runtime.lcdui.LcdFunctionInterrupted;
-import cc.squirreljme.runtime.lcdui.WidgetType;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,7 +39,7 @@ public final class LcdServer
 	protected final LcdDisplays displays;
 	
 	/** Widgets which are currently available to this server. */
-	private final Map<Integer, LcdWidget> _widgets =
+	private final Map<Integer, LcdCollectable> _collects =
 		new HashMap<>();
 	
 	/** Local widgets which wrap displays. */
@@ -68,25 +68,25 @@ public final class LcdServer
 	}
 	
 	/**
-	 * Creates a new widget of the specified type.
+	 * Creates a new collectable of the specified type.
 	 *
-	 * @param __type The type of widget to create.
-	 * @return The newly created widget.
+	 * @param __type The type of collectable to create.
+	 * @return The newly created collectable.
 	 * @throws IllegalArgumentException
 	 */
-	public final LcdWidget createWidget(WidgetType __type)
+	public final LcdCollectable createCollectable(CollectableType __type)
 		throws IllegalArgumentException, NullPointerException
 	{
 		if (__type == null)
 			throw new NullPointerException("NARG");
 		
 		// {@squirreljme.error EB29 Cannot create display heads.}
-		if (__type == WidgetType.DISPLAY_HEAD)
+		if (__type == CollectableType.DISPLAY_HEAD)
 			throw new IllegalArgumentException("EB29");
 		
-		LcdWidget rv = this.displays.__internalCreateWidget(++this._nexthandle,
-			__type);
-		this._widgets.put(rv.handle(), rv);
+		LcdCollectable rv = this.displays.__internalCreateCollectable(
+			++this._nexthandle, __type);
+		this._collects.put(rv.handle(), rv);
 		return rv;
 	}
 	
@@ -102,6 +102,44 @@ public final class LcdServer
 	}
 	
 	/**
+	 * Obtains the collectable by the specified index and class type.
+	 *
+	 * @param <W> The class type to lookup.
+	 * @param __cl The class type to lookup.
+	 * @param __dx The handle of the collectable.
+	 * @return The collectable of the specified handle and class type or
+	 * {@code null} if the collectable does not exist or is not of the
+	 * specified class type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/23
+	 */
+	public final <W extends LcdCollectable> W get(Class<W> __cl,
+		int __dx)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		LcdCollectable rv = this._collects.get(__dx);
+		if (!__cl.isInstance(rv))
+			return null;
+		return __cl.cast(rv);
+	}
+	
+	/**
+	 * Obtains a collectable by an ID using a generic class type.
+	 *
+	 * @param __dx The handle of the collectable.
+	 * @return The collectable of the specified handle or {@code null} if it
+	 * does not exist.
+	 * @since 2018/03/26
+	 */
+	public final LcdCollectable getCollectable(int __dx)
+	{
+		return this.<LcdCollectable>get(LcdCollectable.class, __dx);
+	}
+	
+	/**
 	 * Obtains a widget by an ID using a generic class type.
 	 *
 	 * @param __dx The handle of the widget.
@@ -111,32 +149,27 @@ public final class LcdServer
 	 */
 	public final LcdWidget getWidget(int __dx)
 	{
-		return this.<LcdWidget>getWidget(LcdWidget.class, __dx);
+		return this.<LcdWidget>get(LcdWidget.class, __dx);
 	}
 	
 	/**
-	 * Obtains the widget by the specified index and class type.
+	 * Obtains a widget by an ID using the specified class type.
 	 *
-	 * @param <W> The class type to lookup.
-	 * @param __cl The class type to lookup.
+	 * @param <W> The type of widget to get.
+	 * @param __cl The type of widget to get.
 	 * @param __dx The handle of the widget.
-	 * @return The widget of the specified handle and class type or
-	 * {@code null} if the widget does not exist or is not of the specified
-	 * class type.
+	 * @return The widget of the specified handle or {@code null} if it does
+	 * not exist or is the wrong type.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2018/03/23
+	 * @since 2018/03/26
 	 */
-	public final <W extends LcdWidget> W getWidget(Class<W> __cl,
-		int __dx)
+	public final <W extends LcdWidget> W getWidget(Class<W> __cl, int __dx)
 		throws NullPointerException
 	{
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		LcdWidget rv = this._widgets.get(__dx);
-		if (!__cl.isInstance(rv))
-			return null;
-		return __cl.cast(rv);
+		return this.<W>get(__cl, __dx);
 	}
 	
 	/**
@@ -162,7 +195,7 @@ public final class LcdServer
 		LcdWidget[] rv = new LcdWidget[n];
 		
 		// Map local widgets if they are missing
-		Map<Integer, LcdWidget> widgets = this._widgets;
+		Map<Integer, LcdCollectable> widgets = this._collects;
 		Map<LcdDisplay, LcdWidget> localwidgets = this._localwidgets;
 		for (int i = 0; i < n; i++)
 		{
@@ -171,9 +204,9 @@ public final class LcdServer
 			if (local == null)
 			{
 				int handle = display.handle();
-				localwidgets.put(display, (local =
-					displays.__internalCreateWidget(handle,
-					WidgetType.DISPLAY_HEAD)));
+				localwidgets.put(display, (local = (LcdWidget)(
+					displays.__internalCreateCollectable(handle,
+					CollectableType.DISPLAY_HEAD))));
 				widgets.put(handle, local);
 				
 				// Link local display to real display

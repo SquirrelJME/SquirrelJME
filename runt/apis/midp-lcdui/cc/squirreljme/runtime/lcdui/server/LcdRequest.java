@@ -16,19 +16,19 @@ import cc.squirreljme.runtime.cldc.system.type.LocalIntegerArray;
 import cc.squirreljme.runtime.cldc.system.type.RemoteMethod;
 import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.cldc.task.SystemTask;
+import cc.squirreljme.runtime.lcdui.CollectableType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
+import cc.squirreljme.runtime.lcdui.server.requests.CollectableCleanup;
+import cc.squirreljme.runtime.lcdui.server.requests.CollectableCreate;
 import cc.squirreljme.runtime.lcdui.server.requests.DisplayVibrate;
 import cc.squirreljme.runtime.lcdui.server.requests.QueryDisplays;
 import cc.squirreljme.runtime.lcdui.server.requests.WidgetAdd;
 import cc.squirreljme.runtime.lcdui.server.requests.WidgetAlertShow;
-import cc.squirreljme.runtime.lcdui.server.requests.WidgetCleanup;
 import cc.squirreljme.runtime.lcdui.server.requests.WidgetClearAndSet;
-import cc.squirreljme.runtime.lcdui.server.requests.WidgetCreate;
 import cc.squirreljme.runtime.lcdui.server.requests.WidgetGetHeight;
 import cc.squirreljme.runtime.lcdui.server.requests.WidgetGetWidth;
 import cc.squirreljme.runtime.lcdui.server.requests.WidgetRepaint;
 import cc.squirreljme.runtime.lcdui.server.requests.WidgetSetTitle;
-import cc.squirreljme.runtime.lcdui.WidgetType;
 
 /**
  * This represents a single request to be made by the LCD server, it allows
@@ -177,14 +177,14 @@ public abstract class LcdRequest
 					__sv.getWidget((Integer)__args[0]),
 					__sv.getWidget((Integer)__args[1]));
 			
-			case WIDGET_CREATE:
-				return new WidgetCreate(__sv, 
-					((EnumType)__args[0]).<WidgetType>asEnum(
-					WidgetType.class));
+			case COLLECTABLE_CREATE:
+				return new CollectableCreate(__sv, 
+					((EnumType)__args[0]).<CollectableType>asEnum(
+					CollectableType.class));
 			
-			case WIDGET_CLEANUP:
-				return new WidgetCleanup(__sv,
-					__sv.getWidget((Integer)__args[0]));
+			case COLLECTABLE_CLEANUP:
+				return new CollectableCleanup(__sv,
+					__sv.getCollectable((Integer)__args[0]));
 			
 			case WIDGET_CLEAR_AND_SET:
 				return new WidgetClearAndSet(__sv,

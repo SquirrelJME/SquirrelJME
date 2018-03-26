@@ -143,8 +143,7 @@ final class __LocalCallback__
 			throw new NullPointerException("NARG");
 		
 		// Can be a canvas or custom item
-		__Widget__ on = __Queue__.INSTANCE.<__Widget__>__get(
-			__Widget__.class, __d);
+		__Widget__ on = __Queue__.INSTANCE.__getWidget(__d);
 		if (on == null)
 			return;
 		
@@ -186,7 +185,7 @@ final class __LocalCallback__
 	 */
 	private final void __widgetShown(int __d, boolean __shown)
 	{
-		__Widget__ on = __Queue__.INSTANCE.__get(__d);
+		__Widget__ on = __Queue__.INSTANCE.__getWidget(__d);
 		if (on == null)
 			return;
 		on.__doShown(__shown);
@@ -202,8 +201,7 @@ final class __LocalCallback__
 	 */
 	private final void __widgetSizeChanged(int __d, int __w, int __h)
 	{
-		__Widget__ on = __Queue__.INSTANCE.<__Widget__>__get(
-			__Widget__.class, __d);
+		__Widget__ on = __Queue__.INSTANCE.__getWidget(__d);
 		if (on == null)
 			return;
 		
