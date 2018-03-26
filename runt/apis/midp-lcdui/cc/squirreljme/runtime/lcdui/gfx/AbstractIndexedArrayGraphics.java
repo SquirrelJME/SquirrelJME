@@ -92,7 +92,7 @@ public abstract class AbstractIndexedArrayGraphics
 	public static final int scoreColor(int __rgb)
 	{
 		// Mask out alpha always
-		__rgb &= 0xFF000000;
+		__rgb &= 0x00FFFFFF;
 		
 		// Average the three color channels and set them as the high priority
 		// bits so that the average of the color is chosen first
