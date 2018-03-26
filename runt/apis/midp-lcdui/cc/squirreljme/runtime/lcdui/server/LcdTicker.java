@@ -11,6 +11,11 @@
 package cc.squirreljme.runtime.lcdui.server;
 
 import cc.squirreljme.runtime.lcdui.CollectableType;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * This represents a ticker which represents a sequence of scrolling text for
@@ -21,6 +26,10 @@ import cc.squirreljme.runtime.lcdui.CollectableType;
 public abstract class LcdTicker
 	extends LcdCollectable
 {
+	/** Things which are listening to this ticker for change events. */
+	private final Set<Reference<LcdTickerListener>> _listeners =
+		new LinkedHashSet<>();
+	
 	/** The ticker text. */
 	private volatile String _text;
 	
@@ -36,14 +45,20 @@ public abstract class LcdTicker
 	}
 	
 	/**
-	 * Internally sets the ticker's text.
+	 * Adds a listener for this ticker.
 	 *
-	 * @param __t The text to set.
+	 * @param __l The ticker to send changes to.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/26
 	 */
-	protected abstract void internalSetText(String __t)
-		throws NullPointerException;
+	public final void addListener(LcdTickerListener __l)
+		throws NullPointerException
+	{
+		if (__l == null)
+			throw new NullPointerException("NARG");
+		
+		this._listeners.add(new WeakReference<>(__l));
+	}
 	
 	/**
 	 * Sets the text for the ticker.
@@ -60,10 +75,21 @@ public abstract class LcdTicker
 		
 		this._text = __t;
 		
-		throw new todo.TODO();
-		/*
-		this.internalSetText(__t);
-		*/
+		Set<Reference<LcdTickerListener>> listeners = this._listeners;
+		for (Iterator<Reference<LcdTickerListener>> it = listeners.iterator();
+			it.hasNext();)
+		{
+			Reference<LcdTickerListener> ref = it.next();
+			LcdTickerListener ltl;
+			
+			// Inform that the text has changed
+			if (ref != null && null != (ltl = ref.get()))
+				ltl.textChanged(this, __t);
+			
+			// Remove old listeners
+			else
+				it.remove();
+		}
 	}
 	
 	/**

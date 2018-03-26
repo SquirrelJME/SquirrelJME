@@ -8,27 +8,24 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.javase.lcdui;
-
-import cc.squirreljme.runtime.lcdui.server.LcdTicker;
+package cc.squirreljme.runtime.lcdui.server;
 
 /**
- * This is a ticker which shows scrolling text.
+ * This interface is used in conjunction with tickers .
  *
  * @since 2018/03/26
  */
-public class SwingTicker
-	extends LcdTicker
+public interface LcdTickerListener
 {
 	/**
-	 * Initializes the ticker.
+	 * This is called when the ticker's text has changed.
 	 *
-	 * @param __handle The ticker handle.
+	 * @param __lcd The ticker which has changed.
+	 * @param __text The new text for the ticker.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/26
 	 */
-	public SwingTicker(int __handle)
-	{
-		super(__handle);
-	}
+	public abstract void textChanged(LcdTicker __lcd, String __text)
+		throws NullPointerException;
 }
 
