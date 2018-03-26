@@ -63,38 +63,58 @@ public final class IntegerRGB888ArrayGraphics
 	{
 		int[] buffer = this.buffer;
 		
-		int paintcolor = this.paintcolor,
+		int pac = this.paintcolor,
 			sa = this.paintalpha,
-			qq = (sa ^ 0xFF),
-			srb = ((paintcolor & 0xFF00FF) * sa),
-			sgg = ((paintcolor & 0x00FF00) * sa);
+			na = (sa ^ 0xFF),
+			srb = ((pac & 0xFF00FF) * sa),
+			sgg = ((pac & 0x00FF00) * sa);
 		
 		// Blend each color
+		int mod = 0;
+		boolean did = false;
 		for (int y = __y; y < __ey; y++)
 			for (int dest = offset + (y * pitch) + __x, pex = dest + __w;
 				dest < pex; dest++)
 			{
-				int dcc = buffer[dest],
-					xrb = (srb + ((dcc & 0xFF00FF) * qq)) >>> 8,
-					xgg = (sgg + ((dcc & 0x00FF00) * qq)) >>> 8;
+				int dcc = buffer[dest];
 				
-				buffer[dest] = (xrb & 0xFF00FF) | (xgg & 0x00FF00);
+				// Quick
+				int xrb = srb + (((dcc & 0xFF00FF) * na) >>> 8),
+					xgg = sgg + (((dcc & 0x00FF00) * na) >>> 8);
+				int ra = ((xrb & 0xFF00FF) | (xgg & 0x00FF00));
+				
+				// Slower
+				int sr = (pac >>> 16) & 0xFF,
+					sg = (pac >>> 8) & 0xFF,
+					sb = (pac) & 0xFF,
+					dr = (dcc >>> 16) & 0xFF,
+					dg = (dcc >>> 8) & 0xFF,
+					db = (dcc) & 0xFF;
+				int xr = ((sr * sa) + (dr * na)) / 255,
+					xg = ((sg * sa) + (dg * na)) / 255,
+					xb = ((sb * sa) + (db * na)) / 255;
+				int rb = (xr << 16) | (xg << 8) | xb;
+				
+				// Identity
+				int rc = __blend(pac | 0xFF000000, dcc | 0xFF000000, 0xFF,
+					sa) & 0xFFFFFF;
+				
+				
+				buffer[dest] = (mod == 0 ? ra : (mod == 1 ? rb : rc));
+				mod++;
+				if (mod >= 3)
+					mod = 0;
+				
+				if (!did && (ra != rb || ra != rc))
+				{
+					did = true;
+					System.err.printf("DEBUG -- %02x%06x > ff%06x == (ra=%06x, rb=%06x, rc=%06x)%n",
+						sa, pac, dcc, ra, rb, rc);
+				}
 			}
-			
-				/*((rb1 | rb2) & 0xFF00FF) + ((g1 | g2) & 0x00FF00);*/
-				
-				/*
-				drb = (;
-				dgg = ;
-				
-				xr = ((sr * sa) + (dr * qq)) / 255,
-				xg = ((sg * sa) + (dg * qq)) / 255,
-				xb = ((sb * sa) + (db * qq)) / 255;
-				
-				buffer[dest] = (__blend(pac, dpp, 0xFF000000, a)) & 0xFFFFFF;
-			}
-				*/
 		/*
+		buffer[dest] = (__blend(pac, dpp, 0xFF000000, a)) & 0xFFFFFF
+		
 		int sa = (((__src >> 24) & 0xFF) * __alpha) / 255;
 		
 		// Split into RGB
@@ -117,33 +137,6 @@ public final class IntegerRGB888ArrayGraphics
 	
 		// Recompile
 		return (xa << 24) | (xr << 16) | (xg << 8) | xb;
-		
-		
-		
-		// The original alpha color is lost because there is no alpha channel
-		// so it must be restored accordingly
-		int pac = this.paintalphacolor | (this.paintalpha << 24),
-			pitch = this.pitch,
-			offset = this.offset;
-			
-		
-		// Source color
-		int a = pac >>> 24,
-			na = a ^ 0xFF,
-			nap = na + 1,
-			bgrb = (pac & 0x00FF00FF),
-			bggg = (pac & 0x0000FF00);
-		
-		// Just a simple color fill
-		for (int y = __y; y < __ey; y++)
-			for (int dest = offset + (y * pitch) + __x, pex = dest + __w;
-				dest < pex; dest++)
-			{
-				// Blend this color with the color at the original source
-				int dpp = buffer[dest] | 0xFF000000;
-				
-				buffer[dest] = (__blend(pac, dpp, 0xFF000000, a)) & 0xFFFFFF;
-			}
 		*/
 	}
 	
@@ -155,7 +148,7 @@ public final class IntegerRGB888ArrayGraphics
 	protected final void internalFillRectSolid(int __x, int __y, int __ex,
 		int __ey, int __w, int __h)
 	{
-		int b = this.paintcolorhigh;
+		int b = this.paintcolor;
 		int[] buffer = this.buffer;
 		int pitch = this.pitch,
 			offset = this.offset;
@@ -195,10 +188,10 @@ public final class IntegerRGB888ArrayGraphics
 		int qq = 255 - sa;
 		
 		// Perform blending
-		int xa = (sa + da - ((sa * da) / 255)) | __bor,
-			xr = ((sr * sa) + (dr * qq)) / 255,
-			xg = ((sg * sa) + (dg * qq)) / 255,
-			xb = ((sb * sa) + (db * qq)) / 255;
+		int xa = ((sa + da - ((sa * da) / 255)) | __bor) & 0xFF,
+			xr = (((sr * sa) + (dr * qq)) / 255) & 0xFF,
+			xg = (((sg * sa) + (dg * qq)) / 255) & 0xFF,
+			xb = (((sb * sa) + (db * qq)) / 255) & 0xFF;
 	
 		// Recompile
 		return (xa << 24) | (xr << 16) | (xg << 8) | xb;

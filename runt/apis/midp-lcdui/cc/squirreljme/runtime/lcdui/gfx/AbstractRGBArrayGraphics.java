@@ -162,7 +162,7 @@ public abstract class AbstractRGBArrayGraphics
 			paintalphacolor = paintcolor |
 				((__a & this.alphavalmask) << this.alphashift);
 		this.paintcolor = paintcolor;
-		this.paintcolorhigh = paintcolor | 0xFF000000;
+		this.paintcolorhigh = paintcolor | this.alphamask;
 		this.paintalphacolor = paintalphacolor;
 	}
 }
