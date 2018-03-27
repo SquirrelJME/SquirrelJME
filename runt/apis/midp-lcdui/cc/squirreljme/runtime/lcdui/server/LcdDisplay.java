@@ -27,7 +27,10 @@ public abstract class LcdDisplay
 	extends LcdWidget
 {
 	/** The current widget being shown, owned by a task. */
-	volatile LcdWidget _current;
+	LcdWidget _current;
+	
+	/** The ticker being shown on the display currently. */
+	LcdTicker _showticker;
 	
 	/**
 	 * Initiazes the display.
@@ -49,6 +52,15 @@ public abstract class LcdDisplay
 	 * @since 2018/03/23
 	 */
 	protected abstract void internalSetCurrent(LcdWidget __w);
+	
+	/**
+	 * This is called when the ticker to be displayed has changed and
+	 * will be called to update it.
+	 *
+	 * @param __t The ticker to show, will be {@code null} if it is removed.
+	 * @since 2018/03/27
+	 */
+	protected abstract void internalShowTicker(LcdTicker __t);
 	
 	/**
 	 * Returns the pixel format of this display.
@@ -122,7 +134,20 @@ public abstract class LcdDisplay
 	 */
 	public final void updateTicker()
 	{
-		throw new todo.TODO();
+		LcdWidget current = this._current;
+		LcdTicker showticker = this._showticker,
+			doticker = (current == null ? null : current.getTickerDisplayed());
+		
+		// Ticker has changed?
+		if (showticker != doticker)
+		{
+			// Clear the old ticker
+			this.internalShowTicker(null);
+			
+			// Set the new ticker
+			this._showticker = showticker;
+			this.internalShowTicker(doticker);
+		}
 	}
 }
 

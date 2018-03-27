@@ -406,9 +406,18 @@ public abstract class LcdWidget
 	{
 		LcdDisplay disp = this.getActualDisplay();
 		
+		// If the ticker has not changed just go through the update logic
+		// to make sure it is up to date.
+		LcdTicker old = this._ticker;
+		if (__t == old)
+		{
+			if (disp != null)
+				disp.updateTicker();
+			return;
+		}
+		
 		// Remove the old ticker, tell the display to not use the ticker
 		// anymore because it has been cleared
-		LcdTicker old = this._ticker;
 		if (old != null)
 		{
 			this._ticker = null;

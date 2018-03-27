@@ -14,8 +14,11 @@ import cc.squirreljme.runtime.cldc.system.type.RemoteMethod;
 import cc.squirreljme.runtime.cldc.task.SystemTask;
 import cc.squirreljme.runtime.lcdui.gfx.PixelFormat;
 import cc.squirreljme.runtime.lcdui.server.LcdDisplay;
+import cc.squirreljme.runtime.lcdui.server.LcdTicker;
 import cc.squirreljme.runtime.lcdui.server.LcdWidget;
+import java.awt.BorderLayout;
 import java.awt.Dimension;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 
 /**
@@ -29,8 +32,11 @@ public class SwingDisplay
 	/** The frame which acts as the display. */
 	final JFrame _frame;
 	
+	/** The ticker which was shown. */
+	private JComponent _usedticker;
+	
 	/** First initialization, used to center initially? */
-	private volatile boolean _first;
+	private boolean _first;
 	
 	/**
 	 * This makes the JFrames look more matching.
@@ -91,12 +97,39 @@ public class SwingDisplay
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2018/03/27
+	 */
+	@Override
+	protected void internalShowTicker(LcdTicker __t)
+	{
+		JFrame frame = this._frame;
+		JComponent usedticker = this._usedticker;
+		
+		// Clear the old ticker first if there is one
+		if (usedticker != null)
+		{
+			frame.remove(usedticker);
+			this._usedticker = null;
+		}
+		
+		// Setting a new one
+		if (__t != null)
+		{
+			usedticker = ((SwingTicker)__t).createComponent();
+			frame.add(usedticker, BorderLayout.PAGE_START);
+			this._usedticker = usedticker;
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/03/18
 	 */
 	@Override
 	protected final void internalSetCurrent(LcdWidget __w)
 	{
 		JFrame frame = this._frame;
+		JComponent usedticker = this._usedticker;
 		
 		// Clearing the frame
 		if (__w == null)
@@ -114,8 +147,13 @@ public class SwingDisplay
 		// Setting it up
 		else
 		{
-			// Add the widget's component to the frame
-			frame.add(((SwingWidget)__w)._component);
+			// Add the widget's component to the centerframe
+			frame.add(((SwingWidget)__w)._component,
+				BorderLayout.CENTER);
+			
+			// Add the ticker, if there is any
+			if (usedticker != null)
+				frame.add(usedticker, BorderLayout.PAGE_START);
 		
 			// Pack it
 			frame.pack();

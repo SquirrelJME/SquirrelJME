@@ -12,38 +12,44 @@ package cc.squirreljme.runtime.javase.lcdui;
 
 import cc.squirreljme.runtime.lcdui.server.LcdTicker;
 import cc.squirreljme.runtime.lcdui.server.LcdTickerListener;
-import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 /**
- * This is a ticker which shows scrolling text.
+ * This is the compoent which is shown to display text.
  *
- * @since 2018/03/26
+ * @since 2018/03/27
  */
-public class SwingTicker
-	extends LcdTicker
+public class SwingTickerComponent
+	extends JPanel
+	implements LcdTickerListener
 {
+	/** The label. */
+	protected final JLabel label;
+	
 	/**
-	 * Initializes the ticker.
+	 * Initializes the component.
 	 *
-	 * @param __handle The ticker handle.
-	 * @since 2018/03/26
+	 * @since 2018/03/27
 	 */
-	public SwingTicker(int __handle)
+	public SwingTickerComponent()
 	{
-		super(__handle);
+		JLabel label = new JLabel();
+		this.label = label;
+		
+		// Only the label is here
+		this.add(label);
 	}
 	
 	/**
-	 * This creates a component which shows the ticker text.
-	 *
-	 * @return The component for showing the ticker.
-	 * @since 2018/03/27
+	 * {@inheritDoc}
+	 * @since 2018/03/26
 	 */
-	public JComponent createComponent()
+	@Override
+	public void textChanged(LcdTicker __lcd, String __text)
+		throws NullPointerException
 	{
-		SwingTickerComponent rv = new SwingTickerComponent();
-		this.addListener(rv);
-		return rv;
+		this.label.setText(__text);
 	}
 }
 
