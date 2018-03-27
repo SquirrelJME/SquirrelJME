@@ -60,7 +60,7 @@ public final class ColorInfo
 		// Set the pixel format
 		PixelFormat pf;
 		PIXEL_FORMAT = (pf = PixelFormat.valueOf(
-			System.getProperty(PIXEL_FORMAT_PROPERTY, "INT_RGB888")));
+			System.getProperty(PIXEL_FORMAT_PROPERTY, "INTEGER_RGB888")));
 		
 		// Set the type of data to use for buffered images
 		int btype;

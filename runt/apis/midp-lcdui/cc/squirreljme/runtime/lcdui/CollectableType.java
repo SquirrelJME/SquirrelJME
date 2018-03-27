@@ -88,6 +88,7 @@ public enum CollectableType
 			case DISPLAY_HEAD:
 				return true;
 			
+				// Any displayable can show a ticker
 			default:
 				return this.isDisplayable();
 		}
