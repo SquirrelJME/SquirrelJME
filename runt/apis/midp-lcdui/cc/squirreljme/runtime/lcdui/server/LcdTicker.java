@@ -47,6 +47,10 @@ public abstract class LcdTicker
 	/**
 	 * Adds a listener for this ticker.
 	 *
+	 * The listener which is added will have the
+	 * {@link LcdTickerListener#textChange(LcdTicker, String)} method called
+	 * so that it can be known which text to show.
+	 *
 	 * @param __l The ticker to send changes to.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/26
@@ -57,7 +61,11 @@ public abstract class LcdTicker
 		if (__l == null)
 			throw new NullPointerException("NARG");
 		
+		// Store listener and also call it right after it has been added
+		// so it could be updated with the correct text without needing the
+		// ticker text
 		this._listeners.add(new WeakReference<>(__l));
+		__l.textChanged(this, this._text);
 	}
 	
 	/**

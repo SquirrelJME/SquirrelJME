@@ -56,7 +56,6 @@ public final class ColorInfo
 	 */
 	static
 	{
-		
 		// Set the pixel format
 		PixelFormat pf;
 		PIXEL_FORMAT = (pf = PixelFormat.valueOf(
