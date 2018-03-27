@@ -299,6 +299,43 @@ public abstract class LcdWidget
 	}
 	
 	/**
+	 * This returns the ticker that would be displayed on the display for
+	 * the given widget.
+	 *
+	 * @return The ticker to be displayed for this widget.
+	 * @since 2018/03/26
+	 */
+	public final LcdTicker getTickerDisplayed()
+	{
+		// If this cannot show a ticker then do not use it
+		CollectableType type = this.type;
+		if (!type.canShowTicker())
+			return null;
+		
+		// If this has a ticker then it takes priority first
+		LcdTicker ticker = this._ticker;
+		if (ticker != null)
+			return ticker;
+		
+		// If this is a tabbed pane then the ticker that is displayed comes
+		// from the active element if there is one
+		if (type == CollectableType.DISPLAYABLE_TABBED_PANE)
+			throw new todo.TODO();
+		
+		// See if a contained object has a ticker, this means that
+		// these can propogate up
+		for (LcdWidget k : this._kids)
+		{
+			ticker = k.getTickerDisplayed();
+			if (ticker != null)
+				return ticker;
+		}
+		
+		// None found
+		return null;
+	}
+	
+	/**
 	 * Returns the title of the widget.
 	 *
 	 * @return The widget title.
@@ -367,7 +404,29 @@ public abstract class LcdWidget
 	 */
 	public final void setTicker(LcdTicker __t)
 	{
-		throw new todo.TODO();
+		LcdDisplay disp = this.getActualDisplay();
+		
+		// Remove the old ticker, tell the display to not use the ticker
+		// anymore because it has been cleared
+		LcdTicker old = this._ticker;
+		if (old != null)
+		{
+			this._ticker = null;
+			
+			if (disp != null)
+				disp.updateTicker();
+		}
+		
+		// Set the new one
+		if (__t != null)
+		{
+			// Say that a new ticker was used
+			this._ticker = __t;
+			
+			// Tell the display to update the ticker
+			if (disp != null)
+				disp.updateTicker();
+		}
 	}
 	
 	/**

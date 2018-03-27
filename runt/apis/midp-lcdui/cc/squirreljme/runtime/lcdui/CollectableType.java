@@ -75,6 +75,25 @@ public enum CollectableType
 	;
 	
 	/**
+	 * Can this show a ticker?
+	 *
+	 * @return If this can show a ticker.
+	 * @since 2018/03/26
+	 */
+	public final boolean canShowTicker()
+	{
+		switch (this)
+		{
+			case DISPLAY:
+			case DISPLAY_HEAD:
+				return true;
+			
+			default:
+				return this.isDisplayable();
+		}
+	}
+	
+	/**
 	 * Is this considered a container for other widgets? Traversal to the
 	 * top stops at these.
 	 *
