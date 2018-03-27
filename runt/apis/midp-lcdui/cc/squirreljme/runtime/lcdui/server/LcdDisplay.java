@@ -99,6 +99,9 @@ public abstract class LcdDisplay
 		{
 			this.internalSetCurrent(null);
 			this._current = null;
+			
+			// Tell the ticker to update
+			this.updateTicker();
 		}
 		
 		// Set new widget
@@ -106,7 +109,20 @@ public abstract class LcdDisplay
 		{
 			this._current = __w;
 			this.internalSetCurrent(__w);
+			
+			// Tell the ticker to update
+			this.updateTicker();
 		}
+	}
+	
+	/**
+	 * This is called when the ticker should be updated.
+	 *
+	 * @since 2018/03/26
+	 */
+	public final void updateTicker()
+	{
+		throw new todo.TODO();
 	}
 }
 
