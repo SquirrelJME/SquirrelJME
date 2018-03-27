@@ -66,3 +66,31 @@ So that is the next goal, using custom items in forms in tabbed panes to show
 off those tab panes and additionally all the various drawing operations as
 needed. It would also act as a good test when implementing other graphics
 things.
+
+## 11:04
+
+I believe what I need is a ticker which can be attached to widgets and can be
+shared across multiple widgets. So having a widget itself would not really
+work out all too well, so this will be a separate object but would still have
+to be resource collected and such. Maybe tickers do not even have to be
+handled remotely, they can just purely be a local thing. I would however need
+to keep track of ticker ownership to determine which widgets should be
+notified when the ticker changes, but it can work. The ticker would be kind of
+like a secondary titlebar of sorts. But I can have it where the ticker is
+recursively handled at least on the remote side. But tickers themselves are
+multiply updated and could be changed accordingly. They have to be consistent
+where if a screen changes the ticker should stay the same no matter what. Oh
+I have an idea. Basically I can make the queued stuff have an even lower edge
+stuff that is locally managed but individually handled on the remote end when
+things are created. But it would end up being like a `CollectableType` and
+the base would be `__Collectable__` and `LcdCollectable`. The function would
+change to `COLLECTABLE_CREATE` which for widgets would return new widgets and
+for tickers it would create new tickers. On the remote end I can represent
+tickers and then tickers would have the ability to have a kind of detached
+widget of sorts. When the ticker text is updated, all of the widgets that
+exist are updated. But that is how it is going to work, and it should work
+out quite well.
+
+## 14:08
+
+I have work soon sadly.
