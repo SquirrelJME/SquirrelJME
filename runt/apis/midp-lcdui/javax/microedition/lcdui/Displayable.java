@@ -236,17 +236,6 @@ public abstract class Displayable
 	{
 		throw new todo.TODO();
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/03/23
-	 */
-	@SerializedEvent
-	@Override
-	final void __doSizeChanged(int __w, int __h)
-	{
-		this.sizeChanged(__w, __h);
-	}
 }
 
 

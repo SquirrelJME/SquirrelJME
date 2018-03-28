@@ -822,23 +822,11 @@ public class Display
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/03/23
-	 */
-	@SerializedEvent
-	@Override
-	final void __doPaint(Graphics __g, int __bw, int __bh)
-		throws NullPointerException
-	{
-		// Does nothing
-	}
-	
-	/**
-	 * {@inheritDoc}
+	 * @param __shown Is the display being shown?
 	 * @since 2018/03/24
 	 */
 	@SerializedEvent
-	@Override
-	final void __doShown(boolean __shown)
+	final void __doDisplayShown(boolean __shown)
 	{
 		// Report that visibility has changed
 		int state = (__shown ? Display.STATE_VISIBLE :
@@ -848,12 +836,14 @@ public class Display
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * This is called when the display has changed size.
+	 *
+	 * @param __w The display width.
+	 * @param __h The display height.
 	 * @since 2018/03/23
 	 */
 	@SerializedEvent
-	@Override
-	final void __doSizeChanged(int __w, int __h)
+	final void __doDisplaySizeChanged(int __w, int __h)
 	{
 		// Report that the size changed for events
 		for (DisplayListener dl : Display.__listeners())

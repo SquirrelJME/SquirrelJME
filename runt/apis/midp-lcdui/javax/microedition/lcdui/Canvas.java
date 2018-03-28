@@ -148,10 +148,10 @@ public abstract class Canvas
 		1;
 	
 	/** The key listener to use. */
-	private volatile KeyListener _keylistener;
+	private KeyListener _keylistener;
 	
 	/** Is the rendering transparent or opaque? */
-	private volatile boolean _transparent;
+	boolean _transparent;
 	
 	/** Should this be ran full-screen? */
 	volatile boolean _isfullscreen;
@@ -540,34 +540,15 @@ public abstract class Canvas
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2017/10/24
+	 * @since 2018/03/28
 	 */
-	@SerializedEvent
 	@Override
-	void __doPaint(Graphics __g, int __pw, int __ph)
+	int __getTransparentColor()
 	{
-		// If this is transparent then fill the rectangle with the default
-		// color
+		// The color for canvas backgrounds is always white
 		if (this._transparent)
-			__g.fillRect(__g.getClipX(), __g.getClipY(),
-				__g.getClipWidth(), __g.getClipHeight());
-		
-		// Forward paint call
-		this.paint(__g);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/03/24
-	 */
-	@SerializedEvent
-	@Override
-	final void __doShown(boolean __shown)
-	{
-		if (__shown)
-			this.showNotify();
-		else
-			this.hideNotify();
+			return 0xFFFFFFFF;
+		return 0;
 	}
 }
 
