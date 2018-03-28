@@ -178,17 +178,17 @@ final class __LocalCallback__
 		// Get the start and end element of the drawing region
 		int cs = g.getClipElementStart(),
 			cw = g.getClipElementEnd() - cs,
-			olds = (__pitch * __cy);
+			olds = __offset + (__pitch * __cy) + cs;
 		
 		// Copy the old buffer data into this one before drawing
-		ArrayUtils.copy(__buf, cs, shadow, __cx, cw);
+		ArrayUtils.copy(__buf, olds, shadow, cs, cw);
 		
 		// Perform the actual painting operation
 		on.__doPaint(g, __bw, __bh);
 		
 		// Since a new buffer was setup temporarily, copy the drawn bytes
 		// into the destination
-		ArrayUtils.copy(shadow, __cx, __buf, cs, cw);
+		ArrayUtils.copy(shadow, cs, __buf, olds, cw);
 	}
 	
 	/**

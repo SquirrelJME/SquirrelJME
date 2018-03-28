@@ -152,7 +152,6 @@ public abstract class AbstractArrayGraphics
 		this.abstransy = __aty;
 		this.transx = __atx;
 		this.transy = __aty;
-		System.err.printf("DEBUG -- Itrans: %d %d%n", __atx, __aty);
 		
 		// Initial clipping rectangle has the image bounds
 		this.clipex = __w;
@@ -595,8 +594,9 @@ public abstract class AbstractArrayGraphics
 	 */
 	public final int getClipElementEnd()
 	{
-		return this.offset + (((this.pitch * this.clipey) + this.clipex) /
-			this.pixelsperelement);
+		// Subtract one from the Y because it is on the next row
+		return this.offset + (((this.pitch * (this.clipey - 1)) +
+			(this.clipex)) / this.pixelsperelement);
 	}
 	
 	/**
