@@ -51,6 +51,48 @@ public enum PixelFormat
 	;
 	
 	/**
+	 * Creates an array buffer which is capable of containing an image of
+	 * the specified size.
+	 *
+	 * @param __p The buffer pitch.
+	 * @param __h The buffer height.
+	 * @since 2018/03/28
+	 */
+	public final Object createBuffer(int __p, int __h)
+	{
+		// Depends on the format
+		int dim = __p * __h;
+		switch (this)
+		{
+			case BYTE_INDEXED1:
+				return new byte[dim / 8];
+					
+			case BYTE_INDEXED2:
+				return new byte[dim / 4];
+					
+			case BYTE_INDEXED4:
+				return new byte[dim / 2];
+					
+			case BYTE_INDEXED8:
+			case BYTE_RGB332:
+				return new byte[dim];
+					
+			case SHORT_INDEXED16:
+			case SHORT_ARGB4444:
+			case SHORT_RGB565:
+				return new short[dim];
+			
+			case INTEGER_ARGB8888:
+			case INTEGER_RGB888:
+				return new int[dim];
+			
+				// Unknown
+			default:
+				throw new RuntimeException("OOPS");
+		}
+	}
+	
+	/**
 	 * Creates the graphics object for drawing graphics, no absolute
 	 * translation is used for the graphics.
 	 *
