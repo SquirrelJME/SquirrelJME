@@ -41,8 +41,8 @@ public final class ArrayUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/28
 	 */
-	public static final void copy(Array __src, int __srcpos,
-		Array __dest, int __destpos, int __len)
+	public static final void copy(Object __src, int __srcpos,
+		Object __dest, int __destpos, int __len)
 		throws IndexOutOfBoundsException, ArrayStoreException,
 			NullPointerException
 	{

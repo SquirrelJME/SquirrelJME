@@ -149,11 +149,7 @@ final class __LocalCallback__
 		if (on == null)
 			return;
 		
-		// Setup a new buffer to draw into locally for increased speed
-		Array original = __buf,
-			shadow = __LocalCallback__.__shadowBuffer(__buf, __pitch, __bh);
-		
-		// Need to copy the palette too?
+		// Copy the palette
 		int[] pal = null;
 		if (__pal != null)
 		{
@@ -162,34 +158,37 @@ final class __LocalCallback__
 			__pal.get(0, pal, 0, n);
 		}
 		
-		// This will be set to the graphics to draw on
+		// Create a local buffer which is stored completely within the
+		// clipping region, although for simpler operation in copying, keep
+		// the pitch but lose the y values
+		// So this will end up just copying only Y values as drawn from the
+		// source buffer because otherwise more calls will be needed for
+		// interleaving.
+		Object shadow = __pf.createBuffer(__pitch, __ch);
+		
+		// Setup graphics object to draw on with an absolute translation
+		// offset from the clipping rectangle
 		AbstractArrayGraphics g = __pf.createGraphics(
-			((LocalArray)shadow).localArray(), pal, __bw, __bh, __alpha,
-			__pitch, __offset, 10000, 10000);
+			shadow, pal, __cw, __ch, __alpha, __pitch, 0, 0, -__cy);
 		
 		// Set the clipping bounds so bytes outside of the area are not drawn
-		// into at all
+		// into at all.
 		g.setClip(__cx, __cy, __cw, __ch);
 		
-		// Copy bytes which were already in the passed buffer to the shadowed
-		// buffer
-		int cs = -1,
-			cw = -1;
-		if (original != shadow)
-		{
-			cs = g.getClipElementStart();
-			cw = g.getClipElementEnd() - cs;
-			
-			ArrayUtils.copy(original, cs, shadow, cs, cw);
-		}
+		// Get the start and end element of the drawing region
+		int cs = g.getClipElementStart(),
+			cw = g.getClipElementEnd() - cs,
+			olds = (__pitch * __cy);
+		
+		// Copy the old buffer data into this one before drawing
+		ArrayUtils.copy(__buf, cs, shadow, __cx, cw);
 		
 		// Perform the actual painting operation
 		on.__doPaint(g, __bw, __bh);
 		
-		// Buffer was shadowed, so copy the pixels back after they have been
-		// drawn
-		if (original != shadow)
-			ArrayUtils.copy(shadow, cs, original, cs, cw);
+		// Since a new buffer was setup temporarily, copy the drawn bytes
+		// into the destination
+		ArrayUtils.copy(shadow, __cx, __buf, cs, cw);
 	}
 	
 	/**
