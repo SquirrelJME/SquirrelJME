@@ -76,10 +76,17 @@ public abstract class CustomItem
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * This method is called after this has been hidden from the display,
+	 * whether it was removed or concealed. This can be used to stop timers
+	 * for example since they might not be needed when this is not visible.
+	 *
+	 * @since 2018/03/28
+	 */
 	@__SerializedEvent__
 	protected void hideNotify()
 	{
-		throw new todo.TODO();
+		// Implemented by sub-classes
 	}
 	
 	protected final void invalidate()
@@ -146,7 +153,7 @@ public abstract class CustomItem
 	@__SerializedEvent__
 	protected void showNotify()
 	{
-		throw new todo.TODO();
+		// Implemented by sub-classes
 	}
 	
 	@__SerializedEvent__
