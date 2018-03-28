@@ -20,6 +20,7 @@ import java.awt.event.HierarchyEvent;
 import java.awt.event.HierarchyListener;
 import java.awt.Point;
 import java.awt.Rectangle;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.JLabel;
@@ -63,6 +64,8 @@ public class SwingTickerComponent
 		// Only the label is here
 		this.setViewportView(label);
 		this.addComponentListener(this);
+		this.setBorder(new EmptyBorder(0, 0, 0, 0));
+		this.setViewportBorder(new EmptyBorder(0, 0, 0, 0));
 		
 		// Setup base timer for scrolling
 		Timer timer = new Timer(200, this);
