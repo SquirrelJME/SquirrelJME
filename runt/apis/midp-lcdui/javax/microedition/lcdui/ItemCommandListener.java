@@ -10,10 +10,11 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.lcdui.SerializedEvent;
 
 public interface ItemCommandListener
 {
-	@__SerializedEvent__
+	@SerializedEvent
 	public abstract void commandAction(Command __a, Item __b);
 }
 

@@ -10,6 +10,8 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.lcdui.SerializedEvent;
+
 public abstract class FormLayoutPolicy
 {
 	public static int DIRECTION_LTR =
@@ -23,7 +25,7 @@ public abstract class FormLayoutPolicy
 		throw new todo.TODO();
 	}
 	
-	@__SerializedEvent__
+	@SerializedEvent
 	protected abstract void doLayout(int __vpx, int __vpy, int __vpw,
 		int __vph, int[] __ts);
 	

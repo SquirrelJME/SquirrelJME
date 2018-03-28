@@ -10,11 +10,13 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.lcdui.SerializedEvent;
+
 public interface TabListener
 {
 	public abstract void tabAddedEvent(int __i, Screen __tab);
 	
-	@__SerializedEvent__
+	@SerializedEvent
 	public abstract void tabChangeEvent(Screen __tab);
 	
 	public abstract void tabRemoveEvent(int __i);

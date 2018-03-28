@@ -12,6 +12,7 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.lcdui.LcdFunction;
 import cc.squirreljme.runtime.lcdui.LcdServiceCall;
+import cc.squirreljme.runtime.lcdui.SerializedEvent;
 
 /**
  * This class acts as the lowest base for displays and items.
@@ -53,7 +54,7 @@ abstract class __Widget__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/23
 	 */
-	@__SerializedEvent__
+	@SerializedEvent
 	abstract void __doPaint(Graphics __g, int __bw, int __bh)
 		throws NullPointerException;
 	
@@ -63,7 +64,7 @@ abstract class __Widget__
 	 * @param __shown Is the widget shown?
 	 * @since 2018/03/24
 	 */
-	@__SerializedEvent__
+	@SerializedEvent
 	abstract void __doShown(boolean __shown);
 	
 	/**
@@ -73,7 +74,7 @@ abstract class __Widget__
 	 * @param __h The new height.
 	 * @since 2018/03/23
 	 */
-	@__SerializedEvent__
+	@SerializedEvent
 	abstract void __doSizeChanged(int __w, int __h);
 	
 	/**

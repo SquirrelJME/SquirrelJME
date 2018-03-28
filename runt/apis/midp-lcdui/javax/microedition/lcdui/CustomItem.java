@@ -10,6 +10,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.lcdui.SerializedEvent;
 
 public abstract class CustomItem
 	extends Item
@@ -46,19 +47,19 @@ public abstract class CustomItem
 		throw new todo.TODO();
 	}
 	
-	@__SerializedEvent__
+	@SerializedEvent
 	protected abstract int getMinContentHeight();
 	
-	@__SerializedEvent__
+	@SerializedEvent
 	protected abstract int getMinContentWidth();
 	
-	@__SerializedEvent__
+	@SerializedEvent
 	protected abstract int getPrefContentHeight(int __a);
 	
-	@__SerializedEvent__
+	@SerializedEvent
 	protected abstract int getPrefContentWidth(int __a);
 	
-	@__SerializedEvent__
+	@SerializedEvent
 	protected abstract void paint(Graphics __a, int __b, int __c);
 	
 	public int getGameAction(int __a)
@@ -83,7 +84,7 @@ public abstract class CustomItem
 	 *
 	 * @since 2018/03/28
 	 */
-	@__SerializedEvent__
+	@SerializedEvent
 	protected void hideNotify()
 	{
 		// Implemented by sub-classes
@@ -94,37 +95,37 @@ public abstract class CustomItem
 		throw new todo.TODO();
 	}
 	
-	@__SerializedEvent__
+	@SerializedEvent
 	protected void keyPressed(int __a)
 	{
 		throw new todo.TODO();
 	}
 	
-	@__SerializedEvent__
+	@SerializedEvent
 	protected void keyReleased(int __a)
 	{
 		throw new todo.TODO();
 	}
 	
-	@__SerializedEvent__
+	@SerializedEvent
 	protected void keyRepeated(int __a)
 	{
 		throw new todo.TODO();
 	}
 	
-	@__SerializedEvent__
+	@SerializedEvent
 	protected void pointerDragged(int __a, int __b)
 	{
 		throw new todo.TODO();
 	}
 	
-	@__SerializedEvent__
+	@SerializedEvent
 	protected void pointerPressed(int __a, int __b)
 	{
 		throw new todo.TODO();
 	}
 	
-	@__SerializedEvent__
+	@SerializedEvent
 	protected void pointerReleased(int __a, int __b)
 	{
 		throw new todo.TODO();
@@ -150,25 +151,25 @@ public abstract class CustomItem
 		throw new todo.TODO();
 	}
 	
-	@__SerializedEvent__
+	@SerializedEvent
 	protected void showNotify()
 	{
 		// Implemented by sub-classes
 	}
 	
-	@__SerializedEvent__
+	@SerializedEvent
 	protected void sizeChanged(int __a, int __b)
 	{
 		throw new todo.TODO();
 	}
 	
-	@__SerializedEvent__
+	@SerializedEvent
 	protected boolean traverse(int __a, int __b, int __c, int[] __d)
 	{
 		throw new todo.TODO();
 	}
 	
-	@__SerializedEvent__
+	@SerializedEvent
 	protected void traverseOut()
 	{
 		throw new todo.TODO();
@@ -178,7 +179,7 @@ public abstract class CustomItem
 	 * {@inheritDoc}
 	 * @since 2018/03/23
 	 */
-	@__SerializedEvent__
+	@SerializedEvent
 	@Override
 	final void __doPaint(Graphics __g, int __pw, int __ph)
 	{
@@ -189,7 +190,7 @@ public abstract class CustomItem
 	 * {@inheritDoc}
 	 * @since 2018/03/24
 	 */
-	@__SerializedEvent__
+	@SerializedEvent
 	@Override
 	final void __doShown(boolean __shown)
 	{

@@ -10,6 +10,8 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.lcdui.SerializedEvent;
+
 /**
  * This is the base class for all user interactable displays.
  *
@@ -34,7 +36,7 @@ public abstract class Screen
 	 * {@inheritDoc}
 	 * @since 2018/03/24
 	 */
-	@__SerializedEvent__
+	@SerializedEvent
 	@Override
 	final void __doPaint(Graphics __g, int __pw, int __ph)
 	{
@@ -45,7 +47,7 @@ public abstract class Screen
 	 * {@inheritDoc}
 	 * @since 2018/03/24
 	 */
-	@__SerializedEvent__
+	@SerializedEvent
 	@Override
 	final void __doShown(boolean __shown)
 	{

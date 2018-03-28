@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package javax.microedition.lcdui;
+package cc.squirreljme.runtime.lcdui;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RetentionPolicy.SOURCE)
 @Target({ElementType.METHOD})
-@interface __SerializedEvent__
+public @interface SerializedEvent
 {
 }
 

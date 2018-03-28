@@ -10,10 +10,11 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.lcdui.SerializedEvent;
 
 public interface ItemStateListener
 {
-	@__SerializedEvent__
+	@SerializedEvent
 	public abstract void itemStateChanged(Item __a);
 }
 

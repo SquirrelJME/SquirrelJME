@@ -11,6 +11,7 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.lcdui.common.EditableText;
+import cc.squirreljme.runtime.lcdui.SerializedEvent;
 
 public class TextBox
 	extends Screen

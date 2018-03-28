@@ -10,6 +10,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.lcdui.SerializedEvent;
 
 public class ImageItem
 	extends Item
@@ -85,7 +86,7 @@ public class ImageItem
 	 * {@inheritDoc}
 	 * @since 2018/03/23
 	 */
-	@__SerializedEvent__
+	@SerializedEvent
 	@Override
 	final void __doPaint(Graphics __g, int __pw, int __ph)
 	{
@@ -96,7 +97,7 @@ public class ImageItem
 	 * {@inheritDoc}
 	 * @since 2018/03/23
 	 */
-	@__SerializedEvent__
+	@SerializedEvent
 	@Override
 	final void __doSizeChanged(int __w, int __h)
 	{

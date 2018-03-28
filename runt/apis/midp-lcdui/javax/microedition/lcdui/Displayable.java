@@ -15,6 +15,7 @@ import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.lcdui.event.EventType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
 import cc.squirreljme.runtime.lcdui.LcdServiceCall;
+import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -218,7 +219,7 @@ public abstract class Displayable
 	 * @param __h The new heigh of the displayable.
 	 * @since 2016/10/10
 	 */
-	@__SerializedEvent__
+	@SerializedEvent
 	protected void sizeChanged(int __w, int __h)
 	{
 		// Implemented by sub-classes
@@ -240,7 +241,7 @@ public abstract class Displayable
 	 * {@inheritDoc}
 	 * @since 2018/03/23
 	 */
-	@__SerializedEvent__
+	@SerializedEvent
 	@Override
 	final void __doSizeChanged(int __w, int __h)
 	{

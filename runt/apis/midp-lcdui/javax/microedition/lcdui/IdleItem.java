@@ -10,6 +10,8 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.lcdui.SerializedEvent;
+
 public abstract class IdleItem
 	extends CustomItem
 {
@@ -19,13 +21,13 @@ public abstract class IdleItem
 		throw new todo.TODO();
 	}
 	
-	@__SerializedEvent__
+	@SerializedEvent
 	protected void addedToDisplay(Display __d)
 	{
 		throw new todo.TODO();
 	}
 	
-	@__SerializedEvent__
+	@SerializedEvent
 	protected void removedFromDisplay(Display __d)
 	{
 		throw new todo.TODO();
