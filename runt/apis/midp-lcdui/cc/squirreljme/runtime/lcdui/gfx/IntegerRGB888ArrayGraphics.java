@@ -29,16 +29,18 @@ public final class IntegerRGB888ArrayGraphics
 	 * @param __h The image height.
 	 * @param __p The image pitch.
 	 * @param __o The buffer offset.
+	 * @param __atx Absolute X translation.
+	 * @param __aty Absolute Y translation.
 	 * @throws IllegalArgumentException If the input parameters are not
 	 * correct.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/25
 	 */
 	public IntegerRGB888ArrayGraphics(int[] __buf,
-		int __w, int __h, int __p, int __o)
+		int __w, int __h, int __p, int __o, int __atx, int __aty)
 		throws IllegalArgumentException, NullPointerException
 	{
-		super(__w, __h, __p, __o, __buf.length, 1, false,
+		super(__w, __h, __p, __o, __buf.length, 1, false, __atx, __aty,
 			0b00000000_00000000__00000000_00000000,
 			0b00000000_11111111__00000000_00000000,
 			0b00000000_00000000__11111111_00000000,

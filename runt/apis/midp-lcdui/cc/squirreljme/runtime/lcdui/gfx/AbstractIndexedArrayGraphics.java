@@ -43,16 +43,18 @@ public abstract class AbstractIndexedArrayGraphics
 	 * @param __l The length of the buffer.
 	 * @param __pal The palette.
 	 * @param __ppe Pixels per element.
+	 * @param __atx Absolute X translation.
+	 * @param __aty Absolute Y translation.
 	 * @param __numc The number of colors in the palette.
 	 * @throws IllegalArgumentException If the palette is too small.
 	 * @throws NullPointerException If no palette was specified.
 	 * @since 2018/03/25
 	 */
 	public AbstractIndexedArrayGraphics(int __w, int __h, int __p, int __o,
-		int __l, int __ppe, int[] __pal, int __numc)
+		int __l, int __ppe, int __atx, int __aty, int[] __pal, int __numc)
 		throws IllegalArgumentException, NullPointerException
 	{
-		super(__w, __h, __p, __o, __l, __ppe, false);
+		super(__w, __h, __p, __o, __l, __ppe, false, __atx, __aty);
 		
 		if (__pal == null)
 			throw new NullPointerException("NARG");
