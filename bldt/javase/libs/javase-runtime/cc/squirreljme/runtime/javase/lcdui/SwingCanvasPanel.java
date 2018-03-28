@@ -13,6 +13,7 @@ package cc.squirreljme.runtime.javase.lcdui;
 import cc.squirreljme.runtime.cldc.system.type.Array;
 import cc.squirreljme.runtime.cldc.system.type.IntegerArray;
 import cc.squirreljme.runtime.lcdui.gfx.PixelFormat;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
@@ -88,7 +89,7 @@ public class SwingCanvasPanel
 		// Recreate the image if the size has changed
 		if (xw != oldw || xh != oldh)
 			this._image = (image = ColorInfo.create(xw, xh,
-				SystemColor.window));
+				new Color(0xFFFFFFFF)/*SystemColor.window()*/));
 		
 		// Have the remote end draw into our buffer as needed
 		Rectangle rect = __g.getClipBounds();

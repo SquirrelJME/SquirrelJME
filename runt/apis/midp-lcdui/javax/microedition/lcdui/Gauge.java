@@ -80,28 +80,6 @@ public class Gauge
 	{
 		throw new todo.TODO();
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/03/23
-	 */
-	@SerializedEvent
-	@Override
-	final void __doPaint(Graphics __g, int __pw, int __ph)
-	{
-		// Not required
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/03/23
-	 */
-	@SerializedEvent
-	@Override
-	final void __doSizeChanged(int __w, int __h)
-	{
-		// Not required
-	}
 }
 
 

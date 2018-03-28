@@ -42,6 +42,9 @@ public abstract class CustomItem
 	protected static final int TRAVERSE_VERTICAL =
 		2;
 	
+	/** Is the rendering transparent or opaque? */
+	boolean _transparent;
+	
 	protected CustomItem(String __a)
 	{
 		throw new todo.TODO();
@@ -59,8 +62,16 @@ public abstract class CustomItem
 	@SerializedEvent
 	protected abstract int getPrefContentWidth(int __a);
 	
+	/**
+	 * This is called when the item is to be painted.
+	 *
+	 * @param __g The graphics to draw into.
+	 * @param __w The width of the item.
+	 * @param __h The height of the item.
+	 * @since 2018/03/28
+	 */
 	@SerializedEvent
-	protected abstract void paint(Graphics __a, int __b, int __c);
+	protected abstract void paint(Graphics __g, int __w, int __h);
 	
 	public int getGameAction(int __a)
 	{
@@ -146,9 +157,24 @@ public abstract class CustomItem
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Sets the painting mode of the canvas.
+	 *
+	 * If transparent mode is enabled, then the implementation (not the end
+	 * developer) will fill the background with a suitable color or image
+	 * (which is unspecified).
+	 *
+	 * If opaque mode (which is the default) is enabled then it will be
+	 * assumed that {@link #repaint(Graphics)} will cover every pixel and as
+	 * such it will not be required for the background to be cleared or
+	 * initialized.
+	 *
+	 * @param __opaque If {@code true} then opaque mode is enabled.
+	 * @since 2018/03/28
+	 */
 	public void setPaintMode(boolean __opaque)
 	{
-		throw new todo.TODO();
+		this._transparent = !__opaque;
 	}
 	
 	@SerializedEvent
@@ -177,27 +203,16 @@ public abstract class CustomItem
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/03/23
+	 * @since 2018/03/28
 	 */
-	@SerializedEvent
 	@Override
-	final void __doPaint(Graphics __g, int __pw, int __ph)
+	int __getTransparentColor()
 	{
-		this.paint(__g, __pw, __ph);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/03/24
-	 */
-	@SerializedEvent
-	@Override
-	final void __doShown(boolean __shown)
-	{
-		if (__shown)
-			this.showNotify();
-		else
-			this.hideNotify();
+		// Just use the color white for now since the canvas defaults to
+		// black
+		if (this._transparent)
+			return 0xFFFFFFFF;
+		return 0;
 	}
 }
 
