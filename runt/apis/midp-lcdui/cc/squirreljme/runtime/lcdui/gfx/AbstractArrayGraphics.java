@@ -35,6 +35,9 @@ public abstract class AbstractArrayGraphics
 	/** The buffer offset. */
 	protected final int offset;
 	
+	/** The number of pixels which exist per element. */
+	protected final int pixelsperelement;
+	
 	/** The number of elements that consist of pixel data. */
 	protected final int numelements;
 	
@@ -119,7 +122,7 @@ public abstract class AbstractArrayGraphics
 		// of the array. (The width; The height; The offset; The pitch;
 		// The array length; The number of elements in the image)}
 		int numelements = (__p * __h) / __ppe,
-			lastelement = __o + __l;
+			lastelement = __o + numelements;
 		if (__o < 0 || lastelement > __l)
 			throw new ArrayIndexOutOfBoundsException(
 				String.format("EB2g %d %d %d %d %d %d", __w, __h,
@@ -130,6 +133,7 @@ public abstract class AbstractArrayGraphics
 		this.height = __h;
 		this.pitch = __p;
 		this.offset = __o;
+		this.pixelsperelement = __ppe;
 		this.numelements = numelements;
 		this.lastelement = lastelement;
 		this.hasalphachannel = __alpha;
@@ -560,6 +564,32 @@ public abstract class AbstractArrayGraphics
 	public final int getBlueComponent()
 	{
 		return (this.color) & 0xFF;
+	}
+	
+	/**
+	 * Returns the element in the input array which represents the end of the
+	 * clipping rectangle.
+	 *
+	 * @return The element which contains the end of the clipping rectangle.
+	 * @since 2018/03/28
+	 */
+	public final int getClipElementEnd()
+	{
+		return this.offset + (((this.pitch * this.clipey) + this.clipex) /
+			this.pixelsperelement);
+	}
+	
+	/**
+	 * Returns the element in the input array which represents the start of
+	 * the clipping rectangle.
+	 *
+	 * @return The element which contains the start of the clipping rectangle.
+	 * @since 2018/03/28
+	 */
+	public final int getClipElementStart()
+	{
+		return this.offset + (((this.pitch * this.clipsy) + this.clipsx) /
+			this.pixelsperelement);
 	}
 	
 	/**

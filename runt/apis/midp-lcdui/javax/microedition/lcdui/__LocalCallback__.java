@@ -12,6 +12,7 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.system.type.Array;
 import cc.squirreljme.runtime.cldc.system.type.ArrayType;
+import cc.squirreljme.runtime.cldc.system.type.ArrayUtils;
 import cc.squirreljme.runtime.cldc.system.type.ByteArray;
 import cc.squirreljme.runtime.cldc.system.type.EnumType;
 import cc.squirreljme.runtime.cldc.system.type.IntegerArray;
@@ -22,6 +23,7 @@ import cc.squirreljme.runtime.cldc.system.type.LocalShortArray;
 import cc.squirreljme.runtime.cldc.system.type.RemoteMethod;
 import cc.squirreljme.runtime.cldc.system.type.ShortArray;
 import cc.squirreljme.runtime.cldc.system.type.VoidType;
+import cc.squirreljme.runtime.lcdui.gfx.AbstractArrayGraphics;
 import cc.squirreljme.runtime.lcdui.gfx.ByteIndexed1ArrayGraphics;
 import cc.squirreljme.runtime.lcdui.gfx.ByteIndexed2ArrayGraphics;
 import cc.squirreljme.runtime.lcdui.gfx.ByteIndexed4ArrayGraphics;
@@ -161,19 +163,32 @@ final class __LocalCallback__
 		}
 		
 		// This will be set to the graphics to draw on
-		Graphics g = __LocalCallback__.__shadowGraphics(__pf,
+		AbstractArrayGraphics g = __LocalCallback__.__shadowGraphics(__pf,
 			(LocalArray)shadow, pal, __bw, __bh, __alpha, __pitch, __offset);
 		
 		// Set the clipping bounds so bytes outside of the area are not drawn
 		// into at all
 		g.setClip(__cx, __cy, __cw, __ch);
 		
+		// Copy bytes which were already in the passed buffer to the shadowed
+		// buffer
+		int cs = -1,
+			cw = -1;
+		if (original != shadow)
+		{
+			cs = g.getClipElementStart();
+			cw = g.getClipElementEnd() - cs;
+			
+			ArrayUtils.copy(original, cs, shadow, cs, cw);
+		}
+		
 		// Perform the actual painting operation
 		on.__doPaint(g, __bw, __bh);
 		
-		// Buffer was shadowed, so copy the pixels back
+		// Buffer was shadowed, so copy the pixels back after they have been
+		// drawn
 		if (original != shadow)
-			throw new todo.TODO();
+			ArrayUtils.copy(shadow, cs, original, cs, cw);
 	}
 	
 	/**
@@ -245,8 +260,8 @@ final class __LocalCallback__
 	 * @throws NullPointerException On null arguments except for {@code __pal}.
 	 * @since 2018/03/23
 	 */
-	private static final Graphics __shadowGraphics(PixelFormat __pf,
-		LocalArray __buf, int[] __pal, int __bw,
+	private static final AbstractArrayGraphics __shadowGraphics(
+		PixelFormat __pf, LocalArray __buf, int[] __pal, int __bw,
 		int __bh, boolean __alpha, int __pitch, int __offset)
 	{
 		if (__pf == null || __buf == null)
