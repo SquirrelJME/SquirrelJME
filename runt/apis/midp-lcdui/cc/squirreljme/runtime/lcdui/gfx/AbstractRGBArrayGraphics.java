@@ -102,7 +102,7 @@ public abstract class AbstractRGBArrayGraphics
 	 * @since 2018/03/25
 	 */
 	public AbstractRGBArrayGraphics(int __w, int __h, int __p, int __o,
-		int __l, int __ppe, boolean __alpha, int __amask, int __atx, int __aty,
+		int __l, int __ppe, boolean __alpha, int __atx, int __aty, int __amask,
 		int __rmask, int __gmask, int __bmask)
 		throws IllegalArgumentException, NullPointerException
 	{
