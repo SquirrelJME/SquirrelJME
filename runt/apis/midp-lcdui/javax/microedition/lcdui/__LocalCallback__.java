@@ -151,7 +151,7 @@ final class __LocalCallback__
 		
 		// Setup a new buffer to draw into locally for increased speed
 		Array original = __buf,
-			shadow = __LocalCallback__.__shadowBuffer(__buf);
+			shadow = __LocalCallback__.__shadowBuffer(__buf, __pitch, __bh);
 		
 		// Need to copy the palette too?
 		int[] pal = null;
@@ -163,8 +163,9 @@ final class __LocalCallback__
 		}
 		
 		// This will be set to the graphics to draw on
-		AbstractArrayGraphics g = __LocalCallback__.__shadowGraphics(__pf,
-			(LocalArray)shadow, pal, __bw, __bh, __alpha, __pitch, __offset);
+		AbstractArrayGraphics g = __pf.createGraphics(
+			((LocalArray)shadow).localArray(), pal, __bw, __bh, __alpha,
+			__pitch, __offset);
 		
 		// Set the clipping bounds so bytes outside of the area are not drawn
 		// into at all
@@ -228,11 +229,13 @@ final class __LocalCallback__
 	 * source buffer.
 	 *
 	 * @param __a The buffer to shadow.
+	 * @param __p The pitch of the image.
+	 * @param __h The height of the graphics.
 	 * @return The shadowed buffer or {@code __a} if it is not shadowed.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/24
 	 */
-	private static final Array __shadowBuffer(Array __a)
+	private static final Array __shadowBuffer(Array __a, int __p, int __h)
 		throws NullPointerException
 	{
 		if (__a == null)
@@ -243,87 +246,6 @@ final class __LocalCallback__
 			return __a;
 		
 		throw new todo.TODO();
-	}
-	
-	/**
-	 * Creates the graphics object for drawing graphics.
-	 *
-	 * @param __pf Pixel format to use.
-	 * @param __buf The buffer to send the result into after drawing.
-	 * @param __pal The palette to use for the remote buffer.
-	 * @param __bw The buffer width.
-	 * @param __bh The buffer height.
-	 * @param __alpha Is an alpha channel being used?
-	 * @param __pitch The number of elements for the width in the buffer.
-	 * @param __offset The offset into the buffer to the actual image data.
-	 * @return The graphics object for drawing graphics.
-	 * @throws NullPointerException On null arguments except for {@code __pal}.
-	 * @since 2018/03/23
-	 */
-	private static final AbstractArrayGraphics __shadowGraphics(
-		PixelFormat __pf, LocalArray __buf, int[] __pal, int __bw,
-		int __bh, boolean __alpha, int __pitch, int __offset)
-	{
-		if (__pf == null || __buf == null)
-			throw new NullPointerException("NARG");
-		
-		// Depends on the format
-		switch (__pf)
-		{
-			case BYTE_INDEXED1:
-				return new ByteIndexed1ArrayGraphics(
-					(byte[])__buf.localArray(), __pal,
-					__bw, __bh, __pitch, __offset);
-					
-			case BYTE_INDEXED2:
-				return new ByteIndexed2ArrayGraphics(
-					(byte[])__buf.localArray(), __pal,
-					__bw, __bh, __pitch, __offset);
-					
-			case BYTE_INDEXED4:
-				return new ByteIndexed4ArrayGraphics(
-					(byte[])__buf.localArray(), __pal,
-					__bw, __bh, __pitch, __offset);
-					
-			case BYTE_INDEXED8:
-				return new ByteIndexed8ArrayGraphics(
-					(byte[])__buf.localArray(), __pal,
-					__bw, __bh, __pitch, __offset);
-					
-			case SHORT_INDEXED16:
-				return new ShortIndexed16ArrayGraphics(
-					(short[])__buf.localArray(), __pal,
-					__bw, __bh, __pitch, __offset);
-			
-			case BYTE_RGB332:
-				return new ByteRGB332ArrayGraphics(
-					(byte[])__buf.localArray(),
-					__bw, __bh, __pitch, __offset);
-			
-			case SHORT_ARGB4444:
-				return new ShortARGB4444ArrayGraphics(
-					(short[])__buf.localArray(),
-					__bw, __bh, __pitch, __offset);
-			
-			case SHORT_RGB565:
-				return new ShortRGB565ArrayGraphics(
-					(short[])__buf.localArray(),
-					__bw, __bh, __pitch, __offset);
-			
-			case INTEGER_ARGB8888:
-				return new IntegerARGB8888ArrayGraphics(
-					(int[])__buf.localArray(),
-					__bw, __bh, __pitch, __offset);
-			
-			case INTEGER_RGB888:
-				return new IntegerRGB888ArrayGraphics(
-					(int[])__buf.localArray(),
-					__bw, __bh, __pitch, __offset);
-			
-				// Unknown
-			default:
-				throw new RuntimeException("OOPS");
-		}
 	}
 }
 
