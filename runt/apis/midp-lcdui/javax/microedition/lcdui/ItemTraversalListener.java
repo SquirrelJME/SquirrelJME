@@ -10,12 +10,14 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.lcdui.SerializedEvent;
+
 public interface ItemTraversalListener
 {
-	@__SerializedEvent__
+	@SerializedEvent
 	public abstract void itemTraversedIn(Item __i);
 	
-	@__SerializedEvent__
+	@SerializedEvent
 	public abstract void itemTraversedOut(Item __i);
 }
 

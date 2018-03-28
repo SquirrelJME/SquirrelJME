@@ -18,6 +18,7 @@ import cc.squirreljme.runtime.lcdui.DisplayState;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
 import cc.squirreljme.runtime.lcdui.LcdServiceCall;
 import cc.squirreljme.runtime.lcdui.LcdWidgetOwnedException;
+import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -219,7 +220,7 @@ public class Display
 	public void callSerially(Runnable __a)
 	{
 		// Note that the Runnable.run() will be called as if it were serialized
-		// like everything else with @__SerializedEvent__
+		// like everything else with @SerializedEvent
 		throw new todo.TODO();
 	}
 	
@@ -823,7 +824,7 @@ public class Display
 	 * {@inheritDoc}
 	 * @since 2018/03/23
 	 */
-	@__SerializedEvent__
+	@SerializedEvent
 	@Override
 	final void __doPaint(Graphics __g, int __bw, int __bh)
 		throws NullPointerException
@@ -835,7 +836,7 @@ public class Display
 	 * {@inheritDoc}
 	 * @since 2018/03/24
 	 */
-	@__SerializedEvent__
+	@SerializedEvent
 	@Override
 	final void __doShown(boolean __shown)
 	{
@@ -850,7 +851,7 @@ public class Display
 	 * {@inheritDoc}
 	 * @since 2018/03/23
 	 */
-	@__SerializedEvent__
+	@SerializedEvent
 	@Override
 	final void __doSizeChanged(int __w, int __h)
 	{

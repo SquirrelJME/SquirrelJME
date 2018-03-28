@@ -16,6 +16,7 @@ import cc.squirreljme.runtime.lcdui.event.KeyNames;
 import cc.squirreljme.runtime.lcdui.gfx.BasicGraphics;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
 import cc.squirreljme.runtime.lcdui.LcdServiceCall;
+import cc.squirreljme.runtime.lcdui.SerializedEvent;
 
 /**
  * The canvas acts as the base class for primary display interfaces that
@@ -164,7 +165,7 @@ public abstract class Canvas
 	{
 	}
 	
-	@__SerializedEvent__
+	@SerializedEvent
 	protected abstract void paint(Graphics __a);
 	
 	/**
@@ -281,7 +282,7 @@ public abstract class Canvas
 	 *
 	 * @since 2018/03/28
 	 */
-	@__SerializedEvent__
+	@SerializedEvent
 	protected void hideNotify()
 	{
 		// Implemented by sub-classes
@@ -305,7 +306,7 @@ public abstract class Canvas
 	 * @param __code The key code, the character is not modified by modifiers.
 	 * @since 2017/02/12
 	 */
-	@__SerializedEvent__
+	@SerializedEvent
 	protected void keyPressed(int __code)
 	{
 		// Does nothing, implemented by sub-classes
@@ -317,7 +318,7 @@ public abstract class Canvas
 	 * @param __code The key code, the character is not modified by modifiers.
 	 * @since 2017/02/12
 	 */
-	@__SerializedEvent__
+	@SerializedEvent
 	protected void keyReleased(int __code)
 	{
 		// Does nothing, implemented by sub-classes
@@ -329,7 +330,7 @@ public abstract class Canvas
 	 * @param __code The key code, the character is not modified by modifiers.
 	 * @since 2017/02/12
 	 */
-	@__SerializedEvent__
+	@SerializedEvent
 	protected void keyRepeated(int __code)
 	{
 		// Does nothing, implemented by sub-classes
@@ -346,7 +347,7 @@ public abstract class Canvas
 	 * @param __y The Y coordinate of the pointer, on the canvas origin.
 	 * @since 2017/02/12
 	 */
-	@__SerializedEvent__
+	@SerializedEvent
 	protected void pointerDragged(int __x, int __y)
 	{
 		// Does nothing by default
@@ -362,7 +363,7 @@ public abstract class Canvas
 	 * @param __y The Y coordinate of the pointer, on the canvas origin.
 	 * @since 2017/02/12
 	 */
-	@__SerializedEvent__
+	@SerializedEvent
 	protected void pointerPressed(int __x, int __y)
 	{
 		// Does nothing by default
@@ -378,7 +379,7 @@ public abstract class Canvas
 	 * @param __y The Y coordinate of the pointer, on the canvas origin.
 	 * @since 2017/02/12
 	 */
-	@__SerializedEvent__
+	@SerializedEvent
 	protected void pointerReleased(int __x, int __y)
 	{
 		// Does nothing by default
@@ -509,7 +510,7 @@ public abstract class Canvas
 		throw new todo.TODO();
 	}
 	
-	@__SerializedEvent__
+	@SerializedEvent
 	protected void showNotify()
 	{
 		// Implemented by sub-classes
@@ -520,7 +521,7 @@ public abstract class Canvas
 	 * @since 2017/02/10
 	 */
 	@Override
-	@__SerializedEvent__
+	@SerializedEvent
 	protected void sizeChanged(int __w, int __h)
 	{
 		super.sizeChanged(__w, __h);
@@ -541,7 +542,7 @@ public abstract class Canvas
 	 * {@inheritDoc}
 	 * @since 2017/10/24
 	 */
-	@__SerializedEvent__
+	@SerializedEvent
 	@Override
 	void __doPaint(Graphics __g, int __pw, int __ph)
 	{
@@ -559,7 +560,7 @@ public abstract class Canvas
 	 * {@inheritDoc}
 	 * @since 2018/03/24
 	 */
-	@__SerializedEvent__
+	@SerializedEvent
 	@Override
 	final void __doShown(boolean __shown)
 	{

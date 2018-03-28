@@ -10,6 +10,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.lcdui.SerializedEvent;
 
 public abstract class Item
 	extends __Widget__
@@ -199,7 +200,7 @@ public abstract class Item
 	 * {@inheritDoc}
 	 * @since 2018/03/23
 	 */
-	@__SerializedEvent__
+	@SerializedEvent
 	@Override
 	void __doPaint(Graphics __g, int __pw, int __ph)
 	{
@@ -210,7 +211,7 @@ public abstract class Item
 	 * {@inheritDoc}
 	 * @since 2018/03/24
 	 */
-	@__SerializedEvent__
+	@SerializedEvent
 	@Override
 	void __doShown(boolean __shown)
 	{
@@ -221,7 +222,7 @@ public abstract class Item
 	 * {@inheritDoc}
 	 * @since 2018/03/23
 	 */
-	@__SerializedEvent__
+	@SerializedEvent
 	@Override
 	void __doSizeChanged(int __w, int __h)
 	{
