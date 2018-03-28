@@ -29,16 +29,18 @@ public final class ShortRGB565ArrayGraphics
 	 * @param __h The image height.
 	 * @param __p The image pitch.
 	 * @param __o The buffer offset.
+	 * @param __atx Absolute X translation.
+	 * @param __aty Absolute Y translation.
 	 * @throws IllegalArgumentException If the input parameters are not
 	 * correct.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/25
 	 */
 	public ShortRGB565ArrayGraphics(short[] __buf,
-		int __w, int __h, int __p, int __o)
+		int __w, int __h, int __p, int __o, int __atx, int __aty)
 		throws IllegalArgumentException, NullPointerException
 	{
-		super(__w, __h, __p, __o, __buf.length, 1, false,
+		super(__w, __h, __p, __o, __buf.length, 1, false, __atx, __aty,
 			0b0000_0000__0000_0000,
 			0b1111_1000__0000_0000,
 			0b0000_0111__1110_0000,

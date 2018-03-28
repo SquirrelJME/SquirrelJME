@@ -47,6 +47,12 @@ public abstract class AbstractArrayGraphics
 	/** Is there an alpha channel? */
 	protected final boolean hasalphachannel;
 	
+	/** Absolute translated X coordinate. */
+	protected final int abstransx;
+	
+	/** Absolute translated Y coordinate. */
+	protected final int abstransy;
+	
 	/** The current stroke style. */
 	protected int strokestyle;
 	
@@ -102,12 +108,14 @@ public abstract class AbstractArrayGraphics
 	 * @param __l The length of the buffer.
 	 * @param __ppe Pixels per element.
 	 * @param __alpha Is there an alpha channel?
+	 * @param __atx Absolute X translation.
+	 * @param __aty Absolute Y translation.
 	 * @throws IllegalArgumentException If the width, height, or pitch are
 	 * zero or negative; or pitch is lower than the width.
 	 * @since 2018/03/25
 	 */
 	public AbstractArrayGraphics(int __w, int __h, int __p, int __o, int __l,
-		int __ppe, boolean __alpha)
+		int __ppe, boolean __alpha, int __atx, int __aty)
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error EB2d Invalid width and/or height specified.}
@@ -137,6 +145,12 @@ public abstract class AbstractArrayGraphics
 		this.numelements = numelements;
 		this.lastelement = lastelement;
 		this.hasalphachannel = __alpha;
+		this.abstransx = __atx;
+		this.abstransy = __aty;
+		
+		// Initial clipping rectangle has the image bounds
+		this.clipex = __w;
+		this.clipey = __h;
 	}
 	
 	/**

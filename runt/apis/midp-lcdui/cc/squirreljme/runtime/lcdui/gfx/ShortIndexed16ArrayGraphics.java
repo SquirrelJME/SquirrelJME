@@ -30,16 +30,18 @@ public final class ShortIndexed16ArrayGraphics
 	 * @param __h The image height.
 	 * @param __p The image pitch.
 	 * @param __o The buffer offset.
+	 * @param __atx Absolute X translation.
+	 * @param __aty Absolute Y translation.
 	 * @throws IllegalArgumentException If the input parameters are not
 	 * correct.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/25
 	 */
 	public ShortIndexed16ArrayGraphics(short[] __buf, int[] __pal,
-		int __w, int __h, int __p, int __o)
+		int __w, int __h, int __p, int __o, int __atx, int __aty)
 		throws IllegalArgumentException, NullPointerException
 	{
-		super(__w, __h, __p, __o, __buf.length, 1, __pal, 65536);
+		super(__w, __h, __p, __o, __buf.length, 1, __atx, __aty, __pal, 65536);
 		
 		if (__buf == null)
 			throw new NullPointerException("NARG");

@@ -90,6 +90,8 @@ public abstract class AbstractRGBArrayGraphics
 	 * @param __l The length of the buffer.
 	 * @param __ppe The number of pixels per element.
 	 * @param __alpha Is there an alpha specified?
+	 * @param __atx Absolute X translation.
+	 * @param __aty Absolute Y translation.
 	 * @param __amask Alpha mask.
 	 * @param __rmask Red mask.
 	 * @param __gmask Green mask.
@@ -100,11 +102,11 @@ public abstract class AbstractRGBArrayGraphics
 	 * @since 2018/03/25
 	 */
 	public AbstractRGBArrayGraphics(int __w, int __h, int __p, int __o,
-		int __l, int __ppe, boolean __alpha, int __amask, int __rmask,
-		int __gmask, int __bmask)
+		int __l, int __ppe, boolean __alpha, int __amask, int __atx, int __aty,
+		int __rmask, int __gmask, int __bmask)
 		throws IllegalArgumentException, NullPointerException
 	{
-		super(__w, __h, __p, __o, __l, __ppe, __alpha);
+		super(__w, __h, __p, __o, __l, __ppe, __alpha, __atx, __aty);
 		
 		// The alpha mask is only valid if there is an alpha channel
 		if (__alpha)
