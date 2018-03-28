@@ -220,6 +220,7 @@ public abstract class Displayable
 	 * @since 2016/10/10
 	 */
 	@SerializedEvent
+	@Override
 	protected void sizeChanged(int __w, int __h)
 	{
 		// Implemented by sub-classes
