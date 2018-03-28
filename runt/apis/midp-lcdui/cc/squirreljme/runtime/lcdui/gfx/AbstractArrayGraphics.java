@@ -145,8 +145,14 @@ public abstract class AbstractArrayGraphics
 		this.numelements = numelements;
 		this.lastelement = lastelement;
 		this.hasalphachannel = __alpha;
+		
+		// Setup absolute translation and initialize the base translation
+		// which is at the absolute origin
 		this.abstransx = __atx;
 		this.abstransy = __aty;
+		this.transx = __atx;
+		this.transy = __aty;
+		System.err.printf("DEBUG -- Itrans: %d %d%n", __atx, __aty);
 		
 		// Initial clipping rectangle has the image bounds
 		this.clipex = __w;
@@ -724,7 +730,7 @@ public abstract class AbstractArrayGraphics
 	@Override
 	public final int getTranslateX()
 	{
-		return this.transx;
+		return this.transx - this.abstransx;
 	}
 	
 	/**
@@ -734,7 +740,7 @@ public abstract class AbstractArrayGraphics
 	@Override
 	public final int getTranslateY()
 	{
-		return this.transy;
+		return this.transy - this.abstransy;
 	}
 	
 	/**
@@ -746,8 +752,8 @@ public abstract class AbstractArrayGraphics
 	public void resetParameters(boolean __clip)
 	{
 		// Clear translation
-		this.transx = 0;
-		this.transy = 0;
+		this.transx = this.abstransx;
+		this.transy = this.abstransy;
 	
 		// Reset clip also
 		if (__clip)

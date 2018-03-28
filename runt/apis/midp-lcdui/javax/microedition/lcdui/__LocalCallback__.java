@@ -165,7 +165,7 @@ final class __LocalCallback__
 		// This will be set to the graphics to draw on
 		AbstractArrayGraphics g = __pf.createGraphics(
 			((LocalArray)shadow).localArray(), pal, __bw, __bh, __alpha,
-			__pitch, __offset);
+			__pitch, __offset, 10000, 10000);
 		
 		// Set the clipping bounds so bytes outside of the area are not drawn
 		// into at all
