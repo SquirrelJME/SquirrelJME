@@ -165,7 +165,21 @@ public abstract class Canvas
 	{
 	}
 	
+	/**
+	 * This is called when this is to be painted. The clipping area will
+	 * be set to the area that needs updating and as such drawing should only
+	 * occur within the region. Any pixels drawn outside of the clipping area
+	 * might not be updated and may have no effect when drawing.
+	 *
+	 * If this is transparent then the background will automatically be filled
+	 * appropriately with a color or image, otherwise in opaque mode it is
+	 * assumed that pixels in the clipping region will be drawn on.
+	 *
+	 * @param __g The graphics to draw into.
+	 * @since 2018/03/28
+	 */
 	@SerializedEvent
+	@Override
 	protected abstract void paint(Graphics __a);
 	
 	/**
@@ -283,6 +297,7 @@ public abstract class Canvas
 	 * @since 2018/03/28
 	 */
 	@SerializedEvent
+	@Override
 	protected void hideNotify()
 	{
 		// Implemented by sub-classes
@@ -511,6 +526,7 @@ public abstract class Canvas
 	}
 	
 	@SerializedEvent
+	@Override
 	protected void showNotify()
 	{
 		// Implemented by sub-classes

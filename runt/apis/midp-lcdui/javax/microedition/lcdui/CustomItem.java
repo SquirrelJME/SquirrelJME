@@ -63,7 +63,14 @@ public abstract class CustomItem
 	protected abstract int getPrefContentWidth(int __a);
 	
 	/**
-	 * This is called when the item is to be painted.
+	 * This is called when this is to be painted. The clipping area will
+	 * be set to the area that needs updating and as such drawing should only
+	 * occur within the region. Any pixels drawn outside of the clipping area
+	 * might not be updated and may have no effect when drawing.
+	 *
+	 * If this is transparent then the background will automatically be filled
+	 * appropriately with a color or image, otherwise in opaque mode it is
+	 * assumed that pixels in the clipping region will be drawn on.
 	 *
 	 * @param __g The graphics to draw into.
 	 * @param __w The width of the item.
@@ -71,6 +78,7 @@ public abstract class CustomItem
 	 * @since 2018/03/28
 	 */
 	@SerializedEvent
+	@Override
 	protected abstract void paint(Graphics __g, int __w, int __h);
 	
 	public int getGameAction(int __a)
@@ -96,6 +104,7 @@ public abstract class CustomItem
 	 * @since 2018/03/28
 	 */
 	@SerializedEvent
+	@Override
 	protected void hideNotify()
 	{
 		// Implemented by sub-classes
@@ -178,6 +187,7 @@ public abstract class CustomItem
 	}
 	
 	@SerializedEvent
+	@Override
 	protected void showNotify()
 	{
 		// Implemented by sub-classes
