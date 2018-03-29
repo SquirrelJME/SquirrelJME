@@ -1,0 +1,120 @@
+# 2018/03/28
+
+## 08:53
+
+Okay so at this point, what happens next? I have tickers which was quite easy
+to implement. I suppose the next big thing to do would be forms. But actually
+before that I think I will finish off canvases and have a working event system
+in place. Events will definitely be important because there will have to be
+command callbacks and such for items and forms. So this will take care of the
+bulk of it.
+
+## 08:59
+
+Okay so looking at `CanvasItem` and `TextEditor` it seems this can just be
+added to a `Canvas` or `Canvas` item and just provides a mean to edit text on
+these instead of using text boxes and such. So I suppose that can be locally
+or mostly locally implemented perhaps. Well, it depends.
+
+## 09:07
+
+Okay so can `CustomItem` get customized borders, like to make a button or
+a dropped down area for text? I suppose it would be borderless and up to the
+implementation to add a border? Seems like a kind of a limitation I suppose,
+will need to see how other systems handle it and such.
+
+## 09:11
+
+But definitely the thing to do now, is to get back into events. But this can
+be handled by the wodget code easily now. I think something that would be
+great is if I made proprietary interfaces for the items so that some events
+are the same and such.
+
+## 09:13
+
+Only two classes have events though, which would be `Canvas` and `CustomItem`
+but reduced documentation would be easier and I could just use interfaces for
+handlers and such.
+
+## 09:26
+
+Definitely some interfaces would be good, for the duplicated stuff between the
+two classes. Additionally I can just not have duplicate code.
+
+## 09:34
+
+I have an idea! I do not need sub-methods at all! I can have everything be in
+`__Widget__`. For stuff like `paint()` I can instead just have it call a
+package private method which does nothing. Sub-classes would just extend that
+package private up to protected. So this would make it easy and I would not
+need interfaces at all. Then stuff like command listeners or events can just
+do super calls accordingly. So basically `__Widget__` will do all of the work
+with no duplication basically. Then I can get away with having `protected`
+too.
+
+## 09:38
+
+I do though need to consider, what happens if there is a package private
+method which is executed from another class. Which method is called?
+
+## 09:42
+
+Okay good, it is completely sane for stuff outside of packages, basically my
+method could not be executed from another package and was not replaced even
+though it was made public. Probably if I looked at the code there would be an
+`invokespecial`. Well there is an `invokevirtual` call. Let me see what the
+traces are.
+
+## 09:45
+
+This is the call:
+
+	Hello from A! >>>>>
+	java.lang.Throwable
+	at a.A.hello(A.java:13)
+	at a.A.<init>(A.java:7)
+	at b.B.<init>(B.java:9)
+	at b.B.main(B.java:23)
+	<<<<<
+	Hello from B! >>>>
+	java.lang.Throwable
+	at b.B.hello(B.java:16)
+	at b.B.<init>(B.java:10)
+	at b.B.main(B.java:23)
+	<<<<
+
+So that works out. What I need to do now is have a C which is in `a` and see
+if it works as I hope it does.                                                        
+
+## 09:49
+
+And it does as it should be, so my confirmation has been made and it should
+be completely safe.
+
+## 12:53
+
+For increased speed I suppose, what I need is an element bounds thing for the
+clipping rectangle. Instead of copying the entire array which contains the
+entire image, I can just copy part of it back.
+
+## 13:29
+
+It would be good if for drawing sub-regions that if they are shadowed locally
+I do not need to create a buffer which can store the entire image. So
+basically there would be a global fixed translation. So effectively the
+translation when set or unset is always at those given coordinates. I would
+not need to change the code at all because only a few methods use the
+translation. But an absolute translation would be useful. It would be better
+for embedded systems where the buffer has to be shadowed and the area to
+draw on is quite large.
+
+## 13:47
+
+I need to figure out the math for absolute translations.
+
+## 14:07
+
+Okay so, translations which are positive will draw further up in the image
+while those which are negative will draw further down. When the local callback
+sets up the mini buffer it will use negative coordinates. So for set
+translation locally, the initial translation will be the absolute translation.
