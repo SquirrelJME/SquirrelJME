@@ -10,6 +10,9 @@
 
 package javax.microedition.lcdui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TabbedPane
 	extends Screen
 {
