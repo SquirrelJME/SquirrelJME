@@ -18,7 +18,7 @@ public class Alert
 	 * dismissed.
 	 */
 	public static final Command DISMISS_COMMAND =
-		new Command("", Command.OK, 0);
+		new Command("Okay", Command.OK, 0, true);
 	
 	/** Specifies that the alert should last forever. */
 	public static final int FOREVER =

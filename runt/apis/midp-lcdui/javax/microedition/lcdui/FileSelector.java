@@ -17,11 +17,16 @@ import javax.microedition.io.StreamConnection;
 public class FileSelector
 	extends Screen
 {
+	/**
+	 * This is used when the user has dismissed the file selector without
+	 * having any file selected.
+	 */
 	public static final Command CANCEL_COMMAND =
-		new Command(null, -1, -1);
+		new Command("Cancel", Command.CANCEL, 1, true);
 	
+	/** This is used when the user has selected a file. */
 	public static final Command OK_COMMAND =
-		new Command(null, -1, -1);
+		new Command("Select", Command.OK, 0, true);
 	
 	public static final int DIRECTORY_CREATE =
 		3;

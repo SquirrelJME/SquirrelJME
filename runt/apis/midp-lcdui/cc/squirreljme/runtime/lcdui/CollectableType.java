@@ -71,6 +71,9 @@ public enum CollectableType
 	/** A ticker. */
 	TICKER,
 	
+	/** A command. */
+	COMMAND,
+	
 	/** End. */
 	;
 	

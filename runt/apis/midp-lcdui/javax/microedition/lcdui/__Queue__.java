@@ -229,6 +229,8 @@ final class __Queue__
 			type = CollectableType.ITEM_TEXT_FIELD;
 		else if (__d instanceof Ticker)
 			type = CollectableType.TICKER;
+		else if (__d instanceof Command)
+			type = CollectableType.COMMAND;
 		
 		// {@squirreljme.error EB1x Could not determine the type displayable
 		// that this is. (The displayable type)}
