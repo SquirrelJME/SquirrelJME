@@ -83,6 +83,9 @@ public class TodoProgression
 			__ps.print(t);
 		}
 		
+		// End with line
+		__ps.println();
+		
 		// Sort projects by their name then UUID so they appear consistent
 		// and alphabetically sorted
 		Set<Project> sorted = new TreeSet<>(projects.values());
@@ -225,7 +228,8 @@ public class TodoProgression
 		public void count(String __tag, String __name, int __n)
 			throws NullPointerException
 		{
-			this.lastname = __name + "@" + __hashUUID(this.uuid);
+			this.lastname = __name + "@" +
+				String.format("%08x", __hashUUID(this.uuid));
 			this.counts.put(__tag, __n);
 			
 			TodoProgression.this.tags.add(__tag);
