@@ -27,6 +27,22 @@ then
 	exit 1
 fi
 
+# Need to compile the program
+__cls="TodoProgression"
+__src="$__exedir/$__cls.java"
+__odr="/tmp"
+__out="$__odr/$__cls.class"
+
+# Need to compile?
+if [ ! -f "$__out" ] || [ "$__src" -nt "$__out" ]
+then
+	if ! javac -d "$__odr" "$__src"
+	then
+		echo "Failed to compile"
+		exit 1
+	fi
+fi
+
 # The root where fuse projects are
 __fuse="$1"
 
@@ -44,5 +60,6 @@ do
 		
 		echo "$__tag" "$__project" "$__uuid" "$__count"
 	done
-done
+done | java -classpath "$__odr" "$__cls" "$@"
+exit $?
 

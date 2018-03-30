@@ -28,11 +28,17 @@ fi
 # Get the base of the project
 __base="$("$__exedir/projectbase.sh" "$__now")"
 
+
 # Go through the manifest which can contain multiple fields for the UUID
 # since the field has changed throughout the project
 if [ -f "$__base/META-INF/MANIFEST.MF" ]
 then
-	echo "X-SquirrelJME-UUID:Unknown" | cat "$__base/META-INF/MANIFEST.MF" - |
+	# Determine Default fallback UUID
+	__defl="00000000-0000-0000-0000-$(fossil sha1sum - < \
+		"$__base/META-INF/MANIFEST.MF" | cut -c 1-12)"
+	
+	# Get sum
+	echo "X-SquirrelJME-UUID:$__defl" | cat "$__base/META-INF/MANIFEST.MF" - |
 	grep -i -e 'X-Hairball-UUID' -e 'X-SquirrelJME-UUID' | \
 		cut -d ':' -f 2 | head -n 1 | tr -d ' '
 
