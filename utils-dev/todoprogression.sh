@@ -36,6 +36,13 @@ do
 	# Get the base directory for that tag
 	__base="$__fuse/checkins/$__tag/"
 	
-	"$__exedir/lsprojects.sh" "$__base"
+	# Go through all projects in the base
+	"$__exedir/lsprojects.sh" "$__base" | while read __project
+	do
+		__uuid="$("$__exedir/projectuuid.sh" "$__base/$__project")"
+		__count="$("$__exedir/todocount.sh" "$__base/$__project")"
+		
+		echo "$__tag" "$__project" "$__uuid" "$__count"
+	done
 done
 
