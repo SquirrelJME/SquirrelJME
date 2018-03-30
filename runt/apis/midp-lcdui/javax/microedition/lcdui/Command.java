@@ -53,15 +53,6 @@ public class Command
 	private static final int _LAST_TYPE =
 		ITEM;
 	
-	/** The short label. */
-	private final String _shortlabel;
-	
-	/** The long label. */
-	private final String _longlabel;
-	
-	/** The image used. */
-	private final Image _image;
-	
 	/** The command type. */
 	private final int _type;
 	
@@ -70,6 +61,15 @@ public class Command
 	
 	/** Is this an implementation specific command with fixed text? */
 	private final boolean _implspec;
+	
+	/** The short label. */
+	private String _shortlabel;
+	
+	/** The long label. */
+	private String _longlabel;
+	
+	/** The image used. */
+	private Image _image;
 	
 	/**
 	 * Creates a new command with the specified parameters.
@@ -171,12 +171,13 @@ public class Command
 				String.format("EB16 %d", __type));
 		
 		// Set
-		this._shortlabel = __sl;
-		this._longlabel = __ll;
-		this._image = __i;
+		this._implspec = __implspec;
 		this._type = __type;
 		this._priority = __pri;
-		this._implspec = __implspec;
+		
+		// Internally set details
+		this.__setImage(__i);
+		this.__setLabels(__sl, __ll);
 	}
 	
 	public int getCommandType()
@@ -194,6 +195,12 @@ public class Command
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the image of the command.
+	 *
+	 * @return The image of the command or {@code null} if it has none.
+	 * @since 2018/03/29
+	 */
 	public Image getImage()
 	{
 		// Do not provide implementation specific images
@@ -203,6 +210,12 @@ public class Command
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the label used for this command.
+	 *
+	 * @return The label used for the command.
+	 * @since 2018/03/29
+	 */
 	public String getLabel()
 	{
 		// Do not provide implementation specific labels
@@ -212,11 +225,17 @@ public class Command
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the long label of the command.
+	 *
+	 * @return The long label of the command or {@code null} if it has none.
+	 * @since 2018/03/29
+	 */
 	public String getLongLabel()
 	{
 		// Do not provide implementation specific labels
 		if (this._implspec)
-			return "";
+			return null;
 		
 		throw new todo.TODO();
 	}
@@ -249,29 +268,80 @@ public class Command
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Sets the label to be displayed.
+	 *
+	 * @param __s The label to display.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/03/29
+	 */
 	public void setLabel(String __s)
+		throws NullPointerException
 	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
 		// Do nothing for implementation specific commands
 		if (this._implspec)
 			return;
 		
-		throw new todo.TODO();
+		this.__setLabels(__s, this._longlabel);
 	}
 	
+	/**
+	 * Sets the long label of the command.
+	 *
+	 * @param __s The long label to use, {@code null} clears it.
+	 * @since 2018/03/29
+	 */
 	public void setLongLabel(String __s)
 	{
 		// Do nothing for implementation specific commands
 		if (this._implspec)
 			return;
 		
-		throw new todo.TODO();
+		this.__setLabels(this._shortlabel, __s);
 	}
 	
+	/**
+	 * Sets the image to be displayed for this command.
+	 *
+	 * @param __i The image to be displayed, {@code null} clears this.
+	 * @since 2018/03/29
+	 */
 	public void setImage(Image __i)
 	{
 		// Do nothing for implementation specific commands
 		if (this._implspec)
 			return;
+		
+		this.__setImage(__i);
+	}
+	
+	/**
+	 * Internally sets the image to be displayed.
+	 *
+	 * @param __i The image to display, {@code null} will clear it.
+	 * @since 2018/03/29
+	 */
+	private final void __setImage(Image __i)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Internally sets the labels to be displayed.
+	 *
+	 * @param __sl The short label.
+	 * @param __ll The long label, {@code null} will clear it.
+	 * @throws NullPointerException If no short label was specified.
+	 * @since 2018/03/29
+	 */
+	private final void __setLabels(String __sl, String __ll)
+		throws NullPointerException
+	{
+		if (__sl == null)
+			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
 	}
