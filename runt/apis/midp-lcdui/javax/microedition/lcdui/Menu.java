@@ -11,6 +11,7 @@
 package javax.microedition.lcdui;
 
 public class Menu
+	extends __Collectable__
 {
 	public Menu(String __short, String __long, Image __i)
 	{

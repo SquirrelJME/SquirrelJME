@@ -74,6 +74,9 @@ public enum CollectableType
 	/** A command. */
 	COMMAND,
 	
+	/** A menu. */
+	MENU,
+	
 	/** End. */
 	;
 	
