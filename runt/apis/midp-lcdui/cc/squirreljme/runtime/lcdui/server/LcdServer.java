@@ -92,6 +92,10 @@ public final class LcdServer
 		if (__type == CollectableType.COMMAND)
 			rv = new LcdCommand(handle);
 		
+		// Creating image?
+		else if (__type == CollectableType.IMAGE)
+			throw new todo.TODO();
+		
 		// Implementation specific
 		else
 			rv = this.displays.__internalCreateCollectable(handle, __type);

@@ -80,6 +80,9 @@ public enum CollectableType
 	/** A notification. */
 	NOTIFICATION,
 	
+	/** An image. */
+	IMAGE,
+	
 	/** End. */
 	;
 	
