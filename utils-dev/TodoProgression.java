@@ -150,6 +150,19 @@ public class TodoProgression
 	}
 	
 	/**
+	 * Generates a hashcode from the UUID.
+	 *
+	 * @param __uuid The input UUID to hash.
+	 * @return The hashcode for the UUID.
+	 * @since 2018/03/29
+	 */
+	static final int __hashUUID(UUID __uuid)
+	{
+		return Long.hashCode(__uuid.getLeastSignificantBits()) ^
+			~Long.hashCode(__uuid.getMostSignificantBits());
+	}
+	
+	/**
 	 * Used to keep track of projects.
 	 *
 	 * @since 2018/03/29
@@ -212,7 +225,7 @@ public class TodoProgression
 		public void count(String __tag, String __name, int __n)
 			throws NullPointerException
 		{
-			this.lastname = __name;
+			this.lastname = __name + "@" + __hashUUID(this.uuid);
 			this.counts.put(__tag, __n);
 			
 			TodoProgression.this.tags.add(__tag);
