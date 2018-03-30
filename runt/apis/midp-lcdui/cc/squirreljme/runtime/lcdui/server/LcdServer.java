@@ -84,8 +84,19 @@ public final class LcdServer
 		if (__type == CollectableType.DISPLAY_HEAD)
 			throw new IllegalArgumentException("EB29");
 		
-		LcdCollectable rv = this.displays.__internalCreateCollectable(
-			++this._nexthandle, __type);
+		// Determine the handle to use
+		int handle = ++this._nexthandle;
+		
+		// Creating a command?
+		LcdCollectable rv;
+		if (__type == CollectableType.COMMAND)
+			rv = new LcdCommand(handle);
+		
+		// Implementation specific
+		else
+			rv = this.displays.__internalCreateCollectable(handle, __type);
+		
+		// Store it so it may be referenced
 		this._collects.put(rv.handle(), rv);
 		return rv;
 	}
