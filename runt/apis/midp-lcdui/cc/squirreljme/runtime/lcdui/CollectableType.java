@@ -77,6 +77,9 @@ public enum CollectableType
 	/** A menu. */
 	MENU,
 	
+	/** A notification. */
+	NOTIFICATION,
+	
 	/** End. */
 	;
 	
