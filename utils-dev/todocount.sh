@@ -27,8 +27,8 @@ fi
 __base="$("$__exedir/projectbase.sh" "$__dir")"
 
 # Keep counts of everything per project
-grep -cR -e 'todo\.TODO' -e 'Error("TODO")' "$__base" | while read __line
+find "$__base" -type f | while read __file
 do
-	echo "$__line" | cut -d ':' -f 2
+	grep -c -e 'todo\.TODO' -e 'Error("TODO")' "$__file"
 done | datamash -t ' ' sum 1
 

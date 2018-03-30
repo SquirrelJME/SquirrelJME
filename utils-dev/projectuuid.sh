@@ -44,7 +44,7 @@ then
 
 # Not known othewise
 else
-	echo "Unknown"
+	echo "00000000-0000-0000-0000-000000000000"
 fi
 
 
