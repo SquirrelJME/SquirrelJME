@@ -14,8 +14,9 @@ public class List
 	extends Screen
 	implements Choice
 {
+	/** The default select command used for lists. */
 	public static final Command SELECT_COMMAND =
-		new Command(null, null, null, -1, -1);
+		new Command("Select", Command.SCREEN, 0, true);
 	
 	public List(String __a, int __b)
 	{

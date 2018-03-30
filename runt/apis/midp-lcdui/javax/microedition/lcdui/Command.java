@@ -11,7 +11,8 @@
 package javax.microedition.lcdui;
 
 public class Command
-{
+	extends __Collectable__
+{ 
 	/** Returns the user to the previous screen.. */
 	public static final int BACK =
 		2;
@@ -67,6 +68,9 @@ public class Command
 	/** The priority. */
 	private final int _priority;
 	
+	/** Is this an implementation specific command with fixed text? */
+	private final boolean _implspec;
+	
 	/**
 	 * Creates a new command with the specified parameters.
 	 *
@@ -80,7 +84,26 @@ public class Command
 	public Command(String __sl, int __type, int __pri)
 		throws IllegalArgumentException, NullPointerException
 	{
-		this(__sl, null, null, __type, __pri);
+		this(__sl, null, null, __type, __pri, false);
+	}
+	
+	/**
+	 * Creates a new command with the specified parameters.
+	 *
+	 * @param __sl The short label of the command.
+	 * @param __type The type of command this is.
+	 * @param __pri The priority of the command.
+	 * @param __implspec If true this is an implementation specific command
+	 * which the returned labels are always blank except that internally they
+	 * use the passed strings.
+	 * @throws IllegalArgumentException If the command type is not valid.
+	 * @throws NullPointerException If no short label was specified.
+	 * @since 2017/02/28
+	 */
+	Command(String __sl, int __type, int __pri, boolean __implspec)
+		throws IllegalArgumentException, NullPointerException
+	{
+		this(__sl, null, null, __type, __pri, __implspec);
 	}
 	
 	/**
@@ -97,7 +120,7 @@ public class Command
 	public Command(String __sl, String __ll, int __type, int __pri)
 		throws IllegalArgumentException, NullPointerException
 	{
-		this(__sl, null, null, __type, __pri);
+		this(__sl, null, null, __type, __pri, false);
 	}
 	
 	/**
@@ -113,6 +136,28 @@ public class Command
 	 * @since 2017/02/28
 	 */
 	public Command(String __sl, String __ll, Image __i, int __type, int __pri)
+		throws IllegalArgumentException, NullPointerException
+	{
+		this(__sl, __ll, __i, __type, __pri, false);
+	}
+	
+	/**
+	 * Creates a new command with the specified parameters.
+	 *
+	 * @param __sl The short label of the command.
+	 * @param __ll The long label of the command, may be {@code null}.
+	 * @param __i The image used on the command, may be {@code null}.
+	 * @param __type The type of command this is.
+	 * @param __pri The priority of the command.
+	 * @param __implspec If true this is an implementation specific command
+	 * which the returned labels are always blank except that internally they
+	 * use the passed strings.
+	 * @throws IllegalArgumentException If the command type is not valid.
+	 * @throws NullPointerException If no short label was specified.
+	 * @since 2018/03/29
+	 */
+	Command(String __sl, String __ll, Image __i, int __type, int __pri,
+		boolean __implspec)
 		throws IllegalArgumentException, NullPointerException
 	{
 		// Check
@@ -131,6 +176,7 @@ public class Command
 		this._image = __i;
 		this._type = __type;
 		this._priority = __pri;
+		this._implspec = __implspec;
 	}
 	
 	public int getCommandType()
@@ -150,16 +196,28 @@ public class Command
 	
 	public Image getImage()
 	{
+		// Do not provide implementation specific images
+		if (this._implspec)
+			return null;
+		
 		throw new todo.TODO();
 	}
 	
 	public String getLabel()
 	{
+		// Do not provide implementation specific labels
+		if (this._implspec)
+			return "";
+		
 		throw new todo.TODO();
 	}
 	
 	public String getLongLabel()
 	{
+		// Do not provide implementation specific labels
+		if (this._implspec)
+			return "";
+		
 		throw new todo.TODO();
 	}
 	
@@ -175,26 +233,46 @@ public class Command
 	
 	public void setEnabled(boolean __e)
 	{
+		// Do nothing for implementation specific commands
+		if (this._implspec)
+			return;
+		
 		throw new todo.TODO();
 	}
 	
 	public void setFont(Font __f)
 	{
+		// Do nothing for implementation specific commands
+		if (this._implspec)
+			return;
+		
 		throw new todo.TODO();
 	}
 	
 	public void setLabel(String __s)
 	{
+		// Do nothing for implementation specific commands
+		if (this._implspec)
+			return;
+		
 		throw new todo.TODO();
 	}
 	
 	public void setLongLabel(String __s)
 	{
+		// Do nothing for implementation specific commands
+		if (this._implspec)
+			return;
+		
 		throw new todo.TODO();
 	}
 	
 	public void setImage(Image __i)
 	{
+		// Do nothing for implementation specific commands
+		if (this._implspec)
+			return;
+		
 		throw new todo.TODO();
 	}
 }
