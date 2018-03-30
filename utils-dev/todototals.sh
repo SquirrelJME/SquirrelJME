@@ -4,10 +4,10 @@
 #     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
 #     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 # ---------------------------------------------------------------------------
-# SquirrelJME is under the GNU General Public License v3, or later.
+# SquirrelJME is under the GNU General Public License v3+, or later.
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
-# DESCRIPTION: This lists the namespaces which are available
+# DESCRIPTION: Prints the totals for all namespaces.
 
 # Force C locale
 export LC_ALL=C
@@ -23,20 +23,11 @@ else
 	__root="$__exedir/.."
 fi
 
-# Old SquirrelJME layout which appears before x-date-201611
-if [ -d "$__root/src" ]
-then
-	echo "src"
+# Count through all projects
+"$__exedir/lsprojects.sh" | while read __project
+do
+	__count="$("$__exedir/todocount.sh" "$__root/$__project")"
 	
-# Modern SquirrelJME
-else
-	# Scan every directory for namespaces
-	(find "$__root" -type d | while read __dir
-	do
-		if [ -f "$__dir/NAMESPACE.MF" ]
-		then
-			"$__exedir/relative.sh" "$__root" "$__dir"
-		fi
-	done) | sort
-fi
+	echo "$__project $__count"
+done
 
