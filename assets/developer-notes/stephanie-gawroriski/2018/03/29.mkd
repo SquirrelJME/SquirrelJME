@@ -1,0 +1,40 @@
+# 2018/03/29
+
+## 19:46
+
+I believe I will take a break on forms and canvases and work on forms since
+that is a rather important part. Those might just be simpler to implement for
+the most part. Then when I can do `CustomItem` I can handle canvases at the
+same time. Definitely though one thing I need before that are tabbed panes
+since I do want to test multiple things. `TabbedPane` only supports `Form`
+and `List` sadly, although it would have been cool if the other things
+were supported. But it is what it is. I will work on the documentation for
+tabbed panes first.
+
+## 19:59
+
+Okay so `Item` and `Displayable` have commands in common, so those will be
+put in the base class of `__Widget__` since it maeks it much easier to handle
+and have less duplicate code between the two. There just needs super calls.
+
+## 20:15
+
+I should actually start at the base class which is `Displayable` and implement
+all of that accordingly.
+
+## 20:32
+
+Menus are quite simple though and could potentially be implemented next along
+with support for commands and such.
+
+## 20:50
+
+It would be good if I could track progress via the use of a TODO command
+tracker of sorts, maybe even generate a graph or CSV of it. I think it could
+be used to keep track of things that were implemented and progress and such.
+
+## 22:48
+
+I am so glad I did UUIDs early on so I can keep track of how projects change
+over time, that way I can have a most consistent TODO progression of sorts. So
+that is useful for me since I rarely would ever change a UUID.
