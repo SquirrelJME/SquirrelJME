@@ -35,6 +35,9 @@ public class TodoProgression
 	protected final Set<String> tags =
 		new TreeSet<>();
 	
+	/** The last read tag. */
+	protected String lasttag;
+	
 	/**
 	 * Registers data.
 	 *
@@ -50,6 +53,8 @@ public class TodoProgression
 	{
 		if (__tag == null || __name == null || __uuid == null)
 			throw new NullPointerException("NARG");
+		
+		this.lasttag = __tag;
 		
 		Map<UUID, Project> projects = this.projects;
 		Project p = projects.get(__uuid);
@@ -176,7 +181,7 @@ public class TodoProgression
 		/** The project UUID. */
 		protected final UUID uuid;
 		
-		/** TODO counts. */
+		/** Todo counts. */
 		protected final Map<String, Integer> counts =
 			new TreeMap<>();
 		
@@ -209,8 +214,15 @@ public class TodoProgression
 			if (this == __p)
 				return 0;
 			
+			// Make it so projects which are alive still appear first
+			String lasttag = TodoProgression.this.lasttag;
+			int rv = Boolean.compare(this.counts.get(lasttag) == null,
+				__p.counts.get(lasttag) == null);
+			if (rv != 0)
+				return rv;
+			
 			// Make it so names appear first
-			int rv = this.lastname.compareTo(__p.lastname);
+			rv = this.lastname.compareTo(__p.lastname);
 			if (rv != 0)
 				return rv;
 			return this.uuid.compareTo(__p.uuid);
