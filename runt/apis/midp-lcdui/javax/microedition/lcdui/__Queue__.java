@@ -231,6 +231,8 @@ final class __Queue__
 			type = CollectableType.TICKER;
 		else if (__d instanceof Command)
 			type = CollectableType.COMMAND;
+		else if (__d instanceof Menu)
+			type = CollectableType.MENU;
 		
 		// {@squirreljme.error EB1x Could not determine the type displayable
 		// that this is. (The displayable type)}
