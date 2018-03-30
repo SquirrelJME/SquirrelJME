@@ -7,7 +7,12 @@
 # SquirrelJME is under the GNU General Public License v3+, or later.
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
-# DESCRIPTION: List all relative projects from the base of the source code.
+# DESCRIPTION: This counts the progression of TODO statements across the
+# entire project over the course of the project.
+#
+# This detects:
+#  * 'new Error("TODO")'
+#  * 'new todo.TODO()'
 
 # Force C locale
 export LC_ALL=C
@@ -15,32 +20,22 @@ export LC_ALL=C
 # Directory of this script
 __exedir="$(dirname -- "$0")"
 
-# Allow a custom root to be specified
-if [ "$#" -ge "1" ]
+# Requires the FUSE root
+if [ "$#" -le "0" ]
 then
-	__root="$1"
-else
-	__root="$__exedir/.."
+	echo "Usage: $0 [Fossil Fuse Root]"
+	exit 1
 fi
 
-# Go through all namespaces
-("$__exedir/lsnamespaces.sh" "$__root" | while read __dir
+# The root where fuse projects are
+__fuse="$1"
+
+# Go through the tag list to get the tags to check for progression
+cat "$__exedir/tagslist" | while read __tag
 do
-	# And directories within the namespaces
-	for __file in "$__root/$__dir/"*
-	do
-		# Ignore non-directories
-		if [ ! -d "$__file" ]
-		then
-			continue
-		fi
-		
-		# If there is a project here, print that directory
-		if [ -f "$__file/META-INF/MANIFEST.MF" ] ||
-			[ -f "$__file/META-INF/TEST.MF" ]
-		then
-			"$__exedir/relative.sh" "$__root" "$__file"
-		fi
-	done
-done) | sort
+	# Get the base directory for that tag
+	__base="$__fuse/checkins/$__tag/"
+	
+	"$__exedir/lsprojects.sh" "$__base"
+done
 
