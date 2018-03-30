@@ -11,6 +11,7 @@
 package javax.microedition.lcdui;
 
 public class Notification
+	extends __Collectable__
 {
 	public Notification(NotificationType __t)
 	{
