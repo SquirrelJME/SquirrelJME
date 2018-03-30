@@ -10,6 +10,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.lcdui.CollectableType;
 import cc.squirreljme.runtime.lcdui.gfx.BasicGraphics;
 import cc.squirreljme.runtime.lcdui.gfx.IntArrayGraphics;
 import cc.squirreljme.runtime.lcdui.gfx.PixelArrayGraphics;
@@ -21,6 +22,7 @@ import java.io.InputStream;
 import java.io.IOException;
 
 public class Image
+	extends __Collectable__
 {
 	/** The RGB image data. */
 	private final int[] _data;
