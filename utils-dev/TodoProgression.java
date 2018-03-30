@@ -76,7 +76,7 @@ public class TodoProgression
 		Set<String> tags = this.tags;
 		
 		// Build row one for column headers
-		__ps.print("name,");
+		__ps.print("name");
 		for (String t : tags)
 		{
 			__ps.print(',');
