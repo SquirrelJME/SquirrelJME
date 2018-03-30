@@ -1,0 +1,8 @@
+# 2018/03/30
+
+## 00:24
+
+Actually the FUSE filesystem is missing some files, like some directories
+appear to be hidden which means they do not have accurate TODO counts. Will
+need to write up a new script I suppose that can really go through each
+file and such.
