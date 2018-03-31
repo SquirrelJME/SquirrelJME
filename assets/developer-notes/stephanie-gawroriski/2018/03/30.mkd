@@ -6,3 +6,20 @@ Actually the FUSE filesystem is missing some files, like some directories
 appear to be hidden which means they do not have accurate TODO counts. Will
 need to write up a new script I suppose that can really go through each
 file and such.
+
+## 13:06
+
+Okay so I suppose what I need is to make images collectable and allow a means
+of there being remote references to image data and such. Since the remote
+graphics system is going to need to know the kind of pixels that are in
+images. It could be done simply with arrays and such. But one thing that
+would be useful would be if there were a basic image that supported the
+various pixel formats and such and stored that data there instead. I could
+make `Image` operate over the IPC and such potentially too. Image though is
+completely internal. So can I base it off a primitive class. But, images
+that are created and used in the UI might need to have resources created for
+them such as in Palm OS which requires a bitmap resource to be used for
+elements. So `Image` must be collectable. But for that I can use a raw
+image data class for storing things. When the image is initialized I can just
+send the server the image properties and the array that makes up the image
+data.
