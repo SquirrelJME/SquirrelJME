@@ -176,8 +176,7 @@ public class Command
 		this._priority = __pri;
 		
 		// Internally set details
-		this.__setImage(__i);
-		this.__setLabels(__sl, __ll);
+		this.__setLabels(__sl, __ll, __i);
 	}
 	
 	public int getCommandType()
@@ -285,7 +284,7 @@ public class Command
 		if (this._implspec)
 			return;
 		
-		this.__setLabels(__s, this._longlabel);
+		this.__setLabels(__s, this._longlabel, this._image);
 	}
 	
 	/**
@@ -300,7 +299,7 @@ public class Command
 		if (this._implspec)
 			return;
 		
-		this.__setLabels(this._shortlabel, __s);
+		this.__setLabels(this._shortlabel, __s, this._image);
 	}
 	
 	/**
@@ -315,18 +314,7 @@ public class Command
 		if (this._implspec)
 			return;
 		
-		this.__setImage(__i);
-	}
-	
-	/**
-	 * Internally sets the image to be displayed.
-	 *
-	 * @param __i The image to display, {@code null} will clear it.
-	 * @since 2018/03/29
-	 */
-	private final void __setImage(Image __i)
-	{
-		throw new todo.TODO();
+		this.__setLabels(this._shortlabel, this._longlabel, __i);
 	}
 	
 	/**
@@ -334,10 +322,11 @@ public class Command
 	 *
 	 * @param __sl The short label.
 	 * @param __ll The long label, {@code null} will clear it.
+	 * @param __i The image to be displayed.
 	 * @throws NullPointerException If no short label was specified.
 	 * @since 2018/03/29
 	 */
-	private final void __setLabels(String __sl, String __ll)
+	private final void __setLabels(String __sl, String __ll, Image __i)
 		throws NullPointerException
 	{
 		if (__sl == null)
