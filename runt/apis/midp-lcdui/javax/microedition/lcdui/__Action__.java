@@ -8,27 +8,16 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.lcdui.server;
-
-import cc.squirreljme.runtime.lcdui.CollectableType;
+package javax.microedition.lcdui;
 
 /**
- * This represents a single command.
+ * This represents the base for an action which may be given a label, an
+ * image, and could be enabled or disabled.
  *
- * @since 2018/03/30
+ * @since 2018/03/31
  */
-public final class LcdCommand
-	extends LcdAction
+abstract class __Action__
+	extends __Collectable__
 {
-	/**
-	 * Initializes the base command with the given handle.
-	 *
-	 * @param __handle The handle of the command.
-	 * @since 2018/03/30
-	 */
-	public LcdCommand(int __handle)
-	{
-		super(__handle, CollectableType.COMMAND);
-	}
 }
 

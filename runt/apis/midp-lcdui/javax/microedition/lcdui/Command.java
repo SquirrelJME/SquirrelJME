@@ -15,7 +15,7 @@ import cc.squirreljme.runtime.lcdui.LcdFunction;
 import cc.squirreljme.runtime.lcdui.LcdServiceCall;
 
 public class Command
-	extends __Collectable__
+	extends __Action__
 { 
 	/** Returns the user to the previous screen.. */
 	public static final int BACK =
@@ -173,7 +173,7 @@ public class Command
 		
 		// {@squirreljme.error EB16 And invalid command type was specified.
 		// (The command type)}
-		if (__type < _FIRST_TYPE || __type > _LAST_TYPE)
+		if (__type < Command._FIRST_TYPE || __type > Command._LAST_TYPE)
 			throw new IllegalArgumentException(
 				String.format("EB16 %d", __type));
 		

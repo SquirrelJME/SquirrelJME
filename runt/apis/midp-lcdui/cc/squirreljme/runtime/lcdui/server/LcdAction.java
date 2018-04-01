@@ -13,22 +13,24 @@ package cc.squirreljme.runtime.lcdui.server;
 import cc.squirreljme.runtime.lcdui.CollectableType;
 
 /**
- * This represents a single command.
+ * This represents an action which has a label, image, and may be potentially
+ * enabled or disabled.
  *
- * @since 2018/03/30
+ * @since 2018/03/31
  */
-public final class LcdCommand
-	extends LcdAction
+public abstract class LcdAction
+	extends LcdCollectable
 {
 	/**
-	 * Initializes the base command with the given handle.
+	 * Initializes the base action.
 	 *
 	 * @param __handle The handle of the command.
-	 * @since 2018/03/30
+	 * @param __type The type of collectable this is.
+	 * @since 2018/03/31
 	 */
-	public LcdCommand(int __handle)
+	public LcdAction(int __handle, CollectableType __type)
 	{
-		super(__handle, CollectableType.COMMAND);
+		super(__handle, __type);
 	}
 }
 
