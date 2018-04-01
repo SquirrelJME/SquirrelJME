@@ -67,13 +67,16 @@ public class Command
 	private final boolean _implspec;
 	
 	/** The short label. */
-	private String _shortlabel;
+	private volatile String _shortlabel;
 	
 	/** The long label. */
-	private String _longlabel;
+	private volatile String _longlabel;
 	
 	/** The image used. */
-	private Image _image;
+	private volatile Image _image;
+	
+	/** The font hint to use, not used by SquirrelJME. */
+	private volatile Font _font;
 	
 	/**
 	 * Creates a new command with the specified parameters.
@@ -183,9 +186,15 @@ public class Command
 		this.__setLabels(__sl, __ll, __i);
 	}
 	
+	/**
+	 * Returns the type of command this is.
+	 *
+	 * @return The command type.
+	 * @since 2018/03/31
+	 */
 	public int getCommandType()
 	{
-		throw new todo.TODO();
+		return this._type;
 	}
 	
 	public boolean getEnabled()
@@ -193,13 +202,20 @@ public class Command
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the font that is used as a hint for rendering the text in
+	 * a command, it may be disregarded by the implementation.
+	 *
+	 * @return The font that should be used as a hint.
+	 * @since 2018/03/31
+	 */
 	public Font getFont()
 	{
-		throw new todo.TODO();
+		return this._font;
 	}
 	
 	/**
-	 * Returns the image of the command.
+	 * Returns the iTHe commmage of the command.
 	 *
 	 * @return The image of the command or {@code null} if it has none.
 	 * @since 2018/03/29
@@ -262,13 +278,24 @@ public class Command
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Sets the font used to be used as a hint when rendering the command.
+	 *
+	 * @param __f The font to use as a hint when rendering the command,
+	 * {@code null} will use the default.
+	 * @since 2018/03/31
+	 */
 	public void setFont(Font __f)
 	{
 		// Do nothing for implementation specific commands
 		if (this._implspec)
 			return;
 		
-		throw new todo.TODO();
+		// Just cache the font but do nothing as it is not supported in
+		// SquirrelJME (it would complicate command handling) although it
+		// could potentially be supported in the future for stuff such as
+		// word processors and such
+		this._font = __f;
 	}
 	
 	/**
