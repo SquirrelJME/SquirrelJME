@@ -13,22 +13,22 @@ package cc.squirreljme.runtime.lcdui.server;
 import cc.squirreljme.runtime.lcdui.CollectableType;
 
 /**
- * This represents a single command.
+ * This represents a menu which may contain multiple sub-menus and commands.
  *
- * @since 2018/03/30
+ * @since 2018/03/31
  */
-public final class LcdCommand
+public final class LcdMenu
 	extends LcdAction
 {
 	/**
-	 * Initializes the base command with the given handle.
+	 * Initializes the base menu with the given handle.
 	 *
 	 * @param __handle The handle of the command.
-	 * @since 2018/03/30
+	 * @since 2018/03/31
 	 */
-	public LcdCommand(int __handle)
+	public LcdMenu(int __handle)
 	{
-		super(__handle, CollectableType.COMMAND);
+		super(__handle, CollectableType.MENU);
 	}
 }
 
