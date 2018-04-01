@@ -1,0 +1,77 @@
+# 2018/03/31
+
+## 01:55
+
+I wrote an article on the JEMBlazer JFlame and I put it on Medium.
+
+## 22:28
+
+You know, MIDP 3 added enabled, images, and fonts. But for pre-existing
+built in commands it is unspecified if a command is enabled or not. And why
+would a command be disabled completely and not set to some disabled state in
+a menu or displayable?
+
+## 22:32
+
+No exceptions are set to be triggered on global commands, so should I warn
+that it was done or just ignore it. Perhaps I will just ignore it because
+some other properties cannot be ignored. If a command that is default is
+set to be disabled then applications are very likely to break especially
+for stuff like `OKAY`.
+
+## 22:38
+
+Okay so, `onParentEnabled()` is executed for each command when the parent is
+enabled or disabled. I think it only refers to menu items since that is really
+the only thing that can be enabled or disabled. So I suppose there should be a
+kind of merger between commands and menus.
+
+## 22:46
+
+Okay so menu items and commands are pretty much the same thing, so a base class
+they will get. I wonder what I could call the base class.
+
+## 22:48
+
+This would be reduced code between the two things definitely. But at least
+commands do not seem to be too bad. At least for default commands I will make
+disabling them do nothing and of course `onParentEnabled()` would be called for
+the default commands and do nothing.
+
+## 23:16
+
+Had an idae, menus and commands would be based on actions and would fork from
+this since they both have similar code. It would simplify things.
+
+## 23:28
+
+Menus are completely new to MIDP so they would not likely be used often unless
+in very new code like Squirrel Quarrel. I think what would be best though is
+if there were kind of native action viewers of sorts and maybe just treat
+everything sort of as a command. Although menus only contain actions.
+
+## 23:30
+
+Menu items do not have a type or priority though, so that would definitely
+would only exist for commands.
+
+## 23:32
+
+It can be checked if a menu is visible on any display though. So I think it
+would be best if menus and commands were something that were never extended
+in implemented subclasses. There would however, be action viewers and such
+that would take care of things as needed.
+
+## 23:46
+
+Says commands are since MIDP 3 but I think they are older.
+
+## 23:47
+
+Okay so previously commands were very immutable and could not be changed, so
+this definitely means all of the set ones and some methods become invalid.
+There are no menus in MIDP 2. MIDP2 for Command just has `getCommandType()`,
+`getLabel()`, `getLongLabel()`, and `getPriority()`. So I suppose built-in
+commands for sanity will just have no effect for these being set. So the
+commands and menus are a bit complicated now and I think done rather oddly
+in this case.
