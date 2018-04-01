@@ -24,6 +24,9 @@ public enum LcdFunction
 	/** Create a new collectable. */
 	COLLECTABLE_CREATE,
 	
+	/** Sets the labels and images for a command. */
+	COMMAND_SET_LABELS,
+	
 	/** Vibrates the display. */
 	DISPLAY_VIBRATE,
 	

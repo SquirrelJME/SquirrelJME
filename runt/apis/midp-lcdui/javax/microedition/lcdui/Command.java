@@ -10,6 +10,10 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.system.type.VoidType;
+import cc.squirreljme.runtime.lcdui.LcdFunction;
+import cc.squirreljme.runtime.lcdui.LcdServiceCall;
+
 public class Command
 	extends __Collectable__
 { 
@@ -332,7 +336,15 @@ public class Command
 		if (__sl == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Cache to prevent GC
+		this._shortlabel = __sl;
+		this._longlabel = __ll;
+		this._image = __i;
+		
+		// Set remotely
+		LcdServiceCall.<VoidType>call(VoidType.class,
+			LcdFunction.COMMAND_SET_LABELS,
+			this._handle, __sl, __ll, (__i == null ? -1 : __i._handle));
 	}
 }
 
