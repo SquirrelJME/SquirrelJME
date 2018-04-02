@@ -91,27 +91,100 @@ public class TODO
 	 */
 	public static final void note(String __fmt, Object... __args)
 	{
-		// Determine where it came from
-		CallTraceElement[] elems = SystemCall.EASY.throwableGetStack(
-			new Throwable());
-		CallTraceElement elem;
-		int n = elems.length;
-		if (n > 1)
-			elem = elems[1];
-		else if (n > 0)
-			elem = elems[0];
-		else
-			elem = new CallTraceElement();
-		
 		// Print it out
 		PrintStream ps = System.err;
 		ps.print("TODO -- ");
-		ps.printf("%s::%s %s @ 0x%X (%s:%d)", elem.className(),
-			elem.methodName(), elem.methodDescriptor(), elem.address(),
-			elem.file(), elem.line());
+		ps.print(TODO.__formatTrace(TODO.__where()));
 		ps.print(" -- ");
 		ps.printf(__fmt, __args);
 		ps.println();
+	}
+	
+	/**
+	 * Formats the call trace element.
+	 *
+	 * @param __e The element to format.
+	 * @return The formatted string.
+	 * @since 2018/04/02
+	 */
+	private static final String __formatTrace(CallTraceElement __e)
+		throws NullPointerException
+	{
+		if (__e == null)
+			throw new NullPointerException("NARG");
+		
+		String cn = __e.className(),
+			mn = __e.methodName(),
+			md = __e.methodDescriptor(),
+			fi = __e.file();
+		long ad = __e.address();
+		int ln = __e.line();
+		
+		StringBuilder sb = new StringBuilder();
+		
+		// Location
+		if (cn != null)
+			sb.append(cn);
+		sb.append("::");
+		if (mn != null)
+			sb.append(mn);
+		if (md != null)
+			sb.append(md);
+		
+		// Address, if it is valid
+		if (ad != -1L)
+			sb.append(String.format("@0x%016X", ad));
+		
+		// Add file/line information if it is valid
+		if (fi != null)
+		{
+			sb.append(" (");
+			sb.append(fi);
+			
+			if (ln >= 0)
+			{
+				sb.append(':');
+				sb.append(ln);
+			}
+			
+			sb.append(')');
+		}
+		
+		return sb.toString();
+	}
+	
+	/**
+	 * Determines where the code is in the call stack.
+	 *
+	 * @return The call trace element for the current location.
+	 * @since 2018/04/02
+	 */
+	private static final CallTraceElement __where()
+	{
+		return TODO.__where(new Throwable());
+	}
+	
+	/**
+	 * Determines where the code is in the call stack.
+	 *
+	 * @param __t The throwable to get the trace from.
+	 * @return The call trace element for the given location.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/04/02
+	 */
+	private static final CallTraceElement __where(Throwable __t)
+		throws NullPointerException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Get the first one which is not in this class
+		for (CallTraceElement e : SystemCall.EASY.throwableGetStack(__t))
+			if (!"todo.TODO".equals(e.className()))
+				return e;
+		
+		// Unknown
+		return new CallTraceElement();
 	}
 }
 

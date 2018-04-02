@@ -271,7 +271,7 @@ public class ZipStreamWriter
 			throw new NullPointerException("NARG");
 		
 		// Force no compressiong
-		System.err.println("TODO -- Support other compression methods");
+		todo.TODO.note("Support other compression methods");
 		__comp = ZipCompressionType.NO_COMPRESSION;
 		
 		// Lock
