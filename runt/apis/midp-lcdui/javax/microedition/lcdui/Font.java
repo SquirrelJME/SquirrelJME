@@ -26,6 +26,7 @@ import java.util.List;
  * @since 2017/05/25
  */
 public final class Font
+	extends __Collectable__
 {
 	/** The monospace font. */
 	public static final int FACE_MONOSPACE =

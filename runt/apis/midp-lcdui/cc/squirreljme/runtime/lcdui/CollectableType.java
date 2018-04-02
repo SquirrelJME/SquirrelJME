@@ -44,6 +44,9 @@ public enum CollectableType
 	/** Text Box. */
 	DISPLAYABLE_TEXT_BOX,
 	
+	/** Font. */
+	FONT,
+	
 	/** Choice group. */
 	ITEM_CHOICE_GROUP,
 	

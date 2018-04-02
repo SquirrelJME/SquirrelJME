@@ -18,14 +18,20 @@ package cc.squirreljme.runtime.lcdui;
  */
 public enum LcdFunction
 {
+	/** Sets whether a given action is enabled. */
+	ACTION_SET_ENABLED,
+	
+	/** Sets the font for the action. */
+	ACTION_SET_FONT,
+	
+	/** Sets the labels and images for an action. */
+	ACTION_SET_LABELS,
+	
 	/** A collectable was garbage collected, so clean it up. */
 	COLLECTABLE_CLEANUP,
 	
 	/** Create a new collectable. */
 	COLLECTABLE_CREATE,
-	
-	/** Sets the labels and images for a command. */
-	COMMAND_SET_LABELS,
 	
 	/** Vibrates the display. */
 	DISPLAY_VIBRATE,

@@ -10,6 +10,10 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.system.type.VoidType;
+import cc.squirreljme.runtime.lcdui.LcdFunction;
+import cc.squirreljme.runtime.lcdui.LcdServiceCall;
+
 public class Menu
 	extends __Action__
 {
@@ -33,21 +37,46 @@ public class Menu
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the font that is used as a hint for rendering the text in
+	 * a menu, it may be disregarded by the implementation.
+	 *
+	 * @return The font that should be used as a hint.
+	 * @since 2018/04/01
+	 */
 	public Font getFont()
 	{
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the image the menu.
+	 *
+	 * @return The image of the command or {@code null} if it has none.
+	 * @since 2018/04/01
+	 */
 	public Image getImage()
 	{
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the label used for this menu.
+	 *
+	 * @return The label used for the menu.
+	 * @since 2018/04/01
+	 */
 	public String getLabel()
 	{
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the long label of the menu.
+	 *
+	 * @return The long label of the menu or {@code null} if it has none.
+	 * @since 2018/04/01
+	 */
 	public String getLongLabel()
 	{
 		throw new todo.TODO();
@@ -88,9 +117,16 @@ public class Menu
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * This is called when the enabled state of the parent has changed.
+	 *
+	 * @param __e The new state of the parent.
+	 * @since 2018/04/01
+	 */
+	@Override
 	public void onParentEnabled(boolean __e)
 	{
-		throw new todo.TODO();
+		// The default implementation does nothing
 	}
 	
 	public void remove(Command __c)

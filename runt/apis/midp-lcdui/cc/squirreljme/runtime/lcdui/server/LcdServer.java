@@ -92,6 +92,10 @@ public final class LcdServer
 		if (__type == CollectableType.COMMAND)
 			rv = new LcdCommand(handle);
 		
+		// Menu?
+		else if (__type == CollectableType.MENU)
+			rv = new LcdMenu(handle);
+		
 		// Creating image?
 		else if (__type == CollectableType.IMAGE)
 			throw new todo.TODO();
