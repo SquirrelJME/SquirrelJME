@@ -22,7 +22,7 @@ import cc.squirreljme.runtime.lcdui.server.LcdWidget;
  *
  * @since 2018/03/23
  */
-public class WidgetClearAndSet
+public final class WidgetClearAndSet
 	extends LcdRequest
 {
 	/** The destination widget. */

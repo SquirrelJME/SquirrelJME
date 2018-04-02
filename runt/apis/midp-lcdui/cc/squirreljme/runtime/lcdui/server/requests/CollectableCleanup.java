@@ -20,7 +20,7 @@ import cc.squirreljme.runtime.lcdui.server.LcdServer;
  *
  * @since 2018/03/23
  */
-public class CollectableCleanup
+public final class CollectableCleanup
 	extends LcdRequest
 {
 	/** The widget to cleanup. */

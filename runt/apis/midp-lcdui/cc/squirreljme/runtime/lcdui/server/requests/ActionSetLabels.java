@@ -12,69 +12,66 @@ package cc.squirreljme.runtime.lcdui.server.requests;
 
 import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
+import cc.squirreljme.runtime.lcdui.server.LcdAction;
+import cc.squirreljme.runtime.lcdui.server.LcdImage;
 import cc.squirreljme.runtime.lcdui.server.LcdRequest;
 import cc.squirreljme.runtime.lcdui.server.LcdServer;
-import cc.squirreljme.runtime.lcdui.server.LcdWidget;
 
 /**
- * Repaints a widget.
+ * This sets the labels and images for an action.
  *
- * @since 2018/03/23
+ * @since 2018/04/02
  */
-public final class WidgetRepaint
+public final class ActionSetLabels
 	extends LcdRequest
 {
-	/** The widget to repaint. */
-	protected final LcdWidget widget;
+	/** The action to set. */
+	protected final LcdAction action;
 	
-	/** The X coordinate. */
-	protected final int x;
+	/** The short label to set. */
+	protected final String shortlabel;
 	
-	/** The Y coordinate. */
-	protected final int y;
+	/** The long label to set. */
+	protected final String longlabel;
 	
-	/** The width. */
-	protected final int width;
-	
-	/** The height. */
-	protected final int height;
+	/** The image to display. */
+	protected final LcdImage image;
 	
 	/**
 	 * Initializes the request.
 	 *
 	 * @param __sv The calling server.
-	 * @param __wid The widget to repaint.
-	 * @param __x The X coordinate.
-	 * @param __y The Y coordinate.
-	 * @param __w The width.
-	 * @param __h The height.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/03/23
+	 * @param __a The action to modify.
+	 * @param __sl The short label.
+	 * @param __ll The long label.
+	 * @param __i The image.
+	 * @throws NullPointerException If {@code __sv}, {@code __a}, or
+	 * {@code __sl} are {@code null}.
+	 * @since 2018/04/02
 	 */
-	public WidgetRepaint(LcdServer __sv, LcdWidget __wid, int __x, int __y,
-		int __w, int __h)
+	public ActionSetLabels(LcdServer __sv, LcdAction __a, String __sl,
+		String __ll, LcdImage __i)
 		throws NullPointerException
 	{
-		super(__sv, LcdFunction.WIDGET_REPAINT);
+		super(__sv, LcdFunction.ACTION_SET_LABELS);
 		
-		if (__wid == null)
+		if (__a == null || __sl == null)
 			throw new NullPointerException("NARG");
 		
-		this.widget = __wid;
-		this.x = __x;
-		this.y = __y;
-		this.width = __w;
-		this.height = __h;
+		this.action = __a;
+		this.shortlabel = __sl;
+		this.longlabel = __ll;
+		this.image = __i;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/03/23
+	 * @since 2018/03/26
 	 */
 	@Override
 	protected final Object invoke()
 	{
-		this.widget.repaint(this.x, this.y, this.width, this.height);
+		this.action.setLabels(this.shortlabel, this.longlabel, this.image);
 		return VoidType.INSTANCE;
 	}
 }

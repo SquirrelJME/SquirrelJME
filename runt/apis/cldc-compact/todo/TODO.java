@@ -10,6 +10,8 @@
 
 package todo;
 
+import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
+import cc.squirreljme.runtime.cldc.system.SystemCall;
 import java.io.PrintStream;
 
 /**
@@ -78,6 +80,38 @@ public class TODO
 	public static final <T> T missingObject()
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Prints a note to standard error about something that is incomplete.
+	 *
+	 * @param __fmt The format string.
+	 * @param __args The arguments to the call.
+	 * @since 2018/04/02
+	 */
+	public static final void note(String __fmt, Object... __args)
+	{
+		// Determine where it came from
+		CallTraceElement[] elems = SystemCall.EASY.throwableGetStack(
+			new Throwable());
+		CallTraceElement elem;
+		int n = elems.length;
+		if (n > 1)
+			elem = elems[1];
+		else if (n > 0)
+			elem = elems[0];
+		else
+			elem = new CallTraceElement();
+		
+		// Print it out
+		PrintStream ps = System.err;
+		ps.print("TODO -- ");
+		ps.printf("%s::%s %s @ 0x%X (%s:%d)", elem.className(),
+			elem.methodName(), elem.methodDescriptor(), elem.address(),
+			elem.file(), elem.line());
+		ps.print(" -- ");
+		ps.printf(__fmt, __args);
+		ps.println();
 	}
 }
 

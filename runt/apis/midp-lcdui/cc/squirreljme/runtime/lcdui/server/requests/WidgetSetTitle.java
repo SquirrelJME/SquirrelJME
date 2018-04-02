@@ -21,7 +21,7 @@ import cc.squirreljme.runtime.lcdui.server.LcdWidget;
  *
  * @since 2018/03/23
  */
-public class WidgetSetTitle
+public final class WidgetSetTitle
 	extends LcdRequest
 {
 	/** The widget to set the title for. */

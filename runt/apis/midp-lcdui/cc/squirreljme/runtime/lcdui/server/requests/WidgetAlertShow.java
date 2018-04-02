@@ -21,7 +21,7 @@ import cc.squirreljme.runtime.lcdui.server.LcdWidget;
  *
  * @since 2018/03/23
  */
-public class WidgetAlertShow
+public final class WidgetAlertShow
 	extends LcdRequest
 {
 	/** The widget to show as an alert. */

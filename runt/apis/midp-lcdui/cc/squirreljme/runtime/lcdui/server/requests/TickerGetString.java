@@ -21,7 +21,7 @@ import cc.squirreljme.runtime.lcdui.server.LcdTicker;
  *
  * @since 2018/03/26
  */
-public class TickerGetString
+public final class TickerGetString
 	extends LcdRequest
 {
 	/** The ticker to get the text from. */

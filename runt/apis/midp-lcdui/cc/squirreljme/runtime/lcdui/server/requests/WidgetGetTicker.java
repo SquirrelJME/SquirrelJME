@@ -22,7 +22,7 @@ import cc.squirreljme.runtime.lcdui.server.LcdWidget;
  *
  * @since 2018/03/26
  */
-public class WidgetGetTicker
+public final class WidgetGetTicker
 	extends LcdRequest
 {
 	/** The widget to get the ticker from. */

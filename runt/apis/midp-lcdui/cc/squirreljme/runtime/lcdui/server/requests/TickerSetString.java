@@ -21,7 +21,7 @@ import cc.squirreljme.runtime.lcdui.server.LcdTicker;
  *
  * @since 2018/03/26
  */
-public class TickerSetString
+public final class TickerSetString
 	extends LcdRequest
 {
 	/** The ticker to set the text for. */

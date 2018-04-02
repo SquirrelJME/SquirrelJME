@@ -20,7 +20,7 @@ import cc.squirreljme.runtime.lcdui.server.LcdWidget;
  *
  * @since 2018/03/23
  */
-public class DisplayVibrate
+public final class DisplayVibrate
 	extends LcdRequest
 {
 	/** The widget to vibrate. */

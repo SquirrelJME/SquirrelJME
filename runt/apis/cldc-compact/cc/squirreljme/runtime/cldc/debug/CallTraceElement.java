@@ -32,6 +32,12 @@ public final class CallTraceElement
 	/** The execution pointer of the address. */
 	protected final long address;
 	
+	/** The source code file. */
+	protected final String file;
+	
+	/** The line in the file. */
+	protected final int line;
+	
 	/**
 	 * Initializes an empty call trace element.
 	 *
@@ -78,10 +84,29 @@ public final class CallTraceElement
 	 */
 	public CallTraceElement(String __cl, String __mn, String __md, long __addr)
 	{
+		this(__cl, __mn, __md, __addr, null, -1);
+	}
+	
+	/**
+	 * Initializes a call trace element.
+	 *
+	 * @param __cl The class name.
+	 * @param __mn The method name.
+	 * @param __md The method descriptor.
+	 * @param __addr The address the method executes at.
+	 * @param __file The file.
+	 * @param __line The line in the file.
+	 * @since 2018/04/02
+	 */
+	public CallTraceElement(String __cl, String __mn, String __md, long __addr,
+		String __file, int __line)
+	{
 		this.classname = __cl;
 		this.methodname = __mn;
 		this.methoddescriptor = __md;
 		this.address = __addr;
+		this.file = __file;
+		this.line = __line;
 	}
 	
 	/**
@@ -123,7 +148,20 @@ public final class CallTraceElement
 		return Objects.equals(this.classname, o.classname) &&
 			Objects.equals(this.methodname, o.methodname) &&
 			Objects.equals(this.methoddescriptor, o.methoddescriptor) &&
-			this.address == o.address;
+			Objects.equals(this.file, o.file) &&
+			this.address == o.address &&
+			this.line == o.line;
+	}
+	
+	/**
+	 * Returns the source file.
+	 *
+	 * @return The source file.
+	 * @since 2018/04/02
+	 */
+	public final String file()
+	{
+		return this.file;
 	}
 	
 	/**
@@ -137,7 +175,20 @@ public final class CallTraceElement
 		return Objects.hashCode(this.classname) ^
 			Objects.hashCode(this.methodname) ^
 			Objects.hashCode(this.methoddescriptor) ^
-			(int)((address >>> 32) | address);
+			Objects.hashCode(this.file) ^
+			(int)((address >>> 32) | address) ^
+			~this.line;
+	}
+	
+	/**
+	 * Returns the source file line.
+	 *
+	 * @return The source file line.
+	 * @since 2018/04/02
+	 */
+	public final int line()
+	{
+		return this.line;
 	}
 	
 	/**
