@@ -38,8 +38,6 @@ public class SwingCanvasPanel
 	/** The owning widget. */
 	protected final SwingWidget owner;
 	
-	/** The buffered image type. */
-	
 	/** The image to display in the panel. */
 	private volatile BufferedImage _image;
 	
