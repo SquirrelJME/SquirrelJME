@@ -139,26 +139,58 @@ public class Menu
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Sets whether this menu is enabled or disabled.
+	 *
+	 * @param __e If the menu is enabled or not.
+	 * @since 2018/04/01
+	 */
 	public void setEnabled(boolean __e)
 	{
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Sets the font used to be used as a hint when rendering the menu.
+	 *
+	 * @param __f The font to use as a hint when rendering the menu,
+	 * {@code null} will use the default.
+	 * @since 2018/04/01
+	 */
 	public void setFont(Font __f)
 	{
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Sets the image to be displayed for this menu.
+	 *
+	 * @param __i The image to be displayed, {@code null} clears this.
+	 * @since 2018/04/01
+	 */
 	public void setImage(Image __i)
 	{
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Sets the label to be displayed.
+	 *
+	 * @param __s The label to display.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/04/01
+	 */
 	public void setLabel(String __l)
 	{
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Sets the long label of the menu.
+	 *
+	 * @param __s The long label to use, {@code null} clears it.
+	 * @since 2018/04/01
+	 */
 	public void setLongLabel(String __l)
 	{
 		throw new todo.TODO();
