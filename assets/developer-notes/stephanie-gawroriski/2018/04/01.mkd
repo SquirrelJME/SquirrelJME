@@ -1,0 +1,9 @@
+# 2018/04/01
+
+## 21:10
+
+So commands can have multiple parents. Also for local caching, I think it
+would be best to have a single lock which modifies things for each item
+to prevent GC from dropping references. I suppose a single lock would be
+best so that way things can happen anywhere without there being a giant
+mess especially when lists and such are needed to be set.
