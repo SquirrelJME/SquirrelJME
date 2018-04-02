@@ -170,7 +170,7 @@ public class Menu
 	 */
 	public void setImage(Image __i)
 	{
-		throw new todo.TODO();
+		this.__setLabels(this._shortlabel, this._longlabel, __i);
 	}
 	
 	/**
@@ -180,9 +180,9 @@ public class Menu
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/04/01
 	 */
-	public void setLabel(String __l)
+	public void setLabel(String __s)
 	{
-		throw new todo.TODO();
+		this.__setLabels(__s, this._longlabel, this._image);
 	}
 	
 	/**
@@ -191,9 +191,9 @@ public class Menu
 	 * @param __s The long label to use, {@code null} clears it.
 	 * @since 2018/04/01
 	 */
-	public void setLongLabel(String __l)
+	public void setLongLabel(String __s)
 	{
-		throw new todo.TODO();
+		this.__setLabels(this._shortlabel, __s, this._image);
 	}
 	
 	public int size()

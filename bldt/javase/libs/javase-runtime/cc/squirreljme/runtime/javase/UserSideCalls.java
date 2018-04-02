@@ -181,7 +181,7 @@ public final class UserSideCalls
 			throw new NullPointerException("NARG");
 		
 		return new StackTraceElement(__e.className(), __e.methodName(),
-			__e.methodDescriptor(), (int)__e.address());
+			__e.file(), __e.line());
 	}
 	
 	/**
@@ -199,7 +199,7 @@ public final class UserSideCalls
 			throw new NullPointerException("NARG");
 		
 		return new CallTraceElement(__e.getClassName(), __e.getMethodName(),
-			__e.getFileName(), __e.getLineNumber());
+			null, -1, __e.getFileName(), __e.getLineNumber());
 	}
 }
 

@@ -409,7 +409,9 @@ public final class EasyCall
 	public final CallTraceElement[] throwableGetStack(Throwable __t)
 		throws NullPointerException
 	{
-		throw new todo.TODO();
+		return SystemCall.<CallTraceElement[]>systemCall(
+			CallTraceElement[].class,
+			SystemFunction.THROWABLE_GET_STACK, __t);
 	}
 	
 	/**
@@ -421,7 +423,8 @@ public final class EasyCall
 		CallTraceElement[] __e)
 		throws NullPointerException
 	{
-		throw new todo.TODO();
+		SystemCall.<VoidType[]>systemCall(VoidType[].class,
+			SystemFunction.THROWABLE_SET_STACK, __t, __e);
 	}
 }
 

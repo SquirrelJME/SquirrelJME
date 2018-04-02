@@ -21,7 +21,7 @@ import cc.squirreljme.runtime.lcdui.server.LcdServer;
  *
  * @since 2018/03/23
  */
-public class CollectableCreate
+public final class CollectableCreate
 	extends LcdRequest
 {
 	/** The type of collectable to create. */

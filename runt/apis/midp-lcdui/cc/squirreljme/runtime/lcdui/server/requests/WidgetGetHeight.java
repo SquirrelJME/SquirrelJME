@@ -20,7 +20,7 @@ import cc.squirreljme.runtime.lcdui.server.LcdWidget;
  *
  * @since 2018/03/23
  */
-public class WidgetGetHeight
+public final class WidgetGetHeight
 	extends LcdRequest
 {
 	/** The widget to get the height of. */

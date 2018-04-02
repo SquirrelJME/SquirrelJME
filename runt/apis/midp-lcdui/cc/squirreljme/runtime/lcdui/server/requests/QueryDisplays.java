@@ -25,7 +25,7 @@ import cc.squirreljme.runtime.lcdui.server.LcdWidget;
  *
  * @since 2018/03/23
  */
-public class QueryDisplays
+public final class QueryDisplays
 	extends LcdRequest
 {
 	/** The remote handler method. */

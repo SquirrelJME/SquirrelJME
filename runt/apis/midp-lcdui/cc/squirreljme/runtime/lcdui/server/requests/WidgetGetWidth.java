@@ -20,7 +20,7 @@ import cc.squirreljme.runtime.lcdui.server.LcdWidget;
  *
  * @since 2018/03/23
  */
-public class WidgetGetWidth
+public final class WidgetGetWidth
 	extends LcdRequest
 {
 	/** The widget to get the width of. */

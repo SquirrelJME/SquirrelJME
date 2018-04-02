@@ -18,6 +18,7 @@ import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.cldc.task.SystemTask;
 import cc.squirreljme.runtime.lcdui.CollectableType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
+import cc.squirreljme.runtime.lcdui.server.requests.ActionSetLabels;
 import cc.squirreljme.runtime.lcdui.server.requests.CollectableCleanup;
 import cc.squirreljme.runtime.lcdui.server.requests.CollectableCreate;
 import cc.squirreljme.runtime.lcdui.server.requests.DisplayVibrate;
@@ -164,13 +165,17 @@ public abstract class LcdRequest
 		
 		switch (__func)
 		{
+			case ACTION_SET_LABELS:
+				return new ActionSetLabels(__sv,
+					__sv.<LcdAction>get(LcdAction.class, (Integer)__args[0]),
+					(String)__args[1],
+					(String)__args[2],
+					__sv.<LcdImage>get(LcdImage.class, (Integer)__args[3]));
+			
 			case DISPLAY_VIBRATE:
 				return new DisplayVibrate(__sv,
 					__sv.getWidget((Integer)__args[0]),
 					(Integer)__args[1]);
-			
-			case QUERY_DISPLAYS:
-				return new QueryDisplays(__sv, (RemoteMethod)__args[0]);
 			
 			case WIDGET_ADD:
 				return new WidgetAdd(__sv, __sv.getWidget((Integer)__args[0]),
@@ -189,6 +194,9 @@ public abstract class LcdRequest
 			case COLLECTABLE_CLEANUP:
 				return new CollectableCleanup(__sv,
 					__sv.getCollectable((Integer)__args[0]));
+			
+			case QUERY_DISPLAYS:
+				return new QueryDisplays(__sv, (RemoteMethod)__args[0]);
 				
 			case TICKER_GET_STRING:
 				return new TickerGetString(__sv,
