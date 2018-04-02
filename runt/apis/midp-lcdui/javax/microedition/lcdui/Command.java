@@ -66,18 +66,6 @@ public class Command
 	/** Is this an implementation specific command with fixed text? */
 	private final boolean _implspec;
 	
-	/** The short label. */
-	private volatile String _shortlabel;
-	
-	/** The long label. */
-	private volatile String _longlabel;
-	
-	/** The image used. */
-	private volatile Image _image;
-	
-	/** The font hint to use, not used by SquirrelJME. */
-	private volatile Font _font;
-	
 	/**
 	 * Creates a new command with the specified parameters.
 	 *
@@ -215,7 +203,7 @@ public class Command
 	}
 	
 	/**
-	 * Returns the iTHe commmage of the command.
+	 * Returns the image the command.
 	 *
 	 * @return The image of the command or {@code null} if it has none.
 	 * @since 2018/03/29
@@ -264,11 +252,24 @@ public class Command
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * This is called when the enabled state of the parent has changed.
+	 *
+	 * @param __e The new state of the parent.
+	 * @since 2018/04/01
+	 */
+	@Override
 	public void onParentEnabled(boolean __e)
 	{
-		throw new todo.TODO();
+		// The default implementation does nothing
 	}
 	
+	/**
+	 * Sets whether this command is enabled or disabled.
+	 *
+	 * @param __e If the command is enabled or not.
+	 * @since 2018/04/01
+	 */
 	public void setEnabled(boolean __e)
 	{
 		// Do nothing for implementation specific commands
@@ -296,6 +297,21 @@ public class Command
 		// could potentially be supported in the future for stuff such as
 		// word processors and such
 		this._font = __f;
+	}
+	
+	/**
+	 * Sets the image to be displayed for this command.
+	 *
+	 * @param __i The image to be displayed, {@code null} clears this.
+	 * @since 2018/03/29
+	 */
+	public void setImage(Image __i)
+	{
+		// Do nothing for implementation specific commands
+		if (this._implspec)
+			return;
+		
+		this.__setLabels(this._shortlabel, this._longlabel, __i);
 	}
 	
 	/**
@@ -331,47 +347,6 @@ public class Command
 			return;
 		
 		this.__setLabels(this._shortlabel, __s, this._image);
-	}
-	
-	/**
-	 * Sets the image to be displayed for this command.
-	 *
-	 * @param __i The image to be displayed, {@code null} clears this.
-	 * @since 2018/03/29
-	 */
-	public void setImage(Image __i)
-	{
-		// Do nothing for implementation specific commands
-		if (this._implspec)
-			return;
-		
-		this.__setLabels(this._shortlabel, this._longlabel, __i);
-	}
-	
-	/**
-	 * Internally sets the labels to be displayed.
-	 *
-	 * @param __sl The short label.
-	 * @param __ll The long label, {@code null} will clear it.
-	 * @param __i The image to be displayed.
-	 * @throws NullPointerException If no short label was specified.
-	 * @since 2018/03/29
-	 */
-	private final void __setLabels(String __sl, String __ll, Image __i)
-		throws NullPointerException
-	{
-		if (__sl == null)
-			throw new NullPointerException("NARG");
-		
-		// Cache to prevent GC
-		this._shortlabel = __sl;
-		this._longlabel = __ll;
-		this._image = __i;
-		
-		// Set remotely
-		LcdServiceCall.<VoidType>call(VoidType.class,
-			LcdFunction.COMMAND_SET_LABELS,
-			this._handle, __sl, __ll, (__i == null ? -1 : __i._handle));
 	}
 }
 

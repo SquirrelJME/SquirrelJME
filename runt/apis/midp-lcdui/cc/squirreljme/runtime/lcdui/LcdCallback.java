@@ -18,6 +18,9 @@ package cc.squirreljme.runtime.lcdui;
  */
 public enum LcdCallback
 {
+	/** The parent of an action changes enable state. */
+	ACTION_ON_PARENT_ENABLED,
+	
 	/** Paint graphics in the widget. */
 	WIDGET_PAINT,
 	
