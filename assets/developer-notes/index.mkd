@@ -1712,7 +1712,7 @@
 
  * 
 [**`01`**](stephanie-gawroriski/2018/04/01.mkd)
-`02`
+[**`02`**](stephanie-gawroriski/2018/04/02.mkd)
 `03`
 `04`
 `05`

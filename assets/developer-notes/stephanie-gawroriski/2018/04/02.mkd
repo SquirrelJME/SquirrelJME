@@ -1,0 +1,23 @@
+# 2018/04/02
+
+## 09:51
+
+Okay so for widgets I have a base class problem. Like I would want a class
+that does things since there could be some shared widget logic but I also
+want stuff like `LcdList` which manages being a list, there could also be a
+`Canvas` too. But I suppose for Swing there will need to be some kind of
+duplication. It would be much easier though if I could use default methods
+in interfaces. But this VM basically is a Java 7 VM. Default interfaces
+would be very useful, but I believe I can change the Swing code around. For
+widgets it really just needs some methods. Right now for swing all I really
+need is a `getJComponent()` interface because that is all that is used for
+the most part.
+
+## 10:00
+
+Unless I have like an interface adapter of sorts, basically I have just a
+plain widget, but I can have specialized sub-classes and it would act like a
+derived widget of sorts. There could still be some issues with that. So right
+now I kind of wish Java had multiple classes, although that would complicate
+things for the most part. Will need to think on this befor I continue so that
+way the widget code is not a giant mess.
