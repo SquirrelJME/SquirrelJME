@@ -11,13 +11,12 @@
 package cc.squirreljme.runtime.lcdui.ui;
 
 /**
- * This class represents anything which has a label associated with it, it
- * must contain a standard label which represents the short label but can
- * additionally have a long label or image.
+ * This represents an image which may contain image data as needed.
  *
  * @since 2018/04/04
  */
-public interface UiHasLabel
+public interface UiImage
+	extends UiCollectable
 {
 }
 
