@@ -19,7 +19,7 @@ import cc.squirreljme.runtime.lcdui.CollectableType;
  * @since 2018/04/04
  */
 public final class UiCommand
-	implements UiHasSettableLabel, UiCollectable
+	implements UiCollectable, UiHasSettableLabel, UiInterface
 {
 	/**
 	 * {@inheritDoc}

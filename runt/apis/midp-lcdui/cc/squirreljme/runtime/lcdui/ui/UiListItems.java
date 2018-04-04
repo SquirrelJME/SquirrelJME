@@ -17,6 +17,7 @@ package cc.squirreljme.runtime.lcdui.ui;
  * @since 2018/04/04
  */
 public final class UiListItems
+	implements UiInterface
 {
 	/**
 	 * Adds the specified list listener which is used as a callback when the

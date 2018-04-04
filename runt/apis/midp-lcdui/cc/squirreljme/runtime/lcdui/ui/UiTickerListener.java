@@ -17,6 +17,7 @@ package cc.squirreljme.runtime.lcdui.ui;
  * @since 2018/04/04
  */
 public interface UiTickerListener
+	extends UiInterface
 {
 	/**
 	 * This is called when the text has been changed.

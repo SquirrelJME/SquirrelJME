@@ -13,6 +13,8 @@ package cc.squirreljme.runtime.lcdui.server;
 import cc.squirreljme.runtime.cldc.system.type.RemoteMethod;
 import cc.squirreljme.runtime.lcdui.CollectableType;
 import cc.squirreljme.runtime.lcdui.LcdException;
+import cc.squirreljme.runtime.lcdui.ui.UiCollectable;
+import cc.squirreljme.runtime.lcdui.ui.UiDisplayHead;
 import java.util.HashMap;
 import java.util.Map;
 import net.multiphasicapps.collections.SortedTreeMap;
@@ -34,7 +36,7 @@ import net.multiphasicapps.collections.SortedTreeMap;
 public abstract class LcdDisplays
 {
 	/** Displays which are currently available. */
-	private final Map<Integer, LcdDisplay> _displays =
+	private final Map<Integer, UiDisplayHead> _displays =
 		new SortedTreeMap<>();
 	
 	/**
@@ -45,7 +47,7 @@ public abstract class LcdDisplays
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/24
 	 */
-	protected abstract LcdCollectable internalCreateCollectable(int __handle,
+	protected abstract UiCollectable internalCreateCollectable(int __handle,
 		CollectableType __type)
 		throws NullPointerException;
 	
@@ -58,7 +60,8 @@ public abstract class LcdDisplays
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/17
 	 */
-	protected abstract LcdDisplay[] internalQueryDisplays(LcdDisplay[] __k)
+	protected abstract UiDisplayHead[] internalQueryDisplays(
+		UiDisplayHead[] __k)
 		throws NullPointerException;
 	
 	/**
@@ -99,13 +102,13 @@ public abstract class LcdDisplays
 	 * @throws LcdException If the display does not exist.
 	 * @since 2018/03/18
 	 */
-	public final LcdDisplay get(int __dx)
+	public final UiDisplayHead get(int __dx)
 		throws LcdException
 	{
 		// {@squirreljme.error EB22 The specified display index is not
 		// valid. (The display index)}
-		Map<Integer, LcdDisplay> displays = this._displays;
-		LcdDisplay rv = displays.get(__dx);
+		Map<Integer, UiDisplayHead> displays = this._displays;
+		UiDisplayHead rv = displays.get(__dx);
 		if (rv == null)
 			throw new LcdException(String.format("EB22 %d", __dx));
 		return rv;
@@ -117,21 +120,20 @@ public abstract class LcdDisplays
 	 * @return The displays which are available.
 	 * @since 2018/03/17
 	 */
-	public final LcdDisplay[] queryDisplays()
+	public final UiDisplayHead[] queryDisplays()
 	{
-		// Lock displays 
-		Map<Integer, LcdDisplay> displays = this._displays;
+		Map<Integer, UiDisplayHead> displays = this._displays;
 		
 		// Get the displays which are known to the definition so that
 		// lookup does not create any duplicates ones potentially
-		LcdDisplay[] known = displays.values().<LcdDisplay>toArray(
-			new LcdDisplay[displays.size()]);
+		UiDisplayHead[] known = displays.values().<LcdDisplay>toArray(
+			new UiDisplayHead[displays.size()]);
 		
 		// Query all native displays
-		LcdDisplay[] active = this.internalQueryDisplays(known);
+		UiDisplayHead[] active = this.internalQueryDisplays(known);
 		
 		// Cache all displays by their index
-		for (LcdDisplay d : active)
+		for (UiDisplayHead d : active)
 		{
 			Integer dx = d.handle();
 			
@@ -141,8 +143,8 @@ public abstract class LcdDisplays
 		}
 		
 		// Return every display which is known about
-		return displays.values().<LcdDisplay>toArray(
-			new LcdDisplay[displays.size()]);
+		return displays.values().<UiDisplayHead>toArray(
+			new UiDisplayHead[displays.size()]);
 	}
 	
 	/**
@@ -152,7 +154,7 @@ public abstract class LcdDisplays
 	 * @param __type The type of collectable to create.
 	 * @since 2018/03/24
 	 */
-	final LcdCollectable __internalCreateCollectable(int __handle,
+	final UiCollectable __internalCreateCollectable(int __handle,
 		CollectableType __type)
 	{
 		return this.internalCreateCollectable(__handle, __type);

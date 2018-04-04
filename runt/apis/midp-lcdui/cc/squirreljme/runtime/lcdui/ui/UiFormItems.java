@@ -17,6 +17,7 @@ package cc.squirreljme.runtime.lcdui.ui;
  * @since 2018/04/04
  */
 public final class UiFormItems
+	implements UiInterface
 {
 	/**
 	 * Adds the specified item to the form.

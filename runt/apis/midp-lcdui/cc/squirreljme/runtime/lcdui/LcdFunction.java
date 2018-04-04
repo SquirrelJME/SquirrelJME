@@ -18,15 +18,6 @@ package cc.squirreljme.runtime.lcdui;
  */
 public enum LcdFunction
 {
-	/** Sets whether a given action is enabled. */
-	ACTION_SET_ENABLED,
-	
-	/** Sets the font for the action. */
-	ACTION_SET_FONT,
-	
-	/** Sets the labels and images for an action. */
-	ACTION_SET_LABELS,
-	
 	/** A collectable was garbage collected, so clean it up. */
 	COLLECTABLE_CLEANUP,
 	
@@ -38,39 +29,6 @@ public enum LcdFunction
 	
 	/** Queries available displays and sets the local callback method. */
 	QUERY_DISPLAYS,
-	
-	/** Gets the string from a ticker. */
-	TICKER_GET_STRING,
-	
-	/** Sets the ticker to the given string. */
-	TICKER_SET_STRING,
-	
-	/** Adds a widget to this widget. */
-	WIDGET_ADD,
-	
-	/** Shows a widget which is an alert, the alert is considered modal. */
-	WIDGET_ALERT_SHOW,
-	
-	/** Clears all widgets that are to be displayed then sets it. */
-	WIDGET_CLEAR_AND_SET,
-	
-	/** Returns the widget height. */
-	WIDGET_GET_HEIGHT,
-	
-	/** Gets the ticker of a widget. */
-	WIDGET_GET_TICKER,
-	
-	/** Returns the widget width. */
-	WIDGET_GET_WIDTH,
-	
-	/** Repaints a widget. */
-	WIDGET_REPAINT,
-	
-	/** Sets the ticker of a widget. */
-	WIDGET_SET_TICKER,
-	
-	/** Sets the title of a widget. */
-	WIDGET_SET_TITLE,
 	
 	/** End. */
 	;
@@ -103,11 +61,6 @@ public enum LcdFunction
 		{
 			case COLLECTABLE_CREATE:
 			case QUERY_DISPLAYS:
-			case TICKER_GET_STRING:
-			case WIDGET_ADD:
-			case WIDGET_GET_HEIGHT:
-			case WIDGET_GET_TICKER:
-			case WIDGET_GET_WIDTH:
 				return true;
 			
 			default:

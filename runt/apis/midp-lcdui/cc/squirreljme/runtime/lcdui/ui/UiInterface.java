@@ -11,20 +11,11 @@
 package cc.squirreljme.runtime.lcdui.ui;
 
 /**
- * This represents a form which will consist of various input items as they
- * are used and needed.
+ * Flagging interface used by anything that implements anything in this class.
  *
  * @since 2018/04/04
  */
-public interface UiForm
-	extends UiDisplayable, UiInterface, UiTabbedDisplayable
+public interface UiInterface
 {
-	/**
-	 * Returns the items that represent this form.
-	 *
-	 * @return The items representing the form.
-	 * @since 2018/04/04
-	 */
-	public abstract UiFormItems getFormItems();
 }
 

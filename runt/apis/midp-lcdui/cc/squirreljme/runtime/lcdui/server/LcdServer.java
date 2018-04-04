@@ -20,6 +20,9 @@ import cc.squirreljme.runtime.cldc.task.SystemTask;
 import cc.squirreljme.runtime.lcdui.CollectableType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
 import cc.squirreljme.runtime.lcdui.LcdFunctionInterrupted;
+import cc.squirreljme.runtime.lcdui.ui.UiCollectable;
+import cc.squirreljme.runtime.lcdui.ui.UiDisplay;
+import cc.squirreljme.runtime.lcdui.ui.UiDisplayHead;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,7 +42,7 @@ public final class LcdServer
 	protected final LcdDisplays displays;
 	
 	/** Widgets which are currently available to this server. */
-	private final Map<Integer, LcdCollectable> _collects =
+	private final Map<Integer, UiCollectable> _collects =
 		new HashMap<>();
 	
 	/** Local widgets which wrap displays. */

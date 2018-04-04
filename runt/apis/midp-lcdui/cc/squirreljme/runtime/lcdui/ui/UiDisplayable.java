@@ -17,7 +17,7 @@ package cc.squirreljme.runtime.lcdui.ui;
  * @since 2018/04/04
  */
 public interface UiDisplayable
-	extends UiWidget
+	extends UiInterface, UiWidget
 {
 	/**
 	 * Returns the title of the displayable.
