@@ -11,30 +11,30 @@
 package cc.squirreljme.runtime.lcdui.ui;
 
 /**
- * This represents the base for a form item which may be added to a form as
- * required.
+ * This represents the single display head that is provided for clients to
+ * use and share with each other when displaying graphics. Since only a single
+ * application may show something at a time, there is {@link UiDisplay} which
+ * provides a constant widget that represents the display used
  *
  * @since 2018/04/04
  */
-public interface UiFormItem
-	extends UiCollectable
+public interface UiDisplayHead
+	extends UiWidget
 {
 	/**
-	 * Returns the form that this item is a member of.
+	 * Returns the client display which is currently being shown.
 	 *
-	 * @return The form this item is in or {@code null} if it is not in one.
+	 * @return The client display being shown or {@code null} if there is none.
 	 * @since 2018/04/04
 	 */
-	public abstract UiForm getForm();
+	public abstract UiDisplay getCurrentDisplay();
 	
 	/**
-	 * This sets the form the item is contained within, this is only called
-	 * by the form item class to specify and indicate which for the item is
-	 * apart of. This should never be called by interface code directly.
+	 * Sets the current display to be shown.
 	 *
-	 * @param __f The form to set the parent of, {@code null} sets no parent.
+	 * @param __d The display to show, {@code null} will clear it.
 	 * @since 2018/04/04
 	 */
-	public abstract void setForm(UiForm __f);
+	public abstract void setCurrentDisplay(UiDisplay __d);
 }
 

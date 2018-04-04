@@ -11,30 +11,29 @@
 package cc.squirreljme.runtime.lcdui.ui;
 
 /**
- * This represents the base for a form item which may be added to a form as
- * required.
+ * This represents a client local display which gets displayables shown on it
+ * accordingly.
  *
  * @since 2018/04/04
  */
-public interface UiFormItem
-	extends UiCollectable
+public interface UiDisplay
+	extends UiWidget
 {
 	/**
-	 * Returns the form that this item is a member of.
+	 * Returns the current displayable being shown on the display.
 	 *
-	 * @return The form this item is in or {@code null} if it is not in one.
+	 * @return The current displayable being shown, returns {@code null} if
+	 * there is none.
 	 * @since 2018/04/04
 	 */
-	public abstract UiForm getForm();
+	public abstract UiDisplayable getCurrent();
 	
 	/**
-	 * This sets the form the item is contained within, this is only called
-	 * by the form item class to specify and indicate which for the item is
-	 * apart of. This should never be called by interface code directly.
+	 * Sets the current displayable to be shown on the display.
 	 *
-	 * @param __f The form to set the parent of, {@code null} sets no parent.
+	 * @param __d The displayable to show, {@code null} will clear it.
 	 * @since 2018/04/04
 	 */
-	public abstract void setForm(UiForm __f);
+	public abstract void setCurrent(UiDisplayable __d);
 }
 
