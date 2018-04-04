@@ -19,7 +19,7 @@ import cc.squirreljme.runtime.lcdui.CollectableType;
  * @since 2018/04/04
  */
 public final class UiTicker
-	implements UiCollectable
+	implements UiCollectable, UiInterface
 {
 	/**
 	 * Adds a listener which is used as a callback when the text of a ticker

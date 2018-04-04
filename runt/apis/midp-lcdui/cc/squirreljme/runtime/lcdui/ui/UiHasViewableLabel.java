@@ -18,6 +18,7 @@ package cc.squirreljme.runtime.lcdui.ui;
  * @since 2018/04/04
  */
 public interface UiHasViewableLabel
+	extends UiInterface
 {
 	/**
 	 * Gets the image to be displayed for this item.

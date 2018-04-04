@@ -19,7 +19,7 @@ package cc.squirreljme.runtime.lcdui.ui;
  * @since 2018/04/04
  */
 public interface UiDisplayHead
-	extends UiWidget
+	extends UiInterface, UiWidget
 {
 	/**
 	 * Returns the client display which is currently being shown.
@@ -36,5 +36,13 @@ public interface UiDisplayHead
 	 * @since 2018/04/04
 	 */
 	public abstract void setCurrentDisplay(UiDisplay __d);
+	
+	/**
+	 * Vibrates the device for the given duration.
+	 *
+	 * @param __ms The number of milliseconds to vibrate for.
+	 * @since 2018/04/04
+	 */
+	public abstract void vibrate(int __ms);
 }
 

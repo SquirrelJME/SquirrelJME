@@ -18,22 +18,10 @@ import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.cldc.task.SystemTask;
 import cc.squirreljme.runtime.lcdui.CollectableType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
-import cc.squirreljme.runtime.lcdui.requests.ActionSetLabels;
 import cc.squirreljme.runtime.lcdui.requests.CollectableCleanup;
 import cc.squirreljme.runtime.lcdui.requests.CollectableCreate;
 import cc.squirreljme.runtime.lcdui.requests.DisplayVibrate;
 import cc.squirreljme.runtime.lcdui.requests.QueryDisplays;
-import cc.squirreljme.runtime.lcdui.requests.TickerGetString;
-import cc.squirreljme.runtime.lcdui.requests.TickerSetString;
-import cc.squirreljme.runtime.lcdui.requests.WidgetAdd;
-import cc.squirreljme.runtime.lcdui.requests.WidgetAlertShow;
-import cc.squirreljme.runtime.lcdui.requests.WidgetClearAndSet;
-import cc.squirreljme.runtime.lcdui.requests.WidgetGetHeight;
-import cc.squirreljme.runtime.lcdui.requests.WidgetGetTicker;
-import cc.squirreljme.runtime.lcdui.requests.WidgetGetWidth;
-import cc.squirreljme.runtime.lcdui.requests.WidgetRepaint;
-import cc.squirreljme.runtime.lcdui.requests.WidgetSetTicker;
-import cc.squirreljme.runtime.lcdui.requests.WidgetSetTitle;
 
 /**
  * This represents a single request to be made by the LCD server, it allows

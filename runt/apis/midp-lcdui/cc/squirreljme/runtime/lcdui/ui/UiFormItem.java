@@ -17,7 +17,7 @@ package cc.squirreljme.runtime.lcdui.ui;
  * @since 2018/04/04
  */
 public interface UiFormItem
-	extends UiCollectable
+	extends UiCollectable, UiInterface
 {
 	/**
 	 * Returns the form that this item is a member of.

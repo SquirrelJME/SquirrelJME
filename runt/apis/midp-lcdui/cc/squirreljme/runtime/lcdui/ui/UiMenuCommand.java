@@ -19,7 +19,7 @@ import cc.squirreljme.runtime.lcdui.CollectableType;
  */
 public final class UiMenuCommand
 	extends UiMenuItem
-	implements UiCommandListener
+	implements UiCommandListener, UiInterface
 {
 	/**
 	 * {@inheritDoc}

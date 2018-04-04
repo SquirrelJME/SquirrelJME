@@ -18,7 +18,7 @@ package cc.squirreljme.runtime.lcdui.ui;
  * @since 2018/04/04
  */
 public interface UiHasSettableLabel
-	extends UiHasViewableLabel
+	extends UiHasViewableLabel, UiInterface
 {
 	/**
 	 * Sets or clears the image to be displayed.

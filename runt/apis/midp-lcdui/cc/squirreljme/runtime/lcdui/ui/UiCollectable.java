@@ -21,6 +21,7 @@ import cc.squirreljme.runtime.lcdui.CollectableType;
  * @since 2018/04/04
  */
 public interface UiCollectable
+	extends UiInterface
 {
 	/**
 	 * Cleans up after this collectable since the client has informed us that

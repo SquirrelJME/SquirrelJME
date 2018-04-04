@@ -16,7 +16,7 @@ package cc.squirreljme.runtime.lcdui.ui;
  * @since 2018/04/04
  */
 public abstract class UiMenuItem
-	implements UiHasViewableLabel
+	implements UiHasViewableLabel, UiInterface
 {
 }
 
