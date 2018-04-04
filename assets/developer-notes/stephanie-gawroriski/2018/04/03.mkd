@@ -1,0 +1,67 @@
+# 2018/04/03
+
+## 21:39
+
+Still not sure what to do for widgets. I think probably the base thing to do
+would be to have base widgets that are then final which then have sub-widgets
+which do the actual native stuff. It just seems a bit nasty. But the best way
+for sub-widgets would if they were interfaces and not classes. Then this would
+mean that `LcdWidget`
+
+## 21:48
+
+So this is still complex and rather confusing because whatever method will end
+up being complex and rather a pain to use. The only thing that would be the
+simplest to do is if I just directly used a canvas and performed all the
+drawing of widgets and such on the local end. Basically instead of doing
+things on the server, all the server would do is send a size to a client and
+such. Then the client can send an updated buffer to the server. There could
+also be event queues and such. Then there would just be a single buffer push
+from the server and such, treating everything as a bunch of pixels. It would
+work on every system although that would completely remove accessibility and
+native navigation when it came to widgets and such. It would completely break
+on that. It also would not match the native feel of the OS which I still
+would rather want. So what I have now is rather nice but the base class when
+more widget types are involved are a complete mess. I really do need native
+support because that simplifies accessibility and integration of SquirrelJME.
+Perhaps I just derive sub-classes for every type of widget and some actions
+will just be duplicated and such. What I can do now though is move off the
+callback code from widgets to their own class, that would make it easier to
+use for the most part.
+
+## 22:04
+
+Yes that can work, sub-widgets that are specialized. Just instead of
+sub-widget I suppose they could be called natives. Perhaps actually
+just local things which are then given handle information as needed.
+So basically there will just be like a `LocalCanvas` which is an
+interface that is initialized and given a handle to act upon locally
+along with `LcdLocalCallback` for any events that happen on it and
+such. Then all of the `LcdWidget` stuff will not be extended. Just
+that it will use a generic type of sorts to show which interface is
+used for the sub-class.
+
+## 22:08
+
+Basically every collectable would be created with a native resource and such
+so that would be derived for everything, including menus perhaps. Menus
+would be complex a bit because the widget would need to build them up. I
+can actually re-implement the server without changing any client code since
+it works equally for the most part.
+
+## 22:12
+
+So since the old code would be rather messy to correct to the changes like
+this, I will just write up completely new code to handle the stuff and
+such.
+
+## 22:15
+
+Will completely change the design so that collectables of certain types have
+collectable resources and such. I have to design it with everything in mind
+to where it would be the least hassle to do things.
+
+## 22:24
+
+Well, I can probably keep it. I just need a kind of adaptable thing like a
+menu viewer and a ticker viewer and such.
