@@ -19,7 +19,7 @@ import cc.squirreljme.runtime.lcdui.CollectableType;
  */
 public final class UiMenu
 	extends UiMenuItem
-	implements UiHasLabel, UiCollectable
+	implements UiHasSettableLabel, UiCollectable
 {
 	/**
 	 * {@inheritDoc}
@@ -46,7 +46,71 @@ public final class UiMenu
 	 * @since 2018/04/04
 	 */
 	@Override
+	public final UiImage getImage()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/04
+	 */
+	@Override
+	public final String getLabel()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/04
+	 */
+	@Override
+	public final String getLongLabel()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/04
+	 */
+	@Override
 	public final int handle()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/04
+	 */
+	@Override
+	public final void setImage(UiImage __i)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/04
+	 */
+	@Override
+	public final void setLabel(String __s)
+		throws NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/04
+	 */
+	@Override
+	public final void setLongLabel(String __s)
 	{
 		throw new todo.TODO();
 	}
