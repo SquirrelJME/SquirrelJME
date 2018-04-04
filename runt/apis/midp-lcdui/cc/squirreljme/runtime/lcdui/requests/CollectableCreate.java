@@ -8,48 +8,47 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.lcdui.server.requests;
+package cc.squirreljme.runtime.lcdui.requests;
 
-import cc.squirreljme.runtime.cldc.system.type.VoidType;
+import cc.squirreljme.runtime.lcdui.CollectableType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
+import cc.squirreljme.runtime.lcdui.server.LcdCollectable;
 import cc.squirreljme.runtime.lcdui.server.LcdRequest;
 import cc.squirreljme.runtime.lcdui.server.LcdServer;
-import cc.squirreljme.runtime.lcdui.server.LcdWidget;
 
 /**
- * Sets the title of a widget.
+ * Creates a new collectable.
  *
  * @since 2018/03/23
  */
-public final class WidgetSetTitle
+public final class CollectableCreate
 	extends LcdRequest
 {
-	/** The widget to set the title for. */
-	protected final LcdWidget widget;
-	
-	/** The title to set. */
-	protected final String title;
+	/** The type of collectable to create. */
+	protected final CollectableType type;
 	
 	/**
 	 * Initializes the request.
 	 *
 	 * @param __sv The calling server.
-	 * @param __w The widget to set the title for.
-	 * @param __t The title to set.
-	 * @throws NullPointerException On null arguments, except for the null
-	 * title.
+	 * @throws IllegalStateException If the created widget is a display.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/23
 	 */
-	public WidgetSetTitle(LcdServer __sv, LcdWidget __w, String __t)
-		throws NullPointerException
+	public CollectableCreate(LcdServer __sv, CollectableType __type)
+		throws IllegalStateException, NullPointerException
 	{
-		super(__sv, LcdFunction.WIDGET_SET_TITLE);
+		super(__sv, LcdFunction.COLLECTABLE_CREATE);
 		
-		if (__w == null)
+		if (__type == null)
 			throw new NullPointerException("NARG");
 		
-		this.widget = __w;
-		this.title = __t;
+		// {@squirreljme.error EB28 Display heads cannot be created using the
+		// create collectable function.}
+		if (__type == CollectableType.DISPLAY_HEAD)
+			throw new IllegalStateException("EB28");
+		
+		this.type = __type;
 	}
 	
 	/**
@@ -59,8 +58,7 @@ public final class WidgetSetTitle
 	@Override
 	protected final Object invoke()
 	{
-		this.widget.setTitle(this.title);
-		return VoidType.INSTANCE;
+		return this.server.createCollectable(this.type).handle();
 	}
 }
 

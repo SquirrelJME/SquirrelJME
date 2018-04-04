@@ -8,47 +8,60 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.lcdui.server.requests;
+package cc.squirreljme.runtime.lcdui.requests;
 
 import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
+import cc.squirreljme.runtime.lcdui.server.LcdAction;
+import cc.squirreljme.runtime.lcdui.server.LcdImage;
 import cc.squirreljme.runtime.lcdui.server.LcdRequest;
 import cc.squirreljme.runtime.lcdui.server.LcdServer;
-import cc.squirreljme.runtime.lcdui.server.LcdTicker;
 
 /**
- * This sets the text for a ticker.
+ * This sets the labels and images for an action.
  *
- * @since 2018/03/26
+ * @since 2018/04/02
  */
-public final class TickerSetString
+public final class ActionSetLabels
 	extends LcdRequest
 {
-	/** The ticker to set the text for. */
-	protected final LcdTicker ticker;
+	/** The action to set. */
+	protected final LcdAction action;
 	
-	/** The text to set. */
-	protected final String text;
+	/** The short label to set. */
+	protected final String shortlabel;
+	
+	/** The long label to set. */
+	protected final String longlabel;
+	
+	/** The image to display. */
+	protected final LcdImage image;
 	
 	/**
 	 * Initializes the request.
 	 *
 	 * @param __sv The calling server.
-	 * @param __tick The ticker to set.
-	 * @param __text The text to set.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/03/26
+	 * @param __a The action to modify.
+	 * @param __sl The short label.
+	 * @param __ll The long label.
+	 * @param __i The image.
+	 * @throws NullPointerException If {@code __sv}, {@code __a}, or
+	 * {@code __sl} are {@code null}.
+	 * @since 2018/04/02
 	 */
-	public TickerSetString(LcdServer __sv, LcdTicker __tick, String __text)
+	public ActionSetLabels(LcdServer __sv, LcdAction __a, String __sl,
+		String __ll, LcdImage __i)
 		throws NullPointerException
 	{
-		super(__sv, LcdFunction.TICKER_SET_STRING);
+		super(__sv, LcdFunction.ACTION_SET_LABELS);
 		
-		if (__tick == null || __text == null)
+		if (__a == null || __sl == null)
 			throw new NullPointerException("NARG");
 		
-		this.ticker = __tick;
-		this.text = __text;
+		this.action = __a;
+		this.shortlabel = __sl;
+		this.longlabel = __ll;
+		this.image = __i;
 	}
 	
 	/**
@@ -58,7 +71,7 @@ public final class TickerSetString
 	@Override
 	protected final Object invoke()
 	{
-		this.ticker.setText(this.text);
+		this.action.setLabels(this.shortlabel, this.longlabel, this.image);
 		return VoidType.INSTANCE;
 	}
 }

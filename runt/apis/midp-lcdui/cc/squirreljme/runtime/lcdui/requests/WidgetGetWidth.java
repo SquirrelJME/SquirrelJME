@@ -8,52 +8,51 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.lcdui.server.requests;
+package cc.squirreljme.runtime.lcdui.requests;
 
-import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
 import cc.squirreljme.runtime.lcdui.server.LcdRequest;
 import cc.squirreljme.runtime.lcdui.server.LcdServer;
-import cc.squirreljme.runtime.lcdui.server.LcdTicker;
+import cc.squirreljme.runtime.lcdui.server.LcdWidget;
 
 /**
- * This sets the text for a ticker.
+ * Gets the width of a widget.
  *
- * @since 2018/03/26
+ * @since 2018/03/23
  */
-public final class TickerGetString
+public final class WidgetGetWidth
 	extends LcdRequest
 {
-	/** The ticker to get the text from. */
-	protected final LcdTicker ticker;
+	/** The widget to get the width of. */
+	protected final LcdWidget widget;
 	
 	/**
 	 * Initializes the request.
 	 *
 	 * @param __sv The calling server.
-	 * @param __tick The ticker to get from.
+	 * @param __w The widget to get the property from.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2018/03/26
+	 * @since 2018/03/23
 	 */
-	public TickerGetString(LcdServer __sv, LcdTicker __tick)
+	public WidgetGetWidth(LcdServer __sv, LcdWidget __w)
 		throws NullPointerException
 	{
-		super(__sv, LcdFunction.TICKER_GET_STRING);
+		super(__sv, LcdFunction.WIDGET_GET_WIDTH);
 		
-		if (__tick == null)
+		if (__w == null)
 			throw new NullPointerException("NARG");
 		
-		this.ticker = __tick;
+		this.widget = __w;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/03/26
+	 * @since 2018/03/23
 	 */
 	@Override
 	protected final Object invoke()
 	{
-		return this.ticker.text();
+		return this.widget.getWidth();
 	}
 }
 

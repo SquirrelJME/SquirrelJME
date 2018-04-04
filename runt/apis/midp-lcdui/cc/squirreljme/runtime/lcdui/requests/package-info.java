@@ -14,5 +14,5 @@
  * @since 2018/03/23
  */
 
-package cc.squirreljme.runtime.lcdui.server.requests;
+package cc.squirreljme.runtime.lcdui.requests;
 
