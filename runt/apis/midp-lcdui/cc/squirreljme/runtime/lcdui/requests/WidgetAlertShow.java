@@ -8,63 +8,48 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.lcdui.server.requests;
+package cc.squirreljme.runtime.lcdui.requests;
 
-import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
 import cc.squirreljme.runtime.lcdui.server.LcdRequest;
 import cc.squirreljme.runtime.lcdui.server.LcdServer;
 import cc.squirreljme.runtime.lcdui.server.LcdWidget;
 
 /**
- * Repaints a widget.
+ * This shows an alert using a modal dialog, it is shown until it gets
+ * dismissed eventually.
  *
  * @since 2018/03/23
  */
-public final class WidgetRepaint
+public final class WidgetAlertShow
 	extends LcdRequest
 {
-	/** The widget to repaint. */
-	protected final LcdWidget widget;
+	/** The widget to show as an alert. */
+	protected final LcdWidget alert;
 	
-	/** The X coordinate. */
-	protected final int x;
-	
-	/** The Y coordinate. */
-	protected final int y;
-	
-	/** The width. */
-	protected final int width;
-	
-	/** The height. */
-	protected final int height;
+	/** The widget to show on exit. */
+	protected final LcdWidget exit;
 	
 	/**
 	 * Initializes the request.
 	 *
 	 * @param __sv The calling server.
-	 * @param __wid The widget to repaint.
-	 * @param __x The X coordinate.
-	 * @param __y The Y coordinate.
-	 * @param __w The width.
-	 * @param __h The height.
+	 * @param __alert The widget to show as an alert.
+	 * @param __exit The widget to show on exit.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/23
 	 */
-	public WidgetRepaint(LcdServer __sv, LcdWidget __wid, int __x, int __y,
-		int __w, int __h)
+	public WidgetAlertShow(LcdServer __sv, LcdWidget __alert,
+		LcdWidget __exit)
 		throws NullPointerException
 	{
-		super(__sv, LcdFunction.WIDGET_REPAINT);
+		super(__sv, LcdFunction.WIDGET_ALERT_SHOW);
 		
-		if (__wid == null)
+		if (__alert == null || __exit == null)
 			throw new NullPointerException("NARG");
 		
-		this.widget = __wid;
-		this.x = __x;
-		this.y = __y;
-		this.width = __w;
-		this.height = __h;
+		this.alert = __alert;
+		this.exit = __exit;
 	}
 	
 	/**
@@ -74,8 +59,7 @@ public final class WidgetRepaint
 	@Override
 	protected final Object invoke()
 	{
-		this.widget.repaint(this.x, this.y, this.width, this.height);
-		return VoidType.INSTANCE;
+		throw new todo.TODO();
 	}
 }
 

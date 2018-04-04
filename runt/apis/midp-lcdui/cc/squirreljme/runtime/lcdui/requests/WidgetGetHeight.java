@@ -8,46 +8,41 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.lcdui.server.requests;
+package cc.squirreljme.runtime.lcdui.requests;
 
-import cc.squirreljme.runtime.cldc.system.type.LocalIntegerArray;
-import cc.squirreljme.runtime.cldc.system.type.RemoteMethod;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
-import cc.squirreljme.runtime.lcdui.server.LcdDisplay;
-import cc.squirreljme.runtime.lcdui.server.LcdDisplays;
 import cc.squirreljme.runtime.lcdui.server.LcdRequest;
 import cc.squirreljme.runtime.lcdui.server.LcdServer;
 import cc.squirreljme.runtime.lcdui.server.LcdWidget;
 
 /**
- * This queries the displays which are currently available along with setting
- * the callback method if it has not been set.
+ * Gets the height of a widget.
  *
  * @since 2018/03/23
  */
-public final class QueryDisplays
+public final class WidgetGetHeight
 	extends LcdRequest
 {
-	/** The remote handler method. */
-	protected final RemoteMethod callback;
+	/** The widget to get the height of. */
+	protected final LcdWidget widget;
 	
 	/**
 	 * Initializes the request.
 	 *
 	 * @param __sv The calling server.
-	 * @param __cb The callback method.
+	 * @param __w The widget to get the property from.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/23
 	 */
-	public QueryDisplays(LcdServer __sv, RemoteMethod __cb)
+	public WidgetGetHeight(LcdServer __sv, LcdWidget __w)
 		throws NullPointerException
 	{
-		super(__sv, LcdFunction.QUERY_DISPLAYS);
+		super(__sv, LcdFunction.WIDGET_GET_HEIGHT);
 		
-		if (__cb == null)
+		if (__w == null)
 			throw new NullPointerException("NARG");
 		
-		this.callback = __cb;
+		this.widget = __w;
 	}
 	
 	/**
@@ -57,16 +52,7 @@ public final class QueryDisplays
 	@Override
 	protected final Object invoke()
 	{
-		// Query the available displays, however for each server there is
-		// always a widget which acts as a virtual display on a real display
-		LcdWidget[] displays = this.server.queryDisplays(this.callback);
-		
-		// Fill result with handles
-		int n = displays.length;
-		int[] rv = new int[n];
-		for (int i = 0; i < n; i++)
-			rv[i] = displays[i].handle();
-		return new LocalIntegerArray(rv);
+		return this.widget.getHeight();
 	}
 }
 

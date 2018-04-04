@@ -8,48 +8,41 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.lcdui.server.requests;
+package cc.squirreljme.runtime.lcdui.requests;
 
-import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
+import cc.squirreljme.runtime.lcdui.server.LcdCollectable;
 import cc.squirreljme.runtime.lcdui.server.LcdRequest;
 import cc.squirreljme.runtime.lcdui.server.LcdServer;
-import cc.squirreljme.runtime.lcdui.server.LcdWidget;
 
 /**
- * Clears all of the widgets which are being displayed on this widget and
- * sets the single widget to be shown.
+ * Cleans up after a collectable.
  *
  * @since 2018/03/23
  */
-public final class WidgetClearAndSet
+public final class CollectableCleanup
 	extends LcdRequest
 {
-	/** The destination widget. */
-	protected final LcdWidget destination;
-	
-	/** The widget to add. */
-	protected final LcdWidget set;
+	/** The widget to cleanup. */
+	protected final LcdCollectable cleanup;
 	
 	/**
 	 * Initializes the request.
 	 *
 	 * @param __sv The calling server.
-	 * @param __dest The destination widget.
-	 * @param __set The widget to set.
-	 * @throws NullPointerException
+	 * @param __cl The collectable to clean up.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/23
 	 */
-	public WidgetClearAndSet(LcdServer __sv, LcdWidget __dest, LcdWidget __set)
+	public CollectableCleanup(LcdServer __sv, LcdCollectable __cl)
 		throws NullPointerException
 	{
-		super(__sv, LcdFunction.WIDGET_CLEAR_AND_SET);
+		super(__sv, LcdFunction.COLLECTABLE_CLEANUP);
 		
-		if (__dest == null || __set == null)
+		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		this.destination = __dest;
-		this.set = __set;
+		this.cleanup = __cl;
 	}
 	
 	/**
@@ -59,16 +52,7 @@ public final class WidgetClearAndSet
 	@Override
 	protected final Object invoke()
 	{
-		LcdWidget destination = this.destination,
-			set = this.set;
-		
-		// Clear widgets first
-		destination.removeAll();
-		
-		// Then add one back
-		destination.add(set);
-		
-		return VoidType.INSTANCE;
+		throw new todo.TODO();
 	}
 }
 

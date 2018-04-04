@@ -8,58 +8,66 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.lcdui.server.requests;
+package cc.squirreljme.runtime.lcdui.requests;
 
 import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
 import cc.squirreljme.runtime.lcdui.server.LcdRequest;
 import cc.squirreljme.runtime.lcdui.server.LcdServer;
-import cc.squirreljme.runtime.lcdui.server.LcdTicker;
 import cc.squirreljme.runtime.lcdui.server.LcdWidget;
 
 /**
- * Sets the ticker of a widget.
+ * Clears all of the widgets which are being displayed on this widget and
+ * sets the single widget to be shown.
  *
- * @since 2018/03/26
+ * @since 2018/03/23
  */
-public final class WidgetSetTicker
+public final class WidgetClearAndSet
 	extends LcdRequest
 {
-	/** The widget to set the ticker for. */
-	protected final LcdWidget widget;
+	/** The destination widget. */
+	protected final LcdWidget destination;
 	
-	/** The ticker to set. */
-	protected final LcdTicker ticker;
+	/** The widget to add. */
+	protected final LcdWidget set;
 	
 	/**
 	 * Initializes the request.
 	 *
 	 * @param __sv The calling server.
-	 * @param __w The widget to set the ticker for.
-	 * @param __t The ticker to set.
-	 * @throws NullPointerException On null arguments, except for {@code __t}.
-	 * @since 2018/03/26
+	 * @param __dest The destination widget.
+	 * @param __set The widget to set.
+	 * @throws NullPointerException
+	 * @since 2018/03/23
 	 */
-	public WidgetSetTicker(LcdServer __sv, LcdWidget __w, LcdTicker __t)
+	public WidgetClearAndSet(LcdServer __sv, LcdWidget __dest, LcdWidget __set)
 		throws NullPointerException
 	{
-		super(__sv, LcdFunction.WIDGET_SET_TITLE);
+		super(__sv, LcdFunction.WIDGET_CLEAR_AND_SET);
 		
-		if (__w == null)
+		if (__dest == null || __set == null)
 			throw new NullPointerException("NARG");
 		
-		this.widget = __w;
-		this.ticker = __t;
+		this.destination = __dest;
+		this.set = __set;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/03/26
+	 * @since 2018/03/23
 	 */
 	@Override
 	protected final Object invoke()
 	{
-		this.widget.setTicker(this.ticker);
+		LcdWidget destination = this.destination,
+			set = this.set;
+		
+		// Clear widgets first
+		destination.removeAll();
+		
+		// Then add one back
+		destination.add(set);
+		
 		return VoidType.INSTANCE;
 	}
 }

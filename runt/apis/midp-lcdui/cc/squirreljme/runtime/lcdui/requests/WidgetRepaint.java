@@ -8,41 +8,63 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.lcdui.server.requests;
+package cc.squirreljme.runtime.lcdui.requests;
 
+import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
 import cc.squirreljme.runtime.lcdui.server.LcdRequest;
 import cc.squirreljme.runtime.lcdui.server.LcdServer;
 import cc.squirreljme.runtime.lcdui.server.LcdWidget;
 
 /**
- * Gets the width of a widget.
+ * Repaints a widget.
  *
  * @since 2018/03/23
  */
-public final class WidgetGetWidth
+public final class WidgetRepaint
 	extends LcdRequest
 {
-	/** The widget to get the width of. */
+	/** The widget to repaint. */
 	protected final LcdWidget widget;
+	
+	/** The X coordinate. */
+	protected final int x;
+	
+	/** The Y coordinate. */
+	protected final int y;
+	
+	/** The width. */
+	protected final int width;
+	
+	/** The height. */
+	protected final int height;
 	
 	/**
 	 * Initializes the request.
 	 *
 	 * @param __sv The calling server.
-	 * @param __w The widget to get the property from.
+	 * @param __wid The widget to repaint.
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __w The width.
+	 * @param __h The height.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/23
 	 */
-	public WidgetGetWidth(LcdServer __sv, LcdWidget __w)
+	public WidgetRepaint(LcdServer __sv, LcdWidget __wid, int __x, int __y,
+		int __w, int __h)
 		throws NullPointerException
 	{
-		super(__sv, LcdFunction.WIDGET_GET_WIDTH);
+		super(__sv, LcdFunction.WIDGET_REPAINT);
 		
-		if (__w == null)
+		if (__wid == null)
 			throw new NullPointerException("NARG");
 		
-		this.widget = __w;
+		this.widget = __wid;
+		this.x = __x;
+		this.y = __y;
+		this.width = __w;
+		this.height = __h;
 	}
 	
 	/**
@@ -52,7 +74,8 @@ public final class WidgetGetWidth
 	@Override
 	protected final Object invoke()
 	{
-		return this.widget.getWidth();
+		this.widget.repaint(this.x, this.y, this.width, this.height);
+		return VoidType.INSTANCE;
 	}
 }
 

@@ -8,43 +8,47 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.lcdui.server.requests;
+package cc.squirreljme.runtime.lcdui.requests;
 
 import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
 import cc.squirreljme.runtime.lcdui.server.LcdRequest;
 import cc.squirreljme.runtime.lcdui.server.LcdServer;
 import cc.squirreljme.runtime.lcdui.server.LcdTicker;
-import cc.squirreljme.runtime.lcdui.server.LcdWidget;
 
 /**
- * Gets the ticker from a widget.
+ * This sets the text for a ticker.
  *
  * @since 2018/03/26
  */
-public final class WidgetGetTicker
+public final class TickerSetString
 	extends LcdRequest
 {
-	/** The widget to get the ticker from. */
-	protected final LcdWidget widget;
+	/** The ticker to set the text for. */
+	protected final LcdTicker ticker;
+	
+	/** The text to set. */
+	protected final String text;
 	
 	/**
 	 * Initializes the request.
 	 *
 	 * @param __sv The calling server.
-	 * @param __w The widget to get the ticker from.
+	 * @param __tick The ticker to set.
+	 * @param __text The text to set.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/26
 	 */
-	public WidgetGetTicker(LcdServer __sv, LcdWidget __w)
+	public TickerSetString(LcdServer __sv, LcdTicker __tick, String __text)
 		throws NullPointerException
 	{
-		super(__sv, LcdFunction.WIDGET_SET_TITLE);
+		super(__sv, LcdFunction.TICKER_SET_STRING);
 		
-		if (__w == null)
+		if (__tick == null || __text == null)
 			throw new NullPointerException("NARG");
 		
-		this.widget = __w;
+		this.ticker = __tick;
+		this.text = __text;
 	}
 	
 	/**
@@ -54,10 +58,8 @@ public final class WidgetGetTicker
 	@Override
 	protected final Object invoke()
 	{
-		LcdTicker rv = this.widget.getTicker();
-		if (rv == null)
-			return Integer.MIN_VALUE;
-		return rv.handle();
+		this.ticker.setText(this.text);
+		return VoidType.INSTANCE;
 	}
 }
 

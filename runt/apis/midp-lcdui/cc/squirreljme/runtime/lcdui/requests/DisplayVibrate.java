@@ -8,41 +8,46 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.lcdui.server.requests;
+package cc.squirreljme.runtime.lcdui.requests;
 
 import cc.squirreljme.runtime.lcdui.LcdFunction;
-import cc.squirreljme.runtime.lcdui.server.LcdCollectable;
 import cc.squirreljme.runtime.lcdui.server.LcdRequest;
 import cc.squirreljme.runtime.lcdui.server.LcdServer;
+import cc.squirreljme.runtime.lcdui.server.LcdWidget;
 
 /**
- * Cleans up after a collectable.
+ * Vibrates the display.
  *
  * @since 2018/03/23
  */
-public final class CollectableCleanup
+public final class DisplayVibrate
 	extends LcdRequest
 {
-	/** The widget to cleanup. */
-	protected final LcdCollectable cleanup;
+	/** The widget to vibrate. */
+	protected final LcdWidget widget;
+	
+	/** The number of milliseconds to vibrate for. */
+	protected final int milliseconds;
 	
 	/**
 	 * Initializes the request.
 	 *
 	 * @param __sv The calling server.
-	 * @param __cl The collectable to clean up.
+	 * @param __w The widget to vibrate.
+	 * @param __ms The number of milliseconds to vibrate for.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/23
 	 */
-	public CollectableCleanup(LcdServer __sv, LcdCollectable __cl)
+	public DisplayVibrate(LcdServer __sv, LcdWidget __w, int __ms)
 		throws NullPointerException
 	{
-		super(__sv, LcdFunction.COLLECTABLE_CLEANUP);
+		super(__sv, LcdFunction.DISPLAY_VIBRATE);
 		
-		if (__cl == null)
+		if (__w == null)
 			throw new NullPointerException("NARG");
 		
-		this.cleanup = __cl;
+		this.widget = __w;
+		this.milliseconds = __ms;
 	}
 	
 	/**

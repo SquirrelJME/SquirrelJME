@@ -8,47 +8,46 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.lcdui.server.requests;
+package cc.squirreljme.runtime.lcdui.requests;
 
-import cc.squirreljme.runtime.lcdui.CollectableType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
-import cc.squirreljme.runtime.lcdui.server.LcdCollectable;
 import cc.squirreljme.runtime.lcdui.server.LcdRequest;
 import cc.squirreljme.runtime.lcdui.server.LcdServer;
+import cc.squirreljme.runtime.lcdui.server.LcdWidget;
 
 /**
- * Creates a new collectable.
+ * Adds a widget to a widget.
  *
  * @since 2018/03/23
  */
-public final class CollectableCreate
+public final class WidgetAdd
 	extends LcdRequest
 {
-	/** The type of collectable to create. */
-	protected final CollectableType type;
+	/** The destination widget. */
+	protected final LcdWidget destination;
+	
+	/** The widget to add. */
+	protected final LcdWidget add;
 	
 	/**
 	 * Initializes the request.
 	 *
 	 * @param __sv The calling server.
-	 * @throws IllegalStateException If the created widget is a display.
-	 * @throws NullPointerException On null arguments.
+	 * @param __dest The destination widget.
+	 * @param __add The widget to add.
+	 * @throws NullPointerException
 	 * @since 2018/03/23
 	 */
-	public CollectableCreate(LcdServer __sv, CollectableType __type)
-		throws IllegalStateException, NullPointerException
+	public WidgetAdd(LcdServer __sv, LcdWidget __dest, LcdWidget __add)
+		throws NullPointerException
 	{
-		super(__sv, LcdFunction.COLLECTABLE_CREATE);
+		super(__sv, LcdFunction.WIDGET_ADD);
 		
-		if (__type == null)
+		if (__dest == null || __add == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB28 Display heads cannot be created using the
-		// create collectable function.}
-		if (__type == CollectableType.DISPLAY_HEAD)
-			throw new IllegalStateException("EB28");
-		
-		this.type = __type;
+		this.destination = __dest;
+		this.add = __add;
 	}
 	
 	/**
@@ -58,7 +57,7 @@ public final class CollectableCreate
 	@Override
 	protected final Object invoke()
 	{
-		return this.server.createCollectable(this.type).handle();
+		throw new todo.TODO();
 	}
 }
 

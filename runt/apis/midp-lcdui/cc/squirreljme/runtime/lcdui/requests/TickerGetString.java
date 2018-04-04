@@ -8,56 +8,52 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.lcdui.server.requests;
+package cc.squirreljme.runtime.lcdui.requests;
 
+import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
 import cc.squirreljme.runtime.lcdui.server.LcdRequest;
 import cc.squirreljme.runtime.lcdui.server.LcdServer;
-import cc.squirreljme.runtime.lcdui.server.LcdWidget;
+import cc.squirreljme.runtime.lcdui.server.LcdTicker;
 
 /**
- * Vibrates the display.
+ * This sets the text for a ticker.
  *
- * @since 2018/03/23
+ * @since 2018/03/26
  */
-public final class DisplayVibrate
+public final class TickerGetString
 	extends LcdRequest
 {
-	/** The widget to vibrate. */
-	protected final LcdWidget widget;
-	
-	/** The number of milliseconds to vibrate for. */
-	protected final int milliseconds;
+	/** The ticker to get the text from. */
+	protected final LcdTicker ticker;
 	
 	/**
 	 * Initializes the request.
 	 *
 	 * @param __sv The calling server.
-	 * @param __w The widget to vibrate.
-	 * @param __ms The number of milliseconds to vibrate for.
+	 * @param __tick The ticker to get from.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2018/03/23
+	 * @since 2018/03/26
 	 */
-	public DisplayVibrate(LcdServer __sv, LcdWidget __w, int __ms)
+	public TickerGetString(LcdServer __sv, LcdTicker __tick)
 		throws NullPointerException
 	{
-		super(__sv, LcdFunction.DISPLAY_VIBRATE);
+		super(__sv, LcdFunction.TICKER_GET_STRING);
 		
-		if (__w == null)
+		if (__tick == null)
 			throw new NullPointerException("NARG");
 		
-		this.widget = __w;
-		this.milliseconds = __ms;
+		this.ticker = __tick;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/03/23
+	 * @since 2018/03/26
 	 */
 	@Override
 	protected final Object invoke()
 	{
-		throw new todo.TODO();
+		return this.ticker.text();
 	}
 }
 

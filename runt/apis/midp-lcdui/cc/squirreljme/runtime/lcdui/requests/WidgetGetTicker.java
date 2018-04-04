@@ -8,58 +8,56 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.lcdui.server.requests;
+package cc.squirreljme.runtime.lcdui.requests;
 
+import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
 import cc.squirreljme.runtime.lcdui.server.LcdRequest;
 import cc.squirreljme.runtime.lcdui.server.LcdServer;
+import cc.squirreljme.runtime.lcdui.server.LcdTicker;
 import cc.squirreljme.runtime.lcdui.server.LcdWidget;
 
 /**
- * This shows an alert using a modal dialog, it is shown until it gets
- * dismissed eventually.
+ * Gets the ticker from a widget.
  *
- * @since 2018/03/23
+ * @since 2018/03/26
  */
-public final class WidgetAlertShow
+public final class WidgetGetTicker
 	extends LcdRequest
 {
-	/** The widget to show as an alert. */
-	protected final LcdWidget alert;
-	
-	/** The widget to show on exit. */
-	protected final LcdWidget exit;
+	/** The widget to get the ticker from. */
+	protected final LcdWidget widget;
 	
 	/**
 	 * Initializes the request.
 	 *
 	 * @param __sv The calling server.
-	 * @param __alert The widget to show as an alert.
-	 * @param __exit The widget to show on exit.
+	 * @param __w The widget to get the ticker from.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2018/03/23
+	 * @since 2018/03/26
 	 */
-	public WidgetAlertShow(LcdServer __sv, LcdWidget __alert,
-		LcdWidget __exit)
+	public WidgetGetTicker(LcdServer __sv, LcdWidget __w)
 		throws NullPointerException
 	{
-		super(__sv, LcdFunction.WIDGET_ALERT_SHOW);
+		super(__sv, LcdFunction.WIDGET_SET_TITLE);
 		
-		if (__alert == null || __exit == null)
+		if (__w == null)
 			throw new NullPointerException("NARG");
 		
-		this.alert = __alert;
-		this.exit = __exit;
+		this.widget = __w;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/03/23
+	 * @since 2018/03/26
 	 */
 	@Override
 	protected final Object invoke()
 	{
-		throw new todo.TODO();
+		LcdTicker rv = this.widget.getTicker();
+		if (rv == null)
+			return Integer.MIN_VALUE;
+		return rv.handle();
 	}
 }
 
