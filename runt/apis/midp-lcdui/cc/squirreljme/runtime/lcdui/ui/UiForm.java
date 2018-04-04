@@ -20,31 +20,11 @@ public interface UiForm
 	extends UiDisplayable, UiTabbedDisplayable
 {
 	/**
-	 * Adds the specified item to the form.
+	 * Returns the items that represent this form.
 	 *
-	 * @param __i The item to add.
-	 * @throws NullPointerException On null arguments.
+	 * @return The items representing the form.
 	 * @since 2018/04/04
 	 */
-	public abstract void addItem(UiFormItem __i)
-		throws NullPointerException;
-	
-	/**
-	 * Returns all of the items which are added to this form.
-	 *
-	 * @return All of the items that were added to this form.
-	 * @since 2018/04/04
-	 */
-	public abstract UiFormItem[] getItems();
-	
-	/**
-	 * Removes the specified item from the form.
-	 *
-	 * @param __i The item to remove.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/04/04
-	 */
-	public abstract void removeItem(UiFormItem __i)
-		throws NullPointerException;
+	public abstract UiFormItems getFormItems();
 }
 
