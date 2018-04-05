@@ -29,6 +29,14 @@ public interface UiDisplay
 	public abstract UiDisplayable getCurrent();
 	
 	/**
+	 * Gets the display head this is associated with.
+	 *
+	 * @return The display head this is associated with.
+	 * @since 2018/04/05
+	 */
+	public abstract UiDisplayHead getDisplayHead();
+	
+	/**
 	 * Sets the current displayable to be shown on the display.
 	 *
 	 * @param __d The displayable to show, {@code null} will clear it.

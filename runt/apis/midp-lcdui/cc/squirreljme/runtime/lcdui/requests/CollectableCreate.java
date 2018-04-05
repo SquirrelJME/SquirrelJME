@@ -12,9 +12,9 @@ package cc.squirreljme.runtime.lcdui.requests;
 
 import cc.squirreljme.runtime.lcdui.CollectableType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
-import cc.squirreljme.runtime.lcdui.server.LcdCollectable;
 import cc.squirreljme.runtime.lcdui.server.LcdRequest;
 import cc.squirreljme.runtime.lcdui.server.LcdServer;
+import cc.squirreljme.runtime.lcdui.ui.UiCollectable;
 
 /**
  * Creates a new collectable.
@@ -42,11 +42,6 @@ public final class CollectableCreate
 		
 		if (__type == null)
 			throw new NullPointerException("NARG");
-		
-		// {@squirreljme.error EB28 Display heads cannot be created using the
-		// create collectable function.}
-		if (__type == CollectableType.DISPLAY_HEAD)
-			throw new IllegalStateException("EB28");
 		
 		this.type = __type;
 	}

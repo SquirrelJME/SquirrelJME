@@ -153,26 +153,10 @@ public abstract class LcdRequest
 		
 		switch (__func)
 		{
-			case ACTION_SET_LABELS:
-				return new ActionSetLabels(__sv,
-					__sv.<LcdAction>get(LcdAction.class, (Integer)__args[0]),
-					(String)__args[1],
-					(String)__args[2],
-					__sv.<LcdImage>get(LcdImage.class, (Integer)__args[3]));
-			
 			case DISPLAY_VIBRATE:
 				return new DisplayVibrate(__sv,
-					__sv.getWidget((Integer)__args[0]),
+					__sv.<UiDisplay>getWidget(UiDisplay.class, (Integer)__args[0]),
 					(Integer)__args[1]);
-			
-			case WIDGET_ADD:
-				return new WidgetAdd(__sv, __sv.getWidget((Integer)__args[0]),
-					__sv.getWidget((Integer)__args[1]));
-			
-			case WIDGET_ALERT_SHOW:
-				return new WidgetAlertShow(__sv,
-					__sv.getWidget((Integer)__args[0]),
-					__sv.getWidget((Integer)__args[1]));
 			
 			case COLLECTABLE_CREATE:
 				return new CollectableCreate(__sv, 
@@ -186,54 +170,42 @@ public abstract class LcdRequest
 			case QUERY_DISPLAYS:
 				return new QueryDisplays(__sv, (RemoteMethod)__args[0]);
 				
-			case TICKER_GET_STRING:
-				return new TickerGetString(__sv,
-					__sv.<LcdTicker>get(LcdTicker.class, (Integer)__args[0]));
-				
-			case TICKER_SET_STRING:
-				return new TickerSetString(__sv,
-					__sv.<LcdTicker>get(LcdTicker.class, (Integer)__args[0]),
-					(String)__args[1]);
-			
-			case WIDGET_CLEAR_AND_SET:
-				return new WidgetClearAndSet(__sv,
-					__sv.getWidget((Integer)__args[0]),
-					__sv.getWidget((Integer)__args[1]));
-			
-			case WIDGET_GET_HEIGHT:
-				return new WidgetGetHeight(__sv,
-					__sv.getWidget((Integer)__args[0]));
-			
-			case WIDGET_GET_TICKER:
-				return new WidgetGetTicker(__sv,
-					__sv.getWidget((Integer)__args[0]));
-			
-			case WIDGET_GET_WIDTH:
-				return new WidgetGetWidth(__sv,
-					__sv.getWidget((Integer)__args[0]));
-				
-			case WIDGET_REPAINT:
-				return new WidgetRepaint(__sv,
-					__sv.getWidget((Integer)__args[0]),
-					(Integer)__args[1], (Integer)__args[2],
-					(Integer)__args[3], (Integer)__args[4]);
-			
-			case WIDGET_SET_TICKER:
-				return new WidgetSetTicker(__sv,
-					__sv.getWidget((Integer)__args[0]),
-					__sv.<LcdTicker>get(LcdTicker.class, (Integer)__args[1]));
-			
-			case WIDGET_SET_TITLE:
-				return new WidgetSetTitle(__sv,
-					__sv.getWidget((Integer)__args[0]),
-					(String)__args[1]);
-				
 				// {@squirreljme.error EB20 Unimplemented function.
 				// (The function)}
 			default:
 				throw new RuntimeException(String.format("EB20 %s",
 					__func));
 		}
+	}
+	
+	/**
+	 * Returns the UI element for the given type.
+	 *
+	 * @param <U> The class type to get.
+	 * @param __sv The server to get from.
+	 * @param __dx The index of the arguments to get.
+	 * @param __cl The class type to get.
+	 * @param __args The inoput arguments.
+	 * @return The UI of the given type.
+	 * @since 2018/04/05
+	 */
+	private static final <U extends UiInterface> __ui(LcdServer __sv,
+		int __dx, Class<U> __cl, Object... __args)
+	{
+		return __sv.<U>get(__cl, __int(__dx, __args));
+	}
+	
+	/**
+	 * Returns the integer argument.
+	 *
+	 * @param __dx The index.
+	 * @param __args The input arguments.
+	 * @return The integer value.
+	 * @since 2018/04/05
+	 */
+	private static final int __int(int __dx, Object... __args)
+	{
+		return (Integer)__args[__dx];
 	}
 }
 

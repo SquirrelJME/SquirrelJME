@@ -11,9 +11,9 @@
 package cc.squirreljme.runtime.lcdui.requests;
 
 import cc.squirreljme.runtime.lcdui.LcdFunction;
-import cc.squirreljme.runtime.lcdui.server.LcdCollectable;
 import cc.squirreljme.runtime.lcdui.server.LcdRequest;
 import cc.squirreljme.runtime.lcdui.server.LcdServer;
+import cc.squirreljme.runtime.lcdui.ui.UiCollectable;
 
 /**
  * Cleans up after a collectable.
@@ -23,8 +23,8 @@ import cc.squirreljme.runtime.lcdui.server.LcdServer;
 public final class CollectableCleanup
 	extends LcdRequest
 {
-	/** The widget to cleanup. */
-	protected final LcdCollectable cleanup;
+	/** The collectable to cleanup. */
+	protected final UiCollectable cleanup;
 	
 	/**
 	 * Initializes the request.
@@ -34,7 +34,7 @@ public final class CollectableCleanup
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/23
 	 */
-	public CollectableCleanup(LcdServer __sv, LcdCollectable __cl)
+	public CollectableCleanup(LcdServer __sv, UiCollectable __cl)
 		throws NullPointerException
 	{
 		super(__sv, LcdFunction.COLLECTABLE_CLEANUP);
@@ -52,7 +52,7 @@ public final class CollectableCleanup
 	@Override
 	protected final Object invoke()
 	{
-		throw new todo.TODO();
+		this.cleanup.cleanup();
 	}
 }
 
