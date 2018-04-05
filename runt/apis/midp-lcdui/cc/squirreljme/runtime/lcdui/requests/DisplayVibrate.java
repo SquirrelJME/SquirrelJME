@@ -10,10 +10,11 @@
 
 package cc.squirreljme.runtime.lcdui.requests;
 
+import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
 import cc.squirreljme.runtime.lcdui.server.LcdRequest;
 import cc.squirreljme.runtime.lcdui.server.LcdServer;
-import cc.squirreljme.runtime.lcdui.server.LcdWidget;
+import cc.squirreljme.runtime.lcdui.ui.UiDisplay;
 
 /**
  * Vibrates the display.
@@ -23,8 +24,8 @@ import cc.squirreljme.runtime.lcdui.server.LcdWidget;
 public final class DisplayVibrate
 	extends LcdRequest
 {
-	/** The widget to vibrate. */
-	protected final LcdWidget widget;
+	/** The display to vibrate. */
+	protected final UiDisplay display;
 	
 	/** The number of milliseconds to vibrate for. */
 	protected final int milliseconds;
@@ -33,12 +34,12 @@ public final class DisplayVibrate
 	 * Initializes the request.
 	 *
 	 * @param __sv The calling server.
-	 * @param __w The widget to vibrate.
+	 * @param __d The display to vibrate.
 	 * @param __ms The number of milliseconds to vibrate for.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/23
 	 */
-	public DisplayVibrate(LcdServer __sv, LcdWidget __w, int __ms)
+	public DisplayVibrate(LcdServer __sv, UiDisplay __w, int __ms)
 		throws NullPointerException
 	{
 		super(__sv, LcdFunction.DISPLAY_VIBRATE);
@@ -46,7 +47,7 @@ public final class DisplayVibrate
 		if (__w == null)
 			throw new NullPointerException("NARG");
 		
-		this.widget = __w;
+		this.display = __w;
 		this.milliseconds = __ms;
 	}
 	
@@ -57,7 +58,8 @@ public final class DisplayVibrate
 	@Override
 	protected final Object invoke()
 	{
-		throw new todo.TODO();
+		this.display.getDisplayHead().vibrate(this.milliseconds);
+		return VoidType.INSTANCE;
 	}
 }
 
