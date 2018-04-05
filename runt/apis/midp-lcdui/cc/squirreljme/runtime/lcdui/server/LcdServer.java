@@ -21,8 +21,12 @@ import cc.squirreljme.runtime.lcdui.CollectableType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
 import cc.squirreljme.runtime.lcdui.LcdFunctionInterrupted;
 import cc.squirreljme.runtime.lcdui.ui.UiCollectable;
+import cc.squirreljme.runtime.lcdui.ui.UiCommand;
 import cc.squirreljme.runtime.lcdui.ui.UiDisplay;
 import cc.squirreljme.runtime.lcdui.ui.UiDisplayHead;
+import cc.squirreljme.runtime.lcdui.ui.UiInterface;
+import cc.squirreljme.runtime.lcdui.ui.UiMenu;
+import cc.squirreljme.runtime.lcdui.ui.UiTicker;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,7 +50,7 @@ public final class LcdServer
 		new HashMap<>();
 	
 	/** Local widgets which wrap displays. */
-	private final Map<LcdDisplay, LcdWidget> _localwidgets =
+	private final Map<UiDisplayHead, UiDisplay> _localdisplays =
 		new HashMap<>();
 	
 	/** The next handle to use. */
@@ -75,9 +79,12 @@ public final class LcdServer
 	 *
 	 * @param __type The type of collectable to create.
 	 * @return The newly created collectable.
-	 * @throws IllegalArgumentException
+	 * @throws IllegalArgumentException If the given collectable does not
+	 * permitted to be created.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/04/05
 	 */
-	public final LcdCollectable createCollectable(CollectableType __type)
+	public final UiCollectable createCollectable(CollectableType __type)
 		throws IllegalArgumentException, NullPointerException
 	{
 		if (__type == null)
@@ -90,18 +97,14 @@ public final class LcdServer
 		// Determine the handle to use
 		int handle = ++this._nexthandle;
 		
-		// Creating a command?
-		LcdCollectable rv;
+		// Some collectables are pre-handled
+		UiCollectable rv;
 		if (__type == CollectableType.COMMAND)
-			rv = new LcdCommand(handle);
-		
-		// Menu?
+			rv = new UiCommand(handle);
 		else if (__type == CollectableType.MENU)
-			rv = new LcdMenu(handle);
-		
-		// Creating image?
-		else if (__type == CollectableType.IMAGE)
-			throw new todo.TODO();
+			rv = new UiCommand(handle);
+		else if (__type == CollectableType.TICKER)
+			rv = new UiTicker(handle);
 		
 		// Implementation specific
 		else
@@ -124,74 +127,25 @@ public final class LcdServer
 	}
 	
 	/**
-	 * Obtains the collectable by the specified index and class type.
+	 * Obtains the collectable by the given type and handle.
 	 *
-	 * @param <W> The class type to lookup.
-	 * @param __cl The class type to lookup.
-	 * @param __dx The handle of the collectable.
-	 * @return The collectable of the specified handle and class type or
-	 * {@code null} if the collectable does not exist or is not of the
-	 * specified class type.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/03/23
+	 * @param <U> The class type to get.
+	 * @param __cl The class type tp get.
+	 * @param __handle The handle of the collectable to get.
+	 * @return The collectable for the given handle or {@code null} if it does
+	 * not exist or is of the wrong class.
+	 * @since 2018/04/05
 	 */
-	public final <W extends LcdCollectable> W get(Class<W> __cl,
-		int __dx)
+	public final <U extends UiInterface> U get(Class<U> __cl, int __handle)
 		throws NullPointerException
 	{
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		LcdCollectable rv = this._collects.get(__dx);
-		if (!__cl.isInstance(rv))
+		UiInterface rv = this._collects.get(__handle);
+		if (rv == null || !__cl.isInstance(rv))
 			return null;
 		return __cl.cast(rv);
-	}
-	
-	/**
-	 * Obtains a collectable by an ID using a generic class type.
-	 *
-	 * @param __dx The handle of the collectable.
-	 * @return The collectable of the specified handle or {@code null} if it
-	 * does not exist.
-	 * @since 2018/03/26
-	 */
-	public final LcdCollectable getCollectable(int __dx)
-	{
-		return this.<LcdCollectable>get(LcdCollectable.class, __dx);
-	}
-	
-	/**
-	 * Obtains a widget by an ID using a generic class type.
-	 *
-	 * @param __dx The handle of the widget.
-	 * @return The widget of the specified handle or {@code null} if it does
-	 * not exist.
-	 * @since 2018/03/23
-	 */
-	public final LcdWidget getWidget(int __dx)
-	{
-		return this.<LcdWidget>get(LcdWidget.class, __dx);
-	}
-	
-	/**
-	 * Obtains a widget by an ID using the specified class type.
-	 *
-	 * @param <W> The type of widget to get.
-	 * @param __cl The type of widget to get.
-	 * @param __dx The handle of the widget.
-	 * @return The widget of the specified handle or {@code null} if it does
-	 * not exist or is the wrong type.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/03/26
-	 */
-	public final <W extends LcdWidget> W getWidget(Class<W> __cl, int __dx)
-		throws NullPointerException
-	{
-		if (__cl == null)
-			throw new NullPointerException("NARG");
-		
-		return this.<W>get(__cl, __dx);
 	}
 	
 	/**
@@ -203,37 +157,34 @@ public final class LcdServer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/24
 	 */
-	public final LcdWidget[] queryDisplays(RemoteMethod __cb)
+	public final UiDisplay[] queryDisplays(RemoteMethod __cb)
 		throws NullPointerException
 	{
 		if (__cb == null)
 			throw new NullPointerException("NARG");
 		
 		LcdDisplays displays = this.displays;
-		LcdDisplay[] queried = displays.queryDisplays();
+		UiDisplayHead[] queried = displays.queryDisplays();
 		
 		// The displays returned will be remapped accordingly
 		int n = queried.length;
-		LcdWidget[] rv = new LcdWidget[n];
+		UiDisplay[] rv = new UiDisplay[n];
 		
 		// Map local widgets if they are missing
-		Map<Integer, LcdCollectable> widgets = this._collects;
-		Map<LcdDisplay, LcdWidget> localwidgets = this._localwidgets;
+		Map<Integer, UiCollectable> widgets = this._collects;
+		Map<UiDisplayHead, UiDisplay> localdisplays = this._localdisplays;
 		for (int i = 0; i < n; i++)
 		{
-			LcdDisplay display = queried[i];
-			LcdWidget local = localwidgets.get(display);
+			UiDisplayHead display = queried[i];
+			UiDisplay local = localdisplays.get(display);
 			if (local == null)
 			{
-				int handle = display.handle();
-				localwidgets.put(display, (local = (LcdWidget)(
-					displays.__internalCreateCollectable(handle,
-					CollectableType.DISPLAY_HEAD))));
+				// Displays could have a random handle and local display
+				// handles might clash with real ones.
+				int handle = ++this._nexthandle;
+				localdisplays.put(display, (local = displays.wrapDisplay(
+					handle, display)));
 				widgets.put(handle, local);
-				
-				// Link local display to real display
-				local._localdisplay = display;
-				local._localcallback = __cb;
 			}
 			
 			rv[i] = local;

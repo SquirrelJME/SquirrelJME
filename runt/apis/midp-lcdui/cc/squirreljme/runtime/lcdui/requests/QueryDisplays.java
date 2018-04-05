@@ -13,11 +13,9 @@ package cc.squirreljme.runtime.lcdui.requests;
 import cc.squirreljme.runtime.cldc.system.type.LocalIntegerArray;
 import cc.squirreljme.runtime.cldc.system.type.RemoteMethod;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
-import cc.squirreljme.runtime.lcdui.server.LcdDisplay;
-import cc.squirreljme.runtime.lcdui.server.LcdDisplays;
 import cc.squirreljme.runtime.lcdui.server.LcdRequest;
 import cc.squirreljme.runtime.lcdui.server.LcdServer;
-import cc.squirreljme.runtime.lcdui.server.LcdWidget;
+import cc.squirreljme.runtime.lcdui.ui.UiDisplay;
 
 /**
  * This queries the displays which are currently available along with setting
@@ -59,7 +57,7 @@ public final class QueryDisplays
 	{
 		// Query the available displays, however for each server there is
 		// always a widget which acts as a virtual display on a real display
-		LcdWidget[] displays = this.server.queryDisplays(this.callback);
+		UiDisplay[] displays = this.server.queryDisplays(this.callback);
 		
 		// Fill result with handles
 		int n = displays.length;
