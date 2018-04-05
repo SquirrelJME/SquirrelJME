@@ -21,6 +21,20 @@ public final class UiMenu
 	extends UiMenuItem
 	implements UiCollectable, UiHasSettableLabel, UiInterface
 {
+	/** The handle for the menu. */
+	protected final int handle;
+	
+	/**
+	 * Initializes the menu.
+	 *
+	 * @param __handle The handle for the menu.
+	 * @since 2018/04/05
+	 */
+	public UiMenu(int __handle)
+	{
+		this.handle = __handle;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/04/04

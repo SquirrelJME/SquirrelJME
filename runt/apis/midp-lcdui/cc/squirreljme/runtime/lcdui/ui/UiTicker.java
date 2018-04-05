@@ -21,6 +21,20 @@ import cc.squirreljme.runtime.lcdui.CollectableType;
 public final class UiTicker
 	implements UiCollectable, UiInterface
 {
+	/** The handle for the ticker. */
+	protected final int handle;
+	
+	/**
+	 * Initializes the ticker.
+	 *
+	 * @param __handle The handle for the ticker.
+	 * @since 2018/04/05
+	 */
+	public UiTicker(int __handle)
+	{
+		this.handle = __handle;
+	}
+	
 	/**
 	 * Adds a listener which is used as a callback when the text of a ticker
 	 * has been changed.

@@ -95,6 +95,18 @@ public abstract class LcdDisplays
 		throws InterruptedException, NullPointerException;
 	
 	/**
+	 * Wraps the display head with a local display for use by clients.
+	 *
+	 * @param __handle The handle of the local display for matching.
+	 * @param __head The display head to be wrapped.
+	 * @return The wrapped local display.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/04/05
+	 */
+	public abstract UiDisplay wrapDisplay(int __handle, UiDisplayHead __head)
+		throws NullPointerException;
+	
+	/**
 	 * Returns the specified display.
 	 *
 	 * @param __dx The display to get.
