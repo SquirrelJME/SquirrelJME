@@ -22,6 +22,9 @@ import cc.squirreljme.runtime.lcdui.requests.CollectableCleanup;
 import cc.squirreljme.runtime.lcdui.requests.CollectableCreate;
 import cc.squirreljme.runtime.lcdui.requests.DisplayVibrate;
 import cc.squirreljme.runtime.lcdui.requests.QueryDisplays;
+import cc.squirreljme.runtime.lcdui.ui.UiCollectable;
+import cc.squirreljme.runtime.lcdui.ui.UiDisplay;
+import cc.squirreljme.runtime.lcdui.ui.UiDisplayHead;
 
 /**
  * This represents a single request to be made by the LCD server, it allows
@@ -155,8 +158,8 @@ public abstract class LcdRequest
 		{
 			case DISPLAY_VIBRATE:
 				return new DisplayVibrate(__sv,
-					__sv.<UiDisplay>getWidget(UiDisplay.class, (Integer)__args[0]),
-					(Integer)__args[1]);
+					__sv.<UiDisplay>get(UiDisplay.class, __int(0, __args)),
+					__int(1, __args));
 			
 			case COLLECTABLE_CREATE:
 				return new CollectableCreate(__sv, 
@@ -165,7 +168,8 @@ public abstract class LcdRequest
 			
 			case COLLECTABLE_CLEANUP:
 				return new CollectableCleanup(__sv,
-					__sv.getCollectable((Integer)__args[0]));
+					__sv.<UiCollectable>get(UiCollectable.class,
+						__int(0, __args)));
 			
 			case QUERY_DISPLAYS:
 				return new QueryDisplays(__sv, (RemoteMethod)__args[0]);
@@ -176,23 +180,6 @@ public abstract class LcdRequest
 				throw new RuntimeException(String.format("EB20 %s",
 					__func));
 		}
-	}
-	
-	/**
-	 * Returns the UI element for the given type.
-	 *
-	 * @param <U> The class type to get.
-	 * @param __sv The server to get from.
-	 * @param __dx The index of the arguments to get.
-	 * @param __cl The class type to get.
-	 * @param __args The inoput arguments.
-	 * @return The UI of the given type.
-	 * @since 2018/04/05
-	 */
-	private static final <U extends UiInterface> __ui(LcdServer __sv,
-		int __dx, Class<U> __cl, Object... __args)
-	{
-		return __sv.<U>get(__cl, __int(__dx, __args));
 	}
 	
 	/**
