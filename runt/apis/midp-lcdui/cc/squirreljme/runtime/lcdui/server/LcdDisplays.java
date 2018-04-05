@@ -14,6 +14,7 @@ import cc.squirreljme.runtime.cldc.system.type.RemoteMethod;
 import cc.squirreljme.runtime.lcdui.CollectableType;
 import cc.squirreljme.runtime.lcdui.LcdException;
 import cc.squirreljme.runtime.lcdui.ui.UiCollectable;
+import cc.squirreljme.runtime.lcdui.ui.UiDisplay;
 import cc.squirreljme.runtime.lcdui.ui.UiDisplayHead;
 import java.util.HashMap;
 import java.util.Map;
@@ -138,7 +139,7 @@ public abstract class LcdDisplays
 		
 		// Get the displays which are known to the definition so that
 		// lookup does not create any duplicates ones potentially
-		UiDisplayHead[] known = displays.values().<LcdDisplay>toArray(
+		UiDisplayHead[] known = displays.values().<UiDisplayHead>toArray(
 			new UiDisplayHead[displays.size()]);
 		
 		// Query all native displays
