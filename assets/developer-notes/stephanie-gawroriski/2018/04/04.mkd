@@ -1,0 +1,43 @@
+# 2018/04/04
+
+## 09:43
+
+Okay, so since I have some base class issues, I am going to build the entire
+UI system on the server end out of interfaces. Then once I have all of those
+I will build stuff on top of that. I can go through and document all of the
+LCDUI code so I can have an idea of what to do.
+
+## 09:58
+
+Since I want server side drawing of fonts along with local stuff, for fonts
+I will need a way to handle fonts without causing too much of a loopback. I
+really do want a basic buffer layout along with a widget layout. So for
+systems without a widget system or at least something initially it is just a
+standard buffer where pixels can go for the most part.
+
+## 10:11
+
+Okay so for menus and commands, pretty sure I am just going to make them both
+purely menu items or similar. But alerts and such use commands which are
+treated as buttons on the alert. Commands can also be placed in menus and
+such too. Commands can be duplicated too so they do not always have to be in
+one place. Menus on the other hand can be placed anywhere. So I have an idea,
+basically for menus it is `UiMenuItem` at the base, then `UiMenu` extends
+that. Then for commands and such there is a `UiMenuCommand` which views a
+`UiCommand` and has listeners on it and such so it knows when the command
+has been updated. That way commands are purely single things to be viewed and
+not really associated with anything.
+
+## 12:17
+
+Okay so setting a menu or command is quite complex, there needs to be an
+implemented interface that is called when the layout policy is to be changed.
+So there is no actual set of menu items, just kind of a layout manager of
+sorts.
+
+## 14:41
+
+Logic for actions to be performed by the client can actually be done by the
+requests code. Those will basically just be loose methods and such. Since
+most of the server end will be implemented in interfaces, there would be
+duplicate code so this will clear up the logic as needed.
