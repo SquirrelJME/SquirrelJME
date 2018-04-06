@@ -644,10 +644,14 @@ public class Display
 		try
 		{
 			// Set widgets
+			if (true)
+				throw new todo.TODO();
+			/*
 			LcdServiceCall.<VoidType>call(VoidType.class,
 				LcdFunction.WIDGET_ALERT_SHOW, this._handle,
 				__show._handle, __exit._handle);
-				
+			*/
+			
 			// Hold onto these so they do not get GCed
 			this._heldcurrent = __show;
 			this._heldexit = __exit;
@@ -695,9 +699,13 @@ public class Display
 		try
 		{
 			// Set widgets
+			if (true)
+				throw new todo.TODO();
+			/*
 			LcdServiceCall.<VoidType>call(VoidType.class,
 				LcdFunction.WIDGET_CLEAR_AND_SET, this._handle,
 				__show._handle);
+			*/
 				
 			// Hold onto this so they do not get GCed
 			this._heldcurrent = __show;

@@ -64,9 +64,11 @@ abstract class __Action__
 		this._image = __i;
 		
 		// Set remotely
+		throw new todo.TODO();
+		/*
 		LcdServiceCall.<VoidType>call(VoidType.class,
 			LcdFunction.ACTION_SET_LABELS,
-			this._handle, __sl, __ll, (__i == null ? -1 : __i._handle));
+			this._handle, __sl, __ll, (__i == null ? -1 : __i._handle));*/
 	}
 }
 

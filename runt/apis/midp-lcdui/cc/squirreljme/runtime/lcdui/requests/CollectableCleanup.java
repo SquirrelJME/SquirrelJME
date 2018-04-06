@@ -10,6 +10,7 @@
 
 package cc.squirreljme.runtime.lcdui.requests;
 
+import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
 import cc.squirreljme.runtime.lcdui.server.LcdRequest;
 import cc.squirreljme.runtime.lcdui.server.LcdServer;
@@ -53,6 +54,7 @@ public final class CollectableCleanup
 	protected final Object invoke()
 	{
 		this.cleanup.cleanup();
+		return VoidType.INSTANCE;
 	}
 }
 
