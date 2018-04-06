@@ -10,6 +10,8 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.lcdui.LcdFunction;
+import cc.squirreljme.runtime.lcdui.LcdServiceCall;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 
 public class ImageItem
@@ -32,6 +34,9 @@ public class ImageItem
 	
 	public static final int LAYOUT_RIGHT =
 		2;
+	
+	/** Cache of the used image. */
+	private volatile Image _image;
 	
 	public ImageItem(String __a, Image __b, int __c, String __d)
 	{
@@ -71,9 +76,25 @@ public class ImageItem
 		throw new todo.TODO();
 	}
 	
-	public void setImage(Image __a)
+	/**
+	 * Sets the image to be displayed for this item. If the image is mutable
+	 * then this will take a snapshot of the image and use that snapshot
+	 * instead of the normal image.
+	 *
+	 * A new snapshot from a mutable image can be created by performing:
+	 * {@code imageitem.setImage(imageitem.getImage())}.
+	 *
+	 * @param __i The image to set or {@code null} to clear it.
+	 * @since 2018/04/06
+	 */
+	public void setImage(Image __i)
 	{
-		throw new todo.TODO();
+		Image clone = (__i != null && __i.isMutable() ?
+			Image.createImage(__i) : __i);
+		LcdServiceCall.voidCall(LcdFunction.SET_IMAGE, this._handle,
+			(__i == null ? -1 : __i._handle),
+			(clone == null ? -1 : clone._handle));
+		this._image = __i;
 	}
 	
 	@Override

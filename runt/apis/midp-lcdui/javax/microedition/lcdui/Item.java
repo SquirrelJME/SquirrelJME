@@ -10,6 +10,8 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.lcdui.LcdFunction;
+import cc.squirreljme.runtime.lcdui.LcdServiceCall;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 
 public abstract class Item
@@ -76,9 +78,6 @@ public abstract class Item
 	
 	/** The label of this item. */
 	private volatile String _label;
-	
-	/** The owning screen. */
-	volatile Screen _screen;
 	
 	/**
 	 * Initializes the base item.
@@ -171,14 +170,22 @@ public abstract class Item
 	public void setLabel(String __l)
 		throws IllegalArgumentException
 	{
+		if (true)
+			throw new todo.TODO();
+		/*
 		// {@squirreljme.error EB1t Cannot set the label of an item which is
 		// contained within an Alert.}
 		if (this._screen instanceof Alert)
 			throw new IllegalArgumentException("EB1t");
+		*/
 		
-		// Set
-		this._label = __l;
-		throw new todo.TODO();
+		// Set if it has changed
+		String oldlabel = this._label;
+		if (oldlabel != __l)
+		{
+			LcdServiceCall.voidCall(LcdFunction.SET_LABEL, this._handle, __l);
+			this._label = __l;
+		}
 	}
 	
 	public void setLayout(int __a)

@@ -21,22 +21,50 @@ public class Spacer
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Commands are not supported for this item.
+	 *
+	 * @param __a Ignored.
+	 * @throws IllegalStateException Always.
+	 * @since 2018/04/06
+	 */
 	@Override
 	public void addCommand(Command __a)
+		throws IllegalStateException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error EB2m Cannot add commands for spacers.}
+		throw new IllegalStateException("EB2m");
 	}
 	
+	/**
+	 * Commands are not supported for this item.
+	 *
+	 * @param __a Ignored.
+	 * @throws IllegalStateException Always.
+	 * @since 2018/04/06
+	 */
 	@Override
 	public void setDefaultCommand(Command __a)
+		throws IllegalStateException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error EB2l Cannot set the default command for
+		// spacers.}
+		throw new IllegalStateException("EB2l");
 	}
 	
+	/**
+	 * Labels are not supported for this item.
+	 *
+	 * @param __a Ignored.
+	 * @throws IllegalStateException Always.
+	 * @since 2018/04/06
+	 */
 	@Override
 	public void setLabel(String __a)
+		throws IllegalStateException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error EB2k Cannot set labels for spacers.}
+		throw new IllegalStateException("EB2k");
 	}
 	
 	public void setMinimumSize(int __a, int __b)

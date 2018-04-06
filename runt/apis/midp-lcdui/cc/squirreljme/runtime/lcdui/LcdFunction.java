@@ -30,6 +30,19 @@ public enum LcdFunction
 	/** Queries available displays and sets the local callback method. */
 	QUERY_DISPLAYS,
 	
+	/**
+	 * Sets the image of something. The format is the effective image handle
+	 * followed by the visible image handle, this way mutable image snapshots
+	 * work without much complexity.
+	 */
+	SET_IMAGE,
+	
+	/** Sets the label of soemthing. */
+	SET_LABEL,
+	
+	/** Sets the long label of something. */
+	SET_LONG_LABEL,
+	
 	/** End. */
 	;
 	
