@@ -13,6 +13,7 @@ package cc.squirreljme.runtime.javase.lcdui;
 import cc.squirreljme.runtime.cldc.system.type.Array;
 import cc.squirreljme.runtime.cldc.system.type.IntegerArray;
 import cc.squirreljme.runtime.lcdui.gfx.PixelFormat;
+import cc.squirreljme.runtime.lcdui.ui.UiWidget;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ComponentEvent;
@@ -36,7 +37,7 @@ public class SwingCanvasPanel
 	extends JPanel
 {
 	/** The owning widget. */
-	protected final SwingWidget owner;
+	protected final UiWidget owner;
 	
 	/** The image to display in the panel. */
 	private volatile BufferedImage _image;
@@ -52,7 +53,7 @@ public class SwingCanvasPanel
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/24
 	 */
-	public SwingCanvasPanel(SwingWidget __o)
+	public SwingCanvasPanel(UiWidget __o)
 		throws NullPointerException
 	{
 		if (__o == null)
@@ -89,6 +90,8 @@ public class SwingCanvasPanel
 			this._image = (image = ColorInfo.create(xw, xh,
 				new Color(0xFFFFFFFF)/*SystemColor.window()*/));
 		
+		throw new todo.TODO();
+		/*
 		// Have the remote end draw into our buffer as needed
 		Rectangle rect = __g.getClipBounds();
 		try
@@ -108,7 +111,7 @@ public class SwingCanvasPanel
 		
 		// Draw the backed buffered image
 		__g.drawImage(image, 0, 0, xw, xh,
-			0, 0, xw, xh, null);
+			0, 0, xw, xh, null);*/
 	}
 }
 

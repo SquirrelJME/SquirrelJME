@@ -12,10 +12,12 @@ package cc.squirreljme.runtime.javase.lcdui;
 
 import cc.squirreljme.runtime.cldc.system.type.RemoteMethod;
 import cc.squirreljme.runtime.cldc.task.SystemTask;
+import cc.squirreljme.runtime.lcdui.CollectableType;
 import cc.squirreljme.runtime.lcdui.gfx.PixelFormat;
-import cc.squirreljme.runtime.lcdui.server.LcdDisplay;
-import cc.squirreljme.runtime.lcdui.server.LcdTicker;
-import cc.squirreljme.runtime.lcdui.server.LcdWidget;
+import cc.squirreljme.runtime.lcdui.ui.UiDisplay;
+import cc.squirreljme.runtime.lcdui.ui.UiDisplayHead;
+import cc.squirreljme.runtime.lcdui.ui.UiTicker;
+import cc.squirreljme.runtime.lcdui.ui.UiWidget;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import javax.swing.JComponent;
@@ -26,9 +28,12 @@ import javax.swing.JFrame;
  *
  * @since 2018/03/18
  */
-public class SwingDisplay
-	extends LcdDisplay
+public class SwingDisplayHead
+	implements UiDisplayHead
 {
+	/** The display handle. */
+	protected final int handle;
+	
 	/** The frame which acts as the display. */
 	final JFrame _frame;
 	
@@ -52,13 +57,12 @@ public class SwingDisplay
 	/**
 	 * Initializes the display.
 	 *
-	 * @param __dx The display index.
-	 * @param __cb The callback method for events.
+	 * @param __handle The display handle.
 	 * @since 2018/03/17
 	 */
-	public SwingDisplay(int __dx)
+	public SwingDisplayHead(int __handle)
 	{
-		super(__dx);
+		this.handle = __handle;
 		
 		// Initialize the frame
 		JFrame frame = new JFrame();
@@ -73,6 +77,76 @@ public class SwingDisplay
 		// Force minimum size to something more friendly
 		frame.setMinimumSize(new Dimension(160, 160));
 		frame.setPreferredSize(new Dimension(640, 480));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/06
+	 */
+	@Override
+	public void cleanup()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/06
+	 */
+	@Override
+	public CollectableType collectableType()
+	{
+		return CollectableType.DISPLAY_HEAD;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/06
+	 */
+	@Override
+	public int displayMaximumHeightPixels()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/06
+	 */
+	@Override
+	public int displayMaximumWidthPixels()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/06
+	 */
+	@Override
+	public int displayPhysicalHeightMillimeters()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/06
+	 */
+	@Override
+	public int displayPhysicalWidthMillimeters()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/06
+	 */
+	@Override
+	public UiDisplay getCurrentDisplay()
+	{
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -97,28 +171,22 @@ public class SwingDisplay
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/03/27
+	 * @since 2018/04/06
 	 */
 	@Override
-	protected void internalShowTicker(LcdTicker __t)
+	public final int handle()
 	{
-		JFrame frame = this._frame;
-		JComponent usedticker = this._usedticker;
-		
-		// Clear the old ticker first if there is one
-		if (usedticker != null)
-		{
-			frame.remove(usedticker);
-			this._usedticker = null;
-		}
-		
-		// Setting a new one
-		if (__t != null)
-		{
-			usedticker = ((SwingTicker)__t).createComponent();
-			frame.add(usedticker, BorderLayout.PAGE_START);
-			this._usedticker = usedticker;
-		}
+		return this.handle;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/24
+	 */
+	@Override
+	public final PixelFormat pixelFormat()
+	{
+		return ColorInfo.PIXEL_FORMAT;
 	}
 	
 	/**
@@ -126,8 +194,10 @@ public class SwingDisplay
 	 * @since 2018/03/18
 	 */
 	@Override
-	protected final void internalSetCurrent(LcdWidget __w)
+	public void setCurrentDisplay(UiDisplay __d)
 	{
+		throw new todo.TODO();
+		/*
 		JFrame frame = this._frame;
 		JComponent usedticker = this._usedticker;
 		
@@ -174,36 +244,27 @@ public class SwingDisplay
 			// Make it visible
 			frame.setVisible(true);
 		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/03/24
-	 */
-	@Override
-	public final PixelFormat pixelFormat()
-	{
-		return ColorInfo.PIXEL_FORMAT;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/03/23
-	 */
-	@Override
-	public final void repaint(int __x, int __y, int __w, int __h)
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/03/24
-	 */
-	@Override
-	public void setContainedTitle(LcdWidget __w, String __t)
-	{
-		this._frame.setTitle(__t);
+		*/
+		/*// From ticker update code
+		
+		JFrame frame = this._frame;
+		JComponent usedticker = this._usedticker;
+		
+		// Clear the old ticker first if there is one
+		if (usedticker != null)
+		{
+			frame.remove(usedticker);
+			this._usedticker = null;
+		}
+		
+		// Setting a new one
+		if (__t != null)
+		{
+			usedticker = ((SwingTicker)__t).createComponent();
+			frame.add(usedticker, BorderLayout.PAGE_START);
+			this._usedticker = usedticker;
+		}
+		*/
 	}
 	
 	/**

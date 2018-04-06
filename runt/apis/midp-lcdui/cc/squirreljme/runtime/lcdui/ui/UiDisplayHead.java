@@ -10,6 +10,8 @@
 
 package cc.squirreljme.runtime.lcdui.ui;
 
+import cc.squirreljme.runtime.lcdui.gfx.PixelFormat;
+
 /**
  * This represents the single display head that is provided for clients to
  * use and share with each other when displaying graphics. Since only a single
@@ -22,12 +24,52 @@ public interface UiDisplayHead
 	extends UiInterface, UiWidget
 {
 	/**
+	 * Returns the maximum display height in pixels.
+	 *
+	 * @return The maximum display height in pixels.
+	 * @since 2017/10/27
+	 */
+	public abstract int displayMaximumHeightPixels();
+	
+	/**
+	 * Returns the maximum display width in pixels.
+	 *
+	 * @return The maximum display width in pixels.
+	 * @since 2017/10/27
+	 */
+	public abstract int displayMaximumWidthPixels();
+	
+	/**
+	 * Returns the physical display height in millimeters.
+	 *
+	 * @return The physical display height in millimeters.
+	 * @since 2017/10/27
+	 */
+	public abstract int displayPhysicalHeightMillimeters();
+	
+	/**
+	 * Returns the physical display width in millimeters.
+	 *
+	 * @return The physical display width in millimeters.
+	 * @since 2017/10/27
+	 */
+	public abstract int displayPhysicalWidthMillimeters();
+	
+	/**
 	 * Returns the client display which is currently being shown.
 	 *
 	 * @return The client display being shown or {@code null} if there is none.
 	 * @since 2018/04/04
 	 */
 	public abstract UiDisplay getCurrentDisplay();
+	
+	/**
+	 * Returns the pixel format that is being used by the display.
+	 *
+	 * @return The pixel format to use.
+	 * @since 2018/04/06
+	 */
+	public abstract PixelFormat pixelFormat();
 	
 	/**
 	 * Sets the current display to be shown.

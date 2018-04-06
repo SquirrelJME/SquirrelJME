@@ -10,8 +10,8 @@
 
 package cc.squirreljme.runtime.javase.lcdui;
 
-import cc.squirreljme.runtime.lcdui.server.LcdTicker;
-import cc.squirreljme.runtime.lcdui.server.LcdTickerListener;
+import cc.squirreljme.runtime.lcdui.ui.UiTicker;
+import cc.squirreljme.runtime.lcdui.ui.UiTickerListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
@@ -36,7 +36,7 @@ import javax.swing.Timer;
  */
 public class SwingTickerComponent
 	extends JScrollPane
-	implements ActionListener, ComponentListener, LcdTickerListener
+	implements ActionListener, ComponentListener, UiTickerListener
 {
 	/** The label. */
 	protected final JLabel label;
@@ -114,6 +114,17 @@ public class SwingTickerComponent
 	 * @since 2018/03/27
 	 */
 	@Override
+	public void changedTickerString(UiTicker __lcd, String __text)
+		throws NullPointerException
+	{
+		this.label.setText(__text);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/27
+	 */
+	@Override
 	public void componentHidden(ComponentEvent __e)
 	{
 		Timer timer = this.timer;
@@ -166,17 +177,6 @@ public class SwingTickerComponent
 		if (this.__runTimer())
 			if (!timer.isRunning())
 				this.timer.start();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/03/27
-	 */
-	@Override
-	public void textChanged(LcdTicker __lcd, String __text)
-		throws NullPointerException
-	{
-		this.label.setText(__text);
 	}
 	
 	/**
