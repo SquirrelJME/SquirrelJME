@@ -19,7 +19,8 @@ import cc.squirreljme.runtime.lcdui.CollectableType;
  */
 public final class UiMenu
 	extends UiMenuItem
-	implements UiCollectable, UiHasSettableLabel, UiInterface
+	implements UiCollectable, UiHasSettableImage, UiHasSettableLabel,
+		UiHasSettableLongLabel, UiInterface
 {
 	/** The handle for the menu. */
 	protected final int handle;
