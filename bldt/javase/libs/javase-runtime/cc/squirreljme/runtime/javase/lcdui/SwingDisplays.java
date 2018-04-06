@@ -12,11 +12,11 @@ package cc.squirreljme.runtime.javase.lcdui;
 
 import cc.squirreljme.runtime.cldc.system.type.RemoteMethod;
 import cc.squirreljme.runtime.lcdui.CollectableType;
-import cc.squirreljme.runtime.lcdui.server.LcdCollectable;
-import cc.squirreljme.runtime.lcdui.server.LcdDisplay;
 import cc.squirreljme.runtime.lcdui.server.LcdDisplays;
 import cc.squirreljme.runtime.lcdui.server.LcdRequest;
-import cc.squirreljme.runtime.lcdui.server.LcdWidget;
+import cc.squirreljme.runtime.lcdui.ui.UiCollectable;
+import cc.squirreljme.runtime.lcdui.ui.UiDisplay;
+import cc.squirreljme.runtime.lcdui.ui.UiDisplayHead;
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.SwingUtilities;
 
@@ -34,18 +34,21 @@ public class SwingDisplays
 	 * @since 2018/03/24
 	 */
 	@Override
-	protected LcdCollectable internalCreateCollectable(int __handle,
+	protected UiCollectable internalCreateCollectable(int __handle,
 		CollectableType __type)
 		throws NullPointerException
 	{
 		if (__type == null)
 			throw new NullPointerException("NARG");
 		
+		if (true)
+			throw new todo.TODO();
+		/*
 		if (__type.isWidget())
 			return new SwingWidget(__handle, __type);
 		
 		else if (__type == CollectableType.TICKER)
-			return new SwingTicker(__handle);
+			return new SwingTicker(__handle);*/
 		
 		// {@squirreljme.error AF0c Do not know how to create the given
 		// collectable. (The collectable type)}
@@ -58,7 +61,7 @@ public class SwingDisplays
 	 * @since 2018/03/17
 	 */
 	@Override
-	protected LcdDisplay[] internalQueryDisplays(LcdDisplay[] __k)
+	protected UiDisplayHead[] internalQueryDisplays(UiDisplayHead[] __k)
 		throws NullPointerException
 	{
 		if (__k == null)
@@ -67,7 +70,7 @@ public class SwingDisplays
 		// Swing only uses a single display which is shared among all
 		// programs
 		if (__k.length == 0)
-			return new LcdDisplay[]{new SwingDisplay(-1)};
+			return new UiDisplayHead[]{new SwingDisplayHead(-1)};
 		return __k;
 	}
 	
@@ -134,6 +137,20 @@ public class SwingDisplays
 		
 		// Return the result of it
 		return __r.<R>result(__cl);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/06
+	 */
+	@Override
+	public UiDisplay wrapDisplay(int __handle, UiDisplayHead __head)
+		throws NullPointerException
+	{
+		if (__head == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 }
 

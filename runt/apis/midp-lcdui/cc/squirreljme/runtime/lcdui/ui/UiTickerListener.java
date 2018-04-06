@@ -22,9 +22,10 @@ public interface UiTickerListener
 	/**
 	 * This is called when the text has been changed.
 	 *
+	 * @param __t The ticker which was changed.
 	 * @param __s The new string to be displayed.
 	 * @since 2018/04/04
 	 */
-	public abstract void changedTickerString(String __s);
+	public abstract void changedTickerString(UiTicker __t, String __s);
 }
 

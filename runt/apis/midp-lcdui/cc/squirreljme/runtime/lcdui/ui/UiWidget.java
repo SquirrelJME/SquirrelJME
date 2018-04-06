@@ -19,5 +19,20 @@ package cc.squirreljme.runtime.lcdui.ui;
 public interface UiWidget
 	extends UiCollectable, UiInterface
 {
+	/**
+	 * Returns the current height of the widget in pixels.
+	 *
+	 * @return The current height of the widget.
+	 * @since 2018/04/06
+	 */
+	public abstract int getHeight();
+	
+	/**
+	 * Returns the current width of the widget in pixels.
+	 *
+	 * @return The current width of the widget.
+	 * @since 2018/04/06
+	 */
+	public abstract int getWidth();
 }
 
