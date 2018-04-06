@@ -52,8 +52,10 @@ public class Ticker
 	 */
 	public String getString()
 	{
+		throw new todo.TODO();
+		/*
 		return LcdServiceCall.<String>call(String.class,
-			LcdFunction.TICKER_GET_STRING, this._handle);
+			LcdFunction.TICKER_GET_STRING, this._handle);*/
 	}
 	
 	/**
@@ -66,8 +68,9 @@ public class Ticker
 	public void setString(String __s)
 		throws NullPointerException
 	{
-		LcdServiceCall.<VoidType>call(VoidType.class,
-			LcdFunction.TICKER_SET_STRING, this._handle, __s);
+		throw new todo.TODO();
+		/*LcdServiceCall.<VoidType>call(VoidType.class,
+			LcdFunction.TICKER_SET_STRING, this._handle, __s);*/
 	}
 }
 

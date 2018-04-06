@@ -114,9 +114,12 @@ public abstract class Displayable
 	 */
 	public Ticker getTicker()
 	{
+		throw new todo.TODO();
+		/*
 		return __Queue__.INSTANCE.<Ticker>__get(Ticker.class,
 			LcdServiceCall.<Integer>call(Integer.class,
 			LcdFunction.WIDGET_GET_TICKER, this._handle));
+		*/
 	}
 	
 	/**
@@ -188,9 +191,13 @@ public abstract class Displayable
 	 */
 	public void setTicker(Ticker __t)
 	{
+		if (true)
+			throw new todo.TODO();
+		/*
 		LcdServiceCall.<VoidType>call(VoidType.class,
 			LcdFunction.WIDGET_SET_TICKER, this._handle, (__t == null ?
 				Integer.MIN_VALUE : __t._handle));
+		*/
 		
 		// Cache it
 		this._cacheticker = __t;
@@ -208,8 +215,12 @@ public abstract class Displayable
 		this._cachetitle = __a;
 		
 		// Set title remotely
+		if (true)
+			throw new todo.TODO();
+		/*
 		LcdServiceCall.<VoidType>call(VoidType.class,
 			LcdFunction.WIDGET_SET_TITLE, this._handle, __a);
+		*/
 	}
 	
 	/**

@@ -438,8 +438,11 @@ public abstract class Canvas
 			return;
 		
 		// Send repaint
+		throw new todo.TODO();
+		/*
 		LcdServiceCall.<VoidType>call(VoidType.class,
 			LcdFunction.WIDGET_REPAINT, this._handle, __x, __y, __w, __h);
+		*/
 	}
 	
 	public final void serviceRepaints()
