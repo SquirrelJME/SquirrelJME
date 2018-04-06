@@ -34,6 +34,7 @@ public final class UiCommand
 	{
 		this.handle = __handle;
 	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/04/04
@@ -91,7 +92,7 @@ public final class UiCommand
 	@Override
 	public final int handle()
 	{
-		throw new todo.TODO();
+		return this.handle;
 	}
 	
 	/**
