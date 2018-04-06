@@ -11,13 +11,20 @@
 package cc.squirreljme.runtime.lcdui.ui;
 
 /**
- * This is the base class for items which may be displayed on a menu.
+ * This represents something that is able to have an image set for it so that
+ * it may be displayed.
  *
- * @since 2018/04/04
+ * @since 2018/04/06
  */
-public abstract class UiMenuItem
-	implements UiHasViewableImage, UiHasViewableLabel, UiHasViewableLongLabel,
-		UiInterface
+public interface UiHasSettableImage
+	extends UiHasViewableImage, UiInterface
 {
+	/**
+	 * Sets or clears the image to be displayed.
+	 *
+	 * @param __i The image to display, {@code null} clears it.
+	 * @since 2018/04/04
+	 */
+	public abstract void setImage(UiImage __i);
 }
 

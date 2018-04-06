@@ -11,23 +11,14 @@
 package cc.squirreljme.runtime.lcdui.ui;
 
 /**
- * This class represents anything which has a label associated with it, it
- * must contain a standard label which represents the short label but can
- * additionally have a long label or image.
+ * This class represents anything which has a label associated with it and one
+ * where that label can be set.
  *
  * @since 2018/04/04
  */
 public interface UiHasSettableLabel
 	extends UiHasViewableLabel, UiInterface
 {
-	/**
-	 * Sets or clears the image to be displayed.
-	 *
-	 * @param __i The image to display, {@code null} clears it.
-	 * @since 2018/04/04
-	 */
-	public abstract void setImage(UiImage __i);
-	
 	/**
 	 * Set the label to be displayed.
 	 *
@@ -37,13 +28,5 @@ public interface UiHasSettableLabel
 	 */
 	public abstract void setLabel(String __s)
 		throws NullPointerException;
-	
-	/**
-	 * Sets or clears the long label for an item.
-	 *
-	 * @param __s The long label to display, {@code null} clears it.
-	 * @since 2018/04/04
-	 */
-	public abstract void setLongLabel(String __s);
 }
 

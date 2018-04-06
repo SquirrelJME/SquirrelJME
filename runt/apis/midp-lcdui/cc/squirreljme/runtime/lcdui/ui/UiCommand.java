@@ -19,7 +19,8 @@ import cc.squirreljme.runtime.lcdui.CollectableType;
  * @since 2018/04/04
  */
 public final class UiCommand
-	implements UiCollectable, UiHasSettableLabel, UiInterface
+	implements UiCollectable, UiHasSettableImage, UiHasSettableLabel,
+		UiHasSettableLongLabel, UiInterface
 {
 	/** The handle for the command. */
 	protected final int handle;

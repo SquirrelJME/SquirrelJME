@@ -11,13 +11,19 @@
 package cc.squirreljme.runtime.lcdui.ui;
 
 /**
- * This is the base class for items which may be displayed on a menu.
+ * This represents something which can have its long label set.
  *
- * @since 2018/04/04
+ * @since 2018/04/06
  */
-public abstract class UiMenuItem
-	implements UiHasViewableImage, UiHasViewableLabel, UiHasViewableLongLabel,
-		UiInterface
+public interface UiHasSettableLongLabel
+	extends UiHasViewableLongLabel, UiInterface
 {
+	/**
+	 * Sets or clears the long label for an item.
+	 *
+	 * @param __s The long label to display, {@code null} clears it.
+	 * @since 2018/04/04
+	 */
+	public abstract void setLongLabel(String __s);
 }
 
