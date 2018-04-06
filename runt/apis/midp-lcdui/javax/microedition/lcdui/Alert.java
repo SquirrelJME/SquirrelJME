@@ -10,6 +10,9 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.lcdui.LcdFunction;
+import cc.squirreljme.runtime.lcdui.LcdServiceCall;
+
 public class Alert
 	extends Screen
 {
@@ -30,8 +33,8 @@ public class Alert
 	/** The message to display. */
 	private volatile String _message;
 	
-	/** The icon to use. */
-	private volatile Image _icon;
+	/** The image to use. */
+	private volatile Image _image;
 	
 	/** The type of alert this is. */
 	private volatile AlertType _type;
@@ -63,12 +66,6 @@ public class Alert
 	public Alert(String __title, String __message, Image __icon,
 		AlertType __type)
 	{
-		// Set
-		this._title = __title;
-		this._message = __message;
-		this._icon = __icon;
-		this._type = __type;
-		
 		throw new todo.TODO();
 	}
 	
@@ -140,9 +137,25 @@ public class Alert
 		throw new todo.TODO();
 	}
 	
-	public void setImage(Image __a)
+	/**
+	 * Sets the image to be displayed for this alert. If the image is mutable
+	 * then this will take a snapshot of the image and use that snapshot
+	 * instead of the normal image.
+	 *
+	 * A new snapshot from a mutable image can be created by performing:
+	 * {@code alert.setImage(alert.getImage())}.
+	 *
+	 * @param __i The image to set or {@code null} to clear it.
+	 * @since 2018/04/06
+	 */
+	public void setImage(Image __i)
 	{
-		throw new todo.TODO();
+		Image clone = (__i != null && __i.isMutable() ?
+			Image.createImage(__i) : __i);
+		LcdServiceCall.voidCall(LcdFunction.SET_IMAGE, this._handle,
+			(__i == null ? -1 : __i._handle),
+			(clone == null ? -1 : clone._handle));
+		this._image = __i;
 	}
 	
 	public void setIndicator(Gauge __a)
@@ -158,9 +171,12 @@ public class Alert
 	 */
 	public void setString(String __s)
 	{
+		throw new todo.TODO();
+		/*
 		this._message = __s;
 		
 		System.err.printf("DEBUG -- Set alert message: %s%n", __s);
+		*/
 	}
 	
 	/**
@@ -175,6 +191,8 @@ public class Alert
 	public void setTimeout(int __ms)
 		throws IllegalArgumentException
 	{
+		throw new todo.TODO();
+		/*
 		// {@squirreljme.error EB11 The specified number of milliseconds is
 		// negative. (The number of milliseconds specified)}
 		if (__ms < 0 && __ms != FOREVER)
@@ -182,6 +200,7 @@ public class Alert
 		
 		// Set
 		this._timeout = __ms;
+		*/
 	}
 	
 	/**
@@ -192,7 +211,10 @@ public class Alert
 	 */
 	public void setType(AlertType __t)
 	{
+		throw new todo.TODO();
+		/*
 		this._type = __t;
+		*/
 	}
 }
 

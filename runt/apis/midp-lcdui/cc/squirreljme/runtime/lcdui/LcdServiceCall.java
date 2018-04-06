@@ -10,6 +10,8 @@
 
 package cc.squirreljme.runtime.lcdui;
 
+import cc.squirreljme.runtime.cldc.system.type.ClassType;
+import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.cldc.service.ServiceAccessor;
 import cc.squirreljme.runtime.cldc.service.ServiceCaller;
 import cc.squirreljme.runtime.cldc.service.ServiceClientProvider;
@@ -77,12 +79,31 @@ public final class LcdServiceCall
 		catch (SystemCallException e)
 		{
 			String m = e.getMessage();
-			if (e.classType().isClass(LcdWidgetOwnedException.class))
+			ClassType ct = e.classType();
+			
+			if (ct.isClass(LcdWidgetOwnedException.class))
 				throw new LcdWidgetOwnedException(m, e);
-			else if (e.classType().isClass(LcdException.class))
+			else if (ct.isClass(LcdException.class))
 				throw new LcdException(m, e);
 			throw e;
 		}
+	}
+	
+	/**
+	 * Calls the given function but where there is no return value.
+	 *
+	 * @param __func The function to call.
+	 * @param __args The arguments to the function.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/04/06
+	 */
+	public static final void voidCall(LcdFunction __func, Object... __args)
+		throws NullPointerException
+	{
+		if (__func == null)
+			throw new NullPointerException("NARG");
+		
+		LcdServiceCall.<VoidType>call(VoidType.class, __func, __args);
 	}
 	
 	/**

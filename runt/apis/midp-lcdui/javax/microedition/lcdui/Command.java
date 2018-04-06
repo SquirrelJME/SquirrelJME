@@ -56,6 +56,10 @@ public class Command
 	/** The last command type. */
 	private static final int _LAST_TYPE =
 		ITEM;
+		
+	
+	/** The image used. */
+	private volatile Image _image;
 	
 	/** The command type. */
 	private final int _type;
@@ -171,7 +175,10 @@ public class Command
 		this._priority = __pri;
 		
 		// Internally set details
+		throw new todo.TODO();
+		/*
 		this.__setLabels(__sl, __ll, __i);
+		*/
 	}
 	
 	/**
@@ -199,7 +206,10 @@ public class Command
 	 */
 	public Font getFont()
 	{
+		throw new todo.TODO();
+		/*
 		return this._font;
+		*/
 	}
 	
 	/**
@@ -292,18 +302,26 @@ public class Command
 		if (this._implspec)
 			return;
 		
+		throw new todo.TODO();
+		/*
 		// Just cache the font but do nothing as it is not supported in
 		// SquirrelJME (it would complicate command handling) although it
 		// could potentially be supported in the future for stuff such as
 		// word processors and such
 		this._font = __f;
+		*/
 	}
 	
 	/**
-	 * Sets the image to be displayed for this command.
+	 * Sets the image to be displayed for this command. If the image is mutable
+	 * then this will take a snapshot of the image and use that snapshot
+	 * instead of the normal image.
 	 *
-	 * @param __i The image to be displayed, {@code null} clears this.
-	 * @since 2018/03/29
+	 * A new snapshot from a mutable image can be created by performing:
+	 * {@code command.setImage(command.getImage())}.
+	 *
+	 * @param __i The image to set or {@code null} to clear it.
+	 * @since 2018/04/06
 	 */
 	public void setImage(Image __i)
 	{
@@ -311,7 +329,12 @@ public class Command
 		if (this._implspec)
 			return;
 		
-		this.__setLabels(this._shortlabel, this._longlabel, __i);
+		Image clone = (__i != null && __i.isMutable() ?
+			Image.createImage(__i) : __i);
+		LcdServiceCall.voidCall(LcdFunction.SET_IMAGE, this._handle,
+			(__i == null ? -1 : __i._handle),
+			(clone == null ? -1 : clone._handle));
+		this._image = __i;
 	}
 	
 	/**
@@ -331,7 +354,10 @@ public class Command
 		if (this._implspec)
 			return;
 		
+		throw new todo.TODO();
+		/*
 		this.__setLabels(__s, this._longlabel, this._image);
+		*/
 	}
 	
 	/**
@@ -346,7 +372,10 @@ public class Command
 		if (this._implspec)
 			return;
 		
+		throw new todo.TODO();
+		/*
 		this.__setLabels(this._shortlabel, __s, this._image);
+		*/
 	}
 }
 

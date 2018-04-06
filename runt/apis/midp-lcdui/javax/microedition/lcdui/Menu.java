@@ -17,6 +17,9 @@ import cc.squirreljme.runtime.lcdui.LcdServiceCall;
 public class Menu
 	extends __Action__
 {
+	/** The image used. */
+	private volatile Image _image;
+	
 	public Menu(String __short, String __long, Image __i)
 	{
 		throw new todo.TODO();
@@ -163,14 +166,24 @@ public class Menu
 	}
 	
 	/**
-	 * Sets the image to be displayed for this menu.
+	 * Sets the image to be displayed for this menu. If the image is mutable
+	 * then this will take a snapshot of the image and use that snapshot
+	 * instead of the normal image.
 	 *
-	 * @param __i The image to be displayed, {@code null} clears this.
-	 * @since 2018/04/01
+	 * A new snapshot from a mutable image can be created by performing:
+	 * {@code menu.setImage(menu.getImage())}.
+	 *
+	 * @param __i The image to set or {@code null} to clear it.
+	 * @since 2018/04/06
 	 */
 	public void setImage(Image __i)
 	{
-		this.__setLabels(this._shortlabel, this._longlabel, __i);
+		Image clone = (__i != null && __i.isMutable() ?
+			Image.createImage(__i) : __i);
+		LcdServiceCall.voidCall(LcdFunction.SET_IMAGE, this._handle,
+			(__i == null ? -1 : __i._handle),
+			(clone == null ? -1 : clone._handle));
+		this._image = __i;
 	}
 	
 	/**
@@ -182,7 +195,10 @@ public class Menu
 	 */
 	public void setLabel(String __s)
 	{
+		throw new todo.TODO();
+		/*
 		this.__setLabels(__s, this._longlabel, this._image);
+		*/
 	}
 	
 	/**
@@ -193,7 +209,10 @@ public class Menu
 	 */
 	public void setLongLabel(String __s)
 	{
+		throw new todo.TODO();
+		/*
 		this.__setLabels(this._shortlabel, __s, this._image);
+		*/
 	}
 	
 	public int size()
