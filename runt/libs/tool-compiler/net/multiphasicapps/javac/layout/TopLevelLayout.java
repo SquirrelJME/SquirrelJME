@@ -13,6 +13,8 @@ package net.multiphasicapps.javac.layout;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import net.multiphasicapps.classfile.BinaryName;
 import net.multiphasicapps.javac.token.ExpandedToken;
 import net.multiphasicapps.javac.token.ExpandingSource;
@@ -102,21 +104,28 @@ public final class TopLevelLayout
 		}
 		
 		// Parse import statements
+		Set<ClassImport> imports = new LinkedHashSet<>();
 		for (;;)
 		{
 			token = __t.peek();
 			
 			// No more import statements?
 			if (token.type() != TokenType.KEYWORD_IMPORT)
-			{
-				if (true)
-					throw new todo.TODO();
 				break;
-			}
 			
-			// Parse statements
-			if (true)
-				throw new todo.TODO();
+			// Consume the import
+			__t.next();
+			
+			// Read statement
+			ClassImport imp = LayoutParserUtils.readClassImport(__t);
+			imports.add(imp);
+			
+			// {@squirreljme.error AQ28 Expected semi-colon to follow the
+			// import statement. (The token)}
+			token = __t.next();
+			if (token.type() != TokenType.SYMBOL_SEMICOLON)
+				throw new LayoutParserException(token, String.format("AQ28 %s",
+					token));
 		}
 		
 		// Read class modifiers

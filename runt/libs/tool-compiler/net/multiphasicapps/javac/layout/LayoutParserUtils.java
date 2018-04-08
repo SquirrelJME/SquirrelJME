@@ -12,6 +12,7 @@ package net.multiphasicapps.javac.layout;
 
 import java.io.IOException;
 import net.multiphasicapps.classfile.BinaryName;
+import net.multiphasicapps.classfile.ClassIdentifier;
 import net.multiphasicapps.javac.token.ExpandedToken;
 import net.multiphasicapps.javac.token.ExpandingSource;
 import net.multiphasicapps.javac.token.TokenType;
@@ -93,6 +94,93 @@ public final class LayoutParserUtils
 		
 		// Build
 		return new BinaryName(sb.toString());
+	}
+	
+	/**
+	 * Reads a single import statement fragment
+	 *
+	 * @param __t The tokens to read from.
+	 * @return The parsed import.
+	 * @throws LayoutParserException If an import was not read.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/04/08
+	 */
+	public static final ClassImport readClassImport(ExpandingSource __t)
+		throws LayoutParserException, IOException, NullPointerException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		ExpandedToken token = __t.peek();
+		TokenType type = token.type();
+		
+		// Is this static?
+		boolean isstatic = false;
+		if (type == TokenType.KEYWORD_STATIC)
+		{
+			isstatic = true;
+			
+			// Consume static
+			__t.next();
+			
+			// Peek for next read
+			token = __t.peek();
+			type = token.type();
+		}
+		
+		// {@squirreljme.error AQ29 Expected an identifier to start an import
+		// statement. (The token)}
+		if (type != TokenType.IDENTIFIER)
+			throw new LayoutParserException(token,
+				String.format("AQ29 %s", token));
+		
+		// Read in tokens
+		StringBuilder pksb = new StringBuilder();
+		for (;;)
+		{
+			// Read next token
+			token = __t.next();
+			type = token.type();
+			
+			// Wildcard import? Finish parsing
+			if (type == TokenType.OPERATOR_MULTIPLY)
+				return new ClassImport(isstatic,
+					new BinaryName(pksb.toString()), new ClassIdentifier("*"));
+			
+			// {@squirreljme.error AQ2a Expected identifier or wildcard symbol
+			// while parsing the import statement. (The token)}
+			else if (type != TokenType.IDENTIFIER)
+				throw new LayoutParserException(token,
+					String.format("AQ2a %s", token));
+			
+			// Store it for later
+			ExpandedToken ident = token;
+			
+			// Peek next, determines if it ends or continues
+			token = __t.peek();
+			type = token.type();
+			
+			// Will read more parts?
+			if (type == TokenType.SYMBOL_DOT)
+			{
+				// Add prefix slash for package?
+				if (pksb.length() > 0)
+					pksb.append('/');
+				
+				// Add that
+				pksb.append(ident.characters());
+				
+				// Consume the dot
+				__t.next();
+			}
+			
+			// Stop otherwise
+			else
+				return new ClassImport(isstatic,
+					new BinaryName(pksb.toString()),
+					new ClassIdentifier(ident.characters()));
+		}
 	}
 }
 
