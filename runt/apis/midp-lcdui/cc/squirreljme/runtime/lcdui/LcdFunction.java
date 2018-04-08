@@ -27,6 +27,13 @@ public enum LcdFunction
 	/** Vibrates the display. */
 	DISPLAY_VIBRATE,
 	
+	/**
+	 * For paintable objects, allow the paint call to be overridden.
+	 * This is needed for graphics libraries which operate on canvases and
+	 * as such they need to replace the paint method accordingly.
+	 */
+	PAINTABLE_OVERRIDE_PAINT,
+	
 	/** Queries available displays and sets the local callback method. */
 	QUERY_DISPLAYS,
 	

@@ -10,9 +10,6 @@
 
 package javax.microedition.khronos.egl;
 
-import cc.squirreljme.compat.AccessChange;
-import cc.squirreljme.compat.AccessType;
-
 /**
  * This represents an OpenGL ES Surface.
  *
@@ -21,8 +18,6 @@ import cc.squirreljme.compat.AccessType;
  *
  * @since 2016/10/10
  */
-@AccessChange(from=AccessType.PRIVATE, to=AccessType.PUBLIC,
-	value="Constructor changed for package encapsulation.")
 public abstract class EGLSurface
 {
 }
