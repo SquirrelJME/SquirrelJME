@@ -11,6 +11,7 @@
 package net.multiphasicapps.javac.layout;
 
 import java.io.IOException;
+import net.multiphasicapps.classfile.ClassIdentifier;
 import net.multiphasicapps.javac.token.ExpandedToken;
 import net.multiphasicapps.javac.token.ExpandingSource;
 import net.multiphasicapps.javac.token.TokenType;
@@ -45,25 +46,102 @@ public final class ClassContainerLayout
 		// Read modifiers to the class
 		Modifiers modifiers = Modifiers.parse(__t);
 		
+		ExpandedToken token = __t.next();
+		TokenType type = token.type();
+		
+		// Is this an annotation?
+		boolean isannotation = false;
+		if (type == TokenType.SYMBOL_AT)
+		{
+			isannotation = true;
+			
+			// This should be interface
+			token = __t.next();
+			type = token.type();
+		}
+		
 		// Determine class type
-		if (true)
-			throw new todo.TODO();
+		ClassType classtype;
+		switch (type)
+		{
+				// Class
+			case KEYWORD_CLASS:
+				// {@squirreljme.error AQ2e Cannot have an annotation
+				// definition that is a class. (The token)}
+				if (isannotation)
+					throw new LayoutParserException(token,
+						String.format("AQ2e %s", token));
+				
+				classtype = ClassType.CLASS;
+				break;
+			
+				// Interface
+			case KEYWORD_INTERFACE:
+				if (isannotation)
+					classtype = ClassType.ANNOTATION;
+				else
+					classtype = ClassType.INTERFACE;
+				break;
+			
+				// Enumeration
+			case KEYWORD_ENUM:
+				// {@squirreljme.error AQ2f Cannot have an annotation
+				// definition that is an enumeration. (The token)}
+				if (isannotation)
+					throw new LayoutParserException(token,
+						String.format("AQ2f %s", token));
+				
+				classtype = ClassType.ENUM;
+				break;
+			
+				// {@squirreljme.error AQ2d Unknown token when parsing the
+				// class type. (The token)}
+			default:
+				throw new LayoutParserException(token,
+					String.format("AQ2d %s", token));
+		}
+		
+		// For potential read of generic
+		token = __t.next();
+		type = token.type();
 		
 		// Read generic arguments to the class, if applicable
-		if (true)
-			throw new todo.TODO();
+		if (type == TokenType.COMPARE_LESS_THAN)
+		{
+			if (true)
+				throw new todo.TODO();
+		}
 		
-		// Read class name
-		if (true)
-			throw new todo.TODO();
+		// {@squirreljme.error AQ2g Expected identifier for the class name.
+		// (The token)}
+		if (type != TokenType.IDENTIFIER)
+			throw new LayoutParserException(token,
+				String.format("AQ2g %s", token));
+		ClassIdentifier name = new ClassIdentifier(token.characters());
+		
+		// Could be extends, implements, or opening brace
+		token = __t.next();
+		type = token.type();
 		
 		// Read extends
-		if (true)
-			throw new todo.TODO();
+		if (type == TokenType.KEYWORD_EXTENDS)
+		{	
+			if (true)
+				throw new todo.TODO();
+		}
 		
 		// Read implements
-		if (true)
-			throw new todo.TODO();
+		if (type == TokenType.KEYWORD_IMPLEMENTS)
+		{
+			if (true)
+				throw new todo.TODO();
+		}
+		
+		// {@squirreljme.error AQ2h Expected opening brace after start of
+		// class declaration. (The token)}
+		if (type != TokenType.SYMBOL_OPEN_BRACE)
+			throw new LayoutParserException(token,
+				String.format("AQ2h %s", token));
 		
 		throw new todo.TODO();
 	}
