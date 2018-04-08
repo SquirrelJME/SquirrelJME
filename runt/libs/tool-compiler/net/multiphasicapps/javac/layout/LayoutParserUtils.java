@@ -11,6 +11,10 @@
 package net.multiphasicapps.javac.layout;
 
 import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.List;
 import net.multiphasicapps.classfile.BinaryName;
 import net.multiphasicapps.classfile.ClassIdentifier;
 import net.multiphasicapps.javac.token.ExpandedToken;
@@ -181,6 +185,26 @@ public final class LayoutParserUtils
 					new BinaryName(pksb.toString()),
 					new ClassIdentifier(ident.characters()));
 		}
+	}
+	
+	/**
+	 * Reads a group of tokens between brace types.
+	 *
+	 * @param __start The starting token.
+	 * @param __src The source to read tokens from.
+	 * @return The iterable containing input tokens.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/04/08
+	 */
+	public static final Iterable<ExpandedToken> readGroup(
+		ExpandedToken __start, ExpandingSource __src)
+		throws IOException, NullPointerException
+	{
+		if (__start == null || __src == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 }
 
