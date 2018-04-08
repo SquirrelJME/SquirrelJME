@@ -11,6 +11,9 @@
 package net.multiphasicapps.javac.layout;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import net.multiphasicapps.javac.token.ExpandedToken;
 import net.multiphasicapps.javac.token.ExpandingSource;
 import net.multiphasicapps.javac.token.TokenType;
@@ -24,6 +27,85 @@ import net.multiphasicapps.javac.token.TokenType;
  */
 public final class Modifiers
 {
+	/** Modifiers which are available. */
+	private final Modifier[] _modifiers;
+	
+	/**
+	 * Initializes the set of modifiers.
+	 *
+	 * @param __mods The input modifiers.
+	 * @throws LayoutParserException If modifiers are duplicated.
+	 * @since 2018/04/08
+	 */
+	public Modifiers(Modifier... __mods)
+		throws LayoutParserException
+	{
+		this(Arrays.<Modifier>asList(
+			(__mods == null ? new Modifier[0] : __mods)));
+	}
+	
+	/**
+	 * Initializes the set of modifiers.
+	 *
+	 * @param __mods The input modifiers.
+	 * @throws LayoutParserException If modifiers are duplicated.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/04/08
+	 */
+	public Modifiers(Iterable<Modifier> __mods)
+		throws LayoutParserException, NullPointerException
+	{
+		if (__mods == null)
+			throw new NullPointerException("NARG");
+		
+		// Copy modifiers
+		Set<Modifier> mods = new LinkedHashSet<>();
+		for (Modifier m : __mods)
+		{
+			if (m == null)
+				throw new NullPointerException("NARG");
+			
+			// {@squirreljme.error AQ2c Duplicate modifier. (The modifier)}
+			if (mods.contains(m))
+				throw new LayoutParserException(String.format("AQ2c %s", m));
+			
+			mods.add(m);
+		}
+		
+		// Initialize
+		this._modifiers = mods.<Modifier>toArray(new Modifier[mods.size()]);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/08
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/08
+	 */
+	@Override
+	public final int hashCode()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/08
+	 */
+	@Override
+	public final String toString()
+	{
+		throw new todo.TODO();
+	}
+	
 	/**
 	 * Parses the input tokens for any modifiers.
 	 *
@@ -39,6 +121,8 @@ public final class Modifiers
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
+		Set<Modifier> mods = new LinkedHashSet<>();
+		
 		// Modifier reading loop, since there could be no modifiers to be
 		// read at all
 __outer:
@@ -48,6 +132,7 @@ __outer:
 			TokenType type = token.type();
 			
 			// Depends on the type
+			Modifier mod;
 			switch (type)
 			{
 					// Annotated something
@@ -56,55 +141,83 @@ __outer:
 					
 					// Abstract
 				case KEYWORD_ABSTRACT:
-					throw new todo.TODO();
+					mod = StandardModifier.ABSTRACT;
+					__t.next();
+					break;
 					
 					// Final
 				case KEYWORD_FINAL:
-					throw new todo.TODO();
+					mod = StandardModifier.FINAL;
+					__t.next();
+					break;
 					
 					// Native
 				case KEYWORD_NATIVE:
-					throw new todo.TODO();
+					mod = StandardModifier.NATIVE;
+					__t.next();
+					break;
 					
 					// Private
 				case KEYWORD_PRIVATE:
-					throw new todo.TODO();
+					mod = StandardModifier.PRIVATE;
+					__t.next();
+					break;
 					
 					// Protected
 				case KEYWORD_PROTECTED:
-					throw new todo.TODO();
+					mod = StandardModifier.PROTECTED;
+					__t.next();
+					break;
 					
 					// Public
 				case KEYWORD_PUBLIC:
-					throw new todo.TODO();
+					mod = StandardModifier.PUBLIC;
+					__t.next();
+					break;
 					
 					// Static
 				case KEYWORD_STATIC:
-					throw new todo.TODO();
+					mod = StandardModifier.STATIC;
+					__t.next();
+					break;
 					
 					// Strict floating point
 				case KEYWORD_STRICTFP:
-					throw new todo.TODO();
+					mod = StandardModifier.STRICTFP;
+					__t.next();
+					break;
 					
 					// Synchronized
 				case KEYWORD_SYNCHRONIZED:
-					throw new todo.TODO();
+					mod = StandardModifier.SYNCHRONIZED;
+					__t.next();
+					break;
 					
 					// Transient
 				case KEYWORD_TRANSIENT:
-					throw new todo.TODO();
+					mod = StandardModifier.TRANSIENT;
+					__t.next();
+					break;
 					
 					// Volatile
 				case KEYWORD_VOLATILE:
-					throw new todo.TODO();
+					mod = StandardModifier.VOLATILE;
+					__t.next();
+					break;
 				
 					// Do not know what this is, so stop
 				default:
 					break __outer;
 			}
+			
+			// {@squirreljme.error AQ2b Duplicate modifier. (The modifier)}
+			if (mods.contains(mod))
+				throw new LayoutParserException(token,
+					String.format("AQ2b %s", mod));
+			mods.add(mod);
 		}
 		
-		throw new todo.TODO();
+		return new Modifiers(mods);
 	}
 }
 
