@@ -56,7 +56,6 @@ public class Command
 	/** The last command type. */
 	private static final int _LAST_TYPE =
 		ITEM;
-		
 	
 	/** The image used. */
 	private volatile Image _image;
