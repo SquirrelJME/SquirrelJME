@@ -13,7 +13,9 @@ package net.multiphasicapps.javac.layout;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import net.multiphasicapps.classfile.BinaryName;
 import net.multiphasicapps.javac.token.ExpandedToken;
@@ -31,6 +33,55 @@ import net.multiphasicapps.javac.token.TokenType;
 public final class TopLevelLayout
 	implements Layout
 {
+	/**
+	 * Initializes the top level layout.
+	 *
+	 * @param __pkg The package represented here.
+	 * @param __imps The import statements.
+	 * @param __classes The class containers.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/04/08
+	 */
+	public TopLevelLayout(BinaryName __pkg, ClassImport[] __imps,
+		ClassContainerLayout[] __classes)
+		throws NullPointerException
+	{
+		if (__pkg == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/08
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/08
+	 */
+	@Override
+	public final int hashCode()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/08
+	 */
+	@Override
+	public final String toString()
+	{
+		throw new todo.TODO();
+	}
+	
 	/**
 	 * Parses and returns the top level layout.
 	 *
@@ -128,30 +179,28 @@ public final class TopLevelLayout
 					token));
 		}
 		
-		// Read class modifiers
-		if (true)
-			throw new todo.TODO();
-		
 		// Parse class containers which contain modifiers (including
 		// annotations), classnames, possible generic type declarations,
 		// extends, and implements.
+		List<ClassContainerLayout> classes = new ArrayList<>();
 		for (;;)
 		{
-			// No more class containers?
-			if (true)
-			{
-				if (true)
-					throw new todo.TODO();
-				break;
-			}
+			token = __t.peek();
 			
-			// Parse container
-			if (true)
-				throw new todo.TODO();
+			// No more class containers?
+			if (token.type() == TokenType.END_OF_FILE)
+				break;
+			
+			// Read class container
+			classes.add(ClassContainerLayout.parse(__t));
 		}
 		
 		// Return the top level layout containing the entire class structure
-		throw new todo.TODO();
+		return new TopLevelLayout(
+			(inpackage == null ? new BinaryName("") : inpackage),
+			imports.<ClassImport>toArray(new ClassImport[imports.size()]),
+			classes.<ClassContainerLayout>toArray(
+				new ClassContainerLayout[classes.size()]));
 	}
 }
 

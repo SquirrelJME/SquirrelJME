@@ -16,27 +16,24 @@ import net.multiphasicapps.javac.token.ExpandingSource;
 import net.multiphasicapps.javac.token.TokenType;
 
 /**
- * This contains the layout for the class container which essentially is the
- * outer portion of the class declaration which includes modifiers (including
- * annotations), classnames, possible generic type declarations, extends, and
- * implements.
+ * This represents modifiers that may be associated with a class, interface,
+ * field or method. Modifiers include modifier keywords along with any
+ * annotations which may be split between other modifiers.
  *
- * @since 2018/03/22
+ * @since 2018/04/08
  */
-public final class ClassContainerLayout
-	implements Layout
+public final class Modifiers
 {
 	/**
-	 * Parses a single class container and returns it.
+	 * Parses the input tokens for any modifiers.
 	 *
-	 * @param __t Where to read class containers from.
-	 * @throws LayoutParserException If the class container could not be
-	 * parsed.
+	 * @param __t Where to read modifiers from.
+	 * @throws LayoutParserException If the modifiers could not be parsed.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/04/08
 	 */
-	public static final ClassContainerLayout parse(ExpandingSource __t)
+	public static final Modifiers parse(ExpandingSource __t)
 		throws LayoutParserException, IOException, NullPointerException
 	{
 		if (__t == null)
