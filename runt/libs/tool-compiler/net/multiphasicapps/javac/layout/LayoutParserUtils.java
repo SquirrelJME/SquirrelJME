@@ -190,21 +190,92 @@ public final class LayoutParserUtils
 	/**
 	 * Reads a group of tokens between brace types.
 	 *
-	 * @param __start The starting token.
+	 * @param __open The opening token.
 	 * @param __src The source to read tokens from.
 	 * @return The iterable containing input tokens.
+	 * @throws LayoutParserException If 
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/04/08
 	 */
 	public static final Iterable<ExpandedToken> readGroup(
-		ExpandedToken __start, ExpandingSource __src)
-		throws IOException, NullPointerException
+		ExpandedToken __open, ExpandingSource __src)
+		throws LayoutParserException, IOException, NullPointerException
 	{
-		if (__start == null || __src == null)
+		if (__open == null || __src == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Always push the opening token
+		// Use linked list because it is more optimized for adding new
+		// elements to the back, it is also intended to be used for
+		// iteration
+		List<ExpandedToken> rv = new LinkedList<>();
+		
+		// The returned group always has the surrounding token for
+		// consistency
+		rv.add(__open);
+		
+		// Determine the closing token type
+		TokenType opentype = __open.type(),
+			closetype;
+		switch (opentype)
+		{
+			case SYMBOL_OPEN_PARENTHESIS:
+				closetype = TokenType.SYMBOL_CLOSED_PARENTHESIS;
+				break;
+				
+			case SYMBOL_OPEN_BRACE:
+				closetype = TokenType.SYMBOL_CLOSED_BRACE;
+				break;
+			
+			case SYMBOL_OPEN_BRACKET:
+				closetype = TokenType.SYMBOL_CLOSED_BRACKET;
+				break;
+			
+				// Generics, this should work just fine with the expander
+			case COMPARE_LESS_THAN:
+				closetype = TokenType.COMPARE_GREATER_THAN;
+				break;
+			
+				// {@squirreljme.error AQ2i Could not determine the closing
+				// type for the token. (The open type)}
+			default:
+				throw new LayoutParserException(__open,
+					String.format("AQ2i %s", opentype));
+		}
+		
+		// The processing stack for how deep the tokens are keep track of
+		// the opening tokens in the event they are not properly closed.
+		Deque<ExpandedToken> stack = new ArrayDeque<>();
+		stack.push(__open);
+		
+		// Keep parsing token as long as the stack has tokens in it
+		while (!stack.isEmpty())
+		{
+			ExpandedToken next = __src.next();
+			TokenType type = next.type();
+			
+			// The token is always added to the result regardless
+			rv.add(next);
+			
+			// {@squirreljme.error AQ2j Reached end of file before the end of
+			// the token group was discovered, this means that one of the
+			// specified tokens has not been closed properly.
+			// (The group stack)}
+			if (type == TokenType.END_OF_FILE)
+				throw new LayoutParserException(stack.pollLast(),
+					String.format("AQ2j %s", stack));
+			
+			// Closing, pop off the stack
+			else if (type == closetype)
+				stack.pop();
+			
+			// Opening a new one, push to the stack
+			else if (type == opentype)
+				stack.push(next);
+		}
+		
+		return rv;
 	}
 }
 
