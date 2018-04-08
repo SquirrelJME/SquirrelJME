@@ -13,7 +13,11 @@ package net.multiphasicapps.javac.layout;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.Reader;
+import net.multiphasicapps.classfile.BinaryName;
+import net.multiphasicapps.javac.token.ExpandedToken;
+import net.multiphasicapps.javac.token.ExpandingSource;
 import net.multiphasicapps.javac.token.ExpandingTokenizer;
+import net.multiphasicapps.javac.token.TokenType;
 
 /**
  * This class contains the top level layout of a source file, it contains
@@ -72,21 +76,38 @@ public final class TopLevelLayout
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/22
 	 */
-	public static final TopLevelLayout parse(ExpandingTokenizer __t)
+	public static final TopLevelLayout parse(ExpandingSource __t)
 		throws LayoutParserException, IOException, NullPointerException
 	{
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
 		// Parse the package statement
-		if (true)
-			throw new todo.TODO();
+		ExpandedToken token = __t.peek();
+		BinaryName inpackage = null;
+		if (token.type() == TokenType.KEYWORD_PACKAGE)
+		{
+			// Consume package
+			token = __t.next();
+			
+			// Read package
+			inpackage = LayoutParserUtils.readBinaryName(__t);
+			
+			// {@squirreljme.error AQ25 Expected semicolon to follow the
+			// package statement. (The read token)}
+			token = __t.next();
+			if (token.type() != TokenType.SYMBOL_SEMICOLON)
+				throw new LayoutParserException(token, String.format(
+					"AQ25 %s", token));
+		}
 		
 		// Parse import statements
 		for (;;)
 		{
+			token = __t.peek();
+			
 			// No more import statements?
-			if (true)
+			if (token.type() != TokenType.KEYWORD_IMPORT)
 			{
 				if (true)
 					throw new todo.TODO();
