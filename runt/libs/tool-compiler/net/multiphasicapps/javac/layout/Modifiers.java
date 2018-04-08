@@ -39,6 +39,71 @@ public final class Modifiers
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
+		// Modifier reading loop, since there could be no modifiers to be
+		// read at all
+__outer:
+		for (;;)
+		{
+			ExpandedToken token = __t.peek();
+			TokenType type = token.type();
+			
+			// Depends on the type
+			switch (type)
+			{
+					// Annotated something
+				case SYMBOL_AT:
+					throw new todo.TODO();
+					
+					// Abstract
+				case KEYWORD_ABSTRACT:
+					throw new todo.TODO();
+					
+					// Final
+				case KEYWORD_FINAL:
+					throw new todo.TODO();
+					
+					// Native
+				case KEYWORD_NATIVE:
+					throw new todo.TODO();
+					
+					// Private
+				case KEYWORD_PRIVATE:
+					throw new todo.TODO();
+					
+					// Protected
+				case KEYWORD_PROTECTED:
+					throw new todo.TODO();
+					
+					// Public
+				case KEYWORD_PUBLIC:
+					throw new todo.TODO();
+					
+					// Static
+				case KEYWORD_STATIC:
+					throw new todo.TODO();
+					
+					// Strict floating point
+				case KEYWORD_STRICTFP:
+					throw new todo.TODO();
+					
+					// Synchronized
+				case KEYWORD_SYNCHRONIZED:
+					throw new todo.TODO();
+					
+					// Transient
+				case KEYWORD_TRANSIENT:
+					throw new todo.TODO();
+					
+					// Volatile
+				case KEYWORD_VOLATILE:
+					throw new todo.TODO();
+				
+					// Do not know what this is, so stop
+				default:
+					break __outer;
+			}
+		}
+		
 		throw new todo.TODO();
 	}
 }

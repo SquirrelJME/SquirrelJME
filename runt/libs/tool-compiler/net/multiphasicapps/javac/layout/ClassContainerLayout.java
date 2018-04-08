@@ -42,6 +42,29 @@ public final class ClassContainerLayout
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
+		// Read modifiers to the class
+		Modifiers modifiers = Modifiers.parse(__t);
+		
+		// Determine class type
+		if (true)
+			throw new todo.TODO();
+		
+		// Read generic arguments to the class, if applicable
+		if (true)
+			throw new todo.TODO();
+		
+		// Read class name
+		if (true)
+			throw new todo.TODO();
+		
+		// Read extends
+		if (true)
+			throw new todo.TODO();
+		
+		// Read implements
+		if (true)
+			throw new todo.TODO();
+		
 		throw new todo.TODO();
 	}
 }
