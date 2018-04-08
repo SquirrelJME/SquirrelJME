@@ -5,8 +5,7 @@ X-SquirrelJME-Vendor: Stephanie Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This project contains the base support needed
   for OpenGL ES 1.1 functionality defined by JSR 239.
-X-SquirrelJME-Depends: cldc-full midp-lcdui
+X-SquirrelJME-Depends: midp-lcdui
 X-SquirrelJME-Error: EJ
-X-SquirrelJME-Optional: opengles-softraster
 X-SquirrelJME-UUID: d46fcedc-9cdd-4315-87a5-6ecb1dafc2a7
-Microedition-Configuration: CLDC-1.8-Compact
+Microedition-Configuration: CLDC-1.8

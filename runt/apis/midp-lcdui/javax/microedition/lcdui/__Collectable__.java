@@ -43,5 +43,15 @@ abstract class __Collectable__
 	{
 		this._handle = __h;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/08
+	 */
+	@Override
+	public int hashCode()
+	{
+		return this._handle;
+	}
 }
 
