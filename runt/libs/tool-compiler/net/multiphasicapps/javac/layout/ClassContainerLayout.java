@@ -143,6 +143,9 @@ public final class ClassContainerLayout
 			throw new LayoutParserException(token,
 				String.format("AQ2h %s", token));
 		
+		// Read the body of the class and all of its contained tokens
+		Iterable<ExpandedToken> body = LayoutParserUtils.readGroup(token, __t);
+		
 		throw new todo.TODO();
 	}
 }
