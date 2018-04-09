@@ -209,13 +209,15 @@ public final class ClassContainerLayout
 	 * Parses the layout of a single member within the class.
 	 *
 	 * @param __t The source tokens to read from.
-	 * @return The read member.
+	 * @return The read member, multiple return values may be used in the
+	 * event a field was read and it referred to multiple fields separated
+	 * by the comma operator.
 	 * @throws LayoutParserException If the member could not be read.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/04/08
 	 */
-	private static final ClassMemberLayout __parseMember(ExpandingSource __t)
+	private static final ClassMemberLayout[] __parseMember(ExpandingSource __t)
 		throws LayoutParserException, IOException, NullPointerException
 	{
 		if (__t  == null)
@@ -232,9 +234,71 @@ public final class ClassContainerLayout
 			type == TokenType.KEYWORD_ENUM ||
 			type == TokenType.KEYWORD_INTERFACE ||
 			type == TokenType.SYMBOL_AT)
-			return ClassContainerLayout.__parse(modifiers, __t);
+			return new ClassMemberLayout[]{
+				ClassContainerLayout.__parse(modifiers, __t)};
 		
-		throw new todo.TODO();
+		// If there is generic type information then it must be a method
+		boolean mustbemethod = false,
+			mustbefield = false;
+		if (type == TokenType.COMPARE_LESS_THAN)
+		{
+			// It must be a method because it declares a generic
+			mustbemethod = true;
+			
+			throw new todo.TODO();
+		}
+		
+		// Read the base type, this may read in brackets for arrays
+		if (true)
+			throw new todo.TODO();
+		
+		// Identifiers may be read in a loop, this is for fields
+		for (;;)
+		{
+			// Parse the identifier in relation to the base type (for more
+			// brackets)
+			if (true)
+				throw new todo.TODO();
+			
+			// If there is an equal sign this is a field
+			if (true)
+			{
+				// {@squirreljme.error AQ2o Expected a method declaration
+				// and not a field declaration. (The token)}
+				if (mustbemethod)
+					throw new LayoutParserException(token,
+						String.format("AQ2o %s", token));
+				
+				throw new todo.TODO();
+			}
+			
+			// Otherwise this is a method
+			else if (true)
+			{
+				// {@squirreljme.error AQ2p Expected a field declaration
+				// and not a method declaration. (The token)}
+				if (mustbefield)
+					throw new LayoutParserException(token,
+						String.format("AQ2p %s", token));
+				
+				throw new todo.TODO();
+			}
+			
+			// If this is a comma then read another field with the base
+			// type
+			if (true)
+			{
+				// {@squirreljme.error AQ2q Cannot declare multiple methods
+				// with the comma separator. (The token)}
+				if (mustbemethod)
+					throw new LayoutParserException(token,
+						String.format("AQ2q %s", token));
+				
+				throw new todo.TODO();
+			}
+			
+			throw new todo.TODO();
+		}
 	}
 	
 	/**
@@ -283,7 +347,9 @@ public final class ClassContainerLayout
 			}
 			
 			// Read single member
-			members.add(ClassContainerLayout.__parseMember(__t));
+			for (ClassMemberLayout cml :
+				ClassContainerLayout.__parseMember(__t))
+				members.add(cml);
 		}
 		
 		// {@squirreljme.error AQ2m Expected a closing brace at the end
