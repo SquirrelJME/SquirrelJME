@@ -14,6 +14,7 @@ import java.io.IOException;
 import net.multiphasicapps.classfile.ClassIdentifier;
 import net.multiphasicapps.javac.token.ExpandedToken;
 import net.multiphasicapps.javac.token.ExpandingSource;
+import net.multiphasicapps.javac.token.ExpandingStacker;
 import net.multiphasicapps.javac.token.TokenType;
 
 /**
@@ -143,8 +144,55 @@ public final class ClassContainerLayout
 			throw new LayoutParserException(token,
 				String.format("AQ2h %s", token));
 		
-		// Read the body of the class and all of its contained tokens
-		Iterable<ExpandedToken> body = LayoutParserUtils.readGroup(token, __t);
+		// Handle reading of the class members
+		try (ExpandingSource src = new ExpandingStacker(
+			LayoutParserUtils.readGroup(token, __t)))
+		{
+			// {@squirreljme.error AQ2k Expected opening brace at start of
+			// class. (The token)}
+			token = src.next();
+			if (token.type() != TokenType.SYMBOL_OPEN_BRACE)
+				throw new LayoutParserException(token,
+					String.format("AQ2k %s", token));
+			
+			// Read enumeration members
+			if (classtype == ClassType.ENUM)
+			{
+				throw new todo.TODO();
+			}
+			
+			// Member reading loop
+			for (;;)
+			{
+				// No more members to read?
+				token = src.peek();
+				if (token.type() == TokenType.SYMBOL_CLOSED_BRACE)
+				{
+					src.next();
+					break;
+				}
+				
+				if (true)
+					throw new todo.TODO();
+			}
+			
+			// {@squirreljme.error AQ2m Expected a closing brace at the end
+			// of a class declaration. (The token)}
+			token = src.next();
+			if (token.type() != TokenType.SYMBOL_CLOSED_BRACE)
+				throw new LayoutParserException(token,
+					String.format("AQ2m %s", token));
+			
+			// {@squirreljme.error AQ2l Expected no more tokens to follow
+			// the class declaration. (The read token)}
+			token = src.next();
+			if (token.type() != TokenType.END_OF_FILE)
+				throw new LayoutParserException(token,
+					String.format("AQ2l %s", token));
+			
+			if (true)
+				throw new todo.TODO();
+		}
 		
 		throw new todo.TODO();
 	}
