@@ -13,11 +13,10 @@ package net.multiphasicapps.javac.cute;
 import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.classfile.ClassName;
-import net.multiphasicapps.javac.basic.BasicStructure;
-import net.multiphasicapps.javac.basic.BasicStructureParser;
 import net.multiphasicapps.javac.CompilerException;
 import net.multiphasicapps.javac.CompilerInput;
 import net.multiphasicapps.javac.CompilerLogger;
+import net.multiphasicapps.javac.layout.TopLevelLayout;
 import net.multiphasicapps.javac.MessageType;
 import net.multiphasicapps.javac.token.Tokenizer;
 
@@ -74,13 +73,11 @@ public final class SourcedClassNode
 		log.message(MessageType.INFO, __input, "AQ0s");
 		
 		// Setup streamlined tokenizers to parse the classes
-		BasicStructure bs;
-		try (InputStream in = __input.open();
-			BasicStructureParser bsp = new BasicStructureParser(
-				new Tokenizer(__input.fileName(), in)))
+		TopLevelLayout toplayout;
+		try (InputStream in = __input.open())
 		{
 			// Load the structure
-			bs = bsp.parse();
+			toplayout = TopLevelLayout.parse(__input.fileName(), in);
 		}
 		
 		// {@squirreljme.error AQ0t Could not read the input source file.
