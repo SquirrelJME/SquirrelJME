@@ -12,7 +12,10 @@ package net.multiphasicapps.javac.layout;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+import net.multiphasicapps.classfile.BinaryName;
 import net.multiphasicapps.classfile.ClassIdentifier;
 import net.multiphasicapps.javac.token.ExpandedToken;
 import net.multiphasicapps.javac.token.ExpandingSource;
@@ -150,13 +153,35 @@ public final class ClassContainerLayout
 		type = token.type();
 		
 		// Read extends
+		Set<GenericBinaryName> cextends = new LinkedHashSet<>();
 		if (type == TokenType.KEYWORD_EXTENDS)
-		{	
-			if (true)
-				throw new todo.TODO();
-		}
+			for (;;)
+			{
+				// Parse name
+				cextends.add(LayoutParserUtils.readGenericBinaryName(__t));
+				
+				// Read next
+				token = __t.next(); 
+				type = token.type();
+				
+				// Stop at implements and opening brace
+				if (type == TokenType.KEYWORD_IMPLEMENTS ||
+					type == TokenType.SYMBOL_OPEN_BRACE)
+					break;
+				
+				// Commas are okay
+				else if (type == TokenType.SYMBOL_COMMA)
+					continue;
+				
+				// {@squirreljme.error AQ2n Expected implements, comma, or
+				// opening brace to follow extends. (The token)}
+				else
+					throw new LayoutParserException(token,
+						String.format("AQ2n %s", token));
+			}
 		
 		// Read implements
+		Set<GenericBinaryName> cimplements = new LinkedHashSet<>();
 		if (type == TokenType.KEYWORD_IMPLEMENTS)
 		{
 			if (true)

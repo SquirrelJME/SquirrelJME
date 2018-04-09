@@ -193,7 +193,7 @@ public final class LayoutParserUtils
 	 * @param __open The opening token.
 	 * @param __src The source to read tokens from.
 	 * @return The iterable containing input tokens.
-	 * @throws LayoutParserException If 
+	 * @throws LayoutParserException If it could not be parsed.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/04/08
@@ -276,6 +276,26 @@ public final class LayoutParserUtils
 		}
 		
 		return rv;
+	}
+	
+	/**
+	 * Reads a generic binary name from the input.
+	 *
+	 * @param __src The source to read tokens from.
+	 * @return The generic binary name.
+	 * @throws LayoutParserException If it could not be parsed.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/04/08
+	 */
+	public static final GenericBinaryName readGenericBinaryName(
+		ExpandingSource __src)
+		throws LayoutParserException, IOException, NullPointerException
+	{
+		if (__src == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 }
 
