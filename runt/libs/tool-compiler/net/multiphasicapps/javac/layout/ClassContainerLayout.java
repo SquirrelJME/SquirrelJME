@@ -134,13 +134,6 @@ public final class ClassContainerLayout
 		token = __t.next();
 		type = token.type();
 		
-		// Read generic arguments to the class, if applicable
-		if (type == TokenType.COMPARE_LESS_THAN)
-		{
-			if (true)
-				throw new todo.TODO();
-		}
-		
 		// {@squirreljme.error AQ2g Expected identifier for the class name.
 		// (The token)}
 		if (type != TokenType.IDENTIFIER)
@@ -148,9 +141,16 @@ public final class ClassContainerLayout
 				String.format("AQ2g %s", token));
 		ClassIdentifier name = new ClassIdentifier(token.characters());
 		
-		// Could be extends, implements, or opening brace
+		// Could be generic, extends, implements, or opening brace
 		token = __t.next();
 		type = token.type();
+		
+		// Read generic arguments to the class, if applicable
+		if (type == TokenType.COMPARE_LESS_THAN)
+		{
+			if (true)
+				throw new todo.TODO();
+		}
 		
 		// Read extends
 		Set<GenericBinaryName> cextends = new LinkedHashSet<>();

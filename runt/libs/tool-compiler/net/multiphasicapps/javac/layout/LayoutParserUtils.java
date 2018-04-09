@@ -281,7 +281,7 @@ public final class LayoutParserUtils
 	/**
 	 * Reads a generic binary name from the input.
 	 *
-	 * @param __src The source to read tokens from.
+	 * @param __t The source to read tokens from.
 	 * @return The generic binary name.
 	 * @throws LayoutParserException If it could not be parsed.
 	 * @throws IOException On read errors.
@@ -289,10 +289,41 @@ public final class LayoutParserUtils
 	 * @since 2018/04/08
 	 */
 	public static final GenericBinaryName readGenericBinaryName(
-		ExpandingSource __src)
+		ExpandingSource __t)
 		throws LayoutParserException, IOException, NullPointerException
 	{
-		if (__src == null)
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Read normal binary name
+		BinaryName bin = LayoutParserUtils.readBinaryName(__t);
+		
+		// Potentially parse generic parameters?
+		ExpandedToken token = __t.peek();
+		if (token.type() == TokenType.COMPARE_LESS_THAN)
+			return new GenericBinaryName(bin,
+				LayoutParserUtils.readGenericParameters(__t));
+		
+		// Binary name with no generics
+		else
+			return new GenericBinaryName(bin);
+	}
+	
+	/**
+	 * Reads and parses generic parameters.
+	 *
+	 * @param __t The source to read tokens from.
+	 * @return The generic parameters.
+	 * @throws LayoutParserException If it could not be parsed.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/04/09
+	 */
+	public static final GenericParameters readGenericParameters(
+		ExpandingSource __t)
+		throws LayoutParserException, IOException, NullPointerException
+	{
+		if (__t == null)
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
