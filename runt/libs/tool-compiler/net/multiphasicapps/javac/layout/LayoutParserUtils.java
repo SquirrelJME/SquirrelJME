@@ -328,5 +328,49 @@ public final class LayoutParserUtils
 		
 		throw new todo.TODO();
 	}
+	
+	/**
+	 * Reads generic type information.
+	 *
+	 * @param __t The input token source.
+	 * @return The parsed generic type.
+	 * @throws LayoutParserException If it could not be parsed.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/04/09
+	 */
+	public static final GenericType readGenericType(ExpandingSource __t)
+		throws LayoutParserException, IOException, NullPointerException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// There is always a generic binary name for the type
+		GenericBinaryName gbn = LayoutParserUtils.readGenericBinaryName(__t);
+		
+		// It may additionally be followed by array brackets
+		int dims = 0;
+		for (;;)
+		{
+			// Has to be an open bracket
+			ExpandedToken token = __t.peek();
+			if (token.type() != TokenType.SYMBOL_OPEN_BRACKET)
+				break;
+			
+			// Count dimension and consume the token
+			dims++;
+			__t.next();
+			
+			// {@squirreljme.error AQ2s In array type, expected a closing
+			// bracket to follow immedietly after the open bracket. (The
+			// read token)}
+			token = __t.next();
+			if (token.type() != TokenType.SYMBOL_CLOSED_BRACKET)
+				throw new LayoutParserException(token,
+					String.format("AQ2s %s", token));
+		}
+		
+		return new GenericType(gbn, dims);
+	}
 }
 

@@ -226,7 +226,7 @@ public final class ClassContainerLayout
 		// Read the modifiers for the member
 		Modifiers modifiers = Modifiers.parse(__t);
 		
-		ExpandedToken token = __t.next();
+		ExpandedToken token = __t.peek();
 		TokenType type = token.type();
 		
 		// Member class type
@@ -236,6 +236,10 @@ public final class ClassContainerLayout
 			type == TokenType.SYMBOL_AT)
 			return new ClassMemberLayout[]{
 				ClassContainerLayout.__parse(modifiers, __t)};
+		
+		// Initializer or static initializer
+		else if (type == TokenType.SYMBOL_OPEN_BRACE)
+			throw new todo.TODO();
 		
 		// If there is generic type information then it must be a method
 		boolean mustbemethod = false,
@@ -249,8 +253,16 @@ public final class ClassContainerLayout
 		}
 		
 		// Read the base type, this may read in brackets for arrays
-		if (true)
+		GenericType basetype = LayoutParserUtils.readGenericType(__t);
+		
+		token = __t.peek();
+		type = token.type();
+		
+		// This is a constructor
+		if (type == TokenType.SYMBOL_OPEN_PARENTHESIS)
+		{
 			throw new todo.TODO();
+		}
 		
 		// Identifiers may be read in a loop, this is for fields
 		for (;;)
