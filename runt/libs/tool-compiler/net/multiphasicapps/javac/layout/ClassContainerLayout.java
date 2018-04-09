@@ -11,6 +11,8 @@
 package net.multiphasicapps.javac.layout;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import net.multiphasicapps.classfile.ClassIdentifier;
 import net.multiphasicapps.javac.token.ExpandedToken;
 import net.multiphasicapps.javac.token.ExpandingSource;
@@ -26,7 +28,7 @@ import net.multiphasicapps.javac.token.TokenType;
  * @since 2018/03/22
  */
 public final class ClassContainerLayout
-	implements Layout
+	implements ClassMemberLayout, Layout
 {
 	/**
 	 * Parses a single class container and returns it.
@@ -44,8 +46,31 @@ public final class ClassContainerLayout
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		// Read modifiers to the class
-		Modifiers modifiers = Modifiers.parse(__t);
+		// Read modifiers then continue on to parsing the class
+		// This has to be done because it is unknown what kind of member is
+		// in a class before the modifiers are read so this allows simple
+		// parsing of classes as members accordingly.
+		return ClassContainerLayout.__parse(Modifiers.parse(__t), __t);
+	}
+		
+	/**
+	 * Parses a single class container with the given modifiers then
+	 * returns it. This method is needed
+	 *
+	 * @param __m The modifiers for the class.
+	 * @param __t Where to read class containers from.
+	 * @throws LayoutParserException If the class container could not be
+	 * parsed.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/04/08
+	 */
+	private static final ClassContainerLayout __parse(Modifiers __m,
+		ExpandingSource __t)
+		throws LayoutParserException, IOException, NullPointerException
+	{
+		if (__m == null || __t == null)
+			throw new NullPointerException("NARG");
 		
 		ExpandedToken token = __t.next();
 		TokenType type = token.type();
@@ -144,57 +169,114 @@ public final class ClassContainerLayout
 			throw new LayoutParserException(token,
 				String.format("AQ2h %s", token));
 		
-		// Handle reading of the class members
+		// Parse the members of the class
+		ClassMemberLayout[] members;
 		try (ExpandingSource src = new ExpandingStacker(
 			LayoutParserUtils.readGroup(token, __t)))
 		{
-			// {@squirreljme.error AQ2k Expected opening brace at start of
-			// class. (The token)}
-			token = src.next();
-			if (token.type() != TokenType.SYMBOL_OPEN_BRACE)
-				throw new LayoutParserException(token,
-					String.format("AQ2k %s", token));
-			
-			// Read enumeration members
-			if (classtype == ClassType.ENUM)
-			{
-				throw new todo.TODO();
-			}
-			
-			// Member reading loop
-			for (;;)
-			{
-				// No more members to read?
-				token = src.peek();
-				if (token.type() == TokenType.SYMBOL_CLOSED_BRACE)
-				{
-					src.next();
-					break;
-				}
-				
-				if (true)
-					throw new todo.TODO();
-			}
-			
-			// {@squirreljme.error AQ2m Expected a closing brace at the end
-			// of a class declaration. (The token)}
-			token = src.next();
-			if (token.type() != TokenType.SYMBOL_CLOSED_BRACE)
-				throw new LayoutParserException(token,
-					String.format("AQ2m %s", token));
-			
-			// {@squirreljme.error AQ2l Expected no more tokens to follow
-			// the class declaration. (The read token)}
-			token = src.next();
-			if (token.type() != TokenType.END_OF_FILE)
-				throw new LayoutParserException(token,
-					String.format("AQ2l %s", token));
-			
-			if (true)
-				throw new todo.TODO();
+			members = ClassContainerLayout.__parseMembers(classtype, src);
 		}
 		
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Parses the layout of a single member within the class.
+	 *
+	 * @param __t The source tokens to read from.
+	 * @return The read member.
+	 * @throws LayoutParserException If the member could not be read.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/04/08
+	 */
+	private static final ClassMemberLayout __parseMember(ExpandingSource __t)
+		throws LayoutParserException, IOException, NullPointerException
+	{
+		if (__t  == null)
+			throw new NullPointerException("NARG");
+		
+		// Read the modifiers for the member
+		Modifiers modifiers = Modifiers.parse(__t);
+		
+		ExpandedToken token = __t.next();
+		TokenType type = token.type();
+		
+		// Member class type
+		if (type == TokenType.KEYWORD_CLASS ||
+			type == TokenType.KEYWORD_ENUM ||
+			type == TokenType.KEYWORD_INTERFACE ||
+			type == TokenType.SYMBOL_AT)
+			return ClassContainerLayout.__parse(modifiers, __t);
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Parses the members of a class, this is needed for enumeration
+	 * elements and additionally for anonymous classes defined within methods.
+	 *
+	 * @param __ct The type of class to parse.
+	 * @param __t The input token source.
+	 * @throws LayoutParserException If the member layout is not valid.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/04/08
+	 */
+	private static final ClassMemberLayout[] __parseMembers(ClassType __ct,
+		ExpandingSource __t)
+		throws LayoutParserException, IOException, NullPointerException
+	{
+		if (__ct == null || __t == null)
+			throw new NullPointerException("NARG");
+		
+		ExpandedToken token;
+		
+		// {@squirreljme.error AQ2k Expected opening brace at start of
+		// class. (The token)}
+		token = __t.next();
+		if (token.type() != TokenType.SYMBOL_OPEN_BRACE)
+			throw new LayoutParserException(token,
+				String.format("AQ2k %s", token));
+		
+		// Read enumeration members
+		if (__ct == ClassType.ENUM)
+		{
+			throw new todo.TODO();
+		}
+		
+		// Member reading loop
+		List<ClassMemberLayout> members = new ArrayList<>();
+		for (;;)
+		{
+			// No more members to read?
+			token = __t.peek();
+			if (token.type() == TokenType.SYMBOL_CLOSED_BRACE)
+			{
+				__t.next();
+				break;
+			}
+			
+			// Read single member
+			members.add(ClassContainerLayout.__parseMember(__t));
+		}
+		
+		// {@squirreljme.error AQ2m Expected a closing brace at the end
+		// of a class declaration. (The token)}
+		token = __t.next();
+		if (token.type() != TokenType.SYMBOL_CLOSED_BRACE)
+			throw new LayoutParserException(token,
+				String.format("AQ2m %s", token));
+		
+		// {@squirreljme.error AQ2l Expected no more tokens to follow
+		// the class declaration. (The read token)}
+		token = __t.next();
+		if (token.type() != TokenType.END_OF_FILE)
+			throw new LayoutParserException(token,
+				String.format("AQ2l %s", token));
+		
+		return members.<ClassMemberLayout>toArray(
+			new ClassMemberLayout[members.size()]);
 	}
 }
 
