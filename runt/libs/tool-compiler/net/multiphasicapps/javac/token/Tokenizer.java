@@ -690,6 +690,9 @@ public class Tokenizer
 				break;
 			}
 			
+			// Debug
+			todo.DEBUG.note("DEBUG -- Literal char: %c%n", peek);
+			
 			// {@squirreljme.error AQ0v Number has multiple decimal points,
 			// only one is valid.}
 			if (peek == '.')

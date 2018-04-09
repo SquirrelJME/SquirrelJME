@@ -107,7 +107,7 @@ public class TODO
 	 * @return The formatted string.
 	 * @since 2018/04/02
 	 */
-	private static final String __formatTrace(CallTraceElement __e)
+	static final String __formatTrace(CallTraceElement __e)
 		throws NullPointerException
 	{
 		if (__e == null)
@@ -159,7 +159,7 @@ public class TODO
 	 * @return The call trace element for the current location.
 	 * @since 2018/04/02
 	 */
-	private static final CallTraceElement __where()
+	static final CallTraceElement __where()
 	{
 		return TODO.__where(new Throwable());
 	}
@@ -172,7 +172,7 @@ public class TODO
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/04/02
 	 */
-	private static final CallTraceElement __where(Throwable __t)
+	static final CallTraceElement __where(Throwable __t)
 		throws NullPointerException
 	{
 		if (__t == null)
@@ -180,8 +180,14 @@ public class TODO
 		
 		// Get the first one which is not in this class
 		for (CallTraceElement e : SystemCall.EASY.throwableGetStack(__t))
-			if (!"todo.TODO".equals(e.className()))
+		{
+			String cn = e.className();
+			if (cn == null)
+				cn = "";
+			
+			if (!cn.startsWith("todo."))
 				return e;
+		}
 		
 		// Unknown
 		return new CallTraceElement();
