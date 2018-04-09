@@ -1,0 +1,13 @@
+# 2018/04/08
+
+## 14:07
+
+Going to skip LCDUI a bit and go back to the layout parser I was working on so
+I can get the test projects compiling and such.
+
+## 17:09
+
+For the parser, I am going to do a simple read of the body for an entire class
+before going into the parser for it that way I do not need to worry about the
+state of it and such. Basically all tokens would be remained within the inner
+fragment as it is parsed.
