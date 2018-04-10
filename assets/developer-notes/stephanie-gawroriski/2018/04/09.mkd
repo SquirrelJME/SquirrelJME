@@ -1,0 +1,32 @@
+# 2018/04/09
+
+## 19:56
+
+I have an idea when it comes to parsing members within a class. Also for the
+layout code I want to remove `IOException` and instead having a kind of parse
+error instead that way I can lazily initialize layouts like I originally
+planned to anyway. Additionally I can have basic member structures too. With
+counting parenthesis, braces, and brackets I could track members and such and
+their contained portions. I could very easily just determine which tokens are
+a part of member by keeping track of things. They do not really need to be
+valid at all. It would allow me to read members and such as individual members
+additionally. For the comma operator, I would just have a previous member
+reference of sort. I could simplify the parsing logic though because right now
+it is quite complex. Basic what I need after tokenization is basic structuring
+of elements with sub-elements and such. I think I should change instead of
+having layout just have a sub of the tokenizer which can parse and store the
+structure of a source code file. Do not worry about modifiers or anything in
+it, just worry about the tokens which are logically together. But basically
+this would involve lists and having sub-lists of tokens. So I load the entire
+file and store it in a list. Then I go through that list and create sub-groups
+accordingly. Then I just keep dividing the tokens up into logical units. So
+classes, to members in the class, to parts of a member for fields, methods,
+and other such things. I think this would simplify the parser. Although it
+would add an extra step and complicate things.
+
+## 20:14
+
+Okay so maybe I should take the syntax of a single compilation unit at a time
+when parsing tokens, then just recursively go into and build an entire tree of
+source code based on input tokens and such. Kind of just spit out information
+accordingly for each sub-step to be taken.
