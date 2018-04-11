@@ -10,7 +10,6 @@
 
 package net.multiphasicapps.javac.token;
 
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -70,7 +69,7 @@ public final class ExpandingStacker
 	 */
 	@Override
 	protected final ExpandedToken readNext()
-		throws IOException
+		throws TokenizerException
 	{
 		try
 		{

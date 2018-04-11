@@ -11,15 +11,13 @@
 package net.multiphasicapps.javac.token;
 
 import java.io.Closeable;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import net.multiphasicapps.javac.FileNameLineAndColumn;
 
 /**
- * This class is used for any source which provides expanding
- * tokens.
+ * This class is used for any source which provides expanded tokens.
  *
  * @since 2018/03/22
  */
@@ -41,7 +39,7 @@ public abstract class ExpandingSource
 	 * @since 2018/03/22
 	 */
 	protected abstract ExpandedToken readNext()
-		throws IOException;
+		throws TokenizerException;
 	
 	/**
 	 * {@inheritDoc}
@@ -90,11 +88,11 @@ public abstract class ExpandingSource
 	 *
 	 * @return The next token in the queue or end of file tokens if there are
 	 * no more tokens.
-	 * @throws IOException On read errors.
+	 * @throws TokenizerException On read errors.
 	 * @since 2018/03/12
 	 */
 	public final ExpandedToken next()
-		throws IOException
+		throws TokenizerException
 	{
 		// Make sure next token is ready
 		this.peek();
@@ -109,11 +107,11 @@ public abstract class ExpandingSource
 	 * Returns the token that would be returned on the call to {@link #next()}
 	 *
 	 * @return The next token that would be returned.
-	 * @throws IOException On read errors.
+	 * @throws TokenizerException On read errors.
 	 * @since 2018/03/12
 	 */
 	public final ExpandedToken peek()
-		throws IOException
+		throws TokenizerException
 	{
 		// Just read the first token
 		return this.peek(0);
@@ -125,11 +123,11 @@ public abstract class ExpandingSource
 	 * @param __o The number of tokens to read into the future.
 	 * @return The next token that would be returned.
 	 * @throws IndexOutOfBoundsException If a negative index was specified.
-	 * @throws IOException On read errors.
+	 * @throws TokenizerException On read errors.
 	 * @since 2018/03/12
 	 */
 	public final ExpandedToken peek(int __o)
-		throws IndexOutOfBoundsException, IOException
+		throws IndexOutOfBoundsException, TokenizerException
 	{
 		// {@squirreljme.error AQ12 Cannot peek a token with a negative
 		// offset.}
@@ -160,6 +158,19 @@ public abstract class ExpandingSource
 		else if (__o == qsize - 1)
 			return queue.getLast();
 		return queue.get(__o);
+	}
+	
+	/**
+	 * This splits this expanding source to an expander which uses only the
+	 * peeking operation. The instance this split from returns a next token
+	 * then the operation will fail.
+	 *
+	 * @return An expanding peeker.
+	 * @since 2018/04/11
+	 */
+	public final ExpandingPeeker split()
+	{
+		throw new todo.TODO();
 	}
 }
 
