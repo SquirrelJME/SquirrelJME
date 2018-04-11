@@ -12,7 +12,6 @@ package net.multiphasicapps.javac.token;
 
 import java.io.Closeable;
 import java.io.InputStream;
-import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -106,7 +105,7 @@ public final class ExpandingTokenizer
 	 */
 	@Override
 	public final void close()
-		throws IOException
+		throws TokenizerException
 	{
 		this.tokenizer.close();
 	}
@@ -117,7 +116,7 @@ public final class ExpandingTokenizer
 	 */
 	@Override
 	protected final ExpandedToken readNext()
-		throws IOException
+		throws TokenizerException
 	{
 		int opencount = this._opencount;
 		try
@@ -250,7 +249,7 @@ public final class ExpandingTokenizer
 	 * @since 2018/03/12
 	 */
 	private final ExpandedToken __read()
-		throws IOException
+		throws TokenizerException
 	{
 		List<Token> commentpush = this._commentpush;
 		for (;;)

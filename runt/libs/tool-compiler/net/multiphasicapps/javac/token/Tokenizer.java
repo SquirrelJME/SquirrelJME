@@ -145,9 +145,17 @@ public class Tokenizer
 	 */
 	@Override
 	public void close()
-		throws IOException
+		throws TokenizerException
 	{
-		this.in.close();
+		try
+		{
+			this.in.close();
+		}
+		catch (IOException e)
+		{
+			// {@squirreljme.error AQ2t Failed to close the tokenizer.}
+			throw new TokenizerException(this, "AQ2t", e);
+		}
 	}
 	
 	/**
@@ -184,12 +192,12 @@ public class Tokenizer
 	 * Returns the next token.
 	 *
 	 * @return The next token or {@code null} if none remain.
-	 * @throws IOException On read errors.
-	 * @throws TokenizerException If a token sequence is not valid.
+	 * @throws TokenizerException If a token sequence is not valid or it could
+	 * not be read.
 	 * @since 2017/09/05
 	 */
 	public Token next()
-		throws IOException, TokenizerException
+		throws TokenizerException
 	{
 		// Loop to skip whitespace
 		for (;;)
@@ -298,11 +306,11 @@ public class Tokenizer
 	 * Decides how to parse an equal sign.
 	 *
 	 * @return The read token.
-	 * @throws IOException On read errors.
+	 * @throws TokenizerException If the token is not valid.
 	 * @since 2017/09/11
 	 */
 	private Token __decideEquals()
-		throws IOException
+		throws TokenizerException
 	{
 		// Checking for equality?
 		int d = __peek();
@@ -321,11 +329,11 @@ public class Tokenizer
 	 * Decides what to do with a forward slash.
 	 *
 	 * @return The read token.
-	 * @throws IOException On read errors.
+	 * @throws TokenizerException If the token is not valid.
 	 * @since 2017/09/09
 	 */
 	private Token __decideForwardSlash()
-		throws IOException
+		throws TokenizerException
 	{
 		int c = __peek();
 		
@@ -359,11 +367,11 @@ public class Tokenizer
 	 *
 	 * @param __c The starting character.
 	 * @return The resulting token.
-	 * @throws IOException On read errors.
+	 * @throws TokenizerException If the token is not valid.
 	 * @since 2018/03/06
 	 */
 	private Token __decideOperator(int __c)
-		throws IOException
+		throws TokenizerException
 	{
 		List<String> operators = Tokenizer._OPERATORS;
 		int numops = operators.size();
@@ -494,10 +502,11 @@ public class Tokenizer
 	 *
 	 * @param __ic The initial character.
 	 * @return The read identifier.
+	 * @throws TokenizerException If the token is not valid.
 	 * @since 2017/09/10
 	 */
 	private Token __getIdentifier(char __ic)
-		throws IOException
+		throws TokenizerException
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.append(__ic);
@@ -591,11 +600,12 @@ public class Tokenizer
 	/**
 	 * Reads a multi-line comment.
 	 *
-	 * @throws IOException On read errors.
+	 * @return The comment token.
+	 * @throws TokenizerException If the token is not valid.
 	 * @since 2017/09/11
 	 */
 	private Token __getMultiLineComment()
-		throws IOException
+		throws TokenizerException
 	{
 		StringBuilder sb = new StringBuilder();
 		for (;;)
@@ -639,11 +649,11 @@ public class Tokenizer
 	 *
 	 * @param __c The initial read character.
 	 * @return The decoded token.
-	 * @throws IOException On read errors.
+	 * @throws TokenizerException If the token is not valid.
 	 * @since 2017/09/11
 	 */
 	private Token __getNumberLiteral(char __c)
-		throws IOException
+		throws TokenizerException
 	{
 		// Read a decimal point?
 		boolean gotdec = (__c == '.');
@@ -786,11 +796,11 @@ public class Tokenizer
 	 * Reads a single line comment.
 	 *
 	 * @return The decoded token.
-	 * @throws IOException On read errors.
+	 * @throws TokenizerException If the token is not valid.
 	 * @since 2017/09/09
 	 */
 	private Token __getSingleLineComment()
-		throws IOException
+		throws TokenizerException
 	{
 		StringBuilder sb = new StringBuilder();
 		for (;;)
@@ -809,11 +819,11 @@ public class Tokenizer
 	 * Decodes a string.
 	 *
 	 * @return The resulting string.
-	 * @throws IOException On read errors.
+	 * @throws TokenizerException If the token is not valid.
 	 * @since 2018/03/06
 	 */
 	private Token __getString()
-		throws IOException
+		throws TokenizerException
 	{
 		StringBuilder sb = new StringBuilder("\"");
 		boolean escaped = false;
@@ -837,11 +847,11 @@ public class Tokenizer
 	 * Returns the next character.
 	 *
 	 * @return The next character.
-	 * @throws IOException On read errors.
+	 * @throws TokenizerException If the next token could not be read.
 	 * @since 2017/09/09
 	 */
 	private int __next()
-		throws IOException
+		throws TokenizerException
 	{
 		// Peek character so it is in the buffer
 		__peek();
@@ -861,30 +871,39 @@ public class Tokenizer
 	 * Peeks the next character.
 	 *
 	 * @return The next character.
-	 * @throws IOException On read errors.
+	 * @throws TokenizerException If the next character could not be peeked.
 	 * @since 2017/09/09
 	 */
 	private int __peek()
-		throws IOException
+		throws TokenizerException
 	{
-		// Use the pre-existing character
-		if (this._nxwaiting)
-			return this._nxchar;
+		try
+		{
+			// Use the pre-existing character
+			if (this._nxwaiting)
+				return this._nxchar;
+			
+			// Read in next character
+			LogicalReader in = this.in;
+			int c = in.read(),
+				ln = in.line(),
+				cl = in.column();
+			
+			// Set details
+			this._nxchar = c;
+			this._nxline = ln;
+			this._nxcolumn = cl;
+			this._nxwaiting = true;
+			
+			// Need to know the actual character
+			return c;
+		}
 		
-		// Read in next character
-		LogicalReader in = this.in;
-		int c = in.read(),
-			ln = in.line(),
-			cl = in.column();
-		
-		// Set details
-		this._nxchar = c;
-		this._nxline = ln;
-		this._nxcolumn = cl;
-		this._nxwaiting = true;
-		
-		// Need to know the actual character
-		return c;
+		// {@squirreljme.error AQ2u Could not read the next character.}
+		catch (IOException e)
+		{
+			throw new TokenizerException(this, "AQ2u", e);
+		}
 	}
 	
 	/**
