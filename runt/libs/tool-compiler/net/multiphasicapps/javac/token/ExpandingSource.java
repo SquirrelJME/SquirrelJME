@@ -29,7 +29,10 @@ public abstract class ExpandingSource
 		new LinkedList<>();
 	
 	/** The last token which was read. */
-	private volatile FileNameLineAndColumn _last;
+	private FileNameLineAndColumn _last;
+	
+	/** The number of tokens which have been returned. */
+	private int _retcount;
 	
 	/**
 	 * Reads the next token from the input.
@@ -52,6 +55,17 @@ public abstract class ExpandingSource
 		if (last != null)
 			return last.column();
 		return -1;
+	}
+	
+	/**
+	 * Returns the number of tokens which have been returned.
+	 *
+	 * @return The returned token count.
+	 * @since 2018/04/11
+	 */
+	public final int count()
+	{
+		return this._retcount;
 	}
 	
 	/**
@@ -100,6 +114,7 @@ public abstract class ExpandingSource
 		// Return and store it
 		ExpandedToken rv = this._queue.removeFirst();
 		this._last = rv;
+		this._retcount++;
 		return rv;
 	}
 	
@@ -170,7 +185,21 @@ public abstract class ExpandingSource
 	 */
 	public final ExpandingPeeker split()
 	{
-		throw new todo.TODO();
+		return this.split(0);
+	}
+	
+	/**
+	 * This splits this expanding source to an expander which uses only the
+	 * peeking operation. The instance this split from returns a next token
+	 * then the operation will fail.
+	 *
+	 * @param __p The number of tokens to peek in the future.
+	 * @return An expanding peeker.
+	 * @since 2018/04/11
+	 */
+	public final ExpandingPeeker split(int __p)
+	{
+		return new ExpandingPeeker(this, __p);
 	}
 }
 
