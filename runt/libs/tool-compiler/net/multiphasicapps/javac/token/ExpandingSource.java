@@ -35,6 +35,15 @@ public abstract class ExpandingSource
 	private int _retcount;
 	
 	/**
+	 * {@inheritDoc}
+	 * @throws TokenizerException If it failed to close.
+	 * @since 2018/04/11
+	 */
+	@Override
+	public abstract void close()
+		throws TokenizerException;
+	
+	/**
 	 * Reads the next token from the input.
 	 *
 	 * @return The next token.
@@ -164,7 +173,7 @@ public abstract class ExpandingSource
 			queue.addLast(gen);
 			
 			// Debug print that token
-			System.err.printf("DEBUG -- Queued: %s%n", gen.characters());
+			todo.DEBUG.note("Queued: %s%n", gen.characters());
 		}
 		
 		// Use that given token

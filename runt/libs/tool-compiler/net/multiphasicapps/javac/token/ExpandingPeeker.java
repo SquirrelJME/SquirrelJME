@@ -29,6 +29,8 @@ public final class ExpandingPeeker
 	/** The number of tokens returned from the base. */
 	protected final int basecount;
 	
+	/** Close the base? */
+	
 	/** The number of tokens to forward. */
 	private int _forward;
 	
@@ -64,7 +66,7 @@ public final class ExpandingPeeker
 	 */
 	@Override
 	public final void close()
-		throws IOException
+		throws TokenizerException
 	{
 		this.base.close();
 	}

@@ -17,7 +17,9 @@ import net.multiphasicapps.javac.CompilerException;
 import net.multiphasicapps.javac.CompilerInput;
 import net.multiphasicapps.javac.CompilerLogger;
 import net.multiphasicapps.javac.layout.TopLevelLayout;
+import net.multiphasicapps.javac.lexical.CompilationUnit;
 import net.multiphasicapps.javac.MessageType;
+import net.multiphasicapps.javac.token.ExpandingTokenizer;
 import net.multiphasicapps.javac.token.Tokenizer;
 
 /**
@@ -73,11 +75,12 @@ public final class SourcedClassNode
 		log.message(MessageType.INFO, __input, "AQ0s");
 		
 		// Setup streamlined tokenizers to parse the classes
-		TopLevelLayout toplayout;
+		CompilationUnit compunit;
 		try (InputStream in = __input.open())
 		{
 			// Load the structure
-			toplayout = TopLevelLayout.parse(__input.fileName(), in);
+			compunit = CompilationUnit.parse(
+				new ExpandingTokenizer(__input.fileName(), in));
 		}
 		
 		// {@squirreljme.error AQ0t Could not read the input source file.
