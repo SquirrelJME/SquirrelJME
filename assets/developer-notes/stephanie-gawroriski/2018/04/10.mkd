@@ -1,0 +1,17 @@
+# 2018/04/10
+
+## 20:09
+
+Unless I missed any there are 123 lexical elements to a Java source code file.
+So I suppose I will be glad I am doing it this way based on the entire
+structure rather than individual elements because it is so complex. I will
+just need to write the code that parses each individual element and determines
+what is to be done accordingly. However it should be accurate. I suppose what
+I can do despite a loss of speed would be to have exceptions thrown that are
+thrown when something is not what is to be expected in a place. So for example
+in `CompilationUnit` it will try to read `Annotations` but if there are none
+then it will throw an exception that the given fragment has failed. So this
+would be an `ImproperStructureException` of sorts. The only problem would be
+if the structure of the file is not correct to begin with. So I suppose it
+would then depend on return values to see if it could parse something there
+or similar.
