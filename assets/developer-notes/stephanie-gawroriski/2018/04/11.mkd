@@ -1,0 +1,8 @@
+# 2018/04/11
+
+## 09:55
+
+It would be best if in `ExpandingTokenizer` if `peek` and `next` were
+consistent because right now they will return different sequences I
+believe. Actually no, I made the behavior consistent so I do not need to worry
+about this at all.
