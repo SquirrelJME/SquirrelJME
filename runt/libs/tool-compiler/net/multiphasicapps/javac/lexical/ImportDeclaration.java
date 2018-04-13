@@ -74,6 +74,12 @@ public final class ImportDeclaration
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
+		// {@squirreljme.error AQ30 Expected "import" when parsing an import
+		// statement.}
+		ExpandedToken token = __t.next();
+		if (token.type() != TokenType.KEYWORD_IMPORT)
+			throw new LexicalStructureException(token, "AQ30");
+		
 		throw new todo.TODO();
 	}
 }
