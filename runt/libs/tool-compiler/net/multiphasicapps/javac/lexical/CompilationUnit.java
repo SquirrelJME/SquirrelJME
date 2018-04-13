@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.javac.lexical;
 
+import net.multiphasicapps.classfile.BinaryName;
 import net.multiphasicapps.javac.token.ExpandedToken;
 import net.multiphasicapps.javac.token.ExpandingSource;
 import net.multiphasicapps.javac.token.TokenType;
@@ -20,7 +21,7 @@ import net.multiphasicapps.javac.token.TokenType;
  *
  * @since 2018/04/10
  */
-public class CompilationUnit
+public final class CompilationUnit
 {
 	/**
 	 * Parses this given lexical structure.
@@ -38,13 +39,12 @@ public class CompilationUnit
 			throw new NullPointerException("NARG");
 		
 		ExpandedToken token = __t.peek();
-		TokenType type = token.type();
 		
 		// There are potentially two states when it comes to parsing a file,
 		// the file could start with annotations and have a package statement
 		// or it could instead declare an actual class. So in this case try
 		// to parse a class first just to see if it is one
-		if (type == TokenType.SYMBOL_AT)
+		if (token.type() == TokenType.SYMBOL_AT)
 			try (ExpandingSource split = __t.split())
 			{
 				throw new todo.TODO();
@@ -56,32 +56,43 @@ public class CompilationUnit
 		
 		// Make valid again
 		token = __t.peek();
-		type = token.type();
 		
 		// Parsing annotations?
 		boolean musthavepackage = false;
-		if (type == TokenType.SYMBOL_AT)
+		if (token.type() == TokenType.SYMBOL_AT)
 		{
 			// There must be a package statement!
 			musthavepackage = true;
+			
+			
 			
 			throw new todo.TODO();
 		}
 		
 		// Clear for package read
 		token = __t.next();
-		type = token.type();
 		
 		// Read package statement
-		if (type == TokenType.KEYWORD_PACKAGE)
+		QualifiedIdentifier pkqi;
+		if (token.type() == TokenType.KEYWORD_PACKAGE)
 		{
-			throw new todo.TODO();
+			pkqi = QualifiedIdentifier.parse(__t);
+			
+			// {@squirreljme.error AQ2x Expected semicolon to follow the
+			// qualified identifier in the package statement.}
+			token = __t.next();
+			if (token.type() != TokenType.SYMBOL_SEMICOLON)
+				throw new LexicalStructureException(token, "AQ2z");
 		}
 		
 		// {@squirreljme.error AQ2x There must be a package statement
 		// following any declared annotations for a package.}
 		else if (musthavepackage)
 			throw new LexicalStructureException(token, "AQ2x");
+		
+		// In the default package
+		else
+			pkqi = new QualifiedIdentifier(new BinaryName(""));
 		
 		throw new todo.TODO();
 	}
