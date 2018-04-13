@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.javac.lexical;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
 import net.multiphasicapps.classfile.BinaryName;
 import net.multiphasicapps.javac.token.ExpandedToken;
 import net.multiphasicapps.javac.token.ExpandingSource;
@@ -93,6 +95,19 @@ public final class CompilationUnit
 		// In the default package
 		else
 			pkqi = new QualifiedIdentifier(new BinaryName(""));
+		
+		// Parse import statements
+		Set<ImportDeclaration> imports = new LinkedHashSet<>();
+		for (;;)
+		{
+			// Not an import statement?
+			token = __t.peek();
+			if (token.type() != TokenType.KEYWORD_IMPORT)
+				break;
+			
+			// Parse import, this includes the semi-colon
+			imports.add(ImportDeclaration.parse(__t));
+		}
 		
 		throw new todo.TODO();
 	}

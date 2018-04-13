@@ -10,12 +10,71 @@
 
 package net.multiphasicapps.javac.lexical;
 
+import net.multiphasicapps.classfile.BinaryName;
+import net.multiphasicapps.classfile.InvalidClassFormatException;
+import net.multiphasicapps.javac.token.ExpandedToken;
+import net.multiphasicapps.javac.token.ExpandingSource;
+import net.multiphasicapps.javac.token.TokenType;
+
 /**
- * DESCRIBE THIS.
+ * This represents an import statement.
  *
  * @since 2018/04/10
  */
-public class ImportDeclaration
+public final class ImportDeclaration
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/13
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		if (__o == this)
+			return true;
+		
+		if (!(__o instanceof ImportDeclaration))
+			return false;
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/13
+	 */
+	@Override
+	public final int hashCode()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/13
+	 */
+	@Override
+	public final String toString()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Parses an import statement.
+	 *
+	 * @param __t The input token source.
+	 * @return The import statement.
+	 * @throws LexicalStructureException If the import is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/04/13
+	 */
+	public static final ImportDeclaration parse(ExpandingSource __t)
+		throws LexicalStructureException, NullPointerException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 }
 
