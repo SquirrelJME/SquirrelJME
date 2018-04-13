@@ -1,0 +1,26 @@
+GIMP Palette
+Name: Squirrel Quarrel
+Columns: 16
+#
+255 255 255	White
+  0   0   0	Black
+  7  71  81	Teal 1
+  0 146 146	Teal 2
+255 109 182	Pink 1
+255 182 219	Pink 2
+ 73   0 146	Purple 1
+  0 109 219	Blue 1
+182 109 255	Purple 2
+109 182 255	Blue 2
+182 219 255	Blue 3
+146   0   0	Red 1
+146  73   0	Brown
+219 109   0	Orange 1
+ 36 254  35	Green 1
+255 255 109	Yellow 1
+225  71  63	Player Red
+249 186  73	Player Yellow
+ 46 175 118	Player Green
+ 39  89 222	Player Blue
+191 127 239	Player Purple
+ 87 125 138	Player Gray
