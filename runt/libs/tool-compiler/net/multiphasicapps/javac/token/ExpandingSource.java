@@ -173,7 +173,7 @@ public abstract class ExpandingSource
 			queue.addLast(gen);
 			
 			// Debug print that token
-			todo.DEBUG.note("Queued: %s%n", gen.characters());
+			todo.DEBUG.note("Queued: %s", gen.characters());
 		}
 		
 		// Use that given token
