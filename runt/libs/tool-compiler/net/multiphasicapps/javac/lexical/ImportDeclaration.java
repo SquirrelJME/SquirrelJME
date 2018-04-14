@@ -84,7 +84,7 @@ public final class ImportDeclaration
 		boolean isstatic;
 		token = __t.peek();
 		if ((isstatic = (token.type() == TokenType.KEYWORD_STATIC)))
-			token.next();
+			__t.next();
 		
 		// {@squirreljme.error AQ31 Expected identifier at start of import
 		// statement.}
