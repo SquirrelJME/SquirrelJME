@@ -80,6 +80,31 @@ public final class ImportDeclaration
 		if (token.type() != TokenType.KEYWORD_IMPORT)
 			throw new LexicalStructureException(token, "AQ30");
 		
+		// Is this static?
+		boolean isstatic;
+		token = __t.peek();
+		if ((isstatic = (token.type() == TokenType.KEYWORD_STATIC)))
+			token.next();
+		
+		// {@squirreljme.error AQ31 Expected identifier at start of import
+		// statement.}
+		token = __t.peek();
+		if (token.type() != TokenType.IDENTIFIER)
+			throw new LexicalStructureException(token, "AQ31");
+		
+		// Read identifier, due to the wildcard we cannot use
+		// QualifiedIdentifier because an identifier must follow the dot
+		StringBuilder sb = new StringBuilder();
+		for (;;)
+		{
+			token = __t.next();
+			
+			if (true)
+				throw new todo.TODO();
+			if (true)
+				break;
+		}
+		
 		throw new todo.TODO();
 	}
 }
