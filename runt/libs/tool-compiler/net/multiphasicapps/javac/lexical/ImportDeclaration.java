@@ -23,6 +23,34 @@ import net.multiphasicapps.javac.token.TokenType;
  */
 public final class ImportDeclaration
 {
+	/** Is this static? */
+	protected final boolean isstatic;
+	
+	/** The imported class. */
+	protected final BinaryName what;
+	
+	/** Is it a wildcard? */
+	protected final boolean wildcard;
+	
+	/**
+	 * Initializes the import declaration.
+	 *
+	 * @param __static Is this static?
+	 * @param __what What is being imported.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/04/14
+	 */
+	public ImportDeclaration(boolean __static, BinaryName __what)
+		throws NullPointerException
+	{
+		if (__what == null)
+			throw new NullPointerException("NARG");
+		
+		this.isstatic = __static;
+		this.what = __what;
+		this.wildcard = __what.toString().endsWith("/*");;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/04/13
@@ -36,7 +64,9 @@ public final class ImportDeclaration
 		if (!(__o instanceof ImportDeclaration))
 			return false;
 		
-		throw new todo.TODO();
+		ImportDeclaration o = (ImportDeclaration)__o;
+		return this.isstatic == o.isstatic &&
+			this.what.equals(o.what);
 	}
 	
 	/**
@@ -46,7 +76,29 @@ public final class ImportDeclaration
 	@Override
 	public final int hashCode()
 	{
-		throw new todo.TODO();
+		return this.what.hashCode();
+	}
+	
+	/**
+	 * Is this static?
+	 *
+	 * @return {@code true} if this is static.
+	 * @since 2018/04/14
+	 */
+	public final boolean isStatic()
+	{
+		return this.isstatic;
+	}
+	
+	/**
+	 * Is this a wildcard?
+	 *
+	 * @return {@code true} if this is a wildcard statement.
+	 * @since 2018/04/14
+	 */
+	public final boolean isWildcard()
+	{
+		return this.wildcard;
 	}
 	
 	/**
@@ -57,6 +109,17 @@ public final class ImportDeclaration
 	public final String toString()
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the identifier being imported.
+	 *
+	 * @return The imported identifier.
+	 * @since 2018/04/14
+	 */
+	public final BinaryName what()
+	{
+		return this.what;
 	}
 	
 	/**
@@ -97,15 +160,53 @@ public final class ImportDeclaration
 		StringBuilder sb = new StringBuilder();
 		for (;;)
 		{
+			// {@squirreljme.error AQ32 Expected identifier while parsing the
+			// import statement.}
 			token = __t.next();
+			if (token.type() != TokenType.IDENTIFIER)
+				throw new LexicalStructureException(token, "AQ32");
 			
-			if (true)
-				throw new todo.TODO();
-			if (true)
+			// Build
+			sb.append(token.characters());
+			
+			// Done parsing?
+			token = __t.next();
+			if (token.type() == TokenType.SYMBOL_SEMICOLON)
 				break;
+			
+			// Parse another statement
+			else if (token.type() == TokenType.SYMBOL_DOT)
+			{
+				// This may be the wildcard statement
+				token = __t.peek();
+				if (token.type() == TokenType.OPERATOR_MULTIPLY)
+				{
+					// Consume it
+					__t.next();
+					
+					// {@squirreljme.error AQ34 Expected semicolon to follow
+					// the wildcard symbol in the import statement.}
+					token = __t.next();
+					if (token.type() != TokenType.SYMBOL_SEMICOLON)
+						throw new LexicalStructureException(token, "AQ34");
+					
+					// Add asterisk to make it a wildcard
+					sb.append("*");
+					break;
+				}
+				
+				// Use slash for binary names
+				else
+					sb.append("/");
+			}
+			
+			// {@squirreljme.error AQ33 Expected dot or semi-colon to follow
+			// the identifier in the import statement.}
+			else
+				throw new LexicalStructureException(token, "AQ33");
 		}
 		
-		throw new todo.TODO();
+		return new ImportDeclaration(isstatic, new BinaryName(sb.toString()));
 	}
 }
 
