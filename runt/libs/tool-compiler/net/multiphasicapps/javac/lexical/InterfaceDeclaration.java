@@ -11,11 +11,12 @@
 package net.multiphasicapps.javac.lexical;
 
 /**
- * DESCRIBE THIS.
+ * This represents the declaration of an interface.
  *
  * @since 2018/04/10
  */
-public class InterfaceDeclaration
+public abstract class InterfaceDeclaration
+	extends ClassOrInterfaceDeclaration
 {
 }
 

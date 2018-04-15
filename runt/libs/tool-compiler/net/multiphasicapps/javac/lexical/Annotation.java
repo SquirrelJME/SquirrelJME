@@ -10,12 +10,66 @@
 
 package net.multiphasicapps.javac.lexical;
 
+import java.util.ArrayList;
+import java.util.List;
+import net.multiphasicapps.javac.token.ExpandedToken;
+import net.multiphasicapps.javac.token.ExpandingSource;
+import net.multiphasicapps.javac.token.TokenType;
+
 /**
- * DESCRIBE THIS.
+ * This class represents an annotation.
  *
  * @since 2018/04/10
  */
-public class Annotation
+public final class Annotation
+	implements Modifier
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/15
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/15
+	 */
+	@Override
+	public final int hashCode()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/15
+	 */
+	@Override
+	public final String toString()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Parses a single annotation.
+	 *
+	 * @param __t The input token source.
+	 * @return The parsed annotation.
+	 * @throws LexicalStructureException If the annotation is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/04/14
+	 */
+	public static final Annotation parse(ExpandingSource __t)
+		throws LexicalStructureException, NullPointerException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 }
 

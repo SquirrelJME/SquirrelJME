@@ -11,11 +11,31 @@
 package net.multiphasicapps.javac.lexical;
 
 /**
- * DESCRIBE THIS.
+ * This represents a class or interface declaration.
  *
  * @since 2018/04/10
  */
-public class ClassOrInterfaceDeclaration
+public abstract class ClassOrInterfaceDeclaration
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/15
+	 */
+	@Override
+	public abstract boolean equals(Object __o);
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/15
+	 */
+	@Override
+	public abstract int hashCode();
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/15
+	 */
+	@Override
+	public abstract String toString();
 }
 

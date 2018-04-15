@@ -26,6 +26,36 @@ import net.multiphasicapps.javac.token.TokenType;
 public final class CompilationUnit
 {
 	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/15
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/15
+	 */
+	@Override
+	public final int hashCode()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/15
+	 */
+	@Override
+	public final String toString()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Parses this given lexical structure.
 	 *
 	 * @param __t The input token source.

@@ -11,11 +11,12 @@
 package net.multiphasicapps.javac.lexical;
 
 /**
- * DESCRIBE THIS.
+ * This repersents the definition of a class.
  *
  * @since 2018/04/10
  */
-public class ClassDeclaration
+public abstract class ClassDeclaration
+	extends ClassOrInterfaceDeclaration
 {
 }
 
