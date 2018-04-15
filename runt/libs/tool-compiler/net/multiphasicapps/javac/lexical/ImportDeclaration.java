@@ -206,7 +206,19 @@ public final class ImportDeclaration
 				throw new LexicalStructureException(token, "AQ33");
 		}
 		
-		return new ImportDeclaration(isstatic, new BinaryName(sb.toString()));
+		// Attempt to parse binary name
+		try
+		{
+			return new ImportDeclaration(isstatic,
+				new BinaryName(sb.toString()));
+		}
+		
+		// {@squirreljme.error AQ35 Parsed import declaration is not a valid
+		// binary name.}
+		catch (InvalidClassFormatException e)
+		{
+			throw new LexicalStructureException(token, "AQ35");
+		}
 	}
 }
 
