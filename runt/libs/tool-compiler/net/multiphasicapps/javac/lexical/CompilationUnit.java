@@ -109,6 +109,20 @@ public final class CompilationUnit
 			imports.add(ImportDeclaration.parse(__t));
 		}
 		
+		// Parse types
+		Set<TypeDeclaration> types = new LinkedHashSet<>();
+		for (;;)
+		{
+			// Reached end of file
+			if (__t.peek().type() == TokenType.END_OF_FILE)
+				break;
+			
+			// Parse type, which may end up not parsing anything
+			TypeDeclaration td = TypeDeclaration.parse(__t);
+			if (td == null)
+				break;
+		}
+		
 		throw new todo.TODO();
 	}
 }
