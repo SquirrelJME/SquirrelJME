@@ -1,0 +1,6 @@
+# 2018/04/14
+
+## 20:30
+
+So I am liking this parser much better, can just go straight into things
+without needing to complicate the design a bit.
