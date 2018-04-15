@@ -43,7 +43,10 @@ public final class TypeDeclaration
 			__t.next();
 			return null;
 		}
-
+		
+		// Parse modifiers
+		Modifier[] mods = Modifier.parseGroup(__t);
+		
 		throw new todo.TODO();
 	}
 }
