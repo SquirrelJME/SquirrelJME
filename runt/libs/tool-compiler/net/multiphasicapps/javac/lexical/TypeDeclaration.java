@@ -22,6 +22,36 @@ import net.multiphasicapps.javac.token.TokenType;
 public final class TypeDeclaration
 {
 	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/15
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/15
+	 */
+	@Override
+	public final int hashCode()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/15
+	 */
+	@Override
+	public final String toString()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Parses a type declaration.
 	 *
 	 * @param __t The input token source.
@@ -45,7 +75,7 @@ public final class TypeDeclaration
 		}
 		
 		// Parse modifiers
-		Modifier[] mods = Modifier.parseGroup(__t);
+		Modifier[] mods = BasicModifier.parseGroup(__t);
 		
 		throw new todo.TODO();
 	}

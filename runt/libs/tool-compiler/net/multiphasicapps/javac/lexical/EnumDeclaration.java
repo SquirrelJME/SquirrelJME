@@ -11,11 +11,41 @@
 package net.multiphasicapps.javac.lexical;
 
 /**
- * DESCRIBE THIS.
+ * This represents the declaration of an enumeration.
  *
  * @since 2018/04/10
  */
-public class EnumDeclaration
+public final class EnumDeclaration
+	extends ClassDeclaration
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/15
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/15
+	 */
+	@Override
+	public final int hashCode()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/15
+	 */
+	@Override
+	public final String toString()
+	{
+		throw new todo.TODO();
+	}
 }
 
