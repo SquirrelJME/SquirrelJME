@@ -34,6 +34,7 @@ import net.multiphasicapps.javac.CompilerOutput;
 import net.multiphasicapps.javac.CompilerPathSet;
 import net.multiphasicapps.javac.FileNameLineAndColumn;
 import net.multiphasicapps.javac.LineAndColumn;
+import net.multiphasicapps.javac.LocationAware;
 import net.multiphasicapps.javac.MessageType;
 
 /**
@@ -160,9 +161,17 @@ public class CuteRunnable
 			{
 				// {@squirreljme.error AQ0n Failed to compile.}
 				log.message(MessageType.ERROR,
-					((t instanceof FileNameLineAndColumn) ?
-						(FileNameLineAndColumn)t : null),
+					((t instanceof LocationAware) ?
+						(LocationAware)t : null),
 					"AQ0n %s", t.getMessage());
+				
+				// {@squirreljme.error AQ37 Failed to compile. (an exception
+				// or error was suppressed)}
+				for (Throwable s : t.getSuppressed())
+					log.message(MessageType.ERROR,
+						((s instanceof LocationAware) ?
+							(LocationAware)s : null),
+						"AQ37 %s", s.getMessage());
 				
 				// Keep going down
 				t = t.getCause();
