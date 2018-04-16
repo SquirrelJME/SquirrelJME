@@ -165,7 +165,7 @@ public class CuteRunnable
 						(LocationAware)t : null),
 					"AQ0n %s", t.getMessage());
 				
-				// {@squirreljme.error AQ37 Failed to compile. (an exception
+				// {@squirreljme.error AQ37 Failed to compile. (An exception
 				// or error was suppressed)}
 				for (Throwable s : t.getSuppressed())
 					log.message(MessageType.ERROR,

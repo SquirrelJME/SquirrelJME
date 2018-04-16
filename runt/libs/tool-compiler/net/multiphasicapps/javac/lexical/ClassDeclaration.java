@@ -39,7 +39,36 @@ public abstract class ClassDeclaration
 		if (__m == null || __t == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Try to parse as a normal class
+		try (ExpandingSource split = __t.split())
+		{
+			return NormalClassDeclaration.parseNormalClass(__m, split);
+		}
+		
+		// Could not parse as normal class
+		catch (LexicalStructureException e)
+		{
+			// Try parsing as enumeration
+			try (ExpandingSource split = __t.split())
+			{
+				return EnumDeclaration.parseEnum(__m, split);
+			}
+			
+			// Could not parse as enumeration
+			catch (LexicalStructureException f)
+			{
+				// {@squirreljme.error AQ36 Could not parse as a normal class
+				// or enumeration.}
+				LexicalStructureException t = new LexicalStructureException(
+					__t, "AQ38");
+				
+				// Make these suppressed so they always appear
+				t.addSuppressed(e);
+				t.addSuppressed(f);
+				
+				throw t;
+			}
+		}
 	}
 }
 
