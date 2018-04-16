@@ -87,6 +87,10 @@ public final class ClassBodyDeclaration
 				break;
 			}
 			
+			// Declares nothing, so do not bother
+			else if (token.type() == TokenType.SYMBOL_SEMICOLON)
+				continue;
+			
 			// Otherwise it must be a declaration
 			rv.add(ClassBodyDeclaration.parseClassBodyDeclaration(__t));
 		}
@@ -112,6 +116,25 @@ public final class ClassBodyDeclaration
 	{
 		if (__t == null)
 			throw new NullPointerException("NARG");
+		
+		ExpandedToken token = __t.next();
+		TokenType type = token.type();
+		
+		// Parse of static initializer?
+		if (type == TokenType.KEYWORD_STATIC &&
+			__t.peek(1).type() == TokenType.SYMBOL_OPEN_BRACE)
+		{
+			throw new todo.TODO();
+		}
+		
+		// Just normal common initializer
+		else if (type == TokenType.SYMBOL_OPEN_BRACE)
+		{
+			throw new todo.TODO();
+		}
+		
+		// Is a basic member, so it will have modifiers
+		Modifier[] mods = BasicModifier.parseGroup(__t);
 		
 		throw new todo.TODO();
 	}
