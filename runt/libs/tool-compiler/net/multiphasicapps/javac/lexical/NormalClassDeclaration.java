@@ -69,6 +69,42 @@ public final class NormalClassDeclaration
 		if (__m == null || __t == null)
 			throw new NullPointerException("NARG");
 		
+		// {@squirreljme.error AQ38 Expected class to appear while attempting
+		// to parse a class.}
+		ExpandedToken token = __t.next();
+		if (token.type() != TokenType.KEYWORD_CLASS)
+			throw new LexicalStructureException(token, "AQ38");
+		
+		// Parse type parameters
+		TypeParameter[] tparms = null;
+		token = __t.peek();
+		if (token.type() == TokenType.COMPARE_LESS_THAN)
+			tparms = TypeParameter.parseTypeParameters(__t);
+		
+		// Parse extends
+		Type textends = null;
+		token = __t.peek();
+		if (token.type() == TokenType.KEYWORD_EXTENDS)
+		{
+			// Consume
+			__t.next();
+			
+			// Parse type
+			textends = Type.parseType(__t);
+		}
+		
+		// Parse implements
+		Type[] timplements = null;
+		token = __t.peek();
+		if (token.type() == TokenType.KEYWORD_IMPLEMENTS)
+		{
+			// Consume
+			__t.next();
+			
+			// Parse types
+			timplements = Type.parseTypeList(__t);
+		}
+		
 		throw new todo.TODO();
 	}
 }

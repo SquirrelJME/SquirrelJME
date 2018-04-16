@@ -10,12 +10,72 @@
 
 package net.multiphasicapps.javac.lexical;
 
+import net.multiphasicapps.javac.token.ExpandedToken;
+import net.multiphasicapps.javac.token.ExpandingSource;
+import net.multiphasicapps.javac.token.TokenType;
+
 /**
- * DESCRIBE THIS.
+ * This represents the base for a type.
  *
  * @since 2018/04/10
  */
-public class Type
+public abstract class Type
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/15
+	 */
+	@Override
+	public abstract boolean equals(Object __o);
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/15
+	 */
+	@Override
+	public abstract int hashCode();
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/15
+	 */
+	@Override
+	public abstract String toString();
+	
+	/**
+	 * Parses a single type
+	 *
+	 * @param __t The input token source.
+	 * @return The parsed type.
+	 * @throws LexicalStructureException If the type is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/04/15
+	 */
+	public static final Type parseType(ExpandingSource __t)
+		throws LexicalStructureException, NullPointerException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Parses a list of types.
+	 *
+	 * @param __t The input token source.
+	 * @return The parsed types.
+	 * @throws LexicalStructureException If the types are not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/04/15
+	 */
+	public static final Type[] parseTypeList(ExpandingSource __t)
+		throws LexicalStructureException, NullPointerException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 }
 
