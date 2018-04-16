@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.javac.lexical;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.multiphasicapps.javac.token.ExpandedToken;
 import net.multiphasicapps.javac.token.ExpandingSource;
 import net.multiphasicapps.javac.token.TokenType;
@@ -20,27 +22,18 @@ import net.multiphasicapps.javac.token.TokenType;
  * @since 2018/04/10
  */
 public abstract class ClassOrInterfaceDeclaration
+	extends TypeDeclaration
 {
 	/**
-	 * {@inheritDoc}
+	 * Returns the modifiers for the class or interface.
+	 *
+	 * @return The modifiers.
 	 * @since 2018/04/15
 	 */
-	@Override
-	public abstract boolean equals(Object __o);
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/04/15
-	 */
-	@Override
-	public abstract int hashCode();
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/04/15
-	 */
-	@Override
-	public abstract String toString();
+	public final Modifier[] modifiers()
+	{
+		throw new todo.TODO();
+	}
 	
 	/**
 	 * Parses a class or interface declaration.
@@ -57,7 +50,39 @@ public abstract class ClassOrInterfaceDeclaration
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Parse modifiers
+		Modifier[] mods = BasicModifier.parseGroup(__t);
+		
+		// Try to parse as a class
+		try (ExpandingSource split = __t.split())
+		{
+			return ClassDeclaration.parseClass(mods, split);
+		}
+		
+		// Failed to parse as a class
+		catch (LexicalStructureException e)
+		{
+			// Try as an interface
+			try (ExpandingSource split = __t.split())
+			{
+				return InterfaceDeclaration.parseInterface(mods, split);
+			}
+			
+			// Failed to parse as interface
+			catch (LexicalStructureException f)
+			{
+				// {@squirreljme.error AQ36 Could not parse this part of the
+				// class file for a class or interface.}
+				LexicalStructureException t = new LexicalStructureException(
+					__t, "AQ36");
+				
+				// Make these suppressed so they always appear
+				t.addSuppressed(e);
+				t.addSuppressed(f);
+				
+				throw t;
+			}
+		}
 	}
 }
 

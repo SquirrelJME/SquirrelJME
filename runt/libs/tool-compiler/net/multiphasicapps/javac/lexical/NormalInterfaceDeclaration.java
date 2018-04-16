@@ -55,16 +55,18 @@ public final class NormalInterfaceDeclaration
 	/**
 	 * Parses a normal interface.
 	 *
+	 * @param __m The modifiers for the annotation.
 	 * @param __t The input token source.
 	 * @return The parsed type.
 	 * @throws LexicalStructureException If the class is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/04/15
 	 */
-	public static NormalInterfaceDeclaration parse(ExpandingSource __t)
+	public static final NormalInterfaceDeclaration parseNormalInterface(
+		Modifier[] __m, ExpandingSource __t)
 		throws LexicalStructureException, NullPointerException
 	{
-		if (__t == null)
+		if (__m == null || __t == null)
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
