@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.javac.lexical;
 
+import net.multiphasicapps.classfile.ClassIdentifier;
+import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.javac.token.ExpandedToken;
 import net.multiphasicapps.javac.token.ExpandingSource;
 import net.multiphasicapps.javac.token.TokenType;
@@ -75,6 +77,26 @@ public final class NormalClassDeclaration
 		if (token.type() != TokenType.KEYWORD_CLASS)
 			throw new LexicalStructureException(token, "AQ38");
 		
+		// Parse name
+		ClassIdentifier name;
+		try
+		{
+			// {@squirreljme.error AQ3b Expected identifier representing the
+			// name of the class after the class keyword.}
+			token = __t.next();
+			if (token.type() != TokenType.IDENTIFIER)
+				throw new LexicalStructureException(token, "AQ3b");
+			
+			name = new ClassIdentifier(token.characters());
+		}
+		
+		// {@squirreljme.error AQ3a Invalid class name. (The class name)}
+		catch (InvalidClassFormatException e)
+		{
+			throw new LexicalStructureException(token, String.format(
+				"AQ3a %s", token.characters()), e);
+		}
+		
 		// Parse type parameters
 		TypeParameter[] tparms = null;
 		token = __t.peek();
@@ -104,6 +126,9 @@ public final class NormalClassDeclaration
 			// Parse types
 			timplements = Type.parseTypeList(__t);
 		}
+		
+		// Parse the body of the class
+		ClassBodyDeclaration[] body = ClassBodyDeclaration.parseClassBody(__t);
 		
 		throw new todo.TODO();
 	}
