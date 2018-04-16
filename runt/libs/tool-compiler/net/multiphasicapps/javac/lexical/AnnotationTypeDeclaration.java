@@ -10,6 +10,10 @@
 
 package net.multiphasicapps.javac.lexical;
 
+import net.multiphasicapps.javac.token.ExpandedToken;
+import net.multiphasicapps.javac.token.ExpandingSource;
+import net.multiphasicapps.javac.token.TokenType;
+
 /**
  * This represents a declaration of an annotation.
  *
