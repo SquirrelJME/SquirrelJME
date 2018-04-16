@@ -51,5 +51,25 @@ public final class AnnotationTypeDeclaration
 	{
 		throw new todo.TODO();
 	}
+	
+	/**
+	 * Parses an annotation.
+	 *
+	 * @param __m The modifiers for the annotation.
+	 * @param __t The input token source.
+	 * @return The parsed type.
+	 * @throws LexicalStructureException If the class is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/04/15
+	 */
+	public static final AnnotationTypeDeclaration parseAnnotation(
+		Modifier[] __m, ExpandingSource __t)
+		throws LexicalStructureException, NullPointerException
+	{
+		if (__m == null || __t == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 }
 

@@ -25,16 +25,18 @@ public abstract class InterfaceDeclaration
 	/**
 	 * Parses an interface declaration.
 	 *
+	 * @param __m Modifiers to the interface.
 	 * @param __t The input token source.
 	 * @return The parsed type.
 	 * @throws LexicalStructureException If the class is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/04/15
 	 */
-	public static InterfaceDeclaration parse(ExpandingSource __t)
+	public static final InterfaceDeclaration parseInterface(Modifier[] __m,
+		ExpandingSource __t)
 		throws LexicalStructureException, NullPointerException
 	{
-		if (__t == null)
+		if (__m == null || __t == null)
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();

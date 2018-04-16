@@ -25,16 +25,18 @@ public abstract class ClassDeclaration
 	/**
 	 * Parses a class declaration.
 	 *
+	 * @param __m Modifiers to the class.
 	 * @param __t The input token source.
 	 * @return The parsed type.
 	 * @throws LexicalStructureException If the class is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/04/15
 	 */
-	public static ClassDeclaration parse(ExpandingSource __t)
+	public static final ClassDeclaration parseClass(Modifier[] __m,
+		ExpandingSource __t)
 		throws LexicalStructureException, NullPointerException
 	{
-		if (__t == null)
+		if (__m == null || __t == null)
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();

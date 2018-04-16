@@ -10,46 +10,39 @@
 
 package net.multiphasicapps.javac.lexical;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.multiphasicapps.javac.token.ExpandedToken;
 import net.multiphasicapps.javac.token.ExpandingSource;
 import net.multiphasicapps.javac.token.TokenType;
 
 /**
- * This represents a type declaration which defines a class.
+ * This represents a type declaration which defines a type.
  *
  * @since 2018/04/10
  */
-public final class TypeDeclaration
+public abstract class TypeDeclaration
 {
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/04/15
 	 */
 	@Override
-	public final boolean equals(Object __o)
-	{
-		throw new todo.TODO();
-	}
+	public abstract boolean equals(Object __o);
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/04/15
 	 */
 	@Override
-	public final int hashCode()
-	{
-		throw new todo.TODO();
-	}
+	public abstract int hashCode();
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/04/15
 	 */
 	@Override
-	public final String toString()
-	{
-		throw new todo.TODO();
-	}
+	public abstract String toString();
 	
 	/**
 	 * Parses a type declaration.
@@ -60,7 +53,7 @@ public final class TypeDeclaration
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/04/14
 	 */
-	public static final TypeDeclaration parse(ExpandingSource __t)
+	public static TypeDeclaration parse(ExpandingSource __t)
 		throws LexicalStructureException, NullPointerException
 	{
 		if (__t == null)
@@ -74,10 +67,8 @@ public final class TypeDeclaration
 			return null;
 		}
 		
-		// Parse modifiers
-		Modifier[] mods = BasicModifier.parseGroup(__t);
-		
-		throw new todo.TODO();
+		// Just the same as the class or interface declaration
+		return ClassOrInterfaceDeclaration.parse(__t);
 	}
 }
 
