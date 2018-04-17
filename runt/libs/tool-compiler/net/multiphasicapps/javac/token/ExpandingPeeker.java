@@ -72,6 +72,30 @@ public final class ExpandingPeeker
 	}
 	
 	/**
+	 * Commits all of the tokens which have been peeked to the base tokenizer
+	 * so that they are fully consumed.
+	 *
+	 * @throws ConcurrentModificationException If the source has already been
+	 * committed.
+	 * @since 2018/04/17
+	 */
+	public final void commit()
+		throws ConcurrentModificationException
+	{
+		// {@squirreljme.error AQ2w The expanding tokenizer split is not valid
+		// because the source
+		ExpandingSource base = this.base;
+		if (this.basecount != base.count())
+			throw new ConcurrentModificationException("AQ2w");
+		
+		// Consume all of the tokens
+		ExpandingSource base = this.base;
+		int target = this.basecount + this._forward;
+		while (base.count() < target)
+			base.next();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @throws ConcurrentModificationException If the base source returned a
 	 * next token when it is not valid to use splits after that has happened.
