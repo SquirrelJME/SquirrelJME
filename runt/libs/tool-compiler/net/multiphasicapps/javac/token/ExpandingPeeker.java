@@ -18,6 +18,8 @@ import java.util.ConcurrentModificationException;
  * forward peek operation to obtain tokens as needed. This allows this to be
  * split multiple times.
  *
+ * When this is closed the base token source is not closed.
+ *
  * @since 2018/04/11
  */
 public final class ExpandingPeeker
@@ -29,10 +31,8 @@ public final class ExpandingPeeker
 	/** The number of tokens returned from the base. */
 	protected final int basecount;
 	
-	/** Close the base? */
-	
 	/** The number of tokens to forward. */
-	private int _forward;
+	int _forward;
 	
 	/**
 	 * Initializes the expanding peeker using the given as a base.
@@ -68,7 +68,7 @@ public final class ExpandingPeeker
 	public final void close()
 		throws TokenizerException
 	{
-		this.base.close();
+		// This does not close the base
 	}
 	
 	/**
