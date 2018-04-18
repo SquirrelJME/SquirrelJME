@@ -76,9 +76,6 @@ public class Tokenizer
 	private volatile int _atcolumn =
 		1;
 	
-	/** Was EOF sent? */
-	private volatile boolean _senteof;
-	
 	/**
 	 * Initializes the merged operator set.
 	 *
@@ -189,11 +186,7 @@ public class Tokenizer
 	}
 	
 	/**
-	 * Returns the next token.
-	 *
-	 * @return The next token or {@code null} if none remain.
-	 * @throws TokenizerException If a token sequence is not valid or it could
-	 * not be read.
+	 * {@inheritDoc}
 	 * @since 2017/09/05
 	 */
 	@Override
@@ -212,15 +205,8 @@ public class Tokenizer
 			int c = __next();
 			if (c < 0)
 			{
-				// If EOF was not sent then send that special token before
-				// null is sent
-				if (!this._senteof)
-				{
-					this._senteof = true;
-					return __token(TokenType.END_OF_FILE, "");
-				}
-				
-				return null;
+				// Just keep sending EOF tokens forever
+				return __token(TokenType.END_OF_FILE, "");
 			}
 			
 			// Skip whitespace
