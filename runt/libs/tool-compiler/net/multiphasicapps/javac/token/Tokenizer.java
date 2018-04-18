@@ -25,7 +25,8 @@ import net.multiphasicapps.collections.UnmodifiableList;
 import net.multiphasicapps.javac.FileNameLineAndColumn;
 
 /**
- * This class is the tokenizer which is used to provide tokens.
+ * This class is the tokenizer which is used to provide tokens for the lexical
+ * structure parser.
  *
  * @since 2017/09/04
  */
@@ -190,7 +191,20 @@ public class Tokenizer
 	 * @since 2017/09/05
 	 */
 	@Override
-	public Token next()
+	public final Token next()
+		throws TokenizerException
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the next raw token which was read from the input.
+	 *
+	 * @return The read token.
+	 * @throws TokenizerException If the token is not valid.
+	 * @since 2018/04/18
+	 */
+	private final Token __decodeToken()
 		throws TokenizerException
 	{
 		// Loop to skip whitespace
@@ -202,7 +216,7 @@ public class Tokenizer
 				column = this._curcolumn;
 			
 			// Stop at EOF
-			int c = __next();
+			int c = this.__nextChar();
 			if (c < 0)
 			{
 				// Just keep sending EOF tokens forever
@@ -219,18 +233,18 @@ public class Tokenizer
 			
 			// Forward slash: comments, /, or /=.
 			if (c == '/')
-				return __decideForwardSlash();
+				return __determineForwardSlash();
 			
 			// Equal sign
 			else if (c == '=')
-				return __decideEquals();
+				return __determineEquals();
 			
 			// Dot
 			else if (c == '.')
 			{
 				// If the following character is a number then this is a
 				// decimal digit
-				int p = this.__peek();
+				int p = this.__peekChar();
 				if (p >= '0' && p <= '9')
 					return this.__getNumberLiteral((char)p);
 				
@@ -239,7 +253,7 @@ public class Tokenizer
 				{
 					// {@squirreljme.error AQ0y Invalid elipses, three
 					// dots were expected but only two were read.}
-					p = this.__peek();
+					p = this.__peekChar();
 					if (p != '.')
 						throw new TokenizerException(this, "AQ0y");
 					
@@ -254,10 +268,10 @@ public class Tokenizer
 			else if (c == ':')
 			{
 				// Could be a double colon
-				int peek = this.__peek();
+				int peek = this.__peekChar();
 				if (peek == ':')
 				{
-					this.__next();
+					this.__nextChar();
 					return this.__token(TokenType.SYMBOL_DOUBLE_COLON, "::");
 				}
 				
@@ -279,7 +293,7 @@ public class Tokenizer
 			
 			// Is start is a potential symbol
 			else if (CharacterTest.isSymbolStart(c))
-				return this.__decideOperator(c);
+				return this.__determineOperator(c);
 			
 			// {@squirreljme.error AQ0e Unknown character while tokenizing the
 			// Java source code. (The character; The line; The column)}
@@ -296,14 +310,14 @@ public class Tokenizer
 	 * @throws TokenizerException If the token is not valid.
 	 * @since 2017/09/11
 	 */
-	private Token __decideEquals()
+	private Token __determineEquals()
 		throws TokenizerException
 	{
 		// Checking for equality?
-		int d = __peek();
+		int d = __peekChar();
 		if (d == '=')
 		{
-			__next();
+			__nextChar();
 			return __token(TokenType.COMPARE_EQUALS, "==");
 		}
 		
@@ -319,16 +333,16 @@ public class Tokenizer
 	 * @throws TokenizerException If the token is not valid.
 	 * @since 2017/09/09
 	 */
-	private Token __decideForwardSlash()
+	private Token __determineForwardSlash()
 		throws TokenizerException
 	{
-		int c = __peek();
+		int c = __peekChar();
 		
 		// Not-divide
 		if (c == '*' || c == '/' || c == '=')
 		{
 			// Eat character
-			__next();
+			__nextChar();
 			
 			// Multi-line comment
 			if (c == '*')
@@ -357,7 +371,7 @@ public class Tokenizer
 	 * @throws TokenizerException If the token is not valid.
 	 * @since 2018/03/06
 	 */
-	private Token __decideOperator(int __c)
+	private Token __determineOperator(int __c)
 		throws TokenizerException
 	{
 		List<String> operators = Tokenizer._OPERATORS;
@@ -420,7 +434,7 @@ public class Tokenizer
 			{
 				// Need to consume the character?
 				if (needconsume)
-					this.__next();
+					this.__nextChar();
 				
 				foundop = tempfoundop;
 				break;
@@ -458,11 +472,11 @@ public class Tokenizer
 			
 			// Need to consume the character before trying again?
 			if (needconsume)
-				this.__next();
+				this.__nextChar();
 			
 			// Peek in next character
 			needconsume = true;
-			__c = this.__peek();
+			__c = this.__peekChar();
 			
 			// Fill in character
 			fill <<= 8;
@@ -500,7 +514,7 @@ public class Tokenizer
 		for (;;)
 		{
 			// Only consider identifier parts
-			int c = __peek();
+			int c = __peekChar();
 			if (c < 0 || !CharacterTest.isIdentifierPart((char)c))
 			{
 				String s = sb.toString();
@@ -580,7 +594,7 @@ public class Tokenizer
 			}
 			
 			// Consume it
-			sb.append((char)__next());
+			sb.append((char)__nextChar());
 		}
 	}
 	
@@ -599,7 +613,7 @@ public class Tokenizer
 		{
 			// {@squirreljme.error AQ0g End of file reached while reading a
 			// multi-line comment.}
-			int c = __peek();
+			int c = __peekChar();
 			if (c < 0)
 				throw new TokenizerException(this, "AQ0g");
 			
@@ -607,15 +621,15 @@ public class Tokenizer
 			if (c == '*')
 			{
 				// Need to potentially detect the slash
-				c = __next();
-				int d = __peek();
+				c = __nextChar();
+				int d = __peekChar();
 				
 				// Finish it, do not include the */
 				if (d == '/')
 				{
 					// Eat the slash otherwise divide operators will always
 					// follow multi-line comments
-					__next();
+					__nextChar();
 					return __token(TokenType.COMMENT, sb);
 				}
 				
@@ -626,7 +640,7 @@ public class Tokenizer
 			
 			// Normal
 			else
-				sb.append((char)__next());
+				sb.append((char)__nextChar());
 		}
 	}
 	
@@ -675,7 +689,7 @@ public class Tokenizer
 		{
 			// If the next character is one of these then it cannot possibly
 			// part of a number
-			int peek = this.__peek();
+			int peek = this.__peekChar();
 			if (peek < 0 || CharacterTest.isWhite(peek) ||
 				!CharacterTest.isPossibleNumberChar(peek))
 			{
@@ -736,7 +750,7 @@ public class Tokenizer
 			}
 			
 			// If this point is reached then the character is valid
-			sb.append((char)this.__next());
+			sb.append((char)this.__nextChar());
 			inchars++;
 			
 			// {@squirreljme.error AQ0x No numberal literals left to put
@@ -793,12 +807,12 @@ public class Tokenizer
 		for (;;)
 		{
 			// Stop if it is consider the end of line
-			int c = __peek();
+			int c = __peekChar();
 			if (c < 0 || CharacterTest.isNewline(c))
 				return __token(TokenType.COMMENT, sb);
 			
 			// Otherwise consume it
-			sb.append((char)__next());
+			sb.append((char)__nextChar());
 		}
 	}
 	
@@ -816,7 +830,7 @@ public class Tokenizer
 		boolean escaped = false;
 		for (;;)
 		{
-			int c = __next();
+			int c = __nextChar();
 			if (c == '\\')
 				escaped = true;
 			else if (!escaped && c == '\"')
@@ -837,11 +851,11 @@ public class Tokenizer
 	 * @throws TokenizerException If the next token could not be read.
 	 * @since 2017/09/09
 	 */
-	private int __next()
+	private int __nextChar()
 		throws TokenizerException
 	{
 		// Peek character so it is in the buffer
-		__peek();
+		__peekChar();
 		
 		// Position needed for finding errors
 		this._curline = this._nxline;
@@ -861,7 +875,7 @@ public class Tokenizer
 	 * @throws TokenizerException If the next character could not be peeked.
 	 * @since 2017/09/09
 	 */
-	private int __peek()
+	private int __peekChar()
 		throws TokenizerException
 	{
 		try
