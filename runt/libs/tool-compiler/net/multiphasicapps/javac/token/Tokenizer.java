@@ -30,7 +30,7 @@ import net.multiphasicapps.javac.FileNameLineAndColumn;
  * @since 2017/09/04
  */
 public class Tokenizer
-	implements Closeable, FileNameLineAndColumn
+	implements Closeable, FileNameLineAndColumn, TokenSource
 {
 	/** Operators used. */
 	private static final List<String> _OPERATORS =
@@ -196,6 +196,7 @@ public class Tokenizer
 	 * not be read.
 	 * @since 2017/09/05
 	 */
+	@Override
 	public Token next()
 		throws TokenizerException
 	{
