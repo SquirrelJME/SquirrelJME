@@ -89,7 +89,6 @@ public final class ExpandingPeeker
 			throw new ConcurrentModificationException("AQ2w");
 		
 		// Consume all of the tokens
-		ExpandingSource base = this.base;
 		int target = this.basecount + this._forward;
 		while (base.count() < target)
 			base.next();

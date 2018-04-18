@@ -39,6 +39,9 @@ public final class Token
 	/** The column the token is on. */
 	protected final int column;
 	
+	/** Token comments. */
+	private final Token[] _comments;
+	
 	/** String representation. */
 	private volatile Reference<String> _string;
 	
@@ -50,10 +53,12 @@ public final class Token
 	 * @param __fn The file name this was read from.
 	 * @param __l The line the token is on.
 	 * @param __o The column the token is on.
+	 * @param __comments Comments which are associated with the token.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/09/06
 	 */
-	public Token(TokenType __t, String __c, String __fn, int __l, int __o)
+	public Token(TokenType __t, String __c, String __fn, int __l, int __o,
+		Token... __comments)
 		throws NullPointerException
 	{
 		// Check
@@ -65,6 +70,36 @@ public final class Token
 		this.filename = __fn;
 		this.line = __l;
 		this.column = __o;
+		
+		// Smartly copy comments
+		if (__comments == null)
+			this._comments = new Token[0];
+		else if (__comments.length == 0)
+			this._comments = __comments;
+		else
+		{
+			__comments = __comments.clone();
+			for (Token t : __comments)
+				if (t == null)
+					throw new NullPointerException("NARG");
+			this._comments = __comments;
+		}
+	}
+	
+	/**
+	 * Initializes the token based off the other token but with the specified
+	 * comments.
+	 *
+	 * @param __t The base token.
+	 * @param __comments The token comments.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/04/18
+	 */
+	public Token(Token __t, Token... __comments)
+		throws NullPointerException
+	{
+		this(__t.type(), __t.characters(), __t.fileName(), __t.line(),
+			__t.column(), __comments);
 	}
 	
 	/**
@@ -89,12 +124,26 @@ public final class Token
 	}
 	
 	/**
+	 * Returns the comments associated with this token.
+	 *
+	 * @return The token comments.
+	 * @since 2018/03/12
+	 */
+	public final Token[] comments()
+	{
+		return this._comments.clone();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/09/04
 	 */
 	@Override
 	public boolean equals(Object __o)
 	{
+		if (this == __o)
+			return true;
+		
 		if (!(__o instanceof Token))
 			return false;
 		
