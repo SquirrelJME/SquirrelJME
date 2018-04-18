@@ -48,33 +48,33 @@ public class Tokenizer
 	protected final LogicalReader in;
 	
 	/** Is there a character waiting? */
-	private volatile boolean _nxwaiting;
+	private boolean _nxwaiting;
 	
 	/** The next character that is waiting. */
-	private volatile int _nxchar;
+	private int _nxchar;
 	
 	/** The next line. */
-	private volatile int _nxline =
+	private int _nxline =
 		1;
 	
 	/** The next column. */
-	private volatile int _nxcolumn =
+	private int _nxcolumn =
 		1;
 	
 	/** The current line. */
-	private volatile int _curline =
+	private int _curline =
 		1;
 	
 	/** The current column. */
-	private volatile int _curcolumn =
+	private int _curcolumn =
 		1;
 	
 	/** The current token's line. */
-	private volatile int _atline =
+	private int _atline =
 		1;
 	
 	/** The current token's column. */
-	private volatile int _atcolumn =
+	private int _atcolumn =
 		1;
 	
 	/**
