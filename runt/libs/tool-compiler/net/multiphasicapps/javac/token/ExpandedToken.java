@@ -20,6 +20,7 @@ import net.multiphasicapps.javac.FileNameLineAndColumn;
  *
  * @since 2018/03/12
  */
+@Deprecated
 public final class ExpandedToken
 	implements FileNameLineAndColumn
 {
