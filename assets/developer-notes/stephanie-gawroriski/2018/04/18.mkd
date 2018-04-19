@@ -1,0 +1,23 @@
+# 2018/04/18
+
+## 19:21
+
+Okay so, I was thinking... `ExpandedToken` is the same as `Token` except it
+has comments attached. So I am just going to merge the two.
+
+## 19:34
+
+Also, I was thinking of moving the expanding code.
+
+## 19:38
+
+`Tokenizer` would best have the expanding code with a note in the class that
+it performs such things. Then I do not need to worry about such things for
+the most part. Then on top of the `TokenSource` I can have a
+`BufferedTokenSource` which does the marking, setting, and resetting as
+needed.
+
+## 19:39
+
+I can do the same with comments in `Tokenizer` too, just having those
+attached to input tokens accordingly on read.
