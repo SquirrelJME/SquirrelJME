@@ -12,8 +12,8 @@ package net.multiphasicapps.javac.lexical;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.multiphasicapps.javac.token.ExpandedToken;
-import net.multiphasicapps.javac.token.ExpandingSource;
+import net.multiphasicapps.javac.token.Token;
+import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.TokenType;
 
 /**
@@ -44,7 +44,7 @@ public abstract class ClassOrInterfaceDeclaration
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/04/15
 	 */
-	public static ClassOrInterfaceDeclaration parse(ExpandingSource __t)
+	public static ClassOrInterfaceDeclaration parse(BufferedTokenSource __t)
 		throws LexicalStructureException, NullPointerException
 	{
 		if (__t == null)
@@ -54,7 +54,7 @@ public abstract class ClassOrInterfaceDeclaration
 		Modifier[] mods = BasicModifier.parseGroup(__t);
 		
 		// Try to parse as a class
-		try (ExpandingSource split = __t.split())
+		try (BufferedTokenSource split = __t.split())
 		{
 			return ClassDeclaration.parseClass(mods, split);
 		}
@@ -63,7 +63,7 @@ public abstract class ClassOrInterfaceDeclaration
 		catch (LexicalStructureException e)
 		{
 			// Try as an interface
-			try (ExpandingSource split = __t.split())
+			try (BufferedTokenSource split = __t.split())
 			{
 				return InterfaceDeclaration.parseInterface(mods, split);
 			}

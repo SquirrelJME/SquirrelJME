@@ -12,8 +12,8 @@ package net.multiphasicapps.javac.lexical;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.multiphasicapps.javac.token.ExpandedToken;
-import net.multiphasicapps.javac.token.ExpandingSource;
+import net.multiphasicapps.javac.token.Token;
+import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.TokenType;
 
 /**
@@ -63,7 +63,7 @@ public final class ClassBodyDeclaration
 	 * @since 2018/04/15
 	 */
 	public static final ClassBodyDeclaration[] parseClassBody(
-		ExpandingSource __t)
+		BufferedTokenSource __t)
 		throws LexicalStructureException, NullPointerException
 	{
 		if (__t == null)
@@ -71,7 +71,7 @@ public final class ClassBodyDeclaration
 		
 		// {@squirreljme.error AQ39 Expected open brace at start of class
 		// body.}
-		ExpandedToken token = __t.next();
+		Token token = __t.next();
 		if (token.type() != TokenType.SYMBOL_OPEN_BRACE)
 			throw new LexicalStructureException(token, "AQ39");
 		
@@ -111,13 +111,13 @@ public final class ClassBodyDeclaration
 	 * @since 2018/04/15
 	 */
 	public static final ClassBodyDeclaration parseClassBodyDeclaration(
-		ExpandingSource __t)
+		BufferedTokenSource __t)
 		throws LexicalStructureException, NullPointerException
 	{
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		ExpandedToken token = __t.next();
+		Token token = __t.next();
 		TokenType type = token.type();
 		
 		// Parse of static initializer?

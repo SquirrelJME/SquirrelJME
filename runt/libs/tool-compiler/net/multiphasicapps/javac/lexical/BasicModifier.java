@@ -12,8 +12,8 @@ package net.multiphasicapps.javac.lexical;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.multiphasicapps.javac.token.ExpandedToken;
-import net.multiphasicapps.javac.token.ExpandingSource;
+import net.multiphasicapps.javac.token.Token;
+import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.TokenType;
 
 /**
@@ -69,13 +69,13 @@ public enum BasicModifier
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/04/14
 	 */
-	public static final Modifier parse(ExpandingSource __t)
+	public static final Modifier parse(BufferedTokenSource __t)
 		throws LexicalStructureException, NullPointerException
 	{
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		ExpandedToken token = __t.peek();
+		Token token = __t.peek();
 		TokenType type = token.type();
 		
 		// Is this an annotation? Do not parse @interface as an annotation
@@ -153,7 +153,7 @@ public enum BasicModifier
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/04/14
 	 */
-	public static final Modifier[] parseGroup(ExpandingSource __t)
+	public static final Modifier[] parseGroup(BufferedTokenSource __t)
 		throws LexicalStructureException, NullPointerException
 	{
 		if (__t == null)

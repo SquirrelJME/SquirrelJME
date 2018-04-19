@@ -13,8 +13,8 @@ package net.multiphasicapps.javac.lexical;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import net.multiphasicapps.classfile.BinaryName;
-import net.multiphasicapps.javac.token.ExpandedToken;
-import net.multiphasicapps.javac.token.ExpandingSource;
+import net.multiphasicapps.javac.token.Token;
+import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.TokenType;
 
 /**
@@ -64,20 +64,20 @@ public final class CompilationUnit
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/04/11
 	 */
-	public static final CompilationUnit parse(ExpandingSource __t)
+	public static final CompilationUnit parse(BufferedTokenSource __t)
 		throws LexicalStructureException, NullPointerException
 	{
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		ExpandedToken token = __t.peek();
+		Token token = __t.peek();
 		
 		// There are potentially two states when it comes to parsing a file,
 		// the file could start with annotations and have a package statement
 		// or it could instead declare an actual class. So in this case try
 		// to parse a class first just to see if it is one
 		if (token.type() == TokenType.SYMBOL_AT)
-			try (ExpandingSource split = __t.split())
+			try (BufferedTokenSource split = __t.split())
 			{
 				throw new todo.TODO();
 			}
