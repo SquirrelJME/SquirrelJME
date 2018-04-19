@@ -20,13 +20,16 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
 import net.multiphasicapps.collections.UnmodifiableList;
 import net.multiphasicapps.javac.FileNameLineAndColumn;
 
 /**
  * This class is the tokenizer which is used to provide tokens for the lexical
- * structure parser.
+ * structure parser. This tokenizer does not return any comments and it will
+ * perform decoupling of less than and greater than brackets which are used
+ * for generic types.
  *
  * @since 2017/09/04
  */
@@ -44,8 +47,19 @@ public class Tokenizer
 	/** Operator character code merge. */
 	private static final int[] _OPERATOR_MERGE;
 	
+	/** No comments used. */
+	private static final Token[] _NO_COMMENTS =
+		new Token[0];
+	
+	/** The input file name. */
+	protected final String filename;
+	
 	/** Input character source. */
 	protected final LogicalReader in;
+	
+	/** The comments which are waiting in the queue. */
+	private final Deque<Token> _comments =
+		new LinkedList<>();
 	
 	/** Is there a character waiting? */
 	private boolean _nxwaiting;
@@ -76,6 +90,18 @@ public class Tokenizer
 	/** The current token's column. */
 	private int _atcolumn =
 		1;
+	
+	/** The number of tokens which are waiting to be decomposed. */
+	private int _decomposewait;
+	
+	/** The number of characters which have been decomposed. */
+	private int _decomposedid;
+	
+	/** The number of open angle brackets. */
+	private int _opencount;
+	
+	/** Used for angle bracket decomposition. */
+	private TokenType _lasttype;
 	
 	/**
 	 * Initializes the merged operator set.
@@ -134,6 +160,7 @@ public class Tokenizer
 		if (__fn == null || __r == null)
 			throw new NullPointerException("NARG");
 		
+		this.filename = __fn;
 		this.in = new LogicalReader(__fn, __r);
 	}
 	
@@ -194,7 +221,155 @@ public class Tokenizer
 	public final Token next()
 		throws TokenizerException
 	{
-		throw new todo.TODO();
+		int decomposewait = this._decomposewait;
+		
+		// Push any comment tokens to the comment queue, do not read tokens
+		// however if there are tokens waiting to be decomposed
+		Deque<Token> comments = this._comments;
+		Token rv = null;
+		if (decomposewait <= 0)
+			for (;;)
+			{
+				// If it is a comment, it gets commented
+				rv = this.__decodeToken();
+				if (rv.type() == TokenType.COMMENT)
+					comments.addLast(rv);
+				
+				// Stop on non-comments
+				else
+					break;
+			}
+		
+		// Any comments which were read will always be drained
+		Token[] usecomments;
+		int numcomments;
+		if ((numcomments = comments.size()) > 0)
+		{
+			usecomments = comments.<Token>toArray(new Token[numcomments]);
+			comments.clear();
+		}
+		
+		// No comments to use
+		else
+			usecomments = Tokenizer._NO_COMMENTS;
+		
+		// Are there tokens waiting to be decomposed?
+		if (decomposewait > 0)
+		{
+			// Used for true positioning of characters
+			int line = this._atline,
+				column = this._atcolumn,
+				decomposedid = this._decomposedid;
+			
+			// Remove a decomposed token
+			this._decomposewait = decomposewait - 1;
+			this._decomposedid = decomposedid + 1;
+			
+			// Build a decomposed token
+			return new Token(TokenType.COMPARE_GREATER_THAN, ">",
+				this.filename, line, column + decomposedid, usecomments);
+		}
+		
+		// Used to determine how many braces have been opened
+		int opencount = this._opencount;
+		
+		// Determine if decomposition is to be performed
+		TokenType type = rv.type();
+		TokenType lasttype = this._lasttype;
+		int maxdecouple = 0;
+		switch (type)
+		{
+				// Count open angle brackets but only if they follow
+				// dots or identifiers
+				// Foo<Bar>
+				// foo.<Bar>boop()
+			case COMPARE_LESS_THAN:
+				if (lasttype != null &&
+					(lasttype == TokenType.IDENTIFIER ||
+					lasttype == TokenType.SYMBOL_DOT))
+					this._opencount = opencount + 1;
+				break;
+			
+				// Closing bracket, never close it negatively
+			case COMPARE_GREATER_THAN:
+				if (opencount > 0)
+					this._opencount = opencount - 1;
+				break;
+			
+				// Decouple two closers
+			case OPERATOR_SSHIFT_RIGHT:
+				maxdecouple = 2;
+				break;
+			
+				// Decouple three closers
+			case OPERATOR_USHIFT_RIGHT:
+				maxdecouple = 3;
+				break;
+		
+				// These may appear in the middle of generic brackets so
+				// if they are read do not clear the count
+				// Primitive types may be used in arrays such as for
+				// Foo<Bar[]>
+			case IDENTIFIER:
+			case KEYWORD_EXTENDS:
+			case KEYWORD_BOOLEAN:
+			case KEYWORD_BYTE:
+			case KEYWORD_SHORT:
+			case KEYWORD_CHAR:
+			case KEYWORD_INT:
+			case KEYWORD_LONG:
+			case KEYWORD_FLOAT:
+			case KEYWORD_DOUBLE:
+			case SYMBOL_OPEN_BRACKET:
+			case SYMBOL_CLOSED_BRACKET:
+			case SYMBOL_QUESTION:
+			case SYMBOL_DOT:
+			case SYMBOL_COMMA:
+				break;
+			
+				// Every other symbol cannot appear in a generic
+				// declaration so there is no possible chance that this was
+				// meant to be used for generics
+			default:
+				opencount = 0;
+				break;
+		}
+		
+		// Use for later processing
+		this._lasttype = type;
+		
+		// There are tokens which may be decoupled
+		if (maxdecouple > 0)
+		{
+			// If there are more things to decouple than things which are
+			// open then it is possible there is something illegal like
+			// `Foo<Bar>> 2` or similar, otherwise that illegal bitshift will
+			// end up being turned into `> >` logically
+			if (maxdecouple > opencount)
+				opencount = 0;
+			
+			// Translate the >> or >>> into multiple tokens according to
+			// the decoupling count
+			else
+			{
+				// Set the token to be returned which is initially decoupled
+				// Since the original token is being decoupled, just ignore
+				// whatever was originally here
+				rv = new Token(TokenType.COMPARE_GREATER_THAN, ">",
+					this.filename, rv.line(), rv.column(), usecomments);
+				
+				// Set these initial values because a decoupled token will
+				// always be returned
+				this._decomposewait = maxdecouple - 1;
+				this._decomposedid = 1;
+				
+				// Treat decoupled tokens as closing statements
+				this._opencount = opencount - maxdecouple;
+			}
+		}
+		
+		// Use that original token
+		return rv;
 	}
 	
 	/**
