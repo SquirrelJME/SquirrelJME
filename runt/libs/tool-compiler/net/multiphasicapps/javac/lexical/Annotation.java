@@ -12,8 +12,8 @@ package net.multiphasicapps.javac.lexical;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.multiphasicapps.javac.token.ExpandedToken;
-import net.multiphasicapps.javac.token.ExpandingSource;
+import net.multiphasicapps.javac.token.Token;
+import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.TokenType;
 
 /**
@@ -63,7 +63,7 @@ public final class Annotation
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/04/14
 	 */
-	public static final Annotation parse(ExpandingSource __t)
+	public static final Annotation parse(BufferedTokenSource __t)
 		throws LexicalStructureException, NullPointerException
 	{
 		if (__t == null)

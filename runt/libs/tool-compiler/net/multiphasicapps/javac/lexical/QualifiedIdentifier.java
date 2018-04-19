@@ -12,8 +12,8 @@ package net.multiphasicapps.javac.lexical;
 
 import net.multiphasicapps.classfile.BinaryName;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
-import net.multiphasicapps.javac.token.ExpandedToken;
-import net.multiphasicapps.javac.token.ExpandingSource;
+import net.multiphasicapps.javac.token.Token;
+import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.TokenType;
 
 /**
@@ -87,14 +87,14 @@ public final class QualifiedIdentifier
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/04/13
 	 */
-	public static final QualifiedIdentifier parse(ExpandingSource __t)
+	public static final QualifiedIdentifier parse(BufferedTokenSource __t)
 		throws LexicalStructureException, NullPointerException
 	{
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
 		// The token is always consumed
-		ExpandedToken token = __t.next();
+		Token token = __t.next();
 		
 		// {@squirreljme.error AQ2y Expected identifier while parsing qualified
 		// identifier.

@@ -12,8 +12,8 @@ package net.multiphasicapps.javac.lexical;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.multiphasicapps.javac.token.ExpandedToken;
-import net.multiphasicapps.javac.token.ExpandingSource;
+import net.multiphasicapps.javac.token.Token;
+import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.TokenType;
 
 /**
@@ -53,14 +53,14 @@ public abstract class TypeDeclaration
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/04/14
 	 */
-	public static TypeDeclaration parse(ExpandingSource __t)
+	public static TypeDeclaration parse(BufferedTokenSource __t)
 		throws LexicalStructureException, NullPointerException
 	{
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
 		// No type to actually parse?
-		ExpandedToken token = __t.peek();
+		Token token = __t.peek();
 		if (token.type() == TokenType.SYMBOL_SEMICOLON)
 		{
 			__t.next();

@@ -10,8 +10,8 @@
 
 package net.multiphasicapps.javac.lexical;
 
-import net.multiphasicapps.javac.token.ExpandedToken;
-import net.multiphasicapps.javac.token.ExpandingSource;
+import net.multiphasicapps.javac.token.Token;
+import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.TokenType;
 
 /**
@@ -33,7 +33,7 @@ public abstract class InterfaceDeclaration
 	 * @since 2018/04/15
 	 */
 	public static final InterfaceDeclaration parseInterface(Modifier[] __m,
-		ExpandingSource __t)
+		BufferedTokenSource __t)
 		throws LexicalStructureException, NullPointerException
 	{
 		if (__m == null || __t == null)

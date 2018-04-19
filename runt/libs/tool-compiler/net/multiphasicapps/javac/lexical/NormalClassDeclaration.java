@@ -12,8 +12,8 @@ package net.multiphasicapps.javac.lexical;
 
 import net.multiphasicapps.classfile.ClassIdentifier;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
-import net.multiphasicapps.javac.token.ExpandedToken;
-import net.multiphasicapps.javac.token.ExpandingSource;
+import net.multiphasicapps.javac.token.Token;
+import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.TokenType;
 
 /**
@@ -65,7 +65,7 @@ public final class NormalClassDeclaration
 	 * @since 2018/04/15
 	 */
 	public static final NormalClassDeclaration parseNormalClass(Modifier[] __m,
-		ExpandingSource __t)
+		BufferedTokenSource __t)
 		throws LexicalStructureException, NullPointerException
 	{
 		if (__m == null || __t == null)
@@ -73,7 +73,7 @@ public final class NormalClassDeclaration
 		
 		// {@squirreljme.error AQ38 Expected class to appear while attempting
 		// to parse a class.}
-		ExpandedToken token = __t.next();
+		Token token = __t.next();
 		if (token.type() != TokenType.KEYWORD_CLASS)
 			throw new LexicalStructureException(token, "AQ38");
 		

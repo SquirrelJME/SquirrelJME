@@ -10,8 +10,8 @@
 
 package net.multiphasicapps.javac.lexical;
 
-import net.multiphasicapps.javac.token.ExpandedToken;
-import net.multiphasicapps.javac.token.ExpandingSource;
+import net.multiphasicapps.javac.token.Token;
+import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.TokenType;
 
 /**
@@ -33,14 +33,14 @@ public abstract class ClassDeclaration
 	 * @since 2018/04/15
 	 */
 	public static final ClassDeclaration parseClass(Modifier[] __m,
-		ExpandingSource __t)
+		BufferedTokenSource __t)
 		throws LexicalStructureException, NullPointerException
 	{
 		if (__m == null || __t == null)
 			throw new NullPointerException("NARG");
 		
 		// Try to parse as a normal class
-		try (ExpandingSource split = __t.split())
+		try (BufferedTokenSource split = __t.split())
 		{
 			return NormalClassDeclaration.parseNormalClass(__m, split);
 		}
@@ -49,7 +49,7 @@ public abstract class ClassDeclaration
 		catch (LexicalStructureException e)
 		{
 			// Try parsing as enumeration
-			try (ExpandingSource split = __t.split())
+			try (BufferedTokenSource split = __t.split())
 			{
 				return EnumDeclaration.parseEnum(__m, split);
 			}
