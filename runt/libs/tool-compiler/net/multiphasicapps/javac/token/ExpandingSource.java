@@ -21,6 +21,7 @@ import net.multiphasicapps.javac.FileNameLineAndColumn;
  *
  * @since 2018/03/22
  */
+@Deprecated
 public abstract class ExpandingSource
 	implements Closeable, FileNameLineAndColumn
 {

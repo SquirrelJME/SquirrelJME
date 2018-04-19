@@ -22,6 +22,7 @@ import java.util.ConcurrentModificationException;
  *
  * @since 2018/04/11
  */
+@Deprecated
 public final class ExpandingPeeker
 	extends ExpandingSource
 {

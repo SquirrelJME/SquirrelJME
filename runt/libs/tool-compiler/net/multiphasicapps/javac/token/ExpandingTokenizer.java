@@ -29,6 +29,7 @@ import net.multiphasicapps.javac.FileNameLineAndColumn;
  *
  * @since 2018/03/12
  */
+@Deprecated
 public final class ExpandingTokenizer
 	extends ExpandingSource
 	implements Closeable

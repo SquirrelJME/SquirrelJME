@@ -19,6 +19,7 @@ import java.util.NoSuchElementException;
  *
  * @since 2018/03/22
  */
+@Deprecated
 public final class ExpandingStacker
 	extends ExpandingSource
 {
