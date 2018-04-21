@@ -77,14 +77,24 @@ public final class CompilationUnit
 		// or it could instead declare an actual class. So in this case try
 		// to parse a class first just to see if it is one
 		if (token.type() == TokenType.SYMBOL_AT)
-			try (BufferedTokenSource split = __t.split())
+		{
+			// Parsing may fail
+			__t.mark();
+			try
 			{
-				throw new todo.TODO();
+				if (true)
+					throw new todo.TODO();
+				
+				// Parse successful
+				__t.commit();
 			}
+			
+			// If it could not be parsed as an annotation, fail
 			catch (LexicalStructureException e)
 			{
-				// Ignore because this was parsed to not be a class at all
+				__t.reset();
 			}
+		}
 		
 		// Make valid again
 		token = __t.peek();

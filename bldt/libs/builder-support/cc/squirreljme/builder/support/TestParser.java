@@ -13,7 +13,6 @@ package cc.squirreljme.builder.support;
 import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.javac.CompilerInput;
-import net.multiphasicapps.javac.layout.TopLevelLayout;
 
 /**
  * This is used to parse classes to look for tests that exist within source
@@ -58,10 +57,11 @@ public final class TestParser
 		CompilerInput input = this.input;
 		
 		// Parse the class layout
-		TopLevelLayout toplevel;
 		try (InputStream in = input.open())
 		{
-			toplevel = TopLevelLayout.parse(input.fileName(), in);
+			//toplevel = TopLevelLayout.parse(input.fileName(), in);
+			if (true)
+				throw new todo.TODO();
 		}
 		
 		// {@squirreljme.error AU20 Could not parse file for tests.}
