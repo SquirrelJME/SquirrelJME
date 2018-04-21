@@ -14,7 +14,9 @@ import java.io.Closeable;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import net.multiphasicapps.javac.FileNameLineAndColumn;
@@ -34,6 +36,17 @@ public final class BufferedTokenSource
 {
 	/** The input token source to read from. */
 	protected final TokenSource input;
+	
+	/** Marks which have been made. */
+	private final Deque<Integer> _marks =
+		new ArrayDeque<>();
+	
+	/** Tokens which are currently being peeked. */
+	private final List<Token> _peeked =
+		new LinkedList<>();
+	
+	/** The current position in the peek queue where the token is at. */
+	private int _peekedpos;
 	
 	/**
 	 * Initializes the buffered token source from the given stream and input
@@ -128,7 +141,30 @@ public final class BufferedTokenSource
 	public final void commit()
 		throws IllegalStateException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error AQ3e Cannot reset a mark when there have been
+		// no marks which were made.}
+		Deque<Integer> marks = this._marks;
+		int n = marks.size();
+		if (n == 0)
+			throw new IllegalStateException("AQ3e");
+		
+		// Remove the last mark but keep the peek position the
+		marks.remove(n - 1);
+		
+		// If this was the last mark then all tokens which were read before
+		// this will just be dropped
+		if (n <= 1)
+		{
+			// Drain all peeked tokens to the current position
+			int peekedpos = this._peekedpos;
+			List<Token> peeked = this._peeked;
+			for (int i = 0; i < peekedpos; i++)
+				peeked.remove(0);
+			
+			// Set the peek position to zero so that the next read position
+			// is the first token in the queue
+			this._peekedpos = 0;
+		}
 	}
 	
 	/**
@@ -160,7 +196,8 @@ public final class BufferedTokenSource
 	 */
 	public final void mark()
 	{
-		throw new todo.TODO();
+		// The current peek position is just stored
+		this._marks.addLast(this._peekedpos);
 	}
 	
 	/**
@@ -170,7 +207,24 @@ public final class BufferedTokenSource
 	@Override
 	public final Token next()
 	{
-		throw new todo.TODO();
+		// Always peek the first token to be returned
+		Token rv = this.peek(0);
+		
+		// If there are no marks that exist, 
+		int peekedpos = this._peekedpos;
+		Deque<Integer> marks = this._marks;
+		if (marks.isEmpty())
+			this._peeked.remove(0);
+		
+		// Otherwise increase the peek index so that the next token is offset
+		// by the peek position
+		else
+			this._peekedpos = peekedpos + 1;
+		
+		// Debug
+		todo.DEBUG.note("Next (%d, m=%d): %s", peekedpos, marks.size(), rv);
+		
+		return rv;
 	}
 	
 	/**
@@ -204,7 +258,21 @@ public final class BufferedTokenSource
 		if (__o < 0)
 			throw new IndexOutOfBoundsException("AQ3c");
 		
-		throw new todo.TODO();
+		TokenSource input = this.input;
+		
+		// Offset by the peek position because if marking is enabled then peek
+		// mode will always be used
+		__o += this._peekedpos;
+		
+		// Need to fill the queue with peeked tokens in order to peek this
+		// far ahead?
+		List<Token> peeked = this._peeked;
+		int n = peeked.size();
+		while (__o >= n)
+			peeked.add(n++, input.next());
+		
+		// Return the peeked token here
+		return peeked.get(__o);
 	}
 	
 	/**
@@ -217,7 +285,15 @@ public final class BufferedTokenSource
 	public final void reset()
 		throws IllegalStateException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error AQ3e Cannot reset a mark when there have been
+		// no marks which were made.}
+		Deque<Integer> marks = this._marks;
+		int n = marks.size();
+		if (n == 0)
+			throw new IllegalStateException("AQ3e");
+		
+		// The peek position becomes the index of the last mark
+		this._peekedpos = marks.removeLast();
 	}
 }
 
