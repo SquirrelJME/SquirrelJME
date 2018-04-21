@@ -48,6 +48,9 @@ public final class BufferedTokenSource
 	/** The current position in the peek queue where the token is at. */
 	private int _peekedpos;
 	
+	/** The last token which was returned. */
+	private Token _last;
+	
 	/**
 	 * Initializes the buffered token source from the given stream and input
 	 * stream.
@@ -125,7 +128,10 @@ public final class BufferedTokenSource
 	@Override
 	public final int column()
 	{
-		throw new todo.TODO();
+		Token last = this._last;
+		if (last != null)
+			return last.column();
+		return this.input.column();
 	}
 	
 	/**
@@ -174,7 +180,10 @@ public final class BufferedTokenSource
 	@Override
 	public final String fileName()
 	{
-		throw new todo.TODO();
+		Token last = this._last;
+		if (last != null)
+			return last.fileName();
+		return this.input.fileName();
 	}
 	
 	/**
@@ -184,7 +193,10 @@ public final class BufferedTokenSource
 	@Override
 	public final int line()
 	{
-		throw new todo.TODO();
+		Token last = this._last;
+		if (last != null)
+			return last.line();
+		return this.input.line();
 	}
 	
 	/**
@@ -224,6 +236,8 @@ public final class BufferedTokenSource
 		// Debug
 		todo.DEBUG.note("Next (%d, m=%d): %s", peekedpos, marks.size(), rv);
 		
+		// Store the last token for positioning information
+		this._last = rv;
 		return rv;
 	}
 	

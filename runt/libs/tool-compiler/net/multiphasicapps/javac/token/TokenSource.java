@@ -10,12 +10,15 @@
 
 package net.multiphasicapps.javac.token;
 
+import net.multiphasicapps.javac.FileNameLineAndColumn;
+
 /**
  * This interface represents a source for tokens.
  *
  * @since 2018/04/18
  */
 public interface TokenSource
+	extends FileNameLineAndColumn
 {
 	/**
 	 * Returns the next token from the input source.
