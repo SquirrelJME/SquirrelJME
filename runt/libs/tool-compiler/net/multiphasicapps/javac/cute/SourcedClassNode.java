@@ -16,11 +16,9 @@ import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.javac.CompilerException;
 import net.multiphasicapps.javac.CompilerInput;
 import net.multiphasicapps.javac.CompilerLogger;
-import net.multiphasicapps.javac.layout.TopLevelLayout;
 import net.multiphasicapps.javac.lexical.CompilationUnit;
 import net.multiphasicapps.javac.MessageType;
-import net.multiphasicapps.javac.token.ExpandingTokenizer;
-import net.multiphasicapps.javac.token.Tokenizer;
+import net.multiphasicapps.javac.token.BufferedTokenSource;
 
 /**
  * This is a class node which is based on input source code and is compiled
@@ -80,7 +78,7 @@ public final class SourcedClassNode
 		{
 			// Load the structure
 			compunit = CompilationUnit.parse(
-				new ExpandingTokenizer(__input.fileName(), in));
+				new BufferedTokenSource(__input.fileName(), in));
 		}
 		
 		// {@squirreljme.error AQ0t Could not read the input source file.

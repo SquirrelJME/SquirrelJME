@@ -11,6 +11,9 @@
 package net.multiphasicapps.javac.token;
 
 import java.io.Closeable;
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,6 +34,36 @@ public final class BufferedTokenSource
 {
 	/** The input token source to read from. */
 	protected final TokenSource input;
+	
+	/**
+	 * Initializes the buffered token source from the given stream and input
+	 * stream.
+	 *
+	 * @param __fn The name of the file being read.
+	 * @param __in The input file stream.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/04/21
+	 */
+	public BufferedTokenSource(String __fn, InputStream __in)
+		throws NullPointerException
+	{
+		this(new Tokenizer(__fn, __in));
+	}
+	
+	/**
+	 * Initializes the buffered token source from the given stream and input
+	 * stream.
+	 *
+	 * @param __fn The name of the file being read.
+	 * @param __in The input file stream.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/04/21
+	 */
+	public BufferedTokenSource(String __fn, Reader __in)
+		throws NullPointerException
+	{
+		this(new Tokenizer(__fn, __in));
+	}
 	
 	/**
 	 * Initializes the buffered token source.
@@ -58,7 +91,18 @@ public final class BufferedTokenSource
 	public final void close()
 		throws TokenizerException
 	{
-		this.input.close();
+		// Close it if the input is closeable
+		TokenSource input = this.input;
+		if (input instanceof Closeable)
+			try
+			{
+				((Closeable)this.input).close();
+			}
+			catch (IOException e)
+			{
+				// {@squirreljme.error AQ3d Could not close the token source.}
+				throw new TokenizerException("AQ3d", e);
+			}
 	}
 	
 	/**

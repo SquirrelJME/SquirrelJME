@@ -56,9 +56,8 @@ public abstract class ClassDeclaration
 		// Could not parse as normal class
 		catch (LexicalStructureException e)
 		{
-			// Parsing failed so revert to the previous mark and remark
+			// Parsing failed so revert to the previous mark
 			__t.reset();
-			__t.mark();
 			
 			// Try parsing as enumeration
 			try
@@ -81,9 +80,6 @@ public abstract class ClassDeclaration
 				// Make these suppressed so they always appear
 				t.addSuppressed(e);
 				t.addSuppressed(f);
-				
-				// Parsing failed, so revert the state
-				__t.reset();
 				
 				throw t;
 			}

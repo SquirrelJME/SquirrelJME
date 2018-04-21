@@ -53,19 +53,34 @@ public abstract class ClassOrInterfaceDeclaration
 		// Parse modifiers
 		Modifier[] mods = BasicModifier.parseGroup(__t);
 		
+		// Parsing either of these may fail
+		__t.mark();
+		
 		// Try to parse as a class
-		try (BufferedTokenSource split = __t.split())
+		ClassOrInterfaceDeclaration rv;
+		try
 		{
-			return ClassDeclaration.parseClass(mods, split);
+			rv = ClassDeclaration.parseClass(mods, __t);
+			
+			// Success!
+			__t.commit();
+			return rv;
 		}
 		
 		// Failed to parse as a class
 		catch (LexicalStructureException e)
 		{
+			// Reset to last position
+			__t.reset();
+			
 			// Try as an interface
-			try (BufferedTokenSource split = __t.split())
+			try
 			{
-				return InterfaceDeclaration.parseInterface(mods, split);
+				rv = InterfaceDeclaration.parseInterface(mods, __t);
+				
+				// Success!
+				__t.commit();
+				return rv;
 			}
 			
 			// Failed to parse as interface
