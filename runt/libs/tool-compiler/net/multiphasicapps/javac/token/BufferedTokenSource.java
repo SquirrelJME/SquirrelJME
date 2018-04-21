@@ -14,6 +14,7 @@ import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import net.multiphasicapps.javac.FileNameLineAndColumn;
 
 /**
  * This is a token source which performs buffering of an input set of tokens

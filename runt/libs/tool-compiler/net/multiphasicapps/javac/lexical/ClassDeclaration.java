@@ -39,19 +39,35 @@ public abstract class ClassDeclaration
 		if (__m == null || __t == null)
 			throw new NullPointerException("NARG");
 		
+		// Parsing may fail
+		__t.mark();
+		
 		// Try to parse as a normal class
-		try (BufferedTokenSource split = __t.split())
+		ClassDeclaration rv;
+		try
 		{
-			return NormalClassDeclaration.parseNormalClass(__m, split);
+			rv = NormalClassDeclaration.parseNormalClass(__m, __t);
+			
+			// Use this set of input
+			__t.commit();
+			return rv;
 		}
 		
 		// Could not parse as normal class
 		catch (LexicalStructureException e)
 		{
+			// Parsing failed so revert to the previous mark and remark
+			__t.reset();
+			__t.mark();
+			
 			// Try parsing as enumeration
-			try (BufferedTokenSource split = __t.split())
+			try
 			{
-				return EnumDeclaration.parseEnum(__m, split);
+				rv = EnumDeclaration.parseEnum(__m, __t);
+				
+				// Use this parse
+				__t.commit();
+				return rv;
 			}
 			
 			// Could not parse as enumeration
@@ -65,6 +81,9 @@ public abstract class ClassDeclaration
 				// Make these suppressed so they always appear
 				t.addSuppressed(e);
 				t.addSuppressed(f);
+				
+				// Parsing failed, so revert the state
+				__t.reset();
 				
 				throw t;
 			}
