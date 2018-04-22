@@ -16,8 +16,8 @@ import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.javac.CompilerException;
 import net.multiphasicapps.javac.CompilerInput;
 import net.multiphasicapps.javac.CompilerLogger;
-import net.multiphasicapps.javac.lexical.CompilationUnit;
 import net.multiphasicapps.javac.MessageType;
+import net.multiphasicapps.javac.structure.CompilationUnit;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
 
 /**
