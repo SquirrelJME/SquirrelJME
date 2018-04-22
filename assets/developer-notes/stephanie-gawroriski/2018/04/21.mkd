@@ -1,0 +1,43 @@
+# 2018/04/21
+
+## 17:11
+
+Okay so I think the best thing to do for parsing to just have a single class
+for parsing then just build up on it perhaps. That way there is just say a
+single parser that can parse multiple things and just call each other as
+needed.
+
+## 18:51
+
+Okay so, what if I split into packages the different parts of the file.
+Basically I have a package for the class part, then the code parts, and other
+such things. This way it is not everything thrown into one package.
+
+## 19:19
+
+What if I made like a static class parser kind of thing. Give it a bunch of
+tokens and it just tries to parse everything and such based on a given
+structure.
+
+## 19:30
+
+I think splitting the parser from the structure would be the best thing to do
+so that it is not really that ugly. Might be best with static methods although
+single objects could be used.
+
+## 19:35
+
+I do not really know the best way to structure the parser so that the code is
+clean. And today I just feel completely horrible and worn out due to stress
+induced by "family". I just cannot think clearly at all.
+
+## 22:08
+
+Okay, how about instead there is just a "simple" class layout. basically I cut
+out a bunch of the lexical structure stuff to simplify it as much as possible.
+This way at least initially I only need to worry about the initial structure
+of a file and not all the possible sub-expressions. I think this would be the
+easiest. Then what I can do instead is to have it where I just worry about
+modifiers, parameters, and members. This would simplify things greatly. When
+I parse a member I could just ignore everything inside of it for the most part
+until those things, if they actually are, needed.
