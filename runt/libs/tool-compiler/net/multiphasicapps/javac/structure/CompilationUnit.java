@@ -10,6 +10,10 @@
 
 package net.multiphasicapps.javac.structure;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.Token;
 import net.multiphasicapps.javac.token.TokenSource;
@@ -26,19 +30,91 @@ public final class CompilationUnit
 	/**
 	 * Parses the compilation unit of the class file.
 	 *
-	 * @param __rawt The input raw token source.
+	 * @param __in The input token source.
+	 * @return The parsed compilation unit.
 	 * @throws NullPointerException On null arguments.
 	 * @throws StructureParseException If the structure is not valid.
 	 * @since 2018/04/21
 	 */
-	public static CompilationUnit parse(TokenSource __rawt)
+	public static CompilationUnit parse(BufferedTokenSource __in)
 		throws NullPointerException, StructureParseException
 	{
-		if (__rawt == null)
+		if (__in == null)
 			throw new NullPointerException("NARG");
 		
-		// Always buffer it
-		BufferedTokenSource input = new BufferedTokenSource(__rawt);
+		// This may be set early for class parse
+		Modifiers modifiers = null;
+		
+		// This may be a package-info file which contains annotations
+		// associated with a package
+		Token token = __in.next();
+		if (token.type() == TokenType.SYMBOL_AT)
+			modifiers = Modifiers.parse(__in);
+		
+		// Read in the package statement, if it is there
+		token = __in.peek();
+		if (token.type() == TokenType.KEYWORD_PACKAGE)
+		{
+			// Read package declaration
+			if (true)
+				throw new todo.TODO();
+			
+			// Only semi-colons and EOF may follow
+			if (modifiers != null)
+			{
+				// {@squirreljme.error AQ3f Expected end of file or semicolons
+				// after an annotated package statement, annotated packages
+				// are only valid in package-info.java.}
+				while ((token = __in.next()).type() != TokenType.END_OF_FILE)
+					if (token.type() != TokenType.SYMBOL_SEMICOLON)
+						throw new StructureParseException(token, "AQ3f");
+				
+				throw new todo.TODO();
+			}
+		}
+		
+		// Read import statements but if there are modifiers then a class
+		// must directly follow
+		Set<ImportStatement> imports = new LinkedHashSet<>();
+		if (modifiers == null)
+			for (;;)
+			{
+				// Stop when there are no more imports
+				token = __in.peek();
+				if (token.type() != TokenType.KEYWORD_IMPORT)
+					break;
+				
+				// Parse import statement
+				imports.add(ImportStatement.parse(__in));
+			}
+		
+		// Read in classes
+		List<ClassStructure> classes = new ArrayList<>();
+		for (;;)
+		{
+			// Need to read in the class modifiers
+			if (modifiers == null)
+			{
+				// Ignore semi-colons
+				token = __in.peek();
+				if (token.type() == TokenType.SYMBOL_SEMICOLON)
+					continue;
+				
+				// But stop parsing on EOF
+				else if (token.type() == TokenType.END_OF_FILE)
+					break;
+				
+				// Parse modifiers
+				modifiers = Modifiers.parse(__in);
+			}
+			
+			// Read in single class body
+			if (true)
+				throw new todo.TODO();
+			
+			// Clear modifiers so that they are not used again
+			modifiers = null;
+		}
 		
 		throw new todo.TODO();
 	}

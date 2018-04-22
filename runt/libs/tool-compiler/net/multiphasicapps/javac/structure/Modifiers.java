@@ -16,22 +16,23 @@ import net.multiphasicapps.javac.token.TokenSource;
 import net.multiphasicapps.javac.token.TokenType;
 
 /**
- * This represents a single import statement.
+ * This represents modifiers that are associated with something which may be
+ * a basic keyword or an annotation.
  *
  * @since 2018/04/21
  */
-public final class ImportStatement
+public final class Modifiers
 {
 	/**
-	 * This parses a single import statement.
+	 * This parses modifiers which are associated with something.
 	 *
 	 * @param __in The input token source.
 	 * @return The parsed modifiers.
 	 * @throws NullPointerException On null arguments.
-	 * @throws StructureParseException If this is not a valid import statement.
+	 * @throws StructureParseException If the structure is not valid.
 	 * @since 2018/04/21
 	 */
-	public static ImportStatement parse(BufferedTokenSource __in)
+	public static Modifiers parse(BufferedTokenSource __in)
 		throws NullPointerException, StructureParseException
 	{
 		if (__in == null)
