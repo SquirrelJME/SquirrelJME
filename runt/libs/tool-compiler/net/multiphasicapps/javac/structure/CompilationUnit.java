@@ -28,6 +28,36 @@ import net.multiphasicapps.javac.token.TokenType;
 public final class CompilationUnit
 {
 	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/21
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/21
+	 */
+	@Override
+	public final int hashCode()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/21
+	 */
+	@Override
+	public final String toString()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Parses the compilation unit of the class file.
 	 *
 	 * @param __in The input token source.
@@ -45,6 +75,9 @@ public final class CompilationUnit
 		// This may be set early for class parse
 		Modifiers modifiers = null;
 		
+		// The package the class is in, if it is in one
+		QualifiedIdentifier inpackage = null;
+		
 		// This may be a package-info file which contains annotations
 		// associated with a package
 		Token token = __in.next();
@@ -56,8 +89,13 @@ public final class CompilationUnit
 		if (token.type() == TokenType.KEYWORD_PACKAGE)
 		{
 			// Read package declaration
-			if (true)
-				throw new todo.TODO();
+			inpackage = QualifiedIdentifier.parse(__in);
+			
+			// {@squirreljme.error AQ3j Expected semi-colon to follow the
+			// package statement.}
+			token = __in.next();
+			if (token.type() != TokenType.SYMBOL_SEMICOLON)
+				throw new StructureParseException(token, "AQ3j");
 			
 			// Only semi-colons and EOF may follow
 			if (modifiers != null)

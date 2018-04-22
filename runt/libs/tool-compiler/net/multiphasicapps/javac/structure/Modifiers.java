@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.javac.structure;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.Token;
 import net.multiphasicapps.javac.token.TokenSource;
@@ -23,6 +25,36 @@ import net.multiphasicapps.javac.token.TokenType;
  */
 public final class Modifiers
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/21
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/21
+	 */
+	@Override
+	public final int hashCode()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/21
+	 */
+	@Override
+	public final String toString()
+	{
+		throw new todo.TODO();
+	}
+	
 	/**
 	 * This parses modifiers which are associated with something.
 	 *
@@ -38,7 +70,84 @@ public final class Modifiers
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Parse modifiers
+		Set<Modifier> rv = new LinkedHashSet<>();
+		for (;;)
+		{
+			Token token = __in.peek();
+			Modifier got;
+			
+			// Is this an annotation? Do not parse @interface as an annotation
+			// since that is not valid
+			if (token.type() == TokenType.SYMBOL_AT &&
+				__in.peek(1).type() != TokenType.KEYWORD_INTERFACE)
+				got = Annotation.parse(__in);
+				
+			// Basic modifier?
+			else
+			{
+				// Depends
+				switch (token.type())
+				{
+					case KEYWORD_PUBLIC:
+						got = BasicModifier.PUBLIC;
+						break;
+						
+					case KEYWORD_PROTECTED:
+						got = BasicModifier.PROTECTED;
+						break;
+						
+					case KEYWORD_PRIVATE:
+						got = BasicModifier.PRIVATE;
+						break;
+						
+					case KEYWORD_STATIC:
+						got = BasicModifier.STATIC;
+						break;
+						
+					case KEYWORD_ABSTRACT:
+						got = BasicModifier.ABSTRACT;
+						break;
+						
+					case KEYWORD_FINAL:
+						got = BasicModifier.FINAL;
+						break;
+						
+					case KEYWORD_NATIVE:
+						got = BasicModifier.NATIVE;
+						break;
+						
+					case KEYWORD_SYNCHRONIZED:
+						got = BasicModifier.SYNCHRONIZED;
+						break;
+						
+					case KEYWORD_TRANSIENT:
+						got = BasicModifier.TRANSIENT;
+						break;
+						
+					case KEYWORD_VOLATILE:
+						got = BasicModifier.VOLATILE;
+						break;
+						
+					case KEYWORD_STRICTFP:
+						got = BasicModifier.STRICTFP;
+						break;
+					
+						// No more modifiers to parse
+					default:
+						throw new todo.TODO();
+				}
+				
+				// Consume token to prevent infinite loop
+				__in.next();
+			}
+			
+			// {@squirreljme.error AQ3k Duplicate modifier. (The modifier)}
+			if (rv.contains(got))
+				throw new StructureParseException(token,
+					String.format("AQ3k %s", got));
+			rv.add(got);
+		}
 	}
 }
 
