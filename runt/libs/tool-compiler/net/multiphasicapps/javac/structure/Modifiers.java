@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.javac.structure;
 
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
@@ -25,6 +26,56 @@ import net.multiphasicapps.javac.token.TokenType;
  */
 public final class Modifiers
 {
+	/** The modifiers to use. */
+	private final Set<Modifier> _modifiers;	
+	
+	/**
+	 * Initializes the modifier set.
+	 *
+	 * @param __ms The modifiers to use.
+	 * @throws NullPointerException If any modifier is null.
+	 * @throws StructureParseException If a modifier is duplicated.
+	 * @since 2018/04/22
+	 */
+	public Modifiers(Modifier... __ms)
+		throws NullPointerException, StructureParseException
+	{
+		this(Arrays.<Modifier>asList((__ms == null ? new Modifier[0] : __ms)));
+	}
+	
+	/**
+	 * Initializes the modifier set.
+	 *
+	 * @param __ms The modifiers to use.
+	 * @throws NullPointerException If any modifier is null.
+	 * @throws StructureParseException If a modifier is duplicated.
+	 * @since 2018/04/22
+	 */
+	public Modifiers(Iterable<Modifier> __ms)
+		throws NullPointerException, StructureParseException
+	{
+		if (__ms == null)
+			throw new NullPointerException("NARG");
+		
+		// Check modifiers before using them
+		Set<Modifier> modifiers = new LinkedHashSet<>();
+		for (Modifier m : __ms)
+		{
+			if (m == null)
+				throw new NullPointerException("NARG");
+			
+			// {@squirreljme.error AQ3l Duplicate modifier. (The modifier)}
+			if (modifiers.contains(m))
+				throw new StructureParseException(String.format("AQ3l %s",
+					m));
+			
+			modifiers.add(m);
+		}
+		
+		// Store
+		this._modifiers = modifiers;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/04/21
@@ -135,7 +186,7 @@ public final class Modifiers
 					
 						// No more modifiers to parse
 					default:
-						throw new todo.TODO();
+						return new Modifiers(rv);
 				}
 				
 				// Consume token to prevent infinite loop
