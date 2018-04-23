@@ -148,9 +148,10 @@ public final class CompilationUnit
 				modifiers = Modifiers.parse(__in);
 			}
 			
-			// Read in single class body
-			if (true)
-				throw new todo.TODO();
+			// Read entire class container
+			ClassStructure struct = ClassStructure.parseEntireClass(modifiers,
+				__in);
+			classes.add(struct);
 			
 			// Clear modifiers so that they are not used again
 			modifiers = null;
