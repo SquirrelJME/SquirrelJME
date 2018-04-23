@@ -40,6 +40,38 @@ public final class ClassStructure
 		if (__mods == null || __in == null)
 			throw new NullPointerException("NARG");
 		
+		Token token;
+		
+		// Determine the class type based on the next token
+		ClassStructureType structtype;
+		token = __in.next();
+		switch (token.type())
+		{
+			case KEYWORD_CLASS:
+				structtype = ClassStructureType.CLASS;
+				break;
+				
+			case KEYWORD_ENUM:
+				structtype = ClassStructureType.ENUM;
+				break;
+				
+			case KEYWORD_INTERFACE:
+				structtype = ClassStructureType.INTERFACE;
+				break;
+			
+				// {@squirreljme.error AQ3m Expected interface to follow
+				// at symbol for declaring an annotation type.}
+			case SYMBOL_AT:
+				token = __in.next();
+				if (token.type() != TokenType.KEYWORD_INTERFACE)
+					throw new StructureParseException(token, "AQ3m");
+				break;
+			
+				// {@squirreljme.error AQ3n Unknown token while parsing class.}
+			default:
+				throw new StructureParseException(token, "AQ3n");
+		}
+		
 		throw new todo.TODO();
 	}
 }
