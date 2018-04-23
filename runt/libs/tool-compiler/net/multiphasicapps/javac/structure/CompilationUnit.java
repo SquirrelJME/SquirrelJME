@@ -81,7 +81,7 @@ public final class CompilationUnit
 		// This may be a package-info file which contains annotations
 		// associated with a package
 		// Detect annotation types here in the event they have no modifiers
-		Token token = __in.next();
+		Token token = __in.peek();
 		if (token.type() == TokenType.SYMBOL_AT &&
 			__in.peek(1).type() != TokenType.KEYWORD_INTERFACE)
 			modifiers = Modifiers.parse(__in);
@@ -90,6 +90,9 @@ public final class CompilationUnit
 		token = __in.peek();
 		if (token.type() == TokenType.KEYWORD_PACKAGE)
 		{
+			// Consume package
+			__in.next();
+			
 			// Read package declaration
 			inpackage = QualifiedIdentifier.parse(__in);
 			
