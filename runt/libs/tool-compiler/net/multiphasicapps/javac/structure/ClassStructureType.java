@@ -31,5 +31,44 @@ public enum ClassStructureType
 	
 	/** End. */
 	;
+	
+	/**
+	 * Returns the type of inheritence that is used for extends.
+	 *
+	 * @return The inheritence type used for extends.
+	 * @since 2018/04/24
+	 */
+	public final InheritenceType extendsType()
+	{
+		if (this == CLASS)
+			return InheritenceType.SINGLE;
+		else if (this == INTERFACE)
+			return InheritenceType.MULTIPLE;
+		return InheritenceType.NONE;
+	}
+	
+	/**
+	 * Does this type have type parameters?
+	 *
+	 * @return If it has type parameters.
+	 * @since 2018/04/24
+	 */
+	public final boolean hasTypeParameters()
+	{
+		return this == CLASS || this == INTERFACE;
+	}
+	
+	/**
+	 * Returns the inheritence type used for implements.
+	 *
+	 * @return The inheritence type for implements.
+	 * @since 2018/04/24
+	 */
+	public final InheritenceType implementsType()
+	{
+		if (this == CLASS || this == ENUM)
+			return InheritenceType.MULTIPLE;
+		return InheritenceType.NONE;
+	}
 }
 
