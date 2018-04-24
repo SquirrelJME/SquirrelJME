@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.javac.structure;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
 import net.multiphasicapps.classfile.ClassIdentifier;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.Token;
@@ -82,27 +84,68 @@ public final class ClassStructure
 		
 		// Read type parameters?
 		token = __in.peek();
+		TypeParameter[] typeparms;
 		if (structtype.hasTypeParameters() &&
 			token.type() == TokenType.COMPARE_LESS_THAN)
-		{
-			throw new todo.TODO();
-		}
+			typeparms = TypeParameter.parseTypeParameters(__in);
+		else
+			typeparms = new TypeParameter[0];
 		
 		// Read extends
 		token = __in.peek();
+		Type[] extending;
 		if (token.type() == TokenType.KEYWORD_EXTENDS)
 		{
-			throw new todo.TODO();
+			// Consume and parse list
+			__in.next();
+			switch (structtype.extendsType())
+			{
+				case SINGLE:
+					extending = new Type[]{Type.parseType(__in)};
+					break;
+					
+				case MULTIPLE:
+					extending = Type.parseTypes(__in);
+					break;
+					
+					// {@squirreljme.error AQ3w This type of class cannot
+					// extend other classes.}
+				default:
+					throw new StructureParseException(token, "AQ3w");
+			}
 		}
+		else
+			extending = new Type[0];
 		
 		// Read implements
+		token = __in.peek();
+		Type[] implementing;
 		if (token.type() == TokenType.KEYWORD_IMPLEMENTS)
 		{
-			throw new todo.TODO();
+			// Consume and parse list
+			__in.next();
+			switch (structtype.extendsType())
+			{
+				case MULTIPLE:
+					implementing = Type.parseTypes(__in);
+					break;
+					
+					// {@squirreljme.error AQ3y This type of class cannot
+					// implement interfaces.}
+				default:
+					throw new StructureParseException(token, "AQ3y");
+			}
 		}
+		else
+			implementing = new Type[0];
+		
+		if (true)
+			throw new todo.TODO();
 		
 		// Read class body which contains all the members
-		throw new todo.TODO();
+		if (structtype == ClassStructureType.ENUM)
+			return new ClassStructure();
+		return new ClassStructure();
 	}
 }
 
