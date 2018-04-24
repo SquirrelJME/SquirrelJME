@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.javac.structure;
 
+import net.multiphasicapps.classfile.ClassIdentifier;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.Token;
 import net.multiphasicapps.javac.token.TokenSource;
@@ -65,6 +66,7 @@ public final class ClassStructure
 				token = __in.next();
 				if (token.type() != TokenType.KEYWORD_INTERFACE)
 					throw new StructureParseException(token, "AQ3m");
+				structtype = ClassStructureType.ANNOTATION;
 				break;
 			
 				// {@squirreljme.error AQ3n Unknown token while parsing class.}
@@ -72,6 +74,34 @@ public final class ClassStructure
 				throw new StructureParseException(token, "AQ3n");
 		}
 		
+		// {@squirreljme.error AQ3v Expected identifier to name the class as.}
+		token = __in.next();
+		if (token.type() != TokenType.IDENTIFIER)
+			throw new StructureParseException(token, "AQ3v");
+		ClassIdentifier name = new ClassIdentifier(token.characters());
+		
+		// Read type parameters?
+		token = __in.peek();
+		if (structtype.hasTypeParameters() &&
+			token.type() == TokenType.COMPARE_LESS_THAN)
+		{
+			throw new todo.TODO();
+		}
+		
+		// Read extends
+		token = __in.peek();
+		if (token.type() == TokenType.KEYWORD_EXTENDS)
+		{
+			throw new todo.TODO();
+		}
+		
+		// Read implements
+		if (token.type() == TokenType.KEYWORD_IMPLEMENTS)
+		{
+			throw new todo.TODO();
+		}
+		
+		// Read class body which contains all the members
 		throw new todo.TODO();
 	}
 }
