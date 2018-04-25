@@ -1,0 +1,8 @@
+# 2018/04/24
+
+## 15:47
+
+Neat so having `class Boop extends boolean[]` is completely valid when it
+comes to the structure of classes in Java 7 even though it does not compile
+it is lexically valid. Well actually no this is an error in the language
+specification in the Syntax chapter so there is that.
