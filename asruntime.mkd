@@ -120,26 +120,17 @@ of work that is required to support various systems. This means that porting
 SquirrelJME will be very simple and straightforward once the base semantics of
 the virtual machine are implemented.
 
-Both kernel and user-space tasks require that system calls be made available.
-This means an implementation of the
-`cc.squirreljme.runtime.cldc.SystemCaller` class. Regardless
-for the kernel or the user-space, the `_CALLER` field must be set in
-`cc.squirreljme.runtime.cldc.SystemCall`. For additional
-support, it is possible for `__systemCaller()` be replaced as needed to return
-the appropriate instance of `SystemCaller` if the field cannot statically
-be set by the virtual machine.
+Both kernel and user-space tasks use an API that provides system calls to
+perform some unsafe operations in the kernel and to interact with the kernel.
+Each function is specified in the enumeration
+`cc.squirreljme.runtime.cldc.system.SystemFunction`. System calls are directly
+used with the `cc.squirreljme.runtime.cldc.system.SystemCall` class. System
+calls can be initialized by either setting the internal `_CALLS` field or
+modifying the method `__calls()` to return an array of system call
+implementations.
 
-The kernel task is required to create an implementation of the
-`cc.squirreljme.runtime.kernel.Kernel` class. The actual
-implementation can vary according to the required means.
-The system call interface that can be used in the kernel task is an
-instance of
-`cc.squirreljme.runtime.kernel.syscall.DirectCaller` which
-is capable of calling into the kernel as needed. The `_CALLER` field is set to
-this caller.
-
-User-space tasks use IPC to communicate with the kernel process and as such the
-recommended means of handling that is by implementing
-`cc.squirreljme.runtime.clsyscall.ClientCaller`. The `_CALLER`
-field is set to this caller.
+The system calls allow for basic types to be passed to and from the remote
+side and also provides a mean to have remote execution as it is needed via
+remote function handlers. This means that system call operations should be
+fast as there only needs to be handling of the basic types.
 
