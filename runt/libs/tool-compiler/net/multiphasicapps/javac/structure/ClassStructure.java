@@ -10,7 +10,9 @@
 
 package net.multiphasicapps.javac.structure;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import net.multiphasicapps.classfile.ClassIdentifier;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
@@ -25,7 +27,100 @@ import net.multiphasicapps.javac.token.TokenType;
  * @since 2018/04/21
  */
 public final class ClassStructure
+	implements MemberStructure
 {
+	/**
+	 * Initializes the class structure information.
+	 *
+	 * @param __structtype The type of structure used.
+	 * @param __name The name of the class.
+	 * @param __typeparms The type parameters of the class.
+	 * @param __extending The classes this class extends.
+	 * @param __implementing The classes this class implements.
+	 * @param __members The members of this class.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/04/27
+	 */
+	public ClassStructure(ClassStructureType __structtype,
+		ClassIdentifier __name, TypeParameter[] __typeparms,
+		Type[] __extending, Type[] __implementing, MemberStructure[] __members)
+		throws NullPointerException
+	{
+		if (__structtype == null || __name == null || __typeparms == null ||
+			__extending == null || __implementing == null || __members == null)
+			throw new NullPointerException();
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Parses the body of the class.
+	 *
+	 * @param __structtype The structure type of the class.
+	 * @param __in The input token source.
+	 * @return The parsed members of the class.
+	 * @throws NullPointerException On null arguments.
+	 * @throws StructureParseException If the members of the body are not
+	 * correct.
+	 * @since 2018/04/27
+	 */
+	public static MemberStructure[] parseClassBody(
+		ClassStructureType __structtype, BufferedTokenSource __in)
+		throws NullPointerException, StructureParseException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AQ3z Expected opening brace at start of class.}
+		Token token = __in.next();
+		if (token.type() != TokenType.SYMBOL_OPEN_BRACE)
+			throw new StructureParseException(token, "AQ3z");
+		
+		// Parse the enumeration constants, their fields and their class
+		// values
+		if (__structtype == ClassStructureType.ENUM)
+		{
+			throw new todo.TODO();
+		}
+		
+		// Member parsing loop
+		List<MemberStructure> rv = new ArrayList<>();
+		for (;;)
+		{
+			// End of members?
+			token = __in.peek();
+			if (token.type() == TokenType.SYMBOL_CLOSED_BRACE)
+				return rv.<MemberStructure>toArray(
+					new MemberStructure[rv.size()]);
+			
+			// Ignore semi-colons just lying around in the class
+			else if (token.type() == TokenType.SYMBOL_SEMICOLON)
+				continue;
+			
+			// Parse modifiers since this will modify how things are parsed
+			Modifiers mods = Modifiers.parse(__in);
+			
+			// Always try to parse a class since any kind of class can include
+			// classes
+			try
+			{
+				// Parse the class
+				__in.mark();
+				rv.add(ClassStructure.parseEntireClass(mods, __in));
+				
+				// Do not try parsing anything else for now
+				__in.commit();
+				continue;
+			}
+			catch (StructureParseException e)
+			{
+				__in.reset();
+			}
+			
+			throw new todo.TODO();
+		}
+	}
+	
 	/**
 	 * Attempts to parse an entire class.
 	 *
@@ -139,13 +234,13 @@ public final class ClassStructure
 		else
 			implementing = new Type[0];
 		
-		if (true)
-			throw new todo.TODO();
-		
 		// Read class body which contains all the members
-		if (structtype == ClassStructureType.ENUM)
-			return new ClassStructure();
-		return new ClassStructure();
+		MemberStructure[] members = ClassStructure.parseClassBody(structtype,
+			__in);
+		
+		// Build class structure
+		return new ClassStructure(structtype, name, typeparms,
+			extending, implementing, members);
 	}
 }
 
