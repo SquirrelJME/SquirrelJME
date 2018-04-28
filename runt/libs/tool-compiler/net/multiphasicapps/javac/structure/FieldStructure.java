@@ -16,26 +16,25 @@ import net.multiphasicapps.javac.token.TokenSource;
 import net.multiphasicapps.javac.token.TokenType;
 
 /**
- * This represents a method which is a member of a class and may contain Java
- * code to be compiled.
+ * This represents a field which may have a value for a class.
  *
- * @since 2018/04/27
+ * @since 2018/04/28
  */
-public abstract class MethodStructure
+public abstract class FieldStructure
 	implements MemberStructure
 {
 	/**
-	 * Parses a single method which is appropriate for a given class type.
+	 * Parses a single field which is appropriate for a given class type.
 	 *
 	 * @param __ct The structure of the class.
-	 * @param __mods The modifiers to the method.
+	 * @param __mods The modifiers to the field.
 	 * @param __in The input tokens.
-	 * @return The parsed method.
+	 * @return The parsed field.
 	 * @throws NullPointerException On null arguments.
-	 * @throws StructureParseException If it is not a valid method.
+	 * @throws StructureParseException If it is not a valid field.
 	 * @since 2018/04/28
 	 */
-	public static MethodStructure parseMethod(ClassStructureType __ct,
+	public static FieldStructure parseField(ClassStructureType __ct,
 		Modifiers __mods, BufferedTokenSource __in)
 		throws NullPointerException, StructureParseException
 	{
