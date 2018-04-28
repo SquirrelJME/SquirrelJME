@@ -133,7 +133,25 @@ public final class ClassStructure
 				__in.reset();
 			}
 			
-			throw new todo.TODO();
+			// Try to parse a field
+			try
+			{
+				// Parse field
+				__in.mark();
+				rv.add(FieldStructure.parseField(__structtype, mods, __in));
+				
+				// Valid field
+				__in.commit();
+				continue;
+			}
+			catch (StructureParseException e)
+			{
+				__in.reset();
+			}
+			
+			// {@squirreljme.error AQ40 The specified token does not
+			// represent a member that is a class, field, or method.}
+			throw new StructureParseException(__in, "AQ40");
 		}
 	}
 	
