@@ -117,6 +117,22 @@ public final class ClassStructure
 				__in.reset();
 			}
 			
+			// Try to parse a method
+			try
+			{
+				// Parse method
+				__in.mark();
+				rv.add(MethodStructure.parseMethod(__structtype, mods, __in));
+				
+				// Valid method
+				__in.commit();
+				continue;
+			}
+			catch (StructureParseException e)
+			{
+				__in.reset();
+			}
+			
 			throw new todo.TODO();
 		}
 	}
