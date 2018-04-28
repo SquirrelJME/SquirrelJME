@@ -42,6 +42,14 @@ public abstract class MethodStructure
 		if (__ct == null || __mods == null || __in == null)
 			throw new NullPointerException("NARG");
 		
+		// Parse any type parameters which are used
+		TypeParameter[] typeparams;
+		Token token = __in.peek();
+		if (token.type() == TokenType.COMPARE_LESS_THAN)
+			typeparams = TypeParameter.parseTypeParameters(__in);
+		else
+			typeparams = new TypeParameter[0];
+		
 		throw new todo.TODO();
 	}
 }
