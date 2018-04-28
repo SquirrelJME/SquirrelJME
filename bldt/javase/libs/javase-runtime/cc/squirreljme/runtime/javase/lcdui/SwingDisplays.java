@@ -150,7 +150,7 @@ public class SwingDisplays
 		if (__head == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		return new SwingDisplay(__handle, (SwingDisplayHead)__head);
 	}
 }
 
