@@ -41,19 +41,16 @@ public class SwingDisplays
 		if (__type == null)
 			throw new NullPointerException("NARG");
 		
-		if (true)
-			throw new todo.TODO();
-		/*
-		if (__type.isWidget())
-			return new SwingWidget(__handle, __type);
-		
-		else if (__type == CollectableType.TICKER)
-			return new SwingTicker(__handle);*/
-		
-		// {@squirreljme.error AF0c Do not know how to create the given
-		// collectable. (The collectable type)}
-		else
-			throw new RuntimeException(String.format("AF0c %s", __type));
+		switch (__type)
+		{
+			case DISPLAYABLE_CANVAS:
+				return new SwingCanvas(__handle);
+			
+				// {@squirreljme.error AF0c Do not know how to create the given
+				// collectable. (The collectable type)}
+			default:
+				throw new RuntimeException(String.format("AF0c %s", __type));
+		}
 	}
 	
 	/**
