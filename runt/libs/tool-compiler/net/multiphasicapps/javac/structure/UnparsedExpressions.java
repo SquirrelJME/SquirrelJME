@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.javac.structure;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.Token;
 import net.multiphasicapps.javac.token.TokenSource;
