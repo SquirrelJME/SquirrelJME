@@ -208,56 +208,22 @@ maximum of 8 characters for a file name and 3 characters for an extension along
 with other naming restrictions. As such getting a path which does not produce
 a valid DOS pathname will result in an exception being thrown.
 
-## ***OLD*** System Services
+## System Services
 
-***SYSTEM SERVICES USE ANOTHER CLASS, NOT THE ONE SPECIFIED BELOW***
+Services are obtained by utilizing the following class:
+`cc.squirreljme.runtime.cldc.service.ServiceAccessor`.
 
-The `cc.squirreljme.unsafe.SystemEnvironment` has a method
-called `<C>systemService(Class<C>)` which is used to obtain a system service.
-The purpose of this class is mostly by the APIs which need to access some
-implementation of an API but one which may vary across various systems and
-such. This allows the API code to be very light and not require massive amounts
-of branches or complexities to support multiple systems. The services means
-that things can be implemented on an as used basis.
-
-Custom system services can be specified by setting system properties with the
-given prefix `cc.squirreljme.unsafe.service.` where anything
-following that is the target class to provide a service for, the value for the
-property is the implementation of that.
-
-# ***OLD*** Compilation Time
+# Compilation Time
 
 This section contains information related to the operation of the Ahead-Of-Time
 Compiler and the Just-In-Time Compiler.
 
-## ***OLD*** Unsafe Renaming
-
-In the `cc.squirreljme.unsafe` package, there are classes
-which are `public` and others which are internal and package private. The
-internal package private classes in the form of `__Ext_<Name>__` contain
-internal and to be renamed by the JIT implementations of class `<Name>`. So for
-example the public class `cc.squirreljme.unsafe.SystemVM`. It
-internally checks and then calls methods within
-`cc.squirreljme.unsafe.__Ext_systemvm__` or other internal
-classes as needed. When the JIT sees a static method call to an `__Ext_` class
-it will rename it according to the JIT configuration. This means that any calls
-to that class end up turning into calls to
-`cc.squirreljme.unsafe.__Int_mipssystemvm__` which implements
-the required classes to support the VM on MIPS systems.
-
-This renaming in turn allows the build environment to work like a normal Java
-program without requiring major rewriting or having various kludges between
-the build environment and SquirrelJME. This also reduces duplicate code since
-the code can be shared between the two.
-
-Note that all renames are lowercase and only lowercased renames are used.
-
-# ***OLD*** Virtual Machine
+# Virtual Machine
 
 This section contains information related to the target independent virtual
 machine at run-time.
 
-## ***OLD*** Garbage Collection
+## Garbage Collection
 
 For simplicity the garbage collector is a reference counter with sweeping when
 no more memory is available (or GC is called manually). As such, cyclic
@@ -286,7 +252,7 @@ long as it has zero weak count also. Thus, an object which is never referenced
 at all will be garbage collected. In a standard Java VM, a `WeakReference` in
 most cases will only give an object if it has at least one strong reference.
 
-### ***OLD*** Strongly reached, weakly reached (`WeakReference`)
+### Strongly reached, weakly reached (`WeakReference`)
 
 In Java ME with Java being garbage collected, there are two types of
 references to objects which affects how garbage collection is performed.
@@ -310,7 +276,7 @@ are garbage collected as soon as possible. If used for memoization it will
 not have the best intended effect of reducing calculations but it would reduce
 the memory footprint.
 
-### ***OLD*** Strong Count of Zero, Non-Zero Weak Count
+### Strong Count of Zero, Non-Zero Weak Count
 
 When an object has no strong references and only weak references, that means
 that it can soon be garbage collected. For simplicity when `WeakReference`
@@ -322,50 +288,18 @@ detach to occur.
 If the system is out of memory then all objects will be iterated and any
 objects which only have weak references to them will be removed.
 
-### ***OLD*** Strong Count of Zero, Zero Weak Count
+### Strong Count of Zero, Zero Weak Count
 
 This object can be garbage collected, it will be removed and that memory will
 be made available for other allocations.
 
-## ***OLD*** Processes
+## Processes
 
 MIDP 3 allows multiple programs to be ran at the same time (provided they
 are actual different MIDlets). One thing to simplify the design of SquirrelJME
-without needing much work
+without needing much work.
 
-## ***OLD*** `String` Implementation
-
-The `String` class is a Java class which is used virtually in every single
-program. One main consideration about strings are that to the virtual machine
-they are UTF-16 strings, which may have codepoints in them (but internally
-those are not considered at all).
-
-The following assumptions are made for the best case memory optimization:
-
- * Most strings have a maximum length of 127 characters.
- * At most strings have at most 127 unique non-ASCII characters.
- * Most used characters are in the ASCII range (0-127).
-   * Latin languages may use a number of characters from other ranges.
-   * Characters for other languages usually do not have a massive number of
-     character combinations (except for Chinese character sets).
-
-To reduce the memory footprint of strings, the string itself is represented as
-a `byte` array and has interpretations depending on the value of a character
-within that given string.
-
-For characters within `[0, 127]` they will be treated as standard ASCII
-characters. These characters are the most used characters and require no
-special handling otherwise.
-
-Characters within `[128, 255]` will be translated to an index (via `AND 127`)
-which will point to an array of `char` specifying the character to use. Any
-non-ASCII character will use a character within the map.
-
-If the best case assumptions are not met, then the string will be represented
-using 16-bit characters so that variable length strings are not encoded to
-support `char`.
-
-## ***OLD*** Synchronization and Locks
+## Synchronization and Locks
 
 Java naturally provides synchronization which is used for writing code which
 is thread safe. Since synchronization and monitors are very intertwined, the
@@ -384,21 +318,21 @@ the synchronization state of the object:
 Notifications are handled by going through all threads and locating threads
 which are waiting on a given object.
 
-### ***OLD*** Loop Threading for Multi-Threading
+### Loop Threading for Multi-Threading
 
 Since Java is multi-threaded and SquirrelJME may run on top of a number of
 system which may have different threading models, the following differences
 determine what happens when a loop needs to be repeated due to a failed
 operation.
 
-#### ***OLD*** Preemptive
+#### Preemptive
 
 The loop should perform a given number of checks, then once a certain
 threshold is reached a longer duration sleep should be entered so that CPU
 cycles are not spent deadlocking. Essentially it waits upon a signal where
 possible.
 
-#### ***OLD*** Cooperative
+#### Cooperative
 
 The loop should yield and not attempt another try (because only a single thread
 can run at one time) that way another thread which is able to be ran can
@@ -407,7 +341,7 @@ executed, potentially one which controls the monitor for the given object.
 It is possible that an internal threading manager can determine the best
 thread to choose for consecutive execution.
 
-### ***OLD*** `synchronized` (aka `monitorenter`)
+### `synchronized` (aka `monitorenter`)
 
 When a monitor on an object is to be locked the following actions will be
 performed:
@@ -418,7 +352,7 @@ performed:
     * If non-zero, fail, thread the loop, and try again.
  3. Increment _lockcount_.
 
-### ***OLD*** End of `synchronized` (aka `monitorexit`)
+### End of `synchronized` (aka `monitorexit`)
 
 This is performed when the current thread wishes to exit the monitor for the
 given object:
@@ -430,7 +364,7 @@ given object:
  2. Decrement _lockcount_.
  3. If _lockcount_ is zero, atomically set _threadid_ to zero.
 
-### ***OLD*** `Object.wait()`, `Object.wait(long)`, `Object.wait(long, int)`
+### `Object.wait()`, `Object.wait(long)`, `Object.wait(long, int)`
 
 This indicates that the thread wishes to wait for a notification for the
 object. This effectively prepares some state then unlocks the monitor.
@@ -461,7 +395,7 @@ When timeout or interrupt occurs:
  2. Decrement _waitcount_.
  3. If applicable, throw `InterruptedException`.
 
-### ***OLD*** `Object.notify()` and `Object.notifyAll()`
+### `Object.notify()` and `Object.notifyAll()`
 
 This notifies other threads waiting on the given object.
 
