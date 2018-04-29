@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.javac.structure;
 
+import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.Token;
 import net.multiphasicapps.javac.token.TokenSource;
@@ -24,6 +25,26 @@ import net.multiphasicapps.javac.token.TokenType;
 public abstract class MethodStructure
 	implements MemberStructure
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/29
+	 */
+	@Override
+	public final Modifiers modifiers()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/29
+	 */
+	@Override
+	public final MethodName name()
+	{
+		throw new todo.TODO();
+	}
+	
 	/**
 	 * Parses a single method which is appropriate for a given class type.
 	 *

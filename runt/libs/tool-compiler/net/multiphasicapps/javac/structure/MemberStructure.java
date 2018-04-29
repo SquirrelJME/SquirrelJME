@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.javac.structure;
 
+import net.multiphasicapps.classfile.Identifier;
+
 /**
  * This interface represents anything which can be a member of a class.
  *
@@ -17,5 +19,20 @@ package net.multiphasicapps.javac.structure;
  */
 public interface MemberStructure
 {
+	/**
+	 * Returns the modifiers for the member.
+	 *
+	 * @return The member modifiers.
+	 * @since 2018/04/29
+	 */
+	public abstract Modifiers modifiers();
+	
+	/**
+	 * Returns the name of the member.
+	 *
+	 * @return The name of the member.
+	 * @since 2018/04/29
+	 */
+	public abstract Identifier name();
 }
 

@@ -54,6 +54,26 @@ public final class ClassStructure
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/29
+	 */
+	@Override
+	public final Modifiers modifiers()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/29
+	 */
+	@Override
+	public final ClassIdentifier name()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Parses the body of the class.
 	 *
 	 * @param __structtype The structure type of the class.

@@ -25,6 +25,29 @@ public final class ClassConstructor
 	extends MethodStructure
 {
 	/**
+	 * Initializes the constructor information.
+	 *
+	 * @param __mods Constructor modifiers.
+	 * @param __ident The identifier for the constructor.
+	 * @param __params Type parameters.
+	 * @param __thrown Exceptions which are thrown by the constructor.
+	 * @param __code The code which makes up the constructor.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/04/29
+	 */
+	public ClassConstructor(Modifiers __mods, ClassIdentifier __ident,
+		FormalParameter[] __params, QualifiedIdentifier[] __thrown,
+		UnparsedExpressions __code)
+		throws NullPointerException
+	{
+		if (__mods == null || __ident == null || __params == null ||
+			__thrown == null || __code == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/04/28
 	 */
@@ -93,7 +116,9 @@ public final class ClassConstructor
 		else
 			thrown = new QualifiedIdentifier[0];
 		
-		throw new todo.TODO();
+		// Parse constructor block and build
+		return new ClassConstructor(__mods, identifier, params, thrown,
+			UnparsedExpressions.parseBlock(__in));
 	}
 }
 

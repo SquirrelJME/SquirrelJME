@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.javac.structure;
 
+import net.multiphasicapps.classfile.FieldName;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.Token;
 import net.multiphasicapps.javac.token.TokenSource;
@@ -23,6 +24,25 @@ import net.multiphasicapps.javac.token.TokenType;
 public abstract class FieldStructure
 	implements MemberStructure
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/29
+	 */
+	public final Modifiers modifiers()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/29
+	 */
+	@Override
+	public final FieldName name()
+	{
+		throw new todo.TODO();
+	}
+	
 	/**
 	 * Parses a single field which is appropriate for a given class type.
 	 *
