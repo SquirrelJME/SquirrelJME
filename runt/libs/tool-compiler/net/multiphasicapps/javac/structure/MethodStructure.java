@@ -42,15 +42,62 @@ public abstract class MethodStructure
 		if (__ct == null || __mods == null || __in == null)
 			throw new NullPointerException("NARG");
 		
+		// Annotations only have a single format
+		if (__ct == ClassStructureType.ANNOTATION)
+			return AnnotationMethod.parse(__mods, __in);
+		
+		// Initializer method?
+		Token token = __in.peek();
+		if ((__ct == ClassStructureType.CLASS ||
+			__ct == ClassStructureType.ENUM) &&
+			token.type() == TokenType.SYMBOL_OPEN_BRACE)
+			try
+			{
+				// Might not be one
+				__in.mark();
+				ClassInitializer rv = ClassInitializer.parse(__mods, __in);
+				
+				// Is one
+				__in.commit();
+				return rv;
+			}
+			catch (StructureParseException e)
+			{
+				__in.reset();
+			}
+		
 		// Parse any type parameters which are used
 		TypeParameter[] typeparams;
-		Token token = __in.peek();
-		if (token.type() == TokenType.COMPARE_LESS_THAN)
+		token = __in.peek();
+		if (__ct != ClassStructureType.ANNOTATION &&
+			token.type() == TokenType.COMPARE_LESS_THAN)
 			typeparams = TypeParameter.parseTypeParameters(__in);
 		else
 			typeparams = new TypeParameter[0];
 		
-		throw new todo.TODO();
+		// Constructor?
+		token = __in.peek();
+		if (__ct != ClassStructureType.INTERFACE &&
+			token.type() == TokenType.IDENTIFIER &&
+			__in.peek(1).type() == TokenType.SYMBOL_OPEN_PARENTHESIS)
+			try
+			{
+				// Could be one
+				__in.mark();
+				ClassConstructor rv = ClassConstructor.parse(__mods,
+					typeparams, __in);
+				
+				// Is one
+				__in.commit();
+				return rv;
+			}
+			catch (StructureParseException e)
+			{
+				__in.reset();
+			}
+		
+		// General method
+		return SimpleMethod.parse(__mods, typeparams, __in);
 	}
 }
 

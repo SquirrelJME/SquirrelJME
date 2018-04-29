@@ -16,33 +16,32 @@ import net.multiphasicapps.javac.token.TokenSource;
 import net.multiphasicapps.javac.token.TokenType;
 
 /**
- * This represents a field which may have a value for a class.
+ * This represents a constructor that is available for a class.
  *
  * @since 2018/04/28
  */
-public abstract class FieldStructure
-	implements MemberStructure
+public class ClassConstructor
+	extends MethodStructure
 {
 	/**
-	 * Parses a single field which is appropriate for a given class type.
+	 * Parses a single class constrictor.
 	 *
-	 * @param __ct The structure of the class.
-	 * @param __mods The modifiers to the field.
+	 * @param __mods The modifiers to the method.
+	 * @param __typeparams Type parameters.
 	 * @param __in The input tokens.
-	 * @return The parsed field.
+	 * @return The parsed constructor.
 	 * @throws NullPointerException On null arguments.
-	 * @throws StructureParseException If it is not a valid field.
+	 * @throws StructureParseException If it is not a valid constructor.
 	 * @since 2018/04/28
 	 */
-	public static FieldStructure parseField(ClassStructureType __ct,
-		Modifiers __mods, BufferedTokenSource __in)
+	public static ClassConstructor parse(Modifiers __mods,
+		TypeParameter[] __typeparams, BufferedTokenSource __in)
 		throws NullPointerException, StructureParseException
 	{
-		if (__ct == null || __mods == null || __in == null)
+		if (__mods == null || __typeparams == null || __in == null)
 			throw new NullPointerException("NARG");
 		
-		// Always parse basic fields
-		return BasicField.parse(__mods, __in);
+		throw new todo.TODO();
 	}
 }
 
