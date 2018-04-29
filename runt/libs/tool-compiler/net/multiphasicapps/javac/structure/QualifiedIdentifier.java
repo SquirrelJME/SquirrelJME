@@ -141,5 +141,24 @@ public final class QualifiedIdentifier
 				String.format("AQ3i %s", sb), e);
 		}
 	}
+	
+	/**
+	 * Parses a list of qualified identifiers.
+	 *
+	 * @param __in The input tokens.
+	 * @return The list of qualified identifiers.
+	 * @throws NullPointerException On null arguments.
+	 * @throws StructureParseException If the list is not valid.
+	 * @since 2018/04/28
+	 */
+	public static final QualifiedIdentifier[] parseList(
+		BufferedTokenSource __in)
+		throws NullPointerException, StructureParseException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 }
 
