@@ -112,7 +112,7 @@ public final class Modifiers
 	 * @param __in The input token source.
 	 * @return The parsed modifiers.
 	 * @throws NullPointerException On null arguments.
-	 * @throws StructureParseException If the structure is not valid.
+	 * @throws StructureParseException If the modifiers are not valid.
 	 * @since 2018/04/21
 	 */
 	public static Modifiers parse(BufferedTokenSource __in)
@@ -197,6 +197,60 @@ public final class Modifiers
 			if (rv.contains(got))
 				throw new StructureParseException(token,
 					String.format("AQ3k %s", got));
+			rv.add(got);
+		}
+	}
+	
+	/**
+	 * This parses modifiers which are associated with formal parameters.
+	 *
+	 * @param __in The input token source.
+	 * @return The parsed modifiers for formal parameters.
+	 * @throws NullPointerException On null arguments.
+	 * @throws StructureParseException If the modifiers are not valid.
+	 * @since 2018/04/29
+	 */
+	public static Modifiers parseForFormalParameter(BufferedTokenSource __in)
+		throws NullPointerException, StructureParseException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		// Parse modifiers
+		Set<Modifier> rv = new LinkedHashSet<>();
+		for (;;)
+		{
+			Token token = __in.peek();
+			Modifier got;
+			
+			// Annotated formal parameter
+			if (token.type() == TokenType.SYMBOL_AT)
+				got = Annotation.parse(__in);
+				
+			// Basic modifier?
+			else
+			{
+				// Depends
+				switch (token.type())
+				{
+					case KEYWORD_FINAL:
+						got = BasicModifier.FINAL;
+						break;
+						
+						// No more modifiers to parse
+					default:
+						return new Modifiers(rv);
+				}
+				
+				// Consume token to prevent infinite loop
+				__in.next();
+			}
+			
+			// {@squirreljme.error AQ44 Duplicate modifier while parsing
+			// formal parameter modifiers. (The modifier)}
+			if (rv.contains(got))
+				throw new StructureParseException(token,
+					String.format("AQ44 %s", got));
 			rv.add(got);
 		}
 	}
