@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.javac.structure;
 
+import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.Token;
 import net.multiphasicapps.javac.token.TokenSource;
@@ -23,6 +24,36 @@ import net.multiphasicapps.javac.token.TokenType;
 public final class SimpleMethod
 	extends MethodStructure
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/28
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/28
+	 */
+	@Override
+	public final int hashCode()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/28
+	 */
+	@Override
+	public final String toString()
+	{
+		throw new todo.TODO();
+	}
+	
 	/**
 	 * Parses a simple method.
 	 *
@@ -40,6 +71,29 @@ public final class SimpleMethod
 	{
 		if (__mods == null || __typeparams == null || __in == null)
 			throw new NullPointerException("NARG");
+		
+		// Read return type
+		Type returntype = Type.parseType(__in);
+		
+		// {@squirreljme.error AQ42 Expected identifier to name the method.}
+		Token token = __in.next();
+		if (token.type() != TokenType.IDENTIFIER)
+			throw new StructureParseException(token, "AQ42");
+		MethodName identifier = new MethodName(token.characters());
+		
+		// Parse formal parameters
+		FormalParameter[] params = FormalParameter.parseFormalParameters(__in);
+		
+		// Parse throws
+		QualifiedIdentifier[] thrown;
+		token = __in.peek();
+		if (token.type() == TokenType.KEYWORD_THROWS)
+		{
+			__in.next();
+			thrown = QualifiedIdentifier.parseList(__in);
+		}
+		else
+			thrown = new QualifiedIdentifier[0];
 		
 		throw new todo.TODO();
 	}

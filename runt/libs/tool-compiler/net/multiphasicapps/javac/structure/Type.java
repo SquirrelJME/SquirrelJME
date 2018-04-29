@@ -23,6 +23,36 @@ import net.multiphasicapps.javac.token.TokenType;
 public final class Type
 {
 	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/28
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/28
+	 */
+	@Override
+	public final int hashCode()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/28
+	 */
+	@Override
+	public final String toString()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Parses a single type.
 	 *
 	 * @param __in The input token source.

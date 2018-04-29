@@ -24,6 +24,36 @@ public final class ClassInitializer
 	extends MethodStructure
 {
 	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/28
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/28
+	 */
+	@Override
+	public final int hashCode()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/28
+	 */
+	@Override
+	public final String toString()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Parses a single class initializer.
 	 *
 	 * @param __mods The modifiers to the method.

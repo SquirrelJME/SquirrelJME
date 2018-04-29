@@ -16,12 +16,11 @@ import net.multiphasicapps.javac.token.TokenSource;
 import net.multiphasicapps.javac.token.TokenType;
 
 /**
- * This represents a basic field.
+ * This represents a single formal parameter which may be a part of a class.
  *
  * @since 2018/04/28
  */
-public final class BasicField
-	extends FieldStructure
+public final class FormalParameter
 {
 	/**
 	 * {@inheritDoc}
@@ -54,20 +53,19 @@ public final class BasicField
 	}
 	
 	/**
-	 * Parses a basic field that is contained within a class.
+	 * Parses formal parameters which are part of a description of a method.
 	 *
-	 * @param __mods The modifiers to the field.
 	 * @param __in The input tokens.
-	 * @return The parsed field.
+	 * @return The parsed formal parameters.
 	 * @throws NullPointerException On null arguments.
-	 * @throws StructureParseException If it is not a valid field.
+	 * @throws StructureParseException If a formal parameter is not correct.
 	 * @since 2018/04/28
 	 */
-	public static BasicField parse(Modifiers __mods,
+	public static FormalParameter[] parseFormalParameters(
 		BufferedTokenSource __in)
 		throws NullPointerException, StructureParseException
 	{
-		if (__mods == null || __in == null)
+		if (__in == null)
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();

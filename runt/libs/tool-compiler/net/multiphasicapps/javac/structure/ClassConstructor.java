@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.javac.structure;
 
+import net.multiphasicapps.classfile.ClassIdentifier;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.Token;
 import net.multiphasicapps.javac.token.TokenSource;
@@ -20,9 +21,39 @@ import net.multiphasicapps.javac.token.TokenType;
  *
  * @since 2018/04/28
  */
-public class ClassConstructor
+public final class ClassConstructor
 	extends MethodStructure
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/28
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/28
+	 */
+	@Override
+	public final int hashCode()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/28
+	 */
+	@Override
+	public final String toString()
+	{
+		throw new todo.TODO();
+	}
+	
 	/**
 	 * Parses a single class constrictor.
 	 *
@@ -40,6 +71,27 @@ public class ClassConstructor
 	{
 		if (__mods == null || __typeparams == null || __in == null)
 			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AQ41 Expected identifier at start of
+		// constructor.}
+		Token token = __in.next();
+		if (token.type() != TokenType.IDENTIFIER)
+			throw new StructureParseException(token, "AQ41");
+		ClassIdentifier identifier = new ClassIdentifier(token.characters());
+		
+		// Parse formal parameters
+		FormalParameter[] params = FormalParameter.parseFormalParameters(__in);
+		
+		// Parse throws
+		QualifiedIdentifier[] thrown;
+		token = __in.peek();
+		if (token.type() == TokenType.KEYWORD_THROWS)
+		{
+			__in.next();
+			thrown = QualifiedIdentifier.parseList(__in);
+		}
+		else
+			thrown = new QualifiedIdentifier[0];
 		
 		throw new todo.TODO();
 	}
