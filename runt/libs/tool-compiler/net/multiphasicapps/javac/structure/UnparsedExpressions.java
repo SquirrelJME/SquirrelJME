@@ -16,11 +16,12 @@ import net.multiphasicapps.javac.token.TokenSource;
 import net.multiphasicapps.javac.token.TokenType;
 
 /**
- * This represents the type that may be used in the language.
+ * This class represents expressions which have not been parsed and are just
+ * a raw set of tokens.
  *
- * @since 2018/04/24
+ * @since 2018/04/28
  */
-public final class Type
+public final class UnparsedExpressions
 {
 	/**
 	 * {@inheritDoc}
@@ -53,44 +54,15 @@ public final class Type
 	}
 	
 	/**
-	 * Returns the type with an extra array associated with it.
+	 * Parses a block of expressions to not be parsed.
 	 *
-	 * @return The type with an extra array.
-	 * @since 2018/04/29
-	 */
-	public final Type withArray()
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * Parses a single type.
-	 *
-	 * @param __in The input token source.
-	 * @return The parsed type.
+	 * @param __in The input tokens.
+	 * @return The unparsed expressions.
 	 * @throws NullPointerException On null arguments.
-	 * @throws StructureParseException If the type is not valid.
-	 * @since 2018/04/24
+	 * @throws StructureParseException If the block is not valid.
+	 * @since 2018/04/28
 	 */
-	public static Type parseType(BufferedTokenSource __in)
-		throws NullPointerException, StructureParseException
-	{
-		if (__in == null)
-			throw new NullPointerException("NARG");
-		
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * Parses multiple types separated by a comma.
-	 *
-	 * @param __in The input token source.
-	 * @return The parsed types.
-	 * @throws NullPointerException On null arguments.
-	 * @throws StructureParseException If the types are not valid.
-	 * @since 2018/04/24
-	 */
-	public static Type[] parseTypes(BufferedTokenSource __in)
+	public static UnparsedExpressions parseBlock(BufferedTokenSource __in)
 		throws NullPointerException, StructureParseException
 	{
 		if (__in == null)
