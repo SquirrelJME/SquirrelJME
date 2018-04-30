@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.javac.structure;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
 import net.multiphasicapps.classfile.ClassIdentifier;
 import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
@@ -54,13 +56,41 @@ public final class ClassConstructor
 	public ClassConstructor(Modifiers __mods, ClassIdentifier __ident,
 		FormalParameters __params, QualifiedIdentifier[] __thrown,
 		UnparsedExpressions __code)
-		throws NullPointerException
+		throws NullPointerException, StructureParseException
 	{
 		if (__mods == null || __ident == null || __params == null ||
 			__thrown == null || __code == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Check throwables for null
+		Set<QualifiedIdentifier> thrown = new LinkedHashSet<>();
+		for (QualifiedIdentifier t : (__thrown = __thrown.clone()))
+		{
+			if (t == null)
+				throw new NullPointerException("NARG");
+			
+			// {@squirreljme.error AQ4a Duplicated throw statement. (The throw
+			// statement which was duplicated)}
+			if (thrown.contains(t))
+				throw new StructureParseException(String.format("AQ4a %s", t));
+			
+			thrown.add(t);
+		}
+		
+		// {@squirreljme.error AQ49 Illegal modifiers specified for class
+		// constructor. (The modifiers)}
+		if (__mods.isStatic() || __mods.isAbstract() || __mods.isFinal() ||
+			__mods.isNative() || __mods.isSynchronized() ||
+			__mods.isTransient() || __mods.isVolatile() ||
+			__mods.isStrictFloatingPoint())
+			throw new StructureParseException(
+				String.format("AQ49 %s", __mods));
+		
+		this.modifiers = __mods;
+		this.name = new MethodName(__ident.toString());
+		this.parameters = __params;
+		this.code = __code;
+		this._thrown = __thrown;
 	}
 	
 	/**

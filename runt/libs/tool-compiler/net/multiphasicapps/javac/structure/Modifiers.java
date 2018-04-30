@@ -97,6 +97,127 @@ public final class Modifiers
 	}
 	
 	/**
+	 * Is this abstract?
+	 *
+	 * @return If this is abstract.
+	 * @since 2018/04/30
+	 */
+	public final boolean isAbstract()
+	{
+		return this._modifiers.contains(BasicModifier.ABSTRACT);
+	}
+	
+	/**
+	 * Is this final?
+	 *
+	 * @return If this is final.
+	 * @since 2018/04/30
+	 */
+	public final boolean isFinal()
+	{
+		return this._modifiers.contains(BasicModifier.FINAL);
+	}
+	
+	/**
+	 * Is this native?
+	 *
+	 * @return If this is native.
+	 * @since 2018/04/30
+	 */
+	public final boolean isNative()
+	{
+		return this._modifiers.contains(BasicModifier.NATIVE);
+	}
+	
+	/**
+	 * Is this private?
+	 *
+	 * @return If this is private.
+	 * @since 2018/04/30
+	 */
+	public final boolean isPrivate()
+	{
+		return this._modifiers.contains(BasicModifier.PRIVATE);
+	}
+	
+	/**
+	 * Is this protected?
+	 *
+	 * @return If this is protected.
+	 * @since 2018/04/30
+	 */
+	public final boolean isProtected()
+	{
+		return this._modifiers.contains(BasicModifier.PROTECTED);
+	}
+	
+	/**
+	 * Is this public?
+	 *
+	 * @return If this is public.
+	 * @since 2018/04/30
+	 */
+	public final boolean isPublic()
+	{
+		return this._modifiers.contains(BasicModifier.PUBLIC);
+	}
+	
+	/**
+	 * Is this static?
+	 *
+	 * @return If this is static.
+	 * @since 2018/04/30
+	 */
+	public final boolean isStatic()
+	{
+		return this._modifiers.contains(BasicModifier.STATIC);
+	}
+	
+	/**
+	 * Is this using strict floating point?
+	 *
+	 * @return If this is using struct floating point.
+	 * @since 2018/04/30
+	 */
+	public final boolean isStrictFloatingPoint()
+	{
+		return this._modifiers.contains(BasicModifier.STRICTFP);
+	}
+	
+	/**
+	 * Is this synchronized?
+	 *
+	 * @return If this is synchronized.
+	 * @since 2018/04/30
+	 */
+	public final boolean isSynchronized()
+	{
+		return this._modifiers.contains(BasicModifier.SYNCHRONIZED);
+	}
+	
+	/**
+	 * Is this transient?
+	 *
+	 * @return If this is transient.
+	 * @since 2018/04/30
+	 */
+	public final boolean isTransient()
+	{
+		return this._modifiers.contains(BasicModifier.TRANSIENT);
+	}
+	
+	/**
+	 * Is this volatile?
+	 *
+	 * @return If this is volatile.
+	 * @since 2018/04/30
+	 */
+	public final boolean isVolatile()
+	{
+		return this._modifiers.contains(BasicModifier.VOLATILE);
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/04/21
 	 */
