@@ -25,6 +25,21 @@ import net.multiphasicapps.javac.token.TokenType;
 public final class ClassConstructor
 	implements MethodStructure
 {
+	/** Modifiers to the constructor. */
+	protected final Modifiers modifiers;
+	
+	/** The identifier of the constructor. */
+	protected final MethodName name;
+	
+	/** The code which makes up the constructor. */
+	protected final UnparsedExpressions code;
+	
+	/** The formal parameters. */
+	private final FormalParameter[] _parameters;
+	
+	/** The thrown classes. */
+	private final QualifiedIdentifier[] _thrown;
+	
 	/**
 	 * Initializes the constructor information.
 	 *

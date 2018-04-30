@@ -11,6 +11,7 @@
 package net.multiphasicapps.javac.structure;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.Token;
@@ -25,6 +26,36 @@ import net.multiphasicapps.javac.token.TokenType;
  */
 public final class UnparsedExpressions
 {
+	/** Tokens which make up the expression. */
+	private final Token[] _tokens;
+	
+	/**
+	 * Initializes the unparsed expression.
+	 *
+	 * @param __t The input tokens.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/04/29
+	 */
+	public UnparsedExpressions(Iterable<Token> __t)
+		throws NullPointerException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Copy tokens
+		List<Token> tokens = new ArrayList<>();
+		for (Token t : __t)
+		{
+			if (t == null)
+				throw new NullPointerException("NARG");
+			
+			tokens.add(t);
+		}
+		
+		// Finalize
+		this._tokens = tokens.<Token>toArray(new Token[tokens.size()]);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/04/28
@@ -70,7 +101,33 @@ public final class UnparsedExpressions
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Input tokens
+		List<Token> tokens = new LinkedList<>();
+		
+		// {@squirreljme.error AQ48 Expected start of block to start with an
+		// opening brace.}
+		Token token = __in.next();
+		if (token.type() != TokenType.SYMBOL_OPEN_BRACE)
+			throw new StructureParseException(token, "AQ48");
+		tokens.add(token);
+		
+		// Just count braces and such
+		for (int count = 1; count != 0;)
+		{
+			token = __in.next();
+			
+			// Add or remove braces
+			if (token.type() == TokenType.SYMBOL_OPEN_BRACE)
+				count++;
+			else if (token.type() == TokenType.SYMBOL_CLOSED_BRACE)
+				count--;
+			
+			// Add token always
+			tokens.add(token);
+		}
+		
+		// Build
+		return new UnparsedExpressions(tokens);
 	}
 }
 
