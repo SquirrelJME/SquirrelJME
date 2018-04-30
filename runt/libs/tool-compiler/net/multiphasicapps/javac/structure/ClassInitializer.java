@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.javac.structure;
 
+import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.Token;
 import net.multiphasicapps.javac.token.TokenSource;
@@ -21,7 +22,7 @@ import net.multiphasicapps.javac.token.TokenType;
  * @since 2018/04/28
  */
 public final class ClassInitializer
-	extends MethodStructure
+	implements MethodStructure
 {
 	/**
 	 * {@inheritDoc}
@@ -39,6 +40,26 @@ public final class ClassInitializer
 	 */
 	@Override
 	public final int hashCode()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/29
+	 */
+	@Override
+	public final Modifiers modifiers()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/29
+	 */
+	@Override
+	public final MethodName name()
 	{
 		throw new todo.TODO();
 	}

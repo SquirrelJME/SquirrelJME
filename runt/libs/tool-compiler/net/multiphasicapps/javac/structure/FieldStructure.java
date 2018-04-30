@@ -21,48 +21,14 @@ import net.multiphasicapps.javac.token.TokenType;
  *
  * @since 2018/04/28
  */
-public abstract class FieldStructure
-	implements MemberStructure
+public interface FieldStructure
+	extends MemberStructure
 {
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/04/29
 	 */
-	public final Modifiers modifiers()
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/04/29
-	 */
 	@Override
-	public final FieldName name()
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * Parses a single field which is appropriate for a given class type.
-	 *
-	 * @param __ct The structure of the class.
-	 * @param __mods The modifiers to the field.
-	 * @param __in The input tokens.
-	 * @return The parsed field.
-	 * @throws NullPointerException On null arguments.
-	 * @throws StructureParseException If it is not a valid field.
-	 * @since 2018/04/28
-	 */
-	public static FieldStructure parseField(ClassStructureType __ct,
-		Modifiers __mods, BufferedTokenSource __in)
-		throws NullPointerException, StructureParseException
-	{
-		if (__ct == null || __mods == null || __in == null)
-			throw new NullPointerException("NARG");
-		
-		// Always parse basic fields
-		return BasicField.parse(__mods, __in);
-	}
+	public abstract FieldName name();
 }
 

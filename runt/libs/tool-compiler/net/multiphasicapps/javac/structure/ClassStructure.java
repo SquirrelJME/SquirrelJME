@@ -15,6 +15,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import net.multiphasicapps.classfile.ClassIdentifier;
+import net.multiphasicapps.classfile.FieldName;
+import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.Token;
 import net.multiphasicapps.javac.token.TokenSource;
@@ -142,7 +144,7 @@ public final class ClassStructure
 			{
 				// Parse method
 				__in.mark();
-				rv.add(MethodStructure.parseMethod(__structtype, mods, __in));
+				rv.add(ClassStructure.parseMethod(__structtype, mods, __in));
 				
 				// Valid method
 				__in.commit();
@@ -158,7 +160,7 @@ public final class ClassStructure
 			{
 				// Parse field
 				__in.mark();
-				rv.add(FieldStructure.parseField(__structtype, mods, __in));
+				rv.add(ClassStructure.parseField(__structtype, mods, __in));
 				
 				// Valid field
 				__in.commit();
@@ -295,6 +297,104 @@ public final class ClassStructure
 		// Build class structure
 		return new ClassStructure(structtype, name, typeparms,
 			extending, implementing, members);
+	}
+	
+	/**
+	 * Parses a single field which is appropriate for a given class type.
+	 *
+	 * @param __ct The structure of the class.
+	 * @param __mods The modifiers to the field.
+	 * @param __in The input tokens.
+	 * @return The parsed field.
+	 * @throws NullPointerException On null arguments.
+	 * @throws StructureParseException If it is not a valid field.
+	 * @since 2018/04/28
+	 */
+	public static FieldStructure parseField(ClassStructureType __ct,
+		Modifiers __mods, BufferedTokenSource __in)
+		throws NullPointerException, StructureParseException
+	{
+		if (__ct == null || __mods == null || __in == null)
+			throw new NullPointerException("NARG");
+		
+		// Always parse basic fields
+		return BasicField.parse(__mods, __in);
+	}
+	
+	/**
+	 * Parses a single method which is appropriate for a given class type.
+	 *
+	 * @param __ct The structure of the class.
+	 * @param __mods The modifiers to the method.
+	 * @param __in The input tokens.
+	 * @return The parsed method.
+	 * @throws NullPointerException On null arguments.
+	 * @throws StructureParseException If it is not a valid method.
+	 * @since 2018/04/28
+	 */
+	public static MethodStructure parseMethod(ClassStructureType __ct,
+		Modifiers __mods, BufferedTokenSource __in)
+		throws NullPointerException, StructureParseException
+	{
+		if (__ct == null || __mods == null || __in == null)
+			throw new NullPointerException("NARG");
+		
+		// Annotations only have a single format
+		if (__ct == ClassStructureType.ANNOTATION)
+			return AnnotationMethod.parse(__mods, __in);
+		
+		// Initializer method?
+		Token token = __in.peek();
+		if ((__ct == ClassStructureType.CLASS ||
+			__ct == ClassStructureType.ENUM) &&
+			token.type() == TokenType.SYMBOL_OPEN_BRACE)
+			try
+			{
+				// Might not be one
+				__in.mark();
+				ClassInitializer rv = ClassInitializer.parse(__mods, __in);
+				
+				// Is one
+				__in.commit();
+				return rv;
+			}
+			catch (StructureParseException e)
+			{
+				__in.reset();
+			}
+		
+		// Parse any type parameters which are used
+		TypeParameter[] typeparams;
+		token = __in.peek();
+		if (__ct != ClassStructureType.ANNOTATION &&
+			token.type() == TokenType.COMPARE_LESS_THAN)
+			typeparams = TypeParameter.parseTypeParameters(__in);
+		else
+			typeparams = new TypeParameter[0];
+		
+		// Constructor?
+		token = __in.peek();
+		if (__ct != ClassStructureType.INTERFACE &&
+			token.type() == TokenType.IDENTIFIER &&
+			__in.peek(1).type() == TokenType.SYMBOL_OPEN_PARENTHESIS)
+			try
+			{
+				// Could be one
+				__in.mark();
+				ClassConstructor rv = ClassConstructor.parse(__mods,
+					typeparams, __in);
+				
+				// Is one
+				__in.commit();
+				return rv;
+			}
+			catch (StructureParseException e)
+			{
+				__in.reset();
+			}
+		
+		// General method
+		return SimpleMethod.parse(__mods, typeparams, __in);
 	}
 }
 
