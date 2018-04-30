@@ -41,12 +41,13 @@ public final class ClassStructure
 	 * @param __implementing The classes this class implements.
 	 * @param __members The members of this class.
 	 * @throws NullPointerException On null arguments.
+	 * @throws StructureDefinitionException If the structure is not valid.
 	 * @since 2018/04/27
 	 */
 	public ClassStructure(ClassStructureType __structtype,
 		ClassIdentifier __name, TypeParameter[] __typeparms,
 		Type[] __extending, Type[] __implementing, MemberStructure[] __members)
-		throws NullPointerException
+		throws NullPointerException, StructureDefinitionException
 	{
 		if (__structtype == null || __name == null || __typeparms == null ||
 			__extending == null || __implementing == null || __members == null)

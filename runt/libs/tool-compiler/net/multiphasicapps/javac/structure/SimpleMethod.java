@@ -93,10 +93,18 @@ public final class SimpleMethod
 			throw new NullPointerException("NARG");
 		
 		// Read return type
-		Type returntype = Type.parseType(__in);
+		Token token = __in.peek();
+		Type returntype;
+		if (token.type() == TokenType.KEYWORD_VOID)
+		{
+			__in.next();
+			returntype = null;
+		}
+		else
+			returntype = Type.parseType(__in);
 		
 		// {@squirreljme.error AQ42 Expected identifier to name the method.}
-		Token token = __in.next();
+		token = __in.next();
 		if (token.type() != TokenType.IDENTIFIER)
 			throw new StructureParseException(token, "AQ42");
 		MethodName identifier = new MethodName(token.characters());
