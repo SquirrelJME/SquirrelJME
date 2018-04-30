@@ -102,7 +102,7 @@ public final class SimpleMethod
 		MethodName identifier = new MethodName(token.characters());
 		
 		// Parse formal parameters
-		FormalParameter[] params = FormalParameter.parseFormalParameters(__in);
+		FormalParameters params = FormalParameters.parse(__in);
 		
 		// Parse throws
 		QualifiedIdentifier[] thrown;

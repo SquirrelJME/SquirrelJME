@@ -35,7 +35,7 @@ public final class ClassConstructor
 	protected final UnparsedExpressions code;
 	
 	/** The formal parameters. */
-	private final FormalParameter[] _parameters;
+	protected final FormalParameters parameters;
 	
 	/** The thrown classes. */
 	private final QualifiedIdentifier[] _thrown;
@@ -52,7 +52,7 @@ public final class ClassConstructor
 	 * @since 2018/04/29
 	 */
 	public ClassConstructor(Modifiers __mods, ClassIdentifier __ident,
-		FormalParameter[] __params, QualifiedIdentifier[] __thrown,
+		FormalParameters __params, QualifiedIdentifier[] __thrown,
 		UnparsedExpressions __code)
 		throws NullPointerException
 	{
@@ -139,7 +139,7 @@ public final class ClassConstructor
 		ClassIdentifier identifier = new ClassIdentifier(token.characters());
 		
 		// Parse formal parameters
-		FormalParameter[] params = FormalParameter.parseFormalParameters(__in);
+		FormalParameters params = FormalParameters.parse(__in);
 		
 		// Parse throws
 		QualifiedIdentifier[] thrown;
