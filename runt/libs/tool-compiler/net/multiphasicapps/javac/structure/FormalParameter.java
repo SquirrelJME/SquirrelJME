@@ -25,6 +25,45 @@ import net.multiphasicapps.javac.token.TokenType;
  */
 public final class FormalParameter
 {
+	/** The modifiers used. */
+	protected final Modifiers modifiers;
+	
+	/** The type. */
+	protected final Type type;
+	
+	/** The name of the field. */
+	protected final FieldName name;
+	
+	/**
+	 * Initializes the formal parameter.
+	 *
+	 * @param __mods The modifiers for the parameter.
+	 * @param __type The type used.
+	 * @param __name The name of the parameter.
+	 * @throws NullPointerException On null arguments.
+	 * @throws StructureDefinitionException If the definition is not valid.
+	 * @since 2018/04/30
+	 */
+	public FormalParameter(Modifiers __mods, Type __type, FieldName __name)
+		throws NullPointerException, StructureDefinitionException
+	{
+		if (__mods == null || __type == null || __name == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AQ4f Illegal modifiers specified for formal
+		// parameter. (The modifiers}}
+		if (__mods.isPublic() || __mods.isProtected() || __mods.isPrivate() ||
+			__mods.isStatic() || __mods.isAbstract() || __mods.isNative() ||
+			__mods.isSynchronized() || __mods.isTransient() ||
+			__mods.isVolatile() || __mods.isStrictFloatingPoint())
+			throw new StructureDefinitionException(
+				String.format("AQ4f %s", __mods));
+		
+		this.modifiers = __mods;
+		this.type = __type;
+		this.name = __name;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/04/28

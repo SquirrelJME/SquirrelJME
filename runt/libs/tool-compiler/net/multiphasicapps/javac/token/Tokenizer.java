@@ -426,9 +426,12 @@ public class Tokenizer
 				// If it is a dot then it could be ...
 				else if (p == '.')
 				{
+					// Consume that character
+					this.__nextChar();
+					
 					// {@squirreljme.error AQ0y Invalid elipses, three
 					// dots were expected but only two were read.}
-					p = this.__peekChar();
+					p = this.__nextChar();
 					if (p != '.')
 						throw new TokenizerException(this, "AQ0y");
 					

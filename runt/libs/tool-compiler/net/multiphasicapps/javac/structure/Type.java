@@ -22,6 +22,47 @@ import net.multiphasicapps.javac.token.TokenType;
  */
 public final class Type
 {
+	/** The simple type used. */
+	protected final SimpleType simpletype;
+	
+	/** The dimensions. */
+	protected final int dimensions;
+	
+	/**
+	 * Initializes the type information.
+	 *
+	 * @param __st The simple type.
+	 * @param __dims The dimensions used for the type.
+	 * @throws IllegalArgumentException If the number of dimensions is
+	 * negative.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/04/30
+	 */
+	public Type(SimpleType __st, int __dims)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__st == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AQ4c Type cannot have negative dimensions.}
+		if (__dims < 0)
+			throw new IllegalArgumentException("AQ4c");
+		
+		this.simpletype = __st;
+		this.dimensions = __dims;
+	}
+	
+	/**
+	 * Returns the number of dimensions associated with the type.
+	 *
+	 * @return The number of dimensions associated with the type.
+	 * @since 2018/04/30
+	 */
+	public final int dimensions()
+	{
+		throw new todo.TODO();
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/04/28
@@ -53,13 +94,21 @@ public final class Type
 	}
 	
 	/**
-	 * Returns the type with an extra array associated with it.
+	 * Returns the type with the given number of array dimensions.
 	 *
-	 * @return The type with an extra array.
+	 * @param __d The number of dimensions to use for the type.
+	 * @return The type with the given dimension count.
+	 * @throws IllegalArgumentException If the dimension count is negative.
 	 * @since 2018/04/29
 	 */
-	public final Type withArray()
+	public final Type withDimensions(int __d)
+		throws IllegalArgumentException
 	{
+		// {@squirreljme.error AQ4e Cannot initialize type with a negative
+		// number of dimensions.}
+		if (__d < 0)
+			throw new IllegalArgumentException("AQ4e");
+		
 		throw new todo.TODO();
 	}
 	
@@ -78,7 +127,72 @@ public final class Type
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Determine the simple type
+		Token token = __in.peek();
+		SimpleType simple;
+		switch (token.type())
+		{
+			case KEYWORD_BYTE:
+				simple = BasicType.BYTE;
+				__in.next();
+				break;
+				
+			case KEYWORD_SHORT:
+				simple = BasicType.SHORT;
+				__in.next();
+				break;
+				
+			case KEYWORD_CHAR:
+				simple = BasicType.CHARACTER;
+				__in.next();
+				break;
+				
+			case KEYWORD_INT:
+				simple = BasicType.INTEGER;
+				__in.next();
+				break;
+				
+			case KEYWORD_LONG:
+				simple = BasicType.LONG;
+				__in.next();
+				break;
+				
+			case KEYWORD_FLOAT:
+				simple = BasicType.FLOAT;
+				__in.next();
+				break;
+				
+			case KEYWORD_DOUBLE:
+				simple = BasicType.DOUBLE;
+				__in.next();
+				break;
+			
+				// Probably class or method handler
+			case IDENTIFIER:
+				simple = GenericType.parse(__in);
+				break;
+			
+				// {@squirreljme.error AQ4b Invalid type.}
+			default:
+				throw new StructureParseException(token, "AQ4b");
+		}
+		
+		// Handle dimensions
+		int dims = 0;
+		while ((token = __in.peek()).type() == TokenType.SYMBOL_OPEN_BRACKET)
+		{
+			__in.next();
+			
+			// {@squirreljme.error AQ4d Expected closing bracket to follow
+			// opening bracket when declaring type.}
+			token = __in.next();
+			if (token.type() != TokenType.SYMBOL_CLOSED_BRACKET)
+				throw new StructureParseException(token, "AQ4d");
+			dims++;
+		}
+		
+		// Build type
+		return new Type(simple, dims);
 	}
 	
 	/**

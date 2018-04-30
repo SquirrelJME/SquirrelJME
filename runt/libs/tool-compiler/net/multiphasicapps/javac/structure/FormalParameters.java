@@ -165,6 +165,7 @@ public final class FormalParameters
 			FieldName name = new FieldName(token.characters());
 			
 			// Add arrays accordingly
+			int extradims = 0;
 			while ((token = __in.peek()).type() ==
 				TokenType.SYMBOL_OPEN_BRACKET)
 			{
@@ -174,12 +175,15 @@ public final class FormalParameters
 				if (__in.next().type() != TokenType.SYMBOL_CLOSED_BRACKET)
 					throw new StructureParseException(token, "AQ47");
 				
-				type = type.withArray();
+				extradims++;
 			}
 			
+			// Were there any extra dimensions?
+			if (extradims > 0)
+				type = type.withDimensions(type.dimensions() + extradims);
+			
 			// Setup parameter
-			if (true)
-				throw new todo.TODO();
+			rv.add(new FormalParameter(mods, type, name));
 			
 			// {@squirreljme.error AQ46 Expected closing parenthesis to follow
 			// variadic argument in formal parameter.}

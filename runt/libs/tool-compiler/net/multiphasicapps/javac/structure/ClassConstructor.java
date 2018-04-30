@@ -51,12 +51,13 @@ public final class ClassConstructor
 	 * @param __thrown Exceptions which are thrown by the constructor.
 	 * @param __code The code which makes up the constructor.
 	 * @throws NullPointerException On null arguments.
+	 * @throws StructureDefinitionException If the definition is not valid.
 	 * @since 2018/04/29
 	 */
 	public ClassConstructor(Modifiers __mods, ClassIdentifier __ident,
 		FormalParameters __params, QualifiedIdentifier[] __thrown,
 		UnparsedExpressions __code)
-		throws NullPointerException, StructureParseException
+		throws NullPointerException, StructureDefinitionException
 	{
 		if (__mods == null || __ident == null || __params == null ||
 			__thrown == null || __code == null)
@@ -72,7 +73,8 @@ public final class ClassConstructor
 			// {@squirreljme.error AQ4a Duplicated throw statement. (The throw
 			// statement which was duplicated)}
 			if (thrown.contains(t))
-				throw new StructureParseException(String.format("AQ4a %s", t));
+				throw new StructureDefinitionException(
+					String.format("AQ4a %s", t));
 			
 			thrown.add(t);
 		}
@@ -83,7 +85,7 @@ public final class ClassConstructor
 			__mods.isNative() || __mods.isSynchronized() ||
 			__mods.isTransient() || __mods.isVolatile() ||
 			__mods.isStrictFloatingPoint())
-			throw new StructureParseException(
+			throw new StructureDefinitionException(
 				String.format("AQ49 %s", __mods));
 		
 		this.modifiers = __mods;
