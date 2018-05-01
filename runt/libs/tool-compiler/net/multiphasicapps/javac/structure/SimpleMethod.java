@@ -29,6 +29,9 @@ public final class SimpleMethod
 	/** Modifiers to the constructor. */
 	protected final Modifiers modifiers;
 	
+	/** Type parameters used. */
+	protected final TypeParameters typeparameters;
+	
 	/** The identifier of the constructor. */
 	protected final MethodName name;
 	
@@ -58,13 +61,13 @@ public final class SimpleMethod
 	 * @throws StructureDefinitionException If the structure is not correct.
 	 * @since 2018/04/30
 	 */
-	public SimpleMethod(Modifiers __mods, Type __rtype,
-		MethodName __ident, FormalParameters __params,
+	public SimpleMethod(Modifiers __mods, TypeParameters __tparms,
+		Type __rtype, MethodName __ident, FormalParameters __params,
 		QualifiedIdentifier[] __thrown, UnparsedExpressions __code)
 		throws NullPointerException, StructureDefinitionException
 	{
-		if (__mods == null || __rtype == null || __ident == null ||
-			__params == null || __thrown == null)
+		if (__mods == null || __tparms == null || __rtype == null ||
+			__ident == null || __params == null || __thrown == null)
 			throw new NullPointerException("NARG");
 		
 		// {@squirreljme.error AQ4h Mismatch between the method having code
@@ -96,6 +99,7 @@ public final class SimpleMethod
 				String.format("AQ4k %s", __mods));
 		
 		this.modifiers = __mods;
+		this.typeparameters = __tparms;
 		this.returntype = __rtype;
 		this.name = new MethodName(__ident.toString());
 		this.parameters = __params;
@@ -165,7 +169,7 @@ public final class SimpleMethod
 	 * @since 2018/04/28
 	 */
 	public static SimpleMethod parse(Modifiers __mods,
-		TypeParameter[] __typeparams, BufferedTokenSource __in)
+		TypeParameters __typeparams, BufferedTokenSource __in)
 		throws NullPointerException, StructureParseException
 	{
 		if (__mods == null || __typeparams == null || __in == null)
@@ -219,8 +223,8 @@ public final class SimpleMethod
 			code = UnparsedExpressions.parseBlock(__in);
 		
 		// Initialize simple method
-		return new SimpleMethod(__mods, returntype, identifier, params, thrown,
-			code);
+		return new SimpleMethod(__mods, __typeparams, returntype, identifier,
+			params, thrown, code);
 	}
 }
 

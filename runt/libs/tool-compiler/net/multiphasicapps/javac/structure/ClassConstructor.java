@@ -30,6 +30,9 @@ public final class ClassConstructor
 	/** Modifiers to the constructor. */
 	protected final Modifiers modifiers;
 	
+	/** Type parameters used. */
+	protected final TypeParameters typeparameters;
+	
 	/** The identifier of the constructor. */
 	protected final MethodName name;
 	
@@ -46,6 +49,7 @@ public final class ClassConstructor
 	 * Initializes the constructor information.
 	 *
 	 * @param __mods Constructor modifiers.
+	 * @param __tparms Type parameters used.
 	 * @param __ident The identifier for the constructor.
 	 * @param __params Type parameters.
 	 * @param __thrown Exceptions which are thrown by the constructor.
@@ -54,13 +58,13 @@ public final class ClassConstructor
 	 * @throws StructureDefinitionException If the definition is not valid.
 	 * @since 2018/04/29
 	 */
-	public ClassConstructor(Modifiers __mods, ClassIdentifier __ident,
-		FormalParameters __params, QualifiedIdentifier[] __thrown,
-		UnparsedExpressions __code)
+	public ClassConstructor(Modifiers __mods, TypeParameters __tparms,
+		ClassIdentifier __ident, FormalParameters __params,
+		QualifiedIdentifier[] __thrown, UnparsedExpressions __code)
 		throws NullPointerException, StructureDefinitionException
 	{
-		if (__mods == null || __ident == null || __params == null ||
-			__thrown == null || __code == null)
+		if (__mods == null || __tparms == null || __ident == null ||
+			__params == null || __thrown == null || __code == null)
 			throw new NullPointerException("NARG");
 		
 		// Check throwables for null
@@ -89,6 +93,7 @@ public final class ClassConstructor
 				String.format("AQ49 %s", __mods));
 		
 		this.modifiers = __mods;
+		this.typeparameters = __tparms;
 		this.name = new MethodName(__ident.toString());
 		this.parameters = __params;
 		this.code = __code;
@@ -157,7 +162,7 @@ public final class ClassConstructor
 	 * @since 2018/04/28
 	 */
 	public static ClassConstructor parse(Modifiers __mods,
-		TypeParameter[] __typeparams, BufferedTokenSource __in)
+		TypeParameters __typeparams, BufferedTokenSource __in)
 		throws NullPointerException, StructureParseException
 	{
 		if (__mods == null || __typeparams == null || __in == null)
@@ -185,8 +190,8 @@ public final class ClassConstructor
 			thrown = new QualifiedIdentifier[0];
 		
 		// Parse constructor block and build
-		return new ClassConstructor(__mods, identifier, params, thrown,
-			UnparsedExpressions.parseBlock(__in));
+		return new ClassConstructor(__mods, __typeparams, identifier, params,
+			thrown, UnparsedExpressions.parseBlock(__in));
 	}
 }
 
