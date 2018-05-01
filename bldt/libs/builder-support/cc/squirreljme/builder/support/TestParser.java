@@ -12,7 +12,10 @@ package cc.squirreljme.builder.support;
 
 import java.io.InputStream;
 import java.io.IOException;
+import net.multiphasicapps.javac.CompilerException;
 import net.multiphasicapps.javac.CompilerInput;
+import net.multiphasicapps.javac.structure.CompilationUnit;
+import net.multiphasicapps.javac.token.BufferedTokenSource;
 
 /**
  * This is used to parse classes to look for tests that exist within source
@@ -59,13 +62,17 @@ public final class TestParser
 		// Parse the class layout
 		try (InputStream in = input.open())
 		{
+			// Parse compilation unit
+			CompilationUnit cu = CompilationUnit.parse(
+				new BufferedTokenSource(input.fileName(), in));
+			
 			//toplevel = TopLevelLayout.parse(input.fileName(), in);
 			if (true)
 				throw new todo.TODO();
 		}
 		
 		// {@squirreljme.error AU20 Could not parse file for tests.}
-		catch (IOException e)
+		catch (IOException|CompilerException e)
 		{
 			throw new RuntimeException("AU20", e);
 		}
