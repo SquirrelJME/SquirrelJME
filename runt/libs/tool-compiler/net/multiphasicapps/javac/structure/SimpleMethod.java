@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.javac.structure;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
 import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.Token;
@@ -24,6 +26,83 @@ import net.multiphasicapps.javac.token.TokenType;
 public final class SimpleMethod
 	implements MethodStructure
 {
+	/** Modifiers to the constructor. */
+	protected final Modifiers modifiers;
+	
+	/** The identifier of the constructor. */
+	protected final MethodName name;
+	
+	/** The code which makes up the constructor. */
+	protected final UnparsedExpressions code;
+	
+	/** The formal parameters. */
+	protected final FormalParameters parameters;
+	
+	/** The return type. */
+	protected final Type returntype;
+	
+	/** The thrown classes. */
+	private final QualifiedIdentifier[] _thrown;
+	
+	/**
+	 * Initializes simple method.
+	 *
+	 * @param __mods The modifiers.
+	 * @param __rtype The return type.
+	 * @param __ident The method name.
+	 * @param __params The parameters.
+	 * @param __thrown The thrown methods.
+	 * @param __code The code block, may be {@code null} if abstract or native.
+	 * @throws NullPointerException On null arguments except for
+	 * {@code __code}.
+	 * @throws StructureDefinitionException If the structure is not correct.
+	 * @since 2018/04/30
+	 */
+	public SimpleMethod(Modifiers __mods, Type __rtype,
+		MethodName __ident, FormalParameters __params,
+		QualifiedIdentifier[] __thrown, UnparsedExpressions __code)
+		throws NullPointerException, StructureDefinitionException
+	{
+		if (__mods == null || __rtype == null || __ident == null ||
+			__params == null || __thrown == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AQ4h Mismatch between the method having code
+		// or not and it being abstract and/or native.}
+		if ((__mods.isAbstract() || __mods.isNative()) != (__code == null))
+			throw new StructureDefinitionException("AQ4h");
+		
+		// Check throwables for null
+		Set<QualifiedIdentifier> thrown = new LinkedHashSet<>();
+		for (QualifiedIdentifier t : (__thrown = __thrown.clone()))
+		{
+			if (t == null)
+				throw new NullPointerException("NARG");
+			
+			// {@squirreljme.error AQ4j Duplicated throw statement. (The throw
+			// statement which was duplicated)}
+			if (thrown.contains(t))
+				throw new StructureDefinitionException(
+					String.format("AQ4j %s", t));
+			
+			thrown.add(t);
+		}
+		
+		// {@squirreljme.error AQ4k Illegal modifiers specified for simple
+		// method. (The modifiers)}
+		if ((__mods.isAbstract() && (__mods.isStatic() || __mods.isNative() ||
+			__mods.isFinal())) || __mods.isVolatile() || __mods.isTransient())
+			throw new StructureDefinitionException(
+				String.format("AQ4k %s", __mods));
+		
+		this.modifiers = __mods;
+		this.returntype = __rtype;
+		this.name = new MethodName(__ident.toString());
+		this.parameters = __params;
+		this.code = __code;
+		this._thrown = __thrown;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/04/28
@@ -98,7 +177,7 @@ public final class SimpleMethod
 		if (token.type() == TokenType.KEYWORD_VOID)
 		{
 			__in.next();
-			returntype = null;
+			returntype = Type.VOID;
 		}
 		else
 			returntype = Type.parseType(__in);
@@ -123,7 +202,25 @@ public final class SimpleMethod
 		else
 			thrown = new QualifiedIdentifier[0];
 		
-		throw new todo.TODO();
+		// Parse potential code block?
+		UnparsedExpressions code;
+		if (__mods.isAbstract() || __mods.isNative())
+		{
+			// No code
+			code = null;
+			
+			// {@squirreljme.error AQ4g Expected semicolon to follow abstract
+			// or native method.}
+			token = __in.next();
+			if (token.type() != TokenType.SYMBOL_SEMICOLON)
+				throw new StructureParseException(token, "AQ4g");
+		}
+		else
+			code = UnparsedExpressions.parseBlock(__in);
+		
+		// Initialize simple method
+		return new SimpleMethod(__mods, returntype, identifier, params, thrown,
+			code);
 	}
 }
 
