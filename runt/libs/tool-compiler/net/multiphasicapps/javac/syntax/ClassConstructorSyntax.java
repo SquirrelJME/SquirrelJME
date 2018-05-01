@@ -58,9 +58,10 @@ public final class ClassConstructorSyntax
 	 * @throws SyntaxDefinitionException If the definition is not valid.
 	 * @since 2018/04/29
 	 */
-	public ClassConstructorSyntax(ModifiersSyntax __mods, TypeParametersSyntax __tparms,
-		ClassIdentifier __ident, FormalParametersSyntax __params,
-		QualifiedIdentifierSyntax[] __thrown, UnparsedExpressions __code)
+	public ClassConstructorSyntax(ModifiersSyntax __mods,
+		TypeParametersSyntax __tparms, ClassIdentifier __ident,
+		FormalParametersSyntax __params, QualifiedIdentifierSyntax[] __thrown,
+		UnparsedExpressions __code)
 		throws NullPointerException, SyntaxDefinitionException
 	{
 		if (__mods == null || __tparms == null || __ident == null ||
@@ -190,8 +191,8 @@ public final class ClassConstructorSyntax
 			thrown = new QualifiedIdentifierSyntax[0];
 		
 		// Parse constructor block and build
-		return new ClassConstructorSyntax(__mods, __typeparams, identifier, params,
-			thrown, UnparsedExpressions.parseBlock(__in));
+		return new ClassConstructorSyntax(__mods, __typeparams, identifier,
+			params, thrown, UnparsedExpressions.parseBlock(__in));
 	}
 }
 

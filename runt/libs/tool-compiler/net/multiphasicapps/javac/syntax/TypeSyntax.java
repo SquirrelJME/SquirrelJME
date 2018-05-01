@@ -48,7 +48,7 @@ public final class TypeSyntax
 		if (__st == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AQ4c TypeSyntax cannot have negative dimensions.}
+		// {@squirreljme.error AQ4c Types cannot have negative dimensions.}
 		if (__dims < 0)
 			throw new IllegalArgumentException("AQ4c");
 		

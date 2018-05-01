@@ -146,7 +146,8 @@ public final class FormalParametersSyntax
 			}
 			
 			// Parse modifiers
-			ModifiersSyntax mods = ModifiersSyntax.parseForFormalParameter(__in);
+			ModifiersSyntax mods = ModifiersSyntax.
+				parseForFormalParameter(__in);
 			
 			// Parse type
 			TypeSyntax type = TypeSyntax.parseType(__in);

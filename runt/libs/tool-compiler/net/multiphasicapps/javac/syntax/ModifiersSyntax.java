@@ -41,7 +41,8 @@ public final class ModifiersSyntax
 	public ModifiersSyntax(ModifierSyntax... __ms)
 		throws NullPointerException, SyntaxDefinitionException
 	{
-		this(Arrays.<ModifierSyntax>asList((__ms == null ? new ModifierSyntax[0] : __ms)));
+		this(Arrays.<ModifierSyntax>asList(
+			(__ms == null ? new ModifierSyntax[0] : __ms)));
 	}
 	
 	/**
@@ -342,7 +343,8 @@ public final class ModifiersSyntax
 	 * @throws SyntaxParseException If the modifiers are not valid.
 	 * @since 2018/04/29
 	 */
-	public static ModifiersSyntax parseForFormalParameter(BufferedTokenSource __in)
+	public static ModifiersSyntax parseForFormalParameter(
+		BufferedTokenSource __in)
 		throws NullPointerException, SyntaxParseException
 	{
 		if (__in == null)

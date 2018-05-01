@@ -38,8 +38,8 @@ public final class TypeParametersSyntax
 	public TypeParametersSyntax(TypeParameterSyntax... __t)
 		throws NullPointerException
 	{
-		this(Arrays.<TypeParameterSyntax>asList((__t == null ? new TypeParameterSyntax[0] :
-			__t)));
+		this(Arrays.<TypeParameterSyntax>asList(
+			(__t == null ? new TypeParameterSyntax[0] : __t)));
 	}
 	
 	/**
