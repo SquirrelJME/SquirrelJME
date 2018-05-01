@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.javac.structure;
+package net.multiphasicapps.javac.syntax;
 
 import net.multiphasicapps.classfile.FieldName;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
@@ -21,8 +21,8 @@ import net.multiphasicapps.javac.token.TokenType;
  *
  * @since 2018/04/28
  */
-public interface FieldStructure
-	extends MemberStructure
+public interface FieldSyntax
+	extends MemberSyntax
 {
 	/**
 	 * {@inheritDoc}

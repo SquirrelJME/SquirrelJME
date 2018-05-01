@@ -17,7 +17,7 @@ import net.multiphasicapps.javac.CompilerException;
 import net.multiphasicapps.javac.CompilerInput;
 import net.multiphasicapps.javac.CompilerLogger;
 import net.multiphasicapps.javac.MessageType;
-import net.multiphasicapps.javac.structure.CompilationUnit;
+import net.multiphasicapps.javac.syntax.CompilationUnitSyntax;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
 
 /**
@@ -73,11 +73,11 @@ public final class SourcedClassNode
 		log.message(MessageType.INFO, __input, "AQ0s");
 		
 		// Setup streamlined tokenizers to parse the classes
-		CompilationUnit compunit;
+		CompilationUnitSyntax compunit;
 		try (InputStream in = __input.open())
 		{
 			// Load the structure
-			compunit = CompilationUnit.parse(
+			compunit = CompilationUnitSyntax.parse(
 				new BufferedTokenSource(__input.fileName(), in));
 		}
 		

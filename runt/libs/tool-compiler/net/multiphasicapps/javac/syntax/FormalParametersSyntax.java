@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.javac.structure;
+package net.multiphasicapps.javac.syntax;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,10 +25,10 @@ import net.multiphasicapps.javac.token.TokenType;
  *
  * @since 2018/04/29
  */
-public final class FormalParameters
+public final class FormalParametersSyntax
 {
 	/** Parameters used. */
-	private final FormalParameter[] _parameters;
+	private final FormalParameterSyntax[] _parameters;
 	
 	/**
 	 * Initializes the formal parameters.
@@ -37,11 +37,11 @@ public final class FormalParameters
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/04/29
 	 */
-	public FormalParameters(FormalParameter... __p)
+	public FormalParametersSyntax(FormalParameterSyntax... __p)
 		throws NullPointerException
 	{
-		this(Arrays.<FormalParameter>asList(
-			(__p == null ? new FormalParameter[0] : __p)));
+		this(Arrays.<FormalParameterSyntax>asList(
+			(__p == null ? new FormalParameterSyntax[0] : __p)));
 	}
 	
 	/**
@@ -51,14 +51,14 @@ public final class FormalParameters
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/04/29
 	 */
-	public FormalParameters(Iterable<FormalParameter> __p)
+	public FormalParametersSyntax(Iterable<FormalParameterSyntax> __p)
 		throws NullPointerException
 	{
 		if (__p == null)
 			throw new NullPointerException("NARG");
 		
-		List<FormalParameter> parms = new ArrayList<>();
-		for (FormalParameter p : __p)
+		List<FormalParameterSyntax> parms = new ArrayList<>();
+		for (FormalParameterSyntax p : __p)
 		{
 			if (p == null)
 				throw new NullPointerException("NARG");
@@ -66,8 +66,8 @@ public final class FormalParameters
 			parms.add(p);
 		}
 		
-		this._parameters = parms.<FormalParameter>toArray(
-			new FormalParameter[parms.size()]);
+		this._parameters = parms.<FormalParameterSyntax>toArray(
+			new FormalParameterSyntax[parms.size()]);
 	}
 	
 	/**
@@ -117,11 +117,11 @@ public final class FormalParameters
 	 * @param __in The input tokens.
 	 * @return The parsed formal parameters.
 	 * @throws NullPointerException On null arguments.
-	 * @throws StructureParseException If a formal parameter is not correct.
+	 * @throws SyntaxParseException If a formal parameter is not correct.
 	 * @since 2018/04/28
 	 */
-	public static FormalParameters parse(BufferedTokenSource __in)
-		throws NullPointerException, StructureParseException
+	public static FormalParametersSyntax parse(BufferedTokenSource __in)
+		throws NullPointerException, SyntaxParseException
 	{
 		if (__in == null)
 			throw new NullPointerException("NARG");
@@ -130,10 +130,10 @@ public final class FormalParameters
 		// formal parameters.}
 		Token token = __in.next();
 		if (token.type() != TokenType.SYMBOL_OPEN_PARENTHESIS)
-			throw new StructureParseException("AQ43");
+			throw new SyntaxParseException("AQ43");
 		
 		// Parse each one
-		List<FormalParameter> rv = new ArrayList<>();
+		List<FormalParameterSyntax> rv = new ArrayList<>();
 		for (;;)
 		{
 			token = __in.peek();
@@ -146,10 +146,10 @@ public final class FormalParameters
 			}
 			
 			// Parse modifiers
-			Modifiers mods = Modifiers.parseForFormalParameter(__in);
+			ModifiersSyntax mods = ModifiersSyntax.parseForFormalParameter(__in);
 			
 			// Parse type
-			Type type = Type.parseType(__in);
+			TypeSyntax type = TypeSyntax.parseType(__in);
 			
 			// Is this a variadic argument?
 			boolean isvariadic;
@@ -161,7 +161,7 @@ public final class FormalParameters
 			// name.}
 			token = __in.next();
 			if (token.type() != TokenType.IDENTIFIER)
-				throw new StructureParseException(token, "AQ45");
+				throw new SyntaxParseException(token, "AQ45");
 			FieldName name = new FieldName(token.characters());
 			
 			// Add arrays accordingly
@@ -173,7 +173,7 @@ public final class FormalParameters
 				// opening bracket for array declaration.}
 				__in.next();
 				if (__in.next().type() != TokenType.SYMBOL_CLOSED_BRACKET)
-					throw new StructureParseException(token, "AQ47");
+					throw new SyntaxParseException(token, "AQ47");
 				
 				extradims++;
 			}
@@ -183,21 +183,21 @@ public final class FormalParameters
 				type = type.withDimensions(type.dimensions() + extradims);
 			
 			// Setup parameter
-			rv.add(new FormalParameter(mods, type, name));
+			rv.add(new FormalParameterSyntax(mods, type, name));
 			
 			// {@squirreljme.error AQ46 Expected closing parenthesis to follow
 			// variadic argument in formal parameter.}
 			token = __in.peek();
 			if (isvariadic && token.type() !=
 				TokenType.SYMBOL_CLOSED_PARENTHESIS)
-				throw new StructureParseException(token, "AQ46");
+				throw new SyntaxParseException(token, "AQ46");
 			
 			// Consume comma
 			if (token.type() == TokenType.SYMBOL_COMMA)
 				__in.next();
 		}
 		
-		return new FormalParameters(rv);
+		return new FormalParametersSyntax(rv);
 	}
 }
 

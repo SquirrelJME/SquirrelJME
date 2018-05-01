@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.javac.structure;
+package net.multiphasicapps.javac.syntax;
 
 import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
@@ -22,8 +22,8 @@ import net.multiphasicapps.javac.token.TokenType;
  *
  * @since 2018/04/27
  */
-public interface MethodStructure
-	extends MemberStructure
+public interface MethodSyntax
+	extends MemberSyntax
 {
 	/**
 	 * {@inheritDoc}

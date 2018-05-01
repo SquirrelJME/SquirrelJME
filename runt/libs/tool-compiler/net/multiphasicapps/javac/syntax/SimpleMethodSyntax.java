@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.javac.structure;
+package net.multiphasicapps.javac.syntax;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -23,14 +23,14 @@ import net.multiphasicapps.javac.token.TokenType;
  *
  * @since 2018/04/28
  */
-public final class SimpleMethod
-	implements MethodStructure
+public final class SimpleMethodSyntax
+	implements MethodSyntax
 {
-	/** Modifiers to the constructor. */
-	protected final Modifiers modifiers;
+	/** ModifiersSyntax to the constructor. */
+	protected final ModifiersSyntax modifiers;
 	
-	/** Type parameters used. */
-	protected final TypeParameters typeparameters;
+	/** TypeSyntax parameters used. */
+	protected final TypeParametersSyntax typeparameters;
 	
 	/** The identifier of the constructor. */
 	protected final MethodName name;
@@ -39,13 +39,13 @@ public final class SimpleMethod
 	protected final UnparsedExpressions code;
 	
 	/** The formal parameters. */
-	protected final FormalParameters parameters;
+	protected final FormalParametersSyntax parameters;
 	
 	/** The return type. */
-	protected final Type returntype;
+	protected final TypeSyntax returntype;
 	
 	/** The thrown classes. */
-	private final QualifiedIdentifier[] _thrown;
+	private final QualifiedIdentifierSyntax[] _thrown;
 	
 	/**
 	 * Initializes simple method.
@@ -58,13 +58,13 @@ public final class SimpleMethod
 	 * @param __code The code block, may be {@code null} if abstract or native.
 	 * @throws NullPointerException On null arguments except for
 	 * {@code __code}.
-	 * @throws StructureDefinitionException If the structure is not correct.
+	 * @throws SyntaxDefinitionException If the structure is not correct.
 	 * @since 2018/04/30
 	 */
-	public SimpleMethod(Modifiers __mods, TypeParameters __tparms,
-		Type __rtype, MethodName __ident, FormalParameters __params,
-		QualifiedIdentifier[] __thrown, UnparsedExpressions __code)
-		throws NullPointerException, StructureDefinitionException
+	public SimpleMethodSyntax(ModifiersSyntax __mods, TypeParametersSyntax __tparms,
+		TypeSyntax __rtype, MethodName __ident, FormalParametersSyntax __params,
+		QualifiedIdentifierSyntax[] __thrown, UnparsedExpressions __code)
+		throws NullPointerException, SyntaxDefinitionException
 	{
 		if (__mods == null || __tparms == null || __rtype == null ||
 			__ident == null || __params == null || __thrown == null)
@@ -73,11 +73,11 @@ public final class SimpleMethod
 		// {@squirreljme.error AQ4h Mismatch between the method having code
 		// or not and it being abstract and/or native.}
 		if ((__mods.isAbstract() || __mods.isNative()) != (__code == null))
-			throw new StructureDefinitionException("AQ4h");
+			throw new SyntaxDefinitionException("AQ4h");
 		
 		// Check throwables for null
-		Set<QualifiedIdentifier> thrown = new LinkedHashSet<>();
-		for (QualifiedIdentifier t : (__thrown = __thrown.clone()))
+		Set<QualifiedIdentifierSyntax> thrown = new LinkedHashSet<>();
+		for (QualifiedIdentifierSyntax t : (__thrown = __thrown.clone()))
 		{
 			if (t == null)
 				throw new NullPointerException("NARG");
@@ -85,7 +85,7 @@ public final class SimpleMethod
 			// {@squirreljme.error AQ4j Duplicated throw statement. (The throw
 			// statement which was duplicated)}
 			if (thrown.contains(t))
-				throw new StructureDefinitionException(
+				throw new SyntaxDefinitionException(
 					String.format("AQ4j %s", t));
 			
 			thrown.add(t);
@@ -95,7 +95,7 @@ public final class SimpleMethod
 		// method. (The modifiers)}
 		if ((__mods.isAbstract() && (__mods.isStatic() || __mods.isNative() ||
 			__mods.isFinal())) || __mods.isVolatile() || __mods.isTransient())
-			throw new StructureDefinitionException(
+			throw new SyntaxDefinitionException(
 				String.format("AQ4k %s", __mods));
 		
 		this.modifiers = __mods;
@@ -132,7 +132,7 @@ public final class SimpleMethod
 	 * @since 2018/04/29
 	 */
 	@Override
-	public final Modifiers modifiers()
+	public final ModifiersSyntax modifiers()
 	{
 		throw new todo.TODO();
 	}
@@ -161,50 +161,50 @@ public final class SimpleMethod
 	 * Parses a simple method.
 	 *
 	 * @param __mods The modifiers to the method.
-	 * @param __typeparams Type parameters.
+	 * @param __typeparams TypeSyntax parameters.
 	 * @param __in The input tokens.
 	 * @return The parsed method.
 	 * @throws NullPointerException On null arguments.
-	 * @throws StructureParseException If it is not a valid method.
+	 * @throws SyntaxParseException If it is not a valid method.
 	 * @since 2018/04/28
 	 */
-	public static SimpleMethod parse(Modifiers __mods,
-		TypeParameters __typeparams, BufferedTokenSource __in)
-		throws NullPointerException, StructureParseException
+	public static SimpleMethodSyntax parse(ModifiersSyntax __mods,
+		TypeParametersSyntax __typeparams, BufferedTokenSource __in)
+		throws NullPointerException, SyntaxParseException
 	{
 		if (__mods == null || __typeparams == null || __in == null)
 			throw new NullPointerException("NARG");
 		
 		// Read return type
 		Token token = __in.peek();
-		Type returntype;
+		TypeSyntax returntype;
 		if (token.type() == TokenType.KEYWORD_VOID)
 		{
 			__in.next();
-			returntype = Type.VOID;
+			returntype = TypeSyntax.VOID;
 		}
 		else
-			returntype = Type.parseType(__in);
+			returntype = TypeSyntax.parseType(__in);
 		
 		// {@squirreljme.error AQ42 Expected identifier to name the method.}
 		token = __in.next();
 		if (token.type() != TokenType.IDENTIFIER)
-			throw new StructureParseException(token, "AQ42");
+			throw new SyntaxParseException(token, "AQ42");
 		MethodName identifier = new MethodName(token.characters());
 		
 		// Parse formal parameters
-		FormalParameters params = FormalParameters.parse(__in);
+		FormalParametersSyntax params = FormalParametersSyntax.parse(__in);
 		
 		// Parse throws
-		QualifiedIdentifier[] thrown;
+		QualifiedIdentifierSyntax[] thrown;
 		token = __in.peek();
 		if (token.type() == TokenType.KEYWORD_THROWS)
 		{
 			__in.next();
-			thrown = QualifiedIdentifier.parseList(__in);
+			thrown = QualifiedIdentifierSyntax.parseList(__in);
 		}
 		else
-			thrown = new QualifiedIdentifier[0];
+			thrown = new QualifiedIdentifierSyntax[0];
 		
 		// Parse potential code block?
 		UnparsedExpressions code;
@@ -217,13 +217,13 @@ public final class SimpleMethod
 			// or native method.}
 			token = __in.next();
 			if (token.type() != TokenType.SYMBOL_SEMICOLON)
-				throw new StructureParseException(token, "AQ4g");
+				throw new SyntaxParseException(token, "AQ4g");
 		}
 		else
 			code = UnparsedExpressions.parseBlock(__in);
 		
 		// Initialize simple method
-		return new SimpleMethod(__mods, __typeparams, returntype, identifier,
+		return new SimpleMethodSyntax(__mods, __typeparams, returntype, identifier,
 			params, thrown, code);
 	}
 }

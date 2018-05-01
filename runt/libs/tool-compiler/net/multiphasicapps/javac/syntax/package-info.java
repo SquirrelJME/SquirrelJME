@@ -14,5 +14,5 @@
  * @since 2018/04/21
  */
 
-package net.multiphasicapps.javac.structure;
+package net.multiphasicapps.javac.syntax;
 

@@ -8,15 +8,15 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.javac.structure;
+package net.multiphasicapps.javac.syntax;
 
 /**
  * This represents a basic type.
  *
  * @since 2018/04/30
  */
-public enum BasicType
-	implements SimpleType
+public enum BasicTypeSyntax
+	implements SimpleTypeSyntax
 {
 	/** Byte. */
 	BYTE,

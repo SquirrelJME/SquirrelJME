@@ -8,14 +8,14 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.javac.structure;
+package net.multiphasicapps.javac.syntax;
 
 /**
  * This represents a modifier which may be associated with a class or member.
  *
  * @since 2018/04/21
  */
-public interface Modifier
+public interface ModifierSyntax
 {
 }
 

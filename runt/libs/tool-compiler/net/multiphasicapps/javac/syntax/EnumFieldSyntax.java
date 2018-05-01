@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.javac.structure;
+package net.multiphasicapps.javac.syntax;
 
 import net.multiphasicapps.classfile.FieldName;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
@@ -21,8 +21,8 @@ import net.multiphasicapps.javac.token.TokenType;
  *
  * @since 2018/04/30
  */
-public final class EnumField
-	implements FieldStructure
+public final class EnumFieldSyntax
+	implements FieldSyntax
 {
 	/**
 	 * {@inheritDoc}
@@ -49,7 +49,7 @@ public final class EnumField
 	 * @since 2018/04/30
 	 */
 	@Override
-	public final Modifiers modifiers()
+	public final ModifiersSyntax modifiers()
 	{
 		throw new todo.TODO();
 	}

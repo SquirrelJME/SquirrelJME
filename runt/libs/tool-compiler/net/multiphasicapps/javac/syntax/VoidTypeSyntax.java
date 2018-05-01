@@ -8,15 +8,15 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.javac.structure;
+package net.multiphasicapps.javac.syntax;
 
 /**
  * This represents the void type.
  *
  * @since 2018/04/30
  */
-public enum VoidType
-	implements SimpleType
+public enum VoidTypeSyntax
+	implements SimpleTypeSyntax
 {
 	/** Void. */
 	VOID,

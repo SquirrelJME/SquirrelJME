@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.javac.structure;
+package net.multiphasicapps.javac.syntax;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -24,24 +24,24 @@ import net.multiphasicapps.javac.token.TokenType;
  *
  * @since 2018/04/21
  */
-public final class Modifiers
+public final class ModifiersSyntax
 {
 	/** The modifiers to use. */
-	private final Set<Modifier> _modifiers;	
+	private final Set<ModifierSyntax> _modifiers;	
 	
 	/**
 	 * Initializes the modifier set.
 	 *
 	 * @param __ms The modifiers to use.
 	 * @throws NullPointerException If any modifier is null.
-	 * @throws StructureDefinitionException If a modifier is duplicated or
+	 * @throws SyntaxDefinitionException If a modifier is duplicated or
 	 * public, protected, or private are multiply specified.
 	 * @since 2018/04/22
 	 */
-	public Modifiers(Modifier... __ms)
-		throws NullPointerException, StructureDefinitionException
+	public ModifiersSyntax(ModifierSyntax... __ms)
+		throws NullPointerException, SyntaxDefinitionException
 	{
-		this(Arrays.<Modifier>asList((__ms == null ? new Modifier[0] : __ms)));
+		this(Arrays.<ModifierSyntax>asList((__ms == null ? new ModifierSyntax[0] : __ms)));
 	}
 	
 	/**
@@ -49,26 +49,26 @@ public final class Modifiers
 	 *
 	 * @param __ms The modifiers to use.
 	 * @throws NullPointerException If any modifier is null.
-	 * @throws StructureDefinitionException If a modifier is duplicated or
+	 * @throws SyntaxDefinitionException If a modifier is duplicated or
 	 * public, protected, or private are multiply specified.
 	 * @since 2018/04/22
 	 */
-	public Modifiers(Iterable<Modifier> __ms)
-		throws NullPointerException, StructureDefinitionException
+	public ModifiersSyntax(Iterable<ModifierSyntax> __ms)
+		throws NullPointerException, SyntaxDefinitionException
 	{
 		if (__ms == null)
 			throw new NullPointerException("NARG");
 		
 		// Check modifiers before using them
-		Set<Modifier> modifiers = new LinkedHashSet<>();
-		for (Modifier m : __ms)
+		Set<ModifierSyntax> modifiers = new LinkedHashSet<>();
+		for (ModifierSyntax m : __ms)
 		{
 			if (m == null)
 				throw new NullPointerException("NARG");
 			
 			// {@squirreljme.error AQ3l Duplicate modifier. (The modifier)}
 			if (modifiers.contains(m))
-				throw new StructureDefinitionException(String.format("AQ3l %s",
+				throw new SyntaxDefinitionException(String.format("AQ3l %s",
 					m));
 			
 			modifiers.add(m);
@@ -76,11 +76,11 @@ public final class Modifiers
 		
 		// {@squirreljme.error AQ4i There may be only one or none specified for
 		// public, protected, or private. (The modifiers)}
-		boolean a = modifiers.contains(BasicModifier.PUBLIC),
-			b = modifiers.contains(BasicModifier.PROTECTED),
-			c = modifiers.contains(BasicModifier.PRIVATE);
+		boolean a = modifiers.contains(BasicModifierSyntax.PUBLIC),
+			b = modifiers.contains(BasicModifierSyntax.PROTECTED),
+			c = modifiers.contains(BasicModifierSyntax.PRIVATE);
 		if ((a && b) || (a && c) || (b && c))
-			throw new StructureDefinitionException(String.format("AQ4i %s",
+			throw new SyntaxDefinitionException(String.format("AQ4i %s",
 				modifiers));
 		
 		// Store
@@ -115,7 +115,7 @@ public final class Modifiers
 	 */
 	public final boolean isAbstract()
 	{
-		return this._modifiers.contains(BasicModifier.ABSTRACT);
+		return this._modifiers.contains(BasicModifierSyntax.ABSTRACT);
 	}
 	
 	/**
@@ -126,7 +126,7 @@ public final class Modifiers
 	 */
 	public final boolean isFinal()
 	{
-		return this._modifiers.contains(BasicModifier.FINAL);
+		return this._modifiers.contains(BasicModifierSyntax.FINAL);
 	}
 	
 	/**
@@ -137,7 +137,7 @@ public final class Modifiers
 	 */
 	public final boolean isNative()
 	{
-		return this._modifiers.contains(BasicModifier.NATIVE);
+		return this._modifiers.contains(BasicModifierSyntax.NATIVE);
 	}
 	
 	/**
@@ -148,7 +148,7 @@ public final class Modifiers
 	 */
 	public final boolean isPrivate()
 	{
-		return this._modifiers.contains(BasicModifier.PRIVATE);
+		return this._modifiers.contains(BasicModifierSyntax.PRIVATE);
 	}
 	
 	/**
@@ -159,7 +159,7 @@ public final class Modifiers
 	 */
 	public final boolean isProtected()
 	{
-		return this._modifiers.contains(BasicModifier.PROTECTED);
+		return this._modifiers.contains(BasicModifierSyntax.PROTECTED);
 	}
 	
 	/**
@@ -170,7 +170,7 @@ public final class Modifiers
 	 */
 	public final boolean isPublic()
 	{
-		return this._modifiers.contains(BasicModifier.PUBLIC);
+		return this._modifiers.contains(BasicModifierSyntax.PUBLIC);
 	}
 	
 	/**
@@ -181,7 +181,7 @@ public final class Modifiers
 	 */
 	public final boolean isStatic()
 	{
-		return this._modifiers.contains(BasicModifier.STATIC);
+		return this._modifiers.contains(BasicModifierSyntax.STATIC);
 	}
 	
 	/**
@@ -192,7 +192,7 @@ public final class Modifiers
 	 */
 	public final boolean isStrictFloatingPoint()
 	{
-		return this._modifiers.contains(BasicModifier.STRICTFP);
+		return this._modifiers.contains(BasicModifierSyntax.STRICTFP);
 	}
 	
 	/**
@@ -203,7 +203,7 @@ public final class Modifiers
 	 */
 	public final boolean isSynchronized()
 	{
-		return this._modifiers.contains(BasicModifier.SYNCHRONIZED);
+		return this._modifiers.contains(BasicModifierSyntax.SYNCHRONIZED);
 	}
 	
 	/**
@@ -214,7 +214,7 @@ public final class Modifiers
 	 */
 	public final boolean isTransient()
 	{
-		return this._modifiers.contains(BasicModifier.TRANSIENT);
+		return this._modifiers.contains(BasicModifierSyntax.TRANSIENT);
 	}
 	
 	/**
@@ -225,7 +225,7 @@ public final class Modifiers
 	 */
 	public final boolean isVolatile()
 	{
-		return this._modifiers.contains(BasicModifier.VOLATILE);
+		return this._modifiers.contains(BasicModifierSyntax.VOLATILE);
 	}
 	
 	/**
@@ -244,27 +244,27 @@ public final class Modifiers
 	 * @param __in The input token source.
 	 * @return The parsed modifiers.
 	 * @throws NullPointerException On null arguments.
-	 * @throws StructureParseException If the modifiers are not valid.
+	 * @throws SyntaxParseException If the modifiers are not valid.
 	 * @since 2018/04/21
 	 */
-	public static Modifiers parse(BufferedTokenSource __in)
-		throws NullPointerException, StructureParseException
+	public static ModifiersSyntax parse(BufferedTokenSource __in)
+		throws NullPointerException, SyntaxParseException
 	{
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
 		// Parse modifiers
-		Set<Modifier> rv = new LinkedHashSet<>();
+		Set<ModifierSyntax> rv = new LinkedHashSet<>();
 		for (;;)
 		{
 			Token token = __in.peek();
-			Modifier got;
+			ModifierSyntax got;
 			
 			// Is this an annotation? Do not parse @interface as an annotation
 			// since that is not valid
 			if (token.type() == TokenType.SYMBOL_AT &&
 				__in.peek(1).type() != TokenType.KEYWORD_INTERFACE)
-				got = Annotation.parse(__in);
+				got = AnnotationSyntax.parse(__in);
 				
 			// Basic modifier?
 			else
@@ -273,52 +273,52 @@ public final class Modifiers
 				switch (token.type())
 				{
 					case KEYWORD_PUBLIC:
-						got = BasicModifier.PUBLIC;
+						got = BasicModifierSyntax.PUBLIC;
 						break;
 						
 					case KEYWORD_PROTECTED:
-						got = BasicModifier.PROTECTED;
+						got = BasicModifierSyntax.PROTECTED;
 						break;
 						
 					case KEYWORD_PRIVATE:
-						got = BasicModifier.PRIVATE;
+						got = BasicModifierSyntax.PRIVATE;
 						break;
 						
 					case KEYWORD_STATIC:
-						got = BasicModifier.STATIC;
+						got = BasicModifierSyntax.STATIC;
 						break;
 						
 					case KEYWORD_ABSTRACT:
-						got = BasicModifier.ABSTRACT;
+						got = BasicModifierSyntax.ABSTRACT;
 						break;
 						
 					case KEYWORD_FINAL:
-						got = BasicModifier.FINAL;
+						got = BasicModifierSyntax.FINAL;
 						break;
 						
 					case KEYWORD_NATIVE:
-						got = BasicModifier.NATIVE;
+						got = BasicModifierSyntax.NATIVE;
 						break;
 						
 					case KEYWORD_SYNCHRONIZED:
-						got = BasicModifier.SYNCHRONIZED;
+						got = BasicModifierSyntax.SYNCHRONIZED;
 						break;
 						
 					case KEYWORD_TRANSIENT:
-						got = BasicModifier.TRANSIENT;
+						got = BasicModifierSyntax.TRANSIENT;
 						break;
 						
 					case KEYWORD_VOLATILE:
-						got = BasicModifier.VOLATILE;
+						got = BasicModifierSyntax.VOLATILE;
 						break;
 						
 					case KEYWORD_STRICTFP:
-						got = BasicModifier.STRICTFP;
+						got = BasicModifierSyntax.STRICTFP;
 						break;
 					
 						// No more modifiers to parse
 					default:
-						return new Modifiers(rv);
+						return new ModifiersSyntax(rv);
 				}
 				
 				// Consume token to prevent infinite loop
@@ -327,7 +327,7 @@ public final class Modifiers
 			
 			// {@squirreljme.error AQ3k Duplicate modifier. (The modifier)}
 			if (rv.contains(got))
-				throw new StructureParseException(token,
+				throw new SyntaxParseException(token,
 					String.format("AQ3k %s", got));
 			rv.add(got);
 		}
@@ -339,25 +339,25 @@ public final class Modifiers
 	 * @param __in The input token source.
 	 * @return The parsed modifiers for formal parameters.
 	 * @throws NullPointerException On null arguments.
-	 * @throws StructureParseException If the modifiers are not valid.
+	 * @throws SyntaxParseException If the modifiers are not valid.
 	 * @since 2018/04/29
 	 */
-	public static Modifiers parseForFormalParameter(BufferedTokenSource __in)
-		throws NullPointerException, StructureParseException
+	public static ModifiersSyntax parseForFormalParameter(BufferedTokenSource __in)
+		throws NullPointerException, SyntaxParseException
 	{
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
 		// Parse modifiers
-		Set<Modifier> rv = new LinkedHashSet<>();
+		Set<ModifierSyntax> rv = new LinkedHashSet<>();
 		for (;;)
 		{
 			Token token = __in.peek();
-			Modifier got;
+			ModifierSyntax got;
 			
 			// Annotated formal parameter
 			if (token.type() == TokenType.SYMBOL_AT)
-				got = Annotation.parse(__in);
+				got = AnnotationSyntax.parse(__in);
 				
 			// Basic modifier?
 			else
@@ -366,12 +366,12 @@ public final class Modifiers
 				switch (token.type())
 				{
 					case KEYWORD_FINAL:
-						got = BasicModifier.FINAL;
+						got = BasicModifierSyntax.FINAL;
 						break;
 						
 						// No more modifiers to parse
 					default:
-						return new Modifiers(rv);
+						return new ModifiersSyntax(rv);
 				}
 				
 				// Consume token to prevent infinite loop
@@ -381,7 +381,7 @@ public final class Modifiers
 			// {@squirreljme.error AQ44 Duplicate modifier while parsing
 			// formal parameter modifiers. (The modifier)}
 			if (rv.contains(got))
-				throw new StructureParseException(token,
+				throw new SyntaxParseException(token,
 					String.format("AQ44 %s", got));
 			rv.add(got);
 		}

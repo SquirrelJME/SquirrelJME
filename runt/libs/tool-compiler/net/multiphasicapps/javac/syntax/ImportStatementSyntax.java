@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.javac.structure;
+package net.multiphasicapps.javac.syntax;
 
 import net.multiphasicapps.classfile.BinaryName;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
@@ -22,7 +22,7 @@ import net.multiphasicapps.javac.token.TokenType;
  *
  * @since 2018/04/21
  */
-public final class ImportStatement
+public final class ImportStatementSyntax
 {
 	/** Is this static? */
 	protected final boolean isstatic;
@@ -41,7 +41,7 @@ public final class ImportStatement
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/04/14
 	 */
-	public ImportStatement(boolean __static, BinaryName __what)
+	public ImportStatementSyntax(boolean __static, BinaryName __what)
 		throws NullPointerException
 	{
 		if (__what == null)
@@ -62,10 +62,10 @@ public final class ImportStatement
 		if (__o == this)
 			return true;
 		
-		if (!(__o instanceof ImportStatement))
+		if (!(__o instanceof ImportStatementSyntax))
 			return false;
 		
-		ImportStatement o = (ImportStatement)__o;
+		ImportStatementSyntax o = (ImportStatementSyntax)__o;
 		return this.isstatic == o.isstatic &&
 			this.what.equals(o.what);
 	}
@@ -129,11 +129,11 @@ public final class ImportStatement
 	 * @param __in The input token source.
 	 * @return The parsed modifiers.
 	 * @throws NullPointerException On null arguments.
-	 * @throws StructureParseException If this is not a valid import statement.
+	 * @throws SyntaxParseException If this is not a valid import statement.
 	 * @since 2018/04/21
 	 */
-	public static ImportStatement parse(BufferedTokenSource __in)
-		throws NullPointerException, StructureParseException
+	public static ImportStatementSyntax parse(BufferedTokenSource __in)
+		throws NullPointerException, SyntaxParseException
 	{
 		if (__in == null)
 			throw new NullPointerException("NARG");
@@ -142,7 +142,7 @@ public final class ImportStatement
 		// statement.}
 		Token token = __in.next();
 		if (token.type() != TokenType.KEYWORD_IMPORT)
-			throw new StructureParseException(token, "AQ3p");
+			throw new SyntaxParseException(token, "AQ3p");
 		
 		// Is this static?
 		boolean isstatic;
@@ -154,10 +154,10 @@ public final class ImportStatement
 		// statement.}
 		token = __in.peek();
 		if (token.type() != TokenType.IDENTIFIER)
-			throw new StructureParseException(token, "AQ3q");
+			throw new SyntaxParseException(token, "AQ3q");
 		
 		// Read identifier, due to the wildcard we cannot use
-		// QualifiedIdentifier because an identifier must follow the dot
+		// QualifiedIdentifierSyntax because an identifier must follow the dot
 		StringBuilder sb = new StringBuilder();
 		for (;;)
 		{
@@ -165,7 +165,7 @@ public final class ImportStatement
 			// import statement.}
 			token = __in.next();
 			if (token.type() != TokenType.IDENTIFIER)
-				throw new StructureParseException(token, "AQ3r");
+				throw new SyntaxParseException(token, "AQ3r");
 			
 			// Build
 			sb.append(token.characters());
@@ -189,7 +189,7 @@ public final class ImportStatement
 					// the wildcard symbol in the import statement.}
 					token = __in.next();
 					if (token.type() != TokenType.SYMBOL_SEMICOLON)
-						throw new StructureParseException(token, "AQ3s");
+						throw new SyntaxParseException(token, "AQ3s");
 					
 					// Add asterisk to make it a wildcard
 					sb.append("*");
@@ -204,13 +204,13 @@ public final class ImportStatement
 			// {@squirreljme.error AQ3t Expected dot or semi-colon to follow
 			// the identifier in the import statement.}
 			else
-				throw new StructureParseException(token, "AQ3t");
+				throw new SyntaxParseException(token, "AQ3t");
 		}
 		
 		// Attempt to parse binary name
 		try
 		{
-			return new ImportStatement(isstatic,
+			return new ImportStatementSyntax(isstatic,
 				new BinaryName(sb.toString()));
 		}
 		
@@ -218,7 +218,7 @@ public final class ImportStatement
 		// binary name.}
 		catch (InvalidClassFormatException e)
 		{
-			throw new StructureParseException(token, "AQ3u");
+			throw new SyntaxParseException(token, "AQ3u");
 		}
 	}
 }

@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.javac.structure;
+package net.multiphasicapps.javac.syntax;
 
 import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.Token;
@@ -21,7 +21,7 @@ import net.multiphasicapps.javac.token.TokenType;
  *
  * @since 2018/04/24
  */
-public final class TypeParameter
+public final class TypeParameterSyntax
 {
 	/**
 	 * {@inheritDoc}
@@ -59,12 +59,12 @@ public final class TypeParameter
 	 * @param __in The input tokens.
 	 * @return The parsed type parameter.
 	 * @throws NullPointerException On null arguments.
-	 * @throws StructureParseException If the type parameter could not be
+	 * @throws SyntaxParseException If the type parameter could not be
 	 * parsed.
 	 * @since 2018/04/24
 	 */
-	public static TypeParameter parse(BufferedTokenSource __in)
-		throws NullPointerException, StructureParseException
+	public static TypeParameterSyntax parse(BufferedTokenSource __in)
+		throws NullPointerException, SyntaxParseException
 	{
 		if (__in == null)
 			throw new NullPointerException("NARG");

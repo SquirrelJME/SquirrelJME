@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.javac.structure;
+package net.multiphasicapps.javac.syntax;
 
 import net.multiphasicapps.classfile.BinaryName;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
@@ -21,7 +21,7 @@ import net.multiphasicapps.javac.token.TokenType;
  *
  * @since 2018/04/10
  */
-public final class QualifiedIdentifier
+public final class QualifiedIdentifierSyntax
 {
 	/** The class this refers to. */
 	protected final BinaryName name;
@@ -33,7 +33,7 @@ public final class QualifiedIdentifier
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/04/13
 	 */
-	public QualifiedIdentifier(BinaryName __bn)
+	public QualifiedIdentifierSyntax(BinaryName __bn)
 		throws NullPointerException
 	{
 		if (__bn == null)
@@ -52,10 +52,10 @@ public final class QualifiedIdentifier
 		if (__o == this)
 			return true;
 		
-		if (!(__o instanceof QualifiedIdentifier))
+		if (!(__o instanceof QualifiedIdentifierSyntax))
 			return false;
 		
-		return this.name.equals(((QualifiedIdentifier)__o).name);
+		return this.name.equals(((QualifiedIdentifierSyntax)__o).name);
 	}
 	
 	/**
@@ -84,11 +84,11 @@ public final class QualifiedIdentifier
 	 * @param __t The input token source.
 	 * @return The qualified identifier.
 	 * @throws NullPointerException On null arguments.
-	 * @throws StructureParseException If the identifier is not valid.
+	 * @throws SyntaxParseException If the identifier is not valid.
 	 * @since 2018/04/13
 	 */
-	public static final QualifiedIdentifier parse(BufferedTokenSource __t)
-		throws NullPointerException, StructureParseException
+	public static final QualifiedIdentifierSyntax parse(BufferedTokenSource __t)
+		throws NullPointerException, SyntaxParseException
 	{
 		if (__t == null)
 			throw new NullPointerException("NARG");
@@ -99,7 +99,7 @@ public final class QualifiedIdentifier
 		// {@squirreljme.error AQ3g Expected identifier while parsing qualified
 		// identifier.
 		if (token.type() != TokenType.IDENTIFIER)
-			throw new StructureParseException(token, "AQ3g");
+			throw new SyntaxParseException(token, "AQ3g");
 		
 		// Start with initial base
 		StringBuilder sb = new StringBuilder();
@@ -120,7 +120,7 @@ public final class QualifiedIdentifier
 			// dot in qualified identifier.}
 			token = __t.next();
 			if (token.type() != TokenType.IDENTIFIER)
-				throw new StructureParseException(token, "AQ3h");
+				throw new SyntaxParseException(token, "AQ3h");
 			
 			// Add in
 			sb.append('/');
@@ -130,14 +130,14 @@ public final class QualifiedIdentifier
 		// Might not be valid
 		try
 		{
-			return new QualifiedIdentifier(new BinaryName(sb.toString()));
+			return new QualifiedIdentifierSyntax(new BinaryName(sb.toString()));
 		}
 		
 		// {@squirreljme.error AQ3i The specified identifier is not a valid
 		// binary name. (The identifier)}
 		catch (InvalidClassFormatException e)
 		{
-			throw new StructureParseException(token,
+			throw new SyntaxParseException(token,
 				String.format("AQ3i %s", sb), e);
 		}
 	}
@@ -148,12 +148,12 @@ public final class QualifiedIdentifier
 	 * @param __in The input tokens.
 	 * @return The list of qualified identifiers.
 	 * @throws NullPointerException On null arguments.
-	 * @throws StructureParseException If the list is not valid.
+	 * @throws SyntaxParseException If the list is not valid.
 	 * @since 2018/04/28
 	 */
-	public static final QualifiedIdentifier[] parseList(
+	public static final QualifiedIdentifierSyntax[] parseList(
 		BufferedTokenSource __in)
-		throws NullPointerException, StructureParseException
+		throws NullPointerException, SyntaxParseException
 	{
 		if (__in == null)
 			throw new NullPointerException("NARG");

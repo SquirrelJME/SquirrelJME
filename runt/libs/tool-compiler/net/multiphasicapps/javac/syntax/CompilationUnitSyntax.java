@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.javac.structure;
+package net.multiphasicapps.javac.syntax;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,19 +26,19 @@ import net.multiphasicapps.javac.token.TokenType;
  *
  * @since 2018/04/21
  */
-public final class CompilationUnit
+public final class CompilationUnitSyntax
 {
 	/** The modifiers for the package. */
-	protected final Modifiers modifiers;
+	protected final ModifiersSyntax modifiers;
 	
 	/** The package this compilation unit is in. */
-	protected final QualifiedIdentifier inpackage;
+	protected final QualifiedIdentifierSyntax inpackage;
 	
 	/** The imports being performed. */
-	private final ImportStatement[] _imports;
+	private final ImportStatementSyntax[] _imports;
 	
 	/** The classes being declared. */
-	private final ClassStructure[] _classes;
+	private final ClassSyntax[] _classes;
 	
 	/**
 	 * Initializes the compilation unit.
@@ -46,12 +46,12 @@ public final class CompilationUnit
 	 * @param __pmod The modifiers to the package.
 	 * @param __pk The owning package.
 	 * @throws NullPointerException On null arguments.
-	 * @throws StructureDefinitionException If the compilation unit is not
+	 * @throws SyntaxDefinitionException If the compilation unit is not
 	 * valid.
 	 * @since 2018/04/30
 	 */
-	public CompilationUnit(Modifiers __pmod, QualifiedIdentifier __pk)
-		throws NullPointerException, StructureDefinitionException
+	public CompilationUnitSyntax(ModifiersSyntax __pmod, QualifiedIdentifierSyntax __pk)
+		throws NullPointerException, SyntaxDefinitionException
 	{
 		if (__pmod == null || __pk == null)
 			throw new NullPointerException("NARG");
@@ -63,13 +63,13 @@ public final class CompilationUnit
 			__pmod.isNative() || __pmod.isSynchronized() ||
 			__pmod.isTransient() || __pmod.isVolatile() ||
 			__pmod.isStrictFloatingPoint())
-			throw new StructureDefinitionException(
+			throw new SyntaxDefinitionException(
 				String.format("AQ4u %s", __pmod));
 		
 		this.modifiers = __pmod;
 		this.inpackage = __pk;
-		this._imports = new ImportStatement[0];
-		this._classes = new ClassStructure[0];
+		this._imports = new ImportStatementSyntax[0];
+		this._classes = new ClassSyntax[0];
 	}
 	
 	/**
@@ -79,18 +79,18 @@ public final class CompilationUnit
 	 * @param __imports Imports that are used.
 	 * @param __classes Classes which have been declared.
 	 * @throws NullPointerException On null arguments.
-	 * @throws StructureDefinitionException If the compilation unit is not
+	 * @throws SyntaxDefinitionException If the compilation unit is not
 	 * valid.
 	 * @since 2018/04/30
 	 */
-	public CompilationUnit(QualifiedIdentifier __pk,
-		ImportStatement[] __imports, ClassStructure[] __classes)
-		throws NullPointerException, StructureDefinitionException
+	public CompilationUnitSyntax(QualifiedIdentifierSyntax __pk,
+		ImportStatementSyntax[] __imports, ClassSyntax[] __classes)
+		throws NullPointerException, SyntaxDefinitionException
 	{
-		this(__pk, Arrays.<ImportStatement>asList(
-			__imports == null ? new ImportStatement[0] : __imports),
-			Arrays.<ClassStructure>asList(__classes == null ?
-			new ClassStructure[0] : __classes));
+		this(__pk, Arrays.<ImportStatementSyntax>asList(
+			__imports == null ? new ImportStatementSyntax[0] : __imports),
+			Arrays.<ClassSyntax>asList(__classes == null ?
+			new ClassSyntax[0] : __classes));
 	}
 	
 	/**
@@ -100,21 +100,21 @@ public final class CompilationUnit
 	 * @param __imports Imports that are used.
 	 * @param __classes Classes which have been declared.
 	 * @throws NullPointerException On null arguments.
-	 * @throws StructureDefinitionException If the compilation unit is not
+	 * @throws SyntaxDefinitionException If the compilation unit is not
 	 * valid.
 	 * @since 2018/04/30
 	 */
-	public CompilationUnit(QualifiedIdentifier __pk,
-		Iterable<ImportStatement> __imports,
-		Iterable<ClassStructure> __classes)
-		throws NullPointerException, StructureDefinitionException
+	public CompilationUnitSyntax(QualifiedIdentifierSyntax __pk,
+		Iterable<ImportStatementSyntax> __imports,
+		Iterable<ClassSyntax> __classes)
+		throws NullPointerException, SyntaxDefinitionException
 	{
 		if (__pk == null || __imports == null || __classes == null)
 			throw new NullPointerException("NARG");
 		
 		// Check imports
-		Set<ImportStatement> imports = new LinkedHashSet<>();
-		for (ImportStatement v : __imports)
+		Set<ImportStatementSyntax> imports = new LinkedHashSet<>();
+		for (ImportStatementSyntax v : __imports)
 		{
 			if (v == null)
 				throw new NullPointerException("NARG");
@@ -123,8 +123,8 @@ public final class CompilationUnit
 		}
 		
 		// Check classes
-		Set<ClassStructure> classes = new LinkedHashSet<>();
-		for (ClassStructure v : __classes)
+		Set<ClassSyntax> classes = new LinkedHashSet<>();
+		for (ClassSyntax v : __classes)
 		{
 			if (v == null)
 				throw new NullPointerException("NARG");
@@ -132,12 +132,12 @@ public final class CompilationUnit
 			classes.add(v);
 		}
 		
-		this.modifiers = new Modifiers();
+		this.modifiers = new ModifiersSyntax();
 		this.inpackage = __pk;
-		this._imports = imports.<ImportStatement>toArray(
-			new ImportStatement[imports.size()]);
-		this._classes = classes.<ClassStructure>toArray(
-			new ClassStructure[classes.size()]);
+		this._imports = imports.<ImportStatementSyntax>toArray(
+			new ImportStatementSyntax[imports.size()]);
+		this._classes = classes.<ClassSyntax>toArray(
+			new ClassSyntax[classes.size()]);
 	}
 	
 	/**
@@ -176,20 +176,20 @@ public final class CompilationUnit
 	 * @param __in The input token source.
 	 * @return The parsed compilation unit.
 	 * @throws NullPointerException On null arguments.
-	 * @throws StructureParseException If the structure is not valid.
+	 * @throws SyntaxParseException If the structure is not valid.
 	 * @since 2018/04/21
 	 */
-	public static CompilationUnit parse(BufferedTokenSource __in)
-		throws NullPointerException, StructureParseException
+	public static CompilationUnitSyntax parse(BufferedTokenSource __in)
+		throws NullPointerException, SyntaxParseException
 	{
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
 		// This may be set early for class parse
-		Modifiers modifiers = null;
+		ModifiersSyntax modifiers = null;
 		
 		// The package the class is in, if it is in one
-		QualifiedIdentifier inpackage = null;
+		QualifiedIdentifierSyntax inpackage = null;
 		
 		// This may be a package-info file which contains annotations
 		// associated with a package
@@ -197,7 +197,7 @@ public final class CompilationUnit
 		Token token = __in.peek();
 		if (token.type() == TokenType.SYMBOL_AT &&
 			__in.peek(1).type() != TokenType.KEYWORD_INTERFACE)
-			modifiers = Modifiers.parse(__in);
+			modifiers = ModifiersSyntax.parse(__in);
 		
 		// Read in the package statement, if it is there
 		token = __in.peek();
@@ -207,13 +207,13 @@ public final class CompilationUnit
 			__in.next();
 			
 			// Read package declaration
-			inpackage = QualifiedIdentifier.parse(__in);
+			inpackage = QualifiedIdentifierSyntax.parse(__in);
 			
 			// {@squirreljme.error AQ3j Expected semi-colon to follow the
 			// package statement.}
 			token = __in.next();
 			if (token.type() != TokenType.SYMBOL_SEMICOLON)
-				throw new StructureParseException(token, "AQ3j");
+				throw new SyntaxParseException(token, "AQ3j");
 			
 			// Only semi-colons and EOF may follow
 			if (modifiers != null)
@@ -223,15 +223,15 @@ public final class CompilationUnit
 				// are only valid in package-info.java.}
 				while ((token = __in.next()).type() != TokenType.END_OF_FILE)
 					if (token.type() != TokenType.SYMBOL_SEMICOLON)
-						throw new StructureParseException(token, "AQ3f");
+						throw new SyntaxParseException(token, "AQ3f");
 				
-				return new CompilationUnit(modifiers, inpackage);
+				return new CompilationUnitSyntax(modifiers, inpackage);
 			}
 		}
 		
 		// Read import statements but if there are modifiers then a class
 		// must directly follow
-		Set<ImportStatement> imports = new LinkedHashSet<>();
+		Set<ImportStatementSyntax> imports = new LinkedHashSet<>();
 		if (modifiers == null)
 			for (;;)
 			{
@@ -241,11 +241,11 @@ public final class CompilationUnit
 					break;
 				
 				// Parse import statement
-				imports.add(ImportStatement.parse(__in));
+				imports.add(ImportStatementSyntax.parse(__in));
 			}
 		
 		// Read in classes
-		List<ClassStructure> classes = new ArrayList<>();
+		List<ClassSyntax> classes = new ArrayList<>();
 		for (;;)
 		{
 			// Need to read in the class modifiers
@@ -261,11 +261,11 @@ public final class CompilationUnit
 					break;
 				
 				// Parse modifiers
-				modifiers = Modifiers.parse(__in);
+				modifiers = ModifiersSyntax.parse(__in);
 			}
 			
 			// Read entire class container
-			ClassStructure struct = ClassStructure.parseEntireClass(modifiers,
+			ClassSyntax struct = ClassSyntax.parseEntireClass(modifiers,
 				__in);
 			classes.add(struct);
 			
@@ -273,7 +273,7 @@ public final class CompilationUnit
 			modifiers = null;
 		}
 		
-		return new CompilationUnit(inpackage, imports, classes);
+		return new CompilationUnitSyntax(inpackage, imports, classes);
 	}
 }
 

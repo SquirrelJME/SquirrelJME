@@ -8,14 +8,14 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.javac.structure;
+package net.multiphasicapps.javac.syntax;
 
 /**
  * This interface represents a simple type.
  *
  * @since 2018/04/30
  */
-public interface SimpleType
+public interface SimpleTypeSyntax
 {
 }
 

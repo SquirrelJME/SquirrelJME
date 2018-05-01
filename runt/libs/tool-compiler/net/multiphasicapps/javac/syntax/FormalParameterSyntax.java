@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.javac.structure;
+package net.multiphasicapps.javac.syntax;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,13 +23,13 @@ import net.multiphasicapps.javac.token.TokenType;
  *
  * @since 2018/04/28
  */
-public final class FormalParameter
+public final class FormalParameterSyntax
 {
 	/** The modifiers used. */
-	protected final Modifiers modifiers;
+	protected final ModifiersSyntax modifiers;
 	
 	/** The type. */
-	protected final Type type;
+	protected final TypeSyntax type;
 	
 	/** The name of the field. */
 	protected final FieldName name;
@@ -41,11 +41,11 @@ public final class FormalParameter
 	 * @param __type The type used.
 	 * @param __name The name of the parameter.
 	 * @throws NullPointerException On null arguments.
-	 * @throws StructureDefinitionException If the definition is not valid.
+	 * @throws SyntaxDefinitionException If the definition is not valid.
 	 * @since 2018/04/30
 	 */
-	public FormalParameter(Modifiers __mods, Type __type, FieldName __name)
-		throws NullPointerException, StructureDefinitionException
+	public FormalParameterSyntax(ModifiersSyntax __mods, TypeSyntax __type, FieldName __name)
+		throws NullPointerException, SyntaxDefinitionException
 	{
 		if (__mods == null || __type == null || __name == null)
 			throw new NullPointerException("NARG");
@@ -56,7 +56,7 @@ public final class FormalParameter
 			__mods.isStatic() || __mods.isAbstract() || __mods.isNative() ||
 			__mods.isSynchronized() || __mods.isTransient() ||
 			__mods.isVolatile() || __mods.isStrictFloatingPoint())
-			throw new StructureDefinitionException(
+			throw new SyntaxDefinitionException(
 				String.format("AQ4f %s", __mods));
 		
 		this.modifiers = __mods;

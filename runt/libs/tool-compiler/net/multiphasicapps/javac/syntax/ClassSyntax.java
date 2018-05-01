@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.javac.structure;
+package net.multiphasicapps.javac.syntax;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -28,29 +28,29 @@ import net.multiphasicapps.javac.token.TokenType;
  *
  * @since 2018/04/21
  */
-public final class ClassStructure
-	implements MemberStructure
+public final class ClassSyntax
+	implements MemberSyntax
 {
 	/** The type of class this is. */
-	protected final ClassStructureType type;
+	protected final ClassSyntaxType type;
 	
 	/** The modifiers to the class. */
-	protected final Modifiers modifiers;
+	protected final ModifiersSyntax modifiers;
 	
 	/** The name of the class. */
 	protected final ClassIdentifier name;
 	
 	/** The type parameters of the class. */
-	protected final TypeParameters typeparams;
+	protected final TypeParametersSyntax typeparams;
 	
 	/** The extending types. */
-	private final Type[] _extends;
+	private final TypeSyntax[] _extends;
 	
 	/** The implementing types. */
-	private final Type[] _implements;
+	private final TypeSyntax[] _implements;
 	
 	/** The members of the class. */
-	private final MemberStructure[] _members;
+	private final MemberSyntax[] _members;
 	
 	/**
 	 * Initializes the class structure information.
@@ -63,13 +63,13 @@ public final class ClassStructure
 	 * @param __implementing The classes this class implements.
 	 * @param __members The members of this class.
 	 * @throws NullPointerException On null arguments.
-	 * @throws StructureDefinitionException If the structure is not valid.
+	 * @throws SyntaxDefinitionException If the structure is not valid.
 	 * @since 2018/04/27
 	 */
-	public ClassStructure(ClassStructureType __structtype, Modifiers __mods,
-		ClassIdentifier __name, TypeParameters __typeparms,
-		Type[] __extending, Type[] __implementing, MemberStructure[] __members)
-		throws NullPointerException, StructureDefinitionException
+	public ClassSyntax(ClassSyntaxType __structtype, ModifiersSyntax __mods,
+		ClassIdentifier __name, TypeParametersSyntax __typeparms,
+		TypeSyntax[] __extending, TypeSyntax[] __implementing, MemberSyntax[] __members)
+		throws NullPointerException, SyntaxDefinitionException
 	{
 		if (__structtype == null || __mods == null || __name == null ||
 			__typeparms == null || __extending == null ||
@@ -80,16 +80,16 @@ public final class ClassStructure
 		// the given class type. (The class type; The class modifiers)}
 		if (__mods.isNative() || __mods.isVolatile() || __mods.isTransient() ||
 			__mods.isSynchronized() ||
-			(__structtype == ClassStructureType.ENUM &&
+			(__structtype == ClassSyntaxType.ENUM &&
 				(__mods.isAbstract() || __mods.isFinal())) ||
-			(__structtype == ClassStructureType.INTERFACE &&
+			(__structtype == ClassSyntaxType.INTERFACE &&
 				(__mods.isFinal())))
-			throw new StructureDefinitionException(String.format("AQ4l %s %s",
+			throw new SyntaxDefinitionException(String.format("AQ4l %s %s",
 				__structtype, __mods));
 		
 		// Check extends
-		Set<Type> doext = new LinkedHashSet<>();
-		for (Type t : __extending)
+		Set<TypeSyntax> doext = new LinkedHashSet<>();
+		for (TypeSyntax t : __extending)
 		{
 			if (t == null)
 				throw new NullPointerException("NARG");
@@ -97,7 +97,7 @@ public final class ClassStructure
 			// {@squirreljme.error AQ4m Duplicate extends specified.
 			// (The type)}
 			if (doext.contains(t))
-				throw new StructureDefinitionException(String.format("AQ4m %s",
+				throw new SyntaxDefinitionException(String.format("AQ4m %s",
 					t));
 			
 			doext.add(t);
@@ -106,12 +106,12 @@ public final class ClassStructure
 		// {@squirreljme.error AQ4o The specified class of the given type
 		// cannot extend the given types. (The class type; The inherited types}
 		if (!__structtype.extendsType().isCompatibleCount(doext.size()))
-			throw new StructureDefinitionException(
+			throw new SyntaxDefinitionException(
 				String.format("AQ4o %s %s", __structtype, doext));
 		
 		// Check implements
-		Set<Type> doimp = new LinkedHashSet<>();
-		for (Type t : __implementing)
+		Set<TypeSyntax> doimp = new LinkedHashSet<>();
+		for (TypeSyntax t : __implementing)
 		{
 			if (t == null)
 				throw new NullPointerException("NARG");
@@ -119,7 +119,7 @@ public final class ClassStructure
 			// {@squirreljme.error AQ4n Duplicate implements specified.
 			// (The type)}
 			if (doimp.contains(t))
-				throw new StructureDefinitionException(String.format("AQ4n %s",
+				throw new SyntaxDefinitionException(String.format("AQ4n %s",
 					t));
 			
 			doimp.add(t);
@@ -129,38 +129,38 @@ public final class ClassStructure
 		// cannot implement the given types. (The class type; The inherited
 		// types}
 		if (!__structtype.implementsType().isCompatibleCount(doimp.size()))
-			throw new StructureDefinitionException(
+			throw new SyntaxDefinitionException(
 				String.format("AQ4p %s %s", __structtype, doext));
 		
 		// Check members
-		List<MemberStructure> membs = new ArrayList<>();
-		for (MemberStructure member : __members)
+		List<MemberSyntax> membs = new ArrayList<>();
+		for (MemberSyntax member : __members)
 		{
 			if (member == null)
 				throw new NullPointerException("NARG");
 			
 			// Interfaces
-			if (__structtype == ClassStructureType.INTERFACE)
+			if (__structtype == ClassSyntaxType.INTERFACE)
 			{
 				// {@squirreljme.error AQ4q An interface cannot contain a
 				// member represented by the given type. (The class type)}
-				if (member instanceof ClassInitializer ||
-					member instanceof ClassConstructor ||
-					member instanceof AnnotationMethod ||
-					member instanceof EnumField)
-					throw new StructureDefinitionException(
+				if (member instanceof ClassInitializerSyntax ||
+					member instanceof ClassConstructorSyntax ||
+					member instanceof AnnotationMethodSyntax ||
+					member instanceof EnumFieldSyntax)
+					throw new SyntaxDefinitionException(
 						String.format("AQ4q %s", member.getClass()));
 			}
 			
 			// Annotations
-			else if (__structtype == ClassStructureType.ANNOTATION)
+			else if (__structtype == ClassSyntaxType.ANNOTATION)
 			{
 				// {@squirreljme.error AQ4r An annotation cannot contain a
 				// member represented by the given type. (The class type)}
-				if (!(member instanceof ClassStructure ||
-					member instanceof BasicField ||
-					member instanceof AnnotationMethod))
-					throw new StructureDefinitionException(
+				if (!(member instanceof ClassSyntax ||
+					member instanceof BasicFieldSyntax ||
+					member instanceof AnnotationMethodSyntax))
+					throw new SyntaxDefinitionException(
 						String.format("AQ4r %s", member.getClass()));
 			}
 			
@@ -169,8 +169,8 @@ public final class ClassStructure
 			{
 				// {@squirreljme.error AQ4s An class or enum cannot contain a
 				// member represented by the given type. (The class type)}
-				if (member instanceof AnnotationMethod)
-					throw new StructureDefinitionException(
+				if (member instanceof AnnotationMethodSyntax)
+					throw new SyntaxDefinitionException(
 						String.format("AQ4s %s", member.getClass()));
 			}
 			
@@ -183,10 +183,10 @@ public final class ClassStructure
 		this.modifiers = __mods;
 		this.name = __name;
 		this.typeparams = __typeparms;
-		this._extends = doext.<Type>toArray(new Type[doext.size()]);
-		this._implements = doimp.<Type>toArray(new Type[doimp.size()]);
-		this._members = membs.<MemberStructure>toArray(
-			new MemberStructure[membs.size()]);
+		this._extends = doext.<TypeSyntax>toArray(new TypeSyntax[doext.size()]);
+		this._implements = doimp.<TypeSyntax>toArray(new TypeSyntax[doimp.size()]);
+		this._members = membs.<MemberSyntax>toArray(
+			new MemberSyntax[membs.size()]);
 	}
 	
 	/**
@@ -194,7 +194,7 @@ public final class ClassStructure
 	 * @since 2018/04/29
 	 */
 	@Override
-	public final Modifiers modifiers()
+	public final ModifiersSyntax modifiers()
 	{
 		throw new todo.TODO();
 	}
@@ -216,13 +216,13 @@ public final class ClassStructure
 	 * @param __in The input token source.
 	 * @return The parsed members of the class.
 	 * @throws NullPointerException On null arguments.
-	 * @throws StructureParseException If the members of the body are not
+	 * @throws SyntaxParseException If the members of the body are not
 	 * correct.
 	 * @since 2018/04/27
 	 */
-	public static MemberStructure[] parseClassBody(
-		ClassStructureType __structtype, BufferedTokenSource __in)
-		throws NullPointerException, StructureParseException
+	public static MemberSyntax[] parseClassBody(
+		ClassSyntaxType __structtype, BufferedTokenSource __in)
+		throws NullPointerException, SyntaxParseException
 	{
 		if (__in == null)
 			throw new NullPointerException("NARG");
@@ -230,31 +230,31 @@ public final class ClassStructure
 		// {@squirreljme.error AQ3z Expected opening brace at start of class.}
 		Token token = __in.next();
 		if (token.type() != TokenType.SYMBOL_OPEN_BRACE)
-			throw new StructureParseException(token, "AQ3z");
+			throw new SyntaxParseException(token, "AQ3z");
 		
 		// Parse the enumeration constants, their fields and their class
 		// values
-		if (__structtype == ClassStructureType.ENUM)
+		if (__structtype == ClassSyntaxType.ENUM)
 		{
 			throw new todo.TODO();
 		}
 		
 		// Member parsing loop
-		List<MemberStructure> rv = new ArrayList<>();
+		List<MemberSyntax> rv = new ArrayList<>();
 		for (;;)
 		{
 			// End of members?
 			token = __in.peek();
 			if (token.type() == TokenType.SYMBOL_CLOSED_BRACE)
-				return rv.<MemberStructure>toArray(
-					new MemberStructure[rv.size()]);
+				return rv.<MemberSyntax>toArray(
+					new MemberSyntax[rv.size()]);
 			
 			// Ignore semi-colons just lying around in the class
 			else if (token.type() == TokenType.SYMBOL_SEMICOLON)
 				continue;
 			
 			// Parse modifiers since this will modify how things are parsed
-			Modifiers mods = Modifiers.parse(__in);
+			ModifiersSyntax mods = ModifiersSyntax.parse(__in);
 			
 			// Always try to parse a class since any kind of class can include
 			// classes
@@ -262,13 +262,13 @@ public final class ClassStructure
 			{
 				// Parse the class
 				__in.mark();
-				rv.add(ClassStructure.parseEntireClass(mods, __in));
+				rv.add(ClassSyntax.parseEntireClass(mods, __in));
 				
 				// Do not try parsing anything else for now
 				__in.commit();
 				continue;
 			}
-			catch (StructureParseException e)
+			catch (SyntaxParseException e)
 			{
 				__in.reset();
 			}
@@ -278,13 +278,13 @@ public final class ClassStructure
 			{
 				// Parse method
 				__in.mark();
-				rv.add(ClassStructure.parseMethod(__structtype, mods, __in));
+				rv.add(ClassSyntax.parseMethod(__structtype, mods, __in));
 				
 				// Valid method
 				__in.commit();
 				continue;
 			}
-			catch (StructureParseException e)
+			catch (SyntaxParseException e)
 			{
 				__in.reset();
 			}
@@ -294,20 +294,20 @@ public final class ClassStructure
 			{
 				// Parse field
 				__in.mark();
-				rv.add(ClassStructure.parseField(__structtype, mods, __in));
+				rv.add(ClassSyntax.parseField(__structtype, mods, __in));
 				
 				// Valid field
 				__in.commit();
 				continue;
 			}
-			catch (StructureParseException e)
+			catch (SyntaxParseException e)
 			{
 				__in.reset();
 			}
 			
 			// {@squirreljme.error AQ40 The specified token does not
 			// represent a member that is a class, field, or method.}
-			throw new StructureParseException(__in, "AQ40");
+			throw new SyntaxParseException(__in, "AQ40");
 		}
 	}
 	
@@ -318,12 +318,12 @@ public final class ClassStructure
 	 * @param __in The input token source.
 	 * @return The parsed class structure.
 	 * @throws NullPointerException On null arguments.
-	 * @throws StructureParseException If this is not a class.
+	 * @throws SyntaxParseException If this is not a class.
 	 * @since 2018/04/22
 	 */
-	public static ClassStructure parseEntireClass(Modifiers __mods,
+	public static ClassSyntax parseEntireClass(ModifiersSyntax __mods,
 		BufferedTokenSource __in)
-		throws NullPointerException, StructureParseException
+		throws NullPointerException, SyntaxParseException
 	{
 		if (__mods == null || __in == null)
 			throw new NullPointerException("NARG");
@@ -331,20 +331,20 @@ public final class ClassStructure
 		Token token;
 		
 		// Determine the class type based on the next token
-		ClassStructureType structtype;
+		ClassSyntaxType structtype;
 		token = __in.next();
 		switch (token.type())
 		{
 			case KEYWORD_CLASS:
-				structtype = ClassStructureType.CLASS;
+				structtype = ClassSyntaxType.CLASS;
 				break;
 				
 			case KEYWORD_ENUM:
-				structtype = ClassStructureType.ENUM;
+				structtype = ClassSyntaxType.ENUM;
 				break;
 				
 			case KEYWORD_INTERFACE:
-				structtype = ClassStructureType.INTERFACE;
+				structtype = ClassSyntaxType.INTERFACE;
 				break;
 			
 				// {@squirreljme.error AQ3m Expected interface to follow
@@ -352,33 +352,33 @@ public final class ClassStructure
 			case SYMBOL_AT:
 				token = __in.next();
 				if (token.type() != TokenType.KEYWORD_INTERFACE)
-					throw new StructureParseException(token, "AQ3m");
-				structtype = ClassStructureType.ANNOTATION;
+					throw new SyntaxParseException(token, "AQ3m");
+				structtype = ClassSyntaxType.ANNOTATION;
 				break;
 			
 				// {@squirreljme.error AQ3n Unknown token while parsing class.}
 			default:
-				throw new StructureParseException(token, "AQ3n");
+				throw new SyntaxParseException(token, "AQ3n");
 		}
 		
 		// {@squirreljme.error AQ3v Expected identifier to name the class as.}
 		token = __in.next();
 		if (token.type() != TokenType.IDENTIFIER)
-			throw new StructureParseException(token, "AQ3v");
+			throw new SyntaxParseException(token, "AQ3v");
 		ClassIdentifier name = new ClassIdentifier(token.characters());
 		
 		// Read type parameters?
 		token = __in.peek();
-		TypeParameters typeparms;
+		TypeParametersSyntax typeparms;
 		if (structtype.hasTypeParameters() &&
 			token.type() == TokenType.COMPARE_LESS_THAN)
-			typeparms = TypeParameters.parse(__in);
+			typeparms = TypeParametersSyntax.parse(__in);
 		else
-			typeparms = new TypeParameters();
+			typeparms = new TypeParametersSyntax();
 		
 		// Read extends
 		token = __in.peek();
-		Type[] extending;
+		TypeSyntax[] extending;
 		if (token.type() == TokenType.KEYWORD_EXTENDS)
 		{
 			// Consume and parse list
@@ -386,25 +386,25 @@ public final class ClassStructure
 			switch (structtype.extendsType())
 			{
 				case SINGLE:
-					extending = new Type[]{Type.parseType(__in)};
+					extending = new TypeSyntax[]{TypeSyntax.parseType(__in)};
 					break;
 					
 				case MULTIPLE:
-					extending = Type.parseTypes(__in);
+					extending = TypeSyntax.parseTypes(__in);
 					break;
 					
 					// {@squirreljme.error AQ3w This type of class cannot
 					// extend other classes.}
 				default:
-					throw new StructureParseException(token, "AQ3w");
+					throw new SyntaxParseException(token, "AQ3w");
 			}
 		}
 		else
-			extending = new Type[0];
+			extending = new TypeSyntax[0];
 		
 		// Read implements
 		token = __in.peek();
-		Type[] implementing;
+		TypeSyntax[] implementing;
 		if (token.type() == TokenType.KEYWORD_IMPLEMENTS)
 		{
 			// Consume and parse list
@@ -412,29 +412,29 @@ public final class ClassStructure
 			switch (structtype.extendsType())
 			{
 				case MULTIPLE:
-					implementing = Type.parseTypes(__in);
+					implementing = TypeSyntax.parseTypes(__in);
 					break;
 					
 					// {@squirreljme.error AQ3y This type of class cannot
 					// implement interfaces.}
 				default:
-					throw new StructureParseException(token, "AQ3y");
+					throw new SyntaxParseException(token, "AQ3y");
 			}
 		}
 		else
-			implementing = new Type[0];
+			implementing = new TypeSyntax[0];
 		
 		// Read class body which contains all the members
-		MemberStructure[] members = ClassStructure.parseClassBody(structtype,
+		MemberSyntax[] members = ClassSyntax.parseClassBody(structtype,
 			__in);
 		
 		// {@squirreljme.error AQ4t Expected closing brace at end of class.}
 		token = __in.next();
 		if (token.type() != TokenType.SYMBOL_CLOSED_BRACE)
-			throw new StructureParseException(token, "AQ4t");
+			throw new SyntaxParseException(token, "AQ4t");
 		
 		// Build class structure
-		return new ClassStructure(structtype, __mods, name, typeparms,
+		return new ClassSyntax(structtype, __mods, name, typeparms,
 			extending, implementing, members);
 	}
 	
@@ -446,18 +446,18 @@ public final class ClassStructure
 	 * @param __in The input tokens.
 	 * @return The parsed field.
 	 * @throws NullPointerException On null arguments.
-	 * @throws StructureParseException If it is not a valid field.
+	 * @throws SyntaxParseException If it is not a valid field.
 	 * @since 2018/04/28
 	 */
-	public static FieldStructure parseField(ClassStructureType __ct,
-		Modifiers __mods, BufferedTokenSource __in)
-		throws NullPointerException, StructureParseException
+	public static FieldSyntax parseField(ClassSyntaxType __ct,
+		ModifiersSyntax __mods, BufferedTokenSource __in)
+		throws NullPointerException, SyntaxParseException
 	{
 		if (__ct == null || __mods == null || __in == null)
 			throw new NullPointerException("NARG");
 		
 		// Always parse basic fields
-		return BasicField.parse(__mods, __in);
+		return BasicFieldSyntax.parse(__mods, __in);
 	}
 	
 	/**
@@ -468,72 +468,72 @@ public final class ClassStructure
 	 * @param __in The input tokens.
 	 * @return The parsed method.
 	 * @throws NullPointerException On null arguments.
-	 * @throws StructureParseException If it is not a valid method.
+	 * @throws SyntaxParseException If it is not a valid method.
 	 * @since 2018/04/28
 	 */
-	public static MethodStructure parseMethod(ClassStructureType __ct,
-		Modifiers __mods, BufferedTokenSource __in)
-		throws NullPointerException, StructureParseException
+	public static MethodSyntax parseMethod(ClassSyntaxType __ct,
+		ModifiersSyntax __mods, BufferedTokenSource __in)
+		throws NullPointerException, SyntaxParseException
 	{
 		if (__ct == null || __mods == null || __in == null)
 			throw new NullPointerException("NARG");
 		
 		// Annotations only have a single format
-		if (__ct == ClassStructureType.ANNOTATION)
-			return AnnotationMethod.parse(__mods, __in);
+		if (__ct == ClassSyntaxType.ANNOTATION)
+			return AnnotationMethodSyntax.parse(__mods, __in);
 		
 		// Initializer method?
 		Token token = __in.peek();
-		if ((__ct == ClassStructureType.CLASS ||
-			__ct == ClassStructureType.ENUM) &&
+		if ((__ct == ClassSyntaxType.CLASS ||
+			__ct == ClassSyntaxType.ENUM) &&
 			token.type() == TokenType.SYMBOL_OPEN_BRACE)
 			try
 			{
 				// Might not be one
 				__in.mark();
-				ClassInitializer rv = ClassInitializer.parse(__mods, __in);
+				ClassInitializerSyntax rv = ClassInitializerSyntax.parse(__mods, __in);
 				
 				// Is one
 				__in.commit();
 				return rv;
 			}
-			catch (StructureParseException e)
+			catch (SyntaxParseException e)
 			{
 				__in.reset();
 			}
 		
 		// Parse any type parameters which are used
-		TypeParameters typeparams;
+		TypeParametersSyntax typeparams;
 		token = __in.peek();
-		if (__ct != ClassStructureType.ANNOTATION &&
+		if (__ct != ClassSyntaxType.ANNOTATION &&
 			token.type() == TokenType.COMPARE_LESS_THAN)
-			typeparams = TypeParameters.parse(__in);
+			typeparams = TypeParametersSyntax.parse(__in);
 		else
-			typeparams = new TypeParameters();
+			typeparams = new TypeParametersSyntax();
 		
 		// Constructor?
 		token = __in.peek();
-		if (__ct != ClassStructureType.INTERFACE &&
+		if (__ct != ClassSyntaxType.INTERFACE &&
 			token.type() == TokenType.IDENTIFIER &&
 			__in.peek(1).type() == TokenType.SYMBOL_OPEN_PARENTHESIS)
 			try
 			{
 				// Could be one
 				__in.mark();
-				ClassConstructor rv = ClassConstructor.parse(__mods,
+				ClassConstructorSyntax rv = ClassConstructorSyntax.parse(__mods,
 					typeparams, __in);
 				
 				// Is one
 				__in.commit();
 				return rv;
 			}
-			catch (StructureParseException e)
+			catch (SyntaxParseException e)
 			{
 				__in.reset();
 			}
 		
 		// General method
-		return SimpleMethod.parse(__mods, typeparams, __in);
+		return SimpleMethodSyntax.parse(__mods, typeparams, __in);
 	}
 }
 
