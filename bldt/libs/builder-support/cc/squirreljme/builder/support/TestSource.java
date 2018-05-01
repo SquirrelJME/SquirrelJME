@@ -83,27 +83,33 @@ public final class TestSource
 	 * @since 2018/03/06
 	 */
 	@Override
-	protected final CompilerPathSet internalPathSet(boolean __root)
+	public final CompilerPathSet pathSet(SourcePathSetType __spst)
+		throws NullPointerException
 	{
+		if (__spst == null)
+			throw new NullPointerException("NARG");
+		
+		// If just requesting the source set do nothing special
+		FilePathSet rootset = new FilePathSet(this.root);
+		if (__spst == SourcePathSetType.SOURCE)
+			return rootset;
+		
 		// Could fail to read
 		try
 		{
-			FilePathSet rootset = new FilePathSet(this.root);
-			
 			// Parse every input class file and look for tests
 			DefinedTests dt = new DefinedTests();
-			if (!__root)
-				for (CompilerInput ci : rootset)
+			for (CompilerInput ci : rootset)
+			{
+				String name = ci.fileName();
+				if (name.endsWith(".java"))
 				{
-					String name = ci.fileName();
-					if (name.endsWith(".java"))
-					{
-						// {@squirreljme.error AU20 Parsing the specified file
-						// and looking for tests. (The file name)}
-						System.err.printf("AU21 %s%n", name);
-						new TestParser(ci, dt).run();
-					}
+					// {@squirreljme.error AU20 Parsing the specified file
+					// and looking for tests. (The file name)}
+					System.err.printf("AU21 %s%n", name);
+					new TestParser(ci, dt).run();
 				}
+			}
 		
 			// Generate input
 			try (ByteArrayOutputStream baos = new ByteArrayOutputStream();

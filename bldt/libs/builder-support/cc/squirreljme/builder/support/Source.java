@@ -69,15 +69,15 @@ public abstract class Source
 	}
 	
 	/**
-	 * Returns the input set which makes up the source project, internally
-	 * as the end result will be wrapped to add some special meta-files if
-	 * needed.
+	 * Returns the path set which is used for the given path set type.
 	 *
-	 * @param __root Should only the root be considered?
-	 * @return The input set.
-	 * @since 2018/03/06
+	 * @param __spst The path set type to get.
+	 * @return The path set for the given type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/04/30
 	 */
-	protected abstract CompilerPathSet internalPathSet(boolean __root);
+	public abstract CompilerPathSet pathSet(SourcePathSetType __spst)
+		throws NullPointerException;
 	
 	/**
 	 * The source manifest.
@@ -102,7 +102,7 @@ public abstract class Source
 			return rv;
 		
 		// Go through all input and compare the modified times
-		try (CompilerPathSet ps = this.internalPathSet(true))
+		try (CompilerPathSet ps = this.pathSet(SourcePathSetType.SOURCE))
 		{
 			rv = Long.MIN_VALUE;
 			for (CompilerInput ci : ps)
@@ -248,17 +248,6 @@ public abstract class Source
 	public final SourceName name()
 	{
 		return this.name;
-	}
-	
-	/**
-	 * Returns the path set to use for the source code.
-	 *
-	 * @return The input set.
-	 * @since 2018/03/06
-	 */
-	public final CompilerPathSet pathSet()
-	{
-		return this.internalPathSet(false);
 	}
 	
 	/**

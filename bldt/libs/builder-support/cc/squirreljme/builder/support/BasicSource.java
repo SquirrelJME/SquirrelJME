@@ -62,8 +62,13 @@ public final class BasicSource
 	 * @since 2018/03/06
 	 */
 	@Override
-	protected final CompilerPathSet internalPathSet(boolean __root)
+	public final CompilerPathSet pathSet(SourcePathSetType __spst)
+		throws NullPointerException
 	{
+		if (__spst == null)
+			throw new NullPointerException("NARG");
+		
+		// The same path set is used for compilation and for sources
 		return new FilePathSet(this.root);
 	}
 	
@@ -89,7 +94,7 @@ public final class BasicSource
 		JavaManifest rv;
 		
 		if (ref == null || null == (rv = ref.get()))
-			try (CompilerPathSet ps = this.internalPathSet(false);
+			try (CompilerPathSet ps = this.pathSet(SourcePathSetType.SOURCE);
 				InputStream in = ps.input("META-INF/MANIFEST.MF").open())
 			{
 				this._manifest = new WeakReference<>(

@@ -241,7 +241,8 @@ public final class BinaryManager
 				
 				// Use the source root to lookup source code
 				CompilerPathSet srcps = closing.<CompilerPathSet>addThis(
-					src.pathSet(), CompilerPathSet.class);
+					src.pathSet(SourcePathSetType.COMPILED),
+					CompilerPathSet.class);
 				javac.setLocation(CompilerInputLocation.SOURCE, srcps);
 				
 				// Explicitly compile every source file
