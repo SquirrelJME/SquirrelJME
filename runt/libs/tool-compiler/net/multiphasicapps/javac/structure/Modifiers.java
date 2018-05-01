@@ -34,11 +34,12 @@ public final class Modifiers
 	 *
 	 * @param __ms The modifiers to use.
 	 * @throws NullPointerException If any modifier is null.
-	 * @throws StructureParseException If a modifier is duplicated.
+	 * @throws StructureDefinitionException If a modifier is duplicated or
+	 * public, protected, or private are multiply specified.
 	 * @since 2018/04/22
 	 */
 	public Modifiers(Modifier... __ms)
-		throws NullPointerException, StructureParseException
+		throws NullPointerException, StructureDefinitionException
 	{
 		this(Arrays.<Modifier>asList((__ms == null ? new Modifier[0] : __ms)));
 	}
@@ -48,11 +49,12 @@ public final class Modifiers
 	 *
 	 * @param __ms The modifiers to use.
 	 * @throws NullPointerException If any modifier is null.
-	 * @throws StructureParseException If a modifier is duplicated.
+	 * @throws StructureDefinitionException If a modifier is duplicated or
+	 * public, protected, or private are multiply specified.
 	 * @since 2018/04/22
 	 */
 	public Modifiers(Iterable<Modifier> __ms)
-		throws NullPointerException, StructureParseException
+		throws NullPointerException, StructureDefinitionException
 	{
 		if (__ms == null)
 			throw new NullPointerException("NARG");
@@ -66,11 +68,20 @@ public final class Modifiers
 			
 			// {@squirreljme.error AQ3l Duplicate modifier. (The modifier)}
 			if (modifiers.contains(m))
-				throw new StructureParseException(String.format("AQ3l %s",
+				throw new StructureDefinitionException(String.format("AQ3l %s",
 					m));
 			
 			modifiers.add(m);
 		}
+		
+		// {@squirreljme.error AQ4i There may be only one or none specified for
+		// public, protected, or private. (The modifiers)}
+		boolean a = modifiers.contains(BasicModifier.PUBLIC),
+			b = modifiers.contains(BasicModifier.PROTECTED),
+			c = modifiers.contains(BasicModifier.PRIVATE);
+		if ((a && b) || (a && c) || (b && c))
+			throw new StructureDefinitionException(String.format("AQ4i %s",
+				modifiers));
 		
 		// Store
 		this._modifiers = modifiers;

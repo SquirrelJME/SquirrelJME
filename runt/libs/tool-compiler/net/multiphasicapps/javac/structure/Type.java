@@ -22,6 +22,10 @@ import net.multiphasicapps.javac.token.TokenType;
  */
 public final class Type
 {
+	/** The void type. */
+	public static final Type VOID =
+		new Type(VoidType.VOID, 0);
+	
 	/** The simple type used. */
 	protected final SimpleType simpletype;
 	
