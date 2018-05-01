@@ -1,0 +1,27 @@
+# 2018/04/30
+
+## 20:46
+
+Whew so I have at least `todo.DEBUG` able to be parsed for its basic outside
+structure with the parser. That was a bunch of work. Now that I have that I
+will move onto getting it where it can parse sources with annotations and such
+so that way I can build the dynamic test system and such.
+
+## 23:41
+
+Okay so to correctly handle annotations there will need to be actual
+expression handling. The values for all annotations are going to be actual
+expressions and such so there is that. This means the structure parser is
+going to be mostly for syntax only for the most part. This then would need to
+be thrown into an actual compiler to be handled at least on a documentation or
+test generation level.
+
+## 23:45
+
+So basically the code which will be generating tests will be for the most part
+be running a basic compilation where it loads constant values and knows all of
+the used types. So that part of the compiler will need to be handled. But once
+all of the stuff is parsed for the most part it should be a bit easier to
+determine what is what. There would basically be a compilation unit processor
+of sorts.
+
