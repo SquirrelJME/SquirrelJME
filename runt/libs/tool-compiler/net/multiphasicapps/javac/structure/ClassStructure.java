@@ -31,10 +31,32 @@ import net.multiphasicapps.javac.token.TokenType;
 public final class ClassStructure
 	implements MemberStructure
 {
+	/** The type of class this is. */
+	protected final ClassStructureType type;
+	
+	/** The modifiers to the class. */
+	protected final Modifiers modifiers;
+	
+	/** The name of the class. */
+	protected final ClassIdentifier name;
+	
+	/** The type parameters of the class. */
+	protected final TypeParameters typeparams;
+	
+	/** The extending types. */
+	private final Type[] _extends;
+	
+	/** The implementing types. */
+	private final Type[] _implements;
+	
+	/** The members of the class. */
+	private final MemberStructure[] _members;
+	
 	/**
 	 * Initializes the class structure information.
 	 *
 	 * @param __structtype The type of structure used.
+	 * @param __mods The modifiers to the class.
 	 * @param __name The name of the class.
 	 * @param __typeparms The type parameters of the class.
 	 * @param __extending The classes this class extends.
@@ -44,16 +66,127 @@ public final class ClassStructure
 	 * @throws StructureDefinitionException If the structure is not valid.
 	 * @since 2018/04/27
 	 */
-	public ClassStructure(ClassStructureType __structtype,
-		ClassIdentifier __name, TypeParameter[] __typeparms,
+	public ClassStructure(ClassStructureType __structtype, Modifiers __mods,
+		ClassIdentifier __name, TypeParameters __typeparms,
 		Type[] __extending, Type[] __implementing, MemberStructure[] __members)
 		throws NullPointerException, StructureDefinitionException
 	{
-		if (__structtype == null || __name == null || __typeparms == null ||
-			__extending == null || __implementing == null || __members == null)
+		if (__structtype == null || __mods == null || __name == null ||
+			__typeparms == null || __extending == null ||
+			__implementing == null || __members == null)
 			throw new NullPointerException();
 		
-		throw new todo.TODO();
+		// {@squirreljme.error AQ4l Illegal class modifiers specified with the
+		// the given class type. (The class type; The class modifiers)}
+		if (__mods.isNative() || __mods.isVolatile() || __mods.isTransient() ||
+			__mods.isSynchronized() ||
+			(__structtype == ClassStructureType.ENUM &&
+				(__mods.isAbstract() || __mods.isFinal())) ||
+			(__structtype == ClassStructureType.INTERFACE &&
+				(__mods.isFinal())))
+			throw new StructureDefinitionException(String.format("AQ4l %s %s",
+				__structtype, __mods));
+		
+		// Check extends
+		Set<Type> doext = new LinkedHashSet<>();
+		for (Type t : __extending)
+		{
+			if (t == null)
+				throw new NullPointerException("NARG");
+			
+			// {@squirreljme.error AQ4m Duplicate extends specified.
+			// (The type)}
+			if (doext.contains(t))
+				throw new StructureDefinitionException(String.format("AQ4m %s",
+					t));
+			
+			doext.add(t);
+		}
+		
+		// {@squirreljme.error AQ4o The specified class of the given type
+		// cannot extend the given types. (The class type; The inherited types}
+		if (!__structtype.extendsType().isCompatibleCount(doext.size()))
+			throw new StructureDefinitionException(
+				String.format("AQ4o %s %s", __structtype, doext));
+		
+		// Check implements
+		Set<Type> doimp = new LinkedHashSet<>();
+		for (Type t : __implementing)
+		{
+			if (t == null)
+				throw new NullPointerException("NARG");
+			
+			// {@squirreljme.error AQ4n Duplicate implements specified.
+			// (The type)}
+			if (doimp.contains(t))
+				throw new StructureDefinitionException(String.format("AQ4n %s",
+					t));
+			
+			doimp.add(t);
+		}
+		
+		// {@squirreljme.error AQ4p The specified class of the given type
+		// cannot implement the given types. (The class type; The inherited
+		// types}
+		if (!__structtype.implementsType().isCompatibleCount(doimp.size()))
+			throw new StructureDefinitionException(
+				String.format("AQ4p %s %s", __structtype, doext));
+		
+		// Check members
+		List<MemberStructure> membs = new ArrayList<>();
+		for (MemberStructure member : __members)
+		{
+			if (member == null)
+				throw new NullPointerException("NARG");
+			
+			// Interfaces
+			if (__structtype == ClassStructureType.INTERFACE)
+			{
+				// {@squirreljme.error AQ4q An interface cannot contain a
+				// member represented by the given type. (The class type)}
+				if (member instanceof ClassInitializer ||
+					member instanceof ClassConstructor ||
+					member instanceof AnnotationMethod ||
+					member instanceof EnumField)
+					throw new StructureDefinitionException(
+						String.format("AQ4q %s", member.getClass()));
+			}
+			
+			// Annotations
+			else if (__structtype == ClassStructureType.ANNOTATION)
+			{
+				// {@squirreljme.error AQ4r An annotation cannot contain a
+				// member represented by the given type. (The class type)}
+				if (!(member instanceof ClassStructure ||
+					member instanceof BasicField ||
+					member instanceof AnnotationMethod))
+					throw new StructureDefinitionException(
+						String.format("AQ4r %s", member.getClass()));
+			}
+			
+			// Normal class or enum
+			else
+			{
+				// {@squirreljme.error AQ4s An class or enum cannot contain a
+				// member represented by the given type. (The class type)}
+				if (member instanceof AnnotationMethod)
+					throw new StructureDefinitionException(
+						String.format("AQ4s %s", member.getClass()));
+			}
+			
+			// Is valid
+			membs.add(member);
+		}
+		
+		// Set
+		this.type = __structtype;
+		this.modifiers = __mods;
+		this.name = __name;
+		this.typeparams = __typeparms;
+		this._extends = doext.<Type>toArray(new Type[doext.size()]);
+		this._implements = doimp.<Type>toArray(new Type[doimp.size()]);
+		this._members = membs.<MemberStructure>toArray(
+			new MemberStructure[membs.size()]);
 	}
 	
 	/**
@@ -236,12 +369,12 @@ public final class ClassStructure
 		
 		// Read type parameters?
 		token = __in.peek();
-		TypeParameter[] typeparms;
+		TypeParameters typeparms;
 		if (structtype.hasTypeParameters() &&
 			token.type() == TokenType.COMPARE_LESS_THAN)
-			typeparms = TypeParameter.parseTypeParameters(__in);
+			typeparms = TypeParameters.parse(__in);
 		else
-			typeparms = new TypeParameter[0];
+			typeparms = new TypeParameters();
 		
 		// Read extends
 		token = __in.peek();
@@ -295,8 +428,13 @@ public final class ClassStructure
 		MemberStructure[] members = ClassStructure.parseClassBody(structtype,
 			__in);
 		
+		// {@squirreljme.error AQ4t Expected closing brace at end of class.}
+		token = __in.next();
+		if (token.type() != TokenType.SYMBOL_CLOSED_BRACE)
+			throw new StructureParseException(token, "AQ4t");
+		
 		// Build class structure
-		return new ClassStructure(structtype, name, typeparms,
+		return new ClassStructure(structtype, __mods, name, typeparms,
 			extending, implementing, members);
 	}
 	
@@ -365,13 +503,13 @@ public final class ClassStructure
 			}
 		
 		// Parse any type parameters which are used
-		TypeParameter[] typeparams;
+		TypeParameters typeparams;
 		token = __in.peek();
 		if (__ct != ClassStructureType.ANNOTATION &&
 			token.type() == TokenType.COMPARE_LESS_THAN)
-			typeparams = TypeParameter.parseTypeParameters(__in);
+			typeparams = TypeParameters.parse(__in);
 		else
-			typeparams = new TypeParameter[0];
+			typeparams = new TypeParameters();
 		
 		// Constructor?
 		token = __in.peek();

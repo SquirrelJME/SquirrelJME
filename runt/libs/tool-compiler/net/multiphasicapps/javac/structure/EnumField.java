@@ -10,22 +10,23 @@
 
 package net.multiphasicapps.javac.structure;
 
+import net.multiphasicapps.classfile.FieldName;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.Token;
 import net.multiphasicapps.javac.token.TokenSource;
 import net.multiphasicapps.javac.token.TokenType;
 
 /**
- * This represents a single type parameter which may be associated with a
- * class or method.
+ * A field which represents an enumeration.
  *
- * @since 2018/04/24
+ * @since 2018/04/30
  */
-public final class TypeParameter
+public final class EnumField
+	implements FieldStructure
 {
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/04/28
+	 * @since 2018/04/30
 	 */
 	@Override
 	public final boolean equals(Object __o)
@@ -35,7 +36,7 @@ public final class TypeParameter
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/04/28
+	 * @since 2018/04/30
 	 */
 	@Override
 	public final int hashCode()
@@ -45,30 +46,31 @@ public final class TypeParameter
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/04/28
+	 * @since 2018/04/30
 	 */
 	@Override
-	public final String toString()
+	public final Modifiers modifiers()
 	{
 		throw new todo.TODO();
 	}
 	
 	/**
-	 * Parses a single type parameter.
-	 *
-	 * @param __in The input tokens.
-	 * @return The parsed type parameter.
-	 * @throws NullPointerException On null arguments.
-	 * @throws StructureParseException If the type parameter could not be
-	 * parsed.
-	 * @since 2018/04/24
+	 * {@inheritDoc}
+	 * @since 2018/04/30
 	 */
-	public static TypeParameter parse(BufferedTokenSource __in)
-		throws NullPointerException, StructureParseException
+	@Override
+	public final FieldName name()
 	{
-		if (__in == null)
-			throw new NullPointerException("NARG");
-		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/04/30
+	 */
+	@Override
+	public final String toString()
+	{
 		throw new todo.TODO();
 	}
 }

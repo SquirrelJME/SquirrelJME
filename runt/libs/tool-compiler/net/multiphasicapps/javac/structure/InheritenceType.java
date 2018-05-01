@@ -28,5 +28,30 @@ public enum InheritenceType
 	
 	/** End. */
 	;
+	
+	/**
+	 * Is the inheritence count valid for the given type?
+	 *
+	 * @param __n The number of inherited elements.
+	 * @return If it is valid or not.
+	 * @since 2018/04/30
+	 */
+	public final boolean isCompatibleCount(int __n)
+	{
+		switch (this)
+		{
+			case NONE:
+				return __n == 0;
+				
+			case SINGLE:
+				return (__n == 0 || __n == 1);
+				
+			case MULTIPLE:
+				return __n >= 0;
+			
+			default:
+				throw new RuntimeException("OOPS");
+		}
+	}
 }
 
