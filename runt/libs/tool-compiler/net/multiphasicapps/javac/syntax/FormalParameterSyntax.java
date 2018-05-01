@@ -44,7 +44,8 @@ public final class FormalParameterSyntax
 	 * @throws SyntaxDefinitionException If the definition is not valid.
 	 * @since 2018/04/30
 	 */
-	public FormalParameterSyntax(ModifiersSyntax __mods, TypeSyntax __type, FieldName __name)
+	public FormalParameterSyntax(ModifiersSyntax __mods, TypeSyntax __type,
+		FieldName __name)
 		throws NullPointerException, SyntaxDefinitionException
 	{
 		if (__mods == null || __type == null || __name == null)

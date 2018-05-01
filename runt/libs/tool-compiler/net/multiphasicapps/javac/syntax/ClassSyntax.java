@@ -68,7 +68,8 @@ public final class ClassSyntax
 	 */
 	public ClassSyntax(ClassSyntaxType __structtype, ModifiersSyntax __mods,
 		ClassIdentifier __name, TypeParametersSyntax __typeparms,
-		TypeSyntax[] __extending, TypeSyntax[] __implementing, MemberSyntax[] __members)
+		TypeSyntax[] __extending, TypeSyntax[] __implementing,
+		MemberSyntax[] __members)
 		throws NullPointerException, SyntaxDefinitionException
 	{
 		if (__structtype == null || __mods == null || __name == null ||
@@ -183,8 +184,10 @@ public final class ClassSyntax
 		this.modifiers = __mods;
 		this.name = __name;
 		this.typeparams = __typeparms;
-		this._extends = doext.<TypeSyntax>toArray(new TypeSyntax[doext.size()]);
-		this._implements = doimp.<TypeSyntax>toArray(new TypeSyntax[doimp.size()]);
+		this._extends = doext.<TypeSyntax>toArray(
+			new TypeSyntax[doext.size()]);
+		this._implements = doimp.<TypeSyntax>toArray(
+			new TypeSyntax[doimp.size()]);
 		this._members = membs.<MemberSyntax>toArray(
 			new MemberSyntax[membs.size()]);
 	}
@@ -491,7 +494,8 @@ public final class ClassSyntax
 			{
 				// Might not be one
 				__in.mark();
-				ClassInitializerSyntax rv = ClassInitializerSyntax.parse(__mods, __in);
+				ClassInitializerSyntax rv = ClassInitializerSyntax.
+					parse(__mods, __in);
 				
 				// Is one
 				__in.commit();
@@ -520,8 +524,8 @@ public final class ClassSyntax
 			{
 				// Could be one
 				__in.mark();
-				ClassConstructorSyntax rv = ClassConstructorSyntax.parse(__mods,
-					typeparams, __in);
+				ClassConstructorSyntax rv = ClassConstructorSyntax.
+					parse(__mods, typeparams, __in);
 				
 				// Is one
 				__in.commit();

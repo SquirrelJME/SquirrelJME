@@ -89,7 +89,8 @@ public final class GenericTypeSyntax
 			throw new NullPointerException("NARG");
 		
 		// There will always be a qualified identifier
-		QualifiedIdentifierSyntax ident = QualifiedIdentifierSyntax.parse(__in);
+		QualifiedIdentifierSyntax ident =
+			QualifiedIdentifierSyntax.parse(__in);
 		
 		// Is there generic type information?
 		Token token = __in.peek();

@@ -87,7 +87,8 @@ public final class QualifiedIdentifierSyntax
 	 * @throws SyntaxParseException If the identifier is not valid.
 	 * @since 2018/04/13
 	 */
-	public static final QualifiedIdentifierSyntax parse(BufferedTokenSource __t)
+	public static final QualifiedIdentifierSyntax parse(
+		BufferedTokenSource __t)
 		throws NullPointerException, SyntaxParseException
 	{
 		if (__t == null)
@@ -130,7 +131,8 @@ public final class QualifiedIdentifierSyntax
 		// Might not be valid
 		try
 		{
-			return new QualifiedIdentifierSyntax(new BinaryName(sb.toString()));
+			return new QualifiedIdentifierSyntax(
+				new BinaryName(sb.toString()));
 		}
 		
 		// {@squirreljme.error AQ3i The specified identifier is not a valid

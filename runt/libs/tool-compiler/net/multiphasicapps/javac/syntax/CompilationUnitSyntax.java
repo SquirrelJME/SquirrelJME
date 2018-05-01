@@ -50,7 +50,8 @@ public final class CompilationUnitSyntax
 	 * valid.
 	 * @since 2018/04/30
 	 */
-	public CompilationUnitSyntax(ModifiersSyntax __pmod, QualifiedIdentifierSyntax __pk)
+	public CompilationUnitSyntax(ModifiersSyntax __pmod,
+		QualifiedIdentifierSyntax __pk)
 		throws NullPointerException, SyntaxDefinitionException
 	{
 		if (__pmod == null || __pk == null)

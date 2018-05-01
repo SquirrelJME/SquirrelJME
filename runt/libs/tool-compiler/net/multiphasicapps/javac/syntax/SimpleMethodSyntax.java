@@ -61,9 +61,10 @@ public final class SimpleMethodSyntax
 	 * @throws SyntaxDefinitionException If the structure is not correct.
 	 * @since 2018/04/30
 	 */
-	public SimpleMethodSyntax(ModifiersSyntax __mods, TypeParametersSyntax __tparms,
-		TypeSyntax __rtype, MethodName __ident, FormalParametersSyntax __params,
-		QualifiedIdentifierSyntax[] __thrown, UnparsedExpressions __code)
+	public SimpleMethodSyntax(ModifiersSyntax __mods,
+		TypeParametersSyntax __tparms, TypeSyntax __rtype, MethodName __ident,
+		FormalParametersSyntax __params, QualifiedIdentifierSyntax[] __thrown,
+		UnparsedExpressions __code)
 		throws NullPointerException, SyntaxDefinitionException
 	{
 		if (__mods == null || __tparms == null || __rtype == null ||
@@ -223,8 +224,8 @@ public final class SimpleMethodSyntax
 			code = UnparsedExpressions.parseBlock(__in);
 		
 		// Initialize simple method
-		return new SimpleMethodSyntax(__mods, __typeparams, returntype, identifier,
-			params, thrown, code);
+		return new SimpleMethodSyntax(__mods, __typeparams, returntype,
+			identifier, params, thrown, code);
 	}
 }
 
