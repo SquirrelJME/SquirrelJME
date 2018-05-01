@@ -29,6 +29,9 @@ public final class UnparsedExpressions
 	/** Tokens which make up the expression. */
 	private final Token[] _tokens;
 	
+	/** The hashcode for these expressions. */
+	private final int _hashcode;
+	
 	/**
 	 * Initializes the unparsed expression.
 	 *
@@ -54,6 +57,7 @@ public final class UnparsedExpressions
 		
 		// Finalize
 		this._tokens = tokens.<Token>toArray(new Token[tokens.size()]);
+		this._hashcode = tokens.hashCode();
 	}
 	
 	/**
@@ -73,7 +77,7 @@ public final class UnparsedExpressions
 	@Override
 	public final int hashCode()
 	{
-		throw new todo.TODO();
+		return this._hashcode;
 	}
 	
 	/**
@@ -84,6 +88,26 @@ public final class UnparsedExpressions
 	public final String toString()
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Parses arguments which are included in a block of parenthesis.
+	 *
+	 * @param __in The input tokens.
+	 * @return The unparsed expressions.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SyntaxParseException If it could not be parsed.
+	 * @since 2018/05/01
+	 */
+	public static UnparsedExpressions parseArguments(BufferedTokenSource __in)
+		throws NullPointerException, SyntaxParseException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		return UnparsedExpressions.stackTypeParse(__in,
+			TokenType.SYMBOL_OPEN_PARENTHESIS,
+			TokenType.SYMBOL_CLOSED_PARENTHESIS);
 	}
 	
 	/**
@@ -101,14 +125,37 @@ public final class UnparsedExpressions
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
+		return UnparsedExpressions.stackTypeParse(__in,
+			TokenType.SYMBOL_OPEN_BRACE, TokenType.SYMBOL_CLOSED_BRACE);
+	}
+	
+	/**
+	 * Parses expressions keeping a stack of which ones that were opened and
+	 * closed.
+	 *
+	 * @param __in The input tokens.
+	 * @param __open The open type.
+	 * @param __close The close type.
+	 * @return The unparsed expressions.
+	 * @since 2018/05/01
+	 */
+	public static UnparsedExpressions stackTypeParse(BufferedTokenSource __in,
+		TokenType __open, TokenType __close)
+		throws NullPointerException, SyntaxParseException
+	{
+		if (__in == null || __open == null || __close == null)
+			throw new NullPointerException("NARG");
+		
 		// Input tokens
 		List<Token> tokens = new LinkedList<>();
 		
-		// {@squirreljme.error AQ48 Expected start of block to start with an
-		// opening brace.}
-		Token token = __in.next();
-		if (token.type() != TokenType.SYMBOL_OPEN_BRACE)
-			throw new SyntaxParseException(token, "AQ48");
+		// {@squirreljme.error AQ48 Expected start of expression to start with
+		// a given symbol. (The expected symbol)}
+		Token token = __in.next(),
+			base = token;
+		if (token.type() != __open)
+			throw new SyntaxParseException(token, String.format("AQ48 %s",
+				__open));
 		tokens.add(token);
 		
 		// Just count braces and such
@@ -116,10 +163,15 @@ public final class UnparsedExpressions
 		{
 			token = __in.next();
 			
+			// {@squirreljme.error AQ4w This token might not have been
+			// closed properly as the end of file was reached.}
+			if (token.type() == TokenType.END_OF_FILE)
+				throw new SyntaxParseException(base, "AQ4w");
+			
 			// Add or remove braces
-			if (token.type() == TokenType.SYMBOL_OPEN_BRACE)
+			else if (token.type() == __open)
 				count++;
-			else if (token.type() == TokenType.SYMBOL_CLOSED_BRACE)
+			else if (token.type() == __close)
 				count--;
 			
 			// Add token always
