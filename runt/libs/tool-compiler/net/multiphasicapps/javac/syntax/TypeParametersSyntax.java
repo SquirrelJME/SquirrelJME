@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.javac.structure;
+package net.multiphasicapps.javac.syntax;
 
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -23,10 +23,10 @@ import net.multiphasicapps.javac.token.TokenType;
  *
  * @since 2018/04/30
  */
-public final class TypeParameters
+public final class TypeParametersSyntax
 {
 	/** Type parameters used. */
-	private final TypeParameter[] _params;
+	private final TypeParameterSyntax[] _params;
 	
 	/**
 	 * Initializes the type parameters.
@@ -35,10 +35,10 @@ public final class TypeParameters
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/04/30
 	 */
-	public TypeParameters(TypeParameter... __t)
+	public TypeParametersSyntax(TypeParameterSyntax... __t)
 		throws NullPointerException
 	{
-		this(Arrays.<TypeParameter>asList((__t == null ? new TypeParameter[0] :
+		this(Arrays.<TypeParameterSyntax>asList((__t == null ? new TypeParameterSyntax[0] :
 			__t)));
 	}
 	
@@ -49,14 +49,14 @@ public final class TypeParameters
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/04/30
 	 */
-	public TypeParameters(Iterable<TypeParameter> __t)
+	public TypeParametersSyntax(Iterable<TypeParameterSyntax> __t)
 		throws NullPointerException
 	{
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		List<TypeParameter> params = new ArrayList<>();
-		for (TypeParameter t : __t)
+		List<TypeParameterSyntax> params = new ArrayList<>();
+		for (TypeParameterSyntax t : __t)
 		{
 			if (__t == null)
 				throw new NullPointerException("NARG");
@@ -64,8 +64,8 @@ public final class TypeParameters
 			params.add(t);
 		}
 		
-		this._params = params.<TypeParameter>toArray(
-			new TypeParameter[params.size()]);
+		this._params = params.<TypeParameterSyntax>toArray(
+			new TypeParameterSyntax[params.size()]);
 	}
 	
 	/**
@@ -104,12 +104,12 @@ public final class TypeParameters
 	 * @param __in The input tokens.
 	 * @return The parsed type parameters.
 	 * @throws NullPointerException On null arguments.
-	 * @throws StructureParseException If the type parameters could not be
+	 * @throws SyntaxParseException If the type parameters could not be
 	 * parsed.
 	 * @since 2018/04/24
 	 */
-	public static TypeParameters parse(BufferedTokenSource __in)
-		throws NullPointerException, StructureParseException
+	public static TypeParametersSyntax parse(BufferedTokenSource __in)
+		throws NullPointerException, SyntaxParseException
 	{
 		if (__in == null)
 			throw new NullPointerException("NARG");

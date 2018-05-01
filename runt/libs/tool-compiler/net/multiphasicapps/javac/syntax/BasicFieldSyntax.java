@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.javac.structure;
+package net.multiphasicapps.javac.syntax;
 
 import net.multiphasicapps.classfile.FieldName;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
@@ -21,8 +21,8 @@ import net.multiphasicapps.javac.token.TokenType;
  *
  * @since 2018/04/28
  */
-public final class BasicField
-	implements FieldStructure
+public final class BasicFieldSyntax
+	implements FieldSyntax
 {
 	/**
 	 * {@inheritDoc}
@@ -49,7 +49,7 @@ public final class BasicField
 	 * @since 2018/04/29
 	 */
 	@Override
-	public final Modifiers modifiers()
+	public final ModifiersSyntax modifiers()
 	{
 		throw new todo.TODO();
 	}
@@ -81,12 +81,12 @@ public final class BasicField
 	 * @param __in The input tokens.
 	 * @return The parsed field.
 	 * @throws NullPointerException On null arguments.
-	 * @throws StructureParseException If it is not a valid field.
+	 * @throws SyntaxParseException If it is not a valid field.
 	 * @since 2018/04/28
 	 */
-	public static BasicField parse(Modifiers __mods,
+	public static BasicFieldSyntax parse(ModifiersSyntax __mods,
 		BufferedTokenSource __in)
-		throws NullPointerException, StructureParseException
+		throws NullPointerException, SyntaxParseException
 	{
 		if (__mods == null || __in == null)
 			throw new NullPointerException("NARG");

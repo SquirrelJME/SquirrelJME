@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.javac.structure;
+package net.multiphasicapps.javac.syntax;
 
 import net.multiphasicapps.javac.CompilerException;
 import net.multiphasicapps.javac.LocationAware;
@@ -19,7 +19,7 @@ import net.multiphasicapps.javac.LocationAware;
  *
  * @since 2018/04/21
  */
-public class StructureParseException
+public class SyntaxParseException
 	extends CompilerException
 {
 	/**
@@ -27,7 +27,7 @@ public class StructureParseException
 	 *
 	 * @since 2018/04/21
 	 */
-	public StructureParseException()
+	public SyntaxParseException()
 	{
 	}
 	
@@ -37,7 +37,7 @@ public class StructureParseException
 	 * @param __m The message.
 	 * @since 2018/04/21
 	 */
-	public StructureParseException(String __m)
+	public SyntaxParseException(String __m)
 	{
 		super(__m);
 	}
@@ -49,7 +49,7 @@ public class StructureParseException
 	 * @param __c The cause.
 	 * @since 2018/04/21
 	 */
-	public StructureParseException(String __m, Throwable __c)
+	public SyntaxParseException(String __m, Throwable __c)
 	{
 		super(__m, __c);
 	}
@@ -60,7 +60,7 @@ public class StructureParseException
 	 * @param __c The cause.
 	 * @since 2018/04/21
 	 */
-	public StructureParseException(Throwable __c)
+	public SyntaxParseException(Throwable __c)
 	{
 		super(__c);
 	}
@@ -71,7 +71,7 @@ public class StructureParseException
 	 * @param __la Location awareness information.
 	 * @since 2018/04/21
 	 */
-	public StructureParseException(LocationAware __la)
+	public SyntaxParseException(LocationAware __la)
 	{
 		super(__la);
 	}
@@ -83,7 +83,7 @@ public class StructureParseException
 	 * @param __m The message.
 	 * @since 2018/04/21
 	 */
-	public StructureParseException(LocationAware __la, String __m)
+	public SyntaxParseException(LocationAware __la, String __m)
 	{
 		super(__la, __m);
 	}
@@ -96,7 +96,7 @@ public class StructureParseException
 	 * @param __c The cause.
 	 * @since 2018/04/21
 	 */
-	public StructureParseException(LocationAware __la, String __m,
+	public SyntaxParseException(LocationAware __la, String __m,
 		Throwable __c)
 	{
 		super(__la, __m, __c);
@@ -109,7 +109,7 @@ public class StructureParseException
 	 * @param __c The cause.
 	 * @since 2018/04/21
 	 */
-	public StructureParseException(LocationAware __la, Throwable __c)
+	public SyntaxParseException(LocationAware __la, Throwable __c)
 	{
 		super(__la, __c);
 	}

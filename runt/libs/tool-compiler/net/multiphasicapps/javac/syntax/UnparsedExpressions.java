@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.javac.structure;
+package net.multiphasicapps.javac.syntax;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -92,11 +92,11 @@ public final class UnparsedExpressions
 	 * @param __in The input tokens.
 	 * @return The unparsed expressions.
 	 * @throws NullPointerException On null arguments.
-	 * @throws StructureParseException If the block is not valid.
+	 * @throws SyntaxParseException If the block is not valid.
 	 * @since 2018/04/28
 	 */
 	public static UnparsedExpressions parseBlock(BufferedTokenSource __in)
-		throws NullPointerException, StructureParseException
+		throws NullPointerException, SyntaxParseException
 	{
 		if (__in == null)
 			throw new NullPointerException("NARG");
@@ -108,7 +108,7 @@ public final class UnparsedExpressions
 		// opening brace.}
 		Token token = __in.next();
 		if (token.type() != TokenType.SYMBOL_OPEN_BRACE)
-			throw new StructureParseException(token, "AQ48");
+			throw new SyntaxParseException(token, "AQ48");
 		tokens.add(token);
 		
 		// Just count braces and such

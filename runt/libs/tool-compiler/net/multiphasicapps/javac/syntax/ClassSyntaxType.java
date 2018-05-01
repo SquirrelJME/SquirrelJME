@@ -8,14 +8,14 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.javac.structure;
+package net.multiphasicapps.javac.syntax;
 
 /**
  * This represents the type of class.
  *
  * @since 2018/04/21
  */
-public enum ClassStructureType
+public enum ClassSyntaxType
 {
 	/** Normal class. */
 	CLASS,
@@ -38,13 +38,13 @@ public enum ClassStructureType
 	 * @return The inheritence type used for extends.
 	 * @since 2018/04/24
 	 */
-	public final InheritenceType extendsType()
+	public final InheritenceTypeSyntax extendsType()
 	{
 		if (this == CLASS)
-			return InheritenceType.SINGLE;
+			return InheritenceTypeSyntax.SINGLE;
 		else if (this == INTERFACE)
-			return InheritenceType.MULTIPLE;
-		return InheritenceType.NONE;
+			return InheritenceTypeSyntax.MULTIPLE;
+		return InheritenceTypeSyntax.NONE;
 	}
 	
 	/**
@@ -64,11 +64,11 @@ public enum ClassStructureType
 	 * @return The inheritence type for implements.
 	 * @since 2018/04/24
 	 */
-	public final InheritenceType implementsType()
+	public final InheritenceTypeSyntax implementsType()
 	{
 		if (this == CLASS || this == ENUM)
-			return InheritenceType.MULTIPLE;
-		return InheritenceType.NONE;
+			return InheritenceTypeSyntax.MULTIPLE;
+		return InheritenceTypeSyntax.NONE;
 	}
 }
 

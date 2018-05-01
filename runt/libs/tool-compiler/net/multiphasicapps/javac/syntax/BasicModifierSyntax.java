@@ -8,15 +8,15 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.javac.structure;
+package net.multiphasicapps.javac.syntax;
 
 /**
  * This represents a basic modifier.
  *
  * @since 2018/04/21
  */
-public enum BasicModifier
-	implements Modifier
+public enum BasicModifierSyntax
+	implements ModifierSyntax
 {
 	/** Public access. */
 	PUBLIC,

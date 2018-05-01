@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.javac.structure;
+package net.multiphasicapps.javac.syntax;
 
 import net.multiphasicapps.classfile.Identifier;
 
@@ -17,7 +17,7 @@ import net.multiphasicapps.classfile.Identifier;
  *
  * @since 2018/04/27
  */
-public interface MemberStructure
+public interface MemberSyntax
 {
 	/**
 	 * Returns the modifiers for the member.
@@ -25,7 +25,7 @@ public interface MemberStructure
 	 * @return The member modifiers.
 	 * @since 2018/04/29
 	 */
-	public abstract Modifiers modifiers();
+	public abstract ModifiersSyntax modifiers();
 	
 	/**
 	 * Returns the name of the member.

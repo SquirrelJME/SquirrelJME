@@ -8,14 +8,14 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.javac.structure;
+package net.multiphasicapps.javac.syntax;
 
 /**
  * This represents the inheritence type of some class structures.
  *
  * @since 2018/04/24
  */
-public enum InheritenceType
+public enum InheritenceTypeSyntax
 {
 	/** No inheritence. */
 	NONE,

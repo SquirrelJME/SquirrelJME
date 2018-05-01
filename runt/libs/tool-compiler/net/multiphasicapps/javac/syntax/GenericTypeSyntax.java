@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.javac.structure;
+package net.multiphasicapps.javac.syntax;
 
 import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.Token;
@@ -21,11 +21,11 @@ import net.multiphasicapps.javac.token.TokenType;
  *
  * @since 2018/04/30
  */
-public final class GenericType
-	implements SimpleType
+public final class GenericTypeSyntax
+	implements SimpleTypeSyntax
 {
 	/** The identifier. */
-	protected final QualifiedIdentifier identifier;
+	protected final QualifiedIdentifierSyntax identifier;
 	
 	/**
 	 * Initializes the generic type with no generic information.
@@ -34,7 +34,7 @@ public final class GenericType
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/04/30
 	 */
-	public GenericType(QualifiedIdentifier __id)
+	public GenericTypeSyntax(QualifiedIdentifierSyntax __id)
 		throws NullPointerException
 	{
 		if (__id == null)
@@ -79,17 +79,17 @@ public final class GenericType
 	 * @param __in The input token source.
 	 * @return The generic type.
 	 * @throws NullPointerException On null arguments.
-	 * @throws StructureParseException If the generic type is not valid.
+	 * @throws SyntaxParseException If the generic type is not valid.
 	 * @since 2018/04/30
 	 */
-	public static GenericType parse(BufferedTokenSource __in)
-		throws NullPointerException, StructureParseException
+	public static GenericTypeSyntax parse(BufferedTokenSource __in)
+		throws NullPointerException, SyntaxParseException
 	{
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
 		// There will always be a qualified identifier
-		QualifiedIdentifier ident = QualifiedIdentifier.parse(__in);
+		QualifiedIdentifierSyntax ident = QualifiedIdentifierSyntax.parse(__in);
 		
 		// Is there generic type information?
 		Token token = __in.peek();
@@ -97,7 +97,7 @@ public final class GenericType
 			throw new todo.TODO();
 		
 		// Just a plain type
-		return new GenericType(ident);
+		return new GenericTypeSyntax(ident);
 	}
 }
 

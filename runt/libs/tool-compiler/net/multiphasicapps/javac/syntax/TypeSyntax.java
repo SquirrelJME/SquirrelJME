@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.javac.structure;
+package net.multiphasicapps.javac.syntax;
 
 import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.Token;
@@ -20,14 +20,14 @@ import net.multiphasicapps.javac.token.TokenType;
  *
  * @since 2018/04/24
  */
-public final class Type
+public final class TypeSyntax
 {
 	/** The void type. */
-	public static final Type VOID =
-		new Type(VoidType.VOID, 0);
+	public static final TypeSyntax VOID =
+		new TypeSyntax(VoidTypeSyntax.VOID, 0);
 	
 	/** The simple type used. */
-	protected final SimpleType simpletype;
+	protected final SimpleTypeSyntax simpletype;
 	
 	/** The dimensions. */
 	protected final int dimensions;
@@ -42,13 +42,13 @@ public final class Type
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/04/30
 	 */
-	public Type(SimpleType __st, int __dims)
+	public TypeSyntax(SimpleTypeSyntax __st, int __dims)
 		throws IllegalArgumentException, NullPointerException
 	{
 		if (__st == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AQ4c Type cannot have negative dimensions.}
+		// {@squirreljme.error AQ4c TypeSyntax cannot have negative dimensions.}
 		if (__dims < 0)
 			throw new IllegalArgumentException("AQ4c");
 		
@@ -105,7 +105,7 @@ public final class Type
 	 * @throws IllegalArgumentException If the dimension count is negative.
 	 * @since 2018/04/29
 	 */
-	public final Type withDimensions(int __d)
+	public final TypeSyntax withDimensions(int __d)
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error AQ4e Cannot initialize type with a negative
@@ -122,63 +122,63 @@ public final class Type
 	 * @param __in The input token source.
 	 * @return The parsed type.
 	 * @throws NullPointerException On null arguments.
-	 * @throws StructureParseException If the type is not valid.
+	 * @throws SyntaxParseException If the type is not valid.
 	 * @since 2018/04/24
 	 */
-	public static Type parseType(BufferedTokenSource __in)
-		throws NullPointerException, StructureParseException
+	public static TypeSyntax parseType(BufferedTokenSource __in)
+		throws NullPointerException, SyntaxParseException
 	{
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
 		// Determine the simple type
 		Token token = __in.peek();
-		SimpleType simple;
+		SimpleTypeSyntax simple;
 		switch (token.type())
 		{
 			case KEYWORD_BYTE:
-				simple = BasicType.BYTE;
+				simple = BasicTypeSyntax.BYTE;
 				__in.next();
 				break;
 				
 			case KEYWORD_SHORT:
-				simple = BasicType.SHORT;
+				simple = BasicTypeSyntax.SHORT;
 				__in.next();
 				break;
 				
 			case KEYWORD_CHAR:
-				simple = BasicType.CHARACTER;
+				simple = BasicTypeSyntax.CHARACTER;
 				__in.next();
 				break;
 				
 			case KEYWORD_INT:
-				simple = BasicType.INTEGER;
+				simple = BasicTypeSyntax.INTEGER;
 				__in.next();
 				break;
 				
 			case KEYWORD_LONG:
-				simple = BasicType.LONG;
+				simple = BasicTypeSyntax.LONG;
 				__in.next();
 				break;
 				
 			case KEYWORD_FLOAT:
-				simple = BasicType.FLOAT;
+				simple = BasicTypeSyntax.FLOAT;
 				__in.next();
 				break;
 				
 			case KEYWORD_DOUBLE:
-				simple = BasicType.DOUBLE;
+				simple = BasicTypeSyntax.DOUBLE;
 				__in.next();
 				break;
 			
 				// Probably class or method handler
 			case IDENTIFIER:
-				simple = GenericType.parse(__in);
+				simple = GenericTypeSyntax.parse(__in);
 				break;
 			
 				// {@squirreljme.error AQ4b Invalid type.}
 			default:
-				throw new StructureParseException(token, "AQ4b");
+				throw new SyntaxParseException(token, "AQ4b");
 		}
 		
 		// Handle dimensions
@@ -191,12 +191,12 @@ public final class Type
 			// opening bracket when declaring type.}
 			token = __in.next();
 			if (token.type() != TokenType.SYMBOL_CLOSED_BRACKET)
-				throw new StructureParseException(token, "AQ4d");
+				throw new SyntaxParseException(token, "AQ4d");
 			dims++;
 		}
 		
 		// Build type
-		return new Type(simple, dims);
+		return new TypeSyntax(simple, dims);
 	}
 	
 	/**
@@ -205,11 +205,11 @@ public final class Type
 	 * @param __in The input token source.
 	 * @return The parsed types.
 	 * @throws NullPointerException On null arguments.
-	 * @throws StructureParseException If the types are not valid.
+	 * @throws SyntaxParseException If the types are not valid.
 	 * @since 2018/04/24
 	 */
-	public static Type[] parseTypes(BufferedTokenSource __in)
-		throws NullPointerException, StructureParseException
+	public static TypeSyntax[] parseTypes(BufferedTokenSource __in)
+		throws NullPointerException, SyntaxParseException
 	{
 		if (__in == null)
 			throw new NullPointerException("NARG");

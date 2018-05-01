@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.javac.structure;
+package net.multiphasicapps.javac.syntax;
 
 import net.multiphasicapps.javac.CompilerException;
 import net.multiphasicapps.javac.LocationAware;
@@ -18,7 +18,7 @@ import net.multiphasicapps.javac.LocationAware;
  *
  * @since 2018/04/30
  */
-public class StructureDefinitionException
+public class SyntaxDefinitionException
 	extends CompilerException
 {
 	/**
@@ -26,7 +26,7 @@ public class StructureDefinitionException
 	 *
 	 * @since 2018/04/30
 	 */
-	public StructureDefinitionException()
+	public SyntaxDefinitionException()
 	{
 	}
 	
@@ -36,7 +36,7 @@ public class StructureDefinitionException
 	 * @param __m The message.
 	 * @since 2018/04/30
 	 */
-	public StructureDefinitionException(String __m)
+	public SyntaxDefinitionException(String __m)
 	{
 		super(__m);
 	}
@@ -48,7 +48,7 @@ public class StructureDefinitionException
 	 * @param __c The cause.
 	 * @since 2018/04/30
 	 */
-	public StructureDefinitionException(String __m, Throwable __c)
+	public SyntaxDefinitionException(String __m, Throwable __c)
 	{
 		super(__m, __c);
 	}
@@ -59,7 +59,7 @@ public class StructureDefinitionException
 	 * @param __c The cause.
 	 * @since 2018/04/30
 	 */
-	public StructureDefinitionException(Throwable __c)
+	public SyntaxDefinitionException(Throwable __c)
 	{
 		super(__c);
 	}
@@ -70,7 +70,7 @@ public class StructureDefinitionException
 	 * @param __la Location awareness information.
 	 * @since 2018/04/30
 	 */
-	public StructureDefinitionException(LocationAware __la)
+	public SyntaxDefinitionException(LocationAware __la)
 	{
 		super(__la);
 	}
@@ -82,7 +82,7 @@ public class StructureDefinitionException
 	 * @param __m The message.
 	 * @since 2018/04/30
 	 */
-	public StructureDefinitionException(LocationAware __la, String __m)
+	public SyntaxDefinitionException(LocationAware __la, String __m)
 	{
 		super(__la, __m);
 	}
@@ -95,7 +95,7 @@ public class StructureDefinitionException
 	 * @param __c The cause.
 	 * @since 2018/04/30
 	 */
-	public StructureDefinitionException(LocationAware __la, String __m,
+	public SyntaxDefinitionException(LocationAware __la, String __m,
 		Throwable __c)
 	{
 		super(__la, __m, __c);
@@ -108,7 +108,7 @@ public class StructureDefinitionException
 	 * @param __c The cause.
 	 * @since 2018/04/30
 	 */
-	public StructureDefinitionException(LocationAware __la, Throwable __c)
+	public SyntaxDefinitionException(LocationAware __la, Throwable __c)
 	{
 		super(__la, __c);
 	}
