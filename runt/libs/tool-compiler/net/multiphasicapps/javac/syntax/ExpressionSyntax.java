@@ -22,7 +22,7 @@ import net.multiphasicapps.javac.token.TokenType;
  * @since 2018/05/01
  */
 public final class ExpressionSyntax
-	implements SubExpressionSyntax
+	implements AnnotationValueSyntax, SubExpressionSyntax
 {
 	/**
 	 * Initializes the expression with the given sub-expressions.
@@ -93,7 +93,71 @@ public final class ExpressionSyntax
 	 * @throws SyntaxParseException If the expression is not valid.
 	 * @since 2018/05/01
 	 */
-	public static AnnotationSyntax parse(BufferedTokenSource __in)
+	public static ExpressionSyntax parse(BufferedTokenSource __in)
+		throws NullPointerException, SyntaxParseException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		// Starts with expression one
+		ExpressionSyntax one = ExpressionSyntax.__parseExpression1(__in);
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Parses an expression one syntax.
+	 *
+	 * @param __in The input tokens.
+	 * @return The expression one syntax.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SyntaxParseException If it is not a valid expression one syntax.
+	 * @since 2018/05/02
+	 */
+	static ExpressionSyntax __parseExpression1(BufferedTokenSource __in)
+		throws NullPointerException, SyntaxParseException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		// Starts with expression two
+		ExpressionSyntax two = ExpressionSyntax.__parseExpression2(__in);
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Parses an expression two syntax.
+	 *
+	 * @param __in The input tokens.
+	 * @return The expression two syntax.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SyntaxParseException If it is not a valid expression two syntax.
+	 * @since 2018/05/02
+	 */
+	static ExpressionSyntax __parseExpression2(BufferedTokenSource __in)
+		throws NullPointerException, SyntaxParseException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		// Starts with expression three
+		ExpressionSyntax three = ExpressionSyntax.__parseExpression3(__in);
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Parses an expression three syntax.
+	 *
+	 * @param __in The input tokens.
+	 * @return The expression three syntax.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SyntaxParseException If it is not a valid expression three
+	 * syntax.
+	 * @since 2018/05/02
+	 */
+	static ExpressionSyntax __parseExpression3(BufferedTokenSource __in)
 		throws NullPointerException, SyntaxParseException
 	{
 		if (__in == null)
