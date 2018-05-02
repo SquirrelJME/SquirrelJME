@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.javac.syntax;
 
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.Token;
@@ -22,48 +25,48 @@ import net.multiphasicapps.javac.token.TokenType;
  * @since 2018/04/21
  */
 public final class AnnotationSyntax
-	implements ModifierSyntax
+	implements AnnotationValueSyntax, ModifierSyntax
 {
 	/** The identifier which identifies the annotation. */
 	protected final QualifiedIdentifierSyntax identifier;
 	
-	/** The expressions which make up the annotation. */
-	protected final UnparsedExpressions arguments;
+	/** The parameters to the annotation */
+	private final AnnotationValueSyntax[] _values;
 	
 	/**
 	 * Initializes the annotation which is just a marker.
 	 *
 	 * @param __qi The identifier used to identify the annotation.
+	 * @param __values The values to the annotation.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/05/01
 	 */
-	public AnnotationSyntax(QualifiedIdentifierSyntax __qi)
+	public AnnotationSyntax(QualifiedIdentifierSyntax __qi,
+		AnnotationValueSyntax... __values)
 		throws NullPointerException
 	{
-		if (__qi == null)
-			throw new NullPointerException("NARG");
-		
-		this.identifier = __qi;
-		this.arguments = null;
+		this(__qi, Arrays.<AnnotationValueSyntax>asList(
+			(__values == null ? new AnnotationValueSyntax[0] : __values)));
 	}
 	
 	/**
 	 * Initializes the annotation which contains the given unparsed arguments.
 	 *
 	 * @param __qi The identifier used to identify the annotation.
-	 * @param __ue The unparsed expression.
+	 * @param __values The values to the annotation.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/05/01
 	 */
 	public AnnotationSyntax(QualifiedIdentifierSyntax __qi,
-		UnparsedExpressions __ue)
+		Iterable<AnnotationValueSyntax> __values)
 		throws NullPointerException
 	{
-		if (__qi == null || __ue == null)
+		if (__qi == null || __values == null)
 			throw new NullPointerException("NARG");
 		
 		this.identifier = __qi;
-		this.arguments = __ue;
+		
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -83,8 +86,7 @@ public final class AnnotationSyntax
 	@Override
 	public final int hashCode()
 	{
-		return this.identifier.hashCode() ^
-			Objects.hashCode(this.arguments);
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -126,9 +128,113 @@ public final class AnnotationSyntax
 		if (token.type() != TokenType.SYMBOL_OPEN_PARENTHESIS)
 			return new AnnotationSyntax(qi);
 		
-		// Just read the parenthesis block
-		return new AnnotationSyntax(qi,
-			UnparsedExpressions.parseArguments(__in));
+		// Consume token, not needed
+		__in.next();
+		
+		// Quick check to see if there are no values to parse
+		token = __in.peek();
+		if (token.type() == TokenType.SYMBOL_CLOSED_PARENTHESIS)
+		{
+			__in.next();
+			return new AnnotationSyntax(qi);
+		}
+		
+		// Annotations may now have values so handle them accordingly
+		List<AnnotationValueSyntax> values = new ArrayList<>();
+		for (;;)
+		{
+			// Read single annotation value
+			values.add(AnnotationSyntax.parseValue(__in));
+			
+			// No more values?
+			token = __in.peek();
+			if (token.type() == TokenType.SYMBOL_CLOSED_PARENTHESIS)
+			{
+				__in.next();
+				break;
+			}
+			
+			// Reading more of them
+			else if (token.type() == TokenType.SYMBOL_COMMA)
+				continue;
+			
+			// {@squirreljme.error AQ4x Expected comma or closing parenthesis
+			// at end of annotation expression.}
+			else
+				throw new SyntaxParseException(token, "AQ4x");
+		}
+		
+		// Build annotation
+		return new AnnotationSyntax(qi, values);
 	}
+	
+	/**
+	 * This parses a single value.
+	 *
+	 * @param __in The input token source.
+	 * @return The parsed value.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SyntaxParseException If the value is not valid.
+	 * @since 2018/05/02
+	 */
+	public static AnnotationValueSyntax parseValue(BufferedTokenSource __in)
+		throws NullPointerException, SyntaxParseException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		Token token = __in.peek();
+		
+		// Recursive read of annotation argument
+		if (token.type() == TokenType.SYMBOL_AT)
+			return AnnotationSyntax.parse(__in);
+		
+		// Is a kind of array
+		else if (token.type() == TokenType.SYMBOL_OPEN_BRACE)
+		{
+			// Consume that
+			__in.next();
+			
+			// Quick end of array value?
+			token = __in.peek();
+			if (token.type() == TokenType.SYMBOL_CLOSED_BRACE)
+			{
+				__in.next();
+				return new AnnotationArrayValueSyntax();
+			}
+			
+			// Read in values
+			List<AnnotationValueSyntax> values = new ArrayList<>();
+			for (;;)
+			{
+				// Read in next value
+				values.add(AnnotationSyntax.parseValue(__in));
+				
+				// Stop parsing?
+				token = __in.peek();
+				if (token.type() == TokenType.SYMBOL_CLOSED_BRACE)
+				{
+					__in.next();
+					break;
+				}
+				
+				// Continue
+				else if (token.type() == TokenType.SYMBOL_COMMA)
+					continue;
+				
+				// {@squirreljme.error AQ4y Expected comma or closing brace
+				// after annotation value.}
+				else
+					throw new SyntaxParseException(token, "AQ4y");
+			}
+			
+			// Finish values
+			return new AnnotationArrayValueSyntax(values);
+		}
+		
+		// Normal expression
+		else
+			 return ExpressionSyntax.parse(__in);
+	}	
 }
 
