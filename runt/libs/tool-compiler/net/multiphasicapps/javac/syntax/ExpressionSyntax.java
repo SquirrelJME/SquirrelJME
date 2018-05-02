@@ -253,7 +253,7 @@ public final class ExpressionSyntax
 			ExpressionSyntax third = ExpressionSyntax.__parseExpression3(__in);
 			
 			// Build expression
-			throw new todo.TODO();
+			return new ExpressionSyntax(what, third);
 		}
 		
 		throw new todo.TODO();
