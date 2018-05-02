@@ -1,0 +1,39 @@
+# 2018/05/01
+
+## 16:09
+
+Okay now the classes have been renamed and all of that so for the most part
+everything is under syntax. I am not going to worry about laying out and
+handling the structures until I can get the annotations parsed and at least
+the file with tests parsing correctly. But once that is done I will need to
+process all of the syntax and setup symbols and such resolving everything
+that is needed to make sense of what is what. Once I have that I can just
+look at that information rather than needing to compile it for now. However
+I would have the bulk part of the compiler done (probably the biggest
+portion) and the actual compiler part would just be parsing expressions and
+making class files and such. So just to make the test system work I have
+perhaps half the compiler completed. At least with the syntax parser having
+a bunch of checks it will make it easier to write the compiler since it
+does not have to check everything out and such.
+
+## 21:54
+
+I should setup tests for the compiler in its own protected namespace and such.
+
+## 22:11
+
+Okay so I need to actually parse expressions because annotations can contain
+actual expressions and such. Hopefully expressions are not that complex at all
+because that could be a bit complicated. However the expression tree should be
+completely within the grammar so the expression handlers.
+
+## 22:44
+
+Expressions are recursive so I think the best thing to do would be to have
+multiple methods for parsing expression types and having a large number of
+sub-classes. I just need to figure out a way to form the expressions and such
+together. I do wonder though if order of operations is handled, well not quite
+but an expression will contain a list of expressions although that could be
+a bit complex. Perhaps though what I need is a sub-expression. Expressions
+contain sub-expressions, but an expression can be a sub-expression. I think
+that would work out the best way as there can be various expression types.
