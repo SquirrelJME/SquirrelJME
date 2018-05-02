@@ -10,48 +10,31 @@
 
 package net.multiphasicapps.javac.syntax;
 
-import java.util.Arrays;
-
 /**
- * This represents an annotation value that represents multiple values in an
- * array.
+ * Represents an expression that is acting as a cast.
  *
  * @since 2018/05/02
  */
-public final class AnnotationArrayValueSyntax
-	implements AnnotationValueSyntax
+public final class ExpressionCastSyntax
+	implements SubExpressionSyntax
 {
-	/** The value which make up this value. */
-	private final AnnotationValueSyntax[] _value;
+	/** The type to cast to. */
+	protected final TypeSyntax type;
 	
 	/**
-	 * Initializes the array value annotation.
+	 * Initializes the cast expression.
 	 *
-	 * @param __v The values which make up the annotation.
+	 * @param __type The type used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/05/02
 	 */
-	public AnnotationArrayValueSyntax(AnnotationValueSyntax... __v)
+	public ExpressionCastSyntax(TypeSyntax __type)
 		throws NullPointerException
 	{
-		this(Arrays.<AnnotationValueSyntax>asList((__v == null ?
-			new AnnotationValueSyntax[0] : __v)));
-	}
-	
-	/**
-	 * Initializes the array value annotation.
-	 *
-	 * @param __v The values which make up the annotation.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/05/02
-	 */
-	public AnnotationArrayValueSyntax(Iterable<AnnotationValueSyntax> __v)
-		throws NullPointerException
-	{
-		if (__v == null)
+		if (__type == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		this.type = __type;
 	}
 	
 	/**

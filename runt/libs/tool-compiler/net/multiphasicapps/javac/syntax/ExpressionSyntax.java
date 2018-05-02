@@ -163,6 +163,99 @@ public final class ExpressionSyntax
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
+		Token token = __in.peek();
+		
+		// Determine if this is a prefix operation
+		PrefixOperatorSyntax prefix;
+		switch (token.type())
+		{
+			case OPERATOR_INCREMENT:
+				prefix = PrefixOperatorSyntax.INCREMENT;
+				break;
+			
+			case OPERATOR_DECREMENT:
+				prefix = PrefixOperatorSyntax.DECREMENT;
+				break;
+			
+			case OPERATOR_NOT:
+				prefix = PrefixOperatorSyntax.NOT;
+				break;
+			
+			case OPERATOR_COMPLEMENT:
+				prefix = PrefixOperatorSyntax.ONES_COMPLEMENT;
+				break;
+			
+			case OPERATOR_PLUS:
+				prefix = PrefixOperatorSyntax.POSITIVE;
+				break;
+			
+			case OPERATOR_MINUS:
+				prefix = PrefixOperatorSyntax.NEGATIVE;
+				break;
+			
+			default:
+				prefix = null;
+				break;
+		}
+		
+		// If it is one it will be the prefix and this expression type again
+		if (prefix != null)
+		{
+			__in.next();
+			return new ExpressionSyntax(prefix,
+				ExpressionSyntax.__parseExpression3(__in));
+		}
+		
+		// Will be an expression in a parenthesis or a kind of cast operation
+		token = __in.peek();
+		if (token.type() == TokenType.SYMBOL_OPEN_PARENTHESIS)
+		{
+			// Consume that
+			__in.next();
+			
+			// Try to read it as a type, making it a cast
+			try
+			{
+				__in.mark();
+				TypeSyntax cast = TypeSyntax.parseType(__in);
+				
+				// {@squirreljme.error AQ4z Expected closing parenthesis to
+				// follow cast.}
+				token = __in.next();
+				if (token.type() != TokenType.SYMBOL_CLOSED_PARENTHESIS)
+					throw new SyntaxParseException(token, "AQ4z");
+				
+				// Read another third expression
+				ExpressionSyntax third =
+					ExpressionSyntax.__parseExpression3(__in);
+				
+				// Is valid
+				__in.commit();
+				return new ExpressionSyntax(new ExpressionCastSyntax(cast),
+					third);
+			}
+			catch (SyntaxParseException e)
+			{
+				__in.reset();
+			}
+			
+			// It failed to read as a type so then it is some kind of
+			// expression in the middle of parenthesis
+			ExpressionSyntax what = ExpressionSyntax.parse(__in);
+			
+			// {@squirreljme.error AQ50 Expected closing parenthesis to follow
+			// expression in parenthesis.}
+			token = __in.next();
+			if (token.type() != TokenType.SYMBOL_CLOSED_PARENTHESIS)
+				throw new SyntaxParseException(token, "AQ50");
+			
+			// Read another third expression
+			ExpressionSyntax third = ExpressionSyntax.__parseExpression3(__in);
+			
+			// Build expression
+			throw new todo.TODO();
+		}
+		
 		throw new todo.TODO();
 	}
 }
