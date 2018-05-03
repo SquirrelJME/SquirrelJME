@@ -43,7 +43,14 @@ public final class IdentifierSyntax
 	@Override
 	public final boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		if (__o == this)
+			return true;
+		
+		if (!(__o instanceof IdentifierSyntax))
+			return false;
+		
+		IdentifierSyntax o = (IdentifierSyntax)__o;
+		return this.string.equals(o.string);
 	}
 	
 	/**
@@ -53,7 +60,7 @@ public final class IdentifierSyntax
 	@Override
 	public final int hashCode()
 	{
-		throw new todo.TODO();
+		return this.string.hashCode();
 	}
 	
 	/**

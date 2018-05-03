@@ -73,7 +73,14 @@ public final class AnnotationArrayValueSyntax
 	@Override
 	public final boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		if (__o == this)
+			return true;
+		
+		if (!(__o instanceof AnnotationArrayValueSyntax))
+			return false;
+		
+		AnnotationArrayValueSyntax o = (AnnotationArrayValueSyntax)__o;
+		return Arrays.equals(this._values, o._values);
 	}
 	
 	/**
@@ -83,7 +90,10 @@ public final class AnnotationArrayValueSyntax
 	@Override
 	public final int hashCode()
 	{
-		throw new todo.TODO();
+		int hash = 0;
+		for (Object v : this._values)
+			hash ^= v.hashCode();
+		return hash;
 	}
 	
 	/**

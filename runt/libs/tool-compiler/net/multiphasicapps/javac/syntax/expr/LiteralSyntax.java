@@ -45,7 +45,14 @@ public final class LiteralSyntax
 	@Override
 	public final boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		if (__o == this)
+			return true;
+		
+		if (!(__o instanceof LiteralSyntax))
+			return false;
+		
+		LiteralSyntax o = (LiteralSyntax)__o;
+		return this.string.equals(o.string);
 	}
 	
 	/**
@@ -55,7 +62,7 @@ public final class LiteralSyntax
 	@Override
 	public final int hashCode()
 	{
-		throw new todo.TODO();
+		return this.string.hashCode();
 	}
 	
 	/**
