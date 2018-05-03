@@ -113,6 +113,11 @@ public class CuteRunnable
 	{
 		CompilerLogger log = this.log;
 		
+		// Setup input which processes input classes
+		Map<CompilerInputLocation, List<CompilerPathSet>> paths = this.paths;
+		RuntimeInput ri = new RuntimeInput(
+			paths.get(CompilerInputLocation.CLASS),
+			paths.get(CompilerInputLocation.SOURCE));
 		
 		throw new todo.TODO();
 		/*
