@@ -297,7 +297,7 @@ public final class BufferedTokenSource
 		{
 			todo.DEBUG.note("Peek (%d, m=%d): %s", __o, this._marks.size(),
 				rv);
-			lastpeek = rv;
+			this._lastpeek = rv;
 		}
 		
 		// Use that
