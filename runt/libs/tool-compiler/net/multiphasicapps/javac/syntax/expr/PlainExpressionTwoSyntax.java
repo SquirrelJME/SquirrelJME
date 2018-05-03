@@ -45,7 +45,14 @@ public final class PlainExpressionTwoSyntax
 	@Override
 	public final boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		if (__o == this)
+			return true;
+		
+		if (!(__o instanceof PlainExpressionTwoSyntax))
+			return false;
+		
+		PlainExpressionTwoSyntax o = (PlainExpressionTwoSyntax)__o;
+		return this.expression.equals(o.expression);
 	}
 	
 	/**
@@ -55,7 +62,7 @@ public final class PlainExpressionTwoSyntax
 	@Override
 	public final int hashCode()
 	{
-		throw new todo.TODO();
+		return this.expression.hashCode();
 	}
 	
 	/**

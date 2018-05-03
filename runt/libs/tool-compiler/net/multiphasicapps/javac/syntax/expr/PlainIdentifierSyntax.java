@@ -44,7 +44,14 @@ public final class PlainIdentifierSyntax
 	@Override
 	public final boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		if (__o == this)
+			return true;
+		
+		if (!(__o instanceof PlainIdentifierSyntax))
+			return false;
+		
+		PlainIdentifierSyntax o = (PlainIdentifierSyntax)__o;
+		return this.identifier.equals(o.identifier);
 	}
 	
 	/**
@@ -54,7 +61,7 @@ public final class PlainIdentifierSyntax
 	@Override
 	public final int hashCode()
 	{
-		throw new todo.TODO();
+		return this.identifier.hashCode();
 	}
 	
 	/**

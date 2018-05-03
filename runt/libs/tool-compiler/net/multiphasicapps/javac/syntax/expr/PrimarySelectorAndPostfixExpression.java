@@ -11,6 +11,7 @@
 package net.multiphasicapps.javac.syntax.expr;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -83,7 +84,17 @@ public final class PrimarySelectorAndPostfixExpression
 	@Override
 	public final boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		if (__o == this)
+			return true;
+		
+		if (!(__o instanceof PrimarySelectorAndPostfixExpression))
+			return false;
+		
+		PrimarySelectorAndPostfixExpression o =
+			(PrimarySelectorAndPostfixExpression)__o;
+		return this.primary.equals(o.primary) &&
+			Arrays.equals(this._selectors, o._selectors) &&
+			Arrays.equals(this._postfixes, o._postfixes);
 	}
 	
 	/**
@@ -93,7 +104,12 @@ public final class PrimarySelectorAndPostfixExpression
 	@Override
 	public final int hashCode()
 	{
-		throw new todo.TODO();
+		int hash = 0;
+		for (Object v : this._selectors)
+			hash ^= v.hashCode();
+		for (Object v : this._postfixes)
+			hash ^= v.hashCode();
+		return this.primary.hashCode() ^ hash;
 	}
 	
 	/**

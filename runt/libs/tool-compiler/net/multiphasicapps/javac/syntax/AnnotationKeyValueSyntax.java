@@ -51,7 +51,15 @@ public final class AnnotationKeyValueSyntax
 	@Override
 	public final boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		if (__o == this)
+			return true;
+		
+		if (!(__o instanceof AnnotationKeyValueSyntax))
+			return false;
+		
+		AnnotationKeyValueSyntax o = (AnnotationKeyValueSyntax)__o;
+		return this.key.equals(o.key) &&
+			this.value.equals(o.value);
 	}
 	
 	/**
@@ -61,7 +69,8 @@ public final class AnnotationKeyValueSyntax
 	@Override
 	public final int hashCode()
 	{
-		throw new todo.TODO();
+		return this.key.hashCode() ^
+			this.value.hashCode();
 	}
 	
 	/**
