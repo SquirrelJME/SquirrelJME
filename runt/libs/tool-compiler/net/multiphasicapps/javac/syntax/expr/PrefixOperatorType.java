@@ -15,8 +15,7 @@ package net.multiphasicapps.javac.syntax;
  *
  * @since 2018/05/02
  */
-public enum PrefixOperatorSyntax
-	implements SubExpressionSyntax
+public enum PrefixOperatorType
 {
 	/** Increment. */
 	INCREMENT,

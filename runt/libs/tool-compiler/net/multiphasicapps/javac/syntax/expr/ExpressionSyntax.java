@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.javac.syntax.expr;
 
+import net.multiphasicapps.javac.syntax.AnnotationValueSyntax;
+
 /**
  * This interface represents the base interface for all expression
  * representations.
@@ -17,6 +19,7 @@ package net.multiphasicapps.javac.syntax.expr;
  * @since 2018/05/03
  */
 public interface ExpressionSyntax
+	extends AnnotationValueSyntax
 {
 }
 
