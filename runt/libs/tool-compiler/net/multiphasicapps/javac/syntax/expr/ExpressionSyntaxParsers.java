@@ -58,8 +58,12 @@ public final class ExpressionSyntaxParsers
 		
 		// Check for assignment operation
 		Token token = __in.peek();
+		if (token.type().isAssignmentOperator())
+			throw new todo.TODO();
 		
-		throw new todo.TODO();
+		// Just a plain expression syntax
+		else
+			return new PlainExpressionSyntax(one);
 	}
 	
 	/**
@@ -84,8 +88,12 @@ public final class ExpressionSyntaxParsers
 		
 		// May contain ternary operation
 		Token token = __in.peek();
+		if (token.type() == TokenType.SYMBOL_QUESTION)
+			throw new todo.TODO();
 		
-		throw new todo.TODO();
+		// Just a plain expression one
+		else
+			return new PlainExpressionOneSyntax(two);
 	}
 	
 	/**

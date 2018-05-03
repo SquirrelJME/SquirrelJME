@@ -360,22 +360,28 @@ public enum TokenType
 	;
 	
 	/**
-	 * Is this a modifier to a class?
+	 * Is this an assignment operator?
 	 *
-	 * @return If this is a class modifier.
-	 * @since 2018/03/10
+	 * @return If this is an assignment operator.
+	 * @since 2018/05/03
 	 */
-	public final boolean isClassModifier()
+	public final boolean isAssignmentOperator()
 	{
 		switch (this)
 		{
-			case KEYWORD_ABSTRACT:
-			case KEYWORD_FINAL:
-			case KEYWORD_PRIVATE:
-			case KEYWORD_PROTECTED:
-			case KEYWORD_PUBLIC:
-			case KEYWORD_STATIC:
-			case KEYWORD_STRICTFP:
+			case OPERATOR_ASSIGN:
+			case OPERATOR_PLUS_ASSIGN:
+			case OPERATOR_MINUS_ASSIGN:
+			case OPERATOR_MULTIPLY_ASSIGN:
+			case OPERATOR_DIVIDE_ASSIGN:
+			case OPERATOR_REMAINDER_ASSIGN:
+			case OPERATOR_SHIFT_LEFT_ASSIGN:
+			case OPERATOR_SSHIFT_RIGHT_ASSIGN:
+			case OPERATOR_USHIFT_RIGHT_ASSIGN:
+			case OPERATOR_NOT_ASSIGN:
+			case OPERATOR_AND_ASSIGN:
+			case OPERATOR_XOR_ASSIGN:
+			case OPERATOR_OR_ASSIGN:
 				return true;
 			
 			default:
@@ -401,6 +407,30 @@ public enum TokenType
 			case KEYWORD_FLOAT:
 			case KEYWORD_DOUBLE:
 			case KEYWORD_BOOLEAN:
+				return true;
+			
+			default:
+				return false;
+		}
+	}
+	
+	/**
+	 * Is this a modifier to a class?
+	 *
+	 * @return If this is a class modifier.
+	 * @since 2018/03/10
+	 */
+	public final boolean isClassModifier()
+	{
+		switch (this)
+		{
+			case KEYWORD_ABSTRACT:
+			case KEYWORD_FINAL:
+			case KEYWORD_PRIVATE:
+			case KEYWORD_PROTECTED:
+			case KEYWORD_PUBLIC:
+			case KEYWORD_STATIC:
+			case KEYWORD_STRICTFP:
 				return true;
 			
 			default:
