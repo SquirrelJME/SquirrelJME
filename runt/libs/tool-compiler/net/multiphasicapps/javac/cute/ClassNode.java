@@ -18,6 +18,7 @@ import net.multiphasicapps.javac.CompilerInput;
  *
  * @since 2018/03/06
  */
+@Deprecated
 public abstract class ClassNode
 {
 	/** The file used for input. */

@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.javac.structure;
 
+import java.util.Arrays;
 import net.multiphasicapps.javac.CompilerPathSet;
 
 /**
@@ -53,6 +54,40 @@ public final class RuntimeInput
 		
 		this._classpath = __class;
 		this._sourcepath = __src;
+	}
+	
+	/**
+	 * Processes source code files and loads their required structure
+	 * information performing basic compilation of them.
+	 *
+	 * @param __fn The source file name to process.
+	 * @throws StructureException If the parsed structures are not correct.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/05/03
+	 */
+	public final void processSources(String... __fn)
+		throws StructureException, NullPointerException
+	{
+		this.processSources(Arrays.<String>asList((__fn == null ?
+			new String[0] : __fn)));
+	}
+	
+	/**
+	 * Processes source code files and loads their required structure
+	 * information performing basic compilation of them.
+	 *
+	 * @param __fn The source file name to process.
+	 * @throws StructureException If the parsed structures are not correct.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/05/03
+	 */
+	public final void processSources(Iterable<String> __fn)
+		throws StructureException, NullPointerException
+	{
+		if (__fn == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 }
 
