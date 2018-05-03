@@ -10,7 +10,9 @@
 
 package net.multiphasicapps.javac.structure;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import net.multiphasicapps.javac.CompilerPathSet;
 
 /**
@@ -37,23 +39,47 @@ public final class RuntimeInput
 	public RuntimeInput(CompilerPathSet[] __class, CompilerPathSet[] __src)
 		throws NullPointerException
 	{
+		this(Arrays.<CompilerPathSet>asList((__class == null ?
+			new CompilerPathSet[0] : __class)),
+			Arrays.<CompilerPathSet>asList((__src == null ?
+			new CompilerPathSet[0] : __src)));
+	}
+	
+	/**
+	 * Initializes the runtime input.
+	 *
+	 * @param __class The class path.
+	 * @param __src The source path.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/05/03
+	 */
+	public RuntimeInput(Iterable<CompilerPathSet> __class,
+		Iterable<CompilerPathSet> __src)
+		throws NullPointerException
+	{
 		if (__class == null || __src == null)
 			throw new NullPointerException("NARG");
 		
 		// Check classpath
-		__class = __class.clone();
+		List<CompilerPathSet> classes = new ArrayList<>();
 		for (CompilerPathSet p : __class)
 			if (p == null)
 				throw new NullPointerException("NARG");
+			else
+				classes.add(p);
 		
 		// Check sources
-		__src = __src.clone();
+		List<CompilerPathSet> sources = new ArrayList<>();
 		for (CompilerPathSet p : __src)
 			if (p == null)
 				throw new NullPointerException("NARG");
+			else
+				sources.add(p);
 		
-		this._classpath = __class;
-		this._sourcepath = __src;
+		this._classpath = classes.<CompilerPathSet>toArray(
+			new CompilerPathSet[classes.size()]);
+		this._sourcepath = sources.<CompilerPathSet>toArray(
+			new CompilerPathSet[sources.size()]);
 	}
 	
 	/**
