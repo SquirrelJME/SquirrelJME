@@ -188,8 +188,14 @@ public class TODO
 			// Use fragment
 			else
 			{
-				sb.append('*');
-				sb.append(fi.substring(deep));
+				// But only if it does not end in .java, this makes it
+				// implied since it is always around
+				String sub = fi.substring(deep);
+				if (!sub.equals(".java"))
+				{
+					sb.append('*');
+					sb.append(sub);
+				}
 			}
 			
 			if (ln >= 0)
