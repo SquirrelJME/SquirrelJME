@@ -275,7 +275,18 @@ public final class AnnotationSyntax
 				// Continue
 				else if (token.type() == TokenType.SYMBOL_COMMA)
 				{
+					// Consume that
 					__in.next();
+					
+					// There could be a comma before the closing brace
+					token = __in.peek();
+					if (token.type() == TokenType.SYMBOL_CLOSED_BRACE)
+					{
+						__in.next();
+						break;
+					}
+					
+					// Keep reading more
 					continue;
 				}
 				
