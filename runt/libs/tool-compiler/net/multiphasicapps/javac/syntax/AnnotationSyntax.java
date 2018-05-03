@@ -262,7 +262,10 @@ public final class AnnotationSyntax
 				
 				// Continue
 				else if (token.type() == TokenType.SYMBOL_COMMA)
+				{
+					__in.next();
 					continue;
+				}
 				
 				// {@squirreljme.error AQ4y Expected comma or closing brace
 				// after annotation value.}
