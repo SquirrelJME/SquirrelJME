@@ -200,6 +200,9 @@ public enum TokenType
 	/** String literal. */
 	LITERAL_STRING,
 	
+	/** Character literal. */
+	LITERAL_CHARACTER,
+	
 	/** Compare for equality. */
 	COMPARE_EQUALS,
 	

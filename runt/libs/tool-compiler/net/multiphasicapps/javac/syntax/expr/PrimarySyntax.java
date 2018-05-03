@@ -11,31 +11,12 @@
 package net.multiphasicapps.javac.syntax.expr;
 
 /**
- * Represents a prefix operation.
+ * This interface represents a primary expression.
  *
- * @since 2018/05/02
+ * @since 2018/05/03
  */
-public enum PrefixOperatorType
+public interface PrimarySyntax
+	extends ExpressionSyntax
 {
-	/** Increment. */
-	INCREMENT,
-	
-	/** Decrement. */
-	DECREMENT,
-	
-	/** Not. */
-	NOT,
-	
-	/** One's complement. */
-	ONES_COMPLEMENT,
-	
-	/** Positive. */
-	POSITIVE,
-	
-	/** Negative. */
-	NEGATIVE,
-	
-	/** End. */
-	;
 }
 

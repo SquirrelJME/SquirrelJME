@@ -10,7 +10,9 @@
 
 package net.multiphasicapps.javac.syntax.expr;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import net.multiphasicapps.javac.syntax.SyntaxDefinitionException;
 import net.multiphasicapps.javac.syntax.SyntaxParseException;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
@@ -102,8 +104,8 @@ public final class ExpressionSyntaxParsers
 			throw new NullPointerException("NARG");
 		
 		// Starts with an expression three
-		if (true)
-			throw new todo.TODO();
+		ExpressionThreeSyntax three = ExpressionSyntaxParsers.
+			parseExpressionThree(__in);
 		
 		// May be followed by instancof
 		if (true)
@@ -133,6 +135,141 @@ public final class ExpressionSyntaxParsers
 	{
 		if (__in == null)
 			throw new NullPointerException("NARG");
+		
+		// This could be a prefix operation
+		Token token = __in.peek();
+		PrefixOperatorType prefix;
+		switch (token.type())
+		{
+			case OPERATOR_INCREMENT:
+				prefix = PrefixOperatorType.INCREMENT;
+				break;
+			
+			case OPERATOR_DECREMENT:
+				prefix = PrefixOperatorType.DECREMENT;
+				break;
+			
+			case OPERATOR_NOT:
+				prefix = PrefixOperatorType.NOT;
+				break;
+			
+			case OPERATOR_COMPLEMENT:
+				prefix = PrefixOperatorType.ONES_COMPLEMENT;
+				break;
+			
+			case OPERATOR_PLUS:
+				prefix = PrefixOperatorType.POSITIVE;
+				break;
+			
+			case OPERATOR_MINUS:
+				prefix = PrefixOperatorType.NEGATIVE;
+				break;
+			
+			default:
+				prefix = null;
+				break;
+		}
+		
+		// This is a prefixed operation
+		if (prefix != null)
+		{
+			__in.next();
+			return new PrefixOpExpressionSyntax(prefix,
+				ExpressionSyntaxParsers.parseExpressionThree(__in));
+		}
+		
+		// Will be a type cast or an expression in a parenthesis (the latter
+		// I am not too sure about as it does not make much sense, it could
+		// be a language design decision for future proofing?)
+		token = __in.peek();
+		if (token.type() == TokenType.SYMBOL_OPEN_PARENTHESIS)
+		{
+			throw new todo.TODO();
+		}
+		
+		// Parse a primary
+		PrimarySyntax primary = ExpressionSyntaxParsers.parsePrimary(__in);
+		
+		// Read in selectors
+		List<SelectorSyntax> selectors = new ArrayList<>();
+		for (;;)
+		{
+			// Is not going to be a selector?
+			token = __in.peek();
+			if (token.type() != TokenType.SYMBOL_DOT &&
+				token.type() != TokenType.SYMBOL_OPEN_BRACE)
+				break;
+			
+			throw new todo.TODO();
+		}
+		
+		// Read in postfix operations, if any
+		List<PostfixOperatorType> postfixes = new ArrayList<>();
+		for (;;)
+		{
+			token = __in.peek();
+			
+			// Increment?
+			if (token.type() == TokenType.OPERATOR_INCREMENT)
+			{
+				__in.next();
+				postfixes.add(PostfixOperatorType.INCREMENT);
+			}
+			
+			// Decrement?
+			else if (token.type() == TokenType.OPERATOR_DECREMENT)
+			{
+				__in.next();
+				postfixes.add(PostfixOperatorType.DECREMENT);
+			}
+			
+			// Unknown, stop parsing
+			else
+				break;
+		}
+		
+		// Build expression
+		return new PrimarySelectorAndPostfixExpression(primary,
+			selectors, postfixes);
+	}
+	
+	/**
+	 * Parses a primary syntax.
+	 *
+	 * @param __in The input token source.
+	 * @return The primary token.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SyntaxParseException If it is not a valid primary syntax.
+	 * @since 2018/05/03
+	 */
+	public static PrimarySyntax parsePrimary(BufferedTokenSource __in)
+		throws NullPointerException, SyntaxParseException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		// It could be a literal value
+		Token token = __in.peek();
+		switch (token.type())
+		{
+			case LITERAL_NULL:
+			case LITERAL_FALSE:
+			case LITERAL_TRUE:
+			case LITERAL_BINARY_INTEGER:
+			case LITERAL_OCTAL_INTEGER:
+			case LITERAL_DECIMAL_INTEGER:
+			case LITERAL_HEXADECIMAL_INTEGER:
+			case LITERAL_DECIMAL_FLOAT:
+			case LITERAL_HEXADECIMAL_FLOAT:
+			case LITERAL_STRING:
+			case LITERAL_CHARACTER:
+				__in.next();
+				return new LiteralSyntax(token.characters());
+			
+				// Is not one
+			default:
+				break;
+		}
 		
 		throw new todo.TODO();
 	}

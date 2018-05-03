@@ -11,31 +11,12 @@
 package net.multiphasicapps.javac.syntax.expr;
 
 /**
- * Represents a prefix operation.
+ * This represents a selector.
  *
- * @since 2018/05/02
+ * @since 2018/05/03
  */
-public enum PrefixOperatorType
+public interface SelectorSyntax
+	extends ExpressionSyntax
 {
-	/** Increment. */
-	INCREMENT,
-	
-	/** Decrement. */
-	DECREMENT,
-	
-	/** Not. */
-	NOT,
-	
-	/** One's complement. */
-	ONES_COMPLEMENT,
-	
-	/** Positive. */
-	POSITIVE,
-	
-	/** Negative. */
-	NEGATIVE,
-	
-	/** End. */
-	;
 }
 
