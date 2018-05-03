@@ -36,6 +36,7 @@ import net.multiphasicapps.javac.FileNameLineAndColumn;
 import net.multiphasicapps.javac.LineAndColumn;
 import net.multiphasicapps.javac.LocationAware;
 import net.multiphasicapps.javac.MessageType;
+import net.multiphasicapps.javac.structure.RuntimeInput;
 
 /**
  * This is the runnable which performs the actual compilation tasks and
@@ -111,6 +112,10 @@ public class CuteRunnable
 		throws CompilerException
 	{
 		CompilerLogger log = this.log;
+		
+		
+		throw new todo.TODO();
+		/*
 		CompilerState state = new CompilerState(log, this.paths);
 		Set<ClassNode> did = new HashSet<>();
 		
@@ -183,6 +188,7 @@ public class CuteRunnable
 			// Keep it going
 			throw e;
 		}
+		*/
 	}
 	
 	/**

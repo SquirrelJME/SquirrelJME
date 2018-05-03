@@ -30,6 +30,7 @@ import net.multiphasicapps.javac.NoSuchInputException;
  *
  * @since 2018/03/06
  */
+@Deprecated
 public final class CompilerState
 {
 	/** Logging. */
