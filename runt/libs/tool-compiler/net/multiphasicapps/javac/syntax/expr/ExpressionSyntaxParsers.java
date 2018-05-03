@@ -341,13 +341,12 @@ public final class ExpressionSyntaxParsers
 					break;
 				
 				// Add dot
-				sb.append('/');
+				sb.append('.');
 				__in.next();
 			}
 			
 			// Build that
-			QualifiedIdentifierSyntax qi =
-				new QualifiedIdentifierSyntax(new BinaryName(sb.toString()));
+			IdentifierSyntax qi = new IdentifierSyntax(sb.toString());
 			
 			// Opening of an array
 			token = __in.peek();
