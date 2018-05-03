@@ -19,6 +19,25 @@ package net.multiphasicapps.javac.syntax.expr;
 public final class PlainExpressionTwoSyntax
 	implements ExpressionTwoSyntax
 {
+	/** The expression used. */
+	protected final ExpressionThreeSyntax expression;
+	
+	/**
+	 * Initializes the plain syntax.
+	 *
+	 * @param __expr The expression used.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/05/03
+	 */
+	public PlainExpressionTwoSyntax(ExpressionThreeSyntax __expr)
+		throws NullPointerException
+	{
+		if (__expr == null)
+			throw new NullPointerException("NARG");
+		
+		this.expression = __expr;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/05/03

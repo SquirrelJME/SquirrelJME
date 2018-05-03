@@ -108,17 +108,20 @@ public final class ExpressionSyntaxParsers
 		ExpressionThreeSyntax three = ExpressionSyntaxParsers.
 			parseExpressionThree(__in);
 		
-		// May be followed by instancof
-		if (true)
+		// May be followed by instanceof
+		Token token = __in.peek();
+		if (token.type() == TokenType.KEYWORD_INSTANCEOF)
 			throw new todo.TODO();
 		
 		// Otherwise it might be infix operations stacked on each other
 		// Note that expression twos are not included in the same region so
 		// a bunch of infix operations will stack on each other
-		if (true)
+		else if (token.type().isInfixOperation())
 			throw new todo.TODO();
 		
-		throw new todo.TODO();
+		// Is just a plain expression two syntax
+		else
+			return new PlainExpressionTwoSyntax(three);
 	}
 	
 	/**
