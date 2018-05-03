@@ -13,6 +13,7 @@ package net.multiphasicapps.javac.syntax.expr;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import net.multiphasicapps.classfile.BinaryName;
 import net.multiphasicapps.javac.syntax.QualifiedIdentifierSyntax;
 import net.multiphasicapps.javac.syntax.SyntaxDefinitionException;
 import net.multiphasicapps.javac.syntax.SyntaxParseException;
@@ -315,9 +316,38 @@ public final class ExpressionSyntaxParsers
 		// Will be an identifier followed by something
 		else if (token.type() == TokenType.IDENTIFIER)
 		{
-			// This is going to be a qualified identifier
+			// This is going to be a qualified identifier but modified slightly
+			// since .<non-identifier> can appear which would break
+			// QualifiedIdentifierSyntax
+			StringBuilder sb = new StringBuilder();
+			for (;;)
+			{
+				// {@squirreljme.error AQ51 Expected identifier while parsing
+				// a primary expression.}
+				token = __in.next();
+				if (token.type() != TokenType.IDENTIFIER)
+					throw new SyntaxParseException(token, "AQ51");
+				
+				// Add that
+				sb.append(token.characters());
+				
+				// Need to peek ahead because it might not be an identifier
+				token = __in.peek();
+				Token after = __in.peek(1);
+				
+				// Stop if this is not a .identifier but something else
+				if (token.type() != TokenType.SYMBOL_DOT &&
+					after.type() != TokenType.IDENTIFIER)
+					break;
+				
+				// Add dot
+				sb.append('/');
+				__in.next();
+			}
+			
+			// Build that
 			QualifiedIdentifierSyntax qi =
-				QualifiedIdentifierSyntax.parse(__in);
+				new QualifiedIdentifierSyntax(new BinaryName(sb.toString()));
 			
 			// Opening of an array
 			token = __in.peek();
