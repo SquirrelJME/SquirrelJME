@@ -13,6 +13,7 @@ package net.multiphasicapps.javac.syntax.expr;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import net.multiphasicapps.javac.syntax.QualifiedIdentifierSyntax;
 import net.multiphasicapps.javac.syntax.SyntaxDefinitionException;
 import net.multiphasicapps.javac.syntax.SyntaxParseException;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
@@ -302,7 +303,28 @@ public final class ExpressionSyntaxParsers
 		
 		// Will be an identifier followed by something
 		else if (token.type() == TokenType.IDENTIFIER)
-			throw new todo.TODO();
+		{
+			// This is going to be a qualified identifier
+			QualifiedIdentifierSyntax qi =
+				QualifiedIdentifierSyntax.parse(__in);
+			
+			// Opening of an array
+			token = __in.peek();
+			if (token.type() == TokenType.SYMBOL_OPEN_BRACKET)
+				throw new todo.TODO();
+			
+			// Method arguments
+			else if (token.type() == TokenType.SYMBOL_OPEN_PARENTHESIS)
+				throw new todo.TODO();
+			
+			// Sub-something on the argument
+			else if (token.type() == TokenType.SYMBOL_DOT)
+				throw new todo.TODO();
+			
+			// Is just going to be a plain identifier
+			else
+				return new PlainIdentifierSyntax(qi);
+		}
 		
 		// {@squirreljme.error AQ50 This is not a valid primary expression.}
 		else
