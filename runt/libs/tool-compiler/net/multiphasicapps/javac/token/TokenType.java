@@ -384,6 +384,31 @@ public enum TokenType
 	}
 	
 	/**
+	 * Is this a basic type?
+	 *
+	 * @return If this is a basic type.
+	 * @since 2018/05/03
+	 */
+	public final boolean isBasicType()
+	{
+		switch (this)
+		{
+			case KEYWORD_BYTE:
+			case KEYWORD_SHORT:
+			case KEYWORD_CHAR:
+			case KEYWORD_INT:
+			case KEYWORD_LONG:
+			case KEYWORD_FLOAT:
+			case KEYWORD_DOUBLE:
+			case KEYWORD_BOOLEAN:
+				return true;
+			
+			default:
+				return false;
+		}
+	}
+	
+	/**
 	 * Is this a comment?
 	 *
 	 * @return If this is a comment or not.

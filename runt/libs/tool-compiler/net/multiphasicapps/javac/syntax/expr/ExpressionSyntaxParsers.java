@@ -271,7 +271,42 @@ public final class ExpressionSyntaxParsers
 				break;
 		}
 		
-		throw new todo.TODO();
+		// Parenthesis operation
+		token = __in.peek();
+		if (token.type() == TokenType.SYMBOL_OPEN_PARENTHESIS)
+			throw new todo.TODO();
+		
+		// This... something potentially
+		else if (token.type() == TokenType.KEYWORD_THIS)
+			throw new todo.TODO();
+		
+		// Super something
+		else if (token.type() == TokenType.KEYWORD_SUPER)
+			throw new todo.TODO();
+		
+		// New something
+		else if (token.type() == TokenType.KEYWORD_NEW)
+			throw new todo.TODO();
+		
+		// void.class
+		else if (token.type() == TokenType.KEYWORD_VOID)
+			throw new todo.TODO();
+		
+		// Non-wildcard type arguments
+		else if (token.type() == TokenType.COMPARE_LESS_THAN)
+			throw new todo.TODO();
+		
+		// Is a basic type (which could be an array) followed by .class
+		else if (token.type().isBasicType())
+			throw new todo.TODO();
+		
+		// Will be an identifier followed by something
+		else if (token.type() == TokenType.IDENTIFIER)
+			throw new todo.TODO();
+		
+		// {@squirreljme.error AQ50 This is not a valid primary expression.}
+		else
+			throw new SyntaxParseException(token, "AQ50");
 	}
 }
 
