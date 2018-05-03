@@ -1,0 +1,33 @@
+# 2018/05/02
+
+## 17:05
+
+Okay so I found a better way to handle annotation values properly and without
+having `UnparsedExpressions` be used, so that is nice. Right now what I need
+to work on is parsing of the various expressions that exist.
+
+## 17:11
+
+Actually being forced to handle expression takes care of the bulk work since
+the code will be used in the main block, just hope it turns out well.
+
+## 17:37
+
+Oh, I get it. The `(expression)expression3` format is for stuff like this kind
+of thing: `((Type)new Boop()).hello()`. So that makes sense. I think for
+simplicity I will just drop the parenthesis and make it an expression.
+
+## 17:44
+
+Maybe for expressions the best thing to do would be to sub-class things and
+load it full of expressions and such. That would make the class a bit messy
+but it would work for the most part. However, what could work is a sub-package
+which contains the expression tree. Basically what I can do is have it where
+all expressions are of their given type in the syntax tree so that there is no
+way to mess it up. I do wish I could use static methods in interfaces for some
+of these, but it is what it is.
+
+## 17:49
+
+So the three types of `Expression3` will implement that interface but they
+will be distinct classes, that would match the syntax tree for the most part.
