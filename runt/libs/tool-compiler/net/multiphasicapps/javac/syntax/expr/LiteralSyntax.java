@@ -11,36 +11,31 @@
 package net.multiphasicapps.javac.syntax.expr;
 
 /**
- * This represents an expression which is prefixed by a prefix operation.
+ * This represents a literal value which may be a {@code boolean}, number,
+ * string, or {@code null}.
  *
  * @since 2018/05/03
  */
-public final class PrefixOpExpressionSyntax
-	implements ExpressionThreeSyntax
+public final class LiteralSyntax
+	implements PrimarySyntax
 {
-	/** The prefix operator. */
-	protected final PrefixOperatorType operator;
-	
-	/** The expression being operated on. */
-	protected final ExpressionThreeSyntax expression;
+	/** The characters that make up the literal. */
+	protected final String string;
 	
 	/**
-	 * Initializes the prefix operation.
+	 * Initializes the literal.
 	 *
-	 * @param __op The operation being performed.
-	 * @param __expr The expression to be operated on.
+	 * @param __s The characters that make up the literal.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/05/03
 	 */
-	public PrefixOpExpressionSyntax(PrefixOperatorType __op,
-		ExpressionThreeSyntax __expr)
+	public LiteralSyntax(String __s)
 		throws NullPointerException
 	{
-		if (__op == null || __expr == null)
+		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		this.operator = __op;
-		this.expression = __expr;
+		this.string = __s;
 	}
 	
 	/**
