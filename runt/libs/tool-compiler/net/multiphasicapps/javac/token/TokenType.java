@@ -505,6 +505,42 @@ public enum TokenType
 	}
 	
 	/**
+	 * Is this an infix operation?
+	 *
+	 * @return If this is an infix operation.
+	 * @since 2018/05/03
+	 */
+	public final boolean isInfixOperation()
+	{
+		switch (this)
+		{
+			case COMPARE_OR:
+			case COMPARE_AND:
+			case COMPARE_EQUALS:
+			case COMPARE_NOT_EQUALS:
+			case COMPARE_LESS_THAN:
+			case COMPARE_GREATER_THAN:
+			case COMPARE_LESS_OR_EQUAL:
+			case COMPARE_GREATER_OR_EQUAL:
+			case OPERATOR_OR:
+			case OPERATOR_XOR:
+			case OPERATOR_AND:
+			case OPERATOR_SHIFT_LEFT:
+			case OPERATOR_SSHIFT_RIGHT:
+			case OPERATOR_USHIFT_RIGHT:
+			case OPERATOR_PLUS:
+			case OPERATOR_MINUS:
+			case OPERATOR_MULTIPLY:
+			case OPERATOR_DIVIDE:
+			case OPERATOR_REMAINDER:
+				return true;
+			
+			default:
+				return false;
+		}
+	}
+	
+	/**
 	 * Is this a literal?
 	 *
 	 * @return If this is a literal.
