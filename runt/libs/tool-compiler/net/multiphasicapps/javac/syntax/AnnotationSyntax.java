@@ -67,9 +67,19 @@ public final class AnnotationSyntax
 		if (__qi == null || __values == null)
 			throw new NullPointerException("NARG");
 		
-		this.identifier = __qi;
+		// Check values
+		List<AnnotationValueSyntax> values = new ArrayList<>();
+		for (AnnotationValueSyntax v : __values)
+		{
+			if (v == null)
+				throw new NullPointerException("NARG");
+			
+			values.add(v);
+		}
 		
-		throw new todo.TODO();
+		this.identifier = __qi;
+		this._values = values.<AnnotationValueSyntax>toArray(
+			new AnnotationValueSyntax[values.size()]);
 	}
 	
 	/**
