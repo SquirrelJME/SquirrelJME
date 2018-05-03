@@ -51,6 +51,9 @@ public final class BufferedTokenSource
 	/** The last token which was returned. */
 	private Token _last;
 	
+	/** The token which was last peeked. */
+	private Token _lastpeek;
+	
 	/**
 	 * Initializes the buffered token source from the given stream and input
 	 * stream.
@@ -286,7 +289,19 @@ public final class BufferedTokenSource
 			peeked.add(n++, input.next());
 		
 		// Return the peeked token here
-		return peeked.get(__o);
+		Token rv = peeked.get(__o);
+		
+		// Debug
+		Token lastpeek = this._lastpeek;
+		if (lastpeek != rv)
+		{
+			todo.DEBUG.note("Peek (%d, m=%d): %s", __o, this._marks.size(),
+				rv);
+			lastpeek = rv;
+		}
+		
+		// Use that
+		return rv;
 	}
 	
 	/**
