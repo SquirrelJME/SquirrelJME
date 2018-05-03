@@ -10,7 +10,9 @@
 
 package net.multiphasicapps.javac.syntax;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * This represents an annotation value that represents multiple values in an
@@ -22,7 +24,7 @@ public final class AnnotationArrayValueSyntax
 	implements AnnotationValueSyntax
 {
 	/** The value which make up this value. */
-	private final AnnotationValueSyntax[] _value;
+	private final AnnotationValueSyntax[] _values;
 	
 	/**
 	 * Initializes the array value annotation.
@@ -51,7 +53,17 @@ public final class AnnotationArrayValueSyntax
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		List<AnnotationValueSyntax> values = new ArrayList<>();
+		for (AnnotationValueSyntax v : __v)
+		{
+			if (v == null)
+				throw new NullPointerException("NARG");
+			
+			values.add(v);
+		}
+		
+		this._values = values.<AnnotationValueSyntax>toArray(
+			new AnnotationValueSyntax[values.size()]);
 	}
 	
 	/**
