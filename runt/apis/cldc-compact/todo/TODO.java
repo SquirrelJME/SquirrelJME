@@ -94,10 +94,114 @@ public class TODO
 		// Print it out
 		PrintStream ps = System.err;
 		ps.print("TODO -- ");
-		ps.print(TODO.__formatTrace(TODO.__where()));
+		ps.print(TODO.__formatCondensedTrace(TODO.__where()));
 		ps.print(" -- ");
 		ps.printf(__fmt, __args);
 		ps.println();
+	}
+	
+	/**
+	 * Formats a call trace element in a condensed form.
+	 *
+	 * @param __e The element to print out.
+	 * @return The condensed string.
+	 * @since 2018/05/03
+	 */
+	static final String __formatCondensedTrace(CallTraceElement __e)
+		throws NullPointerException
+	{
+		if (__e == null)
+			throw new NullPointerException("NARG");
+		
+		String cn = __e.className(),
+			mn = __e.methodName(),
+			md = __e.methodDescriptor(),
+			fi = __e.file();
+		long ad = __e.address();
+		int ln = __e.line();
+		
+		StringBuilder sb = new StringBuilder();
+		
+		// Location
+		if (cn != null)
+		{
+			// Get identifier part
+			int ld = cn.lastIndexOf('.');
+			if (ld < 0)
+				ld = 0;
+			
+			// Print slimmed down packages since they could be guessed
+			for (int i = 0, n = cn.length(); i >= 0 && i < n;)
+			{
+				// Before the last dot, print single and skip ahead
+				if (i < ld)
+				{
+					sb.append(cn.charAt(i));
+					sb.append('.');
+					
+					i = cn.indexOf('.', i) + 1;
+				}
+				
+				// Finish string
+				else
+				{
+					sb.append(cn.substring(i));
+					break;
+				}
+			}
+		}
+		sb.append("::");
+		if (mn != null)
+			sb.append(mn);
+		if (md != null)
+			sb.append(md);
+		
+		// Address, if it is valid
+		if (ad != -1L)
+			sb.append(String.format("@0x%016X", ad));
+		
+		// Add file/line information if it is valid
+		if (fi != null)
+		{
+			sb.append(" (");
+			
+			// Use blank class name if not specified
+			if (cn == null)
+				cn = "";
+			
+			// The class will start with a package, so drop that
+			int ld = cn.lastIndexOf('.');
+			if (ld >= 0)
+				cn = cn.substring(ld + 1);
+			
+			// Determine how many charcters the class name and the file
+			// name have in common, so that it can be shortened
+			int deep = 0;
+			for (int n = Math.min(cn.length(), fi.length()); deep < n; deep++)
+				if (cn.charAt(deep) != fi.charAt(deep))
+					break;
+			
+			// Use whole name
+			if (deep == 0)
+				sb.append(fi);
+			
+			// Use fragment
+			else
+			{
+				sb.append('*');
+				sb.append(fi.substring(deep));
+			}
+			
+			if (ln >= 0)
+			{
+				sb.append(':');
+				sb.append(ln);
+			}
+			
+			sb.append(')');
+		}
+		
+		return sb.toString();
 	}
 	
 	/**
