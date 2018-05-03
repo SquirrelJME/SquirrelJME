@@ -197,8 +197,10 @@ public final class AnnotationSyntax
 			after.type() == TokenType.OPERATOR_ASSIGN)
 		{
 			// Consume identifier and the equals
-			__in.next();
-			__in.next();
+			token = __in.next();
+			after = __in.next();
+			
+			todo.DEBUG.note("Annotation kv: %s %s", token, after);
 			
 			// Setup key and parse value too
 			return new AnnotationKeyValueSyntax(
