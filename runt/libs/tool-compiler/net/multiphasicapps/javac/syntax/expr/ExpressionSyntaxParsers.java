@@ -336,7 +336,7 @@ public final class ExpressionSyntaxParsers
 				Token after = __in.peek(1);
 				
 				// Stop if this is not a .identifier but something else
-				if (token.type() != TokenType.SYMBOL_DOT &&
+				if (token.type() != TokenType.SYMBOL_DOT ||
 					after.type() != TokenType.IDENTIFIER)
 					break;
 				
