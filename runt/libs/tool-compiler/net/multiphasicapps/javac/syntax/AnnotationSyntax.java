@@ -159,7 +159,10 @@ public final class AnnotationSyntax
 			
 			// Reading more of them
 			else if (token.type() == TokenType.SYMBOL_COMMA)
+			{
+				__in.next();
 				continue;
+			}
 			
 			// {@squirreljme.error AQ4x Expected comma or closing parenthesis
 			// at end of annotation expression.}
