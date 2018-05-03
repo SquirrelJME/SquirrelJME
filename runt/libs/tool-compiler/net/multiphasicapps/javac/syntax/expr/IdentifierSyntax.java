@@ -11,30 +11,29 @@
 package net.multiphasicapps.javac.syntax.expr;
 
 /**
- * This is just a plain identifier.
+ * This represents an identifier.
  *
  * @since 2018/05/03
  */
-public final class PlainIdentifierSyntax
-	implements PrimarySyntax
+public final class IdentifierSyntax
 {
-	/** The identifier used. */
-	protected final IdentifierSyntax identifier;
+	/** The string which makes up the identifier. */
+	protected final String string;
 	
 	/**
-	 * Initializes the plain identifier.
+	 * Initializes the identifier syntax.
 	 *
-	 * @param __i The identifier used.
+	 * @param __s The identifier string.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/05/03
 	 */
-	public PlainIdentifierSyntax(IdentifierSyntax __i)
+	public IdentifierSyntax(String __s)
 		throws NullPointerException
 	{
-		if (__i == null)
+		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		this.identifier = __i;
+		this.string = __s;
 	}
 	
 	/**
