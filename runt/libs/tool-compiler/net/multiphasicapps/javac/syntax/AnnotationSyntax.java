@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.javac.syntax.expr.ExpressionSyntax;
 import net.multiphasicapps.javac.syntax.expr.ExpressionSyntaxParsers;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
@@ -145,8 +146,8 @@ public final class AnnotationSyntax
 		List<AnnotationValueSyntax> values = new ArrayList<>();
 		for (;;)
 		{
-			// Read single annotation value
-			values.add(AnnotationSyntax.parseValue(__in));
+			// Read single annotation value which may be a key
+			values.add(AnnotationSyntax.parseKey(__in));
 			
 			// No more values?
 			token = __in.peek();
@@ -168,6 +169,42 @@ public final class AnnotationSyntax
 		
 		// Build annotation
 		return new AnnotationSyntax(qi, values);
+	}
+	
+	/**
+	 * Parses either a value or a key and a value.
+	 *
+	 * @param __in The input token source.
+	 * @return The parsed value.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SyntaxParseException If the value is not valid.
+	 * @since 2018/05/03
+	 */
+	public static AnnotationValueSyntax parseKey(BufferedTokenSource __in)
+		throws NullPointerException, SyntaxParseException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		Token token = __in.peek(),
+			after = __in.peek(1);
+		
+		// Does this contain a key associated with a value?
+		if (token.type() == TokenType.IDENTIFIER &&
+			after.type() == TokenType.OPERATOR_ASSIGN)
+		{
+			// Consume identifier and the equals
+			__in.next();
+			__in.next();
+			
+			// Setup key and parse value too
+			return new AnnotationKeyValueSyntax(
+				new MethodName(token.characters()),
+				AnnotationSyntax.parseValue(__in));
+		}
+		
+		// Just a value
+		return AnnotationSyntax.parseValue(__in);
 	}
 	
 	/**
