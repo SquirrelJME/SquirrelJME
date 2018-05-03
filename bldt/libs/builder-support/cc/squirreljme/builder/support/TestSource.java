@@ -24,6 +24,7 @@ import net.multiphasicapps.javac.CompilerPathSet;
 import net.multiphasicapps.javac.DistinctPathSet;
 import net.multiphasicapps.javac.FilePathSet;
 import net.multiphasicapps.javac.MergedPathSet;
+import net.multiphasicapps.javac.structure.RuntimeInput;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.writer.MutableJavaManifest;
 import net.multiphasicapps.tool.manifest.writer.MutableJavaManifestAttributes;
