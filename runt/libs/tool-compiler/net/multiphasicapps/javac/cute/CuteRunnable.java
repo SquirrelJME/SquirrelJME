@@ -119,47 +119,15 @@ public class CuteRunnable
 			paths.get(CompilerInputLocation.CLASS),
 			paths.get(CompilerInputLocation.SOURCE));
 		
-		throw new todo.TODO();
-		/*
-		CompilerState state = new CompilerState(log, this.paths);
-		Set<ClassNode> did = new HashSet<>();
-		
-		// Forward catch all compiler exceptions so that they are logged before
-		// they are rethrown
-		CompilerInput lastfile = null;
+		// Run compilation step
 		try
 		{
-			// Compile all input files
+			// Process input files to load their structures
 			for (CompilerInput ci : this.input)
-			{
-				// Ignore package-info since it can only contain attributes
-				String name = ci.fileName();
-				if (name.endsWith("package-info.java"))
-					continue;
+				ri.processSourceFiles(ci.fileName());
 			
-				// Lookup nodes so that they are parsed and added to the
-				// compiler
-				state.classNode(__fileToClassName(name));
-				
-				// Compile any nodes queued up for compilation
-				SourcedClassNode next;
-				while (null != (next = state.nextCompile()))
-				{
-					// Only compile nodes once
-					if (did.contains(next))
-						continue;
-					did.add(next);
-					
-					// Used to use a generic throwing in case of error
-					lastfile = next.compilerInput();
-				
-					// {@squirreljme.error AQ0m Currently compiling the
-					// specified input.}
-					log.message(MessageType.INFO, ci, "AQ0m");
-				
-					throw new todo.TODO();
-				}
-			}
+			if (true)
+				throw new todo.TODO();
 		}
 		
 		// Caught compiler exception so report it and retoss
@@ -193,7 +161,6 @@ public class CuteRunnable
 			// Keep it going
 			throw e;
 		}
-		*/
 	}
 	
 	/**
