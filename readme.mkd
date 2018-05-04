@@ -107,6 +107,7 @@ You may donate to SquirrelJME to which would be used by the author to keep the
 web server online, the purchasing of new hardware/software, and for the
 purchasing of food items for consumption.
 
+ * [Ko-Fi](http://ko-fi.com/xerthesquirrel)
  * [Patreon](https://www.patreon.com/XerTheSquirrel)
  * BitCoin (**BTC/XBT**): [`13UYwi2zuQd8NLhjyu1BA7a8NWktDotmq4`](
    bitcoin:13UYwi2zuQd8NLhjyu1BA7a8NWktDotmq4)
