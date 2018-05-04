@@ -91,10 +91,10 @@ public final class RuntimeInput
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/05/03
 	 */
-	public final void processSources(String... __fn)
+	public final void processSourceFiles(String... __fn)
 		throws StructureException, NullPointerException
 	{
-		this.processSources(Arrays.<String>asList((__fn == null ?
+		this.processSourceFiles(Arrays.<String>asList((__fn == null ?
 			new String[0] : __fn)));
 	}
 	
@@ -107,7 +107,7 @@ public final class RuntimeInput
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/05/03
 	 */
-	public final void processSources(Iterable<String> __fn)
+	public final void processSourceFiles(Iterable<String> __fn)
 		throws StructureException, NullPointerException
 	{
 		if (__fn == null)
