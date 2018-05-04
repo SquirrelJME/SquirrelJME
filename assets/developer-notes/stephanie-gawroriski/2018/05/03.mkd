@@ -1,0 +1,40 @@
+# 2018/05/03
+
+## 01:40
+
+Okay this block for Expression2 seems very odd.
+
+## 01:42
+
+Oh never this is not a block, it is just multiple infix operations.
+
+## 10:59
+
+Okay so there is a syntax for `identifier[[].class]` and what is the purpose
+of that?
+
+## 14:41
+
+Okay so now that annotations are parsed, what I need to do is to build some
+kind of structure from the classes, resolve names, and other such things.
+Basically something that can be used by the documentation tool, the test
+parser, and the compiler itself.
+
+## 15:11
+
+So what do I call this new package that I am about to create? Well I have the
+syntax I need, which has to be parsed from compilation units and such. But
+basically the sourced class node I had before was similar. But basically what
+I need to do is pass a class path set and a source path set used for parsing
+files and such. Since when a class is parsed it will need to pull in
+information about other classes too. So it really is the input state of any
+part of the compiler. So then I suppose it is like structure like what I had
+before since it contains the entire structure of the classes. So I suppose
+structure it is.
+
+## 15:16
+
+The only big thing would be making it so that references are cleanly handled
+as I do want to avoid circular references as much as I can. I should be able
+to do that though at least having a parser and a structure stage for the
+most part.
