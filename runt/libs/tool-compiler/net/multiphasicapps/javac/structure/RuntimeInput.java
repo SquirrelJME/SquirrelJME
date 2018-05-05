@@ -15,7 +15,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import net.multiphasicapps.javac.CompilerInput;
 import net.multiphasicapps.javac.CompilerPathSet;
+import net.multiphasicapps.javac.NoSuchInputException;
 
 /**
  * This class contians the input for the .
@@ -128,6 +130,23 @@ public final class RuntimeInput
 		if (didfiles.contains(__fn))
 			return;
 		didfiles.add(__fn);
+		
+		// Search for the source file
+		CompilerInput ci = null;
+		for (CompilerPathSet ps : this._sourcepath)
+			try
+			{
+				if (null != (ci = ps.input(__fn)))
+					break;
+			}
+			catch (NoSuchInputException e)
+			{
+			}
+		
+		// {@squirreljme.error AQ52 The specified source file does not
+		// exist in the source path. (The source file)}
+		if (ci == null)
+			throw new StructureException(String.format("AQ52", __fn));
 		
 		// Need to search for the source file and then process them into
 		// syntax then load them into structures
