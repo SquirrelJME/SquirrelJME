@@ -12,7 +12,9 @@ package net.multiphasicapps.javac.structure;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import net.multiphasicapps.javac.CompilerPathSet;
 
 /**
@@ -22,11 +24,19 @@ import net.multiphasicapps.javac.CompilerPathSet;
  */
 public final class RuntimeInput
 {
+	/** Output structure information. */
+	protected final Structures structures =
+		new Structures();
+	
 	/** The class path. */
 	private final CompilerPathSet[] _classpath;
 	
 	/** The source path. */
 	private final CompilerPathSet[] _sourcepath;
+	
+	/** Files which have been processed. */
+	private final Set<String> _didfiles =
+		new HashSet<>();
 	
 	/**
 	 * Initializes the runtime input.
@@ -83,6 +93,48 @@ public final class RuntimeInput
 	}
 	
 	/**
+	 * Prcoesses a single class file.
+	 *
+	 * @param __fn The class file name to process.
+	 * @throws StructureException If the source structure is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/05/05
+	 */
+	public final void processClassFile(String __fn)
+		throws StructureException, NullPointerException
+	{
+		if (__fn == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Processes a single source file.
+	 *
+	 * @param __fn The input file to process.
+	 * @throws StructureException If the source structure is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/05/05
+	 */
+	public final void processSourceFile(String __fn)
+		throws StructureException, NullPointerException
+	{
+		if (__fn == null)
+			throw new NullPointerException("NARG");
+		
+		// Only process class files once
+		Set<String> didfiles = this._didfiles;
+		if (didfiles.contains(__fn))
+			return;
+		didfiles.add(__fn);
+		
+		// Need to search for the source file and then process them into
+		// syntax then load them into structures
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Processes source code files and loads their required structure
 	 * information performing basic compilation of them.
 	 *
@@ -113,7 +165,25 @@ public final class RuntimeInput
 		if (__fn == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Process each file
+		for (String filename : __fn)
+		{
+			if (filename == null)
+				throw new NullPointerException("NARG");	
+			
+			this.processSourceFile(filename);
+		}
+	}
+	
+	/**
+	 * Returns the structures where classes have been read into.
+	 *
+	 * @return The structures used.
+	 * @since 2018/05/05
+	 */
+	public final Structures structures()
+	{
+		return this.structures;
 	}
 }
 
