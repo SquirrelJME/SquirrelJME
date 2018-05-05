@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.javac.structure;
 
+import java.io.InputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -18,6 +20,10 @@ import java.util.Set;
 import net.multiphasicapps.javac.CompilerInput;
 import net.multiphasicapps.javac.CompilerPathSet;
 import net.multiphasicapps.javac.NoSuchInputException;
+import net.multiphasicapps.javac.StringFileName;
+import net.multiphasicapps.javac.syntax.CompilationUnitSyntax;
+import net.multiphasicapps.javac.syntax.SyntaxException;
+import net.multiphasicapps.javac.token.BufferedTokenSource;
 
 /**
  * This class contians the input for the .
@@ -131,6 +137,9 @@ public final class RuntimeInput
 			return;
 		didfiles.add(__fn);
 		
+		// Used for location awareness
+		StringFileName sfn = new StringFileName(__fn);
+		
 		// Search for the source file
 		CompilerInput ci = null;
 		for (CompilerPathSet ps : this._sourcepath)
@@ -143,13 +152,26 @@ public final class RuntimeInput
 			{
 			}
 		
-		// {@squirreljme.error AQ52 The specified source file does not
-		// exist in the source path. (The source file)}
+		// {@squirreljme.error AQ52 The source file does not exist.}
 		if (ci == null)
-			throw new StructureException(String.format("AQ52", __fn));
+			throw new StructureException(sfn, "AQ52");
 		
 		// Need to search for the source file and then process them into
 		// syntax then load them into structures
+		CompilationUnitSyntax cus;
+		try (InputStream in = ci.open();
+			BufferedTokenSource bts = new BufferedTokenSource(__fn, in))
+		{
+			cus = CompilationUnitSyntax.parse(bts);
+		}
+		
+		// {@squirreljme.error AQ53 Could not parse the syntax for the source
+		// file because it failed to read or has invalid syntax.}
+		catch (IOException|SyntaxException e)
+		{
+			throw new StructureException(sfn, "AQ53", e);
+		}
+		
 		throw new todo.TODO();
 	}
 	

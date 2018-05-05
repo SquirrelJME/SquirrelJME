@@ -19,7 +19,7 @@ import net.multiphasicapps.javac.LocationAware;
  * @since 2018/04/30
  */
 public class SyntaxDefinitionException
-	extends CompilerException
+	extends SyntaxException
 {
 	/**
 	 * Initialize the exception with no message or cause.
