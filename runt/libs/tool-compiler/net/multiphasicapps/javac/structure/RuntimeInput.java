@@ -156,8 +156,7 @@ public final class RuntimeInput
 		if (ci == null)
 			throw new StructureException(sfn, "AQ52");
 		
-		// Need to search for the source file and then process them into
-		// syntax then load them into structures
+		// Parse the syntax for the compilation unit and hope it works
 		CompilationUnitSyntax cus;
 		try (InputStream in = ci.open();
 			BufferedTokenSource bts = new BufferedTokenSource(__fn, in))
@@ -172,6 +171,8 @@ public final class RuntimeInput
 			throw new StructureException(sfn, "AQ53", e);
 		}
 		
+		// So now that the source file has been parsed the resulting syntax
+		// needs to be parsed itself to load structure data from it
 		throw new todo.TODO();
 	}
 	
