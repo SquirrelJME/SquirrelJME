@@ -1,0 +1,8 @@
+# 2018/05/05
+
+## 12:15
+
+The good thing is that this code will help take care of the documentation tool
+along with the compiler and the source parser to generate tests for. So that
+is a really good bonus.
+

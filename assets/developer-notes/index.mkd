@@ -1750,7 +1750,7 @@
 [**`02`**](stephanie-gawroriski/2018/05/02.mkd)
 [**`03`**](stephanie-gawroriski/2018/05/03.mkd)
 `04`
-`05`
+[**`05`**](stephanie-gawroriski/2018/05/05.mkd)
  * `06`
 `07`
 `08`
