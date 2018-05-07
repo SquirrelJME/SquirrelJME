@@ -16,12 +16,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import net.multiphasicapps.classfile.BinaryName;
+import net.multiphasicapps.classfile.ClassIdentifier;
+import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.javac.CompilerInput;
 import net.multiphasicapps.javac.CompilerPathSet;
 import net.multiphasicapps.javac.NoSuchInputException;
 import net.multiphasicapps.javac.StringFileName;
+import net.multiphasicapps.javac.syntax.ClassSyntax;
 import net.multiphasicapps.javac.syntax.CompilationUnitSyntax;
+import net.multiphasicapps.javac.syntax.ModifiersSyntax;
 import net.multiphasicapps.javac.syntax.SyntaxException;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
 
@@ -140,6 +146,46 @@ public final class RuntimeInput
 		// Used for location awareness
 		StringFileName sfn = new StringFileName(__fn);
 		
+		// {@squirreljme.error AQ54 Cannot process source file which does not
+		// end in {@code .java}.}
+		if (!__fn.toLowerCase().endsWith(".java"))
+			throw new StructureException(sfn, "AQ54");
+		
+		// Get basename and package name, used to quickly determine some things
+		String basename = __fn.substring(0, __fn.length() - 5);
+		int lastslash = basename.lastIndexOf('/');
+		String rawinpackage = (lastslash < 0 ? null :
+				basename.substring(0, lastslash)),
+			baseclassname = (lastslash < 0 ? basename :
+				basename.substring(lastslash + 1));
+		
+		// The package the class is in
+		BinaryName inpackage = (rawinpackage == null ? null :
+			new BinaryName(rawinpackage));
+		
+		// This will essentially check that the class is named with valid
+		// characters
+		BinaryName classname;
+		try
+		{
+			// The package information has no class name
+			if (basename.equals("package-info"))
+				classname = null;
+			else
+				classname = new BinaryName(basename);
+		}
+		catch (InvalidClassFormatException e)
+		{
+			// {@squirreljme.error AQ55 Cannot parse the source file because
+			// it does not have a valid name.}
+			throw new StructureException(sfn,
+				String.format("AQ55 %s", basename));
+		}
+		
+		// Determine the identifier of the class
+		ClassIdentifier classident = (classname == null ? null :
+			new ClassIdentifier(baseclassname));
+		
 		// Search for the source file
 		CompilerInput ci = null;
 		for (CompilerPathSet ps : this._sourcepath)
@@ -169,6 +215,55 @@ public final class RuntimeInput
 		catch (IOException|SyntaxException e)
 		{
 			throw new StructureException(sfn, "AQ53", e);
+		}
+		
+		// {@squirreljme.error AQ56 Source code file specified a package which
+		// does not match the package represented in the source code itself.
+		// (The package the source is in; The package the source code actually
+		// specified)}
+		BinaryName cuspackage = cus.inPackage();
+		if (!Objects.equals(inpackage, cuspackage))
+			throw new StructureException(sfn, String.format("AQ56 %s %s",
+				inpackage, cuspackage));
+		
+		// Determine if the class was placed in the correct file
+		ClassSyntax[] classes = cus.classes();
+		if (classname != null)
+		{
+			// Find the public class
+			ClassSyntax pubclass = null;
+			for (ClassSyntax cs : classes)
+			{
+				ModifiersSyntax mods = cs.modifiers();
+				if (mods.isPublic())
+				{
+					// {@squirreljme.error AQ59 Class file contains multiple
+					// public classes. (The first found public class; The
+					// second found public class)}
+					if (pubclass != null)
+						throw new StructureException(sfn,
+							String.format("AQ59 %s %s", pubclass.name(),
+							cs.name()));
+					
+					pubclass = cs;
+				}
+			}
+			
+			// {@squirreljme.error AQ5a The name of the public class in the
+			// file does not match the expected name of the source file.
+			// (The public class name)}
+			if (pubclass != null && !classident.equals(pubclass.name()))
+				throw new StructureException(sfn,
+					String.format("AQ5a %s", pubclass.name()));
+		}
+		
+		// Is a package-info file
+		else
+		{
+			// {@squirreljme.error AQ57 Source package-info files cannot
+			// specify any classes.}
+			if (classes.length != 0)
+				throw new StructureException(sfn, "AQ57");
 		}
 		
 		// So now that the source file has been parsed the resulting syntax

@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import net.multiphasicapps.classfile.BinaryName;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.Token;
 import net.multiphasicapps.javac.token.TokenSource;
@@ -100,7 +101,7 @@ public final class CompilationUnitSyntax
 	 * @param __pk The owning package.
 	 * @param __imports Imports that are used.
 	 * @param __classes Classes which have been declared.
-	 * @throws NullPointerException On null arguments.
+	 * @throws NullPointerException On null arguments, except for {@code __pk}.
 	 * @throws SyntaxDefinitionException If the compilation unit is not
 	 * valid.
 	 * @since 2018/04/30
@@ -110,7 +111,7 @@ public final class CompilationUnitSyntax
 		Iterable<ClassSyntax> __classes)
 		throws NullPointerException, SyntaxDefinitionException
 	{
-		if (__pk == null || __imports == null || __classes == null)
+		if (__imports == null || __classes == null)
 			throw new NullPointerException("NARG");
 		
 		// Check imports
@@ -130,6 +131,15 @@ public final class CompilationUnitSyntax
 			if (v == null)
 				throw new NullPointerException("NARG");
 			
+			// {@squirreljme.error AQ58 Classes contained within a compilation
+			// unit cannot be static, protected, or private. (The modifiers)}
+			ModifiersSyntax modifiers = v.modifiers();
+			if (modifiers.isStatic() || modifiers.isProtected() ||
+				modifiers.isPrivate())
+				throw new SyntaxDefinitionException(
+					String.format("AQ58 %s", modifiers));
+			
+			// Is okay to use
 			classes.add(v);
 		}
 		
@@ -139,6 +149,17 @@ public final class CompilationUnitSyntax
 			new ImportStatementSyntax[imports.size()]);
 		this._classes = classes.<ClassSyntax>toArray(
 			new ClassSyntax[classes.size()]);
+	}
+	
+	/**
+	 * Returns the classes which have been defined.
+	 *
+	 * @return The defined classes.
+	 * @since 2018/05/07
+	 */
+	public final ClassSyntax[] classes()
+	{
+		return this._classes.clone();
 	}
 	
 	/**
@@ -162,6 +183,19 @@ public final class CompilationUnitSyntax
 	}
 	
 	/**
+	 * Returns the package that this compilation unit is within.
+	 *
+	 * @return The package of the compilation unit or {@code null} if it is
+	 * not in one.
+	 * @since 2018/05/07
+	 */
+	public final BinaryName inPackage()
+	{
+		QualifiedIdentifierSyntax inpackage = this.inpackage;
+		return (inpackage == null ? null : inpackage.name());
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/04/21
 	 */
@@ -177,7 +211,7 @@ public final class CompilationUnitSyntax
 	 * @param __in The input token source.
 	 * @return The parsed compilation unit.
 	 * @throws NullPointerException On null arguments.
-	 * @throws SyntaxParseException If the structure is not valid.
+	 * @throws SyntaxParseException If the syntax is not valid.
 	 * @since 2018/04/21
 	 */
 	public static CompilationUnitSyntax parse(BufferedTokenSource __in)
