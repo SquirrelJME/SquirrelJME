@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.javac;
+package net.multiphasicapps.javac.structure;
 
 /**
  * This represents the symbol name of a package, it is mostly intended to
