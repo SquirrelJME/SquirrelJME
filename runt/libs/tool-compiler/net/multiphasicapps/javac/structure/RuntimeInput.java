@@ -169,7 +169,7 @@ public final class RuntimeInput
 		try
 		{
 			// The package information has no class name
-			if (basename.equals("package-info"))
+			if (baseclassname.equals("package-info"))
 				classname = null;
 			else
 				classname = new BinaryName(basename);
@@ -230,6 +230,10 @@ public final class RuntimeInput
 		ClassSyntax[] classes = cus.classes();
 		if (classname != null)
 		{
+			// {@squirreljme.error AQ5b Source file declares no classes.}
+			if (classes.length <= 0)
+				throw new StructureException(sfn, "AQ5b");
+			
 			// Find the public class
 			ClassSyntax pubclass = null;
 			for (ClassSyntax cs : classes)
@@ -248,6 +252,12 @@ public final class RuntimeInput
 					pubclass = cs;
 				}
 			}
+			
+			// If only a single class is declared and no public class exists
+			// then the only class which exists there must have a matching
+			// name
+			if (pubclass == null && classes.length == 1)
+				pubclass = classes[0];
 			
 			// {@squirreljme.error AQ5a The name of the public class in the
 			// file does not match the expected name of the source file.
