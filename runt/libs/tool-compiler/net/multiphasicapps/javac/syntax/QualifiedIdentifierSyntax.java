@@ -69,6 +69,17 @@ public final class QualifiedIdentifierSyntax
 	}
 	
 	/**
+	 * Returns the binary name of the identifier.
+	 *
+	 * @return The identifier binary name.
+	 * @since 2018/05/07
+	 */
+	public final BinaryName name()
+	{
+		return this.name;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/04/13
 	 */

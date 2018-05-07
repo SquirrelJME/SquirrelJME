@@ -199,7 +199,7 @@ public final class ClassSyntax
 	@Override
 	public final ModifiersSyntax modifiers()
 	{
-		throw new todo.TODO();
+		return this.modifiers;
 	}
 	
 	/**
@@ -209,7 +209,7 @@ public final class ClassSyntax
 	@Override
 	public final ClassIdentifier name()
 	{
-		throw new todo.TODO();
+		return this.name;
 	}
 	
 	/**
