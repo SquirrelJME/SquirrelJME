@@ -278,9 +278,10 @@ public final class RuntimeInput
 		
 		// So now that the source file has been parsed the resulting syntax
 		// needs to be parsed itself to load structure data from it
-		new CompilationUnitParser(cus, this.structures).run();
-		
-		throw new todo.TODO();
+		if (classname != null)
+			new CompilationUnitParser(cus, this.structures).run();
+		else
+			new PackageInfoParser(cus, this.structures).run();
 	}
 	
 	/**
