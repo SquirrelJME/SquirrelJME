@@ -11,6 +11,7 @@
 package net.multiphasicapps.javac.syntax;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
@@ -25,6 +26,7 @@ import net.multiphasicapps.javac.token.TokenType;
  * @since 2018/04/21
  */
 public final class ModifiersSyntax
+	implements Iterable<ModifierSyntax>
 {
 	/** The modifiers to use. */
 	private final Set<ModifierSyntax> _modifiers;	
@@ -104,6 +106,16 @@ public final class ModifiersSyntax
 	 */
 	@Override
 	public final int hashCode()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/05/07
+	 */
+	@Override
+	public final Iterator<ModifierSyntax> iterator()
 	{
 		throw new todo.TODO();
 	}
@@ -227,6 +239,19 @@ public final class ModifiersSyntax
 	public final boolean isVolatile()
 	{
 		return this._modifiers.contains(BasicModifierSyntax.VOLATILE);
+	}
+	
+	/**
+	 * Returns the modifiers that have been declared.
+	 *
+	 * @return The declared modifiers.
+	 * @since 2018/05/07
+	 */
+	public final ModifierSyntax[] modifiers()
+	{
+		Set<ModifierSyntax> modifiers = this._modifiers;
+		return modifiers.<ModifierSyntax>toArray(
+			new ModifierSyntax[modifiers.size()]);
 	}
 	
 	/**

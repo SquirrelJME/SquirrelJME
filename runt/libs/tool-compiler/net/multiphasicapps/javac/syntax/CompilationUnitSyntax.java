@@ -196,6 +196,17 @@ public final class CompilationUnitSyntax
 	}
 	
 	/**
+	 * Returns the modifiers used for the package.
+	 *
+	 * @return The package modifiers.
+	 * @since 2018/05/07
+	 */
+	public final ModifiersSyntax packageModifiers()
+	{
+		return this.modifiers;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/04/21
 	 */

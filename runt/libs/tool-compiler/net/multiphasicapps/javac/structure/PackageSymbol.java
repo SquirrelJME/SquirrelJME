@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.javac.structure;
 
+import net.multiphasicapps.classfile.BinaryName;
+
 /**
  * This represents the symbol name of a package, it is mostly intended to
  * handle {@code package-info} files and potentially associate any annotations
@@ -20,6 +22,25 @@ package net.multiphasicapps.javac.structure;
 public final class PackageSymbol
 	implements StructureSymbol
 {
+	/** The binary name of the package. */
+	protected final BinaryName name;
+	
+	/**
+	 * Initializes the symbol.
+	 *
+	 * @param __bn The binary name used.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/05/07
+	 */
+	public PackageSymbol(BinaryName __n)
+		throws NullPointerException
+	{
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		this.name = __n;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/05/05
@@ -27,7 +48,14 @@ public final class PackageSymbol
 	@Override
 	public final boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		if (this == __o)
+			return true;
+		
+		if (!(__o instanceof PackageSymbol))
+			return false;
+		
+		PackageSymbol o = (PackageSymbol)__o;
+		return this.name.equals(o.name);
 	}
 	
 	/**
@@ -37,7 +65,7 @@ public final class PackageSymbol
 	@Override
 	public final int hashCode()
 	{
-		throw new todo.TODO();
+		return this.name.hashCode();
 	}
 	
 	/**
@@ -47,7 +75,7 @@ public final class PackageSymbol
 	@Override
 	public final String toString()
 	{
-		throw new todo.TODO();
+		return this.name.toString();
 	}
 }
 
