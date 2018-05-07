@@ -10,7 +10,12 @@
 
 package net.multiphasicapps.javac.structure;
 
+import java.util.ArrayList;
+import java.util.List;
+import net.multiphasicapps.javac.syntax.AnnotationSyntax;
 import net.multiphasicapps.javac.syntax.CompilationUnitSyntax;
+import net.multiphasicapps.javac.syntax.ModifiersSyntax;
+import net.multiphasicapps.javac.syntax.ModifierSyntax;
 
 /**
  * This parses the package information source file and for the most part is
@@ -52,6 +57,26 @@ public final class PackageInfoParser
 	@Override
 	public final void run()
 	{
+		CompilationUnitSyntax input = this.input;
+		Structures output = this.output;
+		
+		// Parse package annotations, if any
+		List<AnnotationModifier> annotations = new ArrayList<>();
+		for (ModifierSyntax modifier : input.packageModifiers().modifiers())
+		{
+			// Only annotation are valid for packages
+			AnnotationSyntax as = (AnnotationSyntax)modifier;
+			
+			throw new todo.TODO();
+		}
+		
+		// Build the symbol from the package
+		PackageSymbol psym = new PackageSymbol(input.inPackage());
+		
+		// {@squirreljme.error AQ5c Duplicate parse of package.}
+		if (output.contains(psym))
+			throw new RuntimeException("AQ5c");
+		
 		throw new todo.TODO();
 	}
 }

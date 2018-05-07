@@ -51,6 +51,11 @@ public final class CompilationUnitParser
 	@Override
 	public final void run()
 	{
+		// Check if the package the classes are in has to be processed (if it
+		// is in a package)
+		if (true)
+			throw new todo.TODO();
+		
 		throw new todo.TODO();
 	}
 }
