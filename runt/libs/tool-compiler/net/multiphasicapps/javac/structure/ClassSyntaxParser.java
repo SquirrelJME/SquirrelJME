@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.javac.structure;
 
+import java.util.ArrayList;
+import java.util.List;
+import net.multiphasicapps.javac.syntax.ClassConstructorSyntax;
 import net.multiphasicapps.javac.syntax.ClassSyntax;
 import net.multiphasicapps.javac.syntax.MemberSyntax;
 import net.multiphasicapps.javac.syntax.TypeSyntax;
@@ -66,6 +69,7 @@ public final class ClassSyntaxParser
 	{
 		ClassSyntax current = this.current;
 		ClassNameLookup namelookup = this.namelookup;
+		RuntimeInput runtime = this.runtime;
 		
 		// Handle extends of the class
 		for (TypeSyntax t : current.extending())
@@ -76,10 +80,53 @@ public final class ClassSyntaxParser
 			throw new todo.TODO();
 		
 		// Handle class members
-		for (MemberSyntax m: current.members())
-			throw new todo.TODO();
+		List<ClassMemberStructure> members = new ArrayList<>();
+		for (MemberSyntax m : current.members())
+		{
+			// Is just another class to be parsed
+			if (m instanceof ClassSyntax)
+			{
+				ClassSyntax xm = (ClassSyntax)m;
+				
+				// Run that class through the processor
+				new ClassSyntaxParser(current, xm,
+					new ClassNameLookup(namelookup, xm), runtime).run();
+				
+				throw new todo.TODO();
+			}
+			
+			// Class constructor
+			else if (m instanceof ClassConstructorSyntax)
+				members.add(this.__parseConstructor(
+					(ClassConstructorSyntax)m));
+			
+			// Unhandled member type
+			else
+				throw new RuntimeException(String.format("OOPS %s",
+					m.getClass()));
+		}
 		
 		// Build class structure
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Parses the class constructor syntax and returns a structure for the
+	 * class constructor.
+	 *
+	 * @param __syn The input syntax.
+	 * @return The resulting structure.
+	 * @throws NullPointerException On null arguments.
+	 * @throws StructureException If the structure is not valid.
+	 * @since 2018/05/08
+	 */
+	private final ClassConstructorStructure __parseConstructor(
+		ClassConstructorSyntax __syn)
+		throws NullPointerException, StructureException
+	{
+		if (__syn == null)
+			throw new NullPointerException("NARG");
+		
 		throw new todo.TODO();
 	}
 }
