@@ -1,0 +1,34 @@
+# 2018/05/07
+
+## 15:37
+
+So I got the Amiga documentation books that I need to port SquirrelJME to the
+Amiga so this is definitely going to be a reality.
+
+## 15:47
+
+Okay so for parsing classes, name resolution will be the most complex and it
+will require some rather complex handling to determine what everything refers
+to and such. There will definitely be some recursive elements to the parses
+and the big thing will be determining what a name means.
+
+## 15:59
+
+Actually to determine some base things, I think it would be best to scan the
+entire class path for classes and determine which classes and packages are
+available to the compiler. Also have an idea, the package info could be
+processed in any order for the most case. Also the compilation unit rather
+needs a name too.
+
+## 16:02
+
+Basically, the compilation unit parser could check, well maybe the syntax
+parser could perform some basic checks to make sure things are sane.
+
+## 16:59
+
+Actually, I do not need to worry about some parts of the syntax such as those
+in the blocks of code for methods, just need to know them for fields and
+annotations for the most part. I am just building a structure of things such
+as classes and really just need to perform resolutions and such as to what
+refers to what.
