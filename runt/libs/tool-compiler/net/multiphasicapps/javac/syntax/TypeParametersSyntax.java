@@ -12,6 +12,7 @@ package net.multiphasicapps.javac.syntax;
 
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.Token;
@@ -24,6 +25,7 @@ import net.multiphasicapps.javac.token.TokenType;
  * @since 2018/04/30
  */
 public final class TypeParametersSyntax
+	implements Iterable<TypeParameterSyntax>
 {
 	/** Type parameters used. */
 	private final TypeParameterSyntax[] _params;
@@ -86,6 +88,17 @@ public final class TypeParametersSyntax
 	public final int hashCode()
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/05/07
+	 */
+	@Override
+	public final Iterator<TypeParameterSyntax> iterator()
+	{
+		return Arrays.<TypeParameterSyntax>asList(this._params.clone()).
+			iterator();
 	}
 	
 	/**

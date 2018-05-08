@@ -11,6 +11,7 @@
 package net.multiphasicapps.javac.syntax;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -194,6 +195,65 @@ public final class ClassSyntax
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2018/05/08
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the types this class extends.
+	 *
+	 * @return The classes which this extends.
+	 * @since 2018/05/08
+	 */
+	public final TypeSyntax[] extending()
+	{
+		return this._extends.clone();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/05/08
+	 */
+	@Override
+	public final int hashCode()
+	{
+		return this.type.hashCode() ^
+			this.modifiers.hashCode() ^
+			this.name.hashCode() ^
+			this.typeparams.hashCode() ^
+			Arrays.asList(this._extends).hashCode() ^
+			Arrays.asList(this._implements).hashCode() ^
+			Arrays.asList(this._members).hashCode();
+	}
+	
+	/**
+	 * Returns the types this class implements.
+	 *
+	 * @return The classes this implements.
+	 * @since 2018/05/08
+	 */
+	public final TypeSyntax[] implementing()
+	{
+		return this._implements.clone();
+	}
+	
+	/**
+	 * Returns the members of this class.
+	 *
+	 * @return The class members.
+	 * @since 2018/05/08
+	 */
+	public final MemberSyntax[] members()
+	{
+		return this._members.clone();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/04/29
 	 */
 	@Override
@@ -210,6 +270,38 @@ public final class ClassSyntax
 	public final ClassIdentifier name()
 	{
 		return this.name;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/05/08
+	 */
+	@Override
+	public final String toString()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the type of class this is.
+	 *
+	 * @return The class type.
+	 * @since 2018/05/08
+	 */
+	public final ClassSyntaxType type()
+	{
+		return this.type;
+	}
+	
+	/**
+	 * Returns the type parameters for this class.
+	 *
+	 * @return The type parameters used.
+	 * @since 2018/05/08
+	 */
+	public final TypeParametersSyntax typeParameters()
+	{
+		return this.typeparams;
 	}
 	
 	/**

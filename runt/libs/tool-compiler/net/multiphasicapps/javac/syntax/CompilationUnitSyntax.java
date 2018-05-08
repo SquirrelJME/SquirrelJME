@@ -125,7 +125,7 @@ public final class CompilationUnitSyntax
 		}
 		
 		// Check classes
-		Set<ClassSyntax> classes = new LinkedHashSet<>();
+		List<ClassSyntax> classes = new ArrayList<>();
 		for (ClassSyntax v : __classes)
 		{
 			if (v == null)
