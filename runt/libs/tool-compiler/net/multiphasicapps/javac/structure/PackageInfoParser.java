@@ -70,14 +70,9 @@ public final class PackageInfoParser
 			throw new todo.TODO();
 		}
 		
-		// Build the symbol from the package
-		PackageSymbol psym = new PackageSymbol(input.inPackage());
-		
-		// {@squirreljme.error AQ5c Duplicate parse of package.}
-		if (output.contains(psym))
-			throw new RuntimeException("AQ5c");
-		
-		throw new todo.TODO();
+		// Store it
+		output.put(new PackageStructure(new PackageSymbol(input.inPackage()),
+			annotations));
 	}
 }
 
