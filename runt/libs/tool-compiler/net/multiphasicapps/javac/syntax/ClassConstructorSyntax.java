@@ -102,6 +102,17 @@ public final class ClassConstructorSyntax
 	}
 	
 	/**
+	 * Returns the code for this constructor if there is any.
+	 *
+	 * @return The method code, may be {@code null} if there is none.
+	 * @since 2018/05/08
+	 */
+	public final UnparsedExpressions code()
+	{
+		return this.code;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/04/28
 	 */
@@ -109,6 +120,17 @@ public final class ClassConstructorSyntax
 	public final boolean equals(Object __o)
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the formal parameters for the constructor.
+	 *
+	 * @return The constructor formal parameters.
+	 * @since 2018/05/08
+	 */
+	public final FormalParametersSyntax formalParameters()
+	{
+		return this.parameters;
 	}
 	
 	/**
@@ -142,6 +164,17 @@ public final class ClassConstructorSyntax
 	}
 	
 	/**
+	 * Returns the types which are thrown from this constructor.
+	 *
+	 * @return The types which are thrown.
+	 * @since 2018/05/08
+	 */
+	public final QualifiedIdentifierSyntax[] thrownTypes()
+	{
+		return this._thrown.clone();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/04/28
 	 */
@@ -149,6 +182,17 @@ public final class ClassConstructorSyntax
 	public final String toString()
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the type parameters for the constructor.
+	 *
+	 * @return The constructor type parameters.
+	 * @since 2018/05/08
+	 */
+	public final TypeParametersSyntax typeParameters()
+	{
+		return this.typeparameters;
 	}
 	
 	/**
