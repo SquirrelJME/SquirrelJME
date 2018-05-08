@@ -11,6 +11,8 @@
 package net.multiphasicapps.javac.structure;
 
 import net.multiphasicapps.javac.syntax.ClassSyntax;
+import net.multiphasicapps.javac.syntax.MemberSyntax;
+import net.multiphasicapps.javac.syntax.TypeSyntax;
 
 /**
  * This class parses individual classes.
@@ -62,6 +64,22 @@ public final class ClassSyntaxParser
 	@Override
 	public final void run()
 	{
+		ClassSyntax current = this.current;
+		ClassNameLookup namelookup = this.namelookup;
+		
+		// Handle extends of the class
+		for (TypeSyntax t : current.extending())
+			throw new todo.TODO();
+		
+		// Handle implements of the class
+		for (TypeSyntax t : current.implementing())
+			throw new todo.TODO();
+		
+		// Handle class members
+		for (MemberSyntax m: current.members())
+			throw new todo.TODO();
+		
+		// Build class structure
 		throw new todo.TODO();
 	}
 }

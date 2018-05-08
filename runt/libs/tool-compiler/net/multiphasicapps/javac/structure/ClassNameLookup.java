@@ -11,6 +11,8 @@
 package net.multiphasicapps.javac.structure;
 
 import net.multiphasicapps.javac.syntax.ClassSyntax;
+import net.multiphasicapps.javac.syntax.TypeParameterSyntax;
+import net.multiphasicapps.javac.syntax.TypeParametersSyntax;
 
 /**
  * This is used to lookup fields, methods, and identifiers within a class
@@ -43,6 +45,11 @@ public final class ClassNameLookup
 		
 		this.parent = __parent;
 		this.current = __cur;
+		
+		// Determine if there are any type parameters which need their meaning
+		// defined
+		for (TypeParameterSyntax typeparam : __cur.typeParameters())
+			throw new todo.TODO();
 	}
 }
 
