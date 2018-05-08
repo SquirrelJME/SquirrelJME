@@ -110,14 +110,33 @@ public final class RuntimeInput
 	 * Prcoesses a single class file.
 	 *
 	 * @param __fn The class file name to process.
-	 * @throws StructureException If the source structure is not valid.
 	 * @throws NullPointerException On null arguments.
+	 * @throws StructureException If the class structure is not valid.
 	 * @since 2018/05/05
 	 */
 	public final void processClassFile(String __fn)
-		throws StructureException, NullPointerException
+		throws NullPointerException, StructureException
 	{
 		if (__fn == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Processes the specified package and initializes it from class files
+	 * or source code.
+	 *
+	 * @param __ps The package to initialize.
+	 * @throws NullPointerException On null arguments.
+	 * @throws StructureException If the specified package does not exist or
+	 * is not valid.
+	 * @since 2018/05/08
+	 */
+	public final void processPackage(PackageSymbol __ps)
+		throws NullPointerException, StructureException
+	{
+		if (__ps == null)
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
