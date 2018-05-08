@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.javac.structure;
 
+import net.multiphasicapps.classfile.BinaryName;
 import net.multiphasicapps.javac.syntax.CompilationUnitSyntax;
 
 /**
@@ -55,10 +56,19 @@ public final class CompilationUnitParser
 	@Override
 	public final void run()
 	{
-		// Check if the package the classes are in has to be processed (if it
-		// is in a package)
-		if (true)
-			throw new todo.TODO();
+		CompilationUnitSyntax input = this.input;
+		RuntimeInput runtime = this.runtime;
+		Structures output = this.output;
+		
+		// Get the package this is in
+		BinaryName bninpackage = input.inPackage();
+		PackageSymbol inpackage = (bninpackage == null ? null :
+			new PackageSymbol(bninpackage));
+		
+		// Check if the package for this class needs to be processed (searched
+		// for annotations and such)
+		if (inpackage != null && !output.contains(inpackage))
+			runtime.processPackage(inpackage);
 		
 		throw new todo.TODO();
 	}
