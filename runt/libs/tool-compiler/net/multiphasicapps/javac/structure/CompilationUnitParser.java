@@ -11,6 +11,7 @@
 package net.multiphasicapps.javac.structure;
 
 import net.multiphasicapps.classfile.BinaryName;
+import net.multiphasicapps.javac.syntax.ClassSyntax;
 import net.multiphasicapps.javac.syntax.CompilationUnitSyntax;
 
 /**
@@ -69,6 +70,16 @@ public final class CompilationUnitParser
 		// for annotations and such)
 		if (inpackage != null && !output.contains(inpackage))
 			runtime.processPackage(inpackage);
+		
+		// Setup compilation unit name lookup at the top level, which uses
+		// import statements, packages, and the classes that exist for
+		// identifiers
+		CompilationUnitNameLookup nl = new CompilationUnitNameLookup(input,
+			runtime);
+		
+		// Process each individual class
+		for (ClassSyntax cs : input.classes())
+			new ClassSyntaxParser(null, cs, nl, runtime).run();
 		
 		throw new todo.TODO();
 	}
