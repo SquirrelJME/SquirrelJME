@@ -16,7 +16,7 @@ package net.multiphasicapps.javac.structure;
  *
  * @since 2018/05/07
  */
-public abstract class AbstractNameLookup
+public interface NameLookup
 {
 }
 
