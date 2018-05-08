@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.javac.structure;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * This class contains the structure information.
  *
@@ -17,6 +20,10 @@ package net.multiphasicapps.javac.structure;
  */
 public final class Structures
 {
+	/** Mapping of symbols to structures. */
+	private final Map<StructureSymbol, Structure> _structures =
+		new LinkedHashMap<>();
+	
 	/**
 	 * Checks if the loaded structure contains a symbol for the given class.
 	 *
@@ -31,7 +38,36 @@ public final class Structures
 		if (__sym == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		return this._structures.containsKey(__sym);
+	}
+	
+	/**
+	 * Puts the specified structure into the structure map.
+	 *
+	 * @param __s The structure to put.
+	 * @throws NullPointerException On null arguments.
+	 * @throws StructureException If the structure already exists.
+	 * @since 2018/05/07
+	 */
+	public final void put(Structure __s)
+		throws NullPointerException, StructureException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AQ5c Structure has no symbol.}
+		StructureSymbol sym = __s.symbol();
+		if (sym == null)
+			throw new NullPointerException("AQ5c");
+		
+		// {@squirreljme.error AQ5d A structure already exists with the
+		// given symbol. (The symbol)}
+		Map<StructureSymbol, Structure> structures = this._structures;
+		if (structures.containsKey(sym))
+			throw new StructureException(String.format("AQ5d %s", sym));
+		
+		// Associate that structure with this symbol
+		structures.put(sym, __s);
 	}
 }
 
