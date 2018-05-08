@@ -23,6 +23,9 @@ public final class CompilationUnitParser
 	/** The compilation unit being parsed. */
 	protected final CompilationUnitSyntax input;
 	
+	/** The runtime information. */
+	protected final RuntimeInput runtime;
+	
 	/** The output where it is to be stored. */
 	protected final Structures output;
 	
@@ -30,18 +33,19 @@ public final class CompilationUnitParser
 	 * Initializes the parser.
 	 *
 	 * @param __in The compilation unit input.
-	 * @param __out The output structures where things are placed.
+	 * @param __ri The run-time input.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/05/07
 	 */
-	public CompilationUnitParser(CompilationUnitSyntax __in, Structures __out)
+	public CompilationUnitParser(CompilationUnitSyntax __in, RuntimeInput __ri)
 		throws NullPointerException
 	{
-		if (__in == null || __out == null)
+		if (__in == null || __ri == null)
 			throw new NullPointerException("NARG");
 		
 		this.input = __in;
-		this.output = __out;
+		this.runtime = __ri;
+		this.output = __ri.structures();
 	}
 	
 	/**
