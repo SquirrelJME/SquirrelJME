@@ -15,6 +15,8 @@ import java.util.List;
 import net.multiphasicapps.javac.syntax.ClassConstructorSyntax;
 import net.multiphasicapps.javac.syntax.ClassSyntax;
 import net.multiphasicapps.javac.syntax.MemberSyntax;
+import net.multiphasicapps.javac.syntax.TypeParametersSyntax;
+import net.multiphasicapps.javac.syntax.TypeParameterSyntax;
 import net.multiphasicapps.javac.syntax.TypeSyntax;
 
 /**
@@ -128,6 +130,7 @@ public final class ClassSyntaxParser
 			throw new NullPointerException("NARG");
 		
 		ClassSyntax current = this.current;
+		ClassNameLookup namelookup = this.namelookup;
 		
 		/*
 		protected final ModifiersSyntax modifiers;
