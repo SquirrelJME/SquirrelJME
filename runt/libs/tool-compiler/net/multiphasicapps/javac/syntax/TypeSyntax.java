@@ -33,6 +33,23 @@ public final class TypeSyntax
 	protected final int dimensions;
 	
 	/**
+	 * Initializes the type using a basic qualified identifier.
+	 *
+	 * @param __qi The qualified identifier used.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/05/10
+	 */
+	public TypeSyntax(QualifiedIdentifierSyntax __qi)
+		throws NullPointerException
+	{
+		if (__qi == null)
+			throw new NullPointerException("NARG");
+		
+		this.simpletype = new GenericTypeSyntax(__qi);
+		this.dimensions = 0;
+	}
+	
+	/**
 	 * Initializes the type information.
 	 *
 	 * @param __st The simple type.
