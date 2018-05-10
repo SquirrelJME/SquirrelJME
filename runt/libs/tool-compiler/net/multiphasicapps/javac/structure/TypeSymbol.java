@@ -10,26 +10,14 @@
 
 package net.multiphasicapps.javac.structure;
 
-import net.multiphasicapps.javac.syntax.TypeSyntax;
-
 /**
- * This class manages the lookup for names and may recursively lookup what a
- * name means depending on the scope.
+ * This is used for any symbol which represents a type such as a class or
+ * generic type parameter.
  *
- * @since 2018/05/07
+ * @since 2018/05/10
  */
-public interface NameLookup
+public interface TypeSymbol
+	extends StructureSymbol
 {
-	/**
-	 * Looks up the specified type syntax and returns the symbol for it.
-	 *
-	 * @param __ts The type syntax to locate.
-	 * @return The symbol for the given type.
-	 * @throws NullPointerException On null arguments.
-	 * @throws StructureException If no such symbol exists.
-	 * @since 2018/05/10
-	 */
-	public abstract TypeSymbol lookupType(TypeSyntax __ts)
-		throws NullPointerException, StructureException;
 }
 

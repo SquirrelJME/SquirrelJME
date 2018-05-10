@@ -12,9 +12,15 @@ package net.multiphasicapps.javac.structure;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import net.multiphasicapps.classfile.FieldName;
+import net.multiphasicapps.javac.syntax.AnnotationSyntax;
 import net.multiphasicapps.javac.syntax.FormalParametersSyntax;
 import net.multiphasicapps.javac.syntax.FormalParameterSyntax;
+import net.multiphasicapps.javac.syntax.ModifiersSyntax;
+import net.multiphasicapps.javac.syntax.ModifierSyntax;
 
 /**
  * This represents a group of formal parameters.
@@ -55,7 +61,25 @@ public final class FormalParameters
 		if (__fp == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		Set<FieldName> names = new HashSet<>();
+		List<FormalParameter> rv = new ArrayList<>();
+		for (FormalParameter fp : __fp)
+		{
+			if (fp == null)
+				throw new NullPointerException("NARG");
+			
+			// {@squirreljme.error AQ5g Duplicate parameter name. (The name
+			// of the parameter)}
+			FieldName name = fp.name();
+			if (names.contains(name))
+				throw new StructureException(String.format("AQ5g %s", name));
+			names.add(name);
+			
+			rv.add(fp);
+		}
+		
+		this._parameters = rv.<FormalParameter>toArray(
+			new FormalParameter[rv.size()]);
 	}
 	
 	/**
@@ -108,7 +132,19 @@ public final class FormalParameters
 		List<FormalParameter> rv = new ArrayList<>();
 		for (FormalParameterSyntax syn : __syn)
 		{
-			throw new todo.TODO();
+			// Need to check the modifiers to determine if they are annotated
+			// in any way
+			ModifiersSyntax modifiers = syn.modifiers();
+			List<AnnotationModifier> ams = new ArrayList<>();
+			for (ModifierSyntax modifier : modifiers)
+				if (modifier instanceof AnnotationSyntax)
+				{
+					throw new todo.TODO();
+				}
+			
+			// Setup formal parameter
+			rv.add(new FormalParameter(ams, modifiers.isFinal(),
+				__nl.lookupType(syn.type()), syn.name()));
 		}
 		
 		// Create
