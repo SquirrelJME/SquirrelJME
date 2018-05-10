@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.javac.structure;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import net.multiphasicapps.javac.syntax.FormalParametersSyntax;
 import net.multiphasicapps.javac.syntax.FormalParameterSyntax;
 
@@ -20,6 +23,41 @@ import net.multiphasicapps.javac.syntax.FormalParameterSyntax;
  */
 public final class FormalParameters
 {
+	/** The formal parameters which are used. */
+	private final FormalParameter[] _parameters;
+	
+	/**
+	 * Initializes the formal parameters.
+	 *
+	 * @param __fp The input formal parameters.
+	 * @throws NullPointerException On null arguments.
+	 * @throws StructureException If the formal parameters are not valid.
+	 * @since 2018/05/10
+	 */
+	public FormalParameters(FormalParameter... __fp)
+		throws NullPointerException, StructureException
+	{
+		this(Arrays.<FormalParameter>asList((__fp != null ? __fp :
+			new FormalParameter[0])));
+	}
+	
+	/**
+	 * Initializes the formal parameters.
+	 *
+	 * @param __tp The input formal parameters.
+	 * @throws NullPointerException On null arguments.
+	 * @throws StructureException If the formal parameters are not valid.
+	 * @since 2018/05/10
+	 */
+	public FormalParameters(Iterable<FormalParameter> __fp)
+		throws NullPointerException, StructureException
+	{
+		if (__fp == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/05/10
@@ -66,7 +104,15 @@ public final class FormalParameters
 		if (__syn == null || __nl == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Parse each one and wrap
+		List<FormalParameter> rv = new ArrayList<>();
+		for (FormalParameterSyntax syn : __syn)
+		{
+			throw new todo.TODO();
+		}
+		
+		// Create
+		return new FormalParameters(rv);
 	}
 }
 
