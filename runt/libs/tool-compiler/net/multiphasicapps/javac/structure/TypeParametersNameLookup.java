@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.javac.structure;
 
+import net.multiphasicapps.javac.syntax.TypeSyntax;
+
 /**
  * This is a name lookup which additionally supports lookup into a set of
  * type parameters.
@@ -42,6 +44,20 @@ public final class TypeParametersNameLookup
 		
 		this.typeparameters = __tp;
 		this.parent = __parent;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/05/10
+	 */
+	@Override
+	public final TypeSymbol lookupType(TypeSyntax __ts)
+		throws NullPointerException, StructureException
+	{
+		if (__ts == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 }
 

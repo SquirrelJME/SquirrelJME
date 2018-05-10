@@ -13,6 +13,7 @@ package net.multiphasicapps.javac.structure;
 import net.multiphasicapps.javac.syntax.ClassSyntax;
 import net.multiphasicapps.javac.syntax.TypeParameterSyntax;
 import net.multiphasicapps.javac.syntax.TypeParametersSyntax;
+import net.multiphasicapps.javac.syntax.TypeSyntax;
 
 /**
  * This is used to lookup fields, methods, and identifiers within a class
@@ -50,6 +51,20 @@ public final class ClassNameLookup
 		// defined
 		for (TypeParameterSyntax typeparam : __cur.typeParameters())
 			throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/05/10
+	 */
+	@Override
+	public final TypeSymbol lookupType(TypeSyntax __ts)
+		throws NullPointerException, StructureException
+	{
+		if (__ts == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 }
 

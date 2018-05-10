@@ -86,6 +86,28 @@ public final class FormalParameterSyntax
 	}
 	
 	/**
+	 * Returns the modifiers that the formal parameter uses.
+	 *
+	 * @return The modifies for the formal parameter.
+	 * @since 2018/05/10
+	 */
+	public final ModifiersSyntax modifiers()
+	{
+		return this.modifiers;
+	}
+	
+	/**
+	 * Returns the name of the parameter.
+	 *
+	 * @return The name of the parameter.
+	 * @since 2018/05/10
+	 */
+	public final FieldName name()
+	{
+		return this.name;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/04/28
 	 */
@@ -93,6 +115,17 @@ public final class FormalParameterSyntax
 	public final String toString()
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the type of the formal parameter.
+	 *
+	 * @return The type used.
+	 * @since 2018/05/10
+	 */
+	public final TypeSyntax type()
+	{
+		return this.type;
 	}
 }
 
