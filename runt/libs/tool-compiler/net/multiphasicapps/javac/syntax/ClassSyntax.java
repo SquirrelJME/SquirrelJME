@@ -176,6 +176,19 @@ public final class ClassSyntax
 						String.format("AQ4s %s", member.getClass()));
 			}
 			
+			// Check constructor
+			if (member instanceof ClassConstructorSyntax)
+			{
+				ClassConstructorSyntax c = (ClassConstructorSyntax)member;
+				
+				// {@squirreljme.error AQ5e Class constructor name does not
+				// match the name of the class. (This class name; The
+				// constructor name)}
+				if (!__name.toString().equals(c.name().toString()))
+					throw new SyntaxDefinitionException(
+						String.format("AQ5e %s %s", __name, c.name()));
+			}
+			
 			// Is valid
 			membs.add(member);
 		}

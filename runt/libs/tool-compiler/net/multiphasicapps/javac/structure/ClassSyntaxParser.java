@@ -127,6 +127,17 @@ public final class ClassSyntaxParser
 		if (__syn == null)
 			throw new NullPointerException("NARG");
 		
+		ClassSyntax current = this.current;
+		
+		/*
+		protected final ModifiersSyntax modifiers;
+		protected final TypeParametersSyntax typeparameters;
+		protected final MethodName name;
+		protected final UnparsedExpressions code;
+		protected final FormalParametersSyntax parameters;
+		private final QualifiedIdentifierSyntax[] _thrown;
+		*/
+		
 		throw new todo.TODO();
 	}
 }
