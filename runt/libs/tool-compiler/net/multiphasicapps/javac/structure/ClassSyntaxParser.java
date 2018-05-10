@@ -141,6 +141,10 @@ public final class ClassSyntaxParser
 		TypeParametersNameLookup tpnl = new TypeParametersNameLookup(
 			typeparms, namelookup);
 		
+		// Parse formal parameters and perform name lookup
+		FormalParameters fparms = FormalParameters.parseSyntax(
+			__syn.formalParameters(), tpnl);
+		
 		/*
 		protected final ModifiersSyntax modifiers;
 		protected final TypeParametersSyntax typeparameters;
