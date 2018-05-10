@@ -136,6 +136,11 @@ public final class ClassSyntaxParser
 		TypeParameters typeparms = TypeParameters.parseSyntax(
 			__syn.typeParameters(), namelookup);
 		
+		// Setup lookup with type parameters because arguments and throwables
+		// will need to know the types and such
+		TypeParametersNameLookup tpnl = new TypeParametersNameLookup(
+			typeparms, namelookup);
+		
 		/*
 		protected final ModifiersSyntax modifiers;
 		protected final TypeParametersSyntax typeparameters;
