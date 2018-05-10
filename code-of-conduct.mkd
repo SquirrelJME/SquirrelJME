@@ -1,92 +1,76 @@
-# Code of Conduct
+# Contributor Covenant Code of Conduct
 
-This code of conduct outlines our expectations for participants within the
-SquirrelJME community, as well as steps to reporting unacceptable behavior.
-We are committed to providing a welcoming and inspiring community for all and
-expect our code of conduct to be honored. Anyone who violates this code of
-conduct may be frowned upon by the community. Temporary to permanent bans may
-be employed depending on the severity of the issues.
+## Our Pledge
 
-Our open source community strives to:
+In the interest of fostering an open and welcoming environment, we as
+contributors and maintainers pledge to making participation in our project and
+our community a harassment-free experience for everyone, regardless of age,
+body size, disability, ethnicity, gender identity and expression, level of
+experience, education, socio-economic status, nationality, personal appearance,
+race, religion, or sexual identity and orientation.
 
- * **Be friendly and patient.**
-   * By using your imagination, imagine that other entities being communicated
-     with have a round trip response time of up to 8 hours. When one entity
-     does not respond immediately they currently may be busy performing another
-     task or are oblivious to your communications because they have not yet
-     arrived.
- * **Be welcoming.**
-   * We strive to be a community that welcomes and supports entities of all
-     backgrounds and identities for the use of this software. This includes,
-     and is not limited to members of any species (except mosquitoes and
-     wasps), genetic makeup, culture or lack of culture, universal origin,
-     fur/epidermal/scale/feather layer spectral absorption and scattering,
-     citizenship status, current placement on the socio-economical ladder,
-     standard or non-standard test proficiency, physical abilities, physical
-     disabilities, mental abilities, mental disabilities, ratio of one chemical
-     to another chemical, mass, ideological beliefs, tail length, editor
-     preference, operating system preference, file-system preference, CPU
-     architecture placement, preferred energy and nutrient choices,
-     transistor size, clock frequency, garbage collection algorithm, legal
-     entity status, preferred mate qualities, and gender representation.
- * **Be considerate.**
-   * Your work may or may not be used by others and you may or may not depend
-     on the work of others. Any decision you make may or may not affect others,
-     however you should consider the consequences of action or inaction.
-     Remember that we are a universal community, so you might not be
-     communicating in the preferred method that the other entity uses for
-     communication.
- * **Be respectful.**
-   * Not all of use agree or disagree all of the time, however disagreement is
-     no reason to be hostile against other entities. Entities from time to time
-     may become frustrated for various purposes and reasons. However, please
-     do not turn such frustration on other entities. Potential relieving of
-     stress/frustration may be cured by burning calories while looking at the
-     local fauna and carbon-based life, playing a game of falling four piece
-     blocks while avoiding legal action, digging around in a world made up of
-     cubes, absorbing light rays produced by a flat or slightly curved surface,
-     being exposed to high frequency vibrations caused by vibrating
-     metal/plastic diaphragms, consuming a large number of calories, or
-     entering a cycle of rest.
- * **Be careful in the words that we choose.**
-   * We may be a community of professionals but we are also likely a
-     community of hobbyists. Try your best to be kind to other entities, even
-     if they sting and cause severe skin rash. Harassing other entities and
-     employing behaviors for their exclusion is frowned upon.
- * **Try to understand why we disagree.**
-   * Disagreements happen, whether it be social, technical, economical,
-     political, virtual, physical, and mental. Try to construct an argument
-     that is in favor of the other side and weigh them against your own
-     arguments. Resolving of disagreements is important for cooperation,
-     however even if a disagreement cannot be resolved there should be no
-     reason for hostility. Sometimes the very differences of both sides may be
-     correct and a solution forged from both of them. Also, always learn from
-     your mistakes and others mistakes.
- * **Privacy is important.**
-   * Because one entity uses a given open source software does not mean that
-     non-public information must be known. One does not need to know everything
-     about another entity to understand it and to interact with that given
-     entity.
+## Our Standards
 
-# Diversity Statement
+Examples of behavior that contributes to creating a positive environment
+include:
 
-Diversity is important and it is important that entities get along.
-Cooperation is required to escape gravity wells in a sea of deadly radiation,
-in a universe leading to the nullification of energy. There is no real purpose
-in hate as it is only a distraction from reality.
+* Using welcoming and inclusive language
+* Being respectful of differing viewpoints and experiences
+* Gracefully accepting constructive criticism
+* Focusing on what is best for the community
+* Showing empathy towards other community members
 
-# Reporting Unacceptable Behaviors
+Examples of unacceptable behavior by participants include:
 
-If an entity requires that a behavior is to be reported, such behavior should
-be reported in the same area where it has occurred. For example something that
-happens on IRC should be reported on IRC. If this is not possible then another
-alternative may be chosen. Reports must be explained in full detail, otherwise
-a solution cannot be crafted due to a lack of information. The report should
-make sense and not be a hostile attack on another entity.
+* The use of sexualized language or imagery and unwelcome sexual attention or
+  advances
+* Trolling, insulting/derogatory comments, and personal or political attacks
+* Public or private harassment
+* Publishing others' private information, such as a physical or electronic
+  address, without explicit permission
+* Other conduct which could reasonably be considered inappropriate in a
+  professional setting
 
-Note that many social communication systems support blocking and ignoring,
-consider using these as it can nullify the hostile noise.
+## Our Responsibilities
 
-What is not acceptable is attacking those whose behavior is not acceptable. If
-this is done then those entities merge as one.
+Project maintainers are responsible for clarifying the standards of acceptable
+behavior and are expected to take appropriate and fair corrective action in
+response to any instances of unacceptable behavior.
+
+Project maintainers have the right and responsibility to remove, edit, or
+reject comments, commits, code, wiki edits, issues, and other contributions
+that are not aligned to this Code of Conduct, or to ban temporarily or
+permanently any contributor for other behaviors that they deem inappropriate,
+threatening, offensive, or harmful.
+
+## Scope
+
+This Code of Conduct applies both within project spaces and in public spaces
+when an individual is representing the project or its community. Examples of
+representing a project or community include using an official project e-mail
+address, posting via an official social media account, or acting as an
+appointed representative at an online or offline event. Representation of a
+project may be further defined and clarified by project maintainers.
+
+## Enforcement
+
+Instances of abusive, harassing, or otherwise unacceptable behavior may be
+reported by contacting the project team at <xer@multiphasicapps.net>. All
+complaints will be reviewed and investigated and will result in a response that
+is deemed necessary and appropriate to the circumstances. The project team is
+obligated to maintain confidentiality with regard to the reporter of an
+incident. Further details of specific enforcement policies may be posted
+separately.
+
+Project maintainers who do not follow or enforce the Code of Conduct in good
+faith may face temporary or permanent repercussions as determined by other
+members of the project's leadership.
+
+## Attribution
+
+This Code of Conduct is adapted from the [Contributor Covenant][homepage],
+version 1.4, available at
+<https://www.contributor-covenant.org/version/1/4/code-of-conduct.html>.
+
+[homepage]: https://www.contributor-covenant.org
 
