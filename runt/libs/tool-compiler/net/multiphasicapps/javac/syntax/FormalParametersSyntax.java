@@ -12,6 +12,7 @@ package net.multiphasicapps.javac.syntax;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import net.multiphasicapps.classfile.FieldName;
 import net.multiphasicapps.classfile.MethodDescriptor;
@@ -26,6 +27,7 @@ import net.multiphasicapps.javac.token.TokenType;
  * @since 2018/04/29
  */
 public final class FormalParametersSyntax
+	implements Iterable<FormalParameterSyntax>
 {
 	/** Parameters used. */
 	private final FormalParameterSyntax[] _parameters;
@@ -99,6 +101,17 @@ public final class FormalParametersSyntax
 	public final int hashCode()
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/05/10
+	 */
+	@Override
+	public final Iterator<FormalParameterSyntax> iterator()
+	{
+		return Arrays.<FormalParameterSyntax>asList(this._parameters.clone()).
+			iterator();
 	}
 	
 	/**
