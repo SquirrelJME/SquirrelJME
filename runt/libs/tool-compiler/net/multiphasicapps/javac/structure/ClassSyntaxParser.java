@@ -15,6 +15,7 @@ import java.util.List;
 import net.multiphasicapps.javac.syntax.ClassConstructorSyntax;
 import net.multiphasicapps.javac.syntax.ClassSyntax;
 import net.multiphasicapps.javac.syntax.MemberSyntax;
+import net.multiphasicapps.javac.syntax.QualifiedIdentifierSyntax;
 import net.multiphasicapps.javac.syntax.TypeParametersSyntax;
 import net.multiphasicapps.javac.syntax.TypeParameterSyntax;
 import net.multiphasicapps.javac.syntax.TypeSyntax;
@@ -145,16 +146,15 @@ public final class ClassSyntaxParser
 		FormalParameters fparms = FormalParameters.parseSyntax(
 			__syn.formalParameters(), tpnl);
 		
-		/*
-		protected final ModifiersSyntax modifiers;
-		protected final TypeParametersSyntax typeparameters;
-		protected final MethodName name;
-		protected final UnparsedExpressions code;
-		protected final FormalParametersSyntax parameters;
-		private final QualifiedIdentifierSyntax[] _thrown;
-		*/
+		// Parse thrown types
+		List<TypeSymbol> thrown = new ArrayList<>();
+		for (QualifiedIdentifierSyntax qi : __syn.thrownTypes())
+			thrown.add(namelookup.lookupType(new TypeSyntax(qi)));
 		
-		throw new todo.TODO();
+		// Construct class symbol
+		return new ClassConstructorStructure(StructureModifiers.parse(
+			__syn.modifiers(), namelookup), typeparms, fparms, thrown,
+			__syn.code());
 	}
 }
 
