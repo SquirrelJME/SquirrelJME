@@ -13,12 +13,12 @@ package net.multiphasicapps.javac.structure;
 import net.multiphasicapps.classfile.Identifier;
 
 /**
- * This represents a single type parameter which is used to describe generic
- * type information.
+ * This is a symbol which represents the type name of the type parameter.
  *
  * @since 2018/05/10
  */
-public final class TypeParameter
+public final class TypeParameterSymbol
+	implements StructureSymbol
 {
 	/**
 	 * {@inheritDoc}
@@ -36,17 +36,6 @@ public final class TypeParameter
 	 */
 	@Override
 	public final int hashCode()
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * Returns the identifier which represents the type.
-	 *
-	 * @return The symbol identifier.
-	 * @since 2018/05/10
-	 */
-	public final TypeParameterSymbol symbol()
 	{
 		throw new todo.TODO();
 	}

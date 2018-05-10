@@ -132,6 +132,10 @@ public final class ClassSyntaxParser
 		ClassSyntax current = this.current;
 		ClassNameLookup namelookup = this.namelookup;
 		
+		// Parse type parameters
+		TypeParameters typeparms = TypeParameters.parseSyntax(
+			__syn.typeParameters(), namelookup);
+		
 		/*
 		protected final ModifiersSyntax modifiers;
 		protected final TypeParametersSyntax typeparameters;
