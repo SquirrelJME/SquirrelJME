@@ -1,0 +1,8 @@
+# 2018/05/10
+
+## 11:59
+
+At least writing stuff to parse constructors into structures will mean that I
+do not have to repeat the bulk of the parsing code because it will essentially
+be doing the same thing everywhere. Good thing for very similar handling of
+syntax and such.
