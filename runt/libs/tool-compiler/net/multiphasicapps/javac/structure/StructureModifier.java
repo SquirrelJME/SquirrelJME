@@ -8,50 +8,15 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.javac.syntax;
+package net.multiphasicapps.javac.structure;
 
 /**
- * This represents a basic modifier.
+ * This interface represents any modifier which may be associated with a class,
+ * member, or parameter.
  *
- * @since 2018/04/21
+ * @since 2018/05/12
  */
-public enum BasicModifierSyntax
-	implements ModifierSyntax
+public interface StructureModifier
 {
-	/** Public access. */
-	PUBLIC,
-	
-	/** Protected access. */
-	PROTECTED,
-	
-	/** Private access. */
-	PRIVATE,
-	
-	/** Static access. */
-	STATIC,
-	
-	/** Abstract. */
-	ABSTRACT,
-	
-	/** Final. */
-	FINAL,
-	
-	/** Native. */
-	NATIVE,
-	
-	/** Synchronized. */
-	SYNCHRONIZED,
-	
-	/** Transient. */
-	TRANSIENT,
-	
-	/** Volatile. */
-	VOLATILE,
-	
-	/** Strict floating point. */
-	STRICTFP,
-	
-	/** End. */
-	;
 }
 

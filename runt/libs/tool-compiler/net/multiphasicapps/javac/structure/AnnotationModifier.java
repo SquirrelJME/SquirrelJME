@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.javac.structure;
 
+import net.multiphasicapps.javac.syntax.AnnotationSyntax;
+
 /**
  * This represents a modifier which is associated with a package, class,
  * member, or field and it represents the value of an annotation.
@@ -17,6 +19,7 @@ package net.multiphasicapps.javac.structure;
  * @since 2018/05/07
  */
 public final class AnnotationModifier
+	implements StructureModifier
 {
 	/**
 	 * {@inheritDoc}
@@ -45,6 +48,26 @@ public final class AnnotationModifier
 	@Override
 	public final String toString()
 	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Parses the input annotation and sets the modifier for it.
+	 *
+	 * @param __syn The input syntax.
+	 * @param __nl The name lookup for annotation types.
+	 * @return The output modifier.
+	 * @throws NullPointerException On null arguments.
+	 * @throws StructureException On null arguments.
+	 * @since 2018/05/12
+	 */
+	public static AnnotationModifier parse(AnnotationSyntax __syn,
+		NameLookup __nl)
+		throws NullPointerException, StructureException
+	{
+		if (__syn == null || __nl == null)
+			throw new NullPointerException("NARG");
+		
 		throw new todo.TODO();
 	}
 }

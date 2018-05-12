@@ -10,7 +10,11 @@
 
 package net.multiphasicapps.javac.structure;
 
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import net.multiphasicapps.javac.syntax.AnnotationSyntax;
+import net.multiphasicapps.javac.syntax.BasicModifierSyntax;
 import net.multiphasicapps.javac.syntax.ModifiersSyntax;
 import net.multiphasicapps.javac.syntax.ModifierSyntax;
 
@@ -21,6 +25,54 @@ import net.multiphasicapps.javac.syntax.ModifierSyntax;
  */
 public final class StructureModifiers
 {
+	/** The modifiers which are available. */
+	private final Set<StructureModifier> _modifiers;
+	
+	/**
+	 * Initializes the modifiers.
+	 *
+	 * @param __m The input modifiers.
+	 * @throws NullPointerException On null arguments.
+	 * @throws StructureException If the modifiers are not valid.
+	 * @since 2018/05/12
+	 */
+	public StructureModifiers(StructureModifier... __m)
+		throws NullPointerException, StructureException
+	{
+		this(Arrays.<StructureModifier>asList((__m != null ? __m :
+			new StructureModifier[0])));
+	}
+	
+	/**
+	 * Initializes the modifiers.
+	 *
+	 * @param __m The input modifiers.
+	 * @throws NullPointerException On null arguments.
+	 * @throws StructureException If the modifiers are not valid.
+	 * @since 2018/05/12
+	 */
+	public StructureModifiers(Iterable<StructureModifier> __m)
+		throws NullPointerException, StructureException
+	{
+		if (__m == null)
+			throw new NullPointerException("NARG");
+		
+		Set<StructureModifier> rv = new LinkedHashSet<>();
+		for (StructureModifier m : __m)
+		{
+			if (m == null)
+				throw new NullPointerException("NARG");
+			
+			// {@squirreljme.error AQ5h Duplicate modifier. (The modifier)}
+			if (rv.contains(m))
+				throw new StructureException(String.format("AQ5h %s", m));
+			
+			rv.add(m);
+		}
+		
+		this._modifiers = rv;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/05/10
@@ -70,15 +122,77 @@ public final class StructureModifiers
 			throw new NullPointerException("NARG");
 		
 		// Go through all modifiers
+		Set<StructureModifier> rv = new LinkedHashSet<>();
 		for (ModifierSyntax mod : __syn)
 		{
+			// Is this just an annotation?
 			if (mod instanceof AnnotationSyntax)
-				throw new todo.TODO();
+				rv.add(AnnotationModifier.parse((AnnotationSyntax)mod, __nl));
 			
-			throw new todo.TODO();
+			// Standard modifier
+			else if (mod instanceof BasicModifierSyntax)
+			{
+				BasicModifier got;
+				switch ((BasicModifierSyntax)mod)
+				{
+					case PUBLIC:
+						got = BasicModifier.PUBLIC;
+						break;
+						
+					case PROTECTED:
+						got = BasicModifier.PROTECTED;
+						break;
+						
+					case PRIVATE:
+						got = BasicModifier.PRIVATE;
+						break;
+						
+					case STATIC:
+						got = BasicModifier.STATIC;
+						break;
+						
+					case ABSTRACT:
+						got = BasicModifier.ABSTRACT;
+						break;
+						
+					case FINAL:
+						got = BasicModifier.FINAL;
+						break;
+						
+					case NATIVE:
+						got = BasicModifier.NATIVE;
+						break;
+						
+					case SYNCHRONIZED:
+						got = BasicModifier.SYNCHRONIZED;
+						break;
+						
+					case TRANSIENT:
+						got = BasicModifier.TRANSIENT;
+						break;
+						
+					case VOLATILE:
+						got = BasicModifier.VOLATILE;
+						break;
+						
+					case STRICTFP:
+						got = BasicModifier.STRICTFP;
+						break;
+						
+					default:
+						throw new RuntimeException("OOPS");
+				}
+				
+				rv.add(got);
+			}
+			
+			// {@squirreljme.error AQ5i Unsupported modifier type. (The type)}
+			else
+				throw new RuntimeException(String.format("AQ5i %s",
+					mod.getClass()));
 		}
 		
-		throw new todo.TODO();
+		return new StructureModifiers(rv);
 	}
 }
 
