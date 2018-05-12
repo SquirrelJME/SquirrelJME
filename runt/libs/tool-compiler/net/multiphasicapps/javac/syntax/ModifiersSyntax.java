@@ -117,7 +117,9 @@ public final class ModifiersSyntax
 	@Override
 	public final Iterator<ModifierSyntax> iterator()
 	{
-		throw new todo.TODO();
+		Set<ModifierSyntax> modifiers = this._modifiers;
+		return Arrays.<ModifierSyntax>asList(modifiers.<ModifierSyntax>toArray(
+			new ModifierSyntax[modifiers.size()])).iterator();
 	}
 	
 	/**

@@ -10,7 +10,9 @@
 
 package net.multiphasicapps.javac.structure;
 
+import net.multiphasicapps.javac.syntax.AnnotationSyntax;
 import net.multiphasicapps.javac.syntax.ModifiersSyntax;
+import net.multiphasicapps.javac.syntax.ModifierSyntax;
 
 /**
  * Represents modifiers that may be associated with a structure.
@@ -66,6 +68,15 @@ public final class StructureModifiers
 	{
 		if (__syn == null || __nl == null)
 			throw new NullPointerException("NARG");
+		
+		// Go through all modifiers
+		for (ModifierSyntax mod : __syn)
+		{
+			if (mod instanceof AnnotationSyntax)
+				throw new todo.TODO();
+			
+			throw new todo.TODO();
+		}
 		
 		throw new todo.TODO();
 	}
