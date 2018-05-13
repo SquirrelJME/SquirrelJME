@@ -47,7 +47,7 @@ public final class ArrayUtils
 		if (__e == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		return new UnmodifiableArrayList<T>(__e, 0, __e.length);
 	}
 }
 
