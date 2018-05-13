@@ -48,7 +48,7 @@ public final class UnmodifiableIterator<T>
 	@Override
 	public final boolean hasNext()
 	{
-		throw new todo.TODO();
+		return this.source.hasNext();
 	}
 	
 	/**
@@ -59,7 +59,7 @@ public final class UnmodifiableIterator<T>
 	public final T next()
 		throws NoSuchElementException
 	{
-		throw new todo.TODO();
+		return this.source.next();
 	}
 	
 	/**
