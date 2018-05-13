@@ -19,6 +19,7 @@ import java.util.Set;
 import net.multiphasicapps.classfile.ClassIdentifier;
 import net.multiphasicapps.classfile.FieldName;
 import net.multiphasicapps.classfile.MethodName;
+import net.multiphasicapps.collections.UnmodifiableArrayList;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.Token;
 import net.multiphasicapps.javac.token.TokenSource;
@@ -223,9 +224,9 @@ public final class ClassSyntax
 	 * @return The classes which this extends.
 	 * @since 2018/05/08
 	 */
-	public final TypeSyntax[] extending()
+	public final List<TypeSyntax> extending()
 	{
-		return this._extends.clone();
+		return UnmodifiableArrayList.<TypeSyntax>of(this._extends);
 	}
 	
 	/**
@@ -250,9 +251,9 @@ public final class ClassSyntax
 	 * @return The classes this implements.
 	 * @since 2018/05/08
 	 */
-	public final TypeSyntax[] implementing()
+	public final List<TypeSyntax> implementing()
 	{
-		return this._implements.clone();
+		return UnmodifiableArrayList.<TypeSyntax>of(this._implements);
 	}
 	
 	/**
@@ -261,9 +262,9 @@ public final class ClassSyntax
 	 * @return The class members.
 	 * @since 2018/05/08
 	 */
-	public final MemberSyntax[] members()
+	public final List<MemberSyntax> members()
 	{
-		return this._members.clone();
+		return UnmodifiableArrayList.<MemberSyntax>of(this._members);
 	}
 	
 	/**

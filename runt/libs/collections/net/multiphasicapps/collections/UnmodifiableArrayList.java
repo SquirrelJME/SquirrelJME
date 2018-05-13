@@ -49,7 +49,7 @@ public final class UnmodifiableArrayList<T>
 	{
 		if (__a == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) >= __a.length)
+		if (__o < 0 || __l < 0 || (__o + __l) > __a.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
 		this._source = __a;
@@ -116,7 +116,7 @@ public final class UnmodifiableArrayList<T>
 	{
 		if (__a == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) >= __a.length)
+		if (__o < 0 || __l < 0 || (__o + __l) > __a.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
 		return new UnmodifiableArrayList<T>(__a, __o, __l);
