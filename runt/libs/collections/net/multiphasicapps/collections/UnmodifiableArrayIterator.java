@@ -62,8 +62,8 @@ public final class UnmodifiableArrayIterator<T>
 	 */
 	@Override
 	public final boolean hasNext()
-	{
-		throw new todo.TODO();
+	{	
+		return (this._at < this.limit);
 	}
 	
 	/**
@@ -74,7 +74,16 @@ public final class UnmodifiableArrayIterator<T>
 	public final T next()
 		throws NoSuchElementException
 	{
-		throw new todo.TODO();
+		// Is at the end?
+		int at = this._at;
+		if (at >= this.limit)
+		{
+			this._source = null;
+			throw new NoSuchElementException("NSEE");
+		}
+		
+		this._at = at + 1;
+		return this._source[at];
 	}
 	
 	/**
