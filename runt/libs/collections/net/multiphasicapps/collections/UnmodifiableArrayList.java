@@ -65,7 +65,10 @@ public final class UnmodifiableArrayList<T>
 	public final T get(int __i)
 		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		if (__i < 0 || __i >= this.length)
+			throw new IndexOutOfBoundsException(String.format("IOOB %d", __i));
+		
+		return this._source[this.offset + __i];
 	}
 	
 	/**
