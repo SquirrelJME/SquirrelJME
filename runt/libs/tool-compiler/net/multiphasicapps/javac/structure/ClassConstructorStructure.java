@@ -20,6 +20,21 @@ import net.multiphasicapps.javac.syntax.UnparsedExpressions;
 public final class ClassConstructorStructure
 	implements ClassMemberStructure
 {
+	/** The modifiers used for the class. */
+	protected final StructureModifiers modifiers;
+	
+	/** The type parameters. */
+	protected final TypeParameters typeparameters;
+	
+	/** The formal parameters. */
+	protected final FormalParameters formalparameters;
+	
+	/** The unparsed code block, if any. */
+	protected final UnparsedExpressions code;
+	
+	/** The thrown types. */
+	private final TypeSymbol[] _thrown;
+	
 	/**
 	 * Initializes the class constructor structure.
 	 *
