@@ -10,30 +10,31 @@
 
 package net.multiphasicapps.collections;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.AbstractList;
+import java.util.RandomAccess;
+import java.util.List;
 
 /**
- * This is an iterator where elements cannot be removed and where it iterates
- * over an array.
+ * This is a list representation of an array which cannot be modified.
  *
- * @param <T> The type to use.
+ * @param <T> The type of values to store.
  * @since 2018/05/13
  */
-public final class UnmodifiableArrayIterator<T>
-	implements Iterator<T>
+public final class UnmodifiableArrayList<T>
+	extends AbstractList<T>
+	implements RandomAccess
 {
-	/** The element limit. */
-	protected final int limit;
+	/** The element offset. */
+	protected final int offset;
 	
-	/** The source elements, cleared when empty. */
-	private T[] _source;
+	/** The element length. */
+	protected final int length;
 	
-	/** The current element. */
-	private int _at;
+	/** The source elements. */
+	private final T[] _source;
 	
 	/**
-	 * Initializes the iterator.
+	 * Initializes the list.
 	 *
 	 * @param __a The input array.
 	 * @param __o The offset into the array.
@@ -43,7 +44,7 @@ public final class UnmodifiableArrayIterator<T>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/05/13
 	 */
-	UnmodifiableArrayIterator(T[] __a, int __o, int __l)
+	UnmodifiableArrayList(T[] __a, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, NullPointerException
 	{
 		if (__a == null)
@@ -51,51 +52,30 @@ public final class UnmodifiableArrayIterator<T>
 		if (__o < 0 || __l < 0 || (__o + __l) >= __a.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
-		this.limit = __o + __l;
 		this._source = __a;
-		this._at = __o;
+		this.offset = __o;
+		this.length = __l;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2108/05/13
+	 * @since 2018/05/13
 	 */
 	@Override
-	public final boolean hasNext()
-	{	
-		return (this._at < this.limit);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2108/05/13
-	 */
-	@Override
-	public final T next()
-		throws NoSuchElementException
+	public final T get(int __i)
+		throws IndexOutOfBoundsException
 	{
-		// Is at the end?
-		int at = this._at;
-		if (at >= this.limit)
-		{
-			this._source = null;
-			throw new NoSuchElementException("NSEE");
-		}
-		
-		this._at = at + 1;
-		return this._source[at];
+		throw new todo.TODO();
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @throws UnsupportedOperationException Always.
-	 * @since 2108/05/13
+	 * @since 2018/05/13
 	 */
 	@Override
-	public final void remove()
-		throws UnsupportedOperationException
+	public final int size()
 	{
-		throw new UnsupportedOperationException("RORO");
+		return this.length;
 	}
 	
 	/**
@@ -107,13 +87,13 @@ public final class UnmodifiableArrayIterator<T>
 	 * @since 2018/05/13
 	 */
 	@SuppressWarnings({"unchecked"})
-	public static <T> Iterator<T> of(T... __a)
+	public static <T> List<T> of(T... __a)
 		throws NullPointerException
 	{
 		if (__a == null)
 			throw new NullPointerException("NARG");
 		
-		return new UnmodifiableArrayIterator<T>(__a, 0, __a.length);
+		return new UnmodifiableArrayList<T>(__a, 0, __a.length);
 	}
 	
 	/**
@@ -128,7 +108,7 @@ public final class UnmodifiableArrayIterator<T>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/05/13
 	 */
-	public static <T> Iterator<T> of(T[] __a, int __o, int __l)
+	public static <T> List<T> of(T[] __a, int __o, int __l)
 		throws ArrayIndexOutOfBoundsException, NullPointerException
 	{
 		if (__a == null)
@@ -136,7 +116,7 @@ public final class UnmodifiableArrayIterator<T>
 		if (__o < 0 || __l < 0 || (__o + __l) >= __a.length)
 			throw new ArrayIndexOutOfBoundsException("IOOB");
 		
-		return new UnmodifiableArrayIterator<T>(__a, __o, __l);
+		return new UnmodifiableArrayList<T>(__a, __o, __l);
 	}
 }
 
