@@ -98,8 +98,7 @@ public final class TypeParametersSyntax
 	@Override
 	public final Iterator<TypeParameterSyntax> iterator()
 	{
-		return Arrays.<TypeParameterSyntax>asList(this._params.clone()).
-			iterator();
+		return UnmodifiableIterator.<TypeParameterSyntax>of(this._params);
 	}
 	
 	/**
