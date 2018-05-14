@@ -6,7 +6,7 @@ X-SquirrelJME-Vendor: Stephanie Gawroriski
 X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This dumps information about a class file similar to 
  the javap tool.
-X-SquirrelJME-Depends: dump-class zip
+X-SquirrelJME-Depends: tool-classfile zip
 Microedition-Configuration: CLDC-1.8-Compact
 Main-Class: net.multiphasicapps.dumpclass.Main
 
