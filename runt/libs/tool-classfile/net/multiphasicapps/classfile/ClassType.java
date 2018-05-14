@@ -10,21 +10,26 @@
 
 package net.multiphasicapps.classfile;
 
-import java.util.List;
-
 /**
- * This represents any element which has been annotated.
+ * Returns the type of class this is.
  *
- * @since 2018/03/06
+ * @since 2018/05/14
  */
-public interface Annotated
+public enum ClassType
 {
-	/**
-	 * Returns all of the annotations which have been specified for this.
-	 *
-	 * @return The annotated elements.
-	 * @since 2018/03/06
-	 */
-	public abstract List<AnnotationElement> annotatedElements();
+	/** Normal class. */
+	CLASS,
+	
+	/** Interface. */
+	INTERFACE,
+	
+	/** Enumeration. */
+	ENUM,
+	
+	/** Annotation. */
+	ANNOTATION,
+	
+	/** End. */
+	;
 }
 

@@ -15,7 +15,9 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
+import net.multiphasicapps.collections.UnmodifiableArrayList;
 import net.multiphasicapps.io.SizeLimitedInputStream;
 
 /**
@@ -52,7 +54,7 @@ public final class ClassFile
 	private final Method[] _methods;
 	
 	/** Annotated values. */
-	private final AnnotatedValue[] _annotatedvalues;
+	private final AnnotationElement[] _annotations;
 	
 	/**
 	 * Initializes the class file.
@@ -71,7 +73,7 @@ public final class ClassFile
 	 */
 	ClassFile(ClassVersion __ver, ClassFlags __cf, ClassName __tn,
 		ClassName __sn, ClassName[] __in, Field[] __fs, Method[] __ms,
-		AnnotatedValue[] __avs)
+		AnnotationElement[] __avs)
 		throws InvalidClassFormatException, NullPointerException
 	{
 		if (__ver == null || __cf == null || __tn == null ||
@@ -99,7 +101,7 @@ public final class ClassFile
 		this._interfaces = __in;
 		this._fields = __fs;
 		this._methods = __ms;
-		this._annotatedvalues = __avs;
+		this._annotations = __avs;
 	}
 	
 	/**
@@ -107,9 +109,10 @@ public final class ClassFile
 	 * @since 2018/03/06
 	 */
 	@Override
-	public final AnnotatedValue[] annotatedValues()
+	public final List<AnnotationElement> annotatedElements()
 	{
-		return this._annotatedvalues.clone();
+		return UnmodifiableArrayList.<AnnotationElement>of(
+			this._annotations);
 	}
 	
 	/**
@@ -118,9 +121,9 @@ public final class ClassFile
 	 * @return The class fields.
 	 * @since 2017/10/12
 	 */
-	public final Field[] fields()
+	public final List<Field> fields()
 	{
-		return this._fields.clone();
+		return UnmodifiableArrayList.<Field>of(this._fields);
 	}
 	
 	/**
@@ -140,9 +143,9 @@ public final class ClassFile
 	 * @return The implemented interface names.
 	 * @since 2017/10/09
 	 */
-	public final ClassName[] interfaceNames()
+	public final List<ClassName> interfaceNames()
 	{
-		return this._interfaces.clone();
+		return UnmodifiableArrayList.<ClassName>of(this._interfaces);
 	}
 	
 	/**
@@ -151,9 +154,9 @@ public final class ClassFile
 	 * @return The class methods.
 	 * @since 2017/10/09
 	 */
-	public final Method[] methods()
+	public final List<Method> methods()
 	{
-		return this._methods.clone();
+		return UnmodifiableArrayList.<Method>of(this._methods);
 	}
 	
 	/**
@@ -176,6 +179,24 @@ public final class ClassFile
 	public final ClassName thisName()
 	{
 		return this.thisname;
+	}
+	
+	/**
+	 * Returns the type of class this is.
+	 *
+	 * @return The class type.
+	 * @since 2018/05/14
+	 */
+	public final ClassType type()
+	{
+		ClassFlags flags = this.classflags;
+		if (flags.isEnum())
+			return ClassType.ENUM;
+		else if (flags.isAnnotation())
+			return ClassType.ANNOTATION;
+		else if (flags.isInterface())
+			return ClassType.INTERFACE;
+		return ClassType.CLASS;
 	}
 	
 	/**
@@ -206,7 +227,7 @@ public final class ClassFile
 			new ClassFlags(ClassFlag.PUBLIC, ClassFlag.FINAL, ClassFlag.SUPER,
 			ClassFlag.SYNTHETIC), new ClassName(__d.toString()),
 			new ClassName("java/lang/Object"), new ClassName[0], new Field[0],
-			new Method[0], new AnnotatedValue[0]);
+			new Method[0], new AnnotationElement[0]);
 	}
 	
 	/**
@@ -273,7 +294,7 @@ public final class ClassFile
 			in);
 		
 		// Annotated values
-		Set<AnnotatedValue> avs = new LinkedHashSet<>();
+		Set<AnnotationElement> avs = new LinkedHashSet<>();
 		
 		// Handle attributes
 		int na = in.readUnsignedShort();
@@ -298,7 +319,7 @@ public final class ClassFile
 		// Build
 		return new ClassFile(version, classflags, thisname, supername,
 			interfaces, fields, methods,
-			avs.<AnnotatedValue>toArray(new AnnotatedValue[avs.size()]));
+			avs.<AnnotationElement>toArray(new AnnotationElement[avs.size()]));
 	}
 	
 	/**
@@ -354,7 +375,7 @@ public final class ClassFile
 	 * @since 2018/03/06
 	 */
 	static boolean __maybeParseAnnotation(Pool __pool, String __key, 
-		Collection<AnnotatedValue> __target, DataInputStream __in)
+		Collection<AnnotationElement> __target, DataInputStream __in)
 		throws IOException, NullPointerException
 	{
 		if (__pool == null || __key == null || __target == null ||
@@ -365,7 +386,7 @@ public final class ClassFile
 		if (__key.equals("RuntimeVisibleAnnotations") ||
 			__key.equals("RuntimeInvisibleAnnotations"))
 		{
-			for (AnnotatedValue av : AnnotatedValue.decode(__pool, __in))
+			for (AnnotationElement av : AnnotationElement.decode(__pool, __in))
 				__target.add(av);
 			
 			return true;

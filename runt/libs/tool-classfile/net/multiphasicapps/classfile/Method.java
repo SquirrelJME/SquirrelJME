@@ -16,7 +16,9 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
+import net.multiphasicapps.collections.UnmodifiableArrayList;
 
 /**
  * This represents a method which is used to execute byte code.
@@ -52,7 +54,7 @@ public final class Method
 	private final byte[] _rawcodeattr;
 	
 	/** Annotated values. */
-	private final AnnotatedValue[] _annotatedvalues;
+	private final AnnotationElement[] _annotations;
 	
 	/** The method byte code. */
 	private volatile Reference<ByteCode> _bytecode;
@@ -81,7 +83,7 @@ public final class Method
 	 */
 	Method(ClassVersion __ver, ClassFlags __cf, ClassName __tn, Pool __pool,
 		MethodFlags __mf, MethodName __mn, MethodDescriptor __mt, byte[] __mc,
-		AnnotatedValue[] __avs)
+		AnnotationElement[] __avs)
 		throws NullPointerException
 	{
 		if (__ver == null || __cf == null || __tn == null || __pool == null ||
@@ -97,7 +99,7 @@ public final class Method
 		this.methodname = __mn;
 		this.methodtype = __mt;
 		this._rawcodeattr = __mc;
-		this._annotatedvalues = __avs;
+		this._annotations = __avs;
 	}
 	
 	/**
@@ -105,9 +107,10 @@ public final class Method
 	 * @since 2018/03/06
 	 */
 	@Override
-	public final AnnotatedValue[] annotatedValues()
+	public final List<AnnotationElement> annotatedElements()
 	{
-		return this._annotatedvalues.clone();
+		return UnmodifiableArrayList.<AnnotationElement>of(
+			this._annotations);
 	}
 	
 	/**
@@ -272,7 +275,7 @@ public final class Method
 					"JC12 %s %s", name, type));
 			
 			// Annotated values
-			Set<AnnotatedValue> avs = new LinkedHashSet<>();
+			Set<AnnotationElement> avs = new LinkedHashSet<>();
 			
 			// Handle attributes
 			int na = __in.readUnsignedShort();
@@ -316,7 +319,7 @@ public final class Method
 			// Create
 			rv[i] = new Method(__ver, __cf, __tn, __pool, flags, name, type,
 				code,
-				avs.<AnnotatedValue>toArray(new AnnotatedValue[avs.size()]));
+				avs.<AnnotationElement>toArray(new AnnotationElement[avs.size()]));
 		}
 		
 		// All done!
