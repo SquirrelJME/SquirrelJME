@@ -10,8 +10,8 @@
 
 package net.multiphasicapps.dumpclass;
 
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -21,7 +21,11 @@ import net.multiphasicapps.classfile.AnnotationValuePair;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassFlag;
 import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.Field;
+import net.multiphasicapps.classfile.FieldFlag;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
+import net.multiphasicapps.classfile.Method;
+import net.multiphasicapps.classfile.MethodFlag;
 import net.multiphasicapps.io.IndentedOutputStream;
 import net.multiphasicapps.zip.streamreader.ZipStreamEntry;
 import net.multiphasicapps.zip.streamreader.ZipStreamReader;
@@ -46,7 +50,7 @@ public class Main
 		PrintStream __out, AnnotationElement __in)
 		throws NullPointerException
 	{
-		if (__out == null || __in == null)
+		if (__i == null || __out == null || __in == null)
 			throw new NullPointerException("NARG");
 		
 		__out.printf("Type: %s%n", __in.type());
@@ -71,13 +75,13 @@ public class Main
 		ClassFile __in)
 		throws NullPointerException
 	{
-		if (__out == null || __in == null)
+		if (__i == null || __out == null || __in == null)
 			throw new NullPointerException("NARG");
 		
 		// Base indentation level
 		__i.setLevel(0);
 		
-		__out.printf("*** %s ***%n", __in.thisName());
+		__out.printf("*** Class %s ***%n", __in.thisName());
 		
 		__out.printf("Type       : %s%n", __in.type());
 		__out.printf("Extends    : %s%n", __in.superName());
@@ -102,11 +106,91 @@ public class Main
 			Main.dumpAnnotation(__i, __out, a);
 		__i.decrement();
 		
-		if (true)
-			throw new todo.TODO();
+		// Print fields
+		__out.println("Fields");
+		__i.increment();
+		for (Field m : __in.fields())
+			Main.dumpField(__i, __out, m);
+		__i.decrement();
+		
+		// Print fields
+		__out.println("Methods");
+		__i.increment();
+		for (Method m : __in.methods())
+			Main.dumpMethod(__i, __out, m);
+		__i.decrement();
 		
 		// Flush
+		__out.println();
 		__out.flush();
+	}
+	
+	/**
+	 * Dumps field information.
+	 *
+	 * @param __i The controller for indenting.
+	 * @param __out The output.
+	 * @param __in The input.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/05/14
+	 */
+	public static void dumpField(IndentedOutputStream __i, PrintStream __out,
+		Field __in)
+		throws NullPointerException
+	{
+		if (__i == null || __out == null || __in == null)
+			throw new NullPointerException("NARG");
+		
+		__out.printf("--- Field %s ---%n", __in.nameAndType());
+		
+		__out.printf ("Value      : %s%n", __in.constantValue());
+		
+		// Print flags
+		__out.println("Flags");
+		__i.increment();
+		for (FieldFlag f : __in.flags())
+			__out.println(f);
+		__i.decrement();
+		
+		// Print annotations
+		__out.println("Annotations");
+		__i.increment();
+		for (AnnotationElement a : __in.annotatedElements())
+			Main.dumpAnnotation(__i, __out, a);
+		__i.decrement();
+	}
+	
+	/**
+	 * Dumps method information.
+	 *
+	 * @param __i The controller for indenting.
+	 * @param __out The output.
+	 * @param __in The input.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/05/14
+	 */
+	public static void dumpMethod(IndentedOutputStream __i, PrintStream __out,
+		Method __in)
+		throws NullPointerException
+	{
+		if (__i == null || __out == null || __in == null)
+			throw new NullPointerException("NARG");
+		
+		__out.printf("--- Method %s ---%n", __in.nameAndType());
+		
+		// Print flags
+		__out.println("Flags");
+		__i.increment();
+		for (MethodFlag f : __in.flags())
+			__out.println(f);
+		__i.decrement();
+		
+		// Print annotations
+		__out.println("Annotations");
+		__i.increment();
+		for (AnnotationElement a : __in.annotatedElements())
+			Main.dumpAnnotation(__i, __out, a);
+		__i.decrement();
 	}
 	
 	/**

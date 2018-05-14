@@ -85,6 +85,17 @@ public final class Field
 	}
 	
 	/**
+	 * Returns the constant value of the field.
+	 *
+	 * @return The field constant value.
+	 * @since 2018/05/14
+	 */
+	public final Object constantValue()
+	{
+		return this.constval;
+	}
+	
+	/**
 	 * Returns the flags for the field.
 	 *
 	 * @return The field flags.
@@ -93,6 +104,17 @@ public final class Field
 	public final FieldFlags flags()
 	{
 		return this.flags;
+	}
+	
+	/**
+	 * Returns the name of the field.
+	 *
+	 * @return The field name.
+	 * @since 2018/05/14
+	 */
+	public final FieldName name()
+	{
+		return this.name;
 	}
 	
 	/**
@@ -111,6 +133,17 @@ public final class Field
 				rv = new FieldNameAndType(this.name, this.type));
 		
 		return rv;
+	}
+	
+	/**
+	 * Returns the field type.
+	 *
+	 * @return The field type.
+	 * @since 2018/05/14
+	 */
+	public final FieldDescriptor type()
+	{
+		return this.type;
 	}
 	
 	/**
