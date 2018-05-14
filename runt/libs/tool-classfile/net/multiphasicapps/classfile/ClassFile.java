@@ -297,6 +297,10 @@ public final class ClassFile
 		Set<AnnotationElement> avs = new LinkedHashSet<>();
 		
 		// Handle attributes
+		AttributeTable attrs = AttributeTable.parse(in, pool);
+		if (true)
+			throw new todo.TODO();
+		/*
 		int na = in.readUnsignedShort();
 		String[] attr = new String[1];
 		int[] alen = new int[1];
@@ -309,6 +313,7 @@ public final class ClassFile
 				
 				// Nothing else is parsed
 			}
+		*/
 		
 		// {@squirreljme.error JC0g Expected end of the class to follow the
 		// attributes in the class. (The name of this class)}
