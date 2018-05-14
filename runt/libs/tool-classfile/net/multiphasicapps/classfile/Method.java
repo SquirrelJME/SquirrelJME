@@ -75,6 +75,7 @@ public final class Method
 	 * @param __mt The method type.
 	 * @param __mc An optional byte array representing the code attribute, the
 	 * value is used directly.
+	 * @param __avs Annotated method values.
 	 * @throws NullPointerException On null arguments except for {@code __mc}.
 	 * @since 2017/09/30
 	 */
