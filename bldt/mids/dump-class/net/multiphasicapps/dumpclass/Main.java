@@ -19,7 +19,10 @@ import java.nio.file.StandardOpenOption;
 import net.multiphasicapps.classfile.AnnotationElement;
 import net.multiphasicapps.classfile.AnnotationValuePair;
 import net.multiphasicapps.classfile.ClassFile;
+import net.multiphasicapps.classfile.ClassFlag;
+import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
+import net.multiphasicapps.io.IndentedOutputStream;
 import net.multiphasicapps.zip.streamreader.ZipStreamEntry;
 import net.multiphasicapps.zip.streamreader.ZipStreamReader;
 
@@ -33,13 +36,14 @@ public class Main
 	/**
 	 * Dumps a single annotation.
 	 *
+	 * @param __i The controller for indenting.
 	 * @param __out The output.
 	 * @param __in The input.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/05/14
 	 */
-	public static void dumpAnnotation(PrintStream __out,
-		AnnotationElement __in)
+	public static void dumpAnnotation(IndentedOutputStream __i,
+		PrintStream __out, AnnotationElement __in)
 		throws NullPointerException
 	{
 		if (__out == null || __in == null)
@@ -47,35 +51,62 @@ public class Main
 		
 		__out.printf("Type: %s%n", __in.type());
 		
+		// Print the values of the annotations
+		__i.increment();
 		for (AnnotationValuePair v : __in.valuePairs())
 			__out.println(v);
+		__i.decrement();
 	}
 	
 	/**
 	 * Dumps the class information.
 	 *
+	 * @param __i The controller for indenting.
 	 * @param __out The output.
 	 * @param __in The input.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/05/14
 	 */
-	public static void dumpClass(PrintStream __out, ClassFile __in)
+	public static void dumpClass(IndentedOutputStream __i, PrintStream __out,
+		ClassFile __in)
 		throws NullPointerException
 	{
 		if (__out == null || __in == null)
 			throw new NullPointerException("NARG");
 		
+		// Base indentation level
+		__i.setLevel(0);
+		
 		__out.printf("*** %s ***%n", __in.thisName());
 		
 		__out.printf("Type       : %s%n", __in.type());
 		__out.printf("Extends    : %s%n", __in.superName());
-		__out.printf("Interfaces : %s%n", __in.interfaceNames());
-		__out.printf("Flags      : %s%n", __in.flags());
-		__out.printf("Annotations:%n");
-		for (AnnotationElement a : __in.annotatedElements())
-			__out.printf("    %s%n", a);
 		
-		throw new todo.TODO();
+		__out.println("Interfaces");
+		__i.increment();
+		for (ClassName n : __in.interfaceNames())
+			__out.println(n);
+		__i.decrement();
+		
+		// Print flags
+		__out.println("Flags");
+		__i.increment();
+		for (ClassFlag f : __in.flags())
+			__out.println(f);
+		__i.decrement();
+		
+		// Print annotations
+		__out.println("Annotations");
+		__i.increment();
+		for (AnnotationElement a : __in.annotatedElements())
+			Main.dumpAnnotation(__i, __out, a);
+		__i.decrement();
+		
+		if (true)
+			throw new todo.TODO();
+		
+		// Flush
+		__out.flush();
 	}
 	
 	/**
@@ -90,8 +121,11 @@ public class Main
 		if (__args == null)
 			__args = new String[0];
 		
+		// Indent to make the output nice
+		IndentedOutputStream i = new IndentedOutputStream(System.out);
+		PrintStream out = new PrintStream(i, true);
+		
 		// Dump all of them
-		PrintStream out = System.out;
 		for (String a : __args)
 		{
 			if (a == null)
@@ -114,7 +148,7 @@ public class Main
 								if (!ent.name().endsWith(".class"))
 									continue;
 								
-								Main.dumpClass(out, ClassFile.decode(ent));
+								Main.dumpClass(i, out, ClassFile.decode(ent));
 							}
 							catch (IOException|InvalidClassFormatException e)
 							{
@@ -125,7 +159,7 @@ public class Main
 				
 				// Treat as class
 				else
-					Main.dumpClass(out, ClassFile.decode(in));
+					Main.dumpClass(i, out, ClassFile.decode(in));
 			}
 			
 			// Note it
