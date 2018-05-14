@@ -16,6 +16,8 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import net.multiphasicapps.classfile.AnnotationElement;
+import net.multiphasicapps.classfile.AnnotationValuePair;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.zip.streamreader.ZipStreamEntry;
@@ -28,6 +30,27 @@ import net.multiphasicapps.zip.streamreader.ZipStreamReader;
  */
 public class Main
 {
+	/**
+	 * Dumps a single annotation.
+	 *
+	 * @param __out The output.
+	 * @param __in The input.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/05/14
+	 */
+	public static void dumpAnnotation(PrintStream __out,
+		AnnotationElement __in)
+		throws NullPointerException
+	{
+		if (__out == null || __in == null)
+			throw new NullPointerException("NARG");
+		
+		__out.printf("Type: %s%n", __in.type());
+		
+		for (AnnotationValuePair v : __in.valuePairs())
+			__out.println(v);
+	}
+	
 	/**
 	 * Dumps the class information.
 	 *
@@ -43,6 +66,14 @@ public class Main
 			throw new NullPointerException("NARG");
 		
 		__out.printf("*** %s ***%n", __in.thisName());
+		
+		__out.printf("Type       : %s%n", __in.type());
+		__out.printf("Extends    : %s%n", __in.superName());
+		__out.printf("Interfaces : %s%n", __in.interfaceNames());
+		__out.printf("Flags      : %s%n", __in.flags());
+		__out.printf("Annotations:%n");
+		for (AnnotationElement a : __in.annotatedElements())
+			__out.printf("    %s%n", a);
 		
 		throw new todo.TODO();
 	}

@@ -10,21 +10,52 @@
 
 package net.multiphasicapps.classfile;
 
-import java.util.List;
-
 /**
- * This represents any element which has been annotated.
+ * This contains the key/value pair for an annotation.
  *
- * @since 2018/03/06
+ * @since 2018/05/14
  */
-public interface Annotated
+public final class AnnotationValuePair
 {
 	/**
-	 * Returns all of the annotations which have been specified for this.
-	 *
-	 * @return The annotated elements.
-	 * @since 2018/03/06
+	 * {@inheritDoc}
+	 * @since 2018/05/14
 	 */
-	public abstract List<AnnotationElement> annotatedElements();
+	@Override
+	public final boolean equals(Object __o)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/05/14
+	 */
+	@Override
+	public final int hashCode()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the key of the annotation.
+	 *
+	 * @return The value key.
+	 * @since 2018/05/14
+	 */
+	public final MethodName key()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/05/14
+	 */
+	@Override
+	public final String toString()
+	{
+		throw new todo.TODO();
+	}
 }
 

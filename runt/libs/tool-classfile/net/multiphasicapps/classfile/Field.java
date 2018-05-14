@@ -16,7 +16,9 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
+import net.multiphasicapps.collections.UnmodifiableArrayList;
 
 /**
  * This represents a field in a class which is used to store values either as
@@ -41,7 +43,7 @@ public final class Field
 	protected final Object constval;
 	
 	/** Annotated values. */
-	private final AnnotatedValue[] _annotatedvalues;
+	private final AnnotationElement[] _annotations;
 	
 	/** Name and type reference. */
 	private volatile Reference<FieldNameAndType> _nameandtype;
@@ -58,7 +60,7 @@ public final class Field
 	 * @since 2017/10/02
 	 */
 	Field(FieldFlags __f, FieldName __n, FieldDescriptor __t, Object __cv,
-		AnnotatedValue[] __avs)
+		AnnotationElement[] __avs)
 		throws NullPointerException
 	{
 		if (__f == null || __n == null || __t == null || __avs == null)
@@ -68,7 +70,7 @@ public final class Field
 		this.name = __n;
 		this.type = __t;
 		this.constval = __cv;
-		this._annotatedvalues = __avs;
+		this._annotations = __avs;
 	}
 	
 	/**
@@ -76,9 +78,10 @@ public final class Field
 	 * @since 2018/03/06
 	 */
 	@Override
-	public final AnnotatedValue[] annotatedValues()
+	public final List<AnnotationElement> annotatedElements()
 	{
-		return this._annotatedvalues.clone();
+		return UnmodifiableArrayList.<AnnotationElement>of(
+			this._annotations);
 	}
 	
 	/**
@@ -153,7 +156,7 @@ public final class Field
 					"JC0p %s %s", name, type));
 			
 			// Annotated values
-			Set<AnnotatedValue> avs = new LinkedHashSet<>();
+			Set<AnnotationElement> avs = new LinkedHashSet<>();
 			
 			// Handle attributes
 			int na = __in.readUnsignedShort();
@@ -195,7 +198,7 @@ public final class Field
 			
 			// Create field
 			rv[i] = new Field(flags, name, type, constval,
-				avs.<AnnotatedValue>toArray(new AnnotatedValue[avs.size()]));
+				avs.<AnnotationElement>toArray(new AnnotationElement[avs.size()]));
 		}
 		
 		// All done!
