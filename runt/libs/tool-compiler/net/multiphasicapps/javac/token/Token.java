@@ -12,7 +12,9 @@ package net.multiphasicapps.javac.token;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.List;
 import java.util.Objects;
+import net.multiphasicapps.collections.UnmodifiableArrayList;
 import net.multiphasicapps.javac.FileNameLineAndColumn;
 
 /**
@@ -129,9 +131,9 @@ public final class Token
 	 * @return The token comments.
 	 * @since 2018/03/12
 	 */
-	public final Token[] comments()
+	public final List<Token> comments()
 	{
-		return this._comments.clone();
+		return UnmodifiableArrayList.<Token>of(this._comments);
 	}
 	
 	/**

@@ -246,11 +246,11 @@ public final class RuntimeInput
 				inpackage, cuspackage));
 		
 		// Determine if the class was placed in the correct file
-		ClassSyntax[] classes = cus.classes();
+		List<ClassSyntax> classes = cus.classes();
 		if (classname != null)
 		{
 			// {@squirreljme.error AQ5b Source file declares no classes.}
-			if (classes.length <= 0)
+			if (classes.size() <= 0)
 				throw new StructureException(sfn, "AQ5b");
 			
 			// Find the public class
@@ -275,8 +275,8 @@ public final class RuntimeInput
 			// If only a single class is declared and no public class exists
 			// then the only class which exists there must have a matching
 			// name
-			if (pubclass == null && classes.length == 1)
-				pubclass = classes[0];
+			if (pubclass == null && classes.size() == 1)
+				pubclass = classes.get(0);
 			
 			// {@squirreljme.error AQ5a The name of the public class in the
 			// file does not match the expected name of the source file.
@@ -291,7 +291,7 @@ public final class RuntimeInput
 		{
 			// {@squirreljme.error AQ57 Source package-info files cannot
 			// specify any classes.}
-			if (classes.length != 0)
+			if (classes.size() != 0)
 				throw new StructureException(sfn, "AQ57");
 		}
 		
