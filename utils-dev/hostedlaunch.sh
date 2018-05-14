@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -x
 # ---------------------------------------------------------------------------
 # Multi-Phasic Applications: SquirrelJME
 #     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
