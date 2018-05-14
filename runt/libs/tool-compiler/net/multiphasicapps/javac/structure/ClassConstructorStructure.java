@@ -56,6 +56,34 @@ public final class ClassConstructorStructure
 			__thrown == null || __code == null)
 			throw new NullPointerException("NARG");
 		
+		if (true)
+			throw new todo.TODO();
+		
+		this.modifiers = __mods;
+		this.typeparameters = __tparms;
+		this.formalparameters = __parms;
+		this.code = __code;
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/05/14
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/05/14
+	 */
+	@Override
+	public final int hashCode()
+	{
 		throw new todo.TODO();
 	}
 	
@@ -65,6 +93,16 @@ public final class ClassConstructorStructure
 	 */
 	@Override
 	public final ClassConstructorSymbol symbol()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/05/14
+	 */
+	@Override
+	public final String toString()
 	{
 		throw new todo.TODO();
 	}
