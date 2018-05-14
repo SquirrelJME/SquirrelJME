@@ -78,9 +78,10 @@ public class PrintStreamWriter
 		throws IOException
 	{
 		// Lock
+		PrintStream output = this.output;
 		synchronized (this.lock)
 		{
-			this.output.close();
+			output.close();
 			__checkError();
 		}
 	}
@@ -94,9 +95,10 @@ public class PrintStreamWriter
 		throws IOException
 	{
 		// Lock
+		PrintStream output = this.output;
 		synchronized (this.lock)
 		{
-			this.output.flush();
+			output.flush();
 			__checkError();
 		}
 	}
@@ -110,9 +112,10 @@ public class PrintStreamWriter
 		throws IOException
 	{
 		// Lock
+		PrintStream output = this.output;
 		synchronized (this.lock)
 		{
-			this.output.print((char)__c);
+			output.print((char)__c);
 			__checkError();
 		}
 	}
@@ -134,10 +137,10 @@ public class PrintStreamWriter
 			throw new IndexOutOfBoundsException("IOOB");
 	
 		// Lock
+		PrintStream output = this.output;
 		synchronized (this.lock)
 		{
 			// Print characters
-			PrintStream output = this.output;
 			for (int i = __o; i < end; i++)
 				output.print((char)__c[i]);
 			
