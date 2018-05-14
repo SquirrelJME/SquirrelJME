@@ -11,9 +11,11 @@
 package net.multiphasicapps.javac.syntax;
 
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import net.multiphasicapps.classfile.ClassIdentifier;
 import net.multiphasicapps.classfile.MethodName;
+import net.multiphasicapps.collections.UnmodifiableArrayList;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.Token;
 import net.multiphasicapps.javac.token.TokenSource;
@@ -169,9 +171,10 @@ public final class ClassConstructorSyntax
 	 * @return The types which are thrown.
 	 * @since 2018/05/08
 	 */
-	public final QualifiedIdentifierSyntax[] thrownTypes()
+	public final List<QualifiedIdentifierSyntax> thrownTypes()
 	{
-		return this._thrown.clone();
+		return UnmodifiableArrayList.<QualifiedIdentifierSyntax>of(
+			this._thrown);
 	}
 	
 	/**

@@ -16,6 +16,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import net.multiphasicapps.classfile.BinaryName;
+import net.multiphasicapps.collections.UnmodifiableArrayList;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.Token;
 import net.multiphasicapps.javac.token.TokenSource;
@@ -157,9 +158,9 @@ public final class CompilationUnitSyntax
 	 * @return The defined classes.
 	 * @since 2018/05/07
 	 */
-	public final ClassSyntax[] classes()
+	public final List<ClassSyntax> classes()
 	{
-		return this._classes.clone();
+		return UnmodifiableArrayList.<ClassSyntax>of(this._classes);
 	}
 	
 	/**
