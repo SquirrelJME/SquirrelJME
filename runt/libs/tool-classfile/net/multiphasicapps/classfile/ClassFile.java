@@ -340,6 +340,7 @@ public final class ClassFile
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/04/09
 	 */
+	@Deprecated
 	static DataInputStream __nextAttribute(DataInputStream __in,
 		Pool __pool, String[] __aname, int[] __alens)
 		throws InvalidClassFormatException, IOException, NullPointerException
