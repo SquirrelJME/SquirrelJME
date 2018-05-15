@@ -60,7 +60,20 @@ public final class AnnotationTable
 		if (__e == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		Map<BinaryName, AnnotationElement> rv = new LinkedHashMap<>();
+		for (AnnotationElement e : __e)
+		{
+			// {@squirreljme.error JC20 Duplicate annotation declared. (The
+			// declared annotation)}
+			BinaryName name = e.type();
+			if (rv.containsKey(name))
+				throw new InvalidClassFormatException(String.format("JC20 %s",
+					name));
+			
+			rv.put(name, e);
+		}
+		
+		this._annotations = rv;
 	}
 	
 	/**

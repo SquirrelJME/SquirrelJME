@@ -156,7 +156,7 @@ public final class AttributeTable
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/05/14
 	 */
-	public static AttributeTable parse(DataInputStream __in, Pool __pool)
+	public static AttributeTable parse(Pool __pool, DataInputStream __in)
 		throws InvalidClassFormatException, IOException, NullPointerException
 	{
 		if (__in == null || __pool == null)

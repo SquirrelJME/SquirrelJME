@@ -57,6 +57,17 @@ public final class Attribute
 	}
 	
 	/**
+	 * Returns a copy of the attribute bytes.
+	 *
+	 * @return The attribute bytes.
+	 * @since 2018/05/15
+	 */
+	public final byte[] bytes()
+	{
+		return this._data.clone();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/05/15
 	 */
