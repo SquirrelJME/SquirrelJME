@@ -17,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import net.multiphasicapps.classfile.AnnotationElement;
+import net.multiphasicapps.classfile.AnnotationTable;
 import net.multiphasicapps.classfile.AnnotationValuePair;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassFlag;
@@ -63,6 +64,25 @@ public class Main
 	}
 	
 	/**
+	 * Dumps the annotation table.
+	 *
+	 * @param __i The controller for indenting.
+	 * @param __out The output.
+	 * @param __in The input.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/05/15
+	 */
+	public static void dumpAnnotationTable(IndentedOutputStream __i,
+		PrintStream __out, AnnotationTable __in)
+		throws NullPointerException
+	{
+		if (__i == null || __out == null || __in == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+		
+	/**
 	 * Dumps the class information.
 	 *
 	 * @param __i The controller for indenting.
@@ -102,8 +122,7 @@ public class Main
 		// Print annotations
 		__out.println("Annotations");
 		__i.increment();
-		for (AnnotationElement a : __in.annotatedElements())
-			Main.dumpAnnotation(__i, __out, a);
+		Main.dumpAnnotationTable(__i, __out, __in.annotationTable());
 		__i.decrement();
 		
 		// Print fields
@@ -155,8 +174,7 @@ public class Main
 		// Print annotations
 		__out.println("Annotations");
 		__i.increment();
-		for (AnnotationElement a : __in.annotatedElements())
-			Main.dumpAnnotation(__i, __out, a);
+		Main.dumpAnnotationTable(__i, __out, __in.annotationTable());
 		__i.decrement();
 	}
 	
@@ -188,8 +206,7 @@ public class Main
 		// Print annotations
 		__out.println("Annotations");
 		__i.increment();
-		for (AnnotationElement a : __in.annotatedElements())
-			Main.dumpAnnotation(__i, __out, a);
+		Main.dumpAnnotationTable(__i, __out, __in.annotationTable());
 		__i.decrement();
 	}
 	

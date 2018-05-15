@@ -104,6 +104,27 @@ public final class AttributeTable
 	}
 	
 	/**
+	 * Opens the attribute by the specified key.
+	 *
+	 * @param __n The name of the attribute to open.
+	 * @return The stream to the given attribute or {@code null} if it is not
+	 * valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/05/15
+	 */
+	public final DataInputStream open(String __n)
+		throws NullPointerException
+	{
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		Attribute a = this.get(__n);
+		if (a == null)
+			return null;
+		return a.open();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/05/15
 	 */

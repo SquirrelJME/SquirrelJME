@@ -44,6 +44,12 @@ public final class ClassFile
 	/** The class this extends. */
 	protected final ClassName supername;
 	
+	/** The annotation table of the class. */
+	protected final AnnotationTable annotations;
+	
+	/** The referenced inner classes. */
+	protected final InnerClasses innerclasses;
+	
 	/** The interfaces this class implements. */
 	private final ClassName[] _interfaces;
 	
@@ -52,9 +58,6 @@ public final class ClassFile
 	
 	/** The methods within this class. */
 	private final Method[] _methods;
-	
-	/** Annotated values. */
-	private final AnnotationElement[] _annotations;
 	
 	/**
 	 * Initializes the class file.
@@ -66,18 +69,20 @@ public final class ClassFile
 	 * @param __in The interfaces this class implements.
 	 * @param __fs The fields in this class.
 	 * @param __ms The methods in this class.
-	 * @param __avs Annotated values.
+	 * @param __icl Defined inner classes.
+	 * @param __at Annotations that are declared on the class.
 	 * @throws InvalidClassFormatException If the class is not valid.
 	 * @throws NullPointerException On null arguments, except for {@code __sn}.
 	 * @since 2017/09/26
 	 */
 	ClassFile(ClassVersion __ver, ClassFlags __cf, ClassName __tn,
 		ClassName __sn, ClassName[] __in, Field[] __fs, Method[] __ms,
-		AnnotationElement[] __avs)
+		InnerClasses __icl, AnnotationTable __at)
 		throws InvalidClassFormatException, NullPointerException
 	{
 		if (__ver == null || __cf == null || __tn == null ||
-			__in == null || __fs == null || __ms == null || __avs == null)
+			__in == null || __fs == null || __ms == null || __icl == null ||
+			__at == null)
 			throw new NullPointerException("NARG");
 		
 		// Check sub-arrays for null
@@ -98,10 +103,11 @@ public final class ClassFile
 		this.classflags = __cf;
 		this.thisname = __tn;
 		this.supername = __sn;
+		this.innerclasses = __icl;
+		this.annotations = __at;
 		this._interfaces = __in;
 		this._fields = __fs;
 		this._methods = __ms;
-		this._annotations = __avs;
 	}
 	
 	/**
@@ -109,10 +115,9 @@ public final class ClassFile
 	 * @since 2018/03/06
 	 */
 	@Override
-	public final List<AnnotationElement> annotatedElements()
+	public final AnnotationTable annotationTable()
 	{
-		return UnmodifiableArrayList.<AnnotationElement>of(
-			this._annotations);
+		return this.annotations;
 	}
 	
 	/**
@@ -227,7 +232,7 @@ public final class ClassFile
 			new ClassFlags(ClassFlag.PUBLIC, ClassFlag.FINAL, ClassFlag.SUPER,
 			ClassFlag.SYNTHETIC), new ClassName(__d.toString()),
 			new ClassName("java/lang/Object"), new ClassName[0], new Field[0],
-			new Method[0], new AnnotationElement[0]);
+			new Method[0], new InnerClasses(), new AnnotationTable());
 	}
 	
 	/**
@@ -296,24 +301,14 @@ public final class ClassFile
 		// Annotated values
 		Set<AnnotationElement> avs = new LinkedHashSet<>();
 		
-		// Handle attributes
+		// Read in attributes
 		AttributeTable attrs = AttributeTable.parse(in, pool);
-		if (true)
-			throw new todo.TODO();
-		/*
-		int na = in.readUnsignedShort();
-		String[] attr = new String[1];
-		int[] alen = new int[1];
-		for (int j = 0; j < na; j++)
-			try (DataInputStream ai = __nextAttribute(in, pool, attr, alen))
-			{
-				// Parse annotations?
-				if (ClassFile.__maybeParseAnnotation(pool, attr[0], avs, ai))
-					continue;
-				
-				// Nothing else is parsed
-			}
-		*/
+		
+		// Read annotation table, if it is valid and exists
+		AnnotationTable annotations = AnnotationTable.parse(pool, attrs);
+		
+		// Parse inner classes
+		InnerClasses innerclasses = InnerClasses.parse(pool, attrs);
 		
 		// {@squirreljme.error JC0g Expected end of the class to follow the
 		// attributes in the class. (The name of this class)}
@@ -323,8 +318,7 @@ public final class ClassFile
 		
 		// Build
 		return new ClassFile(version, classflags, thisname, supername,
-			interfaces, fields, methods,
-			avs.<AnnotationElement>toArray(new AnnotationElement[avs.size()]));
+			interfaces, fields, methods, innerclasses, annotations);
 	}
 	
 	/**
@@ -366,40 +360,6 @@ public final class ClassFile
 		// Setup reader
 		return new DataInputStream(new SizeLimitedInputStream(__in, len, true,
 			false));
-	}
-	
-	/**
-	 * Parses the input class for annotations.
-	 *
-	 * @param __pool The constant pool used.
-	 * @param __key The key used for the attribute.
-	 * @param __target The target collection for annotations.
-	 * @param __in The input stream for the attribute data.
-	 * @return {@code true} if annotations were read.
-	 * @throws IOException On read errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/03/06
-	 */
-	static boolean __maybeParseAnnotation(Pool __pool, String __key, 
-		Collection<AnnotationElement> __target, DataInputStream __in)
-		throws IOException, NullPointerException
-	{
-		if (__pool == null || __key == null || __target == null ||
-			__in == null)
-			throw new NullPointerException("NARG");
-		
-		// Only these keys are valid
-		if (__key.equals("RuntimeVisibleAnnotations") ||
-			__key.equals("RuntimeInvisibleAnnotations"))
-		{
-			for (AnnotationElement av : AnnotationElement.decode(__pool, __in))
-				__target.add(av);
-			
-			return true;
-		}
-		
-		// Not parsed
-		return false;
 	}
 }
 

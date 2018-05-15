@@ -27,7 +27,10 @@ import net.multiphasicapps.collections.UnmodifiableArrayList;
 public final class AnnotationElement
 {
 	/** The annotation type. */
-	protected final ClassName type;
+	protected final BinaryName type;
+	
+	/** The visibility of this annotation. */
+	protected final AnnotationRuntimeVisibility visibility;
 	
 	/** Annotation value pairs. */
 	private final AnnotationValuePair[] _pairs;
@@ -35,6 +38,7 @@ public final class AnnotationElement
 	/**
 	 * Initializes the annotation value with the given value sets.
 	 *
+	 * @param __v The visibiity of the annotation.
 	 * @param __type The class name indicating the type of the annotation.
 	 * @param __vals The values for the annotation.
 	 * @throws InvalidClassFormatException If the annotation value is not of
@@ -42,16 +46,18 @@ public final class AnnotationElement
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/05/14
 	 */
-	public AnnotationElement(ClassName __type, AnnotationValuePair... __vals)
+	public AnnotationElement(AnnotationRuntimeVisibility __v,
+		BinaryName __type, AnnotationValuePair... __vals)
 		throws InvalidClassFormatException, NullPointerException
 	{
-		this(__type, Arrays.<AnnotationValuePair>asList(
+		this(__v, __type, Arrays.<AnnotationValuePair>asList(
 			(__vals != null ? __vals : new AnnotationValuePair[0])));
 	}
 	
 	/**
 	 * Initializes the annotation value with the given value sets.
 	 *
+	 * @param __v The visibiity of the annotation.
 	 * @param __type The class name indicating the type of the annotation.
 	 * @param __vals The values for the annotation.
 	 * @throws InvalidClassFormatException If the annotation value is not of
@@ -59,11 +65,11 @@ public final class AnnotationElement
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/06
 	 */
-	public AnnotationElement(ClassName __type,
-		Iterable<AnnotationValuePair> __vals)
+	public AnnotationElement(AnnotationRuntimeVisibility __v,
+		BinaryName __type, Iterable<AnnotationValuePair> __vals)
 		throws InvalidClassFormatException, NullPointerException
 	{
-		if (__vals == null)
+		if (__v == null || __vals == null)
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
@@ -95,7 +101,7 @@ public final class AnnotationElement
 	 * @return The annotation type.
 	 * @since 2018/03/06
 	 */
-	public final ClassName type()
+	public final BinaryName type()
 	{
 		return this.type;
 	}
@@ -123,20 +129,32 @@ public final class AnnotationElement
 	}
 	
 	/**
-	 * Decodes the input annotations and returns them.
+	 * Returns the visibility of this annotation.
 	 *
-	 * @param __pool The constant pool.
-	 * @param __in The input data stream.
-	 * @return The parsed annotation values.
-	 * @throws IOException On read errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/03/06
+	 * @return The visibility of the annotation.
+	 * @since 2018/05/15
 	 */
-	public static final AnnotationElement[] decode(Pool __pool,
-		DataInputStream __in)
-		throws IOException, NullPointerException
+	public final AnnotationRuntimeVisibility visibility()
 	{
-		if (__pool == null || __in == null)
+		return this.visibility;
+	}
+	
+	/**
+	 * Parses a single annotation.
+	 *
+	 * @param __vis The visibility of this annotation.
+	 * @param __pool The constant pool.
+	 * @param __in The input stream for the data.
+	 * @return The read and parsed annotation.
+	 * @throws InvalidClassFormatException If the class format is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/05/15
+	 */
+	public static AnnotationElement parse(AnnotationRuntimeVisibility __vis,
+		Pool __pool, DataInputStream __in)
+		throws InvalidClassFormatException, NullPointerException
+	{
+		if (__vis == null || __pool == null || __in == null)
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();

@@ -10,21 +10,20 @@
 
 package net.multiphasicapps.classfile;
 
-import java.util.List;
-
 /**
- * This represents any element which has been annotated.
+ * This represents the runtime visibility of the annotations.
  *
- * @since 2018/03/06
+ * @since 2018/05/15
  */
-public interface Annotated
+public enum AnnotationRuntimeVisibility
 {
-	/**
-	 * Returns all of the annotations which have been specified for this.
-	 *
-	 * @return The annotated elements.
-	 * @since 2018/03/06
-	 */
-	public abstract AnnotationTable annotationTable();
+	/** They are visible at run-time. */
+	VISIBLE,
+	
+	/** They are invisible at run-time. */
+	INVISIBLE,
+	
+	/** End. */
+	;
 }
 

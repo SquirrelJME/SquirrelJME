@@ -107,10 +107,9 @@ public final class Method
 	 * @since 2018/03/06
 	 */
 	@Override
-	public final List<AnnotationElement> annotatedElements()
+	public final AnnotationTable annotationTable()
 	{
-		return UnmodifiableArrayList.<AnnotationElement>of(
-			this._annotations);
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -287,9 +286,8 @@ public final class Method
 					__pool, attr, alen))
 				{
 					// Parse annotations?
-					if (ClassFile.__maybeParseAnnotation(__pool, attr[0], avs,
-						ai))
-						continue;
+					if (true)
+						throw new todo.TODO();
 					
 					// Only care about the code attribute
 					if (!"Code".equals(attr[0]))
