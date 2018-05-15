@@ -249,6 +249,7 @@ public class Main
 								if (!ent.name().endsWith(".class"))
 									continue;
 								
+								out.printf(">>> %s <<<%n", ent.name());
 								Main.dumpClass(i, out, ClassFile.decode(ent));
 							}
 							catch (IOException|InvalidClassFormatException e)
@@ -260,7 +261,10 @@ public class Main
 				
 				// Treat as class
 				else
+				{
+					out.printf(">>> %s <<<%n", a);
 					Main.dumpClass(i, out, ClassFile.decode(in));
+				}
 			}
 			
 			// Note it
