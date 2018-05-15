@@ -11,6 +11,7 @@
 package net.multiphasicapps.classfile;
 
 import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -21,6 +22,40 @@ import java.io.InputStream;
  */
 public final class Attribute
 {
+	/** The attribute name. */
+	protected final String name;
+	
+	/** The attribute data. */
+	private final byte[] _data;
+	
+	/**
+	 * Initializes the attribute.
+	 *
+	 * @param __name The name of the attribute.
+	 * @param __b The data that makes up the attribute.
+	 * @param __o The offset to the attribute data.
+	 * @param __l The number of bytes in the attribute.
+	 * @throws IndexOutOfBoundsException If the offset and/or length are
+	 * negative or exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/05/15
+	 */
+	public Attribute(String __name, byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		if (__name == null || __b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new ArrayIndexOutOfBoundsException("IOOB");
+		
+		this.name = __name;
+		
+		// Copy the array
+		byte[] clone = new byte[__l];
+		System.arraycopy(__b, __o, clone, 0, __l);
+		this._data = clone;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/05/15
@@ -49,7 +84,7 @@ public final class Attribute
 	 */
 	public final String name()
 	{
-		throw new todo.TODO();
+		return this.name;
 	}
 	
 	/**
@@ -58,9 +93,9 @@ public final class Attribute
 	 * @return A stream over the bytes of the attribute.
 	 * @since 2018/05/14
 	 */
-	public final InputStream open()
+	public final DataInputStream open()
 	{
-		throw new todo.TODO();
+		return new DataInputStream(new ByteArrayInputStream(this._data));
 	}
 	
 	/**
@@ -71,7 +106,7 @@ public final class Attribute
 	 */
 	public final int size()
 	{
-		throw new todo.TODO();
+		return this._data.length;
 	}
 	
 	/**
