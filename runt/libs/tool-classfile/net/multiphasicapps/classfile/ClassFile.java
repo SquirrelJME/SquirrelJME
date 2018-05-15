@@ -302,7 +302,7 @@ public final class ClassFile
 		Set<AnnotationElement> avs = new LinkedHashSet<>();
 		
 		// Read in attributes
-		AttributeTable attrs = AttributeTable.parse(in, pool);
+		AttributeTable attrs = AttributeTable.parse(pool, in);
 		
 		// Read annotation table, if it is valid and exists
 		AnnotationTable annotations = AnnotationTable.parse(pool, attrs);

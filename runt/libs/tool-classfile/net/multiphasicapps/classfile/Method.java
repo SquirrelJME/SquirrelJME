@@ -50,11 +50,11 @@ public final class Method
 	/** The type of the method. */
 	protected final MethodDescriptor methodtype;
 	
+	/** Annotated values. */
+	private final AnnotationTable annotations;
+	
 	/** The code attribute data, which is optional. */
 	private final byte[] _rawcodeattr;
-	
-	/** Annotated values. */
-	private final AnnotationElement[] _annotations;
 	
 	/** The method byte code. */
 	private volatile Reference<ByteCode> _bytecode;
@@ -77,13 +77,13 @@ public final class Method
 	 * @param __mt The method type.
 	 * @param __mc An optional byte array representing the code attribute, the
 	 * value is used directly.
-	 * @param __avs Annotated method values.
+	 * @param __avs Annotations associated with this method.
 	 * @throws NullPointerException On null arguments except for {@code __mc}.
 	 * @since 2017/09/30
 	 */
 	Method(ClassVersion __ver, ClassFlags __cf, ClassName __tn, Pool __pool,
 		MethodFlags __mf, MethodName __mn, MethodDescriptor __mt, byte[] __mc,
-		AnnotationElement[] __avs)
+		AnnotationTable __avs)
 		throws NullPointerException
 	{
 		if (__ver == null || __cf == null || __tn == null || __pool == null ||
@@ -98,8 +98,8 @@ public final class Method
 		this.methodflags = __mf;
 		this.methodname = __mn;
 		this.methodtype = __mt;
+		this.annotations = __avs;
 		this._rawcodeattr = __mc;
-		this._annotations = __avs;
 	}
 	
 	/**
@@ -109,7 +109,7 @@ public final class Method
 	@Override
 	public final AnnotationTable annotationTable()
 	{
-		throw new todo.TODO();
+		return this.annotations;
 	}
 	
 	/**
@@ -277,35 +277,15 @@ public final class Method
 			Set<AnnotationElement> avs = new LinkedHashSet<>();
 			
 			// Handle attributes
-			int na = __in.readUnsignedShort();
-			String[] attr = new String[1];
-			int[] alen = new int[1];
-			byte[] code = null;
-			for (int j = 0; j < na; j++)
-				try (DataInputStream ai = ClassFile.__nextAttribute(__in,
-					__pool, attr, alen))
-				{
-					// Parse annotations?
-					if (true)
-						throw new todo.TODO();
-					
-					// Only care about the code attribute
-					if (!"Code".equals(attr[0]))
-						continue;
+			AttributeTable attrs = AttributeTable.parse(__pool, __in);
 			
-					// {@squirreljme.error JC13 The specified method
-					// contains more than one code attribute. (The current
-					// class; The method name; The method type)}
-					if (code != null)
-						throw new InvalidClassFormatException(String.format(
-							"JC13 %s %s %s", __tn, name, type));
-					
-					// Copy bytes
-					int rlen = alen[0];
-					code = new byte[rlen];
-					ai.readFully(code, 0, rlen);
-				}
-		
+			// Parse annotations
+			AnnotationTable annotations = AnnotationTable.parse(__pool, attrs);
+			
+			// Get copy of the code attribute
+			Attribute maybecode = attrs.get("Code");
+			byte[] code = (maybecode == null ? null : maybecode.bytes());
+			
 			// {@squirreljme.error JC14 The specified method does not have
 			// the correct matching for abstract and if code exists or not.
 			// (The current
@@ -316,8 +296,7 @@ public final class Method
 			
 			// Create
 			rv[i] = new Method(__ver, __cf, __tn, __pool, flags, name, type,
-				code,
-				avs.<AnnotationElement>toArray(new AnnotationElement[avs.size()]));
+				code, annotations);
 		}
 		
 		// All done!
