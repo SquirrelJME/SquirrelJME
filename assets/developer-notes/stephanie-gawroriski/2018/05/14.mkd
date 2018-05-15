@@ -1,0 +1,53 @@
+# 2018/05/14
+
+## 11:18
+
+Actually thinking about it, the structures seem a bit complex a bit. I think I
+should move the code to another package and such and perform the needed
+stuff there instead. What I need to handle is partial state for when classes
+have not yet been parsed and they need to be handled accordingly. Also classes
+are grouped within individual packages. I think it would be best to try and
+load as many classes as possible at one time using class obtainers and such. I
+just need to avoid circular references though because it would never be
+garbage collected ever. So this is quite the complex part of the compiler
+especially when it comes to making sure it can be garbage collected. The
+collection of classes needs to be checked to make sure they inherit the right
+classes, much of the checking has to be performed. But also this code is going
+to have to be shared with the JIT compiler because it will be doing the same
+exact thing too. So this has to go in another package. There just needs to be
+some kind of adapters to the class types and such. Perhaps instead some of the
+stuff in `class-file` being turned into interfaces instead could work. Note
+that all of that stuff refers only to names in classes and does not really
+contain the structure. So really before I would end up just writing duplicate
+code, something that can be shared by the JIT and the compiler. I just need
+a nice way to put it. The JIT compiler would definitely need to have the
+things checked so it does not do bad things. Also, I think the class file
+code could be improved definitely. Basically have a representation of formal
+parameters. Also for the compiler I am also going to have to handle generics
+and such too along with annotations. So the class file parser is going to have
+to be a bit more complex, even though at run-time the information is not
+needed. But the annotations could however be used in situations needed by the
+native code compiler (for example a forced register and such).
+
+## 11:52
+
+My goal with the class file code now is to get as much information about a
+class as possible even if it is not really needed for the JIT in the end
+such as for generics. It will be needed by the compiler and can be used by
+the documentation tool to figure things out.
+
+## 12:11
+
+Can definitely see where the class file parser can be improved definitely.
+
+## 12:19
+
+So the class file dumper is going to be refactored a bit and improved so that
+way it will be easier and better to use with the JIT and the compiler. Also
+plan to make it so that the compiler can create the same `ClassFile` format
+so that there is only a single representation of it.
+
+## 13:38
+
+I need better annotation representation. Something that fits sources better
+and is more clean.
