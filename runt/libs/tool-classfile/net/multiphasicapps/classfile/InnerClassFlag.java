@@ -11,21 +11,27 @@
 package net.multiphasicapps.classfile;
 
 /**
- * These are flags which modify how a class is accessed and is behaved.
+ * This represents a flag which may be associated with an inner class.
  *
- * @since 2016/04/23
+ * @since 2018/05/15
  */
-public enum ClassFlag
+public enum InnerClassFlag
 	implements Flag
 {
-	/** Public access. */
+	/** Public. */
 	PUBLIC,
+	
+	/** Private. */
+	PRIVATE,
+	
+	/** Protected. */
+	PROTECTED,
+	
+	/** Static. */
+	STATIC,
 	
 	/** Final. */
 	FINAL,
-	
-	/** Super. */
-	SUPER,
 	
 	/** Interface. */
 	INTERFACE,
@@ -47,7 +53,7 @@ public enum ClassFlag
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2017/06/13
+	 * @since 2018/05/15
 	 */
 	@Override
 	public final int javaBitMask()
@@ -55,13 +61,16 @@ public enum ClassFlag
 		switch (this)
 		{
 			case PUBLIC:		return 0x0001;
+			case PRIVATE:		return 0x0002;
+			case PROTECTED:		return 0x0004;
+			case STATIC:		return 0x0008;
 			case FINAL:			return 0x0010;
-			case SUPER:			return 0x0020;
 			case INTERFACE:		return 0x0200;
 			case ABSTRACT:		return 0x0400;
 			case SYNTHETIC:		return 0x1000;
 			case ANNOTATION:	return 0x2000;
 			case ENUM:			return 0x4000;
+			
 			default:
 				throw new RuntimeException("OOPS");
 		}
