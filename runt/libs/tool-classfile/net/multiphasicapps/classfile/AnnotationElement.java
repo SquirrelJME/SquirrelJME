@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.Map;
 import net.multiphasicapps.collections.UnmodifiableArrayList;
+import net.multiphasicapps.collections.UnmodifiableMap;
 
 /**
  * This represents an annotation along with its value.
@@ -33,7 +34,7 @@ public final class AnnotationElement
 	protected final AnnotationRuntimeVisibility visibility;
 	
 	/** Annotation value pairs. */
-	private final AnnotationValuePair[] _pairs;
+	private final Map<MethodName, AnnotationValuePair> _pairs;
 	
 	/**
 	 * Initializes the annotation value with the given value sets.
@@ -122,9 +123,9 @@ public final class AnnotationElement
 	 * @return The annotation value pairs.
 	 * @since 2018/05/14
 	 */
-	public final List<AnnotationValuePair> valuePairs()
+	public final Map<MethodName, AnnotationValuePair> valuePairs()
 	{
-		return UnmodifiableArrayList.<AnnotationValuePair>of(
+		return UnmodifiableMap.<MethodName, AnnotationValuePair>of(
 			this._pairs);
 	}
 	

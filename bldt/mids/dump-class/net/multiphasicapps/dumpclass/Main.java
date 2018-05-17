@@ -16,6 +16,7 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.Map;
 import net.multiphasicapps.classfile.AnnotationElement;
 import net.multiphasicapps.classfile.AnnotationTable;
 import net.multiphasicapps.classfile.AnnotationValuePair;
@@ -27,6 +28,7 @@ import net.multiphasicapps.classfile.FieldFlag;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.Method;
 import net.multiphasicapps.classfile.MethodFlag;
+import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.io.IndentedOutputStream;
 import net.multiphasicapps.zip.streamreader.ZipStreamEntry;
 import net.multiphasicapps.zip.streamreader.ZipStreamReader;
@@ -58,8 +60,9 @@ public class Main
 		
 		// Print the values of the annotations
 		__i.increment();
-		for (AnnotationValuePair v : __in.valuePairs())
-			__out.println(v);
+		for (Map.Entry<MethodName, AnnotationValuePair> v : __in.valuePairs().
+			entrySet())
+			__out.printf("%s=%s%n", v.getKey(), v.getValue());
 		__i.decrement();
 	}
 	
@@ -79,7 +82,8 @@ public class Main
 		if (__i == null || __out == null || __in == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		for (AnnotationElement e : __in)
+			Main.dumpAnnotation(__i, __out, e);
 	}
 		
 	/**
@@ -103,37 +107,37 @@ public class Main
 		
 		__out.printf("*** Class %s ***%n", __in.thisName());
 		
-		__out.printf("Type       : %s%n", __in.type());
-		__out.printf("Extends    : %s%n", __in.superName());
+		__out.printf("Type:        %s%n", __in.type());
+		__out.printf("Extends:     %s%n", __in.superName());
 		
-		__out.println("Interfaces");
+		__out.println("Interfaces:");
 		__i.increment();
 		for (ClassName n : __in.interfaceNames())
 			__out.println(n);
 		__i.decrement();
 		
 		// Print flags
-		__out.println("Flags");
+		__out.println("Flags:");
 		__i.increment();
 		for (ClassFlag f : __in.flags())
 			__out.println(f);
 		__i.decrement();
 		
 		// Print annotations
-		__out.println("Annotations");
+		__out.println("Annotations:");
 		__i.increment();
 		Main.dumpAnnotationTable(__i, __out, __in.annotationTable());
 		__i.decrement();
 		
 		// Print fields
-		__out.println("Fields");
+		__out.println("Fields:");
 		__i.increment();
 		for (Field m : __in.fields())
 			Main.dumpField(__i, __out, m);
 		__i.decrement();
 		
 		// Print fields
-		__out.println("Methods");
+		__out.println("Methods:");
 		__i.increment();
 		for (Method m : __in.methods())
 			Main.dumpMethod(__i, __out, m);
@@ -162,17 +166,17 @@ public class Main
 		
 		__out.printf("--- Field %s ---%n", __in.nameAndType());
 		
-		__out.printf ("Value      : %s%n", __in.constantValue());
+		__out.printf ("Value:       %s%n", __in.constantValue());
 		
 		// Print flags
-		__out.println("Flags");
+		__out.println("Flags:");
 		__i.increment();
 		for (FieldFlag f : __in.flags())
 			__out.println(f);
 		__i.decrement();
 		
 		// Print annotations
-		__out.println("Annotations");
+		__out.println("Annotations:");
 		__i.increment();
 		Main.dumpAnnotationTable(__i, __out, __in.annotationTable());
 		__i.decrement();
@@ -197,14 +201,14 @@ public class Main
 		__out.printf("--- Method %s ---%n", __in.nameAndType());
 		
 		// Print flags
-		__out.println("Flags");
+		__out.println("Flags:");
 		__i.increment();
 		for (MethodFlag f : __in.flags())
 			__out.println(f);
 		__i.decrement();
 		
 		// Print annotations
-		__out.println("Annotations");
+		__out.println("Annotations:");
 		__i.increment();
 		Main.dumpAnnotationTable(__i, __out, __in.annotationTable());
 		__i.decrement();
