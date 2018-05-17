@@ -12,6 +12,9 @@ package net.multiphasicapps.classfile;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * This contains the table of inner class references.
@@ -20,6 +23,50 @@ import java.io.IOException;
  */
 public final class InnerClasses
 {
+	/** The declared inner classes. */
+	private final InnerClass[] _inners;
+	
+	/**
+	 * Initializes the inner classes.
+	 *
+	 * @param __i The inner classes.
+	 * @throws InvalidClassFormatException If the inner classes are not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/05/16
+	 */
+	public InnerClasses(InnerClass... __i)
+		throws InvalidClassFormatException, NullPointerException
+	{
+		this(Arrays.<InnerClass>asList((__i != null ? __i :
+			new InnerClass[0])));
+	}
+	
+	/**
+	 * Initializes the inner classes.
+	 *
+	 * @param __i The inner classes.
+	 * @throws InvalidClassFormatException If the inner classes are not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/05/16
+	 */
+	public InnerClasses(Iterable<InnerClass> __i)
+		throws InvalidClassFormatException, NullPointerException
+	{
+		if (__i == null)
+			throw new NullPointerException("NARG");
+		
+		List<InnerClass> rv = new ArrayList<>();
+		for (InnerClass i : __i)
+		{
+			if (i == null)
+				throw new NullPointerException("NARG");
+			
+			rv.add(i);
+		}
+		
+		this._inners = rv.<InnerClass>toArray(new InnerClass[rv.size()]);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/05/15
@@ -67,6 +114,12 @@ public final class InnerClasses
 		if (__pool == null || __attrs == null)
 			throw new NullPointerException("NARG");
 		
+		// Only if the attribute exists
+		Attribute attr = __attrs.get("InnerClasses");
+		if (attr == null)
+			return new InnerClasses();
+		
+		List<InnerClass> rv = new ArrayList<>();
 		throw new todo.TODO();
 	}
 }
