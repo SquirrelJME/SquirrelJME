@@ -1,0 +1,6 @@
+# 2018/05/16
+
+## 20:17
+
+I have a working Amiga 500, so this means that there will eventually be a port
+of SquirrelJME to the Amiga. I think if I can do that, it would be amazing.
