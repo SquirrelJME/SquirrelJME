@@ -14,11 +14,13 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import net.multiphasicapps.collections.UnmodifiableIterator;
 
 /**
  * This contains the annotation table which stores all of the annotation
@@ -27,9 +29,10 @@ import java.util.Set;
  * @since 2018/05/15
  */
 public final class AnnotationTable
+	implements Iterable<AnnotationElement>
 {
 	/** The annotations which have been declared. */
-	protected final Map<BinaryName, AnnotationElement> _annotations;
+	private final Map<BinaryName, AnnotationElement> _annotations;
 	
 	/**
 	 * Initializes the annotation table.
@@ -94,6 +97,17 @@ public final class AnnotationTable
 	public final int hashCode()
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/05/16
+	 */
+	@Override
+	public final Iterator<AnnotationElement> iterator()
+	{
+		return UnmodifiableIterator.<AnnotationElement>of(
+			this._annotations.values());
 	}
 	
 	/**
