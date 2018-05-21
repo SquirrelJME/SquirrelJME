@@ -23,6 +23,43 @@ import java.io.IOException;
 public final class InnerClass
 {
 	/**
+	 * Initializes an anonymous inner class.
+	 *
+	 * @param __n The name of the class.
+	 * @param __f The class flags.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/05/21
+	 */
+	public InnerClass(ClassName __n, InnerClassFlags __f)
+		throws NullPointerException
+	{
+		if (__n == null || __f == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Initializes a standard inner class.
+	 *
+	 * @param __n The name of the class.
+	 * @param __o The class this is a member of.
+	 * @param __i The identifier used to name the class.
+	 * @param __f The class flags.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/05/21
+	 */
+	public InnerClass(ClassName __n, ClassName __o, ClassIdentifier __i,
+		InnerClassFlags __f)
+		throws NullPointerException
+	{
+		if (__n == null || __o == null || __i == null || __f == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/05/15
 	 */
