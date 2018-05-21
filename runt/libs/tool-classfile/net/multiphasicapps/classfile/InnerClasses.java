@@ -120,6 +120,30 @@ public final class InnerClasses
 			return new InnerClasses();
 		
 		List<InnerClass> rv = new ArrayList<>();
+		try (DataInputStream in = attr.open())
+		{
+			// Read each one
+			int n = in.readUnsignedShort();
+			for (int i = 0; i < n; i++)
+			{
+				ClassName innerclass = __pool.<ClassName>get(
+					ClassName.class, in.readUnsignedShort());
+				ClassName outerclass = __pool.<ClassName>get(
+					ClassName.class, in.readUnsignedShort());
+				
+				UTFConstantEntry rawname = __pool.<UTFConstantEntry>get(
+					UTFConstantEntry.class, in.readUnsignedShort());
+				ClassIdentifier name = (rawname == null ? null :
+					new ClassIdentifier(rawname.toString()));
+				
+				InnerClassFlags flags = new InnerClassFlags(
+					in.readUnsignedShort());
+				
+				todo.DEBUG.note("Inner: %s %s %s %s", innerclass,
+					outerclass, name, flags);
+			}
+		}
+		
 		throw new todo.TODO();
 	}
 }

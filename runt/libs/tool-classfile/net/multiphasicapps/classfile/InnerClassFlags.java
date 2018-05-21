@@ -10,6 +10,11 @@
 
 package net.multiphasicapps.classfile;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 /**
  * This represents a set of flags which are used as modifiers to inner classes.
  *
@@ -19,6 +24,9 @@ public final class InnerClassFlags
 	extends Flags<InnerClassFlag>
 	implements AccessibleFlags
 {
+	/** Standard class flag representation. */
+	private Reference<ClassFlags> _cflags;
+	
 	/**
 	 * Initializes the inner class flags decoding from the specified bit field.
 	 *
@@ -54,6 +62,68 @@ public final class InnerClassFlags
 		super(InnerClassFlag.class, __fl);
 		
 		this.__checkFlags();
+	}
+	
+	/**
+	 * Returns the outer class representation for these flags.
+	 *
+	 * @return The outer class flag representation.
+	 * @since 2018/05/21
+	 */
+	public final ClassFlags asClassFlags()
+	{
+		Reference<ClassFlags> ref = this._cflags;
+		ClassFlags rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+		{
+			int mask = 0;
+			for (InnerClassFlag i : this)
+			{
+				ClassFlag v;
+				switch (i)
+				{
+					case PUBLIC:
+						v = ClassFlag.PUBLIC;
+						break;
+						
+					case FINAL:
+						v = ClassFlag.FINAL;
+						break;
+						
+					case INTERFACE:
+						v = ClassFlag.INTERFACE;
+						break;
+						
+					case ABSTRACT:
+						v = ClassFlag.ABSTRACT;
+						break;
+						
+					case SYNTHETIC:
+						v = ClassFlag.SYNTHETIC;
+						break;
+						
+					case ANNOTATION:
+						v = ClassFlag.ANNOTATION;
+						break;
+						
+					case ENUM:
+						v = ClassFlag.ENUM;
+						break;
+					
+					default:
+						v = null;
+						continue;
+				}
+				
+				if (v != null)
+					mask |= v.javaBitMask();
+			}
+			
+			this._cflags = new WeakReference<>((rv = new ClassFlags(mask)));
+		}
+		
+		return rv;
 	}
 	
 	/**
@@ -106,7 +176,29 @@ public final class InnerClassFlags
 	private final void __checkFlags()
 		throws InvalidClassFormatException
 	{
-		throw new todo.TODO();
+		// Construct class flags which checks if they are valid
+		try
+		{
+			this.asClassFlags();
+		}
+		catch (InvalidClassFormatException e)
+		{
+			// {@squirreljme.error JC23 Inner class flags are not valid
+			// because they would produce invalid standard outer class
+			// flags. (The flags)}
+			throw new InvalidClassFormatException(String.format("JC23 %s",
+				this), e);
+		}
+		
+		// {@squirreljme.error JC22 Multiple access modifiers, inner classes
+		// can only be one or none of private, protected, or public.
+		// (The flags)}
+		int count = (this.isPublic() ? 1 : 0) +
+			(this.isProtected() ? 1 : 0) +
+			(this.isPrivate() ? 1 : 0);
+		if (count > 1)
+			throw new InvalidClassFormatException(String.format("JC22 %s",
+				this));
 	}
 }
 
