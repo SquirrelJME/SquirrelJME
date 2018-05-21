@@ -105,7 +105,8 @@ public final class Pool
 	 * @param <C> The type of class to get.
 	 * @param __cl The type of class to get.
 	 * @param __i The index of the entry to get.
-	 * @return The entry at the specified position as the given class.
+	 * @return The entry at the specified position as the given class or
+	 * {@code null} if it does not exist.
 	 * @throws InvalidClassFormatException If the class type does not match or
 	 * the pool index is out of range.
 	 * @throws NullPointerException On null arguments.
@@ -117,6 +118,10 @@ public final class Pool
 		// Check
 		if (__cl == null)
 			throw new NullPointerException("NARG");
+		
+		// Short circuit, the zero entry is always nothing
+		if (__i == 0)
+			return null;
 		
 		// {@squirreljme.error JC1c The specified index is not within the bounds
 		// of the constant pool. (The index of the entry)}
