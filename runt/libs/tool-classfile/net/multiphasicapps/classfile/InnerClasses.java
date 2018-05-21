@@ -103,13 +103,15 @@ public final class InnerClasses
 	 * @param __pool The constant pool.
 	 * @param __attrs The input attributes.
 	 * @return The parsed inner class information.
+	 * @throws InvalidClassFormatException If the inner classes are not
+	 * correct.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/05/15
 	 */
 	public static final InnerClasses parse(Pool __pool,
 		AttributeTable __attrs)
-		throws IOException, NullPointerException
+		throws InvalidClassFormatException, IOException, NullPointerException
 	{
 		if (__pool == null || __attrs == null)
 			throw new NullPointerException("NARG");
@@ -126,7 +128,7 @@ public final class InnerClasses
 			int n = in.readUnsignedShort();
 			for (int i = 0; i < n; i++)
 			{
-				ClassName innerclass = __pool.<ClassName>get(
+				ClassName innerclass = __pool.<ClassName>require(
 					ClassName.class, in.readUnsignedShort());
 				ClassName outerclass = __pool.<ClassName>get(
 					ClassName.class, in.readUnsignedShort());
@@ -139,12 +141,26 @@ public final class InnerClasses
 				InnerClassFlags flags = new InnerClassFlags(
 					in.readUnsignedShort());
 				
-				todo.DEBUG.note("Inner: %s %s %s %s", innerclass,
-					outerclass, name, flags);
+				// Add them
+				if (outerclass == null && name == null)
+					rv.add(new InnerClass(innerclass, flags));
+				else
+				{
+					// {@squirreljme.error JC24 An anonymous inner class
+					// cannot have a declared outer class or name. (The inner
+					// class; The outer class it is in; The name of the class)}
+					if (outerclass == null || name == null)
+						throw new InvalidClassFormatException(
+							String.format("JC24 %s %s %s",
+							innerclass, outerclass, name));
+					
+					rv.add(new InnerClass(innerclass, outerclass,
+						name, flags));
+				}
 			}
 		}
 		
-		throw new todo.TODO();
+		return new InnerClasses(rv);
 	}
 }
 
