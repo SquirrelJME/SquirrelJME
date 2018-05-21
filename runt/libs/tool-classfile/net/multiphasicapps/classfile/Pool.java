@@ -229,22 +229,26 @@ public final class Pool
 					
 					// Integer
 				case TAG_INTEGER:
-					data = Integer.valueOf(__in.readInt());
+					data = new ConstantValueInteger(
+						Integer.valueOf(__in.readInt()));
 					break;
 					
 					// Long
 				case TAG_LONG:
-					data = Long.valueOf(__in.readLong());
+					data = new ConstantValueLong(
+						Long.valueOf(__in.readLong()));
 					break;
 					
 					// Float
 				case TAG_FLOAT:
-					data = Float.valueOf(__in.readFloat());
+					data = new ConstantValueFloat(
+						Float.valueOf(__in.readFloat()));
 					break;
 					
 					// Double
 				case TAG_DOUBLE:
-					data = Double.valueOf(__in.readDouble());
+					data = new ConstantValueDouble(
+						Double.valueOf(__in.readDouble()));
 					break;
 					
 					// {@squirreljme.error JC1g Java ME does not support dynamic
@@ -388,8 +392,9 @@ public final class Pool
 					
 					// String constant
 				case TAG_STRING:
-					out = ((UTFConstantEntry)__entries[((int[])in)[0]]).
-						toString();
+					out = new ConstantValueString(
+						((UTFConstantEntry)__entries[((int[])in)[0]]).
+							toString());
 					break;
 					
 					// Name and type information

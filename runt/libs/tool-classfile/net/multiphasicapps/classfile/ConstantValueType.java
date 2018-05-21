@@ -34,5 +34,58 @@ public enum ConstantValueType
 	
 	/** End. */
 	;
+	
+	/**
+	 * Checks if this value is compatible with the given field descriptor.
+	 *
+	 * @param __d The descriptor to check.
+	 * @return If it is compatible.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/05/21
+	 */
+	public final boolean isCompatibleWith(FieldDescriptor __d)
+		throws NullPointerException
+	{
+		if (__d == null)
+			throw new NullPointerException("NARG");
+		
+		switch (this)
+		{
+			case INTEGER:
+				if (!__d.isPrimitive())
+					return false;
+				switch (__d.primitiveType())
+				{
+					case BOOLEAN:
+					case BYTE:
+					case SHORT:
+					case CHARACTER:
+					case INTEGER:
+						return true;
+						
+					default:
+						return false;
+				}
+			
+			case LONG:
+				return __d.isPrimitive() &&
+					__d.primitiveType().equals(PrimitiveType.LONG);
+			
+			case FLOAT:
+				return __d.isPrimitive() &&
+					__d.primitiveType().equals(PrimitiveType.FLOAT);
+			
+			case DOUBLE:
+				return __d.isPrimitive() &&
+					__d.primitiveType().equals(PrimitiveType.DOUBLE);
+			
+			case STRING:
+				return __d.isObject() &&
+					"Ljava/lang/String;".equals(__d.toString()); 
+			
+			default:
+				throw new RuntimeException("OOPS");
+		}
+	}
 }
 

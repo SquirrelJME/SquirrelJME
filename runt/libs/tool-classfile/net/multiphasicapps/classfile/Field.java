@@ -40,10 +40,10 @@ public final class Field
 	protected final FieldDescriptor type;
 	
 	/** The constant value, if there is none then this is {@code null}. */
-	protected final Object constval;
+	protected final ConstantValue constval;
 	
 	/** Annotated values. */
-	private final AnnotationElement[] _annotations;
+	protected final AnnotationTable annotations;
 	
 	/** Name and type reference. */
 	private volatile Reference<FieldNameAndType> _nameandtype;
@@ -56,21 +56,28 @@ public final class Field
 	 * @param __t The type of the field.
 	 * @param __cv The constant value of the field, may be {@code null}.
 	 * @param __avs Annotated values.
+	 * @throws InvalidClassFormatException If the class format is not valid.
 	 * @throws NullPointerException On null arguments, except for {@code __cv}.
 	 * @since 2017/10/02
 	 */
-	Field(FieldFlags __f, FieldName __n, FieldDescriptor __t, Object __cv,
-		AnnotationElement[] __avs)
-		throws NullPointerException
+	Field(FieldFlags __f, FieldName __n, FieldDescriptor __t,
+		ConstantValue __cv, AnnotationTable __avs)
+		throws InvalidClassFormatException, NullPointerException
 	{
 		if (__f == null || __n == null || __t == null || __avs == null)
 			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error JC21 The constant value is not compatible with
+		// the given field type. (The value; The value type; The field type)}
+		if (__cv != null && !__cv.type().isCompatibleWith(__t))
+			throw new InvalidClassFormatException(String.format(
+				"JC21 %s %s %s", __cv, __cv.type(), __t));
 		
 		this.flags = __f;
 		this.name = __n;
 		this.type = __t;
 		this.constval = __cv;
-		this._annotations = __avs;
+		this.annotations = __avs;
 	}
 	
 	/**
@@ -80,7 +87,7 @@ public final class Field
 	@Override
 	public final AnnotationTable annotationTable()
 	{
-		throw new todo.TODO();
+		return this.annotations;
 	}
 	
 	/**
@@ -89,7 +96,7 @@ public final class Field
 	 * @return The field constant value.
 	 * @since 2018/05/14
 	 */
-	public final Object constantValue()
+	public final ConstantValue constantValue()
 	{
 		return this.constval;
 	}
@@ -191,45 +198,23 @@ public final class Field
 			Set<AnnotationElement> avs = new LinkedHashSet<>();
 			
 			// Handle attributes
-			int na = __in.readUnsignedShort();
-			String[] attr = new String[1];
-			int[] alen = new int[1];
-			Object constval = null;
-			for (int j = 0; j < na; j++)
-				try (DataInputStream ai = ClassFile.__nextAttribute(__in,
-					__pool, attr, alen))
+			AttributeTable attrs = AttributeTable.parse(__pool, __in);
+			
+			// Parse annotations
+			AnnotationTable annotations = AnnotationTable.parse(__pool, attrs);
+			
+			// Parse constant value if there is one
+			ConstantValue constval = null;
+			Attribute cvalattr = attrs.get("ConstantValue");
+			if (cvalattr != null)
+				try (DataInputStream ai = cvalattr.open())
 				{
-					// Parse annotations?
-					if (true)
-						throw new todo.TODO();
-					
-					// Only care about the constant value attribute
-					if (!"ConstantValue".equals(attr[0]))
-						continue;
-					
-					// {@squirreljme.error JC0q There may only be one constant
-					// value for a field.}
-					if (constval != null)
-						throw new InvalidClassFormatException("JC0q");
-					
-					// {@squirreljme.error JC0r Expected the constant value
-					// of a field to be a constant value type, not one that
-					// is another type. (The value that was input)}.
-					Object read = __pool.<Object>require(Object.class,
-						ai.readUnsignedShort());
-					if (!(read instanceof Integer || read instanceof Long ||
-						read instanceof Float || read instanceof Double ||
-						read instanceof String) || read == null)
-						throw new InvalidClassFormatException(String.format(
-							"JC0r %s", read));
-					
-					// Set
-					constval = read;
+					constval = __pool.<ConstantValue>require(
+						ConstantValue.class, ai.readUnsignedShort());
 				}
 			
 			// Create field
-			rv[i] = new Field(flags, name, type, constval,
-				avs.<AnnotationElement>toArray(new AnnotationElement[avs.size()]));
+			rv[i] = new Field(flags, name, type, constval, annotations);
 		}
 		
 		// All done!
