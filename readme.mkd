@@ -31,20 +31,6 @@ and requires only a Java compiler and virtual machine for it to be built.
  * [Project Scope](scope.mkd)
  * [SquirrelJME As A Runtime](asruntime.mkd)
 
-## I Am Open For Hiring
-
-**SquirrelJME** is a hobby project (which means I work on it in my spare time)
-and as such does not sustain me monetarily. What does sustain me is a job in
-retail at big box stores. If you do like my work please also
-be advised that I am available for hire to work on a number of other projects
-potentially. Most of my experience for languages is in _C_, _Java_, and
-_POSIX Shell_. Although I do not mainly use other languages they can be learned
-by adapting my current experience with those languages. **SquirrelJME** itself
-mostly relates to embedded, compiler, and Java development. I prefer remote
-development as it allows me to work from home rather than spending time
-commuting every day (which wastes time). Interest can be e-mailed to me
-(Stephanie Gawroriski) at <xer@multiphasicapps.net>.
-
 ## Repository
 
  * [Online repository](http://multiphasicapps.net/)
