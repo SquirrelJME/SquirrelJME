@@ -17,7 +17,18 @@ package net.multiphasicapps.classfile;
  * @since 2018/06/16
  */
 public final class VisibleAnnotation
+	implements IsAnnotation
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/06/16
+	 */
+	@Override
+	public final Annotation annotation()
+	{
+		throw new todo.TODO();
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/06/16
@@ -44,6 +55,17 @@ public final class VisibleAnnotation
 	 */
 	@Override
 	public final String toString()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the visibility of the annotation.
+	 *
+	 * @return The annotation visibility.
+	 * @since 2018/06/16
+	 */
+	public final AnnotationRuntimeVisibility visibility()
 	{
 		throw new todo.TODO();
 	}
