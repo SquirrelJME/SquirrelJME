@@ -10,54 +10,20 @@
 
 package net.multiphasicapps.classfile;
 
-import java.util.Map;
-
 /**
- * This represents an annotation which has values assigned to keys.
+ * This is used to represent an annotation which has a plain annotation, this
+ * is to make the usage of visible annotations and annotations easier.
  *
  * @since 2018/06/16
  */
-public final class Annotation
-	implements AnnotationValue, IsAnnotation, Map<MethodName, AnnotationValue>
+public interface IsAnnotation
 {
 	/**
-	 * {@inheritDoc}
+	 * Returns the representation of the object as a plain annotation.
+	 *
+	 * @return The plain annotation.
 	 * @since 2018/06/16
 	 */
-	@Override
-	public final Annotation annotation()
-	{
-		return this;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/06/16
-	 */
-	@Override
-	public final boolean equals(Object __o)
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/06/16
-	 */
-	@Override
-	public final int hashCode()
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/06/16
-	 */
-	@Override
-	public final String toString()
-	{
-		throw new todo.TODO();
-	}
+	public abstract Annotation annotation();
 }
 
