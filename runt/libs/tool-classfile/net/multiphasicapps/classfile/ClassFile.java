@@ -21,7 +21,8 @@ import net.multiphasicapps.collections.UnmodifiableArrayList;
 import net.multiphasicapps.io.SizeLimitedInputStream;
 
 /**
- * This represents a single class file.
+ * This represents a class file which was most likely derived from the binary
+ * class file format of a class.
  *
  * @since 2017/09/26
  */
@@ -86,7 +87,8 @@ public final class ClassFile
 			throw new NullPointerException("NARG");
 		
 		// Check sub-arrays for null
-		for (Object[] foo : new Object[][]{__in, __fs, __ms})
+		for (Object[] foo : new Object[][]{(__in = __in.clone()),
+			(__fs = __fs.clone()), (__ms = __ms.clone())})
 			for (Object f : foo)
 				if (f == null)
 					throw new NullPointerException("NARG");
@@ -140,6 +142,17 @@ public final class ClassFile
 	public final ClassFlags flags()
 	{
 		return this.classflags;
+	}
+	
+	/**
+	 * Returns the inner classes.
+	 *
+	 * @return The inner classes.
+	 * @since 2018/06/16
+	 */
+	public final InnerClasses innerClasses()
+	{
+		return this.innerclasses;
 	}
 	
 	/**

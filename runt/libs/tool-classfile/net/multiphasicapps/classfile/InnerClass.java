@@ -22,6 +22,18 @@ import java.io.IOException;
  */
 public final class InnerClass
 {
+	/** The name of the inner class. */
+	protected final ClassName name;
+	
+	/** The outer class this is contained within. */
+	protected final ClassName outerclass;
+	
+	/** The simple name of the class as defined in the class. */
+	protected final ClassIdentifier simplename;
+	
+	/** The flags for the inner class. */
+	protected final InnerClassFlags flags;
+	
 	/**
 	 * Initializes an anonymous inner class.
 	 *
@@ -36,7 +48,10 @@ public final class InnerClass
 		if (__n == null || __f == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		this.name = __n;
+		this.outerclass = null;
+		this.simplename = null;
+		this.flags = __f;
 	}
 	
 	/**
@@ -56,7 +71,10 @@ public final class InnerClass
 		if (__n == null || __o == null || __i == null || __f == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		this.name = __n;
+		this.outerclass = __o;
+		this.simplename = __i;
+		this.flags = __f;
 	}
 	
 	/**
@@ -70,6 +88,17 @@ public final class InnerClass
 	}
 	
 	/**
+	 * Returns the flags for the inner class.
+	 *
+	 * @return The inner class flags.
+	 * @since 2018/06/16
+	 */
+	public final InnerClassFlags flags()
+	{
+		return this.flags;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/05/15
 	 */
@@ -77,6 +106,52 @@ public final class InnerClass
 	public final int hashCode()
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Is this an anonymous class?
+	 *
+	 * @return Is this an anonymous class?
+	 * @since 2018/06/16
+	 */
+	public final boolean isAnonymous()
+	{
+		return this.name != null &&
+			this.outerclass == null &&
+			this.simplename == null;
+	}
+	
+	/**
+	 * Returns the name of this class.
+	 *
+	 * @return The class name.
+	 * @since 2018/06/16
+	 */
+	public final ClassName name()
+	{
+		return this.name;
+	}
+	
+	/**
+	 * Returns the name of the outer class or {@code null} if it is anonymous.
+	 *
+	 * @return The name of the outer class or {@code null} if anonymous.
+	 * @since 2018/06/16
+	 */
+	public final ClassName outerClass()
+	{
+		return this.outerclass;
+	}
+	
+	/**
+	 * Returns the simple name of the class.
+	 *
+	 * @return The simple name of the class.
+	 * @since 2018/06/16
+	 */
+	public final ClassIdentifier simpleName()
+	{
+		return this.simplename;
 	}
 	
 	/**
