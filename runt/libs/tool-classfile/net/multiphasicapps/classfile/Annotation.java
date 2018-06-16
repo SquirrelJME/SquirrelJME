@@ -10,15 +10,13 @@
 
 package net.multiphasicapps.classfile;
 
-import java.util.Map;
-
 /**
  * This represents an annotation which has values assigned to keys.
  *
  * @since 2018/06/16
  */
 public final class Annotation
-	implements AnnotationValue, IsAnnotation, Map<MethodName, AnnotationValue>
+	implements AnnotationValue, IsAnnotation
 {
 	/**
 	 * {@inheritDoc}
@@ -56,6 +54,16 @@ public final class Annotation
 	 */
 	@Override
 	public final String toString()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/06/16
+	 */
+	@Override
+	public final ClassName type()
 	{
 		throw new todo.TODO();
 	}

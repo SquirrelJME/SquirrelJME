@@ -25,5 +25,24 @@ public interface IsAnnotation
 	 * @since 2018/06/16
 	 */
 	public abstract Annotation annotation();
+	
+	/**
+	 * Returns the value of the given key.
+	 *
+	 * @param __n The name to obtain.
+	 * @return The value for the given element.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/06/16
+	 */
+	public abstract AnnotationValue get(MethodName __n)
+		throws NullPointerException;
+	
+	/**
+	 * Returns the type of this annotation.
+	 *
+	 * @return The annotation type.
+	 * @since 2018/06/16
+	 */
+	public abstract ClassName type();
 }
 
