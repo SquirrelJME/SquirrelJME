@@ -118,15 +118,29 @@ public final class AnnotationElement
 	}
 	
 	/**
-	 * Returns the value pairs that are used by this annotation.
+	 * Returns the value pairs that are used by this annotation as a map with
+	 * the method name as the key.
 	 *
 	 * @return The annotation value pairs.
 	 * @since 2018/05/14
 	 */
-	public final Map<MethodName, AnnotationValuePair> valuePairs()
+	public final Map<MethodName, AnnotationValuePair> valueMap()
 	{
 		return UnmodifiableMap.<MethodName, AnnotationValuePair>of(
 			this._pairs);
+	}
+	
+	/**
+	 * Returns only the value pairs that are used which additionally have
+	 * the key value specified.
+	 *
+	 * @return The value pairs that are used.
+	 * @since 2018/06/16
+	 */
+	public final Collection<AnnotationValuePair> valuePairs()
+	{
+		return UnmodifiableCollections.<AnnotationValuePair>of(
+			this._pairs.values());
 	}
 	
 	/**
