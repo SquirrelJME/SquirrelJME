@@ -87,7 +87,7 @@ public abstract class ConstantValue
 	 */
 	public final ConstantValueType type()
 	{
-		throw new todo.TODO();
+		return this.type;
 	}
 }
 
