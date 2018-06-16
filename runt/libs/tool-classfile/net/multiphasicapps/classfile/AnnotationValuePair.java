@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.classfile;
 
+import java.util.Map;
+
 /**
  * This contains the key/value pair for an annotation.
  *
