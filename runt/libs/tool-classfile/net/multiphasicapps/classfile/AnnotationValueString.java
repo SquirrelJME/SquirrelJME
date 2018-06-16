@@ -10,19 +10,17 @@
 
 package net.multiphasicapps.classfile;
 
-import java.util.Map;
-
 /**
- * This contains the key/value pair for an annotation.
+ * This represents an annotation value which is a string.
  *
- * @since 2018/05/14
+ * @since 2018/06/16
  */
-@Deprecated
-public final class AnnotationValuePair
+public final class AnnotationValueString
+	implements AnnotationValue, CharSequence
 {
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/05/14
+	 * @since 2018/06/16
 	 */
 	@Override
 	public final boolean equals(Object __o)
@@ -32,7 +30,7 @@ public final class AnnotationValuePair
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/05/14
+	 * @since 2018/06/16
 	 */
 	@Override
 	public final int hashCode()
@@ -41,19 +39,8 @@ public final class AnnotationValuePair
 	}
 	
 	/**
-	 * Returns the key of the annotation.
-	 *
-	 * @return The value key.
-	 * @since 2018/05/14
-	 */
-	public final MethodName key()
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
 	 * {@inheritDoc}
-	 * @since 2018/05/14
+	 * @since 2018/06/16
 	 */
 	@Override
 	public final String toString()

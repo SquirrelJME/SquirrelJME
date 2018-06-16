@@ -25,6 +25,7 @@ import net.multiphasicapps.collections.UnmodifiableMap;
  *
  * @since 2018/03/06
  */
+@Deprecated
 public final class AnnotationElement
 {
 	/** The annotation type. */
