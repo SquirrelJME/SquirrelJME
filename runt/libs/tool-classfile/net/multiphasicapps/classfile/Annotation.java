@@ -16,18 +16,8 @@ package net.multiphasicapps.classfile;
  * @since 2018/06/16
  */
 public final class Annotation
-	implements AnnotationValue, IsAnnotation
+	implements AnnotationValue
 {
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/06/16
-	 */
-	@Override
-	public final Annotation annotation()
-	{
-		return this;
-	}
-	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/06/16
@@ -35,6 +25,23 @@ public final class Annotation
 	@Override
 	public final boolean equals(Object __o)
 	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the value of the given key.
+	 *
+	 * @param __n The name to obtain.
+	 * @return The value for the given element.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/06/16
+	 */
+	public final AnnotationValue get(MethodName __n)
+		throws NullPointerException
+	{
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
 		throw new todo.TODO();
 	}
 	
@@ -59,13 +66,11 @@ public final class Annotation
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Returns the type of this annotation.
+	 *
+	 * @return The annotation type.
 	 * @since 2018/06/16
 	 */
-	@Override
-	public final ClassName type()
-	{
-		throw new todo.TODO();
-	}
+	public final ClassName type();
 }
 
