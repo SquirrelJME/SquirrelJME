@@ -14,7 +14,9 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import net.multiphasicapps.collections.UnmodifiableIterator;
 
 /**
  * This contains the table of inner class references.
@@ -22,6 +24,7 @@ import java.util.List;
  * @since 2018/05/15
  */
 public final class InnerClasses
+	implements Iterable<InnerClass>
 {
 	/** The declared inner classes. */
 	private final InnerClass[] _inners;
@@ -85,6 +88,16 @@ public final class InnerClasses
 	public final int hashCode()
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/06/16
+	 */
+	@Override
+	public final Iterator<InnerClass> iterator()
+	{
+		return UnmodifiableIterator.<InnerClass>of(this._inners);
 	}
 	
 	/**

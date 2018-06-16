@@ -25,6 +25,8 @@ import net.multiphasicapps.classfile.ClassFlag;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.Field;
 import net.multiphasicapps.classfile.FieldFlag;
+import net.multiphasicapps.classfile.InnerClass;
+import net.multiphasicapps.classfile.InnerClasses;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.Method;
 import net.multiphasicapps.classfile.MethodFlag;
@@ -128,6 +130,12 @@ public class Main
 		__i.increment();
 		Main.dumpAnnotationTable(__i, __out, __in.annotationTable());
 		__i.decrement();
+	
+		// Inner classes
+		__out.println("Inner Classes:");
+		__i.increment();
+		Main.dumpInnerClasses(__i, __out, __in.innerClasses());
+		__i.decrement();
 		
 		// Print fields
 		__out.println("Fields:");
@@ -180,6 +188,37 @@ public class Main
 		__i.increment();
 		Main.dumpAnnotationTable(__i, __out, __in.annotationTable());
 		__i.decrement();
+	}
+	
+	/**
+	 * Dumps the inner classes.
+	 *
+	 * @param __i The controller for indenting.
+	 * @param __out The output.
+	 * @param __in The input.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/06/16
+	 */
+	public static void dumpInnerClasses(IndentedOutputStream __i,
+		PrintStream __out, InnerClasses __in)
+		throws NullPointerException
+	{
+		if (__i == null || __out == null || __in == null)
+			throw new NullPointerException("NARG");
+		
+		// Go through each one.
+		for (InnerClass ic : __in)
+		{
+			__out.printf("Class %s%n", ic.name());
+			
+			__i.increment();
+			
+			__out.printf("Outer Class: %s%n", ic.outerClass());
+			__out.printf("Simple Name: %s%n", ic.simpleName());
+			__out.printf("Flags:       %s%n", ic.flags());
+			
+			__i.decrement();
+		}
 	}
 	
 	/**
