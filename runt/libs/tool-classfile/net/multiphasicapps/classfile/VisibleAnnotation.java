@@ -44,6 +44,20 @@ public final class VisibleAnnotation
 	 * @since 2018/06/16
 	 */
 	@Override
+	public final AnnotationValue get(MethodName __n)
+		throws NullPointerException
+	{
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/06/16
+	 */
+	@Override
 	public final int hashCode()
 	{
 		throw new todo.TODO();
@@ -55,6 +69,16 @@ public final class VisibleAnnotation
 	 */
 	@Override
 	public final String toString()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/06/16
+	 */
+	@Override
+	public final ClassName type()
 	{
 		throw new todo.TODO();
 	}
