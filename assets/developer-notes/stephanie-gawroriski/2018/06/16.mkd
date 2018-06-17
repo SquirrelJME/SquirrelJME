@@ -1,0 +1,19 @@
+# 2018/06/16
+
+## 18:21
+
+Okay `AnnotationValuePair` is a bit confusing, I think it would be best to
+just be a value of sorts. I do however need to represent the type of value
+stored in an annotation. Annotation values can be recursive!
+
+## 18:31
+
+Okay, I just need a way better thing for annotations because it is messy.
+I am going to need quite a number of classes to represent annotation values
+since there are quite a number of different formats.
+
+## 18:58
+
+You know, is the visibility of an annotation even important to me? I mean for
+the most part there is no reflection and there will be no way to obtain the
+annotations anyway. So I think the visibility information is rather pointless.
