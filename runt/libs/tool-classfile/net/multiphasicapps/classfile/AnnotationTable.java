@@ -24,15 +24,16 @@ import net.multiphasicapps.collections.UnmodifiableIterator;
 
 /**
  * This contains the annotation table which stores all of the annotation
- * information.
+ * information. No visibility information is stored because that is not needed
+ * in SquirrelJME either by the run-time or the compiler.
  *
  * @since 2018/05/15
  */
 public final class AnnotationTable
-	implements Iterable<AnnotationElement>
+	implements Iterable<Annotation>
 {
 	/** The annotations which have been declared. */
-	private final Map<BinaryName, AnnotationElement> _annotations;
+	private final Map<ClassName, Annotation> _annotations;
 	
 	/**
 	 * Initializes the annotation table.
@@ -42,11 +43,11 @@ public final class AnnotationTable
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/05/15
 	 */
-	public AnnotationTable(AnnotationElement... __e)
+	public AnnotationTable(Annotation... __e)
 		throws InvalidClassFormatException, NullPointerException
 	{
-		this(Arrays.<AnnotationElement>asList((__e != null ? __e :
-			new AnnotationElement[0])));
+		this(Arrays.<Annotation>asList((__e != null ? __e :
+			new Annotation[0])));
 	}
 	
 	/**
@@ -57,18 +58,18 @@ public final class AnnotationTable
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/05/15
 	 */
-	public AnnotationTable(Iterable<AnnotationElement> __e)
+	public AnnotationTable(Iterable<Annotation> __e)
 		throws InvalidClassFormatException, NullPointerException
 	{
 		if (__e == null)
 			throw new NullPointerException("NARG");
 		
-		Map<BinaryName, AnnotationElement> rv = new LinkedHashMap<>();
-		for (AnnotationElement e : __e)
+		Map<ClassName, Annotation> rv = new LinkedHashMap<>();
+		for (Annotation e : __e)
 		{
 			// {@squirreljme.error JC20 Duplicate annotation declared. (The
 			// declared annotation)}
-			BinaryName name = e.type();
+			ClassName name = e.type();
 			if (rv.containsKey(name))
 				throw new InvalidClassFormatException(String.format("JC20 %s",
 					name));
@@ -104,9 +105,9 @@ public final class AnnotationTable
 	 * @since 2018/05/16
 	 */
 	@Override
-	public final Iterator<AnnotationElement> iterator()
+	public final Iterator<Annotation> iterator()
 	{
-		return UnmodifiableIterator.<AnnotationElement>of(
+		return UnmodifiableIterator.<Annotation>of(
 			this._annotations.values());
 	}
 	
@@ -139,14 +140,16 @@ public final class AnnotationTable
 			throw new NullPointerException("NARG");
 		
 		// Parse visible then invisible annotations
-		List<AnnotationElement> rv = new ArrayList<>();
+		List<Annotation> rv = new ArrayList<>();
 		for (int z = 0; z < 2; z++)
 			try (DataInputStream di = __attrs.open((z == 0 ?
 				"RuntimeVisibleAnnotations" : "RuntimeInvisibleAnnotations")))
 			{
 				if (di != null)
 				{
-					throw new todo.TODO();
+					int n = di.readUnsignedShort();
+					for (int i = 0; i < n; i++)
+						rv.add(Annotation.parse(__pool, di));
 				}
 			}
 		

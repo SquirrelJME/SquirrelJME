@@ -132,7 +132,7 @@ public final class UnmodifiableCollection<T>
 	@SuppressWarnings({"unchecked"})
 	public static <T> Collection<T> of(Collection<T> __c)
 	{
-		// If already one, return that set
+		// If already one, return that collection
 		if (__c instanceof UnmodifiableCollection)
 			return __c;
 		

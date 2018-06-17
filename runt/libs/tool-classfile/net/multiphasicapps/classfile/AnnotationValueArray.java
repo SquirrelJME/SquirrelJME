@@ -10,7 +10,9 @@
 
 package net.multiphasicapps.classfile;
 
+import java.util.AbstractList;
 import java.util.List;
+import java.util.RandomAccess;
 
 /**
  * This represents an annotation value that is an array.
@@ -18,7 +20,8 @@ import java.util.List;
  * @since 2018/06/16
  */
 public final class AnnotationValueArray
-	implements AnnotationValue, List<AnnotationValue>
+	extends AbstractList<AnnotationValue>
+	implements AnnotationValue, List<AnnotationValue>, RandomAccess
 {
 	/**
 	 * {@inheritDoc}
@@ -36,6 +39,26 @@ public final class AnnotationValueArray
 	 */
 	@Override
 	public final int hashCode()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/06/16
+	 */
+	@Override
+	public final AnnotationValue get(int __i)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/06/16
+	 */
+	@Override
+	public final int size()
 	{
 		throw new todo.TODO();
 	}

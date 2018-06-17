@@ -311,9 +311,6 @@ public final class ClassFile
 		Method[] methods = Method.decode(version, thisname, classflags, pool,
 			in);
 		
-		// Annotated values
-		Set<AnnotationElement> avs = new LinkedHashSet<>();
-		
 		// Read in attributes
 		AttributeTable attrs = AttributeTable.parse(pool, in);
 		

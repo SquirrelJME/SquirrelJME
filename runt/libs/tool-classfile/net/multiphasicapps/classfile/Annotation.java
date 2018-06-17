@@ -10,12 +10,19 @@
 
 package net.multiphasicapps.classfile;
 
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.util.AbstractMap;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * This represents an annotation which has values assigned to keys.
  *
  * @since 2018/06/16
  */
 public final class Annotation
+	extends AbstractMap<MethodName, AnnotationValue>
 	implements AnnotationValue
 {
 	/**
@@ -29,18 +36,25 @@ public final class Annotation
 	}
 	
 	/**
-	 * Returns the value of the given key.
-	 *
-	 * @param __n The name to obtain.
-	 * @return The value for the given element.
-	 * @throws NullPointerException On null arguments.
+	 * {@inheritDoc}
 	 * @since 2018/06/16
 	 */
-	public final AnnotationValue get(MethodName __n)
-		throws NullPointerException
+	@Override
+	public final Set<Map.Entry<MethodName, AnnotationValue>> entrySet()
 	{
-		if (__n == null)
-			throw new NullPointerException("NARG");
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/06/16
+	 */
+	@Override
+	public final AnnotationValue get(Object __n)
+	{
+		// Will never be found
+		if (__n == null || !(__n instanceof MethodName))
+			return null;
 		
 		throw new todo.TODO();
 	}
@@ -51,6 +65,16 @@ public final class Annotation
 	 */
 	@Override
 	public final int hashCode()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/06/16
+	 */
+	@Override
+	public final int size()
 	{
 		throw new todo.TODO();
 	}
@@ -71,6 +95,29 @@ public final class Annotation
 	 * @return The annotation type.
 	 * @since 2018/06/16
 	 */
-	public final ClassName type();
+	public final ClassName type()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Decodes a single annotation from the input data stream and returns the
+	 * parsed annotation.
+	 *
+	 * @param __pool The constant pool.
+	 * @param __in The input stream to read from.
+	 * @return The parsed annotation.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/06/16
+	 */
+	public static final Annotation parse(Pool __pool, DataInputStream __in)
+		throws IOException, NullPointerException
+	{
+		if (__pool == null || __in == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 }
 
