@@ -17,9 +17,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Map;
-import net.multiphasicapps.classfile.AnnotationElement;
+import net.multiphasicapps.classfile.Annotation;
 import net.multiphasicapps.classfile.AnnotationTable;
-import net.multiphasicapps.classfile.AnnotationValuePair;
+import net.multiphasicapps.classfile.AnnotationValue;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassFlag;
 import net.multiphasicapps.classfile.ClassName;
@@ -52,7 +52,7 @@ public class Main
 	 * @since 2018/05/14
 	 */
 	public static void dumpAnnotation(IndentedOutputStream __i,
-		PrintStream __out, AnnotationElement __in)
+		PrintStream __out, Annotation __in)
 		throws NullPointerException
 	{
 		if (__i == null || __out == null || __in == null)
@@ -62,8 +62,7 @@ public class Main
 		
 		// Print the values of the annotations
 		__i.increment();
-		for (Map.Entry<MethodName, AnnotationValuePair> v : __in.valuePairs().
-			entrySet())
+		for (Map.Entry<MethodName, AnnotationValue> v : __in.entrySet())
 			__out.printf("%s=%s%n", v.getKey(), v.getValue());
 		__i.decrement();
 	}
@@ -84,7 +83,7 @@ public class Main
 		if (__i == null || __out == null || __in == null)
 			throw new NullPointerException("NARG");
 		
-		for (AnnotationElement e : __in)
+		for (Annotation e : __in)
 			Main.dumpAnnotation(__i, __out, e);
 	}
 		

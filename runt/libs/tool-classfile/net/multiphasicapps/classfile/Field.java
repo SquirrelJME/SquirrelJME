@@ -194,9 +194,6 @@ public final class Field
 				throw new InvalidClassFormatException(String.format(
 					"JC0p %s %s", name, type));
 			
-			// Annotated values
-			Set<AnnotationElement> avs = new LinkedHashSet<>();
-			
 			// Handle attributes
 			AttributeTable attrs = AttributeTable.parse(__pool, __in);
 			

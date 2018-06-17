@@ -273,9 +273,6 @@ public final class Method
 				throw new InvalidClassFormatException(String.format(
 					"JC12 %s %s", name, type));
 			
-			// Annotated values
-			Set<AnnotationElement> avs = new LinkedHashSet<>();
-			
 			// Handle attributes
 			AttributeTable attrs = AttributeTable.parse(__pool, __in);
 			

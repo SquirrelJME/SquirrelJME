@@ -16,7 +16,7 @@ package net.multiphasicapps.classfile;
  * @since 2018/06/16
  */
 public final class AnnotationValueString
-	implements AnnotationValue, CharSequence
+	implements AnnotationValue
 {
 	/**
 	 * {@inheritDoc}

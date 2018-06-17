@@ -24,6 +24,16 @@ public final class AnnotationValuePrimitive
 	 * @since 2018/06/16
 	 */
 	@Override
+	public final double doubleValue()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/06/16
+	 */
+	@Override
 	public final boolean equals(Object __o)
 	{
 		throw new todo.TODO();
@@ -34,7 +44,37 @@ public final class AnnotationValuePrimitive
 	 * @since 2018/06/16
 	 */
 	@Override
+	public final float floatValue()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/06/16
+	 */
+	@Override
 	public final int hashCode()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/06/16
+	 */
+	@Override
+	public final int intValue()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/06/16
+	 */
+	@Override
+	public final long longValue()
 	{
 		throw new todo.TODO();
 	}
