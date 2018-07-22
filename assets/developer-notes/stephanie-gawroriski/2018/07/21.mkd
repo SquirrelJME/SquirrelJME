@@ -1,0 +1,48 @@
+# 2018/07/21
+
+## 19:33
+
+Okay, I have literally have not touched SquirrelJME in two months because I
+have a new job at IOpipe (where I am a Java developer, do check it out) and
+I was prepping moving. Also things were rather stressful at my old home so
+now the conditions are rather better for me and I can really concentrate. I
+think seeing this code again that I have not touched in so long, to be honest
+I think it is rather silly. I know things have been repetitive and such but
+to be honest I think I am just kind of constantly looping around doing all
+different things. In short I am writing very complex things and trying to get
+it perfect the first time. This is literally impossible. Putting it into
+perspective the first project has to be a mess and it has to be a complete
+utter mess that would be insanly horrible to use in the end product. It has
+to be simple to get it at least working somewhat. One thing that is difficult
+for me is figuring the parts out that are pieced together. I think right now
+the best choice to make would be to translate the byte code instructions to
+a register based virtual machine. Basically I turn the input byte code into
+output byte code. Then I write an interpreter for that byte code. I think
+for simplicity I am going to completely not perform any checks on the input
+byte code just to get a proof of concept going. What I need is something that
+can generate a really ugly format that the VM can load. I think what I can do
+is take the existing _WinterCoat_. But I think something that would work for
+me at least this super hacky first concept would be called _SpringCoat_. This
+_SpringCoat_ will be its own independent system that is not intended to be
+used for the rest of the compiler interface. Basically I am going to write
+this to be completely throw it away. If anything it will just remain as an
+old product of sorts. I am just going to go through every class file and just
+not even care how horrible or bad the input is. It is just something to put
+my paw into the door so to speak. I know I had a Java compiler to write on
+the side due to timing, but I think I will put that aside for a bit to
+work on _SpringCoat_. This is going to be extremely hacky but it will be a
+demo. Even though it would be hacky it could then lead the way to _SummerCoat_
+which would be the next step. Refining the process.
+
+## 20:05
+
+I am not even going to put the stuff in the JIT. It is just going to be tossed
+into the build system. What I need first is to write the actual virtual
+machine first before I have a working compiler. I just have to kind of guess
+what to do for the most part. I do also have to match Java in a way. So I
+guess in the virtual machine I will take a recursive approach to things.
+Basically there will be basic class definitions. References to interfaces or
+super classes and such will purely be done by references to. Then for field
+values, they can just be stored in an instance with a variable specifier.
+The same can be said for methods depending on the class itself. So it will
+use a ton of memory but it will work.
