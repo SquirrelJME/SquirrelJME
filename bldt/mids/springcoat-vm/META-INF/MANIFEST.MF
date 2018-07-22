@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-UUID: 82dcdfbb-27da-48a6-87f7-7a0a8810360f
+X-SquirrelJME-Error: BK
+X-SquirrelJME-Name: SpringCoat Virtual Machine
+X-SquirrelJME-Vendor: Stephanie Gawroriski
+X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Depends: springcoat-compiler
+X-SquirrelJME-Description: This is the virtual machine on top of the 
+ SpringCoat executable format. This is really baseline and it pretty 
+ much is very ugly and is in no way intended for speed or anything.
+Microedition-Configuration: CLDC-1.8-Compact
+
