@@ -17,6 +17,7 @@ import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedHashSet;
+import java.util.Queue;
 import java.util.Set;
 
 /**
@@ -31,22 +32,11 @@ public class BuilderFactory
 	/** The command to execute. */
 	protected final String command;
 	
-	/** The directory for the project root (source code). */
-	protected final Path sourceroot;
+	/** The project manager to use. */
+	protected final ProjectManager projectmanager;
 	
 	/** Arguments to the builder command. */
 	private final String[] _args;
-	
-	/** The directory for each timespace binaries. */
-	private final Path[] _bin;
-	
-	/** The source managers for each timespace. */
-	private final SourceManager[] _sourcemanagers =
-		new SourceManager[TimeSpaceType.values().length];
-	
-	/** Binary managers for each timespace. */
-	private final BinaryManager[] _binarymanagers =
-		new BinaryManager[TimeSpaceType.values().length];
 	
 	/**
 	 * Initializes the build factory.
@@ -66,89 +56,15 @@ public class BuilderFactory
 				if (a != null)
 					args.addLast(a);
 		
-		// Use default paths based on system properties
-		Path sourceroot = Paths.get(
-			System.getProperty("cc.squirreljme.builder.root",
-				System.getProperty("user.dir", "squirreljme"))),
-			binroot = Paths.get(
-				System.getProperty(
-					"cc.squirreljme.builder.output", "bins")),
-			binruntime = null,
-			binjit = null,
-			bintest = null,
-			binbuild = null;
-		
-		// Allow paths to be modified
-		String[] parse;
-		while (null != (parse = __getopts(":?s:o:j:t:b:", args)))
-			switch (parse[0])
-			{
-					// Change source code root
-				case "-s":
-					sourceroot = Paths.get(parse[1]);
-					break;
-					
-					// Change binary output base root
-				case "-o":
-					binroot = Paths.get(parse[1]);
-					break;
-					
-					// Run-time build path
-				case "-r":
-					binruntime = Paths.get(parse[1]);
-					break;
-					
-					// JIT-time build path
-				case "-j":
-					binjit = Paths.get(parse[1]);
-					break;
-					
-					// Test-time build path
-				case "-t":
-					bintest = Paths.get(parse[1]);
-					break;
-					
-					// Build-time build path
-				case "-b":
-					binbuild = Paths.get(parse[1]);
-					break;
-				
-					// {@squirreljme.error AU0d Unknown argument.
-					// Usage: [-s path] [-o path] [-r path] [-j path] [-b path]
-					// command (command arguments...);
-					// -s: The project source path;
-					// -o: The base directory for binary output;
-					// -r: The binary path for the run-time;
-					// -j: The binary path for the jit-time;
-					// -t: The binary path for the tests;
-					// -b: The binary path for the build-time;
-					// Valid commands are:
-					// build, c, sdk, suite, task, wintercoat
-					// .(The switch)}
-				default:
-					throw new IllegalArgumentException(
-						String.format("AU0d %s", parse[1]));
-			}
-		
-		// Fill with defaults if missing
-		if (binruntime == null)
-			binruntime = binroot.resolve("brun");
-		if (binjit == null)
-			binjit = binroot.resolve("bjit");
-		if (bintest == null)
-			bintest = binroot.resolve("btst");
-		if (binbuild == null)
-			binbuild = binroot.resolve("bbld");
+		// Parse options and such for the project
+		ProjectManager projectmanager = ProjectManager.fromArguments(args);
+		this.projectmanager = projectmanager;
 		
 		// {@squirreljme.error AU0e No command given.}
 		String command = args.pollFirst();
 		if (command == null)
 			throw new IllegalArgumentException("AU0e");
 		this.command = command;
-		
-		// Set paths
-		this.sourceroot = sourceroot;
-		this._bin = new Path[]{binruntime, binjit, bintest, binbuild};
 		
 		// Use remaining arguments as input
 		this._args = args.<String>toArray(new String[args.size()]);
@@ -166,16 +82,7 @@ public class BuilderFactory
 	public BinaryManager binaryManager(TimeSpaceType __t)
 		throws IOException, NullPointerException
 	{
-		if (__t == null)
-			throw new NullPointerException("NARG");
-		
-		int i = __t.ordinal();
-		BinaryManager[] binarymanagers = this._binarymanagers;
-		BinaryManager rv = binarymanagers[i];
-		if (rv == null)
-			binarymanagers[i] =
-				(rv = new BinaryManager(this._bin[i], sourceManager(__t)));
-		return rv;
+		return this.projectmanager.binaryManager(__t);
 	}
 	
 	/**
@@ -190,41 +97,7 @@ public class BuilderFactory
 	public Binary[] build(TimeSpaceType __t, String... __p)
 		throws NullPointerException
 	{
-		if (__t == null || __p == null)
-			throw new NullPointerException("NARG");
-		
-		System.err.printf("DEBUG -- %s: %s%n", __t, Arrays.asList(__p));
-		
-		// Need the binary manager to build these projects
-		BinaryManager bm;
-		try
-		{
-			bm = this.binaryManager(__t);
-		}
-		
-		// {@squirreljme.error AU0f Could not obtain the binary manager.}
-		catch (IOException e)
-		{
-			throw new RuntimeException("AU0f", e);
-		}
-		
-		// Get binaries
-		int n = __p.length;
-		Binary[] bins = new Binary[n];
-		for (int i = 0; i < n; i++)
-			bins[i] = bm.get(__p[i]);
-		
-		// Do not return duplicate binaries
-		Set<Binary> rv = new LinkedHashSet<>();
-		
-		// Compile all of the project and return required class path for
-		// it to operate
-		for (Binary i : bins)
-			for (Binary b : bm.compile(i))
-				rv.add(b);
-		
-		// Return the completed set
-		return rv.<Binary>toArray(new Binary[rv.size()]);
+		return this.projectmanager.build(__t, __p);
 	}
 	
 	/**
@@ -316,8 +189,11 @@ public class BuilderFactory
 					args.<String>toArray(new String[args.size()]));
 				break;
 			
-				// {@squirreljme.error AU0h The specified command is not
-				// valid. (The command)}
+				// {@squirreljme.error AU0h Unknown command specified.
+				// Usage: command (command arguments...);
+				// Valid commands are:
+				// build, c, sdk, suite, task, wintercoat
+				// .(The switch)}
 			default:
 				throw new IllegalArgumentException(String.format("AU0h %s",
 					command));
@@ -336,16 +212,7 @@ public class BuilderFactory
 	public SourceManager sourceManager(TimeSpaceType __t)
 		throws IOException, NullPointerException
 	{
-		if (__t == null)
-			throw new NullPointerException("NARG");
-		
-		int i = __t.ordinal();
-		SourceManager[] sourcemanagers = this._sourcemanagers;
-		SourceManager rv = sourcemanagers[i];
-		if (rv == null)
-			sourcemanagers[i] =
-				(rv = new SourceManagerFactory(this.sourceroot).get(__t));
-		return rv;
+		return this.sourceManager(__t);
 	}
 	
 	/**
@@ -429,7 +296,7 @@ public class BuilderFactory
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/11/16
 	 */
-	static String[] __getopts(String __optstring, Deque<String> __q)
+	static String[] __getopts(String __optstring, Queue<String> __q)
 		throws IllegalArgumentException, NullPointerException
 	{
 		if (__optstring == null || __q == null)
@@ -449,7 +316,7 @@ public class BuilderFactory
 		int optstrlen = __optstring.length();
 		
 		// Peek the next argument
-		String peek = __q.peekFirst();
+		String peek = __q.peek();
 		
 		// Stop parsing arguments, or nothing to parse
 		if (peek.equals("--") || !peek.startsWith("-"))
@@ -472,7 +339,7 @@ public class BuilderFactory
 				wantsarg = (__optstring.charAt(odx + 1) == ':');
 			
 			// At this point the argument is consumed
-			__q.removeFirst();
+			__q.remove();
 			
 			// Wants an argument?
 			String rva = Character.toString(c);
@@ -484,12 +351,12 @@ public class BuilderFactory
 				{
 					// {@squirreljme.error AU0i The specified option argument
 					// requires a value set to it. (The option argument)}
-					String next = __q.peekFirst();
+					String next = __q.peek();
 					if (next == null)
 						throw new IllegalArgumentException(
 							String.format("AU0i %c", c));
 					
-					return new String[]{rva, __q.removeFirst()};
+					return new String[]{rva, __q.remove()};
 				}
 				
 				// Otherwise it is just anything after the sequence
