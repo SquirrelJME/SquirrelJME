@@ -74,6 +74,12 @@ public class Main
 		Binary bootbin = classpath[classpath.length - 1];
 		EntryPoints entries = new EntryPoints(bootbin.manifest());
 		
+		// Print entry points out out for debug
+		System.err.println("Entry points:");
+		int n = entries.size();
+		for (int i = 0; i < n; i++)
+			System.err.printf("    %d: %s%n", i, entries.get(i));
+		
 		throw new todo.TODO();
 	}
 }
