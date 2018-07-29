@@ -161,6 +161,11 @@ public final class Files
 		throw new todo.TODO();
 	}
 	
+	public static boolean isRegularFile(Path __p)
+	{
+		throw new todo.TODO();
+	}
+	
 	public static boolean isSameFile(Path __a, Path __b)
 		throws IOException
 	{
