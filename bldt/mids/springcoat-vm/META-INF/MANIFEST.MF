@@ -9,5 +9,5 @@ X-SquirrelJME-Description: This is the virtual machine on top of the
  SpringCoat executable format. This is really baseline and it pretty 
  much is very ugly and is in no way intended for speed or anything.
 Microedition-Configuration: CLDC-1.8-Compact
-Main-Class: cc.squirreljme.springcoat.vm.Main
+Main-Class: cc.squirreljme.springcoat.Main
 
