@@ -15,7 +15,7 @@ package cc.squirreljme.springcoat.vm;
  *
  * @since 2018/07/22
  */
-public class SpringField
+public final class SpringField
 {
 }
 
