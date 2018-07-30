@@ -1,0 +1,16 @@
+# 2018/07/29
+
+## 10:44
+
+Instead of generating files and running them, the VM will run directly from
+the build and run JARs and such and classes on demand. Instead of just running
+through everything. Because running through everything it gets just rather
+painful because all the classes and such are hard to do and it just feels like
+a big pain because there are so many classes to process before you can run
+any kind of code. So I think this is the best choice.
+
+## 10:48
+
+Okay so, what I will need to do is make it so `BuilderFactory` can have stuff
+like the managers not built without a command. Basically a manager class which
+I can base other things on which does the same thing.
