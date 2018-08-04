@@ -15,6 +15,7 @@ import cc.squirreljme.builder.support.ProjectManager;
 import cc.squirreljme.builder.support.TimeSpaceType;
 import cc.squirreljme.kernel.suiteinfo.EntryPoint;
 import cc.squirreljme.kernel.suiteinfo.EntryPoints;
+import cc.squirreljme.springcoat.vm.SpringMachine;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
@@ -79,6 +80,13 @@ public class Main
 		int n = entries.size();
 		for (int i = 0; i < n; i++)
 			System.err.printf("    %d: %s%n", i, entries.get(i));
+		
+		// Use the first program if the ID is not valid
+		if (launchid < 0 || launchid >= n)
+			launchid = 0;
+		
+		// Initialize the machine
+		SpringMachine machine = new SpringMachine(classpath);
 		
 		throw new todo.TODO();
 	}

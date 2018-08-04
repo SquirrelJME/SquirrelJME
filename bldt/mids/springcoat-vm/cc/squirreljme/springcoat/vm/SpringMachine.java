@@ -10,6 +10,8 @@
 
 package cc.squirreljme.springcoat.vm;
 
+import cc.squirreljme.builder.support.Binary;
+
 /**
  * This class contains the instance of the SpringCoat virtual machine and has
  * a classpath along with all the needed storage for variables and such.
@@ -18,5 +20,24 @@ package cc.squirreljme.springcoat.vm;
  */
 public final class SpringMachine
 {
+	/** The class path for the machine. */
+	protected final Binary[] classpath;
+	
+	/**
+	 * Initializes the machine.
+	 *
+	 * @param __classpath The classpath.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/08/04
+	 */
+	public SpringMachine(Binary... __classpath)
+		throws NullPointerException
+	{
+		for (Binary b : __classpath = (__classpath == null ? new Binary[0] :
+			__classpath.clone()))
+			if (b == null)
+				throw new NullPointerException("NARG");
+		this.classpath = __classpath;
+	}
 }
 
