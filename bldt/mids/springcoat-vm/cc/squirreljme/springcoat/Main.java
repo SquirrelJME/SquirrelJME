@@ -15,6 +15,7 @@ import cc.squirreljme.builder.support.ProjectManager;
 import cc.squirreljme.builder.support.TimeSpaceType;
 import cc.squirreljme.kernel.suiteinfo.EntryPoint;
 import cc.squirreljme.kernel.suiteinfo.EntryPoints;
+import cc.squirreljme.springcoat.vm.SpringClass;
 import cc.squirreljme.springcoat.vm.SpringMachine;
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -87,6 +88,10 @@ public class Main
 		
 		// Initialize the machine
 		SpringMachine machine = new SpringMachine(classpath);
+		
+		// Find the entry point
+		SpringClass entrycl = machine.locateClass(entries.get(launchid).
+			entryPoint().replace('.', '/'));
 		
 		throw new todo.TODO();
 	}
