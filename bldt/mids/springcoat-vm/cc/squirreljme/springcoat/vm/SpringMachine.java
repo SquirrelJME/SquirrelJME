@@ -11,6 +11,7 @@
 package cc.squirreljme.springcoat.vm;
 
 import cc.squirreljme.builder.support.Binary;
+import net.multiphasicapps.classfile.ClassName;
 
 /**
  * This class contains the instance of the SpringCoat virtual machine and has
@@ -38,6 +39,31 @@ public final class SpringMachine
 			if (b == null)
 				throw new NullPointerException("NARG");
 		this.classpath = __classpath;
+	}
+	
+	/**
+	 * Locates the specified class in the machine.
+	 *
+	 * @param __cn The class to load.
+	 * @return 
+	 * @throws NullPointerException On null arguments.
+	 */
+	public final SpringClass locateClass(ClassName __cn)
+		throws NullPointerException
+	{
+		if (__cn == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	public final SpringClass locateClass(String __cn)
+		throws NullPointerException
+	{
+		if (__cn == null)
+			throw new NullPointerException("NARG");
+		
+		return this.locateClass(new ClassName(__cn));
 	}
 }
 
