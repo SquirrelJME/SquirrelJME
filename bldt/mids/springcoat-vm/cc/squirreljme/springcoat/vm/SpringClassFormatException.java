@@ -17,7 +17,7 @@ import net.multiphasicapps.classfile.ClassName;
  *
  * @since 2018/08/05
  */
-public class SpringClassFormatError
+public class SpringClassFormatException
 	extends SpringException
 {
 	/** The name of the class. */
@@ -30,7 +30,7 @@ public class SpringClassFormatError
 	 * @throws NullPointerException If no class was specified.
 	 * @since 2018/08/05
 	 */
-	public SpringClassFormatError(ClassName __cn)
+	public SpringClassFormatException(ClassName __cn)
 		throws NullPointerException
 	{
 		if (__cn == null)
@@ -47,7 +47,7 @@ public class SpringClassFormatError
 	 * @throws NullPointerException If no class was specified.
 	 * @since 2018/08/05
 	 */
-	public SpringClassFormatError(ClassName __cn, String __m)
+	public SpringClassFormatException(ClassName __cn, String __m)
 		throws NullPointerException
 	{
 		super(__m);
@@ -67,7 +67,7 @@ public class SpringClassFormatError
 	 * @throws NullPointerException If no class was specified.
 	 * @since 2018/08/05
 	 */
-	public SpringClassFormatError(ClassName __cn, String __m,
+	public SpringClassFormatException(ClassName __cn, String __m,
 		Throwable __c)
 		throws NullPointerException
 	{
@@ -87,7 +87,7 @@ public class SpringClassFormatError
 	 * @throws NullPointerException If no class was specified.
 	 * @since 2018/08/05
 	 */
-	public SpringClassFormatError(ClassName __cn, Throwable __c)
+	public SpringClassFormatException(ClassName __cn, Throwable __c)
 		throws NullPointerException
 	{
 		super(__c);

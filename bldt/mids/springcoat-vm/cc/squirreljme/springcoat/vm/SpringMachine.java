@@ -45,8 +45,10 @@ public final class SpringMachine
 	 * Locates the specified class in the machine.
 	 *
 	 * @param __cn The class to load.
-	 * @return 
+	 * @return The found class.
 	 * @throws NullPointerException On null arguments.
+	 * @throws SpringClassNotFoundException If the class was not found.
+	 * @since 2018/08/05
 	 */
 	public final SpringClass locateClass(ClassName __cn)
 		throws NullPointerException
@@ -57,6 +59,15 @@ public final class SpringMachine
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Locates the specified class in the machine.
+	 *
+	 * @param __cn The class to load.
+	 * @return The found class.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SpringClassNotFoundException If the class was not found.
+	 * @since 2018/08/05
+	 */
 	public final SpringClass locateClass(String __cn)
 		throws NullPointerException
 	{
