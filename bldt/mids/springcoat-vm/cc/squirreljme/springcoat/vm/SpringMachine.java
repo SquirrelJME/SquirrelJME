@@ -12,6 +12,8 @@ package cc.squirreljme.springcoat.vm;
 
 import cc.squirreljme.builder.support.Binary;
 import net.multiphasicapps.classfile.ClassName;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class contains the instance of the SpringCoat virtual machine and has
@@ -23,6 +25,10 @@ public final class SpringMachine
 {
 	/** The class path for the machine. */
 	protected final Binary[] classpath;
+	
+	/** Classes which have been loaded. */
+	private final Map<ClassName, SpringClass> _classes =
+		new HashMap<>();
 	
 	/**
 	 * Initializes the machine.
@@ -56,7 +62,14 @@ public final class SpringMachine
 		if (__cn == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		System.err.printf("DEBUG -- locateClass(%s)%n", __cn);
+		
+		// Lock on classes
+		Map<ClassName, SpringClass> classes = this._classes;
+		synchronized (classes)
+		{
+			throw new todo.TODO();
+		}
 	}
 	
 	/**
