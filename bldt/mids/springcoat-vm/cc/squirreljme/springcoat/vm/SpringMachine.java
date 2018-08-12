@@ -11,9 +11,15 @@
 package cc.squirreljme.springcoat.vm;
 
 import cc.squirreljme.builder.support.Binary;
-import net.multiphasicapps.classfile.ClassName;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.zip.blockreader.ZipBlockReader;
+import net.multiphasicapps.zip.blockreader.ZipBlockEntry;
+import net.multiphasicapps.zip.blockreader.ZipEntryNotFoundException;
 
 /**
  * This class contains the instance of the SpringCoat virtual machine and has
@@ -24,7 +30,7 @@ import java.util.Map;
 public final class SpringMachine
 {
 	/** The class path for the machine. */
-	protected final Binary[] classpath;
+	private final Binary[] _classpath;
 	
 	/** Classes which have been loaded. */
 	private final Map<ClassName, SpringClass> _classes =
@@ -44,7 +50,7 @@ public final class SpringMachine
 			__classpath.clone()))
 			if (b == null)
 				throw new NullPointerException("NARG");
-		this.classpath = __classpath;
+		this._classpath = __classpath;
 	}
 	
 	/**
@@ -68,6 +74,62 @@ public final class SpringMachine
 		Map<ClassName, SpringClass> classes = this._classes;
 		synchronized (classes)
 		{
+			// If the class has already been obtained then use that
+			SpringClass rv = classes.get(__cn);
+			if (rv != null)
+				return rv;
+			
+			// This is the class that is read, in binary form
+			String fileform = __cn.toString() + ".class";
+			
+			// Otherwise we need to go through every single binary to find
+			// the class we want, which can take awhile
+			byte[] data = null;
+			for (Binary b : this._classpath)
+				try (ZipBlockReader zip = b.zipBlock())
+				{
+					// Does not exist?
+					ZipBlockEntry entry = zip.get(fileform);
+					if (entry == null)
+						continue;
+					
+					// Read in the data
+					byte[] buf = new byte[512];
+					try (ByteArrayOutputStream baos =
+						new ByteArrayOutputStream(1024);
+						InputStream in = entry.open())
+					{
+						int rc = in.read(buf);
+						
+						if (rc < 0)
+						{
+							baos.flush();
+							data = baos.toByteArray();
+							break;
+						}
+						
+						baos.write(buf, 0, rc);
+					}
+					
+					break;
+				}
+				catch (ZipEntryNotFoundException e)
+				{
+				}
+				catch (IOException e)
+				{
+					// {@squirreljme.error BK03 Failed to read from the class
+					// path.}
+					throw new SpringException("BK03", e);
+				}
+			
+			// {@squirreljme.error BK01 Could not locate the specified class.
+			// (The class which was not found; The class file which was
+			// attempted to be located)}
+			if (data == null)
+				throw new SpringClassNotFoundException(__cn, String.format(
+					"BK01 %s %s", __cn, fileform));
+			
 			throw new todo.TODO();
 		}
 	}
