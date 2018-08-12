@@ -99,16 +99,19 @@ public final class SpringMachine
 						new ByteArrayOutputStream(1024);
 						InputStream in = entry.open())
 					{
-						int rc = in.read(buf);
-						
-						if (rc < 0)
+						for (;;)
 						{
-							baos.flush();
-							data = baos.toByteArray();
-							break;
+							int rc = in.read(buf);
+							
+							if (rc < 0)
+							{
+								baos.flush();
+								data = baos.toByteArray();
+								break;
+							}
+							
+							baos.write(buf, 0, rc);
 						}
-						
-						baos.write(buf, 0, rc);
 					}
 					
 					break;
