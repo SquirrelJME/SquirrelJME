@@ -57,7 +57,7 @@ and requires only a Java compiler and virtual machine for it to be built.
 ## Links
 
  * Locations where you can get support:
-   * [Discord](https://discord.gg/SqhNpjf)
+   * [Discord](https://discord.gg/9PkMMKt)
  * Front facing social media:
    * [YouTube](https://www.youtube.com/channel/UCbmC7qQjeXUEUyE5XfDX5RA)
  * Personal Accounts (If you wish to contact me this way)
