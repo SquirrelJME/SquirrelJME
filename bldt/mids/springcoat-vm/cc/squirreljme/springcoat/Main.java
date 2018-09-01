@@ -89,7 +89,7 @@ public class Main
 		// Initialize the machine
 		SpringMachine machine = new SpringMachine(classpath);
 		
-		// Find the entry point
+		// Find the entry point class
 		SpringClass entrycl = machine.classLocate(entries.get(launchid).
 			entryPoint().replace('.', '/'));
 		
