@@ -157,7 +157,9 @@ public final class SpringMachine
 					"BK04 %s", __cn), e);
 			}
 			
-			throw new todo.TODO();
+			// Parse the class and store it for later
+			classes.put(__cn, (rv = SpringClass.parse(cf)));
+			return rv;
 		}
 	}
 	

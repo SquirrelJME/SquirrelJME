@@ -13,6 +13,7 @@ package cc.squirreljme.springcoat.vm;
 import java.io.DataInputStream;
 import java.io.IOException;
 import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.ClassFile;
 
 /**
  * This is a representation of a class file as it is seen by the virtual
@@ -39,14 +40,15 @@ public final class SpringClass
 	/**
 	 * Parses the input stream for class information.
 	 *
-	 * @param __in The stream to read from.
+	 * @param __in The class to parse.
 	 * @return A loaded class.
-	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
+	 * @throws SpringClassFormatException If the class is not formatted
+	 * properly.
 	 * @since 2018/07/21
 	 */
-	public static SpringClass parse(DataInputStream __in)
-		throws IOException, NullPointerException
+	public static SpringClass parse(ClassFile __in)
+		throws NullPointerException, SpringClassFormatException
 	{
 		if (__in == null)
 			throw new NullPointerException("NARG");
