@@ -15,7 +15,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
@@ -38,6 +40,13 @@ public final class SpringMachine
 	/** Classes which have been loaded. */
 	private final Map<ClassName, SpringClass> _classes =
 		new HashMap<>();
+	
+	/** Threads which are available. */
+	private final List<SpringThread> _threads =
+		new ArrayList<>();
+	
+	/** The next thread ID to use. */
+	private volatile int _nextthreadid;
 	
 	/**
 	 * Initializes the machine.
@@ -65,7 +74,7 @@ public final class SpringMachine
 	 * @throws SpringClassNotFoundException If the class was not found.
 	 * @since 2018/08/05
 	 */
-	public final SpringClass locateClass(ClassName __cn)
+	public final SpringClass classLocate(ClassName __cn)
 		throws NullPointerException
 	{
 		if (__cn == null)
@@ -172,13 +181,40 @@ public final class SpringMachine
 	 * @throws SpringClassNotFoundException If the class was not found.
 	 * @since 2018/08/05
 	 */
-	public final SpringClass locateClass(String __cn)
+	public final SpringClass classLocate(String __cn)
 		throws NullPointerException
 	{
 		if (__cn == null)
 			throw new NullPointerException("NARG");
 		
 		return this.locateClass(new ClassName(__cn));
+	}
+	
+	/**
+	 * Creates a new thread within the virtual machine.
+	 *
+	 * @param __n The name of the thread.
+	 * @return The newly created thread.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/01
+	 */
+	public final SpringThread threadNew(String __n)
+		throws NullPointerException
+	{
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		// Store thread
+		List<SpringThread> threads = this._threads;
+		synchronized (threads)
+		{
+			// Initialize new thread
+			SpringThread rv = new SpringThread(__n, ++this._nextthreadid);
+			
+			// Store thread
+			threads.add(rv);
+			return rv;
+		}
 	}
 }
 
