@@ -173,6 +173,7 @@ __primary()
 			then
 				# Add missing dates
 				__i="$__days"
+				__origi="$__i"
 				while [ "$__i" -lt "7" ]
 				do
 					echo -n '`--` '
@@ -180,7 +181,11 @@ __primary()
 				done
 				
 				# Go to next line to make a bit cleaner
-				echo
+				# But only do this if dashes were output
+				if [ "$__origi" -ne "$__i" ]
+				then
+					echo
+				fi
 			fi
 			
 			# Go through all days on the week
