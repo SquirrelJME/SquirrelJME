@@ -74,6 +74,7 @@ public final class SpringMachine
 	 * @throws SpringClassNotFoundException If the class was not found.
 	 * @since 2018/08/05
 	 */
+	@Deprecated
 	public final SpringClass classLocate(ClassName __cn)
 		throws NullPointerException
 	{
@@ -181,13 +182,14 @@ public final class SpringMachine
 	 * @throws SpringClassNotFoundException If the class was not found.
 	 * @since 2018/08/05
 	 */
+	@Deprecated
 	public final SpringClass classLocate(String __cn)
 		throws NullPointerException
 	{
 		if (__cn == null)
 			throw new NullPointerException("NARG");
 		
-		return this.locateClass(new ClassName(__cn));
+		return this.classLocate(new ClassName(__cn));
 	}
 	
 	/**
@@ -209,7 +211,7 @@ public final class SpringMachine
 		synchronized (threads)
 		{
 			// Initialize new thread
-			SpringThread rv = new SpringThread(__n, ++this._nextthreadid);
+			SpringThread rv = new SpringThread(++this._nextthreadid, __n);
 			
 			// Store thread
 			threads.add(rv);

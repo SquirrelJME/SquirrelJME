@@ -16,6 +16,7 @@ import cc.squirreljme.builder.support.TimeSpaceType;
 import cc.squirreljme.kernel.suiteinfo.EntryPoint;
 import cc.squirreljme.kernel.suiteinfo.EntryPoints;
 import cc.squirreljme.springcoat.vm.SpringClass;
+import cc.squirreljme.springcoat.vm.SpringClassLoader;
 import cc.squirreljme.springcoat.vm.SpringMachine;
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -86,6 +87,10 @@ public class Main
 		if (launchid < 0 || launchid >= n)
 			launchid = 0;
 		
+		// Initialize the class loader to find classes
+		SpringClassLoader classloader = new SpringClassLoader(classpath);
+		
+		/*
 		// Initialize the machine
 		SpringMachine machine = new SpringMachine(classpath);
 		
@@ -95,6 +100,7 @@ public class Main
 		
 		// Create main thread
 		SpringThread mainthread = machine.newThread("main");
+		*/
 		
 		throw new todo.TODO();
 	}
