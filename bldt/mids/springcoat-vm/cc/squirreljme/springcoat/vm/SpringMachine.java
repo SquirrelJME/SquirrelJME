@@ -11,12 +11,15 @@
 package cc.squirreljme.springcoat.vm;
 
 import cc.squirreljme.builder.support.Binary;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;
 import net.multiphasicapps.zip.blockreader.ZipBlockEntry;
 import net.multiphasicapps.zip.blockreader.ZipEntryNotFoundException;
@@ -126,12 +129,33 @@ public final class SpringMachine
 					throw new SpringException("BK03", e);
 				}
 			
-			// {@squirreljme.error BK01 Could not locate the specified class.
+			// {@squirreljme.error BK02 Could not locate the specified class.
 			// (The class which was not found; The class file which was
 			// attempted to be located)}
 			if (data == null)
 				throw new SpringClassNotFoundException(__cn, String.format(
-					"BK01 %s %s", __cn, fileform));
+					"BK02 %s %s", __cn, fileform));
+			
+			// Load class file
+			ClassFile cf;
+			try (ByteArrayInputStream bais = new ByteArrayInputStream(data))
+			{
+				cf = ClassFile.decode(bais);
+			}
+			catch (IOException e)
+			{
+				// {@squirreljme.error BK05 Could not read from the source
+				// class file. (The class being read)}
+				throw new SpringVirtualMachineException(String.format(
+					"BK05 %s", __cn), e);
+			}
+			catch (InvalidClassFormatException e)
+			{
+				// {@squirreljme.error BK04 The class is not formatted
+				// correctly. (The class being read)}
+				throw new SpringClassFormatException(__cn, String.format(
+					"BK04 %s", __cn), e);
+			}
 			
 			throw new todo.TODO();
 		}
