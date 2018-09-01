@@ -17,22 +17,27 @@ package cc.squirreljme.springcoat.vm;
  */
 public final class SpringThread
 {
+	/** The thread ID. */
+	protected final int id;
+	
 	/** The name of this thread. */
 	protected final String name;
 	
 	/**
 	 * Initializes the thread.
 	 *
+	 * @param __id The thread ID.
 	 * @param __n The name of the thread.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/01
 	 */
-	SpringThread(String __n)
+	SpringThread(int __id, String __n)
 		throws NullPointerException
 	{
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
+		this.id = __id;
 		this.name = __n;
 	}
 }
