@@ -27,14 +27,25 @@ public final class SpringClass
 	/** The name of this class. */
 	protected final ClassName name;
 	
+	/** The class file data. */
+	protected final ClassFile file;
+	
 	/**
 	 * Initializes the spring class.
 	 *
+	 * @param __tn The name of this class.
+	 * @param __cf The class file for this class.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2018/07/21
 	 */
-	private SpringClass()
+	private SpringClass(ClassName __tn, ClassFile __cf)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__tn == null || __cf == null)
+			throw new NullPointerException("NARG");
+		
+		this.name = __tn;
+		this.file = __cf;
 	}
 	
 	/**
@@ -53,7 +64,10 @@ public final class SpringClass
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Debug
+		System.err.printf("parse(%s)%n", __in.thisName());
+		
+		return new SpringClass(__in.thisName(), __in);
 	}
 }
 
