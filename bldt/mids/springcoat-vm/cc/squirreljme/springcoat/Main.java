@@ -90,11 +90,11 @@ public class Main
 		SpringMachine machine = new SpringMachine(classpath);
 		
 		// Find the entry point
-		SpringClass entrycl = machine.locateClass(entries.get(launchid).
+		SpringClass entrycl = machine.classLocate(entries.get(launchid).
 			entryPoint().replace('.', '/'));
 		
 		// Create main thread
-		SpringThread mainthread = new SpringThread("main");
+		SpringThread mainthread = machine.newThread("main");
 		
 		throw new todo.TODO();
 	}
