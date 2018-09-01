@@ -93,6 +93,9 @@ public class Main
 		SpringClass entrycl = machine.locateClass(entries.get(launchid).
 			entryPoint().replace('.', '/'));
 		
+		// Create main thread
+		SpringThread mainthread = new SpringThread("main");
+		
 		throw new todo.TODO();
 	}
 }
