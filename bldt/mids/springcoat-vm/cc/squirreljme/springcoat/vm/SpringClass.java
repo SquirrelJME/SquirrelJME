@@ -27,6 +27,12 @@ public final class SpringClass
 	/** The class file data. */
 	protected final ClassFile file;
 	
+	/** The super class. */
+	protected final SpringClass superclass;
+	
+	/** Interface classes. */
+	private final SpringClass[] _interfaceclasses;
+	
 	/**
 	 * Initializes the spring class.
 	 *
@@ -36,14 +42,21 @@ public final class SpringClass
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/07/21
 	 */
-	private SpringClass(SpringClass __super, SpringClass[] __interfaces,
+	SpringClass(SpringClass __super, SpringClass[] __interfaces,
 		ClassFile __cf)
 		throws NullPointerException
 	{
-		if (__super == null || __interfaces == null || __cf == null)
+		if (__interfaces == null || __cf == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		this.file = __cf;
+		this.superclass = __super;
+		
+		// Check
+		this._interfaceclasses = (__interfaces = __interfaces.clone());
+		for (SpringClass x : __interfaces)
+			if (x == null)
+				throw new NullPointerException("NARG");
 	}
 }
 
