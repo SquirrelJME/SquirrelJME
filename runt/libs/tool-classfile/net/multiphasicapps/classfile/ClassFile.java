@@ -161,9 +161,9 @@ public final class ClassFile
 	 * @return The implemented interface names.
 	 * @since 2017/10/09
 	 */
-	public final List<ClassName> interfaceNames()
+	public final ClassName[] interfaceNames()
 	{
-		return UnmodifiableArrayList.<ClassName>of(this._interfaces);
+		return this._interfaces.clone();
 	}
 	
 	/**

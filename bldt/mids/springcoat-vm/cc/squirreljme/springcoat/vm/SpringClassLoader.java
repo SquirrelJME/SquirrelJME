@@ -94,7 +94,20 @@ public final class SpringClassLoader
 			SpringClass superclass = (supername == null ? null :
 				this.loadClass(supername));
 			
-			throw new todo.TODO();
+			// Load any interfaces
+			ClassName[] interfacenames = cf.interfaceNames();
+			int numinterfaces = interfacenames.length;
+			SpringClass[] interfaceclasses = new SpringClass[numinterfaces];
+			for (int i = 0; i < numinterfaces; i++)
+				interfaceclasses[i] = this.loadClass(interfacenames[i]);
+			
+			// Load class information
+			rv = new SpringClass(superclass, interfaceclasses, cf);
+			
+			// Store for later use
+			classes.put(__cn, rv);
+			
+			return rv;
 		}
 	}
 	
