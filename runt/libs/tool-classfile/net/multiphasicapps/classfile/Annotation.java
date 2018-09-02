@@ -26,6 +26,9 @@ import java.util.Set;
 public final class Annotation
 	implements AnnotationValue
 {
+	/** The type name of the annotation. */
+	protected final ClassName typename;
+	
 	/** The values for the annotation. */
 	private final Map<MethodName, AnnotationValue> _values =
 		new LinkedHashMap<>();
@@ -35,16 +38,35 @@ public final class Annotation
 	 *
 	 * @param __tn The type name to use.
 	 * @param __vs The value mappings.
-	 * @throws NullPointerException On null arguments.
+	 * @throws InvalidClassFormatException If an annotation key is duplicated.
+	 * @throws NullPointerException On null arguments or if the value mappings
+	 * contain a null value.
 	 * @since 2018/09/01
 	 */
 	private Annotation(ClassName __tn, Map<MethodName, AnnotationValue> __vs)
-		throws NullPointerException
+		throws InvalidClassFormatException, NullPointerException
 	{
 		if (__tn == null || __vs == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		this.typename = __tn;
+		
+		// Copy key and values over
+		Map<MethodName, AnnotationValue> values = this._values;
+		for (Map.Entry<MethodName, AnnotationValue> e : __vs.entrySet())
+		{
+			MethodName k = e.getKey();
+			AnnotationValue v = e.getValue();
+			
+			if (k == null || v == null)
+				throw new NullPointerException();
+			
+			// {@squirreljme.error JC27 Duplicate key within annotation. (The
+			// key)}
+			if (null != values.put(k, v))
+				throw new InvalidClassFormatException(String.format(
+					"JC27 %s", k));
+		}
 	}
 	
 	/**
@@ -103,7 +125,7 @@ public final class Annotation
 	 */
 	public final ClassName type()
 	{
-		throw new todo.TODO();
+		return this.typename;
 	}
 	
 	/**
