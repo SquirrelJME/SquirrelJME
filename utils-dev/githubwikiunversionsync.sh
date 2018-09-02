@@ -33,6 +33,13 @@ __tmp="/tmp/$$"
 __cat="/tmp/$$.cat"
 __boop="/tmp/$$.boop"
 
+# Need this to better process files
+if ! javac -d . "$__exedir/GitHubWikiReformat.java"
+then
+	echo "Failed to compile Java helper!"
+	exit 1
+fi
+
 # Clone the Wiki
 if ! git clone git@github.com:XerTheSquirrel/SquirrelJME.wiki.git "$__tmp"
 then
@@ -90,7 +97,7 @@ do
 	if echo "$__file" | grep '\.mkd$' > /dev/null
 	then
 		echo "Remapping $__file for GitHub Wiki..."
-		"$__exedir/githubwikimap.sh" < "$__boop" > "$__tmp/$__gitfile" 
+		java GitHubWikiReformat "$__file" < "$__boop" > "$__tmp/$__gitfile" 
 	
 	# Otherwise a 1:1 copy
 	else
