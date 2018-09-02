@@ -15,6 +15,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
@@ -33,6 +35,10 @@ public final class SpringClassLoader
 	/** The class path for the machine. */
 	private final Binary[] _classpath;
 	
+	/** The classes which have been loaded by the virtual machine. */
+	private final Map<ClassName, SpringClass> _classes =
+		new HashMap<>();
+	
 	/**
 	 * Initializes the class loader.
 	 *
@@ -48,6 +54,48 @@ public final class SpringClassLoader
 			if (b == null)
 				throw new NullPointerException("NARG");
 		this._classpath = __classpath;
+	}
+	
+	/**
+	 * Loads the specified class.
+	 *
+	 * @param __cn The name of the class to load.
+	 * @return The loaded class.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SpringClassFormatException If the class is not formatted
+	 * properly.
+	 * @throws SpringClassNotFoundException If the class was not found.
+	 * @since 2018/09/01
+	 */
+	public final SpringClass loadClass(ClassName __cn)
+		throws NullPointerException, SpringClassFormatException,
+			SpringClassNotFoundException
+	{
+		if (__cn == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock on classes
+		Map<ClassName, SpringClass> classes = this._classes;
+		synchronized (classes)
+		{
+			// If the class has already been initialized, use that
+			SpringClass rv = classes.get(__cn);
+			if (rv != null)
+				return rv;
+			
+			// Debug
+			todo.DEBUG.note("Loading class `%s`...", __cn);
+			
+			// Load class file for this class
+			ClassFile cf = this.loadClassFile(__cn);
+			
+			// Load the super class
+			ClassName supername = cf.superName();
+			SpringClass superclass = (supername == null ? null :
+				this.loadClass(supername));
+			
+			throw new todo.TODO();
+		}
 	}
 	
 	/**
@@ -70,7 +118,7 @@ public final class SpringClassLoader
 			throw new NullPointerException("NARG");
 		
 		// Debug
-		todo.DEBUG.note("Loading `%s`...", __cn);
+		todo.DEBUG.note("Loading class file `%s`...", __cn);
 		
 		// This is the class that is read, in binary form
 		String fileform = __cn.toString() + ".class";

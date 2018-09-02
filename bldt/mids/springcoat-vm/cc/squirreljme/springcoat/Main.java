@@ -20,6 +20,7 @@ import cc.squirreljme.springcoat.vm.SpringClassLoader;
 import cc.squirreljme.springcoat.vm.SpringMachine;
 import java.util.ArrayDeque;
 import java.util.Queue;
+import net.multiphasicapps.classfile.ClassName;
 
 /**
  * Main entry class for the SpringCoat virtual machine, this initializes and
@@ -90,14 +91,11 @@ public class Main
 		// Initialize the class loader to find classes
 		SpringClassLoader classloader = new SpringClassLoader(classpath);
 		
+		// Load the entry point class
+		SpringClass entrycl = classloader.loadClass(new ClassName(
+			entries.get(launchid).entryPoint().replace('.', '/')));
+		
 		/*
-		// Initialize the machine
-		SpringMachine machine = new SpringMachine(classpath);
-		
-		// Find the entry point class
-		SpringClass entrycl = machine.classLocate(entries.get(launchid).
-			entryPoint().replace('.', '/'));
-		
 		// Create main thread
 		SpringThread mainthread = machine.newThread("main");
 		*/
