@@ -123,6 +123,17 @@ public final class FieldDescriptor
 	}
 	
 	/**
+	 * Returns the name of the used class.
+	 *
+	 * @return The used class or {@code null} if a class is not referred to.
+	 * @since 2018/09/01
+	 */
+	public final ClassName className()
+	{
+		return this.classname;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/10/02
 	 */
