@@ -12,8 +12,9 @@ package net.multiphasicapps.classfile;
 
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,6 +29,23 @@ public final class Annotation
 	/** The values for the annotation. */
 	private final Map<MethodName, AnnotationValue> _values =
 		new LinkedHashMap<>();
+	
+	/**
+	 * Initializes the annotation.
+	 *
+	 * @param __tn The type name to use.
+	 * @param __vs The value mappings.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/01
+	 */
+	private Annotation(ClassName __tn, Map<MethodName, AnnotationValue> __vs)
+		throws NullPointerException
+	{
+		if (__tn == null || __vs == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -95,17 +113,65 @@ public final class Annotation
 	 * @param __pool The constant pool.
 	 * @param __in The input stream to read from.
 	 * @return The parsed annotation.
+	 * @throws InvalidClassFormatException If the annotation is invalid.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/06/16
 	 */
 	public static final Annotation parse(Pool __pool, DataInputStream __in)
-		throws IOException, NullPointerException
+		throws InvalidClassFormatException, IOException, NullPointerException
 	{
 		if (__pool == null || __in == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Read the type name, which is a class
+		String rawtypename;
+		ClassName typename = new FieldDescriptor((rawtypename = __pool.
+			<UTFConstantEntry>get(UTFConstantEntry.class,
+			__in.readUnsignedShort()).toString())).className();
+		
+		// {@squirreljme.error JC26 Annotation type is not correct. (The type)}
+		if (typename == null)
+			throw new InvalidClassFormatException(String.format("JC26 %s",
+				rawtypename));
+		
+		// Read element table
+		Map<MethodName, AnnotationValue> values = new LinkedHashMap<>();
+		int n = __in.readUnsignedShort();
+		for (int i = 0; i < n; i++)
+		{
+			// Read element name
+			MethodName elemname = new MethodName(__pool.<UTFConstantEntry>get(
+				UTFConstantEntry.class, __in.readUnsignedShort()).toString());
+			
+			// Read tag, which represents the type of
+			int tag = __in.readUnsignedByte();
+			switch (tag)
+			{
+				case 's':
+					throw new todo.TODO();
+				
+				case 'e':
+					throw new todo.TODO();
+				
+				case 'c':
+					throw new todo.TODO();
+				
+				case '@':
+					throw new todo.TODO();
+				
+				case '[':
+					throw new todo.TODO();
+				
+					// {@squirreljme.error JC25 Invalid tag specified in
+					// annotation. (The tag used)}
+				default:
+					throw new InvalidClassFormatException(
+						String.format("JC25 %c", tag));
+			}
+		}
+		
+		return new Annotation(typename, values);
 	}
 }
 
