@@ -13,6 +13,7 @@ package net.multiphasicapps.classfile;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.AbstractMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -22,9 +23,12 @@ import java.util.Set;
  * @since 2018/06/16
  */
 public final class Annotation
-	extends AbstractMap<MethodName, AnnotationValue>
 	implements AnnotationValue
 {
+	/** The values for the annotation. */
+	private final Map<MethodName, AnnotationValue> _values =
+		new LinkedHashMap<>();
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/06/16
@@ -36,25 +40,19 @@ public final class Annotation
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Returns the value for the given method name.
+	 *
+	 * @param __n The key to get the value for.
+	 * @return The value of the given key.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2018/06/16
 	 */
-	@Override
-	public final Set<Map.Entry<MethodName, AnnotationValue>> entrySet()
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/06/16
-	 */
-	@Override
-	public final AnnotationValue get(Object __n)
+	public final AnnotationValue get(MethodName __n)
+		throws NullPointerException
 	{
 		// Will never be found
-		if (__n == null || !(__n instanceof MethodName))
-			return null;
+		if (__n == null)
+			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
 	}
@@ -65,16 +63,6 @@ public final class Annotation
 	 */
 	@Override
 	public final int hashCode()
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/06/16
-	 */
-	@Override
-	public final int size()
 	{
 		throw new todo.TODO();
 	}
