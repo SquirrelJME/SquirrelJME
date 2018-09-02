@@ -1,0 +1,42 @@
+# 2018/09/01
+
+## 10:59
+
+Well, my new job has been going well working at IOpipe. I love it. It does
+take a bunch of my time since it is full-time. Also recently I removed a
+distraction from me and honestly it seems really peaceful now like I can think
+and such. Maybe I was addicted. But anyway, going to continue work on
+SquirrelJME. I got a new logo designed and Lex is being redesigned by
+[CYMKat](https://twitter.com/CMYKhia).
+
+## 11:06
+
+Need to figure out the best way to initialize classes. But honestly I think
+something that just works will be good enough. Because I hit this problem
+before where I tried to solve it without understanding it. SpringCoat is
+supposed to be dirty and not the best way to implement. I mean once
+everything is working much better I can recycle and reiterate to SummerCoat
+and slowly develop everything.
+
+## 11:43
+
+Would be easiest to invoke a static main entry point, will not need to deal
+with initializing objects and such.
+
+## 19:07
+
+I think having services would be a bit too complex, something more direct
+might work out better in the end. But I will avoid thinking about this until I
+actually write SpringCoat. Hopefully I can write SpringCoat.
+
+## 19:33
+
+Actually an idea, it is inefficient but it could work. Basically when I load
+and initialize a class I load all of its information such as fields, methods,
+and other things. Then I maintain everything that is actually available for
+the class. So there will be duplicated information but it will remove the
+need to do recursive handling of classes and such. I can load everything as it
+needs to be for a class and just use back references and such. But I need the
+basic class hierarchy to exist first before I can process fields and methods.
+But basically say I load class `A`, that will load `Object`. No class can
+recursively depend on each other, so there is no issue there.

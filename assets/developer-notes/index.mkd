@@ -5,8 +5,7 @@
 
 ### 12
 
- * 
-`01`
+ * `01`
 `02`
 `03`
 `04`
@@ -79,8 +78,7 @@
 
 ### 06
 
- * 
-`01`
+ * `01`
 `02`
 `03`
 `04`
@@ -365,8 +363,7 @@
 
 ### 02
 
- * 
-[**`01`**](stephanie-gawroriski/2015/02/01.mkd)
+ * [**`01`**](stephanie-gawroriski/2015/02/01.mkd)
 [**`02`**](stephanie-gawroriski/2015/02/02.mkd)
 [**`03`**](stephanie-gawroriski/2015/02/03.mkd)
 [**`04`**](stephanie-gawroriski/2015/02/04.mkd)
@@ -397,8 +394,7 @@
 
 ### 03
 
- * 
-[**`01`**](stephanie-gawroriski/2015/03/01.mkd)
+ * [**`01`**](stephanie-gawroriski/2015/03/01.mkd)
 [**`02`**](stephanie-gawroriski/2015/03/02.mkd)
 [**`03`**](stephanie-gawroriski/2015/03/03.mkd)
 [**`04`**](stephanie-gawroriski/2015/03/04.mkd)
@@ -681,8 +677,7 @@
 
 ### 11
 
- * 
-[**`01`**](stephanie-gawroriski/2015/11/01.mkd)
+ * [**`01`**](stephanie-gawroriski/2015/11/01.mkd)
 [**`02`**](stephanie-gawroriski/2015/11/02.mkd)
 [**`03`**](stephanie-gawroriski/2015/11/03.mkd)
 [**`04`**](stephanie-gawroriski/2015/11/04.mkd)
@@ -894,8 +889,7 @@
 
 ### 05
 
- * 
-[**`01`**](stephanie-gawroriski/2016/05/01.mkd)
+ * [**`01`**](stephanie-gawroriski/2016/05/01.mkd)
 [**`02`**](stephanie-gawroriski/2016/05/02.mkd)
 [**`03`**](stephanie-gawroriski/2016/05/03.mkd)
 [**`04`**](stephanie-gawroriski/2016/05/04.mkd)
@@ -1180,8 +1174,7 @@
 
 ### 01
 
- * 
-[**`01`**](stephanie-gawroriski/2017/01/01.mkd)
+ * [**`01`**](stephanie-gawroriski/2017/01/01.mkd)
 `02`
 [**`03`**](stephanie-gawroriski/2017/01/03.mkd)
 `04`
@@ -1497,8 +1490,7 @@
 
 ### 10
 
- * 
-[**`01`**](stephanie-gawroriski/2017/10/01.mkd)
+ * [**`01`**](stephanie-gawroriski/2017/10/01.mkd)
 `02`
 [**`03`**](stephanie-gawroriski/2017/10/03.mkd)
 [**`04`**](stephanie-gawroriski/2017/10/04.mkd)
@@ -1710,8 +1702,7 @@
 
 ### 04
 
- * 
-[**`01`**](stephanie-gawroriski/2018/04/01.mkd)
+ * [**`01`**](stephanie-gawroriski/2018/04/01.mkd)
 [**`02`**](stephanie-gawroriski/2018/04/02.mkd)
 [**`03`**](stephanie-gawroriski/2018/04/03.mkd)
 [**`04`**](stephanie-gawroriski/2018/04/04.mkd)
@@ -1815,8 +1806,7 @@
 
 ### 07
 
- * 
-`01`
+ * `01`
 `02`
 `03`
 `04`
@@ -1884,6 +1874,41 @@
 `30`
 `31`
  `--`
+
+### 09
+
+ * `--` `--` `--` `--` `--` `--` 
+[**`01`**](stephanie-gawroriski/2018/09/01.mkd)
+ * `02`
+`03`
+`04`
+`05`
+`06`
+`07`
+`08`
+ * `09`
+`10`
+`11`
+`12`
+`13`
+`14`
+`15`
+ * `16`
+`17`
+`18`
+`19`
+`20`
+`21`
+`22`
+ * `23`
+`24`
+`25`
+`26`
+`27`
+`28`
+`29`
+ * `30`
+ `--` `--` `--` `--` `--` `--`
 
 # Other
 
