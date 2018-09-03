@@ -1,0 +1,18 @@
+# 2018/09/02
+
+# 12:50
+
+Okay so it looks like that GitHub's Wiki does not support using `.mkd` which
+means that all the links break. So for any files which are markdown they will
+need to be corrected accordingly so that they are correct.
+
+## 13:17
+
+Okay, looks like directories are not supported at all, so I will need to map
+slashes to normal files.
+
+## 14:25
+
+Okay I think at this point, I am going to need a translator to process the
+files and that is going to be in Java code because it is too complex and
+limited in UNIX shell. It will be primitive but it should work.
