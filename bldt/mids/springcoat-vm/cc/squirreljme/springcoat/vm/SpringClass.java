@@ -158,7 +158,8 @@ public final class SpringClass
 			throw new NullPointerException("NARG");
 		
 		// Debug
-		todo.DEBUG.note("Looking up method %s (static=%b)", __nat, __static);
+		todo.DEBUG.note("Looking up method %s::%s (static=%b)", this.name,
+			__nat, __static);
 		
 		// {@squirreljme.error BK07 The specified method does not exist.
 		// (The class which was looked in; The name and type of the method)} 
