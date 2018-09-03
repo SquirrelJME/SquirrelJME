@@ -50,15 +50,25 @@ fi
 # Map Fossil filename to Git
 __fossil_to_git()
 {
-	echo "$1" | sed 's/\.mkd$/.md/' | sed 's/\//@d@/g' |
-		sed 's/-/@h@/g'
+	if [ "$(basename "$1" .mkd)" = "$1" ]
+	then
+		echo "$1"
+	else
+		echo "$1" | sed 's/\.mkd$/.md/' | sed 's/\//@d@/g' |
+			sed 's/-/@h@/g'
+	fi
 }
 
 # Map Git filename to Fossil
 __git_to_fossil()
 {
-	echo "$1" | sed 's/\.md$/.mkd/' | sed 's/@d@/\//g' |
-		sed 's/@h@/-/g'
+	if [ "$(basename "$1" .md)" = "$1" ]
+	then
+		echo "$1"
+	else
+		echo "$1" | sed 's/\.md$/.mkd/' | sed 's/@d@/\//g' |
+			sed 's/@h@/-/g'
+	fi
 }
 
 # Determine if any files in the git repository need to be deleted
