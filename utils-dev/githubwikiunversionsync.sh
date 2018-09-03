@@ -117,20 +117,20 @@ do
 		mv -f -- "$__boop" "$__tmp/$__file"
 		
 		# Store the original file
-		if ! (cd "$__tmp" && git add "$__file")
+		if ! (cd "$__tmp" && git add "$__gitfile")
 		then
-			echo "Failed to add file $__file!"
+			echo "Failed to add file $__file (as $__gitfile)!"
 		fi
 		
 	# Otherwise a 1:1 copy
 	else
-		mv -f -- "$__boop" "$__tmp/$__gitfile" 
+		mv -f -- "$__boop" "$__tmp/$__file" 
 	fi
 	
 	# Add to the changes
-	if ! (cd "$__tmp" && git add "$__gitfile")
+	if ! (cd "$__tmp" && git add "$__file")
 	then
-		echo "Failed to add file $__file (as $__gitfile)!"
+		echo "Failed to add file $__file (as $__file)!"
 	fi 
 done
 
