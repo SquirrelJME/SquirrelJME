@@ -54,7 +54,7 @@ __fossil_to_git()
 	then
 		echo "$1"
 	else
-		echo "$1" | sed 's/\.mkd$/.md/' | sed 's/\//@d@/g' |
+		echo "@@gh@$1" | sed 's/\.mkd$/.md/' | sed 's/\//@d@/g' |
 			sed 's/-/@h@/g'
 	fi
 }
@@ -67,7 +67,7 @@ __git_to_fossil()
 		echo "$1"
 	else
 		echo "$1" | sed 's/\.md$/.mkd/' | sed 's/@d@/\//g' |
-			sed 's/@h@/-/g'
+			sed 's/@h@/-/g' | sed 's/^@@gh@//g'
 	fi
 }
 
@@ -100,7 +100,10 @@ do
 	
 	# The directory needs to exist first!
 	mkdir -p $(dirname "$__tmp/$__gitfile")
+	mkdir -p $(dirname "$__tmp/$__file")
 	fossil unversion cat "$__file" > "$__boop"
+	
+	echo "Mapping $__file to $__gitfile..."
 	
 	# If the file is a markdown file then the extensions need to be remapped
 	# so everything works, due to GitHub Wiki limitations
@@ -108,7 +111,17 @@ do
 	then
 		echo "Remapping $__file for GitHub Wiki..."
 		java GitHubWikiReformat "$__file" < "$__boop" > "$__tmp/$__gitfile" 
-	
+		
+		# Make an original copy of it, for record keeping and so it can
+		# potentially be reversed
+		mv -f -- "$__boop" "$__tmp/$__file"
+		
+		# Store the original file
+		if ! (cd "$__tmp" && git add "$__file")
+		then
+			echo "Failed to add file $__file!"
+		fi
+		
 	# Otherwise a 1:1 copy
 	else
 		mv -f -- "$__boop" "$__tmp/$__gitfile" 

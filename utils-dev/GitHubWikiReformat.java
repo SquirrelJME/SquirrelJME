@@ -104,7 +104,8 @@ public class GitHubWikiReformat
 			String storepath = origpath.toString().substring(1);
 			
 			// Convert characters specially
-			out.append(storepath.replaceAll(Pattern.quote("/"), "@d@").
+			out.append("@@gh@" +
+				storepath.replaceAll(Pattern.quote("/"), "@d@").
 				replaceAll(Pattern.quote("-"), "@h@").
 				replaceAll(Pattern.quote(".mkd"), ""));
 			
