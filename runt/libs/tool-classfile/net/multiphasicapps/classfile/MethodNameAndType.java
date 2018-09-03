@@ -31,6 +31,22 @@ public final class MethodNameAndType
 	private volatile Reference<String> _string;
 	
 	/**
+	 * Initializes the method anme and type.
+	 *
+	 * @param __n The name of the method.
+	 * @param __t The type of the method.
+	 * @throws InvalidClassFormatException If the method name and type are not
+	 * valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/03
+	 */
+	public MethodNameAndType(String __n, String __t)
+		throws InvalidClassFormatException, NullPointerException
+	{
+		this(new MethodName(__n), new MethodDescriptor(__t));
+	}
+	
+	/**
 	 * Initializes the method name and type.
 	 *
 	 * @param __n The name of the method.

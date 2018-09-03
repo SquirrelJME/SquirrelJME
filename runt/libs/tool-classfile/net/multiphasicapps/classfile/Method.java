@@ -180,6 +180,39 @@ public final class Method
 	}
 	
 	/**
+	 * Returns whether this is a constructor or not.
+	 *
+	 * @return Whether this is a constructor or not.
+	 * @since 2018/09/03
+	 */
+	public final boolean isInstanceInitializer()
+	{
+		return this.methodname.isInstanceInitializer();
+	}
+	
+	/**
+	 * Is this a static method?
+	 *
+	 * @return {@code true} if a static method.
+	 * @since 2018/09/03
+	 */
+	public final boolean isStatic()
+	{
+		return this.methodflags.isStatic();
+	}
+	
+	/**
+	 * Returns whether this is a static initializer or not.
+	 *
+	 * @return Whether this is a static initializer or not.
+	 * @since 2018/09/03
+	 */
+	public final boolean isStaticInitializer()
+	{
+		return this.methodname.isStaticInitializer();
+	}
+	
+	/**
 	 * Returns the name of the method.
 	 *
 	 * @return The method name.

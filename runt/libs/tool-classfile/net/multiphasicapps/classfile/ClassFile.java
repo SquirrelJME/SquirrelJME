@@ -172,9 +172,9 @@ public final class ClassFile
 	 * @return The class methods.
 	 * @since 2017/10/09
 	 */
-	public final List<Method> methods()
+	public final Method[] methods()
 	{
-		return UnmodifiableArrayList.<Method>of(this._methods);
+		return this._methods.clone();
 	}
 	
 	/**

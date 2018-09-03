@@ -18,9 +18,13 @@ import cc.squirreljme.kernel.suiteinfo.EntryPoints;
 import cc.squirreljme.springcoat.vm.SpringClass;
 import cc.squirreljme.springcoat.vm.SpringClassLoader;
 import cc.squirreljme.springcoat.vm.SpringMachine;
+import cc.squirreljme.springcoat.vm.SpringMethod;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.MethodDescriptor;
+import net.multiphasicapps.classfile.MethodName;
+import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**
  * Main entry class for the SpringCoat virtual machine, this initializes and
@@ -92,15 +96,29 @@ public class Main
 		SpringClassLoader classloader = new SpringClassLoader(classpath);
 		
 		// Load the entry point class
+		EntryPoint entry = entries.get(launchid);
 		SpringClass entrycl = classloader.loadClass(new ClassName(
-			entries.get(launchid).entryPoint().replace('.', '/')));
+			entry.entryPoint().replace('.', '/')));
 		
-		/*
-		// Create main thread
-		SpringThread mainthread = machine.newThread("main");
-		*/
+		// Initialize new entry class and enter it
+		if (entry.isMidlet())
+		{
+			// Entry via this method
+			SpringMethod main = entrycl.lookupMethod(false,
+				new MethodNameAndType("startApp", "()V"));
+			
+			throw new todo.TODO();
+		}
 		
-		throw new todo.TODO();
+		// Launch main method
+		else
+		{
+			// Entry via this method
+			SpringMethod main = entrycl.lookupMethod(true,
+				new MethodNameAndType("main", "(Ljava/lang/String;)V"));
+			
+			throw new todo.TODO();
+		}
 	}
 }
 
