@@ -34,12 +34,31 @@ import net.multiphasicapps.zip.blockreader.ZipEntryNotFoundException;
  */
 public final class SpringMachine
 {
+	/** The class loader. */
+	protected final SpringClassLoader classloader;
+	
 	/** Threads which are available. */
 	private final List<SpringThread> _threads =
 		new ArrayList<>();
 	
 	/** The next thread ID to use. */
 	private volatile int _nextthreadid;
+	
+	/**
+	 * Initializes the virtual machine.
+	 *
+	 * @param __cl The class loader.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/03
+	 */
+	public SpringMachine(SpringClassLoader __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		this.classloader = __cl;
+	}
 	
 	/**
 	 * Creates a new thread within the virtual machine.

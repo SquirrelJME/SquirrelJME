@@ -94,6 +94,7 @@ public class Main
 		
 		// Initialize the class loader to find classes
 		SpringClassLoader classloader = new SpringClassLoader(classpath);
+		SpringMachine machine = new SpringMachine(classloader);
 		
 		// Load the entry point class
 		EntryPoint entry = entries.get(launchid);
