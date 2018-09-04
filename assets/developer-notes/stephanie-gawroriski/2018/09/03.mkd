@@ -1,0 +1,31 @@
+# 2018/09/03
+
+## 16:40
+
+So I loaded methods into a giant table and they can be looked up so that is
+nice.
+
+## 16:59
+
+So how do I want to go about the virtual machine and the stack along with
+threads. Perhaps those can be a part of `SpringMachine` which can be
+initialized with the class loader.
+
+## 21:37
+
+I am going to completely avoid argument handling and such until I reach that
+point. It will horribly crash probably definitely. Although I definitely will
+likely need the stuff soon, I will handle it later.
+
+## 22:02
+
+The first lucky instruction is `ALOAD0`.
+
+## 23:03
+
+The first to be implemented though is NOP, that is easy. I think today was a
+rather productive. Not much was done though but small steps count twords the
+journey. At least I got something working. Actually it was nice actually
+working on this project because it has been awhile. I missed it. I am actually
+feeling much more happy that I got rid of a major distraction that kept me
+from doing things, so that is nice. Goodnight!
