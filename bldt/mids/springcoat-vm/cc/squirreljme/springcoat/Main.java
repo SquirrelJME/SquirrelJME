@@ -19,6 +19,7 @@ import cc.squirreljme.springcoat.vm.SpringClass;
 import cc.squirreljme.springcoat.vm.SpringClassLoader;
 import cc.squirreljme.springcoat.vm.SpringMachine;
 import cc.squirreljme.springcoat.vm.SpringMethod;
+import cc.squirreljme.springcoat.vm.SpringThread;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import net.multiphasicapps.classfile.ClassName;
@@ -101,25 +102,22 @@ public class Main
 		SpringClass entrycl = classloader.loadClass(new ClassName(
 			entry.entryPoint().replace('.', '/')));
 		
-		// Initialize new entry class and enter it
-		if (entry.isMidlet())
-		{
-			// Entry via this method
-			SpringMethod main = entrycl.lookupMethod(false,
-				new MethodNameAndType("startApp", "()V"));
-			
-			throw new todo.TODO();
-		}
+		// Thread that will be used as the main thread of execution
+		SpringThread mainthread = machine.createThread("main");
 		
-		// Launch main method
+		// Find the method to be entered in
+		SpringMethod mainmethod;
+		if (entry.isMidlet())
+			mainmethod = entrycl.lookupMethod(false,
+				new MethodNameAndType("startApp", "()V"));
 		else
-		{
-			// Entry via this method
-			SpringMethod main = entrycl.lookupMethod(true,
+			mainmethod = entrycl.lookupMethod(true,
 				new MethodNameAndType("main", "(Ljava/lang/String;)V"));
-			
-			throw new todo.TODO();
-		}
+		
+		// Enter the frame for that method
+		mainthread.enterFrame(mainmethod);
+		
+		throw new todo.TODO();
 	}
 }
 

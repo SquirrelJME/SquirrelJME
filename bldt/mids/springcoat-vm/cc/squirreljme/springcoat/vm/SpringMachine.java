@@ -68,7 +68,7 @@ public final class SpringMachine
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/01
 	 */
-	public final SpringThread threadNew(String __n)
+	public final SpringThread createThread(String __n)
 		throws NullPointerException
 	{
 		if (__n == null)
