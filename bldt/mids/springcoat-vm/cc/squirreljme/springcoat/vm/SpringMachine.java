@@ -86,5 +86,21 @@ public final class SpringMachine
 			return rv;
 		}
 	}
+	
+	/**
+	 * Returns the number of threads which are currently alive and active.
+	 *
+	 * @return The number of active and alive threads.
+	 * @since 2018/09/03
+	 */
+	public final int numThreads()
+	{
+		// Store thread
+		List<SpringThread> threads = this._threads;
+		synchronized (threads)
+		{
+			return threads.size();
+		}
+	}
 }
 

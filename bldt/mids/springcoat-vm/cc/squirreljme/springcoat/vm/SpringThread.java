@@ -88,6 +88,21 @@ public final class SpringThread
 	}
 	
 	/**
+	 * Returns the number of frames that are available in this thread.
+	 *
+	 * @return The number of available frames.
+	 * @since 2018/09/03
+	 */
+	public final int numFrames()
+	{
+		List<SpringThread.Frame> frames = this._frames;
+		synchronized (frames)
+		{
+			return frames.size();
+		}
+	}
+	
+	/**
 	 * This class represents the stack frame and is used to store local
 	 * variables and other such things.
 	 *
@@ -109,6 +124,9 @@ public final class SpringThread
 		
 		/** The top of the stack. */
 		private volatile int _stacktop;
+		
+		/** The current program counter. */
+		private volatile int _pc;
 		
 		/**
 		 * Initializes the frame.
@@ -138,6 +156,57 @@ public final class SpringThread
 			// Debug
 			todo.DEBUG.note("Frame has %d locals, %d stack", locals.length,
 				this._stack.length);
+		}
+	}
+	
+	/**
+	 * A worker which runs the actual thread code in single-step fashion.
+	 *
+	 * @since 2018/09/03
+	 */
+	public static final class Worker
+		implements Runnable
+	{
+		/** The owning machine. */
+		protected final SpringMachine machine;
+		
+		/** The thread being run. */
+		protected final SpringThread thread;
+		
+		/**
+		 * Initialize the worker.
+		 *
+		 * @param __m The executing machine.
+		 * @param __t The running thread.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2018/09/03
+		 */
+		public Worker(SpringMachine __m, SpringThread __t)
+			throws NullPointerException
+		{
+			if (__m == null || __t == null)
+				throw new NullPointerException("NARG");
+			
+			this.machine = __m;
+			this.thread = __t;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/09/03
+		 */
+		@Override
+		public final void run()
+		{
+			// The thread is alive as long as there are still frames of
+			// execution
+			SpringThread thread = this.thread;
+			while (thread.numFrames() > 0)
+			{
+				throw new todo.TODO();
+			}
+			
+			throw new todo.TODO();
 		}
 	}
 }
