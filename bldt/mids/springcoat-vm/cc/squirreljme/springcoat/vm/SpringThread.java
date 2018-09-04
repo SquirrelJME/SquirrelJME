@@ -131,8 +131,13 @@ public final class SpringThread
 			this.code = (code = __m.byteCode());
 			
 			// Initialize variable storage
-			this._locals = new Object[code.maxLocals()];
+			Object[] locals;
+			this._locals = (locals = new Object[code.maxLocals()]);
 			this._stack = new Object[code.maxStack()];
+			
+			// Debug
+			todo.DEBUG.note("Frame has %d locals, %d stack", locals.length,
+				this._stack.length);
 		}
 	}
 }
