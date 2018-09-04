@@ -117,6 +117,14 @@ public class Main
 		// Enter the frame for that method
 		mainthread.enterFrame(mainmethod);
 		
+		// The main although it executes in this context will always have the
+		// same exact logic as other threads running apart from this main
+		// thread, so no code is needed to be duplicated at all.
+		SpringThread.Worker worker = new SpringThread.Worker(machine,
+			mainthread);
+		worker.run();
+		
+		// Wait until all threads have terminated before actually leaving
 		throw new todo.TODO();
 	}
 }
