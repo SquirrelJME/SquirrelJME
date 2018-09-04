@@ -77,7 +77,8 @@ public final class SpringClass
 		// Go through and initialize methods declared in this class
 		Map<MethodNameAndType, SpringMethod> methods = this._methods;
 		for (Method m : __cf.methods())
-			if (null != methods.put(m.nameAndType(), new SpringMethod(m)))
+			if (null != methods.put(m.nameAndType(),
+				new SpringMethod(name, m)))
 			{
 				// {@squirreljme.error BK06 Duplicated method in class. (The
 				// method)}

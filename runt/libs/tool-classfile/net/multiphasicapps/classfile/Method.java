@@ -168,6 +168,17 @@ public final class Method
 	}
 	
 	/**
+	 * Is this method abstract?
+	 *
+	 * @return If this method is abstract.
+	 * @since 2018/09/03
+	 */
+	public final boolean isAbstract()
+	{
+		return this.methodflags.isAbstract();
+	}
+	
+	/**
 	 * Returns if this method is effectively final, meaning that it cannot be
 	 * replaced.
 	 *

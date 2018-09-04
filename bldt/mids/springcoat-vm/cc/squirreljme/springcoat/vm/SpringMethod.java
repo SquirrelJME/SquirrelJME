@@ -10,7 +10,10 @@
 
 package cc.squirreljme.springcoat.vm;
 
+import net.multiphasicapps.classfile.ByteCode;
+import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.Method;
+import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**
  * This contains and stores the definition of a single method.
@@ -19,23 +22,61 @@ import net.multiphasicapps.classfile.Method;
  */
 public final class SpringMethod
 {
+	/** The class this technically belongs to. */
+	protected final ClassName inclass;
+	
 	/** The backing method and its information. */
 	protected final Method method;
 	
 	/**
 	 * Initializes the method representation.
 	 *
+	 * @param __ic The class this belongs to.
 	 * @param __m The method to wrap.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/03
 	 */
-	SpringMethod(Method __m)
+	SpringMethod(ClassName __ic, Method __m)
 		throws NullPointerException
 	{
-		if (__m == null)
+		if (__ic == null || __m == null)
 			throw new NullPointerException("NARG");
 		
+		this.inclass = __ic;
 		this.method = __m;
+	}
+	
+	/**
+	 * Returns the byte code of the method.
+	 *
+	 * @return The method byte code.
+	 * @since 2018/09/03
+	 */
+	public final ByteCode byteCode()
+	{
+		return this.method.byteCode();
+	}
+	
+	/**
+	 * Returns the class this is a member of.
+	 *
+	 * @return The class which owns the method.
+	 * @since 2018/09/03
+	 */
+	public final ClassName inClass()
+	{
+		return this.inclass;
+	}
+	
+	/**
+	 * Returns whether this method is abstract.
+	 *
+	 * @return Whether this method is abstract.
+	 * @since 2018/09/03
+	 */
+	public final boolean isAbstract()
+	{
+		return this.method.isAbstract();
 	}
 	
 	/**
@@ -69,6 +110,17 @@ public final class SpringMethod
 	public final boolean isStaticInitializer()
 	{
 		return this.method.isStaticInitializer();
+	}
+	
+	/**
+	 * Returns the name and type of the method.
+	 *
+	 * @return The method name and type.
+	 * @since 2018/09/03
+	 */
+	public final MethodNameAndType nameAndType()
+	{
+		return this.method.nameAndType();
 	}
 }
 
