@@ -20,6 +20,7 @@ import cc.squirreljme.springcoat.vm.SpringClassLoader;
 import cc.squirreljme.springcoat.vm.SpringMachine;
 import cc.squirreljme.springcoat.vm.SpringMethod;
 import cc.squirreljme.springcoat.vm.SpringThread;
+import cc.squirreljme.springcoat.vm.SpringThreadWorker;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import net.multiphasicapps.classfile.ClassName;
@@ -120,7 +121,7 @@ public class Main
 		// The main although it executes in this context will always have the
 		// same exact logic as other threads running apart from this main
 		// thread, so no code is needed to be duplicated at all.
-		SpringThread.Worker worker = new SpringThread.Worker(machine,
+		SpringThreadWorker worker = new SpringThreadWorker(machine,
 			mainthread);
 		worker.run();
 		
