@@ -50,6 +50,23 @@ public final class SpringThread
 	}
 	
 	/**
+	 * Returns the current frame of execution or {@code null} if there is none.
+	 *
+	 * @return The current frame of execution or {@code null} if there is none.
+	 * @since 2018/09/03
+	 */
+	public final SpringThread.Frame currentFrame()
+	{
+		List<SpringThread.Frame> frames = this._frames;
+		synchronized (frames)
+		{
+			if (frames.isEmpty())
+				return null;
+			return frames.get(frames.size() - 1);
+		}
+	}
+	
+	/**
 	 * Enters the specified method and sets up a stack frame for it.
 	 *
 	 * @param __m The method to enter.
@@ -85,6 +102,17 @@ public final class SpringThread
 		}
 		
 		return rv;
+	}
+	
+	/**
+	 * Returns the name of the thread.
+	 *
+	 * @return The name of the thread.
+	 * @since 2018/09/03
+	 */
+	public final String name()
+	{
+		return this.name;
 	}
 	
 	/**
@@ -157,56 +185,27 @@ public final class SpringThread
 			todo.DEBUG.note("Frame has %d locals, %d stack", locals.length,
 				this._stack.length);
 		}
-	}
-	
-	/**
-	 * A worker which runs the actual thread code in single-step fashion.
-	 *
-	 * @since 2018/09/03
-	 */
-	public static final class Worker
-		implements Runnable
-	{
-		/** The owning machine. */
-		protected final SpringMachine machine;
-		
-		/** The thread being run. */
-		protected final SpringThread thread;
 		
 		/**
-		 * Initialize the worker.
+		 * Returns the byte code to execute.
 		 *
-		 * @param __m The executing machine.
-		 * @param __t The running thread.
-		 * @throws NullPointerException On null arguments.
+		 * @return The byte code to execute.
 		 * @since 2018/09/03
 		 */
-		public Worker(SpringMachine __m, SpringThread __t)
-			throws NullPointerException
+		public final ByteCode byteCode()
 		{
-			if (__m == null || __t == null)
-				throw new NullPointerException("NARG");
-			
-			this.machine = __m;
-			this.thread = __t;
+			return this.code;
 		}
 		
 		/**
-		 * {@inheritDoc}
+		 * Returns the instruction counter.
+		 *
+		 * @return The instruction counter.
 		 * @since 2018/09/03
 		 */
-		@Override
-		public final void run()
+		public final int pc()
 		{
-			// The thread is alive as long as there are still frames of
-			// execution
-			SpringThread thread = this.thread;
-			while (thread.numFrames() > 0)
-			{
-				throw new todo.TODO();
-			}
-			
-			throw new todo.TODO();
+			return this._pc;
 		}
 	}
 }
