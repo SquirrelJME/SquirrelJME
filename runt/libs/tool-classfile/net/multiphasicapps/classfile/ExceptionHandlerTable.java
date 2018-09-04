@@ -21,8 +21,6 @@ import java.util.RandomAccess;
  * @since 2017/02/09
  */
 public final class ExceptionHandlerTable
-	extends AbstractList<ExceptionHandler>
-	implements RandomAccess
 {
 	/** The exception handler table. */
 	private final ExceptionHandler[] _table;
@@ -51,21 +49,23 @@ public final class ExceptionHandlerTable
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Returns the exception handler at the given index.
+	 *
+	 * @return The exception handler at the given index.
 	 * @since 2017/02/09
 	 */
-	@Override
-	public ExceptionHandler get(int __i)
+	public final ExceptionHandler get(int __i)
 	{
 		return this._table[__i];
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Returns the number of exception handlers that exist.
+	 *
+	 * @return The total number of exception handlers.
 	 * @since 2017/02/09
 	 */
-	@Override
-	public int size()
+	public final int size()
 	{
 		return this._table.length;
 	}
@@ -98,7 +98,7 @@ public final class ExceptionHandlerTable
 			int spc = __is.readUnsignedShort();
 			int epc = __is.readUnsignedShort();
 			int hpc = __is.readUnsignedShort();
-			ClassName type = __pool.<ClassName>require(ClassName.class,
+			ClassName type = __pool.<ClassName>get(ClassName.class,
 				__is.readUnsignedShort());
 			
 			// {@squirreljme.error JC0o Address is outside of the bounds of the
