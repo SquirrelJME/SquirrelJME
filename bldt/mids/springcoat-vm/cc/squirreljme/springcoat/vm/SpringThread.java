@@ -207,6 +207,17 @@ public final class SpringThread
 		{
 			return this._pc;
 		}
+		
+		/**
+		 * Sets the program counter.
+		 *
+		 * @param __pc The program counter to set.
+		 * @since 2018/09/03
+		 */
+		public final void setPc(int __pc)
+		{
+			this._pc = __pc;
+		}
 	}
 }
 

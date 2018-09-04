@@ -12,6 +12,7 @@ package cc.squirreljme.springcoat.vm;
 
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.Instruction;
+import net.multiphasicapps.classfile.InstructionIndex;
 
 /**
  * A worker which runs the actual thread code in single-step fashion.
@@ -83,7 +84,23 @@ public final class SpringThreadWorker
 		// Debug
 		todo.DEBUG.note("step(%s) -> %s", thread.name(), inst);
 		
-		throw new todo.TODO();
+		// Handle it
+		int nextpc = code.addressFollowing(pc);
+		switch (inst.operation())
+		{
+				// Do absolutely nothing!
+			case InstructionIndex.NOP:
+				break;
+			
+				// {@squirreljme.error BK0a Unimplemented operation.
+				// (The instruction)}
+			default:
+				throw new SpringVirtualMachineException(String.format(
+					"BK0a", inst));
+		}
+		
+		// Set next PC address
+		frame.setPc(nextpc);
 	}
 }
 
