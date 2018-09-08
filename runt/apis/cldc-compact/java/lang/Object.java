@@ -13,6 +13,11 @@ package java.lang;
 /**
  * This class is the root of all class trees in Java.
  *
+ * The implementation of {@link Object#hashCode()} in SquirrelJME uses a
+ * random number generator that is the same as {@link java.util.Random} with
+ * no consideration for thread safety. So if two objects are initialized at
+ * the same exact time then they will have the same hashcode.
+ *
  * @since 2016/02/08
  */
 public class Object
