@@ -46,6 +46,9 @@ public final class SpringClass
 	private final Map<MethodNameAndType, SpringMethod> _methods =
 		new HashMap<>();
 	
+	/** The instance of the class object. */
+	private volatile SpringClassInstance _instance;
+	
 	/**
 	 * Initializes the spring class.
 	 *
@@ -126,6 +129,18 @@ public final class SpringClass
 	public final ClassFile file()
 	{
 		return this.file;
+	}
+	
+	/**
+	 * Returns the instance of this class (its representation).
+	 *
+	 * @return The instance of this class or {@code null} if it has not been
+	 * initialized.
+	 * @since 2018/09/08
+	 */
+	public final SpringClassInstance instance()
+	{
+		return this._instance;
 	}
 	
 	/**

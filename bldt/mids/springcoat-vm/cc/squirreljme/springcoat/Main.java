@@ -99,13 +99,19 @@ public class Main
 		SpringClassLoader classloader = new SpringClassLoader(classpath);
 		SpringMachine machine = new SpringMachine(classloader);
 		
+		// Thread that will be used as the main thread of execution, also used
+		// to initialize classes when they are requested
+		SpringThread mainthread = machine.createThread("main");
+		
+		// We will be using the same logic in the thread worker if we need to
+		// initialize any objects or arguments
+		SpringThreadWorker worker = new SpringThreadWorker(machine,
+			mainthread);
+		
 		// Load the entry point class
 		EntryPoint entry = entries.get(launchid);
-		SpringClass entrycl = classloader.loadClass(new ClassName(
+		SpringClass entrycl = worker.loadClass(new ClassName(
 			entry.entryPoint().replace('.', '/')));
-		
-		// Thread that will be used as the main thread of execution
-		SpringThread mainthread = machine.createThread("main");
 		
 		// Find the method to be entered in
 		SpringMethod mainmethod;
@@ -116,11 +122,6 @@ public class Main
 		else
 			mainmethod = entrycl.lookupMethod(true,
 				new MethodNameAndType("main", "(Ljava/lang/String;)V"));
-		
-		// We will be using the same logic in the thread worker if we need to
-		// initialize any objects or arguments
-		SpringThreadWorker worker = new SpringThreadWorker(machine,
-			mainthread);
 		
 		// If this is a midlet, we are going to need to initialize a new
 		// instance of our MIDlet and then push that to the current frame's

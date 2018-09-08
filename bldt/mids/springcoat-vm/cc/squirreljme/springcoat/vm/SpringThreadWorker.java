@@ -65,6 +65,42 @@ public final class SpringThreadWorker
 	}
 	
 	/**
+	 * Loads the specified class, potentially performing initialization on it
+	 * if it has not been initialized.
+	 *
+	 * @param __cn The class to load.
+	 * @return The loaded class.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/08
+	 */
+	public final SpringClass loadClass(ClassName __cn)
+		throws NullPointerException
+	{
+		if (__cn == null)
+			throw new NullPointerException("NARG");
+		
+		// Use the class loading lock to prevent other threads from loading or
+		// initializing classes while this thread does such things
+		SpringClassLoader classloader = this.machine.classLoader();
+		synchronized (classloader.classLoadingLock())
+		{
+			// Load the class from the class loader
+			SpringClass rv = classloader.loadClass(__cn);
+			
+			// If the class has already been initialized then the class is
+			// ready to be used
+			SpringClassInstance instance = rv.instance();
+			if (instance != null)
+				return rv;
+			
+			// Debug
+			todo.DEBUG.note("Need to initialize %s.", __cn);
+			
+			throw new todo.TODO();
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/09/03
 	 */
