@@ -11,15 +11,13 @@
 package cc.squirreljme.springcoat.vm;
 
 /**
- * This is a representation of an object within the virtual machine.
+ * This represents anything that is treated by the virtual machine as a kind
+ * of object reference. This is needed for SquirrelJME since it exposes a
+ * pointer logic which is magically handled by the virtual machine.
  *
  * @since 2018/09/08
  */
-public final class SpringObject
-	implements SpringObjectKind
+public interface SpringObject
 {
-	/** Null Object. */
-	public static final SpringObject NULL =
-		new SpringObject();
 }
 
