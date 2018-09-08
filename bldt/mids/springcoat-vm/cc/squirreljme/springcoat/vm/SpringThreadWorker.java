@@ -14,6 +14,7 @@ import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
+import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**
@@ -263,7 +264,7 @@ public final class SpringThreadWorker
 		
 		// Use the original exception, just add a suppression note on it since
 		// that is the simplest action
-		catch (SpringException e)
+		catch (RuntimeException e)
 		{
 			// Where is this located?
 			SpringMethod inmethod = frame.method();
