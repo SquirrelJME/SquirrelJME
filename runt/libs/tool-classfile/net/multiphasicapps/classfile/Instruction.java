@@ -283,6 +283,17 @@ public final class Instruction
 						"JC28 %d %d %s", op, __a, cvalue));
 				break;
 				
+				// Read or write of a field
+			case InstructionIndex.GETSTATIC:
+			case InstructionIndex.PUTSTATIC:
+			case InstructionIndex.GETFIELD:
+			case InstructionIndex.PUTFIELD:
+				naturalflow = true;
+				args = new Object[]{__pool.<FieldReference>require(
+					FieldReference.class,
+					Instruction.__readUnsignedShort(__code, argbase))};
+				break;
+				
 				// {@squirreljme.error JC10 The operation at the specified
 				// address is not supported yet. (The operation; The name of
 				// the operation; The address it is at)}
