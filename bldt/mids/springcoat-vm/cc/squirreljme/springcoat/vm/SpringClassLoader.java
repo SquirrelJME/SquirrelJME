@@ -32,6 +32,10 @@ import net.multiphasicapps.zip.blockreader.ZipEntryNotFoundException;
  */
 public final class SpringClassLoader
 {
+	/** Class loading lock. */
+	protected final Object loaderlock =
+		new Object();
+	
 	/** The class path for the machine. */
 	private final Binary[] _classpath;
 	
@@ -57,6 +61,17 @@ public final class SpringClassLoader
 	}
 	
 	/**
+	 * Returns the class loading lock.
+	 *
+	 * @return The class loading lock.
+	 * @since 2018/09/08
+	 */
+	public final Object classLoadingLock()
+	{
+		return this.loaderlock;
+	}
+	
+	/**
 	 * Loads the specified class.
 	 *
 	 * @param __cn The name of the class to load.
@@ -76,7 +91,7 @@ public final class SpringClassLoader
 		
 		// Lock on classes
 		Map<ClassName, SpringClass> classes = this._classes;
-		synchronized (classes)
+		synchronized (this.loaderlock)
 		{
 			// If the class has already been initialized, use that
 			SpringClass rv = classes.get(__cn);
