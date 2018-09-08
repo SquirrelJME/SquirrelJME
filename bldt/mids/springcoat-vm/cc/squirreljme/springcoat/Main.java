@@ -19,6 +19,7 @@ import cc.squirreljme.springcoat.vm.SpringClass;
 import cc.squirreljme.springcoat.vm.SpringClassLoader;
 import cc.squirreljme.springcoat.vm.SpringMachine;
 import cc.squirreljme.springcoat.vm.SpringMethod;
+import cc.squirreljme.springcoat.vm.SpringObject;
 import cc.squirreljme.springcoat.vm.SpringThread;
 import cc.squirreljme.springcoat.vm.SpringThreadWorker;
 import java.util.ArrayDeque;
@@ -108,21 +109,57 @@ public class Main
 		
 		// Find the method to be entered in
 		SpringMethod mainmethod;
-		if (entry.isMidlet())
+		boolean ismidlet;
+		if ((ismidlet = entry.isMidlet()))
 			mainmethod = entrycl.lookupMethod(false,
 				new MethodNameAndType("startApp", "()V"));
 		else
 			mainmethod = entrycl.lookupMethod(true,
 				new MethodNameAndType("main", "(Ljava/lang/String;)V"));
 		
-		// Enter the frame for that method
-		mainthread.enterFrame(mainmethod);
+		// We will be using the same logic in the thread worker if we need to
+		// initialize any objects or arguments
+		SpringThreadWorker worker = new SpringThreadWorker(machine,
+			mainthread);
+		
+		// If this is a midlet, we are going to need to initialize a new
+		// instance of our MIDlet and then push that to the current frame's
+		// stack then call the main method on it
+		Object[] entryargs;
+		if (ismidlet)
+		{
+			// Allocate an object for our instance
+			SpringObject midinstance = worker.allocateObject(entrycl);
+			
+			// Initialize the object
+			SpringMethod defcon = entrycl.lookupDefaultConstructor();
+			mainthread.enterFrame(defcon, midinstance);
+			
+			// Since the constructor was entered, run all the code needed to
+			// actually initialize it and such, this method will return once
+			// there are no frames left
+			worker.run();
+			
+			// The arguments to the method we are calling is just the instance
+			// of the midlet we created and initialized
+			entryargs = new Object[]{midinstance};
+		}
+		
+		// Initialize program arguments from a bunch of string arguments that
+		// way they are passed to the main entry point
+		else
+		{
+			if (true)
+				throw new todo.TODO();
+		}
+		
+		// Enter the frame for that method using the arguments we passed (in
+		// a static fashion)
+		mainthread.enterFrame(mainmethod, entryargs);
 		
 		// The main although it executes in this context will always have the
 		// same exact logic as other threads running apart from this main
 		// thread, so no code is needed to be duplicated at all.
-		SpringThreadWorker worker = new SpringThreadWorker(machine,
-			mainthread);
 		worker.run();
 		
 		// Wait until all threads have terminated before actually leaving

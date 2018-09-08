@@ -48,6 +48,23 @@ public final class SpringThreadWorker
 	}
 	
 	/**
+	 * Allocates the memory needed to store an object of the given class.
+	 *
+	 * @param __cl The object to allocate.
+	 * @return The allocated instance of the object.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/08
+	 */
+	public final SpringObject allocateObject(SpringClass __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/09/03
 	 */
@@ -63,7 +80,7 @@ public final class SpringThreadWorker
 			this.__singleStep();
 		}
 		
-		throw new todo.TODO();
+		// No more frames to run, so just stop execution
 	}
 	
 	/**

@@ -129,6 +129,21 @@ public final class SpringClass
 	}
 	
 	/**
+	 * Looks up the method which acts as the default constructor for instance
+	 * objects.
+	 *
+	 * If an object has no constructor then a constructor in a base class is
+	 * used.
+	 *
+	 * @return The default constructor for the object.
+	 * @since 2018/09/08
+	 */
+	public final SpringMethod lookupDefaultConstructor()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Locates the given method in the class.
 	 *
 	 * @param __static Is the method static?
