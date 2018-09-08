@@ -198,6 +198,41 @@ public final class SpringThread
 		}
 		
 		/**
+		 * Loads the specified value from a local variable and pushes it to
+		 * the stack.
+		 *
+		 * @param __cl The expected class type.
+		 * @param __dx The index to load from.
+		 * @since 2018/09/08
+		 */
+		public final void loadToStack(Class<?> __cl, int __dx)
+		{
+			Object[] locals = this._locals;
+			
+			// {@squirreljme.error BK0b Cannot push local variable to the stack
+			// because it of the incorrect type. (The varible to push; The
+			// index to load from; The expected class)}
+			Object pushy = locals[__dx];
+			if (!__cl.isInstance(pushy))
+				throw new SpringVirtualMachineException(String.format(
+					"BK0b %s %d %s", pushy, __dx, __cl));
+			
+			// Just copy to the stack
+			this.pushToStack(pushy);
+		}
+		
+		/**
+		 * Returns the method that this frame represents.
+		 *
+		 * @return The current method the frame is in.
+		 * @since 2018/09/08
+		 */
+		public final SpringMethod method()
+		{
+			return this.method;
+		}
+		
+		/**
 		 * Returns the instruction counter.
 		 *
 		 * @return The instruction counter.
@@ -206,6 +241,31 @@ public final class SpringThread
 		public final int pc()
 		{
 			return this._pc;
+		}
+		
+		/**
+		 * Pushes the specified value to the stack.
+		 *
+		 * @param __v The value to push.
+		 * @throws NullPointerException On null arguments.
+		 * @throws SpringVirtualMachineException If the stack overflows or is
+		 * not valid.
+		 * @since 2018/09/08
+		 */
+		public final void pushToStack(Object __v)
+			throws NullPointerException, SpringVirtualMachineException
+		{
+			if (__v == null)
+				throw new NullPointerException("NARG");
+			
+			Object[] stack = this._stack;
+			int stacktop = this._stacktop;
+			
+			// {@squirreljme.error BK0c Stack overflow pushing value. (The
+			// value; The current top of the stack; The stack limit)}
+			if (stacktop >= stack.length)
+				throw new SpringVirtualMachineException(String.format(
+					"BK0c %s %d %d", __v, stacktop, stack.length));
 		}
 		
 		/**

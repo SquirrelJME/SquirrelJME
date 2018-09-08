@@ -390,6 +390,21 @@ public final class ByteCode
 	}
 	
 	/**
+	 * Returns the line that the address is on, assuming the address is valid
+	 * and there is line number information available.
+	 *
+	 * @param __a The address to lookup.
+	 * @return The line of the address or a negative value if it is not valid
+	 * or it is unknown.
+	 * @since 2018/09/08
+	 */
+	public final int lineOfAddress(int __a)
+	{
+		todo.TODO.note("Implement");
+		return -1;
+	}
+	
+	/**
 	 * Returns the maximum number of locals.
 	 *
 	 * @return The maximum number of locals.

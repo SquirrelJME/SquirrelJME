@@ -177,6 +177,12 @@ public final class ClassFile
 		return this._methods.clone();
 	}
 	
+	public final String sourceFile()
+	{
+		todo.TODO.note("Implement");
+		return null;
+	}
+	
 	/**
 	 * Returns the name of the super class.
 	 *

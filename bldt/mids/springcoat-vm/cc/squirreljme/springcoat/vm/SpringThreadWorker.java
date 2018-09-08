@@ -11,6 +11,7 @@
 package cc.squirreljme.springcoat.vm;
 
 import net.multiphasicapps.classfile.ByteCode;
+import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
 
@@ -84,19 +85,60 @@ public final class SpringThreadWorker
 		// Debug
 		todo.DEBUG.note("step(%s) -> %s", thread.name(), inst);
 		
-		// Handle it
-		int nextpc = code.addressFollowing(pc);
-		switch (inst.operation())
+		// Used to give a more detailed idea of anything that happens since
+		// sub-calls will lose any and all exception types
+		int nextpc = code.addressFollowing(pc),
+			opid;
+		try
 		{
-				// Do absolutely nothing!
-			case InstructionIndex.NOP:
-				break;
+			// Handle it
+			switch ((opid = inst.operation()))
+			{
+					// Do absolutely nothing!
+				case InstructionIndex.NOP:
+					break;
+					
+					// Load from local variables
+				case InstructionIndex.ALOAD_0:
+				case InstructionIndex.ALOAD_1:
+				case InstructionIndex.ALOAD_2:
+				case InstructionIndex.ALOAD_3:
+					frame.loadToStack(SpringObject.class,
+						opid - InstructionIndex.ALOAD_0);
+					break;
+					
+					// {@squirreljme.error BK0a Unimplemented operation.
+					// (The instruction)}
+				default:
+					throw new SpringVirtualMachineException(String.format(
+						"BK0a %s", inst));
+			}
+		}
+		
+		// Use the original exception, just add a suppression note on it since
+		// that is the simplest action
+		catch (SpringException e)
+		{
+			// Where is this located?
+			SpringMethod inmethod = frame.method();
+			ClassName inclassname = inmethod.inClass();
+			SpringClass inclass = machine.classLoader().loadClass(
+				inclassname);
 			
-				// {@squirreljme.error BK0a Unimplemented operation.
-				// (The instruction)}
-			default:
-				throw new SpringVirtualMachineException(String.format(
-					"BK0a %s", inst));
+			// Location information if debugging is used, this makes it easier
+			// to see exactly where failed code happened
+			String onfile = inclass.file().sourceFile();
+			int online = code.lineOfAddress(pc);
+			
+			// {@squirreljme.error BK0d An exception was thrown in the virtual
+			// machine while executing the specified location. (The class;
+			// The method; The program counter; The file in source code,
+			// null means it is unknown; The line in source code, negative
+			// values are unknown; The instruction)}
+			e.addSuppressed(new SpringVirtualMachineException(
+				String.format("BK0d %s %s %d %s %d %s", inclassname,
+				inmethod.nameAndType(), pc, onfile, online, inst)));
+			throw e;
 		}
 		
 		// Set next PC address
