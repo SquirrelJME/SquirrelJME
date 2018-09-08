@@ -190,6 +190,10 @@ public final class SpringThread
 			this._locals = (locals = new Object[code.maxLocals()]);
 			this._stack = new Object[code.maxStack()];
 			
+			// Copy arguments passed to the method
+			for (int i = 0, n = __args.length; i < n; i++)
+				locals[i] = __args[i];
+			
 			// Debug
 			todo.DEBUG.note("Frame has %d locals, %d stack", locals.length,
 				this._stack.length);
