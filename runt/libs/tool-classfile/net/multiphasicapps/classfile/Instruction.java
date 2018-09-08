@@ -247,7 +247,7 @@ public final class Instruction
 				// Reference is in the constant pool
 				MethodReference mr = __pool.<MethodReference>require(
 					MethodReference.class,
-					__readUnsignedShort(__code, argbase));
+					Instruction.__readUnsignedShort(__code, argbase));
 				
 				// {@squirreljme.error JC0z Invocation of method did not
 				// have the matching interface/not-interface attribute.
@@ -264,7 +264,23 @@ public final class Instruction
 			case InstructionIndex.NEW:
 				naturalflow = true;
 				args = new Object[]{__pool.<ClassName>require(ClassName.class,
-					__readUnsignedShort(__code, argbase))};
+					Instruction.__readUnsignedShort(__code, argbase))};
+				break;
+				
+				// Load constant value
+			case InstructionIndex.LDC:
+				naturalflow = true;
+				ConstantValue cvalue;
+				args = new Object[]{(cvalue = __pool.<ConstantValue>require(
+					ConstantValue.class,
+					Instruction.__readUnsignedByte(__code, argbase)))};
+				
+				// {@squirreljme.error JC28 Cannot load a constant value which
+				// is not of a narrow type. (The operation; The address; The
+				// constant value)}
+				if (!cvalue.type().isNarrow())
+					throw new InvalidClassFormatException(String.format(
+						"JC28 %d %d %s", op, __a, cvalue));
 				break;
 				
 				// {@squirreljme.error JC10 The operation at the specified
@@ -418,6 +434,33 @@ public final class Instruction
 	}
 	
 	/**
+	 * Reads an unsigned byte from the specified array.
+	 *
+	 * @param __a The array to read from.
+	 * @param __o The offset to read from.
+	 * @return The read value.
+	 * @throws InvalidClassFormatException If the offset exceeds the bounds of
+	 * the given array.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/08
+	 */
+	private static final int __readUnsignedByte(byte[] __a, int __o)
+		throws InvalidClassFormatException, NullPointerException
+	{
+		// Check
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error JC29 Illegal byte read off the end of the
+		// instruction array. (The offset; The length of the code array)}
+		if (__o < 0 || __o >= __a.length)
+			throw new InvalidClassFormatException(
+				String.format("JC29 %d %d", __o, __a.length));
+		
+		return (__a[__o] & 0xFF);
+	}
+	
+	/**
 	 * Reads an unsigned short from the specified array.
 	 *
 	 * @param __a The array to read from.
@@ -435,8 +478,8 @@ public final class Instruction
 		if (__a == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JC11 Illegal read off the end of the instruction
-		// array. (The offset; The length of the code array)}
+		// {@squirreljme.error JC11 Illegal byte read off the end of the
+		// instruction array. (The offset; The length of the code array)}
 		if (__o < 0 || __o + 1 >= __a.length)
 			throw new InvalidClassFormatException(
 				String.format("JC11 %d %d", __o, __a.length));
