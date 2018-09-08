@@ -14,6 +14,7 @@ import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
+import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**
  * A worker which runs the actual thread code in single-step fashion.
@@ -127,8 +128,46 @@ public final class SpringThreadWorker
 			for (SpringClass iface : __cl.interfaceClasses())
 				this.loadClass(iface);
 			
-			throw new todo.TODO();
+			// Initialize a new instance of a runtime class which is
+			// object-like but not exactly an object
+			__cl.setInstance(instance = new SpringClassInstance());
+			
+			// Look for static constructor for this class to initialize it as
+			// needed
+			SpringMethod init;
+			try
+			{
+				init = __cl.lookupMethod(true,
+					new MethodNameAndType("<clinit>", "()V"));
+			}
+			
+			// No static initializer exists
+			catch (SpringNoSuchMethodException e)
+			{
+				init = null;
+				
+				// Debug
+				todo.DEBUG.note("Class %s has no static initializer.",
+					__cl.name());
+			}
+			
+			// Static initializer exists, setup a frame and call it
+			if (init != null)
+			{
+				// Stop execution when the initializer exits
+				SpringThread thread = this.thread;
+				int framelimit = thread.numFrames();
+				
+				// Enter the static initializer
+				thread.enterFrame(init);
+				
+				// Execute until it finishes
+				this.run(framelimit);
+			}
 		}
+		
+		// Return the input class
+		return __cl;
 	}
 	
 	/**
@@ -138,10 +177,33 @@ public final class SpringThreadWorker
 	@Override
 	public final void run()
 	{
+		// Run until there are no frames left
+		this.run(0);
+	}
+	
+	/**
+	 * Runs the worker with a limit on the lowest frame that may be reached
+	 * when execution finishes. This is needed in some cases to invoke methods
+	 * and static initializers in auxiliary code without needing complex state
+	 * or otherwise to handle such things.
+	 *
+	 * @param __framelimit The current frame depth execution will stop at.
+	 * @throws IllegalArgumentException If the frame limit is negative.
+	 * @since 2018/09/08
+	 */
+	public final void run(int __framelimit)
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error BK0e Cannot have a negative frame limit. (The
+		// frame limit)}
+		if (__framelimit < 0)
+			throw new IllegalArgumentException(String.format("BK0e %d",
+				__framelimit));
+		
 		// The thread is alive as long as there are still frames of
 		// execution
 		SpringThread thread = this.thread;
-		while (thread.numFrames() > 0)
+		while (thread.numFrames() > __framelimit)
 		{
 			// Single step executing the top frame
 			this.__singleStep();

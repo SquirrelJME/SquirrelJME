@@ -243,6 +243,30 @@ public final class SpringClass
 	}
 	
 	/**
+	 * Sets the instance of this class.
+	 *
+	 * @param __i The represented class object instance.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SpringVirtualMachineException If an instance has already been
+	 * set.
+	 * @since 2018/09/08
+	 */
+	public final void setInstance(SpringClassInstance __i)
+		throws NullPointerException, SpringVirtualMachineException
+	{
+		if (__i == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error BK0f Attempt to set an instance to a class which
+		// already has had its instance set. (This class)}
+		if (this._instance != null)
+			throw new SpringVirtualMachineException(String.format(
+				"BK0f %s", this.name));
+		
+		this._instance = __i;
+	}
+	
+	/**
 	 * Returns the super class of this class.
 	 *
 	 * @return The super class of this class.
