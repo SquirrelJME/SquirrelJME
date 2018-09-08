@@ -42,6 +42,17 @@ public abstract class ConstantValue
 	}
 	
 	/**
+	 * Returns the value of the constant as a boxed object.
+	 *
+	 * @return The constant value in a boxed type.
+	 * @since 2018/09/08
+	 */
+	public final Object boxedValue()
+	{
+		return this.value;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/05/16
 	 */

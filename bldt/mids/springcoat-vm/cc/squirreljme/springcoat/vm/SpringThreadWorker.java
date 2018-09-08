@@ -12,6 +12,8 @@ package cc.squirreljme.springcoat.vm;
 
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.ConstantValue;
+import net.multiphasicapps.classfile.ConstantValueString;
 import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
@@ -250,8 +252,29 @@ public final class SpringThreadWorker
 				case InstructionIndex.ALOAD_1:
 				case InstructionIndex.ALOAD_2:
 				case InstructionIndex.ALOAD_3:
-					frame.loadToStack(SpringObject.class,
-						opid - InstructionIndex.ALOAD_0);
+					{
+						frame.loadToStack(SpringObject.class,
+							opid - InstructionIndex.ALOAD_0);
+					}
+					break;
+					
+					// Load from constant pool, push to the stack
+				case InstructionIndex.LDC:
+					{
+						ConstantValue value = inst.<ConstantValue>argument(0,
+							ConstantValue.class);
+						
+						// Pushing a string, which due to the rules of Java
+						// there must always be an equality (==) between two
+						// strings, so "foo" == "foo" must be true even if it
+						// is in different parts of the code
+						if (value instanceof ConstantValueString)
+							throw new todo.TODO();
+						
+						// This will be pre-boxed so push it to the stack
+						else
+							frame.pushToStack(value.boxedValue());
+					}
 					break;
 					
 					// {@squirreljme.error BK0a Unimplemented operation.
