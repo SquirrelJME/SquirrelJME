@@ -144,6 +144,17 @@ public final class SpringClass
 	}
 	
 	/**
+	 * Returns the interfaces that this class implements.
+	 *
+	 * @return The implemented interfaces.
+	 * @since 2018/09/08
+	 */
+	public final SpringClass[] interfaceClasses()
+	{
+		return this._interfaceclasses.clone();
+	}
+	
+	/**
 	 * Looks up the method which acts as the default constructor for instance
 	 * objects.
 	 *
@@ -218,6 +229,28 @@ public final class SpringClass
 				this.name, __nat, __static));
 		
 		return rv;
+	}
+	
+	/**
+	 * Returns the name of this class.
+	 *
+	 * @return The name of this class.
+	 * @since 2018/09/08
+	 */
+	public final ClassName name()
+	{
+		return this.name;
+	}
+	
+	/**
+	 * Returns the super class of this class.
+	 *
+	 * @return The super class of this class.
+	 * @since 2018/09/08
+	 */
+	public final SpringClass superClass()
+	{
+		return this.superclass;
 	}
 }
 
