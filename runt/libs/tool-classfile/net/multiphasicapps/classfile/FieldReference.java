@@ -96,7 +96,7 @@ public final class FieldReference
 		// Cache?
 		if (ref == null || null == (rv = ref.get()))
 			this._string = new WeakReference<>((rv = String.format(
-				"field %s::%s%s", this.classname, this.name,
+				"field %s::%s %s", this.classname, this.name,
 				this.type)));
 		
 		return rv;
