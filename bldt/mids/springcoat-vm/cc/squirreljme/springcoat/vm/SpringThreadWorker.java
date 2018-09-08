@@ -123,7 +123,7 @@ public final class SpringThreadWorker
 			if (clsuper != null)
 				this.loadClass(clsuper);
 			
-			// Go through unterfaces and do the same
+			// Go through interfaces and do the same
 			for (SpringClass iface : __cl.interfaceClasses())
 				this.loadClass(iface);
 			
