@@ -68,6 +68,9 @@ public final class ByteCode
 	/** The addresses of every instruction by index. */
 	private final int[] _index;
 	
+	/** The line number table. */
+	private final short[] _linenumbertable;
+	
 	/** The cache of instructions in the byte code. */
 	private final Reference<Instruction>[] _icache;
 	
@@ -155,45 +158,66 @@ public final class ByteCode
 			byte[] smt = null;
 			boolean smtnew = false;
 			
-			// Handle attributes
-			int na = in.readUnsignedShort();
-			String[] attr = new String[1];
-			int[] alen = new int[1];
-			for (int j = 0; j < na; j++)
-				try (DataInputStream ai = ClassFile.__nextAttribute(in, pool,
-					attr, alen))
+			// Parse the attribute table
+			AttributeTable attrs = AttributeTable.parse(pool, in);
+			
+			// Try using the newer stack map table, if that does not exist
+			// then fallback to the old one
+			Attribute attr = attrs.get("StackMapTable");
+			if (attr != null)
+			{
+				smt = attr.bytes();
+				smtnew = true;
+			}
+			else
+			{
+				attr = attrs.get("StackMap");
+				if (attr != null)
 				{
-					String a;
-					boolean newtable = false;
-					switch ((a = attr[0]))
-					{
-							// The stack map table, either new or old
-						case "StackMapTable":
-							newtable = true;
-						case "StackMap":
-							// {@squirreljme.error JC03 Duplicate stack map
-							// tables exist within the method byte code.}
-							if (smt != null)
-								throw new InvalidClassFormatException("JC03");
-							
-							// Decode
-							ai.readFully((smt = new byte[alen[0]]));
-							smtnew = newtable;
-							break;
-						
-							// Unknown, ignore
-						default:
-							continue;
-					}
+					smt = attr.bytes();
+					smtnew = false;
 				}
+			}
 			
 			// If there is no stack map, then use a default one (which has
-			// just no entries)
+			// just no entries) which has an assumed state
 			if (smt == null)
 			{
 				smt = new byte[2];
 				smtnew = true;
 			}
+			
+			// Initialize a blank line number table
+			short[] lnt = new short[codelen];
+			for (int i = 0; i < codelen; i++)
+				lnt[i] = -1;
+			
+			// Parse the line number table for debug purposes
+			attr = attrs.get("LineNumberTable");
+			if (attr != null)
+				try (DataInputStream ai = attr.open())
+				{
+					// Read entry count
+					int n = ai.readUnsignedShort();
+					
+					// Read all the individual entries
+					for (int i = 0; i < n; i++)
+					{
+						int pc = ai.readUnsignedShort(),
+							line = ai.readUnsignedShort();
+						
+						// Failed to read the program address, this could be
+						// a failure but instead just ignore it and continue
+						// on
+						if (pc < 0 || pc >= codelen)
+							continue;
+						
+						// This gets handled later, but if there is more than
+						// 65534 lines in a file then what is the programmer
+						// even doing
+						lnt[pc] = (short)line;
+					}
+				}
 			
 			// Can set fields now
 			this.maxstack = maxstack;
@@ -205,6 +229,7 @@ public final class ByteCode
 			this._newsmtdata = smtnew;
 			this._lengths = lengths;
 			this._icache = __newCache(codelen);
+			this._linenumbertable = lnt;
 			
 			// Store addresses for all the indexes
 			if (indexat == codelen)
@@ -400,7 +425,33 @@ public final class ByteCode
 	 */
 	public final int lineOfAddress(int __a)
 	{
-		todo.TODO.note("Implement");
+		// Scan through the table and try to find the line number for the given
+		// address, the table is negative padded for unknown locations
+		int codelen = this.codelen;
+		short[] linenumbertable = this._linenumbertable;
+		int negscandx = __a;
+		for (int pc = __a; pc >= 0 && pc < codelen; pc--)
+		{
+			// Do not use this value if the line is not valid, scan backwards
+			short clip = linenumbertable[pc];
+			if (clip == -1)
+				continue;
+			
+			// If the address we started at is not valid then a bunch of source
+			// code is probably on the same line for a bunch of area so to
+			// prevent any extra backscanning when this information is needed
+			// cache it back into the table so it is used
+			// Fill the entire table to our PC address so that way the entire
+			// section is filled
+			while (negscandx > pc)
+				linenumbertable[negscandx--] = clip;
+			
+			// Sign extends to int, then removes the negative part so we can
+			// recover the full 0-65534 range of the line table
+			return (clip & 0xFFFF);
+		}
+		
+		// Not known
 		return -1;
 	}
 	

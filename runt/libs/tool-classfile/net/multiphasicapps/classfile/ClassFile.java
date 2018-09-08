@@ -356,7 +356,6 @@ public final class ClassFile
 					UTFConstantEntry.class, ai.readUnsignedShort()).toString();
 			}
 		
-		
 		// Build
 		return new ClassFile(version, classflags, thisname, supername,
 			interfaces, fields, methods, innerclasses, annotations,
