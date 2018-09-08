@@ -85,16 +85,47 @@ public final class SpringThreadWorker
 		synchronized (classloader.classLoadingLock())
 		{
 			// Load the class from the class loader
-			SpringClass rv = classloader.loadClass(__cn);
-			
+			return this.loadClass(classloader.loadClass(__cn));
+		}
+	}
+	
+	/**
+	 * Loads the specified class.
+	 *
+	 * @param __cl The class to load.
+	 * @return {@code __cl}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/08
+	 */
+	public final SpringClass loadClass(SpringClass __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// Use the class loading lock to prevent other threads from loading or
+		// initializing classes while this thread does such things
+		SpringClassLoader classloader = this.machine.classLoader();
+		synchronized (classloader.classLoadingLock())
+		{
 			// If the class has already been initialized then the class is
 			// ready to be used
-			SpringClassInstance instance = rv.instance();
+			SpringClassInstance instance = __cl.instance();
 			if (instance != null)
-				return rv;
+				return __cl;
 			
 			// Debug
-			todo.DEBUG.note("Need to initialize %s.", __cn);
+			todo.DEBUG.note("Need to initialize %s.", __cl.name());
+			
+			// Recursively call self to load the super class before this class
+			// is handled
+			SpringClass clsuper = __cl.superClass();
+			if (clsuper != null)
+				this.loadClass(clsuper);
+			
+			// Go through unterfaces and do the same
+			for (SpringClass iface : __cl.interfaceClasses())
+				this.loadClass(iface);
 			
 			throw new todo.TODO();
 		}
