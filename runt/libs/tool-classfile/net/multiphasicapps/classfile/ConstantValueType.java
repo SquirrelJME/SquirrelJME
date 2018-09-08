@@ -87,5 +87,44 @@ public enum ConstantValueType
 				throw new RuntimeException("OOPS");
 		}
 	}
+	
+	/**
+	 * Is this a narrow constant value?
+	 *
+	 * @return If this is a narrow constant value.
+	 * @since 2108/09/08
+	 */
+	public final boolean isNarrow()
+	{
+		switch (this)
+		{
+			case INTEGER:
+			case FLOAT:
+			case STRING:
+				return true;
+			
+			default:
+				return false;
+		}
+	}
+	
+	/**
+	 * Is this a wide constant value?
+	 *
+	 * @return If this is a wide constant value.
+	 * @since 2108/09/08
+	 */
+	public final boolean isWide()
+	{
+		switch (this)
+		{
+			case LONG:
+			case DOUBLE:
+				return true;
+			
+			default:
+				return false;
+		}
+	}
 }
 
