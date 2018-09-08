@@ -11,6 +11,7 @@
 package cc.squirreljme.springcoat.vm;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import net.multiphasicapps.classfile.ByteCode;
 
@@ -70,20 +71,25 @@ public final class SpringThread
 	 * Enters the specified method and sets up a stack frame for it.
 	 *
 	 * @param __m The method to enter.
+	 * @param __args Arguments to the frame entry (method arguments).
 	 * @return The used stack frame.
 	 * @throws NullPointerException On null arguments.
 	 * @throws SpringVirtualMachineException If the method is abstract.
 	 * @since 2018/09/03
 	 */
-	public final SpringThread.Frame enterFrame(SpringMethod __m)
+	public final SpringThread.Frame enterFrame(SpringMethod __m,
+		Object... __args)
 		throws NullPointerException, SpringVirtualMachineException
 	{
 		if (__m == null)
 			throw new NullPointerException("NARG");
 		
+		if (__args == null)
+			__args = new Object[0];
+		
 		// Debug
-		todo.DEBUG.note("enterFrame(%s::%s)", __m.inClass(),
-			__m.nameAndType());
+		todo.DEBUG.note("enterFrame(%s::%s, %s)", __m.inClass(),
+			__m.nameAndType(), Arrays.<Object>asList(__args));
 		
 		// {@squirreljme.error BK09 Cannot enter the frame for a method which
 		// is abstract. (The class the method is in; The method name and type)}
@@ -92,7 +98,7 @@ public final class SpringThread
 				__m.inClass(), __m.nameAndType()));
 		
 		// Create new frame
-		Frame rv = new Frame(__m);
+		Frame rv = new Frame(__m, __args);
 		
 		// Lock on frames as a new one is added
 		List<SpringThread.Frame> frames = this._frames;
@@ -160,14 +166,17 @@ public final class SpringThread
 		 * Initializes the frame.
 		 *
 		 * @param __m The method used for the frame.
+		 * @param __args The frame arguments.
 		 * @throws NullPointerException On null arguments.
 		 * @since 2018/09/03
 		 */
-		private Frame(SpringMethod __m)
+		private Frame(SpringMethod __m, Object... __args)
 			throws NullPointerException
 		{
 			if (__m == null)
 				throw new NullPointerException("NARG");
+			
+			__args = (__args == null ? new Object[0] : __args.clone());
 			
 			this.method = __m;
 			
