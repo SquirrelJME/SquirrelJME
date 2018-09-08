@@ -96,7 +96,7 @@ public final class SpringThreadWorker
 				// (The instruction)}
 			default:
 				throw new SpringVirtualMachineException(String.format(
-					"BK0a", inst));
+					"BK0a %s", inst));
 		}
 		
 		// Set next PC address
