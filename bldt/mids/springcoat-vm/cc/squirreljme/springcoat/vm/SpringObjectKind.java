@@ -8,35 +8,16 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.asm;
+package cc.squirreljme.springcoat.vm;
 
 /**
- * This represents a pointer type and contains a pointer value.
+ * This represents anything that is treated by the virtual machine as a kind
+ * of object reference. This is needed for SquirrelJME since it exposes a
+ * pointer logic which is magically handled by the virtual machine.
  *
- * This class represents a virtual object which is replaced by the compiler to
- * represent a native pointer.
- *
- * @since 2017/12/27
+ * @since 2018/09/08
  */
-public final class Pointer
+public interface SpringObjectKind
 {
-	/**
-	 * Not used.
-	 *
-	 * @since 2017/12/27
-	 */
-	private Pointer()
-	{
-	}
-	
-	/**
-	 * This translates an address represented in the given long value to a
-	 * pointer address.
-	 *
-	 * @param __a The address to translate.
-	 * @return The pointer of that address.
-	 * @since 2017/12/27
-	 */
-	public static native Pointer longToPointer(long __a);
 }
 

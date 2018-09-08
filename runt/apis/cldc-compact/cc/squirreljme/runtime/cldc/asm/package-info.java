@@ -15,5 +15,5 @@
  * @since 2017/12/27
  */
 
-package cc.squirreljme.runtime.asm;
+package cc.squirreljme.runtime.cldc.asm;
 

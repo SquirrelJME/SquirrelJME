@@ -8,22 +8,35 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.asm;
+package cc.squirreljme.runtime.cldc.asm;
 
 /**
- * This class contains utilities for atomic operations.
+ * This represents a pointer type and contains a pointer value.
  *
- * @since 2018/09/08
+ * This class represents a virtual object which is replaced by the compiler to
+ * represent a native pointer.
+ *
+ * @since 2017/12/27
  */
-public final class AtomicOperation
+public final class Pointer
 {
 	/**
 	 * Not used.
 	 *
-	 * @since 2018/09/08
+	 * @since 2017/12/27
 	 */
-	private AtomicOperation()
+	private Pointer()
 	{
 	}
+	
+	/**
+	 * This translates an address represented in the given long value to a
+	 * pointer address.
+	 *
+	 * @param __a The address to translate.
+	 * @return The pointer of that address.
+	 * @since 2017/12/27
+	 */
+	public static native Pointer longToPointer(long __a);
 }
 

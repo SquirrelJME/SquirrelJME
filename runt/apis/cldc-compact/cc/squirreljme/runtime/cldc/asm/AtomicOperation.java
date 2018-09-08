@@ -8,18 +8,22 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.springcoat.vm;
+package cc.squirreljme.runtime.cldc.asm;
 
 /**
- * This is a representation of an object within the virtual machine.
+ * This class contains utilities for atomic operations.
  *
  * @since 2018/09/08
  */
-public final class SpringObject
-	implements SpringObjectKind
+public final class AtomicOperation
 {
-	/** Null Object. */
-	public static final SpringObject NULL =
-		new SpringObject();
+	/**
+	 * Not used.
+	 *
+	 * @since 2018/09/08
+	 */
+	private AtomicOperation()
+	{
+	}
 }
 
