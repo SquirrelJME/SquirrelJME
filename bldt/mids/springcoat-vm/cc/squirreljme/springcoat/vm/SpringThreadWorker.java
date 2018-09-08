@@ -103,7 +103,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.ALOAD_1:
 				case InstructionIndex.ALOAD_2:
 				case InstructionIndex.ALOAD_3:
-					frame.loadToStack(SpringObject.class,
+					frame.loadToStack(SpringObjectKind.class,
 						opid - InstructionIndex.ALOAD_0);
 					break;
 					

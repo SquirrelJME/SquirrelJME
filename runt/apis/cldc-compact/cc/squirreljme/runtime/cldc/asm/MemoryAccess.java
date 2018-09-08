@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.asm;
+package cc.squirreljme.runtime.cldc.asm;
 
 /**
  * This class contains static methods which are replaced by the compiler to
