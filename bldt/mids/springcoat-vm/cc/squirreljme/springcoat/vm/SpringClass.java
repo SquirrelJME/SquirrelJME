@@ -118,6 +118,17 @@ public final class SpringClass
 	}
 	
 	/**
+	 * Returns the associated class file.
+	 *
+	 * @return The class file.
+	 * @since 2018/09/08
+	 */
+	public final ClassFile file()
+	{
+		return this.file;
+	}
+	
+	/**
 	 * Locates the given method in the class.
 	 *
 	 * @param __static Is the method static?

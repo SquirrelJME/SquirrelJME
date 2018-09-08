@@ -61,6 +61,17 @@ public final class SpringMachine
 	}
 	
 	/**
+	 * Returns the class loader.
+	 *
+	 * @return The class loader.
+	 * @since 2018/09/08
+	 */
+	public final SpringClassLoader classLoader()
+	{
+		return this.classloader;
+	}
+	
+	/**
 	 * Creates a new thread within the virtual machine.
 	 *
 	 * @param __n The name of the thread.
