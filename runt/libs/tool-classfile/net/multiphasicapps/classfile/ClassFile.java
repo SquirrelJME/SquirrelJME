@@ -51,6 +51,9 @@ public final class ClassFile
 	/** The referenced inner classes. */
 	protected final InnerClasses innerclasses;
 	
+	/** The source file the class is in. */
+	protected final String sourcefilename;
+	
 	/** The interfaces this class implements. */
 	private final ClassName[] _interfaces;
 	
@@ -72,13 +75,14 @@ public final class ClassFile
 	 * @param __ms The methods in this class.
 	 * @param __icl Defined inner classes.
 	 * @param __at Annotations that are declared on the class.
+	 * @param __sfn Source file name.
 	 * @throws InvalidClassFormatException If the class is not valid.
 	 * @throws NullPointerException On null arguments, except for {@code __sn}.
 	 * @since 2017/09/26
 	 */
 	ClassFile(ClassVersion __ver, ClassFlags __cf, ClassName __tn,
 		ClassName __sn, ClassName[] __in, Field[] __fs, Method[] __ms,
-		InnerClasses __icl, AnnotationTable __at)
+		InnerClasses __icl, AnnotationTable __at, String __sfn)
 		throws InvalidClassFormatException, NullPointerException
 	{
 		if (__ver == null || __cf == null || __tn == null ||
@@ -110,6 +114,10 @@ public final class ClassFile
 		this._interfaces = __in;
 		this._fields = __fs;
 		this._methods = __ms;
+		
+		// Use known source, or just guess it
+		this.sourcefilename = (__sfn != null ? __sfn :
+			__tn.toString() + ".java?");
 	}
 	
 	/**
@@ -177,10 +185,15 @@ public final class ClassFile
 		return this._methods.clone();
 	}
 	
+	/**
+	 * Returns the source file the class is in.
+	 *
+	 * @return The source file the class is in.
+	 * @since 2018/09/08
+	 */
 	public final String sourceFile()
 	{
-		todo.TODO.note("Implement");
-		return null;
+		return this.sourcefilename;
 	}
 	
 	/**
@@ -251,7 +264,8 @@ public final class ClassFile
 			new ClassFlags(ClassFlag.PUBLIC, ClassFlag.FINAL, ClassFlag.SUPER,
 			ClassFlag.SYNTHETIC), new ClassName(__d.toString()),
 			new ClassName("java/lang/Object"), new ClassName[0], new Field[0],
-			new Method[0], new InnerClasses(), new AnnotationTable());
+			new Method[0], new InnerClasses(), new AnnotationTable(),
+			"<special>");
 	}
 	
 	/**
@@ -332,9 +346,21 @@ public final class ClassFile
 			throw new InvalidClassFormatException(
 				String.format("JC0g %s", thisname));
 		
+		// Source file name, if any
+		Attribute attr = attrs.get("SourceFile");
+		String sourcefilename = null;
+		if (attr != null)
+			try (DataInputStream ai = attr.open())
+			{
+				sourcefilename = pool.<UTFConstantEntry>require(
+					UTFConstantEntry.class, ai.readUnsignedShort()).toString();
+			}
+		
+		
 		// Build
 		return new ClassFile(version, classflags, thisname, supername,
-			interfaces, fields, methods, innerclasses, annotations);
+			interfaces, fields, methods, innerclasses, annotations,
+			sourcefilename);
 	}
 	
 	/**
