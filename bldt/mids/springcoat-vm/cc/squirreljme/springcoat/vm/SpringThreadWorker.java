@@ -21,7 +21,10 @@ import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.MemberFlags;
+import net.multiphasicapps.classfile.MethodDescriptor;
+import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.classfile.MethodNameAndType;
+import net.multiphasicapps.classfile.MethodReference;
 
 /**
  * A worker which runs the actual thread code in single-step fashion.
@@ -474,6 +477,38 @@ public final class SpringThreadWorker
 					{
 						MethodReference ref = inst.<MethodReference>argument(
 							0, MethodReference.class);
+						
+						MethodName rn = ref.memberName();
+						MethodDescriptor type = ref.memberType();
+						
+						// Pop all the arguments used in the call
+						int nargs = type.argumentCount();
+						Object[] passed = new Object[nargs];
+						for (int i = nargs - 1; i >= 0; i--)
+							passed[i] = frame.popFromStack();
+						
+						// {@squirreljme.error BK0q No instance specified for
+						// invokespecial.}
+						if (!(passed[0] instanceof SpringObject))
+							throw new SpringNullPointerException("BK0q");
+						SpringObject instance = (SpringObject)passed[0];
+						
+						/*
+						SpringClass itype = instance.type();
+						boolean targetissuper = 
+						
+						// Call a compatible constructor for the class
+						SpringMethod reallyinvoke;
+						if (rn.isInstanceInitializer())
+							reallyinvoke = itype.
+							throw new todo.TODO();
+						
+						// Otherwise look for compatible method in that class
+						else
+						{
+							if (true)
+								throw new todo.TODO();
+						}*/
 						
 						if (true)
 							throw new todo.TODO();

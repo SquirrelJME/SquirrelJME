@@ -59,6 +59,10 @@ public final class SpringClass
 	private final Map<MethodNameAndType, SpringMethod> _methods =
 		new HashMap<>();
 	
+	/** Non-virtual instance methods. */
+	private final Map<MethodNameAndType, SpringMethod> _nonvirtmethods =
+		new HashMap<>();
+	
 	/** Fields which exist in this class, only includes this class fields */
 	private final Map<FieldNameAndType, SpringField> _fields =
 		new HashMap<>();
@@ -98,16 +102,24 @@ public final class SpringClass
 				throw new NullPointerException("NARG");
 		
 		// Go through and initialize methods declared in this class
+		Map<MethodNameAndType, SpringMethod> nvmeths = this._nonvirtmethods;
 		Map<MethodNameAndType, SpringMethod> methods = this._methods;
 		for (Method m : __cf.methods())
+		{
+			SpringMethod sm;
 			if (null != methods.put(m.nameAndType(),
-				new SpringMethod(name, m)))
+				(sm = new SpringMethod(name, m))))
 			{
 				// {@squirreljme.error BK06 Duplicated method in class. (The
 				// method)}
 				throw new SpringClassFormatException(name, String.format(
 					"BK06 %s", m.nameAndType()));
 			}
+			
+			// Store only instance methods which are not static
+			if (!m.flags().isStatic())
+				nvmeths.put(m.nameAndType(), sm);
+		}
 		
 		// Fields that are defined in super classes must be allocated, stored,
 		// and indexed appropriately so that way casting between types and
@@ -160,6 +172,7 @@ public final class SpringClass
 		this.instancefieldcount = instancefieldcount;
 		
 		// Go through super and interfaces and add non-static methods which
+		// exist in sub-classes
 		for (int i = 0, n = __interfaces.length; i <= n; i++)
 		{
 			// The class to look within
@@ -174,9 +187,9 @@ public final class SpringClass
 				MethodNameAndType k = e.getKey();
 				SpringMethod v = e.getValue();
 				
-				// Ignore static and initializer methods
-				if (v.isStatic() || v.isInstanceInitializer() ||
-					v.isStaticInitializer())
+				// Ignore static, initializer methods, and private methods
+				if (v.flags().isStatic() || v.isInstanceInitializer() ||
+					v.isStaticInitializer() || v.flags().isPrivate())
 					continue;
 				
 				// If the method does not exist in the table then it gets added
@@ -286,26 +299,14 @@ public final class SpringClass
 	 * Looks up the method which acts as the default constructor for instance
 	 * objects.
 	 *
-	 * If an object has no constructor then a constructor in a base class is
-	 * used.
-	 *
 	 * @return The default constructor for the object or {@code null} if there
 	 * is none.
 	 * @since 2018/09/08
 	 */
 	public final SpringMethod lookupDefaultConstructor()
 	{
-		// Default constructors are always a known name and type
-		SpringMethod rv = this._methods.get(new MethodNameAndType("<init>",
+		return this.lookupMethodNonVirtual(new MethodNameAndType("<init>",
 			"()V"));
-		if (rv != null)
-			return rv;
-		
-		// Use the default constructor of the superclass instead
-		SpringClass superclass = this.superclass;
-		if (superclass != null)
-			return superclass.lookupDefaultConstructor();
-		return null;
 	}
 	
 	/**
@@ -376,13 +377,16 @@ public final class SpringClass
 	 * @param __desc The descriptor of the method.
 	 * @return The method which was found.
 	 * @throws NullPointerException On null arguments.
+	 * @throws SpringIncompatibleClassChangeException If the target method
+	 * does not match staticness.
 	 * @throws SpringNoSuchMethodException If the specified method does not
 	 * exist.
 	 * @since 2018/09/03
 	 */
 	public final SpringMethod lookupMethod(boolean __static, MethodName __name,
 		MethodDescriptor __desc)
-		throws NullPointerException, SpringNoSuchMethodException
+		throws NullPointerException, SpringIncompatibleClassChangeException,
+			SpringNoSuchMethodException
 	{
 		if (__name == null || __desc == null)
 			throw new NullPointerException("NARG");
@@ -398,13 +402,16 @@ public final class SpringClass
 	 * @param __nat The name and type of the method.
 	 * @return The method which was found.
 	 * @throws NullPointerException On null arguments.
+	 * @throws SpringIncompatibleClassChangeException If the target method
+	 * does not match staticness.
 	 * @throws SpringNoSuchMethodException If the specified method does not
 	 * exist.
 	 * @since 2018/09/03
 	 */
 	public final SpringMethod lookupMethod(boolean __static,
 		MethodNameAndType __nat)
-		throws NullPointerException, SpringNoSuchMethodException
+		throws NullPointerException, SpringIncompatibleClassChangeException,
+			SpringNoSuchMethodException
 	{
 		if (__nat == null)
 			throw new NullPointerException("NARG");
@@ -425,7 +432,46 @@ public final class SpringClass
 		// The name and type of the method; If a static method was requested)}
 		if (rv.isStatic() != __static)
 			throw new SpringIncompatibleClassChangeException(String.format(
-				"BK08 %s %s", this.name, __nat, __static));
+				"BK08 %s %s %b", this.name, __nat, __static));
+		
+		return rv;
+	}
+	
+	/**
+	 * Looks up the specified method non-virtually.
+	 *
+	 * @param __nat The name and type.
+	 * @return The target method.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SpringIncompatibleClassChangeException If the target method
+	 * is static.
+	 * @throws SpringNoSuchMethodException If no method exists.
+	 * @since 2018/09/09
+	 */
+	public final SpringMethod lookupMethodNonVirtual(MethodNameAndType __nat)
+		throws NullPointerException, SpringIncompatibleClassChangeException,
+			SpringNoSuchMethodException
+	{
+		if (__nat == null)
+			throw new NullPointerException("NARG");
+		
+		// Debug
+		todo.DEBUG.note("Looking up non-virtual method %s::%s.", this.name,
+			__nat);
+		
+		// {@squirreljme.error BK0r The specified method does not exist, when
+		// non-virtual lookup is used. (The class which was looked in; The
+		// name and type of the method)} 
+		SpringMethod rv = this._nonvirtmethods.get(__nat);
+		if (rv == null)
+			throw new SpringNoSuchMethodException(String.format("BK0r %s %s",
+				this.name, __nat));
+		
+		// {@squirreljme.error BK0s Non-virtual method lookup found a static
+		// method. (The class being looked in; The name and type requested)}
+		if (rv.flags().isStatic())
+			throw new SpringIncompatibleClassChangeException(String.format(
+				"BK0s %s %s", this.name, __nat));
 		
 		return rv;
 	}

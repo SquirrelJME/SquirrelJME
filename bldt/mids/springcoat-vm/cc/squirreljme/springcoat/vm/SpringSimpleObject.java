@@ -40,5 +40,15 @@ public final class SpringSimpleObject
 		this.type = __cl;
 		this._fields = new Object[__cl.instanceFieldCount()];
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/09/09
+	 */
+	@Override
+	public final SpringClass type()
+	{
+		return this.type;
+	}
 }
 
