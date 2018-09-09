@@ -123,11 +123,10 @@ public final class Field
 	}
 	
 	/**
-	 * Returns the name and type of the method.
-	 *
-	 * @return The method name and type.
+	 * {@inheritDoc}
 	 * @since 2017/10/12
 	 */
+	@Override
 	public final FieldNameAndType nameAndType()
 	{
 		Reference<FieldNameAndType> ref = this._nameandtype;

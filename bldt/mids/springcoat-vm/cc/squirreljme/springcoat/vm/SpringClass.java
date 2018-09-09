@@ -21,6 +21,8 @@ import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassFlags;
 import net.multiphasicapps.classfile.Field;
+import net.multiphasicapps.classfile.FieldDescriptor;
+import net.multiphasicapps.classfile.FieldName;
 import net.multiphasicapps.classfile.FieldNameAndType;
 import net.multiphasicapps.classfile.HasAccessibleFlags;
 import net.multiphasicapps.classfile.Method;
@@ -275,6 +277,66 @@ public final class SpringClass
 	}
 	
 	/**
+	 * Locates the given field in this class.
+	 *
+	 * @param __static Is the field static?
+	 * @param __name The name of the field.
+	 * @param __desc The type of the field.
+	 * @return The field.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SpringNoSuchFieldException If the field does not exist.
+	 * @since 2018/09/09
+	 */
+	public final SpringField lookupField(boolean __static, FieldName __name,
+		FieldDescriptor __desc)
+		throws NullPointerException, SpringNoSuchFieldException
+	{
+		if (__name == null || __desc == null)
+			throw new NullPointerException("NARG");
+		
+		return this.lookupField(__static,
+			new FieldNameAndType(__name, __desc));
+	}
+	
+	/**
+	 * Locates the given field in this class.
+	 *
+	 * @param __static Is the field static?
+	 * @param __nat The name and type of the field.
+	 * @return The field.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SpringNoSuchFieldException If the field does not exist.
+	 * @since 2018/09/09
+	 */
+	public final SpringField lookupField(boolean __static,
+		FieldNameAndType __nat)
+		throws NullPointerException, SpringNoSuchFieldException
+	{
+		if (__nat == null)
+			throw new NullPointerException("NARG");
+		
+		// Debug
+		todo.DEBUG.note("Looking up field %s::%s (static=%b)", this.name,
+			__nat, __static);
+		
+		// {@squirreljme.error BK0j The specified field does not exist.
+		// (The class which was looked in; The name and type of the field)} 
+		SpringField rv = this._fields.get(__nat);
+		if (rv == null)
+			throw new SpringNoSuchFieldException(String.format("BK0j %s %s",
+				this.name, __nat));
+		
+		// {@squirreljme.error BK0k The specified field exists in the class
+		// however it does not match being static. (The class the field is in;
+		// The name and type of the method; If a static field was requested)}
+		if (rv.isStatic() != __static)
+			throw new SpringIncompatibleClassChangeException(String.format(
+				"BK0k %s %s", this.name, __nat, __static));
+		
+		return rv;
+	}
+	
+	/**
 	 * Locates the given method in the class.
 	 *
 	 * @param __static Is the method static?
@@ -330,8 +392,8 @@ public final class SpringClass
 		// however it does not match being static. (The class the method is in;
 		// The name and type of the method; If a static method was requested)}
 		if (rv.isStatic() != __static)
-			throw new SpringNoSuchMethodException(String.format("BK08 %s %s",
-				this.name, __nat, __static));
+			throw new SpringIncompatibleClassChangeException(String.format(
+				"BK08 %s %s", this.name, __nat, __static));
 		
 		return rv;
 	}

@@ -28,7 +28,10 @@ public final class FieldReference
 	protected final FieldDescriptor type;
 	
 	/** String representation. */
-	private volatile Reference<String> _string;
+	private Reference<String> _string;
+	
+	/** Name and type. */
+	private Reference<FieldNameAndType> _nat;
 	
 	/**
 	 * Initializes the field reference.
@@ -81,6 +84,33 @@ public final class FieldReference
 	public final FieldName memberName()
 	{
 		return this.name;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/09/09
+	 */
+	@Override
+	public final FieldNameAndType memberNameAndType()
+	{
+		Reference<FieldNameAndType> ref = this._nat;
+		FieldNameAndType rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._nat = new WeakReference<>(
+				(rv = new FieldNameAndType(this.name, this.type)));
+		
+		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/09/09
+	 */
+	@Override
+	public final FieldDescriptor memberType()
+	{
+		return this.type;
 	}
 	
 	/**

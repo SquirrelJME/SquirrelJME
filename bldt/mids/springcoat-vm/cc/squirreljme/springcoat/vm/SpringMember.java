@@ -10,12 +10,15 @@
 
 package cc.squirreljme.springcoat.vm;
 
+import net.multiphasicapps.classfile.HasMemberFlags;
+
 /**
  * This represents a member.
  *
  * @since 2018/09/09
  */
 public interface SpringMember
+	extends HasMemberFlags
 {
 }
 

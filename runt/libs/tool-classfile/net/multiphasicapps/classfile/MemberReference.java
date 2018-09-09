@@ -61,6 +61,22 @@ public abstract class MemberReference
 	public abstract Identifier memberName();
 	
 	/**
+	 * Returns the name and type of the member.
+	 *
+	 * @return The member name and type.
+	 * @since 2018/09/09
+	 */
+	public abstract MemberNameAndType memberNameAndType();
+	
+	/**
+	 * Returns the type of the member.
+	 *
+	 * @return The member type.
+	 * @since 2018/09/09
+	 */
+	public abstract MemberDescriptor memberType();
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/06/12
 	 */

@@ -26,5 +26,13 @@ public abstract class Member
 	Member()
 	{
 	}
+	
+	/**
+	 * Returns the name and type of the member.
+	 *
+	 * @return The member name and type.
+	 * @since 2018/09/09
+	 */
+	public abstract MemberNameAndType nameAndType();
 }
 
