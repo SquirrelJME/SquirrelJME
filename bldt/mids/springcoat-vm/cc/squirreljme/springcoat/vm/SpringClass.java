@@ -262,6 +262,27 @@ public final class SpringClass
 	}
 	
 	/**
+	 * Checks if the given class is a super class of the this class.
+	 *
+	 * @param __cl The class to check.
+	 * @return {@code true} if it is a superclass.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/09
+	 */
+	public final boolean isSuperClass(SpringClass __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		for (SpringClass r = this.superclass; r != null; r = r.superClass())
+			if (r == __cl)
+				return true;
+		
+		return true;
+	}
+	
+	/**
 	 * Looks up the method which acts as the default constructor for instance
 	 * objects.
 	 *
