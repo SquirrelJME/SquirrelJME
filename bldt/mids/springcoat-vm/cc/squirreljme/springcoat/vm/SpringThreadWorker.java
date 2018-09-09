@@ -228,6 +228,18 @@ public final class SpringThreadWorker
 	}
 	
 	/**
+	 * Looks up the specified static field and returns the storage for it.
+	 *
+	 * @param __f The field to lookup.
+	 * @return The static field storage.
+	 * @since 2018/09/09
+	 */
+	private final SpringStaticField __lookupStaticField()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Single step through handling a single instruction.
 	 *
 	 * @since 2018/09/03
