@@ -376,7 +376,8 @@ public final class SpringThreadWorker
 			throw new SpringIncompatibleClassChangeException(
 				String.format("BK0l %s", __f));
 		
-		throw new todo.TODO();
+		// Lookup the global static field
+		return this.machine.lookupStaticField(field);
 	}
 	
 	/**
@@ -390,6 +391,12 @@ public final class SpringThreadWorker
 		SpringThread thread = this.thread;
 		SpringThread.Frame frame = thread.currentFrame();
 		ByteCode code = frame.byteCode();
+		
+		// Are these certain kinds of initializers? Because final fields are
+		// writable during initialization accordingly
+		SpringMethod method = frame.method();
+		boolean isstaticinit = method.isStaticInitializer(),
+			isinstanceinit = method.isInstanceInitializer();
 		
 		// Determine the current instruction of execution
 		int pc = frame.pc();
@@ -449,8 +456,9 @@ public final class SpringThreadWorker
 							inst.<FieldReference>argument(0,
 							FieldReference.class));
 						
-						if (true)
-							throw new todo.TODO();
+						// Set value, note that static initializers can set
+						// static field values even if they are final
+						ssf.set(frame.popFromStack(), isstaticinit);
 					}
 					break;
 					

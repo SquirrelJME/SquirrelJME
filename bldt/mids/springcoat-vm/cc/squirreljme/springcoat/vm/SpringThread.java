@@ -257,6 +257,45 @@ public final class SpringThread
 		}
 		
 		/**
+		 * Pops from the stack.
+		 *
+		 * @return The popped value.
+		 * @throws SpringVirtualMachineException If the stack underflows.
+		 * @since 2018/09/09
+		 */
+		public final Object popFromStack()
+			throws SpringVirtualMachineException
+		{
+			Object[] stack = this._stack;
+			int stacktop = this._stacktop;
+			
+			// {@squirreljme.error BK0m Stack underflow. (The current top of
+			// the stack; The stack limit)}
+			if (stacktop <= 0)
+				throw new SpringVirtualMachineException(String.format(
+					"BK0m %d %d", stacktop, stack.length));
+			
+			// Read value
+			Object rv = stack[--stacktop];
+			this._stacktop = stacktop;
+			
+			// Is top, so pop again to read the actual desired value
+			if (rv == SpringStackTop.TOP)
+			{
+				rv = this.popFromStack();
+				
+				// {@squirreljme.error BK0n Expected long or double below
+				// top entry in stack. (The current top of the stack; The
+				// stack limit)}
+				if (!(rv instanceof Long || rv instanceof Double))
+					throw new SpringVirtualMachineException(String.format(
+						"BK0n %d %d", stacktop, stack.length));
+			}
+			
+			return rv;
+		}
+		
+		/**
 		 * Pushes the specified value to the stack.
 		 *
 		 * @param __v The value to push.
@@ -279,6 +318,14 @@ public final class SpringThread
 			if (stacktop >= stack.length)
 				throw new SpringVirtualMachineException(String.format(
 					"BK0c %s %d %d", __v, stacktop, stack.length));
+			
+			// Store
+			stack[stacktop++] = __v;
+			this._stacktop = stacktop;
+			
+			// Push an extra top for long and double
+			if (__v instanceof Long || __v instanceof Double)
+				this.pushToStack(SpringStackTop.TOP);
 		}
 		
 		/**
