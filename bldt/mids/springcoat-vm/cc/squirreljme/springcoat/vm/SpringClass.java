@@ -268,12 +268,23 @@ public final class SpringClass
 	 * If an object has no constructor then a constructor in a base class is
 	 * used.
 	 *
-	 * @return The default constructor for the object.
+	 * @return The default constructor for the object or {@code null} if there
+	 * is none.
 	 * @since 2018/09/08
 	 */
 	public final SpringMethod lookupDefaultConstructor()
 	{
-		throw new todo.TODO();
+		// Default constructors are always a known name and type
+		SpringMethod rv = this._methods.get(new MethodNameAndType("<init>",
+			"()V"));
+		if (rv != null)
+			return rv;
+		
+		// Use the default constructor of the superclass instead
+		SpringClass superclass = this.superclass;
+		if (superclass != null)
+			return superclass.lookupDefaultConstructor();
+		return null;
 	}
 	
 	/**
