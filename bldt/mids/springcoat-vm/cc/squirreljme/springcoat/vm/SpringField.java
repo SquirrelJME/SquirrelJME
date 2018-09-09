@@ -98,5 +98,15 @@ public final class SpringField
 	{
 		return this.field.flags().isStatic();
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/09/09
+	 */
+	@Override
+	public final FieldNameAndType nameAndType()
+	{
+		return this.field.nameAndType();
+	}
 }
 

@@ -12,6 +12,7 @@ package cc.squirreljme.springcoat.vm;
 
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.HasMemberFlags;
+import net.multiphasicapps.classfile.MemberNameAndType;
 
 /**
  * This represents a member.
@@ -28,5 +29,13 @@ public interface SpringMember
 	 * @since 2018/09/09
 	 */
 	public abstract ClassName inClass();
+	
+	/**
+	 * Returns the name and type of the member.
+	 *
+	 * @return The member name and type.
+	 * @since 2018/09/09
+	 */
+	public abstract MemberNameAndType nameAndType();
 }
 

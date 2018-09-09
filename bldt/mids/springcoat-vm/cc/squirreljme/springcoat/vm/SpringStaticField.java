@@ -65,8 +65,14 @@ public final class SpringStaticField
 	public void set(Object __v, boolean __writetofinal)
 		throws SpringIncompatibleClassChangeException
 	{
+		SpringField field = this.field;
+		
+		// Debug
+		todo.DEBUG.note("static %s::%s = %s", field.inClass(),
+			field.nameAndType(), __v);
+		
 		// {@squirreljme.error BK0o Attempt to write to final field.}
-		FieldFlags flags = this.field.flags();
+		FieldFlags flags = field.flags();
 		if (flags.isFinal() && !__writetofinal)
 			throw new SpringIncompatibleClassChangeException("BK0o");
 		
