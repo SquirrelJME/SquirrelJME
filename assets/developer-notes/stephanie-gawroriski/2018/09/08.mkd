@@ -1,0 +1,60 @@
+# 2018/09/08
+
+## 09:32
+
+Cool so I got the source file and the line information, I think this will
+really help me figure out issues in SpringCoat by allowing me to more easily
+see the Java code that is there.
+
+## 09:35
+
+Looks like I am going to have to initialize objects! So this will be fun but
+I suppose since Java is pretty much a bunch of objects there is no other
+direction to head in. But at least I got some basic execution going on. Once
+I can implement new instance and initialization and such, things should
+hopefully be fine.
+
+## 11:04
+
+Honestly the service code and such will completely complicate the design of
+the compiler and all of that. I think I want something that is very simple and
+basically is unsafe. Just native methods that do special things for the most
+part.
+
+## 14:21
+
+Cleaned my apartment, which is nice.
+
+## 18:02
+
+So now static initializers are called. Since `Object` is the first class to be
+initialized, its static initializer sets the initial seed value in the static
+field. So I need to implement static fields at least.
+
+## 18:09
+
+I was thinking of something then I did something else and I forgot, I wanted to
+go back to it but I just cannot remember it at all.
+
+## 18:24
+
+SummerCoat is going to be a virtual machine which instead of the Java stack
+machine all of it will be treated and compiled using just registers. Will not
+worry about optimization at all. But it will effectively start off as being
+SpringCoat just reiterated and rewritten in parts to become a register based
+machine. That way I can understand how it works for the most part before I
+develop more a compiler.
+
+## 21:13
+
+Thinking about it, having `Object` store a `Class<?>` is probably a bad idea
+and will complicate the recursive nature of things. I am going to want a way
+where I can just use the same logic for `Class<?>` without going magical. So
+I will do that. I think the class argument will just be specially handled so
+that it performs a lookup or similar. Basically the allocation code will set
+that field in object. I think that is the cleanest way because I do not want
+to have more special classes than I desire.
+
+## 21:39
+
+Best way to store static fields? Not too sure here.
