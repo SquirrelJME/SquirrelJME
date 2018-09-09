@@ -90,6 +90,17 @@ public abstract class MemberFlags<F extends MemberFlag>
 	public abstract boolean isSynthetic();
 	
 	/**
+	 * Is this not static?
+	 *
+	 * @return If this is not static.
+	 * @since 2018/09/09
+	 */
+	public final boolean isInstance()
+	{
+		return !this.isStatic();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2016/03/20
 	 */

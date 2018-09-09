@@ -27,7 +27,7 @@ import net.multiphasicapps.io.SizeLimitedInputStream;
  * @since 2017/09/26
  */
 public final class ClassFile
-	implements Annotated
+	implements Annotated, HasAccessibleFlags
 {
 	/** The magic number of the class file. */
 	private static final int _MAGIC_NUMBER =
@@ -142,11 +142,10 @@ public final class ClassFile
 	}
 	
 	/**
-	 * Returns the flags for this class.
-	 *
-	 * @return The class flags.
+	 * {@inheritDoc}
 	 * @since 2017/10/09
 	 */
+	@Override
 	public final ClassFlags flags()
 	{
 		return this.classflags;

@@ -15,6 +15,7 @@ import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ConstantValue;
 import net.multiphasicapps.classfile.ConstantValueString;
+import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
@@ -135,7 +136,7 @@ public final class SpringThreadWorker
 				machine.__staticFieldMap();
 			for (SpringField f : __cl.fieldsOnlyThisClass())
 				if (f.isStatic())
-					sfm.put(f, new SpringStaticField());
+					sfm.put(f, new SpringStaticField(f));
 			
 			// Recursively call self to load the super class before this class
 			// is handled
@@ -232,10 +233,21 @@ public final class SpringThreadWorker
 	 *
 	 * @param __f The field to lookup.
 	 * @return The static field storage.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SpringIncompatibleClassChangeException If the target field is
+	 * not static.
+	 * @throws SpringNoSuchFieldException If the field does not exist.
 	 * @since 2018/09/09
 	 */
-	private final SpringStaticField __lookupStaticField()
+	private final SpringStaticField __lookupStaticField(FieldReference __f)
+		throws NullPointerException, SpringIncompatibleClassChangeException,
+			SpringNoSuchFieldException
 	{
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
+		SpringClass inclass = this.loadClass(__f.);
+		
 		throw new todo.TODO();
 	}
 	

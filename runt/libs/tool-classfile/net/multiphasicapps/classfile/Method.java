@@ -27,7 +27,7 @@ import net.multiphasicapps.collections.UnmodifiableArrayList;
  */
 public final class Method
 	extends Member
-	implements Annotated
+	implements Annotated, HasMemberFlags
 {
 	/** The version of the class. */
 	protected final ClassVersion version;
@@ -139,11 +139,10 @@ public final class Method
 	}
 	
 	/**
-	 * Returns the flags for this method.
-	 *
-	 * @return The method flags.
+	 * {@inheritDoc}
 	 * @since 2017/10/11
 	 */
+	@Override
 	public final MethodFlags flags()
 	{
 		return this.methodflags;

@@ -91,17 +91,6 @@ public final class MethodFlags
 	}
 	
 	/**
-	 * Is this an instance method?
-	 *
-	 * @return {@code true} if an instance method.
-	 * @since 2017/08/13
-	 */
-	public boolean isInstance()
-	{
-		return !isStatic();
-	}
-	
-	/**
 	 * Returns {@code true} if this is a native method.
 	 *
 	 * @return {@code true} if it is native.
