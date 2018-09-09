@@ -79,6 +79,16 @@ public final class SpringField
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2018/09/09
+	 */
+	@Override
+	public final ClassName inClass()
+	{
+		return this.inclass;
+	}
+	
+	/**
 	 * Is this a static field?
 	 *
 	 * @return If this is a static field.

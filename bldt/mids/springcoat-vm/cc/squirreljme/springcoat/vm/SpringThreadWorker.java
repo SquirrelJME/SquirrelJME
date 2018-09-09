@@ -20,6 +20,7 @@ import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
+import net.multiphasicapps.classfile.MemberFlags;
 import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**
@@ -136,7 +137,36 @@ public final class SpringThreadWorker
 		if (__m == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Need the current and the target class to check permissions
+		SpringClass self = this.contextClass(),
+			target = this.machine.classLoader().loadClass(__m.inClass());
+		
+		// If in the same class all access is permitted
+		if (self == target)
+			return true;
+		
+		// Public has full access
+		MemberFlags flags = __m.flags();
+		if (flags.isPublic())
+			return true;
+		
+		// Protected class, we must be a super class
+		else if (flags.isProtected())
+		{
+			for (SpringClass r = self; r != null; r = r.superClass())
+				if (target == r)
+					return true;
+		}
+		
+		// Classes must be in the same package
+		else if (flags.isPackagePrivate())
+		{
+			if (self.name().inPackage().equals(target.name().inPackage()))
+				return true;
+		}
+		
+		// Access not permitted
+		return false;
 	}
 	
 	/**

@@ -10,6 +10,7 @@
 
 package cc.squirreljme.springcoat.vm;
 
+import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.HasMemberFlags;
 
 /**
@@ -20,5 +21,12 @@ import net.multiphasicapps.classfile.HasMemberFlags;
 public interface SpringMember
 	extends HasMemberFlags
 {
+	/**
+	 * Returns the class this is a member of.
+	 *
+	 * @return The class which owns the method.
+	 * @since 2018/09/09
+	 */
+	public abstract ClassName inClass();
 }
 
