@@ -124,6 +124,17 @@ public final class Field
 	}
 	
 	/**
+	 * Is this field static?
+	 *
+	 * @return If this field is static.
+	 * @since 2018/09/09
+	 */
+	public final boolean isStatic()
+	{
+		return this.flags.isStatic();
+	}
+	
+	/**
 	 * Returns the name of the field.
 	 *
 	 * @return The field name.
