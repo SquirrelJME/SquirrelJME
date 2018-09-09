@@ -107,6 +107,37 @@ public final class SpringMachine
 	}
 	
 	/**
+	 * Returns the static field for the given field.
+	 *
+	 * @param __f The field to get the static field for.
+	 * @return The static field.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SpringVirtualMachineException If the field does not exist.
+	 * @since 2018/09/09
+	 */
+	public final SpringStaticField lookupStaticField(SpringField __f)
+		throws NullPointerException
+	{
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
+		// Static fields may be added to when class loading is happening and
+		// as such there must be a lock to be given safe access
+		Map<SpringField, SpringStaticField> sfm = this._staticfields;
+		synchronized (this.classloader.classLoadingLock())
+		{
+			SpringStaticField rv = sfm.get(__f);
+			
+			// {@squirreljme.error BK0g Could not locate the static field
+			// storage?}
+			if (rv == null)
+				throw new SpringVirtualMachineException("BK0g");
+			
+			return rv;
+		}
+	}
+	
+	/**
 	 * Returns the number of threads which are currently alive and active.
 	 *
 	 * @return The number of active and alive threads.
