@@ -61,8 +61,8 @@ public final class SpringClass
 	/** The table of fields defined in this class, includes super classes. */
 	private final SpringField[] _fieldtable;
 	
-	/** The instance of the class object. */
-	private volatile SpringClassInstance _instance;
+	/** Has this class been initialized? */
+	private volatile boolean _initialized;
 	
 	/**
 	 * Initializes the spring class.
@@ -200,18 +200,6 @@ public final class SpringClass
 	}
 	
 	/**
-	 * Returns the instance of this class (its representation).
-	 *
-	 * @return The instance of this class or {@code null} if it has not been
-	 * initialized.
-	 * @since 2018/09/08
-	 */
-	public final SpringClassInstance instance()
-	{
-		return this._instance;
-	}
-	
-	/**
 	 * Returns the number of instance fields this class stores. This is for
 	 * the most part the size of the given class.
 	 *
@@ -232,6 +220,17 @@ public final class SpringClass
 	public final SpringClass[] interfaceClasses()
 	{
 		return this._interfaceclasses.clone();
+	}
+	
+	/**
+	 * Has this class been initialized?
+	 *
+	 * @return If the class has been initialized.
+	 * @since 2018/09/08
+	 */
+	public final boolean isInitialized()
+	{
+		return this._initialized;
 	}
 	
 	/**
@@ -323,27 +322,22 @@ public final class SpringClass
 	}
 	
 	/**
-	 * Sets the instance of this class.
+	 * Sets the class as initialized.
 	 *
-	 * @param __i The represented class object instance.
-	 * @throws NullPointerException On null arguments.
-	 * @throws SpringVirtualMachineException If an instance has already been
-	 * set.
+	 * @throws SpringVirtualMachineException If the class has already been
+	 * initialized.
 	 * @since 2018/09/08
 	 */
-	public final void setInstance(SpringClassInstance __i)
-		throws NullPointerException, SpringVirtualMachineException
+	public final void setInitialized()
+		throws SpringVirtualMachineException
 	{
-		if (__i == null)
-			throw new NullPointerException("NARG");
-		
-		// {@squirreljme.error BK0f Attempt to set an instance to a class which
-		// already has had its instance set. (This class)}
-		if (this._instance != null)
+		// {@squirreljme.error BK0f Class attempted to be initialized twice.
+		// (This class)}
+		if (this._initialized)
 			throw new SpringVirtualMachineException(String.format(
 				"BK0f %s", this.name));
 		
-		this._instance = __i;
+		this._initialized = true;
 	}
 	
 	/**

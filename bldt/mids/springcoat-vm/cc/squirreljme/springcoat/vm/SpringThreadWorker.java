@@ -116,12 +116,17 @@ public final class SpringThreadWorker
 		{
 			// If the class has already been initialized then the class is
 			// ready to be used
-			SpringClassInstance instance = __cl.instance();
-			if (instance != null)
+			if (__cl.isInitialized())
 				return __cl;
 			
 			// Debug
 			todo.DEBUG.note("Need to initialize %s.", __cl.name());
+			
+			// Set the class as initialized early to prevent loops, because
+			// a super class might call something from the base class which
+			// might be seen as initialized when it should not be. So this is
+			// to prevent bad things from happening.
+			__cl.setInitialized();
 			
 			// Recursively call self to load the super class before this class
 			// is handled
@@ -132,10 +137,6 @@ public final class SpringThreadWorker
 			// Go through interfaces and do the same
 			for (SpringClass iface : __cl.interfaceClasses())
 				this.loadClass(iface);
-			
-			// Initialize a new instance of a runtime class which is
-			// object-like but not exactly an object
-			__cl.setInstance(instance = new SpringClassInstance());
 			
 			// Look for static constructor for this class to initialize it as
 			// needed

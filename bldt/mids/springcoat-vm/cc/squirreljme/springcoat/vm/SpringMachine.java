@@ -41,6 +41,10 @@ public final class SpringMachine
 	private final List<SpringThread> _threads =
 		new ArrayList<>();
 	
+	/** Classes and their {@link Class} instances in the VM. */
+	private final Map<SpringClass, SpringObject> _classobjects =
+		new HashMap<>();
+	
 	/** The next thread ID to use. */
 	private volatile int _nextthreadid;
 	
