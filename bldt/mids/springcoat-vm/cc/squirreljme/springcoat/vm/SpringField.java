@@ -52,7 +52,7 @@ public final class SpringField
 		this.field = __f;
 		
 		// Instance fields require an index
-		if (__f.isInstance())
+		if (__f.flags().isInstance())
 		{
 			// {@squirreljme.error BK0h Negative field index.}
 			if (__dx < 0)
@@ -74,7 +74,7 @@ public final class SpringField
 	 */
 	public final boolean isStatic()
 	{
-		return this.field.isStatic();
+		return this.field.flags().isStatic();
 	}
 }
 

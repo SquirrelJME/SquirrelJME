@@ -12,6 +12,7 @@ package cc.squirreljme.springcoat.vm;
 
 import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
+import net.multiphasicapps.classfile.ClassFlags;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ConstantValue;
 import net.multiphasicapps.classfile.ConstantValueString;
@@ -70,6 +71,74 @@ public final class SpringThreadWorker
 		// The called constructor will allocate the space needed to store
 		// this object
 		return new SpringSimpleObject(__cl);
+	}
+	
+	/**
+	 * Checks if the given class may be accessed.
+	 *
+	 * @param __cl The class to access.
+	 * @return {@code true} if it may be accessed.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/09
+	 */
+	public final boolean checkAccess(SpringClass __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// If the target class is public then we can access it
+		ClassFlags targetflags = __cl.flags();
+		if (targetflags.isPublic())
+			return true;
+		
+		// Get our current class
+		SpringClass self = this.contextClass();
+		
+		// This is ourself so access is always granted
+		if (__cl == self)
+			return true;
+		
+		// Protected class, we must be a super class
+		else if (targetflags.isProtected())
+		{
+			for (SpringClass r = self; r != null; r = r.superClass())
+				if (__cl == r)
+					return true;
+		}
+		
+		// Must be in the same package
+		else if (targetflags.isPackagePrivate())
+		{
+			if (self.name().inPackage().equals(__cl.name().inPackage()))
+				return true;
+		}
+		
+		// This should not occur
+		else
+			throw new RuntimeException("OOPS");
+		
+		// No access permitted
+		return false;
+	}
+	
+	/**
+	 * Returns the current class context, if any.
+	 *
+	 * @return The current class context or {@code null} if there is none.
+	 * @since 2018/09/09
+	 */
+	public final SpringClass contextClass()
+	{
+		SpringThread thread = this.thread;
+		SpringThread.Frame frame = thread.currentFrame();
+		
+		// No frame exists
+		if (frame == null)
+			return null;
+		
+		// Otherwise lookup according to the method
+		return this.machine.classLoader().loadClass(frame.method().inClass());
 	}
 	
 	/**
@@ -246,7 +315,12 @@ public final class SpringThreadWorker
 		if (__f == null)
 			throw new NullPointerException("NARG");
 		
-		SpringClass inclass = this.loadClass(__f.);
+		// {@squirreljme.error BK0i Could not access the target class for
+		// static field access. (The field reference)}
+		SpringClass inclass = this.loadClass(__f.className());
+		if (!this.checkAccess(inclass))
+			throw new SpringIncompatibleClassChangeException(
+				String.format("BK0i %s", __f));
 		
 		throw new todo.TODO();
 	}
@@ -310,6 +384,19 @@ public final class SpringThreadWorker
 						// This will be pre-boxed so push it to the stack
 						else
 							frame.pushToStack(value.boxedValue());
+					}
+					break;
+				
+					// Put to static field
+				case InstructionIndex.PUTSTATIC:
+					{
+						// Lookup field
+						SpringStaticField ssf = this.__lookupStaticField(
+							inst.<FieldReference>argument(0,
+							FieldReference.class));
+						
+						if (true)
+							throw new todo.TODO();
 					}
 					break;
 					

@@ -19,8 +19,10 @@ import java.util.HashMap;
 import java.util.Map;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ClassFile;
+import net.multiphasicapps.classfile.ClassFlags;
 import net.multiphasicapps.classfile.Field;
 import net.multiphasicapps.classfile.FieldNameAndType;
+import net.multiphasicapps.classfile.HasAccessibleFlags;
 import net.multiphasicapps.classfile.Method;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodName;
@@ -34,6 +36,7 @@ import net.multiphasicapps.classfile.MethodNameAndType;
  * @since 2018/07/21
  */
 public final class SpringClass
+	implements HasAccessibleFlags
 {
 	/** The name of this class. */
 	protected final ClassName name;
@@ -116,7 +119,7 @@ public final class SpringClass
 		List<SpringField> instfields = new ArrayList<>(fields.size());
 		for (Field f : __cf.fields())
 		{
-			boolean isinstance = f.isInstance();
+			boolean isinstance = f.flags().isInstance();
 			
 			// {@squirreljme.error BK0g Duplicated field in class. (The field)}
 			SpringField sf;
@@ -210,6 +213,16 @@ public final class SpringClass
 	public final ClassFile file()
 	{
 		return this.file;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/09/09
+	 */
+	@Override
+	public final ClassFlags flags()
+	{
+		return this.file.flags();
 	}
 	
 	/**
