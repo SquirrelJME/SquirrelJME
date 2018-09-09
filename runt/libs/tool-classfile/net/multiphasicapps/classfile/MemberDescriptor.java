@@ -11,20 +11,11 @@
 package net.multiphasicapps.classfile;
 
 /**
- * This represents the base for members within classes.
+ * Represents the type of the member.
  *
- * @since 2017/09/30
+ * @since 2018/09/09
  */
-public abstract class Member
-	implements HasMemberFlags
+public interface MemberDescriptor
 {
-	/**
-	 * Initializes the base member.
-	 *
-	 * @since 2017/09/30
-	 */
-	Member()
-	{
-	}
 }
 

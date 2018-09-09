@@ -11,44 +11,18 @@
 package net.multiphasicapps.classfile;
 
 /**
- * This represents the name of a field. It has the same constraints as
- * identifiers.
+ * Represents the name of a member.
  *
- * @since 2017/07/07
+ * @since 2018/09/09
  */
-public final class FieldName
-	extends Identifier
-	implements Comparable<FieldName>, MemberName
+public interface MemberName
 {
 	/**
-	 * Initializes the field name.
+	 * Returns the identifier.
 	 *
-	 * @param __s The field name.
-	 * @since 2017/07/07
+	 * @return The identifier.
+	 * @since 2018/09/09
 	 */
-	public FieldName(String __s)
-	{
-		super(__s);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/10/12
-	 */
-	@Override
-	public int compareTo(FieldName __o)
-	{
-		return this.string.compareTo(__o.string);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/07/07
-	 */
-	@Override
-	public boolean equals(Object __o)
-	{
-		return (__o instanceof FieldName) && super.equals(__o);
-	}
+	public abstract String identifier();
 }
 

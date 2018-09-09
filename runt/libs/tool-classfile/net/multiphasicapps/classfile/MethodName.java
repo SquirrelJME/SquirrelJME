@@ -19,7 +19,7 @@ package net.multiphasicapps.classfile;
  */
 public final class MethodName
 	extends Identifier
-	implements Comparable<MethodName>
+	implements Comparable<MethodName>, MemberName
 {
 	/**
 	 * Initializes the method name.

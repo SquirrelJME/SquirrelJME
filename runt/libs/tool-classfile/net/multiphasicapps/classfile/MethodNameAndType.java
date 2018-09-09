@@ -19,7 +19,7 @@ import java.lang.ref.WeakReference;
  * @since 2017/10/10
  */
 public final class MethodNameAndType
-	implements Comparable<MethodNameAndType>
+	implements Comparable<MethodNameAndType>, MemberNameAndType
 {
 	/** The method name. */
 	protected final MethodName name;
@@ -103,11 +103,10 @@ public final class MethodNameAndType
 	}
 	
 	/**
-	 * Returns the name of the method.
-	 *
-	 * @return The method name.
+	 * {@inheritDoc}
 	 * @since 2017/10/10
 	 */
+	@Override
 	public MethodName name()
 	{
 		return this.name;
@@ -131,11 +130,10 @@ public final class MethodNameAndType
 	}
 	
 	/**
-	 * Returns the type of the method.
-	 *
-	 * @return The method type.
+	 * {@inheritDoc}
 	 * @since 2017/10/10
 	 */
+	@Override
 	public MethodDescriptor type()
 	{
 		return this.type;
