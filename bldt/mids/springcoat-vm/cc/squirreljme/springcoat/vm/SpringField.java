@@ -13,6 +13,7 @@ package cc.squirreljme.springcoat.vm;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.Field;
+import net.multiphasicapps.classfile.FieldFlags;
 import net.multiphasicapps.classfile.FieldNameAndType;
 
 /**
@@ -21,6 +22,7 @@ import net.multiphasicapps.classfile.FieldNameAndType;
  * @since 2018/07/22
  */
 public final class SpringField
+	implements SpringMember
 {
 	/** The class this technically belongs to. */
 	protected final ClassName inclass;
@@ -64,6 +66,16 @@ public final class SpringField
 		// Not used for statics
 		else
 			this.index = -1;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/09/09
+	 */
+	@Override
+	public final FieldFlags flags()
+	{
+		return this.field.flags();
 	}
 	
 	/**

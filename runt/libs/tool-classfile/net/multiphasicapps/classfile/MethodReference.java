@@ -28,9 +28,10 @@ public final class MethodReference
 	protected final boolean isinterface;
 	
 	/** String representation. */
-	private volatile Reference<String> _string;
+	private Reference<String> _string;
 	
-	/** The method index. */
+	/** Name and type. */
+	private Reference<MethodNameAndType> _nat;
 	
 	/**
 	 * Initializes the method reference.
@@ -125,6 +126,37 @@ public final class MethodReference
 	public final MethodName memberName()
 	{
 		return this.handle.name();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/09/09
+	 */
+	@Override
+	public final MethodNameAndType memberNameAndType()
+	{
+		Reference<MethodNameAndType> ref = this._nat;
+		MethodNameAndType rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+		{
+			MethodHandle handle = this.handle;
+			this._nat = new WeakReference<>(
+				(rv = new MethodNameAndType(handle.name(),
+					handle.descriptor())));
+		}
+		
+		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/09/09
+	 */
+	@Override
+	public final MethodDescriptor memberType()
+	{
+		return this.handle.descriptor();
 	}
 	
 	/**

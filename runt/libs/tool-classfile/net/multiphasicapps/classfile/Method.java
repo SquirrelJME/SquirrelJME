@@ -167,17 +167,6 @@ public final class Method
 	}
 	
 	/**
-	 * Is this method abstract?
-	 *
-	 * @return If this method is abstract.
-	 * @since 2018/09/03
-	 */
-	public final boolean isAbstract()
-	{
-		return this.methodflags.isAbstract();
-	}
-	
-	/**
 	 * Returns if this method is effectively final, meaning that it cannot be
 	 * replaced.
 	 *
@@ -198,17 +187,6 @@ public final class Method
 	public final boolean isInstanceInitializer()
 	{
 		return this.methodname.isInstanceInitializer();
-	}
-	
-	/**
-	 * Is this a static method?
-	 *
-	 * @return {@code true} if a static method.
-	 * @since 2018/09/03
-	 */
-	public final boolean isStatic()
-	{
-		return this.methodflags.isStatic();
 	}
 	
 	/**
@@ -234,11 +212,10 @@ public final class Method
 	}
 	
 	/**
-	 * Returns the name and type of the method.
-	 *
-	 * @return The method name and type.
+	 * {@inheritDoc}
 	 * @since 2017/10/10
 	 */
+	@Override
 	public final MethodNameAndType nameAndType()
 	{
 		Reference<MethodNameAndType> ref = this._nameandtype;

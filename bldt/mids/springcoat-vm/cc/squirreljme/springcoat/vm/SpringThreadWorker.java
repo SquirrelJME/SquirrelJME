@@ -123,6 +123,23 @@ public final class SpringThreadWorker
 	}
 	
 	/**
+	 * Checks if the given member can be accessed.
+	 *
+	 * @param __m The member to check.
+	 * @return If the member can be accessed.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/09
+	 */
+	public final boolean checkAccess(SpringMember __m)
+		throws NullPointerException
+	{
+		if (__m == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Returns the current class context, if any.
 	 *
 	 * @return The current class context or {@code null} if there is none.
@@ -321,6 +338,13 @@ public final class SpringThreadWorker
 		if (!this.checkAccess(inclass))
 			throw new SpringIncompatibleClassChangeException(
 				String.format("BK0i %s", __f));
+		
+		// {@squirreljme.error BK0l Could not access the target field for
+		// static field access. (The field reference)}
+		SpringField field = inclass.lookupField(true, __f.memberNameAndType());
+		if (!this.checkAccess(field))
+			throw new SpringIncompatibleClassChangeException(
+				String.format("BK0l %s", __f));
 		
 		throw new todo.TODO();
 	}

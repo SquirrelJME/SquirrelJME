@@ -13,6 +13,7 @@ package cc.squirreljme.springcoat.vm;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.Method;
+import net.multiphasicapps.classfile.MethodFlags;
 import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**
@@ -21,6 +22,7 @@ import net.multiphasicapps.classfile.MethodNameAndType;
  * @since 2018/07/22
  */
 public final class SpringMethod
+	implements SpringMember
 {
 	/** The class this technically belongs to. */
 	protected final ClassName inclass;
@@ -58,6 +60,16 @@ public final class SpringMethod
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2018/09/09
+	 */
+	@Override
+	public final MethodFlags flags()
+	{
+		return this.method.flags();
+	}
+	
+	/**
 	 * Returns the class this is a member of.
 	 *
 	 * @return The class which owns the method.
@@ -76,7 +88,7 @@ public final class SpringMethod
 	 */
 	public final boolean isAbstract()
 	{
-		return this.method.isAbstract();
+		return this.method.flags().isAbstract();
 	}
 	
 	/**
@@ -98,7 +110,7 @@ public final class SpringMethod
 	 */
 	public final boolean isStatic()
 	{
-		return this.method.isStatic();
+		return this.method.flags().isStatic();
 	}
 	
 	/**
