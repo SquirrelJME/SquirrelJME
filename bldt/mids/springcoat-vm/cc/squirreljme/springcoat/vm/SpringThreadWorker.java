@@ -65,7 +65,9 @@ public final class SpringThreadWorker
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// The called constructor will allocate the space needed to store
+		// this object
+		return new SpringSimpleObject(__cl);
 	}
 	
 	/**

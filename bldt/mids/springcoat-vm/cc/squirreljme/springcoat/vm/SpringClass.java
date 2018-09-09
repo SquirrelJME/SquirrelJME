@@ -212,6 +212,18 @@ public final class SpringClass
 	}
 	
 	/**
+	 * Returns the number of instance fields this class stores. This is for
+	 * the most part the size of the given class.
+	 *
+	 * @return The number of instance fields this class stores.
+	 * @since 2018/09/08
+	 */
+	public final int instanceFieldCount()
+	{
+		return this.instancefieldcount;
+	}
+	
+	/**
 	 * Returns the interfaces that this class implements.
 	 *
 	 * @return The implemented interfaces.
