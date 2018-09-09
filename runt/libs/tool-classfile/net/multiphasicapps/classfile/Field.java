@@ -113,6 +113,17 @@ public final class Field
 	}
 	
 	/**
+	 * Is this an instance field?
+	 *
+	 * @return If this is an instance field or not.
+	 * @since 2108/09/08
+	 */
+	public final boolean isInstance()
+	{
+		return !this.flags.isStatic();
+	}
+	
+	/**
 	 * Returns the name of the field.
 	 *
 	 * @return The field name.
