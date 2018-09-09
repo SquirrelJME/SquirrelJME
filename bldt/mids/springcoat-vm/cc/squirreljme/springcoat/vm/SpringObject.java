@@ -19,5 +19,12 @@ package cc.squirreljme.springcoat.vm;
  */
 public interface SpringObject
 {
+	/**
+	 * Returns the object type.
+	 *
+	 * @return The object type.
+	 * @since 2018/09/09
+	 */
+	public abstract SpringClass type();
 }
 

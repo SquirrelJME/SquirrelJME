@@ -30,5 +30,15 @@ public final class SpringNullObject
 	private SpringNullObject()
 	{
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/09/09
+	 */
+	@Override
+	public final SpringClass type()
+	{
+		return null;
+	}
 }
 
