@@ -65,5 +65,16 @@ public final class SpringField
 		else
 			this.index = -1;
 	}
+	
+	/**
+	 * Is this a static field?
+	 *
+	 * @return If this is a static field.
+	 * @since 2018/09/09
+	 */
+	public final boolean isStatic()
+	{
+		return this.field.isStatic();
+	}
 }
 

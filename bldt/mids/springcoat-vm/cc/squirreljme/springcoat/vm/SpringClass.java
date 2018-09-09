@@ -54,7 +54,7 @@ public final class SpringClass
 	private final Map<MethodNameAndType, SpringMethod> _methods =
 		new HashMap<>();
 	
-	/** Fields which exist in this class, includes statics for this only. */
+	/** Fields which exist in this class, only includes this class fields */
 	private final Map<FieldNameAndType, SpringField> _fields =
 		new HashMap<>();
 	
@@ -186,6 +186,19 @@ public final class SpringClass
 			instancefieldcount,
 			fields.size(),
 			methods.size());
+	}
+	
+	/**
+	 * Returns the fields which are only declared in this class.
+	 *
+	 * @return The fields only declared in this class.
+	 * @since 2018/09/09
+	 */
+	public final SpringField[] fieldsOnlyThisClass()
+	{
+		Map<FieldNameAndType, SpringField> fields = this._fields;
+		return fields.values().<SpringField>toArray(
+			new SpringField[fields.size()]);
 	}
 	
 	/**

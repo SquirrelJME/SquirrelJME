@@ -10,6 +10,7 @@
 
 package cc.squirreljme.springcoat.vm;
 
+import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ConstantValue;
@@ -128,6 +129,13 @@ public final class SpringThreadWorker
 			// might be seen as initialized when it should not be. So this is
 			// to prevent bad things from happening.
 			__cl.setInitialized();
+			
+			// Initialize the static field map
+			Map<SpringField, SpringStaticField> sfm =
+				machine.__staticFieldMap();
+			for (SpringField f : __cl.fieldsOnlyThisClass())
+				if (f.isStatic())
+					sfm.put(f, new SpringStaticField());
 			
 			// Recursively call self to load the super class before this class
 			// is handled
