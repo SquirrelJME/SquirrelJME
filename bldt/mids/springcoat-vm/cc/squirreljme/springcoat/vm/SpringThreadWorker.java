@@ -394,6 +394,7 @@ public final class SpringThreadWorker
 		
 		// Are these certain kinds of initializers? Because final fields are
 		// writable during initialization accordingly
+		SpringClass currentclass = this.contextClass();
 		SpringMethod method = frame.method();
 		boolean isstaticinit = method.isStaticInitializer(),
 			isinstanceinit = method.isInstanceInitializer();
@@ -465,6 +466,18 @@ public final class SpringThreadWorker
 					// Return from method with no return value
 				case InstructionIndex.RETURN:
 					thread.popFrame();
+					break;
+					
+					// Invoke special method (constructor, superclass,
+					// or private)
+				case InstructionIndex.INVOKESPECIAL:
+					{
+						MethodReference ref = inst.<MethodReference>argument(
+							0, MethodReference.class);
+						
+						if (true)
+							throw new todo.TODO();
+					}
 					break;
 					
 					// {@squirreljme.error BK0a Unimplemented operation.

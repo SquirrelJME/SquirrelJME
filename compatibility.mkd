@@ -1,0 +1,18 @@
+# Compatibility
+
+SquirrelJME aims to be compatible with most programs however there are
+situations and rare edge cases where there will be no compatibility. This is
+to make the implementation easier.
+
+## `SUPER` is always assumed to be set.
+
+In all clases the `SUPER` flag is assumed to be set, this flag just modifies
+the behavior of `invokespecial`. When it is not set then that instruction
+can invoke nearly every method directly (it was called before
+`invokenonvirtual`). However, the Java compiler since Java 1.1 always set
+the flag for classes it compiled. Since CLDC 1.0 was released well after
+Java 2 was and is defined as a Java 2 virtual machine all code written for
+J2ME should have classes where this flag is set. As such instead of
+supporting the logic to handle cases where it is not set, the flag will just
+be ignored and assumed to be set.
+

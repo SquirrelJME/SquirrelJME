@@ -29,6 +29,7 @@ and requires only a Java compiler and virtual machine for it to be built.
    * _Assets_: Creative Commons CC-BY-SA 4.0
  * [Release Route](route.mkd)
  * [Project Scope](scope.mkd)
+ * [Compatibility](compatibility.mkd)
  * [SquirrelJME As A Runtime](asruntime.mkd)
 
 ## Repository
