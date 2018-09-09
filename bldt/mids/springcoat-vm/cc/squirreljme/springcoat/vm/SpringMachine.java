@@ -45,6 +45,10 @@ public final class SpringMachine
 	private final Map<SpringClass, SpringObject> _classobjects =
 		new HashMap<>();
 	
+	/** Static fields which exist within the virtual machine. */
+	private final Map<SpringField, Object> _staticfields =
+		new HashMap<>();
+	
 	/** The next thread ID to use. */
 	private volatile int _nextthreadid;
 	
@@ -116,6 +120,17 @@ public final class SpringMachine
 		{
 			return threads.size();
 		}
+	}
+	
+	/**
+	 * Returns the map of static fields.
+	 *
+	 * @return The static field map.
+	 * @since 2018/09/08
+	 */
+	final Map<SpringField, Object> __staticFieldMap()
+	{
+		return this._staticfields;
 	}
 }
 

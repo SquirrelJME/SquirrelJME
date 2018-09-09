@@ -111,7 +111,8 @@ public final class SpringThreadWorker
 		
 		// Use the class loading lock to prevent other threads from loading or
 		// initializing classes while this thread does such things
-		SpringClassLoader classloader = this.machine.classLoader();
+		SpringMachine machine = this.machine;
+		SpringClassLoader classloader = machine.classLoader();
 		synchronized (classloader.classLoadingLock())
 		{
 			// If the class has already been initialized then the class is
