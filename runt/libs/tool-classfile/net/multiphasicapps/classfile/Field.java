@@ -28,7 +28,7 @@ import net.multiphasicapps.collections.UnmodifiableArrayList;
  */
 public final class Field
 	extends Member
-	implements Annotated
+	implements Annotated, HasMemberFlags
 {
 	/** The flags for the field. */
 	protected final FieldFlags flags;
@@ -102,36 +102,13 @@ public final class Field
 	}
 	
 	/**
-	 * Returns the flags for the field.
-	 *
-	 * @return The field flags.
+	 * {@inheritDoc}
 	 * @since 2017/10/12
 	 */
+	@Override
 	public final FieldFlags flags()
 	{
 		return this.flags;
-	}
-	
-	/**
-	 * Is this an instance field?
-	 *
-	 * @return If this is an instance field or not.
-	 * @since 2108/09/08
-	 */
-	public final boolean isInstance()
-	{
-		return !this.flags.isStatic();
-	}
-	
-	/**
-	 * Is this field static?
-	 *
-	 * @return If this field is static.
-	 * @since 2018/09/09
-	 */
-	public final boolean isStatic()
-	{
-		return this.flags.isStatic();
 	}
 	
 	/**
