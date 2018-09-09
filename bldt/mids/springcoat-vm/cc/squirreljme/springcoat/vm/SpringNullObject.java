@@ -11,34 +11,24 @@
 package cc.squirreljme.springcoat.vm;
 
 /**
- * This is a representation of an object within the virtual machine.
+ * Represents the null object.
  *
  * @since 2018/09/08
  */
-public final class SpringSimpleObject
+public final class SpringNullObject
 	implements SpringObject
 {
-	/** The type of object this is. */
-	protected final SpringClass type;
-	
-	/** Field storage in the class. */
-	private final Object[] _fields;
+	/** Single null object reference. */
+	public static final SpringNullObject NULL =
+		new SpringNullObject();
 	
 	/**
-	 * Initializes the object.
+	 * Only used once.
 	 *
-	 * @param __cl The class of the object.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/08
 	 */
-	public SpringSimpleObject(SpringClass __cl)
-		throws NullPointerException
+	private SpringNullObject()
 	{
-		if (__cl == null)
-			throw new NullPointerException("NARG");
-		
-		this.type = __cl;
-		this._fields = new Object[__cl.instanceFieldCount()];
 	}
 }
 
