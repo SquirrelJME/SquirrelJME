@@ -19,7 +19,7 @@ import java.lang.ref.WeakReference;
  * @since 2017/10/12
  */
 public final class FieldNameAndType
-	implements Comparable<FieldNameAndType>
+	implements Comparable<FieldNameAndType>, MemberNameAndType
 {
 	/** The field name. */
 	protected final FieldName name;
@@ -87,11 +87,10 @@ public final class FieldNameAndType
 	}
 	
 	/**
-	 * Returns the name of the field.
-	 *
-	 * @return The field name.
+	 * {@inheritDoc}
 	 * @since 2017/10/12
 	 */
+	@Override
 	public FieldName name()
 	{
 		return this.name;
@@ -115,11 +114,10 @@ public final class FieldNameAndType
 	}
 	
 	/**
-	 * Returns the type of the field.
-	 *
-	 * @return The field type.
+	 * {@inheritDoc}
 	 * @since 2017/10/12
 	 */
+	@Override
 	public FieldDescriptor type()
 	{
 		return this.type;

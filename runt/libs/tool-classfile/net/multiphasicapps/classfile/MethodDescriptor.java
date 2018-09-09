@@ -19,6 +19,7 @@ import java.util.List;
  * @since 2017/06/12
  */
 public final class MethodDescriptor
+	implements MemberDescriptor
 {
 	/** String representation of the descriptor. */
 	protected final String string;

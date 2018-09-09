@@ -19,7 +19,7 @@ import java.lang.ref.WeakReference;
  * @since 2017/06/12
  */
 public final class FieldDescriptor
-	implements Comparable<FieldDescriptor>
+	implements Comparable<FieldDescriptor>, MemberDescriptor
 {
 	/** String representation. */
 	protected final String string;
