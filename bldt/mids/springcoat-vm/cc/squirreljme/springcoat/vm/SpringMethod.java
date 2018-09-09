@@ -70,11 +70,10 @@ public final class SpringMethod
 	}
 	
 	/**
-	 * Returns the class this is a member of.
-	 *
-	 * @return The class which owns the method.
+	 * {@inheritDoc}
 	 * @since 2018/09/03
 	 */
+	@Override
 	public final ClassName inClass()
 	{
 		return this.inclass;
