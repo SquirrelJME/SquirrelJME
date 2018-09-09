@@ -12,10 +12,15 @@ package cc.squirreljme.springcoat.vm;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ClassFile;
+import net.multiphasicapps.classfile.Field;
+import net.multiphasicapps.classfile.FieldNameAndType;
 import net.multiphasicapps.classfile.Method;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodName;
@@ -39,12 +44,22 @@ public final class SpringClass
 	/** The super class. */
 	protected final SpringClass superclass;
 	
+	/** The number of instance fields that exist. */
+	protected final int instancefieldcount;
+	
 	/** Interface classes. */
 	private final SpringClass[] _interfaceclasses;
 	
 	/** Methods which exist in this class, includes statics for this only. */
 	private final Map<MethodNameAndType, SpringMethod> _methods =
 		new HashMap<>();
+	
+	/** Fields which exist in this class, includes statics for this only. */
+	private final Map<FieldNameAndType, SpringField> _fields =
+		new HashMap<>();
+	
+	/** The table of fields defined in this class, includes super classes. */
+	private final SpringField[] _fieldtable;
 	
 	/** The instance of the class object. */
 	private volatile SpringClassInstance _instance;
@@ -89,6 +104,56 @@ public final class SpringClass
 					"BK06 %s", m.nameAndType()));
 			}
 		
+		// Fields that are defined in super classes must be allocated, stored,
+		// and indexed appropriately so that way casting between types and
+		// accessing other fields is actually valid
+		int superfieldcount = (__super == null ? 0 :
+			__super.instancefieldcount);
+		int instancefieldcount = superfieldcount;
+		
+		// Initialize all of the fields as needed
+		Map<FieldNameAndType, SpringField> fields = this._fields;
+		List<SpringField> instfields = new ArrayList<>(fields.size());
+		for (Field f : __cf.fields())
+		{
+			boolean isinstance = f.isInstance();
+			
+			// {@squirreljme.error BK0g Duplicated field in class. (The field)}
+			SpringField sf;
+			if (null != fields.put(f.nameAndType(),
+				(sf = new SpringField(name, f,
+					(isinstance ? instancefieldcount++ : -1)))))
+				throw new SpringClassFormatException(name, String.format(
+					"BK0g %s", f.nameAndType()));
+			
+			// Used to build our part of the field table
+			if (isinstance)
+				instfields.add(sf);
+		}
+		
+		// Each field is referenced by an index rather than a map, this is
+		// more efficient for instances and additionally still allows for
+		// sub-classes to declare fields as needed.
+		SpringField[] fieldtable = new SpringField[instancefieldcount];
+		this._fieldtable = fieldtable;
+		
+		// Copy the super class field table, since technically all of the
+		// fields in the super class are a part of this class.
+		if (__super != null)
+		{
+			SpringField[] supertable = __super._fieldtable;
+			for (int i = 0; i < superfieldcount; i++)
+				fieldtable[i] = supertable[i];
+		}
+		
+		// Store all of the instance fields
+		for (int i = superfieldcount, p = 0, pn = instfields.size();
+			p < pn; i++, p++)
+			fieldtable[i] = instfields.get(p);
+		
+		// Used to quickly determine how big to set storage for a class
+		this.instancefieldcount = instancefieldcount;
+		
 		// Go through super and interfaces and add non-static methods which
 		for (int i = 0, n = __interfaces.length; i <= n; i++)
 		{
@@ -117,7 +182,10 @@ public final class SpringClass
 		}
 		
 		// Debug
-		todo.DEBUG.note("Class %s has %d methods.", name, methods.size());
+		todo.DEBUG.note("Class %s (size=%d, fields=%d, methods=%d).", name,
+			instancefieldcount,
+			fields.size(),
+			methods.size());
 	}
 	
 	/**
