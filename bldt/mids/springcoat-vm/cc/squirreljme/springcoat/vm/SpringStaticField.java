@@ -10,6 +10,8 @@
 
 package cc.squirreljme.springcoat.vm;
 
+import net.multiphasicapps.classfile.FieldFlags;
+
 /**
  * Contains storage and other information for static fields.
  *
@@ -56,11 +58,28 @@ public final class SpringStaticField
 	 *
 	 * @param __v The value to set.
 	 * @param __writetofinal If true then final is overridden.
+	 * @throws SpringIncompatibleClassChangeException If the field is final
+	 * and we are not allowed to write to final fields.
 	 * @since 2018/09/09
 	 */
 	public void set(Object __v, boolean __writetofinal)
+		throws SpringIncompatibleClassChangeException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error BK0o Attempt to write to final field.}
+		FieldFlags flags = this.field.flags();
+		if (flags.isFinal() && !__writetofinal)
+			throw new SpringIncompatibleClassChangeException("BK0o");
+		
+		// Volatile field, only a single thread may access at a time
+		if (flags.isVolatile())
+			synchronized (this)
+			{
+				this._value = __v;
+			}
+		
+		// Otherwise just set thread without worrying about any contention
+		else
+			this._value = __v;
 	}
 }
 
