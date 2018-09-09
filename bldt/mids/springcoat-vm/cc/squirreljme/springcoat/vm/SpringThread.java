@@ -137,6 +137,28 @@ public final class SpringThread
 	}
 	
 	/**
+	 * Pops a frame from the thread stack.
+	 *
+	 * @return The frame which was popped.
+	 * @throws SpringVirtualMachineException If there are no stack frames.
+	 * @since 2018/09/09
+	 */
+	public final SpringThread.Frame popFrame()
+		throws SpringVirtualMachineException
+	{
+		List<SpringThread.Frame> frames = this._frames;
+		synchronized (frames)
+		{
+			// {@squirreljme.error BK0p No frames to pop.}
+			int n;
+			if ((n = frames.size()) <= 0)
+				throw new SpringVirtualMachineException("BK0p");	
+			
+			return frames.remove(n - 1);
+		}
+	}
+	
+	/**
 	 * This class represents the stack frame and is used to store local
 	 * variables and other such things.
 	 *

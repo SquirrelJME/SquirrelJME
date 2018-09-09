@@ -462,6 +462,11 @@ public final class SpringThreadWorker
 					}
 					break;
 					
+					// Return from method with no return value
+				case InstructionIndex.RETURN:
+					thread.popFrame();
+					break;
+					
 					// {@squirreljme.error BK0a Unimplemented operation.
 					// (The instruction)}
 				default:

@@ -124,11 +124,10 @@ public final class SpringMethod
 	}
 	
 	/**
-	 * Returns the name and type of the method.
-	 *
-	 * @return The method name and type.
-	 * @since 2018/09/03
+	 * {@inheritDoc}
+	 * @since 2018/09/09
 	 */
+	@Override
 	public final MethodNameAndType nameAndType()
 	{
 		return this.method.nameAndType();
