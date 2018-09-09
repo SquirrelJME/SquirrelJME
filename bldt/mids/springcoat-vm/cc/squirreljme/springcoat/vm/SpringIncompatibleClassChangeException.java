@@ -11,19 +11,20 @@
 package cc.squirreljme.springcoat.vm;
 
 /**
- * This is thrown when a method in a class does not exist.
+ * This is thrown when a class refers to another reference and it differs
+ * than what was expected at run-time.
  *
- * @since 2018/09/03
+ * @since 2018/09/09
  */
-public class SpringNoSuchMethodException
-	extends SpringIncompatibleClassChangeException
+public class SpringIncompatibleClassChangeException
+	extends SpringException
 {
 	/**
 	 * Initialize the exception with no message or cause.
 	 *
-	 * @since 2018/09/03
+	 * @since 2018/09/09
 	 */
-	public SpringNoSuchMethodException()
+	public SpringIncompatibleClassChangeException()
 	{
 	}
 	
@@ -31,9 +32,9 @@ public class SpringNoSuchMethodException
 	 * Initialize the exception with a message and no cause.
 	 *
 	 * @param __m The message.
-	 * @since 2018/09/03
+	 * @since 2018/09/09
 	 */
-	public SpringNoSuchMethodException(String __m)
+	public SpringIncompatibleClassChangeException(String __m)
 	{
 		super(__m);
 	}
@@ -43,9 +44,9 @@ public class SpringNoSuchMethodException
 	 *
 	 * @param __m The message.
 	 * @param __c The cause.
-	 * @since 2018/09/03
+	 * @since 2018/09/09
 	 */
-	public SpringNoSuchMethodException(String __m, Throwable __c)
+	public SpringIncompatibleClassChangeException(String __m, Throwable __c)
 	{
 		super(__m, __c);
 	}
@@ -54,9 +55,9 @@ public class SpringNoSuchMethodException
 	 * Initialize the exception with no message and with a cause.
 	 *
 	 * @param __c The cause.
-	 * @since 2018/09/03
+	 * @since 2018/09/09
 	 */
-	public SpringNoSuchMethodException(Throwable __c)
+	public SpringIncompatibleClassChangeException(Throwable __c)
 	{
 		super(__c);
 	}
