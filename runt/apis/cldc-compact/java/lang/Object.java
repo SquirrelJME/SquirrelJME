@@ -10,29 +10,29 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+
 /**
  * This class is the root of all class trees in Java.
  *
- * The implementation of {@link Object#hashCode()} in SquirrelJME uses a
- * random number generator that is the same as {@link java.util.Random} with
- * no consideration for thread safety. So if two objects are initialized at
- * the same exact time then they will have the same hashcode.
- *
  * @since 2016/02/08
  */
+@ImplementationNote("The Java compiler does not allow any final fields to " +
+	"exist in Object and if they are set via assignment no code will be " +
+	"generated for them, so as such Object effectively has no fields.")
 public class Object
 {
-	/** The seed used for the next hashcode. */
-	private static volatile int _SEED =
-		0x917F_25C9;
-	
-	/** The "identity" hashcode for this object. */
-	final int _hashcode =
-		Object.__nextHash();
-	
-	/** The type of class this object is. */
-	final Class<?> _classobj =
-		this.getClass();
+	/**
+	 * Initializes the base object.
+	 *
+	 * @since 2018/09/09
+	 */
+	@ImplementationNote("The Java compiler does not allow final fields " +
+		"in Object to be set, they are already treated as already being " +
+		"set.")
+	public Object()
+	{
+	}
 	
 	/**
 	 * Clones the current copy creating a shallow copy of it if
@@ -76,7 +76,7 @@ public class Object
 	 */
 	public final Class<?> getClass()
 	{
-		return this._classobj;
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -90,7 +90,7 @@ public class Object
 	 */
 	public int hashCode()
 	{
-		return this._hashcode;
+		return System.identityHashCode(this);
 	}
 	
 	/**
@@ -193,26 +193,6 @@ public class Object
 			InterruptedException
 	{
 		throw new todo.TODO();
-	}
-	
-	/**
-	 * Returns the next hash code to use for the identity value.
-	 *
-	 * Internally this uses the same logic as {@link java.util.Random}.
-	 *
-	 * Hash codes are not meant to be secure and they are not meant to be used
-	 * for cryptography. Although you can potentially guess when an object has
-	 * been initialized in what order depending on its hashcode.
-	 *
-	 * @return The next identity hashcode.
-	 * @since 2017/12/10
-	 */
-	private static final int __nextHash()
-	{
-		int seed = Object._SEED;
-		seed = (seed >>> 1) ^ (-(seed & 1) & 0x80200003);
-		Object._SEED = seed;
-		return seed;
 	}
 }
 
