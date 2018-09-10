@@ -1,0 +1,63 @@
+# 2018/09/09
+
+## 17:51
+
+I have been working on SquirrelJME throughout the day, so that is not bad.
+Right now my current hurdle is `invokespecial`, which is a bit complex.
+
+## 18:18
+
+Using deduction to determine how to handle `invokespecial`. Okay so since
+Java 1.1 (released 02/1997) the compiler always set `SUPER`, so the method
+that is directly specified is never called it instead uses the alternative
+lookup. So let me see when J2ME came out.
+
+## 18:21
+
+JSR030 is 05/2000, drafted in 08/1999. This means the latest Java release at
+the time was Java 1.2 which was released 12/1998. Also the _J2_ in _J2ME_
+stands for Java 2, which is Java 1.2. So I think at this point, if the super
+flag is not set then it sucks to be you.
+
+## 18:29
+
+Looking through the ancient specification, `main` is handled and used so
+that is something. At least now I have actual backing for it.
+
+## 18:33
+
+Confirmed that CLDC 1.0 uses a Java 1.2 VM.
+
+## 18:41
+
+Okay so from this point, I am going to declare that `SUPER` is always set no
+matter what.
+
+## 21:40
+
+I am definitely going to need a refactor of the thread worker because it is
+getting quite ugly!
+
+## 21:47
+
+Huh, for some reason `Object` cannot have final fields and they cannot be
+assigned a value in the compiler at all.
+
+## 21:54
+
+The compiler does not allow final fields to be set for `Object` in its
+constructor. In fact if final fields are initialized at run-time the compiler
+does not generate any code for the constructor. So I will need to remember
+this interesting detail.
+
+## 22:57
+
+For the Lex redesign and logos, I would like to credit the artist for their
+work:
+
+ * Kat@CMYKat Designs & Illustrations
+ * Kat Adam-MacEwen
+ * <www.cmykat-designs.com>
+
+The logo is awesome so far and Lex is coming along quite cutely, I am very
+excited.
