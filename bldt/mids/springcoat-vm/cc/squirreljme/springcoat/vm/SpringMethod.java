@@ -14,6 +14,7 @@ import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.Method;
 import net.multiphasicapps.classfile.MethodFlags;
+import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**
@@ -121,6 +122,17 @@ public final class SpringMethod
 	public final boolean isStaticInitializer()
 	{
 		return this.method.isStaticInitializer();
+	}
+	
+	/**
+	 * Returns the name of this method.
+	 *
+	 * @return The name of this method.
+	 * @since 2018/09/09
+	 */
+	public final MethodName name()
+	{
+		return this.method.name();
 	}
 	
 	/**
