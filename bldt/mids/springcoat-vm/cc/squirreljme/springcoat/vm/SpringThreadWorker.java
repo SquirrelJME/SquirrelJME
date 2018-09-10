@@ -482,7 +482,7 @@ public final class SpringThreadWorker
 						MethodDescriptor type = ref.memberType();
 						
 						// Pop all the arguments used in the call
-						int nargs = type.argumentCount();
+						int nargs = type.argumentCount() + 1;
 						Object[] passed = new Object[nargs];
 						for (int i = nargs - 1; i >= 0; i--)
 							passed[i] = frame.popFromStack();
