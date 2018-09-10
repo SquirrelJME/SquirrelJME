@@ -345,8 +345,7 @@ public final class System
 		if (__a == null)
 			return 0;
 		
-		// Use the pre-calculated hash
-		return __a._hashcode;
+		throw new todo.TODO();
 	}
 	
 	/**
