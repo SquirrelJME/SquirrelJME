@@ -172,6 +172,9 @@ public final class SpringThread
 		/** The method code for execution. */
 		protected final ByteCode code;
 		
+		/** The current object of the current frame. */
+		protected final SpringObject thisobject;
+		
 		/** Local variables. */
 		private final Object[] _locals;
 		
@@ -215,6 +218,10 @@ public final class SpringThread
 			// Copy arguments passed to the method
 			for (int i = 0, n = __args.length; i < n; i++)
 				locals[i] = __args[i];
+			
+			// Store the this object, if needed
+			this.thisobject = (__m.flags().isStatic() ? null :
+				(SpringObject)__args[0]);
 			
 			// Debug
 			todo.DEBUG.note("Frame has %d locals, %d stack", locals.length,
@@ -359,6 +366,17 @@ public final class SpringThread
 		public final void setPc(int __pc)
 		{
 			this._pc = __pc;
+		}
+		
+		/**
+		 * Returns the {@code this} of the current frame.
+		 *
+		 * @return The current this,
+		 * @since 2018/09/09
+		 */
+		public final SpringObject thisObject()
+		{
+			return this.thisobject;
 		}
 	}
 }

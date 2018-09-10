@@ -407,7 +407,8 @@ public final class SpringThreadWorker
 		Instruction inst = code.getByAddress(pc);
 		
 		// Debug
-		todo.DEBUG.note("step(%s) -> %s", thread.name(), inst);
+		todo.DEBUG.note("step(%s %s::%s) -> %s", thread.name(),
+			method.inClass(), method.nameAndType(), inst);
 		
 		// Used to give a more detailed idea of anything that happens since
 		// sub-calls will lose any and all exception types
@@ -478,40 +479,40 @@ public final class SpringThreadWorker
 						MethodReference ref = inst.<MethodReference>argument(
 							0, MethodReference.class);
 						
-						MethodName rn = ref.memberName();
-						MethodDescriptor type = ref.memberType();
+						// Resolve the method reference
+						SpringClass refclass = this.loadClass(ref.className());
+						SpringMethod refmethod = refclass.lookupMethod(false,
+							ref.memberNameAndType());
 						
-						// Pop all the arguments used in the call
-						int nargs = type.argumentCount() + 1;
-						Object[] passed = new Object[nargs];
+						// {@squirreljme.error BK0t Could not access the target
+						// method for special invoke. (The target method)}
+						if (!this.checkAccess(refmethod))
+							throw new SpringIncompatibleClassChangeException(
+								String.format("BK0t %s", ref));
+						
+						// The new class the method is in
+						SpringClass newclass = this.loadClass(
+							refmethod.inClass());
+						
+						// Load arguments
+						int nargs = refmethod.nameAndType().type().
+							argumentCount() + 1;
+						Object[] args = new Object[nargs];
 						for (int i = nargs - 1; i >= 0; i--)
-							passed[i] = frame.popFromStack();
+							args[i] = frame.popFromStack();
 						
-						// {@squirreljme.error BK0q No instance specified for
-						// invokespecial.}
-						if (!(passed[0] instanceof SpringObject))
-							throw new SpringNullPointerException("BK0q");
-						SpringObject instance = (SpringObject)passed[0];
-						
-						/*
-						SpringClass itype = instance.type();
-						boolean targetissuper = 
-						
-						// Call a compatible constructor for the class
-						SpringMethod reallyinvoke;
-						if (rn.isInstanceInitializer())
-							reallyinvoke = itype.
+						// Invoke this method specially
+						if (newclass.isSuperClass(refclass) &&
+							!refmethod.name().isInstanceInitializer())
+						{
 							throw new todo.TODO();
+						}
 						
-						// Otherwise look for compatible method in that class
+						// Invoke virtual instead
 						else
 						{
-							if (true)
-								throw new todo.TODO();
-						}*/
-						
-						if (true)
-							throw new todo.TODO();
+							thread.enterFrame(refmethod, args);
+						}
 					}
 					break;
 					
