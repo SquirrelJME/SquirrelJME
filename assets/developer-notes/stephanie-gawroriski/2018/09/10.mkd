@@ -1,0 +1,19 @@
+# 2018/09/10
+
+## 10:25
+
+Had an idea for the test framework, instead of super complex things instead
+just make individual tests in an enum. Each test could be different in that
+each constant implements a test, if not then the outer body can declare a
+test. I think this is the simplest. Also there can be test parameters so that
+undefined tests can run also, depending on the input. It should reduce the
+boilerplate and should be much easier to implement. Also I will be able to
+put it on real CLDC systems much easier for testing purposes. I think this is
+the best way to go. The only thing I need is something that can compile
+Jasmin assembly files which I could potentially spend time writing since I do
+need to write some invalid classes and such. Well maybe not Jasmin directly
+but some derivative where I can write the class directly and such in a well
+meaning fashion (probably just a Jasmin clone then). This way I can test all
+the weird and different ways to do things. The only problem is that the test
+constants will be a bit odd for this since they are testing classes
+themselves. But we shall see.
