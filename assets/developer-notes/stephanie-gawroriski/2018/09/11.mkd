@@ -1,0 +1,30 @@
+# 2018/09/11
+
+## 09:33
+
+Tested building on Windows, it works. I have to split SpringCoat because it
+would be best if it were in `runt/libs` then I could build a virtual machine
+midlet that uses the build system on top of that using some class path
+adapter and such. That way it can potentially be used within a J2ME
+environment itself as a kind of bootstrap or similar. Maybe potentially a
+package a bunch of JARs and their contents as a single J2ME program for
+running. Since it runs the SquirrelJME environment it would be able to run at
+a much slower rate, the build system to do things potentially. It probably
+is not useful at all. But actually since J2ME I believe allows the
+installation of new JARs maybe it can work. I do not know if the older APIs
+support this in any way. But raw suite management and such could be managed
+by the CLDC itself, basically just allow access to a virtual JAR and its
+contents, manifests, accordingly.
+
+## 09:43
+
+The internal CLDC API stuff needs to definitely be simplified because it is
+really complex for the most part. Definitely stuff like direct pointers and
+such will be easier, because GUI interfaces will be using that stuff anyway.
+
+## 10:52
+
+I think I will rework the proprietary for-profit license and make the future
+logos and mascot under the CC-BY-SA proper and remove the restrictions. But
+note that the mascot is trademarked. I could potentially register SquirrelJME
+as a trademark that way there is some protections for me at least.
