@@ -63,6 +63,7 @@ __file="$1"
 shift
 
 # Forward to hosted launch with the known parameters
-"$__exedir/hostedlaunch.sh" $__wineswitch springcoat-vm "$__file:$__numb" "$@"
+"$__exedir/hostedlaunch.sh" $__wineswitch springcoat-vm-build \
+	"$__file:$__numb" "$@"
 exit $?
 

@@ -4,10 +4,9 @@ X-SquirrelJME-Error: BK
 X-SquirrelJME-Name: SpringCoat Virtual Machine
 X-SquirrelJME-Vendor: Stephanie Gawroriski
 X-SquirrelJME-Version: 0.0.2
-X-SquirrelJME-Depends: tool-classfile builder-support
-X-SquirrelJME-Description: This is the virtual machine on top of the 
- SpringCoat executable format. This is really baseline and it pretty 
- much is very ugly and is in no way intended for speed or anything.
+X-SquirrelJME-Depends: tool-classfile
+X-SquirrelJME-Description: This is a SpringCoat virtual machine which 
+ is an unoptimized pure interpreter aimed for the purpose of being an 
+ educational stepping stone to other future virtual machines.
 Microedition-Configuration: CLDC-1.8-Compact
-Main-Class: cc.squirreljme.springcoat.Main
 
