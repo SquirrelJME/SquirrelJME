@@ -1,0 +1,24 @@
+# 2018/09/12
+
+## 13:39
+
+What could be done to implement weak references would be to have a weak
+reference pointer in an object. Make it atomic and just make the same
+object be returned if such a reference already exists. The only issue
+with this is `WeakReference` is constructed using a new object. So I
+would say that it would point to a special sub-object. When the reference
+has been garbage collected, has a different object pointer, or if the
+usage index is different then it was removed. So basically it would be a
+simple struct with two fields:
+
+ * `int useindex` -- The number of times the raw reference index has been
+   used, this is used to potentially recycle those references.
+ * `Object object` -- The object it refers to.
+
+If `WeakReference` looks at the struct then if
+`useindex != myindex || object == null` then `null` will be returned
+otherwise the object pointer will be returned. When a object is to be
+deallocated due to being garbage collected then, first any references for
+that object are cleared by just incrementing the index atomically if it
+matches the object reference index. Then object deallocation continues.
+
