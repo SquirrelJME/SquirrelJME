@@ -10,7 +10,6 @@
 
 package cc.squirreljme.springcoat.vm;
 
-import cc.squirreljme.builder.support.Binary;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -20,9 +19,6 @@ import java.util.Map;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
-import net.multiphasicapps.zip.blockreader.ZipBlockReader;
-import net.multiphasicapps.zip.blockreader.ZipBlockEntry;
-import net.multiphasicapps.zip.blockreader.ZipEntryNotFoundException;
 
 /**
  * This class acts as the equivalent to {@code ClassLoader} in that it manages
@@ -37,7 +33,7 @@ public final class SpringClassLoader
 		new Object();
 	
 	/** The class path for the machine. */
-	private final Binary[] _classpath;
+	private final SpringClassLibrary[] _classpath;
 	
 	/** The classes which have been loaded by the virtual machine. */
 	private final Map<ClassName, SpringClass> _classes =
@@ -50,14 +46,26 @@ public final class SpringClassLoader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/01
 	 */
-	public SpringClassLoader(Binary... __classpath)
+	public SpringClassLoader(SpringClassLibrary... __classpath)
 		throws NullPointerException
 	{
-		for (Binary b : __classpath = (__classpath == null ? new Binary[0] :
-			__classpath.clone()))
+		for (SpringClassLibrary b : __classpath = (__classpath == null ?
+			new SpringClassLibrary[0] : __classpath.clone()))
 			if (b == null)
 				throw new NullPointerException("NARG");
 		this._classpath = __classpath;
+	}
+	
+	/**
+	 * Returns the library that is used for booting, the main entry JAR.
+	 *
+	 * @return The boot library.
+	 * @since 2018/09/13
+	 */
+	public final SpringClassLibrary bootLibrary()
+	{
+		SpringClassLibrary[] classpath = this._classpath;
+		return classpath[classpath - 1];
 	}
 	
 	/**
@@ -154,19 +162,17 @@ public final class SpringClassLoader
 		// Otherwise we need to go through every single binary to find
 		// the class we want, which can take awhile
 		byte[] data = null;
-		for (Binary b : this._classpath)
-			try (ZipBlockReader zip = b.zipBlock())
+		for (SpringClassLibrary b : this._classpath)
+			try (InputStream in = b.resourceAsStream(fileform))
 			{
-				// Does not exist?
-				ZipBlockEntry entry = zip.get(fileform);
-				if (entry == null)
+				// Class or file does not exist
+				if (in == null)
 					continue;
 				
 				// Read in the data
 				byte[] buf = new byte[512];
 				try (ByteArrayOutputStream baos =
-					new ByteArrayOutputStream(1024);
-					InputStream in = entry.open())
+					new ByteArrayOutputStream(1024))
 				{
 					for (;;)
 					{
