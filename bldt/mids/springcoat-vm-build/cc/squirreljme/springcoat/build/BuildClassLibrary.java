@@ -12,6 +12,8 @@ package cc.squirreljme.springcoat.build;
 
 import cc.squirreljme.builder.support.Binary;
 import cc.squirreljme.springcoat.vm.SpringClassLibrary;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;
@@ -67,7 +69,34 @@ public final class BuildClassLibrary
 		if (__rc == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		try (ZipBlockReader zip = this.binary.zipBlock())
+		{
+			// Might not exist
+			try (InputStream in = zip.open(__rc))
+			{
+				// Copy all the data
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				byte[] buf = new byte[512];
+				for (;;)
+				{
+					int rc = in.read(buf);
+					
+					if (rc < 0)
+						break;
+					
+					baos.write(buf, 0, rc);
+				}
+				
+				// Wrap and return
+				return new ByteArrayInputStream(baos.toByteArray());
+			}
+			
+			// No entry exists to be read
+			catch (ZipEntryNotFoundException e)
+			{
+				return null;
+			}
+		}
 	}
 }
 
