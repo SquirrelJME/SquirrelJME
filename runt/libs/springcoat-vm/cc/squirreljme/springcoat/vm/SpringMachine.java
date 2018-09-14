@@ -10,7 +10,8 @@
 
 package cc.squirreljme.springcoat.vm;
 
-import cc.squirreljme.builder.support.Binary;
+import cc.squirreljme.kernel.suiteinfo.EntryPoint;
+import cc.squirreljme.kernel.suiteinfo.EntryPoints;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -22,10 +23,8 @@ import java.util.Map;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
+import net.multiphasicapps.classfile.MethodNameAndType;
 import net.multiphasicapps.tool.manifest.JavaManifest;
-import net.multiphasicapps.zip.blockreader.ZipBlockReader;
-import net.multiphasicapps.zip.blockreader.ZipBlockEntry;
-import net.multiphasicapps.zip.blockreader.ZipEntryNotFoundException;
 
 /**
  * This class contains the instance of the SpringCoat virtual machine and has
@@ -180,7 +179,7 @@ public final class SpringMachine
 			if (in == null)
 				throw new SpringVirtualMachineException("BK0v");
 			
-			entries = new JavaManifest(in);
+			entries = new EntryPoints(new JavaManifest(in));
 		}
 		
 		// {@squirreljme.error BK0u Failed to read the manifest.}
@@ -188,11 +187,6 @@ public final class SpringMachine
 		{
 			throw new SpringVirtualMachineException("BK0u", e);
 		}
-		
-		// The binary to launch is the final binary specified, get those
-		// entry points
-		SpringClassLibrary bootbin = classpath[classpath.length - 1];
-		EntryPoints entries = new EntryPoints(bootbin.manifest());
 		
 		// Print entry points out out for debug
 		todo.DEBUG.note("Entry points:");

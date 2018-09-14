@@ -10,9 +10,10 @@
 
 package cc.squirreljme.springcoat.build;
 
+import cc.squirreljme.builder.support.Binary;
+import cc.squirreljme.springcoat.vm.SpringClassLibrary;
 import java.io.InputStream;
 import java.io.IOException;
-import cc.squirreljme.springcoat.vm.SpringClassLibrary;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;
 import net.multiphasicapps.zip.blockreader.ZipBlockEntry;
 import net.multiphasicapps.zip.blockreader.ZipEntryNotFoundException;
