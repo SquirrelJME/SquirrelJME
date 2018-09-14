@@ -65,7 +65,7 @@ public final class SpringClassLoader
 	public final SpringClassLibrary bootLibrary()
 	{
 		SpringClassLibrary[] classpath = this._classpath;
-		return classpath[classpath - 1];
+		return classpath[classpath.length - 1];
 	}
 	
 	/**
@@ -190,9 +190,6 @@ public final class SpringClassLoader
 				}
 				
 				break;
-			}
-			catch (ZipEntryNotFoundException e)
-			{
 			}
 			catch (IOException e)
 			{
