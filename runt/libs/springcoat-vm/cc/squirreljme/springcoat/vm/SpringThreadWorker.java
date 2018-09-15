@@ -410,10 +410,12 @@ public final class SpringThreadWorker
 		todo.DEBUG.note("step(%s %s::%s) -> %s", thread.name(),
 			method.inClass(), method.nameAndType(), inst);
 		
-		// Used to give a more detailed idea of anything that happens since
-		// sub-calls will lose any and all exception types
-		int nextpc = code.addressFollowing(pc),
-			opid;
+		// Used to detect the next instruction of execution following this,
+		// may be set accordingly in the frame manually
+		int nextpc = code.addressFollowing(pc);
+		
+		// Handle individual instructions
+		int opid;
 		try
 		{
 			// Handle it
@@ -475,45 +477,7 @@ public final class SpringThreadWorker
 					// Invoke special method (constructor, superclass,
 					// or private)
 				case InstructionIndex.INVOKESPECIAL:
-					{
-						MethodReference ref = inst.<MethodReference>argument(
-							0, MethodReference.class);
-						
-						// Resolve the method reference
-						SpringClass refclass = this.loadClass(ref.className());
-						SpringMethod refmethod = refclass.lookupMethod(false,
-							ref.memberNameAndType());
-						
-						// {@squirreljme.error BK0t Could not access the target
-						// method for special invoke. (The target method)}
-						if (!this.checkAccess(refmethod))
-							throw new SpringIncompatibleClassChangeException(
-								String.format("BK0t %s", ref));
-						
-						// The new class the method is in
-						SpringClass newclass = this.loadClass(
-							refmethod.inClass());
-						
-						// Load arguments
-						int nargs = refmethod.nameAndType().type().
-							argumentCount() + 1;
-						Object[] args = new Object[nargs];
-						for (int i = nargs - 1; i >= 0; i--)
-							args[i] = frame.popFromStack();
-						
-						// Invoke this method specially
-						if (newclass.isSuperClass(refclass) &&
-							!refmethod.name().isInstanceInitializer())
-						{
-							throw new todo.TODO();
-						}
-						
-						// Invoke virtual instead
-						else
-						{
-							thread.enterFrame(refmethod, args);
-						}
-					}
+					this.__vmInvokeSpecial(inst, thread, frame);
 					break;
 					
 					// {@squirreljme.error BK0a Unimplemented operation.
@@ -550,8 +514,64 @@ public final class SpringThreadWorker
 			throw e;
 		}
 		
-		// Set next PC address
-		frame.setPc(nextpc);
+		// Set implicit next PC address, if it has not been set
+		if (pc == frame.pc())
+			frame.setPc(nextpc);
+	}
+	
+	/**
+	 * Performs a special invoke.
+	 *
+	 * @param __i The instruction.
+	 * @param __t The current thread.
+	 * @param __f The current frame.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/15
+	 */
+	private final void __vmInvokeSpecial(Instruction __i, SpringThread __t,
+		SpringThread.Frame __f)
+		throws NullPointerException
+	{
+		if (__i == null || __t == null || __f == null)
+			throw new NullPointerException("NARG");
+		
+		MethodReference ref = __i.<MethodReference>argument(
+			0, MethodReference.class);
+		
+		// Resolve the method reference
+		SpringClass refclass = this.loadClass(ref.className());
+		SpringMethod refmethod = refclass.lookupMethod(false,
+			ref.memberNameAndType());
+		
+		// {@squirreljme.error BK0t Could not access the target
+		// method for special invoke. (The target method)}
+		if (!this.checkAccess(refmethod))
+			throw new SpringIncompatibleClassChangeException(
+				String.format("BK0t %s", ref));
+		
+		// The new class the method is in
+		SpringClass newclass = this.loadClass(
+			refmethod.inClass());
+		
+		// Load arguments
+		int nargs = refmethod.nameAndType().type().
+			argumentCount() + 1;
+		Object[] args = new Object[nargs];
+		for (int i = nargs - 1; i >= 0; i--)
+			args[i] = __f.popFromStack();
+		
+		// Invoke this method specially
+		if (newclass.isSuperClass(refclass) &&
+			!refmethod.name().isInstanceInitializer())
+		{
+			throw new todo.TODO();
+		}
+		
+		// Invoke virtual instead
+		else
+		{
+			__t.enterFrame(refmethod, args);
+		}
 	}
 }
 
