@@ -10,6 +10,9 @@
 
 package cc.squirreljme.springcoat.vm;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+
 /**
  * This is a representation of an object within the virtual machine.
  *
@@ -23,6 +26,9 @@ public final class SpringSimpleObject
 	
 	/** Field storage in the class. */
 	private final Object[] _fields;
+	
+	/** String representation. */
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes the object.
@@ -49,6 +55,23 @@ public final class SpringSimpleObject
 	public final SpringClass type()
 	{
 		return this.type;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/09/15
+	 */
+	@Override
+	public final String toString()
+	{
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>((rv = String.format(
+				"%s@%08x", this.type.name(), System.identityHashCode(this))));
+		
+		return rv;
 	}
 }
 
