@@ -19,6 +19,7 @@ import net.multiphasicapps.classfile.ConstantValueString;
 import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
+import net.multiphasicapps.classfile.InstructionJumpTarget;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.MemberFlags;
 import net.multiphasicapps.classfile.MethodDescriptor;
@@ -412,7 +413,8 @@ public final class SpringThreadWorker
 		
 		// Used to detect the next instruction of execution following this,
 		// may be set accordingly in the frame manually
-		int nextpc = code.addressFollowing(pc);
+		int nextpc = code.addressFollowing(pc),
+			orignextpc = nextpc;
 		
 		// Handle individual instructions
 		int opid;
@@ -449,6 +451,17 @@ public final class SpringThreadWorker
 						// Push twice!
 						frame.pushToStack(copy);
 						frame.pushToStack(copy);
+					}
+					break;
+					
+					// If reference is not null
+				case InstructionIndex.IFNONNULL:
+					{
+						SpringObject a = frame.<SpringObject>popFromStack(
+							SpringObject.class);
+						if (a != SpringNullObject.NULL)
+							nextpc = inst.<InstructionJumpTarget>argument(0,
+								InstructionJumpTarget.class).target();
 					}
 					break;
 					
@@ -548,8 +561,9 @@ public final class SpringThreadWorker
 			throw e;
 		}
 		
-		// Set implicit next PC address, if it has not been set
-		if (pc == frame.pc())
+		// Set implicit next PC address, if it has not been set or the next
+		// address was actually changed
+		if (nextpc != orignextpc || pc == frame.pc())
 			frame.setPc(nextpc);
 	}
 	

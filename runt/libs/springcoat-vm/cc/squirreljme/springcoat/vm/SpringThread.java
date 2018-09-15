@@ -308,6 +308,11 @@ public final class SpringThread
 			Object rv = stack[--stacktop];
 			this._stacktop = stacktop;
 			
+			// {@squirreljme.error BK11 Popped a null value of the stack, which
+			// should not occur.}
+			if (rv == null)
+				throw new SpringVirtualMachineException("BK11");
+			
 			// Is top, so pop again to read the actual desired value
 			if (rv == SpringStackTop.TOP)
 			{
