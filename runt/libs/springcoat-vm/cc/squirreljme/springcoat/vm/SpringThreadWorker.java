@@ -466,6 +466,11 @@ public final class SpringThreadWorker
 					}
 					break;
 					
+					// Allocate new object
+				case InstructionIndex.NEW:
+					this.__vmNew(inst, frame);
+					break;
+					
 					// Return from method with no return value
 				case InstructionIndex.RETURN:
 					thread.popFrame();
@@ -618,6 +623,36 @@ public final class SpringThreadWorker
 		
 		// Enter frame for static method
 		__t.enterFrame(refmethod, args);
+	}
+	
+	/**
+	 * Allocates a new instance of the given object, it is not initialized just
+	 * allocated.
+	 *
+	 * @param __i The instruction.
+	 * @param __f The current frame.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/15
+	 */
+	private final void __vmNew(Instruction __i, SpringThread.Frame __f)
+		throws NullPointerException
+	{
+		if (__i == null || __f == null)
+			throw new NullPointerException("NARG");
+		
+		// Lookup class we want to allocate
+		ClassName allocname;
+		SpringClass toalloc = this.loadClass((allocname =
+			__i.<ClassName>argument(0, ClassName.class)));
+		
+		// {@squirreljme.error BK0x Cannot allocate an instance of the given
+		// class because it cannot be accessed. (The class to allocate)}
+		if (!this.checkAccess(toalloc))
+			throw new SpringIncompatibleClassChangeException(
+				String.format("BK0x %s", allocname));
+		
+		// Push a new allocation to the stack
+		__f.pushToStack(this.allocateObject(toalloc));
 	}
 }
 
