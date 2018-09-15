@@ -39,15 +39,47 @@ public final class SpringStaticField
 			throw new NullPointerException("NARG");
 		
 		this.field = __f;
+		
+		// Initialize value depending on the field type
+		Object init;
+		switch (__f.nameAndType().type().simpleStorageType())
+		{
+			case OBJECT:
+				init = SpringNullObject.NULL;
+				break;
+			
+			case INTEGER:
+				init = Integer.valueOf(0);
+				break;
+			
+			case LONG:
+				init = Long.valueOf(0);
+				break;
+			
+			case FLOAT:
+				init = Float.valueOf(0);
+				break;
+			
+			case DOUBLE:
+				init = Double.valueOf(0);
+				break;
+			
+				// Should not occur
+			default:
+				throw new RuntimeException("OOPS");
+		}
+		this._value = init;
 	}
 	 
 	/**
 	 * Sets the static field to the given value.
 	 *
 	 * @param __v The value to set.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/09
 	 */
 	public void set(Object __v)
+		throws NullPointerException
 	{
 		this.set(__v, false);
 	}
@@ -58,6 +90,7 @@ public final class SpringStaticField
 	 *
 	 * @param __v The value to set.
 	 * @param __writetofinal If true then final is overridden.
+	 * @throws NullPointerException On null arguments.
 	 * @throws SpringIncompatibleClassChangeException If the field is final
 	 * and we are not allowed to write to final fields.
 	 * @since 2018/09/09
@@ -65,6 +98,9 @@ public final class SpringStaticField
 	public void set(Object __v, boolean __writetofinal)
 		throws SpringIncompatibleClassChangeException
 	{
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
 		SpringField field = this.field;
 		
 		// Debug
