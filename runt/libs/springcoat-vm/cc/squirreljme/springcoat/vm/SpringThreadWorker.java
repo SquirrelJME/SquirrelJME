@@ -503,15 +503,19 @@ public final class SpringThreadWorker
 						-1 + (opid - InstructionIndex.ICONST_M1)));
 					break;
 					
+					// If greater than or equal to zero
+				case InstructionIndex.IFGE:
+					if (frame.<Integer>popFromStack(Integer.class) >= 0)
+						nextpc = inst.<InstructionJumpTarget>argument(0,
+							InstructionJumpTarget.class).target();
+					break;
+					
 					// If reference is not null
 				case InstructionIndex.IFNONNULL:
-					{
-						SpringObject a = frame.<SpringObject>popFromStack(
-							SpringObject.class);
-						if (a != SpringNullObject.NULL)
-							nextpc = inst.<InstructionJumpTarget>argument(0,
-								InstructionJumpTarget.class).target();
-					}
+					if (frame.<SpringObject>popFromStack(
+						SpringObject.class) != SpringNullObject.NULL)
+						nextpc = inst.<InstructionJumpTarget>argument(0,
+							InstructionJumpTarget.class).target();
 					break;
 					
 					// If reference is null
