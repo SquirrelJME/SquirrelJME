@@ -316,6 +316,13 @@ public final class Instruction
 					__a + Instruction.__readShort(__code, argbase))};
 				break;
 				
+				// Goto
+			case InstructionIndex.GOTO:
+				naturalflow = false;
+				args = new Object[]{new InstructionJumpTarget(
+					__a + Instruction.__readShort(__code, argbase))};
+				break;
+				
 				// {@squirreljme.error JC10 The operation at the specified
 				// address is not supported yet. (The operation; The name of
 				// the operation; The address it is at)}
