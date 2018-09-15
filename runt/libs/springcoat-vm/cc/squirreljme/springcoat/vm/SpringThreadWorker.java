@@ -505,6 +505,14 @@ public final class SpringThreadWorker
 						ssf.set(frame.popFromStack(), isstaticinit);
 					}
 					break;
+				
+					// {@squirreljme.error BK10 Reserved instruction. (The
+					// instruction)}
+				case InstructionIndex.BREAKPOINT:
+				case InstructionIndex.IMPDEP1:
+				case InstructionIndex.IMPDEP2:
+					throw new SpringVirtualMachineException(String.format(
+						"BK10 %s", inst));
 					
 					// {@squirreljme.error BK0a Unimplemented operation.
 					// (The instruction)}
