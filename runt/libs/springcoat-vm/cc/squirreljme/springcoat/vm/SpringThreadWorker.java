@@ -490,6 +490,17 @@ public final class SpringThreadWorker
 					}
 					break;
 					
+					// If reference is null
+				case InstructionIndex.IFNULL:
+					{
+						SpringObject a = frame.<SpringObject>popFromStack(
+							SpringObject.class);
+						if (a == SpringNullObject.NULL)
+							nextpc = inst.<InstructionJumpTarget>argument(0,
+								InstructionJumpTarget.class).target();
+					}
+					break;
+					
 					// Invoke special method (constructor, superclass,
 					// or private)
 				case InstructionIndex.INVOKESPECIAL:
