@@ -10,6 +10,8 @@
 
 package cc.squirreljme.springcoat.vm;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,6 +33,9 @@ public final class SpringThread
 	/** The stack frames. */
 	private final List<SpringThread.Frame> _frames =
 		new ArrayList<>();
+		
+	/** String representation. */
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes the thread.
@@ -156,6 +161,23 @@ public final class SpringThread
 			
 			return frames.remove(n - 1);
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/09/15
+	 */
+	@Override
+	public final String toString()
+	{
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>((rv = String.format(
+				"Thread-%d: %s", this.id, this.name)));
+		
+		return rv;
 	}
 	
 	/**
