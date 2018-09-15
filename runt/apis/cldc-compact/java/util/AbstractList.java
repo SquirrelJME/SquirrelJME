@@ -14,14 +14,22 @@ public abstract class AbstractList<E>
 	extends AbstractCollection<E>
 	implements List<E>
 {
+	/**
+	 * The modification count of this list, used to detect situations
+	 * where a list was modified while it was being iterated.
+	 */
 	protected transient int modCount;
 	
+	/**
+	 * Constructor requiring sub-classing.
+	 *
+	 * @since 2018/09/15
+	 */
 	protected AbstractList()
 	{
-		super();
-		throw new todo.TODO();
 	}
 	
+	@Override
 	public abstract E get(int __a);
 	
 	@Override
@@ -30,11 +38,13 @@ public abstract class AbstractList<E>
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public void add(int __a, E __b)
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public boolean addAll(int __a, Collection<? extends E> __b)
 	{
 		throw new todo.TODO();
@@ -142,6 +152,7 @@ public abstract class AbstractList<E>
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public int indexOf(Object __a)
 	{
 		throw new todo.TODO();
@@ -153,21 +164,25 @@ public abstract class AbstractList<E>
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public int lastIndexOf(Object __a)
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public ListIterator<E> listIterator()
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public ListIterator<E> listIterator(int __a)
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public E remove(int __a)
 	{
 		throw new todo.TODO();
@@ -178,11 +193,13 @@ public abstract class AbstractList<E>
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public E set(int __a, E __b)
 	{
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public List<E> subList(int __a, int __b)
 	{
 		throw new todo.TODO();

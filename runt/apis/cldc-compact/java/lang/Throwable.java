@@ -35,7 +35,7 @@ public class Throwable
 	
 	/** Suppressed exceptions. */
 	private final List<Throwable> _suppressed =
-		new ArrayList<>();
+		new ArrayList<>(1);
 	
 	/** Was a cause initialized already? */
 	private volatile boolean _initcause;
