@@ -17,6 +17,8 @@ should be able to run a wide range of older J2ME software which would enable
 this software to be used for archival purposes. It is written purely in Java
 and requires only a Java compiler and virtual machine for it to be built.
 
+ * [Version 0.0.2 Release Progress](
+   https://github.com/XerTheSquirrel/SquirrelJME/projects/2)
  * [Building](building.mkd)
  * [Changelog](changelog.mkd)
  * [Code of Conduct](code-of-conduct.mkd)
