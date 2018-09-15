@@ -22,8 +22,14 @@ public final class SpringStaticField
 	/** The field this stores information for. */
 	protected final SpringField field;
 	
+	/** Is this volatile? */
+	protected final boolean isvolatile;
+	
 	/** The value of the field. */
-	private Object _value;
+	private Object _normalvalue;
+	
+	/** The volatile value of the field. */
+	private volatile Object _volatilevalue;
 	
 	/**
 	 * Initializes the static field.
@@ -68,7 +74,11 @@ public final class SpringStaticField
 			default:
 				throw new RuntimeException("OOPS");
 		}
-		this._value = init;
+		
+		if ((this.isvolatile = __f.flags().isVolatile()))
+			this._volatilevalue = init;
+		else
+			this._normalvalue = init;
 	}
 	
 	/**
@@ -79,16 +89,13 @@ public final class SpringStaticField
 	 */
 	public final Object get()
 	{
-		// Volatile field, only a single thread may access at a time
-		if (this.field.flags().isVolatile())
-			synchronized (this)
-			{
-				return this._value;
-			}
+		// Volatile field, use volatile field instead
+		if (this.isvolatile)
+			return this._volatilevalue;
 		
 		// Otherwise just set thread without worrying about any contention
 		else
-			return this._value;
+			return this._normalvalue;
 	}
 	 
 	/**
@@ -132,16 +139,13 @@ public final class SpringStaticField
 		if (flags.isFinal() && !__writetofinal)
 			throw new SpringIncompatibleClassChangeException("BK0o");
 		
-		// Volatile field, only a single thread may access at a time
-		if (flags.isVolatile())
-			synchronized (this)
-			{
-				this._value = __v;
-			}
+		// Volatile field, use volatile field instead
+		if (this.isvolatile)
+			this._volatilevalue = __v;
 		
 		// Otherwise just set thread without worrying about any contention
 		else
-			this._value = __v;
+			this._normalvalue = __v;
 	}
 }
 
