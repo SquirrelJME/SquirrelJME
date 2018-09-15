@@ -520,6 +520,18 @@ public final class SpringThreadWorker
 					}
 					break;
 					
+					// Enter monitor
+				case InstructionIndex.MONITORENTER:
+					frame.<SpringObject>popFromStack(SpringObject.class).
+						monitor().enter(thread);
+					break;
+					
+					// Exit monitor
+				case InstructionIndex.MONITOREXIT:
+					frame.<SpringObject>popFromStack(SpringObject.class).
+						monitor().exit(thread);
+					break;
+					
 					// Allocate new object
 				case InstructionIndex.NEW:
 					this.__vmNew(inst, frame);

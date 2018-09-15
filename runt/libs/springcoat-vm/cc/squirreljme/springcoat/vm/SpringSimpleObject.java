@@ -24,6 +24,10 @@ public final class SpringSimpleObject
 	/** The type of object this is. */
 	protected final SpringClass type;
 	
+	/** The monitor for this object, every object has one. */
+	protected final SpringMonitor monitor =
+		new SpringMonitor();
+	
 	/** Field storage in the class. */
 	private final Object[] _fields;
 	
@@ -54,7 +58,7 @@ public final class SpringSimpleObject
 	@Override
 	public final SpringMonitor monitor()
 	{
-		throw new todo.TODO();
+		return this.monitor;
 	}
 	
 	/**
