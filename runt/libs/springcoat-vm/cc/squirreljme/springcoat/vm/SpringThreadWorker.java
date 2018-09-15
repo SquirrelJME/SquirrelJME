@@ -454,6 +454,19 @@ public final class SpringThreadWorker
 					}
 					break;
 					
+					// Read static variable
+				case InstructionIndex.GETSTATIC:
+					{
+						// Lookup field
+						SpringStaticField ssf = this.__lookupStaticField(
+							inst.<FieldReference>argument(0,
+							FieldReference.class));
+						
+						// Push read value to stack
+						frame.pushToStack(ssf.get());
+					}
+					break;
+					
 					// If reference is not null
 				case InstructionIndex.IFNONNULL:
 					{
