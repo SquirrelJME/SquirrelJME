@@ -229,6 +229,43 @@ public final class FieldDescriptor
 	}
 	
 	/**
+	 * Returns the simple storage type of the field.
+	 *
+	 * @return The simple storage type for this field.
+	 * @since 2018/09/15
+	 */
+	public final SimpleStorageType simpleStorageType()
+	{
+		// Objects
+		if (this.isObject())
+			return SimpleStorageType.OBJECT;
+		
+		// Primitive types, these are promoted
+		switch (this.primitiveType())
+		{
+			case BOOLEAN:
+			case BYTE:
+			case SHORT:
+			case CHARACTER:
+			case INTEGER:
+				return SimpleStorageType.INTEGER;
+			
+			case LONG:
+				return SimpleStorageType.LONG;
+			
+			case FLOAT:
+				return SimpleStorageType.FLOAT;
+			
+			case DOUBLE:
+				return SimpleStorageType.DOUBLE;
+			
+				// Should not occur
+			default:
+				throw new RuntimeException("OOPS");
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/06/12
 	 */
