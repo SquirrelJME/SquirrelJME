@@ -525,6 +525,17 @@ public final class SpringThreadWorker
 					}
 					break;
 					
+					// Load integer from local variable
+				case InstructionIndex.ILOAD_0:
+				case InstructionIndex.ILOAD_1:
+				case InstructionIndex.ILOAD_2:
+				case InstructionIndex.ILOAD_3:
+					{
+						frame.loadToStack(Integer.class,
+							opid - InstructionIndex.ILOAD_0);
+					}
+					break;
+					
 					// Invoke special method (constructor, superclass,
 					// or private)
 				case InstructionIndex.INVOKESPECIAL:
