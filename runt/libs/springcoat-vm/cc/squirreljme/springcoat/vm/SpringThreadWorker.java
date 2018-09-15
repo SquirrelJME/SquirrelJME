@@ -479,6 +479,13 @@ public final class SpringThreadWorker
 					}
 					break;
 					
+					// Go to address
+				case InstructionIndex.GOTO:
+				case InstructionIndex.GOTO_W:
+					nextpc = inst.<InstructionJumpTarget>argument(0,
+						InstructionJumpTarget.class).target();
+					break;
+					
 					// If reference is not null
 				case InstructionIndex.IFNONNULL:
 					{
