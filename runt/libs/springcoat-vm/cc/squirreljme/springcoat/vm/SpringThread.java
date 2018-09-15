@@ -326,6 +326,9 @@ public final class SpringThread
 						"BK0n %d %d", stacktop, stack.length));
 			}
 			
+			// Debug
+			todo.DEBUG.note("Popped %s", rv);
+			
 			return rv;
 		}
 		
