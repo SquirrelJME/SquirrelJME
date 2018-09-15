@@ -115,6 +115,14 @@ final class __StackMapParser__
 			nextlocals[i] = new StackMapTableEntry(jis[i],
 				(isiinit ? (i != 0) : true));
 		
+		// Initialize entries with nothing
+		for (int i = 0, n = nextstack.length; i < n; i++)
+			if (nextstack[i] == null)
+				nextstack[i] = StackMapTableEntry.NOTHING;
+		for (int i = 0, n = nextlocals.length; i < n; i++)
+			if (nextlocals[i] == null)
+				nextlocals[i] = StackMapTableEntry.NOTHING;
+		
 		// Where states go
 		Map<Integer, StackMapTableState> targets = new LinkedHashMap<>();
 		this._targets = targets;
@@ -234,7 +242,7 @@ final class __StackMapParser__
 			StackMapTableEntry s = nextlocals[i];
 			
 			// If it is not empty, ignore it
-			if (!s.equals(JavaType.NOTHING))
+			if (!s.equals(StackMapTableEntry.NOTHING))
 				continue;
 			
 			// Set it
