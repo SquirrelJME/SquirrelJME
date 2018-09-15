@@ -436,6 +436,17 @@ public final class SpringThreadWorker
 					}
 					break;
 					
+					// Invoke special method (constructor, superclass,
+					// or private)
+				case InstructionIndex.INVOKESPECIAL:
+					this.__vmInvokeSpecial(inst, thread, frame);
+					break;
+					
+					// Invoke static method
+				case InstructionIndex.INVOKESTATIC:
+					this.__vmInvokeStatic(inst, thread, frame);
+					break;
+					
 					// Load from constant pool, push to the stack
 				case InstructionIndex.LDC:
 					{
@@ -454,6 +465,11 @@ public final class SpringThreadWorker
 							frame.pushToStack(value.boxedValue());
 					}
 					break;
+					
+					// Return from method with no return value
+				case InstructionIndex.RETURN:
+					thread.popFrame();
+					break;
 				
 					// Put to static field
 				case InstructionIndex.PUTSTATIC:
@@ -467,22 +483,6 @@ public final class SpringThreadWorker
 						// static field values even if they are final
 						ssf.set(frame.popFromStack(), isstaticinit);
 					}
-					break;
-					
-					// Return from method with no return value
-				case InstructionIndex.RETURN:
-					thread.popFrame();
-					break;
-					
-					// Invoke special method (constructor, superclass,
-					// or private)
-				case InstructionIndex.INVOKESPECIAL:
-					this.__vmInvokeSpecial(inst, thread, frame);
-					break;
-					
-					// Invoke static method
-				case InstructionIndex.INVOKESTATIC:
-					this.__vmInvokeStatic(inst, thread, frame);
 					break;
 					
 					// {@squirreljme.error BK0a Unimplemented operation.
