@@ -486,6 +486,18 @@ public final class SpringThreadWorker
 						InstructionJumpTarget.class).target();
 					break;
 					
+					// Integer constant
+				case InstructionIndex.ICONST_M1:
+				case InstructionIndex.ICONST_0:
+				case InstructionIndex.ICONST_1:
+				case InstructionIndex.ICONST_2:
+				case InstructionIndex.ICONST_3:
+				case InstructionIndex.ICONST_4:
+				case InstructionIndex.ICONST_5:
+					frame.pushToStack(Integer.valueOf(
+						-1 + (opid - InstructionIndex.ICONST_M1)));
+					break;
+					
 					// If reference is not null
 				case InstructionIndex.IFNONNULL:
 					{
