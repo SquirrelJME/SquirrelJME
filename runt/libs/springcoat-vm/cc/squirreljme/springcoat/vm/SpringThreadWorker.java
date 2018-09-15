@@ -427,7 +427,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.NOP:
 					break;
 					
-					// Load from local variables
+					// Load reference from local variable
 				case InstructionIndex.ALOAD_0:
 				case InstructionIndex.ALOAD_1:
 				case InstructionIndex.ALOAD_2:
@@ -435,6 +435,18 @@ public final class SpringThreadWorker
 					{
 						frame.loadToStack(SpringObject.class,
 							opid - InstructionIndex.ALOAD_0);
+					}
+					break;
+					
+					// Store reference to local varibale
+				case InstructionIndex.ASTORE_0:
+				case InstructionIndex.ASTORE_1:
+				case InstructionIndex.ASTORE_2:
+				case InstructionIndex.ASTORE_3:
+					{
+						frame.storeLocal(opid - InstructionIndex.ASTORE_0,
+							frame.<SpringObject>popFromStack(
+								SpringObject.class));
 					}
 					break;
 					

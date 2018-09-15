@@ -304,8 +304,9 @@ public final class SpringThread
 				throw new SpringVirtualMachineException(String.format(
 					"BK0m %d %d", stacktop, stack.length));
 			
-			// Read value
+			// Read value and clear the value that was there
 			Object rv = stack[--stacktop];
+			stack[stacktop] = null;
 			this._stacktop = stacktop;
 			
 			// {@squirreljme.error BK11 Popped a null value of the stack, which
@@ -402,6 +403,23 @@ public final class SpringThread
 		public final void setPc(int __pc)
 		{
 			this._pc = __pc;
+		}
+		
+		/**
+		 * Stores the specified value at the given local variable index.
+		 *
+		 * @param __dx The index to store into.
+		 * @param __v The value to store.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2018/09/15
+		 */
+		public final void storeLocal(int __dx, Object __v)
+			throws NullPointerException
+		{
+			if (__v == null)
+				throw new NullPointerException("NARG");
+			
+			this._locals[__dx] = __v;
 		}
 		
 		/**
