@@ -49,6 +49,16 @@ public final class SpringSimpleObject
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2018/09/15
+	 */
+	@Override
+	public final SpringMonitor monitor()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/09/09
 	 */
 	@Override

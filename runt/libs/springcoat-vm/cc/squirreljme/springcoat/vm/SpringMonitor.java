@@ -11,28 +11,11 @@
 package cc.squirreljme.springcoat.vm;
 
 /**
- * This represents anything that is treated by the virtual machine as a kind
- * of object reference. This is needed for SquirrelJME since it exposes a
- * pointer logic which is magically handled by the virtual machine.
+ * This is a monitor which is associated with an object.
  *
- * @since 2018/09/08
+ * @since 2018/09/15
  */
-public interface SpringObject
+public final class SpringMonitor
 {
-	/**
-	 * Returns the monitor for this object.
-	 *
-	 * @return This object's monitor.
-	 * @since 2018/09/15
-	 */
-	public abstract SpringMonitor monitor();
-	
-	/**
-	 * Returns the object type.
-	 *
-	 * @return The object type.
-	 * @since 2018/09/09
-	 */
-	public abstract SpringClass type();
 }
 
