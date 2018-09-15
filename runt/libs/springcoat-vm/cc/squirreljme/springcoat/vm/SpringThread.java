@@ -325,6 +325,34 @@ public final class SpringThread
 		}
 		
 		/**
+		 * Pops from the stack, checking the type.
+		 *
+		 * @param <C> The type to pop.
+		 * @param __cl The type to pop.
+		 * @return The popped data.
+		 * @throws NullPointerException On null arguments.
+		 * @throws SpringVirtualMachineException If the type does not match or
+		 * the stack underflows.
+		 * @since 2018/09/15
+		 */
+		public final <C> C popFromStack(Class<C> __cl)
+			throws NullPointerException, SpringVirtualMachineException
+		{
+			if (__cl == null)
+				throw new NullPointerException("NARG");
+			
+			// {@squirreljme.error BK0z Popped the wrong kind of value from the
+			// stack. (The popped type; The expected type)}
+			Object rv = this.popFromStack();
+			if (!__cl.isInstance(rv))
+				throw new SpringVirtualMachineException(
+					String.format("BK0z %s %s",
+						(rv == null ? null : rv.getClass()), __cl));
+			
+			return __cl.cast(rv);
+		}
+		
+		/**
 		 * Pushes the specified value to the stack.
 		 *
 		 * @param __v The value to push.

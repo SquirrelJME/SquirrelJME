@@ -436,6 +436,22 @@ public final class SpringThreadWorker
 					}
 					break;
 					
+					// Duplicate top-most stack entry
+				case InstructionIndex.DUP:
+					{
+						Object copy = frame.<Object>popFromStack(Object.class);
+						
+						// {@squirreljme.error BK0y Cannot duplicate category
+						// two type.}
+						if (copy instanceof Long || copy instanceof Double)
+							throw new SpringVirtualMachineException("BK0y");
+						
+						// Push twice!
+						frame.pushToStack(copy);
+						frame.pushToStack(copy);
+					}
+					break;
+					
 					// Invoke special method (constructor, superclass,
 					// or private)
 				case InstructionIndex.INVOKESPECIAL:
