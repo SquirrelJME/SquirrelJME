@@ -1,0 +1,7 @@
+# 2018/09/14
+
+## 23:23
+
+Okay so there is the exception `AtomicMoveNotSupportedException` but nothing
+throws it and I am pretty sure the CLDC has no atomic operations.
+
