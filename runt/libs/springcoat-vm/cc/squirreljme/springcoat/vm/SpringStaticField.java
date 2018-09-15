@@ -70,6 +70,26 @@ public final class SpringStaticField
 		}
 		this._value = init;
 	}
+	
+	/**
+	 * Returns the value of the field.
+	 *
+	 * @return The field value.
+	 * @since 2018/09/15
+	 */
+	public final Object get()
+	{
+		// Volatile field, only a single thread may access at a time
+		if (this.field.flags().isVolatile())
+			synchronized (this)
+			{
+				return this._value;
+			}
+		
+		// Otherwise just set thread without worrying about any contention
+		else
+			return this._value;
+	}
 	 
 	/**
 	 * Sets the static field to the given value.
@@ -78,7 +98,7 @@ public final class SpringStaticField
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/09
 	 */
-	public void set(Object __v)
+	public final void set(Object __v)
 		throws NullPointerException
 	{
 		this.set(__v, false);
@@ -95,7 +115,7 @@ public final class SpringStaticField
 	 * and we are not allowed to write to final fields.
 	 * @since 2018/09/09
 	 */
-	public void set(Object __v, boolean __writetofinal)
+	public final void set(Object __v, boolean __writetofinal)
 		throws SpringIncompatibleClassChangeException
 	{
 		if (__v == null)
