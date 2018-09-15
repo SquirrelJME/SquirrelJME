@@ -480,6 +480,11 @@ public final class SpringThreadWorker
 					this.__vmInvokeSpecial(inst, thread, frame);
 					break;
 					
+					// Invoke static method
+				case InstructionIndex.INVOKESTATIC:
+					this.__vmInvokeStatic(inst, thread, frame);
+					break;
+					
 					// {@squirreljme.error BK0a Unimplemented operation.
 					// (The instruction)}
 				default:
@@ -572,6 +577,47 @@ public final class SpringThreadWorker
 		{
 			__t.enterFrame(refmethod, args);
 		}
+	}
+	
+	/**
+	 * Performs a static invoke.
+	 *
+	 * @param __i The instruction.
+	 * @param __t The current thread.
+	 * @param __f The current frame.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/15
+	 */
+	private final void __vmInvokeStatic(Instruction __i, SpringThread __t,
+		SpringThread.Frame __f)
+		throws NullPointerException
+	{
+		if (__i == null || __t == null || __f == null)
+			throw new NullPointerException("NARG");
+		
+		MethodReference ref = __i.<MethodReference>argument(
+			0, MethodReference.class);
+		
+		// Resolve the method reference
+		SpringClass refclass = this.loadClass(ref.className());
+		SpringMethod refmethod = refclass.lookupMethod(true,
+			ref.memberNameAndType());
+		
+		// {@squirreljme.error BK0w Could not access the target
+		// method for static invoke. (The target method)}
+		if (!this.checkAccess(refmethod))
+			throw new SpringIncompatibleClassChangeException(
+				String.format("BK0w %s", ref));
+		
+		// Load arguments
+		int nargs = refmethod.nameAndType().type().
+			argumentCount();
+		Object[] args = new Object[nargs];
+		for (int i = nargs - 1; i >= 0; i--)
+			args[i] = __f.popFromStack();
+		
+		// Enter frame for static method
+		__t.enterFrame(refmethod, args);
 	}
 }
 
