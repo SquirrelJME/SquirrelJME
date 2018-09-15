@@ -313,7 +313,7 @@ public final class Instruction
 			case InstructionIndex.IFLE:
 				naturalflow = true;
 				args = new Object[]{new InstructionJumpTarget(
-					Instruction.__readUnsignedShort(__code, argbase))};
+					__a + Instruction.__readShort(__code, argbase))};
 				break;
 				
 				// {@squirreljme.error JC10 The operation at the specified
@@ -464,6 +464,23 @@ public final class Instruction
 		}
 		
 		return rv;
+	}
+	
+	/**
+	 * Reads a signed short from the specified array.
+	 *
+	 * @param __a The array to read from.
+	 * @param __o The offset to read from.
+	 * @return The read value.
+	 * @throws InvalidClassFormatException If the offset exceeds the bounds of
+	 * the given array.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/15
+	 */
+	private static final int __readShort(byte[] __a, int __o)
+		throws InvalidClassFormatException, NullPointerException
+	{
+		return (short)Instruction.__readUnsignedShort(__a, __o);
 	}
 	
 	/**

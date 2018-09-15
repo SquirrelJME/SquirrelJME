@@ -563,8 +563,13 @@ public final class SpringThreadWorker
 		
 		// Set implicit next PC address, if it has not been set or the next
 		// address was actually changed
-		if (nextpc == orignextpc || pc == frame.pc())
+		if (nextpc != orignextpc || pc == frame.pc())
+		{
 			frame.setPc(nextpc);
+			
+			// Debug
+			todo.DEBUG.note("Next PC %d", nextpc);
+		}
 	}
 	
 	/**
