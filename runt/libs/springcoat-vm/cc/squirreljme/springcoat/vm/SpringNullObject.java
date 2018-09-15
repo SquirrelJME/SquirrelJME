@@ -33,6 +33,18 @@ public final class SpringNullObject
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2018/09/15
+	 */
+	@Override
+	public final SpringMonitor monitor()
+	{
+		// {@squirreljme.error BK12 Cannot obtain the monitor of an object
+		// that is null.}
+		throw new SpringNullPointerException("BK12");
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/09/09
 	 */
 	@Override
