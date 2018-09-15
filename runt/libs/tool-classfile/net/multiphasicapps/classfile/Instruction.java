@@ -294,6 +294,28 @@ public final class Instruction
 					Instruction.__readUnsignedShort(__code, argbase))};
 				break;
 				
+				// Branches
+			case InstructionIndex.IFNONNULL:
+			case InstructionIndex.IFNULL:
+			case InstructionIndex.IF_ACMPEQ:
+			case InstructionIndex.IF_ACMPNE:
+			case InstructionIndex.IF_ICMPEQ:
+			case InstructionIndex.IF_ICMPNE:
+			case InstructionIndex.IF_ICMPLT:
+			case InstructionIndex.IF_ICMPGE:
+			case InstructionIndex.IF_ICMPGT:
+			case InstructionIndex.IF_ICMPLE:
+			case InstructionIndex.IFEQ:
+			case InstructionIndex.IFNE:
+			case InstructionIndex.IFLT:
+			case InstructionIndex.IFGE:
+			case InstructionIndex.IFGT:
+			case InstructionIndex.IFLE:
+				naturalflow = true;
+				args = new Object[]{new InstructionJumpTarget(
+					Instruction.__readUnsignedShort(__code, argbase))};
+				break;
+				
 				// {@squirreljme.error JC10 The operation at the specified
 				// address is not supported yet. (The operation; The name of
 				// the operation; The address it is at)}
