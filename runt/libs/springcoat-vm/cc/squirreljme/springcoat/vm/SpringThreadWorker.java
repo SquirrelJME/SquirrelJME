@@ -427,6 +427,11 @@ public final class SpringThreadWorker
 				case InstructionIndex.NOP:
 					break;
 					
+					// Push null reference
+				case InstructionIndex.ACONST_NULL:
+					frame.pushToStack(SpringNullObject.NULL);
+					break;
+					
 					// Load reference from local variable
 				case InstructionIndex.ALOAD_0:
 				case InstructionIndex.ALOAD_1:
