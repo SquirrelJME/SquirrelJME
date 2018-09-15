@@ -1,0 +1,8 @@
+# 2018/09/13
+
+## 20:29
+
+Neat so I split off SpringCoat from the build system so it could potentially
+be reused elsewhere. Perhaps the next iteration could use the same exact code
+in some places too. Kind of like a multi VM wrapper of sorts. Would be useful
+and could be done with interfaces easily.
