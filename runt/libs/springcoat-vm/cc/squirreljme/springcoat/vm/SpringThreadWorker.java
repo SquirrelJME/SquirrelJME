@@ -60,6 +60,25 @@ public final class SpringThreadWorker
 	}
 	
 	/**
+	 * Allocates the memory needed to store an array of the given class and
+	 * of the given length.
+	 *
+	 * @param __cl The component type.
+	 * @param __l The length of the array.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SpringNegativeArraySizeException If the array size is negative.
+	 * @since 2018/09/15
+	 */
+	public final SpringArrayObject allocateArray(SpringClass __cl, int __l)
+		throws NullPointerException, SpringNegativeArraySizeException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		return new SpringArrayObject(__cl, __l);
+	}
+	
+	/**
 	 * Allocates the memory needed to store an object of the given class.
 	 *
 	 * @param __cl The object to allocate.
@@ -307,6 +326,31 @@ public final class SpringThreadWorker
 	}
 	
 	/**
+	 * Resolves the given class, checking access.
+	 *
+	 * @param __cl The class to resolve.
+	 * @return The resolved class.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SpringIllegalAccessException If the class cannot be accessed.
+	 * @since 2018/09/15
+	 */
+	public final SpringClass resolveClass(ClassName __cl)
+		throws NullPointerException, SpringIllegalAccessException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error BK15 Could not access the specified class.
+		// (The class to access)}
+		SpringClass rv = this.loadClass(__cl);
+		if (!this.checkAccess(rv))
+			throw new SpringIllegalAccessException(String.format("BK15 %s",
+				__cl));
+		
+		return rv;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/09/03
 	 */
@@ -437,10 +481,15 @@ public final class SpringThreadWorker
 				case InstructionIndex.ALOAD_1:
 				case InstructionIndex.ALOAD_2:
 				case InstructionIndex.ALOAD_3:
-					{
-						frame.loadToStack(SpringObject.class,
-							opid - InstructionIndex.ALOAD_0);
-					}
+					frame.loadToStack(SpringObject.class,
+						opid - InstructionIndex.ALOAD_0);
+					break;
+				
+					// Alolcate new array
+				case InstructionIndex.ANEWARRAY:
+					frame.pushToStack(this.allocateArray(this.resolveClass(
+						inst.<ClassName>argument(0, ClassName.class)),
+						frame.<Integer>popFromStack(Integer.class)));
 					break;
 					
 					// Store reference to local varibale
