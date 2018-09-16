@@ -275,17 +275,6 @@ public final class SpringClass
 	}
 	
 	/**
-	 * Has this class been initialized?
-	 *
-	 * @return If the class has been initialized.
-	 * @since 2018/09/08
-	 */
-	public final boolean isInitialized()
-	{
-		return this._initialized;
-	}
-	
-	/**
 	 * Checks if this class can be assigned from the target class, that is
 	 * {@code this = (ThisClass)__o}.
 	 *
@@ -318,6 +307,65 @@ public final class SpringClass
 		
 		// Not assignable from the class
 		return false;
+	}
+	
+	/**
+	 * Checks if the given value is compatible with this class.
+	 *
+	 * @param __v The value to check.
+	 * @return If it is compatible or not.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/16
+	 */
+	public final boolean isCompatible(Object __v)
+		throws NullPointerException
+	{
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		// Primitive must match standard promoted type
+		ClassName name = this.name;
+		if (name.isPrimitive())
+			switch (name.toString())
+			{
+				case "boolean":
+				case "byte":
+				case "short":
+				case "char":
+				case "int":
+					return (__v instanceof Integer);
+				
+				case "long":
+					return (__v instanceof Long);
+				
+				case "float":
+					return (__v instanceof Float);
+					
+				case "double":
+					return (__v instanceof Double);
+				
+				default:
+					throw new RuntimeException("OOPS");
+			}
+		
+		// Not primitive type, must be assignable
+		else if (__v instanceof SpringObject)
+			return this.isAssignableFrom(((SpringObject)__v).type());
+		
+		// Unknown
+		else
+			throw new RuntimeException("OOPS");
+	}
+	
+	/**
+	 * Has this class been initialized?
+	 *
+	 * @return If the class has been initialized.
+	 * @since 2018/09/08
+	 */
+	public final boolean isInitialized()
+	{
+		return this._initialized;
 	}
 	
 	/**
