@@ -99,8 +99,10 @@ public final class ClassFile
 		
 		// {@squirreljme.error JC0c Either Object has a superclass which it
 		// cannot extend any class or any other class does not have a super
-		// class. (The current class name; The super class name)}
-		if (__tn.equals(new ClassName("java/lang/Object")) != (__sn == null))
+		// class. Additionally primitive types cannot have a super class.
+		// (The current class name; The super class name)}
+		if ((__tn.isPrimitive() ||
+			__tn.equals(new ClassName("java/lang/Object"))) != (__sn == null))
 			throw new InvalidClassFormatException(String.format("JC0c %s %s",
 				__tn, __sn));
 		
@@ -260,7 +262,8 @@ public final class ClassFile
 		
 		// Use the names of the types in the language
 		ClassName name;
-		if (__d.isPrimitive())
+		boolean isprimitive;
+		if ((isprimitive = __d.isPrimitive()))
 			name = ClassName.fromPrimitiveType(__d.primitiveType());
 		
 		// Treat array as normal class name
@@ -270,8 +273,8 @@ public final class ClassFile
 		// Build
 		return new ClassFile(ClassVersion.MAX_VERSION,
 			new ClassFlags(ClassFlag.PUBLIC, ClassFlag.FINAL, ClassFlag.SUPER,
-			ClassFlag.SYNTHETIC), name,
-			new ClassName("java/lang/Object"), new ClassName[0], new Field[0],
+			ClassFlag.SYNTHETIC), name, (isprimitive ? null :
+			new ClassName("java/lang/Object")), new ClassName[0], new Field[0],
 			new Method[0], new InnerClasses(), new AnnotationTable(),
 			"<special>");
 	}
