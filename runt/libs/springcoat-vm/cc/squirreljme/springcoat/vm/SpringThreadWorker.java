@@ -679,6 +679,13 @@ public final class SpringThreadWorker
 					}
 					break;
 					
+					// Push value
+				case InstructionIndex.BIPUSH:
+				case InstructionIndex.SIPUSH:
+					frame.pushToStack(inst.<Integer>argument(
+						0, Integer.class));
+					break;
+					
 					// Checks casting from a type to another
 				case InstructionIndex.CHECKCAST:
 					{
