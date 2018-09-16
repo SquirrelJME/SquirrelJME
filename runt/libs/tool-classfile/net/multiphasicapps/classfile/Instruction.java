@@ -299,6 +299,14 @@ public final class Instruction
 					__a + Instruction.__readShort(__code, argbase))};
 				break;
 				
+				// Increment local variable
+			case InstructionIndex.IINC:
+				naturalflow = true;
+				args = new Object[]{
+					Instruction.__readUnsignedByte(__code, argbase),
+					Instruction.__readByte(__code, argbase + 1)};
+				break;
+				
 				// Branches
 			case InstructionIndex.IFNONNULL:
 			case InstructionIndex.IFNULL:
