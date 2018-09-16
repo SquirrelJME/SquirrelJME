@@ -764,6 +764,18 @@ public final class SpringThreadWorker
 					}
 					break;
 					
+					// Store integer to array
+				case InstructionIndex.IASTORE:
+					{
+						int value = frame.<Integer>popFromStack(Integer.class);
+						int dx = frame.<Integer>popFromStack(Integer.class);
+						SpringArrayObject obj = frame.<SpringArrayObject>
+							popFromStack(SpringArrayObject.class);
+						
+						obj.set(dx, value);
+					}
+					break;
+					
 					// Integer constant
 				case InstructionIndex.ICONST_M1:
 				case InstructionIndex.ICONST_0:
