@@ -275,6 +275,41 @@ public final class SpringClass
 	}
 	
 	/**
+	 * Checks if this class can be assigned from the target class, that is
+	 * {@code this = (ThisClass)__o}.
+	 *
+	 * This is the same as {@link Class#isInstance(Object)} except it works
+	 * only on class representations.
+	 *
+	 * @param __o The other class to check.
+	 * @return If the other class can be assigned as this class.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/15
+	 */
+	public final boolean isAssignableFrom(SpringClass __o)
+		throws NullPointerException
+	{
+		if (__o == null)
+			throw new NullPointerException("NARG");
+		
+		// Check super classes and interfaces
+		for (SpringClass r = this; r != null; r = r.superclass)
+		{
+			// Same class
+			if (r == __o)
+				return true;
+			
+			// Check interfaces
+			for (SpringClass i : r._interfaceclasses)
+				if (i.isAssignableFrom(__o))
+					return true;
+		}
+		
+		// Not assignable from the class
+		return false;
+	}
+	
+	/**
 	 * Checks if the given class is a super class of the this class.
 	 *
 	 * @param __cl The class to check.
@@ -515,6 +550,16 @@ public final class SpringClass
 	public final SpringClass superClass()
 	{
 		return this.superclass;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/09/15
+	 */
+	@Override
+	public final String toString()
+	{
+		return this.name.toString();
 	}
 }
 
