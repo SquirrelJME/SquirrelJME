@@ -178,7 +178,7 @@ public final class SpringArrayObject
 		// The length of the array)}
 		int length = this.length;
 		if (__dx < 0 || __dx >= length)
-			throw new SpringArrayStoreException(String.format("BK1h %d %d",
+			throw new SpringArrayIndexOutOfBoundsException(String.format("BK1h %d %d",
 				__dx, length));
 		
 		// {@squirreljme.error BK1i The specified type is not compatible
@@ -186,7 +186,7 @@ public final class SpringArrayObject
 		// The component type)}
 		SpringClass component = this.component;
 		if (!component.isCompatible(__v))
-			throw new SpringArrayIndexOutOfBoundsException(String.format(
+			throw new SpringArrayStoreException(String.format(
 				"BK1i %s %s", __v, component));
 		
 		// Set

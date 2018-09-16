@@ -28,10 +28,10 @@ public final class EmptySequence
 	 */
 	@Override
 	public final char charAt(int __i)
-		throws IndexOutOfBoundsException
+		throws StringIndexOutOfBoundsException
 	{
 		// {@squirreljme.error ZZ0e The empty string has no valid characters.}
-		throw new IndexOutOfBoundsException("ZZ0e");
+		throw new StringIndexOutOfBoundsException("ZZ0e");
 	}
 	
 	/**

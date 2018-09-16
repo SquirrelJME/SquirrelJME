@@ -10,19 +10,33 @@
 
 package java.lang;
 
+/**
+ * This is thrown when an index which is not within bounds was accessed.
+ *
+ * @since 2018/09/16
+ */
 public class IndexOutOfBoundsException
 	extends RuntimeException
 {
+	/**
+	 * Initializes the exception with no message or cause.
+	 *
+	 * @since 2018/09/16
+	 */
 	public IndexOutOfBoundsException()
 	{
 		super();
-		throw new todo.TODO();
 	}
 	
-	public IndexOutOfBoundsException(String __a)
+	/**
+	 * Initializes the exception with the given message and no cause.
+	 *
+	 * @param __m The message.
+	 * @since 2018/09/16
+	 */
+	public IndexOutOfBoundsException(String __m)
 	{
-		super();
-		throw new todo.TODO();
+		super(__m);
 	}
 }
 

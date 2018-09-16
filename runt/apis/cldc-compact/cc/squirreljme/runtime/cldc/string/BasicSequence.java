@@ -28,11 +28,12 @@ public interface BasicSequence
 	 *
 	 * @param __i The index of the character.
 	 * @return The character at the given index.
-	 * @throws IndexOutOfBoundsException If the index is outside of bounds.
+	 * @throws StringIndexOutOfBoundsException If the index is outside of
+	 * bounds.
 	 * @since 2018/02/24
 	 */
 	public abstract char charAt(int __i)
-		throws IndexOutOfBoundsException;
+		throws StringIndexOutOfBoundsException;
 	
 	/**
 	 * Returns the length of the string.

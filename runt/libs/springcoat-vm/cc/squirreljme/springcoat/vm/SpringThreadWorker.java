@@ -130,6 +130,23 @@ public final class SpringThreadWorker
 		else if (__in instanceof Byte || __in instanceof Short)
 			return Integer.valueOf(((Number)__in).intValue());
 		
+		// Character array
+		else if (__in instanceof char[])
+		{
+			char[] in = (char[])__in;
+			
+			// Setup return array
+			int n = in.length;
+			SpringArrayObject rv = this.allocateArray(
+				this.loadClass(new ClassName("char")), n);
+			
+			// Copy array values
+			for (int i = 0; i < n; i++)
+				rv.set(i, (int)in[i]);
+			
+			return rv;
+		}
+		
 		// Integer array
 		else if (__in instanceof int[])
 		{
@@ -142,9 +159,54 @@ public final class SpringThreadWorker
 			
 			// Copy array values
 			for (int i = 0; i < n; i++)
-				rv.set(i, in[i]);
+				rv.set(i, (int)in[i]);
 			
 			return rv;
+		}
+		
+		// Constant string from the constant pool, which shared a global pool
+		// of string objects! This must be made so that "aaa" == "aaa" is true
+		// even across different classes!
+		else if (__in instanceof ConstantValueString)
+		{
+			ConstantValueString cvs = (ConstantValueString)__in;
+			
+			// Get the string map but lock on the class loader because a class
+			// might want a string but then another thread might be
+			// initializing some class, and it will just deadlock as they wait
+			// on each other
+			SpringMachine machine = this.machine;
+			Map<ConstantValueString, SpringObject> stringmap =
+				machine.__stringMap();
+			synchronized (machine.classLoader().classLoadingLock())
+			{
+				// Pre-cached object already exists?
+				SpringObject rv = stringmap.get(cvs);
+				if (rv != null)
+					return rv;
+				
+				// Setup an array of characters to represent the string data,
+				// this is the simplest thing to do right now
+				SpringObject array = (SpringObject)this.asVMObject(
+					cvs.toString().toCharArray());
+				
+				// Setup character array sequence which wraps our array
+				SpringObject cas = this.newInstance(new ClassName(
+					"cc/squirreljme/runtime/cldc/string/CharArraySequence"),
+					new MethodDescriptor("([C)V"), array);
+				
+				// Setup string which uses this sequence
+				rv = this.newInstance(new ClassName("java/lang/String"),
+					new MethodDescriptor(
+					"(Lcc/squirreljme/runtime/cldc/string/BasicSequence;)V"),
+					cas);
+				
+				// Cache
+				stringmap.put(cvs, rv);
+				
+				// Use it
+				return rv;
+			}
 		}
 		
 		// {@squirreljme.error BK1f Do not know how to convert the given class
@@ -451,6 +513,76 @@ public final class SpringThreadWorker
 				throw new SpringVirtualMachineException(
 					String.format("BK1g %s", __func));
 		}
+	}
+	
+	/**
+	 * Creates a new instance of the given class and initializes it using the
+	 * given arguments. Access checks are ignored.
+	 *
+	 * @param __cl The class to initialize.
+	 * @param __desc The descriptor of the constructor.
+	 * @param __args The arguments to the constructor.
+	 * @return The newly created and setup object.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/16
+	 */
+	public final SpringObject newInstance(ClassName __cl,
+		MethodDescriptor __desc, Object... __args)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		return this.newInstance(this.loadClass(__cl), __desc, __args);
+	}
+	
+	/**
+	 * Creates a new instance of the given class and initializes it using the
+	 * given arguments. Access checks are ignored.
+	 *
+	 * @param __cl The class to initialize.
+	 * @param __desc The descriptor of the constructor.
+	 * @param __args The arguments to the constructor.
+	 * @return The newly created and setup object.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/16
+	 */
+	public final SpringObject newInstance(SpringClass __cl,
+		MethodDescriptor __desc, Object... __args)
+		throws NullPointerException
+	{
+		if (__cl == null || __desc == null || __args == null)
+			throw new NullPointerException("NARG");
+		
+		// Make sure this class is loaded
+		__cl = this.loadClass(__cl);
+		
+		// Lookup constructor to this method
+		SpringMethod cons = __cl.lookupMethod(false, new MethodName("<init>"),
+			__desc);
+		
+		// Allocate the object
+		SpringObject rv = this.allocateObject(__cl);
+			
+		// Stop execution when the constructor exits
+		SpringThread thread = this.thread;
+		int framelimit = thread.numFrames();
+		
+		// Need to pass the allocated object as the first argument
+		int nargs = __args.length;
+		Object[] callargs = new Object[nargs + 1];
+		callargs[0] = rv;
+		for (int i = 0, o = 1; i < nargs; i++, o++)
+			callargs[o] = __args[i];
+		
+		// Enter the constructor
+		thread.enterFrame(cons, callargs);
+		
+		// Execute until it finishes
+		this.run(framelimit);
+		
+		// Return the resulting object
+		return rv;
 	}
 	
 	/**
@@ -917,7 +1049,7 @@ public final class SpringThreadWorker
 						// strings, so "foo" == "foo" must be true even if it
 						// is in different parts of the code
 						if (value instanceof ConstantValueString)
-							throw new todo.TODO();
+							frame.pushToStack(this.asVMObject(value));
 						
 						// This will be pre-boxed so push it to the stack
 						else
