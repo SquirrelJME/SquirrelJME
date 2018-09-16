@@ -267,6 +267,13 @@ public final class Instruction
 					Instruction.__readUnsignedShort(__code, argbase))};
 				break;
 				
+				// Create new array
+			case InstructionIndex.ANEWARRAY:
+				naturalflow = true;
+				args = new Object[]{__pool.<ClassName>require(ClassName.class,
+					Instruction.__readUnsignedShort(__code, argbase))};
+				break;
+				
 				// Load constant value
 			case InstructionIndex.LDC:
 				naturalflow = true;
