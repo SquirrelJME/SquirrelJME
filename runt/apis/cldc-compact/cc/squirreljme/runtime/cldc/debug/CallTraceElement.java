@@ -10,6 +10,8 @@
 
 package cc.squirreljme.runtime.cldc.debug;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.Objects;
 
 /**
@@ -37,6 +39,9 @@ public final class CallTraceElement
 	
 	/** The line in the file. */
 	protected final int line;
+	
+	/** String representation. */
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes an empty call trace element.
@@ -220,7 +225,23 @@ public final class CallTraceElement
 	@Override
 	public final String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+		{
+			// Get all fields to determine how to print it pretty
+			String classname = this.classname,
+				methodname = this.methodname,
+				methoddescriptor = this.methoddescriptor,
+				file = this.file;
+			long address = this.address;
+			int line = this.line;
+			
+			throw new todo.TODO();
+		}
+		
+		return rv;
 	}
 	
 	/**

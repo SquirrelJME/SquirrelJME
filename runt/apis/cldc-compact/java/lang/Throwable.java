@@ -10,6 +10,7 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +49,9 @@ public class Throwable
 	 */
 	private volatile Throwable _cause;
 	
+	/** The stack trace for this throwable. */
+	private volatile CallTraceElement[] _stack;
+	
 	/**
 	 * Initializes a throwable with no cause or message.
 	 *
@@ -55,7 +59,7 @@ public class Throwable
 	 */
 	public Throwable()
 	{
-		this(false, null, null);
+		this(false, 2, null, null);
 	}
 	
 	/**
@@ -66,7 +70,7 @@ public class Throwable
 	 */
 	public Throwable(String __m)
 	{
-		this(false, __m, null);
+		this(false, 2, __m, null);
 	}
 	
 	/**
@@ -77,7 +81,7 @@ public class Throwable
 	 */
 	public Throwable(Throwable __t)
 	{
-		this(true, null, __t);
+		this(true, 2, null, __t);
 	}
 	
 	/**
@@ -89,7 +93,7 @@ public class Throwable
 	 */
 	public Throwable(String __m, Throwable __t)
 	{
-		this(true, __m, __t);
+		this(true, 2, __m, __t);
 	}
 	
 	/**
@@ -97,11 +101,12 @@ public class Throwable
 	 * track of whether it was set by a constructor or not.
 	 *
 	 * @param __ic Is the cause initialized?
+	 * @param __clip The number of stack trace entries to clip.
 	 * @param __m The exception message.
 	 * @param __t The cause.
 	 * @since 2018/09/15
 	 */
-	private Throwable(boolean __ic, String __m, Throwable __t)
+	private Throwable(boolean __ic, int __clip, String __m, Throwable __t)
 	{
 		// These are trivially set
 		this._message = __m;
@@ -110,7 +115,7 @@ public class Throwable
 		
 		// The stack trace is implicitly filled in by this constructor, it
 		// matches the stack trace of the current thread of execution
-		this.fillInStackTrace();
+		this._stack = this.__getStackTrace(__clip);
 	}
 	
 	/**
@@ -154,8 +159,8 @@ public class Throwable
 	 */
 	public Throwable fillInStackTrace()
 	{
-		if (true)
-			throw new todo.TODO();
+		// Get stack trace, ignore this method
+		this._stack = this.__getStackTrace(1);
 		
 		// Returns self
 		return this;
@@ -255,7 +260,7 @@ public class Throwable
 	 */
 	public void printStackTrace()
 	{
-		this.__printStackTrace(System.err);
+		Throwable.__printStackTrace(this, System.err, 0);
 	}
 	
 	/**
@@ -271,7 +276,7 @@ public class Throwable
 		if (__ps == null)
 			throw new NullPointerException("NARG");
 		
-		this.__printStackTrace(__ps);
+		Throwable.__printStackTrace(this, __ps, 0);
 	}
 	
 	/**
@@ -295,21 +300,83 @@ public class Throwable
 	}
 	
 	/**
+	 * Obtains the stack trace for the current thread.
+	 *
+	 * @param __clip The number of entries on the top to clip.
+	 * @return The stack trace for the current stack.
+	 * @throws IllegalArgumentException If the clip is negative.
+	 * @since 2018/09/16
+	 */
+	private static CallTraceElement[] __getStackTrace(int __clip)
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error ZZ0x Cannot specify a negative clip for a
+		// stack trace.}
+		if (__clip < 0)
+			throw new IllegalArgumentException("ZZ0x");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Prints the stack trace to the specified stream. This is internal so that
 	 * one stack printing does not call the other since it is not specified if
 	 * it actually does it.
 	 *
+	 * @param __t The throwable to print for.
 	 * @param __ps The stream to print to.
+	 * @param __indent The indentation level.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/15
 	 */
-	private void __printStackTrace(PrintStream __ps)
+	private static void __printStackTrace(Throwable __t, PrintStream __ps,
+		int __indent)
 		throws NullPointerException
 	{
-		if (__ps == null)
+		if (__t == null || __ps == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// If there is no stack trace, just report that then
+		CallTraceElement[] stack = __t._stack;
+		if (stack == null)
+		{
+			__ps.println("<No stack trace>");
+			return;
+		}
+		
+		// The first thing is the string representation of this throwable
+		__ps.println(__t.toString());
+		
+		// The first entry is the top of the stack so it gets printed first 
+		for (int i = 0, n = stack.length; i < n; i++)
+		{
+			// Ignore any elements that may happen to be null
+			CallTraceElement e = stack[i];
+			if (e == null)
+				continue;
+			
+			// Add indentation
+			for (int p = 0; p < __indent; p++)
+				__ps.print("  ");
+			
+			// Use string representation of the element
+			__ps.println(e.toString());
+		}
+		
+		// Print cause of the exception
+		Throwable cause = __t.getCause();
+		if (cause != null)
+		{
+			__ps.print("  Caused by:");
+			Throwable.__printStackTrace(cause, __ps, __indent + 1);
+		}
+		
+		// Print suppressed exceptions
+		for (Throwable sup : __t.getSuppressed())
+		{
+			__ps.print("  Suppressed:");
+			Throwable.__printStackTrace(sup, __ps, __indent + 2);
+		}
 	}
 }
 
