@@ -34,6 +34,9 @@ public final class SpringArrayObject
 	/** The length of the array. */
 	protected final int length;
 	
+	/** Elements in the array. */
+	private final Object[] _elements;
+	
 	/** String representation. */
 	private Reference<String> _string;
 	
@@ -62,6 +65,7 @@ public final class SpringArrayObject
 		this.selftype = __self;
 		this.component = __cl;
 		this.length = __l;
+		this._elements = new Object[__l];
 	}
 	
 	/**
@@ -72,6 +76,23 @@ public final class SpringArrayObject
 	public final SpringMonitor monitor()
 	{
 		return this.monitor;
+	}
+	
+	/**
+	 * Sets the index to the specified value.
+	 *
+	 * @param __dx The index to set.
+	 * @param __v The value to set.
+	 * @throws SpringArrayStoreException If the array cannot store the given
+	 * type.
+	 * @throws SpringArrayIndexOutOfBoundsException If the index is not within
+	 * bounds.
+	 * @since 2018/09/16
+	 */
+	public final void set(int __dx, Object __v)
+		throws SpringArrayStoreException, SpringArrayIndexOutOfBoundsException
+	{
+		throw new todo.TODO();
 	}
 	
 	/**
