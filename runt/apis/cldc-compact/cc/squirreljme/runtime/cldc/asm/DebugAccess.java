@@ -36,8 +36,9 @@ public final class DebugAccess
 	/**
 	 * Returns the raw call trace without any objects.
 	 *
-	 * The values are in groups of longs for each individual element:
-	 *  0,1. Pointer to class.
+	 * The values are in groups of longs for each individual element, dual
+	 * elements are in {@code [high, low]} order:
+	 *  0,1. Pointer to string, specifying the class.
 	 *  2,3. Pointer to string, specifying the method.
 	 *  4,5. Pointer to string, specifying the method descriptor.
 	 *  6,7. The address of the program counter if it is possible to get.
