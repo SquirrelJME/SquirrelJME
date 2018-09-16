@@ -443,8 +443,8 @@ public final class SpringClass
 			throw new NullPointerException("NARG");
 		
 		// Debug
-		todo.DEBUG.note("Looking up field %s::%s (static=%b)", this.name,
-			__nat, __static);
+		/*todo.DEBUG.note("Looking up field %s::%s (static=%b)", this.name,
+			__nat, __static);*/
 		
 		// {@squirreljme.error BK0j The specified field does not exist.
 		// (The class which was looked in; The name and type of the field)} 
@@ -511,8 +511,8 @@ public final class SpringClass
 			throw new NullPointerException("NARG");
 		
 		// Debug
-		todo.DEBUG.note("Looking up method %s::%s (static=%b)", this.name,
-			__nat, __static);
+		/*todo.DEBUG.note("Looking up method %s::%s (static=%b)", this.name,
+			__nat, __static);*/
 		
 		// {@squirreljme.error BK07 The specified method does not exist.
 		// (The class which was looked in; The name and type of the method)} 
@@ -550,8 +550,8 @@ public final class SpringClass
 			throw new NullPointerException("NARG");
 		
 		// Debug
-		todo.DEBUG.note("Looking up non-virtual method %s::%s.", this.name,
-			__nat);
+		/*todo.DEBUG.note("Looking up non-virtual method %s::%s.", this.name,
+			__nat);*/
 		
 		// {@squirreljme.error BK0r The specified method does not exist, when
 		// non-virtual lookup is used. (The class which was looked in; The

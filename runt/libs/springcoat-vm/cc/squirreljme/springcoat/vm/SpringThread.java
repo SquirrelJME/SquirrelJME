@@ -263,8 +263,8 @@ public final class SpringThread
 				(SpringObject)__args[0]);
 			
 			// Debug
-			todo.DEBUG.note("Frame has %d locals, %d stack", locals.length,
-				this._stack.length);
+			/*todo.DEBUG.note("Frame has %d locals, %d stack", locals.length,
+				this._stack.length);*/
 		}
 		
 		/**
@@ -394,7 +394,7 @@ public final class SpringThread
 			}
 			
 			// Debug
-			todo.DEBUG.note("popped(%s) <- %d", rv, stacktop);
+			/*todo.DEBUG.note("popped(%s) <- %d", rv, stacktop);*/
 			
 			return rv;
 		}
@@ -446,7 +446,7 @@ public final class SpringThread
 			int stacktop = this._stacktop;
 			
 			// Debug
-			todo.DEBUG.note("push(%s) -> %d", __v, stacktop);
+			/*todo.DEBUG.note("push(%s) -> %d", __v, stacktop);*/
 			
 			// {@squirreljme.error BK0c Stack overflow pushing value. (The
 			// value; The current top of the stack; The stack limit)}
