@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.Map;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
-import net.multiphasicapps.classfile.FieldDescriptor;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 
 /**
@@ -37,7 +36,7 @@ public final class SpringClassLoader
 	private final SpringClassLibrary[] _classpath;
 	
 	/** The classes which have been loaded by the virtual machine. */
-	private final Map<FieldDescriptor, SpringClass> _classes =
+	private final Map<ClassName, SpringClass> _classes =
 		new HashMap<>();
 	
 	/**
@@ -89,7 +88,7 @@ public final class SpringClassLoader
 	 * @throws SpringClassFormatException If the class is not formatted
 	 * properly.
 	 * @throws SpringClassNotFoundException If the class was not found.
-	 * @since 2018/09/16
+	 * @since 2018/09/01
 	 */
 	public final SpringClass loadClass(ClassName __cn)
 		throws NullPointerException, SpringClassFormatException,
@@ -98,30 +97,8 @@ public final class SpringClassLoader
 		if (__cn == null)
 			throw new NullPointerException("NARG");
 		
-		return this.loadClass(__cn.field());
-	}
-	
-	/**
-	 * Loads the specified class from a field descriptor to allow for special
-	 * classes.
-	 *
-	 * @param __cn The name of the class to load.
-	 * @return The loaded class.
-	 * @throws NullPointerException On null arguments.
-	 * @throws SpringClassFormatException If the class is not formatted
-	 * properly.
-	 * @throws SpringClassNotFoundException If the class was not found.
-	 * @since 2018/09/01
-	 */
-	public final SpringClass loadClass(FieldDescriptor __cn)
-		throws NullPointerException, SpringClassFormatException,
-			SpringClassNotFoundException
-	{
-		if (__cn == null)
-			throw new NullPointerException("NARG");
-		
 		// Lock on classes
-		Map<FieldDescriptor, SpringClass> classes = this._classes;
+		Map<ClassName, SpringClass> classes = this._classes;
 		synchronized (this.loaderlock)
 		{
 			// If the class has already been initialized, use that
@@ -148,7 +125,7 @@ public final class SpringClassLoader
 				interfaceclasses[i] = this.loadClass(interfacenames[i]);
 			
 			// Load class information
-			rv = new SpringClass(superclass, interfaceclasses, cf, __cn);
+			rv = new SpringClass(superclass, interfaceclasses, cf);
 			
 			// Store for later use
 			classes.put(__cn, rv);
@@ -169,7 +146,7 @@ public final class SpringClassLoader
 	 * @throws SpringClassNotFoundException If the class was not found.
 	 * @since 2018/09/01
 	 */
-	public final ClassFile loadClassFile(FieldDescriptor __cn)
+	public final ClassFile loadClassFile(ClassName __cn)
 		throws NullPointerException, SpringClassFormatException,
 			SpringClassNotFoundException
 	{
@@ -179,16 +156,12 @@ public final class SpringClassLoader
 		// Debug
 		todo.DEBUG.note("Loading class file `%s`...", __cn);
 		
-		// If this is an array or primitive type use virtual class
-		// representation because these classes do not really exist
-		if (__cn.isPrimitive() || __cn.isArray())
-			return ClassFile.special(__cn);
-		
-		// Use class name
-		ClassName inclass = __cn.className();
+		// If this is an array type use virtual class representation
+		if (__cn.isArray())
+			return ClassFile.special(__cn.field());
 		
 		// This is the class that is read, in binary form
-		String fileform = inclass.toString() + ".class";
+		String fileform = __cn.toString() + ".class";
 		
 		// Otherwise we need to go through every single binary to find
 		// the class we want, which can take awhile

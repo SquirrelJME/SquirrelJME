@@ -11,7 +11,6 @@
 package cc.squirreljme.springcoat.vm;
 
 import net.multiphasicapps.classfile.ClassName;
-import net.multiphasicapps.classfile.FieldDescriptor;
 
 /**
  * This is thrown when the specified class could not be found.
@@ -22,7 +21,7 @@ public class SpringClassNotFoundException
 	extends SpringException
 {
 	/** The name of the class. */
-	protected final FieldDescriptor name;
+	protected final ClassName name;
 	
 	/**
 	 * Initialize the exception with no message or cause.
@@ -31,7 +30,7 @@ public class SpringClassNotFoundException
 	 * @throws NullPointerException If no class was specified.
 	 * @since 2018/08/05
 	 */
-	public SpringClassNotFoundException(FieldDescriptor __cn)
+	public SpringClassNotFoundException(ClassName __cn)
 		throws NullPointerException
 	{
 		if (__cn == null)
@@ -48,7 +47,7 @@ public class SpringClassNotFoundException
 	 * @throws NullPointerException If no class was specified.
 	 * @since 2018/08/05
 	 */
-	public SpringClassNotFoundException(FieldDescriptor __cn, String __m)
+	public SpringClassNotFoundException(ClassName __cn, String __m)
 		throws NullPointerException
 	{
 		super(__m);
@@ -68,7 +67,7 @@ public class SpringClassNotFoundException
 	 * @throws NullPointerException If no class was specified.
 	 * @since 2018/08/05
 	 */
-	public SpringClassNotFoundException(FieldDescriptor __cn, String __m,
+	public SpringClassNotFoundException(ClassName __cn, String __m,
 		Throwable __c)
 		throws NullPointerException
 	{
@@ -88,7 +87,7 @@ public class SpringClassNotFoundException
 	 * @throws NullPointerException If no class was specified.
 	 * @since 2018/08/05
 	 */
-	public SpringClassNotFoundException(FieldDescriptor __cn, Throwable __c)
+	public SpringClassNotFoundException(ClassName __cn, Throwable __c)
 		throws NullPointerException
 	{
 		super(__c);
@@ -105,7 +104,7 @@ public class SpringClassNotFoundException
 	 * @return The class name.
 	 * @since 2018/08/05
 	 */
-	public final FieldDescriptor name()
+	public final ClassName name()
 	{
 		return this.name;
 	}
