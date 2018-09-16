@@ -29,7 +29,7 @@ public final class SpringSimpleObject
 		new SpringMonitor();
 	
 	/** Field storage in the class. */
-	private final Object[] _fields;
+	private final SpringFieldStorage[] _fields;
 	
 	/** String representation. */
 	private Reference<String> _string;
@@ -48,7 +48,17 @@ public final class SpringSimpleObject
 			throw new NullPointerException("NARG");
 		
 		this.type = __cl;
-		this._fields = new Object[__cl.instanceFieldCount()];
+		
+		// Setup field array
+		int n;
+		SpringFieldStorage[] fields;
+		this._fields = (fields =
+			new SpringFieldStorage[(n = __cl.instanceFieldCount())]);
+		
+		// Initialize variable for all fields
+		int i = 0;
+		for (SpringField f : __cl.fieldTable())
+			fields[i++] = new SpringFieldStorage(f);
 	}
 	
 	/**
