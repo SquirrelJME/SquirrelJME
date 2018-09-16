@@ -753,6 +753,17 @@ public final class SpringThreadWorker
 						InstructionJumpTarget.class).target();
 					break;
 					
+					// Load integer from array
+				case InstructionIndex.IALOAD:
+					{
+						int dx = frame.<Integer>popFromStack(Integer.class);
+						SpringArrayObject obj = frame.<SpringArrayObject>
+							popFromStack(SpringArrayObject.class);
+						
+						frame.pushToStack(obj.<Integer>get(Integer.class, dx));
+					}
+					break;
+					
 					// Integer constant
 				case InstructionIndex.ICONST_M1:
 				case InstructionIndex.ICONST_0:

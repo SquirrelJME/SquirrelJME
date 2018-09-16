@@ -249,6 +249,32 @@ public class ClassName
 	}
 	
 	/**
+	 * Returns the primitive type of this class, if there is one.
+	 *
+	 * @return The primitive type or {@code null} if it is not one.
+	 * @since 2018/09/16
+	 */
+	public final PrimitiveType primitiveType()
+	{
+		if (!this.isPrimitive())
+			return null;
+		
+		switch (this.binary.toString())
+		{
+			case "boolean":		return PrimitiveType.BOOLEAN;
+			case "byte":		return PrimitiveType.BYTE;
+			case "short":		return PrimitiveType.SHORT;
+			case "char":		return PrimitiveType.CHARACTER;
+			case "int":			return PrimitiveType.INTEGER;
+			case "long":		return PrimitiveType.LONG;
+			case "float":		return PrimitiveType.FLOAT;
+			case "double":		return PrimitiveType.DOUBLE;
+			default:
+				throw new RuntimeException("TODO");
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/09/27
 	 */
