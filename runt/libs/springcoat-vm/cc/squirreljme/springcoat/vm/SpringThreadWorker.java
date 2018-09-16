@@ -785,14 +785,18 @@ public final class SpringThreadWorker
 					break;
 					
 					// Load integer from local variable
+				case InstructionIndex.ILOAD:
+					frame.loadToStack(Integer.class,
+						inst.<Integer>argument(0, Integer.class));
+					break;
+					
+					// Load integer from local variable
 				case InstructionIndex.ILOAD_0:
 				case InstructionIndex.ILOAD_1:
 				case InstructionIndex.ILOAD_2:
 				case InstructionIndex.ILOAD_3:
-					{
-						frame.loadToStack(Integer.class,
-							opid - InstructionIndex.ILOAD_0);
-					}
+					frame.loadToStack(Integer.class,
+						opid - InstructionIndex.ILOAD_0);
 					break;
 					
 					// Invoke special method (constructor, superclass,
@@ -809,6 +813,12 @@ public final class SpringThreadWorker
 					// Invoke virtual method
 				case InstructionIndex.INVOKEVIRTUAL:
 					this.__vmInvokeVirtual(inst, thread, frame);
+					break;
+					
+					// Store integer to local variable
+				case InstructionIndex.ISTORE:
+					frame.storeLocal(inst.<Integer>argument(0, Integer.class),
+						frame.<Integer>popFromStack(Integer.class));
 					break;
 					
 					// Store integer to local variable
