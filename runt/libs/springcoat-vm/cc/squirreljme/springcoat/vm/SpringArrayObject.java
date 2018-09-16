@@ -12,6 +12,7 @@ package cc.squirreljme.springcoat.vm;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.classfile.PrimitiveType;
 
 /**
  * This is an object which acts as an array, which stores some kind of data.
@@ -65,7 +66,77 @@ public final class SpringArrayObject
 		this.selftype = __self;
 		this.component = __cl;
 		this.length = __l;
-		this._elements = new Object[__l];
+		
+		// Initialize elements
+		Object[] elements;
+		this._elements = (elements = new Object[__l]);
+		
+		// Determine the initial value to use
+		PrimitiveType type = __cl.name().primitiveType();
+		Object v;
+		if (type == null)
+			v = SpringNullObject.NULL;
+		else
+			switch (type)
+			{
+				case BOOLEAN:
+				case BYTE:
+				case SHORT:
+				case CHARACTER:
+				case INTEGER:
+					v = Integer.valueOf(0);
+					break;
+				
+				case LONG:
+					v = Long.valueOf(0);
+					break;
+				
+				case FLOAT:
+					v = Float.valueOf(0);
+					break;
+				
+				case DOUBLE:
+					v = Double.valueOf(0);
+					break;
+				
+				default:
+					throw new RuntimeException("OOPS");
+			}
+		
+		// Set all elements to an initial value depending on the type
+		// Set all 
+		for (int i = 0; i < __l; i++)
+			elements[i] = v;
+	}
+	
+	/**
+	 * Sets the index to the specified value.
+	 *
+	 * @param <C> The type of value to get.
+	 * @param __cl The type of value to get.
+	 * @param __dx The index to set.
+	 * @return The contained value.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SpringArrayStoreException If the array cannot store the given
+	 * type.
+	 * @throws SpringArrayIndexOutOfBoundsException If the index is not within
+	 * bounds.
+	 * @since 2018/09/16
+	 */
+	public final <C> C get(Class<C> __cl, int __dx)
+		throws NullPointerException, SpringArrayIndexOutOfBoundsException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error BK1j Out of bounds access to array. (The index;
+		// The length of the array)}
+		int length = this.length;
+		if (__dx < 0 || __dx >= length)
+			throw new SpringArrayStoreException(String.format("BK1j %d %d",
+				__dx, length));
+		
+		return __cl.cast(this._elements[__dx]);
 	}
 	
 	/**
