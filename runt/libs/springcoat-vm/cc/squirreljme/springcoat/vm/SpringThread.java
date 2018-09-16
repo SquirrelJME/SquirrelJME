@@ -394,7 +394,7 @@ public final class SpringThread
 			}
 			
 			// Debug
-			todo.DEBUG.note("Popped %s", rv);
+			todo.DEBUG.note("popped(%s) <- %d", rv, stacktop);
 			
 			return rv;
 		}
@@ -444,6 +444,9 @@ public final class SpringThread
 			
 			Object[] stack = this._stack;
 			int stacktop = this._stacktop;
+			
+			// Debug
+			todo.DEBUG.note("push(%s) -> %d", __v, stacktop);
 			
 			// {@squirreljme.error BK0c Stack overflow pushing value. (The
 			// value; The current top of the stack; The stack limit)}
