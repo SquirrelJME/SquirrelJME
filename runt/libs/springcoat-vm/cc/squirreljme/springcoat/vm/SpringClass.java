@@ -220,6 +220,17 @@ public final class SpringClass
 	}
 	
 	/**
+	 * Returns the table of fields used for this class.
+	 *
+	 * @return The field table used for this class.
+	 * @since 2018/09/16
+	 */
+	public final SpringField[] fieldTable()
+	{
+		return this._fieldtable.clone();
+	}
+	
+	/**
 	 * Returns the associated class file.
 	 *
 	 * @return The class file.
