@@ -668,6 +668,12 @@ public final class SpringThreadWorker
 						SpringArrayObject.class).length());
 					break;
 					
+					// Store reference to local variable
+				case InstructionIndex.ASTORE:
+					frame.storeLocal(inst.<Integer>argument(0, Integer.class),
+						frame.<SpringObject>popFromStack(SpringObject.class));
+					break;
+					
 					// Store reference to local varibale
 				case InstructionIndex.ASTORE_0:
 				case InstructionIndex.ASTORE_1:
