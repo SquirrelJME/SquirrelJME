@@ -1,0 +1,51 @@
+# 2018/09/15
+
+## 09:23
+
+Found a few errors in the stack map parser due to the wrong type being
+checked, good thing for type safety and using a placeholder type for
+nothing rather than something.
+
+## 10:04
+
+According to this code, the active midlet is being set to null. Will need
+to investigate if this is actually the case or the parser is incorrect.
+
+## 10:22
+
+Oh yeah, the jump target is a signed offset.
+
+## 17:00
+
+Implementing monitors is going to be fun, because things are quite blocking
+until the monitors are free.
+
+## 17:20
+
+Okay, so `notify` and `notifyAll` just waken up threads waiting on the monitor
+which I guess they then spin and try to compete for obtaining the lock. I will
+say that from that I guess, that both are pretty much the same? But I guess it
+just is a hint really. Well `wait` will wait until a `notify` is called or it
+times out. So if `notify` is never called, it will just wait forever. So that
+makes sense.
+
+## 17:38
+
+Nice! Now a ton of instructions are executed, except it seems to get stuck
+into a loop initializing the TODO. I think this is because `Throwable` is not
+implemented and it is just a TODO.
+
+## 19:06
+
+Going to need to implement arrays now since I will be allocating one now. They
+are a bit special in that they are objects but they have rather linear
+storage and length, so will be interesting.
+
+## 22:26
+
+Had an idea, for the stack map table and unique values and such it could be
+handled by the class file code. That might work out a bunch, since I could
+just write it once and have the stuff represent everything as needed
+accordingly. Then it would be something that could be useful as a
+representation of the byte code itself. Of course there may possible be some
+things it depends on which are completely unknown.
