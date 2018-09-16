@@ -58,6 +58,28 @@ public class ClassName
 	}
 	
 	/**
+	 * Adds dimensions to the class.
+	 *
+	 * @param __d The number of dimensions to add.
+	 * @return The class with added dimensions.
+	 * @throws IllegalArgumentException If the dimensions are negative.
+	 * @since 2018/09/15
+	 */
+	public final ClassName addDimensions(int __d)
+		throws IllegalArgumentException
+	{
+		if (__d == 0)
+			return this;
+		
+		// {@squirreljme.error JC2b Cannot add negative dimensions.}
+		if (__d < 0)
+			throw new IllegalArgumentException("JC2b");
+		
+		// Going to be the same here but as a class name instead
+		return this.field().addDimensions(__d).className();
+	}
+	
+	/**
 	 * Returns the binary name for this class.
 	 *
 	 * @return The class binary name or {@code null} if this is an array or
