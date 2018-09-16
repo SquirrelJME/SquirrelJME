@@ -394,6 +394,42 @@ public final class SpringThreadWorker
 	}
 	
 	/**
+	 * Looks up the specified instance field specifier and returns the
+	 * information for it.
+	 *
+	 * @param __f The field to lookup.
+	 * @return The specified for the field.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SpringIncompatibleClassChangeException If the field is static.
+	 * @throws SpringNoSuchFieldException If the field does not exist.
+	 * @since 2018/09/16
+	 */
+	private final SpringField __lookupInstanceField(FieldReference __f)
+		throws NullPointerException, SpringIncompatibleClassChangeException,
+			SpringNoSuchFieldException
+	{
+		if (__f == null)
+			throw new NullPointerException("NARG");
+			
+		// {@squirreljme.error BK18 Could not access the target class for
+		// instance field access. (The field reference)}
+		SpringClass inclass = this.loadClass(__f.className());
+		if (!this.checkAccess(inclass))
+			throw new SpringIncompatibleClassChangeException(
+				String.format("BK18 %s", __f));
+		
+		// {@squirreljme.error BK19 Could not access the target field for
+		// instance field access. (The field reference)}
+		SpringField field = inclass.lookupField(false,
+			__f.memberNameAndType());
+		if (!this.checkAccess(field))
+			throw new SpringIncompatibleClassChangeException(
+				String.format("BK19 %s", __f));
+		
+		return field;
+	}
+	
+	/**
 	 * Looks up the specified static field and returns the storage for it.
 	 *
 	 * @param __f The field to lookup.
@@ -664,6 +700,43 @@ public final class SpringThreadWorker
 					// Return from method with no return value
 				case InstructionIndex.RETURN:
 					thread.popFrame();
+					break;
+					
+					// Put to instance field
+				case InstructionIndex.PUTFIELD:
+					{
+						// Lookup field
+						SpringField ssf = this.__lookupInstanceField(
+							inst.<FieldReference>argument(0,
+							FieldReference.class));
+						
+						// Pop the value and the object to mess with
+						Object value = frame.popFromStack();
+						SpringObject ref = frame.<SpringObject>popFromStack(
+							SpringObject.class);
+						
+						// {@squirreljme.error BK1a Cannot store value into
+						// null reference.}
+						if (ref == SpringNullObject.NULL)
+							throw new SpringNullPointerException("BK1a");
+						
+						// {@squirreljme.error BK1b Cannot store value into
+						// this instance because it not a simple object.}
+						if (!(ref instanceof SpringSimpleObject))
+							throw new SpringIncompatibleClassChangeException(
+								"BK1b");
+						SpringSimpleObject sso = (SpringSimpleObject)ref;
+						
+						// {@squirreljme.error BK1c Cannot store value into
+						// a field which belongs to another class.}
+						if (!sso.type().isAssignableFrom(
+							this.loadClass(ssf.inClass())))
+							throw new SpringClassCastException("BK1c");
+						
+						// Set
+						sso.fieldByIndex(ssf.index()).set(value,
+							isinstanceinit);
+					}
 					break;
 				
 					// Put to static field
