@@ -139,7 +139,11 @@ public final class SpringThreadWorker
 			SpringArrayObject rv = this.allocateArray(
 				this.loadClass(new ClassName("int")), n);
 			
-			throw new todo.TODO();
+			// Copy array values
+			for (int i = 0; i < n; i++)
+				rv.set(i, in[i]);
+			
+			return rv;
 		}
 		
 		// {@squirreljme.error BK1f Do not know how to convert the given class
