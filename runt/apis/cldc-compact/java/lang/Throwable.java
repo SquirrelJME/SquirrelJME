@@ -10,6 +10,7 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.asm.DebugAccess;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -49,8 +50,8 @@ public class Throwable
 	 */
 	private volatile Throwable _cause;
 	
-	/** The stack trace for this throwable. */
-	private volatile CallTraceElement[] _stack;
+	/** The stack trace for this throwable (in raw form). */
+	private volatile long[] _stack;
 	
 	/**
 	 * Initializes a throwable with no cause or message.
@@ -300,14 +301,14 @@ public class Throwable
 	}
 	
 	/**
-	 * Obtains the stack trace for the current thread.
+	 * Obtains the stack trace for the current thread in raw format.
 	 *
 	 * @param __clip The number of entries on the top to clip.
 	 * @return The stack trace for the current stack.
 	 * @throws IllegalArgumentException If the clip is negative.
 	 * @since 2018/09/16
 	 */
-	private static CallTraceElement[] __getStackTrace(int __clip)
+	private static long[] __getStackTrace(int __clip)
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error ZZ0x Cannot specify a negative clip for a
@@ -315,7 +316,22 @@ public class Throwable
 		if (__clip < 0)
 			throw new IllegalArgumentException("ZZ0x");
 		
-		throw new todo.TODO();
+		// Get the raw trace here
+		long[] rawstack = DebugAccess.rawCallTrace();
+		
+		// Determine the new length of the raw data
+		int len = rawstack.length,
+			skippy = DebugAccess.TRACE_COUNT * 6,
+			newlen = len - skippy;
+		if (newlen < 0)
+			newlen = 0;
+		
+		// Copy the trace data into this one
+		long[] rv = new long[newlen];
+		for (int i = skippy, o = 0; o < newlen; i++, o++)
+			rv[0] = rawstack[i];
+		
+		return rv;
 	}
 	
 	/**
@@ -336,13 +352,18 @@ public class Throwable
 		if (__t == null || __ps == null)
 			throw new NullPointerException("NARG");
 		
-		// If there is no stack trace, just report that then
-		CallTraceElement[] stack = __t._stack;
-		if (stack == null)
+		// Internally raw stacks are stored since that is the fastest way
+		// to generate a stack trace, which will only be resolved when this
+		// method is called to print.
+		long[] rawstack = __t._stack;
+		if (rawstack == null)
 		{
 			__ps.println("<No stack trace>");
 			return;
 		}
+		
+		// Resolve the stack trace so it is easier to work with
+		CallTraceElement[] stack = DebugAccess.resolveRawCallTrace(rawstack);
 		
 		// The first thing is the string representation of this throwable
 		__ps.println(__t.toString());
