@@ -22,7 +22,7 @@ public final class DebugAccess
 {
 	/** The elements per trace. */
 	public static final int TRACE_COUNT =
-		6;
+		11;
 	
 	/**
 	 * Not used.
@@ -37,19 +37,19 @@ public final class DebugAccess
 	 * Returns the raw call trace without any objects.
 	 *
 	 * The values are in groups of longs for each individual element:
-	 *  0. Pointer to class.
-	 *  1. Pointer to string, specifying the method.
-	 *  2. Pointer to string, specifying the method descriptor.
-	 *  3. The address of the program counter if it is possible to get.
-	 *  4. Pointer to string, specifying the file if it is possible to get.
-	 *  5. The line of code in the file this is in, if it is possible to get.
+	 *  0,1. Pointer to class.
+	 *  2,3. Pointer to string, specifying the method.
+	 *  4,5. Pointer to string, specifying the method descriptor.
+	 *  6,7. The address of the program counter if it is possible to get.
+	 *  8,9. Pointer to string, specifying the file if it is possible to get.
+	 *  10 . The line of code in the file this is in, if it is possible to get.
 	 *
 	 * If any value is unknown then {@code -1} will be used as the value.
 	 *
 	 * @return The raw call trace in pointer and value format.
 	 * @since 2018/09/16
 	 */
-	public static final native long[] rawCallTrace();
+	public static final native int[] rawCallTrace();
 	
 	/**
 	 * Returns the current call trace in wrapped special types.
@@ -71,7 +71,7 @@ public final class DebugAccess
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/16
 	 */
-	public static final CallTraceElement[] resolveRawCallTrace(long[] __v)
+	public static final CallTraceElement[] resolveRawCallTrace(int[] __v)
 		throws NullPointerException
 	{
 		if (__v == null)

@@ -51,7 +51,7 @@ public class Throwable
 	private volatile Throwable _cause;
 	
 	/** The stack trace for this throwable (in raw form). */
-	private volatile long[] _stack;
+	private volatile int[] _stack;
 	
 	/**
 	 * Initializes a throwable with no cause or message.
@@ -308,7 +308,7 @@ public class Throwable
 	 * @throws IllegalArgumentException If the clip is negative.
 	 * @since 2018/09/16
 	 */
-	private static long[] __getStackTrace(int __clip)
+	private static int[] __getStackTrace(int __clip)
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error ZZ0x Cannot specify a negative clip for a
@@ -317,7 +317,7 @@ public class Throwable
 			throw new IllegalArgumentException("ZZ0x");
 		
 		// Get the raw trace here
-		long[] rawstack = DebugAccess.rawCallTrace();
+		int[] rawstack = DebugAccess.rawCallTrace();
 		
 		// Determine the new length of the raw data
 		int len = rawstack.length,
@@ -327,7 +327,7 @@ public class Throwable
 			newlen = 0;
 		
 		// Copy the trace data into this one
-		long[] rv = new long[newlen];
+		int[] rv = new int[newlen];
 		for (int i = skippy, o = 0; o < newlen; i++, o++)
 			rv[0] = rawstack[i];
 		
@@ -355,7 +355,7 @@ public class Throwable
 		// Internally raw stacks are stored since that is the fastest way
 		// to generate a stack trace, which will only be resolved when this
 		// method is called to print.
-		long[] rawstack = __t._stack;
+		int[] rawstack = __t._stack;
 		if (rawstack == null)
 		{
 			__ps.println("<No stack trace>");
