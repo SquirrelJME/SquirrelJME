@@ -321,7 +321,7 @@ public class Throwable
 		
 		// Determine the new length of the raw data
 		int len = rawstack.length,
-			skippy = DebugAccess.TRACE_COUNT * 6,
+			skippy = DebugAccess.TRACE_COUNT * __clip,
 			newlen = len - skippy;
 		if (newlen < 0)
 			newlen = 0;
