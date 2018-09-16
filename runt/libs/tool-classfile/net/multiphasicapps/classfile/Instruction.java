@@ -367,6 +367,34 @@ public final class Instruction
 					Instruction.__readUnsignedShort(__code, argbase))};
 				break;
 				
+				// Allocate array of primitive type
+			case InstructionIndex.NEWARRAY:
+				naturalflow = true;
+				
+				// The primitive type depends
+				PrimitiveType pt;
+				int pd;
+				switch ((pd = Instruction.__readUnsignedByte(__code, argbase)))
+				{
+					case 4:		pt = PrimitiveType.BOOLEAN; break;
+					case 5:		pt = PrimitiveType.CHARACTER; break;
+					case 6:		pt = PrimitiveType.FLOAT; break;
+					case 7:		pt = PrimitiveType.DOUBLE; break;
+					case 8:		pt = PrimitiveType.BYTE; break;
+					case 9:		pt = PrimitiveType.SHORT; break;
+					case 10:	pt = PrimitiveType.INTEGER; break;
+					case 11:	pt = PrimitiveType.LONG; break;
+					
+						// {@squirreljme.error JC2d Unknown type specified for
+						// new primitive array. (The operation; The address;
+						// The type specifier)}
+					default:
+						throw new InvalidClassFormatException(String.format(
+							"JC2d %d %d %d", op, __a, pd));
+				}
+				args = new Object[]{pt};
+				break;
+				
 				// {@squirreljme.error JC10 The operation at the specified
 				// address is not supported yet. (The operation; The name of
 				// the operation; The address it is at)}
