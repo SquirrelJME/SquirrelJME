@@ -18,24 +18,48 @@ package java.lang;
 public class Error
 	extends Throwable
 {
+	/**
+	 * Initializes the error with no message or cause.
+	 *
+	 * @since 2018/09/16
+	 */
 	public Error()
 	{
-		throw new todo.TODO();
 	}
 	
-	public Error(String __a)
+	/**
+	 * Initializes the error with a message and no cause.
+	 *
+	 * @param __m The message to use.
+	 * @since 2018/09/16
+	 */
+	public Error(String __m)
 	{
-		throw new todo.TODO();
+		super(__m);
 	}
 	
-	public Error(String __a, Throwable __b)
+	/**
+	 * Initializes the error with a message and the given cause.
+	 *
+	 * @param __m The message to use.
+	 * @param __t The cause of this error.
+	 * @since 2018/09/16
+	 */
+	public Error(String __m, Throwable __t)
 	{
-		throw new todo.TODO();
+		super(__m);
 	}
 	
-	public Error(Throwable __a)
+	/**
+	 * Initializes the error with no message and the given cause.
+	 *
+	 * @param __m The message to use.
+	 * @param __t The cause of this error.
+	 * @since 2018/09/16
+	 */
+	public Error(Throwable __t)
 	{
-		throw new todo.TODO();
+		super(__t);
 	}
 }
 
