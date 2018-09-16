@@ -258,10 +258,19 @@ public final class ClassFile
 		if (!__d.isArray() && !__d.isPrimitive())
 			throw new IllegalArgumentException(String.format("JC0d %s", __d));
 		
+		// Use the names of the types in the language
+		ClassName name;
+		if (__d.isPrimitive())
+			name = ClassName.fromPrimitiveType(__d.primitiveType());
+		
+		// Treat array as normal class name
+		else
+			name = __d.className();
+		
 		// Build
 		return new ClassFile(ClassVersion.MAX_VERSION,
 			new ClassFlags(ClassFlag.PUBLIC, ClassFlag.FINAL, ClassFlag.SUPER,
-			ClassFlag.SYNTHETIC), new ClassName(__d.toString()),
+			ClassFlag.SYNTHETIC), name,
 			new ClassName("java/lang/Object"), new ClassName[0], new Field[0],
 			new Method[0], new InnerClasses(), new AnnotationTable(),
 			"<special>");
