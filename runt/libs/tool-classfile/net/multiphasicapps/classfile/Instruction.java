@@ -237,6 +237,13 @@ public final class Instruction
 				naturalflow = true;
 				break;
 				
+				// First value is a signed byte
+			case InstructionIndex.BIPUSH:
+				naturalflow = true;
+				args = new Object[]{
+					Instruction.__readByte(__code, argbase)};
+				break;
+				
 				// First value is an unsigned byte
 			case InstructionIndex.ALOAD:
 			case InstructionIndex.ILOAD:
@@ -248,9 +255,9 @@ public final class Instruction
 			case InstructionIndex.LSTORE:
 			case InstructionIndex.FSTORE:
 			case InstructionIndex.DSTORE:
+				naturalflow = true;
 				args = new Object[]{
 					Instruction.__readUnsignedByte(__code, argbase)};
-				naturalflow = true;
 				break;
 				
 				// Create new array
@@ -501,6 +508,23 @@ public final class Instruction
 		}
 		
 		return rv;
+	}
+	
+	/**
+	 * Reads a signed byte from the specified array.
+	 *
+	 * @param __a The array to read from.
+	 * @param __o The offset to read from.
+	 * @return The read value.
+	 * @throws InvalidClassFormatException If the offset exceeds the bounds of
+	 * the given array.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/16
+	 */
+	private static final int __readByte(byte[] __a, int __o)
+		throws InvalidClassFormatException, NullPointerException
+	{
+		return (byte)Instruction.__readUnsignedByte(__a, __o);
 	}
 	
 	/**
