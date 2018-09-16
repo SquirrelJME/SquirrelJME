@@ -713,6 +713,17 @@ public final class SpringThreadWorker
 					thread.popFrame();
 					break;
 					
+					// Pop category 1 value
+				case InstructionIndex.POP:
+					{
+						// {@squirreljme.error BK1e Cannot pop category two
+						// value from stack.}
+						Object val = frame.popFromStack();
+						if (val instanceof Long || val instanceof Double)
+							throw new SpringVirtualMachineException("BK1e");
+					}
+					break;
+					
 					// Put to instance field
 				case InstructionIndex.PUTFIELD:
 					{
