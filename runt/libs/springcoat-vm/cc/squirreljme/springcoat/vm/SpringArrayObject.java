@@ -79,6 +79,17 @@ public final class SpringArrayObject
 	}
 	
 	/**
+	 * Returns the length of this array.
+	 *
+	 * @return The array length.
+	 * @since 2018/09/16
+	 */
+	public final int length()
+	{
+		return this.length;
+	}
+	
+	/**
 	 * Sets the index to the specified value.
 	 *
 	 * @param __dx The index to set.
