@@ -504,6 +504,30 @@ public final class SpringThreadWorker
 					}
 					break;
 					
+					// Checks casting from a type to another
+				case InstructionIndex.CHECKCAST:
+					{
+						SpringClass as = this.resolveClass(inst.
+							<ClassName>argument(0, ClassName.class));
+						
+						// This is just popped back on if it passes
+						SpringObject pop = frame.<SpringObject>popFromStack(
+							SpringObject.class);
+						
+						// {@squirreljme.error BK17 Cannot cast object to the
+						// target type. (The type to cast to; The type of the
+						// object)}
+						if (pop != SpringNullObject.NULL &&
+							!as.isAssignableFrom(pop.type()))
+							throw new SpringClassCastException(String.format(
+								"BK17 %s %s", as, pop.type()));
+						
+						// Return the popped value
+						else
+							frame.pushToStack(pop);
+					}
+					break;
+					
 					// Duplicate top-most stack entry
 				case InstructionIndex.DUP:
 					{
