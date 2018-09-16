@@ -663,7 +663,7 @@ public final class SpringThreadWorker
 					
 					// Length of array
 				case InstructionIndex.ARRAYLENGTH:
-					frame.pushToStack(this.<SpringArrayObject>popFromClass(
+					frame.pushToStack(frame.<SpringArrayObject>popFromClass(
 						SpringArrayObject.class).length());
 					break;
 					
