@@ -237,6 +237,22 @@ public final class Instruction
 				naturalflow = true;
 				break;
 				
+				// First value is an unsigned short
+			case InstructionIndex.ALOAD:
+			case InstructionIndex.ILOAD:
+			case InstructionIndex.LLOAD:
+			case InstructionIndex.FLOAD:
+			case InstructionIndex.DLOAD:
+			case InstructionIndex.ASTORE:
+			case InstructionIndex.ISTORE:
+			case InstructionIndex.LSTORE:
+			case InstructionIndex.FSTORE:
+			case InstructionIndex.DSTORE:
+				args = new Object[]{
+					Instruction.__readUnsignedShort(__code, argbase)};
+				naturalflow = true;
+				break;
+				
 				// Create new array
 			case InstructionIndex.ANEWARRAY:
 				naturalflow = true;
