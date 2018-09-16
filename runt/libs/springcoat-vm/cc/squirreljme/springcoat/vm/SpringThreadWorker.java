@@ -129,6 +129,19 @@ public final class SpringThreadWorker
 		else if (__in instanceof Byte || __in instanceof Short)
 			return Integer.valueOf(((Number)__in).intValue());
 		
+		// Integer array
+		else if (__in instanceof int[])
+		{
+			int[] in = (int[])__in;
+			
+			// Setup return array
+			int n = in.length;
+			SpringArrayObject rv = this.allocateArray(
+				this.loadClass(new ClassName("int")), n);
+			
+			throw new todo.TODO();
+		}
+		
 		// {@squirreljme.error BK1f Do not know how to convert the given class
 		// to a virtual machine object. (The input class)}
 		else

@@ -28,6 +28,9 @@ public class ClassName
 	/** The field type of the class (for arrays). */
 	protected final FieldDescriptor field;
 	
+	/** Is this considered primitive? */
+	protected final boolean isprimitive;
+	
 	/**
 	 * Initializes the class name.
 	 *
@@ -47,6 +50,7 @@ public class ClassName
 		{
 			this.binary = null;
 			this.field = new FieldDescriptor(__n);
+			this.isprimitive = false;
 		}
 		
 		// Not an array
@@ -54,6 +58,24 @@ public class ClassName
 		{
 			this.binary = new BinaryName(__n);
 			this.field = null;
+			
+			// Consider this a primitive type
+			switch (__n)
+			{
+				case "boolean":
+				case "byte":
+				case "short":
+				case "char":
+				case "int":
+				case "long":
+				case "float":
+				case "double":
+					this.isprimitive = true;
+					break;
+				
+				default:
+					this.isprimitive = false;
+			}
 		}
 	}
 	
@@ -137,7 +159,24 @@ public class ClassName
 	 */
 	public FieldDescriptor field()
 	{
+		// If this is a primitive type, treat as one
 		BinaryName binary = this.binary;
+		if (this.isprimitive)
+			switch (binary.toString())
+			{
+				case "boolean":		return new FieldDescriptor("Z");
+				case "byte":		return new FieldDescriptor("B");
+				case "short":		return new FieldDescriptor("S");
+				case "char":		return new FieldDescriptor("C");
+				case "int":			return new FieldDescriptor("I");
+				case "long":		return new FieldDescriptor("J");
+				case "float":		return new FieldDescriptor("F");
+				case "double":		return new FieldDescriptor("D");
+				default:
+					throw new RuntimeException("TODO");
+			}
+		
+		// If just a binary name, convert
 		if (binary != null)
 			return new FieldDescriptor("L" + binary + ";");
 		return this.field;
@@ -206,7 +245,7 @@ public class ClassName
 	public boolean isPrimitive()
 	{
 		FieldDescriptor field = this.field;
-		return field != null && field.isPrimitive();
+		return this.isprimitive || field != null && field.isPrimitive();
 	}
 	
 	/**
@@ -220,6 +259,52 @@ public class ClassName
 		if (binary != null)
 			return binary.toString();
 		return field.toString();
+	}
+	
+	/**
+	 * Translates the primitive type to the given class type.
+	 *
+	 * @param __t The type to convert.
+	 * @return The name of the class for this primitive.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/16
+	 */
+	public static final ClassName fromPrimitiveType(PrimitiveType __t)
+		throws NullPointerException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Depends on the primitive type
+		switch (__t)
+		{
+			case BOOLEAN:
+				return new ClassName("boolean");
+			
+			case BYTE:
+				return new ClassName("byte");
+			
+			case SHORT:
+				return new ClassName("short");
+			
+			case CHARACTER:
+				return new ClassName("char");
+			
+			case INTEGER:
+				return new ClassName("int");
+			
+			case LONG:
+				return new ClassName("long");
+			
+			case FLOAT:
+				return new ClassName("float");
+			
+			case DOUBLE:
+				return new ClassName("double");
+			
+			default:
+				throw new RuntimeException("OOPS");
+		}
 	}
 }
 
