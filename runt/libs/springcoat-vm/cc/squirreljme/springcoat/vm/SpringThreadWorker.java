@@ -765,6 +765,18 @@ public final class SpringThreadWorker
 						-1 + (opid - InstructionIndex.ICONST_M1)));
 					break;
 					
+					// int a >= b
+				case InstructionIndex.IF_ICMPGE:
+					{
+						int b = frame.<Integer>popFromStack(Integer.class),
+							a = frame.<Integer>popFromStack(Integer.class);
+						
+						if (a >= b)
+							nextpc = inst.<InstructionJumpTarget>argument(0,
+								InstructionJumpTarget.class).target();
+					}
+					break;
+					
 					// If greater than or equal to zero
 				case InstructionIndex.IFGE:
 					if (frame.<Integer>popFromStack(Integer.class) >= 0)
