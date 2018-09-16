@@ -40,7 +40,7 @@ public final class DEBUG
 	{
 		// Print it out
 		PrintStream ps = System.err;
-		ps.print("DEBUG -- ");
+		ps.print("DBUG ");
 		ps.print(TODO.__formatCondensedTrace(TODO.__where()));
 		ps.print(" -- ");
 		ps.printf(__fmt, __args);

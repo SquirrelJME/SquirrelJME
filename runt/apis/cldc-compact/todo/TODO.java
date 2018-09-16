@@ -93,7 +93,7 @@ public class TODO
 	{
 		// Print it out
 		PrintStream ps = System.err;
-		ps.print("TODO -- ");
+		ps.print("TODO ");
 		ps.print(TODO.__formatCondensedTrace(TODO.__where()));
 		ps.print(" -- ");
 		ps.printf(__fmt, __args);
@@ -137,7 +137,6 @@ public class TODO
 				if (i < ld)
 				{
 					sb.append(cn.charAt(i));
-					sb.append('.');
 					
 					i = cn.indexOf('.', i) + 1;
 				}
@@ -145,6 +144,8 @@ public class TODO
 				// Finish string
 				else
 				{
+					if (i > 0)
+						sb.append('.');
 					sb.append(cn.substring(i));
 					break;
 				}
