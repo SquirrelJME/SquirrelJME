@@ -850,6 +850,15 @@ public final class SpringThreadWorker
 					frame.loadToStack(Integer.class,
 						opid - InstructionIndex.ILOAD_0);
 					break;
+				
+					// Multiply integer
+				case InstructionIndex.IMUL:
+					{
+						int b = frame.<Integer>popFromStack(Integer.class),
+							a = frame.<Integer>popFromStack(Integer.class);
+						frame.pushToStack(a * b);
+					}
+					break;
 					
 					// Invoke special method (constructor, superclass,
 					// or private)
@@ -882,14 +891,14 @@ public final class SpringThreadWorker
 						frame.<Integer>popFromStack(Integer.class));
 					break;
 				
-				// Subtract integer
-			case InstructionIndex.ISUB:
-				{
-					Integer b = frame.<Integer>popFromStack(Integer.class),
-						a = frame.<Integer>popFromStack(Integer.class);
-					frame.pushToStack(a - b);
-				}
-				break;
+					// Subtract integer
+				case InstructionIndex.ISUB:
+					{
+						Integer b = frame.<Integer>popFromStack(Integer.class),
+							a = frame.<Integer>popFromStack(Integer.class);
+						frame.pushToStack(a - b);
+					}
+					break;
 					
 					// Load from constant pool, push to the stack
 				case InstructionIndex.LDC:
