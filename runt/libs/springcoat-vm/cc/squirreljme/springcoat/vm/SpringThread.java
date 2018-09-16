@@ -279,6 +279,22 @@ public final class SpringThread
 		}
 		
 		/**
+		 * Loads a value from local variables.
+		 *
+		 * @param <C> The type to return.
+		 * @param __cl The type to return.
+		 * @param __dx The index to load from.
+		 * @return The read value.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2018/09/16
+		 */
+		public final <C> C loadLocal(Class<C> __cl, int __dx)
+			throws NullPointerException
+		{
+			return __cl.cast(this._locals[__dx]);
+		}
+		
+		/**
 		 * Loads the specified value from a local variable and pushes it to
 		 * the stack.
 		 *

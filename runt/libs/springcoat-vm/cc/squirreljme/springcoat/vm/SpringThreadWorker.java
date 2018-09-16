@@ -826,6 +826,16 @@ public final class SpringThreadWorker
 					}
 					break;
 					
+					// Increment local variable
+				case InstructionIndex.IINC:
+					{
+						int dx = inst.<Integer>argument(0, Integer.class);
+						frame.storeLocal(dx, frame.<Integer>loadLocal(
+							Integer.class, dx) + inst.<Integer>argument(1,
+							Integer.class));
+					}
+					break;
+					
 					// Load integer from local variable
 				case InstructionIndex.ILOAD:
 					frame.loadToStack(Integer.class,
