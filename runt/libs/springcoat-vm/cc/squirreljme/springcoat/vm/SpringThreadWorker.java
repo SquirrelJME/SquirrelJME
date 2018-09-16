@@ -99,6 +99,43 @@ public final class SpringThreadWorker
 	}
 	
 	/**
+	 * Converts the specified native object to a virtual machine type.
+	 *
+	 * @param __in The input object.
+	 * @return The resulting VM object.
+	 * @since 2018/09/16
+	 */
+	public final Object asVMType(Object __in)
+	{
+		// Null is converted to null
+		if (__in == null)
+			return SpringNullObject.NULL;
+		
+		// As-is
+		else if (__in instanceof Integer || __in instanceof Long ||
+			__in instanceof Float || __in instanceof Double)
+			return __in;
+		
+		// Boolean to integer
+		else if (__in instanceof Boolean)
+			return Integer.valueOf((Boolean.TRUE.equals(__in) ? 1 : 0));
+		
+		// Character to Integer
+		else if (__in instanceof Character)
+			return Integer.valueOf(((Character)__in).charValue());
+		
+		// Promoted to integer
+		else if (__in instanceof Byte || __in instanceof Short)
+			return Integer.valueOf(((Number)__in).intValue());
+		
+		// {@squirreljme.error BK1f Do not know how to convert the given class
+		// to a virtual machine object. (The input class)}
+		else
+			throw new RuntimeException(
+				String.format("BK1f %s", __in.getClass()));
+	}
+	
+	/**
 	 * Checks if the given class may be accessed.
 	 *
 	 * @param __cl The class to access.
