@@ -748,8 +748,8 @@ public final class SpringThreadWorker
 		Instruction inst = code.getByAddress(pc);
 		
 		// Debug
-		todo.DEBUG.note("step(%s %s::%s) -> %s", thread.name(),
-			method.inClass(), method.nameAndType(), inst);
+		/*todo.DEBUG.note("step(%s %s::%s) -> %s", thread.name(),
+			method.inClass(), method.nameAndType(), inst);*/
 		
 		// Used to detect the next instruction of execution following this,
 		// may be set accordingly in the frame manually
