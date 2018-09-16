@@ -654,11 +654,17 @@ public final class SpringThreadWorker
 						opid - InstructionIndex.ALOAD_0);
 					break;
 				
-					// Alolcate new array
+					// Allocate new array
 				case InstructionIndex.ANEWARRAY:
 					frame.pushToStack(this.allocateArray(this.resolveClass(
 						inst.<ClassName>argument(0, ClassName.class)),
 						frame.<Integer>popFromStack(Integer.class)));
+					break;
+					
+					// Length of array
+				case InstructionIndex.ARRAYLENGTH:
+					frame.pushToStack(this.<SpringArrayObject>popFromClass(
+						SpringArrayObject.class).length());
 					break;
 					
 					// Store reference to local varibale
