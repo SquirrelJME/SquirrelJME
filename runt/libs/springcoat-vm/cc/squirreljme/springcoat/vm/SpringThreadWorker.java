@@ -804,6 +804,15 @@ public final class SpringThreadWorker
 					this.__vmInvokeVirtual(inst, thread, frame);
 					break;
 					
+					// Store integer to local variable
+				case InstructionIndex.ISTORE_0:
+				case InstructionIndex.ISTORE_1:
+				case InstructionIndex.ISTORE_2:
+				case InstructionIndex.ISTORE_3:
+					frame.storeLocal(opid - InstructionIndex.ISTORE_0,
+						frame.<Integer>popFromStack(Integer.class));
+					break;
+					
 					// Load from constant pool, push to the stack
 				case InstructionIndex.LDC:
 					{
