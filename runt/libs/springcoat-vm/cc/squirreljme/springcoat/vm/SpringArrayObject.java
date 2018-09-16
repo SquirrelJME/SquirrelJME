@@ -92,7 +92,23 @@ public final class SpringArrayObject
 	public final void set(int __dx, Object __v)
 		throws SpringArrayStoreException, SpringArrayIndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error BK1h Out of bounds access to array. (The index;
+		// The length of the array)}
+		int length = this.length;
+		if (__dx < 0 || __dx >= length)
+			throw new SpringArrayStoreException(String.format("BK1h %d %d",
+				__dx, length));
+		
+		// {@squirreljme.error BK1i The specified type is not compatible
+		// with the values this array stores. (The input value;
+		// The component type)}
+		SpringClass component = this.component;
+		if (!component.isCompatible(__v))
+			throw new SpringArrayIndexOutOfBoundsException(String.format(
+				"BK1i %s %s", __v, component));
+		
+		// Set
+		this._elements[__dx] = __v;
 	}
 	
 	/**
