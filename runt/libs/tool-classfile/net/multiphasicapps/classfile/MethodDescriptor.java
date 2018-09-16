@@ -182,6 +182,17 @@ public final class MethodDescriptor
 	}
 	
 	/**
+	 * Does this method have a return value?
+	 *
+	 * @return If the method has a return value.
+	 * @since 2018/09/16
+	 */
+	public final boolean hasReturnValue()
+	{
+		return null != this.rvalue;
+	}
+	
+	/**
 	 * Returns the Java type stack for this descriptor.
 	 * 
 	 * @return The descriptor as it appears on the Java Stack.

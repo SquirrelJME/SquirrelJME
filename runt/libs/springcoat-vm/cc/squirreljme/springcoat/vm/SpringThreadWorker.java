@@ -105,7 +105,7 @@ public final class SpringThreadWorker
 	 * @return The resulting VM object.
 	 * @since 2018/09/16
 	 */
-	public final Object asVMType(Object __in)
+	public final Object asVMObject(Object __in)
 	{
 		// Null is converted to null
 		if (__in == null)
@@ -361,6 +361,27 @@ public final class SpringThreadWorker
 		
 		// Return the input class
 		return __cl;
+	}
+	
+	/**
+	 * Handles a native action within the VM.
+	 *
+	 * @param __func The function to call.
+	 * @param __args The arguments to the function.
+	 * @return The result from the call.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/16
+	 */
+	public final Object nativeMethod(String __func, Object... __args)
+		throws NullPointerException
+	{
+		if (__func == null || __args == null)
+			throw new NullPointerException("NARG");
+		
+		// Debug
+		todo.DEBUG.note("Call native %s", __func);
+		
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -953,8 +974,22 @@ public final class SpringThreadWorker
 		for (int i = nargs - 1; i >= 0; i--)
 			args[i] = __f.popFromStack();
 		
-		// Enter frame for static method
-		__t.enterFrame(refmethod, args);
+		// Virtualized native call, depends on what it is
+		if (refmethod.flags().isNative())
+		{
+			// Calculate result of method
+			MethodDescriptor type = ref.memberType();
+			Object rv = this.nativeMethod(ref.className() + "::" +
+				ref.memberName() + ":" + type, args);
+			
+			// Push native object to the stack
+			if (type.hasReturnValue())
+				__f.pushToStack(this.asVMObject(rv));
+		}
+		
+		// Real code that exists in class file format
+		else
+			__t.enterFrame(refmethod, args);
 	}
 	
 	/**
