@@ -259,6 +259,13 @@ public final class Instruction
 				
 				args = new Object[]{mr};
 				break;
+			
+				// Checks that the object on the stack is of the given class
+			case InstructionIndex.CHECKCAST:
+				naturalflow = true;
+				args = new Object[]{__pool.<ClassName>require(ClassName.class,
+					Instruction.__readUnsignedShort(__code, argbase))};
+				break;
 				
 				// Allocate (but do not construct) instance of new object
 			case InstructionIndex.NEW:
