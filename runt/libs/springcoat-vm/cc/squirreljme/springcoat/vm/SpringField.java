@@ -90,6 +90,17 @@ public final class SpringField
 	}
 	
 	/**
+	 * Returns the index of this field.
+	 *
+	 * @return The field index.
+	 * @since 2018/09/16
+	 */
+	public final int index()
+	{
+		return this.index;
+	}
+	
+	/**
 	 * Is this a static field?
 	 *
 	 * @return If this is a static field.

@@ -62,6 +62,18 @@ public final class SpringSimpleObject
 	}
 	
 	/**
+	 * Returns the field by the given index.
+	 *
+	 * @param __dx The field to get.
+	 * @return The storage for the field by the specified index.
+	 * @since 2018/09/16
+	 */
+	public final SpringFieldStorage fieldByIndex(int __dx)
+	{
+		return this._fields[__dx];
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/09/15
 	 */
