@@ -237,27 +237,11 @@ public final class Instruction
 				naturalflow = true;
 				break;
 				
-				// Method invocations
-			case InstructionIndex.INVOKEINTERFACE:
-			case InstructionIndex.INVOKESPECIAL:
-			case InstructionIndex.INVOKESTATIC:
-			case InstructionIndex.INVOKEVIRTUAL:
+				// Create new array
+			case InstructionIndex.ANEWARRAY:
 				naturalflow = true;
-				
-				// Reference is in the constant pool
-				MethodReference mr = __pool.<MethodReference>require(
-					MethodReference.class,
-					Instruction.__readUnsignedShort(__code, argbase));
-				
-				// {@squirreljme.error JC0z Invocation of method did not
-				// have the matching interface/not-interface attribute.
-				// (The operation; The address; The method reference)}
-				if (mr.isInterface() !=
-					(op == InstructionIndex.INVOKEINTERFACE))
-					throw new InvalidClassFormatException(String.format(
-						"JC0z %d %d %s", op, __a, mr));
-				
-				args = new Object[]{mr};
+				args = new Object[]{__pool.<ClassName>require(ClassName.class,
+					Instruction.__readUnsignedShort(__code, argbase))};
 				break;
 			
 				// Checks that the object on the stack is of the given class
@@ -265,36 +249,6 @@ public final class Instruction
 				naturalflow = true;
 				args = new Object[]{__pool.<ClassName>require(ClassName.class,
 					Instruction.__readUnsignedShort(__code, argbase))};
-				break;
-				
-				// Allocate (but do not construct) instance of new object
-			case InstructionIndex.NEW:
-				naturalflow = true;
-				args = new Object[]{__pool.<ClassName>require(ClassName.class,
-					Instruction.__readUnsignedShort(__code, argbase))};
-				break;
-				
-				// Create new array
-			case InstructionIndex.ANEWARRAY:
-				naturalflow = true;
-				args = new Object[]{__pool.<ClassName>require(ClassName.class,
-					Instruction.__readUnsignedShort(__code, argbase))};
-				break;
-				
-				// Load constant value
-			case InstructionIndex.LDC:
-				naturalflow = true;
-				ConstantValue cvalue;
-				args = new Object[]{(cvalue = __pool.<ConstantValue>require(
-					ConstantValue.class,
-					Instruction.__readUnsignedByte(__code, argbase)))};
-				
-				// {@squirreljme.error JC28 Cannot load a constant value which
-				// is not of a narrow type. (The operation; The address; The
-				// constant value)}
-				if (!cvalue.type().isNarrow())
-					throw new InvalidClassFormatException(String.format(
-						"JC28 %d %d %s", op, __a, cvalue));
 				break;
 				
 				// Read or write of a field
@@ -306,6 +260,13 @@ public final class Instruction
 				args = new Object[]{__pool.<FieldReference>require(
 					FieldReference.class,
 					Instruction.__readUnsignedShort(__code, argbase))};
+				break;
+				
+				// Goto
+			case InstructionIndex.GOTO:
+				naturalflow = false;
+				args = new Object[]{new InstructionJumpTarget(
+					__a + Instruction.__readShort(__code, argbase))};
 				break;
 				
 				// Branches
@@ -330,11 +291,50 @@ public final class Instruction
 					__a + Instruction.__readShort(__code, argbase))};
 				break;
 				
-				// Goto
-			case InstructionIndex.GOTO:
-				naturalflow = false;
-				args = new Object[]{new InstructionJumpTarget(
-					__a + Instruction.__readShort(__code, argbase))};
+				// Method invocations
+			case InstructionIndex.INVOKEINTERFACE:
+			case InstructionIndex.INVOKESPECIAL:
+			case InstructionIndex.INVOKESTATIC:
+			case InstructionIndex.INVOKEVIRTUAL:
+				naturalflow = true;
+				
+				// Reference is in the constant pool
+				MethodReference mr = __pool.<MethodReference>require(
+					MethodReference.class,
+					Instruction.__readUnsignedShort(__code, argbase));
+				
+				// {@squirreljme.error JC0z Invocation of method did not
+				// have the matching interface/not-interface attribute.
+				// (The operation; The address; The method reference)}
+				if (mr.isInterface() !=
+					(op == InstructionIndex.INVOKEINTERFACE))
+					throw new InvalidClassFormatException(String.format(
+						"JC0z %d %d %s", op, __a, mr));
+				
+				args = new Object[]{mr};
+				break;
+				
+				// Load constant value
+			case InstructionIndex.LDC:
+				naturalflow = true;
+				ConstantValue cvalue;
+				args = new Object[]{(cvalue = __pool.<ConstantValue>require(
+					ConstantValue.class,
+					Instruction.__readUnsignedByte(__code, argbase)))};
+				
+				// {@squirreljme.error JC28 Cannot load a constant value which
+				// is not of a narrow type. (The operation; The address; The
+				// constant value)}
+				if (!cvalue.type().isNarrow())
+					throw new InvalidClassFormatException(String.format(
+						"JC28 %d %d %s", op, __a, cvalue));
+				break;
+				
+				// Allocate (but do not construct) instance of new object
+			case InstructionIndex.NEW:
+				naturalflow = true;
+				args = new Object[]{__pool.<ClassName>require(ClassName.class,
+					Instruction.__readUnsignedShort(__code, argbase))};
 				break;
 				
 				// {@squirreljme.error JC10 The operation at the specified
