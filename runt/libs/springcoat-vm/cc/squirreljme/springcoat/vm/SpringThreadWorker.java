@@ -662,6 +662,12 @@ public final class SpringThreadWorker
 						frame.<Integer>popFromStack(Integer.class)));
 					break;
 					
+					// Return reference
+				case InstructionIndex.ARETURN:
+					this.__vmReturn(thread,
+						frame.<SpringObject>popFromStack(SpringObject.class));
+					break;
+					
 					// Length of array
 				case InstructionIndex.ARRAYLENGTH:
 					frame.pushToStack(frame.<SpringArrayObject>popFromStack(
@@ -1233,6 +1239,30 @@ public final class SpringThreadWorker
 		
 		// Push a new allocation to the stack
 		__f.pushToStack(this.allocateObject(toalloc));
+	}
+	
+	/**
+	 * Returns from the top-most frame then pushes the return value to the
+	 * parent frame's stack (if any).
+	 *
+	 * @param __thread The thread to return in.
+	 * @param __value The value to push.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/16
+	 */
+	private final void __vmReturn(SpringThread __thread, Object __value)
+		throws NullPointerException
+	{
+		if (__thread == null || __value == null)
+			throw new NullPointerException("NARG");
+		
+		// Pop our current frame
+		__thread.popFrame();
+		
+		// Push the value to the current frame
+		SpringThread.Frame cur = __thread.currentFrame();
+		if (cur != null)
+			cur.pushToStack(__value);
 	}
 }
 
