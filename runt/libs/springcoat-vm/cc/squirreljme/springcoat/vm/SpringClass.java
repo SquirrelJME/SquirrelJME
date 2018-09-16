@@ -43,6 +43,9 @@ public final class SpringClass
 	/** The name of this class. */
 	protected final ClassName name;
 	
+	/** The field name of this class. */
+	protected final FieldDescriptor fieldname;
+	
 	/** The class file data. */
 	protected final ClassFile file;
 	
@@ -79,18 +82,20 @@ public final class SpringClass
 	 * @param __super The super class of this class.
 	 * @param __interfaces The the interfaces this class implements.
 	 * @param __cf The class file for this class.
+	 * @param __fn The field name of this clas.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/07/21
 	 */
 	SpringClass(SpringClass __super, SpringClass[] __interfaces,
-		ClassFile __cf)
+		ClassFile __cf, FieldDescriptor __fn)
 		throws NullPointerException
 	{
-		if (__interfaces == null || __cf == null)
+		if (__interfaces == null || __cf == null || __fn == null)
 			throw new NullPointerException("NARG");
 		
 		ClassName name = __cf.thisName();
 		this.name = name;
+		this.fieldname = __fn;
 		
 		this.file = __cf;
 		this.superclass = __super;
@@ -112,8 +117,8 @@ public final class SpringClass
 			{
 				// {@squirreljme.error BK06 Duplicated method in class. (The
 				// method)}
-				throw new SpringClassFormatException(name, String.format(
-					"BK06 %s", m.nameAndType()));
+				throw new SpringClassFormatException(name.field(),
+					String.format("BK06 %s", m.nameAndType()));
 			}
 			
 			// Store only instance methods which are not static
@@ -140,8 +145,8 @@ public final class SpringClass
 			if (null != fields.put(f.nameAndType(),
 				(sf = new SpringField(name, f,
 					(isinstance ? instancefieldcount++ : -1)))))
-				throw new SpringClassFormatException(name, String.format(
-					"BK0g %s", f.nameAndType()));
+				throw new SpringClassFormatException(name.field(),
+					String.format("BK0g %s", f.nameAndType()));
 			
 			// Used to build our part of the field table
 			if (isinstance)
@@ -531,6 +536,16 @@ public final class SpringClass
 	public final ClassName name()
 	{
 		return this.name;
+	}
+	
+	/**
+	 * Returns the name of this class as a field.
+	 *
+	 * @since 2018/09/16
+	 */
+	public final FieldDescriptor nameAsField()
+	{
+		return this.fieldname;
 	}
 	
 	/**

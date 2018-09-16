@@ -17,6 +17,7 @@ import net.multiphasicapps.classfile.ClassFlags;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ConstantValue;
 import net.multiphasicapps.classfile.ConstantValueString;
+import net.multiphasicapps.classfile.FieldDescriptor;
 import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
@@ -128,6 +129,19 @@ public final class SpringThreadWorker
 		// Promoted to integer
 		else if (__in instanceof Byte || __in instanceof Short)
 			return Integer.valueOf(((Number)__in).intValue());
+		
+		// Integer array
+		else if (__in instanceof int[])
+		{
+			int[] in = (int[])__in;
+			
+			// Setup return array
+			int n = in.length;
+			SpringArrayObject rv = this.allocateArray(
+				this.loadClass(new FieldDescriptor("I")), n);
+			
+			throw new todo.TODO();
+		}
 		
 		// {@squirreljme.error BK1f Do not know how to convert the given class
 		// to a virtual machine object. (The input class)}
@@ -260,6 +274,31 @@ public final class SpringThreadWorker
 	 * @since 2018/09/08
 	 */
 	public final SpringClass loadClass(ClassName __cn)
+		throws NullPointerException
+	{
+		if (__cn == null)
+			throw new NullPointerException("NARG");
+		
+		// Use the class loading lock to prevent other threads from loading or
+		// initializing classes while this thread does such things
+		SpringClassLoader classloader = this.machine.classLoader();
+		synchronized (classloader.classLoadingLock())
+		{
+			// Load the class from the class loader
+			return this.loadClass(classloader.loadClass(__cn));
+		}
+	}
+	
+	/**
+	 * Loads the specified class from a field descriptor, potentially
+	 * performing initialization on it if it has not been initialized.
+	 *
+	 * @param __cn The class to load.
+	 * @return The loaded class.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/16
+	 */
+	public final SpringClass loadClass(FieldDescriptor __cn)
 		throws NullPointerException
 	{
 		if (__cn == null)
