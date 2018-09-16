@@ -329,7 +329,7 @@ public class Throwable
 		// Copy the trace data into this one
 		int[] rv = new int[newlen];
 		for (int i = skippy, o = 0; o < newlen; i++, o++)
-			rv[0] = rawstack[i];
+			rv[o] = rawstack[i];
 		
 		return rv;
 	}
