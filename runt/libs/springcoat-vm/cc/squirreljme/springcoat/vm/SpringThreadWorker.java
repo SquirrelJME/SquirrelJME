@@ -513,7 +513,13 @@ public final class SpringThreadWorker
 					frame.pushToStack(SpringNullObject.NULL);
 					break;
 					
-					// Load reference from local variable
+					// Load reference from local
+				case InstructionIndex.ALOAD:
+					frame.loadToStack(SpringObject.class,
+						inst.<Integer>argument(0, Integer.class));
+					break;
+					
+					// Load reference from local (short)
 				case InstructionIndex.ALOAD_0:
 				case InstructionIndex.ALOAD_1:
 				case InstructionIndex.ALOAD_2:

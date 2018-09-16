@@ -237,7 +237,7 @@ public final class Instruction
 				naturalflow = true;
 				break;
 				
-				// First value is an unsigned short
+				// First value is an unsigned byte
 			case InstructionIndex.ALOAD:
 			case InstructionIndex.ILOAD:
 			case InstructionIndex.LLOAD:
@@ -249,7 +249,7 @@ public final class Instruction
 			case InstructionIndex.FSTORE:
 			case InstructionIndex.DSTORE:
 				args = new Object[]{
-					Instruction.__readUnsignedShort(__code, argbase)};
+					Instruction.__readUnsignedByte(__code, argbase)};
 				naturalflow = true;
 				break;
 				
