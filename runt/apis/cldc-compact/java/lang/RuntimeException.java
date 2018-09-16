@@ -10,27 +10,56 @@
 
 package java.lang;
 
+/**
+ * This and all of its sub-classes represents exceptions which are unchecked
+ * by the compiler.
+ *
+ * @since 2018/09/16
+ */
 public class RuntimeException
 	extends Exception
 {
+	/**
+	 * Initializes the exception with no message or cause.
+	 *
+	 * @since 2018/09/16
+	 */
 	public RuntimeException()
 	{
-		throw new todo.TODO();
 	}
 	
-	public RuntimeException(String __a)
+	/**
+	 * Initializes the exception with the given message and no cause.
+	 *
+	 * @param __m The message.
+	 * @since 2018/09/16
+	 */
+	public RuntimeException(String __m)
 	{
-		throw new todo.TODO();
+		super(__m);
 	}
 	
-	public RuntimeException(String __a, Throwable __b)
+	/**
+	 * Initializes the exception with the given message and cause.
+	 *
+	 * @param __m The message.
+	 * @param __t The cause.
+	 * @since 2018/09/16
+	 */
+	public RuntimeException(String __m, Throwable __t)
 	{
-		throw new todo.TODO();
+		super(__m, __t);
 	}
 	
-	public RuntimeException(Throwable __a)
+	/**
+	 * Initializes the exception with the given cause and no message.
+	 *
+	 * @param __t The cause.
+	 * @since 2018/09/16
+	 */
+	public RuntimeException(Throwable __t)
 	{
-		throw new todo.TODO();
+		super(__t);
 	}
 }
 

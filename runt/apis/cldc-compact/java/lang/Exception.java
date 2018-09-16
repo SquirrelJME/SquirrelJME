@@ -10,27 +10,57 @@
 
 package java.lang;
 
+/**
+ * For any exceptions which extend this class and not {@link RuntimeException}
+ * they will act as checked exceptions by the compiler, thus they will need
+ * to be handled accordingly.
+ *
+ * @since 2018/09/16
+ */
 public class Exception
 	extends Throwable
 {
+	/**
+	 * Initializes the exception with no message or cause.
+	 *
+	 * @since 2018/09/16
+	 */
 	public Exception()
 	{
-		throw new todo.TODO();
 	}
 	
-	public Exception(String __a)
+	/**
+	 * Initializes the exception with the given message and no cause.
+	 *
+	 * @param __m The message.
+	 * @since 2018/09/16
+	 */
+	public Exception(String __m)
 	{
-		throw new todo.TODO();
+		super(__m);
 	}
 	
-	public Exception(String __a, Throwable __b)
+	/**
+	 * Initializes the exception with the given message and cause.
+	 *
+	 * @param __m The message.
+	 * @param __t The cause.
+	 * @since 2018/09/16
+	 */
+	public Exception(String __m, Throwable __t)
 	{
-		throw new todo.TODO();
+		super(__m, __t);
 	}
 	
-	public Exception(Throwable __a)
+	/**
+	 * Initializes the exception with the given cause and no message.
+	 *
+	 * @param __t The cause.
+	 * @since 2018/09/16
+	 */
+	public Exception(Throwable __t)
 	{
-		throw new todo.TODO();
+		super(__t);
 	}
 }
 

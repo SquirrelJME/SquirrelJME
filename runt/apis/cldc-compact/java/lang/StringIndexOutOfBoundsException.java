@@ -11,47 +11,40 @@
 package java.lang;
 
 /**
- * This is thrown when the index of the string is out of bounds.
+ * This is thrown when an attempt is made to read from an index within a string
+ * which is not within bounds.
  *
- * Note that this class does not exist in the CLDC but is used by methods
- * within the LCDUI code, as such this is here for compatibility purposes. It
- * is highly recommended to not use this exception or to check against this
- * exception.
- *
- * @since 2017/10/21
+ * @since 2018/09/16
  */
 public class StringIndexOutOfBoundsException
 	extends IndexOutOfBoundsException
 {
 	/**
-	 * Initializes the exception with no message.
+	 * Initializes the exception with no message and no cause.
 	 *
-	 * @since 2017/10/21
+	 * @since 2018/09/16
 	 */
 	public StringIndexOutOfBoundsException()
 	{
-		super();
 	}
 	
 	/**
-	 * Initializes the exception with the given index for specifying out of
-	 * bounds strings.
+	 * Initailizes the exception with the given index with no cause.
 	 *
-	 * @param __dx The index of the out of bound string.
-	 * @since 2017/10/21
+	 * @param __dx The index to reference.
+	 * @since 2018/09/16
 	 */
 	public StringIndexOutOfBoundsException(int __dx)
 	{
-		// {@squirreljme.error EB10 The specified index is not within the
-		// bounds of the string. (The string index)}
-		super(String.format("EB10 %d", __dx));
+		// {@squirreljme.error ZZ10 String index out of bounds. (The index)}
+		super("ZZ10 " + __dx);
 	}
 	
 	/**
-	 * Initializes the exception with the given message.
+	 * Initializes the exception with given message and no cause.
 	 *
-	 * @param __m The message to use for the string.
-	 * @since 2017/10/21
+	 * @param __m The message used.
+	 * @since 2018/09/16
 	 */
 	public StringIndexOutOfBoundsException(String __m)
 	{

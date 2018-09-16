@@ -10,7 +10,9 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.string.BasicSequence;
+import cc.squirreljme.runtime.cldc.string.CharArraySequence;
 import cc.squirreljme.runtime.cldc.string.EmptySequence;
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.Reference;
@@ -19,6 +21,23 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+/**
+ * A {@link String} represents a sequence of characters which make up a group
+ * of alphanumeric or other symbols and represents text.
+ *
+ * Note that only {@link #toLowerCase()} and {@link #toUpperCase()} take
+ * locale into considering during their conversion.
+ *
+ * @since 2018/09/16
+ */
+@ImplementationNote("The internal representation of characters in this " +
+	"class is not a concrete character array, instead the strings are " +
+	"handled by classes which represent sequences and such. This allows " +
+	"for potential compression or representation of different strings " +
+	"without needing to up the complexity of this class greatly. There " +
+	"is slight overhead, but it will allow for Strings to be for the most " +
+	"part be directly mapped into memory which will be the case when " +
+	"stuff from the string table is to be used.")
 public final class String
 	implements Comparable<String>, CharSequence
 {
@@ -33,18 +52,6 @@ public final class String
 	/** The minumum trim character. */
 	private static final char _MIN_TRIM_CHAR =
 		' ';
-	
-	/**
-	 * Strings which are intered so that the same string is referred to so that
-	 * for example the {@code ==} operator is actually valid (despite not being
-	 * recommended at all). The value for the keys are {@code null} and not
-	 * weak references to the keys to reduce the memory usage by non-static
-	 * interned strings (Otherwise for each non-static string, there would
-	 * need to be an extra weak reference to it when the keys are already
-	 * weak).
-	 */
-	private static final Map<String, Object> _INTERNS =
-		new WeakHashMap<>();
 	
 	/** The basic character sequence data. */
 	private final BasicSequence _sequence;
@@ -116,8 +123,10 @@ public final class String
 	 * @param __e The exclusive ending index.
 	 * @throws IndexOutOfBoundsException If the indices are out of bounds.
 	 * @throws NullPointerException On null arguments.
+	 * @deprecated Use substring sequence wrapper instead.
 	 * @since 2016/04/20
 	 */
+	@Deprecated
 	private String(String __str, int __s, int __e)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
@@ -186,7 +195,7 @@ public final class String
 		for (int i = 0; i < max; i++)
 		{
 			// Get character difference
-			int diff = ((int)charAt(i)) - ((int)__os.charAt(i));
+			int diff = ((int)this.charAt(i)) - ((int)__os.charAt(i));
 			
 			// If there is a difference, then return it
 			if (diff != 0)
@@ -408,27 +417,7 @@ public final class String
 	 */
 	public String intern()
 	{
-		// The string may exist within the executable in a static form, use it
-		String rv = null;//SystemCall.internString(this);
-		if (true)
-			throw new todo.TODO();
-		if (rv != null)
-			return rv;
-		
-		// Otherwise go through a cache of interned strings to locate this
-		// string
-		Map<String, Object> interns = _INTERNS;
-		synchronized (interns)
-		{
-			// Use that string if it is found
-			for (String k : interns.keySet())
-				if (k.equals(this))
-					return k;
-			
-			// Otherwise add it and refer to this as the intern string
-			interns.put(this, null);
-			return this;
-		}
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -439,7 +428,7 @@ public final class String
 	 */
 	public boolean isEmpty()
 	{
-		return length() == 0;
+		return this.length() == 0;
 	}
 	
 	public int lastIndexOf(int __a)
@@ -511,7 +500,7 @@ public final class String
 			return this;
 		
 		// Call other
-		return substring(__s, length());
+		return this.substring(__s, length());
 	}
 	
 	public String substring(int __s, int __e)
@@ -534,11 +523,11 @@ public final class String
 	 */
 	public char[] toCharArray()
 	{
-		int n = length();
+		int n = this.length();
 		char[] rv = new char[n];
 		
 		for (int i = 0; i < n; i++)
-			rv[i] = charAt(i);
+			rv[i] = this.charAt(i);
 		
 		return rv;
 	}

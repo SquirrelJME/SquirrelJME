@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.ConstantValueString;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.MethodNameAndType;
 import net.multiphasicapps.tool.manifest.JavaManifest;
@@ -51,6 +52,10 @@ public final class SpringMachine
 	
 	/** Static fields which exist within the virtual machine. */
 	private final Map<SpringField, SpringFieldStorage> _staticfields =
+		new HashMap<>();
+	
+	/** Global strings representing singular constants. */
+	private final Map<ConstantValueString, SpringObject> _strings =
 		new HashMap<>();
 	
 	/** The next thread ID to use. */
@@ -276,6 +281,17 @@ public final class SpringMachine
 	final Map<SpringField, SpringFieldStorage> __staticFieldMap()
 	{
 		return this._staticfields;
+	}
+	
+	/**
+	 * Returns the global string map.
+	 *
+	 * @return The global string map.
+	 * @since 2018/09/16
+	 */
+	final Map<ConstantValueString, SpringObject> __stringMap()
+	{
+		return this._strings;
 	}
 }
 
