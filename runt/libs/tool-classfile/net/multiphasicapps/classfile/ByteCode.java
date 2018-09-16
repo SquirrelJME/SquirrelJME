@@ -785,7 +785,6 @@ public final class ByteCode
 			case InstructionIndex.DSTORE:
 			case InstructionIndex.FLOAD:
 			case InstructionIndex.FSTORE:
-			case InstructionIndex.IINC:
 			case InstructionIndex.ILOAD:
 			case InstructionIndex.ISTORE:
 			case InstructionIndex.LDC:
@@ -817,6 +816,7 @@ public final class ByteCode
 			case InstructionIndex.IFNE:
 			case InstructionIndex.IFNONNULL:
 			case InstructionIndex.IFNULL:
+			case InstructionIndex.IINC:
 			case InstructionIndex.INSTANCEOF:
 			case InstructionIndex.INVOKESPECIAL:
 			case InstructionIndex.INVOKESTATIC:
