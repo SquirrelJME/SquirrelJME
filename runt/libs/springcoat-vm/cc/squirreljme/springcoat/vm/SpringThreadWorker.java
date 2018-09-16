@@ -819,6 +819,15 @@ public final class SpringThreadWorker
 					frame.storeLocal(opid - InstructionIndex.ISTORE_0,
 						frame.<Integer>popFromStack(Integer.class));
 					break;
+				
+				// Subtract integer
+			case InstructionIndex.ISUB:
+				{
+					Integer b = frame.<Integer>popFromStack(Integer.class),
+						a = frame.<Integer>popFromStack(Integer.class);
+					frame.pushToStack(a - b);
+				}
+				break;
 					
 					// Load from constant pool, push to the stack
 				case InstructionIndex.LDC:
