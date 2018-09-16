@@ -75,7 +75,8 @@ public final class SpringThreadWorker
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		return new SpringArrayObject(__cl, __l);
+		return new SpringArrayObject(
+			this.resolveClass(__cl.name().addDimensions(1)), __cl, __l);
 	}
 	
 	/**

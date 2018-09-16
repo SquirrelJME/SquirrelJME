@@ -123,13 +123,47 @@ public final class FieldDescriptor
 	}
 	
 	/**
+	 * Adds dimensions to the field descriptor.
+	 *
+	 * @param __d The number of dimensions to add.
+	 * @return The field descriptor with added dimensions.
+	 * @throws IllegalArgumentException If the dimensions are negative.
+	 * @since 2018/09/15
+	 */
+	public final FieldDescriptor addDimensions(int __d)
+		throws IllegalArgumentException
+	{
+		if (__d == 0)
+			return this;
+		
+		// {@squirreljme.error JC2c Cannot add negative dimensions.}
+		if (__d < 0)
+			throw new IllegalArgumentException("JC2c");
+		
+		// Prepend string with brackets, to declare a new array
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < __d; i++)
+			sb.append('[');
+		
+		// Rebuild field
+		sb.append(this.toString());
+		return new FieldDescriptor(sb.toString());
+	}
+	
+	/**
 	 * Returns the name of the used class.
 	 *
-	 * @return The used class or {@code null} if a class is not referred to.
+	 * @return The used class or {@code null} if a class is not referred to and
+	 * this is a primitive type.
 	 * @since 2018/09/01
 	 */
 	public final ClassName className()
 	{
+		// If this is an array then the class name will be the array descriptor
+		if (this.dimensions > 0)
+			return new ClassName(this.toString());
+		
+		// Otherwise as normal class
 		return this.classname;
 	}
 	

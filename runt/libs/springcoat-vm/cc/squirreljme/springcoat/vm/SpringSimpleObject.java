@@ -63,16 +63,6 @@ public final class SpringSimpleObject
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/09/09
-	 */
-	@Override
-	public final SpringClass type()
-	{
-		return this.type;
-	}
-	
-	/**
-	 * {@inheritDoc}
 	 * @since 2018/09/15
 	 */
 	@Override
@@ -86,6 +76,16 @@ public final class SpringSimpleObject
 				"%s@%08x", this.type.name(), System.identityHashCode(this))));
 		
 		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/09/09
+	 */
+	@Override
+	public final SpringClass type()
+	{
+		return this.type;
 	}
 }
 

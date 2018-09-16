@@ -156,6 +156,10 @@ public final class SpringClassLoader
 		// Debug
 		todo.DEBUG.note("Loading class file `%s`...", __cn);
 		
+		// If this is an array type use virtual class representation
+		if (__cn.isArray())
+			return ClassFile.special(__cn.field());
+		
 		// This is the class that is read, in binary form
 		String fileform = __cn.toString() + ".class";
 		
