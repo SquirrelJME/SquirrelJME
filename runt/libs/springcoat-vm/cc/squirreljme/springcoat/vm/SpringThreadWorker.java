@@ -10,6 +10,7 @@
 
 package cc.squirreljme.springcoat.vm;
 
+import cc.squirreljme.runtime.cldc.asm.DebugAccess;
 import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassFlags;
@@ -381,7 +382,57 @@ public final class SpringThreadWorker
 		// Debug
 		todo.DEBUG.note("Call native %s", __func);
 		
-		throw new todo.TODO();
+		// Depends on the function
+		switch (__func)
+		{
+				// Return the call trace
+			case "cc/squirreljme/runtime/cldc/asm/DebugAccess::" +
+				"rawCallTrace:()[I":
+				{
+					// Need to get all the stack frames first
+					SpringThread.Frame[] frames = this.thread.frames();
+					int numframes = frames.length;
+					
+					// Setup return value which stores all the frame data
+					int[] rv = new int[DebugAccess.TRACE_COUNT * numframes];
+					for (int i = numframes - 1, o = 0; i >= 0; i--,
+						o += DebugAccess.TRACE_COUNT)
+					{
+						SpringThread.Frame frame = frames[i];
+						
+						// Class hilo
+						rv[o + 0] = -1;
+						rv[o + 1] = -1;
+						
+						// Method hilo
+						rv[o + 2] = -1;
+						rv[o + 3] = -1;
+						
+						// Descriptor hilo
+						rv[o + 4] = -1;
+						rv[o + 5] = -1;
+						
+						// Program counter hilo
+						rv[o + 6] = 0;
+						rv[o + 7] = frame.pc();
+						
+						// File string
+						rv[o + 8] = -1;
+						rv[o + 9] = -1;
+						
+						// Line of code being executed
+						rv[o + 10] = frame.pcSourceLine();
+					}
+					
+					return rv;
+				}
+			
+				// {@squirreljme.error BK1g Unknown native function. (The
+				// native function)}
+			default:
+				throw new SpringVirtualMachineException(
+					String.format("BK1g %s", __func));
+		}
 	}
 	
 	/**

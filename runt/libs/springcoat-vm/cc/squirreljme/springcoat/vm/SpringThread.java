@@ -116,6 +116,23 @@ public final class SpringThread
 	}
 	
 	/**
+	 * Returns all of the frames which are available.
+	 *
+	 * @return All of the available stack frames.
+	 * @since 2018/09/16
+	 */
+	public final SpringThread.Frame[] frames()
+	{
+		// Lock on frames
+		List<SpringThread.Frame> frames = this._frames;
+		synchronized (frames)
+		{
+			return frames.<SpringThread.Frame>toArray(
+				new SpringThread.Frame[frames.size()]);
+		}
+	}
+	
+	/**
 	 * Returns the name of the thread.
 	 *
 	 * @return The name of the thread.
@@ -305,6 +322,17 @@ public final class SpringThread
 		public final int pc()
 		{
 			return this._pc;
+		}
+		
+		/**
+		 * Returns the line of code the program counter is on.
+		 *
+		 * @return The program counter line of code.
+		 * @since 2018/09/16
+		 */
+		public final int pcSourceLine()
+		{
+			return this.code.lineOfAddress(this._pc);
 		}
 		
 		/**
