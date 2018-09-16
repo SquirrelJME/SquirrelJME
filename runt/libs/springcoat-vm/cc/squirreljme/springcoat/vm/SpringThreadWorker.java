@@ -272,11 +272,11 @@ public final class SpringThreadWorker
 			__cl.setInitialized();
 			
 			// Initialize the static field map
-			Map<SpringField, SpringStaticField> sfm =
+			Map<SpringField, SpringFieldStorage> sfm =
 				machine.__staticFieldMap();
 			for (SpringField f : __cl.fieldsOnlyThisClass())
 				if (f.isStatic())
-					sfm.put(f, new SpringStaticField(f));
+					sfm.put(f, new SpringFieldStorage(f));
 			
 			// Recursively call self to load the super class before this class
 			// is handled
@@ -404,7 +404,7 @@ public final class SpringThreadWorker
 	 * @throws SpringNoSuchFieldException If the field does not exist.
 	 * @since 2018/09/09
 	 */
-	private final SpringStaticField __lookupStaticField(FieldReference __f)
+	private final SpringFieldStorage __lookupStaticField(FieldReference __f)
 		throws NullPointerException, SpringIncompatibleClassChangeException,
 			SpringNoSuchFieldException
 	{
@@ -549,7 +549,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.GETSTATIC:
 					{
 						// Lookup field
-						SpringStaticField ssf = this.__lookupStaticField(
+						SpringFieldStorage ssf = this.__lookupStaticField(
 							inst.<FieldReference>argument(0,
 							FieldReference.class));
 						
@@ -670,7 +670,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.PUTSTATIC:
 					{
 						// Lookup field
-						SpringStaticField ssf = this.__lookupStaticField(
+						SpringFieldStorage ssf = this.__lookupStaticField(
 							inst.<FieldReference>argument(0,
 							FieldReference.class));
 						

@@ -10,20 +10,28 @@
 
 package cc.squirreljme.springcoat.vm;
 
+import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.FieldFlags;
+import net.multiphasicapps.classfile.FieldNameAndType;
 
 /**
- * Contains storage and other information for static fields.
+ * Contains storage and other information for fields.
  *
  * @since 2018/09/09
  */
-public final class SpringStaticField
+public final class SpringFieldStorage
 {
-	/** The field this stores information for. */
-	protected final SpringField field;
+	/** The class this is in. */
+	protected final ClassName inclass;
+	
+	/** Name and type of the field. */
+	protected final FieldNameAndType nameandtype;
 	
 	/** Is this volatile? */
 	protected final boolean isvolatile;
+	
+	/** Is this final? */
+	protected final boolean isfinal;
 	
 	/** The value of the field. */
 	private Object _normalvalue;
@@ -38,17 +46,20 @@ public final class SpringStaticField
 	 * @throws NullPointerException On null arguments.
 	 * @since 2108/09/09
 	 */
-	SpringStaticField(SpringField __f)
+	SpringFieldStorage(SpringField __f)
 		throws NullPointerException
 	{
 		if (__f == null)
 			throw new NullPointerException("NARG");
 		
-		this.field = __f;
+		// Used for debug
+		FieldNameAndType nameandtype;
+		this.inclass = __f.inClass();
+		this.nameandtype = (nameandtype = __f.nameAndType());
 		
 		// Initialize value depending on the field type
 		Object init;
-		switch (__f.nameAndType().type().simpleStorageType())
+		switch (nameandtype.type().simpleStorageType())
 		{
 			case OBJECT:
 				init = SpringNullObject.NULL;
@@ -79,6 +90,8 @@ public final class SpringStaticField
 			this._volatilevalue = init;
 		else
 			this._normalvalue = init;
+		
+		this.isfinal = __f.flags().isFinal();
 	}
 	
 	/**
@@ -128,15 +141,11 @@ public final class SpringStaticField
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		SpringField field = this.field;
-		
 		// Debug
-		todo.DEBUG.note("static %s::%s = %s", field.inClass(),
-			field.nameAndType(), __v);
+		todo.DEBUG.note("%s::%s = %s", this.inclass, this.nameandtype, __v);
 		
 		// {@squirreljme.error BK0o Attempt to write to final field.}
-		FieldFlags flags = field.flags();
-		if (flags.isFinal() && !__writetofinal)
+		if (this.isfinal && !__writetofinal)
 			throw new SpringIncompatibleClassChangeException("BK0o");
 		
 		// Volatile field, use volatile field instead

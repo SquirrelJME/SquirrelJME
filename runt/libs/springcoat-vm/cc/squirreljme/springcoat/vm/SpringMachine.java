@@ -50,7 +50,7 @@ public final class SpringMachine
 		new HashMap<>();
 	
 	/** Static fields which exist within the virtual machine. */
-	private final Map<SpringField, SpringStaticField> _staticfields =
+	private final Map<SpringField, SpringFieldStorage> _staticfields =
 		new HashMap<>();
 	
 	/** The next thread ID to use. */
@@ -122,7 +122,7 @@ public final class SpringMachine
 	 * @throws SpringVirtualMachineException If the field does not exist.
 	 * @since 2018/09/09
 	 */
-	public final SpringStaticField lookupStaticField(SpringField __f)
+	public final SpringFieldStorage lookupStaticField(SpringField __f)
 		throws NullPointerException
 	{
 		if (__f == null)
@@ -130,10 +130,10 @@ public final class SpringMachine
 		
 		// Static fields may be added to when class loading is happening and
 		// as such there must be a lock to be given safe access
-		Map<SpringField, SpringStaticField> sfm = this._staticfields;
+		Map<SpringField, SpringFieldStorage> sfm = this._staticfields;
 		synchronized (this.classloader.classLoadingLock())
 		{
-			SpringStaticField rv = sfm.get(__f);
+			SpringFieldStorage rv = sfm.get(__f);
 			
 			// {@squirreljme.error BK0g Could not locate the static field
 			// storage?}
@@ -273,7 +273,7 @@ public final class SpringMachine
 	 * @return The static field map.
 	 * @since 2018/09/08
 	 */
-	final Map<SpringField, SpringStaticField> __staticFieldMap()
+	final Map<SpringField, SpringFieldStorage> __staticFieldMap()
 	{
 		return this._staticfields;
 	}
