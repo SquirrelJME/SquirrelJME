@@ -661,6 +661,11 @@ public final class SpringThreadWorker
 					this.__vmInvokeStatic(inst, thread, frame);
 					break;
 					
+					// Invoke virtual method
+				case InstructionIndex.INVOKEVIRTUAL:
+					this.__vmInvokeVirtual(inst, thread, frame);
+					break;
+					
 					// Load from constant pool, push to the stack
 				case InstructionIndex.LDC:
 					{
@@ -847,18 +852,14 @@ public final class SpringThreadWorker
 		for (int i = nargs - 1; i >= 0; i--)
 			args[i] = __f.popFromStack();
 		
-		// Invoke this method specially
+		// Virtual invoke
 		if (newclass.isSuperClass(refclass) &&
 			!refmethod.name().isInstanceInitializer())
-		{
-			throw new todo.TODO();
-		}
+			this.__vmInvokeVirtual(__i, __t, __f);
 		
-		// Invoke virtual instead
+		// Invoke this method
 		else
-		{
 			__t.enterFrame(refmethod, args);
-		}
 	}
 	
 	/**
@@ -894,6 +895,46 @@ public final class SpringThreadWorker
 		// Load arguments
 		int nargs = refmethod.nameAndType().type().
 			argumentCount();
+		Object[] args = new Object[nargs];
+		for (int i = nargs - 1; i >= 0; i--)
+			args[i] = __f.popFromStack();
+		
+		// Enter frame for static method
+		__t.enterFrame(refmethod, args);
+	}
+	
+	/**
+	 * Performs a virtual invoke.
+	 *
+	 * @param __i The instruction.
+	 * @param __t The current thread.
+	 * @param __f The current frame.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/16
+	 */
+	private final void __vmInvokeVirtual(Instruction __i, SpringThread __t,
+		SpringThread.Frame __f)
+		throws NullPointerException
+	{
+		if (__i == null || __t == null || __f == null)
+			throw new NullPointerException("NARG");
+		
+		MethodReference ref = __i.<MethodReference>argument(
+			0, MethodReference.class);
+		
+		// Resolve the method reference
+		SpringClass refclass = this.loadClass(ref.className());
+		SpringMethod refmethod = refclass.lookupMethod(false,
+			ref.memberNameAndType());
+		
+		// {@squirreljme.error BK1d Could not access the target
+		// method for virtual invoke. (The target method)}
+		if (!this.checkAccess(refmethod))
+			throw new SpringIncompatibleClassChangeException(
+				String.format("BK1d %s", ref));
+		
+		// Load arguments, includes the instance it acts on
+		int nargs = refmethod.nameAndType().type().argumentCount() + 1;
 		Object[] args = new Object[nargs];
 		for (int i = nargs - 1; i >= 0; i--)
 			args[i] = __f.popFromStack();
