@@ -27,6 +27,7 @@ import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.classfile.MethodNameAndType;
 import net.multiphasicapps.classfile.MethodReference;
+import net.multiphasicapps.classfile.PrimitiveType;
 
 /**
  * A worker which runs the actual thread code in single-step fashion.
@@ -873,6 +874,14 @@ public final class SpringThreadWorker
 					// Allocate new object
 				case InstructionIndex.NEW:
 					this.__vmNew(inst, frame);
+					break;
+				
+					// Allocate new primitive array
+				case InstructionIndex.NEWARRAY:
+					frame.pushToStack(this.allocateArray(this.resolveClass(
+						ClassName.fromPrimitiveType(
+						inst.<PrimitiveType>argument(0, PrimitiveType.class))),
+						frame.<Integer>popFromStack(Integer.class)));
 					break;
 					
 					// Return from method with no return value
