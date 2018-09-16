@@ -260,6 +260,13 @@ public final class Instruction
 					Instruction.__readUnsignedByte(__code, argbase)};
 				break;
 				
+				// First value is a signed short
+			case InstructionIndex.SIPUSH:
+				naturalflow = true;
+				args = new Object[]{
+					Instruction.__readShort(__code, argbase)};
+				break;
+				
 				// Create new array
 			case InstructionIndex.ANEWARRAY:
 				naturalflow = true;
