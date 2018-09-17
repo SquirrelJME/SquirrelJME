@@ -10,6 +10,9 @@
 
 package java.io;
 
+import cc.squirreljme.runtime.cldc.io.CodecFactory;
+import cc.squirreljme.runtime.cldc.io.Encoder;
+
 public class OutputStreamWriter
 	extends Writer
 {
