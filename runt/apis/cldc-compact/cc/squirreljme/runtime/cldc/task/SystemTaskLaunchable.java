@@ -16,6 +16,7 @@ package cc.squirreljme.runtime.cldc.task;
  *
  * @since 2018/01/02
  */
+@Deprecated
 public interface SystemTaskLaunchable
 {
 }

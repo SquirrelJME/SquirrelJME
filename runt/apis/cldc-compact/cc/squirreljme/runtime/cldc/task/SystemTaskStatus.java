@@ -15,24 +15,31 @@ package cc.squirreljme.runtime.cldc.task;
  *
  * @since 2017/12/10
  */
+@Deprecated
 public enum SystemTaskStatus
 {
 	/** Exit with fatal error. */
+	@Deprecated
 	EXITED_FATAL,
 	
 	/** Normal exit. */
+	@Deprecated
 	EXITED_REGULAR,
 
 	/** Terminated. */
+	@Deprecated
 	EXITED_TERMINATED,
 
 	/** Running. */
+	@Deprecated
 	RUNNING,
 
 	/** Failed to start. */
+	@Deprecated
 	START_FAILED,
 
 	/** Starting. */
+	@Deprecated
 	STARTING,
 	
 	/** End. */

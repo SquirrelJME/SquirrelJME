@@ -15,18 +15,23 @@ package cc.squirreljme.runtime.cldc.task;
  *
  * @since 2017/12/10
  */
+@Deprecated
 public enum SystemTaskMetric
 {
 	/** The task priority. */
+	@Deprecated
 	PRIORITY,
 	
 	/** Used memory. */
+	@Deprecated
 	MEMORY_USED,
 	
 	/** Free memory. */
+	@Deprecated
 	MEMORY_FREE,
 	
 	/** Total memory. */
+	@Deprecated
 	MEMORY_TOTAL,
 	
 	/** End. */

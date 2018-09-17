@@ -28,6 +28,7 @@ import java.io.InputStream;
  *
  * @since 2017/12/10
  */
+@Deprecated
 public interface SystemTask
 {
 	/**
@@ -40,6 +41,7 @@ public interface SystemTask
 	 * @throws SecurityException If the permissions is not permitted.
 	 * @since 2018/01/09
 	 */
+	@Deprecated
 	public abstract void checkPermission(String __cl, String __n, String __a)
 		throws NullPointerException, SecurityException;
 	
@@ -48,6 +50,7 @@ public interface SystemTask
 	 * @since 2018/03/03
 	 */
 	@Override
+	@Deprecated
 	public abstract boolean equals(Object __o);
 	
 	/**
@@ -56,6 +59,7 @@ public interface SystemTask
 	 * @return The flags for the task.
 	 * @since 2017/12/27
 	 */
+	@Deprecated
 	public abstract int flags();
 	
 	/**
@@ -63,6 +67,7 @@ public interface SystemTask
 	 * @since 2018/03/03
 	 */
 	@Override
+	@Deprecated
 	public abstract int hashCode();
 	
 	/**
@@ -71,6 +76,7 @@ public interface SystemTask
 	 * @return The task index.
 	 * @since 2018/01/03
 	 */
+	@Deprecated
 	public abstract int index();
 	
 	/**
@@ -80,6 +86,7 @@ public interface SystemTask
 	 * @throws SecurityException If the libraries could not be obtained.
 	 * @since 2018/03/03
 	 */
+	@Deprecated
 	public abstract Library[] libraryClassPath()
 		throws SecurityException;
 	
@@ -89,6 +96,7 @@ public interface SystemTask
 	 * @return The task main entry point.
 	 * @since 2017/12/10
 	 */
+	@Deprecated
 	public abstract String mainClass();
 	
 	/**
@@ -99,6 +107,7 @@ public interface SystemTask
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/10
 	 */
+	@Deprecated
 	public abstract long metric(SystemTaskMetric __m)
 		throws NullPointerException;
 	
@@ -110,6 +119,7 @@ public interface SystemTask
 	 *
 	 * @since 2017/12/10
 	 */
+	@Deprecated
 	public abstract void restart();
 	
 	/**
@@ -118,6 +128,7 @@ public interface SystemTask
 	 * @return The task status.
 	 * @since 2018/03/02
 	 */
+	@Deprecated
 	public abstract SystemTaskStatus status();
 	
 	/**
@@ -126,6 +137,7 @@ public interface SystemTask
 	 * @return The trust group of the task.
 	 * @since 2018/01/09
 	 */
+	@Deprecated
 	public abstract SystemTrustGroup trustGroup();
 }
 

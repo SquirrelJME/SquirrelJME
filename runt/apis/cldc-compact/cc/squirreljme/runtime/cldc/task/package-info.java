@@ -14,5 +14,6 @@
  * @since 2018/03/02
  */
 
+@Deprecated
 package cc.squirreljme.runtime.cldc.task;
 

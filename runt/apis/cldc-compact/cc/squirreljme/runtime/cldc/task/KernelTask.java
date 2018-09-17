@@ -19,10 +19,12 @@ import java.io.InputStream;
  *
  * @since 2018/03/16
  */
+@Deprecated
 public final class KernelTask
 	implements SystemTask
 {
 	/** The single instance of the kernel task. */
+	@Deprecated
 	public static final KernelTask INSTANCE =
 		new KernelTask();
 	
@@ -31,6 +33,7 @@ public final class KernelTask
 	 *
 	 * @since 2018/03/16
 	 */
+	@Deprecated
 	private KernelTask()
 	{
 	}
@@ -40,6 +43,7 @@ public final class KernelTask
 	 * @since 2018/03/16
 	 */
 	@Override
+	@Deprecated
 	public final void checkPermission(String __cl, String __n, String __a)
 		throws NullPointerException, SecurityException
 	{
@@ -51,6 +55,7 @@ public final class KernelTask
 	 * @since 2018/03/16
 	 */
 	@Override
+	@Deprecated
 	public final boolean equals(Object __o)
 	{
 		if (this == __o)
@@ -67,6 +72,7 @@ public final class KernelTask
 	 * @since 2018/03/16
 	 */
 	@Override
+	@Deprecated
 	public final int flags()
 	{
 		throw new todo.TODO();
@@ -77,6 +83,7 @@ public final class KernelTask
 	 * @since 2018/03/16
 	 */
 	@Override
+	@Deprecated
 	public final int hashCode()
 	{
 		return 0;
@@ -87,6 +94,7 @@ public final class KernelTask
 	 * @since 2018/03/16
 	 */
 	@Override
+	@Deprecated
 	public final int index()
 	{
 		return 0;
@@ -97,6 +105,7 @@ public final class KernelTask
 	 * @since 2018/03/16
 	 */
 	@Override
+	@Deprecated
 	public final Library[] libraryClassPath()
 		throws SecurityException
 	{
@@ -108,6 +117,7 @@ public final class KernelTask
 	 * @since 2018/03/16
 	 */
 	@Override
+	@Deprecated
 	public final String mainClass()
 	{
 		throw new todo.TODO();
@@ -118,6 +128,7 @@ public final class KernelTask
 	 * @since 2018/03/16
 	 */
 	@Override
+	@Deprecated
 	public final long metric(SystemTaskMetric __m)
 		throws NullPointerException
 	{
@@ -129,6 +140,7 @@ public final class KernelTask
 	 * @since 2018/03/16
 	 */
 	@Override
+	@Deprecated
 	public final void restart()
 	{
 		throw new todo.TODO();
@@ -139,6 +151,7 @@ public final class KernelTask
 	 * @since 2018/03/16
 	 */
 	@Override
+	@Deprecated
 	public final SystemTaskStatus status()
 	{
 		throw new todo.TODO();
@@ -149,6 +162,7 @@ public final class KernelTask
 	 * @since 2018/03/16
 	 */
 	@Override
+	@Deprecated
 	public final SystemTrustGroup trustGroup()
 	{
 		throw new todo.TODO();
