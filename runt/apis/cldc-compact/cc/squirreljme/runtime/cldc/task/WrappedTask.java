@@ -19,10 +19,12 @@ import cc.squirreljme.runtime.cldc.trust.SystemTrustGroup;
  *
  * @since 2018/03/03
  */
+@Deprecated
 public final class WrappedTask
 	implements SystemTask
 {
 	/** The task index. */
+	@Deprecated
 	protected final int index;
 	
 	/**
@@ -31,6 +33,7 @@ public final class WrappedTask
 	 * @param __dx The task index.
 	 * @since 2018/03/03
 	 */
+	@Deprecated
 	public WrappedTask(int __dx)
 	{
 		this.index = __dx;
@@ -40,6 +43,7 @@ public final class WrappedTask
 	 * {@inheritDoc}
 	 * @since 2018/03/03
 	 */
+	@Deprecated
 	@Override
 	public final void checkPermission(String __cl, String __n, String __a)
 		throws NullPointerException, SecurityException
@@ -51,6 +55,7 @@ public final class WrappedTask
 	 * {@inheritDoc}
 	 * @since 2018/03/03
 	 */
+	@Deprecated
 	@Override
 	public final boolean equals(Object __o)
 	{
@@ -67,6 +72,7 @@ public final class WrappedTask
 	 * {@inheritDoc}
 	 * @since 2018/03/03
 	 */
+	@Deprecated
 	@Override
 	public final int flags()
 	{
@@ -77,6 +83,7 @@ public final class WrappedTask
 	 * {@inheritDoc}
 	 * @since 2018/03/03
 	 */
+	@Deprecated
 	@Override
 	public final int hashCode()
 	{
@@ -87,6 +94,7 @@ public final class WrappedTask
 	 * {@inheritDoc}
 	 * @since 2018/03/03
 	 */
+	@Deprecated
 	@Override
 	public final int index()
 	{
@@ -97,6 +105,7 @@ public final class WrappedTask
 	 * {@inheritDoc}
 	 * @since 2018/03/03
 	 */
+	@Deprecated
 	@Override
 	public final Library[] libraryClassPath()
 		throws SecurityException
@@ -108,6 +117,7 @@ public final class WrappedTask
 	 * {@inheritDoc}
 	 * @since 2018/03/03
 	 */
+	@Deprecated
 	@Override
 	public final String mainClass()
 	{
@@ -118,6 +128,7 @@ public final class WrappedTask
 	 * {@inheritDoc}
 	 * @since 2018/03/03
 	 */
+	@Deprecated
 	@Override
 	public final long metric(SystemTaskMetric __m)
 		throws NullPointerException
@@ -129,6 +140,7 @@ public final class WrappedTask
 	 * {@inheritDoc}
 	 * @since 2018/03/03
 	 */
+	@Deprecated
 	@Override
 	public final void restart()
 	{
@@ -139,6 +151,7 @@ public final class WrappedTask
 	 * {@inheritDoc}
 	 * @since 2018/03/03
 	 */
+	@Deprecated
 	@Override
 	public final SystemTaskStatus status()
 	{
@@ -149,6 +162,7 @@ public final class WrappedTask
 	 * {@inheritDoc}
 	 * @since 2018/03/03
 	 */
+	@Deprecated
 	@Override
 	public final SystemTrustGroup trustGroup()
 	{

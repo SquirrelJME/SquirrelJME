@@ -15,9 +15,11 @@ package cc.squirreljme.runtime.cldc.task;
  *
  * @since 2017/12/27
  */
+@Deprecated
 public interface SystemTaskFlag
 {
 	/** Is this a system task? */
+	@Deprecated
 	public static final int SYSTEM =
 		0x0000_0001;
 }
