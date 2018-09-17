@@ -15,6 +15,7 @@ package cc.squirreljme.runtime.cldc.trust;
  *
  * @since 2018/02/12
  */
+@Deprecated
 public final class SystemTrustGroupUtils
 {
 	/**
@@ -22,6 +23,7 @@ public final class SystemTrustGroupUtils
 	 *
 	 * @since 2018/02/12
 	 */
+	@Deprecated
 	private SystemTrustGroupUtils()
 	{
 	}
@@ -34,6 +36,7 @@ public final class SystemTrustGroupUtils
 	 * @return {@code true} if they are equal.
 	 * @since 2018/02/12
 	 */
+	@Deprecated
 	public static final boolean equals(SystemTrustGroup __a,
 		SystemTrustGroup __b)
 	{
@@ -63,6 +66,7 @@ public final class SystemTrustGroupUtils
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/02/12
 	 */
+	@Deprecated
 	public static final int hashCode(SystemTrustGroup __a)
 		throws NullPointerException
 	{
