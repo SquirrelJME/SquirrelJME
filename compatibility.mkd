@@ -4,6 +4,13 @@ SquirrelJME aims to be compatible with most programs however there are
 situations and rare edge cases where there will be no compatibility. This is
 to make the implementation easier.
 
+## Supported Encodings
+
+Only the following character encodings are supported:
+
+ * _ISO-8859-1_.
+ * _UTF-8_.
+
 ## `SUPER` is always assumed to be set.
 
 In all clases the `SUPER` flag is assumed to be set, this flag just modifies
