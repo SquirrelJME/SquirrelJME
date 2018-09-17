@@ -15,6 +15,7 @@ package cc.squirreljme.runtime.cldc.trust;
  *
  * @since 2018/01/18
  */
+@Deprecated
 public class InvalidTrustException
 	extends RuntimeException
 {
@@ -23,6 +24,7 @@ public class InvalidTrustException
 	 *
 	 * @since 2018/01/18
 	 */
+	@Deprecated
 	public InvalidTrustException()
 	{
 	}
@@ -33,6 +35,7 @@ public class InvalidTrustException
 	 * @param __m The message.
 	 * @since 2018/01/18
 	 */
+	@Deprecated
 	public InvalidTrustException(String __m)
 	{
 		super(__m);
@@ -45,6 +48,7 @@ public class InvalidTrustException
 	 * @param __c The cause.
 	 * @since 2018/01/18
 	 */
+	@Deprecated
 	public InvalidTrustException(String __m, Throwable __c)
 	{
 		super(__m, __c);
@@ -56,6 +60,7 @@ public class InvalidTrustException
 	 * @param __c The cause.
 	 * @since 2018/01/18
 	 */
+	@Deprecated
 	public InvalidTrustException(Throwable __c)
 	{
 		super(__c);

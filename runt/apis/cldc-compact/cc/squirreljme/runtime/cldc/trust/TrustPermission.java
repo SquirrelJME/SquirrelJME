@@ -20,14 +20,17 @@ import java.security.PermissionCollection;
  *
  * @since 2018/01/31
  */
+@Deprecated
 public final class TrustPermission
 	extends Permission
 {
 	/** Get trust ID. */
+	@Deprecated
 	public static final String ACTION_CHECK_TRUST_ID =
 		"check-trust-id";
 	
 	/** The untrusted action. */
+	@Deprecated
 	public static final String ACTION_GET_UNTRUSTED =
 		"get-untrusted";
 	
@@ -39,6 +42,7 @@ public final class TrustPermission
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/31
 	 */
+	@Deprecated
 	public TrustPermission(String __name, String __actions)
 		throws NullPointerException
 	{
@@ -51,6 +55,7 @@ public final class TrustPermission
 	 * {@inheritDoc}
 	 * @since 2018/01/31
 	 */
+	@Deprecated
 	@Override
 	public boolean equals(Object __o)
 	{
@@ -61,6 +66,7 @@ public final class TrustPermission
 	 * {@inheritDoc}
 	 * @since 2018/01/31
 	 */
+	@Deprecated
 	@Override
 	public String getActions()
 	{
@@ -71,6 +77,7 @@ public final class TrustPermission
 	 * {@inheritDoc}
 	 * @since 2018/01/31
 	 */
+	@Deprecated
 	@Override
 	public int hashCode()
 	{
@@ -81,6 +88,7 @@ public final class TrustPermission
 	 * {@inheritDoc}
 	 * @since 2018/01/31
 	 */
+	@Deprecated
 	@Override
 	public boolean implies(Permission __p)
 	{
@@ -91,6 +99,7 @@ public final class TrustPermission
 	 * {@inheritDoc}
 	 * @since 2018/01/31
 	 */
+	@Deprecated
 	@Override
 	public PermissionCollection newPermissionCollection()
 	{
@@ -101,6 +110,7 @@ public final class TrustPermission
 	 * {@inheritDoc}
 	 * @since 2018/01/31
 	 */
+	@Deprecated
 	@Override
 	public String toString()
 	{

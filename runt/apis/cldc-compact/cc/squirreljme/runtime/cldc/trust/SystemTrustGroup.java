@@ -16,6 +16,7 @@ package cc.squirreljme.runtime.cldc.trust;
  *
  * @since 2018/01/09
  */
+@Deprecated
 public interface SystemTrustGroup
 {
 	/**
@@ -28,6 +29,7 @@ public interface SystemTrustGroup
 	 * @throws SecurityException If the permissions is not permitted.
 	 * @since 2018/01/11
 	 */
+	@Deprecated
 	public abstract void checkPermission(String __cl, String __n, String __a)
 		throws NullPointerException, SecurityException;
 	
@@ -40,6 +42,7 @@ public interface SystemTrustGroup
 	 * @return If the trust group is equal to another.
 	 * @since 2018/02/12
 	 */
+	@Deprecated
 	@Override
 	public abstract boolean equals(Object __o);
 	
@@ -51,6 +54,7 @@ public interface SystemTrustGroup
 	 * @return The hash code for this group.
 	 * @since 2018/02/12
 	 */
+	@Deprecated
 	@Override
 	public abstract int hashCode();
 	
@@ -60,6 +64,7 @@ public interface SystemTrustGroup
 	 * @return The trust group index.
 	 * @since 2018/01/11
 	 */
+	@Deprecated
 	public abstract int index();
 	
 	/**
@@ -68,6 +73,7 @@ public interface SystemTrustGroup
 	 * @return If the group is a trusted group.
 	 * @since 2018/01/31
 	 */
+	@Deprecated
 	public abstract boolean isTrusted();
 	
 	/**
@@ -76,6 +82,7 @@ public interface SystemTrustGroup
 	 * @return The name of the group.
 	 * @since 2018/01/31
 	 */
+	@Deprecated
 	public abstract String name();
 	
 	/**
@@ -84,6 +91,7 @@ public interface SystemTrustGroup
 	 * @return The vendor of the group.
 	 * @since 2018/01/31
 	 */
+	@Deprecated
 	public abstract String vendor();
 }
 
