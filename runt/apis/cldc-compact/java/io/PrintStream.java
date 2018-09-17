@@ -10,24 +10,103 @@
 
 package java.io;
 
+import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+import cc.squirreljme.runtime.cldc.io.CodecFactory;
+import cc.squirreljme.runtime.cldc.io.Encoder;
+
+/**
+ * This class is used to print translated and formatted text.
+ *
+ * No {@link IOException} is ever thrown by any of these methods, they are
+ * handled and provided as an error flag which can be obtained.
+ *
+ * Print streams may optionally have automatic flushing which will call
+ * {@link #flush()} whenever a byte array is written or when it is detected
+ * that {@code '\n'} is written.
+ *
+ * If not specified, the current system encoding is used.
+ *
+ * @since 2018/09/16
+ */
 public class PrintStream
 	extends OutputStream
 	implements Appendable, Closeable
 {
-	public PrintStream(OutputStream __a)
+	/** The stream to write bytes to. */
+	private final OutputStream _out;
+	
+	/** Is auto-flushing to be used? */
+	private final boolean _autoflush;
+	
+	/** The encoder used to encode chars to bytes. */
+	private final Encoder _encoder;
+	
+	/**
+	 * Writes to the given stream using the default encoding and with no
+	 * auto flushing.
+	 *
+	 * @param __out The stream to write to.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/17
+	 */
+	public PrintStream(OutputStream __out)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		this(__out, false, CodecFactory.defaultEncoder());
 	}
 	
-	public PrintStream(OutputStream __a, boolean __b)
+	/**
+	 * Writes to the given stream using the default encoding and with the
+	 * specified auto flushing.
+	 *
+	 * @param __out The stream to write to.
+	 * @param __autoflush If auto flushing is to be enabled.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/17
+	 */
+	public PrintStream(OutputStream __out, boolean __autoflush)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		this(__out, __autoflush, CodecFactory.defaultEncoder());
 	}
 	
-	public PrintStream(OutputStream __a, boolean __b, String __c)
-		throws UnsupportedEncodingException
+	/**
+	 * Writes to the given stream using the given encoding and with the
+	 * specified auto flushing.
+	 *
+	 * @param __out The stream to write to.
+	 * @param __autoflush If auto flushing is to be enabled.
+	 * @param __enc The encoding to use.
+	 * @throws NullPointerException On null arguments.
+	 * @throws UnsupportedEncodingException If the encoding is not supported.
+	 * @since 2018/09/17
+	 */
+	public PrintStream(OutputStream __out, boolean __autoflush, String __enc)
+		throws NullPointerException, UnsupportedEncodingException
 	{
-		throw new todo.TODO();
+		this(__out, __autoflush, CodecFactory.encoder(__enc));
+	}
+	
+	/**
+	 * Writes to the given stream using the given encoder and with the
+	 * specified auto flushing.
+	 *
+	 * @param __out The stream to write to.
+	 * @param __autoflush If auto flushing is to be enabled.
+	 * @param __enc The encoder to use to encode characters to bytes.
+	 * @throws NullPointerException On null arguments.
+	 * @throws UnsupportedEncodingException If the encoding is not supported.
+	 * @since 2018/09/17
+	 */
+	private PrintStream(OutputStream __out, boolean __autoflush, Encoder __enc)
+		throws NullPointerException
+	{
+		if (__out == null || __enc == null)
+			throw new NullPointerException("NARG");
+		
+		this._out = __out;
+		this._autoflush = __autoflush;
+		this._encoder = __enc;
 	}
 	
 	public PrintStream append(CharSequence __a)
@@ -184,6 +263,7 @@ public class PrintStream
 	}
 	
 	@Override
+	@ImplementationNote("If auto-flushing, this calls flush after writing.")
 	public void write(byte[] __a, int __b, int __c)
 	{
 		throw new todo.TODO();
