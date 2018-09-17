@@ -27,9 +27,11 @@ import cc.squirreljme.runtime.cldc.system.type.VoidType;
  *
  * @since 2018/03/02
  */
+@Deprecated
 public final class ServiceCaller
 {
 	/** The service index. */
+	@Deprecated
 	protected final Integer index;
 	
 	/**
@@ -38,6 +40,7 @@ public final class ServiceCaller
 	 * @param __dx The system call index.
 	 * @since 2018/03/02
 	 */
+	@Deprecated
 	public ServiceCaller(int __dx)
 		throws NullPointerException
 	{
@@ -54,6 +57,7 @@ public final class ServiceCaller
 	 * @throws NullPointerException If no function was specified.
 	 * @since 2018/03/02
 	 */
+	@Deprecated
 	public final boolean booleanCall(Enum<?> __func, Object... __args)
 		throws InvalidServiceCallException, NullPointerException
 	{
@@ -70,6 +74,7 @@ public final class ServiceCaller
 	 * @throws NullPointerException If no function was specified.
 	 * @since 2018/03/02
 	 */
+	@Deprecated
 	public final BooleanArray booleanArrayCall(Enum<?> __func,
 		Object... __args)
 		throws InvalidServiceCallException, NullPointerException
@@ -88,6 +93,7 @@ public final class ServiceCaller
 	 * @throws NullPointerException If no function was specified.
 	 * @since 2018/03/02
 	 */
+	@Deprecated
 	public final char charCall(Enum<?> __func, Object... __args)
 		throws InvalidServiceCallException, NullPointerException
 	{
@@ -105,6 +111,7 @@ public final class ServiceCaller
 	 * @throws NullPointerException If no function was specified.
 	 * @since 2018/03/02
 	 */
+	@Deprecated
 	public final CharacterArray charArrayCall(Enum<?> __func,
 		Object... __args)
 		throws InvalidServiceCallException, NullPointerException
@@ -123,6 +130,7 @@ public final class ServiceCaller
 	 * @throws NullPointerException If no function was specified.
 	 * @since 2018/03/02
 	 */
+	@Deprecated
 	public final double doubleCall(Enum<?> __func, Object... __args)
 		throws InvalidServiceCallException, NullPointerException
 	{
@@ -139,6 +147,7 @@ public final class ServiceCaller
 	 * @throws NullPointerException If no function was specified.
 	 * @since 2018/03/02
 	 */
+	@Deprecated
 	public final DoubleArray doubleArrayCall(Enum<?> __func,
 		Object... __args)
 		throws InvalidServiceCallException, NullPointerException
@@ -157,6 +166,7 @@ public final class ServiceCaller
 	 * @throws NullPointerException If no function was specified.
 	 * @since 2018/03/02
 	 */
+	@Deprecated
 	public final float floatCall(Enum<?> __func, Object... __args)
 		throws InvalidServiceCallException, NullPointerException
 	{
@@ -173,6 +183,7 @@ public final class ServiceCaller
 	 * @throws NullPointerException If no function was specified.
 	 * @since 2018/03/02
 	 */
+	@Deprecated
 	public final FloatArray floatArrayCall(Enum<?> __func,
 		Object... __args)
 		throws InvalidServiceCallException, NullPointerException
@@ -191,6 +202,7 @@ public final class ServiceCaller
 	 * @throws NullPointerException If no function was specified.
 	 * @since 2018/03/02
 	 */
+	@Deprecated
 	public final int integerCall(Enum<?> __func, Object... __args)
 		throws InvalidServiceCallException, NullPointerException
 	{
@@ -208,6 +220,7 @@ public final class ServiceCaller
 	 * @throws NullPointerException If no function was specified.
 	 * @since 2018/03/02
 	 */
+	@Deprecated
 	public final IntegerArray integerArrayCall(Enum<?> __func,
 		Object... __args)
 		throws InvalidServiceCallException, NullPointerException
@@ -226,6 +239,7 @@ public final class ServiceCaller
 	 * @throws NullPointerException If no function was specified.
 	 * @since 2018/03/02
 	 */
+	@Deprecated
 	public final long longCall(Enum<?> __func, Object... __args)
 		throws InvalidServiceCallException, NullPointerException
 	{
@@ -242,6 +256,7 @@ public final class ServiceCaller
 	 * @throws NullPointerException If no function was specified.
 	 * @since 2018/03/02
 	 */
+	@Deprecated
 	public final LongArray longArrayCall(Enum<?> __func,
 		Object... __args)
 		throws InvalidServiceCallException, NullPointerException
@@ -262,6 +277,7 @@ public final class ServiceCaller
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/02
 	 */
+	@Deprecated
 	public final <R> R serviceCall(Class<R> __rv, Enum<?> __func,
 		Object... __args)
 		throws ClassCastException, InvalidServiceCallException,
@@ -297,6 +313,7 @@ public final class ServiceCaller
 	 * @throws NullPointerException If no function was specified.
 	 * @since 2018/03/02
 	 */
+	@Deprecated
 	public final short shortCall(Enum<?> __func, Object... __args)
 		throws InvalidServiceCallException, NullPointerException
 	{
@@ -313,6 +330,7 @@ public final class ServiceCaller
 	 * @throws NullPointerException If no function was specified.
 	 * @since 2018/03/02
 	 */
+	@Deprecated
 	public final ShortArray shortArrayCall(Enum<?> __func,
 		Object... __args)
 		throws InvalidServiceCallException, NullPointerException
@@ -330,6 +348,7 @@ public final class ServiceCaller
 	 * @throws NullPointerException If no function was specified.
 	 * @since 2018/03/02
 	 */
+	@Deprecated
 	public final void voidCall(Enum<?> __func, Object... __args)
 		throws InvalidServiceCallException, NullPointerException
 	{

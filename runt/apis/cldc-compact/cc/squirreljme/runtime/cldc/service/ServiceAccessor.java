@@ -21,13 +21,16 @@ import java.util.Map;
  *
  * @since 2018/03/02
  */
+@Deprecated
 public final class ServiceAccessor
 {
 	/** Mapping of client classes to instances. */
+	@Deprecated
 	private static final Map<Class<?>, Integer> _INSTANCEMAP =
 		new HashMap<>();
 	
 	/** Services which have been initialized for clients. */
+	@Deprecated
 	private static final Map<Integer, Object> _INSTANCES =
 		new HashMap<>();
 	
@@ -36,6 +39,7 @@ public final class ServiceAccessor
 	 *
 	 * @since 2018/03/02
 	 */
+	@Deprecated
 	private ServiceAccessor()
 	{
 	}
@@ -50,6 +54,7 @@ public final class ServiceAccessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/02
 	 */
+	@Deprecated
 	public static final <R> R service(Class<R> __cl)
 		throws NoSuchServiceException, NullPointerException
 	{

@@ -17,9 +17,11 @@ import cc.squirreljme.runtime.cldc.task.SystemTask;
  *
  * @since 2018/03/02
  */
+@Deprecated
 public abstract class ServiceDefinition
 {
 	/** The provider for the client class. */
+	@Deprecated
 	protected final Class<? extends ServiceClientProvider> clientprovider;
 	
 	/**
@@ -29,6 +31,7 @@ public abstract class ServiceDefinition
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/02
 	 */
+	@Deprecated
 	public ServiceDefinition(Class<? extends ServiceClientProvider> __cp)
 		throws NullPointerException
 	{
@@ -46,6 +49,7 @@ public abstract class ServiceDefinition
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/02
 	 */
+	@Deprecated
 	public abstract ServiceServer newServer(SystemTask __task)
 		throws NullPointerException;
 	
@@ -55,6 +59,7 @@ public abstract class ServiceDefinition
 	 * @return The class for initializing the client.
 	 * @since 2018/03/02
 	 */
+	@Deprecated
 	public final Class<? extends ServiceClientProvider> clientProvider()
 	{
 		return this.clientprovider;
