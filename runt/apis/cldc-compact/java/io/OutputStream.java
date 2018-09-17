@@ -86,8 +86,9 @@ public abstract class OutputStream
 		if (__a == null)
 			throw new NullPointerException("NARG");
 		
-		// Wrap
-		write(__a, 0, __a.length);
+		// Write all bytes
+		for (int i = 0, n = __a.length; i < n; i++)
+			this.write(__a[i]);
 	}
 	
 	/**
@@ -113,7 +114,7 @@ public abstract class OutputStream
 		
 		// Write all bytes
 		for (int i = 0; i < __l; i++)
-			write(__a[__o + i]);
+			this.write(__a[__o + i]);
 	}
 }
 
