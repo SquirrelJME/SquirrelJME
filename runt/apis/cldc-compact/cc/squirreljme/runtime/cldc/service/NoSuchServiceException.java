@@ -15,6 +15,7 @@ package cc.squirreljme.runtime.cldc.service;
  *
  * @since 2018/01/05
  */
+@Deprecated
 public class NoSuchServiceException
 	extends RuntimeException
 {
@@ -23,6 +24,7 @@ public class NoSuchServiceException
 	 *
 	 * @since 2018/01/05
 	 */
+	@Deprecated
 	public NoSuchServiceException()
 	{
 	}
@@ -33,6 +35,7 @@ public class NoSuchServiceException
 	 * @param __m The message.
 	 * @since 2018/01/05
 	 */
+	@Deprecated
 	public NoSuchServiceException(String __m)
 	{
 		super(__m);
@@ -45,6 +48,7 @@ public class NoSuchServiceException
 	 * @param __c The cause.
 	 * @since 2018/01/05
 	 */
+	@Deprecated
 	public NoSuchServiceException(String __m, Throwable __c)
 	{
 		super(__m, __c);
@@ -56,6 +60,7 @@ public class NoSuchServiceException
 	 * @param __c The cause.
 	 * @since 2018/01/05
 	 */
+	@Deprecated
 	public NoSuchServiceException(Throwable __c)
 	{
 		super(__c);

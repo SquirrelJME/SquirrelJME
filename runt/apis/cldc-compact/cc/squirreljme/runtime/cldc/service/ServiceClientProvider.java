@@ -16,6 +16,7 @@ package cc.squirreljme.runtime.cldc.service;
  *
  * @since 2018/03/02
  */
+@Deprecated
 public interface ServiceClientProvider
 {
 	/**
@@ -26,6 +27,7 @@ public interface ServiceClientProvider
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/02
 	 */
+	@Deprecated
 	public abstract Object initializeClient(ServiceCaller __c)
 		throws NullPointerException;
 }

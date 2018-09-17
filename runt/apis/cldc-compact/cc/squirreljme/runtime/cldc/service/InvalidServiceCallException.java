@@ -15,6 +15,7 @@ package cc.squirreljme.runtime.cldc.service;
  *
  * @since 2018/03/02
  */
+@Deprecated
 public class InvalidServiceCallException
 	extends RuntimeException
 {
@@ -23,6 +24,7 @@ public class InvalidServiceCallException
 	 *
 	 * @since 2018/03/02
 	 */
+	@Deprecated
 	public InvalidServiceCallException()
 	{
 	}
@@ -33,6 +35,7 @@ public class InvalidServiceCallException
 	 * @param __m The message.
 	 * @since 2018/03/02
 	 */
+	@Deprecated
 	public InvalidServiceCallException(String __m)
 	{
 		super(__m);
@@ -45,6 +48,7 @@ public class InvalidServiceCallException
 	 * @param __c The cause.
 	 * @since 2018/03/02
 	 */
+	@Deprecated
 	public InvalidServiceCallException(String __m, Throwable __c)
 	{
 		super(__m, __c);
@@ -56,6 +60,7 @@ public class InvalidServiceCallException
 	 * @param __c The cause.
 	 * @since 2018/03/02
 	 */
+	@Deprecated
 	public InvalidServiceCallException(Throwable __c)
 	{
 		super(__c);

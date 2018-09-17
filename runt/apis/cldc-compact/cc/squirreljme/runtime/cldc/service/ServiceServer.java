@@ -17,6 +17,7 @@ import cc.squirreljme.runtime.cldc.system.type.EnumType;
  *
  * @since 2018/03/02
  */
+@Deprecated
 public interface ServiceServer
 {
 	/**
@@ -28,6 +29,7 @@ public interface ServiceServer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/03
 	 */
+	@Deprecated
 	public abstract Object serviceCall(EnumType __func, Object... __args)
 		throws NullPointerException;
 }
