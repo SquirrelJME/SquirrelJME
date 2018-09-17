@@ -1,0 +1,60 @@
+# 2018/09/16
+
+## 11:20
+
+Raw stack traces will be very nice. I am going to do the resolution as late
+as possible so that way it is actually faster. Since throwables could just
+be initialized and tossed, there is no real reason to perform the heavy
+work of making stack traces nices until we actually want them to be nice
+such as when they are being printed.
+
+## 11:35
+
+I need to implement invoking the special native methods which do special
+things. These are internal VM functions, but they can easily be detected
+and handled accordingly to just return a value directly.
+
+## 11:47
+
+It would be easier to work with long, but I will go for int instead with
+high and low. This is because some systems might not have native 64-bit
+stuff so that means worse off systems do not need 64-bit math to work with
+stack traces which will slow it down.
+
+## 13:12
+
+`ClassName` is going to need to handle primitive types, so I have a solution
+for that. If the name of the class is the primitive type name in the language
+then it will be treated as one.
+
+## 16:23
+
+Okay I think the debug messages take up too much space!
+
+## 16:39
+
+Okay the byte code is being parsed wrong, this is our byte code:
+
+	67: iinc          6, 1
+	70: iinc          7, 1
+	73: goto          51
+
+And this is how my VM decodes it:
+
+	@67#IINC~:[6, 1]
+	@69#ACONST_NULL~:[]
+	@70#IINC~:[7, 1]
+	@72#ACONST_NULL~:[]
+	@73#GOTO:[->@51]
+
+So, this means IINC is being read improperly, it has a bad size but
+it does not break as much because ACONST_NULL is a single byte instruction.
+
+## 17:46
+
+Organization is doing wonders for getting stuff done, I like it.
+
+## 17:56
+
+I need to make arrays more optimized because right now everything is stored
+as an object which will mean an insane amount of memory is required.

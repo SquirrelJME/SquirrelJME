@@ -1,0 +1,9 @@
+# 2018/09/17
+
+## 0:22
+
+Well, I am quite sleepy and I literally worked on SquirrelJME all day long so
+it was not bad at all. I made a ton of commits which is nice. Things are
+getting much further along. Additionally seeing progress is nice, hopefully
+next weekend I can actually have printing text and such. Just next weekend
+I will be handling `LOOKUPSWITCH` which will be fun.
