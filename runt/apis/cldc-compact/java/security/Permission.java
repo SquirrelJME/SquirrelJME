@@ -12,10 +12,18 @@ package java.security;
 
 public abstract class Permission
 {
-	public Permission(String __a)
+	/** The permission name. */
+	private final String _name;
+	
+	/**
+	 * Initializes the base permission.
+	 *
+	 * @param __name The name of the permission.
+	 * @since 2018/09/18
+	 */
+	public Permission(String __name)
 	{
-		super();
-		throw new todo.TODO();
+		this._name = __name;
 	}
 	
 	@Override
