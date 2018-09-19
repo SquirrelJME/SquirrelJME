@@ -238,6 +238,11 @@ public class PrintStream
 	
 	public void println()
 	{
+		// If the newline character has not yet been set, use a fallback
+		String nl = PrintStream._NEWLINE;
+		if (nl == null)
+			nl = "\n";
+		
 		throw new todo.TODO();
 	}
 	
