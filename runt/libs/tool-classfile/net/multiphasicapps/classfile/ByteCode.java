@@ -133,7 +133,7 @@ public final class ByteCode
 				lengths[i] = -1;
 		
 			// Determine instruction lengths for each position
-			for (int i = 0; i < codelen;)
+			for (int i = 0, li = -1; i < codelen; li = i)
 			{
 				// Store address of instruction for an index based lookup
 				index[indexat++] = i;
@@ -144,10 +144,10 @@ public final class ByteCode
 			
 				// {@squirreljme.error JC02 The operation exceeds the bounds of
 				// the method byte code. (The operation pointer; The operation
-				// length; The code length)}
+				// length; The code length; The last operation pointer)}
 				if ((i += oplen) > codelen)
 					throw new InvalidClassFormatException(
-						String.format("JC02 %d %d %d", i, oplen, codelen));
+						String.format("JC02 %d %d %d", i, oplen, codelen, li));
 			}
 			
 			// Read exception handler table
@@ -852,13 +852,40 @@ public final class ByteCode
 				rv += 4;
 				break;
 			
-				// Table switch
+				// Table switch, the length of this instruction varies due to
+				// alignment and the count contained within
 			case InstructionIndex.TABLESWITCH:
-				throw new todo.TODO();
+				//             tusaddr +4    +8
+			    // +0          +4      +8    +12    [+16x4         ]...
+				// op  x  x  x default lowdx highdx [(highdx-lowdx)]...
+				//    op  x  x default lowdx highdx [(highdx-lowdx)]...
+				//       op  x default lowdx highdx [(highdx-lowdx)]...
+				//          op default lowdx highdx [(highdx-lowdx)]...
+				// tuspadlen includes the opcode
+				int tusaddr = ((aa + 4) & (~3)),
+					tuspadlen = tusaddr - aa;
+				rv += tuspadlen + 12 + (4 *
+					(Instruction.__readInt(__code, tusaddr + 8) -
+					Instruction.__readInt(__code, tusaddr + 4) + 1));
+				break;
 				
-				// Lookup switch
+				// Lookup switch, the length of this instruction varies due to
+				// alignment and the number of contained entries.
 			case InstructionIndex.LOOKUPSWITCH:
-				throw new todo.TODO();
+				// The instruction is in this format:
+				//             lusaddr +4    +8
+				// +0          +4      +8    [+12x8       ]...
+				// op  x  x  x default count [match offset]...
+				//    op  x  x default count [match offset]...
+				//       op  x default count [match offset]...
+				//          op default count [match offset]...
+				// luspadlen includes the opcode
+				int lusaddr = ((aa + 4) & (~3)),
+					luspadlen = lusaddr - aa;
+				int vvvv;
+				rv += luspadlen + 8 + (8 * Instruction.__readInt(__code,
+					lusaddr + 4));
+				break;
 			
 				// {@squirreljme.error JC0b Cannot get the length of the
 				// specified operation because it is not valid. (The operation;

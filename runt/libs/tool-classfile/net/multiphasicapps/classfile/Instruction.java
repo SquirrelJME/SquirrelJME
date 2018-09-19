@@ -564,10 +564,40 @@ public final class Instruction
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/16
 	 */
-	private static final int __readByte(byte[] __a, int __o)
+	static final int __readByte(byte[] __a, int __o)
 		throws InvalidClassFormatException, NullPointerException
 	{
 		return (byte)Instruction.__readUnsignedByte(__a, __o);
+	}
+	
+	/**
+	 * Reads a signed int from the specified array.
+	 *
+	 * @param __a The array to read from.
+	 * @param __o The offset to read from.
+	 * @return The read value.
+	 * @throws InvalidClassFormatException If the offset exceeds the bounds of
+	 * the given array.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/18
+	 */
+	static final int __readInt(byte[] __a, int __o)
+		throws InvalidClassFormatException, NullPointerException
+	{
+		// Check
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error JC2e Illegal int read off the end of the
+		// instruction array. (The offset; The length of the code array)}
+		if (__o < 0 || __o + 3 >= __a.length)
+			throw new InvalidClassFormatException(
+				String.format("JC2e %d %d", __o, __a.length));
+		
+		return ((__a[__o] & 0xFF) << 24)  |
+			((__a[__o + 1] & 0xFF) << 16)  |
+			((__a[__o + 2] & 0xFF) << 8) |
+			(__a[__o + 3] & 0xFF);
 	}
 	
 	/**
@@ -581,7 +611,7 @@ public final class Instruction
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/15
 	 */
-	private static final int __readShort(byte[] __a, int __o)
+	static final int __readShort(byte[] __a, int __o)
 		throws InvalidClassFormatException, NullPointerException
 	{
 		return (short)Instruction.__readUnsignedShort(__a, __o);
@@ -598,7 +628,7 @@ public final class Instruction
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/08
 	 */
-	private static final int __readUnsignedByte(byte[] __a, int __o)
+	static final int __readUnsignedByte(byte[] __a, int __o)
 		throws InvalidClassFormatException, NullPointerException
 	{
 		// Check
@@ -625,14 +655,14 @@ public final class Instruction
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/07/15
 	 */
-	private static final int __readUnsignedShort(byte[] __a, int __o)
+	static final int __readUnsignedShort(byte[] __a, int __o)
 		throws InvalidClassFormatException, NullPointerException
 	{
 		// Check
 		if (__a == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JC11 Illegal byte read off the end of the
+		// {@squirreljme.error JC11 Illegal short read off the end of the
 		// instruction array. (The offset; The length of the code array)}
 		if (__o < 0 || __o + 1 >= __a.length)
 			throw new InvalidClassFormatException(
