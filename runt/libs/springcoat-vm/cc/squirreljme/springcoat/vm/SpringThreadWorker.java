@@ -1002,6 +1002,20 @@ public final class SpringThreadWorker
 					frame.loadToStack(Integer.class,
 						opid - InstructionIndex.ILOAD_0);
 					break;
+					
+					// Is the given object an instance of the given class?
+				case InstructionIndex.INSTANCEOF:
+					{
+						// Check against this
+						SpringClass as = this.resolveClass(inst.
+							<ClassName>argument(0, ClassName.class));
+						
+						SpringClass vtype = frame.<SpringObject>popFromStack(
+							SpringObject.class).type();
+						frame.pushToStack((vtype != null &&
+							as.isAssignableFrom(vtype) ? 1 : 0));
+					}
+					break;
 				
 					// Multiply integer
 				case InstructionIndex.IMUL:
