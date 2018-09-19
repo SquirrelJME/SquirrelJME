@@ -1,0 +1,42 @@
+# 2018/09/18
+
+## 20:27
+
+Was parsing `LOOKUPSWITCH` and `TABLESWITCH` and I calculated the offset after
+padding, but I was adding an extra 4 to read the counts and lengths. I forgot
+that it was relative to the base address so it messed up. I actually figured
+it out for `LOOKUPSWITCH` but I forgot it for `TABLESWITCH` until I figured it
+out again.
+
+## 20:42
+
+`PrintStream` is buffered, but what should the buffer size be? This is a
+limited and constrained environment so it cannot be a huge value.
+
+## 20:44
+
+I peeked at Java SE to see what the buffer size was but it just uses
+`BufferedWriter` and `OutputStreamWriter` which honestly is much easier of a
+solution that doing buffering myself. Then I can implement two classes at once
+anyway.
+
+## 20:57
+
+Java SE's buffer size is 8KiB! I think that is far too much, since these are
+`char` I will use a buffer size of 128 since that is 256 bytes. There really
+does not need to be that much text to be buffered.
+
+## 21:08
+
+However, thinking about it `PrintStream` does allow direct byte writing so I
+pretty much will have to skirt around the encoder anyway. I will need to
+handle flushing the buffer if there are characters to be written and such, so
+I think it would be best to do the duplicated work and not use these other
+classes. It can just be buffered at the byte level I would say, that would be
+the easiest and definitely the encoder will do everything.
+
+## 21:52
+
+And I can have a smaller buffer size optimized for console output, so that
+will just be a lofty 96 bytes! This is large enough to be useful for text but
+small enough to not use insane amounts of memory.
