@@ -10,13 +10,13 @@
 
 package java.lang;
 
+import java.security.AccessController;
 import java.security.Permission;
 
 public class SecurityManager
 {
 	public SecurityManager()
 	{
-		super();
 		throw new todo.TODO();
 	}
 	
@@ -50,9 +50,21 @@ public class SecurityManager
 		throw new todo.TODO();
 	}
 	
-	public void checkPermission(Permission __a)
+	/**
+	 * Checks whether the given permission is permitted.
+	 *
+	 * @param __p The permission to check.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SecurityException If permission is denied.
+	 * @since 2018/09/18
+	 */
+	public void checkPermission(Permission __p)
+		throws NullPointerException, SecurityException
 	{
-		throw new todo.TODO();
+		if (__p == null)
+			throw new NullPointerException("NARG");
+		
+		AccessController.checkPermission(__p);
 	}
 	
 	public void checkPropertyAccess(String __a)
