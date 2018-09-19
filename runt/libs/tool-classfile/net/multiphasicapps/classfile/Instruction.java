@@ -237,6 +237,16 @@ public final class Instruction
 				naturalflow = true;
 				break;
 				
+				// Argument is a class
+			case InstructionIndex.ANEWARRAY:
+			case InstructionIndex.CHECKCAST:
+			case InstructionIndex.INSTANCEOF:
+			case InstructionIndex.NEW:
+				naturalflow = true;
+				args = new Object[]{__pool.<ClassName>require(ClassName.class,
+					Instruction.__readUnsignedShort(__code, argbase))};
+				break;
+				
 				// First value is a signed byte
 			case InstructionIndex.BIPUSH:
 				naturalflow = true;
@@ -265,20 +275,6 @@ public final class Instruction
 				naturalflow = true;
 				args = new Object[]{
 					Instruction.__readShort(__code, argbase)};
-				break;
-				
-				// Create new array
-			case InstructionIndex.ANEWARRAY:
-				naturalflow = true;
-				args = new Object[]{__pool.<ClassName>require(ClassName.class,
-					Instruction.__readUnsignedShort(__code, argbase))};
-				break;
-			
-				// Checks that the object on the stack is of the given class
-			case InstructionIndex.CHECKCAST:
-				naturalflow = true;
-				args = new Object[]{__pool.<ClassName>require(ClassName.class,
-					Instruction.__readUnsignedShort(__code, argbase))};
 				break;
 				
 				// Read or write of a field
@@ -366,13 +362,6 @@ public final class Instruction
 				if (!cvalue.type().isNarrow())
 					throw new InvalidClassFormatException(String.format(
 						"JC28 %d %d %s", op, __a, cvalue));
-				break;
-				
-				// Allocate (but do not construct) instance of new object
-			case InstructionIndex.NEW:
-				naturalflow = true;
-				args = new Object[]{__pool.<ClassName>require(ClassName.class,
-					Instruction.__readUnsignedShort(__code, argbase))};
 				break;
 				
 				// Allocate array of primitive type
