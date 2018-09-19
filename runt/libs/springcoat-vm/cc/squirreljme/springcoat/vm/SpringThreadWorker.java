@@ -952,6 +952,13 @@ public final class SpringThreadWorker
 					}
 					break;
 					
+					// If not equal to zero
+				case InstructionIndex.IFNE:
+					if (frame.<Integer>popFromStack(Integer.class) != 0)
+						nextpc = inst.<InstructionJumpTarget>argument(0,
+							InstructionJumpTarget.class).target();
+					break;
+					
 					// If greater than or equal to zero
 				case InstructionIndex.IFGE:
 					if (frame.<Integer>popFromStack(Integer.class) >= 0)
