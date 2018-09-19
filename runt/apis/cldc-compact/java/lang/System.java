@@ -322,9 +322,19 @@ public final class System
 		return rv;
 	}
 	
+	/**
+	 * Returns the current security manager that is in use.
+	 *
+	 * @return The current security manager in use.
+	 * @since 2018/09/18
+	 */
 	public static SecurityManager getSecurityManager()
 	{
-		throw new todo.TODO();
+		// Lock because it is managed by that class for checking
+		synchronized (SecurityManager.class)
+		{
+			return SecurityManager._CURRENT_MANAGER;
+		}
 	}
 	
 	/**
