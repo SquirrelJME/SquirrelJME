@@ -12,6 +12,7 @@ package java.lang;
 
 import java.security.AccessController;
 import java.security.Permission;
+import java.util.PropertyPermission;
 
 public class SecurityManager
 {
@@ -67,9 +68,29 @@ public class SecurityManager
 		AccessController.checkPermission(__p);
 	}
 	
-	public void checkPropertyAccess(String __a)
+	/**
+	 * Checks if the given system property can be accessed.
+	 *
+	 * @param __key The key to check.
+	 * @throws IllegalArgumentException If the key is empty.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SecurityException If access to the property is denied.
+	 * @since 2018/09/18
+	 */
+	public void checkPropertyAccess(String __key)
+		throws IllegalArgumentException, NullPointerException,
+			SecurityException
 	{
-		throw new todo.TODO();
+		if (__key == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error ZZ0y Request to check access to system property
+		// with an empty key.}
+		if (__key.isEmpty())
+			throw new IllegalArgumentException("ZZ0y");
+		
+		// Forward
+		this.checkPermission(new PropertyPermission(__key, "read"));
 	}
 	
 	public void checkRead(String __a)

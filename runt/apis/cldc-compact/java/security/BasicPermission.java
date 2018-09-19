@@ -13,16 +13,41 @@ package java.security;
 public abstract class BasicPermission
 	extends Permission
 {
-	public BasicPermission(String __a)
+	/**
+	 * Initializes the basic permission.
+	 *
+	 * @param __name The name of the permission.
+	 * @throws IllegalArgumentException If name is empty.
+	 * @throws NullPointerException If no name was specified.
+	 * @since 2018/09/18
+	 */
+	public BasicPermission(String __name)
+		throws IllegalArgumentException, NullPointerException
 	{
-		super((String)null);
-		throw new todo.TODO();
+		super(__name);
+		
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error ZZ0e The name for basic permissions cannot
+		// be empty.}
+		if (__name.equals(""))
+			throw new IllegalArgumentException("ZZ0z");
 	}
 	
-	public BasicPermission(String __a, String __b)
+	/**
+	 * Initializes the basic permission.
+	 *
+	 * @param __name The name of the permission.
+	 * @param __act The action to use, this is ignored for basic permissions.
+	 * @throws IllegalArgumentException If name is empty.
+	 * @throws NullPointerException If no name was specified.
+	 * @since 2018/09/18
+	 */
+	public BasicPermission(String __name, String __act)
+		throws IllegalArgumentException, NullPointerException
 	{
-		super((String)null);
-		throw new todo.TODO();
+		this(__name);
 	}
 	
 	public boolean equals(Object __a)
