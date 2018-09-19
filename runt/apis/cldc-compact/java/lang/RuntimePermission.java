@@ -12,19 +12,57 @@ package java.lang;
 
 import java.security.BasicPermission;
 
+/**
+ * This is a permission which may be available at runtime.
+ *
+ * The following permissions are available:
+ * {@code "exitVM.(n)"} -- Exiting the VM with the given error code, if
+ * an asterisk {@code '*'} is used then any exit code is specified.
+ * {@code "setSecurityManager"} -- Setting a new security manager.
+ * {@code "createSecurityManager"} -- Creating a new security manager.
+ * {@code "setIO"} -- Setting {@link System#out} and {@link System#err}.
+ * {@code "modifyThread"} -- Allows one to interrupt threads, set priority,
+ * and rename them.
+ *
+ * @since 2018/09/18
+ */
 public final class RuntimePermission
 	extends BasicPermission
 {
-	public RuntimePermission(String __a)
+	/**
+	 * Initializes the permission.
+	 *
+	 * @param __name The name to check.
+	 * @throws IllegalArgumentException If name is empty.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/18
+	 */
+	public RuntimePermission(String __name)
+		throws IllegalArgumentException, NullPointerException
 	{
-		super((String)null);
-		throw new todo.TODO();
+		super(__name);
+		
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error ZZ15 Runtime permission name cannot be empty.}
+		if (__name.isEmpty())
+			throw new IllegalArgumentException("ZZ15");
 	}
 	
-	public RuntimePermission(String __a, String __b)
+	/**
+	 * Invokes {@code RuntimePermission(__name)}, the action is not used.
+	 *
+	 * @param __name The name to check.
+	 * @param __act This is ignored.
+	 * @throws IllegalArgumentException If name is empty.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/18
+	 */
+	public RuntimePermission(String __name, String __act)
+		throws IllegalArgumentException, NullPointerException
 	{
-		super((String)null);
-		throw new todo.TODO();
+		this(__name);
 	}
 }
 

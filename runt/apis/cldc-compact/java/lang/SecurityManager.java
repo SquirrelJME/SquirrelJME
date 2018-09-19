@@ -16,9 +16,30 @@ import java.util.PropertyPermission;
 
 public class SecurityManager
 {
+	/** The current security manager, defaults to the system one. */
+	static volatile SecurityManager _CURRENT_MANAGER =
+		new SecurityManager();
+	
+	/**
+	 * Initializes the security manager, if a security manager already exists
+	 * then the
+	 *
+	 * @throws SecurityException If the manager could not be created.
+	 * @since 2018/09/18 
+	 */
 	public SecurityManager()
+		throws SecurityException
 	{
-		throw new todo.TODO();
+		// Lock on this class, since multiple threads cannot mess around with
+		// this check
+		synchronized (SecurityManager.class)
+		{
+			// If one already exists, check to see if it can be created first
+			SecurityManager current = SecurityManager._CURRENT_MANAGER;
+			if (current != null)
+				current.checkPermission(
+					new RuntimePermission("createSecurityManager"));
+		}
 	}
 	
 	public void checkAccept(String __a, int __b)
