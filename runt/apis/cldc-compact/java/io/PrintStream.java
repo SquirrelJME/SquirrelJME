@@ -22,9 +22,12 @@ import cc.squirreljme.runtime.cldc.io.Encoder;
  *
  * Print streams may optionally have automatic flushing which will call
  * {@link #flush()} whenever a byte array is written or when it is detected
- * that {@code '\n'} is written.
+ * that {@code '\n'} is written. Internally the output is bufferred to optimize
+ * for writing multiple characters at once rather than one at a time.
  *
  * If not specified, the current system encoding is used.
+ *
+ * Any characters which are written to the output will be encoded accordingly.
  *
  * @since 2018/09/16
  */
@@ -32,6 +35,18 @@ public class PrintStream
 	extends OutputStream
 	implements Appendable, Closeable
 {
+	/**
+	 * This buffer size for this class has been chosen to be small, since in
+	 * most cases this class will either not be used or will be outputting just
+	 * text to the console. So since most consoles and most text will likely
+	 * be 80 columns or less, this buffer size is enough to fit such a terminal
+	 * but also give some extra room in the event of overflow.
+	 */
+	private static final int _BUFFER_SIZE =
+		96;
+	
+	private static final String _NEWLINE;
+	
 	/** The stream to write bytes to. */
 	private final OutputStream _out;
 	
@@ -40,6 +55,26 @@ public class PrintStream
 	
 	/** The encoder used to encode chars to bytes. */
 	private final Encoder _encoder;
+	
+	/**
+	 * Cache the line separator which is derived from the system properties.
+	 *
+	 * @since 2018/09/18
+	 */
+	static
+	{
+		String nl;
+		try
+		{
+			nl = System.getProperty("line.separator");
+		}
+		catch (SecurityException e)
+		{
+			nl = "\n";
+		}
+		
+		_NEWLINE = nl;
+	}
 	
 	/**
 	 * Writes to the given stream using the default encoding and with no
@@ -241,7 +276,14 @@ public class PrintStream
 		throw new todo.TODO();
 	}
 	
-	public void println(String __a)
+	/**
+	 * Prints the given string to the output stream followed by the system
+	 * newline character.
+	 *
+	 * @param __v The string to write.
+	 * @since 2018/09/18
+	 */
+	public void println(String __v)
 	{
 		throw new todo.TODO();
 	}
@@ -257,6 +299,7 @@ public class PrintStream
 	}
 	
 	@Override
+	@ImplementationNote("If newline is written, this will flush.")
 	public void write(int __a)
 	{
 		throw new todo.TODO();
