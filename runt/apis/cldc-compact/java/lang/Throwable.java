@@ -36,8 +36,7 @@ public class Throwable
 	private final String _message;
 	
 	/** Suppressed exceptions. */
-	private final List<Throwable> _suppressed =
-		new ArrayList<>(1);
+	private volatile Throwable[] _suppressed;
 	
 	/** Was a cause initialized already? */
 	private volatile boolean _initcause;
@@ -143,12 +142,28 @@ public class Throwable
 		if (__t == this)
 			throw new IllegalArgumentException("ZZ0v");
 		
-		// Lock to prevent multiple threads from adding these and messing up
-		// exceptions
-		List<Throwable> suppressed = this._suppressed;
-		synchronized (suppressed)
+		// Just lock on this to add suppressed exceptions, it is unspecified
+		// where the lock is done, but this prevent creation of an object just
+		// to hold a lock.
+		synchronized (this)
 		{
-			suppressed.add(__t);
+			// No suppressed exceptions were set, initialize
+			Throwable[] suppressed = this._suppressed;
+			if (suppressed == null)
+				this._suppressed = new Throwable[]{__t};
+			
+			// Otherwise rebuild the array and add it
+			else
+			{
+				int n = suppressed.length;
+				Throwable[] copy = new Throwable[n + 1];
+				for (int i = 0; i < n; i++)
+					copy[i] = suppressed[i];
+				copy[n] = __t;
+				
+				// Use this instead
+				this._suppressed = copy;
+			}
 		}
 	}
 	
@@ -212,13 +227,12 @@ public class Throwable
 	 */
 	public final Throwable[] getSuppressed()
 	{
-		// Prevent multiple threads from racing on these
-		List<Throwable> suppressed = this._suppressed;
-		synchronized (suppressed)
-		{
-			return suppressed.<Throwable>toArray(
-				new Throwable[suppressed.size()]);
-		}
+		// Since this is volatile we can just read whatever value is here
+		// without needing to lock
+		Throwable[] rv = this._suppressed;
+		if (rv == null)
+			return new Throwable[0];
+		return rv.clone();
 	}
 	
 	/**
