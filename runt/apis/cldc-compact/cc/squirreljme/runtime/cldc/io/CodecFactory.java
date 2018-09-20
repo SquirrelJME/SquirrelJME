@@ -23,6 +23,13 @@ import java.lang.ref.WeakReference;
 public final class CodecFactory
 {
 	/**
+	 * The encoding to use if it is unknown or not set anywhere, UTF-8 is used
+	 * because it is a sane default and should be used everywhere.
+	 */
+	private static final String _FALLBACK_ENCODING =
+		"utf-8";
+	
+	/**
 	 * Not used.
 	 *
 	 * @since 2018/09/16
@@ -50,13 +57,17 @@ public final class CodecFactory
 	 */
 	public static final String defaultEncoding()
 	{
+		// If no encoding has been set, fallback on one so it is always valid
 		try
 		{
-			return System.getProperty("microedition.encoding");
+			String rv = System.getProperty("microedition.encoding");
+			if (rv == null)
+				return CodecFactory._FALLBACK_ENCODING;
+			return rv;
 		}
 		catch (SecurityException e)
 		{
-			return "utf-8";
+			return CodecFactory._FALLBACK_ENCODING;
 		}
 	}
 	
