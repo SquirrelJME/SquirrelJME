@@ -99,7 +99,7 @@ public final class CodecFactory
 				
 				// UTF-8
 			case "utf-8":
-				throw new todo.TODO();
+				return new UTF8Encoder();
 			
 				// {@squirreljme.error ZZ16 Unknown encoding. (The input
 				// encoding)}
@@ -204,6 +204,7 @@ public final class CodecFactory
 				// Unknown use original
 			default:
 				return orign;
+		}
 	}
 }
 
