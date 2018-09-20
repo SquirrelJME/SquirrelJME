@@ -11,8 +11,11 @@
 package java.lang;
 
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+import cc.squirreljme.runtime.cldc.i18n.DefaultLocale;
+import cc.squirreljme.runtime.cldc.i18n.Locale;
 import cc.squirreljme.runtime.cldc.string.BasicSequence;
 import cc.squirreljme.runtime.cldc.string.CharArraySequence;
+import cc.squirreljme.runtime.cldc.string.CharSequenceSequence;
 import cc.squirreljme.runtime.cldc.string.EmptySequence;
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.Reference;
@@ -53,8 +56,15 @@ public final class String
 	private static final char _MIN_TRIM_CHAR =
 		' ';
 	
+	/** Is this string already lowercased? */
+	private static final int _QUICK_ISLOWER =
+		0b0000_0000__0000_0000___0000_0000__0000_0000;
+	
 	/** The basic character sequence data. */
 	private final BasicSequence _sequence;
+	
+	/** Quick determination flags for speedy operations. */
+	private volatile int _quickflags;
 	
 	/**
 	 * Initializes a new empty string.
@@ -68,7 +78,7 @@ public final class String
 	
 	public String(String __a)
 	{
-		this(__a, 0, __a.length());
+		this(new CharSequenceSequence(__a));
 	}
 	
 	public String(char[] __a)
@@ -116,28 +126,6 @@ public final class String
 	}
 	
 	/**
-	 * Provides a sub-string view of the given string.
-	 *
-	 * @param __str The string.
-	 * @param __s The inclusive starting index.
-	 * @param __e The exclusive ending index.
-	 * @throws IndexOutOfBoundsException If the indices are out of bounds.
-	 * @throws NullPointerException On null arguments.
-	 * @deprecated Use substring sequence wrapper instead.
-	 * @since 2016/04/20
-	 */
-	@Deprecated
-	private String(String __str, int __s, int __e)
-		throws IndexOutOfBoundsException, NullPointerException
-	{
-		// Check
-		if (__str == null)
-			throw new NullPointerException("NARG");
-		
-		throw new todo.TODO();
-	}
-	
-	/**
 	 * Initializes the string using the given sequence for characters.
 	 *
 	 * @param __bs The sequence of characters to use.
@@ -147,10 +135,25 @@ public final class String
 	private String(BasicSequence __bs)
 		throws NullPointerException
 	{
+		this(__bs, 0);
+	}
+	
+	/**
+	 * Initializes the string using the given sequence for characters.
+	 *
+	 * @param __bs The sequence of characters to use.
+	 * @param __qf Quick determination flags.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/02/24
+	 */
+	private String(BasicSequence __bs, int __qf)
+		throws NullPointerException
+	{
 		if (__bs == null)
 			throw new NullPointerException("NARG");
 		
 		this._sequence = __bs;
+		this._quickflags = __qf;
 	}
 	
 	/**
@@ -325,7 +328,7 @@ public final class String
 		String o = (String)__o;
 		
 		// Get length of both strings
-		int mlen = length();
+		int mlen = this.length();
 		int olen = o.length();
 		
 		// If the length differs, they are not equal
@@ -545,9 +548,51 @@ public final class String
 		return rv;
 	}
 	
+	/**
+	 * Translates this string to lowercase using the current locale.
+	 *
+	 * Java ME specifies that only Latin-1 characters are supported
+	 *
+	 * @return The lowercased result of this string.
+	 * @since 2018/09/20
+	 */
 	public String toLowerCase()
 	{
-		throw new todo.TODO();
+		// If this string is lowercased already do not mess with it
+		if ((this._quickflags & String._QUICK_ISLOWER) != 0)
+			return this;
+		
+		// Needed for case conversion
+		Locale locale = DefaultLocale.defaultLocale();
+		
+		// Setup new character array for the conversion
+		int n = this.length();
+		char[] rv = new char[n];
+		
+		// Copy and convert characters
+		boolean changed = false;
+		for (int i = 0; i < n; i++)
+		{
+			char a = this.charAt(i),
+				b = locale.toLowerCase(a);
+			
+			// Detect if the string actually changed
+			if (!changed && a != b)
+				changed = true;
+			
+			rv[i] = b;
+		}
+		
+		// String was unchanged, so forget about the array we just handled and
+		// set that the string is lowercase
+		if (!changed)
+		{
+			this._quickflags |= String._QUICK_ISLOWER;
+			return this;
+		}
+		
+		// New string will be lowercase, so ignore this operation
+		return new String(new CharArraySequence(rv), String._QUICK_ISLOWER);
 	}
 	
 	/**

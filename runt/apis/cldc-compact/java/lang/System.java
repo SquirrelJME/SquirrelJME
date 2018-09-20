@@ -128,6 +128,8 @@ public final class System
 	 * {@squirreljme.property microedition.hostname The host name of the
 	 * current system that the virtual machine is running on as it appears
 	 * to other machines on the network.}
+	 * {@squirreljme.property microedition.locale The current locale that the
+	 * library will use.}
 	 * {@squirreljme.property microedition.platform This is the device that
 	 * SquirrelJME is running on. It is in the format of
 	 * {@code (Manufacturer)(DeviceModelNumber)[/version[/comments]]}. The

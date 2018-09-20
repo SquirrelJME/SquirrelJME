@@ -851,7 +851,7 @@ public final class SpringThreadWorker
 					// Store object to array
 				case InstructionIndex.AASTORE:
 					{
-						int value = frame.<SpringObject>popFromStack(
+						SpringObject value = frame.<SpringObject>popFromStack(
 							SpringObject.class);
 						int dx = frame.<Integer>popFromStack(Integer.class);
 						SpringArrayObject obj = frame.<SpringArrayObject>
@@ -1253,6 +1253,15 @@ public final class SpringThreadWorker
 						opid - InstructionIndex.ILOAD_0);
 					break;
 				
+					// AND integer
+				case InstructionIndex.IAND:
+					{
+						int b = frame.<Integer>popFromStack(Integer.class),
+							a = frame.<Integer>popFromStack(Integer.class);
+						frame.pushToStack(a & b);
+					}
+					break;
+				
 					// Multiply integer
 				case InstructionIndex.IMUL:
 					{
@@ -1295,6 +1304,15 @@ public final class SpringThreadWorker
 					// Invoke virtual method
 				case InstructionIndex.INVOKEVIRTUAL:
 					this.__vmInvokeVirtual(inst, thread, frame);
+					break;
+				
+					// OR integer
+				case InstructionIndex.IOR:
+					{
+						int b = frame.<Integer>popFromStack(Integer.class),
+							a = frame.<Integer>popFromStack(Integer.class);
+						frame.pushToStack(a | b);
+					}
 					break;
 					
 					// Return integer
