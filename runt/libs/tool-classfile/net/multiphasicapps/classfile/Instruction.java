@@ -489,6 +489,17 @@ public final class Instruction
 	}
 	
 	/**
+	 * Returns the mnemonic of this instruction.
+	 *
+	 * @return The instruction mnemonic.
+	 * @since 2018/09/20
+	 */
+	public final String mnemonic()
+	{
+		return InstructionMnemonics.toString(this.op);
+	}
+	
+	/**
 	 * Returns the operation that this performs.
 	 *
 	 * @return The operation.
