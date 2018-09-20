@@ -351,10 +351,17 @@ public final class Instruction
 				// Load constant value
 			case InstructionIndex.LDC:
 				naturalflow = true;
+				
+				// Could vary in type
+				Object ldcv = __pool.<Object>require(Object.class,
+					Instruction.__readUnsignedByte(__code, argbase));
+				
+				// Turn into a class value
 				ConstantValue cvalue;
-				args = new Object[]{(cvalue = __pool.<ConstantValue>require(
-					ConstantValue.class,
-					Instruction.__readUnsignedByte(__code, argbase)))};
+				if (ldcv instanceof ClassName)
+					cvalue = new ConstantValueClass((ClassName)ldcv);
+				else
+					cvalue = (ConstantValue)ldcv;
 				
 				// {@squirreljme.error JC28 Cannot load a constant value which
 				// is not of a narrow type. (The operation; The address; The
@@ -362,6 +369,9 @@ public final class Instruction
 				if (!cvalue.type().isNarrow())
 					throw new InvalidClassFormatException(String.format(
 						"JC28 %d %d %s", op, __a, cvalue));
+				
+				// Just use this value
+				args = new Object[]{cvalue};
 				break;
 				
 				// Allocate array of primitive type
