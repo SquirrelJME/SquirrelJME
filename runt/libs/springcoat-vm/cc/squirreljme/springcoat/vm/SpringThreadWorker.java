@@ -1430,8 +1430,15 @@ public final class SpringThreadWorker
 		
 		// Use the original exception, just add a suppression note on it since
 		// that is the simplest action
-		catch (RuntimeException e)
+		catch (SpringException e)
 		{
+			// Do not add causes or do anything if this was already thrown
+			if (e instanceof SpringFatalException)
+				throw e;
+			
+			// Print the stack trace
+			thread.printStackTrace(System.err);
+			
 			// Where is this located?
 			SpringMethod inmethod = frame.method();
 			ClassName inclassname = inmethod.inClass();
@@ -1451,7 +1458,9 @@ public final class SpringThreadWorker
 			e.addSuppressed(new SpringVirtualMachineException(
 				String.format("BK0d %s %s %d %s %d %s", inclassname,
 				inmethod.nameAndType(), pc, onfile, online, inst)));
-			throw e;
+			
+			// {@squirreljme.error BK1p Fatal VM exception.}
+			throw new SpringFatalException("BK1p", e);
 		}
 		
 		// Set implicit next PC address, if it has not been set or the next

@@ -10,6 +10,7 @@
 
 package cc.squirreljme.springcoat.vm;
 
+import java.io.PrintStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -177,6 +178,45 @@ public final class SpringThread
 				throw new SpringVirtualMachineException("BK0p");	
 			
 			return frames.remove(n - 1);
+		}
+	}
+	
+	/**
+	 * Prints this thread's stack trace.
+	 *
+	 * @param __ps The stream to write to.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/20
+	 */
+	public final void printStackTrace(PrintStream __ps)
+		throws NullPointerException
+	{
+		if (__ps == null)
+			throw new NullPointerException("NARG");
+		
+		// Note the thread
+		__ps.printf("Thread #%d: %s%n", this.id, this.name);
+		
+		// Lock since the frames may change!
+		List<SpringThread.Frame> frames = this._frames;
+		synchronized (frames)
+		{
+			// The frames at the end are at the top
+			for (int n = frames.size(), i = n - 1; i >= 0; i--)
+			{
+				SpringThread.Frame frame = frames.get(i);
+				
+				SpringMethod inmethod = frame.method();
+				int pc = frame.pc();
+				
+				// Print information
+				__ps.printf("    at %s.%s(%s:%d) @ %d%n",
+					inmethod.inClass(),
+					inmethod.nameAndType(),
+					inmethod.inFile(),
+					inmethod.byteCode().lineOfAddress(pc),
+					pc);
+			}
 		}
 	}
 	
