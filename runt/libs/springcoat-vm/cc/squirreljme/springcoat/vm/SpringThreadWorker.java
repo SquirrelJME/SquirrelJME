@@ -1002,6 +1002,9 @@ public final class SpringThreadWorker
 					break;
 					
 					// Load integer from array
+				case InstructionIndex.BALOAD:
+				case InstructionIndex.CALOAD:
+				case InstructionIndex.SALOAD:
 				case InstructionIndex.IALOAD:
 					{
 						int dx = frame.<Integer>popFromStack(Integer.class);
@@ -1012,7 +1015,10 @@ public final class SpringThreadWorker
 					}
 					break;
 					
-					// Store integer to array
+					// Store integer to array (compatible)
+				case InstructionIndex.BASTORE:
+				case InstructionIndex.CASTORE:
+				case InstructionIndex.SASTORE:
 				case InstructionIndex.IASTORE:
 					{
 						int value = frame.<Integer>popFromStack(Integer.class);
