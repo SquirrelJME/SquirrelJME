@@ -11,6 +11,7 @@
 package cc.squirreljme.springcoat.vm;
 
 import cc.squirreljme.runtime.cldc.asm.DebugAccess;
+import java.util.Formatter;
 import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassFlags;
@@ -465,6 +466,33 @@ public final class SpringThreadWorker
 		// Depends on the function
 		switch (__func)
 		{
+				// Fatal report of a raw call trace in early TODO code
+			case "cc/squirreljme/runtime/cldc/asm/DebugAccess::" +
+				"fatalTodoReport:([I)V":
+				{
+					// Format text to the output
+					StringBuilder sb = new StringBuilder("[");
+					
+					// Print hex codes
+					SpringArrayObject hex = (SpringArrayObject)__args[0];
+					for (int i = 0, n = hex.length(); i < n; i++)
+					{
+						if (i > 0)
+							sb.append(", ");
+						sb.append(String.format("%08x",
+							hex.<Integer>get(Integer.class, i)));
+					}
+					
+					// End
+					sb.append("]");
+					
+					// {@squirreljme.error BK1k Virtual machine code executed
+					// a fatal TODOs report indicating unimplemented code,
+					// failing. (The hex codes for the TODOs trace)}
+					throw new SpringVirtualMachineException(
+						String.format("BK1k %s", sb));
+				}
+			
 				// Return the call trace
 			case "cc/squirreljme/runtime/cldc/asm/DebugAccess::" +
 				"rawCallTrace:()[I":
