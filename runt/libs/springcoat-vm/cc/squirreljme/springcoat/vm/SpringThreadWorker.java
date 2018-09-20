@@ -1066,6 +1066,15 @@ public final class SpringThreadWorker
 					frame.loadToStack(Integer.class,
 						opid - InstructionIndex.ILOAD_0);
 					break;
+				
+					// Multiply integer
+				case InstructionIndex.IMUL:
+					{
+						int b = frame.<Integer>popFromStack(Integer.class),
+							a = frame.<Integer>popFromStack(Integer.class);
+						frame.pushToStack(a * b);
+					}
+					break;
 					
 					// Is the given object an instance of the given class?
 				case InstructionIndex.INSTANCEOF:
@@ -1080,14 +1089,10 @@ public final class SpringThreadWorker
 							as.isAssignableFrom(vtype) ? 1 : 0));
 					}
 					break;
-				
-					// Multiply integer
-				case InstructionIndex.IMUL:
-					{
-						int b = frame.<Integer>popFromStack(Integer.class),
-							a = frame.<Integer>popFromStack(Integer.class);
-						frame.pushToStack(a * b);
-					}
+					
+					// Invoke interface method
+				case InstructionIndex.INVOKEINTERFACE:
+					this.__vmInvokeInterface(inst, thread, frame);
 					break;
 					
 					// Invoke special method (constructor, superclass,
@@ -1287,6 +1292,54 @@ public final class SpringThreadWorker
 		// address was actually changed
 		if (nextpc != orignextpc || pc == frame.pc())
 			frame.setPc(nextpc);
+	}
+	
+	/**
+	 * Invokes a method in an interface.
+	 *
+	 * @param __i The instruction.
+	 * @param __t The current thread.
+	 * @param __f The current frame.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/19
+	 */
+	private final void __vmInvokeInterface(Instruction __i, SpringThread __t,
+		SpringThread.Frame __f)
+		throws NullPointerException
+	{
+		if (__i == null || __t == null || __f == null)
+			throw new NullPointerException("NARG");
+		
+		MethodReference ref = __i.<MethodReference>argument(
+			0, MethodReference.class);
+		
+		// Resolve the method reference
+		SpringClass refclass = this.loadClass(ref.className());
+		SpringMethod refmethod = refclass.lookupMethod(false,
+			ref.memberNameAndType());
+		
+		// {@squirreljme.error BK1n Could not access the target
+		// method for interface invoke. (The target method)}
+		if (!this.checkAccess(refmethod))
+			throw new SpringIncompatibleClassChangeException(
+				String.format("BK1n %s", ref));
+		
+		// Load arguments, includes the instance it acts on
+		int nargs = refmethod.nameAndType().type().argumentCount() + 1;
+		Object[] args = new Object[nargs];
+		for (int i = nargs - 1; i >= 0; i--)
+			args[i] = __f.popFromStack();
+			
+		// {@squirreljme.error BK1o Cannot invoke the method in the object
+		// because it is of the wrong type. (The reference class)}
+		SpringClass objclass = ((SpringObject)args[0]).type();
+		if (!objclass.isAssignableFrom(refclass))
+			throw new SpringClassCastException(
+				String.format("BK1o %s", refclass));
+		
+		// Relookup the method since we need to the right one! Then invoke it
+		__t.enterFrame(objclass.lookupMethod(false, ref.memberNameAndType()),
+			args);
 	}
 	
 	/**
