@@ -106,6 +106,11 @@ public final class SpringClass
 			if (x == null)
 				throw new NullPointerException("NARG");
 		
+		// Used for method location
+		String filename = __cf.sourceFile();
+		if (filename == null)
+			filename = "<unknown>";
+		
 		// Go through and initialize methods declared in this class
 		Map<MethodNameAndType, SpringMethod> nvmeths = this._nonvirtmethods;
 		Map<MethodNameAndType, SpringMethod> methods = this._methods;
@@ -113,7 +118,7 @@ public final class SpringClass
 		{
 			SpringMethod sm;
 			if (null != methods.put(m.nameAndType(),
-				(sm = new SpringMethod(name, m))))
+				(sm = new SpringMethod(name, m, filename))))
 			{
 				// {@squirreljme.error BK06 Duplicated method in class. (The
 				// method)}

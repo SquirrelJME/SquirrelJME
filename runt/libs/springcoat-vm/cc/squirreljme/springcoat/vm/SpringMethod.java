@@ -31,6 +31,9 @@ public final class SpringMethod
 	/** The backing method and its information. */
 	protected final Method method;
 	
+	/** The file this method is in. */
+	protected final String infile;
+	
 	/**
 	 * Initializes the method representation.
 	 *
@@ -39,14 +42,15 @@ public final class SpringMethod
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/03
 	 */
-	SpringMethod(ClassName __ic, Method __m)
+	SpringMethod(ClassName __ic, Method __m, String __if)
 		throws NullPointerException
 	{
-		if (__ic == null || __m == null)
+		if (__ic == null || __m == null || __if == null)
 			throw new NullPointerException("NARG");
 		
 		this.inclass = __ic;
 		this.method = __m;
+		this.infile = __if;
 	}
 	
 	/**
@@ -78,6 +82,17 @@ public final class SpringMethod
 	public final ClassName inClass()
 	{
 		return this.inclass;
+	}
+	
+	/**
+	 * Returns the file this method is in.
+	 *
+	 * @return The file this method is in.
+	 * @since 2018/09/20
+	 */
+	public final String inFile()
+	{
+		return this.infile;
 	}
 	
 	/**
