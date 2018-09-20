@@ -1,0 +1,17 @@
+# 2018/09/19
+
+## 13:17
+
+I should have a document on security vulnerabilities, for recording when they
+occur.
+
+## 20:57
+
+Oh, that is something I forgot about. If the system output and error streams
+do not exist when TODO is called then it cannot print the stack trace which
+means the input object is null. This will definitely happen early on!
+
+## 21:29
+
+So, looks like a hash map is being created by `Display` along with eventually
+there being `String.length()` being called which is not implemented.

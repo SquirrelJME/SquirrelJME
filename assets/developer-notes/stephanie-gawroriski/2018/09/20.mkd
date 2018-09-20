@@ -1,0 +1,5 @@
+# 2018/09/20
+
+## 1:04
+
+I think a stack trace being printed in the VM scope will be helpful!
