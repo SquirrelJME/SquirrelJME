@@ -31,16 +31,19 @@ public class TODO
 	 */
 	public TODO()
 	{
-		// Print a starting banner
+		// Print a starting banner, but only if the error stream exists
 		PrintStream ps = System.err;
-		ps.println("*******************************************************");
-		ps.println("INCOMPLETE CODE HAS BEEN REACHED:");
-		
-		// Print the trace
-		printStackTrace(ps);
-		
-		// Ending banner
-		ps.println("*******************************************************");
+		if (ps != null)
+		{
+			ps.println("****************************************************");
+			ps.println("INCOMPLETE CODE HAS BEEN REACHED:");
+			
+			// Print the trace
+			printStackTrace(ps);
+			
+			// Ending banner
+			ps.println("****************************************************");
+		}
 		
 		// {@squirreljme.property
 		// cc.squirreljme.notodoexit=(boolean)
@@ -91,8 +94,12 @@ public class TODO
 	 */
 	public static final void note(String __fmt, Object... __args)
 	{
-		// Print it out
+		// Only print if the stream is valid
 		PrintStream ps = System.err;
+		if (ps == null)
+			return;
+		
+		// Print it out
 		ps.print("TODO ");
 		ps.print(TODO.__formatCondensedTrace(TODO.__where()));
 		ps.print(" -- ");
