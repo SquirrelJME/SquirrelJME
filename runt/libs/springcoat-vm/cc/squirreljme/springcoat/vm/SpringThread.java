@@ -207,7 +207,7 @@ public final class SpringThread
 				SpringThread.Frame frame = frames.get(i);
 				
 				SpringMethod inmethod = frame.method();
-				int pc = frame.pc();
+				int pc = frame.lastExecutedPc();
 				
 				// Print information
 				__ps.printf("    at %s.%s @ %d [%s] (%s:%d)%n",
@@ -267,6 +267,9 @@ public final class SpringThread
 		/** The current program counter. */
 		private volatile int _pc;
 		
+		/** Last executed PC address. */
+		private volatile int _lastexecpc;
+		
 		/**
 		 * Initializes the frame.
 		 *
@@ -317,6 +320,17 @@ public final class SpringThread
 		public final ByteCode byteCode()
 		{
 			return this.code;
+		}
+		
+		/**
+		 * Returns the last executed PC address.
+		 *
+		 * @return The last executed PC address.
+		 * @since 2018/09/20
+		 */
+		public final int lastExecutedPc()
+		{
+			return this._lastexecpc;
 		}
 		
 		/**
@@ -502,6 +516,17 @@ public final class SpringThread
 			// Push an extra top for long and double
 			if (__v instanceof Long || __v instanceof Double)
 				this.pushToStack(SpringStackTop.TOP);
+		}
+		
+		/**
+		 * Sets the last executed PC address.
+		 *
+		 * @param __pc The last executed PC address.
+		 * @since 2018/09/20
+		 */
+		public final void setLastExecutedPc(int __pc)
+		{
+			this._lastexecpc = __pc;
 		}
 		
 		/**

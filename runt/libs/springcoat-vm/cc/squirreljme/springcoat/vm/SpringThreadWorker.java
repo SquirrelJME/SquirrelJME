@@ -812,6 +812,10 @@ public final class SpringThreadWorker
 		int pc = frame.pc();
 		Instruction inst = code.getByAddress(pc);
 		
+		// This PC is about to be executed, so set it as executed since if an
+		// exception is thrown this could change potentially
+		frame.setLastExecutedPc(pc);
+		
 		// Debug
 		/*todo.DEBUG.note("step(%s %s::%s) -> %s", thread.name(),
 			method.inClass(), method.nameAndType(), inst);*/
