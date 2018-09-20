@@ -883,6 +883,12 @@ public final class SpringThreadWorker
 					}
 					break;
 					
+					// Return double
+				case InstructionIndex.DRETURN:
+					this.__vmReturn(thread,
+						frame.<Double>popFromStack(Double.class));
+					break;
+					
 					// Duplicate top-most stack entry
 				case InstructionIndex.DUP:
 					{
@@ -897,6 +903,12 @@ public final class SpringThreadWorker
 						frame.pushToStack(copy);
 						frame.pushToStack(copy);
 					}
+					break;
+					
+					// Return float
+				case InstructionIndex.FRETURN:
+					this.__vmReturn(thread,
+						frame.<Float>popFromStack(Float.class));
 					break;
 					
 					// Read from instance field
@@ -1111,6 +1123,12 @@ public final class SpringThreadWorker
 					this.__vmInvokeVirtual(inst, thread, frame);
 					break;
 					
+					// Return integer
+				case InstructionIndex.IRETURN:
+					this.__vmReturn(thread,
+						frame.<Integer>popFromStack(Integer.class));
+					break;
+					
 					// Store integer to local variable
 				case InstructionIndex.ISTORE:
 					frame.storeLocal(inst.<Integer>argument(0, Integer.class),
@@ -1152,6 +1170,12 @@ public final class SpringThreadWorker
 						else
 							frame.pushToStack(value.boxedValue());
 					}
+					break;
+					
+					// Return long
+				case InstructionIndex.LRETURN:
+					this.__vmReturn(thread,
+						frame.<Long>popFromStack(Long.class));
 					break;
 					
 					// Enter monitor
