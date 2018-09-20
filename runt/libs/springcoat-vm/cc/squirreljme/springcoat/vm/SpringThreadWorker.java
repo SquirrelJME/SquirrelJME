@@ -459,8 +459,8 @@ public final class SpringThreadWorker
 				init = null;
 				
 				// Debug
-				todo.DEBUG.note("Class %s has no static initializer.",
-					__cl.name());
+				/*todo.DEBUG.note("Class %s has no static initializer.",
+					__cl.name());*/
 			}
 			
 			// Static initializer exists, setup a frame and call it
@@ -498,7 +498,7 @@ public final class SpringThreadWorker
 			throw new NullPointerException("NARG");
 		
 		// Debug
-		todo.DEBUG.note("Call native %s", __func);
+		/*todo.DEBUG.note("Call native %s", __func);*/
 		
 		// Depends on the function
 		switch (__func)

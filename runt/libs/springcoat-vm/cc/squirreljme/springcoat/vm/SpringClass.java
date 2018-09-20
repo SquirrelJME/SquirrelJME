@@ -210,10 +210,10 @@ public final class SpringClass
 		}
 		
 		// Debug
-		todo.DEBUG.note("Class %s (size=%d, fields=%d, methods=%d).", name,
+		/*todo.DEBUG.note("Class %s (size=%d, fields=%d, methods=%d).", name,
 			instancefieldcount,
 			fields.size(),
-			methods.size());
+			methods.size());*/
 	}
 	
 	/**
