@@ -17,18 +17,24 @@ should be able to run a wide range of older J2ME software which would enable
 this software to be used for archival purposes. It is written purely in Java
 and requires only a Java compiler and virtual machine for it to be built.
 
+Note that **SquirrelJME** is not a Java SE virtual machine nor does it intend
+to be one at all. As such, it will not be able to run desktop software unless
+it is ported to Java ME. However some programs may run since Java ME is a
+subset of Java SE, so provided the desktop software does not use what is
+missing or not supported it will run.
+
  * [Version 0.0.2 Release Progress](
    https://github.com/XerTheSquirrel/SquirrelJME/projects/2)
+ * [License](license.mkd)
+   * _Source_: GNU General Public License, Version 3 or later
+   * _Assets_: Creative Commons CC-BY-SA 4.0
+ * [Code of Conduct](code-of-conduct.mkd)
  * [Building](building.mkd)
  * [Changelog](changelog.mkd)
- * [Code of Conduct](code-of-conduct.mkd)
  * [Contributing](contributing.mkd)
  * [Design Document](design.mkd)
  * [Developer Notes](assets/developer-notes/index.mkd)
  * [History](history.mkd)
- * [License](license.mkd)
-   * _Source_: GNU General Public License, Version 3 or later
-   * _Assets_: Creative Commons CC-BY-SA 4.0
  * [Release Route](route.mkd)
  * [Project Scope](scope.mkd)
  * [Compatibility](compatibility.mkd)
