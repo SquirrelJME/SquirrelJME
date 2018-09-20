@@ -185,7 +185,7 @@ public final class String
 			throw new NullPointerException("NARG");
 		
 		// Get both string lengths
-		int an = length();
+		int an = this.length();
 		int bn = __os.length();
 		
 		// Max comparison length
@@ -270,7 +270,7 @@ public final class String
 		// prevent it from being changed.
 		synchronized (__s)
 		{
-			return __contentEquals(__s);
+			return this.__contentEquals(__s);
 		}
 	}
 	
@@ -451,9 +451,15 @@ public final class String
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the length of this string.
+	 *
+	 * @return The length of this string.
+	 * @since 2018/09/19
+	 */
 	public int length()
 	{
-		throw new todo.TODO();
+		return this._sequence.length();
 	}
 	
 	public boolean regionMatches(int __a, String __b, int __c, int __d)
