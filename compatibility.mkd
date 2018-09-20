@@ -8,8 +8,9 @@ to make the implementation easier.
 
 Only the following character encodings are supported:
 
- * _ISO-8859-1_.
- * _UTF-8_.
+ * _US-ASCII_
+ * _ISO-8859-1_
+ * _UTF-8_
 
 Note that UTF codepoints above U+FFFF are not supported.
 

@@ -316,5 +316,16 @@ public class PrintStream
 	{
 		throw new todo.TODO();
 	}
+	
+	/**
+	 * Writes a single character to the output, encoding it as required.
+	 *
+	 * @param __c The character to write.
+	 * @since 2018/09/19
+	 */
+	private final void __writeChar(char __c)
+	{
+		throw new todo.TODO();
+	}
 }
 
