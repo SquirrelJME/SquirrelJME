@@ -34,6 +34,18 @@ public final class DebugAccess
 	}
 	
 	/**
+	 * Reports that the given raw trace information using some given means,
+	 * this is to detect early TODOs before there is any real code that exists.
+	 * Since the code might end up infinite looping while constantly hitting
+	 * TODOs, this is a means it might not be reported properly. This call
+	 * should be fatal and terminate the machine.
+	 *
+	 * @param __rct The raw trace code.
+	 * @since 2018/09/19
+	 */
+	public static final native void fatalTodoReport(int[] __rct);
+	
+	/**
 	 * Returns the raw call trace without any objects.
 	 *
 	 * The values are in groups of longs for each individual element, dual

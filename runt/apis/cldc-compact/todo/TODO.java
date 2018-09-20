@@ -10,6 +10,7 @@
 
 package todo;
 
+import cc.squirreljme.runtime.cldc.asm.DebugAccess;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import cc.squirreljme.runtime.cldc.system.SystemCall;
 import java.io.PrintStream;
@@ -44,6 +45,13 @@ public class TODO
 			// Ending banner
 			ps.println("****************************************************");
 		}
+		
+		// No streams are currently available, but we would still like to
+		// report the trace information to the debugger, we might not be in any
+		// condition to actually do printing to the console so this will end
+		// here
+		else
+			DebugAccess.fatalTodoReport(DebugAccess.rawCallTrace());
 		
 		// {@squirreljme.property
 		// cc.squirreljme.notodoexit=(boolean)
