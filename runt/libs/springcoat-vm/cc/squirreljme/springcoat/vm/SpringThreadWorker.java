@@ -995,6 +995,20 @@ public final class SpringThreadWorker
 						-1 + (opid - InstructionIndex.ICONST_M1)));
 					break;
 					
+					// Object a == b
+				case InstructionIndex.IF_ACMPEQ:
+					{
+						SpringObject b = frame.<SpringObject>popFromStack(
+								SpringObject.class),
+							a = frame.<SpringObject>popFromStack(
+								SpringObject.class);
+						
+						if (a == b)
+							nextpc = inst.<InstructionJumpTarget>argument(0,
+								InstructionJumpTarget.class).target();
+					}
+					break;
+					
 					// Object a != b
 				case InstructionIndex.IF_ACMPNE:
 					{
@@ -1004,6 +1018,18 @@ public final class SpringThreadWorker
 								SpringObject.class);
 						
 						if (a != b)
+							nextpc = inst.<InstructionJumpTarget>argument(0,
+								InstructionJumpTarget.class).target();
+					}
+					break;
+					
+					// int a == b
+				case InstructionIndex.IF_ICMPEQ:
+					{
+						int b = frame.<Integer>popFromStack(Integer.class),
+							a = frame.<Integer>popFromStack(Integer.class);
+						
+						if (a == b)
 							nextpc = inst.<InstructionJumpTarget>argument(0,
 								InstructionJumpTarget.class).target();
 					}
@@ -1021,16 +1047,92 @@ public final class SpringThreadWorker
 					}
 					break;
 					
-					// If not equal to zero
-				case InstructionIndex.IFNE:
-					if (frame.<Integer>popFromStack(Integer.class) != 0)
+					// int a > b
+				case InstructionIndex.IF_ICMPGT:
+					{
+						int b = frame.<Integer>popFromStack(Integer.class),
+							a = frame.<Integer>popFromStack(Integer.class);
+						
+						if (a > b)
+							nextpc = inst.<InstructionJumpTarget>argument(0,
+								InstructionJumpTarget.class).target();
+					}
+					break;
+					
+					// int a <= b
+				case InstructionIndex.IF_ICMPLE:
+					{
+						int b = frame.<Integer>popFromStack(Integer.class),
+							a = frame.<Integer>popFromStack(Integer.class);
+						
+						if (a <= b)
+							nextpc = inst.<InstructionJumpTarget>argument(0,
+								InstructionJumpTarget.class).target();
+					}
+					break;
+					
+					// int a < b
+				case InstructionIndex.IF_ICMPLT:
+					{
+						int b = frame.<Integer>popFromStack(Integer.class),
+							a = frame.<Integer>popFromStack(Integer.class);
+						
+						if (a < b)
+							nextpc = inst.<InstructionJumpTarget>argument(0,
+								InstructionJumpTarget.class).target();
+					}
+					break;
+					
+					// int a != b
+				case InstructionIndex.IF_ICMPNE:
+					{
+						int b = frame.<Integer>popFromStack(Integer.class),
+							a = frame.<Integer>popFromStack(Integer.class);
+						
+						if (a != b)
+							nextpc = inst.<InstructionJumpTarget>argument(0,
+								InstructionJumpTarget.class).target();
+					}
+					break;
+					
+					// int a == 0
+				case InstructionIndex.IFEQ:
+					if (frame.<Integer>popFromStack(Integer.class) == 0)
 						nextpc = inst.<InstructionJumpTarget>argument(0,
 							InstructionJumpTarget.class).target();
 					break;
 					
-					// If greater than or equal to zero
+					// int a >= 0
 				case InstructionIndex.IFGE:
 					if (frame.<Integer>popFromStack(Integer.class) >= 0)
+						nextpc = inst.<InstructionJumpTarget>argument(0,
+							InstructionJumpTarget.class).target();
+					break;
+					
+					// int a > 0
+				case InstructionIndex.IFGT:
+					if (frame.<Integer>popFromStack(Integer.class) > 0)
+						nextpc = inst.<InstructionJumpTarget>argument(0,
+							InstructionJumpTarget.class).target();
+					break;
+					
+					// int a <= 0
+				case InstructionIndex.IFLE:
+					if (frame.<Integer>popFromStack(Integer.class) <= 0)
+						nextpc = inst.<InstructionJumpTarget>argument(0,
+							InstructionJumpTarget.class).target();
+					break;
+					
+					// int a < 0
+				case InstructionIndex.IFLT:
+					if (frame.<Integer>popFromStack(Integer.class) < 0)
+						nextpc = inst.<InstructionJumpTarget>argument(0,
+							InstructionJumpTarget.class).target();
+					break;
+					
+					// int a != 0
+				case InstructionIndex.IFNE:
+					if (frame.<Integer>popFromStack(Integer.class) != 0)
 						nextpc = inst.<InstructionJumpTarget>argument(0,
 							InstructionJumpTarget.class).target();
 					break;
