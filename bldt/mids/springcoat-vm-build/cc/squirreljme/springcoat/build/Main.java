@@ -16,6 +16,7 @@ import cc.squirreljme.builder.support.Binary;
 import cc.squirreljme.builder.support.ProjectManager;
 import cc.squirreljme.builder.support.TimeSpaceType;
 import cc.squirreljme.springcoat.vm.SpringClassLoader;
+import cc.squirreljme.springcoat.vm.SpringFatalException;
 import cc.squirreljme.springcoat.vm.SpringMachine;
 
 /**
@@ -82,7 +83,16 @@ public class Main
 		SpringMachine machine = new SpringMachine(classloader, launchid);
 		
 		// Run the VM until it terminates
-		machine.run();
+		try
+		{
+			machine.run();
+		}
+		
+		// Ignore these exceptions, just fatal exit
+		catch (SpringFatalException e)
+		{
+			System.exit(7);
+		}
 	}
 }
 
