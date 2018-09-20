@@ -12,7 +12,16 @@ Only the following character encodings are supported:
  * _ISO-8859-1_
  * _UTF-8_
 
-Note that UTF codepoints above U+FFFF are not supported.
+Note that UTF codepoints above U+FFFF are not fully supported and are not
+available in Java ME. Surrogate pairs in UTF-16 will be encoded in UTF-8 as
+six bytes. Additionally when decoding, if a sequence that is above U+FFFF is
+read then it will decode to a surrogate pair. This may cause a loss of or
+mutation of data when processing files.
+
+See:
+
+ * <https://unicode.org/faq/utf_bom.html#utf8-4>
+ * <https://www.unicode.org/reports/tr26/>
 
 ## `SUPER` is always assumed to be set.
 
