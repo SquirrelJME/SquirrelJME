@@ -17,6 +17,7 @@ import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassFlags;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ConstantValue;
+import net.multiphasicapps.classfile.ConstantValueClass;
 import net.multiphasicapps.classfile.ConstantValueString;
 import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.Instruction;
@@ -208,6 +209,16 @@ public final class SpringThreadWorker
 				// Use it
 				return rv;
 			}
+		}
+		
+		// A class object, as needed
+		else if (__in instanceof ClassName ||
+			__in instanceof ConstantValueClass)
+		{
+			ClassName name = ((__in instanceof ClassName) ? (ClassName)__in :
+				((ConstantValueClass)__in).className());
+			
+			throw new todo.TODO();
 		}
 		
 		// {@squirreljme.error BK1f Do not know how to convert the given class
@@ -1265,7 +1276,10 @@ public final class SpringThreadWorker
 						// there must always be an equality (==) between two
 						// strings, so "foo" == "foo" must be true even if it
 						// is in different parts of the code
-						if (value instanceof ConstantValueString)
+						// Additionally internall class objects are adapted
+						// too as needed
+						if (value instanceof ConstantValueString ||
+							value instanceof ConstantValueClass)
 							frame.pushToStack(this.asVMObject(value));
 						
 						// This will be pre-boxed so push it to the stack

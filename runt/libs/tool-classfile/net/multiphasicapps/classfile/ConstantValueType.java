@@ -32,6 +32,9 @@ public enum ConstantValueType
 	/** String. */
 	STRING,
 	
+	/** Class. */
+	CLASS,
+	
 	/** End. */
 	;
 	
@@ -83,6 +86,10 @@ public enum ConstantValueType
 				return __d.isObject() &&
 					"Ljava/lang/String;".equals(__d.toString()); 
 			
+			case CLASS:
+				return __d.isObject() &&
+					"Ljava/lang/Class;".equals(__d.toString());
+			
 			default:
 				throw new RuntimeException("OOPS");
 		}
@@ -101,6 +108,7 @@ public enum ConstantValueType
 			case INTEGER:
 			case FLOAT:
 			case STRING:
+			case CLASS:
 				return true;
 			
 			default:
