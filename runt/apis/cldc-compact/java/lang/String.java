@@ -153,9 +153,16 @@ public final class String
 		this._sequence = __bs;
 	}
 	
-	public char charAt(int __a)
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/09/20
+	 */
+	@Override
+	public char charAt(int __i)
+		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		// Bounds checking is handled by the sequence
+		return this._sequence.charAt(__i);
 	}
 	
 	/**
