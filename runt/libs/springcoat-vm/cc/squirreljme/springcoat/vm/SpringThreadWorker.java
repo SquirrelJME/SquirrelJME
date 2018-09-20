@@ -836,6 +836,31 @@ public final class SpringThreadWorker
 				case InstructionIndex.NOP:
 					break;
 					
+					// Load object from array
+				case InstructionIndex.AALOAD:
+					{
+						int dx = frame.<Integer>popFromStack(Integer.class);
+						SpringArrayObject obj = frame.<SpringArrayObject>
+							popFromStack(SpringArrayObject.class);
+						
+						frame.pushToStack(obj.<SpringObject>get(
+							SpringObject.class, dx));
+					}
+					break;
+					
+					// Store object to array
+				case InstructionIndex.AASTORE:
+					{
+						int value = frame.<SpringObject>popFromStack(
+							SpringObject.class);
+						int dx = frame.<Integer>popFromStack(Integer.class);
+						SpringArrayObject obj = frame.<SpringArrayObject>
+							popFromStack(SpringArrayObject.class);
+						
+						obj.set(dx, value);
+					}
+					break;
+					
 					// Push null reference
 				case InstructionIndex.ACONST_NULL:
 					frame.pushToStack(SpringNullObject.NULL);
