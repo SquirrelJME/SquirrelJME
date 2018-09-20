@@ -18,6 +18,9 @@ public final class Class<T>
 	private static final String _ASSERTION_PREFIX =
 		"cc.squirreljme.runtime.noassert.";
 	
+	/** Special class reference index. */
+	private final int _specialindex;
+	
 	/** Has the assertion status been checked already? */
 	private volatile boolean _checkedassert;
 	
@@ -25,13 +28,14 @@ public final class Class<T>
 	private volatile boolean _useassert;
 	
 	/**
-	 * This method may or may not be called internally by the virtual machine
-	 * when it initializes a new class object for a given class type.
+	 * This constructor is internally called as needed.
 	 *
+	 * @param __csi Class special index.
 	 * @since 2016/04/12
 	 */
-	private Class()
+	private Class(int __csi)
 	{
+		this._specialindex = __csi;
 	}
 	
 	/**

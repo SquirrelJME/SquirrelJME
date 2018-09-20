@@ -52,6 +52,9 @@ public final class SpringClass
 	/** The number of instance fields that exist. */
 	protected final int instancefieldcount;
 	
+	/** The special class index. */
+	protected final int specialindex;
+	
 	/** Interface classes. */
 	private final SpringClass[] _interfaceclasses;
 	
@@ -79,11 +82,12 @@ public final class SpringClass
 	 * @param __super The super class of this class.
 	 * @param __interfaces The the interfaces this class implements.
 	 * @param __cf The class file for this class.
+	 * @param __si The special class index.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/07/21
 	 */
 	SpringClass(SpringClass __super, SpringClass[] __interfaces,
-		ClassFile __cf)
+		ClassFile __cf, int __si)
 		throws NullPointerException
 	{
 		if (__interfaces == null || __cf == null)
@@ -91,6 +95,7 @@ public final class SpringClass
 		
 		ClassName name = __cf.thisName();
 		this.name = name;
+		this.specialindex = __si;
 		
 		this.file = __cf;
 		this.superclass = __super;
@@ -598,6 +603,17 @@ public final class SpringClass
 				"BK0f %s", this.name));
 		
 		this._initialized = true;
+	}
+	
+	/**
+	 * Returns the special class index.
+	 *
+	 * @return The special class index.
+	 * @since 2018/09/20
+	 */
+	public final int specialIndex()
+	{
+		return this.specialindex;
 	}
 	
 	/**

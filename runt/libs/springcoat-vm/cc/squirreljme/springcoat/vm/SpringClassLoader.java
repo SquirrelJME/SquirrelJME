@@ -39,6 +39,10 @@ public final class SpringClassLoader
 	private final Map<ClassName, SpringClass> _classes =
 		new HashMap<>();
 	
+	/** Next special class index. */
+	private int _nexcsi =
+		1;
+	
 	/**
 	 * Initializes the class loader.
 	 *
@@ -125,7 +129,8 @@ public final class SpringClassLoader
 				interfaceclasses[i] = this.loadClass(interfacenames[i]);
 			
 			// Load class information
-			rv = new SpringClass(superclass, interfaceclasses, cf);
+			rv = new SpringClass(superclass, interfaceclasses, cf,
+				this._nexcsi++);
 			
 			// Store for later use
 			classes.put(__cn, rv);

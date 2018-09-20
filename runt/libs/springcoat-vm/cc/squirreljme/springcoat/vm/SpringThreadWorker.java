@@ -218,7 +218,33 @@ public final class SpringThreadWorker
 			ClassName name = ((__in instanceof ClassName) ? (ClassName)__in :
 				((ConstantValueClass)__in).className());
 			
-			throw new todo.TODO();
+			// Get the class object map but lock on the class loader since we
+			// might end up just initializing classes and such
+			SpringMachine machine = this.machine;
+			Map<ClassName, SpringObject> com = machine.__classObjectMap();
+			synchronized (machine.classLoader().classLoadingLock())
+			{
+				// Pre-cached object already exists?
+				SpringObject rv = com.get(name);
+				if (rv != null)
+					return rv;
+				
+				// Resolve the input class, so it is initialized
+				SpringClass resclass = this.resolveClass(name);
+				
+				// Resolve the class object
+				SpringClass classobj = this.resolveClass(
+					new ClassName("java/lang/Class"));
+				
+				// Initialize class with special class index
+				rv = this.newInstance(classobj.name(),
+					new MethodDescriptor("(I)V"),
+					resclass.specialIndex());
+				
+				// Cache and use it
+				com.put(name, rv);
+				return rv;
+			}
 		}
 		
 		// {@squirreljme.error BK1f Do not know how to convert the given class

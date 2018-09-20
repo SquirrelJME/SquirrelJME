@@ -46,16 +46,16 @@ public final class SpringMachine
 	private final List<SpringThread> _threads =
 		new ArrayList<>();
 	
-	/** Classes and their {@link Class} instances in the VM. */
-	private final Map<SpringClass, SpringObject> _classobjects =
-		new HashMap<>();
-	
 	/** Static fields which exist within the virtual machine. */
 	private final Map<SpringField, SpringFieldStorage> _staticfields =
 		new HashMap<>();
 	
 	/** Global strings representing singular constants. */
 	private final Map<ConstantValueString, SpringObject> _strings =
+		new HashMap<>();
+	
+	/** Class objects which represent a given class. */
+	private final Map<ClassName, SpringObject> _classobjects =
 		new HashMap<>();
 	
 	/** The next thread ID to use. */
@@ -270,6 +270,17 @@ public final class SpringMachine
 		
 		// Wait until all threads have terminated before actually leaving
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the mapping of class names to {@link Class} instances.
+	 *
+	 * @return The mapping of class names to object instances.
+	 * @since 2018/09/19
+	 */
+	final Map<ClassName, SpringObject> __classObjectMap()
+	{
+		return this._classobjects;
 	}
 	
 	/**
