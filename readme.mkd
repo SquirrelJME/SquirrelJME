@@ -67,6 +67,7 @@ and requires only a Java compiler and virtual machine for it to be built.
    * [GitHub](https://github.com/XerTheSquirrel/)
    * [Keybase](https://keybase.io/xerthesquirrel)
    * [LinkedIn](https://www.linkedin.com/in/xerthesquirrel/)
+   * [Mastodon (awoo.space)](https://awoo.space/@XerTheSquirrel)
    * [Twitter](https://twitter.com/MultiPhasicApps)
 
 ## Goals
