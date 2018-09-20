@@ -899,6 +899,35 @@ public final class SpringThreadWorker
 					}
 					break;
 					
+					// Read from instance field
+				case InstructionIndex.GETFIELD:
+					{
+						// Lookup field
+						SpringField ssf = this.__lookupInstanceField(
+							inst.<FieldReference>argument(0,
+							FieldReference.class));
+						
+						// Pop the object to read from
+						SpringObject ref = frame.<SpringObject>popFromStack(
+							SpringObject.class);
+						
+						// {@squirreljme.error BK1l Cannot read value from
+						// null reference.}
+						if (ref == SpringNullObject.NULL)
+							throw new SpringNullPointerException("BK1l");
+						
+						// {@squirreljme.error BK1m Cannot read value from
+						// this instance because it not a simple object.}
+						if (!(ref instanceof SpringSimpleObject))
+							throw new SpringIncompatibleClassChangeException(
+								"BK1m");
+						SpringSimpleObject sso = (SpringSimpleObject)ref;
+						
+						// Read and push to the stack
+						frame.pushToStack(sso.fieldByIndex(ssf.index()).get());
+					}
+					break;
+					
 					// Read static variable
 				case InstructionIndex.GETSTATIC:
 					{
