@@ -16,6 +16,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -266,7 +267,33 @@ public final class SpringMachine
 		// The main although it executes in this context will always have the
 		// same exact logic as other threads running apart from this main
 		// thread, so no code is needed to be duplicated at all.
-		worker.run();
+		try
+		{
+			worker.run();
+		}
+		
+		// Ooopsie!
+		catch (RuntimeException e)
+		{
+			PrintStream err = System.err;
+			
+			err.println("****************************");
+			
+			// Print the real stack trace
+			err.println("*** EXTERNAL STACK TRACE ***");
+			e.printStackTrace(err);
+			err.println();
+			
+			// Print the VM seen stack trace
+			err.println("*** INTERNAL STACK TRACE ***");
+			mainthread.printStackTrace(err);
+			err.println();
+			
+			err.println("****************************");
+			
+			// Retoss
+			throw e;
+		}
 		
 		// Wait until all threads have terminated before actually leaving
 		throw new todo.TODO();
