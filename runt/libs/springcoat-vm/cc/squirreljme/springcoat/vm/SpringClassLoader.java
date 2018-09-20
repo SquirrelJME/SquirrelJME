@@ -159,7 +159,7 @@ public final class SpringClassLoader
 			throw new NullPointerException("NARG");
 		
 		// Debug
-		todo.DEBUG.note("Loading class file `%s`...", __cn);
+		/*todo.DEBUG.note("Loading class file `%s`...", __cn);*/
 		
 		// If this is an array type use virtual class representation
 		if (__cn.isPrimitive() || __cn.isArray())

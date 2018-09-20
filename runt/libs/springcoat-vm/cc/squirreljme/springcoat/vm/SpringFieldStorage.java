@@ -142,7 +142,8 @@ public final class SpringFieldStorage
 			throw new NullPointerException("NARG");
 		
 		// Debug
-		todo.DEBUG.note("%s::%s = %s", this.inclass, this.nameandtype, __v);
+		/*todo.DEBUG.note("%s::%s = %s", this.inclass, this.nameandtype,
+			__v);*/
 		
 		// {@squirreljme.error BK0o Attempt to write to final field.}
 		if (this.isfinal && !__writetofinal)
