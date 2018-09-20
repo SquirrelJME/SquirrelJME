@@ -210,12 +210,13 @@ public final class SpringThread
 				int pc = frame.pc();
 				
 				// Print information
-				__ps.printf("    at %s.%s(%s:%d) @ %d%n",
+				__ps.printf("    at %s.%s(%s:%d) @ %d [%s]%n",
 					inmethod.inClass(),
 					inmethod.nameAndType(),
 					inmethod.inFile(),
 					inmethod.byteCode().lineOfAddress(pc),
-					pc);
+					pc,
+					inmethod.byteCode().getByAddress(pc).mnemonic());
 			}
 		}
 	}
