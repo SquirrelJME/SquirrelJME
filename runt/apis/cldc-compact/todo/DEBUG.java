@@ -38,8 +38,12 @@ public final class DEBUG
 	 */
 	public static final void note(String __fmt, Object... __args)
 	{
-		// Print it out
+		// Only print if the stream is valid!
 		PrintStream ps = System.err;
+		if (ps == null)
+			return;
+	
+		// Print it out
 		ps.print("DBUG ");
 		ps.print(TODO.__formatCondensedTrace(TODO.__where()));
 		ps.print(" -- ");
