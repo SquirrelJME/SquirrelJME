@@ -121,6 +121,39 @@ public final class SpringThreadWorker
 		else if (__in == SpringNullObject.NULL)
 			return null;
 		
+		// Array type
+		else if (__in instanceof SpringArrayObject)
+		{
+			SpringArrayObject sao = (SpringArrayObject)__in;
+			
+			int len = sao.length();
+			
+			// Depends on the array type
+			SpringClass sscl = sao.type();
+			ClassName type = sscl.name();
+			switch (type.toString())
+			{
+					// Char array
+				case "[C":
+					{
+						char[] rv = new char[len];
+						
+						for (int i = 0; i < len; i++)
+							rv[i] = (char)(sao.<Integer>get(Integer.class, i).
+								intValue());
+						
+						return rv;
+					}
+				
+					// {@squirreljme.error BK1u Do not know how to convert the
+					// given virtual machine array to a native machine array.
+					// (The input class)}
+				default:
+					throw new RuntimeException(
+						String.format("BK1u %s", type));
+			}
+		}
+		
 		// Class type
 		else if (__in instanceof SpringSimpleObject)
 		{
