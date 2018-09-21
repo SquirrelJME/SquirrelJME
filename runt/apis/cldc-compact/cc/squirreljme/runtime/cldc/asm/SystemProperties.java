@@ -8,23 +8,21 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.cldc;
+package cc.squirreljme.runtime.cldc.asm;
 
 /**
- * This contains the version information.
+ * Access to system properties.
  *
- * @since 2017/12/10
+ * @since 2018/09/20
  */
-@Deprecated
-public final class SystemVersion
+public final class SystemProperties
 {
 	/**
 	 * Not used.
 	 *
-	 * @since 2017/12/10
+	 * @since 2018/09/20
 	 */
-	@Deprecated
-	private SystemVersion()
+	private SystemProperties()
 	{
 	}
 	
@@ -34,8 +32,7 @@ public final class SystemVersion
 	 * @return The class library version.
 	 * @since 2017/10/02
 	 */
-	@Deprecated
-	public static final String javaRuntimeVersion()
+	public static String javaRuntimeVersion()
 	{
 		return "0.0.2";
 	}
@@ -46,11 +43,7 @@ public final class SystemVersion
 	 * @return The contact e-mail for the virtual machine.
 	 * @since 2017/10/02
 	 */
-	@Deprecated
-	public static final String javaVMEmail()
-	{
-		return "xer@multiphasicapps.net";
-	}
+	public static native String javaVMEmail();
 	
 	/**
 	 * Returns the name of the Java virtual machine.
@@ -58,11 +51,7 @@ public final class SystemVersion
 	 * @return The name of the virtual machine.
 	 * @since 2017/10/02
 	 */
-	@Deprecated
-	public static final String javaVMName()
-	{
-		return "SquirrelJME";
-	}
+	public static native String javaVMName();
 	
 	/**
 	 * Returns the URL to the virtual machine's vendor's URL.
@@ -70,11 +59,7 @@ public final class SystemVersion
 	 * @return The URL of the JVM's virtual machine.
 	 * @since 2017/10/02
 	 */
-	@Deprecated
-	public static final String javaVMURL()
-	{
-		return "http://multiphasicapps.net/";
-	}
+	public static native String javaVMURL();
 	
 	/**
 	 * Returns the vendor of the Java virtual machine.
@@ -82,11 +67,7 @@ public final class SystemVersion
 	 * @return The vendor of the Java virtual machine.
 	 * @since 2017/10/02
 	 */
-	@Deprecated
-	public static final String javaVMVendor()
-	{
-		return "Stephanie Gawroriski";
-	}
+	public static native String javaVMVendor();
 	
 	/**
 	 * Returns the full version of the Java virtual machine.
@@ -94,10 +75,10 @@ public final class SystemVersion
 	 * @return The full Java virtual machine version.
 	 * @since 2017/08/13
 	 */
-	@Deprecated
-	public static final String javaVMVersionFull()
+	public static String javaVMVersionFull()
 	{
-		return "1.8.0-0.0.2";
+		return SystemProperties.javaVMVersionShort() + "-" +
+			SystemProperties.javaRuntimeVersion();
 	}
 	
 	/**
@@ -106,10 +87,19 @@ public final class SystemVersion
 	 * @return The short Java virtual machine version.
 	 * @since 2017/08/13
 	 */
-	@Deprecated
-	public static final String javaVMVersionShort()
+	public static String javaVMVersionShort()
 	{
 		return "1.8.0";
 	}
+	
+	/**
+	 * Returns a system property for the given value.
+	 *
+	 * @param __k The key to get.
+	 * @return The value of the property, will be {@code null} if it is not
+	 * valid.
+	 * @since 2018/09/20
+	 */
+	public static native String systemProperty(String __k);
 }
 
