@@ -1255,6 +1255,23 @@ public final class SpringThreadWorker
 					}
 					break;
 					
+					// Integer to byte
+				case InstructionIndex.I2B:
+					{
+						int value = frame.<Integer>popFromStack(Integer.class);
+						frame.pushToStack(Byte.valueOf((byte)value).
+							intValue());
+					}
+					break;
+					
+					// Integer to long
+				case InstructionIndex.I2L:
+					{
+						int value = frame.<Integer>popFromStack(Integer.class);
+						frame.pushToStack(Long.valueOf(value));
+					}
+					break;
+					
 					// Integer constant
 				case InstructionIndex.ICONST_M1:
 				case InstructionIndex.ICONST_0:
@@ -1471,6 +1488,15 @@ public final class SpringThreadWorker
 					}
 					break;
 				
+					// Divide integer
+				case InstructionIndex.IDIV:
+					{
+						int b = frame.<Integer>popFromStack(Integer.class),
+							a = frame.<Integer>popFromStack(Integer.class);
+						frame.pushToStack(a / b);
+					}
+					break;
+				
 					// Multiply integer
 				case InstructionIndex.IMUL:
 					{
@@ -1597,6 +1623,15 @@ public final class SpringThreadWorker
 				case InstructionIndex.LRETURN:
 					this.__vmReturn(thread,
 						frame.<Long>popFromStack(Long.class));
+					break;
+				
+					// Shift left long
+				case InstructionIndex.LSHL:
+					{
+						int b = frame.<Integer>popFromStack(Integer.class);
+						long a = frame.<Long>popFromStack(Long.class);
+						frame.pushToStack(a << (((long)b) & 0x3F));
+					}
 					break;
 					
 					// Enter monitor

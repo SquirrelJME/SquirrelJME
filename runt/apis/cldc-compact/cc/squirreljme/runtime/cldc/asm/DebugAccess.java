@@ -90,7 +90,22 @@ public final class DebugAccess
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		int rawlen = __v.length,
+			numframes = rawlen / TRACE_COUNT;
+		
+		CallTraceElement[] rv = new CallTraceElement[numframes];
+		
+		// Convert frames
+		for (int o = 0, i = 0; o < numframes; o++, i += TRACE_COUNT)
+			rv[o] = new CallTraceElement(
+				null,
+				null,
+				null,
+				(((long)__v[i + 6]) << 32) | (__v[i + 7] & 0xFFFFFFFFL),
+				null,
+				__v[i + 10]);
+		
+		return rv;
 	}
 }
 

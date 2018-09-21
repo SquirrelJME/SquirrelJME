@@ -176,6 +176,10 @@ public final class System
 		if (__k.equals(""))
 			throw new IllegalArgumentException("ZZ05");
 		
+		// Short circuit for run-time detection
+		if (__k.equals("cc.squirreljme.isruntime"))
+			return "true";
+		
 		// Not allowed to do this?
 		getSecurityManager().checkPropertyAccess(__k);
 		

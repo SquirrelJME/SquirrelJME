@@ -10,8 +10,7 @@
 
 package cc.squirreljme.runtime.cldc.io;
 
-import cc.squirreljme.runtime.cldc.system.SystemCall;
-import cc.squirreljme.runtime.cldc.system.type.LocalByteArray;
+import cc.squirreljme.runtime.cldc.asm.ConsoleOutput;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -29,8 +28,11 @@ public final class StandardError
 	 */
 	@Override
 	public void write(int __b)
+		throws IOException
 	{
-		SystemCall.EASY.pipeOutput(true, __b);
+		// {@squirreljme.error ZZ19 Error writing to standard error.}
+		if (ConsoleOutput.write(ConsoleOutput.ERROR, __b) != 0)
+			throw new IOException("ZZ19");
 	}
 	
 	/**
@@ -39,12 +41,13 @@ public final class StandardError
 	 */
 	@Override
 	public void write(byte[] __b, int __o, int __l)
-		throws NullPointerException
+		throws IOException, NullPointerException
 	{
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		
-		SystemCall.EASY.pipeOutput(true, new LocalByteArray(__b), __o, __l);
+		for (int i = __o, e = (__o + __l); i < e; i++)
+			this.write(__b[i]);
 	}
 }
 
