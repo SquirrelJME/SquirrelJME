@@ -46,6 +46,9 @@ public final class SpringThreadWorker
 	/** The thread being run. */
 	protected final SpringThread thread;
 	
+	/** The current step count. */
+	private volatile int _stepcount;
+	
 	/**
 	 * Initialize the worker.
 	 *
@@ -991,6 +994,10 @@ public final class SpringThreadWorker
 	{
 		// Need the current frame and its byte code
 		SpringThread thread = this.thread;
+		
+		// Increase the step count
+		this._stepcount++;
+		
 		SpringThread.Frame frame = thread.currentFrame();
 		ByteCode code = frame.byteCode();
 		
