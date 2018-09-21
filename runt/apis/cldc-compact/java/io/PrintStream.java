@@ -221,8 +221,19 @@ public class PrintStream
 		throw new todo.TODO();
 	}
 	
-	public void print(String __a)
+	/**
+	 * Prints the specified string.
+	 *
+	 * @param __s The string to print, if {@code null} then {@code "null"} is
+	 * printed.
+	 * @since 2018/09/20
+	 */
+	public void print(String __s)
 	{
+		// Print null explicitely
+		if (__s == null)
+			__s = "null";
+		
 		throw new todo.TODO();
 	}
 	
@@ -282,8 +293,7 @@ public class PrintStream
 	}
 	
 	/**
-	 * Prints the given string to the output stream followed by the system
-	 * newline character.
+	 * Prints the given string to the output stream followed by a new line.
 	 *
 	 * @param __v The string to write.
 	 * @since 2018/09/18
