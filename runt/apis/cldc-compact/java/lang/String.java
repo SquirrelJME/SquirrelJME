@@ -316,6 +316,10 @@ public final class String
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/09/21
+	 */
 	@Override
 	public boolean equals(Object __o)
 	{
