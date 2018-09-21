@@ -95,7 +95,7 @@ public final class CodecFactory
 
 				// ISO-8859-1
 			case "iso-8859-1":
-				throw new todo.TODO();
+				return new ISO88591Encoder();
 				
 				// UTF-8
 			case "utf-8":
