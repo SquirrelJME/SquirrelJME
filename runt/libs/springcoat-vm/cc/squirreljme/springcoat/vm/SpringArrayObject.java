@@ -178,8 +178,8 @@ public final class SpringArrayObject
 		// The length of the array)}
 		int length = this.length;
 		if (__dx < 0 || __dx >= length)
-			throw new SpringArrayIndexOutOfBoundsException(String.format("BK1h %d %d",
-				__dx, length));
+			throw new SpringArrayIndexOutOfBoundsException(
+				String.format("BK1h %d %d", __dx, length));
 		
 		// {@squirreljme.error BK1i The specified type is not compatible
 		// with the values this array stores. (The input value;
