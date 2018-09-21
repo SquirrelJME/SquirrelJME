@@ -24,6 +24,7 @@ import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
 import net.multiphasicapps.classfile.InstructionJumpTarget;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
+import net.multiphasicapps.classfile.LookupSwitch;
 import net.multiphasicapps.classfile.MemberFlags;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodName;
@@ -1383,6 +1384,13 @@ public final class SpringThreadWorker
 						else
 							frame.pushToStack(value.boxedValue());
 					}
+					break;
+					
+					// Lookup in jump table
+				case InstructionIndex.LOOKUPSWITCH:
+					nextpc = inst.<LookupSwitch>argument(0,
+						LookupSwitch.class).match(
+						frame.<Integer>popFromStack(Integer.class)).target();
 					break;
 					
 					// Return long
