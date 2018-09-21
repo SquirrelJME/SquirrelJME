@@ -66,6 +66,9 @@ public final class String
 	/** Quick determination flags for speedy operations. */
 	private volatile int _quickflags;
 	
+	/** The hash code for this string, is cached. */
+	private int _hashcode;
+	
 	/**
 	 * Initializes a new empty string.
 	 *
@@ -327,12 +330,22 @@ public final class String
 		// Cast
 		String o = (String)__o;
 		
-		// Get length of both strings
-		int mlen = this.length();
-		int olen = o.length();
+		// Quickly determine if the string is likely the same via the hashcode
+		// This at best removes all loops and just results in a simple integer
+		// comparison being used
+		int an = this.hashCode(),
+			bn = o.hashCode();
+		if (an != bn)
+			return false;
+		
+		// Work on sequences now
+		BasicSequence sa = this._sequence,
+			sb = o._sequence;
 		
 		// If the length differs, they are not equal
-		if (mlen != olen)
+		an = sa.length();
+		bn = sb.length();
+		if (an != bn)
 			return false;
 		
 		throw new todo.TODO();
@@ -384,10 +397,28 @@ public final class String
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/09/20
+	 */
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		// If the hashcode was already determined before then use that
+		// cache
+		int rv = this._hashcode;
+		if (rv != 0)
+			return rv;
+		
+		// Calculate the hashCode(), the JavaDoc gives the following formula:
+		// == s[0]*31^(n-1) + s[1]*31^(n-2) + ... + s[n-1] .... yikes!
+		BasicSequence sequence = this._sequence;
+		for (int i = 0, n = sequence.length(); i < n; i++)
+			rv = ((rv << 5) - rv) + sequence.charAt(i);
+		
+		// Cache hashcode for later
+		this._hashcode = rv;
+		return rv;
 	}
 	
 	/**

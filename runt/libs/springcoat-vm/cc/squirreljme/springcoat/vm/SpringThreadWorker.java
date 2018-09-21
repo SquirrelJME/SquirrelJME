@@ -1253,6 +1253,15 @@ public final class SpringThreadWorker
 						opid - InstructionIndex.ILOAD_0);
 					break;
 				
+					// Addly integer
+				case InstructionIndex.IADD:
+					{
+						int b = frame.<Integer>popFromStack(Integer.class),
+							a = frame.<Integer>popFromStack(Integer.class);
+						frame.pushToStack(a + b);
+					}
+					break;
+				
 					// AND integer
 				case InstructionIndex.IAND:
 					{
@@ -1319,6 +1328,15 @@ public final class SpringThreadWorker
 				case InstructionIndex.IRETURN:
 					this.__vmReturn(thread,
 						frame.<Integer>popFromStack(Integer.class));
+					break;
+				
+					// Shift left integer
+				case InstructionIndex.ISHL:
+					{
+						int b = frame.<Integer>popFromStack(Integer.class),
+							a = frame.<Integer>popFromStack(Integer.class);
+						frame.pushToStack(a << (b & 0x1F));
+					}
 					break;
 					
 					// Store integer to local variable
