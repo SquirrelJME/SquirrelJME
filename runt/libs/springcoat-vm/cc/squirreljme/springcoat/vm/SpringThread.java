@@ -74,6 +74,27 @@ public final class SpringThread
 	}
 	
 	/**
+	 * Enters a blank frame to store data.
+	 *
+	 * @return The
+	 * @since 2018/09/20
+	 */
+	public final SpringThread.Frame enterBlankFrame()
+	{
+		// Setup blank frame
+		SpringThread.Frame rv = new SpringThread.Frame();
+		
+		// Lock on frames as a new one is added
+		List<SpringThread.Frame> frames = this._frames;
+		synchronized (frames)
+		{
+			frames.add(rv);
+		}
+		
+		return rv;
+	}
+	
+	/**
 	 * Enters the specified method and sets up a stack frame for it.
 	 *
 	 * @param __m The method to enter.
@@ -206,6 +227,13 @@ public final class SpringThread
 			{
 				SpringThread.Frame frame = frames.get(i);
 				
+				// Do not print traces for blank frames
+				if (frame.isBlank())
+				{
+					__ps.printf("    at <guard frame>%n");
+					continue;
+				}
+				
 				SpringMethod inmethod = frame.method();
 				int pc = frame.lastExecutedPc();
 				
@@ -255,6 +283,9 @@ public final class SpringThread
 		/** The current object of the current frame. */
 		protected final SpringObject thisobject;
 		
+		/** Is this frame blank? */
+		protected final boolean isblank;
+		
 		/** Local variables. */
 		private final Object[] _locals;
 		
@@ -269,6 +300,21 @@ public final class SpringThread
 		
 		/** Last executed PC address. */
 		private volatile int _lastexecpc;
+		
+		/**
+		 * Initializes a blank guard frame.
+		 *
+		 * @since 2018/09/20
+		 */
+		private Frame()
+		{
+			this.method = null;
+			this.code = null;
+			this.thisobject = null;
+			this.isblank = true;
+			this._locals = new Object[0];
+			this._stack = new Object[2];
+		}
 		
 		/**
 		 * Initializes the frame.
@@ -286,6 +332,7 @@ public final class SpringThread
 			
 			__args = (__args == null ? new Object[0] : __args.clone());
 			
+			this.isblank = false;
 			this.method = __m;
 			
 			// We will need to initialize the local and stack data from the
@@ -320,6 +367,17 @@ public final class SpringThread
 		public final ByteCode byteCode()
 		{
 			return this.code;
+		}
+		
+		/**
+		 * Is this a blank frame?
+		 *
+		 * @return If this is a blank frame.
+		 * @since 2018/09/20
+		 */
+		public final boolean isBlank()
+		{
+			return this.isblank;
 		}
 		
 		/**
