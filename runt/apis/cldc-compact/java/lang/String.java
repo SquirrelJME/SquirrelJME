@@ -390,14 +390,44 @@ public final class String
 		throw new todo.TODO();
 	}
 	
-	public int indexOf(int __a)
+	/**
+	 * Searches the string for the given character and returns the index if it
+	 * was found.
+	 *
+	 * @param __c The character to find.
+	 * @return The character index or {@code -1} if it was not found.
+	 * @since 2018/09/20
+	 */
+	public int indexOf(int __c)
 	{
-		throw new todo.TODO();
+		return this.indexOf(__c, 0);
 	}
 	
-	public int indexOf(int __a, int __b)
+	/**
+	 * Searches the string for the given character starting from the given
+	 * index and returns the index if it was found.
+	 *
+	 * @param __c The character to find.
+	 * @param __i The index to start at, the values are capped within the
+	 * string length.
+	 * @return The character index or {@code -1} if it was not found.
+	 * @since 2018/09/20
+	 */
+	public int indexOf(int __c, int __i)
 	{
-		throw new todo.TODO();
+		BasicSequence sequence = this._sequence;
+		
+		// Cap index
+		int n = sequence.length();
+		if (__i < 0)
+			__i = 0;
+		
+		for (int i = __i; i < n; i++)
+			if (__c == sequence.charAt(i))
+				return i;
+		
+		// Not found
+		return -1;
 	}
 	
 	public int indexOf(String __a)
@@ -563,6 +593,7 @@ public final class String
 			return this;
 		
 		// Needed for case conversion
+		BasicSequence sequence = this._sequence;
 		Locale locale = DefaultLocale.defaultLocale();
 		
 		// Setup new character array for the conversion
@@ -573,7 +604,7 @@ public final class String
 		boolean changed = false;
 		for (int i = 0; i < n; i++)
 		{
-			char a = this.charAt(i),
+			char a = sequence.charAt(i),
 				b = locale.toLowerCase(a);
 			
 			// Detect if the string actually changed
