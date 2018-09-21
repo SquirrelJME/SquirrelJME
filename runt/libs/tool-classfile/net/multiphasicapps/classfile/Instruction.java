@@ -438,6 +438,36 @@ public final class Instruction
 					args = new Object[]{new LookupSwitch(def, keys, jumps)};
 				}
 				break;
+			
+				// Table switch lookup table
+			case InstructionIndex.TABLESWITCH:
+				{
+					// Determine the real address of the table
+					int pa = ((aa + 4) & (~3));
+					
+					// Read in the default
+					InstructionJumpTarget def = new InstructionJumpTarget(
+						__a + Instruction.__readInt(__code, pa));
+					
+					// Read in low and high
+					int lo = Instruction.__readInt(__code, pa + 4),
+						hi = Instruction.__readInt(__code, pa + 8);
+					
+					// Read jump targets
+					int n = (hi - lo) + 1;
+					InstructionJumpTarget[] jumps =
+						new InstructionJumpTarget[n];
+					
+					// Load in tables
+					for (int i = 0, ra = pa + 8; i < n; i++, ra += 4)
+						jumps[i] = new InstructionJumpTarget(
+							__a + Instruction.__readInt(__code, ra));
+					
+					// Setup instruction properties
+					naturalflow = true;
+					args = new Object[]{new TableSwitch(def, lo, hi, jumps)};
+				}
+				break;
 				
 				// {@squirreljme.error JC10 The operation at the specified
 				// address is not supported yet. (The operation; The name of
