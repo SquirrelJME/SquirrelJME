@@ -104,7 +104,74 @@ public final class SpringThreadWorker
 	}
 	
 	/**
-	 * Converts the specified native object to a virtual machine type.
+	 * Converts the specified virtual machine object to a native object.
+	 *
+	 * @param __in The input object.
+	 * @return The resulting native object.
+	 * @throw NullPointerException On null arguments.
+	 * @since 2018/09/20
+	 */
+	public final Object asNativeObject(Object __in)
+		throws NullPointerException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		// Is null refernece
+		else if (__in == SpringNullObject.NULL)
+			return null;
+		
+		// Class type
+		else if (__in instanceof SpringSimpleObject)
+		{
+			SpringObject sso = (SpringObject)__in;
+			
+			// Depends on the class type
+			ClassName type = sso.type().name();
+			switch (type.toString())
+			{
+				case "java/lang/String":
+					{
+						throw new todo.TODO();
+					}
+				
+					// {@squirreljme.error BK1s Do not know how to convert the
+					// given virtual machine class to a native machine object.
+					// (The input class)}
+				default:
+					throw new RuntimeException(
+						String.format("BK1s %s", type));
+			}
+		}
+		
+		// {@squirreljme.error BK1r Do not know how to convert the given class
+		// to a native machine object. (The input class)}
+		else
+			throw new RuntimeException(
+				String.format("BK1r %s", __in.getClass()));
+	}
+	
+	/**
+	 * Converts the specified virtual machine object to a native object.
+	 *
+	 * @param <C> The class type.
+	 * @param __cl The class type.
+	 * @param __in The input object.
+	 * @return The resulting native object.
+	 * @throw NullPointerException On null arguments.
+	 * @since 2018/09/20
+	 */
+	public final <C> C asNativeObject(Class<C> __cl, Object __in)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		return __cl.cast(this.asNativeObject(__in));
+	}
+	
+	/**
+	 * Converts the specified native object to a virtual machine object.
 	 *
 	 * @param __in The input object.
 	 * @return The resulting VM object.
@@ -163,6 +230,35 @@ public final class SpringThreadWorker
 			// Copy array values
 			for (int i = 0; i < n; i++)
 				rv.set(i, (int)in[i]);
+			
+			return rv;
+		}
+		
+		// String object
+		else if (__in instanceof String)
+		{
+			String s = (String)__in;
+			
+			// Locate the string class
+			SpringClass strclass = this.loadClass(
+				new ClassName("java/lang/String"));
+				
+			// Setup an array of characters to represent the string data,
+			// this is the simplest thing to do right now
+			SpringObject array = (SpringObject)this.asVMObject(
+				s.toString().toCharArray());
+				
+			// Setup character array sequence which wraps our array
+			SpringObject cas = this.newInstance(new ClassName(
+				"cc/squirreljme/runtime/cldc/string/CharArraySequence"),
+				new MethodDescriptor("([C)V"), array);
+			
+			// Setup string which uses this sequence
+			SpringObject rv = this.newInstance(
+				new ClassName("java/lang/String"),
+				new MethodDescriptor(
+				"(Lcc/squirreljme/runtime/cldc/string/BasicSequence;)V"),
+				cas);
 			
 			return rv;
 		}
@@ -572,6 +668,12 @@ public final class SpringThreadWorker
 					
 					return rv;
 				}
+				
+				// Check
+			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
+				"systemProperty:(Ljava/lang/String;)Ljava/lang/String;":
+				return System.getProperty(this.<String>asNativeObject(
+					String.class, __args[0]));
 			
 				// {@squirreljme.error BK1g Unknown native function. (The
 				// native function)}

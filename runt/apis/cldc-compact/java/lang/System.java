@@ -10,6 +10,7 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.asm.SystemProperties;
 import cc.squirreljme.runtime.cldc.io.StandardError;
 import cc.squirreljme.runtime.cldc.io.StandardOutput;
 import cc.squirreljme.runtime.cldc.system.SystemCall;
@@ -181,37 +182,29 @@ public final class System
 		// Depends on the property
 		switch (__k)
 		{
-				// The file separator
-			case "file.separator":
-				throw new todo.TODO();
-			
-				// Temporary directory
-			case "java.io.tmpdir":
-				throw new todo.TODO();
-				
 				// The version of the Java virtual machine
 			case "java.version":
-				return SystemVersion.javaVMVersionShort();
+				return SystemProperties.javaVMVersionShort();
 				
 				// The version of the JVM (full)
 			case "java.vm.version":
-				return SystemVersion.javaVMVersionFull();
+				return SystemProperties.javaVMVersionFull();
 				
 				// The name of the JVM
 			case "java.vm.name":
-				return SystemVersion.javaVMName();
+				return SystemProperties.javaVMName();
 				
 				// The vendor of the JVM
 			case "java.vm.vendor":
-				return SystemVersion.javaVMVendor();
+				return SystemProperties.javaVMVendor();
 			
 				// The e-mail of the JVM
 			case "java.vm.vendor.email":
-				return SystemVersion.javaVMEmail();
+				return SystemProperties.javaVMEmail();
 			
 				// The URL of the JVM
 			case "java.vm.vendor.url":
-				return SystemVersion.javaVMURL();
+				return SystemProperties.javaVMURL();
 				
 				// The vendor of the class libraries
 			case "java.vendor":
@@ -225,75 +218,17 @@ public final class System
 			case "java.vendor.url":
 				return "http://multiphasicapps.net/";
 				
-				// The name of the virtual machine
+				// The name of the runtime library
 			case "java.runtime.name":
 				return "SquirrelJME";
 				
 				// The version of the run-time
 			case "java.runtime.version":
-				return SystemVersion.javaRuntimeVersion();
+				return SystemProperties.javaRuntimeVersion();
 				
-				// The line separator used for text files on the system
-			case "line.separator":
-				throw new todo.TODO();
-				
-				// The configuration used
-			case "microedition.configuration":
-				throw new todo.TODO();
-				
-				// The unique device identifier
-			case "microedition.deviceid.uuid":
-				throw new todo.TODO();
-				
-				// The encoding to use for reading/writing text files
-			case "microedition.encoding":
-				throw new todo.TODO();
-			
-				// The hostname used
-			case "microedition.hostname":
-				throw new todo.TODO();
-				
-				// The platform the device is running on, this is a model
-				// number and such
-			case "microedition.platform":
-				throw new todo.TODO();
-			
-				// Profiles supported by the virtual machine
-			case "microedition.profiles":
-				throw new todo.TODO();
-				
-				// The architecture of the OS, using standard SquirrelJME
-				// architecture name format
-			case "os.arch":
-				throw new todo.TODO();
-				
-				// The name of the operating system
-			case "os.name":
-				throw new todo.TODO();
-				
-				// The version of the operating system
-			case "os.version":
-				throw new todo.TODO();
-			
-				// The PATH variable separator
-			case "path.separator":
-				throw new todo.TODO();
-			
-				// Working directory
-			case "user.dir":
-				throw new todo.TODO();
-				
-				// User home directory
-			case "user.home":
-				throw new todo.TODO();
-				
-				// User account name
-			case "user.name":
-				throw new todo.TODO();
-			
-				// Unknown, get user supplied properties
+				// Unknown, use system call
 			default:
-				throw new todo.TODO();
+				return SystemProperties.systemProperty(__k);
 		}
 	}
 	
