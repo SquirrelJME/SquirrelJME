@@ -18,5 +18,21 @@ package cc.squirreljme.runtime.cldc.io;
  */
 public interface Encoder
 {
+	/**
+	 * Encodes the given character and writes it to the output byte array.
+	 *
+	 * @param __c The character to encode.
+	 * @param __b The output byte array.
+	 * @param __o The offset to the array.
+	 * @param __l The length of the area to write.
+	 * @return The number of bytes written, {@code -1} means the character
+	 * cannot be encoded because it will not fit in the buffer.
+	 * @throws IndexOutOfBoundsException If the offset and or length are
+	 * negative or exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/21
+	 */
+	public abstract int encode(char __c, byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException;
 }
 
