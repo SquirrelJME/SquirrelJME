@@ -459,7 +459,7 @@ public final class Instruction
 						new InstructionJumpTarget[n];
 					
 					// Load in tables
-					for (int i = 0, ra = pa + 8; i < n; i++, ra += 4)
+					for (int i = 0, ra = pa + 12; i < n; i++, ra += 4)
 						jumps[i] = new InstructionJumpTarget(
 							__a + Instruction.__readInt(__code, ra));
 					
