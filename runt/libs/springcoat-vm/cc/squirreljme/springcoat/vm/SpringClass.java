@@ -302,6 +302,19 @@ public final class SpringClass
 		if (__o == null)
 			throw new NullPointerException("NARG");
 		
+		// Go through target superclasses to find this class
+		for (SpringClass r = __o; r != null; r = r.superclass)
+		{
+			if (r == this)
+				return true;
+		
+			// Go through interfaces for the class to find this class
+			for (SpringClass i : r._interfaceclasses)
+				if (i == this)
+					return true;
+		}
+		
+		/*
 		// Check super classes and interfaces
 		for (SpringClass r = this; r != null; r = r.superclass)
 		{
@@ -314,6 +327,7 @@ public final class SpringClass
 				if (i.isAssignableFrom(__o))
 					return true;
 		}
+		*/
 		
 		// Not assignable from the class
 		return false;

@@ -1467,8 +1467,8 @@ public final class SpringThreadWorker
 						
 						// {@squirreljme.error BK1c Cannot store value into
 						// a field which belongs to another class.}
-						if (!sso.type().isAssignableFrom(
-							this.loadClass(ssf.inClass())))
+						if (!this.loadClass(ssf.inClass()).isAssignableFrom(
+							sso.type()))
 							throw new SpringClassCastException("BK1c");
 						
 						// Set
@@ -1585,11 +1585,12 @@ public final class SpringThreadWorker
 			args[i] = __f.popFromStack();
 			
 		// {@squirreljme.error BK1o Cannot invoke the method in the object
-		// because it is of the wrong type. (The reference class)}
+		// because it is of the wrong type. (The reference class; The class
+		// of the target object)}
 		SpringClass objclass = ((SpringObject)args[0]).type();
-		if (!objclass.isAssignableFrom(refclass))
+		if (!refclass.isAssignableFrom(objclass))
 			throw new SpringClassCastException(
-				String.format("BK1o %s", refclass));
+				String.format("BK1o %s %s", refclass, objclass));
 		
 		// Relookup the method since we need to the right one! Then invoke it
 		__t.enterFrame(objclass.lookupMethod(false, ref.memberNameAndType()),
