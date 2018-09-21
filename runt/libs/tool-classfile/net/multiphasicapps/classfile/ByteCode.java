@@ -864,7 +864,7 @@ public final class ByteCode
 				// tuspadlen includes the opcode
 				int tusaddr = ((aa + 4) & (~3)),
 					tuspadlen = tusaddr - aa;
-				rv += tuspadlen + 12 + (4 *
+				rv = tuspadlen + 12 + (4 *
 					(Instruction.__readInt(__code, tusaddr + 8) -
 					Instruction.__readInt(__code, tusaddr + 4) + 1));
 				break;
@@ -882,8 +882,7 @@ public final class ByteCode
 				// luspadlen includes the opcode
 				int lusaddr = ((aa + 4) & (~3)),
 					luspadlen = lusaddr - aa;
-				int vvvv;
-				rv += luspadlen + 8 + (8 * Instruction.__readInt(__code,
+				rv = luspadlen + 8 + (8 * Instruction.__readInt(__code,
 					lusaddr + 4));
 				break;
 			
