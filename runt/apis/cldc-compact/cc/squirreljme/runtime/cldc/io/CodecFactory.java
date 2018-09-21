@@ -23,11 +23,10 @@ import java.lang.ref.WeakReference;
 public final class CodecFactory
 {
 	/**
-	 * The encoding to use if it is unknown or not set anywhere, UTF-8 is used
-	 * because it is a sane default and should be used everywhere.
+	 * The encoding to use if it is unknown or not set anywhere.
 	 */
 	private static final String _FALLBACK_ENCODING =
-		"utf-8";
+		"iso-8859-1";
 	
 	/**
 	 * Not used.

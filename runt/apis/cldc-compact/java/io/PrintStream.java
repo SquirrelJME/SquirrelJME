@@ -45,6 +45,10 @@ public class PrintStream
 	private static final int _BUFFER_SIZE =
 		96;
 	
+	/** Threshold before a forced flush. */
+	private static final int _THRESHOLD =
+		90;
+	
 	private static final String _NEWLINE;
 	
 	/** The stream to write bytes to. */
@@ -55,6 +59,16 @@ public class PrintStream
 	
 	/** The encoder used to encode chars to bytes. */
 	private final Encoder _encoder;
+	
+	/** The internal buffer. */
+	private final byte[] _buf =
+		new byte[_BUFFER_SIZE];
+	
+	/** The position the buffer is at. */
+	private int _bat;
+	
+	/** Error state? */
+	private boolean _inerror;
 	
 	/**
 	 * Cache the line separator which is derived from the system properties.
@@ -175,10 +189,17 @@ public class PrintStream
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/09/21
+	 */
 	@Override
 	public void flush()
 	{
-		throw new todo.TODO();
+		synchronized (this)
+		{
+			this.__flush();
+		}
 	}
 	
 	public PrintStream format(String __a, Object... __b)
@@ -230,11 +251,15 @@ public class PrintStream
 	 */
 	public void print(String __s)
 	{
-		// Print null explicitely
-		if (__s == null)
-			__s = "null";
-		
-		throw new todo.TODO();
+		synchronized (this)
+		{
+			// Print null explicitely
+			if (__s == null)
+				__s = "null";
+			
+			for (int i = 0, n = __s.length(); i < n; i++)
+				this.__writeChar(__s.charAt(i));
+		}
 	}
 	
 	public void print(Object __a)
@@ -247,14 +272,30 @@ public class PrintStream
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Prints the end of line sequence that is used for the current platform.
+	 *
+	 * @return The end of line sequence.
+	 * @since 2018/09/21
+	 */
 	public void println()
 	{
-		// If the newline character has not yet been set, use a fallback
-		String nl = PrintStream._NEWLINE;
-		if (nl == null)
-			nl = "\n";
-		
-		throw new todo.TODO();
+		synchronized (this)
+		{
+			// If the newline character has not yet been set, use a fallback
+			String nl = PrintStream._NEWLINE;
+			if (nl == null)
+				nl = "\n";
+			
+			// Write the ending
+			for (int i = 0, n = nl.length(); i < n; i++)
+				this.__writeChar(nl.charAt(i));
+			
+			// Flush the stream after every line printed, in the event the
+			// system does not use a UNIX newline
+			if (this._autoflush)
+				this.flush();
+		}
 	}
 	
 	public void println(boolean __a)
@@ -328,6 +369,52 @@ public class PrintStream
 	}
 	
 	/**
+	 * Flushes the stream to the output.
+	 *
+	 * @since 2018/09/21
+	 */
+	private final void __flush()
+	{
+		// Nothing to be written at all?
+		int bat = this._bat;
+		if (bat <= 0)
+			return;
+		
+		// Write individual bytes and detect any exceptions
+		OutputStream out = this._out;
+		boolean oopsie = false;
+		byte[] buf = this._buf;
+		int bop = 0;
+		for (bop = 0; bop < bat; bop++)
+			try
+			{
+				out.write(buf[bop]);
+			}
+			catch (IOException e)
+			{
+				oopsie = true;
+				break;
+			}
+		
+		// Could not flush to the output
+		if (oopsie)
+		{
+			// Bring down the characters in the buffer so that they are not
+			// just lost
+			for (int i = bop, o = 0; i < bat; i++, o++)
+				buf[o] = buf[i];
+			this._bat = bat - bop;
+			
+			// Set error state
+			this._inerror = true;
+		}
+		
+		// Is perfectly fine, so "clear" the buffer
+		else
+			this._bat = 0;
+	}
+	
+	/**
 	 * Writes a single character to the output, encoding it as required.
 	 *
 	 * @param __c The character to write.
@@ -335,7 +422,34 @@ public class PrintStream
 	 */
 	private final void __writeChar(char __c)
 	{
-		throw new todo.TODO();
+		byte[] buf = this._buf;
+		int bat = this._bat;
+		
+		// Encode the character into empty space
+		int wc = this._encoder.encode(__c, buf, bat, _BUFFER_SIZE - bat);
+		
+		// {@squirreljme.error ZZ18 Did not expect the buffer to be out of
+		// room.}
+		if (wc < 0)
+			throw new Error("ZZ18");
+		
+		// Should we flush bytes?
+		boolean flush = false;
+		if (this._autoflush)
+		{
+			for (int skim = bat + wc; bat < skim; bat++)
+				if (buf[skim] == '\n')
+					flush = true;
+		}
+		else
+			bat += wc;
+		
+		// Store changes
+		this._bat = bat;
+		
+		// Flush?
+		if (flush || bat >= _THRESHOLD)
+			this.__flush();
 	}
 }
 

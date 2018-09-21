@@ -20,5 +20,20 @@ package cc.squirreljme.runtime.cldc.io;
 public final class UTF8Encoder
 	implements Encoder
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/09/21
+	 */
+	@Override
+	public int encode(char __c, byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) >= __b.length)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		throw new todo.TODO();
+	}
 }
 
