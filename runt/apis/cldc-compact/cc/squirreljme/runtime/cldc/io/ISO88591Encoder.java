@@ -28,7 +28,7 @@ public final class ISO88591Encoder
 	{
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) >= __b.length)
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Always encodes to one character, so if one character cannot fit in

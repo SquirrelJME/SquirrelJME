@@ -1841,7 +1841,14 @@ public final class SpringThreadWorker
 		// Virtual invoke
 		if (newclass.isSuperClass(refclass) &&
 			!refmethod.name().isInstanceInitializer())
+		{
+			// Push back in for the virtual call
+			for (int i = 0; i < nargs; i++)
+				__f.pushToStack(args[i]);
+			
+			// Would just mess up
 			this.__vmInvokeVirtual(__i, __t, __f);
+		}
 		
 		// Invoke this method
 		else
