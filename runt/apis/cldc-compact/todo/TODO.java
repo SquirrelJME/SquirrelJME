@@ -313,12 +313,22 @@ public class TODO
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
+		// For the SquirrelJME runtime, use the debug stuff to get the
+		// current call trace
+		CallTraceElement[] stack;
+		if ("true".equals(System.getProperty("cc.squirreljme.isruntime")))
+			stack = DebugAccess.callTrace();
+		
+		// Use something that works in hosted Java SE environment
+		else
+			stack = SystemCall.EASY.throwableGetStack(__t);
+		
 		// Get the first one which is not in this class
-		for (CallTraceElement e : SystemCall.EASY.throwableGetStack(__t))
+		for (CallTraceElement e : stack)
 		{
 			String cn = e.className();
 			if (cn == null)
-				cn = "";
+				cn = "<unknown>";
 			
 			if (!cn.startsWith("todo."))
 				return e;
