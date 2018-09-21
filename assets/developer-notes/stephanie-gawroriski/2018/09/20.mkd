@@ -3,3 +3,16 @@
 ## 1:04
 
 I think a stack trace being printed in the VM scope will be helpful!
+
+## 23:07
+
+I am right now adding blank frames so I can invoke in the VM but still read
+return values.
+
+## 23:27
+
+I need to detect and stop when double TODOs happen because that is bad!
+
+## 23:29
+
+So detecting double TODO trips, I stop and fatal stack print that.
