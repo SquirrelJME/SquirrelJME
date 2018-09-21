@@ -12,22 +12,23 @@ package net.multiphasicapps.classfile;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import java.util.Arrays;
 
 /**
- * This class represents a lookup switch which is used to lookup indexes as a
- * jump table.
+ * This represents a table switch.
  *
  * @since 2018/09/20
  */
-public final class LookupSwitch
+public final class TableSwitch
 	implements IntMatchingJumpTable
 {
-	/** The default target. */
+	/** The default jump address. */
 	protected final InstructionJumpTarget defaultjump;
 	
-	/** The keys. */
-	private final int[] _keys;
+	/** The low index. */
+	protected final int low;
+	
+	/** The high index. */
+	protected final int high;
 	
 	/** The jump targets. */
 	private final InstructionJumpTarget[] _jumps;
@@ -36,52 +37,40 @@ public final class LookupSwitch
 	private Reference<String> _string;
 	
 	/**
-	 * Initializes the lookup switch.
+	 * Initializes the table switch.
 	 *
-	 * @param __def The default address if no values match at all.
-	 * @param __keys The keys to check, must be sorted.
-	 * @param __jumps The jump targets.
-	 * @throws IllegalArgumentException If the key and jump table length are
-	 * difference lengths.
-	 * @throws InvalidClassFormatException If the key table is not sorted.
+	 * @param __def The default address.
+	 * @param __lo The low address.
+	 * @param __hi The high address.
+	 * @param __jumps The jump offsets.
+	 * @throws InvalidClassFormatException If the high is less than or equal
+	 * to the low.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/20
 	 */
-	public LookupSwitch(InstructionJumpTarget __def,
-		int[] __keys, InstructionJumpTarget[] __jumps)
-		throws IllegalArgumentException, InvalidClassFormatException,
-			NullPointerException
+	public TableSwitch(InstructionJumpTarget __def, int __lo, int __hi,
+		InstructionJumpTarget[] __jumps)
+		throws InvalidClassFormatException, NullPointerException
 	{
-		if (__def == null || __keys == null || __jumps == null)
+		if (__def == null || __jumps == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JC2f Key and jump table for lookup switch
-		// table is of different lengths.}
-		if (__keys.length != __jumps.length)
-			throw new IllegalArgumentException("JC2f");
+		// {@squirreljme.error JC2i Table switch high index is less than or
+		// equal to the low index. (The low index; The high index)}
+		if (__hi <= __lo)
+			throw new InvalidClassFormatException(String.format("JC2i %d %d",
+				__lo, __hi));
 		
-		// Defensive copy
-		__keys = __keys.clone();
+		// Check for null
 		__jumps = __jumps.clone();
-		
-		// Check for sorted
-		long last = ((long)Integer.MIN_VALUE) - 1;
-		for (int i = 0, n = __keys.length; i < n; i++)
-		{
-			// {@squirreljme.error JC2g Lookup switch key is not in sorted
-			// order. (The index; The current key; The last key)}
-			int k = __keys[i];
-			if (k < last)
-				throw new InvalidClassFormatException(
-					String.format("JC2g %d %d %d", i, k, last));
-			last = k;
-			
-			if (__jumps[i] == null)
+		for (InstructionJumpTarget j : __jumps)
+			if (j == null)
 				throw new NullPointerException("NARG");
-		}
 		
+		// Set
+		this.low = __lo;
+		this.high = __hi;
 		this.defaultjump = __def;
-		this._keys = __keys;
 		this._jumps = __jumps;
 	}
 	
@@ -92,15 +81,13 @@ public final class LookupSwitch
 	@Override
 	public final InstructionJumpTarget match(int __k)
 	{
-		// Use binary search since all entries are sorted
-		int dx = Arrays.binarySearch(this._keys, __k);
+		// Use default if out of bounds
+		int low = this.low,
+			high = this.high;
+		if (__k < low || __k > high)
+			return this.defaultjump;
 		
-		// Match was found, use that result
-		if (dx >= 0)
-			return this._jumps[dx];
-		
-		// Not found
-		return this.defaultjump;
+		return this._jumps[__k - low];
 	}
 	
 	/**
@@ -120,13 +107,12 @@ public final class LookupSwitch
 			sb.append(this.defaultjump);
 			
 			// Add all matches and their targets
-			int[] keys = this._keys;
 			InstructionJumpTarget[] jumps = this._jumps;
-			for (int i = 0, n = keys.length; i < n; i++)
+			for (int i = 0, n = jumps.length, v = this.low; i < n; i++, v++)
 			{
 				sb.append(", ");
 				
-				sb.append(keys[i]);
+				sb.append(v);
 				sb.append('=');
 				sb.append(jumps[i]);
 			}
