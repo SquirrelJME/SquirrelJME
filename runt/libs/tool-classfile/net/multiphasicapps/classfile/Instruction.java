@@ -401,6 +401,43 @@ public final class Instruction
 				}
 				args = new Object[]{pt};
 				break;
+			
+				// Lookup switch lookup table
+			case InstructionIndex.LOOKUPSWITCH:
+				{
+					// Determine the real address of the table
+					int pa = ((aa + 4) & (~3));
+					
+					// Read in the default
+					InstructionJumpTarget def = new InstructionJumpTarget(
+						__a + Instruction.__readInt(__code, pa));
+					
+					// {@squirreljme.error JC2h Pair count for lookup switch
+					// is negative. (The opcode; The address; The after padded
+					// address; The read length)}
+					int n = Instruction.__readInt(__code, pa + 4);
+					if (n < 0)
+						throw new InvalidClassFormatException(String.format(
+							"JC2h %d %d %d %d", op, __a, pa, n));
+					
+					// Setup
+					int[] keys = new int[n];
+					InstructionJumpTarget[] jumps =
+						new InstructionJumpTarget[n];
+					
+					// Load in tables
+					for (int i = 0, ra = pa + 8; i < n; i++, ra += 8)
+					{
+						keys[i] = Instruction.__readInt(__code, ra);
+						jumps[i] = new InstructionJumpTarget(
+							__a + Instruction.__readInt(__code, ra + 4));
+					}
+					
+					// Setup instruction properties
+					naturalflow = true;
+					args = new Object[]{new LookupSwitch(def, keys, jumps)};
+				}
+				break;
 				
 				// {@squirreljme.error JC10 The operation at the specified
 				// address is not supported yet. (The operation; The name of

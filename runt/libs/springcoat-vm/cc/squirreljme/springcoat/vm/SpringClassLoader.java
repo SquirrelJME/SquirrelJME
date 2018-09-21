@@ -114,7 +114,18 @@ public final class SpringClassLoader
 			todo.DEBUG.note("Loading class `%s`...", __cn);
 			
 			// Load class file for this class
-			ClassFile cf = this.loadClassFile(__cn);
+			ClassFile cf;
+			try
+			{
+				cf = this.loadClassFile(__cn);
+			}
+			catch (InvalidClassFormatException e)
+			{
+				// {@squirreljme.error BK1q Could not load class. (The class
+				// to load)}
+				throw new InvalidClassFormatException(
+					String.format("BK1q %s", __cn), e);
+			}
 			
 			// Load the super class
 			ClassName supername = cf.superName();
