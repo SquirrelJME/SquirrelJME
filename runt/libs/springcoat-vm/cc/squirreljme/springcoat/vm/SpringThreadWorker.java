@@ -127,13 +127,16 @@ public final class SpringThreadWorker
 			SpringObject sso = (SpringObject)__in;
 			
 			// Depends on the class type
-			ClassName type = sso.type().name();
+			SpringClass sscl = sso.type();
+			ClassName type = sscl.name();
 			switch (type.toString())
 			{
 				case "java/lang/String":
-					{
-						throw new todo.TODO();
-					}
+					return new String(this.<char[]>asNativeObject(
+						char[].class, this.invokeMethod(false,
+							new ClassName("java/lang/String"),
+							new MethodNameAndType("toCharArray", "()[C"),
+							sso)));
 				
 					// {@squirreljme.error BK1s Do not know how to convert the
 					// given virtual machine class to a native machine object.
@@ -463,6 +466,60 @@ public final class SpringThreadWorker
 		
 		// Otherwise lookup according to the method
 		return this.machine.classLoader().loadClass(frame.method().inClass());
+	}
+	
+	/**
+	 * Invokes the given method.
+	 *
+	 * @param __static Is the method static?
+	 * @param __cl The class name.
+	 * @param __nat The name and type.
+	 * @param __args The arguments.
+	 * @return The return value, if any.
+	 * @since 2018/09/20
+	 */
+	public final Object invokeMethod(boolean __static, ClassName __cl,
+		MethodNameAndType __nat, Object... __args)
+		throws NullPointerException
+	{
+		if (__cl == null || __nat == null || __args == null)
+			throw new NullPointerException("NARG");
+		
+		// Lookup class
+		SpringClass cl = this.resolveClass(__cl);
+		
+		// Lookup method
+		SpringMethod method = cl.lookupMethod(__static, __nat);
+		
+		// Add blank frame for protection, this is used to hold the return
+		// value on the stack
+		SpringThread thread = this.thread;
+		SpringThread.Frame blank = thread.enterBlankFrame();
+		
+		// Enter the method we really want to execute
+		int framelimit = thread.numFrames();
+		SpringThread.Frame execframe = thread.enterFrame(method, __args);
+		
+		// Execute this method
+		this.run(framelimit);
+		
+		// {@squirreljme.error BK1t Current frame is not our blank frame.}
+		SpringThread.Frame currentframe = thread.currentFrame();
+		if (currentframe != blank)
+			throw new SpringVirtualMachineException("BK1t");
+		
+		// Read return value from the blank frame
+		Object rv;
+		if (!__nat.type().hasReturnValue())
+			rv = null;
+		else
+			rv = blank.popFromStack();
+		
+		// Pop the blank frame, we do not need it anymore
+		thread.popFrame();
+		
+		// Return the popped value
+		return rv;
 	}
 	
 	/**
