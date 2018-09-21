@@ -348,7 +348,13 @@ public final class String
 		if (an != bn)
 			return false;
 		
-		throw new todo.TODO();
+		// Compare individual characters
+		for (int i = 0; i < an; i++)
+			if (sa.charAt(i) != sb.charAt(i))
+				return false;
+		
+		// Would be a match!
+		return true;
 	}
 	
 	public boolean equalsIgnoreCase(String __a)
