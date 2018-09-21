@@ -25,6 +25,9 @@ import java.io.PrintStream;
 public class TODO
 	extends Error
 {
+	/** Used to detect TODOs recursively being called. */
+	private static volatile boolean _DOUBLE_TRIP;
+	
 	/**
 	 * Initializes the exception, prints the trace, and exits the program.
 	 *
@@ -32,6 +35,12 @@ public class TODO
 	 */
 	public TODO()
 	{
+		// Detect TODOs tripping multiple times and fail
+		boolean doubletripped = TODO._DOUBLE_TRIP;
+		if (doubletripped)
+			DebugAccess.fatalTodoReport(DebugAccess.rawCallTrace());
+		TODO._DOUBLE_TRIP = true;
+		
 		// Print a starting banner, but only if the error stream exists
 		PrintStream ps = System.err;
 		if (ps != null)
