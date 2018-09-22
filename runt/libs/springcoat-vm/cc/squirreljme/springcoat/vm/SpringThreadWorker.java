@@ -1626,6 +1626,21 @@ public final class SpringThreadWorker
 						ConstantValue.class).boxedValue());
 					break;
 					
+					// Load integer from local variable
+				case InstructionIndex.LLOAD:
+					frame.loadToStack(Long.class,
+						inst.<Integer>argument(0, Integer.class));
+					break;
+					
+					// Load integer from local variable
+				case InstructionIndex.LLOAD_0:
+				case InstructionIndex.LLOAD_1:
+				case InstructionIndex.LLOAD_2:
+				case InstructionIndex.LLOAD_3:
+					frame.loadToStack(Long.class,
+						opid - InstructionIndex.LLOAD_0);
+					break;
+					
 					// OR long
 				case InstructionIndex.LOR:
 					{
