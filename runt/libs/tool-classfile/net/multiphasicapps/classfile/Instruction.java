@@ -374,6 +374,26 @@ public final class Instruction
 				args = new Object[]{cvalue};
 				break;
 				
+				// Load wide constant value
+			case InstructionIndex.LDC2_W:
+				naturalflow = true;
+				
+				// Just will be a constant value type
+				cvalue = __pool.<ConstantValue>require(
+					ConstantValue.class,
+					Instruction.__readUnsignedShort(__code, argbase));
+				
+				// {@squirreljme.error JC2j Cannot load a constant value which
+				// is not of a wide type. (The operation; The address;
+				// The constant value)}
+				if (!cvalue.type().isWide())
+					throw new InvalidClassFormatException(String.format(
+						"JC2j %d %d %s", op, __a, cvalue));
+				
+				// Just use this value
+				args = new Object[]{cvalue};
+				break;
+				
 				// Allocate array of primitive type
 			case InstructionIndex.NEWARRAY:
 				naturalflow = true;
