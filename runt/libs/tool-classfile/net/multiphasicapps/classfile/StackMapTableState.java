@@ -216,7 +216,7 @@ public final class StackMapTableState
 				// not match the expected type following a wide type. (The wide
 				// type; The expected type; The actual type)}
 				JavaType t = w.topType();
-				if (!a.equals(t))
+				if (!t.equals(a))
 					throw new InvalidClassFormatException(
 						String.format("JC1o %s %s %s", w, t, a));
 				
