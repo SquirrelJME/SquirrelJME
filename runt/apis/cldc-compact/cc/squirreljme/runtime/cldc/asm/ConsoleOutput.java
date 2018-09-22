@@ -25,6 +25,14 @@ public final class ConsoleOutput
 	public static final int ERROR =
 		2;
 	
+	/** End of file. */
+	public static final int ERROR_EOF =
+		-1;
+	
+	/** Invalid file descriptor. */
+	public static final int ERROR_INVALIDFD =
+		-2;
+	
 	/**
 	 * Not used.
 	 *
