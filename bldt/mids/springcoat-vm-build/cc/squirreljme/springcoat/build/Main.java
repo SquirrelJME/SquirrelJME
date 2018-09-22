@@ -80,7 +80,8 @@ public class Main
 		SpringClassLoader classloader = new SpringClassLoader(libs);
 		
 		// Initialize the virtual machine with our launch ID
-		SpringMachine machine = new SpringMachine(classloader, launchid);
+		SpringMachine machine = new SpringMachine(classloader, launchid,
+			args.<String>toArray(new String[args.size()]));
 		
 		// Run the VM until it terminates
 		try
