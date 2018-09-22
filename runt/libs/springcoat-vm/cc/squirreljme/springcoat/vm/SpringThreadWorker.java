@@ -1626,6 +1626,15 @@ public final class SpringThreadWorker
 						ConstantValue.class).boxedValue());
 					break;
 					
+					// OR long
+				case InstructionIndex.LOR:
+					{
+						long b = frame.<Long>popFromStack(Long.class),
+							a = frame.<Long>popFromStack(Long.class);
+						frame.pushToStack(a | b);
+					}
+					break;
+					
 					// Lookup in a jump table
 				case InstructionIndex.LOOKUPSWITCH:
 				case InstructionIndex.TABLESWITCH:
