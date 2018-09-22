@@ -1588,6 +1588,15 @@ public final class SpringThreadWorker
 						frame.pushToStack(a - b);
 					}
 					break;
+				
+					// And long
+				case InstructionIndex.LAND:
+					{
+						long b = frame.<Long>popFromStack(Long.class),
+							a = frame.<Long>popFromStack(Long.class);
+						frame.pushToStack(a & b);
+					}
+					break;
 					
 					// Load from constant pool, push to the stack
 				case InstructionIndex.LDC:
