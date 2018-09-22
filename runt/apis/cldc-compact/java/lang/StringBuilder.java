@@ -373,6 +373,11 @@ public final class StringBuilder
 	public StringBuilder insert(int __dx, CharSequence __v, int __o, int __l)
 		throws IndexOutOfBoundsException
 	{
+		// {@squirreljme.error ZZ1d Cannot insert sequence at a negative
+		// index.}
+		if (__dx < 0)
+			throw new IndexOutOfBoundsException("ZZ1d");
+		
 		// Print null?
 		if (__v == null)
 			__v = "null";
@@ -381,29 +386,46 @@ public final class StringBuilder
 		if (__o < 0 || __l < 0 || (__o + __l) > __v.length())
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		throw new todo.TODO();
-		
-		/*
 		// Get buffer properties
 		char[] buffer = this._buffer;
 		int limit = buffer.length,
-			at = this._at;
+			at = this._at,
+			capacity = buffer.length;
 		
-		// Resize the buffer if the string cannot fit
-		if (at + __l > limit)
+		// {@squirreljme.error ZZ1e The index of insertion exceeds the
+		// length of the current string. (The insertion index; The string
+		// length)}
+		if (__dx > at)
+			throw new IndexOutOfBoundsException(String.format("ZZ1e %d %d",
+				__dx, at));
+		
+		// Need to resize the buffer to fit this?
+		if (__dx + __l > capacity)
 		{
-			throw new todo.TODO();
+			int newcapacity = (__dx + __l) + StringBuilder._DEFAULT_CAPACITY;
+			
+			// Copy characters over
+			char[] extra = new char[newcapacity];
+			for (int i = 0; i < at; i++)
+				extra[i] = buffer[i];
+			
+			this._buffer = (buffer = extra);
+			capacity = newcapacity;
 		}
 		
-		// Store data
-		for (int i = __o, o = at, endi = i + __l; i < endi; i++, o++)
-			buffer[o] = __cs.charAt(i);
+		// First move all characters on the right to the end so that this can
+		// properly fit
+		for (int i = at - 1, o = i + __l; i >= __dx; i--, o--)
+			buffer[o] = buffer[i];
 		
-		// Set new length
+		// Place input characters at this point
+		for (int i = __dx, s = __o, se = (__o + __l); s < se; i++, s++)
+			buffer[i] = __v.charAt(s);
+		
+		// Set new size
 		this._at = at + __l;
 		
 		return this;
-		*/
 	}
 	
 	public StringBuilder insert(int __a, boolean __b)
