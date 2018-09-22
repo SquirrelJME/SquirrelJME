@@ -341,7 +341,11 @@ public class PrintStream
 	 */
 	public void println(String __v)
 	{
-		throw new todo.TODO();
+		synchronized (this)
+		{
+			this.print(__v);
+			this.println();
+		}
 	}
 	
 	public void println(Object __a)
