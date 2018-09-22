@@ -10,27 +10,93 @@
 
 package java.lang;
 
+/**
+ * This is a string .
+ *
+ * This class is not thread safe, for that use {@link StringBuffer} instead.
+ *
+ * The default capacity of this builder is 16 characters.
+ *
+ * @since 2018/09/22
+ */
 public final class StringBuilder
-	implements CharSequence
+	implements Appendable, CharSequence
 {
+	/** Default capacity of the internal array. */
+	private static final int _DEFAULT_CAPACITY =
+		16;
+	
+	/** The internal buffer for storing characters. */
+	private char[] _buffer;
+	
+	/** The characters which are in the buffer. */
+	private int _at;
+	
+	/**
+	 * Initializes with the default capacity.
+	 *
+	 * @since 2018/09/22
+	 */
 	public StringBuilder()
 	{
-		throw new todo.TODO();
+		this(StringBuilder._DEFAULT_CAPACITY);
 	}
 	
-	public StringBuilder(int __a)
+	/**
+	 * Initailizes with the given capacity.
+	 *
+	 * @param __c The initial capacity.
+	 * @throws NegativeArraySizeException If the capacity is negative.
+	 * @since 2018/09/22
+	 */
+	public StringBuilder(int __c)
+		throws NegativeArraySizeException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error ZZ1c The initial capacity cannot be negative.
+		// (The initial capacity)}
+		if (__c < 0)
+			throw new NegativeArraySizeException(
+				String.format("ZZ1c %d", __c));
+		
+		// Initialize buffer
+		this._buffer = new char[__c];
 	}
 	
-	public StringBuilder(String __a)
+	/**
+	 * Initializes with the initial characters given by the input sequence,
+	 * the internal buffer is the default capacity plus the input string
+	 * length.
+	 *
+	 * @param __s The characters to copy.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/22
+	 */
+	public StringBuilder(String __s)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		this((CharSequence)__s);
 	}
 	
-	public StringBuilder(CharSequence __a)
+	/**
+	 * Initializes with the initial characters given by the input sequence,
+	 * the internal buffer is the default capacity plus the input string
+	 * length.
+	 *
+	 * @param __s The characters to copy.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/22
+	 */
+	public StringBuilder(CharSequence __cs)
 	{
-		throw new todo.TODO();
+		if (__cs == null)
+			throw new NullPointerException("NARG");
+		
+		// Initialize buffer with the default and the input sequence length
+		this._buffer = new char[StringBuilder._DEFAULT_CAPACITY +
+			__cs.length()];
+		
+		// Just append the sequence since the code is the same
+		this.append(__cs);
 	}
 	
 	public StringBuilder append(Object __a)
@@ -38,24 +104,84 @@ public final class StringBuilder
 		throw new todo.TODO();
 	}
 	
-	public StringBuilder append(String __a)
+	/**
+	 * Appends the given string.
+	 *
+	 * @param __s The string to append.
+	 * @return {@code this}.
+	 * @since 2018/09/22 
+	 */
+	public StringBuilder append(String __s)
 	{
-		throw new todo.TODO();
+		return this.append((CharSequence)__s);
 	}
 	
-	public StringBuilder append(StringBuffer __a)
+	/**
+	 * Appends the given string buffer.
+	 *
+	 * @param __s The string buffer to append.
+	 * @return {@code this}.
+	 * @since 2018/09/22 
+	 */
+	public StringBuilder append(StringBuffer __s)
 	{
-		throw new todo.TODO();
+		// Is null, cannot lock on it so just forward
+		if (__s == null)
+			return this.append((CharSequence)null);
+		
+		// Lock on the buffer because this is thread safe
+		synchronized (__s)
+		{
+			return this.append((CharSequence)__s);
+		}
 	}
 	
-	public StringBuilder append(CharSequence __a)
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/09/22
+	 */
+	@Override
+	public StringBuilder append(CharSequence __cs)
 	{
-		throw new todo.TODO();
+		// Forward call
+		return this.append(__cs, 0, __cs.length());
 	}
 	
-	public StringBuilder append(CharSequence __a, int __b, int __c)
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/09/22
+	 */
+	@Override
+	public StringBuilder append(CharSequence __cs, int __o, int __l)
+		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		// Switch to null
+		if (__cs == null)
+			__cs = "null";
+		
+		// Check bounds
+		if (__o < 0 || __l < 0 || (__o + __l) > __cs.length())
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Get buffer properties
+		char[] buffer = this._buffer;
+		int limit = buffer.length,
+			at = this._at;
+		
+		// Resize the buffer if the string cannot fit
+		if (at + __l > limit)
+		{
+			throw new todo.TODO();
+		}
+		
+		// Store data
+		for (int i = __o, o = at, endi = i + __l; i < endi; i++, o++)
+			buffer[o] = __cs.charAt(i);
+		
+		// Set new length
+		this._at = at + __l;
+		
+		return this;
 	}
 	
 	public StringBuilder append(char[] __a)
@@ -73,6 +199,11 @@ public final class StringBuilder
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/09/22
+	 */
+	@Override
 	public StringBuilder append(char __a)
 	{
 		throw new todo.TODO();
@@ -249,9 +380,14 @@ public final class StringBuilder
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/09/22
+	 */
+	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		return new String(this._buffer, 0, this._at);
 	}
 	
 	public void trimToSize()
