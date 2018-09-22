@@ -322,9 +322,19 @@ public final class StringBuilder
 		throw new todo.TODO();
 	}
 	
-	public StringBuilder insert(int __a, String __b)
+	/**
+	 * Inserts the given value at the given position.
+	 *
+	 * @param __dx The index to insert at.
+	 * @param __v The value to insert.
+	 * @return {@code this}.
+	 * @throws StringIndexOutOfBoundsException If the index is out of bounds.
+	 * @since 2018/09/22
+	 */
+	public StringBuilder insert(int __dx, String __v)
+		throws StringIndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		return this.insert(__dx, (CharSequence)__v);
 	}
 	
 	public StringBuilder insert(int __a, char[] __b)
@@ -332,25 +342,48 @@ public final class StringBuilder
 		throw new todo.TODO();
 	}
 	
-	public StringBuilder insert(int __a, CharSequence __b)
+	/**
+	 * Inserts the given value at the given position.
+	 *
+	 * @param __dx The index to insert at.
+	 * @param __v The value to insert.
+	 * @return {@code this}.
+	 * @throws IndexOutOfBoundsException If the index is out of bounds.
+	 * @since 2018/09/22
+	 */
+	public StringBuilder insert(int __dx, CharSequence __v)
+		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		// Print null instead
+		if (__v == null)
+			__v = "null";
+		
+		return this.insert(__dx, __v, 0, __v.length());
 	}
 	
-	public StringBuilder insert(int __a, CharSequence __b, int __c,
-		int __d)
+	/**
+	 * Inserts the given value at the given position.
+	 *
+	 * @param __dx The index to insert at.
+	 * @param __v The value to insert.
+	 * @return {@code this}.
+	 * @throws IndexOutOfBoundsException If the index is out of bounds.
+	 * @since 2018/09/22
+	 */
+	public StringBuilder insert(int __dx, CharSequence __v, int __o, int __l)
+		throws IndexOutOfBoundsException
 	{
+		// Print null?
+		if (__v == null)
+			__v = "null";
+		
+		// Check bounds
+		if (__o < 0 || __l < 0 || (__o + __l) > __v.length())
+			throw new IndexOutOfBoundsException("IOOB");
+		
 		throw new todo.TODO();
 		
 		/*
-		// Switch to null
-		if (__cs == null)
-			__cs = "null";
-		
-		// Check bounds
-		if (__o < 0 || __l < 0 || (__o + __l) > __cs.length())
-			throw new IndexOutOfBoundsException("IOOB");
-		
 		// Get buffer properties
 		char[] buffer = this._buffer;
 		int limit = buffer.length,
