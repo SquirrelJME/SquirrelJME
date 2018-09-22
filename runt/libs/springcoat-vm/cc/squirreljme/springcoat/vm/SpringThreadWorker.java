@@ -1618,6 +1618,15 @@ public final class SpringThreadWorker
 						frame.pushToStack(a & b);
 					}
 					break;
+				
+					// Compare long
+				case InstructionIndex.LCMP:
+					{
+						long b = frame.<Long>popFromStack(Long.class),
+							a = frame.<Long>popFromStack(Long.class);
+						frame.pushToStack((a < b ? -1 : (a > b ? 1 : 0)));
+					}
+					break;
 					
 					// Load from constant pool, push to the stack
 				case InstructionIndex.LDC:
