@@ -59,6 +59,9 @@ public final class SpringMachine
 	private final Map<ClassName, SpringObject> _classobjects =
 		new HashMap<>();
 	
+	/** Main entry point arguments. */
+	private final String[] _args;
+	
 	/** The next thread ID to use. */
 	private volatile int _nextthreadid;
 	
@@ -68,10 +71,12 @@ public final class SpringMachine
 	 * @param __cl The class loader.
 	 * @param __bootdx The entry point which should be booted when the VM
 	 * runs.
+	 * @param __args Main entry point arguments.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/03
 	 */
-	public SpringMachine(SpringClassLoader __cl, int __bootdx)
+	public SpringMachine(SpringClassLoader __cl, int __bootdx,
+		String... __args)
 		throws NullPointerException
 	{
 		if (__cl == null)
@@ -79,6 +84,7 @@ public final class SpringMachine
 		
 		this.classloader = __cl;
 		this.bootdx = __bootdx;
+		this._args = (__args == null ? new String[0] : __args.clone());
 	}
 	
 	/**
@@ -227,7 +233,7 @@ public final class SpringMachine
 				new MethodNameAndType("startApp", "()V"));
 		else
 			mainmethod = entrycl.lookupMethod(true,
-				new MethodNameAndType("main", "(Ljava/lang/String;)V"));
+				new MethodNameAndType("main", "([Ljava/lang/String;)V"));
 		
 		// If this is a midlet, we are going to need to initialize a new
 		// instance of our MIDlet and then push that to the current frame's
@@ -256,8 +262,19 @@ public final class SpringMachine
 		// way they are passed to the main entry point
 		else
 		{
-			if (true)
-				throw new todo.TODO();
+			String[] inargs = this._args;
+			int inlen = inargs.length;
+			
+			// Setup array
+			SpringArrayObject outargs = worker.allocateArray(
+				worker.resolveClass(new ClassName("java/lang/String")), inlen);
+			
+			// Initialize the argument array
+			for (int i = 0; i < inlen; i++)
+				outargs.set(i, worker.asVMObject(inargs[i]));
+			
+			// Entry arguments are just this array
+			entryargs = new Object[]{outargs};
 		}
 		
 		// Enter the frame for that method using the arguments we passed (in
