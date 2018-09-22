@@ -202,19 +202,19 @@ public final class MethodDescriptor
 	{
 		// Handle all arguments now
 		int n = argumentCount();
-		JavaType[] rv = new JavaType[n];
-		for (int i = 0, o = 0; i < n; i++)
+		List<JavaType> rv = new ArrayList<>(n * 2);
+		for (int i = 0; i < n; i++)
 		{
 			FieldDescriptor a;
 			JavaType j;
-			rv[o++] = (j = new JavaType(a = argument(i)));
+			rv.add(j = new JavaType(a = argument(i)));
 			
 			// Add top of long/double but with unique distinct types
 			if (j.isWide())
-				rv[o++] = j.topType();
+				rv.add(j.topType());
 		}
 		
-		return rv;
+		return rv.<JavaType>toArray(new JavaType[rv.size()]);
 	}
 	
 	/**
