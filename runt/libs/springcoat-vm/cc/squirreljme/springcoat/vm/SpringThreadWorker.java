@@ -1673,6 +1673,21 @@ public final class SpringThreadWorker
 					}
 					break;
 					
+					// Store long to local variable
+				case InstructionIndex.LSTORE:
+					frame.storeLocal(inst.<Integer>argument(0, Integer.class),
+						frame.<Long>popFromStack(Long.class));
+					break;
+					
+					// Store long to local variable
+				case InstructionIndex.LSTORE_0:
+				case InstructionIndex.LSTORE_1:
+				case InstructionIndex.LSTORE_2:
+				case InstructionIndex.LSTORE_3:
+					frame.storeLocal(opid - InstructionIndex.LSTORE_0,
+						frame.<Long>popFromStack(Long.class));
+					break;
+					
 					// Enter monitor
 				case InstructionIndex.MONITORENTER:
 					frame.<SpringObject>popFromStack(SpringObject.class).
