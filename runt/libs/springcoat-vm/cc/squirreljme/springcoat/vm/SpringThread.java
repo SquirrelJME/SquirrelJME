@@ -421,11 +421,13 @@ public final class SpringThread
 			
 			// {@squirreljme.error BK0b Cannot push local variable to the stack
 			// because it of the incorrect type. (The varible to push; The
-			// index to load from; The expected class)}
+			// index to load from; The expected class; The value to push;
+			// The type of value to push)}
 			Object pushy = locals[__dx];
 			if (!__cl.isInstance(pushy))
 				throw new SpringVirtualMachineException(String.format(
-					"BK0b %s %d %s", pushy, __dx, __cl));
+					"BK0b %s %d %s %s %s", pushy, __dx, __cl, pushy,
+					(pushy == null ? "null" : pushy.getClass())));
 			
 			// Just copy to the stack
 			this.pushToStack(pushy);
