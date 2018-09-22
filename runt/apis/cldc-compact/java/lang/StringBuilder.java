@@ -99,40 +99,47 @@ public final class StringBuilder
 		this.append(__cs);
 	}
 	
-	public StringBuilder append(Object __a)
+	/**
+	 * Appends the value to the string.
+	 *
+	 * @param __v The value to append.
+	 * @return {@code this}.
+	 * @since 2018/09/22
+	 */
+	public StringBuilder append(Object __v)
 	{
-		throw new todo.TODO();
+		return this.insert(this._at, __v);
 	}
 	
 	/**
 	 * Appends the given string.
 	 *
-	 * @param __s The string to append.
+	 * @param __v The string to append.
 	 * @return {@code this}.
 	 * @since 2018/09/22 
 	 */
-	public StringBuilder append(String __s)
+	public StringBuilder append(String __v)
 	{
-		return this.append((CharSequence)__s);
+		return this.insert(this._at, __v);
 	}
 	
 	/**
 	 * Appends the given string buffer.
 	 *
-	 * @param __s The string buffer to append.
+	 * @param __v The string buffer to append.
 	 * @return {@code this}.
 	 * @since 2018/09/22 
 	 */
-	public StringBuilder append(StringBuffer __s)
+	public StringBuilder append(StringBuffer __v)
 	{
 		// Is null, cannot lock on it so just forward
-		if (__s == null)
-			return this.append((CharSequence)null);
+		if (__v == null)
+			return this.insert(this._at, (CharSequence)null);
 		
 		// Lock on the buffer because this is thread safe
-		synchronized (__s)
+		synchronized (__v)
 		{
-			return this.append((CharSequence)__s);
+			return this.insert(this._at, (CharSequence)__v);
 		}
 	}
 	
@@ -141,10 +148,9 @@ public final class StringBuilder
 	 * @since 2018/09/22
 	 */
 	@Override
-	public StringBuilder append(CharSequence __cs)
+	public StringBuilder append(CharSequence __v)
 	{
-		// Forward call
-		return this.append(__cs, 0, __cs.length());
+		return this.insert(this._at, __v);
 	}
 	
 	/**
@@ -152,51 +158,54 @@ public final class StringBuilder
 	 * @since 2018/09/22
 	 */
 	@Override
-	public StringBuilder append(CharSequence __cs, int __o, int __l)
+	public StringBuilder append(CharSequence __v, int __o, int __l)
 		throws IndexOutOfBoundsException
 	{
-		// Switch to null
-		if (__cs == null)
-			__cs = "null";
-		
-		// Check bounds
-		if (__o < 0 || __l < 0 || (__o + __l) > __cs.length())
-			throw new IndexOutOfBoundsException("IOOB");
-		
-		// Get buffer properties
-		char[] buffer = this._buffer;
-		int limit = buffer.length,
-			at = this._at;
-		
-		// Resize the buffer if the string cannot fit
-		if (at + __l > limit)
-		{
-			throw new todo.TODO();
-		}
-		
-		// Store data
-		for (int i = __o, o = at, endi = i + __l; i < endi; i++, o++)
-			buffer[o] = __cs.charAt(i);
-		
-		// Set new length
-		this._at = at + __l;
-		
-		return this;
+		return this.insert(this._at, __v, __o, __l);
 	}
 	
-	public StringBuilder append(char[] __a)
+	/**
+	 * Appends the given characters to the string.
+	 *
+	 * @param __c The characters to append.
+	 * @return {@code this}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/22
+	 */
+	public StringBuilder append(char[] __c)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		return this.insert(this._at, __c);
 	}
 	
-	public StringBuilder append(char[] __a, int __b, int __c)
+	/**
+	 * Appends the given characters to the string.
+	 *
+	 * @param __c The characters to append.
+	 * @param __o The offset.
+	 * @param __l The length.
+	 * @return {@code this}.
+	 * @throws IndexOutOfBoundsException If the offset and/or length are
+	 * negative or exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/22
+	 */
+	public StringBuilder append(char[] __c, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
 	{
-		throw new todo.TODO();
+		return this.insert(this._at, __c, __o, __l);
 	}
 	
-	public StringBuilder append(boolean __a)
+	/**
+	 * Appends the value to the string.
+	 *
+	 * @param __v The value to append.
+	 * @return {@code this}.
+	 * @since 2018/09/22
+	 */
+	public StringBuilder append(boolean __v)
 	{
-		throw new todo.TODO();
+		return this.insert(this._at, __v);
 	}
 	
 	/**
@@ -204,37 +213,71 @@ public final class StringBuilder
 	 * @since 2018/09/22
 	 */
 	@Override
-	public StringBuilder append(char __a)
+	public StringBuilder append(char __v)
 	{
-		throw new todo.TODO();
+		return this.insert(this._at, __v);
 	}
 	
-	public StringBuilder append(int __a)
+	/**
+	 * Appends the value to the string.
+	 *
+	 * @param __v The value to append.
+	 * @return {@code this}.
+	 * @since 2018/09/22
+	 */
+	public StringBuilder append(int __v)
 	{
-		throw new todo.TODO();
+		return this.insert(this._at, __v);
 	}
 	
-	public StringBuilder append(long __a)
+	/**
+	 * Appends the value to the string.
+	 *
+	 * @param __v The value to append.
+	 * @return {@code this}.
+	 * @since 2018/09/22
+	 */
+	public StringBuilder append(long __v)
 	{
-		throw new todo.TODO();
+		return this.insert(this._at, __v);
 	}
 	
-	public StringBuilder append(float __a)
+	/**
+	 * Appends the value to the string.
+	 *
+	 * @param __v The value to append.
+	 * @return {@code this}.
+	 * @since 2018/09/22
+	 */
+	public StringBuilder append(float __v)
 	{
-		throw new todo.TODO();
+		return this.insert(this._at, __v);
 	}
 	
-	public StringBuilder append(double __a)
+	/**
+	 * Appends the value to the string.
+	 *
+	 * @param __v The value to append.
+	 * @return {@code this}.
+	 * @since 2018/09/22
+	 */
+	public StringBuilder append(double __v)
 	{
-		throw new todo.TODO();
+		return this.insert(this._at, __v);
 	}
 	
+	/**
+	 * Returns the current capacity of the internal buffer.
+	 *
+	 * @return The internal capacity.
+	 * @since 2018/09/22
+	 */
 	public int capacity()
 	{
-		throw new todo.TODO();
+		return this._buffer.length;
 	}
 	
-	public char charAt(int __a)
+	public char charAt(int __dx)
 	{
 		throw new todo.TODO();
 	}
@@ -298,6 +341,36 @@ public final class StringBuilder
 		int __d)
 	{
 		throw new todo.TODO();
+		
+		/*
+		// Switch to null
+		if (__cs == null)
+			__cs = "null";
+		
+		// Check bounds
+		if (__o < 0 || __l < 0 || (__o + __l) > __cs.length())
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Get buffer properties
+		char[] buffer = this._buffer;
+		int limit = buffer.length,
+			at = this._at;
+		
+		// Resize the buffer if the string cannot fit
+		if (at + __l > limit)
+		{
+			throw new todo.TODO();
+		}
+		
+		// Store data
+		for (int i = __o, o = at, endi = i + __l; i < endi; i++, o++)
+			buffer[o] = __cs.charAt(i);
+		
+		// Set new length
+		this._at = at + __l;
+		
+		return this;
+		*/
 	}
 	
 	public StringBuilder insert(int __a, boolean __b)
