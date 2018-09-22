@@ -351,10 +351,12 @@ public final class SpringThreadWorker
 		
 		// A class object, as needed
 		else if (__in instanceof ClassName ||
-			__in instanceof ConstantValueClass)
+			__in instanceof ConstantValueClass ||
+			__in instanceof SpringClass)
 		{
-			ClassName name = ((__in instanceof ClassName) ? (ClassName)__in :
-				((ConstantValueClass)__in).className());
+			ClassName name = ((__in instanceof SpringClass) ?
+				((SpringClass)__in).name() : ((__in instanceof ClassName) ?
+				(ClassName)__in : ((ConstantValueClass)__in).className()));
 			
 			// Get the class object map but lock on the class loader since we
 			// might end up just initializing classes and such
@@ -376,8 +378,9 @@ public final class SpringThreadWorker
 				
 				// Initialize class with special class index
 				rv = this.newInstance(classobj.name(),
-					new MethodDescriptor("(I)V"),
-					resclass.specialIndex());
+					new MethodDescriptor("(ILjava/lang/String;)V"),
+					resclass.specialIndex(),
+					this.asVMObject(name.toString()));
 				
 				// Cache and use it
 				com.put(name, rv);
@@ -677,6 +680,9 @@ public final class SpringThreadWorker
 	/**
 	 * Handles a native action within the VM.
 	 *
+	 * Note that the return value should be a native type, it is translated
+	 * as needed.
+	 *
 	 * @param __func The function to call.
 	 * @param __args The arguments to the function.
 	 * @return The result from the call.
@@ -783,7 +789,16 @@ public final class SpringThreadWorker
 					return rv;
 				}
 				
-				// Check
+				// Get the class object for an object
+			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
+				"classOf:(Ljava/lang/Object;)Ljava/lang/Class;":
+				{
+					// Just use the input class of the type
+					SpringObject so = (SpringObject)__args[0];
+					return so.type();
+				}
+				
+				// Get system property
 			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
 				"systemProperty:(Ljava/lang/String;)Ljava/lang/String;":
 				return System.getProperty(this.<String>asNativeObject(

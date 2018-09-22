@@ -587,6 +587,14 @@ public final class String
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns a string with all characters which match the starting character
+	 * which are then replaced with the replacement character.
+	 *
+	 * @param __a The starting character.
+	 * @param __b The replacement character.
+	 * @since 2018/09/22
+	 */
 	public String replace(char __a, char __b)
 	{
 		// If a character is going to be replaced with itself then no
@@ -594,7 +602,22 @@ public final class String
 		if (__a == __b)
 			return this;
 		
-		throw new todo.TODO();
+		// Get source sequence
+		BasicSequence bs = this._sequence;
+		int n = bs.length();
+		
+		// Copy data into an array with translated characters
+		char[] rv = new char[n];
+		for (int i = 0; i < n; i++)
+		{
+			char c = bs.charAt(i);
+			if (c == __a)
+				c = __b;
+			rv[i] = c;
+		}
+		
+		// Build new string
+		return new String(new CharArraySequence(rv));
 	}
 	
 	/**

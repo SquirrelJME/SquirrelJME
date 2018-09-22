@@ -11,6 +11,7 @@
 package java.lang;
 
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 
 /**
  * This class is the root of all class trees in Java.
@@ -76,7 +77,7 @@ public class Object
 	 */
 	public final Class<?> getClass()
 	{
-		throw new todo.TODO();
+		return ObjectAccess.classOf(this);
 	}
 	
 	/**

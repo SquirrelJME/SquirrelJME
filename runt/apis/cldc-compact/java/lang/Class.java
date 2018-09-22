@@ -11,12 +11,17 @@
 package java.lang;
 
 import java.io.InputStream;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 
 public final class Class<T>
 {
 	/** This is the prefix that is used for assertion checks. */
 	private static final String _ASSERTION_PREFIX =
 		"cc.squirreljme.runtime.noassert.";
+	
+	/** The binary name of this class. */
+	private final String _binaryname;
 	
 	/** Special class reference index. */
 	private final int _specialindex;
@@ -27,15 +32,25 @@ public final class Class<T>
 	/** Is this class being asserted? */
 	private volatile boolean _useassert;
 	
+	/** The display name of the class. */
+	private Reference<String> _name;
+	
 	/**
 	 * This constructor is internally called as needed.
 	 *
 	 * @param __csi Class special index.
+	 * @param __bn The binary name of this class.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/12
 	 */
-	private Class(int __csi)
+	private Class(int __csi, String __bn)
+		throws NullPointerException
 	{
+		if (__bn == null)
+			throw new NullPointerException("NARG");
+		
 		this._specialindex = __csi;
+		this._binaryname = __bn;
 	}
 	
 	/**
@@ -97,9 +112,33 @@ public final class Class<T>
 		return __checkAssertionStatus();
 	}
 	
+	/**
+	 * Returns the name of this class.
+	 *
+	 * @return The name of this class.
+	 * @since 2018/09/22
+	 */
 	public String getName()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._name;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+		{
+			String bn = this._binaryname;
+			
+			// Arrays keep the same format
+			if (bn.startsWith("["))
+				rv = bn;
+			
+			// Otherwise slashes become dots
+			else
+				rv = bn.replace('/', '.');
+			
+			this._name = new WeakReference<>((rv = rv));
+		}
+		
+		return rv;
 	}
 	
 	/**
