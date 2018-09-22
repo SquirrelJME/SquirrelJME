@@ -10,7 +10,9 @@
 
 package cc.squirreljme.springcoat.vm;
 
+import cc.squirreljme.runtime.cldc.asm.ConsoleOutput;
 import cc.squirreljme.runtime.cldc.asm.DebugAccess;
+import java.io.PrintStream;
 import java.util.Formatter;
 import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
@@ -693,6 +695,25 @@ public final class SpringThreadWorker
 		// Depends on the function
 		switch (__func)
 		{
+				// Write to the console
+			case "cc/squirreljme/runtime/cldc/asm/ConsoleOutput::" +
+				"write:(II)I":
+				{
+					int fd = (Integer)__args[0];
+					PrintStream to = (fd == ConsoleOutput.OUTPUT ?
+						System.out : (fd == ConsoleOutput.ERROR ?
+						System.err : null));
+					
+					// Write if it exists
+					if (to != null)
+					{
+						to.write((Integer)__args[1]);
+						return 0;
+					}
+					else
+						return ConsoleOutput.ERROR_INVALIDFD;
+				}
+			
 				// Fatal report of a raw call trace in early TODO code
 			case "cc/squirreljme/runtime/cldc/asm/DebugAccess::" +
 				"fatalTodoReport:([I)V":
