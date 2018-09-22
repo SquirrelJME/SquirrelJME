@@ -2035,6 +2035,16 @@ public final class SpringThreadWorker
 		for (int i = nargs - 1; i >= 0; i--)
 			args[i] = __f.popFromStack();
 		
+		// {@squirreljme.error BK1v Instance object for virtual invoke is
+		// null.}
+		SpringObject onthis = (SpringObject)args[0];
+		if (onthis == null || onthis == SpringNullObject.NULL)
+			throw new SpringNullPointerException("BK1v");
+		
+		// Re-resolve method for this object's class
+		refmethod = onthis.type().lookupMethod(false,
+			ref.memberNameAndType());
+		
 		// Enter frame for static method
 		__t.enterFrame(refmethod, args);
 	}
