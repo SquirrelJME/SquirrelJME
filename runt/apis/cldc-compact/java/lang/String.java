@@ -564,14 +564,64 @@ public final class String
 		throw new todo.TODO();
 	}
 	
-	public boolean startsWith(String __a, int __b)
+	/**
+	 * Checks if this string starts with the other string at the given index.
+	 *
+	 * @param __s The string to check for a starting match.
+	 * @param __sdx The starting index to start checking at.
+	 * @return If this string starts with the given string.
+	 * @throws IndexOutOfBoundsException
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/22
+	 */
+	public boolean startsWith(String __s, int __sdx)
+		throws IndexOutOfBoundsException, NullPointerException
 	{
-		throw new todo.TODO();
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error ZZ1b Starting index in string is out of
+		// bounds. (The starting index)}
+		if (__sdx < 0)
+			throw new IndexOutOfBoundsException(
+				String.format("ZZ1b %d", __sdx));
+		
+		// Need to work on both sequences
+		BasicSequence sa = this._sequence,
+			sb = __s._sequence;
+		
+		// If the second string is empty then it will always match
+		int na = sa.length(),
+			nb = sb.length();
+		if (nb == 0)
+			return true;
+		
+		// The second string cannot even fit from this index so do not bother
+		// checking anything
+		if (__sdx + nb > na)
+			return false;
+		
+		// Find false match
+		for (int ia = __sdx, ib = 0; ib < nb; ia++, ib++)
+			if (sa.charAt(ia) != sb.charAt(ib))
+				return false;
+		
+		// False not found, so it matches
+		return true;
 	}
 	
-	public boolean startsWith(String __a)
+	/**
+	 * Checks if this string starts with the other string.
+	 *
+	 * @param __s The string to check for a starting match.
+	 * @return If this string starts with the given string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/22
+	 */
+	public boolean startsWith(String __s)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		return this.startsWith(__s, 0);
 	}
 	
 	public CharSequence subSequence(int __a, int __b)
