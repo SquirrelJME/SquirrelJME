@@ -346,8 +346,15 @@ public final class SpringThread
 			this._stack = new Object[code.maxStack()];
 			
 			// Copy arguments passed to the method
-			for (int i = 0, n = __args.length; i < n; i++)
-				locals[i] = __args[i];
+			for (int i = 0, n = __args.length, o = 0; i < n; i++)
+			{
+				Object av;
+				locals[o++] = (av = __args[i]);
+				
+				// Add additional top for long/double
+				if (av instanceof Long || av instanceof Double)
+					locals[o++] = SpringStackTop.TOP;
+			}
 			
 			// Store the this object, if needed
 			this.thisobject = (__m.flags().isStatic() ? null :
