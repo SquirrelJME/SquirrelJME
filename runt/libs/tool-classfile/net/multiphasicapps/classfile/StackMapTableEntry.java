@@ -153,6 +153,21 @@ public final class StackMapTableEntry
 	}
 	
 	/**
+	 * Returns the top type for this entry.
+	 *
+	 * @return The top type or {@code null} if there is none.
+	 * @since 2018/09/22
+	 */
+	public final StackMapTableEntry topType()
+	{
+		if (this.equals(StackMapTableEntry.LONG))
+			return StackMapTableEntry.TOP_LONG;
+		else if (this.equals(StackMapTableEntry.DOUBLE))
+			return StackMapTableEntry.TOP_DOUBLE;
+		return null;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/09/02
 	 */

@@ -337,18 +337,32 @@ final class __StackMapParser__
 		if (nl > maxlocals)
 			throw new InvalidClassFormatException(
 				String.format("JC1v %d %d", nl, maxlocals));
-		int i;
+		int i, o;
 		StackMapTableEntry[] nextlocals = this._nextlocals;
-		for (i = 0; i < nl; i++)
-			nextlocals[i] = __loadInfo();
+		for (i = 0, o = 0; i < nl; i++)
+		{
+			StackMapTableEntry e;
+			nextlocals[o++] = (e = __loadInfo());
+			
+			// Add top?
+			if (e.isWide())
+				nextlocals[o++] = e.topType();
+		}
 		for (;i < maxlocals; i++)
 			nextlocals[i] = StackMapTableEntry.NOTHING;
 		
 		// Read in stack variables
 		StackMapTableEntry[] nextstack = this._nextstack;
 		int ns = in.readUnsignedShort();
-		for (i = 0; i < ns; i++)
-			nextstack[i] = __loadInfo();
+		for (i = 0, o = 0; i < ns; i++)
+		{
+			StackMapTableEntry e;
+			nextstack[o++] = (e = __loadInfo());
+			
+			// Add top?
+			if (e.isWide())
+				nextstack[o++] = e.topType();
+		}
 		this._stacktop = ns;
 		
 		return rv;
