@@ -1611,6 +1611,12 @@ public final class SpringThreadWorker
 					}
 					break;
 					
+					// Load long or double from constant pool, to the stack
+				case InstructionIndex.LDC2_W:
+					frame.pushToStack(inst.<ConstantValue>argument(0,
+						ConstantValue.class));
+					break;
+					
 					// Lookup in a jump table
 				case InstructionIndex.LOOKUPSWITCH:
 				case InstructionIndex.TABLESWITCH:
