@@ -450,8 +450,8 @@ final class __StackMapParser__
 			// specified address. (The address offset; Is the address offset
 			// absolute?; The placement address; The type of entry which
 			// was just handled, -1 means it was old-style or initial state.)}
-			throw new InvalidClassFormatException(
-				String.format("JC2k %d %b %d", __au, __abs, naddr, __type), e);
+			throw new InvalidClassFormatException(String.format(
+				"JC2k %d %b %d %d", __au, __abs, naddr, __type), e);
 		}
 		
 		// Set new placement address
