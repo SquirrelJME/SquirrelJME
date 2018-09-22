@@ -12,6 +12,7 @@ package net.multiphasicapps.classfile;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 
 /**
  * This represents a single state within the stack map table which contains
@@ -214,11 +215,12 @@ public final class StackMapTableState
 			{
 				// {@squirreljme.error JC1o The type at the read index does
 				// not match the expected type following a wide type. (The wide
-				// type; The expected type; The actual type)}
+				// type; The expected type; The actual type; The input map)}
 				JavaType t = w.topType();
 				if (!t.equals(a))
 					throw new InvalidClassFormatException(
-						String.format("JC1o %s %s %s", w, t, a));
+						String.format("JC1o %s %s %s %s", w, t, a,
+						Arrays.asList(__t)));
 				
 				// Clear
 				w = null;

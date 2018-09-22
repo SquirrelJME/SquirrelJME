@@ -128,7 +128,7 @@ final class __StackMapParser__
 		this._targets = targets;
 		
 		// Record state
-		__next(0, true);
+		__next(0, true, -1);
 		
 		// Parse the stack map table
 		try (DataInputStream in = xin)
@@ -141,7 +141,7 @@ final class __StackMapParser__
 			
 				// All entries in the table are full frames
 				for (int i = 0; i < ne; i++)
-					__next(__oldStyle(), true);
+					__next(__oldStyle(), true, -1);
 			}
 		
 			// The modern stack map table
@@ -192,7 +192,7 @@ final class __StackMapParser__
 							String.format("JC1r %d", type));
 					
 					// Setup next
-					__next(addr, false);
+					__next(addr, false, type);
 				}
 			}
 		}
@@ -427,17 +427,34 @@ final class __StackMapParser__
 	 *
 	 * @param __au The address offset.
 	 * @param __abs Absolute position?
+	 * @param __type The type of entry that was just handled, this is for
+	 * debug purposes.
 	 * @return The state for the next address.
 	 * @since 2016/05/20
 	 */
-	StackMapTableState __next(int __au, boolean __abs)
+	StackMapTableState __next(int __au, boolean __abs, int __type)
 	{
+		// Where are we?
+		int naddr = this._placeaddr;
+		
 		// Generate it
-		StackMapTableState rv = new StackMapTableState(this._nextlocals,
-			this._nextstack, this._stacktop);
+		StackMapTableState rv;
+		try
+		{
+			rv = new StackMapTableState(this._nextlocals,
+				this._nextstack, this._stacktop);
+		}
+		catch (InvalidClassFormatException e)
+		{
+			// {@squirreljme.error JC2k Invalid stack map table at the
+			// specified address. (The address offset; Is the address offset
+			// absolute?; The placement address; The type of entry which
+			// was just handled, -1 means it was old-style or initial state.)}
+			throw new InvalidClassFormatException(
+				String.format("JC2k %d %b %d", __au, __abs, naddr, __type), e);
+		}
 		
 		// Set new placement address
-		int naddr = this._placeaddr;
 		int pp = (__abs ? __au :
 			naddr + (__au + (naddr == 0 ? 0 : 1)));
 		this._placeaddr = pp;
