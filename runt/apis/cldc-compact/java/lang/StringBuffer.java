@@ -11,7 +11,7 @@
 package java.lang;
 
 public final class StringBuffer
-	implements CharSequence
+	implements Appendable, CharSequence
 {
 	/** The base buffer. */
 	protected final StringBuilder builder;
