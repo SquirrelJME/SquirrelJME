@@ -141,6 +141,18 @@ public final class StackMapTableEntry
 	}
 	
 	/**
+	 * Is this a top type?
+	 *
+	 * @return If this is a top type.
+	 * @since 2018/09/23
+	 */
+	public final boolean isTop()
+	{
+		JavaType type = this.type;
+		return type != null && type.isTop();
+	}
+	
+	/**
 	 * Does this represent a wide type?
 	 *
 	 * @return If this is a wide type.
