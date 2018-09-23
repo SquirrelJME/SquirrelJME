@@ -324,25 +324,28 @@ public class TODO
 		
 		// Print it out?
 		if (printy)
-		{
-			ps.print(__pfx);
-			ps.print(' ');
-			ps.print(TODO.__formatCondensedTrace(TODO.__where()));
-			ps.print(" -- ");
-			ps.printf(__fmt, __args);
-			
-			// Add markers to indicate the number of notes which were
-			// suppressed
-			int suppressed = TODO._supressednotes;
-			TODO._supressednotes = 0;
-			for (int i = 0; i < suppressed; i++)
-				ps.print('^');
-			
-			ps.println();
-			
-			// Was locked, so unlock!
-			TODO._notelock = false;
-		}
+			try
+			{
+				ps.print(__pfx);
+				ps.print(' ');
+				ps.print(TODO.__formatCondensedTrace(TODO.__where()));
+				ps.print(" -- ");
+				ps.printf(__fmt, __args);
+				
+				// Add markers to indicate the number of notes which were
+				// suppressed
+				int suppressed = TODO._supressednotes;
+				TODO._supressednotes = 0;
+				for (int i = 0; i < suppressed; i++)
+					ps.print('^');
+				
+				ps.println();
+			}
+			finally
+			{
+				// In case of exceptions, this will always be unlocked
+				TODO._notelock = false;
+			}
 	}
 	
 	/**
