@@ -226,7 +226,8 @@ public final class SpringThreadWorker
 		
 		// As-is
 		else if (__in instanceof Integer || __in instanceof Long ||
-			__in instanceof Float || __in instanceof Double)
+			__in instanceof Float || __in instanceof Double ||
+			__in instanceof SpringObject)
 			return __in;
 		
 		// Boolean to integer
@@ -797,6 +798,28 @@ public final class SpringThreadWorker
 					SpringObject so = (SpringObject)__args[0];
 					return so.type();
 				}
+				
+				// Create new primitive weak reference
+			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
+				"newWeakReference:" +
+				"()Lcc/squirreljme/runtime/cldc/ref/PrimitiveReference;":
+				{
+					return new SpringPrimitiveWeakReference();
+				}
+				
+				// Get reference
+			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
+				"referenceGet:(Lcc/squirreljme/runtime/cldc/ref/" +
+				"PrimitiveReference;)Ljava/lang/Object;":
+				return ((SpringPrimitiveReference)__args[0]).get();
+				
+				// Set reference
+			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
+				"referenceSet:(Lcc/squirreljme/runtime/cldc/ref/" +
+				"PrimitiveReference;Ljava/lang/Object;)V":
+				((SpringPrimitiveReference)__args[0]).set(
+					(SpringObject)__args[1]);
+				return null;
 				
 				// Get system property
 			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
