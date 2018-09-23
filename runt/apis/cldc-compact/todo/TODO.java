@@ -334,9 +334,7 @@ public class TODO
 				ps.print(TODO.__formatCondensedTrace(TODO.__where()));
 				ps.print(" -- ");
 				
-				// TODO -- CHANGE THIS BACK
-				ps.print(__fmt);
-				//ps.printf(__fmt, __args);
+				ps.printf(__fmt, __args);
 				
 				// Add markers to indicate the number of notes which were
 				// suppressed
