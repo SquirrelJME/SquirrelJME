@@ -212,9 +212,18 @@ public class PrintStream
 		throw new todo.TODO();
 	}
 	
-	public void print(char __a)
+	/**
+	 * Prints the specified character to the stream.
+	 *
+	 * @param __c The character to print.
+	 * @since 2018/09/23
+	 */
+	public void print(char __c)
 	{
-		throw new todo.TODO();
+		synchronized (this)
+		{
+			this.__writeChar(__c);
+		}
 	}
 	
 	public void print(int __a)

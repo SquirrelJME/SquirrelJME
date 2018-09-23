@@ -30,6 +30,16 @@ public final class ObjectAccess
 	}
 	
 	/**
+	 * Returns the class object for the specified class by its binary name.
+	 *
+	 * @param __s The class to lookup, the binary name is used.
+	 * @return The class for the given binary name, or {@code null} if it
+	 * does not exist.
+	 * @since 2018/09/23 
+	 */
+	public static final native Class<?> classByName(String __s);
+	
+	/**
 	 * Returns the class object for the given object.
 	 *
 	 * @param __v The object to get the class of.
@@ -68,5 +78,21 @@ public final class ObjectAccess
 	 */
 	public static final native void referenceSet(PrimitiveReference __r,
 		Object __v);
+		
+	
+	/**
+	 * Returns the class object for the specified class by its binary name.
+	 *
+	 * @param <C> The class to type this as.
+	 * @param __s The class to lookup, the binary name is used.
+	 * @return The class for the given binary name, or {@code null} if it
+	 * does not exist.
+	 * @since 2018/09/23 
+	 */
+	@SuppressWarnings({"unchecked"})
+	public static final <C> Class<C> classByNameType(String __s)
+	{
+		return (Class<C>)((Object)ObjectAccess.classByName(__s));
+	}
 }
 

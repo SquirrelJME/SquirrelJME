@@ -238,7 +238,42 @@ public final class CallTraceElement
 			long address = this.address;
 			int line = this.line;
 			
-			throw new todo.TODO();
+			// Format it nicely
+			StringBuilder sb = new StringBuilder();
+			
+			sb.append((classname == null ? "<unknown>" : classname));
+			sb.append('.');
+			sb.append((methodname == null ? "<unknown>" : methodname));
+			
+			if (methoddescriptor != null)
+			{
+				sb.append(':');
+				sb.append(methoddescriptor);
+			}
+			
+			if (address != Long.MIN_VALUE)
+			{
+				sb.append(" @ ");
+				sb.append(address);
+			}
+			
+			if (file != null || line >= 0)
+			{
+				sb.append(" (");
+				
+				if (file != null)
+					sb.append(file);
+				
+				if (line >= 0)
+				{
+					sb.append(':');
+					sb.append(line);
+				}
+				
+				sb.append(')');
+			}
+			
+			this._string = new WeakReference<>((rv = sb.toString()));
 		}
 		
 		return rv;
