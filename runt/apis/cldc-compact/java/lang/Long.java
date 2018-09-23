@@ -34,7 +34,7 @@ public final class Long
 	/** The value of this long. */
 	private final long _value;
 	
-	/** The string representation of this long. */
+	/** The string representation of this value. */
 	private Reference<String> _string;
 	
 	/**
@@ -236,7 +236,7 @@ public final class Long
 	}
 	
 	/**
-	 * Calls {@link Long#toStirng(long, int)} with a radix of 10.
+	 * Converts the value to a string using the given radix.
 	 *
 	 * @param __v The input value.
 	 * @param __r The radix of the string, if it exceeds the maximum

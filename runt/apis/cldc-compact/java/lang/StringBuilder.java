@@ -438,8 +438,7 @@ public final class StringBuilder
 		// Get buffer properties
 		char[] buffer = this.__buffer(1);
 		int limit = buffer.length,
-			at = this._at,
-			capacity = buffer.length;
+			at = this._at;
 		
 		// {@squirreljme.error ZZ1g The index of insertion exceeds the
 		// length of the current string. (The insertion index; The string
@@ -462,9 +461,18 @@ public final class StringBuilder
 		return this;
 	}
 	
-	public StringBuilder insert(int __a, int __b)
+	/**
+	 * Inserts the given value into the string at the given index.
+	 *
+	 * @param __dx The index to insert at.
+	 * @param __v The value to insert.
+	 * @return {@code this}.
+	 * @throws IndexOutOfBoundsException If the index is not valid.
+	 * @since 2018/09/23
+	 */
+	public StringBuilder insert(int __dx, int __v)
 	{
-		throw new todo.TODO();
+		return this.insert(__dx, Long.valueOf(__v).toString());
 	}
 	
 	/**
@@ -511,9 +519,29 @@ public final class StringBuilder
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Reverses all of the characters in the string.
+	 *
+	 * @return {@code this}.
+	 * @since 2018/09/23
+	 */
 	public StringBuilder reverse()
 	{
-		throw new todo.TODO();
+		// Get the buffer
+		char[] buffer = this._buffer;
+		int at = this._at;
+		
+		// Swap all the characters, a less than be because if it reaches the
+		// center there will be no need to swap anything
+		for (int a = 0, b = at - 1; a < b; a++, b--)
+		{
+			char x = buffer[a];
+			buffer[a] = buffer[b];
+			buffer[b] = x;
+		}
+		
+		// Self
+		return this;
 	}
 	
 	public void setCharAt(int __dx, char __c)
