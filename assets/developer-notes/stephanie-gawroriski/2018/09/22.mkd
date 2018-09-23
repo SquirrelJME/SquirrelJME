@@ -1,0 +1,57 @@
+# 2018/09/22
+
+## 08:56
+
+Okay so the wrong value was getting pushed or loaded, but it is in a
+constructor which takes a `long` argument so I believe that the top
+of types has not be handled.
+
+## 8:58
+
+And that works now.
+
+## 9:57
+
+So the full frame is wrong with there is a long/double, it is missing a
+top so I suppose that is very much implied perhaps.
+
+## 9:59
+
+Okay so, the top is just implied in the local variable info. So that is
+fun.
+
+## 11:43
+
+I had an idea. For native instructions and such I really do want to keep
+it in Java code or at least have something very close. So what I can do is,
+when I write my own Java assembler I can have `impdep1` be used for these
+things. Since this instruction is reserved I can just use it and the class
+dumper should be fine with it. Since I cannot encode any information into
+it and it would actually be quite complicated, I can have an extra attribute
+in the byte code which contains the meaning for every one of those
+instructions. So when my assembler reaches a special native assembly kind of
+thing it will just pretty much do the thing with it. I will just have this
+assembler and the compiler itself which will be for everything related to the
+Java language. It will pretty much be the same tool really.
+
+## 11:49
+
+I also thought the progression of VMs:
+
+ * _SpringCoat_ -- Initial pure interpreter, what I am building now.
+ * _SummerCoat_ -- Register based machine with some optimizations as needed.
+ * _AutumnCoat_ -- A fake raw instruction kind of like native machines.
+ * _WinterCoat_ -- The final implementation that SquirrelJME will use.
+
+## 12:11
+
+Also, I thought instead of MIDlets, I will just have a basic hello world kind
+of thing. That is simple and shows things off nicely.
+
+## 12:32
+
+Now I just really want a basic demo that does the one thing.
+
+## 15:36
+
+Note sure how I want to handle `Reference` and such.
