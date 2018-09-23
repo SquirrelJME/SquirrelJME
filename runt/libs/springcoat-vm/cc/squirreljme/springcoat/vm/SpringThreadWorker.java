@@ -1672,8 +1672,16 @@ public final class SpringThreadWorker
 					}
 					break;
 					
+					// Long constant
+				case InstructionIndex.LCONST_0:
+				case InstructionIndex.LCONST_1:
+					frame.pushToStack(Long.valueOf(
+						(opid - InstructionIndex.LCONST_0)));
+					break;
+					
 					// Load from constant pool, push to the stack
 				case InstructionIndex.LDC:
+				case InstructionIndex.LDC_W:
 					{
 						ConstantValue value = inst.<ConstantValue>argument(0,
 							ConstantValue.class);
