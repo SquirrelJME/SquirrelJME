@@ -26,8 +26,8 @@ public abstract class Reference<T>
 	/** The primitive reference used to access the object. */
 	private final PrimitiveReference _ref;
 	
-	/** The queue this reference is in. */
-	private final ReferenceQueue<? super T> _queue;
+	/** The queue this reference is in, volatile to be clearned. */
+	private volatile ReferenceQueue<? super T> _queue;
 	
 	/** Has this been enqueued? */
 	private volatile boolean _enqueued;
@@ -79,7 +79,17 @@ public abstract class Reference<T>
 		if (this._enqueued || queue == null)
 			return false;
 		
-		throw new todo.TODO();
+		// Enqueue it
+		queue.__enqueue(this);
+		
+		// The queue is not needed anymore so there is no need to keep a
+		// reference to it around, this will help remove circular references
+		// if one forgets to drain the queues.
+		this._enqueued = true;
+		this._queue = null;
+		
+		// Was enqueued
+		return true;
 	}
 	
 	/**
