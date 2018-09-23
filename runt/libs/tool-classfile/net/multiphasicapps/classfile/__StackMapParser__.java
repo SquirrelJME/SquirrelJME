@@ -348,8 +348,8 @@ final class __StackMapParser__
 			if (e.isWide())
 				nextlocals[o++] = e.topType();
 		}
-		for (;i < maxlocals; i++)
-			nextlocals[i] = StackMapTableEntry.NOTHING;
+		for (;o < maxlocals; o++)
+			nextlocals[o] = StackMapTableEntry.NOTHING;
 		
 		// Read in stack variables
 		StackMapTableEntry[] nextstack = this._nextstack;
@@ -363,7 +363,7 @@ final class __StackMapParser__
 			if (e.isWide())
 				nextstack[o++] = e.topType();
 		}
-		this._stacktop = ns;
+		this._stacktop = o;
 		
 		return rv;
 	}
