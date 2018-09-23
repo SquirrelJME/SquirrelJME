@@ -28,6 +28,12 @@ public class TODO
 	/** Used to detect TODOs recursively being called. */
 	private static volatile boolean _DOUBLE_TRIP;
 	
+	/** Suppress infinite note TODOs being printed over and over. */
+	private static volatile boolean _notelock;
+	
+	/** The number of suppressed note TODOs. */
+	private static volatile int _supressednotes;
+	
 	/**
 	 * Initializes the exception, prints the trace, and exits the program.
 	 *
@@ -111,17 +117,7 @@ public class TODO
 	 */
 	public static final void note(String __fmt, Object... __args)
 	{
-		// Only print if the stream is valid
-		PrintStream ps = System.err;
-		if (ps == null)
-			return;
-		
-		// Print it out
-		ps.print("TODO ");
-		ps.print(TODO.__formatCondensedTrace(TODO.__where()));
-		ps.print(" -- ");
-		ps.printf(__fmt, __args);
-		ps.println();
+		TODO.__note("TODO", __fmt, __args);
 	}
 	
 	/**
@@ -286,6 +282,67 @@ public class TODO
 		}
 		
 		return sb.toString();
+	}
+	
+	
+	/**
+	 * Prints a note to standard error about something that is incomplete.
+	 *
+	 * @param __fmt The format string.
+	 * @param __args The arguments to the call.
+	 * @since 2018/04/02
+	 */
+	static final void __note(String __pfx, String __fmt, Object... __args)
+	{
+		// Only print if the stream is valid
+		PrintStream ps = System.err;
+		if (ps == null)
+			return;
+		
+		// Prevent infinite recursion when printing notes because things might
+		// get stuck here if code that this method calls ends up calling
+		// things
+		boolean printy = false;
+		synchronized (TODO.class)
+		{
+			// Use simple lock counter
+			if (!TODO._notelock)
+				try
+				{
+					// Lock note
+					TODO._notelock = true;
+					printy = true;
+				}
+				finally
+				{
+				}
+			
+			// Add marker for suppressed notes
+			else
+				TODO._supressednotes++;
+		}
+		
+		// Print it out?
+		if (printy)
+		{
+			ps.print(__pfx);
+			ps.print(' ');
+			ps.print(TODO.__formatCondensedTrace(TODO.__where()));
+			ps.print(" -- ");
+			ps.printf(__fmt, __args);
+			
+			// Add markers to indicate the number of notes which were
+			// suppressed
+			int suppressed = TODO._supressednotes;
+			TODO._supressednotes = 0;
+			for (int i = 0; i < suppressed; i++)
+				ps.print('^');
+			
+			ps.println();
+			
+			// Was locked, so unlock!
+			TODO._notelock = false;
+		}
 	}
 	
 	/**
