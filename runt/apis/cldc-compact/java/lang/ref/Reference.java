@@ -10,32 +10,104 @@
 
 package java.lang.ref;
 
+import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
+import cc.squirreljme.runtime.cldc.ref.PrimitiveReference;
+
+/**
+ * This class represents references which may be referred to using various
+ * different means of attachment, as such this family of classes integrates
+ * with the garbage collector.
+ *
+ * @param <T> The type of object to store.
+ * @since 2018/09/23
+ */
 public abstract class Reference<T>
 {
-	Reference()
+	/** The primitive reference used to access the object. */
+	private final PrimitiveReference _ref;
+	
+	/** The queue this reference is in. */
+	private final ReferenceQueue<? super T> _queue;
+	
+	/** Has this been enqueued? */
+	private volatile boolean _enqueued;
+	
+	/**
+	 * Initializes a reference pointing to the given object and an optionally
+	 * specified queue to place this reference into when garbage collection
+	 * occurs.
+	 *
+	 * @param __r The primitive reference storage.
+	 * @param __v The object to point to, may be {@code null}.
+	 * @param __q When the given object is garbage collected the specified
+	 * queue will be given this reference (not {@link __v} itself}, may be
+	 * {@code null}
+	 * @since 2018/09/23
+	 */
+	Reference(PrimitiveReference __r, T __v, ReferenceQueue<? super T> __q)
 	{
-		super();
-		throw new todo.TODO();
+		// Set
+		this._ref = __r;
+		this._queue = __q;
+		
+		// Set primitive reference data
+		ObjectAccess.referenceSet(__r, __v);
 	}
 	
+	/**
+	 * Clears this reference without placing it in the queue.
+	 *
+	 * @since 2018/09/23
+	 */
 	public void clear()
 	{
-		throw new todo.TODO();
+		ObjectAccess.referenceSet(this._ref, null);
 	}
 	
+	/**
+	 * Places this reference in the queue.
+	 *
+	 * @return If it was added to the queue then this will return true,
+	 * otherwise if there is no queue or it was already added this will
+	 * return false.
+	 * @since 2018/09/23
+	 */
 	public boolean enqueue()
 	{
+		// Already been enqueued
+		ReferenceQueue<? super T> queue = this._queue;
+		if (this._enqueued || queue == null)
+			return false;
+		
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the object that this reference refers to.
+	 *
+	 * @return The reference of this object.
+	 * @since 2018/09/23
+	 */
+	@SuppressWarnings({"unchecked"})
 	public T get()
 	{
-		throw new todo.TODO();
+		// If the reference was cleared, enqueue it!
+		Object rv = ObjectAccess.referenceGet(this._ref);
+		if (rv == null)
+			this.enqueue();
+		
+		return (T)rv;
 	}
 	
+	/**
+	 * Returns if this reference was enqueued into the reference queue.
+	 *
+	 * @return If this object was enqueued.
+	 * @since 2018/09/23
+	 */
 	public boolean isEnqueued()
 	{
-		throw new todo.TODO();
+		return this._enqueued;
 	}
 }
 
