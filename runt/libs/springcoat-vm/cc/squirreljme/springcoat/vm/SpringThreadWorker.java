@@ -1337,6 +1337,14 @@ public final class SpringThreadWorker
 					}
 					break;
 					
+					// Integer to character
+				case InstructionIndex.I2C:
+					{
+						int value = frame.<Integer>popFromStack(Integer.class);
+						frame.pushToStack(Integer.valueOf((char)value));
+					}
+					break;
+					
 					// Integer constant
 				case InstructionIndex.ICONST_M1:
 				case InstructionIndex.ICONST_0:
@@ -1653,6 +1661,14 @@ public final class SpringThreadWorker
 						frame.pushToStack(a - b);
 					}
 					break;
+					
+					// Long to integer
+				case InstructionIndex.L2I:
+					{
+						long value = frame.<Long>popFromStack(Long.class);
+						frame.pushToStack(Integer.valueOf((int)value));
+					}
+					break;
 				
 					// And long
 				case InstructionIndex.LAND:
@@ -1707,6 +1723,15 @@ public final class SpringThreadWorker
 					frame.pushToStack(inst.<ConstantValue>argument(0,
 						ConstantValue.class).boxedValue());
 					break;
+				
+					// Divide long
+				case InstructionIndex.LDIV:
+					{
+						long b = frame.<Long>popFromStack(Long.class),
+							a = frame.<Long>popFromStack(Long.class);
+						frame.pushToStack(a / b);
+					}
+					break;
 					
 					// Load integer from local variable
 				case InstructionIndex.LLOAD:
@@ -1738,6 +1763,15 @@ public final class SpringThreadWorker
 					nextpc = inst.<IntMatchingJumpTable>argument(0,
 						IntMatchingJumpTable.class).match(
 						frame.<Integer>popFromStack(Integer.class)).target();
+					break;
+				
+					// Remainder long
+				case InstructionIndex.LREM:
+					{
+						long b = frame.<Long>popFromStack(Long.class),
+							a = frame.<Long>popFromStack(Long.class);
+						frame.pushToStack(a % b);
+					}
 					break;
 					
 					// Return long
