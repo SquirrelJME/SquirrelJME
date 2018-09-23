@@ -827,6 +827,26 @@ public final class SpringThreadWorker
 					(SpringObject)__args[1]);
 				return null;
 				
+				// VM e-mail
+			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
+				"javaVMEmail:()Ljava/lang/String;":
+				return "xer@multiphasicapps.net";
+				
+				// VM name
+			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
+				"javaVMName:()Ljava/lang/String;":
+				return "SquirrelJME SpringCoat";
+				
+				// VM vendor
+			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
+				"javaVMVendor:()Ljava/lang/String;":
+				return "Stephanie Gawroriski";
+				
+				// VM URL
+			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
+				"javaVMURL:()Ljava/lang/String;":
+				return "http://multiphasicapps.net/";
+				
 				// Get system property
 			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
 				"systemProperty:(Ljava/lang/String;)Ljava/lang/String;":

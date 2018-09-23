@@ -179,7 +179,10 @@ public class TODO
 		
 		// Address, if it is valid
 		if (ad != -1L)
-			sb.append(String.format("@0x%016X", ad));
+		{
+			sb.append("@0x");
+			sb.append(Long.toString(ad, 16));
+		}
 		
 		// Add file/line information if it is valid
 		if (fi != null)
@@ -330,7 +333,10 @@ public class TODO
 				ps.print(' ');
 				ps.print(TODO.__formatCondensedTrace(TODO.__where()));
 				ps.print(" -- ");
-				ps.printf(__fmt, __args);
+				
+				// TODO -- CHANGE THIS BACK
+				ps.print(__fmt);
+				//ps.printf(__fmt, __args);
 				
 				// Add markers to indicate the number of notes which were
 				// suppressed
