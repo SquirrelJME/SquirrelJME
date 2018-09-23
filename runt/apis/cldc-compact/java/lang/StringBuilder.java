@@ -387,10 +387,9 @@ public final class StringBuilder
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Get buffer properties
-		char[] buffer = this._buffer;
+		char[] buffer = this.__buffer(__l);
 		int limit = buffer.length,
-			at = this._at,
-			capacity = buffer.length;
+			at = this._at;
 		
 		// {@squirreljme.error ZZ1e The index of insertion exceeds the
 		// length of the current string. (The insertion index; The string
@@ -398,20 +397,6 @@ public final class StringBuilder
 		if (__dx > at)
 			throw new IndexOutOfBoundsException(String.format("ZZ1e %d %d",
 				__dx, at));
-		
-		// Need to resize the buffer to fit this?
-		if (__dx + __l > capacity)
-		{
-			int newcapacity = (__dx + __l) + StringBuilder._DEFAULT_CAPACITY;
-			
-			// Copy characters over
-			char[] extra = new char[newcapacity];
-			for (int i = 0; i < at; i++)
-				extra[i] = buffer[i];
-			
-			this._buffer = (buffer = extra);
-			capacity = newcapacity;
-		}
 		
 		// First move all characters on the right to the end so that this can
 		// properly fit
@@ -433,9 +418,48 @@ public final class StringBuilder
 		throw new todo.TODO();
 	}
 	
-	public StringBuilder insert(int __a, char __b)
+	/**
+	 * Inserts the given character into the string at the given index.
+	 *
+	 * @param __dx The index to insert at.
+	 * @param __v The value to insert.
+	 * @return {@code this}.
+	 * @throws IndexOutOfBoundsException If the index is not valid.
+	 * @since 2018/09/23
+	 */
+	public StringBuilder insert(int __dx, char __v)
+		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error ZZ1h Cannot insert sequence at a negative
+		// index.}
+		if (__dx < 0)
+			throw new IndexOutOfBoundsException("ZZ1h");
+		
+		// Get buffer properties
+		char[] buffer = this.__buffer(1);
+		int limit = buffer.length,
+			at = this._at,
+			capacity = buffer.length;
+		
+		// {@squirreljme.error ZZ1g The index of insertion exceeds the
+		// length of the current string. (The insertion index; The string
+		// length)}
+		if (__dx > at)
+			throw new IndexOutOfBoundsException(String.format("ZZ1g %d %d",
+				__dx, at));
+		
+		// First move all characters on the right to the end so that this can
+		// properly fit
+		for (int i = at - 1, o = i + 1; i >= __dx; i--, o--)
+			buffer[o] = buffer[i];
+		
+		// Place input characters at this point
+		buffer[__dx] = __v;
+		
+		// Set new size
+		this._at = at + 1;
+		
+		return this;
 	}
 	
 	public StringBuilder insert(int __a, int __b)
@@ -443,9 +467,18 @@ public final class StringBuilder
 		throw new todo.TODO();
 	}
 	
-	public StringBuilder insert(int __a, long __b)
+	/**
+	 * Inserts the given value into the string at the given index.
+	 *
+	 * @param __dx The index to insert at.
+	 * @param __v The value to insert.
+	 * @return {@code this}.
+	 * @throws IndexOutOfBoundsException If the index is not valid.
+	 * @since 2018/09/23
+	 */
+	public StringBuilder insert(int __dx, long __v)
 	{
-		throw new todo.TODO();
+		return this.insert(__dx, Long.valueOf(__v).toString());
 	}
 	
 	public StringBuilder insert(int __a, float __b)
@@ -521,6 +554,38 @@ public final class StringBuilder
 	public void trimToSize()
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Obtains the buffer, potentially resizing it to fit the given amount
+	 * of characters.
+	 *
+	 * @param __l The number of characters to add.
+	 * @return The buffer.
+	 * @since 2018/09/23
+	 */
+	private final char[] __buffer(int __l)
+	{
+		// Get buffer properties
+		char[] buffer = this._buffer;
+		int limit = buffer.length,
+			at = this._at;
+		
+		// Need to resize the buffer to fit this?
+		int nextat = at + __l;
+		if (nextat > limit)
+		{
+			int newcapacity = nextat + StringBuilder._DEFAULT_CAPACITY;
+			
+			// Copy characters over
+			char[] extra = new char[newcapacity];
+			for (int i = 0; i < at; i++)
+				extra[i] = buffer[i];
+			
+			this._buffer = (buffer = extra);
+		}
+		
+		return buffer;
 	}
 }
 

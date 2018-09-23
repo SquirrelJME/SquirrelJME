@@ -790,6 +790,12 @@ public final class SpringThreadWorker
 					return rv;
 				}
 				
+				// Get the class by the name of whatever is input
+			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
+				"classByName:(Ljava/lang/String;)Ljava/lang/Class;":
+				return new ClassName(this.<String>asNativeObject(String.class,
+					(SpringObject)__args[0]));
+				
 				// Get the class object for an object
 			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
 				"classOf:(Ljava/lang/Object;)Ljava/lang/Class;":

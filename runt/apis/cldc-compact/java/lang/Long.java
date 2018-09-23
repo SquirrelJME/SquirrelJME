@@ -10,6 +10,10 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+
 public final class Long
 	extends Number
 	implements Comparable<Long>
@@ -23,13 +27,25 @@ public final class Long
 	public static final int SIZE =
 		64;
 	
+	/** The class representing the primitive long type. */
 	public static final Class<Long> TYPE =
-		__getType();
+		ObjectAccess.<Long>classByNameType("long");
 	
-	public Long(long __a)
+	/** The value of this long. */
+	private final long _value;
+	
+	/** The string representation of this long. */
+	private Reference<String> _string;
+	
+	/**
+	 * Initializes the long with the given value.
+	 *
+	 * @param __v The value to use.
+	 * @since 2018/09/23
+	 */
+	public Long(long __v)
 	{
-		super();
-		throw new todo.TODO();
+		this._value = __v;
 	}
 	
 	public Long(String __a)
@@ -93,10 +109,21 @@ public final class Long
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/09/23
+	 */
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>(
+				(rv = Long.toString(this._value)));
+		
+		return rv;
 	}
 	
 	public static int bitCount(long __a)
@@ -208,14 +235,68 @@ public final class Long
 		throw new todo.TODO();
 	}
 	
-	public static String toString(long __a, int __b)
+	/**
+	 * Calls {@link Long#toStirng(long, int)} with a radix of 10.
+	 *
+	 * @param __v The input value.
+	 * @param __r The radix of the string, if it exceeds the maximum
+	 * permitted radix specified in {@link Character} then this is set to 10.
+	 * @return The resulting string.
+	 * @since 2018/09/23
+	 */
+	public static String toString(long __v, int __r)
 	{
-		throw new todo.TODO();
+		// If the radix is not valid, then just force to 10
+		if (__r < Character.MIN_RADIX || __r > Character.MAX_RADIX)
+			__r = 10;
+		
+		StringBuilder sb = new StringBuilder();
+		
+		// Negative? Remember it but we need to swap the sign
+		boolean negative;
+		if ((negative = (__v < 0)))
+			__v = -__v;
+		
+		// Insert characters at the end of the string, they will be reversed
+		// later, it is easier this way
+		for (;;)
+		{
+			// Determine the current place
+			long div = __v / __r;
+			int mod = (int)(__v % __r);
+			
+			// Print character
+			sb.append((char)(mod < 10 ? '0' + mod : 'a' + (mod - 10)));
+			
+			// Stop printing characters
+			if (__v == 0)
+				break;
+			
+			// Use the remaining division
+			else
+				__v = div;
+		}
+		
+		// Add the sign in
+		if (negative)
+			sb.append('-');
+			
+		// Because the values are added in the opposite order, reverse it
+		sb.reverse();
+		
+		return sb.toString();
 	}
 	
-	public static String toString(long __a)
+	/**
+	 * Calls {@link Long#toStirng(long, int)} with a radix of 10.
+	 *
+	 * @param __v The input value.
+	 * @return The resulting string.
+	 * @since 2018/09/23
+	 */
+	public static String toString(long __v)
 	{
-		throw new todo.TODO();
+		return Long.toString(__v, 10);
 	}
 	
 	public static Long valueOf(String __a, int __b)
@@ -234,20 +315,17 @@ public final class Long
 		throw new todo.TODO();
 	}
 	
-	public static Long valueOf(long __a)
-	{
-		throw new todo.TODO();
-	}
-	
 	/**
-	 * The {@link #TYPE} field is magically initialized by the virtual machine.
+	 * Returns a instance of the given value, this may be cached.
 	 *
-	 * @return {@link #TYPE}.
-	 * @since 2016/06/16
+	 * @param __v The value to box.
+	 * @return The boxed value.
+	 * @since 2018/09/23
 	 */
-	private static Class<Long> __getType()
+	public static Long valueOf(long __v)
 	{
-		return TYPE;
+		todo.TODO.note("Cache this?");
+		return new Long(__v);
 	}
 }
 
