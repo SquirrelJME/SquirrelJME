@@ -295,6 +295,10 @@ final class __StackMapParser__
 			if (s.equals(StackMapTableEntry.NOTHING))
 				continue;
 			
+			// Clear top off
+			if (s.isTop())
+				nextlocals[i--] = StackMapTableEntry.NOTHING;
+			
 			// Clear it
 			nextlocals[i] = StackMapTableEntry.NOTHING;
 			__chops--;
