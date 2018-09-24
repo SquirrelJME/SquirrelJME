@@ -75,22 +75,7 @@ public final class SystemProperties
 	 * @return The full Java virtual machine version.
 	 * @since 2017/08/13
 	 */
-	public static String javaVMVersionFull()
-	{
-		return SystemProperties.javaVMVersionShort() + "-" +
-			SystemProperties.javaRuntimeVersion();
-	}
-	
-	/**
-	 * Returns the short version of the Java virtual machine.
-	 *
-	 * @return The short Java virtual machine version.
-	 * @since 2017/08/13
-	 */
-	public static String javaVMVersionShort()
-	{
-		return "1.8.0";
-	}
+	public static native String javaVMVersion();
 	
 	/**
 	 * Returns a system property for the given value.

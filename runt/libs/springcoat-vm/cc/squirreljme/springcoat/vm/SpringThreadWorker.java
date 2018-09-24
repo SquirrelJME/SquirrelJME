@@ -837,15 +837,20 @@ public final class SpringThreadWorker
 				"javaVMName:()Ljava/lang/String;":
 				return "SquirrelJME SpringCoat";
 				
+				// VM URL
+			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
+				"javaVMURL:()Ljava/lang/String;":
+				return "http://multiphasicapps.net/";
+				
 				// VM vendor
 			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
 				"javaVMVendor:()Ljava/lang/String;":
 				return "Stephanie Gawroriski";
 				
-				// VM URL
+				// VM Version
 			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
-				"javaVMURL:()Ljava/lang/String;":
-				return "http://multiphasicapps.net/";
+				"javaVMVersion:()Ljava/lang/String;":
+				return "0.0.2";
 				
 				// Get system property
 			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
