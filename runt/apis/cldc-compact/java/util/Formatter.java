@@ -24,6 +24,32 @@ import java.io.Writer;
  * inspired by the C language but it does not match it exactly and this is
  * far more strict in what it requires.
  *
+ * Format specifiers start with the {@code '%'} character which defines a
+ * sequence accordingly. The format specifiers are in the following format:
+ * {@code %[argument_index$][flags][width][.precision]conversion}. Any fields
+ * within brackets are optional. For any specifiers which do not conform to
+ * arguments, their format is {@code %[flags][width]conversion}.
+ *
+ * {@code argument_index$} specifies which argument to take the value from,
+ * this allows one to use an alternative order. If this is not specified then
+ * the order is implied based on the argument order for any specifiers which
+ * do not use an argument index. This means that:
+ * {@code format("%7$d %d %6$d %d %% %d", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)} will
+ * print {@code "7 1 6 2 % 3"}.
+ *
+ * {@code flags} specifies special flags which are used to modify how the
+ * printing is done. The following flags are used:
+ *
+ * {@code width} is a positive decimal integer which specifies the minimum
+ * amount of space the text will take up, it will be aligned accordingly
+ * depending on the flags used.
+ *
+ * {@code precision} is a positive decimal integer which specified a limit
+ * on the output, this depends on the format specifier.
+ *
+ * {@code conversion} is the symbol which determines how the input is to be
+ * formatted.
+ *
  * @since 2018/09/23
  */
 @ImplementationNote("")
@@ -159,8 +185,33 @@ public final class Formatter
 		if (__args == null)
 			__args = new Object[0];
 		
-		if (true)
-			throw new todo.TODO();
+		// Writing to the appendable may cause an exception to occur
+		try
+		{
+			// Process input characters
+			Appendable out = this._out;
+			for (int i = 0, n = __fmt.length(); i < n; i++)
+			{
+				char c = __fmt.charAt(i);
+				
+				// Just a normal character
+				if (c != '%')
+				{
+					out.append(c);
+					continue;
+				}
+				
+				// It is simpler to handle the parsing of the specifier in
+				// another method due to loops and variables
+				i = this.__parseSpecifier(out, i, __fmt, __args);
+			}
+		}
+		
+		// Catch any exception
+		catch (IOException e)
+		{
+			this._ioe = e;
+		}
 		
 		return this;
 	}
@@ -211,6 +262,31 @@ public final class Formatter
 			throw new IllegalStateException("ZZ1j");
 		
 		return this._out.toString();
+	}
+	
+	/**
+	 * Parses the specifier in the input format.
+	 *
+	 * @param __out The output sink.
+	 * @param __i The index of the specifier.
+	 * @param __fmt The formatted text.
+	 * @param __args The arguments.
+	 * @return The index where the format specifier ends, this is so the
+	 * calling loop can properly set its counter.
+	 * @throws IllegalArgumentException If the format specifiers are not
+	 * correct.
+	 * @throws IOException If writing failed.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/23
+	 */
+	private static int __parseSpecifier(Appendable __out, int __i,
+		String __fmt, Object... __args)
+		throws IllegalArgumentException, IOException, NullPointerException
+	{
+		if (__out == null || __fmt == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 }
 
