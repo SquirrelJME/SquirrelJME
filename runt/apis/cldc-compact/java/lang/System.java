@@ -186,13 +186,13 @@ public final class System
 		// Depends on the property
 		switch (__k)
 		{
-				// The version of the Java virtual machine
+				// The version of the Java virtual machine (fixed value)
 			case "java.version":
-				return SystemProperties.javaVMVersionShort();
+				return "1.8.0";
 				
 				// The version of the JVM (full)
 			case "java.vm.version":
-				return SystemProperties.javaVMVersionFull();
+				return SystemProperties.javaVMVersion();
 				
 				// The name of the JVM
 			case "java.vm.name":
