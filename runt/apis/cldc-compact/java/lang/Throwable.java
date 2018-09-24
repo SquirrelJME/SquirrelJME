@@ -391,10 +391,11 @@ public class Throwable
 				continue;
 			
 			// Add indentation
-			for (int p = 0; p < __indent; p++)
+			for (int p = 0; p <= __indent; p++)
 				__ps.print("  ");
 			
 			// Use string representation of the element
+			__ps.print("at ");
 			__ps.println(e.toString());
 		}
 		
