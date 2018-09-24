@@ -259,14 +259,18 @@ public final class Long
 		
 		// Insert characters at the end of the string, they will be reversed
 		// later, it is easier this way
-		for (;;)
+		for (boolean digit = false;;)
 		{
 			// Determine the current place
-			long div = __v / __r;
 			int mod = (int)(__v % __r);
+			
+			// Do not print if any other digit was stored
+			if (__v == 0 && digit)
+				break;
 			
 			// Print character
 			sb.append((char)(mod < 10 ? '0' + mod : 'a' + (mod - 10)));
+			digit = true;
 			
 			// Stop printing characters
 			if (__v == 0)
@@ -274,7 +278,7 @@ public final class Long
 			
 			// Use the remaining division
 			else
-				__v = div;
+				__v = __v / __r;
 		}
 		
 		// Add the sign in
