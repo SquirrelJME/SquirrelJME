@@ -13,6 +13,7 @@ package java.io;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.io.CodecFactory;
 import cc.squirreljme.runtime.cldc.io.Encoder;
+import java.util.Formatter;
 
 /**
  * This class is used to print translated and formatted text.
@@ -202,9 +203,21 @@ public class PrintStream
 		}
 	}
 	
-	public PrintStream format(String __a, Object... __b)
+	/**
+	 * Writes formatted text to the print stream, using the default locale.
+	 *
+	 * @param __fmt The format specifiers.
+	 * @param __args The arguments.
+	 * @return {@code this}.
+	 * @throws IllegalArgumentException If the string contains illegal
+	 * format specifiers.
+	 * @throws NullPointerException If no format was specified.
+	 * @since 2018/09/23
+	 */
+	public PrintStream format(String __fmt, Object... __args)
+		throws IllegalArgumentException, NullPointerException
 	{
-		throw new todo.TODO();
+		return this.__printf(__fmt, __args);
 	}
 	
 	public void print(boolean __a)
@@ -262,12 +275,7 @@ public class PrintStream
 	{
 		synchronized (this)
 		{
-			// Print null explicitely
-			if (__s == null)
-				__s = "null";
-			
-			for (int i = 0, n = __s.length(); i < n; i++)
-				this.__writeChar(__s.charAt(i));
+			this.__print(__s);
 		}
 	}
 	
@@ -276,9 +284,20 @@ public class PrintStream
 		throw new todo.TODO();
 	}
 	
-	public PrintStream printf(String __a, Object... __b)
+	/**
+	 * Writes formatted text to the print stream, using the default locale.
+	 *
+	 * @param __fmt The format specifiers.
+	 * @param __args The arguments.
+	 * @return {@code this}.
+	 * @throws IllegalArgumentException If the string contains illegal
+	 * format specifiers.
+	 * @throws NullPointerException If no format was specified.
+	 * @since 2018/09/23
+	 */
+	public PrintStream printf(String __fmt, Object... __args)
 	{
-		throw new todo.TODO();
+		return this.__printf(__fmt, __args);
 	}
 	
 	/**
@@ -291,19 +310,7 @@ public class PrintStream
 	{
 		synchronized (this)
 		{
-			// If the newline character has not yet been set, use a fallback
-			String nl = PrintStream._NEWLINE;
-			if (nl == null)
-				nl = "\n";
-			
-			// Write the ending
-			for (int i = 0, n = nl.length(); i < n; i++)
-				this.__writeChar(nl.charAt(i));
-			
-			// Flush the stream after every line printed, in the event the
-			// system does not use a UNIX newline
-			if (this._autoflush)
-				this.flush();
+			this.__println();
 		}
 	}
 	
@@ -352,8 +359,8 @@ public class PrintStream
 	{
 		synchronized (this)
 		{
-			this.print(__v);
-			this.println();
+			this.__print(__v);
+			this.__println();
 		}
 	}
 	
@@ -425,6 +432,87 @@ public class PrintStream
 		// Is perfectly fine, so "clear" the buffer
 		else
 			this._bat = 0;
+	}
+	
+	/**
+	 * Prints the specified string.
+	 *
+	 * @param __s The string to print, if {@code null} then {@code "null"} is
+	 * printed.
+	 * @since 2018/09/20
+	 */
+	private final void __print(String __s)
+	{
+		synchronized (this)
+		{
+			// Print null explicitely
+			if (__s == null)
+				__s = "null";
+			
+			for (int i = 0, n = __s.length(); i < n; i++)
+				this.__writeChar(__s.charAt(i));
+		}
+	}
+	
+	/**
+	 * Writes formatted text to the print stream, using the default locale.
+	 *
+	 * @param __fmt The format specifiers.
+	 * @param __args The arguments.
+	 * @return {@code this}.
+	 * @throws IllegalArgumentException If the string contains illegal
+	 * format specifiers.
+	 * @throws NullPointerException If no format was specified.
+	 * @since 2018/09/23
+	 */
+	private final PrintStream __printf(String __fmt, Object... __args)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__fmt == null)
+			throw new NullPointerException("NARG");
+		
+		// Generate text to write into a string builder
+		StringBuilder sb = new StringBuilder();
+		try (Formatter f = new Formatter(sb))
+		{
+			f.format(__fmt, __args);
+		}
+		
+		// Dump characters that were written into the string but without
+		// turning it into an actual string, for memory purposes
+		synchronized (this)
+		{
+			for (int i = 0, n = sb.length(); i < n; i++)
+				this.__writeChar(sb.charAt(i));
+		}
+		
+		return this;
+	}
+	
+	/**
+	 * Prints the end of line sequence that is used for the current platform.
+	 *
+	 * @return The end of line sequence.
+	 * @since 2018/09/21
+	 */
+	private final void __println()
+	{
+		synchronized (this)
+		{
+			// If the newline character has not yet been set, use a fallback
+			String nl = PrintStream._NEWLINE;
+			if (nl == null)
+				nl = "\n";
+			
+			// Write the ending
+			for (int i = 0, n = nl.length(); i < n; i++)
+				this.__writeChar(nl.charAt(i));
+			
+			// Flush the stream after every line printed, in the event the
+			// system does not use a UNIX newline
+			if (this._autoflush)
+				this.flush();
+		}
 	}
 	
 	/**
