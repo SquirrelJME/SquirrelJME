@@ -10,16 +10,14 @@
 
 package java.io;
 
-/**
- * TODO.
- *
- * Note that code which relies on {@code Writer} being {@code Flushable} will
- * fail.
- *
- * @since 2016/08/12
- */
+import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+
+@ImplementationNote("In SquirrelJME this class implements Flushable, " +
+	"the standard Java ME documentation specifies that this is not " +
+	"Flushable. However in Java SE it is as such, so this was likely " +
+	"an error.")
 public abstract class Writer
-	implements Appendable, Closeable
+	implements Appendable, Closeable, Flushable
 {
 	protected Object lock;
 	
@@ -39,6 +37,7 @@ public abstract class Writer
 	public abstract void close()
 		throws IOException;
 	
+	@Override
 	public abstract void flush()
 		throws IOException;
 	
