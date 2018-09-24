@@ -1,0 +1,19 @@
+# 2018/09/23
+
+## 12:24
+
+So how do I handle `Reference`s? I do need to think of something but I think
+something random would work.
+
+## 13:58
+
+So `ReferenceQueue` will just be passive, which works I guess lol.
+
+## 15:08
+
+So `java.lang.ref` is done, which is nice!
+
+## 17:14
+
+OH MY GOSH! SQUIRRELJME CAN RUN A BASIC HELLO WORLD PROGRAM THAT PRINTS SOME
+SYSTEM PROPERTIES! THIS IS AMAZING!! EEEEEEEEEEEEEEEEEEEEEEEEEEEE!

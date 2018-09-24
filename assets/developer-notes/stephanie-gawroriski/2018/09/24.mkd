@@ -1,0 +1,7 @@
+# 2018/09/24
+
+## 0:46
+
+I had no idea what the stack trace that was printed to the console was
+because I forgot the "at" and such. Also the toString for integers and
+numbers is wrong it seems.
