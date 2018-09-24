@@ -399,6 +399,17 @@ public final class SpringThread
 		}
 		
 		/**
+		 * Returns the source line of the last executed address.
+		 *
+		 * @return The source line for the last executed address.
+		 * @since 2018/09/24
+		 */
+		public final int lastExecutedPcSourceLine()
+		{
+			return this.code.lineOfAddress(this._lastexecpc);
+		}
+		
+		/**
 		 * Loads a value from local variables.
 		 *
 		 * @param <C> The type to return.

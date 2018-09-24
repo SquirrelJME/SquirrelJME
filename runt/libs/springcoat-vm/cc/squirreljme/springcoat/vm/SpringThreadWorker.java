@@ -777,14 +777,14 @@ public final class SpringThreadWorker
 						
 						// Program counter hilo
 						rv[o + 6] = 0;
-						rv[o + 7] = frame.pc();
+						rv[o + 7] = frame.lastExecutedPc();
 						
 						// File string
 						rv[o + 8] = -1;
 						rv[o + 9] = -1;
 						
 						// Line of code being executed
-						rv[o + 10] = frame.pcSourceLine();
+						rv[o + 10] = frame.lastExecutedPcSourceLine();
 					}
 					
 					return rv;
