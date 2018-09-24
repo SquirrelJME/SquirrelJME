@@ -285,7 +285,7 @@ public final class Formatter
 	{
 		if (__out == null || __fmt == null)
 			throw new NullPointerException("NARG");
-		
+				
 		throw new todo.TODO();
 	}
 }
