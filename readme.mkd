@@ -7,6 +7,7 @@
  * _Lex_ (The SquirrelJME Mascot) was drawn by...
    * "_Puppenstein_" <http://www.furaffinity.net/user/puppenstein/>
  * Support me on [Patreon](https://www.patreon.com/XerTheSquirrel)!
+ * "SquirrelJME" and "Lex" are trademarked by Stephanie Gawroriski 2016-2018
 
 **SquirrelJME** is intended to be a Java ME 8 compatible environment for
 strange and many other devices. That is, you would be able to have a Java
