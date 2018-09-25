@@ -10,6 +10,7 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import java.io.InputStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -233,7 +234,7 @@ public final class Class<T>
 	 */
 	public boolean isArray()
 	{
-		throw new todo.TODO();
+		return null != ObjectAccess.arrayComponentType(this);
 	}
 	
 	public boolean isAssignableFrom(Class<?> __a)

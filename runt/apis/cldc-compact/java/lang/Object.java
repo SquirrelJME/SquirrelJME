@@ -48,6 +48,22 @@ public class Object
 	protected Object clone()
 		throws CloneNotSupportedException
 	{
+		// If this is an array copy elements around
+		Class<?> cl = this.getClass();
+		if (cl.isArray())
+		{
+			// Need length of this array to recreate!
+			int len = ObjectAccess.arrayLength(this);
+			
+			// Allocate new array
+			Object dest = ObjectAccess.arrayNew(cl, len);
+			
+			// Copy everything over
+			System.arraycopy(this, 0, dest, 0, len);
+			
+			// This array was cloned
+			return this;
+		}
 		
 		// {@squirreljme.error ZZ1t This object does not support being clone.}
 		throw new CloneNotSupportedException("ZZ1t");

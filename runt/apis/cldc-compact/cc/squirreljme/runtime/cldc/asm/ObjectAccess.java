@@ -30,6 +30,35 @@ public final class ObjectAccess
 	}
 	
 	/**
+	 * Returns the component type of the given array.
+	 *
+	 * @param __cl The class to get the component type of.
+	 * @return The component type or {@code null} if it is not valid.
+	 * @since 2018/09/25
+	 */
+	public static final native Class<?> arrayComponentType(Class<?> __cl);
+	
+	/**
+	 * Returns the length of the given array.
+	 *
+	 * @param __a The array to get the length of.
+	 * @return The length of the array or {@code -1} if it is not an
+	 * array.
+	 * @since 2018/09/25
+	 */
+	public static final native int arrayLength(Object __a);
+	
+	/**
+	 * Creates a new array to store the given component.
+	 *
+	 * @param __t The array type.
+	 * @param __l The array length.
+	 * @return An array allocated to the given length.
+	 * @since 2018/09/25
+	 */
+	public static final native Object arrayNew(Class<?> __t, int __l);
+	
+	/**
 	 * Returns the class object for the specified class by its binary name.
 	 *
 	 * @param __s The class to lookup, the binary name is used.
