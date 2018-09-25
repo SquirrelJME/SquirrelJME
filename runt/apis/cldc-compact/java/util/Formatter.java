@@ -40,6 +40,21 @@ import java.io.Writer;
  * {@code flags} specifies special flags which are used to modify how the
  * printing is done. The following flags are used:
  *
+ *  - {@code '-'} -- Left justified
+ *    (general, char, int, float, date).
+ *  - {@code '#'} -- Conversion dependent alternate form
+ *    (general, int (only: o, x, X), float).
+ *  - {@code '+'} -- Include a sign always
+ *    (int, float).
+ *  - {@code ' '} -- Include leading space for positive values
+ *    (int, float).
+ *  - {@code '0'} -- Zero padding
+ *    (int, float).
+ *  - {@code ','} -- Use locale specific grouping separators
+ *    (int (only: d), float).
+ *  - {@code '('} -- Negative values are enclosed in parenthesis
+ *    (int, float).
+ *
  * {@code width} is a positive decimal integer which specifies the minimum
  * amount of space the text will take up, it will be aligned accordingly
  * depending on the flags used.
@@ -188,6 +203,10 @@ public final class Formatter
 		// Writing to the appendable may cause an exception to occur
 		try
 		{
+			// Used to store the implicit argument index in the event one is
+			// not specified
+			int[] impargdx = new int[1];
+			
 			// Process input characters
 			Appendable out = this._out;
 			for (int i = 0, n = __fmt.length(); i < n; i++)
@@ -203,7 +222,11 @@ public final class Formatter
 				
 				// It is simpler to handle the parsing of the specifier in
 				// another method due to loops and variables
-				i = this.__parseSpecifier(out, i, __fmt, __args);
+				__PrintFState__ pf = new __PrintFState__();
+				i = this.__specifier(pf, i, __fmt);
+				
+				// Handle output of the specifier
+				throw new todo.TODO();
 			}
 		}
 		
@@ -267,10 +290,12 @@ public final class Formatter
 	/**
 	 * Parses the specifier in the input format.
 	 *
-	 * @param __out The output sink.
-	 * @param __i The index of the specifier.
-	 * @param __fmt The formatted text.
-	 * @param __args The arguments.
+	 * This parses the following, just returning that information:
+	 * {@code %[argument_index$][flags][width][.precision]conversion}.
+	 *
+	 * @param __pf The PrintF state.
+	 * @param __base The base character index.
+	 * @param __fmt The format specifiers.
 	 * @return The index where the format specifier ends, this is so the
 	 * calling loop can properly set its counter.
 	 * @throws IllegalArgumentException If the format specifiers are not
@@ -279,14 +304,67 @@ public final class Formatter
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/23
 	 */
-	private static int __parseSpecifier(Appendable __out, int __i,
-		String __fmt, Object... __args)
+	private static int __specifier(__PrintFState__ __pf, int __base,
+		String __fmt)
 		throws IllegalArgumentException, IOException, NullPointerException
 	{
-		if (__out == null || __fmt == null)
+		if (__pf == null || __fmt == null)
 			throw new NullPointerException("NARG");
+		
+		// The specifier could be too short! So handle these cases and make
+		// sure the exception of the right type
+		int at = __base + 1;
+		try
+		{
+			char c = __fmt.charAt(at);
+			
+			// The first might be a number specifying the argument index to use
+			// Note that zero is NOT included because it would be parsed as
+			// a flag, additionally argument indexes are 1-based!
+			if (c >= '1' && c <= '9')
+			{
+				// Read the entire number
+				int base = at;
+				for (c = __fmt.charAt(at); c >= '0' && c <= '9'; at++)
+					;
 				
-		throw new todo.TODO();
+				// Parse value
+				int val = Integer.valueOf(__fmt.substring(base, at));
+				
+				// If there is a dollar sign, this is going to be the
+				// argument index
+				if (__fmt.charAt(at) == '$')
+				{
+					__pf.__setArgumentIndex(val);
+					
+					// Skip the dollar
+					at++;
+				}
+				
+				// Otherwise this is the width
+				else
+					__pf.__setWidth(val);
+			}
+			
+			// Parse flags, but only if no width was specified
+			if (!__pf.__hasWidth())
+				for (c = __fmt.charAt(at); __pf.__setFlag(c); at++)
+					;
+			
+			if (true)
+				throw new todo.TODO();
+		}
+		
+		// {@squirreljme.error ZZ1m Could not parse the format specifier
+		// properly. (The string with the specifier sequence)}
+		catch (IndexOutOfBoundsException|NumberFormatException e)
+		{
+			throw new IllegalArgumentException("ZZ1m " +
+				__fmt.substring(__base, Math.min(at, __fmt.length())), e);
+		}
+		
+		// Return the new ending index, after everything was parsed
+		return at;
 	}
 }
 
