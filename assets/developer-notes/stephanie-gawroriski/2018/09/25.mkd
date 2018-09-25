@@ -1,0 +1,7 @@
+# 2018/09/25
+
+## 0:16
+
+I think for cloning arrays, I can do the base class with magic or I can write
+some magic methods for handling arrays. However in SpringCoat, I can just put
+it in Object.
