@@ -26,7 +26,7 @@ public final class CodecFactory
 	 * The encoding to use if it is unknown or not set anywhere.
 	 */
 	private static final String _FALLBACK_ENCODING =
-		"utf-8";
+		"iso-8859-1"/*"utf-8"*/;
 	
 	/**
 	 * Not used.

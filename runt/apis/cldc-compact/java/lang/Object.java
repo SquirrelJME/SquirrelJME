@@ -48,7 +48,9 @@ public class Object
 	protected Object clone()
 		throws CloneNotSupportedException
 	{
-		throw new todo.TODO();
+		
+		// {@squirreljme.error ZZ1t This object does not support being clone.}
+		throw new CloneNotSupportedException("ZZ1t");
 	}
 	
 	/**
