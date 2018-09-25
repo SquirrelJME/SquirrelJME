@@ -1,14 +1,5 @@
 # SquirrelJME
 
- * Copyright (C) 2013-2018 Stephanie Gawroriski
-   <xer@multiphasicapps.net>
- * Copyright (C) 2013-2018 Multi-Phasic Applications
-   <http://multiphasicapps.net/>
- * _Lex_ (The SquirrelJME Mascot) was drawn by...
-   * "_Puppenstein_" <http://www.furaffinity.net/user/puppenstein/>
- * Support me on [Patreon](https://www.patreon.com/XerTheSquirrel)!
- * "SquirrelJME" and "Lex" are trademarked by Stephanie Gawroriski 2016-2018
-
 **SquirrelJME** is intended to be a Java ME 8 compatible environment for
 strange and many other devices. That is, you would be able to have a Java
 environment on a wide range of _Internet of Things_ devices, older computers
@@ -24,11 +15,25 @@ it is ported to Java ME. However some programs may run since Java ME is a
 subset of Java SE, so provided the desktop software does not use what is
 missing or not supported it will run.
 
- * [Version 0.0.2 Release Progress](
+ * Copyright (C) 2013-2018 Stephanie Gawroriski
+   <xer@multiphasicapps.net>
+ * Copyright (C) 2013-2018 Multi-Phasic Applications
+   <http://multiphasicapps.net/>
+ * "SquirrelJME" and "Lex" are trademarked by Stephanie Gawroriski 2016-2018
+ * _Lex_ (The SquirrelJME Mascot) was drawn by...
+   * "_Puppenstein_" <http://www.furaffinity.net/user/puppenstein/>
+ * The SquirrelJME Logo was illustrated by...
+   * Kat Adam-MacEwen
+   * Kat@CMYKat Designs & Illustrations <www.cmykat-designs.com>
+
+Information:
+
+ * [Version 0.0.2 Release Progress (GitHub)](
    https://github.com/XerTheSquirrel/SquirrelJME/projects/2)
  * [License](license.mkd)
    * _Source_: GNU General Public License, Version 3 or later
    * _Assets_: Creative Commons CC-BY-SA 4.0
+   * _Fonts_ : SIL Open Font License Version 1.1
  * [Code of Conduct](code-of-conduct.mkd)
  * [Building](building.mkd)
  * [Changelog](changelog.mkd)
