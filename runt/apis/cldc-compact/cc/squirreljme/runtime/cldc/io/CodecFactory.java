@@ -26,7 +26,7 @@ public final class CodecFactory
 	 * The encoding to use if it is unknown or not set anywhere.
 	 */
 	private static final String _FALLBACK_ENCODING =
-		"iso-8859-1";
+		"utf-8";
 	
 	/**
 	 * Not used.
@@ -91,6 +91,10 @@ public final class CodecFactory
 				// ASCII
 			case "ascii":
 				throw new todo.TODO();
+				
+				// IBM037
+			case "ibm037":
+				return new IBM037Encoder();
 
 				// ISO-8859-1
 			case "iso-8859-1":
@@ -175,6 +179,24 @@ public final class CodecFactory
 			case "us":
 			case "us-ascii":
 				return "ascii";
+				
+				// IBM037
+			case "037":
+			case "cp037":
+			case "cpibm37":
+			case "cs-ebcdic-cp-ca":
+			case "cs-ebcdic-cp-nl":
+			case "cs-ebcdic-cp-us":
+			case "cs-ebcdic-cp-wt":
+			case "csibm037":
+			case "ebcdic-cp-ca":
+			case "ebcdic-cp-nl":
+			case "ebcdic-cp-us":
+			case "ebcdic-cp-wt":
+			case "ibm037":
+			case "ibm-037":
+			case "ibm-37":
+				return "ibm037";
 			
 				// ISO-8859-1
 			case "819":

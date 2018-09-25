@@ -18,8 +18,9 @@ this was intended to be done but was forgotten.
 
 Only the following character encodings are supported:
 
- * _US-ASCII_
+ * _IBM037_
  * _ISO-8859-1_
+ * _ASCII_
  * _UTF-8_
 
 Note that UTF codepoints above U+FFFF are not fully supported and are not
