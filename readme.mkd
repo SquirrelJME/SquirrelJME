@@ -26,6 +26,8 @@ missing or not supported it will run.
    * Kat Adam-MacEwen
    * Kat@CMYKat Designs & Illustrations <www.cmykat-designs.com>
 
+You may support me on [Patreon](https://www.patreon.com/SquirrelJME)!
+
 Information:
 
  * [Version 0.0.2 Release Progress (GitHub)](
