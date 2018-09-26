@@ -110,7 +110,7 @@ web server online, the purchasing of new hardware/software, and for the
 purchasing of food items for consumption.
 
  * [Ko-Fi](http://ko-fi.com/xerthesquirrel)
- * [Patreon](https://www.patreon.com/XerTheSquirrel)
+ * [Patreon](https://www.patreon.com/SquirrelJME)
  * BitCoin (**BTC/XBT**): [`13UYwi2zuQd8NLhjyu1BA7a8NWktDotmq4`](
    bitcoin:13UYwi2zuQd8NLhjyu1BA7a8NWktDotmq4)
  * Ethereum (**ETH**): [`0xf9C7d3a5496E66140de099EEFBa1eD8446b319d2`](
