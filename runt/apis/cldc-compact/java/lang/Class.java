@@ -234,7 +234,9 @@ public final class Class<T>
 	 */
 	public boolean isArray()
 	{
-		return null != ObjectAccess.arrayComponentType(this);
+		// Guess what! Every array starts with with brackets so this is quite
+		// easily something which can be determined from the classname
+		return this._binaryname.startsWith("[");
 	}
 	
 	public boolean isAssignableFrom(Class<?> __a)
