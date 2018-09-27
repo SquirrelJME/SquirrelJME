@@ -790,6 +790,18 @@ public final class SpringThreadWorker
 					return rv;
 				}
 				
+				// Return the length of the array
+			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
+				"arrayLength:(Ljava/lang/Object;)I":
+				return ((SpringArrayObject)__args[0]).length();
+			
+				// Allocate array of a given class
+			case "	cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
+				"arrayNew:(Ljava/lang/Class;I)Ljava/lang/Object;":
+				{
+					throw new todo.TODO();
+				}
+			
 				// Get the class by the name of whatever is input
 			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
 				"classByName:(Ljava/lang/String;)Ljava/lang/Class;":

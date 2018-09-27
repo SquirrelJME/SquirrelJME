@@ -49,9 +49,10 @@ public final class ObjectAccess
 	public static final native int arrayLength(Object __a);
 	
 	/**
-	 * Creates a new array to store the given component.
+	 * Creates a new array of the given type, this is the actual array and
+	 * not the component.
 	 *
-	 * @param __t The array type.
+	 * @param __t The array type, not the component type.
 	 * @param __l The array length.
 	 * @return An array allocated to the given length.
 	 * @since 2018/09/25
