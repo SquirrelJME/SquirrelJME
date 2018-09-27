@@ -1,0 +1,6 @@
+# 2018/09/26
+
+## 23:26
+
+Nice way for arrays, is that I can do checking on an array just with the
+binary name.
