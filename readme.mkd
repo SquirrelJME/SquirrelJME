@@ -47,6 +47,8 @@ Information:
  * [Project Scope](scope.mkd)
  * [Compatibility](compatibility.mkd)
  * [SquirrelJME As A Runtime](asruntime.mkd)
+ * [CLDC 1.8 API (docs.oracle.com)](
+   https://docs.oracle.com/javame/8.0/api/cldc/api/overview-summary.html)
 
 ## Repository
 
