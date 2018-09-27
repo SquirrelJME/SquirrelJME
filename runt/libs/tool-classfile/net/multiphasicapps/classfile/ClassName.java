@@ -137,6 +137,27 @@ public class ClassName
 	}
 	
 	/**
+	 * Returns the component type of this class name.
+	 *
+	 * @return The component type.
+	 * @throws IllegalStateException If this is not an array.
+	 * @since 2018/09/27
+	 */
+	public final ClassName componentType()
+		throws IllegalStateException
+	{
+		// {@squirreljme.error JC2l This class is not an array, cannot get
+		// the component type. (The name of this class)}
+		if (!this.isArray())
+			throw new IllegalStateException(String.format("JC2l %s", this));
+		
+		FieldDescriptor fd = this.field().componentType();
+		if (fd == null)
+			return null;
+		return fd.className();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/09/27
 	 */

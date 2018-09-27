@@ -178,6 +178,17 @@ public final class FieldDescriptor
 	}
 	
 	/**
+	 * Returns the component type of the array if this is one.
+	 *
+	 * @return The component type or {@code null} if this is not one.
+	 * @since 2018/09/27
+	 */
+	public final FieldDescriptor componentType()
+	{
+		return this.component;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/06/12
 	 */
