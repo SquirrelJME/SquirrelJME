@@ -363,6 +363,8 @@ public final class SpringThreadWorker
 			// might end up just initializing classes and such
 			SpringMachine machine = this.machine;
 			Map<ClassName, SpringObject> com = machine.__classObjectMap();
+			Map<SpringObject, ClassName> ocm = machine.
+				__classObjectToNameMap();
 			synchronized (machine.classLoader().classLoadingLock())
 			{
 				// Pre-cached object already exists?
@@ -385,6 +387,7 @@ public final class SpringThreadWorker
 				
 				// Cache and use it
 				com.put(name, rv);
+				ocm.put(rv, name);
 				return rv;
 			}
 		}
@@ -796,10 +799,28 @@ public final class SpringThreadWorker
 				return ((SpringArrayObject)__args[0]).length();
 			
 				// Allocate array of a given class
-			case "	cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
+			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
 				"arrayNew:(Ljava/lang/Class;I)Ljava/lang/Object;":
 				{
-					throw new todo.TODO();
+					// Cannot do a reverse lookup
+					SpringMachine machine = this.machine;
+					Map<SpringObject, ClassName> ocm = machine.
+						__classObjectToNameMap();
+					synchronized (machine.classLoader().classLoadingLock())
+					{
+						// {@squirreljme.error BK1y Could not reverse class
+						// object to class name.}
+						ClassName cn = ocm.get((SpringObject)__args[0]);
+						if (cn == null)
+							throw new SpringVirtualMachineException("BK1y");
+						
+						// Lookup class for the component type, we need it
+						SpringClass cl = this.loadClass(cn.componentType());
+						
+						// Allocate array for the component type
+						return this.allocateArray(cl,
+							(Integer)__args[1]);
+					}
 				}
 			
 				// Get the class by the name of whatever is input

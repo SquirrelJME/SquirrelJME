@@ -59,6 +59,10 @@ public final class SpringMachine
 	private final Map<ClassName, SpringObject> _classobjects =
 		new HashMap<>();
 	
+	/** Class names by their objects. */
+	private final Map<SpringObject, ClassName> _namesbyclass =
+		new HashMap<>();
+	
 	/** Main entry point arguments. */
 	private final String[] _args;
 	
@@ -325,6 +329,17 @@ public final class SpringMachine
 	final Map<ClassName, SpringObject> __classObjectMap()
 	{
 		return this._classobjects;
+	}
+	
+	/**
+	 * Returns the mapping for objects to class names.
+	 *
+	 * @return The mapping of class objects to names.
+	 * @since 2018/09/29
+	 */
+	final Map<SpringObject, ClassName> __classObjectToNameMap()
+	{
+		return this._namesbyclass;
 	}
 	
 	/**
