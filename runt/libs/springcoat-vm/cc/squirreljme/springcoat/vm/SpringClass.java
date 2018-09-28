@@ -55,6 +55,12 @@ public final class SpringClass
 	/** The special class index. */
 	protected final int specialindex;
 	
+	/** The dimentions of this class. */
+	protected final int dimensions;
+	
+	/** The component type. */
+	protected final SpringClass component;
+	
 	/** Interface classes. */
 	private final SpringClass[] _interfaceclasses;
 	
@@ -83,11 +89,12 @@ public final class SpringClass
 	 * @param __interfaces The the interfaces this class implements.
 	 * @param __cf The class file for this class.
 	 * @param __si The special class index.
+	 * @param __ct The component type.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/07/21
 	 */
 	SpringClass(SpringClass __super, SpringClass[] __interfaces,
-		ClassFile __cf, int __si)
+		ClassFile __cf, int __si, SpringClass __ct)
 		throws NullPointerException
 	{
 		if (__interfaces == null || __cf == null)
@@ -99,6 +106,8 @@ public final class SpringClass
 		
 		this.file = __cf;
 		this.superclass = __super;
+		this.component = __ct;
+		this.dimensions = name.dimensions();
 		
 		// Check
 		this._interfaceclasses = (__interfaces = __interfaces.clone());
@@ -217,6 +226,28 @@ public final class SpringClass
 	}
 	
 	/**
+	 * Returns the component type of this class.
+	 *
+	 * @return The component type.
+	 * @since 2018/09/27
+	 */
+	public final SpringClass componentType()
+	{
+		return this.component;
+	}
+	
+	/**
+	 * Returns the number of array dimensions.
+	 *
+	 * @return The number of dimensions.
+	 * @since 2018/09/28
+	 */
+	public final int dimensions()
+	{
+		return this.name.dimensions();
+	}
+	
+	/**
 	 * Returns the fields which are only declared in this class.
 	 *
 	 * @return The fields only declared in this class.
@@ -285,6 +316,17 @@ public final class SpringClass
 	}
 	
 	/**
+	 * Is this an array?
+	 *
+	 * @return If this is an array.
+	 * @since 2018/09/27
+	 */
+	public final boolean isArray()
+	{
+		return this.name.isArray();
+	}
+	
+	/**
 	 * Checks if this class can be assigned from the target class, that is
 	 * {@code this = (ThisClass)__o}.
 	 *
@@ -314,22 +356,15 @@ public final class SpringClass
 					return true;
 		}
 		
-		/*
-		// Check super classes and interfaces
-		for (SpringClass r = this; r != null; r = r.superclass)
-		{
-			// Same class
-			if (r == __o)
+		// If this is an array and the other type is an array with the same
+		// number of dimensions, then compare the base type so that say
+		// Number[] is assignable from Integer[].
+		int thisdims = this.dimensions(),
+			otherdims = __o.dimensions();
+		if (thisdims > 0 && thisdims == otherdims)
+			if (this.__rootType().isAssignableFrom(__o.__rootType()))
 				return true;
-			
-			// Check interfaces
-			for (SpringClass i : r._interfaceclasses)
-				if (i.isAssignableFrom(__o))
-					return true;
-		}
-		*/
 		
-		// Not assignable from the class
 		return false;
 	}
 	
@@ -654,6 +689,20 @@ public final class SpringClass
 	public final String toString()
 	{
 		return this.name.toString();
+	}
+	
+	/**
+	 * Returns the root type, the base of the component.
+	 *
+	 * @return The root type of this type.
+	 * @since 2018/09/27
+	 */
+	private final SpringClass __rootType()
+	{
+		SpringClass rv = this;
+		for (SpringClass r = this; r != null; r = r.component)
+			rv = r;
+		return rv;
 	}
 }
 

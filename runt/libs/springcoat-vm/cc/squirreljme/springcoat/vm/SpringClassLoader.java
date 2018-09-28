@@ -139,9 +139,14 @@ public final class SpringClassLoader
 			for (int i = 0; i < numinterfaces; i++)
 				interfaceclasses[i] = this.loadClass(interfacenames[i]);
 			
+			// Component?
+			SpringClass component = null;
+			if (__cn.isArray())
+				component = this.loadClass(__cn.componentType());
+			
 			// Load class information
 			rv = new SpringClass(superclass, interfaceclasses, cf,
-				this._nexcsi++);
+				this._nexcsi++, component);
 			
 			// Store for later use
 			classes.put(__cn, rv);

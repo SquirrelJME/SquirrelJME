@@ -151,10 +151,20 @@ public class ClassName
 		if (!this.isArray())
 			throw new IllegalStateException(String.format("JC2l %s", this));
 		
-		FieldDescriptor fd = this.field().componentType();
-		if (fd == null)
-			return null;
-		return fd.className();
+		return this.field().componentType().className();
+	}
+	
+	/**
+	 * Returns the number of array dimensions that are used.
+	 *
+	 * @return The array dimensions.
+	 * @since 2018/09/28
+	 */
+	public final int dimensions()
+	{
+		if (!this.isArray())
+			return 0;
+		return this.field().dimensions();
 	}
 	
 	/**

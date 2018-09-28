@@ -27,11 +27,17 @@ public final class Class<T>
 	/** The interface classes of this class. */
 	private final Class<?>[] _interfaceclasses;
 	
+	/** The component type. */
+	private final Class<?> _component;
+	
 	/** The binary name of this class. */
 	private final String _binaryname;
 	
 	/** Special class reference index. */
 	private final int _specialindex;
+	
+	/** The number of dimensions. */
+	private final int _dimensions;
 	
 	/** Has the assertion status been checked already? */
 	private volatile boolean _checkedassert;
@@ -52,7 +58,8 @@ public final class Class<T>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/12
 	 */
-	private Class(int __csi, String __bn, Class<?> __sc, Class<?>[] __ic)
+	private Class(int __csi, String __bn, Class<?> __sc, Class<?>[] __ic,
+		Class<?> __ct)
 		throws NullPointerException
 	{
 		if (__bn == null)
@@ -62,6 +69,13 @@ public final class Class<T>
 		this._binaryname = __bn;
 		this._superclass = __sc;
 		this._interfaceclasses = __ic;
+		this._component = __ct;
+		
+		// Count dimensions, used for comparison purposes
+		int dims = 0;
+		for (; __bn.charAt(dims) == '['; dims++)
+			;
+		this._dimensions = dims;
 	}
 	
 	/**
@@ -278,6 +292,15 @@ public final class Class<T>
 					return true;
 		}
 		
+		// If this is an array and the other type is an array with the same
+		// number of dimensions, then compare the base type so that say
+		// Number[] is assignable from Integer[].
+		int thisdims = this._dimensions,
+			otherdims = __cl._dimensions;
+		if (thisdims > 0 && thisdims == otherdims)
+			if (this.__rootType().isAssignableFrom(__cl.__rootType()))
+				return true;
+		
 		// Not assignable
 		return false;
 	}
@@ -386,6 +409,20 @@ public final class Class<T>
 		// Set as marked
 		this._checkedassert = true;
 		this._useassert = rv;
+		return rv;
+	}
+	
+	/**
+	 * Returns the root type, the base of the component.
+	 *
+	 * @return The root type of this type.
+	 * @since 2018/09/27
+	 */
+	private final Class<?> __rootType()
+	{
+		Class<?> rv = this;
+		for (Class<?> r = this; r != null; r = r._component)
+			rv = r;
 		return rv;
 	}
 }
