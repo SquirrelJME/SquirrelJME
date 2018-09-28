@@ -19,7 +19,7 @@ final class __PrintFState__
 {
 	/** Flags specified. */
 	final boolean[] _flags =
-		new boolean[__Flag__.COUNT];
+		new boolean[__PrintFFlag__.COUNT];
 	
 	/** The argument index. */
 	int _argdx =
@@ -59,6 +59,20 @@ final class __PrintFState__
 	}
 	
 	/**
+	 * Sets the conversion.
+	 *
+	 * @param __p The primary conversion.
+	 * @param __s The secondary conversion.
+	 * @throws IllegalArgumentException If the conversion is not valid.
+	 * @since 2018/09/28
+	 */
+	final void __setConversion(int __p, int __s)
+		throws IllegalArgumentException
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Sets the specified flag.
 	 *
 	 * @param __c The flag to set.
@@ -70,7 +84,7 @@ final class __PrintFState__
 		throws IllegalArgumentException
 	{
 		// Is this flag one that exists?
-		__Flag__ f = __Flag__.__decode(__c);
+		__PrintFFlag__ f = __PrintFFlag__.__decode(__c);
 		if (f == null)
 			return false;
 		
@@ -102,65 +116,6 @@ final class __PrintFState__
 			throw new IllegalArgumentException("ZZ1o " + __w);
 		
 		this._width = __w;
-	}
-	
-	/**
-	 * Enumeration flags which are available for use.
-	 *
-	 * @since 2018/09/24
-	 */
-	static enum __Flag__
-	{
-		/** Left justification. */
-		LEFT_JUSTIFIED,
-		
-		/** Alternative form. */
-		ALTERNATIVE_FORM,
-		
-		/** Include sign always. */
-		ALWAYS_SIGNED,
-		
-		/** Padded sign with space. */
-		SPACE_FOR_POSITIVE,
-		
-		/** Zero padded. */
-		ZERO_PADDED,
-		
-		/** Locale specific grouping specifiers. */
-		LOCALE_GROUPING,
-		
-		/** Negative numbers in parenthesis. */
-		NEGATIVE_PARENTHESIS,
-		
-		/** End. */
-		;
-		
-		/** The number of flags used. */
-		public static final int COUNT =
-			__Flag__.values().length;
-		
-		/**
-		 * Decodes the given character to a flag.
-		 *
-		 * @param __c The character to decode.
-		 * @return The flag for the character.
-		 * @since 2018/09/24
-		 */
-		static final __Flag__ __decode(char __c)
-		{
-			switch (__c)
-			{
-				case '-':	return __Flag__.LEFT_JUSTIFIED;
-				case '#':	return __Flag__.ALTERNATIVE_FORM;
-				case '+':	return __Flag__.ALWAYS_SIGNED;
-				case ' ':	return __Flag__.SPACE_FOR_POSITIVE;
-				case '0':	return __Flag__.ZERO_PADDED;
-				case ',':	return __Flag__.LOCALE_GROUPING;
-				case '(':	return __Flag__.NEGATIVE_PARENTHESIS;
-				default:
-					return null;
-			}
-		}
 	}
 }
 
