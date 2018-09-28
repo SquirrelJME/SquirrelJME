@@ -379,11 +379,22 @@ public final class SpringThreadWorker
 				SpringClass classobj = this.resolveClass(
 					new ClassName("java/lang/Class"));
 				
-				// Initialize class with special class index
+				// Copy interfaces into a class array
+				SpringClass[] interfaces = resclass.interfaceClasses();
+				int ni = interfaces.length;
+				SpringArrayObject ints = this.allocateArray(classobj, ni);
+				for (int i = 0; i < ni; i++)
+					ints.set(i, this.asVMObject(interfaces[i]));
+				
+				// Initialize class with special class index and some class
+				// information
 				rv = this.newInstance(classobj.name(),
-					new MethodDescriptor("(ILjava/lang/String;)V"),
+					new MethodDescriptor("(ILjava/lang/String;" +
+						"Ljava/lang/Class;[Ljava/lang/Class;)V"),
 					resclass.specialIndex(),
-					this.asVMObject(name.toString()));
+					this.asVMObject(name.toString()),
+					this.asVMObject(resclass.superClass()),
+					ints);
 				
 				// Cache and use it
 				com.put(name, rv);
