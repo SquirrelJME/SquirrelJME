@@ -163,7 +163,9 @@ public final class FieldDescriptor
 		if (this.dimensions > 0)
 			return new ClassName(this.toString());
 		
-		// Otherwise as normal class
+		// Otherwise as normal class (or primitive representation)
+		if (this.primitive)
+			return ClassName.fromPrimitiveType(this.primitiveType());
 		return this.classname;
 	}
 	
@@ -186,6 +188,17 @@ public final class FieldDescriptor
 	public final FieldDescriptor componentType()
 	{
 		return this.component;
+	}
+	
+	/**
+	 * Returns the number of dimensions in this class.
+	 *
+	 * @return The number of dimensions in the class.
+	 * @since 2018/09/28
+	 */
+	public final int dimensions()
+	{
+		return this.dimensions;
 	}
 	
 	/**
