@@ -1,0 +1,8 @@
+# 2018/09/28
+
+## 1:39
+
+I did a little hack, I allowed `Object` and `Class` access to any class
+regardless of the source. Since they might be messing with private
+classes there is probably no way to mess with those things.
+
