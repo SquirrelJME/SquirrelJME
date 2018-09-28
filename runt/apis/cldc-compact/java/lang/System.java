@@ -10,6 +10,7 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import cc.squirreljme.runtime.cldc.asm.SystemProperties;
 import cc.squirreljme.runtime.cldc.io.StandardError;
 import cc.squirreljme.runtime.cldc.io.StandardOutput;
@@ -40,10 +41,95 @@ public final class System
 		throw new Error("ZZ0g");
 	}
 	
-	public static void arraycopy(Object __a, int __b, Object __c, int __d,
-		int __e)
+	/**
+	 * Copies from the source array to the destination.
+	 *
+	 * @param __src The source array.
+	 * @param __srcoff The source offset.
+	 * @param __dest The destination array.
+	 * @param __destoff The destination offset.
+	 * @param __copylen The number of elements to copy.
+	 * @throws ArrayStoreException If the destination array cannot contain
+	 * the given data.
+	 * @throws IndexOutOfBoundsException If the offset and or/lengths are
+	 * negative or exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/27
+	 */
+	public static void arraycopy(Object __src, int __srcoff,
+		Object __dest, int __destoff, int __copylen)
+		throws ArrayStoreException, IndexOutOfBoundsException,
+			NullPointerException
 	{
-		throw new todo.TODO();
+		if (__src == null || __dest == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error ZZ1u Negative offsets and/or length cannot be
+		// specified. (The source offset; The destination offset; The copy
+		// length)}
+		if (__srcoff < 0 || __destoff < 0 || __copylen < 0)
+			throw new IndexOutOfBoundsException(String.format("ZZ1u %d %d %d",
+				__srcoff, __destoff, __copylen));
+		
+		// {@squirreljme.error ZZ1v Copy operation would exceed the bounds of
+		// the array. (Source offset; Source length; Destination offset;
+		// Destination length; The copy length)}
+		int srclen = ObjectAccess.arrayLength(__src),
+			destlen = ObjectAccess.arrayLength(__dest);
+		if (__srcoff + __copylen > srclen ||
+			__destoff + __copylen > srclen)
+			throw new IndexOutOfBoundsException(String.format(
+				"ZZ1v %d %d %d %d %d", __srcoff, srclen, __destoff, destlen,
+				__copylen));
+		
+		// {@squirreljme.error ZZ1w The source array type is not compatible
+		// with destination array. (The source array; The destination array)}
+		if (!__dest.getClass().isAssignableFrom(__src.getClass()))
+			throw new ArrayStoreException(String.format(
+				"ZZ1w %s %s", __src, __dest));
+		
+		// These offsets for the loops are the same
+		int i = __srcoff,
+			o = __destoff,
+			end = __srcoff + __copylen;
+		
+		// Copy depending on the type
+		if (__src instanceof boolean[])
+			for (boolean[] s = (boolean[])__src, d = (boolean[])__dest;
+				i < end; i++, o++)
+			d[o] = s[i];
+		else if (__src instanceof byte[])
+			for (byte[] s = (byte[])__src, d = (byte[])__dest;
+				i < end; i++, o++)
+			d[o] = s[i];
+		else if (__src instanceof short[])
+			for (short[] s = (short[])__src, d = (short[])__dest;
+				i < end; i++, o++)
+			d[o] = s[i];
+		else if (__src instanceof char[])
+			for (char[] s = (char[])__src, d = (char[])__dest;
+				i < end; i++, o++)
+			d[o] = s[i];
+		else if (__src instanceof int[])
+			for (int[] s = (int[])__src, d = (int[])__dest;
+				i < end; i++, o++)
+			d[o] = s[i];
+		else if (__src instanceof long[])
+			for (long[] s = (long[])__src, d = (long[])__dest;
+				i < end; i++, o++)
+			d[o] = s[i];
+		else if (__src instanceof float[])
+			for (float[] s = (float[])__src, d = (float[])__dest;
+				i < end; i++, o++)
+			d[o] = s[i];
+		else if (__src instanceof double[])
+			for (double[] s = (double[])__src, d = (double[])__dest;
+				i < end; i++, o++)
+			d[o] = s[i];
+		else
+			for (Object[] s = (Object[])__src, d = (Object[])__dest;
+				i < end; i++, o++)
+			d[o] = s[i];
 	}
 	
 	/**

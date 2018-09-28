@@ -21,6 +21,12 @@ public final class Class<T>
 	private static final String _ASSERTION_PREFIX =
 		"cc.squirreljme.runtime.noassert.";
 	
+	/** The super class of this class. */
+	private final Class<?> _superclass;
+	
+	/** The interface classes of this class. */
+	private final Class<?>[] _interfaceclasses;
+	
 	/** The binary name of this class. */
 	private final String _binaryname;
 	
@@ -41,10 +47,12 @@ public final class Class<T>
 	 *
 	 * @param __csi Class special index.
 	 * @param __bn The binary name of this class.
+	 * @param __sc Super classes.
+	 * @param __ic Interface classes.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/12
 	 */
-	private Class(int __csi, String __bn)
+	private Class(int __csi, String __bn, Class<?> __sc, Class<?>[] __ic)
 		throws NullPointerException
 	{
 		if (__bn == null)
@@ -52,6 +60,8 @@ public final class Class<T>
 		
 		this._specialindex = __csi;
 		this._binaryname = __bn;
+		this._superclass = __sc;
+		this._interfaceclasses = __ic;
 	}
 	
 	/**
@@ -221,9 +231,10 @@ public final class Class<T>
 	 * @return The superclass or {@code null} if there is none.
 	 * @since 2017/03/29
 	 */
+	@SuppressWarnings({"unchecked"})
 	public Class<? super T> getSuperclass()
 	{
-		throw new todo.TODO();
+		return (Class<? super T>)((Object)this._superclass);
 	}
 	
 	/**
@@ -239,9 +250,36 @@ public final class Class<T>
 		return this._binaryname.startsWith("[");
 	}
 	
-	public boolean isAssignableFrom(Class<?> __a)
+	/**
+	 * Checks if the given class can be assigned to this one, the check is
+	 * in the same order as {@link #instanceOf(Object)} that is
+	 * {@code a.getClass().isAssignableFrom(b.getClass()) == (a instanceof b)}.
+	 *
+	 * @param __cl The other class type.
+	 * @return If the otehr class can be assigned to this one.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/27
+	 */
+	public boolean isAssignableFrom(Class<?> __cl)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// Go through target superclasses to find this class
+		for (Class<?> r = __cl; r != null; r = r._superclass)
+		{
+			if (r == this)
+				return true;
+		
+			// Go through interfaces for the class to find this class
+			for (Class<?> i : r._interfaceclasses)
+				if (i == this)
+					return true;
+		}
+		
+		// Not assignable
+		return false;
 	}
 	
 	public boolean isInterface()
@@ -249,13 +287,21 @@ public final class Class<T>
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Checks if the given class is an instance of this class.
+	 *
+	 * @param __o The object to check.
+	 * @return If the given object is an instance of this class.
+	 * @since 2018/09/27
+	 */
 	public boolean isInstance(Object __o)
 	{
 		// Null will never be an instance
 		if (__o == null)
 			return false;
 		
-		throw new todo.TODO();
+		// This is in the same form
+		return this.isAssignableFrom(__o.getClass());
 	}
 	
 	public T newInstance()
