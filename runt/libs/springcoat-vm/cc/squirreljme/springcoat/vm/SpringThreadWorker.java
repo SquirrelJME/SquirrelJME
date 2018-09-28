@@ -435,8 +435,18 @@ public final class SpringThreadWorker
 		// Get our current class
 		SpringClass self = this.contextClass();
 		
+		// No current class, treat as always valid
+		if (self == null)
+			return true;
+		
+		// Allow object and class unlimited access to anything
+		ClassName cn = self.name();
+		if (cn.toString().equals("java/lang/Object") ||
+			cn.toString().equals("java/lang/Class"))
+			return true;
+		
 		// This is ourself so access is always granted
-		if (__cl == self)
+		else if (__cl == self)
 			return true;
 		
 		// Protected class, we must be a super class
@@ -480,6 +490,10 @@ public final class SpringThreadWorker
 		SpringClass self = this.contextClass(),
 			target = this.machine.classLoader().loadClass(__m.inClass());
 		
+		// No current class, treat as always valid
+		if (self == null)
+			return true;
+		
 		// If in the same class all access is permitted
 		if (self == target)
 			return true;
@@ -517,14 +531,28 @@ public final class SpringThreadWorker
 	public final SpringClass contextClass()
 	{
 		SpringThread thread = this.thread;
-		SpringThread.Frame frame = thread.currentFrame();
+		SpringThread.Frame[] frames = thread.frames();
 		
-		// No frame exists
-		if (frame == null)
-			return null;
+		// Go through frames
+		for (int n = frames.length, i = n - 1; i >= 0; i--)
+		{
+			SpringThread.Frame frame = frames[i];
+			
+			// No method, could be a blank frame
+			SpringMethod m = frame.method();
+			if (m == null)
+				continue;
+			
+			// If this is the assembly classes, treat it as if the caller were
+			// doing things rather than the asm classes itself
+			ClassName icl = frame.method().inClass();
+			if (icl.toString().startsWith("cc/squirreljme/runtime/cldc/asm/"))
+				continue;
+			
+			return this.machine.classLoader().loadClass(icl);
+		}
 		
-		// Otherwise lookup according to the method
-		return this.machine.classLoader().loadClass(frame.method().inClass());
+		return null;
 	}
 	
 	/**
@@ -999,11 +1027,11 @@ public final class SpringThreadWorker
 			throw new NullPointerException("NARG");
 		
 		// {@squirreljme.error BK15 Could not access the specified class.
-		// (The class to access)}
+		// (The class to access; The context class)}
 		SpringClass rv = this.loadClass(__cl);
 		if (!this.checkAccess(rv))
-			throw new SpringIllegalAccessException(String.format("BK15 %s",
-				__cl));
+			throw new SpringIllegalAccessException(String.format("BK15 %s %s",
+				__cl, this.contextClass()));
 		
 		return rv;
 	}

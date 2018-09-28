@@ -351,8 +351,36 @@ public final class Formatter
 				for (c = __fmt.charAt(at); __pf.__setFlag(c); at++)
 					;
 			
-			if (true)
+			// Parse width
+			c = __fmt.charAt(at);
+			if (!__pf.__hasWidth() && c >= '1' && c <= '9')
+			{
+				// Read the entire number
+				int base = at;
+				for (c = __fmt.charAt(at); c >= '0' && c <= '9'; at++)
+					;
+				
+				// Set width
+				__pf.__setWidth(Integer.valueOf(__fmt.substring(base, at)));
+			}
+			
+			// Parse precision
+			c = __fmt.charAt(at);
+			if (c == '.')
 				throw new todo.TODO();
+			
+			// Parse the conversion
+			c = __fmt.charAt(at);
+			if (c == 't' || c == 'T')
+			{
+				__pf.__setConversion(c, __fmt.charAt(at + 1));
+				at++; 
+			}
+			else
+				__pf.__setConversion(c, -1);
+			
+			// Skip conversion character
+			at++;
 		}
 		
 		// {@squirreljme.error ZZ1m Could not parse the format specifier
