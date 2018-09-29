@@ -10,10 +10,16 @@
 
 package java.security;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+
 public abstract class Permission
 {
 	/** The permission name. */
 	private final String _name;
+	
+	/** String form. */
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes the base permission.
@@ -49,7 +55,14 @@ public abstract class Permission
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>((rv =
+			"(\"" + this.getClass().getName() + "\" \"" + this._name + "\")"));
+		
+		return rv;
 	}
 }
 
