@@ -228,6 +228,17 @@ public class NewBootstrap
 				// Make the boot JAR always first
 				mergeorder.add(0, bp);
 				
+				// {@squirreljme.error NB0d Expected the CLDC libraries to be
+				// present in the build.}
+				BuildProject cldccompact = projects.get("cldc-compact");
+				if (!mergeorder.cldccompact)
+					throw new RuntimeException("NB0d");
+				
+				// Make the CLDC compact JAR always last, so that its system
+				// entries are always shaded last. This is because they need
+				// to be replaced accordingly to operate correctly
+				mergeorder.add(cldccompact);
+				
 				// Create temporary JAR
 				tempjar = Files.createTempFile("squirreljme-boot-out", ".jar");
 				
