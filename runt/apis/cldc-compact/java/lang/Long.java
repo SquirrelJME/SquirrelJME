@@ -328,7 +328,6 @@ public final class Long
 	 */
 	public static Long valueOf(long __v)
 	{
-		todo.TODO.note("Cache this?");
 		return new Long(__v);
 	}
 }

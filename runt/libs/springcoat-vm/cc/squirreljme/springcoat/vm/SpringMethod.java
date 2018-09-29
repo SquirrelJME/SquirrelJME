@@ -45,7 +45,7 @@ public final class SpringMethod
 	SpringMethod(ClassName __ic, Method __m, String __if)
 		throws NullPointerException
 	{
-		if (__ic == null || __m == null || __if == null)
+		if (__ic == null || __m == null)
 			throw new NullPointerException("NARG");
 		
 		this.inclass = __ic;
@@ -87,7 +87,7 @@ public final class SpringMethod
 	/**
 	 * Returns the file this method is in.
 	 *
-	 * @return The file this method is in.
+	 * @return The file this method is in, may be {@code null}.
 	 * @since 2018/09/20
 	 */
 	public final String inFile()

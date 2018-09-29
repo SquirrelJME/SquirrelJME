@@ -323,7 +323,6 @@ public final class Integer
 	 */
 	public static Integer valueOf(int __v)
 	{
-		todo.TODO.note("Cache this?");
 		return new Integer(__v);
 	}
 }
