@@ -317,9 +317,18 @@ public final class StringBuilder
 		throw new todo.TODO();
 	}
 	
-	public StringBuilder insert(int __a, Object __b)
+	/**
+	 * Inserts the given value at the given position.
+	 *
+	 * @param __dx The index to insert at.
+	 * @param __v The value to insert.
+	 * @return {@code this}.
+	 * @throws IndexOutOfBoundsException If the index is out of bounds.
+	 * @since 2018/09/29
+	 */
+	public StringBuilder insert(int __dx, Object __v)
 	{
-		throw new todo.TODO();
+		return this.insert(__dx, (__v == null ? "null" : __v.toString()));
 	}
 	
 	/**

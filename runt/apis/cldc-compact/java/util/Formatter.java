@@ -200,13 +200,12 @@ public final class Formatter
 		if (__args == null)
 			__args = new Object[0];
 		
+		// Global state needed for argument handling.
+		__PrintFGlobal__ pg = new __PrintFGlobal__();
+		
 		// Writing to the appendable may cause an exception to occur
 		try
 		{
-			// Used to store the implicit argument index in the event one is
-			// not specified
-			int[] impargdx = new int[1];
-			
 			// Process input characters
 			Appendable out = this._out;
 			for (int i = 0, n = __fmt.length(); i < n; i++)
@@ -226,7 +225,7 @@ public final class Formatter
 				i = this.__specifier(pf, i, __fmt);
 				
 				// Handle output of the specifier
-				throw new todo.TODO();
+				this.__output(out, pg, pf, __args);
 			}
 		}
 		
@@ -288,6 +287,35 @@ public final class Formatter
 	}
 	
 	/**
+	 * Outputs to the state to the appendable.
+	 *
+	 * @param __out The output appendable.
+	 * @param __pg The global state.
+	 * @param __pf The standard state.
+	 * @param __args The arguments.
+	 * @throws IllegalArgumentException If the format is not valid.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/28
+	 */
+	private static void __output(Appendable __out, __PrintFGlobal__ __pg,
+		__PrintFState__ __pf, Object... __args)
+		throws IllegalArgumentException, IOException, NullPointerException
+	{
+		if (__out == null || __pg == null || __pf == null || __args == null)
+			throw new NullPointerException("NARG");
+		
+		// Depends on the conversion
+		switch (__pf._conv)
+		{
+				// {@squirreljme.error ZZ1z Unimplemented conversion.
+				// (The conversion)}
+			default:
+				throw new todo.TODO("ZZ1z " + __pf._conv);
+		}
+	}
+	
+	/**
 	 * Parses the specifier in the input format.
 	 *
 	 * This parses the following, just returning that information:
@@ -300,13 +328,12 @@ public final class Formatter
 	 * calling loop can properly set its counter.
 	 * @throws IllegalArgumentException If the format specifiers are not
 	 * correct.
-	 * @throws IOException If writing failed.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/23
 	 */
 	private static int __specifier(__PrintFState__ __pf, int __base,
 		String __fmt)
-		throws IllegalArgumentException, IOException, NullPointerException
+		throws IllegalArgumentException, NullPointerException
 	{
 		if (__pf == null || __fmt == null)
 			throw new NullPointerException("NARG");
