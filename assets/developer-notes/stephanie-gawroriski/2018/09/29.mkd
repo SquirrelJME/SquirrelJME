@@ -1,0 +1,6 @@
+# 2018/09/29
+
+## 1:42
+
+The documentation says that general types (bool, hashcode, and string) take
+an alternative flag but that is actually not the case.
