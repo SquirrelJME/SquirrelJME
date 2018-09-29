@@ -24,11 +24,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -216,18 +219,28 @@ public class NewBootstrap
 				// {@squirreljme.error NB0a Merging output JAR file.}
 				System.err.println("NB0a");
 				
+				// {@squirreljme.error NB0b Expected the entry point boot JAR
+				// to be within the merge JAR set.}
+				List<BuildProject> mergeorder = new ArrayList<>(mergethese);
+				if (!mergeorder.remove(bp))
+					throw new RuntimeException("NB0b");
+				
+				// Make the boot JAR always first
+				mergeorder.add(0, bp);
+				
 				// Create temporary JAR
 				tempjar = Files.createTempFile("squirreljme-boot-out", ".jar");
 				
 				// Open output
+				Map<String, BuildProject> shaded = new HashMap<>();
 				Map<String, Set<String>> services = new LinkedHashMap<>();
 				try (ZipOutputStream zos = new ZipOutputStream(Channels.
 					newOutputStream(FileChannel.open(tempjar,
 					StandardOpenOption.WRITE, StandardOpenOption.CREATE))))
 				{
 					// Copy contents from other JARs
-					for (BuildProject dp : mergethese)
-						__mergeInto(dp, zos, dp == bp, services);
+					for (BuildProject dp : mergeorder)
+						__mergeInto(dp, zos, dp == bp, services, shaded);
 					
 					// Write services as needed
 					byte[] buf = new byte[512];
@@ -507,16 +520,18 @@ public class NewBootstrap
 	 * @param __zos The destination.
 	 * @param __useman Use the manifest?
 	 * @param __svs Service list.
+	 * @param __shade Used to detect shading.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/10/28
 	 */
 	private static void __mergeInto(BuildProject __bp, ZipOutputStream __zos,
-		boolean __useman, Map<String, Set<String>> __svs)
+		boolean __useman, Map<String, Set<String>> __svs,
+		Map<String, BuildProject> __shade)
 		throws IOException, NullPointerException
 	{
 		// Check
-		if (__bp == null || __zos == null || __svs == null)
+		if (__bp == null || __zos == null || __svs == null || __shade == null)
 			throw new NullPointerException("NARG");
 		
 		// Go through the input
@@ -594,6 +609,18 @@ public class NewBootstrap
 					// Do not write this entry
 					continue;
 				}
+				
+				// {@squirreljme.error NB0c The specified entry has been
+				// shaded out, an earlier file is taking priority. (The entry;
+				// The base project; The current project)}
+				BuildProject shadeout = __shade.get(name);
+				if (shadeout != null)
+				{
+					System.err.printf("NB0c %s %s %s%n", e, shadeout.name,
+						__bp.name);
+					continue;
+				}
+				__shade.put(name, __bp);
 				
 				// Write to target
 				__zos.putNextEntry(e);
