@@ -29,5 +29,17 @@ public abstract class BasicLocale
 			return (char)(__c + 0x20);
 		return __c;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/09/29
+	 */
+	@Override
+	public char toUpperCase(char __c)
+	{
+		if ((__c >= 'a' && __c <= 'z') || (__c >= 0xE0 && __c <= 0xFE))
+			return (char)(__c - 0x20);
+		return __c;
+	}
 }
 

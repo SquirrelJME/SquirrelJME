@@ -58,7 +58,11 @@ public final class String
 	
 	/** Is this string already lowercased? */
 	private static final int _QUICK_ISLOWER =
-		0b0000_0000__0000_0000___0000_0000__0000_0000;
+		0b0000_0000__0000_0000___0000_0000__0000_0001;
+	
+	/** Is this string already uppercased? */
+	private static final int _QUICK_ISUPPER =
+		0b0000_0000__0000_0000___0000_0000__0000_0010;
 	
 	/** The basic character sequence data. */
 	private final BasicSequence _sequence;
@@ -785,9 +789,52 @@ public final class String
 		return this;
 	}
 	
+	/**
+	 * Translates this string to uppercase using the current locale.
+	 *
+	 * Java ME specifies that only Latin-1 characters are supported
+	 *
+	 * @return The uppercased result of this string.
+	 * @since 2018/09/29
+	 */
 	public String toUpperCase()
 	{
-		throw new todo.TODO();
+		// If this string is uppercased already do not mess with it
+		if ((this._quickflags & String._QUICK_ISUPPER) != 0)
+			return this;
+		
+		// Needed for case conversion
+		BasicSequence sequence = this._sequence;
+		Locale locale = DefaultLocale.defaultLocale();
+		
+		// Setup new character array for the conversion
+		int n = this.length();
+		char[] rv = new char[n];
+		
+		// Copy and convert characters
+		boolean changed = false;
+		for (int i = 0; i < n; i++)
+		{
+			char a = sequence.charAt(i),
+				b = locale.toUpperCase(a);
+			
+			// Detect if the string actually changed
+			if (!changed && a != b)
+				changed = true;
+			
+			rv[i] = b;
+		}
+		
+		// String was unchanged, so forget about the array we just handled and
+		// set that the string is lowercase
+		if (!changed)
+		{
+			this._quickflags |= String._QUICK_ISUPPER;
+			return this;
+		}
+		
+		// New string will be uppercase, so ignore this operation
+		return new String(new CharArraySequence(rv), String._QUICK_ISUPPER);
 	}
 	
 	/**
