@@ -489,6 +489,29 @@ public final class ByteCode
 	}
 	
 	/**
+	 * Reads an unsigned short from the raw byte code at the given address.
+	 *
+	 * @param __addr The address to read from.
+	 * @return The read unsigned short.
+	 * @throws IndexOutOfBoundsException If the address is out of bounds.
+	 * @since 2018/09/28
+	 */
+	public final int readRawCodeUnsignedShort(int __addr)
+		throws IndexOutOfBoundsException
+	{
+		// {@squirreljme.error JC2m Out of bounds read of unsigned short from
+		// raw byte code. (The address)}
+		if (__addr < 0 || __addr >= this.codelen - 1)
+			throw new IndexOutOfBoundsException(
+				String.format("JC2m %d", __addr));
+		
+		byte[] rad = this._rawattributedata;
+		int d = __addr + ByteCode._CODE_OFFSET;
+		return ((rad[d] & 0xFF) << 8) |
+			(rad[d + 1] & 0xFF);
+	}
+	
+	/**
 	 * Returns the stack map table.
 	 *
 	 * @return The stack map table.
