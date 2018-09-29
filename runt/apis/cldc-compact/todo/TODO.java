@@ -41,6 +41,17 @@ public class TODO
 	 */
 	public TODO()
 	{
+		this(null);
+	}
+	
+	/**
+	 * Initializes the exception, prints the trace, and exits the program.
+	 *
+	 * @param __s Message input.
+	 * @since 2018/09/29
+	 */
+	public TODO(String __s)
+	{
 		// Detect TODOs tripping multiple times and fail
 		boolean doubletripped = TODO._DOUBLE_TRIP;
 		if (doubletripped)
@@ -52,10 +63,13 @@ public class TODO
 		if (ps != null)
 		{
 			ps.println("****************************************************");
-			ps.println("INCOMPLETE CODE HAS BEEN REACHED:");
+			ps.print("INCOMPLETE CODE HAS BEEN REACHED: ");
+			if (__s != null)
+				ps.print(__s);
+			ps.println();
 			
 			// Print the trace
-			printStackTrace(ps);
+			this.printStackTrace(ps);
 			
 			// Ending banner
 			ps.println("****************************************************");
