@@ -6,3 +6,7 @@ I did a little hack, I allowed `Object` and `Class` access to any class
 regardless of the source. Since they might be messing with private
 classes there is probably no way to mess with those things.
 
+## 21:31
+
+So definitely the way I setup printf format parsing, it is very nice and
+it is very clean. Because this is one insanely complex parsing stuff!
