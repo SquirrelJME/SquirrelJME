@@ -203,6 +203,18 @@ public final class DebugAccess
 	}
 	
 	/**
+	 * Unresolves the string to the given pointer.
+	 *
+	 * @param __s The string to resolve.
+	 * @return The pointer to the string, or {@code -1} if it is not valid.
+	 * @since 2018/09/29
+	 */
+	public static final long unresolveString(String __s)
+	{
+		return DebugAccess.__unresolveString(__s);
+	}
+	
+	/**
 	 * Combines an integer to long.
 	 *
 	 * @param __dx The index.

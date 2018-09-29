@@ -848,6 +848,12 @@ public final class SpringThreadWorker
 				"resolveString:(J)Ljava/lang/String;":
 				return this.asVMObject(
 					this.machine.debugResolveString((Long)__args[0]));
+					
+				// Unresolve string pointer
+			case "cc/squirreljme/runtime/cldc/asm/DebugAccess::" +
+				"unresolveString:(Ljava/lang/String;)J":
+				return this.machine.debugUnresolveString(
+					this.<String>asNativeObject(String.class, __args[0]));
 			
 				// Return the length of the array
 			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
@@ -1934,6 +1940,15 @@ public final class SpringThreadWorker
 				case InstructionIndex.LSTORE_3:
 					frame.storeLocal(opid - InstructionIndex.LSTORE_0,
 						frame.<Long>popFromStack(Long.class));
+					break;
+				
+					// Unsigned shift right long
+				case InstructionIndex.LUSHR:
+					{
+						int b = frame.<Integer>popFromStack(Integer.class);
+						long a = frame.<Long>popFromStack(Long.class);
+						frame.pushToStack(a >>> (((long)b) & 0x3F));
+					}
 					break;
 					
 					// Enter monitor
