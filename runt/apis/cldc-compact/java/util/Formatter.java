@@ -221,11 +221,11 @@ public final class Formatter
 				
 				// It is simpler to handle the parsing of the specifier in
 				// another method due to loops and variables
-				__PrintFState__ pf = new __PrintFState__();
+				__PrintFState__ pf = new __PrintFState__(pg);
 				i = this.__specifier(pf, i, __fmt);
 				
 				// Handle output of the specifier
-				this.__output(out, pg, pf, __args);
+				this.__output(out, pf);
 			}
 		}
 		
@@ -290,19 +290,16 @@ public final class Formatter
 	 * Outputs to the state to the appendable.
 	 *
 	 * @param __out The output appendable.
-	 * @param __pg The global state.
 	 * @param __pf The standard state.
-	 * @param __args The arguments.
 	 * @throws IllegalArgumentException If the format is not valid.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/28
 	 */
-	private static void __output(Appendable __out, __PrintFGlobal__ __pg,
-		__PrintFState__ __pf, Object... __args)
+	private static void __output(Appendable __out, __PrintFState__ __pf)
 		throws IllegalArgumentException, IOException, NullPointerException
 	{
-		if (__out == null || __pg == null || __pf == null || __args == null)
+		if (__out == null || __pf == null)
 			throw new NullPointerException("NARG");
 		
 		// Depends on the conversion

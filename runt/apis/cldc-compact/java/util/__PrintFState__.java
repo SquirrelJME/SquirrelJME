@@ -17,6 +17,9 @@ package java.util;
  */
 final class __PrintFState__
 {
+	/** Global state. */
+	final __PrintFGlobal__ _global;
+	
 	/** Flags specified. */
 	final boolean[] _flags =
 		new boolean[__PrintFFlag__.COUNT];
@@ -38,6 +41,22 @@ final class __PrintFState__
 	
 	/** Is the conversion to be uppercase? */
 	boolean _upper;
+	
+	/**
+	 * Initializes the state.
+	 *
+	 * @param __pg The state.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/29
+	 */
+	__PrintFState__(__PrintFGlobal__ __pg)
+		throws NullPointerException
+	{
+		if (__pg == null)
+			throw new NullPointerException("NARG");
+		
+		this._global = __pg;
+	}
 	
 	/**
 	 * Was a width specified?
