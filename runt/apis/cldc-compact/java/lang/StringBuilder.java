@@ -518,9 +518,15 @@ public final class StringBuilder
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the length of the string.
+	 *
+	 * @return The string length.
+	 * @since 2018/09/29
+	 */
 	public int length()
 	{
-		throw new todo.TODO();
+		return this._at;
 	}
 	
 	public StringBuilder replace(int __a, int __b, String __c)
