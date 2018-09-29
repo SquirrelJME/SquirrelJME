@@ -29,6 +29,12 @@ final class __PrintFState__
 	int _width =
 		-1;
 	
+	/** The conversion used. */
+	__PrintFConversion__ _conv;
+	
+	/** Is the conversion to be uppercase? */
+	boolean _upper;
+	
 	/**
 	 * Was a width specified?
 	 *
@@ -69,7 +75,37 @@ final class __PrintFState__
 	final void __setConversion(int __p, int __s)
 		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error ZZ1y The conversion has already been specified.}
+		if (this._conv != null)
+			throw new IllegalArgumentException("ZZ1y");
+		
+		// {@squirreljme.error ZZ1x Invalid conversion specified. (The first
+		// character; The second character)}
+		__PrintFConversion__ conv = __PrintFConversion__.__decode(__p, __s);
+		if (conv == null)
+			throw new IllegalArgumentException("ZZ1x " + (char)__p + " " +
+				(char)(__s < 0 ? ' ' : __s));
+		
+		// Set
+		this._conv = conv;
+		
+		// Uppercase conversion?
+		switch (__p)
+		{
+			case 'B':
+			case 'H':
+			case 'S':
+			case 'C':
+			case 'X':
+			case 'E':
+			case 'G':
+			case 'T':
+				this._upper = true;
+				break;
+			
+			default:
+				break;
+		}
 	}
 	
 	/**

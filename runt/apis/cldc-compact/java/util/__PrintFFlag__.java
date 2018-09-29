@@ -49,7 +49,7 @@ enum __PrintFFlag__
 	 * Decodes the given character to a flag.
 	 *
 	 * @param __c The character to decode.
-	 * @return The flag for the character.
+	 * @return The flag for the character or {@code null} if it is not valid.
 	 * @since 2018/09/24
 	 */
 	static final __PrintFFlag__ __decode(char __c)
