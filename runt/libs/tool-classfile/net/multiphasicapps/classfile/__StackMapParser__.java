@@ -428,8 +428,10 @@ final class __StackMapParser__
 				// that instruction to determine the type of that actual
 				// object
 			case 8:
-				int pc = in.readUnsignedShort();
-				throw new todo.TODO();
+				return new StackMapTableEntry(new JavaType(this.pool.
+					<ClassName>get(ClassName.class, this.code.
+					readRawCodeUnsignedShort(in.readUnsignedShort() + 1))),
+					false);
 				
 				// Unknown
 			default:
