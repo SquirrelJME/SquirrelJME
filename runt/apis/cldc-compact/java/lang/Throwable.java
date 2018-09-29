@@ -376,12 +376,18 @@ public class Throwable
 			
 			// Go down the trace and find the first instance
 			int scan = 0;
-			boolean seek = true;
+			boolean seek = true,
+				hit = false;
 			for (; scan < len; scan += DebugAccess.TRACE_COUNT)
 			{
 				// Read scan here
 				int xhi = rawstack[scan],
 					xlo = rawstack[scan + 1];
+				
+				// Missing trace information, we do not want to lose this
+				// information at all so just ignore!
+				if (xhi == -1 && xlo == -1)
+					break;
 				
 				// Seek to the current class for this current object
 				if (seek)
@@ -397,12 +403,15 @@ public class Throwable
 				{
 					// Stop on the first entry which is not in this class
 					if (lhi != xhi || llo != xlo)
+					{
+						hit = true;
 						break;
+					}
 				}
 			}
 			
-			// Use the new scan instead, if it was found
-			if (!seek && scan != len && scan > skippy)
+			// Use the new scan instead, only if it was found
+			if (hit)
 			{
 				skippy = scan;
 				newlen = len - skippy;
