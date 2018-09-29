@@ -281,8 +281,9 @@ public class TODO
 		sb.append("::");
 		if (mn != null)
 			sb.append(mn);
-		if (md != null)
-			sb.append(md);
+		
+		/*if (md != null)
+			sb.append(md);*/
 		
 		// Address, if it is valid
 		if (ad != -1L)
