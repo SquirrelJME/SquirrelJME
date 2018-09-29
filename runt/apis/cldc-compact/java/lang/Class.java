@@ -104,13 +104,30 @@ public final class Class<T>
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Casts the object to this class, checking it.
+	 *
+	 * @param __o The object to cast.
+	 * @return The casted object.
+	 * @throws ClassCastException If the type is not matched.
+	 * @since 2018/09/29
+	 */
+	@SuppressWarnings({"unchecked"})
 	public T cast(Object __o)
+		throws ClassCastException
 	{
 		// Null always casts OK
 		if (__o == null)
 			return null;
 		
-		throw new todo.TODO();
+		// {@squirreljme.error ZZ26 The other class cannot be casted to this
+		// class. (This class; The other class)}
+		Class<?> other = __o.getClass();
+		if (!this.isAssignableFrom(other))
+			throw new ClassCastException("ZZ26 " + this.getName() + " " +
+				other.getName());
+		
+		return (T)__o;
 	}
 	
 	/**
