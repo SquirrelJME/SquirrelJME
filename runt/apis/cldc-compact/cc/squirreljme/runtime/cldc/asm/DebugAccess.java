@@ -84,17 +84,6 @@ public final class DebugAccess
 	public static final native long unresolveString(String __s);
 	
 	/**
-	 * Returns the current call trace in wrapped special types.
-	 *
-	 * @return The current call trace.
-	 * @since 2018/09/16
-	 */
-	public static final CallTraceElement[] callTrace()
-	{
-		return DebugAccess.resolveRawCallTrace(DebugAccess.rawCallTrace());
-	}
-	
-	/**
 	 * Combines an integer to long.
 	 *
 	 * @param __dx The index.

@@ -140,17 +140,6 @@ public final class DebugAccess
 	}
 	
 	/**
-	 * Returns the current call trace in wrapped special types.
-	 *
-	 * @return The current call trace.
-	 * @since 2018/09/16
-	 */
-	public static final CallTraceElement[] callTrace()
-	{
-		return DebugAccess.resolveRawCallTrace(DebugAccess.rawCallTrace());
-	}
-	
-	/**
 	 * This translates a raw call trace into a wrapped call trace to make it
 	 * simpler to easier to parse.
 	 *
