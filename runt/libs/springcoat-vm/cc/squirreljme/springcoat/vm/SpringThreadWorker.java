@@ -1336,6 +1336,24 @@ public final class SpringThreadWorker
 					}
 					break;
 					
+					// Duplicate top and place two down
+				case InstructionIndex.DUP_X1:
+					{
+						Object a = frame.<Object>popFromStack(Object.class),
+							b = frame.<Object>popFromStack(Object.class);
+						
+						// {@squirreljme.error BK1z Cannot duplicate and place
+						// down below with two type.}
+						if (a instanceof Long || a instanceof Double ||
+							b instanceof Long || b instanceof Double)
+							throw new SpringVirtualMachineException("BK1z");
+						
+						frame.pushToStack(a);
+						frame.pushToStack(b);
+						frame.pushToStack(a);
+					}
+					break;
+					
 					// Return float
 				case InstructionIndex.FRETURN:
 					this.__vmReturn(thread,
