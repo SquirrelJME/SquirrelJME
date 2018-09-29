@@ -214,6 +214,8 @@ public class TODO
 			
 			// The class will end with the Java extension
 			int ld = cn.lastIndexOf('.');
+			if (ld < 0)
+				ld = cn.lastIndexOf('/');
 			if (ld >= 0)
 				cn = cn.substring(ld + 1);
 			

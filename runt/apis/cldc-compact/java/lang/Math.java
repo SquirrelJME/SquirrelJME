@@ -109,7 +109,7 @@ public final class Math
 	 */
 	public static int max(int __a, int __b)
 	{
-		if (__a > 0)
+		if (__a > __b)
 			return __a;
 		return __b;
 	}
@@ -139,7 +139,7 @@ public final class Math
 	 */
 	public static int min(int __a, int __b)
 	{
-		if (__a < 0)
+		if (__a < __b)
 			return __a;
 		return __b;
 	}
