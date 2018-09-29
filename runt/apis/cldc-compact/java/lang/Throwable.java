@@ -32,6 +32,9 @@ import java.util.List;
  */
 public class Throwable
 {
+	/** String ID for the throwable. */
+	private static final int _THROWABLE_ID_HI, _THROWABLE_ID_LO;
+	
 	/** The message for this exception. */
 	private final String _message;
 	
@@ -51,6 +54,18 @@ public class Throwable
 	
 	/** The stack trace for this throwable (in raw form). */
 	private volatile int[] _stack;
+	
+	/**
+	 * Initializes the throwable ID.
+	 *
+	 * @since 2018/09/29
+	 */
+	static
+	{
+		long id = DebugAccess.unresolveString("java/lang/Throwable");
+		_THROWABLE_ID_HI = (int)(id >>> 32);
+		_THROWABLE_ID_LO = (int)id;
+	}
 	
 	/**
 	 * Initializes a throwable with no cause or message.
@@ -340,6 +355,48 @@ public class Throwable
 			newlen = len - skippy;
 		if (newlen < 0)
 			newlen = 0;
+		
+		// If this is initializer clipping, clip out any references that lead
+		// up to this Throwable class so that they do not appear on the stack
+		// at all
+		int thi = Throwable._THROWABLE_ID_HI,
+			tlo = Throwable._THROWABLE_ID_LO;
+		if (__initclip && thi != -1 && tlo != -1)
+		{
+			// Go down the trace and find the first instance
+			int scan = skippy;
+			boolean seek = true;
+			for (; scan < len; scan += DebugAccess.TRACE_COUNT)
+			{
+				// Read scan here
+				int xhi = rawstack[scan],
+					xlo = rawstack[scan + 1];
+				
+				System.err.print("DEBUG -- x:[" + xhi + ", " + xlo + 
+					"] t:[" + thi + ", " + tlo + "]\n");
+				
+				// Seek to throwable
+				if (seek)
+				{
+					// We found our Throwable, switch out of seek mode
+					if (thi == xhi && tlo == xlo)
+					{
+						seek = false;
+						break;
+					}
+				}
+				else
+				{
+					// Stop on the first entry which is not in this class
+					if (thi != xhi || tlo != xlo)
+						break;
+				}
+			}
+			
+			// Use the new scan instead, if it was found
+			if (!seek && scan != len && scan > skippy)
+				skippy = scan;
+		}
 		
 		// Copy the trace data into this one
 		int[] rv = new int[newlen];

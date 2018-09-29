@@ -75,6 +75,15 @@ public final class DebugAccess
 	public static final native String resolveString(long __p);
 	
 	/**
+	 * Unresolves the string to the given pointer.
+	 *
+	 * @param __s The string to resolve.
+	 * @return The pointer to the string, or {@code -1} if it is not valid.
+	 * @since 2018/09/29
+	 */
+	public static final native long unresolveString(String __s);
+	
+	/**
 	 * Returns the current call trace in wrapped special types.
 	 *
 	 * @return The current call trace.
