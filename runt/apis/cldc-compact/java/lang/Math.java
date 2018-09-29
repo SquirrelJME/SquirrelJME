@@ -129,9 +129,19 @@ public final class Math
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the lower of the two values.
+	 *
+	 * @param __a The first.
+	 * @param __b The second.
+	 * @return The lower value.
+	 * @since 2018/09/29
+	 */
 	public static int min(int __a, int __b)
 	{
-		throw new todo.TODO();
+		if (__a < 0)
+			return __a;
+		return __b;
 	}
 	
 	public static long min(long __a, long __b)

@@ -17,6 +17,7 @@ import cc.squirreljme.runtime.cldc.string.BasicSequence;
 import cc.squirreljme.runtime.cldc.string.CharArraySequence;
 import cc.squirreljme.runtime.cldc.string.CharSequenceSequence;
 import cc.squirreljme.runtime.cldc.string.EmptySequence;
+import cc.squirreljme.runtime.cldc.string.SubBasicSequenceSequence;
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -735,15 +736,40 @@ public final class String
 		return this.substring(__s, length());
 	}
 	
+	/**
+	 * Returns a substring of the given string.
+	 *
+	 * @param __s The starting index.
+	 * @param __e The ending index.
+	 * @throws IndexOutOfBoundsException If the string region is outside of
+	 * bounds.
+	 * @since 2018/09/29
+	 */
 	public String substring(int __s, int __e)
 		throws IndexOutOfBoundsException
 	{
 		// The entire string region requires no new string
-		int n = length();
+		BasicSequence sequence = this._sequence;
+		int n = sequence.length();
 		if (__s == 0 && __e == n)
 			return this;
 		
-		throw new todo.TODO();
+		// A blank string with no characters
+		if (__s == __e)
+			return "";
+		
+		// {@squirreljme.error ZZ28 String substring is outside of bounds.
+		// (The start index; The end index; The length)}
+		if (__s < 0 || __s > __e || __e > n)
+			throw new IndexOutOfBoundsException("ZZ28 " + __s + " " + __e +
+				" " + n);
+		
+		// If this is already a subsequence, split it off more so that there
+		// is no insane amount of depth involved when reading string data
+		if (sequence instanceof SubBasicSequenceSequence)
+			return new String(
+				((SubBasicSequenceSequence)sequence).subSequence(__s, __e));
+		return new String(new SubBasicSequenceSequence(sequence, __s, __e));
 	}
 	
 	/**
