@@ -11,7 +11,9 @@
 package cc.squirreljme.springcoat.build;
 
 import java.util.ArrayDeque;
+import java.util.LinkedHashSet;
 import java.util.Queue;
+import java.util.Set;
 import cc.squirreljme.builder.support.Binary;
 import cc.squirreljme.builder.support.ProjectManager;
 import cc.squirreljme.builder.support.TimeSpaceType;
@@ -27,6 +29,15 @@ import cc.squirreljme.springcoat.vm.SpringMachine;
  */
 public class Main
 {
+	/** Fixed projects to always include. */
+	private static final String[] _FIXED_PROJECTS =
+		new String[]
+		{
+			"midp-lcdui",
+			"meep-rms",
+			"media-api",
+		};
+	
 	/**
 	 * Main entry point.
 	 *
@@ -66,9 +77,34 @@ public class Main
 			project = project.substring(0, col);
 		}
 		
+		// Include some dependenices to always be included so that SpringCoat
+		// can run a few more programs rather than what is in the base library
+		Set<Binary> xclasspath = new LinkedHashSet<>();
+		for (String fp : _FIXED_PROJECTS)
+			for (Binary b : pm.build(TimeSpaceType.BUILD, fp))
+				xclasspath.add(b);
+		
 		// Get the project and all of its dependencies built which forms
 		// the class path
-		Binary[] classpath = pm.build(TimeSpaceType.BUILD, project);
+		Binary[] vclasspath = pm.build(TimeSpaceType.BUILD, project);
+		
+		// The boot entry always must be last
+		Binary bootp = vclasspath[vclasspath.length - 1];
+		
+		// Merge the sets of classpaths
+		Set<Binary> finalclasspath = new LinkedHashSet<>();
+		for (Binary b : xclasspath)
+			finalclasspath.add(b);
+		for (Binary b : vclasspath)
+			finalclasspath.add(b);
+		
+		// Remove and re-add the boot entry so it is always last
+		finalclasspath.remove(bootp);
+		finalclasspath.add(bootp);
+		
+		// Build into final array
+		Binary[] classpath = finalclasspath.<Binary>toArray(
+			new Binary[finalclasspath.size()]);
 		
 		// Setup wrapped libraries
 		int numlibs = classpath.length;
