@@ -277,9 +277,23 @@ public final class StringBuilder
 		return this._buffer.length;
 	}
 	
+	/**
+	 * Returns the character at the given index.
+	 *
+	 * @param __dx The index.
+	 * @return The character at the given index.
+	 * @throws IndexOutOfBoundsException If the character is outside of
+	 * bounds.
+	 * @since 2018/09/29
+	 */
 	public char charAt(int __dx)
+		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error ZZ27 Out of bound access. (The index)}
+		if (__dx < 0 || __dx >= this._at)
+			throw new IndexOutOfBoundsException("ZZ27 " + __dx);
+		
+		return this._buffer[__dx];
 	}
 	
 	public StringBuilder delete(int __a, int __b)
