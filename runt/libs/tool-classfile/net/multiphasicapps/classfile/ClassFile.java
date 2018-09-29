@@ -116,10 +116,7 @@ public final class ClassFile
 		this._interfaces = __in;
 		this._fields = __fs;
 		this._methods = __ms;
-		
-		// Use known source, or just guess it
-		this.sourcefilename = (__sfn != null ? __sfn :
-			__tn.toString() + ".java?");
+		this.sourcefilename = __sfn;
 	}
 	
 	/**
@@ -189,7 +186,8 @@ public final class ClassFile
 	/**
 	 * Returns the source file the class is in.
 	 *
-	 * @return The source file the class is in.
+	 * @return The source file the class is in or {@code null} if it is not
+	 * in one.
 	 * @since 2018/09/08
 	 */
 	public final String sourceFile()

@@ -117,8 +117,6 @@ public final class SpringClass
 		
 		// Used for method location
 		String filename = __cf.sourceFile();
-		if (filename == null)
-			filename = "<unknown>";
 		
 		// Go through and initialize methods declared in this class
 		Map<MethodNameAndType, SpringMethod> nvmeths = this._nonvirtmethods;
