@@ -41,9 +41,29 @@ enum __PrintFFlag__
 	/** End. */
 	;
 	
+	/** Internal values. */
+	private static final __PrintFFlag__[] _VALUES =
+		__PrintFFlag__.values();
+	
 	/** The number of flags used. */
 	public static final int COUNT =
-		__PrintFFlag__.values().length;
+		__PrintFFlag__._VALUES.length;
+	
+	/**
+	 * Returns the value for the given ordinal/
+	 *
+	 * @param __i The ordinal.
+	 * @return The flag.
+	 * @throws IndexOutOfBoundsException If the ordinal is out of range.
+	 * @since 2018/09/29
+	 */
+	public static final __PrintFFlag__ valueOf(int __i)
+		throws IndexOutOfBoundsException
+	{
+		if (__i < 0 || __i >= __PrintFFlag__.COUNT)
+			throw new IndexOutOfBoundsException("IOOB");
+		return __PrintFFlag__._VALUES[__i];
+	}
 	
 	/**
 	 * Decodes the given character to a flag.

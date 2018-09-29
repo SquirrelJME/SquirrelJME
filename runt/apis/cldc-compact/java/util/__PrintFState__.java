@@ -29,6 +29,10 @@ final class __PrintFState__
 	int _width =
 		-1;
 	
+	/** The precision. */
+	int _precision =
+		-1;
+	
 	/** The conversion used. */
 	__PrintFConversion__ _conv;
 	
@@ -106,6 +110,30 @@ final class __PrintFState__
 			default:
 				break;
 		}
+		
+		// Need this to do sanity checks
+		__PrintFCategory__ cat = conv.__category();
+		
+		// {@squirreljme.error ZZ22 The specified flag cannot be specified
+		// for the given conversion. (The conversion; The flag)}
+		boolean[] flags = this._flags;
+		for (int i = 0, n = __PrintFFlag__.COUNT; i < n; i++)
+		{
+			__PrintFFlag__ flag = __PrintFFlag__.valueOf(i);
+			if (flags[i] && !conv.__hasFlag(flag))
+				throw new IllegalArgumentException("ZZ22 " + conv + " " +
+					flag);
+		}
+		
+		// {@squirreljme.error ZZ21 Width cannot be specified for the given
+		// convesion. (The conversion)}
+		if (this._width > 0 && !cat.__hasWidth())
+			throw new IllegalArgumentException("ZZ21 " + conv);
+		
+		// {@squirreljme.error ZZ20 Precision cannot be specified for the
+		// given conversion. (The conversion)}
+		if (this._precision > 0 && !cat.__hasPrecision())
+			throw new IllegalArgumentException("ZZ20 " + conv);
 	}
 	
 	/**

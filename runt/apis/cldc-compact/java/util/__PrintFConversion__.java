@@ -138,6 +138,114 @@ enum __PrintFConversion__
 	;
 	
 	/**
+	 * Returns the category of this conversion.
+	 *
+	 * @return The conversion category.
+	 * @since 2018/09/29
+	 */
+	final __PrintFCategory__ __category()
+	{
+		switch (this)
+		{
+			case PERCENT:
+				return __PrintFCategory__.PERCENT;
+			
+			case NEWLINE:
+				return __PrintFCategory__.LINE_SEPARATOR;
+			
+			case BOOLEAN:
+			case HASHCODE:
+			case STRING:
+				return __PrintFCategory__.GENERAL;
+				
+			case CHARACTER:
+				return __PrintFCategory__.CHARACTER;
+				
+			case DECIMAL_INTEGER:
+			case OCTAL_INTEGER:
+			case HEXADECIMAL_INTEGER:
+				return __PrintFCategory__.INTEGRAL;
+				
+			case SCIENTIFIC_DECIMAL_FLOAT:
+			case NORMAL_DECIMAL_FLOAT:
+			case SCIENTIFIC_OR_NORMAL_DECIMAL_FLOAT:
+				return __PrintFCategory__.FLOATING_POINT;
+				
+			case TIME_MILITARY_HOUR_TWO_DIGIT_LEADING_ZERO:
+			case TIME_STANDARD_HOUR_TWO_DIGIT_LEADING_ZERO:
+			case TIME_MILITARY_HOUR:
+			case TIME_STANDARD_HOUR:
+			case TIME_MINUTE:
+			case TIME_SECONDS:
+			case TIME_MILLISECONDS:
+			case TIME_AM_PM:
+			case TIME_ZONE_RFC822_OFFSET:
+			case TIME_ZONE_ABBREVIATION:
+			case TIME_UNIX_SECONDS:
+			case TIME_UNIX_MILLISECONDS:
+			case DATE_ABBREVIATED_MONTH_NAME:
+			case DATE_ABBREVIATED_DAY_NAME:
+			case DATE_CENTURY_TWO_DIGIT_LEADING_ZERO:
+			case DATE_YEAR_FOUR_DIGITS:
+			case DATE_YEAR_LAST_TWO_DIGITS:
+			case DATE_DAY_OF_YEAR:
+			case DATE_MONTH_TWO_DIGIT_LEADING_ZERO:
+			case DATE_DAY_TWO_DIGIT_LEADING_ZERO:
+			case DATE_DAY:
+			case DATE_TIME_MILITARY:
+			case DATE_TIME_MILITARY_WITH_SECONDS:
+			case DATE_TIME_STANDARD:
+			case DATE_MONTH_DAY_YEAR:
+			case DATE_ISO8601:
+			case DATE_LONG_FORMAT:
+				return __PrintFCategory__.DATE_TIME;
+				
+			default:
+				throw new RuntimeException("OOPS");
+		}
+	}
+	
+	/**
+	 * Is the specified flag valid?
+	 *
+	 * @param __f The flag to check.
+	 * @return If it is valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/09/29
+	 */
+	final boolean __hasFlag(__PrintFFlag__ __f)
+		throws NullPointerException
+	{
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
+		// If the category does not have it then it will never have it
+		__PrintFCategory__ cat = this.__category();
+		if (!cat.__hasFlag(__f))
+			return false;
+		
+		// Only this category has exclusions
+		if (cat == __PrintFCategory__.INTEGRAL)
+			switch (__f)
+			{
+					// Only valid for octal and hex ints
+				case ALTERNATIVE_FORM:
+					return this == OCTAL_INTEGER ||
+						this == HEXADECIMAL_INTEGER;
+				
+					// Only valid for decimal ints
+				case LOCALE_GROUPING:
+					return this == DECIMAL_INTEGER;
+				
+				default:
+					break;
+			}
+		
+		// Is valid!
+		return true;
+	}
+	
+	/**
 	 * Returns the conversion that is used for the characters.
 	 *
 	 * @param __f The first character.
