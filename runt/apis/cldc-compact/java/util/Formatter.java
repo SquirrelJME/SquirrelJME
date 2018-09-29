@@ -201,7 +201,7 @@ public final class Formatter
 			__args = new Object[0];
 		
 		// Global state needed for argument handling.
-		__PrintFGlobal__ pg = new __PrintFGlobal__();
+		__PrintFGlobal__ pg = new __PrintFGlobal__(__args);
 		
 		// Writing to the appendable may cause an exception to occur
 		try
@@ -301,15 +301,57 @@ public final class Formatter
 	{
 		if (__out == null || __pf == null)
 			throw new NullPointerException("NARG");
+			
+		__PrintFConversion__ conv = __pf._conv;
+		__PrintFCategory__ cat = conv.__category();
 		
 		// Depends on the conversion
-		switch (__pf._conv)
+		String append;
+		switch (conv)
 		{
+				// Simple string conversion
+			case STRING:
+				append = __pf.<Object>__argument(Object.class, "null").
+					toString();
+				break;
+			
 				// {@squirreljme.error ZZ1z Unimplemented conversion.
 				// (The conversion)}
 			default:
-				throw new todo.TODO("ZZ1z " + __pf._conv);
+				throw new todo.TODO("ZZ1z " + conv);
 		}
+		
+		// Convert to uppercase
+		if (__pf._upper)
+			append = append.toUpperCase();
+		
+		// General items may be reduced by the precision, at most
+		if (cat == __PrintFCategory__.GENERAL)
+		{
+			int precision = __pf._precision;
+			if (precision >= 0)
+				append = append.substring(0,
+					Math.min(precision, append.length()));
+		}
+		
+		// Width is either higher of the input width or the string length
+		int strlen = append.length(),
+			width = Math.max(strlen, __pf._width),
+			padding = width - strlen;
+		
+		// Right justification spaces?
+		boolean isleft = __pf.__isLeftJustified();
+		if (!isleft)
+			for (int i = 0; i < padding; i++)
+				__out.append(' ');
+		
+		// Send the string in
+		__out.append(append);
+		
+		// Left justification spaces?
+		if (isleft)
+			for (int i = 0; i < padding; i++)
+				__out.append(' ');
 	}
 	
 	/**
