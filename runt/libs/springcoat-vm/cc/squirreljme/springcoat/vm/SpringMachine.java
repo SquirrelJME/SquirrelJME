@@ -37,6 +37,10 @@ import net.multiphasicapps.tool.manifest.JavaManifest;
 public final class SpringMachine
 	implements Runnable
 {
+	/** Lock. */
+	public final Object strlock =
+		new Object();
+	
 	/** The class loader. */
 	protected final SpringClassLoader classloader;
 	
@@ -66,8 +70,19 @@ public final class SpringMachine
 	/** Main entry point arguments. */
 	private final String[] _args;
 	
+	/** Long to string map. */
+	private final Map<Long, String> _strlongtostring =
+		new HashMap<>();
+	
+	/** String to long map. */
+	private final Map<String, Long> _strstringtolong =
+		new HashMap<>();
+	
 	/** The next thread ID to use. */
 	private volatile int _nextthreadid;
+	
+	/** The next long to choose. */
+	private long _strnextlong;
 	
 	/**
 	 * Initializes the virtual machine.
@@ -126,6 +141,51 @@ public final class SpringMachine
 			// Store thread
 			threads.add(rv);
 			return rv;
+		}
+	}
+	
+	/**
+	 * Resolves the given string pointer.
+	 *
+	 * @param __p The pointer.
+	 * @return The string at the given pointer or {@code null} if it has no
+	 * resolution.
+	 * @since 2018/09/29
+	 */
+	public final String debugResolveString(long __p)
+	{
+		if (__p == -1L)
+			return null;
+		
+		synchronized (this.strlock)
+		{
+			return this._strlongtostring.get(__p);
+		}
+	}
+	
+	/**
+	 * Unresolves the given string.
+	 *
+	 * @param __s The string to unresolve.
+	 * @return The pointer to the string.
+	 * @since 2018/09/29
+	 */
+	public final long debugUnresolveString(String __s)
+	{
+		if (__s == null)
+			return -1L;
+		
+		synchronized (this.strlock)
+		{
+			Long rv = this._strstringtolong.get(__s);
+			if (rv != null)
+				return rv.longValue();
+			
+			Long next = Long.valueOf(++this._strnextlong);
+			this._strstringtolong.put(__s, next);
+			this._strlongtostring.put(next, __s);
+			
+			return next;
 		}
 	}
 	
@@ -318,6 +378,20 @@ public final class SpringMachine
 		
 		// Wait until all threads have terminated before actually leaving
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Splits long to integers.
+	 *
+	 * @param __dx The index.
+	 * @param __v The output integers.
+	 * @param __l The input long.
+	 * @since 2018/09/29
+	 */
+	public static final void longToInt(int __dx, int[] __v, long __l)
+	{
+		__v[__dx] = (int)(__l >>> 32);
+		__v[__dx + 1] = (int)__l;
 	}
 	
 	/**

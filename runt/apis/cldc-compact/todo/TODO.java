@@ -12,7 +12,6 @@ package todo;
 
 import cc.squirreljme.runtime.cldc.asm.DebugAccess;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
-import cc.squirreljme.runtime.cldc.system.SystemCall;
 import java.io.PrintStream;
 
 /**
@@ -162,7 +161,8 @@ public class TODO
 			// Get identifier part
 			int ld = cn.lastIndexOf('.');
 			if (ld < 0)
-				ld = 0;
+				if ((ld = cn.lastIndexOf('/')) < 0)
+					ld = 0;
 			
 			// Print slimmed down packages since they could be guessed
 			for (int i = 0, n = cn.length(); i >= 0 && i < n;)
@@ -172,7 +172,11 @@ public class TODO
 				{
 					sb.append(cn.charAt(i));
 					
-					i = cn.indexOf('.', i) + 1;
+					int ldi = cn.indexOf('.', i);
+					if (ldi < 0)
+						ldi = cn.indexOf('/', i);
+					
+					i = ldi + 1;
 				}
 				
 				// Finish string
@@ -208,7 +212,7 @@ public class TODO
 			if (cn == null)
 				cn = "";
 			
-			// The class will start with a package, so drop that
+			// The class will end with the Java extension
 			int ld = cn.lastIndexOf('.');
 			if (ld >= 0)
 				cn = cn.substring(ld + 1);
@@ -375,32 +379,9 @@ public class TODO
 	 */
 	static final CallTraceElement __where()
 	{
-		return TODO.__where(new Throwable());
-	}
-	
-	/**
-	 * Determines where the code is in the call stack.
-	 *
-	 * @param __t The throwable to get the trace from.
-	 * @return The call trace element for the given location.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/04/02
-	 */
-	static final CallTraceElement __where(Throwable __t)
-		throws NullPointerException
-	{
-		if (__t == null)
-			throw new NullPointerException("NARG");
-		
 		// For the SquirrelJME runtime, use the debug stuff to get the
 		// current call trace
-		CallTraceElement[] stack;
-		if ("true".equals(System.getProperty("cc.squirreljme.isruntime")))
-			stack = DebugAccess.callTrace();
-		
-		// Use something that works in hosted Java SE environment
-		else
-			stack = SystemCall.EASY.throwableGetStack(__t);
+		CallTraceElement[] stack = DebugAccess.callTrace();
 		
 		// Get the first one which is not in this class
 		for (CallTraceElement e : stack)
@@ -409,7 +390,7 @@ public class TODO
 			if (cn == null)
 				cn = "<unknown>";
 			
-			if (!cn.startsWith("todo."))
+			if (!cn.startsWith("todo/"))
 				return e;
 		}
 		

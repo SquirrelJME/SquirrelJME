@@ -231,7 +231,7 @@ public class NewBootstrap
 				// {@squirreljme.error NB0d Expected the CLDC libraries to be
 				// present in the build.}
 				BuildProject cldccompact = projects.get("cldc-compact");
-				if (!mergeorder.cldccompact)
+				if (!mergeorder.remove(cldccompact))
 					throw new RuntimeException("NB0d");
 				
 				// Make the CLDC compact JAR always last, so that its system

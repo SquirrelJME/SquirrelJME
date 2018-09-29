@@ -65,6 +65,16 @@ public final class DebugAccess
 	public static final native int[] rawCallTrace();
 	
 	/**
+	 * Resolves the given string pointer.
+	 *
+	 * @param __p The pointer.
+	 * @return The string at the given pointer or {@code null} if it has no
+	 * resolution.
+	 * @since 2018/09/29
+	 */
+	public static final native String resolveString(long __p);
+	
+	/**
 	 * Returns the current call trace in wrapped special types.
 	 *
 	 * @return The current call trace.
@@ -73,6 +83,24 @@ public final class DebugAccess
 	public static final CallTraceElement[] callTrace()
 	{
 		return DebugAccess.resolveRawCallTrace(DebugAccess.rawCallTrace());
+	}
+	
+	/**
+	 * Combines an integer to long.
+	 *
+	 * @param __dx The index.
+	 * @param __v The input integers.
+	 * @return The resulting long.
+	 * @since 2018/09/29
+	 */
+	public static final long intToLong(int __dx, int[] __v)
+		throws NullPointerException
+	{
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		return (((long)__v[__dx]) << 32L) |
+			(((long)__v[__dx + 1]) & 0xFFFFFFFFL);
 	}
 	
 	/**
@@ -98,11 +126,11 @@ public final class DebugAccess
 		// Convert frames
 		for (int o = 0, i = 0; o < numframes; o++, i += TRACE_COUNT)
 			rv[o] = new CallTraceElement(
-				null,
-				null,
-				null,
-				(((long)__v[i + 6]) << 32) | (__v[i + 7] & 0xFFFFFFFFL),
-				null,
+				DebugAccess.resolveString(DebugAccess.intToLong(i + 0, __v)),
+				DebugAccess.resolveString(DebugAccess.intToLong(i + 2, __v)),
+				DebugAccess.resolveString(DebugAccess.intToLong(i + 4, __v)),
+				DebugAccess.intToLong(i + 6, __v),
+				DebugAccess.resolveString(DebugAccess.intToLong(i + 8, __v)),
 				__v[i + 10]);
 		
 		return rv;

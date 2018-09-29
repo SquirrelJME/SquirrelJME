@@ -115,7 +115,7 @@ public class Throwable
 		
 		// The stack trace is implicitly filled in by this constructor, it
 		// matches the stack trace of the current thread of execution
-		this._stack = this.__getStackTrace(__clip);
+		this._stack = this.__getStackTrace(__clip, true);
 	}
 	
 	/**
@@ -176,7 +176,7 @@ public class Throwable
 	public Throwable fillInStackTrace()
 	{
 		// Get stack trace, ignore this method
-		this._stack = this.__getStackTrace(1);
+		this._stack = this.__getStackTrace(1, false);
 		
 		// Returns self
 		return this;
@@ -318,11 +318,12 @@ public class Throwable
 	 * Obtains the stack trace for the current thread in raw format.
 	 *
 	 * @param __clip The number of entries on the top to clip.
+	 * @param __initclip Clip off initializers?
 	 * @return The stack trace for the current stack.
 	 * @throws IllegalArgumentException If the clip is negative.
 	 * @since 2018/09/16
 	 */
-	private static int[] __getStackTrace(int __clip)
+	private static int[] __getStackTrace(int __clip, boolean __initclip)
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error ZZ0x Cannot specify a negative clip for a
@@ -335,7 +336,7 @@ public class Throwable
 		
 		// Determine the new length of the raw data
 		int len = rawstack.length,
-			skippy = DebugAccess.TRACE_COUNT * __clip,
+			skippy = DebugAccess.TRACE_COUNT * (__clip + 1),
 			newlen = len - skippy;
 		if (newlen < 0)
 			newlen = 0;
