@@ -194,8 +194,9 @@ public class TODO
 		// Address, if it is valid
 		if (ad != -1L)
 		{
-			sb.append("@0x");
-			sb.append(Long.toString(ad, 16));
+			sb.append( "@");
+			sb.append(Long.toString(ad, 16).toUpperCase());
+			sb.append("h");
 		}
 		
 		// Add file/line information if it is valid

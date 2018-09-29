@@ -25,5 +25,14 @@ public interface Locale
 	 * @since 2018/09/20
 	 */
 	public abstract char toLowerCase(char __c);
+	
+	/**
+	 * Converts the specified character to uppercase.
+	 *
+	 * @param __c The input character.
+	 * @return The uppercased character.
+	 * @since 2018/09/28
+	 */
+	public abstract char toUpperCase(char __c);
 }
 
