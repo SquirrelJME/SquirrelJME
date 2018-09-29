@@ -31,7 +31,7 @@ public final class Class<T>
 	private final Class<?> _component;
 	
 	/** The binary name of this class. */
-	private final String _binaryname;
+	final String _binaryname;
 	
 	/** Special class reference index. */
 	private final int _specialindex;

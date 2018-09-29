@@ -130,7 +130,7 @@ public class Throwable
 		
 		// The stack trace is implicitly filled in by this constructor, it
 		// matches the stack trace of the current thread of execution
-		this._stack = this.__getStackTrace(__clip, true);
+		this._stack = this.__getStackTrace(this, __clip, true);
 	}
 	
 	/**
@@ -191,7 +191,7 @@ public class Throwable
 	public Throwable fillInStackTrace()
 	{
 		// Get stack trace, ignore this method
-		this._stack = this.__getStackTrace(1, false);
+		this._stack = this.__getStackTrace(this, 1, false);
 		
 		// Returns self
 		return this;
@@ -332,13 +332,15 @@ public class Throwable
 	/**
 	 * Obtains the stack trace for the current thread in raw format.
 	 *
+	 * @param __this The this throwable object.
 	 * @param __clip The number of entries on the top to clip.
 	 * @param __initclip Clip off initializers?
 	 * @return The stack trace for the current stack.
 	 * @throws IllegalArgumentException If the clip is negative.
 	 * @since 2018/09/16
 	 */
-	private static int[] __getStackTrace(int __clip, boolean __initclip)
+	private static int[] __getStackTrace(Throwable __this,
+		int __clip, boolean __initclip)
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error ZZ0x Cannot specify a negative clip for a
@@ -361,10 +363,19 @@ public class Throwable
 		// at all
 		int thi = Throwable._THROWABLE_ID_HI,
 			tlo = Throwable._THROWABLE_ID_LO;
-		if (__initclip && thi != -1 && tlo != -1)
+		if (__initclip && __this != null && thi != -1 && tlo != -1)
 		{
+			// Resolve the name for this class, because it will be at the
+			// bottom of the constructor stack
+			long lid = DebugAccess.unresolveString(
+				__this.getClass()._binaryname);
+			
+			// Split off IDs
+			int lhi = (int)(lid >>> 32),
+				llo = (int)lid;
+			
 			// Go down the trace and find the first instance
-			int scan = skippy;
+			int scan = 0;
 			boolean seek = true;
 			for (; scan < len; scan += DebugAccess.TRACE_COUNT)
 			{
@@ -372,14 +383,11 @@ public class Throwable
 				int xhi = rawstack[scan],
 					xlo = rawstack[scan + 1];
 				
-				System.err.print("DEBUG -- x:[" + xhi + ", " + xlo + 
-					"] t:[" + thi + ", " + tlo + "]\n");
-				
-				// Seek to throwable
+				// Seek to the current class for this current object
 				if (seek)
 				{
-					// We found our Throwable, switch out of seek mode
-					if (thi == xhi && tlo == xlo)
+					// We found our class, switch out of seek mode
+					if (lhi == xhi && llo == xlo)
 					{
 						seek = false;
 						break;
@@ -388,14 +396,20 @@ public class Throwable
 				else
 				{
 					// Stop on the first entry which is not in this class
-					if (thi != xhi || tlo != xlo)
+					if (lhi != xhi || llo != xlo)
 						break;
 				}
 			}
 			
 			// Use the new scan instead, if it was found
 			if (!seek && scan != len && scan > skippy)
+			{
 				skippy = scan;
+				newlen = len - skippy;
+				
+				if (newlen < 0)
+					newlen = 0;
+			}
 		}
 		
 		// Copy the trace data into this one
