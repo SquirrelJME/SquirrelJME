@@ -549,14 +549,49 @@ public final class String
 		return this.length() == 0;
 	}
 	
-	public int lastIndexOf(int __a)
+	/**
+	 * Returns the last occurance of the given character.
+	 *
+	 * @param __c The character to find.
+	 * @return The last occurance of the character or {@code -1} if it was
+	 * not found.
+	 * @since 2018/09/29
+	 */
+	public int lastIndexOf(int __c)
 	{
-		throw new todo.TODO();
+		return this.lastIndexOf(__c, this.length() - 1);
 	}
 	
-	public int lastIndexOf(int __a, int __b)
+	/**
+	 * Returns the last occurance of the given character going backwards from
+	 * the given index.
+	 *
+	 * @param __c The character to find.
+	 * @param __dx The index to start at, this is clipped to within the
+	 * string bounds accordingly although if it is negative no searching is
+	 * done.
+	 * @return The last occurance of the character or {@code -1} if it was
+	 * not found.
+	 * @since 2018/09/29
+	 */
+	public int lastIndexOf(int __c, int __dx)
 	{
-		throw new todo.TODO();
+		// Never going to find anything at all
+		if (__dx < 0)
+			return -1;
+		
+		// Cap index
+		BasicSequence sequence = this._sequence;
+		int n = sequence.length();
+		if (__dx >= n)
+			__dx = n - 1;
+		
+		for (; __dx >= 0; __dx--)
+			if (__c == sequence.charAt(__dx))
+				return __dx;
+		
+		// Not found
+		return -1;
 	}
 	
 	public int lastIndexOf(String __a)
