@@ -99,9 +99,19 @@ public final class Math
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the higher of the two values.
+	 *
+	 * @param __a The first.
+	 * @param __b The second.
+	 * @return The higher value.
+	 * @since 2018/09/29
+	 */
 	public static int max(int __a, int __b)
 	{
-		throw new todo.TODO();
+		if (__a > 0)
+			return __a;
+		return __b;
 	}
 	
 	public static long max(long __a, long __b)
