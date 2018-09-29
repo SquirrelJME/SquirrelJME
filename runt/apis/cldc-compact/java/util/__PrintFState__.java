@@ -59,6 +59,74 @@ final class __PrintFState__
 	}
 	
 	/**
+	 * Returns the specified argument.
+	 *
+	 * @param <C> The return type.
+	 * @param __i The index.
+	 * @return The argument value.
+	 * @throws IllegalArgumentException If the argument is not valid.
+	 * @throws NullPointerException If no class was specified.
+	 * @since 2018/09/29
+	 */
+	final <C> C __argument(Class<C> __cl)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error ZZ23 Null argument was passed.}
+		C rv = this.<C>__argument(__cl, null);
+		if (rv == null)
+			throw new NullPointerException("ZZ23");
+		return rv;
+	}
+	
+	/**
+	 * Returns the specified argument.
+	 *
+	 * @param <C> The return type.
+	 * @param __i The index.
+	 * @param __def The default value, if the input is null then this will
+	 * be returned.
+	 * @return The argument value or the default if it was null.
+	 * @throws IllegalArgumentException If the argument is not valid.
+	 * @throws NullPointerException If no class was specified.
+	 * @since 2018/09/29
+	 */
+	final <C> C __argument(Class<C> __cl, C __def)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		__PrintFGlobal__ global = this._global;
+		
+		// Determine the argument index to use, if the argument was not
+		// explicitely passed then it is tracked manually
+		int argdx = this._argdx,
+			usedx = (argdx < 0 ? global._lineardx++ : argdx - 1);
+		
+		// {@squirreljme.error ZZ24 Request to use argument which is not
+		// within the bounds of the input arguments. (The argument index)}
+		Object[] args = global._args;
+		if (usedx < 0 || usedx >= args.length)
+			throw new IllegalArgumentException("ZZ24 " + (usedx + 1));
+		
+		// Return default value if one was used and there was no value here
+		Object rv = args[usedx];
+		if (rv == null)
+			return __def;
+		
+		// {@squirreljme.error ZZ25 Expected argument of one class however it
+		// was instead another class. (The requested class; The actual class)}
+		if (!__cl.isInstance(rv))
+			throw new IllegalArgumentException("ZZ25 " + __cl + " " +
+				rv.getClass());
+		
+		return __cl.cast(rv);
+	}
+	
+	/**
 	 * Was a width specified?
 	 *
 	 * @return If a width was specified.
@@ -67,6 +135,17 @@ final class __PrintFState__
 	final boolean __hasWidth()
 	{
 		return this._width >= 1;
+	}
+	
+	/**
+	 * Is this left justified?
+	 *
+	 * @return If this is left justified.
+	 * @since 2018/09/29
+	 */
+	final boolean __isLeftJustified()
+	{
+		return this._flags[__PrintFFlag__.LEFT_JUSTIFIED.ordinal()];
 	}
 	
 	/**

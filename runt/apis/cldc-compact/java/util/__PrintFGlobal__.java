@@ -17,5 +17,21 @@ package java.util;
  */
 final class __PrintFGlobal__
 {
+	/** Arguments. */
+	final Object[] _args;
+	
+	/** Linear index, used to implicitly define which argument to use. */
+	int _lineardx;
+	
+	/**
+	 * Initializes the global state.
+	 *
+	 * @param __args The arguments.
+	 * @since 2018/09/29
+	 */
+	__PrintFGlobal__(Object... __args)
+	{
+		this._args = (__args == null ? new Object[0] : __args);
+	}
 }
 
