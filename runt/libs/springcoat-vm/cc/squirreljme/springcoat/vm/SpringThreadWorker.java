@@ -802,31 +802,39 @@ public final class SpringThreadWorker
 					int numframes = frames.length;
 					
 					// Setup return value which stores all the frame data
+					SpringMachine machine = this.machine;
 					int[] rv = new int[DebugAccess.TRACE_COUNT * numframes];
 					for (int i = numframes - 1, o = 0; i >= 0; i--,
 						o += DebugAccess.TRACE_COUNT)
 					{
 						SpringThread.Frame frame = frames[i];
 						
+						SpringMethod inmethod = frame.method();
+						int pc = frame.lastExecutedPc();
+						
 						// Class hilo
-						rv[o + 0] = -1;
-						rv[o + 1] = -1;
+						SpringMachine.longToInt(o + 0, rv,
+							machine.debugUnresolveString(
+								inmethod.inClass().toString()));
 						
 						// Method hilo
-						rv[o + 2] = -1;
-						rv[o + 3] = -1;
+						SpringMachine.longToInt(o + 2, rv,
+							machine.debugUnresolveString(
+								inmethod.nameAndType().name().toString()));
 						
 						// Descriptor hilo
-						rv[o + 4] = -1;
-						rv[o + 5] = -1;
+						SpringMachine.longToInt(o + 4, rv,
+							machine.debugUnresolveString(
+								inmethod.nameAndType().type().toString()));
 						
 						// Program counter hilo
 						rv[o + 6] = 0;
 						rv[o + 7] = frame.lastExecutedPc();
 						
 						// File string
-						rv[o + 8] = -1;
-						rv[o + 9] = -1;
+						SpringMachine.longToInt(o + 8, rv,
+							machine.debugUnresolveString(
+								inmethod.inFile()));
 						
 						// Line of code being executed
 						rv[o + 10] = frame.lastExecutedPcSourceLine();
@@ -835,6 +843,12 @@ public final class SpringThreadWorker
 					return rv;
 				}
 				
+				// Resolve string pointer
+			case "cc/squirreljme/runtime/cldc/asm/DebugAccess::" +
+				"resolveString:(J)Ljava/lang/String;":
+				return this.asVMObject(
+					this.machine.debugResolveString((Long)__args[0]));
+			
 				// Return the length of the array
 			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
 				"arrayLength:(Ljava/lang/Object;)I":
