@@ -76,14 +76,17 @@ public class SizeMap
 			
 			long clipped = Math.max(0, Math.min(x, Integer.MAX_VALUE));
 			
-			System.out.printf(
-				"%4d: %10d (%7dKiB, %4dMiB, %9d int[], %9d long[])%n",
-				i,
-				clipped,
-				clipped / 1024,
-				clipped / 1048576,
-				(clipped - 12) / 4,
-				(clipped - 12) / 8);
+			if (true)
+				System.out.println(clipped);
+			else
+				System.out.printf(
+					"%4d: %10d (%7dKiB, %4dMiB, %9d int[], %9d long[])%n",
+					i,
+					clipped,
+					clipped / 1024,
+					clipped / 1048576,
+					(clipped - 12) / 4,
+					(clipped - 12) / 8);
 		}
 	}
 }
