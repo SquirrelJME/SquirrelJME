@@ -4,3 +4,62 @@
 
 The documentation says that general types (bool, hashcode, and string) take
 an alternative flag but that is actually not the case.
+
+## 3:02
+
+So now that I implemented enough of printf, I can print the hello world again
+so that is nice. I guess it will be moving onto other things? Do I even need
+like a complete library or anything for this?
+
+## 3:03
+
+Next thing to do are the stack trace resolutions and such, because that is
+going to be very important! Also I am going to have to do replacements for the
+build system and Java SE so that I can use the same native code without
+needing to do native library stuff. This will just be priority classes if I do
+not yet have such a thing.
+
+## 13:07
+
+Okay so I now have debug traces and such, I need to modify `Throwable` so that
+the initial stack trace does not include the `Throwable` class and anything
+that initialized it.
+
+## 14:16
+
+So after implementing a few more methods now it prints the hello world again
+so I am not sure where to go other than continuing running programs and such.
+Maybe this time I should do a SpringCoat in SpringCoat but that would actually
+involve a ton of stuff and I am not sure I want to take that route yet. I
+guess the thing to do is to run some program or another. Maybe some more demos
+and such.
+
+## 16:18
+
+Going to need a constant time hashmap.
+
+## 16:29
+
+Okay so, I think trying to run something such as DoomRPG in SpringCoat would
+be too complex and confusing of a task, since there is absolutely no source
+code at all. I know I said to not do SpringCoat on SpringCoat, but if I can
+run it in itself then that means it is self hosting and it probably could run
+any basic CLDC program that relies just on the core library. Since right now
+the library is implemented in a very minimal fashion and there are a large
+number of TODOs. So if I can double launch SpringCoat that would probably
+require me to implment the bulk of the library for the most part. Then of
+course if it is double launched, then I guess things would work out well. I
+could just implement file handling as needed. I think instead of just like
+double launching, this time I implement the VM as it would be if it were not
+running on the build system itself. So basically it would act like the normal
+`java` command taking a `-classpath` parameter and all of that. It would just
+run exactly what it was passed. Well, I think there would just be no anything
+since it could really not determine the core libraries so you would need to
+specify them manually. So this would just require that everything be passed
+accordingly. Of course, the SpringCoat launching script could afterwards just
+use the JIT classpath I guess. Although it could really use the build class
+path.
+
+## 16:37
+
+So yes, next goal is SpringCoat on SpringCoat.
