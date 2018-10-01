@@ -1,0 +1,83 @@
+# 2018/09/30
+
+## 17:14
+
+Okay so I went for a walk and I thought about the garbage collector on my walk
+and I want to start by specifying the goals of what I actually want and how
+it acts:
+
+ * It is synchronous, only a single thread may allocate an object at once.
+ * It is reference counted, so objects are considered free when there are no
+   longer any references to them.
+ * It is pooled, just allocate and reserve a chunk of memory and just use that
+   instead of making tons of mini allocations. This would of course allow for
+   pools to be allocated in additional chunks and such. It makes fitting
+   things potentially difficult if fragmentation happens but that could be
+   mitigated by aligning objects (small objects together, large objects alone)
+   and not using the first available space.
+ * Allow reference counting to happen even as the allocator is doing things
+   or garbage collecting things. That way there needs to be no locks and such
+   when increasing or decreasing counts.
+ * Lazy freeing, objects which are no longer referenced are not cleared out of
+   the pool unless an allocation overwrites it.
+ * Minimal amount of memory, keep it tiny.
+   * Object bits: (At a minimum)
+     *  1b: Object cycle bit
+     * 11b: Object size???
+       * Maybe logarithmic or bit shift.
+       * 5 bits can represent 1, 2, 4, ..., 4294967296
+     * 12b: Object class type, index to some class table.
+     * 16b: Object hash code.
+       * I wanted to give this less bits, but that makes hashes a bit bad so
+         I want to keep it to 16-bits for performance.
+     *  1b: Reference count overflow bit.
+       * If this is set then reference counter overflowed and bad things
+         happen now.
+     * 23b: Reference count
+       * This is 24-bits, this value will never drop below zero so there will
+         never be any sign flipping issues.
+ * See if it is possible to have a null object which can be operated on with
+   reference counts but it has no value. This means though that any such
+   fields and such will need to be initialized to this specific `null`
+   reference. However, if this is done then it would solve the fact that
+   references are not needed. Although the issue is that we would have to
+   check. But any code which checks against `null` could just have a constant
+   `null` value index to be compared against. So this makes the stuff less
+   complicated. Just the memory for each object must have the fields
+   initialized to `null` in the object code as zero memory is not going to
+   work.
+ * Reference counting is always atomic.
+ * When memory is exhausted a mark and sweep garbage collection might able to
+   be ran, however the issue here is that we would need to know about objects
+   and such which would add more memory and code. So since this needs to be
+   small and not need this memory, _no mark and sweep is to be used_. If there
+   are cyclic references they shall remain forever.
+
+The garbage collector will have a cycle bit and each object will have a cycle
+bit. If the cycle bit matches then that means the object was not yet
+traversed during garbage collection, but if it does not match then it was.
+All allocations that happen will be set to the current cycle bit. As a note
+other objects are reference count increased first before the old one is
+decreased so no objects are lost ever.
+
+It would be nice to have implicit object sizes though, like using a
+logarithmic or exponential scale. That way size can be encoded in the object
+data as needed.
+
+## 18:09
+
+With 2048 different size values, a full 31-bit range is with the following
+algorithm:
+
+ * 2^(2^log(x*44))
+
+Also, regions which are in the free state free do not need a reference count
+they can pretty much be:
+
+ * 32b: Flag for free space
+ * 32b: How big this chunk is.
+
+## 18:19
+
+I would need a linked list of free chunks if I want to allocate certain
+objects at the ends.
