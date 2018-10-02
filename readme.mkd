@@ -75,16 +75,19 @@ Information:
 
 ## Links
 
+ * [My Public PGP Key](public-key.gpg.mkd)
  * Locations where you can get support:
    * [Discord](https://discord.gg/9PkMMKt)
  * Front facing social media:
-   * [YouTube](https://www.youtube.com/channel/UCbmC7qQjeXUEUyE5XfDX5RA)
+   * [YouTube](
+     https://www.youtube.com/playlist?list=PLpBpyrtWn1U3motx3AUOm70qG5zraCepD)
  * Personal Accounts (If you wish to contact me this way)
    * [GitHub](https://github.com/XerTheSquirrel/)
    * [Keybase](https://keybase.io/xerthesquirrel)
    * [LinkedIn](https://www.linkedin.com/in/xerthesquirrel/)
    * [Mastodon (awoo.space)](https://awoo.space/@XerTheSquirrel)
    * [Twitter](https://twitter.com/MultiPhasicApps)
+   * E-Mail: <xer@multiphasicapps.net>
 
 ## Goals
 
