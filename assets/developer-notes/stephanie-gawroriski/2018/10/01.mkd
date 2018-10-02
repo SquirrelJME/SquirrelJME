@@ -1,0 +1,9 @@
+# 2018/10/01
+
+## 21:06
+
+So I have decided that I am going to develop a test framework first. I need it
+to test my library along with the VM itself. Then if there are any issues that
+occur while implementing other programs, I can simply make a test. I can
+actually do this for SpringCoat itself. So these tests will be very important.
+
