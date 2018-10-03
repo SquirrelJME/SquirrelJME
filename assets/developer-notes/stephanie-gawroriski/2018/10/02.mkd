@@ -1,0 +1,25 @@
+# 2018/10/02
+
+## 22:30
+
+Okay so, how can I define multiple tests and how can I make them quick and
+easy to implement without needing tons of classes. It has to be limited to
+match and run on the VM itself, so it should not depend on any SquirrelJME
+specific stuff. I know JUnit is complex and uses annotations so it cannot
+be used.
+
+## 22:36
+
+Maybe I am overthinking this though. Like what if it does not need to be
+as complex as this. I could really just setup a list of classes like in the
+manifest, being `Test-1`, `Test-2`, etc. And it could just be that. Then
+single tests will just be those classes. However there needs to be a class
+to latch onto because `getResourceAsStream()` is local to the JAR the class
+is defined within.
+
+## 22:47
+
+There is however `Suite.getAttributes()` which reads from the manifest. And
+`Class.forName()` can locate classes. It is rather complicated though and
+implementing a whole new portion of code would be quite complex a thing to
+do. So I need to simplify the design more.
