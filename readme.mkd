@@ -24,7 +24,7 @@ missing or not supported it will run.
    * "_Puppenstein_" <http://www.furaffinity.net/user/puppenstein/>
  * The SquirrelJME Logo was illustrated by...
    * Kat Adam-MacEwen
-   * Kat@CMYKat Designs & Illustrations <www.cmykat-designs.com>
+   * Kat@CMYKat Designs & Illustrations <http://www.cmykat-designs.com/>
 
 You may support me on [Patreon](https://www.patreon.com/SquirrelJME)!
 
