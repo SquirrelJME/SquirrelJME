@@ -8,4 +8,6 @@ X-SquirrelJME-Description: This project contains the testing, acceptance,
  and comparison framework which is used to test and compare differring 
  executions of the virtual machine.
 Microedition-Configuration: CLDC-1.8-Compact
+Microedition-Profile: MEEP-8
+X-SquirrelJME-Depends: meep-midlet
 
