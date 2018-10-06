@@ -23,7 +23,7 @@ public class DoRunnable
 	 * @since 2018/10/06
 	 */
 	@Override
-	public void run()
+	public void test()
 	{
 	}
 }

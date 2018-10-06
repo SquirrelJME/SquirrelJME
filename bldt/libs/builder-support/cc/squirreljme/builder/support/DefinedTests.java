@@ -15,6 +15,7 @@ package cc.squirreljme.builder.support;
  *
  * @since 2018/03/19
  */
+@Deprecated
 public final class DefinedTests
 {
 }

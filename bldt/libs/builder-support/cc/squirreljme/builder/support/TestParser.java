@@ -23,6 +23,7 @@ import net.multiphasicapps.javac.token.BufferedTokenSource;
  *
  * @since 2018/03/19
  */
+@Deprecated
 public final class TestParser
 	implements Runnable
 {
