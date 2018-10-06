@@ -18,6 +18,9 @@ import java.io.PrintStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.nio.file.Path;
+import java.util.Map;
+import java.util.Set;
+import net.multiphasicapps.collections.SortedTreeSet;
 import net.multiphasicapps.javac.ByteArrayCompilerInput;
 import net.multiphasicapps.javac.CompilerInput;
 import net.multiphasicapps.javac.CompilerPathSet;
@@ -90,71 +93,8 @@ public final class TestSource
 		if (__spst == null)
 			throw new NullPointerException("NARG");
 		
-		// If just requesting the source set do nothing special
-		FilePathSet rootset = new FilePathSet(this.root);
-		if (__spst == SourcePathSetType.SOURCE)
-			return rootset;
-		
-		// Could fail to read
-		try
-		{
-			// Parse every input class file and look for tests
-			DefinedTests dt = new DefinedTests();
-			for (CompilerInput ci : rootset)
-			{
-				String name = ci.fileName();
-				if (name.endsWith(".java"))
-				{
-					// {@squirreljme.error AU20 Parsing the specified file
-					// and looking for tests. (The file name)}
-					System.err.printf("AU21 %s%n", name);
-					new TestParser(ci, dt).run();
-				}
-			}
-		
-			// Generate input
-			try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				PrintStream ps = new PrintStream(baos, true))
-			{
-				// Specify test package so the main entry always goes in its
-				// own package
-				// Do not end in newline so the line numbers match the template
-				String mainpackage = this.mainpackage;
-				ps.printf("package %s;", mainpackage);
-				
-				// Include template test header with test information
-				try (InputStream in = TestSource.class.getResourceAsStream(
-					"testmain.template"))
-				{
-					byte[] buf = new byte[512];
-					for (;;)
-					{
-						int rc = in.read(buf);
-						
-						if (rc < 0)
-							break;
-						
-						ps.write(buf, 0, rc);
-					}
-				}
-				
-				// Store special auto-generated test information class
-				
-				// Build input, make sure to place it in the correct directory
-				ps.flush();
-				return new MergedPathSet(rootset,
-					new DistinctPathSet(new ByteArrayCompilerInput(
-					mainpackage.replace('.', '/') + "/TestMain.java",
-					baos.toByteArray())));
-			}
-		}
-		
-		// {@squirreljme.error AU17 Could not generate the virtual test
-		// source project.}
-		catch (IOException e)
-		{
-			throw new RuntimeException("AU17", e);
-		}
+		// Always use the root source set
+		return new FilePathSet(this.root);
 	}
 	
 	/**
@@ -185,15 +125,60 @@ public final class TestSource
 			wattr.putValue("x-squirreljme-description", coolname);
 			wattr.putValue("x-squirreljme-depends", testfor.name().name() +
 				" meep-midlet unit-testing");
-			wattr.putValue("main-class", this.mainpackage + ".TestMain");
-			wattr.putValue("midlet-1", bs.name() + ",, " +
-				this.mainpackage + ".TestMain");
+			
+			// All of the tests are just MIDlets to be ran accordingly as if
+			// they were unique individual programs within the JAR
+			Set<String> classes = this.__testClass();
+			int next = 1;
+			for (String cl : classes)
+				wattr.putValue("midlet-" + (next++),
+					cl + ",," + cl);
 			
 			// Finalize
 			this._manifest = new WeakReference<>((rv = wman.build()));
 		}
 		
 		return rv;
+	}
+	
+	/**
+	 * Returns classes which make up the test classes.
+	 *
+	 * @return The tests which are available.
+	 * @since 2018/10/06
+	 */
+	private Set<String> __testClass()
+	{
+		// Classes which are available for testing
+		Set<String> classes = new SortedTreeSet<>();
+		
+		// Parse every input class file and look for tests according to
+		// a given file syntax
+		for (CompilerInput ci : this.pathSet(SourcePathSetType.SOURCE))
+		{
+			// Only consider Java source files
+			String name = ci.fileName();
+			if (!name.endsWith(".java"))
+				continue;
+			
+			// Remove the extension
+			name = name.substring(0, name.length() - 5);
+			
+			// Get the basename, because the test could be organized into
+			// packages which might mess with parsing. Although generally
+			// tests are likely in just the default package
+			int ls = name.lastIndexOf('/');
+			String base = (ls < 0 ? name : name.substring(ls + 1));
+			
+			// Only if the given patterns are matched is the test added
+			if (base.startsWith("Do") ||
+				base.startsWith("Test") ||
+				base.endsWith("Test"))
+				classes.add(name.replace('/', '.'));
+		}
+		
+		// Return all the discovered classes
+		return classes;
 	}
 }
 

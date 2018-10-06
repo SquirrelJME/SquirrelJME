@@ -37,9 +37,20 @@ abstract class __CoreTest__
 	 * {@inheritDoc}
 	 * @since 2018/10/06
 	 */
+	@Override
 	public final void run()
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/10/06
+	 */
+	@Override
+	protected final void destroyApp(boolean __u)
+	{
+		// Not used
 	}
 	
 	/**
