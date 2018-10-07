@@ -296,7 +296,92 @@ abstract class __CoreTest__
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		StringBuilder sb = new StringBuilder(__s.length());
+		
+		// Decode all input characters
+		for (int i = 0, n = __s.length(); i < n; i++)
+		{
+			char c = __s.charAt(i);
+			
+			// Ignore whitespace, since this could be an artifact of whitespace
+			// used in the manifest
+			if (c == ' ' || c == '\r' || c == '\n' || c == '\t')
+				continue;
+			
+			// Escaped sequence requires parsing
+			else if (c == '\\')
+			{
+				// Read the next character
+				c = __s.charAt(++i);
+				
+				// Hex sequence for any character
+				if (c == '@')
+				{
+					// Build string to decode hex sequence from
+					StringBuilder sub = new StringBuilder(4);
+					sub.append(__s.charAt(++i));
+					sub.append(__s.charAt(++i));
+					sub.append(__s.charAt(++i));
+					sub.append(__s.charAt(++i));
+					
+					// Decode character
+					c = (char)(Integer.valueOf(sub.toString(), 16).intValue());
+				}
+				
+				// Code for specific characters
+				else
+					switch (c)
+					{
+							// Unchanged
+						case '\\':
+						case '\"':
+							break;
+							
+							// Delete
+						case 'd':
+							c = (char)0x7F;
+							break;
+							
+							// Space
+						case '_':
+							c = ' ';
+							break;
+							
+							// Newline
+						case 'n':
+							c = '\n';
+							break;
+							
+							// Carriage return
+						case 'r':
+							c = '\r';
+							break;
+							
+							// Tab
+						case 't':
+							c = '\t';
+							break;
+						
+							// Used to represent all the other upper
+							// sequences
+						default:
+							if (c >= '0' && c <= '9')
+								c = (char)(c - '0');
+							else if (c >= 'A' && c <= 'Z')
+								c = (char)((c - 'A') + 10);
+							break;
+					}
+				
+				// Append normalized
+				sb.append(c);
+			}
+			
+			// Not escaped
+			else
+				sb.append(c);
+		}
+		
+		return sb.toString();
 	}
 	
 	/**
@@ -353,6 +438,12 @@ abstract class __CoreTest__
 				case '\t':
 					escape = true;
 					c = 't';
+					break;
+					
+					// Delete
+				case 0x7F:
+					escape = true;
+					c = 'd';
 					break;
 				
 				case 0x00:
