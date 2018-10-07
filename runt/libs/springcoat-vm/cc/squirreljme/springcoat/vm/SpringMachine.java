@@ -44,6 +44,9 @@ public final class SpringMachine
 	/** The class loader. */
 	protected final SpringClassLoader classloader;
 	
+	/** Resources accessor. */
+	protected final SpringResourceAccess resourceaccessor;
+	
 	/** The boot index. */
 	protected final int bootdx;
 	
@@ -104,6 +107,9 @@ public final class SpringMachine
 		this.classloader = __cl;
 		this.bootdx = __bootdx;
 		this._args = (__args == null ? new String[0] : __args.clone());
+		
+		// Setup resource accessor
+		this.resourceaccessor = new SpringResourceAccess(__cl);
 	}
 	
 	/**
@@ -234,6 +240,17 @@ public final class SpringMachine
 		{
 			return threads.size();
 		}
+	}
+	
+	/**
+	 * Returns the access for resources.
+	 *
+	 * @return The resource access.
+	 * @since 2018/10/07
+	 */
+	public final SpringResourceAccess resourceAccess()
+	{
+		return this.resourceaccessor;
 	}
 	
 	/**

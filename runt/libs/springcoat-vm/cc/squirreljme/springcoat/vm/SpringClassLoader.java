@@ -84,6 +84,27 @@ public final class SpringClassLoader
 	}
 	
 	/**
+	 * Finds the specified library.
+	 *
+	 * @param __n The library to find.
+	 * @return The given library or {@code null} if it was not found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/10/07
+	 */
+	public final SpringClassLibrary findLibrary(String __n)
+		throws NullPointerException
+	{
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		for (SpringClassLibrary lib : this._classpath)
+			if (__n.equals(lib.name()))
+				return lib;
+		
+		return null;
+	}
+	
+	/**
 	 * Loads the specified class.
 	 *
 	 * @param __cn The name of the class to load.

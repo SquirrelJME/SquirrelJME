@@ -923,6 +923,13 @@ public final class SpringThreadWorker
 					(SpringObject)__args[1]);
 				return null;
 				
+				// Open resource in JAR
+			case "cc/squirreljme/runtime/cldc/asm/ResourceAccess::" +
+				"open:(Ljava/lang/String;Ljava/lang/String;)I":
+				return this.machine.resourceAccess().open(
+					this.<String>asNativeObject(String.class, __args[0]),
+					this.<String>asNativeObject(String.class, __args[1]));
+				
 				// VM e-mail
 			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
 				"javaVMEmail:()Ljava/lang/String;":

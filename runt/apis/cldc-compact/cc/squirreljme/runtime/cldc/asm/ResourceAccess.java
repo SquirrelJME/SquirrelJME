@@ -46,6 +46,8 @@ public final class ResourceAccess
 	 * @param __jar The JAR the resource is in.
 	 * @param __res The name of the resource to load.
 	 * @return The file descriptor or a negative value if it does not exist.
+	 * If {@code -2} is returned that means there was an exception trying to
+	 * load the resource.
 	 * @since 2018/10/07
 	 */
 	public static final native int open(String __jar, String __res);
