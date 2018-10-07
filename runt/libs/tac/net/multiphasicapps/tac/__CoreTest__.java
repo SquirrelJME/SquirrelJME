@@ -117,8 +117,8 @@ abstract class __CoreTest__
 			expectth = attr.getValue("thrown", "ExceptionWasNotSpecified");
 		
 		// Is the test a success or failure?
-		boolean passedrv = rvstr.equals(expectrv),
-			passedth = thstr.equals(expectth),
+		boolean passedrv = __CoreTest__.__equals(rvstr, expectrv),
+			passedth = __CoreTest__.__equals(thstr, expectth),
 			passed = passedrv && passedth;
 		
 		// Print test result, the passed format is shorter as expected values
@@ -386,6 +386,80 @@ abstract class __CoreTest__
 		else
 			return "other:" + __o.getClass().getName() + ":" +
 				__CoreTest__.__stringEncode(__o.toString());
+	}
+	
+	/**
+	 * Compares the strings together, handling the special case of thrown
+	 * exception to match the class tree.
+	 *
+	 * @param __act The actual value.
+	 * @param __exp The expected value.
+	 * @return If the strings are a match.
+	 * @throws InvalidTestParameterException If a throwable is not formatted
+	 * correctly.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/10/06
+	 */
+	private static boolean __equals(String __act, String __exp)
+		throws InvalidTestParameterException, NullPointerException
+	{
+		if (__act == null || __exp == null)
+			throw new NullPointerException("NARG");
+		
+		// Throwables are special cases
+		if (__act.startsWith("throwable:") && __exp.startsWith("throwable:"))
+		{
+			// Snip off the throwable portions
+			__act = __act.substring(10);
+			__exp = __exp.substring(10);
+			
+			// Snip off the optional message in the actual
+			int ld = __act.indexOf(':');
+			if (ld >= 0)
+				__act = __act.substring(0, ld);
+			
+			// Snip off the optional message in the expected
+			ld = __exp.indexOf(':');
+			if (ld >= 0)
+				__exp = __exp.substring(0, ld);
+			
+			// Find the base expected class to find
+			ld = __exp.indexOf(',');
+			if (ld >= 0)
+				__exp = __exp.substring(0, ld);
+			
+			// Only use the basename
+			ld = __exp.lastIndexOf('.');
+			if (ld >= 0)
+				__exp = __exp.substring(ld + 1);
+			
+			// Go through the actual classes to find the class to match
+			for (int i = 0, n = __act.length(); i < n;)
+			{
+				// Get sequence
+				ld = __act.indexOf(',', i);
+				if (ld < 0)
+					ld = __act.length();
+				
+				// Snip off fragment
+				String snip = __act.substring(i, ld);
+				
+				// Only consider the base name
+				ld = snip.lastIndexOf('.');
+				if (ld >= 0)
+					snip = snip.substring(ld + 1);
+				
+				// Is a match
+				if (snip.equals(__exp))
+					return true;
+				
+				// Skip
+				i = ld + 1;
+			}
+		}
+		
+		// Use normal string comparison
+		return __exp.equals(__act);
 	}
 	
 	/**
