@@ -25,7 +25,7 @@ public class DoConsumer
 	@Override
 	public void test(String __s)
 	{
-		System.err.printf("Consumer said: `%s`!%n", __s);
+		this.secondary("input", __s);
 	}
 }
 

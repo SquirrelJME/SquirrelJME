@@ -17,9 +17,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.microedition.midlet.MIDlet;
 import net.multiphasicapps.collections.SortedTreeMap;
 import net.multiphasicapps.tool.manifest.JavaManifest;
+import net.multiphasicapps.tool.manifest.JavaManifestKey;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 
 /**
@@ -51,6 +53,16 @@ abstract class __CoreTest__
 	 */
 	abstract Object __runTest(Object... __args)
 		throws Throwable;
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/10/06
+	 */
+	@Override
+	protected final void destroyApp(boolean __u)
+	{
+		// Not used
+	}
 	
 	/**
 	 * Runs the specified test using the given main arguments, if any.
@@ -129,35 +141,69 @@ abstract class __CoreTest__
 			expectrv = attr.getValue("result", "ResultWasNotSpecified"),
 			expectth = attr.getValue("thrown", "ExceptionWasNotSpecified");
 		
+		// Convert secondary values to string formats for simpler comparison
+		Map<String, String> sestr = new SortedTreeMap<>();
+		Map<String, Object> secondary = this._secondary;
+		synchronized (secondary)
+		{
+			for (Map.Entry<String, Object> e : secondary.entrySet())
+				sestr.put(e.getKey(),
+					__CoreTest__.__convertToString(e.getValue()));
+		}
+		
+		// Read in secondary values from the manifest
+		Map<String, String> expectse = new SortedTreeMap<>();
+		for (Map.Entry<JavaManifestKey, String> e : attr.entrySet())
+		{
+			String k = e.getKey().toString().toLowerCase();
+			if (k.startsWith("secondary-"))
+				expectse.put(k.substring(10), e.getValue());
+		}
+		
 		// Is the test a success or failure?
 		boolean passedrv = __CoreTest__.__equals(rvstr, expectrv),
 			passedth = __CoreTest__.__equals(thstr, expectth),
-			passed = passedrv && passedth;
+			passedse = __CoreTest__.__equals(sestr, expectse);
 		
 		// Print test result, the passed format is shorter as expected values
 		// are not needed
+		boolean passed = passedrv && passedth && passedse;
 		if (passed)
-			System.out.printf("%s: PASS %s %s%n",
-				classname, rvstr, thstr);
+			System.out.printf("%s: PASS %s %s %s%n",
+				classname, rvstr, thstr, sestr);
 		
 		// Failures print more information so that bugs may be found, etc.
 		else
-			System.out.printf("%s: FAIL%c%c %s %s %s %s%n",
+			System.out.printf("%s: FAIL%c%c%c %s %s %s %s %s %s%n",
 				classname, (passedrv ? 'r' : '.'), (passedth ? 't' : '.'),
-				rvstr, thstr, expectrv, expectth);
+				(passedse ? 's' : '.'), rvstr, thstr, sestr,
+				expectrv, expectth, expectse);
 		
 		// Set test status
 		this._status = (passed ? TestStatus.SUCCESS : TestStatus.FAILED);
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @since 2018/10/06
+	 * Stores a secondary value which can be additionally used as test
+	 * comparison.
+	 *
+	 * @param __key The key to check.
+	 * @param __v The value to check.
+	 * @throws NullPointerException If no key was specified.
+	 * @since 2018/10/07
 	 */
-	@Override
-	protected final void destroyApp(boolean __u)
+	public final void secondary(String __key, Object __v)
+		throws NullPointerException
 	{
-		// Not used
+		if (__key == null)
+			throw new NullPointerException("NARG");
+		
+		// Make it thread safe
+		Map<String, Object> secondary = this._secondary;
+		synchronized (secondary)
+		{
+			secondary.put(__key.toLowerCase(), __v);
+		}
 	}
 	
 	/**
@@ -184,29 +230,6 @@ abstract class __CoreTest__
 	public final TestStatus status()
 	{
 		return this._status;
-	}
-	
-	/**
-	 * Stores a secondary value which can be additionally used as test
-	 * comparison.
-	 *
-	 * @param __key The key to check.
-	 * @param __v The value to check.
-	 * @throws NullPointerException If no key was specified.
-	 * @since 2018/10/07
-	 */
-	public final void value(String __key, Object __v)
-		throws NullPointerException
-	{
-		if (__key == null)
-			throw new NullPointerException("NARG");
-		
-		// Make it thread safe
-		Map<String, Object> secondary = this._secondary;
-		synchronized (secondary)
-		{
-			secondary.put(__key.toLowerCase(), __v);
-		}
 	}
 	
 	/**
@@ -513,6 +536,48 @@ abstract class __CoreTest__
 		
 		// Use normal string comparison
 		return __exp.equals(__act);
+	}
+	
+	/**
+	 * Compares the map of strings to see that they are equal.
+	 *
+	 * @param __act The actual values.
+	 * @param __exp The expected values.
+	 * @return If the maps are a match.
+	 * @throws InvalidTestParameterException If a throwable is not formatted
+	 * correctly.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/10/07
+	 */
+	private static boolean __equals(Map<String, String> __act,
+		Map<String, String> __exp)
+		throws InvalidTestParameterException, NullPointerException
+	{
+		if (__act == null || __exp == null)
+			throw new NullPointerException("NARG");
+		
+		// Compare from the first map
+		for (Map.Entry<String, String> a : __act.entrySet())
+		{
+			String key = a.getKey();
+			
+			// Second is missing key
+			if (!__exp.containsKey(key))
+				return false;
+			
+			// Match value
+			if (!__CoreTest__.__equals(a.getValue(), __exp.get(key)))
+				return false;
+		}
+		
+		// Just scan through the keys in the second map, if any keys are
+		// missing then extra keys were added
+		for (String k : __exp.keySet())
+			if (!__act.containsKey(k))
+				return false;
+		
+		// Is a match
+		return true;
 	}
 	
 	/**
