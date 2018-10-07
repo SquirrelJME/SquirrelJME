@@ -132,7 +132,7 @@ public final class TestSource
 			int next = 1;
 			for (String cl : classes)
 				wattr.putValue("midlet-" + (next++),
-					cl + ",," + cl);
+					"TEST " + cl + ",," + cl);
 			
 			// Finalize
 			this._manifest = new WeakReference<>((rv = wman.build()));
