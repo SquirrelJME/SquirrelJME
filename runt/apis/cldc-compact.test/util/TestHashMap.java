@@ -11,9 +11,10 @@
 package util;
 
 import net.multiphasicapps.tac.TestRunnable;
+import java.util.HashMap;
 
 /**
- * Tests that hashmap works properly.
+ * Tests that {@link HashMap} works properly.
  *
  * @since 2018/10/07
  */
@@ -27,6 +28,9 @@ public class TestHashMap
 	@Override
 	public void test()
 	{
+		// Initialize a map to work with
+		HashMap<Integer, String> map = new HashMap<>();
+		
 		throw new todo.TODO();
 	}
 }
