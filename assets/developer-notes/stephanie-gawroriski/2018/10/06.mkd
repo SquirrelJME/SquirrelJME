@@ -1,0 +1,30 @@
+# 2018/10/06
+
+## 16:53
+
+I figured out a simple way to do tests. Basically every test can be a MIDlet
+which all have instances, then the name of the test is just derived from the
+class. So that means one test per class. The test could do whatever it wants.
+This also allows me to store results and default parameters for the test in
+resources. There can probably be different classes depending on the type of
+result the class takes. It would be all abstract classes. The base class will
+handle running the tests, then higher level classes will handle unfolding
+parameters and such. The base class will just take the parameters and push
+them into an array, with an object for a return value. The higher level
+classes will just unfold accordingly. I think this will work out.
+
+## 17:42
+
+All the tests will just be in the default package I guess, since it works.
+
+## 18:05
+
+Okay so this is very simple for the most part, which is nice. I think this is
+going to be far easier to use and implement.
+
+## 22:23
+
+So now I have a working test system. I think I am going to take an idea from
+where I work and have secondary key/value pairs that can be used to specify
+extra values to test against and such. This would be useful for tests where
+there are no results but I need to test these values.
