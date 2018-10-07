@@ -271,7 +271,11 @@ abstract class __CoreTest__
 			throw new InvalidTestParameterException(
 				String.format("BU06 %s", __s));
 		
-		throw new todo.TODO();
+		// {@squirreljme.error BU0b The specified object cannot be
+		// decoded because it is not known. (The encoded data)}
+		else
+			throw new InvalidTestParameterException(
+				String.format("BU0b %s", __s));
 	}
 	
 	/**
