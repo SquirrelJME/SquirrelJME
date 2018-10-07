@@ -25,7 +25,8 @@ public class DoBiConsumer
 	@Override
 	public void test(String __s, Integer __i)
 	{
-		System.err.printf("Consumer said: `%s` and %d!%n", __s, __i);
+		this.secondary("a", __s);
+		this.secondary("b", __i);
 	}
 }
 
