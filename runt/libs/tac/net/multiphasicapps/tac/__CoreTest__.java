@@ -313,7 +313,99 @@ abstract class __CoreTest__
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		StringBuilder sb = new StringBuilder(__s.length());
+		
+		// Encode characters to normalize them
+		for (int i = 0, n = __s.length(); i < n; i++)
+		{
+			char c = __s.charAt(i);
+			
+			// Is the character to be translated?
+			boolean escape = false;
+			switch (c)
+			{
+					// Just escape these
+				case '\\':
+				case '"':
+					escape = true;
+					break;
+					
+					// Make spaces just in the form of an underline to make
+					// them more spacey but easier to see
+				case ' ':
+					escape = true;
+					c = '_';
+					break;
+					
+					// Newline
+				case '\n':
+					escape = true;
+					c = 'n';
+					break;
+					
+					// Carriage return
+				case '\r':
+					escape = true;
+					c = 'r';
+					break;
+					
+					// Tab
+				case '\t':
+					escape = true;
+					c = 't';
+					break;
+				
+				case 0x00:
+				case 0x01:
+				case 0x02:
+				case 0x03:
+				case 0x04:
+				case 0x05:
+				case 0x06:
+				case 0x07:
+				case 0x08:
+				case 0x0b:
+				case 0x0c:
+				case 0x0e:
+				case 0x1f:
+				case 0x10:
+				case 0x11:
+				case 0x12:
+				case 0x13:
+				case 0x14:
+				case 0x15:
+				case 0x16:
+				case 0x17:
+				case 0x18:
+				case 0x19:
+				case 0x1a:
+				case 0x1b:
+				case 0x1c:
+				case 0x1d:
+				case 0x1e:
+					escape = true;
+					c = (char)((c < 10 ? '0' + c : 'A' + (c - 10)));
+					break;
+				
+					// Not changed
+				default:
+					break;
+			}
+			
+			// Character is out of range?
+			if (c >= 0x7F)
+				sb.append(String.format("\\@%04x", c));
+			
+			// Append printable
+			else
+			{
+				if (escape)
+					sb.append('\\');
+				sb.append(c);
+			}
+		}
+		
+		return sb.toString();
 	}
 }
 
