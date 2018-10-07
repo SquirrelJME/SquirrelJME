@@ -119,11 +119,11 @@ abstract class __CoreTest__
 		// Print the result of the test, in a manifest compatible format
 		System.out.printf("%s: %s%n", classname, rvstr);
 		
-		// {@squirreljme.error BU05 An expected result was specified but it
-		// did not match. (The class; The expected value; The result)}
+		// Unexpected result!
 		if (expected != null)
 			if (!expected.equals(rvstr))
-				System.err.printf("BU05 %s %s", classname, expected, rvstr);
+				System.err.printf("FAIL! %s%n\tEXP: %s%n\tACT: %s%n",
+					classname, expected, rvstr);
 	}
 	
 	/**
