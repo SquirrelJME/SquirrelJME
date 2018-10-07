@@ -241,10 +241,14 @@ abstract class __CoreTest__
 				break;
 		}
 		
+		// A string
+		if (__s.startsWith("string:"))
+			return __CoreTest__.__stringDecode(__s.substring(7));
+		
 		// {@squirreljme.error BU06 The specified string cannot be converted
 		// to an object because it an unknown representation, the conversion
 		// is only one way. (The encoded data)}
-		if (__s.startsWith("other:"))
+		else if (__s.startsWith("other:"))
 			throw new InvalidTestParameterException(
 				String.format("BU06 %s", __s));
 		
@@ -274,6 +278,10 @@ abstract class __CoreTest__
 		// Boolean values
 		else if (__o instanceof Boolean)
 			return __o.toString();
+		
+		// String
+		else if (__o instanceof String)
+			return "string:" + __CoreTest__.__stringEncode((String)__o);
 		
 		// Unrepresented object, just use its string representation in an
 		// encoded form
