@@ -20,7 +20,7 @@ __exedir="$(dirname -- "$0")"
 
 __print_usage()
 {
-	echo "Usage: $0 [-w] [-p #] (project|file.jar)" 1>&2
+	echo "Usage: $0 [-w] [-p #] (project[:#]|file.jar)" 1>&2
 	echo "" 1>&2
 	echo "  [-w]   Run with Wine instead" 1>&2
 	echo "  [-p #] Can be 0 or greater to specify that an alternative" 1>&2
@@ -37,7 +37,7 @@ fi
 # Parse arguments
 __javacmd="$JAVA"
 __sepchar=":"
-__numb=0
+__numb=-1
 while getopts wp: __opt
 do
 	case "$__opt" in
@@ -64,7 +64,7 @@ shift $(($OPTIND - 1))
 __file="$1"
 shift
 
-__proj="$(basename "$__file" .jar)"
+__proj="$(basename "$__file" .jar | sed 's/:[0-9]\{1,\}$//')"
 
 # The file to run
 if [ -f "$__file" ]
@@ -127,6 +127,11 @@ __gen_classpath()
 	echo "$__rv"
 }
 
+if [ "$__numb" = "-1" ]
+then
+	echo
+fi
+
 # Run the JVM with the bootstrap followed
 __main="$("$__exedir/mainclass.sh" "$__run")"
 "$__javacmd" -classpath "$(__gen_classpath "$__run")" \
@@ -135,6 +140,7 @@ __main="$("$__exedir/mainclass.sh" "$__run")"
 	"-Dcc.squirreljme.builder.root=$__exedir/.." \
 	"-Dcc.squirreljme.runtime.javase.servermain=$__main" \
 	"-Dcc.squirreljme.runtime.javase.program=$__numb" \
+	"-Dcc.squirreljme.runtime.javase.file=$__file" \
 	cc.squirreljme.runtime.javase.Main "$@"
 exit $?
 
