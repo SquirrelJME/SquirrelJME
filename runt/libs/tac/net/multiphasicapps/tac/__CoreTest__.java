@@ -102,7 +102,7 @@ abstract class __CoreTest__
 		
 		// If an output file was specified, read the result from it and compare
 		// it to see if it was expected
-		try (InputStream out = self.getResourceAsStream(basename + ".out"))
+		try (InputStream out = self.getResourceAsStream(basename + ".result"))
 		{
 			if (out != null)
 				try (BufferedReader br = new BufferedReader(
