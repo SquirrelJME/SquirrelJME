@@ -1342,6 +1342,13 @@ public final class SpringThreadWorker
 					}
 					break;
 					
+					// Double constant
+				case InstructionIndex.DCONST_0:
+				case InstructionIndex.DCONST_1:
+					frame.pushToStack(
+						Double.valueOf(opid - InstructionIndex.DCONST_0));
+					break;
+					
 					// Return double
 				case InstructionIndex.DRETURN:
 					this.__vmReturn(thread,
@@ -1380,6 +1387,49 @@ public final class SpringThreadWorker
 						frame.pushToStack(b);
 						frame.pushToStack(a);
 					}
+					break;
+				
+					// Compare float, NaN is positive
+				case InstructionIndex.FCMPG:
+					{
+						float b = frame.<Float>popFromStack(Float.class),
+							a = frame.<Float>popFromStack(Float.class);
+						
+						if (Float.isNaN(a) || Float.isNaN(b))
+							frame.pushToStack(1);
+						else
+							frame.pushToStack((a < b ? -1 : (a > b ? 1 : 0)));
+					}
+					break;
+				
+					// Compare float, NaN is negative
+				case InstructionIndex.FCMPL:
+					{
+						float b = frame.<Float>popFromStack(Float.class),
+							a = frame.<Float>popFromStack(Float.class);
+						
+						if (Float.isNaN(a) || Float.isNaN(b))
+							frame.pushToStack(-1);
+						else
+							frame.pushToStack((a < b ? -1 : (a > b ? 1 : 0)));
+					}
+					break;
+					
+					// Float constant
+				case InstructionIndex.FCONST_0:
+				case InstructionIndex.FCONST_1:
+				case InstructionIndex.FCONST_2:
+					frame.pushToStack(
+						Float.valueOf(opid - InstructionIndex.FCONST_0));
+					break;
+					
+					// Load float from local variable
+				case InstructionIndex.FLOAD_0:
+				case InstructionIndex.FLOAD_1:
+				case InstructionIndex.FLOAD_2:
+				case InstructionIndex.FLOAD_3:
+					frame.loadToStack(Float.class,
+						opid - InstructionIndex.FLOAD_0);
 					break;
 					
 					// Return float

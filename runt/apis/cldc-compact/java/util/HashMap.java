@@ -10,39 +10,80 @@
 
 package java.util;
 
+/**
+ * This is a hash table where keys are mapped to values.
+ *
+ * This class is not thread safe.
+ *
+ * If keys are added or removed during iteration then
+ * {@link ConcurrentModificationException} will be thrown.
+ *
+ */
 public class HashMap<K, V>
 	extends AbstractMap<K, V>
 	implements Map<K, V>, Cloneable
 {
-	/** The default capacity. */
-	private static final int _DEFAULT_CAPACITY =
-		16;
+	/** Internal map. */
+	private final __BucketMap__ _map;
 	
-	/** The default load factor. */
-	private static final float _DEFAULT_LOAD =
-		0.75F;
-	
-	public HashMap(int __a, float __b)
+	/**
+	 * Initializes the map with the given capacity and load factor.
+	 *
+	 * @param __cap The capacity used.
+	 * @param __load The load factor used.
+	 * @throws IllegalArgumentException If the capacity is negative or the
+	 * load factor is not positive.
+	 * @since 2018/10/07
+	 */
+	public HashMap(int __cap, float __load)
+		throws IllegalArgumentException
 	{
-		super();
-		throw new todo.TODO();
+		this._map = new __BucketMap__(__cap, __load);
 	}
 	
-	public HashMap(int __a)
+	/**
+	 * Initializes the map with the given capacity and the default load factor.
+	 *
+	 * @param __cap The capacity used.
+	 * @throws IllegalArgumentException If the capacity is negative.
+	 * @since 2018/10/07
+	 */
+	public HashMap(int __cap)
+		throws IllegalArgumentException
 	{
-		super();
-		throw new todo.TODO();
+		this._map = new __BucketMap__(__cap);
 	}
 	
+	/**
+	 * Initializes the map with the default capacity and load factor.
+	 *
+	 * @since 2018/10/07
+	 */
 	public HashMap()
 	{
-		super();
-		throw new todo.TODO();
+		this._map = new __BucketMap__();
 	}
 	
-	public HashMap(Map<? extends K, ? extends V> __a)
+	/**
+	 * Initializes a map which is a copy of the other map.
+	 *
+	 * The default load factor is used and the capacity is set to the
+	 * capacity of the input map.
+	 *
+	 * @param __m The map to copy from.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/10/07
+	 */
+	public HashMap(Map<? extends K, ? extends V> __m)
+		throws NullPointerException
 	{
-		super();
+		if (__m == null)
+			throw new NullPointerException("NARG");
+		
+		// Capacity is just the number of entries in the map
+		this._map = new __BucketMap__(
+			Math.max(__BucketMap__._DEFAULT_CAPACITY, __m.size()));
+		
 		throw new todo.TODO();
 	}
 	
