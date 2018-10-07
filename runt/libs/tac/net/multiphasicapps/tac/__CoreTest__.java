@@ -30,6 +30,10 @@ import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 abstract class __CoreTest__
 	extends MIDlet
 {
+	/** The status of the test. */
+	volatile TestStatus _status =
+		TestStatus.NOT_RUN;
+	
 	/**
 	 * Runs the given test with the given arguments and resulting in the
 	 * given result.
@@ -97,6 +101,9 @@ abstract class __CoreTest__
 			// The test parameter is not valid, so whoops!
 			if (t instanceof InvalidTestException)
 			{
+				// Exception was thrown
+				this._status = TestStatus.TEST_EXCEPTION;
+				
 				// {@squirreljme.error BU04 The test failed to run properly.
 				// (The given test)}
 				System.err.printf("BU04 %s%n", classname);
@@ -132,6 +139,9 @@ abstract class __CoreTest__
 			System.out.printf("%s: FAIL%c%c %s %s %s %s%n",
 				classname, (passedrv ? 'r' : '.'), (passedth ? 't' : '.'),
 				rvstr, thstr, expectrv, expectth);
+		
+		// Set test status
+		this._status = (passed ? TestStatus.SUCCESS : TestStatus.FAILED);
 	}
 	
 	/**
@@ -154,6 +164,20 @@ abstract class __CoreTest__
 	{
 		// Just forward to run, no main arguments are used at all
 		this.runTest((String[])null);
+		
+		// There is just a single program, so exit with the test status
+		System.exit(this._status.ordinal());
+	}
+	
+	/**
+	 * Returns the test status.
+	 *
+	 * @return The test status.
+	 * @since 2018/10/07
+	 */
+	public final TestStatus status()
+	{
+		return this._status;
 	}
 	
 	/**
