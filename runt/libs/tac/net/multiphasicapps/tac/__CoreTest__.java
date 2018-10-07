@@ -337,11 +337,6 @@ abstract class __CoreTest__
 						case '\"':
 							break;
 							
-							// Delete
-						case 'd':
-							c = (char)0x7F;
-							break;
-							
 							// Space
 						case '_':
 							c = ' ';
@@ -360,6 +355,11 @@ abstract class __CoreTest__
 							// Tab
 						case 't':
 							c = '\t';
+							break;
+							
+							// Delete
+						case 'd':
+							c = (char)0x7F;
 							break;
 						
 							// Used to represent all the other upper
