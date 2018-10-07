@@ -43,7 +43,7 @@ public abstract class TestConsumer<A>
 		this.test((A)__args[0]);
 		
 		// No result is generated
-		return new NoResult();
+		return new __NoResult__();
 	}
 }
 

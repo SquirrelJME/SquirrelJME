@@ -11,11 +11,11 @@
 package net.multiphasicapps.tac;
 
 /**
- * This represents no result.
+ * This represents a result which has not been defined.
  *
  * @since 2018/10/06
  */
-final class __NoResult__
+final class __UndefinedResult__
 {
 	/**
 	 * {@inheritDoc}
@@ -24,7 +24,7 @@ final class __NoResult__
 	@Override
 	public final boolean equals(Object __o)
 	{
-		return __o == this || (__o instanceof __NoResult__);
+		return __o == this || (__o instanceof __UndefinedResult__);
 	}
 	
 	/**
@@ -44,7 +44,7 @@ final class __NoResult__
 	@Override
 	public final String toString()
 	{
-		return "NoResult";
+		return "UndefinedResult";
 	}
 }
 

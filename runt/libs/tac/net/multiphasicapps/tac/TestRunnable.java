@@ -40,7 +40,7 @@ public abstract class TestRunnable
 		this.test();
 		
 		// No result is generated
-		return new NoResult();
+		return new __NoResult__();
 	}
 }
 

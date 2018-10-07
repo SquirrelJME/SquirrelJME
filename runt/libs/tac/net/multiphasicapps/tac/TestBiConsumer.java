@@ -45,7 +45,7 @@ public abstract class TestBiConsumer<A, B>
 		this.test((A)__args[0], (B)__args[1]);
 		
 		// No result is generated
-		return new NoResult();
+		return new __NoResult__();
 	}
 }
 
