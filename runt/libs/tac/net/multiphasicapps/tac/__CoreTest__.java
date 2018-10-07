@@ -323,6 +323,43 @@ abstract class __CoreTest__
 		else if (__o instanceof Integer)
 			return "int:" + __o.toString();
 		
+		// Throwable, meta data is used
+		else if (__o instanceof Throwable)
+		{
+			Throwable t = (Throwable)__o;
+			
+			StringBuilder sb = new StringBuilder("throwable:");
+			
+			// Throwables may be of multiple class types and it usually is
+			// expected that they are some base class. For example a class
+			// can thrown some FooIndexOutOfBoundsException which is based
+			// off IndexOutOfBoundsException, if the result expects the
+			// base class then it must still pass. So store the entire class
+			// tree.
+			boolean comma = false;
+			for (Class<?> x = t.getClass(); x != null; x = x.getSuperclass())
+			{
+				// Split to encode multiple classes
+				if (comma)
+					sb.append(',');
+				comma = true;
+				
+				// Append class name here
+				sb.append(x.getName());
+			}
+			
+			// For debug purposes, encode the message information
+			String msg = t.getMessage();
+			if (msg != null)
+			{
+				sb.append(':');
+				sb.append(__CoreTest__.__stringEncode(msg));
+			}
+			
+			// Now metadata is included for this
+			return sb.toString();
+		}
+		
 		// Unrepresented object, just use its string representation in an
 		// encoded form
 		else
