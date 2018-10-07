@@ -125,6 +125,7 @@ public final class TestSource
 			wattr.putValue("x-squirreljme-description", coolname);
 			wattr.putValue("x-squirreljme-depends", testfor.name().name() +
 				" meep-midlet unit-testing");
+			wattr.putValue("x-squirreljme-tests", "true");
 			
 			// All of the tests are just MIDlets to be ran accordingly as if
 			// they were unique individual programs within the JAR
