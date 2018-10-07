@@ -16,7 +16,9 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.microedition.midlet.MIDlet;
+import net.multiphasicapps.collections.SortedTreeMap;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 
@@ -30,6 +32,10 @@ import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 abstract class __CoreTest__
 	extends MIDlet
 {
+	/** Secondary results. */
+	final Map<String, Object> _secondary =
+		new SortedTreeMap<>();
+	
 	/** The status of the test. */
 	volatile TestStatus _status =
 		TestStatus.NOT_RUN;
@@ -178,6 +184,29 @@ abstract class __CoreTest__
 	public final TestStatus status()
 	{
 		return this._status;
+	}
+	
+	/**
+	 * Stores a secondary value which can be additionally used as test
+	 * comparison.
+	 *
+	 * @param __key The key to check.
+	 * @param __v The value to check.
+	 * @throws NullPointerException If no key was specified.
+	 * @since 2018/10/07
+	 */
+	public final void value(String __key, Object __v)
+		throws NullPointerException
+	{
+		if (__key == null)
+			throw new NullPointerException("NARG");
+		
+		// Make it thread safe
+		Map<String, Object> secondary = this._secondary;
+		synchronized (secondary)
+		{
+			secondary.put(__key.toLowerCase(), __v);
+		}
 	}
 	
 	/**
