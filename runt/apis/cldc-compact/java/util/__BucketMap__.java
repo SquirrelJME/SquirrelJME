@@ -18,9 +18,11 @@ package java.util;
  * @see HashSet
  * @see LinkedHashMap
  * @see LinkedHashSet
+ * @param <K> The key type.
+ * @param <V> The value type.
  * @since 2018/10/07
  */
-final class __BucketMap__
+final class __BucketMap__<K, V>
 {
 	/** The default capacity. */
 	static final int _DEFAULT_CAPACITY =
@@ -33,8 +35,11 @@ final class __BucketMap__
 	/** The load factor. */
 	protected final float loadfactor;
 	
-	/** The buckets used to store elements. */
-	__Bucket__[] _buckets;
+	/** The entry chains for each element. */
+	__Chain__[] _buckets;
+	
+	/** The hashcode divisor for buckets. */
+	int _bucketdiv;
 	
 	/** The number of elements in the map. */
 	int _size;
@@ -84,23 +89,31 @@ final class __BucketMap__
 		
 		this.loadfactor = __load;
 		this._buckets = new __Bucket__[__cap];
+		this._bucketdiv = __cap;
 	}
 	
 	/**
-	 * Chain of elements in individual buckets.
+	 * Returns the chain that the hashed object is within for the bucket.
+	 *
+	 * @param __hash The hash to locate the bucket for.
+	 * @return The bucket for the given hash.
+	 * @since 2018/10/07
+	 */
+	public __BucketMap__.__Chain__ put(Object __k)
+	{
+		// Determine the slot the bucket would be in
+		int slot = __hash % this._bucketdiv;
+		
+		// Return that bucket
+		return this._buckets[slot];
+	}
+	
+	/**
+	 * Chained elements which represent multiple entries.
 	 *
 	 * @since 2018/10/07
 	 */
 	static final class __Chain__
-	{
-	}
-	
-	/**
-	 * Buckets used to store entries.
-	 *
-	 * @since 2018/10/07
-	 */
-	static final class __Bucket__
 	{
 	}
 }

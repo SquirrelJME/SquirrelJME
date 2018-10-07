@@ -134,9 +134,18 @@ public class HashMap<K, V>
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/10/07
+	 */
 	@Override
-	public V put(K __a, V __b)
+	public V put(K __k, V __v)
 	{
+		// Need the hashcode to find the bucket to place the value in
+		int hash = (__k == null ? 0 : __k.hashCode());
+		
+		
+		
 		throw new todo.TODO();
 	}
 	
