@@ -9,5 +9,6 @@ X-SquirrelJME-Description: This project contains the testing, acceptance,
  executions of the virtual machine.
 Microedition-Configuration: CLDC-1.8-Compact
 Microedition-Profile: MEEP-8
-X-SquirrelJME-Depends: meep-midlet
+X-SquirrelJME-Depends: meep-midlet tool-manifest-reader 
+ tool-manifest-writer
 

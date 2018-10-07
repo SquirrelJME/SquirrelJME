@@ -37,7 +37,7 @@ public abstract class TestRunnable
 			throw new InvalidTestParameterException("BU01");
 		
 		// Run the test
-		this.run();
+		this.test();
 		
 		// No result is generated
 		return new NoResult();
