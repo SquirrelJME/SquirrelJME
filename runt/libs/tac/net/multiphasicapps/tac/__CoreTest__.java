@@ -272,7 +272,8 @@ abstract class __CoreTest__
 				String.format("BU06 %s", __s));
 		
 		// {@squirreljme.error BU0b The specified object cannot be
-		// decoded because it is not known. (The encoded data)}
+		// decoded because it is not known or does not support decoding.
+		// (The encoded data)}
 		else
 			throw new InvalidTestParameterException(
 				String.format("BU0b %s", __s));
