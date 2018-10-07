@@ -330,6 +330,9 @@ abstract class __CoreTest__
 			
 			StringBuilder sb = new StringBuilder("throwable:");
 			
+			// The last package to shorten the classes
+			String lastpkg = "java.lang.";
+			
 			// Throwables may be of multiple class types and it usually is
 			// expected that they are some base class. For example a class
 			// can thrown some FooIndexOutOfBoundsException which is based
@@ -337,15 +340,33 @@ abstract class __CoreTest__
 			// base class then it must still pass. So store the entire class
 			// tree.
 			boolean comma = false;
-			for (Class<?> x = t.getClass(); x != null; x = x.getSuperclass())
+			for (Class<?> x = t.getClass(); x != null && x != Object.class;
+				x = x.getSuperclass())
 			{
+				// Clip off the package if it matches
+				String clname = x.getName();
+				if (clname.startsWith(lastpkg))
+					clname = clname.substring(lastpkg.length());
+				
+				// Otherwise remember the package used
+				else
+				{
+					int ld = clname.lastIndexOf('.');
+					if (ld >= 0)
+						lastpkg = clname.substring(0, ld + 1);
+					
+					// Maybe default package?
+					else
+						lastpkg = "";
+				}
+				
 				// Split to encode multiple classes
 				if (comma)
 					sb.append(',');
 				comma = true;
 				
 				// Append class name here
-				sb.append(x.getName());
+				sb.append(clname);
 			}
 			
 			// For debug purposes, encode the message information
