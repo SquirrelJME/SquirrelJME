@@ -60,6 +60,7 @@ shift $(($OPTIND - 1))
 
 # File is the first one
 if [ "$__numb" = "-1" ]
+then
 	__file="$1"
 else
 	__file="$1:$__numb"
