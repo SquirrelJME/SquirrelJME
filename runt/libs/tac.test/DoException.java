@@ -26,7 +26,7 @@ public class DoException
 	public void test()
 	{
 		// Expected to fail
-		throw new RuntimeException();
+		throw new RuntimeException("Oopsie!");
 	}
 }
 
