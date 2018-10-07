@@ -25,6 +25,7 @@ public class DoRunnable
 	@Override
 	public void test()
 	{
+		System.err.println("Did run!");
 	}
 }
 
