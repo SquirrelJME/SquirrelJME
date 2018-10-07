@@ -11,6 +11,7 @@
 package java.lang;
 
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
+import cc.squirreljme.runtime.cldc.asm.ResourceAccess;
 import java.io.InputStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -39,6 +40,9 @@ public final class Class<T>
 	/** The number of dimensions. */
 	private final int _dimensions;
 	
+	/** The JAR this class is in. */
+	private final String _injar;
+	
 	/** Has the assertion status been checked already? */
 	private volatile boolean _checkedassert;
 	
@@ -55,11 +59,12 @@ public final class Class<T>
 	 * @param __bn The binary name of this class.
 	 * @param __sc Super classes.
 	 * @param __ic Interface classes.
+	 * @param __ij The JAR this class is in.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/12
 	 */
 	private Class(int __csi, String __bn, Class<?> __sc, Class<?>[] __ic,
-		Class<?> __ct)
+		Class<?> __ct, String __ij)
 		throws NullPointerException
 	{
 		if (__bn == null)
@@ -70,6 +75,7 @@ public final class Class<T>
 		this._superclass = __sc;
 		this._interfaceclasses = __ic;
 		this._component = __ct;
+		this._injar = __ij;
 		
 		// Count dimensions, used for comparison purposes
 		int dims = 0;
@@ -189,10 +195,6 @@ public final class Class<T>
 	 * to be obtain from another class which exists in another JAR file then
 	 * this method must be called from a class in that JAR.
 	 *
-	 * Relative names are based on the method which called this method.
-	 * Instances of {@code /./} will be translated to {@code /} and
-	 * {@code /foo/../} will be translated to {@code /}.
-	 *
 	 * In the Java ME environment, one should not rely on getting resources
 	 * which are executable class files (files ending in .class). These class
 	 * files may be deleted during native compilation. This however should not
@@ -201,6 +203,9 @@ public final class Class<T>
 	 * Using this method on the classes for primitive types ({@code int.class})
 	 * and using a relative name will always result in the path being treated
 	 * as absolute.
+	 *
+	 * Relative paths are converted to absolute paths by appending the name
+	 * to the binary name of the class package.
 	 *
 	 * @param __name The name of the resource to find, if this starts with a
 	 * forward slash {@code '/'} then it is treated as an absolute path.
@@ -217,43 +222,37 @@ public final class Class<T>
 		if (__name == null)
 			throw new NullPointerException("NARG");
 		
-		/*
-		// If this is an array then perform the resource lookup on the
-		// component type.
-		Class<?> comp = this._componenttype;
-		if (comp != null)
-			return comp.getResourceAsStream(__name);
-		
-		// A fully resolved full path?
-		String res;
-		if (__name.startsWith("/"))
-			res = __name.substring(1);
-		
-		// Relative name
-		else
-		{
-			// Need to build a new name due to . and .. components
-			StringBuilder sb = new StringBuilder();
-			
-			if (true)
-				throw new todo.TODO();
-			
-			// Use it
-			res = sb.toString();
-		}
-		
-		// Locate the resource in the JAR that this class resides in
-		VM vmi = VM.INSTANCE;
-		String found = vmi.jar.findResource(this, res);
-		
-		// Not found?
-		if (found == null)
+		// This is not within any JAR, so nothing will ever be found
+		String injar = this._injar;
+		if (injar == null)
 			return null;
 		
-		// Open it
-		return vmi.jar.openResource(found);
-		*/
-		throw new todo.TODO();
+		// Absolute paths are not translated
+		String want;
+		if (__name.startsWith("/"))
+			want = __name.substring(1);
+		
+		// Otherwise append to the binary name
+		else
+		{
+			// Has a package
+			String pkg = this._binaryname;
+			int ld = pkg.lastIndexOf('/');
+			if (ld >= 0)
+				want = pkg.substring(0, ld + 1) + __name;
+			
+			// Is in default package
+			else
+				want = __name;
+		}
+		
+		// If no resource exists then
+		int fd = ResourceAccess.open(injar, want);
+		if (fd < 0)
+			return null;
+		
+		// Otherwise read from that resource
+		return new __ResourceInputStream__(fd);
 	}
 	
 	/**
