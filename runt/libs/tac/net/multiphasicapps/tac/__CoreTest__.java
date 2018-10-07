@@ -62,17 +62,26 @@ abstract class __CoreTest__
 		if (ld >= 0)
 			basename = basename.substring(ld + 1);
 		
-		// Read the inputs for the test
-		Object[] args;
+		// Read input and output parameters
+		JavaManifest man;
 		try (InputStream in = self.getResourceAsStream(basename + ".in"))
 		{
-			args = this.__parseInput(classname, __mainargs, in);
+			if (in == null)
+				man = new JavaManifest();
+			else
+				man = new JavaManifest(in);
 		}
 		catch (IOException e)
 		{
 			// {@squirreljme.error BU02 Could not read the argument input.}
 			throw new InvalidTestException("BU02", e);
 		}
+		
+		// The main attributes contain the arguments
+		JavaManifestAttributes attr = man.getMainAttributes();
+		
+		// Read the inputs for the test
+		Object[] args = this.__parseInput(classname, __mainargs, attr);
 		
 		// Run the test, catch any exception to report it
 		Object rv;
@@ -96,39 +105,14 @@ abstract class __CoreTest__
 			rv = t;
 		}
 		
-		// Get string result representation
+		// Get string result representation and the expected value from the
+		// manifest
 		String rvstr = __CoreTest__.__convertToString(rv),
-			expected = null;
-		
-		// If an output file was specified, read the result from it and compare
-		// it to see if it was expected
-		try (InputStream out = self.getResourceAsStream(basename + ".result"))
-		{
-			if (out != null)
-				try (BufferedReader br = new BufferedReader(
-					new InputStreamReader(out, "utf-8")))
-				{
-					expected = br.readLine();
-					
-					// In the event one forgot to place a result when one
-					// should have been specified
-					if (expected == null)
-						expected = "ResultFileWasEmpty";
-				}
-			
-			// No result
-			else
-				expected = "ResultWasNotSpecified";
-		}
-		catch (IOException e)
-		{
-			// This should make it quite flaggable
-			expected = "IOExceptionReadingExpectedResult";
-		}
+			expected = attr.getValue("result");
 		
 		// If there was no expected value then treat it as undefined
 		if (expected == null)
-			expected = "UndefinedResult";
+			expected = "ResultWasNotSpecified";
 		
 		// Print the result of the test, in a manifest compatible format
 		System.out.printf("%s: %s%n", classname, rvstr);
@@ -167,24 +151,22 @@ abstract class __CoreTest__
 	 *
 	 * @param __sysprefix System property prefix.
 	 * @param __mainargs Main program arguments.
-	 * @param __in Input manifest data which may be null.
+	 * @param __attr Test attributes.
 	 * @return The input arguments.
-	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2018/10/06
 	 */
 	private Object[] __parseInput(String __sysprefix, String[] __mainargs,
-		InputStream __in)
-		throws IOException
+		JavaManifestAttributes __attr)
+		throws NullPointerException
 	{
 		if (__mainargs == null)
 			__mainargs = new String[0];
 		
-		List<Object> rv = new ArrayList<>();
+		if (__sysprefix == null || __mainargs == null || __attr == null)
+			throw new NullPointerException("NARG");
 		
-		// Parse manifest
-		JavaManifest man = (__in == null ? new JavaManifest() :
-			new JavaManifest(__in));
-		JavaManifestAttributes attr = man.getMainAttributes();
+		List<Object> rv = new ArrayList<>();
 		
 		// Read argument values in this order, to allow new ones to be
 		// specified accordingly: main arguments, system properties, the
@@ -206,7 +188,7 @@ abstract class __CoreTest__
 				
 				// Otherwise just read a value from the manifest
 				else
-					parse = attr.getValue("argument-" + i);
+					parse = __attr.getValue("argument-" + i);
 			}
 			
 			// Nothing to parse
