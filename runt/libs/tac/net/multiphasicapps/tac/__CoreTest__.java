@@ -36,9 +36,11 @@ abstract class __CoreTest__
 	 *
 	 * @param __args The arguments to the test.
 	 * @return The result of the test.
+	 * @throws Throwable On any thrown exception.
 	 * @since 2018/10/06
 	 */
-	abstract Object __runTest(Object... __args);
+	abstract Object __runTest(Object... __args)
+		throws Throwable;
 	
 	/**
 	 * Runs the specified test using the given main arguments, if any.

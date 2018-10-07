@@ -8,42 +8,25 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.tac;
+import net.multiphasicapps.tac.TestRunnable;
 
 /**
- * This is a test which has no input and produces no output, it just runs.
+ * Tests a basic exception.
  *
  * @since 2018/10/06
  */
-public abstract class TestRunnable
-	extends __CoreTest__
+public class DoException
+	extends TestRunnable
 {
-	/**
-	 * Runs the specified test.
-	 *
-	 * @throws Throwable On any thrown exception.
-	 * @since 2018/10/06
-	 */
-	public abstract void test()
-		throws Throwable;
-	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/10/06
 	 */
 	@Override
-	final Object __runTest(Object... __args)
-		throws Throwable
+	public void test()
 	{
-		// {@squirreljme.error BU01 Test does not take any parameters.}
-		if (__args.length != 0)
-			throw new InvalidTestParameterException("BU01");
-		
-		// Run the test
-		this.test();
-		
-		// No result is generated
-		return new __NoResult__();
+		// Expected to fail
+		throw new RuntimeException();
 	}
 }
 

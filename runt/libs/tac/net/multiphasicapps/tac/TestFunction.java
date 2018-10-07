@@ -25,9 +25,11 @@ public abstract class TestFunction<A, R>
 	 *
 	 * @param __a The first parameter.
 	 * @return The result.
+	 * @throws Throwable On any thrown exception.
 	 * @since 2018/10/06
 	 */
-	public abstract R test(A __a);
+	public abstract R test(A __a)
+		throws Throwable;
 	
 	/**
 	 * {@inheritDoc}
@@ -36,6 +38,7 @@ public abstract class TestFunction<A, R>
 	@Override
 	@SuppressWarnings({"unchecked"})
 	final Object __runTest(Object... __args)
+		throws Throwable
 	{
 		// {@squirreljme.error BU09 Test takes one parameter.}
 		if (__args.length != 1)
