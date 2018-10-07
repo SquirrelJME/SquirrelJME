@@ -23,9 +23,11 @@ public abstract class TestConsumer<A>
 	 * Runs the specified test.
 	 *
 	 * @param __a The first parameter.
+	 * @throws Throwable On any thrown exception.
 	 * @since 2018/10/06
 	 */
-	public abstract void test(A __a);
+	public abstract void test(A __a)
+		throws Throwable;
 	
 	/**
 	 * {@inheritDoc}
@@ -34,6 +36,7 @@ public abstract class TestConsumer<A>
 	@Override
 	@SuppressWarnings({"unchecked"})
 	final Object __runTest(Object... __args)
+		throws Throwable
 	{
 		// {@squirreljme.error BU08 Test takes one parameter.}
 		if (__args.length != 1)

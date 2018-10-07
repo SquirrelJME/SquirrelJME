@@ -1,0 +1,3 @@
+result: ExceptionThrown
+thrown: throwable:java.lang.RuntimeException
+

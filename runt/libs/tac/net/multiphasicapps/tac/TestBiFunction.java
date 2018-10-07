@@ -27,9 +27,11 @@ public abstract class TestBiFunction<A, B, R>
 	 * @param __a The first parameter.
 	 * @param __b The second parameter.
 	 * @return The result
+	 * @throws Throwable On any thrown exception.
 	 * @since 2018/10/06
 	 */
-	public abstract R test(A __a, B __b);
+	public abstract R test(A __a, B __b)
+		throws Throwable;
 	
 	/**
 	 * {@inheritDoc}
@@ -38,6 +40,7 @@ public abstract class TestBiFunction<A, B, R>
 	@Override
 	@SuppressWarnings({"unchecked"})
 	final Object __runTest(Object... __args)
+		throws Throwable
 	{
 		// {@squirreljme.error BU0a Test takes two parameters.}
 		if (__args.length != 2)

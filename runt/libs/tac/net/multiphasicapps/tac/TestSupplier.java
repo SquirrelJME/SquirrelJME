@@ -23,9 +23,11 @@ public abstract class TestSupplier<R>
 	 * Runs the specified test.
 	 *
 	 * @return The result.
+	 * @throws Throwable On any thrown exception.
 	 * @since 2018/10/06
 	 */
-	public abstract R test();
+	public abstract R test()
+		throws Throwable;
 	
 	/**
 	 * {@inheritDoc}
@@ -33,6 +35,7 @@ public abstract class TestSupplier<R>
 	 */
 	@Override
 	final Object __runTest(Object... __args)
+		throws Throwable
 	{
 		// {@squirreljme.error BU07 Test does not take any parameters.}
 		if (__args.length != 0)

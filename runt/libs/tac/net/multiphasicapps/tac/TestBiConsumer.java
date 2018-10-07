@@ -25,9 +25,11 @@ public abstract class TestBiConsumer<A, B>
 	 *
 	 * @param __a The first parameter.
 	 * @param __b The second parameter.
+	 * @throws Throwable On any thrown exception.
 	 * @since 2018/10/06
 	 */
-	public abstract void test(A __a, B __b);
+	public abstract void test(A __a, B __b)
+		throws Throwable;
 	
 	/**
 	 * {@inheritDoc}
@@ -36,6 +38,7 @@ public abstract class TestBiConsumer<A, B>
 	@Override
 	@SuppressWarnings({"unchecked"})
 	final Object __runTest(Object... __args)
+		throws Throwable
 	{
 		// {@squirreljme.error BU08 Test takes two parameters.}
 		if (__args.length != 2)
