@@ -109,12 +109,26 @@ abstract class __CoreTest__
 					new InputStreamReader(out, "utf-8")))
 				{
 					expected = br.readLine();
+					
+					// In the event one forgot to place a result when one
+					// should have been specified
+					if (expected == null)
+						expected = "ResultFileWasEmpty";
 				}
+			
+			// No result
+			else
+				expected = "ResultWasNotSpecified";
 		}
 		catch (IOException e)
 		{
-			expected = null;
+			// This should make it quite flaggable
+			expected = "IOExceptionReadingExpectedResult";
 		}
+		
+		// If there was no expected value then treat it as undefined
+		if (expected == null)
+			expected = "UndefinedResult";
 		
 		// Print the result of the test, in a manifest compatible format
 		System.out.printf("%s: %s%n", classname, rvstr);
@@ -229,7 +243,10 @@ abstract class __CoreTest__
 				return null;
 			
 			case "NoResult":
-				return new NoResult();
+				return new __NoResult__();
+			
+			case "UndefinedResult":
+				return new __UndefinedResult__();
 			
 			case "true":
 				return Boolean.TRUE;
@@ -276,8 +293,12 @@ abstract class __CoreTest__
 			return "null";
 		
 		// No result generated
-		else if (__o instanceof NoResult)
+		else if (__o instanceof __NoResult__)
 			return "NoResult";
+		
+		// Undefined
+		else if (__o instanceof __UndefinedResult__)
+			return "UndefinedResult";
 		
 		// Boolean values
 		else if (__o instanceof Boolean)
