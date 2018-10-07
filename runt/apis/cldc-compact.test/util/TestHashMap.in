@@ -1,5 +1,5 @@
 result: NoResult
-thrown: NoException
+thrown: NoExceptionThrown
 secondary-initempty: true
 secondary-initsize: int:0
 secondary-firstcontained: true
