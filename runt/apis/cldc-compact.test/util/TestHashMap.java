@@ -100,6 +100,8 @@ public class TestHashMap
 		map.put(ka, va);
 		
 		// Reused values
+		this.secondary("reusedcontained", map.containsKey(ka));
+		this.secondary("reusedvalue", map.get(ka));
 		this.secondary("reusedcontainednew",
 			map.containsKey(new Integer(1989)));
 		this.secondary("reusedvaluenew",

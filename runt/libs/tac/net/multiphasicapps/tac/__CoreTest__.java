@@ -14,12 +14,14 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.microedition.midlet.MIDlet;
 import net.multiphasicapps.collections.SortedTreeMap;
+import net.multiphasicapps.collections.SortedTreeSet;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestKey;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
@@ -141,14 +143,24 @@ abstract class __CoreTest__
 			expectrv = attr.getValue("result", "ResultWasNotSpecified"),
 			expectth = attr.getValue("thrown", "ExceptionWasNotSpecified");
 		
+		// Longest string, used for secondary value formatting when failure
+		// happens
+		int longskeylen = 0;
+		
 		// Convert secondary values to string formats for simpler comparison
 		Map<String, String> sestr = new SortedTreeMap<>();
 		Map<String, Object> secondary = this._secondary;
 		synchronized (secondary)
 		{
 			for (Map.Entry<String, Object> e : secondary.entrySet())
-				sestr.put(e.getKey(),
-					__CoreTest__.__convertToString(e.getValue()));
+			{
+				String k = e.getKey();
+				sestr.put(k, __CoreTest__.__convertToString(e.getValue()));
+				
+				int l = k.length();
+				if (l > longskeylen)
+					longskeylen = l;
+			}
 		}
 		
 		// Read in secondary values from the manifest
@@ -168,16 +180,37 @@ abstract class __CoreTest__
 		// Print test result, the passed format is shorter as expected values
 		// are not needed
 		boolean passed = passedrv && passedth && passedse;
+		PrintStream out = System.out;
 		if (passed)
-			System.out.printf("%s: PASS %s %s %s%n",
+			out.printf("%s: PASS %s %s %s%n",
 				classname, rvstr, thstr, sestr);
 		
 		// Failures print more information so that bugs may be found, etc.
 		else
-			System.out.printf("%s: FAIL%c%c%c %s %s %s %s %s %s%n",
-				classname, (passedrv ? 'r' : '.'), (passedth ? 't' : '.'),
-				(passedse ? 's' : '.'), rvstr, thstr, sestr,
-				expectrv, expectth, expectse);
+		{
+			// Print base values
+			out.printf("%s: FAIL%n", classname);
+			out.printf("\tRV %s %s%n", rvstr, expectrv);
+			out.printf("\tTH %s %s%n", thstr, expectth);
+			
+			// Merge the two key sets
+			Set<String> merged = new SortedTreeSet<>();
+			merged.addAll(sestr.keySet());
+			merged.addAll(expectse.keySet());
+			
+			// Secondary values are more complex to handle
+			String valueform = "\t%" + longskeylen + "s %c %s %s%n";
+			for (String k : merged)
+			{
+				String a = sestr.get(k),
+					b = expectse.get(k);
+				
+				out.printf(valueform, k,
+					(__CoreTest__.__equals(a, b) ? '=' : '!'),
+					a,
+					b);
+			}
+		}
 		
 		// Set test status
 		this._status = (passed ? TestStatus.SUCCESS : TestStatus.FAILED);
