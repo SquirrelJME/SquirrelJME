@@ -115,9 +115,10 @@ public final class SpringClassLoader
 			
 			// Load class file for this class
 			ClassFile cf;
+			String[] injar = new String[1];
 			try
 			{
-				cf = this.loadClassFile(__cn);
+				cf = this.loadClassFile(__cn, injar);
 			}
 			catch (InvalidClassFormatException e)
 			{
@@ -146,7 +147,7 @@ public final class SpringClassLoader
 			
 			// Load class information
 			rv = new SpringClass(superclass, interfaceclasses, cf,
-				this._nexcsi++, component);
+				this._nexcsi++, component, injar[0]);
 			
 			// Store for later use
 			classes.put(__cn, rv);
@@ -160,6 +161,7 @@ public final class SpringClassLoader
 	 * the given class.
 	 *
 	 * @param __cn The class to load.
+	 * @param __ij The input JAR file for the class.
 	 * @return The loaded class file data.
 	 * @throws NullPointerException On null arguments.
 	 * @throws SpringClassFormatException If the class is not formatted
@@ -167,7 +169,7 @@ public final class SpringClassLoader
 	 * @throws SpringClassNotFoundException If the class was not found.
 	 * @since 2018/09/01
 	 */
-	public final ClassFile loadClassFile(ClassName __cn)
+	public final ClassFile loadClassFile(ClassName __cn, String[] __ij)
 		throws NullPointerException, SpringClassFormatException,
 			SpringClassNotFoundException
 	{
@@ -213,6 +215,10 @@ public final class SpringClassLoader
 						baos.write(buf, 0, rc);
 					}
 				}
+				
+				// Record the binary
+				if (__ij != null && __ij.length > 0)
+					__ij[0] = b.name();
 				
 				break;
 			}
