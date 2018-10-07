@@ -391,13 +391,14 @@ public final class SpringThreadWorker
 				rv = this.newInstance(classobj.name(),
 					new MethodDescriptor("(ILjava/lang/String;" +
 						"Ljava/lang/Class;[Ljava/lang/Class;" +
-						"Ljava/lang/Class;)V"),
+						"Ljava/lang/Class;Ljava/lang/String;)V"),
 					resclass.specialIndex(),
 					this.asVMObject(name.toString()),
 					this.asVMObject(resclass.superClass()),
 					ints,
 					(!resclass.isArray() ? SpringNullObject.NULL :
-						this.asVMObject(resclass.componentType())));
+						this.asVMObject(resclass.componentType())),
+					this.asVMObject(classobj.inJar()));
 				
 				// Cache and use it
 				com.put(name, rv);

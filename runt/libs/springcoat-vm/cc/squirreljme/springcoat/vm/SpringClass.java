@@ -61,6 +61,9 @@ public final class SpringClass
 	/** The component type. */
 	protected final SpringClass component;
 	
+	/** The JAR this class is in. */
+	protected final String injar;
+	
 	/** Interface classes. */
 	private final SpringClass[] _interfaceclasses;
 	
@@ -90,11 +93,12 @@ public final class SpringClass
 	 * @param __cf The class file for this class.
 	 * @param __si The special class index.
 	 * @param __ct The component type.
+	 * @param __injar The JAR this class is in.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/07/21
 	 */
 	SpringClass(SpringClass __super, SpringClass[] __interfaces,
-		ClassFile __cf, int __si, SpringClass __ct)
+		ClassFile __cf, int __si, SpringClass __ct, String __injar)
 		throws NullPointerException
 	{
 		if (__interfaces == null || __cf == null)
@@ -103,7 +107,7 @@ public final class SpringClass
 		ClassName name = __cf.thisName();
 		this.name = name;
 		this.specialindex = __si;
-		
+		this.injar = __injar;
 		this.file = __cf;
 		this.superclass = __super;
 		this.component = __ct;
@@ -288,6 +292,17 @@ public final class SpringClass
 	public final ClassFlags flags()
 	{
 		return this.file.flags();
+	}
+	
+	/**
+	 * Returns the JAR this class is in.
+	 *
+	 * @return The JAR this class is in.
+	 * @since 2018/10/07
+	 */
+	public final String inJar()
+	{
+		return this.injar;
 	}
 	
 	/**
