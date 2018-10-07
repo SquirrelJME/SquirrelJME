@@ -29,6 +29,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -54,6 +55,10 @@ public class Main
 	/** Property specifying the main entry point for server entries. */
 	public static final String SERVER_MAIN =
 		"cc.squirreljme.runtime.javase.servermain";
+	
+	/** The file which was passed. */
+	public static final String FILE_PROPERTY =
+		"cc.squirreljme.runtime.javase.file";
 	
 	/**
 	 * {@squirreljme.property cc.squirreljme.runtime.javase.program=(id)
@@ -82,9 +87,24 @@ public class Main
 		// APIs
 		__initializeRunTime(isclient);
 		
+		// Try to extract from the program
+		int pdx = Integer.getInteger(Main.PROGRAM, -1);
+		String fprop = System.getProperty(FILE_PROPERTY);
+		if (pdx < 0 && fprop != null)
+		{
+			int col = fprop.lastIndexOf(':');
+			if (col >= 0)
+				try
+				{
+					pdx = Integer.valueOf(fprop.substring(col + 1));
+				}
+				catch (NumberFormatException e)
+				{
+				}
+		}
+		
 		// Search through programs to find the entry point desired
 		String mainclassname;
-		int pdx = Integer.getInteger(Main.PROGRAM, -1);
 		if (pdx >= 0)
 		{
 			// Need to go through all the URLs and find the midlet containing

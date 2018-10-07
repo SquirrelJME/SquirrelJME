@@ -20,7 +20,7 @@ __exedir="$(dirname -- "$0")"
 
 __print_usage()
 {
-	echo "Usage: $0 [-w] [-p #] (project|file.jar)" 1>&2
+	echo "Usage: $0 [-w] [-p #] (project[:#]|file.jar)" 1>&2
 	echo "" 1>&2
 	echo "  [-w]   Run with Wine instead" 1>&2
 	echo "  [-p #] Can be 0 or greater to specify that an alternative" 1>&2
@@ -36,7 +36,7 @@ fi
 
 # Parse arguments
 __wineswitch=""
-__numb=0
+__numb=-1
 while getopts wp: __opt
 do
 	case "$__opt" in
@@ -59,11 +59,15 @@ done
 shift $(($OPTIND - 1))
 
 # File is the first one
-__file="$1"
+if [ "$__numb" = "-1" ]
+	__file="$1"
+else
+	__file="$1:$__numb"
+fi
 shift
 
 # Forward to hosted launch with the known parameters
 "$__exedir/hostedlaunch.sh" $__wineswitch springcoat-vm-build \
-	"$__file:$__numb" "$@"
+	"$__file" "$@"
 exit $?
 
