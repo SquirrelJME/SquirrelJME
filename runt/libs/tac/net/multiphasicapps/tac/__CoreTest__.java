@@ -241,6 +241,13 @@ abstract class __CoreTest__
 				break;
 		}
 		
+		// {@squirreljme.error BU06 The specified string cannot be converted
+		// to an object because it an unknown representation, the conversion
+		// is only one way. (The encoded data)}
+		if (__s.startsWith("other:"))
+			throw new InvalidTestParameterException(
+				String.format("BU06 %s", __s));
+		
 		throw new todo.TODO();
 	}
 	
@@ -268,11 +275,45 @@ abstract class __CoreTest__
 		else if (__o instanceof Boolean)
 			return __o.toString();
 		
-		// {@squirreljme.error BU03 Could not convert the object to a string
-		// representation. (The class; The toString() of that object)}
+		// Unrepresented object, just use its string representation in an
+		// encoded form
 		else
-			throw new InvalidTestParameterException(
-				String.format("BU03 %s %s", __o.getClass(), __o));
+			return "other:" + __o.getClass().getName() + ":" +
+				__CoreTest__.__stringEncode(__o.toString());
+	}
+	
+	/**
+	 * Decodes the given string from a manifest safe format to a string.
+	 *
+	 * @param __s The string to decode.
+	 * @return The decoded string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/10/06
+	 */
+	private static String __stringDecode(String __s)
+		throws NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Encodes the given string to a manifest safe format.
+	 *
+	 * @param __s The string to encode.
+	 * @return The encoded string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/10/06
+	 */
+	private static String __stringEncode(String __s)
+		throws NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 }
 
