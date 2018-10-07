@@ -124,7 +124,7 @@ public final class TestSource
 			wattr.putValue("x-squirreljme-version", bs.version().toString());
 			wattr.putValue("x-squirreljme-description", coolname);
 			wattr.putValue("x-squirreljme-depends", testfor.name().name() +
-				" meep-midlet unit-testing");
+				" meep-midlet tac");
 			wattr.putValue("x-squirreljme-tests", "true");
 			
 			// All of the tests are just MIDlets to be ran accordingly as if
