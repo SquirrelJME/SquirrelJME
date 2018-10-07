@@ -245,6 +245,10 @@ abstract class __CoreTest__
 		if (__s.startsWith("string:"))
 			return __CoreTest__.__stringDecode(__s.substring(7));
 		
+		// Integer
+		else if (__s.startsWith("int:"))
+			return Integer.valueOf(__s.substring(4));
+		
 		// {@squirreljme.error BU06 The specified string cannot be converted
 		// to an object because it an unknown representation, the conversion
 		// is only one way. (The encoded data)}
@@ -282,6 +286,10 @@ abstract class __CoreTest__
 		// String
 		else if (__o instanceof String)
 			return "string:" + __CoreTest__.__stringEncode((String)__o);
+		
+		// Integer
+		else if (__o instanceof Integer)
+			return "int:" + __o.toString();
 		
 		// Unrepresented object, just use its string representation in an
 		// encoded form
