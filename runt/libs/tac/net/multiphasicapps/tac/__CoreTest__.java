@@ -84,10 +84,11 @@ abstract class __CoreTest__
 		Object[] args = this.__parseInput(classname, __mainargs, attr);
 		
 		// Run the test, catch any exception to report it
-		Object rv;
+		Object rv, thrown;
 		try
 		{
 			rv = this.__runTest(args);
+			thrown = new __NoExceptionThrown__();
 		}
 		catch (Throwable t)
 		{
@@ -101,27 +102,34 @@ abstract class __CoreTest__
 				return;
 			}
 			
-			// Make the result just the exception, to simplify things
-			rv = t;
+			// Indicate an exception was thrown
+			rv = new __ExceptionThrown__();
+			thrown = t;
 		}
 		
 		// Get string result representation and the expected value from the
 		// manifest
 		String rvstr = __CoreTest__.__convertToString(rv),
-			expected = attr.getValue("result");
+			thstr = __CoreTest__.__convertToString(thrown),
+			expectrv = attr.getValue("result", "ResultWasNotSpecified"),
+			expectth = attr.getValue("thrown", "ExceptionWasNotSpecified");
 		
-		// If there was no expected value then treat it as undefined
-		if (expected == null)
-			expected = "ResultWasNotSpecified";
+		// Is the test a success or failure?
+		boolean passedrv = rvstr.equals(expectrv),
+			passedth = thstr.equals(expectth),
+			passed = passedrv && passedth;
 		
-		// Print the result of the test, in a manifest compatible format
-		System.out.printf("%s: %s%n", classname, rvstr);
+		// Print test result, the passed format is shorter as expected values
+		// are not needed
+		if (passed)
+			System.out.printf("%s: PASS %s %s%n",
+				classname, rvstr, thstr);
 		
-		// Unexpected result!
-		if (expected != null)
-			if (!expected.equals(rvstr))
-				System.err.printf("FAIL! %s%n\tEXP: %s%n\tACT: %s%n",
-					classname, expected, rvstr);
+		// Failures print more information so that bugs may be found, etc.
+		else
+			System.out.printf("%s: FAIL%c%c %s %s %s %s%n",
+				classname, (passedrv ? 'r' : '.'), (passedth ? 't' : '.'),
+				rvstr, thstr, expectrv, expectth);
 	}
 	
 	/**
@@ -230,6 +238,12 @@ abstract class __CoreTest__
 			case "UndefinedResult":
 				return new __UndefinedResult__();
 			
+			case "ExceptionThrown":
+				return new __ExceptionThrown__();
+			
+			case "NoExceptionThrown":
+				return new __NoExceptionThrown__();
+			
 			case "true":
 				return Boolean.TRUE;
 			
@@ -281,6 +295,14 @@ abstract class __CoreTest__
 		// Undefined
 		else if (__o instanceof __UndefinedResult__)
 			return "UndefinedResult";
+		
+		// Exception was thrown
+		else if (__o instanceof __ExceptionThrown__)
+			return "ExceptionThrown";
+		
+		// No exception was thrown
+		else if (__o instanceof __NoExceptionThrown__)
+			return "NoExceptionThrown";
 		
 		// Boolean values
 		else if (__o instanceof Boolean)
