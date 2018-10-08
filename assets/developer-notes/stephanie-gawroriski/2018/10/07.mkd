@@ -1,0 +1,38 @@
+# 2018/10/07
+
+## 9:25
+
+So now the thing to do would be to make it so the test framework can run in
+SpringCoat. This will be rather important!
+
+## 9:35
+
+Okay so `getResourceAsStream()` does not handle `.` and `..` so this makes
+my life easier.
+
+## 10:56
+
+I think implementing `HashMap` is a point where it can be tested using the
+tests while I implement it. Oh but the thing is, I need `HashMap` to run
+the tests due to how the manifest is stored. So I cannot really test it I
+would say until it is implemented. But at least I can write a test for it
+first.
+
+## 11:04
+
+Okay, I definitely need secondary results now!
+
+## 12:15
+
+Okay, with all of the secondary values, finding it hard to compare values!
+
+## 13:17
+
+Okay so now that I have some testing at least for `HashMap`, it is time to
+implement it. Since this code will be shared in common with `LinkedHashMap`
+using the same internal stuff (just the later operates as a linked list)
+I will write a basic map storage mechanism.
+
+## 13:26
+
+Also not to mention `HashSet` has the same implementation of `HashMap`.
