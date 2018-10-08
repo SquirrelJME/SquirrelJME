@@ -1919,7 +1919,7 @@
 `04`
 `05`
 [**`06`**](stephanie-gawroriski/2018/10/06.mkd)
- * `07`
+ * [**`07`**](stephanie-gawroriski/2018/10/07.mkd)
 `08`
 `09`
 `10`
