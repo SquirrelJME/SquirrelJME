@@ -36,13 +36,19 @@ final class __BucketMap__<K, V>
 	protected final float loadfactor;
 	
 	/** The entry chains for each element. */
-	__Chain__[] _buckets;
+	__Entry__<K, V>[][] _buckets;
 	
 	/** The hashcode divisor for buckets. */
 	int _bucketdiv;
 	
 	/** The number of elements in the map. */
 	int _size;
+	
+	/** The current capacity. */
+	int _capacity;
+	
+	/** The size threshold before a rebuild is done. */
+	int _loadthreshold;
 	
 	/**
 	 * Initializes the map with the default capacity and load factor.
@@ -88,33 +94,225 @@ final class __BucketMap__<K, V>
 			throw new IllegalArgumentException("ZZ2c");
 		
 		this.loadfactor = __load;
-		this._buckets = new __Bucket__[__cap];
+		this._buckets = new __Entry__<K, V>[__cap][];
 		this._bucketdiv = __cap;
+		this._capacity = __cap;
+		this._loadthreshold = __cap * __load;
+	}
+	
+	/**
+	 * Gets the entry for the given key.
+	 *
+	 * @param __k The key to get.
+	 * @return The entry for the given or {@code null} if none exists.
+	 * @since 2018/10/08
+	 */
+	public __BucketMap__.__Entry__<K, V> get(K __k)
+	{
+		// Where to look in the table?
+		int hash = (__k == null ? 0 : __k.hashCode());
+		int div = hash % _bucketdiv;
+		
+		// If the chain does not exist then do not bother at all
+		__Entry__<K, V>[] chain = this._buckets[div];
+		if (chain == null)
+			return null;
+		
+		// Go through the chain and find the matching entry
+		for (__Entry__<K, V> e : chain)
+		{
+			// Ignore blank entries
+			if (e == null)
+				continue;
+			
+			// Has the wrong hashcode
+			if (hash != e._keyhash)
+				continue;
+			
+			// If the objects actually match, it is found
+			if (Objects.equals(__k, e._key))
+				return e;
+		}
+		
+		// Not found
+		return null;
 	}
 	
 	/**
 	 * Returns the chain that the hashed object is within for the bucket.
 	 *
-	 * @param __hash The hash to locate the bucket for.
-	 * @return The bucket for the given hash.
+	 * @param __k The key.
+	 * @return The key for the given entry.
 	 * @since 2018/10/07
 	 */
-	public __BucketMap__.__Chain__ put(Object __k)
+	public __BucketMap__.__Entry__ put(K __k)
 	{
-		// Determine the slot the bucket would be in
-		int slot = __hash % this._bucketdiv;
+		__Entry__<K, V>[][] buckets = this._buckets;
+		int bucketdiv = this._bucketdiv;
 		
-		// Return that bucket
-		return this._buckets[slot];
+		// Used to determine if we rebuild
+		int size = this._size,
+			nextsize = size + 1;
+		
+		// Hypothetically putting a new entry could cause the threshold to be
+		// hit, so just in this case a new entry would be put so rebuild
+		// the hash table.
+		if (nextsize >= this._loadthreshold)
+		{
+			throw new todo.TODO();
+		}
+		
+		// Where to look in the table?
+		int hash = (__k == null ? 0 : __k.hashCode());
+		int div = hash % bucketdiv;
+		
+		// This will be set depending on the situation
+		__Entry__<K, V> rv;
+		
+		// No entries exist in the chain, we can just create one
+		__Entry__<K, V>[] chain = buckets[div];
+		if (chain == null)
+		{
+			rv = new __Entry__<K, V>(__k);
+			buckets[div] = new __Entry__<K, V>[]{rv};
+			return rv;
+		}
+		
+		// Go through and find if there was a pre-existing item
+		int nulldx = -1,
+			n = chain.length;
+		for (int i = 0; i < n; i++)
+		{
+			__Entry__<K, V> e = chain[i];
+			
+			// If no entry is here remember this blank spot in the event
+			// nothing is ever found
+			if (e == null)
+			{
+				if (nulldx < 0)
+					nulldx = i;
+				continue;
+			}
+			
+			// Has the wrong hashcode
+			if (hash != e._keyhash)
+				continue;
+			
+			// If the objects actually match, it is found
+			if (Object.equals(__k, e._key))
+				return e;
+		}
+		
+		// Found a blank spot, we can just put the entry here
+		if (nulldx >= 0)
+			chain[nulldx] = (rv = new __Entry__<K, V>(__k));
+		
+		// Otherwise, increase the chain and use that instead
+		else
+		{
+			// Copy the old chain over
+			__Entry__<K, V>[] dup = new __Entry__<K, V>[n + 1];
+			for (int i = 0; i < n; i++)
+				dup[i] = chain[i];
+			
+			// Set at end
+			dup[n] = (rv = new __Entry__<K, V>(__k));
+			
+			// Use this chain again
+			buckets[div] = dup;
+		}
+		
+		return rv;
 	}
 	
 	/**
-	 * Chained elements which represent multiple entries.
+	 * Returns the number of entries in the map.
 	 *
+	 * @return The number of entries in the map.
+	 * @since 2018/10/08
+	 */
+	public final int size()
+	{
+		return this._size;
+	}
+	
+	/**
+	 * This represents a single entry within the map.
+	 *
+	 * @param <K> The key type.
+	 * @param <V> The value type.
 	 * @since 2018/10/07
 	 */
-	static final class __Chain__
+	static final class __Entry__<K, V>
+		implements Map.Entry<K, V>
 	{
+		/** The key. */
+		final K _key;
+		
+		/** The key hashcode. */
+		final int _keyhash;
+		
+		/**
+		 * Initializes the entry.
+		 *
+		 * @param __k The key.
+		 * @since 2018/10/08
+		 */
+		__Entry__(K __k)
+		{
+			this._key = __k;
+			this._keyhash = (__k == null ? 0 : __k.hashCode());
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/10/08
+		 */
+		@Override
+		public final boolean equals(Object __o)
+		{
+			throw new todo.TODO();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/10/08
+		 */
+		@Override
+		public final K getKey()
+		{
+			return this._key;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/10/08
+		 */
+		@Override
+		public final V getValue()
+		{
+			throw new todo.TODO();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/10/08
+		 */
+		@Override
+		public final int hashCode()
+		{
+			throw new todo.TODO();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/10/08
+		 */
+		@Override
+		public final V setValue(V __v)
+		{
+			throw new todo.TODO();
+		}
 	}
 }
 
