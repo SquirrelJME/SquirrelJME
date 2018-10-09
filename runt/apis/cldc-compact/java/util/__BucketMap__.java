@@ -94,10 +94,10 @@ final class __BucketMap__<K, V>
 			throw new IllegalArgumentException("ZZ2c");
 		
 		this.loadfactor = __load;
-		this._buckets = new __Entry__<K, V>[__cap][];
+		this._buckets = __BucketMap__.<K, V>__newBucket(__cap);
 		this._bucketdiv = __cap;
 		this._capacity = __cap;
-		this._loadthreshold = __cap * __load;
+		this._loadthreshold = (int)(__cap * __load);
 	}
 	
 	/**
@@ -173,8 +173,12 @@ final class __BucketMap__<K, V>
 		__Entry__<K, V>[] chain = buckets[div];
 		if (chain == null)
 		{
-			rv = new __Entry__<K, V>(__k);
-			buckets[div] = new __Entry__<K, V>[]{rv};
+			// Setup chain
+			chain = __BucketMap__.<K, V>__newChain(1);
+			buckets[div] = chain;
+			
+			// Fill
+			chain[0] = (rv = new __Entry__<K, V>(__k));
 			return rv;
 		}
 		
@@ -199,7 +203,7 @@ final class __BucketMap__<K, V>
 				continue;
 			
 			// If the objects actually match, it is found
-			if (Object.equals(__k, e._key))
+			if (Objects.equals(__k, e._key))
 				return e;
 		}
 		
@@ -211,7 +215,7 @@ final class __BucketMap__<K, V>
 		else
 		{
 			// Copy the old chain over
-			__Entry__<K, V>[] dup = new __Entry__<K, V>[n + 1];
+			__Entry__<K, V>[] dup = __BucketMap__.<K, V>__newChain(n + 1);
 			for (int i = 0; i < n; i++)
 				dup[i] = chain[i];
 			
@@ -234,6 +238,36 @@ final class __BucketMap__<K, V>
 	public final int size()
 	{
 		return this._size;
+	}
+	
+	/**
+	 * Creates a new bucket array.
+	 *
+	 * @param <K> Key type.
+	 * @param <V> Value type.
+	 * @param __n The length.
+	 * @return The array.
+	 * @since 2018/10/08
+	 */
+	@SuppressWarnings({"unchecked"})
+	private static <K, V> __Entry__<K, V>[][] __newBucket(int __n)
+	{
+		return (__Entry__<K, V>[][])((Object)new __Entry__[__n][]);
+	}
+	
+	/**
+	 * Creates a new chain array.
+	 *
+	 * @param <K> Key type.
+	 * @param <V> Value type.
+	 * @param __n The length.
+	 * @return The array.
+	 * @since 2018/10/08
+	 */
+	@SuppressWarnings({"unchecked"})
+	private static <K, V> __Entry__<K, V>[] __newChain(int __n)
+	{
+		return (__Entry__<K, V>[])((Object)new __Entry__[__n]);
 	}
 	
 	/**
