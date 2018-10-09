@@ -1,0 +1,7 @@
+# 2018/10/08
+
+## 21:40
+
+I am going to make an optimization to the hash table. For put I am going to
+treat it as if always a new entry were created, then rebuild if the
+threshold was hit rather than researching and redoing.
