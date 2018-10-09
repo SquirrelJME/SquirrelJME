@@ -18,6 +18,7 @@ package java.util;
  * If keys are added or removed during iteration then
  * {@link ConcurrentModificationException} will be thrown.
  *
+ * @since 2018/10/07
  */
 public class HashMap<K, V>
 	extends AbstractMap<K, V>
