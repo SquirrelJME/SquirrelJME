@@ -208,18 +208,6 @@ public class ArrayList<E>
 		throw new todo.TODO();
 	}
 	
-	@Override
-	public Object[] toArray()
-	{
-		throw new todo.TODO();
-	}
-	
-	@Override
-	public <T> T[] toArray(T[] __a)
-	{
-		throw new todo.TODO();
-	}
-	
 	public void trimToSize()
 	{
 		throw new todo.TODO();
