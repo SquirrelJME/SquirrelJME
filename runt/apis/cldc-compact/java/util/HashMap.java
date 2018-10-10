@@ -25,7 +25,7 @@ public class HashMap<K, V>
 	implements Map<K, V>, Cloneable
 {
 	/** Internal map. */
-	private final __BucketMap__ _map;
+	private final __BucketMap__<K, V> _map;
 	
 	/**
 	 * Initializes the map with the given capacity and load factor.
@@ -39,7 +39,7 @@ public class HashMap<K, V>
 	public HashMap(int __cap, float __load)
 		throws IllegalArgumentException
 	{
-		this._map = new __BucketMap__(__cap, __load);
+		this._map = new __BucketMap__<K, V>(__cap, __load);
 	}
 	
 	/**
@@ -52,7 +52,7 @@ public class HashMap<K, V>
 	public HashMap(int __cap)
 		throws IllegalArgumentException
 	{
-		this._map = new __BucketMap__(__cap);
+		this._map = new __BucketMap__<K, V>(__cap);
 	}
 	
 	/**
@@ -62,7 +62,7 @@ public class HashMap<K, V>
 	 */
 	public HashMap()
 	{
-		this._map = new __BucketMap__();
+		this._map = new __BucketMap__<K, V>();
 	}
 	
 	/**
