@@ -1843,6 +1843,15 @@ public final class SpringThreadWorker
 						frame.pushToStack(a | b);
 					}
 					break;
+				
+					// Remainder integer
+				case InstructionIndex.IREM:
+					{
+						int b = frame.<Integer>popFromStack(Integer.class),
+							a = frame.<Integer>popFromStack(Integer.class);
+						frame.pushToStack(a % b);
+					}
+					break;
 					
 					// Return integer
 				case InstructionIndex.IRETURN:
