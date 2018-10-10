@@ -171,6 +171,11 @@ public final class TestSource
 			int ls = name.lastIndexOf('/');
 			String base = (ls < 0 ? name : name.substring(ls + 1));
 			
+			// Ignore classes with dollar signs because that indicates an
+			// inner class
+			if (base.indexOf('$') >= 0)
+				continue;
+			
 			// Only if the given patterns are matched is the test added
 			if (base.startsWith("Do") ||
 				base.startsWith("Test") ||
