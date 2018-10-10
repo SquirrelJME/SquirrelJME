@@ -82,7 +82,7 @@ public class HashMap<K, V>
 			throw new NullPointerException("NARG");
 		
 		// Capacity is just the number of entries in the map
-		this._map = new __BucketMap__(
+		this._map = new __BucketMap__<K, V>(
 			Math.max(__BucketMap__._DEFAULT_CAPACITY, __m.size()));
 		
 		throw new todo.TODO();
@@ -142,12 +142,8 @@ public class HashMap<K, V>
 	@Override
 	public V put(K __k, V __v)
 	{
-		// Need the hashcode to find the bucket to place the value in
-		int hash = (__k == null ? 0 : __k.hashCode());
-		
-		
-		
-		throw new todo.TODO();
+		// Just operates on that key
+		return this._map.put(__k).setValue(__v);
 	}
 	
 	@Override

@@ -145,7 +145,7 @@ final class __BucketMap__<K, V>
 	 * @return The key for the given entry.
 	 * @since 2018/10/07
 	 */
-	public __BucketMap__.__Entry__ put(K __k)
+	public __BucketMap__.__Entry__<K, V> put(K __k)
 	{
 		__Entry__<K, V>[][] buckets = this._buckets;
 		int bucketdiv = this._bucketdiv;
@@ -286,6 +286,9 @@ final class __BucketMap__<K, V>
 		/** The key hashcode. */
 		final int _keyhash;
 		
+		/** The value here. */
+		V _value;		
+		
 		/**
 		 * Initializes the entry.
 		 *
@@ -305,7 +308,15 @@ final class __BucketMap__<K, V>
 		@Override
 		public final boolean equals(Object __o)
 		{
-			throw new todo.TODO();
+			if (__o == this)
+				return true;
+			
+			if (!(__o instanceof Map.Entry))
+				return false;
+			
+			Map.Entry<?, ?> o = (Map.Entry<?, ?>)__o;
+			return Objects.equals(this._key, o.getKey()) &&
+				Objects.equals(this._value, o.getValue());
 		}
 		
 		/**
@@ -345,7 +356,9 @@ final class __BucketMap__<K, V>
 		@Override
 		public final V setValue(V __v)
 		{
-			throw new todo.TODO();
+			V rv = this._value;
+			this._value = __v;
+			return rv;
 		}
 	}
 }
