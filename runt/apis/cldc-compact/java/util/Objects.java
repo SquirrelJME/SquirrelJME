@@ -10,6 +10,8 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+
 /**
  * This class provides utility methods which are usually able to handle null
  * values.
@@ -77,13 +79,13 @@ public final class Objects
 		boolean na = (__a == null);
 		boolean nb = (__b == null);
 		
-		// Both sides are null?
-		if (na && nb)
-			return true;
-		
 		// One side is null, but the other is not
 		if (na != nb)
 			return false;
+		
+		// Both sides are null (just need to check one)
+		else if (na)
+			return true;
 		
 		// Standard equals
 		return __a.equals(__b);
