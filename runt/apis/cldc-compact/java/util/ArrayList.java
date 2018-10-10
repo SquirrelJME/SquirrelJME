@@ -192,10 +192,14 @@ public class ArrayList<E>
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/10/10
+	 */
 	@Override
 	public int size()
 	{
-		throw new todo.TODO();
+		return this._size;
 	}
 	
 	@Override
