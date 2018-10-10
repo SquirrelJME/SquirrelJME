@@ -1439,6 +1439,15 @@ public final class SpringThreadWorker
 					frame.loadToStack(Float.class,
 						opid - InstructionIndex.FLOAD_0);
 					break;
+				
+					// Multiply float
+				case InstructionIndex.FMUL:
+					{
+						float b = frame.<Float>popFromStack(Float.class),
+							a = frame.<Float>popFromStack(Float.class);
+						frame.pushToStack(a * b);
+					}
+					break;
 					
 					// Return float
 				case InstructionIndex.FRETURN:
