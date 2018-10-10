@@ -132,7 +132,7 @@ public final class SpringClassLoader
 				return rv;
 			
 			// Debug
-			todo.DEBUG.note("Loading class `%s`...", __cn);
+			/*todo.DEBUG.note("Loading class `%s`...", __cn);*/
 			
 			// Load class file for this class
 			ClassFile cf;
