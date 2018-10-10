@@ -43,6 +43,7 @@ public interface Collection<E>
 	
 	public abstract Object[] toArray();
 	
-	public abstract <T> T[] toArray(T[] __a);
+	public abstract <T> T[] toArray(T[] __v)
+		throws NullPointerException;
 }
 

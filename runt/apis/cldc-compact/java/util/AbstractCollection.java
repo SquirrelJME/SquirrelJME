@@ -109,10 +109,42 @@ public abstract class AbstractCollection<E>
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/10/10
+	 */
 	@Override
-	public <T> T[] toArray(T[] __a)
+	@SuppressWarnings({"unchecked"})
+	public <T> T[] toArray(T[] __v)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		// Use to check or create a new array of the given type
+		int size = this.size();
+		
+		// Only copy elements if there are any to copy, prevents creation
+		// of the iterator
+		if (size > 0)
+		{
+			// If the array is too small, reallocate it to fit
+			if (__v.length < size)
+				throw new todo.TODO();
+			
+			// Copy elements based on the iteration order, just ignore the
+			// class and hope it works
+			int o = 0;
+			for (E e : this)
+				__v[o++] = (T)e;
+		}
+		
+		// The element at the end of the array, if there is room is set to
+		// null
+		if (__v.length > size)
+			__v[size] = null;
+		
+		return __v;
 	}
 	
 	@Override
