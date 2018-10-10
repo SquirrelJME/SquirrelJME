@@ -226,6 +226,9 @@ final class __BucketMap__<K, V>
 			buckets[div] = dup;
 		}
 		
+		// Size would have been increased at this point
+		this._size = nextsize;
+		
 		return rv;
 	}
 	
