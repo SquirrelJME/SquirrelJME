@@ -1388,6 +1388,14 @@ public final class SpringThreadWorker
 						frame.pushToStack(a);
 					}
 					break;
+					
+					// Float to integer
+				case InstructionIndex.F2I:
+					{
+						float value = frame.<Float>popFromStack(Float.class);
+						frame.pushToStack(Integer.valueOf((int)value));
+					}
+					break;
 				
 					// Compare float, NaN is positive
 				case InstructionIndex.FCMPG:
@@ -1538,6 +1546,14 @@ public final class SpringThreadWorker
 					{
 						int value = frame.<Integer>popFromStack(Integer.class);
 						frame.pushToStack(Integer.valueOf((char)value));
+					}
+					break;
+					
+					// Integer to float
+				case InstructionIndex.I2F:
+					{
+						int value = frame.<Integer>popFromStack(Integer.class);
+						frame.pushToStack(Float.valueOf(value));
 					}
 					break;
 					
