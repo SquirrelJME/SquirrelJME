@@ -14,10 +14,13 @@ public abstract class AbstractSet<E>
 	extends AbstractCollection<E>
 	implements Set<E>
 {
+	/**
+	 * Requires that the class be extended.
+	 *
+	 * @since 2018/10/10
+	 */
 	protected AbstractSet()
 	{
-		super();
-		throw new todo.TODO();
 	}
 	
 	@Override
