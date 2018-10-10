@@ -107,7 +107,7 @@ final class __BucketMap__<K, V>
 	 * @return The entry for the given or {@code null} if none exists.
 	 * @since 2018/10/08
 	 */
-	public __BucketMap__.__Entry__<K, V> get(K __k)
+	public __BucketMap__.__Entry__<K, V> get(Object __k)
 	{
 		// Where to look in the table?
 		int hash = (__k == null ? 0 : __k.hashCode());
@@ -130,7 +130,7 @@ final class __BucketMap__<K, V>
 				continue;
 			
 			// If the objects actually match, it is found
-			if (Objects.equals(__k, e._key))
+			if (Objects.equals(e._key, __k))
 				return e;
 		}
 		
@@ -336,7 +336,7 @@ final class __BucketMap__<K, V>
 		@Override
 		public final V getValue()
 		{
-			throw new todo.TODO();
+			return this._value;
 		}
 		
 		/**

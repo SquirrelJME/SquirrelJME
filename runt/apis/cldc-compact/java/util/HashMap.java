@@ -94,9 +94,17 @@ public class HashMap<K, V>
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns a shallow copy of this map which just shares the same key and
+	 * value mappings, the actual keys and values are not cloned.
+	 *
+	 * {@inheritDoc}
+	 * @since 2018/10/10
+	 */
+	@Override
 	public Object clone()
 	{
-		throw new todo.TODO();
+		return new HashMap<>(this);
 	}
 	
 	@Override
@@ -117,10 +125,17 @@ public class HashMap<K, V>
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/10/10
+	 */
 	@Override
-	public V get(Object __a)
+	public V get(Object __k)
 	{
-		throw new todo.TODO();
+		__BucketMap__.__Entry__<K, V> e = this._map.get(__k);
+		if (e == null)
+			return null;
+		return e.getValue();
 	}
 	
 	@Override
