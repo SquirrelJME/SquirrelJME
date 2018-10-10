@@ -661,7 +661,7 @@ public final class SpringThreadWorker
 				return __cl;
 			
 			// Debug
-			todo.DEBUG.note("Need to initialize %s.", __cl.name());
+			/*todo.DEBUG.note("Need to initialize %s.", __cl.name());*/
 			
 			// Set the class as initialized early to prevent loops, because
 			// a super class might call something from the base class which
