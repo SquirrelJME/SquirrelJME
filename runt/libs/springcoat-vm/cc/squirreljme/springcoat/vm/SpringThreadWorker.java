@@ -2271,10 +2271,6 @@ public final class SpringThreadWorker
 			throw new SpringIncompatibleClassChangeException(
 				String.format("BK0t %s", ref));
 		
-		// The new class the method is in
-		SpringClass newclass = this.loadClass(
-			refmethod.inClass());
-		
 		// Load arguments
 		int nargs = refmethod.nameAndType().type().
 			argumentCount() + 1;
@@ -2282,21 +2278,36 @@ public final class SpringThreadWorker
 		for (int i = nargs - 1; i >= 0; i--)
 			args[i] = __f.popFromStack();
 		
-		// Virtual invoke
-		if (newclass.isSuperClass(refclass) &&
-			!refmethod.name().isInstanceInitializer())
-		{
-			// Push back in for the virtual call
-			for (int i = 0; i < nargs; i++)
-				__f.pushToStack(args[i]);
-			
-			// Would just mess up
-			this.__vmInvokeVirtual(__i, __t, __f);
-		}
+		// Get the class of the current method being executed, lookup depends
+		// on it
+		SpringClass currentclass = this.loadClass(
+			this.thread.currentFrame().method().inClass());
+		
+		// {@squirreljme.error BK20 Instance object for special invoke is
+		// null.}
+		SpringObject onthis = (SpringObject)args[0];
+		if (onthis == null || onthis == SpringNullObject.NULL)
+			throw new SpringNullPointerException("BK20");
+		
+		// These modify the action to be performed
+		boolean insame = (currentclass == refclass),
+			insuper = currentclass.isSuperClass(refclass),
+			isinit = refmethod.name().isInstanceInitializer(),
+			isprivate = refmethod.flags().isPrivate();
+		
+		// {@squirreljme.error BK21 Cannot call private method that is not
+		// in the same class. (The method reference)}
+		if (isprivate && !insame)
+			throw new SpringIncompatibleClassChangeException(
+				String.format("BK21 %s", ref));
+		
+		// Call superclass method instead?
+		else if (!isprivate && insuper && !isinit)
+			refmethod = currentclass.superClass().lookupMethod(false,
+				ref.memberNameAndType());
 		
 		// Invoke this method
-		else
-			__t.enterFrame(refmethod, args);
+		__t.enterFrame(refmethod, args);
 	}
 	
 	/**
