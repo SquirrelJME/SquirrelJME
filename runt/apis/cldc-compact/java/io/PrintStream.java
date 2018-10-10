@@ -50,6 +50,7 @@ public class PrintStream
 	private static final int _THRESHOLD =
 		90;
 	
+	/** The newline sequence. */
 	private static final String _NEWLINE;
 	
 	/** The stream to write bytes to. */

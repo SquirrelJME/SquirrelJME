@@ -71,6 +71,9 @@ import java.io.Writer;
 public final class Formatter
 	implements Closeable, Flushable
 {
+	/** The newline sequence. */
+	private static final String _NEWLINE;
+	
 	/** The appendable to write to. */
 	private final Appendable _out;
 	
@@ -79,6 +82,26 @@ public final class Formatter
 	
 	/** The IOException if any was generated. */
 	private IOException _ioe;
+	
+	/**
+	 * Cache the line separator which is derived from the system properties.
+	 *
+	 * @since 2018/10/10
+	 */
+	static
+	{
+		String nl;
+		try
+		{
+			nl = System.getProperty("line.separator");
+		}
+		catch (SecurityException e)
+		{
+			nl = "\n";
+		}
+		
+		_NEWLINE = nl;
+	}
 	
 	/**
 	 * Initializes a formatter which uses an internal {@link StringBuilder}.
@@ -309,6 +332,11 @@ public final class Formatter
 		String append;
 		switch (conv)
 		{
+				// Newline sequence
+			case NEWLINE:
+				append = Formatter._NEWLINE;
+				break;
+			
 				// Simple string conversion
 			case STRING:
 				append = __pf.<Object>__argument(Object.class, "null").
