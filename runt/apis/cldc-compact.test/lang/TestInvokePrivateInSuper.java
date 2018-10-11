@@ -23,6 +23,7 @@ public class TestInvokePrivateInSuper
 	 * {@inheritDoc}
 	 * @since 2018/10/10
 	 */
+	@Override
 	public void test()
 	{
 		this.doSuper();

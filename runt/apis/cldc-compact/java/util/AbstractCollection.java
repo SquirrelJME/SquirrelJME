@@ -55,10 +55,24 @@ public abstract class AbstractCollection<E>
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/10/10
+	 */
 	@Override
-	public boolean addAll(Collection<? extends E> __a)
+	public boolean addAll(Collection<? extends E> __c)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__c == null)
+			throw new NullPointerException("NARG");
+		
+		// Add but we also need to keep track if the underlying collection
+		// was actually changed
+		boolean changed = false;
+		for (E e : __c)
+			changed |= this.add(e);
+		
+		return changed;
 	}
 	
 	@Override

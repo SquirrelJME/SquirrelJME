@@ -205,8 +205,11 @@ abstract class __CoreTest__
 				String a = sestr.get(k),
 					b = expectse.get(k);
 				
+				boolean isequal = (a != null && b != null &&
+					__CoreTest__.__equals(a, b));
+				
 				out.printf(valueform, k,
-					(__CoreTest__.__equals(a, b) ? '=' : '!'),
+					(isequal ? '=' : '!'),
 					a,
 					b);
 			}

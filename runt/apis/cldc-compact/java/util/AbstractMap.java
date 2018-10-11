@@ -65,9 +65,14 @@ public abstract class AbstractMap<K, V>
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/10/10
+	 */
+	@Override
 	public Set<K> keySet()
 	{
-		throw new todo.TODO();
+		return new __AbstractMapKeySet__<K>(this.entrySet());
 	}
 	
 	public V put(K __a, V __b)
