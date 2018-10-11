@@ -10,6 +10,7 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -326,6 +327,7 @@ public final class Long
 	 * @return The boxed value.
 	 * @since 2018/09/23
 	 */
+	@ImplementationNote("This is not cached.")
 	public static Long valueOf(long __v)
 	{
 		return new Long(__v);
