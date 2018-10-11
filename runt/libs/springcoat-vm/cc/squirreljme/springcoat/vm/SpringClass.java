@@ -419,6 +419,10 @@ public final class SpringClass
 				default:
 					throw new RuntimeException("OOPS");
 			}
+			
+		// Would be an assignable reference
+		else if (__v instanceof SpringNullObject)
+			return true;
 		
 		// Not primitive type, must be assignable
 		else if (__v instanceof SpringObject)
