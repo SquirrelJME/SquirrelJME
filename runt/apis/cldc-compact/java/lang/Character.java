@@ -10,6 +10,11 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+
 public final class Character
 	implements Comparable<Character>
 {
@@ -28,18 +33,33 @@ public final class Character
 	public static final int SIZE =
 		16;
 	
+	/** The class representing the primitive type. */
 	public static final Class<Character> TYPE =
-		__getType();
+		ObjectAccess.<Character>classByNameType("char");
 	
-	public Character(char __a)
+	/** The character value. */
+	private final char _value;
+	
+	/**
+	 * Initializes the boxed character.
+	 *
+	 * @param __v The character to use.
+	 * @since 2018/10/11
+	 */
+	public Character(char __v)
 	{
-		super();
-		throw new todo.TODO();
+		this._value = __v;
 	}
 	
+	/**
+	 * Returns the character value.
+	 *
+	 * @return The character value.
+	 * @since 2018/10/11
+	 */
 	public char charValue()
 	{
-		throw new todo.TODO();
+		return this._value;
 	}
 	
 	public int compareTo(Character __a)
@@ -119,20 +139,17 @@ public final class Character
 		throw new todo.TODO();
 	}
 	
-	public static Character valueOf(char __a)
-	{
-		throw new todo.TODO();
-	}
-	
 	/**
-	 * The {@link #TYPE} field is magically initialized by the virtual machine.
+	 * Boxes the specified value.
 	 *
-	 * @return {@link #TYPE}.
-	 * @since 2016/06/16
+	 * @param __v The value to box.
+	 * @return The resulting character value.
+	 * @since 2018/10/11
 	 */
-	private static Class<Character> __getType()
+	@ImplementationNote("This is not cached.")
+	public static Character valueOf(char __v)
 	{
-		return TYPE;
+		return new Character(__v);
 	}
 }
 
