@@ -1,0 +1,7 @@
+# 2018/10/10
+
+## 09:21
+
+Definitely the `TestInvokePrivate` reporting `FAIL` is not a good sign for the
+VM at all.
+
