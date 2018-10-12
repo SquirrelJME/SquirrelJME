@@ -405,6 +405,9 @@ public final class Formatter
 		if (__pf == null || __fmt == null)
 			throw new NullPointerException("NARG");
 		
+		// Length of the format
+		int fmtlen = __fmt.length();
+		
 		// The specifier could be too short! So handle these cases and make
 		// sure the exception of the right type
 		int at = __base + 1;
@@ -419,8 +422,8 @@ public final class Formatter
 			{
 				// Read the entire number
 				int base = at;
-				for (c = __fmt.charAt(at); c >= '0' && c <= '9'; at++)
-					;
+				for (; c >= '0' && c <= '9'; at++)
+					c = __fmt.charAt(at);
 				
 				// Parse value
 				int val = Integer.valueOf(__fmt.substring(base, at));
@@ -451,8 +454,8 @@ public final class Formatter
 			{
 				// Read the entire number
 				int base = at;
-				for (c = __fmt.charAt(at); c >= '0' && c <= '9'; at++)
-					;
+				for (; c >= '0' && c <= '9'; at++)
+					c = __fmt.charAt(at);
 				
 				// Set width
 				__pf.__setWidth(Integer.valueOf(__fmt.substring(base, at)));
