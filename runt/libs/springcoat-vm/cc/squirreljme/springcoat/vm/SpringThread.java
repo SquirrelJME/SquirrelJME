@@ -301,6 +301,9 @@ public final class SpringThread
 		/** Last executed PC address. */
 		private volatile int _lastexecpc;
 		
+		/** Frame execution count. */
+		private volatile int _execcount;
+		
 		/**
 		 * Initializes a blank guard frame.
 		 *
@@ -374,6 +377,16 @@ public final class SpringThread
 		public final ByteCode byteCode()
 		{
 			return this.code;
+		}
+		
+		/**
+		 * Increments the execution counter for this frame.
+		 *
+		 * @since 2018/10/12
+		 */
+		public final int incrementExecCount()
+		{
+			return this._execcount++;
 		}
 		
 		/**

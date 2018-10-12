@@ -42,6 +42,10 @@ import net.multiphasicapps.classfile.PrimitiveType;
 public final class SpringThreadWorker
 	implements Runnable
 {
+	/** Number of instructions which can be executed before warning. */
+	private static final int _EXECUTION_THRESHOLD =
+		50000;
+	
 	/** The owning machine. */
 	protected final SpringMachine machine;
 	
@@ -1194,6 +1198,16 @@ public final class SpringThreadWorker
 		SpringThread.Frame frame = thread.currentFrame();
 		ByteCode code = frame.byteCode();
 		
+		// Frame is execution
+		int iec = frame.incrementExecCount();
+		if (iec > 0 && (iec % _EXECUTION_THRESHOLD) == 0)
+		{
+			// {@squirreljme.error BK22 Execution seems to be stuck in this
+			// method.}
+			System.err.println("BK22");
+			this.thread.printStackTrace(System.err);
+		}
+		
 		// Are these certain kinds of initializers? Because final fields are
 		// writable during initialization accordingly
 		SpringClass currentclass = this.contextClass();
@@ -1285,6 +1299,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.ARETURN:
 					this.__vmReturn(thread,
 						frame.<SpringObject>popFromStack(SpringObject.class));
+					nextpc = Integer.MIN_VALUE;
 					break;
 					
 					// Length of array
@@ -1353,6 +1368,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.DRETURN:
 					this.__vmReturn(thread,
 						frame.<Double>popFromStack(Double.class));
+					nextpc = Integer.MIN_VALUE;
 					break;
 					
 					// Duplicate top-most stack entry
@@ -1453,6 +1469,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.FRETURN:
 					this.__vmReturn(thread,
 						frame.<Float>popFromStack(Float.class));
+					nextpc = Integer.MIN_VALUE;
 					break;
 					
 					// Read from instance field
@@ -1857,6 +1874,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.IRETURN:
 					this.__vmReturn(thread,
 						frame.<Integer>popFromStack(Integer.class));
+					nextpc = Integer.MIN_VALUE;
 					break;
 				
 					// Shift left integer
@@ -2008,6 +2026,7 @@ public final class SpringThreadWorker
 				case InstructionIndex.LRETURN:
 					this.__vmReturn(thread,
 						frame.<Long>popFromStack(Long.class));
+					nextpc = Integer.MIN_VALUE;
 					break;
 				
 					// Shift left long
@@ -2461,12 +2480,16 @@ public final class SpringThreadWorker
 			throw new NullPointerException("NARG");
 		
 		// Pop our current frame
-		__thread.popFrame();
+		SpringThread.Frame old = __thread.popFrame();
+		old.setPc(Integer.MIN_VALUE);
 		
 		// Push the value to the current frame
 		SpringThread.Frame cur = __thread.currentFrame();
 		if (cur != null)
 			cur.pushToStack(__value);
+		
+		/*System.err.printf("+++RETURN: %s%n", __value);
+		__thread.printStackTrace(System.err);*/
 	}
 }
 
