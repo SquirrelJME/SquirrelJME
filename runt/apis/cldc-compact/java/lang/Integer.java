@@ -299,20 +299,31 @@ public final class Integer
 		return Integer.toString(__v, 10);
 	}
 	
-	public static Integer valueOf(String __a, int __b)
+	/**
+	 * Returns the value of the specified string using the given radix.
+	 *
+	 * @param __v The String to decode.
+	 * @param __r The radix to use.
+	 * @throws NumberFormatException If the string is not valid.
+	 * @since 2018/10/12
+	 */
+	public static Integer valueOf(String __v, int __r)
 		throws NumberFormatException
 	{
-		if (false)
-			throw new NumberFormatException();
-		throw new todo.TODO();
+		return Integer.parseInt(__v, __r);
 	}
 	
-	public static Integer valueOf(String __a)
+	/**
+	 * Returns the value of the specified string.
+	 *
+	 * @param __v The String to decode.
+	 * @throws NumberFormatException If the string is not valid.
+	 * @since 2018/10/12
+	 */
+	public static Integer valueOf(String __v)
 		throws NumberFormatException
 	{
-		if (false)
-			throw new NumberFormatException();
-		throw new todo.TODO();
+		return Integer.parseInt(__v, 10);
 	}
 	
 	/**
