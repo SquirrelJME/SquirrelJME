@@ -1178,9 +1178,6 @@ public final class SpringThreadWorker
 		ByteCode code = frame.byteCode();
 		int pc = frame.pc();
 		
-		// Debug
-		todo.DEBUG.note("EH Table: %s", code.exceptions());
-		
 		// Get the handler for the given exception at the
 		// given address
 		ExceptionHandler useeh = null;
@@ -1189,10 +1186,6 @@ public final class SpringThreadWorker
 			// Is this handler compatible for the thrown
 			// exception?
 			SpringClass ehcl = this.loadClass(eh.type());
-			
-			todo.DEBUG.note("Maybe %s ?= %s??",
-				eh.type(),
-				__o.type().name());
 			
 			if (ehcl.isCompatible(__o))
 			{
@@ -1355,7 +1348,6 @@ public final class SpringThreadWorker
 			
 			// Handle it
 			pc = this.__handleException(tossing);
-			todo.DEBUG.note("Handler: %d", pc);
 			if (pc < 0)
 				return;
 			
