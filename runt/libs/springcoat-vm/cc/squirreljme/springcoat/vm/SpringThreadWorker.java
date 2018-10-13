@@ -493,7 +493,7 @@ public final class SpringThreadWorker
 		
 		// Need the current and the target class to check permissions
 		SpringClass self = this.contextClass(),
-			target = this.machine.classLoader().loadClass(__m.inClass());
+			target = this.loadClass(__m.inClass());
 		
 		// No current class, treat as always valid
 		if (self == null)
@@ -1169,12 +1169,12 @@ public final class SpringThreadWorker
 				String.format("BK18 %s", __f));
 		
 		// {@squirreljme.error BK19 Could not access the target field for
-		// instance field access. (The field reference)}
+		// instance field access. (The field reference; The field flags)}
 		SpringField field = inclass.lookupField(false,
 			__f.memberNameAndType());
 		if (!this.checkAccess(field))
 			throw new SpringIncompatibleClassChangeException(
-				String.format("BK19 %s", __f));
+				String.format("BK19 %s %s", __f, field.flags()));
 		
 		return field;
 	}
