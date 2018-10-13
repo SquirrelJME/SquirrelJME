@@ -80,9 +80,20 @@ public abstract class AbstractMap<K, V>
 		throw new todo.TODO();
 	}
 	
-	public void putAll(Map<? extends K, ? extends V> __a)
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/10/13
+	 */
+	@Override
+	public void putAll(Map<? extends K, ? extends V> __m)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__m == null)
+			throw new NullPointerException("NARG");
+		
+		// Copy everything
+		for (Map.Entry<? extends K, ? extends V> e : __m.entrySet())
+			this.put(e.getKey(), e.getValue());
 	}
 	
 	public V remove(Object __a)
