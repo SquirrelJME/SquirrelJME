@@ -106,10 +106,31 @@ public abstract class AbstractMap<K, V>
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/10/13
+	 */
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		StringBuilder sb = new StringBuilder("{");
+		
+		// Go through and append
+		boolean comma = false;
+		for (Map.Entry<?, ?> e : this.entrySet())
+		{
+			// Space comma
+			if (comma)
+				sb.append(", ");
+			comma = true;
+			
+			// Key is equal to the value
+			sb.append(e.getKey());
+			sb.append('=');
+			sb.append(e.getValue());
+		}
+		
+		return sb.toString();
 	}
 	
 	public Collection<V> values()
