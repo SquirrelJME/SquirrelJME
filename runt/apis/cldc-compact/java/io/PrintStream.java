@@ -536,8 +536,8 @@ public class PrintStream
 			throw new Error("ZZ18");
 		
 		// Should we flush bytes?
-		boolean flush = false;
-		if (this._autoflush)
+		boolean flush = (__c == '\n' && this._autoflush);
+		if (!flush && this._autoflush)
 		{
 			for (int skim = bat + wc; bat < skim; bat++)
 				if (buf[bat] == '\n')
