@@ -92,10 +92,14 @@ public final class Integer
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/10/12
+	 */
 	@Override
 	public int intValue()
 	{
-		throw new todo.TODO();
+		return this._value;
 	}
 	
 	@Override
@@ -175,20 +179,91 @@ public final class Integer
 		throw new todo.TODO();
 	}
 	
-	public static int parseInt(String __a, int __b)
+	/**
+	 * Returns the value of the specified string using the given radix.
+	 *
+	 * @param __v The String to decode.
+	 * @param __r The radix to use.
+	 * @throws NumberFormatException If the string is not valid or the radix
+	 * is outside of the valid bounds.
+	 * @since 2018/10/12
+	 */
+	public static int parseInt(String __v, int __r)
 		throws NumberFormatException
 	{
-		if (false)
-			throw new NumberFormatException();
-		throw new todo.TODO();
+		// {@squirreljme.error ZZ2d The radix is out of bounds. (The radix)}
+		if (__r < Character.MIN_RADIX || __r > Character.MAX_RADIX)
+			throw new NumberFormatException("ZZ2d " + __r);
+		
+		// {@squirreljme.error ZZ2e String is null or has zero length.}
+		int n = __v.length();
+		if (__v == null || n <= 0)
+			throw new NumberFormatException("ZZ2e");
+		
+		// Detect sign
+		boolean neg = false,
+			signed = false;
+		char c = __v.charAt(0);
+		if ((neg = (c == '-')) || c == '+')
+			signed = true;
+		
+		// If the number is negative, instead of negating the value at the end
+		// just subtract digits instead.
+		int digsign = (neg ? -1 : 1);
+		
+		// Read all digits
+		int rv = 0;
+		for (int i = (signed ? 1 : 0); i < n; i++)
+		{
+			// Read character
+			c = __v.charAt(i);
+			
+			// Convert to digit
+			int dig;
+			if (c >= 'A' && c <= 'Z')
+				dig = 10 + (c - 'A');
+			else if (c >= 'a' && c <= 'z')
+				dig = 10 + (c - 'a');
+			else if (c >= '0' && c <= '9')
+				dig = c - '0';
+			
+			// {@squirreljme.error ZZ2f Character out of range of any radix.
+			// (The input string; The out of range character)}
+			else
+				throw new NumberFormatException("ZZ2f " + __v + " " + c);
+			
+			// {@squirreljme.error ZZ2h Digit out of bounds of radix. (The
+			// input string; The digit; The radix)}
+			if (dig >= __r)
+				throw new NumberFormatException("ZZ2h " + __v + " " + dig +
+					" " + __r);
+			
+			// {@squirreljme.error ZZ2g Input integer out of range of 32-bit
+			// integer. (The input string)}
+			// For non-zero values, if the value overflows during the radix
+			// mulitplication then the sign bit will be flipped.
+			int prod = rv * __r;
+			if (rv != 0 && (prod & 0x8000_0000) != (rv & 0x8000_0000))
+				throw new NumberFormatException("ZZ2g " + __v);
+			
+			// Add up
+			rv = prod + (dig * digsign);
+		}
+		
+		return rv;
 	}
 	
-	public static int parseInt(String __a)
+	/**
+	 * Returns the value of the specified string.
+	 *
+	 * @param __v The String to decode.
+	 * @throws NumberFormatException If the string is not valid.
+	 * @since 2018/10/12
+	 */
+	public static int parseInt(String __v)
 		throws NumberFormatException
 	{
-		if (false)
-			throw new NumberFormatException();
-		throw new todo.TODO();
+		return Integer.parseInt(__v, 10);
 	}
 	
 	public static int reverse(int __i)
@@ -304,7 +379,8 @@ public final class Integer
 	 *
 	 * @param __v The String to decode.
 	 * @param __r The radix to use.
-	 * @throws NumberFormatException If the string is not valid.
+	 * @throws NumberFormatException If the string is not valid or the radix
+	 * is outside of the valid bounds.
 	 * @since 2018/10/12
 	 */
 	public static Integer valueOf(String __v, int __r)
