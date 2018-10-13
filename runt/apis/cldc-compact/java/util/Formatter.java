@@ -422,8 +422,14 @@ public final class Formatter
 			{
 				// Read the entire number
 				int base = at;
-				for (; c >= '0' && c <= '9'; at++)
+				for (;;)
+				{
 					c = __fmt.charAt(at);
+					if (c >= '0' && c <= '9')
+						at++;
+					else
+						break;
+				}
 				
 				// Parse value
 				int val = Integer.valueOf(__fmt.substring(base, at));
@@ -454,8 +460,14 @@ public final class Formatter
 			{
 				// Read the entire number
 				int base = at;
-				for (; c >= '0' && c <= '9'; at++)
+				for (;;)
+				{
 					c = __fmt.charAt(at);
+					if (c >= '0' && c <= '9')
+						at++;
+					else
+						break;
+				}
 				
 				// Set width
 				__pf.__setWidth(Integer.valueOf(__fmt.substring(base, at)));

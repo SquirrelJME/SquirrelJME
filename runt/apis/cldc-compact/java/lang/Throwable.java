@@ -131,6 +131,9 @@ public class Throwable
 		// The stack trace is implicitly filled in by this constructor, it
 		// matches the stack trace of the current thread of execution
 		this._stack = this.__getStackTrace(this, __clip, true);
+		
+		// Debug to catch which throwable was made
+		todo.DEBUG.note("new Throwable(`%s`)", __m);
 	}
 	
 	/**

@@ -51,6 +51,8 @@ public class TODO
 	 */
 	public TODO(String __s)
 	{
+		super(__s);
+		
 		// Detect TODOs tripping multiple times and fail
 		boolean doubletripped = TODO._DOUBLE_TRIP;
 		if (doubletripped)

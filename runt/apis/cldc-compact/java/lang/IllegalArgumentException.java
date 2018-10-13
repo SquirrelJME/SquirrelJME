@@ -10,27 +10,55 @@
 
 package java.lang;
 
+/**
+ * This is thrown when the argument of a method is not correct.
+ *
+ * @since 2018/10/12
+ */
 public class IllegalArgumentException
 	extends RuntimeException
 {
+	/**
+	 * Initializes the exception with no message or cause.
+	 *
+	 * @since 2018/10/12
+	 */
 	public IllegalArgumentException()
 	{
-		throw new todo.TODO();
 	}
 	
-	public IllegalArgumentException(String __a)
+	/**
+	 * Initializes the exception with the given message and no cause.
+	 *
+	 * @param __m The message.
+	 * @since 2018/10/12
+	 */
+	public IllegalArgumentException(String __m)
 	{
-		throw new todo.TODO();
+		super(__m);
 	}
 	
-	public IllegalArgumentException(String __a, Throwable __b)
+	/**
+	 * Initializes the exception with the given message and cause.
+	 *
+	 * @param __m The message.
+	 * @param __t The cause.
+	 * @since 2018/10/12
+	 */
+	public IllegalArgumentException(String __m, Throwable __t)
 	{
-		throw new todo.TODO();
+		super(__m, __t);
 	}
 	
-	public IllegalArgumentException(Throwable __a)
+	/**
+	 * Initializes the exception with the given cause and no message.
+	 *
+	 * @param __t The cause.
+	 * @since 2018/10/12
+	 */
+	public IllegalArgumentException(Throwable __t)
 	{
-		throw new todo.TODO();
+		super(__t);
 	}
 }
 

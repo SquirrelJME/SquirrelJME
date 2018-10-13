@@ -10,19 +10,32 @@
 
 package java.lang;
 
+/**
+ * This is thrown when the format of a number is not correct.
+ *
+ * @since 2018/10/12
+ */
 public class NumberFormatException
 	extends IllegalArgumentException
 {
+	/**
+	 * Initializes the exception with no message or cause.
+	 *
+	 * @since 2018/10/12
+	 */
 	public NumberFormatException()
 	{
-		super();
-		throw new todo.TODO();
 	}
 	
-	public NumberFormatException(String __a)
+	/**
+	 * Initializes the exception with the given message and no cause.
+	 *
+	 * @param __m The message.
+	 * @since 2018/10/12
+	 */
+	public NumberFormatException(String __m)
 	{
-		super();
-		throw new todo.TODO();
+		super(__m);
 	}
 }
 
