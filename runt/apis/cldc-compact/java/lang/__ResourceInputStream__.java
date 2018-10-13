@@ -11,6 +11,7 @@
 package java.lang;
 
 import java.io.InputStream;
+import java.io.IOException;
 import cc.squirreljme.runtime.cldc.asm.ResourceAccess;
 
 /**
@@ -57,13 +58,19 @@ final class __ResourceInputStream__
 	 */
 	@Override
 	public final void close()
+		throws IOException
 	{
 		// Prevent double close of resources because the values may be
 		// recycled
 		if (!this._closed)
 		{
 			this._closed = true;
-			ResourceAccess.close(this.fd);
+			
+			// {@squirreljme.error ZZ2m Closing of resource resulted in an
+			// IOException.}
+			int rv;
+			if ((rv = ResourceAccess.close(this.fd)) < 0)
+				throw new IOException("ZZ2m " + rv);
 		}
 	}
 	
@@ -73,6 +80,7 @@ final class __ResourceInputStream__
 	 */
 	@Override
 	public final int read()
+		throws IOException
 	{
 		byte[] rv = new byte[1];
 		for (;;)
@@ -98,7 +106,7 @@ final class __ResourceInputStream__
 	 */
 	@Override
 	public final int read(byte[] __b)
-		throws NullPointerException
+		throws IOException, NullPointerException
 	{
 		if (__b == null)
 			throw new NullPointerException("NARG");
@@ -112,7 +120,7 @@ final class __ResourceInputStream__
 	 */
 	@Override
 	public final int read(byte[] __b, int __o, int __l)
-		throws IndexOutOfBoundsException, NullPointerException
+		throws IndexOutOfBoundsException, IOException, NullPointerException
 	{
 		if (__b == null)
 			throw new NullPointerException("NARG");
@@ -133,7 +141,28 @@ final class __ResourceInputStream__
 		// a free resource that has no implications if they are never closed.
 		if (rv < 0)
 		{
-			this.close();
+			// {@squirreljme.error ZZ2l Read of resource resulted in an
+			// IOException.}
+			IOException toss = (rv != ResourceAccess.READ_STATUS_EOF ?
+				new IOException("ZZ2l " + rv) : null);
+			
+			// Close it to not claim resources
+			try
+			{
+				this.close();
+			}
+			catch (IOException e)
+			{
+				// If closing caused an issue then
+				if (toss != null)
+					toss.addSuppressed(e);
+				else
+					toss = e;
+			}
+			
+			// Either throw the exception or EOF
+			if (toss != null)
+				throw toss;
 			return -1;
 		}
 		

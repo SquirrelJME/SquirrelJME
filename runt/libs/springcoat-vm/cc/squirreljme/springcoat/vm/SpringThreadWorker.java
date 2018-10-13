@@ -934,6 +934,33 @@ public final class SpringThreadWorker
 					this.<String>asNativeObject(String.class, __args[0]),
 					this.<String>asNativeObject(String.class, __args[1]));
 				
+				// Read resource in JAR
+			case "cc/squirreljme/runtime/cldc/asm/ResourceAccess::" +
+				"read:(I[BII)I":
+				{
+					// Handle the arguments
+					int fd = (Integer)__args[0];
+					SpringArrayObject vb = (SpringArrayObject)__args[1];
+					int vo = (Integer)__args[2];
+					int vl = (Integer)__args[3];
+					
+					// Just create a temporary byte array since we cannot
+					// write into the VM object representation anyway
+					byte[] temp = new byte[vl];
+					int rv = this.machine.resourceAccess().read(
+						fd, temp, 0, vl);
+					
+					// Read returned EOF or an error
+					if (rv < 0)
+						return rv;
+					
+					// Copy temporary back into the VM buffer
+					for (int i = 0, o = vo; i < rv; i++, o++)
+						vb.set(o, (int)temp[i]);
+					
+					return rv;
+				}
+				
 				// VM e-mail
 			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
 				"javaVMEmail:()Ljava/lang/String;":
