@@ -10,10 +10,13 @@
 
 package java.io;
 
+import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+
 public abstract class Reader
 	implements Closeable
 {
 	/** The lock to use when performing read operations. */
+	@ImplementationNote("This is only used with the skip() method.")
 	protected Object lock;
 	
 	/**
@@ -21,11 +24,21 @@ public abstract class Reader
 	 *
 	 * @since 2018/10/13
 	 */
+	@ImplementationNote("The lock should be initialized to this, however " +
+		"this would result in the reader itself never able to be freed " +
+		"because it refers to itself.")
 	protected Reader()
 	{
 		this.lock = null;
 	}
 	
+	/**
+	 * Initializes the reader to lock against the given object.
+	 *
+	 * @param __l The object to lock against.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/10/13
+	 */
 	protected Reader(Object __l)
 		throws NullPointerException
 	{
@@ -89,9 +102,25 @@ public abstract class Reader
 	public long skip(long __a)
 		throws IOException
 	{
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
+		// To prevent clashes when skipping characters
+		synchronized (this.__lock())
+		{
+			if (false)
+				throw new IOException();
+			throw new todo.TODO();
+		}
+	}
+	
+	/**
+	 * Returns the locking object.
+	 *
+	 * @return The locking object.
+	 * @since 2018/10/13
+	 */
+	final Object __lock()
+	{
+		Object rv = this.lock;
+		return (rv == null ? this : rv);
 	}
 }
 

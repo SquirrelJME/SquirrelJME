@@ -14,6 +14,25 @@ this was intended to be done but was forgotten.
    * `Formatter`
    * `Writer`
 
+## `Reader`'s `lock` is initialized to `null` instead of `this`
+
+Since SquirrelJME uses a reference counted garbage collector the `Reader`'s
+`lock` object in the default constructor is set to `null` instead of `this`.
+This is so that readers do not remain in memory unable to be freed because
+objects still refer to them and such.
+
+## `SUPER` is always assumed to be set.
+
+In all clases the `SUPER` flag is assumed to be set, this flag just modifies
+the behavior of `invokespecial`. When it is not set then that instruction
+can invoke nearly every method directly (it was called before
+`invokenonvirtual`). However, the Java compiler since Java 1.1 always set
+the flag for classes it compiled. Since CLDC 1.0 was released well after
+Java 2 was and is defined as a Java 2 virtual machine all code written for
+J2ME should have classes where this flag is set. As such instead of
+supporting the logic to handle cases where it is not set, the flag will just
+be ignored and assumed to be set.
+
 ## Supported Encodings
 
 Only the following character encodings are supported:
@@ -33,16 +52,4 @@ See:
 
  * <https://unicode.org/faq/utf_bom.html#utf8-4>
  * <https://www.unicode.org/reports/tr26/>
-
-## `SUPER` is always assumed to be set.
-
-In all clases the `SUPER` flag is assumed to be set, this flag just modifies
-the behavior of `invokespecial`. When it is not set then that instruction
-can invoke nearly every method directly (it was called before
-`invokenonvirtual`). However, the Java compiler since Java 1.1 always set
-the flag for classes it compiled. Since CLDC 1.0 was released well after
-Java 2 was and is defined as a Java 2 virtual machine all code written for
-J2ME should have classes where this flag is set. As such instead of
-supporting the logic to handle cases where it is not set, the flag will just
-be ignored and assumed to be set.
 

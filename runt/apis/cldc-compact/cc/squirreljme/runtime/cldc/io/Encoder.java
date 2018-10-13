@@ -17,6 +17,7 @@ package cc.squirreljme.runtime.cldc.io;
  * @since 2018/09/16
  */
 public interface Encoder
+	extends NamedCodec
 {
 	/**
 	 * Encodes the given character and writes it to the output byte array.
