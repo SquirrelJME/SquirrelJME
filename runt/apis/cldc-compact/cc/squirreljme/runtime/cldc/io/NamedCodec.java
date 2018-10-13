@@ -11,39 +11,18 @@
 package cc.squirreljme.runtime.cldc.io;
 
 /**
- * This encoder encodes input characters to standard UTF-8 sequences.
+ * This is used to get the name of the encoder or decoder that was used.
  *
- * Surrogate pairs will be encoded as 6 bytes.
- *
- * @since 2018/09/19
+ * @since 2018/10/13
  */
-public final class UTF8Encoder
-	implements Encoder
+public interface NamedCodec
 {
 	/**
-	 * {@inheritDoc}
-	 * @since 2018/09/21
-	 */
-	@Override
-	public int encode(char __c, byte[] __b, int __o, int __l)
-		throws IndexOutOfBoundsException, NullPointerException
-	{
-		if (__b == null)
-			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
-			throw new IndexOutOfBoundsException("IOOB");
-		
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDc}
+	 * Returns the name of the encoding.
+	 *
+	 * @return The encoding name.
 	 * @since 2018/10/13
 	 */
-	@Override
-	public final String encodingName()
-	{
-		return "utf-8";
-	}
+	public abstract String encodingName();
 }
 

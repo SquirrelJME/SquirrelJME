@@ -10,22 +10,60 @@
 
 package java.io;
 
+import cc.squirreljme.runtime.cldc.io.CodecFactory;
+import cc.squirreljme.runtime.cldc.io.Decoder;
+
+/**
+ * This is a reader which adapts to an input stream and decodes the input
+ * bytes into characters.
+ *
+ * @since 2018/10/13
+ */
 public class InputStreamReader
 	extends Reader
 {
-	public InputStreamReader(InputStream __a)
+	/** The input source. */
+	private final InputStream _in;
+	
+	/** The decoder to use. */
+	private final Decoder _decoder;
+	
+	/**
+	 * Initializes the reader from the given input stream using the default
+	 * encoding.
+	 *
+	 * @param __in The input byte source.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/10/13
+	 */
+	public InputStreamReader(InputStream __in)
+		throws NullPointerException
 	{
-		super();
-		throw new todo.TODO();
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		this._in = __in;
+		this._decoder = CodecFactory.defaultDecoder();
 	}
 	
-	public InputStreamReader(InputStream __a, String __b)
-		throws UnsupportedEncodingException
+	/**
+	 * Initializes the reader from the given input stream using the default
+	 * encoding.
+	 *
+	 * @param __in The input byte source.
+	 * @param __enc The encoding to decode.
+	 * @throws NullPointerException On null arguments.
+	 * @throws UnsupportedEncodingException If the encoding is not supported.
+	 * @since 2018/10/13
+	 */
+	public InputStreamReader(InputStream __in, String __enc)
+		throws NullPointerException, UnsupportedEncodingException
 	{
-		super();
-		if (false)
-			throw new UnsupportedEncodingException();
-		throw new todo.TODO();
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		this._in = __in;
+		this._decoder = CodecFactory.decoder(__enc);
 	}
 	
 	@Override

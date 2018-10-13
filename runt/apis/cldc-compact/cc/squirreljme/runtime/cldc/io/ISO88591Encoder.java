@@ -48,5 +48,15 @@ public final class ISO88591Encoder
 		// Only single characters written
 		return 1;
 	}
+	
+	/**
+	 * {@inheritDc}
+	 * @since 2018/10/13
+	 */
+	@Override
+	public final String encodingName()
+	{
+		return "iso-8859-1";
+	}
 }
 

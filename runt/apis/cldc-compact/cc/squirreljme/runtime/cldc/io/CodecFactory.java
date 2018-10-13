@@ -38,6 +38,88 @@ public final class CodecFactory
 	}
 	
 	/**
+	 * Returns a decoder for the given encoding.
+	 *
+	 * @param __enc The encoding to decode for.
+	 * @return The decoder for the given encoding.
+	 * @throws NullPointerException On null arguments.
+	 * @throws UnsupportedEncodingException If the encoding is not supported.
+	 * @since 2018/10/13
+	 */
+	public static final Decoder decoder(String __enc)
+		throws NullPointerException, UnsupportedEncodingException
+	{
+		if (__enc == null)
+			throw new NullPointerException("NARG");
+		
+		// Normalization makes it easier to match
+		switch ((__enc = CodecFactory.__normalizeEncodingName(__enc)))
+		{
+				// ASCII
+			case "ascii":
+				throw new todo.TODO();
+				
+				// IBM037
+			case "ibm037":
+				throw new todo.TODO();
+
+				// ISO-8859-1
+			case "iso-8859-1":
+				throw new todo.TODO();
+				
+				// UTF-8
+			case "utf-8":
+				throw new todo.TODO();
+			
+				// {@squirreljme.error ZZ2j Unknown encoding. (The input
+				// encoding)}
+			default:
+				throw new UnsupportedEncodingException(
+					String.format("ZZ2j %s", __enc));
+		}
+	}
+	
+	/**
+	 * Returns a decoder for the given encoding.
+	 *
+	 * @param __enc The encoding to decode for.
+	 * @return The decoder for the given encoding.
+	 * @throws NullPointerException On null arguments.
+	 * @throws RuntimeException If the encoding is not supported.
+	 * @since 2018/10/13
+	 */
+	public static final Decoder decoderUnchecked(String __enc)
+		throws NullPointerException, RuntimeException
+	{
+		if (__enc == null)
+			throw new NullPointerException("NARG");
+		
+		// Could fail
+		try
+		{
+			return CodecFactory.decoder(__enc);
+		}
+		
+		// {@squirreljme.error ZZ2k Unknown or unsupported encoding.
+		// (The encoding)}
+		catch (UnsupportedEncodingException e)
+		{
+			throw new RuntimeException(String.format("ZZ2k %s", __enc), e);
+		}
+	}
+	
+	/**
+	 * Returns the default decoder.
+	 *
+	 * @return The default decoder.
+	 * @since 2018/10/13
+	 */
+	public static final Decoder defaultDecoder()
+	{
+		return CodecFactory.decoderUnchecked(CodecFactory.defaultEncoding());
+	}
+	
+	/**
 	 * Returns the default system encoder.
 	 *
 	 * @return The default encoder.
@@ -85,7 +167,7 @@ public final class CodecFactory
 		if (__enc == null)
 			throw new NullPointerException("NARG");
 		
-		// Lowercasing makes it easier to match
+		// Normalization makes it easier to match
 		switch ((__enc = CodecFactory.__normalizeEncodingName(__enc)))
 		{
 				// ASCII
@@ -104,7 +186,7 @@ public final class CodecFactory
 			case "utf-8":
 				return new UTF8Encoder();
 			
-				// {@squirreljme.error ZZ16 Unknown encoding. (The input
+				// {@squirreljme.error ZZ16 Unknown encoding. (The output
 				// encoding)}
 			default:
 				throw new UnsupportedEncodingException(

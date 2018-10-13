@@ -71,5 +71,15 @@ public final class IBM037Encoder
 		// Only single characters written
 		return 1;
 	}
+	
+	/**
+	 * {@inheritDc}
+	 * @since 2018/10/13
+	 */
+	@Override
+	public final String encodingName()
+	{
+		return "ibm037";
+	}
 }
 
