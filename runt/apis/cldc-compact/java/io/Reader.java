@@ -13,18 +13,26 @@ package java.io;
 public abstract class Reader
 	implements Closeable
 {
+	/** The lock to use when performing read operations. */
 	protected Object lock;
 	
+	/**
+	 * Initializes the base reader.
+	 *
+	 * @since 2018/10/13
+	 */
 	protected Reader()
 	{
-		super();
-		throw new todo.TODO();
+		this.lock = null;
 	}
 	
-	protected Reader(Object __a)
+	protected Reader(Object __l)
+		throws NullPointerException
 	{
-		super();
-		throw new todo.TODO();
+		if (__l == null)
+			throw new NullPointerException("NARG");
+		
+		this.lock = __l;
 	}
 	
 	public abstract void close()
