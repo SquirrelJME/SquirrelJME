@@ -185,7 +185,7 @@ public final class Character
 	 */
 	public static char forDigit(int __dig, int __r)
 	{
-		if (__dig < 0 || __r < Character.MIN_RADIX ||
+		if (__dig < 0 || __dig >= __r || __r < Character.MIN_RADIX ||
 			__r > Character.MAX_RADIX)
 			return '\0';
 		
