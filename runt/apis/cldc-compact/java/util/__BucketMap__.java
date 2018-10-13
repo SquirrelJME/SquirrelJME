@@ -111,7 +111,7 @@ final class __BucketMap__<K, V>
 	{
 		// Where to look in the table?
 		int hash = (__k == null ? 0 : __k.hashCode());
-		int div = hash % _bucketdiv;
+		int div = (hash & 0x7FFF_FFFF) % this._bucketdiv;
 		
 		// If the chain does not exist then do not bother at all
 		__Entry__<K, V>[] chain = this._buckets[div];
@@ -164,7 +164,7 @@ final class __BucketMap__<K, V>
 		
 		// Where to look in the table?
 		int hash = (__k == null ? 0 : __k.hashCode());
-		int div = hash % bucketdiv;
+		int div = (hash & 0x7FFF_FFFF) % bucketdiv;
 		
 		// This will be set depending on the situation
 		__Entry__<K, V> rv;
