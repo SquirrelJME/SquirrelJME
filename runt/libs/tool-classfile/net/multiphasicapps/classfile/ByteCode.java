@@ -120,6 +120,10 @@ public final class ByteCode
 			for (int i = 0; i < codelen; i++)
 				in.readByte();
 			
+			// Read exception handler table
+			ExceptionHandlerTable eht = ExceptionHandlerTable.decode(in, pool,
+				codelen);
+			
 			// The instruction index is used to lookup using a linear index
 			// count rather than the potentially spaced out address lookup
 			int[] index = new int[codelen];
@@ -149,10 +153,6 @@ public final class ByteCode
 					throw new InvalidClassFormatException(
 						String.format("JC02 %d %d %d", i, oplen, codelen, li));
 			}
-			
-			// Read exception handler table
-			ExceptionHandlerTable eht = ExceptionHandlerTable.decode(in, pool,
-				codelen);
 			
 			// The stack map table is used for verification
 			byte[] smt = null;
@@ -288,6 +288,17 @@ public final class ByteCode
 		if (rv < 0)
 			return -1;
 		return rv;
+	}
+	
+	/**
+	 * Returns the exception handler table.
+	 *
+	 * @return The exception handler table.
+	 * @since 2018/10/13
+	 */
+	public final ExceptionHandlerTable exceptions()
+	{
+		return this.exceptions;
 	}
 	
 	/**
