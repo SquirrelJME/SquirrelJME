@@ -93,7 +93,14 @@ abstract class __CoreTest__
 		try (InputStream in = self.getResourceAsStream(basename + ".in"))
 		{
 			if (in == null)
+			{
+				// Warn that it is missing
+				System.err.printf("WARN: No .in for %s (%s.in)%n",
+					classname, basename);
+				
+				// Use a blank manifest instead
 				man = new JavaManifest();
+			}
 			else
 				man = new JavaManifest(in);
 		}
