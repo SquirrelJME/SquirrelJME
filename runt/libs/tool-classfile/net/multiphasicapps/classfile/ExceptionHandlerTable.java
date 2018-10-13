@@ -70,12 +70,8 @@ public final class ExceptionHandlerTable
 		
 		// Add any handlers which are in range
 		for (ExceptionHandler e : this._table)
-		{
-			todo.DEBUG.note("Is %d in %s", __pc, e);
-			
 			if (e.inRange(__pc))
 				rv.add(e);
-		}
 		
 		return rv.<ExceptionHandler>toArray(new ExceptionHandler[rv.size()]);
 	}

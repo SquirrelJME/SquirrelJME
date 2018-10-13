@@ -1341,8 +1341,6 @@ public final class SpringThreadWorker
 		SpringObject tossing = frame.tossedException();
 		if (tossing != null)
 		{
-			todo.DEBUG.note("Tossing: %s", tossing);
-			
 			// Handling the tossed exception, so do not try handling it again
 			frame.tossException(null);
 			
