@@ -19,7 +19,7 @@ import net.multiphasicapps.tac.TestSupplier;
  * @since 2018/10/13
  */
 public class TestInnerClassOnProtected
-	implements TestSupplier<Integer>
+	extends TestSupplier<Integer>
 {
 	/** The value to use. */
 	protected int value;

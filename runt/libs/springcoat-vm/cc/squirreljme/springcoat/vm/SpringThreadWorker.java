@@ -514,6 +514,10 @@ public final class SpringThreadWorker
 			for (SpringClass r = self; r != null; r = r.superClass())
 				if (target == r)
 					return true;
+			
+			// Otherwise it has to be in the same package
+			if (self.name().inPackage().equals(target.name().inPackage()))
+				return true;
 		}
 		
 		// Classes must be in the same package
