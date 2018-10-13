@@ -304,6 +304,9 @@ public final class SpringThread
 		/** Frame execution count. */
 		private volatile int _execcount;
 		
+		/** Exception which was tossed into this frame. */
+		private SpringObject _tossedexception;
+		
 		/**
 		 * Initializes a blank guard frame.
 		 *
@@ -377,6 +380,16 @@ public final class SpringThread
 		public final ByteCode byteCode()
 		{
 			return this.code;
+		}
+		
+		/**
+		 * Clears the stack.
+		 *
+		 * @since 2018/10/13
+		 */
+		public final void clearStack()
+		{
+			this._stacktop = 0;
 		}
 		
 		/**
@@ -657,6 +670,28 @@ public final class SpringThread
 		public final SpringObject thisObject()
 		{
 			return this.thisobject;
+		}
+		
+		/**
+		 * Returns the tossed exception.
+		 *
+		 * @return The exception being tossed.
+		 * @since 2018/10/13
+		 */
+		public final SpringObject tossedException()
+		{
+			return this._tossedexception;
+		}
+		
+		/**
+		 * Sets the tossed exception for this frame.
+		 *
+		 * @param __o The exception tossed for this frame.
+		 * @since 2018/10/13
+		 */
+		public final void tossException(SpringObject __o)
+		{
+			this._tossedexception = __o;
 		}
 	}
 }

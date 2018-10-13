@@ -12,7 +12,12 @@ package net.multiphasicapps.classfile;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.AbstractList;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.RandomAccess;
 
 /**
@@ -24,6 +29,9 @@ public final class ExceptionHandlerTable
 {
 	/** The exception handler table. */
 	private final ExceptionHandler[] _table;
+	
+	/** String representation. */
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes the exception handler table.
@@ -49,6 +57,30 @@ public final class ExceptionHandlerTable
 	}
 	
 	/**
+	 * Return all of the exception handlers which apply to the given address.
+	 *
+	 * @param __pc The address to use.
+	 * @return An array containing the exceptions which handle for the given
+	 * address.
+	 * @since 2018/10/13
+	 */
+	public final ExceptionHandler[] at(int __pc)
+	{
+		List<ExceptionHandler> rv = new ArrayList<>();
+		
+		// Add any handlers which are in range
+		for (ExceptionHandler e : this._table)
+		{
+			todo.DEBUG.note("Is %d in %s", __pc, e);
+			
+			if (e.inRange(__pc))
+				rv.add(e);
+		}
+		
+		return rv.<ExceptionHandler>toArray(new ExceptionHandler[rv.size()]);
+	}
+	
+	/**
 	 * Returns the exception handler at the given index.
 	 *
 	 * @return The exception handler at the given index.
@@ -68,6 +100,23 @@ public final class ExceptionHandlerTable
 	public final int size()
 	{
 		return this._table.length;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/10/13
+	 */
+	@Override
+	public final String toString()
+	{
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>(
+				(rv = Arrays.asList(this._table).toString()));
+		
+		return rv;
 	}
 	
 	/**

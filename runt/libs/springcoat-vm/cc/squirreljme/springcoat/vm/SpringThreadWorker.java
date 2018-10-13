@@ -21,6 +21,7 @@ import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ConstantValue;
 import net.multiphasicapps.classfile.ConstantValueClass;
 import net.multiphasicapps.classfile.ConstantValueString;
+import net.multiphasicapps.classfile.ExceptionHandler;
 import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
@@ -1154,6 +1155,82 @@ public final class SpringThreadWorker
 	}
 	
 	/**
+	 * Handles the exception, if it is in this frame to be handled then it
+	 * will say that the instruction is to be moved elsewhere. Otherwise it
+	 * will flag the frame above that an exception occurred and should be
+	 * handled.
+	 *
+	 * @param __o The object being thrown.
+	 * @return The next PC address of the handler or a negative value if it
+	 * is to proprogate to the above frame.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/10/13
+	 */
+	int __handleException(SpringObject __o)
+		throws NullPointerException
+	{
+		if (__o == null)
+			throw new NullPointerException("NARG");
+		
+		// Need the current frame and its byte code
+		SpringThread thread = this.thread;
+		SpringThread.Frame frame = thread.currentFrame();
+		ByteCode code = frame.byteCode();
+		int pc = frame.pc();
+		
+		// Debug
+		todo.DEBUG.note("EH Table: %s", code.exceptions());
+		
+		// Get the handler for the given exception at the
+		// given address
+		ExceptionHandler useeh = null;
+		for (ExceptionHandler eh : code.exceptions().at(pc))
+		{
+			// Is this handler compatible for the thrown
+			// exception?
+			SpringClass ehcl = this.loadClass(eh.type());
+			
+			todo.DEBUG.note("Maybe %s ?= %s??",
+				eh.type(),
+				__o.type().name());
+			
+			if (ehcl.isCompatible(__o))
+			{
+				useeh = eh;
+				break;
+			}
+		}
+		
+		// No handler for this exception, so just go up the
+		// stack and find a handler recursively up every frame
+		if (useeh == null)
+		{
+			// Pop our current frame from the call stack
+			thread.popFrame();
+			
+			// Get our new top frame from the call stack
+			SpringThread.Frame cf = thread.currentFrame();
+			cf.tossException(__o);
+			
+			// Stop executing here and let it continue on the
+			// other top frame
+			return -1;
+		}
+		
+		// Otherwise jump to that address
+		else
+		{
+			// Clear the stack frame and then push our
+			// exception back onto the stack
+			frame.clearStack();
+			frame.pushToStack(frame);
+			
+			// Handle at this address
+			return useeh.handlerAddress();
+		}
+	}
+	
+	/**
 	 * Looks up the specified instance field specifier and returns the
 	 * information for it.
 	 *
@@ -1267,6 +1344,30 @@ public final class SpringThreadWorker
 		int pc = frame.pc();
 		Instruction inst = code.getByAddress(pc);
 		
+		// If we are tossing an exception, we need to handle it
+		SpringObject tossing = frame.tossedException();
+		if (tossing != null)
+		{
+			todo.DEBUG.note("Tossing: %s", tossing);
+			
+			// Handling the tossed exception, so do not try handling it again
+			frame.tossException(null);
+			
+			// Handle it
+			pc = this.__handleException(tossing);
+			todo.DEBUG.note("Handler: %d", pc);
+			if (pc < 0)
+				return;
+			
+			// Put it on an empty stack
+			frame.clearStack();
+			frame.pushToStack(tossing);
+			
+			// Execute at the handler address now
+			frame.setPc(pc);
+			return;
+		}
+		
 		// This PC is about to be executed, so set it as executed since if an
 		// exception is thrown this could change potentially
 		frame.setLastExecutedPc(pc);
@@ -1372,6 +1473,14 @@ public final class SpringThreadWorker
 							frame.<SpringObject>popFromStack(
 								SpringObject.class));
 					}
+					break;
+					
+					// Throwing of an exception
+				case InstructionIndex.ATHROW:
+					nextpc = this.__handleException(
+						frame.<SpringObject>popFromStack(SpringObject.class));
+					if (nextpc < 0)
+						return;
 					break;
 					
 					// Push value
