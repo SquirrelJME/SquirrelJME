@@ -51,8 +51,21 @@ public abstract class Reader
 	public abstract void close()
 		throws IOException;
 	
-	public abstract int read(char[] __a, int __b, int __c)
-		throws IOException;
+	/**
+	 * Reads multiple characters.
+	 *
+	 * @param __c The output characters.
+	 * @param __o The offset into the output.
+	 * @param __l The number of characters to read.
+	 * @return The number of read characters or {@code -1} on end of file.
+	 * @throws IndexOutOfBoundsException If the offset and/or length are
+	 * negative or exceed the array bounds.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/10/13
+	 */
+	public abstract int read(char[] __c, int __o, int __l)
+		throws IndexOutOfBoundsException, IOException, NullPointerException;
 	
 	public void mark(int __a)
 		throws IOException
@@ -67,20 +80,50 @@ public abstract class Reader
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Reads a single character from the input.
+	 *
+	 * @return The character which was read or {@code -1} on end of file.
+	 * @throws IOException On read errors.
+	 * @since 2018/10/13
+	 */
 	public int read()
 		throws IOException
 	{
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
+		// Try reading the character in a loop
+		char[] buf = new char[1];
+		for (;;)
+		{
+			int rc = this.read(buf, 0, 1);
+			
+			// Try to read character again
+			if (rc == 0)
+				continue;
+			
+			// EOF
+			else if (rc < 0)
+				return rc;
+			
+			return buf[0];
+		}
 	}
 	
-	public int read(char[] __a)
-		throws IOException
+	/**
+	 * Reads in multiple characters from the stream.
+	 *
+	 * @param __c The characters to read.
+	 * @return The number of read characters.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/10/13
+	 */
+	public int read(char[] __c)
+		throws IOException, NullPointerException
 	{
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
+		if (__c == null)
+			throw new NullPointerException("NARG");
+		
+		return this.read(__c, 0, __c.length);
 	}
 	
 	public boolean ready()
