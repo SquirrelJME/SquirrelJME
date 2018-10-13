@@ -29,6 +29,22 @@ public final class ResourceAccess
 	public static final int OPEN_STATUS_IOEXCEPTION =
 		-3;
 	
+	/** Read returned EOF. */
+	public static final int READ_STATUS_EOF =
+		-1;
+	
+	/** Read returned unknown file descriptor. */
+	public static final int READ_STATUS_UNKNOWN_FD =
+		-2;
+	
+	/** Read returned IOException. */
+	public static final int READ_STATUS_IOEXCEPTION =
+		-3;
+	
+	/** Close resulted in any IOException. */
+	public static final int CLOSE_ANY_IOEXCEPTION =
+		-1;
+	
 	/**
 	 * Returns the number of bytes which are known to be available. This is
 	 * not required to be supported but is available for usage if it would
@@ -47,9 +63,10 @@ public final class ResourceAccess
 	 * Closes the given resource.
 	 *
 	 * @param __fd The resource descriptor to close.
+	 * @return A negative value indicating the reason for the failure.
 	 * @since 2018/10/07
 	 */
-	public static final native void close(int __fd);
+	public static final native int close(int __fd);
 	
 	/**
 	 * Opens the specified resource in the given JAR, according to the class

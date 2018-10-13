@@ -97,5 +97,57 @@ public final class SpringResourceAccess
 		// Only the ID is used
 		return id;
 	}
+	
+	/**
+	 * Reads from the 
+	 *
+	 * @param __fd The file descriptor to read from.
+	 * @param __b The output bytes.
+	 * @param __o The offset.
+	 * @param __l The length.
+	 * @return The number of bytes read or a negative status code.
+	 * @throws IndexOutOfBoundsException If the offset and/or length are
+	 * negative or exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/10/13
+	 */
+	public int read(int __fd, byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Locate the stream to read from
+		InputStream in;
+		Map<Integer, InputStream> streams = this._streams;
+		synchronized (streams)
+		{
+			in = streams.get(__fd);
+		}
+		
+		// No stream was found, so fail
+		if (in == null)
+			return -2;
+		
+		// Do the read
+		try
+		{
+			int rv = in.read(__b, __o, __l);
+			
+			// Normalize the return value because negative values mean special
+			// values, while we just want EOF
+			if (rv < 0)
+				return -1;
+			return rv;
+		}
+		
+		// Failed so just pass that some exception happened
+		catch (IOException e)
+		{
+			return -3;
+		}
+	}
 }
 
