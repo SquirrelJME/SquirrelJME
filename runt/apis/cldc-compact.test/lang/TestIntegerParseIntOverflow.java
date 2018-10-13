@@ -19,15 +19,17 @@ import net.multiphasicapps.tac.TestSupplier;
  * @since 2018/10/13
  */
 public class TestIntegerParseIntOverflow
-	extends TestSupplier<Integer>
+	extends TestSupplier<String>
 {
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/10/13
 	 */
 	@Override
-	public Integer test()
+	public String test()
 	{
+		StringBuilder sb = new StringBuilder();
+		
 		// Check overflow for all radixes
 		int rv = 0;
 		for (int r = Character.MIN_RADIX; r <= Character.MAX_RADIX; r++)
@@ -36,13 +38,16 @@ public class TestIntegerParseIntOverflow
 				// This is a really long value which is valid for all radixes
 				// it is either a 33-bit integer or log(33)??
 				Integer.parseInt("111111111111111111111111111111111", r);
+				
+				sb.append(Character.toUpperCase(
+					Character.forDigit(r, Character.MAX_RADIX)));
 			}
 			catch (NumberFormatException e)
 			{
-				rv++;
+				sb.append(Character.forDigit(r, Character.MAX_RADIX));
 			}
 		
-		return rv;
+		return sb.toString();
 	}
 }
 

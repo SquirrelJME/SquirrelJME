@@ -12,25 +12,36 @@ package java.lang;
 
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
+import cc.squirreljme.runtime.cldc.i18n.DefaultLocale;
 import cc.squirreljme.runtime.cldc.string.SingleCharacterSequence;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
+/**
+ * This is a boxed representation of {@link char}.
+ *
+ * @since 2018/10/13
+ */
 public final class Character
 	implements Comparable<Character>
 {
+	/** The maximum radix for digit conversions. */
 	public static final int MAX_RADIX =
 		36;
 	
+	/** The maximum value for characters. */
 	public static final char MAX_VALUE =
 		65535;
 	
+	/** The minimum radix for digit conversions. */
 	public static final int MIN_RADIX =
 		2;
 	
+	/** The minimum value for characters. */
 	public static final char MIN_VALUE =
 		0;
 	
+	/** The number of bits used to represent a character. */
 	public static final int SIZE =
 		16;
 	
@@ -66,20 +77,47 @@ public final class Character
 		return this._value;
 	}
 	
-	public int compareTo(Character __a)
-	{
-		throw new todo.TODO();
-	}
-	
+	/**
+	 * This compares the numerical value for characters, it does not depend
+	 * on locale at all.
+	 *
+	 * {@inheritDoc}
+	 * @since 2018/10/13
+	 */
 	@Override
-	public boolean equals(Object __a)
+	public int compareTo(Character __o)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		char a = this._value,
+			b = __o._value;
+		
+		return a - b;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/10/13
+	 */
+	@Override
+	public boolean equals(Object __o)
+	{
+		if (__o == this)
+			return true;
+		
+		if (!(__o instanceof Character))
+			return false;
+		
+		return this._value == ((Character)__o)._value;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/10/13
+	 */
+	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		return this._value;
 	}
 	
 	/**
@@ -102,14 +140,58 @@ public final class Character
 		return rv;
 	}
 	
-	public static int digit(char __a, int __b)
+	/**
+	 * Returns the digit for the given character and radix.
+	 *
+	 * @param __c The character to decode.
+	 * @param __r The radix used.
+	 * @return The digit for the given radix, if the character or the radix is
+	 * not valid then {@code -1} is returned.
+	 * @since 2018/10/13
+	 */
+	public static int digit(char __c, int __r)
 	{
-		throw new todo.TODO();
+		// Invalid radix
+		if (__r < Character.MIN_RADIX || __r > Character.MAX_RADIX)
+			return -1;
+		
+		// Decode character
+		int rv;
+		if (__c >= 'a' && __c <= 'z')
+			rv = 10 + (__c - 'a');
+		else if (__c >= 'A' && __c <= 'Z')
+			rv = 10 + (__c - 'A');
+		else if (__c >= '0' && __c <= '9')
+			rv = __c - '0';
+		
+		// Not valid
+		else
+			return -1;
+		
+		// Out of bounds of the radix
+		if (rv >= __r)
+			return -1;
+		return rv;
 	}
 	
-	public static char forDigit(int __a, int __b)
+	/**
+	 * Returns the character for the given digit and radix.
+	 *
+	 * @param __dig The digit to convert to a character.
+	 * @param __r The radix to use for conversion.
+	 * @return The character for the digit or NUL if the digit is out of range
+	 * or the radix is out of range.
+	 * @since 2018/10/13
+	 */
+	public static char forDigit(int __dig, int __r)
 	{
-		throw new todo.TODO();
+		if (__dig < 0 || __r < Character.MIN_RADIX ||
+			__r > Character.MAX_RADIX)
+			return '\0';
+		
+		if (__dig < 10)
+			return (char)('0' + __dig);
+		return (char)('a' + (__dig - 10));
 	}
 	
 	public static boolean isDigit(char __a)
@@ -142,19 +224,46 @@ public final class Character
 		throw new todo.TODO();
 	}
 	
-	public static char toLowerCase(char __a)
+	/**
+	 * Converts the specified character to lower case without considering
+	 * locale.
+	 *
+	 * @param __c The character to convert.
+	 * @return The converted character.
+	 * @since 2018/10/13
+	 */
+	@ImplementationNote("CLDC only supports Latin-1 and this method has no " +
+		"locale support.")
+	public static char toLowerCase(char __c)
 	{
-		throw new todo.TODO();
+		return DefaultLocale.NO_LOCALE.toLowerCase(__c);
 	}
 	
-	public static String toString(char __a)
+	/**
+	 * Returns a string representation of the given character.
+	 *
+	 * @param __c The character to represent as a string.
+	 * @return The string representation of that character.
+	 * @since 2018/10/13
+	 */
+	public static String toString(char __c)
 	{
-		throw new todo.TODO();
+		return new String(new SingleCharacterSequence(__c));
 	}
 	
-	public static char toUpperCase(char __a)
+	/**
+	 * Converts the specified character to lower case without considering
+	 * locale.
+	 *
+	 * @param __c The character to convert.
+	 * @return The converted character.
+	 * @since 2018/10/13
+	 */
+	@ImplementationNote("CLDC only supports Latin-1 and this method has no " +
+		"locale support.")
+	public static char toUpperCase(char __c)
 	{
-		throw new todo.TODO();
+		return DefaultLocale.NO_LOCALE.toUpperCase(__c);
 	}
 	
 	/**

@@ -219,24 +219,12 @@ public final class Integer
 			c = __v.charAt(i);
 			
 			// Convert to digit
-			int dig;
-			if (c >= 'A' && c <= 'Z')
-				dig = 10 + (c - 'A');
-			else if (c >= 'a' && c <= 'z')
-				dig = 10 + (c - 'a');
-			else if (c >= '0' && c <= '9')
-				dig = c - '0';
+			int dig = Character.digit(c, __r);
 			
-			// {@squirreljme.error ZZ2f Character out of range of any radix.
+			// {@squirreljme.error ZZ2f Character out of range of radix.
 			// (The input string; The out of range character)}
-			else
+			if (dig < 0)
 				throw new NumberFormatException("ZZ2f " + __v + " " + c);
-			
-			// {@squirreljme.error ZZ2h Digit out of bounds of radix. (The
-			// input string; The digit; The radix)}
-			if (dig >= __r)
-				throw new NumberFormatException("ZZ2h " + __v + " " + dig +
-					" " + __r);
 			
 			// {@squirreljme.error ZZ2g Input integer out of range of 32-bit
 			// integer. (The input string)}

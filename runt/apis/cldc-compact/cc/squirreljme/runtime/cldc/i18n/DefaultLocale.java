@@ -17,6 +17,10 @@ package cc.squirreljme.runtime.cldc.i18n;
  */
 public final class DefaultLocale
 {
+	/** The locale to use for conversion in cases where one is not used. */
+	public static final Locale NO_LOCALE =
+		new LocaleEnUs();
+	
 	/** The default locale. */
 	private static final Locale _DEFAULT_LOCALE =
 		DefaultLocale.__defaultLocale();
@@ -41,7 +45,7 @@ public final class DefaultLocale
 	{
 		Locale rv = DefaultLocale._DEFAULT_LOCALE;
 		if (rv == null)
-			return new LocaleEnUs();
+			return DefaultLocale.NO_LOCALE;
 		return rv;
 	}
 	
