@@ -133,8 +133,8 @@ public final class SpringArrayObject
 		// The length of the array)}
 		int length = this.length;
 		if (__dx < 0 || __dx >= length)
-			throw new SpringArrayStoreException(String.format("BK1j %d %d",
-				__dx, length));
+			throw new SpringArrayIndexOutOfBoundsException(
+				String.format("BK1j %d %d", __dx, length));
 		
 		return __cl.cast(this._elements[__dx]);
 	}
