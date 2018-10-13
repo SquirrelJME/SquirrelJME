@@ -130,6 +130,7 @@ public abstract class AbstractMap<K, V>
 			sb.append(e.getValue());
 		}
 		
+		sb.append('}');
 		return sb.toString();
 	}
 	
