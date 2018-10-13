@@ -87,6 +87,12 @@ public final class SpringMachine
 	/** The next long to choose. */
 	private long _strnextlong;
 	
+	/** Is the VM exiting? */
+	private volatile boolean _exiting;
+	
+	/** Exit code of the VM. */
+	private volatile int _exitcode;
+	
 	/**
 	 * Initializes the virtual machine.
 	 *
@@ -193,6 +199,38 @@ public final class SpringMachine
 			
 			return next;
 		}
+	}
+	
+	/**
+	 * Exits the virtual machine.
+	 *
+	 * @param __code The exit code.
+	 * @throws SpringMachineExitException To signal virtual machine exit.
+	 * @since 2018/10/13
+	 */
+	public final void exit(int __code)
+		throws SpringMachineExitException
+	{
+		// Set as exiting
+		this._exitcode = __code;
+		this._exiting = true;
+		
+		// Now signal exit
+		throw new SpringMachineExitException(__code);
+	}
+	
+	/**
+	 * Checks whether the virtual machine is exiting.
+	 *
+	 * @throws SpringMachineExitException If the VM is exiting.
+	 * @since 2018/10/13
+	 */
+	public final void exitCheck()
+		throws SpringMachineExitException
+	{
+		// Only if exiting
+		if (this._exiting)
+			throw new SpringMachineExitException(this._exitcode);
 	}
 	
 	/**
@@ -368,6 +406,12 @@ public final class SpringMachine
 		try
 		{
 			worker.run();
+		}
+		
+		// Virtual machine exited, do not print fatal trace just exit here
+		catch (SpringMachineExitException e)
+		{
+			throw e;
 		}
 		
 		// Ooopsie!

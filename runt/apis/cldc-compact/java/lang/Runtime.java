@@ -10,6 +10,7 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.asm.SystemAccess;
 import cc.squirreljme.runtime.cldc.system.SystemCall;
 
 public class Runtime
@@ -28,11 +29,17 @@ public class Runtime
 	 * @param __v The exit code, the value of this code may change according
 	 * to the host operating system and the resulting process might not exit
 	 * with the given code.
+	 * @throws SecurityException If exiting is not permitted.
 	 * @since 2017/02/08
 	 */
 	public void exit(int __v)
+		throws SecurityException
 	{
-		SystemCall.EASY.exit(__v);
+		// Check that we can exit
+		System.getSecurityManager().checkExit(__v);
+		
+		// Then do the exit if no exception was thrown
+		SystemAccess.exit(__v);
 	}
 	
 	public long freeMemory()
