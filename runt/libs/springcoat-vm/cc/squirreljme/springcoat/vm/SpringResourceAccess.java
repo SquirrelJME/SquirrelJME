@@ -49,6 +49,43 @@ public final class SpringResourceAccess
 	}
 	
 	/**
+	 * Closes the open resource.
+	 *
+	 * @param __fd The file descriptor.
+	 * @return Zero on success or a negative value on failure.
+	 * @since 2018/10/13
+	 */
+	public int close(int __fd)
+	{
+		// Locate the stream to close
+		InputStream in;
+		Map<Integer, InputStream> streams = this._streams;
+		synchronized (streams)
+		{
+			in = streams.get(__fd);
+			
+			// Remove it
+			if (in != null)
+				streams.remove(__fd);
+		}
+		
+		// No stream was found, so fail
+		if (in == null)
+			return -2;
+		
+		// Close it
+		try
+		{
+			in.close();
+			return 0;
+		}
+		catch (IOException e)
+		{
+			return -3;
+		}
+	}
+	
+	/**
 	 * Opens the given resource in the given JAR.
 	 *
 	 * @param __jar The source JAR.

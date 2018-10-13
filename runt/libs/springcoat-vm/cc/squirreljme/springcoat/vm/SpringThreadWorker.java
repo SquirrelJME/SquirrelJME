@@ -927,6 +927,12 @@ public final class SpringThreadWorker
 					(SpringObject)__args[1]);
 				return null;
 				
+				// Close resource in JAR
+			case "cc/squirreljme/runtime/cldc/asm/ResourceAccess::" +
+				"close:(I)I":
+				return this.machine.resourceAccess().close(
+					(Integer)__args[0]);
+				
 				// Open resource in JAR
 			case "cc/squirreljme/runtime/cldc/asm/ResourceAccess::" +
 				"open:(Ljava/lang/String;Ljava/lang/String;)I":

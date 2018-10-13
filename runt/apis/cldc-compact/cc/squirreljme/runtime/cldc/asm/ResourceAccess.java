@@ -41,9 +41,13 @@ public final class ResourceAccess
 	public static final int READ_STATUS_IOEXCEPTION =
 		-3;
 	
+	/** Descriptor was not found. */
+	public static final int CLOSE_STATUS_UNKNOWN_FD =
+		-2;
+	
 	/** Close resulted in any IOException. */
-	public static final int CLOSE_ANY_IOEXCEPTION =
-		-1;
+	public static final int CLOSE_STATUS_IOEXCEPTION =
+		-3;
 	
 	/**
 	 * Returns the number of bytes which are known to be available. This is

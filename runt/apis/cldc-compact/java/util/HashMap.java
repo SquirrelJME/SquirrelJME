@@ -85,7 +85,8 @@ public class HashMap<K, V>
 		this._map = new __BucketMap__<K, V>(
 			Math.max(__BucketMap__._DEFAULT_CAPACITY, __m.size()));
 		
-		throw new todo.TODO();
+		// Put all entries
+		this.putAll(__m);
 	}
 	
 	@Override
@@ -119,10 +120,15 @@ public class HashMap<K, V>
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/10/07
+	 */
 	@Override
+	@SuppressWarnings({"unchecked"})
 	public Set<Map.Entry<K, V>> entrySet()
 	{
-		throw new todo.TODO();
+		return (Set<Map.Entry<K, V>>)((Object)this._map.entrySet());
 	}
 	
 	/**
@@ -162,12 +168,6 @@ public class HashMap<K, V>
 	}
 	
 	@Override
-	public void putAll(Map<? extends K, ? extends V> __a)
-	{
-		throw new todo.TODO();
-	}
-	
-	@Override
 	public V remove(Object __a)
 	{
 		throw new todo.TODO();
@@ -178,10 +178,14 @@ public class HashMap<K, V>
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/10/13
+	 */
 	@Override
 	public int size()
 	{
-		throw new todo.TODO();
+		return this._map.size();
 	}
 	
 	@Override

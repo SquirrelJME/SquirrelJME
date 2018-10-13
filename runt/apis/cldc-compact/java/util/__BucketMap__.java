@@ -107,7 +107,7 @@ final class __BucketMap__<K, V>
 	 * @return The entry for the given or {@code null} if none exists.
 	 * @since 2018/10/08
 	 */
-	public __BucketMap__.__Entry__<K, V> get(Object __k)
+	public final __BucketMap__.__Entry__<K, V> get(Object __k)
 	{
 		// Where to look in the table?
 		int hash = (__k == null ? 0 : __k.hashCode());
@@ -139,13 +139,24 @@ final class __BucketMap__<K, V>
 	}
 	
 	/**
+	 * Returns the entry set for the map.
+	 *
+	 * @return The entry set for the map.
+	 * @since 2018/10/27
+	 */
+	public final Set<__BucketMap__.__Entry__<K, V>> entrySet()
+	{
+		return new __MapEntrySet__<K, V>(this);
+	}
+	
+	/**
 	 * Returns the chain that the hashed object is within for the bucket.
 	 *
 	 * @param __k The key.
 	 * @return The key for the given entry.
 	 * @since 2018/10/07
 	 */
-	public __BucketMap__.__Entry__<K, V> put(K __k)
+	public final __BucketMap__.__Entry__<K, V> put(K __k)
 	{
 		__Entry__<K, V>[][] buckets = this._buckets;
 		int bucketdiv = this._bucketdiv;
@@ -362,6 +373,46 @@ final class __BucketMap__<K, V>
 			V rv = this._value;
 			this._value = __v;
 			return rv;
+		}
+	}
+	
+	/**
+	 * Iterator over the entries in this map.
+	 *
+	 * @since 2018/10/13
+	 */
+	final class __EntryIterator__
+		implements Iterator<__BucketMap__.__Entry__<K, V>>
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/10/13
+		 */
+		@Override
+		public final boolean hasNext()
+		{
+			throw new todo.TODO();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/10/13
+		 */
+		@Override
+		public final __BucketMap__.__Entry__<K, V> next()
+			throws NoSuchElementException
+		{
+			throw new todo.TODO();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/10/13
+		 */
+		@Override
+		public final void remove()
+		{
+			throw new todo.TODO();
 		}
 	}
 }
