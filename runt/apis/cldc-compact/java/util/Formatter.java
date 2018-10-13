@@ -231,7 +231,7 @@ public final class Formatter
 		{
 			// Process input characters
 			Appendable out = this._out;
-			for (int i = 0, n = __fmt.length(); i < n; i++)
+			for (int i = 0, n = __fmt.length(), next = 0; i < n; i = next)
 			{
 				char c = __fmt.charAt(i);
 				
@@ -239,13 +239,16 @@ public final class Formatter
 				if (c != '%')
 				{
 					out.append(c);
+					
+					// Just skip the single character
+					next = i + 1;;
 					continue;
 				}
 				
 				// It is simpler to handle the parsing of the specifier in
 				// another method due to loops and variables
 				__PrintFState__ pf = new __PrintFState__(pg);
-				i = this.__specifier(pf, i, __fmt);
+				next = this.__specifier(pf, i, __fmt);
 				
 				// Handle output of the specifier
 				this.__output(out, pf);
