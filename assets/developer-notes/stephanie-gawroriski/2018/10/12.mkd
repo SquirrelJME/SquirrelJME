@@ -1,0 +1,88 @@
+# 2018/10/12
+
+## 09:00
+
+There is a freeze at the given frame and I think it may be related to
+conversion or compatible objects:
+
+ * `cc/squirreljme/runtime/cldc/string/CharArraySequence.charAt:(I)C`
+
+## 09:05
+
+Seems the issue is in context class.
+
+## 09:06
+
+`cc.squirreljme.springcoat.vm.SpringThreadWorker.contextClass` seems to
+be the issue, it must be looping here.
+
+## 09:11
+
+Okay so there is a loop definitely with finding instructions. A new frame
+is not being inserted, but there definitely is a problem with the byte
+code parsing.
+
+## 09:22
+
+I think `CharArraySequence` is fine. It must be more up the stack. The
+next is `java/lang/String.charAt:(I)C` which is really simple, I think if
+that failed it would be bad and not work anywhere else. But there are no
+enter frames being done at all which means that code is still executing
+somehow.
+
+## 09:29
+
+I believe I am going to need a debugger that can be ran from the console or
+otherwise.
+
+## 09:31
+
+Okay the code is really stuck at:
+
+ * `java/util/Formatter.__specifier:`
+   * `(Ljava/util/__PrintFState__;ILjava/lang/String;)I`
+
+So to investifate that.
+
+## 09:34
+
+There is some kind of loop, it might be `if_icmpgt`.
+
+## 09:49
+
+Looks like it is stuck on a GOTO.
+
+## 09:51
+
+And it is:
+
+	53: iload         4
+	55: bipush        48
+	57: if_icmplt     73
+	60: iload         4
+	62: bipush        57
+	64: if_icmpgt     73
+	67: iinc          3, 1
+	70: goto          53
+
+This block of code just compares values. And it is at Formatter.java:422.
+This is reading a number from the input.
+
+## 09:54
+
+Duh, I am stupid, because I am only reading the value one.
+
+## 21:04
+
+I need to figure out how to check for overflow, actually I can use division
+or just check the bits I guess?
+
+## 22:59
+
+Cheating a bit, `Character.toString()` is just a basic sequence initialized
+for a single character since that is the solution with the least amount of
+memory and object space used.
+
+## 23:04
+
+Okay so for the test failing, I believe `getResourceAsStream()` is failing.
