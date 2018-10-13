@@ -249,7 +249,12 @@ public final class Class<T>
 		// If no resource exists then
 		int fd = ResourceAccess.open(injar, want);
 		if (fd < 0)
+		{
+			// Any other value besides this means some resource error
+			if (fd != ResourceAccess.OPEN_STATUS_NO_RESOURCE)
+				todo.DEBUG.note("RA.o(%s, %s) = %d", injar, want, fd);
 			return null;
+		}
 		
 		// Otherwise read from that resource
 		return new __ResourceInputStream__(fd);

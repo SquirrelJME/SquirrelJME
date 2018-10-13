@@ -17,6 +17,18 @@ package cc.squirreljme.runtime.cldc.asm;
  */
 public final class ResourceAccess
 {
+	/** Resource does not exist. */
+	public static final int OPEN_STATUS_NO_RESOURCE =
+		-1;
+	
+	/** JAR does not exist. */
+	public static final int OPEN_STATUS_NO_JAR =
+		-2;
+	
+	/** IOException. */
+	public static final int OPEN_STATUS_IOEXCEPTION =
+		-3;
+	
 	/**
 	 * Returns the number of bytes which are known to be available. This is
 	 * not required to be supported but is available for usage if it would
