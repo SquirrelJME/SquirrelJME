@@ -402,7 +402,7 @@ public final class SpringThreadWorker
 					ints,
 					(!resclass.isArray() ? SpringNullObject.NULL :
 						this.asVMObject(resclass.componentType())),
-					this.asVMObject(classobj.inJar()));
+					this.asVMObject(resclass.inJar()));
 				
 				// Cache and use it
 				com.put(name, rv);

@@ -67,19 +67,23 @@ public final class SpringResourceAccess
 		SpringClassLoader classloader = this.classloader;
 		SpringClassLibrary lib = classloader.findLibrary(__jar);
 		if (lib == null)
-			return -1;
+			return -2;
 		
 		// Open input stream, if it even exists
 		InputStream rv;
 		try
 		{
 			rv = lib.resourceAsStream(__rc);
+			
+			// Debug
+			todo.DEBUG.note("rAS(%s, %s) = %b", __jar, __rc, rv != null);
+			
 			if (rv == null)
 				return -1;
 		}
 		catch (IOException e)
 		{
-			return -2;
+			return -3;
 		}
 		
 		// It does exist so it needs to be registered
