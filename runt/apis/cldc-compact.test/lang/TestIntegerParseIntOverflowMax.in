@@ -1,0 +1,2 @@
+result: string:23456789abcdefghijklmnopqrstuvwxyz\0
+thrown: NoExceptionThrown
