@@ -578,9 +578,37 @@ public final class StringBuilder
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Sets the length of the internal buffer, either truncating it or
+	 * padding it with NUL characters.
+	 *
+	 * @param __nl The new length.
+	 * @throws IndexOutOfBoundsException If the length is negative.
+	 * @since 2018/10/13
+	 */
 	public void setLength(int __nl)
+		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error ZZ2n Attempt to use a length of a negative
+		// size.}
+		if (__nl < 0)
+			throw new IndexOutOfBoundsException("ZZ2n");
+		
+		// We only need to do something if we are going up, staying the same
+		// or going down just sets a variable
+		int at = this._at;
+		if (__nl > at)
+		{
+			// Check that there is enough buffer to do this
+			char[] buffer = this.__buffer(__nl);
+			
+			// Pad with NUL characters
+			for (int i = at; i < __nl; i++)
+				buffer[i] = 0;
+		}
+		
+		// Set new length
+		this._at = __nl;
 	}
 	
 	public CharSequence subSequence(int __a, int __b)
