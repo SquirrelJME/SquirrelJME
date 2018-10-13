@@ -62,9 +62,17 @@ public class SecurityManager
 		throw new todo.TODO();
 	}
 	
-	public void checkExit(int __a)
+	/**
+	 * Checks that the virtual machine can exit with the given code.
+	 *
+	 * @param __code The exit code.
+	 * @throws SecurityException If exit is not permitted.
+	 * @since 2018/10/13
+	 */
+	public void checkExit(int __code)
+		throws SecurityException
 	{
-		throw new todo.TODO();
+		this.checkPermission(new RuntimePermission("exitVM." + __code));
 	}
 	
 	public void checkListen(int __a)

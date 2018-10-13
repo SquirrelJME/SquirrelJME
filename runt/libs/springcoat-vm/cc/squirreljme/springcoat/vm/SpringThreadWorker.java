@@ -970,6 +970,12 @@ public final class SpringThreadWorker
 					
 					return rv;
 				}
+			
+				// Exit the virtual machine
+			case "cc/squirreljme/runtime/cldc/asm/SystemAccess::" +
+				"exit:(I)V":
+				this.machine.exit((Integer)__args[0]);
+				return null;
 				
 				// VM e-mail
 			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
@@ -1226,6 +1232,11 @@ public final class SpringThreadWorker
 	 */
 	private final void __singleStep()
 	{
+		// Check if the VM is exiting, to discontinue execution if it has been
+		// requested by any thread
+		SpringMachine machine = this.machine;
+		machine.exitCheck();
+		
 		// Need the current frame and its byte code
 		SpringThread thread = this.thread;
 		
@@ -2212,7 +2223,8 @@ public final class SpringThreadWorker
 		catch (SpringException e)
 		{
 			// Do not add causes or do anything if this was already thrown
-			if (e instanceof SpringFatalException)
+			if ((e instanceof SpringFatalException) ||
+				(e instanceof SpringMachineExitException))
 				throw e;
 			
 			// Print the stack trace

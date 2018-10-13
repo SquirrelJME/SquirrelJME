@@ -20,6 +20,7 @@ import cc.squirreljme.builder.support.TimeSpaceType;
 import cc.squirreljme.springcoat.vm.SpringClassLoader;
 import cc.squirreljme.springcoat.vm.SpringFatalException;
 import cc.squirreljme.springcoat.vm.SpringMachine;
+import cc.squirreljme.springcoat.vm.SpringMachineExitException;
 
 /**
  * Main entry point for the virtual machine which is layered on the build
@@ -123,6 +124,12 @@ public class Main
 		try
 		{
 			machine.run();
+		}
+		
+		// Exiting with some given code
+		catch (SpringMachineExitException e)
+		{
+			System.exit(e.code());
 		}
 		
 		// Ignore these exceptions, just fatal exit
