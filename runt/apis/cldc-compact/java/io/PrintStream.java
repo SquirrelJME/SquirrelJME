@@ -540,7 +540,7 @@ public class PrintStream
 		if (this._autoflush)
 		{
 			for (int skim = bat + wc; bat < skim; bat++)
-				if (buf[skim] == '\n')
+				if (buf[bat] == '\n')
 					flush = true;
 		}
 		else
