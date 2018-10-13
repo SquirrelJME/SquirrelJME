@@ -45,8 +45,8 @@ Only the following character encodings are supported:
 Note that UTF codepoints above U+FFFF are not fully supported and are not
 available in Java ME. Surrogate pairs in UTF-16 will be encoded in UTF-8 as
 six bytes. Additionally when decoding, if a sequence that is above U+FFFF is
-read then it will decode to a surrogate pair. This may cause a loss of or
-mutation of data when processing files.
+read then it will decode to the replacement character. This may cause a loss of
+or mutation of data when processing files.
 
 See:
 

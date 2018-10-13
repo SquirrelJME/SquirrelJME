@@ -69,7 +69,7 @@ public final class CodecFactory
 				
 				// UTF-8
 			case "utf-8":
-				throw new todo.TODO();
+				return new UTF8Decoder();
 			
 				// {@squirreljme.error ZZ2j Unknown encoding. (The input
 				// encoding)}
