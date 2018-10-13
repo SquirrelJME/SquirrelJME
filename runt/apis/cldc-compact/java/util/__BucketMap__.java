@@ -50,6 +50,9 @@ final class __BucketMap__<K, V>
 	/** The size threshold before a rebuild is done. */
 	int _loadthreshold;
 	
+	/** Modification identifier. */
+	int _modid;
+	
 	/**
 	 * Initializes the map with the default capacity and load factor.
 	 *
@@ -237,6 +240,9 @@ final class __BucketMap__<K, V>
 			buckets[div] = dup;
 		}
 		
+		// Map has been modified
+		this._modid++;
+		
 		// Size would have been increased at this point
 		this._size = nextsize;
 		
@@ -384,6 +390,19 @@ final class __BucketMap__<K, V>
 	final class __EntryIterator__
 		implements Iterator<__BucketMap__.__Entry__<K, V>>
 	{
+		/** The mod init this iterator is at, to detect modifications. */
+		int _atmodinit =
+			__BucketMap__.this._modid;
+		
+		/** The current bucket this is at. */
+		int _bucketat;
+		
+		/** The current chain link this is at. */
+		int _chainat;
+		
+		/** The cached next entry. */
+		__BucketMap__.__Entry__<K, V> _next;
+		
 		/**
 		 * {@inheritDoc}
 		 * @since 2018/10/13
@@ -391,7 +410,69 @@ final class __BucketMap__<K, V>
 		@Override
 		public final boolean hasNext()
 		{
-			throw new todo.TODO();
+			// Check modification
+			this.__checkModified();
+			
+			// Already cached, do not need to check anything more
+			if (this._next != null)
+				return true;
+			
+			// No more buckets remain?
+			int bucketat = this._bucketat,
+				bucketdiv = __BucketMap__.this._bucketdiv;
+			if (bucketat >= bucketdiv)
+				return false;
+			
+			// Get the current chain
+			__Entry__<K, V>[][] buckets = __BucketMap__.this._buckets;
+			
+			// We can store the current location parameters at the end rather
+			// than every time (keeps everything in locals)
+			int chainat = this._chainat;
+			try
+			{
+				// We might try looking at the next bucket if we reach the end
+				// of this chain.
+				for (;;)
+				{
+					__Entry__<K, V>[] chain = buckets[bucketat];
+					
+					// No more chain links remain? Or there is no chain?
+					int chaindiv = (chain == null ? -1 : chain.length);
+					if (chainat >= chaindiv)
+					{
+						// Reset to start of next bucket
+						bucketat++;
+						chainat = 0;
+						
+						// No more buckets to look in
+						if (bucketat >= bucketdiv)
+							return false;
+						
+						// Try again
+						continue;
+					}
+					
+					// Will use the next chain
+					int oldchainat = chainat++;
+					
+					// If no link was here try again
+					__Entry__<K, V> link = chain[oldchainat];
+					if (link == null)
+						continue;
+					
+					// Cache that link for returning
+					this._next = link;
+					return true;
+				}
+			}
+			
+			// Store properties
+			finally
+			{
+				this._bucketat = bucketat;
+				this._chainat = chainat;
+			}
 		}
 		
 		/**
@@ -402,7 +483,14 @@ final class __BucketMap__<K, V>
 		public final __BucketMap__.__Entry__<K, V> next()
 			throws NoSuchElementException
 		{
-			throw new todo.TODO();
+			// {@squirreljme.error ZZ2p Map has no more entries remaining.}
+			if (!this.hasNext())
+				throw new NoSuchElementException("ZZ2p");
+			
+			// hasNext() caches this
+			__BucketMap__.__Entry__<K, V> rv = this._next;
+			this._next = null;
+			return rv;
 		}
 		
 		/**
@@ -412,7 +500,25 @@ final class __BucketMap__<K, V>
 		@Override
 		public final void remove()
 		{
+			// Check modification
+			this.__checkModified();
+			
 			throw new todo.TODO();
+		}
+		
+		/**
+		 * Checks if the map's internal structure modification count has
+		 * changed.
+		 *
+		 * @throws ConcurrentModificationException If the map was modified.
+		 * @since 2018/10/13
+		 */
+		private final void __checkModified()
+			throws ConcurrentModificationException
+		{
+			// {@squirreljme.error ZZ2o Backing map has been modified.}
+			if (this._atmodinit != __BucketMap__.this._modid)
+				throw new ConcurrentModificationException("ZZ2o");
 		}
 	}
 }
