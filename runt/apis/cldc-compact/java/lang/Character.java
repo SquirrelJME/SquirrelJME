@@ -12,6 +12,7 @@ package java.lang;
 
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
+import cc.squirreljme.runtime.cldc.string.SingleCharacterSequence;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -39,6 +40,9 @@ public final class Character
 	
 	/** The character value. */
 	private final char _value;
+	
+	/** The string representation of this value. */
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes the boxed character.
@@ -78,10 +82,24 @@ public final class Character
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/10/12
+	 */
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		// We can represent a string for our single character as this
+		// special sequence instead of just creating a new temporary string
+		// just to store a single character or creating some kind of array.
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>(
+				(rv = new String(new SingleCharacterSequence(this._value))));
+		
+		return rv;
 	}
 	
 	public static int digit(char __a, int __b)
