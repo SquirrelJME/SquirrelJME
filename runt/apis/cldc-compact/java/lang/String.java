@@ -173,7 +173,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/02/24
 	 */
-	private String(BasicSequence __bs)
+	String(BasicSequence __bs)
 		throws NullPointerException
 	{
 		this(__bs, 0);

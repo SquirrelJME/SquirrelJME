@@ -339,6 +339,12 @@ public final class Formatter
 			case NEWLINE:
 				append = Formatter._NEWLINE;
 				break;
+				
+				// Single character
+			case CHARACTER:
+				Character cha = __pf.<Character>__argument(Character.class);
+				append = (cha == null ? "null" : cha.toString());
+				break;
 			
 				// Simple string conversion
 			case STRING:
