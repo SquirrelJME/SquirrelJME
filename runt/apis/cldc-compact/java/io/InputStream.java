@@ -13,9 +13,13 @@ package java.io;
 public abstract class InputStream
 	implements Closeable
 {
+	/**
+	 * Initializes the base input stream.
+	 *
+	 * @since 2018/10/13
+	 */
 	public InputStream()
 	{
-		throw new todo.TODO();
 	}
 	
 	public abstract int read()
