@@ -80,6 +80,14 @@ public final class ObjectAccess
 	public static final native Class<?> classOf(Object __v);
 	
 	/**
+	 * Returns the identity hashcode of the object.
+	 *
+	 * @return The identity hashcode.
+	 * @since 2018/10/14
+	 */
+	public static final native int identityHashCode(Object __o);
+	
+	/**
 	 * Creates a new primitive weak reference. Note that it is not valid to
 	 * operate on this object as a normal object, it is a special
 	 * representation.

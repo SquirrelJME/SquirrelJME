@@ -22,7 +22,7 @@ import cc.squirreljme.runtime.cldc.asm.MemoryAccess;
  */
 public class Runtime
 {
-	/** THere is only a single instance of the run-time. */
+	/** There is only a single instance of the run-time. */
 	private static final Runtime _INSTANCE =
 		new Runtime();
 	
