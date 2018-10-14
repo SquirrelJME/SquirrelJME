@@ -15,6 +15,7 @@ package cc.squirreljme.runtime.cldc.library;
  *
  * @since 2018/01/03
  */
+@Deprecated
 public class NoSuchLibraryException
 	extends RuntimeException
 {
@@ -23,6 +24,7 @@ public class NoSuchLibraryException
 	 *
 	 * @since 2018/03/02
 	 */
+	@Deprecated
 	public NoSuchLibraryException()
 	{
 	}
@@ -33,6 +35,7 @@ public class NoSuchLibraryException
 	 * @param __m The message.
 	 * @since 2018/03/02
 	 */
+	@Deprecated
 	public NoSuchLibraryException(String __m)
 	{
 		super(__m);
@@ -45,6 +48,7 @@ public class NoSuchLibraryException
 	 * @param __c The cause.
 	 * @since 2018/03/02
 	 */
+	@Deprecated
 	public NoSuchLibraryException(String __m, Throwable __c)
 	{
 		super(__m, __c);
@@ -56,6 +60,7 @@ public class NoSuchLibraryException
 	 * @param __c The cause.
 	 * @since 2018/03/02
 	 */
+	@Deprecated
 	public NoSuchLibraryException(Throwable __c)
 	{
 		super(__c);
