@@ -1,0 +1,59 @@
+# 2018/10/13
+
+## 10:28
+
+Took a peek and the monitor for `Reader` is only used for `skip` so that is
+not too bad at all.
+
+## 10:35
+
+I should have a fallback if the specified system encoding is not valid.
+
+## 10:36
+
+Maybe not.
+
+## 12:38
+
+The hashmap has negative divisions used, so that means I need to mask the
+lower value to remove the sign bit.
+
+## 15:43
+
+Looks to be that protected fields are unable to be accessed from subclasses
+so need to check that out.
+
+## 15:49
+
+Okay so, it is `UnmodifiableMap.__SetIterator__` and it is accessing the
+parent class iterator. So this needs fixing.
+
+## 16:01
+
+Looks like protected and package private fields and methods could be accessed
+if they are in the same package. Oh wow, this is something.
+
+## 16:05
+
+Wow, I learned something new! Or at least something I really forgot about but
+now I know. This definitely changes how I create fields and methods.
+
+## 16:07
+
+Well, this is quite the revelation of something I learned long ago but
+completely forgot about. But it works and actually kind of makes things better
+I guess.
+
+## 19:02
+
+I paired with a friend on SquirrelJME and I fried her brain with exception
+handling, heehee.
+
+## 19:20
+
+So for integer overflow parsing, not all values reach overflow so that is
+something: `RV int:31 int:35`.
+
+## 19:23
+
+I need better reporting.
