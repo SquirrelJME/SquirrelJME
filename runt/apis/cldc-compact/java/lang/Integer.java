@@ -228,10 +228,8 @@ public final class Integer
 			
 			// {@squirreljme.error ZZ2g Input integer out of range of 32-bit
 			// integer. (The input string)}
-			// For non-zero values, if the value overflows during the radix
-			// mulitplication then the sign bit will be flipped.
 			int prod = rv * __r;
-			if (rv != 0 && (prod & 0x8000_0000) != (rv & 0x8000_0000))
+			if (rv != 0 && (neg ? (prod > rv) : (prod < rv)))
 				throw new NumberFormatException("ZZ2g " + __v);
 			
 			// Add up

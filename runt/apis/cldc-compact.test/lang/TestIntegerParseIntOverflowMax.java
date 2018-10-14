@@ -39,7 +39,7 @@ public class TestIntegerParseIntOverflowMax
 				// This is a really long value which is valid for all radixes
 				// it is either a 33-bit integer or log(33)??
 				char c = Character.forDigit(r - 1, r);
-				StringBuilder seq = new StringBuilder(33);
+				StringBuilder seq = new StringBuilder("-");
 				for (int i = 0; i < 33; i++)
 					seq.append(c);
 				
