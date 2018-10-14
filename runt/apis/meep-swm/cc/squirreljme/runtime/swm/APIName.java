@@ -8,72 +8,75 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.kernel.suiteinfo;
+package cc.squirreljme.runtime.swm;
 
 import net.multiphasicapps.strings.StringUtils;
 
 /**
- * This represents the vendor of a midlet suite.
+ * This represents the name of an API.
  *
- * @since 2016/10/12
+ * @since 2017/11/30
  */
-public final class SuiteVendor
-	implements Comparable<SuiteVendor>
+public final class APIName
+	implements Comparable<APIName>
 {
-	/** String value. */
+	/** The name of the API. */
 	protected final String string;
 	
 	/**
-	 * Initializes the suite vendor.
+	 * Initializes the API name from the given string.
 	 *
-	 * @param __v The value to parse.
-	 * @throws InvalidSuiteException If the input is not valid.
+	 * @param __n The name of the API.
+	 * @throws InvalidSuiteException If the suite is not valid.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2016/10/12
+	 * @since 2017/11/30
 	 */
-	public SuiteVendor(String __v)
+	public APIName(String __n)
 		throws InvalidSuiteException, NullPointerException
 	{
-		// Check
-		if (__v == null)
+		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AR0h An illegal character was
-		// specified in the midlet suite vendor. (The midlet suite
-		// vendor)}
-		if (StringUtils.firstIndex("\0\r\n:;", __v) >= 0)
-			throw new InvalidSuiteException(String.format("AD0d %s", __v));
+		// Force all APIs to be uppercase
+		__n = StringUtils.toUpperCaseNoLocale(__n);
 		
-		this.string = __v;
+		// {@squirreljme.error AR01 An illegal character was
+		// specified in the API name. (The API name)
+		if (StringUtils.firstIndex("\0\r\n:;", __n) >= 0)
+			throw new InvalidSuiteException(String.format("AR01 %s", __n));
+		
+		this.string = __n;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2016/10/12
+	 * @since 2017/11/30
 	 */
 	@Override
-	public int compareTo(SuiteVendor __o)
+	public int compareTo(APIName __o)
 	{
 		return this.string.compareTo(__o.string);
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2016/10/12
+	 * @since 2017/11/30
 	 */
 	@Override
 	public boolean equals(Object __o)
 	{
-		// Check
-		if (!(__o instanceof SuiteVendor))
+		if (this == __o)
+			return true;
+		
+		if (!(__o instanceof APIName))
 			return false;
 		
-		return this.string.equals(((SuiteVendor)__o).string);
+		return this.string.equals(((APIName)__o).string);
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2016/10/12
+	 * @since 2017/11/30
 	 */
 	@Override
 	public int hashCode()
@@ -83,7 +86,7 @@ public final class SuiteVendor
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2016/10/12
+	 * @since 2017/11/30
 	 */
 	@Override
 	public String toString()

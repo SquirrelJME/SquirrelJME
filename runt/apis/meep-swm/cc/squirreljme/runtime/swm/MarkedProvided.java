@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.kernel.suiteinfo;
+package cc.squirreljme.runtime.swm;
 
 /**
  * This interface is associated with anything which can be a provided detail

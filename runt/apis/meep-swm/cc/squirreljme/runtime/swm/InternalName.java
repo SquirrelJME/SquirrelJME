@@ -8,71 +8,80 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.kernel.suiteinfo;
+package cc.squirreljme.runtime.swm;
 
 /**
- * This represents the name of a standard.
+ * This represents an internal project name which is used by SquirrelJME.
  *
- * @since 2017/12/05
+ * @since 2017/12/31
  */
-public final class StandardName
-	implements Comparable<StandardName>
+public final class InternalName
+	implements MarkedProvided
 {
+	/** The project name. */
+	protected final String name;
+	
 	/**
-	 * Initializes the standard name.
+	 * Initializes the internal name.
 	 *
-	 * @param __s The name of the standard.
-	 * @throws InvalidSuiteException If the name is not valid.
+	 * @param __n The name to use.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2017/12/05
+	 * @since 2017/12/31
 	 */
-	public StandardName(String __s)
-		throws InvalidSuiteException, NullPointerException
+	public InternalName(String __n)
+		throws NullPointerException
 	{
-		if (__s == null)
+		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		this.name = __n;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2017/12/05
-	 */
-	@Override
-	public int compareTo(StandardName __o)
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2017/12/05
+	 * @since 2017/12/31
 	 */
 	@Override
 	public boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		if (this == __o)
+			return true;
+		
+		if (!(__o instanceof InternalName))
+			return false;
+		
+		return this.name.equals(((InternalName)__o).name);
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2017/12/05
+	 * @since 2017/12/31
 	 */
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		return this.name.hashCode();
+	}
+	
+	/**
+	 * Returns the internal name.
+	 *
+	 * @return The internal name.
+	 * @since 2017/12/31
+	 */
+	public String name()
+	{
+		return this.name;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2017/12/05
+	 * @since 2017/12/31
 	 */
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		return this.name;
 	}
 }
 
