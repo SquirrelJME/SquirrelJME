@@ -11,14 +11,26 @@
 package java.lang;
 
 import cc.squirreljme.runtime.cldc.asm.SystemAccess;
-import cc.squirreljme.runtime.cldc.system.SystemCall;
+import cc.squirreljme.runtime.cldc.asm.MemoryAccess;
 
+/**
+ * This class contains information about the host memory environment along
+ * with providing methods to perform garbage collection and exit the
+ * virtual machine.
+ *
+ * @since 2018/10/14
+ */
 public class Runtime
 {
 	/** THere is only a single instance of the run-time. */
 	private static final Runtime _INSTANCE =
 		new Runtime();
 	
+	/**
+	 * Not used.
+	 *
+	 * @since 2018/10/14
+	 */
 	private Runtime()
 	{
 	}
@@ -42,9 +54,15 @@ public class Runtime
 		SystemAccess.exit(__v);
 	}
 	
+	/**
+	 * Returns the amount of memory that is free for the JVM to use.
+	 *
+	 * @return The amount of free memory.
+	 * @since 2018/10/14
+	 */
 	public long freeMemory()
 	{
-		throw new todo.TODO();
+		return MemoryAccess.freeMemory();
 	}
 	
 	/**
@@ -55,17 +73,33 @@ public class Runtime
 	 */
 	public void gc()
 	{
-		SystemCall.EASY.garbageCollectionHint();
+		MemoryAccess.gc();
 	}
 	
+	/**
+	 * Returns the maximum amount of memory that the virtual machine will
+	 * attempt to use, if there is no limit then {@link Long#MAX_VALUE} will
+	 * be used.
+	 *
+	 * @return The maximum amount of memory available to the virtual machine.
+	 * @since 2018/10/14
+	 */
 	public long maxMemory()
 	{
-		throw new todo.TODO();
+		return MemoryAccess.maxMemory();
 	}
 	
+	/**
+	 * Returns the total amount of memory that is being used by the virtual
+	 * machine. This is a count of all the memory claimed by the virtual
+	 * machine itself for its memory pools and such.
+	 *
+	 * @return The amount of memory being used by the virtual machine.
+	 * @since 2018/10/14
+	 */
 	public long totalMemory()
 	{
-		throw new todo.TODO();
+		return MemoryAccess.totalMemory();
 	}
 	
 	/**
