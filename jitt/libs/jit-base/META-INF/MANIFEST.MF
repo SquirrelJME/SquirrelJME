@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-X-SquirrelJME-UUID: e0279655-b0cf-4e4d-9ed2-e126cff46ea1
-X-SquirrelJME-Error: AI
-X-SquirrelJME-Name: JIT Base
-X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.0.2
-X-SquirrelJME-Description: This contains the base for the JIT.
-Microedition-Configuration: CLDC-1.8-Compact
-
