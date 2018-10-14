@@ -13,14 +13,19 @@ package java.lang;
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import cc.squirreljme.runtime.cldc.asm.SystemAccess;
 import cc.squirreljme.runtime.cldc.asm.SystemProperties;
+import cc.squirreljme.runtime.cldc.asm.TimeAccess;
 import cc.squirreljme.runtime.cldc.io.StandardError;
 import cc.squirreljme.runtime.cldc.io.StandardOutput;
-import cc.squirreljme.runtime.cldc.system.SystemCall;
-import cc.squirreljme.runtime.cldc.SystemVersion;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.security.Permission;
 
+/**
+ * This class contains methods which are used to interact with the system and
+ * the environment.
+ *
+ * @since 2018/10/14
+ */
 public final class System
 {
 	/** Standard error stream (stderr). */
@@ -38,8 +43,6 @@ public final class System
 	 */
 	private System()
 	{
-		// {@squirreljme.error ZZ0g The system class cannot be initialized.}
-		throw new Error("ZZ0g");
 	}
 	
 	/**
@@ -150,7 +153,7 @@ public final class System
 	public static long currentTimeMillis()
 	{
 		// Returns the current time in UTC, not local time zone.
-		return SystemCall.EASY.currentTimeMillis();
+		return TimeAccess.currentTimeMillis();
 	}
 	
 	/**
@@ -372,18 +375,18 @@ public final class System
 	 * object ID or it may be a memory address. Two objects may also share the
 	 * same identity hash code.
 	 *
-	 * @param __a The input object to get the hash code for.
+	 * @param __o The input object to get the hash code for.
 	 * @return The hash code which was given by the virtual machine, if the
 	 * input is {@code null} then {@code 0} is returned.
 	 * @since 2015/11/09
 	 */
-	public static int identityHashCode(Object __a)
+	public static int identityHashCode(Object __o)
 	{
 		// If null, this is zero
-		if (__a == null)
+		if (__o == null)
 			return 0;
 		
-		throw new todo.TODO();
+		return ObjectAccess.identityHashCode(__o);
 	}
 	
 	/**
@@ -409,7 +412,7 @@ public final class System
 	 */
 	public static long nanoTime()
 	{
-		return SystemCall.EASY.nanoTime();
+		return TimeAccess.nanoTime();
 	}
 	
 	/**
