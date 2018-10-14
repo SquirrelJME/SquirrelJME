@@ -10,7 +10,6 @@
 
 package net.multiphasicapps.collections;
 
-import cc.squirreljme.runtime.cldc.system.SystemCall;
 import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.Iterator;
@@ -28,17 +27,17 @@ public final class EnumSet<T extends Enum<T>>
 	/** The type of class being stored. */
 	protected final Class<T> type;
 	
-	/** The number of used bits. */
+	/** The number of used bits so far. */
 	protected final int numbits;
 	
-	/** The number of ints to use. */
+	/** The number of ints in use. */
 	protected final int numints;
 	
-	/** The constants which are in the set. */
-	private final int[] _bits;
+	/** The values which are in the set, split into fields. */
+	private int[] _bits;
 	
 	/** Is the null element in this set? */
-	private volatile boolean _hasnull;
+	private boolean _hasnull;
 	
 	/**
 	 * Initializes an empty enumeration set.
@@ -69,16 +68,10 @@ public final class EnumSet<T extends Enum<T>>
 		
 		this.type = __cl;
 		
-		// Determine the number of bits that are needed to store
-		int numbits = SystemCall.EASY.classEnumCount(__cl);
-		this.numbits = numbits;
-		
-		// Determine the number of integer values to use
-		int numints = (numbits + 31) / 32;
-		this.numints = numints;
-		
 		// Setup storage bits
-		this._bits = new int[numints];
+		this.numbits = 0;
+		this.numints = 0;
+		this._bits = new int[0];
 		
 		// Add values
 		for (T v : __v)
@@ -104,6 +97,10 @@ public final class EnumSet<T extends Enum<T>>
 				return true;
 			}
 		}
+		
+		// Need a place to store
+		if (true)
+			throw new todo.TODO();
 		
 		// Determine bit position
 		int bit = __v.ordinal(),
