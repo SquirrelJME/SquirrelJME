@@ -8,29 +8,45 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.kernel.suiteinfo;
+package cc.squirreljme.runtime.swm;
 
 /**
- * This represents the type of the dependency that is to be included.
+ * This represents the level of the dependency.
  *
  * @since 2017/02/22
  */
-public enum SuiteDependencyType
+public enum SuiteDependencyLevel
 {
-	/** Liblet. */
-	LIBLET,
+	/** Required. */
+	REQUIRED,
 	
-	/** Standard. */
-	STANDARD,
-	
-	/** Service. */
-	SERVICE,
-	
-	/** Proprietary. */
-	PROPRIETARY,
+	/** Optional. */
+	OPTIONAL,
 	
 	/** End. */
 	;
+	
+	/**
+	 * Is this an optional dependency level?
+	 *
+	 * @return {@code true} if this is an optional dependency level.
+	 * @since 2017/11/22
+	 */
+	public boolean isOptional()
+	{
+		return this == OPTIONAL;
+	}
+	
+	/**
+	 * Is this an required dependency level?
+	 *
+	 * @return {@code true} if this is an required dependency level.
+	 * @since 2017/11/22
+	 */
+	public boolean isRequired()
+	{
+		return this == REQUIRED;
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -42,28 +58,23 @@ public enum SuiteDependencyType
 		// Convert string
 		switch (this)
 		{
-			case LIBLET:		return "liblet";
-			case STANDARD:		return "standard";
-			case SERVICE:		return "service";
-			case PROPRIETARY:	return "proprietary";
-			
+			case REQUIRED:	return "required";
+			case OPTIONAL:	return "optional";
 			default:
 				throw new RuntimeException("OOPS");
 		}
 	}
 	
 	/**
-	 * Returns the dependency type based on the input string.
+	 * Returns the dependency level based on the input string.
 	 *
 	 * @param __s The input string to parse.
-	 * @return The dependency type for the given string.
-	 * @throws InvalidSuiteException If the dependency type is not
-	 * valid.
+	 * @return The dependency level for the given string.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/22
 	 */
-	public static SuiteDependencyType of(String __s)
-		throws InvalidSuiteException, NullPointerException
+	public static SuiteDependencyLevel of(String __s)
+		throws NullPointerException
 	{
 		// Check
 		if (__s == null)
@@ -72,16 +83,12 @@ public enum SuiteDependencyType
 		// Depends
 		switch (__s.trim())
 		{
-			case "liblet":		return LIBLET;
-			case "standard":	return STANDARD;
-			case "service":		return SERVICE;
-			case "proprietary":	return PROPRIETARY;
+			case "required":	return REQUIRED;
+			case "optional":	return OPTIONAL;
 			
-				// {@squirreljme.error AR0a The specified string is not a valid
-				// dependency type. (The input string)}
+				// Should not happen
 			default:
-				throw new InvalidSuiteException(
-					String.format("AR0a %s", __s));
+				throw new RuntimeException("OOPS");
 		}
 	}
 }
