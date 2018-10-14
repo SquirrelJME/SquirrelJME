@@ -37,7 +37,7 @@ public class TestIntegerParseIntOverflow
 			{
 				// This is a really long value which is valid for all radixes
 				// it is either a 33-bit integer or log(33)??
-				Integer.parseInt("111111111111111111111111111111111", r);
+				Integer.parseInt("-111111111111111111111111111111111", r);
 				
 				sb.append(Character.toUpperCase(
 					Character.forDigit(r, Character.MAX_RADIX)));
