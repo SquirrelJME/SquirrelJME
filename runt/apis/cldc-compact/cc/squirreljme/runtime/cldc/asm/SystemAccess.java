@@ -33,5 +33,26 @@ public final class SystemAccess
 	 * @since 2018/10/13
 	 */
 	public static final native void exit(int __code);
+	
+	/**
+	 * Returns the specified environment variable, it is unspecified and
+	 * system dependent if variables are case sensitive or not. Locale may
+	 * be considered by the host system additionally. If environment variables
+	 * do not exist in the environment then only {@code null} will be
+	 * returned.
+	 *
+	 * @param __e The environment variable to get.
+	 * @return The value of that variable or {@code null} if it is not set.
+	 * @since 2018/10/14
+	 */
+	public static final native String getEnv(String __e);
+	
+	/**
+	 * Returns the type of operating SquirrelJME is running on.
+	 *
+	 * @return The type of operating system SquirrelJME is running on.
+	 * @since 2018/10/14
+	 */
+	public static final native int operatingSystemType();
 }
 

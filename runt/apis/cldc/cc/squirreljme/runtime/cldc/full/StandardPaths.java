@@ -8,10 +8,10 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.kernel.impl.base.file;
+package cc.squirreljme.runtime.cldc.full.StandardPaths;
 
 import cc.squirreljme.runtime.cldc.OperatingSystemType;
-import cc.squirreljme.runtime.cldc.SystemCall;
+import cc.squirreljme.runtime.cldc.asm.SystemAccess;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.nio.file.Path;
@@ -99,9 +99,6 @@ public final class StandardPaths
 	/** Library path. */
 	private volatile Reference<Path> _libpath;
 	
-	/** Trusts path. */
-	private volatile Reference<Path> _trustpath;
-	
 	/**
 	 * Initializes a standard path using the specified path as a base for
 	 * the required directories.
@@ -155,24 +152,6 @@ public final class StandardPaths
 	}
 	
 	/**
-	 * Returns the path where trusts are located.
-	 *
-	 * @return The path where trusts are stored.
-	 * @since 2018/02/10
-	 */
-	public final Path trustPath()
-	{
-		Reference<Path> ref = this._trustpath;
-		Path rv;
-		
-		if (ref == null || null == (rv = ref.get()))
-			this._trustpath = new WeakReference<>(
-				(rv = this.data.resolve("trusts")));
-		
-		return rv;
-	}
-	
-	/**
 	 * Determines how to get the default paths.
 	 *
 	 * @return The set of standard paths.
@@ -184,7 +163,7 @@ public final class StandardPaths
 		
 		// Using a basic home path
 		String basichome = Objects.toString(System.getProperty(HOME_PROPERTY),
-			SystemCall.getEnv(HOME_ENV));
+			SystemAccess.getEnv(HOME_ENV));
 		if (basichome != null)
 			rv = new Path[]{Paths.get(basichome)};
 		
@@ -215,11 +194,11 @@ public final class StandardPaths
 		// Setup paths
 		return new StandardPaths(
 			__triple(rv[0], System.getProperty(CONFIG_PATH_PROPERTY),
-				SystemCall.getEnv(CONFIG_PATH_ENV)),
+				SystemAccess.getEnv(CONFIG_PATH_ENV)),
 			__triple(rv[1], System.getProperty(DATA_PATH_PROPERTY),
-				SystemCall.getEnv(DATA_PATH_ENV)),
+				SystemAccess.getEnv(DATA_PATH_ENV)),
 			__triple(rv[2], System.getProperty(CACHE_PATH_PROPERTY),
-				SystemCall.getEnv(CACHE_PATH_ENV)));
+				SystemAccess.getEnv(CACHE_PATH_ENV)));
 	}
 	
 	/**
@@ -232,7 +211,7 @@ public final class StandardPaths
 	private static Path[] __defaultPathsOs()
 	{
 		// Based on OS
-		OperatingSystemType ostype = SystemCall.operatingSystemType();
+		OperatingSystemType ostype = OperatingSystemType.systemType();
 		
 		// These may be used by either OS
 		Path userhome = StandardPaths.__getPropertyPath("user.home");
@@ -278,7 +257,7 @@ public final class StandardPaths
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		String v = SystemCall.getEnv(__s);
+		String v = SystemAccess.getEnv(__s);
 		if (v != null)
 			return Paths.get(v);
 		return null;

@@ -10,6 +10,7 @@
 
 package cc.squirreljme.runtime.cldc;
 
+import cc.squirreljme.runtime.cldc.asm.SystemAccess;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -136,6 +137,18 @@ public enum OperatingSystemType
 				rv = this.name().toLowerCase().replace('_', '-'));
 		
 		return rv;
+	}
+	
+	/**
+	 * Returns the type of operating system that this is.
+	 *
+	 * @return The type of operating system this is.
+	 * @since 2018/10/14
+	 */
+	public static OperatingSystemType systemType()
+	{
+		return OperatingSystemType.values()[
+			SystemAccess.operatingSystemType()];
 	}
 }
 
