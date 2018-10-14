@@ -28,6 +28,7 @@ import java.io.InputStream;
  *
  * @since 2017/12/11
  */
+@Deprecated
 public interface Library
 	extends SystemTaskLaunchable
 {
@@ -39,6 +40,7 @@ public interface Library
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/01/02
 	 */
+	@Deprecated
 	public abstract String controlGet(LibraryControlKey __k)
 		throws NullPointerException;
 	
@@ -50,6 +52,7 @@ public interface Library
 	 * @throws NullPointerException If no key was specified.
 	 * @since 2018/01/02
 	 */
+	@Deprecated
 	public abstract void controlSet(LibraryControlKey __k, String __v)
 		throws NullPointerException;
 	
@@ -58,6 +61,7 @@ public interface Library
 	 * @since 2018/03/03
 	 */
 	@Override
+	@Deprecated
 	public abstract boolean equals(Object __o);
 	
 	/**
@@ -65,6 +69,7 @@ public interface Library
 	 * @since 2018/03/03
 	 */
 	@Override
+	@Deprecated
 	public abstract int hashCode();
 	
 	/**
@@ -73,6 +78,7 @@ public interface Library
 	 * @return The library index.
 	 * @since 2018/03/03
 	 */
+	@Deprecated
 	public abstract int index();
 	
 	/**
@@ -84,6 +90,7 @@ public interface Library
 	 * {@code null} if it does not exist.
 	 * @since 2018/02/11
 	 */
+	@Deprecated
 	public abstract InputStream loadResource(LibraryResourceScope __scope,
 		String __name)
 		throws NullPointerException;
@@ -94,6 +101,7 @@ public interface Library
 	 * @return The library type.
 	 * @since 2018/01/02
 	 */
+	@Deprecated
 	public abstract LibraryType type();
 }
 

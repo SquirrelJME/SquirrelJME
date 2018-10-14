@@ -15,15 +15,19 @@ package cc.squirreljme.runtime.cldc.library;
  *
  * @since 2017/12/10
  */
+@Deprecated
 public enum LibraryType
 {
 	/** An application (MIDlet). */
+	@Deprecated
 	APPLICATION,
 	
 	/** A library (LIBlet). */
+	@Deprecated
 	LIBRARY,
 	
 	/** A system suite. */
+	@Deprecated
 	SYSTEM,
 	
 	/** End. */

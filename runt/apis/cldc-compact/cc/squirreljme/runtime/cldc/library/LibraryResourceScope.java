@@ -15,12 +15,15 @@ package cc.squirreljme.runtime.cldc.library;
  *
  * @since 2018/02/11
  */
+@Deprecated
 public enum LibraryResourceScope
 {
 	/** Normal resource. */
+	@Deprecated
 	RESOURCE,
 	
 	/** Resources required by the compiler to function. */
+	@Deprecated
 	COMPILER,
 	
 	/** End. */
