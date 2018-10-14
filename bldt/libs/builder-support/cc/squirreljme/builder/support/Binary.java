@@ -10,7 +10,6 @@
 
 package cc.squirreljme.builder.support;
 
-import cc.squirreljme.jit.library.Library;
 import cc.squirreljme.kernel.suiteinfo.DependencyInfo;
 import cc.squirreljme.kernel.suiteinfo.MatchResult;
 import cc.squirreljme.kernel.suiteinfo.ProvidedInfo;
@@ -64,9 +63,6 @@ public final class Binary
 	
 	/** The suite information. */
 	private volatile Reference<SuiteInfo> _suiteinfo;
-	
-	/** The wrapped JIT library. */
-	private volatile Reference<Library> _library;
 	
 	/**
 	 * Initializes the binary.
@@ -151,24 +147,6 @@ public final class Binary
 		{
 			return Long.MIN_VALUE;
 		}
-	}
-	
-	/**
-	 * Returns the library to use as input for the JIT compiler.
-	 *
-	 * @return The library used for JIT compilation.
-	 * @since 2018/02/21
-	 */
-	public final Library library()
-	{
-		Reference<Library> ref = this._library;
-		Library rv;
-		
-		if (ref == null || null == (rv = ref.get()))
-			this._library = new WeakReference<>(
-				(rv = new BinaryLibrary(this)));
-		
-		return rv;
 	}
 	
 	/**
