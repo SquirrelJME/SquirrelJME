@@ -118,12 +118,16 @@ purchasing of food items for consumption.
 
  * [Ko-Fi](http://ko-fi.com/xerthesquirrel)
  * [Patreon](https://www.patreon.com/SquirrelJME)
- * BitCoin (**BTC/XBT**): [`13UYwi2zuQd8NLhjyu1BA7a8NWktDotmq4`](
-   bitcoin:13UYwi2zuQd8NLhjyu1BA7a8NWktDotmq4)
- * Ethereum (**ETH**): [`0xf9C7d3a5496E66140de099EEFBa1eD8446b319d2`](
-   ethereum:0xf9C7d3a5496E66140de099EEFBa1eD8446b319d2)
- * LiteCoin (**LTC**): [`Lf7d8X9LQ6GMTuwUMtnDqzqdsmQ4W5mN6i`](
-   litecoin:Lf7d8X9LQ6GMTuwUMtnDqzqdsmQ4W5mN6i)
+ * BitCoin (**BTC/XBT**): [`3EjFDnmECNtL8C8up6R5DTNy1XDrWaaMw5`](
+   bitcoin:3EjFDnmECNtL8C8up6R5DTNy1XDrWaaMw5)
+ * BitCoin Cash (**BCH**): [`qrgww4z9aalgxyyddh5ax8jyy34c89phxuklp3hcwd`](
+   bitcoincash:qrgww4z9aalgxyyddh5ax8jyy34c89phxuklp3hcwd)
+ * Ethereum (**ETH**): [`0x7C2316f5336C63855C199784a6e145921145B74a`](
+   ethereum:0x7C2316f5336C63855C199784a6e145921145B74a)
+ * Ethereum Classic (**ETC**): [`0x1b30e6411bd7da6dd72cA35dabD5b98BA25A0Ae7`](
+   ethereum:0x1b30e6411bd7da6dd72cA35dabD5b98BA25A0Ae7)
+ * LiteCoin (**LTC**): [`MAogNXdjPQ7ZABtpeXztCHf4UXvfiwTuGX`](
+   litecoin:MAogNXdjPQ7ZABtpeXztCHf4UXvfiwTuGX)
 
 ## Important Statements
 
