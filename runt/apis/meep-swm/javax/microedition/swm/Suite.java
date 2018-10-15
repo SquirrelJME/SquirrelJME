@@ -10,15 +10,9 @@
 
 package javax.microedition.swm;
 
-import cc.squirreljme.kernel.lib.client.LibrariesClient;
-import cc.squirreljme.kernel.suiteinfo.EntryPoint;
-import cc.squirreljme.kernel.suiteinfo.EntryPoints;
-import cc.squirreljme.kernel.suiteinfo.SuiteInfo;
-import cc.squirreljme.runtime.cldc.library.Library;
-import cc.squirreljme.runtime.cldc.library.LibraryControlKey;
-import cc.squirreljme.runtime.cldc.library.LibraryResourceScope;
-import cc.squirreljme.runtime.cldc.library.LibraryType;
-import cc.squirreljme.runtime.cldc.system.SystemCall;
+import cc.squirreljme.runtime.swm.EntryPoint;
+import cc.squirreljme.runtime.swm.EntryPoints;
+import cc.squirreljme.runtime.swm.SuiteInfo;
 import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
