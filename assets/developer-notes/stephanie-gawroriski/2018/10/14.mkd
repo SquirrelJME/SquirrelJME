@@ -1,0 +1,17 @@
+# 2018/10/14
+
+## 09:57
+
+I think what I need is to actually go through everything and cut out and
+reorganize. Just kind of clip out things and such. Code that will not really
+be used again and just completely redone later.
+
+## 10:14
+
+Definitely, this is going to be a big project reorganization by removing the
+stuff I will not be using. This will be nice.
+
+## 13:54
+
+`meep-swm` has like a hundred errors due to the removal of services and such.
+But it should be easier to implement with the new interface changes.

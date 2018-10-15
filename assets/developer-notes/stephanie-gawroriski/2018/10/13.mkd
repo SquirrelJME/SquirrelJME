@@ -57,3 +57,33 @@ something: `RV int:31 int:35`.
 ## 19:23
 
 I need better reporting.
+
+## 20:27
+
+So now that I have exception handling, I can pretty much run any program now
+apart from anything needing the few instructions not implemented. Although
+there is the main library to consider. I suppose what I should do now is make
+it easier to run tests by implementing the stuff needed for suites and tasks
+and otherwise. Although I do still kind of need threads and such. But bulk
+running of tests might just be the next thing to do. Although I can really
+branch out to many other things now as needed. I could though just move onto
+double SpringCoat, although I would really need file handling for that to be
+doing anything useful. I could try to run Squirrel Quarrel, but that would be
+far too much work and would take some time. So I guess the next goal is
+implementing SpringCoat on top of SpringCoat. It would be far slower and will
+likely just use tons of memory, but if it became self hosting it could
+probably run everything. If I wanted to use the host VM libraries to provide
+suites and such like as a forwarding scheme, then that could work. Although
+I would need a way to list the contents of a JAR in order to more effectively
+handle it. Although actually, no I do not need to do that because the current
+code just uses resource as stream for classes and such. SpringCoat on
+SpringCoat like that would only work if the original classes were still
+available, which they might not be. But it is worth a try to be honest I would
+say.
+
+## 23:06
+
+Okay so I really think the next thing to do would be to implement suites and
+tasks, this way I can launch things. I really need to be able to do bulk
+tests and also support things like performing launching from a launcher and
+such.
