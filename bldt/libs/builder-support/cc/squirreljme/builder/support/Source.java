@@ -10,8 +10,8 @@
 
 package cc.squirreljme.builder.support;
 
-import cc.squirreljme.kernel.suiteinfo.InvalidSuiteException;
-import cc.squirreljme.kernel.suiteinfo.SuiteInfo;
+import cc.squirreljme.runtime.swm.InvalidSuiteException;
+import cc.squirreljme.runtime.swm.SuiteInfo;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Map;
