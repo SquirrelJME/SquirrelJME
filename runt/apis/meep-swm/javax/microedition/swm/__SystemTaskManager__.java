@@ -10,14 +10,6 @@
 
 package javax.microedition.swm;
 
-import cc.squirreljme.runtime.cldc.library.Library;
-import cc.squirreljme.runtime.cldc.service.ServiceAccessor;
-import cc.squirreljme.runtime.cldc.system.EasyCall;
-import cc.squirreljme.runtime.cldc.system.SystemCall;
-import cc.squirreljme.runtime.cldc.system.SystemFunction;
-import cc.squirreljme.runtime.cldc.system.type.IntegerArray;
-import cc.squirreljme.runtime.cldc.task.SystemTask;
-import cc.squirreljme.runtime.cldc.task.WrappedTask;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;

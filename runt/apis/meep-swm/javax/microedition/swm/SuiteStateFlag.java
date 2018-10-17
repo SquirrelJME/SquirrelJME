@@ -10,8 +10,6 @@
 
 package javax.microedition.swm;
 
-import cc.squirreljme.runtime.cldc.library.LibraryControlKey;
-
 /**
  * This represents a flag which may be associated with a suite.
  *

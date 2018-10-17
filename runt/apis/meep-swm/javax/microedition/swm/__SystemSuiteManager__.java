@@ -10,11 +10,6 @@
 
 package javax.microedition.swm;
 
-import cc.squirreljme.kernel.lib.client.LibrariesClient;
-import cc.squirreljme.runtime.cldc.library.Library;
-import cc.squirreljme.runtime.cldc.library.LibraryType;
-import cc.squirreljme.runtime.cldc.service.ServiceAccessor;
-import cc.squirreljme.runtime.cldc.system.SystemCall;
 import cc.squirreljme.runtime.swm.ByteArrayJarStreamSupplier;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
