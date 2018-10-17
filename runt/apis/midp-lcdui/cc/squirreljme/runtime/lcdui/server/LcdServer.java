@@ -10,13 +10,6 @@
 
 package cc.squirreljme.runtime.lcdui.server;
 
-import cc.squirreljme.runtime.cldc.service.ServiceServer;
-import cc.squirreljme.runtime.cldc.system.type.EnumType;
-import cc.squirreljme.runtime.cldc.system.type.IntegerArray;
-import cc.squirreljme.runtime.cldc.system.type.LocalIntegerArray;
-import cc.squirreljme.runtime.cldc.system.type.RemoteMethod;
-import cc.squirreljme.runtime.cldc.system.type.VoidType;
-import cc.squirreljme.runtime.cldc.task.SystemTask;
 import cc.squirreljme.runtime.lcdui.CollectableType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
 import cc.squirreljme.runtime.lcdui.LcdFunctionInterrupted;
@@ -37,11 +30,7 @@ import java.util.Map;
  * @since 2018/03/16
  */
 public final class LcdServer
-	implements ServiceServer
 {
-	/** The task this provides a service for. */
-	protected final SystemTask task;
-	
 	/** The displays which are available. */
 	protected final LcdDisplays displays;
 	
@@ -59,19 +48,21 @@ public final class LcdServer
 	/**
 	 * Initializes the LCDUI server.
 	 *
-	 * @param __s The state of the server.
 	 * @param __ld The displays which are available for usage.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/17
 	 */
-	public LcdServer(SystemTask __task, LcdDisplays __ld)
+	public LcdServer(LcdDisplays __ld)
 		throws NullPointerException
 	{
+		throw new todo.TODO();
+		/*
 		if (__task == null || __ld == null)
 			throw new NullPointerException("NARG");
 		
 		this.task = __task;
 		this.displays = __ld;
+		*/
 	}
 	
 	/**
@@ -146,104 +137,6 @@ public final class LcdServer
 		if (rv == null || !__cl.isInstance(rv))
 			return null;
 		return __cl.cast(rv);
-	}
-	
-	/**
-	 * Queries all of the displays which are available for usage, they will
-	 * be automatically wrapped in local widgets accordingly.
-	 *
-	 * @param __cb The callback method for making new calls.
-	 * @return The displays which are available.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/03/24
-	 */
-	public final UiDisplay[] queryDisplays(RemoteMethod __cb)
-		throws NullPointerException
-	{
-		if (__cb == null)
-			throw new NullPointerException("NARG");
-		
-		LcdDisplays displays = this.displays;
-		UiDisplayHead[] queried = displays.queryDisplays();
-		
-		// The displays returned will be remapped accordingly
-		int n = queried.length;
-		UiDisplay[] rv = new UiDisplay[n];
-		
-		// Map local widgets if they are missing
-		Map<Integer, UiCollectable> widgets = this._collects;
-		Map<UiDisplayHead, UiDisplay> localdisplays = this._localdisplays;
-		for (int i = 0; i < n; i++)
-		{
-			UiDisplayHead display = queried[i];
-			UiDisplay local = localdisplays.get(display);
-			if (local == null)
-			{
-				// Displays could have a random handle and local display
-				// handles might clash with real ones.
-				int handle = ++this._nexthandle;
-				localdisplays.put(display, (local = displays.wrapDisplay(
-					handle, display)));
-				widgets.put(handle, local);
-			}
-			
-			rv[i] = local;
-		}
-		
-		// use the remapped
-		return rv;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/03/16
-	 */
-	@Override
-	public final Object serviceCall(EnumType __func, Object... __args)
-		throws NullPointerException
-	{
-		if (__func == null)
-			throw new NullPointerException("NARG");
-		
-		if (__args == null)
-			__args = new Object[0];
-		
-		// Build request to run in the future
-		LcdFunction func = __func.<LcdFunction>asEnum(LcdFunction.class);
-		LcdRequest r = LcdRequest.create(this, func, __args);
-		
-		// If the function is a query then execute it now and return a value
-		LcdDisplays rh = this.displays;
-		if (func.query())
-			for (;;)
-				try
-				{
-					return rh.<Object>invokeNow(Object.class, r);
-				}
-				catch (InterruptedException e)
-				{
-					// {@squirreljme.error EB1y The operation was interrupted.}
-					if (func.isInterruptable())
-						throw new LcdFunctionInterrupted("EB1y", e);
-				}
-		
-		// Otherwise execute it at some later time
-		else
-		{
-			rh.invokeLater(r);
-			return VoidType.INSTANCE;
-		}
-	}
-	
-	/**
-	 * Returns the task which owns this server.
-	 *
-	 * @return The owning task.
-	 * @since 2018/03/18
-	 */
-	public final SystemTask task()
-	{
-		return this.task;
 	}
 }
 

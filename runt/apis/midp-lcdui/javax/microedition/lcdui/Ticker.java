@@ -10,7 +10,6 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
 import cc.squirreljme.runtime.lcdui.LcdServiceCall;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;

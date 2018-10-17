@@ -179,6 +179,8 @@ public abstract class Item
 			throw new IllegalArgumentException("EB1t");
 		*/
 		
+		throw new todo.TODO();
+		/*
 		// Set if it has changed
 		String oldlabel = this._label;
 		if (oldlabel != __l)
@@ -186,6 +188,7 @@ public abstract class Item
 			LcdServiceCall.voidCall(LcdFunction.SET_LABEL, this._handle, __l);
 			this._label = __l;
 		}
+		*/
 	}
 	
 	public void setLayout(int __a)

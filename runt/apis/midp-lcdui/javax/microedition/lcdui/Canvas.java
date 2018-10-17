@@ -10,7 +10,6 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.lcdui.event.EventType;
 import cc.squirreljme.runtime.lcdui.event.KeyNames;
 import cc.squirreljme.runtime.lcdui.gfx.BasicGraphics;

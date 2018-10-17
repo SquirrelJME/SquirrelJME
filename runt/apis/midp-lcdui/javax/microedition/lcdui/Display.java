@@ -10,9 +10,6 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.runtime.cldc.service.ServiceCaller;
-import cc.squirreljme.runtime.cldc.system.type.IntegerArray;
-import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.lcdui.DisplayOrientation;
 import cc.squirreljme.runtime.lcdui.DisplayState;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
@@ -757,6 +754,8 @@ public class Display
 	public boolean vibrate(int __d)
 		throws IllegalArgumentException
 	{
+		throw new todo.TODO();
+		/*
 		// {@squirreljme.error EB1a Cannot vibrate for a negative duration.}
 		if (__d < 0)
 			throw new IllegalArgumentException("EB1a");
@@ -769,6 +768,7 @@ public class Display
 		// as possible than it is to vibrate the display and to see if it is
 		// supported or not
 		return true;
+		*/
 	}
 	
 	/**
@@ -927,6 +927,8 @@ public class Display
 	 */
 	public static Display[] getDisplays(int __caps)
 	{
+		throw new todo.TODO();
+		/*
 		// This call will always refresh the displays which are currently
 		// available to the server
 		Map<Integer, Display> displays = Display._DISPLAYS;
@@ -967,6 +969,7 @@ public class Display
 		
 		// As an array
 		return rv.<Display>toArray(new Display[rv.size()]);
+		*/
 	}
 	
 	/**

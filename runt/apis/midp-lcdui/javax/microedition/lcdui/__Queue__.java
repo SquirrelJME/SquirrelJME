@@ -10,8 +10,6 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.runtime.cldc.system.SystemCall;
-import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.lcdui.CollectableType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
 import cc.squirreljme.runtime.lcdui.LcdServiceCall;
@@ -61,9 +59,12 @@ final class __Queue__
 	 */
 	private __Queue__()
 	{
+		throw new todo.TODO();
+		/*
 		Thread cleanuper = new Thread(this, "LCDUI-Cleanup-Thread");
 		SystemCall.EASY.setDaemonThread(cleanuper);
 		cleanuper.start();
+		*/
 	}
 	
 	/**
@@ -116,6 +117,8 @@ final class __Queue__
 				svdx = dx;
 			}
 			
+			throw new todo.TODO();
+			/*
 			// If the server failed to clean it up properly then just ignore it
 			try
 			{
@@ -126,6 +129,7 @@ final class __Queue__
 			{
 				t.printStackTrace();
 			}
+			*/
 		}
 	}
 	
@@ -240,6 +244,8 @@ final class __Queue__
 			throw new RuntimeException(String.format(
 				"EB1x %s", __d.getClass()));
 		
+		throw new todo.TODO();
+		/*
 		// Register and get the index for it
 		dx = LcdServiceCall.<Integer>call(Integer.class,
 			LcdFunction.COLLECTABLE_CREATE, type);
@@ -258,6 +264,7 @@ final class __Queue__
 		
 		// The displayable uses this index to interact with the server
 		return dx;
+		*/
 	}
 }
 

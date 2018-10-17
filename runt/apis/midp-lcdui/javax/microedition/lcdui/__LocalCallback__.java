@@ -10,19 +10,6 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.runtime.cldc.system.type.Array;
-import cc.squirreljme.runtime.cldc.system.type.ArrayType;
-import cc.squirreljme.runtime.cldc.system.type.ArrayUtils;
-import cc.squirreljme.runtime.cldc.system.type.ByteArray;
-import cc.squirreljme.runtime.cldc.system.type.EnumType;
-import cc.squirreljme.runtime.cldc.system.type.IntegerArray;
-import cc.squirreljme.runtime.cldc.system.type.LocalArray;
-import cc.squirreljme.runtime.cldc.system.type.LocalByteArray;
-import cc.squirreljme.runtime.cldc.system.type.LocalIntegerArray;
-import cc.squirreljme.runtime.cldc.system.type.LocalShortArray;
-import cc.squirreljme.runtime.cldc.system.type.RemoteMethod;
-import cc.squirreljme.runtime.cldc.system.type.ShortArray;
-import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.lcdui.gfx.AbstractArrayGraphics;
 import cc.squirreljme.runtime.lcdui.gfx.ByteIndexed1ArrayGraphics;
 import cc.squirreljme.runtime.lcdui.gfx.ByteIndexed2ArrayGraphics;
@@ -50,7 +37,6 @@ import cc.squirreljme.runtime.lcdui.LcdException;
  * @since 2018/03/18
  */
 final class __LocalCallback__
-	extends RemoteMethod
 {
 	/** The single instance of the local callback. */
 	static final __LocalCallback__ INSTANCE =
@@ -69,9 +55,10 @@ final class __LocalCallback__
 	 * {@inheritDoc}
 	 * @since 2018/03/18
 	 */
-	@Override
 	protected final Object internalInvoke(Object[] __args)
 	{
+		throw new todo.TODO();
+		/*
 		if (__args == null)
 			__args = new Object[0];
 		
@@ -115,6 +102,7 @@ final class __LocalCallback__
 			default:
 				throw new RuntimeException(String.format("EB23 %s", func));
 		}
+		*/
 	}
 	
 	/**
@@ -137,10 +125,12 @@ final class __LocalCallback__
 	 * @since 2018/03/18
 	 */
 	private void __widgetPaint(int __d, PixelFormat __pf, int __cx, int __cy,
-		int __cw, int __ch, Array __buf, IntegerArray __pal, int __bw,
+		int __cw, int __ch, Object __buf, Object __pal, int __bw,
 		int __bh, boolean __alpha, int __pitch, int __offset)
 		throws NullPointerException
 	{
+		throw new todo.TODO();
+		/*
 		if (__pf == null || __buf == null)
 			throw new NullPointerException("NARG");
 		
@@ -180,6 +170,9 @@ final class __LocalCallback__
 			cw = g.getClipElementEnd() - cs,
 			olds = __offset + (__pitch * __cy) + cs;
 		
+		throw new todo.TODO();
+		*/
+		/*
 		// Copy the old buffer data into this one before drawing
 		ArrayUtils.copy(__buf, olds, shadow, cs, cw);
 		
@@ -189,6 +182,7 @@ final class __LocalCallback__
 		// Since a new buffer was setup temporarily, copy the drawn bytes
 		// into the destination
 		ArrayUtils.copy(shadow, cs, __buf, olds, cw);
+		*/
 	}
 	
 	/**
@@ -234,9 +228,11 @@ final class __LocalCallback__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/24
 	 */
-	private static final Array __shadowBuffer(Array __a, int __p, int __h)
+	private static final Object __shadowBuffer(Object __a, int __p, int __h)
 		throws NullPointerException
 	{
+		throw new todo.TODO();
+		/*
 		if (__a == null)
 			throw new NullPointerException("NARG");
 		
@@ -245,6 +241,7 @@ final class __LocalCallback__
 			return __a;
 		
 		throw new todo.TODO();
+		*/
 	}
 }
 

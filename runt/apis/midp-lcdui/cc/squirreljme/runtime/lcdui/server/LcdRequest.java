@@ -10,12 +10,6 @@
 
 package cc.squirreljme.runtime.lcdui.server;
 
-import cc.squirreljme.runtime.cldc.system.type.EnumType;
-import cc.squirreljme.runtime.cldc.system.type.IntegerArray;
-import cc.squirreljme.runtime.cldc.system.type.LocalIntegerArray;
-import cc.squirreljme.runtime.cldc.system.type.RemoteMethod;
-import cc.squirreljme.runtime.cldc.system.type.VoidType;
-import cc.squirreljme.runtime.cldc.task.SystemTask;
 import cc.squirreljme.runtime.lcdui.CollectableType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
 import cc.squirreljme.runtime.lcdui.requests.CollectableCleanup;
@@ -151,6 +145,8 @@ public abstract class LcdRequest
 		LcdFunction __func, Object... __args)
 		throws NullPointerException
 	{
+		throw new todo.TODO();
+		/*
 		if (__sv == null || __func == null)
 			throw new NullPointerException("NARG");
 		
@@ -180,6 +176,7 @@ public abstract class LcdRequest
 				throw new RuntimeException(String.format("EB20 %s",
 					__func));
 		}
+		*/
 	}
 	
 	/**

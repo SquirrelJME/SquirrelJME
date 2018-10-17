@@ -10,9 +10,6 @@
 
 package cc.squirreljme.runtime.lcdui.server;
 
-import cc.squirreljme.runtime.cldc.service.ServiceDefinition;
-import cc.squirreljme.runtime.cldc.service.ServiceServer;
-import cc.squirreljme.runtime.cldc.task.SystemTask;
 import cc.squirreljme.runtime.lcdui.CollectableType;
 import cc.squirreljme.runtime.lcdui.LcdServiceCall;
 import java.util.HashMap;
@@ -32,7 +29,6 @@ import java.util.Map;
  * @since 2018/03/15
  */
 public abstract class LcdDefinition
-	extends ServiceDefinition
 {
 	/** The displays that are available for usage. */
 	protected final LcdDisplays displays;
@@ -48,26 +44,15 @@ public abstract class LcdDefinition
 	public LcdDefinition(LcdDisplays __ld)
 		throws NullPointerException
 	{
+		throw new todo.TODO();
+		/*
 		super(LcdServiceCall.Provider.class);
 		
 		if (__ld == null)
 			throw new NullPointerException("NARG");
 		
 		this.displays = __ld;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/03/15
-	 */
-	@Override
-	public final ServiceServer newServer(SystemTask __task)
-		throws NullPointerException
-	{
-		if (__task == null)
-			throw new NullPointerException("NARG");
-		
-		return new LcdServer(__task, this.displays);
+		*/
 	}
 }
 

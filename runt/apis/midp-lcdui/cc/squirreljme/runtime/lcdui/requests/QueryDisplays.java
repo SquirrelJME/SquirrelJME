@@ -10,8 +10,6 @@
 
 package cc.squirreljme.runtime.lcdui.requests;
 
-import cc.squirreljme.runtime.cldc.system.type.LocalIntegerArray;
-import cc.squirreljme.runtime.cldc.system.type.RemoteMethod;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
 import cc.squirreljme.runtime.lcdui.server.LcdRequest;
 import cc.squirreljme.runtime.lcdui.server.LcdServer;
@@ -26,26 +24,25 @@ import cc.squirreljme.runtime.lcdui.ui.UiDisplay;
 public final class QueryDisplays
 	extends LcdRequest
 {
-	/** The remote handler method. */
-	protected final RemoteMethod callback;
-	
 	/**
 	 * Initializes the request.
 	 *
 	 * @param __sv The calling server.
-	 * @param __cb The callback method.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/23
 	 */
-	public QueryDisplays(LcdServer __sv, RemoteMethod __cb)
+	public QueryDisplays(LcdServer __sv)
 		throws NullPointerException
 	{
 		super(__sv, LcdFunction.QUERY_DISPLAYS);
 		
+		throw new todo.TODO();
+		/*
 		if (__cb == null)
 			throw new NullPointerException("NARG");
 		
 		this.callback = __cb;
+		*/
 	}
 	
 	/**
@@ -55,6 +52,8 @@ public final class QueryDisplays
 	@Override
 	protected final Object invoke()
 	{
+		throw new todo.TODO();
+		/*
 		// Query the available displays, however for each server there is
 		// always a widget which acts as a virtual display on a real display
 		UiDisplay[] displays = this.server.queryDisplays(this.callback);
@@ -65,6 +64,7 @@ public final class QueryDisplays
 		for (int i = 0; i < n; i++)
 			rv[i] = displays[i].handle();
 		return new LocalIntegerArray(rv);
+		*/
 	}
 }
 
