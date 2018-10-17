@@ -10,8 +10,6 @@
 
 package cc.squirreljme.runtime.javase.lcdui;
 
-import cc.squirreljme.runtime.cldc.system.type.Array;
-import cc.squirreljme.runtime.cldc.system.type.IntegerArray;
 import cc.squirreljme.runtime.lcdui.gfx.PixelFormat;
 import cc.squirreljme.runtime.lcdui.ui.UiWidget;
 import java.awt.Color;
