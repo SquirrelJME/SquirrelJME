@@ -10,9 +10,6 @@
 
 package javax.microedition.swm;
 
-import cc.squirreljme.kernel.lib.client.LibrariesClient;
-import cc.squirreljme.kernel.lib.client.LibraryInstallationReport;
-import cc.squirreljme.runtime.cldc.system.SystemCall;
 import cc.squirreljme.runtime.swm.JarStreamSupplier;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
