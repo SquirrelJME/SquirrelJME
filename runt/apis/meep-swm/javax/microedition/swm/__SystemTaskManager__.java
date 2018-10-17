@@ -35,10 +35,6 @@ final class __SystemTaskManager__
 	protected final Object lock =
 		new Object();
 	
-	/** The mapping of system tasks to tasks. */
-	private final Map<SystemTask, Reference<Task>> _tasks =
-		new WeakHashMap<>();
-	
 	/**
 	 * {@inheritDoc}
 	 * @since 2017/12/07
@@ -69,6 +65,8 @@ final class __SystemTaskManager__
 	@Override
 	public List<Task> getTaskList(boolean __incsys)
 	{
+		throw new todo.TODO();
+		/*
 		// Lock so that the task list is always up to date
 		Task[] rv;
 		synchronized (this.lock)
@@ -84,6 +82,7 @@ final class __SystemTaskManager__
 		
 		// Wrap array instead of creating a new list for speed
 		return Arrays.<Task>asList(rv);
+		*/
 	}
 	
 	/**
@@ -130,14 +129,14 @@ final class __SystemTaskManager__
 		if (__s == null || __cn == null)
 			throw new NullPointerException("NARG");
 		
+		throw new todo.TODO();
+		/*
 		// {@squirreljme.error DG09 Cannot launch the specified program
 		// because it is of the system suite.}
 		Library program = __s.__library();
 		if (program == null)
 			throw new IllegalArgumentException(String.format("DG09 %s %s",
 				__s.getName(), __cn));
-		throw new todo.TODO();
-		/*
 		return this.__ofTask(SystemCall.launchTask(program, __cn, ~0));
 		*/
 	}
@@ -151,35 +150,6 @@ final class __SystemTaskManager__
 		throws IllegalArgumentException, IllegalStateException
 	{
 		throw new todo.TODO();
-	}
-	
-	/**
-	 * Returns a wrapped task for the given system task.
-	 *
-	 * @param __t The task to wrap.
-	 * @return The wrapped task for the system task.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/12/10
-	 */
-	final Task __ofTask(SystemTask __t)
-		throws NullPointerException
-	{
-		if (__t == null)
-			throw new NullPointerException("NARG");
-		
-		// Use pre-existing task or rewrap
-		Map<SystemTask, Reference<Task>> tasks = this._tasks;
-		synchronized (this.lock)
-		{
-			Reference<Task> ref = tasks.get(__t);
-			Task rv;
-			
-			if (ref == null || null == (rv = ref.get()))
-				tasks.put(__t, new WeakReference<>(
-					(rv = new Task(__t))));
-			
-			return rv;
-		}
 	}
 }
 

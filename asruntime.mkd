@@ -1,5 +1,7 @@
 # SquirrelJME As A Runtime
 
+***THIS DOCUMENTATION IS OUT OF DATE AND NEEDS TO BE REWRITTEN***
+
 There are two portions of SquirrelJME, the _SquirrelJME Virtual Machine_ and
 the _SquirrelJME Runtime_. The virtual machine is the one which executes the
 program and provides an environment that runs on the operating system or
