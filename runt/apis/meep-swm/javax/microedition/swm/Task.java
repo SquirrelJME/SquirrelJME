@@ -24,23 +24,13 @@ import java.util.Objects;
  */
 public final class Task
 {
-	/** The actual chore being wrapped. */
-	private final SystemTask _task;
-	
 	/**
 	 * Initializes the task.
 	 *
-	 * @param __task The chore to wrap.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/24
 	 */
-	Task(SystemTask __task)
-		throws NullPointerException
+	Task()
 	{
-		if (__task == null)
-			throw new NullPointerException("NARG");
-		
-		this._task = __task;
 	}
 	
 	/**
@@ -54,6 +44,8 @@ public final class Task
 	@Override
 	public boolean equals(Object __o)
 	{
+		throw new todo.TODO();
+		/*
 		// Must be another task
 		if (!(__o instanceof Task))
 			return false;
@@ -62,6 +54,7 @@ public final class Task
 		Task o = (Task)__o;
 		return Objects.equals(this.getSuite(), o.getSuite()) &&
 			Objects.equals(this.getName(), o.getName());
+		*/
 	}
 	
 	/**
@@ -72,6 +65,8 @@ public final class Task
 	 */
 	public int getHeapUse()
 	{
+		throw new todo.TODO();
+		/*
 		// Make sure the amount of memory used does not overflow ever
 		long rv = this._task.metric(SystemTaskMetric.MEMORY_USED);
 		if (rv < 0L)
@@ -79,6 +74,7 @@ public final class Task
 		else if (rv > Integer.MAX_VALUE)
 			return Integer.MAX_VALUE;
 		return (int)rv;
+		*/
 	}
 	
 	/**
@@ -104,12 +100,15 @@ public final class Task
 	 */
 	public TaskPriority getPriority()
 	{
+		throw new todo.TODO();
+		/*
 		long rv = this._task.metric(SystemTaskMetric.PRIORITY);
 		if (rv < 0L)
 			return TaskPriority.MAX;
 		else if (rv > 0L)
 			return TaskPriority.MIN;
 		return TaskPriority.NORM;
+		*/
 	}
 	
 	/**
@@ -120,6 +119,8 @@ public final class Task
 	 */
 	public TaskStatus getStatus()
 	{
+		throw new todo.TODO();
+		/*
 		SystemTaskStatus status = this._task.status();
 		switch (status)
 		{
@@ -147,6 +148,7 @@ public final class Task
 				throw new IllegalStateException(
 					String.format("DG04 %d", status));
 		}
+		*/
 	}
 	
 	/**
@@ -186,18 +188,10 @@ public final class Task
 	 */
 	public boolean isSystemTask()
 	{
+		throw new todo.TODO();
+		/*
 		return (0 != (this._task.flags() & SystemTaskFlag.SYSTEM));
-	}
-	
-	/**
-	 * Returns the system task of this task.
-	 *
-	 * @return The system task.
-	 * @since 2017/12/08
-	 */
-	final SystemTask __task()
-	{
-		return this._task;
+		*/
 	}
 }
 

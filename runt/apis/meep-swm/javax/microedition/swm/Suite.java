@@ -48,9 +48,6 @@ public class Suite
 	private final Object _lock =
 		new Object();
 	
-	/** The suite program. */
-	private final Library _library;
-	
 	/** Cached manifest information. */
 	private volatile Reference<JavaManifest> _manifest;
 	
@@ -65,7 +62,9 @@ public class Suite
 	 */
 	private Suite(Class<Suite> __cl)
 	{
-		this._library = null;
+		throw new todo.TODO();
+		/*
+		*/
 	}
 	
 	/**
@@ -75,13 +74,15 @@ public class Suite
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/08
 	 */
-	Suite(Library __p)
-		throws NullPointerException
+	Suite()
 	{
+		throw new todo.TODO();
+		/*
 		if (__p == null)
 			throw new NullPointerException("NARG");
 		
 		this._library = __p;
+		*/
 	}
 	
 	/**
@@ -115,6 +116,8 @@ public class Suite
 	 */
 	public Iterator<String> getAttributes()
 	{
+		throw new todo.TODO();
+		/*
 		Library program = this._library;
 		if (program == null)
 			return EmptyIterator.<String>empty();
@@ -124,6 +127,7 @@ public class Suite
 			keySet())
 			rv.add(k.toString());
 		return rv.iterator();
+		*/
 	}
 	
 	/**
@@ -136,12 +140,15 @@ public class Suite
 	 */
 	public String getAttributeValue(String __a)
 	{
+		throw new todo.TODO();
+		/*
 		Library program = this._library;
 		if (program == null)
 			return null;
 		
 		return this.__manifest().getMainAttributes().get(
 			new JavaManifestKey(__a));
+		*/
 	}
 	
 	/**
@@ -153,6 +160,8 @@ public class Suite
 	 */
 	public Iterator<Suite> getDependencies()
 	{
+		throw new todo.TODO();
+		/*
 		Library program = this._library;
 		if (program == null)
 			return EmptyIterator.<Suite>empty();
@@ -181,6 +190,7 @@ public class Suite
 			}
 		
 		return rv.iterator();
+		*/
 	}
 	
 	/**
@@ -194,11 +204,14 @@ public class Suite
 	 */
 	public String getDownloadUrl()
 	{
+		throw new todo.TODO();
+		/*
 		Library program = this._library;
 		if (program == null)
 			return null;
 		
 		return program.controlGet(LibraryControlKey.DOWNLOAD_URL);
+		*/
 	}
 	
 	/**
@@ -212,6 +225,8 @@ public class Suite
 	 */
 	public Iterator<String> getMIDlets()
 	{
+		throw new todo.TODO();
+		/*
 		Library program = this._library;
 		if (program == null)
 			return EmptyIterator.<String>empty();
@@ -224,6 +239,7 @@ public class Suite
 			rv.add(e.entryPoint());
 		
 		return rv.iterator();
+		*/
 	}
 	
 	/**
@@ -234,11 +250,14 @@ public class Suite
 	 */
 	public String getName()
 	{
+		throw new todo.TODO();
+		/*
 		Library program = this._library;
 		if (program == null)
 			return null;
 		
 		return this.__suiteInfo().name().toString();
+		*/
 	}
 	
 	/**
@@ -250,6 +269,8 @@ public class Suite
 	 */
 	public SuiteType getSuiteType()
 	{
+		throw new todo.TODO();
+		/*
 		Library program = this._library;
 		if (program == null)
 			return SuiteType.SYSTEM;
@@ -268,6 +289,7 @@ public class Suite
 			default:
 				return SuiteType.INVALID;
 		}
+		*/
 	}
 	
 	/**
@@ -278,11 +300,14 @@ public class Suite
 	 */
 	public String getVendor()
 	{
+		throw new todo.TODO();
+		/*
 		Library program = this._library;
 		if (program == null)
 			return null;
 		
 		return this.__suiteInfo().vendor().toString();
+		*/
 	}
 	
 	/**
@@ -293,11 +318,14 @@ public class Suite
 	 */
 	public String getVersion()
 	{
+		throw new todo.TODO();
+		/*
 		Library program = this._library;
 		if (program == null)
 			return null;
 		
 		return this.__suiteInfo().version().toString();
+		*/
 	}
 	
 	/**
@@ -323,12 +351,15 @@ public class Suite
 	 */
 	public boolean isInstalled()
 	{
+		throw new todo.TODO();
+		/*
 		Library program = this._library;
 		if (program == null)
 			return true;
 		
 		return Boolean.valueOf(
 			program.controlGet(LibraryControlKey.IS_INSTALLED));
+		*/
 	}
 	
 	/**
@@ -340,6 +371,8 @@ public class Suite
 	 */
 	public boolean isSuiteState(SuiteStateFlag __f)
 	{
+		throw new todo.TODO();
+		/*
 		// Null is never true
 		if (__f == null)
 			return false;
@@ -361,6 +394,7 @@ public class Suite
 			}
 		
 		return Boolean.valueOf(program.controlGet(__f.__controlKey()));
+		*/
 	}
 	
 	/**
@@ -372,12 +406,15 @@ public class Suite
 	 */
 	public boolean isTrusted()
 	{
+		throw new todo.TODO();
+		/*
 		Library program = this._library;
 		if (program == null)
 			return true;
 		
 		return Boolean.valueOf(
 			program.controlGet(LibraryControlKey.IS_TRUSTED));
+		*/
 	}
 	
 	/**
@@ -442,6 +479,8 @@ public class Suite
 	 */
 	final JavaManifest __manifest()
 	{
+		throw new todo.TODO();
+		/*
 		Reference<JavaManifest> ref = this._manifest;
 		JavaManifest rv;
 		
@@ -465,17 +504,7 @@ public class Suite
 			}
 		
 		return rv;
-	}
-	
-	/**
-	 * Returns the program the suite uses.
-	 *
-	 * @return The used program.
-	 * @since 2017/12/08
-	 */
-	final Library __library()
-	{
-		return this._library;
+		*/
 	}
 	
 	/**

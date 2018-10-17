@@ -47,7 +47,6 @@ final class __SuiteTracker__
 		// Setup thread which performs the actual installation
 		Thread thread = new Thread(new __Runner__(this, __i),
 			"SquirrelJME-Suite-Installer");
-		SystemCall.EASY.setDaemonThread(thread);
 		thread.start();
 	}
 	
@@ -106,6 +105,8 @@ final class __SuiteTracker__
 		{
 			try
 			{
+				throw new todo.TODO();
+				/*
 				// Read the JAR data stream 
 				byte[] data;
 				__update(SuiteInstallStage.DOWNLOAD_DATA, 0);
@@ -191,6 +192,7 @@ final class __SuiteTracker__
 				// Finished
 				__update(SuiteInstallStage.DONE, 100);
 				__done(InstallErrorCodes.NO_ERROR);
+				*/
 			}
 			
 			// Oops

@@ -32,14 +32,6 @@ final class __SystemSuiteManager__
 	protected final Object lock =
 		new Object();
 	
-	/** The library manager. */
-	final LibrariesClient _manager =
-		ServiceAccessor.<LibrariesClient>service(LibrariesClient.class);
-	
-	/** Cached suites. */
-	protected final Map<Library, Reference<Suite>> _suites =
-		new WeakHashMap<>();
-	
 	/**
 	 * {@inheritDoc}
 	 * @since 2017/12/08
@@ -95,38 +87,8 @@ final class __SystemSuiteManager__
 	{
 		if (__t == null)
 			throw new NullPointerException("NARG");
-			
-		LibrariesClient manager = this._manager;
 		
-		// The system call can be masked to filter out unwanted suites
-		LibraryType mask;
-		if (__t == SuiteType.APPLICATION)
-			mask = LibraryType.APPLICATION;
-		else if (__t == SuiteType.LIBRARY)
-			mask = LibraryType.LIBRARY;
-		
-		// {@squirreljme.error DG08 The specified suite type cannot be
-		// listed. (The type)}
-		else
-			throw new IllegalArgumentException(String.format("DG08 %s", __t));
-		
-		// Lock so the suites are always up to date
-		Suite[] rv;
-		synchronized (this.lock)
-		{
-			Library[] programs = manager.list(mask);
-			int n = programs.length;
-			
-			// Return wrappers
-			rv = new Suite[n];
-			for (int i = 0; i < n; i++)
-				rv[i] = __ofProgram(programs[i]);
-		}
-		
-		// Since the returned set of programs is an array, just wrap the
-		// returning array because it is faster than seting up the logic
-		// for a new one.
-		return Arrays.<Suite>asList(rv);
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -148,35 +110,6 @@ final class __SystemSuiteManager__
 	public void removeSuiteListener(SuiteListener __sl)
 	{
 		throw new todo.TODO();
-	}
-	
-	/**
-	 * Returns the suite which maps to the given program.
-	 *
-	 * @param __p The program to wrap.
-	 * @return The suite for the given program.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/12/10
-	 */
-	final Suite __ofProgram(Library __p)
-		throws NullPointerException
-	{
-		if (__p == null)
-			throw new NullPointerException("NARG");
-		
-		// Use pre-existing suite when possible
-		Map<Library, Reference<Suite>> suites = this._suites;
-		synchronized (this.lock)
-		{
-			Reference<Suite> ref = suites.get(__p);
-			Suite rv;
-			
-			if (ref == null || null == (rv = ref.get()))
-				suites.put(__p, new WeakReference<>(
-					(rv = new Suite(__p))));
-			
-			return rv;
-		}
 	}
 }
 
