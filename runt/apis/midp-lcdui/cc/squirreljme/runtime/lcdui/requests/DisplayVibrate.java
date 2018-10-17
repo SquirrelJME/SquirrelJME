@@ -10,7 +10,6 @@
 
 package cc.squirreljme.runtime.lcdui.requests;
 
-import cc.squirreljme.runtime.cldc.system.type.VoidType;
 import cc.squirreljme.runtime.lcdui.LcdFunction;
 import cc.squirreljme.runtime.lcdui.server.LcdRequest;
 import cc.squirreljme.runtime.lcdui.server.LcdServer;
@@ -58,8 +57,11 @@ public final class DisplayVibrate
 	@Override
 	protected final Object invoke()
 	{
+		throw new todo.TODO();
+		/*
 		this.display.getDisplayHead().vibrate(this.milliseconds);
 		return VoidType.INSTANCE;
+		*/
 	}
 }
 

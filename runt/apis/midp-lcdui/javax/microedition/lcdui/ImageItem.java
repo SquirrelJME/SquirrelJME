@@ -89,12 +89,15 @@ public class ImageItem
 	 */
 	public void setImage(Image __i)
 	{
+		throw new todo.TODO();
+		/*
 		Image clone = (__i != null && __i.isMutable() ?
 			Image.createImage(__i) : __i);
 		LcdServiceCall.voidCall(LcdFunction.SET_IMAGE, this._handle,
 			(__i == null ? -1 : __i._handle),
 			(clone == null ? -1 : clone._handle));
 		this._image = __i;
+		*/
 	}
 	
 	@Override

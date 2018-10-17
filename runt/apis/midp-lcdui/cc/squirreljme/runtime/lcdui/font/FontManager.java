@@ -10,7 +10,6 @@
 
 package cc.squirreljme.runtime.lcdui.font;
 
-import cc.squirreljme.runtime.cldc.service.ServiceAccessor;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Map;
