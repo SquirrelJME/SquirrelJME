@@ -10,8 +10,8 @@
 
 package cc.squirreljme.runtime.rms;
 
-import cc.squirreljme.kernel.suiteinfo.SuiteName;
-import cc.squirreljme.kernel.suiteinfo.SuiteVendor;
+import cc.squirreljme.runtime.swm.SuiteName;
+import cc.squirreljme.runtime.swm.SuiteVendor;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
