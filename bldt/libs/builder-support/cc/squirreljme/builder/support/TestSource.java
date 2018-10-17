@@ -10,7 +10,7 @@
 
 package cc.squirreljme.builder.support;
 
-import cc.squirreljme.kernel.suiteinfo.SuiteInfo;
+import cc.squirreljme.runtime.swm.SuiteInfo;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
