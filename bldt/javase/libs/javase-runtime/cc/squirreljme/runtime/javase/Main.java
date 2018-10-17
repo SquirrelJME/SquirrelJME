@@ -10,16 +10,8 @@
 
 package cc.squirreljme.runtime.javase;
 
-import cc.squirreljme.kernel.Kernel;
-import cc.squirreljme.kernel.PrimitiveKernel;
-import cc.squirreljme.kernel.suiteinfo.EntryPoint;
-import cc.squirreljme.kernel.suiteinfo.EntryPoints;
-import cc.squirreljme.runtime.cldc.io.StandardOutput;
-import cc.squirreljme.runtime.cldc.system.api.Call;
-import cc.squirreljme.runtime.cldc.system.EasyCall;
-import cc.squirreljme.runtime.cldc.system.SystemCall;
-import cc.squirreljme.runtime.cldc.system.SystemCallDispatch;
-import cc.squirreljme.runtime.cldc.system.SystemFunction;
+import cc.squirreljme.runtime.swm.EntryPoint;
+import cc.squirreljme.runtime.swm.EntryPoints;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -179,9 +171,6 @@ public class Main
 				if ((mainmethod.getModifiers() & Modifier.STATIC) == 0)
 					throw new RuntimeException("AF02");
 				
-				// Initialization complete
-				SystemCall.EASY.initialized();
-				
 				// Call it
 				mainmethod.invoke(null, new Object[]{__args});
 				
@@ -202,9 +191,6 @@ public class Main
 			Method startmethod = MIDlet.class.getDeclaredMethod(
 				"startApp");
 			startmethod.setAccessible(true);
-			
-			// Initialization complete
-			SystemCall.EASY.initialized();
 			
 			// Invoke the start method
 			startmethod.invoke(mid);
@@ -231,102 +217,11 @@ public class Main
 	private static void __initializeRunTime(boolean __client)
 		throws Throwable
 	{
-		// System calls may be performed on single objects or multiple objects
-		SystemFunction[] functions = SystemFunction.values();
-		int numf = functions.length;
-		Call[] impls = new Call[numf];
-		
-		// Clients for Java SE use a bi-directional stream attached to the
-		// input and output streams so that there is portable RPC
+		// Initialize anything needed for the client
 		if (__client)
 		{
 			System.err.println("SquirrelJME Client Launch!");
-			
-			// The client uses the process's normal input and output stream
-			// to communicate with the kernel, so they need to be remapped
-			InputStream win = System.in;
-			OutputStream wout = System.out;
-			
-			// Wipe the input stream so that it does not accidentally get used
-			// by anything
-			Field fin = System.class.getDeclaredField("in");
-			
-			// It is final, so it must be cleared
-			Field modifiersfield = Field.class.getDeclaredField("modifiers");
-			modifiersfield.setAccessible(true);
-			
-			// Remember the old modifiers and clear the final field
-			int oldmods = modifiersfield.getInt(fin);
-			modifiersfield.setInt(fin, fin.getModifiers() & ~Modifier.FINAL);
-			
-			// Change field to an empty byte array so it ends right away
-			fin.setAccessible(true);
-			fin.set(null, new ByteArrayInputStream(new byte[0]));
-			
-			// Revert state
-			modifiersfield.setInt(fin, oldmods);
-			modifiersfield.setAccessible(false);
-			fin.setAccessible(false);
-			
-			// Redirect standard output to use the system caller interface
-			// instead
-			System.setOut(new PrintStream(new StandardOutput(), true));
-			
-			// Use the original streams instead
-			throw new todo.TODO();
-			/*syscaller = new JavaClientCaller(
-				Objects.<Integer>requireNonNull(null),
-				new DatagramInputStream(win),
-				new DatagramOutputStream(wout));*/
 		}
-		
-		// The server uses the actual kernel
-		else
-		{
-			// Initialize the kernel
-			JavaPrimitiveKernel jpk = new JavaPrimitiveKernel();
-			Kernel kernel = new Kernel(jpk);
-			
-			// Set calls to be implemented by the kernel
-			Call dispatch = kernel.systemDispatch();
-			for (int i = 0; i < numf; i++)
-				impls[i] = dispatch;
-		}
-		
-		// Initialize the same user side calls
-		UserSideCalls usc = new UserSideCalls();
-		impls[SystemFunction.CLASS_ENUM_CONSTANTS.ordinal()] = usc;
-		impls[SystemFunction.CLASS_ENUM_COUNT.ordinal()] = usc;
-		impls[SystemFunction.CLASS_ENUM_INDEXOF.ordinal()] = usc;
-		impls[SystemFunction.CLASS_ENUM_VALUEOF.ordinal()] = usc;
-		impls[SystemFunction.SET_DAEMON_THREAD.ordinal()] = usc;
-		impls[SystemFunction.THROWABLE_GET_STACK.ordinal()] = usc;
-		impls[SystemFunction.THROWABLE_SET_STACK.ordinal()] = usc;
-		
-		// Need to obtain the interface field so that it is initialized
-		Field callerfield = SystemCall.class.getDeclaredField(
-			"_CALLS");
-		
-		// There is an internal modifiers field which needs to be cleared so
-		// that the data can be accessed as such
-		Field modifiersfield = Field.class.getDeclaredField("modifiers");
-		modifiersfield.setAccessible(true);
-		
-		// Remember the old modifiers and clear the final field
-		int oldmods = modifiersfield.getInt(callerfield);
-		modifiersfield.setInt(callerfield,
-			callerfield.getModifiers() & ~Modifier.FINAL);
-		
-		// It is final so it must be settable
-		callerfield.setAccessible(true);
-		
-		// Set the interface used to interact with the kernel
-		callerfield.set(null, impls);
-		
-		// Protect everything again
-		modifiersfield.setInt(callerfield, oldmods);
-		modifiersfield.setAccessible(false);
-		callerfield.setAccessible(false);
 	}
 	
 	/**

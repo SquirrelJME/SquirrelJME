@@ -10,7 +10,6 @@
 
 package cc.squirreljme.runtime.javase.lcdui;
 
-import cc.squirreljme.runtime.cldc.task.SystemTask;
 import cc.squirreljme.runtime.lcdui.server.LcdDefinition;
 import javax.swing.SwingUtilities;
 

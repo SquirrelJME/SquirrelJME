@@ -10,7 +10,6 @@
 
 package cc.squirreljme.runtime.javase.lcdui;
 
-import cc.squirreljme.runtime.cldc.system.type.RemoteMethod;
 import cc.squirreljme.runtime.lcdui.CollectableType;
 import cc.squirreljme.runtime.lcdui.server.LcdDisplays;
 import cc.squirreljme.runtime.lcdui.server.LcdRequest;

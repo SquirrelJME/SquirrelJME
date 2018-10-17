@@ -10,11 +10,6 @@
 
 package cc.squirreljme.runtime.javase.lcdui;
 
-import cc.squirreljme.runtime.cldc.system.type.Array;
-import cc.squirreljme.runtime.cldc.system.type.IntegerArray;
-import cc.squirreljme.runtime.cldc.system.type.LocalByteArray;
-import cc.squirreljme.runtime.cldc.system.type.LocalIntegerArray;
-import cc.squirreljme.runtime.cldc.system.type.LocalShortArray;
 import cc.squirreljme.runtime.lcdui.gfx.PixelFormat;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -178,12 +173,14 @@ public final class ColorInfo
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/24
 	 */
-	public static Array getArray(BufferedImage __bi)
+	public static Object getArray(BufferedImage __bi)
 		throws NullPointerException
 	{
 		if (__bi == null)
 			throw new NullPointerException("NARG");
 		
+		throw new todo.TODO();
+		/*
 		DataBuffer db = __bi.getRaster().getDataBuffer();
 		PixelFormat pf;
 		switch ((pf = ColorInfo.PIXEL_FORMAT))
@@ -209,6 +206,7 @@ public final class ColorInfo
 			default:
 				throw new RuntimeException(String.format("AF0a %s", pf));
 		}
+		*/
 	}
 	
 	/**
@@ -219,9 +217,11 @@ public final class ColorInfo
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/02/24
 	 */
-	public static IntegerArray getPalette(BufferedImage __bi)
+	public static Object getPalette(BufferedImage __bi)
 		throws NullPointerException
 	{
+		throw new todo.TODO();
+		/*
 		if (__bi == null)
 			throw new NullPointerException("NARG");
 		
@@ -251,6 +251,7 @@ public final class ColorInfo
 			default:
 				throw new RuntimeException(String.format("AF0b %s", pf));
 		}
+		*/
 	}
 }
 
