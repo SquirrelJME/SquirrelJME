@@ -10,8 +10,8 @@
 
 package cc.squirreljme.springcoat.vm;
 
-import cc.squirreljme.kernel.suiteinfo.EntryPoint;
-import cc.squirreljme.kernel.suiteinfo.EntryPoints;
+import cc.squirreljme.runtime.swm.EntryPoint;
+import cc.squirreljme.runtime.swm.EntryPoints;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
