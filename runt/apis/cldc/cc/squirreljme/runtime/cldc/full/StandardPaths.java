@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.cldc.full.StandardPaths;
+package cc.squirreljme.runtime.cldc.full;
 
 import cc.squirreljme.runtime.cldc.OperatingSystemType;
 import cc.squirreljme.runtime.cldc.asm.SystemAccess;
