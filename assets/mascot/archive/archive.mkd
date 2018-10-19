@@ -1,0 +1,10 @@
+# Mascot Archive
+
+Archive for the old version of Lex.
+
+ * _Lex_ (The SquirrelJME Mascot) was drawn by...
+   * "_Puppenstein_" <http://www.furaffinity.net/user/puppenstein/>
+
+The pixel art was drawn by Stephanie Gawroriski and was derived from the head
+art of Lex.
+
