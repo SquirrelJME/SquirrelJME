@@ -10,7 +10,13 @@
 
 package net.multiphasicapps.tac.runner;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+import javax.microedition.swm.ManagerFactory;
+import javax.microedition.swm.Suite;
+import javax.microedition.swm.SuiteManager;
+import javax.microedition.swm.SuiteType;
 
 /**
  * This class loads and stores the database for the test system.
@@ -38,6 +44,17 @@ public final class Database
 	 */
 	public static final Database build()
 	{
+		Map<String, SingleUnit> units = new HashMap<>();
+		
+		// Need this to go through all the available suites for testing
+		SuiteManager sm = ManagerFactory.getSuiteManager();
+		for (Suite s : sm.getSuites(SuiteTypes.APPLICATION))
+		{
+			
+			
+			throw new todo.TODO();
+		}
+		
 		throw new todo.TODO();
 	}
 }
