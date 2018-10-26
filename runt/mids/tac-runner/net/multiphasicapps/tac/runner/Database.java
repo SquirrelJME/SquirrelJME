@@ -48,10 +48,8 @@ public final class Database
 		
 		// Need this to go through all the available suites for testing
 		SuiteManager sm = ManagerFactory.getSuiteManager();
-		for (Suite s : sm.getSuites(SuiteTypes.APPLICATION))
+		for (Suite s : sm.getSuites(SuiteType.APPLICATION))
 		{
-			
-			
 			throw new todo.TODO();
 		}
 		

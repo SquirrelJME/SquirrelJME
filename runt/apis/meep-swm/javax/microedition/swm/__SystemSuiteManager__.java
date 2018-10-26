@@ -11,10 +11,12 @@
 package javax.microedition.swm;
 
 import cc.squirreljme.runtime.swm.ByteArrayJarStreamSupplier;
+import cc.squirreljme.runtime.cldc.asm.SuiteAccess;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -28,6 +30,10 @@ import java.util.WeakHashMap;
 final class __SystemSuiteManager__
 	implements SuiteManager
 {
+	/** Cache of suites which are available. */
+	private static final Map<String, Reference<Suite>> _SUITES =
+		new HashMap<>();
+	
 	/** Internal lock for suite management. */
 	protected final Object lock =
 		new Object();
@@ -88,7 +94,18 @@ final class __SystemSuiteManager__
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Go through suites and find suites to return
+		List<Suite> rv = new ArrayList<>();
+		for (String as : SuiteAccess.availableSuites())
+		{
+			Suite s = __SystemSuiteManager__.__getSuite(as);
+			
+			// Matching suite type
+			if (s.getSuiteType() == __t)
+				rv.add(s);
+		}
+		
+		return rv;
 	}
 	
 	/**
@@ -110,6 +127,33 @@ final class __SystemSuiteManager__
 	public void removeSuiteListener(SuiteListener __sl)
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Gets the specified suite.
+	 *
+	 * @param __s The suite to get.
+	 * @return The suite for the given name.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/10/26
+	 */
+	static Suite __getSuite(String __s)
+		throws NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		Map<String, Reference<Suite>> suites = __SystemSuiteManager__._SUITES;
+		synchronized (suites)
+		{
+			Reference<Suite> ref = suites.get(__s);
+			Suite rv;
+			
+			if (ref == null || null == (rv = ref.get()))
+				suites.put(__s, new WeakReference<>((rv = new Suite(__s))));
+			
+			return rv;
+		}
 	}
 }
 
