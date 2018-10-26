@@ -22,8 +22,8 @@ import java.util.Map;
  */
 public final class SpringResourceAccess
 {
-	/** The class loader for resources. */
-	protected final SpringClassLoader classloader;
+	/** The manager for suites. */
+	protected final SpringSuiteManager suites;
 	
 	/** Opened resources. */
 	private final Map<Integer, InputStream> _streams =
@@ -35,17 +35,17 @@ public final class SpringResourceAccess
 	/**
 	 * Initializes the resource access.
 	 *
-	 * @param __cl The class loader.
+	 * @param __sm The suite manager.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/10/07
 	 */
-	public SpringResourceAccess(SpringClassLoader __cl)
+	public SpringResourceAccess(SpringSuiteManager __sm)
 		throws NullPointerException
 	{
-		if (__cl == null)
+		if (__sm == null)
 			throw new NullPointerException("NARG");
 		
-		this.classloader = __cl;
+		this.suites = __sm;
 	}
 	
 	/**
@@ -100,9 +100,8 @@ public final class SpringResourceAccess
 		if (__jar == null || __rc == null)
 			throw new NullPointerException("NARG");
 		
-		// Locate the library first, if it is not found then we need not bother
-		SpringClassLoader classloader = this.classloader;
-		SpringClassLibrary lib = classloader.findLibrary(__jar);
+		// Load the library to access its resources
+		SpringClassLibrary lib = this.suites.loadLibrary(__jar);
 		if (lib == null)
 			return -2;
 		

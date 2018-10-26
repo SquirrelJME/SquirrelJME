@@ -28,6 +28,9 @@ public interface SpringSuiteManager
 	/**
 	 * Loads the specified library by the given string.
 	 *
+	 * It is recommended that this caches the library internally so that it may
+	 * be reused accordingly as such.
+	 *
 	 * @param __s The name of the library to load.
 	 * @return The loaded library.
 	 * @since 2018/10/16
