@@ -44,6 +44,9 @@ public class Suite
 	public static Suite SYSTEM_SUITE =
 		new Suite(Suite.class);
 	
+	/** The name of this suite. */
+	private final String _name;
+	
 	/** The state lock. */
 	private final Object _lock =
 		new Object();
@@ -62,27 +65,23 @@ public class Suite
 	 */
 	private Suite(Class<Suite> __cl)
 	{
-		throw new todo.TODO();
-		/*
-		*/
+		this._name = null;
 	}
 	
 	/**
 	 * Initializes the suite.
 	 *
-	 * @param __p The program for this suite.
+	 * @param __n The name of this suite.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/12/08
 	 */
-	Suite()
+	Suite(String __n)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
-		/*
-		if (__p == null)
+		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		this._library = __p;
-		*/
+		this._name = __n;
 	}
 	
 	/**
