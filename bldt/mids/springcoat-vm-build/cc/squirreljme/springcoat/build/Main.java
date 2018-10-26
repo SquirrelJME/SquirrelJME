@@ -87,7 +87,7 @@ public class Main
 		
 		// Get the project and all of its dependencies built which forms
 		// the class path
-		Binary[] vclasspath = pm.build(TimeSpaceType.BUILD, project);
+		Binary[] vclasspath = pm.build(TimeSpaceType.TEST, project);
 		
 		// The boot entry always must be last
 		Binary bootp = vclasspath[vclasspath.length - 1];
@@ -117,7 +117,9 @@ public class Main
 		SpringClassLoader classloader = new SpringClassLoader(libs);
 		
 		// Initialize the virtual machine with our launch ID
-		SpringMachine machine = new SpringMachine(classloader, launchid,
+		SpringMachine machine = new SpringMachine(
+			new BuildSuiteManager(pm, TimeSpaceType.TEST),
+			classloader, launchid,
 			args.<String>toArray(new String[args.size()]));
 		
 		// Run the VM until it terminates

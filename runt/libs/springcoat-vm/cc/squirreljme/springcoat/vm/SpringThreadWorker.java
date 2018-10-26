@@ -281,6 +281,23 @@ public final class SpringThreadWorker
 			return rv;
 		}
 		
+		// String array
+		else if (__in instanceof String[])
+		{
+			String[] in = (String[])__in;
+			
+			// Setup return array
+			int n = in.length;
+			SpringArrayObject rv = this.allocateArray(
+				this.loadClass(new ClassName("java/lang/String")), n);
+			
+			// Copy array values
+			for (int i = 0; i < n; i++)
+				rv.set(i, this.asVMObject(in[i]));
+			
+			return rv;
+		}
+		
 		// String object
 		else if (__in instanceof String)
 		{
@@ -971,6 +988,11 @@ public final class SpringThreadWorker
 					
 					return rv;
 				}
+			
+				// List suites that are available
+			case "cc/squirreljme/runtime/cldc/asm/SuiteAccess::" +
+				"availableSuites:()[Ljava/lang/String;":
+				return this.machine.suiteManager().listLibraryNames();
 			
 				// Exit the virtual machine
 			case "cc/squirreljme/runtime/cldc/asm/SystemAccess::" +

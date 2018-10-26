@@ -50,6 +50,9 @@ public final class SpringMachine
 	/** The boot index. */
 	protected final int bootdx;
 	
+	/** The manager for suites. */
+	protected final SpringSuiteManager suites;
+	
 	/** Threads which are available. */
 	private final List<SpringThread> _threads =
 		new ArrayList<>();
@@ -96,6 +99,7 @@ public final class SpringMachine
 	/**
 	 * Initializes the virtual machine.
 	 *
+	 * @param __sm The manager for suites.
 	 * @param __cl The class loader.
 	 * @param __bootdx The entry point which should be booted when the VM
 	 * runs.
@@ -103,13 +107,14 @@ public final class SpringMachine
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/03
 	 */
-	public SpringMachine(SpringClassLoader __cl, int __bootdx,
-		String... __args)
+	public SpringMachine(SpringSuiteManager __sm, SpringClassLoader __cl,
+		int __bootdx, String... __args)
 		throws NullPointerException
 	{
-		if (__cl == null)
+		if (__cl == null || __sm == null)
 			throw new NullPointerException("NARG");
 		
+		this.suites = __sm;
 		this.classloader = __cl;
 		this.bootdx = __bootdx;
 		this._args = (__args == null ? new String[0] : __args.clone());
@@ -439,6 +444,17 @@ public final class SpringMachine
 		
 		// Wait until all threads have terminated before actually leaving
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the suite manager which is available.
+	 *
+	 * @return The suite manager that is available.
+	 * @since 2018/10/26
+	 */
+	public final SpringSuiteManager suiteManager()
+	{
+		return this.suites;
 	}
 	
 	/**
