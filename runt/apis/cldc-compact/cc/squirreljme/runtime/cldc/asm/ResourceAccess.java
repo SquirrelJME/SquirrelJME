@@ -13,6 +13,9 @@ package cc.squirreljme.runtime.cldc.asm;
 /**
  * This class provides access to resources and their raw data streams.
  *
+ * Access to resources relies on the suites, so the correct suite must be
+ * specified. {@link Class#getResourceAsStream(String)} should handle this.
+ *
  * @since 2018/10/07
  */
 public final class ResourceAccess
@@ -73,10 +76,10 @@ public final class ResourceAccess
 	public static final native int close(int __fd);
 	
 	/**
-	 * Opens the specified resource in the given JAR, according to the class
-	 * the JAR is in.
+	 * Opens the specified resource in the given JAR.
 	 *
-	 * @param __jar The JAR the resource is in.
+	 * @param __jar The JAR the resource is in, this specifies the name of a
+	 * suite.
 	 * @param __res The name of the resource to load.
 	 * @return The file descriptor or a negative value if it does not exist.
 	 * If {@code -2} is returned that means there was an exception trying to

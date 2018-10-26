@@ -120,7 +120,7 @@ public final class SpringMachine
 		this._args = (__args == null ? new String[0] : __args.clone());
 		
 		// Setup resource accessor
-		this.resourceaccessor = new SpringResourceAccess(__cl);
+		this.resourceaccessor = new SpringResourceAccess(__sm);
 	}
 	
 	/**
