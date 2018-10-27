@@ -10,6 +10,7 @@
 
 package javax.microedition.swm;
 
+import cc.squirreljme.runtime.cldc.io.ResourceInputStream;
 import cc.squirreljme.runtime.swm.EntryPoint;
 import cc.squirreljme.runtime.swm.EntryPoints;
 import cc.squirreljme.runtime.swm.SuiteInfo;
@@ -56,6 +57,9 @@ public class Suite
 	
 	/** Cached suite information. */
 	private volatile Reference<SuiteInfo> _suiteinfo;
+	
+	/** No manifest available for usage? */
+	private volatile boolean _nomanifest;
 	
 	/**
 	 * Initializes the system suite.
@@ -268,27 +272,28 @@ public class Suite
 	 */
 	public SuiteType getSuiteType()
 	{
-		throw new todo.TODO();
-		/*
-		Library program = this._library;
-		if (program == null)
+		// Is system suite
+		if (this._name == null)
 			return SuiteType.SYSTEM;
 		
-		switch (program.type())
+		// Depends on the type
+		switch (this.__suiteInfo().type())
 		{
-			case APPLICATION:
+			case MIDLET:
 				return SuiteType.APPLICATION;
-				
-			case LIBRARY:
-				return SuiteType.LIBRARY;
-				
-			case SYSTEM:
-				return SuiteType.SYSTEM;
 			
-			default:
+			case LIBLET:
+				return SuiteType.LIBRARY;
+			
+				// Not a valid suite type, should end up always being
+				// filtered
+			case SQUIRRELJME_API:
 				return SuiteType.INVALID;
+				
+				// Unknown
+			default:
+				throw new RuntimeException("OOPS");
 		}
-		*/
 	}
 	
 	/**
@@ -478,32 +483,43 @@ public class Suite
 	 */
 	final JavaManifest __manifest()
 	{
-		throw new todo.TODO();
-		/*
 		Reference<JavaManifest> ref = this._manifest;
 		JavaManifest rv;
 		
 		if (ref == null || null == (rv = ref.get()))
-			try (InputStream in =
-				this._library.loadResource(LibraryResourceScope.RESOURCE,
-					"META-INF/MANIFEST.MF"))
-			{
-				// {@squirreljme.error DG04 Suite has no manifest file.}
-				if (in == null)
-					throw new RuntimeException("DG04");
-				
-				this._manifest = new WeakReference<>(
-					(rv = new JavaManifest(in)));
-			}
+		{
+			// Definitely does not exist
+			if (this._nomanifest)
+				rv = new JavaManifest();
 			
-			// {@squirreljme.error DG05 Could not read the suite manifest.}
-			catch (IOException e)
-			{
-				throw new RuntimeException("DG05");
-			}
+			// Could exist, hopefully it does
+			else
+				try (InputStream in = ResourceInputStream.open(this._name,
+					"META-INF/MANIFEST.MF"))
+				{
+					// Will keep trying to open resources, so just prevent
+					// that from happening
+					if (in == null)
+					{
+						rv = new JavaManifest();
+						this._nomanifest = true;
+					}
+					
+					// Load it in
+					else
+						rv = new JavaManifest(in);
+				}
+				catch (IOException e)
+				{
+					// {@squirreljme.error DG01 Could not load suite manifest.}
+					throw new RuntimeException("DG0a", e);
+				}
+			
+			// Cache
+			this._manifest = new WeakReference<>(rv);
+		}
 		
 		return rv;
-		*/
 	}
 	
 	/**

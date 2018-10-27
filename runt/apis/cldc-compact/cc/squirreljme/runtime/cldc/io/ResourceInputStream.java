@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package java.lang;
+package cc.squirreljme.runtime.cldc.io;
 
 import java.io.InputStream;
 import java.io.IOException;
@@ -19,7 +19,7 @@ import cc.squirreljme.runtime.cldc.asm.ResourceAccess;
  *
  * @since 2018/10/07
  */
-final class __ResourceInputStream__
+public final class ResourceInputStream
 	extends InputStream
 {
 	/** The file descriptor. */
@@ -34,7 +34,7 @@ final class __ResourceInputStream__
 	 * @param __fd The file descriptor.
 	 * @since 2018/10/07
 	 */
-	__ResourceInputStream__(int __fd)
+	public ResourceInputStream(int __fd)
 	{
 		this.fd = __fd;
 	}
@@ -205,6 +205,35 @@ final class __ResourceInputStream__
 		
 		// This might not match the input
 		return total;
+	}
+	
+	/**
+	 * Opens the specified resource in the given JAR.
+	 *
+	 * @param __jar The JAR to look within.
+	 * @param __rc The name of the resource to open.
+	 * @return The stream for the given resource or {@code null} if it does not
+	 * exist.
+	 * @since 2018/10/26
+	 */
+	public static final ResourceInputStream open(String __jar, String __rc)
+		throws NullPointerException
+	{
+		if (__jar == null || __rc == null)
+			throw new NullPointerException("NARG");
+		
+		// If no resource exists then
+		int fd = ResourceAccess.open(__jar, __rc);
+		if (fd < 0)
+		{
+			// Any other value besides this means some resource error
+			if (fd != ResourceAccess.OPEN_STATUS_NO_RESOURCE)
+				todo.DEBUG.note("RA.o(%s, %s) = %d", __jar, __rc, fd);
+			return null;
+		}
+		
+		// Otherwise read from that resource
+		return new ResourceInputStream(fd);
 	}
 }
 

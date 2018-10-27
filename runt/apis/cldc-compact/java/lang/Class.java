@@ -12,6 +12,7 @@ package java.lang;
 
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import cc.squirreljme.runtime.cldc.asm.ResourceAccess;
+import cc.squirreljme.runtime.cldc.io.ResourceInputStream;
 import java.io.InputStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -246,18 +247,8 @@ public final class Class<T>
 				want = __name;
 		}
 		
-		// If no resource exists then
-		int fd = ResourceAccess.open(injar, want);
-		if (fd < 0)
-		{
-			// Any other value besides this means some resource error
-			if (fd != ResourceAccess.OPEN_STATUS_NO_RESOURCE)
-				todo.DEBUG.note("RA.o(%s, %s) = %d", injar, want, fd);
-			return null;
-		}
-		
-		// Otherwise read from that resource
-		return new __ResourceInputStream__(fd);
+		// Open the resource, perhaps
+		return ResourceInputStream.open(injar, want);
 	}
 	
 	/**

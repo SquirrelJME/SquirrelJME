@@ -19,7 +19,9 @@ import cc.squirreljme.springcoat.vm.SpringClassLibrary;
 import cc.squirreljme.springcoat.vm.SpringSuiteManager;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.collections.SortedTreeSet;
 
@@ -36,6 +38,10 @@ public final class BuildSuiteManager
 	
 	/** The timespace to act in. */
 	protected final TimeSpaceType timespace;
+	
+	/** Loaded libraries. */
+	private final Map<String, SpringClassLibrary> _libraries =
+		new HashMap<>();
 	
 	/**
 	 * Initializes the suite manager.
@@ -96,7 +102,30 @@ public final class BuildSuiteManager
 	public final SpringClassLibrary loadLibrary(String __s)
 		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock
+		Map<String, SpringClassLibrary> libraries = this._libraries;
+		synchronized (libraries)
+		{
+			// Pre-cached already?
+			SpringClassLibrary rv = libraries.get(__s);
+			if (rv != null)
+				return rv;
+			
+			// Build the binaries for this finding the matching one
+			for (Binary b : this.manager.build(this.timespace, __s))
+				if (__s.equals(b.name().toString()))
+				{
+					libraries.put(__s, (rv = new BuildClassLibrary(b)));
+					return rv;
+				}
+			
+			// {@squirreljme.error BA03 No such library exists. (The requested
+			// library)}
+			throw new RuntimeException(String.format("BA03 %s", __s));
+		}
 	}
 }
 

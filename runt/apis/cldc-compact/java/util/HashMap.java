@@ -108,10 +108,14 @@ public class HashMap<K, V>
 		return new HashMap<>(this);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/10/26
+	 */
 	@Override
-	public boolean containsKey(Object __a)
+	public boolean containsKey(Object __k)
 	{
-		throw new todo.TODO();
+		return null != this._map.get(__k);
 	}
 	
 	@Override
