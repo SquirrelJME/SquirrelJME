@@ -1,0 +1,6 @@
+# 2018/10/26
+
+## 10:38
+
+Okay so I believe the VM could use stuff like seeing which things are fully
+available like in the classpath and such.
