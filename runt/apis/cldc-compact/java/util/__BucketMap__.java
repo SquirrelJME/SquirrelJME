@@ -173,7 +173,9 @@ final class __BucketMap__<K, V>
 		// the hash table.
 		if (nextsize >= this._loadthreshold)
 		{
-			throw new todo.TODO();
+			todo.TODO.note("Re-balance bucket map.");
+			if (false)
+				throw new todo.TODO();
 		}
 		
 		// Where to look in the table?
