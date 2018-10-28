@@ -13,6 +13,7 @@ package java.util;
 import cc.squirreljme.runtime.cldc.util.CharacterIntegerArray;
 import cc.squirreljme.runtime.cldc.util.IntegerArray;
 import cc.squirreljme.runtime.cldc.util.IntegerArrays;
+import cc.squirreljme.runtime.cldc.util.IntegerIntegerArray;
 
 /**
  * This class contains utility methods which operate on arrays.
@@ -63,14 +64,47 @@ public class Arrays
 		throw new todo.TODO();
 	}
 	
-	public static int binarySearch(int[] __a, int __b)
+	/**
+	 * Searches the given sorted array for the given element.
+	 *
+	 * @param __a The sorted array to search.
+	 * @param __key The key to locate.
+	 * @return The index of the given key or {@code (-(insertion point) - 1)}
+	 * indicating where the element would be found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/10/28
+	 */
+	public static int binarySearch(int[] __a, int __key)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
+		return Arrays.binarySearch(__a, 0, __a.length, __key);
 	}
 	
-	public static int binarySearch(int[] __a, int __b, int __c, int __d)
+	/**
+	 * Searches the given sorted array for the given element.
+	 *
+	 * @param __a The sorted array to search.
+	 * @param __from The from index.
+	 * @param __to The to index.
+	 * @param __key The key to locate.
+	 * @return The index of the given key or {@code (-(insertion point) - 1)}
+	 * indicating where the element would be found.
+	 * @throws ArrayIndexOutOfBoundsException If the from or to index exceed
+	 * the bounds of the array.
+	 * @throws IllegalArgumentException If the from index is higher than the
+	 * to index.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/10/28
+	 */
+	public static int binarySearch(int[] __a, int __from, int __to, int __key)
+		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+			NullPointerException
 	{
-		throw new todo.TODO();
+		return IntegerArrays.binarySearch(new IntegerIntegerArray(__a),
+			__from, __to, __key);
 	}
 	
 	public static int binarySearch(short[] __a, short __b)
