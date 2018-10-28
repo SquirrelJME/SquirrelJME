@@ -164,10 +164,14 @@ public abstract class AbstractList<E>
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/10/28
+	 */
 	@Override
 	public Iterator<E> iterator()
 	{
-		throw new todo.TODO();
+		return new __ListIterator__(0);
 	}
 	
 	@Override
@@ -176,16 +180,24 @@ public abstract class AbstractList<E>
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/10/28
+	 */
 	@Override
 	public ListIterator<E> listIterator()
 	{
-		throw new todo.TODO();
+		return this.listIterator(0);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/10/28
+	 */
 	@Override
-	public ListIterator<E> listIterator(int __a)
+	public ListIterator<E> listIterator(int __i)
 	{
-		throw new todo.TODO();
+		return new __ListIterator__(__i);
 	}
 	
 	@Override
@@ -209,6 +221,118 @@ public abstract class AbstractList<E>
 	public List<E> subList(int __a, int __b)
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * List iterator which can go forwards and backwards through this abstract
+	 * list. Indexed elements are used here, not sequential lists
+	 */
+	private final class __ListIterator__
+		implements ListIterator<E>
+	{
+		/**
+		 * Initializes the list iterator.
+		 *
+		 * @param __i The index to use.
+		 * @throws IndexOutOfBoundsException If the index is outside the list
+		 * bounds.
+		 * @since 2018/10/28
+		 */
+		__ListIterator__(int __i)
+			throws IndexOutOfBoundsException
+		{
+			throw new todo.TODO();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/10/28
+		 */
+		@Override
+		public final void add(E __a)
+		{
+			throw new todo.TODO();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/10/28
+		 */
+		@Override
+		public final boolean hasNext()
+		{
+			throw new todo.TODO();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/10/28
+		 */
+		@Override
+		public final boolean hasPrevious()
+		{
+			throw new todo.TODO();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/10/28
+		 */
+		@Override
+		public final E next()
+		{
+			throw new todo.TODO();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/10/28
+		 */
+		@Override
+		public final int nextIndex()
+		{
+			throw new todo.TODO();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/10/28
+		 */
+		@Override
+		public final E previous()
+		{
+			throw new todo.TODO();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/10/28
+		 */
+		@Override
+		public final int previousIndex()
+		{
+			throw new todo.TODO();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/10/28
+		 */
+		@Override
+		public final void remove()
+		{
+			throw new todo.TODO();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/10/28
+		 */
+		@Override
+		public final void set(E __v)
+		{
+			throw new todo.TODO();
+		}
 	}
 }
 

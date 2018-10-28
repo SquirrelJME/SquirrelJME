@@ -15,10 +15,20 @@ public interface ListIterator<E>
 {
 	public abstract void add(E __a);
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/10/28
+	 */
+	@Override
 	public abstract boolean hasNext();
 	
 	public abstract boolean hasPrevious();
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/10/28
+	 */
+	@Override
 	public abstract E next();
 	
 	public abstract int nextIndex();
@@ -27,6 +37,11 @@ public interface ListIterator<E>
 	
 	public abstract int previousIndex();
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/10/28
+	 */
+	@Override
 	public abstract void remove();
 	
 	public abstract void set(E __a);

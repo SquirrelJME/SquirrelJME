@@ -20,7 +20,7 @@ public abstract class AbstractSequentialList<E>
 	}
 	
 	@Override
-	public abstract ListIterator<E> listIterator(int __a);
+	public abstract ListIterator<E> listIterator(int __i);
 	
 	@Override
 	public void add(int __a, E __b)
@@ -40,10 +40,14 @@ public abstract class AbstractSequentialList<E>
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/10/28
+	 */
 	@Override
 	public Iterator<E> iterator()
 	{
-		throw new todo.TODO();
+		return this.listIterator(0);
 	}
 	
 	@Override
