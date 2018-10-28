@@ -162,12 +162,6 @@ public class ArrayList<E>
 	}
 	
 	@Override
-	public Iterator<E> iterator()
-	{
-		throw new todo.TODO();
-	}
-	
-	@Override
 	public int lastIndexOf(Object __a)
 	{
 		throw new todo.TODO();
