@@ -41,6 +41,9 @@ final class __StackMapParser__
 	/** Constant pool. */
 	protected final Pool pool;
 	
+	/** This type. */
+	protected final JavaType thistype;
+		
 	/** Verification targets. */
 	private final Map<Integer, StackMapTableState> _targets;
 	
@@ -64,17 +67,19 @@ final class __StackMapParser__
 	 * @param __new Should the new stack map table format be used?
 	 * @param __in The data for the stack map table.
 	 * @param __bc The owning byte code.
+	 * @param __tt This type.
 	 * @throws InvalidClassFormatException If the stack map table is not
 	 * valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/04/16
 	 */
 	__StackMapParser__(Pool __p, Method __m, boolean __new, byte[] __in,
-		ByteCode __bc)
+		ByteCode __bc, JavaType __tt)
 		throws InvalidClassFormatException, NullPointerException
 	{
 		// Check
-		if (__p == null || __m == null || __in == null || __bc == null)
+		if (__p == null || __m == null || __in == null || __bc == null ||
+			__tt == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
@@ -87,6 +92,7 @@ final class __StackMapParser__
 		this.maxlocals = maxlocals;
 		this.code = __bc;
 		this.pool = __p;
+		this.thistype = __tt;
 		
 		// This is used to set which variables appear next before a state is
 		// constructed with them
@@ -415,7 +421,7 @@ final class __StackMapParser__
 				
 				// Uninitialized this
 			case 6:
-				throw new todo.TODO();
+				return new StackMapTableEntry(this.thistype, false);
 				
 				// Initialized object
 			case 7:

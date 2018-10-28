@@ -50,6 +50,9 @@ public final class ByteCode
 	/** The exceptions within this method. */
 	protected final ExceptionHandlerTable exceptions;
 	
+	/** This type. */
+	protected final ClassName thistype;
+	
 	/** The input attribute code, used for instruction lookup. */
 	private final byte[] _rawattributedata;
 	
@@ -85,14 +88,15 @@ public final class ByteCode
 	 *
 	 * @param __mr The owning method reference.
 	 * @param __ca The raw code attribute data.
+	 * @param __tt The this type.
 	 * @throws InvalidClassFormatException If the byte code is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/10/09
 	 */
-	ByteCode(Reference<Method> __mr, byte[] __ca)
+	ByteCode(Reference<Method> __mr, byte[] __ca, ClassName __tt)
 		throws InvalidClassFormatException, NullPointerException
 	{
-		if (__mr == null || __ca == null)
+		if (__mr == null || __ca == null || __tt == null)
 			throw new NullPointerException("NARG");
 		
 		// Set
@@ -225,6 +229,7 @@ public final class ByteCode
 			this.codelen = codelen;
 			this.exceptions = eht;
 			this.pool = pool;
+			this.thistype = __tt;
 			this._smtdata = smt;
 			this._newsmtdata = smtnew;
 			this._lengths = lengths;
@@ -536,7 +541,7 @@ public final class ByteCode
 		if (ref == null || null == (rv = ref.get()))
 			this._smt = new WeakReference<>(rv = new __StackMapParser__(
 				this.pool, __method(), this._newsmtdata, this._smtdata,
-				this).get());
+				this, new JavaType(this.thistype)).get());
 		
 		return rv;
 	}
