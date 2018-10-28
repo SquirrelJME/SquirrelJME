@@ -2181,6 +2181,14 @@ public final class SpringThreadWorker
 					frame.loadToStack(Long.class,
 						opid - InstructionIndex.LLOAD_0);
 					break;
+				
+					// Negate long
+				case InstructionIndex.LNEG:
+					{
+						long a = frame.<Long>popFromStack(Long.class);
+						frame.pushToStack(-a);
+					}
+					break;
 					
 					// OR long
 				case InstructionIndex.LOR:
