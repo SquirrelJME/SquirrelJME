@@ -1985,6 +1985,14 @@ public final class SpringThreadWorker
 						frame.pushToStack(a * b);
 					}
 					break;
+				
+					// Negate integer
+				case InstructionIndex.INEG:
+					{
+						int a = frame.<Integer>popFromStack(Integer.class);
+						frame.pushToStack(-a);
+					}
+					break;
 					
 					// Is the given object an instance of the given class?
 				case InstructionIndex.INSTANCEOF:
@@ -2052,6 +2060,15 @@ public final class SpringThreadWorker
 						int b = frame.<Integer>popFromStack(Integer.class),
 							a = frame.<Integer>popFromStack(Integer.class);
 						frame.pushToStack(a << (b & 0x1F));
+					}
+					break;
+				
+					// Shift right integer
+				case InstructionIndex.ISHR:
+					{
+						int b = frame.<Integer>popFromStack(Integer.class),
+							a = frame.<Integer>popFromStack(Integer.class);
+						frame.pushToStack(a >> (b & 0x1F));
 					}
 					break;
 					

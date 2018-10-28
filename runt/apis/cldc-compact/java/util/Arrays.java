@@ -10,6 +10,10 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.util.CharacterIntegerArray;
+import cc.squirreljme.runtime.cldc.util.IntegerArray;
+import cc.squirreljme.runtime.cldc.util.IntegerArrays;
+
 /**
  * This class contains utility methods which operate on arrays.
  *
@@ -79,14 +83,48 @@ public class Arrays
 		throw new todo.TODO();
 	}
 	
-	public static int binarySearch(char[] __a, char __b)
+	/**
+	 * Searches the given sorted array for the given element.
+	 *
+	 * @param __a The sorted array to search.
+	 * @param __key The key to locate.
+	 * @return The index of the given key or {@code (-(insertion point) - 1)}
+	 * indicating where the element would be found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/10/28
+	 */
+	public static int binarySearch(char[] __a, char __key)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
+		return Arrays.binarySearch(__a, 0, __a.length, __key);
 	}
 	
-	public static int binarySearch(char[] __a, int __b, int __c, char __d)
+	/**
+	 * Searches the given sorted array for the given element.
+	 *
+	 * @param __a The sorted array to search.
+	 * @param __from The from index.
+	 * @param __to The to index.
+	 * @param __key The key to locate.
+	 * @return The index of the given key or {@code (-(insertion point) - 1)}
+	 * indicating where the element would be found.
+	 * @throws ArrayIndexOutOfBoundsException If the from or to index exceed
+	 * the bounds of the array.
+	 * @throws IllegalArgumentException If the from index is higher than the
+	 * to index.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/10/28
+	 */
+	public static int binarySearch(char[] __a, int __from, int __to,
+		char __key)
+		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+			NullPointerException
 	{
-		throw new todo.TODO();
+		return IntegerArrays.binarySearch(new CharacterIntegerArray(__a),
+			__from, __to, __key);
 	}
 	
 	public static int binarySearch(byte[] __a, byte __b)
@@ -411,24 +449,25 @@ public class Arrays
 		sort(__a, 0, __a.length);
 	}
 	
+	/**
+	 * Sorts the specified array.
+	 *
+	 * @param __a The array to sort.
+	 * @param __from The source array.
+	 * @param __to The destination array.
+	 * @throws ArrayIndexOutOfBoundsException If the from and/or to index
+	 * exceed the array bounds.
+	 * @throws IllegalArgumentException If the from index is greater than to
+	 * index.
+	 * @throws NullPointerException If no array was specified.
+	 * @since 2018/10/28
+	 */
 	public static void sort(char[] __a, int __from, int __to)
 		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
 			NullPointerException
 	{
-		// Check
-		if (__a == null)
-			throw new NullPointerException("NARG");
-		int an = __a.length;
-		if (__from < 0 || __to > an)
-			throw new ArrayIndexOutOfBoundsException("ZZ04");
-		if (__from > __to)
-			throw new IllegalArgumentException("ZZ07");
-		
-		// Pointless sort?
-		if (__from == __to)
-			return;
-		
-		throw new todo.TODO();
+		// Use common sorting code
+		IntegerArrays.sort(new CharacterIntegerArray(__a), __from, __to);
 	}
 	
 	/**
