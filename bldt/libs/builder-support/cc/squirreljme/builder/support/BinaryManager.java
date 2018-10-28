@@ -252,8 +252,13 @@ public final class BinaryManager
 				{
 					String name = i.fileName();
 					
+					// Is there a dash in this?
+					int ls = name.lastIndexOf('/');
+					boolean dashname = (ls >= 0 && name.substring(0, ls).
+						indexOf('-') >= 0);
+					
 					// Compile any source file
-					if (name.endsWith(".java"))
+					if (!dashname && name.endsWith(".java"))
 					{
 						hasinput = true;
 						javac.addInput(i);
