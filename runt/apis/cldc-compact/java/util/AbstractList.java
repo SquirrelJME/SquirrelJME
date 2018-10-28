@@ -32,10 +32,16 @@ public abstract class AbstractList<E>
 	@Override
 	public abstract E get(int __a);
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/10/28
+	 */
 	@Override
-	public boolean add(E __a)
+	public boolean add(E __v)
 	{
-		throw new todo.TODO();
+		int oldsize = this.size();
+		this.add(oldsize, __v);
+		return this.size() != oldsize;
 	}
 	
 	@Override

@@ -62,7 +62,8 @@ public class Main
 		
 		// Print the values of the annotations
 		__i.increment();
-		for (Map.Entry<MethodName, AnnotationValue> v : __in.entrySet())
+		for (Map.Entry<MethodName, AnnotationValue> v : __in.keyValueMap().
+			entrySet())
 			__out.printf("%s=%s%n", v.getKey(), v.getValue());
 		__i.decrement();
 	}

@@ -24,7 +24,7 @@ import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import net.multiphasicapps.io.hexdumpstream.HexDumpOutputStream;
+import net.multiphasicapps.io.HexDumpOutputStream;
 import net.multiphasicapps.zip.blockreader.ZipBlockEntry;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;
 import net.multiphasicapps.zip.streamreader.ZipStreamEntry;
