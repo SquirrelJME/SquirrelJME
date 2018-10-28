@@ -77,30 +77,35 @@ public final class IntegerArrays
 				return -2;
 		}
 		
+		// Use the same index
+		__to -= 1;
+		
 		// Search for element at the pivot first, stop if the from and to are
 		// at the same points
-		for (int p = __from + ((__to - __from) >> 1);
-			__to != __from && __to > __from;
-			p = __from + ((__to - __from) >> 1))
+		while (__from <= __to)
 		{
-			todo.DEBUG.note("%s ?= <%s, %s, %s>", __key, __from, p, __to);
+			// Calculate the pivot and use its value
+			int p = __from + (((__to - __from) + 1) >> 1),
+				pv = __a.get(p);
 			
-			// Check for match at the pivot
-			int pv = __a.get(p);
-			if (pv == __key)
-				return p;
+			// Debug
+			todo.DEBUG.note("%s ?= <%s |%s| %s> = %s", __key, __from, p, __to,
+				pv);
 			
-			// Left of pivot
-			else if (__key < pv)
+			// Left of pivot?
+			if (__key < pv)
 				__to = p - 1;
 			
-			// Right of pivot
+			// Right of pivot?
 			else if (__key > pv)
 				__from = p + 1;
+			
+			// Match
+			else
+				return p;
 		}
 		
-		// To and from are at the same points so,
-		return (-__to) - 1;
+		return (-__from) - 1;
 	}
 	
 	/**
