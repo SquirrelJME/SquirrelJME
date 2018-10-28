@@ -26,6 +26,10 @@ public class ArrayList<E>
 	extends AbstractList<E>
 	implements List<E>, RandomAccess, Cloneable
 {
+	/** Capacity growth size. */
+	private static final int _GROWTH =
+		8;
+	
 	/** Elements in the list. */
 	private E[] _elements;
 	
@@ -67,16 +71,47 @@ public class ArrayList<E>
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/10/28
+	 */
 	@Override
-	public boolean add(E __a)
+	@SuppressWarnings({"unchecked"})
+	public void add(int __i, E __v)
+		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
-	}
-	
-	@Override
-	public void add(int __a, E __b)
-	{
-		throw new todo.TODO();
+		int size = this._size;
+		if (__i < 0 || __i > size)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		E[] elements = this._elements;
+		int cap = elements.length,
+			nextsize = cap + 1;
+		
+		// Cannot fit in this array
+		E[] source = elements;
+		if (nextsize > cap)
+		{
+			// Grow the list by a bit
+			int newcap = nextsize + _GROWTH;
+			elements = (E[])new Object[newcap];
+			
+			// Copy old stuff over, but only up to the index as needed
+			for (int i = 0; i < __i; i++)
+				elements[i] = source[i];
+		}
+		
+		// Move down to fit
+		for (int i = size - 1, o = size; o > __i; i--, o--)
+			elements[o] = source[i];
+		
+		// Store data here
+		elements[__i] = __v;
+		
+		// Store new information
+		this._size = nextsize;
+		if (elements != source)
+			this._elements = elements;
 	}
 	
 	@Override
@@ -122,12 +157,6 @@ public class ArrayList<E>
 	
 	@Override
 	public int indexOf(Object __a)
-	{
-		throw new todo.TODO();
-	}
-	
-	@Override
-	public boolean isEmpty()
 	{
 		throw new todo.TODO();
 	}

@@ -93,10 +93,14 @@ public abstract class AbstractCollection<E>
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/10/28
+	 */
 	@Override
 	public boolean isEmpty()
 	{
-		throw new todo.TODO();
+		return this.size() == 0;
 	}
 	
 	@Override

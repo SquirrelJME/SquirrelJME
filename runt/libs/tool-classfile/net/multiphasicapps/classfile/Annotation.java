@@ -17,6 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import net.multiphasicapps.collections.UnmodifiableMap;
 
 /**
  * This represents an annotation which has values assigned to keys.
@@ -105,6 +106,17 @@ public final class Annotation
 	public final int hashCode()
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the key and value map.
+	 *
+	 * @return The key and value map.
+	 * @since 2018/10/28
+	 */
+	public final Map<MethodName, AnnotationValue> keyValueMap()
+	{
+		return UnmodifiableMap.<MethodName, AnnotationValue>of(this._values);
 	}
 	
 	/**
