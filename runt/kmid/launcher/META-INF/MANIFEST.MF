@@ -6,7 +6,7 @@ X-SquirrelJME-Version: 0.0.2
 X-SquirrelJME-Description: This project contains the graphical launcher 
  that SquirrelJME uses to act as a front end interface to running user p
  rograms.
-X-SquirrelJME-Depends: squirreljme-launcher midp-lcdui meep-midlet
+X-SquirrelJME-Depends: midp-lcdui meep-midlet meep-swm
 X-SquirrelJME-Error: EP
 X-SquirrelJME-UUID: 2ec9b1c4-3adb-4dd0-acfa-48f878dd6cdd
 MIDlet-1: SquirrelJME Launcher (Graphical), , net.multiphasicapps.launch
