@@ -88,10 +88,6 @@ public final class IntegerArrays
 			int p = __from + (((__to - __from) + 1) >> 1),
 				pv = __a.get(p);
 			
-			// Debug
-			todo.DEBUG.note("%s ?= <%s |%s| %s> = %s", __key, __from, p, __to,
-				pv);
-			
 			// Left of pivot?
 			if (__key < pv)
 				__to = p - 1;

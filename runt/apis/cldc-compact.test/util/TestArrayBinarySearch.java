@@ -57,8 +57,6 @@ public class TestArrayBinarySearch
 			// Is this our expected value?
 			if (res == want)
 				rv |= (1L << (long)i);
-			
-			todo.DEBUG.note("%s -> %s should be %s", i, res, want);
 		}
 		
 		return rv;
