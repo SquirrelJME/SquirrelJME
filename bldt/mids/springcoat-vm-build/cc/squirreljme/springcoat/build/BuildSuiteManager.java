@@ -78,11 +78,11 @@ public final class BuildSuiteManager
 		{
 			// Add sources
 			for (Source s : manager.sourceManager(timespace))
-				rv.add(s.name().toString());
+				rv.add(s.name().toString() + ".jar");
 			
 			// Add binaries
 			for (Binary b : manager.binaryManager(timespace))
-				rv.add(b.name().toString());
+				rv.add(b.name().toString() + ".jar");
 		}
 		
 		// {@squirreljme.error BA02 Could not list suites available.}
@@ -104,6 +104,10 @@ public final class BuildSuiteManager
 	{
 		if (__s == null)
 			throw new NullPointerException("NARG");
+		
+		// Remove the extension
+		if (__s.endsWith(".jar"))
+			__s = __s.substring(0, __s.length() - 4);
 		
 		// Lock
 		Map<String, SpringClassLibrary> libraries = this._libraries;
