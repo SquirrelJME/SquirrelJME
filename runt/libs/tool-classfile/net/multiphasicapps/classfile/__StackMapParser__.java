@@ -252,7 +252,7 @@ final class __StackMapParser__
 			
 			// If a wide element was added, then the next one becomes TOP
 			if (aa.isWide())
-				nextlocals[++i] = StackMapTableEntry.TOP_UNDEFINED;
+				nextlocals[++i] = aa.topType();
 		}
 		
 		// Error if added stuff remains
