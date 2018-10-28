@@ -383,6 +383,10 @@ abstract class __CoreTest__
 		else if (__s.startsWith("int:"))
 			return Integer.valueOf(__s.substring(4));
 		
+		// Long
+		else if (__s.startsWith("long:"))
+			return Long.valueOf(__s.substring(5));
+		
 		// {@squirreljme.error BU06 The specified string cannot be converted
 		// to an object because it an unknown representation, the conversion
 		// is only one way. (The encoded data)}
@@ -441,6 +445,10 @@ abstract class __CoreTest__
 		// Integer
 		else if (__o instanceof Integer)
 			return "int:" + __o.toString();
+		
+		// Long
+		else if (__o instanceof Long)
+			return "long:" + __o.toString();
 		
 		// Throwable, meta data is used
 		else if (__o instanceof Throwable)
