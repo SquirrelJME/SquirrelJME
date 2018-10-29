@@ -70,7 +70,7 @@ public abstract class AbstractList<E>
 	@Override
 	public void clear()
 	{
-		return this.removeRange(0, this.size());
+		this.removeRange(0, this.size());
 	}
 	
 	/**
@@ -83,6 +83,8 @@ public abstract class AbstractList<E>
 	 * @since 2017/11/21
 	 */
 	@Override
+	@ImplementationNote("This method considers if the source and target " +
+		"lists are RandomAccess, for more optimized comparison.")
 	public boolean equals(Object __o)
 	{
 		// Same object, no point in comparing against self

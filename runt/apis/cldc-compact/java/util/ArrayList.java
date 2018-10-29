@@ -112,6 +112,9 @@ public class ArrayList<E>
 		this._size = nextsize;
 		if (elements != source)
 			this._elements = elements;
+		
+		// Structurally modified
+		this.modCount++;
 	}
 	
 	@Override
@@ -129,7 +132,17 @@ public class ArrayList<E>
 	@Override
 	public void clear()
 	{
-		throw new todo.TODO();
+		// Clear the entire 
+		E[] elements = this._elements;
+		int size = this._size;
+		for (int i = 0; i < size; i++)
+			elements[i] = 0;
+		
+		// Keep the backing array, just clear the size
+		this._size = 0;
+		
+		// Structurally modified
+		this.modCount++;
 	}
 	
 	@Override

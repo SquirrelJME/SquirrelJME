@@ -365,7 +365,7 @@ public final class SpringClass
 		
 			// Go through interfaces for the class to find this class
 			for (SpringClass i : r._interfaceclasses)
-				if (i == this)
+				if (this.isAssignableFrom(i))
 					return true;
 		}
 		
