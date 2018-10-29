@@ -10,6 +10,8 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.ProgrammerTip;
+
 public abstract class AbstractList<E>
 	extends AbstractCollection<E>
 	implements List<E>
@@ -44,10 +46,15 @@ public abstract class AbstractList<E>
 		return this.size() != oldsize;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/10/29
+	 */
 	@Override
+	@ProgrammerTip("Implement for variable sized lists.")
 	public void add(int __a, E __b)
 	{
-		throw new todo.TODO();
+		throw new UnsupportedOperationException("RORO");
 	}
 	
 	@Override
@@ -56,10 +63,14 @@ public abstract class AbstractList<E>
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/10/29
+	 */
 	@Override
 	public void clear()
 	{
-		throw new todo.TODO();
+		return this.removeRange(0, this.size());
 	}
 	
 	/**
@@ -200,21 +211,46 @@ public abstract class AbstractList<E>
 		return new __ListIterator__(__i);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/10/29
+	 */
 	@Override
-	public E remove(int __a)
+	@ProgrammerTip("Implement for variable sized lists.")
+	public E remove(int __i)
+	{
+		throw new UnsupportedOperationException("RORO");
+	}
+	
+	/**
+	 * Removes elements from the given inclusive range to the given exclusive
+	 * range.
+	 *
+	 * The basic implementation of this method uses the list iterator until
+	 * the from index is reached, once it has been reached it will remove
+	 * the given number of elements. Therefor
+	 *
+	 * @param __from The first element to remove, inclusive.
+	 * @param __to The last element to remove, exclusive.
+	 * @since 2018/10/29
+	 */
+	@ProgrammerTip("The basic implementation of this method is not " +
+		"efficient at all, it should be reimplemented if removal is a " +
+		"busy operation.")
+	protected void removeRange(int __from, int __to)
 	{
 		throw new todo.TODO();
 	}
 	
-	protected void removeRange(int __a, int __b)
-	{
-		throw new todo.TODO();
-	}
-	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/10/29
+	 */
 	@Override
-	public E set(int __a, E __b)
+	@ProgrammerTip("Implement for modifiable lists.")
+	public E set(int __i, E __v)
 	{
-		throw new todo.TODO();
+		throw new UnsupportedOperationException("RORO");
 	}
 	
 	@Override
@@ -225,11 +261,23 @@ public abstract class AbstractList<E>
 	
 	/**
 	 * List iterator which can go forwards and backwards through this abstract
-	 * list. Indexed elements are used here, not sequential lists
+	 * list. Indexed elements are used here, not sequential lists.
+	 *
+	 * @since 2018/10/28
 	 */
 	private final class __ListIterator__
 		implements ListIterator<E>
 	{
+		/** The next element to be returned. */
+		private int _next;
+		
+		/** The current modification count, to detect modifications. */
+		private int _atmod;
+		
+		/** The index to be removed. */
+		private int _rmdx =
+			-1;
+		
 		/**
 		 * Initializes the list iterator.
 		 *
@@ -241,7 +289,11 @@ public abstract class AbstractList<E>
 		__ListIterator__(int __i)
 			throws IndexOutOfBoundsException
 		{
-			throw new todo.TODO();
+			if (__i < 0 || __i > AbstractList.this.size())
+				throw new IndexOutOfBoundsException("IOOB");
+			
+			this._next = __i;
+			this._atmod = AbstractList.this.modCount;
 		}
 		
 		/**
@@ -280,6 +332,7 @@ public abstract class AbstractList<E>
 		 */
 		@Override
 		public final E next()
+			throws NoSuchElementException
 		{
 			throw new todo.TODO();
 		}
@@ -291,7 +344,7 @@ public abstract class AbstractList<E>
 		@Override
 		public final int nextIndex()
 		{
-			throw new todo.TODO();
+			return this._next;
 		}
 		
 		/**
@@ -300,6 +353,7 @@ public abstract class AbstractList<E>
 		 */
 		@Override
 		public final E previous()
+			throws NoSuchElementException
 		{
 			throw new todo.TODO();
 		}
@@ -311,7 +365,8 @@ public abstract class AbstractList<E>
 		@Override
 		public final int previousIndex()
 		{
-			throw new todo.TODO();
+			// If next is zero then this would be -1
+			return this._next - 1;
 		}
 		
 		/**
@@ -321,6 +376,11 @@ public abstract class AbstractList<E>
 		@Override
 		public final void remove()
 		{
+			// {@squirreljme.error ZZ2q
+			int rmdx = this._rmdx;
+			if (rmdx < 0)
+				throw new IllegalStateException("ZZ2q");
+			
 			throw new todo.TODO();
 		}
 		
