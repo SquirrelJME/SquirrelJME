@@ -19,10 +19,13 @@ import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import net.multiphasicapps.collections.EmptyIterator;
@@ -53,10 +56,10 @@ public class Suite
 		new Object();
 	
 	/** Cached manifest information. */
-	private volatile Reference<JavaManifest> _manifest;
+	private Reference<JavaManifest> _manifest;
 	
 	/** Cached suite information. */
-	private volatile Reference<SuiteInfo> _suiteinfo;
+	private Reference<SuiteInfo> _suiteinfo;
 	
 	/** No manifest available for usage? */
 	private volatile boolean _nomanifest;
@@ -143,15 +146,12 @@ public class Suite
 	 */
 	public String getAttributeValue(String __a)
 	{
-		throw new todo.TODO();
-		/*
-		Library program = this._library;
-		if (program == null)
+		// System suite always returns null
+		if (this._name == null)
 			return null;
 		
-		return this.__manifest().getMainAttributes().get(
-			new JavaManifestKey(__a));
-		*/
+		// Just need to read the value from the manifest
+		return this.__manifest().getMainAttributes().getValue(__a);
 	}
 	
 	/**
@@ -228,21 +228,33 @@ public class Suite
 	 */
 	public Iterator<String> getMIDlets()
 	{
-		throw new todo.TODO();
-		/*
-		Library program = this._library;
-		if (program == null)
+		// System suite always returns null
+		if (this._name == null)
 			return EmptyIterator.<String>empty();
 		
-		EntryPoints entries = new EntryPoints(
-			this.__manifest().getMainAttributes());
-		Set<String> rv = new LinkedHashSet<>();
+		JavaManifestAttributes attr = this.__manifest().getMainAttributes();
 		
-		for (EntryPoint e : entries)
-			rv.add(e.entryPoint());
+		// Load in all midlet descriptions
+		List<String> rv = new LinkedList<>();
+		for (int i = 1; i >= 1; i++)
+		{
+			// These are in the following format
+			String maybe = attr.getValue("MIDlet-" + i);
+			if (maybe == null)
+				break;
+			
+			// The value is in the following format:
+			// name, icon, entry point
+			// We only care about the entry point
+			int lm = maybe.lastIndexOf(',');
+			if (lm < 0)
+				continue;
+			
+			// Use trimmed string since there may be extra whitespace
+			rv.add(maybe.substring(lm + 1).trim());
+		}
 		
 		return rv.iterator();
-		*/
 	}
 	
 	/**

@@ -11,6 +11,7 @@
 package java.lang;
 
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+import cc.squirreljme.runtime.cldc.annotation.ProgrammerTip;
 import cc.squirreljme.runtime.cldc.i18n.DefaultLocale;
 import cc.squirreljme.runtime.cldc.i18n.Locale;
 import cc.squirreljme.runtime.cldc.string.BasicSequence;
@@ -399,9 +400,49 @@ public final class String
 		return true;
 	}
 	
-	public boolean equalsIgnoreCase(String __a)
+	/**
+	 * Checks if one string is equal to the other, ignoring case and ignoring
+	 * any locale differences.
+	 *
+	 * A character is considered equal if they are the same character, the
+	 * uppercase result of both characters is the same, or the lowercase
+	 * result of each character is the same.
+	 *
+	 * @param __o The other string to check.
+	 * @return If the two strings are equal.
+	 * @since 2018/10/29
+	 */
+	@ProgrammerTip("Locale is not considered.")
+	public boolean equalsIgnoreCase(String __o)
 	{
-		throw new todo.TODO();
+		// Always false
+		if (__o == null)
+			return false;
+		
+		// Directly use sequences, is faster
+		BasicSequence sa = this._sequence,
+			sb = __o._sequence;
+		
+		// Two strings of inequal length will never be the same
+		int n = sa.length();
+		if (n != sb.length())
+			return false;
+		
+		// Check characters
+		for (int i = 0; i < n; i++)
+		{
+			char a = sa.charAt(i),
+				b = sb.charAt(i);
+			
+			// Is a different character?
+			if (a != b &&
+				Character.toUpperCase(a) != Character.toUpperCase(b) &&
+				Character.toLowerCase(b) != Character.toLowerCase(b))
+				return false;
+		}
+		
+		// The same
+		return true;
 	}
 	
 	/**
