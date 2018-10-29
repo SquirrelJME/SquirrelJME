@@ -503,6 +503,10 @@ public class LinkedList<E>
 				
 				// The link becomes a new empty chain with the value
 				link = new __Link__<E>(null, __v, null);
+				
+				// Set both head and tail
+				LinkedList.this._head = link;
+				LinkedList.this._tail = link;
 			}
 			
 			// Linking into the chain
@@ -513,7 +517,13 @@ public class LinkedList<E>
 				vdx++;
 				
 				// Link in our chain
+				__Link__<E> oldlink = link;
 				link = new __Link__<E>(link, __v, link._next);
+				
+				// If the current tail of the list was the element we just
+				// linked from, we replace it
+				if (LinkedList.this._tail == oldlink)
+					LinkedList.this._tail = link;
 			}
 			
 			// Increase list size
