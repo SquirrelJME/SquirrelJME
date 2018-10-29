@@ -136,7 +136,7 @@ public class ArrayList<E>
 		E[] elements = this._elements;
 		int size = this._size;
 		for (int i = 0; i < size; i++)
-			elements[i] = 0;
+			elements[i] = null;
 		
 		// Keep the backing array, just clear the size
 		this._size = 0;
