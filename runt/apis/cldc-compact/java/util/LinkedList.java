@@ -10,6 +10,8 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+
 /**
  * A linked list is a list of items which are held together using chains. Each
  * value for an element is placed within a chain link which is then held to
@@ -26,6 +28,8 @@ package java.util;
  * @param <E> The type of element to store.
  * @since 2016/09/05
  */
+@ImplementationNote("For simplicity this uses base anchor nodes for the " +
+	"head and tail of the list.")
 public class LinkedList<E>
 	extends AbstractSequentialList<E>
 	implements List<E>, Deque<E>, Cloneable
@@ -34,10 +38,12 @@ public class LinkedList<E>
 	private int _size;
 	
 	/** The list head. */
-	private __Link__<E> _head;
+	private final __Link__<E> _head =
+		new __Link__<E>(null, null, null);
 	
-	/** The list tail. */
-	private __Link__<E> _tail;
+	/** The list tail, this gets linked into the head. */
+	private final __Link__<E> _tail =
+		new __Link__<E>(this._head, null, null);
 	
 	/**
 	 * Initializes a linked list with no entries.
@@ -159,9 +165,6 @@ public class LinkedList<E>
 	@Override
 	public ListIterator<E> listIterator(int __i)
 	{
-		int size = this._size;
-		if (size == 0 && __i == 0)
-			return new __ListIterator__();
 		return new __ListIterator__(__i);
 	}
 	
@@ -410,31 +413,14 @@ public class LinkedList<E>
 		private int _vdx;	
 		
 		/** The current link the list is at. */
-		private __Link__<E> _link;
+		private __Link__<E> _next;
 		
-		/** The link to remove, should always be next to link. */
-		private __Link__<E> _remove;
+		/** The last element, for removal or setting */
+		private __Link__<E> _last;
 		
 		/** The current modification count, to detect modifications. */
 		private int _atmod =
 			LinkedList.this.modCount;
-		
-		/** Can removal be done? */
-		private boolean _canremove;
-		
-		/** Can set be done? */
-		private boolean _canset;
-		
-		/**
-		 * Initializes the iterator for the empty list.
-		 *
-		 * @since 2018/10/29
-		 */
-		__ListIterator__()
-		{
-			this._vdx = 0;
-			this._link = null;
-		}
 		
 		/**
 		 * Initializes the iterator starting at the given index.
@@ -451,31 +437,27 @@ public class LinkedList<E>
 			if (__i < 0 || __i > size)
 				throw new IndexOutOfBoundsException("IOOB");
 			
-			// At the very end of the list, will be null
+			// Closer to the start of the list
 			__Link__<E> rover;
-			if (__i == size)
-				rover = null;
-			
-			// Closer to the start, go from start
-			else if (__i < (size >> 1))
+			if (__i < (size >> 1))
 			{
 				rover = LinkedList.this._head;
 				
-				for (int i = 0; i < __i; i++)
+				for (int i = -1; i < __i; i++)
 					rover = rover._next;
 			}
 			
-			// Closer to the end, go from end
+			// Closer to the end of the list
 			else
 			{
 				rover = LinkedList.this._tail;
 				
-				for (int i = size - 1; i > __i; i--)
+				for (int i = size; i > __i; i--)
 					rover = rover._prev;
 			}
 			
 			// Store start information
-			this._link = rover;
+			this._next = rover;
 			this._vdx = __i;
 		}
 		
@@ -490,73 +472,27 @@ public class LinkedList<E>
 			__checkConcurrent();
 			
 			// These will both be adjusted
-			int vdx = this._vdx,
-				size = LinkedList.this._size;
-			__Link__<E> link = this._link;
+			int vdx = this._vdx;
+			__Link__<E> next = this._next;
 			
 			// The documentation specifies that the object is inserted
 			// before the implicit cursor, which means the next call to
 			// previous will return the new element. Next would just return
 			// the same element no matter how many elements are added.
+			// So it is inserted between the previous and our current next
+			new __Link__<E>(next._prev, __v, next);
 			
-			// Inserting at the start of the list
-			if (vdx <= 0)
-			{
-				// So VDX just turns to 1, next will still have nothing because
-				// it is the end of the list
-				vdx = 1;
-				
-				// Link into the other head
-				link = new __Link__<E>(null, __v, LinkedList.this._head);
-				
-				// The head becomes this link
-				LinkedList.this._head = link;
-				
-				// Only set the tail if the list is completely empty
-				if (size == 0)
-					LinkedList.this._tail = link;
-			}
+			// Since we inserted an item, vdx goes up
+			this._vdx++;
 			
-			// Linking to the end of the list
-			else if (link == null)
-			{
-				// We always add before this one, so this index goes up
-				vdx++;
-				
-				// Link to end of the list and set new tail
-				link = new __Link__<E>(LinkedList.this._tail, __v, null);
-				
-				// Set new tail to be this link
-				LinkedList.this._tail = link;
-			}
-			
-			// Linking into the chain somewhere in the middle or at the end
-			else
-			{
-				// We always add before this one, so this index goes up
-				vdx++;
-				
-				// Since we add before this link (that is our next element
-				// remains constant) this means the link remains the same. So
-				// we work on the previous and do not change link at all
-				// although vdx goes up
-				new __Link__<E>(link._prev, __v, link);
-			}
-			
-			// Increase list size
-			LinkedList.this._size = size + 1;
+			// Size also goes up
+			LinkedList.this._size++;
 			
 			// Set list as being modified and update our count to match
 			this._atmod = ++LinkedList.this.modCount;
 			
-			// Set new iterator properties
-			this._vdx = vdx;
-			this._link = link;
-			
-			// Invalidates these operations
-			this._canremove = false;
-			this._canset = false;
-			this._remove = null;
+			// Cannot remove or set
+			this._last = null;
 		}
 		
 		/**
@@ -599,24 +535,20 @@ public class LinkedList<E>
 			// Check modification
 			__checkConcurrent();
 			
-			// If there is no link we fell off the list
-			__Link__<E> link = this._link;
-			if (link == null)
+			// We are at the tail node, do nothing
+			__Link__<E> next = this._next;
+			if (next == LinkedList.this._tail)
 				throw new NoSuchElementException("NSEE");
 			
-			// Removal will be done on this link
-			this._remove = link;
+			// Removal and set and be done on this
+			this._last = next;
 			
-			// Set values for the next index
+			// Iterate and record for the next element
 			this._vdx++;
-			this._link = link._next;
+			this._next = next._next;
 			
-			// These can be done
-			this._canremove = true;
-			this._canset = true;
-			
-			// Return this links value
-			return link._value;
+			// Return the current value
+			return next._value;
 		}
 		
 		/**
@@ -674,48 +606,11 @@ public class LinkedList<E>
 			// {@squirreljme.error ZZ2t Cannot remove the element from the
 			// linked list because there was no previous call to next or
 			// previous, or add was called.}
-			if (!this._canremove)
+			__Link__<E> last = this._last,
+				next = this._next;
+			if (last == null)
 				throw new IllegalStateException("ZZ2t");
-			
-			// Determine how to unlink this chain depending on how the element
-			// to be removed chains with the current link. Link is always set
-			// to the last returned value from next/previous.
-			int vdx = this._vdx;
-			__Link__<E> remove = this._remove,
-				link = this._link;
-			
-			// Going forward in the chain
-			if (remove._next == link)
-			{
-				if (true)
-					throw new todo.TODO();
-			}
-			
-			// Going backwards in the chain
-			else if (remove._prev == link)
-			{
-				if (true)
-					throw new todo.TODO();
-			}
-			
-			// Something bad happened and the chain was tangled somehow
-			else
-				throw new RuntimeException("OOPS");
-				
-			// Drecrease list size
-			LinkedList.this._size--;
-			
-			// Set new values
-			this._vdx = vdx;
-			this._link = link;
-			
-			// Set list as being modified and update our count to match
-			this._atmod = ++LinkedList.this.modCount;
-			
-			// Invalidates these
-			this._canremove = false;
-			this._canset = false;
-			this._remove = null;
+			throw new todo.TODO();
 		}
 		
 		/**
@@ -732,10 +627,12 @@ public class LinkedList<E>
 			// {@squirreljme.error ZZ2u Cannot set the element from the
 			// linked list because there was no previous call to next or
 			// previous, or add was called.}
-			if (!this._canset)
+			__Link__<E> last = this._last;
+			if (last == null)
 				throw new IllegalStateException("ZZ2u");
 			
-			throw new todo.TODO();
+			// Just set it
+			last._value = __v;
 		}
 		
 		/**
@@ -749,7 +646,14 @@ public class LinkedList<E>
 		{
 			// {@squirreljme.error ZZ2s List has been concurrently modified.}
 			if (this._atmod != LinkedList.this.modCount)
+			{
+				// Just empty these out so they are never used again
+				this._next = null;
+				this._last = null;
+				
+				// Fail
 				throw new ConcurrentModificationException("ZZ2s");
+			}
 		}
 	}
 	
