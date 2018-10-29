@@ -265,14 +265,11 @@ public class Suite
 	 */
 	public String getName()
 	{
-		throw new todo.TODO();
-		/*
-		Library program = this._library;
-		if (program == null)
+		// System suite always returns null
+		if (this._name == null)
 			return null;
 		
 		return this.__suiteInfo().name().toString();
-		*/
 	}
 	
 	/**
@@ -316,14 +313,11 @@ public class Suite
 	 */
 	public String getVendor()
 	{
-		throw new todo.TODO();
-		/*
-		Library program = this._library;
-		if (program == null)
+		// System suite always returns null
+		if (this._name == null)
 			return null;
 		
 		return this.__suiteInfo().vendor().toString();
-		*/
 	}
 	
 	/**
@@ -334,14 +328,11 @@ public class Suite
 	 */
 	public String getVersion()
 	{
-		throw new todo.TODO();
-		/*
-		Library program = this._library;
-		if (program == null)
+		// System suite always returns null
+		if (this._name == null)
 			return null;
 		
 		return this.__suiteInfo().version().toString();
-		*/
 	}
 	
 	/**
@@ -354,8 +345,8 @@ public class Suite
 	@Override
 	public int hashCode()
 	{
-		return Objects.hashCode(getVendor()) ^
-			Objects.hashCode(getName());
+		return Objects.hashCode(this.getVendor()) ^
+			Objects.hashCode(this.getName());
 	}
 	
 	/**

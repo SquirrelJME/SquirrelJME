@@ -165,10 +165,30 @@ public abstract class AbstractCollection<E>
 		return __v;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/10/29
+	 */
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		StringBuilder sb = new StringBuilder("[");
+		
+		// Build string
+		boolean comma = false;
+		for (Iterator<E> it = this.iterator(); it.hasNext();)
+		{
+			// Add comma
+			if (comma)
+				sb.append(", ");
+			comma = true;
+			
+			// Add item
+			sb.append(it.next());
+		}
+		
+		sb.append("]");
+		return sb.toString();
 	}
 }
 

@@ -948,6 +948,11 @@ public final class SpringThreadWorker
 					return new SpringPrimitiveWeakReference();
 				}
 				
+				// Identity hash code
+			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
+				"identityHashCode:(Ljava/lang/Object;)I":
+				return System.identityHashCode(((SpringObject)__args[0]));
+				
 				// Get reference
 			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
 				"referenceGet:(Lcc/squirreljme/runtime/cldc/ref/" +
@@ -2119,6 +2124,15 @@ public final class SpringThreadWorker
 						Integer b = frame.<Integer>popFromStack(Integer.class),
 							a = frame.<Integer>popFromStack(Integer.class);
 						frame.pushToStack(a - b);
+					}
+					break;
+				
+					// XOR integer
+				case InstructionIndex.IXOR:
+					{
+						int b = frame.<Integer>popFromStack(Integer.class),
+							a = frame.<Integer>popFromStack(Integer.class);
+						frame.pushToStack(a ^ b);
 					}
 					break;
 					

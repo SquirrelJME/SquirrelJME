@@ -68,7 +68,7 @@ public final class Database
 		// Need this to go through all the available suites for testing
 		SuiteManager sm = ManagerFactory.getSuiteManager();
 		for (Suite s : sm.getSuites(SuiteType.APPLICATION))
-		{
+		{todo.DEBUG.note("Check suite: %s", s);
 			// This is not a test program for SquirrelJME, ignore
 			if (!Boolean.valueOf(s.getAttributeValue("x-squirreljme-tests")))
 				continue;
