@@ -32,10 +32,15 @@ public abstract class AbstractSequentialList<E>
 	@Override
 	public abstract ListIterator<E> listIterator(int __i);
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/10/29
+	 */
 	@Override
-	public void add(int __a, E __b)
+	public void add(int __i, E __v)
 	{
-		throw new todo.TODO();
+		// Just adds the entry at the given position
+		this.listIterator(__i).add(__v);
 	}
 	
 	@Override

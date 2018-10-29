@@ -8,34 +8,45 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package java.util;
+package cc.squirreljme.runtime.cldc.lang;
+
+import java.io.PrintStream;
 
 /**
- * This is thrown when no element exists, usually from an {@link Iterator}.
+ * This method is called when there has been an uncaught exception being
+ * handled.
  *
  * @since 2018/10/29
  */
-public class NoSuchElementException
-	extends RuntimeException
+public final class UncaughtExceptionHandler
 {
 	/**
-	 * Initializes the exception with no message or cause.
+	 * Not used.
 	 *
 	 * @since 2018/10/29
 	 */
-	public NoSuchElementException()
+	private UncaughtExceptionHandler()
 	{
 	}
 	
 	/**
-	 * Initializes the exception with the given message and no cause.
+	 * Performs some default handling for exceptions that were not caught
+	 * anywhere.
 	 *
-	 * @param __m The message.
+	 * @param __t The throwable to handle.
 	 * @since 2018/10/29
 	 */
-	public NoSuchElementException(String __m)
+	public static final void handle(Throwable __t)
 	{
-		super(__m);
+		// Print exception stack
+		PrintStream out = System.err;
+		out.println("Uncaught exception:");
+		if (__t != null)
+			__t.printStackTrace(out);
+		
+		// Check if this is the only running thread, if it is then exit the
+		// VM with some error status
+		throw new todo.TODO();
 	}
 }
 

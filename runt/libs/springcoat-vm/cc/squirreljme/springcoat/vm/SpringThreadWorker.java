@@ -1223,8 +1223,21 @@ public final class SpringThreadWorker
 			// Pop our current frame from the call stack
 			thread.popFrame();
 			
-			// Get our new top frame from the call stack
+			// Did we run out of stack frames?
 			SpringThread.Frame cf = thread.currentFrame();
+			if (cf == null)
+			{
+				// Send our throwable to a special handler
+				this.invokeMethod(true, new ClassName("cc/squirreljme/" +
+					"runtime/cldc/lang/UncaughtExceptionHandler"),
+					new MethodNameAndType("handle",
+					"(Ljava/lang/Throwable;)V"), __o);
+				
+				// Just stop execution here
+				return -1;
+			}
+			
+			// Toss onto the new current frame
 			cf.tossException(__o);
 			
 			// Stop executing here and let it continue on the

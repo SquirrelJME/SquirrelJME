@@ -13,13 +13,15 @@ package java.util;
 /**
  * A linked list is a list of items which are held together using chains. Each
  * value for an element is placed within a chain link which is then held to
- * other links in the chain.
+ * other links in the chain. This is a doubly linked list.
  *
  * This class has efficient insertion and removal via the iterator interfaces.
  *
  * Random access is not efficient and the further away the element is from the
  * initial sequence the more elements will need to be skipped to access the
  * data.
+ *
+ * This class is not thread safe.
  *
  * @param <E> The type of element to store.
  * @since 2016/09/05
@@ -29,7 +31,13 @@ public class LinkedList<E>
 	implements List<E>, Deque<E>, Cloneable
 {
 	/** The number of entries in the list. */
-	private volatile int _count;
+	private int _size;
+	
+	/** The list head. */
+	private __Link__<E> _head;
+	
+	/** The list tail. */
+	private __Link__<E> _tail;
 	
 	/**
 	 * Initializes a linked list with no entries.
@@ -56,7 +64,7 @@ public class LinkedList<E>
 			throw new NullPointerException("NARG");
 		
 		// Just call addAll
-		addAll(__a);
+		this.addAll(__a);
 	}
 	
 	/**
@@ -64,9 +72,9 @@ public class LinkedList<E>
 	 * @since 2016/09/05
 	 */
 	@Override
-	public void addFirst(E __a)
+	public void addFirst(E __v)
 	{
-		add(0, __a);
+		this.add(0, __v);
 	}
 	
 	/**
@@ -74,9 +82,9 @@ public class LinkedList<E>
 	 * @since 2016/09/05
 	 */
 	@Override
-	public void addLast(E __a)
+	public void addLast(E __v)
 	{
-		add(__a);
+		this.add(this.size(), __v);
 	}
 	
 	/**
@@ -107,7 +115,7 @@ public class LinkedList<E>
 	public E element()
 		throws NoSuchElementException
 	{
-		return getFirst();
+		return this.getFirst();
 	}
 	
 	/**
@@ -120,11 +128,11 @@ public class LinkedList<E>
 	{
 		// {@squirreljme.error ZZ08 Cannot get the first element because the
 		// linked list is empty.}
-		if (size() == 0)
+		if (this.size() == 0)
 			throw new NoSuchElementException("ZZ08");
 		
 		// Get it
-		return get(0);
+		return this.get(0);
 	}
 	
 	/**
@@ -137,11 +145,11 @@ public class LinkedList<E>
 		// {@squirreljme.error ZZ09 Cannot get the last element because the
 		// linked list is empty.}
 		int sz;
-		if ((sz = size()) == 0)
+		if ((sz = this.size()) == 0)
 			throw new NoSuchElementException("ZZ09");
 		
 		// Get it
-		return get(sz - 1);
+		return this.get(sz - 1);
 	}
 	
 	/**
@@ -149,9 +157,12 @@ public class LinkedList<E>
 	 * @since 2016/09/05
 	 */
 	@Override
-	public ListIterator<E> listIterator(int __a)
+	public ListIterator<E> listIterator(int __i)
 	{
-		throw new todo.TODO();
+		int size = this._size;
+		if (size == 0 && __i == 0)
+			return new __ListIterator__();
+		return new __ListIterator__(__i);
 	}
 	
 	/**
@@ -159,9 +170,9 @@ public class LinkedList<E>
 	 * @since 2016/09/05
 	 */
 	@Override
-	public boolean offer(E __a)
+	public boolean offer(E __v)
 	{
-		return offerLast(__a);
+		return offerLast(__v);
 	}
 	
 	/**
@@ -169,22 +180,22 @@ public class LinkedList<E>
 	 * @since 2016/09/05
 	 */
 	@Override
-	public boolean offerFirst(E __a)
+	public boolean offerFirst(E __v)
 	{
 		// There are no capacity restrictions
-		add(0, __a);
+		this.add(0, __v);
 		return true;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2016/09/05
+	 * @since 2018/10/29
 	 */
 	@Override
-	public boolean offerLast(E __a)
+	public boolean offerLast(E __v)
 	{
 		// There are no capacity restrictions
-		add(size(), __a);
+		this.add(this.size(), __v);
 		return true;
 	}
 	
@@ -195,7 +206,7 @@ public class LinkedList<E>
 	@Override
 	public E peek()
 	{
-		return peekFirst();
+		return this.peekFirst();
 	}
 	
 	/**
@@ -206,11 +217,11 @@ public class LinkedList<E>
 	public E peekFirst()
 	{
 		// Return null on empty list
-		if (size() == 0)
+		if (this.size() == 0)
 			return null;
 		
 		// Get otherwise
-		return get(0);
+		return this.get(0);
 	}
 	
 	/**
@@ -248,7 +259,7 @@ public class LinkedList<E>
 	{
 		try
 		{
-			return removeFirst();
+			return this.removeFirst();
 		}
 		
 		// Is empty
@@ -267,7 +278,7 @@ public class LinkedList<E>
 	{
 		try
 		{
-			return removeLast();
+			return this.removeLast();
 		}
 		
 		// Is empty
@@ -292,9 +303,9 @@ public class LinkedList<E>
 	 * @since 2016/09/05
 	 */
 	@Override
-	public void push(E __a)
+	public void push(E __v)
 	{
-		addFirst(__a);
+		this.addFirst(__v);
 	}
 	
 	/**
@@ -304,7 +315,7 @@ public class LinkedList<E>
 	@Override
 	public E remove()
 	{
-		return removeFirst();
+		return this.removeFirst();
 	}
 	
 	/**
@@ -384,7 +395,376 @@ public class LinkedList<E>
 	@Override
 	public int size()
 	{
-		return this._count;
+		return this._size;
+	}
+	
+	/**
+	 * The list iterator for this linked list.
+	 *
+	 * @since 2018/10/29
+	 */
+	private final class __ListIterator__
+		implements ListIterator<E>
+	{
+		/** The virtualized index for the list (estimated). */
+		private int _vdx;	
+		
+		/** The current link the list is at. */
+		private __Link__<E> _link;
+		
+		/** The link to remove, should always be next to link. */
+		private __Link__<E> _remove;
+		
+		/** The current modification count, to detect modifications. */
+		private int _atmod =
+			LinkedList.this.modCount;
+		
+		/** Can removal be done? */
+		private boolean _canremove;
+		
+		/** Can set be done? */
+		private boolean _canset;
+		
+		/**
+		 * Initializes the iterator for the empty list.
+		 *
+		 * @since 2018/10/29
+		 */
+		__ListIterator__()
+		{
+			this._vdx = 0;
+			this._link = null;
+		}
+		
+		/**
+		 * Initializes the iterator starting at the given index.
+		 *
+		 * @param __i The index to start at.
+		 * @throws IndexOutOfBoundsException If the index is outside of the
+		 * list bounds.
+		 * @since 2018/10/29
+		 */
+		__ListIterator__(int __i)
+			throws IndexOutOfBoundsException
+		{
+			int size = LinkedList.this._size;
+			if (__i < 0 || __i > size)
+				throw new IndexOutOfBoundsException("IOOB");
+			
+			// Closer to the start, go from start
+			__Link__<E> rover;
+			if (__i < (size >> 1))
+			{
+				rover = LinkedList.this._head;
+				
+				for (int i = 0; i < __i; i++)
+					rover = rover._next;
+			}
+			
+			// Closer to the end, go from end
+			else
+			{
+				rover = LinkedList.this._tail;
+				
+				for (int i = size - 1; i > __i; i--)
+					rover = rover._prev;
+			}
+			
+			// Store start information
+			this._link = rover;
+			this._vdx = __i;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/10/29
+		 */
+		@Override
+		public final void add(E __v)
+		{
+			// Check modification
+			__checkConcurrent();
+			
+			// These will both be adjusted
+			int vdx = this._vdx;
+			__Link__<E> link = this._link;
+			
+			// The documentation specifies that the object is inserted
+			// before the implicit cursor, which means the next call to
+			// previous will return the new element. Next would just return
+			// the same element no matter how many elements are added.
+			
+			// This is a fresh start of the list
+			if (link == null)
+			{
+				// So VDX just turns to 1, next will still have nothing because
+				// it is the end of the list
+				vdx = 1;
+				
+				// The link becomes a new empty chain with the value
+				link = new __Link__<E>(null, __v, null);
+			}
+			
+			// Linking into the chain
+			else
+			{
+				// There was an index placed before this one, so the virtual
+				// index goes up
+				vdx++;
+				
+				// Link in our chain
+				link = new __Link__<E>(link, __v, link._next);
+			}
+			
+			// Increase list size
+			LinkedList.this._size++;
+			
+			// Set list as being modified and update our count to match
+			this._atmod = ++LinkedList.this.modCount;
+			
+			// Set new iterator properties
+			this._vdx = vdx;
+			this._link = link;
+			
+			// Invalidates these operations
+			this._canremove = false;
+			this._canset = false;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/10/29
+		 */
+		@Override
+		public final boolean hasNext()
+		{
+			// Check modification
+			__checkConcurrent();
+			
+			// There is a next as long as the current element is before the
+			// size
+			return this._vdx < LinkedList.this._size;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/10/29
+		 */
+		@Override
+		public final boolean hasPrevious()
+		{
+			// Check modification
+			__checkConcurrent();
+			
+			// There is a previous as long as this is not the first element
+			return this._vdx > 0;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/10/28
+		 */
+		@Override
+		public final E next()
+			throws NoSuchElementException
+		{
+			// Check modification
+			__checkConcurrent();
+			
+			// If there is no link we fell off the list
+			__Link__<E> link = this._link;
+			if (link == null)
+				throw new NoSuchElementException("NSEE");
+			
+			// Removal will be done on this link
+			this._remove = link;
+			
+			// Set values for the next index
+			this._vdx++;
+			this._link = link._next;
+			
+			// These can be done
+			this._canremove = true;
+			this._canset = true;
+			
+			// Return this links value
+			return link._value;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/10/29
+		 */
+		@Override
+		public final int nextIndex()
+		{
+			// Check modification
+			__checkConcurrent();
+			
+			// Virtual index should match this one
+			return this._vdx;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/10/29
+		 */
+		@Override
+		public final E previous()
+		{
+			// Check modification
+			__checkConcurrent();
+			
+			throw new todo.TODO();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/10/29
+		 */
+		@Override
+		public final int previousIndex()
+		{
+			// Check modification
+			__checkConcurrent();
+			
+			// Should be the previous virtual index
+			return this._vdx - 1;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/10/29
+		 */
+		@Override
+		public final void remove()
+			throws IllegalStateException
+		{
+			// Check modification
+			__checkConcurrent();
+			
+			// {@squirreljme.error ZZ2t Cannot remove the element from the
+			// linked list because there was no previous call to next or
+			// previous, or add was called.}
+			if (!this._canremove)
+				throw new IllegalStateException("ZZ2t");
+			
+			// Determine how to unlink this chain depending on how the element
+			// to be removed chains with the current link. Link is always set
+			// to the last returned value from next/previous.
+			int vdx = this._vdx;
+			__Link__<E> remove = this._remove,
+				link = this._link;
+			
+			// Going forward in the chain
+			if (remove._next == link)
+			{
+				if (true)
+					throw new todo.TODO();
+			}
+			
+			// Going backwards in the chain
+			else if (remove._prev == link)
+			{
+				if (true)
+					throw new todo.TODO();
+			}
+			
+			// Something bad happened and the chain was tangled somehow
+			else
+				throw new RuntimeException("OOPS");
+				
+			// Drecrease list size
+			LinkedList.this._size--;
+			
+			// Set new values
+			this._vdx = vdx;
+			this._link = link;
+			
+			// Set list as being modified and update our count to match
+			this._atmod = ++LinkedList.this.modCount;
+			
+			// Invalidates these
+			this._canremove = false;
+			this._canset = false;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/10/29
+		 */
+		@Override
+		public final void set(E __v)
+			throws IllegalStateException
+		{
+			// Check modification
+			__checkConcurrent();
+			
+			// {@squirreljme.error ZZ2u Cannot set the element from the
+			// linked list because there was no previous call to next or
+			// previous, or add was called.}
+			if (!this._canset)
+				throw new IllegalStateException("ZZ2u");
+			
+			throw new todo.TODO();
+		}
+		
+		/**
+		 * Checks if the list was concurrently modified.
+		 *
+		 * @throws ConcurrentModificationException If it was modified.
+		 * @since 2018/10/29
+		 */
+		private final void __checkConcurrent()
+			throws ConcurrentModificationException
+		{
+			// {@squirreljme.error ZZ2s List has been concurrently modified.}
+			if (this._atmod != LinkedList.this.modCount)
+				throw new ConcurrentModificationException("ZZ2s");
+		}
+	}
+	
+	/**
+	 * Represents a single link in the linked list. This is just a basic
+	 * structure like object with public fields for simple access.
+	 *
+	 * @param <E> The type to store.
+	 * @since 2018/10/29
+	 */
+	static final class __Link__<E>
+	{
+		/** The previous link. */
+		__Link__<E> _prev;
+		
+		/** The next link. */
+		__Link__<E> _next;
+		
+		/** The value to store. */
+		E _value;
+		
+		/**
+		 * Initializes the new link and links into the chain.
+		 *
+		 * @param __prev The previous link to link in.
+		 * @param __v The value to use.
+		 * @param __next The next link to link in.
+		 * @since 2018/10/29
+		 */
+		__Link__(__Link__<E> __prev, E __v, __Link__<E> __next)
+		{
+			// Set value first
+			this._value = __v;
+			
+			// Link into previous chain
+			this._prev = __prev;
+			if (__prev != null)
+				__prev._next = this;
+			
+			// Link into next chain
+			this._next = __next;
+			if (__next != null)
+				__next._prev = this;
+		}
 	}
 }
 
