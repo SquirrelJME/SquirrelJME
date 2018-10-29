@@ -105,9 +105,6 @@ final class __SystemSuiteManager__
 				rv.add(s);
 		}
 		
-		// Debug
-		todo.DEBUG.note("Suites: %s", rv);
-		
 		return rv;
 	}
 	

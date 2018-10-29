@@ -68,7 +68,7 @@ public final class Database
 		// Need this to go through all the available suites for testing
 		SuiteManager sm = ManagerFactory.getSuiteManager();
 		for (Suite s : sm.getSuites(SuiteType.APPLICATION))
-		{todo.DEBUG.note("Check suite: %s", s);
+		{
 			// This is not a test program for SquirrelJME, ignore
 			if (!Boolean.valueOf(s.getAttributeValue("x-squirreljme-tests")))
 				continue;
@@ -77,9 +77,6 @@ public final class Database
 			for (Iterator<String> it = s.getMIDlets(); it.hasNext();)
 				units.add(new SingleUnit(s, it.next()));
 		}
-		
-		// Debug
-		todo.DEBUG.note("Loaded units: %s", units);
 		
 		// Build the final database
 		return new Database(units);
