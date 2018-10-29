@@ -1,0 +1,6 @@
+# 2018/10/28
+
+## 11:30
+
+I think for now, I will have wrappers for array type to integers and such, to
+make things easier for usage.
