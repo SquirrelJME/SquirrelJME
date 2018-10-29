@@ -86,7 +86,7 @@ public class ArrayList<E>
 		
 		E[] elements = this._elements;
 		int cap = elements.length,
-			nextsize = cap + 1;
+			nextsize = size + 1;
 		
 		// Cannot fit in this array
 		E[] source = elements;
@@ -129,6 +129,10 @@ public class ArrayList<E>
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/10/29
+	 */
 	@Override
 	public void clear()
 	{
