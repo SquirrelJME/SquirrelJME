@@ -522,12 +522,24 @@ public final class SpringClass
 		/*todo.DEBUG.note("Looking up field %s::%s (static=%b)", this.name,
 			__nat, __static);*/
 		
-		// {@squirreljme.error BK0j The specified field does not exist.
-		// (The class which was looked in; The name and type of the field)} 
+		// Field lookup starts at the current class, but also goes to the
+		// super class for non-statics
 		SpringField rv = this._fields.get(__nat);
 		if (rv == null)
+		{
+			// Lookup non-static fields in super class
+			if (!__static)
+			{
+				SpringClass sc = this.superclass;
+				if (sc != null)
+					return sc.lookupField(__static, __nat);
+			}
+			
+			// {@squirreljme.error BK0j The specified field does not exist.
+			// (The class which was looked in; The name and type of the field)}
 			throw new SpringNoSuchFieldException(String.format("BK0j %s %s",
 				this.name, __nat));
+		}
 		
 		// {@squirreljme.error BK0k The specified field exists in the class
 		// however it does not match being static. (The class the field is in;
