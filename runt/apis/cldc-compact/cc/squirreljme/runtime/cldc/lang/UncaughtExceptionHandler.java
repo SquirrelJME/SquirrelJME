@@ -38,11 +38,15 @@ public final class UncaughtExceptionHandler
 	 */
 	public static final void handle(Throwable __t)
 	{
-		// Print exception stack
+		// Make a nice and big banner on it
 		PrintStream out = System.err;
-		out.println("Uncaught exception:");
+		out.println("****************************************************");
+		out.println("UNCAUGHT EXCEPTION:");
+		
 		if (__t != null)
 			__t.printStackTrace(out);
+		
+		out.println("****************************************************");
 		
 		// Check if this is the only running thread, if it is then exit the
 		// VM with some error status

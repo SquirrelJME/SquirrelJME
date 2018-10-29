@@ -839,29 +839,42 @@ public final class SpringThreadWorker
 						SpringMethod inmethod = frame.method();
 						int pc = frame.lastExecutedPc();
 						
-						// Class hilo
-						SpringMachine.longToInt(o + 0, rv,
-							machine.debugUnresolveString(
-								inmethod.inClass().toString()));
+						// Only if the method is valid
+						if (inmethod != null)
+						{
+							// Class hilo
+							SpringMachine.longToInt(o + 0, rv,
+								machine.debugUnresolveString(
+									inmethod.inClass().toString()));
+							
+							// Method hilo
+							SpringMachine.longToInt(o + 2, rv,
+								machine.debugUnresolveString(
+									inmethod.nameAndType().name().toString()));
+							
+							// Descriptor hilo
+							SpringMachine.longToInt(o + 4, rv,
+								machine.debugUnresolveString(
+									inmethod.nameAndType().type().toString()));
+							
+							// File string
+							SpringMachine.longToInt(o + 8, rv,
+								machine.debugUnresolveString(
+									inmethod.inFile()));
+						}
 						
-						// Method hilo
-						SpringMachine.longToInt(o + 2, rv,
-							machine.debugUnresolveString(
-								inmethod.nameAndType().name().toString()));
-						
-						// Descriptor hilo
-						SpringMachine.longToInt(o + 4, rv,
-							machine.debugUnresolveString(
-								inmethod.nameAndType().type().toString()));
+						// Not valid
+						else
+						{
+							SpringMachine.longToInt(o + 0, rv, -1);
+							SpringMachine.longToInt(o + 2, rv, -1);
+							SpringMachine.longToInt(o + 4, rv, -1);
+							SpringMachine.longToInt(o + 8, rv, -1);
+						}
 						
 						// Program counter hilo
 						rv[o + 6] = 0;
 						rv[o + 7] = frame.lastExecutedPc();
-						
-						// File string
-						SpringMachine.longToInt(o + 8, rv,
-							machine.debugUnresolveString(
-								inmethod.inFile()));
 						
 						// Line of code being executed
 						rv[o + 10] = frame.lastExecutedPcSourceLine();

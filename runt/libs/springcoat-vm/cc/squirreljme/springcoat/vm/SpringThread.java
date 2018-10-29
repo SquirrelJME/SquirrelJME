@@ -432,7 +432,10 @@ public final class SpringThread
 		 */
 		public final int lastExecutedPcSourceLine()
 		{
-			return this.code.lineOfAddress(this._lastexecpc);
+			ByteCode code = this.code;
+			if (code == null)
+				return -1;
+			return code.lineOfAddress(this._lastexecpc);
 		}
 		
 		/**
