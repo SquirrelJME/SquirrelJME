@@ -8,42 +8,11 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package java.util;
+/**
+ * General language support and such.
+ *
+ * @since 2018/10/29
+ */
 
-public interface ListIterator<E>
-	extends Iterator<E>
-{
-	public abstract void add(E __v);
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/10/28
-	 */
-	@Override
-	public abstract boolean hasNext();
-	
-	public abstract boolean hasPrevious();
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/10/28
-	 */
-	@Override
-	public abstract E next();
-	
-	public abstract int nextIndex();
-	
-	public abstract E previous();
-	
-	public abstract int previousIndex();
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/10/28
-	 */
-	@Override
-	public abstract void remove();
-	
-	public abstract void set(E __v);
-}
+package cc.squirreljme.runtime.cldc.lang;
 

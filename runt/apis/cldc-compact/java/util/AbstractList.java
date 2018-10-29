@@ -275,7 +275,8 @@ public abstract class AbstractList<E>
 		private int _next;
 		
 		/** The current modification count, to detect modifications. */
-		private int _atmod;
+		private int _atmod =
+			AbstractList.this.modCount;
 		
 		/** The index to be removed. */
 		private int _rmdx =
@@ -296,7 +297,6 @@ public abstract class AbstractList<E>
 				throw new IndexOutOfBoundsException("IOOB");
 			
 			this._next = __i;
-			this._atmod = AbstractList.this.modCount;
 		}
 		
 		/**
