@@ -148,7 +148,8 @@ public class Object
 	 */
 	public String toString()
 	{
-		throw new todo.TODO();
+		return this.getClass().getName() + "@" +
+			Integer.toString(this.hashCode(), 16);
 	}
 	
 	/**

@@ -101,9 +101,12 @@ final class __SystemSuiteManager__
 			Suite s = __SystemSuiteManager__.__getSuite(as);
 			
 			// Matching suite type
-			if (s.getSuiteType() == __t)
+			if (s != null && s.getSuiteType() == __t)
 				rv.add(s);
 		}
+		
+		// Debug
+		todo.DEBUG.note("Suites: %s", rv);
 		
 		return rv;
 	}

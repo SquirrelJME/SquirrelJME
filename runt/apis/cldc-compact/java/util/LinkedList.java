@@ -451,9 +451,13 @@ public class LinkedList<E>
 			if (__i < 0 || __i > size)
 				throw new IndexOutOfBoundsException("IOOB");
 			
-			// Closer to the start, go from start
+			// At the very end of the list, will be null
 			__Link__<E> rover;
-			if (__i < (size >> 1))
+			if (__i == size)
+				rover = null;
+			
+			// Closer to the start, go from start
+			else if (__i < (size >> 1))
 			{
 				rover = LinkedList.this._head;
 				
@@ -486,7 +490,8 @@ public class LinkedList<E>
 			__checkConcurrent();
 			
 			// These will both be adjusted
-			int vdx = this._vdx;
+			int vdx = this._vdx,
+				size = LinkedList.this._size;
 			__Link__<E> link = this._link;
 			
 			// The documentation specifies that the object is inserted
@@ -494,40 +499,52 @@ public class LinkedList<E>
 			// previous will return the new element. Next would just return
 			// the same element no matter how many elements are added.
 			
-			// This is a fresh start of the list
-			if (link == null)
+			// Inserting at the start of the list
+			if (vdx <= 0)
 			{
 				// So VDX just turns to 1, next will still have nothing because
 				// it is the end of the list
 				vdx = 1;
 				
-				// The link becomes a new empty chain with the value
-				link = new __Link__<E>(null, __v, null);
+				// Link into the other head
+				link = new __Link__<E>(null, __v, LinkedList.this._head);
 				
-				// Set both head and tail
+				// The head becomes this link
 				LinkedList.this._head = link;
-				LinkedList.this._tail = link;
-			}
-			
-			// Linking into the chain
-			else
-			{
-				// There was an index placed before this one, so the virtual
-				// index goes up
-				vdx++;
 				
-				// Link in our chain
-				__Link__<E> oldlink = link;
-				link = new __Link__<E>(link, __v, link._next);
-				
-				// If the current tail of the list was the element we just
-				// linked from, we replace it
-				if (LinkedList.this._tail == oldlink)
+				// Only set the tail if the list is completely empty
+				if (size == 0)
 					LinkedList.this._tail = link;
 			}
 			
+			// Linking to the end of the list
+			else if (link == null)
+			{
+				// We always add before this one, so this index goes up
+				vdx++;
+				
+				// Link to end of the list and set new tail
+				link = new __Link__<E>(LinkedList.this._tail, __v, null);
+				
+				// Set new tail to be this link
+				LinkedList.this._tail = link;
+			}
+			
+			// Linking into the chain somewhere in the middle or at the end
+			else
+			{
+				// We always add before this one, so this index goes up
+				vdx++;
+				
+				// Since we add before this link (that is our next element
+				// remains constant) this means the link remains the same. So
+				// we work on the previous and do not change link at all
+				// although vdx goes up
+				new __Link__<E>(link._prev, __v, link);
+			}
+			
 			// Increase list size
-			LinkedList.this._size++;
+			LinkedList.this._size = size + 1;
 			
 			// Set list as being modified and update our count to match
 			this._atmod = ++LinkedList.this.modCount;
@@ -539,6 +556,7 @@ public class LinkedList<E>
 			// Invalidates these operations
 			this._canremove = false;
 			this._canset = false;
+			this._remove = null;
 		}
 		
 		/**
@@ -697,6 +715,7 @@ public class LinkedList<E>
 			// Invalidates these
 			this._canremove = false;
 			this._canset = false;
+			this._remove = null;
 		}
 		
 		/**
