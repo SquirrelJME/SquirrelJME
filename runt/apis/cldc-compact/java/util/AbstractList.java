@@ -10,6 +10,7 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.annotation.ProgrammerTip;
 
 public abstract class AbstractList<E>
@@ -305,6 +306,9 @@ public abstract class AbstractList<E>
 		@Override
 		public final void add(E __a)
 		{
+			// Check modification
+			this.__checkConcurrent();
+			
 			throw new todo.TODO();
 		}
 		
@@ -315,7 +319,11 @@ public abstract class AbstractList<E>
 		@Override
 		public final boolean hasNext()
 		{
-			throw new todo.TODO();
+			// Check modification
+			this.__checkConcurrent();
+			
+			// There are elements as long as the next one is below the size
+			return this._next < AbstractList.this.size();
 		}
 		
 		/**
@@ -325,7 +333,12 @@ public abstract class AbstractList<E>
 		@Override
 		public final boolean hasPrevious()
 		{
-			throw new todo.TODO();
+			// Check modification
+			this.__checkConcurrent();
+			
+			// As long as this is not the first element there will be
+			// previous ones
+			return this._next > 0;
 		}
 		
 		/**
@@ -336,7 +349,23 @@ public abstract class AbstractList<E>
 		public final E next()
 			throws NoSuchElementException
 		{
-			throw new todo.TODO();
+			// Check modification
+			this.__checkConcurrent();
+			
+			// End of list?
+			int next = this._next;
+			if (this._next >= AbstractList.this.size())
+				throw new NoSuchElementException("NSEE");
+			
+			// Get this element
+			E rv = AbstractList.this.get(next);
+			
+			// Next one is after this, also the element to be removed is set
+			// by this method
+			this._rmdx = next;
+			this._next = next + 1;
+			
+			return rv;
 		}
 		
 		/**
@@ -346,6 +375,9 @@ public abstract class AbstractList<E>
 		@Override
 		public final int nextIndex()
 		{
+			// Check modification
+			this.__checkConcurrent();
+			
 			return this._next;
 		}
 		
@@ -357,6 +389,9 @@ public abstract class AbstractList<E>
 		public final E previous()
 			throws NoSuchElementException
 		{
+			// Check modification
+			this.__checkConcurrent();
+			
 			throw new todo.TODO();
 		}
 		
@@ -367,6 +402,9 @@ public abstract class AbstractList<E>
 		@Override
 		public final int previousIndex()
 		{
+			// Check modification
+			this.__checkConcurrent();
+			
 			// If next is zero then this would be -1
 			return this._next - 1;
 		}
@@ -378,7 +416,11 @@ public abstract class AbstractList<E>
 		@Override
 		public final void remove()
 		{
-			// {@squirreljme.error ZZ2q
+			// Check modification
+			this.__checkConcurrent();
+			
+			// {@squirreljme.error ZZ2q No previously returned element was
+			// iterated, it was already removed, or an element was added.}
 			int rmdx = this._rmdx;
 			if (rmdx < 0)
 				throw new IllegalStateException("ZZ2q");
@@ -393,7 +435,24 @@ public abstract class AbstractList<E>
 		@Override
 		public final void set(E __v)
 		{
+			// Check modification
+			this.__checkConcurrent();
+			
 			throw new todo.TODO();
+		}
+		
+		/**
+		 * Checks if the list was concurrently modified.
+		 *
+		 * @throws ConcurrentModificationException If it was modified.
+		 * @since 2018/10/29
+		 */
+		private final void __checkConcurrent()
+			throws ConcurrentModificationException
+		{
+			// {@squirreljme.error ZZ2r List has been concurrently modified.}
+			if (this._atmod != AbstractList.this.modCount)
+				throw new ConcurrentModificationException("ZZ2r");
 		}
 	}
 }
