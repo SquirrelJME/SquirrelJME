@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.tac.runner;
 
+import javax.microedition.swm.Suite;
+
 /**
  * This contains a single test unit which may be run accordingly.
  *
@@ -17,6 +19,47 @@ package net.multiphasicapps.tac.runner;
  */
 public final class SingleUnit
 {
+	/** The full name for this suite. */
+	protected final String fullname;
+	
+	/** The suite for this unit. */
+	protected final Suite suite;
+	
+	/** The midlet for this unit. */
+	protected final String midlet;
+	
+	/**
+	 * Initializes the unit.
+	 *
+	 * @param __s The suite of the unit.
+	 * @param __m The unit midlet.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/10/29
+	 */
+	public SingleUnit(Suite __s, String __m)
+		throws NullPointerException
+	{
+		if (__s == null || __m == null)
+			throw new NullPointerException("NARG");
+		
+		this.suite = __s;
+		this.midlet = __m;
+		
+		// Setup full name
+		this.fullname = SingleUnit.__crimpName(__s.getName()) + "." + __m;
+	}
+	
+	/**
+	 * The full name for this test.
+	 *
+	 * @return The full name for this test.
+	 * @since 2018/10/29
+	 */
+	public final String fullName()
+	{
+		return this.fullname;
+	}
+	
 	/**
 	 * Runs the test.
 	 *
@@ -26,6 +69,46 @@ public final class SingleUnit
 	public final boolean run()
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Crimps the name so it fits and is easier to type and such.
+	 *
+	 * @param __in The input name.
+	 * @return The crimped name.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/10/29
+	 */
+	private static final String __crimpName(String __in)
+		throws NullPointerException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		// Strip and lowercase characters
+		StringBuilder rv = new StringBuilder();
+		for (int i = 0, n = __in.length(); i < n; i++)
+		{
+			char c = __in.charAt(i);
+			
+			// Lowercase capitals
+			if (c >= 'A' && c <= 'Z')
+				c = Character.toLowerCase(c);
+			
+			// Underscores to hyphens
+			else if (c == '_')
+				c = '-';
+			
+			// Ignore anything outside of this range
+			else if (!((c >= 'a' && c <= 'z') ||
+				(c >= '0' && c <= '9') ||
+				c == '.' || c == '-'))
+				continue;
+			
+			rv.append(c);
+		}
+		
+		return rv.toString();
 	}
 }
 

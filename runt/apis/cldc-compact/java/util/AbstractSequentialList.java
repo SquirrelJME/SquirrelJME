@@ -10,13 +10,23 @@
 
 package java.util;
 
+/**
+ * This is the base list for classes which are optimized for sequential and
+ * not randomized access.
+ *
+ * @param <E> The element to store in the list.
+ * @since 2018/10/29
+ */
 public abstract class AbstractSequentialList<E>
 	extends AbstractList<E>
 {
+	/**
+	 * Initializes the base sequential list.
+	 *
+	 * @since 2018/10/29
+	 */
 	protected AbstractSequentialList()
 	{
-		super();
-		throw new todo.TODO();
 	}
 	
 	@Override

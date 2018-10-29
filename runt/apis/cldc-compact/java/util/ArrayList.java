@@ -162,10 +162,18 @@ public class ArrayList<E>
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/10/29
+	 */
 	@Override
-	public E get(int __a)
+	public E get(int __i)
+		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		if (__i < 0 || __i >= this._size)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		return this._elements[__i];
 	}
 	
 	@Override
