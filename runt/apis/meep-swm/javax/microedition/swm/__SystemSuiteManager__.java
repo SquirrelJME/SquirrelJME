@@ -96,14 +96,9 @@ final class __SystemSuiteManager__
 		
 		// Go through suites and find suites to return
 		List<Suite> rv = new ArrayList<>();
-		for (String as : SuiteAccess.availableSuites())
-		{
-			Suite s = __SystemSuiteManager__.__getSuite(as);
-			
-			// Matching suite type
-			if (s != null && s.getSuiteType() == __t)
+		for (Suite s : __SystemSuiteManager__.__allSuites())
+			if (s.getSuiteType() == __t)
 				rv.add(s);
-		}
 		
 		return rv;
 	}
@@ -127,6 +122,22 @@ final class __SystemSuiteManager__
 	public void removeSuiteListener(SuiteListener __sl)
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns all of the suites which are available.
+	 *
+	 * @return All of the available suites.
+	 * @since 2018/10/30
+	 */
+	static List<Suite> __allSuites()
+	{
+		// Just get every suite
+		List<Suite> rv = new ArrayList<>();
+		for (String as : SuiteAccess.availableSuites())
+			rv.add(__SystemSuiteManager__.__getSuite(as));
+		
+		return rv;
 	}
 	
 	/**

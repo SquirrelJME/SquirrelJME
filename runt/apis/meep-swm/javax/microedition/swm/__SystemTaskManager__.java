@@ -10,6 +10,9 @@
 
 package javax.microedition.swm;
 
+import cc.squirreljme.runtime.swm.DependencyInfo;
+import cc.squirreljme.runtime.swm.MatchResult;
+import cc.squirreljme.runtime.swm.ProvidedInfo;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -129,8 +132,17 @@ final class __SystemTaskManager__
 		if (__s == null || __cn == null)
 			throw new NullPointerException("NARG");
 		
+		// Using our suite manager
+		__SystemSuiteManager__ ssm =
+			(__SystemSuiteManager__)ManagerFactory.getSuiteManager();
+		
+		// Get all the suites that are available, since we need to determine
+		// dependencies and such
+		List<Suite> all = ssm.__allSuites();
+		
 		// Determine the suites which need to be loaded into the classpath
 		// in order to run the given suite
+		DependencyInfo wantdeps = __s.__suiteInfo().dependencies();
 		if (true)
 			throw new todo.TODO();
 		
