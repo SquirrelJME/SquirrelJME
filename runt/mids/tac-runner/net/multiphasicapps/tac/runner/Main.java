@@ -35,9 +35,28 @@ public class Main
 		Database db = Database.build();
 		
 		// Run each test
+		int total = 0,
+			pass = 0,
+			fail = 0;
 		boolean hasfailed = false;
 		for (SingleUnit su : db)
-			hasfailed |= su.run();
+		{
+			boolean passed = su.run();
+			
+			// Keep track
+			total++;
+			if (!passed)
+			{
+				fail++;
+				hasfailed = true;
+			}
+			else
+				pass++;
+		}
+		
+		// Note it
+		System.err.printf("Ran %d tests: %d passed, %d failed.%n",
+			total, pass, fail);
 		
 		// Exit with failure if there are bad tests
 		if (hasfailed)
