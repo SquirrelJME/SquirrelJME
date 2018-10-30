@@ -1,0 +1,16 @@
+# 2018/10/29
+
+## 08:50
+
+Interesting, fields take fields from the parent when looking up. Will need to
+consider that.
+
+## 09:47
+
+My `LinkedList` list iterator will need to handle situations where the list
+is completely empty!
+
+## 14:38
+
+Someone gave me the idea of having dummy nodes in the linked list, I think
+that would be smart and involve less complicated code.
