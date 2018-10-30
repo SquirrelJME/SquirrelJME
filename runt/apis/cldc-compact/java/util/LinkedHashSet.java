@@ -14,28 +14,24 @@ public class LinkedHashSet<E>
 	extends HashSet<E>
 	implements Set<E>, Cloneable
 {
-	public LinkedHashSet(int __a, float __b)
+	public LinkedHashSet(int __initcap, float __load)
 	{
-		super();
-		throw new todo.TODO();
+		super(__initcap, __load);
 	}
 	
-	public LinkedHashSet(int __a)
+	public LinkedHashSet(int __initcap)
 	{
-		super();
-		throw new todo.TODO();
+		super(__initcap);
 	}
 	
 	public LinkedHashSet()
 	{
 		super();
-		throw new todo.TODO();
 	}
 	
-	public LinkedHashSet(Collection<? extends E> __a)
+	public LinkedHashSet(Collection<? extends E> __c)
 	{
-		super();
-		throw new todo.TODO();
+		super(__c);
 	}
 }
 
