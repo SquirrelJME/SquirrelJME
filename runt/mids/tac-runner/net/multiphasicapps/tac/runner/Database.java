@@ -20,6 +20,8 @@ import javax.microedition.swm.ManagerFactory;
 import javax.microedition.swm.Suite;
 import javax.microedition.swm.SuiteManager;
 import javax.microedition.swm.SuiteType;
+import net.multiphasicapps.collections.SortedTreeMap;
+import net.multiphasicapps.collections.UnmodifiableCollection;
 
 /**
  * This class loads and stores the database for the test system.
@@ -29,6 +31,9 @@ import javax.microedition.swm.SuiteType;
 public final class Database
 	implements Iterable<SingleUnit>
 {
+	/** Suite mappings by name. */
+	private final Map<String, SingleUnit> _units;
+	
 	/**
 	 * Initializes the database of units.
 	 *
@@ -42,7 +47,15 @@ public final class Database
 		if (__it == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Map units
+		Map<String, SingleUnit> units = new SortedTreeMap<>();
+		for (SingleUnit u : __it)
+			if (u == null)
+				throw new NullPointerException("NARG");
+			else
+				units.put(u.fullName(), u);
+		
+		this._units = units;		
 	}
 	
 	/**
@@ -52,7 +65,8 @@ public final class Database
 	@Override
 	public final Iterator<SingleUnit> iterator()
 	{
-		throw new todo.TODO();
+		return UnmodifiableCollection.<SingleUnit>of(
+			this._units.values()).iterator();
 	}
 	
 	/**

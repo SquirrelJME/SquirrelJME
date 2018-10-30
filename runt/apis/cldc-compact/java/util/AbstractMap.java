@@ -134,9 +134,14 @@ public abstract class AbstractMap<K, V>
 		return sb.toString();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/10/29
+	 */
+	@Override
 	public Collection<V> values()
 	{
-		throw new todo.TODO();
+		return new __AbstractMapValueSet__<V>(this.entrySet());
 	}
 }
 

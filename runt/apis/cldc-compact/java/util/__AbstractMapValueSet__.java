@@ -11,25 +11,25 @@
 package java.util;
 
 /**
- * This is the key set for an abstract map.
+ * This is the value set for an abstract map.
  *
- * @param <K> The key type.
- * @since 2018/10/10
+ * @param <V> The value type.
+ * @since 2018/10/29
  */
-final class __AbstractMapKeySet__<K>
-	extends AbstractSet<K>
+final class __AbstractMapValueSet__<V>
+	extends AbstractSet<V>
 {
 	/** The entry set. */
-	protected final Set<? extends Map.Entry<K, ?>> entries;
+	protected final Set<? extends Map.Entry<?, V>> entries;
 	
 	/**
 	 * Initializes the set.
 	 *
 	 * @param __set The entry set.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2018/10/10
+	 * @since 2018/10/19
 	 */
-	__AbstractMapKeySet__(Set<? extends Map.Entry<K, ?>> __set)
+	__AbstractMapValueSet__(Set<? extends Map.Entry<?, V>> __set)
 		throws NullPointerException
 	{
 		if (__set == null)
@@ -40,7 +40,7 @@ final class __AbstractMapKeySet__<K>
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/10/10
+	 * @since 2018/10/19
 	 */
 	@Override
 	public final void clear()
@@ -50,28 +50,28 @@ final class __AbstractMapKeySet__<K>
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/10/10
+	 * @since 2018/10/19
 	 */
 	@Override
-	public final Iterator<K> iterator()
+	public final Iterator<V> iterator()
 	{
-		return new __MapEntryKeyIterator__<K>(this.entries.iterator());
+		return new __MapEntryValueIterator__<V>(this.entries.iterator());
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/10/10
+	 * @since 2018/10/19
 	 */
 	@Override
-	public final boolean remove(Object __k)
+	public final boolean remove(Object __v)
 	{
 		// Need to go through the iterator and find any entries
-		for (Iterator<? extends Map.Entry<K, ?>> it = this.entries.iterator();
+		for (Iterator<? extends Map.Entry<?, V>> it = this.entries.iterator();
 			it.hasNext();)
 		{
-			Map.Entry<K, ?> e = it.next();
+			Map.Entry<?, V> e = it.next();
 			
-			if (Objects.equals(e.getKey(), __k))
+			if (Objects.equals(e.getValue(), __v))
 			{
 				it.remove();
 				return true;
@@ -84,7 +84,7 @@ final class __AbstractMapKeySet__<K>
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/10/10
+	 * @since 2018/10/19
 	 */
 	@Override
 	public final int size()
