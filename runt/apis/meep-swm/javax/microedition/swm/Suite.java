@@ -49,7 +49,7 @@ public class Suite
 		new Suite(Suite.class);
 	
 	/** The name of this suite. */
-	private final String _name;
+	final String _name;
 	
 	/** The state lock. */
 	private final Object _lock =
