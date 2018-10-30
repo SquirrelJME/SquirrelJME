@@ -119,7 +119,7 @@ final class __SystemTaskManager__
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2017/12/07
+	 * @since 2018/10/29
 	 */
 	@Override
 	public Task startTask(Suite __s, String __cn)
@@ -128,6 +128,19 @@ final class __SystemTaskManager__
 	{
 		if (__s == null || __cn == null)
 			throw new NullPointerException("NARG");
+		
+		// Determine the suites which need to be loaded into the classpath
+		// in order to run the given suite
+		if (true)
+			throw new todo.TODO();
+		
+		// Setup new task internally
+		if (true)
+			throw new todo.TODO();
+		
+		// Build task object around given task
+		if (true)
+			throw new todo.TODO();
 		
 		throw new todo.TODO();
 		/*

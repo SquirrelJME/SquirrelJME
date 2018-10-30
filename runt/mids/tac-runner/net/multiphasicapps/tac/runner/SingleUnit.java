@@ -11,6 +11,10 @@
 package net.multiphasicapps.tac.runner;
 
 import javax.microedition.swm.Suite;
+import javax.microedition.swm.ManagerFactory;
+import javax.microedition.swm.Task;
+import javax.microedition.swm.TaskManager;
+import javax.microedition.swm.TaskStatus;
 
 /**
  * This contains a single test unit which may be run accordingly.
@@ -68,7 +72,43 @@ public final class SingleUnit
 	 */
 	public final boolean run()
 	{
-		throw new todo.TODO();
+		// Start task
+		Task task = ManagerFactory.getTaskManager().startTask(
+			this.suite, this.midlet);
+		
+		// Run the task task until it terminates
+		for (long mswait = 10;; mswait += Math.min(10, 250))
+		{
+			// Check status
+			TaskStatus status = task.getStatus();
+			
+			// Depends on the status
+			switch (status)
+			{
+					// Success
+				case EXITED_REGULAR:
+					return true;
+					
+					// Failure
+				case EXITED_FATAL:
+				case EXITED_TERMINATED:
+				case START_FAILED:
+					return false;
+					
+					// Unhandled
+				default:
+					break;
+			}
+			
+			// Wait for the task to do things before checking again
+			try
+			{
+				Thread.sleep(mswait);
+			}
+			catch (InterruptedException e)
+			{
+			}
+		}
 	}
 	
 	/**
