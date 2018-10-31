@@ -1,0 +1,17 @@
+# 2018/10/30
+
+## 20:28
+
+I wonder how I am going to handle `LinkedHashSet` and `LinkedHashMap`, so that
+will be a bit of a mystery.
+
+## 20:33
+
+I do not need to worry about the mod count at all for the maps because it is
+kept internal. So that means only bucket map needs it. But I guess bucket map
+just needs to keep track of it.
+
+## 20:41
+
+Okay, I think I have too many map classes and such, they need to be simplified
+much!
