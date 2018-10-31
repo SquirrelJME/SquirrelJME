@@ -14,6 +14,10 @@ public class HashSet<E>
 	extends AbstractSet<E>
 	implements Set<E>, Cloneable
 {
+	/** Object which is referenced when an entry is taken. */
+	static final Object TAKEN =
+		new Object();
+	
 	public HashSet()
 	{
 		super();
