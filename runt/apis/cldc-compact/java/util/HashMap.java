@@ -42,7 +42,7 @@ public class HashMap<K, V>
 		throws IllegalArgumentException
 	{
 		this._map = new __BucketMap__<K, V>((this instanceof LinkedHashMap),
-			__cap, __load);
+			false, __cap, __load);
 	}
 	
 	/**
@@ -91,6 +91,26 @@ public class HashMap<K, V>
 		
 		// Put all entries
 		this.putAll(__m);
+	}
+	
+	/**
+	 * Initializes the map with the given capacity and load factor in the
+	 * given access order.
+	 *
+	 * This is an internal constructor.
+	 *
+	 * @param __cap The capacity used.
+	 * @param __load The load factor used.
+	 * @param __ao Is access order used?
+	 * @throws IllegalArgumentException If the capacity is negative or the
+	 * load factor is not positive.
+	 * @since 2018/11/01
+	 */
+	HashMap(int __cap, float __load, boolean __ao)
+		throws IllegalArgumentException
+	{
+		this._map = new __BucketMap__<K, V>((this instanceof LinkedHashMap),
+			__ao, __cap, __load);
 	}
 	
 	/**

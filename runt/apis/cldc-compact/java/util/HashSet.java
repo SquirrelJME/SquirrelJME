@@ -32,7 +32,7 @@ public class HashSet<E>
 		throws IllegalArgumentException
 	{
 		this._map = new __BucketMap__<E, Object>(
-			(this instanceof LinkedHashSet), __cap, __load);
+			(this instanceof LinkedHashSet), false, __cap, __load);
 	}
 	
 	/**
