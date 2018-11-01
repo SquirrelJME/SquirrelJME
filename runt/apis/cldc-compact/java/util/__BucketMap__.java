@@ -23,7 +23,12 @@ package java.util;
  * @since 2018/10/07
  */
 final class __BucketMap__<K, V>
+	extends AbstractMap<K, V>
 {
+	/** Special holder for when backing for a set. */
+	static final Object _TAKEN =
+		new Object();
+	
 	/** The default capacity. */
 	static final int _DEFAULT_CAPACITY =
 		16;
@@ -32,11 +37,14 @@ final class __BucketMap__<K, V>
 	static final float _DEFAULT_LOAD =
 		0.75F;
 	
+	/** Is this bucket map ordered? */
+	protected final boolean ordered;
+	
 	/** The load factor. */
 	protected final float loadfactor;
 	
 	/** The entry chains for each element. */
-	__Entry__<K, V>[][] _buckets;
+	__BucketMapEntry__<K, V>[][] _buckets;
 	
 	/** The hashcode divisor for buckets. */
 	int _bucketdiv;
@@ -50,41 +58,45 @@ final class __BucketMap__<K, V>
 	/** The size threshold before a rebuild is done. */
 	int _loadthreshold;
 	
-	/** Modification identifier. */
-	int _modid;
+	/** Modification count. */
+	int _modcount;
 	
 	/**
 	 * Initializes the map with the default capacity and load factor.
 	 *
+	 * @param __o Is the backing iterator ordered?
 	 * @since 2018/10/07
 	 */
-	__BucketMap__()
+	__BucketMap__(boolean __o)
 	{
-		this(__BucketMap__._DEFAULT_CAPACITY, __BucketMap__._DEFAULT_LOAD);
+		this(__o, __BucketMap__._DEFAULT_CAPACITY,
+			__BucketMap__._DEFAULT_LOAD);
 	}
 	
 	/**
 	 * Initializes the map with the given capacity and the default load factor.
 	 *
+	 * @param __o Is the backing iterator ordered?
 	 * @param __cap The capacity used.
 	 * @throws IllegalArgumentException If the capacity is negative.
 	 * @since 2018/10/07
 	 */
-	__BucketMap__(int __cap)
+	__BucketMap__(boolean __o, int __cap)
 	{
-		this(__cap, __BucketMap__._DEFAULT_LOAD);
+		this(__o, __cap, __BucketMap__._DEFAULT_LOAD);
 	}
 	
 	/**
 	 * Initializes the map with the given capacity and load factor.
 	 *
+	 * @param __o Is the backing iterator ordered?
 	 * @param __cap The capacity used.
 	 * @param __load The load factor used.
 	 * @throws IllegalArgumentException If the capacity is negative or the
 	 * load factor is not positive.
 	 * @since 2018/10/07
 	 */
-	__BucketMap__(int __cap, float __load)
+	__BucketMap__(boolean __o, int __cap, float __load)
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error ZZ2b The initial capacity of the map cannot be
@@ -96,6 +108,7 @@ final class __BucketMap__<K, V>
 		if (__load <= 0.0F)
 			throw new IllegalArgumentException("ZZ2c");
 		
+		this.ordered = __o;
 		this.loadfactor = __load;
 		this._buckets = __BucketMap__.<K, V>__newBucket(__cap);
 		this._bucketdiv = __cap;
@@ -110,19 +123,19 @@ final class __BucketMap__<K, V>
 	 * @return The entry for the given or {@code null} if none exists.
 	 * @since 2018/10/08
 	 */
-	public final __BucketMap__.__Entry__<K, V> get(Object __k)
+	public final __BucketMapEntry__<K, V> getEntry(Object __k)
 	{
 		// Where to look in the table?
 		int hash = (__k == null ? 0 : __k.hashCode());
 		int div = (hash & 0x7FFF_FFFF) % this._bucketdiv;
 		
 		// If the chain does not exist then do not bother at all
-		__Entry__<K, V>[] chain = this._buckets[div];
+		__BucketMapEntry__<K, V>[] chain = this._buckets[div];
 		if (chain == null)
 			return null;
 		
 		// Go through the chain and find the matching entry
-		for (__Entry__<K, V> e : chain)
+		for (__BucketMapEntry__<K, V> e : chain)
 		{
 			// Ignore blank entries
 			if (e == null)
@@ -142,14 +155,13 @@ final class __BucketMap__<K, V>
 	}
 	
 	/**
-	 * Returns the entry set for the map.
-	 *
-	 * @return The entry set for the map.
-	 * @since 2018/10/27
+	 * {@inheritDoc}
+	 * @since 2018/11/01
 	 */
-	public final Set<__BucketMap__.__Entry__<K, V>> entrySet()
+	@Override
+	public final Set<Map.Entry<K, V>> entrySet()
 	{
-		return new __MapEntrySet__<K, V>(this);
+		return new __EntrySet__();
 	}
 	
 	/**
@@ -159,9 +171,9 @@ final class __BucketMap__<K, V>
 	 * @return The key for the given entry.
 	 * @since 2018/10/07
 	 */
-	public final __BucketMap__.__Entry__<K, V> put(K __k)
+	public final __BucketMapEntry__<K, V> putEntry(K __k)
 	{
-		__Entry__<K, V>[][] buckets = this._buckets;
+		__BucketMapEntry__<K, V>[][] buckets = this._buckets;
 		int bucketdiv = this._bucketdiv;
 		
 		// Used to determine if we rebuild
@@ -183,10 +195,10 @@ final class __BucketMap__<K, V>
 		int div = (hash & 0x7FFF_FFFF) % bucketdiv;
 		
 		// This will be set depending on the situation
-		__Entry__<K, V> rv;
+		__BucketMapEntry__<K, V> rv;
 		
 		// No entries exist in the chain, we can just create one
-		__Entry__<K, V>[] chain = buckets[div];
+		__BucketMapEntry__<K, V>[] chain = buckets[div];
 		if (chain == null)
 		{
 			// Setup chain
@@ -194,7 +206,11 @@ final class __BucketMap__<K, V>
 			buckets[div] = chain;
 			
 			// Fill
-			chain[0] = (rv = new __Entry__<K, V>(__k));
+			chain[0] = (rv = new __BucketMapEntry__<K, V>(__k));
+			
+			// Map is modified
+			this._modcount++;
+			
 			return rv;
 		}
 		
@@ -203,7 +219,7 @@ final class __BucketMap__<K, V>
 			n = chain.length;
 		for (int i = 0; i < n; i++)
 		{
-			__Entry__<K, V> e = chain[i];
+			__BucketMapEntry__<K, V> e = chain[i];
 			
 			// If no entry is here remember this blank spot in the event
 			// nothing is ever found
@@ -225,25 +241,26 @@ final class __BucketMap__<K, V>
 		
 		// Found a blank spot, we can just put the entry here
 		if (nulldx >= 0)
-			chain[nulldx] = (rv = new __Entry__<K, V>(__k));
+			chain[nulldx] = (rv = new __BucketMapEntry__<K, V>(__k));
 		
 		// Otherwise, increase the chain and use that instead
 		else
 		{
 			// Copy the old chain over
-			__Entry__<K, V>[] dup = __BucketMap__.<K, V>__newChain(n + 1);
+			__BucketMapEntry__<K, V>[] dup =
+				__BucketMap__.<K, V>__newChain(n + 1);
 			for (int i = 0; i < n; i++)
 				dup[i] = chain[i];
 			
 			// Set at end
-			dup[n] = (rv = new __Entry__<K, V>(__k));
+			dup[n] = (rv = new __BucketMapEntry__<K, V>(__k));
 			
 			// Use this chain again
 			buckets[div] = dup;
 		}
 		
 		// Map has been modified
-		this._modid++;
+		this._modcount++;
 		
 		// Size would have been increased at this point
 		this._size = nextsize;
@@ -252,11 +269,10 @@ final class __BucketMap__<K, V>
 	}
 	
 	/**
-	 * Returns the number of entries in the map.
-	 *
-	 * @return The number of entries in the map.
+	 * {@inheritDoc}
 	 * @since 2018/10/08
 	 */
+	@Override
 	public final int size()
 	{
 		return this._size;
@@ -272,9 +288,10 @@ final class __BucketMap__<K, V>
 	 * @since 2018/10/08
 	 */
 	@SuppressWarnings({"unchecked"})
-	private static <K, V> __Entry__<K, V>[][] __newBucket(int __n)
+	private static <K, V> __BucketMapEntry__<K, V>[][] __newBucket(int __n)
 	{
-		return (__Entry__<K, V>[][])((Object)new __Entry__[__n][]);
+		return (__BucketMapEntry__<K, V>[][])
+			((Object)new __BucketMapEntry__[__n][]);
 	}
 	
 	/**
@@ -287,100 +304,50 @@ final class __BucketMap__<K, V>
 	 * @since 2018/10/08
 	 */
 	@SuppressWarnings({"unchecked"})
-	private static <K, V> __Entry__<K, V>[] __newChain(int __n)
+	private static <K, V> __BucketMapEntry__<K, V>[] __newChain(int __n)
 	{
-		return (__Entry__<K, V>[])((Object)new __Entry__[__n]);
+		return (__BucketMapEntry__<K, V>[])
+			((Object)new __BucketMapEntry__[__n]);
 	}
 	
 	/**
-	 * This represents a single entry within the map.
+	 * Implements the entry set over the map, this iterates in a given order.
 	 *
-	 * @param <K> The key type.
-	 * @param <V> The value type.
-	 * @since 2018/10/07
+	 * @since 2018/11/01
 	 */
-	static final class __Entry__<K, V>
-		implements Map.Entry<K, V>
+	final class __EntrySet__
+		extends AbstractSet<Map.Entry<K, V>>
 	{
-		/** The key. */
-		final K _key;
-		
-		/** The key hashcode. */
-		final int _keyhash;
-		
-		/** The value here. */
-		V _value;		
-		
 		/**
-		 * Initializes the entry.
-		 *
-		 * @param __k The key.
-		 * @since 2018/10/08
+		 * {@inheritDoc}
+		 * @since 2018/11/01
 		 */
-		__Entry__(K __k)
+		@Override
+		public final void clear()
 		{
-			this._key = __k;
-			this._keyhash = (__k == null ? 0 : __k.hashCode());
+			__BucketMap__.this.clear();
 		}
 		
 		/**
 		 * {@inheritDoc}
-		 * @since 2018/10/08
+		 * @since 2018/11/01
 		 */
 		@Override
-		public final boolean equals(Object __o)
+		public final Iterator<Map.Entry<K, V>> iterator()
 		{
-			if (__o == this)
-				return true;
-			
-			if (!(__o instanceof Map.Entry))
-				return false;
-			
-			Map.Entry<?, ?> o = (Map.Entry<?, ?>)__o;
-			return Objects.equals(this._key, o.getKey()) &&
-				Objects.equals(this._value, o.getValue());
+			if (__BucketMap__.this.ordered)
+				throw new todo.TODO();
+			return new __IteratorBucketOrder__();
 		}
 		
 		/**
 		 * {@inheritDoc}
-		 * @since 2018/10/08
+		 * @since 2018/11/01
 		 */
 		@Override
-		public final K getKey()
+		public final int size()
 		{
-			return this._key;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2018/10/08
-		 */
-		@Override
-		public final V getValue()
-		{
-			return this._value;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2018/10/08
-		 */
-		@Override
-		public final int hashCode()
-		{
-			throw new todo.TODO();
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2018/10/08
-		 */
-		@Override
-		public final V setValue(V __v)
-		{
-			V rv = this._value;
-			this._value = __v;
-			return rv;
+			return __BucketMap__.this._size;
 		}
 	}
 	
@@ -389,12 +356,12 @@ final class __BucketMap__<K, V>
 	 *
 	 * @since 2018/10/13
 	 */
-	final class __EntryIterator__
-		implements Iterator<__BucketMap__.__Entry__<K, V>>
+	final class __IteratorBucketOrder__
+		implements Iterator<Map.Entry<K, V>>
 	{
 		/** The mod init this iterator is at, to detect modifications. */
 		int _atmodinit =
-			__BucketMap__.this._modid;
+			__BucketMap__.this._modcount;
 		
 		/** The current bucket this is at. */
 		int _bucketat;
@@ -403,7 +370,7 @@ final class __BucketMap__<K, V>
 		int _chainat;
 		
 		/** The cached next entry. */
-		__BucketMap__.__Entry__<K, V> _next;
+		__BucketMapEntry__<K, V> _next;
 		
 		/**
 		 * {@inheritDoc}
@@ -426,7 +393,7 @@ final class __BucketMap__<K, V>
 				return false;
 			
 			// Get the current chain
-			__Entry__<K, V>[][] buckets = __BucketMap__.this._buckets;
+			__BucketMapEntry__<K, V>[][] buckets = __BucketMap__.this._buckets;
 			
 			// We can store the current location parameters at the end rather
 			// than every time (keeps everything in locals)
@@ -437,7 +404,7 @@ final class __BucketMap__<K, V>
 				// of this chain.
 				for (;;)
 				{
-					__Entry__<K, V>[] chain = buckets[bucketat];
+					__BucketMapEntry__<K, V>[] chain = buckets[bucketat];
 					
 					// No more chain links remain? Or there is no chain?
 					int chaindiv = (chain == null ? -1 : chain.length);
@@ -459,7 +426,7 @@ final class __BucketMap__<K, V>
 					int oldchainat = chainat++;
 					
 					// If no link was here try again
-					__Entry__<K, V> link = chain[oldchainat];
+					__BucketMapEntry__<K, V> link = chain[oldchainat];
 					if (link == null)
 						continue;
 					
@@ -482,7 +449,7 @@ final class __BucketMap__<K, V>
 		 * @since 2018/10/13
 		 */
 		@Override
-		public final __BucketMap__.__Entry__<K, V> next()
+		public final Map.Entry<K, V> next()
 			throws NoSuchElementException
 		{
 			// {@squirreljme.error ZZ2p Map has no more entries remaining.}
@@ -490,7 +457,7 @@ final class __BucketMap__<K, V>
 				throw new NoSuchElementException("ZZ2p");
 			
 			// hasNext() caches this
-			__BucketMap__.__Entry__<K, V> rv = this._next;
+			__BucketMapEntry__<K, V> rv = this._next;
 			this._next = null;
 			return rv;
 		}
@@ -519,7 +486,7 @@ final class __BucketMap__<K, V>
 			throws ConcurrentModificationException
 		{
 			// {@squirreljme.error ZZ2o Backing map has been modified.}
-			if (this._atmodinit != __BucketMap__.this._modid)
+			if (this._atmodinit != __BucketMap__.this._modcount)
 				throw new ConcurrentModificationException("ZZ2o");
 		}
 	}

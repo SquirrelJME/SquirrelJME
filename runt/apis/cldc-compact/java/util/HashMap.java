@@ -10,6 +10,8 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+
 /**
  * This is a hash table where keys are mapped to values.
  *
@@ -39,7 +41,8 @@ public class HashMap<K, V>
 	public HashMap(int __cap, float __load)
 		throws IllegalArgumentException
 	{
-		this._map = new __BucketMap__<K, V>(__cap, __load);
+		this._map = new __BucketMap__<K, V>((this instanceof LinkedHashMap),
+			__cap, __load);
 	}
 	
 	/**
@@ -52,7 +55,8 @@ public class HashMap<K, V>
 	public HashMap(int __cap)
 		throws IllegalArgumentException
 	{
-		this._map = new __BucketMap__<K, V>(__cap);
+		this._map = new __BucketMap__<K, V>((this instanceof LinkedHashMap),
+			__cap);
 	}
 	
 	/**
@@ -62,7 +66,7 @@ public class HashMap<K, V>
 	 */
 	public HashMap()
 	{
-		this._map = new __BucketMap__<K, V>();
+		this._map = new __BucketMap__<K, V>((this instanceof LinkedHashMap));
 	}
 	
 	/**
@@ -82,17 +86,21 @@ public class HashMap<K, V>
 			throw new NullPointerException("NARG");
 		
 		// Capacity is just the number of entries in the map
-		this._map = new __BucketMap__<K, V>(
+		this._map = new __BucketMap__<K, V>((this instanceof LinkedHashMap),
 			Math.max(__BucketMap__._DEFAULT_CAPACITY, __m.size()));
 		
 		// Put all entries
 		this.putAll(__m);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/01
+	 */
 	@Override
 	public void clear()
 	{
-		throw new todo.TODO();
+		this._map.clear();
 	}
 	
 	/**
@@ -100,12 +108,32 @@ public class HashMap<K, V>
 	 * value mappings, the actual keys and values are not cloned.
 	 *
 	 * {@inheritDoc}
-	 * @since 2018/10/10
+	 * @since 2018/11/01
 	 */
 	@Override
+	@SuppressWarnings({"unchecked"})
+	@ImplementationNote("This creates a new instance of this class and " +
+		"then places all the entries into it.")
 	public Object clone()
 	{
-		return new HashMap<>(this);
+		try
+		{
+			// Create a new instance of this class to put into, since the class
+			// is always of the same type
+			Map<K, V> copy = (Map<K, V>)this.getClass().newInstance();
+			
+			// Copy all the elements over
+			copy.putAll(this);
+			
+			return copy;
+		}
+		
+		// Oops
+		catch (IllegalAccessException|InstantiationException e)
+		{
+			// {@squirreljme.error ZZ2v Could not clone the map.}
+			throw new RuntimeException("ZZ2v", e);
+		}
 	}
 	
 	/**
@@ -115,13 +143,7 @@ public class HashMap<K, V>
 	@Override
 	public boolean containsKey(Object __k)
 	{
-		return null != this._map.get(__k);
-	}
-	
-	@Override
-	public boolean containsValue(Object __a)
-	{
-		throw new todo.TODO();
+		return null != this._map.getEntry(__k);
 	}
 	
 	/**
@@ -132,7 +154,7 @@ public class HashMap<K, V>
 	@SuppressWarnings({"unchecked"})
 	public Set<Map.Entry<K, V>> entrySet()
 	{
-		return (Set<Map.Entry<K, V>>)((Object)this._map.entrySet());
+		return this._map.entrySet();
 	}
 	
 	/**
@@ -142,22 +164,10 @@ public class HashMap<K, V>
 	@Override
 	public V get(Object __k)
 	{
-		__BucketMap__.__Entry__<K, V> e = this._map.get(__k);
+		__BucketMapEntry__<K, V> e = this._map.getEntry(__k);
 		if (e == null)
 			return null;
 		return e.getValue();
-	}
-	
-	@Override
-	public boolean isEmpty()
-	{
-		throw new todo.TODO();
-	}
-	
-	@Override
-	public Set<K> keySet()
-	{
-		throw new todo.TODO();
 	}
 	
 	/**
@@ -168,13 +178,17 @@ public class HashMap<K, V>
 	public V put(K __k, V __v)
 	{
 		// Just operates on that key
-		return this._map.put(__k).setValue(__v);
+		return this._map.putEntry(__k).setValue(__v);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/01
+	 */
 	@Override
-	public V remove(Object __a)
+	public V remove(Object __k)
 	{
-		throw new todo.TODO();
+		return this._map.remove(__k);
 	}
 	
 	/**
@@ -185,12 +199,6 @@ public class HashMap<K, V>
 	public int size()
 	{
 		return this._map.size();
-	}
-	
-	@Override
-	public Collection<V> values()
-	{
-		throw new todo.TODO();
 	}
 }
 
