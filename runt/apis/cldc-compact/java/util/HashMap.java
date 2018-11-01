@@ -177,11 +177,6 @@ public class HashMap<K, V>
 		throw new todo.TODO();
 	}
 	
-	public boolean remove(Object __a, Object __b)
-	{
-		throw new todo.TODO();
-	}
-	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/10/13
