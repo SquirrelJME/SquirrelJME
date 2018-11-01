@@ -279,6 +279,19 @@ final class __BucketMap__<K, V>
 	}
 	
 	/**
+	 * Return the iterator over the map entries.
+	 *
+	 * @return The map iterator.
+	 * @since 2018/11/01
+	 */
+	final Iterator<Map.Entry<K, V>> __iterator()
+	{
+		if (__BucketMap__.this.ordered)
+			throw new todo.TODO();
+		return new __IteratorBucketOrder__();
+	}
+	
+	/**
 	 * Creates a new bucket array.
 	 *
 	 * @param <K> Key type.
@@ -335,9 +348,7 @@ final class __BucketMap__<K, V>
 		@Override
 		public final Iterator<Map.Entry<K, V>> iterator()
 		{
-			if (__BucketMap__.this.ordered)
-				throw new todo.TODO();
-			return new __IteratorBucketOrder__();
+			return __BucketMap__.this.__iterator();
 		}
 		
 		/**
