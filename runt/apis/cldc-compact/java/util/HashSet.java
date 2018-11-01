@@ -85,10 +85,17 @@ public class HashSet<E>
 		this.addAll(__s);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/01
+	 */
 	@Override
-	public boolean add(E __a)
+	public boolean add(E __v)
 	{
-		throw new todo.TODO();
+		// The set has been modified only if the special taken value was
+		// set to null (it will become non-null)
+		__BucketMapEntry__<E, Object> e = this._map.putEntry(__v);
+		return (e.setValue(__BucketMap__._TAKEN) == null);
 	}
 	
 	/**
@@ -134,22 +141,24 @@ public class HashSet<E>
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/01
+	 */
 	@Override
-	public boolean contains(Object __a)
+	public boolean contains(Object __v)
 	{
-		throw new todo.TODO();
+		return null != this._map.getEntry(__v);
 	}
 	
-	@Override
-	public boolean isEmpty()
-	{
-		throw new todo.TODO();
-	}
-	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/01
+	 */
 	@Override
 	public Iterator<E> iterator()
 	{
-		throw new todo.TODO();
+		return new __Iterator__();
 	}
 	
 	@Override
@@ -158,10 +167,57 @@ public class HashSet<E>
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/01
+	 */
 	@Override
 	public int size()
 	{
-		throw new todo.TODO();
+		return this._map.size();
+	}
+	
+	/**
+	 * Iterates over the hash set.
+	 *
+	 * @since 2018/11/01
+	 */
+	final class __Iterator__
+		implements Iterator<E>
+	{
+		/** The iterator over the internal map. */
+		protected final Iterator<Map.Entry<E, Object>> iterator =
+			HashSet.this._map.__iterator();
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/11/01
+		 */
+		@Override
+		public final boolean hasNext()
+		{
+			return this.iterator.hasNext();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/11/01
+		 */
+		@Override
+		public final E next()
+		{
+			return this.iterator.next().getKey();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/11/01
+		 */
+		@Override
+		public final void remove()
+		{
+			this.iterator.remove();
+		}
 	}
 }
 
