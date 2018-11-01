@@ -14,38 +14,39 @@ package java.util;
  * This is the key set for an abstract map.
  *
  * @param <K> The key type.
+ * @param <V> The value stored.
  * @since 2018/10/10
  */
-final class __AbstractMapKeySet__<K>
+final class __AbstractMapKeySet__<K, V>
 	extends AbstractSet<K>
 {
-	/** The entry set. */
-	protected final Set<? extends Map.Entry<K, ?>> entries;
+	/** The backing map. */
+	protected final Map<K, V> map;
 	
 	/**
 	 * Initializes the set.
 	 *
-	 * @param __set The entry set.
+	 * @param __map The backing map
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/10/10
 	 */
-	__AbstractMapKeySet__(Set<? extends Map.Entry<K, ?>> __set)
+	__AbstractMapKeySet__(Map<K, V> __map)
 		throws NullPointerException
 	{
-		if (__set == null)
+		if (__map == null)
 			throw new NullPointerException("NARG");
 		
-		this.entries = __set;
+		this.map = __map;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/10/10
+	 * @since 2018/11/01
 	 */
 	@Override
-	public final void clear()
+	public final boolean contains(Object __o)
 	{
-		this.entries.clear();
+		return this.map.containsKey(__o);
 	}
 	
 	/**
@@ -55,31 +56,7 @@ final class __AbstractMapKeySet__<K>
 	@Override
 	public final Iterator<K> iterator()
 	{
-		return new __MapEntryKeyIterator__<K>(this.entries.iterator());
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/10/10
-	 */
-	@Override
-	public final boolean remove(Object __k)
-	{
-		// Need to go through the iterator and find any entries
-		for (Iterator<? extends Map.Entry<K, ?>> it = this.entries.iterator();
-			it.hasNext();)
-		{
-			Map.Entry<K, ?> e = it.next();
-			
-			if (Objects.equals(e.getKey(), __k))
-			{
-				it.remove();
-				return true;
-			}
-		}
-		
-		// Not modified
-		return false;
+		return new __Iterator__<K, V>(this.map.entrySet().iterator());
 	}
 	
 	/**
@@ -89,7 +66,68 @@ final class __AbstractMapKeySet__<K>
 	@Override
 	public final int size()
 	{
-		return this.entries.size();
+		return this.map.size();
+	}
+	
+	/**
+	 * This is the iterator over the map's key set.
+	 *
+	 * @param <K> The key type.
+	 * @param <V> The value type.
+	 * @since 2018/11/01
+	 */
+	static final class __Iterator__<K, V>
+		implements Iterator<K>
+	{
+		/** The entry set iterator. */
+		protected final Iterator<Map.Entry<K, V>> iterator;
+		
+		/**
+		 * Initializes the iterator.
+		 *
+		 * @param __it The backing iterator.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2018/11/01
+		 */
+		__Iterator__(Iterator<Map.Entry<K, V>> __it)
+			throws NullPointerException
+		{
+			if (__it == null)
+				throw new NullPointerException("NARG");
+			
+			this.iterator = __it;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/11/01
+		 */
+		@Override
+		public boolean hasNext()
+		{
+			return this.iterator.hasNext();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/11/01
+		 */
+		@Override
+		public K next()
+			throws NoSuchElementException
+		{
+			return this.iterator.next().getKey();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/11/01
+		 */
+		@Override
+		public void remove()
+		{
+			this.iterator.remove();
+		}
 	}
 }
 
