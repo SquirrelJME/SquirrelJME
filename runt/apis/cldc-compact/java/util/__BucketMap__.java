@@ -40,8 +40,17 @@ final class __BucketMap__<K, V>
 	/** Is this bucket map ordered? */
 	protected final boolean ordered;
 	
+	/** Is this bucket map in accessed order? */
+	protected final boolean accessorder;
+	
+	/** Track put order? */
+	protected final boolean trackputorder;
+	
 	/** The load factor. */
 	protected final float loadfactor;
+	
+	/** Linked order of entries. */
+	private final LinkedList<__BucketMapEntry__<K, V>> _links;
 	
 	/** The entry chains for each element. */
 	__BucketMapEntry__<K, V>[][] _buckets;
@@ -69,7 +78,7 @@ final class __BucketMap__<K, V>
 	 */
 	__BucketMap__(boolean __o)
 	{
-		this(__o, __BucketMap__._DEFAULT_CAPACITY,
+		this(__o, false, __BucketMap__._DEFAULT_CAPACITY,
 			__BucketMap__._DEFAULT_LOAD);
 	}
 	
@@ -83,20 +92,21 @@ final class __BucketMap__<K, V>
 	 */
 	__BucketMap__(boolean __o, int __cap)
 	{
-		this(__o, __cap, __BucketMap__._DEFAULT_LOAD);
+		this(__o, false, __cap, __BucketMap__._DEFAULT_LOAD);
 	}
 	
 	/**
 	 * Initializes the map with the given capacity and load factor.
 	 *
 	 * @param __o Is the backing iterator ordered?
+	 * @param __ao Is access order used additionally?
 	 * @param __cap The capacity used.
 	 * @param __load The load factor used.
 	 * @throws IllegalArgumentException If the capacity is negative or the
 	 * load factor is not positive.
 	 * @since 2018/10/07
 	 */
-	__BucketMap__(boolean __o, int __cap, float __load)
+	__BucketMap__(boolean __o, boolean __ao, int __cap, float __load)
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error ZZ2b The initial capacity of the map cannot be
@@ -109,11 +119,17 @@ final class __BucketMap__<K, V>
 			throw new IllegalArgumentException("ZZ2c");
 		
 		this.ordered = __o;
+		this.accessorder = (__ao = (__o && __ao));
+		this.trackputorder = (__o && !__ao);
 		this.loadfactor = __load;
 		this._buckets = __BucketMap__.<K, V>__newBucket(__cap);
 		this._bucketdiv = __cap;
 		this._capacity = __cap;
 		this._loadthreshold = (int)(__cap * __load);
+		
+		// Set linked list for ordered storage if it is used
+		this._links = ((__o || __ao) ?
+			new LinkedList<__BucketMapEntry__<K, V>>() : null);
 	}
 	
 	/**
@@ -147,7 +163,13 @@ final class __BucketMap__<K, V>
 			
 			// If the objects actually match, it is found
 			if (Objects.equals(e._key, __k))
+			{
+				// In access order?
+				if (this.accessorder)
+					throw new todo.TODO();	
+				
 				return e;
+			}
 		}
 		
 		// Not found
@@ -208,6 +230,10 @@ final class __BucketMap__<K, V>
 			// Fill
 			chain[0] = (rv = new __BucketMapEntry__<K, V>(__k));
 			
+			// Add to order?
+			if (this.trackputorder)
+				throw new todo.TODO();
+			
 			// Map is modified
 			this._modcount++;
 			
@@ -261,6 +287,10 @@ final class __BucketMap__<K, V>
 		
 		// Map has been modified
 		this._modcount++;
+		
+		// Add to order?
+		if (this.trackputorder)
+			throw new todo.TODO();
 		
 		// Size would have been increased at this point
 		this._size = nextsize;
@@ -519,6 +549,10 @@ final class __BucketMap__<K, V>
 	final class __IteratorLinkedOrder__
 		extends __IteratorBase__
 	{
+		/** The iterator for entries in linked order. */
+		final Iterator<__BucketMapEntry__<K, V>> _iterator =
+			__BucketMap__.this._links.iterator();
+		
 		/**
 		 * {@inheritDoc}
 		 * @since 2018/11/01
@@ -529,7 +563,8 @@ final class __BucketMap__<K, V>
 			// Check for modification
 			this.__checkModified();
 			
-			throw new todo.TODO();
+			// Just if it has a next anyway
+			return this._iterator.hasNext();
 		}
 		
 		/**
@@ -542,7 +577,8 @@ final class __BucketMap__<K, V>
 			// Check for modification
 			this.__checkModified();
 			
-			throw new todo.TODO();
+			// Use the direct next entry
+			return this._iterator.next();
 		}
 		
 		/**
@@ -555,6 +591,21 @@ final class __BucketMap__<K, V>
 			// Check for modification
 			this.__checkModified();
 			
+			// Try removing it from the link first, if the state is bad then
+			// we cannot remove the link.
+			try
+			{
+				this._iterator.remove();
+			}
+			
+			// Just rethrow this, this means the entry was already removed
+			catch (IllegalStateException e)
+			{
+				throw e;
+			}
+			
+			// Otherwise, remove the entry from the map but hint that it was
+			// already removed from the ordered list
 			throw new todo.TODO();
 		}
 	}

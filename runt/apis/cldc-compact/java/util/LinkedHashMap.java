@@ -38,10 +38,9 @@ public class LinkedHashMap<K, V>
 		throw new todo.TODO();
 	}
 	
-	public LinkedHashMap(int __a, float __b, boolean __c)
+	public LinkedHashMap(int __cap, float __load, boolean __ao)
 	{
-		super(0, 0);
-		throw new todo.TODO();
+		super(__cap, __load, __ao);
 	}
 	
 	@Override
