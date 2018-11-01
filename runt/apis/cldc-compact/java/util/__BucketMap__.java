@@ -287,7 +287,7 @@ final class __BucketMap__<K, V>
 	final Iterator<Map.Entry<K, V>> __iterator()
 	{
 		if (__BucketMap__.this.ordered)
-			throw new todo.TODO();
+			return new __IteratorLinkedOrder__();
 		return new __IteratorBucketOrder__();
 	}
 	
@@ -363,17 +363,41 @@ final class __BucketMap__<K, V>
 	}
 	
 	/**
+	 * Base iterator.
+	 *
+	 * @since 2018/11/01
+	 */
+	abstract class __IteratorBase__
+		implements Iterator<Map.Entry<K, V>>
+	{
+		/** The mod init this iterator is at, to detect modifications. */
+		int _atmod =
+			__BucketMap__.this._modcount;
+		
+		/**
+		 * Checks if the map's internal structure modification count has
+		 * changed.
+		 *
+		 * @throws ConcurrentModificationException If the map was modified.
+		 * @since 2018/10/13
+		 */
+		final void __checkModified()
+			throws ConcurrentModificationException
+		{
+			// {@squirreljme.error ZZ2o Backing map has been modified.}
+			if (this._atmod != __BucketMap__.this._modcount)
+				throw new ConcurrentModificationException("ZZ2o");
+		}
+	}
+	
+	/**
 	 * Iterator over the entries in this map.
 	 *
 	 * @since 2018/10/13
 	 */
 	final class __IteratorBucketOrder__
-		implements Iterator<Map.Entry<K, V>>
+		extends __IteratorBase__
 	{
-		/** The mod init this iterator is at, to detect modifications. */
-		int _atmodinit =
-			__BucketMap__.this._modcount;
-		
 		/** The current bucket this is at. */
 		int _bucketat;
 		
@@ -485,20 +509,53 @@ final class __BucketMap__<K, V>
 			
 			throw new todo.TODO();
 		}
+	}
+	
+	/**
+	 * Iterator over the linked order in this map.
+	 *
+	 * @since 2018/11/01
+	 */
+	final class __IteratorLinkedOrder__
+		extends __IteratorBase__
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/11/01
+		 */
+		@Override
+		public final boolean hasNext()
+		{
+			// Check for modification
+			this.__checkModified();
+			
+			throw new todo.TODO();
+		}
 		
 		/**
-		 * Checks if the map's internal structure modification count has
-		 * changed.
-		 *
-		 * @throws ConcurrentModificationException If the map was modified.
-		 * @since 2018/10/13
+		 * {@inheritDoc}
+		 * @since 2018/11/01
 		 */
-		private final void __checkModified()
-			throws ConcurrentModificationException
+		@Override
+		public final Map.Entry<K, V> next()
 		{
-			// {@squirreljme.error ZZ2o Backing map has been modified.}
-			if (this._atmodinit != __BucketMap__.this._modcount)
-				throw new ConcurrentModificationException("ZZ2o");
+			// Check for modification
+			this.__checkModified();
+			
+			throw new todo.TODO();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/11/01
+		 */
+		@Override
+		public final void remove()
+		{
+			// Check for modification
+			this.__checkModified();
+			
+			throw new todo.TODO();
 		}
 	}
 }
