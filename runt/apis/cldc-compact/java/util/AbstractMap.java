@@ -72,7 +72,7 @@ public abstract class AbstractMap<K, V>
 	@Override
 	public Set<K> keySet()
 	{
-		return new __AbstractMapKeySet__<K>(this.entrySet());
+		return new __AbstractMapKeySet__<K, V>(this);
 	}
 	
 	public V put(K __a, V __b)
