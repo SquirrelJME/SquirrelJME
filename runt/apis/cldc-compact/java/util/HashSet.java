@@ -158,7 +158,7 @@ public class HashSet<E>
 	@Override
 	public Iterator<E> iterator()
 	{
-		return new __Iterator__();
+		return this._map.keySet().iterator();
 	}
 	
 	@Override
@@ -175,49 +175,6 @@ public class HashSet<E>
 	public int size()
 	{
 		return this._map.size();
-	}
-	
-	/**
-	 * Iterates over the hash set.
-	 *
-	 * @since 2018/11/01
-	 */
-	final class __Iterator__
-		implements Iterator<E>
-	{
-		/** The iterator over the internal map. */
-		protected final Iterator<Map.Entry<E, Object>> iterator =
-			HashSet.this._map.__iterator();
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2018/11/01
-		 */
-		@Override
-		public final boolean hasNext()
-		{
-			return this.iterator.hasNext();
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2018/11/01
-		 */
-		@Override
-		public final E next()
-		{
-			return this.iterator.next().getKey();
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2018/11/01
-		 */
-		@Override
-		public final void remove()
-		{
-			this.iterator.remove();
-		}
 	}
 }
 
