@@ -11,14 +11,14 @@
 package java.util;
 
 /**
- * This is the key set for an abstract map.
+ * This is the value set for an abstract map.
  *
  * @param <K> The key type.
- * @param <V> The value stored.
- * @since 2018/10/10
+ * @param <V> The value type.
+ * @since 2018/10/29
  */
-final class __AbstractMapKeySet__<K, V>
-	extends AbstractSet<K>
+final class __AbstractMapValues__<K, V>
+	extends AbstractCollection<V>
 {
 	/** The backing map. */
 	protected final Map<K, V> map;
@@ -30,7 +30,7 @@ final class __AbstractMapKeySet__<K, V>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/01
 	 */
-	__AbstractMapKeySet__(Map<K, V> __map)
+	__AbstractMapValues__(Map<K, V> __map)
 		throws NullPointerException
 	{
 		if (__map == null)
@@ -46,22 +46,22 @@ final class __AbstractMapKeySet__<K, V>
 	@Override
 	public final boolean contains(Object __o)
 	{
-		return this.map.containsKey(__o);
+		return this.map.containsValue(__o);
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/10/10
+	 * @since 2018/10/19
 	 */
 	@Override
-	public final Iterator<K> iterator()
+	public final Iterator<V> iterator()
 	{
 		return new __Iterator__<K, V>(this.map.entrySet().iterator());
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/10/10
+	 * @since 2018/10/19
 	 */
 	@Override
 	public final int size()
@@ -70,14 +70,14 @@ final class __AbstractMapKeySet__<K, V>
 	}
 	
 	/**
-	 * This is the iterator over the map's key set.
+	 * This is the iterator over the map's value set.
 	 *
 	 * @param <K> The key type.
 	 * @param <V> The value type.
 	 * @since 2018/11/01
 	 */
 	static final class __Iterator__<K, V>
-		implements Iterator<K>
+		implements Iterator<V>
 	{
 		/** The entry set iterator. */
 		protected final Iterator<Map.Entry<K, V>> iterator;
@@ -113,10 +113,10 @@ final class __AbstractMapKeySet__<K, V>
 		 * @since 2018/11/01
 		 */
 		@Override
-		public K next()
+		public V next()
 			throws NoSuchElementException
 		{
-			return this.iterator.next().getKey();
+			return this.iterator.next().getValue();
 		}
 		
 		/**

@@ -141,7 +141,7 @@ public abstract class AbstractMap<K, V>
 	@Override
 	public Collection<V> values()
 	{
-		return new __AbstractMapValueSet__<V>(this.entrySet());
+		return new __AbstractMapValues__<K, V>(this);
 	}
 }
 
