@@ -232,7 +232,7 @@ final class __BucketMap__<K, V>
 			
 			// Add to order?
 			if (this.trackputorder)
-				throw new todo.TODO();
+				this._links.add(rv);
 			
 			// Map is modified
 			this._modcount++;
@@ -290,7 +290,7 @@ final class __BucketMap__<K, V>
 		
 		// Add to order?
 		if (this.trackputorder)
-			throw new todo.TODO();
+			this._links.add(rv);
 		
 		// Size would have been increased at this point
 		this._size = nextsize;
