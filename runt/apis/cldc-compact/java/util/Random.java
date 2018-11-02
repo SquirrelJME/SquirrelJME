@@ -11,6 +11,7 @@
 package java.util;
 
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+import cc.squirreljme.runtime.cldc.util.FDMLMath;
 
 /**
  * This is an insecure pseudo-random number generator.
@@ -164,7 +165,7 @@ public class Random
 				} while (s >= 1 || s == 0);
 				
 				double multiplier =
-					Random.__strictSqrt(-2 * Random.__strictLog(s) / s);
+					FDMLMath.sqrt(-2 * FDMLMath.log(s) / s);
 				
 				// Store for next time
 				this._nextg = v2 * multiplier;
@@ -244,30 +245,6 @@ public class Random
 			this._seed = (__seed ^ 0x5DEECE66DL) & ((1L << 48) - 1);
 			this._hasnng = false;
 		}
-	}
-	
-	/**
-	 * Strict logarithm implementation.
-	 *
-	 * @param __v The input value.
-	 * @return The resulting logarithm value.
-	 * @since 2018/11/02
-	 */
-	private static double __strictLog(double __v)
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * Strict square root implementation, needed by {@link #nextGaussian()}.
-	 *
-	 * @param __v The input value.
-	 * @return The resulting square root value.
-	 * @since 2018/11/02
-	 */
-	private static double __strictSqrt(double __v)
-	{
-		throw new todo.TODO();
 	}
 }
 
