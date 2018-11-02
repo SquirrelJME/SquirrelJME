@@ -23,6 +23,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Comparator;
+import java.util.Formatter;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -1030,9 +1031,22 @@ public final class String
 		return String.valueOf(__c);
 	}
 	
-	public static String format(String __a, Object... __b)
+	/**
+	 * Returns a formatted string using a temporary instance of the
+	 * {@link Formatter} class.
+	 *
+	 * @param __fmt The format specifiers.
+	 * @param __args The arguments to the formatter.
+	 * @throws IllegalArgumentException If the format is not correct.
+	 * @throws NullPointerException On null arguments.
+	 * @see java.util.Formatter
+	 * @since 2018/11/02
+	 */
+	public static String format(String __fmt, Object... __args)
+		throws IllegalArgumentException, NullPointerException
 	{
-		throw new todo.TODO();
+		// Just forward everything to this formatter
+		return new Formatter().format(__fmt, __args).toString();
 	}
 	
 	/**

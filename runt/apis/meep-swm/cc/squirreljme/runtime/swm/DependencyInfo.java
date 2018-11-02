@@ -10,6 +10,8 @@
 
 package cc.squirreljme.runtime.swm;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -34,6 +36,9 @@ public final class DependencyInfo
 {
 	/** The dependencies. */
 	protected final Set<MarkedDependency> depends;
+	
+	/** String representation. */
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes the dependency information.
@@ -188,7 +193,14 @@ public final class DependencyInfo
 	@Override
 	public final String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>((rv = "Dependencies:" +
+				this.depends));
+		
+		return rv;
 	}
 	
 	/**
