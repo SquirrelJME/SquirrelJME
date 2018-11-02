@@ -132,19 +132,17 @@ final class __SystemTaskManager__
 		if (__s == null || __cn == null)
 			throw new NullPointerException("NARG");
 		
-		// Using our suite manager
-		__SystemSuiteManager__ ssm =
-			(__SystemSuiteManager__)ManagerFactory.getSuiteManager();
-		
 		// Get all the suites that are available, since we need to determine
 		// dependencies and such
-		List<Suite> all = ssm.__allSuites();
+		List<Suite> all = __SystemSuiteManager__.__allSuites();
 		
 		// Determine the suites which need to be loaded into the classpath
 		// in order to run the given suite
-		DependencyInfo wantdeps = __s.__suiteInfo().dependencies();
-		if (true)
-			throw new todo.TODO();
+		Suite[] depends = __SystemSuiteManager__.__matchDependencies(
+			__s.__suiteInfo().dependencies(), false);
+		
+		// Debug
+		todo.DEBUG.note("Suites: %s", Arrays.<Suite>asList(depends));
 		
 		// Setup new task internally
 		if (true)

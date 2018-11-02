@@ -11,14 +11,19 @@
 package javax.microedition.swm;
 
 import cc.squirreljme.runtime.swm.ByteArrayJarStreamSupplier;
+import cc.squirreljme.runtime.swm.DependencyInfo;
+import cc.squirreljme.runtime.swm.MatchResult;
+import cc.squirreljme.runtime.swm.ProvidedInfo;
 import cc.squirreljme.runtime.cldc.asm.SuiteAccess;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.WeakHashMap;
 
 /**
@@ -165,6 +170,76 @@ final class __SystemSuiteManager__
 			
 			return rv;
 		}
+	}
+	
+	/**
+	 * Returns the suites which match the given dependency set.
+	 *
+	 * This is copied from the SquirrelJME build system.
+	 *
+	 * @param __set The set of dependencies to get.
+	 * @param __opt If {@code true} include optional dependencies.
+	 * @return Suites which statisfy the given dependencies.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/02
+	 */
+	static Suite[] __matchDependencies(DependencyInfo __set, boolean __opt)
+		throws NullPointerException
+	{
+		if (__set == null)
+			throw new NullPointerException("NARG");
+			
+		// Debug
+		todo.DEBUG.note("Input dependencies: %s", __set);
+		
+		// Clear all optionals if they are not included
+		if (!__opt)
+			__set = __set.noOptionals();
+		
+		// No dependencies to search for
+		if (__set.isEmpty())
+			return new Suite[0];
+		
+		// Remember the original set for recursive dependency checks
+		DependencyInfo original = __set;
+		
+		// The returning set
+		Set<Suite> rv = new LinkedHashSet<>();
+		
+		// Go through all binaries and attempt to match
+		for (Suite bin : __SystemSuiteManager__.__allSuites())
+		{
+			// Only consider matches
+			MatchResult result = bin.__matchedDependencies(__set);
+			if (!result.hasMatches())
+				continue;
+			
+			// Use this as a dependency
+			rv.add(bin);
+			
+			// Recursively go down
+			for (Suite sub : __SystemSuiteManager__.__matchDependencies(
+				bin.__suiteInfo().dependencies(), false))
+				rv.add(sub);
+			
+			// Use remaining unmatched set
+			__set = result.unmatched();
+			
+			// If the set was emptied then it will never have any more matches
+			if (__set.isEmpty())
+				break;
+		}
+		
+		// {@squirreljme.error DG0a Could not locate the suite which
+		// statifies the given dependency. (The dependency to look for)}
+		if (rv.isEmpty())
+			throw new RuntimeException(
+				String.format("DG0a %s", __set));
+		
+		// Debug
+		todo.DEBUG.note("Returning suites: %s", rv);
+		
+		return rv.<Suite>toArray(new Suite[rv.size()]);
 	}
 }
 

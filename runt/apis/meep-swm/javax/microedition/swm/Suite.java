@@ -11,8 +11,11 @@
 package javax.microedition.swm;
 
 import cc.squirreljme.runtime.cldc.io.ResourceInputStream;
+import cc.squirreljme.runtime.swm.DependencyInfo;
 import cc.squirreljme.runtime.swm.EntryPoint;
 import cc.squirreljme.runtime.swm.EntryPoints;
+import cc.squirreljme.runtime.swm.MatchResult;
+import cc.squirreljme.runtime.swm.ProvidedInfo;
 import cc.squirreljme.runtime.swm.SuiteInfo;
 import java.io.InputStream;
 import java.io.IOException;
@@ -523,6 +526,27 @@ public class Suite
 		}
 		
 		return rv;
+	}
+	
+	/**
+	 * Returns a dependency match result which contains the results of a
+	 * dependency match between the provided dependencies and the provided
+	 * dependencies for this suite.
+	 *
+	 * This is taken from the SquirrelJME build system.
+	 *
+	 * @param __d The input dependencies to check.
+	 * @return The result of the match.
+	 * @throws NullPointerException On null arguments.
+	 * @sine 2018/11/02
+	 */
+	final MatchResult __matchedDependencies(DependencyInfo __d)
+		throws NullPointerException
+	{
+		if (__d == null)
+			throw new NullPointerException("NARG");
+		
+		return __d.match(this.__suiteInfo().provided());
 	}
 	
 	/**
