@@ -1648,6 +1648,12 @@ public final class SpringThreadWorker
 					break;
 					
 					// Load float from local variable
+				case InstructionIndex.FLOAD:
+					frame.loadToStack(Float.class,
+						inst.<Integer>argument(0, Integer.class));
+					break;
+					
+					// Load float from local variable
 				case InstructionIndex.FLOAD_0:
 				case InstructionIndex.FLOAD_1:
 				case InstructionIndex.FLOAD_2:
