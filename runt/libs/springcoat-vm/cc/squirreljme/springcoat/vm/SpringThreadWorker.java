@@ -2149,6 +2149,15 @@ public final class SpringThreadWorker
 						frame.pushToStack(Integer.valueOf((int)value));
 					}
 					break;
+					
+					// Add long
+				case InstructionIndex.LADD:
+					{
+						long b = frame.<Long>popFromStack(Long.class),
+							a = frame.<Long>popFromStack(Long.class);
+						frame.pushToStack(a + b);
+					}
+					break;
 				
 					// And long
 				case InstructionIndex.LAND:
@@ -2227,6 +2236,15 @@ public final class SpringThreadWorker
 					frame.loadToStack(Long.class,
 						opid - InstructionIndex.LLOAD_0);
 					break;
+					
+					// Multiply long
+				case InstructionIndex.LMUL:
+					{
+						long b = frame.<Long>popFromStack(Long.class),
+							a = frame.<Long>popFromStack(Long.class);
+						frame.pushToStack(a * b);
+					}
+					break;
 				
 					// Negate long
 				case InstructionIndex.LNEG:
@@ -2299,6 +2317,15 @@ public final class SpringThreadWorker
 						int b = frame.<Integer>popFromStack(Integer.class);
 						long a = frame.<Long>popFromStack(Long.class);
 						frame.pushToStack(a >>> (((long)b) & 0x3F));
+					}
+					break;
+					
+					// XOR long
+				case InstructionIndex.LXOR:
+					{
+						long b = frame.<Long>popFromStack(Long.class),
+							a = frame.<Long>popFromStack(Long.class);
+						frame.pushToStack(a ^ b);
 					}
 					break;
 					
