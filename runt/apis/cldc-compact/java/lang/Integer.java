@@ -87,9 +87,14 @@ public final class Integer
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/02
+	 */
+	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		return this._value;
 	}
 	
 	/**
