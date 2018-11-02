@@ -1,0 +1,8 @@
+# 2018/11/01
+
+## 08:30
+
+Yay new month! Also after not doing anything for a bit I find myself seeing
+that `__BucketMap__ is essentially a map so I am going to make it an
+`AbstractMap` so I can take advantage of not doing everything with it and
+such.
