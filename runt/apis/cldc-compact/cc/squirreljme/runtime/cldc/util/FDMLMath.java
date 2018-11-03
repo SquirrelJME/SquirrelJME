@@ -96,7 +96,7 @@ public final class FDMLMath
 			
 			// sqrt(-ve) = sNaN
 			else if (ix0 < 0)
-				return Double.NaN;
+				return (__v - __v) / (__v - __v);
 		}
 		
 		// normalize

@@ -1599,6 +1599,15 @@ public final class SpringThreadWorker
 					frame.pushToStack(
 						Double.valueOf(opid - InstructionIndex.DCONST_0));
 					break;
+				
+					// Divide double
+				case InstructionIndex.DDIV:
+					{
+						double b = frame.<Double>popFromStack(Double.class),
+							a = frame.<Double>popFromStack(Double.class);
+						frame.pushToStack(a / b);
+					}
+					break;
 					
 					// Load double from local variable
 				case InstructionIndex.DLOAD:
@@ -1614,12 +1623,30 @@ public final class SpringThreadWorker
 					frame.loadToStack(Double.class,
 						opid - InstructionIndex.DLOAD_0);
 					break;
+				
+					// Multiply double
+				case InstructionIndex.DMUL:
+					{
+						double b = frame.<Double>popFromStack(Double.class),
+							a = frame.<Double>popFromStack(Double.class);
+						frame.pushToStack(a * b);
+					}
+					break;
 					
 					// Return double
 				case InstructionIndex.DRETURN:
 					this.__vmReturn(thread,
 						frame.<Double>popFromStack(Double.class));
 					nextpc = Integer.MIN_VALUE;
+					break;
+				
+					// Subtract double
+				case InstructionIndex.DSUB:
+					{
+						double b = frame.<Double>popFromStack(Double.class),
+							a = frame.<Double>popFromStack(Double.class);
+						frame.pushToStack(a - b);
+					}
 					break;
 					
 					// Store double to local variable
