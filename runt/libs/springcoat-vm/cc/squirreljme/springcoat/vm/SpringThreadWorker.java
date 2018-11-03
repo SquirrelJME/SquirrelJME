@@ -1646,6 +1646,23 @@ public final class SpringThreadWorker
 						frame.pushToStack(a * b);
 					}
 					break;
+				
+					// Negate double
+				case InstructionIndex.DNEG:
+					{
+						double a = frame.<Double>popFromStack(Double.class);
+						frame.pushToStack(-a);
+					}
+					break;
+				
+					// Remainder double
+				case InstructionIndex.DREM:
+					{
+						double b = frame.<Double>popFromStack(Double.class),
+							a = frame.<Double>popFromStack(Double.class);
+						frame.pushToStack(a % b);
+					}
+					break;
 					
 					// Return double
 				case InstructionIndex.DRETURN:
@@ -1721,6 +1738,15 @@ public final class SpringThreadWorker
 					}
 					break;
 				
+					// Add float
+				case InstructionIndex.FADD:
+					{
+						float b = frame.<Float>popFromStack(Float.class),
+							a = frame.<Float>popFromStack(Float.class);
+						frame.pushToStack(a + b);
+					}
+					break;
+				
 					// Compare float, NaN is positive
 				case InstructionIndex.FCMPG:
 					{
@@ -1754,6 +1780,15 @@ public final class SpringThreadWorker
 					frame.pushToStack(
 						Float.valueOf(opid - InstructionIndex.FCONST_0));
 					break;
+				
+					// Divide float
+				case InstructionIndex.FDIV:
+					{
+						float b = frame.<Float>popFromStack(Float.class),
+							a = frame.<Float>popFromStack(Float.class);
+						frame.pushToStack(a / b);
+					}
+					break;
 					
 					// Load float from local variable
 				case InstructionIndex.FLOAD:
@@ -1779,12 +1814,38 @@ public final class SpringThreadWorker
 						frame.pushToStack(a * b);
 					}
 					break;
+				
+					// Negate float
+				case InstructionIndex.FNEG:
+					{
+						float a = frame.<Float>popFromStack(Float.class);
+						frame.pushToStack(-a);
+					}
+					break;
+				
+					// Remainder float
+				case InstructionIndex.FREM:
+					{
+						float b = frame.<Float>popFromStack(Float.class),
+							a = frame.<Float>popFromStack(Float.class);
+						frame.pushToStack(a % b);
+					}
+					break;
 					
 					// Return float
 				case InstructionIndex.FRETURN:
 					this.__vmReturn(thread,
 						frame.<Float>popFromStack(Float.class));
 					nextpc = Integer.MIN_VALUE;
+					break;
+				
+					// Subtract float
+				case InstructionIndex.FSUB:
+					{
+						float b = frame.<Float>popFromStack(Float.class),
+							a = frame.<Float>popFromStack(Float.class);
+						frame.pushToStack(a - b);
+					}
 					break;
 					
 					// Store float to local variable
@@ -2477,6 +2538,15 @@ public final class SpringThreadWorker
 						long b = frame.<Long>popFromStack(Long.class),
 							a = frame.<Long>popFromStack(Long.class);
 						frame.pushToStack(a | b);
+					}
+					break;
+					
+					// Subtract long
+				case InstructionIndex.LSUB:
+					{
+						long b = frame.<Long>popFromStack(Long.class),
+							a = frame.<Long>popFromStack(Long.class);
+						frame.pushToStack(a - b);
 					}
 					break;
 					
