@@ -1570,6 +1570,30 @@ public final class SpringThreadWorker
 							frame.pushToStack(pop);
 					}
 					break;
+					
+					// Double to float
+				case InstructionIndex.D2F:
+					{
+						double value = frame.<Double>popFromStack(Double.class);
+						frame.pushToStack(Float.valueOf((float)value));
+					}
+					break;
+					
+					// Double to int
+				case InstructionIndex.D2I:
+					{
+						double value = frame.<Double>popFromStack(Double.class);
+						frame.pushToStack(Integer.valueOf((int)value));
+					}
+					break;
+					
+					// Double to long
+				case InstructionIndex.D2L:
+					{
+						double value = frame.<Double>popFromStack(Double.class);
+						frame.pushToStack(Long.valueOf((long)value));
+					}
+					break;
 				
 					// Addiply double
 				case InstructionIndex.DADD:
@@ -1730,11 +1754,27 @@ public final class SpringThreadWorker
 					}
 					break;
 					
+					// Float to double
+				case InstructionIndex.F2D:
+					{
+						float value = frame.<Float>popFromStack(Float.class);
+						frame.pushToStack(Double.valueOf((double)value));
+					}
+					break;
+					
 					// Float to integer
 				case InstructionIndex.F2I:
 					{
 						float value = frame.<Float>popFromStack(Float.class);
 						frame.pushToStack(Integer.valueOf((int)value));
+					}
+					break;
+					
+					// Float to long
+				case InstructionIndex.F2L:
+					{
+						float value = frame.<Float>popFromStack(Float.class);
+						frame.pushToStack(Long.valueOf((long)value));
 					}
 					break;
 				
@@ -2043,6 +2083,14 @@ public final class SpringThreadWorker
 					{
 						int value = frame.<Integer>popFromStack(Integer.class);
 						frame.pushToStack(Integer.valueOf((char)value));
+					}
+					break;
+					
+					// Integer to short
+				case InstructionIndex.I2S:
+					{
+						int value = frame.<Integer>popFromStack(Integer.class);
+						frame.pushToStack(Integer.valueOf((short)value));
 					}
 					break;
 					
@@ -2416,6 +2464,22 @@ public final class SpringThreadWorker
 						int b = frame.<Integer>popFromStack(Integer.class),
 							a = frame.<Integer>popFromStack(Integer.class);
 						frame.pushToStack(a ^ b);
+					}
+					break;
+					
+					// Long to double
+				case InstructionIndex.L2D:
+					{
+						long value = frame.<Long>popFromStack(Long.class);
+						frame.pushToStack(Double.valueOf((double)value));
+					}
+					break;
+					
+					// Long to float
+				case InstructionIndex.L2F:
+					{
+						long value = frame.<Long>popFromStack(Long.class);
+						frame.pushToStack(Float.valueOf((float)value));
 					}
 					break;
 					
