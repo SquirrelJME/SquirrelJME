@@ -11,6 +11,7 @@
 package lang;
 
 import net.multiphasicapps.tac.TestRunnable;
+import java.util.Random;
 
 /**
  * Tests the square root of a number.
@@ -20,6 +21,10 @@ import net.multiphasicapps.tac.TestRunnable;
 public class TestMathSqrt
 	extends TestRunnable
 {
+	/** Random sequence count. */
+	public static final int COUNT =
+		32;
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/11/03
@@ -27,14 +32,19 @@ public class TestMathSqrt
 	@Override
 	public void test()
 	{
+		// Linear sequence of values
 		for (int i = -2; i <= 128; i++)
+			this.secondary(String.format("value-%03d", i),
+				Double.doubleToRawLongBits(Math.sqrt(i)));
+		
+		// Random sequence of bits, generate NaN and such
+		Random rand = new Random(0xDEADBEEF);
+		for (int i = 0; i < COUNT; i++)
 		{
-			long rawbits = Double.doubleToRawLongBits(Math.sqrt(i));
-			
-			// Debug
-			todo.DEBUG.note("%d: %d", i, rawbits);
-			
-			this.secondary(String.format("value-%03d", i), rawbits);
+			long raw = rand.nextLong();
+			this.secondary(String.format("random-%d", raw),
+				Double.doubleToRawLongBits(Math.sqrt(
+					Double.longBitsToDouble(raw))));
 		}
 	}
 }
