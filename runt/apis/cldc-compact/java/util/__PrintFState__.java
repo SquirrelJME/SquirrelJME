@@ -127,6 +127,23 @@ final class __PrintFState__
 	}
 	
 	/**
+	 * Is the given flag used?
+	 *
+	 * @param __f The flag to use.
+	 * @return If the flag is used.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/03
+	 */
+	final boolean __hasFlag(__PrintFFlag__ __f)
+		throws NullPointerException
+	{
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
+		return this._flags[__f.ordinal()];
+	}
+	
+	/**
 	 * Was a width specified?
 	 *
 	 * @return If a width was specified.
@@ -257,6 +274,14 @@ final class __PrintFState__
 		if (flags[ord])
 			throw new IllegalArgumentException("ZZ1p " + __c);
 		
+		// {@squirreljme.error ZZ2z Always signed and space for positive values
+		// cannot be combined for format flags.}
+		if ((f == __PrintFFlag__.ALWAYS_SIGNED &&
+			flags[__PrintFFlag__.SPACE_FOR_POSITIVE.ordinal()]) ||
+			(f == __PrintFFlag__.SPACE_FOR_POSITIVE &&
+			flags[__PrintFFlag__.ALWAYS_SIGNED.ordinal()]))
+			throw new IllegalArgumentException("ZZ2z");
+		
 		// Use it
 		flags[ord] = true;
 		return true;
@@ -278,6 +303,25 @@ final class __PrintFState__
 			throw new IllegalArgumentException("ZZ1o " + __w);
 		
 		this._width = __w;
+	}
+	
+	/**
+	 * Returns the width.
+	 *
+	 * @return The width.
+	 * @throws IllegalArgumentException If it was not specified.
+	 * @since 2018/11/03
+	 */
+	final int __width()
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error ZZ2y No width was specified where one was
+		// expected.}
+		int rv = this._width;
+		if (rv < 0)
+			throw new IllegalArgumentException("ZZ2y");
+		
+		return rv;
 	}
 }
 

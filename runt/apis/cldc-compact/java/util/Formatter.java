@@ -313,6 +313,72 @@ public final class Formatter
 	}
 	
 	/**
+	 * Formats integer number in decimal format.
+	 *
+	 * @param __pf The state used.
+	 * @param __n The number used.
+	 * @return The formatted integer number.
+	 * @throws NullPointerException If no state is specified.
+	 * @since 2018/11/03
+	 */
+	private static String __formatDecimalInt(__PrintFState__ __pf, Number __n)
+		throws NullPointerException
+	{
+		if (__pf == null)
+			throw new NullPointerException("NARG");
+		
+		// Null is used.
+		if (__n == null)
+			return null;
+		
+		// Generate base number
+		long value = __n.longValue();
+		boolean neg = (value < 0);
+		StringBuilder base = new StringBuilder(Long.toString(value));
+		
+		// Use local digit grouping
+		if (__pf.__hasFlag(__PrintFFlag__.LOCALE_GROUPING))
+			throw new todo.TODO();
+		
+		// Negative values can have flags
+		boolean signed = false;
+		if (neg)
+		{
+			// Use parenthesis for negative instead
+			if (signed |= __pf.__hasFlag(__PrintFFlag__.NEGATIVE_PARENTHESIS))
+			{
+				// Replace the sign with open parenthesis
+				base.setCharAt(0, '(');
+				
+				// And add parenthesis to the end
+				base.append(')');
+			}
+		}
+		
+		// Positive values have some flags
+		else
+		{
+			// Always use the sign
+			if (signed |= __pf.__hasFlag(__PrintFFlag__.ALWAYS_SIGNED))
+				base.insert(0, '+');
+			
+			// Space for positive value
+			else if (signed |= __pf.__hasFlag(
+				__PrintFFlag__.SPACE_FOR_POSITIVE))
+				base.insert(0, ' ');
+		}
+		
+		// Padding with zero? Remember if there is a sign in place
+		if (__pf.__hasFlag(__PrintFFlag__.ZERO_PADDED))
+			for (int w = __pf.__width(), idx = (signed ? 1 : 0);
+				base.length() < w;)
+				base.insert(idx, '0');
+		
+		// Use this result
+		return base.toString();
+	}
+	
+	/**
 	 * Outputs to the state to the appendable.
 	 *
 	 * @param __out The output appendable.
@@ -344,6 +410,12 @@ public final class Formatter
 			case CHARACTER:
 				Character cha = __pf.<Character>__argument(Character.class);
 				append = (cha == null ? "null" : cha.toString());
+				break;
+			
+				// Decimal Integer
+			case DECIMAL_INTEGER:
+				append = Formatter.__formatDecimalInt(__pf,
+					__pf.<Number>__argument(Number.class));
 				break;
 			
 				// Simple string conversion
