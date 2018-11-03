@@ -34,5 +34,14 @@ public final class PrimitiveAccess
 	 * @since 2018/11/03
 	 */
 	public static final native long doubleToRawLongBits(double __d);
+	
+	/**
+	 * Long bits to double.
+	 *
+	 * @param __b The input bits.
+	 * @return The resulting double.
+	 * @since 2018/11/03
+	 */
+	public static final native double longBitsToDouble(long __b);
 }
 
