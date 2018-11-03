@@ -1864,6 +1864,85 @@ public final class SpringThreadWorker
 						}
 					}
 					break;
+				
+					// Duplicate top one or two stack entries and insert
+					// two, three, or four down
+				case InstructionIndex.DUP2_X2:
+					{
+						Object a = frame.popFromStack(),
+							b = frame.popFromStack();
+						
+						// Category two is on top
+						if (a instanceof Long || a instanceof Double)
+						{
+							// Category two is on bottom (form 4)
+							if (b instanceof Long || b instanceof Double)
+							{
+								frame.pushToStack(a);
+								frame.pushToStack(b);
+								frame.pushToStack(a);
+							}
+							
+							// Category ones on bottom (form 2)
+							else
+							{
+								Object c = frame.popFromStack();
+								
+								// {@squirreljme.error BK2b Cannot pop cat2
+								// type for dup.}
+								if (c instanceof Long || c instanceof Double)
+									throw new SpringVirtualMachineException(
+										"BK2b");
+								
+								frame.pushToStack(a);
+								frame.pushToStack(c);
+								frame.pushToStack(b);
+								frame.pushToStack(a);
+							}
+						}
+						
+						// Category one is on top
+						else
+						{
+							// {@squirreljme.error BK2c Category two type
+							// cannot be on the bottom.}
+							if (b instanceof Long || b instanceof Double)
+								throw new SpringVirtualMachineException(
+									"BK2c");
+							
+							Object c = frame.popFromStack();
+							
+							// C is category two (Form 3)
+							if (c instanceof Long || c instanceof Double)
+							{
+								frame.pushToStack(b);
+								frame.pushToStack(a);
+								frame.pushToStack(c);
+								frame.pushToStack(b);
+								frame.pushToStack(a);
+							}
+							
+							// Category one on bottom (Form 1)
+							else
+							{
+								Object d = frame.popFromStack();
+								
+								// {@squirreljme.error BK2d Bottommost entry
+								// cannot be cat2 type.}
+								if (d instanceof Long || d instanceof Double)
+									throw new SpringVirtualMachineException(
+										"BK2d");
+								
+								frame.pushToStack(b);
+								frame.pushToStack(a);
+								frame.pushToStack(d);
+								frame.pushToStack(c);
+								frame.pushToStack(b);
+								frame.pushToStack(a);
+							}
+						}
+					}
+					break;
 					
 					// Float to double
 				case InstructionIndex.F2D:
