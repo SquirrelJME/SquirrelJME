@@ -65,7 +65,96 @@ public final class FDMLMath
 	@ImplementationNote("Source http://www.netlib.org/fdlibm/e_log.c")
 	public static double log(double __v)
 	{
-		throw new todo.TODO();
+		double hfsq, f, s, z, R, w, t1, t2, dk;
+		int k, hx, i, j;
+		unsigned lx;
+
+		// high and low word of __v
+		hx = __hi(__v);
+		lx = __lo(__v);
+
+		k=0;
+		
+		// x < 2**-1022
+		if (hx < 0x00100000)
+		{
+			// log(+-0)=-inf
+			if (((hx & 0x7fffffff) | lx) == 0) 
+				return -two54 / zero;
+			
+			// log(-#) = NaN
+			if (hx < 0)
+				return (__v - __v) / zero;
+			
+			// subnormal number, scale up __v
+			k -= 54;
+			__v *= two54;
+			
+			// high word of __v
+			hx = __HI(__v);
+		} 
+		
+		if (hx >= 0x7ff00000)
+			return __v + __v;
+		
+		k += (hx >> 20) - 1023;
+		hx &= 0x000fffff;
+		i = (hx + 0x95f64) & 0x100000;
+		
+		// normalize x or x/2
+		__HI(x) = hx | (i^0x3ff00000);
+		k += (i >> 20);
+		f = __v - 1.0;
+		
+		// |f| < 2**-20
+		if ((0x000fffff & (2 + hx)) < 3)
+		{
+			if (f == zero)
+				if (k == 0)
+					return zero;
+				else
+				{
+					dk = (double)k;
+					return dk * ln2_hi + dk * ln2_lo;
+				}
+			
+			R = f * f * (0.5 - 0.33333333333333333 * f);
+			if (k == 0)
+				return f - R;
+			else
+			{
+				dk = (double)k;
+				return dk * ln2_hi - ((R - dk * ln2_lo) - f);
+			}
+		}
+		
+		s = f / (2.0 + f); 
+		dk = (double)k;
+		z = s * s;
+		i = hx - 0x6147a;
+		w = z * z;
+		j = 0x6b851 - hx;
+		t1 = w * (Lg2 + w * (Lg4 + w * Lg6)); 
+		t2 = z * (Lg1 + w * (Lg3 + w * (Lg5 + w * Lg7))); 
+		i |= j;
+		R = t2 + t1;
+		
+		if (i > 0)
+		{
+			hfsq = 0.5 * f * f;
+			if (k == 0)
+				return f - (hfsq - s * (hfsq + R));
+			else
+				return dk * ln2_hi -
+					((hfsq - (s * (hfsq + R) + dk * ln2_lo)) - f);
+		}
+		else
+		{
+			if (k == 0)
+				return f - s * (f - R);
+			else
+				return dk * ln2_hi - (( s * (f - R) - dk * ln2_lo) - f);
+		}
 	}
 
 	/**
