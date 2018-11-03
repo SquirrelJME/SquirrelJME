@@ -2162,6 +2162,15 @@ public final class SpringThreadWorker
 					}
 					break;
 				
+					// Unsigned shift right integer
+				case InstructionIndex.IUSHR:
+					{
+						int b = frame.<Integer>popFromStack(Integer.class),
+							a = frame.<Integer>popFromStack(Integer.class);
+						frame.pushToStack(a >>> (b & 0x1F));
+					}
+					break;
+				
 					// XOR integer
 				case InstructionIndex.IXOR:
 					{
