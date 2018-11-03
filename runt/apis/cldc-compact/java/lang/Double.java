@@ -161,9 +161,20 @@ public final class Double
 		throw new todo.TODO();
 	}
 	
-	public static double longBitsToDouble(long __a)
+	/**
+	 * Converts the given long bits to a double.
+	 *
+	 * Note that this value might be modified depending on the platform if
+	 * the platform based conversion cannot handle signaling NaNs or illegal
+	 * floating point values.
+	 *
+	 * @param __b The bits to convert.
+	 * @return The resulting double.
+	 * @since 2018/11/03
+	 */
+	public static double longBitsToDouble(long __b)
 	{
-		throw new todo.TODO();
+		return PrimitiveAccess.longBitsToDouble(__b);
 	}
 	
 	public static double parseDouble(String __a)

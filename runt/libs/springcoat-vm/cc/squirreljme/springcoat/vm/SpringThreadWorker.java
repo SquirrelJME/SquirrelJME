@@ -972,6 +972,11 @@ public final class SpringThreadWorker
 				"doubleToRawLongBits:(D)J":
 				return Double.doubleToRawLongBits((Double)__args[0]);
 				
+				// Convert long bits to double
+			case "cc/squirreljme/runtime/cldc/asm/PrimitiveAccess::" +
+				"longBitsToDouble:(J)D":
+				return Double.longBitsToDouble((Long)__args[0]);
+				
 				// Close resource in JAR
 			case "cc/squirreljme/runtime/cldc/asm/ResourceAccess::" +
 				"close:(I)I":
