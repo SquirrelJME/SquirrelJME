@@ -10,6 +10,8 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.asm.PrimitiveAccess;
+
 public final class Double
 	extends Number
 	implements Comparable<Double>
@@ -137,9 +139,16 @@ public final class Double
 		throw new todo.TODO();
 	}
 	
-	public static long doubleToRawLongBits(double __a)
+	/**
+	 * Returns the raw bits which represent the double value.
+	 *
+	 * @param __v The input value.
+	 * @return The raw bits for the value.
+	 * @since 2018/11/03
+	 */
+	public static long doubleToRawLongBits(double __v)
 	{
-		throw new todo.TODO();
+		return PrimitiveAccess.doubleToRawLongBits(__v);
 	}
 	
 	public static boolean isInfinite(double __a)

@@ -967,6 +967,11 @@ public final class SpringThreadWorker
 					(SpringObject)__args[1]);
 				return null;
 				
+				// Gets the raw bits for the given double value
+			case "cc/squirreljme/runtime/cldc/asm/PrimitiveAccess::" +
+				"doubleToRawLongBits:(D)J":
+				return Double.doubleToRawLongBits((Double)__args[0]);
+				
 				// Close resource in JAR
 			case "cc/squirreljme/runtime/cldc/asm/ResourceAccess::" +
 				"close:(I)I":
