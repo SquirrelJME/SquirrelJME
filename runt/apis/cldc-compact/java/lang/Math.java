@@ -13,7 +13,8 @@ package java.lang;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.util.FDMLMath;
 
-public final class Math
+@ImplementationNote("This class uses strict floating point.")
+public strictfp final class Math
 {
 	public static final double E =
 		+0x1.5BF0A8B145769p1D;
