@@ -111,19 +111,19 @@ public final class FDMLMath
 	{
 		double hfsq, f, s, z, R, w, t1, t2, dk;
 		int k, hx, i, j;
-		unsigned lx;
+		int uulx;
 
 		// high and low word of __v
 		hx = __hi(__v);
-		lx = __lo(__v);
+		uulx = __lo(__v);
 
-		k=0;
+		k = 0;
 		
 		// x < 2**-1022
 		if (hx < 0x00100000)
 		{
 			// log(+-0)=-inf
-			if (((hx & 0x7FFFFFFF) | lx) == 0) 
+			if (((hx & 0x7FFFFFFF) | uulx) == 0) 
 				return -_TWO54 / _ZERO;
 			
 			// log(-#) = NaN
