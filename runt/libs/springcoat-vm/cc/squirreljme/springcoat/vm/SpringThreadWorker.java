@@ -2799,6 +2799,23 @@ public final class SpringThreadWorker
 						ssf.set(frame.popFromStack(), isstaticinit);
 					}
 					break;
+					
+					// Swap top two cat1 stack entries
+				case InstructionIndex.SWAP:
+					{
+						Object v1 = frame.popFromStack();
+							v2 = frame.popFromStack();
+						
+						// {@squirreljme.error BK23 Cannot swap category
+						// two types.}
+						if (v1 instanceof Long || v1 instanceof Double ||
+							v2 instanceof Long || v2 instanceof Double)
+							throw new SpringClassCastException("BK23");
+						
+						frame.pushToStack(v1);
+						frame.pushToStack(v2);
+					}
+					break;
 				
 					// {@squirreljme.error BK10 Reserved instruction. (The
 					// instruction)}
