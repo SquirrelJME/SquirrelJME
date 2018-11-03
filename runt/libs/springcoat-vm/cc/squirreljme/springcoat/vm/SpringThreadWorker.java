@@ -1269,7 +1269,7 @@ public final class SpringThreadWorker
 			// Clear the stack frame and then push our
 			// exception back onto the stack
 			frame.clearStack();
-			frame.pushToStack(frame);
+			frame.pushToStack(__o);
 			
 			// Handle at this address
 			return useeh.handlerAddress();
