@@ -21,6 +21,10 @@ import java.util.Random;
 public class TestRandom
 	extends TestRunnable
 {
+	/** Count for values. */
+	public static final int COUNT =
+		32;
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/11/02
@@ -28,6 +32,8 @@ public class TestRandom
 	@Override
 	public void test()
 	{
+		Random rand = new Random();
+		
 		throw new todo.TODO();
 	}
 }
