@@ -2803,7 +2803,7 @@ public final class SpringThreadWorker
 					// Swap top two cat1 stack entries
 				case InstructionIndex.SWAP:
 					{
-						Object v1 = frame.popFromStack();
+						Object v1 = frame.popFromStack(),
 							v2 = frame.popFromStack();
 						
 						// {@squirreljme.error BK23 Cannot swap category
