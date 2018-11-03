@@ -1866,6 +1866,40 @@ public final class SpringThreadWorker
 					}
 					break;
 					
+					// Load double from array
+				case InstructionIndex.DALOAD:
+					{
+						int dx = frame.<Integer>popFromStack(Integer.class);
+						SpringArrayObject obj = frame.<SpringArrayObject>
+							popFromStack(SpringArrayObject.class);
+						
+						frame.pushToStack(obj.<Double>get(Double.class, dx));
+					}
+					break;
+					
+					// Load float from array
+				case InstructionIndex.FALOAD:
+					{
+						int dx = frame.<Integer>popFromStack(Integer.class);
+						SpringArrayObject obj = frame.<SpringArrayObject>
+							popFromStack(SpringArrayObject.class);
+						
+						frame.pushToStack(obj.<Float>get(Float.class, dx));
+					}
+					break;
+					
+					
+					// Load long from array
+				case InstructionIndex.LALOAD:
+					{
+						int dx = frame.<Integer>popFromStack(Integer.class);
+						SpringArrayObject obj = frame.<SpringArrayObject>
+							popFromStack(SpringArrayObject.class);
+						
+						frame.pushToStack(obj.<Long>get(Long.class, dx));
+					}
+					break;
+					
 					// Store integer to array (compatible)
 				case InstructionIndex.BASTORE:
 				case InstructionIndex.CASTORE:
@@ -1873,6 +1907,43 @@ public final class SpringThreadWorker
 				case InstructionIndex.IASTORE:
 					{
 						int value = frame.<Integer>popFromStack(Integer.class);
+						int dx = frame.<Integer>popFromStack(Integer.class);
+						SpringArrayObject obj = frame.<SpringArrayObject>
+							popFromStack(SpringArrayObject.class);
+						
+						obj.set(dx, value);
+					}
+					break;
+					
+					// Store double to array
+				case InstructionIndex.DASTORE:
+					{
+						double value = frame.<Double>popFromStack(
+							Double.class);
+						int dx = frame.<Integer>popFromStack(Integer.class);
+						SpringArrayObject obj = frame.<SpringArrayObject>
+							popFromStack(SpringArrayObject.class);
+						
+						obj.set(dx, value);
+					}
+					break;
+					
+					// Store float to array
+				case InstructionIndex.FASTORE:
+					{
+						float value = frame.<Float>popFromStack(Float.class);
+						int dx = frame.<Integer>popFromStack(Integer.class);
+						SpringArrayObject obj = frame.<SpringArrayObject>
+							popFromStack(SpringArrayObject.class);
+						
+						obj.set(dx, value);
+					}
+					break;
+					
+					// Store long to array
+				case InstructionIndex.LASTORE:
+					{
+						long value = frame.<Long>popFromStack(Long.class);
 						int dx = frame.<Integer>popFromStack(Integer.class);
 						SpringArrayObject obj = frame.<SpringArrayObject>
 							popFromStack(SpringArrayObject.class);
