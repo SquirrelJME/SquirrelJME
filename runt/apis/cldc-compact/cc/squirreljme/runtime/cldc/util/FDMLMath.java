@@ -38,6 +38,10 @@ public final class FDMLMath
 	private static final int _SIGN =
 		0x80000000;
 	
+	/** The zero value. */
+	private static final double _ZERO =
+		0.0;
+	
 	/** The one value. */
 	private static final double _ONE =
 		1.0;
@@ -45,6 +49,46 @@ public final class FDMLMath
 	/** The tiniest value. */
 	private static final double _TINY =
 		1.0e-300;
+
+	/** Ln2 high. */
+	private static final double _LN2_HI =
+		0x1.62e42feep-1;
+	
+	/** Ln2 Low. */
+	private static final double _LN2_LO =
+		0x1.a39ef35793c76p-33;
+	
+	/** 2^54. */
+	private static final double _TWO54 =
+		0x1.0p54;
+	
+	/** log(1). */
+	private static final double _LG1 =
+		0x1.5555555555593p-1;
+	
+	/** log(2). */
+	private static final double _LG2 =
+		0x1.999999997fa04p-2;
+	
+	/** log(3). */
+	private static final double _LG3 =
+		0x1.2492494229359p-2;
+	
+	/** log(4). */
+	private static final double _LG4 =
+		0x1.c71c51d8e78afp-3;
+	
+	/** log(5). */
+	private static final double _LG5 =
+		0x1.7466496cb03dep-3;
+	
+	/** log(6). */
+	private static final double _LG6 =
+		0x1.39a09d078c69fp-3;
+	
+	/** log(7). */
+	private static final double _LG7 =
+		0x1.2f112df3e5244p-3;
 	
 	/**
 	 * Not used.
@@ -80,18 +124,18 @@ public final class FDMLMath
 		{
 			// log(+-0)=-inf
 			if (((hx & 0x7FFFFFFF) | lx) == 0) 
-				return -two54 / zero;
+				return -_TWO54 / _ZERO;
 			
 			// log(-#) = NaN
 			if (hx < 0)
-				return (__v - __v) / zero;
+				return (__v - __v) / _ZERO;
 			
 			// subnormal number, scale up __v
 			k -= 54;
-			__v *= two54;
+			__v *= _TWO54;
 			
 			// high word of __v
-			hx = __HI(__v);
+			hx = __hi(__v);
 		} 
 		
 		if (hx >= 0x7FF00000)
@@ -102,20 +146,21 @@ public final class FDMLMath
 		i = (hx + 0x95F64) & 0x100000;
 		
 		// normalize x or x/2
-		__HI(x) = hx | (i^0x3FF00000);
+		// __HI(__v) = hx | (i^0x3FF00000);
+		__v = __compose(hx | (i ^ 0x3FF00000), __lo(__v));
 		k += (i >> 20);
 		f = __v - 1.0;
 		
 		// |f| < 2**-20
 		if ((0x000FFFFF & (2 + hx)) < 3)
 		{
-			if (f == zero)
+			if (f == _ZERO)
 				if (k == 0)
-					return zero;
+					return _ZERO;
 				else
 				{
 					dk = (double)k;
-					return dk * ln2_hi + dk * ln2_lo;
+					return dk * _LN2_HI + dk * _LN2_LO;
 				}
 			
 			R = f * f * (0.5 - 0.33333333333333333 * f);
@@ -124,7 +169,7 @@ public final class FDMLMath
 			else
 			{
 				dk = (double)k;
-				return dk * ln2_hi - ((R - dk * ln2_lo) - f);
+				return dk * _LN2_HI - ((R - dk * _LN2_LO) - f);
 			}
 		}
 		
@@ -134,8 +179,8 @@ public final class FDMLMath
 		i = hx - 0x6147A;
 		w = z * z;
 		j = 0x6B851 - hx;
-		t1 = w * (Lg2 + w * (Lg4 + w * Lg6)); 
-		t2 = z * (Lg1 + w * (Lg3 + w * (Lg5 + w * Lg7))); 
+		t1 = w * (_LG2 + w * (_LG4 + w * _LG6)); 
+		t2 = z * (_LG1 + w * (_LG3 + w * (_LG5 + w * _LG7))); 
 		i |= j;
 		R = t2 + t1;
 		
@@ -145,15 +190,15 @@ public final class FDMLMath
 			if (k == 0)
 				return f - (hfsq - s * (hfsq + R));
 			else
-				return dk * ln2_hi -
-					((hfsq - (s * (hfsq + R) + dk * ln2_lo)) - f);
+				return dk * _LN2_HI -
+					((hfsq - (s * (hfsq + R) + dk * _LN2_LO)) - f);
 		}
 		else
 		{
 			if (k == 0)
 				return f - s * (f - R);
 			else
-				return dk * ln2_hi - (( s * (f - R) - dk * ln2_lo) - f);
+				return dk * _LN2_HI - (( s * (f - R) - dk * _LN2_LO) - f);
 		}
 	}
 
