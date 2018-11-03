@@ -1596,6 +1596,21 @@ public final class SpringThreadWorker
 					nextpc = Integer.MIN_VALUE;
 					break;
 					
+					// Store double to local variable
+				case InstructionIndex.DSTORE:
+					frame.storeLocal(inst.<Integer>argument(0, Integer.class),
+						frame.<Double>popFromStack(Double.class));
+					break;
+					
+					// Store long to double variable
+				case InstructionIndex.DSTORE_0:
+				case InstructionIndex.DSTORE_1:
+				case InstructionIndex.DSTORE_2:
+				case InstructionIndex.DSTORE_3:
+					frame.storeLocal(opid - InstructionIndex.DSTORE_0,
+						frame.<Double>popFromStack(Double.class));
+					break;
+					
 					// Duplicate top-most stack entry
 				case InstructionIndex.DUP:
 					{
