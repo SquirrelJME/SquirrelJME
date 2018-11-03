@@ -28,8 +28,14 @@ public class TestMathSqrt
 	public void test()
 	{
 		for (int i = -2; i <= 128; i++)
-			this.secondary(String.format("value-%03d", i),
-				Double.doubleToRawLongBits(Math.sqrt(i)));
+		{
+			long rawbits = Double.doubleToRawLongBits(Math.sqrt(i));
+			
+			// Debug
+			todo.DEBUG.note("%d: %d", i, rawbits);
+			
+			this.secondary(String.format("value-%03d", i), rawbits);
+		}
 	}
 }
 

@@ -98,10 +98,14 @@ public final class Long
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/03
+	 */
 	@Override
 	public long longValue()
 	{
-		throw new todo.TODO();
+		return this._value;
 	}
 	
 	@Override
