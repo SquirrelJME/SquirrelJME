@@ -141,6 +141,7 @@ public final class ByteCode
 				lengths[i] = -1;
 		
 			// Determine instruction lengths for each position
+			int[] ollastop = new int[]{-1};
 			for (int i = 0, li = -1; i < codelen; li = i)
 			{
 				// Store address of instruction for an index based lookup
@@ -148,7 +149,7 @@ public final class ByteCode
 			
 				// Store length
 				int oplen;
-				lengths[i] = (oplen = __opLength(__ca, i));
+				lengths[i] = (oplen = __opLength(__ca, i, ollastop));
 			
 				// {@squirreljme.error JC02 The operation exceeds the bounds of
 				// the method byte code. (The operation pointer; The operation
@@ -618,7 +619,7 @@ public final class ByteCode
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/05/17
 	 */
-	private static int __opLength(byte[] __code, int __a)
+	private static int __opLength(byte[] __code, int __a, int[] __last)
 		throws InvalidClassFormatException, NullPointerException
 	{
 		// Check
@@ -872,7 +873,6 @@ public final class ByteCode
 			case InstructionIndex.WIDE_DSTORE:
 			case InstructionIndex.WIDE_FLOAD:
 			case InstructionIndex.WIDE_FSTORE:
-			case InstructionIndex.WIDE_IINC:
 			case InstructionIndex.WIDE_ILOAD:
 			case InstructionIndex.WIDE_ISTORE:
 			case InstructionIndex.WIDE_LLOAD:
@@ -889,6 +889,11 @@ public final class ByteCode
 				// Four bytes
 			case InstructionIndex.GOTO_W:
 				rv += 4;
+				break;
+				
+				// Six bytes
+			case InstructionIndex.WIDE_IINC:
+				rv += 6;
 				break;
 			
 				// Table switch, the length of this instruction varies due to
@@ -927,11 +932,16 @@ public final class ByteCode
 			
 				// {@squirreljme.error JC0b Cannot get the length of the
 				// specified operation because it is not valid. (The operation;
-				// The address)}
+				// The address; The operation before this one)}
 			default:
 				throw new InvalidClassFormatException(
-					String.format("JC0b %d %d", op, __a));
+					String.format("JC0b %d %d %d", op, __a,
+					((__last != null && __last.length > 0) ? __last[0] : -1)));
 		}
+		
+		// Set last
+		if (__last != null && __last.length > 0)
+			__last[0] = op;
 		
 		return rv;
 	}
