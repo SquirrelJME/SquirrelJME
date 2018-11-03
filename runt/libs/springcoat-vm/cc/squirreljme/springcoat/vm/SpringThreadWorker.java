@@ -2441,6 +2441,15 @@ public final class SpringThreadWorker
 						frame.pushToStack(a << (((long)b) & 0x3F));
 					}
 					break;
+				
+					// Shift right long
+				case InstructionIndex.LSHR:
+					{
+						int b = frame.<Integer>popFromStack(Integer.class);
+						long a = frame.<Long>popFromStack(Long.class);
+						frame.pushToStack(a >> (((long)b) & 0x3F));
+					}
+					break;
 					
 					// Store long to local variable
 				case InstructionIndex.LSTORE:
