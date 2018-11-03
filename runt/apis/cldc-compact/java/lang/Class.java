@@ -44,6 +44,9 @@ public final class Class<T>
 	/** The JAR this class is in. */
 	private final String _injar;
 	
+	/** Is this an interface. */
+	private final boolean _isinterface;
+	
 	/** Has the assertion status been checked already? */
 	private volatile boolean _checkedassert;
 	
@@ -53,6 +56,9 @@ public final class Class<T>
 	/** The display name of the class. */
 	private Reference<String> _name;
 	
+	/** String representation of class. */
+	private Reference<String> _string;
+	
 	/**
 	 * This constructor is internally called as needed.
 	 *
@@ -61,11 +67,12 @@ public final class Class<T>
 	 * @param __sc Super classes.
 	 * @param __ic Interface classes.
 	 * @param __ij The JAR this class is in.
+	 * @param __int Is this an interface?
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/12
 	 */
 	private Class(int __csi, String __bn, Class<?> __sc, Class<?>[] __ic,
-		Class<?> __ct, String __ij)
+		Class<?> __ct, String __ij, boolean __int)
 		throws NullPointerException
 	{
 		if (__bn == null)
@@ -77,6 +84,7 @@ public final class Class<T>
 		this._interfaceclasses = __ic;
 		this._component = __ct;
 		this._injar = __ij;
+		this._isinterface = __int;
 		
 		// Count dimensions, used for comparison purposes
 		int dims = 0;
@@ -176,15 +184,8 @@ public final class Class<T>
 		{
 			String bn = this._binaryname;
 			
-			// Arrays keep the same format
-			if (bn.startsWith("["))
-				rv = bn;
-			
-			// Otherwise slashes become dots
-			else
-				rv = bn.replace('/', '.');
-			
-			this._name = new WeakReference<>((rv = rv));
+			// Slashes become dots
+			this._name = new WeakReference<>((rv = bn.replace('/', '.')));
 		}
 		
 		return rv;
@@ -317,9 +318,15 @@ public final class Class<T>
 		return false;
 	}
 	
+	/**
+	 * Is this class an interface?
+	 *
+	 * @return If this is an interface.
+	 * @since 2018/11/03
+	 */
 	public boolean isInterface()
 	{
-		throw new todo.TODO();
+		return this._isinterface;
 	}
 	
 	/**
@@ -345,10 +352,46 @@ public final class Class<T>
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/03
+	 */
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+		{
+			// Based on the binary name
+			String binaryname = this._binaryname;
+			switch (binaryname)
+			{
+					// Primitive types have the same binary name
+				case "boolean":
+				case "byte":
+				case "short":
+				case "char":
+				case "int":
+				case "long":
+				case "float":
+				case "double":
+					rv = binaryname;
+					break;
+				
+					// Otherwise build a string
+				default:
+					rv = (this._isinterface ? "interface " : "class ") +
+						this.getName(); 
+					break;
+			}
+			
+			// Cache it
+			this._string = new WeakReference<>(rv);
+		}
+		
+		return rv;
 	}
 	
 	/**

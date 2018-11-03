@@ -429,6 +429,25 @@ public final class Instruction
 				}
 				args = new Object[]{pt};
 				break;
+				
+				// New multi-dimensional array
+			case InstructionIndex.MULTIANEWARRAY:
+				naturalflow = true;
+				
+				ClassName cname = __pool.<ClassName>require(ClassName.class,
+					Instruction.__readUnsignedShort(__code, argbase));
+				int dims = Instruction.__readUnsignedByte(__code,
+					argbase + 2);
+				
+				// {@squirreljme.error JC2n Dimensions represented in type
+				// is smaller than the represented dimensions.
+				// (The operation; The address; The dimensions)}
+				if (cname.dimensions() < dims)
+					throw new InvalidClassFormatException(String.format(
+						"JC2n %d %d %d", op, __a, dims));
+				
+				args = new Object[]{cname, dims};
+				break;
 			
 				// Lookup switch lookup table
 			case InstructionIndex.LOOKUPSWITCH:
