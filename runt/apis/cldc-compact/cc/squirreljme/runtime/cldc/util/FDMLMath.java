@@ -259,18 +259,5 @@ public final class FDMLMath
 	{
 		return (int)(Double.doubleToRawLongBits(__v));
 	}
-	
-	/**
-	 * Operator signed A <= unsigned B.
-	 *
-	 * @param __sa Signed A.
-	 * @param __ub Unsigned B.
-	 * @return If {@code __sa} is less than or equal to {@code __ub}.
-	 * @since 2018/11/03
-	 */
-	private static final boolean __opLTEsu(int __sa, int __ub)
-	{
-		throw new todo.TODO();
-	}
 }
 
