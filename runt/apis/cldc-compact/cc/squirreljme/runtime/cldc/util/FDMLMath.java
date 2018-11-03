@@ -30,7 +30,15 @@ public final class FDMLMath
 	/** The sign bit value. */
 	private static final int _SIGN =
 		0x80000000;
-
+	
+	/** The one value. */
+	private static final double _ONE =
+		1.0;
+	
+	/** The tiniest value. */
+	private static final double _TINY =
+		1.0e-300;
+	
 	/**
 	 * Not used.
 	 *
@@ -67,34 +75,34 @@ public final class FDMLMath
 		unsigned r, t1, s1, ix1, q1;
 		int ix0, s0, q, m, t, i;
 
-		// high and low word of x
-		ix0 = __hi(x);
-		ix1 = __lo(x);
+		// high and low word of __v
+		ix0 = __hi(__v);
+		ix1 = __lo(__v);
 
 		// Take care of Inf and NaN
 		if ((ix0 & 0x7ff00000) == 0x7ff00000)
 		{
 			// sqrt(NaN)=NaN, sqrt(+inf)=+inf
 			// sqrt(-inf)=sNaN
-			return x * x + x;
+			return __v * __v + __v;
 		}
 		
 		// take care of zero
 		if (ix0 <= 0)
 		{
 			// sqrt(+-0) = +-0
-			if (((ix0 & (~sign)) | ix1) == 0)
-				return x;
+			if (((ix0 & (~_SIGN)) | ix1) == 0)
+				return __v;
 			
 			// sqrt(-ve) = sNaN
 			else if (ix0 < 0)
-				return (x - x) / (x - x);
+				return Double.NaN;
 		}
 		
 		// normalize
 		m = (ix0 >> 20);
 		
-		// subnormal x
+		// subnormal __v
 		if (m == 0)
 		{
 			while (ix0 == 0)
@@ -116,26 +124,26 @@ public final class FDMLMath
 		m -= 1023;
 		ix0 = (ix0 & 0x000fffff) | 0x00100000;
 		
-		// odd m, double x to make it even
-		if(m&1)
+		// odd m, double __v to make it even
+		if ((m & 1) != 0)
 		{
-			ix0 += ix0 + ((ix1 & sign) >> 31);
+			ix0 += ix0 + ((ix1 & _SIGN) >> 31);
 			ix1 += ix1;
 		}
 		
 		// m = [m/2]
 		m >>= 1;
 
-		// generate sqrt(x) bit by bit
-		ix0 += ix0 + ((ix1 & sign) >> 31);
+		// generate sqrt(__v) bit by bit
+		ix0 += ix0 + ((ix1 & _SIGN) >> 31);
 		ix1 += ix1;
 		
-		// [q,q1] = sqrt(x)
+		// [q,q1] = sqrt(__v)
 		q = q1 = s0 = s1 = 0;
 		
 		// r = moving bit from right to left
 		r = 0x00200000;
-		while (r!=0)
+		while (r != 0)
 		{
 			t = s0 + r;
 			if (t <= ix0)
@@ -144,12 +152,12 @@ public final class FDMLMath
 				ix0 -= t;
 				q += r;
 			}
-			ix0 += ix0 + ((ix1 & sign) >> 31);
+			ix0 += ix0 + ((ix1 & _SIGN) >> 31);
 			ix1 += ix1;
 			r >>= 1;
 		}
 
-		r = sign;
+		r = _SIGN;
 		while (r != 0)
 		{
 			t1 = s1+r;
@@ -158,7 +166,7 @@ public final class FDMLMath
 			if ((t < ix0) || ((t == ix0) && (t1 <= ix1)))
 			{
 				s1 = t1+r;
-				if (((t1 & sign) == sign) && (s1 & sign) ==0)
+				if (((t1 & _SIGN) == _SIGN) && (s1 & _SIGN) == 0)
 					s0 += 1;
 				ix0 -= t;
 				if (ix1 < t1)
@@ -167,7 +175,7 @@ public final class FDMLMath
 				q1 += r;
 			}
 			
-			ix0 += ix0 + ((ix1 & sign) >> 31);
+			ix0 += ix0 + ((ix1 & _SIGN) >> 31);
 			ix1 += ix1;
 			r>>=1;
 		}
@@ -176,19 +184,19 @@ public final class FDMLMath
 		if ((ix0 | ix1) != 0)
 		{
 			// trigger inexact flag
-			z = one - tiny;
+			z = _ONE - _TINY;
 			
-			if (z >= one)
+			if (z >= _ONE)
 			{
-				z = one + tiny;
-				if (q1 == (unsigned)0xffffffff)
+				z = _ONE + _TINY;
+				if (q1 == 0xffffffff)
 				{
 					q1 = 0;
 					q += 1;
 				}
-				else if (z > one)
+				else if (z > _ONE)
 				{
-					if (q1 == (unsigned)0xfffffffe)
+					if (q1 == 0xfffffffe)
 						q += 1;
 					q1 += 2;
 				}
@@ -201,7 +209,7 @@ public final class FDMLMath
 		ix1 = q1 >> 1;
 		
 		if ((q & 1) == 1)
-			ix1 |= sign;
+			ix1 |= _SIGN;
 		
 		ix0 += (m << 20);
 		
