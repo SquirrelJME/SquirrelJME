@@ -79,7 +79,7 @@ public final class FDMLMath
 		if (hx < 0x00100000)
 		{
 			// log(+-0)=-inf
-			if (((hx & 0x7fffffff) | lx) == 0) 
+			if (((hx & 0x7FFFFFFF) | lx) == 0) 
 				return -two54 / zero;
 			
 			// log(-#) = NaN
@@ -94,20 +94,20 @@ public final class FDMLMath
 			hx = __HI(__v);
 		} 
 		
-		if (hx >= 0x7ff00000)
+		if (hx >= 0x7FF00000)
 			return __v + __v;
 		
 		k += (hx >> 20) - 1023;
-		hx &= 0x000fffff;
-		i = (hx + 0x95f64) & 0x100000;
+		hx &= 0x000FFFFF;
+		i = (hx + 0x95F64) & 0x100000;
 		
 		// normalize x or x/2
-		__HI(x) = hx | (i^0x3ff00000);
+		__HI(x) = hx | (i^0x3FF00000);
 		k += (i >> 20);
 		f = __v - 1.0;
 		
 		// |f| < 2**-20
-		if ((0x000fffff & (2 + hx)) < 3)
+		if ((0x000FFFFF & (2 + hx)) < 3)
 		{
 			if (f == zero)
 				if (k == 0)
@@ -131,9 +131,9 @@ public final class FDMLMath
 		s = f / (2.0 + f); 
 		dk = (double)k;
 		z = s * s;
-		i = hx - 0x6147a;
+		i = hx - 0x6147A;
 		w = z * z;
-		j = 0x6b851 - hx;
+		j = 0x6B851 - hx;
 		t1 = w * (Lg2 + w * (Lg4 + w * Lg6)); 
 		t2 = z * (Lg1 + w * (Lg3 + w * (Lg5 + w * Lg7))); 
 		i |= j;
