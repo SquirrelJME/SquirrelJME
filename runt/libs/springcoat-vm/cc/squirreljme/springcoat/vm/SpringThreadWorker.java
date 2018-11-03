@@ -1723,7 +1723,7 @@ public final class SpringThreadWorker
 					// Duplicate top-most stack entry
 				case InstructionIndex.DUP:
 					{
-						Object copy = frame.<Object>popFromStack(Object.class);
+						Object copy = frame.popFromStack();
 						
 						// {@squirreljme.error BK0y Cannot duplicate category
 						// two type.}
@@ -1739,8 +1739,8 @@ public final class SpringThreadWorker
 					// Duplicate top and place two down
 				case InstructionIndex.DUP_X1:
 					{
-						Object a = frame.<Object>popFromStack(Object.class),
-							b = frame.<Object>popFromStack(Object.class);
+						Object a = frame.popFromStack(),
+							b = frame.popFromStack();
 						
 						// {@squirreljme.error BK1z Cannot duplicate and place
 						// down below with two type.}
@@ -1751,6 +1751,45 @@ public final class SpringThreadWorker
 						frame.pushToStack(a);
 						frame.pushToStack(b);
 						frame.pushToStack(a);
+					}
+					break;
+					
+					// Dup[licate top entry and place two or three down
+				case InstructionIndex.DUP_X2:
+					{
+						Object a = frame.popFromStack(),
+							b = frame.popFromStack();
+						
+						// {@squirreljme.error BK26 Cannot duplicate cat2
+						// type.}
+						if (a instanceof Long || a instanceof Double)
+							throw new SpringVirtualMachineException("BK26");
+						
+						// Insert A below C
+						if (b instanceof Long || b instanceof Double)
+						{
+							frame.pushToStack(a);
+							frame.pushToStack(b);
+							frame.pushToStack(a);
+						}
+						
+						// Grab C as well and push below that
+						else
+						{
+							Object c = frame.popFromStack();
+							
+							// {@squirreljme.error BK25 Cannot duplicate top
+							// most entry and place two down because a cat2
+							// type is in the way.}
+							if (c instanceof Long || c instanceof Double)
+								throw new SpringVirtualMachineException(
+									"BK25");
+									
+							frame.pushToStack(a);
+							frame.pushToStack(c);
+							frame.pushToStack(b);
+							frame.pushToStack(a);
+						}
 					}
 					break;
 					
