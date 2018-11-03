@@ -1567,6 +1567,32 @@ public final class SpringThreadWorker
 					}
 					break;
 					
+					// Compare double, NaN is positive
+				case InstructionIndex.DCMPG:
+					{
+						double b = frame.<Float>popFromStack(Float.class),
+							a = frame.<Float>popFromStack(Float.class);
+						
+						if (Double.isNaN(a) || Double.isNaN(b))
+							frame.pushToStack(1);
+						else
+							frame.pushToStack((a < b ? -1 : (a > b ? 1 : 0)));
+					}
+					break;
+				
+					// Compare double, NaN is negative
+				case InstructionIndex.DCMPL:
+					{
+						double b = frame.<Double>popFromStack(Double.class),
+							a = frame.<Double>popFromStack(Double.class);
+						
+						if (Double.isNaN(a) || Double.isNaN(b))
+							frame.pushToStack(-1);
+						else
+							frame.pushToStack((a < b ? -1 : (a > b ? 1 : 0)));
+					}
+					break;
+					
 					// Double constant
 				case InstructionIndex.DCONST_0:
 				case InstructionIndex.DCONST_1:
