@@ -1568,6 +1568,15 @@ public final class SpringThreadWorker
 							frame.pushToStack(pop);
 					}
 					break;
+				
+					// Addiply double
+				case InstructionIndex.DADD:
+					{
+						double b = frame.<Double>popFromStack(Double.class),
+							a = frame.<Double>popFromStack(Double.class);
+						frame.pushToStack(a + b);
+					}
+					break;
 					
 					// Compare double, NaN is positive
 				case InstructionIndex.DCMPG:
