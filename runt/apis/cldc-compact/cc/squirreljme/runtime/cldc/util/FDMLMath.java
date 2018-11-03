@@ -163,14 +163,19 @@ public final class FDMLMath
 			uut1 = uus1 + uur;
 			t = s0;
 			
-			if ((t < ix0) || ((t == ix0) && __opLTEsu(uut1, uuix1)))
+			if ((t < ix0) || ((t == ix0) &&
+				UnsignedInteger.compareSignedUnsigned(uut1, uuix1) <= 0))
 			{
 				uus1 = uut1 + uur;
+				
 				if (((uut1 & _SIGN) == _SIGN) && (uus1 & _SIGN) == 0)
 					s0 += 1;
+				
 				ix0 -= t;
-				if (__opLTuu(uuix1, uut1))
+				
+				if (UnsignedInteger.compareUnsigned(uuix1, uut1) < 0)
 					ix0 -= 1;
+				
 				uuix1 -= uut1;
 				uuq1 += uur;
 			}
@@ -253,19 +258,6 @@ public final class FDMLMath
 	private static final int __lo(double __v)
 	{
 		return (int)(Double.doubleToRawLongBits(__v));
-	}
-	
-	/**
-	 * Operator unsigned A < unsigned B.
-	 *
-	 * @param __ua Unsigned A.
-	 * @param __ub Unsigned B.
-	 * @return If {@code __ua} is less than {@code __ub}.
-	 * @since 2018/11/03
-	 */
-	private static final boolean __opLTuu(int __ua, int __ub)
-	{
-		throw new todo.TODO();
 	}
 	
 	/**
