@@ -303,6 +303,14 @@ public final class Instruction
 					Instruction.__readByte(__code, argbase + 1)};
 				break;
 				
+				// Increment local variable (wide)
+			case InstructionIndex.WIDE_IINC:
+				naturalflow = true;
+				args = new Object[]{
+					Instruction.__readUnsignedShort(__code, argbase),
+					Instruction.__readShort(__code, argbase + 2)};
+				break;
+				
 				// Branches
 			case InstructionIndex.IFNONNULL:
 			case InstructionIndex.IFNULL:
