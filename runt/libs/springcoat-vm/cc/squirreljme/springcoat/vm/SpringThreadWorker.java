@@ -1824,6 +1824,47 @@ public final class SpringThreadWorker
 					}
 					break;
 					
+					// Duplicate top one or two operand values and insert two
+					// or three values down
+				case InstructionIndex.DUP2_X1:
+					{
+						Object a = frame.popFromStack(),
+							b = frame.popFromStack();
+						
+						// {@squirreljme.error BK28 Expected category one
+						// type.}
+						if (b instanceof Long || b instanceof Double)
+							throw new SpringVirtualMachineException(
+								"BK28");
+						
+						// Insert this below b
+						if (a instanceof Long || a instanceof Double)
+						{
+							frame.pushToStack(a);
+							frame.pushToStack(b);
+							frame.pushToStack(a);
+						}
+						
+						// Three cat1 values
+						else
+						{
+							Object c = frame.popFromStack();
+							
+							// {@squirreljme.error BK2a Cannot duplicate value
+							// below category two type.}
+							if (c instanceof Long || c instanceof Double)
+								throw new SpringVirtualMachineException(
+									"BK2a");
+							
+							frame.pushToStack(b);
+							frame.pushToStack(a);
+							frame.pushToStack(c);
+							frame.pushToStack(b);
+							frame.pushToStack(a);
+						}
+					}
+					break;
+					
 					// Float to double
 				case InstructionIndex.F2D:
 					{
