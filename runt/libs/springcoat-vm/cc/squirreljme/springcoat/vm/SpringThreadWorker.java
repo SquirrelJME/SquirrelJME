@@ -1992,6 +1992,7 @@ public final class SpringThreadWorker
 					
 					// Increment local variable
 				case InstructionIndex.IINC:
+				case InstructionIndex.WIDE_IINC:
 					{
 						int dx = inst.<Integer>argument(0, Integer.class);
 						frame.storeLocal(dx, frame.<Integer>loadLocal(
