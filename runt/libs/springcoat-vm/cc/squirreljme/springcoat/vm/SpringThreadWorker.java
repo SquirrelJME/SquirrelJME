@@ -2731,6 +2731,24 @@ public final class SpringThreadWorker
 					}
 					break;
 					
+					// Pop two cat1s or one cat2
+				case InstructionIndex.POP2:
+					{
+						// Pop one value, if it is a long or double then only
+						// pop one
+						Object val = frame.popFromStack();
+						if (!(val instanceof Long || val instanceof Double))
+						{
+							// {@squirreljme.error BK23 Cannot pop a category
+							// one then category two type.}
+							val = frame.popFromStack();
+							if (val instanceof Long || val instanceof Double)
+								throw new SpringVirtualMachineException(
+									"BK23");
+						}
+					}
+					break;
+					
 					// Put to instance field
 				case InstructionIndex.PUTFIELD:
 					{
