@@ -413,14 +413,15 @@ public final class SpringThreadWorker
 				rv = this.newInstance(classobj.name(),
 					new MethodDescriptor("(ILjava/lang/String;" +
 						"Ljava/lang/Class;[Ljava/lang/Class;" +
-						"Ljava/lang/Class;Ljava/lang/String;)V"),
+						"Ljava/lang/Class;Ljava/lang/String;Z)V"),
 					resclass.specialIndex(),
 					this.asVMObject(name.toString()),
 					this.asVMObject(resclass.superClass()),
 					ints,
 					(!resclass.isArray() ? SpringNullObject.NULL :
 						this.asVMObject(resclass.componentType())),
-					this.asVMObject(resclass.inJar()));
+					this.asVMObject(resclass.inJar()),
+					(resclass.flags().isInterface() ? 1 : 0));
 				
 				// Cache and use it
 				com.put(name, rv);
@@ -2890,6 +2891,32 @@ public final class SpringThreadWorker
 				case InstructionIndex.MONITOREXIT:
 					frame.<SpringObject>popFromStack(SpringObject.class).
 						monitor().exit(thread);
+					break;
+					
+					// Allocate multi-dimensional array
+				case InstructionIndex.MULTIANEWARRAY:
+					{
+						// Determine component type and dimension count
+						SpringClass ccl = this.resolveClass(
+							inst.<ClassName>argument(0, ClassName.class));
+						int n = inst.<Integer>argument(1, Integer.class);
+						
+						// Pop values into array
+						int[] pops = new int[n];
+						for (int i = n - 1; i >= 0; i--)
+							pops[i] = frame.<Integer>popFromStack(
+								Integer.class);
+						
+						// Call method within the class library since it is
+						// easier, becuse this is one super complex
+						// instruction
+						frame.pushToStack(
+							this.invokeMethod(true, new ClassName(
+							"cc/squirreljme/runtime/cldc/lang/MultiANewArray"),
+							new MethodNameAndType("multiANewArray",
+								"(Ljava/lang/Class;[I)Ljava/lang/Object;"),
+							this.asVMObject(ccl), this.asVMObject(pops)));
+					}
 					break;
 					
 					// Allocate new object
