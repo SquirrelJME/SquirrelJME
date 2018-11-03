@@ -10,6 +10,7 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.util.FDMLMath;
 
 public final class Math
@@ -99,6 +100,22 @@ public final class Math
 	public static int getExponent(double __a)
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the logarithm of the given number.
+	 *
+	 * This method does not exist in CLDC and is SquirrelJME specified.
+	 *
+	 * @param __v The value to get the logarithm from.
+	 * @return The logarithm for the given value.
+	 * @since 2018/11/03
+	 */
+	@Deprecated
+	@ImplementationNote("This method does not exist in the CLDC library.")
+	public static double log(double __v)
+	{
+		return FDMLMath.log(__v);
 	}
 	
 	/**
