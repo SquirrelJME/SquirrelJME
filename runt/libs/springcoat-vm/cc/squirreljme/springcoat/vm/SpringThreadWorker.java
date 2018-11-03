@@ -45,7 +45,7 @@ public final class SpringThreadWorker
 {
 	/** Number of instructions which can be executed before warning. */
 	private static final int _EXECUTION_THRESHOLD =
-		50000;
+		200000;
 	
 	/** The owning machine. */
 	protected final SpringMachine machine;
@@ -1564,6 +1564,21 @@ public final class SpringThreadWorker
 						Double.valueOf(opid - InstructionIndex.DCONST_0));
 					break;
 					
+					// Load double from local variable
+				case InstructionIndex.DLOAD:
+					frame.loadToStack(Double.class,
+						inst.<Integer>argument(0, Integer.class));
+					break;
+					
+					// Load double from local variable
+				case InstructionIndex.DLOAD_0:
+				case InstructionIndex.DLOAD_1:
+				case InstructionIndex.DLOAD_2:
+				case InstructionIndex.DLOAD_3:
+					frame.loadToStack(Double.class,
+						opid - InstructionIndex.DLOAD_0);
+					break;
+					
 					// Return double
 				case InstructionIndex.DRETURN:
 					this.__vmReturn(thread,
@@ -1762,6 +1777,14 @@ public final class SpringThreadWorker
 						int value = frame.<Integer>popFromStack(Integer.class);
 						frame.pushToStack(Byte.valueOf((byte)value).
 							intValue());
+					}
+					break;
+					
+					// Integer to double
+				case InstructionIndex.I2D:
+					{
+						int value = frame.<Integer>popFromStack(Integer.class);
+						frame.pushToStack(Double.valueOf(value));
 					}
 					break;
 					

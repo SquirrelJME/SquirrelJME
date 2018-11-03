@@ -107,10 +107,14 @@ public final class Integer
 		return this._value;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/03
+	 */
 	@Override
 	public long longValue()
 	{
-		throw new todo.TODO();
+		return this._value;
 	}
 	
 	@Override
