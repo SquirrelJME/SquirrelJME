@@ -10,6 +10,8 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.util.FDMLMath;
+
 public final class Math
 {
 	public static final double E =
@@ -189,9 +191,15 @@ public final class Math
 		throw new todo.TODO();
 	}
 	
-	public static double sqrt(double __a)
+	/**
+	 * Returns the square root of the given number.
+	 *
+	 * @return __v The value to get the square root for.
+	 * @since 2018/11/03
+	 */
+	public static double sqrt(double __v)
 	{
-		throw new todo.TODO();
+		return FDMLMath.sqrt(__v);
 	}
 	
 	public static double tan(double __a)
