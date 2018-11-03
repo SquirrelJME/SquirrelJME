@@ -80,7 +80,7 @@ public final class FDMLMath
 		uuix1 = __lo(__v);
 
 		// Take care of Inf and NaN
-		if ((ix0 & 0x7ff00000) == 0x7ff00000)
+		if ((ix0 & 0x7FF00000) == 0x7FF00000)
 		{
 			// sqrt(NaN)=NaN, sqrt(+inf)=+inf
 			// sqrt(-inf)=sNaN
@@ -122,7 +122,7 @@ public final class FDMLMath
 		
 		// unbias exponent
 		m -= 1023;
-		ix0 = (ix0 & 0x000fffff) | 0x00100000;
+		ix0 = (ix0 & 0x000FFFFF) | 0x00100000;
 		
 		// odd m, double __v to make it even
 		if ((m & 1) != 0)
@@ -194,14 +194,14 @@ public final class FDMLMath
 			if (z >= _ONE)
 			{
 				z = _ONE + _TINY;
-				if (uuq1 == 0xffffffff)
+				if (uuq1 == 0xFFFFFFFF)
 				{
 					uuq1 = 0;
 					q += 1;
 				}
 				else if (z > _ONE)
 				{
-					if (uuq1 == 0xfffffffe)
+					if (uuq1 == 0xFFFFFFFE)
 						q += 1;
 					uuq1 += 2;
 				}
@@ -210,7 +210,7 @@ public final class FDMLMath
 			}
 		}
 		
-		ix0 = (q >> 1) + 0x3fe00000;
+		ix0 = (q >> 1) + 0x3FE00000;
 		uuix1 = uuq1 >>> 1;
 		
 		if ((q & 1) == 1)
