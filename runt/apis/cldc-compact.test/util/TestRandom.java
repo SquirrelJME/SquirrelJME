@@ -32,9 +32,23 @@ public class TestRandom
 	@Override
 	public void test()
 	{
-		Random rand = new Random();
+		Random rand = new Random(0xCAFEBABE);
 		
-		throw new todo.TODO();
+		for (int i = 0; i < COUNT; i++)
+			this.secondary(String.format("boolean-%02d", i),
+				rand.nextBoolean());
+		
+		for (int i = 0; i < COUNT; i++)
+			this.secondary(String.format("int-%02d", i),
+				rand.nextInt());
+		
+		for (int i = 0; i < COUNT; i++)
+			this.secondary(String.format("long-%02d", i),
+				rand.nextLong());
+			
+		for (int i = 0; i < COUNT; i++)
+			this.secondary(String.format("range-%02d", i),
+				rand.nextInt(i + 1));
 	}
 }
 

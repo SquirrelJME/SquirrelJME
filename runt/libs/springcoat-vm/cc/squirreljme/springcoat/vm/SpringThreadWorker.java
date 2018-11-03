@@ -1361,9 +1361,11 @@ public final class SpringThreadWorker
 	/**
 	 * Single step through handling a single instruction.
 	 *
+	 * This method uses strict floating point to make operations consistent.
+	 *
 	 * @since 2018/09/03
 	 */
-	private final void __singleStep()
+	private final strictfp void __singleStep()
 	{
 		// Check if the VM is exiting, to discontinue execution if it has been
 		// requested by any thread

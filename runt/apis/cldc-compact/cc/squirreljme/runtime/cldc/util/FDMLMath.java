@@ -31,8 +31,9 @@ import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
  * @since 2018/11/02
  */
 @ImplementationNote("This code is derived from the Freely " +
-	"Distributable Math Library (http://www.netlib.org/fdlibm/).")
-public final class FDMLMath
+	"Distributable Math Library (http://www.netlib.org/fdlibm/). " +
+	"Additionally this class is strictfp to keep math consistent.")
+public final strictfp class FDMLMath
 {
 	/** The sign bit value. */
 	private static final int _SIGN =
