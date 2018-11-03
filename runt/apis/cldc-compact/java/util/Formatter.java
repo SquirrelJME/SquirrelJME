@@ -340,12 +340,12 @@ public final class Formatter
 		if (__pf.__hasFlag(__PrintFFlag__.LOCALE_GROUPING))
 			throw new todo.TODO();
 		
-		// Negative values can have flags
-		boolean signed = false;
+		// Negative values can have flags (note negatives are always signed)
+		boolean signed = neg;
 		if (neg)
 		{
 			// Use parenthesis for negative instead
-			if (signed |= __pf.__hasFlag(__PrintFFlag__.NEGATIVE_PARENTHESIS))
+			if (__pf.__hasFlag(__PrintFFlag__.NEGATIVE_PARENTHESIS))
 			{
 				// Replace the sign with open parenthesis
 				base.setCharAt(0, '(');
