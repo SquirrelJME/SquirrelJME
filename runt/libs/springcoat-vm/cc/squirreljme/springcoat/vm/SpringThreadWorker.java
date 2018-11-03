@@ -1793,6 +1793,37 @@ public final class SpringThreadWorker
 					}
 					break;
 					
+					// Duplicate top two cat1s or single cat2
+				case InstructionIndex.DUP2:
+					{
+						Object a = frame.popFromStack();
+						
+						// Just cat two
+						if (a instanceof Long || a instanceof Double)
+						{
+							frame.pushToStack(a);
+							frame.pushToStack(a);
+						}
+						
+						// Double values
+						else
+						{
+							Object b = frame.popFromStack();
+							
+							// {@squirreljme.error BK27 Cannot duplicate top
+							// two values.}
+							if (b instanceof Long || b instanceof Double)
+								throw new SpringVirtualMachineException(
+									"BK27");
+							
+							frame.pushToStack(b);
+							frame.pushToStack(a);
+							frame.pushToStack(b);
+							frame.pushToStack(a);
+						}
+					}
+					break;
+					
 					// Float to double
 				case InstructionIndex.F2D:
 					{
