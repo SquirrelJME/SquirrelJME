@@ -460,7 +460,8 @@ public final class Formatter
 			
 			// Parse flags, but only if no width was specified
 			if (!__pf.__hasWidth())
-				for (c = __fmt.charAt(at); __pf.__setFlag(c); at++)
+				for (c = __fmt.charAt(at); __pf.__setFlag(c);
+					at++, c = __fmt.charAt(at))
 					;
 			
 			// Parse width

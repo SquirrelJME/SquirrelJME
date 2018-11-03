@@ -252,7 +252,7 @@ final class __PrintFState__
 		
 		boolean[] flags = this._flags;
 		
-		// {@squirreljme.error ZZ1p Duplicate flag specified. (The flag)}
+		// There may be a duplicate flag
 		int ord = f.ordinal();
 		if (flags[ord])
 			throw new IllegalArgumentException("ZZ1p " + __c);
