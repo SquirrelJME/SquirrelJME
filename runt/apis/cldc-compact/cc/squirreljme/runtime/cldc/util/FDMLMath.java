@@ -15,7 +15,8 @@ import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 /**
  * This class contains math methods which are derived from the Freely
  * Distributed Math Library, which is written in C which is then translated
- * into Java.
+ * into Java. The conversion process is copy and pasted from the origin sources
+ * and adapted to Java.
  *
  * The library is located at http://www.netlib.org/fdlibm/ and was
  * developed at Sun Microsystems, Inc.
