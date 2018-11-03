@@ -888,12 +888,8 @@ public final class ByteCode
 				
 				// Four bytes
 			case InstructionIndex.GOTO_W:
-				rv += 4;
-				break;
-				
-				// Six bytes
 			case InstructionIndex.WIDE_IINC:
-				rv += 6;
+				rv += 4;
 				break;
 			
 				// Table switch, the length of this instruction varies due to
