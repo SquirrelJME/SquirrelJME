@@ -72,12 +72,12 @@ public final class FDMLMath
 	public static double sqrt(double __v)
 	{
 		double z;
-		unsigned r, t1, s1, ix1, q1;
+		int uur, uut1, uus1, uuix1, uuq1;
 		int ix0, s0, q, m, t, i;
 
 		// high and low word of __v
 		ix0 = __hi(__v);
-		ix1 = __lo(__v);
+		uuix1 = __lo(__v);
 
 		// Take care of Inf and NaN
 		if ((ix0 & 0x7ff00000) == 0x7ff00000)
@@ -91,7 +91,7 @@ public final class FDMLMath
 		if (ix0 <= 0)
 		{
 			// sqrt(+-0) = +-0
-			if (((ix0 & (~_SIGN)) | ix1) == 0)
+			if (((ix0 & (~_SIGN)) | uuix1) == 0)
 				return __v;
 			
 			// sqrt(-ve) = sNaN
@@ -108,16 +108,16 @@ public final class FDMLMath
 			while (ix0 == 0)
 			{
 				m -= 21;
-				ix0 |= (ix1 >> 11);
-				ix1 <<= 21;
+				ix0 |= (uuix1 >>> 11);
+				uuix1 <<= 21;
 			}
 			
 			for (i = 0; (ix0 & 0x00100000) == 0; i++)
 				ix0 <<= 1;
 			
 			m -= i - 1;
-			ix0 |= (ix1 >> (32 - i));
-			ix1 <<= i;
+			ix0 |= (uuix1 >>> (32 - i));
+			uuix1 <<= i;
 		}
 		
 		// unbias exponent
@@ -127,61 +127,61 @@ public final class FDMLMath
 		// odd m, double __v to make it even
 		if ((m & 1) != 0)
 		{
-			ix0 += ix0 + ((ix1 & _SIGN) >> 31);
-			ix1 += ix1;
+			ix0 += ix0 + ((uuix1 & _SIGN) >>> 31);
+			uuix1 += uuix1;
 		}
 		
 		// m = [m/2]
 		m >>= 1;
 
 		// generate sqrt(__v) bit by bit
-		ix0 += ix0 + ((ix1 & _SIGN) >> 31);
-		ix1 += ix1;
+		ix0 += ix0 + ((uuix1 & _SIGN) >>> 31);
+		uuix1 += uuix1;
 		
 		// [q,q1] = sqrt(__v)
-		q = q1 = s0 = s1 = 0;
+		q = uuq1 = s0 = uus1 = 0;
 		
 		// r = moving bit from right to left
-		r = 0x00200000;
-		while (r != 0)
+		uur = 0x00200000;
+		while (uur != 0)
 		{
-			t = s0 + r;
+			t = s0 + uur;
 			if (t <= ix0)
 			{
-				s0 = t+r;
+				s0 = t + uur;
 				ix0 -= t;
-				q += r;
+				q += uur;
 			}
-			ix0 += ix0 + ((ix1 & _SIGN) >> 31);
-			ix1 += ix1;
-			r >>= 1;
+			ix0 += ix0 + ((uuix1 & _SIGN) >>> 31);
+			uuix1 += uuix1;
+			uur >>>= 1;
 		}
 
-		r = _SIGN;
-		while (r != 0)
+		uur = _SIGN;
+		while (uur != 0)
 		{
-			t1 = s1+r;
+			uut1 = uus1 + uur;
 			t = s0;
 			
-			if ((t < ix0) || ((t == ix0) && (t1 <= ix1)))
+			if ((t < ix0) || ((t == ix0) && __opLTEsu(uut1, uuix1)))
 			{
-				s1 = t1+r;
-				if (((t1 & _SIGN) == _SIGN) && (s1 & _SIGN) == 0)
+				uus1 = uut1 + uur;
+				if (((uut1 & _SIGN) == _SIGN) && (uus1 & _SIGN) == 0)
 					s0 += 1;
 				ix0 -= t;
-				if (ix1 < t1)
+				if (__opLTuu(uuix1, uut1))
 					ix0 -= 1;
-				ix1 -= t1;
-				q1 += r;
+				uuix1 -= uut1;
+				uuq1 += uur;
 			}
 			
-			ix0 += ix0 + ((ix1 & _SIGN) >> 31);
-			ix1 += ix1;
-			r>>=1;
+			ix0 += ix0 + ((uuix1 & _SIGN) >>> 31);
+			uuix1 += uuix1;
+			uur >>>= 1;
 		}
 
 		// use floating add to find out rounding direction
-		if ((ix0 | ix1) != 0)
+		if ((ix0 | uuix1) != 0)
 		{
 			// trigger inexact flag
 			z = _ONE - _TINY;
@@ -189,31 +189,31 @@ public final class FDMLMath
 			if (z >= _ONE)
 			{
 				z = _ONE + _TINY;
-				if (q1 == 0xffffffff)
+				if (uuq1 == 0xffffffff)
 				{
-					q1 = 0;
+					uuq1 = 0;
 					q += 1;
 				}
 				else if (z > _ONE)
 				{
-					if (q1 == 0xfffffffe)
+					if (uuq1 == 0xfffffffe)
 						q += 1;
-					q1 += 2;
+					uuq1 += 2;
 				}
 				else
-					q1 += (q1 & 1);
+					uuq1 += (uuq1 & 1);
 			}
 		}
 		
 		ix0 = (q >> 1) + 0x3fe00000;
-		ix1 = q1 >> 1;
+		uuix1 = uuq1 >>> 1;
 		
 		if ((q & 1) == 1)
-			ix1 |= _SIGN;
+			uuix1 |= _SIGN;
 		
 		ix0 += (m << 20);
 		
-		return __compose(ix0, ix1);
+		return __compose(ix0, uuix1);
 	}
 	
 	/**
@@ -253,6 +253,32 @@ public final class FDMLMath
 	private static final int __lo(double __v)
 	{
 		return (int)(Double.doubleToRawLongBits(__v));
+	}
+	
+	/**
+	 * Operator unsigned A < unsigned B.
+	 *
+	 * @param __ua Unsigned A.
+	 * @param __ub Unsigned B.
+	 * @return If {@code __ua} is less than {@code __ub}.
+	 * @since 2018/11/03
+	 */
+	private static final boolean __opLTuu(int __ua, int __ub)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Operator signed A <= unsigned B.
+	 *
+	 * @param __sa Signed A.
+	 * @param __ub Unsigned B.
+	 * @return If {@code __sa} is less than or equal to {@code __ub}.
+	 * @since 2018/11/03
+	 */
+	private static final boolean __opLTEsu(int __sa, int __ub)
+	{
+		throw new todo.TODO();
 	}
 }
 
