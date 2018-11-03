@@ -1477,6 +1477,7 @@ public final class SpringThreadWorker
 					
 					// Load reference from local
 				case InstructionIndex.ALOAD:
+				case InstructionIndex.WIDE_ALOAD:
 					frame.loadToStack(SpringObject.class,
 						inst.<Integer>argument(0, Integer.class));
 					break;
@@ -1512,6 +1513,7 @@ public final class SpringThreadWorker
 					
 					// Store reference to local variable
 				case InstructionIndex.ASTORE:
+				case InstructionIndex.WIDE_ASTORE:
 					frame.storeLocal(inst.<Integer>argument(0, Integer.class),
 						frame.<SpringObject>popFromStack(SpringObject.class));
 					break;
@@ -1611,6 +1613,7 @@ public final class SpringThreadWorker
 					
 					// Load double from local variable
 				case InstructionIndex.DLOAD:
+				case InstructionIndex.WIDE_DLOAD:
 					frame.loadToStack(Double.class,
 						inst.<Integer>argument(0, Integer.class));
 					break;
@@ -1651,6 +1654,7 @@ public final class SpringThreadWorker
 					
 					// Store double to local variable
 				case InstructionIndex.DSTORE:
+				case InstructionIndex.WIDE_DSTORE:
 					frame.storeLocal(inst.<Integer>argument(0, Integer.class),
 						frame.<Double>popFromStack(Double.class));
 					break;
@@ -1742,6 +1746,7 @@ public final class SpringThreadWorker
 					
 					// Load float from local variable
 				case InstructionIndex.FLOAD:
+				case InstructionIndex.WIDE_FLOAD:
 					frame.loadToStack(Float.class,
 						inst.<Integer>argument(0, Integer.class));
 					break;
@@ -1769,6 +1774,22 @@ public final class SpringThreadWorker
 					this.__vmReturn(thread,
 						frame.<Float>popFromStack(Float.class));
 					nextpc = Integer.MIN_VALUE;
+					break;
+					
+					// Store float to local variable
+				case InstructionIndex.FSTORE:
+				case InstructionIndex.WIDE_FSTORE:
+					frame.storeLocal(inst.<Integer>argument(0, Integer.class),
+						frame.<Float>popFromStack(Float.class));
+					break;
+					
+					// Store float to local variable
+				case InstructionIndex.FSTORE_0:
+				case InstructionIndex.FSTORE_1:
+				case InstructionIndex.FSTORE_2:
+				case InstructionIndex.FSTORE_3:
+					frame.storeLocal(opid - InstructionIndex.FSTORE_0,
+						frame.<Float>popFromStack(Float.class));
 					break;
 					
 					// Read from instance field
@@ -2076,6 +2097,7 @@ public final class SpringThreadWorker
 					
 					// Load integer from local variable
 				case InstructionIndex.ILOAD:
+				case InstructionIndex.WIDE_ILOAD:
 					frame.loadToStack(Integer.class,
 						inst.<Integer>argument(0, Integer.class));
 					break;
@@ -2213,6 +2235,7 @@ public final class SpringThreadWorker
 					
 					// Store integer to local variable
 				case InstructionIndex.ISTORE:
+				case InstructionIndex.WIDE_ISTORE:
 					frame.storeLocal(inst.<Integer>argument(0, Integer.class),
 						frame.<Integer>popFromStack(Integer.class));
 					break;
@@ -2335,6 +2358,7 @@ public final class SpringThreadWorker
 					
 					// Load integer from local variable
 				case InstructionIndex.LLOAD:
+				case InstructionIndex.WIDE_LLOAD:
 					frame.loadToStack(Long.class,
 						inst.<Integer>argument(0, Integer.class));
 					break;
@@ -2409,6 +2433,7 @@ public final class SpringThreadWorker
 					
 					// Store long to local variable
 				case InstructionIndex.LSTORE:
+				case InstructionIndex.WIDE_LSTORE:
 					frame.storeLocal(inst.<Integer>argument(0, Integer.class),
 						frame.<Long>popFromStack(Long.class));
 					break;
