@@ -21,6 +21,10 @@ import java.util.Random;
 public class TestRandomFloat
 	extends TestRunnable
 {
+	/** Count for values. */
+	public static final int COUNT =
+		32;
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/11/02
@@ -28,7 +32,19 @@ public class TestRandomFloat
 	@Override
 	public void test()
 	{
-		throw new todo.TODO();
+		Random rand = new Random(0xCAFED00D);
+		
+		for (int i = 0; i < COUNT; i++)
+			this.secondary(String.format("double-%02d", i),
+				Double.doubleToRawLongBits(rand.nextDouble()));
+		
+		for (int i = 0; i < COUNT; i++)
+			this.secondary(String.format("float-%02d", i),
+				Float.floatToRawIntBits(rand.nextFloat()));
+		
+		for (int i = 0; i < COUNT; i++)
+			this.secondary(String.format("gauss-%02d", i),
+				Double.doubleToRawLongBits(rand.nextGaussian()));
 	}
 }
 
