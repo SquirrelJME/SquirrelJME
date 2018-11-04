@@ -2914,8 +2914,8 @@ public final class SpringThreadWorker
 							this.invokeMethod(true, new ClassName(
 							"cc/squirreljme/runtime/cldc/lang/MultiANewArray"),
 							new MethodNameAndType("multiANewArray",
-								"(Ljava/lang/Class;[I)Ljava/lang/Object;"),
-							this.asVMObject(ccl), this.asVMObject(pops)));
+								"(Ljava/lang/Class;I[I)Ljava/lang/Object;"),
+							this.asVMObject(ccl), 0, this.asVMObject(pops)));
 					}
 					break;
 					
