@@ -369,14 +369,23 @@ public final class SpringClass
 					return true;
 		}
 		
-		// If this is an array and the other type is an array with the same
-		// number of dimensions, then compare the base type so that say
-		// Number[] is assignable from Integer[].
+		// Need to cast from one array type to another
 		int thisdims = this.dimensions(),
 			otherdims = __o.dimensions();
-		if (thisdims > 0 && thisdims == otherdims)
-			if (this.__rootType().isAssignableFrom(__o.__rootType()))
+		if (thisdims > 0)
+		{
+			// If this is an array and the other type is an array with the same
+			// number of dimensions, then compare the base type so that say
+			// Number[] is assignable from Integer[].
+			if (otherdims == thisdims)
+				if (this.__rootType().isAssignableFrom(__o.__rootType()))
+					return true;
+			
+			// We can cast down to Object array types if there are less
+			// dimensions ([[[[Integer -> [Object)
+			if (this.__rootType().isObjectClass() && thisdims < otherdims)
 				return true;
+		}
 		
 		return false;
 	}
@@ -442,6 +451,17 @@ public final class SpringClass
 	public final boolean isInitialized()
 	{
 		return this._initialized;
+	}
+	
+	/**
+	 * Is this the object class?
+	 *
+	 * @return If this is the object class.
+	 * @since 2018/11/04
+	 */
+	public final boolean isObjectClass()
+	{
+		return this.name.toString().equals("java/lang/Object");
 	}
 	
 	/**
