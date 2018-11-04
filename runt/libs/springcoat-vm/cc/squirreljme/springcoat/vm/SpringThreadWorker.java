@@ -1093,6 +1093,13 @@ public final class SpringThreadWorker
 				"systemProperty:(Ljava/lang/String;)Ljava/lang/String;":
 				return System.getProperty(this.<String>asNativeObject(
 					String.class, __args[0]));
+				
+				// Start Task
+			case "cc/squirreljme/runtime/cldc/asm/TaskAccess::" +
+				"startTask:([Ljava/lang/String;Ljava/lang/String;)I":
+				return this.machine.taskManager().startTask(
+					this.<String[]>asNativeObject(String[].class, __args[0]),
+					this.<String>asNativeObject(String.class, __args[1]));
 			
 				// {@squirreljme.error BK1g Unknown native function. (The
 				// native function)}

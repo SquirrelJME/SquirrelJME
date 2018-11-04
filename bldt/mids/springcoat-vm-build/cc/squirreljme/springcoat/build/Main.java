@@ -21,6 +21,7 @@ import cc.squirreljme.springcoat.vm.SpringClassLoader;
 import cc.squirreljme.springcoat.vm.SpringFatalException;
 import cc.squirreljme.springcoat.vm.SpringMachine;
 import cc.squirreljme.springcoat.vm.SpringMachineExitException;
+import cc.squirreljme.springcoat.vm.SpringTaskManager;
 
 /**
  * Main entry point for the virtual machine which is layered on the build
@@ -117,9 +118,10 @@ public class Main
 		SpringClassLoader classloader = new SpringClassLoader(libs);
 		
 		// Initialize the virtual machine with our launch ID
+		BuildSuiteManager bm;
 		SpringMachine machine = new SpringMachine(
-			new BuildSuiteManager(pm, TimeSpaceType.TEST),
-			classloader, launchid,
+			(bm = new BuildSuiteManager(pm, TimeSpaceType.TEST)),
+			classloader, new SpringTaskManager(bm), launchid,
 			args.<String>toArray(new String[args.size()]));
 		
 		// Run the VM until it terminates
