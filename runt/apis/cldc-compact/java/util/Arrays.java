@@ -10,6 +10,7 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import cc.squirreljme.runtime.cldc.util.CharacterIntegerArray;
 import cc.squirreljme.runtime.cldc.util.IntegerArray;
 import cc.squirreljme.runtime.cldc.util.IntegerArrays;
@@ -25,10 +26,13 @@ import cc.squirreljme.runtime.cldc.util.IntegerIntegerArray;
  */
 public class Arrays
 {
+	/**
+	 * Not used.
+	 *
+	 * @since 2018/11/04
+	 */
 	private Arrays()
 	{
-		super();
-		throw new todo.TODO();
 	}
 	
 	/**
@@ -219,10 +223,38 @@ public class Arrays
 		throw new todo.TODO();
 	}
 	
-	public static <T, U> T[] copyOf(U[] __a, int __b, Class<? extends T[]>
-		__c)
+	/**
+	 * Returns a copy of the given array but using the specified type.
+	 *
+	 * @param <T> The resulting type of the array to use.
+	 * @param <U> The input array type.
+	 * @param __src The source array.
+	 * @param __newlen The new length of the array.
+	 * @param __targettype The type type.
+	 * @return The copy of the array with the new length and type.
+	 * @throws ArrayStoreException If an element being copied from the source
+	 * array is not compatible with the destination array.
+	 * @throws NegativeArraySizeException If the new length is negative.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/04
+	 */
+	@SuppressWarnings({"unchecked"})
+	public static <T, U> T[] copyOf(U[] __src, int __newlen,
+		Class<? extends T[]> __targettype)
 	{
-		throw new todo.TODO();
+		if (__src == null || __targettype == null)
+			throw new NullPointerException("NARG");
+		if (__newlen < 0)
+			throw new NegativeArraySizeException("NASE");
+		
+		// Allocate array in the target type
+		Object[] rv = (Object[])ObjectAccess.arrayNew(__targettype, __newlen);
+		
+		// Copy source to destination
+		for (int i = 0, n = Math.min(__src.length, __newlen); i < n; i++)
+			rv[i] = __src[i];
+		
+		return (T[])rv;
 	}
 	
 	public static byte[] copyOf(byte[] __a, int __b)
