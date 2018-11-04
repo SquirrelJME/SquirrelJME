@@ -160,7 +160,8 @@ final class __SystemTaskManager__
 		todo.DEBUG.note("Suites: %s", Arrays.<String>asList(names));
 		
 		// Setup new task internally
-		int tid = TaskAccess.startTask(names, __cn);
+		int tid = TaskAccess.startTask(names, __cn.replace('.', '/'),
+			new String[0]);
 		if (tid < 0)
 		{
 			// {@squirreljme.error DG0c Invalid entry point was specified

@@ -173,6 +173,18 @@ public final class SpringThreadWorker
 						
 						return rv;
 					}
+					
+					// String
+				case "[Ljava/lang/String;":
+					{
+						String[] rv = new String[len];
+						
+						for (int i = 0; i < len; i++)
+							rv[i] = this.<String>asNativeObject(String.class,
+								sao.<SpringObject>get(SpringObject.class, i));
+						
+						return rv;
+					}
 				
 					// {@squirreljme.error BK1u Do not know how to convert the
 					// given virtual machine array to a native machine array.
@@ -1099,7 +1111,8 @@ public final class SpringThreadWorker
 				"startTask:([Ljava/lang/String;Ljava/lang/String;)I":
 				return this.machine.taskManager().startTask(
 					this.<String[]>asNativeObject(String[].class, __args[0]),
-					this.<String>asNativeObject(String.class, __args[1]));
+					this.<String>asNativeObject(String.class, __args[1]),
+					this.<String[]>asNativeObject(String[].class, __args[2]));
 			
 				// {@squirreljme.error BK1g Unknown native function. (The
 				// native function)}

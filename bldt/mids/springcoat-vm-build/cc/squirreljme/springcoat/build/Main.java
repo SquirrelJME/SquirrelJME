@@ -10,6 +10,7 @@
 
 package cc.squirreljme.springcoat.build;
 
+import cc.squirreljme.runtime.cldc.asm.TaskAccess;
 import java.util.ArrayDeque;
 import java.util.LinkedHashSet;
 import java.util.Queue;
@@ -139,7 +140,7 @@ public class Main
 		// Ignore these exceptions, just fatal exit
 		catch (SpringFatalException e)
 		{
-			System.exit(7);
+			System.exit(TaskAccess.EXIT_CODE_FATAL_EXCEPTION);
 		}
 	}
 }
