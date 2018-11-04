@@ -152,9 +152,12 @@ final class __SystemTaskManager__
 		
 		// Load suite names since we need to build the class path
 		int n = depends.length;
-		String[] names = new String[n];
+		String[] names = new String[n + 1];
 		for (int i = 0; i < n; i++)
 			names[i] = depends[i]._name;
+		
+		// Add our boot suite to the last entry
+		names[n] = __s._name;
 		
 		// Debug
 		todo.DEBUG.note("Suites: %s", Arrays.<String>asList(names));
