@@ -27,6 +27,14 @@ public final class SystemProperties
 	}
 	
 	/**
+	 * Returns the depth of the guests within the virtual machine.
+	 *
+	 * @return The number of guests.
+	 * @since 2018/11/04
+	 */
+	public static final native int guestDepth();
+	
+	/**
 	 * Returns the version of the class libraries.
 	 *
 	 * @return The class library version.

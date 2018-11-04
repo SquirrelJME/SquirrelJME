@@ -12,6 +12,7 @@ package todo;
 
 import cc.squirreljme.runtime.cldc.asm.DebugAccess;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
+import cc.squirreljme.runtime.cldc.lang.GuestDepth;
 import java.io.PrintStream;
 
 /**
@@ -357,6 +358,7 @@ public class TODO
 			try
 			{
 				ps.print(__pfx);
+				ps.print(GuestDepth.guestDepth());
 				ps.print(' ');
 				ps.print(TODO.__formatCondensedTrace(TODO.__where()));
 				ps.print(" -- ");

@@ -10,6 +10,8 @@
 
 package cc.squirreljme.runtime.swm;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.Objects;
 import net.multiphasicapps.strings.StringUtils;
 
@@ -26,6 +28,9 @@ public final class Profile
 	
 	/** Version. */
 	protected final SuiteVersion version;
+	
+	/** String representation. */
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes the profile using the given API name and version.
@@ -156,7 +161,15 @@ public final class Profile
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>((rv = "Profile " +
+				this.name + ":" + this.version));
+		
+		return rv;
 	}
 	
 	/**

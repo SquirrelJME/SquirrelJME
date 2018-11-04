@@ -240,9 +240,18 @@ public class PrintStream
 		}
 	}
 	
-	public void print(int __a)
+	/**
+	 * Prints the specified integer to the stream.
+	 *
+	 * @param __v The value to print.
+	 * @since 2018/11/04
+	 */
+	public void print(int __v)
 	{
-		throw new todo.TODO();
+		synchronized (this)
+		{
+			this.__print(Integer.toString(__v));
+		}
 	}
 	
 	public void print(long __a)
