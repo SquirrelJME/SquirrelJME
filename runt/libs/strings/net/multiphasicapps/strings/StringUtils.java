@@ -301,8 +301,9 @@ public final class StringUtils
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0, n = sb.length(); i < n; i++)
+		int n = __s.length();
+		StringBuilder sb = new StringBuilder(n);
+		for (int i = 0; i < n; i++)
 			sb.append(Character.toLowerCase(__s.charAt(i)));
 		return sb.toString();
 	}
@@ -322,8 +323,9 @@ public final class StringUtils
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0, n = sb.length(); i < n; i++)
+		int n = __s.length();
+		StringBuilder sb = new StringBuilder(n);
+		for (int i = 0; i < n; i++)
 			sb.append(Character.toUpperCase(__s.charAt(i)));
 		return sb.toString();
 	}

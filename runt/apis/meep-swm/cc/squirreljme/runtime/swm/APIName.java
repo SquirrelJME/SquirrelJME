@@ -37,10 +37,6 @@ public final class APIName
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error DG0b API name cannot be blank.}
-		if (__n.length() <= 0)
-			throw new InvalidSuiteException("DG0b");
-		
 		// Force all APIs to be uppercase
 		__n = StringUtils.toUpperCaseNoLocale(__n);
 		
@@ -48,6 +44,10 @@ public final class APIName
 		// specified in the API name. (The API name)
 		if (StringUtils.firstIndex("\0\r\n:;", __n) >= 0)
 			throw new InvalidSuiteException(String.format("AR01 %s", __n));
+		
+		// {@squirreljme.error DG0b API name cannot be blank.}
+		if (__n.length() <= 0)
+			throw new InvalidSuiteException("DG0b");
 		
 		this.string = __n;
 	}
