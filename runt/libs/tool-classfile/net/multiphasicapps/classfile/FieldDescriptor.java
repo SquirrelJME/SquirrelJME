@@ -95,7 +95,7 @@ public final class FieldDescriptor
 				this.dimensions = dims;
 				
 				// Parse component
-				this.component = new FieldDescriptor(__n.substring(dims));
+				this.component = new FieldDescriptor(__n.substring(1));
 				break;
 				
 				// Class

@@ -61,11 +61,42 @@ public final class MultiANewArray
 		if (__skip < 0 || dims <= 0 || typedims < dims)
 			throw new IllegalArgumentException("ZZ30");
 		
-		// Debug
-		todo.DEBUG.note("For %s (%d dims), do %d dims", __type, typedims,
-			dims);
+		// Allocate array of this type
+		int numelem = __dims[__skip];
+		Object[] rv = (Object[])ObjectAccess.arrayNew(__type, numelem);
 		
-		throw new todo.TODO();
+		// Debug
+		todo.DEBUG.note("For %s (%d dims), do %d dims -> %s", __type, typedims,
+			dims, rv);
+		
+		// The array has more dimensions which must be set
+		if (dims > 1)
+		{
+			// Remove a single brace from the class to cut down its dimensions
+			// Class names use dot forms, so refer to classes using the class
+			// handler.
+			Class<?> subtype;
+			try
+			{
+				subtype = Class.forName(typename.substring(1));
+			}
+			
+			// {@squirreljme.error ZZ31 Could not find the sub-type for
+			// multi-dimensional array.}
+			catch (ClassNotFoundException e)
+			{
+				throw new Error("ZZ31", e);
+			}
+			
+			// Skipping ahead by one
+			int nxskip = __skip + 1;
+			
+			// Allocate
+			for (int i = 0; i < numelem; i++)
+				rv[i] = MultiANewArray.multiANewArray(subtype, nxskip, __dims);
+		}
+		
+		return (Object)rv;
 	}
 }
 
