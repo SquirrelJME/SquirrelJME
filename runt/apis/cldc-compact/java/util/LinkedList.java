@@ -469,7 +469,7 @@ public class LinkedList<E>
 		public final void add(E __v)
 		{
 			// Check modification
-			__checkConcurrent();
+			this.__checkConcurrent();
 			
 			// These will both be adjusted
 			int vdx = this._vdx;
@@ -503,7 +503,7 @@ public class LinkedList<E>
 		public final boolean hasNext()
 		{
 			// Check modification
-			__checkConcurrent();
+			this.__checkConcurrent();
 			
 			// There is a next as long as the current element is before the
 			// size
@@ -518,7 +518,7 @@ public class LinkedList<E>
 		public final boolean hasPrevious()
 		{
 			// Check modification
-			__checkConcurrent();
+			this.__checkConcurrent();
 			
 			// There is a previous as long as this is not the first element
 			return this._vdx > 0;
@@ -533,7 +533,7 @@ public class LinkedList<E>
 			throws NoSuchElementException
 		{
 			// Check modification
-			__checkConcurrent();
+			this.__checkConcurrent();
 			
 			// We are at the tail node, do nothing
 			__Link__<E> next = this._next;
@@ -559,7 +559,7 @@ public class LinkedList<E>
 		public final int nextIndex()
 		{
 			// Check modification
-			__checkConcurrent();
+			this.__checkConcurrent();
 			
 			// Virtual index should match this one
 			return this._vdx;
@@ -573,7 +573,7 @@ public class LinkedList<E>
 		public final E previous()
 		{
 			// Check modification
-			__checkConcurrent();
+			this.__checkConcurrent();
 			
 			throw new todo.TODO();
 		}
@@ -586,7 +586,7 @@ public class LinkedList<E>
 		public final int previousIndex()
 		{
 			// Check modification
-			__checkConcurrent();
+			this.__checkConcurrent();
 			
 			// Should be the previous virtual index
 			return this._vdx - 1;
@@ -601,16 +601,25 @@ public class LinkedList<E>
 			throws IllegalStateException
 		{
 			// Check modification
-			__checkConcurrent();
+			this.__checkConcurrent();
 			
 			// {@squirreljme.error ZZ2t Cannot remove the element from the
 			// linked list because there was no previous call to next or
 			// previous, or add was called.}
-			__Link__<E> last = this._last,
-				next = this._next;
+			__Link__<E> last = this._last;
 			if (last == null)
 				throw new IllegalStateException("ZZ2t");
-			throw new todo.TODO();
+			
+			// Only removed once
+			this._last = null;
+			
+			// Just link the previous and next entries to the others and
+			// drop this link
+			last._prev._next = last._next;
+			last._next._prev = last._prev;
+			
+			// Set list as being modified and update our count to match
+			this._atmod = ++LinkedList.this.modCount;
 		}
 		
 		/**
@@ -622,7 +631,7 @@ public class LinkedList<E>
 			throws IllegalStateException
 		{
 			// Check modification
-			__checkConcurrent();
+			this.__checkConcurrent();
 			
 			// {@squirreljme.error ZZ2u Cannot set the element from the
 			// linked list because there was no previous call to next or

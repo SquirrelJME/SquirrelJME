@@ -204,7 +204,8 @@ final class __BucketMap__<K, V>
 		
 		// Hypothetically putting a new entry could cause the threshold to be
 		// hit, so just in this case a new entry would be put so rebuild
-		// the hash table.
+		// the hash table. The buckets need to remain the same object
+		// references for iteration.
 		if (nextsize >= this._loadthreshold)
 		{
 			todo.TODO.note("Re-balance bucket map.");
@@ -299,6 +300,72 @@ final class __BucketMap__<K, V>
 		this._size = nextsize;
 		
 		return rv;
+	}
+	
+	/**
+	 * Removes the specified key from this map.
+	 *
+	 * Note that because iterators need to keep the same order, the entries
+	 * cannot be shuffled or the map rebuilt.
+	 *
+	 * @param __k The key to remove.
+	 * @param __preunlinked If this is true then the link chain will not have
+	 * the entry removed by this method, it is assumed it was already
+	 * removed by an iterator.
+	 * @return 
+	 */
+	public final __BucketMapEntry__<K, V> removeEntry(K __k,
+		boolean __preunlinked)
+	{
+		// Where to look in the table?
+		int hash = (__k == null ? 0 : __k.hashCode());
+		int div = (hash & 0x7FFF_FFFF) % this._bucketdiv;
+		
+		// If the chain does not exist then do not bother at all
+		__BucketMapEntry__<K, V>[] chain = this._buckets[div];
+		if (chain == null)
+			return null;
+		
+		// Go through the chain and find the matching entry
+		for (int i = 0, n = chain.length; i < n; i++)
+		{
+			// Ignore blank entries
+			__BucketMapEntry__<K, V> e = chain[i];
+			if (e == null)
+				continue;
+			
+			// Has the wrong hashcode
+			if (hash != e._keyhash)
+				continue;
+			
+			// If the objects actually match, it is found so it must be
+			// removed
+			if (Objects.equals(e._key, __k))
+			{
+				// Removing an entry from the chain is as simple as just
+				// setting it to null. We do not need to move entries around
+				// since that can be a bit slow
+				chain[i] = null;
+				
+				// If this was not pre-unlinked from the iterator call then
+				// it will be removed from the chain accordingly
+				if (!__preunlinked)
+				{
+					Collection<__BucketMapEntry__<K, V>> links = this._links;
+					if (links != null)
+						links.remove(e);
+				}	
+				
+				// Map has been modified
+				this._modcount++;
+				
+				// This entry was removed, so it gets returned by the map
+				return e;
+			}
+		}
+		
+		// Not found
+		return null;
 	}
 	
 	/**
@@ -556,6 +623,9 @@ final class __BucketMap__<K, V>
 		final Iterator<__BucketMapEntry__<K, V>> _iterator =
 			__BucketMap__.this._links.iterator();
 		
+		/** The last returned entry, for removal. */
+		__BucketMapEntry__<K, V> _last;
+		
 		/**
 		 * {@inheritDoc}
 		 * @since 2018/11/01
@@ -581,7 +651,9 @@ final class __BucketMap__<K, V>
 			this.__checkModified();
 			
 			// Use the direct next entry
-			return this._iterator.next();
+			__BucketMapEntry__<K, V> rv = this._iterator.next();
+			this._last = rv;
+			return rv;
 		}
 		
 		/**
@@ -594,8 +666,18 @@ final class __BucketMap__<K, V>
 			// Check for modification
 			this.__checkModified();
 			
+			// No last element was nexted
+			__BucketMapEntry__<K, V> last = this._last;
+			if (last == null)
+				throw new IllegalStateException("NSEE");
+			
+			// Clear last because it will be invalid
+			this._last = null;
+			
 			// Try removing it from the link first, if the state is bad then
-			// we cannot remove the link.
+			// we cannot remove the link. Has to be removed from the iterator
+			// because otherwise there will be a concurrent modification
+			// exception thrown when modification is detected.
 			try
 			{
 				this._iterator.remove();
@@ -609,7 +691,13 @@ final class __BucketMap__<K, V>
 			
 			// Otherwise, remove the entry from the map but hint that it was
 			// already removed from the ordered list
-			throw new todo.TODO();
+			// The entry being mismatched to the key should not happen ever
+			// but if it does then something is very wrong
+			if (__BucketMap__.this.removeEntry(last.getKey(), true) != last)
+				throw new RuntimeException("OOPS");
+			
+			// The map likely was structurally modified so use the new state
+			this._atmod = __BucketMap__.this._modcount;
 		}
 	}
 }

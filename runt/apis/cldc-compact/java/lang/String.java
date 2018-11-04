@@ -260,9 +260,48 @@ public final class String
 		return an - bn;
 	}
 	
-	public int compareToIgnoreCase(String __a)
+	/**
+	 * Compares two strings lexicographically without regards to case. This
+	 * method does not take locale into account.
+	 *
+	 * @param __o The other string.
+	 * @return The comparison of the string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/04
+	 */
+	public int compareToIgnoreCase(String __o)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__o == null)
+			throw new NullPointerException("NARG");
+		
+		// Get both string lengths
+		int an = this.length();
+		int bn = __o.length();
+		
+		// Max comparison length
+		int max = Math.min(an, bn);
+		
+		// Compare both strings
+		for (int i = 0; i < max; i++)
+		{
+			// Get both characters and normalize case
+			char ca = Character.toLowerCase(
+					Character.toUpperCase(this.charAt(i))),
+				cb = Character.toLowerCase(
+					Character.toUpperCase(__o.charAt(i)));
+			
+			// Get character difference
+			int diff = ca - cb;
+			
+			// If there is a difference, then return it
+			if (diff != 0)
+				return diff;
+		}
+		
+		// Remaining comparison is the length parameter, shorter strings are
+		// first
+		return an - bn;
 	}
 	
 	/**
