@@ -23,6 +23,9 @@ public final class SpringArrayObjectGeneric
 	/** Elements in the array. */
 	private final Object[] _elements;
 	
+	/** The last class which was checked for compatibility. */
+	private SpringClass _lastvalid;
+	
 	/**
 	 * Initializes the array.
 	 *
@@ -129,13 +132,46 @@ public final class SpringArrayObjectGeneric
 	{
 		try
 		{
-			// {@squirreljme.error BK1i The specified type is not compatible
-			// with the values this array stores. (The input value;
-			// The component type)}
-			SpringClass component = this.component;
-			if (!component.isCompatible(__v))
-				throw new SpringArrayStoreException(String.format(
-					"BK1i %s %s", __v, component));
+			// This is a cached type for setting because an array of one type
+			// will usually in most cases set with objects which are compatible
+			// so the rather involved instanceof check will take awhile and
+			// compound for setting single elements.
+			SpringClass lastvalid = this._lastvalid,
+				wouldset = null;
+			
+			// If the input value is an object
+			boolean docheck;
+			if (__v instanceof SpringObject)
+			{
+				// If a check is done, then 
+				wouldset = ((SpringObject)__v).type();
+				
+				// Only if the types differ would we actually check
+				docheck = (wouldset != lastvalid);
+			}
+			
+			// Otherwise always do a check since we do not really know the
+			// class type here
+			else
+				docheck = true;
+			
+			// Performing the check for cache?
+			if (docheck)
+			{
+				// {@squirreljme.error BK1i The specified type is not
+				// compatible with the values this array stores. (The input
+				// value; The component type)}
+				SpringClass component = this.component;
+				if (!component.isCompatible(__v))
+					throw new SpringArrayStoreException(String.format(
+						"BK1i %s %s", __v, component));
+				
+				// Next validity check would be set if done on an object
+				// Ignore setting it back to null, if one was previously
+				// valid
+				if (wouldset != null)
+					this._lastvalid = wouldset;
+			}
 			
 			// Set
 			this._elements[__dx] = __v;
