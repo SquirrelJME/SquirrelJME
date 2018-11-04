@@ -14,6 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import java.io.Flushable;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -209,22 +210,40 @@ public class MutableJavaManifest
 	 * Writes the manifest data to the given output stream.
 	 *
 	 * @param __os The stream to get the manifest data written to.
+	 * @return {@code __os}.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/19
 	 */
-	public final void write(OutputStream __os)
+	public final OutputStream write(OutputStream __os)
+		throws IOException, NullPointerException
+	{
+		if (__os == null)
+			throw new NullPointerException("NARG");
+		
+		this.write(new OutputStreamWriter(__os, "utf-8"));
+		
+		return __os;
+	}
+	
+	/**
+	 * Writes the manifest data to the given output stream.
+	 *
+	 * @param __os The stream to get the manifest data written to.
+	 * @return {@code __os}.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/09/19
+	 */
+	public final Appendable write(Appendable __os)
 		throws IOException, NullPointerException
 	{
 		// Check
 		if (__os == null)
 			throw new NullPointerException("NARG");
 		
-		// Create writer to write data
-		Writer w = new OutputStreamWriter(__os, "utf-8");
-		
 		// Write main attribute first
-		__write(w, getMainAttributes());
+		__write(__os, getMainAttributes());
 		
 		// Write other attributes
 		for (Map.Entry<String, MutableJavaManifestAttributes> e :
@@ -236,17 +255,20 @@ public class MutableJavaManifest
 				continue;
 			
 			// Sub-attributes are always spaced after the previous one
-			w.write("\r\n");
+			__os.append("\r\n");
 			
 			// Write the name
-			__write(w, "Name", k);
+			__write(__os, "Name", k);
 			
 			// Write values
-			__write(w, e.getValue());
+			__write(__os, e.getValue());
 		}
 		
 		// Flush the output in case of queues
-		w.flush();
+		if (__os instanceof Flushable)
+			((Flushable)__os).flush();
+		
+		return __os;
 	}
 	
 	/**
@@ -257,7 +279,7 @@ public class MutableJavaManifest
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/19
 	 */
-	private void __write(Writer __w, MutableJavaManifestAttributes __a)
+	private void __write(Appendable __w, MutableJavaManifestAttributes __a)
 		throws IOException, NullPointerException
 	{
 		// Check
@@ -294,7 +316,7 @@ public class MutableJavaManifest
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/09/19
 	 */
-	private void __write(Writer __w, String __k, String __v)
+	private void __write(Appendable __w, String __k, String __v)
 		throws IOException, NullPointerException
 	{
 		// Check
@@ -324,13 +346,13 @@ public class MutableJavaManifest
 					// If the current character is a space then it will
 					// be lost on the following line.
 					if (c == ' ')
-						__w.write(' ');
-					__w.write("\r\n");
+						__w.append(' ');
+					__w.append("\r\n");
 					newline = true;
 					
 					// Indent next line with space as long as this is not
 					// the last character being written
-					__w.write(' ');
+					__w.append(' ');
 					
 					// Set next column
 					nextcol = 1;
@@ -339,7 +361,7 @@ public class MutableJavaManifest
 				// Write the character, but if a space was written early then
 				// do not write it
 				if ((c == ' ' && !newline) || c != ' ')
-					__w.write(c);
+					__w.append(c);
 				
 				// Set new column
 				col = nextcol;
@@ -348,13 +370,13 @@ public class MutableJavaManifest
 			// Add spacer
 			if (z == 0)
 			{
-				__w.write(": ");
+				__w.append(": ");
 				col += 2;
 			}
 		}
 		
 		// Write newline
-		__w.write("\r\n");
+		__w.append("\r\n");
 	}
 }
 
