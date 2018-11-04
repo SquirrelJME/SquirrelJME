@@ -65,10 +65,6 @@ public final class MultiANewArray
 		int numelem = __dims[__skip];
 		Object[] rv = (Object[])ObjectAccess.arrayNew(__type, numelem);
 		
-		// Debug
-		todo.DEBUG.note("For %s (%d dims), do %d dims -> %s", __type, typedims,
-			dims, rv);
-		
 		// The array has more dimensions which must be set
 		if (dims > 1)
 		{
