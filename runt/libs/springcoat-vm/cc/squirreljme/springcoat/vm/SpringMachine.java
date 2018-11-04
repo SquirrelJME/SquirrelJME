@@ -10,6 +10,7 @@
 
 package cc.squirreljme.springcoat.vm;
 
+import cc.squirreljme.runtime.cldc.lang.GuestDepth;
 import cc.squirreljme.runtime.swm.EntryPoint;
 import cc.squirreljme.runtime.swm.EntryPoints;
 import java.io.ByteArrayInputStream;
@@ -334,11 +335,16 @@ public final class SpringMachine
 			throw new SpringVirtualMachineException("BK0u", e);
 		}
 		
-		// Print entry points out out for debug
-		todo.DEBUG.note("Entry points:");
 		int n = entries.size();
-		for (int i = 0; i < n; i++)
-			todo.DEBUG.note("    %d: %s", i, entries.get(i));
+		
+		// Print entry points out out for debug, but only for the first
+		// guest because this is annoying!
+		if (GuestDepth.guestDepth() + 1 == this.guestdepth)
+		{
+			todo.DEBUG.note("Entry points:");
+			for (int i = 0; i < n; i++)
+				todo.DEBUG.note("    %d: %s", i, entries.get(i));
+		}
 		
 		// Use the first program if the ID is not valid
 		int launchid = this.bootdx;
