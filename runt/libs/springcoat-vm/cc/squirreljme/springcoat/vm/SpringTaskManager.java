@@ -10,6 +10,15 @@
 
 package cc.squirreljme.springcoat.vm;
 
+import cc.squirreljme.runtime.cldc.asm.TaskAccess;
+import cc.squirreljme.runtime.swm.EntryPoint;
+import cc.squirreljme.runtime.swm.EntryPoints;
+import java.io.InputStream;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import net.multiphasicapps.tool.manifest.JavaManifest;
+
 /**
  * This class manages tasks within SpringCoat and is used to launch and
  * provide access to those that are running.
@@ -20,6 +29,13 @@ public final class SpringTaskManager
 {
 	/** The manager for suites. */
 	protected final SpringSuiteManager suites;
+	
+	/** Tasks that are used. */
+	private final Map<Integer, SpringTask> _tasks =
+		new HashMap<>();
+	
+	/** Next task ID. */
+	private int _nextid;
 	
 	/**
 	 * Initializes the task manager.
@@ -42,17 +58,81 @@ public final class SpringTaskManager
 	 *
 	 * @param __cp The class path to use.
 	 * @param __entry The entry point.
+	 * @param __args Arguments used.
 	 * @return The ID of the created task.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/04
 	 */
-	public final int startTask(String[] __cp, String __entry)
+	public final int startTask(String[] __cp, String __entry, String[] __args)
 		throws NullPointerException
 	{
-		if (__cp == null || __entry == null)
+		if (__cp == null || __entry == null || __args == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		SpringSuiteManager suites = this.suites;
+		
+		// Load classpath libraries
+		int cpn = __cp.length;
+		SpringClassLibrary[] scl = new SpringClassLibrary[cpn];
+		for (int i = 0; i < cpn; i++)
+			scl[i] = suites.loadLibrary(__cp[i]);
+		
+		// Get the boot library since we need to look at the entry points
+		SpringClassLibrary boot = scl[cpn - 1];
+		
+		// Need to load the manifest where the entry points will be
+		EntryPoints entries;
+		try (InputStream in = boot.resourceAsStream("META-INF/MANIFEST.MF"))
+		{
+			// {@squirreljme.error BK2n Entry point JAR has no manifest.}
+			if (in == null)
+				throw new SpringVirtualMachineException("BK2n");
+			
+			entries = new EntryPoints(new JavaManifest(in));
+		}
+		
+		// {@squirreljme.error BK2o Failed to read the manifest.}
+		catch (IOException e)
+		{
+			throw new SpringVirtualMachineException("BK2o", e);
+		}
+		
+		// Determine the entry point used
+		int bootdx = -1;
+		for (int i = 0, n = entries.size(); i < n; i++)
+			if (__entry.equals(entries.get(i).entryPoint()))
+			{
+				bootdx = i;
+				break;
+			}
+		
+		// Could not find the boot point
+		if (bootdx < 0)
+			return TaskAccess.ERROR_INVALID_ENTRY;
+		
+		// Build machine for the task
+		SpringMachine machine = new SpringMachine(
+			suites, new SpringClassLoader(scl), this, bootdx, __args);
+		
+		// Lock on tasks
+		Map<Integer, SpringTask> tasks = this._tasks;
+		synchronized (tasks)
+		{
+			// Next task ID
+			int tid = ++this._nextid;
+			
+			// Setup task in a new thread to run and such
+			SpringTask rv = new SpringTask(tid, machine);
+			
+			// Store task in active set
+			tasks.put(tid, rv);
+			
+			// Start a thread for this task, which is that task's main thread
+			new Thread(rv, "MainTask-" + tid + "-" + __entry).start();
+			
+			// The task ID is our handle
+			return tid;
+		}
 	}
 }
 

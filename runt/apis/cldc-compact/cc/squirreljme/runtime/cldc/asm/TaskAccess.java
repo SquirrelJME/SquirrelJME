@@ -21,6 +21,10 @@ public final class TaskAccess
 	public static final int ERROR_INVALID_ENTRY =
 		-2;
 	
+	/** Exit code indicating bad task things. */
+	public static final int EXIT_CODE_FATAL_EXCEPTION =
+		127;
+	
 	/**
 	 * Not used.
 	 *
@@ -35,10 +39,12 @@ public final class TaskAccess
 	 *
 	 * @param __cp The classpath used.
 	 * @param __main The main entry point.
+	 * @param __args Arguments to start the task with.
 	 * @return The task identifier or a negative number if the task could
 	 * not start.
 	 * @since 2018/11/04
 	 */
-	public static final native int startTask(String[] __cp, String __main);
+	public static final native int startTask(String[] __cp, String __main,
+		String[] __args);
 }
 
