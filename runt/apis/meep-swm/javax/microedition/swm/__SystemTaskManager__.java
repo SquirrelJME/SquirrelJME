@@ -160,7 +160,7 @@ final class __SystemTaskManager__
 		todo.DEBUG.note("Suites: %s", Arrays.<String>asList(names));
 		
 		// Setup new task internally
-		int tid = TaskAccess.startTask(names, __cn.replace('.', '/'),
+		int tid = TaskAccess.startTask(names, __cn,
 			new String[0]);
 		if (tid < 0)
 		{
