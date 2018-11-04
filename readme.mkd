@@ -48,6 +48,10 @@ Information:
  * [CLDC 1.8 API (docs.oracle.com)](
    https://docs.oracle.com/javame/8.0/api/cldc/api/overview-summary.html)
 
+Also check out SquirrelJME's sister project _Mu_ at:
+
+ * <https://github.com/meepingsnesroms/Mu>
+
 ## Repository
 
  * [Online repository](http://multiphasicapps.net/)
