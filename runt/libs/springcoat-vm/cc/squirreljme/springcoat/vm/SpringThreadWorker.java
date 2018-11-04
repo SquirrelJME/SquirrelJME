@@ -1106,6 +1106,19 @@ public final class SpringThreadWorker
 				return System.getProperty(this.<String>asNativeObject(
 					String.class, __args[0]));
 				
+				// Sleep
+			case "cc/squirreljme/runtime/cldc/asm/TaskAccess::" +
+				"sleep:(JI)Z":
+				try
+				{
+					Thread.sleep((Long)__args[0], (Integer)__args[1]);
+					return 0;
+				}
+				catch (InterruptedException e)
+				{
+					return 1;
+				}
+				
 				// Start Task
 			case "cc/squirreljme/runtime/cldc/asm/TaskAccess::" +
 				"startTask:([Ljava/lang/String;Ljava/lang/String;" +

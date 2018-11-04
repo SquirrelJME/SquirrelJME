@@ -35,6 +35,17 @@ public final class TaskAccess
 	}
 	
 	/**
+	 * Causes the thread to sleep for the given milliseconds and nanoseconds.
+	 *
+	 * @param __ms The milliseconds to sleep for.
+	 * @param __ns The nanoseconds to sleep for, in the range of 0-999999.
+	 * @return {@code true} if the thread was interrupted, otherwise
+	 * {@code false}.
+	 * @since 2018/11/04
+	 */
+	public static final native boolean sleep(long __ms, int __ns);
+	
+	/**
 	 * Starts the specified task.
 	 *
 	 * @param __cp The classpath used.
