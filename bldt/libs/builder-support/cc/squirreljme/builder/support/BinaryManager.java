@@ -566,7 +566,7 @@ public final class BinaryManager
 			JavaManifestKey key = __dependencyKey(ismidlet, next);
 			
 			// Debug
-			System.err.printf("DEBUG -- Dep: %s%n", dep);
+			todo.DEBUG.note("Dep: %s%n", dep);
 			
 			// Non-proprietary dependency
 			String name = Objects.toString(dep.name(), "").trim();
@@ -626,7 +626,7 @@ public final class BinaryManager
 		}
 		
 		// Handle API dependencies since they require a more complex setup
-		System.err.printf("DEBUG -- API Depends: %s%n", apideps);
+		todo.DEBUG.note("API Depends: %s%n", apideps);
 		if (!apideps.isEmpty())
 			for (Map.Entry<Binary, SuiteDependency> e : apideps.entrySet())
 			{

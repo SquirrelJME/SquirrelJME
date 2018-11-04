@@ -178,7 +178,7 @@ public class Alert
 		/*
 		this._message = __s;
 		
-		System.err.printf("DEBUG -- Set alert message: %s%n", __s);
+		todo.DEBUG.note("Set alert message: %s%n", __s);
 		*/
 	}
 	

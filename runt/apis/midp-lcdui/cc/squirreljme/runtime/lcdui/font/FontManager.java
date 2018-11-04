@@ -128,7 +128,7 @@ public abstract class FontManager
 					fn));
 			
 			// Debug
-			System.err.printf("DEBUG -- Created font family: %s%n", fn);
+			todo.DEBUG.note("Created font family: %s%n", fn);
 			
 			// Cache for later
 			families.put(fn, rv);
