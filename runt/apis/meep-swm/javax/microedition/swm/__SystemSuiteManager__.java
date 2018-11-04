@@ -233,9 +233,6 @@ final class __SystemSuiteManager__
 			throw new RuntimeException(
 				String.format("DG0a %s", __set));
 		
-		// Debug
-		todo.DEBUG.note("Returning suites: %s", rv);
-		
 		return rv.<Suite>toArray(new Suite[rv.size()]);
 	}
 }
