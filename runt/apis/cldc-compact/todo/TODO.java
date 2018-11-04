@@ -25,6 +25,13 @@ import java.io.PrintStream;
 public class TODO
 	extends Error
 {
+	/** Debug by default? */
+	private static final boolean _DEFAULT_DEBUG =
+		true;
+	
+	/** Should messages be squelched? */
+	private static final boolean _SQUELCH;
+	
 	/** Used to detect TODOs recursively being called. */
 	private static volatile boolean _DOUBLE_TRIP;
 	
@@ -33,6 +40,34 @@ public class TODO
 	
 	/** The number of suppressed note TODOs. */
 	private static volatile int _supressednotes;
+	
+	/**
+	 * Checks if debug messages should be printed.
+	 *
+	 * @since 2018/11/04
+	 */
+	static
+	{
+		boolean debug;
+		try
+		{
+			// {@squirreljme.property cc.squirreljme.debug Set to a boolean
+			// value (true or false) which specifies whether todo and debug
+			// messages should be printed to the console.}
+			debug = Boolean.valueOf(
+				System.getProperty("cc.squirreljme.debug",
+				Boolean.valueOf(_DEFAULT_DEBUG).toString()));
+		}
+		
+		// Cannot access properties so use the default
+		catch (SecurityException e)
+		{
+			debug = _DEFAULT_DEBUG;
+		}
+		
+		// Squelch based on reverse debug
+		_SQUELCH = !debug;
+	}
 	
 	/**
 	 * Initializes the exception, prints the trace, and exits the program.
@@ -325,6 +360,10 @@ public class TODO
 	 */
 	static final void __note(String __pfx, String __fmt, Object... __args)
 	{
+		// If messages are squelched, ignore anything output
+		if (_SQUELCH)
+			return;
+		
 		// Only print if the stream is valid
 		PrintStream ps = System.err;
 		if (ps == null)
