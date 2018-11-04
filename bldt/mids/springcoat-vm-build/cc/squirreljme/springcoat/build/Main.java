@@ -10,6 +10,7 @@
 
 package cc.squirreljme.springcoat.build;
 
+import cc.squirreljme.runtime.cldc.lang.GuestDepth;
 import cc.squirreljme.runtime.cldc.asm.TaskAccess;
 import java.util.ArrayDeque;
 import java.util.LinkedHashSet;
@@ -123,6 +124,7 @@ public class Main
 		SpringMachine machine = new SpringMachine(
 			(bm = new BuildSuiteManager(pm, TimeSpaceType.TEST)),
 			classloader, new SpringTaskManager(bm), launchid,
+			GuestDepth.guestDepth() + 1,
 			args.<String>toArray(new String[args.size()]));
 		
 		// Run the VM until it terminates
