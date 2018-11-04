@@ -98,17 +98,19 @@ public final class SpringArrayObjectGeneric
 	public final <C> C get(Class<C> __cl, int __dx)
 		throws NullPointerException, SpringArrayIndexOutOfBoundsException
 	{
-		if (__cl == null)
-			throw new NullPointerException("NARG");
+		// Faster to just have the host VM do bounds check
+		try
+		{
+			return __cl.cast(this._elements[__dx]);
+		}
 		
-		// {@squirreljme.error BK1j Out of bounds access to array. (The index;
-		// The length of the array)}
-		int length = this.length;
-		if (__dx < 0 || __dx >= length)
+		// {@squirreljme.error BK1j Out of bounds access to array.
+		// (The index; The length of the array)}
+		catch (IndexOutOfBoundsException e)
+		{
 			throw new SpringArrayIndexOutOfBoundsException(
-				String.format("BK1j %d %d", __dx, length));
-		
-		return __cl.cast(this._elements[__dx]);
+				String.format("BK1j %d %d", __dx, this.length), e);
+		}
 	}
 	
 	/**
@@ -125,23 +127,27 @@ public final class SpringArrayObjectGeneric
 	public final void set(int __dx, Object __v)
 		throws SpringArrayStoreException, SpringArrayIndexOutOfBoundsException
 	{
+		try
+		{
+			// {@squirreljme.error BK1i The specified type is not compatible
+			// with the values this array stores. (The input value;
+			// The component type)}
+			SpringClass component = this.component;
+			if (!component.isCompatible(__v))
+				throw new SpringArrayStoreException(String.format(
+					"BK1i %s %s", __v, component));
+			
+			// Set
+			this._elements[__dx] = __v;
+		}
+		
 		// {@squirreljme.error BK1h Out of bounds access to array. (The index;
 		// The length of the array)}
-		int length = this.length;
-		if (__dx < 0 || __dx >= length)
+		catch (IndexOutOfBoundsException e)
+		{
 			throw new SpringArrayIndexOutOfBoundsException(
-				String.format("BK1h %d %d", __dx, length));
-		
-		// {@squirreljme.error BK1i The specified type is not compatible
-		// with the values this array stores. (The input value;
-		// The component type)}
-		SpringClass component = this.component;
-		if (!component.isCompatible(__v))
-			throw new SpringArrayStoreException(String.format(
-				"BK1i %s %s", __v, component));
-		
-		// Set
-		this._elements[__dx] = __v;
+				String.format("BK1h %d %d", __dx, this.length), e);
+		}
 	}
 }
 
