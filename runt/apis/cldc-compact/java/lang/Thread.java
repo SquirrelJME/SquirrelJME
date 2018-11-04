@@ -10,6 +10,8 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.asm.TaskAccess;
+
 public class Thread
 	implements Runnable
 {
@@ -173,18 +175,39 @@ public class Thread
 		throw new todo.TODO();
 	}
 	
-	public static void sleep(long __a)
+	/**
+	 * Causes the thread to sleep for the given amount of milliseconds.
+	 *
+	 * @param __ms The number of milliseconds to sleep for.
+	 * @throws InterruptedException If the thread was interrupted.
+	 * @since 2018/11/04
+	 */
+	public static void sleep(long __ms)
 		throws InterruptedException
 	{
-		sleep(__a, 0);
+		Thread.sleep(__ms, 0);
 	}
 	
-	public static void sleep(long __a, int __b)
-		throws InterruptedException
+	/**
+	 * Causes the thread to sleep for the given milliseconds and nanoseconds.
+	 *
+	 * @param __ms The milliseconds to sleep for.
+	 * @param __ns The nanoseconds to sleep for, in the range of 0-999999.
+	 * @throws IllegalArgumentException If the milliseconds and/or nanoseconds
+	 * are out of range.
+	 * @throws InterruptedException If the thread was interrupted.
+	 * @since 2018/11/04
+	 */
+	public static void sleep(long __ms, int __ns)
+		throws IllegalArgumentException, InterruptedException
 	{
-		if (false)
-			throw new InterruptedException();
-		throw new todo.TODO();
+		// {@squirreljme.error ZZ33 Invalid sleep arguments.
+		if (__ms < 0 || __ns < 0 || __ns > 999999)
+			throw new IllegalArgumentException("ZZ33");
+		
+		// {@squirreljme.error ZZ32 Sleep was interrupted.}
+		if (TaskAccess.sleep(__ms, __ns))
+			throw new InterruptedException("ZZ32");
 	}
 	
 	public static void yield()
