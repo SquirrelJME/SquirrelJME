@@ -94,9 +94,17 @@ public final class SpringThreadWorker
 		SpringClass dim = this.resolveClass(__cl.name().addDimensions(1));
 		switch (__cl.name().toString())
 		{
+				// Byte
+			case "byte":
+				return new SpringArrayObjectByte(dim, __cl, __l);
+			
 				// Char
 			case "char":
 				return new SpringArrayObjectChar(dim, __cl, __l);
+				
+				// Int
+			case "int":
+				return new SpringArrayObjectInteger(dim, __cl, __l);
 			
 				// Generic array
 			default:
