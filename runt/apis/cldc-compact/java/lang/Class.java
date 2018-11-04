@@ -407,26 +407,27 @@ public final class Class<T>
 	 * If an array is requested then it must only be of a primitive type using
 	 * a Java internal type descriptor.
 	 *
-	 * @param __a The name of the class to find.
+	 * @param __n The name of the class to find.
 	 * @return The class with the given name.
 	 * @throws ClassNotFoundException If the given class was not found.
 	 * @throws NullPointerException If no name was specified.
 	 * @since 2016/03/01
 	 */
-	public static Class<?> forName(String __a)
+	public static Class<?> forName(String __n)
 		throws ClassNotFoundException
 	{
 		// No class specified
-		if (__a == null)
+		if (__n == null)
 			throw new NullPointerException();
+		
+		// The name will have to be converted to binary form since that is
+		// what is internally used
+		Class<?> rv = ObjectAccess.classByName(__n.replace('.', '/'));
 		
 		// {@squirreljme.error ZZ03 Could not find the specified class. (The
 		// name of the class)}
-		Class<?> rv = null;
-		if (true)
-			throw new todo.TODO();
 		if (rv == null)
-			throw new ClassNotFoundException(String.format("ZZ03 %s", __a));
+			throw new ClassNotFoundException(String.format("ZZ03 %s", __n));
 		return rv;
 	}
 	
