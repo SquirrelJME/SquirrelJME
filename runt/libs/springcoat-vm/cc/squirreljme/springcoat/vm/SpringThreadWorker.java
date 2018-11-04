@@ -976,7 +976,7 @@ public final class SpringThreadWorker
 				// Float to raw int bits
 			case "cc/squirreljme/runtime/cldc/asm/PrimitiveAccess::" +
 				"floatToRawIntBits:(F)I":
-				return Float.floatToRawLongBits((Float)__args[0]);
+				return Float.floatToRawIntBits((Float)__args[0]);
 				
 				// Int bits to float
 			case "cc/squirreljme/runtime/cldc/asm/PrimitiveAccess::" +
