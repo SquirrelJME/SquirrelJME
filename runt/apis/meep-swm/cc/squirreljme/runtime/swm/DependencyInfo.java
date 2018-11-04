@@ -229,7 +229,7 @@ public final class DependencyInfo
 			depends.add(new Configuration(value.trim()));
 		
 		// Profiles needed to run
-		value = attr.getValue("microedition-configuration");
+		value = attr.getValue("microedition-profile");
 		if (value != null)
 			for (String s : StringUtils.basicSplit(" \t", value))
 				depends.add(new Profile(s));
