@@ -1951,7 +1951,7 @@
  * `--` `--` `--` `--` 
 [**`01`**](stephanie-gawroriski/2018/11/01.mkd)
 [**`02`**](stephanie-gawroriski/2018/11/02.mkd)
-`03`
+[**`03`**](stephanie-gawroriski/2018/11/03.mkd)
  * `04`
 `05`
 `06`
