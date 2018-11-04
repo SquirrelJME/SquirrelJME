@@ -24,13 +24,28 @@ import java.util.Objects;
  */
 public final class Task
 {
+	/** The ID of the task. */
+	final int _tid;
+	
+	/** The suite of this task. */
+	final Suite _suite;
+	
 	/**
 	 * Initializes the task.
 	 *
+	 * @param __tid The task ID.
+	 * @param __s The suite used.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/24
 	 */
-	Task()
+	Task(int __tid, Suite __s)
+		throws NullPointerException
 	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		this._tid = __tid;
+		this._suite = __s;
 	}
 	
 	/**
@@ -119,6 +134,11 @@ public final class Task
 	 */
 	public TaskStatus getStatus()
 	{
+		// If the TID is negative then it failed to start
+		int tid = this._tid;
+		if (tid < 0)
+			return TaskStatus.START_FAILED;
+		
 		throw new todo.TODO();
 		/*
 		SystemTaskStatus status = this._task.status();
