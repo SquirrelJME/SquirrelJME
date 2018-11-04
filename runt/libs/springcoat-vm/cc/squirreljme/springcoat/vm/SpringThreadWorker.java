@@ -1108,7 +1108,8 @@ public final class SpringThreadWorker
 				
 				// Start Task
 			case "cc/squirreljme/runtime/cldc/asm/TaskAccess::" +
-				"startTask:([Ljava/lang/String;Ljava/lang/String;)I":
+				"startTask:([Ljava/lang/String;Ljava/lang/String;" +
+				"[Ljava/lang/String;)I":
 				return this.machine.taskManager().startTask(
 					this.<String[]>asNativeObject(String[].class, __args[0]),
 					this.<String>asNativeObject(String.class, __args[1]),
