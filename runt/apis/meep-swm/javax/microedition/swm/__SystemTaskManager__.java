@@ -10,6 +10,7 @@
 
 package javax.microedition.swm;
 
+import cc.squirreljme.runtime.cldc.asm.TaskAccess;
 import cc.squirreljme.runtime.swm.DependencyInfo;
 import cc.squirreljme.runtime.swm.MatchResult;
 import cc.squirreljme.runtime.swm.ProvidedInfo;
@@ -19,11 +20,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.WeakHashMap;
 
 /**
  * This is the task manager which interfaces with the CLDC system support
@@ -34,6 +35,10 @@ import java.util.WeakHashMap;
 final class __SystemTaskManager__
 	implements TaskManager
 {
+	/** Mapping of task IDs to tasks. */
+	static final Map<Integer, Task> _TASKS =
+		new HashMap<>();
+	
 	/** Internal lock for chore management. */
 	protected final Object lock =
 		new Object();
@@ -132,6 +137,10 @@ final class __SystemTaskManager__
 		if (__s == null || __cn == null)
 			throw new NullPointerException("NARG");
 		
+		// {@squirreljme.error DG0b Cannot start a non-application suite.}
+		if (__s.getSuiteType() != SuiteType.APPLICATION)
+			throw new IllegalArgumentException("DG0b");
+		
 		// Get all the suites that are available, since we need to determine
 		// dependencies and such
 		List<Suite> all = __SystemSuiteManager__.__allSuites();
@@ -141,27 +150,28 @@ final class __SystemTaskManager__
 		Suite[] depends = __SystemSuiteManager__.__matchDependencies(
 			__s.__suiteInfo().dependencies(), false);
 		
+		// Load suite names since we need to build the class path
+		int n = depends.length;
+		String[] names = new String[n];
+		for (int i = 0; i < n; i++)
+			names[i] = depends[i]._name;
+		
 		// Debug
-		todo.DEBUG.note("Suites: %s", Arrays.<Suite>asList(depends));
+		todo.DEBUG.note("Suites: %s", Arrays.<String>asList(names));
 		
 		// Setup new task internally
-		if (true)
-			throw new todo.TODO();
+		int tid = TaskAccess.startTask(names, __cn);
+		if (tid < 0)
+		{
+			// {@squirreljme.error DG0c Invalid entry point was specified
+			// when starting task. (The entry point)}
+			if (tid == TaskAccess.ERROR_INVALID_ENTRY)
+				throw new IllegalArgumentException("DG0c " + __cn);
+			return new Task(tid, __s);
+		}
 		
-		// Build task object around given task
-		if (true)
-			throw new todo.TODO();
-		
-		throw new todo.TODO();
-		/*
-		// {@squirreljme.error DG09 Cannot launch the specified program
-		// because it is of the system suite.}
-		Library program = __s.__library();
-		if (program == null)
-			throw new IllegalArgumentException(String.format("DG09 %s %s",
-				__s.getName(), __cn));
-		return this.__ofTask(SystemCall.launchTask(program, __cn, ~0));
-		*/
+		// Otherwise use cached form
+		return this.__getTask(tid, __s);
 	}
 	
 	/**
@@ -173,6 +183,36 @@ final class __SystemTaskManager__
 		throws IllegalArgumentException, IllegalStateException
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns a task mapped to the given ID.
+	 *
+	 * @param __tid The task ID.
+	 * @param __s The suite used.
+	 * @return The task for the task.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/04
+	 */
+	static final Task __getTask(int __tid, Suite __s)
+		throws NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock on the tasks
+		Map<Integer, Task> tasks = _TASKS;
+		synchronized (tasks)
+		{
+			// There should not be duplicates
+			Integer k = __tid;
+			Task rv = tasks.get(k);
+			if (rv != null)
+				throw new RuntimeException("OOPS");
+			
+			tasks.put(k, (rv = new Task(__tid, __s)));
+			return rv;
+		}
 	}
 }
 
