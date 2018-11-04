@@ -406,6 +406,12 @@ public final class Formatter
 				append = Formatter._NEWLINE;
 				break;
 				
+				// Boolean
+			case BOOLEAN:
+				append = __pf.<Boolean>__argument(Boolean.class,
+					Boolean.FALSE).toString();
+				break;
+				
 				// Single character
 			case CHARACTER:
 				Character cha = __pf.<Character>__argument(Character.class);

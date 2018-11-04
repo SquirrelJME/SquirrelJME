@@ -12,6 +12,7 @@ package cc.squirreljme.springcoat.vm;
 
 import cc.squirreljme.runtime.cldc.asm.ConsoleOutput;
 import cc.squirreljme.runtime.cldc.asm.DebugAccess;
+import cc.squirreljme.runtime.cldc.lang.GuestDepth;
 import java.io.PrintStream;
 import java.util.Formatter;
 import java.util.Map;
@@ -1038,6 +1039,11 @@ public final class SpringThreadWorker
 				"exit:(I)V":
 				this.machine.exit((Integer)__args[0]);
 				return null;
+				
+				// The guest depth of this virtual machine
+			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
+				"guestDepth:()I":
+				return GuestDepth.guestDepth() + 1;
 				
 				// VM e-mail
 			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +

@@ -10,6 +10,8 @@
 
 package cc.squirreljme.runtime.swm;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Objects;
 import net.multiphasicapps.strings.StringUtils;
@@ -32,6 +34,9 @@ public final class Configuration
 	
 	/** Is this configuration compact? */
 	protected final boolean compact;
+	
+	/** String representation. */
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes the configuration using the given API name and version.
@@ -168,7 +173,15 @@ public final class Configuration
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>((rv = "Configuration " +
+				this.name + ":" + this.version +
+				(this.compact ? "-compact" : "")));
+		
+		return rv;
 	}
 	
 	/**

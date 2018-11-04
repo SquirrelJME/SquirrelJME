@@ -10,6 +10,8 @@
 
 package cc.squirreljme.runtime.swm;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -33,6 +35,9 @@ public final class ProvidedInfo
 {
 	/** Provided fields. */
 	protected final Set<MarkedProvided> provided;
+	
+	/** String representation. */
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes the provided dependency info.
@@ -112,7 +117,14 @@ public final class ProvidedInfo
 	@Override
 	public final String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>(
+				(rv = this.provided.toString()));
+		
+		return rv;
 	}
 	
 	/**

@@ -188,13 +188,13 @@ final class __SystemSuiteManager__
 	{
 		if (__set == null)
 			throw new NullPointerException("NARG");
-			
-		// Debug
-		todo.DEBUG.note("Input dependencies: %s", __set);
 		
 		// Clear all optionals if they are not included
 		if (!__opt)
 			__set = __set.noOptionals();
+		
+		// Debug
+		todo.DEBUG.note("Input dependencies: %s", __set);
 		
 		// No dependencies to search for
 		if (__set.isEmpty())

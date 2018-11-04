@@ -276,6 +276,10 @@ public final class System
 		// Depends on the property
 		switch (__k)
 		{
+				// SquirrelJME guest depth
+			case "cc.squirreljme.guests":
+				return Integer.toString(SystemProperties.guestDepth());
+			
 				// The version of the Java virtual machine (fixed value)
 			case "java.version":
 				return "1.8.0";
