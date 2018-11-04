@@ -27,7 +27,24 @@ public class TestMultiANewArray
 	@Override
 	public String test()
 	{
-		return new Integer[6][7][4][5][2][3].getClass().getName();
+		// Allocate array
+		Integer[][][] array = new Integer[6][7][4];
+		
+		// Determine the number of elements
+		int total = 0;
+		for (int i = 0, in = array.length; i < in; i++)
+		{
+			// Down to next level
+			Integer[][] subi = array[i];
+			for (int j = 0, jn = subi.length; j < jn; j++)
+				total += subi[j].length;
+		}
+		
+		// Is this time
+		this.secondary("total", total);
+		
+		// Use the name of it
+		return array.getClass().getName();
 	}
 }
 
