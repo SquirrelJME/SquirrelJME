@@ -67,6 +67,9 @@ public class Suite
 	/** No manifest available for usage? */
 	private volatile boolean _nomanifest;
 	
+	/** String representation. */
+	private Reference<String> _string;
+	
 	/**
 	 * Initializes the system suite.
 	 *
@@ -479,6 +482,23 @@ public class Suite
 				this._state &= bit;
 		}
 		*/
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/04
+	 */
+	@Override
+	public String toString()
+	{
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>(
+				(rv = "Suite " + this.getName() + ":" + this.getVersion()));
+		
+		return rv;
 	}
 	
 	/**
