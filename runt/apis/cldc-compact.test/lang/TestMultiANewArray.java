@@ -27,7 +27,7 @@ public class TestMultiANewArray
 	@Override
 	public String test()
 	{
-		return new Integer[7][9][12][42][1][3].getClass().getName();
+		return new Integer[6][7][4][5][2][3].getClass().getName();
 	}
 }
 
