@@ -762,11 +762,25 @@ public final class String
 		return this.startsWith(__s, 0);
 	}
 	
-	public CharSequence subSequence(int __a, int __b)
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/04
+	 */
+	@Override
+	public CharSequence subSequence(int __s, int __e)
 	{
-		throw new todo.TODO();
+		// Is the same code as substring
+		return this.substring(__s, __e);
 	}
 	
+	/**
+	 * Returns a substring of this string starting at the given index.
+	 *
+	 * @param __s The index to start at.
+	 * @return The sub-string for that index.
+	 * @throws IndexOutOfBoundsException If the start is outside of the bounds.
+	 * @since 2018/11/04
+	 */
 	public String substring(int __s)
 		throws IndexOutOfBoundsException
 	{
@@ -779,7 +793,7 @@ public final class String
 	}
 	
 	/**
-	 * Returns a substring of the given string.
+	 * Returns a substring of this string.
 	 *
 	 * @param __s The starting index.
 	 * @param __e The ending index.
