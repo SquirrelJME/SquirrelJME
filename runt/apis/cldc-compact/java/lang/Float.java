@@ -10,6 +10,8 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.asm.PrimitiveAccess;
+
 public final class Float
 	extends Number
 	implements Comparable<Float>
@@ -143,14 +145,32 @@ public final class Float
 		throw new todo.TODO();
 	}
 	
-	public static int floatToRawIntBits(float __a)
+	/**
+	 * Converts the specified float into its raw integer bit form.
+	 *
+	 * @param __v The input value.
+	 * @return The bits that make up the float.
+	 * @since 2018/11/04
+	 */
+	public static int floatToRawIntBits(float __v)
 	{
-		throw new todo.TODO();
+		return PrimitiveAccess.floatToRawIntBits(__v);
 	}
 	
-	public static float intBitsToFloat(int __a)
+	/**
+	 * Converts the specified integer bits into a floating point value.
+	 *
+	 * Note that this value might be modified depending on the platform if
+	 * the platform based conversion cannot handle signaling NaNs or illegal
+	 * floating point values.
+	 *
+	 * @param __b The input bits.
+	 * @return The resulting float.
+	 * @since 2018/11/04
+	 */
+	public static float intBitsToFloat(int __b)
 	{
-		throw new todo.TODO();
+		return PrimitiveAccess.intBitsToFloat(__b);
 	}
 	
 	public static boolean isInfinite(float __a)

@@ -36,6 +36,24 @@ public final class PrimitiveAccess
 	public static final native long doubleToRawLongBits(double __d);
 	
 	/**
+	 * Float to raw int bits.
+	 *
+	 * @param __d The input float.
+	 * @return The raw int bits.
+	 * @since 2018/11/04
+	 */
+	public static final native int floatToRawIntBits(float __f);
+	
+	/**
+	 * Integer bits to float.
+	 *
+	 * @param __b The input bits.
+	 * @return The resulting float.
+	 * @since 2018/11/04
+	 */
+	public static final native float intBitsToFloat(int __b);
+	
+	/**
 	 * Long bits to double.
 	 *
 	 * @param __b The input bits.

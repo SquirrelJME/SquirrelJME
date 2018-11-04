@@ -973,6 +973,16 @@ public final class SpringThreadWorker
 				"doubleToRawLongBits:(D)J":
 				return Double.doubleToRawLongBits((Double)__args[0]);
 				
+				// Float to raw int bits
+			case "cc/squirreljme/runtime/cldc/asm/PrimitiveAccess::" +
+				"floatToRawIntBits:(F)I":
+				return Float.floatToRawLongBits((Float)__args[0]);
+				
+				// Int bits to float
+			case "cc/squirreljme/runtime/cldc/asm/PrimitiveAccess::" +
+				"intBitsToFloat:(I)F":
+				return Float.intBitsToFloat((Integer)__args[0]);
+				
 				// Convert long bits to double
 			case "cc/squirreljme/runtime/cldc/asm/PrimitiveAccess::" +
 				"longBitsToDouble:(J)D":
