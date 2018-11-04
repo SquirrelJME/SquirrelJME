@@ -1115,6 +1115,12 @@ public final class SpringThreadWorker
 					this.<String>asNativeObject(String.class, __args[1]),
 					this.<String[]>asNativeObject(String[].class, __args[2]),
 					this.machine.guestdepth);
+				
+				// Task status
+			case "cc/squirreljme/runtime/cldc/asm/TaskAccess::" +
+				"taskStatus:(I)I":
+				return this.machine.taskManager().taskStatus(
+					(Integer)__args[0]);
 			
 				// {@squirreljme.error BK1g Unknown native function. (The
 				// native function)}

@@ -27,7 +27,7 @@ public final class SpringTask
 	protected final int tid;
 	
 	/** Exit code. */
-	private volatile int _exitcode =
+	volatile int _exitcode =
 		Integer.MIN_VALUE;
 	
 	/**
