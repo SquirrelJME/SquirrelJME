@@ -113,7 +113,7 @@ public final class ProjectManager
 		if (__t == null || __p == null)
 			throw new NullPointerException("NARG");
 		
-		System.err.printf("DEBUG -- %s: %s%n", __t, Arrays.asList(__p));
+		todo.DEBUG.note("%s: %s%n", __t, Arrays.asList(__p));
 		
 		// Need the binary manager to build these projects
 		BinaryManager bm;

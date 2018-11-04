@@ -61,7 +61,7 @@ public final class SourceManager
 			__scanNamespaces(p, namespaces);
 		
 		// Debug
-		System.err.printf("DEBUG -- Found namespaces %s%n", namespaces);
+		todo.DEBUG.note("Found namespaces %s%n", namespaces);
 		
 		// Go through all namespaces and initialize any projects which may be
 		// within directories

@@ -206,7 +206,7 @@ public class PNGReader
 		this._height = height;
 		
 		// Debug
-		System.err.printf("DEBUG -- Size: %dx%d%n", width, height);
+		todo.DEBUG.note("Size: %dx%d%n", width, height);
 		
 		// Read the bit depth and the color type
 		int bitdepth = __in.readUnsignedByte(),
