@@ -37,5 +37,28 @@ public enum TaskStatus
 	
 	/** End. */
 	;
+	
+	/**
+	 * Maps ordinal back into task status.
+	 *
+	 * @param __i Index to get.
+	 * @return The task status.
+	 * @since 2018/11/04
+	 */
+	static final TaskStatus __of(int __i)
+	{
+		switch (__i)
+		{
+			case 0: return EXITED_FATAL;
+			case 1: return EXITED_REGULAR;
+			case 2: return EXITED_TERMINATED;
+			case 3: return RUNNING;
+			case 4: return START_FAILED;
+			case 5: return STARTING;
+			
+			default:
+				return EXITED_FATAL;
+		}
+	}
 }
 

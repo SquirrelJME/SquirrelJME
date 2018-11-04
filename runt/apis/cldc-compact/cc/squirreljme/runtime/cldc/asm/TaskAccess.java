@@ -46,5 +46,14 @@ public final class TaskAccess
 	 */
 	public static final native int startTask(String[] __cp, String __main,
 		String[] __args);
+	
+	/**
+	 * Returns the status of the target task.
+	 *
+	 * @param __tid The task to get the status of.
+	 * @return The status for the given task.
+	 * @since 2018/11/04
+	 */
+	public static final native int taskStatus(int __tid);
 }
 

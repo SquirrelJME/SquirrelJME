@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import javax.microedition.swm.TaskStatus;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 
 /**
@@ -134,6 +135,41 @@ public final class SpringTaskManager
 			
 			// The task ID is our handle
 			return tid;
+		}
+	}
+	
+	/**
+	 * Returns the status for a task.
+	 *
+	 * @param __tid The task ID.
+	 * @return The status.
+	 * @since 2018/11/04
+	 */
+	public final int taskStatus(int __tid)
+	{
+		// Lock on tasks
+		Map<Integer, SpringTask> tasks = this._tasks;
+		synchronized (tasks)
+		{
+			// Must be a valid task
+			SpringTask rv = tasks.get(__tid);
+			if (rv == null)
+				return -1;
+			
+			// Get the exit code
+			int exitcode = rv._exitcode;
+			
+			// Still running
+			if (exitcode == Integer.MIN_VALUE)
+				return TaskStatus.RUNNING.ordinal();
+			
+			// Terminated with success
+			else if (exitcode == 0)
+				return TaskStatus.EXITED_REGULAR.ordinal();
+			
+			// Terminate with something else
+			else
+				return TaskStatus.EXITED_FATAL.ordinal();
 		}
 	}
 }

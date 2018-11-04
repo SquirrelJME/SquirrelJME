@@ -10,6 +10,7 @@
 
 package javax.microedition.swm;
 
+import cc.squirreljme.runtime.cldc.asm.TaskAccess;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
@@ -33,7 +34,7 @@ public final class Task
 	/**
 	 * Initializes the task.
 	 *
-	 * @param __tid The task ID.
+	 * @param __tid The task ID, zero is the system task.
 	 * @param __s The suite used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/24
@@ -139,36 +140,7 @@ public final class Task
 		if (tid < 0)
 			return TaskStatus.START_FAILED;
 		
-		throw new todo.TODO();
-		/*
-		SystemTaskStatus status = this._task.status();
-		switch (status)
-		{
-			case EXITED_FATAL:
-				return TaskStatus.EXITED_FATAL;
-
-			case EXITED_REGULAR:
-				return TaskStatus.EXITED_REGULAR;
-
-			case EXITED_TERMINATED:
-				return TaskStatus.EXITED_TERMINATED;
-
-			case RUNNING:
-				return TaskStatus.RUNNING;
-
-			case START_FAILED:
-				return TaskStatus.START_FAILED;
-
-			case STARTING:
-				return TaskStatus.STARTING;
-			
-				// {@squirreljme.error DG06 Task is in an invalid status
-				// state. (The status)}
-			default:
-				throw new IllegalStateException(
-					String.format("DG04 %d", status));
-		}
-		*/
+		return TaskStatus.__of(TaskAccess.taskStatus(tid));
 	}
 	
 	/**
