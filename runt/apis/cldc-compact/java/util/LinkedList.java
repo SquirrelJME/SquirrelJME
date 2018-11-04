@@ -410,7 +410,10 @@ public class LinkedList<E>
 		implements ListIterator<E>
 	{
 		/** The virtualized index for the list (estimated). */
-		private int _vdx;	
+		private int _vdx;
+		
+		/** Last virtualized index. */
+		private int _lastvdx;
 		
 		/** The current link the list is at. */
 		private __Link__<E> _next;
@@ -540,11 +543,11 @@ public class LinkedList<E>
 			if (next == LinkedList.this._tail)
 				throw new NoSuchElementException("NSEE");
 			
-			// Removal and set and be done on this
+			// Removal and set can be done on this
 			this._last = next;
 			
 			// Iterate and record for the next element
-			this._vdx++;
+			this._lastvdx = this._vdx++;
 			this._next = next._next;
 			
 			// Return the current value
@@ -618,8 +621,18 @@ public class LinkedList<E>
 			last._prev._next = last._next;
 			last._next._prev = last._prev;
 			
+			// If the next entry is after this point then it will needs its
+			// index dropped
+			int vdx = this._vdx,
+				lastvdx = this._lastvdx;
+			if (vdx > lastvdx)
+				this._vdx = vdx - 1;
+			
 			// Set list as being modified and update our count to match
 			this._atmod = ++LinkedList.this.modCount;
+			
+			// Size goes down
+			LinkedList.this._size--;
 		}
 		
 		/**
