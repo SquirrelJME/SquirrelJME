@@ -667,9 +667,8 @@ public final class BinaryManager
 			}
 		
 		// Debug
-		System.err.println("DEBUG -- Begin manifest...");
-		outman.write(System.err);
-		System.err.println("DEBUG -- ...end manifest.");
+		todo.DEBUG.note("Manifest: %s",
+			outman.write(new StringBuilder()));
 		
 		// Write it
 		outman.write(__os);
