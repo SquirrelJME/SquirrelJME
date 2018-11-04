@@ -56,6 +56,9 @@ public final class SpringMachine
 	/** Task manager. */
 	protected final SpringTaskManager tasks;
 	
+	/** The depth of this machine. */
+	protected final int guestdepth;
+	
 	/** Threads which are available. */
 	private final List<SpringThread> _threads =
 		new ArrayList<>();
@@ -107,12 +110,13 @@ public final class SpringMachine
 	 * @param __tm Task manager.
 	 * @param __bootdx The entry point which should be booted when the VM
 	 * runs.
+	 * @param __gd Guest depth.
 	 * @param __args Main entry point arguments.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/03
 	 */
 	public SpringMachine(SpringSuiteManager __sm, SpringClassLoader __cl,
-		SpringTaskManager __tm, int __bootdx, String... __args)
+		SpringTaskManager __tm, int __bootdx, int __gd, String... __args)
 		throws NullPointerException
 	{
 		if (__cl == null || __sm == null)
@@ -122,6 +126,7 @@ public final class SpringMachine
 		this.classloader = __cl;
 		this.tasks = __tm;
 		this.bootdx = __bootdx;
+		this.guestdepth = __gd;
 		this._args = (__args == null ? new String[0] : __args.clone());
 		
 		// Setup resource accessor

@@ -1073,7 +1073,7 @@ public final class SpringThreadWorker
 				// The guest depth of this virtual machine
 			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
 				"guestDepth:()I":
-				return GuestDepth.guestDepth() + 1;
+				return this.machine.guestdepth;
 				
 				// VM e-mail
 			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
@@ -1113,7 +1113,8 @@ public final class SpringThreadWorker
 				return this.machine.taskManager().startTask(
 					this.<String[]>asNativeObject(String[].class, __args[0]),
 					this.<String>asNativeObject(String.class, __args[1]),
-					this.<String[]>asNativeObject(String[].class, __args[2]));
+					this.<String[]>asNativeObject(String[].class, __args[2]),
+					this.machine.guestdepth);
 			
 				// {@squirreljme.error BK1g Unknown native function. (The
 				// native function)}

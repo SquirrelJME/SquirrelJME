@@ -59,11 +59,13 @@ public final class SpringTaskManager
 	 * @param __cp The class path to use.
 	 * @param __entry The entry point.
 	 * @param __args Arguments used.
+	 * @param __gd The current guest depth.
 	 * @return The ID of the created task.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/04
 	 */
-	public final int startTask(String[] __cp, String __entry, String[] __args)
+	public final int startTask(String[] __cp, String __entry, String[] __args,
+		int __gd)
 		throws NullPointerException
 	{
 		if (__cp == null || __entry == null || __args == null)
@@ -111,8 +113,8 @@ public final class SpringTaskManager
 			return TaskAccess.ERROR_INVALID_ENTRY;
 		
 		// Build machine for the task
-		SpringMachine machine = new SpringMachine(
-			suites, new SpringClassLoader(scl), this, bootdx, __args);
+		SpringMachine machine = new SpringMachine(suites,
+			new SpringClassLoader(scl), this, bootdx, __gd + 1, __args);
 		
 		// Lock on tasks
 		Map<Integer, SpringTask> tasks = this._tasks;
