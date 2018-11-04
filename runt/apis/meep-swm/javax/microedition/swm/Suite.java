@@ -58,11 +58,11 @@ public class Suite
 	private final Object _lock =
 		new Object();
 	
-	/** Cached manifest information. */
-	private Reference<JavaManifest> _manifest;
+	/** Cached manifest information (longer lived). */
+	private JavaManifest _manifest;
 	
-	/** Cached suite information. */
-	private Reference<SuiteInfo> _suiteinfo;
+	/** Cached suite information (longer lived). */
+	private SuiteInfo _suiteinfo;
 	
 	/** No manifest available for usage? */
 	private volatile boolean _nomanifest;
@@ -489,41 +489,39 @@ public class Suite
 	 */
 	final JavaManifest __manifest()
 	{
-		Reference<JavaManifest> ref = this._manifest;
-		JavaManifest rv;
+		JavaManifest rv = this._manifest;
+		if (rv != null)
+			return rv;
 		
-		if (ref == null || null == (rv = ref.get()))
-		{
-			// Definitely does not exist
-			if (this._nomanifest)
-				rv = new JavaManifest();
-			
-			// Could exist, hopefully it does
-			else
-				try (InputStream in = ResourceInputStream.open(this._name,
-					"META-INF/MANIFEST.MF"))
+		// Definitely does not exist
+		if (this._nomanifest)
+			rv = new JavaManifest();
+		
+		// Could exist, hopefully it does
+		else
+			try (InputStream in = ResourceInputStream.open(this._name,
+				"META-INF/MANIFEST.MF"))
+			{
+				// Will keep trying to open resources, so just prevent
+				// that from happening
+				if (in == null)
 				{
-					// Will keep trying to open resources, so just prevent
-					// that from happening
-					if (in == null)
-					{
-						rv = new JavaManifest();
-						this._nomanifest = true;
-					}
-					
-					// Load it in
-					else
-						rv = new JavaManifest(in);
+					rv = new JavaManifest();
+					this._nomanifest = true;
 				}
-				catch (IOException e)
-				{
-					// {@squirreljme.error DG01 Could not load suite manifest.}
-					throw new RuntimeException("DG0a", e);
-				}
-			
-			// Cache
-			this._manifest = new WeakReference<>(rv);
-		}
+				
+				// Load it in
+				else
+					rv = new JavaManifest(in);
+			}
+			catch (IOException e)
+			{
+				// {@squirreljme.error DG01 Could not load suite manifest.}
+				throw new RuntimeException("DG0a", e);
+			}
+		
+		// Cache
+		this._manifest = rv;
 		
 		return rv;
 	}
@@ -562,12 +560,12 @@ public class Suite
 	 */
 	final SuiteInfo __suiteInfo()
 	{
-		Reference<SuiteInfo> ref = this._suiteinfo;
-		SuiteInfo rv;
+		SuiteInfo rv = this._suiteinfo;
+		if (rv != null)
+			return rv;
 		
-		if (ref == null || null == (rv = ref.get()))
-			this._suiteinfo = new WeakReference<>(
-				(rv = new SuiteInfo(this.__manifest())));
+		// Load
+		this._suiteinfo = (rv = new SuiteInfo(this.__manifest()));
 		
 		return rv;
 	}
