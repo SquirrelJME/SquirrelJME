@@ -1,0 +1,47 @@
+# 2018/11/03
+
+## 11:33
+
+Adapting square root and I hope it works.
+
+## 12:05
+
+Looks like LDC does not push to the stack. But it does so that means the
+length for wide_iinc is wrong:
+
+	147: iinc_w        12, -1023
+	153: iload         9
+	155: ldc           #13                 // int 1048575
+
+So let me see, the length is six. Okay so yeah I did an extra byte because
+wide instructions get their opcode length considered already. So yeah
+I had 6 down so it was skipping the next two bytes.
+
+## 12:40
+
+Awesome! SQUARE ROOT WORKS I AM SO HAPPY.
+
+## 12:58
+
+Also! Randomly generated values work perfectly fine, so this is a very good
+thing. At least smashing it with random values would be like a rough test of
+whether or not things really work and such.
+
+## 15:35
+
+Damn, some of the values are off by 1 ulp. Will need to figure that out.
+
+## 15:43
+
+Okay so since I have a value that is off by one, I am going to need a special
+class which for example can be given a correct range for values.
+
+## 15:53
+
+Going to make SpringCoat method strictfp.
+
+## 16:08
+
+I am at a point where most instructions have been implemented and the ones
+left so far have never been hit yet, so I am going to implement those just to
+be done and such.
