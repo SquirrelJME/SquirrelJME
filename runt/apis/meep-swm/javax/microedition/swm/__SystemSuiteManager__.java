@@ -193,9 +193,6 @@ final class __SystemSuiteManager__
 		if (!__opt)
 			__set = __set.noOptionals();
 		
-		// Debug
-		todo.DEBUG.note("Input dependencies: %s", __set);
-		
 		// No dependencies to search for
 		if (__set.isEmpty())
 			return new Suite[0];

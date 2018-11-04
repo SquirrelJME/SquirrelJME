@@ -564,12 +564,7 @@ public class Suite
 		if (__d == null)
 			throw new NullPointerException("NARG");
 		
-		ProvidedInfo pi = this.__suiteInfo().provided();
-		
-		// Debug
-		todo.DEBUG.note("Match %s to %s", __d, pi);
-		
-		return __d.match(pi);
+		return __d.match(this.__suiteInfo().provided());
 	}
 	
 	/**
