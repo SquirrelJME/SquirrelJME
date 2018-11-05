@@ -10,6 +10,7 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.ProgrammerTip;
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import cc.squirreljme.runtime.cldc.asm.PrimitiveAccess;
 
@@ -41,8 +42,13 @@ public final class Float
 	public static final float POSITIVE_INFINITY =
 		1.0F / 0.0F;
 	
+	/** The number of bits float requires for storage. */
 	public static final int SIZE =
 		32;
+	
+	/** The mask for NaN values. */
+	private static final int _NAN_MASK =
+		0b0111_1111_1000_0000_0000_0000_0000_0000;
 	
 	/** The class representing the primitive type. */
 	public static final Class<Float> TYPE =
@@ -94,10 +100,36 @@ public final class Float
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/04
+	 */
 	@Override
-	public boolean equals(Object __a)
+	@ProgrammerTip("NaN values are equal to each other, positive and " +
+		"negative zero are not equal to each other.")
+	public boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		if (this == __o)
+			return true;
+		
+		if (!(__o instanceof Float))
+			return false;
+		
+		float a = this._value,
+			b = ((Float)__o)._value;
+		
+		// Both values are NaN, consider it equal
+		if (Float.isNaN(a) && Float.isNaN(b))
+			return true;
+		
+		// If both values are zero, the sign is important
+		int ra = Float.floatToRawIntBits(a),
+			rb = Float.floatToRawIntBits(b);
+		if ((ra & 0x7FFFFFFF) == 0 && (rb & 0x7FFFFFFF) == 0)
+			return ra == rb;
+		
+		// Otherwise standard comparison
+		return a == b;
 	}
 	
 	/**
@@ -110,9 +142,14 @@ public final class Float
 		return this._value;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/04
+	 */
+	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		return Float.floatToIntBits(this._value);
 	}
 	
 	@Override
@@ -126,9 +163,15 @@ public final class Float
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Is this the NaN value.
+	 *
+	 * @return If this is the NaN value.
+	 * @since 2018/11/04
+	 */
 	public boolean isNaN()
 	{
-		throw new todo.TODO();
+		return Float.isNaN(this._value);
 	}
 	
 	@Override
@@ -154,9 +197,23 @@ public final class Float
 		throw new todo.TODO();
 	}
 	
-	public static int floatToIntBits(float __a)
+	/**
+	 * Converts the specified float into its integer bit form with NaNs losing
+	 * all their signaling and turning into non-signaling NaNs.
+	 *
+	 * @param __v The value the get the bit representation of.
+	 * @return The bit representation of the float.
+	 * @since 2018/11/04
+	 */
+	public static int floatToIntBits(float __v)
 	{
-		throw new todo.TODO();
+		int raw = Float.floatToRawIntBits(__v);
+		
+		// Collapse all NaN values to a single form
+		if ((raw & _NAN_MASK) == (_NAN_MASK))
+			return _NAN_MASK;
+		
+		return raw;
 	}
 	
 	/**
@@ -192,9 +249,16 @@ public final class Float
 		throw new todo.TODO();
 	}
 	
-	public static boolean isNaN(float __a)
+	/**
+	 * Is the specified value a NaN?
+	 *
+	 * @param __v The value to check.
+	 * @return If it is NaN or not.
+	 * @since 2018/11/04
+	 */
+	public static boolean isNaN(float __v)
 	{
-		throw new todo.TODO();
+		return (Float.floatToRawIntBits(__v) & _NAN_MASK) == _NAN_MASK;
 	}
 	
 	public static float parseFloat(String __a)
