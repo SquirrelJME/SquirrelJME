@@ -101,9 +101,30 @@ public abstract class AbstractMap<K, V>
 			this.put(e.getKey(), e.getValue());
 	}
 	
-	public V remove(Object __a)
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/04
+	 */
+	@Override
+	public V remove(Object __k)
 	{
-		throw new todo.TODO();
+		// Linearly search through the hash map to remove the key
+		for (Iterator<Map.Entry<K, V>> it = this.entrySet().iterator();
+			it.hasNext();)
+		{
+			Map.Entry<K, V> e = it.next();
+			
+			// If the key matches, then it is removed
+			if (Objects.equals(e.getKey(), __k))
+			{
+				V rv = e.getValue();
+				it.remove();
+				return rv;
+			}
+		}
+		
+		// If this point was reached, there is no matching key
+		return null;
 	}
 	
 	/**

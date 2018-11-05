@@ -10,6 +10,7 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import cc.squirreljme.runtime.cldc.asm.PrimitiveAccess;
 
 public final class Double
@@ -40,11 +41,20 @@ public final class Double
 	public static final double POSITIVE_INFINITY =
 		1.0D / 0.0D;
 	
+	/** The number of bits double requires for storage. */
 	public static final int SIZE =
 		64;
 	
+	/** The class representing the primitive type. */
 	public static final Class<Double> TYPE =
-		__getType();
+		ObjectAccess.<Double>classByNameType("double");
+	
+	/** The mask for NaN values. */
+	private static final long _NAN_MASK =
+		0b0111111111111000000000000000000000000000000000000000000000000000L;
+	
+	/** The value for this double. */
+	private final double _value;
 	
 	public Double(double __a)
 	{
@@ -90,9 +100,15 @@ public final class Double
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/04
+	 */
+	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		long v = this.doubleToLongBits(this._value); 
+		return (int)(v ^ (v >>> 32));
 	}
 	
 	@Override
@@ -134,9 +150,23 @@ public final class Double
 		throw new todo.TODO();
 	}
 	
-	public static long doubleToLongBits(double __a)
+	/**
+	 * Returns the bits which represent the double value with all NaN values
+	 * collapsed into a single form.
+	 *
+	 * @param __v The input value.
+	 * @return The bits for the value.
+	 * @since 2018/11/04
+	 */
+	public static long doubleToLongBits(double __v)
 	{
-		throw new todo.TODO();
+		long raw = Double.doubleToRawLongBits(__v);
+		
+		// Collapse all NaN values to a single form
+		if ((raw & _NAN_MASK) == (_NAN_MASK))
+			return _NAN_MASK;
+		
+		return raw;
 	}
 	
 	/**
@@ -201,17 +231,6 @@ public final class Double
 	public static Double valueOf(double __a)
 	{
 		throw new todo.TODO();
-	}
-	
-	/**
-	 * The {@link #TYPE} field is magically initialized by the virtual machine.
-	 *
-	 * @return {@link #TYPE}.
-	 * @since 2016/06/16
-	 */
-	private static Class<Double> __getType()
-	{
-		return TYPE;
 	}
 }
 

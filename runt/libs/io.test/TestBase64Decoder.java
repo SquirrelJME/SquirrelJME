@@ -8,8 +8,6 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.io;
-
 import net.multiphasicapps.tac.TestFunction;
 
 /**
