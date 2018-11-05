@@ -392,6 +392,30 @@ final class __BucketMap__<K, V>
 	}
 	
 	/**
+	 * Clears the bucket map.
+	 *
+	 * @since 2018/11/05
+	 */
+	final void __clear()
+	{
+		// Set all buckets to null so they are empty
+		__BucketMapEntry__<K, V>[][] buckets = this._buckets;
+		for (int i = 0, n = buckets.length; i < n; i++)
+			buckets[i] = null;
+		
+		// Set size to zero
+		this._size = 0;
+		
+		// Clear the linked list if there is one
+		LinkedList<__BucketMapEntry__<K, V>> links = this._links;
+		if (links != null)
+			links.clear();
+		
+		// Modification count goes up
+		this._modcount++;
+	}
+	
+	/**
 	 * Return the iterator over the map entries.
 	 *
 	 * @return The map iterator.
@@ -451,7 +475,7 @@ final class __BucketMap__<K, V>
 		@Override
 		public final void clear()
 		{
-			__BucketMap__.this.clear();
+			__BucketMap__.this.__clear();
 		}
 		
 		/**
