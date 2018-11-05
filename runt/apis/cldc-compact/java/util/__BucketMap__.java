@@ -369,6 +369,9 @@ final class __BucketMap__<K, V>
 						links.remove(e);
 				}	
 				
+				// Size goes down
+				this._size--;
+				
 				// Map has been modified
 				this._modcount++;
 				
@@ -544,6 +547,9 @@ final class __BucketMap__<K, V>
 		/** The cached next entry. */
 		__BucketMapEntry__<K, V> _next;
 		
+		/** The last entry. */
+		__BucketMapEntry__<K, V> _last;
+		
 		/**
 		 * {@inheritDoc}
 		 * @since 2018/10/13
@@ -631,6 +637,7 @@ final class __BucketMap__<K, V>
 			// hasNext() caches this
 			__BucketMapEntry__<K, V> rv = this._next;
 			this._next = null;
+			this._last = rv;
 			return rv;
 		}
 		
@@ -644,7 +651,18 @@ final class __BucketMap__<K, V>
 			// Check modification
 			this.__checkModified();
 			
-			throw new todo.TODO();
+			// No last element was nexted
+			__BucketMapEntry__<K, V> last = this._last;
+			if (last == null)
+				throw new IllegalStateException("NSEE");
+			
+			// Remove from the map but we never unlinked it, so if there is
+			// a link it will be scanned and removed accordingly
+			if (__BucketMap__.this.removeEntry(last.getKey(), false) != last)
+				throw new RuntimeException("OOPS");
+			
+			// The map likely was structurally modified so use the new state
+			this._atmod = __BucketMap__.this._modcount;
 		}
 	}
 	

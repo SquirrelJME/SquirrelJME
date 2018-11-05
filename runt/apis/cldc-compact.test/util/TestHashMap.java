@@ -12,6 +12,8 @@ package util;
 
 import net.multiphasicapps.tac.TestRunnable;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Tests that {@link HashMap} works properly.
@@ -21,6 +23,35 @@ import java.util.HashMap;
 public class TestHashMap
 	extends TestRunnable
 {
+	/** The map to test on. */
+	protected final Map<Integer, String> map;
+	
+	/**
+	 * Initializes the test using the base map.
+	 *
+	 * @since 2018/11/05
+	 */
+	public TestHashMap()
+	{
+		this(new HashMap<Integer, String>());
+	}
+	
+	/**
+	 * Initializes the test using the given map.
+	 *
+	 * @param __m The map to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/05
+	 */
+	public TestHashMap(Map<Integer, String> __m)
+		throws NullPointerException
+	{
+		if (__m == null)
+			throw new NullPointerException("NARG");
+		
+		this.map = __m;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/10/07
@@ -29,7 +60,7 @@ public class TestHashMap
 	public void test()
 	{
 		// Initialize a map to work with
-		HashMap<Integer, String> map = new HashMap<>();
+		Map<Integer, String> map = this.map;
 		
 		// Initial size and such
 		this.secondary("initempty", map.isEmpty());
@@ -65,7 +96,7 @@ public class TestHashMap
 		this.secondary("secondsize", map.size());
 		
 		// Replace first value
-		map.put(ka, vb);
+		this.secondary("replaceput", map.put(ka, vb));
 		
 		// Checks for replaced value
 		this.secondary("replacevalue", map.get(ka));
@@ -78,6 +109,26 @@ public class TestHashMap
 		
 		// Check the size
 		this.secondary("dumpsize", map.size());
+		
+		// Search for entry by iterator
+		for (Iterator<Map.Entry<Integer, String>> it =
+			map.entrySet().iterator(); it.hasNext();)
+		{
+			Map.Entry<Integer, String> e = it.next();
+			
+			// Matches first value
+			if (ka.equals(e.getKey()))
+			{
+				this.secondary("ithasfirst", e.getValue());
+				
+				// Remove it
+				it.remove();
+			}
+		}
+		
+		// Must not have first value
+		this.secondary("itafterhasfirst", map.containsKey(ka));
+		this.secondary("itputfirstagain", map.put(ka, vb));
 		
 		// Remove second value
 		this.secondary("removesecond", map.remove(kb));

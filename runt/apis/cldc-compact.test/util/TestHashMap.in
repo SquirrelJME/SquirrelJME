@@ -11,10 +11,14 @@ secondary-firsthassecond: false
 secondary-secondcontained: true
 secondary-secondvalue: string:Cute
 secondary-secondsize: int:2
+secondary-replaceput: string:Squirrels
 secondary-replacevalue: string:Cute
 secondary-replacesecondvalue: string:Cute
 secondary-replacesize: int:2
 secondary-dumpsize: int:130
+secondary-ithasfirst: string:Cute
+secondary-itafterhasfirst: false
+secondary-itputfirstagain: null
 secondary-removesecond: string:Cute
 secondary-removesize: int:129
 secondary-hasanother: string:Adorable
