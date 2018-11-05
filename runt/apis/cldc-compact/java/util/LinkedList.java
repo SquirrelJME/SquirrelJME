@@ -95,6 +95,27 @@ public class LinkedList<E>
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2018/11/05
+	 */
+	@Override
+	public void clear()
+	{
+		// Since there are anchor entries used for the linked list we can just
+		// set the anchor points to each other
+		__Link__<E> head = this._head,
+			tail = this._tail;
+		head._next = tail;
+		tail._prev = head;
+		
+		// Clear size
+		this._size = 0;
+		
+		// List was modified
+		LinkedList.this.modCount++;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2016/09/05
 	 */
 	@Override

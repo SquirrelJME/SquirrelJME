@@ -75,10 +75,19 @@ public abstract class AbstractCollection<E>
 		return changed;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/05
+	 */
 	@Override
 	public void clear()
 	{
-		throw new todo.TODO();
+		for (Iterator<E> it = this.iterator(); it.hasNext();)
+		{
+			// Remove is always after a next
+			it.next();
+			it.remove();
+		}
 	}
 	
 	@Override

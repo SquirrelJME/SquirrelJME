@@ -19,9 +19,14 @@ public abstract class AbstractMap<K, V>
 	
 	public abstract Set<Map.Entry<K, V>> entrySet();
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/05
+	 */
+	@Override
 	public void clear()
 	{
-		throw new todo.TODO();
+		this.entrySet().clear();
 	}
 	
 	@Override
