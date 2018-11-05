@@ -10,6 +10,7 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import cc.squirreljme.runtime.cldc.asm.PrimitiveAccess;
 
 public final class Float
@@ -43,13 +44,22 @@ public final class Float
 	public static final int SIZE =
 		32;
 	
+	/** The class representing the primitive type. */
 	public static final Class<Float> TYPE =
-		__getType();
+		ObjectAccess.<Float>classByNameType("float");
 	
-	public Float(float __a)
+	/** The stored value. */
+	private final float _value;
+	
+	/**
+	 * Stores the specified float.
+	 *
+	 * @param __v The value to store.
+	 * @since 2018/11/04
+	 */
+	public Float(float __v)
 	{
-		super();
-		throw new todo.TODO();
+		this._value = __v;
 	}
 	
 	public Float(double __a)
@@ -90,10 +100,14 @@ public final class Float
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/04
+	 */
 	@Override
 	public float floatValue()
 	{
-		throw new todo.TODO();
+		return this._value;
 	}
 	
 	public int hashCode()
@@ -204,20 +218,16 @@ public final class Float
 		throw new todo.TODO();
 	}
 	
-	public static Float valueOf(float __a)
-	{
-		throw new todo.TODO();
-	}
-	
 	/**
-	 * The {@link #TYPE} field is magically initialized by the virtual machine.
+	 * Returns the boxed representation of the given float.
 	 *
-	 * @return {@link #TYPE}.
-	 * @since 2016/06/16
+	 * @param __v The float value.
+	 * @return The boxed float.
+	 * @since 2018/11/04
 	 */
-	private static Class<Float> __getType()
+	public static Float valueOf(float __v)
 	{
-		return TYPE;
+		return new Float(__v);
 	}
 }
 

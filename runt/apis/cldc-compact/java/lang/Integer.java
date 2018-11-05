@@ -75,10 +75,20 @@ public final class Integer
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/04
+	 */
 	@Override
-	public boolean equals(Object __a)
+	public boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		if (this == __o)
+			return true;
+		
+		if (!(__o instanceof Integer))
+			return false;
+		
+		return this._value == ((Integer)__o)._value;
 	}
 	
 	@Override

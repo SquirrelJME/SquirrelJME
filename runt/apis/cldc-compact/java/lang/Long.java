@@ -75,10 +75,20 @@ public final class Long
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/04
+	 */
 	@Override
-	public boolean equals(Object __a)
+	public boolean equals(Long __o)
 	{
-		throw new todo.TODO();
+		if (this == __o)
+			return true;
+		
+		if (!(__o instanceof Long))
+			return false;
+		
+		return this._value == ((Long)__o)._value;
 	}
 	
 	@Override
@@ -87,6 +97,7 @@ public final class Long
 		throw new todo.TODO();
 	}
 	
+	@Override
 	public int hashCode()
 	{
 		throw new todo.TODO();
