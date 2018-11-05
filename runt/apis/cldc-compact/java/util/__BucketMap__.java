@@ -303,6 +303,19 @@ final class __BucketMap__<K, V>
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/04
+	 */
+	@Override
+	public final V remove(Object __k)
+	{
+		__BucketMapEntry__<K, V> rv = this.removeEntry(__k, false);
+		if (rv != null)
+			return rv._value;
+		return null;
+	}
+	
+	/**
 	 * Removes the specified key from this map.
 	 *
 	 * Note that because iterators need to keep the same order, the entries
@@ -314,7 +327,7 @@ final class __BucketMap__<K, V>
 	 * removed by an iterator.
 	 * @return 
 	 */
-	public final __BucketMapEntry__<K, V> removeEntry(K __k,
+	public final __BucketMapEntry__<K, V> removeEntry(Object __k,
 		boolean __preunlinked)
 	{
 		// Where to look in the table?
