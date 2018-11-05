@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.io;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.Reader;
@@ -360,6 +361,57 @@ public final class Base64Decoder
 		if (paddedeof && rv == 0)
 			return -1;
 		return rv;
+	}
+	
+	/**
+	 * Decodes the input string to byte values.
+	 *
+	 * @param __in The string to decode.
+	 * @param __ab The alphabet to use. 
+	 * @param __ip Is padding ignored?
+	 * @return The resulting byte array.
+	 * @throws IllegalArgumentException If the input string is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/04
+	 */
+	public static final byte[] decode(String __in, Base64Alphabet __ab,
+		boolean __ip)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__in == null || __ab == null)
+			throw new NullPointerException("NARG");
+		
+		// Wrap in a reader to decode
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
+		{
+			byte[] buf = new byte[32];
+			
+			// Loop handle bytes
+			try (InputStream in = new Base64Decoder(
+				new StringReader(__in), __ab, __ip))
+			{
+				for (;;)
+				{
+					int rc = in.read(buf);
+					
+					// EOF?
+					if (rc < 0)
+						break;
+					
+					// Copy
+					baos.write(buf, 0, rc);
+				}
+			}
+			
+			// Return resulting byte array
+			return baos.toByteArray();
+		}
+		
+		// {@squirreljme.error BD0m Could not decode the input string.}
+		catch (IOException e)
+		{
+			throw new IllegalArgumentException("BD0m", e);
+		}
 	}
 }
 

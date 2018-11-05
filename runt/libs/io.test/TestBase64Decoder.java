@@ -10,6 +10,9 @@
 
 import net.multiphasicapps.tac.TestFunction;
 
+import net.multiphasicapps.io.Base64Alphabet;
+import net.multiphasicapps.io.Base64Decoder;
+
 /**
  * This tests the base 64 decoder.
  *
@@ -24,8 +27,10 @@ public class TestBase64Decoder
 	 */
 	@Override
 	public String test(String __i)
+		throws Throwable
 	{
-		throw new todo.TODO();
+		return new String(Base64Decoder.decode(__i, Base64Alphabet.BASIC,
+			true), "utf-8");
 	}
 }
 

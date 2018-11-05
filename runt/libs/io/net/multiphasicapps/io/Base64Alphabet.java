@@ -11,7 +11,7 @@
 package net.multiphasicapps.io;
 
 /**
- * TH.
+ * This represents the alphabet that is used for Base64.
  *
  * @since 2018/03/05
  */
