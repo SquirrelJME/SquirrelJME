@@ -80,7 +80,7 @@ public final class Long
 	 * @since 2018/11/04
 	 */
 	@Override
-	public boolean equals(Long __o)
+	public boolean equals(Object __o)
 	{
 		if (this == __o)
 			return true;
