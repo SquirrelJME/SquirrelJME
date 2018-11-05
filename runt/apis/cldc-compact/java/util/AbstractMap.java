@@ -60,9 +60,14 @@ public abstract class AbstractMap<K, V>
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/04
+	 */
+	@Override
 	public boolean isEmpty()
 	{
-		throw new todo.TODO();
+		return this.size() == 0;
 	}
 	
 	/**
@@ -101,9 +106,14 @@ public abstract class AbstractMap<K, V>
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/04
+	 */
+	@Override
 	public int size()
 	{
-		throw new todo.TODO();
+		return this.entrySet().size();
 	}
 	
 	/**
