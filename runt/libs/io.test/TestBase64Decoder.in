@@ -1,4 +1,4 @@
-argument-1: string:I\_love\_squirrels!
-result: string:SSBsb3ZlIHNxdWlycmVscyE=
+argument-1: string:SSBsb3ZlIHNxdWlycmVscyE=
+result: string:I\_love\_squirrels!
 thrown: NoExceptionThrown
 
