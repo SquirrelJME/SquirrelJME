@@ -85,7 +85,7 @@ public class StringReader
 		int max = Math.min(__l, left),
 			limit = at + max;
 		for (int o = __o; at < limit; at++, o++)
-			__c[o] = string.charAt(o);
+			__c[o] = string.charAt(at);
 		
 		// Set position for next time
 		this._at = at;
