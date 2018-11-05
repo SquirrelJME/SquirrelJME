@@ -11,6 +11,7 @@
 package cc.squirreljme.springcoat.vm;
 
 import cc.squirreljme.runtime.cldc.asm.TaskAccess;
+import java.io.PrintStream;
 
 /**
  * This represents a task which can be run.
@@ -67,10 +68,24 @@ public final class SpringTask
 			this._exitcode = e.code();
 		}
 		
-		// Ignore these exceptions, just fatal exit
-		catch (SpringFatalException e)
+		// Any other exception is fatal and the task must be made to exit
+		// with the error code otherwise the VM will stick trying to wait
+		// to exit
+		catch (RuntimeException|Error e)
 		{
 			this._exitcode = TaskAccess.EXIT_CODE_FATAL_EXCEPTION;
+			
+			PrintStream err = System.err;
+			
+			err.println("****************************");
+			
+			// Print the real stack trace
+			err.println("*** EXTERNAL STACK TRACE ***");
+			e.printStackTrace(err);
+			err.println();
+			
+			err.println("****************************");
+			
 		}
 	}
 }
