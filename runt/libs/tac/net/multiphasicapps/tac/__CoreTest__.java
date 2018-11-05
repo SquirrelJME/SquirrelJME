@@ -834,7 +834,7 @@ abstract class __CoreTest__
 			
 			// Character is out of range?
 			if (c >= 0x7F)
-				sb.append(String.format("\\@%04x", c));
+				sb.append(String.format("\\@%04x", (int)c));
 			
 			// Append printable
 			else
