@@ -1,0 +1,29 @@
+# 2018/11/04
+
+## 08:22
+
+Cool! So floating point random works and it passes at least for me. So I guess
+the 1 ulp being away for log is not too bad a concern for now. Will need to
+figure that out sometime. Also there is another thing to add, SquirrelJME now
+has a sister project <https://github.com/meepingsnesroms/libretro-palmm515emu>
+which is a Palm m515 Emulator which is pretty cool. So we will both release on
+Christmas what we have. I should probably have something runnable and such,
+perhaps also have some kind of graphical thing I can do as well. I should
+probably by then get a better implementation of primitive arrays and such as
+well. I will need that for LCDUI framebuffer if I go there for that.
+
+## 10:13
+
+I think for debug messages I am going to need a flag to determine if something
+came from the host VM or the guest VM.
+
+## 11:49
+
+Okay so accessing the manifests and such in the suite takes forever because the
+resources need to be read and handled each time. A longer lived cache would be
+better for this. Honestly if a `Suite` is not reference anymore that stuff
+could be cleared. Otherwise it is very slow.
+
+## 22:02
+
+19 minutes 46 seconds to run everything.
