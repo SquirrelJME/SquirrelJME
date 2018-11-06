@@ -260,7 +260,7 @@ public class Arrays
 	/**
 	 * Returns a new copy of the given array of the given length.
 	 *
-	 * @param __a The array to copy.
+	 * @param __src The array to copy.
 	 * @param __newlen The new length of the array.
 	 * @throws NegativeArraySizeException If the new length is negative.
 	 * @throws NullPointerException On null arguments.
@@ -281,39 +281,172 @@ public class Arrays
 		return rv;
 	}
 	
-	public static short[] copyOf(short[] __a, int __b)
+	/**
+	 * Returns a new copy of the given array of the given length.
+	 *
+	 * @param __src The array to copy.
+	 * @param __newlen The new length of the array.
+	 * @throws NegativeArraySizeException If the new length is negative.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/06
+	 */
+	public static short[] copyOf(short[] __src, int __newlen)
+		throws NegativeArraySizeException, NullPointerException
 	{
-		throw new todo.TODO();
+		if (__src == null)
+			throw new NullPointerException("NARG");
+		if (__newlen < 0)
+			throw new NegativeArraySizeException("NASE");
+		
+		short[] rv = new short[__newlen];
+		for (int i = 0, n = Math.min(__newlen, __src.length); i < n; i++)
+			rv[i] = __src[i];
+		
+		return rv;
 	}
 	
-	public static int[] copyOf(int[] __a, int __b)
+	/**
+	 * Returns a new copy of the given array of the given length.
+	 *
+	 * @param __src The array to copy.
+	 * @param __newlen The new length of the array.
+	 * @throws NegativeArraySizeException If the new length is negative.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/06
+	 */
+	public static int[] copyOf(int[] __src, int __newlen)
+		throws NegativeArraySizeException, NullPointerException
 	{
-		throw new todo.TODO();
+		if (__src == null)
+			throw new NullPointerException("NARG");
+		if (__newlen < 0)
+			throw new NegativeArraySizeException("NASE");
+		
+		int[] rv = new int[__newlen];
+		for (int i = 0, n = Math.min(__newlen, __src.length); i < n; i++)
+			rv[i] = __src[i];
+		
+		return rv;
 	}
 	
-	public static long[] copyOf(long[] __a, int __b)
+	/**
+	 * Returns a new copy of the given array of the given length.
+	 *
+	 * @param __src The array to copy.
+	 * @param __newlen The new length of the array.
+	 * @throws NegativeArraySizeException If the new length is negative.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/06
+	 */
+	public static long[] copyOf(long[] __src, int __newlen)
+		throws NegativeArraySizeException, NullPointerException
 	{
-		throw new todo.TODO();
+		if (__src == null)
+			throw new NullPointerException("NARG");
+		if (__newlen < 0)
+			throw new NegativeArraySizeException("NASE");
+		
+		long[] rv = new long[__newlen];
+		for (int i = 0, n = Math.min(__newlen, __src.length); i < n; i++)
+			rv[i] = __src[i];
+		
+		return rv;
 	}
 	
-	public static char[] copyOf(char[] __a, int __b)
+	/**
+	 * Returns a new copy of the given array of the given length.
+	 *
+	 * @param __src The array to copy.
+	 * @param __newlen The new length of the array.
+	 * @throws NegativeArraySizeException If the new length is negative.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/06
+	 */
+	public static char[] copyOf(char[] __src, int __newlen)
+		throws NegativeArraySizeException, NullPointerException
 	{
-		throw new todo.TODO();
+		if (__src == null)
+			throw new NullPointerException("NARG");
+		if (__newlen < 0)
+			throw new NegativeArraySizeException("NASE");
+		
+		char[] rv = new char[__newlen];
+		for (int i = 0, n = Math.min(__newlen, __src.length); i < n; i++)
+			rv[i] = __src[i];
+		
+		return rv;
 	}
 	
-	public static float[] copyOf(float[] __a, int __b)
+	/**
+	 * Returns a new copy of the given array of the given length.
+	 *
+	 * @param __src The array to copy.
+	 * @param __newlen The new length of the array.
+	 * @throws NegativeArraySizeException If the new length is negative.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/06
+	 */
+	public static float[] copyOf(float[] __src, int __newlen)
+		throws NegativeArraySizeException, NullPointerException
 	{
-		throw new todo.TODO();
+		if (__src == null)
+			throw new NullPointerException("NARG");
+		if (__newlen < 0)
+			throw new NegativeArraySizeException("NASE");
+		
+		float[] rv = new float[__newlen];
+		for (int i = 0, n = Math.min(__newlen, __src.length); i < n; i++)
+			rv[i] = __src[i];
+		
+		return rv;
 	}
 	
-	public static double[] copyOf(double[] __a, int __b)
+	/**
+	 * Returns a new copy of the given array of the given length.
+	 *
+	 * @param __src The array to copy.
+	 * @param __newlen The new length of the array.
+	 * @throws NegativeArraySizeException If the new length is negative.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/06
+	 */
+	public static double[] copyOf(double[] __src, int __newlen)
+		throws NegativeArraySizeException, NullPointerException
 	{
-		throw new todo.TODO();
+		if (__src == null)
+			throw new NullPointerException("NARG");
+		if (__newlen < 0)
+			throw new NegativeArraySizeException("NASE");
+		
+		double[] rv = new double[__newlen];
+		for (int i = 0, n = Math.min(__newlen, __src.length); i < n; i++)
+			rv[i] = __src[i];
+		
+		return rv;
 	}
 	
-	public static boolean[] copyOf(boolean[] __a, int __b)
+	/**
+	 * Returns a new copy of the given array of the given length.
+	 *
+	 * @param __src The array to copy.
+	 * @param __newlen The new length of the array.
+	 * @throws NegativeArraySizeException If the new length is negative.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/06
+	 */
+	public static boolean[] copyOf(boolean[] __src, int __newlen)
+		throws NegativeArraySizeException, NullPointerException
 	{
-		throw new todo.TODO();
+		if (__src == null)
+			throw new NullPointerException("NARG");
+		if (__newlen < 0)
+			throw new NegativeArraySizeException("NASE");
+		
+		boolean[] rv = new boolean[__newlen];
+		for (int i = 0, n = Math.min(__newlen, __src.length); i < n; i++)
+			rv[i] = __src[i];
+		
+		return rv;
 	}
 	
 	public static boolean equals(long[] __a, long[] __b)

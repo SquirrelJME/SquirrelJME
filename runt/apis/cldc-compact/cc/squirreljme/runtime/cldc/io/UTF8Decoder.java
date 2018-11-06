@@ -20,6 +20,16 @@ public final class UTF8Decoder
 {
 	/**
 	 * {@inheritDoc}
+	 * @since 2018/11/06
+	 */
+	@Override
+	public final double averageSequenceLength()
+	{
+		return 1.3333;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/10/13
 	 */
 	@Override
@@ -36,7 +46,7 @@ public final class UTF8Decoder
 			return -1;
 		
 		// Determine the length of the sequence
-		byte a = __b[0];
+		byte a = __b[__o];
 		int seqlen = 
 			(((a & 0b1000_0000) == 0b0000_0000) ? 1 :
 			(((a & 0b1110_0000) == 0b1100_0000) ? 2 :

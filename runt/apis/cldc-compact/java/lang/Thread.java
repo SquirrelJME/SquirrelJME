@@ -201,7 +201,7 @@ public class Thread
 	public static void sleep(long __ms, int __ns)
 		throws IllegalArgumentException, InterruptedException
 	{
-		// {@squirreljme.error ZZ33 Invalid sleep arguments.
+		// {@squirreljme.error ZZ33 Invalid sleep arguments.}
 		if (__ms < 0 || __ns < 0 || __ns > 999999)
 			throw new IllegalArgumentException("ZZ33");
 		

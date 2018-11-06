@@ -51,12 +51,11 @@ public class ByteArrayOutputStream
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error ZZ34 Cannot initialize output stream using a
-		// negative capacity.
+		// negative capacity.}
 		if (__cap < 0)
 			throw new IllegalArgumentException("ZZ34");
 		
 		this.buf = new byte[__cap];
-		this.count = __cap;
 	}
 	
 	/**
@@ -167,14 +166,14 @@ public class ByteArrayOutputStream
 		{
 			// Reallocate buffer if it cannot be store data
 			int endcount = count + __l;
-			if (endcount > bufn)
+			if (endcount > buf.length)
 				this.buf = (buf = Arrays.copyOf(buf, endcount + _CAPACITY));
 			
 			// Write bytes
 			for (int i = 0; i < __l; i++)
 				buf[count++] = __b[__o++];
 			
-			this.count = count;
+			this.count = endcount;
 		}
 	}
 	
