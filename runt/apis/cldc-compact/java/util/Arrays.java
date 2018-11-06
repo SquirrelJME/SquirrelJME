@@ -257,9 +257,28 @@ public class Arrays
 		return (T[])rv;
 	}
 	
-	public static byte[] copyOf(byte[] __a, int __b)
+	/**
+	 * Returns a new copy of the given array of the given length.
+	 *
+	 * @param __a The array to copy.
+	 * @param __newlen The new length of the array.
+	 * @throws NegativeArraySizeException If the new length is negative.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/06
+	 */
+	public static byte[] copyOf(byte[] __src, int __newlen)
+		throws NegativeArraySizeException, NullPointerException
 	{
-		throw new todo.TODO();
+		if (__src == null)
+			throw new NullPointerException("NARG");
+		if (__newlen < 0)
+			throw new NegativeArraySizeException("NASE");
+		
+		byte[] rv = new byte[__newlen];
+		for (int i = 0, n = Math.min(__newlen, rv.length); i < n; i++)
+			rv[i] = __src[i];
+		
+		return rv;
 	}
 	
 	public static short[] copyOf(short[] __a, int __b)
