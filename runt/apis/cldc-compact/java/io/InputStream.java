@@ -22,6 +22,14 @@ public abstract class InputStream
 	{
 	}
 	
+	/**
+	 * Reads a single byte from the input stream.
+	 *
+	 * @return The read unsigned byte value ({@code 0-255}) or {@code -1} if
+	 * the end of stream has been reached.
+	 * @throws IOException On read errors.
+	 * @since 2018/11/06
+	 */
 	public abstract int read()
 		throws IOException;
 	
@@ -47,16 +55,83 @@ public abstract class InputStream
 		throw new todo.TODO();
 	}
 	
-	public int read(byte[] __a)
-		throws IOException
+	/**
+	 * Reads multiple bytes and stores them into the array.
+	 *
+	 * @param __b The destination array.
+	 * @return The number of bytes read or {@code -1} if the end of stream has
+	 * been reached.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/06
+	 */
+	public int read(byte[] __b)
+		throws IOException, NullPointerException
 	{
-		throw new todo.TODO();
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		// No bytes to read?
+		int n = __b.length;
+		if (n <= 0)
+			return 0;
+		
+		// Read bytes into the array
+		for (int i = 0, o = 0; i < n; i++)
+		{
+			int rv = this.read();
+			
+			// EOF?
+			if (rv < 0)
+				return (i == 0 ? -1 : i);
+			
+			__b[o++] = (byte)rv;
+		}
+		
+		// Read all bytes
+		return n;
 	}
 	
-	public int read(byte[] __a, int __b, int __c)
-		throws IOException
+	/**
+	 * Reads multiple bytes and stores them into the array.
+	 *
+	 * @param __b The destination array.
+	 * @param __o The offset into the array.
+	 * @param __l The number of bytes to read.
+	 * @return The number of bytes read or {@code -1} if the end of stream has
+	 * been reached.
+	 * @throws IndexOutOfBoundsException If the offset and/or length 
+	 * negative or exceed the array bounds.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/06
+	 */
+	public int read(byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, IOException, NullPointerException
 	{
-		throw new todo.TODO();
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// No bytes to read?
+		if (__l <= 0)
+			return 0;
+		
+		// Read bytes into the array
+		for (int i = 0; i < __l; i++)
+		{
+			int rv = this.read();
+			
+			// EOF?
+			if (rv < 0)
+				return (i == 0 ? -1 : i);
+			
+			__b[__o++] = (byte)rv;
+		}
+		
+		// Read all bytes
+		return __l;
 	}
 	
 	public void reset()

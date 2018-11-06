@@ -275,7 +275,7 @@ public class Arrays
 			throw new NegativeArraySizeException("NASE");
 		
 		byte[] rv = new byte[__newlen];
-		for (int i = 0, n = Math.min(__newlen, rv.length); i < n; i++)
+		for (int i = 0, n = Math.min(__newlen, __src.length); i < n; i++)
 			rv[i] = __src[i];
 		
 		return rv;
