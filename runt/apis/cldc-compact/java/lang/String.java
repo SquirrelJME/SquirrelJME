@@ -14,6 +14,8 @@ import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.annotation.ProgrammerTip;
 import cc.squirreljme.runtime.cldc.i18n.DefaultLocale;
 import cc.squirreljme.runtime.cldc.i18n.Locale;
+import cc.squirreljme.runtime.cldc.io.CodecFactory;
+import cc.squirreljme.runtime.cldc.io.Decoder;
 import cc.squirreljme.runtime.cldc.string.BasicSequence;
 import cc.squirreljme.runtime.cldc.string.CharArraySequence;
 import cc.squirreljme.runtime.cldc.string.CharSequenceSequence;
@@ -22,6 +24,7 @@ import cc.squirreljme.runtime.cldc.string.SubBasicSequenceSequence;
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Formatter;
 import java.util.Map;
@@ -134,26 +137,71 @@ public final class String
 		this._sequence = new CharArraySequence(copy);
 	}
 	
-	public String(byte[] __a, int __o, int __l, String __e)
+	/**
+	 * Decodes the given bytes to a string using the specified encoding.
+	 *
+	 * @param __b The input bytes to decode.
+	 * @param __o The offset into the array.
+	 * @param __l The number of bytes to code.
+	 * @param __e The encoding to use when decoding the bytes.
+	 * @throws IndexOutOfBoundsException If offset and/or length are negative
+	 * or exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @throws UnsupportedEncodingException If the encoding is not supported.
+	 * @since 2018/11/06
+	 */
+	public String(byte[] __b, int __o, int __l, String __e)
+		throws IndexOutOfBoundsException, NullPointerException,
+			UnsupportedEncodingException
+	{
+		this(__b, __o, __l, CodecFactory.decoder(__e));
+	}
+	
+	/**
+	 * Decodes the given bytes to a string using the specified encoding.
+	 *
+	 * @param __b The input bytes to decode.
+	 * @param __e The encoding to use when decoding the bytes.
+	 * @throws NullPointerException On null arguments.
+	 * @throws UnsupportedEncodingException If the encoding is not supported.
+	 * @since 2018/11/06
+	 */
+	public String(byte[] __b, String __e)
 		throws NullPointerException, UnsupportedEncodingException
 	{
-		throw new todo.TODO();
+		this(__b, 0, __b.length, CodecFactory.decoder(__e));
 	}
 	
-	public String(byte[] __a, String __e)
-		throws NullPointerException, UnsupportedEncodingException
+	/**
+	 * Decodes the given bytes to a string using the default encoding.
+	 *
+	 * @param __b The input bytes to decode.
+	 * @param __o The offset into the array.
+	 * @param __l The number of bytes to code.
+	 * @throws IndexOutOfBoundsException If offset and/or length are negative
+	 * or exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @throws UnsupportedEncodingException If the encoding is not supported.
+	 * @since 2018/11/06
+	 */
+	public String(byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
 	{
-		this(__a, 0, __a.length, __e);
+		this(__b, __o, __l, CodecFactory.defaultDecoder());
 	}
 	
-	public String(byte[] __a, int __o, int __l)
+	/**
+	 * Decodes the given bytes to a string using the specified encoding.
+	 *
+	 * @param __b The input bytes to decode.
+	 * @param __e The encoding to use when decoding the bytes.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/06
+	 */
+	public String(byte[] __b)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
-	}
-	
-	public String(byte[] __a)
-	{
-		throw new todo.TODO();
+		this(__b, 0, __b.length, CodecFactory.defaultDecoder());
 	}
 	
 	public String(StringBuffer __a)
@@ -166,6 +214,71 @@ public final class String
 		throws NullPointerException
 	{
 		this(__a.toString());
+	}
+	
+	/**
+	 * Decodes the given bytes to a string using the specified decoder.
+	 *
+	 * @param __b The input bytes to decode.
+	 * @param __o The offset into the array.
+	 * @param __l The number of bytes to code.
+	 * @param __dec The decoder to use for the input bytes.
+	 * @throws IndexOutOfBoundsException If offset and/or length are negative
+	 * or exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/06
+	 */
+	private String(byte[] __b, int __o, int __l, Decoder __dec)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		if (__b == null || __dec == null)
+			throw new NullPointerException("NARG");
+		int bn = __b.length;
+		if (__o < 0 || __l < 0 || (__o + __l) > bn)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Setup a temporary character array with average sequence length to
+		// hopefully have enough room to store the decoded characters
+		int cap = (int)(__l * __dec.averageSequenceLength()),
+			at = 0;
+		char[] out = new char[cap];
+		
+		// Start decoding input sequences
+		for (int i = __o, e = i + __l; i < e;)
+		{
+			// Decode sequence (the decoded char is in the low 16-bits)
+			int left = e - i,
+				rc = __dec.decode(__b, i, left);
+			
+			// If there is not enough room to decode a sequence then store the
+			// replacement character
+			char ch;
+			if (rc < 0)
+			{
+				ch = 0xFFFD;
+				i = e;
+			}
+			
+			// The lower 16-bits contains the character, the upper bytes
+			// contains the number of characters read
+			else
+			{
+				ch = (char)rc;
+				i += (rc >> 16);
+			}
+			
+			// Need to re-allocate?
+			if (at >= cap)
+				out = Arrays.copyOf(out, (cap += left));
+			
+			// Store
+			out[at++] = ch;
+		}
+		
+		// Just allocate an exact buffer since the estimate could have been off
+		if (at != cap)
+			out = Arrays.copyOf(out, at);
+		this._sequence = new CharArraySequence(out);
 	}
 	
 	/**

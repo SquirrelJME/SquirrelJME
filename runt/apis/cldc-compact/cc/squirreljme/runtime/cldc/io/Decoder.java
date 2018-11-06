@@ -20,6 +20,15 @@ public interface Decoder
 	extends NamedCodec
 {
 	/**
+	 * The average sequence length used for characters, used to estimate how
+	 * big of an array to allocate for characters.
+	 *
+	 * @return The average sequence length.
+	 * @since 2018/11/06
+	 */
+	public abstract double averageSequenceLength();
+	
+	/**
 	 * Decodes the input bytes.
 	 *
 	 * @param __b The input byte array.
