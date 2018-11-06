@@ -367,7 +367,23 @@ public final class Base64Decoder
 	 * Decodes the input string to byte values.
 	 *
 	 * @param __in The string to decode.
-	 * @param __ab The alphabet to use. 
+	 * @param __ab The alphabet to use.
+	 * @return The resulting byte array.
+	 * @throws IllegalArgumentException If the input string is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/06
+	 */
+	public static final byte[] decode(String __in, Base64Alphabet __ab)
+		throws IllegalArgumentException, NullPointerException
+	{
+		return Base64Decoder.decode(__in, __ab, false);
+	}
+	
+	/**
+	 * Decodes the input string to byte values.
+	 *
+	 * @param __in The string to decode.
+	 * @param __ab The alphabet to use.
 	 * @param __ip Is padding ignored?
 	 * @return The resulting byte array.
 	 * @throws IllegalArgumentException If the input string is not valid.

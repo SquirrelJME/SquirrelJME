@@ -29,8 +29,8 @@ public class TestBase64Decoder
 	public String test(String __i)
 		throws Throwable
 	{
-		return new String(Base64Decoder.decode(__i, Base64Alphabet.BASIC,
-			true), "utf-8");
+		return new String(Base64Decoder.decode(__i, Base64Alphabet.BASIC),
+			"utf-8");
 	}
 }
 
