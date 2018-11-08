@@ -1,0 +1,9 @@
+# 2018/11/07
+
+## 07:09
+
+So having things work is pretty exciting to say the least. It would be nice
+to have a super slow LCDUI technical demo running. Although this time around
+since I have seen how simplicity has benefited the existing stuff. The
+simplicity not having the super complex services code and such. I think it
+just ends up being far better to say the least.
