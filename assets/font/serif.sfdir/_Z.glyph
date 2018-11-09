@@ -2,5 +2,6 @@ StartChar: Z
 Encoding: 90 90 90
 Width: 1000
 VWidth: 0
+Flags: W
 LayerCount: 2
 EndChar
