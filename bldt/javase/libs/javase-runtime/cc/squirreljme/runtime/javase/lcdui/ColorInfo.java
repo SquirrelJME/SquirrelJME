@@ -179,8 +179,6 @@ public final class ColorInfo
 		if (__bi == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
-		/*
 		DataBuffer db = __bi.getRaster().getDataBuffer();
 		PixelFormat pf;
 		switch ((pf = ColorInfo.PIXEL_FORMAT))
@@ -190,23 +188,22 @@ public final class ColorInfo
 			case BYTE_INDEXED4:
 			case BYTE_INDEXED8:
 			case BYTE_RGB332:
-				return new LocalByteArray(((DataBufferByte)db).getData());
+				return ((DataBufferByte)db).getData();
 				
 			case SHORT_INDEXED16:
 			case SHORT_ARGB4444:
 			case SHORT_RGB565:
-				return new LocalShortArray(((DataBufferShort)db).getData());
+				return ((DataBufferShort)db).getData();
 				
 			case INTEGER_ARGB8888:
 			case INTEGER_RGB888:
-				return new LocalIntegerArray(((DataBufferInt)db).getData());
+				return ((DataBufferInt)db).getData();
 			
 				// {@squirreljme.error AF0a Unsupported pixel format.
 				// (The pixel format to use)}
 			default:
 				throw new RuntimeException(String.format("AF0a %s", pf));
 		}
-		*/
 	}
 	
 	/**
@@ -220,8 +217,6 @@ public final class ColorInfo
 	public static Object getPalette(BufferedImage __bi)
 		throws NullPointerException
 	{
-		throw new todo.TODO();
-		/*
 		if (__bi == null)
 			throw new NullPointerException("NARG");
 		
@@ -237,7 +232,7 @@ public final class ColorInfo
 				int n = model.getNumColorComponents();
 				int[] rv = new int[n];
 				model.getRGBs(rv);
-				return new LocalIntegerArray(rv);
+				return rv;
 				
 			case BYTE_RGB332:
 			case SHORT_ARGB4444:
@@ -251,7 +246,6 @@ public final class ColorInfo
 			default:
 				throw new RuntimeException(String.format("AF0b %s", pf));
 		}
-		*/
 	}
 }
 
