@@ -51,7 +51,7 @@ done
 for __file in "/tmp/$$/"*.bdf
 do
 	# Get base name
-	__base="$(basename -- "$__file")"
+	__base="$(basename -- "$__file" .bdf)"
 	
 	# Convert first
 	echo "Converting $__base!"
