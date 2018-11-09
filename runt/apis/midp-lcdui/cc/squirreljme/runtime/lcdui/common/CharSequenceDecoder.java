@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.lcdui.font;
+package cc.squirreljme.runtime.lcdui.common;
 
 /**
  * This class is used to decode character sequences so that it is known which

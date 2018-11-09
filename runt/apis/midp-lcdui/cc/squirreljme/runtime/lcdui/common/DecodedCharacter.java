@@ -8,23 +8,28 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.lcdui.ui;
+package cc.squirreljme.runtime.lcdui.common;
 
 /**
- * This represents a form which will consist of various input items as they
- * are used and needed.
+ * This contains structured information on a character which has been
+ * decoded. This is used for font rendering.
  *
- * @since 2018/04/04
+ * @since 2017/10/24
  */
-public interface UiForm
-	extends UiDisplayable, UiInterface, UiTabbedDisplayable
+public final class DecodedCharacter
 {
+	/** The primary and visible codepoint. */
+	public final int codepoint;
+	
 	/**
-	 * Returns the items that represent this form.
+	 * Initializes the decoded character.
 	 *
-	 * @return The items representing the form.
-	 * @since 2018/04/04
+	 * @param __cp The code point of the character.
+	 * @since 2017/10/24
 	 */
-	public abstract UiFormItems getFormItems();
+	public DecodedCharacter(int __cp)
+	{
+		this.codepoint = __cp;
+	}
 }
 
