@@ -2,5 +2,6 @@ StartChar: cent
 Encoding: 162 162 162
 Width: 1000
 VWidth: 0
+Flags: W
 LayerCount: 2
 EndChar

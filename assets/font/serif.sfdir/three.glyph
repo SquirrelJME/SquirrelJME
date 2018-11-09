@@ -2,5 +2,6 @@ StartChar: three
 Encoding: 51 51 51
 Width: 1000
 VWidth: 0
+Flags: W
 LayerCount: 2
 EndChar

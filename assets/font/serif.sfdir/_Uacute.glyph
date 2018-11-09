@@ -2,5 +2,6 @@ StartChar: Uacute
 Encoding: 218 218 218
 Width: 1000
 VWidth: 0
+Flags: W
 LayerCount: 2
 EndChar

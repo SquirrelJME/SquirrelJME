@@ -2,5 +2,6 @@ StartChar: section
 Encoding: 167 167 167
 Width: 1000
 VWidth: 0
+Flags: W
 LayerCount: 2
 EndChar
