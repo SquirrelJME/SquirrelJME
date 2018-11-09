@@ -10,11 +10,7 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.runtime.lcdui.LcdFunction;
-import cc.squirreljme.runtime.lcdui.LcdServiceCall;
-
 public class Notification
-	extends __Collectable__
 {
 	/** Cache of the used label. */
 	private volatile String _label;

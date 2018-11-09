@@ -10,8 +10,6 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.runtime.lcdui.LcdFunction;
-import cc.squirreljme.runtime.lcdui.LcdServiceCall;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 
 /**
@@ -24,7 +22,6 @@ import cc.squirreljme.runtime.lcdui.SerializedEvent;
  * @since 2018/03/26
  */
 public class Ticker
-	extends __Collectable__
 {
 	/**
 	 * Initializes the ticker with the given string.

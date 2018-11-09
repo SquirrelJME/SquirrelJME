@@ -10,8 +10,6 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.runtime.lcdui.LcdFunction;
-import cc.squirreljme.runtime.lcdui.LcdServiceCall;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 
 /**
@@ -20,7 +18,6 @@ import cc.squirreljme.runtime.lcdui.SerializedEvent;
  * @since 2018/03/23
  */
 abstract class __Widget__
-	extends __Collectable__
 {
 	/** Is this being shown right now? */
 	boolean _isshown;
@@ -35,17 +32,6 @@ abstract class __Widget__
 	__Widget__()
 	{
 		super();
-	}
-	
-	/**
-	 * Initializes the widget using the given handle.
-	 *
-	 * @param __h The handle to use.
-	 * @since 2018/03/23
-	 */
-	__Widget__(int __h)
-	{
-		super(__h);
 	}
 	
 	/**
