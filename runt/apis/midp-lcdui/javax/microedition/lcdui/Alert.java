@@ -10,9 +10,6 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.runtime.lcdui.LcdFunction;
-import cc.squirreljme.runtime.lcdui.LcdServiceCall;
-
 public class Alert
 	extends Screen
 {

@@ -11,8 +11,6 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.lcdui.event.EventType;
-import cc.squirreljme.runtime.lcdui.LcdFunction;
-import cc.squirreljme.runtime.lcdui.LcdServiceCall;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;

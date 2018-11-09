@@ -12,9 +12,6 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.lcdui.DisplayOrientation;
 import cc.squirreljme.runtime.lcdui.DisplayState;
-import cc.squirreljme.runtime.lcdui.LcdFunction;
-import cc.squirreljme.runtime.lcdui.LcdServiceCall;
-import cc.squirreljme.runtime.lcdui.LcdWidgetOwnedException;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -206,12 +203,10 @@ public class Display
 	/**
 	 * Initializes the display instance.
 	 *
-	 * @param __handle The display handle.
 	 * @since 2018/03/16
 	 */
-	Display(int __handle)
+	Display()
 	{
-		super(__handle);
 	}
 	
 	public void callSerially(Runnable __a)
@@ -638,6 +633,8 @@ public class Display
 			throw new IllegalStateException("EB25");
 		
 		// Perform call on this display
+		throw new todo.TODO();
+		/*
 		try
 		{
 			// Set widgets
@@ -647,7 +644,7 @@ public class Display
 			LcdServiceCall.<VoidType>call(VoidType.class,
 				LcdFunction.WIDGET_ALERT_SHOW, this._handle,
 				__show._handle, __exit._handle);
-			*/
+			* /
 			
 			// Hold onto these so they do not get GCed
 			this._heldcurrent = __show;
@@ -659,7 +656,7 @@ public class Display
 		catch (LcdWidgetOwnedException e)
 		{
 			throw new IllegalStateException("EB25", e);
-		}
+		}*/
 	}
 	
 	/**
@@ -692,6 +689,8 @@ public class Display
 			return;*/
 		}
 		
+		throw new todo.TODO();
+		/*
 		// Perform call on this display
 		try
 		{
@@ -702,10 +701,10 @@ public class Display
 			LcdServiceCall.<VoidType>call(VoidType.class,
 				LcdFunction.WIDGET_CLEAR_AND_SET, this._handle,
 				__show._handle);
-			*/
 				
 			// Hold onto this so they do not get GCed
 			this._heldcurrent = __show;
+			* /
 		}
 		
 		// {@squirreljme.error EB27 Could not set the displayable to be
@@ -714,6 +713,7 @@ public class Display
 		{
 			throw new IllegalStateException("EB27", e);
 		}
+		*/
 	}
 	
 	public void setCurrentItem(Item __a)
@@ -1031,6 +1031,8 @@ public class Display
 	 */
 	static Display __mapDisplay(int __did)
 	{
+		throw new todo.TODO();
+		/*
 		// Displays must be premapped before they can be discovered
 		Map<Integer, Display> displays = Display._DISPLAYS;
 		synchronized (displays)
@@ -1048,7 +1050,7 @@ public class Display
 				displays.put(k, (rv = new Display(__did)));
 			
 			return rv;
-		}
+		}*/
 	}
 }
 

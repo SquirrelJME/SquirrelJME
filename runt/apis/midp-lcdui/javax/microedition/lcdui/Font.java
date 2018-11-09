@@ -10,8 +10,6 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.runtime.lcdui.font.FontHandle;
-import cc.squirreljme.runtime.lcdui.font.FontManager;
 import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
@@ -26,7 +24,6 @@ import java.util.List;
  * @since 2017/05/25
  */
 public final class Font
-	extends __Collectable__
 {
 	/** The monospace font. */
 	public static final int FACE_MONOSPACE =
@@ -84,23 +81,13 @@ public final class Font
 	public static final int STYLE_UNDERLINED =
 		4;
 	
-	/** The handle to the native font. */
-	private final FontHandle _handle;
-	
 	/**
-	 * Initializes the font with the given handle.
+	 * Initializes the font.
 	 *
-	 * @param __handle The handle of the native font to refer to.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2017/10/20
 	 */
-	private Font(FontHandle __handle)
-		throws NullPointerException
+	private Font()
 	{
-		if (__handle == null)
-			throw new NullPointerException("NARG");
-		
-		this._handle = __handle;
 	}
 	
 	/**
@@ -112,7 +99,7 @@ public final class Font
 	 */
 	public int charWidth(char __c)
 	{
-		return this._handle.codepointWidth(__c, -1);
+		throw new todo.TODO();
 	}
 	
 	public int charsWidth(char[] __a, int __b, int __c)
@@ -145,7 +132,7 @@ public final class Font
 	 */
 	public int getAscent()
 	{
-		return this._handle.getAscent();
+		throw new todo.TODO();
 	}
 	
 	public int getBaselinePosition()
@@ -162,7 +149,7 @@ public final class Font
 	 */
 	public int getDescent()
 	{
-		return this._handle.getDescent();
+		throw new todo.TODO();
 	}
 	
 	public int getFace()
@@ -184,7 +171,7 @@ public final class Font
 	 */
 	public int getHeight()
 	{
-		return getLeading() + getAscent() + getDescent();
+		return this.getLeading() + this.getAscent() + this.getDescent();
 	}
 	
 	/**
@@ -198,7 +185,7 @@ public final class Font
 	 */
 	public int getLeading()
 	{
-		return this._handle.getLeading();
+		throw new todo.TODO();
 	}
 	
 	public int getMaxAscent()
@@ -233,7 +220,7 @@ public final class Font
 	@Override
 	public int hashCode()
 	{
-		return this._handle.hashCode();
+		throw new todo.TODO();
 	}
 	
 	public boolean isBold()
@@ -270,7 +257,7 @@ public final class Font
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		return substringWidth(__s, 0, __s.length());
+		return this.substringWidth(__s, 0, __s.length());
 	}
 	
 	/**
@@ -293,7 +280,10 @@ public final class Font
 		
 		try
 		{
+			throw new todo.TODO();
+			/*
 			return this._handle.sequencePixelWidth(__s, __o, __l);
+			*/
 		}
 		
 		// For compatibility just wrap out of bounds, since it is
@@ -344,7 +334,7 @@ public final class Font
 	 */
 	public static Font getDefaultFont()
 	{
-		return getFont(0, 0, 0);
+		return Font.getFont(0, 0, 0);
 	}
 	
 	public static Font getFont(int __a)

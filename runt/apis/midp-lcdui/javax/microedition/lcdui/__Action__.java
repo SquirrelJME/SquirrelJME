@@ -10,9 +10,6 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.runtime.lcdui.LcdFunction;
-import cc.squirreljme.runtime.lcdui.LcdServiceCall;
-
 /**
  * This represents the base for an action which may be given a label, an
  * image, and could be enabled or disabled.
@@ -20,7 +17,6 @@ import cc.squirreljme.runtime.lcdui.LcdServiceCall;
  * @since 2018/03/31
  */
 abstract class __Action__
-	extends __Collectable__
 {
 	/**
 	 * This is called when the enabled state of the parent has changed.
