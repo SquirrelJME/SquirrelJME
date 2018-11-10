@@ -138,11 +138,11 @@ public final class ImportStatementSyntax
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AQ3p Expected "import" when parsing an import
+		// {@squirreljme.error AQ1z Expected "import" when parsing an import
 		// statement.}
 		Token token = __in.next();
 		if (token.type() != TokenType.KEYWORD_IMPORT)
-			throw new SyntaxParseException(token, "AQ3p");
+			throw new SyntaxParseException(token, "AQ1z");
 		
 		// Is this static?
 		boolean isstatic;
@@ -150,22 +150,22 @@ public final class ImportStatementSyntax
 		if ((isstatic = (token.type() == TokenType.KEYWORD_STATIC)))
 			__in.next();
 		
-		// {@squirreljme.error AQ3q Expected identifier at start of import
+		// {@squirreljme.error AQ20 Expected identifier at start of import
 		// statement.}
 		token = __in.peek();
 		if (token.type() != TokenType.IDENTIFIER)
-			throw new SyntaxParseException(token, "AQ3q");
+			throw new SyntaxParseException(token, "AQ20");
 		
 		// Read identifier, due to the wildcard we cannot use
 		// QualifiedIdentifierSyntax because an identifier must follow the dot
 		StringBuilder sb = new StringBuilder();
 		for (;;)
 		{
-			// {@squirreljme.error AQ3r Expected identifier while parsing the
+			// {@squirreljme.error AQ21 Expected identifier while parsing the
 			// import statement.}
 			token = __in.next();
 			if (token.type() != TokenType.IDENTIFIER)
-				throw new SyntaxParseException(token, "AQ3r");
+				throw new SyntaxParseException(token, "AQ21");
 			
 			// Build
 			sb.append(token.characters());
@@ -185,11 +185,11 @@ public final class ImportStatementSyntax
 					// Consume it
 					__in.next();
 					
-					// {@squirreljme.error AQ3s Expected semicolon to follow
+					// {@squirreljme.error AQ22 Expected semicolon to follow
 					// the wildcard symbol in the import statement.}
 					token = __in.next();
 					if (token.type() != TokenType.SYMBOL_SEMICOLON)
-						throw new SyntaxParseException(token, "AQ3s");
+						throw new SyntaxParseException(token, "AQ22");
 					
 					// Add asterisk to make it a wildcard
 					sb.append("*");
@@ -201,10 +201,10 @@ public final class ImportStatementSyntax
 					sb.append("/");
 			}
 			
-			// {@squirreljme.error AQ3t Expected dot or semi-colon to follow
+			// {@squirreljme.error AQ23 Expected dot or semi-colon to follow
 			// the identifier in the import statement.}
 			else
-				throw new SyntaxParseException(token, "AQ3t");
+				throw new SyntaxParseException(token, "AQ23");
 		}
 		
 		// Attempt to parse binary name
@@ -214,11 +214,11 @@ public final class ImportStatementSyntax
 				new BinaryName(sb.toString()));
 		}
 		
-		// {@squirreljme.error AQ3u Parsed import declaration is not a valid
+		// {@squirreljme.error AQ24 Parsed import declaration is not a valid
 		// binary name.}
 		catch (InvalidClassFormatException e)
 		{
-			throw new SyntaxParseException(token, "AQ3u");
+			throw new SyntaxParseException(token, "AQ24");
 		}
 	}
 }

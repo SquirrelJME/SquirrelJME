@@ -69,11 +69,11 @@ public final class TypeParameters
 			{
 				params.add(tp);
 				
-				// {@squirreljme.error AQ5f Duplicate type parameter
+				// {@squirreljme.error AQ12 Duplicate type parameter
 				// identifier. (The identifier)}
 				TypeParameterSymbol i = tp.symbol();
 				if (idents.contains(i))
-					throw new StructureException(String.format("AQ5f %s", i));
+					throw new StructureException(String.format("AQ12 %s", i));
 				idents.add(i);
 			}
 		

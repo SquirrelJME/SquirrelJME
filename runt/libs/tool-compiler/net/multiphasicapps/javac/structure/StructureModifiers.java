@@ -63,9 +63,9 @@ public final class StructureModifiers
 			if (m == null)
 				throw new NullPointerException("NARG");
 			
-			// {@squirreljme.error AQ5h Duplicate modifier. (The modifier)}
+			// {@squirreljme.error AQ0y Duplicate modifier. (The modifier)}
 			if (rv.contains(m))
-				throw new StructureException(String.format("AQ5h %s", m));
+				throw new StructureException(String.format("AQ0y %s", m));
 			
 			rv.add(m);
 		}
@@ -307,9 +307,9 @@ public final class StructureModifiers
 				rv.add(got);
 			}
 			
-			// {@squirreljme.error AQ5i Unsupported modifier type. (The type)}
+			// {@squirreljme.error AQ0z Unsupported modifier type. (The type)}
 			else
-				throw new RuntimeException(String.format("AQ5i %s",
+				throw new RuntimeException(String.format("AQ0z %s",
 					mod.getClass()));
 		}
 		

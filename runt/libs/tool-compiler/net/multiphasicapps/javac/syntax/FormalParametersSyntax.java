@@ -141,11 +141,11 @@ public final class FormalParametersSyntax
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AQ43 Expected opening parenthesis when parsing
+		// {@squirreljme.error AQ1v Expected opening parenthesis when parsing
 		// formal parameters.}
 		Token token = __in.next();
 		if (token.type() != TokenType.SYMBOL_OPEN_PARENTHESIS)
-			throw new SyntaxParseException("AQ43");
+			throw new SyntaxParseException("AQ1v");
 		
 		// Parse each one
 		List<FormalParameterSyntax> rv = new ArrayList<>();
@@ -173,11 +173,11 @@ public final class FormalParametersSyntax
 			if ((isvariadic = (token.type() == TokenType.SYMBOL_ELLIPSES)))
 				__in.next();
 			
-			// {@squirreljme.error AQ45 Expected identifier for the parameter
+			// {@squirreljme.error AQ1w Expected identifier for the parameter
 			// name.}
 			token = __in.next();
 			if (token.type() != TokenType.IDENTIFIER)
-				throw new SyntaxParseException(token, "AQ45");
+				throw new SyntaxParseException(token, "AQ1w");
 			FieldName name = new FieldName(token.characters());
 			
 			// Add arrays accordingly
@@ -185,11 +185,11 @@ public final class FormalParametersSyntax
 			while ((token = __in.peek()).type() ==
 				TokenType.SYMBOL_OPEN_BRACKET)
 			{
-				// {@squirreljme.error AQ47 Expected closing bracket to follow
+				// {@squirreljme.error AQ1x Expected closing bracket to follow
 				// opening bracket for array declaration.}
 				__in.next();
 				if (__in.next().type() != TokenType.SYMBOL_CLOSED_BRACKET)
-					throw new SyntaxParseException(token, "AQ47");
+					throw new SyntaxParseException(token, "AQ1x");
 				
 				extradims++;
 			}
@@ -201,12 +201,12 @@ public final class FormalParametersSyntax
 			// Setup parameter
 			rv.add(new FormalParameterSyntax(mods, type, name));
 			
-			// {@squirreljme.error AQ46 Expected closing parenthesis to follow
+			// {@squirreljme.error AQ1y Expected closing parenthesis to follow
 			// variadic argument in formal parameter.}
 			token = __in.peek();
 			if (isvariadic && token.type() !=
 				TokenType.SYMBOL_CLOSED_PARENTHESIS)
-				throw new SyntaxParseException(token, "AQ46");
+				throw new SyntaxParseException(token, "AQ1y");
 			
 			// Consume comma
 			if (token.type() == TokenType.SYMBOL_COMMA)

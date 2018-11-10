@@ -55,16 +55,16 @@ public final class Structures
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AQ5c Structure has no symbol.}
+		// {@squirreljme.error AQ10 Structure has no symbol.}
 		StructureSymbol sym = __s.symbol();
 		if (sym == null)
-			throw new NullPointerException("AQ5c");
+			throw new NullPointerException("AQ10");
 		
-		// {@squirreljme.error AQ5d A structure already exists with the
+		// {@squirreljme.error AQ11 A structure already exists with the
 		// given symbol. (The symbol)}
 		Map<StructureSymbol, Structure> structures = this._structures;
 		if (structures.containsKey(sym))
-			throw new StructureException(String.format("AQ5d %s", sym));
+			throw new StructureException(String.format("AQ11 %s", sym));
 		
 		// Associate that structure with this symbol
 		structures.put(sym, __s);

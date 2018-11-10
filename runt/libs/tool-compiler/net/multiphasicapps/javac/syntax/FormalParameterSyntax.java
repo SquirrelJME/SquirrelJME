@@ -51,14 +51,14 @@ public final class FormalParameterSyntax
 		if (__mods == null || __type == null || __name == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AQ4f Illegal modifiers specified for formal
+		// {@squirreljme.error AQ1u Illegal modifiers specified for formal
 		// parameter. (The modifiers}}
 		if (__mods.isPublic() || __mods.isProtected() || __mods.isPrivate() ||
 			__mods.isStatic() || __mods.isAbstract() || __mods.isNative() ||
 			__mods.isSynchronized() || __mods.isTransient() ||
 			__mods.isVolatile() || __mods.isStrictFloatingPoint())
 			throw new SyntaxDefinitionException(
-				String.format("AQ4f %s", __mods));
+				String.format("AQ1u %s", __mods));
 		
 		this.modifiers = __mods;
 		this.type = __type;

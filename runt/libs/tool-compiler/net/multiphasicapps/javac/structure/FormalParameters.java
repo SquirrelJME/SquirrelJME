@@ -68,11 +68,11 @@ public final class FormalParameters
 			if (fp == null)
 				throw new NullPointerException("NARG");
 			
-			// {@squirreljme.error AQ5g Duplicate parameter name. (The name
+			// {@squirreljme.error AQ0o Duplicate parameter name. (The name
 			// of the parameter)}
 			FieldName name = fp.name();
 			if (names.contains(name))
-				throw new StructureException(String.format("AQ5g %s", name));
+				throw new StructureException(String.format("AQ0o %s", name));
 			names.add(name);
 			
 			rv.add(fp);

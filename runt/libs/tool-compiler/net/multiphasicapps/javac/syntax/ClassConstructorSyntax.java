@@ -77,23 +77,23 @@ public final class ClassConstructorSyntax
 			if (t == null)
 				throw new NullPointerException("NARG");
 			
-			// {@squirreljme.error AQ4a Duplicated throw statement. (The throw
+			// {@squirreljme.error AQ16 Duplicated throw statement. (The throw
 			// statement which was duplicated)}
 			if (thrown.contains(t))
 				throw new SyntaxDefinitionException(
-					String.format("AQ4a %s", t));
+					String.format("AQ16 %s", t));
 			
 			thrown.add(t);
 		}
 		
-		// {@squirreljme.error AQ49 Illegal modifiers specified for class
+		// {@squirreljme.error AQ17 Illegal modifiers specified for class
 		// constructor. (The modifiers)}
 		if (__mods.isStatic() || __mods.isAbstract() || __mods.isFinal() ||
 			__mods.isNative() || __mods.isSynchronized() ||
 			__mods.isTransient() || __mods.isVolatile() ||
 			__mods.isStrictFloatingPoint())
 			throw new SyntaxDefinitionException(
-				String.format("AQ49 %s", __mods));
+				String.format("AQ17 %s", __mods));
 		
 		this.modifiers = __mods;
 		this.typeparameters = __tparms;
@@ -216,11 +216,11 @@ public final class ClassConstructorSyntax
 		if (__mods == null || __typeparams == null || __in == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AQ41 Expected identifier at start of
+		// {@squirreljme.error AQ18 Expected identifier at start of
 		// constructor.}
 		Token token = __in.next();
 		if (token.type() != TokenType.IDENTIFIER)
-			throw new SyntaxParseException(token, "AQ41");
+			throw new SyntaxParseException(token, "AQ18");
 		ClassIdentifier identifier = new ClassIdentifier(token.characters());
 		
 		// Parse formal parameters

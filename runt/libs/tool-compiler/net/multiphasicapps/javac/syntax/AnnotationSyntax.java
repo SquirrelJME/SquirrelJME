@@ -139,10 +139,10 @@ public final class AnnotationSyntax
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AQ4v Expected at symbol at start of annotation.}
+		// {@squirreljme.error AQ13 Expected at symbol at start of annotation.}
 		Token token = __in.next();
 		if (token.type() != TokenType.SYMBOL_AT)
-			throw new SyntaxParseException(token, "AQ4v");
+			throw new SyntaxParseException(token, "AQ13");
 		
 		// Read qualified identifier which identifies the type used for the
 		// annotation
@@ -186,10 +186,10 @@ public final class AnnotationSyntax
 				continue;
 			}
 			
-			// {@squirreljme.error AQ4x Expected comma or closing parenthesis
+			// {@squirreljme.error AQ14 Expected comma or closing parenthesis
 			// at end of annotation expression.}
 			else
-				throw new SyntaxParseException(token, "AQ4x");
+				throw new SyntaxParseException(token, "AQ14");
 		}
 		
 		// Build annotation
@@ -302,10 +302,10 @@ public final class AnnotationSyntax
 					continue;
 				}
 				
-				// {@squirreljme.error AQ4y Expected comma or closing brace
+				// {@squirreljme.error AQ15 Expected comma or closing brace
 				// after annotation value.}
 				else
-					throw new SyntaxParseException(token, "AQ4y");
+					throw new SyntaxParseException(token, "AQ15");
 			}
 			
 			// Finish values

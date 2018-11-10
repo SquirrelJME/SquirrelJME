@@ -137,19 +137,19 @@ public class CuteRunnable
 			Throwable t = e;
 			while (t != null)
 			{
-				// {@squirreljme.error AQ0n Failed to compile.}
+				// {@squirreljme.error AQ0j Failed to compile.}
 				log.message(MessageType.ERROR,
 					((t instanceof LocationAware) ?
 						(LocationAware)t : null),
-					"AQ0n %s", t.getMessage());
+					"AQ0j %s", t.getMessage());
 				
-				// {@squirreljme.error AQ37 Failed to compile. (An exception
+				// {@squirreljme.error AQ0k Failed to compile. (An exception
 				// or error was suppressed)}
 				for (Throwable s : t.getSuppressed())
 					log.message(MessageType.ERROR,
 						((s instanceof LocationAware) ?
 							(LocationAware)s : null),
-						"AQ37 %s", s.getMessage());
+						"AQ0k %s", s.getMessage());
 				
 				// Keep going down
 				t = t.getCause();
@@ -179,12 +179,12 @@ public class CuteRunnable
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AQ0o Cannot determine classname of file because
+		// {@squirreljme.error AQ0l Cannot determine classname of file because
 		// it has an unknown suffix. (The file name)}
 		String suffix;
 		if (!__n.endsWith(".java"))
 			if (!__n.endsWith(".class"))
-				throw new CompilerException(String.format("AQ0o %s", __n));
+				throw new CompilerException(String.format("AQ0l %s", __n));
 			else
 				suffix = ".class";
 		else

@@ -113,10 +113,10 @@ public final class FileInput
 				return Long.MIN_VALUE;
 		}
 		
-		// {@squirreljme.error AQ0k Could not obtain the last modified time.}
+		// {@squirreljme.error AQ03 Could not obtain the last modified time.}
 		catch (IOException e)
 		{
-			throw new CompilerException("AQ0k", e);
+			throw new CompilerException("AQ03", e);
 		}
 	}
 	
@@ -134,18 +134,18 @@ public final class FileInput
 			return Files.newInputStream(path, StandardOpenOption.READ);
 		}
 		
-		// {@squirreljme.error AQ02 The specified path does not exist.
+		// {@squirreljme.error AQ04 The specified path does not exist.
 		// (The path to the file)}
 		catch (NoSuchFileException e)
 		{
-			throw new NoSuchInputException(String.format("AQ02 %s", path), e);
+			throw new NoSuchInputException(String.format("AQ04 %s", path), e);
 		}
 		
-		// {@squirreljme.error AQ03 Could not read from the specified path.
+		// {@squirreljme.error AQ05 Could not read from the specified path.
 		// (The path to the file)}
 		catch (IOException e)
 		{
-			throw new NoSuchInputException(String.format("AQ03 %s", path), e);
+			throw new NoSuchInputException(String.format("AQ05 %s", path), e);
 		}
 	}
 	

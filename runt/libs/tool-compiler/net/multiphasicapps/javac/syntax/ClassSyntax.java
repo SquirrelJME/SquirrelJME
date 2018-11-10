@@ -80,7 +80,7 @@ public final class ClassSyntax
 			__implementing == null || __members == null)
 			throw new NullPointerException();
 		
-		// {@squirreljme.error AQ4l Illegal class modifiers specified with the
+		// {@squirreljme.error AQ19 Illegal class modifiers specified with the
 		// the given class type. (The class type; The class modifiers)}
 		if (__mods.isNative() || __mods.isVolatile() || __mods.isTransient() ||
 			__mods.isSynchronized() ||
@@ -88,7 +88,7 @@ public final class ClassSyntax
 				(__mods.isAbstract() || __mods.isFinal())) ||
 			(__structtype == ClassSyntaxType.INTERFACE &&
 				(__mods.isFinal())))
-			throw new SyntaxDefinitionException(String.format("AQ4l %s %s",
+			throw new SyntaxDefinitionException(String.format("AQ19 %s %s",
 				__structtype, __mods));
 		
 		// Check extends
@@ -98,20 +98,20 @@ public final class ClassSyntax
 			if (t == null)
 				throw new NullPointerException("NARG");
 			
-			// {@squirreljme.error AQ4m Duplicate extends specified.
+			// {@squirreljme.error AQ1a Duplicate extends specified.
 			// (The type)}
 			if (doext.contains(t))
-				throw new SyntaxDefinitionException(String.format("AQ4m %s",
+				throw new SyntaxDefinitionException(String.format("AQ1a %s",
 					t));
 			
 			doext.add(t);
 		}
 		
-		// {@squirreljme.error AQ4o The specified class of the given type
+		// {@squirreljme.error AQ1b The specified class of the given type
 		// cannot extend the given types. (The class type; The inherited types}
 		if (!__structtype.extendsType().isCompatibleCount(doext.size()))
 			throw new SyntaxDefinitionException(
-				String.format("AQ4o %s %s", __structtype, doext));
+				String.format("AQ1b %s %s", __structtype, doext));
 		
 		// Check implements
 		Set<TypeSyntax> doimp = new LinkedHashSet<>();
@@ -120,21 +120,21 @@ public final class ClassSyntax
 			if (t == null)
 				throw new NullPointerException("NARG");
 			
-			// {@squirreljme.error AQ4n Duplicate implements specified.
+			// {@squirreljme.error AQ1c Duplicate implements specified.
 			// (The type)}
 			if (doimp.contains(t))
-				throw new SyntaxDefinitionException(String.format("AQ4n %s",
+				throw new SyntaxDefinitionException(String.format("AQ1c %s",
 					t));
 			
 			doimp.add(t);
 		}
 		
-		// {@squirreljme.error AQ4p The specified class of the given type
+		// {@squirreljme.error AQ1d The specified class of the given type
 		// cannot implement the given types. (The class type; The inherited
 		// types}
 		if (!__structtype.implementsType().isCompatibleCount(doimp.size()))
 			throw new SyntaxDefinitionException(
-				String.format("AQ4p %s %s", __structtype, doext));
+				String.format("AQ1d %s %s", __structtype, doext));
 		
 		// Check members
 		List<MemberSyntax> membs = new ArrayList<>();
@@ -146,36 +146,36 @@ public final class ClassSyntax
 			// Interfaces
 			if (__structtype == ClassSyntaxType.INTERFACE)
 			{
-				// {@squirreljme.error AQ4q An interface cannot contain a
+				// {@squirreljme.error AQ1e An interface cannot contain a
 				// member represented by the given type. (The class type)}
 				if (member instanceof ClassInitializerSyntax ||
 					member instanceof ClassConstructorSyntax ||
 					member instanceof AnnotationMethodSyntax ||
 					member instanceof EnumFieldSyntax)
 					throw new SyntaxDefinitionException(
-						String.format("AQ4q %s", member.getClass()));
+						String.format("AQ1e %s", member.getClass()));
 			}
 			
 			// Annotations
 			else if (__structtype == ClassSyntaxType.ANNOTATION)
 			{
-				// {@squirreljme.error AQ4r An annotation cannot contain a
+				// {@squirreljme.error AQ1f An annotation cannot contain a
 				// member represented by the given type. (The class type)}
 				if (!(member instanceof ClassSyntax ||
 					member instanceof BasicFieldSyntax ||
 					member instanceof AnnotationMethodSyntax))
 					throw new SyntaxDefinitionException(
-						String.format("AQ4r %s", member.getClass()));
+						String.format("AQ1f %s", member.getClass()));
 			}
 			
 			// Normal class or enum
 			else
 			{
-				// {@squirreljme.error AQ4s An class or enum cannot contain a
+				// {@squirreljme.error AQ1g An class or enum cannot contain a
 				// member represented by the given type. (The class type)}
 				if (member instanceof AnnotationMethodSyntax)
 					throw new SyntaxDefinitionException(
-						String.format("AQ4s %s", member.getClass()));
+						String.format("AQ1g %s", member.getClass()));
 			}
 			
 			// Check constructor
@@ -183,12 +183,12 @@ public final class ClassSyntax
 			{
 				ClassConstructorSyntax c = (ClassConstructorSyntax)member;
 				
-				// {@squirreljme.error AQ5e Class constructor name does not
+				// {@squirreljme.error AQ1h Class constructor name does not
 				// match the name of the class. (This class name; The
 				// constructor name)}
 				if (!__name.toString().equals(c.name().toString()))
 					throw new SyntaxDefinitionException(
-						String.format("AQ5e %s %s", __name, c.name()));
+						String.format("AQ1h %s %s", __name, c.name()));
 			}
 			
 			// Is valid
@@ -337,10 +337,10 @@ public final class ClassSyntax
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AQ3z Expected opening brace at start of class.}
+		// {@squirreljme.error AQ1i Expected opening brace at start of class.}
 		Token token = __in.next();
 		if (token.type() != TokenType.SYMBOL_OPEN_BRACE)
-			throw new SyntaxParseException(token, "AQ3z");
+			throw new SyntaxParseException(token, "AQ1i");
 		
 		// Parse the enumeration constants, their fields and their class
 		// values
@@ -415,9 +415,9 @@ public final class ClassSyntax
 				__in.reset();
 			}
 			
-			// {@squirreljme.error AQ40 The specified token does not
+			// {@squirreljme.error AQ1j The specified token does not
 			// represent a member that is a class, field, or method.}
-			throw new SyntaxParseException(__in, "AQ40");
+			throw new SyntaxParseException(__in, "AQ1j");
 		}
 	}
 	
@@ -457,24 +457,24 @@ public final class ClassSyntax
 				structtype = ClassSyntaxType.INTERFACE;
 				break;
 			
-				// {@squirreljme.error AQ3m Expected interface to follow
+				// {@squirreljme.error AQ1k Expected interface to follow
 				// at symbol for declaring an annotation type.}
 			case SYMBOL_AT:
 				token = __in.next();
 				if (token.type() != TokenType.KEYWORD_INTERFACE)
-					throw new SyntaxParseException(token, "AQ3m");
+					throw new SyntaxParseException(token, "AQ1k");
 				structtype = ClassSyntaxType.ANNOTATION;
 				break;
 			
-				// {@squirreljme.error AQ3n Unknown token while parsing class.}
+				// {@squirreljme.error AQ1l Unknown token while parsing class.}
 			default:
-				throw new SyntaxParseException(token, "AQ3n");
+				throw new SyntaxParseException(token, "AQ1l");
 		}
 		
-		// {@squirreljme.error AQ3v Expected identifier to name the class as.}
+		// {@squirreljme.error AQ1m Expected identifier to name the class as.}
 		token = __in.next();
 		if (token.type() != TokenType.IDENTIFIER)
-			throw new SyntaxParseException(token, "AQ3v");
+			throw new SyntaxParseException(token, "AQ1m");
 		ClassIdentifier name = new ClassIdentifier(token.characters());
 		
 		// Read type parameters?
@@ -503,10 +503,10 @@ public final class ClassSyntax
 					extending = TypeSyntax.parseTypes(__in);
 					break;
 					
-					// {@squirreljme.error AQ3w This type of class cannot
+					// {@squirreljme.error AQ1n This type of class cannot
 					// extend other classes.}
 				default:
-					throw new SyntaxParseException(token, "AQ3w");
+					throw new SyntaxParseException(token, "AQ1n");
 			}
 		}
 		else
@@ -525,10 +525,10 @@ public final class ClassSyntax
 					implementing = TypeSyntax.parseTypes(__in);
 					break;
 					
-					// {@squirreljme.error AQ3y This type of class cannot
+					// {@squirreljme.error AQ1o This type of class cannot
 					// implement interfaces.}
 				default:
-					throw new SyntaxParseException(token, "AQ3y");
+					throw new SyntaxParseException(token, "AQ1o");
 			}
 		}
 		else
@@ -538,10 +538,10 @@ public final class ClassSyntax
 		MemberSyntax[] members = ClassSyntax.parseClassBody(structtype,
 			__in);
 		
-		// {@squirreljme.error AQ4t Expected closing brace at end of class.}
+		// {@squirreljme.error AQ1p Expected closing brace at end of class.}
 		token = __in.next();
 		if (token.type() != TokenType.SYMBOL_CLOSED_BRACE)
-			throw new SyntaxParseException(token, "AQ4t");
+			throw new SyntaxParseException(token, "AQ1p");
 		
 		// Build class structure
 		return new ClassSyntax(structtype, __mods, name, typeparms,

@@ -71,10 +71,10 @@ public final class SimpleMethodSyntax
 			__ident == null || __params == null || __thrown == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AQ4h Mismatch between the method having code
+		// {@squirreljme.error AQ2c Mismatch between the method having code
 		// or not and it being abstract and/or native.}
 		if ((__mods.isAbstract() || __mods.isNative()) != (__code == null))
-			throw new SyntaxDefinitionException("AQ4h");
+			throw new SyntaxDefinitionException("AQ2c");
 		
 		// Check throwables for null
 		Set<QualifiedIdentifierSyntax> thrown = new LinkedHashSet<>();
@@ -83,21 +83,21 @@ public final class SimpleMethodSyntax
 			if (t == null)
 				throw new NullPointerException("NARG");
 			
-			// {@squirreljme.error AQ4j Duplicated throw statement. (The throw
+			// {@squirreljme.error AQ2d Duplicated throw statement. (The throw
 			// statement which was duplicated)}
 			if (thrown.contains(t))
 				throw new SyntaxDefinitionException(
-					String.format("AQ4j %s", t));
+					String.format("AQ2d %s", t));
 			
 			thrown.add(t);
 		}
 		
-		// {@squirreljme.error AQ4k Illegal modifiers specified for simple
+		// {@squirreljme.error AQ2e Illegal modifiers specified for simple
 		// method. (The modifiers)}
 		if ((__mods.isAbstract() && (__mods.isStatic() || __mods.isNative() ||
 			__mods.isFinal())) || __mods.isVolatile() || __mods.isTransient())
 			throw new SyntaxDefinitionException(
-				String.format("AQ4k %s", __mods));
+				String.format("AQ2e %s", __mods));
 		
 		this.modifiers = __mods;
 		this.typeparameters = __tparms;
@@ -187,10 +187,10 @@ public final class SimpleMethodSyntax
 		else
 			returntype = TypeSyntax.parseType(__in);
 		
-		// {@squirreljme.error AQ42 Expected identifier to name the method.}
+		// {@squirreljme.error AQ2f Expected identifier to name the method.}
 		token = __in.next();
 		if (token.type() != TokenType.IDENTIFIER)
-			throw new SyntaxParseException(token, "AQ42");
+			throw new SyntaxParseException(token, "AQ2f");
 		MethodName identifier = new MethodName(token.characters());
 		
 		// Parse formal parameters
@@ -214,11 +214,11 @@ public final class SimpleMethodSyntax
 			// No code
 			code = null;
 			
-			// {@squirreljme.error AQ4g Expected semicolon to follow abstract
+			// {@squirreljme.error AQ2g Expected semicolon to follow abstract
 			// or native method.}
 			token = __in.next();
 			if (token.type() != TokenType.SYMBOL_SEMICOLON)
-				throw new SyntaxParseException(token, "AQ4g");
+				throw new SyntaxParseException(token, "AQ2g");
 		}
 		else
 			code = UnparsedExpressions.parseBlock(__in);

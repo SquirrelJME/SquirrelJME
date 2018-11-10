@@ -149,12 +149,12 @@ public final class UnparsedExpressions
 		// Input tokens
 		List<Token> tokens = new LinkedList<>();
 		
-		// {@squirreljme.error AQ48 Expected start of expression to start with
+		// {@squirreljme.error AQ2l Expected start of expression to start with
 		// a given symbol. (The expected symbol)}
 		Token token = __in.next(),
 			base = token;
 		if (token.type() != __open)
-			throw new SyntaxParseException(token, String.format("AQ48 %s",
+			throw new SyntaxParseException(token, String.format("AQ2l %s",
 				__open));
 		tokens.add(token);
 		
@@ -163,10 +163,10 @@ public final class UnparsedExpressions
 		{
 			token = __in.next();
 			
-			// {@squirreljme.error AQ4w This token might not have been
+			// {@squirreljme.error AQ2m This token might not have been
 			// closed properly as the end of file was reached.}
 			if (token.type() == TokenType.END_OF_FILE)
-				throw new SyntaxParseException(base, "AQ4w");
+				throw new SyntaxParseException(base, "AQ2m");
 			
 			// Add or remove braces
 			else if (token.type() == __open)

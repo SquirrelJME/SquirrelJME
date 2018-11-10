@@ -147,10 +147,10 @@ public class LogicalReader
 			int c = in.read();
 			if (c < 0)
 			{
-				// {@squirreljme.error AQ0c Unicode sequence truncated at
+				// {@squirreljme.error AQ2t Unicode sequence truncated at
 				// end of file.}
 				if (unicode)
-					throw new TokenizerException(this, "AQ0c");
+					throw new TokenizerException(this, "AQ2t");
 				
 				// Make sure the escape is returned before EOF
 				if (escaped)
@@ -212,11 +212,11 @@ public class LogicalReader
 				// Either another character or something else?
 				else
 				{
-					// {@squirreljme.error AQ0d Invalid unicode escape
+					// {@squirreljme.error AQ2u Invalid unicode escape
 					// sequence. (The line; The column)}
 					if (unicodemask != 0 || c != 'u')
 						throw new TokenizerException(this, 
-							String.format("AQ0d %d %d", this._line,
+							String.format("AQ2u %d %d", this._line,
 							this._column));
 					
 					// Just skip the u, there can be tons of them

@@ -97,11 +97,11 @@ public final class FilePathSet
 				break;
 		}
 		
-		// {@squirreljme.error AQ0l The specified input does not exist in
+		// {@squirreljme.error AQ06 The specified input does not exist in
 		// the path set filesystem. (The name; The expected path)}
 		if (Files.exists(path) && !Files.isDirectory(path))
 			return new FileInput(path, origname);
-		throw new NoSuchInputException(String.format("AQ0l %s %s", origname,
+		throw new NoSuchInputException(String.format("AQ06 %s %s", origname,
 			path));
 	}
 	
@@ -141,10 +141,10 @@ public final class FilePathSet
 				}
 			}
 			
-			// {@squirreljme.error AQ04 Could not list directory contents.}
+			// {@squirreljme.error AQ07 Could not list directory contents.}
 			catch (IOException e)
 			{
-				throw new CompilerException("AQ04", e);
+				throw new CompilerException("AQ07", e);
 			}
 		
 		// Return iterator over entries

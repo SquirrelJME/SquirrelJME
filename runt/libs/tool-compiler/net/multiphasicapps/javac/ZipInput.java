@@ -102,12 +102,12 @@ public final class ZipInput
 			return this.entry.open();
 		}
 		
-		// {@squirreljme.error AQ08 Failed to open the ZIP entry. (The name
+		// {@squirreljme.error AQ0d Failed to open the ZIP entry. (The name
 		// of the entry)}
 		catch (IOException e)
 		{
 			throw new CompilerException(
-				String.format("AQ08 %s", this.fileName()), e);
+				String.format("AQ0d %s", this.fileName()), e);
 		}
 	}
 }

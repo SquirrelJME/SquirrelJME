@@ -322,11 +322,11 @@ public final class ExpressionSyntaxParsers
 			StringBuilder sb = new StringBuilder();
 			for (;;)
 			{
-				// {@squirreljme.error AQ51 Expected identifier while parsing
+				// {@squirreljme.error AQ2n Expected identifier while parsing
 				// a primary expression.}
 				token = __in.next();
 				if (token.type() != TokenType.IDENTIFIER)
-					throw new SyntaxParseException(token, "AQ51");
+					throw new SyntaxParseException(token, "AQ2n");
 				
 				// Add that
 				sb.append(token.characters());
@@ -366,9 +366,9 @@ public final class ExpressionSyntaxParsers
 				return new PlainIdentifierSyntax(qi);
 		}
 		
-		// {@squirreljme.error AQ50 This is not a valid primary expression.}
+		// {@squirreljme.error AQ2o This is not a valid primary expression.}
 		else
-			throw new SyntaxParseException(token, "AQ50");
+			throw new SyntaxParseException(token, "AQ2o");
 	}
 }
 
