@@ -142,7 +142,7 @@ public class BuilderFactory
 								space = TimeSpaceType.BUILD;
 								break;
 							
-								// {@squirreljme.error AU0g Unknown argument.
+								// {@squirreljme.error AU0f Unknown argument.
 								// Usage: build [-r] [-j] [-t] [-b]
 								// (projects...);
 								// -r: Build for run-time;
@@ -152,7 +152,7 @@ public class BuilderFactory
 								// (The switch)}
 							default:
 								throw new IllegalArgumentException(
-									String.format("AU0g %s", parse[1]));
+									String.format("AU0f %s", parse[1]));
 						}
 					
 					// Run the builder
@@ -183,13 +183,13 @@ public class BuilderFactory
 					args.<String>toArray(new String[args.size()]));
 				break;
 				
-				// {@squirreljme.error AU0h Unknown command specified.
+				// {@squirreljme.error AU0g Unknown command specified.
 				// Usage: command (command arguments...);
 				// Valid commands are:
 				// build, c, sdk, suite, task
 				// .(The switch)}
 			default:
-				throw new IllegalArgumentException(String.format("AU0h %s",
+				throw new IllegalArgumentException(String.format("AU0g %s",
 					command));
 		}
 	}
@@ -223,10 +223,10 @@ public class BuilderFactory
 				run();
 		}
 		
-		// {@squirreljme.error AU0x Could not initialize the SDK factory.}
+		// {@squirreljme.error AU0h Could not initialize the SDK factory.}
 		catch (IOException e)
 		{
-			throw new RuntimeException("AU0x", e);
+			throw new RuntimeException("AU0h", e);
 		}
 	}
 	

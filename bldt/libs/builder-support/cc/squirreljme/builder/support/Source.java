@@ -270,12 +270,12 @@ public abstract class Source
 					(rv = new SuiteInfo(this.manifest())));
 			}
 			
-			// {@squirreljme.error AU0j Could not approximate the binary
+			// {@squirreljme.error AU0o Could not approximate the binary
 			// suite information. (The name of the project)}
 			catch (InvalidSuiteException e)
 			{
 				throw new InvalidSourceException(
-					String.format("AU0j %s", this.name), e);
+					String.format("AU0o %s", this.name), e);
 			}
 		
 		return rv;
