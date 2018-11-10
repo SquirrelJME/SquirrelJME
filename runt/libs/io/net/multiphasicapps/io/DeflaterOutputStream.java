@@ -129,6 +129,9 @@ public class DeflaterOutputStream
 			this.__bitFlush();
 			this.flush();
 		}
+		
+		// We need to pass close to the wrapped stream
+		this.out.close();
 	}
 	
 	/**
