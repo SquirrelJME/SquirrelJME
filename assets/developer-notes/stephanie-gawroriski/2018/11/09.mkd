@@ -1,0 +1,32 @@
+# 2018/11/09
+
+## 07:38
+
+So I am definitely going to change how the LCDUI code works, definitely. It
+was a giant mess, but I want it to be far simpler than how it used to be. I
+think for simplicity I am just going to have a single framebuffer of sorts
+and ignore native UI stuff. I mean it will not match the UI, but honestly it
+is far easier to maintain and it would be consistent across SquirrelJME.
+Also I would only need to write it once. The removal of the service code and
+the complex kernel stuff has greatly simplified things for the most part. So
+I want to continue that and save me the hassle.
+
+## 08:33
+
+From social media:
+
+> _This time around for the LCDUI implementation, I will be taking the easier_
+> _and simpler route. Before the system was far too complex and was pretty_
+> _much hyper modular, but that increased complexity made it very unwieldy._
+
+## 10:59
+
+I am going to need to write a profiler for SpringCoat so that I can measure
+the performance of how things run. Even though the VM is super slow it could
+still be useful in finding slow code to optimize!
+
+## 11:40
+
+I am going to make the first version `0.2.0` instead of `0.0.2`. If there are
+any forks or hotfixes for `0.2.0` then they can be released as `0.2.1` and
+such.
