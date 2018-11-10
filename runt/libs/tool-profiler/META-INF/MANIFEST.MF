@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+X-SquirrelJME-UUID: f3ffd3f9-32b0-4fe2-8b06-d5d2211ab55a
+X-SquirrelJME-Error: AH
+X-SquirrelJME-Name: tool-profiler
+X-SquirrelJME-Vendor: Stephanie Gawroriski
+X-SquirrelJME-Version: 0.2.0
+X-SquirrelJME-Description: tool-profiler
+Microedition-Configuration: CLDC-1.8-Compact
+
