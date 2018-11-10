@@ -9,7 +9,6 @@
 // ---------------------------------------------------------------------------
 
 import net.multiphasicapps.tac.TestFunction;
-
 import net.multiphasicapps.io.Base64Alphabet;
 import net.multiphasicapps.io.Base64Decoder;
 
