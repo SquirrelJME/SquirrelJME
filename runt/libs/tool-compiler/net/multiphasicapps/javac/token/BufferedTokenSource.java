@@ -119,8 +119,8 @@ public final class BufferedTokenSource
 			}
 			catch (IOException e)
 			{
-				// {@squirreljme.error AQ3d Could not close the token source.}
-				throw new TokenizerException("AQ3d", e);
+				// {@squirreljme.error AQ2p Could not close the token source.}
+				throw new TokenizerException("AQ2p", e);
 			}
 	}
 	
@@ -150,12 +150,12 @@ public final class BufferedTokenSource
 	public final void commit()
 		throws IllegalStateException
 	{
-		// {@squirreljme.error AQ3e Cannot reset a mark when there have been
+		// {@squirreljme.error AQ2q Cannot reset a mark when there have been
 		// no marks which were made.}
 		Deque<Integer> marks = this._marks;
 		int n = marks.size();
 		if (n == 0)
-			throw new IllegalStateException("AQ3e");
+			throw new IllegalStateException("AQ2q");
 		
 		// Remove the last mark but keep the peek position the
 		marks.remove(n - 1);
@@ -270,10 +270,10 @@ public final class BufferedTokenSource
 	public final Token peek(int __o)
 		throws IndexOutOfBoundsException, TokenizerException
 	{
-		// {@squirreljme.error AQ3c Cannot peek a token with a negative
+		// {@squirreljme.error AQ2r Cannot peek a token with a negative
 		// offset.}
 		if (__o < 0)
-			throw new IndexOutOfBoundsException("AQ3c");
+			throw new IndexOutOfBoundsException("AQ2r");
 		
 		TokenSource input = this.input;
 		
@@ -314,12 +314,12 @@ public final class BufferedTokenSource
 	public final void reset()
 		throws IllegalStateException
 	{
-		// {@squirreljme.error AQ3e Cannot reset a mark when there have been
+		// {@squirreljme.error AQ2s Cannot reset a mark when there have been
 		// no marks which were made.}
 		Deque<Integer> marks = this._marks;
 		int n = marks.size();
 		if (n == 0)
-			throw new IllegalStateException("AQ3e");
+			throw new IllegalStateException("AQ2s");
 		
 		// The peek position becomes the index of the last mark
 		this._peekedpos = marks.removeLast();

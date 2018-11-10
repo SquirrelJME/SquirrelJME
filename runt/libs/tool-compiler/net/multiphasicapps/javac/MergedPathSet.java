@@ -66,10 +66,10 @@ public final class MergedPathSet
 			}
 			catch (CompilerException e)
 			{
-				// {@squirreljme.error AQ0h Could not close the merged path
+				// {@squirreljme.error AQ08 Could not close the merged path
 				// set.}
 				if (tossed == null)
-					tossed = new CompilerException("AQ0h");
+					tossed = new CompilerException("AQ08");
 				
 				tossed.addSuppressed(tossed);
 			}
@@ -126,9 +126,9 @@ public final class MergedPathSet
 			{
 			}
 		
-		// {@squirreljme.error AQ0i Could not find the specified input in the
+		// {@squirreljme.error AQ09 Could not find the specified input in the
 		// merged path set. (The input)}
-		throw new NoSuchInputException(String.format("AQ0i %s", __n));
+		throw new NoSuchInputException(String.format("AQ09 %s", __n));
 	}
 }
 

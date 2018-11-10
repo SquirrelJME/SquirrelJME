@@ -84,9 +84,9 @@ public final class DistinctPathSet
 			if (__n.equals(ci.fileName()))
 				return ci;
 		
-		// {@squirreljme.error AQ0j Could not find the specified input in the
+		// {@squirreljme.error AQ02 Could not find the specified input in the
 		// distinct path set. (The input)}
-		throw new NoSuchInputException(String.format("AQ0j %s", __n));
+		throw new NoSuchInputException(String.format("AQ02 %s", __n));
 	}
 }
 

@@ -65,9 +65,9 @@ public final class TypeSyntax
 		if (__st == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AQ4c Types cannot have negative dimensions.}
+		// {@squirreljme.error AQ2h Types cannot have negative dimensions.}
 		if (__dims < 0)
-			throw new IllegalArgumentException("AQ4c");
+			throw new IllegalArgumentException("AQ2h");
 		
 		this.simpletype = __st;
 		this.dimensions = __dims;
@@ -125,10 +125,10 @@ public final class TypeSyntax
 	public final TypeSyntax withDimensions(int __d)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error AQ4e Cannot initialize type with a negative
+		// {@squirreljme.error AQ2i Cannot initialize type with a negative
 		// number of dimensions.}
 		if (__d < 0)
-			throw new IllegalArgumentException("AQ4e");
+			throw new IllegalArgumentException("AQ2i");
 		
 		throw new todo.TODO();
 	}
@@ -193,9 +193,9 @@ public final class TypeSyntax
 				simple = GenericTypeSyntax.parse(__in);
 				break;
 			
-				// {@squirreljme.error AQ4b Invalid type.}
+				// {@squirreljme.error AQ2j Invalid type.}
 			default:
-				throw new SyntaxParseException(token, "AQ4b");
+				throw new SyntaxParseException(token, "AQ2j");
 		}
 		
 		// Handle dimensions
@@ -204,11 +204,11 @@ public final class TypeSyntax
 		{
 			__in.next();
 			
-			// {@squirreljme.error AQ4d Expected closing bracket to follow
+			// {@squirreljme.error AQ2k Expected closing bracket to follow
 			// opening bracket when declaring type.}
 			token = __in.next();
 			if (token.type() != TokenType.SYMBOL_CLOSED_BRACKET)
-				throw new SyntaxParseException(token, "AQ4d");
+				throw new SyntaxParseException(token, "AQ2k");
 			dims++;
 		}
 		

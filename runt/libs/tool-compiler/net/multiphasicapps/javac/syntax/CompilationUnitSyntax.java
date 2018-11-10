@@ -59,7 +59,7 @@ public final class CompilationUnitSyntax
 		if (__pmod == null || __pk == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AQ4u Only annotation are valid modifiers for
+		// {@squirreljme.error AQ1q Only annotation are valid modifiers for
 		// packages.}
 		if (__pmod.isPublic() || __pmod.isProtected() || __pmod.isPrivate() ||
 			__pmod.isStatic() || __pmod.isAbstract() || __pmod.isFinal() ||
@@ -67,7 +67,7 @@ public final class CompilationUnitSyntax
 			__pmod.isTransient() || __pmod.isVolatile() ||
 			__pmod.isStrictFloatingPoint())
 			throw new SyntaxDefinitionException(
-				String.format("AQ4u %s", __pmod));
+				String.format("AQ1q %s", __pmod));
 		
 		this.modifiers = __pmod;
 		this.inpackage = __pk;
@@ -132,13 +132,13 @@ public final class CompilationUnitSyntax
 			if (v == null)
 				throw new NullPointerException("NARG");
 			
-			// {@squirreljme.error AQ58 Classes contained within a compilation
+			// {@squirreljme.error AQ1r Classes contained within a compilation
 			// unit cannot be static, protected, or private. (The modifiers)}
 			ModifiersSyntax modifiers = v.modifiers();
 			if (modifiers.isStatic() || modifiers.isProtected() ||
 				modifiers.isPrivate())
 				throw new SyntaxDefinitionException(
-					String.format("AQ58 %s", modifiers));
+					String.format("AQ1r %s", modifiers));
 			
 			// Is okay to use
 			classes.add(v);
@@ -256,21 +256,21 @@ public final class CompilationUnitSyntax
 			// Read package declaration
 			inpackage = QualifiedIdentifierSyntax.parse(__in);
 			
-			// {@squirreljme.error AQ3j Expected semi-colon to follow the
+			// {@squirreljme.error AQ1s Expected semi-colon to follow the
 			// package statement.}
 			token = __in.next();
 			if (token.type() != TokenType.SYMBOL_SEMICOLON)
-				throw new SyntaxParseException(token, "AQ3j");
+				throw new SyntaxParseException(token, "AQ1s");
 			
 			// Only semi-colons and EOF may follow
 			if (modifiers != null)
 			{
-				// {@squirreljme.error AQ3f Expected end of file or semicolons
+				// {@squirreljme.error AQ1t Expected end of file or semicolons
 				// after an annotated package statement, annotated packages
 				// are only valid in package-info.java.}
 				while ((token = __in.next()).type() != TokenType.END_OF_FILE)
 					if (token.type() != TokenType.SYMBOL_SEMICOLON)
-						throw new SyntaxParseException(token, "AQ3f");
+						throw new SyntaxParseException(token, "AQ1t");
 				
 				return new CompilationUnitSyntax(modifiers, inpackage);
 			}

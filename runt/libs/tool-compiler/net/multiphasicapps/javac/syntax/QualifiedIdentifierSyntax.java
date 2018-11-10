@@ -108,10 +108,10 @@ public final class QualifiedIdentifierSyntax
 		// The token is always consumed
 		Token token = __t.next();
 		
-		// {@squirreljme.error AQ3g Expected identifier while parsing qualified
+		// {@squirreljme.error AQ29 Expected identifier while parsing qualified
 		// identifier.
 		if (token.type() != TokenType.IDENTIFIER)
-			throw new SyntaxParseException(token, "AQ3g");
+			throw new SyntaxParseException(token, "AQ29");
 		
 		// Start with initial base
 		StringBuilder sb = new StringBuilder();
@@ -128,11 +128,11 @@ public final class QualifiedIdentifierSyntax
 			// Consume the dot
 			__t.next();
 			
-			// {@squirreljme.error AQ3h Expected identifier to follow
+			// {@squirreljme.error AQ2a Expected identifier to follow
 			// dot in qualified identifier.}
 			token = __t.next();
 			if (token.type() != TokenType.IDENTIFIER)
-				throw new SyntaxParseException(token, "AQ3h");
+				throw new SyntaxParseException(token, "AQ2a");
 			
 			// Add in
 			sb.append('/');
@@ -146,12 +146,12 @@ public final class QualifiedIdentifierSyntax
 				new BinaryName(sb.toString()));
 		}
 		
-		// {@squirreljme.error AQ3i The specified identifier is not a valid
+		// {@squirreljme.error AQ2b The specified identifier is not a valid
 		// binary name. (The identifier)}
 		catch (InvalidClassFormatException e)
 		{
 			throw new SyntaxParseException(token,
-				String.format("AQ3i %s", sb), e);
+				String.format("AQ2b %s", sb), e);
 		}
 	}
 	

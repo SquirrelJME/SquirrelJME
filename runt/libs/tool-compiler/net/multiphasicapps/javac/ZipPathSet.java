@@ -59,10 +59,10 @@ public final class ZipPathSet
 			this.zip.close();
 		}
 		
-		// {@squirreljme.error AQ09 Could not close the source ZIP.}
+		// {@squirreljme.error AQ0e Could not close the source ZIP.}
 		catch (IOException e)
 		{
-			throw new CompilerException("AQ09", e);
+			throw new CompilerException("AQ0e", e);
 		}
 	}
 	
@@ -81,18 +81,18 @@ public final class ZipPathSet
 			return new ZipInput(this.zip.get(__n));
 		}
 		
-		// {@squirreljme.error AQ0a No such entry exists within the ZIP.
+		// {@squirreljme.error AQ0f No such entry exists within the ZIP.
 		// (The name of the entry)}
 		catch (ZipEntryNotFoundException e)
 		{
-			throw new NoSuchInputException(String.format("AQ0a %s", __n), e);
+			throw new NoSuchInputException(String.format("AQ0f %s", __n), e);
 		}
 		
-		// {@squirreljme.error AQ0b Read error attempting to open the input
+		// {@squirreljme.error AQ0g Read error attempting to open the input
 		// entry. (The name of the entry)}
 		catch (IOException e)
 		{
-			throw new NoSuchInputException(String.format("AQ0b %s", __n), e);
+			throw new NoSuchInputException(String.format("AQ0g %s", __n), e);
 		}
 	}
 	

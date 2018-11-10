@@ -165,10 +165,10 @@ public final class RuntimeInput
 		// Used for location awareness
 		StringFileName sfn = new StringFileName(__fn);
 		
-		// {@squirreljme.error AQ54 Cannot process source file which does not
+		// {@squirreljme.error AQ0p Cannot process source file which does not
 		// end in {@code .java}.}
 		if (!__fn.toLowerCase().endsWith(".java"))
-			throw new StructureException(sfn, "AQ54");
+			throw new StructureException(sfn, "AQ0p");
 		
 		// Get basename and package name, used to quickly determine some things
 		String basename = __fn.substring(0, __fn.length() - 5);
@@ -195,10 +195,10 @@ public final class RuntimeInput
 		}
 		catch (InvalidClassFormatException e)
 		{
-			// {@squirreljme.error AQ55 Cannot parse the source file because
+			// {@squirreljme.error AQ0q Cannot parse the source file because
 			// it does not have a valid name.}
 			throw new StructureException(sfn,
-				String.format("AQ55 %s", basename));
+				String.format("AQ0q %s", basename));
 		}
 		
 		// Determine the identifier of the class
@@ -217,9 +217,9 @@ public final class RuntimeInput
 			{
 			}
 		
-		// {@squirreljme.error AQ52 The source file does not exist.}
+		// {@squirreljme.error AQ0r The source file does not exist.}
 		if (ci == null)
-			throw new StructureException(sfn, "AQ52");
+			throw new StructureException(sfn, "AQ0r");
 		
 		// Parse the syntax for the compilation unit and hope it works
 		CompilationUnitSyntax cus;
@@ -229,29 +229,29 @@ public final class RuntimeInput
 			cus = CompilationUnitSyntax.parse(bts);
 		}
 		
-		// {@squirreljme.error AQ53 Could not parse the syntax for the source
+		// {@squirreljme.error AQ0s Could not parse the syntax for the source
 		// file because it failed to read or has invalid syntax.}
 		catch (IOException|SyntaxException e)
 		{
-			throw new StructureException(sfn, "AQ53", e);
+			throw new StructureException(sfn, "AQ0s", e);
 		}
 		
-		// {@squirreljme.error AQ56 Source code file specified a package which
+		// {@squirreljme.error AQ0t Source code file specified a package which
 		// does not match the package represented in the source code itself.
 		// (The package the source is in; The package the source code actually
 		// specified)}
 		BinaryName cuspackage = cus.inPackage();
 		if (!Objects.equals(inpackage, cuspackage))
-			throw new StructureException(sfn, String.format("AQ56 %s %s",
+			throw new StructureException(sfn, String.format("AQ0t %s %s",
 				inpackage, cuspackage));
 		
 		// Determine if the class was placed in the correct file
 		List<ClassSyntax> classes = cus.classes();
 		if (classname != null)
 		{
-			// {@squirreljme.error AQ5b Source file declares no classes.}
+			// {@squirreljme.error AQ0u Source file declares no classes.}
 			if (classes.size() <= 0)
-				throw new StructureException(sfn, "AQ5b");
+				throw new StructureException(sfn, "AQ0u");
 			
 			// Find the public class
 			ClassSyntax pubclass = null;
@@ -260,12 +260,12 @@ public final class RuntimeInput
 				ModifiersSyntax mods = cs.modifiers();
 				if (mods.isPublic())
 				{
-					// {@squirreljme.error AQ59 Class file contains multiple
+					// {@squirreljme.error AQ0v Class file contains multiple
 					// public classes. (The first found public class; The
 					// second found public class)}
 					if (pubclass != null)
 						throw new StructureException(sfn,
-							String.format("AQ59 %s %s", pubclass.name(),
+							String.format("AQ0v %s %s", pubclass.name(),
 							cs.name()));
 					
 					pubclass = cs;
@@ -278,21 +278,21 @@ public final class RuntimeInput
 			if (pubclass == null && classes.size() == 1)
 				pubclass = classes.get(0);
 			
-			// {@squirreljme.error AQ5a The name of the public class in the
+			// {@squirreljme.error AQ0w The name of the public class in the
 			// file does not match the expected name of the source file.
 			// (The public class name)}
 			if (pubclass != null && !classident.equals(pubclass.name()))
 				throw new StructureException(sfn,
-					String.format("AQ5a %s", pubclass.name()));
+					String.format("AQ0w %s", pubclass.name()));
 		}
 		
 		// Is a package-info file
 		else
 		{
-			// {@squirreljme.error AQ57 Source package-info files cannot
+			// {@squirreljme.error AQ0x Source package-info files cannot
 			// specify any classes.}
 			if (classes.size() != 0)
-				throw new StructureException(sfn, "AQ57");
+				throw new StructureException(sfn, "AQ0x");
 		}
 		
 		// So now that the source file has been parsed the resulting syntax

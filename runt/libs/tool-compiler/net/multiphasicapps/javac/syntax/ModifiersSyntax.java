@@ -69,21 +69,21 @@ public final class ModifiersSyntax
 			if (m == null)
 				throw new NullPointerException("NARG");
 			
-			// {@squirreljme.error AQ3l Duplicate modifier. (The modifier)}
+			// {@squirreljme.error AQ25 Duplicate modifier. (The modifier)}
 			if (modifiers.contains(m))
-				throw new SyntaxDefinitionException(String.format("AQ3l %s",
+				throw new SyntaxDefinitionException(String.format("AQ25 %s",
 					m));
 			
 			modifiers.add(m);
 		}
 		
-		// {@squirreljme.error AQ4i There may be only one or none specified for
+		// {@squirreljme.error AQ26 There may be only one or none specified for
 		// public, protected, or private. (The modifiers)}
 		boolean a = modifiers.contains(BasicModifierSyntax.PUBLIC),
 			b = modifiers.contains(BasicModifierSyntax.PROTECTED),
 			c = modifiers.contains(BasicModifierSyntax.PRIVATE);
 		if ((a && b) || (a && c) || (b && c))
-			throw new SyntaxDefinitionException(String.format("AQ4i %s",
+			throw new SyntaxDefinitionException(String.format("AQ26 %s",
 				modifiers));
 		
 		// Store
@@ -353,10 +353,10 @@ public final class ModifiersSyntax
 				__in.next();
 			}
 			
-			// {@squirreljme.error AQ3k Duplicate modifier. (The modifier)}
+			// {@squirreljme.error AQ27 Duplicate modifier. (The modifier)}
 			if (rv.contains(got))
 				throw new SyntaxParseException(token,
-					String.format("AQ3k %s", got));
+					String.format("AQ27 %s", got));
 			rv.add(got);
 		}
 	}
@@ -407,11 +407,11 @@ public final class ModifiersSyntax
 				__in.next();
 			}
 			
-			// {@squirreljme.error AQ44 Duplicate modifier while parsing
+			// {@squirreljme.error AQ28 Duplicate modifier while parsing
 			// formal parameter modifiers. (The modifier)}
 			if (rv.contains(got))
 				throw new SyntaxParseException(token,
-					String.format("AQ44 %s", got));
+					String.format("AQ28 %s", got));
 			rv.add(got);
 		}
 	}

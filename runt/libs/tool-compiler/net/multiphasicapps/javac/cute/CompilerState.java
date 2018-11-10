@@ -160,16 +160,16 @@ public final class CompilerState
 				}
 		}
 		
-		// {@squirreljme.error AQ0r Could not locate the node for the given
+		// {@squirreljme.error AQ0h Could not locate the node for the given
 		// class name, the source file where the class should have been located
 		// did not actually contain the class. (The class name)}
 		if (badhit)
 			throw new MissingClassNodeException(
-				String.format("AQ0r %s", __cn));
+				String.format("AQ0h %s", __cn));
 		
-		// {@squirreljme.error AQ0p Could not locate the node for the given
+		// {@squirreljme.error AQ0i Could not locate the node for the given
 		// class name. (The class name)}
-		throw new MissingClassNodeException(String.format("AQ0p %s", __cn));
+		throw new MissingClassNodeException(String.format("AQ0i %s", __cn));
 	}
 	
 	/**

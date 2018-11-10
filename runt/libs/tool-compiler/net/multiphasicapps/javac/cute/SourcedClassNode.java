@@ -69,9 +69,9 @@ public final class SourcedClassNode
 		// Store last processed file for debug purposes
 		__state._lastinput = __input;
 		
-		// {@squirreljme.error AQ0s Parsing input source file for classes to
+		// {@squirreljme.error AQ0m Parsing input source file for classes to
 		// compile.}
-		log.message(MessageType.INFO, __input, "AQ0s");
+		log.message(MessageType.INFO, __input, "AQ0m");
 		
 		// Setup streamlined tokenizers to parse the classes
 		CompilationUnitSyntax compunit;
@@ -82,12 +82,12 @@ public final class SourcedClassNode
 				new BufferedTokenSource(__input.fileName(), in));
 		}
 		
-		// {@squirreljme.error AQ0t Could not read the input source file.
+		// {@squirreljme.error AQ0n Could not read the input source file.
 		// (The input source file)}
 		catch (IOException e)
 		{
 			throw new CompilerException(__input,
-				String.format("AQ0t %s", __input.fileName()), e);
+				String.format("AQ0n %s", __input.fileName()), e);
 		}
 		
 		throw new todo.TODO();

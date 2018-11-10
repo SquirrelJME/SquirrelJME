@@ -178,8 +178,8 @@ public class Tokenizer
 		}
 		catch (IOException e)
 		{
-			// {@squirreljme.error AQ2t Failed to close the tokenizer.}
-			throw new TokenizerException(this, "AQ2t", e);
+			// {@squirreljme.error AQ2v Failed to close the tokenizer.}
+			throw new TokenizerException(this, "AQ2v", e);
 		}
 	}
 	
@@ -429,11 +429,11 @@ public class Tokenizer
 					// Consume that character
 					this.__nextChar();
 					
-					// {@squirreljme.error AQ0y Invalid elipses, three
+					// {@squirreljme.error AQ2w Invalid elipses, three
 					// dots were expected but only two were read.}
 					p = this.__nextChar();
 					if (p != '.')
-						throw new TokenizerException(this, "AQ0y");
+						throw new TokenizerException(this, "AQ2w");
 					
 					return this.__token(TokenType.SYMBOL_ELLIPSES, "...");
 				}
@@ -473,11 +473,11 @@ public class Tokenizer
 			else if (CharacterTest.isSymbolStart(c))
 				return this.__determineOperator(c);
 			
-			// {@squirreljme.error AQ0e Unknown character while tokenizing the
+			// {@squirreljme.error AQ2x Unknown character while tokenizing the
 			// Java source code. (The character; The line; The column)}
 			else
 				throw new TokenizerException(this,
-					String.format("AQ0e %c %d %d", (char)c, line, column));
+					String.format("AQ2x %c %d %d", (char)c, line, column));
 		}
 	}
 	
@@ -641,10 +641,10 @@ public class Tokenizer
 					}
 				}
 				
-				// {@squirreljme.error AQ11 Could not determine the
+				// {@squirreljme.error AQ2y Could not determine the
 				// operator to decode.}
 				if (foundop < 0)
-					throw new TokenizerException(this, "AQ11");
+					throw new TokenizerException(this, "AQ2y");
 				break;
 			}
 			
@@ -669,9 +669,9 @@ public class Tokenizer
 			mask |= 0xFF;
 		}
 		
-		// {@squirreljme.error AQ10 Could not decode an operator.}
+		// {@squirreljme.error AQ2z Could not decode an operator.}
 		if (foundop < 0)
-			throw new TokenizerException(this, "AQ10");
+			throw new TokenizerException(this, "AQ2z");
 		
 		return this.__tokenOperator(operators.get(foundop));
 	}
@@ -699,12 +699,12 @@ public class Tokenizer
 				TokenType t;
 				switch (s)
 				{
-						// {@squirreljme.error AQ0f The specified keywords
+						// {@squirreljme.error AQ30 The specified keywords
 						// are reserved and not valid. (The keyword)}
 					case "const":
 					case "goto":
 						throw new TokenizerException(this, String.format(
-							"AQ0f %s", __token(TokenType.IDENTIFIER, s)));
+							"AQ30 %s", __token(TokenType.IDENTIFIER, s)));
 					
 					case "abstract":	t = TokenType.KEYWORD_ABSTRACT; break;
 					case "assert":		t = TokenType.KEYWORD_ASSERT; break;
@@ -789,11 +789,11 @@ public class Tokenizer
 		StringBuilder sb = new StringBuilder();
 		for (;;)
 		{
-			// {@squirreljme.error AQ0g End of file reached while reading a
+			// {@squirreljme.error AQ31 End of file reached while reading a
 			// multi-line comment.}
 			int c = __peekChar();
 			if (c < 0)
-				throw new TokenizerException(this, "AQ0g");
+				throw new TokenizerException(this, "AQ31");
 			
 			// Potential end of comment?
 			if (c == '*')
@@ -871,23 +871,23 @@ public class Tokenizer
 			if (peek < 0 || CharacterTest.isWhite(peek) ||
 				!CharacterTest.isPossibleNumberChar(peek))
 			{
-				// {@squirreljme.error AQ0u An identifier character cannot
+				// {@squirreljme.error AQ32 An identifier character cannot
 				// follow a numerical literal. (The next character)}
 				if (CharacterTest.isIdentifierPart(peek))
 					throw new TokenizerException(this, 
-						String.format("AQ0u %c", peek));
+						String.format("AQ32 %c", peek));
 				break;
 			}
 			
 			// Debug
 			todo.DEBUG.note("Literal char: %c", peek);
 			
-			// {@squirreljme.error AQ0v Number has multiple decimal points,
+			// {@squirreljme.error AQ33 Number has multiple decimal points,
 			// only one is valid.}
 			if (peek == '.')
 			{
 				if (gotdec)
-					throw new TokenizerException(this, "AQ0v");
+					throw new TokenizerException(this, "AQ33");
 				gotdec = true;
 			}
 			
@@ -931,13 +931,13 @@ public class Tokenizer
 			sb.append((char)this.__nextChar());
 			inchars++;
 			
-			// {@squirreljme.error AQ0x No numberal literals left to put
+			// {@squirreljme.error AQ34 No numberal literals left to put
 			// the literal under as they have all been ruled out. (The
 			// current string sequence)}
 			if (!isbinint && !isbinint && !isoctint && !isdecint &&
 				!ishexint && !isdecfloat && !ishexfloat)
 				throw new TokenizerException(this, 
-					String.format("AQ0x %s", sb));
+					String.format("AQ34 %s", sb));
 		}
 		
 		// Token only had a length of one so these will never be valid
@@ -961,11 +961,11 @@ public class Tokenizer
 		else if (ishexfloat)
 			type = TokenType.LITERAL_HEXADECIMAL_FLOAT;
 		
-		// {@squirreljme.error AQ0w Could not determine type of number
+		// {@squirreljme.error AQ35 Could not determine type of number
 		// literal is used for the given string. (The token string)}
 		else
 			throw new TokenizerException(this, 
-				String.format("AQ0w %s", sb.toString()));
+				String.format("AQ35 %s", sb.toString()));
 		
 		// Use that!
 		return __token(type, sb.toString());
@@ -1078,10 +1078,10 @@ public class Tokenizer
 			return c;
 		}
 		
-		// {@squirreljme.error AQ2u Could not read the next character.}
+		// {@squirreljme.error AQ36 Could not read the next character.}
 		catch (IOException e)
 		{
-			throw new TokenizerException(this, "AQ2u", e);
+			throw new TokenizerException(this, "AQ36", e);
 		}
 	}
 	
@@ -1175,11 +1175,11 @@ public class Tokenizer
 			case "++":	type = TokenType.OPERATOR_INCREMENT; break;
 			case "@":	type = TokenType.SYMBOL_AT; break;
 			
-				// {@squirreljme.error AQ0z Could not determine the used
+				// {@squirreljme.error AQ37 Could not determine the used
 				// operator for the given sequence. (The sequence)}
 			default:
 				throw new TokenizerException(this, 
-					String.format("AQ0z %s", s));
+					String.format("AQ37 %s", s));
 		}
 		
 		// Generate
