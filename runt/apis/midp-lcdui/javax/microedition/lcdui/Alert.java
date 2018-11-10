@@ -193,10 +193,10 @@ public class Alert
 	{
 		throw new todo.TODO();
 		/*
-		// {@squirreljme.error EB11 The specified number of milliseconds is
+		// {@squirreljme.error EB15 The specified number of milliseconds is
 		// negative. (The number of milliseconds specified)}
 		if (__ms < 0 && __ms != FOREVER)
-			throw new IllegalArgumentException(String.format("EB11 %d", __ms));
+			throw new IllegalArgumentException(String.format("EB15 %d", __ms));
 		
 		// Set
 		this._timeout = __ms;

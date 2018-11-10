@@ -356,22 +356,22 @@ public final class Font
 	public static Font getFont(int __face, int __style, int __size)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB1g Invalid font face specified. (The face)}
+		// {@squirreljme.error EB1n Invalid font face specified. (The face)}
 		if ((__face & ~(FACE_SYSTEM | FACE_MONOSPACE | FACE_PROPORTIONAL)) != 0
 			|| Integer.bitCount(__face) > 1)
-			throw new IllegalArgumentException(String.format("EB1g %d",
+			throw new IllegalArgumentException(String.format("EB1n %d",
 				__face));
 		
-		// {@squirreljme.error EB1h Invalid font size specified. (The size)}
+		// {@squirreljme.error EB1o Invalid font size specified. (The size)}
 		if ((__size & ~(SIZE_SMALL | SIZE_MEDIUM | SIZE_LARGE)) != 0
 			|| Integer.bitCount(__size) > 1)
-			throw new IllegalArgumentException(String.format("EB1h %d",
+			throw new IllegalArgumentException(String.format("EB1o %d",
 				__size));
 		
-		// {@squirreljme.error EB1i Invalid font style specified. (The style)}
+		// {@squirreljme.error EB1p Invalid font style specified. (The style)}
 		if ((__style & ~(STYLE_PLAIN | STYLE_UNDERLINED | STYLE_BOLD |
 			STYLE_ITALIC)) != 0)
-			throw new IllegalArgumentException(String.format("EB1i %d",
+			throw new IllegalArgumentException(String.format("EB1p %d",
 				__style));
 		
 		throw new todo.TODO();

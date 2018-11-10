@@ -32,8 +32,8 @@ public class Spacer
 	public void addCommand(Command __a)
 		throws IllegalStateException
 	{
-		// {@squirreljme.error EB2m Cannot add commands for spacers.}
-		throw new IllegalStateException("EB2m");
+		// {@squirreljme.error EB21 Cannot add commands for spacers.}
+		throw new IllegalStateException("EB21");
 	}
 	
 	/**
@@ -47,9 +47,9 @@ public class Spacer
 	public void setDefaultCommand(Command __a)
 		throws IllegalStateException
 	{
-		// {@squirreljme.error EB2l Cannot set the default command for
+		// {@squirreljme.error EB22 Cannot set the default command for
 		// spacers.}
-		throw new IllegalStateException("EB2l");
+		throw new IllegalStateException("EB22");
 	}
 	
 	/**
@@ -63,8 +63,8 @@ public class Spacer
 	public void setLabel(String __a)
 		throws IllegalStateException
 	{
-		// {@squirreljme.error EB2k Cannot set labels for spacers.}
-		throw new IllegalStateException("EB2k");
+		// {@squirreljme.error EB23 Cannot set labels for spacers.}
+		throw new IllegalStateException("EB23");
 	}
 	
 	public void setMinimumSize(int __a, int __b)

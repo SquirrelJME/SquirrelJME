@@ -171,10 +171,10 @@ public abstract class Item
 		if (true)
 			throw new todo.TODO();
 		/*
-		// {@squirreljme.error EB1t Cannot set the label of an item which is
+		// {@squirreljme.error EB20 Cannot set the label of an item which is
 		// contained within an Alert.}
 		if (this._screen instanceof Alert)
-			throw new IllegalArgumentException("EB1t");
+			throw new IllegalArgumentException("EB20");
 		*/
 		
 		throw new todo.TODO();

@@ -89,9 +89,9 @@ public final class KeyNames
 				if (__c >= 0x21 && __c <= 0x7E)
 					return Character.valueOf((char)__c).toString();
 				
-				// {@squirreljme.error EB07 Cannot get the name for the given
+				// {@squirreljme.error EB06 Cannot get the name for the given
 				// key code because it is not known. (The key code)}
-				throw new IllegalArgumentException(String.format("EB07 %d",
+				throw new IllegalArgumentException(String.format("EB06 %d",
 					__c));
 		}
 	}

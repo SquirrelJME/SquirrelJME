@@ -371,10 +371,10 @@ public class Display
 				p = DisplayProperty.COLOR_IDLE_HIGHLIGHTED_FOREGROUND;
 				break;
 				
-				// {@squirreljme.error EB17 The specified color is not valid.
+				// {@squirreljme.error EB1b The specified color is not valid.
 				// (The color ID)}
 			default:
-				throw new IllegalArgumentException(String.format("EB17 %d",
+				throw new IllegalArgumentException(String.format("EB1b %d",
 					__c));
 		}
 		
@@ -587,9 +587,9 @@ public class Display
 		else if (__m == MODE_NORMAL)
 			throw new todo.TODO();
 	
-		// {@squirreljme.error EB18 Unknown activity mode specified.}
+		// {@squirreljme.error EB1c Unknown activity mode specified.}
 		else
-			throw new IllegalArgumentException("EB18");
+			throw new IllegalArgumentException("EB1c");
 	}
 	
 	public void setCommandLayoutPolicy(CommandLayoutPolicy __clp)
@@ -618,19 +618,19 @@ public class Display
 		throws DisplayCapabilityException, IllegalStateException,
 			NullPointerException
 	{
-		// {@squirreljme.error EB19 Cannot show another alert when the alert
+		// {@squirreljme.error EB1d Cannot show another alert when the alert
 		// to show is cleared.}
 		if (__exit instanceof Alert)
-			throw new IllegalStateException("EB19");
+			throw new IllegalStateException("EB1d");
 		
 		// Check
 		if (__show == null || __exit == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB25 The displayable to show on exit after
+		// {@squirreljme.error EB1e The displayable to show on exit after
 		// showing an alert cannot be an alert.}
 		if (__exit instanceof Alert)
-			throw new IllegalStateException("EB25");
+			throw new IllegalStateException("EB1e");
 		
 		// Perform call on this display
 		throw new todo.TODO();
@@ -651,11 +651,11 @@ public class Display
 			this._heldexit = __exit;
 		}
 		
-		// {@squirreljme.error EB25 Could not set the alert and its exit
+		// {@squirreljme.error EB1f Could not set the alert and its exit
 		// displayable because it is already set on a display.}
 		catch (LcdWidgetOwnedException e)
 		{
-			throw new IllegalStateException("EB25", e);
+			throw new IllegalStateException("EB1f", e);
 		}*/
 	}
 	
@@ -707,11 +707,11 @@ public class Display
 			* /
 		}
 		
-		// {@squirreljme.error EB27 Could not set the displayable to be
+		// {@squirreljme.error EB1g Could not set the displayable to be
 		// shown because it is already being shown on a display.}
 		catch (LcdWidgetOwnedException e)
 		{
-			throw new IllegalStateException("EB27", e);
+			throw new IllegalStateException("EB1g", e);
 		}
 		*/
 	}
@@ -756,9 +756,9 @@ public class Display
 	{
 		throw new todo.TODO();
 		/*
-		// {@squirreljme.error EB1a Cannot vibrate for a negative duration.}
+		// {@squirreljme.error EB1h Cannot vibrate for a negative duration.}
 		if (__d < 0)
-			throw new IllegalArgumentException("EB1a");
+			throw new IllegalArgumentException("EB1h");
 		
 		// Send vibrate call
 		LcdServiceCall.<VoidType>call(VoidType.class,
@@ -816,10 +816,10 @@ public class Display
 				p = DisplayProperty.BEST_IMAGE_SIZE_MENU;
 				break;
 				
-				// {@squirreljme.error EB1b Cannot get the best image size of
+				// {@squirreljme.error EB1i Cannot get the best image size of
 				// the specified element. (The element specifier)}
 			default:
-				throw new IllegalArgumentException(String.format("EB1b %d",
+				throw new IllegalArgumentException(String.format("EB1i %d",
 					__e));
 		}
 		
@@ -910,9 +910,9 @@ public class Display
 		if (disp.length > 0)
 			return disp[0];
 		
-		// {@squirreljme.error EB1e Could not get the display for the specified
+		// {@squirreljme.error EB1j Could not get the display for the specified
 		// MIDlet because no displays are available.}
-		throw new IllegalStateException("EB1e");
+		throw new IllegalStateException("EB1j");
 	}
 	
 	/**
@@ -953,9 +953,9 @@ public class Display
 			}
 		}
 		
-		// {@squirreljme.error EB1f No displays are available.}
+		// {@squirreljme.error EB1k No displays are available.}
 		if (displays.size() <= 0)
-			throw new IllegalStateException("EB1f");
+			throw new IllegalStateException("EB1k");
 		
 		// Add any displays that meet the capabilities
 		List<Display> rv = new ArrayList<>();
@@ -998,10 +998,10 @@ public class Display
 					didremove = true;
 				}
 			
-			// {@squirreljme.error EB2c The listener was never added to the
+			// {@squirreljme.error EB1l The listener was never added to the
 			// listener set.}
 			if (!didremove)
-				throw new IllegalStateException("EB2c");
+				throw new IllegalStateException("EB1l");
 		}
 	}
 	
@@ -1039,10 +1039,10 @@ public class Display
 		{
 			Integer k = __did;
 			
-			// {@squirreljme.error EB1w Could not map the given display
+			// {@squirreljme.error EB1m Could not map the given display
 			// because it is not a known display key. (The display index)}
 			if (!displays.containsKey(k))
-				throw new IllegalStateException(String.format("EB1w %d", k));
+				throw new IllegalStateException(String.format("EB1m %d", k));
 			
 			Display rv = displays.get(k);
 			

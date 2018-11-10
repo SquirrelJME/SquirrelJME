@@ -77,16 +77,16 @@ public class ChoiceGroup
 		if (__se == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB12 The image array does not have the same
+		// {@squirreljme.error EB16 The image array does not have the same
 		// length as the string array.}
 		int n = __se.length;
 		if (__ie != null && __ie.length != n)
-			throw new IllegalArgumentException("EB12");
+			throw new IllegalArgumentException("EB16");
 		
-		// {@squirreljme.error EB13 Invalid choice type specified for a
+		// {@squirreljme.error EB17 Invalid choice type specified for a
 		// choice group. (The choice type)}
 		if (__ct < _MIN_TYPE || __ct > _MAX_TYPE || __ct == IMPLICIT)
-			throw new IllegalArgumentException(String.format("EB13 %d", __ct));
+			throw new IllegalArgumentException(String.format("EB17 %d", __ct));
 		
 		// Set
 		setLabel(__l);
@@ -95,11 +95,11 @@ public class ChoiceGroup
 		// Append all elements
 		for (int i = 0; i < n; i++)
 		{
-			// {@squirreljme.error EB14 A string element contains a null
+			// {@squirreljme.error EB18 A string element contains a null
 			// entry.}
 			String s = __se[i];
 			if (s == null)
-				throw new NullPointerException("EB14");
+				throw new NullPointerException("EB18");
 			
 			// Add it
 			append(s, (__ie != null ? __ie[i] : null));
@@ -194,11 +194,11 @@ public class ChoiceGroup
 		// Insert wherever
 		synchronized (this._lock)
 		{
-			// {@squirreljme.error EB15 Cannot insert choice at the specified
+			// {@squirreljme.error EB19 Cannot insert choice at the specified
 			// index because it is not within bounds. (The index to add at)}
 			List<__ChoiceEntry__> entries = this._entries;
 			if (__v < 0 || __v > entries.size())
-				throw new IndexOutOfBoundsException(String.format("EB15 %d",
+				throw new IndexOutOfBoundsException(String.format("EB19 %d",
 					__v));
 			
 			// Insert
