@@ -94,7 +94,7 @@ public class PNGReader
 	{
 		DataInputStream in = this.in;
 		
-		// {@squirreljme.error EB0o Illegal PNG magic number.}
+		// {@squirreljme.error EB0t Illegal PNG magic number.}
 		if (in.readUnsignedByte() != 80 ||
 			in.readUnsignedByte() != 78 ||
 			in.readUnsignedByte() != 71 ||
@@ -102,7 +102,7 @@ public class PNGReader
 			in.readUnsignedByte() != 10 ||
 			in.readUnsignedByte() != 26 ||
 			in.readUnsignedByte() != 10)
-			throw new IOException("EB0o");
+			throw new IOException("EB0t");
 		
 		// Keep reading chunks in the file
 		for (;;)
@@ -157,19 +157,19 @@ public class PNGReader
 				}
 			}
 			
-			// {@squirreljme.error EB0p CRC mismatch in PNG data chunk.
+			// {@squirreljme.error EB0u CRC mismatch in PNG data chunk.
 			// (Desired CRC; Actual CRC; Last chunk type read)}
 			int want = in.readInt(),
 				real = crc.checksum();
 			if (want != real)
-				throw new IOException(String.format("EB0p %08x %08x %08x",
+				throw new IOException(String.format("EB0u %08x %08x %08x",
 					want, real, lasttype));
 		}
 		
-		// {@squirreljme.error EB0q No image data has been loaded.}
+		// {@squirreljme.error EB0v No image data has been loaded.}
 		int[] argb = this._argb;
 		if (argb == null)
-			throw new IOException("EB0q");
+			throw new IOException("EB0v");
 		
 		// Create image
 		return Image.createRGBImage(argb, this._width, this._height,
@@ -191,18 +191,18 @@ public class PNGReader
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB0r Image has zero or negative width.
+		// {@squirreljme.error EB0w Image has zero or negative width.
 		// (The width)}
 		int width = __in.readInt();
 		if (width <= 0)
-			throw new IOException(String.format("EB0r %d", width));
+			throw new IOException(String.format("EB0w %d", width));
 		this._width = width;
 		
-		// {@squirreljme.error EB0s Image has zero or negative height. (The
+		// {@squirreljme.error EB0x Image has zero or negative height. (The
 		// height)}
 		int height = __in.readInt();
 		if (height <= 0)
-			throw new IOException(String.format("EB0s %d", height));
+			throw new IOException(String.format("EB0x %d", height));
 		this._height = height;
 		
 		// Debug
@@ -212,16 +212,16 @@ public class PNGReader
 		int bitdepth = __in.readUnsignedByte(),
 			colortype = __in.readUnsignedByte();
 		
-		// {@squirreljme.error EB0t Invalid PNG bit depth.
+		// {@squirreljme.error EB0y Invalid PNG bit depth.
 		// (The bit depth)}
 		if (Integer.bitCount(bitdepth) != 1 || bitdepth < 0 || bitdepth > 16)
-			throw new IOException(String.format("EB0t %d", bitdepth));
+			throw new IOException(String.format("EB0y %d", bitdepth));
 		
-		// {@squirreljme.error EB0u Invalid PNG bit depth and color type
+		// {@squirreljme.error EB0z Invalid PNG bit depth and color type
 		// combination. (The color type; The bit depth)}
 		if ((bitdepth < 8 && (colortype != 0 && colortype != 3)) ||
 			(bitdepth > 8 && colortype != 3))
-			throw new IOException(String.format("EB0u %d %d", colortype,
+			throw new IOException(String.format("EB0z %d %d", colortype,
 				bitdepth));
 			
 		// Set
@@ -231,23 +231,23 @@ public class PNGReader
 		// These two color types have alpha
 		this._hasalpha = (colortype == 4 || colortype == 6);
 		
-		// {@squirreljme.error EB0v Only deflate compressed PNG images are
+		// {@squirreljme.error EB10 Only deflate compressed PNG images are
 		// supported. (The compression method)}
 		int compressionmethod = __in.readUnsignedByte();
 		if (compressionmethod != 0)
-			throw new IOException(String.format("EB0v %d", compressionmethod));
+			throw new IOException(String.format("EB10 %d", compressionmethod));
 		
-		// {@squirreljme.error EB0w Only adapative filtered PNGs are supported.
+		// {@squirreljme.error EB11 Only adapative filtered PNGs are supported.
 		// (The filter type)}
 		int filter = __in.readUnsignedByte();
 		if (filter != 0)
-			throw new IOException(String.format("EB0w %d", filter));
+			throw new IOException(String.format("EB11 %d", filter));
 		
-		// {@squirreljme.error EB0x Unsupported PNG interlace method. (The
+		// {@squirreljme.error EB12 Unsupported PNG interlace method. (The
 		// interlace type)}
 		int interlace = __in.readUnsignedByte();
 		if (interlace != 0 && interlace != 1)
-			throw new IOException(String.format("EB0x %d", interlace));
+			throw new IOException(String.format("EB12 %d", interlace));
 		this._adamseven = (interlace == 1);
 		
 		// Allocate image buffer
@@ -280,9 +280,9 @@ public class PNGReader
 			numpals = (palette != null ? palette.length : 0);
 		boolean adamseven = this._adamseven;
 		
-		// {@squirreljme.error EB0y Paletted PNG image has no palette.}
+		// {@squirreljme.error EB13 Paletted PNG image has no palette.}
 		if (colortype == 3 && palette == null)
-			throw new IOException("EB0y");
+			throw new IOException("EB13");
 		
 		// Calculate the number of bytes that are used to represent the image
 		// pixel data.
@@ -406,11 +406,11 @@ public class PNGReader
 					// Palette
 					else if (colortype == 3)
 					{
-						// {@squirreljme.error EB0z Index exceeds the size of
+						// {@squirreljme.error EB14 Index exceeds the size of
 						// a palette. (The index; The palette size)}
 						int v = channels[0];
 						if (v >= numpals)
-							throw new IOException(String.format("EB0z %d %d",
+							throw new IOException(String.format("EB14 %d %d",
 								v, numpals));
 						color = palette[v];
 					}

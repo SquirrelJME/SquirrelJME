@@ -158,11 +158,11 @@ public class Command
 		if (__sl == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB16 And invalid command type was specified.
+		// {@squirreljme.error EB1a And invalid command type was specified.
 		// (The command type)}
 		if (__type < Command._FIRST_TYPE || __type > Command._LAST_TYPE)
 			throw new IllegalArgumentException(
-				String.format("EB16 %d", __type));
+				String.format("EB1a %d", __type));
 		
 		// Set
 		this._implspec = __implspec;

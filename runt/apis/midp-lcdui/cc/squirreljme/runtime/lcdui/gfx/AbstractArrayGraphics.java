@@ -118,22 +118,22 @@ public abstract class AbstractArrayGraphics
 		int __ppe, boolean __alpha, int __atx, int __aty)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB2d Invalid width and/or height specified.}
+		// {@squirreljme.error EB07 Invalid width and/or height specified.}
 		if (__w <= 0 || __h <= 0)
-			throw new IllegalArgumentException("EB2d");
+			throw new IllegalArgumentException("EB07");
 		
-		// {@squirreljme.error EB2e The pitch is less than the width.}
+		// {@squirreljme.error EB08 The pitch is less than the width.}
 		if (__p < __w)
-			throw new IllegalArgumentException("EB2e");
+			throw new IllegalArgumentException("EB08");
 		
-		// {@squirreljme.error EB2g The specified parameters exceed the bounds
+		// {@squirreljme.error EB09 The specified parameters exceed the bounds
 		// of the array. (The width; The height; The offset; The pitch;
 		// The array length; The number of elements in the image)}
 		int numelements = (__p * __h) / __ppe,
 			lastelement = __o + numelements;
 		if (__o < 0 || lastelement > __l)
 			throw new ArrayIndexOutOfBoundsException(
-				String.format("EB2g %d %d %d %d %d %d", __w, __h,
+				String.format("EB09 %d %d %d %d %d %d", __w, __h,
 				__o, __p, __l, numelements));
 		
 		// Set
@@ -819,12 +819,12 @@ public abstract class AbstractArrayGraphics
 	public final void setAlphaColor(int __a, int __r, int __g, int __b)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB2h Color out of range. (Alpha; Red; Green;
+		// {@squirreljme.error EB0a Color out of range. (Alpha; Red; Green;
 		// Blue)}
 		if (__a < 0 || __a > 255 || __r < 0 || __r > 255 ||
 			__g < 0 || __g > 255 || __b < 0 || __b > 255)
 			throw new IllegalArgumentException(String.format(
-				"EB2h %d %d %d %d", __a, __r, __g, __b));
+				"EB0a %d %d %d %d", __a, __r, __g, __b));
 		
 		// Set
 		this.setAlphaColor((__a << 24) | (__r << 16) | (__g << 8) | __b);
@@ -844,10 +844,10 @@ public abstract class AbstractArrayGraphics
 		// Just use source pixels
 		if (__m == SRC)
 		{
-			// {@squirreljme.error EB2j Cannot set the overlay blending mode
+			// {@squirreljme.error EB0b Cannot set the overlay blending mode
 			// because this graphics context does not have the alpha channel.}
 			if (!this.hasalphachannel)
-				throw new IllegalArgumentException("EB2j");
+				throw new IllegalArgumentException("EB0b");
 			
 			candoblending = false;
 		}
@@ -858,9 +858,9 @@ public abstract class AbstractArrayGraphics
 			candoblending = true;
 		}
 		
-		// {@squirreljme.error EB2i Unknown blending mode.}
+		// {@squirreljme.error EB0c Unknown blending mode.}
 		else
-			throw new IllegalArgumentException("EB2i");
+			throw new IllegalArgumentException("EB0c");
 		
 		// Set
 		this.blendmode = __m;
@@ -981,9 +981,9 @@ public abstract class AbstractArrayGraphics
 	public final void setStrokeStyle(int __a)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB0g Illegal stroke style.}
+		// {@squirreljme.error EB0d Illegal stroke style.}
 		if (__a != SOLID && __a != DOTTED)
-			throw new IllegalArgumentException("EB0g");
+			throw new IllegalArgumentException("EB0d");
 		
 		// Set
 		this.strokestyle = __a;

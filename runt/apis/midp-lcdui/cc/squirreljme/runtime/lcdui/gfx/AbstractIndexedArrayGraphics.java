@@ -59,10 +59,10 @@ public abstract class AbstractIndexedArrayGraphics
 		if (__pal == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB2f The input palette does not have enough
+		// {@squirreljme.error EB0e The input palette does not have enough
 		// entries to store color information.}
 		if (__pal.length < __numc)
-			throw new IllegalArgumentException("EB2f");
+			throw new IllegalArgumentException("EB0e");
 		
 		// Score all colors in the palette for faster lookup potentially
 		int[] scores = new int[__numc];

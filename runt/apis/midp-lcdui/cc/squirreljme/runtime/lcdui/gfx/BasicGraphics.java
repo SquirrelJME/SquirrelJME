@@ -233,10 +233,10 @@ public abstract class BasicGraphics
 		if (__i == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB0a Images cannot have the baseline anchor
+		// {@squirreljme.error EB0f Images cannot have the baseline anchor
 		// point.}
 		if (__anchor == BASELINE)
-			throw new IllegalArgumentException("EB0a");
+			throw new IllegalArgumentException("EB0f");
 		
 		// Transform
 		__x += this.transx;
@@ -616,10 +616,10 @@ public abstract class BasicGraphics
 		if (__src == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EB0b Images cannot have the baseline anchor
+		// {@squirreljme.error EB0g Images cannot have the baseline anchor
 		// point.}
 		if (__anchor == BASELINE)
-			throw new IllegalArgumentException("EB0b");
+			throw new IllegalArgumentException("EB0g");
 		
 		// Calculate source image coordinates
 		int iw = __src.getWidth(),
@@ -627,10 +627,10 @@ public abstract class BasicGraphics
 			exsrc = __xsrc + __wsrc,
 			eysrc = __ysrc + __hsrc;
 		
-		// {@squirreljme.error EB0c Source rectangle from an image exceeds the
+		// {@squirreljme.error EB0h Source rectangle from an image exceeds the
 		// bounds of the image.}
 		if (__xsrc < 0 || __ysrc < 0 || exsrc > iw || eysrc > ih)
-			throw new IllegalArgumentException("EB0c");
+			throw new IllegalArgumentException("EB0h");
 		
 		// Transform
 		__xdest += this.transx;
@@ -1084,12 +1084,12 @@ public abstract class BasicGraphics
 	public final void setAlphaColor(int __a, int __r, int __g, int __b)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB0d Color out of range. (Alpha; Red; Green;
+		// {@squirreljme.error EB0i Color out of range. (Alpha; Red; Green;
 		// Blue)}
 		if (__a < 0 || __a > 255 || __r < 0 || __r > 255 ||
 			__g < 0 || __g > 255 || __b < 0 || __b > 255)
 			throw new IllegalArgumentException(String.format(
-				"EB0d %d %d %d %d", __a, __r, __g, __b));
+				"EB0i %d %d %d %d", __a, __r, __g, __b));
 		
 		// Set
 		this.color = (__a << 24) | (__r << 16) | (__g << 8) | __b;
@@ -1103,14 +1103,14 @@ public abstract class BasicGraphics
 	public final void setBlendingMode(int __m)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB0e Unknown blending mode.}
+		// {@squirreljme.error EB0j Unknown blending mode.}
 		if (__m != SRC_OVER && __m != SRC)
-			throw new IllegalArgumentException("EB0e");
+			throw new IllegalArgumentException("EB0j");
 		
-		// {@squirreljme.error EB0f Cannot set the overlay blending mode
+		// {@squirreljme.error EB0k Cannot set the overlay blending mode
 		// because this graphics context does not have the alpha channel.}
 		if (__m == SRC && !this.hasalpha)
-			throw new IllegalArgumentException("EB0f");
+			throw new IllegalArgumentException("EB0k");
 		
 		// Set
 		this.blendmode = __m;
@@ -1214,9 +1214,9 @@ public abstract class BasicGraphics
 	public final void setStrokeStyle(int __a)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EB0g Illegal stroke style.}
+		// {@squirreljme.error EB0l Illegal stroke style.}
 		if (__a != SOLID && __a != DOTTED)
-			throw new IllegalArgumentException("EB0g");
+			throw new IllegalArgumentException("EB0l");
 		
 		// Set
 		this.strokestyle = __a;
@@ -1264,10 +1264,10 @@ public abstract class BasicGraphics
 			case HCENTER:
 				return __x - (__w >>> 1);
 				
-				// {@squirreljme.error EB0h Invalid anchor point. (The anchor
+				// {@squirreljme.error EB0m Invalid anchor point. (The anchor
 				// point)}
 			default:
-				throw new IllegalArgumentException(String.format("EB0h %d",
+				throw new IllegalArgumentException(String.format("EB0m %d",
 					__anchor));
 		}
 	}
@@ -1307,10 +1307,10 @@ public abstract class BasicGraphics
 			case VCENTER:
 				return __y - (__h >>> 1);
 				
-				// {@squirreljme.error EB0i Invalid anchor point. (The anchor
+				// {@squirreljme.error EB0n Invalid anchor point. (The anchor
 				// point)}
 			default:
-				throw new IllegalArgumentException(String.format("EB0i %d",
+				throw new IllegalArgumentException(String.format("EB0n %d",
 					__anchor));
 		}
 	}
