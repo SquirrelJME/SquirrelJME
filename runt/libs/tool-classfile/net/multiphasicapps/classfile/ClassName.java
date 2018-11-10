@@ -93,9 +93,9 @@ public class ClassName
 		if (__d == 0)
 			return this;
 		
-		// {@squirreljme.error JC2b Cannot add negative dimensions.}
+		// {@squirreljme.error JC0r Cannot add negative dimensions.}
 		if (__d < 0)
-			throw new IllegalArgumentException("JC2b");
+			throw new IllegalArgumentException("JC0r");
 		
 		// Going to be the same here but as a class name instead
 		return this.field().addDimensions(__d).className();
@@ -146,10 +146,10 @@ public class ClassName
 	public final ClassName componentType()
 		throws IllegalStateException
 	{
-		// {@squirreljme.error JC2l This class is not an array, cannot get
+		// {@squirreljme.error JC0s This class is not an array, cannot get
 		// the component type. (The name of this class)}
 		if (!this.isArray())
-			throw new IllegalStateException(String.format("JC2l %s", this));
+			throw new IllegalStateException(String.format("JC0s %s", this));
 		
 		return this.field().componentType().className();
 	}

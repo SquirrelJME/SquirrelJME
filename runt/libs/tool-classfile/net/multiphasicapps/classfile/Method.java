@@ -288,11 +288,11 @@ public final class Method
 				__pool.<UTFConstantEntry>require(UTFConstantEntry.class,
 				__in.readUnsignedShort()).toString());
 			
-			// {@squirreljme.error JC12 A duplicate method exists within the
+			// {@squirreljme.error JC1m A duplicate method exists within the
 			// class. (The method name; The method descriptor)}
 			if (!dup.add(new NameAndType(name.toString(), type.toString())))
 				throw new InvalidClassFormatException(String.format(
-					"JC12 %s %s", name, type));
+					"JC1m %s %s", name, type));
 			
 			// Handle attributes
 			AttributeTable attrs = AttributeTable.parse(__pool, __in);
@@ -304,13 +304,13 @@ public final class Method
 			Attribute maybecode = attrs.get("Code");
 			byte[] code = (maybecode == null ? null : maybecode.bytes());
 			
-			// {@squirreljme.error JC14 The specified method does not have
+			// {@squirreljme.error JC1n The specified method does not have
 			// the correct matching for abstract and if code exists or not.
 			// (The current
 			// class; The method name; The method type; The method flags)}
 			if ((code == null) != (flags.isAbstract() | flags.isNative()))
 				throw new InvalidClassFormatException(String.format(
-					"JC14 %s %s %s", __tn, name, type, flags));
+					"JC1n %s %s %s", __tn, name, type, flags));
 			
 			// Create
 			rv[i] = new Method(__ver, __cf, __tn, __pool, flags, name, type,

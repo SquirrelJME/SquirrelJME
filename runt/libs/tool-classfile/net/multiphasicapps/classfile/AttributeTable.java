@@ -171,11 +171,11 @@ public final class AttributeTable
 			String name = __pool.<UTFConstantEntry>require(
 				UTFConstantEntry.class, __in.readUnsignedShort()).toString();
 			
-			// {@squirreljme.error JC1z Attributes with a size larger than two
+			// {@squirreljme.error JC05 Attributes with a size larger than two
 			// gigabytes are not supported.}
 			int len = __in.readInt();
 			if (len < 0)
-				throw new InvalidClassFormatException("JC1z");
+				throw new InvalidClassFormatException("JC05");
 			
 			byte[] data = new byte[len];
 			__in.readFully(data);

@@ -62,11 +62,11 @@ public final class Annotation
 			if (k == null || v == null)
 				throw new NullPointerException();
 			
-			// {@squirreljme.error JC27 Duplicate key within annotation. (The
+			// {@squirreljme.error JC01 Duplicate key within annotation. (The
 			// key)}
 			if (null != values.put(k, v))
 				throw new InvalidClassFormatException(String.format(
-					"JC27 %s", k));
+					"JC01 %s", k));
 		}
 	}
 	
@@ -164,9 +164,9 @@ public final class Annotation
 			<UTFConstantEntry>get(UTFConstantEntry.class,
 			__in.readUnsignedShort()).toString())).className();
 		
-		// {@squirreljme.error JC26 Annotation type is not correct. (The type)}
+		// {@squirreljme.error JC02 Annotation type is not correct. (The type)}
 		if (typename == null)
-			throw new InvalidClassFormatException(String.format("JC26 %s",
+			throw new InvalidClassFormatException(String.format("JC02 %s",
 				rawtypename));
 		
 		// Read element table
@@ -197,11 +197,11 @@ public final class Annotation
 				case '[':
 					throw new todo.TODO();
 				
-					// {@squirreljme.error JC25 Invalid tag specified in
+					// {@squirreljme.error JC03 Invalid tag specified in
 					// annotation. (The tag used)}
 				default:
 					throw new InvalidClassFormatException(
-						String.format("JC25 %c", tag));
+						String.format("JC03 %c", tag));
 			}
 		}
 		

@@ -123,20 +123,20 @@ public final class Pool
 		if (__i == 0)
 			return null;
 		
-		// {@squirreljme.error JC1c The specified index is not within the bounds
+		// {@squirreljme.error JC1v The specified index is not within the bounds
 		// of the constant pool. (The index of the entry)}
 		Object[] entries = this._entries;
 		if (__i < 0 || __i >= entries.length)
 			throw new InvalidClassFormatException(
-				String.format("JC1c %d", __i));
+				String.format("JC1v %d", __i));
 		
-		// {@squirreljme.error JC1d The specified entry's class is not of the
+		// {@squirreljme.error JC1w The specified entry's class is not of the
 		// expected class. (The index of the entry; The class the entry is; The
 		// expected class)}
 		Object val = entries[__i];
 		if (val != null && !__cl.isInstance(val))
 			throw new InvalidClassFormatException(
-				String.format("JC1d %d %s %s", __i, val.getClass(), __cl));
+				String.format("JC1w %d %s %s", __i, val.getClass(), __cl));
 		
 		return __cl.cast(val);
 	}
@@ -157,12 +157,12 @@ public final class Pool
 	public <C> C require(Class<C> __cl, int __i)
 		throws InvalidClassFormatException, NullPointerException
 	{
-		// {@squirreljme.error JC1e Expected the specified constant pool entry
+		// {@squirreljme.error JC1x Expected the specified constant pool entry
 		// to not be the null entry. (The index; The expected class)}
 		C rv = this.<C>get(__cl, __i);
 		if (rv == null)
 			throw new InvalidClassFormatException(
-				String.format("JC1e %d %s", __i, __cl));
+				String.format("JC1x %d %s", __i, __cl));
 		return rv;
 	}
 	
@@ -209,11 +209,11 @@ public final class Pool
 						data = new UTFConstantEntry(__in.readUTF());
 					}
 					
-					// {@squirreljme.error JC1f Modified UTF-8 data is not in
+					// {@squirreljme.error JC1y Modified UTF-8 data is not in
 					// the correct format.}
 					catch (UTFDataFormatException e)
 					{
-						throw new InvalidClassFormatException("JC1f", e);
+						throw new InvalidClassFormatException("JC1y", e);
 					}
 					break;
 					
@@ -256,19 +256,19 @@ public final class Pool
 						Double.valueOf(__in.readDouble()));
 					break;
 					
-					// {@squirreljme.error JC1g Java ME does not support dynamic
+					// {@squirreljme.error JC1z Java ME does not support dynamic
 					// invocation (such as method handles or lambda
 					// expressions).}
 				case TAG_METHODHANDLE:
 				case TAG_METHODTYPE:
 				case TAG_INVOKEDYNAMIC:
-					throw new InvalidClassFormatException("JC1g");
+					throw new InvalidClassFormatException("JC1z");
 				
-					// {@squirreljme.error JC1h Unknown tag type in the constant
+					// {@squirreljme.error JC20 Unknown tag type in the constant
 					// pool. (The constant pool tag)}
 				default:
 					throw new InvalidClassFormatException(
-						String.format("JC1h %d", tag));
+						String.format("JC20 %d", tag));
 			}
 			rawdata[i] = data;
 			
@@ -288,11 +288,11 @@ public final class Pool
 			__initializeEntries(entries, tags, rawdata);
 		}
 		
-		// {@squirreljme.error JC1i The constant pool is not valid.}
+		// {@squirreljme.error JC21 The constant pool is not valid.}
 		catch (ClassCastException|IndexOutOfBoundsException|
 			NullPointerException e)
 		{
-			throw new InvalidClassFormatException("JC1i", e);
+			throw new InvalidClassFormatException("JC21", e);
 		}
 		
 		// Setup

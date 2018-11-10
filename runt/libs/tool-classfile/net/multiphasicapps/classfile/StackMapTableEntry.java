@@ -82,7 +82,7 @@ public final class StackMapTableEntry
 		// Nothing can never be initialized
 		if (__t.equals(JavaType.NOTHING))
 		{
-			// {@squirreljme.error JC1j The nothing type cannot be initialized.
+			// {@squirreljme.error JC22 The nothing type cannot be initialized.
 			// (The type)}
 			if (__init && __t.equals(JavaType.NOTHING))
 				throw new InvalidClassFormatException(
@@ -92,11 +92,11 @@ public final class StackMapTableEntry
 		// Otherwise only objects may be initialized
 		else
 		{
-			// {@squirreljme.error JC1k Non-object types cannot be.
+			// {@squirreljme.error JC23 Non-object types cannot be.
 			// uninitialized (The type)}
 			if (!__init && !__t.isObject())
 				throw new InvalidClassFormatException(
-					String.format("JC1k %s", __t));
+					String.format("JC23 %s", __t));
 		}
 		
 		// Set

@@ -183,21 +183,21 @@ public final class InnerClassFlags
 		}
 		catch (InvalidClassFormatException e)
 		{
-			// {@squirreljme.error JC23 Inner class flags are not valid
+			// {@squirreljme.error JC16 Inner class flags are not valid
 			// because they would produce invalid standard outer class
 			// flags. (The flags)}
-			throw new InvalidClassFormatException(String.format("JC23 %s",
+			throw new InvalidClassFormatException(String.format("JC16 %s",
 				this), e);
 		}
 		
-		// {@squirreljme.error JC22 Multiple access modifiers, inner classes
+		// {@squirreljme.error JC17 Multiple access modifiers, inner classes
 		// can only be one or none of private, protected, or public.
 		// (The flags)}
 		int count = (this.isPublic() ? 1 : 0) +
 			(this.isProtected() ? 1 : 0) +
 			(this.isPrivate() ? 1 : 0);
 		if (count > 1)
-			throw new InvalidClassFormatException(String.format("JC22 %s",
+			throw new InvalidClassFormatException(String.format("JC17 %s",
 				this));
 	}
 }

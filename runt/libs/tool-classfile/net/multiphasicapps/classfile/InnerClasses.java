@@ -159,12 +159,12 @@ public final class InnerClasses
 					rv.add(new InnerClass(innerclass, flags));
 				else
 				{
-					// {@squirreljme.error JC24 An anonymous inner class
+					// {@squirreljme.error JC18 An anonymous inner class
 					// cannot have a declared outer class or name. (The inner
 					// class; The outer class it is in; The name of the class)}
 					if (outerclass == null || name == null)
 						throw new InvalidClassFormatException(
-							String.format("JC24 %s %s %s",
+							String.format("JC18 %s %s %s",
 							innerclass, outerclass, name));
 					
 					rv.add(new InnerClass(innerclass, outerclass,
