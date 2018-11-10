@@ -87,6 +87,10 @@ public class DeflaterOutputStream
 		int blocksize = __cl.blockSize();
 		this._fill = new byte[blocksize];
 		this._blocksize = blocksize;
+		
+		// Since compression is not actually implemented, say it should
+		// actually be done here!
+		todo.TODO.note("Implement fixed and dynamic huffman!");
 	}
 	
 	/**
