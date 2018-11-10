@@ -30,6 +30,9 @@ public class DeflaterOutputStream
 	/** Stream to write compressed data to. */
 	protected final OutputStream out;
 	
+	/** Has this been closed? */
+	private boolean _closed;
+	
 	/**
 	 * Initializes the deflation stream.
 	 *
@@ -40,10 +43,45 @@ public class DeflaterOutputStream
 	public DeflaterOutputStream(OutputStream __os)
 		throws NullPointerException
 	{
+		this(__os, CompressionLevel.DEFAULT);
+	}
+	
+	/**
+	 * Initializes the deflation stream.
+	 *
+	 * @param __os The output stream.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/10
+	 */
+	public DeflaterOutputStream(OutputStream __os, CompressionLevel __cl)
+		throws NullPointerException
+	{
 		if (__os == null)
 			throw new NullPointerException("NARG");
 		
 		this.out = __os;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/10
+	 */
+	@Override
+	public final void close()
+		throws IOException
+	{
+		// Only close once!
+		if (!this._closed)
+		{
+			// Is closed
+			this._closed = true;
+			
+			// Make sure the output is flushed first
+			this.flush();
+			
+			// Close it out
+			throw new todo.TODO();
+		}
 	}
 	
 	/**
@@ -63,6 +101,35 @@ public class DeflaterOutputStream
 	@Override
 	public final long uncompressedBytes()
 	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/10
+	 */
+	@Override
+	public final void write(int __b)
+		throws IOException
+	{
+		// Just forward write call since it is easier
+		this.write(new byte[]{(byte)__b}, 0, 1);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/10
+	 */
+	@Override
+	public final void write(byte[] __b, int __o, int __l)
+		throws IOException
+	{
+		// Check
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new ArrayIndexOutOfBoundsException("AIOB");
+		
 		throw new todo.TODO();
 	}
 }
