@@ -45,9 +45,9 @@ public final class APIName
 		if (StringUtils.firstIndex("\0\r\n:;", __n) >= 0)
 			throw new InvalidSuiteException(String.format("AR01 %s", __n));
 		
-		// {@squirreljme.error DG0b API name cannot be blank.}
+		// {@squirreljme.error DG02 API name cannot be blank.}
 		if (__n.length() <= 0)
-			throw new InvalidSuiteException("DG0b");
+			throw new InvalidSuiteException("DG02");
 		
 		this.string = __n;
 	}

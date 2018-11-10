@@ -173,10 +173,10 @@ final class __SuiteTracker__
 					
 					// This will be the only chance to print the installation
 					// report
-					// {@squirreljme.error DG07 Failed to install the program
+					// {@squirreljme.error DG0u Failed to install the program
 					// due to the specified error. (The error code; The more
 					// detailed message associated with the error)}
-					System.err.printf("DG07 %s %s%n", code, report.message());
+					System.err.printf("DG0u %s %s%n", code, report.message());
 					
 					// Mark as done
 					__done(code);
