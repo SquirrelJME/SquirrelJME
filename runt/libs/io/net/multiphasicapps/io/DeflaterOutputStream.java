@@ -325,7 +325,7 @@ public class DeflaterOutputStream
 		// we just take 2 from 8 and we get 6.
 		int wbits = this._wbits,
 			rem = wbits % __n;
-		this._wbits = (__n - rem);
+		this._wbits = wbits + (__n - rem);
 	}
 	
 	/**
