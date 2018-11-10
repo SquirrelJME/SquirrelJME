@@ -101,10 +101,10 @@ public final class BasicSource
 					(rv = new JavaManifest(in)));
 			}
 			
-			// {@squirreljme.error AU18 Could not read the source manifest.}
+			// {@squirreljme.error AU01 Could not read the source manifest.}
 			catch (IOException|CompilerException e)
 			{
-				throw new NoSuchSourceException("AU18", e);
+				throw new NoSuchSourceException("AU01", e);
 			}
 		
 		return rv;

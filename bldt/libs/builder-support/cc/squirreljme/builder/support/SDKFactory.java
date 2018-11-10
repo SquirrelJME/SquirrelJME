@@ -62,10 +62,10 @@ public class SDKFactory
 				if (a != null)
 					args.addLast(a);
 		
-		// {@squirreljme.error AU0y Expected command for SDK operation.}
+		// {@squirreljme.error AU0m Expected command for SDK operation.}
 		String command = args.pollFirst();
 		if (command == null)
-			throw new IllegalArgumentException("AU0y");
+			throw new IllegalArgumentException("AU0m");
 		this.command = command;
 		
 		// Use remaining arguments as input
@@ -95,13 +95,13 @@ public class SDKFactory
 			case "internal":
 				throw new todo.TODO();
 				
-				// {@squirreljme.error AU0z The specified sdk command is not
+				// {@squirreljme.error AU0n The specified sdk command is not
 				// valid. Valid commands are:
 				// build, internal
 				// .(The command)}
 			case "help":
 			default:
-				throw new IllegalArgumentException(String.format("AU0z %s",
+				throw new IllegalArgumentException(String.format("AU0n %s",
 					command));
 		}
 	}

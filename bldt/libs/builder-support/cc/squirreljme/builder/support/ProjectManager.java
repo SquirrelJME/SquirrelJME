@@ -60,10 +60,10 @@ public final class ProjectManager
 		if (__sr == null || __brs == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AU22 Binary paths array count does not match
+		// {@squirreljme.error AU0j Binary paths array count does not match
 		// the number of time spaces available.}
 		if (__brs.length != TimeSpaceType.values().length)
-			throw new IllegalArgumentException("AU22");
+			throw new IllegalArgumentException("AU0j");
 		
 		// These cannot be null, that would be bad
 		for (Path p : (__brs = __brs.clone()))
@@ -122,10 +122,10 @@ public final class ProjectManager
 			bm = this.binaryManager(__t);
 		}
 		
-		// {@squirreljme.error AU0f Could not obtain the binary manager.}
+		// {@squirreljme.error AU0k Could not obtain the binary manager.}
 		catch (IOException e)
 		{
-			throw new RuntimeException("AU0f", e);
+			throw new RuntimeException("AU0k", e);
 		}
 		
 		// Get binaries
@@ -253,7 +253,7 @@ public final class ProjectManager
 					binbuild = Paths.get(parse[1]);
 					break;
 				
-					// {@squirreljme.error AU0d Unknown project argument.
+					// {@squirreljme.error AU0l Unknown project argument.
 					// Usage: [-s path] [-o path] [-r path] [-j path]
 					// [-b path];
 					// -s: The project source path;
@@ -265,7 +265,7 @@ public final class ProjectManager
 				case "-?":
 				default:
 					throw new IllegalArgumentException(
-						String.format("AU0d %s", parse[1]));
+						String.format("AU0l %s", parse[1]));
 			}
 		
 		// Fill with defaults if missing

@@ -72,10 +72,10 @@ public final class TestParser
 				throw new todo.TODO();
 		}
 		
-		// {@squirreljme.error AU20 Could not parse file for tests.}
+		// {@squirreljme.error AU12 Could not parse file for tests.}
 		catch (IOException|CompilerException e)
 		{
-			throw new RuntimeException("AU20", e);
+			throw new RuntimeException("AU12", e);
 		}
 		
 		throw new todo.TODO();
