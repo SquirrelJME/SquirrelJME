@@ -149,10 +149,10 @@ public final class MIMEFileDecoder
 			{
 				int ch = in.read();
 				
-				// {@squirreljme.error BD0h Reached EOF trying to read the
+				// {@squirreljme.error BD1i Reached EOF trying to read the
 				// MIME file header.}
 				if (ch < 0)
-					throw new IOException("BD0h");
+					throw new IOException("BD1i");
 				
 				// End of line
 				else if (ch == '\r' || ch == '\n')
@@ -162,10 +162,10 @@ public final class MIMEFileDecoder
 			}
 			String header = sb.toString();
 			
-			// {@squirreljme.error BD0i First line of file does not start
+			// {@squirreljme.error BD1j First line of file does not start
 			// with "{@code begin-base64 }".}
 			if (!header.startsWith("begin-base64 "))
-				throw new IOException("BD0i");
+				throw new IOException("BD1j");
 			
 			// Read mode and filename potentially
 			header = header.substring(13).trim();
@@ -180,10 +180,10 @@ public final class MIMEFileDecoder
 					this._mode = Integer.parseInt(header.substring(0, fs), 8);
 				}
 			
-				// {@squirreljme.error BD0j Could not parse the mode.
+				// {@squirreljme.error BD1k Could not parse the mode.
 				catch (NumberFormatException e)
 				{
-					throw new IOException("BD0j", e);
+					throw new IOException("BD1k", e);
 				}
 				
 				// Read filename
@@ -224,10 +224,10 @@ public final class MIMEFileDecoder
 			}
 			String end = sb.toString().trim();
 			
-			// {@squirreljme.error BD0k End of the mime file data must end
+			// {@squirreljme.error BD1l End of the mime file data must end
 			// with four equal signs on a single line.
 			if (!end.equals("===="))
-				throw new IOException("BD0k");
+				throw new IOException("BD1l");
 			
 			this._readeof = true;
 		}

@@ -23,7 +23,7 @@ import java.util.NoSuchElementException;
  * Iteration of values goes through the internal value table in no particular
  * order. The iterator is fail-fast.
  *
- * {@squirreljme.error BF1n The huffman tree was modified in the middle of
+ * {@squirreljme.error BD10 The huffman tree was modified in the middle of
  * iteration.}
  *
  * @param <int> The type of values to store in the tree.
@@ -75,16 +75,16 @@ public class HuffmanTreeInt
 		int ibm = Integer.bitCount(__mask);
 		
 		// Check mask and representation
-		// {@squirreljme.error BF1o The symbol exceeds the range of the mask.
+		// {@squirreljme.error BD11 The symbol exceeds the range of the mask.
 		// (The value; The mask)}
 		if ((__sym & (~__mask)) != 0)
-			throw new IllegalArgumentException(String.format("BF1o %x %x",
+			throw new IllegalArgumentException(String.format("BD11 %x %x",
 				__sym, __mask));
-		// {@squirreljme.error BF1p The mask has a zero gap between bits or
+		// {@squirreljme.error BD12 The mask has a zero gap between bits or
 		// at the least significant end. (The value; The mask)}
 		if (ibm != (32 - Integer.numberOfLeadingZeros(__mask)) ||
 			(__mask & 1) == 0)
-			throw new IllegalArgumentException(String.format("BF1p %x %x",
+			throw new IllegalArgumentException(String.format("BD12 %x %x",
 				__sym, __mask));
 		
 		// Get the table
@@ -261,9 +261,9 @@ public class HuffmanTreeInt
 			if (at < 0)
 				return this._values[(-at) - 1];
 			
-			// {@squirreljme.error BF1q Key not found in tree.}
+			// {@squirreljme.error BD13 Key not found in tree.}
 			else if (at == Integer.MAX_VALUE)
-				throw new NoSuchElementException("BF1q");
+				throw new NoSuchElementException("BD13");
 			
 			// Set the new position to the table position
 			at = table[at + (__bs.nextBit() ? 1 : 0)];

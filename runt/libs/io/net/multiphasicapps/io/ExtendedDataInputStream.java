@@ -195,9 +195,9 @@ public class ExtendedDataInputStream
 		// Read value
 		int rv = read();
 		
-		// {@squirreljme.error BD01 End of file reached.}
+		// {@squirreljme.error BD0r End of file reached.}
 		if (rv < 0)
-			throw new EOFException("BD01");
+			throw new EOFException("BD0r");
 		
 		// Cast
 		return (byte)rv;
@@ -398,17 +398,17 @@ public class ExtendedDataInputStream
 	public void reset()
 		throws IOException
 	{
-		// {@squirreljme.error BD02 The stream has not been marked.}
+		// {@squirreljme.error BD0s The stream has not been marked.}
 		long markstart = this._markstart;
 		if (markstart < 0)
-			throw new IOException("BD02");
+			throw new IOException("BD0s");
 		
-		// {@squirreljme.error BD03 Exceeded the number of bytes specified by
+		// {@squirreljme.error BD0t Exceeded the number of bytes specified by
 		// mark.}
 		long count = this._count;
 		long markend = this._markend;
 		if (count > markend)
-			throw new IOException("BD03");
+			throw new IOException("BD0t");
 		
 		// Call reset
 		this.input.reset();
