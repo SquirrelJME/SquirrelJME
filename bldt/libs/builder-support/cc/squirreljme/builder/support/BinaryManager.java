@@ -334,7 +334,7 @@ public final class BinaryManager
 			catch (CompilerException|IOException e)
 			{
 				throw new InvalidBinaryException(
-					String.format("AU08 %s", __b.name()));
+					String.format("AU08 %s", __b.name()), e);
 			}
 			
 			// Clean output temporary file as needed
