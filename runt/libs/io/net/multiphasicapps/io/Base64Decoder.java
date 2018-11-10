@@ -322,11 +322,11 @@ public final class Base64Decoder
 					int padchar,
 						gotchar;
 					
-					// {@squirreljme.error BD0g Expected padding character to
+					// {@squirreljme.error BD01 Expected padding character to
 					// follow for the last remaining bytes. (The expected
 					// character; The read character)}
 					if ((gotchar = in.read()) != (padchar = alphabet[64]))
-						throw new IOException(String.format("BD0g %c %c",
+						throw new IOException(String.format("BD01 %c %c",
 							padchar, gotchar));
 				}
 				
@@ -423,10 +423,10 @@ public final class Base64Decoder
 			return baos.toByteArray();
 		}
 		
-		// {@squirreljme.error BD0m Could not decode the input string.}
+		// {@squirreljme.error BD02 Could not decode the input string.}
 		catch (IOException e)
 		{
-			throw new IllegalArgumentException("BD0m", e);
+			throw new IllegalArgumentException("BD02", e);
 		}
 	}
 }

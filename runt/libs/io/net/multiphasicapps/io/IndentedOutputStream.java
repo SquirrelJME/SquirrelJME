@@ -125,10 +125,10 @@ public final class IndentedOutputStream
 	public final void setLevel(int __i)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error BD0l Cannot set the indentation level to a
+		// {@squirreljme.error BD14 Cannot set the indentation level to a
 		// negative value.}
 		if (__i < 0)
-			throw new IllegalArgumentException("BD0l");
+			throw new IllegalArgumentException("BD14");
 		
 		this._level = __i;
 	}

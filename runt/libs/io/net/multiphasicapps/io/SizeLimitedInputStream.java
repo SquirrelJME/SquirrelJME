@@ -87,10 +87,10 @@ public class SizeLimitedInputStream
 		if (__is == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error BD0b The limit is negative. (The negative
+		// {@squirreljme.error BD1n The limit is negative. (The negative
 		// limit)}
 		if (__li < 0)
-			throw new IllegalArgumentException(String.format("BD0b %d", __li));
+			throw new IllegalArgumentException(String.format("BD1n %d", __li));
 		
 		// Set
 		this.wrapped = __is;
@@ -133,14 +133,14 @@ public class SizeLimitedInputStream
 			// Read in remaining bytes if doing so
 			if (this.exact)
 			{
-				// {@squirreljme.error BD0c Reached EOF on wrapped stream when
+				// {@squirreljme.error BD1o Reached EOF on wrapped stream when
 				// requesting an exact number of bytes. (The current read
 				// count; The read limit)}
 				long limit = this.limit;
 				long at;
 				while ((at = this._current) < limit)
 					if (read() < 0)
-						throw new IOException(String.format("BD0c %d %d",
+						throw new IOException(String.format("BD1o %d %d",
 							at, limit));
 			}
 		}
@@ -172,11 +172,11 @@ public class SizeLimitedInputStream
 		// EOF?
 		if (next < 0)
 		{
-			// {@squirreljme.error BD0d Required an exact number of bytes
+			// {@squirreljme.error BD1p Required an exact number of bytes
 			// however the limit was not yet reached, the input stream is too
 			// short. (The limit; The current position)}
 			if (exact && cur != limit)
-				throw new IOException(String.format("BD0d %d %d",
+				throw new IOException(String.format("BD1p %d %d",
 					limit, cur));
 			
 			// Return original negative
@@ -209,11 +209,11 @@ public class SizeLimitedInputStream
 		long limit = this.limit;
 		if (current >= limit)
 		{
-			// {@squirreljme.error BD0e Required an exact number of bytes
+			// {@squirreljme.error BD1q Required an exact number of bytes
 			// however the limit was not yet reached, the file is too short.
 			// (The limit; The current position)}
 			if (exact && current != limit)
-				throw new IOException(String.format("BD0e %d %d",
+				throw new IOException(String.format("BD1q %d %d",
 					limit, current));
 			
 			return -1;
@@ -229,11 +229,11 @@ public class SizeLimitedInputStream
 		// EOF?
 		if (rc < 0)
 		{
-			// {@squirreljme.error BD0f Required an exact number of bytes
+			// {@squirreljme.error BD1r Required an exact number of bytes
 			// however the limit was not yet reached. (The limit; The
 			// current position)}
 			if (exact && current != limit)
-				throw new IOException(String.format("BD0f %d %d",
+				throw new IOException(String.format("BD1r %d %d",
 					limit, current));
 			
 			// Just EOF
