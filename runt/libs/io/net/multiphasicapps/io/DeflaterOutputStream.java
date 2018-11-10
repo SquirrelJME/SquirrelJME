@@ -341,24 +341,40 @@ public class DeflaterOutputStream
 		byte[] fill = this._fill;
 		int fillbytes = this._fillbytes;
 		
-		// Debug
-		todo.DEBUG.note("Processing %d bytes...", fillbytes);
+		// Determine the best way to handle this block
+		int hufftype = 0;
 		
-		// Write all the bytes with no compression at all
-		// Write no-compression marker, stream not ended yet
-		this.__bitOut(0, 1, false);
-		this.__bitOut(InflaterInputStream._TYPE_NO_COMPRESSION, 2, false);
+		// Compress with fixed table
+		if (hufftype == 1)
+		{
+			throw new todo.TODO();
+		}
 		
-		// Pad because byte boundary
-		this.__bitPad(8);
+		// Compress with dynamically generated table
+		else if (hufftype == 2)
+		{
+			throw new todo.TODO();
+		}
 		
-		// Length and complement of that
-		this.__bitOut(fillbytes, 16, false);
-		this.__bitOut(fillbytes ^ 0xFFFF, 16, false);
-		
-		// Then write every individual byte
-		for (int i = 0; i < fillbytes; i++)
-			this.__bitOut(fill[i], 8, false);
+		// No compression used
+		else
+		{
+			// Write all the bytes with no compression at all
+			// Write no-compression marker, stream not ended yet
+			this.__bitOut(0, 1, false);
+			this.__bitOut(InflaterInputStream._TYPE_NO_COMPRESSION, 2, false);
+			
+			// Pad because byte boundary
+			this.__bitPad(8);
+			
+			// Length and complement of that
+			this.__bitOut(fillbytes, 16, false);
+			this.__bitOut(fillbytes ^ 0xFFFF, 16, false);
+			
+			// Then write every individual byte
+			for (int i = 0; i < fillbytes; i++)
+				this.__bitOut(fill[i], 8, false);
+		}
 		
 		// Remove the fill
 		this._fillbytes = 0;

@@ -63,37 +63,10 @@ public enum CompressionLevel
 			case FASTER:	return 128;
 			case FAST:		return 256;
 			
-				// Slow algorithms have the sliding window
+				// Slow algorithms compress in more chunks
 			case SLOW:		return 256;
 			case SLOWER:	return 512;
 			case SLOWEST:	return 1024;
-			
-			default:
-				throw new RuntimeException("OOPS");
-		}
-	}
-	
-	/**
-	 * Bytes to make up the sliding window.
-	 *
-	 * @return The number of bytes to slide the window with, zero means to
-	 * not use one.
-	 * @since 2018/11/01
-	 */
-	public final int slidingWindowBytes()
-	{
-		switch (this)
-		{
-				// Fast has no sliding window
-			case FASTEST:
-			case FASTER:
-			case FAST:
-				return 0;
-			
-				// How far we want to go back and slide, depends
-			case SLOW:		return 512;
-			case SLOWER:	return 1024;
-			case SLOWEST:	return 2048;
 			
 			default:
 				throw new RuntimeException("OOPS");
