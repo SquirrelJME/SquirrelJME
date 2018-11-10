@@ -123,9 +123,9 @@ public class Main
 				}
 			}
 			
-			// {@squirreljme.error AF08 No entry points were found.}
+			// {@squirreljme.error AF01 No entry points were found.}
 			if (entries == null)
-				throw new IllegalArgumentException("AF08");
+				throw new IllegalArgumentException("AF01");
 			
 			// Print them out for debug
 			System.err.println("Entry points:");
