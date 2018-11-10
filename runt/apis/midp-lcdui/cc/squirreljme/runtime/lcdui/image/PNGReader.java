@@ -13,11 +13,11 @@ package cc.squirreljme.runtime.lcdui.image;
 import java.io.DataInputStream;
 import java.io.IOException;
 import javax.microedition.lcdui.Image;
+import net.multiphasicapps.io.ChecksumInputStream;
+import net.multiphasicapps.io.CRC32Calculator;
+import net.multiphasicapps.io.InflaterInputStream;
 import net.multiphasicapps.io.SizeLimitedInputStream;
-import net.multiphasicapps.zip.util.ChecksumInputStream;
-import net.multiphasicapps.zip.util.CRC32Calculator;
-import net.multiphasicapps.zip.util.InflaterInputStream;
-import net.multiphasicapps.zip.zlib.ZLibDecompressor;
+import net.multiphasicapps.io.ZLibDecompressor;
 
 /**
  * This class parses PNG images.

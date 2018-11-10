@@ -14,11 +14,11 @@ import java.io.Closeable;
 import java.io.EOFException;
 import java.io.InputStream;
 import java.io.IOException;
+import net.multiphasicapps.io.CRC32Calculator;
 import net.multiphasicapps.io.DataEndianess;
+import net.multiphasicapps.io.DynamicHistoryInputStream;
 import net.multiphasicapps.io.ExtendedDataInputStream;
 import net.multiphasicapps.zip.IBM437CodePage;
-import net.multiphasicapps.zip.util.CRC32Calculator;
-import net.multiphasicapps.zip.util.DynamicHistoryInputStream;
 import net.multiphasicapps.zip.ZipCompressionType;
 import net.multiphasicapps.zip.ZipException;
 

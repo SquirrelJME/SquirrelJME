@@ -7,7 +7,7 @@ X-SquirrelJME-Description: This contains the standard MIDP LCD User
  Interface which uses graphical text, widgets, and images to interact 
  with the user. Unlike the MEEP Line User Interface, this requires a 
  much more capable graphical system.
-X-SquirrelJME-Depends: meep-midlet gcf io zip collections
+X-SquirrelJME-Depends: meep-midlet gcf io collections
 X-SquirrelJME-Error: EB
 X-SquirrelJME-DefinedStandards: microedition.lcdui;;
 X-SquirrelJME-UUID: bdd52a0a-1d53-4d80-b54d-6ab5316603f9

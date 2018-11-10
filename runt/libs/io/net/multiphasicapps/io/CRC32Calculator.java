@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.zip.util;
+package net.multiphasicapps.io;
 
 /**
  * This is a data sink which supports the CRC 32 algorithm.

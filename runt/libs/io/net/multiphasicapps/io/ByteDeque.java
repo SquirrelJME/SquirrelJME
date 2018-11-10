@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.util.bytedeque;
+package net.multiphasicapps.io;
 
 import java.io.IOException;
 import java.io.OutputStream;
