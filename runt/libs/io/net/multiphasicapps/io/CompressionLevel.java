@@ -48,6 +48,59 @@ public enum CompressionLevel
 		SLOWEST;
 	
 	/**
+	 * The number of symbols to look at as a single unit with a given
+	 * dictionary before attempting with another dictionary.
+	 *
+	 * @return The block size to use for compression.
+	 * @since 2018/11/10
+	 */
+	public final int blockSize()
+	{
+		switch (this)
+		{
+				// Fast has no sliding window
+			case FASTEST:	return 64;
+			case FASTER:	return 128;
+			case FAST:		return 256;
+			
+				// Slow algorithms have the sliding window
+			case SLOW:		return 256;
+			case SLOWER:	return 512;
+			case SLOWEST:	return 1024;
+			
+			default:
+				throw new RuntimeException("OOPS");
+		}
+	}
+	
+	/**
+	 * Bytes to make up the sliding window.
+	 *
+	 * @return The number of bytes to slide the window with, zero means to
+	 * not use one.
+	 * @since 2018/11/01
+	 */
+	public final int slidingWindowBytes()
+	{
+		switch (this)
+		{
+				// Fast has no sliding window
+			case FASTEST:
+			case FASTER:
+			case FAST:
+				return 0;
+			
+				// How far we want to go back and slide, depends
+			case SLOW:		return 512;
+			case SLOWER:	return 1024;
+			case SLOWEST:	return 2048;
+			
+			default:
+				throw new RuntimeException("OOPS");
+		}
+	}
+	
+	/**
 	 * Converts a ZIP compression 1-10 scale index to compression level.
 	 *
 	 * @param __i The input scale.
