@@ -1098,7 +1098,7 @@ public final class SpringThreadWorker
 				// VM Version
 			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
 				"javaVMVersion:()Ljava/lang/String;":
-				return "0.0.2";
+				return "0.2.0";
 				
 				// Get system property
 			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +

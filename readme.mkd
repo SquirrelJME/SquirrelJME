@@ -28,7 +28,7 @@ You may support me on [Patreon](https://www.patreon.com/SquirrelJME)!
 
 Information:
 
- * [Version 0.0.2 Release Progress (GitHub)](
+ * [Version 0.2.0 Release Progress (GitHub)](
    https://github.com/XerTheSquirrel/SquirrelJME/projects/2)
  * [License](license.mkd)
    * _Source_: GNU General Public License, Version 3 or later
