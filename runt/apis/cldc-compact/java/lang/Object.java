@@ -65,8 +65,8 @@ public class Object
 			return this;
 		}
 		
-		// {@squirreljme.error ZZ1t This object does not support being clone.}
-		throw new CloneNotSupportedException("ZZ1t");
+		// {@squirreljme.error ZZ0u This object does not support being clone.}
+		throw new CloneNotSupportedException("ZZ0u");
 	}
 	
 	/**

@@ -200,9 +200,9 @@ public class Random
 	public int nextInt(int __cap)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error ZZ2x Cap value must be a positive integer}
+		// {@squirreljme.error ZZ24 Cap value must be a positive integer}
 		if (__cap <= 0)
-			throw new IllegalArgumentException("ZZ2x");
+			throw new IllegalArgumentException("ZZ24");
 		
 		// Cap is a power of two
 		if ((__cap & -__cap) == __cap)

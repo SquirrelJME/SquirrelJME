@@ -19,8 +19,8 @@ import cc.squirreljme.runtime.cldc.util.IntegerIntegerArray;
 /**
  * This class contains utility methods which operate on arrays.
  *
- * {@squirreljme.error ZZ06 The sort range exceeds the array bounds.}
- * {@squirreljme.error ZZ07 The from index exceeds the to index.}
+ * {@squirreljme.error ZZ1n The sort range exceeds the array bounds.}
+ * {@squirreljme.error ZZ1o The from index exceeds the to index.}
  *
  * @since 2016/09/30
  */
@@ -567,7 +567,7 @@ public class Arrays
 		if (__from < 0 || __to > an)
 			throw new ArrayIndexOutOfBoundsException("ZZ04");
 		if (__from > __to)
-			throw new IllegalArgumentException("ZZ07");
+			throw new IllegalArgumentException("ZZ1o");
 		
 		// Pointless sort?
 		if (__from == __to)
@@ -604,7 +604,7 @@ public class Arrays
 		if (__from < 0 || __to > an)
 			throw new ArrayIndexOutOfBoundsException("ZZ04");
 		if (__from > __to)
-			throw new IllegalArgumentException("ZZ07");
+			throw new IllegalArgumentException("ZZ1o");
 		
 		// Pointless sort?
 		if (__from == __to)
@@ -641,7 +641,7 @@ public class Arrays
 		if (__from < 0 || __to > an)
 			throw new ArrayIndexOutOfBoundsException("ZZ04");
 		if (__from > __to)
-			throw new IllegalArgumentException("ZZ07");
+			throw new IllegalArgumentException("ZZ1o");
 		
 		// Pointless sort?
 		if (__from == __to)
@@ -716,7 +716,7 @@ public class Arrays
 		if (__from < 0 || __to > an)
 			throw new ArrayIndexOutOfBoundsException("ZZ04");
 		if (__from > __to)
-			throw new IllegalArgumentException("ZZ07");
+			throw new IllegalArgumentException("ZZ1o");
 		
 		// Pointless sort?
 		if (__from == __to)
@@ -753,7 +753,7 @@ public class Arrays
 		if (__from < 0 || __to > an)
 			throw new ArrayIndexOutOfBoundsException("ZZ04");
 		if (__from > __to)
-			throw new IllegalArgumentException("ZZ07");
+			throw new IllegalArgumentException("ZZ1o");
 		
 		// Pointless sort?
 		if (__from == __to)
@@ -790,7 +790,7 @@ public class Arrays
 		if (__from < 0 || __to > an)
 			throw new ArrayIndexOutOfBoundsException("ZZ04");
 		if (__from > __to)
-			throw new IllegalArgumentException("ZZ07");
+			throw new IllegalArgumentException("ZZ1o");
 		
 		// Pointless sort?
 		if (__from == __to)
@@ -845,7 +845,7 @@ public class Arrays
 		if (__from < 0 || __to > an)
 			throw new ArrayIndexOutOfBoundsException("ZZ04");
 		if (__from > __to)
-			throw new IllegalArgumentException("ZZ07");
+			throw new IllegalArgumentException("ZZ1o");
 		
 		// Pointless sort?
 		if (__from == __to)

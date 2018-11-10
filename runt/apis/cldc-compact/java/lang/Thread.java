@@ -201,13 +201,13 @@ public class Thread
 	public static void sleep(long __ms, int __ns)
 		throws IllegalArgumentException, InterruptedException
 	{
-		// {@squirreljme.error ZZ33 Invalid sleep arguments.}
+		// {@squirreljme.error ZZ1c Invalid sleep arguments.}
 		if (__ms < 0 || __ns < 0 || __ns > 999999)
-			throw new IllegalArgumentException("ZZ33");
+			throw new IllegalArgumentException("ZZ1c");
 		
-		// {@squirreljme.error ZZ32 Sleep was interrupted.}
+		// {@squirreljme.error ZZ1d Sleep was interrupted.}
 		if (TaskAccess.sleep(__ms, __ns))
-			throw new InterruptedException("ZZ32");
+			throw new InterruptedException("ZZ1d");
 	}
 	
 	public static void yield()

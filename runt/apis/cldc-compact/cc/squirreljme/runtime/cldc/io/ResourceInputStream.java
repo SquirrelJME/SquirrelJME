@@ -66,11 +66,11 @@ public final class ResourceInputStream
 		{
 			this._closed = true;
 			
-			// {@squirreljme.error ZZ2m Closing of resource resulted in an
+			// {@squirreljme.error ZZ05 Closing of resource resulted in an
 			// IOException.}
 			int rv;
 			if ((rv = ResourceAccess.close(this.fd)) < 0)
-				throw new IOException("ZZ2m " + rv);
+				throw new IOException("ZZ05 " + rv);
 		}
 	}
 	
@@ -141,10 +141,10 @@ public final class ResourceInputStream
 		// a free resource that has no implications if they are never closed.
 		if (rv < 0)
 		{
-			// {@squirreljme.error ZZ2l Read of resource resulted in an
+			// {@squirreljme.error ZZ06 Read of resource resulted in an
 			// IOException.}
 			IOException toss = (rv != ResourceAccess.READ_STATUS_EOF ?
-				new IOException("ZZ2l " + rv) : null);
+				new IOException("ZZ06 " + rv) : null);
 			
 			// Close it to not claim resources
 			try

@@ -30,9 +30,9 @@ public final class StandardError
 	public void write(int __b)
 		throws IOException
 	{
-		// {@squirreljme.error ZZ19 Error writing to standard error.}
+		// {@squirreljme.error ZZ07 Error writing to standard error.}
 		if (ConsoleOutput.write(ConsoleOutput.ERROR, __b) != 0)
-			throw new IOException("ZZ19");
+			throw new IOException("ZZ07");
 	}
 	
 	/**

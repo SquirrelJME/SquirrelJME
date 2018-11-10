@@ -109,14 +109,14 @@ final class __BucketMap__<K, V>
 	__BucketMap__(boolean __o, boolean __ao, int __cap, float __load)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error ZZ2b The initial capacity of the map cannot be
+		// {@squirreljme.error ZZ28 The initial capacity of the map cannot be
 		// negative.}
 		if (__cap < 0)
-			throw new IllegalArgumentException("ZZ2b");
+			throw new IllegalArgumentException("ZZ28");
 		
-		// {@squirreljme.error ZZ2c The load factor must be a positive value.}
+		// {@squirreljme.error ZZ29 The load factor must be a positive value.}
 		if (__load <= 0.0F)
-			throw new IllegalArgumentException("ZZ2c");
+			throw new IllegalArgumentException("ZZ29");
 		
 		this.ordered = __o;
 		this.accessorder = (__ao = (__o && __ao));
@@ -524,9 +524,9 @@ final class __BucketMap__<K, V>
 		final void __checkModified()
 			throws ConcurrentModificationException
 		{
-			// {@squirreljme.error ZZ2o Backing map has been modified.}
+			// {@squirreljme.error ZZ2a Backing map has been modified.}
 			if (this._atmod != __BucketMap__.this._modcount)
-				throw new ConcurrentModificationException("ZZ2o");
+				throw new ConcurrentModificationException("ZZ2a");
 		}
 	}
 	
@@ -630,9 +630,9 @@ final class __BucketMap__<K, V>
 		public final Map.Entry<K, V> next()
 			throws NoSuchElementException
 		{
-			// {@squirreljme.error ZZ2p Map has no more entries remaining.}
+			// {@squirreljme.error ZZ2b Map has no more entries remaining.}
 			if (!this.hasNext())
-				throw new NoSuchElementException("ZZ2p");
+				throw new NoSuchElementException("ZZ2b");
 			
 			// hasNext() caches this
 			__BucketMapEntry__<K, V> rv = this._next;

@@ -31,9 +31,9 @@ public final class StandardOutput
 	public void write(int __b)
 		throws IOException
 	{
-		// {@squirreljme.error ZZ1a Error writing to standard output.}
+		// {@squirreljme.error ZZ08 Error writing to standard output.}
 		if (ConsoleOutput.write(ConsoleOutput.OUTPUT, __b) != 0)
-			throw new IOException("ZZ1a");
+			throw new IOException("ZZ08");
 	}
 	
 	/**

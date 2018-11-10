@@ -29,7 +29,7 @@ public abstract class BasicPermission
 		if (__name == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ0e The name for basic permissions cannot
+		// {@squirreljme.error ZZ1j The name for basic permissions cannot
 		// be empty.}
 		if (__name.equals(""))
 			throw new IllegalArgumentException("ZZ0z");

@@ -37,13 +37,13 @@ public abstract class Enum<E extends Enum<E>>
 	protected Enum(String __s, int __o)
 		throws IllegalArgumentException, NullPointerException
 	{
-		// {@squirreljme.error ZZ1q Enum has no string.}
+		// {@squirreljme.error ZZ0n Enum has no string.}
 		if (__s == null)
-			throw new NullPointerException("ZZ1q");
+			throw new NullPointerException("ZZ0n");
 		
-		// {@squirreljme.error ZZ1r Enum has negative ordinal.}
+		// {@squirreljme.error ZZ0o Enum has negative ordinal.}
 		if (__o < 0)
-			throw new IllegalArgumentException("ZZ1r");
+			throw new IllegalArgumentException("ZZ0o");
 		
 		this._name = __s;
 		this._ordinal = __o;
@@ -57,8 +57,8 @@ public abstract class Enum<E extends Enum<E>>
 	protected final Object clone()
 		throws CloneNotSupportedException
 	{
-		// {@squirreljme.error ZZ1s Enums cannot be cloned.}
-		throw new CloneNotSupportedException("ZZ1s");
+		// {@squirreljme.error ZZ0p Enums cannot be cloned.}
+		throw new CloneNotSupportedException("ZZ0p");
 	}
 	
 	/**

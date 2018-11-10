@@ -54,10 +54,10 @@ public final class CharSequenceSequence
 			if (e instanceof StringIndexOutOfBoundsException)
 				throw (StringIndexOutOfBoundsException)e;
 			
-			// {@squirreljme.error ZZ17 Out of bounds access while accessing
+			// {@squirreljme.error ZZ0b Out of bounds access while accessing
 			// character sequence.}
 			StringIndexOutOfBoundsException t =
-				new StringIndexOutOfBoundsException("ZZ17");
+				new StringIndexOutOfBoundsException("ZZ0b");
 			t.initCause(e);
 			throw t;
 		}

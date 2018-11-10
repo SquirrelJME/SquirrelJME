@@ -111,7 +111,7 @@ public class InputStreamReader
 		int rv = 0;
 		for (int o = __o; rv < __l;)
 		{
-			// {@squirreljme.error ZZ21 Read of input byte sequence exceeded
+			// {@squirreljme.error ZZ0j Read of input byte sequence exceeded
 			// the maximum specified sequence length. (The store length)}
 			if (storelen >= declimit)
 				throw new IOException("ZZ2l " + storelen);

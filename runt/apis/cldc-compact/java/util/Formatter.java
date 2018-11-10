@@ -179,9 +179,9 @@ public final class Formatter
 	public void flush()
 		throws IllegalStateException
 	{
-		// {@squirreljme.error ZZ1k The formatter has been closed.}
+		// {@squirreljme.error ZZ1p The formatter has been closed.}
 		if (this._closed)
-			throw new IllegalStateException("ZZ1k");
+			throw new IllegalStateException("ZZ1p");
 		
 		// Can only be done if it is flushable
 		Appendable out = this._out;
@@ -215,9 +215,9 @@ public final class Formatter
 		if (__fmt == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ1l This formatter has been closed.}
+		// {@squirreljme.error ZZ1q This formatter has been closed.}
 		if (this._closed)
-			throw new IllegalStateException("ZZ1l");
+			throw new IllegalStateException("ZZ1q");
 		
 		// Force this to exist
 		if (__args == null)
@@ -286,9 +286,9 @@ public final class Formatter
 	public Appendable out()
 		throws IllegalStateException
 	{
-		// {@squirreljme.error ZZ1i The formatter has been closed.}
+		// {@squirreljme.error ZZ1r The formatter has been closed.}
 		if (this._closed)
-			throw new IllegalStateException("ZZ1i");
+			throw new IllegalStateException("ZZ1r");
 		
 		return this._out;
 	}
@@ -305,9 +305,9 @@ public final class Formatter
 	public String toString()
 		throws IllegalStateException
 	{
-		// {@squirreljme.error ZZ1j The formatter has been closed.}
+		// {@squirreljme.error ZZ1s The formatter has been closed.}
 		if (this._closed)
-			throw new IllegalStateException("ZZ1j");
+			throw new IllegalStateException("ZZ1s");
 		
 		return this._out.toString();
 	}
@@ -430,10 +430,10 @@ public final class Formatter
 					toString();
 				break;
 			
-				// {@squirreljme.error ZZ1z Unimplemented conversion.
+				// {@squirreljme.error ZZ1t Unimplemented conversion.
 				// (The conversion)}
 			default:
-				throw new todo.TODO("ZZ1z " + conv);
+				throw new todo.TODO("ZZ1t " + conv);
 		}
 		
 		// Convert to uppercase
@@ -580,11 +580,11 @@ public final class Formatter
 			at++;
 		}
 		
-		// {@squirreljme.error ZZ1m Could not parse the format specifier
+		// {@squirreljme.error ZZ1u Could not parse the format specifier
 		// properly. (The string with the specifier sequence)}
 		catch (IndexOutOfBoundsException|NumberFormatException e)
 		{
-			throw new IllegalArgumentException("ZZ1m " +
+			throw new IllegalArgumentException("ZZ1u " +
 				__fmt.substring(__base, Math.min(at, __fmt.length())), e);
 		}
 		
