@@ -96,17 +96,17 @@ public final class SpringMonitor
 		Object lock = this.lock;
 		synchronized (lock)
 		{
-			// {@squirreljme.error BK13 This thread does not own the
+			// {@squirreljme.error BK0x This thread does not own the
 			// monitor.}
 			if (this._owner != __t)
-				throw new SpringIllegalMonitorStateException("BK13");	
+				throw new SpringIllegalMonitorStateException("BK0x");	
 			
-			// {@squirreljme.error BK14 No previous entry call was made.
+			// {@squirreljme.error BK0y No previous entry call was made.
 			// (The monitor entry count)}
 			int count = this._count;
 			if (count <= 0)
 				throw new SpringIllegalMonitorStateException(
-					String.format("BK14 %d", count));
+					String.format("BK0y %d", count));
 			
 			// If the count reaches zero, no thread owns this now
 			this._count = --count;

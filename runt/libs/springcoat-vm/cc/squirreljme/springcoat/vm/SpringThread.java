@@ -118,10 +118,10 @@ public final class SpringThread
 		/*todo.DEBUG.note("enterFrame(%s::%s, %s)", __m.inClass(),
 			__m.nameAndType(), Arrays.<Object>asList(__args));*/
 		
-		// {@squirreljme.error BK09 Cannot enter the frame for a method which
+		// {@squirreljme.error BK14 Cannot enter the frame for a method which
 		// is abstract. (The class the method is in; The method name and type)}
 		if (__m.isAbstract())
-			throw new SpringVirtualMachineException(String.format("BK09 %s %s",
+			throw new SpringVirtualMachineException(String.format("BK14 %s %s",
 				__m.inClass(), __m.nameAndType()));
 		
 		// Create new frame
@@ -193,10 +193,10 @@ public final class SpringThread
 		List<SpringThread.Frame> frames = this._frames;
 		synchronized (frames)
 		{
-			// {@squirreljme.error BK0p No frames to pop.}
+			// {@squirreljme.error BK15 No frames to pop.}
 			int n;
 			if ((n = frames.size()) <= 0)
-				throw new SpringVirtualMachineException("BK0p");	
+				throw new SpringVirtualMachineException("BK15");	
 			
 			return frames.remove(n - 1);
 		}
@@ -466,14 +466,14 @@ public final class SpringThread
 		{
 			Object[] locals = this._locals;
 			
-			// {@squirreljme.error BK0b Cannot push local variable to the stack
+			// {@squirreljme.error BK16 Cannot push local variable to the stack
 			// because it of the incorrect type. (The varible to push; The
 			// index to load from; The expected class; The value to push;
 			// The type of value to push)}
 			Object pushy = locals[__dx];
 			if (!__cl.isInstance(pushy))
 				throw new SpringVirtualMachineException(String.format(
-					"BK0b %s %d %s %s %s", pushy, __dx, __cl, pushy,
+					"BK16 %s %d %s %s %s", pushy, __dx, __cl, pushy,
 					(pushy == null ? "null" : pushy.getClass())));
 			
 			// Just copy to the stack
@@ -526,33 +526,33 @@ public final class SpringThread
 			Object[] stack = this._stack;
 			int stacktop = this._stacktop;
 			
-			// {@squirreljme.error BK0m Stack underflow. (The current top of
+			// {@squirreljme.error BK17 Stack underflow. (The current top of
 			// the stack; The stack limit)}
 			if (stacktop <= 0)
 				throw new SpringVirtualMachineException(String.format(
-					"BK0m %d %d", stacktop, stack.length));
+					"BK17 %d %d", stacktop, stack.length));
 			
 			// Read value and clear the value that was there
 			Object rv = stack[--stacktop];
 			stack[stacktop] = null;
 			this._stacktop = stacktop;
 			
-			// {@squirreljme.error BK11 Popped a null value of the stack, which
+			// {@squirreljme.error BK18 Popped a null value of the stack, which
 			// should not occur.}
 			if (rv == null)
-				throw new SpringVirtualMachineException("BK11");
+				throw new SpringVirtualMachineException("BK18");
 			
 			// Is top, so pop again to read the actual desired value
 			if (rv == SpringStackTop.TOP)
 			{
 				rv = this.popFromStack();
 				
-				// {@squirreljme.error BK0n Expected long or double below
+				// {@squirreljme.error BK19 Expected long or double below
 				// top entry in stack. (The current top of the stack; The
 				// stack limit)}
 				if (!(rv instanceof Long || rv instanceof Double))
 					throw new SpringVirtualMachineException(String.format(
-						"BK0n %d %d", stacktop, stack.length));
+						"BK19 %d %d", stacktop, stack.length));
 			}
 			
 			// Debug
@@ -578,12 +578,12 @@ public final class SpringThread
 			if (__cl == null)
 				throw new NullPointerException("NARG");
 			
-			// {@squirreljme.error BK0z Popped the wrong kind of value from the
+			// {@squirreljme.error BK1a Popped the wrong kind of value from the
 			// stack. (The popped type; The expected type)}
 			Object rv = this.popFromStack();
 			if (!__cl.isInstance(rv))
 				throw new SpringVirtualMachineException(
-					String.format("BK0z %s %s",
+					String.format("BK1a %s %s",
 						(rv == null ? null : rv.getClass()), __cl));
 			
 			return __cl.cast(rv);
@@ -610,11 +610,11 @@ public final class SpringThread
 			// Debug
 			/*todo.DEBUG.note("push(%s) -> %d", __v, stacktop);*/
 			
-			// {@squirreljme.error BK0c Stack overflow pushing value. (The
+			// {@squirreljme.error BK1b Stack overflow pushing value. (The
 			// value; The current top of the stack; The stack limit)}
 			if (stacktop >= stack.length)
 				throw new SpringVirtualMachineException(String.format(
-					"BK0c %s %d %d", __v, stacktop, stack.length));
+					"BK1b %s %d %d", __v, stacktop, stack.length));
 			
 			// Store
 			stack[stacktop++] = __v;

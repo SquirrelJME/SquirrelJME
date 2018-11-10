@@ -57,9 +57,9 @@ public final class SpringField
 		// Instance fields require an index
 		if (__f.flags().isInstance())
 		{
-			// {@squirreljme.error BK0h Negative field index.}
+			// {@squirreljme.error BK0s Negative field index.}
 			if (__dx < 0)
-				throw new IllegalArgumentException("BK0h");	
+				throw new IllegalArgumentException("BK0s");	
 			
 			this.index = __dx;
 		}

@@ -54,11 +54,11 @@ public abstract class SpringArrayObject
 		if (__self == null || __cl == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error BK16 Attempt to allocate an array of a
+		// {@squirreljme.error BK01 Attempt to allocate an array of a
 		// negative size. (The length requested)}
 		if (__l < 0)
 			throw new SpringNegativeArraySizeException(
-				String.format("BK16 %d", __l));
+				String.format("BK01 %d", __l));
 		
 		this.selftype = __self;
 		this.component = __cl;

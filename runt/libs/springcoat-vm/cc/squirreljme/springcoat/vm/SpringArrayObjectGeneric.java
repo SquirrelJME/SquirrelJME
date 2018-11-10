@@ -107,12 +107,12 @@ public final class SpringArrayObjectGeneric
 			return __cl.cast(this._elements[__dx]);
 		}
 		
-		// {@squirreljme.error BK1j Out of bounds access to array.
+		// {@squirreljme.error BK08 Out of bounds access to array.
 		// (The index; The length of the array)}
 		catch (IndexOutOfBoundsException e)
 		{
 			throw new SpringArrayIndexOutOfBoundsException(
-				String.format("BK1j %d %d", __dx, this.length), e);
+				String.format("BK08 %d %d", __dx, this.length), e);
 		}
 	}
 	
@@ -158,13 +158,13 @@ public final class SpringArrayObjectGeneric
 			// Performing the check for cache?
 			if (docheck)
 			{
-				// {@squirreljme.error BK1i The specified type is not
+				// {@squirreljme.error BK09 The specified type is not
 				// compatible with the values this array stores. (The input
 				// value; The component type)}
 				SpringClass component = this.component;
 				if (!component.isCompatible(__v))
 					throw new SpringArrayStoreException(String.format(
-						"BK1i %s %s", __v, component));
+						"BK09 %s %s", __v, component));
 				
 				// Next validity check would be set if done on an object
 				// Ignore setting it back to null, if one was previously
@@ -177,12 +177,12 @@ public final class SpringArrayObjectGeneric
 			this._elements[__dx] = __v;
 		}
 		
-		// {@squirreljme.error BK1h Out of bounds access to array. (The index;
+		// {@squirreljme.error BK0a Out of bounds access to array. (The index;
 		// The length of the array)}
 		catch (IndexOutOfBoundsException e)
 		{
 			throw new SpringArrayIndexOutOfBoundsException(
-				String.format("BK1h %d %d", __dx, this.length), e);
+				String.format("BK0a %d %d", __dx, this.length), e);
 		}
 	}
 }

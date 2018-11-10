@@ -65,12 +65,12 @@ public final class SpringArrayObjectChar
 			return (C)Integer.valueOf(this._elements[__dx]);
 		}
 		
-		// {@squirreljme.error BK2g Out of bounds access to array. (The index;
+		// {@squirreljme.error BK05 Out of bounds access to array. (The index;
 		// The length of the array)}
 		catch (IndexOutOfBoundsException e)
 		{
 			throw new SpringArrayIndexOutOfBoundsException(
-				String.format("BK2g %d %d", __dx, length), e);
+				String.format("BK05 %d %d", __dx, length), e);
 		}
 	}
 	
@@ -94,19 +94,19 @@ public final class SpringArrayObjectChar
 			this._elements[__dx] = (char)((Integer)__v).intValue();
 		}
 		
-		// {@squirreljme.error BK2e Could not set the index in the char
+		// {@squirreljme.error BK06 Could not set the index in the char
 		// array.}
 		catch (ClassCastException e)
 		{
-			throw new SpringArrayStoreException("BK2e", e);
+			throw new SpringArrayStoreException("BK06", e);
 		}
 		
-		// {@squirreljme.error BK2f Out of bounds access to array. (The index;
+		// {@squirreljme.error BK07 Out of bounds access to array. (The index;
 		// The length of the array)}
 		catch (IndexOutOfBoundsException e)
 		{
 			throw new SpringArrayIndexOutOfBoundsException(
-				String.format("BK2f %d %d", __dx, this.length), e);
+				String.format("BK07 %d %d", __dx, this.length), e);
 		}
 	}
 }

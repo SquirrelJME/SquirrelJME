@@ -87,17 +87,17 @@ public final class SpringTaskManager
 		EntryPoints entries;
 		try (InputStream in = boot.resourceAsStream("META-INF/MANIFEST.MF"))
 		{
-			// {@squirreljme.error BK2n Entry point JAR has no manifest.}
+			// {@squirreljme.error BK12 Entry point JAR has no manifest.}
 			if (in == null)
-				throw new SpringVirtualMachineException("BK2n");
+				throw new SpringVirtualMachineException("BK12");
 			
 			entries = new EntryPoints(new JavaManifest(in));
 		}
 		
-		// {@squirreljme.error BK2o Failed to read the manifest.}
+		// {@squirreljme.error BK13 Failed to read the manifest.}
 		catch (IOException e)
 		{
-			throw new SpringVirtualMachineException("BK2o", e);
+			throw new SpringVirtualMachineException("BK13", e);
 		}
 		
 		// Determine the entry point used
