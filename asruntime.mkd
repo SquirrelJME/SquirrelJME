@@ -1,53 +1,10 @@
 # SquirrelJME As A Runtime
 
-***THIS DOCUMENTATION IS OUT OF DATE AND NEEDS TO BE REWRITTEN***
-
-There are two portions of SquirrelJME, the _SquirrelJME Virtual Machine_ and
-the _SquirrelJME Runtime_. The virtual machine is the one which executes the
-program and provides an environment that runs on the operating system or
-other bare hardware. The runtime is the class libraries which provide a
-standard set of classes and interfaces which are used by Java programs. This
-document describes the requirements which are needed to have a virtual machine
-which can use the SquirrelJME runtime.
-
-Note that **J2ME** was renamed to **Java ME**, so any mentions of **Java ME**
-retroactively mentions **J2ME**.
-
-There are two cases where the runtime is used, those two cases are _pure_ and
-_hosted_. There are two major differences between the two:
-
- * _pure_
-   * All of the classes in the runtime are solely provided by SquirrelJME.
-   * More consistent.
-   * Portability is increased because there is less code to be ported.
-   * More likely to be less complicated.
-   * Requires more implementation work
- * _hosted_
-   * Runs an extra SquirrelJME APIs on top of an existing virtual machine.
-   * Hacks will be required for correct operation to match the semantics of
-     Java ME.
-   * May have compatibility issues.
-   * Requires maintaining two separate programs.
-   * Faster to implement non-provided APIs, there is no need to implement the
-     core APIs because the host environment provides them.
-   * Does not need a virtual machine to be modified to support SquirrelJME.
-
-SquirrelJME operates in one of two fashions: _Single Program Mode_ where only
-a single program is ran at once which eventually terminates, and
-_Launcher Mode_ where a launcher is available and multiple programs can be
-launched and ran at the same time.
-
- * _Single Program Mode_
-   * Simple to implement, only need to worry about a single program running at
-     a time.
-   * Not possible to run other programs.
-   * Class initialization and static initialization is easier.
- * _Launcher Mode_
-   * Potentially allows JARs to be loaded at run-time to run other programs.
-   * Provides an interface for selecting JARs to be ran.
-   * Allows multiple programs to be ran at the same time.
-   * Requires that different program execution domains be supported, this is
-     because static variables need to be initialized for each program.
+To use the SquirrelJME library as the main supporting run-time library will
+require that you implement the native methods which are located in the
+`cc.squirreljme.runtime.cldc.asm` package. Implementing these native methods
+will in the result end up with a library compatible implementation of
+SquirrelJME.
 
 # Requirements of Java ME
 
@@ -107,32 +64,4 @@ execution context. If two programs are loaded they are both in two different
 execution contexts and they cannot lookup each others classes. Thus if two
 JARs have the same class, it will only use the class that is in their same
 JAR.
-
-# Virtual Machine Structure
-
-The virtual machine is structured like a micro-kernel in that there is a kernel
-and each task which runs on the machine is its own process with its own
-memory space.
-
-# Required Methods
-
-For simplicity, sanity, and portability; SquirrelJME has a very simple means to
-provide support for many systems and is designed in a way to reduce the amount
-of work that is required to support various systems. This means that porting
-SquirrelJME will be very simple and straightforward once the base semantics of
-the virtual machine are implemented.
-
-Both kernel and user-space tasks use an API that provides system calls to
-perform some unsafe operations in the kernel and to interact with the kernel.
-Each function is specified in the enumeration
-`cc.squirreljme.runtime.cldc.system.SystemFunction`. System calls are directly
-used with the `cc.squirreljme.runtime.cldc.system.SystemCall` class. System
-calls can be initialized by either setting the internal `_CALLS` field or
-modifying the method `__calls()` to return an array of system call
-implementations.
-
-The system calls allow for basic types to be passed to and from the remote
-side and also provides a mean to have remote execution as it is needed via
-remote function handlers. This means that system call operations should be
-fast as there only needs to be handling of the basic types.
 
