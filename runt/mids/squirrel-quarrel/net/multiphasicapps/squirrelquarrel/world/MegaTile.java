@@ -104,11 +104,11 @@ public class MegaTile
 	public TerrainType subTileTerrain(int __x, int __y)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error BE04 Cannot get terrain because the tile is
+		// {@squirreljme.error BE0i Cannot get terrain because the tile is
 		// out of range.}
 		if (__x < 0 || __y < 0 || __x >= TILES_PER_MEGA_TILE ||
 			__y >= TILES_PER_MEGA_TILE)
-			throw new IndexOutOfBoundsException("BE04");
+			throw new IndexOutOfBoundsException("BE0i");
 		
 		// Depends
 		return TerrainType.of(

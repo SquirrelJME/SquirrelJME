@@ -157,10 +157,10 @@ public final class SplitScreen
 	public final GameScreen get(int __i)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error BE0t The game screen which was requested is
+		// {@squirreljme.error BE06 The game screen which was requested is
 		// outside of the player bounds.}
 		if (__i < 0 || __i >= this._numscreens)
-			throw new IndexOutOfBoundsException("BE0t");
+			throw new IndexOutOfBoundsException("BE06");
 		
 		return this._screens[this._order[__i].ordinal()];
 	}
