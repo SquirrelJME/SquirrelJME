@@ -18,6 +18,7 @@ import java.io.OutputStream;
 import net.multiphasicapps.io.Checksum;
 import net.multiphasicapps.io.ChecksumInputStream;
 import net.multiphasicapps.io.DecompressionInputStream;
+import net.multiphasicapps.io.DeflaterOutputStream;
 import net.multiphasicapps.io.InflaterInputStream;
 
 /**
@@ -162,6 +163,10 @@ public enum ZipCompressionType
 				// No compression, use the same stream
 			case NO_COMPRESSION:
 				return __os;
+				
+				// Inflate
+			case DEFLATE:
+				return new DeflaterOutputStream(__os);
 			
 				// {@squirreljme.error BF03 Compressing using the given
 				// compression algorithm is not supported. (The compression
