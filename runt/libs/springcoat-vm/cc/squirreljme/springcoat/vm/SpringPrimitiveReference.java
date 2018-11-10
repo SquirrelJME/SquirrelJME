@@ -41,9 +41,9 @@ public abstract class SpringPrimitiveReference
 	@Override
 	public final SpringMonitor monitor()
 	{
-		// {@squirreljme.error BK1x Reference types are special and have no
+		// {@squirreljme.error BK10 Reference types are special and have no
 		// monitor.}
-		throw new SpringVirtualMachineException("BK1x");
+		throw new SpringVirtualMachineException("BK10");
 	}
 	
 	/**
@@ -53,9 +53,9 @@ public abstract class SpringPrimitiveReference
 	@Override
 	public final SpringClass type()
 	{
-		// {@squirreljme.error BK1w Reference types are special and have no
+		// {@squirreljme.error BK11 Reference types are special and have no
 		// class.}
-		throw new SpringVirtualMachineException("BK1w");
+		throw new SpringVirtualMachineException("BK11");
 	}
 }
 

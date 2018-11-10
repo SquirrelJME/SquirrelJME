@@ -271,10 +271,10 @@ public final class SpringMachine
 		{
 			SpringFieldStorage rv = sfm.get(__f);
 			
-			// {@squirreljme.error BK0g Could not locate the static field
+			// {@squirreljme.error BK0u Could not locate the static field
 			// storage?}
 			if (rv == null)
-				throw new SpringVirtualMachineException("BK0g");
+				throw new SpringVirtualMachineException("BK0u");
 			
 			return rv;
 		}
@@ -329,10 +329,10 @@ public final class SpringMachine
 			entries = new EntryPoints(new JavaManifest(in));
 		}
 		
-		// {@squirreljme.error BK0u Failed to read the manifest.}
+		// {@squirreljme.error BK0w Failed to read the manifest.}
 		catch (IOException e)
 		{
-			throw new SpringVirtualMachineException("BK0u", e);
+			throw new SpringVirtualMachineException("BK0w", e);
 		}
 		
 		int n = entries.size();
