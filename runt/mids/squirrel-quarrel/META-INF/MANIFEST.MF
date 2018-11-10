@@ -3,7 +3,7 @@ X-SquirrelJME-UUID: 00111ef0-e4a8-45e3-a3c7-5a953d183f8f
 X-SquirrelJME-Error: BE
 X-SquirrelJME-Name: Squirrel Quarrel
 X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Version: 0.2.0
 X-SquirrelJME-Description: This provides Squirrel Quarrel through the 
  standard LCD UI interface that is used on MIDP based Java ME systems.
 X-SquirrelJME-Depends: tool-manifest-reader midp-lcdui

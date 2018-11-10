@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Name: MEEP Line Based Interface
 X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Version: 0.2.0
 X-SquirrelJME-Description: This contains the base support for the line 
  based interface.
 X-SquirrelJME-Depends: meep-key collections gcf

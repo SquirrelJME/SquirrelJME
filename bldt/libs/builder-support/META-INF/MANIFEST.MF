@@ -3,7 +3,7 @@ X-SquirrelJME-UUID: fda7df14-a58f-4781-8f8f-336111c7aec2
 X-SquirrelJME-Error: AU
 X-SquirrelJME-Name: Build System Support
 X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Version: 0.2.0
 X-SquirrelJME-Depends: collections tool-manifest-reader meep-swm 
  tool-manifest-writer zip meep-midlet tool-compiler
 X-SquirrelJME-Description: This contains basic support for the build 

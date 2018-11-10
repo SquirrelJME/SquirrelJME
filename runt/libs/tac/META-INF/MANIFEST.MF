@@ -3,7 +3,7 @@ X-SquirrelJME-UUID: 648f4184-68ee-4cfd-ae8c-99e438246e97
 X-SquirrelJME-Error: BU
 X-SquirrelJME-Name: Testing, Acceptance, and Comparison
 X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Version: 0.2.0
 X-SquirrelJME-Description: This project contains the testing, acceptance, 
  and comparison framework which is used to test and compare differring 
  executions of the virtual machine.

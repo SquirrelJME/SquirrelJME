@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Name: Byte Deque Utility
 X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Version: 0.2.0
 X-SquirrelJME-Description: This provides access to a dynamically sized 
  byte buffer with a Deque-like interface.
 X-SquirrelJME-Error: AE

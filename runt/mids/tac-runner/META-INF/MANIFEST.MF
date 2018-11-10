@@ -3,7 +3,7 @@ X-SquirrelJME-UUID: daf7dd87-8de8-4918-b4b0-c36c42e55688
 X-SquirrelJME-Error: AI
 X-SquirrelJME-Name: TAC Runner
 X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Version: 0.2.0
 X-SquirrelJME-Description: This is a system which interacts with 
  SquirrelJME and is able to launch and execute various tests within 
  the environment automatically.

@@ -3,7 +3,7 @@ X-SquirrelJME-UUID: 4b20ba4f-4ec6-4b1f-b5c2-738b8b19da60
 X-SquirrelJME-Error: AX
 X-SquirrelJME-Name: ZIP File Dumper
 X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Version: 0.2.0
 X-SquirrelJME-Description: This dumps ZIP files.
 X-SquirrelJME-Depends: zip io
 Microedition-Configuration: CLDC-1.8

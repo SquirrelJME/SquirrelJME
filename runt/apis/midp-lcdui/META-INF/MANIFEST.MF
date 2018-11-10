@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Name: LCDUI
 X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Version: 0.2.0
 X-SquirrelJME-Description: This contains the standard MIDP LCD User 
  Interface which uses graphical text, widgets, and images to interact 
  with the user. Unlike the MEEP Line User Interface, this requires a 
