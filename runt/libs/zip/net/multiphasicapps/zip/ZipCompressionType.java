@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import net.multiphasicapps.io.Checksum;
 import net.multiphasicapps.io.ChecksumInputStream;
+import net.multiphasicapps.io.CompressionLevel;
 import net.multiphasicapps.io.DecompressionInputStream;
 import net.multiphasicapps.io.DeflaterOutputStream;
 import net.multiphasicapps.io.InflaterInputStream;
@@ -141,7 +142,7 @@ public enum ZipCompressionType
 	
 	/**
 	 * Creates an output stream which wraps another for output which is used
-	 * to write the associated data.
+	 * to write the associated data. The default compression level is used.
 	 *
 	 * @param __os The output stream to write into.
 	 * @return An output stream for writing the data for this given compression
@@ -153,8 +154,27 @@ public enum ZipCompressionType
 	public final OutputStream outputStream(OutputStream __os)
 		throws IOException, NullPointerException
 	{
+		return this.outputStream(__os, CompressionLevel.DEFAULT);
+	}
+	
+	/**
+	 * Creates an output stream which wraps another for output which is used
+	 * to write the associated data.
+	 *
+	 * @param __os The output stream to write into.
+	 * @param __cl The compression level to use.
+	 * @return An output stream for writing the data for this given compression
+	 * method.
+	 * @throws IOException If the stream could not be created.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2016/07/15
+	 */
+	public final OutputStream outputStream(OutputStream __os,
+		CompressionLevel __cl)
+		throws IOException, NullPointerException
+	{
 		// Check
-		if (__os == null)
+		if (__os == null || __cl == null)
 			throw new NullPointerException("NARG");
 		
 		// Depends on the compression
@@ -166,7 +186,7 @@ public enum ZipCompressionType
 				
 				// Inflate
 			case DEFLATE:
-				return new DeflaterOutputStream(__os);
+				return new DeflaterOutputStream(__os, __cl);
 			
 				// {@squirreljme.error BF03 Compressing using the given
 				// compression algorithm is not supported. (The compression
