@@ -37,9 +37,9 @@ public abstract class TestSupplier<R>
 	final Object __runTest(Object... __args)
 		throws Throwable
 	{
-		// {@squirreljme.error BU07 Test does not take any parameters.}
+		// {@squirreljme.error BU06 Test does not take any parameters.}
 		if (__args.length != 0)
-			throw new InvalidTestParameterException("BU07");
+			throw new InvalidTestParameterException("BU06");
 		
 		// Run the test
 		return this.test();

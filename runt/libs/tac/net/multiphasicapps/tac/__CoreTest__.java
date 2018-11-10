@@ -106,8 +106,8 @@ abstract class __CoreTest__
 		}
 		catch (IOException e)
 		{
-			// {@squirreljme.error BU02 Could not read the argument input.}
-			throw new InvalidTestException("BU02", e);
+			// {@squirreljme.error BU07 Could not read the argument input.}
+			throw new InvalidTestException("BU07", e);
 		}
 		
 		// The main attributes contain the arguments
@@ -131,9 +131,9 @@ abstract class __CoreTest__
 				// Exception was thrown
 				this._status = TestStatus.TEST_EXCEPTION;
 				
-				// {@squirreljme.error BU04 The test failed to run properly.
+				// {@squirreljme.error BU08 The test failed to run properly.
 				// (The given test)}
-				System.err.printf("BU04 %s%n", classname);
+				System.err.printf("BU08 %s%n", classname);
 				t.printStackTrace(System.err);
 				return;
 			}
@@ -387,19 +387,19 @@ abstract class __CoreTest__
 		else if (__s.startsWith("long:"))
 			return Long.valueOf(__s.substring(5));
 		
-		// {@squirreljme.error BU06 The specified string cannot be converted
+		// {@squirreljme.error BU09 The specified string cannot be converted
 		// to an object because it an unknown representation, the conversion
 		// is only one way. (The encoded data)}
 		else if (__s.startsWith("other:"))
 			throw new InvalidTestParameterException(
-				String.format("BU06 %s", __s));
+				String.format("BU09 %s", __s));
 		
-		// {@squirreljme.error BU0b The specified object cannot be
+		// {@squirreljme.error BU0a The specified object cannot be
 		// decoded because it is not known or does not support decoding.
 		// (The encoded data)}
 		else
 			throw new InvalidTestParameterException(
-				String.format("BU0b %s", __s));
+				String.format("BU0a %s", __s));
 	}
 	
 	/**

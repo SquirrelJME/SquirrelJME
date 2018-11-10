@@ -40,9 +40,9 @@ public abstract class TestBiConsumer<A, B>
 	final Object __runTest(Object... __args)
 		throws Throwable
 	{
-		// {@squirreljme.error BU08 Test takes two parameters.}
+		// {@squirreljme.error BU01 Test takes two parameters.}
 		if (__args.length != 2)
-			throw new InvalidTestParameterException("BU08");
+			throw new InvalidTestParameterException("BU01");
 		
 		// Run the test
 		this.test((A)__args[0], (B)__args[1]);
