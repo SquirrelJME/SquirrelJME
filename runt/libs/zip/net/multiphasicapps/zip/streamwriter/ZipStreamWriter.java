@@ -68,16 +68,16 @@ public class ZipStreamWriter
 		new LinkedList<>();
 	
 	/** Was this stream closed? */
-	private volatile boolean _closed;
+	private boolean _closed;
 	
 	/** The current entry output (the inner portion). */
-	private volatile __InnerOutputStream__ _inner;
+	private __InnerOutputStream__ _inner;
 	
 	/** The current entry output (the outer portion). */
-	private volatile __OuterOutputStream__ _outer;
+	private __OuterOutputStream__ _outer;
 	
 	/** The best version number. */
-	private volatile int _bestversion =
+	private int _bestversion =
 		Math.max(20, ZipCompressionType.DEFLATE.extractVersion());
 	
 	/**
@@ -412,7 +412,7 @@ public class ZipStreamWriter
 		protected final OutputStream wrapped;
 		
 		/** Is the outer side finished? */
-		protected volatile boolean finished;
+		protected boolean finished;
 		
 		/** The decompressed size. */
 		volatile int _size;
