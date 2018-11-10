@@ -34,19 +34,19 @@ public class InflaterInputStream
 		32768;
 	
 	/** No compression. */
-	private static final int _TYPE_NO_COMPRESSION =
+	static final int _TYPE_NO_COMPRESSION =
 		0b00;
 	
 	/** Fixed huffman table compression. */
-	private static final int _TYPE_FIXED_HUFFMAN =
+	static final int _TYPE_FIXED_HUFFMAN =
 		0b01;
 	
 	/** Dynamic huffman table compression. */
-	private static final int _TYPE_DYNAMIC_HUFFMAN =
+	static final int _TYPE_DYNAMIC_HUFFMAN =
 		0b10;
 	
 	/** An error. */
-	private static final int _TYPE_ERROR =
+	static final int _TYPE_ERROR =
 		0b11;
 	
 	/** The maximum number of bits in the code length tree. */

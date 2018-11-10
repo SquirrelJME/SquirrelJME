@@ -103,11 +103,26 @@ public class DeflaterOutputStream
 			// Is closed
 			this._closed = true;
 			
-			// Process the file if there is any
+			// Process any fill remaining so it gets compressed
 			if (this._fillbytes > 0)
 				this.__processFill();
 			
-			// Make sure the output is flushed first
+			// Mark final block
+			this.__bitOut(1, 1, false);
+			
+			// Fixed huffman
+			this.__bitOut(InflaterInputStream._TYPE_FIXED_HUFFMAN, 2, false);
+			
+			// Write code 256 which means to end processing the data, this
+			// is just 0b000 + 0b0000 for the offset value
+			this.__bitOut(0b000_0000, 7, true);
+			
+			// Pad to 8 bytes so partial bits for the end are not lost
+			this.__bitPad(8);
+			
+			// Perform final flushing before closing to make sure everything
+			// is written
+			this.__bitFlush();
 			this.flush();
 		}
 	}
@@ -298,11 +313,24 @@ public class DeflaterOutputStream
 		// Debug
 		todo.DEBUG.note("Processing %d bytes...", fillbytes);
 		
-		throw new todo.TODO();
+		// Write all the bytes with no compression at all
+		// Write no-compression marker, stream not ended yet
+		this.__bitOut(0, 1, false);
+		this.__bitOut(InflaterInputStream._TYPE_NO_COMPRESSION, 2, false);
 		
-		// private final int _blocksize;
-		// private final byte[] _fill;
-		// private int _fillbytes;
+		// Pad because byte boundary
+		this.__bitPad(8);
+		
+		// Length and complement of that
+		this.__bitOut(fillbytes, 16, false);
+		this.__bitOut(fillbytes ^ 0xFFFF, 16, false);
+		
+		// Then write every individual byte
+		for (int i = 0; i < fillbytes; i++)
+			this.__bitOut(fill[i], 8, false);
+		
+		// Remove the fill
+		this._fillbytes = 0;
 	}
 }
 
