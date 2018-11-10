@@ -44,10 +44,10 @@ public class DefaultDisplay
 		if (__nd == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error EJ0a The specified class type cannot be used
+		// {@squirreljme.error EJ01 The specified class type cannot be used
 		// as a display for OpenGL ES graphics. (The class type)}
 		if (!(__nd instanceof Canvas || __nd instanceof CanvasItem))
-			throw new IllegalArgumentException(String.format("EJ0a %s",
+			throw new IllegalArgumentException(String.format("EJ01 %s",
 				__nd.getClass()));
 		
 		// Set

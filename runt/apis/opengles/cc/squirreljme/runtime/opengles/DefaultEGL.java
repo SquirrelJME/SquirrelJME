@@ -70,12 +70,12 @@ public class DefaultEGL
 		if (__attrl == null)
 			__attrl = new int[]{EGL10.EGL_NONE};
 		
-		// {@squirreljme.error EJ01 No display was specified for choosing a
+		// {@squirreljme.error EJ02 No display was specified for choosing a
 		// configuration.}
 		if (__disp == null)
 		{
 			this._error = EGL10.EGL_BAD_DISPLAY;
-			throw new IllegalArgumentException("EJ01");
+			throw new IllegalArgumentException("EJ02");
 		}
 		
 		// Configuration must be set
@@ -85,20 +85,20 @@ public class DefaultEGL
 			return false;
 		}
 		
-		// {@squirreljme.error EJ02 The array containing the number of
+		// {@squirreljme.error EJ03 The array containing the number of
 		// configurations written has a length of zero.}
 		if (__numconf.length < 1)
 		{
 			this._error = EGL10.EGL_BAD_PARAMETER;
-			throw new IllegalArgumentException("EJ02");
+			throw new IllegalArgumentException("EJ03");
 		}
 		
-		// {@squirreljme.error EJ03 Requested more configurations than what
+		// {@squirreljme.error EJ04 Requested more configurations than what
 		// may be output.}
 		if (__confs != null && __confs.length < __confssize)
 		{
 			this._error = EGL10.EGL_BAD_PARAMETER;
-			throw new IllegalArgumentException("EJ03");
+			throw new IllegalArgumentException("EJ04");
 		}
 		
 		// Must be a SquirrelJME display
@@ -122,12 +122,12 @@ public class DefaultEGL
 			if (__attrl[i] == EGL10.EGL_NONE)
 				break;
 		
-		// {@squirreljme.error EJ04 The attribute list does not end with
+		// {@squirreljme.error EJ05 The attribute list does not end with
 		// EGL_NONE.}
 		if (end >= atn)
 		{
 			this._error = EGL10.EGL_BAD_PARAMETER;
-			throw new IllegalArgumentException("EJ04");
+			throw new IllegalArgumentException("EJ05");
 		}
 		
 		throw new todo.TODO();
@@ -268,10 +268,10 @@ public class DefaultEGL
 	public EGLDisplay eglGetDisplay(Object __nd)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EJ05 No native display was specified when
+		// {@squirreljme.error EJ06 No native display was specified when
 		// obtaining an OpenGL ES display.}
 		if (__nd == null)
-			throw new IllegalArgumentException("EJ05");
+			throw new IllegalArgumentException("EJ06");
 		
 		// Just create a new display regardless of the native display object
 		// used.
@@ -298,17 +298,17 @@ public class DefaultEGL
 	public boolean eglInitialize(EGLDisplay __disp, int[] __ver)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EJ06 No display was specified.}
+		// {@squirreljme.error EJ07 No display was specified.}
 		if (__disp == null)
 		{
 			this._error = EGL11.EGL_BAD_DISPLAY;
-			throw new IllegalArgumentException("EJ06");
+			throw new IllegalArgumentException("EJ07");
 		}
 		
-		// {@squirreljme.error EJ07 An output version was specified, however
+		// {@squirreljme.error EJ08 An output version was specified, however
 		// it has a length lower than two.}
 		if (__ver != null && __ver.length < 2)
-			throw new IllegalArgumentException("EJ07");
+			throw new IllegalArgumentException("EJ08");
 		
 		// Not our kind of display?
 		if (!(__disp instanceof DefaultDisplay))
@@ -362,11 +362,11 @@ public class DefaultEGL
 	public String eglQueryString(EGLDisplay __disp, int __key)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error EJ08 Cannot query string a null display.}
+		// {@squirreljme.error EJ09 Cannot query string a null display.}
 		if (__disp == null)
 		{
 			this._error = EGL10.EGL_BAD_DISPLAY;
-			throw new IllegalArgumentException("EJ08");
+			throw new IllegalArgumentException("EJ09");
 		}
 		
 		// Must be our own display
