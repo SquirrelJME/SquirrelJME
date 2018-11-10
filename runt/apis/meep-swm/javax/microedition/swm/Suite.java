@@ -455,22 +455,22 @@ public class Suite
 		
 		throw new todo.TODO();
 		/*
-		// {@squirreljme.error DG01 The current suite has been removed.}
+		// {@squirreljme.error DG0q The current suite has been removed.}
 		if (!isInstalled())
-			throw new IllegalStateException("DG01");
+			throw new IllegalStateException("DG0q");
 		
-		// {@squirreljme.error DG02 The given state flag cannot be set.
+		// {@squirreljme.error DG0r The given state flag cannot be set.
 		// (The state flag)}
 		if (__f == SuiteStateFlag.SYSTEM || __f == SuiteStateFlag.PREINSTALLED)
-			throw new IllegalArgumentException(String.format("DG02 %s", __f));
+			throw new IllegalArgumentException(String.format("DG0r %s", __f));
 		
 		// Lock
 		synchronized (this._lock)
 		{
-			// {@squirreljme.error DG03 Cannot change flags of the system
+			// {@squirreljme.error DG0s Cannot change flags of the system
 			// suite.}
 			if (0 != (this._state & (1 << SuiteStateFlag.SYSTEM.ordinal())))
-				throw new IllegalStateException("DG03");
+				throw new IllegalStateException("DG0s");
 			
 			// Get the required bit
 			int bit = (1 << __f.SYSTEM.ordinal());
@@ -536,7 +536,7 @@ public class Suite
 			}
 			catch (IOException e)
 			{
-				// {@squirreljme.error DG01 Could not load suite manifest.}
+				// {@squirreljme.error DG0t Could not load suite manifest.}
 				throw new RuntimeException("DG0a", e);
 			}
 		
