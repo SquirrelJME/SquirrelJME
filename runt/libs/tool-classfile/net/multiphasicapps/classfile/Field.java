@@ -67,11 +67,11 @@ public final class Field
 		if (__f == null || __n == null || __t == null || __avs == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error JC21 The constant value is not compatible with
+		// {@squirreljme.error JC0w The constant value is not compatible with
 		// the given field type. (The value; The value type; The field type)}
 		if (__cv != null && !__cv.type().isCompatibleWith(__t))
 			throw new InvalidClassFormatException(String.format(
-				"JC21 %s %s %s", __cv, __cv.type(), __t));
+				"JC0w %s %s %s", __cv, __cv.type(), __t));
 		
 		this.flags = __f;
 		this.name = __n;
@@ -186,11 +186,11 @@ public final class Field
 				__pool.<UTFConstantEntry>require(UTFConstantEntry.class,
 				__in.readUnsignedShort()).toString());
 			
-			// {@squirreljme.error JC0p A duplicate method exists within the
+			// {@squirreljme.error JC0x A duplicate method exists within the
 			// class. (The method name; The method descriptor)}
 			if (!dup.add(new NameAndType(name.toString(), type.toString())))
 				throw new InvalidClassFormatException(String.format(
-					"JC0p %s %s", name, type));
+					"JC0x %s %s", name, type));
 			
 			// Handle attributes
 			AttributeTable attrs = AttributeTable.parse(__pool, __in);

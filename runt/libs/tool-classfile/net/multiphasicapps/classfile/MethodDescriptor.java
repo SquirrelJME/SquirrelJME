@@ -48,11 +48,11 @@ public final class MethodDescriptor
 		// Set
 		this.string = __n;
 		
-		// {@squirreljme.error JC15 Method descriptors must start with an open
+		// {@squirreljme.error JC1o Method descriptors must start with an open
 		// parenthesis. (The method descriptor)}
 		if (!__n.startsWith("("))
 			throw new InvalidClassFormatException(
-				String.format("JC15 %s", __n));
+				String.format("JC1o %s", __n));
 		
 		// Parse all input arguments
 		List<FieldDescriptor> args = new ArrayList<>();
@@ -71,11 +71,11 @@ public final class MethodDescriptor
 				if ('[' != __n.charAt(at))
 					break;
 			
-			// {@squirreljme.error JC16 Reached end of descriptor parsing
+			// {@squirreljme.error JC1p Reached end of descriptor parsing
 			// arguments. (The method descriptor)}
 			if (at >= n)
 				throw new InvalidClassFormatException(
-					String.format("JC16 %s", __n));
+					String.format("JC1p %s", __n));
 			
 			// Find end sequence
 			switch (__n.charAt(at))
@@ -98,11 +98,11 @@ public final class MethodDescriptor
 							break;
 					break;
 				
-					// {@squirreljme.error JC17 Unknown field descriptor in
+					// {@squirreljme.error JC1q Unknown field descriptor in
 					// method descriptor argument. (The descriptor)}
 				default:
 					throw new InvalidClassFormatException(
-						String.format("JC17 %s", __n));
+						String.format("JC1q %s", __n));
 			}
 			
 			// Parse field
@@ -117,11 +117,11 @@ public final class MethodDescriptor
 		// Skip the ending parenthesis
 		i++;
 		
-		// {@squirreljme.error JC18 The method descriptor has no return
+		// {@squirreljme.error JC1r The method descriptor has no return
 		// value. (The method descriptor)}
 		if (i >= n)
 			throw new InvalidClassFormatException(
-				String.format("JC18 %s", __n));
+				String.format("JC1r %s", __n));
 		
 		// No return value?
 		char c = __n.charAt(i);

@@ -54,12 +54,12 @@ public final class FieldDescriptor
 		// Set
 		this.string = __n;
 		
-		// {@squirreljme.error JC0s The field descriptor cannot be blank. (The
+		// {@squirreljme.error JC0y The field descriptor cannot be blank. (The
 		// field descriptor)}
 		int n = __n.length();
 		if (n <= 0)
 			throw new InvalidClassFormatException(
-				String.format("JC0s %s", __n));
+				String.format("JC0y %s", __n));
 		
 		// Depends on the first character
 		char c = __n.charAt(0);
@@ -104,21 +104,21 @@ public final class FieldDescriptor
 				this.dimensions = 0;
 				this.component = null;
 				
-				// {@squirreljme.error JC0t The field descriptor for a class
+				// {@squirreljme.error JC0z The field descriptor for a class
 				// must end with a semicolon. (The field descriptor)}
 				if (';' != __n.charAt(n - 1))
 					throw new InvalidClassFormatException(
-						String.format("JC0t %s", __n));
+						String.format("JC0z %s", __n));
 				
 				// Decode
 				this.classname = new ClassName(__n.substring(1, n - 1));
 				break;
 				
-				// {@squirreljme.error JC0u The field descriptor is not valid.
+				// {@squirreljme.error JC10 The field descriptor is not valid.
 				// (The field descriptor)}
 			default:
 				throw new InvalidClassFormatException(
-					String.format("JC0u %s", __n));
+					String.format("JC10 %s", __n));
 		}
 	}
 	
@@ -136,9 +136,9 @@ public final class FieldDescriptor
 		if (__d == 0)
 			return this;
 		
-		// {@squirreljme.error JC2c Cannot add negative dimensions.}
+		// {@squirreljme.error JC11 Cannot add negative dimensions.}
 		if (__d < 0)
-			throw new IllegalArgumentException("JC2c");
+			throw new IllegalArgumentException("JC11");
 		
 		// Prepend string with brackets, to declare a new array
 		StringBuilder sb = new StringBuilder();

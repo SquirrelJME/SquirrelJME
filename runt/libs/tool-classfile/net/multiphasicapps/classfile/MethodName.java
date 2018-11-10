@@ -39,11 +39,11 @@ public final class MethodName
 			{
 				char c = __s.charAt(i);
 				
-				// {@squirreljme.error JC1b Method names cannot contain less
+				// {@squirreljme.error JC1u Method names cannot contain less
 				// than or greater than signs. (The method name)}
 				if (c == '<' || c == '>')
 					throw new InvalidClassFormatException(
-						String.format("JC1b %s", __s));
+						String.format("JC1u %s", __s));
 			}
 	}
 	

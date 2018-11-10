@@ -37,9 +37,9 @@ public final class InstructionJumpTarget
 	public InstructionJumpTarget(int __t)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error JC2a Jump target is negative. (The target)}
+		// {@squirreljme.error JC1j Jump target is negative. (The target)}
 		if (__t < 0)
-			throw new IllegalArgumentException(String.format("JC2a %d", __t));
+			throw new IllegalArgumentException(String.format("JC1j %d", __t));
 		
 		this.target = __t;
 	}

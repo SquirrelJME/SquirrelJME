@@ -67,11 +67,11 @@ public final class AnnotationTable
 		Map<ClassName, Annotation> rv = new LinkedHashMap<>();
 		for (Annotation e : __e)
 		{
-			// {@squirreljme.error JC20 Duplicate annotation declared. (The
+			// {@squirreljme.error JC04 Duplicate annotation declared. (The
 			// declared annotation)}
 			ClassName name = e.type();
 			if (rv.containsKey(name))
-				throw new InvalidClassFormatException(String.format("JC20 %s",
+				throw new InvalidClassFormatException(String.format("JC04 %s",
 					name));
 			
 			rv.put(name, e);

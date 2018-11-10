@@ -146,12 +146,12 @@ public final class ExceptionHandlerTable
 			ClassName type = __pool.<ClassName>get(ClassName.class,
 				__is.readUnsignedShort());
 			
-			// {@squirreljme.error JC0o Address is outside of the bounds of the
+			// {@squirreljme.error JC0v Address is outside of the bounds of the
 			// method. (The start address; The end address; The handler
 			// address; The code length)}
 			if (spc >= __len || epc > __len || hpc >= __len)
 				throw new InvalidClassFormatException(String.format(
-					"JC0o %d %d %d %d", spc, epc, hpc, __len));
+					"JC0v %d %d %d %d", spc, epc, hpc, __len));
 			
 			// Setup exception
 			table[i] = new ExceptionHandler(spc, epc, hpc, type);
