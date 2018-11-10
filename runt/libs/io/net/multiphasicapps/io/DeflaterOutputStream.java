@@ -296,7 +296,7 @@ public class DeflaterOutputStream
 		int mask = (1 << __n) - 1;
 		
 		// Add the new value to the top of the bits
-		wout |= (__v & mask) << (wbits + __n);
+		wout |= (__v & mask) << wbits;
 		wbits += __n;
 		
 		// Store for next cycle (or out flush)
