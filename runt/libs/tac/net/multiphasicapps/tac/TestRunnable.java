@@ -35,9 +35,9 @@ public abstract class TestRunnable
 	final Object __runTest(Object... __args)
 		throws Throwable
 	{
-		// {@squirreljme.error BU01 Test does not take any parameters.}
+		// {@squirreljme.error BU05 Test does not take any parameters.}
 		if (__args.length != 0)
-			throw new InvalidTestParameterException("BU01");
+			throw new InvalidTestParameterException("BU05");
 		
 		// Run the test
 		this.test();
