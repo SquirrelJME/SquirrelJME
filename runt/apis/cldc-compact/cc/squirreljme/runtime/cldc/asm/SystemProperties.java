@@ -42,7 +42,7 @@ public final class SystemProperties
 	 */
 	public static String javaRuntimeVersion()
 	{
-		return "0.0.2";
+		return "0.2.0";
 	}
 	
 	/**
