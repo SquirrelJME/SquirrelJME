@@ -155,10 +155,10 @@ public class Throwable
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ0v Cannot add a suppressed exception which
+		// {@squirreljme.error ZZ1e Cannot add a suppressed exception which
 		// is this exception.}
 		if (__t == this)
-			throw new IllegalArgumentException("ZZ0v");
+			throw new IllegalArgumentException("ZZ1e");
 		
 		// Just lock on this to add suppressed exceptions, it is unspecified
 		// where the lock is done, but this prevent creation of an object just
@@ -269,15 +269,15 @@ public class Throwable
 	public Throwable initCause(Throwable __t)
 		throws IllegalArgumentException, IllegalStateException
 	{
-		// {@squirreljme.error ZZ0t Cannot initialize the cause of the
+		// {@squirreljme.error ZZ1f Cannot initialize the cause of the
 		// throwable with itself as the cause.}
 		if (__t == this)
-			throw new IllegalArgumentException("ZZ0t");
+			throw new IllegalArgumentException("ZZ1f");
 		
-		// {@squirreljme.error ZZ0u The cause of the throwable has already
+		// {@squirreljme.error ZZ1g The cause of the throwable has already
 		// been initialized.}
 		if (this._initcause)
-			throw new IllegalStateException("ZZ0u");
+			throw new IllegalStateException("ZZ1g");
 		
 		// Set
 		this._initcause = true;
@@ -346,10 +346,10 @@ public class Throwable
 		int __clip, boolean __initclip)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error ZZ0x Cannot specify a negative clip for a
+		// {@squirreljme.error ZZ1h Cannot specify a negative clip for a
 		// stack trace.}
 		if (__clip < 0)
-			throw new IllegalArgumentException("ZZ0x");
+			throw new IllegalArgumentException("ZZ1h");
 		
 		// Get the raw trace here
 		int[] rawstack = DebugAccess.rawCallTrace();

@@ -62,10 +62,10 @@ public final class PropertyPermission
 		if (__key == null || __act == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ13 Property permission key cannot be
+		// {@squirreljme.error ZZ22 Property permission key cannot be
 		// negative.}
 		if (__key.isEmpty())
-			throw new IllegalArgumentException("ZZ13");
+			throw new IllegalArgumentException("ZZ22");
 		
 		// Setup key first
 		this._key = __key;
@@ -96,12 +96,12 @@ public final class PropertyPermission
 					w = true;
 					break;
 				
-					// {@squirreljme.error ZZ14 The specified action is not
+					// {@squirreljme.error ZZ23 The specified action is not
 					// valid for property permissions. (The action; The input
 					// actions)}
 				default:
 					throw new IllegalArgumentException(
-						String.format("ZZ14 %s %s", sub, __act));
+						String.format("ZZ23 %s %s", sub, __act));
 			}
 			
 			// Remember to skip the comma, if there is one

@@ -135,11 +135,11 @@ public final class Class<T>
 		if (__o == null)
 			return null;
 		
-		// {@squirreljme.error ZZ26 The other class cannot be casted to this
+		// {@squirreljme.error ZZ0l The other class cannot be casted to this
 		// class. (This class; The other class)}
 		Class<?> other = __o.getClass();
 		if (!this.isAssignableFrom(other))
-			throw new ClassCastException("ZZ26 " + this.getName() + " " +
+			throw new ClassCastException("ZZ0l " + this.getName() + " " +
 				other.getName());
 		
 		return (T)__o;
@@ -424,10 +424,10 @@ public final class Class<T>
 		// what is internally used
 		Class<?> rv = ObjectAccess.classByName(__n.replace('.', '/'));
 		
-		// {@squirreljme.error ZZ03 Could not find the specified class. (The
+		// {@squirreljme.error ZZ0m Could not find the specified class. (The
 		// name of the class)}
 		if (rv == null)
-			throw new ClassNotFoundException(String.format("ZZ03 %s", __n));
+			throw new ClassNotFoundException(String.format("ZZ0m %s", __n));
 		return rv;
 	}
 	

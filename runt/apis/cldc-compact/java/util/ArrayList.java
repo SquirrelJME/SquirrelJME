@@ -57,11 +57,11 @@ public class ArrayList<E>
 	public ArrayList(int __cap)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error ZZ0w Attempt to initialize array list with
+		// {@squirreljme.error ZZ1m Attempt to initialize array list with
 		// a negative capacity. (The capicity)}
 		if (__cap < 0)
 			throw new IllegalArgumentException(
-				String.format("ZZ0w %d", __cap));
+				String.format("ZZ1m %d", __cap));
 		
 		this._elements = (E[])new Object[__cap];
 	}

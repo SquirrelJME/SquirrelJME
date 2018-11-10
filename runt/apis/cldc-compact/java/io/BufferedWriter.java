@@ -76,10 +76,10 @@ public class BufferedWriter
 		if (__out == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ12 Requested a buffer size that is zero or
+		// {@squirreljme.error ZZ0h Requested a buffer size that is zero or
 		// negative. (The requested buffer size)}
 		if (__bs <= 0)
-			throw new IllegalArgumentException(String.format("ZZ12 %d", __bs));
+			throw new IllegalArgumentException(String.format("ZZ0h %d", __bs));
 		
 		throw new todo.TODO();
 	}

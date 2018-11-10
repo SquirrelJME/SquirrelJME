@@ -44,9 +44,9 @@ public final class SubBasicSequenceSequence
 		if (__q == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ2a Out of bounds sequence access.}
+		// {@squirreljme.error ZZ0e Out of bounds sequence access.}
 		if (__s < 0 || __s > __e || __e > __q.length())
-			throw new IndexOutOfBoundsException("ZZ2a");
+			throw new IndexOutOfBoundsException("ZZ0e");
 		
 		this.sequence = __q;
 		this.start = __s;
@@ -61,10 +61,10 @@ public final class SubBasicSequenceSequence
 	public final char charAt(int __i)
 		throws StringIndexOutOfBoundsException
 	{
-		// {@squirreljme.error ZZ29 Sub-basic sequence index is out of
+		// {@squirreljme.error ZZ0f Sub-basic sequence index is out of
 		// bounds. (The index)}
 		if (__i < 0 || __i > this.length)
-			throw new StringIndexOutOfBoundsException("ZZ29 " + __i);
+			throw new StringIndexOutOfBoundsException("ZZ0f " + __i);
 		
 		return this.sequence.charAt(this.start + __i);
 	}
@@ -91,11 +91,11 @@ public final class SubBasicSequenceSequence
 	public final SubBasicSequenceSequence subSequence(int __s, int __e)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error ZZ2a Out of bounds sequence access.}
+		// {@squirreljme.error ZZ0g Out of bounds sequence access.}
 		int start = this.start,
 			newend = start + __e;
 		if (__s < 0 || __s > __e || __e > newend)
-			throw new IndexOutOfBoundsException("ZZ2a");
+			throw new IndexOutOfBoundsException("ZZ0g");
 		
 		return new SubBasicSequenceSequence(this.sequence,
 			start + __s, newend);

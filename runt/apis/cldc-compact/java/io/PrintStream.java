@@ -539,10 +539,10 @@ public class PrintStream
 		// Encode the character into empty space
 		int wc = this._encoder.encode(__c, buf, bat, _BUFFER_SIZE - bat);
 		
-		// {@squirreljme.error ZZ18 Did not expect the buffer to be out of
+		// {@squirreljme.error ZZ0k Did not expect the buffer to be out of
 		// room.}
 		if (wc < 0)
-			throw new Error("ZZ18");
+			throw new Error("ZZ0k");
 		
 		// Should we flush bytes?
 		boolean flush = (__c == '\n' && this._autoflush);

@@ -52,11 +52,11 @@ public final class StringBuilder
 	public StringBuilder(int __c)
 		throws NegativeArraySizeException
 	{
-		// {@squirreljme.error ZZ1c The initial capacity cannot be negative.
+		// {@squirreljme.error ZZ10 The initial capacity cannot be negative.
 		// (The initial capacity)}
 		if (__c < 0)
 			throw new NegativeArraySizeException(
-				String.format("ZZ1c %d", __c));
+				String.format("ZZ10 %d", __c));
 		
 		// Initialize buffer
 		this._buffer = new char[__c];
@@ -289,9 +289,9 @@ public final class StringBuilder
 	public char charAt(int __dx)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error ZZ27 Out of bound access. (The index)}
+		// {@squirreljme.error ZZ11 Out of bound access. (The index)}
 		if (__dx < 0 || __dx >= this._at)
-			throw new IndexOutOfBoundsException("ZZ27 " + __dx);
+			throw new IndexOutOfBoundsException("ZZ11 " + __dx);
 		
 		return this._buffer[__dx];
 	}
@@ -396,10 +396,10 @@ public final class StringBuilder
 	public StringBuilder insert(int __dx, CharSequence __v, int __o, int __l)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error ZZ1d Cannot insert sequence at a negative
+		// {@squirreljme.error ZZ12 Cannot insert sequence at a negative
 		// index.}
 		if (__dx < 0)
-			throw new IndexOutOfBoundsException("ZZ1d");
+			throw new IndexOutOfBoundsException("ZZ12");
 		
 		// Print null?
 		if (__v == null)
@@ -414,11 +414,11 @@ public final class StringBuilder
 		int limit = buffer.length,
 			at = this._at;
 		
-		// {@squirreljme.error ZZ1e The index of insertion exceeds the
+		// {@squirreljme.error ZZ13 The index of insertion exceeds the
 		// length of the current string. (The insertion index; The string
 		// length)}
 		if (__dx > at)
-			throw new IndexOutOfBoundsException(String.format("ZZ1e %d %d",
+			throw new IndexOutOfBoundsException(String.format("ZZ13 %d %d",
 				__dx, at));
 		
 		// First move all characters on the right to the end so that this can
@@ -453,21 +453,21 @@ public final class StringBuilder
 	public StringBuilder insert(int __dx, char __v)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error ZZ1h Cannot insert sequence at a negative
+		// {@squirreljme.error ZZ14 Cannot insert sequence at a negative
 		// index.}
 		if (__dx < 0)
-			throw new IndexOutOfBoundsException("ZZ1h");
+			throw new IndexOutOfBoundsException("ZZ14");
 		
 		// Get buffer properties
 		char[] buffer = this.__buffer(1);
 		int limit = buffer.length,
 			at = this._at;
 		
-		// {@squirreljme.error ZZ1g The index of insertion exceeds the
+		// {@squirreljme.error ZZ15 The index of insertion exceeds the
 		// length of the current string. (The insertion index; The string
 		// length)}
 		if (__dx > at)
-			throw new IndexOutOfBoundsException(String.format("ZZ1g %d %d",
+			throw new IndexOutOfBoundsException(String.format("ZZ15 %d %d",
 				__dx, at));
 		
 		// First move all characters on the right to the end so that this can
@@ -589,10 +589,10 @@ public final class StringBuilder
 	public void setLength(int __nl)
 		throws IndexOutOfBoundsException
 	{
-		// {@squirreljme.error ZZ2n Attempt to use a length of a negative
+		// {@squirreljme.error ZZ16 Attempt to use a length of a negative
 		// size.}
 		if (__nl < 0)
-			throw new IndexOutOfBoundsException("ZZ2n");
+			throw new IndexOutOfBoundsException("ZZ16");
 		
 		// We only need to do something if we are going up, staying the same
 		// or going down just sets a variable

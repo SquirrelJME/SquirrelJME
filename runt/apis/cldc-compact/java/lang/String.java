@@ -626,11 +626,11 @@ public final class String
 			return getBytes(System.getProperty("microedition.encoding"));
 		}
 		
-		// {@squirreljme.error ZZ04 The default encoding is not supported by
+		// {@squirreljme.error ZZ0x The default encoding is not supported by
 		// the virtual machine.}
 		catch (UnsupportedEncodingException uee)
 		{
-			throw new AssertionError("ZZ04");
+			throw new AssertionError("ZZ0x");
 		}
 	}
 	
@@ -870,11 +870,11 @@ public final class String
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ1b Starting index in string is out of
+		// {@squirreljme.error ZZ0y Starting index in string is out of
 		// bounds. (The starting index)}
 		if (__sdx < 0)
 			throw new IndexOutOfBoundsException(
-				String.format("ZZ1b %d", __sdx));
+				String.format("ZZ0y %d", __sdx));
 		
 		// Need to work on both sequences
 		BasicSequence sa = this._sequence,
@@ -966,10 +966,10 @@ public final class String
 		if (__s == __e)
 			return "";
 		
-		// {@squirreljme.error ZZ28 String substring is outside of bounds.
+		// {@squirreljme.error ZZ0z String substring is outside of bounds.
 		// (The start index; The end index; The length)}
 		if (__s < 0 || __s > __e || __e > n)
-			throw new IndexOutOfBoundsException("ZZ28 " + __s + " " + __e +
+			throw new IndexOutOfBoundsException("ZZ0z " + __s + " " + __e +
 				" " + n);
 		
 		// If this is already a subsequence, split it off more so that there

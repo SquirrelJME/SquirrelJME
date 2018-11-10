@@ -210,14 +210,14 @@ public final class Integer
 	public static int parseInt(String __v, int __r)
 		throws NumberFormatException
 	{
-		// {@squirreljme.error ZZ2d The radix is out of bounds. (The radix)}
+		// {@squirreljme.error ZZ0q The radix is out of bounds. (The radix)}
 		if (__r < Character.MIN_RADIX || __r > Character.MAX_RADIX)
-			throw new NumberFormatException("ZZ2d " + __r);
+			throw new NumberFormatException("ZZ0q " + __r);
 		
-		// {@squirreljme.error ZZ2e String is null or has zero length.}
+		// {@squirreljme.error ZZ0r String is null or has zero length.}
 		int n = __v.length();
 		if (__v == null || n <= 0)
-			throw new NumberFormatException("ZZ2e");
+			throw new NumberFormatException("ZZ0r");
 		
 		// Detect sign
 		boolean neg = false,
@@ -240,16 +240,16 @@ public final class Integer
 			// Convert to digit
 			int dig = Character.digit(c, __r);
 			
-			// {@squirreljme.error ZZ2f Character out of range of radix.
+			// {@squirreljme.error ZZ0s Character out of range of radix.
 			// (The input string; The out of range character)}
 			if (dig < 0)
-				throw new NumberFormatException("ZZ2f " + __v + " " + c);
+				throw new NumberFormatException("ZZ0s " + __v + " " + c);
 			
-			// {@squirreljme.error ZZ2g Input integer out of range of 32-bit
+			// {@squirreljme.error ZZ0t Input integer out of range of 32-bit
 			// integer. (The input string)}
 			int prod = rv * __r;
 			if (rv != 0 && (neg ? (prod > rv) : (prod < rv)))
-				throw new NumberFormatException("ZZ2g " + __v);
+				throw new NumberFormatException("ZZ0t " + __v);
 			
 			// Add up
 			rv = prod + (dig * digsign);

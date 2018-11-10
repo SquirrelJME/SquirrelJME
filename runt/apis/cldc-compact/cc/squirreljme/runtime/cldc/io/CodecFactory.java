@@ -71,11 +71,11 @@ public final class CodecFactory
 			case "utf-8":
 				return new UTF8Decoder();
 			
-				// {@squirreljme.error ZZ2j Unknown encoding. (The input
+				// {@squirreljme.error ZZ01 Unknown encoding. (The input
 				// encoding)}
 			default:
 				throw new UnsupportedEncodingException(
-					String.format("ZZ2j %s", __enc));
+					String.format("ZZ01 %s", __enc));
 		}
 	}
 	
@@ -100,11 +100,11 @@ public final class CodecFactory
 			return CodecFactory.decoder(__enc);
 		}
 		
-		// {@squirreljme.error ZZ2k Unknown or unsupported encoding.
+		// {@squirreljme.error ZZ02 Unknown or unsupported encoding.
 		// (The encoding)}
 		catch (UnsupportedEncodingException e)
 		{
-			throw new RuntimeException(String.format("ZZ2k %s", __enc), e);
+			throw new RuntimeException(String.format("ZZ02 %s", __enc), e);
 		}
 	}
 	
@@ -186,11 +186,11 @@ public final class CodecFactory
 			case "utf-8":
 				return new UTF8Encoder();
 			
-				// {@squirreljme.error ZZ16 Unknown encoding. (The output
+				// {@squirreljme.error ZZ03 Unknown encoding. (The output
 				// encoding)}
 			default:
 				throw new UnsupportedEncodingException(
-					String.format("ZZ16 %s", __enc));
+					String.format("ZZ03 %s", __enc));
 		}
 	}
 	
@@ -215,11 +215,11 @@ public final class CodecFactory
 			return CodecFactory.encoder(__enc);
 		}
 		
-		// {@squirreljme.error ZZ11 Unknown or unsupported encoding.
+		// {@squirreljme.error ZZ04 Unknown or unsupported encoding.
 		// (The encoding)}
 		catch (UnsupportedEncodingException e)
 		{
-			throw new RuntimeException(String.format("ZZ11 %s", __enc), e);
+			throw new RuntimeException(String.format("ZZ04 %s", __enc), e);
 		}
 	}
 	

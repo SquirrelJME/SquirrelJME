@@ -40,9 +40,9 @@ public final class SingleCharacterSequence
 	public final char charAt(int __i)
 		throws StringIndexOutOfBoundsException
 	{
-		// {@squirreljme.error ZZ2i Only a single character is valid.}
+		// {@squirreljme.error ZZ0d Only a single character is valid.}
 		if (__i != 0)
-			throw new StringIndexOutOfBoundsException("ZZ2i");
+			throw new StringIndexOutOfBoundsException("ZZ0d");
 		
 		return this.value;
 	}

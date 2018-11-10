@@ -46,16 +46,16 @@ public class WeakHashMap<K, V>
 	public WeakHashMap(int __icap, float __load)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error ZZ0a The initial capacity of the weak
+		// {@squirreljme.error ZZ25 The initial capacity of the weak
 		// hash map is negative. (The negative initial capacity)}
 		if (__icap < 0)
-			throw new IllegalArgumentException(String.format("ZZ0a %d",
+			throw new IllegalArgumentException(String.format("ZZ25 %d",
 				__icap));
 		
-		// {@squirreljme.error ZZ0b The load factor of the weak hash map is
+		// {@squirreljme.error ZZ26 The load factor of the weak hash map is
 		// not positive. (The non-positive load factor)}
 		if (__load <= 0.0F)
-			throw new IllegalArgumentException(String.format("ZZ0b %f",
+			throw new IllegalArgumentException(String.format("ZZ26 %f",
 				__load));
 		
 		// Setup
@@ -96,9 +96,9 @@ public class WeakHashMap<K, V>
 	 */
 	public WeakHashMap(Map<? extends K, ? extends V> __a)
 	{
-		// {@squirreljme.error ZZ0c No map to copy data from was specified.}
+		// {@squirreljme.error ZZ27 No map to copy data from was specified.}
 		if (__a == null)
-			throw new NullPointerException("ZZ0c");
+			throw new NullPointerException("ZZ27");
 		
 		// Setup initial map
 		_load = _DEFAULT_LOAD;

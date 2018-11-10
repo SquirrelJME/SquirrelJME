@@ -419,11 +419,11 @@ public abstract class AbstractList<E>
 			// Check modification
 			this.__checkConcurrent();
 			
-			// {@squirreljme.error ZZ2q No previously returned element was
+			// {@squirreljme.error ZZ1k No previously returned element was
 			// iterated, it was already removed, or an element was added.}
 			int rmdx = this._rmdx;
 			if (rmdx < 0)
-				throw new IllegalStateException("ZZ2q");
+				throw new IllegalStateException("ZZ1k");
 			
 			throw new todo.TODO();
 		}
@@ -450,9 +450,9 @@ public abstract class AbstractList<E>
 		private final void __checkConcurrent()
 			throws ConcurrentModificationException
 		{
-			// {@squirreljme.error ZZ2r List has been concurrently modified.}
+			// {@squirreljme.error ZZ1l List has been concurrently modified.}
 			if (this._atmod != AbstractList.this.modCount)
-				throw new ConcurrentModificationException("ZZ2r");
+				throw new ConcurrentModificationException("ZZ1l");
 		}
 	}
 }

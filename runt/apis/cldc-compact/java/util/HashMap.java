@@ -151,8 +151,8 @@ public class HashMap<K, V>
 		// Oops
 		catch (IllegalAccessException|InstantiationException e)
 		{
-			// {@squirreljme.error ZZ2v Could not clone the map.}
-			throw new RuntimeException("ZZ2v", e);
+			// {@squirreljme.error ZZ1v Could not clone the map.}
+			throw new RuntimeException("ZZ1v", e);
 		}
 	}
 	

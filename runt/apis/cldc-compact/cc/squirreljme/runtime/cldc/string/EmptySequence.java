@@ -30,8 +30,8 @@ public final class EmptySequence
 	public final char charAt(int __i)
 		throws StringIndexOutOfBoundsException
 	{
-		// {@squirreljme.error ZZ0e The empty string has no valid characters.}
-		throw new StringIndexOutOfBoundsException("ZZ0e");
+		// {@squirreljme.error ZZ0c The empty string has no valid characters.}
+		throw new StringIndexOutOfBoundsException("ZZ0c");
 	}
 	
 	/**

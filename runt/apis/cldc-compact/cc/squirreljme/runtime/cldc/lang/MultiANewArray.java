@@ -55,11 +55,11 @@ public final class MultiANewArray
 		while (typename.charAt(typedims) == '[')
 			typedims++;
 		
-		// {@squirreljme.error ZZ30 Negative number of dimensions available
+		// {@squirreljme.error ZZ09 Negative number of dimensions available
 		// or input type is not correct for the array type.}
 		int dims = __dims.length - __skip;
 		if (__skip < 0 || dims <= 0 || typedims < dims)
-			throw new IllegalArgumentException("ZZ30");
+			throw new IllegalArgumentException("ZZ09");
 		
 		// Allocate array of this type
 		int numelem = __dims[__skip];
@@ -77,11 +77,11 @@ public final class MultiANewArray
 				subtype = Class.forName(typename.substring(1));
 			}
 			
-			// {@squirreljme.error ZZ31 Could not find the sub-type for
+			// {@squirreljme.error ZZ0a Could not find the sub-type for
 			// multi-dimensional array.}
 			catch (ClassNotFoundException e)
 			{
-				throw new Error("ZZ31", e);
+				throw new Error("ZZ0a", e);
 			}
 			
 			// Skipping ahead by one

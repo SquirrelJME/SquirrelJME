@@ -153,10 +153,10 @@ public class LinkedList<E>
 	public E getFirst()
 		throws NoSuchElementException
 	{
-		// {@squirreljme.error ZZ08 Cannot get the first element because the
+		// {@squirreljme.error ZZ1x Cannot get the first element because the
 		// linked list is empty.}
 		if (this.size() == 0)
-			throw new NoSuchElementException("ZZ08");
+			throw new NoSuchElementException("ZZ1x");
 		
 		// Get it
 		return this.get(0);
@@ -169,11 +169,11 @@ public class LinkedList<E>
 	@Override
 	public E getLast()
 	{
-		// {@squirreljme.error ZZ09 Cannot get the last element because the
+		// {@squirreljme.error ZZ1y Cannot get the last element because the
 		// linked list is empty.}
 		int sz;
 		if ((sz = this.size()) == 0)
-			throw new NoSuchElementException("ZZ09");
+			throw new NoSuchElementException("ZZ1y");
 		
 		// Get it
 		return this.get(sz - 1);
@@ -627,12 +627,12 @@ public class LinkedList<E>
 			// Check modification
 			this.__checkConcurrent();
 			
-			// {@squirreljme.error ZZ2t Cannot remove the element from the
+			// {@squirreljme.error ZZ1z Cannot remove the element from the
 			// linked list because there was no previous call to next or
 			// previous, or add was called.}
 			__Link__<E> last = this._last;
 			if (last == null)
-				throw new IllegalStateException("ZZ2t");
+				throw new IllegalStateException("ZZ1z");
 			
 			// Only removed once
 			this._last = null;
@@ -667,12 +667,12 @@ public class LinkedList<E>
 			// Check modification
 			this.__checkConcurrent();
 			
-			// {@squirreljme.error ZZ2u Cannot set the element from the
+			// {@squirreljme.error ZZ20 Cannot set the element from the
 			// linked list because there was no previous call to next or
 			// previous, or add was called.}
 			__Link__<E> last = this._last;
 			if (last == null)
-				throw new IllegalStateException("ZZ2u");
+				throw new IllegalStateException("ZZ20");
 			
 			// Just set it
 			last._value = __v;
@@ -687,7 +687,7 @@ public class LinkedList<E>
 		private final void __checkConcurrent()
 			throws ConcurrentModificationException
 		{
-			// {@squirreljme.error ZZ2s List has been concurrently modified.}
+			// {@squirreljme.error ZZ21 List has been concurrently modified.}
 			if (this._atmod != LinkedList.this.modCount)
 			{
 				// Just empty these out so they are never used again
@@ -695,7 +695,7 @@ public class LinkedList<E>
 				this._last = null;
 				
 				// Fail
-				throw new ConcurrentModificationException("ZZ2s");
+				throw new ConcurrentModificationException("ZZ21");
 			}
 		}
 	}
