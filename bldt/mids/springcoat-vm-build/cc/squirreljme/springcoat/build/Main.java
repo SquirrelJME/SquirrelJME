@@ -60,10 +60,10 @@ public class Main
 		// Setup project manager
 		ProjectManager pm = ProjectManager.fromArguments(args);
 		
-		// {@squirreljme.error BA01 No project to launch was specified. The
+		// {@squirreljme.error BA03 No project to launch was specified. The
 		// format is project-name or project-name:entry-point-id.}
 		if (args.isEmpty())
-			throw new IllegalArgumentException("BA01");
+			throw new IllegalArgumentException("BA03");
 		
 		// Determine the project and launch ID to execute
 		String project = args.remove();

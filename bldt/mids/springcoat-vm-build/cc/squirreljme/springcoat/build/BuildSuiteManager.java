@@ -85,10 +85,10 @@ public final class BuildSuiteManager
 				rv.add(b.name().toString() + ".jar");
 		}
 		
-		// {@squirreljme.error BA02 Could not list suites available.}
+		// {@squirreljme.error BA01 Could not list suites available.}
 		catch (IOException e)
 		{
-			throw new RuntimeException("BA02", e);
+			throw new RuntimeException("BA01", e);
 		}
 		
 		return rv.<String>toArray(new String[rv.size()]);
@@ -126,9 +126,9 @@ public final class BuildSuiteManager
 					return rv;
 				}
 			
-			// {@squirreljme.error BA03 No such library exists. (The requested
+			// {@squirreljme.error BA02 No such library exists. (The requested
 			// library)}
-			throw new RuntimeException(String.format("BA03 %s", __s));
+			throw new RuntimeException(String.format("BA02 %s", __s));
 		}
 	}
 }
