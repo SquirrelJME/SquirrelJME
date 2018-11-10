@@ -3,7 +3,7 @@ X-SquirrelJME-UUID: abb9b55c-8519-404f-bbf8-e8d449111d13
 X-SquirrelJME-Error: AM
 X-SquirrelJME-Name: Basic String Utilities
 X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Version: 0.2.0
 X-SquirrelJME-Description: This project contains basic string utilities 
  which are useful when parsing strings.
 X-SquirrelJME-Depends: collections

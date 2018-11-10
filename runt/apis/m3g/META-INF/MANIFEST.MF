@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Name: Mobile 3D Graphics API
 X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Version: 0.2.0
 X-SquirrelJME-Description: This contains an implementation of the J2ME 
  Mobile 3D Graphics API. In SquirrelJME it utilizes OpenGL ES to perform
   the rendering as required.

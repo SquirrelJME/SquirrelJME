@@ -3,7 +3,7 @@ X-SquirrelJME-UUID: 54f1baae-2912-41a3-a065-6ed0f881cdf2
 X-SquirrelJME-Error: AY
 X-SquirrelJME-Name: Class Dumper
 X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Version: 0.2.0
 X-SquirrelJME-Description: This dumps information about a class file similar to 
  the javap tool.
 X-SquirrelJME-Depends: tool-classfile zip

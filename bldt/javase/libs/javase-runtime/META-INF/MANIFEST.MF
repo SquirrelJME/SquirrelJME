@@ -3,7 +3,7 @@ X-SquirrelJME-UUID: d354b1ef-6941-4a0a-a20a-cec1191e995f
 X-SquirrelJME-Error: AF
 X-SquirrelJME-Name: Java SE Run-Time
 X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Version: 0.2.0
 X-SquirrelJME-Description: This project contains the support for using 
  SquirrelJME as a pseudo-runtime in Java SE, which is needed to run 
  programs such as the build environment.

@@ -3,7 +3,7 @@ X-SquirrelJME-UUID: 076215a5-723a-482e-89e9-08c60ef7f1cb
 X-SquirrelJME-Error: BT
 X-SquirrelJME-Name: Hello (Demo)
 X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Version: 0.2.0
 X-SquirrelJME-Description: This is a basic demo which prints a hello 
  message and prints some details about the virtual machine.
 Microedition-Configuration: CLDC-1.8-Compact

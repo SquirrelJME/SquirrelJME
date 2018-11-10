@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Name: JavaME 8 Device I/O (UART)
 X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.0.2
+X-SquirrelJME-Version: 0.2.0
 X-SquirrelJME-Description: This provides access to serial UARTs.
 X-SquirrelJME-Depends: dio dio-modem
 X-SquirrelJME-Error: CX
