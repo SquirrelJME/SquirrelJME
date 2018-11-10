@@ -226,6 +226,9 @@ public class DeflaterOutputStream
 				addedfill = true;
 		}
 		
+		// These original bytes were added
+		this._nuncompressed += __l;
+		
 		// Bytes were added to the fill, record those
 		if (addedfill)
 			this._fillbytes = fillbytes;
@@ -281,7 +284,29 @@ public class DeflaterOutputStream
 	final void __bitOut(int __v, int __n, boolean __msb)
 		throws IOException
 	{
-		throw new todo.TODO();
+		// If writing with the most significant bit first, flip
+		if (__msb)
+			__v = Integer.reverse(__v) >>> (32 - __n);
+		
+		// Bit storage
+		int wout = this._wout,
+			wbits = this._wbits;
+		
+		// Need to mask off so sign values do not mess anything up above
+		int mask = (1 << __n) - 1;
+		
+		// Add the new value to the top of the bits
+		wout |= (__v & mask) << (wbits + __n);
+		wbits += __n;
+		
+		// Store for next cycle (or out flush)
+		this._wout = wout;
+		this._wbits = wbits;
+		
+		// There are too many bits in the output, so send them to the stream
+		// accordingly
+		if (wbits >= 24)
+			this.__bitFlush();
 	}
 	
 	/**
@@ -294,7 +319,13 @@ public class DeflaterOutputStream
 	final void __bitPad(int __n)
 		throws IOException
 	{
-		throw new todo.TODO();
+		// If we have two bits 0b00 and we pad to 8 we want 0b00000000 then
+		// we add six extra bits. But if we are at 8 already we just keep
+		// it as is. In this code wbits is 2, pad is 8... 2 % 8 is 2, then
+		// we just take 2 from 8 and we get 6.
+		int wbits = this._wbits,
+			rem = wbits % __n;
+		this._wbits = (__n - rem);
 	}
 	
 	/**
