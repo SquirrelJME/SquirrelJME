@@ -12,7 +12,7 @@ package net.multiphasicapps.zip;
 
 import java.io.InputStream;
 import java.io.IOException;
-import net.multiphasicapps.zip.util.DecompressionInputStream;
+import net.multiphasicapps.io.DecompressionInputStream;
 
 /**
  * This is an input stream which offers no compression but keeps count of

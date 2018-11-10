@@ -12,7 +12,7 @@ package net.multiphasicapps.zip.blockreader;
 
 import java.io.InputStream;
 import java.io.IOException;
-import net.multiphasicapps.zip.util.CRC32Calculator;
+import net.multiphasicapps.io.CRC32Calculator;
 import net.multiphasicapps.zip.ZipCRCConstants;
 
 /**

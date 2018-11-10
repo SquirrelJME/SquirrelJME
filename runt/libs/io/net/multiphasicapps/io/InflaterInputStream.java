@@ -8,17 +8,21 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.zip.util;
+package net.multiphasicapps.io;
 
 import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.NoSuchElementException;
-import net.multiphasicapps.util.bytedeque.ByteDeque;
 
 /**
  * This is used to decompress standard deflate compressed stream.
+ *
+ * Associated standards:
+ * {@link https://www.ietf.org/rfc/rfc1951.txt}.
+ *
+ * This class is not thread safe.
  *
  * @since 2017/02/24
  */

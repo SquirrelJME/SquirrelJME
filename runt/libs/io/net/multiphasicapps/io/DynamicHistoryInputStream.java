@@ -8,11 +8,10 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.zip.util;
+package net.multiphasicapps.io;
 
 import java.io.InputStream;
 import java.io.IOException;
-import net.multiphasicapps.util.bytedeque.ByteDeque;
 
 /**
  * This is an input stream which allows any future data in the stream to be

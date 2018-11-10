@@ -16,9 +16,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.List;
+import net.multiphasicapps.io.CRC32Calculator;
 import net.multiphasicapps.io.DataEndianess;
 import net.multiphasicapps.io.ExtendedDataOutputStream;
-import net.multiphasicapps.zip.util.CRC32Calculator;
 import net.multiphasicapps.zip.ZipCompressionType;
 import net.multiphasicapps.zip.ZipCRCConstants;
 

@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.zip.util;
+package net.multiphasicapps.io;
 
 /**
  * This class calculates the Adler32 checksum.

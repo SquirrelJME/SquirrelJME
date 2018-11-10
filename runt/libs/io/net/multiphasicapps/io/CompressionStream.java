@@ -8,11 +8,33 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-/**
- * This package contains the various ZIP utilities.
- *
- * @since 2017/10/26
- */
+package net.multiphasicapps.io;
 
-package net.multiphasicapps.zip.util;
+import java.io.Closeable;
+import java.io.IOException;
+
+/**
+ * This interface is used for compressed streams.
+ *
+ * @since 2017/08/22
+ */
+public interface CompressionStream
+	extends Closeable
+{
+	/**
+	 * Returns the number of compressed bytes which were read.
+	 *
+	 * @return The number of compressed bytes which were read.
+	 * @since 2017/08/22
+	 */
+	public abstract long compressedBytes();
+	
+	/**
+	 * Returns the number of uncompressed bytes which have been read.
+	 *
+	 * @return The number of read uncompressed bytes.
+	 * @since 2017/08/22
+	 */
+	public abstract long uncompressedBytes();
+}
 
