@@ -134,9 +134,9 @@ public final class Unit
 		
 		throw new todo.TODO();
 		/*
-		// {@squirreljme.error BE08 Cannot morph a linked unit.}
+		// {@squirreljme.error BE0a Cannot morph a linked unit.}
 		if (this._islinked)
-			throw new IllegalStateException("BE08");
+			throw new IllegalStateException("BE0a");
 		
 		// If the type remains the same, do nothing
 		UnitType oldtype = this._type;

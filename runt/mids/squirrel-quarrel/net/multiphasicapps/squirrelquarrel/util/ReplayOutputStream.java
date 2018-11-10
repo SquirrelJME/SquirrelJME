@@ -57,11 +57,11 @@ public final class ReplayOutputStream
 			this.out.writeByte(__v);
 		}
 		
-		// {@squirreljme.error BE0s Could not write the byte value.
+		// {@squirreljme.error BE0f Could not write the byte value.
 		// (The value to write)}
 		catch (IOException e)
 		{
-			throw new ReplayIOException(String.format("BE0s %d", __v), e);
+			throw new ReplayIOException(String.format("BE0f %d", __v), e);
 		}
 	}
 	
@@ -80,11 +80,11 @@ public final class ReplayOutputStream
 			this.out.writeInt(__v);
 		}
 		
-		// {@squirreljme.error BE0o Could not write the integer value.
+		// {@squirreljme.error BE0g Could not write the integer value.
 		// (The value to write)}
 		catch (IOException e)
 		{
-			throw new ReplayIOException(String.format("BE0o %d", __v), e);
+			throw new ReplayIOException(String.format("BE0g %d", __v), e);
 		}
 	}
 	
@@ -104,11 +104,11 @@ public final class ReplayOutputStream
 			this.out.writeInt((int)__v);
 		}
 		
-		// {@squirreljme.error BE0p Could not write the long value.
+		// {@squirreljme.error BE0h Could not write the long value.
 		// (The value to write)}
 		catch (IOException e)
 		{
-			throw new ReplayIOException(String.format("BE0p %d", __v), e);
+			throw new ReplayIOException(String.format("BE0h %d", __v), e);
 		}
 	}
 }

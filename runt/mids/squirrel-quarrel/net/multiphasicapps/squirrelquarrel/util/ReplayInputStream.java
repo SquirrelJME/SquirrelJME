@@ -57,10 +57,10 @@ public final class ReplayInputStream
 			return this.in.readByte();
 		}
 		
-		// {@squirreljme.error BE0r Could not read byte from the input.}
+		// {@squirreljme.error BE0c Could not read byte from the input.}
 		catch (IOException e)
 		{
-			throw new ReplayIOException("BE0r", e);
+			throw new ReplayIOException("BE0c", e);
 		}
 	}
 	
@@ -79,10 +79,10 @@ public final class ReplayInputStream
 			return this.in.readInt();
 		}
 		
-		// {@squirreljme.error BE0m Could not read integer from the input.}
+		// {@squirreljme.error BE0d Could not read integer from the input.}
 		catch (IOException e)
 		{
-			throw new ReplayIOException("BE0m", e);
+			throw new ReplayIOException("BE0d", e);
 		}
 	}
 	
@@ -104,10 +104,10 @@ public final class ReplayInputStream
 			return rv;
 		}
 		
-		// {@squirreljme.error BE0n Could not read long from the input.}
+		// {@squirreljme.error BE0e Could not read long from the input.}
 		catch (IOException e)
 		{
-			throw new ReplayIOException("BE0n", e);
+			throw new ReplayIOException("BE0e", e);
 		}
 	}
 }

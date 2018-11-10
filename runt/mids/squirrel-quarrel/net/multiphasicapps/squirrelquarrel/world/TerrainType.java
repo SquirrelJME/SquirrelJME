@@ -68,12 +68,12 @@ public enum TerrainType
 	public InputStream imageStream()
 		throws RuntimeException
 	{
-		// {@squirreljme.error BE07 Could not get the tile image for the
+		// {@squirreljme.error BE0j Could not get the tile image for the
 		// given terrain. (The terrain type)}
 		InputStream rv = TerrainType.class.getResourceAsStream(
 			"images/terrain/" + __lower(name()) + ".xpm");
 		if (rv == null)
-			throw new RuntimeException(String.format("BE07 %s", this));
+			throw new RuntimeException(String.format("BE0j %s", this));
 		return rv;
 	}
 	
