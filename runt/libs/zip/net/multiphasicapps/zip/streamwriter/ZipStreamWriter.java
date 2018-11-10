@@ -260,10 +260,6 @@ public class ZipStreamWriter
 		if (__name == null || __comp == null)
 			throw new NullPointerException("NARG");
 		
-		// Force no compressiong
-		todo.TODO.note("Support other compression methods");
-		__comp = ZipCompressionType.NO_COMPRESSION;
-		
 		// Lock
 		LinkedList<__TOCEntry__> toc = this._toc;
 		

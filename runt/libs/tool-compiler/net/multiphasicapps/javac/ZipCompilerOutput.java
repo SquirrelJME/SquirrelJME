@@ -89,6 +89,9 @@ public final class ZipCompilerOutput
 			Map<String, __Stream__> done = this._done;
 			if (done.isEmpty())
 				return;
+				
+			// This is for debug
+			String last = null;
 			
 			// Go through all the done files
 			Iterator<Map.Entry<String, __Stream__>> it = done.entrySet().
@@ -111,12 +114,15 @@ public final class ZipCompilerOutput
 				}
 				
 				// {@squirreljme.error AQ0a Failed to write the specified file
-				// to the output stream. (The file name)}
+				// to the output stream. (The file name; The last file)}
 				catch (IOException f)
 				{
 					throw new CompilerException(
-						String.format("AQ0a %s", k), f);
+						String.format("AQ0a %s %s", k, last), f);
 				}
+				
+				// New last file, for debug
+				last = k;
 			}
 		}
 	}
