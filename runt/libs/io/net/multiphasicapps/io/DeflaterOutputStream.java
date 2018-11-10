@@ -33,6 +33,12 @@ public class DeflaterOutputStream
 	/** Has this been closed? */
 	private boolean _closed;
 	
+	/** Compressed bytes. */
+	private long _ncompressed;
+	
+	/** Uncompressed bytes. */
+	private long _nuncompressed;
+	
 	/**
 	 * Initializes the deflation stream.
 	 *
@@ -91,7 +97,7 @@ public class DeflaterOutputStream
 	@Override
 	public final long compressedBytes()
 	{
-		throw new todo.TODO();
+		return this._ncompressed;
 	}
 	
 	/**
@@ -101,7 +107,7 @@ public class DeflaterOutputStream
 	@Override
 	public final long uncompressedBytes()
 	{
-		throw new todo.TODO();
+		return this._nuncompressed;
 	}
 	
 	/**
