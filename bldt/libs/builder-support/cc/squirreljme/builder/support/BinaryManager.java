@@ -317,7 +317,7 @@ public final class BinaryManager
 						}
 					
 					// Flush the ZIP before it is closed
-					out.close();
+					out.flush();
 				}
 				
 				// Make sure the output directories exist
