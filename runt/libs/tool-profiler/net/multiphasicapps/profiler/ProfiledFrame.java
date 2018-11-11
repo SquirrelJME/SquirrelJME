@@ -179,7 +179,7 @@ public final class ProfiledFrame
 			throw new IllegalStateException("AH01");
 		
 		// Mark it
-		this._currentsubstart = css;
+		this._currentsubstart = __ns;
 	}
 }
 

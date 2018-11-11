@@ -137,21 +137,23 @@ public class Main
 			args.<String>toArray(new String[args.size()]));
 		
 		// Run the VM until it terminates
+		int exitcode = -1;
 		try
 		{
 			machine.run();
+			exitcode = 0;
 		}
 		
 		// Exiting with some given code
 		catch (SpringMachineExitException e)
 		{
-			System.exit(e.code());
+			exitcode = e.code();
 		}
 		
 		// Ignore these exceptions, just fatal exit
 		catch (SpringFatalException e)
 		{
-			System.exit(TaskAccess.EXIT_CODE_FATAL_EXCEPTION);
+			exitcode = TaskAccess.EXIT_CODE_FATAL_EXCEPTION;
 		}
 		
 		// Dump the profiler snapshot somewhere
@@ -181,6 +183,9 @@ public class Main
 				e.printStackTrace();
 			}
 		}
+		
+		// Exit with our given code
+		System.exit(exitcode);
 	}
 }
 
