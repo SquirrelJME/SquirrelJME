@@ -26,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayDeque;
+import java.util.Calendar;
 import java.util.LinkedHashSet;
 import java.util.Queue;
 import java.util.Set;
@@ -163,8 +164,10 @@ public class Main
 			try
 			{
 				// Create temporary file
+				Calendar now = Calendar.getInstance();
 				Path temp = Files.createTempFile(String.format(
-					"springcoat-%016d", System.currentTimeMillis()), ".nps");
+					"springcoat-%TF_%TH-%TM-%TS-", now, now, now, now),
+					".nps");
 				
 				// Write snapshot to this file
 				try (OutputStream os = Files.newOutputStream(temp,
