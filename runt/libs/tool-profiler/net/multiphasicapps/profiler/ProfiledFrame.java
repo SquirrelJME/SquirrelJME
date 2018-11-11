@@ -67,7 +67,7 @@ public final class ProfiledFrame
 		if (__l == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		this.location = __l;
 	}
 	
 	/**
@@ -80,7 +80,18 @@ public final class ProfiledFrame
 	public final void enteredFrame(long __ns)
 		throws IllegalStateException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error AH04 Cannot enter frame which is in the
+		// entered state.}
+		long cs = this._currentstart;
+		if (cs != Long.MIN_VALUE)
+			throw new IllegalStateException("AH04");
+			
+		// {@squirreljme.error AH07 Cannot enter frame that is in an invoke.}
+		if (this._currentsubstart != Long.MIN_VALUE)
+			throw new IllegalStateException("AH07");
+		
+		// Mark time
+		this._currentstart = __ns;
 	}
 	
 	/**
@@ -94,7 +105,37 @@ public final class ProfiledFrame
 	public final long[] exitedFrame(long __ns)
 		throws IllegalStateException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error AH05 Cannot exit frame which is in the
+		// exited state.}
+		long cs = this._currentstart;
+		if (cs == Long.MIN_VALUE)
+			throw new IllegalStateException("AH05");
+		
+		// {@squirreljme.error AH06 Cannot exit frame that is in an invoke.}
+		if (this._currentsubstart != Long.MIN_VALUE)
+			throw new IllegalStateException("AH06");
+		
+		// Determine the cumulative and self time spent
+		long total = __ns - __ns,
+			self = total - this._subtractself;
+		
+		// Increase call count
+		this._numcalls++;
+		
+		// All sub-frames times
+		this._traceselftime += total;
+		this._tracecputime += total;
+		
+		// And only this frame time
+		this._frameselftime += self;
+		this._framecputime += self;
+		
+		// Clear these for next time
+		this._currentstart = Long.MIN_VALUE;
+		this._subtractself = 0;
+		
+		// Return both times since they may be useful
+		return new long[]{total, self};
 	}
 	
 	/**
