@@ -11,29 +11,26 @@
 package net.multiphasicapps.profiler;
 
 /**
- * This represents the main profiler snapshot which contains all of the data
- * within what is to be profiled, it is mutable and accordingly allows for
- * export to NPS formats.
+ * This contains information and statistics for a single frame within the
+ * thread stack.
  *
  * @since 2018/11/10
  */
-public final class ProfilerSnapshot
+public final class ProfiledFrame
 {
-	/**
-	 * Starts profiling the given thread.
-	 *
-	 * @param __name The name of the thread.
-	 * @return A class to handle the profiling of threads via the call stack.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/11/10
-	 */
-	public final ProfiledThread thread(String __name)
-		throws NullPointerException
-	{
-		if (__name == null)
-			throw new NullPointerException("NARG");
-		
-		throw new todo.TODO();
-	}
+	/** The number of calls made into the frame. */
+	private int _numcalls;
+	
+	/** Cumulative time spent in this frame and child frames. */
+	private long _traceselftime
+	
+	/** Cumulative time spent in this frame and child frames without sleep. */
+	private long _tracecputime;
+	
+	/** Time only spent in this frame. */
+	private long _frameselftime;
+	
+	/** Time only spent in this frame without sleep. */
+	private long _framecputime;
 }
 
