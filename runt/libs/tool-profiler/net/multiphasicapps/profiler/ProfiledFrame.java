@@ -98,7 +98,8 @@ public final class ProfiledFrame
 	 * Indicates that the frame has been exited.
 	 *
 	 * @param __ns The time of the exit.
-	 * @return The time spent in this frame, in total and self time.
+	 * @return The time spent in this frame, in total, self time, and CPU
+	 * time.
 	 * @throws IllegalStateException If the frame has not been entered.
 	 * @since 2018/11/11
 	 */
@@ -135,7 +136,7 @@ public final class ProfiledFrame
 		this._subtractself = 0;
 		
 		// Return both times since they may be useful
-		return new long[]{total, self};
+		return new long[]{total, self, total};
 	}
 	
 	/**

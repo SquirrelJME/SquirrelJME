@@ -154,10 +154,8 @@ public final class ProfiledThread
 		// If all threads are out, count the times
 		else
 		{
-			todo.DEBUG.note("Ended all");
-			
 			this._totaltime += times[0];
-			this._cputime += times[1];
+			this._cputime += times[2];
 			
 			// Invocation total goes up after each method ends
 			this._invtotal++;
