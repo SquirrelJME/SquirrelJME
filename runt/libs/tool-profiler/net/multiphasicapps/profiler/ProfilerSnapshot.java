@@ -141,25 +141,32 @@ public final class ProfilerSnapshot
 				// Timestamp and duration
 				long start = this.startmillis;
 				cpu.writeLong(start);
-				cpu.writeLong(System.currentTimeMillis() - start);
 				
-				// Thread time is always measured
-				cpu.writeBoolean(true);
-				
-				// Build and write the instrumented method table
-				Map<FrameLocation, Integer> mids = this.__doMethodTable();
-				cpu.writeInt(mids.size());
-				for (FrameLocation loc : mids.keySet())
-				{
-					cpu.writeUTF(loc.inclass);
-					cpu.writeUTF(loc.methodname);
-					cpu.writeUTF(loc.methodtype);
-				}
-				
-				// Write thread data
+				// Threads are needed now
 				Map<String, ProfiledThread> threads = this._threads;
 				synchronized (threads)
 				{
+					// The duration of the trace is the maximum time any
+					// thread has spent
+					long maxtime = 0;
+					for (ProfiledThread t : threads.values())
+						maxtime = Math.max(maxtime, t._totaltime);
+					cpu.writeLong(maxtime);
+					
+					// Thread time is always measured
+					cpu.writeBoolean(true);
+					
+					// Build and write the instrumented method table
+					Map<FrameLocation, Integer> mids = this.__doMethodTable();
+					cpu.writeInt(mids.size());
+					for (FrameLocation loc : mids.keySet())
+					{
+						cpu.writeUTF(loc.inclass);
+						cpu.writeUTF(loc.methodname);
+						cpu.writeUTF(loc.methodtype);
+					}
+				
+					// Write thread data
 					cpu.writeInt(threads.size());
 				
 					// Write individual thread
