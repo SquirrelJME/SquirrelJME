@@ -22,7 +22,7 @@ public final class ProfiledFrame
 	private int _numcalls;
 	
 	/** Cumulative time spent in this frame and child frames. */
-	private long _traceselftime
+	private long _traceselftime;
 	
 	/** Cumulative time spent in this frame and child frames without sleep. */
 	private long _tracecputime;
