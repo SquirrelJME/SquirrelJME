@@ -31,7 +31,7 @@ public final class ProfiledThread
 	protected final String name;
 	
 	/** The root frames for this thread. */
-	private final Map<FrameLocation, ProfiledFrame> _frames =
+	final Map<FrameLocation, ProfiledFrame> _frames =
 		new LinkedHashMap<>();
 	
 	/** The stack of currently active frames. */
@@ -74,18 +74,22 @@ public final class ProfiledThread
 		// Used as map key
 		FrameLocation loc = new FrameLocation(__cl, __mn, __md);
 		
+		// We need to know the top-most frame because
+		Deque<ProfiledFrame> stack = this._stack;
+		ProfiledFrame top = stack.peek();
+		
 		// If the frame was not already recorded in the map then add a new one
 		// but we always keep existing frames since their times add up and
-		// such
-		Map<FrameLocation, ProfiledFrame> frames = this._frames;
+		// such. Also remember that there is depth to this, like we cannot
+		// just keep adding to the root and such!
+		Map<FrameLocation, ProfiledFrame> frames = (top == null ?
+			this._frames : top._frames);
 		ProfiledFrame rv = frames.get(loc);
 		if (rv == null)
 			frames.put(loc, (rv = new ProfiledFrame(loc)));
 		
 		// Tell the top-most frame that we are in an invoke, so this removes
 		// self time accordingly
-		Deque<ProfiledFrame> stack = this._stack;
-		ProfiledFrame top = stack.peek();
 		if (top != null)
 			top.invokeStart(__ns);
 		

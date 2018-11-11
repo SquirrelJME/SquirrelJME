@@ -157,6 +157,10 @@ public class Main
 		// Dump the profiler snapshot somewhere
 		finally
 		{
+			// Dump to error stream
+			profiler.writeDumpTo(System.err);
+			
+			// Dump to file
 			try
 			{
 				// Create temporary file
