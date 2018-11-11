@@ -103,7 +103,8 @@ public final class ProfilerSnapshot
 		if (__os == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		todo.TODO.note("Write snapshot to output.");
+		//throw new todo.TODO();
 	}
 	
 	/**
