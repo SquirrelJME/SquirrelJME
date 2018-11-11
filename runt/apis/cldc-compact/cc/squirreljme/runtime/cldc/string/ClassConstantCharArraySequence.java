@@ -15,9 +15,11 @@ package cc.squirreljme.runtime.cldc.string;
  *
  * The array data is not copied.
  *
- * @since 2018/09/16
+ * This is a special class to indicate the character array is a class constant.
+ *
+ * @since 2018/11/11
  */
-public final class CharArraySequence
+public final class ClassConstantCharArraySequence
 	implements BasicSequence
 {
 	/** The array data. */
@@ -31,9 +33,9 @@ public final class CharArraySequence
 	 *
 	 * @param __data The input data, this is set directly and is not copied.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2018/09/16
+	 * @since 2018/11/11
 	 */
-	public CharArraySequence(char... __data)
+	public ClassConstantCharArraySequence(char... __data)
 		throws NullPointerException
 	{
 		if (__data == null)
@@ -45,7 +47,7 @@ public final class CharArraySequence
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/09/16
+	 * @since 2018/11/11
 	 */
 	@Override
 	public final char charAt(int __i)
@@ -63,7 +65,7 @@ public final class CharArraySequence
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/09/16
+	 * @since 2018/11/11
 	 */
 	@Override
 	public final int length()
