@@ -136,9 +136,9 @@ final class __NodeTable__
 				
 				// Nodes will either be wide or narrow
 				if (wide)
-					__NodeTable__.__writeInt24(dos, p._narrow);
-				else
 					dos.writeInt(p._wide);
+				else
+					__NodeTable__.__writeInt24(dos, p._narrow);
 			}
 		}
 	}
