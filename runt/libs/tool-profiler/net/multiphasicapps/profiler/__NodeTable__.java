@@ -39,6 +39,9 @@ final class __NodeTable__
 	private final __Position__ _at =
 		new __Position__();
 	
+	/** Overflowed narrow point? */
+	private boolean _overflowed;
+	
 	/**
 	 * Parses the frames and loads into a node table.
 	 *
@@ -55,6 +58,9 @@ final class __NodeTable__
 		List<ProfiledFrame> linear = this._linear;
 		Map<ProfiledFrame, __Position__> offsets = this._offsets;
 		
+		// Overflow check for wider offsets
+		boolean overflowed = false;
+		
 		// Determine positions for all nodes
 		__Position__ at = this._at;
 		for (ProfiledFrame f : __fs)
@@ -68,7 +74,15 @@ final class __NodeTable__
 			
 			// Handle sub-frames for this frame
 			this.parse(sub);
+			
+			// If these many bytes were written we overflow now
+			if (at._narrow > 16777215)
+				overflowed = true;
 		}
+		
+		// Did we overflow?
+		if (overflowed)
+			this._overflowed = true;
 	}
 	
 	/**
@@ -89,7 +103,96 @@ final class __NodeTable__
 		
 		DataOutputStream dos = new DataOutputStream(__os);
 		
-		throw new todo.TODO();
+		// If there were a large number of entries written then sub-node
+		// offsets use more bytes
+		List<ProfiledFrame> linear = this._linear;
+		boolean wide = this._overflowed;
+		
+		// Just go through every frame and write it using a simple linear
+		// index
+		Map<ProfiledFrame, __Position__> offsets = this._offsets;
+		for (ProfiledFrame f : linear)
+		{
+			// The frame location ID, this is data stored in a previous table
+			dos.writeShort(__mids.get(f.location));
+			
+			// Number of calls
+			dos.writeInt((int)Math.max(Integer.MAX_VALUE, f._numcalls));
+			
+			// Time spent in this frame including children
+			__NodeTable__.__writeLong40(dos, f._traceselftime);
+			__NodeTable__.__writeLong40(dos, f._tracecputime);
+			
+			// Time spent in this frame excluding children
+			__NodeTable__.__writeLong40(dos, f._frameselftime);
+			__NodeTable__.__writeLong40(dos, f._framecputime);
+			
+			// Write offsets to the sub-frame nodes
+			Collection<ProfiledFrame> sub = f._frames.values();
+			dos.writeShort(sub.size());
+			for (ProfiledFrame sf : sub)
+			{
+				__Position__ p = offsets.get(sf);
+				
+				// Nodes will either be wide or narrow
+				if (wide)
+					__NodeTable__.__writeInt24(dos, p._narrow);
+				else
+					dos.writeInt(p._wide);
+			}
+		}
+	}
+	
+	/**
+	 * Writes a 24-bit int.
+	 *
+	 * @param __dos The output stream.
+	 * @param __v The value to write.
+	 * @throws IOException On write errors.
+	 * @since 2018/11/11
+	 */
+	static final void __writeInt24(DataOutputStream __dos, int __v)
+		throws IOException
+	{
+		// Only unsigned
+		if (__v < 0)
+			__v = 0;
+		
+		// This is limited to 24 bits, so cap it so there
+		else if (__v > 16777215)
+			__v = 16777215;
+		
+		// Write values
+		__dos.writeByte((byte)(__v >>> 16));
+		__dos.writeByte((byte)(__v >>> 8));
+		__dos.writeByte((byte)(__v));
+	}
+	
+	/**
+	 * Writes a 40 bit long.
+	 *
+	 * @param __dos The output stream.
+	 * @param __v The value to write.
+	 * @throws IOException On write errors.
+	 * @since 2018/11/11
+	 */
+	static final void __writeLong40(DataOutputStream __dos, long __v)
+		throws IOException
+	{
+		// Only unsigned
+		if (__v < 0)
+			__v = 0;
+		
+		// This is limited to 40 bits, so cap it so there
+		else if (__v > 1099511627775L)
+			__v = 1099511627775L;
+		
+		// Write values
+		__dos.writeByte((byte)(__v >>> 32));
+		__dos.writeByte((byte)(__v >>> 24));
+		__dos.writeByte((byte)(__v >>> 16));
+		__dos.writeByte((byte)(__v >>> 8));
+		__dos.writeByte((byte)(__v));
 	}
 	
 	/**
