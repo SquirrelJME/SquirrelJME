@@ -30,6 +30,19 @@ public final class ZLibCompressor
 	/** The stream to forward to. */
 	protected final OutputStream out;
 	
+	/** The deflater used. */
+	private final DeflaterOutputStream _dos;
+	
+	/** Adler checksum of uncompressed stream. */
+	private final Adler32Calculator _adler =
+		new Adler32Calculator();
+	
+	/** Has this been closed? */
+	private boolean _closed;
+	
+	/** Initialized with Zlib header? */
+	private boolean _init;
+	
 	/**
 	 * Initializes the compressor.
 	 *
@@ -58,8 +71,7 @@ public final class ZLibCompressor
 			throw new NullPointerException("NARG");
 		
 		this.out = __os;
-		
-		throw new todo.TODO();
+		this._dos = new DeflaterOutputStream(__os);
 	}
 	
 	/**
@@ -69,7 +81,8 @@ public final class ZLibCompressor
 	@Override
 	public final long compressedBytes()
 	{
-		throw new todo.TODO();
+		return this._dos.compressedBytes() +
+			(this._init ? 2 + (this._closed ? 4 : 0) : 0);
 	}
 	
 	/**
@@ -80,7 +93,30 @@ public final class ZLibCompressor
 	public final void close()
 		throws IOException
 	{
-		throw new todo.TODO();
+		// Close only once
+		if (!this._closed)
+		{
+			this._closed = true;
+			
+			// Flush and close the other compression stream
+			DeflaterOutputStream dos = this._dos;
+			dos.flush();
+			dos.close();
+			
+			// Write the checksum
+			OutputStream out = this.out;
+			int checksum = this._adler.checksum();
+			out.write(checksum >> 24);
+			out.write(checksum >> 16);
+			out.write(checksum >> 8);
+			out.write(checksum);
+			
+			// Flush the output
+			out.flush();
+		}
+		
+		// Forward close to output
+		this.out.close();
 	}
 	
 	/**
@@ -91,7 +127,8 @@ public final class ZLibCompressor
 	public final void flush()
 		throws IOException
 	{
-		throw new todo.TODO();
+		// Flush to the output
+		this.out.flush();
 	}
 	
 	/**
@@ -101,7 +138,7 @@ public final class ZLibCompressor
 	@Override
 	public final long uncompressedBytes()
 	{
-		throw new todo.TODO();
+		return this._dos.uncompressedBytes();
 	}
 	
 	/**
@@ -130,7 +167,24 @@ public final class ZLibCompressor
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new ArrayIndexOutOfBoundsException("AIOB");
 		
-		throw new todo.TODO();
+		OutputStream out = this.out;
+		
+		// If the stream has not been initialized, we need to set a flag
+		// and such
+		if (!this._init)
+		{
+			this._init = true;
+			
+			// DEFLATE compression with no flags
+			out.write(8);
+			out.write(((8 * 256) + 0) % 31);
+		}
+		
+		// Write to data
+		this._dos.write(__b, __o, __l);
+		
+		// Checksum that
+		this._adler.offer(__b, __o, __l);
 	}
 }
 
