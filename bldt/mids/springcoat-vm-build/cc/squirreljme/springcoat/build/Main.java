@@ -10,20 +10,26 @@
 
 package cc.squirreljme.springcoat.build;
 
-import cc.squirreljme.runtime.cldc.lang.GuestDepth;
-import cc.squirreljme.runtime.cldc.asm.TaskAccess;
-import java.util.ArrayDeque;
-import java.util.LinkedHashSet;
-import java.util.Queue;
-import java.util.Set;
 import cc.squirreljme.builder.support.Binary;
 import cc.squirreljme.builder.support.ProjectManager;
 import cc.squirreljme.builder.support.TimeSpaceType;
+import cc.squirreljme.runtime.cldc.asm.TaskAccess;
+import cc.squirreljme.runtime.cldc.lang.GuestDepth;
 import cc.squirreljme.springcoat.vm.SpringClassLoader;
 import cc.squirreljme.springcoat.vm.SpringFatalException;
 import cc.squirreljme.springcoat.vm.SpringMachine;
 import cc.squirreljme.springcoat.vm.SpringMachineExitException;
 import cc.squirreljme.springcoat.vm.SpringTaskManager;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayDeque;
+import java.util.LinkedHashSet;
+import java.util.Queue;
+import java.util.Set;
+import net.multiphasicapps.profiler.ProfilerSnapshot;
 
 /**
  * Main entry point for the virtual machine which is layered on the build
@@ -119,12 +125,15 @@ public class Main
 		// Initialize the class loader
 		SpringClassLoader classloader = new SpringClassLoader(libs);
 		
+		// Profiled class information
+		ProfilerSnapshot profiler = new ProfilerSnapshot();
+		
 		// Initialize the virtual machine with our launch ID
 		BuildSuiteManager bm;
 		SpringMachine machine = new SpringMachine(
 			(bm = new BuildSuiteManager(pm, TimeSpaceType.TEST)),
-			classloader, new SpringTaskManager(bm), launchid,
-			GuestDepth.guestDepth() + 1,
+			classloader, new SpringTaskManager(bm, profiler), launchid,
+			GuestDepth.guestDepth() + 1, profiler,
 			args.<String>toArray(new String[args.size()]));
 		
 		// Run the VM until it terminates
@@ -143,6 +152,30 @@ public class Main
 		catch (SpringFatalException e)
 		{
 			System.exit(TaskAccess.EXIT_CODE_FATAL_EXCEPTION);
+		}
+		
+		// Dump the profiler snapshot somewhere
+		finally
+		{
+			try
+			{
+				// Create temporary file
+				Path temp = Files.createTempFile(String.format(
+					"springcoat-%016d", System.currentTimeMillis()), ".nps");
+				
+				// Write snapshot to this file
+				try (OutputStream os = Files.newOutputStream(temp,
+					StandardOpenOption.WRITE, StandardOpenOption.CREATE))
+				{
+					profiler.writeTo(os);
+				}
+			}
+			
+			// Ignore
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
 		}
 	}
 }

@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.profiler;
 
+import java.io.IOException;
+import java.io.OutputStream;
+
 /**
  * This represents the main profiler snapshot which contains all of the data
  * within what is to be profiled, it is mutable and accordingly allows for
@@ -27,10 +30,27 @@ public final class ProfilerSnapshot
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/10
 	 */
-	public final ProfiledThread thread(String __name)
+	public final ProfiledThread measureThread(String __name)
 		throws NullPointerException
 	{
 		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Writes the snapshot information to the given output stream.
+	 *
+	 * @param __os The stream to write to.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/11
+	 */
+	public final void writeTo(OutputStream __os)
+		throws IOException, NullPointerException
+	{
+		if (__os == null)
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
