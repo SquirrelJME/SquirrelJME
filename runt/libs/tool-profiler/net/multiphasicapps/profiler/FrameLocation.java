@@ -64,7 +64,16 @@ public final class FrameLocation
 	@Override
 	public final boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		if (__o == this)
+			return true;
+		
+		if (!(__o instanceof FrameLocation))
+			return false;
+		
+		FrameLocation o = (FrameLocation)__o;
+		return this.inclass.equals(o.inclass) &&
+			this.methodname.equals(o.methodname) &&
+			this.methodtype.equals(o.methodtype);
 	}
 	
 	/**
@@ -74,7 +83,9 @@ public final class FrameLocation
 	@Override
 	public final int hashCode()
 	{
-		throw new todo.TODO();
+		return this.inclass.hashCode() ^
+			this.methodname.hashCode() ^
+			this.methodtype.hashCode();
 	}
 	
 	/**
