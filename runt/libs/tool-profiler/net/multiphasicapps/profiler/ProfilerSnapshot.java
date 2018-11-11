@@ -372,8 +372,8 @@ public final class ProfilerSnapshot
 			// Write information on the frame
 			__ps.printf(" [n=%d, t=%d, s=%d]",
 				f._numcalls,
-				f._traceselftime,
-				f._frameselftime);
+				f._traceruntime,
+				f._frameruntime);
 			__ps.println();
 			
 			// Go into this frame's frames
