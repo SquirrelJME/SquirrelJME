@@ -1069,6 +1069,7 @@ public final class SpringThreadWorker
 				// Exit the virtual machine
 			case "cc/squirreljme/runtime/cldc/asm/SystemAccess::" +
 				"exit:(I)V":
+				this.thread.profiler.exitAll(System.nanoTime());
 				this.machine.exit((Integer)__args[0]);
 				return null;
 				
@@ -1445,13 +1446,24 @@ public final class SpringThreadWorker
 	 */
 	private final strictfp void __singleStep()
 	{
+		// Need the current frame and its byte code
+		SpringThread thread = this.thread;
+		
 		// Check if the VM is exiting, to discontinue execution if it has been
 		// requested by any thread
 		SpringMachine machine = this.machine;
-		machine.exitCheck();
+		try
+		{
+			machine.exitCheck();
+		}
 		
-		// Need the current frame and its byte code
-		SpringThread thread = this.thread;
+		// If the VM is exiting then clear the execution stack before we go
+		// away
+		catch (SpringMachineExitException e)
+		{
+			thread.profiler.exitAll(System.nanoTime());
+			throw e;
+		}
 		
 		// Increase the step count
 		this._stepcount++;
