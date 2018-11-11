@@ -345,7 +345,8 @@ public final class SpringThreadWorker
 				
 			// Setup character array sequence which wraps our array
 			SpringObject cas = this.newInstance(new ClassName(
-				"cc/squirreljme/runtime/cldc/string/CharArraySequence"),
+				"cc/squirreljme/runtime/cldc/string/" +
+					"ClassConstantCharArraySequence"),
 				new MethodDescriptor("([C)V"), array);
 			
 			// Setup string which uses this sequence
@@ -386,7 +387,8 @@ public final class SpringThreadWorker
 				
 				// Setup character array sequence which wraps our array
 				SpringObject cas = this.newInstance(new ClassName(
-					"cc/squirreljme/runtime/cldc/string/CharArraySequence"),
+					"cc/squirreljme/runtime/cldc/string/" +
+						"ClassConstantCharArraySequence"),
 					new MethodDescriptor("([C)V"), array);
 				
 				// Setup string which uses this sequence
