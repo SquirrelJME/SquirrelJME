@@ -215,6 +215,10 @@ public final class ProfilerSnapshot
 		Map<FrameLocation, Integer> rv = new LinkedHashMap<>();
 		int[] next = new int[1];
 		
+		// Need root frame for the entry point, used virtually to refer to
+		// multiple initial points in the entry frame since that is a thing
+		rv.put(FrameLocation.ENTRY_POINT, next[0]++);
+		
 		// Have to go through all threads recursively due to all the frames
 		// that exist to build IDs
 		Map<String, ProfiledThread> threads = this._threads;
@@ -293,7 +297,7 @@ public final class ProfilerSnapshot
 		
 		// Parse the node table for this thread
 		__NodeTable__ nodes = new __NodeTable__();
-		nodes.parse(__t._frames.values());
+		nodes.parseThread(__t);
 		
 		// Write the node table
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(1024))
