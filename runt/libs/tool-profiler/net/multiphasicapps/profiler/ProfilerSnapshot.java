@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.profiler;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -25,6 +26,10 @@ import java.util.Map;
  */
 public final class ProfilerSnapshot
 {
+	/** The start time of the snapshot. */
+	protected final long startmillis =
+		System.currentTimeMillis();
+	
 	/** Threads that are being measured. */
 	private final Map<String, ProfiledThread> _threads =
 		new LinkedHashMap<>();
@@ -103,8 +108,16 @@ public final class ProfilerSnapshot
 		if (__os == null)
 			throw new NullPointerException("NARG");
 		
-		todo.TODO.note("Write snapshot to output.");
-		//throw new todo.TODO();
+		// We write to this because we need the data
+		DataOutputStream dos = new DataOutputStream(__os);
+		
+		// Write the header
+		dos.writeBytes("nBpRoFiLeR");
+		dos.write(1);
+		dos.write(2);
+		dos.write(1);
+		
+		throw new todo.TODO();
 	}
 	
 	/**
