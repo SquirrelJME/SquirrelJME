@@ -12,6 +12,8 @@ package net.multiphasicapps.profiler;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * This represents the main profiler snapshot which contains all of the data
@@ -22,6 +24,10 @@ import java.io.OutputStream;
  */
 public final class ProfilerSnapshot
 {
+	/** Threads that are being measured. */
+	private final Map<String, ProfiledThread> _threads =
+		new LinkedHashMap<>();
+	
 	/**
 	 * Starts profiling the given thread.
 	 *
@@ -36,7 +42,18 @@ public final class ProfilerSnapshot
 		if (__name == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		ProfiledThread rv = new ProfiledThread(__name);
+		
+		// Although the frames are not thread safe, this may be called at
+		// any time from any thread although the returned class is only inteded
+		// to be used by a single thread
+		Map<String, ProfiledThread> threads = this._threads;
+		synchronized (threads)
+		{
+			threads.put(__name, rv);
+		}
+		
+		return rv;
 	}
 	
 	/**
