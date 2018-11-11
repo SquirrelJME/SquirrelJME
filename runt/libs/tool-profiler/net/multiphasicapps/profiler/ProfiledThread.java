@@ -38,6 +38,15 @@ public final class ProfiledThread
 	private final Deque<ProfiledFrame> _stack =
 		new LinkedList<>();
 	
+	/** Grand invocation total. */
+	long _invtotal;
+	
+	/** Total time. */
+	long _totaltime;
+	
+	/** CPU time. */
+	long _cputime;
+	
 	/**
 	 * Initializes the thread information.
 	 *
@@ -127,6 +136,16 @@ public final class ProfiledThread
 		ProfiledFrame newtop = stack.peek();
 		if (newtop != null)
 			newtop.invokeEnd(__ns);
+		
+		// If all threads are out, count the times
+		else
+		{
+			this._totaltime += times[0];
+			this._cputime += times[1];
+			
+			// Invocation total goes up after each method ends
+			this._invtotal++;
+		}
 		
 		// Return the frame which was popped
 		return rv;

@@ -152,8 +152,16 @@ public final class ProfilerSnapshot
 					cpu.writeUTF(loc.methodtype);
 				}
 				
-				if (true)
-					throw new todo.TODO();
+				// Write thread data
+				Map<String, ProfiledThread> threads = this._threads;
+				synchronized (threads)
+				{
+					cpu.writeInt(threads.size());
+				
+					// Write individual thread
+					for (ProfiledThread t : threads.values())
+						this.__doWriteThread(cpu, t, mids);
+				}
 			}
 			
 			// Store sizes, which are important
@@ -253,7 +261,61 @@ public final class ProfilerSnapshot
 		}
 		
 		return __rv;
-	}	
+	}
+	
+	/**
+	 * Writes the thread information to the stream.
+	 *
+	 * @param __cpu The stream to write to.
+	 * @param __t The thread information to write.
+	 * @param __mids The method IDs.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/11
+	 */
+	private final void __doWriteThread(DataOutputStream __cpu,
+		ProfiledThread __t, Map<FrameLocation, Integer> __mids)
+		throws IOException, NullPointerException
+	{
+		if (__cpu == null || __t == null || __mids == null)
+			throw new NullPointerException("NARG");
+		
+		// ID and name
+		__cpu.writeInt(__t.name.hashCode());
+		__cpu.writeUTF(__t.name);
+		
+		// Always measure thread time
+		__cpu.writeBoolean(true);
+		
+		// Write compacted node data
+		if (true)
+			throw new todo.TODO();
+		
+		// Node size is always 28
+		__cpu.writeInt(28);
+		
+		// Whole graph time
+		__cpu.writeLong(__t._totaltime);
+		__cpu.writeLong(__t._cputime);
+		
+		// No injected methods used
+		__cpu.writeLong(0);
+		__cpu.writeLong(0);
+		
+		// Pure time (always seems to be max value)
+		__cpu.writeLong(Integer.MAX_VALUE);
+		__cpu.writeLong(Integer.MAX_VALUE);
+		
+		// Net time
+		__cpu.writeLong(__t._totaltime);
+		__cpu.writeLong(__t._cputime);
+		
+		// The number of methods invoked
+		__cpu.writeLong(__t._invtotal);
+		
+		// Always display CPU time
+		__cpu.writeBoolean(true);
+	}
 	
 	/**
 	 * Dumps the frames to the given stream.
