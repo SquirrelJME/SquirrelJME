@@ -142,6 +142,16 @@ public final class ProfilerSnapshot
 				// Thread time is always measured
 				cpu.writeBoolean(true);
 				
+				// Build and write the instrumented method table
+				Map<FrameLocation, Integer> mids = this.__doMethodTable();
+				cpu.writeInt(mids.size());
+				for (FrameLocation loc : mids.keySet())
+				{
+					cpu.writeUTF(loc.inclass);
+					cpu.writeUTF(loc.methodname);
+					cpu.writeUTF(loc.methodtype);
+				}
+				
 				if (true)
 					throw new todo.TODO();
 			}
@@ -180,6 +190,70 @@ public final class ProfilerSnapshot
 		// Make sure everything is flushed
 		cont.flush();
 	}
+	
+	/**
+	 * Builds the the method table.
+	 *
+	 * @return The table of instrumented methods.
+	 * @since 2018/11/11
+	 */
+	private final Map<FrameLocation, Integer> __doMethodTable()
+	{
+		// The table and the ID, which must be passable to sub-builders
+		Map<FrameLocation, Integer> rv = new LinkedHashMap<>();
+		int[] next = new int[1];
+		
+		// Have to go through all threads recursively due to all the frames
+		// that exist to build IDs
+		Map<String, ProfiledThread> threads = this._threads;
+		synchronized (threads)
+		{
+			// Go through all threads
+			for (ProfiledThread t : threads.values())
+				this.__doMethodTableSub(rv, next, t._frames.values());
+		}
+		
+		return rv;
+	}
+	
+	/**
+	 * Builds the method table for frames.
+	 *
+	 * @param __rv The table to write to.
+	 * @param __nid The next ID.
+	 * @param __fs The frames to process.
+	 * @return The table of instrumented methods.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/11
+	 */
+	private final Map<FrameLocation, Integer> __doMethodTableSub(
+		Map<FrameLocation, Integer> __rv,
+		int[] __nid, Iterable<ProfiledFrame> __fs)
+		throws NullPointerException
+	{
+		if (__rv == null || __nid == null || __fs == null)
+			throw new NullPointerException("NARG");
+		
+		// Handle each frame
+		for (ProfiledFrame f : __fs)
+		{
+			// If the location is not in the map, set the ID
+			FrameLocation loc = f.location;
+			if (!__rv.containsKey(loc))
+			{
+				// Generate new ID
+				int id = __nid[0]++;
+				
+				// Store
+				__rv.put(loc, id);
+			}
+			
+			// Go into this frame's sub-frames
+			this.__doMethodTableSub(__rv, __nid, f._frames.values());
+		}
+		
+		return __rv;
+	}	
 	
 	/**
 	 * Dumps the frames to the given stream.
