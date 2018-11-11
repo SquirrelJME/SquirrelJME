@@ -1,0 +1,66 @@
+# 2018/11/10
+
+## 06:34
+
+Going to write the profiler, this will be important to have because it will
+mean that I will be able to find all the slow code and such. I could actually
+use it to profile and optimize the code and find the slow spots. I cannot
+really use VisualVM on SpringCoat itself because it is a VM and nothing runs
+in the host, but I can generate VisualVM snapshots.
+
+## 06:39
+
+I need to commonize the compression algorithm code away from the ZIP code and
+instead put it in the IO code.
+
+## 07:05
+
+Think I should normalize errors since things have been moved around.
+
+## 07:41
+
+I am going to need to write a compression algorithm but it should not be too
+bad and such. I can write a rather poor one that just gets it done then
+improve it later on in the future. Only thing that would probably be fun to
+mess with is the sliding window. I do want it to be fast but the best
+compression is not always the best.
+
+## 10:10
+
+Looking through a PDF of the Encyclopedia Britannica and it is 1100 pages long
+so that will be fun. Doing binary search through it.
+
+## 10:13
+
+This is a really long description of Squirrel but it will work.
+
+## 11:01
+
+Took awhile to write, but it will be a nice set of sample text to test
+compression and such on.
+
+## 14:55
+
+Going to make the zip writer not thread safe.
+
+## 15:08
+
+This is odd, I am using the same stream writing code but it fails because it
+says the previous entry has not been closed. There has been no previous
+entry at all it seems in a group.
+
+## 15:23
+
+So my ZIP code is broken if I change the compression type and I have no idea
+why.
+
+## 15:24
+
+Okay the real manifest is written first.
+
+## 15:33
+
+I am pretty sure it is not working because I am actually using a stream
+that handles compression and it might not be the wrapped stream. Need to
+see how this works. Oh yeah, just thought about it. The deflation stream
+does not call close in its close.
