@@ -113,6 +113,20 @@ public final class ProfiledThread
 	}
 	
 	/**
+	 * Exits all frames as needed.
+	 *
+	 * @param __ns The nanoseconds when exit all has happened.
+	 * @since 2018/11/11
+	 */
+	public void exitAll(long __ns)
+	{
+		// Empty the frame stack
+		Deque<ProfiledFrame> stack = this._stack;
+		while (!stack.isEmpty())
+			this.exitFrame(__ns);
+	}
+	
+	/**
 	 * Exits the frame which at the top of the stack.
 	 *
 	 * @param __ns The nanoseconds when the frame exited.
@@ -140,6 +154,8 @@ public final class ProfiledThread
 		// If all threads are out, count the times
 		else
 		{
+			todo.DEBUG.note("Ended all");
+			
 			this._totaltime += times[0];
 			this._cputime += times[1];
 			
