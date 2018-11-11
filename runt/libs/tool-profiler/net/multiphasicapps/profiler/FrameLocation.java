@@ -1,0 +1,90 @@
+// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
+// ---------------------------------------------------------------------------
+// Multi-Phasic Applications: SquirrelJME
+//     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
+// ---------------------------------------------------------------------------
+// SquirrelJME is under the GNU General Public License v3+, or later.
+// See license.mkd for licensing and copyright information.
+// ---------------------------------------------------------------------------
+
+package net.multiphasicapps.profiler;
+
+/**
+ * This represents the location of a frame.
+ *
+ * @since 2018/11/11
+ */
+public final class FrameLocation
+	implements Comparable<FrameLocation>
+{
+	/** The class. */
+	protected final String inclass;
+	
+	/** The method name. */
+	protected final String methodname;
+	
+	/** The method type. */
+	protected final String methodtype;
+	
+	/**
+	 * Initializes the location.
+	 *
+	 * @param __cl The class.
+	 * @param __mn The method name.
+	 * @param __mt The method type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/11
+	 */
+	public FrameLocation(String __cl, String __mn, String __mt)
+		throws NullPointerException
+	{
+		if (__cl == null || __mn == null || __mt == null)
+			throw new NullPointerException("NARG");
+		
+		this.inclass = __cl;
+		this.methodname = __mn;
+		this.methodtype = __mt;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/11
+	 */
+	@Override
+	public final int compareTo(FrameLocation __o)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/11
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/11
+	 */
+	@Override
+	public final int hashCode()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/11
+	 */
+	@Override
+	public final String toString()
+	{
+		throw new todo.TODO();
+	}
+}
+
