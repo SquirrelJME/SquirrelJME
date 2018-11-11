@@ -122,7 +122,7 @@ public final class ProfilerSnapshot
 		cont.write(2);
 		
 		// Type
-		cont.write(1);
+		cont.writeInt(1);
 		
 		// Write compressed snapshot data to the byte array
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(2048))
