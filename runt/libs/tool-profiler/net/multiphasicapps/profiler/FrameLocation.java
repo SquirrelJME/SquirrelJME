@@ -21,6 +21,10 @@ import java.lang.ref.WeakReference;
 public final class FrameLocation
 	implements Comparable<FrameLocation>
 {
+	/** Location which represents the entry point node. */
+	public static final FrameLocation ENTRY_POINT =
+		new FrameLocation("<entry>", "<entry>", "()V");
+	
 	/** The class. */
 	protected final String inclass;
 	

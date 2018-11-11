@@ -14,6 +14,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -84,6 +85,47 @@ final class __NodeTable__
 		if (overflowed)
 			this._overflowed = true;
 	}
+	
+	/**
+	 * Parses the frames and loads into a node table.
+	 *
+	 * @param __t The thread to parse.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/11
+	 */
+	public final void parseThread(ProfiledThread __t)
+		throws NullPointerException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		Iterable<ProfiledFrame> frames = __t._frames.values();
+		
+		// Create virtual frame since the root actually can have multiple
+		// methods forking from it and the profiler format can only handle
+		// a single root
+		ProfiledFrame vframe = new ProfiledFrame(FrameLocation.ENTRY_POINT);
+		
+		// Only ever called once
+		vframe._numcalls = 1;
+		
+		// Initialize frame times with thread times
+		vframe._traceselftime = __t._totaltime;
+		vframe._tracecputime = __t._cputime;
+		
+		// There is no self time since this is purely a virtual node
+		vframe._frameselftime = 0;
+		vframe._framecputime = 0;
+		
+		// Store the thread sub-frames into this virtual thread
+		Map<FrameLocation, ProfiledFrame> vsubf = vframe._frames;
+		for (ProfiledFrame f : frames)
+			vsubf.put(f.location, f);
+		
+		// Parse this special frame, which will then parse its sub-frames
+		// accordingly
+		this.parse(Arrays.<ProfiledFrame>asList(vframe));
+	}		
 	
 	/**
 	 * Writes the node table to the given stream.
