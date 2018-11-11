@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import net.multiphasicapps.classfile.ByteCode;
+import net.multiphasicapps.profiler.ProfiledThread;
 
 /**
  * This class contains information about a thread within the virtual machine.
@@ -31,6 +32,9 @@ public final class SpringThread
 	/** The name of this thread. */
 	protected final String name;
 	
+	/** Profiler information. */
+	protected final ProfiledThread profiler;
+	
 	/** The stack frames. */
 	private final List<SpringThread.Frame> _frames =
 		new ArrayList<>();
@@ -43,10 +47,11 @@ public final class SpringThread
 	 *
 	 * @param __id The thread ID.
 	 * @param __n The name of the thread.
+	 * @param __profiler Profiled storage.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/01
 	 */
-	SpringThread(int __id, String __n)
+	SpringThread(int __id, String __n, ProfiledThread __profiler)
 		throws NullPointerException
 	{
 		if (__n == null)
@@ -54,6 +59,7 @@ public final class SpringThread
 		
 		this.id = __id;
 		this.name = __n;
+		this.profiler = __profiler;
 	}
 	
 	/**
@@ -83,6 +89,10 @@ public final class SpringThread
 	{
 		// Setup blank frame
 		SpringThread.Frame rv = new SpringThread.Frame();
+		
+		// Profile for this frame
+		this.profiler.enterFrame("<blank>", "<blank>", "()V",
+			System.nanoTime());
 		
 		// Lock on frames as a new one is added
 		List<SpringThread.Frame> frames = this._frames;
@@ -126,6 +136,11 @@ public final class SpringThread
 		
 		// Create new frame
 		Frame rv = new Frame(__m, __args);
+		
+		// Profile for this frame
+		this.profiler.enterFrame(__m.inClass().toString(),
+			__m.nameAndType().name().toString(),
+			__m.nameAndType().type().toString(), System.nanoTime());
 		
 		// Lock on frames as a new one is added
 		List<SpringThread.Frame> frames = this._frames;
@@ -190,6 +205,10 @@ public final class SpringThread
 	public final SpringThread.Frame popFrame()
 		throws SpringVirtualMachineException
 	{
+		// Exit the frame
+		this.profiler.exitFrame(System.nanoTime());
+		
+		// Pop from the stack
 		List<SpringThread.Frame> frames = this._frames;
 		synchronized (frames)
 		{

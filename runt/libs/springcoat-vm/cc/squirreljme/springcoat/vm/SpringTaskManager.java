@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.microedition.swm.TaskStatus;
+import net.multiphasicapps.profiler.ProfilerSnapshot;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 
 /**
@@ -31,6 +32,9 @@ public final class SpringTaskManager
 	/** The manager for suites. */
 	protected final SpringSuiteManager suites;
 	
+	/** The profiling information. */
+	protected final ProfilerSnapshot profiler;
+	
 	/** Tasks that are used. */
 	private final Map<Integer, SpringTask> _tasks =
 		new HashMap<>();
@@ -42,16 +46,18 @@ public final class SpringTaskManager
 	 * Initializes the task manager.
 	 *
 	 * @param __sm The suite manager.
+	 * @param __ps The snapshot for profiling.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/04
 	 */
-	public SpringTaskManager(SpringSuiteManager __sm)
+	public SpringTaskManager(SpringSuiteManager __sm, ProfilerSnapshot __ps)
 		throws NullPointerException
 	{
 		if (__sm == null)
 			throw new NullPointerException("NARG");
 		
 		this.suites = __sm;
+		this.profiler = (__ps == null ? new ProfilerSnapshot() : __ps);
 	}
 	
 	/**
@@ -115,7 +121,8 @@ public final class SpringTaskManager
 		
 		// Build machine for the task
 		SpringMachine machine = new SpringMachine(suites,
-			new SpringClassLoader(scl), this, bootdx, __gd + 1, __args);
+			new SpringClassLoader(scl), this, bootdx, __gd + 1,
+			this.profiler, __args);
 		
 		// Lock on tasks
 		Map<Integer, SpringTask> tasks = this._tasks;

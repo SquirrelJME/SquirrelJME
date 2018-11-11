@@ -27,6 +27,7 @@ import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ConstantValueString;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.MethodNameAndType;
+import net.multiphasicapps.profiler.ProfilerSnapshot;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 
 /**
@@ -59,6 +60,9 @@ public final class SpringMachine
 	
 	/** The depth of this machine. */
 	protected final int guestdepth;
+	
+	/** The profiling information. */
+	protected final ProfilerSnapshot profiler;
 	
 	/** Threads which are available. */
 	private final List<SpringThread> _threads =
@@ -112,12 +116,14 @@ public final class SpringMachine
 	 * @param __bootdx The entry point which should be booted when the VM
 	 * runs.
 	 * @param __gd Guest depth.
+	 * @param __profiler The profiler to use.
 	 * @param __args Main entry point arguments.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/03
 	 */
 	public SpringMachine(SpringSuiteManager __sm, SpringClassLoader __cl,
-		SpringTaskManager __tm, int __bootdx, int __gd, String... __args)
+		SpringTaskManager __tm, int __bootdx, int __gd,
+		ProfilerSnapshot __profiler, String... __args)
 		throws NullPointerException
 	{
 		if (__cl == null || __sm == null)
@@ -129,6 +135,8 @@ public final class SpringMachine
 		this.bootdx = __bootdx;
 		this.guestdepth = __gd;
 		this._args = (__args == null ? new String[0] : __args.clone());
+		this.profiler = (__profiler != null ? __profiler :
+			new ProfilerSnapshot());
 		
 		// Setup resource accessor
 		this.resourceaccessor = new SpringResourceAccess(__sm);
@@ -164,7 +172,10 @@ public final class SpringMachine
 		synchronized (threads)
 		{
 			// Initialize new thread
-			SpringThread rv = new SpringThread(++this._nextthreadid, __n);
+			int v;
+			SpringThread rv = new SpringThread((v = ++this._nextthreadid), __n,
+				this.profiler.measureThread(String.format("vm%08x-%d-%s",
+				System.identityHashCode(this), v, __n)));
 			
 			// Store thread
 			threads.add(rv);
