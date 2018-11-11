@@ -110,11 +110,11 @@ final class __NodeTable__
 		vframe._numcalls = 1;
 		
 		// Initialize frame times with thread times
-		vframe._traceselftime = __t._totaltime;
+		vframe._traceruntime = __t._totaltime;
 		vframe._tracecputime = __t._cputime;
 		
 		// There is no self time since this is purely a virtual node
-		vframe._frameselftime = 0;
+		vframe._frameruntime = 0;
 		vframe._framecputime = 0;
 		
 		// Store the thread sub-frames into this virtual thread
@@ -162,8 +162,8 @@ final class __NodeTable__
 			dos.writeInt((int)Math.min(Integer.MAX_VALUE, f._numcalls));
 			
 			// Total time and self time
-			__NodeTable__.__writeLong40(dos, f._traceselftime);
-			__NodeTable__.__writeLong40(dos, f._frameselftime);
+			__NodeTable__.__writeLong40(dos, f._traceruntime);
+			__NodeTable__.__writeLong40(dos, f._frameruntime);
 			
 			// Total time and self time (not sleeping/blocking)
 			__NodeTable__.__writeLong40(dos, f._tracecputime);

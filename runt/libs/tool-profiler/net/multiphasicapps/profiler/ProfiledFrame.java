@@ -32,13 +32,13 @@ public final class ProfiledFrame
 	int _numcalls;
 	
 	/** Cumulative time spent in this frame and child frames. */
-	long _traceselftime;
+	long _traceruntime;
 	
 	/** Cumulative time spent in this frame and child frames without sleep. */
 	long _tracecputime;
 	
 	/** Time only spent in this frame. */
-	long _frameselftime;
+	long _frameruntime;
 	
 	/** Time only spent in this frame without sleep. */
 	long _framecputime;
@@ -123,11 +123,11 @@ public final class ProfiledFrame
 		this._numcalls++;
 		
 		// All sub-frames times
-		this._traceselftime += total;
+		this._traceruntime += total;
 		this._tracecputime += total;
 		
 		// And only this frame time
-		this._frameselftime += self;
+		this._frameruntime += self;
 		this._framecputime += self;
 		
 		// Clear these for next time
