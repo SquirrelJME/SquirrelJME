@@ -22,9 +22,7 @@ import java.lang.ref.WeakReference;
  */
 public final class CodecFactory
 {
-	/**
-	 * The encoding to use if it is unknown or not set anywhere.
-	 */
+	/** The encoding to use if it is unknown or not set anywhere. */
 	private static final String _FALLBACK_ENCODING =
 		"iso-8859-1"/*"utf-8"*/;
 	
@@ -65,7 +63,7 @@ public final class CodecFactory
 
 				// ISO-8859-1
 			case "iso-8859-1":
-				throw new todo.TODO();
+				return new ISO88591Decoder();
 				
 				// UTF-8
 			case "utf-8":
