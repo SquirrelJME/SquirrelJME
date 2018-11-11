@@ -176,8 +176,8 @@ public final class ZLibCompressor
 			this._init = true;
 			
 			// DEFLATE compression with no flags
-			out.write(8);
-			out.write(((8 * 256) + 0) % 31);
+			out.write(0x78);
+			out.write(1);
 		}
 		
 		// Write to data
