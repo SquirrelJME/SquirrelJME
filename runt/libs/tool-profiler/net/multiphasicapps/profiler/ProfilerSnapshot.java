@@ -18,7 +18,7 @@ import java.io.PrintStream;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import net.multiphasicapps.io.DeflaterOutputStream;
+import net.multiphasicapps.io.ZLibCompressor;
 
 /**
  * This represents the main profiler snapshot which contains all of the data
@@ -128,8 +128,8 @@ public final class ProfilerSnapshot
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(2048))
 		{
 			// Compress the CPU data
-			DeflaterOutputStream olddefl;
-			try (DeflaterOutputStream defl = new DeflaterOutputStream(baos);
+			ZLibCompressor olddefl;
+			try (ZLibCompressor defl = new ZLibCompressor(baos);
 				DataOutputStream cpu = new DataOutputStream(defl))
 			{
 				// Used to get compressed size and such
