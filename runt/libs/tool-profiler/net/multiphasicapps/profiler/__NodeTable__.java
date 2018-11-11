@@ -117,7 +117,7 @@ final class __NodeTable__
 			dos.writeShort(__mids.get(f.location));
 			
 			// Number of calls
-			dos.writeInt((int)Math.max(Integer.MAX_VALUE, f._numcalls));
+			dos.writeInt((int)Math.min(Integer.MAX_VALUE, f._numcalls));
 			
 			// Time spent in this frame including children
 			__NodeTable__.__writeLong40(dos, f._traceselftime);
