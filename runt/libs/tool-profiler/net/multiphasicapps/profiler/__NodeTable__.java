@@ -161,12 +161,12 @@ final class __NodeTable__
 			// Number of calls
 			dos.writeInt((int)Math.min(Integer.MAX_VALUE, f._numcalls));
 			
-			// Time spent in this frame including children
+			// Total time and self time
 			__NodeTable__.__writeLong40(dos, f._traceselftime);
-			__NodeTable__.__writeLong40(dos, f._tracecputime);
-			
-			// Time spent in this frame excluding children
 			__NodeTable__.__writeLong40(dos, f._frameselftime);
+			
+			// Total time and self time (not sleeping/blocking)
+			__NodeTable__.__writeLong40(dos, f._tracecputime);
 			__NodeTable__.__writeLong40(dos, f._framecputime);
 			
 			// Write offsets to the sub-frame nodes
