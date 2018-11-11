@@ -114,10 +114,14 @@ public final class ProfilerSnapshot
 		// We write to this because we need the data
 		DataOutputStream cont = new DataOutputStream(__os);
 		
-		// Write the header
+		// Magic number
 		cont.writeBytes("nBpRoFiLeR");
+		
+		// Version
 		cont.write(1);
 		cont.write(2);
+		
+		// Type
 		cont.write(1);
 		
 		// Write compressed snapshot data to the byte array
@@ -165,9 +169,9 @@ public final class ProfilerSnapshot
 			}
 			
 			// Store sizes, which are important
-			cont.writeInt((int)Math.min(Integer.MAX_VALUE,
-				olddefl.compressedBytes()));
 			cont.writeInt(baos.size());
+			cont.writeInt((int)Math.min(Integer.MAX_VALUE,
+				olddefl.uncompressedBytes()));
 			
 			// Store the compressed data
 			baos.writeTo(cont);
