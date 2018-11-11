@@ -287,9 +287,20 @@ public final class ProfilerSnapshot
 		// Always measure thread time
 		__cpu.writeBoolean(true);
 		
-		// Write compacted node data
-		if (true)
-			throw new todo.TODO();
+		// Parse the node table for this thread
+		__NodeTable__ nodes = new __NodeTable__();
+		nodes.parse(__mids, __t._frames.values());
+		
+		// Write the node table
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(1024))
+		{
+			// Write to the temporary buffer
+			nodes.writeTo(baos);
+			
+			// Store the node table
+			__cpu.writeInt(baos.size());
+			baos.writeTo(__cpu);
+		}
 		
 		// Node size is always 28
 		__cpu.writeInt(28);
