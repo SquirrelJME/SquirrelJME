@@ -25,23 +25,23 @@ public final class ProfiledFrame
 	protected final FrameLocation location;
 	
 	/** The sub-frames of this frame. */
-	private final Map<FrameLocation, ProfiledFrame> _frames =
+	final Map<FrameLocation, ProfiledFrame> _frames =
 		new LinkedHashMap<>();
 	
 	/** The number of calls made into the frame. */
-	private int _numcalls;
+	int _numcalls;
 	
 	/** Cumulative time spent in this frame and child frames. */
-	private long _traceselftime;
+	long _traceselftime;
 	
 	/** Cumulative time spent in this frame and child frames without sleep. */
-	private long _tracecputime;
+	long _tracecputime;
 	
 	/** Time only spent in this frame. */
-	private long _frameselftime;
+	long _frameselftime;
 	
 	/** Time only spent in this frame without sleep. */
-	private long _framecputime;
+	long _framecputime;
 	
 	/** Time to subtract from the measured self times. */
 	private long _subtractself;
@@ -116,7 +116,7 @@ public final class ProfiledFrame
 			throw new IllegalStateException("AH06");
 		
 		// Determine the cumulative and self time spent
-		long total = __ns - __ns,
+		long total = __ns - cs,
 			self = total - this._subtractself;
 		
 		// Increase call count

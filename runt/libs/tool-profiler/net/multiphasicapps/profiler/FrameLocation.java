@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.profiler;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+
 /**
  * This represents the location of a frame.
  *
@@ -26,6 +29,9 @@ public final class FrameLocation
 	
 	/** The method type. */
 	protected final String methodtype;
+	
+	/** String form. */
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes the location.
@@ -95,7 +101,14 @@ public final class FrameLocation
 	@Override
 	public final String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>((rv = this.inclass + "::" +
+				this.methodname + ":" + this.methodtype));
+		
+		return rv;
 	}
 }
 
