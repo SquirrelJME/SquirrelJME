@@ -599,7 +599,23 @@ public class LinkedList<E>
 			// Check modification
 			this.__checkConcurrent();
 			
-			throw new todo.TODO();
+			// We are at the head node, do nothing
+			__Link__<E> next = this._next;
+			if (next == LinkedList.this._head)
+				throw new NoSuchElementException("NSEE");
+			
+			// Move to previous
+			__Link__<E> prev = next._prev;
+			
+			// Removal is done on this
+			this._last = prev;
+			
+			// Move index back
+			this._lastvdx = --this._vdx;
+			this._next = prev;
+			
+			// Use previous value
+			return prev._value;
 		}
 		
 		/**
