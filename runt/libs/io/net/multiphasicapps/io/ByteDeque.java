@@ -365,7 +365,7 @@ public class ByteDeque
 		{
 			// Get the first block
 			byte[] bl = blocks.getFirst();
-			boolean lastbl = (blocks.size() == 1);
+			boolean lastbl = (nb == 1);
 			
 			// Determine the max number of bytes to delete
 			int rc = (lastbl ? (tail == 0 ? bs : tail) - head : bs - head);
@@ -386,7 +386,10 @@ public class ByteDeque
 			
 			// If cycled, remove the first block
 			if (head == 0 || (lastbl && head == tail))
+			{
 				blocks.removeFirst();
+				nb--;
+			}
 			
 			// Bytes were removed
 			left -= rc;
