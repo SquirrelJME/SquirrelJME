@@ -60,7 +60,7 @@ public final class StackMapTableEntry
 	protected final boolean isinitialized;
 	
 	/** String representation. */
-	private volatile Reference<String> _string;
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes the stack map entry.

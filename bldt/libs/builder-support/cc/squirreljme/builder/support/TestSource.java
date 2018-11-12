@@ -52,7 +52,7 @@ public final class TestSource
 	protected final String mainpackage;
 	
 	/** Virtual manifest for this source. */
-	private volatile Reference<JavaManifest> _manifest;
+	private Reference<JavaManifest> _manifest;
 	
 	/** Last modified time of the source code. */
 	private volatile long _lastmodtime =

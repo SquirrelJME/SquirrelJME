@@ -29,10 +29,10 @@ public final class BinaryName
 	private final ClassIdentifier[] _identifiers;
 	
 	/** String representation. */
-	private volatile Reference<String> _string;
+	private Reference<String> _string;
 	
 	/** The package this is in. */
-	private volatile Reference<BinaryName> _package;
+	private Reference<BinaryName> _package;
 	
 	/**
 	 * Initializes the binary name.

@@ -28,7 +28,7 @@ public final class TypedSuite
 	protected final SuiteIdentifier suite;
 	
 	/** String representation. */
-	private volatile Reference<String> _string;
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes the typed suite.

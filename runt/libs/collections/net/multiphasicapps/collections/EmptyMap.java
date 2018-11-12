@@ -26,7 +26,7 @@ public class EmptyMap
 	extends AbstractMap
 {
 	/** The empty map. */
-	private static volatile Reference<Map> _EMPTY_MAP;
+	private static Reference<Map> _EMPTY_MAP;
 	
 	/**
 	 * Initializes the empty map.

@@ -22,6 +22,8 @@ import java.util.Set;
  * This is a sorted map which is internally implemented by using
  * {@link SortedTreeSet} and special handlers.
  *
+ * This class is not thread safe.
+ *
  * @param <K> The type of key to store.
  * @param <V> The type of value to store.
  * @since 2016/09/06
@@ -41,16 +43,16 @@ public class SortedTreeMap<K, V>
 	final Comparator<K> _compare;
 	
 	/** The entry set. */
-	private volatile Reference<Set<Map.Entry<K, V>>> _entryset;
+	private Reference<Set<Map.Entry<K, V>>> _entryset;
 	
 	/** The root node. */
-	volatile __Node__<K, V> _root;
+	__Node__<K, V> _root;
 	
 	/** The minimum value. */
-	volatile __Data__<K, V> _min;
+	__Data__<K, V> _min;
 	
 	/** The size of the tree. */
-	volatile int _size;
+	int _size;
 	
 	/**
 	 * Initializes a new empty map using the natural comparator.

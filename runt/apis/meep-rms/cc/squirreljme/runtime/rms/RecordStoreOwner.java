@@ -30,7 +30,7 @@ public final class RecordStoreOwner
 	protected final SuiteVendor vendor;
 	
 	/** String representation. */
-	private volatile Reference<String> _string;
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes the owner of the record store.

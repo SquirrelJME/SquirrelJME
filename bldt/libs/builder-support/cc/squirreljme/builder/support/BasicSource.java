@@ -34,7 +34,7 @@ public final class BasicSource
 	protected final Path root;
 	
 	/** The manifest for this source. */
-	private volatile Reference<JavaManifest> _manifest;
+	private Reference<JavaManifest> _manifest;
 	
 	/**
 	 * Initializes the project source.

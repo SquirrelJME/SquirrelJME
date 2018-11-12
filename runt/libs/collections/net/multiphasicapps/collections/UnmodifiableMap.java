@@ -33,7 +33,7 @@ public final class UnmodifiableMap<K, V>
 	protected final Map<K, V> wrapped;
 	
 	/** Entry set cache, since it is not always needed. */
-	private volatile Reference<Set<Map.Entry<K, V>>> _escache;
+	private Reference<Set<Map.Entry<K, V>>> _escache;
 	
 	/**
 	 * Initializes the unmodifiable wrapped map.

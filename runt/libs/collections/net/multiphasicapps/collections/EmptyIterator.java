@@ -24,7 +24,7 @@ public final class EmptyIterator
 	implements Iterator
 {
 	/** The empty iterator. */
-	private static volatile Reference<Iterator> _EMPTY_ITERATOR;
+	private static Reference<Iterator> _EMPTY_ITERATOR;
 	
 	/**
 	 * Initializes the empty iterator.

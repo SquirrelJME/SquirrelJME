@@ -34,7 +34,7 @@ public final class ExceptionHandler
 	protected final ClassName type;
 	
 	/** The string representation. */
-	private volatile Reference<String> _string;
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes the exception handler.

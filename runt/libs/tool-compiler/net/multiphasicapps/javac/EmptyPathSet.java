@@ -25,7 +25,7 @@ public final class EmptyPathSet
 	implements CompilerPathSet
 {
 	/** The cache for the path set. */
-	private static volatile Reference<EmptyPathSet> _SET;
+	private static Reference<EmptyPathSet> _SET;
 	
 	/**
 	 * Not publically created.

@@ -29,36 +29,36 @@ public class ForwardingGraphics
 	extends Graphics
 {
 	/** The graphics to forward to. */
-	private volatile Graphics _graphics;
+	private Graphics _graphics;
 	
 	/** The blend mode. */
-	private volatile int _blendmode;
+	private int _blendmode;
 
 	/** The color. */
-	private volatile int _color;
+	private int _color;
 
 	/** The font. */
-	private volatile Font _font;
+	private Font _font;
 
 	/** The clipping rectangle start. */
-	private volatile int _clipx, _clipy;
+	private int _clipx, _clipy;
 	
 	/** The clip width. */
-	private volatile int _clipw =
+	private int _clipw =
 		Integer.MAX_VALUE;
 	
 	/** The clip height. */
-	private volatile int _cliph =
+	private int _cliph =
 		Integer.MAX_VALUE;
 
 	/** The stroke. */
-	private volatile int _stroke;
+	private int _stroke;
 
 	/** The translation coordinates. */
-	private volatile int _translatex, _translatey;
+	private int _translatex, _translatey;
 	
 	/** Plain forwarder. */
-	private volatile Reference<Graphics> _plain;
+	private Reference<Graphics> _plain;
 
 	/**
 	 * {@inheritDoc}

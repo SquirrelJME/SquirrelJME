@@ -33,7 +33,7 @@ public final class StackMapTableState
 	private final StackMapTableEntry[] _stack;
 	
 	/** String representation of this table. */
-	private volatile Reference<String> _string;
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes the stack map table state.

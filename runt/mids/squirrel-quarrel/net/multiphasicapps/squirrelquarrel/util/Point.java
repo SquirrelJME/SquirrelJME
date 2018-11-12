@@ -28,7 +28,7 @@ public final class Point
 	public final int y;
 	
 	/** String form. */
-	private volatile Reference<String> _string;
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes the point.

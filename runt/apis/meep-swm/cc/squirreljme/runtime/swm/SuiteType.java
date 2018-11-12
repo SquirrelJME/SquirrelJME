@@ -39,16 +39,16 @@ public enum SuiteType
 	protected final String prefix;
 	
 	/** Manifest description key. */
-	private volatile Reference<JavaManifestKey> _description;
+	private Reference<JavaManifestKey> _description;
 	
 	/** Manifest name key. */
-	private volatile Reference<JavaManifestKey> _name;
+	private Reference<JavaManifestKey> _name;
 	
 	/** Manifest vendor key. */
-	private volatile Reference<JavaManifestKey> _vendor;
+	private Reference<JavaManifestKey> _vendor;
 	
 	/** Manifest version key. */
-	private volatile Reference<JavaManifestKey> _version;
+	private Reference<JavaManifestKey> _version;
 	
 	/**
 	 * Initializes the type.

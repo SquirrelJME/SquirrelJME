@@ -23,7 +23,7 @@ public final class NaturalComparator<V>
 	implements Comparator<V>
 {
 	/** The single instance. */
-	private static volatile Reference<NaturalComparator> _REF;
+	private static Reference<NaturalComparator> _REF;
 	
 	/**
 	 * Only one is ever needed.

@@ -59,10 +59,10 @@ public final class Binary
 	protected final Path path;
 	
 	/** The cached manifest for this entry. */
-	private volatile Reference<JavaManifest> _manifest;
+	private Reference<JavaManifest> _manifest;
 	
 	/** The suite information. */
-	private volatile Reference<SuiteInfo> _suiteinfo;
+	private Reference<SuiteInfo> _suiteinfo;
 	
 	/**
 	 * Initializes the binary.

@@ -25,10 +25,10 @@ public abstract class MIDlet
 		"cc.squirreljme.runtime.midlet.override.";
 	
 	/** The cached manifest for obtaining properties. */
-	private volatile Reference<JavaManifest> _manifest;
+	private Reference<JavaManifest> _manifest;
 	
 	/** Is there no manifest? */
-	private volatile boolean _nomanifest;
+	private boolean _nomanifest;
 	
 	/**
 	 * Initialize the MIDlet.

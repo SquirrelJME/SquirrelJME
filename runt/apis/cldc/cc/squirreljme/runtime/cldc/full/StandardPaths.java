@@ -97,7 +97,7 @@ public final class StandardPaths
 	protected final Path cache;
 	
 	/** Library path. */
-	private volatile Reference<Path> _libpath;
+	private Reference<Path> _libpath;
 	
 	/**
 	 * Initializes a standard path using the specified path as a base for

@@ -36,7 +36,7 @@ public final class Instruction
 	private final Object[] _args;
 	
 	/** String representation of the operation. */
-	private volatile Reference<String> _string;
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes the instruction information.
