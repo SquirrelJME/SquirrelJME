@@ -150,9 +150,19 @@ public final class Integer
 		return rv;
 	}
 	
-	public static int bitCount(int __a)
+	/**
+	 * Returns the number of bits which are in the value, this is the
+	 * population count.
+	 *
+	 * @param __v The value to count.
+	 * @return The number of bits set in the value.
+	 * @since 2018/11/11
+	 */
+	public static int bitCount(int __v)
 	{
-		throw new todo.TODO();
+		__v = __v - ((__v >>> 1) & 0x55555555);
+		__v = (__v & 0x33333333) + ((__v >>> 2) & 0x33333333);
+		return ((__v + (__v >>> 4) & 0xF0F0F0F) * 0x1010101) >>> 24;
 	}
 	
 	/**
