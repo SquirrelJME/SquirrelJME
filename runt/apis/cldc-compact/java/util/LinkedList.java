@@ -90,7 +90,7 @@ public class LinkedList<E>
 	@Override
 	public void addLast(E __v)
 	{
-		this.add(this.size(), __v);
+		this.add(this._size, __v);
 	}
 	
 	/**
@@ -155,7 +155,7 @@ public class LinkedList<E>
 	{
 		// {@squirreljme.error ZZ1x Cannot get the first element because the
 		// linked list is empty.}
-		if (this.size() == 0)
+		if (this._size == 0)
 			throw new NoSuchElementException("ZZ1x");
 		
 		// One forward from the head
@@ -172,7 +172,7 @@ public class LinkedList<E>
 		// {@squirreljme.error ZZ1y Cannot get the last element because the
 		// linked list is empty.}
 		int sz;
-		if ((sz = this.size()) == 0)
+		if ((sz = this._size) == 0)
 			throw new NoSuchElementException("ZZ1y");
 		
 		// Just one back from the tail
@@ -219,7 +219,7 @@ public class LinkedList<E>
 	public boolean offerLast(E __v)
 	{
 		// There are no capacity restrictions
-		this.add(this.size(), __v);
+		this.add(this._size, __v);
 		return true;
 	}
 	
@@ -241,7 +241,7 @@ public class LinkedList<E>
 	public E peekFirst()
 	{
 		// Return null on empty list
-		if (this.size() == 0)
+		if (this._size == 0)
 			return null;
 		
 		// One forward from the head
@@ -257,7 +257,7 @@ public class LinkedList<E>
 	{
 		// Return null if the list is empty
 		int sz;
-		if ((sz = size()) == 0)
+		if ((sz = _size) == 0)
 			return null;
 		
 		// Just one back from the tail
@@ -404,7 +404,7 @@ public class LinkedList<E>
 	public boolean removeLastOccurrence(Object __a)
 	{
 		// Start at the end of the list and remove the first match
-		ListIterator<E> rover = listIterator(size());
+		ListIterator<E> rover = listIterator(_size);
 		while (rover.hasPrevious())
 		{
 			E v = rover.previous();
