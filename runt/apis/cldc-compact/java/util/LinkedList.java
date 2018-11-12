@@ -158,8 +158,8 @@ public class LinkedList<E>
 		if (this.size() == 0)
 			throw new NoSuchElementException("ZZ1x");
 		
-		// Get it
-		return this.get(0);
+		// One forward from the head
+		return this._head._next._value;
 	}
 	
 	/**
@@ -175,8 +175,8 @@ public class LinkedList<E>
 		if ((sz = this.size()) == 0)
 			throw new NoSuchElementException("ZZ1y");
 		
-		// Get it
-		return this.get(sz - 1);
+		// Just one back from the tail
+		return this._tail._prev._value;
 	}
 	
 	/**
@@ -244,8 +244,8 @@ public class LinkedList<E>
 		if (this.size() == 0)
 			return null;
 		
-		// Get otherwise
-		return this.get(0);
+		// One forward from the head
+		return this._head._next._value;
 	}
 	
 	/**
@@ -260,8 +260,8 @@ public class LinkedList<E>
 		if ((sz = size()) == 0)
 			return null;
 		
-		// Get the last
-		return get(sz - 1);
+		// Just one back from the tail
+		return this._tail._prev._value;
 	}
 	
 	/**
