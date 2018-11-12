@@ -40,13 +40,13 @@ public final class SuiteInfo
 	protected final SuiteVersion version;
 	
 	/** Required dependency information. */
-	private volatile Reference<DependencyInfo> _dependencies;
+	private Reference<DependencyInfo> _dependencies;
 	
 	/** Provided dependency information. */
-	private volatile Reference<ProvidedInfo> _provided;
+	private Reference<ProvidedInfo> _provided;
 	
 	/** Suite cache. */
-	private volatile Reference<SuiteIdentifier> _suite;
+	private Reference<SuiteIdentifier> _suite;
 	
 	/**
 	 * Initializes the suite information.

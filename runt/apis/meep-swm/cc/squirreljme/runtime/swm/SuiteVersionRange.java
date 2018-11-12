@@ -35,7 +35,7 @@ public final class SuiteVersionRange
 	protected final SuiteVersion to;
 	
 	/** String representation. */
-	private volatile Reference<String> _string;
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes the range inclusively between the two given versions.

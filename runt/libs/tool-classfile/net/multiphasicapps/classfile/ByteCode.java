@@ -78,10 +78,10 @@ public final class ByteCode
 	private final Reference<Instruction>[] _icache;
 	
 	/** String representation of this byte code */
-	private volatile Reference<String> _string;
+	private Reference<String> _string;
 	
 	/** The stack map table cache. */
-	private volatile Reference<StackMapTable> _smt;
+	private Reference<StackMapTable> _smt;
 	
 	/**
 	 * Initializes the byte code.
@@ -955,7 +955,7 @@ public final class ByteCode
 			ByteCode.this.codelen;
 		
 		/** The read address. */
-		private volatile int _at =
+		private int _at =
 			0;
 		
 		/**

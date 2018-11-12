@@ -35,7 +35,7 @@ public final class SimpleFileNameLineAndColumn
 	protected final int column;
 	
 	/** String representation. */
-	private volatile Reference<String> _string;
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes this class with unknown information.

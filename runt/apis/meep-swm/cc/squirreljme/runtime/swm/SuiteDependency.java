@@ -40,7 +40,7 @@ public final class SuiteDependency
 	protected final SuiteVersionRange version;
 	
 	/** String representation. */
-	private volatile Reference<String> _string;
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes the dependency which is parsed from the given input string.

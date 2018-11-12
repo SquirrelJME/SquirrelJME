@@ -46,7 +46,7 @@ public final class Field
 	protected final AnnotationTable annotations;
 	
 	/** Name and type reference. */
-	private volatile Reference<FieldNameAndType> _nameandtype;
+	private Reference<FieldNameAndType> _nameandtype;
 	
 	/**
 	 * Initializes the field.

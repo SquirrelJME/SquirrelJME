@@ -28,7 +28,7 @@ public enum UnitType
 	;
 	
 	/** A reference to the unit information. */
-	private volatile Reference<BaseUnitInfo> _info;
+	private Reference<BaseUnitInfo> _info;
 	
 	/**
 	 * Returns the information which is associated with the given unit.

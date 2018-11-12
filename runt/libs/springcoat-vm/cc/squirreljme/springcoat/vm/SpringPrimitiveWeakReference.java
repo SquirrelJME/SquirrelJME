@@ -22,7 +22,7 @@ public final class SpringPrimitiveWeakReference
 	extends SpringPrimitiveReference
 {
 	/** The reference used. */
-	private volatile Reference<SpringObject> _ref;
+	private Reference<SpringObject> _ref;
 	
 	/**
 	 * {@inheritDoc}

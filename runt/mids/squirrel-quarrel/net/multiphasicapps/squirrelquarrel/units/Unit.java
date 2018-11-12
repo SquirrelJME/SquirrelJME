@@ -26,25 +26,25 @@ public final class Unit
 	protected final int id;
 	
 	/** The current unit type. */
-	private volatile UnitType _type;
+	private UnitType _type;
 	
 	/** Was this unit deleted? */
-	private volatile boolean _deleted;
+	private boolean _deleted;
 	
 	/** Hitpoints of the current unit. */
-	private volatile int _hp;
+	private int _hp;
 	
 	/** Unit shields. */
-	private volatile int _shields;
+	private int _shields;
 	
 	/** Reference to this unit via pointer. */
-	private volatile Reference<UnitReference> _ref;
+	private Reference<UnitReference> _ref;
 	
 	/** Actual center position. */
-	volatile int _cx, _cy;
+	int _cx, _cy;
 	
 	/** Position of the unit in the map. */
-	volatile int _x1, _y1, _x2, _y2;
+	int _x1, _y1, _x2, _y2;
 	
 	/**
 	 * Initializes the unit.

@@ -33,7 +33,7 @@ public final class Standard
 	protected final SuiteVersion version;
 	
 	/** String representation. */
-	private volatile Reference<String> _string;
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes the standard using the given fields.

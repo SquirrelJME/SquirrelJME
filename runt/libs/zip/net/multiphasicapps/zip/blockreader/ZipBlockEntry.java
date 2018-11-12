@@ -107,7 +107,7 @@ public final class ZipBlockEntry
 	protected final long position;
 	
 	/** The name of this file. */
-	private volatile Reference<String> _name;
+	private Reference<String> _name;
 	
 	/**
 	 * Initializes the block entry.

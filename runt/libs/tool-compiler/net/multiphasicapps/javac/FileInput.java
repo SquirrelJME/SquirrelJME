@@ -35,7 +35,7 @@ public final class FileInput
 	protected final String name;
 	
 	/** String representation. */
-	private volatile Reference<String> _string;
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes the file input.

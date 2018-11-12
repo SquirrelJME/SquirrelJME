@@ -28,7 +28,7 @@ public final class EmptyList
 	implements RandomAccess
 {
 	/** The empty list. */
-	private static volatile Reference<List> _EMPTY_LIST;
+	private static Reference<List> _EMPTY_LIST;
 	
 	/**
 	 * Initializes the empty list.

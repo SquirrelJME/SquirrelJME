@@ -63,7 +63,7 @@ public enum OperatingSystemType
 	;
 	
 	/** Lowercase form of the type . */
-	private volatile Reference<String> _lower;
+	private Reference<String> _lower;
 	
 	/**
 	 * Is this a DOS system?

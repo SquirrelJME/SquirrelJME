@@ -57,13 +57,13 @@ public final class Method
 	private final byte[] _rawcodeattr;
 	
 	/** The method byte code. */
-	private volatile Reference<ByteCode> _bytecode;
+	private Reference<ByteCode> _bytecode;
 	
 	/** Name and type reference. */
-	private volatile Reference<MethodNameAndType> _nameandtype;
+	private Reference<MethodNameAndType> _nameandtype;
 	
 	/** The method index. */
-	private volatile Reference<MethodHandle> _index;
+	private Reference<MethodHandle> _index;
 	
 	/**
 	 * Initializes the method.

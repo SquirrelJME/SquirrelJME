@@ -26,7 +26,7 @@ public final class EmptySet
 	extends AbstractSet
 {
 	/** The empty set. */
-	private static volatile Reference<Set> _EMPTY_SET;
+	private static Reference<Set> _EMPTY_SET;
 	
 	/**
 	 * Initializes the empty set.

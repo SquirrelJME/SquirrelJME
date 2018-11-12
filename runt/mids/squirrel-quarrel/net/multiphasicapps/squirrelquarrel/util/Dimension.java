@@ -28,7 +28,7 @@ public final class Dimension
 	public final int height;
 	
 	/** String form. */
-	private volatile Reference<String> _string;
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes the dimension.

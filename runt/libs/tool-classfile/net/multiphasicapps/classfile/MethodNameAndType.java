@@ -28,7 +28,7 @@ public final class MethodNameAndType
 	protected final MethodDescriptor type;
 	
 	/** String representation. */
-	private volatile Reference<String> _string;
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes the method anme and type.

@@ -35,16 +35,16 @@ public final class Rectangle
 	public final int height;
 	
 	/** String form. */
-	private volatile Reference<String> _string;
+	private Reference<String> _string;
 	
 	/** As a point. */
-	private volatile Reference<Point> _point;
+	private Reference<Point> _point;
 	
 	/** As an end point. */
-	private volatile Reference<Point> _endpoint;
+	private Reference<Point> _endpoint;
 	
 	/** As a dimension. */
-	private volatile Reference<Dimension> _dimension;
+	private Reference<Dimension> _dimension;
 	
 	/**
 	 * Initializes the rectangle.

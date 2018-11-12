@@ -33,7 +33,7 @@ import javax.microedition.khronos.opengles.GL;
 public abstract class EGLContext
 {
 	/** The single instance of EGL, shared by everything. */
-	private static volatile Reference<EGL> _EGL;
+	private static Reference<EGL> _EGL;
 	
 	/**
 	 * Returns an instance of an object which is used to provide access to

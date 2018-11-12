@@ -31,7 +31,7 @@ public final class EntryPoint
 	protected final boolean ismidlet;
 	
 	/** String representation. */
-	private volatile Reference<String> _string;
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes the entry point.

@@ -108,22 +108,22 @@ public class InflaterInputStream
 		new int[_MAX_BITS + 1];
 	
 	/** The number of compressed bytes. */
-	private volatile long _compressedsize;
+	private long _compressedsize;
 	
 	/** The number of uncompressed bytes. */
-	private volatile long _uncompressedsize;
+	private long _uncompressedsize;
 	
 	/** The code length tree. */
-	private volatile Reference<HuffmanTreeInt> _codelentree;
+	private Reference<HuffmanTreeInt> _codelentree;
 	
 	/** The literal tree. */
-	private volatile Reference<HuffmanTreeInt> _literaltree;
+	private Reference<HuffmanTreeInt> _literaltree;
 	
 	/** The distance tree. */
-	private volatile Reference<HuffmanTreeInt> _distancetree;
+	private Reference<HuffmanTreeInt> _distancetree;
 	
 	/** Window reader. */
-	private volatile Reference<byte[]> _readwindow;
+	private Reference<byte[]> _readwindow;
 	
 	/**
 	 * The miniature read window, it stores a 32-bit value and is given input
@@ -131,19 +131,19 @@ public class InflaterInputStream
 	 * is faster to work with integer values rather than bytes. It also means
 	 * that it is much simpler to work with.
 	 */
-	private volatile int _miniwindow;
+	private int _miniwindow;
 	
 	/** Represents the number of bits in the mini window. */
-	private volatile int _minisize;
+	private int _minisize;
 	
 	/** The output write window, this is used to shift out writes as needed. */
-	private volatile int _writewindow;
+	private int _writewindow;
 	
 	/** The number of bits in the write window. */
-	private volatile int _writesize;
+	private int _writesize;
 	
 	/** EOF has been reached? */
-	private volatile boolean _eof;
+	private boolean _eof;
 	
 	/** The target byte array for writes. */
 	private byte[] _targ;

@@ -41,13 +41,13 @@ public abstract class Source
 	protected final ProjectType type;
 	
 	/** The approximate binary manifest. */
-	private volatile Reference<JavaManifest> _approxbm;
+	private Reference<JavaManifest> _approxbm;
 	
 	/** The suite information. */
-	private volatile Reference<SuiteInfo> _suiteinfo;
+	private Reference<SuiteInfo> _suiteinfo;
 	
 	/** Last modified time of the source code. */
-	private volatile long _lastmodtime =
+	private long _lastmodtime =
 		Long.MIN_VALUE;
 	
 	/**

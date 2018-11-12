@@ -27,7 +27,7 @@ public final class NameAndType
 	protected final String type;
 	
 	/** String representation. */
-	private volatile Reference<String> _string;
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes the name and type information.

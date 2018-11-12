@@ -61,7 +61,7 @@ public final class JavaType
 	private final int _internal;
 	
 	/** String representation of this table. */
-	private volatile Reference<String> _string;
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes the stack map type.
