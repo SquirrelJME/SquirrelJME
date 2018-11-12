@@ -152,7 +152,11 @@ public class ByteArrayInputStream
 			byte[] buf = this.buf;
 			int pos = this.pos,
 				count = this.count,
-				read = Math.min(__l, count - pos);
+				read = count - pos;
+			
+			// Do not exceed this
+			if (__l < read)
+				read = __l;
 			
 			// Copy bytes
 			for (int i = 0; i < __l; i++)
