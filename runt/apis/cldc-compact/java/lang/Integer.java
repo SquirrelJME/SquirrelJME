@@ -306,9 +306,38 @@ public final class Integer
 		throw new todo.TODO();
 	}
 	
-	public static int numberOfTrailingZeros(int __a)
+	/**
+	 * Returns the number of zeros which trail on the right side.
+	 *
+	 * @param __v The value to check.
+	 * @return The number of trailing zeros.
+	 * @since 2018/11/11
+	 */
+	public static int numberOfTrailingZeros(int __v)
 	{
-		throw new todo.TODO();
+		// c will be the number of zero bits on the right
+		int c = 32;
+		__v &= -__v;
+		
+		if ((__v) != 0)
+			c--;
+		
+		if ((__v & 0x0000FFFF) != 0)
+			c -= 16;
+			
+		if ((__v & 0x00FF00FF) != 0)
+			c -= 8;
+		
+		if ((__v & 0x0F0F0F0F) != 0)
+			c -= 4;
+		
+		if ((__v & 0x33333333) != 0)
+			c -= 2;
+		
+		if ((__v & 0x55555555) != 0)
+			c -= 1;
+		
+		return c;
 	}
 	
 	/**
