@@ -271,9 +271,23 @@ public final class Integer
 		return Integer.parseInt(__v, 10);
 	}
 	
+	/**
+	 * Reverses all of the bits in the given integer.
+	 *
+	 * @param __i The input value.
+	 * @return The integer but with the bits reversed.
+	 * @since 2018/11/11
+	 */
+	@ImplementationNote("Taken from " +
+		"<http://aggregate.org/MAGIC/#Bit%20Reversal>.")
 	public static int reverse(int __i)
 	{
-		throw new todo.TODO();
+		__i = (((__i & 0xAAAAAAAA) >>> 1) | ((__i & 0x55555555) << 1));
+		__i = (((__i & 0xCCCCCCCC) >>> 2) | ((__i & 0x33333333) << 2));
+		__i = (((__i & 0xF0F0F0F0) >>> 4) | ((__i & 0x0F0F0F0F) << 4));
+		__i = (((__i & 0xFF00FF00) >>> 8) | ((__i & 0x00FF00FF) << 8));
+		
+		return ((__i >>> 16) | (__i << 16));
 	}
 	
 	public static int reverseBytes(int __i)
