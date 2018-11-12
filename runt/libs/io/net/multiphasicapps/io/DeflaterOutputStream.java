@@ -183,17 +183,28 @@ public class DeflaterOutputStream
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2018/11/11
+	 */
+	@Override
+	public final void write(byte[] __b)
+		throws IOException, NullPointerException
+	{
+		this.write(__b, 0, __b.length);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/11/10
 	 */
 	@Override
 	public final void write(byte[] __b, int __o, int __l)
-		throws IOException
+		throws IndexOutOfBoundsException, IOException, NullPointerException
 	{
 		// Check
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
-			throw new ArrayIndexOutOfBoundsException("AIOB");
+			throw new IndexOutOfBoundsException("IOOB");
 		
 		byte[] fill = this._fill;
 		int blocksize = this._blocksize,
