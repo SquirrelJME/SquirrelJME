@@ -158,6 +158,17 @@ public final class ZLibCompressor
 	 * @since 2018/11/11
 	 */
 	@Override
+	public final void write(byte[] __b)
+		throws IOException, NullPointerException
+	{
+		this.write(__b, 0, __b.length);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/11
+	 */
+	@Override
 	public final void write(byte[] __b, int __o, int __l)
 		throws IOException
 	{

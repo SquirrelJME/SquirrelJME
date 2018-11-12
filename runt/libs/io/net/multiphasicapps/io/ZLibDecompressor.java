@@ -180,6 +180,17 @@ public class ZLibDecompressor
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2018/11/11
+	 */
+	@Override
+	public int read(byte[] __b)
+		throws IOException, NullPointerException
+	{
+		return this.read(__b, 0, __b.length);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2017/03/04
 	 */
 	@Override
