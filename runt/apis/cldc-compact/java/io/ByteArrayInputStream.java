@@ -126,7 +126,10 @@ public class ByteArrayInputStream
 			if (pos >= count)
 				return -1;
 			
-			return this.buf[pos] & 0xFF;
+			// Read single byte
+			int rv = this.buf[pos] & 0xFF;
+			this.pos = pos + 1;
+			return rv;
 		}
 	}
 	
@@ -154,6 +157,9 @@ public class ByteArrayInputStream
 			// Copy bytes
 			for (int i = 0; i < __l; i++)
 				__b[__o++] = buf[pos++];
+			
+			// Store new position
+			this.pos = pos;
 			
 			if (read == 0)
 				return (pos >= count ? -1 : 0);
