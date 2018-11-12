@@ -477,7 +477,7 @@ public class InflaterInputStream
 			
 			// Literal byte value
 			if (code >= 0 && code <= 255)
-				__write(code, 0xFF, false);
+				__write(code, 8, false);
 		
 			// Stop processing
 			else if (code == 256)
@@ -593,7 +593,7 @@ public class InflaterInputStream
 				
 			// Literal byte value
 			if (code >= 0 && code <= 255)
-				__write(code, 0xFF, false);
+				__write(code, 8, false);
 		
 			// Stop processing
 			else if (code == 256)
@@ -639,7 +639,7 @@ public class InflaterInputStream
 		
 		// Read all bytes
 		for (int i = 0; i < len; i++)
-			__write(__readBits(8, false), 0xFF, false);
+			__write(__readBits(8, false), 8, false);
 	}
 	
 	/**
@@ -685,7 +685,7 @@ public class InflaterInputStream
 		for (int i = 0, v = 0; i < __len; i++)
 		{
 			// Write byte
-			__write(winb[v], 0xFF, false);
+			__write(winb[v], 8, false);
 		
 			// Wrap around
 			if ((++v) >= maxlen)
@@ -1135,29 +1135,29 @@ public class InflaterInputStream
 	 * Writes the specified value to the output.
 	 *
 	 * @param __v The value to write.
-	 * @param __mask The mask of the value.
+	 * @param __bits The number of bits to write.
 	 * @param __msb Most significant bits first?
 	 * @throws IOException On write errors.
 	 * @since 2017/02/25
 	 */
-	private void __write(int __v, int __mask, boolean __msb)
+	private void __write(int __v, int __bits, boolean __msb)
 		throws IOException
 	{
-		// Count bits to write
-		int bits = Integer.bitCount(__mask);
+		// Calculate the mask
+		int mask = (1 << __bits) - 1;
 		
 		// Write LSB value, need to swap bits if writing MSB
-		__v &= __mask;
+		__v &= mask;
 		if (__msb)
-			__v = Integer.reverse(__v) >>> (32 - bits);
+			__v = Integer.reverse(__v) >>> (32 - __bits);
 		
 		// Get the current write window
 		int writewindow = this._writewindow,
 			writesize = this._writesize;
 		
 		// Add bits to write
-		writewindow |= __v << writesize;
-		writesize += bits;
+		writewindow |= (__v & mask) << writesize;
+		writesize += __bits;
 		
 		// Enough bytes to write to the output?
 		if (writesize >= 8)
