@@ -126,7 +126,7 @@ public class ByteArrayInputStream
 			if (pos >= count)
 				return -1;
 			
-			return this.buf[pos];
+			return this.buf[pos] & 0xFF;
 		}
 	}
 	
