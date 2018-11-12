@@ -941,7 +941,7 @@ public final class String
 			return this;
 		
 		// Call other
-		return this.substring(__s, length());
+		return this.substring(__s, this.length());
 	}
 	
 	/**
