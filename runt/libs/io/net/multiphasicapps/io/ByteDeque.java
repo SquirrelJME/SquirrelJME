@@ -273,7 +273,9 @@ public class ByteDeque
 				bl = blocks.getLast();
 			
 			// Only can fit a single block
-			int limit = Math.min(bs - tail, left);
+			int limit = bs - tail;
+			if (left < limit)
+				limit = left;
 			
 			// Write data
 			for (int i = 0; i < limit; i++)
@@ -1098,7 +1100,9 @@ public class ByteDeque
 		int bm = _BLOCK_MASK;
 		
 		// The number of bytes to read
-		int limit = Math.min(__l, total - __a);
+		int limit = total - __a;
+		if (__l < limit)
+			limit = __l;
 		
 		// Skip through the starting set of blocks since they are not
 		// needed at all
