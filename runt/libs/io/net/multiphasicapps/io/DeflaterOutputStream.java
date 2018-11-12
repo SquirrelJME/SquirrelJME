@@ -205,7 +205,9 @@ public class DeflaterOutputStream
 		while (__l > 0)
 		{
 			// We can only fit so many bytes in the fill before it is full
-			int leftinfill = Math.min(blocksize - fillbytes, __l);
+			int leftinfill = blocksize - fillbytes;
+			if (__l < leftinfill)
+				leftinfill = __l;
 			
 			// Copy bytes into the fill
 			for (int i = 0; i < leftinfill; i++)

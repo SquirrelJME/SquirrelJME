@@ -349,7 +349,7 @@ public class ByteDeque
 			return 0;
 		
 		// Do not remove more bytes than there are available
-		int limit = Math.min(__l, total);
+		int limit = (__l < total ? __l : total);
 		int newtotal = total - limit;
 		
 		// Get some things
@@ -368,8 +368,9 @@ public class ByteDeque
 			boolean lastbl = (blocks.size() == 1);
 			
 			// Determine the max number of bytes to delete
-			int rc = Math.min((lastbl ? (tail == 0 ? bs : tail) - head :
-				bs - head), left);
+			int rc = (lastbl ? (tail == 0 ? bs : tail) - head : bs - head);
+			if (left < rc)
+				rc = left;
 			
 			// Should never occur, because that means the end is lower
 			// than the start
@@ -1144,8 +1145,9 @@ public class ByteDeque
 			boolean lastbl = !it.hasNext();
 			
 			// Determine the number of bytes to read
-			int rc = Math.min(left,
-				(lastbl && tail != 0 ? tail : bs) - rhead);
+			int rc = (lastbl && tail != 0 ? tail : bs) - rhead;
+			if (left < rc)
+				rc = left;
 			
 			// Write the data
 			if (__set)
