@@ -487,11 +487,17 @@ final class __StackMapParser__
 	
 		// {@squirreljme.error JC2i A duplicate stack map information for the
 		// specified address has already been loaded. (The address; The
-		// already existing information; The information to be placed there)}
+		// already existing information; The information to be placed there;
+		// Absolute address?; Current address of parse; The address offset;
+		// The parsed type)}
+		// Note that the first instruction if it is a jump target may have an
+		// explicit state even if it one is always defined implicitly, so
+		// just ignore it
 		Map<Integer, StackMapTableState> targets = this._targets;
-		if (targets.containsKey(pp))
-			throw new IllegalStateException(String.format("JC2i %d %s %s",
-				pp, targets.get(pp), rv));
+		if (pp != 0 && targets.containsKey(pp))
+			throw new IllegalStateException(String.format(
+				"JC2i %d %s %s %b %d %d %d",
+				pp, targets.get(pp), rv, __abs, naddr, __au, __type));
 		targets.put(pp, rv);
 		
 		// Debug
