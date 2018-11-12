@@ -348,8 +348,17 @@ public class LinkedList<E>
 	 */
 	@Override
 	public E removeFirst()
+		throws NoSuchElementException
 	{
-		throw new todo.TODO();
+		if (this.isEmpty())
+			throw new NoSuchElementException("NSEE");
+		
+		ListIterator<E> it = this.listIterator(0);
+		
+		// Remove the first element
+		E rv = it.next();
+		it.remove();
+		return rv;
 	}
 	
 	/**
