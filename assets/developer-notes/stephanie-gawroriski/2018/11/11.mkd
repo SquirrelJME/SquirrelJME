@@ -1,0 +1,24 @@
+# 2018/11/11
+
+## 12:12
+
+Actually the snapshot format is ZLib, not raw streams so that makes sense.
+
+## 14:01
+
+Okay so profiling works better, although there is lost information! I need
+to set a better tree root.
+
+## 14:29
+
+The self time and such for nodes is definitely not correct.
+
+## 17:58
+
+Okay so, for some reason the total thread time is way off which is why the
+percentages are probably messed up.
+
+## 22:10
+
+Seems like if the first instruction is the target of a jump that it will have
+a stack map entry defined for it.
