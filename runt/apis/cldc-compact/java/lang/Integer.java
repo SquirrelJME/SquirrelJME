@@ -155,27 +155,140 @@ public final class Integer
 		throw new todo.TODO();
 	}
 	
-	public static Integer decode(String __a)
-		throws NumberFormatException
+	/**
+	 * Decodes the input string for an integer value.
+	 *
+	 * There is an optional sign: {@code -} or {@code +}.
+	 *
+	 * Then the number may be prefixed by:
+	 * {@code 0x}, {@code 0X}, or {@code #} for hexadecimal,
+	 * {@code 0} for octal. If there is no prefix then the number is treated
+	 * as decimal.
+	 *
+	 * @param __s The input string to decode.
+	 * @return The decoded integer.
+	 * @throws NullPointerException On null arguments.
+	 * @throws NumberFormatException If the string is of an incorrect value.
+	 * @since 2018/11/11
+	 */
+	public static Integer decode(String __s)
+		throws NullPointerException, NumberFormatException
 	{
-		if (false)
-			throw new NumberFormatException();
-		throw new todo.TODO();
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error ZZ2o Cannot decode an empty string.}
+		if (__s.isEmpty())
+			throw new NumberFormatException("ZZ2o");
+		
+		// It may be changed!
+		String orig = __s;
+		
+		// Check for sign, assume positive otherwise
+		char sign = __s.charAt(0);
+		if (sign != '-' && sign != '+')
+			sign = '+';
+		
+		// Remove the sign
+		else
+			__s = __s.substring(1);
+		
+		// Which number format?
+		int radix;
+		if (__s.startsWith("0x") || __s.startsWith("0X"))
+		{
+			radix = 16;
+			__s = __s.substring(2);
+		}
+		else if (__s.startsWith("#"))
+		{
+			radix = 16;
+			__s = __s.substring(1);
+		}
+		else if (__s.startsWith("0"))
+		{
+			radix = 8;
+			__s = __s.substring(1);
+		}
+		else
+			radix = 10;
+		
+		// {@squirreljme.error ZZ2o Misplaced sign. (The input string)}
+		if (__s.startsWith("-") || __s.startsWith("+"))
+			throw new NumberFormatException("ZZ2p " + orig);
+		
+		// Decode value with radix
+		try
+		{
+			return Integer.parseInt(sign + __s, radix);
+		}
+		
+		// {@squirreljme.error ZZ2q Could not parse number. (The input string)}
+		catch (NumberFormatException e)
+		{
+			RuntimeException t = new NumberFormatException("ZZ2q " + orig);
+			t.initCause(e);
+			throw t;
+		}
 	}
 	
-	public static Integer getInteger(String __a)
+	/**
+	 * Obtains the integer value of a system property.
+	 *
+	 * @param __key The system property to get.
+	 * @return The value or {@code null} if it is not an integer.
+	 * @throws NumberFormatException If the property does not contain a
+	 * valid number.
+	 * @throws SecurityException If access to the property is denied.
+	 * @since 2018/11/11
+	 */
+	public static Integer getInteger(String __key)
+		throws NumberFormatException, SecurityException
 	{
-		throw new todo.TODO();
+		return Integer.getInteger(__key, null);
 	}
 	
-	public static Integer getInteger(String __a, int __b)
+	/**
+	 * Obtains the integer value of a system property.
+	 *
+	 * @param __key The system property to get.
+	 * @param __def The default value.
+	 * @return The value or {@code null} if it is not an integer.
+	 * @throws NumberFormatException If the property does not contain a
+	 * valid number.
+	 * @throws SecurityException If access to the property is denied.
+	 * @since 2018/11/11
+	 */
+	public static Integer getInteger(String __key, int __def)
+		throws NumberFormatException, SecurityException
 	{
-		throw new todo.TODO();
+		Integer rv = Integer.getInteger(__key, null);
+		if (rv == null)
+			return __def;
+		return rv;
 	}
 	
-	public static Integer getInteger(String __a, Integer __b)
+	/**
+	 * Obtains the integer value of a system property.
+	 *
+	 * @param __key The system property to get.
+	 * @param __def The default value.
+	 * @return The value or {@code null} if it is not an integer.
+	 * @throws NumberFormatException If the property does not contain a
+	 * valid number.
+	 * @throws SecurityException If access to the property is denied.
+	 * @since 2018/11/11
+	 */
+	public static Integer getInteger(String __key, Integer __def)
+		throws NumberFormatException, SecurityException
 	{
-		throw new todo.TODO();
+		// If there is no property, use the default
+		String prop = System.getProperty(__key);
+		if (prop == null)
+			return __def;
+		
+		// Otherwise decode the value
+		return Integer.decode(prop);
 	}
 	
 	public static int highestOneBit(int __a)

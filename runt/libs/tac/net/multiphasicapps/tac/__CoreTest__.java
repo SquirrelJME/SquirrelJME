@@ -245,7 +245,24 @@ abstract class __CoreTest__
 		Map<String, Object> secondary = this._secondary;
 		synchronized (secondary)
 		{
-			secondary.put(__key.toLowerCase(), __v);
+			int n;
+			StringBuilder sb = new StringBuilder((n = __key.length()));
+			for (int i = 0; i < n; i++)
+			{
+				char c = __key.charAt(i);
+				
+				if (c >= 'A' && c <= 'Z')
+					c = Character.toLowerCase(c);
+				else if (c == '+')
+					c = 'p';
+				else if (c == '#')
+					c = 'h';
+				
+				sb.append(c);
+			}
+			
+			// Use this formatted key instead
+			secondary.put(sb.toString(), __v);
 		}
 	}
 	

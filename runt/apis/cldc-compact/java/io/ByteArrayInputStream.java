@@ -10,88 +10,176 @@
 
 package java.io;
 
+/**
+ * This is a class which reads from an input byte array and returns its data.
+ *
+ * @since 2018/11/11
+ */
 public class ByteArrayInputStream
 	extends InputStream
 {
+	/** The buffer to read from. */
 	protected byte[] buf;
 	
+	/** The number of bytes to read. */
 	protected int count;
 	
+	/** The current mark. */
 	protected int mark;
 	
+	/** The position within the byte array. */
 	protected int pos;
 	
-	public ByteArrayInputStream(byte[] __a)
+	/**
+	 * Wraps the specified byte array.
+	 *
+	 * @param __b The array to wrap.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/11
+	 */
+	public ByteArrayInputStream(byte[] __b)
+		throws NullPointerException
 	{
-		super();
-		throw new todo.TODO();
+		this(__b, 0, __b.length);
 	}
 	
-	public ByteArrayInputStream(byte[] __a, int __b, int __c)
+	/**
+	 * Wraps the specified byte array.
+	 *
+	 * @param __b The array to wrap.
+	 * @param __o The offset.
+	 * @param __l The length.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/11
+	 */
+	public ByteArrayInputStream(byte[] __b, int __o, int __l)
+		throws NullPointerException
 	{
-		super();
-		throw new todo.TODO();
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		this.buf = __b;
+		this.pos = __o;
+		this.count = Math.min(__o + __l, __b.length);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/11
+	 */
 	@Override
 	public int available()
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			return Math.max(0, this.count - Math.max(0, this.pos));
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/11
+	 */
 	@Override
 	public void close()
 		throws IOException
 	{
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
+		// Does nothing
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/11
+	 */
 	@Override
-	public void mark(int __a)
+	public void mark(int __p)
 	{
-		throw new todo.TODO();
+		synchronized (this)
+		{
+			this.mark = this.pos;
+		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/11
+	 */
 	@Override
 	public boolean markSupported()
 	{
-		throw new todo.TODO();
+		return true;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/11
+	 */
 	@Override
 	public int read()
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			int pos = this.pos,
+				count = this.count;
+			
+			// EOF?
+			if (pos >= count)
+				return -1;
+			
+			return this.buf[pos];
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/11
+	 */
 	@Override
-	public int read(byte[] __a, int __b, int __c)
+	public int read(byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
 	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) >= __b.length)
+			throw new IndexOutOfBoundsException("IOOB");
+		
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			// Determine how many bytes we can read
+			byte[] buf = this.buf;
+			int pos = this.pos,
+				count = this.count,
+				read = Math.min(__l, count - pos);
+			
+			// Copy bytes
+			for (int i = 0; i < __l; i++)
+				__b[__o++] = buf[pos++];
+			
+			if (read == 0)
+				return (pos >= count ? -1 : 0);
+			return read;
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/11
+	 */
 	@Override
 	public void reset()
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			this.pos = this.mark;
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/11
+	 */
 	@Override
-	public long skip(long __a)
+	public long skip(long __n)
 	{
 		synchronized (this)
 		{

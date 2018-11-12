@@ -1,0 +1,15 @@
+result: int:15882
+thrown: NoExceptionThrown
+secondary-h1234: int:4660
+secondary-ph1234: int:4660
+secondary-p01234: int:668
+secondary-p0x1234: int:4660
+secondary-p1234: int:1234
+secondary--h1234: int:-4660
+secondary--01234: int:-668
+secondary--0x1234: int:-4660
+secondary--1234: int:-1234
+secondary-01234: int:668
+secondary-0x1234: int:4660
+secondary-1234: int:1234
+
