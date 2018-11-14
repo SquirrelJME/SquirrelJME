@@ -10,6 +10,11 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+
 public final class Short
 	extends Number
 	implements Comparable<Short>
@@ -23,13 +28,25 @@ public final class Short
 	public static final int SIZE =
 		16;
 	
+	/** The class representing the primitive type. */
 	public static final Class<Short> TYPE =
-		__getType();
+		ObjectAccess.<Short>classByNameType("short");
 	
-	public Short(short __a)
+	/** The value of this integer. */
+	private final short _value;
+	
+	/** The string representation of this value. */
+	private Reference<String> _string;
+	
+	/**
+	 * Wraps the boxed value.
+	 *
+	 * @param __v The value to wrap.
+	 * @since 2018/11/14
+	 */
+	public Short(short __v)
 	{
-		super();
-		throw new todo.TODO();
+		this._value = __v;
 	}
 	
 	public Short(String __a)
@@ -93,10 +110,21 @@ public final class Short
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/14
+	 */
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>(
+				(rv = Short.toString(this._value)));
+		
+		return rv;
 	}
 	
 	public static Short decode(String __a)
@@ -128,9 +156,16 @@ public final class Short
 		throw new todo.TODO();
 	}
 	
-	public static String toString(short __a)
+	/**
+	 * Returns the string representation of the short value.
+	 *
+	 * @param __v The value to represent.
+	 * @return The string representation of it.
+	 * @since 2018/11/14
+	 */
+	public static String toString(short __v)
 	{
-		throw new todo.TODO();
+		return Integer.toString(__v, 10);
 	}
 	
 	public static Short valueOf(String __a, int __b)
@@ -149,9 +184,16 @@ public final class Short
 		throw new todo.TODO();
 	}
 	
-	public static Short valueOf(short __a)
+	/**
+	 * Boxes the given short value.
+	 *
+	 * @param __v The value to box.
+	 * @return The boxed value.
+	 * @since 2018/11/14
+	 */
+	public static Short valueOf(short __v)
 	{
-		throw new todo.TODO();
+		return new Short(__v);
 	}
 	
 	/**

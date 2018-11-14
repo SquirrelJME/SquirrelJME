@@ -145,7 +145,7 @@ public final class Integer
 		
 		if (ref == null || null == (rv = ref.get()))
 			this._string = new WeakReference<>(
-				(rv = Long.toString(this._value)));
+				(rv = Integer.toString(this._value)));
 		
 		return rv;
 	}
