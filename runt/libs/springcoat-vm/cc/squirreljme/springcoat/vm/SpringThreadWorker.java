@@ -113,6 +113,10 @@ public final class SpringThreadWorker
 				// Int
 			case "int":
 				return new SpringArrayObjectInteger(dim, __cl, __l);
+				
+				// Long
+			case "long":
+				return new SpringArrayObjectLong(dim, __cl, __l);
 			
 				// Generic array
 			default:
