@@ -91,7 +91,6 @@ public class TestArray
 		
 		for (int i = 0; i < COUNT; i++)
 			this.secondary("double-" + i, Double.doubleToRawLongBits(ad[i]));
-		
 	}
 }
 

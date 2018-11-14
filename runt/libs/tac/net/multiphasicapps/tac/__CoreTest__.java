@@ -396,6 +396,19 @@ abstract class __CoreTest__
 		if (__s.startsWith("string:"))
 			return __CoreTest__.__stringDecode(__s.substring(7));
 		
+		// Byte
+		else if (__s.startsWith("byte:"))
+			return Byte.valueOf(__s.substring(5));
+			
+		// Short
+		else if (__s.startsWith("short:"))
+			return Short.valueOf(__s.substring(6));
+			
+		// Char
+		else if (__s.startsWith("char:"))
+			return Character.valueOf(
+				(char)Integer.valueOf(__s.substring(5)).intValue());
+		
 		// Integer
 		else if (__s.startsWith("int:"))
 			return Integer.valueOf(__s.substring(4));
@@ -459,13 +472,25 @@ abstract class __CoreTest__
 		else if (__o instanceof String)
 			return "string:" + __CoreTest__.__stringEncode((String)__o);
 		
+		// Byte
+		else if (__o instanceof Byte)
+			return "byte:" + __o;
+		
+		// Short
+		else if (__o instanceof Short)
+			return "short:" + __o;
+		
+		// Character
+		else if (__o instanceof Character)
+			return "char:" + (int)((Character)__o).charValue();
+		
 		// Integer
 		else if (__o instanceof Integer)
-			return "int:" + __o.toString();
+			return "int:" + __o;
 		
 		// Long
 		else if (__o instanceof Long)
-			return "long:" + __o.toString();
+			return "long:" + __o;
 		
 		// Throwable, meta data is used
 		else if (__o instanceof Throwable)
