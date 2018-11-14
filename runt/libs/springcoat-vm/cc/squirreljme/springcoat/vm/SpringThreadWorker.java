@@ -101,7 +101,11 @@ public final class SpringThreadWorker
 				// Byte
 			case "byte":
 				return new SpringArrayObjectByte(dim, __cl, __l);
-			
+				
+				// Short
+			case "short":
+				return new SpringArrayObjectShort(dim, __cl, __l);
+				
 				// Char
 			case "char":
 				return new SpringArrayObjectChar(dim, __cl, __l);
