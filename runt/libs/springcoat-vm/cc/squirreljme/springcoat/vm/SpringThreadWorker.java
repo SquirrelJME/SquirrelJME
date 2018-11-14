@@ -94,6 +94,10 @@ public final class SpringThreadWorker
 		SpringClass dim = this.resolveClass(__cl.name().addDimensions(1));
 		switch (__cl.name().toString())
 		{
+				// Boolean
+			case "boolean":
+				return new SpringArrayObjectBoolean(dim, __cl, __l);
+			
 				// Byte
 			case "byte":
 				return new SpringArrayObjectByte(dim, __cl, __l);
