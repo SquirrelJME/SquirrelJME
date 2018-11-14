@@ -10,6 +10,11 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+
 public final class Byte
 	extends Number
 	implements Comparable<Byte>
@@ -23,13 +28,25 @@ public final class Byte
 	public static final int SIZE =
 		8;
 	
+	/** The class representing the primitive type. */
 	public static final Class<Byte> TYPE =
-		__getType();
+		ObjectAccess.<Byte>classByNameType("byte");
 	
-	public Byte(byte __a)
+	/** The value of the byte. */
+	private final byte _value;
+	
+	/** The string representation of this value. */
+	private Reference<String> _string;
+	
+	/**
+	 * Initializes the boxed value.
+	 *
+	 * @param __v The value to store.
+	 * @since 2018/11/14
+	 */
+	public Byte(byte __v)
 	{
-		super();
-		throw new todo.TODO();
+		this._value = __v;
 	}
 	
 	public Byte(String __a)
@@ -93,10 +110,21 @@ public final class Byte
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/14
+	 */
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>(
+				(rv = Byte.toString(this._value)));
+		
+		return rv;
 	}
 	
 	public static int compare(byte __a, byte __b)
@@ -128,14 +156,28 @@ public final class Byte
 		throw new todo.TODO();
 	}
 	
-	public static String toString(byte __a)
+	/**
+	 * Returns the string representation of the given byte value.
+	 *
+	 * @param __v The value to represent.
+	 * @return The string value.
+	 * @since 2018/11/14
+	 */
+	public static String toString(byte __v)
 	{
-		throw new todo.TODO();
+		return Integer.toString(__v, 10);
 	}
 	
-	public static Byte valueOf(byte __a)
+	/**
+	 * Boxes the specified byte value.
+	 *
+	 * @param __v The value to box.
+	 * @return The boxed value.
+	 * @since 2018/11/14
+	 */
+	public static Byte valueOf(byte __v)
 	{
-		throw new todo.TODO();
+		return new Byte(__v);
 	}
 	
 	public static Byte valueOf(String __a, int __b)
@@ -152,17 +194,6 @@ public final class Byte
 		if (false)
 			throw new NumberFormatException();
 		throw new todo.TODO();
-	}
-	
-	/**
-	 * The {@link #TYPE} field is magically initialized by the virtual machine.
-	 *
-	 * @return {@link #TYPE}.
-	 * @since 2016/06/16
-	 */
-	private static Class<Byte> __getType()
-	{
-		return TYPE;
 	}
 }
 
