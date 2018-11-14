@@ -11,6 +11,7 @@
 package cc.squirreljme.springcoat.vm;
 
 import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.ConstantValue;
 import net.multiphasicapps.classfile.FieldFlags;
 import net.multiphasicapps.classfile.FieldNameAndType;
 
@@ -86,6 +87,12 @@ public final class SpringFieldStorage
 				throw new RuntimeException("OOPS");
 		}
 		
+		// If the field starts with a constant, it must be initialized
+		ConstantValue cv = __f.field.constantValue();
+		if (cv != null)
+			init = cv.boxedValue();
+		
+		// Set initial value
 		if ((this.isvolatile = __f.flags().isVolatile()))
 			this._volatilevalue = init;
 		else
