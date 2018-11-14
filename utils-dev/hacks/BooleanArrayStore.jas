@@ -1,0 +1,68 @@
+; -*- Mode: Jasmin; indent-tabs-mode: t; tab-width: 4 -*-
+; ---------------------------------------------------------------------------
+; Multi-Phasic Applications: SquirrelJME
+;     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+;     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
+; ---------------------------------------------------------------------------
+; SquirrelJME is under the GNU General Public License v3+, or later.
+; See license.mkd for licensing and copyright information.
+; ---------------------------------------------------------------------------
+; Output:
+; 1
+; 0
+; 1
+; 0
+; 1
+; 0
+; 1
+
+.class BooleanArrayStore
+.super java/lang/Object
+
+; Returns the input boolean value
+.method public static main([Ljava/lang/String;)V
+	.limit locals 42
+	.limit stack 42
+	
+	; Storing seven values here
+	bipush 7			; 7
+	istore 2			; -
+	
+	; Create boolean array
+	bipush 100			; 100
+	newarray boolean	; boolean[]
+
+	; Load loop count, stop at zero
+__loopcheck:
+	iload 2				; boolean[], #2
+	ifeq __loopend		; boolean[]
+	
+	; Keep the array on the stack
+	dup					; boolean[], boolean[]
+	
+	; Store temporary into array
+	bipush 7			; boolean[], boolean[], 7
+	iload 2				; boolean[], boolean[], 7, #2
+	bastore				; boolean[]
+	
+	; Load back from array
+	dup					; boolean[], boolean[]
+	bipush 7			; boolean[], boolean[], 7
+	baload				; boolean[], [7]
+	
+	; Print
+						; boolean[], [7], PrintStream
+	getstatic java/lang/System/out Ljava/io/PrintStream;
+	swap				; boolean[], PrintStream, [7]
+						; boolean[]
+	invokevirtual java/io/PrintStream/println(I)V
+	
+	; Decrement local and jump back to loop then
+	iinc 2 -1			; boolean[]
+	goto __loopcheck	; boolean[]
+__loopend:
+
+	; End
+	return
+.end method
+
