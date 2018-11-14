@@ -11,15 +11,15 @@
 package cc.squirreljme.springcoat.vm;
 
 /**
- * Array backed by a boolean array.
+ * Array backed by a short array.
  *
  * @since 2018/11/14
  */
-public final class SpringArrayObjectBoolean
+public final class SpringArrayObjectShort
 	extends SpringArrayObject
 {
 	/** Elements in the array. */
-	private final boolean[] _elements;
+	private final short[] _elements;
 	
 	/**
 	 * Initializes the array.
@@ -31,14 +31,14 @@ public final class SpringArrayObjectBoolean
 	 * @throws SpringNegativeArraySizeException If the array size is negative.
 	 * @since 2018/11/14
 	 */
-	public SpringArrayObjectBoolean(SpringClass __self, SpringClass __cl,
+	public SpringArrayObjectShort(SpringClass __self, SpringClass __cl,
 		int __l)
 		throws NullPointerException
 	{
 		super(__self, __cl, __l);
 		
 		// Initialize elements
-		this._elements = new boolean[__l];
+		this._elements = new short[__l];
 	}
 	
 	/**
@@ -62,15 +62,15 @@ public final class SpringArrayObjectBoolean
 		// Read value
 		try
 		{
-			return (C)Integer.valueOf((this._elements[__dx] ? 1 : 0));
+			return (C)Integer.valueOf(this._elements[__dx]);
 		}
 		
-		// {@squirreljme.error BK2p Out of bounds access to array. (The index;
+		// {@squirreljme.error BK2q Out of bounds access to array. (The index;
 		// The length of the array)}
 		catch (IndexOutOfBoundsException e)
 		{
 			throw new SpringArrayIndexOutOfBoundsException(
-				String.format("BK2p %d %d", __dx, length), e);
+				String.format("BK2q %d %d", __dx, length), e);
 		}
 	}
 	
@@ -91,23 +91,22 @@ public final class SpringArrayObjectBoolean
 		// Try setting
 		try
 		{
-			this._elements[__dx] =
-				((((((Integer)__v).intValue()) & 0x1) != 0) ? true : false);
+			this._elements[__dx] = ((Integer)__v).shortValue();
 		}
 		
-		// {@squirreljme.error BK2n Could not set the index in the boolean
+		// {@squirreljme.error BK2r Could not set the index in the short
 		// array.}
 		catch (ClassCastException e)
 		{
-			throw new SpringArrayStoreException("BK2n", e);
+			throw new SpringArrayStoreException("BK2r", e);
 		}
 		
-		// {@squirreljme.error BK2o Out of bounds access to array. (The index;
+		// {@squirreljme.error BK2s Out of bounds access to array. (The index;
 		// The length of the array)}
 		catch (IndexOutOfBoundsException e)
 		{
 			throw new SpringArrayIndexOutOfBoundsException(
-				String.format("BK2o %d %d", __dx, this.length), e);
+				String.format("BK2s %d %d", __dx, this.length), e);
 		}
 	}
 }
