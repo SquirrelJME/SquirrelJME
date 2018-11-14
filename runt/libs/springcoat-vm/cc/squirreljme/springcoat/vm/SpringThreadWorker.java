@@ -117,6 +117,10 @@ public final class SpringThreadWorker
 				// Long
 			case "long":
 				return new SpringArrayObjectLong(dim, __cl, __l);
+				
+				// Float
+			case "float":
+				return new SpringArrayObjectFloat(dim, __cl, __l);
 			
 				// Generic array
 			default:
