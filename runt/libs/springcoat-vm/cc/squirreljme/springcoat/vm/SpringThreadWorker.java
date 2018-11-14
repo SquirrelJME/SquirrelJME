@@ -121,6 +121,10 @@ public final class SpringThreadWorker
 				// Float
 			case "float":
 				return new SpringArrayObjectFloat(dim, __cl, __l);
+				
+				// Float
+			case "double":
+				return new SpringArrayObjectDouble(dim, __cl, __l);
 			
 				// Generic array
 			default:
