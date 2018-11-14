@@ -2209,7 +2209,8 @@ public final class SpringThreadWorker
 						SpringSimpleObject sso = (SpringSimpleObject)ref;
 						
 						// Read and push to the stack
-						frame.pushToStack(sso.fieldByIndex(ssf.index()).get());
+						frame.pushToStack(this.asVMObject(
+							sso.fieldByIndex(ssf.index()).get()));
 					}
 					break;
 					
@@ -2222,7 +2223,7 @@ public final class SpringThreadWorker
 							FieldReference.class));
 						
 						// Push read value to stack
-						frame.pushToStack(ssf.get());
+						frame.pushToStack(this.asVMObject(ssf.get()));
 					}
 					break;
 					
