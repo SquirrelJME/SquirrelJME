@@ -10,6 +10,17 @@
 
 package cc.squirreljme.springcoat.vm;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * This is a suite manager which is based on resources for accessing various
  * classes and other resources.
@@ -19,6 +30,19 @@ package cc.squirreljme.springcoat.vm;
 public final class ResourceBasedSuiteManager
 	implements SpringSuiteManager
 {
+	/** The class to get resources from. */
+	protected final Class<?> actingclass;
+	
+	/** The prefix for libraries. */
+	protected final String prefix;
+	
+	/** Cache of libraries. */
+	private final Map<String, Reference<SpringClassLibrary>> _cache =
+		new HashMap<>();
+	
+	/** Cache of all available suites. */
+	private String[] _libs;
+	
 	/**
 	 * Initializes the suite manager.
 	 *
@@ -33,7 +57,8 @@ public final class ResourceBasedSuiteManager
 		if (__act == null || __prefix == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		this.actingclass = __act;
+		this.prefix = __prefix;
 	}
 	
 	/**
@@ -43,7 +68,56 @@ public final class ResourceBasedSuiteManager
 	@Override
 	public final String[] listLibraryNames()
 	{
-		throw new todo.TODO();
+		// Resources are fixed, so if this was done already use the cached
+		// form instead
+		String[] libs = this._libs;
+		if (libs != null)
+			return libs.clone();
+		
+		// There should be a suite list
+		try (InputStream in = this.actingclass.getResourceAsStream(
+			this.prefix + "suites.list"))
+		{
+			// Does not exist, so there is no known library list
+			if (in == null)
+			{
+				this._libs = (libs = new String[0]);
+				return libs;
+			}
+			
+			// Will just be a normal list
+			List<String> rv = new ArrayList<>();
+			try (BufferedReader br = new BufferedReader(
+				new InputStreamReader(in, "utf-8")))
+			{
+				for (;;)
+				{
+					String ln = br.readLine();
+					
+					// EOF
+					if (ln == null)
+						break;
+					
+					// Trim and ignore empty lines
+					ln = ln.trim();
+					if (ln.isEmpty())
+						continue;
+					
+					// Add otherwise
+					rv.add(ln);
+				}
+			}
+			
+			// Cache and return
+			this._libs = (libs = rv.<String>toArray(new String[rv.size()]));
+			return libs;
+		}
+		
+		// {@squirreljme.error BK33 Could not read the library list.}
+		catch (IOException e)
+		{
+			throw new RuntimeException("BK33", e);
+		}
 	}
 	
 	/**
@@ -54,7 +128,22 @@ public final class ResourceBasedSuiteManager
 	public final SpringClassLibrary loadLibrary(String __s)
 		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		Map<String, Reference<SpringClassLibrary>> cache = this._cache;
+		synchronized (cache)
+		{
+			Reference<SpringClassLibrary> ref = cache.get(__s);
+			SpringClassLibrary rv;
+			
+			if (ref == null || null == (rv = ref.get()))
+				cache.put(__s, new WeakReference<>((
+					rv = new ResourceBasedClassLibrary(this.actingclass,
+						this.prefix + __s + '/', __s))));
+			
+			return rv;
+		}
 	}
 }
 
