@@ -10,6 +10,9 @@
 
 package cc.squirreljme.springcoat.vm;
 
+import java.io.InputStream;
+import java.io.IOException;
+
 /**
  * This is a class library resource which is based on class resources.
  *
@@ -18,6 +21,36 @@ package cc.squirreljme.springcoat.vm;
 public final class ResourceBasedClassLibrary
 	implements SpringClassLibrary
 {
+	/** The class to get resources from. */
+	protected final Class<?> actingclass;
+	
+	/** The prefix for entries. */
+	protected final String prefix;
+	
+	/** The name of this library. */
+	protected final String name;
+	
+	/**
+	 * Initializes the resource based class library.
+	 *
+	 * @param __act The class to act on.
+	 * @param __pre The prefix for lookup.
+	 * @param __name The name of the library.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/15
+	 */
+	public ResourceBasedClassLibrary(Class<?> __act, String __pre,
+		String __name)
+		throws NullPointerException
+	{
+		if (__act == null || __pre == null || __name == null)
+			throw new NullPointerException("NARG");
+		
+		this.actingclass = __act;
+		this.prefix = __pre;
+		this.name = __name;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/11/14
@@ -25,7 +58,7 @@ public final class ResourceBasedClassLibrary
 	@Override
 	public final String name()
 	{
-		throw new todo.TODO();
+		return this.name;
 	}
 	
 	/**
@@ -39,7 +72,8 @@ public final class ResourceBasedClassLibrary
 		if (__rc == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		return this.actingclass.getResourceAsStream(
+			this.prefix + __rc);
 	}
 }
 
