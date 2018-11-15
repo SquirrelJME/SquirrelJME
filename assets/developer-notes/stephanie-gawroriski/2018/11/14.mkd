@@ -1,0 +1,10 @@
+# 2018/11/14
+
+## 07:40
+
+So boolean values are stored via their mask at the lowest values so this
+will be important to test.
+
+## 08:42
+
+Should probably see if I can optimize `StringBuilder`.
