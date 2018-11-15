@@ -23,15 +23,16 @@ public class ShadedMain
 	 *
 	 * @param __acl The class to use resources from.
 	 * @param __pfx The prefix for library lookup.
+	 * @param __cp The classpath for execution.
 	 * @param __args Arguments to the VM.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/15
 	 */
 	public static final void main(Class<?> __acl, String __pfx,
-		String... __args)
+		String[] __cp, String... __args)
 		throws NullPointerException
 	{
-		if (__acl == null || __pfx == null || __args == null)
+		if (__acl == null || __pfx == null || __cp == null || __args == null)
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
