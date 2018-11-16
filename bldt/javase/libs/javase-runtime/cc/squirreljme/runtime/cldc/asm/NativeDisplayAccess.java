@@ -11,24 +11,12 @@
 package cc.squirreljme.runtime.cldc.asm;
 
 /**
- * This class provides access to the native display system that is used by the
- * LCDUI code to display widgets and such to the screen. Any application may
- * access the screen directly and must manage exclusivity by itself if such a
- * thing is applicable for a single shared screen resource.
+ * Java SE implementation of the native display system using Swing.
  *
- * @since 2018/11/09
+ * @since 2018/11/16
  */
 public final class NativeDisplayAccess
 {
-	/**
-	 * Not used.
-	 *
-	 * @since 2018/11/09
-	 */
-	private NativeDisplayAccess()
-	{
-	}
-	
 	/**
 	 * Returns the number of permanent displays which are currently attached to
 	 * the system.
@@ -36,6 +24,10 @@ public final class NativeDisplayAccess
 	 * @return The number of displays attached to the system.
 	 * @since 2018/11/16
 	 */
-	public static final native int numDisplays();
+	public static final int numDisplays()
+	{
+		// There is ever only a single display that is supported
+		return 1;
+	}
 }
 
