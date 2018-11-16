@@ -14,6 +14,7 @@ import cc.squirreljme.builder.support.Binary;
 import cc.squirreljme.builder.support.BinaryManager;
 import cc.squirreljme.builder.support.ProjectManager;
 import cc.squirreljme.builder.support.TimeSpaceType;
+import cc.squirreljme.runtime.cldc.asm.SystemProperties;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
@@ -22,9 +23,14 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayDeque;
+import java.util.HashSet;
 import java.util.Queue;
+import java.util.Set;
+import net.multiphasicapps.tool.manifest.writer.MutableJavaManifest;
+import net.multiphasicapps.tool.manifest.writer.MutableJavaManifestAttributes;
 import net.multiphasicapps.zip.blockreader.ZipBlockEntry;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
@@ -78,10 +84,16 @@ public class Main
 					StandardOpenOption.WRITE,
 					StandardOpenOption.TRUNCATE_EXISTING)))
 			{
+				// Shade the JAR
 				Main.__shadeJar(zsw, bm);
+				
+				// SpringCoat is to be placed in the JAR
+				Main.__bootIn(zsw, bm, bm.compile(bm.get("springcoat-vm")));
 			}
 			
-			throw new todo.TODO();
+			// Move the file to the output since it was built!
+			Files.move(tempfile, output,
+				StandardCopyOption.REPLACE_EXISTING);
 		}
 		
 		// {@squirreljme.error AE01 Could not build the output shaded JAR.}
@@ -102,6 +114,155 @@ public class Main
 				{
 					// Ignore this
 				}
+		}
+	}
+	
+	/**
+	 * Builds and loads the classes into.
+	 *
+	 * @param __zsw The ZIP to write to.
+	 * @param __bm The manager for binaries.
+	 * @param __bins The binaries to write, the compiled paths.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/16
+	 */
+	private static final void __bootIn(ZipStreamWriter __zsw,
+		BinaryManager __bm, Binary[] __bins)
+		throws IOException, NullPointerException
+	{
+		if (__zsw == null || __bm == null || __bins == null)
+			throw new NullPointerException("NARG");
+		
+		// Files which were put in the JAR, to detect duplicates and such!
+		Set<String> putin = new HashSet<>();
+		
+		// We want to write and merge all the entries
+		byte[] buf = new byte[512];
+		for (Binary bin : __bins)
+		{
+			// Will be copying every single entry to the output
+			try (ZipBlockReader zbr = bin.zipBlock())
+			{
+				// Copy every single entry to the output
+				for (ZipBlockEntry e : zbr)
+				{
+					// Only add entries once!
+					String name = e.name();
+					if (putin.contains(name))
+						continue;
+					
+					// Do not write manifests!
+					if (name.equals("META-INF/MANIFEST.MF"))
+						continue;
+					
+					// Not allowed to add stuff under this package?
+					if (name.endsWith(".class") && !Main.__checkPackage(name))
+						continue;
+					
+					// This was added, so it gets ignored
+					putin.add(name);
+					
+					// Copy the data in here
+					try (InputStream is = e.open();
+						OutputStream os = __zsw.nextEntry(name))
+					{
+						for (;;)
+						{
+							int rc = is.read(buf);
+							
+							if (rc < 0)
+								break;
+							
+							os.write(buf, 0, rc);
+						}
+					}
+				}
+			}
+		}
+		
+		// We need to know the classpath that is used for the launcher so
+		// that the shaded entry main knows how to start the actual launcher!
+		// Since all classes are needed for it!
+		StringBuilder launchercp = new StringBuilder();
+		for (Binary bin : __bm.classPath(__bm.get("launcher")))
+		{
+			if (launchercp.length() > 0)
+				launchercp.append(' ');
+			
+			launchercp.append(bin.name());
+		}
+		
+		// Setup manifest which allows us to run this on SpringCoat along
+		// with doing a normal `java -jar` on it!
+		MutableJavaManifest man = new MutableJavaManifest();
+		MutableJavaManifestAttributes attr = man.getMainAttributes();
+		
+		// Needed for Java SE
+		attr.putValue("Main-Class",
+			"cc.squirreljme.springcoat.vm.ShadedEntryMain");
+		
+		// Needed for Java ME
+		attr.putValue("MIDlet-1",
+			"cc.squirreljme.springcoat.vm.ShadedEntryMIDlet,,SquirrelJME");
+		attr.putValue("MicroEdition-Configuration", "CLDC-1.8");
+		attr.putValue("MicroEdition-Profile", "MEEP-8.0 MIDP-3.1");
+		attr.putValue("MIDlet-Name", "SquirrelJME");
+		attr.putValue("MIDlet-Vendor", "Stephanie Gawroriski");
+		attr.putValue("MIDlet-Version", SystemProperties.javaRuntimeVersion());
+		
+		// Needed by the VM so it knows the boot classpath for the launcher!
+		attr.putValue("X-SquirrelJME-LauncherClassPath",
+			launchercp.toString());
+		
+		// Write manifest to the output
+		try (OutputStream os = __zsw.nextEntry("META-INF/MANIFEST.MF"))
+		{
+			man.write(os);
+		}
+	}
+	
+	/**
+	 * Checks to make sure that the given packet
+	 *
+	 * @param __name The name of the class to check.
+	 * @return If the class can be stored.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/16
+	 */
+	private static final boolean __checkPackage(String __name)
+		throws NullPointerException
+	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		// There is no slash so this is okay!
+		int ls = __name.lastIndexOf('/');
+		if (ls < 0)
+			return true;
+		
+		// Do not allow certain names
+		switch (__name = __name.substring(0, ls))
+		{
+				// These will conflict with stuff in the CLDC and such and
+				// technically it is not permitted to add these classes so
+				// all of these will go away!
+			case "java/io":
+			case "java/lang":
+			case "java/lang/annotation":
+			case "java/lang/ref":
+			case "java/net":
+			case "java/nio":
+			case "java/nio/channels":
+			case "java/nio/file":
+			case "java/nio/file/attribute":
+			case "java/security":
+			case "java/util":
+				return false;
+			
+				// Can add this class
+			default:
+				return true;
 		}
 	}
 	
@@ -127,6 +288,7 @@ public class Main
 		
 		// Go through all the binaries and just place them in the shaded JAR
 		// with their associated names and prefixes
+		byte[] buf = new byte[512];
 		for (Binary bin : __bm)
 		{
 			// Compile the binary
@@ -142,7 +304,6 @@ public class Main
 			String base = "__squirreljme/" + name + "/";
 			
 			// Will be copying every single entry to the output
-			byte[] buf = new byte[512];
 			try (ZipBlockReader zbr = bin.zipBlock())
 			{
 				// Copy every single entry to the output
