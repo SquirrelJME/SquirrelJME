@@ -124,7 +124,9 @@ of bootstrap JARs which may be built:
  * _Java ME_ -- Designed to run on Java ME (includes SquirrelJME).
 
 For all instructions, it is assumed that the environment variable `SQUIRRELJME`
-is the directory where the source code has been extracted.
+is the directory where the source code has been extracted. It is recommended
+that an out-of-tree build is performed (this means building from another
+directory that is no in the SquirrelJME source tree).
 
 ## Building for Java SE
 
