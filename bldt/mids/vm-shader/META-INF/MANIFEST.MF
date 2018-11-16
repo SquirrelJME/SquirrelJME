@@ -10,4 +10,6 @@ X-SquirrelJME-Description: This will create shaded JARs which may be run
  resources. Essentially this creates a standalone JAR which runs
  SquirrelJME.
 Microedition-Configuration: CLDC-1.8-Compact
+X-SquirrelJME-Depends: builder-support
+Main-Class: cc.squirreljme.vmshader.Main
 
