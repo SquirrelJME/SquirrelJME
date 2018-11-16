@@ -170,15 +170,19 @@ public class MidletMain
 		/** The main entry point. */
 		protected final String main;
 		
+		/** The display name of this suite. */
+		protected final String displayname;
+		
 		/**
 		 * Initializes the program.
 		 *
 		 * @param __suite The suite used.
 		 * @param __main The main class.
+		 * @param __dn The display name of this suite.
 		 * @throws NullPointerException On null arguments.
 		 * @since 2018/11/16
 		 */
-		__Program__(Suite __suite, String __main)
+		__Program__(Suite __suite, String __main, String __dn)
 			throws NullPointerException
 		{
 			if (__suite == null || __main == null)
@@ -186,6 +190,8 @@ public class MidletMain
 			
 			this.suite = __suite;
 			this.main = __main;
+			this.displayname = (__dn != null ? __dn :
+				__suite.getName() + " " + __main);
 		}
 		
 		/**
@@ -209,7 +215,7 @@ public class MidletMain
 		 */
 		public final String displayName()
 		{
-			throw new todo.TODO();
+			return this.displayname;
 		}
 		
 		/**
