@@ -10,6 +10,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
 import cc.squirreljme.runtime.lcdui.DisplayOrientation;
 import cc.squirreljme.runtime.lcdui.DisplayState;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
@@ -22,6 +23,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -191,8 +193,11 @@ public class Display
 		new HashMap<>();
 	
 	/** Listeners for the display. */
-	private static final List<DisplayListener> _listeners =
+	private static final List<DisplayListener> _LISTENERS =
 		new ArrayList<>();
+	
+	/** The Native ID of this display. */
+	private final int _nid;
 	
 	/** Hold on the displayable to show. */
 	private volatile Displayable _heldcurrent;
@@ -203,10 +208,12 @@ public class Display
 	/**
 	 * Initializes the display instance.
 	 *
+	 * @param __id The native ID of the display.
 	 * @since 2018/03/16
 	 */
-	Display()
+	Display(int __id)
 	{
+		this._nid = __id;
 	}
 	
 	public void callSerially(Runnable __a)
@@ -874,7 +881,7 @@ public class Display
 		if (__dl == null)
 			throw new NullPointerException("NARG");
 		
-		List<DisplayListener> listeners = Display._listeners;
+		List<DisplayListener> listeners = Display._LISTENERS;
 		synchronized (listeners)
 		{
 			// Do nothing if it is already in there
@@ -927,49 +934,41 @@ public class Display
 	 */
 	public static Display[] getDisplays(int __caps)
 	{
-		throw new todo.TODO();
-		/*
-		// This call will always refresh the displays which are currently
-		// available to the server
+		// Initially filled with all displays, this will be filtered
+		// accordingly
+		List<Display> rv = new ArrayList<>();
+		
+		// Map all display IDs to actual displays
 		Map<Integer, Display> displays = Display._DISPLAYS;
 		synchronized (displays)
 		{
-			// Get all the displays
-			IntegerArray dids = LcdServiceCall.<IntegerArray>call(
-				IntegerArray.class, LcdFunction.QUERY_DISPLAYS,
-				__LocalCallback__.INSTANCE);
-			
-			// Just check to see if the map knows about an index value
-			for (int i = 0, n = dids.length(); i < n; i++)
-			{
-				Integer did = dids.get(i);
-				
-				// If the map does not contain the ID then it is likely a new
-				// display which has been attached
-				// The value is handled later if a display needs to be
-				// initialized accordingly
-				if (!displays.containsKey(did))
-					displays.put(did, null);
-			}
+			// Map all displays
+			int numdisplays = NativeDisplayAccess.numDisplays();
+			for (int i = 0; i < numdisplays; i++)
+				rv.add(Display.__mapDisplay(i));
 		}
 		
-		// {@squirreljme.error EB1k No displays are available.}
-		if (displays.size() <= 0)
-			throw new IllegalStateException("EB1k");
-		
-		// Add any displays that meet the capabilities
-		List<Display> rv = new ArrayList<>();
-		for (int did : displays.keySet())
+		// We only need to filter out displays if we specified capabilities
+		// we need
+		if (__caps != 0)
 		{
-			Display d = Display.__mapDisplay(did);
+			// Filter out all the displays so that only the displays which mat
+			for (Iterator<Display> it = rv.iterator(); it.hasNext();)
+			{
+				Display d = it.next();
+				
+				// Remove any displays which specifically are lacking the ones
+				// we want
+				if ((d.getCapabilities() & __caps) != __caps)
+					it.remove();
+			}
 			
-			if (__caps == 0 || (d.getCapabilities() & __caps) == __caps)
-				rv.add(d);
+			// {@squirreljme.error EB1k No displays are available.}
+			if (rv.size() <= 0)
+				throw new IllegalStateException("EB1k");
 		}
 		
-		// As an array
 		return rv.<Display>toArray(new Display[rv.size()]);
-		*/
 	}
 	
 	/**
@@ -987,7 +986,7 @@ public class Display
 		if (__dl == null)
 			throw new NullPointerException("NARG");	
 		
-		List<DisplayListener> listeners = Display._listeners;
+		List<DisplayListener> listeners = Display._LISTENERS;
 		synchronized (listeners)
 		{
 			boolean didremove = false;
@@ -1013,7 +1012,7 @@ public class Display
 	 */
 	static DisplayListener[] __listeners()
 	{
-		List<DisplayListener> listeners = Display._listeners;
+		List<DisplayListener> listeners = Display._LISTENERS;
 		synchronized (listeners)
 		{
 			return listeners.<DisplayListener>toArray(new DisplayListener[
@@ -1031,26 +1030,19 @@ public class Display
 	 */
 	static Display __mapDisplay(int __did)
 	{
-		throw new todo.TODO();
-		/*
-		// Displays must be premapped before they can be discovered
+		// Lock since multiple threads could be messing with the displays
 		Map<Integer, Display> displays = Display._DISPLAYS;
 		synchronized (displays)
 		{
-			Integer k = __did;
-			
-			// {@squirreljme.error EB1m Could not map the given display
-			// because it is not a known display key. (The display index)}
-			if (!displays.containsKey(k))
-				throw new IllegalStateException(String.format("EB1m %d", k));
-			
+			Integer k = Integer.valueOf(__did);
 			Display rv = displays.get(k);
 			
-			if (null == rv)
+			// Create mapping for this display?
+			if (rv == null)
 				displays.put(k, (rv = new Display(__did)));
 			
 			return rv;
-		}*/
+		}
 	}
 }
 
