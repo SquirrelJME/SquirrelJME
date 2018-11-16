@@ -26,7 +26,9 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 import net.multiphasicapps.tool.manifest.writer.MutableJavaManifest;
@@ -62,8 +64,29 @@ public class Main
 		// Setup project manager
 		ProjectManager pm = ProjectManager.fromArguments(args);
 		
+		// Remove this, because this is annoying
+		if ("--".equals(args.peek()))
+			args.remove();
+		
+		// Flavor this to Java SE or Java ME?
+		boolean javaseflavor = false;
+		if (!args.isEmpty())
+			switch (args.peek())
+			{
+				case "-javase":
+					javaseflavor = true;
+					args.remove();
+					break;
+					
+				case "-javame":
+					javaseflavor = false;
+					args.remove();
+					break;
+			}
+		
 		// Determine the path where our shaded JAR will be built
-		Path output = Paths.get((args.isEmpty() ? "squirreljme.jar" :
+		Path output = Paths.get((args.isEmpty() ? "squirreljme-" +
+			(javaseflavor ? "javase" : "javame") + ".jar" :
 			args.remove()));
 		
 		// Build the output JAR at this path
@@ -87,8 +110,32 @@ public class Main
 				// Shade the JAR
 				Main.__shadeJar(zsw, bm);
 				
-				// SpringCoat is to be placed in the JAR
-				Main.__bootIn(zsw, bm, bm.compile(bm.get("springcoat-vm")));
+				// We need to include some base libraries needed for the VM
+				// to run on Java SE for example.
+				Binary[] sscp;
+				if (javaseflavor)
+				{
+					// All the Java SE stuff is at the build-time level in
+					// a special 
+					throw new todo.TODO();
+				}
+				
+				// Otherwise this is running on Java ME, so use some of our
+				// own provided stubs for this
+				else
+					sscp = bm.compile(bm.get("springcoat-vm-stubs"));
+				
+				// Only use the last library for the shade support stuff
+				List<Binary> mergebins = new ArrayList<>();
+				mergebins.add(sscp[sscp.length - 1]);
+				
+				// Then add our normal classpath dependencies as needed
+				for (Binary bin : bm.compile(bm.get("springcoat-vm")))
+					mergebins.add(bin);
+				
+				// SpringCoat is to be placed in the JAR now
+				Main.__bootIn(zsw, bm, mergebins.<Binary>toArray(
+					new Binary[mergebins.size()]));
 			}
 			
 			// Move the file to the output since it was built!

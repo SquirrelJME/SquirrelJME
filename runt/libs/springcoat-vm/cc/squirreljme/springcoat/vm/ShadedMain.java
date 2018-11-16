@@ -283,7 +283,7 @@ public class ShadedMain
 		}
 		
 		// Perform the call to the launcher!
-		ShadedMain.main(ShadedMain.class, "__squirreljme/",
+		ShadedMain.main(ShadedMain.class, "/__squirreljme/",
 			classpath.<String>toArray(new String[classpath.size()]), null, 0,
 			__args);
 	}
