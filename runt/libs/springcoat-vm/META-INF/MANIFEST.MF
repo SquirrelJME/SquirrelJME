@@ -9,5 +9,5 @@ X-SquirrelJME-Depends: tool-classfile tool-manifest-reader meep-swm
 X-SquirrelJME-Description: This is a SpringCoat virtual machine which 
  is an unoptimized pure interpreter aimed for the purpose of being an 
  educational stepping stone to other future virtual machines.
-Microedition-Configuration: CLDC-1.8-Compact
+Microedition-Configuration: CLDC-1.8
 
