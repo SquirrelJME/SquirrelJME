@@ -3,9 +3,9 @@
 ------------------------------------------------------------------------------
 
 ***Patience is required:***
-***Currently SquirrelJME is in a state of development and does not produce***
-***any actual runnable binaries yet. There is no current predicated time***
-***when SquirrelJME will be able to run general software and games.***
+***Currently SquirrelJME is in active development and although it can***
+***run and produce binaries, there are limitations to consider.***
+***Currently only a limited set of programs may be ran on SquirrelJME.***
 
 ------------------------------------------------------------------------------
 
@@ -103,79 +103,45 @@ code is located in the example `/home/stephanie/squirreljme`:
  * `cd squirreljme-build`
  * `/home/stephanie/squirreljme/build.sh`
 
-# Standard Building
+# Building Shaded SquirrelJME JARs
 
-Compiling SquirrelJME binaries to run on a target system uses the following
-format, the main command being `target`.
+Shaded SquirrelJME JARs are standalone JARs which can run on an existing
+Java SE or Java ME system depending on which target it was built for.
+Generally these JARs are just packaged by themselves and include the entire
+set of libraries and applications from within SquirrelJME. These shaded JARs
+are usually intended for demo projects and such. The JARs additionally are
+pure Java code so they require a host Java VM. To contain the SquirrelJME
+environment, an implementation of a virtual machine is used which is capable
+of using and running the class library. This virtual machine has a speed
+penalty because it is running the Java byte code itself however it is a
+compatible environment.
 
- * `<build script> target <options>`
+Building of shaded JARs requires a host Linux system (or a compatible UNIX
+like system which can run the needed shell scripts). There are two flavors
+of bootstrap JARs which may be built:
 
-The options used to build the target vary depending on how the build system
-parses them.
+ * _Java SE_ -- Designed to run on Java SE.
+ * _Java ME_ -- Designed to run on Java ME (includes SquirrelJME).
 
- * `template`
-   * This represents that a template be used which is read from a set of
-     built-in files and is used to configure the JIT.
- * `project.jar`
-   * This specifies that the given project (within the SquirrelJME packaging
-     system) is to be included for compilation in the output target.
-   * Note that this does not read JARs which are in the host filesystem unless
-     they are in a location SquirrelJME is able to use them.
-   * The location the build system looks for projects which are not provided
-     by SquirrelJME should be the `bins` directory in the build location unless
-     it has been overridden by a system property.
-     * For the JARs to be recognized by SquirrelJME they must be compatible
-       with Java ME, this includes having a compatible `META-INF/MANIFEST.MF`.
- * `+key=value`
-   * This adds the specified key and value to the JIT configuration, replacing
-     a value which has previously been set.
-   * This can be used to override an option that is provided in a template.
- * `-key`
-   * This removes the specified key from the JIT configuration so that it is
-     no longer set.
-   * This can be used to remove an option that has previously been provided.
+For all instructions, it is assumed that the environment variable `SQUIRRELJME`
+is the directory where the source code has been extracted.
 
-# JIT Configuration Options
+## Building for Java SE
 
-These options may be used when creating configurations to have the JIT compile
-for a specific platform.
+This build requires a run-time that bridges what SquirrelJME needs with what
+Java SE provides, as such it must be specified in the build.
 
-## `jit` Namespace
+ * `$SQUIRRELJME/utils-dev/hostedlaunch.sh vm-shader -- `
+   `-javase bootsjme/javase-runtime.jar`
 
-These options affect the operation of the JIT.
+By default the output will be called `squirreljme-javase.jar`.
 
-## `jit.target` Namespace
+## Building for Java ME
 
-These options only affect the target depending on the target architecture and
-CPU.
+***NOTE:*** If the shaded JAR is not running on SquirrelJME, some features
+will not be available for use. It should still run however.
 
-## `jit.rename` Namespace
-
-This namespace contains the unsafe renames which are only performed in the
-package `cc.squirreljme.unsafe`, the pairs are in the form of:
-
- * `jit.rename.systemvm=examplesystemvm`
-
-In that example any static method calls for methods in `__Ext_systemvm__` will
-be rewritten to use `__Int_examplesystemvm__` as the class instead.
-
-## JIT Configuration Options
-
-This is a list of options which may be passed to the JIT.
-
- * `jit.addressbits` -- The number of bits which are used to represents
-   pointers to memory addresses.
- * `jit.arch` -- The architecture to target.
-   * `arm` -- ARM Family CPUs.
-   * `ia` -- Intel Architecture (x86, x86_64).
- * `jit.dump.assembler` -- If set to true then this will dump all commands sent
-   to the assembler.
- * `jit.dump.fragment` -- If set to true then this will dump the fragment which
-   has been generated by the JIT.
- * `jit.dump.pipe` -- If set to true then this will dump all byte code
-   which has been expanded.
- * `jit.pipe` -- This is a pipe which is given expanded Java byte code and
-   which then translates it into native machine code.
- * `jit.profile` -- Enable profiling, used to measure how fast methods
-   execute.
+ * `$SQUIRRELJME/utils-dev/hostedlaunch.sh vm-shader -- -javame`
+ 
+By default the output will be called `squirreljme-javame.jar`.
 
