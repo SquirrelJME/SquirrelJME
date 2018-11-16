@@ -10,6 +10,7 @@
 
 package cc.squirreljme.runtime.launcher.ui;
 
+import javax.microedition.lcdui.Display;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
@@ -29,17 +30,21 @@ public class MidletMain
 	protected void destroyApp(boolean __uc)
 		throws MIDletStateChangeException
 	{
-		throw new todo.TODO();
+		// This is not used at all
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2016/10/11
+	 * @since 2018/11/16
 	 */
 	@Override
 	protected void startApp()
 		throws MIDletStateChangeException
 	{
+		// We will need to access our own display to build the list of
+		// MIDlets that could actually be ran
+		Display disp = Display.getDisplay(this);
+		
 		throw new todo.TODO();
 	}
 }
