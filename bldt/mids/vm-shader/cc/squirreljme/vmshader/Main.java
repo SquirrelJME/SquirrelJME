@@ -35,6 +35,8 @@ import net.multiphasicapps.tool.manifest.writer.MutableJavaManifest;
 import net.multiphasicapps.tool.manifest.writer.MutableJavaManifestAttributes;
 import net.multiphasicapps.zip.blockreader.ZipBlockEntry;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;
+import net.multiphasicapps.zip.streamreader.ZipStreamEntry;
+import net.multiphasicapps.zip.streamreader.ZipStreamReader;
 import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
 
 /**
@@ -70,12 +72,20 @@ public class Main
 		
 		// Flavor this to Java SE or Java ME?
 		boolean javaseflavor = false;
+		Path extraruntjar = null;
 		if (!args.isEmpty())
 			switch (args.peek())
 			{
 				case "-javase":
 					javaseflavor = true;
 					args.remove();
+					
+					// {@squirreljme.error AE02 Need to specify the run-time
+					// JAR to support Java SE systems, on default SquirrelJME
+					// this will be `bootsjme/javase-runtime.jar`.}
+					if (args.isEmpty())
+						throw new IllegalArgumentException("AE02");
+					extraruntjar = Paths.get(args.remove());
 					break;
 					
 				case "-javame":
@@ -107,18 +117,23 @@ public class Main
 					StandardOpenOption.WRITE,
 					StandardOpenOption.TRUNCATE_EXISTING)))
 			{
+				// Files which were put in the JAR, to detect duplicates and
+				// such!
+				Set<String> putin = new HashSet<>();
+				
+				// Inject our Java SE binary?
+				if (extraruntjar != null)
+					Main.__injectRuntimeJar(zsw, extraruntjar, putin);
+				
 				// Shade the JAR
 				Main.__shadeJar(zsw, bm);
 				
 				// We need to include some base libraries needed for the VM
 				// to run on Java SE for example.
+				// But the extra run-time JAR is used for this
 				Binary[] sscp;
 				if (javaseflavor)
-				{
-					// All the Java SE stuff is at the build-time level in
-					// a special 
-					throw new todo.TODO();
-				}
+					sscp = new Binary[0];
 				
 				// Otherwise this is running on Java ME, so use some of our
 				// own provided stubs for this
@@ -127,7 +142,8 @@ public class Main
 				
 				// Only use the last library for the shade support stuff
 				List<Binary> mergebins = new ArrayList<>();
-				mergebins.add(sscp[sscp.length - 1]);
+				if (sscp.length > 0)
+					mergebins.add(sscp[sscp.length - 1]);
 				
 				// Then add our normal classpath dependencies as needed
 				for (Binary bin : bm.compile(bm.get("springcoat-vm")))
@@ -135,7 +151,7 @@ public class Main
 				
 				// SpringCoat is to be placed in the JAR now
 				Main.__bootIn(zsw, bm, mergebins.<Binary>toArray(
-					new Binary[mergebins.size()]));
+					new Binary[mergebins.size()]), putin);
 			}
 			
 			// Move the file to the output since it was built!
@@ -170,19 +186,17 @@ public class Main
 	 * @param __zsw The ZIP to write to.
 	 * @param __bm The manager for binaries.
 	 * @param __bins The binaries to write, the compiled paths.
+	 * @param __putin Files already in the JAR.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/16
 	 */
 	private static final void __bootIn(ZipStreamWriter __zsw,
-		BinaryManager __bm, Binary[] __bins)
+		BinaryManager __bm, Binary[] __bins, Set<String> __putin)
 		throws IOException, NullPointerException
 	{
-		if (__zsw == null || __bm == null || __bins == null)
+		if (__zsw == null || __bm == null || __bins == null || __putin == null)
 			throw new NullPointerException("NARG");
-		
-		// Files which were put in the JAR, to detect duplicates and such!
-		Set<String> putin = new HashSet<>();
 		
 		// We want to write and merge all the entries
 		byte[] buf = new byte[512];
@@ -196,7 +210,7 @@ public class Main
 				{
 					// Only add entries once!
 					String name = e.name();
-					if (putin.contains(name))
+					if (__putin.contains(name))
 						continue;
 					
 					// Do not write manifests!
@@ -208,7 +222,7 @@ public class Main
 						continue;
 					
 					// This was added, so it gets ignored
-					putin.add(name);
+					__putin.add(name);
 					
 					// Copy the data in here
 					try (InputStream is = e.open();
@@ -322,6 +336,67 @@ public class Main
 			default:
 				return true;
 		}
+	}
+	
+	/**
+	 * Injects the run-time support JAR into the classpath.
+	 *
+	 * @param __zsw The output ZIP.
+	 * @param __ertj The support JAR.
+	 * @param __putin The files which were already placed in the JAR.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/16
+	 */
+	private static final void __injectRuntimeJar(ZipStreamWriter __zsw,
+		Path __ertj, Set<String> __putin)
+		throws IOException, NullPointerException
+	{
+		if (__zsw == null || __ertj == null || __putin == null)
+			throw new NullPointerException("NARG");
+		
+		// Before we write the other files, we want to inject everything from
+		// this JAR in there
+		byte[] buf = new byte[512];
+		if (__ertj != null)
+			try (ZipStreamReader copy = new ZipStreamReader(
+				Files.newInputStream(__ertj, StandardOpenOption.READ)))
+			{
+				for (;;)
+					try (ZipStreamEntry e = copy.nextEntry())
+					{
+						// No more entries
+						if (e == null)
+							break;
+						
+						String name = e.name();
+						
+						// Already in the JAR?
+						if (__putin.contains(name))
+							continue;
+						
+						// Ignore manifests
+						if (name.equals("META-INF/MANIFEST.MF"))
+							continue;
+						
+						// Only once this can be added
+						__putin.add(name);
+						
+						// Copy data
+						try (OutputStream os = __zsw.nextEntry(name))
+						{
+							for (;;)
+							{
+								int rc = e.read(buf);
+								
+								if (rc < 0)
+									break;
+								
+								os.write(buf, 0, rc);
+							}
+						}
+					}
+			}
 	}
 	
 	/**
