@@ -211,12 +211,23 @@ public class Main
 		attr.putValue("MIDlet-Vendor", "Stephanie Gawroriski");
 		attr.putValue("MIDlet-Version", SystemProperties.javaRuntimeVersion());
 		
+		// Write manifest to the output
+		try (OutputStream os = __zsw.nextEntry("META-INF/MANIFEST.MF"))
+		{
+			man.write(os);
+		}
+		
+		// Write VM properties into its own manifest as well
+		man = new MutableJavaManifest();
+		attr = man.getMainAttributes();
+		
 		// Needed by the VM so it knows the boot classpath for the launcher!
 		attr.putValue("X-SquirrelJME-LauncherClassPath",
 			launchercp.toString());
 		
 		// Write manifest to the output
-		try (OutputStream os = __zsw.nextEntry("META-INF/MANIFEST.MF"))
+		try (OutputStream os = __zsw.nextEntry(
+			"META-INF/SQUIRRELJME-SHADED.MF"))
 		{
 			man.write(os);
 		}
