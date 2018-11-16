@@ -333,9 +333,11 @@ public final class SpringMachine
 		EntryPoints entries;
 		try (InputStream in = bootbin.resourceAsStream("META-INF/MANIFEST.MF"))
 		{
-			// {@squirreljme.error BK0v Entry point JAR has no manifest.}
+			// {@squirreljme.error BK0v Entry point JAR has no manifest. (The
+			// name of the boot binary)}
 			if (in == null)
-				throw new SpringVirtualMachineException("BK0v");
+				throw new SpringVirtualMachineException("BK0v " +
+					bootbin.name());
 			
 			entries = new EntryPoints(new JavaManifest(in));
 		}
