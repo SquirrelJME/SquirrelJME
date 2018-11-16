@@ -20,11 +20,14 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.profiler.ProfilerSnapshot;
 import net.multiphasicapps.tool.manifest.JavaManifest;
+import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 
 /**
  * This class is used to setup and initialize the shaded entry point for
@@ -226,6 +229,63 @@ public class ShadedMain
 	public static final void main(String... __args)
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * The default shaded main entry point.
+	 *
+	 * @param __args Program entry point.
+	 * @since 2018/11/16
+	 */
+	public static final void shadedMain(String... __args)
+	{
+		// Make this always exist
+		if (__args == null)
+			__args = new String[0];
+		
+		// Load our own main manifest
+		JavaManifest man;
+		try (InputStream in = ShadedMain.class.getResourceAsStream(
+			"/META-INF/SQUIRRELJME-SHADED.MF"))
+		{
+			man = new JavaManifest(in);
+		}
+		
+		// {@squirreljme.error BK38 Could not read the manifest to load the
+		// launcher's classpath.}
+		catch (IOException e)
+		{
+			throw new RuntimeException("BK38", e);
+		}
+		
+		// Read the class path for the launcher from the property
+		List<String> classpath = new ArrayList<>();
+		JavaManifestAttributes attr = man.getMainAttributes();
+		String rawlcp = attr.getValue("X-SquirrelJME-LauncherClassPath");
+		if (rawlcp != null)
+		{
+			// Clip in the path
+			for (int i = 0, n = rawlcp.length(); i < n;)
+			{
+				// Find end clip position
+				int sp = rawlcp.indexOf(' ', i);
+				if (sp < 0)
+					sp = n;
+				
+				// Clip string
+				String clip = rawlcp.substring(i, sp).trim();
+				if (!clip.isEmpty())
+					classpath.add(clip);
+				
+				// Skip this space
+				i = sp + 1;
+			}
+		}
+		
+		// Perform the call to the launcher!
+		ShadedMain.main(ShadedMain.class, "__squirreljme/",
+			classpath.<String>toArray(new String[classpath.size()]), null, 0,
+			__args);
 	}
 }
 

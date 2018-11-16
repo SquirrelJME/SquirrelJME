@@ -25,7 +25,7 @@ public class ShadedEntryMain
 	 */
 	public static void main(String... __args)
 	{
-		throw new todo.TODO();
+		ShadedMain.shadedMain(__args);
 	}
 }
 

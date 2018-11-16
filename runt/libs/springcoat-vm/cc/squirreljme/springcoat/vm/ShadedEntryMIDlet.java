@@ -40,7 +40,7 @@ public class ShadedEntryMIDlet
 	protected final void startApp()
 		throws MIDletStateChangeException
 	{
-		throw new todo.TODO();
+		ShadedMain.shadedMain();
 	}
 }
 
