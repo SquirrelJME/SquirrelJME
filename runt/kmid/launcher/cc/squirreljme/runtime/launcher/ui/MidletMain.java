@@ -10,6 +10,7 @@
 
 package cc.squirreljme.runtime.launcher.ui;
 
+import java.util.ArrayList;
 import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.AlertType;
 import javax.microedition.lcdui.Choice;
@@ -17,12 +18,14 @@ import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.List;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 import javax.microedition.swm.ManagerFactory;
 import javax.microedition.swm.Suite;
 import javax.microedition.swm.SuiteManager;
+import javax.microedition.swm.SuiteType;
 import javax.microedition.swm.Task;
 import javax.microedition.swm.TaskManager;
 
@@ -70,7 +73,29 @@ public class MidletMain
 	 */
 	public void refresh()
 	{
-		throw new todo.TODO();
+		// Go through all of the available application suites and build the
+		// program list
+		ArrayList<__Program__> programs = new ArrayList<>();
+		for (Suite suite : ManagerFactory.getSuiteManager().getSuites(
+			SuiteType.APPLICATION))
+		{
+			throw new todo.TODO();
+		}
+		
+		// Build program array
+		__Program__[] arrprogs = programs.<__Program__>toArray(
+			new __Program__[programs.size()]);
+		
+		// Clear the program list
+		List programlist = this.programlist;
+		programlist.deleteAll();
+		
+		// Build the list in the program order
+		for (__Program__ p : arrprogs)
+			programlist.append(p.displayName(), p.displayImage());
+		
+		// Use this list
+		this._programs = arrprogs;
 	}
 	
 	/**
@@ -161,6 +186,30 @@ public class MidletMain
 			
 			this.suite = __suite;
 			this.main = __main;
+		}
+		
+		/**
+		 * The display image for this suite.
+		 *
+		 * @return The display image.
+		 * @since 2018/11/16
+		 */
+		public final Image displayImage()
+		{
+			// Not currently implemented
+			todo.TODO.note("Implement launch icon display.");
+			return null;
+		}
+		
+		/**
+		 * The display name for this suite.
+		 *
+		 * @return The display name.
+		 * @since 2018/11/16
+		 */
+		public final String displayName()
+		{
+			throw new todo.TODO();
 		}
 		
 		/**
