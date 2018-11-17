@@ -25,8 +25,12 @@ import java.lang.ref.WeakReference;
 public abstract class Displayable
 	extends __Widget__
 {
-	/** Held current display to prevent garbage collection. */
-	volatile Display _heldcurrent;
+	/** Commands which have been added to the displayable. */
+	final __VolatileList__<Command> _commands =
+		new __VolatileList__<>();
+	
+	/** The current display being used. */
+	volatile Display _currentdisplay;
 	
 	/** The command listener to call into when commands are generated. */
 	volatile CommandListener _cmdlistener;
@@ -66,9 +70,29 @@ public abstract class Displayable
 	 */
 	public abstract int getWidth();
 	
-	public void addCommand(Command __a)
+	/**
+	 * Adds the specified command to this displayable, if it was already added
+	 * then there is no effect (object refefences are checked).
+	 *
+	 * @param __c The command to add.
+	 * @throws DisplayCapabilityException If this is being displayed and
+	 * the display does not support commands.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/17
+	 */
+	public void addCommand(Command __c)
+		throws DisplayCapabilityException, NullPointerException
 	{
-		throw new todo.TODO();
+		if (__c == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error EB27 The display does not support commands.}
+		Display cd = this._currentdisplay;
+		if (cd != null)
+			if ((cd.getCapabilities() & Display.SUPPORTS_COMMANDS) == 0)
+				throw new DisplayCapabilityException("EB27");
+		
+		this._commands.addUniqueObjRef(__c);
 	}
 	
 	public Command getCommand(int __p)
