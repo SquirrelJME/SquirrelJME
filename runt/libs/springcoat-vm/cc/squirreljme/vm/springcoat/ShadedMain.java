@@ -14,6 +14,8 @@ import cc.squirreljme.runtime.cldc.asm.TaskAccess;
 import cc.squirreljme.runtime.cldc.lang.GuestDepth;
 import cc.squirreljme.runtime.swm.EntryPoint;
 import cc.squirreljme.runtime.swm.EntryPoints;
+import cc.squirreljme.vm.ResourceBasedSuiteManager;
+import cc.squirreljme.vm.VMClassLibrary;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -116,7 +118,7 @@ public class ShadedMain
 		
 		// Load the classpath
 		int numcp = __cp.length;
-		SpringClassLibrary[] classpath = new SpringClassLibrary[numcp];
+		VMClassLibrary[] classpath = new VMClassLibrary[numcp];
 		for (int i = 0; i < numcp; i++)
 			classpath[i] = sm.loadLibrary(__cp[i]);
 		
@@ -126,7 +128,7 @@ public class ShadedMain
 		// Lookup ID by class name?
 		if (__pid < 0)
 		{
-			SpringClassLibrary bl = classloader.bootLibrary();
+			VMClassLibrary bl = classloader.bootLibrary();
 			
 			// Need to load the manifest where the entry points will be
 			EntryPoints entries;

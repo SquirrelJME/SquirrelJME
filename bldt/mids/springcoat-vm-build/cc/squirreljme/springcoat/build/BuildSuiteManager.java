@@ -15,8 +15,8 @@ import cc.squirreljme.builder.support.BinaryManager;
 import cc.squirreljme.builder.support.ProjectManager;
 import cc.squirreljme.builder.support.Source;
 import cc.squirreljme.builder.support.TimeSpaceType;
-import cc.squirreljme.vm.springcoat.SpringClassLibrary;
-import cc.squirreljme.vm.springcoat.SpringSuiteManager;
+import cc.squirreljme.vm.VMClassLibrary;
+import cc.squirreljme.vm.VMSuiteManager;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,7 +31,7 @@ import net.multiphasicapps.collections.SortedTreeSet;
  * @since 2018/10/26
  */
 public final class BuildSuiteManager
-	implements SpringSuiteManager
+	implements VMSuiteManager
 {
 	/** The project manager which is used. */
 	protected final ProjectManager manager;
@@ -40,7 +40,7 @@ public final class BuildSuiteManager
 	protected final TimeSpaceType timespace;
 	
 	/** Loaded libraries. */
-	private final Map<String, SpringClassLibrary> _libraries =
+	private final Map<String, VMClassLibrary> _libraries =
 		new HashMap<>();
 	
 	/**
@@ -99,7 +99,7 @@ public final class BuildSuiteManager
 	 * @since 2018/10/26
 	 */
 	@Override
-	public final SpringClassLibrary loadLibrary(String __s)
+	public final VMClassLibrary loadLibrary(String __s)
 		throws NullPointerException
 	{
 		if (__s == null)
@@ -110,11 +110,11 @@ public final class BuildSuiteManager
 			__s = __s.substring(0, __s.length() - 4);
 		
 		// Lock
-		Map<String, SpringClassLibrary> libraries = this._libraries;
+		Map<String, VMClassLibrary> libraries = this._libraries;
 		synchronized (libraries)
 		{
 			// Pre-cached already?
-			SpringClassLibrary rv = libraries.get(__s);
+			VMClassLibrary rv = libraries.get(__s);
 			if (rv != null)
 				return rv;
 			

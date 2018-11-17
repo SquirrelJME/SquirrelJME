@@ -11,7 +11,7 @@
 package cc.squirreljme.springcoat.build;
 
 import cc.squirreljme.builder.support.Binary;
-import cc.squirreljme.vm.springcoat.SpringClassLibrary;
+import cc.squirreljme.vm.VMClassLibrary;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -27,7 +27,7 @@ import net.multiphasicapps.zip.blockreader.ZipEntryNotFoundException;
  * @since 2018/09/13
  */
 public final class BuildClassLibrary
-	implements SpringClassLibrary
+	implements VMClassLibrary
 {
 	/** The binary to source from. */
 	protected final Binary binary;

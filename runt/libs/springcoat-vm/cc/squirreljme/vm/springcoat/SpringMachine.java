@@ -13,6 +13,9 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.runtime.cldc.lang.GuestDepth;
 import cc.squirreljme.runtime.swm.EntryPoint;
 import cc.squirreljme.runtime.swm.EntryPoints;
+import cc.squirreljme.vm.VMClassLibrary;
+import cc.squirreljme.vm.VMResourceAccess;
+import cc.squirreljme.vm.VMSuiteManager;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -47,13 +50,13 @@ public final class SpringMachine
 	protected final SpringClassLoader classloader;
 	
 	/** Resources accessor. */
-	protected final SpringResourceAccess resourceaccessor;
+	protected final VMResourceAccess resourceaccessor;
 	
 	/** The boot index. */
 	protected final int bootdx;
 	
 	/** The manager for suites. */
-	protected final SpringSuiteManager suites;
+	protected final VMSuiteManager suites;
 	
 	/** Task manager. */
 	protected final SpringTaskManager tasks;
@@ -121,7 +124,7 @@ public final class SpringMachine
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/03
 	 */
-	public SpringMachine(SpringSuiteManager __sm, SpringClassLoader __cl,
+	public SpringMachine(VMSuiteManager __sm, SpringClassLoader __cl,
 		SpringTaskManager __tm, int __bootdx, int __gd,
 		ProfilerSnapshot __profiler, String... __args)
 		throws NullPointerException
@@ -139,7 +142,7 @@ public final class SpringMachine
 			new ProfilerSnapshot());
 		
 		// Setup resource accessor
-		this.resourceaccessor = new SpringResourceAccess(__sm);
+		this.resourceaccessor = new VMResourceAccess(__sm);
 	}
 	
 	/**
@@ -313,7 +316,7 @@ public final class SpringMachine
 	 * @return The resource access.
 	 * @since 2018/10/07
 	 */
-	public final SpringResourceAccess resourceAccess()
+	public final VMResourceAccess resourceAccess()
 	{
 		return this.resourceaccessor;
 	}
@@ -327,7 +330,7 @@ public final class SpringMachine
 	{
 		// Obtain the boot library to read entry points from
 		SpringClassLoader classloader = this.classloader;
-		SpringClassLibrary bootbin = classloader.bootLibrary();
+		VMClassLibrary bootbin = classloader.bootLibrary();
 		
 		// Need to load the manifest where the entry points will be
 		EntryPoints entries;
@@ -481,7 +484,7 @@ public final class SpringMachine
 	 * @return The suite manager that is available.
 	 * @since 2018/10/26
 	 */
-	public final SpringSuiteManager suiteManager()
+	public final VMSuiteManager suiteManager()
 	{
 		return this.suites;
 	}
