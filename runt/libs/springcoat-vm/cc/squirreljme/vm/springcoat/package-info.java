@@ -15,5 +15,5 @@
  * @since 2018/07/21
  */
 
-package cc.squirreljme.springcoat.vm;
+package cc.squirreljme.vm.springcoat;
 

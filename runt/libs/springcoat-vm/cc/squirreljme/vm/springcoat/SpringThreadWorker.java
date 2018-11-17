@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.springcoat.vm;
+package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.runtime.cldc.asm.ConsoleOutput;
 import cc.squirreljme.runtime.cldc.asm.DebugAccess;

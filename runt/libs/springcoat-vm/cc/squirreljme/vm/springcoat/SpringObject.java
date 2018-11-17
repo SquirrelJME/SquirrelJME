@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.springcoat.vm;
+package cc.squirreljme.vm.springcoat;
 
 /**
  * This represents anything that is treated by the virtual machine as a kind

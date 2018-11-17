@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.springcoat.vm;
+package cc.squirreljme.vm.springcoat;
 
 /**
  * This represents an instance of an object which has a class and defined

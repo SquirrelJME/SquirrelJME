@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.springcoat.vm;
+package cc.squirreljme.vm.springcoat;
 
 /**
  * This is thrown when an invalid out of bounds index was accessed in an
