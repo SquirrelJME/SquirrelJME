@@ -18,6 +18,10 @@ public class List
 	public static final Command SELECT_COMMAND =
 		new Command("Select", Command.SCREEN, 0, true);
 	
+	/** Items on the list. */
+	final __VolatileList__<__ChoiceEntry__> _items =
+		new __VolatileList__<>();
+	
 	/** The type of list this is. */
 	private final int _type;
 	
@@ -82,9 +86,14 @@ public class List
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Deletes all of the items in the list.
+	 *
+	 * @since 2018/11/17
+	 */
 	public void deleteAll()
 	{
-		throw new todo.TODO();
+		this._items.clear();
 	}
 	
 	public int getFitPolicy()
