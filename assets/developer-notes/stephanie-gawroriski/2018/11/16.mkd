@@ -1,0 +1,13 @@
+# 2018/11/16
+
+## 17:18
+
+Okay! So I am on the train home so I decided to work on the shading so that I
+can have little standalone bits that can run on Java SE and naturally
+SquirrelJME itself. So now that this is done, what I really need now is the
+application launcher which implements the LCDUI interface and such. Once I
+have that I really have something which is useable. I do still need to
+complete some things such as threads and such, but I might not need that
+right now. Although I will need it for event handling and such since
+everything is done in a single thread anyway.
+
