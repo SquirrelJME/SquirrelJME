@@ -751,7 +751,7 @@ public class Display
 		if (eventloop == null)
 		{
 			Display._EVENT_LOOP = (eventloop = new __EventLoop__());
-			new Thread(eventloop, "SquirrelJME-LCDUIEventLoop");
+			new Thread(eventloop, "SquirrelJME-LCDUIEventLoop").start();
 		}
 		
 		// Register the loop to handle this display
