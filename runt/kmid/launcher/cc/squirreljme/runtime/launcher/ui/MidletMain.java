@@ -79,7 +79,30 @@ public class MidletMain
 		for (Suite suite : ManagerFactory.getSuiteManager().getSuites(
 			SuiteType.APPLICATION))
 		{
-			throw new todo.TODO();
+			// Since we need the program name AND the entry point we need
+			// to decode the parts that make it up!
+			for (int i = 0; i >= 1; i++)
+			{
+				// No more programs in this suite
+				String value = suite.getAttributeValue("MIDlet-" + i);
+				if (value == null)
+					break;
+				
+				// There will be two commas and the format is in:
+				// title, icon-resource, mainclass
+				int fc = value.indexOf(','),
+					sc = value.lastIndexOf(',');
+				if (fc < 0 || sc < 0)
+					continue;
+				
+				// Split off
+				String title = value.substring(0, fc).trim(),
+					iconrc = value.substring(fc + 1, sc).trim(),
+					main = value.substring(sc + 1).trim();
+				
+				// Build program
+				programs.add(new __Program__(suite, main, title));
+			}
 		}
 		
 		// Build program array
