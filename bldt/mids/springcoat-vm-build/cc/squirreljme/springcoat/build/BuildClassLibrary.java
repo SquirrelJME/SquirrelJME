@@ -11,7 +11,7 @@
 package cc.squirreljme.springcoat.build;
 
 import cc.squirreljme.builder.support.Binary;
-import cc.squirreljme.springcoat.vm.SpringClassLibrary;
+import cc.squirreljme.vm.springcoat.SpringClassLibrary;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;

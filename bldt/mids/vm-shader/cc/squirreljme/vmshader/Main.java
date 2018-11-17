@@ -261,11 +261,11 @@ public class Main
 		
 		// Needed for Java SE
 		attr.putValue("Main-Class",
-			"cc.squirreljme.springcoat.vm.ShadedEntryMain");
+			"cc.squirreljme.vm.springcoat.ShadedEntryMain");
 		
 		// Needed for Java ME
 		attr.putValue("MIDlet-1",
-			"cc.squirreljme.springcoat.vm.ShadedEntryMIDlet,,SquirrelJME");
+			"cc.squirreljme.vm.springcoat.ShadedEntryMIDlet,,SquirrelJME");
 		attr.putValue("MicroEdition-Configuration", "CLDC-1.8");
 		attr.putValue("MicroEdition-Profile", "MEEP-8.0 MIDP-3.1");
 		attr.putValue("MIDlet-Name", "SquirrelJME");
