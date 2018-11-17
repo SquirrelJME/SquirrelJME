@@ -7,7 +7,7 @@
 # SquirrelJME is under the GNU General Public License v3+, or later.
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
-# DESCRIPTION: Launches the specified program using the SpringCoat VM.
+# DESCRIPTION: Launches the specified program using a VM.
 
 # Force C locale
 export LC_ALL=C
@@ -68,7 +68,7 @@ fi
 shift
 
 # Forward to hosted launch with the known parameters
-"$__exedir/hostedlaunch.sh" $__wineswitch springcoat-vm-build \
+"$__exedir/hostedlaunch.sh" $__wineswitch vm-build \
 	"$__file" "$@"
 exit $?
 

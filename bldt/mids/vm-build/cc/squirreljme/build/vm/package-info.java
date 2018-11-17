@@ -9,11 +9,11 @@
 // ---------------------------------------------------------------------------
 
 /**
- * This package contains the support for SpringCoat to use the SquirrelJME
+ * This package contains the support for VMs to use the SquirrelJME
  * build system as a class path provider.
  *
  * @since 2018/09/13
  */
 
-package cc.squirreljme.springcoat.build;
+package cc.squirreljme.build.vm;
 

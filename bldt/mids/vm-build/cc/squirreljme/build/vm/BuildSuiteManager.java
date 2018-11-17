@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.springcoat.build;
+package cc.squirreljme.build.vm;
 
 import cc.squirreljme.builder.support.Binary;
 import cc.squirreljme.builder.support.BinaryManager;
