@@ -146,7 +146,7 @@ public class Main
 					mergebins.add(sscp[sscp.length - 1]);
 				
 				// Then add our normal classpath dependencies as needed
-				for (Binary bin : bm.compile(bm.get("springcoat-vm")))
+				for (Binary bin : bm.compile(bm.get("all-vms")))
 					mergebins.add(bin);
 				
 				// SpringCoat is to be placed in the JAR now
@@ -261,11 +261,11 @@ public class Main
 		
 		// Needed for Java SE
 		attr.putValue("Main-Class",
-			"cc.squirreljme.vm.springcoat.ShadedEntryMain");
+			"cc.squirreljme.vm.VMEntryShadedMain");
 		
 		// Needed for Java ME
 		attr.putValue("MIDlet-1",
-			"cc.squirreljme.vm.springcoat.ShadedEntryMIDlet,,SquirrelJME");
+			"cc.squirreljme.vm.VMEntryShadedMIDlet,,SquirrelJME");
 		attr.putValue("MicroEdition-Configuration", "CLDC-1.8");
 		attr.putValue("MicroEdition-Profile", "MEEP-8.0 MIDP-3.1");
 		attr.putValue("MIDlet-Name", "SquirrelJME");
@@ -283,8 +283,7 @@ public class Main
 		attr = man.getMainAttributes();
 		
 		// Needed by the VM so it knows the boot classpath for the launcher!
-		attr.putValue("X-SquirrelJME-LauncherClassPath",
-			launchercp.toString());
+		attr.putValue("ClassPath", launchercp.toString());
 		
 		// Write manifest to the output
 		try (OutputStream os = __zsw.nextEntry(
