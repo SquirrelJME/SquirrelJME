@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+X-SquirrelJME-UUID: d8b70873-cf2b-4a8b-9cb4-a0a6cb1412fd
+X-SquirrelJME-Error: AK
+X-SquirrelJME-Name: Common Virtual Machine Classes
+X-SquirrelJME-Vendor: Stephanie Gawroriski
+X-SquirrelJME-Version: 0.2.0
+X-SquirrelJME-Description: This contains classes which are common across 
+ the various SquirrelJME VMs, and these only need to be written once 
+ as such.
+Microedition-Configuration: CLDC-1.8-Compact
+
