@@ -196,6 +196,16 @@ public class List
 	{
 		throw new todo.TODO();
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/17
+	 */
+	@Override
+	int __supportBit()
+	{
+		return Display.SUPPORTS_LISTS;
+	}
 }
 
 

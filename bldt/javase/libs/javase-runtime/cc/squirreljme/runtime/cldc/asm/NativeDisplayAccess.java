@@ -10,6 +10,8 @@
 
 package cc.squirreljme.runtime.cldc.asm;
 
+import javax.microedition.lcdui.Display;
+
 /**
  * Java SE implementation of the native display system using Swing.
  *
@@ -17,6 +19,26 @@ package cc.squirreljme.runtime.cldc.asm;
  */
 public final class NativeDisplayAccess
 {
+	/**
+	 * Returns the capabilities of the display.
+	 *
+	 * @param __id The display ID.
+	 * @return The capabilities of the display.
+	 * @since 2018/11/17
+	 */
+	public static final int capabilities(int __id)
+	{
+		return Display.SUPPORTS_INPUT_EVENTS |
+			Display.SUPPORTS_TITLE |
+			Display.SUPPORTS_ORIENTATION_PORTRAIT |
+			Display.SUPPORTS_ORIENTATION_LANDSCAPE;
+	}
+	
+	public static final boolean isUpsideDown(int __id)
+	{
+		return false;
+	}
+	
 	/**
 	 * Returns the number of permanent displays which are currently attached to
 	 * the system.

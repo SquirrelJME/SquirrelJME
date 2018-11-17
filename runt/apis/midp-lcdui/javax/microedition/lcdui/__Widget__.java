@@ -238,9 +238,9 @@ abstract class __Widget__
 	 * @return The bit for support.
 	 * @since 2018/11/17
 	 */
-	final int __supportBit()
+	int __supportBit()
 	{
-		throw new RuntimeException("OOPS");
+		throw new RuntimeException("OOPS " + this.getClass().getName());
 	}
 }
 

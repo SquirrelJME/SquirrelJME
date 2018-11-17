@@ -949,6 +949,18 @@ public final class SpringThreadWorker
 				return this.machine.debugUnresolveString(
 					this.<String>asNativeObject(String.class, __args[0]));
 				
+				// Capabilities of a display
+			case "cc/squirreljme/runtime/cldc/asm/NativeDisplayAccess::" +
+				"capabilities:(I)I":
+				return this.machine.nativedisplay.capabilities(
+					(Integer)__args[0]);
+				
+				// Capabilities of a display
+			case "cc/squirreljme/runtime/cldc/asm/NativeDisplayAccess::" +
+				"isUpsideDown:(I)Z":
+				return this.machine.nativedisplay.isUpsideDown(
+					(Integer)__args[0]);
+				
 				// Number of displays
 			case "cc/squirreljme/runtime/cldc/asm/NativeDisplayAccess::" +
 				"numDisplays:()I":

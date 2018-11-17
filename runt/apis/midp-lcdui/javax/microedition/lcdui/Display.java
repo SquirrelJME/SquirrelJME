@@ -306,7 +306,14 @@ public class Display
 	 */
 	public int getCapabilities()
 	{
-		throw new todo.TODO();
+		// Use the capabilities of the native display, but since SquirrelJME
+		// manages pretty much everything in a framebuffer every display will
+		// always have certain capabilities
+		return NativeDisplayAccess.capabilities(this._nid) |
+			SUPPORTS_COMMANDS | SUPPORTS_FORMS | SUPPORTS_TICKER |
+			SUPPORTS_ALERTS | SUPPORTS_LISTS | SUPPORTS_TEXTBOXES |
+			SUPPORTS_FILESELECTORS | SUPPORTS_TABBEDPANES |
+			SUPPORTS_MENUS;
 	}
 	
 	/**
@@ -475,9 +482,21 @@ public class Display
 	 */
 	public int getOrientation()
 	{
-		throw new todo.TODO();
-		/*
-		return __drawSpace().orientation().lcduiValue();*/
+		// Landscape just means a longer width
+		boolean landscape = this.getWidth() > this.getHeight();
+		
+		// If it is detected that the display is upsidedown, just say that
+		// it was rotated 180 degrees
+		if (NativeDisplayAccess.isUpsideDown(this._nid))
+			if (landscape)
+				return ORIENTATION_LANDSCAPE_180;
+			else
+				return ORIENTATION_PORTRAIT_180;
+		else
+			if (landscape)
+				return ORIENTATION_LANDSCAPE;
+			else
+				return ORIENTATION_PORTRAIT;
 	}
 	
 	/**
@@ -698,7 +717,7 @@ public class Display
 		
 		// {@squirreljme.error EB29 The display does not support this type
 		// of displayable.}
-		if ((this.getCapabilities() & __show.__supportBit()) != 0)
+		if ((this.getCapabilities() & __show.__supportBit()) == 0)
 			throw new DisplayCapabilityException("EB29");
 		
 		// If showing an alert, it gets displayed instead

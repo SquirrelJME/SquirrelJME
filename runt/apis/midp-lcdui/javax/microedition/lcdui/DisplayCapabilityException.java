@@ -10,17 +10,34 @@
 
 package javax.microedition.lcdui;
 
+/**
+ * This is thrown when an attempt is made to do something on a display which
+ * does not support a given capability.
+ *
+ * @since 2018/11/17
+ */
 public class DisplayCapabilityException
 	extends RuntimeException
 {
+	/**
+	 * Initializes the exception with no message or cause.
+	 *
+	 * @since 2018/11/17
+	 */
 	public DisplayCapabilityException()
 	{
 		super();
 	}
 	
-	public DisplayCapabilityException(String __s)
+	/**
+	 * Initializes the exception with the given message and no cause.
+	 *
+	 * @param __m The message.
+	 * @since 2018/11/17
+	 */
+	public DisplayCapabilityException(String __m)
 	{
-		super(__s);
+		super(__m);
 	}
 }
 
