@@ -53,9 +53,6 @@ public class Command
 	private static final int _LAST_TYPE =
 		ITEM;
 	
-	/** The image used. */
-	private volatile Image _image;
-	
 	/** The command type. */
 	private final int _type;
 	
@@ -169,11 +166,10 @@ public class Command
 		this._type = __type;
 		this._priority = __pri;
 		
-		// Internally set details
-		throw new todo.TODO();
-		/*
-		this.__setLabels(__sl, __ll, __i);
-		*/
+		// Part of action
+		this._shortlabel = __sl;
+		this._longlabel = __ll;
+		this._image = __i;
 	}
 	
 	/**
