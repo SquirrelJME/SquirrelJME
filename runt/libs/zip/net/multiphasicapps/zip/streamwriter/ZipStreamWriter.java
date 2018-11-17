@@ -14,6 +14,7 @@ import java.io.Closeable;
 import java.io.Flushable;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 import net.multiphasicapps.io.CRC32Calculator;
@@ -131,6 +132,13 @@ public class ZipStreamWriter
 		// The position where the central directory starts
 		long cdstart = output.size();
 		
+		// The current time all entries will use for their date
+		// 0bhhhhh_mmmmmm_sssss
+		// 0byyyyyy_mmmm_ddddd
+		todo.TODO.note("Implement correct timestamp.");
+		int time = 0b01111_011110_00000,
+			date = 0b100110_0011_01000;
+		
 		// Write all entries
 		int bestversion = this._bestversion;
 		for (__TOCEntry__ entry : toc)
@@ -157,9 +165,9 @@ public class ZipStreamWriter
 			// Compression method
 			output.writeShort(ecomp.method());
 			
-			// Date/time not used
-			output.writeShort(0);
-			output.writeShort(0);
+			// Date/time ZIP was created (closed)
+			output.writeShort(time);
+			output.writeShort(date);
 			
 			// CRC and sizes
 			output.writeInt(entry._crc);
