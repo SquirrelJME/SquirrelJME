@@ -29,9 +29,6 @@ public abstract class Displayable
 	final __VolatileList__<Command> _commands =
 		new __VolatileList__<>();
 	
-	/** The current display being used. */
-	volatile Display _currentdisplay;
-	
 	/** The command listener to call into when commands are generated. */
 	volatile CommandListener _cmdlistener;
 	
@@ -87,7 +84,7 @@ public abstract class Displayable
 			throw new NullPointerException("NARG");
 		
 		// {@squirreljme.error EB27 The display does not support commands.}
-		Display cd = this._currentdisplay;
+		Display cd = this.getCurrentDisplay();
 		if (cd != null)
 			if ((cd.getCapabilities() & Display.SUPPORTS_COMMANDS) == 0)
 				throw new DisplayCapabilityException("EB27");
@@ -118,7 +115,14 @@ public abstract class Displayable
 	 */
 	public Display getCurrentDisplay()
 	{
-		throw new todo.TODO();
+		// Since the widget might be part of a tabbed pane the parent will
+		// technically not be a display, so recursively go up until one is
+		// reached
+		for (__Widget__ w = this._parent; w != null; w = w._parent)
+			if (w instanceof Display)
+				return (Display)w;
+		
+		return null;
 	}
 	
 	public Menu getMenu(int __p)

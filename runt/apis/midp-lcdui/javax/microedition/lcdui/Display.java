@@ -199,11 +199,11 @@ public class Display
 	/** The Native ID of this display. */
 	private final int _nid;
 	
-	/** Hold on the displayable to show. */
-	private volatile Displayable _heldcurrent;
+	/** The displayable to show. */
+	private volatile Displayable _current;
 	
-	/** Hold on the displayable to show on exit. */
-	private volatile Displayable _heldexit;
+	/** The displayable to show on exit. */
+	private volatile Displayable _exit;
 	
 	/**
 	 * Initializes the display instance.
@@ -696,31 +696,29 @@ public class Display
 			return;*/
 		}
 		
-		throw new todo.TODO();
-		/*
-		// Perform call on this display
-		try
+		// {@squirreljme.error EB29 The display does not support this type
+		// of displayable.}
+		if ((this.getCapabilities() & __show.__supportBit()) != 0)
+			throw new DisplayCapabilityException("EB29");
+		
+		// If showing an alert, it gets displayed instead
+		if (__show instanceof Alert)
 		{
-			// Set widgets
-			if (true)
-				throw new todo.TODO();
-			/*
-			LcdServiceCall.<VoidType>call(VoidType.class,
-				LcdFunction.WIDGET_CLEAR_AND_SET, this._handle,
-				__show._handle);
-				
-			// Hold onto this so they do not get GCed
-			this._heldcurrent = __show;
-			* /
+			this.setCurrent((Alert)__show, this.getCurrent());
+			return;
 		}
 		
-		// {@squirreljme.error EB1g Could not set the displayable to be
-		// shown because it is already being shown on a display.}
-		catch (LcdWidgetOwnedException e)
-		{
-			throw new IllegalStateException("EB1g", e);
-		}
-		*/
+		// {@squirreljme.error EB28 The displayable to be displayed is already
+		// being displayed.}
+		if (__show._parent != null)
+			throw new IllegalStateException("EB28");
+		
+		// Relink
+		Displayable current = this._current;
+		if (current != null)
+			current._parent = null;
+		__show._parent = this;
+		this._current = __show;
 	}
 	
 	public void setCurrentItem(Item __a)

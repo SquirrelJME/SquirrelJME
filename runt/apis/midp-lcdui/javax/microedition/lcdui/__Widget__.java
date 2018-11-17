@@ -19,6 +19,9 @@ import cc.squirreljme.runtime.lcdui.SerializedEvent;
  */
 abstract class __Widget__
 {
+	/** The parent widget being used. */
+	volatile __Widget__ _parent;
+	
 	/** Is this being shown right now? */
 	boolean _isshown;
 	
@@ -227,6 +230,17 @@ abstract class __Widget__
 			return Display.getDisplays(0)[0].getWidth();
 		return rv;
 		*/
+	}
+	
+	/**
+	 * The bit that is used to check support.
+	 *
+	 * @return The bit for support.
+	 * @since 2018/11/17
+	 */
+	final int __supportBit()
+	{
+		throw new RuntimeException("OOPS");
 	}
 }
 
