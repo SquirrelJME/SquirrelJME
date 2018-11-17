@@ -13,13 +13,8 @@ package cc.squirreljme.springcoat.build;
 import cc.squirreljme.builder.support.Binary;
 import cc.squirreljme.builder.support.ProjectManager;
 import cc.squirreljme.builder.support.TimeSpaceType;
-import cc.squirreljme.runtime.cldc.asm.TaskAccess;
-import cc.squirreljme.runtime.cldc.lang.GuestDepth;
-import cc.squirreljme.vm.springcoat.SpringClassLoader;
-import cc.squirreljme.vm.springcoat.SpringFatalException;
-import cc.squirreljme.vm.springcoat.SpringMachine;
-import cc.squirreljme.vm.springcoat.SpringMachineExitException;
-import cc.squirreljme.vm.springcoat.SpringTaskManager;
+import cc.squirreljme.vm.VirtualMachine;
+import cc.squirreljme.vm.VMFactory;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -113,48 +108,31 @@ public class Main
 		finalclasspath.remove(bootp);
 		finalclasspath.add(bootp);
 		
-		// Build into final array
-		Binary[] classpath = finalclasspath.<Binary>toArray(
+		// Need to convert to array because we use direct index references
+		// on the array
+		Binary[] fcpa = finalclasspath.<Binary>toArray(
 			new Binary[finalclasspath.size()]);
 		
-		// Setup wrapped libraries
-		int numlibs = classpath.length;
-		BuildClassLibrary[] libs = new BuildClassLibrary[numlibs];
+		// Build class references
+		int numlibs = fcpa.length;
+		String[] classpath = new String[numlibs];
 		for (int i = 0; i < numlibs; i++)
-			libs[i] = new BuildClassLibrary(classpath[i]);
-		
-		// Initialize the class loader
-		SpringClassLoader classloader = new SpringClassLoader(libs);
+			classpath[i] = fcpa[i].name().toString();
 		
 		// Profiled class information
 		ProfilerSnapshot profiler = new ProfilerSnapshot();
 		
 		// Initialize the virtual machine with our launch ID
-		BuildSuiteManager bm;
-		SpringMachine machine = new SpringMachine(
-			(bm = new BuildSuiteManager(pm, TimeSpaceType.TEST)),
-			classloader, new SpringTaskManager(bm, profiler), launchid,
-			GuestDepth.guestDepth() + 1, profiler,
+		VirtualMachine machine = VMFactory.main(null, profiler,
+			new BuildSuiteManager(pm, TimeSpaceType.TEST), classpath,
+			null, launchid, -1, null,
 			args.<String>toArray(new String[args.size()]));
 		
 		// Run the VM until it terminates
 		int exitcode = -1;
 		try
 		{
-			machine.run();
-			exitcode = 0;
-		}
-		
-		// Exiting with some given code
-		catch (SpringMachineExitException e)
-		{
-			exitcode = e.code();
-		}
-		
-		// Ignore these exceptions, just fatal exit
-		catch (SpringFatalException e)
-		{
-			exitcode = TaskAccess.EXIT_CODE_FATAL_EXCEPTION;
+			exitcode = machine.runVm();
 		}
 		
 		// Dump the profiler snapshot somewhere
@@ -166,7 +144,7 @@ public class Main
 				// Create temporary file
 				Calendar now = Calendar.getInstance();
 				Path temp = Files.createTempFile(String.format(
-					"springcoat-%TF_%TH-%TM-%TS-", now, now, now, now),
+					"squirreljme-vm-%TF_%TH-%TM-%TS-", now, now, now, now),
 					".nps");
 				
 				// Write snapshot to this file
@@ -184,7 +162,8 @@ public class Main
 			}
 		}
 		
-		// Exit with our given code
+		// Exit with our given code, we cannot exit before the finally
+		// because then the profiler would never be generatedg
 		System.exit(exitcode);
 	}
 }
