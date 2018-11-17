@@ -218,9 +218,25 @@ public class Arrays
 		throw new todo.TODO();
 	}
 	
-	public static <T> T[] copyOf(T[] __a, int __b)
+	/**
+	 * Returns a copy of the given array but using the specified type.
+	 *
+	 * @param <T> The resulting type of the array to use.
+	 * @param __src The source array.
+	 * @param __newlen The new length of the array.
+	 * @return The copy of the array with the new length and type.
+	 * @throws ArrayStoreException If an element being copied from the source
+	 * array is not compatible with the destination array.
+	 * @throws NegativeArraySizeException If the new length is negative.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/04
+	 */
+	@SuppressWarnings({"unchecked"})
+	public static <T> T[] copyOf(T[] __src, int __newlen)
+		throws NegativeArraySizeException, NullPointerException
 	{
-		throw new todo.TODO();
+		return Arrays.<T, T>copyOf(__src, __newlen,
+			(Class<T[]>)__src.getClass());
 	}
 	
 	/**
@@ -241,6 +257,8 @@ public class Arrays
 	@SuppressWarnings({"unchecked"})
 	public static <T, U> T[] copyOf(U[] __src, int __newlen,
 		Class<? extends T[]> __targettype)
+		throws ArrayStoreException, NegativeArraySizeException,
+			NullPointerException
 	{
 		if (__src == null || __targettype == null)
 			throw new NullPointerException("NARG");
