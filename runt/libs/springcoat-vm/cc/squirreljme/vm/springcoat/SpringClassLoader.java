@@ -10,6 +10,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.vm.VMClassLibrary;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -33,7 +34,7 @@ public final class SpringClassLoader
 		new Object();
 	
 	/** The class path for the machine. */
-	private final SpringClassLibrary[] _classpath;
+	private final VMClassLibrary[] _classpath;
 	
 	/** The classes which have been loaded by the virtual machine. */
 	private final Map<ClassName, SpringClass> _classes =
@@ -50,11 +51,11 @@ public final class SpringClassLoader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/01
 	 */
-	public SpringClassLoader(SpringClassLibrary... __classpath)
+	public SpringClassLoader(VMClassLibrary... __classpath)
 		throws NullPointerException
 	{
-		for (SpringClassLibrary b : __classpath = (__classpath == null ?
-			new SpringClassLibrary[0] : __classpath.clone()))
+		for (VMClassLibrary b : __classpath = (__classpath == null ?
+			new VMClassLibrary[0] : __classpath.clone()))
 			if (b == null)
 				throw new NullPointerException("NARG");
 		this._classpath = __classpath;
@@ -66,9 +67,9 @@ public final class SpringClassLoader
 	 * @return The boot library.
 	 * @since 2018/09/13
 	 */
-	public final SpringClassLibrary bootLibrary()
+	public final VMClassLibrary bootLibrary()
 	{
-		SpringClassLibrary[] classpath = this._classpath;
+		VMClassLibrary[] classpath = this._classpath;
 		return classpath[classpath.length - 1];
 	}
 	
@@ -91,13 +92,13 @@ public final class SpringClassLoader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/10/07
 	 */
-	public final SpringClassLibrary findLibrary(String __n)
+	public final VMClassLibrary findLibrary(String __n)
 		throws NullPointerException
 	{
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		for (SpringClassLibrary lib : this._classpath)
+		for (VMClassLibrary lib : this._classpath)
 			if (__n.equals(lib.name()))
 				return lib;
 		
@@ -210,7 +211,7 @@ public final class SpringClassLoader
 		// Otherwise we need to go through every single binary to find
 		// the class we want, which can take awhile
 		byte[] data = null;
-		for (SpringClassLibrary b : this._classpath)
+		for (VMClassLibrary b : this._classpath)
 			try (InputStream in = b.resourceAsStream(fileform))
 			{
 				// Class or file does not exist

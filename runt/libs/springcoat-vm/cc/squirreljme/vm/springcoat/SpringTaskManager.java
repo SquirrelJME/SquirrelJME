@@ -13,6 +13,8 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.runtime.cldc.asm.TaskAccess;
 import cc.squirreljme.runtime.swm.EntryPoint;
 import cc.squirreljme.runtime.swm.EntryPoints;
+import cc.squirreljme.vm.VMClassLibrary;
+import cc.squirreljme.vm.VMSuiteManager;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -30,7 +32,7 @@ import net.multiphasicapps.tool.manifest.JavaManifest;
 public final class SpringTaskManager
 {
 	/** The manager for suites. */
-	protected final SpringSuiteManager suites;
+	protected final VMSuiteManager suites;
 	
 	/** The profiling information. */
 	protected final ProfilerSnapshot profiler;
@@ -50,7 +52,7 @@ public final class SpringTaskManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/04
 	 */
-	public SpringTaskManager(SpringSuiteManager __sm, ProfilerSnapshot __ps)
+	public SpringTaskManager(VMSuiteManager __sm, ProfilerSnapshot __ps)
 		throws NullPointerException
 	{
 		if (__sm == null)
@@ -78,16 +80,16 @@ public final class SpringTaskManager
 		if (__cp == null || __entry == null || __args == null)
 			throw new NullPointerException("NARG");
 		
-		SpringSuiteManager suites = this.suites;
+		VMSuiteManager suites = this.suites;
 		
 		// Load classpath libraries
 		int cpn = __cp.length;
-		SpringClassLibrary[] scl = new SpringClassLibrary[cpn];
+		VMClassLibrary[] scl = new VMClassLibrary[cpn];
 		for (int i = 0; i < cpn; i++)
 			scl[i] = suites.loadLibrary(__cp[i]);
 		
 		// Get the boot library since we need to look at the entry points
-		SpringClassLibrary boot = scl[cpn - 1];
+		VMClassLibrary boot = scl[cpn - 1];
 		
 		// Need to load the manifest where the entry points will be
 		EntryPoints entries;
