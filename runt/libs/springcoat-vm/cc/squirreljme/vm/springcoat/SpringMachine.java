@@ -16,6 +16,7 @@ import cc.squirreljme.runtime.swm.EntryPoint;
 import cc.squirreljme.runtime.swm.EntryPoints;
 import cc.squirreljme.vm.VirtualMachine;
 import cc.squirreljme.vm.VMClassLibrary;
+import cc.squirreljme.vm.VMNativeDisplayAccess;
 import cc.squirreljme.vm.VMResourceAccess;
 import cc.squirreljme.vm.VMSuiteManager;
 import java.io.ByteArrayInputStream;
@@ -75,6 +76,9 @@ public final class SpringMachine
 	/** The profiling information. */
 	protected final ProfilerSnapshot profiler;
 	
+	/** Access to the native display. */
+	protected final VMNativeDisplayAccess nativedisplay;
+	
 	/** Threads which are available. */
 	private final List<SpringThread> _threads =
 		new ArrayList<>();
@@ -130,16 +134,18 @@ public final class SpringMachine
 	 * runs.
 	 * @param __gd Guest depth.
 	 * @param __profiler The profiler to use.
+	 * @param __nda The native display provider.
 	 * @param __args Main entry point arguments.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/03
 	 */
 	public SpringMachine(VMSuiteManager __sm, SpringClassLoader __cl,
 		SpringTaskManager __tm, String __bootcl, boolean __bootmid,
-		int __bootdx, int __gd, ProfilerSnapshot __profiler, String... __args)
+		int __bootdx, int __gd, ProfilerSnapshot __profiler,
+		VMNativeDisplayAccess __nda, String... __args)
 		throws NullPointerException
 	{
-		if (__cl == null || __sm == null)
+		if (__cl == null || __sm == null || __nda == null)
 			throw new NullPointerException("NARG");
 		
 		this.suites = __sm;
@@ -149,6 +155,7 @@ public final class SpringMachine
 		this.bootmid = __bootmid;
 		this.bootdx = __bootdx;
 		this.guestdepth = __gd;
+		this.nativedisplay = __nda;
 		this._args = (__args == null ? new String[0] : __args.clone());
 		this.profiler = (__profiler != null ? __profiler :
 			new ProfilerSnapshot());

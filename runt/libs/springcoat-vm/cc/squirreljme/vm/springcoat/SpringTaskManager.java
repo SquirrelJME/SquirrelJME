@@ -14,6 +14,7 @@ import cc.squirreljme.runtime.cldc.asm.TaskAccess;
 import cc.squirreljme.runtime.swm.EntryPoint;
 import cc.squirreljme.runtime.swm.EntryPoints;
 import cc.squirreljme.vm.VMClassLibrary;
+import cc.squirreljme.vm.VMNativeDisplayAccess;
 import cc.squirreljme.vm.VMSuiteManager;
 import java.io.InputStream;
 import java.io.IOException;
@@ -40,6 +41,10 @@ public final class SpringTaskManager
 	/** Tasks that are used. */
 	private final Map<Integer, SpringTask> _tasks =
 		new HashMap<>();
+	
+	/** Access to the native display. */
+	protected final VMNativeDisplayAccess nativedisplay =
+		new VMNativeDisplayAccess();
 	
 	/** Next task ID. */
 	private int _nextid;
@@ -124,7 +129,7 @@ public final class SpringTaskManager
 		// Build machine for the task
 		SpringMachine machine = new SpringMachine(suites,
 			new SpringClassLoader(scl), this, null, false, bootdx, __gd + 1,
-			this.profiler, __args);
+			this.profiler, this.nativedisplay, __args);
 		
 		// Lock on tasks
 		Map<Integer, SpringTask> tasks = this._tasks;
