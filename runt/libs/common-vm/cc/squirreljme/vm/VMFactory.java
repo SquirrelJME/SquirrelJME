@@ -286,13 +286,13 @@ public abstract class VMFactory
 		// in the manifest
 		JavaManifestAttributes attr = man.getMainAttributes();
 		if (useactiveclass == null)
-			useactiveclass = attr.getValue("X-SquirrelJME-Shaded-ActiveClass");
+			useactiveclass = attr.getValue("ActiveClass");
 		if (useprefix == null)
-			useprefix = attr.getValue("X-SquirrelJME-Shaded-Prefix");
+			useprefix = attr.getValue("Prefix");
 		if (usecp == null)
-			usecp = attr.getValue("X-SquirrelJME-Shaded-ClassPath");
+			usecp = attr.getValue("ClassPath");
 		if (usemain == null)
-			usemain = attr.getValue("X-SquirrelJME-Shaded-Main");
+			usemain = attr.getValue("Main-Class");
 		
 		// Otherwise, if anything is missing use defaults
 		if (useactiveclass == null)
