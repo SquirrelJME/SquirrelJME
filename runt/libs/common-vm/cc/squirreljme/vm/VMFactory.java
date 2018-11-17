@@ -16,8 +16,10 @@ import cc.squirreljme.runtime.swm.EntryPoints;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Map;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.ServiceLoader;
 import net.multiphasicapps.profiler.ProfilerSnapshot;
 import net.multiphasicapps.tool.manifest.JavaManifest;
@@ -224,7 +226,126 @@ public abstract class VMFactory
 		if (__args == null)
 			__args = new String[0];
 		
-		throw new todo.TODO();
+		// We may be able to grab some properties from the shaded manifest
+		// information, if one is even available
+		JavaManifest man;
+		try (InputStream in = VMFactory.class.getResourceAsStream(
+			"/META-INF/SQUIRRELJME-SHADED.MF"))
+		{
+			man = (in == null ? new JavaManifest() : new JavaManifest(in));
+		}
+		
+		// {@squirreljme.error BK38 Could not read the manifest to load the
+		// launcher's classpath.}
+		catch (IOException e)
+		{
+			throw new RuntimeException("BK38", e);
+		}
+		
+		// These are parameters which will be parsed to handle how to start
+		// the shaded process
+		String useactiveclass = null,
+			useprefix = null,
+			usecp = null,
+			usemain = null;
+		int bootid = -1;
+		
+		// Try loading these from properties first, to take more priority
+		try
+		{
+			// {@squirreljme.property cc.squirreljme.vm.shadeactiveclass=class
+			// The class to use to load resources from.}
+			useactiveclass = System.getProperty(
+				"cc.squirreljme.vm.shadeactiveclass");
+			
+			// {@squirreljme.property cc.squirreljme.vm.shadeprefix=prefix
+			// The resource lookup prefix for the classes.}
+			useprefix = System.getProperty(
+				"cc.squirreljme.vm.shadeprefix");
+			
+			// {@squirreljme.property cc.squirreljme.vm.shadeclasspath=[class:]
+			// The classes which make up the class path for execution.}
+			usecp = System.getProperty(
+				"cc.squirreljme.vm.shadeclasspath");
+			
+			// {@squirreljme.property cc.squirreljme.vm.shademain=class
+			// The class to use as the main entry point for the VM.}
+			usemain = System.getProperty(
+				"cc.squirreljme.vm.shademain");
+			
+			// {@squirreljme.property cc.squirreljme.vm.shadebootid=id
+			// The MIDlet or Main class number to use for entering the JAR.}
+			bootid = Integer.getInteger("cc.squirreljme.vm.shadebootid", -1);
+		}
+		catch (SecurityException e)
+		{
+			// Ignore
+		}
+		
+		// If properties were not defined in the system, then they should be
+		// in the manifest
+		JavaManifestAttributes attr = man.getMainAttributes();
+		if (useactiveclass == null)
+			useactiveclass = attr.getValue("X-SquirrelJME-Shaded-ActiveClass");
+		if (useprefix == null)
+			useprefix = attr.getValue("X-SquirrelJME-Shaded-Prefix");
+		if (usecp == null)
+			usecp = attr.getValue("X-SquirrelJME-Shaded-ClassPath");
+		if (usemain == null)
+			usemain = attr.getValue("X-SquirrelJME-Shaded-Main");
+		
+		// Otherwise, if anything is missing use defaults
+		if (useactiveclass == null)
+			useactiveclass = VMFactory.class.getName();
+		if (useprefix == null)
+			useprefix = "/__squirreljme/";
+		if (bootid < 0)
+			bootid = 0;
+		
+		// Load the resource based suite manager
+		VMSuiteManager sm;
+		try
+		{
+			sm = new ResourceBasedSuiteManager(Class.forName(useactiveclass),
+				useprefix);
+		}
+		
+		// {@squirreljme.error AK07 Could not locate the class to use for
+		// resource lookup. (The class which was not found)}
+		catch (ClassNotFoundException e)
+		{
+			throw new VMException("AK07 " + useactiveclass, e);
+		}
+		
+		// Split the classpath accordingly using ' ', ';', and ':', allow
+		// for multiple forms due to manifests and classpaths used in Windows
+		// and UNIX
+		List<String> classpath = new ArrayList<>();
+		for (int i = 0, n = usecp.length(); i < n;)
+		{
+			// Find end clip position
+			int sp;
+			if ((sp = usecp.indexOf(' ', i)) < 0)
+				if ((sp = usecp.indexOf(';', i)) < 0)
+					if ((sp = usecp.indexOf(':', i)) < 0)
+						sp = n;
+			
+			// Clip string
+			String clip = usecp.substring(i, sp).trim();
+			if (!clip.isEmpty())
+				classpath.add(clip);
+			
+			// Skip the split character
+			i = sp + 1;
+		}
+		
+		// Create the VM
+		VirtualMachine vm = VMFactory.main(null, null,
+			sm, classpath.<String>toArray(new String[classpath.size()]),
+			usemain, bootid, -1, null, __args);
+		
+		// Run the VM and exit with the code it generates
+		System.exit(vm.run());
 	}
 }
 
