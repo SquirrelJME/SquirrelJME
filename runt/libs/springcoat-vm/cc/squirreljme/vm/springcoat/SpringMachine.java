@@ -499,7 +499,40 @@ public final class SpringMachine
 		}
 		
 		// Wait until all threads have terminated before actually leaving
-		throw new todo.TODO();
+		for (;;)
+		{
+			// Check if the VM is exiting, this would have happen if another
+			// thread called exit
+			// If we do not check, then the VM will never exit even after
+			// another thread has exited
+			this.exitCheck();
+			
+			// No more threads left?
+			int okay = 0,
+				notokay = 0;
+			List<SpringThread> threads = this._threads;
+			synchronized (threads)
+			{
+				for (SpringThread t : threads)
+					if (t.isExitOkay())
+						okay++;
+					else
+						notokay++;
+			}
+			
+			// Okay to exit?
+			if (notokay == 0)
+				return;
+			
+			// Wait a short duration before checking again
+			try
+			{
+				Thread.sleep(500);
+			}
+			catch (InterruptedException e)
+			{
+			}
+		}
 	}
 	
 	/**

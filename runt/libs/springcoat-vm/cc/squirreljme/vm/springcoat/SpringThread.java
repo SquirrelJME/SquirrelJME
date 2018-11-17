@@ -42,6 +42,12 @@ public final class SpringThread
 	/** String representation. */
 	private Reference<String> _string;
 	
+	/** Ran at least one frame (was started)? */
+	private volatile boolean _hadoneframe;
+	
+	/** Is it okay to exit the VM with this thread? */
+	volatile boolean _exitokay;
+	
 	/**
 	 * Initializes the thread.
 	 *
@@ -101,6 +107,9 @@ public final class SpringThread
 			frames.add(rv);
 		}
 		
+		// Had one frame (started)
+		this._hadoneframe = true;
+		
 		return rv;
 	}
 	
@@ -149,6 +158,9 @@ public final class SpringThread
 			frames.add(rv);
 		}
 		
+		// Had one frame (started)
+		this._hadoneframe = true;
+		
 		return rv;
 	}
 	
@@ -167,6 +179,17 @@ public final class SpringThread
 			return frames.<SpringThread.Frame>toArray(
 				new SpringThread.Frame[frames.size()]);
 		}
+	}
+	
+	/**
+	 * Is exiting the virtual machine okay?
+	 *
+	 * @return If it is okay to exit.
+	 * @since 2018/11/17
+	 */
+	public final boolean isExitOkay()
+	{
+		return this._exitokay || (this._hadoneframe && this.numFrames() == 0);
 	}
 	
 	/**

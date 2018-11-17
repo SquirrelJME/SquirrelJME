@@ -1481,7 +1481,12 @@ public final class SpringThreadWorker
 		// away
 		catch (SpringMachineExitException e)
 		{
+			// Thread is okay to exit!
+			thread._exitokay = true;
+			
+			// Exit profiler stack
 			thread.profiler.exitAll(System.nanoTime());
+			
 			throw e;
 		}
 		
