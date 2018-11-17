@@ -18,6 +18,15 @@ package javax.microedition.lcdui;
  */
 abstract class __Action__
 {
+	/** The image used. */
+	volatile Image _image;
+	
+	/** The short label. */
+	volatile String _shortlabel;
+	
+	/** The long label. */
+	volatile String _longlabel;
+	
 	/**
 	 * This is called when the enabled state of the parent has changed.
 	 *
