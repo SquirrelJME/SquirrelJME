@@ -69,5 +69,15 @@ final class __VolatileList__<T>
 		// Use this new array
 		this._values = values;
 	}
+	
+	/**
+	 * Clears the list.
+	 *
+	 * @since 2018/11/17
+	 */
+	public final void clear()
+	{
+		this._values = new Object[0];
+	}
 }
 
