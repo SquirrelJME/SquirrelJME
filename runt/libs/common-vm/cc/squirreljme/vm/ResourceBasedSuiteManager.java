@@ -37,7 +37,7 @@ public final class ResourceBasedSuiteManager
 	protected final String prefix;
 	
 	/** Cache of libraries. */
-	private final Map<String, Reference<SpringClassLibrary>> _cache =
+	private final Map<String, Reference<VMClassLibrary>> _cache =
 		new HashMap<>();
 	
 	/** Cache of all available suites. */
@@ -113,10 +113,10 @@ public final class ResourceBasedSuiteManager
 			return libs;
 		}
 		
-		// {@squirreljme.error BK33 Could not read the library list.}
+		// {@squirreljme.error AK01 Could not read the library list.}
 		catch (IOException e)
 		{
-			throw new RuntimeException("BK33", e);
+			throw new RuntimeException("AK01", e);
 		}
 	}
 	
@@ -125,17 +125,17 @@ public final class ResourceBasedSuiteManager
 	 * @since 2018/11/14
 	 */
 	@Override
-	public final SpringClassLibrary loadLibrary(String __s)
+	public final VMClassLibrary loadLibrary(String __s)
 		throws NullPointerException
 	{
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		Map<String, Reference<SpringClassLibrary>> cache = this._cache;
+		Map<String, Reference<VMClassLibrary>> cache = this._cache;
 		synchronized (cache)
 		{
-			Reference<SpringClassLibrary> ref = cache.get(__s);
-			SpringClassLibrary rv;
+			Reference<VMClassLibrary> ref = cache.get(__s);
+			VMClassLibrary rv;
 			
 			if (ref == null || null == (rv = ref.get()))
 				cache.put(__s, new WeakReference<>((

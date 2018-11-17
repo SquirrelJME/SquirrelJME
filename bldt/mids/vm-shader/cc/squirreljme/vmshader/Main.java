@@ -138,7 +138,7 @@ public class Main
 				// Otherwise this is running on Java ME, so use some of our
 				// own provided stubs for this
 				else
-					sscp = bm.compile(bm.get("springcoat-vm-stubs"));
+					sscp = bm.compile(bm.get("common-vm-stubs"));
 				
 				// Only use the last library for the shade support stuff
 				List<Binary> mergebins = new ArrayList<>();

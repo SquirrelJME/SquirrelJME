@@ -35,7 +35,7 @@ public interface VMSuiteManager
 	 * @return The loaded library.
 	 * @since 2018/10/16
 	 */
-	public abstract SpringClassLibrary loadLibrary(String __s)
+	public abstract VMClassLibrary loadLibrary(String __s)
 		throws NullPointerException;
 }
 
