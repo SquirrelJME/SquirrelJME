@@ -10,9 +10,11 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.runtime.cldc.asm.TaskAccess;
 import cc.squirreljme.runtime.cldc.lang.GuestDepth;
 import cc.squirreljme.runtime.swm.EntryPoint;
 import cc.squirreljme.runtime.swm.EntryPoints;
+import cc.squirreljme.vm.VirtualMachine;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.VMResourceAccess;
 import cc.squirreljme.vm.VMSuiteManager;
@@ -40,7 +42,7 @@ import net.multiphasicapps.tool.manifest.JavaManifest;
  * @since 2018/07/29
  */
 public final class SpringMachine
-	implements Runnable
+	implements Runnable, VirtualMachine
 {
 	/** Lock. */
 	public final Object strlock =
@@ -51,6 +53,12 @@ public final class SpringMachine
 	
 	/** Resources accessor. */
 	protected final VMResourceAccess resourceaccessor;
+	
+	/** The boot class. */
+	protected final String bootcl;
+	
+	/** Is the boot a midlet? */
+	protected final boolean bootmid;
 	
 	/** The boot index. */
 	protected final int bootdx;
@@ -116,6 +124,8 @@ public final class SpringMachine
 	 * @param __sm The manager for suites.
 	 * @param __cl The class loader.
 	 * @param __tm Task manager.
+	 * @param __bootcl The boot class.
+	 * @param __bootmid The boot class a midlet.
 	 * @param __bootdx The entry point which should be booted when the VM
 	 * runs.
 	 * @param __gd Guest depth.
@@ -125,8 +135,8 @@ public final class SpringMachine
 	 * @since 2018/09/03
 	 */
 	public SpringMachine(VMSuiteManager __sm, SpringClassLoader __cl,
-		SpringTaskManager __tm, int __bootdx, int __gd,
-		ProfilerSnapshot __profiler, String... __args)
+		SpringTaskManager __tm, String __bootcl, boolean __bootmid,
+		int __bootdx, int __gd, ProfilerSnapshot __profiler, String... __args)
 		throws NullPointerException
 	{
 		if (__cl == null || __sm == null)
@@ -135,6 +145,8 @@ public final class SpringMachine
 		this.suites = __sm;
 		this.classloader = __cl;
 		this.tasks = __tm;
+		this.bootcl = __bootcl;
+		this.bootmid = __bootmid;
 		this.bootdx = __bootdx;
 		this.guestdepth = __gd;
 		this._args = (__args == null ? new String[0] : __args.clone());
@@ -332,40 +344,54 @@ public final class SpringMachine
 		SpringClassLoader classloader = this.classloader;
 		VMClassLibrary bootbin = classloader.bootLibrary();
 		
-		// Need to load the manifest where the entry points will be
-		EntryPoints entries;
-		try (InputStream in = bootbin.resourceAsStream("META-INF/MANIFEST.MF"))
-		{
-			// {@squirreljme.error BK0v Entry point JAR has no manifest. (The
-			// name of the boot binary)}
-			if (in == null)
-				throw new SpringVirtualMachineException("BK0v " +
-					bootbin.name());
-			
-			entries = new EntryPoints(new JavaManifest(in));
-		}
-		
-		// {@squirreljme.error BK0w Failed to read the manifest.}
-		catch (IOException e)
-		{
-			throw new SpringVirtualMachineException("BK0w", e);
-		}
-		
-		int n = entries.size();
-		
-		// Print entry points out out for debug, but only for the first
-		// guest because this is annoying!
-		if (GuestDepth.guestDepth() + 1 == this.guestdepth)
-		{
-			todo.DEBUG.note("Entry points:");
-			for (int i = 0; i < n; i++)
-				todo.DEBUG.note("    %d: %s", i, entries.get(i));
-		}
-		
-		// Use the first program if the ID is not valid
+		// May be specified or not
+		String entryclass = this.bootcl;
+		boolean ismidlet = this.bootmid;
 		int launchid = this.bootdx;
-		if (launchid < 0 || launchid >= n)
-			launchid = 0;
+		
+		// Lookup the entry class via the manifest
+		if (entryclass == null)
+		{
+			// Need to load the manifest where the entry points will be
+			EntryPoints entries;
+			try (InputStream in = bootbin.resourceAsStream(
+				"META-INF/MANIFEST.MF"))
+			{
+				// {@squirreljme.error BK0v Entry point JAR has no manifest.
+				// (The name of the boot binary)}
+				if (in == null)
+					throw new SpringVirtualMachineException("BK0v " +
+						bootbin.name());
+				
+				entries = new EntryPoints(new JavaManifest(in));
+			}
+			
+			// {@squirreljme.error BK0w Failed to read the manifest.}
+			catch (IOException e)
+			{
+				throw new SpringVirtualMachineException("BK0w", e);
+			}
+			
+			int n = entries.size();
+			
+			// Print entry points out out for debug, but only for the first
+			// guest because this is annoying!
+			if (GuestDepth.guestDepth() + 1 == this.guestdepth)
+			{
+				todo.DEBUG.note("Entry points:");
+				for (int i = 0; i < n; i++)
+					todo.DEBUG.note("    %d: %s", i, entries.get(i));
+			}
+			
+			// Use the first program if the ID is not valid
+			if (launchid < 0 || launchid >= n)
+				launchid = 0;
+			
+			// Needed to enter the machine
+			EntryPoint entry = entries.get(launchid);
+			entryclass = entry.entryPoint().toString();
+			ismidlet = entry.isMidlet();
+		}
 		
 		// Thread that will be used as the main thread of execution, also used
 		// to initialize classes when they are requested
@@ -377,14 +403,12 @@ public final class SpringMachine
 			mainthread);
 		
 		// Load the entry point class
-		EntryPoint entry = entries.get(launchid);
 		SpringClass entrycl = worker.loadClass(new ClassName(
-			entry.entryPoint().replace('.', '/')));
+			entryclass.replace('.', '/')));
 		
 		// Find the method to be entered in
 		SpringMethod mainmethod;
-		boolean ismidlet;
-		if ((ismidlet = entry.isMidlet()))
+		if ((ismidlet = ismidlet))
 			mainmethod = entrycl.lookupMethod(false,
 				new MethodNameAndType("startApp", "()V"));
 		else
@@ -476,6 +500,35 @@ public final class SpringMachine
 		
 		// Wait until all threads have terminated before actually leaving
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/17
+	 */
+	@Override
+	public final int runVm()
+	{
+		// Run until the VM terminates
+		try
+		{
+			this.run();
+			
+			// Success!
+			return 0;
+		}
+		
+		// Exit VM with given code
+		catch (SpringMachineExitException e)
+		{
+			return e.code();
+		}
+		
+		// Ignore these exceptions, just fatal exit
+		catch (SpringFatalException e)
+		{
+			return TaskAccess.EXIT_CODE_FATAL_EXCEPTION;
+		}
 	}
 	
 	/**

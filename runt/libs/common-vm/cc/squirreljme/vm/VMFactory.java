@@ -345,7 +345,7 @@ public abstract class VMFactory
 			usemain, bootid, -1, null, __args);
 		
 		// Run the VM and exit with the code it generates
-		System.exit(vm.run());
+		System.exit(vm.runVm());
 	}
 }
 
