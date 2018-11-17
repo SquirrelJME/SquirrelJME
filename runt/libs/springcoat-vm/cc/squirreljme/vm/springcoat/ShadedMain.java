@@ -168,8 +168,8 @@ public class ShadedMain
 		
 		// Initialize the virtual machine with our launch ID
 		SpringMachine machine = new SpringMachine(sm,
-			classloader, new SpringTaskManager(sm, profiler), __pid,
-			GuestDepth.guestDepth() + 1, profiler, __args);
+			classloader, new SpringTaskManager(sm, profiler), null,
+			false, __pid, GuestDepth.guestDepth() + 1, profiler, __args);
 		
 		// Run the VM until it terminates
 		int exitcode = -1;

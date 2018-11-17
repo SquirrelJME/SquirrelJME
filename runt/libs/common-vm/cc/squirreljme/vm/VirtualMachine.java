@@ -25,7 +25,7 @@ public interface VirtualMachine
 	 * @throws VMException If the VM threw an exception.
 	 * @since 2018/11/17
 	 */
-	public abstract int run()
+	public abstract int runVm()
 		throws VMException;
 }
 

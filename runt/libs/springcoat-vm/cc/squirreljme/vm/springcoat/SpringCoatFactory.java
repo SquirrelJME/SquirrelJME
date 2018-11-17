@@ -48,7 +48,10 @@ public class SpringCoatFactory
 		String[] __args)
 		throws IllegalArgumentException, NullPointerException, VMException
 	{
-		throw new todo.TODO();
+		// Create a new instance of the VM
+		return new SpringMachine(__sm, new SpringClassLoader(__cp),
+			new SpringTaskManager(__sm, __ps), __maincl, __ismid, -1,
+			__gd, __ps, __args);
 	}
 }
 

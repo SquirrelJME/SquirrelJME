@@ -123,7 +123,7 @@ public final class SpringTaskManager
 		
 		// Build machine for the task
 		SpringMachine machine = new SpringMachine(suites,
-			new SpringClassLoader(scl), this, bootdx, __gd + 1,
+			new SpringClassLoader(scl), this, null, false, bootdx, __gd + 1,
 			this.profiler, __args);
 		
 		// Lock on tasks
