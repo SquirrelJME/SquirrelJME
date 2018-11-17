@@ -8,14 +8,14 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.springcoat.vm;
+package cc.squirreljme.vm;
 
 /**
  * This is the suite manager which represents the.
  *
  * @since 2018/10/26
  */
-public interface SpringSuiteManager
+public interface VMSuiteManager
 {
 	/**
 	 * Lists the names of libraries which are available for usage.

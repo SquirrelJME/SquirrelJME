@@ -8,24 +8,22 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.springcoat.vm;
-
-import cc.squirreljme.vm.VMException;
+package cc.squirreljme.vm;
 
 /**
- * This is the base class for all exceptions within the spring machine.
+ * Base class for exceptions in the virtual machine.
  *
- * @since 2018/08/05
+ * @since 2018/11/17
  */
-public class SpringException
+public class VMException
 	extends RuntimeException
 {
 	/**
 	 * Initialize the exception with no message or cause.
 	 *
-	 * @since 2018/08/05
+	 * @since 2018/11/17
 	 */
-	public SpringException()
+	public VMException()
 	{
 	}
 	
@@ -33,9 +31,9 @@ public class SpringException
 	 * Initialize the exception with a message and no cause.
 	 *
 	 * @param __m The message.
-	 * @since 2018/08/05
+	 * @since 2018/11/17
 	 */
-	public SpringException(String __m)
+	public VMException(String __m)
 	{
 		super(__m);
 	}
@@ -45,9 +43,9 @@ public class SpringException
 	 *
 	 * @param __m The message.
 	 * @param __c The cause.
-	 * @since 2018/08/05
+	 * @since 2018/11/17
 	 */
-	public SpringException(String __m, Throwable __c)
+	public VMException(String __m, Throwable __c)
 	{
 		super(__m, __c);
 	}
@@ -56,9 +54,9 @@ public class SpringException
 	 * Initialize the exception with no message and with a cause.
 	 *
 	 * @param __c The cause.
-	 * @since 2018/08/05
+	 * @since 2018/11/17
 	 */
-	public SpringException(Throwable __c)
+	public VMException(Throwable __c)
 	{
 		super(__c);
 	}
