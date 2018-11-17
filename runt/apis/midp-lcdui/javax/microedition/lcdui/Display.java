@@ -196,6 +196,9 @@ public class Display
 	private static final List<DisplayListener> _LISTENERS =
 		new ArrayList<>();
 	
+	/** The serialized event loop for handling events. */
+	static volatile __EventLoop__ _EVENT_LOOP;
+	
 	/** The Native ID of this display. */
 	private final int _nid;
 	
@@ -715,6 +718,11 @@ public class Display
 			return;*/
 		}
 		
+		// If we are trying to show the same display, do nothing
+		Displayable current = this._current;
+		if (current == __show)
+			return;
+		
 		// {@squirreljme.error EB29 The display does not support this type
 		// of displayable.}
 		if ((this.getCapabilities() & __show.__supportBit()) == 0)
@@ -733,11 +741,21 @@ public class Display
 			throw new IllegalStateException("EB28");
 		
 		// Relink
-		Displayable current = this._current;
 		if (current != null)
 			current._parent = null;
 		__show._parent = this;
 		this._current = __show;
+		
+		// If the event loop has not yet been started
+		__EventLoop__ eventloop = Display._EVENT_LOOP;
+		if (eventloop == null)
+		{
+			Display._EVENT_LOOP = (eventloop = new __EventLoop__());
+			new Thread(eventloop, "SquirrelJME-LCDUIEventLoop");
+		}
+		
+		// Register the loop to handle this display
+		throw new todo.TODO();
 	}
 	
 	public void setCurrentItem(Item __a)
