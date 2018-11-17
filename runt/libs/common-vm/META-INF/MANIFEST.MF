@@ -7,5 +7,6 @@ X-SquirrelJME-Version: 0.2.0
 X-SquirrelJME-Description: This contains classes which are common across 
  the various SquirrelJME VMs, and these only need to be written once 
  as such.
-Microedition-Configuration: CLDC-1.8-Compact
+X-SquirrelJME-Depends: midp-lcdui meep-swm meep-midlet
+Microedition-Configuration: CLDC-1.8
 
