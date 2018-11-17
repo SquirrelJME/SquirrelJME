@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.springcoat.vm;
+package cc.squirreljme.vm;
 
 import java.io.InputStream;
 import java.io.IOException;
@@ -20,10 +20,10 @@ import java.util.Map;
  *
  * @since 2018/10/07
  */
-public final class SpringResourceAccess
+public final class VMResourceAccess
 {
 	/** The manager for suites. */
-	protected final SpringSuiteManager suites;
+	protected final VMSuiteManager suites;
 	
 	/** Opened resources. */
 	private final Map<Integer, InputStream> _streams =
@@ -39,7 +39,7 @@ public final class SpringResourceAccess
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/10/07
 	 */
-	public SpringResourceAccess(SpringSuiteManager __sm)
+	public VMResourceAccess(VMSuiteManager __sm)
 		throws NullPointerException
 	{
 		if (__sm == null)
@@ -101,7 +101,7 @@ public final class SpringResourceAccess
 			throw new NullPointerException("NARG");
 		
 		// Load the library to access its resources
-		SpringClassLibrary lib = this.suites.loadLibrary(__jar);
+		VMClassLibrary lib = this.suites.loadLibrary(__jar);
 		if (lib == null)
 			return -2;
 		

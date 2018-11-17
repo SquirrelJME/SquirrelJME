@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.springcoat.vm;
+package cc.squirreljme.vm;
 
 import java.io.InputStream;
 import java.io.IOException;
@@ -19,7 +19,7 @@ import java.io.IOException;
  *
  * @since 2018/09/13
  */
-public interface SpringClassLibrary
+public interface VMClassLibrary
 {
 	/**
 	 * Returns the name of this library.

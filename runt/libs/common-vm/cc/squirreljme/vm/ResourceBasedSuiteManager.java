@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.springcoat.vm;
+package cc.squirreljme.vm;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -28,7 +28,7 @@ import java.util.Map;
  * @since 2018/11/14
  */
 public final class ResourceBasedSuiteManager
-	implements SpringSuiteManager
+	implements VMSuiteManager
 {
 	/** The class to get resources from. */
 	protected final Class<?> actingclass;
