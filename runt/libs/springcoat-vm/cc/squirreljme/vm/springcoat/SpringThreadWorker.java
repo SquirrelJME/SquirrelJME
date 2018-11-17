@@ -948,7 +948,12 @@ public final class SpringThreadWorker
 				"unresolveString:(Ljava/lang/String;)J":
 				return this.machine.debugUnresolveString(
 					this.<String>asNativeObject(String.class, __args[0]));
-			
+				
+				// Number of displays
+			case "cc/squirreljme/runtime/cldc/asm/NativeDisplayAccess::" +
+				"numDisplays:()I":
+				return this.machine.nativedisplay.numDisplays();
+				
 				// Return the length of the array
 			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
 				"arrayLength:(Ljava/lang/Object;)I":

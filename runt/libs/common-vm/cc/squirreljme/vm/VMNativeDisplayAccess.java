@@ -14,11 +14,21 @@ import javax.microedition.lcdui.Display;
 
 /**
  * This class provides the framebuffer needed by SquirrelJME which is backed
- * on top of LCDUI itself.
+ * on top of LCDUI itself. This just provides a single display.
  *
  * @since 2018/11/17
  */
 public class VMNativeDisplayAccess
 {
+	/**
+	 * Returns the number of displays which are available.
+	 *
+	 * @return The number of available displays.
+	 * @since 2018/11/17
+	 */
+	public final int numDisplays()
+	{
+		return 1;
+	}
 }
 
