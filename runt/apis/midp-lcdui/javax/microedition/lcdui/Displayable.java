@@ -29,13 +29,13 @@ public abstract class Displayable
 	volatile Display _heldcurrent;
 	
 	/** The command listener to call into when commands are generated. */
-	private volatile CommandListener _cmdlistener;
+	volatile CommandListener _cmdlistener;
 	
-	/** Cached title of the displayable. */
-	private volatile String _cachetitle;
+	/** The title of the displayable. */
+	volatile String _title;
 	
-	/** The cached ticker being shown. */
-	private volatile Ticker _cacheticker;
+	/** The ticker of the displayable. */
+	volatile Ticker _ticker;
 	
 	/**
 	 * Initializes the base displayable object.
@@ -128,7 +128,7 @@ public abstract class Displayable
 	{
 		// Return the cached title so that a remote call does not need to
 		// be performed
-		return this._cachetitle;
+		return this._title;
 	}
 	
 	public void invalidateCommandLayout()
@@ -196,7 +196,7 @@ public abstract class Displayable
 		*/
 		
 		// Cache it
-		this._cacheticker = __t;
+		this._ticker = __t;
 	}
 	
 	/**
@@ -208,7 +208,7 @@ public abstract class Displayable
 	public void setTitle(String __a)
 	{
 		// Cache it for later return
-		this._cachetitle = __a;
+		this._title = __a;
 		
 		// Set title remotely
 		if (true)
