@@ -18,14 +18,58 @@ public class List
 	public static final Command SELECT_COMMAND =
 		new Command("Select", Command.SCREEN, 0, true);
 	
-	public List(String __a, int __b)
+	/** The type of list this is. */
+	private final int _type;
+	
+	/**
+	 * Initializes the list.
+	 *
+	 * @param __title The list title.
+	 * @param __type The type of list this is.
+	 * @throws IllegalArgumentException If the type is not valid.
+	 * @since 2018/11/16
+	 */
+	public List(String __title, int __type)
+		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		this(__title, __type, new String[0], new Image[0]);
 	}
 	
-	public List(String __a, int __b, String[] __c, Image[] __d)
+	/**
+	 * Initializes the list.
+	 *
+	 * @param __title The list title.
+	 * @param __type The type of list this is.
+	 * @param __strs The initial string elements to add.
+	 * @param __imgs The initial image elements to add.
+	 * @throws IllegalArgumentException If the type is not valid.
+	 * @throws NullPointerException If the string elements is null or contains
+	 * a null element.
+	 * @since 2018/11/16
+	 */
+	public List(String __title, int __type, String[] __strs, Image[] __imgs)
+		throws IllegalArgumentException, NullPointerException
 	{
-		throw new todo.TODO();
+		if (__strs == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error EB25 String and image elements differ in
+		// size.}
+		if (__imgs != null && __strs.length != __imgs.length)
+			throw new IllegalArgumentException("EB25");
+		
+		// {@squirreljme.error EB26 Invalid list type. (The list type)}
+		if (__type != Choice.IMPLICIT && __type != Choice.EXCLUSIVE &&
+			__type != Choice.MULTIPLE)
+			throw new IllegalArgumentException("EB26 " + __type);
+		
+		// Set
+		this._title = __title;
+		this._type = __type;
+		
+		// Append all of the items to the list
+		for (int i = 0, n = __strs.length; i < n; i++)
+			this.append(__strs[i], (__imgs == null ? null : __imgs[i]));
 	}
 	
 	public int append(String __a, Image __b)
