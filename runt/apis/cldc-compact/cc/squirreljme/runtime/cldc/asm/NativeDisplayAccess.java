@@ -30,6 +30,24 @@ public final class NativeDisplayAccess
 	}
 	
 	/**
+	 * Returns the capabilities of the display.
+	 *
+	 * @param __id The display ID.
+	 * @return The capabilities of the display.
+	 * @since 2018/11/17
+	 */
+	public static final native int capabilities(int __id);
+	
+	/**
+	 * Is the specified display upsidedown?
+	 *
+	 * @param __id The ID of the display.
+	 * @return If the display is upsidedown.
+	 * @since 2018/11/17
+	 */
+	public static final native boolean isUpsideDown(int __id);
+	
+	/**
 	 * Returns the number of permanent displays which are currently attached to
 	 * the system.
 	 *
