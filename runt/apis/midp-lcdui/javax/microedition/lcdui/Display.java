@@ -309,14 +309,20 @@ public class Display
 	 */
 	public int getCapabilities()
 	{
+		// For simplicity only the first display supports input events of
+		// any kind
+		int mask = 0xFFFF_FFFF;
+		if (this._nid != 0)
+			mask &= ~(SUPPORTS_INPUT_EVENTS);
+		
 		// Use the capabilities of the native display, but since SquirrelJME
 		// manages pretty much everything in a framebuffer every display will
 		// always have certain capabilities
-		return NativeDisplayAccess.capabilities(this._nid) |
+		return (NativeDisplayAccess.capabilities(this._nid) |
 			SUPPORTS_COMMANDS | SUPPORTS_FORMS | SUPPORTS_TICKER |
 			SUPPORTS_ALERTS | SUPPORTS_LISTS | SUPPORTS_TEXTBOXES |
 			SUPPORTS_FILESELECTORS | SUPPORTS_TABBEDPANES |
-			SUPPORTS_MENUS;
+			SUPPORTS_MENUS) & mask;
 	}
 	
 	/**
@@ -521,6 +527,10 @@ public class Display
 	 */
 	public boolean hasPointerEvents()
 	{
+		// Only the first display supports this
+		if (this._nid != 0)
+			return false;
+		
 		throw new todo.TODO();
 	}
 	
@@ -532,6 +542,10 @@ public class Display
 	 */
 	public boolean hasPointerMotionEvents()
 	{
+		// Only the first display supports this
+		if (this._nid != 0)
+			return false;
+		
 		throw new todo.TODO();
 	}
 	
@@ -746,7 +760,8 @@ public class Display
 		__show._parent = this;
 		this._current = __show;
 		
-		// If the event loop has not yet been started
+		// The event loop is needed to process the events but it also must
+		// run serially so only a single event loop exists at once
 		__EventLoop__ eventloop = Display._EVENT_LOOP;
 		if (eventloop == null)
 		{

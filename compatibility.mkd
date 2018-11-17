@@ -14,6 +14,13 @@ this was intended to be done but was forgotten.
    * `Formatter`
    * `Writer`
 
+## LCDUI Display Input
+
+Only the first display (index zero) supports input events such as keyboard,
+buttons, mice, and touchscreen. Any secondary displays which are attached
+will not have events handled for them at all. This is to make it easier to
+implement.
+
 ## `Reader`'s `lock` is initialized to `null` instead of `this`
 
 Since SquirrelJME uses a reference counted garbage collector the `Reader`'s
