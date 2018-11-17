@@ -5,7 +5,7 @@ X-SquirrelJME-Name: SpringCoat Virtual Machine
 X-SquirrelJME-Vendor: Stephanie Gawroriski
 X-SquirrelJME-Version: 0.2.0
 X-SquirrelJME-Depends: tool-classfile tool-manifest-reader meep-swm 
- tool-profiler meep-midlet
+ tool-profiler meep-midlet common-vm
 X-SquirrelJME-Description: This is a SpringCoat virtual machine which 
  is an unoptimized pure interpreter aimed for the purpose of being an 
  educational stepping stone to other future virtual machines.
