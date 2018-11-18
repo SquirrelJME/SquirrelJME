@@ -155,5 +155,14 @@ public final class NativeDisplayAccess
 	 */
 	public static final native void postEvent(int __type,
 		int __d0, int __d1, int __d2, int __d3, int __d4);
+	
+	/**
+	 * Sets the title of the display.
+	 *
+	 * @param __id The display ID.
+	 * @param __t The title to use.
+	 * @since 2018/11/18
+	 */
+	public static final native void setDisplayTitle(int __id, String __t);
 }
 

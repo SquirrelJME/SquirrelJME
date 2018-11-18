@@ -10,6 +10,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
 import cc.squirreljme.runtime.lcdui.event.EventType;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import java.lang.ref.Reference;
@@ -115,14 +116,7 @@ public abstract class Displayable
 	 */
 	public Display getCurrentDisplay()
 	{
-		// Since the widget might be part of a tabbed pane the parent will
-		// technically not be a display, so recursively go up until one is
-		// reached
-		for (__Widget__ w = this._parent; w != null; w = w._parent)
-			if (w instanceof Display)
-				return (Display)w;
-		
-		return null;
+		return this.__currentDisplay();
 	}
 	
 	public Menu getMenu(int __p)
@@ -154,8 +148,6 @@ public abstract class Displayable
 	 */
 	public String getTitle()
 	{
-		// Return the cached title so that a remote call does not need to
-		// be performed
 		return this._title;
 	}
 	
@@ -230,21 +222,18 @@ public abstract class Displayable
 	/**
 	 * Sets the title of this displayable.
 	 *
-	 * @param __a The title to use, {@code null} clears it.
+	 * @param __t The title to use, {@code null} clears it.
 	 * @since 2016/10/08
 	 */
-	public void setTitle(String __a)
+	public void setTitle(String __t)
 	{
 		// Cache it for later return
-		this._title = __a;
+		this._title = __t;
 		
-		// Set title remotely
-		if (true)
-			throw new todo.TODO();
-		/*
-		LcdServiceCall.<VoidType>call(VoidType.class,
-			LcdFunction.WIDGET_SET_TITLE, this._handle, __a);
-		*/
+		// Set the title of the display
+		Display d = this.__currentDisplay();
+		if (d != null)
+			NativeDisplayAccess.setDisplayTitle(d._nid, __t);
 	}
 	
 	/**
@@ -258,18 +247,6 @@ public abstract class Displayable
 	protected void sizeChanged(int __w, int __h)
 	{
 		// Implemented by sub-classes
-	}
-	
-	/**
-	 * This returns the current display, one which is not potentially modified
-	 * by sub-classes.
-	 *
-	 * @return The current display.
-	 * @since 2017/10/01
-	 */
-	final Display __currentDisplay()
-	{
-		throw new todo.TODO();
 	}
 }
 

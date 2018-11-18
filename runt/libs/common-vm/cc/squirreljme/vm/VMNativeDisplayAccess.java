@@ -317,6 +317,21 @@ public class VMNativeDisplayAccess
 	}
 	
 	/**
+	 * Sets the title of the display.
+	 *
+	 * @param __id The display ID.
+	 * @param __t The title to use.
+	 * @since 2018/11/18
+	 */
+	public final void setDisplayTitle(int __id, String __t)
+	{
+		if (__id != 0)
+			return;
+		
+		this.__checkFramebuffer().setTitle(__t);
+	}
+	
+	/**
 	 * Checks if the framebuffer needs updating.
 	 *
 	 * @return The canvas used.

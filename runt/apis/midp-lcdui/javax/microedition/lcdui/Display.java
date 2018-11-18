@@ -779,6 +779,9 @@ public class Display
 		if (nid == 0)
 			eventloop._main = this;
 		
+		// Use the title of this thing
+		NativeDisplayAccess.setDisplayTitle(nid, __show.getTitle());
+		
 		// Post event that indicates that the current state has changed
 		NativeDisplayAccess.postEvent(EventType.DISPLAY_SETCURRENT.ordinal,
 			nid, 0, 0, 0, 0);
