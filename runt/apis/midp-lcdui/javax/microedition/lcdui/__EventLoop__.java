@@ -39,7 +39,7 @@ final class __EventLoop__
 			Display main = this._main;
 			
 			// Used to store event data
-			int[] data = new int[NativeDisplayAccess.EVENT_SIZE];
+			short[] data = new short[NativeDisplayAccess.EVENT_SIZE];
 			
 			// Event handling loop
 			for (;;)

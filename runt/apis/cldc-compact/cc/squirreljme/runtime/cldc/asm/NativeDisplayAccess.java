@@ -67,6 +67,20 @@ public final class NativeDisplayAccess
 	 * @return The next event, this will be the even type.
 	 * @since 2018/11/17
 	 */
-	public static final native int pollEvent(int[] __ed);
+	public static final native int pollEvent(short[] __ed);
+	
+	/**
+	 * Posts the specified event to the end of the event queue.
+	 *
+	 * @param __type The event type to push.
+	 * @param __d0 Datapoint 1.
+	 * @param __d1 Datapoint 2.
+	 * @param __d2 Datapoint 3.
+	 * @param __d3 Datapoint 4.
+	 * @param __d4 Datapoint 5.
+	 * @since 2018/11/18
+	 */
+	public static final native void postEvent(int __type,
+		short __d0, short __d1, short __d2, short __d3, short __d4);
 }
 
