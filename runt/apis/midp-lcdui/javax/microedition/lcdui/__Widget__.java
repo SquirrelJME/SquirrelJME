@@ -19,223 +19,46 @@ import cc.squirreljme.runtime.lcdui.SerializedEvent;
  */
 abstract class __Widget__
 {
+	/** The draw chain of this widget. */
+	final __DrawChain__ _drawchain =
+		new __DrawChain__();
+	
 	/** The parent widget being used. */
 	volatile __Widget__ _parent;
 	
-	/** Is this being shown right now? */
-	boolean _isshown;
-	
-	/** The X location of the widget */
-	int _locx;
-	
-	/** The Y location of the widget. */
-	int _locy;
-	
-	/** The width of the widget. */
-	int _locw =
-		1;
-	
-	/** The height of the widget. */
-	int _loch =
-		1;
+	/**
+	 * Updates the draw chain for this widget.
+	 *
+	 * @since 2018/11/18
+	 */
+	abstract void __updateDrawChain(__DrawSlice__ __sl);
 	
 	/**
-	 * Initializes the widget using a handle which is registered on the
-	 * remote end.
+	 * Returns the default height.
 	 *
-	 * @param __h The handle to use.
-	 * @since 2018/03/23
+	 * @return The default height.
+	 * @since 2018/11/18
 	 */
-	__Widget__()
-	{
-		super();
-	}
-	
-	/**
-	 * Virtual call which has no effect.
-	 *
-	 * @since 2018/03/28
-	 */
-	@SerializedEvent
-	void hideNotify()
-	{
-	}
-	
-	/**
-	 * This is a virtual paint call which has no effect.
-	 *
-	 * @param __g The graphics to draw into.
-	 * @since 2018/03/28
-	 */
-	@SerializedEvent
-	void paint(Graphics __g)
-	{
-	}
-	
-	/**
-	 * This is a virtual paint call which has no effect.
-	 *
-	 * @param __g The graphics to draw into.
-	 * @param __w The width of the item.
-	 * @param __h The height of the item.
-	 * @since 2018/03/28
-	 */
-	@SerializedEvent
-	void paint(Graphics __g, int __w, int __h)
-	{
-		// This will forward for the normal canvas call
-		this.paint(__g);
-	}
-	
-	/**
-	 * Virtual call which has no effect.
-	 *
-	 * @since 2018/03/28
-	 */
-	@SerializedEvent
-	void showNotify()
-	{
-	}
-	
-	/**
-	 * Virtual call which has no effect.
-	 *
-	 * @param __w The width.
-	 * @param __h The height.
-	 * @since 2018/03/27
-	 */
-	@SerializedEvent
-	void sizeChanged(int __w, int __h)
-	{
-	}
-	
-	/**
-	 * This is called when a repaint is to be performed.
-	 *
-	 * @param __g The graphics to draw into.
-	 * @param __bw The buffer width.
-	 * @param __bh The buffer height.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/03/23
-	 */
-	@SerializedEvent
-	final void __doPaint(Graphics __g, int __bw, int __bh)
-		throws NullPointerException
-	{
-		// Determine if a transparent color should be drawn over the widget
-		int trans = this.__getTransparentColor();
-		if (trans != 0)
-		{
-			// The graphics object gets the color pre-initialized so make sure
-			// to restore it after the paint
-			int old = __g.getAlphaColor();
-			
-			// Fill the area accordingly
-			__g.setAlphaColor(trans | 0xFF000000);
-			__g.fillRect(__g.getClipX(), __g.getClipY(),
-				__g.getClipWidth(), __g.getClipHeight());
-			
-			// Restore old color
-			__g.setAlphaColor(old);
-		}
-		
-		// Perform the paint
-		this.paint(__g, __bw, __bh);
-	}
-	
-	/**
-	 * This is called when a widget's visibility has changed.
-	 *
-	 * @param __shown Is the widget shown?
-	 * @since 2018/03/24
-	 */
-	@SerializedEvent
-	final void __doShown(boolean __shown)
-	{
-		boolean isshown = this._isshown;
-		
-		// Make sure the methods are called only once since there could be
-		// multiple events happening
-		if (isshown != __shown)
-		{
-			this._isshown = __shown;
-			
-			// Create display notification?
-			if (this instanceof Display)
-				((Display)this).__doDisplayShown(__shown);
-			
-			// Normal event
-			else
-			{
-				if (__shown)
-					this.showNotify();
-				else
-					this.hideNotify();
-			}
-		}
-	}
-	
-	/**
-	 * This is called when the size of the widget has changed.
-	 *
-	 * @param __w The new width.
-	 * @param __h The new height.
-	 * @since 2018/03/23
-	 */
-	@SerializedEvent
-	final void __doSizeChanged(int __w, int __h)
-	{
-		// Do display notification?
-		if (this instanceof Display)
-			((Display)this).__doDisplaySizeChanged(__w, __h);
-		
-		// Normal
-		else
-			this.sizeChanged(__w, __h);
-	}
-	
-	/**
-	 * Returns the height of the displayable or the maximum size of the
-	 * default display.
-	 *
-	 * @return The displayable height or the maximum height of the default
-	 * display.
-	 * @since 2017/05/24
-	 */
-	int __getHeight()
+	final int __defaultHeight()
 	{
 		__Widget__ parent = this._parent;
 		if (parent == null)
-			return Display.getDisplays(0)[0].__getHeight();
-		return parent.__getHeight();
+			return Display.getDisplays(0)[0].getHeight();
+		return this._drawchain._h;
 	}
 	
 	/**
-	 * Returns the transparent color to use for the widget.
+	 * Returns the default width.
 	 *
-	 * @return The transparent color or {@code 0} if it is not valid, the
-	 * alpha channel must be included.
-	 * @since 2018/03/28
+	 * @return The default width.
+	 * @since 2018/11/18
 	 */
-	int __getTransparentColor()
-	{
-		return 0;
-	}
-	
-	/**
-	 * Returns the width of the displayable or the maximum size of the
-	 * default display.
-	 *
-	 * @return The displayable width or the maximum width of the default
-	 * display.
-	 * @since 2017/05/24
-	 */
-	int __getWidth()
+	final int __defaultWidth()
 	{
 		__Widget__ parent = this._parent;
 		if (parent == null)
-			return Display.getDisplays(0)[0].__getWidth();
-		return parent.__getWidth();
+			return Display.getDisplays(0)[0].getWidth();
+		return this._drawchain._w;
 	}
 	
 	/**
@@ -247,32 +70,6 @@ abstract class __Widget__
 	int __supportBit()
 	{
 		throw new RuntimeException("OOPS " + this.getClass().getName());
-	}
-	
-	/**
-	 * Paint this widget.
-	 *
-	 * @param __g The graphics to draw.
-	 * @param __w The width.
-	 * @param __h The height.
-	 * @since 2018/11/18
-	 */
-	void __widgetPaint(Graphics __g, int __w, int __h)
-	{
-		// Revert positional information
-		__g.translate(-__g.getTranslateX(), -__g.getTranslateY());
-		__g.clipRect(-__g.getClipX(), -__g.getClipY(), __w, __h);
-		
-		// Setup graphics for drawing
-		int w, h;
-		__g.clipRect(this._locx, this._locy,
-			(w = this._locw), (h = this._loch));
-		__g.translate(this._locx, this._locy);
-		
-		// Base draw lines for widget location
-		__g.drawRect(0, 0, w, h);
-		__g.drawLine(0, 0, w, h);
-		__g.drawLine(0, h, w, 0);
 	}
 }
 

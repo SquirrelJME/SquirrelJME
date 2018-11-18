@@ -84,7 +84,7 @@ public class Alert
 	@Override
 	public int getHeight()
 	{
-		return __getHeight();
+		return this.__defaultHeight();
 	}
 	
 	public Image getImage()
@@ -119,7 +119,7 @@ public class Alert
 	@Override
 	public int getWidth()
 	{
-		return __getWidth();
+		return this.__defaultWidth();
 	}
 	
 	@Override
@@ -215,6 +215,16 @@ public class Alert
 		/*
 		this._type = __t;
 		*/
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/18
+	 */
+	@Override
+	void __updateDrawChain(__DrawSlice__ __sl)
+	{
+		throw new todo.TODO();
 	}
 }
 

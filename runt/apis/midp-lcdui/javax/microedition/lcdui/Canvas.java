@@ -177,7 +177,6 @@ public abstract class Canvas
 	 * @since 2018/03/28
 	 */
 	@SerializedEvent
-	@Override
 	protected abstract void paint(Graphics __a);
 	
 	/**
@@ -209,7 +208,7 @@ public abstract class Canvas
 	@Override
 	public int getHeight()
 	{
-		return this.__getHeight();
+		return this.__defaultHeight();
 	}
 	
 	public int getKeyCode(int __a)
@@ -243,7 +242,7 @@ public abstract class Canvas
 	@Override
 	public int getWidth()
 	{
-		return this.__getWidth();
+		return this.__defaultWidth();
 	}
 	
 	/**
@@ -295,7 +294,6 @@ public abstract class Canvas
 	 * @since 2018/03/28
 	 */
 	@SerializedEvent
-	@Override
 	protected void hideNotify()
 	{
 		// Implemented by sub-classes
@@ -527,7 +525,6 @@ public abstract class Canvas
 	}
 	
 	@SerializedEvent
-	@Override
 	protected void showNotify()
 	{
 		// Implemented by sub-classes
@@ -557,19 +554,6 @@ public abstract class Canvas
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/03/28
-	 */
-	@Override
-	int __getTransparentColor()
-	{
-		// The color for canvas backgrounds is always white
-		if (this._transparent)
-			return 0xFFFFFFFF;
-		return 0;
-	}
-	
-	/**
-	 * {@inheritDoc}
 	 * @since 2018/11/18
 	 */
 	@Override
@@ -577,6 +561,16 @@ public abstract class Canvas
 	{
 		// Canvases are always supported
 		return 0xFFFFFFFF;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/18
+	 */
+	@Override
+	final void __updateDrawChain(__DrawSlice__ __sl)
+	{
+		throw new todo.TODO();
 	}
 }
 

@@ -100,7 +100,7 @@ public class Form
 	@Override
 	public int getHeight()
 	{
-		return this.__getHeight();
+		return this.__defaultHeight();
 	}
 	
 	public FormLayoutPolicy getLayoutPolicy()
@@ -115,7 +115,7 @@ public class Form
 	@Override
 	public int getWidth()
 	{
-		return this.__getWidth();
+		return this.__defaultWidth();
 	}
 	
 	public void insert(int __a, Item __b)
@@ -144,6 +144,16 @@ public class Form
 	}
 	
 	public int size()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/18
+	 */
+	@Override
+	void __updateDrawChain(__DrawSlice__ __sl)
 	{
 		throw new todo.TODO();
 	}

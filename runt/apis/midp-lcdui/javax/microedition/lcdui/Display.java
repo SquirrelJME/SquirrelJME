@@ -469,7 +469,7 @@ public class Display
 	 */
 	public int getHeight()
 	{
-		return this.__getHeight();
+		return this.__loadFrame(false).bufferheight;
 	}
 	
 	public IdleItem getIdleItem()
@@ -520,7 +520,7 @@ public class Display
 	 */
 	public int getWidth()
 	{
-		return this.__getWidth();
+		return this.__loadFrame(false).bufferwidth;
 	}
 	
 	/**
@@ -607,26 +607,6 @@ public class Display
 		throw new todo.TODO();
 		/*
 		return this._head.numColors();*/
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/11/18
-	 */
-	@SerializedEvent
-	@Override
-	void paint(Graphics __g, int __w, int __h)
-	{
-		__g.setColor(0x00FF00);
-		__g.drawLine(0, 0, __w, __h);
-		
-		__g.setColor(0x0000FF);
-		__g.drawLine(0, __h, __w, 0);
-		
-		// Draw the current widget
-		Displayable current = this._current;
-		if (current != null)
-			current.__widgetPaint(__g, __w, __h);
 	}
 	
 	public void removeCurrent()
@@ -957,6 +937,9 @@ public class Display
 		// Invalidate the framebuffer
 		this.__loadFrame(true);
 		
+		// Update widgets
+		this.__updateDrawChain(new __DrawSlice__(0, 0, __w, __h));
+		
 		// Repaint everything
 		this.__doRepaint(0, 0, __w, __h);
 	}
@@ -1028,7 +1011,8 @@ public class Display
 		g.clipRect(__x, __y, __w, __h);
 		
 		// Call internal paint
-		this.__doPaint(g, frame.bufferwidth, frame.bufferheight);
+		if (true)
+			throw new todo.TODO();
 		
 		// Was repainted!
 		NativeDisplayAccess.framebufferPainted(this._nid);
@@ -1043,33 +1027,14 @@ public class Display
 	final void __doSetCurrent()
 	{
 		// Load a fresh framebuffer
-		this.__loadFrame(true);
+		__Framebuffer__ fb = this.__loadFrame(false);
 		
 		// The display would be shown
 		this.__doDisplayShown(true);
 		
-		// Report that the size changed as well
-		this.__doDisplaySizeChanged(this.getWidth(), this.getHeight());
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/11/18
-	 */
-	@Override
-	final int __getHeight()
-	{
-		return this.__loadFrame(false).bufferheight;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/11/18
-	 */
-	@Override
-	final int __getWidth()
-	{
-		return this.__loadFrame(false).bufferwidth;
+		// Update widgets
+		this.__updateDrawChain(new __DrawSlice__(0, 0,
+			fb.bufferwidth, fb.bufferheight));
 	}
 	
 	/**
@@ -1089,6 +1054,18 @@ public class Display
 				this._nid));
 		
 		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/18
+	 */
+	@Override
+	void __updateDrawChain(__DrawSlice__ __sl)
+	{
+		__Framebuffer__ fb = this.__loadFrame(false);
+		
+		throw new todo.TODO();
 	}
 	
 	/**
