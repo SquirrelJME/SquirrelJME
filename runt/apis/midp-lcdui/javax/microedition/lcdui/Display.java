@@ -469,7 +469,7 @@ public class Display
 	 */
 	public int getHeight()
 	{
-		return this.__loadFrame(false).bufferheight;
+		return this.__getHeight();
 	}
 	
 	public IdleItem getIdleItem()
@@ -520,7 +520,7 @@ public class Display
 	 */
 	public int getWidth()
 	{
-		return this.__loadFrame(false).bufferwidth;
+		return this.__getWidth();
 	}
 	
 	/**
@@ -964,6 +964,26 @@ public class Display
 			this._framebuffer = (rv = __Framebuffer__.__loadFrame(this._nid));
 		
 		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/18
+	 */
+	@Override
+	final int __getHeight()
+	{
+		return this.__loadFrame(false).bufferheight;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/18
+	 */
+	@Override
+	final int __getWidth()
+	{
+		return this.__loadFrame(false).bufferwidth;
 	}
 	
 	/**

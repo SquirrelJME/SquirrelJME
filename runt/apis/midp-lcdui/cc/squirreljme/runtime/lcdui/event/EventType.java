@@ -47,6 +47,9 @@ public enum EventType
 	 */
 	DISPLAY_SETCURRENT,
 	
+	/** Size has changed. */
+	SIZE_CHANGED,
+	
 	/** End. */
 	;
 	
@@ -74,6 +77,7 @@ public enum EventType
 			case 6:	return POINTER_RELEASED;
 			case 7: return REPAINT;
 			case 8: return DISPLAY_SETCURRENT;
+			case 9: return SIZE_CHANGED;
 			
 				// {@squirreljme.error EB2a Unknown event type. (The event
 				// type)}

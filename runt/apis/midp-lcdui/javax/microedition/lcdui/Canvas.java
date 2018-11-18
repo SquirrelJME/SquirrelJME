@@ -566,5 +566,16 @@ public abstract class Canvas
 			return 0xFFFFFFFF;
 		return 0;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/18
+	 */
+	@Override
+	int __supportBit()
+	{
+		// Canvases are always supported
+		return 0xFFFFFFFF;
+	}
 }
 
