@@ -214,7 +214,7 @@ public final class ColorInfo
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/02/24
 	 */
-	public static Object getPalette(BufferedImage __bi)
+	public static int[] getPalette(BufferedImage __bi)
 		throws NullPointerException
 	{
 		if (__bi == null)
