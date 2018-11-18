@@ -36,57 +36,7 @@ final class __EventLoop__
 		// This is run constantly in a loop waiting for events to happen
 		try
 		{
-			Display main = this._main;
-			
-			// Used to store event data
-			short[] data = new short[NativeDisplayAccess.EVENT_SIZE];
-			
-			// Event handling loop
-			for (;;)
-			{
-				// Need to know the main display
-				if (main == null)
-					main = this._main;
-				
-				// Poll for events and handle them
-				switch (EventType.of(NativeDisplayAccess.pollEvent(data)))
-				{
-					// Command activated
-					case COMMAND:
-						throw new todo.TODO();
-
-					// Key was pressed.
-					case KEY_PRESSED:
-						throw new todo.TODO();
-
-					// Key was released.
-					case KEY_RELEASED:
-						throw new todo.TODO();
-
-					// Key was repeated.
-					case KEY_REPEATED:
-						throw new todo.TODO();
-
-					// Pointer Dragged.
-					case POINTER_DRAGGED:
-						throw new todo.TODO();
-
-					// Pointer Pressed.
-					case POINTER_PRESSED:
-						throw new todo.TODO();
-
-					// Pointer Released.
-					case POINTER_RELEASED:
-						throw new todo.TODO();
-
-					// Repaint the current display
-					case REPAINT:
-						throw new todo.TODO();
-						
-					default:
-						throw new RuntimeException("OOPS");
-				}
-			}
+			this.__loop();
 		}
 		
 		// In the event this loop dies or terminates, if this is the active
@@ -96,6 +46,72 @@ final class __EventLoop__
 		{
 			if (this == Display._EVENT_LOOP)
 				Display._EVENT_LOOP = null;
+		}
+	}
+	
+	/**
+	 * Contains the event loop.
+	 *
+	 * @since 2018/11/18
+	 */
+	private final void __loop()
+	{
+		Display main = this._main;
+		
+		// Used to store event data
+		short[] data = new short[NativeDisplayAccess.EVENT_SIZE];
+		
+		// Event handling loop
+		for (;;)
+		{
+			// Need to know the main display
+			if (main == null)
+				main = this._main;
+			
+			// Poll for events and handle them
+			EventType t;
+			switch ((t = EventType.of(
+				NativeDisplayAccess.pollEvent(data))))
+			{
+					// Command activated
+				case COMMAND:
+					throw new todo.TODO();
+
+					// Key was pressed.
+				case KEY_PRESSED:
+					throw new todo.TODO();
+
+					// Key was released.
+				case KEY_RELEASED:
+					throw new todo.TODO();
+
+					// Key was repeated.
+				case KEY_REPEATED:
+					throw new todo.TODO();
+
+					// Pointer Dragged.
+				case POINTER_DRAGGED:
+					throw new todo.TODO();
+
+					// Pointer Pressed.
+				case POINTER_PRESSED:
+					throw new todo.TODO();
+
+					// Pointer Released.
+				case POINTER_RELEASED:
+					throw new todo.TODO();
+
+					// Repaint the current display
+				case REPAINT:
+					throw new todo.TODO();
+				
+					// Display has had setCurrent() called
+				case DISPLAY_SETCURRENT:
+					throw new todo.TODO();
+					
+				default:
+					throw new RuntimeException("OOPS " + t);
+			}
 		}
 	}
 }

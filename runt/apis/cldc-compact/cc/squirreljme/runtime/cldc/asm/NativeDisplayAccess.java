@@ -72,6 +72,8 @@ public final class NativeDisplayAccess
 	/**
 	 * Posts the specified event to the end of the event queue.
 	 *
+	 * All fields only have the granularity of {@code short}.
+	 *
 	 * @param __type The event type to push.
 	 * @param __d0 Datapoint 1.
 	 * @param __d1 Datapoint 2.
@@ -81,6 +83,6 @@ public final class NativeDisplayAccess
 	 * @since 2018/11/18
 	 */
 	public static final native void postEvent(int __type,
-		short __d0, short __d1, short __d2, short __d3, short __d4);
+		int __d0, int __d1, int __d2, int __d3, int __d4);
 }
 

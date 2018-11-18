@@ -41,8 +41,18 @@ public enum EventType
 	/** Repaint the current display. */
 	REPAINT,
 	
+	/**
+	 * Display has updated the displayable.
+	 * Format: {@code displayid, -, -, -, -}.
+	 */
+	DISPLAY_SETCURRENT,
+	
 	/** End. */
 	;
+	
+	/** The ordinal of this event. */
+	public final int ordinal =
+		this.ordinal();
 	
 	/**
 	 * Returns the event type for the given ID>
@@ -63,6 +73,7 @@ public enum EventType
 			case 5:	return POINTER_PRESSED;
 			case 6:	return POINTER_RELEASED;
 			case 7: return REPAINT;
+			case 8: return DISPLAY_SETCURRENT;
 			
 				// {@squirreljme.error EB2a Unknown event type. (The event
 				// type)}
