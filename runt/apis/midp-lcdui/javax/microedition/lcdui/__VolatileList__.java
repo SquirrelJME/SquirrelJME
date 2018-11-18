@@ -11,6 +11,7 @@
 package javax.microedition.lcdui;
 
 import java.util.Arrays;
+import java.util.Iterator;
 
 /**
  * This is a list which is volatile but not synchronized but is backed by an
@@ -24,6 +25,7 @@ import java.util.Arrays;
  * @since 2018/11/17
  */
 final class __VolatileList__<T>
+	implements Iterable<T>
 {
 	/** The values in the list. */
 	private volatile Object[] _values =
@@ -81,15 +83,26 @@ final class __VolatileList__<T>
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/18
+	 */
+	@Override
+	@SuppressWarnings({"unchecked"})
+	public final Iterator<T> iterator()
+	{
+		return (Iterator<T>)
+			((Object)(Arrays.<Object>asList(this._values).iterator()));
+	}
+	
+	/**
 	 * Returns the values in the list.
 	 *
 	 * @return The list values.
 	 * @since 2018/11/18
 	 */
-	@SuppressWarnings({"unchecked"})
-	public final T[] values()
+	public final Object[] values()
 	{
-		return (T[])this._values;
+		return this._values;
 	}
 }
 

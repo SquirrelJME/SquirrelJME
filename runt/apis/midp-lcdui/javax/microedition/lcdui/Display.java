@@ -968,7 +968,7 @@ public class Display
 		// If an exit command is found, run it
 		Displayable d = this.getCurrent();
 		if (d != null)
-			for (Command c : d._commands.values())
+			for (Command c : d._commands)
 				if (c._type == Command.EXIT)
 				{
 					if (true)

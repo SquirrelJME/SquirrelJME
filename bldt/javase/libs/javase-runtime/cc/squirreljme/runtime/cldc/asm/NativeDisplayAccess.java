@@ -16,6 +16,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
@@ -27,6 +29,7 @@ import java.awt.SystemColor;
 import javax.microedition.lcdui.Display;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.WindowConstants;
 
 /**
  * Java SE implementation of the native display system using Swing.
@@ -344,7 +347,7 @@ public final class NativeDisplayAccess
 			NativeDisplayAccess._frame = (rv = new JFrame());
 			
 			// Exit when close is pressed
-			rv.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			rv.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 			
 			// Initial title
 			rv.setTitle("SquirrelJME");
@@ -384,6 +387,7 @@ public final class NativeDisplayAccess
 			
 			// Record some events
 			frame.addComponentListener(rv);
+			frame.addWindowListener(rv);
 			
 			// Pack the frame
 			frame.pack();
@@ -403,7 +407,7 @@ public final class NativeDisplayAccess
 	 */
 	public static final class SwingPanel
 		extends JPanel
-		implements ComponentListener
+		implements ComponentListener, WindowListener
 	{
 		/** The image to be displayed. */
 		volatile BufferedImage _image =
@@ -516,6 +520,75 @@ public final class NativeDisplayAccess
 			// Draw the backed buffered image
 			__g.drawImage(image, 0, 0, xw, xh,
 				0, 0, xw, xh, null);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/11/18
+		 */
+		@Override
+		public void windowActivated(WindowEvent __e)
+		{
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/11/18
+		 */
+		@Override
+		public void windowClosed(WindowEvent __e)
+		{
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/11/18
+		 */
+		@Override
+		public void windowClosing(WindowEvent __e)
+		{
+			todo.DEBUG.note("Window is closing!");
+			
+			// Post close event
+			NativeDisplayAccess.postEvent(
+				EventType.EXIT_REQUEST.ordinal(),
+				0, -1, -1, -1, -1);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/11/18
+		 */
+		@Override
+		public void windowDeactivated(WindowEvent __e)
+		{
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/11/18
+		 */
+		@Override
+		public void windowDeiconified(WindowEvent __e)
+		{
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/11/18
+		 */
+		@Override
+		public void windowIconified(WindowEvent __e)
+		{
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/11/18
+		 */
+		@Override
+		public void windowOpened(WindowEvent __e)
+		{
 		}
 	}
 }
