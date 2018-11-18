@@ -155,6 +155,20 @@ public final class NativeDisplayAccess
 	}
 	
 	/**
+	 * Specifies that the framebuffer has been painted.
+	 *
+	 * @param __id The display ID.
+	 * @since 2018/11/18
+	 */
+	public static final void framebufferPainted(int __id)
+	{
+		if (__id != 0)
+			return;
+		
+		NativeDisplayAccess.__panel().repaint();
+	}
+	
+	/**
 	 * Returns the palette of the framebuffer.
 	 *
 	 * @param __id The display ID.
@@ -472,9 +486,9 @@ public final class NativeDisplayAccess
 		public void repaint(Rectangle __r)
 		{
 			// Post repaint event
-			NativeDisplayAccess.postEvent(
+			/*NativeDisplayAccess.postEvent(
 				EventType.DISPLAY_REPAINT.ordinal(),
-				0, __r.x, __r.y, __r.width, __r.height);
+				0, __r.x, __r.y, __r.width, __r.height);*/
 			
 			// Forward
 			super.repaint(__r);
@@ -488,9 +502,9 @@ public final class NativeDisplayAccess
 		public void repaint(long __tm, int __x, int __y, int __w, int __h)
 		{
 			// Post repaint event
-			NativeDisplayAccess.postEvent(
+			/*NativeDisplayAccess.postEvent(
 				EventType.DISPLAY_REPAINT.ordinal(),
-				0, __x, __y, __w, __h);
+				0, __x, __y, __w, __h);*/
 			
 			// Forward
 			super.repaint(__tm, __x, __y, __w, __h);

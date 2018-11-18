@@ -104,6 +104,20 @@ public class VMNativeDisplayAccess
 	}
 	
 	/**
+	 * Specifies that the framebuffer has been painted.
+	 *
+	 * @param __id The display ID.
+	 * @since 2018/11/18
+	 */
+	public final void framebufferPainted(int __id)
+	{
+		if (__id != 0)
+			return;
+		
+		this.__checkFramebuffer().repaint();
+	}
+	
+	/**
 	 * Returns the palette of the framebuffer.
 	 *
 	 * @param __id The display ID.
@@ -302,9 +316,10 @@ public class VMNativeDisplayAccess
 	/**
 	 * Checks if the framebuffer needs updating.
 	 *
+	 * @return The canvas used.
 	 * @since 2018/11/18
 	 */
-	private final void __checkFramebuffer()
+	private final VMCanvas __checkFramebuffer()
 	{
 		// Need to create the canvas?
 		VMCanvas canvas = this._canvas;
@@ -331,6 +346,8 @@ public class VMNativeDisplayAccess
 			this._fbw = cw;
 			this._fbh = ch;
 		}
+		
+		return canvas;
 	}
 	
 	/**

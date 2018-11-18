@@ -1031,6 +1031,13 @@ public final class SpringThreadWorker
 				"capabilities:(I)I":
 				return this.machine.nativedisplay.capabilities(
 					(Integer)__args[0]);
+					
+				// The framebuffer was painted to
+			case "cc/squirreljme/runtime/cldc/asm/NativeDisplayAccess::" +
+				"framebufferPainted:(I)V":
+				this.machine.nativedisplay.
+					framebufferPainted((Integer)__args[0]);
+				return null;
 			
 				// Framebuffer object
 			case "cc/squirreljme/runtime/cldc/asm/NativeDisplayAccess::" +
