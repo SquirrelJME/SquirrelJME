@@ -188,16 +188,12 @@ abstract class __Widget__
 	 * display.
 	 * @since 2017/05/24
 	 */
-	final int __getHeight()
+	int __getHeight()
 	{
-		throw new todo.TODO();
-		/*
-		int rv = LcdServiceCall.<Integer>call(Integer.class,
-			LcdFunction.WIDGET_GET_HEIGHT, this._handle);
-		if (rv < 0)
-			return Display.getDisplays(0)[0].getHeight();
-		return rv;
-		*/
+		__Widget__ parent = this._parent;
+		if (parent == null)
+			return Display.getDisplays(0)[0].__getHeight();
+		return parent.__getHeight();
 	}
 	
 	/**
@@ -220,16 +216,12 @@ abstract class __Widget__
 	 * display.
 	 * @since 2017/05/24
 	 */
-	final int __getWidth()
+	int __getWidth()
 	{
-		throw new todo.TODO();
-		/*
-		int rv = LcdServiceCall.<Integer>call(Integer.class,
-			LcdFunction.WIDGET_GET_WIDTH, this._handle);
-		if (rv < 0)
-			return Display.getDisplays(0)[0].getWidth();
-		return rv;
-		*/
+		__Widget__ parent = this._parent;
+		if (parent == null)
+			return Display.getDisplays(0)[0].__getWidth();
+		return parent.__getWidth();
 	}
 	
 	/**

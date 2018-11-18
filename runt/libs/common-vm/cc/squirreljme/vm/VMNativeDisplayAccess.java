@@ -11,7 +11,11 @@
 package cc.squirreljme.vm;
 
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
+import cc.squirreljme.runtime.lcdui.event.EventType;
+import cc.squirreljme.runtime.lcdui.gfx.PixelFormat;
+import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Graphics;
 
 /**
  * This class provides the framebuffer needed by SquirrelJME which is backed
@@ -44,7 +48,21 @@ public class VMNativeDisplayAccess
 	private int _eventwrite;
 	
 	/** The display to back on, lazily initialized to prevent crashing. */
-	private Display _usedisplay;
+	Display _usedisplay;
+	
+	/** The framebuffer RGB data. */
+	volatile int[] _fbrgb;
+	
+	/** The framebuffer width. */
+	volatile int _fbw =
+		-1;
+	
+	/** The framebuffer height. */
+	volatile int _fbh =
+		-1;
+	
+	/** The canvas for display. */
+	volatile VMCanvas _canvas;
 
 	/**
 	 * Returns the capabilities of the display.
@@ -75,7 +93,11 @@ public class VMNativeDisplayAccess
 		if (__id != 0)
 			return null;
 		
-		throw new todo.TODO();
+		// Check for framebuffer update
+		this.__checkFramebuffer();
+		
+		// Return the raw RGB array
+		return this._fbrgb;
 	}
 	
 	/**
@@ -90,7 +112,8 @@ public class VMNativeDisplayAccess
 		if (__id != 0)
 			return null;
 		
-		throw new todo.TODO();
+		// No palette is used
+		return null;
 	}
 	
 	/**
@@ -105,7 +128,28 @@ public class VMNativeDisplayAccess
 		if (__id != 0)
 			return null;
 		
-		throw new todo.TODO();
+		// Check for framebuffer update
+		this.__checkFramebuffer();
+		
+		// Fill in basic parameters
+		int[] rv = new int[NativeDisplayAccess.NUM_PARAMETERS];
+		
+		// These are the only used fields
+		int fbw = this._fbw,
+			fbh = this._fbh;
+		
+		// Build parameters
+		rv[NativeDisplayAccess.PARAMETER_PIXELFORMAT] =
+			PixelFormat.INTEGER_RGB888.ordinal();
+		rv[NativeDisplayAccess.PARAMETER_BUFFERWIDTH] = fbw;
+		rv[NativeDisplayAccess.PARAMETER_BUFFERHEIGHT] = fbh;
+		rv[NativeDisplayAccess.PARAMETER_ALPHA] = 0;
+		rv[NativeDisplayAccess.PARAMETER_PITCH] = fbw;
+		rv[NativeDisplayAccess.PARAMETER_OFFSET] = 0;
+		rv[NativeDisplayAccess.PARAMETER_VIRTXOFF] = 0;
+		rv[NativeDisplayAccess.PARAMETER_VIRTYOFF] = 0;
+		
+		return rv;
 	}
 	
 	/**
@@ -253,6 +297,32 @@ public class VMNativeDisplayAccess
 	}
 	
 	/**
+	 * Checks if the framebuffer needs updating.
+	 *
+	 * @since 2018/11/18
+	 */
+	private final void __checkFramebuffer()
+	{
+		// Need to create the canvas?
+		VMCanvas canvas = this._canvas;
+		if (canvas == null)
+		{
+			this._canvas = (canvas = new VMCanvas());
+			this._usedisplay.setCurrent(canvas);
+		}
+		
+		// Properties have changed? Recreate the buffer data
+		int cw = canvas.getWidth(),
+			ch = canvas.getHeight();
+		if (this._fbrgb == null || cw != this._fbw || ch != this._fbh)
+		{
+			this._fbrgb = new int[cw * ch];
+			this._fbw = cw;
+			this._fbh = ch;
+		}
+	}
+	
+	/**
 	 * Returns the display this is currently using.
 	 *
 	 * @return The currently backed display.
@@ -264,6 +334,46 @@ public class VMNativeDisplayAccess
 		if (rv == null)
 			this._usedisplay = (rv = Display.getDisplays(0)[0]);
 		return rv;
+	}
+	
+	/**
+	 * Contains the canvas which is drawn on.
+	 *
+	 * @since 2018/11/18
+	 */
+	public final class VMCanvas
+		extends Canvas
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/11/18
+		 */
+		@Override
+		public void paint(Graphics __g)
+		{
+			// Just draw the raw RGB data
+			int fbw = VMNativeDisplayAccess.this._fbw;
+			__g.drawRGB(VMNativeDisplayAccess.this._fbrgb,
+				0,
+				fbw,
+				0,
+				0,
+				fbw,
+				VMNativeDisplayAccess.this._fbh,
+				false);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/11/18
+		 */
+		@Override
+		public void sizeChanged(int __w, int __h)
+		{
+			VMNativeDisplayAccess.this.postEvent(
+				EventType.SIZE_CHANGED.ordinal(),
+				__w, __h, -1, -1, -1);
+		}
 	}
 }
 
