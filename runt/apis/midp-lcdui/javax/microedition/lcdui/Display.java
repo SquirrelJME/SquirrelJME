@@ -951,6 +951,9 @@ public class Display
 		if (d != null)
 			d.sizeChanged(__w, __h);
 		
+		// Invalidate the framebuffer
+		this.__loadFrame(true);
+		
 		// Repaint everything
 		this.__doRepaint(0, 0, __w, __h);
 	}
@@ -1001,12 +1004,30 @@ public class Display
 		
 		// Get the graphics for this frame
 		__Framebuffer__ frame = this.__loadFrame(false);
-		Graphics g = frame.graphics();
+		Graphics g = null;
+		for (;;)
+			try
+			{
+				// Try obtaining the graphics
+				g = frame.graphics();
+				
+				// Do not try again
+				break;
+			}
+			catch (ArrayIndexOutOfBoundsException e)
+			{
+				todo.DEBUG.note("Load frame failed with out of bounds, " +
+					"the framebuffer was likely resized between " +
+					"parameter access. Trying again!");
+				
+				// Reload the frame again from scratch
+				frame = this.__loadFrame(true);
+			}
 		
 		// Set the initial clipping region
 		g.clipRect(__x, __y, __w, __h);
 		
-		// Call internal point
+		// Call internal paint
 		this.__doPaint(g, frame.bufferwidth, frame.bufferheight);
 		
 		// Was repainted!
@@ -1064,7 +1085,8 @@ public class Display
 		
 		// Load new framebuffer
 		if (__new || rv == null)
-			this._framebuffer = (rv = __Framebuffer__.__loadFrame(this._nid));
+			this._framebuffer = (rv = __Framebuffer__.__loadFrame(
+				this._nid));
 		
 		return rv;
 	}
