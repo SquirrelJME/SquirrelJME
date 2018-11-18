@@ -45,8 +45,11 @@ public final class SpringThread
 	/** Ran at least one frame (was started)? */
 	private volatile boolean _hadoneframe;
 	
-	/** Is it okay to exit the VM with this thread? */
-	volatile boolean _exitokay;
+	/** Is this a daemon thread? */
+	volatile boolean _daemon;
+	
+	/** Terminate the thread? */
+	volatile boolean _terminate;
 	
 	/**
 	 * Initializes the thread.
@@ -110,6 +113,9 @@ public final class SpringThread
 		// Had one frame (started)
 		this._hadoneframe = true;
 		
+		// Undo termination
+		this._terminate = false;
+		
 		return rv;
 	}
 	
@@ -161,7 +167,25 @@ public final class SpringThread
 		// Had one frame (started)
 		this._hadoneframe = true;
 		
+		// Undo termination
+		this._terminate = false;
+		
 		return rv;
+	}
+	
+	/**
+	 * Exits all frames in the stack.
+	 *
+	 * @since 2018/11/17
+	 */
+	public final void exitAllFrames()
+	{
+		// Lock on frames as a new one is added
+		List<SpringThread.Frame> frames = this._frames;
+		synchronized (frames)
+		{
+			frames.clear();
+		}
 	}
 	
 	/**
@@ -189,7 +213,7 @@ public final class SpringThread
 	 */
 	public final boolean isExitOkay()
 	{
-		return this._exitokay || (this._hadoneframe && this.numFrames() == 0);
+		return this._daemon || this._terminate;
 	}
 	
 	/**

@@ -20,6 +20,10 @@ package cc.squirreljme.runtime.cldc.asm;
  */
 public final class NativeDisplayAccess
 {
+	/** The maximum number of integers for event data. */
+	public static final int EVENT_SIZE =
+		5;
+	
 	/**
 	 * Not used.
 	 *
@@ -55,5 +59,14 @@ public final class NativeDisplayAccess
 	 * @since 2018/11/16
 	 */
 	public static final native int numDisplays();
+	
+	/**
+	 * Polls the next event, blocking until the next one occurs.
+	 *
+	 * @param __ed Event data.
+	 * @return The next event, this will be the even type.
+	 * @since 2018/11/17
+	 */
+	public static final native int pollEvent(int[] __ed);
 }
 
