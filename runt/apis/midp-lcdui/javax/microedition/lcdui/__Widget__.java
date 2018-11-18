@@ -34,6 +34,24 @@ abstract class __Widget__
 	abstract void __updateDrawChain(__DrawSlice__ __sl);
 	
 	/**
+	 * Returns the current display.
+	 *
+	 * @return The current display.
+	 * @since 2018/11/18
+	 */
+	final Display __currentDisplay()
+	{
+		// Since the widget might be part of a tabbed pane the parent will
+		// technically not be a display, so recursively go up until one is
+		// reached
+		for (__Widget__ w = this._parent; w != null; w = w._parent)
+			if (w instanceof Display)
+				return (Display)w;
+		
+		return null;
+	}
+	
+	/**
 	 * Returns the default height.
 	 *
 	 * @return The default height.

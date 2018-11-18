@@ -340,6 +340,22 @@ public final class NativeDisplayAccess
 	}
 	
 	/**
+	 * Sets the title of the display.
+	 *
+	 * @param __id The display ID.
+	 * @param __t The title to use.
+	 * @since 2018/11/18
+	 */
+	public static final void setDisplayTitle(int __id, String __t)
+	{
+		if (__id != 0)
+			return;
+		
+		NativeDisplayAccess.__frame().setTitle(
+			(__t == null ? "SquirrelJME" : __t));
+	}
+	
+	/**
 	 * Returns the current frame.
 	 *
 	 * @return The current frame.
