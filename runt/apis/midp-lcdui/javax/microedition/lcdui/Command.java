@@ -10,6 +10,8 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+
 public class Command
 	extends __Action__
 { 
@@ -57,6 +59,8 @@ public class Command
 	final int _type;
 	
 	/** The priority. */
+	@ImplementationNote("In SquirrelJME if the priority is " +
+		"Integer.MAX_VALUE then it will not be displayed.")
 	private final int _priority;
 	
 	/** Is this an implementation specific command with fixed text? */

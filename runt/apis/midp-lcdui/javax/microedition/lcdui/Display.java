@@ -968,14 +968,17 @@ public class Display
 		// If an exit command is found, run it
 		Displayable d = this.getCurrent();
 		if (d != null)
-			for (Command c : d._commands)
-				if (c._type == Command.EXIT)
-				{
-					if (true)
-						throw new todo.TODO();
-					
-					return;
-				}
+		{
+			// Only if there is an action to be ran, otherwise ignore
+			CommandListener cl = d._cmdlistener;
+			if (cl != null)
+				for (Command c : d._commands)
+					if (c._type == Command.EXIT)
+					{
+						cl.commandAction(c, d);
+						return;
+					}
+		}
 		
 		// Otherwise just exit the VM
 		System.exit(0);
