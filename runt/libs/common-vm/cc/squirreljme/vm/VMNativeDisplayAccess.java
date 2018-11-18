@@ -219,9 +219,6 @@ public class VMNativeDisplayAccess
 		if (__ed == null)
 			throw new NullPointerException("NARG");
 		
-		// Debug
-		todo.DEBUG.note("Event poll");
-		
 		// Maximum number of data points to write
 		int edlen = Math.min(__ed.length, NativeDisplayAccess.EVENT_SIZE);
 		
@@ -286,9 +283,6 @@ public class VMNativeDisplayAccess
 	public final void postEvent(int __type,
 		int __d0, int __d1, int __d2, int __d3, int __d4)
 	{
-		// Debug
-		todo.DEBUG.note("Event post: %d", __type);
-		
 		// Lock on the queue
 		short[] eventqueue = this._eventqueue;
 		synchronized (eventqueue)
@@ -340,8 +334,6 @@ public class VMNativeDisplayAccess
 			ch = canvas.getHeight();
 		if (this._fbrgb == null || cw != this._fbw || ch != this._fbh)
 		{
-			todo.DEBUG.note("Allocate framebuffer.");
-			
 			this._fbrgb = new int[cw * ch];
 			this._fbw = cw;
 			this._fbh = ch;
@@ -421,9 +413,6 @@ public class VMNativeDisplayAccess
 		@Override
 		public void sizeChanged(int __w, int __h)
 		{
-			// Debug
-			todo.DEBUG.note("New size %dx%d", __w, __h);
-			
 			// The framebuffer will need to be redone
 			VMNativeDisplayAccess.this.__checkFramebuffer();
 			
