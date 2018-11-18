@@ -770,7 +770,8 @@ public class Display
 		}
 		
 		// Register the loop to handle this display
-		throw new todo.TODO();
+		if (this._nid == 0)
+			eventloop._main = this;
 	}
 	
 	public void setCurrentItem(Item __a)
