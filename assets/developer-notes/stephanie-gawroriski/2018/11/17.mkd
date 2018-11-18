@@ -1,0 +1,13 @@
+# 2018/11/17
+
+## 10:22
+
+Finally making the VM start and initialization easier and such and doing other
+refactors as needed. Definitely going to make things easier when I implement
+SummerCoat and such.
+
+## 17:52
+
+Okay so this will be cool once I have something displayed. What I need now
+are actual threads to run things in.
+
