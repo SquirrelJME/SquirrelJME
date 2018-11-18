@@ -940,8 +940,6 @@ public class Display
 	@SerializedEvent
 	final void __doDisplaySizeChanged(int __w, int __h)
 	{
-		todo.DEBUG.note("Size changed!");
-		
 		// Report that the size changed for events
 		for (DisplayListener dl : Display.__listeners())
 			dl.sizeChanged(this, __w, __h);
@@ -999,9 +997,6 @@ public class Display
 	@SerializedEvent
 	final void __doRepaint(int __x, int __y, int __w, int __h)
 	{
-		// Debug
-		todo.DEBUG.note("Repaint!");
-		
 		// Get the graphics for this frame
 		__Framebuffer__ frame = this.__loadFrame(false);
 		Graphics g = null;
