@@ -300,6 +300,15 @@ public class VMNativeDisplayAccess
 			// Go back to the start?
 			if (eventwrite >= QUEUE_LIMIT)
 				eventwrite = 0;
+			
+			// Overflowed?
+			if (eventwrite == this._eventread)
+			{
+				todo.DEBUG.note("Event loop overflow!");
+				return;
+			}
+			
+			// Set new position
 			this._eventwrite = eventwrite;
 			
 			// Notify that an event was put in the queue
