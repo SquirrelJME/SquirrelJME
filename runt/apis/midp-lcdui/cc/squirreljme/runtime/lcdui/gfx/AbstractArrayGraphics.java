@@ -23,6 +23,22 @@ import javax.microedition.lcdui.Text;
 public abstract class AbstractArrayGraphics
 	extends Graphics
 {
+	/** Clipping above. */
+	private static final int _CLIP_ABOVE =
+		1;
+	
+	/** Clipping below. */
+	private static final int _CLIP_BELOW =
+		2;
+	
+	/** Clip right. */
+	private static final int _CLIP_RIGHT =
+		4;
+	
+	/** Clip left. */
+	private static final int _CLIP_LEFT =
+		8;
+	
 	/** The width of the image. */
 	protected final int width;
 	
@@ -157,6 +173,54 @@ public abstract class AbstractArrayGraphics
 		this.clipex = __w;
 		this.clipey = __h;
 	}
+	
+	/**
+	 * Internal line draw.
+	 *
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __ex The end X coordinate.
+	 * @param __ey The end Y coordinate.
+	 * @since 2018/11/18
+	 */
+	protected abstract void internalDrawLine(int __x, int __y,
+		int __ex, int __ey);
+	
+	/**
+	 * Internal line draw with blending.
+	 *
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __ex The end X coordinate.
+	 * @param __ey The end Y coordinate.
+	 * @since 2018/11/18
+	 */
+	protected abstract void internalDrawLineBlended(int __x, int __y,
+		int __ex, int __ey);
+	
+	/**
+	 * Internal dotted line draw.
+	 *
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __ex The end X coordinate.
+	 * @param __ey The end Y coordinate.
+	 * @since 2018/11/18
+	 */
+	protected abstract void internalDrawLineDotted(int __x, int __y,
+		int __ex, int __ey);
+	
+	/**
+	 * Internal dotted line draw with blending.
+	 *
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __ex The end X coordinate.
+	 * @param __ey The end Y coordinate.
+	 * @since 2018/11/18
+	 */
+	protected abstract void internalDrawLineBlendedDotted(int __x, int __y,
+		int __ex, int __ey);
 	
 	/**
 	 * Internal rectangle fill with blending.
@@ -340,7 +404,116 @@ public abstract class AbstractArrayGraphics
 	@Override
 	public final void drawLine(int __x1, int __y1, int __x2, int __y2)
 	{
-		throw new todo.TODO();
+		// Translate all coordinates
+		int transx = this.transx,
+			transy = this.transy;
+		__x1 += transx;
+		__y1 += transy;
+		__x2 += transx;
+		__y2 += transy;
+		
+		// Get clipping region
+		int clipsx = this.clipsx, clipsy = this.clipsy,
+			clipex = this.clipex,
+			clipey = this.clipey;
+		
+		// Perform Cohen-Sutherland line clipping
+		for (;;)
+		{
+			// Determine points that lie outside the box
+			int outa = AbstractArrayGraphics.__csOut(__x1, __y1,
+					clipsx, clipsy, clipex - 1,clipey - 1),
+				outb = AbstractArrayGraphics.__csOut(__x2, __y2, clipsx,
+					clipsy, clipex - 1, clipey - 1);
+			
+			// Both points are outside the box, do nothing
+			if ((outa & outb) != 0)
+				return;
+			
+			// Both points are inside the box, use this line
+			if (outa == 0 && outb == 0)
+				break;
+			
+			// Only the second point is outside, swap the points so that the
+			// first point is outside and the first is not
+			if (outa == 0)
+			{
+				// Swap X
+				int boop = __x1;
+				__x1 = __x2;
+				__x2 = boop;
+				
+				// Swap Y
+				boop = __y1;
+				__y1 = __y2;
+				__y2 = boop;
+				
+				// Swap clip flags
+				boop = outb;
+				outb = outa;
+				outa = boop;
+			}
+			
+			// The point is clipped
+			if (outa != 0)
+			{
+				// Differences of points
+				int dx = __x2 - __x1,
+					dy = __y2 - __y1;
+				
+				// Clips above the box
+				if ((outa & _CLIP_ABOVE) != 0)
+				{
+					__x1 += dx * (clipey - __y1) / dy;
+					__y1 = clipey - 1;
+				}
+			
+				// Clips below
+				else if ((outa & _CLIP_BELOW) != 0)
+				{
+					__x1 += dx * (clipsy - __y1) / dy;
+					__y1 = clipsy;
+				}
+			
+				// Clips the right side
+				else if ((outa & _CLIP_RIGHT) != 0)
+				{
+					__y1 += dy * (clipex - __x1) / dx;
+					__x1 = clipex - 1;
+				}
+			
+				// Clips the left side
+				else if ((outa & _CLIP_LEFT) != 0)
+				{
+					__y1 += dy * (clipsx - __x1) / dx;
+					__x1 = clipsx;
+				}
+			}
+		}
+		
+		// Have lines which always go to the right
+		if (__x2 < __x1)
+		{
+			int boopx = __x1,
+				boopy = __y1;
+			__x1 = __x2;
+			__y1 = __y2;
+			__x2 = boopx;
+			__y2 = boopy;
+		}
+		
+		// Forward depending on blending and/or dots
+		boolean dotted = (this.strokestyle == DOTTED);
+		if (this.doblending)
+			if (dotted)
+				this.internalDrawLineBlendedDotted(__x1, __y1, __x2, __y2);
+			else
+				this.internalDrawLineBlended(__x1, __y1, __x2, __y2);
+		else
+			if (dotted)
+				this.internalDrawLineDotted(__x1, __y1, __x2, __y2);
+			else
+				this.internalDrawLine(__x1, __y1, __x2, __y2);
 	}
 	
 	/**
@@ -999,6 +1172,38 @@ public abstract class AbstractArrayGraphics
 	{
 		this.transx += __x;
 		this.transy += __y;
+	}
+	
+	/**
+	 * Determines the Cohen-Sutherland clipping flags.
+	 *
+	 * @param __x Input X coordinate.
+	 * @param __y Input Y coordinate.
+	 * @param __csx Clipping box starting X.
+	 * @param __csy Clipping box starting Y.
+	 * @param __cex Clipping box ending X.
+	 * @param __cey Clipping box ending Y.
+	 * @return The clipping bit flags.
+	 * @since 2017/09/10
+	 */
+	private static final int __csOut(int __x, int __y, int __csx, int __csy,
+		int __cex, int __cey)
+	{
+		int rv = 0;
+		
+		// Clips above or below?
+		if (__y > __cey)
+			rv |= _CLIP_ABOVE;
+		else if (__y < __csy)
+			rv |= _CLIP_BELOW;
+		
+		// Clips right or left?
+		if (__x > __cex)
+			rv |= _CLIP_RIGHT;
+		else if (__x < __csx)
+			rv |= _CLIP_LEFT;
+		
+		return rv;
 	}
 }
 
