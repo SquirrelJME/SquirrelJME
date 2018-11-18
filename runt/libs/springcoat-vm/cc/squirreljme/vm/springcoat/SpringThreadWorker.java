@@ -491,6 +491,83 @@ public final class SpringThreadWorker
 	}
 	
 	/**
+	 * Wraps the native array so that it is directly read and written in
+	 * the VM code.
+	 *
+	 * @param __a The object to convert.
+	 * @return The object representing the array.
+	 * @throws RuntimeException If the type is not an array.
+	 * @since 2018/11/18
+	 */
+	public final SpringObject asWrappedArray(Object __a)
+		throws RuntimeException
+	{
+		if (__a == null)
+			return SpringNullObject.NULL;
+		
+		// Boolean
+		else if (__a instanceof boolean[])
+			return new SpringArrayObjectBoolean(
+				this.loadClass(new ClassName("[Z")),
+				this.loadClass(new ClassName("boolean")),
+				(boolean[])__a);
+		
+		// Byte
+		else if (__a instanceof byte[])
+			return new SpringArrayObjectByte(
+				this.loadClass(new ClassName("[B")),
+				this.loadClass(new ClassName("byte")),
+				(byte[])__a);
+		
+		// Short
+		else if (__a instanceof short[])
+			return new SpringArrayObjectShort(
+				this.loadClass(new ClassName("[S")),
+				this.loadClass(new ClassName("short")),
+				(short[])__a);
+		
+		// Character
+		else if (__a instanceof char[])
+			return new SpringArrayObjectChar(
+				this.loadClass(new ClassName("[C")),
+				this.loadClass(new ClassName("char")),
+				(char[])__a);
+		
+		// Integer
+		else if (__a instanceof int[])
+			return new SpringArrayObjectInteger(
+				this.loadClass(new ClassName("[I")),
+				this.loadClass(new ClassName("int")),
+				(int[])__a);
+		
+		// Long
+		else if (__a instanceof long[])
+			return new SpringArrayObjectLong(
+				this.loadClass(new ClassName("[J")),
+				this.loadClass(new ClassName("long")),
+				(long[])__a);
+		
+		// Float
+		else if (__a instanceof float[])
+			return new SpringArrayObjectFloat(
+				this.loadClass(new ClassName("[F")),
+				this.loadClass(new ClassName("float")),
+				(float[])__a);
+		
+		// Double
+		else if (__a instanceof double[])
+			return new SpringArrayObjectDouble(
+				this.loadClass(new ClassName("[D")),
+				this.loadClass(new ClassName("double")),
+				(double[])__a);
+		
+		// {@squirreljme.error BK33 Cannot wrap this as a native array.
+		// (The input class type)}
+		else
+			throw new RuntimeException("BK33 " + __a.getClass());
+	}
+	
+	/**
 	 * Checks if the given class may be accessed.
 	 *
 	 * @param __cl The class to access.
@@ -954,6 +1031,24 @@ public final class SpringThreadWorker
 				"capabilities:(I)I":
 				return this.machine.nativedisplay.capabilities(
 					(Integer)__args[0]);
+			
+				// Framebuffer object
+			case "cc/squirreljme/runtime/cldc/asm/NativeDisplayAccess::" +
+				"framebufferObject:(I)Ljava/lang/Object;":
+				return this.asWrappedArray(this.machine.nativedisplay.
+					framebufferObject((Integer)__args[0]));
+				
+				// Framebuffer palette
+			case "cc/squirreljme/runtime/cldc/asm/NativeDisplayAccess::" +
+				"framebufferPalette:(I)Ljava/lang/Object;":
+				return this.asWrappedArray(this.machine.nativedisplay.
+					framebufferPalette((Integer)__args[0]));
+					
+				// Framebuffer parameters
+			case "cc/squirreljme/runtime/cldc/asm/NativeDisplayAccess::" +
+				"framebufferParameters:(I)Ljava/lang/Object;":
+				return this.asWrappedArray(this.machine.nativedisplay.
+					framebufferParameters((Integer)__args[0]));
 				
 				// Capabilities of a display
 			case "cc/squirreljme/runtime/cldc/asm/NativeDisplayAccess::" +
