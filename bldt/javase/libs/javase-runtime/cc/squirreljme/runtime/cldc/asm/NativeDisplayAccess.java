@@ -10,7 +10,22 @@
 
 package cc.squirreljme.runtime.cldc.asm;
 
+import cc.squirreljme.runtime.javase.lcdui.ColorInfo;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBuffer;
+import java.awt.image.DataBufferByte;
+import java.awt.image.DataBufferInt;
+import java.awt.image.DataBufferShort;
+import java.awt.Rectangle;
+import java.awt.SystemColor;
 import javax.microedition.lcdui.Display;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 /**
  * Java SE implementation of the native display system using Swing.
@@ -81,6 +96,30 @@ public final class NativeDisplayAccess
 	/** The write position. */
 	private static int _eventwrite;
 	
+	/** The frame to display. */
+	private static volatile JFrame _frame;
+	
+	/** The panel used to display graphics on. */
+	private static volatile SwingPanel _panel;
+	
+	/**
+	 * Initializes some things
+	 *
+	 * @since 2018/11/18
+	 */
+	static
+	{
+		try
+		{
+			// But doing this, speed is increased greatly!
+			JFrame.setDefaultLookAndFeelDecorated(true);
+		}
+		catch (Throwable t)
+		{
+			t.printStackTrace();
+		}
+	}
+	
 	/**
 	 * Returns the capabilities of the display.
 	 *
@@ -108,7 +147,7 @@ public final class NativeDisplayAccess
 		if (__id != 0)
 			return null;
 		
-		throw new todo.TODO();
+		return ColorInfo.getArray(NativeDisplayAccess.__panel()._image);
 	}
 	
 	/**
@@ -123,7 +162,7 @@ public final class NativeDisplayAccess
 		if (__id != 0)
 			return null;
 		
-		throw new todo.TODO();
+		return ColorInfo.getPalette(NativeDisplayAccess.__panel()._image);
 	}
 	
 	/**
@@ -138,7 +177,21 @@ public final class NativeDisplayAccess
 		if (__id != 0)
 			return null;
 		
-		throw new todo.TODO();
+		BufferedImage image = NativeDisplayAccess.__panel()._image;
+		
+		// Build parameters
+		int[] rv = new int[NativeDisplayAccess.NUM_PARAMETERS];
+		rv[NativeDisplayAccess.PARAMETER_PIXELFORMAT] =
+			ColorInfo.PIXEL_FORMAT.ordinal();
+		rv[NativeDisplayAccess.PARAMETER_BUFFERWIDTH] = image.getWidth();
+		rv[NativeDisplayAccess.PARAMETER_BUFFERHEIGHT] = image.getHeight();
+		rv[NativeDisplayAccess.PARAMETER_ALPHA] = 0;
+		rv[NativeDisplayAccess.PARAMETER_PITCH] = image.getWidth();
+		rv[NativeDisplayAccess.PARAMETER_OFFSET] = 0;
+		rv[NativeDisplayAccess.PARAMETER_VIRTXOFF] = 0;
+		rv[NativeDisplayAccess.PARAMETER_VIRTYOFF] = 0;
+		
+		return rv;
 	}
 	
 	/**
@@ -265,6 +318,116 @@ public final class NativeDisplayAccess
 			
 			// Notify that an event was put in the queue
 			eventqueue.notifyAll();
+		}
+	}
+	
+	/**
+	 * Returns the current frame.
+	 *
+	 * @return The current frame.
+	 * @since 2018/11/18
+	 */
+	static final JFrame __frame()
+	{
+		// Without the lock, the frame is initialized multiple times
+		synchronized (NativeDisplayAccess.class)
+		{
+			JFrame rv = NativeDisplayAccess._frame;
+			if (rv != null)
+				return rv;
+				
+			// Debug
+			todo.DEBUG.note("Setting up the frame.");
+			
+			// Setup frame
+			NativeDisplayAccess._frame = (rv = new JFrame());
+			
+			// Exit when close is pressed
+			rv.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			
+			// Initial title
+			rv.setTitle("SquirrelJME");
+			
+			// Use a better panel size
+			rv.setMinimumSize(new Dimension(160, 160));
+			rv.setPreferredSize(new Dimension(640, 480));
+			
+			return rv;
+		}
+	}
+	
+	/**
+	 * Returns the current panel.
+	 *
+	 * @return The current panel.
+	 * @since 2018/11/18
+	 */
+	static final SwingPanel __panel()
+	{
+		// Without the lock, the panel is initialized multiple times
+		synchronized (NativeDisplayAccess.class)
+		{
+			SwingPanel rv = NativeDisplayAccess._panel;
+			if (rv != null)
+				return rv;
+			
+			// Debug
+			todo.DEBUG.note("Setting up the panel.");
+			
+			// Setup panel
+			NativeDisplayAccess._panel = (rv = new SwingPanel());
+			
+			// Add to the frame
+			JFrame frame = NativeDisplayAccess.__frame();
+			frame.add(rv);
+			
+			// Pack the frame
+			frame.pack();
+			
+			// Make the frame visible and set its properties
+			frame.setLocationRelativeTo(null);
+			frame.setVisible(true);
+			
+			return rv;
+		}
+	}
+	
+	/**
+	 * The panel used to display graphics on.
+	 *
+	 * @since 2018/11/18
+	 */
+	public static final class SwingPanel
+		extends JPanel
+	{
+		/** The image to be displayed. */
+		volatile BufferedImage _image =
+			ColorInfo.create(1, 1, new Color(0xFFFFFFFF));
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/11/18
+		 */
+		@Override
+		protected void paintComponent(java.awt.Graphics __g)
+		{
+			// This must always be called
+			super.paintComponent(__g);
+			
+			BufferedImage image = this._image;
+			int oldw = image.getWidth(),
+				oldh = image.getHeight(),
+				xw = this.getWidth(),
+				xh = this.getHeight();
+		
+			// Recreate the image if the size has changed
+			if (xw != oldw || xh != oldh)
+				this._image = (image = ColorInfo.create(xw, xh,
+					new Color(0xFFFFFFFF)));
+			
+			// Draw the backed buffered image
+			__g.drawImage(image, 0, 0, xw, xh,
+				0, 0, xw, xh, null);
 		}
 	}
 }

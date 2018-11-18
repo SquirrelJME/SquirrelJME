@@ -1040,13 +1040,13 @@ public final class SpringThreadWorker
 				
 				// Framebuffer palette
 			case "cc/squirreljme/runtime/cldc/asm/NativeDisplayAccess::" +
-				"framebufferPalette:(I)Ljava/lang/Object;":
+				"framebufferPalette:(I)[I":
 				return this.asWrappedArray(this.machine.nativedisplay.
 					framebufferPalette((Integer)__args[0]));
 					
 				// Framebuffer parameters
 			case "cc/squirreljme/runtime/cldc/asm/NativeDisplayAccess::" +
-				"framebufferParameters:(I)Ljava/lang/Object;":
+				"framebufferParameters:(I)[I":
 				return this.asWrappedArray(this.machine.nativedisplay.
 					framebufferParameters((Integer)__args[0]));
 				
