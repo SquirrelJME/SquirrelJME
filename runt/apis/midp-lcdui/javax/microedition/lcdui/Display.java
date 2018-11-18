@@ -201,7 +201,7 @@ public class Display
 	static volatile __EventLoop__ _EVENT_LOOP;
 	
 	/** The Native ID of this display. */
-	private final int _nid;
+	final int _nid;
 	
 	/** The displayable to show. */
 	private volatile Displayable _current;
@@ -1008,6 +1008,9 @@ public class Display
 		
 		// Call internal point
 		this.__doPaint(g, frame.bufferwidth, frame.bufferheight);
+		
+		// Was repainted!
+		NativeDisplayAccess.framebufferPainted(this._nid);
 	}
 	
 	/**

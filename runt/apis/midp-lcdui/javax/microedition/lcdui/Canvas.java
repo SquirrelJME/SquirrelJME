@@ -10,6 +10,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
 import cc.squirreljme.runtime.lcdui.event.EventType;
 import cc.squirreljme.runtime.lcdui.event.KeyNames;
 import cc.squirreljme.runtime.lcdui.gfx.BasicGraphics;
@@ -434,12 +435,12 @@ public abstract class Canvas
 		if (__w <= 0 || __h <= 0)
 			return;
 		
-		// Send repaint
-		throw new todo.TODO();
-		/*
-		LcdServiceCall.<VoidType>call(VoidType.class,
-			LcdFunction.WIDGET_REPAINT, this._handle, __x, __y, __w, __h);
-		*/
+		// Tell the display to repaint itself
+		Display display = this.getCurrentDisplay();
+		if (display != null)
+			NativeDisplayAccess.postEvent(
+				EventType.DISPLAY_REPAINT.ordinal(),
+				display._nid, __x, __y, __w, __h);
 	}
 	
 	public final void serviceRepaints()

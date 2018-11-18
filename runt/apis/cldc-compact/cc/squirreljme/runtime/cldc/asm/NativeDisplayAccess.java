@@ -88,6 +88,14 @@ public final class NativeDisplayAccess
 	public static final native Object framebufferObject(int __id);
 	
 	/**
+	 * Specifies that the framebuffer has been painted.
+	 *
+	 * @param __id The display ID.
+	 * @since 2018/11/18
+	 */
+	public static final native void framebufferPainted(int __id);
+	
+	/**
 	 * Returns the palette of the framebuffer.
 	 *
 	 * @param __id The display ID.
