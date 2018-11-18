@@ -621,7 +621,12 @@ public class Display
 		__g.drawLine(0, 0, __w, __h);
 		
 		__g.setColor(0x0000FF);
-		__g.drawLine(0, __h, __w, 0); 
+		__g.drawLine(0, __h, __w, 0);
+		
+		// Draw the current widget
+		Displayable current = this._current;
+		if (current != null)
+			current.__widgetPaint(__g, __w, __h);
 	}
 	
 	public void removeCurrent()
