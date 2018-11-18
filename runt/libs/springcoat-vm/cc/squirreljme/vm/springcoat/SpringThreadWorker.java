@@ -991,14 +991,14 @@ public final class SpringThreadWorker
 				
 				// Post event
 			case "cc/squirreljme/runtime/cldc/asm/NativeDisplayAccess::" +
-				"postEvent:(SSSSSS)V":
+				"postEvent:(IIIIII)V":
 				this.machine.nativedisplay.postEvent(
-					((Integer)__args[0]).shortValue(),
-					((Integer)__args[1]).shortValue(),
-					((Integer)__args[2]).shortValue(),
-					((Integer)__args[3]).shortValue(),
-					((Integer)__args[4]).shortValue(),
-					((Integer)__args[5]).shortValue());
+					((Integer)__args[0]).intValue(),
+					((Integer)__args[1]).intValue(),
+					((Integer)__args[2]).intValue(),
+					((Integer)__args[3]).intValue(),
+					((Integer)__args[4]).intValue(),
+					((Integer)__args[5]).intValue());
 				return null;
 				
 				// Return the length of the array
@@ -1380,6 +1380,23 @@ public final class SpringThreadWorker
 				// Single step executing the top frame
 				this.__singleStep();
 			}
+		}
+		
+		// If the VM is exiting then clear the execution stack before we go
+		// away
+		catch (SpringMachineExitException e)
+		{
+			// Thread is okay to exit!
+			thread._terminate = true;
+			
+			// Exit all frames
+			thread.exitAllFrames();
+			
+			// Exit profiler stack
+			thread.profiler.exitAll(System.nanoTime());
+			
+			// Do not rethrow though
+			return;
 		}
 		
 		// Caught exception

@@ -178,7 +178,7 @@ public class VMNativeDisplayAccess
 	 * @since 2018/11/18
 	 */
 	public final void postEvent(int __type,
-		short __d0, short __d1, short __d2, short __d3, short __d4)
+		int __d0, int __d1, int __d2, int __d3, int __d4)
 	{
 		// Debug
 		todo.DEBUG.note("Event post: %d", __type);
@@ -191,11 +191,11 @@ public class VMNativeDisplayAccess
 			
 			// Overwrite all the data
 			eventqueue[eventwrite++] = (short)__type;
-			eventqueue[eventwrite++] = __d0;
-			eventqueue[eventwrite++] = __d1;
-			eventqueue[eventwrite++] = __d2;
-			eventqueue[eventwrite++] = __d3;
-			eventqueue[eventwrite++] = __d4;
+			eventqueue[eventwrite++] = (short)__d0;
+			eventqueue[eventwrite++] = (short)__d1;
+			eventqueue[eventwrite++] = (short)__d2;
+			eventqueue[eventwrite++] = (short)__d3;
+			eventqueue[eventwrite++] = (short)__d4;
 			
 			// Go back to the start?
 			if (eventwrite >= QUEUE_LIMIT)

@@ -13,6 +13,7 @@ package javax.microedition.lcdui;
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
 import cc.squirreljme.runtime.lcdui.DisplayOrientation;
 import cc.squirreljme.runtime.lcdui.DisplayState;
+import cc.squirreljme.runtime.lcdui.event.EventType;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -769,9 +770,15 @@ public class Display
 			new Thread(eventloop, "SquirrelJME-LCDUIEventLoop").start();
 		}
 		
-		// Register the loop to handle this display
-		if (this._nid == 0)
+		// If this is the main display, it gets events pushed to it
+		// specifically
+		int nid = this._nid;
+		if (nid == 0)
 			eventloop._main = this;
+		
+		// Post event that indicates that the current state has changed
+		NativeDisplayAccess.postEvent(EventType.DISPLAY_SETCURRENT.ordinal,
+			nid, 0, 0, 0, 0);
 	}
 	
 	public void setCurrentItem(Item __a)

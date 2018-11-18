@@ -554,8 +554,8 @@ public final class SpringMachine
 		{
 			this.run();
 			
-			// Success!
-			return 0;
+			// Success, maybe
+			return this._exitcode;
 		}
 		
 		// Exit VM with given code
