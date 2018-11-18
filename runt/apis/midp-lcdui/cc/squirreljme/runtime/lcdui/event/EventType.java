@@ -38,8 +38,8 @@ public enum EventType
 	/** Pointer Released. */
 	POINTER_RELEASED,
 	
-	/** Repaint the current display. */
-	REPAINT,
+	/** Repaint the display. */
+	DISPLAY_REPAINT,
 	
 	/**
 	 * Display has updated the displayable.
@@ -47,8 +47,8 @@ public enum EventType
 	 */
 	DISPLAY_SETCURRENT,
 	
-	/** Size has changed. */
-	SIZE_CHANGED,
+	/** Display size has changed. */
+	DISPLAY_SIZE_CHANGED,
 	
 	/** End. */
 	;
@@ -75,9 +75,9 @@ public enum EventType
 			case 4:	return POINTER_DRAGGED;
 			case 5:	return POINTER_PRESSED;
 			case 6:	return POINTER_RELEASED;
-			case 7: return REPAINT;
+			case 7: return DISPLAY_REPAINT;
 			case 8: return DISPLAY_SETCURRENT;
-			case 9: return SIZE_CHANGED;
+			case 9: return DISPLAY_SIZE_CHANGED;
 			
 				// {@squirreljme.error EB2a Unknown event type. (The event
 				// type)}
