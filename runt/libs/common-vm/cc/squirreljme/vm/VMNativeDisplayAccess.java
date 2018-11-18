@@ -14,7 +14,10 @@ import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
 import cc.squirreljme.runtime.lcdui.event.EventType;
 import cc.squirreljme.runtime.lcdui.gfx.PixelFormat;
 import javax.microedition.lcdui.Canvas;
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
 
 /**
@@ -307,8 +310,14 @@ public class VMNativeDisplayAccess
 		VMCanvas canvas = this._canvas;
 		if (canvas == null)
 		{
+			// Display this canvas
 			this._canvas = (canvas = new VMCanvas());
 			this._usedisplay.setCurrent(canvas);
+			
+			// Add exit command
+			canvas.setCommandListener(new __CommandListener__());
+			canvas.addCommand(new Command("Exit", Command.EXIT,
+				Integer.MAX_VALUE));
 		}
 		
 		// Properties have changed? Recreate the buffer data
@@ -336,6 +345,29 @@ public class VMNativeDisplayAccess
 		if (rv == null)
 			this._usedisplay = (rv = Display.getDisplays(0)[0]);
 		return rv;
+	}
+	
+	/**
+	 * Listens for commands.
+	 *
+	 * @since 2018/11/18
+	 */
+	final class __CommandListener__
+		implements CommandListener
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/11/18
+		 */
+		@Override
+		public void commandAction(Command __c, Displayable __d)
+		{
+			// Exiting the VM?
+			if (__c.getCommandType() == Command.EXIT)
+				VMNativeDisplayAccess.this.postEvent(
+					EventType.EXIT_REQUEST.ordinal(),
+					0, -1, -1, -1, -1);
+		}
 	}
 	
 	/**
