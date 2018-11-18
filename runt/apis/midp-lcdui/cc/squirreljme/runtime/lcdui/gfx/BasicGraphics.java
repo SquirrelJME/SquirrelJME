@@ -21,6 +21,7 @@ import javax.microedition.lcdui.Text;
  *
  * @since 2017/02/10
  */
+@Deprecated
 public abstract class BasicGraphics
 	extends Graphics
 {

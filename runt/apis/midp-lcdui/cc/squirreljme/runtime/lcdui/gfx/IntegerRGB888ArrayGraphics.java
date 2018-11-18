@@ -57,6 +57,88 @@ public final class IntegerRGB888ArrayGraphics
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2018/11/18
+	 */
+	@Override
+	protected final void internalDrawLine(int __x1, int __y1,
+		int __x2, int __y2)
+	{
+		int[] data = this.buffer;
+		int iw = this.width,
+			dx = __x2 - __x1;
+		
+		int dy = __y2 - __y1;
+		if (dy < 0)
+			dy = -dy;	
+		
+		int sy = (__y1 < __y2 ? 1 : -1),
+			ssy = iw * sy,
+			err = (dx > dy ? dx : -dy) >> 2,
+			color = this.paintcolor,
+			dest = this.offset + (iw * __y1) + __x1;
+		
+		for (;;)
+		{
+			data[dest] = color;
+			
+			// End
+			if (((__x1 ^ __x2) | (__y1 ^ __y2)) == 0)
+				break;
+			
+			// Increase X
+			int brr = err;
+			if (brr > -dx)
+			{
+				err -= dy;
+				__x1++;
+				dest++;
+			}
+	
+			// Increase Y
+			if (brr < dy)
+			{
+				err += dx;
+				__y1 += sy;
+				dest += ssy;
+			}
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/18
+	 */
+	@Override
+	protected final void internalDrawLineBlended(int __x, int __y,
+		int __ex, int __ey)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/18
+	 */
+	@Override
+	protected final void internalDrawLineDotted(int __x, int __y,
+		int __ex, int __ey)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/18
+	 */
+	@Override
+	protected final void internalDrawLineBlendedDotted(int __x, int __y,
+		int __ex, int __ey)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/03/25
 	 */
 	@Override

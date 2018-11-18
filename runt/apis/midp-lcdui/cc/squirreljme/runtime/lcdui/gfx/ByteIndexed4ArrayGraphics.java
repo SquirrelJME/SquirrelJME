@@ -54,6 +54,50 @@ public final class ByteIndexed4ArrayGraphics
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2018/11/18
+	 */
+	@Override
+	protected final void internalDrawLine(int __x, int __y,
+		int __ex, int __ey)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/18
+	 */
+	@Override
+	protected final void internalDrawLineBlended(int __x, int __y,
+		int __ex, int __ey)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/18
+	 */
+	@Override
+	protected final void internalDrawLineDotted(int __x, int __y,
+		int __ex, int __ey)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/18
+	 */
+	@Override
+	protected final void internalDrawLineBlendedDotted(int __x, int __y,
+		int __ex, int __ey)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/03/25
 	 */
 	@Override

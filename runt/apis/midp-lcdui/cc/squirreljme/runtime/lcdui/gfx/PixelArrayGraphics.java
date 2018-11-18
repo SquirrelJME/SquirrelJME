@@ -15,6 +15,7 @@ package cc.squirreljme.runtime.lcdui.gfx;
  *
  * @since 2017/02/12
  */
+@Deprecated
 public abstract class PixelArrayGraphics
 	extends BasicGraphics
 {
