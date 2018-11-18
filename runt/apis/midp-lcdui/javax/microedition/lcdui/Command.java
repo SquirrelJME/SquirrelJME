@@ -54,7 +54,7 @@ public class Command
 		ITEM;
 	
 	/** The command type. */
-	private final int _type;
+	final int _type;
 	
 	/** The priority. */
 	private final int _priority;

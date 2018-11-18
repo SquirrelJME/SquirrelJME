@@ -428,7 +428,7 @@ public class Display
 	 */
 	public Displayable getCurrent()
 	{
-		throw new todo.TODO();
+		return this._current;
 	}
 	
 	public int getDisplayState()
@@ -940,9 +940,45 @@ public class Display
 	@SerializedEvent
 	final void __doDisplaySizeChanged(int __w, int __h)
 	{
+		todo.DEBUG.note("Size changed!");
+		
 		// Report that the size changed for events
 		for (DisplayListener dl : Display.__listeners())
 			dl.sizeChanged(this, __w, __h);
+		
+		// Tell the current displayable that the size has changed
+		Displayable d = this.getCurrent();
+		if (d != null)
+			d.sizeChanged(__w, __h);
+		
+		// Repaint everything
+		this.__doRepaint(0, 0, __w, __h);
+	}
+	
+	/**
+	 * Requests that exit is performed. If there is a command which tagged
+	 * under the exit type, then that will be launched. Otherwise if there is
+	 * no command then it will just do a system exit.
+	 *
+	 * @since 2018/11/18
+	 */
+	@SerializedEvent
+	final void __doExitRequest()
+	{
+		// If an exit command is found, run it
+		Displayable d = this.getCurrent();
+		if (d != null)
+			for (Command c : d._commands.values())
+				if (c._type == Command.EXIT)
+				{
+					if (true)
+						throw new todo.TODO();
+					
+					return;
+				}
+		
+		// Otherwise just exit the VM
+		System.exit(0);
 	}
 	
 	/**

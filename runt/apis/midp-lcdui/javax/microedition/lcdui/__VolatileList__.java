@@ -79,5 +79,17 @@ final class __VolatileList__<T>
 	{
 		this._values = new Object[0];
 	}
+	
+	/**
+	 * Returns the values in the list.
+	 *
+	 * @return The list values.
+	 * @since 2018/11/18
+	 */
+	@SuppressWarnings({"unchecked"})
+	public final T[] values()
+	{
+		return (T[])this._values;
+	}
 }
 

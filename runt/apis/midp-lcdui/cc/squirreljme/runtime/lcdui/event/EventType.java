@@ -50,6 +50,9 @@ public enum EventType
 	/** Display size has changed. */
 	DISPLAY_SIZE_CHANGED,
 	
+	/** Exit program requested. */
+	EXIT_REQUEST,
+	
 	/** End. */
 	;
 	
@@ -68,16 +71,17 @@ public enum EventType
 	{
 		switch (__i)
 		{
-			case 0:	return COMMAND;
-			case 1:	return KEY_PRESSED;
-			case 2:	return KEY_RELEASED;
-			case 3:	return KEY_REPEATED;
-			case 4:	return POINTER_DRAGGED;
-			case 5:	return POINTER_PRESSED;
-			case 6:	return POINTER_RELEASED;
-			case 7: return DISPLAY_REPAINT;
-			case 8: return DISPLAY_SETCURRENT;
-			case 9: return DISPLAY_SIZE_CHANGED;
+			case 0:		return COMMAND;
+			case 1:		return KEY_PRESSED;
+			case 2:		return KEY_RELEASED;
+			case 3:		return KEY_REPEATED;
+			case 4:		return POINTER_DRAGGED;
+			case 5:		return POINTER_PRESSED;
+			case 6:		return POINTER_RELEASED;
+			case 7:		return DISPLAY_REPAINT;
+			case 8:		return DISPLAY_SETCURRENT;
+			case 9:		return DISPLAY_SIZE_CHANGED;
+			case 10:	return EXIT_REQUEST;
 			
 				// {@squirreljme.error EB2a Unknown event type. (The event
 				// type)}
