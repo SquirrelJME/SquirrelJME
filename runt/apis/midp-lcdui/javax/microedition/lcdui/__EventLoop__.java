@@ -102,12 +102,20 @@ final class __EventLoop__
 					throw new todo.TODO();
 
 					// Repaint the current display
-				case REPAINT:
-					throw new todo.TODO();
+				case DISPLAY_REPAINT:
+					Display.__mapDisplay(data[0]).__doRepaint(
+						data[1], data[2], data[3], data[4]);
+					break;
 				
 					// Display has had setCurrent() called
 				case DISPLAY_SETCURRENT:
 					Display.__mapDisplay(data[0]).__doSetCurrent();
+					break;
+					
+					// Display had its size changed
+				case DISPLAY_SIZE_CHANGED:
+					Display.__mapDisplay(data[0]).__doSizeChanged(
+						data[1], data[2]);
 					break;
 					
 				default:

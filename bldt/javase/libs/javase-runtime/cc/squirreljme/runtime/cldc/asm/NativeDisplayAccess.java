@@ -11,6 +11,7 @@
 package cc.squirreljme.runtime.cldc.asm;
 
 import cc.squirreljme.runtime.javase.lcdui.ColorInfo;
+import cc.squirreljme.runtime.lcdui.event.EventType;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ComponentEvent;
@@ -381,6 +382,9 @@ public final class NativeDisplayAccess
 			JFrame frame = NativeDisplayAccess.__frame();
 			frame.add(rv);
 			
+			// Record some events
+			frame.addComponentListener(rv);
+			
 			// Pack the frame
 			frame.pack();
 			
@@ -399,10 +403,61 @@ public final class NativeDisplayAccess
 	 */
 	public static final class SwingPanel
 		extends JPanel
+		implements ComponentListener
 	{
 		/** The image to be displayed. */
 		volatile BufferedImage _image =
 			ColorInfo.create(1, 1, new Color(0xFFFFFFFF));
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/11/18
+		 */
+		@Override
+		public void componentHidden(ComponentEvent __e)
+		{
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/11/18
+		 */
+		@Override
+		public void componentMoved(ComponentEvent __e)
+		{
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/11/18
+		 */
+		@Override
+		public void componentResized(ComponentEvent __e)
+		{
+			BufferedImage image = this._image;
+			int oldw = image.getWidth(),
+				oldh = image.getHeight(),
+				xw = this.getWidth(),
+				xh = this.getHeight();
+		
+			// Recreate the image if the size has changed
+			if (xw != oldw || xh != oldh)
+				this._image = (image = ColorInfo.create(xw, xh,
+					new Color(0xFFFFFFFF)));
+			
+			NativeDisplayAccess.postEvent(
+				EventType.DISPLAY_SIZE_CHANGED.ordinal(),
+				0, xw, xh, -1, -1);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/11/18
+		 */
+		@Override
+		public void componentShown(ComponentEvent __e)
+		{
+		}
 		
 		/**
 		 * {@inheritDoc}
@@ -424,6 +479,12 @@ public final class NativeDisplayAccess
 			if (xw != oldw || xh != oldh)
 				this._image = (image = ColorInfo.create(xw, xh,
 					new Color(0xFFFFFFFF)));
+			
+			// Post repaint event
+			Rectangle rect = __g.getClipBounds();
+			NativeDisplayAccess.postEvent(
+				EventType.DISPLAY_REPAINT.ordinal(),
+				0, rect.x, rect.y, rect.width, rect.height);
 			
 			// Draw the backed buffered image
 			__g.drawImage(image, 0, 0, xw, xh,

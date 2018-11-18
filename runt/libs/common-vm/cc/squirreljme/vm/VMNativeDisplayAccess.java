@@ -370,8 +370,11 @@ public class VMNativeDisplayAccess
 		@Override
 		public void sizeChanged(int __w, int __h)
 		{
+			// Debug
+			todo.DEBUG.note("New size %dx%d", __w, __h);
+			
 			VMNativeDisplayAccess.this.postEvent(
-				EventType.SIZE_CHANGED.ordinal(),
+				EventType.DISPLAY_SIZE_CHANGED.ordinal(),
 				__w, __h, -1, -1, -1);
 		}
 	}

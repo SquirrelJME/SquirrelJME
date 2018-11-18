@@ -609,6 +609,21 @@ public class Display
 		return this._head.numColors();*/
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/18
+	 */
+	@SerializedEvent
+	@Override
+	void paint(Graphics __g, int __w, int __h)
+	{
+		__g.setColor(0x00FF00);
+		__g.drawLine(0, 0, __w, __h);
+		
+		__g.setColor(0x0000FF);
+		__g.drawLine(0, __h, __w, 0); 
+	}
+	
 	public void removeCurrent()
 	{
 		throw new todo.TODO();
@@ -931,6 +946,32 @@ public class Display
 	}
 	
 	/**
+	 * Performs a repaint of the frame.
+	 *
+	 * @param __x X clip.
+	 * @param __y Y clip.
+	 * @param __w Width clip.
+	 * @param __h Height clip.
+	 * @since 2018/11/18
+	 */
+	@SerializedEvent
+	final void __doRepaint(int __x, int __y, int __w, int __h)
+	{
+		// Debug
+		todo.DEBUG.note("Repaint!");
+		
+		// Get the graphics for this frame
+		__Framebuffer__ frame = this.__loadFrame(false);
+		Graphics g = frame.graphics();
+		
+		// Set the initial clipping region
+		g.clipRect(__x, __y, __w, __h);
+		
+		// Call internal point
+		this.__doPaint(g, frame.bufferwidth, frame.bufferheight);
+	}
+	
+	/**
 	 * A displayable was changed on this display.
 	 *
 	 * @since 2018/11/18
@@ -946,24 +987,6 @@ public class Display
 		
 		// Report that the size changed as well
 		this.__doDisplaySizeChanged(this.getWidth(), this.getHeight());
-	}
-	
-	/**
-	 * Loads the framebuffer.
-	 *
-	 * @param __new Setup new frame?
-	 * @return The framebuffer.
-	 * @since 2018/11/18
-	 */
-	final __Framebuffer__ __loadFrame(boolean __new)
-	{
-		__Framebuffer__ rv = this._framebuffer;
-		
-		// Load new framebuffer
-		if (__new || rv == null)
-			this._framebuffer = (rv = __Framebuffer__.__loadFrame(this._nid));
-		
-		return rv;
 	}
 	
 	/**
@@ -984,6 +1007,24 @@ public class Display
 	final int __getWidth()
 	{
 		return this.__loadFrame(false).bufferwidth;
+	}
+	
+	/**
+	 * Loads the framebuffer.
+	 *
+	 * @param __new Setup new frame?
+	 * @return The framebuffer.
+	 * @since 2018/11/18
+	 */
+	final __Framebuffer__ __loadFrame(boolean __new)
+	{
+		__Framebuffer__ rv = this._framebuffer;
+		
+		// Load new framebuffer
+		if (__new || rv == null)
+			this._framebuffer = (rv = __Framebuffer__.__loadFrame(this._nid));
+		
+		return rv;
 	}
 	
 	/**
