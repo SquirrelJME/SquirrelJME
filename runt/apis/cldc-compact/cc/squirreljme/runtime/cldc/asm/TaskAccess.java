@@ -59,6 +59,16 @@ public final class TaskAccess
 		String[] __args);
 	
 	/**
+	 * Starts the given thread.
+	 *
+	 * @param __r The thread to run.
+	 * @param __name The name of the thread.
+	 * @return The thread ID.
+	 * @since 2018/11/17
+	 */
+	public static final native int startThread(Runnable __r, String __name);
+	
+	/**
 	 * Returns the status of the target task.
 	 *
 	 * @param __tid The task to get the status of.
