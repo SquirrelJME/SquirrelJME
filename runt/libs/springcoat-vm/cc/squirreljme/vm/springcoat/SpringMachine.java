@@ -485,7 +485,7 @@ public final class SpringMachine
 		// Ooopsie!
 		catch (RuntimeException e)
 		{
-			PrintStream err = System.err;
+			/*PrintStream err = System.err;
 			
 			err.println("****************************");
 			
@@ -499,7 +499,7 @@ public final class SpringMachine
 			mainthread.printStackTrace(err);
 			err.println();
 			
-			err.println("****************************");
+			err.println("****************************");*/
 			
 			// Retoss
 			throw e;

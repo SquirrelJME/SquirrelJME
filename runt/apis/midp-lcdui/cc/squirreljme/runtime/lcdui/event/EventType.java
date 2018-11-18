@@ -43,5 +43,32 @@ public enum EventType
 	
 	/** End. */
 	;
+	
+	/**
+	 * Returns the event type for the given ID>
+	 *
+	 * @param __i The ID to get the event for.
+	 * @return The event type.
+	 * @since 2018/11/17
+	 */
+	public static final EventType of(int __i)
+	{
+		switch (__i)
+		{
+			case 0:	return COMMAND;
+			case 1:	return KEY_PRESSED;
+			case 2:	return KEY_RELEASED;
+			case 3:	return KEY_REPEATED;
+			case 4:	return POINTER_DRAGGED;
+			case 5:	return POINTER_PRESSED;
+			case 6:	return POINTER_RELEASED;
+			case 7: return REPAINT;
+			
+				// {@squirreljme.error EB2a Unknown event type. (The event
+				// type)}
+			default:
+				throw new IllegalArgumentException("EB2a " + __i);
+		}
+	}
 }
 

@@ -966,6 +966,28 @@ public final class SpringThreadWorker
 				"numDisplays:()I":
 				return this.machine.nativedisplay.numDisplays();
 				
+				// Poll for the next event
+			case "cc/squirreljme/runtime/cldc/asm/NativeDisplayAccess::" +
+				"pollEvent:([I)I":
+				{
+					SpringArrayObjectInteger data =
+						(SpringArrayObjectInteger)__args[0];
+					
+					// Pass a copy of the original data
+					int n = data.length();
+					int[] wrap = new int[n];
+					for (int i = 0; i < n; i++)
+						wrap[i] = ((Integer)data.get(Integer.class, i));
+					
+					// Perform the call
+					int rv = this.machine.nativedisplay.pollEvent(wrap);
+					
+					// Convert the data back
+					for (int i = 0; i < n; i++)
+						data.set(i, wrap[i]);
+					return rv;
+				}
+				
 				// Return the length of the array
 			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
 				"arrayLength:(Ljava/lang/Object;)I":
@@ -1329,22 +1351,66 @@ public final class SpringThreadWorker
 	public final void run(int __framelimit)
 		throws IllegalArgumentException
 	{
-		// {@squirreljme.error BK1l Cannot have a negative frame limit. (The
-		// frame limit)}
-		if (__framelimit < 0)
-			throw new IllegalArgumentException(String.format("BK1l %d",
-				__framelimit));
-		
-		// The thread is alive as long as there are still frames of
-		// execution
 		SpringThread thread = this.thread;
-		while (thread.numFrames() > __framelimit)
+		try
 		{
-			// Single step executing the top frame
-			this.__singleStep();
+			// {@squirreljme.error BK1l Cannot have a negative frame limit.
+			// (The frame limit)}
+			if (__framelimit < 0)
+				throw new IllegalArgumentException(String.format("BK1l %d",
+					__framelimit));
+			
+			// The thread is alive as long as there are still frames of
+			// execution
+			while (thread.numFrames() > __framelimit)
+			{
+				// Single step executing the top frame
+				this.__singleStep();
+			}
 		}
 		
-		// No more frames to run, so just stop execution
+		// Caught exception
+		catch (RuntimeException e)
+		{
+			// Frame limit is zero, so kill the thread
+			if (__framelimit == 0)
+			{
+				PrintStream err = System.err;
+				
+				err.println("****************************");
+				
+				// Print the real stack trace
+				err.println("*** EXTERNAL STACK TRACE ***");
+				e.printStackTrace(err);
+				err.println();
+				
+				// Print the VM seen stack trace
+				err.println("*** INTERNAL STACK TRACE ***");
+				thread.printStackTrace(err);
+				err.println();
+				
+				err.println("****************************");
+				
+				// Terminate the thread
+				thread._terminate = true;
+				
+				// Exit all frames
+				thread.exitAllFrames();
+				
+				// Exit from all profiler threads
+				thread.profiler.exitAll(System.nanoTime());
+			}
+			
+			// Re-toss
+			throw e;
+		}
+		
+		// Terminate if the last frame
+		finally
+		{
+			if (__framelimit == 0)
+				thread._terminate = true;
+		}
 	}
 	
 	/**
@@ -1526,7 +1592,7 @@ public final class SpringThreadWorker
 		catch (SpringMachineExitException e)
 		{
 			// Thread is okay to exit!
-			thread._exitokay = true;
+			thread._terminate = true;
 			
 			// Exit profiler stack
 			thread.profiler.exitAll(System.nanoTime());

@@ -77,6 +77,23 @@ public class VMNativeDisplayAccess
 	}
 	
 	/**
+	 * Polls the next event, blocking until the next one occurs.
+	 *
+	 * @param __ed Event data.
+	 * @return The next event, this will be the even type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/17
+	 */
+	public static final int pollEvent(int[] __ed)
+		throws NullPointerException
+	{
+		if (__ed == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Returns the display this is currently using.
 	 *
 	 * @return The currently backed display.
