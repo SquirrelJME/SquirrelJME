@@ -968,25 +968,38 @@ public final class SpringThreadWorker
 				
 				// Poll for the next event
 			case "cc/squirreljme/runtime/cldc/asm/NativeDisplayAccess::" +
-				"pollEvent:([I)I":
+				"pollEvent:([S)I":
 				{
-					SpringArrayObjectInteger data =
-						(SpringArrayObjectInteger)__args[0];
+					SpringArrayObjectShort data =
+						(SpringArrayObjectShort)__args[0];
 					
 					// Pass a copy of the original data
 					int n = data.length();
-					int[] wrap = new int[n];
+					short[] wrap = new short[n];
 					for (int i = 0; i < n; i++)
-						wrap[i] = ((Integer)data.get(Integer.class, i));
+						wrap[i] = ((Integer)data.get(Integer.class, i)).
+							shortValue();
 					
 					// Perform the call
 					int rv = this.machine.nativedisplay.pollEvent(wrap);
 					
 					// Convert the data back
 					for (int i = 0; i < n; i++)
-						data.set(i, wrap[i]);
+						data.set(i, (int)wrap[i]);
 					return rv;
 				}
+				
+				// Post event
+			case "cc/squirreljme/runtime/cldc/asm/NativeDisplayAccess::" +
+				"postEvent:(SSSSSS)V":
+				this.machine.nativedisplay.postEvent(
+					((Integer)__args[0]).shortValue(),
+					((Integer)__args[1]).shortValue(),
+					((Integer)__args[2]).shortValue(),
+					((Integer)__args[3]).shortValue(),
+					((Integer)__args[4]).shortValue(),
+					((Integer)__args[5]).shortValue());
+				return null;
 				
 				// Return the length of the array
 			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +

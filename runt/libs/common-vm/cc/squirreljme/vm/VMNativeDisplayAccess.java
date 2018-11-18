@@ -10,6 +10,7 @@
 
 package cc.squirreljme.vm;
 
+import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
 import javax.microedition.lcdui.Display;
 
 /**
@@ -20,6 +21,28 @@ import javax.microedition.lcdui.Display;
  */
 public class VMNativeDisplayAccess
 {
+	/** The event queue size with the type. */
+	public static final int EVENT_SIZE_WITH_TYPE =
+		NativeDisplayAccess.EVENT_SIZE + 1;
+	
+	/** The number of events to store in the buffer. */
+	public static final int QUEUE_SIZE =
+		48;
+	
+	/** The limit of the event queue. */
+	public static final int QUEUE_LIMIT =
+		EVENT_SIZE_WITH_TYPE * QUEUE_SIZE;
+	
+	/** The event queue, a circular buffer. */
+	private final short[] _eventqueue =
+		new short[EVENT_SIZE_WITH_TYPE * QUEUE_SIZE];
+	
+	/** The read position. */
+	private int _eventread;
+	
+	/** The write position. */
+	private int _eventwrite;
+	
 	/** The display to back on, lazily initialized to prevent crashing. */
 	private Display _usedisplay;
 
@@ -84,13 +107,104 @@ public class VMNativeDisplayAccess
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/17
 	 */
-	public static final int pollEvent(int[] __ed)
+	public final int pollEvent(short[] __ed)
 		throws NullPointerException
 	{
 		if (__ed == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Debug
+		todo.DEBUG.note("Event poll");
+		
+		// Maximum number of data points to write
+		int edlen = Math.min(__ed.length, NativeDisplayAccess.EVENT_SIZE);
+		
+		// Constantly poll for events
+		short[] eventqueue = this._eventqueue;
+		for (;;)
+			synchronized (eventqueue)
+			{
+				// Read positions
+				int eventread = this._eventread,
+					eventwrite = this._eventwrite;
+				
+				// This a circular buffer, so if the values do not match
+				// then that means an event was found.
+				if (eventread != eventwrite)
+				{
+					// Base pointer for reading events
+					int baseptr = eventread;
+					
+					// Read the type for later return
+					int type = eventqueue[baseptr++];
+					
+					// Copy event data
+					for (int o = 0; o < edlen;)
+						__ed[o++] = eventqueue[baseptr++];
+					
+					// Make sure the read position does not overflow the
+					// buffer
+					int nexter = eventread + EVENT_SIZE_WITH_TYPE;
+					if (nexter >= QUEUE_LIMIT)
+						nexter = 0;
+					this._eventread = nexter;
+					
+					// And the type of the event
+					return type;
+				}
+				
+				// Wait for an event to appear
+				try
+				{
+					eventqueue.wait();
+				}
+				
+				// Just treat like an event might have happened
+				catch (InterruptedException e)
+				{
+				}
+			}
+	}
+	
+	/**
+	 * Posts the specified event to the end of the event queue.
+	 *
+	 * @param __type The event type to push.
+	 * @param __d0 Datapoint 1.
+	 * @param __d1 Datapoint 2.
+	 * @param __d2 Datapoint 3.
+	 * @param __d3 Datapoint 4.
+	 * @param __d4 Datapoint 5.
+	 * @since 2018/11/18
+	 */
+	public final void postEvent(int __type,
+		short __d0, short __d1, short __d2, short __d3, short __d4)
+	{
+		// Debug
+		todo.DEBUG.note("Event post: %d", __type);
+		
+		// Lock on the queue
+		short[] eventqueue = this._eventqueue;
+		synchronized (eventqueue)
+		{
+			int eventwrite = this._eventwrite;
+			
+			// Overwrite all the data
+			eventqueue[eventwrite++] = (short)__type;
+			eventqueue[eventwrite++] = __d0;
+			eventqueue[eventwrite++] = __d1;
+			eventqueue[eventwrite++] = __d2;
+			eventqueue[eventwrite++] = __d3;
+			eventqueue[eventwrite++] = __d4;
+			
+			// Go back to the start?
+			if (eventwrite >= QUEUE_LIMIT)
+				eventwrite = 0;
+			this._eventwrite = eventwrite;
+			
+			// Notify that an event was put in the queue
+			eventqueue.notifyAll();
+		}
 	}
 	
 	/**
