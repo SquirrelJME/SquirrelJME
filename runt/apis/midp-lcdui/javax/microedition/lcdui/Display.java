@@ -209,6 +209,9 @@ public class Display
 	/** The displayable to show on exit. */
 	private volatile Displayable _exit;
 	
+	/** The framebuffer for this display. */
+	private volatile __Framebuffer__ _framebuffer;
+	
 	/**
 	 * Initializes the display instance.
 	 *
@@ -901,6 +904,10 @@ public class Display
 	@SerializedEvent
 	final void __doDisplayShown(boolean __shown)
 	{
+		// If this is being shown, load the framebuffer
+		if (__shown)
+			this._framebuffer = __Framebuffer__.__loadFrame(this._nid);
+		
 		// Report that visibility has changed
 		int state = (__shown ? Display.STATE_VISIBLE :
 			Display.STATE_BACKGROUND);
@@ -921,6 +928,21 @@ public class Display
 		// Report that the size changed for events
 		for (DisplayListener dl : Display.__listeners())
 			dl.sizeChanged(this, __w, __h);
+	}
+	
+	/**
+	 * A displayable was changed on this display.
+	 *
+	 * @since 2018/11/18
+	 */
+	@SerializedEvent
+	final void __doSetCurrent()
+	{
+		// The display would be shown
+		this.__doDisplayShown();
+		
+		// Report that the size changed as well
+		this.__doDisplaySizeChanged(this.getWidth(), this.getHeight());
 	}
 	
 	/**

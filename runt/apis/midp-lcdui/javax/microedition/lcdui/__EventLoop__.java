@@ -107,7 +107,8 @@ final class __EventLoop__
 				
 					// Display has had setCurrent() called
 				case DISPLAY_SETCURRENT:
-					throw new todo.TODO();
+					Display.__mapDisplay(data[0]).__doSetCurrent();
+					break;
 					
 				default:
 					throw new RuntimeException("OOPS " + t);
