@@ -113,7 +113,7 @@ public class List
 	@Override
 	public int getHeight()
 	{
-		return this.__getHeight();
+		return this.__defaultHeight();
 	}
 	
 	public Image getImage(int __a)
@@ -143,7 +143,7 @@ public class List
 	@Override
 	public int getWidth()
 	{
-		return this.__getWidth();
+		return this.__defaultWidth();
 	}
 	
 	public void insert(int __a, String __b, Image __c)
@@ -205,6 +205,16 @@ public class List
 	int __supportBit()
 	{
 		return Display.SUPPORTS_LISTS;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/18
+	 */
+	@Override
+	void __updateDrawChain(__DrawSlice__ __sl)
+	{
+		throw new todo.TODO();
 	}
 }
 

@@ -114,7 +114,7 @@ final class __EventLoop__
 					
 					// Display had its size changed
 				case DISPLAY_SIZE_CHANGED:
-					Display.__mapDisplay(data[0]).__doSizeChanged(
+					Display.__mapDisplay(data[0]).__doDisplaySizeChanged(
 						data[1], data[2]);
 					break;
 					

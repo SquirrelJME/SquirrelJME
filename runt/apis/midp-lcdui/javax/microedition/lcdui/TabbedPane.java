@@ -43,7 +43,7 @@ public class TabbedPane
 	@Override
 	public int getHeight()
 	{
-		return this.__getHeight();
+		throw new todo.TODO();
 	}
 	
 	public Screen getScreen(int __i)
@@ -68,7 +68,7 @@ public class TabbedPane
 	@Override
 	public int getWidth()
 	{
-		return this.__getWidth();
+		throw new todo.TODO();
 	}
 	
 	public void insertTab(int __i, Screen __t, Image __img)
@@ -87,6 +87,16 @@ public class TabbedPane
 	}
 	
 	public void setTabIcon(int __i, Image __icon)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/18
+	 */
+	@Override
+	void __updateDrawChain(__DrawSlice__ __sl)
 	{
 		throw new todo.TODO();
 	}

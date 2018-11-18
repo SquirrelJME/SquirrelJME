@@ -10,57 +10,39 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.runtime.lcdui.SerializedEvent;
-
-public class StringItem
-	extends Item
+/**
+ * The slice of the display that is available.
+ *
+ * @since 2018/11/18
+ */
+final class __DrawSlice__
 {
-	public StringItem(String __a, String __b)
-	{
-		super();
-		throw new todo.TODO();
-	}
+	/** The X position. */
+	public final int x;
 	
-	public StringItem(String __a, String __b, int __c)
-	{
-		super();
-		throw new todo.TODO();
-	}
+	/** The Y position. */
+	public final int y;
 	
-	public int getAppearanceMode()
-	{
-		throw new todo.TODO();
-	}
+	/** The width. */
+	public final int w;
 	
-	public Font getFont()
-	{
-		throw new todo.TODO();
-	}
-	
-	public String getText()
-	{
-		throw new todo.TODO();
-	}
-	
-	public void setFont(Font __a)
-	{
-		throw new todo.TODO();
-	}
-	
-	public void setText(String __a)
-	{
-		throw new todo.TODO();
-	}
+	/** The height. */
+	public final int h;
 	
 	/**
-	 * {@inheritDoc}
+	 * Initializes the slice which specified space available.
+	 *
+	 * @param __x The X position.
+	 * @param __y The Y position.
+	 * @param __w The width.
+	 * @param __h The height.
 	 * @since 2018/11/18
 	 */
-	@Override
-	void __updateDrawChain(__DrawSlice__ __sl)
+	public __DrawSlice__(int __x, int __y, int __w, int __h)
 	{
-		throw new todo.TODO();
+		this.x = __x;
+		this.y = __y;
+		this.w = __w;
+		this.h = __h;
 	}
 }
-
-

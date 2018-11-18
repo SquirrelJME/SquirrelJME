@@ -10,57 +10,50 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.runtime.lcdui.SerializedEvent;
-
-public class StringItem
-	extends Item
+/**
+ * Contains the packing information for the widget which determines how it
+ * it is placed on the display.
+ *
+ * @since 2018/11/18
+ */
+final class __Packing__
 {
-	public StringItem(String __a, String __b)
-	{
-		super();
-		throw new todo.TODO();
-	}
+	/** The X position. */
+	int _x;
 	
-	public StringItem(String __a, String __b, int __c)
-	{
-		super();
-		throw new todo.TODO();
-	}
+	/** The Y position. */
+	int _y;
 	
-	public int getAppearanceMode()
-	{
-		throw new todo.TODO();
-	}
+	/** The width. */
+	int _w;
 	
-	public Font getFont()
-	{
-		throw new todo.TODO();
-	}
+	/** The height. */
+	int _h;
 	
-	public String getText()
+	/**
+	 * Initializes the default packing.
+	 *
+	 * @since 2018/11/18
+	 */
+	__Packing__()
 	{
-		throw new todo.TODO();
-	}
-	
-	public void setFont(Font __a)
-	{
-		throw new todo.TODO();
-	}
-	
-	public void setText(String __a)
-	{
-		throw new todo.TODO();
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Initializes with the given packing.
+	 *
+	 * @param __x The x position.
+	 * @param __y The y position.
+	 * @param __w The width.
+	 * @param __h The height.
 	 * @since 2018/11/18
 	 */
-	@Override
-	void __updateDrawChain(__DrawSlice__ __sl)
+	__Packing__(int __x, int __y, int __w, int __h)
 	{
-		throw new todo.TODO();
+		this._x = __x;
+		this._y = __y;
+		this._w = __w;
+		this._h = __h;
 	}
 }
-
 

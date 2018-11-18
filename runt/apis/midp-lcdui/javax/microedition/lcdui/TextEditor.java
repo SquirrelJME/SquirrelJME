@@ -173,5 +173,15 @@ public class TextEditor
 	{
 		throw new todo.TODO();
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/18
+	 */
+	@Override
+	void __updateDrawChain(__DrawSlice__ __sl)
+	{
+		throw new todo.TODO();
+	}
 }
 

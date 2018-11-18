@@ -78,7 +78,6 @@ public abstract class CustomItem
 	 * @since 2018/03/28
 	 */
 	@SerializedEvent
-	@Override
 	protected abstract void paint(Graphics __g, int __w, int __h);
 	
 	public int getGameAction(int __a)
@@ -104,7 +103,6 @@ public abstract class CustomItem
 	 * @since 2018/03/28
 	 */
 	@SerializedEvent
-	@Override
 	protected void hideNotify()
 	{
 		// Implemented by sub-classes
@@ -187,7 +185,6 @@ public abstract class CustomItem
 	}
 	
 	@SerializedEvent
-	@Override
 	protected void showNotify()
 	{
 		// Implemented by sub-classes
@@ -209,20 +206,6 @@ public abstract class CustomItem
 	protected void traverseOut()
 	{
 		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/03/28
-	 */
-	@Override
-	int __getTransparentColor()
-	{
-		// Just use the color white for now since the canvas defaults to
-		// black
-		if (this._transparent)
-			return 0xFFFFFFFF;
-		return 0;
 	}
 }
 
