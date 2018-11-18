@@ -25,6 +25,20 @@ abstract class __Widget__
 	/** Is this being shown right now? */
 	boolean _isshown;
 	
+	/** The X location of the widget */
+	int _locx;
+	
+	/** The Y location of the widget. */
+	int _locy;
+	
+	/** The width of the widget. */
+	int _locw =
+		1;
+	
+	/** The height of the widget. */
+	int _loch =
+		1;
+	
 	/**
 	 * Initializes the widget using a handle which is registered on the
 	 * remote end.
@@ -233,6 +247,32 @@ abstract class __Widget__
 	int __supportBit()
 	{
 		throw new RuntimeException("OOPS " + this.getClass().getName());
+	}
+	
+	/**
+	 * Paint this widget.
+	 *
+	 * @param __g The graphics to draw.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @since 2018/11/18
+	 */
+	void __widgetPaint(Graphics __g, int __w, int __h)
+	{
+		// Revert positional information
+		__g.translate(-__g.getTranslateX(), -__g.getTranslateY());
+		__g.clipRect(-__g.getClipX(), -__g.getClipY(), __w, __h);
+		
+		// Setup graphics for drawing
+		int w, h;
+		__g.clipRect(this._locx, this._locy,
+			(w = this._locw), (h = this._loch));
+		__g.translate(this._locx, this._locy);
+		
+		// Base draw lines for widget location
+		__g.drawRect(0, 0, w, h);
+		__g.drawLine(0, 0, w, h);
+		__g.drawLine(0, h, w, 0);
 	}
 }
 
