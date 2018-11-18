@@ -24,28 +24,80 @@ public class Thread
 	public static final int NORM_PRIORITY =
 		5;
 	
+	/** The next virtual thread ID. */
+	private static volatile int _NEXT_VIRTUAL_ID =
+		1;
+	
+	/** The runnable to execute. */
+	private final Runnable _run;
+	
+	/** The virtual thread ID. */
+	private final long _virtid;
+	
+	/** The name of this thread. */
+	private volatile String _name;
+	
+	/** Has this thread been started? */
+	private volatile boolean _started;
+	
+	/** The real thread ID. */
+	private volatile int _realid;
+	
+	/**
+	 * Initializes the thread which invokes this object's {@link #run()} and
+	 * uses a default thread name.
+	 *
+	 * @since 2018/11/17
+	 */
 	public Thread()
 	{
-		super();
-		throw new todo.TODO();
+		this(null, "Thread-" + _NEXT_VIRTUAL_ID);
 	}
 	
-	public Thread(Runnable __a)
+	/**
+	 * Initializes the thread which invokes this object's {@link #run()} and
+	 * uses a default thread name.
+	 *
+	 * @param __r The runnable to execute.
+	 * @since 2018/11/17
+	 */
+	public Thread(Runnable __r)
 	{
-		super();
-		throw new todo.TODO();
+		this(__r, "Thread-" + _NEXT_VIRTUAL_ID);
 	}
 	
-	public Thread(String __a)
+	/**
+	 * Initializes the thread which invokes this object's {@link #run()} and
+	 * uses the specified thread name.
+	 *
+	 * @param __n The thread's name.
+	 * @throws NullPointerException If the thread name is null.
+	 * @since 2018/11/17
+	 */
+	public Thread(String __n)
+		throws NullPointerException
 	{
-		super();
-		throw new todo.TODO();
+		this(null, __n);
 	}
 	
-	public Thread(Runnable __a, String __b)
+	/**
+	 * Initializes the thread which invokes the given {@link Runnable} and uses
+	 * the given name.
+	 *
+	 * @param __r The runnable to execute.
+	 * @param __n The thread's name.
+	 * @throws NullPointerException If the thread name is null.
+	 * @since 2018/11/17
+	 */
+	public Thread(Runnable __r, String __n)
+		throws NullPointerException
 	{
-		super();
-		throw new todo.TODO();
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		this._run = __r;
+		this._name = __n;
+		this._virtid = _NEXT_VIRTUAL_ID++;
 	}
 	
 	public final void checkAccess()
@@ -66,9 +118,15 @@ public class Thread
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the name of this thread.
+	 *
+	 * @return The thread name.
+	 * @since 2018/11/17
+	 */
 	public final String getName()
 	{
-		throw new todo.TODO();
+		return this._name;
 	}
 	
 	public final int getPriority()
@@ -123,9 +181,14 @@ public class Thread
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/17
+	 */
+	@Override
 	public void run()
 	{
-		throw new todo.TODO();
+		// Does nothing
 	}
 	
 	public final void setName(String __a)
@@ -141,11 +204,34 @@ public class Thread
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Starts the specified thread.
+	 *
+	 * @throws IllegalThreadStateException 
+	 * @since 2018/11/17
+	 */
 	public void start()
+		throws IllegalThreadStateException
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			// {@squirreljme.error ZZ2r A thread may only be started once.}
+			if (this._started)
+				throw new IllegalThreadStateException("ZZ2r");
+			this._started = true;
+			
+			// Which thread do we run?
+			Runnable run = this._run;
+			if (run == null)
+				run = this;
+			
+			// Start the thread
+			int realid = TaskAccess.startThread(run, this._name);
+			this._realid = realid;
+			
+			// {@squirreljme.error ZZ2s Could not start the thread.}
+			if (realid < 0)
+				throw new RuntimeException("ZZ2s");
 		}
 	}
 	

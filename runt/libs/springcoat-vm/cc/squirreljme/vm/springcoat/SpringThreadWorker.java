@@ -1169,6 +1169,33 @@ public final class SpringThreadWorker
 					this.<String[]>asNativeObject(String[].class, __args[2]),
 					this.machine.guestdepth);
 				
+				// Start Thread
+			case "cc/squirreljme/runtime/cldc/asm/TaskAccess::" +
+				"startThread:(Ljava/lang/Runnable;Ljava/lang/String;)I":
+				{
+					// Create thread
+					String name;
+					SpringThread thread = this.machine.createThread(
+						(name = this.<String>asNativeObject(String.class,
+							__args[1])));
+					
+					// Enter the runnable for the thread
+					SpringObject runnable = (SpringObject)__args[0];
+					thread.enterFrame(runnable.type().lookupMethod(false,
+						new MethodNameAndType("run", "()V")), runnable);
+					
+					// Create worker for this thread
+					SpringThreadWorker worker = new SpringThreadWorker(
+						this.machine, thread);
+					
+					// Create and start thread for the worker
+					Thread runner = new Thread(worker, name);
+					runner.start();
+					
+					// Return this thread ID
+					return thread.id;
+				}
+				
 				// Task status
 			case "cc/squirreljme/runtime/cldc/asm/TaskAccess::" +
 				"taskStatus:(I)I":
