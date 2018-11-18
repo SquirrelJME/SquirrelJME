@@ -10,6 +10,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
 import cc.squirreljme.runtime.lcdui.gfx.PixelFormat;
 
 /**
@@ -96,7 +97,7 @@ final class __Framebuffer__
 		// Pixel format takes care of all of this
 		return this.pixelformat.createGraphics(this.buffer, this.palette,
 			this.bufferwidth, this.bufferheight, this.alpha,
-			this.pitch, this.offset, this.virtxorgi, this.virtyorig);
+			this.pitch, this.offset, this.virtxorig, this.virtyorig);
 	}
 	
 	/**
@@ -108,7 +109,23 @@ final class __Framebuffer__
 	 */
 	static __Framebuffer__ __loadFrame(int __nid)
 	{
-		throw new todo.TODO();
+		// Get framebuffer data
+		Object buf = NativeDisplayAccess.framebufferObject(__nid);
+		int[] pal = NativeDisplayAccess.framebufferPalette(__nid);
+		int[] params = NativeDisplayAccess.framebufferParameters(__nid);
+		
+		// Build framebuffer object
+		return new __Framebuffer__(
+			PixelFormat.of(params[NativeDisplayAccess.PARAMETER_PIXELFORMAT]),
+			buf,
+			pal,
+			params[NativeDisplayAccess.PARAMETER_BUFFERWIDTH],
+			params[NativeDisplayAccess.PARAMETER_BUFFERHEIGHT],
+			params[NativeDisplayAccess.PARAMETER_ALPHA] != 0,
+			params[NativeDisplayAccess.PARAMETER_PITCH],
+			params[NativeDisplayAccess.PARAMETER_OFFSET],
+			params[NativeDisplayAccess.PARAMETER_VIRTXOFF],
+			params[NativeDisplayAccess.PARAMETER_VIRTYOFF]);
 	}
 }
 

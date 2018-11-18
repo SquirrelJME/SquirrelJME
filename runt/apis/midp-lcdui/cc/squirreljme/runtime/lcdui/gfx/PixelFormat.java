@@ -207,5 +207,35 @@ public enum PixelFormat
 				throw new RuntimeException("OOPS");
 		}
 	}
+	
+	/**
+	 * Maps the pixel format ID to the pixel format type.
+	 *
+	 * @param __id The input ID.
+	 * @return The pixel format for the ID.
+	 * @throws IllegalArgumentException If the ID is not valid.
+	 * @since 2018/11/18
+	 */
+	public static final PixelFormat of(int __id)
+		throws IllegalArgumentException
+	{
+		switch (__id)
+		{
+			case 0:		return BYTE_INDEXED1;
+			case 1:		return BYTE_INDEXED2;
+			case 2:		return BYTE_INDEXED4;
+			case 3:		return BYTE_INDEXED8;
+			case 4:		return BYTE_RGB332;
+			case 5:		return SHORT_INDEXED16;
+			case 6:		return SHORT_ARGB4444;
+			case 7:		return SHORT_RGB565;
+			case 8:		return INTEGER_ARGB8888;
+			case 9:		return INTEGER_RGB888;
+			
+				// {@squirreljme.error EB2b Unknown pixel buffer format.}
+			default:
+				throw new IllegalArgumentException("EB2b " + __id);
+		}
+	}
 }
 

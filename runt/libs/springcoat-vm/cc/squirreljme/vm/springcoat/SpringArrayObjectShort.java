@@ -42,6 +42,24 @@ public final class SpringArrayObjectShort
 	}
 	
 	/**
+	 * Wraps the native array.
+	 *
+	 * @param __self The self type.
+	 * @param __cl The component type.
+	 * @param __a The array to wrap.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/18
+	 */
+	public SpringArrayObjectShort(SpringClass __self, SpringClass __cl,
+		short[] __a)
+		throws NullPointerException
+	{
+		super(__self, __cl, __a.length);
+		
+		this._elements = __a;
+	}
+	
+	/**
 	 * Sets the index to the specified value.
 	 *
 	 * @param <C> The type of value to get.

@@ -64,6 +64,51 @@ public class VMNativeDisplayAccess
 	}
 	
 	/**
+	 * Returns the object representing the framebuffer data.
+	 *
+	 * @param __id The display ID.
+	 * @return The framebuffer array.
+	 * @since 2018/11/18
+	 */
+	public final Object framebufferObject(int __id)
+	{
+		if (__id != 0)
+			return null;
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the palette of the framebuffer.
+	 *
+	 * @param __id The display ID.
+	 * @return The palette of the framebuffer.
+	 * @since 2018/11/18
+	 */
+	public final int[] framebufferPalette(int __id)
+	{
+		if (__id != 0)
+			return null;
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the parameters of the framebuffer.
+	 *
+	 * @param __id The display ID.
+	 * @return The framebuffer parameters.
+	 * @since 2018/11/18
+	 */
+	public final int[] framebufferParameters(int __id)
+	{
+		if (__id != 0)
+			return null;
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Is the specified display upsidedown?
 	 *
 	 * @param __id The ID of the display.

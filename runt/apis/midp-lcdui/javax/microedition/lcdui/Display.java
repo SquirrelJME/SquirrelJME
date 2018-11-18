@@ -469,7 +469,7 @@ public class Display
 	 */
 	public int getHeight()
 	{
-		return this.__getHeight();
+		return this.__loadFrame(false).bufferheight;
 	}
 	
 	public IdleItem getIdleItem()
@@ -520,7 +520,7 @@ public class Display
 	 */
 	public int getWidth()
 	{
-		return this.__getWidth();
+		return this.__loadFrame(false).bufferwidth;
 	}
 	
 	/**
@@ -906,7 +906,7 @@ public class Display
 	{
 		// If this is being shown, load the framebuffer
 		if (__shown)
-			this._framebuffer = __Framebuffer__.__loadFrame(this._nid);
+			this.__loadFrame(false);
 		
 		// Report that visibility has changed
 		int state = (__shown ? Display.STATE_VISIBLE :
@@ -938,11 +938,32 @@ public class Display
 	@SerializedEvent
 	final void __doSetCurrent()
 	{
+		// Load a fresh framebuffer
+		this.__loadFrame(true);
+		
 		// The display would be shown
-		this.__doDisplayShown();
+		this.__doDisplayShown(true);
 		
 		// Report that the size changed as well
 		this.__doDisplaySizeChanged(this.getWidth(), this.getHeight());
+	}
+	
+	/**
+	 * Loads the framebuffer.
+	 *
+	 * @param __new Setup new frame?
+	 * @return The framebuffer.
+	 * @since 2018/11/18
+	 */
+	final __Framebuffer__ __loadFrame(boolean __new)
+	{
+		__Framebuffer__ rv = this._framebuffer;
+		
+		// Load new framebuffer
+		if (__new || rv == null)
+			this._framebuffer = (rv = __Framebuffer__.__loadFrame(this._nid));
+		
+		return rv;
 	}
 	
 	/**

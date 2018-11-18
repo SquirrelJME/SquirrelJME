@@ -24,6 +24,42 @@ public final class NativeDisplayAccess
 	public static final int EVENT_SIZE =
 		5;
 	
+	/** The number of parameters available. */
+	public static final int NUM_PARAMETERS =
+		8;
+	
+	/** The pixel format. */
+	public static final int PARAMETER_PIXELFORMAT =
+		0;
+	
+	/** The buffer width. */
+	public static final int PARAMETER_BUFFERWIDTH =
+		1;
+	
+	/** The buffer height. */
+	public static final int PARAMETER_BUFFERHEIGHT =
+		2;
+	
+	/** Alpha channel is used? */
+	public static final int PARAMETER_ALPHA =
+		3;
+	
+	/** Buffer pitch. */
+	public static final int PARAMETER_PITCH =
+		4;
+	
+	/** Buffer offset. */
+	public static final int PARAMETER_OFFSET =
+		5;
+	
+	/** Virtual X offset. */
+	public static final int PARAMETER_VIRTXOFF =
+		6;
+	
+	/** Virtual Y offset. */
+	public static final int PARAMETER_VIRTYOFF =
+		7;
+	
 	/**
 	 * Not used.
 	 *
@@ -41,6 +77,33 @@ public final class NativeDisplayAccess
 	 * @since 2018/11/17
 	 */
 	public static final native int capabilities(int __id);
+	
+	/**
+	 * Returns the object representing the framebuffer data.
+	 *
+	 * @param __id The display ID.
+	 * @return The framebuffer array.
+	 * @since 2018/11/18
+	 */
+	public static final native Object framebufferObject(int __id);
+	
+	/**
+	 * Returns the palette of the framebuffer.
+	 *
+	 * @param __id The display ID.
+	 * @return The palette of the framebuffer.
+	 * @since 2018/11/18
+	 */
+	public static final native int[] framebufferPalette(int __id);
+	
+	/**
+	 * Returns the parameters of the framebuffer.
+	 *
+	 * @param __id The display ID.
+	 * @return The framebuffer parameters.
+	 * @since 2018/11/18
+	 */
+	public static final native int[] framebufferParameters(int __id);
 	
 	/**
 	 * Is the specified display upsidedown?
