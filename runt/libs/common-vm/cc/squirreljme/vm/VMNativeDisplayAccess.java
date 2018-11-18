@@ -34,7 +34,7 @@ public class VMNativeDisplayAccess
 	
 	/** The number of events to store in the buffer. */
 	public static final int QUEUE_SIZE =
-		96;
+		256;
 	
 	/** The limit of the event queue. */
 	public static final int QUEUE_LIMIT =
