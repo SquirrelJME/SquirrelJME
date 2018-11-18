@@ -118,6 +118,11 @@ final class __EventLoop__
 						data[1], data[2]);
 					break;
 					
+					// Exit requested
+				case EXIT_REQUEST:
+					Display.__mapDisplay(data[0]).__doExitRequest();
+					break;
+					
 				default:
 					throw new RuntimeException("OOPS " + t);
 			}

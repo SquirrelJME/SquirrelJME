@@ -31,7 +31,7 @@ public class VMNativeDisplayAccess
 	
 	/** The number of events to store in the buffer. */
 	public static final int QUEUE_SIZE =
-		48;
+		96;
 	
 	/** The limit of the event queue. */
 	public static final int QUEUE_LIMIT =
@@ -316,6 +316,8 @@ public class VMNativeDisplayAccess
 			ch = canvas.getHeight();
 		if (this._fbrgb == null || cw != this._fbw || ch != this._fbh)
 		{
+			todo.DEBUG.note("Allocate framebuffer.");
+			
 			this._fbrgb = new int[cw * ch];
 			this._fbw = cw;
 			this._fbh = ch;
@@ -373,9 +375,13 @@ public class VMNativeDisplayAccess
 			// Debug
 			todo.DEBUG.note("New size %dx%d", __w, __h);
 			
+			// The framebuffer will need to be redone
+			VMNativeDisplayAccess.this.__checkFramebuffer();
+			
+			// Post event
 			VMNativeDisplayAccess.this.postEvent(
 				EventType.DISPLAY_SIZE_CHANGED.ordinal(),
-				__w, __h, -1, -1, -1);
+				0, __w, __h, -1, -1);
 		}
 	}
 }

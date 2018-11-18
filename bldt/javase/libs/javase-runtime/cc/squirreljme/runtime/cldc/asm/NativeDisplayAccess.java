@@ -81,7 +81,7 @@ public final class NativeDisplayAccess
 	
 	/** The number of events to store in the buffer. */
 	public static final int QUEUE_SIZE =
-		48;
+		96;
 	
 	/** The limit of the event queue. */
 	public static final int QUEUE_LIMIT =
@@ -445,6 +445,7 @@ public final class NativeDisplayAccess
 				this._image = (image = ColorInfo.create(xw, xh,
 					new Color(0xFFFFFFFF)));
 			
+			// Indicate that the size changed
 			NativeDisplayAccess.postEvent(
 				EventType.DISPLAY_SIZE_CHANGED.ordinal(),
 				0, xw, xh, -1, -1);
@@ -457,6 +458,38 @@ public final class NativeDisplayAccess
 		@Override
 		public void componentShown(ComponentEvent __e)
 		{
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/11/18
+		 */
+		@Override
+		public void repaint(Rectangle __r)
+		{
+			// Post repaint event
+			NativeDisplayAccess.postEvent(
+				EventType.DISPLAY_REPAINT.ordinal(),
+				0, __r.x, __r.y, __r.width, __r.height);
+			
+			// Forward
+			super.repaint(__r);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/11/18
+		 */
+		@Override
+		public void repaint(long __tm, int __x, int __y, int __w, int __h)
+		{
+			// Post repaint event
+			NativeDisplayAccess.postEvent(
+				EventType.DISPLAY_REPAINT.ordinal(),
+				0, __x, __y, __w, __h);
+			
+			// Forward
+			super.repaint(__tm, __x, __y, __w, __h);
 		}
 		
 		/**
@@ -479,12 +512,6 @@ public final class NativeDisplayAccess
 			if (xw != oldw || xh != oldh)
 				this._image = (image = ColorInfo.create(xw, xh,
 					new Color(0xFFFFFFFF)));
-			
-			// Post repaint event
-			Rectangle rect = __g.getClipBounds();
-			NativeDisplayAccess.postEvent(
-				EventType.DISPLAY_REPAINT.ordinal(),
-				0, rect.x, rect.y, rect.width, rect.height);
 			
 			// Draw the backed buffered image
 			__g.drawImage(image, 0, 0, xw, xh,
