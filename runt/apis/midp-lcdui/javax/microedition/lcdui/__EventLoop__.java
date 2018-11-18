@@ -20,6 +20,9 @@ package javax.microedition.lcdui;
 final class __EventLoop__
 	implements Runnable
 {
+	/** The primary display. */
+	volatile Display _main;
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/11/17
@@ -30,9 +33,15 @@ final class __EventLoop__
 		// This is run constantly in a loop waiting for events to happen
 		try
 		{
+			Display main = this._main;
+			
 			// Event handling loop
 			for (;;)
 			{
+				// Need to know the main display
+				if (main == null)
+					main = this._main;
+				
 				throw new todo.TODO();
 			}
 		}
