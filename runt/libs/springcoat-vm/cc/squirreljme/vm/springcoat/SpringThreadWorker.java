@@ -1103,6 +1103,14 @@ public final class SpringThreadWorker
 					((Integer)__args[5]).intValue());
 				return null;
 				
+				// Sets the display title
+			case "cc/squirreljme/runtime/cldc/asm/NativeDisplayAccess::" +
+				"setDisplayTitle:(ILjava/lang/String;)V":
+				this.machine.nativedisplay.setDisplayTitle(
+					((Integer)__args[0]).intValue(),
+					this.<String>asNativeObject(String.class, __args[1]));
+				return null;
+				
 				// Return the length of the array
 			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
 				"arrayLength:(Ljava/lang/Object;)I":

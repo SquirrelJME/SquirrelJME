@@ -10,82 +10,134 @@
 
 package java.io;
 
+/**
+ * This stream is capable of writing binary data to an output stream.
+ *
+ * @since 2018/11/18
+ */
 public class DataOutputStream
 	extends OutputStream
 	implements DataOutput
 {
+	/** The underlying stream to write to. */
 	protected OutputStream out;
 	
+	/** The number of bytes written. */
 	protected int written;
 	
-	public DataOutputStream(OutputStream __a)
+	/**
+	 * Initializes the stream to write to the given destination.
+	 *
+	 * @param __o The stream to write to.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/18
+	 */
+	public DataOutputStream(OutputStream __o)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__o == null)
+			throw new NullPointerException("NARG");
+		
+		this.out = __o;
 	}
 	
 	@Override
 	public void close()
 		throws IOException
 	{
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
+		this.out.close();
 	}
 	
 	@Override
 	public void flush()
 		throws IOException
 	{
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
+		this.out.flush();
 	}
 	
+	/**
+	 * Returns the current number of bytes which were written.
+	 *
+	 * @return The number of bytes which were written.
+	 * @since 2018/11/18
+	 */
 	public final int size()
 	{
-		throw new todo.TODO();
+		return this.written;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/18
+	 */
 	@Override
-	public void write(int __a)
+	public void write(int __b)
 		throws IOException
 	{
 		synchronized (this)
 		{
-			if (false)
-				throw new
-					IOException();
-			throw new todo.TODO();
+			this.out.write(__b);
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/18
+	 */
 	@Override
-	public void write(byte[] __a)
+	public void write(byte[] __b)
 		throws IOException
 	{
 		synchronized (this)
 		{
-			if (false)
-				throw new
-					IOException();
-			throw new todo.TODO();
+			this.out.write(__b);
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/18
+	 */
 	@Override
-	public void write(byte[] __a, int __b, int __c)
+	public void write(byte[] __b, int __o, int __l)
 		throws IOException
 	{
 		synchronized (this)
 		{
-			if (false)
-				throw new
-					IOException();
-			throw new todo.TODO();
+			this.out.write(__b, __o, __l);
 		}
 	}
 	
-	public final void writeBoolean(boolean __a)
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/18
+	 */
+	@Override
+	public final void writeBoolean(boolean __v)
+		throws IOException
+	{
+		this.out.write((__v ? 1 : 0));
+		this.written += 1;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/18
+	 */
+	@Override
+	public final void writeByte(int __v)
+		throws IOException
+	{
+		this.out.write(__v);
+		this.written += 1;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/18
+	 */
+	@Override
+	public final void writeBytes(String __v)
 		throws IOException
 	{
 		if (false)
@@ -93,7 +145,12 @@ public class DataOutputStream
 		throw new todo.TODO();
 	}
 	
-	public final void writeByte(int __a)
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/18
+	 */
+	@Override
+	public final void writeChar(int __v)
 		throws IOException
 	{
 		if (false)
@@ -101,7 +158,12 @@ public class DataOutputStream
 		throw new todo.TODO();
 	}
 	
-	public final void writeBytes(String __a)
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/18
+	 */
+	@Override
+	public final void writeChars(String __v)
 		throws IOException
 	{
 		if (false)
@@ -109,7 +171,12 @@ public class DataOutputStream
 		throw new todo.TODO();
 	}
 	
-	public final void writeChar(int __a)
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/18
+	 */
+	@Override
+	public final void writeDouble(double __v)
 		throws IOException
 	{
 		if (false)
@@ -117,7 +184,12 @@ public class DataOutputStream
 		throw new todo.TODO();
 	}
 	
-	public final void writeChars(String __a)
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/18
+	 */
+	@Override
+	public final void writeFloat(float __v)
 		throws IOException
 	{
 		if (false)
@@ -125,7 +197,27 @@ public class DataOutputStream
 		throw new todo.TODO();
 	}
 	
-	public final void writeDouble(double __a)
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/18
+	 */
+	@Override
+	public final void writeInt(int __v)
+		throws IOException
+	{
+		this.out.write(__v >> 24);
+		this.out.write(__v >> 16);
+		this.out.write(__v >> 8);
+		this.out.write(__v);
+		this.written += 4;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/18
+	 */
+	@Override
+	public final void writeLong(long __v)
 		throws IOException
 	{
 		if (false)
@@ -133,7 +225,12 @@ public class DataOutputStream
 		throw new todo.TODO();
 	}
 	
-	public final void writeFloat(float __a)
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/18
+	 */
+	@Override
+	public final void writeShort(int __v)
 		throws IOException
 	{
 		if (false)
@@ -141,31 +238,12 @@ public class DataOutputStream
 		throw new todo.TODO();
 	}
 	
-	public final void writeInt(int __a)
-		throws IOException
-	{
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
-	}
-	
-	public final void writeLong(long __a)
-		throws IOException
-	{
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
-	}
-	
-	public final void writeShort(int __a)
-		throws IOException
-	{
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
-	}
-	
-	public final void writeUTF(String __a)
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/18
+	 */
+	@Override
+	public final void writeUTF(String __v)
 		throws IOException
 	{
 		if (false)
