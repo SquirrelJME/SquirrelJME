@@ -405,10 +405,10 @@ public class VMNativeDisplayAccess
 			// Make this canvas full screen so that the commands go away
 			canvas.setFullScreenMode(true);
 			
-			// Always draw the background on the canvas so that it uses
-			// the default color. Otherwise what is drawn will end up just
-			// being black
-			canvas.setPaintMode(false);
+			// Assume that the client will draw over every pixel, note that
+			// if the client has this done with a false, then the client will
+			// clear the framebuffer while drawing over it.
+			canvas.setPaintMode(true);
 		}
 		
 		// Properties have changed? Recreate the buffer data
