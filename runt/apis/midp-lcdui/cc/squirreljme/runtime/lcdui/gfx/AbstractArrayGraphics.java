@@ -615,6 +615,20 @@ public abstract class AbstractArrayGraphics
 		__w += 1;
 		__h += 1;
 		
+		// For now just cheat and draw four lines
+		if (true)
+		{
+			int ex = __x + __w,
+				ey = __y + __h;
+			
+			this.drawLine(__x, __y, ex, __y);
+			this.drawLine(__x, ey, ex, ey);
+			this.drawLine(__x, __y, __x, ey);
+			this.drawLine(ex, __y, ex, ey);
+			
+			return;
+		}
+		
 		// Get actual end points
 		int ex = __x + __w,
 			ey = __y + __h;

@@ -1113,12 +1113,15 @@ public class Display
 		// Otherwise we will need to fit the command somewhere
 		else
 		{
+			// How many sides do we cut away?
+			int cutsides = (numcommands == 1 ? 1 : 2);
+			
 			// Landscape, remove from the sides to store the commands
 			__DrawSlice__ newslice;
-			if ((__sl.w - (_COMMAND_BUTTON_SIZE * 2)) > __sl.h)
+			if ((__sl.w - (_COMMAND_BUTTON_SIZE * cutsides)) > __sl.h)
 				newslice = new __DrawSlice__(
 					__sl.x + _COMMAND_BUTTON_SIZE, __sl.y,
-					__sl.w - (_COMMAND_BUTTON_SIZE * 2), __sl.h);
+					__sl.w - (_COMMAND_BUTTON_SIZE * cutsides), __sl.h);
 			
 			// Portrait, remove from the bottom
 			else
