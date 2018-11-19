@@ -39,6 +39,12 @@ final class __EventLoop__
 			this.__loop();
 		}
 		
+		// Event loop died
+		catch (Throwable t)
+		{
+			t.printStackTrace();
+		}
+		
 		// In the event this loop dies or terminates, if this is the active
 		// event loop always make sure it no longer is the active loop.
 		// Otherwise events will just suddenly stop working.
