@@ -120,5 +120,16 @@ public final class ShortARGB4444ArrayGraphics
 	{
 		throw new todo.TODO();
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/18
+	 */
+	@Override
+	protected final void internalRGBTile(int[] __b, int __o, int __l,
+		int __x, int __y, int __w, int __h)
+	{
+		throw new todo.TODO();
+	}
 }
 
