@@ -251,6 +251,21 @@ public abstract class AbstractArrayGraphics
 		int __ey, int __w, int __h);
 	
 	/**
+	 * Draws a primitive RGB tile.
+	 *
+	 * @param __b The source buffer containing RGB data.
+	 * @param __o The offset into the buffer.
+	 * @param __sl The scanline length in the source buffer.
+	 * @param __x The destination X position.
+	 * @param __y The destination Y position.
+	 * @param __w The width of the tile.
+	 * @param __h The height of the tile.
+	 * @since 2017/02/11
+	 */
+	protected abstract void internalRGBTile(int[] __b, int __o, int __l,
+		int __x, int __y, int __w, int __h);
+	
+	/**
 	 * Internally sets the color to be used for drawing.
 	 *
 	 * @param __a The alpha level.
@@ -413,7 +428,8 @@ public abstract class AbstractArrayGraphics
 		__y2 += transy;
 		
 		// Get clipping region
-		int clipsx = this.clipsx, clipsy = this.clipsy,
+		int clipsx = this.clipsx,
+			clipsy = this.clipsy,
 			clipex = this.clipex,
 			clipey = this.clipey;
 		
@@ -525,7 +541,55 @@ public abstract class AbstractArrayGraphics
 		int __x, int __y, int __w, int __h, boolean __alpha)
 		throws NullPointerException
 	{
-		throw new todo.TODO();
+		// Transform
+		__x += this.transx;
+		__y += this.transy;
+		
+		// Determine ending position
+		int ex = __x + __w,
+			ey = __y + __h;
+		
+		// Get clipping region
+		int clipsx = this.clipsx,
+			clipsy = this.clipsy,
+			clipex = this.clipex,
+			clipey = this.clipey;
+		
+		// Box is completely outside the bounds of the clip, do not draw
+		if (ex < clipsx || __x >= clipex || ey < clipsy || __y >= clipey)
+			return;
+		
+		// Determine sub-clipping area
+		int subx = __x - clipsx,
+			suby = __y - clipsy;
+		
+		// Clip into bounds
+		if (__x < 0)
+			__x = 0;
+		if (__y < 0)
+			__y = 0;
+		if (ex >= clipex)
+			ex = clipex;
+		if (ey >= clipey)
+			ey = clipey;
+		
+		// New tile size
+		int tw = ex - __x,
+			th = ey - __y;
+		
+		// We might have multiplied alpha blending, or just normal blending
+		// If __alpha is true then this is 32-bit RGBA!
+		if (this.doblending)
+			if (__alpha)
+				throw new todo.TODO();
+			else
+				throw new todo.TODO();
+		else
+			if (__alpha)
+				throw new todo.TODO();
+			else
+				this.internalRGBTile(__data, __off, __scanlen,
+					__x, __y, tw, th);
 	}
 	
 	/**
@@ -621,32 +685,48 @@ public abstract class AbstractArrayGraphics
 		if (this.doblending)
 			if (dotted)
 			{
-				this.internalDrawLineBlendedDotted(__x, __y, __w, __y);
-				this.internalDrawLineBlendedDotted(__x, ey, __w, ey);
-				this.internalDrawLineBlendedDotted(__x, __y, __x, __h);
-				this.internalDrawLineBlendedDotted(ex, __y, ex, __h);
+				if (!bhs)
+					this.internalDrawLineBlendedDotted(__x, __y, ex, __y);
+				if (!ths)
+					this.internalDrawLineBlendedDotted(__x, ey, ex, ey);
+				if (!lvs)
+					this.internalDrawLineBlendedDotted(__x, __y, __x, ey);
+				if (!rvs)
+					this.internalDrawLineBlendedDotted(ex, __y, ex, ey);
 			}
 			else
 			{
-				this.internalDrawLineBlended(__x, __y, __w, __y);
-				this.internalDrawLineBlended(__x, ey, __w, ey);
-				this.internalDrawLineBlended(__x, __y, __x, __h);
-				this.internalDrawLineBlended(ex, __y, ex, __h);
+				if (!bhs)
+					this.internalDrawLineBlended(__x, __y, ex, __y);
+				if (!ths)
+					this.internalDrawLineBlended(__x, ey, ex, ey);
+				if (!lvs)
+					this.internalDrawLineBlended(__x, __y, __x, ey);
+				if (!rvs)
+					this.internalDrawLineBlended(ex, __y, ex, ey);
 			}
 		else
 			if (dotted)
 			{
-				this.internalDrawLineDotted(__x, __y, __w, __y);
-				this.internalDrawLineDotted(__x, ey, __w, ey);
-				this.internalDrawLineDotted(__x, __y, __x, __h);
-				this.internalDrawLineDotted(ex, __y, ex, __h);
+				if (!bhs)
+					this.internalDrawLineDotted(__x, __y, ex, __y);
+				if (!ths)
+					this.internalDrawLineDotted(__x, ey, ex, ey);
+				if (!lvs)
+					this.internalDrawLineDotted(__x, __y, __x, ey);
+				if (!rvs)
+					this.internalDrawLineDotted(ex, __y, ex, ey);
 			}
 			else
 			{
-				this.internalDrawLine(__x, __y, __w, __y);
-				this.internalDrawLine(__x, ey, __w, ey);
-				this.internalDrawLine(__x, __y, __x, __h);
-				this.internalDrawLine(ex, __y, ex, __h);
+				if (!bhs)
+					this.internalDrawLine(__x, __y, ex, __y);
+				if (!ths)
+					this.internalDrawLine(__x, ey, ex, ey);
+				if (!lvs)
+					this.internalDrawLine(__x, __y, __x, ey);
+				if (!rvs)
+					this.internalDrawLine(ex, __y, ex, ey);
 			}
 	}
 	

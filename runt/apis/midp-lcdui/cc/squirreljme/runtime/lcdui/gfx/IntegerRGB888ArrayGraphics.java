@@ -188,5 +188,28 @@ public final class IntegerRGB888ArrayGraphics
 				dest < pex; dest++)
 				buffer[dest] = b;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/18
+	 */
+	@Override
+	protected final void internalRGBTile(int[] __b, int __o, int __l,
+		int __x, int __y, int __w, int __h)
+	{
+		int[] data = this.buffer;
+		int iw = this.width;
+		
+		// The distance from the end of a row to the scanline, this way the
+		// source variable does not need an extra copy
+		int eosa = __l - __w;
+		
+		// Draw tile data
+		int dest = this.offset + (__y * iw) + __x, src = 0, ey = __y + __h;
+		for (; __y < ey; __y++, dest += iw, src += eosa)
+			for (int spend = src + __w, dp = dest; src < spend;
+				dp++, src++)
+				data[dp] = __b[src];
+	}
 }
 
