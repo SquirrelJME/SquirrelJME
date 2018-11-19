@@ -1,0 +1,32 @@
+# 2018/11/18
+
+## 10:51
+
+I now have a blank panel created! So joy!
+
+## 13:12
+
+Need to figure out how the repaint works when resizing. When the widget is
+resized...... Oh, it likely is because the framebuffer has not been
+invalidated and it still using the old one.
+
+## 13:35
+
+Next thing to do is to draw actual widgets and do all of that stuff. So this
+means widgets will need to get their sizes known and such. Then there would
+be a widget draw loop and such.
+
+## 19:53
+
+I need to handle repaints better, because right now displays can be flooded
+by them.
+
+## 21:09
+
+So drawing from inside of the VM itself works! Although it is insanely slow
+and honestly it takes forever. But it is nice to see that it works though.
+Running outside of SpringCoat the drawing operations are insanely fast
+however. But what I do think I can do is to have an accelerated graphics
+setup where it can draw into the display's framebuffer. If I can offload
+most of the primitive graphic operations to the host and keep it outside
+of the VM then I can definitely speed things up!
