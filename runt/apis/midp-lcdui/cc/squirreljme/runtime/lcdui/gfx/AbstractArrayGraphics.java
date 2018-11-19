@@ -547,7 +547,107 @@ public abstract class AbstractArrayGraphics
 	@Override
 	public final void drawRect(int __x, int __y, int __w, int __h)
 	{
-		throw new todo.TODO();
+		// The width and height are increased by a single pixel
+		__w += 1;
+		__h += 1;
+		
+		// Get actual end points
+		int ex = __x + __w,
+			ey = __y + __h;
+			
+		// Translate all coordinates
+		int transx = this.transx,
+			transy = this.transy;
+		__x += transx;
+		__y += transy;
+		ex += transx;
+		ey += transy;
+		
+		// Force lower X
+		if (ex < __x)
+		{
+			int boop = ex;
+			ex = __x;
+			__x = boop;
+		}
+		
+		// Force lower Y
+		if (ey < __y)
+		{
+			int boop = ey;
+			ey = __y;
+			__y = boop;
+		}
+		
+		// Get clipping region
+		int clipsx = this.clipsx, clipsy = this.clipsy,
+			clipex = this.clipex,
+			clipey = this.clipey;
+		
+		// Box is completely outside the bounds of the clip, do not draw
+		if (ex < clipsx || __x >= clipex || ey < clipsy || __y >= clipey)
+			return;
+		
+		// Left vertical shortening
+		boolean lvs = (__x < clipsx);
+		if (lvs)
+			__x = clipsx;
+		
+		// Right vertical shortening
+		boolean rvs = (ex >= clipex);
+		if (rvs)
+			ex = clipex;
+		
+		// Calculate new width
+		if (lvs || rvs)
+			__w = ex - __x;
+		
+		// Bottom horizontal shortening
+		boolean bhs = (__y < clipsy);
+		if (bhs)
+			__y = clipsy;
+		
+		// Top horizontal shortening
+		boolean ths = (ey >= clipey);
+		if (ths)
+			ey = clipey;
+		
+		// Calculate new height
+		if (bhs || ths)
+			__h = ey - __y;
+		
+		// Draw the box
+		boolean dotted = (this.strokestyle == DOTTED);
+		if (this.doblending)
+			if (dotted)
+			{
+				this.internalDrawLineBlendedDotted(__x, __y, __w, __y);
+				this.internalDrawLineBlendedDotted(__x, ey, __w, ey);
+				this.internalDrawLineBlendedDotted(__x, __y, __x, __h);
+				this.internalDrawLineBlendedDotted(ex, __y, ex, __h);
+			}
+			else
+			{
+				this.internalDrawLineBlended(__x, __y, __w, __y);
+				this.internalDrawLineBlended(__x, ey, __w, ey);
+				this.internalDrawLineBlended(__x, __y, __x, __h);
+				this.internalDrawLineBlended(ex, __y, ex, __h);
+			}
+		else
+			if (dotted)
+			{
+				this.internalDrawLineDotted(__x, __y, __w, __y);
+				this.internalDrawLineDotted(__x, ey, __w, ey);
+				this.internalDrawLineDotted(__x, __y, __x, __h);
+				this.internalDrawLineDotted(ex, __y, ex, __h);
+			}
+			else
+			{
+				this.internalDrawLine(__x, __y, __w, __y);
+				this.internalDrawLine(__x, ey, __w, ey);
+				this.internalDrawLine(__x, __y, __x, __h);
+				this.internalDrawLine(ex, __y, ex, __h);
+			}
 	}
 	
 	/**

@@ -558,7 +558,16 @@ public abstract class Canvas
 		}
 		
 		// Draw whatever the canvas wants drawn on this
-		this.paint(__g);
+		try
+		{
+			this.paint(__g);
+		}
+		
+		// Ignore any exceptions user code makes here
+		catch (Throwable t)
+		{
+			t.printStackTrace();
+		}
 	}
 	
 	/**
