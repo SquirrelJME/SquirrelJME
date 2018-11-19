@@ -786,9 +786,10 @@ public class Display
 		// Use the title of this thing
 		NativeDisplayAccess.setDisplayTitle(nid, __show.getTitle());
 		
-		// Post event that indicates that the current state has changed
-		NativeDisplayAccess.postEvent(EventType.DISPLAY_SETCURRENT.ordinal,
-			nid, 0, 0, 0, 0);
+		// Update widgets
+		__Framebuffer__ fb = this.__loadFrame(false);
+		this.__updateDrawChain(new __DrawSlice__(0, 0,
+			fb.bufferwidth, fb.bufferheight));
 	}
 	
 	public void setCurrentItem(Item __a)
@@ -1022,25 +1023,6 @@ public class Display
 		
 		// Was repainted!
 		NativeDisplayAccess.framebufferPainted(this._nid);
-	}
-	
-	/**
-	 * A displayable was changed on this display.
-	 *
-	 * @since 2018/11/18
-	 */
-	@SerializedEvent
-	final void __doSetCurrent()
-	{
-		// Load a fresh framebuffer
-		__Framebuffer__ fb = this.__loadFrame(false);
-		
-		// The display would be shown
-		this.__doDisplayShown(true);
-		
-		// Update widgets
-		this.__updateDrawChain(new __DrawSlice__(0, 0,
-			fb.bufferwidth, fb.bufferheight));
 	}
 	
 	/**

@@ -540,6 +540,23 @@ public abstract class Canvas
 	{
 		__DrawChain__ dc = this._drawchain;
 		
+		// Drawing this widget transparently? This just draws a color below
+		// it accordingly
+		if (this._transparent)
+		{
+			// The graphics object gets the color pre-initialized so make sure
+			// to restore it after the paint
+			int old = __g.getAlphaColor();
+			
+			// Fill the area accordingly
+			__g.setAlphaColor(__Constants__.TRANSPARENT_COLOR | 0xFF000000);
+			__g.fillRect(__g.getClipX(), __g.getClipY(),
+				__g.getClipWidth(), __g.getClipHeight());
+			
+			// Restore old color
+			__g.setAlphaColor(old);
+		}
+		
 		// Draw a box
 		__g.setColor(0x00FF00);
 		__g.drawLine(0, 0, dc.w, dc.h);
