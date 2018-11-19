@@ -948,8 +948,11 @@ public class Display
 		// Update widgets
 		this.__updateDrawChain(new __DrawSlice__(0, 0, __w, __h));
 		
-		// Repaint everything
-		this.__doRepaint(0, 0, __w, __h);
+		// Just post a repaint event, do not actually repaint!
+		if (d != null)
+			NativeDisplayAccess.postEvent(
+				EventType.DISPLAY_REPAINT.ordinal(),
+				this._nid, 0, 0, __w, __h);
 	}
 	
 	/**
