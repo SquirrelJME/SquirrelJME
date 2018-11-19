@@ -312,7 +312,7 @@ public class VMNativeDisplayAccess
 			this._eventwrite = eventwrite;
 			
 			// Notify that an event was put in the queue
-			eventqueue.notifyAll();
+			eventqueue.notify();
 		}
 	}
 	
