@@ -189,6 +189,10 @@ public class Display
 	public static final int TAB =
 		4;
 	
+	/** The space needed for command buttons. */
+	private static final int _COMMAND_BUTTON_SIZE =
+		16;
+	
 	/** The displays which currently exist based on their index. */
 	private static final Map<Integer, Display> _DISPLAYS =
 		new HashMap<>();
@@ -1060,15 +1064,67 @@ public class Display
 	}
 	
 	/**
+	 * Updates the draw chain with a full frame slice.
+	 *
+	 * @since 2018/11/18
+	 */
+	void __updateDrawChain()
+	{
+		__Framebuffer__ fb = this.__loadFrame(false);
+		this.__updateDrawChain(new __DrawSlice__(0, 0,
+			fb.bufferwidth, fb.bufferheight));
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/11/18
 	 */
 	@Override
 	void __updateDrawChain(__DrawSlice__ __sl)
 	{
-		__Framebuffer__ fb = this.__loadFrame(false);
+		// Use the slice as our drawing area
+		__DrawChain__ dc = this._drawchain;
+		dc.set(__sl);
 		
-		throw new todo.TODO();
+		// Not drawing anything
+		Displayable current = this._current;
+		if (current == null)
+		{
+			// Nothing will be drawn at all
+		}
+		
+		// If there are no commands or if we are showing a full-screen canvas
+		// then there will be no command buttons
+		__VolatileList__<Command> cc = current._commands;
+		int numcommands = cc.size();
+		if (numcommands == 0 || ((current instanceof Canvas) &&
+			((Canvas)current)._isfullscreen))
+		{
+			// Use the same slice as the display
+			current.__updateDrawChain(__sl);
+			dc.addLink(current);
+		}
+		
+		// Otherwise we will need to fit the command somewhere
+		else
+		{
+			// Landscape, remove from the sides to store the commands
+			__DrawSlice__ newslice;
+			if ((__sl.w - (_COMMAND_BUTTON_SIZE * 2)) > __sl.h)
+				newslice = new __DrawSlice__(
+					__sl.x + _COMMAND_BUTTON_SIZE, __sl.y,
+					__sl.w - (_COMMAND_BUTTON_SIZE * 2), __sl.h);
+			
+			// Portrait, remove from the bottom
+			else
+				newslice = new __DrawSlice__(
+					__sl.x, __sl.y,
+					__sl.w, __sl.h - _COMMAND_BUTTON_SIZE);
+			
+			// Update draw chain for whatever is being displayed
+			current.__updateDrawChain(newslice);
+			dc.addLink(current);
+		}
 	}
 	
 	/**
