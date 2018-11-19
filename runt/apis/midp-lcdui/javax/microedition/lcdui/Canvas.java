@@ -177,7 +177,7 @@ public abstract class Canvas
 	 * @since 2018/03/28
 	 */
 	@SerializedEvent
-	protected abstract void paint(Graphics __a);
+	protected abstract void paint(Graphics __g);
 	
 	/**
 	 * Returns the action which is associated with the given key.
@@ -557,10 +557,8 @@ public abstract class Canvas
 			__g.setAlphaColor(old);
 		}
 		
-		// Draw a box
-		__g.setColor(0x00FF00);
-		__g.drawLine(0, 0, dc.w, dc.h);
-		__g.drawLine(0, dc.h, dc.w, 0);
+		// Draw whatever the canvas wants drawn on this
+		this.paint(__g);
 	}
 	
 	/**
