@@ -467,6 +467,9 @@ public abstract class Canvas
 		if (this._isfullscreen == __f)
 			return;
 		
+		// Set new mode
+		this._isfullscreen = __f;
+		
 		// If we are the child of a display then we need to update the draw
 		// slice of the display so that way stuff like command buttons and
 		// such are chopped off
