@@ -41,12 +41,6 @@ public enum EventType
 	/** Repaint the display. */
 	DISPLAY_REPAINT,
 	
-	/**
-	 * Display has updated the displayable.
-	 * Format: {@code displayid, -, -, -, -}.
-	 */
-	DISPLAY_SETCURRENT,
-	
 	/** Display size has changed. */
 	DISPLAY_SIZE_CHANGED,
 	
@@ -79,9 +73,8 @@ public enum EventType
 			case 5:		return POINTER_PRESSED;
 			case 6:		return POINTER_RELEASED;
 			case 7:		return DISPLAY_REPAINT;
-			case 8:		return DISPLAY_SETCURRENT;
-			case 9:		return DISPLAY_SIZE_CHANGED;
-			case 10:	return EXIT_REQUEST;
+			case 8:		return DISPLAY_SIZE_CHANGED;
+			case 9:		return EXIT_REQUEST;
 			
 				// {@squirreljme.error EB2a Unknown event type. (The event
 				// type)}
