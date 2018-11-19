@@ -105,7 +105,7 @@ public final class GameLooper
 			game.run();
 			
 			// Debug
-			todo.DEBUG.note("Ran %d%n", nowframe);
+			todo.DEBUG.note("Ran %d", nowframe);
 			
 			// Request a repaint if there is enough time to draw
 			long exit = System.nanoTime();
