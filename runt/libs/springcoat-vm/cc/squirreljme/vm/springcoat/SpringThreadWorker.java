@@ -1338,7 +1338,17 @@ public final class SpringThreadWorker
 				"taskStatus:(I)I":
 				return this.machine.taskManager().taskStatus(
 					(Integer)__args[0]);
+				
+				// Current time in milliseconds
+			case "cc/squirreljme/runtime/cldc/asm/TimeAccess::" +
+				"currentTimeMillis:()J":
+				return System.currentTimeMillis();
 			
+				// Current nanosecond time
+			case "cc/squirreljme/runtime/cldc/asm/TimeAccess::" +
+				"nanoTime:()J":
+				return System.nanoTime();
+				
 				// {@squirreljme.error BK1j Unknown native function. (The
 				// native function)}
 			default:
