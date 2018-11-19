@@ -1019,7 +1019,16 @@ public class Display
 		g.clipRect(__x, __y, __w, __h);
 		
 		// Call internal paint, which draws our entire chain
-		this.__drawChainWrapped(g);
+		try
+		{
+			this.__drawChainWrapped(g);
+		}
+		
+		// Catch all of these, but keep drawing!
+		catch (Throwable t)
+		{
+			t.printStackTrace();
+		}
 		
 		// Was repainted!
 		NativeDisplayAccess.framebufferPainted(this._nid);
