@@ -406,7 +406,7 @@ public abstract class Canvas
 		// A remote repaint call is performed for the canvas so it is
 		// possible that the width/height are not valid. Internally the code
 		// will clip the rectangle to be in bounds.
-		this.repaint(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE);
+		this.repaint(0, 0, this.getWidth(), this.getHeight());
 	}
 	
 	/**

@@ -66,6 +66,15 @@ public class VMNativeDisplayAccess
 	
 	/** The canvas for display. */
 	volatile VMCanvas _canvas;
+	
+	/** Doing a repaint? */
+	volatile boolean _repaint;
+	
+	/** Repaint parameters. */
+	volatile int _repaintx,
+		_repainty,
+		_repaintw,
+		_repainth;
 
 	/**
 	 * Returns the capabilities of the display.
@@ -252,6 +261,19 @@ public class VMNativeDisplayAccess
 						nexter = 0;
 					this._eventread = nexter;
 					
+					// If this a repaint type, use the single repaint
+					// parameters instead
+					if (type == EventType.DISPLAY_REPAINT.ordinal())
+					{
+						// Ignored the stored parameters and instead use
+						// the repaint ones
+						__ed[1] = (short)this._repaintx;
+						__ed[2] = (short)this._repainty;
+						__ed[3] = (short)this._repaintw;
+						__ed[4] = (short)this._repainth;
+						this._repaint = false;
+					}
+					
 					// And the type of the event
 					return type;
 				}
@@ -287,6 +309,34 @@ public class VMNativeDisplayAccess
 		short[] eventqueue = this._eventqueue;
 		synchronized (eventqueue)
 		{
+			// Prevent repaint flooding
+			if (__type == EventType.DISPLAY_REPAINT.ordinal())
+			{
+				// Doing a repaint
+				boolean repaint = this._repaint;
+				if (!repaint)
+				{
+					this._repaintx = __d1;
+					this._repainty = __d2;
+					this._repaintw = __d3;
+					this._repainth = __d4;
+					this._repaint = true;
+				}
+				
+				// Otherwise update parameters
+				else
+				{
+					this._repaintx = Math.min(this._repaintx, __d1);
+					this._repainty = Math.min(this._repainty, __d2);
+					this._repaintw = Math.max(this._repaintw, __d3);
+					this._repainth = Math.max(this._repainth, __d4);
+					
+					// Do not write an event, since there is a repaint in
+					// the queue
+					return;
+				}
+			}
+			
 			int eventwrite = this._eventwrite;
 			
 			// Overwrite all the data

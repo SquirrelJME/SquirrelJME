@@ -106,6 +106,15 @@ public final class NativeDisplayAccess
 	/** The panel used to display graphics on. */
 	private static volatile SwingPanel _panel;
 	
+	/** Doing a repaint? */
+	static volatile boolean _repaint;
+	
+	/** Repaint parameters. */
+	static volatile int _repaintx,
+		_repainty,
+		_repaintw,
+		_repainth;
+	
 	/**
 	 * Initializes some things
 	 *
@@ -282,6 +291,19 @@ public final class NativeDisplayAccess
 						nexter = 0;
 					NativeDisplayAccess._eventread = nexter;
 					
+					// If this a repaint type, use the single repaint
+					// parameters instead
+					if (type == EventType.DISPLAY_REPAINT.ordinal())
+					{
+						// Ignored the stored parameters and instead use
+						// the repaint ones
+						__ed[1] = (short)NativeDisplayAccess._repaintx;
+						__ed[2] = (short)NativeDisplayAccess._repainty;
+						__ed[3] = (short)NativeDisplayAccess._repaintw;
+						__ed[4] = (short)NativeDisplayAccess._repainth;
+						NativeDisplayAccess._repaint = false;
+					}
+					
 					// And the type of the event
 					return type;
 				}
@@ -319,6 +341,38 @@ public final class NativeDisplayAccess
 		short[] eventqueue = NativeDisplayAccess._eventqueue;
 		synchronized (eventqueue)
 		{
+			// Prevent repaint flooding
+			if (__type == EventType.DISPLAY_REPAINT.ordinal())
+			{
+				// Doing a repaint
+				boolean repaint = NativeDisplayAccess._repaint;
+				if (!repaint)
+				{
+					NativeDisplayAccess._repaintx = __d1;
+					NativeDisplayAccess._repainty = __d2;
+					NativeDisplayAccess._repaintw = __d3;
+					NativeDisplayAccess._repainth = __d4;
+					NativeDisplayAccess._repaint = true;
+				}
+				
+				// Otherwise update parameters
+				else
+				{
+					NativeDisplayAccess._repaintx =
+						Math.min(NativeDisplayAccess._repaintx, __d1);
+					NativeDisplayAccess._repainty =
+						Math.min(NativeDisplayAccess._repainty, __d2);
+					NativeDisplayAccess._repaintw =
+						Math.max(NativeDisplayAccess._repaintw, __d3);
+					NativeDisplayAccess._repainth =
+						Math.max(NativeDisplayAccess._repainth, __d4);
+					
+					// Do not write an event, since there is a repaint in
+					// the queue
+					return;
+				}
+			}
+			
 			int eventwrite = NativeDisplayAccess._eventwrite;
 			
 			// Overwrite all the data
