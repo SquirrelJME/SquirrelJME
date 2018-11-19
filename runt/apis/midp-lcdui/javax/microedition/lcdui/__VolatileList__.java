@@ -95,6 +95,17 @@ final class __VolatileList__<T>
 	}
 	
 	/**
+	 * Returns the number of values.
+	 *
+	 * @return The number of values stored.
+	 * @since 2018/11/18
+	 */
+	public final int size()
+	{
+		return this._values.length;
+	}
+	
+	/**
 	 * Returns the values in the list.
 	 *
 	 * @return The list values.

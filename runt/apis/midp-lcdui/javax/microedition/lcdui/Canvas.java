@@ -463,26 +463,16 @@ public abstract class Canvas
 	 */
 	public void setFullScreenMode(boolean __f)
 	{
-		throw new todo.TODO();
-		/*
-		// Use global lock because there are many operations to be performed
-		// especially if this display is bound
-		synchronized (DisplayManager.GLOBAL_LOCK)
-		{
-			// If there is no change of state, do nothing
-			boolean wasfullscreen = this._isfullscreen;
-			if (wasfullscreen == __f)
-				return;
-			
-			// Set the new fullscreen action
-			this._isfullscreen = __f;
-			
-			// Fullscreen mode can be set before setCurrent(), so this is
-			// treated as a flag
-			Display current = __currentDisplay();
-			if (current != null)
-				__doFullscreen(__f);
-		}*/
+		// Do nothing if already fullscreen
+		if (this._isfullscreen == __f)
+			return;
+		
+		// If we are the child of a display then we need to update the draw
+		// slice of the display so that way stuff like command buttons and
+		// such are chopped off
+		__Widget__ parent = this._parent;
+		if (parent != null && parent instanceof Display)
+			((Display)parent).__updateDrawChain();
 	}
 	
 	/**
@@ -570,7 +560,10 @@ public abstract class Canvas
 	@Override
 	final void __updateDrawChain(__DrawSlice__ __sl)
 	{
-		throw new todo.TODO();
+		// We will be using the same drawing area as the slice we were given
+		// whatever it was
+		__DrawChain__ dc = this._drawchain;
+		dc.set(__sl);
 	}
 }
 

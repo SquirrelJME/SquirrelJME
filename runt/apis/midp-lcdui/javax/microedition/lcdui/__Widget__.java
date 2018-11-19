@@ -62,7 +62,7 @@ abstract class __Widget__
 		__Widget__ parent = this._parent;
 		if (parent == null)
 			return Display.getDisplays(0)[0].getHeight();
-		return this._drawchain._h;
+		return this._drawchain.h;
 	}
 	
 	/**
@@ -76,7 +76,7 @@ abstract class __Widget__
 		__Widget__ parent = this._parent;
 		if (parent == null)
 			return Display.getDisplays(0)[0].getWidth();
-		return this._drawchain._w;
+		return this._drawchain.w;
 	}
 	
 	/**
