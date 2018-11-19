@@ -1017,9 +1017,8 @@ public class Display
 		// Set the initial clipping region
 		g.clipRect(__x, __y, __w, __h);
 		
-		// Call internal paint
-		if (true)
-			throw new todo.TODO();
+		// Call internal paint, which draws our entire chain
+		this.__drawChainWrapped(g);
 		
 		// Was repainted!
 		NativeDisplayAccess.framebufferPainted(this._nid);
@@ -1042,6 +1041,21 @@ public class Display
 		// Update widgets
 		this.__updateDrawChain(new __DrawSlice__(0, 0,
 			fb.bufferwidth, fb.bufferheight));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/18
+	 */
+	@Override
+	void __drawChain(Graphics __g)
+	{
+		__DrawChain__ dc = this._drawchain;
+		
+		// Draw a box
+		__g.setColor(0xFF0000);
+		__g.drawLine(0, 0, dc.w, dc.h);
+		__g.drawLine(0, dc.h, dc.w, 0);
 	}
 	
 	/**

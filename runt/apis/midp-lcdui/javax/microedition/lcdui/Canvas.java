@@ -532,14 +532,18 @@ public abstract class Canvas
 	}
 	
 	/**
-	 * Performs the action of making this canvas fullscreen or not.
-	 *
-	 * @param __full Is fullscreen mode used?
-	 * @since 2017/10/01
+	 * {@inheritDoc}
+	 * @since 2018/11/18
 	 */
-	void __doFullscreen(boolean __full)
+	@Override
+	void __drawChain(Graphics __g)
 	{
-		throw new todo.TODO();
+		__DrawChain__ dc = this._drawchain;
+		
+		// Draw a box
+		__g.setColor(0x00FF00);
+		__g.drawLine(0, 0, dc.w, dc.h);
+		__g.drawLine(0, dc.h, dc.w, 0);
 	}
 	
 	/**

@@ -27,6 +27,14 @@ abstract class __Widget__
 	volatile __Widget__ _parent;
 	
 	/**
+	 * Performs drawing of the widgets.
+	 *
+	 * @param __g The graphics to draw into.
+	 * @since 2018/11/18
+	 */
+	abstract void __drawChain(Graphics __g);
+	
+	/**
 	 * Updates the draw chain for this widget.
 	 *
 	 * @since 2018/11/18
@@ -77,6 +85,21 @@ abstract class __Widget__
 		if (parent == null)
 			return Display.getDisplays(0)[0].getWidth();
 		return this._drawchain.w;
+	}
+	
+	/**
+	 * Performs drawing of the widgets, but with wrappers and such.
+	 *
+	 * @param __g The graphics to draw into.
+	 * @since 2018/11/18
+	 */
+	final void __drawChainWrapped(Graphics __g)
+	{
+		// Normal draw chain
+		this.__drawChain(__g);
+		
+		// Draw the children widgets
+		this._drawchain.drawChildren(__g);
 	}
 	
 	/**

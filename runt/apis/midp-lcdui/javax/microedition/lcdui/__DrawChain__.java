@@ -51,6 +51,18 @@ final class __DrawChain__
 	}
 	
 	/**
+	 * Draws the children of this chain.
+	 *
+	 * @param __g The graphics to draw into.
+	 * @since 2018/11/18
+	 */
+	public void drawChildren(Graphics __g)
+	{
+		for (__Widget__ w : this.links)
+			w.__drawChainWrapped(__g);
+	}
+	
+	/**
 	 * Resets the draw chain.
 	 *
 	 * @since 2018/11/18
