@@ -401,6 +401,14 @@ public class VMNativeDisplayAccess
 			canvas.setCommandListener(new __CommandListener__());
 			canvas.addCommand(new Command("Exit", Command.EXIT,
 				Integer.MAX_VALUE));
+			
+			// Make this canvas full screen so that the commands go away
+			canvas.setFullScreenMode(true);
+			
+			// Always draw the background on the canvas so that it uses
+			// the default color. Otherwise what is drawn will end up just
+			// being black
+			canvas.setPaintMode(false);
 		}
 		
 		// Properties have changed? Recreate the buffer data
@@ -408,9 +416,15 @@ public class VMNativeDisplayAccess
 			ch = canvas.getHeight();
 		if (this._fbrgb == null || cw != this._fbw || ch != this._fbh)
 		{
-			this._fbrgb = new int[cw * ch];
+			int n = cw * ch;
+			int[] fbrgb;
+			this._fbrgb = (fbrgb = new int[n]);
 			this._fbw = cw;
 			this._fbh = ch;
+			
+			// Initialize the framebuffer to white
+			for (int i = 0; i < n; i++)
+				fbrgb[i] = 0xFFFFFF;
 		}
 		
 		return canvas;
