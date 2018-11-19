@@ -937,13 +937,13 @@ public class Display
 		for (DisplayListener dl : Display.__listeners())
 			dl.sizeChanged(this, __w, __h);
 		
+		// Invalidate the framebuffer
+		this.__loadFrame(true);
+		
 		// Tell the current displayable that the size has changed
 		Displayable d = this.getCurrent();
 		if (d != null)
 			d.sizeChanged(__w, __h);
-		
-		// Invalidate the framebuffer
-		this.__loadFrame(true);
 		
 		// Update widgets
 		this.__updateDrawChain(new __DrawSlice__(0, 0, __w, __h));
