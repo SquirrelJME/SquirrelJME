@@ -4,3 +4,8 @@
 
 SquirrelJME's first release!
 
+Note that this is a work in progress and not everything will run, due to
+the implementation being incomplete. However it does work and is proven to
+work, which means progress can continue as such. Later releases of SquirrelJME
+will always be an improvement over the older versions.
+
