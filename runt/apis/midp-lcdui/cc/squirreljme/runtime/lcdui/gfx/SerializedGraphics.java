@@ -122,7 +122,8 @@ public abstract class SerializedGraphics
 	@Override
 	public void drawLine(int __x1, int __y1, int __x2, int __y2)
 	{
-		throw new todo.TODO();
+		this.serialize(GraphicsFunction.DRAW_LINE,
+			__x1, __y1, __x2, __y2);
 	}
 	
 	/**
@@ -320,7 +321,7 @@ public abstract class SerializedGraphics
 	@Override
 	public int getClipHeight()
 	{
-		throw new todo.TODO();
+		return (Integer)this.serialize(GraphicsFunction.GET_CLIP_HEIGHT);
 	}
 	
 	/**
@@ -330,7 +331,7 @@ public abstract class SerializedGraphics
 	@Override
 	public int getClipWidth()
 	{
-		throw new todo.TODO();
+		return (Integer)this.serialize(GraphicsFunction.GET_CLIP_WIDTH);
 	}
 	
 	/**
@@ -340,7 +341,7 @@ public abstract class SerializedGraphics
 	@Override
 	public int getClipX()
 	{
-		throw new todo.TODO();
+		return (Integer)this.serialize(GraphicsFunction.GET_CLIP_X);
 	}
 	
 	/**
@@ -350,7 +351,7 @@ public abstract class SerializedGraphics
 	@Override
 	public int getClipY()
 	{
-		throw new todo.TODO();
+		return (Integer)this.serialize(GraphicsFunction.GET_CLIP_Y);
 	}
 	
 	/**
@@ -591,6 +592,26 @@ public abstract class SerializedGraphics
 				__g.setColor(
 					(Integer)__args[0]);
 				return null;
+			
+			case DRAW_LINE:
+				__g.drawLine(
+					(Integer)__args[0],
+					(Integer)__args[1],
+					(Integer)__args[2],
+					(Integer)__args[3]);
+				return null;
+			
+			case GET_CLIP_X:
+				return __g.getClipX();
+			
+			case GET_CLIP_Y:
+				return __g.getClipY();
+			
+			case GET_CLIP_WIDTH:
+				return __g.getClipWidth();
+			
+			case GET_CLIP_HEIGHT:
+				return __g.getClipHeight();
 			
 			default:
 				throw new RuntimeException("OOPS " + __func);
