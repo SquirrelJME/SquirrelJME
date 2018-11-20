@@ -1,0 +1,8 @@
+# 2018/11/19
+
+## 20:32
+
+There are just too many graphics operations. And there are also a ton of
+methods as well. Implementing all of them for each native operation I will
+just be driven insane from it. So what I am going to do is serialize
+everything into arrays and then send those back and forth and such.
