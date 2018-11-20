@@ -38,6 +38,21 @@ public enum GraphicsFunction
 	/** Get the height clip. */
 	GET_CLIP_HEIGHT,
 	
+	/** Get X translation. */
+	GET_TRANSLATE_X,
+	
+	/** Get Y translation. */
+	GET_TRANSLATE_Y,
+	
+	/** Translate. */
+	TRANSLATE,
+	
+	/** Set the clip. */
+	SET_CLIP,
+	
+	/** Draw rectangle. */
+	DRAW_RECT,
+	
 	/** End. */
 	;
 	
@@ -62,6 +77,11 @@ public enum GraphicsFunction
 			case 4:		return GET_CLIP_Y;
 			case 5:		return GET_CLIP_WIDTH;
 			case 6:		return GET_CLIP_HEIGHT;
+			case 7:		return GET_TRANSLATE_X;
+			case 8:		return GET_TRANSLATE_Y;
+			case 9:		return TRANSLATE;
+			case 10:	return SET_CLIP;
+			case 11:	return DRAW_RECT;
 			
 				// {@squirreljme.error EB2d Invalid graphics function.
 				// (The function ID)}
