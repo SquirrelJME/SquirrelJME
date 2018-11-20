@@ -1,0 +1,13 @@
+result: NoResult
+thrown: NoExceptionThrown
+secondary-a-after-lock: int:1
+secondary-a-before-lock: int:0
+secondary-a-done: int:9
+secondary-a-thread-created: int:2
+secondary-a-was-interrupted: int:8
+secondary-b-about-to-unlock: int:7
+secondary-b-dosleep: int:5
+secondary-b-in-lock: int:3
+secondary-b-interrupt-a: int:4
+secondary-b-sleepdone: int:6
+
