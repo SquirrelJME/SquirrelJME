@@ -34,6 +34,14 @@ import javax.microedition.midlet.MIDlet;
 public class Display
 	extends __Widget__
 {
+	/**
+	 * {@squirreljme.property cc.squirreljme.lcdui.acceleration=bool
+	 * Should accelerated graphics be used if it is available?}
+	 */
+	private static boolean _ACCELERATION =
+		Boolean.valueOf(
+			System.getProperty("cc.squirreljme.lcdui.acceleration", "true"));
+	
 	public static final int ALERT =
 		3;
 
@@ -1007,7 +1015,13 @@ public class Display
 				// supported
 				try
 				{
-					g = AcceleratedGraphics.instance(this._nid);
+					// Use acceleration?
+					if (_ACCELERATION)
+						g = AcceleratedGraphics.instance(this._nid);
+					
+					// Do not use it
+					else
+						g = frame.graphics();
 				}
 				
 				// Accelerated graphics not supported, use the general purpose
