@@ -62,6 +62,23 @@ public final class SpringSimpleObject
 	}
 	
 	/**
+	 * Returns the field by the given field.
+	 *
+	 * @param __f The field to get.
+	 * @return The storage for the field.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/19
+	 */
+	public final SpringFieldStorage fieldByField(SpringField __f)
+		throws NullPointerException
+	{
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
+		return this.fieldByIndex(__f.index());
+	}
+	
+	/**
 	 * Returns the field by the given index.
 	 *
 	 * @param __dx The field to get.

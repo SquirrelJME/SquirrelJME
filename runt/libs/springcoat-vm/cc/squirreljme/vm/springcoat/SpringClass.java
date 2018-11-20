@@ -508,6 +508,28 @@ public final class SpringClass
 	 * @return The field.
 	 * @throws NullPointerException On null arguments.
 	 * @throws SpringNoSuchFieldException If the field does not exist.
+	 * @since 2018/11/19
+	 */
+	public final SpringField lookupField(boolean __static, String __name,
+		String __desc)
+		throws NullPointerException, SpringNoSuchFieldException
+	{
+		if (__name == null || __desc == null)
+			throw new NullPointerException("NARG");
+		
+		return this.lookupField(__static,
+			new FieldName(__name), new FieldDescriptor(__desc));
+	}
+	
+	/**
+	 * Locates the given field in this class.
+	 *
+	 * @param __static Is the field static?
+	 * @param __name The name of the field.
+	 * @param __desc The type of the field.
+	 * @return The field.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SpringNoSuchFieldException If the field does not exist.
 	 * @since 2018/09/09
 	 */
 	public final SpringField lookupField(boolean __static, FieldName __name,

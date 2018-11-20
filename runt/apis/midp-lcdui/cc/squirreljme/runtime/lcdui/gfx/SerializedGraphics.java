@@ -43,7 +43,8 @@ public abstract class SerializedGraphics
 	@Override
 	public void clipRect(int __x, int __y, int __w, int __h)
 	{
-		throw new todo.TODO();
+		this.serialize(GraphicsFunction.CLIP_RECT,
+			__x, __y, __w, __h);
 	}
 	
 	/**
@@ -578,6 +579,14 @@ public abstract class SerializedGraphics
 		// Depends on the function
 		switch (__func)
 		{
+			case CLIP_RECT:
+				__g.clipRect(
+					(Integer)__args[0],
+					(Integer)__args[1],
+					(Integer)__args[2],
+					(Integer)__args[3]);
+				return null;
+			
 			default:
 				throw new RuntimeException("OOPS " + __func);
 		}

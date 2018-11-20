@@ -23,6 +23,7 @@ import net.multiphasicapps.classfile.ConstantValue;
 import net.multiphasicapps.classfile.ConstantValueClass;
 import net.multiphasicapps.classfile.ConstantValueString;
 import net.multiphasicapps.classfile.ExceptionHandler;
+import net.multiphasicapps.classfile.FieldNameAndType;
 import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
@@ -157,11 +158,12 @@ public final class SpringThreadWorker
 	 *
 	 * @param __in The input object.
 	 * @return The resulting native object.
-	 * @throw NullPointerException On null arguments.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SpringFatalException If the object cannot be translated.
 	 * @since 2018/09/20
 	 */
 	public final Object asNativeObject(Object __in)
-		throws NullPointerException
+		throws NullPointerException, SpringFatalException
 	{
 		if (__in == null)
 			throw new NullPointerException("NARG");
@@ -169,6 +171,11 @@ public final class SpringThreadWorker
 		// Is null refernece
 		else if (__in == SpringNullObject.NULL)
 			return null;
+		
+		// Boxed types remain the same
+		else if (__in instanceof Integer || __in instanceof Long ||
+			__in instanceof Float || __in instanceof Double)
+			return __in;
 		
 		// Array type
 		else if (__in instanceof SpringArrayObject)
@@ -218,13 +225,18 @@ public final class SpringThreadWorker
 		// Class type
 		else if (__in instanceof SpringSimpleObject)
 		{
-			SpringObject sso = (SpringObject)__in;
+			SpringSimpleObject sso = (SpringSimpleObject)__in;
 			
 			// Depends on the class type
 			SpringClass sscl = sso.type();
 			ClassName type = sscl.name();
 			switch (type.toString())
 			{
+				case "java/lang/Integer":
+					return Integer.valueOf((Integer)
+						sso.fieldByField(sscl.lookupField(false,
+						"_value", "I")).get());
+				
 				case "java/lang/String":
 					return new String(this.<char[]>asNativeObject(
 						char[].class, this.invokeMethod(false,
@@ -244,7 +256,7 @@ public final class SpringThreadWorker
 		// {@squirreljme.error BK1e Do not know how to convert the given class
 		// to a native machine object. (The input class)}
 		else
-			throw new RuntimeException(
+			throw new SpringFatalException(
 				String.format("BK1e %s", __in.getClass()));
 	}
 	
@@ -1056,7 +1068,7 @@ public final class SpringThreadWorker
 				
 				// Accelerated graphics operation
 			case "cc/squirreljme/runtime/cldc/asm/NativeDisplayAccess::" +
-				"accelGfxFunc:(IILjava/lang/Object;)Z":
+				"accelGfxFunc:(II[Ljava/lang/Object;)Ljava/lang/Object;":
 				{
 					// The original array to be adapted
 					SpringArrayObject sao = (SpringArrayObject)__args[2];
