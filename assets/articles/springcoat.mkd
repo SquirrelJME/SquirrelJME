@@ -1,0 +1,76 @@
+# Writing SpringCoat, a Java ME VM
+
+***THIS ARTICLE HAS BEEN SCRAPPED, REPLACED WITH:*** (A New VM)[anewvm.mkd]
+
+This is about writing an important first step for my hobby project: 
+SquirrelJME. This is something which I have dreamed of for awhile, a Java 
+virtual machine that is open source and additionally is able to run the old 
+and outdated J2ME programs which ran on the flip phones of old. This has been 
+preceded by many failed attempts, but I decided to throw everything to the 
+wind and learn how to do it by example.
+
+## A Much Needed Plan
+
+Coming off from failures and over ambitions, what I needed to do was to 
+concentrate and simplify my efforts. My previous ideas were all glorious 
+virtual machines which would be doing native compilation and optimizations on 
+the first pass, when I only had a basic grasp on how to actually write a 
+compiler. I found myself spending too much time reworking and throwing things 
+out never getting anywhere. I was endlessly going in circles just working on 
+what was at my fancy. Before I had a stressful home life and a horrible dead 
+end job which only pointed to oblivion. Then in a moment I finally got 
+something that I always dreamed of, a full-time programming job.
+
+Previously I had done many sessions of long hours programming SquirrelJME, it 
+was a program I could not stop thinking about. Now after some short 
+experiences it is something that I think about now, something that despite my 
+lack of free time I can actually do even at a slow pace. Working a full-time 
+job makes you busy and there is not really much time to do anything at all, so 
+with no organization and no plan the project was not getting anywhere. The 
+thing is, I was thinking too big and too grand but it was something that could 
+not be done because of the time I had available to work on the project. I had 
+to make a plan and I had to simplify tasks due to my limited amount of time.
+
+Since working at IOpipe they used an organization tool that I knew of but I 
+never really knew how effective it was, this tool was Kan-ban. Seeing how well 
+it worked within the company I work at was pretty much the only way I could 
+see its utility. So with that, that was where my organization and tasks were 
+to be on a more overview level. I still keep personal notes and thoughts that 
+I type out, that has definitely help me also.
+
+Now with limited time and the great complexity of a virtual machine, I needed 
+to start small and simple. Gone were the elaborate designs of register 
+allocation and native pointers, gone were the complexities of a garbage 
+collector. This virtual machine is going to borrow the complex elements from 
+the host virtual machine, a virtual machine which runs on a virtual machine. 
+To keep implementation of it simple, it is pretty much a completely naive 
+interpreter where speed is not a concern. At least once this naive machine is 
+to be completed it could be dissected and used as parts to build an even 
+better machine.
+
+## Putting Together The Pieces
+
+The time it took to build the code to a point where it could run basic 
+programs took two months, working slowly after work and on most of the 
+weekends. This was from mostly nothing, to something that was actually useful. 
+There are two major parts that grant the ability to run this basic program, 
+they are the virtual machine and the run-time library.
+The part which runs the actual code is the virtual machine, this handles 
+Java's stack based byte code and remembers all of the needed state for the 
+program.
+
+TODO...
+
+## Making Things Run Faster
+
+TODO...
+
+## The Finishing Touches
+
+TODO...
+
+---
+
+I hope this was an insight into my hobby project and I do hope that it 
+motivates you to start something that you enjoy.
+
