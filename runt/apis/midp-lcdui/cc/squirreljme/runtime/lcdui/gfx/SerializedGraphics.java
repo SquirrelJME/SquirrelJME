@@ -503,7 +503,7 @@ public abstract class SerializedGraphics
 	@Override
 	public void setColor(int __rgb)
 	{
-		throw new todo.TODO();
+		this.serialize(GraphicsFunction.SET_COLOR, __rgb);
 	}
 	
 	/**
@@ -585,6 +585,11 @@ public abstract class SerializedGraphics
 					(Integer)__args[1],
 					(Integer)__args[2],
 					(Integer)__args[3]);
+				return null;
+			
+			case SET_COLOR:
+				__g.setColor(
+					(Integer)__args[0]);
 				return null;
 			
 			default:
