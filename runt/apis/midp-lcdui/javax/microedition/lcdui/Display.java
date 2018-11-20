@@ -14,6 +14,7 @@ import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
 import cc.squirreljme.runtime.lcdui.DisplayOrientation;
 import cc.squirreljme.runtime.lcdui.DisplayState;
 import cc.squirreljme.runtime.lcdui.event.EventType;
+import cc.squirreljme.runtime.lcdui.gfx.AcceleratedGraphics;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -1002,8 +1003,19 @@ public class Display
 		for (;;)
 			try
 			{
-				// Try obtaining the graphics
-				g = frame.graphics();
+				// Try to use native graphics where possible, if it is even
+				// supported
+				try
+				{
+					g = AcceleratedGraphics.instance(this._nid);
+				}
+				
+				// Accelerated graphics not supported, use the general purpose
+				// but far slower graphics operations
+				catch (UnsupportedOperationException e)
+				{
+					g = frame.graphics();
+				}
 				
 				// Do not try again
 				break;
