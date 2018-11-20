@@ -157,7 +157,8 @@ public abstract class SerializedGraphics
 	@Override
 	public void drawRect(int __x, int __y, int __w, int __h)
 	{
-		throw new todo.TODO();
+		this.serialize(GraphicsFunction.DRAW_RECT,
+			__x, __y, __w, __h);
 	}
 	
 	/**
@@ -431,7 +432,7 @@ public abstract class SerializedGraphics
 	@Override
 	public int getTranslateX()
 	{
-		throw new todo.TODO();
+		return (Integer)this.serialize(GraphicsFunction.GET_TRANSLATE_X);
 	}
 	
 	/**
@@ -441,7 +442,7 @@ public abstract class SerializedGraphics
 	@Override
 	public int getTranslateY()
 	{
-		throw new todo.TODO();
+		return (Integer)this.serialize(GraphicsFunction.GET_TRANSLATE_Y);
 	}
 	
 	/**
@@ -494,7 +495,8 @@ public abstract class SerializedGraphics
 	@Override
 	public void setClip(int __x, int __y, int __w, int __h)
 	{
-		throw new todo.TODO();
+		this.serialize(GraphicsFunction.SET_CLIP,
+			__x, __y, __w, __h);
 	}
 	
 	/**
@@ -556,7 +558,8 @@ public abstract class SerializedGraphics
 	@Override
 	public void translate(int __x, int __y)
 	{
-		throw new todo.TODO();
+		this.serialize(GraphicsFunction.TRANSLATE,
+			__x, __y);
 	}
 	
 	/**
@@ -612,6 +615,35 @@ public abstract class SerializedGraphics
 			
 			case GET_CLIP_HEIGHT:
 				return __g.getClipHeight();
+			
+			case GET_TRANSLATE_X:
+				return __g.getTranslateX();
+			
+			case GET_TRANSLATE_Y:
+				return __g.getTranslateY();
+			
+			case TRANSLATE:
+				__g.translate(
+					(Integer)__args[0],
+					(Integer)__args[1]);
+				return null;
+			
+			case SET_CLIP:
+				__g.setClip(
+					(Integer)__args[0],
+					(Integer)__args[1],
+					(Integer)__args[2],
+					(Integer)__args[3]);
+				return null;
+				
+				// Draw rectangle
+			case DRAW_RECT:
+				__g.drawRect(
+					(Integer)__args[0],
+					(Integer)__args[1],
+					(Integer)__args[2],
+					(Integer)__args[3]);
+				return null;
 			
 			default:
 				throw new RuntimeException("OOPS " + __func);
