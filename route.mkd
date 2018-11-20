@@ -1,67 +1,17 @@
 # Release Route
 
-# 0.0.5 (TBD)
+# 0.4.0 (TBD)
 
-This release will work on improvements generally and more program support.
+This is the second version of SquirrelJME which provides virtual machine
+improvements.
 
- * JavaDoc with Completion
-   * Need to know which stuff is not documented and what is not implemented.
-   * This will be useful.
-   * Can be used to show how much of the API is implemented.
-   * Shows documentation of the code.
-   * Can be used as a reference I can refer to instead of opening up source
-     code to look what something does.
- * Optimizations
- * Implement more of the library
- * Any needed refactoring
+ * Virtual Machine: SummerCoat
+   * Basic optimizing register based virtual machine.
 
-# 0.0.3 (TBD)
+# 0.2.0 (December 25, 2018)
 
-This will be the first released version of SquirrelJME, it will be a proof of
-concept version for the most part.
+This is the first version of SquirrelJME.
 
- * Basic Program
-   * Represents a Java method.
-   * Register based.
-   * Can be optimized at a basic level in the future.
- * Basic Program Interpreter
-   * Slow but it is the simplest and quickest to implement for the most part.
-   * Allows part of the core library to be implemented.
-     * Running tests would be a good thing.
-   * Faster to write.
- * Dynamic program compilation and loading
-   * Allow programs to be ran at run-time rather than relying solely on
-     built-in ones.
- * Support MIDlets
-   * UI Demo
-     * This is the UI demo available in the J2ME SDK.
-     * Will need to be used to make sure the LCDUI works.
-   * Opera Mini
-     * Is a web browser.
-     * Not sure if the proxy server is still running, but even then there are
-       still a few things it can be used for.
-     * Probably the most popular program that is not a game, since it browses
-       the web and there are really no other browsers that exist at all.
-     * Available in multiple languages so that it could be used to test those
-       despite not being able to speak them.
-     * May or may not need SSL, if it requires it to be implemented then this
-       will be skipped.
-     * This may also be skipped if the proxy server is offline, which would
-       make the browser non-functional.
-   * DoomRPG
-     * Is a turn based game.
-     * I played it when it came out around and beat it, I should be able to
-       pick up playing it again.
-     * Java ME was very widely used for games and such so supporting a game
-       would probably be a good choice.
- * Any library functionality needed to support the three MIDlets.
-   * Core CLDC Library
-     * Most clases can probably be left unimplemented, just enough to get the
-       MIDlets working.
-   * MIDP3 Classes
-     * LCDUI will be the biggest part.
- * Wintercoat
-   * A C implementation.
-   * Could be used as a library.
-   * Uses SquirrelJME as a runtime.
+ * Virtual Machine: SpringCoat
+   * Pure interpreter which runs on existing JVMs.
 
