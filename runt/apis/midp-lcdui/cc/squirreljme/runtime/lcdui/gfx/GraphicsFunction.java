@@ -20,6 +20,9 @@ public enum GraphicsFunction
 	/** Clip rectangle. */
 	CLIP_RECT,
 	
+	/** Set color. */
+	SET_COLOR,
+	
 	/** End. */
 	;
 	
@@ -38,6 +41,7 @@ public enum GraphicsFunction
 		switch (__id)
 		{
 			case 0:		return CLIP_RECT;
+			case 1:		return SET_COLOR;
 			
 				// {@squirreljme.error EB2d Invalid graphics function.
 				// (The function ID)}
