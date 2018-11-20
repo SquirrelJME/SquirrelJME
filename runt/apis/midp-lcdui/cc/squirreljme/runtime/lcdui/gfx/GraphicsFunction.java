@@ -17,6 +17,9 @@ package cc.squirreljme.runtime.lcdui.gfx;
  */
 public enum GraphicsFunction
 {
+	/** Clip rectangle. */
+	CLIP_RECT,
+	
 	/** End. */
 	;
 	
@@ -34,6 +37,8 @@ public enum GraphicsFunction
 		// Depends
 		switch (__id)
 		{
+			case 0:		return CLIP_RECT;
+			
 				// {@squirreljme.error EB2d Invalid graphics function.
 				// (The function ID)}
 			default:
