@@ -283,6 +283,20 @@ public final class SpringMachine
 	}
 	
 	/**
+	 * Exits the virtual machine without throwing an exception.
+	 *
+	 * @param __code The exit code.
+	 * @since 2018/10/13
+	 */
+	public final void exitNoException(int __code)
+		throws SpringMachineExitException
+	{
+		// Set as exiting
+		this._exitcode = __code;
+		this._exiting = true;
+	}
+	
+	/**
 	 * Returns the static field for the given field.
 	 *
 	 * @param __f The field to get the static field for.

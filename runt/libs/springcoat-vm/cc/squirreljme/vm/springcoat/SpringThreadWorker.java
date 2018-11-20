@@ -3434,6 +3434,9 @@ public final class SpringThreadWorker
 				(e instanceof SpringMachineExitException))
 				throw e;
 			
+			// Kill the VM
+			this.machine.exitNoException(127);
+			
 			// Print the stack trace
 			thread.printStackTrace(System.err);
 			
