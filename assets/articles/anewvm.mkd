@@ -1,0 +1,2 @@
+[SquirrelJME: A New Java ME VM](
+https://medium.com/@XerTheSquirrel/squirreljme-a-new-java-me-vm-8a1b6f2691b1)

@@ -28,25 +28,27 @@ You may support me on [Patreon](https://www.patreon.com/SquirrelJME)!
 
 Information:
 
- * [Version 0.2.0 Release Progress (GitHub)](
-   https://github.com/XerTheSquirrel/SquirrelJME/projects/2)
+ * [Code of Conduct](code-of-conduct.mkd)
  * [License](license.mkd)
    * _Source_: GNU General Public License, Version 3 or later
    * _Assets_: Creative Commons CC-BY-SA 4.0
    * _Fonts_ : SIL Open Font License Version 1.1
- * [Code of Conduct](code-of-conduct.mkd)
- * [Building](building.mkd)
- * [Changelog](changelog.mkd)
- * [Contributing](contributing.mkd)
- * [Design Document](design.mkd)
- * [Developer Notes](assets/developer-notes/index.mkd)
- * [History](history.mkd)
- * [Release Route](route.mkd)
- * [Project Scope](scope.mkd)
- * [Compatibility](compatibility.mkd)
- * [SquirrelJME As A Runtime](asruntime.mkd)
- * [CLDC 1.8 API (docs.oracle.com)](
-   https://docs.oracle.com/javame/8.0/api/cldc/api/overview-summary.html)
+ * [Contributing to SquirrelJME](contributing.mkd)
+ * _End-User Documents_
+   * [Building](building.mkd)
+   * [Changelog](changelog.mkd)
+   * [Compatibility](compatibility.mkd)
+   * [History](history.mkd)
+   * [Release Route](route.mkd)
+ * _Developer Documents_
+   * [Version 0.2.0 Release Progress (GitHub)](
+     https://github.com/XerTheSquirrel/SquirrelJME/projects/2)
+   * [Developer Notes](assets/developer-notes/index.mkd)
+   * [Design Document](design.mkd)
+   * [Project Scope](scope.mkd)
+   * [SquirrelJME As A Runtime](asruntime.mkd)
+   * [CLDC 1.8 API (docs.oracle.com)](
+     https://docs.oracle.com/javame/8.0/api/cldc/api/overview-summary.html)
 
 Also check out SquirrelJME's sister project _Mu_ at:
 

@@ -4,7 +4,7 @@ SquirrelJME is an idea and execution that extends from previous ideas and
 projects. The base idea extends from my desire to write an operating system to
 run on systems, since such things have fascinated me.
 
-# Old Projects
+# Old Projects (2011/01/15 - 2016/02/25)
 
 These are old defunct projects which I have previously worked on.
 
@@ -164,7 +164,9 @@ really got past the JIT stage. The massive requirements in place were
 unrealistic. This project was doomed for failure even when it began but I was
 a bit foolish to take up this task.
 
-# The Beginning of SquirrelJME
+# SquirrelJME
+
+## Starting Background
 
 SquirrelJME stems from the following ideas:
 
@@ -251,7 +253,7 @@ of classes and you could just bring your own classes in if you care about it.
 Personally, I do not really care for SQL and stuff like CORBA because I do not
 often use them at all.
 
-# Naming and Mascot
+## Naming and Mascot
 
 The name _SquirrelJME_ comes from the fact that I personally find squirrels to
 be very interesting and curious animals, not to mention that they are cute.
