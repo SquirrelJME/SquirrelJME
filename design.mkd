@@ -146,23 +146,6 @@ itself and allow building and compiling itself from source. This would also
 allow other programs to be built from source and can be used as a self
 contained Java development environment.
 
-# Micro-Kernel
-
-This details the SquirrelJME micro-kernel. The kernel is used to manage
-SquirrelJME and is the most important part of SquirrelJME as it makes sure
-that everything runs and operates correctly.
-
-## Why A Micro-Kernel?
-
-A micro-kernel was chosen because it is very simple and communication between
-processes can be protected by separation.
-
-## Server-Client Bridge
-
-The connection between the server (the kernel) and each client (running
-processes) operates with a single asynchronous data packet stream. The packet
-stream is used for two-way communication as needed.
-
 # Environment
 
 This details the environment in which SquirrelJME operates within the host
@@ -175,19 +158,9 @@ This describes the design of standard implementations.
 ### `javax.microedition.lcdui.*`
 
 The LCDUI API is used by a large number of older J2ME applications to display
-widgets and graphics on the screen.
-
-For simplicity and in general having common interfaces, any instances of
-`Displayable` will internally be drawn and handled by SquirrelJME rather than
-having native widgets.
-
-The following are graphics systems which exist:
-
- * Raw Framebuffer
- * Wayland
- * Win16
- * Win32
- * X11
+widgets and graphics on the screen. On SquirrelJME everything is done by
+SquirrelJME itself on its own framebuffer which it draws into, this makes
+portability easier.
 
 #### `javax.microedition.lcdui.Image`
 
@@ -207,11 +180,6 @@ As an example for DOS, there are severe filename limitations such as a
 maximum of 8 characters for a file name and 3 characters for an extension along
 with other naming restrictions. As such getting a path which does not produce
 a valid DOS pathname will result in an exception being thrown.
-
-## System Services
-
-Services are obtained by utilizing the following class:
-`cc.squirreljme.runtime.cldc.service.ServiceAccessor`.
 
 # Compilation Time
 
@@ -293,7 +261,7 @@ objects which only have weak references to them will be removed.
 This object can be garbage collected, it will be removed and that memory will
 be made available for other allocations.
 
-## Processes
+## Tasks
 
 MIDP 3 allows multiple programs to be ran at the same time (provided they
 are actual different MIDlets). One thing to simplify the design of SquirrelJME
@@ -306,17 +274,6 @@ is thread safe. Since synchronization and monitors are very intertwined, the
 design will reference future information. Since there are a number of different
 ways different CPUs and targets could have thread safety, those details have
 been removed and replaced with easy to determine common means.
-
-Every object will have the specified fields in their structure which indicates
-the synchronization state of the object:
-
- * _threadid_  - The ID of the thread which has synchronized the object.
- * _lockcount_ - The number of times the lock has been triggered.
-   * All objects have re-entrant locks.
- * _waitcount_ - The number of threads waiting on this handler.
-
-Notifications are handled by going through all threads and locating threads
-which are waiting on a given object.
 
 ### Loop Threading for Multi-Threading
 
@@ -340,62 +297,4 @@ executed, potentially one which controls the monitor for the given object.
 
 It is possible that an internal threading manager can determine the best
 thread to choose for consecutive execution.
-
-### `synchronized` (aka `monitorenter`)
-
-When a monitor on an object is to be locked the following actions will be
-performed:
-
- 1. Start of loop
- 2. Atomic check of _threadid_ against zero.
-    * If zero, atomically set the value to the current thread ID.
-    * If non-zero, fail, thread the loop, and try again.
- 3. Increment _lockcount_.
-
-### End of `synchronized` (aka `monitorexit`)
-
-This is performed when the current thread wishes to exit the monitor for the
-given object:
-
- 1. Atomic check of _threadid_ against the current thread ID.
-    * If the value matches the thread ID, continue the operations.
-    * If it mismatches, keep the same value but throw
-      `IllegalMonitorStateException`.
- 2. Decrement _lockcount_.
- 3. If _lockcount_ is zero, atomically set _threadid_ to zero.
-
-### `Object.wait()`, `Object.wait(long)`, `Object.wait(long, int)`
-
-This indicates that the thread wishes to wait for a notification for the
-object. This effectively prepares some state then unlocks the monitor.
-
-On calling of a wait:
-
- 1. If applicable, determine the nanoseconds for the program clock for when
-    the wait should expire.
- 2. Atomic check of _threadid_ against the current thread ID.
-    * If the value matches the thread ID, continue the operations.
-    * If it mismatches, keep the same value but throw
-      `IllegalMonitorStateException`.
- 3. Lock the state of the current thread.
- 4. Set the timeout flag and timeout appropriately.
- 5. Set the current object being waited on.
- 6. Increment _waitcount_.
- 7. Exit the monitor for the given object.
- 8. Switch to other threads and enter the background waiting state.
-
-When a notification occurs:
-
- 1. Lock the current monitor.
- 2. Decrement _waitcount_.
-
-When timeout or interrupt occurs:
-
- 1. Lock the current monitor.
- 2. Decrement _waitcount_.
- 3. If applicable, throw `InterruptedException`.
-
-### `Object.notify()` and `Object.notifyAll()`
-
-This notifies other threads waiting on the given object.
 
