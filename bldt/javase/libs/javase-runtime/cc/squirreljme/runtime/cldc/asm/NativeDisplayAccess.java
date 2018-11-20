@@ -134,6 +134,20 @@ public final class NativeDisplayAccess
 	}
 	
 	/**
+	 * Initialize and/or reset accelerated graphics operations.
+	 *
+	 * @param __id The display to initialize for.
+	 * @return {@code true} if acceleration is supported.
+	 * @since 2018/11/19
+	 */
+	public static final boolean accelGfx(int __id)
+	{
+		// Not supported on Swing because graphics operations are pretty
+		// fast already
+		return false;
+	}
+	
+	/**
 	 * Returns the capabilities of the display.
 	 *
 	 * @param __id The display ID.

@@ -70,6 +70,15 @@ public final class NativeDisplayAccess
 	}
 	
 	/**
+	 * Initialize and/or reset accelerated graphics operations.
+	 *
+	 * @param __id The display to initialize for.
+	 * @return {@code true} if acceleration is supported.
+	 * @since 2018/11/19
+	 */
+	public static final native boolean accelGfx(int __id);
+	
+	/**
 	 * Returns the capabilities of the display.
 	 *
 	 * @param __id The display ID.
