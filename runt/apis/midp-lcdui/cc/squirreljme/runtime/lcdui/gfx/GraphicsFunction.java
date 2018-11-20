@@ -23,6 +23,21 @@ public enum GraphicsFunction
 	/** Set color. */
 	SET_COLOR,
 	
+	/** Draw line. */
+	DRAW_LINE,
+	
+	/** Get the X clip. */
+	GET_CLIP_X,
+	
+	/** Get the Y clip. */
+	GET_CLIP_Y,
+	
+	/** Get the width clip. */
+	GET_CLIP_WIDTH,
+	
+	/** Get the height clip. */
+	GET_CLIP_HEIGHT,
+	
 	/** End. */
 	;
 	
@@ -42,6 +57,11 @@ public enum GraphicsFunction
 		{
 			case 0:		return CLIP_RECT;
 			case 1:		return SET_COLOR;
+			case 2:		return DRAW_LINE;
+			case 3:		return GET_CLIP_X;
+			case 4:		return GET_CLIP_Y;
+			case 5:		return GET_CLIP_WIDTH;
+			case 6:		return GET_CLIP_HEIGHT;
 			
 				// {@squirreljme.error EB2d Invalid graphics function.
 				// (The function ID)}

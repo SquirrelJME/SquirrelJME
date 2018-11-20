@@ -525,6 +525,43 @@ public final class SpringThreadWorker
 	}
 	
 	/**
+	 * As VM object, but boxed if a primitive.
+	 *
+	 * @param __in The object to convert.
+	 * @return The converted object.
+	 * @since 2018/11/19
+	 */
+	public final Object asVMObjectBoxed(Object __in)
+	{
+		// Null is converted to null
+		if (__in == null)
+			return SpringNullObject.NULL;
+		
+		// Box these
+		else if (__in instanceof Integer)
+			return this.newInstance(new ClassName("java/lang/Integer"),
+				new MethodDescriptor("(I)V"), __in);
+		else if (__in instanceof Long)
+			return this.newInstance(new ClassName("java/lang/Long"),
+				new MethodDescriptor("(J)V"), __in);
+		else if (__in instanceof Float)
+			return this.newInstance(new ClassName("java/lang/Float"),
+				new MethodDescriptor("(F)V"), __in);
+		else if (__in instanceof Double)
+			return this.newInstance(new ClassName("java/lang/Double"),
+				new MethodDescriptor("(D)V"), __in);
+		
+		// As-is
+		else if (__in instanceof Integer || __in instanceof Long ||
+			__in instanceof Float || __in instanceof Double ||
+			__in instanceof SpringObject)
+			return __in;
+		
+		else
+			return this.asVMObject(__in);
+	}
+	
+	/**
 	 * Wraps the native array so that it is directly read and written in
 	 * the VM code.
 	 *
@@ -1081,10 +1118,9 @@ public final class SpringThreadWorker
 							Object.class, sao.<Object>get(Object.class, i));
 					
 					// Forward
-					return this.machine.nativedisplay.accelGfxFunc(
-						(Integer)__args[0],
-						(Integer)__args[1],
-						rawr);
+					return this.asVMObjectBoxed(this.machine.nativedisplay.
+						accelGfxFunc((Integer)__args[0], (Integer)__args[1],
+						rawr));
 				}
 				
 				// Capabilities of a display
