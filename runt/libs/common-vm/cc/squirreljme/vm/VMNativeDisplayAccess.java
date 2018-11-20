@@ -12,7 +12,10 @@ package cc.squirreljme.vm;
 
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
 import cc.squirreljme.runtime.lcdui.event.EventType;
+import cc.squirreljme.runtime.lcdui.gfx.AcceleratedGraphics;
+import cc.squirreljme.runtime.lcdui.gfx.GraphicsFunction;
 import cc.squirreljme.runtime.lcdui.gfx.PixelFormat;
+import cc.squirreljme.runtime.lcdui.gfx.SerializedGraphics;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
@@ -39,6 +42,10 @@ public class VMNativeDisplayAccess
 	/** The limit of the event queue. */
 	public static final int QUEUE_LIMIT =
 		EVENT_SIZE_WITH_TYPE * QUEUE_SIZE;
+	
+	/** The pixel format to use for the framebuffer. */
+	public static final PixelFormat FRAMEBUFFER_PIXELFORMAT =
+		PixelFormat.INTEGER_RGB888;
 	
 	/** The event queue, a circular buffer. */
 	private final short[] _eventqueue =
@@ -75,6 +82,47 @@ public class VMNativeDisplayAccess
 		_repainty,
 		_repaintw,
 		_repainth;
+	
+	/** Accelerated graphics instance. */
+	volatile Graphics _accelgfx;
+	
+	/**
+	 * Initialize and/or reset accelerated graphics operations.
+	 *
+	 * @param __id The display to initialize for.
+	 * @return {@code true} if acceleration is supported.
+	 * @since 2018/11/19
+	 */
+	public final boolean accelGfx(int __id)
+	{
+		if (__id != 0)
+			return false;
+		
+		// Setup instance
+		int fbw = this._fbw;
+		this._accelgfx = FRAMEBUFFER_PIXELFORMAT.createGraphics(
+			this._fbrgb, null, fbw, this._fbh, false, fbw, 0, 0, 0);
+		return true;
+	}
+	
+	/**
+	 * Performs accelerated graphics operation.
+	 *
+	 * @param __id The display ID.
+	 * @param __func The function to call.
+	 * @param __args Arguments to the operation.
+	 * @return The result of the operation.
+	 * @since 2018/11/19
+	 */
+	public final Object accelGfxFunc(int __id, int __func, Object... __args)
+	{
+		if (__id != 0)
+			return null;
+		
+		// Deserialize and forward
+		return SerializedGraphics.deserialize(this._accelgfx,
+			GraphicsFunction.of(__func), __args);
+	}
 
 	/**
 	 * Returns the capabilities of the display.
@@ -166,7 +214,7 @@ public class VMNativeDisplayAccess
 		
 		// Build parameters
 		rv[NativeDisplayAccess.PARAMETER_PIXELFORMAT] =
-			PixelFormat.INTEGER_RGB888.ordinal();
+			FRAMEBUFFER_PIXELFORMAT.ordinal();
 		rv[NativeDisplayAccess.PARAMETER_BUFFERWIDTH] = fbw;
 		rv[NativeDisplayAccess.PARAMETER_BUFFERHEIGHT] = fbh;
 		rv[NativeDisplayAccess.PARAMETER_ALPHA] = 0;

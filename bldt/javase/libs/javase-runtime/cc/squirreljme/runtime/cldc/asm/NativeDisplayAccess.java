@@ -148,6 +148,21 @@ public final class NativeDisplayAccess
 	}
 	
 	/**
+	 * Performs accelerated graphics operation.
+	 *
+	 * @param __id The display ID.
+	 * @param __func The function to call.
+	 * @param __args Arguments to the operation.
+	 * @return The result of the operation.
+	 * @since 2018/11/19
+	 */
+	public static final Object accelGfxFunc(int __id, int __func,
+		Object... __args)
+	{
+		return null;
+	}
+	
+	/**
 	 * Returns the capabilities of the display.
 	 *
 	 * @param __id The display ID.

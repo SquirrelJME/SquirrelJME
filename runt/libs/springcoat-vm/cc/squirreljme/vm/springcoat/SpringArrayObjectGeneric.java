@@ -85,19 +85,20 @@ public final class SpringArrayObjectGeneric
 	}
 	
 	/**
-	 * Sets the index to the specified value.
-	 *
-	 * @param <C> The type of value to get.
-	 * @param __cl The type of value to get.
-	 * @param __dx The index to set.
-	 * @return The contained value.
-	 * @throws NullPointerException On null arguments.
-	 * @throws SpringArrayStoreException If the array cannot store the given
-	 * type.
-	 * @throws SpringArrayIndexOutOfBoundsException If the index is not within
-	 * bounds.
-	 * @since 2018/09/16
+	 * {@inheritDoc}
+	 * @since 2018/11/19
 	 */
+	@Override
+	public final Object array()
+	{
+		return this._elements;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/14
+	 */
+	@Override
 	public final <C> C get(Class<C> __cl, int __dx)
 		throws NullPointerException, SpringArrayIndexOutOfBoundsException
 	{
@@ -117,16 +118,10 @@ public final class SpringArrayObjectGeneric
 	}
 	
 	/**
-	 * Sets the index to the specified value.
-	 *
-	 * @param __dx The index to set.
-	 * @param __v The value to set.
-	 * @throws SpringArrayStoreException If the array cannot store the given
-	 * type.
-	 * @throws SpringArrayIndexOutOfBoundsException If the index is not within
-	 * bounds.
-	 * @since 2018/09/16
+	 * {@inheritDoc}
+	 * @since 2018/11/14
 	 */
+	@Override
 	public final void set(int __dx, Object __v)
 		throws SpringArrayStoreException, SpringArrayIndexOutOfBoundsException
 	{

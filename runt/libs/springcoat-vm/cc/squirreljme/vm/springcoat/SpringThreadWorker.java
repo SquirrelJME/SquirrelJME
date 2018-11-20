@@ -249,6 +249,28 @@ public final class SpringThreadWorker
 	}
 	
 	/**
+	 * Converts the specified object to a native object or unwraps an array
+	 * for direct access.
+	 *
+	 * @param <C> The resulting class type.
+	 * @param __cl The class to cast to.
+	 * @param __in The input object.
+	 * @return The resulting object.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/19
+	 */
+	public final <C> C asNativeObjectUnwrapArray(Class<C> __cl, Object __in)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException();
+		
+		if (__in instanceof SpringArrayObject)
+			return __cl.cast(((SpringArrayObject)__in).array());
+		return this.<C>asNativeObject(__cl, __in);
+	}
+	
+	/**
 	 * Converts the specified virtual machine object to a native object.
 	 *
 	 * @param <C> The class type.
@@ -1025,6 +1047,33 @@ public final class SpringThreadWorker
 				"unresolveString:(Ljava/lang/String;)J":
 				return this.machine.debugUnresolveString(
 					this.<String>asNativeObject(String.class, __args[0]));
+				
+				// Accelerated graphics
+			case "cc/squirreljme/runtime/cldc/asm/NativeDisplayAccess::" +
+				"accelGfx:(I)Z":
+				return this.machine.nativedisplay.accelGfx(
+					(Integer)__args[0]);
+				
+				// Accelerated graphics operation
+			case "cc/squirreljme/runtime/cldc/asm/NativeDisplayAccess::" +
+				"accelGfxFunc:(IILjava/lang/Object;)Z":
+				{
+					// The original array to be adapted
+					SpringArrayObject sao = (SpringArrayObject)__args[2];
+					int n = sao.length();
+					
+					// Wrap arrays or convert to native
+					Object[] rawr = new Object[n];
+					for (int i = 0; i < n; i++)
+						rawr[i] = this.<Object>asNativeObjectUnwrapArray(
+							Object.class, sao.<Object>get(Object.class, i));
+					
+					// Forward
+					return this.machine.nativedisplay.accelGfxFunc(
+						(Integer)__args[0],
+						(Integer)__args[1],
+						rawr);
+				}
 				
 				// Capabilities of a display
 			case "cc/squirreljme/runtime/cldc/asm/NativeDisplayAccess::" +

@@ -66,6 +66,14 @@ public abstract class SpringArrayObject
 	}
 	
 	/**
+	 * Returns the raw backing array.
+	 *
+	 * @return The array.
+	 * @since 2018/11/19
+	 */
+	public abstract Object array();
+	
+	/**
 	 * Sets the index to the specified value.
 	 *
 	 * @param <C> The type of value to get.
