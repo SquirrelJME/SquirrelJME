@@ -282,3 +282,15 @@ He was uploaded on 2016/05/07 to the repository.
 He has subsequently been redrawn on 2018/10/19 by Kat Adam-MacEwen, where he
 ended up very handsome.
 
+## Gaining a Sister Project
+
+On 2018/11/03 the developer of Mu wanted to become a sister project of
+SquirrelJME, so this is very exciting! The link to her repository is in
+the [readme](readme.mkd)! We will be cooperating mostly by word of mouth by
+linking to each other's projects to hopefully gain interest in both of our
+projects.
+
+## The First Release
+
+ * [There is this article here you may read](assets/articles/anewvm.mkd)!
+
