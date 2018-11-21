@@ -278,7 +278,7 @@ public class Thread
 			this._started = true;
 			
 			// Start the thread
-			int realid = TaskAccess.startThread(this);
+			int realid = TaskAccess.startThread(this, this._name);
 			this._realid = realid;
 			
 			// {@squirreljme.error ZZ2s Could not start the thread.}

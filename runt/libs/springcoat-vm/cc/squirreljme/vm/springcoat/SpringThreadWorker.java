@@ -1413,7 +1413,7 @@ public final class SpringThreadWorker
 				
 				// Start Thread
 			case "cc/squirreljme/runtime/cldc/asm/TaskAccess::" +
-				"startThread:(Ljava/lang/Runnable;Ljava/lang/String;)I":
+				"startThread:(Ljava/lang/Thread;Ljava/lang/String;)I":
 				{
 					// Create thread
 					String name;
@@ -1421,10 +1421,11 @@ public final class SpringThreadWorker
 						(name = this.<String>asNativeObject(String.class,
 							__args[1])));
 					
-					// Enter the runnable for the thread
-					SpringObject runnable = (SpringObject)__args[0];
-					thread.enterFrame(runnable.type().lookupMethod(false,
-						new MethodNameAndType("run", "()V")), runnable);
+					// Enter Thread's `__start()`
+					SpringObject throbj = (SpringObject)__args[0];
+					thread.enterFrame(this.resolveClass(
+						new ClassName("java/lang/Thread")).lookupMethod(false,
+						new MethodNameAndType("__start", "()V")), throbj);
 					
 					// Create worker for this thread
 					SpringThreadWorker worker = new SpringThreadWorker(
