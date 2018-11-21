@@ -61,12 +61,12 @@ public final class TaskAccess
 	/**
 	 * Starts the given thread.
 	 *
-	 * @param __r The thread to run.
-	 * @param __name The name of the thread.
+	 * @param __t The thread which is to run, the execution point of the
+	 * thread is the {@link Thread#__start()} method.
 	 * @return The thread ID.
 	 * @since 2018/11/17
 	 */
-	public static final native int startThread(Runnable __r, String __name);
+	public static final native int startThread(Thread __t);
 	
 	/**
 	 * Returns the status of the target task.

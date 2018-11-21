@@ -88,6 +88,26 @@ public final class ObjectAccess
 	public static final native int identityHashCode(Object __o);
 	
 	/**
+	 * Invokes the specified static method.
+	 *
+	 * @param __m The method to invoke.
+	 * @param __v The value to pass to the method.
+	 * @since 2018/11/20
+	 */
+	public static final native void invokeStatic(StaticMethod __m, Object __v);
+	
+	/**
+	 * Constructs and initializes a new instance of the class by the given
+	 * name.
+	 *
+	 * @param __n The name of the class to initialize.
+	 * @return The initialization of the class or {@code null} if it could
+	 * not be initialized.
+	 * @since 2018/11/20
+	 */
+	public static final native Object newInstanceByName(String __n);
+	
+	/**
 	 * Creates a new primitive weak reference. Note that it is not valid to
 	 * operate on this object as a normal object, it is a special
 	 * representation.
@@ -116,7 +136,6 @@ public final class ObjectAccess
 	 */
 	public static final native void referenceSet(PrimitiveReference __r,
 		Object __v);
-		
 	
 	/**
 	 * Returns the class object for the specified class by its binary name.
