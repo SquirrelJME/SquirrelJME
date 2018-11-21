@@ -1253,12 +1253,14 @@ public final class SpringThreadWorker
 					return so.type();
 				}
 				
-				// Create new primitive weak reference
+				// Check if thread holds the given lock
 			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
-				"newWeakReference:" +
-				"()Lcc/squirreljme/runtime/cldc/ref/PrimitiveReference;":
+				"holdsLock:(ILjava/lang/Object;)Z":
 				{
-					return new SpringPrimitiveWeakReference();
+					SpringThread owner =
+						((SpringObject)__args[1]).monitor()._owner;
+					return (owner == null ? false :
+						((Integer)__args[0]).intValue() == owner.id);
 				}
 				
 				// Identity hash code
@@ -1291,6 +1293,14 @@ public final class SpringThreadWorker
 				return this.newInstance((new ClassName(
 					this.<String>asNativeObject(String.class, __args[0]))),
 					new MethodDescriptor("()V"));
+				
+				// Create new primitive weak reference
+			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
+				"newWeakReference:" +
+				"()Lcc/squirreljme/runtime/cldc/ref/PrimitiveReference;":
+				{
+					return new SpringPrimitiveWeakReference();
+				}
 				
 				// Get reference
 			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +

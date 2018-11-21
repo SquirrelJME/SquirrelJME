@@ -30,7 +30,7 @@ public final class SpringMonitor
 		new LinkedHashSet<>();
 	
 	/** The thread which owns this monitor. */
-	private volatile SpringThread _owner;
+	volatile SpringThread _owner;
 	
 	/** The entry count on the monitor. */
 	private int _count;
