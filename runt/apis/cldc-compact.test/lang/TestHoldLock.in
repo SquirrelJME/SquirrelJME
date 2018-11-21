@@ -1,0 +1,5 @@
+result: NoResult
+thrown: NoExceptionThrown
+secondary-before: false
+secondary-during: true
+secondary-after: false

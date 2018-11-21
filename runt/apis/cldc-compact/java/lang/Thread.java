@@ -382,8 +382,20 @@ public class Thread
 		}
 	}
 	
-	public static boolean holdsLock(Object __a)
+	/**
+	 * Checks if the current thread holds the monitor for the given object.
+	 *
+	 * @param __o The object to check.
+	 * @return If the thread owns the monitor.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/21
+	 */
+	public static boolean holdsLock(Object __o)
+		throws NullPointerException
 	{
+		if (__o == null)
+			throw new NullPointerException("NARG");
+		
 		throw new todo.TODO();
 	}
 	
