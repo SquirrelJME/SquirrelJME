@@ -164,14 +164,8 @@ public final class SpringMonitor
 			// Notify all threads or just one?
 			this._notifycount = (__all ? waitcount : 1);
 			
-			// Exit the monitor so threads can grab it
-			this.exit(__by, false);
-			
 			// Notify all threads that something happened with the lock
 			lock.notifyAll();
-			
-			// Re-enter the monitor
-			this.enter(__by);
 			
 			return 0;
 		}
