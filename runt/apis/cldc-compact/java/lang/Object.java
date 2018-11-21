@@ -214,7 +214,7 @@ public class Object
 	 * during the wait.
 	 * @since 2016/02/09
 	 */
-	public final void wait(long __ms, long __ns)
+	public final void wait(long __ms, int __ns)
 		throws IllegalArgumentException, IllegalMonitorStateException,
 			InterruptedException
 	{
@@ -234,6 +234,7 @@ public class Object
 				// {@squirreljme.error ZZ2v Wait operation has been
 				// interrupted.}
 			case ObjectAccess.MONITOR_INTERRUPTED:
+				Thread.currentThread()._interrupted = false;
 				throw new InterruptedException("ZZ2v");
 				
 				// Should not happen

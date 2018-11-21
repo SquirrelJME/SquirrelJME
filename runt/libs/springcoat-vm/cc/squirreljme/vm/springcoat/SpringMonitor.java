@@ -181,7 +181,7 @@ public final class SpringMonitor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/21
 	 */
-	public final int monitorWait(SpringThread __by, long __ms, long __ns)
+	public final int monitorWait(SpringThread __by, long __ms, int __ns)
 		throws NullPointerException
 	{
 		if (__by == null)
@@ -248,7 +248,8 @@ public final class SpringMonitor
 								continue;
 							
 							// Wait for this time
-							lock.wait(rem / 1_000_000L, rem % 1_000_000L);
+							lock.wait(rem / 1_000_000L,
+								(int)(rem % 1_000_000L));
 						}
 						
 						// Wait forever

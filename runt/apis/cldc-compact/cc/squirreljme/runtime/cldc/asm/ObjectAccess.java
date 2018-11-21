@@ -138,7 +138,7 @@ public final class ObjectAccess
 	 * @since 2018/11/21
 	 */
 	public static final native int monitorWait(Object __o, long __ms,
-		long __ns);
+		int __ns);
 	
 	/**
 	 * Constructs and initializes a new instance of the class by the given
