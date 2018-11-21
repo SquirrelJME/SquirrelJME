@@ -65,3 +65,10 @@ execution contexts and they cannot lookup each others classes. Thus if two
 JARs have the same class, it will only use the class that is in their same
 JAR.
 
+## Thread Starting
+
+All threads including the main thread must have a `Thread` object initialized
+in which `Thread.__start()` is executed for the threads. This method is in
+the virtual machine itself and performs most of the logic needed by the
+library so that porting is simpler.
+
