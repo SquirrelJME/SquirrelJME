@@ -78,7 +78,8 @@ public class Thread
 	private final int _virtid;
 	
 	/** The real thread ID. */
-	private volatile int _realid;
+	private volatile int _realid =
+		-1;
 	
 	/** The name of this thread. */
 	private volatile String _name;
@@ -92,6 +93,9 @@ public class Thread
 	/** The priority of the thread. */
 	private volatile int _priority =
 		NORM_PRIORITY;
+	
+	/** Is this thread interrupted? */
+	volatile boolean _interrupted;
 	
 	/**
 	 * Initializes the thread which invokes this object's {@link #run()} and
@@ -220,9 +224,20 @@ public class Thread
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Interrupts the thread.
+	 *
+	 * @since 2018/11/21
+	 */
 	public void interrupt()
 	{
-		throw new todo.TODO();
+		// Signal software interrupt
+		this._interrupted = true;
+		
+		// Signal hardware interrupt
+		int realid = this._realid;
+		if (realid >= 0)
+			TaskAccess.signalInterrupt(realid);
 	}
 	
 	/**
@@ -236,9 +251,15 @@ public class Thread
 		return this._isalive;
 	}
 	
+	/**
+	 * Is this thread interrupted?
+	 *
+	 * @return If this thread is interrupted.
+	 * @since 2018/11/21
+	 */
 	public boolean isInterrupted()
 	{
-		throw new todo.TODO();
+		return this._interrupted;
 	}
 	
 	public final void join(long __a)
@@ -399,9 +420,21 @@ public class Thread
 		return ObjectAccess.holdsLock(TaskAccess.currentThread(), __o);
 	}
 	
+	/**
+	 * Checks if the current thread was interrupted, if it was then the
+	 * interrupt status will be cleared.
+	 *
+	 * @return If this thread was interrupted.
+	 * @since 2018/11/21
+	 */
 	public static boolean interrupted()
 	{
-		throw new todo.TODO();
+		Thread self = Thread.currentThread();
+		
+		// Check interrupt?
+		boolean rv = self._interrupted;
+		self._interrupted = false;
+		return rv;
 	}
 	
 	/**
@@ -436,7 +469,10 @@ public class Thread
 		
 		// {@squirreljme.error ZZ1d Sleep was interrupted.}
 		if (TaskAccess.sleep(__ms, __ns))
+		{
+			Thread.currentThread()._interrupted = false;
 			throw new InterruptedException("ZZ1d");
+		}
 	}
 	
 	public static void yield()

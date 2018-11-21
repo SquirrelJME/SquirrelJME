@@ -43,6 +43,14 @@ public final class TaskAccess
 	public static final native int currentThread();
 	
 	/**
+	 * Signals a hardware interrupt on the given thread.
+	 *
+	 * @param __tid The thread to signal.
+	 * @since 2018/11/21
+	 */
+	public static final native void signalInterrupt(int __tid);
+	
+	/**
 	 * Causes the thread to sleep for the given milliseconds and nanoseconds.
 	 *
 	 * @param __ms The milliseconds to sleep for.

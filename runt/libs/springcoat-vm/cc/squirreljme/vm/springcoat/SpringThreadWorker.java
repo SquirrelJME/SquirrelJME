@@ -1290,9 +1290,10 @@ public final class SpringThreadWorker
 			
 				// Monitor notify
 			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
-				"monitorWait:(Ljava/lang/Object;JJ)I":
+				"monitorWait:(Ljava/lang/Object;JI)I":
 				return ((SpringObject)__args[0]).monitor().
-					monitorWait(this.thread, (Long)__args[1], (Long)__args[2]);
+					monitorWait(this.thread, (Long)__args[1],
+						(Integer)__args[2]);
 				
 				// New instance by name
 			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
@@ -1435,6 +1436,11 @@ public final class SpringThreadWorker
 			case "cc/squirreljme/runtime/cldc/asm/TaskAccess::" +
 				"currentThread:()I":
 				return this.thread.id;
+				
+				// Interrupt the given thread
+			case "cc/squirreljme/runtime/cldc/asm/TaskAccess::" +
+				"interrupt:(I)V":
+				throw new todo.TODO();
 				
 				// Sleep
 			case "cc/squirreljme/runtime/cldc/asm/TaskAccess::" +
