@@ -129,6 +129,18 @@ public final class ObjectAccess
 	public static final native int monitorNotify(Object __o, boolean __all);
 	
 	/**
+	 * Waits for a notification on a monitor.
+	 *
+	 * @param __o The object to wait on.
+	 * @param __ms The milliseconds.
+	 * @param __ns The nanoseconds.
+	 * @return The wait status.
+	 * @since 2018/11/21
+	 */
+	public static final native int monitorWait(Object __o, long __ms,
+		long __ns);
+	
+	/**
 	 * Constructs and initializes a new instance of the class by the given
 	 * name. Access checks are ignored and the class is initialized
 	 * if it is a class which can be initialized.

@@ -93,8 +93,20 @@ public class TestMonitorNotify
 				// Notify other thread
 				tmn.notify();
 				
+				// Note
+				tmn.secondary("sub-after-notify", tmn._count++);
+				
+				// Sleep for a bit, for sanity
+				try
+				{
+					Thread.sleep(1000);
+				}
+				catch (InterruptedException e)
+				{
+				}
+				
 				// Sub continued
-				tmn.secondary("sub-continued", 	tmn._count++);
+				tmn.secondary("sub-after-sleep", tmn._count++);
 			}
 		}
 	}

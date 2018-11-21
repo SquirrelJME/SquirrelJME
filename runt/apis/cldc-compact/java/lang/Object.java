@@ -171,7 +171,7 @@ public class Object
 	public final void wait()
 		throws InterruptedException, IllegalMonitorStateException
 	{
-		throw new todo.TODO();
+		this.wait(0, 0);
 	}
 	
 	/**
@@ -192,7 +192,7 @@ public class Object
 		throws IllegalArgumentException, IllegalMonitorStateException,
 			InterruptedException
 	{
-		throw new todo.TODO();
+		this.wait(__ms, 0);
 	}
 	
 	/**
@@ -218,7 +218,28 @@ public class Object
 		throws IllegalArgumentException, IllegalMonitorStateException,
 			InterruptedException
 	{
-		throw new todo.TODO();
+		// Call wait, but return status can have multiple kind of things
+		// going on
+		switch (ObjectAccess.monitorWait(this, __ms, __ns))
+		{
+				// {@squirreljme.error ZZ2u Cannot wait on monitor because
+				// this thread does not own the monitor.}
+			case ObjectAccess.MONITOR_NOT_OWNED:
+				throw new IllegalMonitorStateException("ZZ2u");
+			
+				// Not interrupted
+			case ObjectAccess.MONITOR_NOT_INTERRUPTED:
+				return;
+			
+				// {@squirreljme.error ZZ2v Wait operation has been
+				// interrupted.}
+			case ObjectAccess.MONITOR_INTERRUPTED:
+				throw new InterruptedException("ZZ2v");
+				
+				// Should not happen
+			default:
+				throw new RuntimeException("OOPS");
+		}
 	}
 }
 
