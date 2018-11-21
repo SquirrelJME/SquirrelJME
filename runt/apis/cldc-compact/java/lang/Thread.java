@@ -10,6 +10,8 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
+import cc.squirreljme.runtime.cldc.asm.StaticMethod;
 import cc.squirreljme.runtime.cldc.asm.SystemAccess;
 import cc.squirreljme.runtime.cldc.asm.TaskAccess;
 import cc.squirreljme.runtime.cldc.lang.UncaughtExceptionHandler;
@@ -30,24 +32,46 @@ public class Thread
 	public static final int NORM_PRIORITY =
 		5;
 	
+	/** Start kind: Self Runnable */
+	private static final int _START_SELF_RUNNABLE =
+		1;
+	
+	/** Start kind: Specified Runnable. */
+	private static final int _START_GIVEN_RUNNABLE =
+		2;
+	
+	/** Start kind: MIDlet (construct then run startApp()). */
+	private static final int _START_MIDLET =
+		3;
+	
+	/** Start kind: main() method (is String[] argument). */
+	private static final int _START_MAIN =
+		4;
+	
 	/** The next virtual thread ID. */
 	private static volatile int _NEXT_VIRTUAL_ID =
 		0;
 	
-	/** The runnable to execute. */
-	private final Runnable _run;
+	/** Which kind of start are we doing? */
+	private final int _startkind;
+	
+	/** The method to execute. */
+	private final StaticMethod _runmethod;
+	
+	/** The argument to the method. */
+	private final Object _runargument;
 	
 	/** The virtual thread ID. */
 	private final int _virtid;
+	
+	/** The real thread ID. */
+	private volatile int _realid;
 	
 	/** The name of this thread. */
 	private volatile String _name;
 	
 	/** Has this thread been started? */
 	private volatile boolean _started;
-	
-	/** The real thread ID. */
-	private volatile int _realid;
 	
 	/**
 	 * Initializes the thread which invokes this object's {@link #run()} and
@@ -98,6 +122,23 @@ public class Thread
 	public Thread(Runnable __r, String __n)
 		throws NullPointerException
 	{
+		this(__n, (__r == null ? _START_SELF_RUNNABLE : _START_GIVEN_RUNNABLE),
+			null, __r);
+	}
+	
+	/**
+	 * Initializes the thread to execute the given static method.
+	 *
+	 * @param __n The name of the thread.
+	 * @param __rk How is this method to be run?
+	 * @param __mm The static method to call.
+	 * @param __ma The argument to use.
+	 * @throws NullPointerException If no name was specified.
+	 * @since 2018/11/20
+	 */
+	private Thread(String __n, int __rk, StaticMethod __mm, Object __ma)
+		throws NullPointerException
+	{
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
@@ -108,8 +149,14 @@ public class Thread
 			this._virtid = (virtid = _NEXT_VIRTUAL_ID++);
 		}
 		
-		this._run = __r;
+		// Set
 		this._name = (__n == _USE_FAKE_NAME ? "Thread-" + virtid : __n);
+		this._startkind = __rk;
+		this._runmethod = __mm;
+		this._runargument = __ma;
+		
+		// The main thread is implicitly started
+		this._started = (__rk == _START_MAIN || __rk == _START_MIDLET);
 	}
 	
 	public final void checkAccess()
@@ -230,14 +277,8 @@ public class Thread
 				throw new IllegalThreadStateException("ZZ2r");
 			this._started = true;
 			
-			// Which thread do we run?
-			Runnable run = this._run;
-			if (run == null)
-				run = this;
-			
 			// Start the thread
-			int realid = TaskAccess.startThread(
-				new __SubRunner__(run, false), this._name);
+			int realid = TaskAccess.startThread(this);
 			this._realid = realid;
 			
 			// {@squirreljme.error ZZ2s Could not start the thread.}
@@ -313,134 +354,111 @@ public class Thread
 	}
 	
 	/**
-	 * Entry point and logic used for the main thread to start using this
-	 * thread.
+	 * This is the starting point for all threads, including the main thread
+	 * and such.
 	 *
 	 * @throws IllegalThreadStateException If the thread has already been
 	 * started.
-	 * @since 2018/11/17
-	 */
-	final void __mainThreadStart()
-		throws IllegalThreadStateException
-	{
-		synchronized (this)
-		{
-			// {@squirreljme.error ZZ2t A thread may only be started once.}
-			if (this._started)
-				throw new IllegalThreadStateException("ZZ2t");
-			this._started = true;
-			
-			// Which thread do we run?
-			Runnable run = this._run;
-			if (run == null)
-				run = this;
-			
-			// Just run this thread in the sub-runner
-			new __SubRunner__(run, true).run();
-		}
-	}
-	
-	/**
-	 * This class runs the runnable and then performs cleanup on it
-	 * accordingly.
-	 *
 	 * @since 2018/11/20
 	 */
-	private final class __SubRunner__
-		implements Runnable
+	final void __start()
+		throws IllegalThreadStateException
 	{
-		/** Is this the main thread? */
-		final boolean _main;
+		// Get the kind and determin if this is a main entry point
+		int startkind = this._startkind;
+		boolean ismain = (startkind == _START_MAIN ||
+			startkind == _START_MIDLET);
 		
-		/** The class to run. */
-		final Runnable _run;
+		// The main method and/or its arguments
+		StaticMethod runmethod = this._runmethod;
+		Object runargument = this._runargument;
 		
-		/**
-		 * Initializes the sub-runner.
-		 *
-		 * @param __r The runable to run.
-		 * @param __main Is this the main thread?
-		 * @throws NullPointerException On null arguments.
-		 * @since 2018/11/20
-		 */
-		__SubRunner__(Runnable __r, boolean __main)
-			throws NullPointerException
+		// The exit code is something that is only handled by the main thread
+		// It will exit with the given code 
+		int exitcode = 0;
+		
+		// Execution setup
+		try
 		{
-			if (__r == null)
-				throw new NullPointerException("NARG");
+			// Increase the active thread count
+			if (true)
+				throw new todo.TODO();
 			
-			this._main = __main;
-			this._run = __r;
+			// Set the thread as alive
+			if (true)
+				throw new todo.TODO();
+			
+			// Add the thread to the thread list
+			if (true)
+				throw new todo.TODO();
+			
+			// How do we run this thread?
+			switch (this._startkind)
+			{
+					// Start Runnable in this instance (extended from)
+				case _START_SELF_RUNNABLE:
+					this.run();
+					break;
+					
+					// Start the given runnable
+				case _START_GIVEN_RUNNABLE:
+					((Runnable)runargument).run();
+					break;
+					
+					// Start MIDlet, construct then startApp()
+				case _START_MIDLET:
+					ObjectAccess.invokeStatic(runmethod,
+						ObjectAccess.newInstanceByName((String)runargument));
+					break;
+					
+					// Start main(String) method
+				case _START_MAIN:
+					ObjectAccess.invokeStatic(runmethod, runargument);
+					break;
+					
+					// Unknown
+				default:
+					throw new RuntimeException("OOPS");
+			}
 		}
 		
-		/**
-		 * {@inheritDoc}
-		 * @since 2018/11/20
-		 */
-		@Override
-		public final void run()
+		// Uncaught exception
+		catch (Throwable t)
 		{
-			// Main thread is important for some handling
-			boolean main = this._main;
-			int exitcode = 0;
+			// Set the exit code for the process to some error number, if
+			// the VM does not exit in this thread but exits in another
+			// it would at least be set for the main thread
+			// But this is only needed for the main thread
+			if (ismain)
+				exitcode = 127;
 			
-			// Could fail
-			try
-			{
-				// Increase the active thread count
-				if (true)
-					throw new todo.TODO();
-				
-				// Set the thread as alive
-				if (true)
-					throw new todo.TODO();
-				
-				// Add the thread to the thread list
-				if (true)
-					throw new todo.TODO();
-				
-				// Run the runner
-				this._run.run();
-			}
+			// Handle uncaught exception
+			UncaughtExceptionHandler.handle(t);
+		}
+		
+		// Cleanup after the thread:
+		//  * Signal joins (for those that are waiting)
+		//  * Remove the thread from the thread list
+		//  * Decrease the active count
+		//  * Set thread as not alive
+		finally
+		{
+			if (true)
+				throw new todo.TODO();
+		}
+		
+		// If this is the main thread, wait for every other thread to
+		// stop execution. This saves the VM execution code itself from
+		// worrying about which threads are running or not.
+		if (ismain)
+		{
+			// Wait for threads to go away
+			if (true)
+				throw new todo.TODO();
 			
-			// Uncaught exception
-			catch (Throwable t)
-			{
-				// Set the exit code for the process to some error number, if
-				// the VM does not exit in this thread but exits in another
-				// it would at least be set for the main thread
-				// But this is only needed for the main thread
-				if (main)
-					exitcode = 127;
-				
-				// Handle uncaught exception
-				UncaughtExceptionHandler.handle(t);
-			}
-			
-			// Cleanup after the thread:
-			//  * Signal joins (for those that are waiting)
-			//  * Remove the thread from the thread list
-			//  * Decrease the active count
-			//  * Set thread as not alive
-			finally
-			{
-				if (true)
-					throw new todo.TODO();
-			}
-			
-			// If this is the main thread, wait for every other thread to
-			// stop execution. This saves the VM execution code itself from
-			// worrying about which threads are running or not.
-			if (main)
-			{
-				// Wait for threads to go away
-				if (true)
-					throw new todo.TODO();
-				
-				// Exit the VM with our normal exit code, since no other
-				// thread called exit at all for this point
-				SystemAccess.exit(exitcode);
-			}
+			// Exit the VM with our normal exit code, since no other
+			// thread called exit at all for this point
+			SystemAccess.exit(exitcode);
 		}
 	}
 }
