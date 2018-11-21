@@ -1,7 +1,9 @@
 result: NoResult
 thrown: NoExceptionThrown
 secondary-a-after-lock: int:1
+secondary-a-after-wait: false
 secondary-a-before-lock: int:0
+secondary-a-before-wait: false
 secondary-a-done: int:9
 secondary-a-thread-created: int:2
 secondary-a-was-interrupted: int:8
