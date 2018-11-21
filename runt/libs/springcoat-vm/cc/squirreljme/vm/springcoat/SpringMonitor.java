@@ -10,6 +10,10 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 /**
  * This is a monitor which is associated with an object.
  *
@@ -20,6 +24,10 @@ public final class SpringMonitor
 	/** The monitor lock. */
 	protected final Object lock =
 		new Object();
+	
+	/** Threads waiting on the lock. */
+	private final Set<__Waiting__> _waits =
+		new LinkedHashSet<>();
 	
 	/** The thread which owns this monitor. */
 	private volatile SpringThread _owner;
@@ -119,6 +127,47 @@ public final class SpringMonitor
 				lock.notifyAll();
 			}
 		}
+	}
+	
+	/**
+	 * Notifies on this monitor and returns the status.
+	 *
+	 * @param __by The thread that is doing the notify.
+	 * @return The notification status.
+	 * @throws NullPointerException
+	 * @since 2018/11/20
+	 */
+	public final int monitorNotify(SpringThread __by)
+		throws NullPointerException
+	{
+		if (__by == null)
+			throw new NullPointerException("NARG");
+		
+		Set<__Waiting__> waits = this._waits;
+		
+		// Lock on the monitor lock
+		Object lock = this.lock;
+		synchronized (lock)
+		{
+			// Wrong thread?
+			if (this._owner != __by)
+				return ObjectAccess.MONITOR_NOT_OWNED;
+			
+			// Nothing is waiting on the monitor, so do nothing
+			if (waits.isEmpty())
+				return 0;
+			
+			throw new todo.TODO();
+		}
+	}
+	
+	/**
+	 * Waiting information on this monitor.
+	 *
+	 * @since 2018/11/20
+	 */
+	private static final class __Waiting__
+	{
 	}
 }
 

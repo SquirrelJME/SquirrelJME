@@ -15,6 +15,8 @@ import cc.squirreljme.runtime.cldc.asm.StaticMethod;
 import cc.squirreljme.runtime.cldc.asm.SystemAccess;
 import cc.squirreljme.runtime.cldc.asm.TaskAccess;
 import cc.squirreljme.runtime.cldc.lang.UncaughtExceptionHandler;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Thread
 	implements Runnable
@@ -48,9 +50,20 @@ public class Thread
 	private static final int _START_MAIN =
 		4;
 	
+	/** Threads by virtual ID. */
+	private static final Map<Integer, Thread> _BY_VIRTID =
+		new HashMap<>();
+	
+	/** Threads by real ID. */
+	private static final Map<Integer, Thread> _BY_REALID =
+		new HashMap<>();
+	
 	/** The next virtual thread ID. */
 	private static volatile int _NEXT_VIRTUAL_ID =
 		0;
+	
+	/** The active number of threads. */
+	private static volatile int _ACTIVE_THREADS;
 	
 	/** Which kind of start are we doing? */
 	private final int _startkind;
@@ -72,6 +85,9 @@ public class Thread
 	
 	/** Has this thread been started? */
 	private volatile boolean _started;
+	
+	/** Is this thread alive? */
+	private volatile boolean _isalive;
 	
 	/**
 	 * Initializes the thread which invokes this object's {@link #run()} and
@@ -196,9 +212,15 @@ public class Thread
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Is this thread currently alive?
+	 *
+	 * @return If this thread is alive.
+	 * @since 2018/11/20
+	 */
 	public final boolean isAlive()
 	{
-		throw new todo.TODO();
+		return this._isalive;
 	}
 	
 	public boolean isInterrupted()
@@ -293,9 +315,15 @@ public class Thread
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the number of threads which are currently alive.
+	 *
+	 * @return The number of alive threads.
+	 * @since 2018/11/20
+	 */
 	public static int activeCount()
 	{
-		throw new todo.TODO();
+		return Thread._ACTIVE_THREADS;
 	}
 	
 	public static Thread currentThread()
@@ -364,10 +392,15 @@ public class Thread
 	final void __start()
 		throws IllegalThreadStateException
 	{
+		// Debug
+		todo.DEBUG.note("Start thread: %s", this._name);
+		
 		// Get the kind and determin if this is a main entry point
 		int startkind = this._startkind;
 		boolean ismain = (startkind == _START_MAIN ||
 			startkind == _START_MIDLET);
+		Integer virtid = this._virtid,
+			realid = this._realid;
 		
 		// The main method and/or its arguments
 		StaticMethod runmethod = this._runmethod;
@@ -380,17 +413,21 @@ public class Thread
 		// Execution setup
 		try
 		{
-			// Increase the active thread count
-			if (true)
-				throw new todo.TODO();
-			
+			// Lock
+			synchronized (Thread.class)
+			{
+				// Increase the active thread count
+				Thread._ACTIVE_THREADS++;
+				
+				// Add threads to the thread list
+				Map<Integer, Thread> byvirtid = Thread._BY_VIRTID,
+					byrealid = Thread._BY_REALID;
+				byvirtid.put(virtid, this);
+				byrealid.put(realid, this);
+			}
+				
 			// Set the thread as alive
-			if (true)
-				throw new todo.TODO();
-			
-			// Add the thread to the thread list
-			if (true)
-				throw new todo.TODO();
+			this._isalive = true;
 			
 			// How do we run this thread?
 			switch (this._startkind)
@@ -443,8 +480,27 @@ public class Thread
 		//  * Set thread as not alive
 		finally
 		{
-			if (true)
-				throw new todo.TODO();
+			// Thread no longer alive
+			this._isalive = false;
+			
+			// Lock
+			synchronized (Thread.class)
+			{
+				// Decrease the active count
+				Thread._ACTIVE_THREADS--;
+				
+				// Remove from the thread list
+				Map<Integer, Thread> byvirtid = Thread._BY_VIRTID,
+					byrealid = Thread._BY_REALID;
+				byvirtid.remove(virtid);
+				byrealid.remove(realid);
+			}
+			
+			// Signal all threads which are waiting on a join
+			synchronized (this)
+			{
+				this.notifyAll();
+			}
 		}
 		
 		// If this is the main thread, wait for every other thread to

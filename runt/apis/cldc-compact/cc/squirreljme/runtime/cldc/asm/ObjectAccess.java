@@ -20,6 +20,18 @@ import cc.squirreljme.runtime.cldc.ref.PrimitiveWeakReference;
  */
 public final class ObjectAccess
 {
+	/** Monitor is not owned by this thread. */
+	public static final int MONITOR_NOT_OWNED =
+		-1;
+	
+	/** Monitor did not interrupt. */
+	public static final int MONITOR_NOT_INTERRUPTED =
+		0;
+	
+	/** Monitor did interrupt. */
+	public static final int MONITOR_INTERRUPTED =
+		1;
+	
 	/**
 	 * Not used.
 	 *
@@ -95,6 +107,16 @@ public final class ObjectAccess
 	 * @since 2018/11/20
 	 */
 	public static final native void invokeStatic(StaticMethod __m, Object __v);
+	
+	/**
+	 * Notifies threads waiting on the monitor.
+	 *
+	 * @param __o The object to notify.
+	 * @param __all Notify all threads?
+	 * @return If the monitor was a success or not.
+	 * @since 2018/11/20
+	 */
+	public static final native int monitorNotify(Object __o, boolean __all);
 	
 	/**
 	 * Constructs and initializes a new instance of the class by the given

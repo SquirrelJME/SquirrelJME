@@ -122,7 +122,10 @@ public class Object
 	public final void notify()
 		throws IllegalMonitorStateException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error ZZ2t This thread does not own the monitor for
+		// this thread.}
+		if (ObjectAccess.monitorNotify(this, false) < 0)
+			throw new IllegalMonitorStateException("ZZ2t");
 	}
 	
 	/**
@@ -135,7 +138,10 @@ public class Object
 	public final void notifyAll()
 		throws IllegalMonitorStateException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error ZZ2t This thread does not own the monitor for
+		// this thread.}
+		if (ObjectAccess.monitorNotify(this, true) < 0)
+			throw new IllegalMonitorStateException("ZZ2t");
 	}
 	
 	/**
