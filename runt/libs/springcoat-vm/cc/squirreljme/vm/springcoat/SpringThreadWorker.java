@@ -1266,11 +1266,31 @@ public final class SpringThreadWorker
 				"identityHashCode:(Ljava/lang/Object;)I":
 				return System.identityHashCode(((SpringObject)__args[0]));
 				
+				// Invoke static method
+			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
+				"invokeStatic:(Lcc/squirreljme/runtime/cldc/asm/" +
+				"StaticMethod;Ljava/lang/Object;)V":
+				{
+					// Enter a frame for this method
+					this.thread.enterFrame(((SpringVMStaticMethod)__args[0]).
+						method, __args[1]);
+					
+					// No return value
+					return null;
+				}
+				
 				// Monitor notify
 			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
 				"monitorNotify:(Ljava/lang/Object;Z)I":
 				return ((SpringObject)__args[0]).monitor().
 					monitorNotify(this.thread);
+				
+				// New instance by name
+			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
+				"newInstanceByName:(Ljava/lang/String;)Ljava/lang/Object;":
+				return this.newInstance((new ClassName(
+					this.<String>asNativeObject(String.class, __args[0]))),
+					new MethodDescriptor("()V"));
 				
 				// Get reference
 			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
