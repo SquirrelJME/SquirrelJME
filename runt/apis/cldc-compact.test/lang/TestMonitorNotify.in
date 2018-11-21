@@ -1,0 +1,10 @@
+result: NoResult
+thrown: NoExceptionThrown
+secondary-after-lock: int:6
+secondary-before-lock: int:0
+secondary-expected-resume: int:5
+secondary-in-lock: int:1
+secondary-sub-continued: int:4
+secondary-sub-in-lock: int:3
+secondary-thread-created: int:2
+
