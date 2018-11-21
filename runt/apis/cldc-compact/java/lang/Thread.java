@@ -179,9 +179,18 @@ public class Thread
 		this._started = (__rk == _START_MAIN || __rk == _START_MIDLET);
 	}
 	
+	/**
+	 * Checks that the thread has access to perform some operations.
+	 *
+	 * @throws SecurityException If access is denied.
+	 * @since 2018/11/21
+	 */
 	public final void checkAccess()
+		throws SecurityException
 	{
-		throw new todo.TODO();
+		SecurityManager sm = System.getSecurityManager();
+		if (sm != null)
+			sm.checkAccess(this);
 	}
 	
 	/**
@@ -274,11 +283,26 @@ public class Thread
 		// Does nothing
 	}
 	
-	public final void setName(String __a)
+	/**
+	 * Sets the name of the thread.
+	 *
+	 * @param __n The new name of the thread.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/21
+	 */
+	public final void setName(String __n)
+		throws NullPointerException
 	{
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		// Check access first
+		this.checkAccess();
+		
+		// Set new name
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			this._name = __n;
 		}
 	}
 	

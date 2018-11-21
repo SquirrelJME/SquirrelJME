@@ -47,9 +47,17 @@ public class SecurityManager
 		throw new todo.TODO();
 	}
 	
-	public void checkAccess(Thread __a)
+	/**
+	 * Checks if the given thread may be modified.
+	 *
+	 * @param __t The thread to check.
+	 * @throws SecurityException If threads cannot be modified.
+	 * @since 2018/11/21
+	 */
+	public void checkAccess(Thread __t)
+		throws SecurityException
 	{
-		throw new todo.TODO();
+		this.checkPermission(new RuntimePermission("modifyThread"));
 	}
 	
 	public void checkConnect(String __a, int __b)
