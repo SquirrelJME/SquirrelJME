@@ -1,0 +1,7 @@
+# 2018/11/20
+
+## 10:04
+
+What I can do instead for the VM threads and such, is instead create a new
+thread object for the main thread then start that thread. Well internally
+start the thread!
