@@ -57,7 +57,7 @@ public class TestVMInterrupt
 			// Wait for a notification
 			try
 			{
-				this.lock.wait(3000);
+				this.lock.wait();
 				
 				// Note
 				this.secondary("a-was-not-interrupted", order++);
