@@ -34,6 +34,8 @@ public class TestVMInterrupt
 	@Override
 	public void test()
 	{
+		Thread self = Thread.currentThread();
+		
 		// Note
 		this.secondary("a-before-lock", order++);
 		
@@ -45,16 +47,17 @@ public class TestVMInterrupt
 			
 			// Setup thread to run
 			Thread runner = new Thread(new __Runner__(
-				Thread.currentThread()), "VMInterruptChild");
+				self), "VMInterruptChild");
 			runner.start();
 			
 			// Note
 			this.secondary("a-thread-created", order++);
+			this.secondary("a-before-wait", self.isInterrupted());
 			
 			// Wait for a notification
 			try
 			{
-				this.lock.wait(1000);
+				this.lock.wait(3000);
 				
 				// Note
 				this.secondary("a-was-not-interrupted", order++);
@@ -64,6 +67,9 @@ public class TestVMInterrupt
 				// Note
 				this.secondary("a-was-interrupted", order++);
 			}
+			
+			// Note
+			this.secondary("a-after-wait", self.isInterrupted());
 		}
 		
 		// Note

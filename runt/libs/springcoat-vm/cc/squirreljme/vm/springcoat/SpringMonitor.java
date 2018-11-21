@@ -25,12 +25,14 @@ public final class SpringMonitor
 	protected final Object lock =
 		new Object();
 	
-	/** Threads waiting on the lock. */
-	private final Set<__Waiting__> _waits =
-		new LinkedHashSet<>();
-	
 	/** The thread which owns this monitor. */
 	volatile SpringThread _owner;
+	
+	/** Number of threads which are waiting on this monitor. */
+	volatile int _waitcount;
+	
+	/** The number of notifications happening. */
+	volatile int _notifycount;
 	
 	/** The entry count on the monitor. */
 	private int _count;
@@ -89,12 +91,13 @@ public final class SpringMonitor
 	 * Exits the monitor.
 	 *
 	 * @param __t The thread exiting the monitor.
+	 * @param __notify Should threads be notified that an unlock happened?
 	 * @throws NullPointerException On null arguments.
 	 * @throws SpringIllegalMonitorStateException If the monitor is not owned
 	 * by this thread.
 	 * @since 2018/09/15
 	 */
-	public final void exit(SpringThread __t)
+	public final void exit(SpringThread __t, boolean __notify)
 		throws NullPointerException, SpringIllegalMonitorStateException
 	{
 		if (__t == null)
@@ -124,7 +127,8 @@ public final class SpringMonitor
 				
 				// Wake up all threads so that they try and lock on the lock
 				// so whoever gets that chance
-				lock.notifyAll();
+				if (__notify)
+					lock.notifyAll();
 			}
 		}
 	}
@@ -133,17 +137,16 @@ public final class SpringMonitor
 	 * Notifies on this monitor and returns the status.
 	 *
 	 * @param __by The thread that is doing the notify.
+	 * @param __all Notify all threads?
 	 * @return The notification status.
 	 * @throws NullPointerException
 	 * @since 2018/11/20
 	 */
-	public final int monitorNotify(SpringThread __by)
+	public final int monitorNotify(SpringThread __by, boolean __all)
 		throws NullPointerException
 	{
 		if (__by == null)
 			throw new NullPointerException("NARG");
-		
-		Set<__Waiting__> waits = this._waits;
 		
 		// Lock on the monitor lock
 		Object lock = this.lock;
@@ -153,11 +156,121 @@ public final class SpringMonitor
 			if (this._owner != __by)
 				return ObjectAccess.MONITOR_NOT_OWNED;
 			
-			// Nothing is waiting on the monitor, so do nothing
-			if (waits.isEmpty())
+			// Nothing is waiting, do not bother at all!
+			int waitcount = this._waitcount;
+			if (waitcount == 0)
 				return 0;
 			
-			throw new todo.TODO();
+			// Notify all threads or just one?
+			this._notifycount = (__all ? waitcount : 1);
+			
+			// Exit the monitor so threads can grab it
+			this.exit(__by, false);
+			
+			// Notify all threads that something happened with the lock
+			lock.notifyAll();
+			
+			// Re-enter the monitor
+			this.enter(__by);
+			
+			return 0;
+		}
+	}
+	
+	/**
+	 * Waits on the monitor.
+	 *
+	 * @param __by The thread doing the wait.
+	 * @param __ms The milliseconds to wait.
+	 * @param __ns The nanoseconds to wait.
+	 * @return The wait result.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/21
+	 */
+	public final int monitorWait(SpringThread __by, long __ms, long __ns)
+		throws NullPointerException
+	{
+		if (__by == null)
+			throw new NullPointerException("NARG");
+		
+		// Lock on the monitor lock
+		Object lock = this.lock;
+		synchronized (lock)
+		{
+			// Wrong thread?
+			if (this._owner != __by)
+				return ObjectAccess.MONITOR_NOT_OWNED;
+			
+			// Increase our wait count
+			this._waitcount++;
+			
+			// Relinquish control, we do not have to worry about other threads
+			// trying to grab this lock
+			this.exit(__by, false);
+			
+			// Do looped wait, but it may be timed
+			boolean waitforever = (__ms == 0 && __ns == 0),
+				interrupted = false,
+				expired = false;
+			long end = (waitforever ? Long.MAX_VALUE :
+				System.nanoTime() + (__ms * 1000000L) + __ns);
+			for (;;)
+			{
+				// read our wait and notify counts to determine if we
+				// should take control here
+				int nownotifycount = this._notifycount,
+					nowwaitcount = this._waitcount;
+				
+				// We were notified, interrupted, or expired, take it and leave
+				if (interrupted || expired || nownotifycount > 0)
+				{
+					// Reduce the notify count, but not when interrupted
+					if (!interrupted)
+						this._notifycount--;
+					
+					// Reduce wait count
+					this._waitcount--;
+					
+					// Re-enter the monitor
+					this.enter(__by);
+					
+					// Whatever state we ended up in
+					if (interrupted)
+						return ObjectAccess.MONITOR_INTERRUPTED;
+					return ObjectAccess.MONITOR_NOT_INTERRUPTED;
+				}
+				
+				// Otherwise wait for notification to happen
+				else
+				{
+					// Could be interrupted
+					try
+					{
+						// Check if time expired
+						if (!waitforever)
+						{
+							long rem = end - System.nanoTime();
+							if (rem < 0)
+								continue;
+							
+							// Wait for this time
+							lock.wait(rem / 1_000_000L, rem % 1_000_000L);
+						}
+						
+						// Wait forever
+						else
+						{
+							lock.wait();
+						}
+					}
+					
+					// Was interrupted
+					catch (InterruptedException e)
+					{
+						interrupted = true;
+					}
+				}
+			}
 		}
 	}
 	

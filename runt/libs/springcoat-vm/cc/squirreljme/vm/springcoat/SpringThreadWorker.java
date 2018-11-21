@@ -1285,7 +1285,14 @@ public final class SpringThreadWorker
 			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
 				"monitorNotify:(Ljava/lang/Object;Z)I":
 				return ((SpringObject)__args[0]).monitor().
-					monitorNotify(this.thread);
+					monitorNotify(this.thread,
+					((Integer)__args[1]).intValue() != 0);
+			
+				// Monitor notify
+			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
+				"monitorWait:(Ljava/lang/Object;JJ)I":
+				return ((SpringObject)__args[0]).monitor().
+					monitorWait(this.thread, (Long)__args[1], (Long)__args[2]);
 				
 				// New instance by name
 			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
@@ -3404,7 +3411,7 @@ public final class SpringThreadWorker
 					// Exit monitor
 				case InstructionIndex.MONITOREXIT:
 					frame.<SpringObject>popFromStack(SpringObject.class).
-						monitor().exit(thread);
+						monitor().exit(thread, true);
 					break;
 					
 					// Allocate multi-dimensional array
