@@ -41,16 +41,13 @@ public final class UncaughtExceptionHandler
 		// Make a nice and big banner on it
 		PrintStream out = System.err;
 		out.println("****************************************************");
-		out.println("UNCAUGHT EXCEPTION:");
+		out.print("UNCAUGHT EXCEPTION IN THREAD: ");
+		out.println(Thread.currentThread());
 		
 		if (__t != null)
 			__t.printStackTrace(out);
 		
 		out.println("****************************************************");
-		
-		// Check if this is the only running thread, if it is then exit the
-		// VM with some error status
-		throw new todo.TODO();
 	}
 }
 

@@ -89,6 +89,10 @@ public class Thread
 	/** Is this thread alive? */
 	private volatile boolean _isalive;
 	
+	/** The priority of the thread. */
+	private volatile int _priority =
+		NORM_PRIORITY;
+	
 	/**
 	 * Initializes the thread which invokes this object's {@link #run()} and
 	 * uses a default thread name.
@@ -309,10 +313,16 @@ public class Thread
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/20
+	 */
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		// JavaSE is in the format of `Thread[name,priority,group]` but
+		// we do not have thread groups here
+		return "Thread[" + this._name + "," + this._priority + "]";
 	}
 	
 	/**
@@ -326,9 +336,26 @@ public class Thread
 		return Thread._ACTIVE_THREADS;
 	}
 	
+	/**
+	 * Returns the current thread.
+	 *
+	 * @return The current thread.
+	 * @since 2018/11/20
+	 */
 	public static Thread currentThread()
 	{
-		throw new todo.TODO();
+		int rid = TaskAccess.currentThread();
+		
+		// If the map is not initialized yet, ignore
+		Map<Integer, Thread> byrealid = _BY_REALID;
+		if (byrealid == null)
+			return null;
+		
+		// Lock
+		synchronized (Thread.class)
+		{
+			return byrealid.get(rid);
+		}
 	}
 	
 	public static boolean holdsLock(Object __a)
@@ -400,7 +427,7 @@ public class Thread
 		boolean ismain = (startkind == _START_MAIN ||
 			startkind == _START_MIDLET);
 		Integer virtid = this._virtid,
-			realid = this._realid;
+			realid = TaskAccess.currentThread();
 		
 		// The main method and/or its arguments
 		StaticMethod runmethod = this._runmethod;
@@ -509,8 +536,15 @@ public class Thread
 		if (ismain)
 		{
 			// Wait for threads to go away
-			if (true)
-				throw new todo.TODO();
+			for (;;)
+			{
+				// No threads are active, so that works
+				if (Thread._ACTIVE_THREADS == 0)
+					break;	
+				
+				if (true)
+					throw new todo.TODO();
+			}
 			
 			// Exit the VM with our normal exit code, since no other
 			// thread called exit at all for this point

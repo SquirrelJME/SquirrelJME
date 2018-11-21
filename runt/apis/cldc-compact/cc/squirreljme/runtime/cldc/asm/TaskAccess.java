@@ -35,6 +35,14 @@ public final class TaskAccess
 	}
 	
 	/**
+	 * Returns the ID of the current thread.
+	 *
+	 * @return The current thread ID.
+	 * @since 2018/11/20
+	 */
+	public static final native int currentThread();
+	
+	/**
 	 * Causes the thread to sleep for the given milliseconds and nanoseconds.
 	 *
 	 * @param __ms The milliseconds to sleep for.
