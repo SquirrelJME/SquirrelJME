@@ -1266,6 +1266,12 @@ public final class SpringThreadWorker
 				"identityHashCode:(Ljava/lang/Object;)I":
 				return System.identityHashCode(((SpringObject)__args[0]));
 				
+				// Monitor notify
+			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
+				"monitorNotify:(Ljava/lang/Object;Z)I":
+				return ((SpringObject)__args[0]).monitor().
+					monitorNotify(this.thread);
+				
 				// Get reference
 			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
 				"referenceGet:(Lcc/squirreljme/runtime/cldc/ref/" +
