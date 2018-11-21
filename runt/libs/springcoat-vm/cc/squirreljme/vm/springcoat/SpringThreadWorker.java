@@ -1414,6 +1414,11 @@ public final class SpringThreadWorker
 				return System.getProperty(this.<String>asNativeObject(
 					String.class, __args[0]));
 				
+				// Current thread ID
+			case "cc/squirreljme/runtime/cldc/asm/TaskAccess::" +
+				"currentThread:()I":
+				return this.thread.id;
+				
 				// Sleep
 			case "cc/squirreljme/runtime/cldc/asm/TaskAccess::" +
 				"sleep:(JI)Z":

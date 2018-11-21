@@ -374,9 +374,19 @@ public class PrintStream
 		}
 	}
 	
-	public void println(Object __a)
+	/**
+	 * Prints the given object to the output stream followed by a new line.
+	 *
+	 * @param __v The string to write.
+	 * @since 2018/11/20
+	 */
+	public void println(Object __v)
 	{
-		throw new todo.TODO();
+		synchronized (this)
+		{
+			this.__print((__v == null ? "null" : __v.toString()));
+			this.__println();
+		}
 	}
 	
 	protected void setError()

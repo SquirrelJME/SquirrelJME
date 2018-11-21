@@ -88,6 +88,9 @@ abstract class __CoreTest__
 		if (ld >= 0)
 			basename = basename.substring(ld + 1);
 		
+		if (true)
+			throw new Error("FUCK");
+		
 		// Read input and output parameters
 		JavaManifest man;
 		try (InputStream in = self.getResourceAsStream(basename + ".in"))
