@@ -396,7 +396,7 @@ public class Thread
 		if (__o == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		return ObjectAccess.holdsLock(TaskAccess.currentThread(), __o);
 	}
 	
 	public static boolean interrupted()

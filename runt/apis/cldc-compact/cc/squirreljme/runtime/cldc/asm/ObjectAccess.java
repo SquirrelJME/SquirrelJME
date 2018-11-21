@@ -92,6 +92,16 @@ public final class ObjectAccess
 	public static final native Class<?> classOf(Object __v);
 	
 	/**
+	 * Checks if the given thread holds the given object in a lock.
+	 *
+	 * @param __ntid The native thread ID.
+	 * @param __o The object to check.
+	 * @return If the lock is held.
+	 * @since 2018/11/21
+	 */
+	public static final native boolean holdsLock(int __ntid, Object __o);
+	
+	/**
 	 * Returns the identity hashcode of the object.
 	 *
 	 * @return The identity hashcode.
