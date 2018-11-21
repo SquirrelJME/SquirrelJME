@@ -120,7 +120,8 @@ public final class ObjectAccess
 	
 	/**
 	 * Constructs and initializes a new instance of the class by the given
-	 * name.
+	 * name. Access checks are ignored and the class is initialized
+	 * if it is a class which can be initialized.
 	 *
 	 * @param __n The name of the class to initialize.
 	 * @return The initialization of the class or {@code null} if it could

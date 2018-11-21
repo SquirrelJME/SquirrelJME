@@ -32,6 +32,7 @@ import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ConstantValueString;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
+import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodNameAndType;
 import net.multiphasicapps.profiler.ProfilerSnapshot;
 import net.multiphasicapps.tool.manifest.JavaManifest;
@@ -429,38 +430,20 @@ public final class SpringMachine
 		
 		// Find the method to be entered in
 		SpringMethod mainmethod;
-		if ((ismidlet = ismidlet))
+		if (ismidlet)
 			mainmethod = entrycl.lookupMethod(false,
 				new MethodNameAndType("startApp", "()V"));
 		else
 			mainmethod = entrycl.lookupMethod(true,
 				new MethodNameAndType("main", "([Ljava/lang/String;)V"));
 		
-		// If this is a midlet, we are going to need to initialize a new
-		// instance of our MIDlet and then push that to the current frame's
-		// stack then call the main method on it
-		Object[] entryargs;
-		if (ismidlet)
-		{
-			// Allocate an object for our instance
-			SpringObject midinstance = worker.allocateObject(entrycl);
-			
-			// Initialize the object
-			SpringMethod defcon = entrycl.lookupDefaultConstructor();
-			mainthread.enterFrame(defcon, midinstance);
-			
-			// Since the constructor was entered, run all the code needed to
-			// actually initialize it and such, this method will return once
-			// there are no frames left
-			worker.run();
-			
-			// The arguments to the method we are calling is just the instance
-			// of the midlet we created and initialized
-			entryargs = new Object[]{midinstance};
-		}
+		// Setup object to initialize with for thread
+		SpringVMStaticMethod vmsm = new SpringVMStaticMethod(mainmethod);
 		
-		// Initialize program arguments from a bunch of string arguments that
-		// way they are passed to the main entry point
+		// Determine the entry argument, midlets is just the class to run
+		Object entryarg;
+		if (ismidlet)
+			entryarg = worker.asVMObject(entryclass.replace('.', '/'));
 		else
 		{
 			String[] inargs = this._args;
@@ -474,13 +457,21 @@ public final class SpringMachine
 			for (int i = 0; i < inlen; i++)
 				outargs.set(i, worker.asVMObject(inargs[i]));
 			
-			// Entry arguments are just this array
-			entryargs = new Object[]{outargs};
+			entryarg = outargs;
 		}
+		
+		// Setup new thread object
+		SpringObject threadobj = worker.newInstance(worker.loadClass(
+			new ClassName("java/lang/Thread")), new MethodDescriptor(
+			"(Ljava/lang/String;ILcc/squirreljme/runtime/cldc/asm/" +
+			"StaticMethod;Ljava/lang/Object;)V"), worker.asVMObject("Main"),
+			(ismidlet ? 3 : 4), vmsm, entryarg);
 		
 		// Enter the frame for that method using the arguments we passed (in
 		// a static fashion)
-		mainthread.enterFrame(mainmethod, entryargs);
+		mainthread.enterFrame(worker.loadClass(
+			new ClassName("java/lang/Thread")).lookupMethod(false,
+			new MethodNameAndType("__start", "()V")), threadobj);
 		
 		// The main although it executes in this context will always have the
 		// same exact logic as other threads running apart from this main
