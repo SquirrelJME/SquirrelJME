@@ -198,9 +198,9 @@ public final class SpringMonitor
 			// Increase our wait count
 			this._waitcount++;
 			
-			// Relinquish control, we do not have to worry about other threads
-			// trying to grab this lock
-			this.exit(__by, false);
+			// Relinquish control of this monitor, so that way when we actually
+			// internally do the wait we check notify counts and such.
+			this.exit(__by, true);
 			
 			// Do looped wait, but it may be timed
 			boolean waitforever = (__ms == 0 && __ns == 0),
