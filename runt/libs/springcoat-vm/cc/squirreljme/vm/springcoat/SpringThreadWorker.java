@@ -1439,7 +1439,7 @@ public final class SpringThreadWorker
 				
 				// Interrupt the given thread
 			case "cc/squirreljme/runtime/cldc/asm/TaskAccess::" +
-				"interrupt:(I)V":
+				"signalInterrupt:(I)V":
 				throw new todo.TODO();
 				
 				// Sleep
