@@ -10,17 +10,34 @@
 
 package java.lang;
 
+/**
+ * This is thrown when a thread is interrupted.
+ *
+ * Note that this does not clear the interrupt status of a thread.
+ *
+ * @since 2018/11/21
+ */
 public class InterruptedException
 	extends Exception
 {
+	/**
+	 * Initializes the exception with no message or cause.
+	 *
+	 * @since 2018/11/21
+	 */
 	public InterruptedException()
 	{
-		throw new todo.TODO();
 	}
 	
-	public InterruptedException(String __a)
+	/**
+	 * Initializes the exception with the given message and no cause.
+	 *
+	 * @param __m The message.
+	 * @since 2018/11/21
+	 */
+	public InterruptedException(String __m)
 	{
-		throw new todo.TODO();
+		super(__m);
 	}
 }
 
