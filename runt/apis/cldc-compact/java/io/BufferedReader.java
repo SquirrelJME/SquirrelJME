@@ -10,58 +10,163 @@
 
 package java.io;
 
+/**
+ * This is a reader which is backed by a buffer which should increase the
+ * efficiency of read operations by allowing for bulk reads for easily.
+ *
+ * It is recommended to wrap these around {@link InputStreamReader} for
+ * example due to that class not being efficient due to character conversions.
+ *
+ * @since 2018/11/22
+ */
 public class BufferedReader
 	extends Reader
 {
-	public BufferedReader(Reader __a, int __b)
+	/** Default buffer size. */
+	private static final int _DEFAULT_SIZE =
+		512;
+	
+	/** The buffer to source from. */
+	private final Reader _in;
+	
+	/** The input buffer, this acts as a round robin, mutable for close(). */
+	private char[] _buf;
+	
+	/** The read position of the buffer. */
+	private int _rp;
+	
+	/** The write position of the buffer. */
+	private int _wp;
+	
+	/** Was EOF reached in the source? */
+	private boolean _ineof;
+	
+	/**
+	 * Initializes the reader.
+	 *
+	 * @param __r The reader to source from.
+	 * @param __bs The size of the internal buffer.
+	 * @throws IllegalArgumentException If the buffer size is zero or
+	 * negative.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/22
+	 */
+	public BufferedReader(Reader __r, int __bs)
+		throws IllegalArgumentException, NullPointerException
 	{
-		super();
-		throw new todo.TODO();
+		if (__r == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error ZZ2x Cannot have a zero or negative buffer
+		// size.}
+		if (__bs <= 0)
+			throw new IllegalArgumentException("ZZ2x");
+		
+		this._in = __r;
+		this._buf = new char[__bs];
 	}
 	
-	public BufferedReader(Reader __a)
+	/**
+	 * Initializes the buffer using a default buffer size.
+	 *
+	 * @param __r The reader to source from.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/22
+	 */
+	public BufferedReader(Reader __r)
+		throws NullPointerException
 	{
-		super();
-		throw new todo.TODO();
+		this(__r, _DEFAULT_SIZE);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/22
+	 */
 	@Override
 	public void close()
 		throws IOException
 	{
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
+		// The buffer not existing indicates this is closed
+		char[] buf = this._buf;
+		if (buf != null)
+			this._buf = null;
+		
+		// Close the underlying stream
+		this._in.close();
 	}
 	
 	@Override
 	public void mark(int __a)
 		throws IOException
 	{
+		// Has been closed?
+		char[] buf = this._buf;
+		if (buf == null)
+			throw new IOException("CLOS");
+		
 		if (false)
 			throw new IOException();
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/22
+	 */
 	@Override
 	public boolean markSupported()
 	{
-		throw new todo.TODO();
+		return true;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/22
+	 */
 	@Override
 	public int read()
 		throws IOException
 	{
+		// Has been closed?
+		char[] buf = this._buf;
+		if (buf == null)
+			throw new IOException("CLOS");
+		
 		if (false)
 			throw new IOException();
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/22
+	 */
 	@Override
-	public int read(char[] __a, int __b, int __c)
-		throws IOException
+	public int read(char[] __c)
+		throws IOException, NullPointerException
 	{
+		return this.read(__c, 0, __c.length);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/22
+	 */
+	@Override
+	public int read(char[] __c, int __o, int __l)
+		throws IndexOutOfBoundsException, IOException, NullPointerException
+	{
+		if (__c == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __c.length)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Has been closed?
+		char[] buf = this._buf;
+		if (buf == null)
+			throw new IOException("CLOS");
+		
 		if (false)
 			throw new IOException();
 		throw new todo.TODO();
@@ -79,6 +184,11 @@ public class BufferedReader
 	public boolean ready()
 		throws IOException
 	{
+		// Has been closed?
+		char[] buf = this._buf;
+		if (buf == null)
+			throw new IOException("CLOS");
+		
 		if (false)
 			throw new IOException();
 		throw new todo.TODO();
@@ -88,15 +198,11 @@ public class BufferedReader
 	public void reset()
 		throws IOException
 	{
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
-	}
-	
-	@Override
-	public long skip(long __a)
-		throws IOException
-	{
+		// Has been closed?
+		char[] buf = this._buf;
+		if (buf == null)
+			throw new IOException("CLOS");
+		
 		if (false)
 			throw new IOException();
 		throw new todo.TODO();

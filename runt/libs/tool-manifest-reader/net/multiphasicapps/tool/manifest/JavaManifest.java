@@ -85,7 +85,7 @@ public final class JavaManifest
 	public JavaManifest(InputStream __is)
 		throws IOException, JavaManifestException, NullPointerException
 	{
-		this(new InputStreamReader(__is, "utf-8"));
+		this(new BufferedReader(new InputStreamReader(__is, "utf-8")));
 	}
 	
 	/**
