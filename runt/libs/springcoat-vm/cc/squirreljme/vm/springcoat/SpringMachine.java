@@ -298,6 +298,26 @@ public final class SpringMachine
 	}
 	
 	/**
+	 * Gets the thread by the given ID.
+	 *
+	 * @param __id The ID of the thread.
+	 * @return The thread by this ID or {@code null} if it was not found.
+	 * @since 2018/11/21
+	 */
+	public final SpringThread getThread(int __id)
+	{
+		List<SpringThread> threads = this._threads;
+		synchronized (threads)
+		{
+			for (SpringThread t : threads)
+				if (t.id == __id)
+					return t;
+		}
+		
+		return null;
+	}
+	
+	/**
 	 * Returns the static field for the given field.
 	 *
 	 * @param __f The field to get the static field for.
@@ -422,7 +442,8 @@ public final class SpringMachine
 		// We will be using the same logic in the thread worker if we need to
 		// initialize any objects or arguments
 		SpringThreadWorker worker = new SpringThreadWorker(this,
-			mainthread);
+			mainthread, true);
+		mainthread._worker = worker;
 		
 		// Load the entry point class
 		SpringClass entrycl = worker.loadClass(new ClassName(
