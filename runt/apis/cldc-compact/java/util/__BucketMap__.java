@@ -208,9 +208,74 @@ final class __BucketMap__<K, V>
 		// references for iteration.
 		if (nextsize >= this._loadthreshold)
 		{
-			todo.TODO.note("Re-balance bucket map.");
-			if (false)
-				throw new todo.TODO();
+			// Indicate re-balance
+			todo.DEBUG.note("Rebalancing bucket map");
+			
+			// Double the number of buckets
+			int newbucketdiv = (bucketdiv * 2);
+			__BucketMapEntry__<K, V>[][] newbuckets =
+				__BucketMap__.<K, V>__newBucket(newbucketdiv);
+			
+			// Go through every source bucket and redistribute entries
+			for (int i = 0; i < bucketdiv; i++)
+			{
+				// Ignore empty chains
+				__BucketMapEntry__<K, V>[] chain = buckets[i];
+				if (chain == null)
+					continue;
+				
+				// Go through chain and re-add entries, we do not need to
+				// worry about object equality since if something is in the
+				// map it is already unique!
+				for (__BucketMapEntry__<K, V> e : chain)
+				{
+					// Was an entry which was removed, ignore
+					if (e == null)
+						continue;
+					
+					// Determine the new placement for it
+					int hash = e._keyhash,
+						div = (hash & 0x7FFF_FFFF) % newbucketdiv;
+					
+					// Get the new chain for it
+					__BucketMapEntry__<K, V>[] newchain = newbuckets[div];
+					if (newchain == null)
+						newchain = __BucketMap__.<K, V>__newChain(1);
+					else
+					{
+						// Need to setup new chain
+						int cn = newchain.length;
+						__BucketMapEntry__<K, V>[] newnewchain =
+							__BucketMap__.<K, V>__newChain(cn + 1);
+						
+						// Copy all the old chain stuff over
+						for (int j = 0; j < cn; j++)
+							newnewchain[j] = newchain[j];
+						
+						// Use this chain
+						newchain = newnewchain;
+					}
+					
+					// Store entry in the last spot
+					newchain[newchain.length - 1] = e;
+					
+					// New chan was created so update it naturally
+					newbuckets[div] = newchain;
+				}
+			}
+			
+			// Map was modified, in case hashCode() fails!
+			this._modcount++;
+			
+			// Store new data for later
+			this._buckets = newbuckets;
+			this._bucketdiv = newbucketdiv;
+			this._capacity = newbucketdiv;
+			this._loadthreshold = (int)(newbucketdiv * this.loadfactor);
+			
+			// Use these new properties and continue on
+			buckets = newbuckets;
+			bucketdiv = newbucketdiv;
 		}
 		
 		// Where to look in the table?
