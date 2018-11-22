@@ -162,7 +162,10 @@ public final class SpringMonitor
 				return 0;
 			
 			// Notify all threads or just one?
-			this._notifycount = (__all ? waitcount : 1);
+			// Never let the notify count exceed the wait count as well
+			int notifycount = this._notifycount;
+			this._notifycount = Math.min(waitcount,
+				(__all ? waitcount : notifycount + 1));
 			
 			// Notify all threads that something happened with the lock
 			lock.notifyAll();
@@ -223,7 +226,12 @@ public final class SpringMonitor
 						this._notifycount--;
 					
 					// Reduce wait count
-					this._waitcount--;
+					int waitcount = this._waitcount;
+					this._waitcount = --waitcount;
+					
+					// Never let the notification count exceed the wait count
+					if (this._notifycount > waitcount)
+						this._notifycount = waitcount;
 					
 					// Re-enter the monitor
 					this.enter(__by);
