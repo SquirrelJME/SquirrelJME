@@ -41,7 +41,7 @@ public class BufferedReader
 	/** The buffer limit. */
 	private int _limit;
 	
-	/** The read position of the buffer (which one was read). */
+	/** The read position of the buffer (which one to read next). */
 	private int _rp;
 	
 	/** The write position of the buffer (the valid characters). */
@@ -194,17 +194,155 @@ public class BufferedReader
 		if (buf == null)
 			throw new IOException("CLOS");
 		
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
+		// Number of characters read
+		int rv = 0;
+		int rp = this._rp,
+			wp = this._wp;
+		
+		// Drain what remains of the buffer
+		int left = wp - rp;
+		if (left > 0)
+		{
+			int lim = (left < __l ? left : __l);
+			
+			for (; rv < lim; rv++)
+				__c[__o++] = buf[rp++];
+			
+			// Invalidate the buffer
+			if (rp == wp)
+			{
+				this._rp = 0;
+				this._wp = 0;
+			}
+		}
+		
+		// Nothing was in the buffer, so read directly from the source
+		// stream
+		Reader in = this._in;
+		while (rv < __l)
+		{
+			int rc = in.read();
+			
+			// EOF
+			if (rc < 0)
+				return (rv == 0 ? -1 : rv);
+			
+			// Add character
+			__c[__o++] = (char)rc;
+			rv++;
+		}
+		
+		// Return the read count
+		return rv;
 	}
 	
+	/**
+	 * Reads a line from the input and returns it.
+	 *
+	 * @return The line which was read, or {@code null} on EOF.
+	 * @throws IOException On read errors.
+	 * @since 2018/11/22
+	 */
 	public String readLine()
 		throws IOException
 	{
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
+		// Has this been closed?
+		char[] buf = this._buf;
+		if (buf == null)
+			throw new IOException("CLSD");
+		
+		// Read/write positions
+		int rp = this._rp,
+			wp = this._wp;
+		
+		// The line is potentially what is left in the buffer perhaps
+		// But do not make a super tiny string builder, make a guess as to
+		// what the average line length is.
+		int diff = wp - rp;
+		StringBuilder sb = new StringBuilder((diff > 64 ? diff : 64));
+		
+		// Continually read data
+		Reader in = this._in;
+		boolean wasinbuf = false;
+		for (;;)
+		{
+			// Was newline read? Did we stop on a CR?
+			boolean readnl = false,
+				stoppedoncr = false;
+			
+			// Scan
+			int ln = rp;
+			if (ln < wp)
+			{
+				while (ln < wp)
+				{
+					// Was something in the buffer?
+					wasinbuf = true;
+					
+					// Stop on end of line characters
+					char c = buf[ln];
+					if ((stoppedoncr = (c == '\r')) || c == '\n')
+					{
+						readnl = true;
+						break;
+					}
+					
+					// Keep going
+					ln++;
+				}
+				
+				// Append all the characters in this buffer
+				sb.append(buf, rp, ln - rp);
+				
+				// Discard everything which was appended
+				this._rp = (rp = ln);
+			}
+			
+			// Ran out of characters to use?
+			if (rp == wp)
+			{
+				// Read in new characters to the buffer
+				int rc = in.read(buf, 0, this._limit);
+				
+				// EOF was reached, if the buffer was empty then nothing was
+				// read anyway
+				if (rc < 0)
+				{
+					// True EOF
+					if (!wasinbuf && sb.length() == 0)
+						return null;
+				}
+				
+				// Set new properties
+				this._rp = (rp = ln = 0);
+				this._wp = (wp = rc);
+			}
+			
+			// Eat newline?
+			if (readnl)
+			{
+				// We stopped on a CR, need to check if the following character
+				// is a newline
+				if (stoppedoncr && ln + 1 < wp && buf[ln + 1] == '\n')
+					rp = ln + 2;
+				
+				// Skip single character
+				else
+					rp = ln + 1;
+				
+				// Store the new read position
+				this._rp = rp;
+				
+				// Stop
+				break;
+			}
+		}
+		
+		// Debug
+		todo.DEBUG.note("Read: `%s`", sb);
+		
+		// Use this line
+		return sb.toString();
 	}
 	
 	/**

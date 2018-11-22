@@ -212,7 +212,7 @@ public final class StringBuilder
 	public StringBuilder append(char[] __c)
 		throws NullPointerException
 	{
-		return this.insert(this._at, __c);
+		return this.append(__c, 0, __c.length);
 	}
 	
 	/**
@@ -230,7 +230,23 @@ public final class StringBuilder
 	public StringBuilder append(char[] __c, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException
 	{
-		return this.insert(this._at, __c, __o, __l);
+		// Check
+		if (__o < 0 || __l < 0 || (__o + __l) > __c.length)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Get buffer properties
+		int limit = this._limit,
+			at = this._at;
+		char[] buffer = (at + __l > limit ? this.__buffer(__l) : this._buffer);
+		
+		// Place input characters at this point
+		for (int i = 0; i < __l; i++)
+			buffer[at++] = __c[__o++];
+		
+		// Set new size
+		this._at = at;
+		
+		return this;
 	}
 	
 	/**

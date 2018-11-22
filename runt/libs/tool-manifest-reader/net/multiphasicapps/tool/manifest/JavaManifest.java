@@ -194,11 +194,17 @@ public final class JavaManifest
 			}
 			
 			// Build key and value
+			JavaManifestKey ak = new JavaManifestKey(key);
 			String av = vsb.toString();
 			
 			// Was this the start of a new section?
 			if (curname == null)
 			{
+				// {@squirreljme.error BB01 New section must start with
+				// {@code Name: value}.}
+				if (!"Name".equals(ak.string))
+					throw new JavaManifestException("BB01");
+				
 				// The current name becomes the value
 				curname = av;
 				
@@ -208,7 +214,7 @@ public final class JavaManifest
 			
 			// Otherwise, add to the map
 			else
-				working.put(new JavaManifestKey(key), av);
+				working.put(ak, av);
 			
 			// Clear the value
 			vsb.setLength(0);
@@ -221,6 +227,14 @@ public final class JavaManifest
 		// Lock in the backing map
 		this.attributes = UnmodifiableMap.<String, JavaManifestAttributes>
 			of(backing);
+		
+		for (Map.Entry<String, JavaManifestAttributes> e : backing.entrySet())
+		{
+			todo.DEBUG.note("Group `%s`:", e.getKey());
+			for (Map.Entry<JavaManifestKey, String> f :
+				e.getValue().entrySet())
+				todo.DEBUG.note("`%s`=`%s`", f.getKey(), f.getValue());
+		}
 	}
 	
 	/**
