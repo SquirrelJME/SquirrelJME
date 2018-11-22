@@ -180,7 +180,8 @@ public class Thread
 		this._runargument = __ma;
 		
 		// The main thread is implicitly started
-		this._started = (__rk == _START_MAIN || __rk == _START_MIDLET);
+		boolean implicitstart = (__rk == _START_MAIN || __rk == _START_MIDLET);
+		this._started = implicitstart;
 	}
 	
 	/**
@@ -396,7 +397,7 @@ public class Thread
 		if (byrealid == null)
 			return null;
 		
-		// Lock
+		// Lock, it should be in the map
 		synchronized (Thread.class)
 		{
 			return byrealid.get(rid);
@@ -491,19 +492,32 @@ public class Thread
 	final void __start()
 		throws IllegalThreadStateException
 	{
-		// Debug
-		todo.DEBUG.note("Start thread: %s", this._name);
-		
-		// Get the kind and determin if this is a main entry point
+		// Get the kind and determine if this is a main entry point
 		int startkind = this._startkind;
 		boolean ismain = (startkind == _START_MAIN ||
 			startkind == _START_MIDLET);
-		Integer virtid = this._virtid,
-			realid = TaskAccess.currentThread();
 		
-		// The main method and/or its arguments
-		StaticMethod runmethod = this._runmethod;
-		Object runargument = this._runargument;
+		// We need to lock because the real ID might just not get assigned
+		// yet here.
+		int realid;
+		int virtid = this._virtid;
+		if (!ismain)
+			synchronized (this)
+			{
+				// {@squirreljme.error ZZ2w Real ID has not been set yet while
+				// in the lock, this should not occur unless the virtual
+				// machine is very broken.}
+				if ((realid = this._realid) < 0)
+					throw new Error("ZZ2w");
+			}
+		
+		// Main thread, so set our real ID to the current thread the VM says
+		// we are since it will still be negatively initialized 
+		else
+		{
+			realid = TaskAccess.currentThread();
+			this._realid = realid;
+		}
 		
 		// The exit code is something that is only handled by the main thread
 		// It will exit with the given code 
@@ -527,6 +541,10 @@ public class Thread
 				
 			// Set the thread as alive
 			this._isalive = true;
+			
+			// The main method and/or its arguments
+			StaticMethod runmethod = this._runmethod;
+			Object runargument = this._runargument;
 			
 			// How do we run this thread?
 			switch (this._startkind)
