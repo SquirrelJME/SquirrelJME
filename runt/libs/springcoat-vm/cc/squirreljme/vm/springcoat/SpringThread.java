@@ -51,6 +51,9 @@ public final class SpringThread
 	/** Terminate the thread? */
 	volatile boolean _terminate;
 	
+	/** The current worker for the thread. */
+	volatile SpringThreadWorker _worker;
+	
 	/**
 	 * Initializes the thread.
 	 *

@@ -43,7 +43,7 @@ import net.multiphasicapps.classfile.PrimitiveType;
  * @since 2018/09/03
  */
 public final class SpringThreadWorker
-	implements Runnable
+	extends Thread
 {
 	/** Number of instructions which can be executed before warning. */
 	private static final int _EXECUTION_THRESHOLD =
@@ -55,6 +55,9 @@ public final class SpringThreadWorker
 	/** The thread being run. */
 	protected final SpringThread thread;
 	
+	/** The thread to signal instead for interrupt. */
+	protected final Thread signalinstead;
+	
 	/** The current step count. */
 	private volatile int _stepcount;
 	
@@ -63,10 +66,12 @@ public final class SpringThreadWorker
 	 *
 	 * @param __m The executing machine.
 	 * @param __t The running thread.
+	 * @param __main Is this the main thread? Used for interrupt hacking.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/03
 	 */
-	public SpringThreadWorker(SpringMachine __m, SpringThread __t)
+	public SpringThreadWorker(SpringMachine __m, SpringThread __t,
+		boolean __main)
 		throws NullPointerException
 	{
 		if (__m == null || __t == null)
@@ -74,6 +79,7 @@ public final class SpringThreadWorker
 		
 		this.machine = __m;
 		this.thread = __t;
+		this.signalinstead = (__main ? Thread.currentThread() : null);
 	}
 	
 	/**
@@ -1440,7 +1446,24 @@ public final class SpringThreadWorker
 				// Interrupt the given thread
 			case "cc/squirreljme/runtime/cldc/asm/TaskAccess::" +
 				"signalInterrupt:(I)V":
-				throw new todo.TODO();
+				{
+					SpringThread st = this.machine.getThread(
+						(Integer)__args[0]);
+					if (st != null)
+					{
+						SpringThreadWorker stw = st._worker;
+						if (stw != null)
+						{
+							Thread signal = stw.signalinstead;
+							if (signal != null)
+								signal.interrupt();
+							else
+								stw.interrupt();
+						}
+					}
+					
+					return null;
+				}
 				
 				// Sleep
 			case "cc/squirreljme/runtime/cldc/asm/TaskAccess::" +
@@ -1483,11 +1506,8 @@ public final class SpringThreadWorker
 					
 					// Create worker for this thread
 					SpringThreadWorker worker = new SpringThreadWorker(
-						this.machine, thread);
-					
-					// Create and start thread for the worker
-					Thread runner = new Thread(worker, name);
-					runner.start();
+						this.machine, thread, false);
+					worker.start();
 					
 					// Return this thread ID
 					return thread.id;
