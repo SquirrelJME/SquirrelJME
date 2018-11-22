@@ -322,9 +322,49 @@ public class BufferedReader
 			if (readnl)
 			{
 				// We stopped on a CR, need to check if the following character
-				// is a newline
-				if (stoppedoncr && ln + 1 < wp && buf[ln + 1] == '\n')
-					rp = ln + 2;
+				// is a newline. However since the CRLF pair can end on a
+				// buffer read barrier, it must be checked to make sure
+				// there is absolutely no connection still.
+				if (stoppedoncr)
+				{
+					// There are characters left in the buffer
+					int gap = ln + 1;
+					if (gap < wp)
+					{
+						// Is a newline, so skip it
+						if (buf[gap] == '\n')
+							rp = ln + 2;
+						
+						// Otherwise do not
+						else
+							rp = ln + 1;
+					}
+					
+					// Need to actually read a character, to see what it
+					// is
+					else
+					{
+						int rx = in.read();
+						
+						// If the character is not a newline and is not EOF
+						// we will just place it in the buffer as if it
+						// were a fresh buffer
+						if (rx > 0 && rx != '\n')
+						{
+							// Store character state
+							buf[0] = (char)rx;
+							this._rp = 0;
+							this._wp = 1;
+							
+							// Do not do any more of our loop stuff
+							break;
+						}
+						
+						// We will be skipping a character in the buffer
+						// anyway so ln == wp, so always just skip one
+						rp = ln + 1;
+					}
+				}
 				
 				// Skip single character
 				else
