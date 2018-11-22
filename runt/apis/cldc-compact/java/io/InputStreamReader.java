@@ -108,7 +108,8 @@ public class InputStreamReader
 		int storelen = 0,
 			declimit = store.length;
 		
-		int rv = 0;
+		int rv = 0,
+			baseo = __o;
 		for (int o = __o; rv < __l;)
 		{
 			// {@squirreljme.error ZZ0j Read of input byte sequence exceeded
@@ -134,13 +135,14 @@ public class InputStreamReader
 					__c[o++] = (char)cha;
 				else
 					__c[o++] = (char)0xFFFD;
+				rv++;
 				
 				// There could have been characters placed before this, so
 				// this should be at least 1
-				return o;
+				return rv;
 			}
 			
-			// Increment the store length since characters were read
+			// Increment the store length since bytes were read
 			storelen++;
 			
 			// Try to decode a character, if it decodes to a valid character we
