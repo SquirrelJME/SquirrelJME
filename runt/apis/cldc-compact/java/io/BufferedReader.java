@@ -150,9 +150,6 @@ public class BufferedReader
 			// Read up to the limit
 			int rc = this._in.read(buf, 0, this._limit);
 			
-			todo.DEBUG.note("Buffered %d: %s", rc,
-				new String(buf));
-			
 			// EOF reached
 			if (rc < 0)
 				return -1;

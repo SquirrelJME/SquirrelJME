@@ -124,8 +124,10 @@ public class InputStreamReader
 			if (brc < 0)
 			{
 				// No characters were read, so this is a complete EOF
+				// However if there were characters sitting in the output we
+				// need to return those
 				if (storelen <= 0)
-					return brc;
+					return (rv > 0 ? rv : brc);
 				
 				// Try to decode whatever was read, if it ends up not being
 				// valid then just use the replacement character because it
