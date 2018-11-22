@@ -10,8 +10,10 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+
 /**
- * This is a string .
+ * This is a string which has a mutable buffer.
  *
  * This class is not thread safe, for that use {@link StringBuffer} instead.
  *
@@ -31,6 +33,9 @@ public final class StringBuilder
 	
 	/** The characters which are in the buffer. */
 	private int _at;
+	
+	/** The limit of the string buffer. */
+	private int _limit;
 	
 	/**
 	 * Initializes with the default capacity.
@@ -60,6 +65,7 @@ public final class StringBuilder
 		
 		// Initialize buffer
 		this._buffer = new char[__c];
+		this._limit = __c;
 	}
 	
 	/**
@@ -120,7 +126,10 @@ public final class StringBuilder
 	 */
 	public StringBuilder append(String __v)
 	{
-		return this.insert(this._at, __v);
+		if (__v == null)
+			__v = "null";
+		
+		return this.append((CharSequence)__v, 0, __v.length());
 	}
 	
 	/**
@@ -134,12 +143,12 @@ public final class StringBuilder
 	{
 		// Is null, cannot lock on it so just forward
 		if (__v == null)
-			return this.insert(this._at, (CharSequence)null);
+			return this.append("null");
 		
 		// Lock on the buffer because this is thread safe
 		synchronized (__v)
 		{
-			return this.insert(this._at, (CharSequence)__v);
+			return this.append((CharSequence)__v, 0, __v.length());
 		}
 	}
 	
@@ -150,7 +159,11 @@ public final class StringBuilder
 	@Override
 	public StringBuilder append(CharSequence __v)
 	{
-		return this.insert(this._at, __v);
+		// Print null instead
+		if (__v == null)
+			__v = "null";
+		
+		return this.append(__v, 0, __v.length());
 	}
 	
 	/**
@@ -161,7 +174,27 @@ public final class StringBuilder
 	public StringBuilder append(CharSequence __v, int __o, int __l)
 		throws IndexOutOfBoundsException
 	{
-		return this.insert(this._at, __v, __o, __l);
+		// Print null?
+		if (__v == null)
+			__v = "null";
+		
+		// Check bounds
+		if (__o < 0 || __l < 0 || (__o + __l) > __v.length())
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Get buffer properties
+		int limit = this._limit,
+			at = this._at;
+		char[] buffer = (at + __l > limit ? this.__buffer(__l) : this._buffer);
+		
+		// Place input characters at this point
+		for (int i = at, s = __o, se = (__o + __l); s < se; i++, s++)
+			buffer[i] = __v.charAt(s);
+		
+		// Set new size
+		this._at = at + __l;
+		
+		return this;
 	}
 	
 	/**
@@ -215,7 +248,17 @@ public final class StringBuilder
 	@Override
 	public StringBuilder append(char __v)
 	{
-		return this.insert(this._at, __v);
+		// Before we go deeper check if the buffer needs to grow
+		int limit = this._limit,
+			at = this._at;
+		char[] buffer = (at + 1 > limit ? this.__buffer(1) : this._buffer);
+		
+		// Add to the end
+		buffer[at] = __v;
+		this._at = at + 1;
+		
+		// Self
+		return this;
 	}
 	
 	/**
@@ -410,9 +453,9 @@ public final class StringBuilder
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Get buffer properties
-		char[] buffer = this.__buffer(__l);
-		int limit = buffer.length,
+		int limit = this._limit,
 			at = this._at;
+		char[] buffer = (at + __l > limit ? this.__buffer(__l) : this._buffer);
 		
 		// {@squirreljme.error ZZ13 The index of insertion exceeds the
 		// length of the current string. (The insertion index; The string
@@ -458,10 +501,10 @@ public final class StringBuilder
 		if (__dx < 0)
 			throw new IndexOutOfBoundsException("ZZ14");
 		
-		// Get buffer properties
-		char[] buffer = this.__buffer(1);
-		int limit = buffer.length,
+		// Before we go deeper check if the buffer needs to grow
+		int limit = this._limit,
 			at = this._at;
+		char[] buffer = (at + 1 > limit ? this.__buffer(1) : this._buffer);
 		
 		// {@squirreljme.error ZZ15 The index of insertion exceeds the
 		// length of the current string. (The insertion index; The string
@@ -586,6 +629,8 @@ public final class StringBuilder
 	 * @throws IndexOutOfBoundsException If the length is negative.
 	 * @since 2018/10/13
 	 */
+	@ImplementationNote("This does not actually even pad NULs it just " +
+		"sets the length or regrows the buffer as needed.")
 	public void setLength(int __nl)
 		throws IndexOutOfBoundsException
 	{
@@ -596,16 +641,11 @@ public final class StringBuilder
 		
 		// We only need to do something if we are going up, staying the same
 		// or going down just sets a variable
+		// If the buffer is resized, we do not need to pad for NUL characters
+		// because it already has zero values
 		int at = this._at;
 		if (__nl > at)
-		{
-			// Check that there is enough buffer to do this
-			char[] buffer = this.__buffer(__nl);
-			
-			// Pad with NUL characters
-			for (int i = at; i < __nl; i++)
-				buffer[i] = 0;
-		}
+			this.__buffer(__nl);
 		
 		// Set new length
 		this._at = __nl;
@@ -653,7 +693,7 @@ public final class StringBuilder
 	{
 		// Get buffer properties
 		char[] buffer = this._buffer;
-		int limit = buffer.length,
+		int limit = this._limit,
 			at = this._at;
 		
 		// Need to resize the buffer to fit this?
@@ -668,6 +708,7 @@ public final class StringBuilder
 				extra[i] = buffer[i];
 			
 			this._buffer = (buffer = extra);
+			this._limit = newcapacity;
 		}
 		
 		return buffer;
