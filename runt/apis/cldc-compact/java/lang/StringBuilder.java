@@ -171,7 +171,7 @@ public final class StringBuilder
 	 * @since 2018/09/22
 	 */
 	@Override
-	public StringBuilder append(CharSequence __v, int __o, int __l)
+	public StringBuilder append(CharSequence __v, int __s, int __e)
 		throws IndexOutOfBoundsException
 	{
 		// Print null?
@@ -179,20 +179,24 @@ public final class StringBuilder
 			__v = "null";
 		
 		// Check bounds
-		if (__o < 0 || __l < 0 || (__o + __l) > __v.length())
+		int vn = __v.length();
+		if (__s < 0 || __e < 0 || __e > vn || __s > __e)
 			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Length to add
+		int len = __e - __s;
 		
 		// Get buffer properties
 		int limit = this._limit,
 			at = this._at;
-		char[] buffer = (at + __l > limit ? this.__buffer(__l) : this._buffer);
+		char[] buffer = (at + len > limit ? this.__buffer(len) : this._buffer);
 		
 		// Place input characters at this point
-		for (int i = at, s = __o, se = (__o + __l); s < se; i++, s++)
-			buffer[i] = __v.charAt(s);
+		while (__s < __e)
+			buffer[at++] = __v.charAt(__s++);
 		
 		// Set new size
-		this._at = at + __l;
+		this._at = at;
 		
 		return this;
 	}
@@ -432,11 +436,13 @@ public final class StringBuilder
 	 *
 	 * @param __dx The index to insert at.
 	 * @param __v The value to insert.
+	 * @param __s The start position.
+	 * @param __e The end position.
 	 * @return {@code this}.
 	 * @throws IndexOutOfBoundsException If the index is out of bounds.
 	 * @since 2018/09/22
 	 */
-	public StringBuilder insert(int __dx, CharSequence __v, int __o, int __l)
+	public StringBuilder insert(int __dx, CharSequence __v, int __s, int __e)
 		throws IndexOutOfBoundsException
 	{
 		// {@squirreljme.error ZZ12 Cannot insert sequence at a negative
@@ -444,18 +450,18 @@ public final class StringBuilder
 		if (__dx < 0)
 			throw new IndexOutOfBoundsException("ZZ12");
 		
-		// Print null?
-		if (__v == null)
-			__v = "null";
-		
 		// Check bounds
-		if (__o < 0 || __l < 0 || (__o + __l) > __v.length())
+		int vn = __v.length();
+		if (__s < 0 || __e < 0 || __e > vn || __s > __e)
 			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Length to add
+		int len = __e - __s;
 		
 		// Get buffer properties
 		int limit = this._limit,
 			at = this._at;
-		char[] buffer = (at + __l > limit ? this.__buffer(__l) : this._buffer);
+		char[] buffer = (at + len > limit ? this.__buffer(len) : this._buffer);
 		
 		// {@squirreljme.error ZZ13 The index of insertion exceeds the
 		// length of the current string. (The insertion index; The string
@@ -466,15 +472,15 @@ public final class StringBuilder
 		
 		// First move all characters on the right to the end so that this can
 		// properly fit
-		for (int i = at - 1, o = i + __l; i >= __dx; i--, o--)
+		for (int i = at - 1, o = i + len; i >= __dx; i--, o--)
 			buffer[o] = buffer[i];
 		
 		// Place input characters at this point
-		for (int i = __dx, s = __o, se = (__o + __l); s < se; i++, s++)
-			buffer[i] = __v.charAt(s);
+		while (__s < __e)
+			buffer[__dx++] = __v.charAt(__s++);
 		
 		// Set new size
-		this._at = at + __l;
+		this._at = at + len;
 		
 		return this;
 	}
