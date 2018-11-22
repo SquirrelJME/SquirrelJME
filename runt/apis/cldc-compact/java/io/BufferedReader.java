@@ -30,7 +30,7 @@ public class BufferedReader
 {
 	/** Default buffer size. */
 	private static final int _DEFAULT_SIZE =
-		64;
+		128;
 	
 	/** The buffer to source from. */
 	private final Reader _in;
@@ -377,9 +377,6 @@ public class BufferedReader
 				break;
 			}
 		}
-		
-		// Debug
-		todo.DEBUG.note("Read: `%s`", sb);
 		
 		// Use this line
 		return sb.toString();
