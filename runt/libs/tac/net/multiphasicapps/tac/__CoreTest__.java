@@ -263,6 +263,9 @@ abstract class __CoreTest__
 			
 			// Use this formatted key instead
 			secondary.put(sb.toString(), __v);
+			
+			// Debug
+			todo.DEBUG.note("%s=%s", sb, __convertToString(__v));
 		}
 	}
 	
