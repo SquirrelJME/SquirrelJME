@@ -37,7 +37,7 @@ abstract class __CoreTest__
 	extends MIDlet
 {
 	/** Secondary results. */
-	final Map<String, Object> _secondary =
+	final Map<String, String> _secondary =
 		new SortedTreeMap<>();
 	
 	/** The status of the test. */
@@ -154,20 +154,15 @@ abstract class __CoreTest__
 		// happens
 		int longskeylen = 0;
 		
-		// Convert secondary values to string formats for simpler comparison
-		Map<String, String> sestr = new SortedTreeMap<>();
-		Map<String, Object> secondary = this._secondary;
+		// Find the longest secondary value and make a copy of it
+		Map<String, String> secondary = this._secondary;
 		synchronized (secondary)
 		{
-			for (Map.Entry<String, Object> e : secondary.entrySet())
-			{
-				String k = e.getKey();
-				sestr.put(k, __CoreTest__.__convertToString(e.getValue()));
-				
-				int l = k.length();
-				if (l > longskeylen)
-					longskeylen = l;
-			}
+			for (Map.Entry<String, String> e : secondary.entrySet())
+				longskeylen = Math.max(e.getKey().length(), longskeylen);
+			
+			// Make copy of it for usage
+			secondary = new SortedTreeMap<>(secondary);
 		}
 		
 		// Read in secondary values from the manifest
@@ -182,7 +177,7 @@ abstract class __CoreTest__
 		// Is the test a success or failure?
 		boolean passedrv = __CoreTest__.__equals(rvstr, expectrv),
 			passedth = __CoreTest__.__equals(thstr, expectth),
-			passedse = __CoreTest__.__equals(sestr, expectse);
+			passedse = __CoreTest__.__equals(secondary, expectse);
 		
 		// Print test result, the passed format is shorter as expected values
 		// are not needed
@@ -190,7 +185,7 @@ abstract class __CoreTest__
 		PrintStream out = System.out;
 		if (passed)
 			out.printf("%s: PASS %s %s %s%n",
-				classname, rvstr, thstr, sestr);
+				classname, rvstr, thstr, secondary);
 		
 		// Failures print more information so that bugs may be found, etc.
 		else
@@ -202,14 +197,14 @@ abstract class __CoreTest__
 			
 			// Merge the two key sets
 			Set<String> merged = new SortedTreeSet<>();
-			merged.addAll(sestr.keySet());
+			merged.addAll(secondary.keySet());
 			merged.addAll(expectse.keySet());
 			
 			// Secondary values are more complex to handle
 			String valueform = "\t%" + longskeylen + "s %c %s %s%n";
 			for (String k : merged)
 			{
-				String a = sestr.get(k),
+				String a = secondary.get(k),
 					b = expectse.get(k);
 				
 				boolean isequal = (a != null && b != null &&
@@ -242,7 +237,7 @@ abstract class __CoreTest__
 			throw new NullPointerException("NARG");
 		
 		// Make it thread safe
-		Map<String, Object> secondary = this._secondary;
+		Map<String, String> secondary = this._secondary;
 		synchronized (secondary)
 		{
 			int n;
@@ -262,10 +257,13 @@ abstract class __CoreTest__
 			}
 			
 			// Use this formatted key instead
-			secondary.put(sb.toString(), __v);
+			String keyval,
+				strval;
+			secondary.put((keyval = sb.toString()),
+				(strval = __convertToString(__v)));
 			
 			// Debug
-			todo.DEBUG.note("%s=%s", sb, __convertToString(__v));
+			todo.DEBUG.note("%s=%s", keyval, strval);
 		}
 	}
 	
