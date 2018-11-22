@@ -1,0 +1,22 @@
+# 2018/11/21
+
+## 09:48
+
+My monitor implementation is wrong, but it actually works because the Host VM
+is correct.
+
+## 20:01
+
+I need a test for wait timeouts.
+
+## 20:25
+
+Also, one thing I need.... interrupting I need to make sure notifycount is
+never greater than waitcount! But back to the thought before, I need a way to
+keep a `SpringThreadWorker` which is a thread associated with a thread so I
+can interrupt and such.
+
+## 20:52
+
+I think what I need to do is to implement `HashMap` re-balance because
+honestly `HashMap` seems to be struggling a bunch there.
