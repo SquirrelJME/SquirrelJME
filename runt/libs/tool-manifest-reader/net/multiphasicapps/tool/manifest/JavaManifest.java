@@ -227,14 +227,6 @@ public final class JavaManifest
 		// Lock in the backing map
 		this.attributes = UnmodifiableMap.<String, JavaManifestAttributes>
 			of(backing);
-		
-		for (Map.Entry<String, JavaManifestAttributes> e : backing.entrySet())
-		{
-			todo.DEBUG.note("Group `%s`:", e.getKey());
-			for (Map.Entry<JavaManifestKey, String> f :
-				e.getValue().entrySet())
-				todo.DEBUG.note("`%s`=`%s`", f.getKey(), f.getValue());
-		}
 	}
 	
 	/**
