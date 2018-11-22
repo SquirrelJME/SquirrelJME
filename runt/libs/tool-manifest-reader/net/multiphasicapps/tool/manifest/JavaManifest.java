@@ -95,7 +95,7 @@ public final class JavaManifest
 	 * @throws IOException On read errors.
 	 * @throws JavaManifestException If the manifest is malformed.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2016/05/20
+	 * @since 2018/11/22
 	 */
 	public JavaManifest(Reader __r)
 		throws IOException, JavaManifestException, NullPointerException
@@ -103,198 +103,120 @@ public final class JavaManifest
 		// Check
 		if (__r == null)
 			throw new NullPointerException("NARG");
-		
-		// Map which stores read attributes
+			
+		// The backing map and temporary key/value pairs for each
+		// attiribute set
 		String curname = "";
-		StringBuilder curkey = new StringBuilder(64);
-		StringBuilder curval = new StringBuilder(256);
+		Map<String, JavaManifestAttributes> backing = new HashMap<>();
 		Map<JavaManifestKey, String> working = new HashMap<>();
 		
-		// The target backing map
-		Map<String, JavaManifestAttributes> backing =
-			new HashMap<>();
-		
-		// Read all input characters
-		int stage = _STAGE_KEY;
-		boolean firstchar = true;
-		for (;;)
+		// Read input file line by line, since it is more efficient than
+		// character by character
+		StringBuilder vsb = new StringBuilder(128);
+		BufferedReader br = new BufferedReader(__r);
+		for (String pln = null;;)
 		{
-			// Read single character
-			int ci = __r.read();
-			char c = (char)ci;
-			
-			// EOF?
-			if (ci < 0)
+			// End of EOF
+			String ln = (pln != null ? pln : br.readLine());
+			pln = null;
+			if (ln == null)
 				break;
 			
-			// It is possible for a manifest to have a BOM at the start, if it
-			// does just remove it
-			if (firstchar)
+			// If the line is blank, it starts a new attribute block
+			if (ln.isEmpty())
 			{
-				firstchar = false;
-				
-				// Ignore the BOM
-				if (c == 0xFEFF)
-					continue;
-			}
-			
-			// Line might continue?
-			if (stage == _STAGE_VALUE_MIGHT_CONTINUE)
-			{
-				// Ignore newlines
-				if (__isNewline(c))
-					continue;
-				
-				// If a space, eat it and enter padding mode next
-				if (__isSpace(c))
+				// Store the current working set
+				if (working != null)
 				{
-					stage = _STAGE_VALUE_PADDING;
-					continue;
+					backing.put(curname, new JavaManifestAttributes(working));
+					
+					// It was stored in the map, so forget it
+					curname = null;
+					working = null;
 				}
 				
-				// Otherwise it is a key
-				else
-				{
-					// Build strings for key and value pair
-					JavaManifestKey sk = new JavaManifestKey(
-						curkey.toString());
-					String sv = curval.toString();
-					
-					// Clear old key/value
-					curkey.setLength(0);
-					curval.setLength(0);
-					
-					// If this is the name key, then there is a new entire
-					// grouping that is used
-					if (sk.equals("name"))
-					{
-						// Setup a copy of the working map
-						JavaManifestAttributes back =
-							new JavaManifestAttributes(working);
-						
-						// Clear it
-						working.clear();
-						
-						// Add it to the backing map
-						backing.put(curname, back);
-						
-						// Set new name to the value
-						curname = sv;
-					}
-					
-					// Otherwise it is just added to the map
-					else
-						working.put(sk, sv);
-					
-					// Start reading keys again
-					stage = _STAGE_KEY;
-				}
+				// Skip blank line
+				continue;
 			}
 			
-			// Depends on the stage
-			switch (stage)
-			{
-					// Reading key
-				case _STAGE_KEY:
-					{
-						// Just started reading the key?
-						boolean js = (curkey.length() <= 0);
-						
-						// Read nothing and just newline, skip otherwise the
-						// parser will fail on blank lines
-						if (js && __isNewline(c))
-							continue;
-						
-						// End of key and reading value?
-						if (c == ':')
-						{
-							stage = _STAGE_VALUE_START;
-							continue;
-						}
-						
-						// {@squirreljme.error BB01 The specified character is
-						// not a valid key character. (The character; The
-						// character code)}
-						if ((!js && !__isKeyChar(c)) ||
-							(js && !__isAlphaNum(c)))
-							throw new JavaManifestException(
-								String.format("BB01 %c %04x", c, (int)c));
-						
-						// Add to key
-						curkey.append(c);
-					}
-					break;
-					
-					// Read spaces following :
-				case _STAGE_VALUE_START:
-				case _STAGE_VALUE_PADDING:
-					{
-						// Skip spaces, but change the stage
-						if (__isSpace(c))
-						{
-							stage = _STAGE_VALUE_PADDING;
-							continue;
-						}
-						
-						// {@squirreljme.error BB02 Expected a space to follow
-						// the colon following the start of the key.}
-						if (stage == _STAGE_VALUE_START)
-							throw new JavaManifestException("BB02");
-						
-						// Otherwise start reading line data
-						else
-							stage = _STAGE_VALUE_LINE;
-					}
-				
-					// Lots of spaces
-					if (stage != _STAGE_VALUE_LINE &&
-						stage != _STAGE_VALUE_PADDING)
-						break;
-					
-					// Read of actual value
-				case _STAGE_VALUE_LINE:
-					{
-						// End of line data
-						if (__isNewline(c))
-						{
-							// Possibly may continue on
-							stage = _STAGE_VALUE_MIGHT_CONTINUE;
-							continue;
-						}
-						
-						// Add it to the line data
-						if (stage != _STAGE_VALUE_PADDING)
-							curval.append(c);
-					}
-					break;
-				
-					// {@squirreljme.error BB03 Unknown manifest parse stage.
-					// (The stage identifier)}
-				default:
+			// This will be a name: value line, so find the colon on it
+			// {@squirreljme.error BB05 Expected colon to appear on the
+			// manifest line, to split a name/value pair.}
+			int col = ln.indexOf(':');
+			if (col < 0)
+				throw new JavaManifestException("BB05");
+			
+			// Read key and value
+			String key = ln.substring(0, col);
+			
+			// {@squirreljme.error BB06 Manifest key contains an invalid
+			// character.}
+			for (int i = 0, n = key.length(); i < n; i++)
+				if (!JavaManifest.__isKeyChar(key.charAt(i)))
 					throw new JavaManifestException(
-						String.format("BB03 %d", stage));
-			}
-		}
-		
-		// {@squirreljme.error BB04 End of file reached while reading a
-		// partial key value.}
-		if (stage == _STAGE_KEY && curkey.length() != 0)
-			throw new JavaManifestException("BB04");
-		
-		// Key and value waiting to be added to the working map?
-		if (curkey.length() != 0)
-		{
-			// Generate values
-			JavaManifestKey sk = new JavaManifestKey(
-				curkey.toString());
-			String sv = curval.toString();
+						String.format("BB06 %s", key));
 			
-			// Add to working set
-			working.put(sk, sv);
+			// Need to skip the actual colon
+			col++;
+			
+			// Skip spaces at the start of the value line
+			int n = ln.length();
+			while (col < n && ln.charAt(col) == ' ')
+				col++;
+			
+			// Place value as it is now into a temporary buffer
+			vsb.append(ln, col, n);
+			
+			// Read the next line to determine if it is a continuation
+			for (;;)
+			{
+				// Stop at EOF
+				pln = br.readLine();
+				if (pln == null)
+					break;
+				
+				// If this is a non-continuation line, it will be a blank
+				// line or some other value, so redo the loop
+				if (!pln.startsWith(" "))
+					break;
+				
+				// Stop at the first non-space
+				int nsp = 1;
+				for (n = pln.length(); nsp < n; nsp++)
+					if (pln.charAt(nsp) != ' ')
+						break;
+				
+				// Append split into the buffer
+				vsb.append(pln, nsp, n);
+				
+				// Clear the line, so it is not repeated
+				pln = null;
+			}
+			
+			// Build key and value
+			String av = vsb.toString();
+			
+			// Was this the start of a new section?
+			if (curname == null)
+			{
+				// The current name becomes the value
+				curname = av;
+				
+				// Empty map to store values into
+				working = new HashMap<>();
+			}
+			
+			// Otherwise, add to the map
+			else
+				working.put(new JavaManifestKey(key), av);
+			
+			// Clear the value
+			vsb.setLength(0);
 		}
 		
-		// Add the current key to the target map
-		backing.put(curname, new JavaManifestAttributes(working));
+		// Make sure the attribute is added to the set
+		if (working != null)
+			backing.put(curname, new JavaManifestAttributes(working));
 		
 		// Lock in the backing map
 		this.attributes = UnmodifiableMap.<String, JavaManifestAttributes>
@@ -391,18 +313,6 @@ public final class JavaManifest
 	private static boolean __isNewline(char __c)
 	{
 		return __c == '\r' || __c == '\n';
-	}
-	
-	/**
-	 * Is the specified character a space character?
-	 *
-	 * @param __c The character to check.
-	 * @return {@code true} if it is a space character.
-	 * @since 2016/05/29
-	 */
-	private static boolean __isSpace(char __c)
-	{
-		return __c == ' ';
 	}
 }
 
