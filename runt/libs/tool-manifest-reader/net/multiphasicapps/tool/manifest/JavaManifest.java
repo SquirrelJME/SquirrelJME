@@ -106,8 +106,8 @@ public final class JavaManifest
 		
 		// Map which stores read attributes
 		String curname = "";
-		StringBuilder curkey = new StringBuilder();
-		StringBuilder curval = new StringBuilder();
+		StringBuilder curkey = new StringBuilder(64);
+		StringBuilder curval = new StringBuilder(256);
 		Map<JavaManifestKey, String> working = new HashMap<>();
 		
 		// The target backing map
