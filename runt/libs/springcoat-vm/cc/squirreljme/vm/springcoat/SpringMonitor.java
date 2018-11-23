@@ -57,7 +57,7 @@ public final class SpringMonitor
 			{
 				// We take possession of this monitor
 				SpringThread owner = this._owner;
-				if (this._owner == null)
+				if (owner == null)
 				{
 					this._owner = __t;
 					this._count = 1;
