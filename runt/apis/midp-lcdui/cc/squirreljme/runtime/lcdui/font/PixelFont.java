@@ -8,34 +8,14 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package javax.microedition.lcdui;
+package cc.squirreljme.runtime.lcdui.font;
 
 /**
- * This is thrown when the format of a font is not correct.
+ * This represents a font with contained pixel data.
  *
  * @since 2018/11/23
  */
-public class FontFormatException
-	extends RuntimeException
+public final class PixelFont
 {
-	/**
-	 * Initializes the exception with no message or cause.
-	 *
-	 * @since 2018/11/23
-	 */
-	public FontFormatException()
-	{
-	}
-	
-	/**
-	 * Initializes the exception with the given message and no cause.
-	 *
-	 * @param __m The message.
-	 * @since 2018/11/23
-	 */
-	public FontFormatException(String __m)
-	{
-		super(__m);
-	}
 }
 
