@@ -21,10 +21,6 @@ import java.util.Map;
 public class Thread
 	implements Runnable
 {
-	/** Internal global lock. */
-	private static final Object _STATIC_LOCK =
-		new Object();
-	
 	/** Use fake name for string? */
 	private static final String _USE_FAKE_NAME =
 		new String();
@@ -402,7 +398,7 @@ public class Thread
 			return null;
 		
 		// Lock, it should be in the map
-		synchronized (_STATIC_LOCK)
+		synchronized (Thread.class)
 		{
 			return byrealid.get(rid);
 		}
@@ -531,7 +527,7 @@ public class Thread
 		try
 		{
 			// Lock
-			synchronized (_STATIC_LOCK)
+			synchronized (Thread.class)
 			{
 				// Increase the active thread count
 				Thread._ACTIVE_THREADS++;
@@ -605,7 +601,7 @@ public class Thread
 			this._isalive = false;
 			
 			// Lock
-			synchronized (_STATIC_LOCK)
+			synchronized (Thread.class)
 			{
 				// Decrease the active count
 				Thread._ACTIVE_THREADS--;
@@ -617,17 +613,19 @@ public class Thread
 				byrealid.remove(realid);
 			}
 			
-			// Signal all threads which are waiting on a join
+			// Signal all threads which are waiting on a join for this thread
+			// only
 			synchronized (this)
 			{
 				this.notifyAll();
 			}
 			
-			// Signal anything waiting on the class
+			// Signal anything waiting on the class itself, to indicate that
+			// a thread has finished
 			if (!ismain)
-				synchronized (_STATIC_LOCK)
+				synchronized (Thread.class)
 				{
-					_STATIC_LOCK.notifyAll();
+					Thread.class.notifyAll();
 				}
 		}
 		
@@ -643,15 +641,15 @@ public class Thread
 				if (Thread._ACTIVE_THREADS == 0)
 					break;
 				
-				// Debug
-				todo.DEBUG.note("Waiting for other threads to end...");
-				
 				// Wait a bit until trying again, unless we get notified
-				synchronized (_STATIC_LOCK)
+				synchronized (Thread.class)
 				{
 					try
 					{
-						_STATIC_LOCK.wait(1_000);
+						// Three seconds is short enough to not be forever
+						// but long enough to where we can get a notify to
+						// quit
+						Thread.class.wait(3_000);
 					}
 					catch (InterruptedException e)
 					{
