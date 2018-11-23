@@ -28,19 +28,31 @@ public class Mystify
 {
 	/** The number of polygon points. */
 	public static final int NUM_POINTS =
-		4;
+		5;
 	
 	/** The number of shadows to draw. */
 	public static final int NUM_SHADOWS =
-		5;
+		7;
 	
 	/** The maximum line speed. */
 	public static final int MAX_SPEED =
-		5;
+		9;
 	
 	/** Use to detect way off coordinates. */
 	public static final int WAY_OFF =
 		50;
+	
+	/** How oftens the colors shift. */
+	public static final int COLOR_SHIFT =
+		2;
+	
+	/** The delay time. */
+	public static final int DELAY_TIME =
+		250;
+	
+	/** Delay time in nanoseconds. */
+	public static final long DELAY_TIME_NS =
+		DELAY_TIME * 1_000_000L;
 	
 	/**
 	 * {@inheritDoc}
@@ -67,7 +79,7 @@ public class Mystify
 		Display.getDisplay(this).setCurrent(cv);
 		
 		// Setup thread to force repaints on canvas
-		new RepaintTimer(cv, 100).start();
+		new RepaintTimer(cv, DELAY_TIME).start();
 	}
 	
 	/**
@@ -93,6 +105,13 @@ public class Mystify
 		/** The direction of the points. */
 		protected final Point[] direction =
 			new Point[NUM_POINTS];
+		
+		/** Update lock to prevent multiple threads updating at once. */
+		private volatile boolean _lockflag;
+		
+		/** The last time an update happened. */
+		private volatile long _nextnano =
+			Long.MIN_VALUE;
 		
 		/**
 		 * Initializes the canvas state.
@@ -151,90 +170,45 @@ public class Mystify
 			Point[] direction = this.direction;
 			int[] colors = this.colors;
 			
+			// Used to limit update rate
+			long now = System.nanoTime(),
+				nextnano = this._nextnano;
+			
 			// Draw every point, from older shadows to the newer shape
 			for (int i = NUM_SHADOWS - 1; i >= 0; i--)
 			{
 				Point[] draw = points[i];
 				
-				// Jump the first set of lines before moving everything
-				// down to the shadows
-				if (i == 0)
+				// Update the state of the demo, but keep it consistent so
+				// that it is not always updating
+				if (i == 0 && now >= nextnano)
 				{
-					// Move all the old points down
-					for (int j = NUM_SHADOWS - 2; j >= 0; j--)
-						points[j + 1] = points[j];
-					
-					// Allocate a new set of points offset in the directions
-					Point[] place = new Point[NUM_POINTS];
-					for (int j = 0; j < NUM_POINTS; j++)
+					// Only allow a single run to update this
+					boolean lockflag;
+					synchronized (this)
 					{
-						// Get base coordinates
-						int newx = draw[j].x,
-							newy = draw[j].y;
-						
-						// Limit to the bounds of the screen. If a point is
-						// way off, just choose a random point on the
-						// screen instead
-						if (newx < 0 || newx >= w)
-						{
-							if (newx < -WAY_OFF || newy > w + WAY_OFF)
-								newx = random.nextInt(w);
-							else
-							{
-								if (newx < 0)
-									newx = 0;
-								else if (newx >= w)
-									newx = w;
-							}
-						}
-						
-						if (newy < 0 || newy >= h)
-						{
-							if (newy < -WAY_OFF || newy > h + WAY_OFF)
-								newy = random.nextInt(h);
-							else
-							{
-								if (newy < 0)
-									newy = 0;
-								else if (newy >= h)
-									newy = h;
-							}
-						}
-						
-						// Move point in the target direction
-						newx += direction[j].x;
-						newy += direction[j].y;
-						
-						// Previous positive position?
-						boolean ppx = (direction[j].x > 0),
-							ppy = (direction[j].y > 0);
-						
-						// Deflect points?
-						boolean defx = (newx < 0 || newx >= w),
-							defy = (newy < 0 || newy >= h);
-						
-						// Deflect direction
-						this.__newDirection(direction[j],
-							ppx ^ defx, ppy ^ defy);
-						
-						// Make sure the points are not on a bound!
-						if (defx)
-							if (ppx)
-								newx--;
-							else
-								newx++;
-						if (defy)
-							if (ppy)
-								newx--;
-							else
-								newy++;
-						
-						// Store the point
-						place[j] = new Point(newx, newy);
+						// Set the lock flag
+						lockflag = this._lockflag;
+						if (!lockflag)
+							this._lockflag = true;
 					}
 					
-					// Use all these points
-					points[0] = place;
+					// If we did hit a false, we can update
+					if (!lockflag)
+						try
+						{
+							// Update the state
+							this.__updateState(w, h);
+						}
+						finally
+						{
+							// Always clear the flag so another run can
+							// have a go
+							this._lockflag = false;
+							
+							// Update some other time in the future
+							this._nextnano = System.nanoTime() + DELAY_TIME_NS;
+						}
 				}
 				
 				// Set the color for this shadow
@@ -286,6 +260,122 @@ public class Mystify
 			
 			// Use that point
 			return __p;
+		}
+		
+		/**
+		 * Updates the state of the demo.
+		 *
+		 * @param __w The width.
+		 * @param __h The height.
+		 * @since 2018/11/22
+		 */
+		private void __updateState(int __w, int __h)
+		{
+			// Needed for cycling	
+			Random random = this.random;
+			
+			// Base points to modify
+			Point[] draw = points[0];
+			
+			// Needed for drawing
+			Point[][] points = this.points;
+			Point[] direction = this.direction;
+			int[] colors = this.colors;
+			
+			// Move all the old points and colors down
+			for (int j = NUM_SHADOWS - 2; j >= 0; j--)
+			{
+				points[j + 1] = points[j];
+				colors[j + 1] = colors[j];
+			}
+			
+			// Allocate a new set of points offset in the directions
+			Point[] place = new Point[NUM_POINTS];
+			for (int j = 0; j < NUM_POINTS; j++)
+			{
+				// Get base coordinates
+				int newx = draw[j].x,
+					newy = draw[j].y;
+				
+				// Limit to the bounds of the screen. If a point is
+				// way off, just choose a random point on the
+				// screen instead
+				if (newx < 0 || newx >= __w)
+				{
+					if (newx < -WAY_OFF || newy > __w + WAY_OFF)
+						newx = random.nextInt(__w);
+					else
+					{
+						if (newx < 0)
+							newx = 0;
+						else if (newx >= __w)
+							newx = __w;
+					}
+				}
+				
+				if (newy < 0 || newy >= __h)
+				{
+					if (newy < -WAY_OFF || newy > __h + WAY_OFF)
+						newy = random.nextInt(__h);
+					else
+					{
+						if (newy < 0)
+							newy = 0;
+						else if (newy >= __h)
+							newy = __h;
+					}
+				}
+				
+				// Move point in the target direction
+				newx += direction[j].x;
+				newy += direction[j].y;
+				
+				// Previous positive position?
+				boolean ppx = (direction[j].x >= 0),
+					ppy = (direction[j].y >= 0);
+				
+				// Deflect points?
+				boolean defx = (newx <= 0 || newx >= __w),
+					defy = (newy <= 0 || newy >= __h);
+				
+				// Deflect direction
+				this.__newDirection(direction[j],
+					ppx ^ defx, ppy ^ defy);
+				
+				// Make sure the points are not on a bound!
+				if (defx)
+					if (ppx)
+						newx--;
+					else
+						newx++;
+				if (defy)
+					if (ppy)
+						newx--;
+					else
+						newy++;
+				
+				// Extract the color
+				int color = colors[j];
+				byte r = (byte)((color & 0xFF0000) >>> 16),
+					g = (byte)((color & 0x00FF00) >>> 8),
+					b = (byte)((color & 0x0000FF));
+				
+				// Cycle the colors depending on the direction of travel
+				r += (ppx ^ ppy ? +COLOR_SHIFT : -COLOR_SHIFT);
+				g += (ppy | ppy ? -COLOR_SHIFT : +COLOR_SHIFT);
+				b += (ppx ^ ppy ? -COLOR_SHIFT : +COLOR_SHIFT);
+				
+				// Recombine the color
+				colors[j] = ((r & 0xFF) << 16) |
+					((g & 0xFF) << 8) |
+					(b & 0xFF);
+				
+				// Store the point
+				place[j] = new Point(newx, newy);
+			}
+			
+			// Use all these points
+			points[0] = place;
 		}
 	}
 	

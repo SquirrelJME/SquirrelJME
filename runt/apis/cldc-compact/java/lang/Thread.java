@@ -21,6 +21,10 @@ import java.util.Map;
 public class Thread
 	implements Runnable
 {
+	/** Internal global lock. */
+	private static final Object _STATIC_LOCK =
+		new Object();
+	
 	/** Use fake name for string? */
 	private static final String _USE_FAKE_NAME =
 		new String();
@@ -398,7 +402,7 @@ public class Thread
 			return null;
 		
 		// Lock, it should be in the map
-		synchronized (Thread.class)
+		synchronized (_STATIC_LOCK)
 		{
 			return byrealid.get(rid);
 		}
@@ -527,7 +531,7 @@ public class Thread
 		try
 		{
 			// Lock
-			synchronized (Thread.class)
+			synchronized (_STATIC_LOCK)
 			{
 				// Increase the active thread count
 				Thread._ACTIVE_THREADS++;
@@ -601,7 +605,7 @@ public class Thread
 			this._isalive = false;
 			
 			// Lock
-			synchronized (Thread.class)
+			synchronized (_STATIC_LOCK)
 			{
 				// Decrease the active count
 				Thread._ACTIVE_THREADS--;
@@ -618,6 +622,13 @@ public class Thread
 			{
 				this.notifyAll();
 			}
+			
+			// Signal anything waiting on the class
+			if (!ismain)
+				synchronized (_STATIC_LOCK)
+				{
+					_STATIC_LOCK.notifyAll();
+				}
 		}
 		
 		// If this is the main thread, wait for every other thread to
@@ -630,10 +641,22 @@ public class Thread
 			{
 				// No threads are active, so that works
 				if (Thread._ACTIVE_THREADS == 0)
-					break;	
+					break;
 				
-				if (true)
-					throw new todo.TODO();
+				// Debug
+				todo.DEBUG.note("Waiting for other threads to end...");
+				
+				// Wait a bit until trying again, unless we get notified
+				synchronized (_STATIC_LOCK)
+				{
+					try
+					{
+						_STATIC_LOCK.wait(1_000);
+					}
+					catch (InterruptedException e)
+					{
+					}
+				}
 			}
 			
 			// Exit the VM with our normal exit code, since no other

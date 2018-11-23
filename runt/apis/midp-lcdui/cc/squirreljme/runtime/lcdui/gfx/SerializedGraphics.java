@@ -250,7 +250,8 @@ public abstract class SerializedGraphics
 	@Override
 	public void fillRect(int __x, int __y, int __w, int __h)
 	{
-		throw new todo.TODO();
+		this.serialize(GraphicsFunction.FILL_RECT,
+			__x, __y, __w, __h);
 	}
 	
 	/**
@@ -292,7 +293,7 @@ public abstract class SerializedGraphics
 	@Override
 	public int getAlphaColor()
 	{
-		throw new todo.TODO();
+		return (Integer)this.serialize(GraphicsFunction.GET_ALPHA_COLOR);
 	}
 	
 	/**
@@ -463,7 +464,7 @@ public abstract class SerializedGraphics
 	@Override
 	public void setAlphaColor(int __argb)
 	{
-		throw new todo.TODO();
+		this.serialize(GraphicsFunction.SET_ALPHA_COLOR, __argb);
 	}
 	
 	/**
@@ -639,6 +640,24 @@ public abstract class SerializedGraphics
 				// Draw rectangle
 			case DRAW_RECT:
 				__g.drawRect(
+					(Integer)__args[0],
+					(Integer)__args[1],
+					(Integer)__args[2],
+					(Integer)__args[3]);
+				return null;
+				
+				// Get alpha color
+			case GET_ALPHA_COLOR:
+				return __g.getAlphaColor();
+				
+				// Set alpha color
+			case SET_ALPHA_COLOR:
+				__g.setAlphaColor((Integer)__args[0]);
+				return null;
+				
+				// Fill rectangle
+			case FILL_RECT:
+				__g.fillRect(
 					(Integer)__args[0],
 					(Integer)__args[1],
 					(Integer)__args[2],
