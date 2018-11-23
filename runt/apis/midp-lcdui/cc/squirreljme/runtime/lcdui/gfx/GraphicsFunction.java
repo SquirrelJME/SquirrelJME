@@ -53,6 +53,15 @@ public enum GraphicsFunction
 	/** Draw rectangle. */
 	DRAW_RECT,
 	
+	/** Get the alpha color. */
+	GET_ALPHA_COLOR,
+	
+	/** Set the alpha color. */
+	SET_ALPHA_COLOR,
+	
+	/** Fill rectangle. */
+	FILL_RECT,
+	
 	/** End. */
 	;
 	
@@ -82,6 +91,9 @@ public enum GraphicsFunction
 			case 9:		return TRANSLATE;
 			case 10:	return SET_CLIP;
 			case 11:	return DRAW_RECT;
+			case 12:	return GET_ALPHA_COLOR;
+			case 13:	return SET_ALPHA_COLOR;
+			case 14:	return FILL_RECT;
 			
 				// {@squirreljme.error EB2d Invalid graphics function.
 				// (The function ID)}
