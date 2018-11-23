@@ -201,9 +201,9 @@ public final class JavaManifest
 			if (curname == null)
 			{
 				// {@squirreljme.error BB01 New section must start with
-				// {@code Name: value}.}
-				if (!"Name".equals(ak.string))
-					throw new JavaManifestException("BB01");
+				// {@code Name: value}. (The input section)}
+				if (!"name".equals(ak.string))
+					throw new JavaManifestException("BB01 " + ak);
 				
 				// The current name becomes the value
 				curname = av;
