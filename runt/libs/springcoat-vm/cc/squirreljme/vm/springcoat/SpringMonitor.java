@@ -210,7 +210,7 @@ public final class SpringMonitor
 				interrupted = false,
 				expired = false;
 			long end = (waitforever ? Long.MAX_VALUE :
-				System.nanoTime() + (__ms * 1000000L) + __ns);
+				System.nanoTime() + (__ms * 1_000_000L) + __ns);
 			for (;;)
 			{
 				// read our wait and notify counts to determine if we
@@ -221,8 +221,9 @@ public final class SpringMonitor
 				// We were notified, interrupted, or expired, take it and leave
 				if (interrupted || expired || nownotifycount > 0)
 				{
-					// Reduce the notify count, but not when interrupted
-					if (!interrupted)
+					// Reduce the notify count, but not when interrupted or
+					// expired
+					if (!interrupted && !expired)
 						this._notifycount--;
 					
 					// Reduce wait count
@@ -252,8 +253,11 @@ public final class SpringMonitor
 						if (!waitforever)
 						{
 							long rem = end - System.nanoTime();
-							if (rem < 0)
+							if (rem <= 0)
+							{
+								expired = true;
 								continue;
+							}
 							
 							// Wait for this time
 							lock.wait(rem / 1_000_000L,
