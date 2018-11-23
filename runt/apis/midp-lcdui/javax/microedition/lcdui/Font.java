@@ -10,6 +10,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.lcdui.font.PixelFont;
 import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
