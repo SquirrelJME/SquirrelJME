@@ -60,7 +60,19 @@ public final class Base64Decoder
 		3;
 	
 	/**
-	 * Initializes the decoder using the default alphabet.
+	 * Initializes the decode the default MIME alphabet.
+	 *
+	 * @param __in The input set of characters.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/23
+	 */
+	public Base64Decoder(Reader __in)
+	{
+		this(__in, Base64Alphabet.BASIC);
+	}
+	
+	/**
+	 * Initializes the decoder using the specified alphabet.
 	 *
 	 * @param __in The input set of characters.
 	 * @param __chars The pre-defined character set to use for the alphabet.
@@ -205,14 +217,16 @@ public final class Base64Decoder
 		for (;;)
 		{
 			int rc = this.read(next, 0, 1);
+			
+			// EOF?
 			if (rc < 0)
 				return -1;
+			
+			// Missed read
 			else if (rc == 0)
 				continue;
-			else if (rc == 1)
-				return (next[0] & 0xFF);
-			else
-				throw new RuntimeException("OOPS");
+			
+			return (next[0] & 0xFF);
 		}
 	}
 	
@@ -261,6 +275,9 @@ public final class Base64Decoder
 				buffer = 0;
 				bits = 0;
 				drained = 0;
+				
+				// Only three bytes are valid
+				drainedmax = 3;
 			}
 			
 			// Bytes to drain to the output?
