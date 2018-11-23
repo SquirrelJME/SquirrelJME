@@ -1,0 +1,27 @@
+# 2018/11/22
+
+## 08:39
+
+Upgrading my laptop so I hope it does not end up going bad.
+
+## 12:44
+
+Looks like `InputStreamReader`'s bulk read operation returns EOF when there
+are characters to be read it seems? When EOF was hit anyway.
+
+## 13:03
+
+Fixed a bug (I hope) in `InputStreamReader` that in bulk reads if EOF was
+read it would just return EOF and completely drop all the characters which
+were actually read.
+
+## 13:35
+
+Reading manifests character by character is pretty slow, so I think the best
+way to handle them would be to read line by line. Manifests are very line
+based anyway and I think that would be far more performant.
+
+## 22:22
+
+I made a Mystify Your Mind demo and I called it Mystify Your Squirrels, it is
+cool.
