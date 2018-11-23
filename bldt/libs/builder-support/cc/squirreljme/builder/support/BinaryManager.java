@@ -26,6 +26,7 @@ import cc.squirreljme.runtime.swm.SuiteVersion;
 import cc.squirreljme.runtime.swm.SuiteVersionRange;
 import java.io.Closeable;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.ref.Reference;
@@ -52,6 +53,7 @@ import java.util.Set;
 import net.multiphasicapps.collections.CloseableList;
 import net.multiphasicapps.collections.SortedTreeMap;
 import net.multiphasicapps.collections.UnmodifiableCollection;
+import net.multiphasicapps.io.Base64Decoder;
 import net.multiphasicapps.javac.Compiler;
 import net.multiphasicapps.javac.CompilerException;
 import net.multiphasicapps.javac.CompilerInput;
@@ -302,8 +304,19 @@ public final class BinaryManager
 					// Go through non-input and copy all of the data
 					byte[] buf = new byte[512];
 					for (CompilerInput j : noninput)
-						try (InputStream ei = j.open();
-							OutputStream eo = out.output(j.fileName()))
+					{
+						// Detect UUEncoded binary files, that I encode due
+						// to the pure text requirements of the repository
+						String inname = j.fileName();
+						boolean isbase64;
+						if ((isbase64 = inname.endsWith(".__base64")))
+							inname = inname.substring(0, inname.length() - 9);
+						
+						// Copy data directly or just decode it
+						try (InputStream ei = (!isbase64 ? j.open() :
+							new Base64Decoder(new InputStreamReader(j.open(),
+							"utf-8")));
+							OutputStream eo = out.output(inname))
 						{
 							for (;;)
 							{
@@ -315,6 +328,7 @@ public final class BinaryManager
 								eo.write(buf, 0, rc);
 							}
 						}
+					}
 					
 					// Flush the ZIP before it is closed
 					out.flush();
