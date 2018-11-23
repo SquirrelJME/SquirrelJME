@@ -91,6 +91,59 @@ public class InputStreamReader
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2018/11/22
+	 */
+	@Override
+	public int read()
+		throws IOException
+	{
+		InputStream in = this._in;
+		Decoder decoder = this._decoder;
+		byte[] store = this._store;
+		int storelen = 0,
+			declimit = store.length;
+		
+		// Read characters
+		for (;;)
+		{
+			// {@squirreljme.error ZZ2z Read of input byte sequence exceeded
+			// the maximum specified sequence length. (The store length)}
+			if (storelen >= declimit)
+				throw new IOException("ZZ2z " + storelen);
+			
+			// Read byte from input stream
+			int brc = in.read(store, storelen, 1);
+			
+			// Reached EOF from the input bytes
+			if (brc < 0)
+			{
+				// No characters were read, so this is a complete EOF
+				if (storelen <= 0)
+					return -1;
+				
+				// Try to decode whatever was read, if it ends up not being
+				// valid then just use the replacement character because it
+				// probably got chopped off
+				int cha = decoder.decode(store, 0, storelen);
+				if (cha >= 0)
+					return (char)cha;
+				else
+					return (char)0xFFFD;
+			}
+			
+			// Increment the store length since bytes were read
+			storelen++;
+			
+			// Try to decode a character, if it decodes to a valid character we
+			// just store that
+			int cha = decoder.decode(store, 0, storelen);
+			if (cha >= 0)
+				return (char)cha;
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/10/13
 	 */
 	@Override
@@ -112,10 +165,10 @@ public class InputStreamReader
 			baseo = __o;
 		for (int o = __o; rv < __l;)
 		{
-			// {@squirreljme.error ZZ0j Read of input byte sequence exceeded
+			// {@squirreljme.error ZZ2y Read of input byte sequence exceeded
 			// the maximum specified sequence length. (The store length)}
 			if (storelen >= declimit)
-				throw new IOException("ZZ2l " + storelen);
+				throw new IOException("ZZ2y " + storelen);
 			
 			// Read byte from input stream
 			int brc = in.read(store, storelen, 1);
