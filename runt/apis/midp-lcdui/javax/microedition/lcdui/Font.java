@@ -10,6 +10,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.lcdui.font.FontSizeConversion;
 import cc.squirreljme.runtime.lcdui.font.PixelFont;
 import java.io.InputStream;
 import java.io.IOException;
@@ -108,13 +109,43 @@ public final class Font
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Derives a font using the given pixel size.
+	 *
+	 * @param __pxs The pixel size of the font.
+	 * @return The derived font.
+	 * @throws IllegalArgumentException If this font is a bitmap font and
+	 * no font is available using that size.
+	 * @since 2018/11/24
+	 */
 	public Font deriveFont(int __pxs)
+		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		return this.deriveFont(this.getStyle(), __pxs);
 	}
 	
+	/**
+	 * Derives a font using the given style and pixel size.
+	 *
+	 * @param __style The style of the font.
+	 * @param __pxs The pixel size of the font.
+	 * @return The derived font.
+	 * @throws IllegalArgumentException If this font is a bitmap font and
+	 * no font is available using that size, or the style is not valid.
+	 * @since 2018/11/24
+	 */
 	public Font deriveFont(int __style, int __pxs)
+		throws IllegalArgumentException
 	{
+		// {@squirreljme.error EB1p Invalid font style specified. (The style)}
+		if ((__style & ~(STYLE_PLAIN | STYLE_UNDERLINED | STYLE_BOLD)) != 0)
+			throw new IllegalArgumentException(String.format("EB1p %d",
+				__style));
+		
+		// Use default font size?
+		if (__pxs == 0)
+			__pxs = FontSizeConversion.logicalSizeToPixelSize(SIZE_MEDIUM);
+		
 		throw new todo.TODO();
 	}
 	
@@ -159,6 +190,11 @@ public final class Font
 	}
 	
 	public String getFamily()
+	{
+		throw new todo.TODO();
+	}
+	
+	public String getFontName()
 	{
 		throw new todo.TODO();
 	}
@@ -304,6 +340,12 @@ public final class Font
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns all of the fonts which are available.
+	 *
+	 * @return All of the available fonts.
+	 * @since 2018/11/24
+	 */
 	public static Font[] getAvailableFonts()
 	{
 		throw new todo.TODO();
@@ -315,16 +357,66 @@ public final class Font
 	 *
 	 * @param __style The style of the font, may be a combination of styles.
 	 * @return An array of matching font and styles.
+	 * @throws IllegalArgumentException If the parameters are not correct.
 	 * @since 2017/05/25
 	 */
 	public static Font[] getAvailableFonts(int __style)
+		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error EB1q Invalid font style specified. (The style)}
+		if ((__style & ~(STYLE_PLAIN | STYLE_UNDERLINED | STYLE_BOLD)) != 0)
+			throw new IllegalArgumentException(String.format("EB1q %d",
+				__style));
+		
+		List<Font> rv = new ArrayList<>();
+		for (Font f : Font.getAvailableFonts())
+			try
+			{
+				rv.add(f.deriveFont(__style, f.getPixelSize()));
+			}
+			catch (IllegalArgumentException e)
+			{
+			}
+		
+		return rv.<Font>toArray(new Font[rv.size()]);
 	}
 	
+	/**
+	 * Returns all of the fonts which are available in the given format.
+	 *
+	 * @param __face The face type of the font.
+	 * @param __style The style of the font.
+	 * @param __pxs The pixel size of the font.
+	 * @throws IllegalArgumentException If the parameters are not correct.
+	 * @since 2018/11/24
+	 */
 	public static Font[] getAvailableFonts(int __face, int __style, int __pxs)
+		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error EB1r Invalid font style specified. (The style)}
+		if ((__style & ~(STYLE_PLAIN | STYLE_UNDERLINED | STYLE_BOLD)) != 0)
+			throw new IllegalArgumentException(String.format("EB1r %d",
+				__style));
+		
+		// Need to filter by face, then derive
+		List<Font> rv = new ArrayList<>();
+		for (Font f : Font.getAvailableFonts())
+		{
+			// Has the wrong face, ignore
+			if (f.getFace() != __face)
+				continue;
+			
+			// Derive it
+			try
+			{
+				rv.add(f.deriveFont(__style, __pxs));
+			}
+			catch (IllegalArgumentException e)
+			{
+			}
+		}
+		
+		return rv.<Font>toArray(new Font[rv.size()]);
 	}
 	
 	/**
@@ -335,16 +427,32 @@ public final class Font
 	 */
 	public static Font getDefaultFont()
 	{
-		return Font.getFont(0, 0, 0);
-	}
-	
-	public static Font getFont(int __a)
-	{
-		throw new todo.TODO();
+		return getAvailableFonts()[0];
 	}
 	
 	/**
-	 * Locates a font which matches the specified parameters the closest.
+	 * Returns the font by the given specifier.
+	 *
+	 * @param __spec The specifier of the font to get.
+	 * @return The font for the given specifier.
+	 * @throws IllegalArgumentException If the specifier is not valid.
+	 * @since 2018/11/24
+	 */
+	public static Font getFont(int __spec)
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error EB2i Invalid font specifiers. (The specifiers)}
+		if (__spec != FONT_INPUT_TEXT && __spec != FONT_STATIC_TEXT &&
+			__spec != FONT_IDLE_TEXT && __spec != FONT_IDLE_HIGHLIGHTED_TEXT)
+			throw new IllegalArgumentException("EB2i " + __spec);
+		
+		// This is always the default font
+		return Font.getDefaultFont();
+	}
+	
+	/**
+	 * Locates a font which matches the specified parameters the closest, a
+	 * font will always be returned if the parameters do not match.
 	 *
 	 * @param __face The font face, this is a single value.
 	 * @param __style The style of the font, this may be a combination of
@@ -369,34 +477,113 @@ public final class Font
 			throw new IllegalArgumentException(String.format("EB1o %d",
 				__size));
 		
-		// {@squirreljme.error EB1p Invalid font style specified. (The style)}
-		if ((__style & ~(STYLE_PLAIN | STYLE_UNDERLINED | STYLE_BOLD |
-			STYLE_ITALIC)) != 0)
-			throw new IllegalArgumentException(String.format("EB1p %d",
-				__style));
+		// Get fonts that might exist
+		Font[] scan = Font.getAvailableFonts(__face, __style,
+			FontSizeConversion.logicalSizeToPixelSize(__size));
 		
-		throw new todo.TODO();
-		/*
-		// Setup font to the given handle, the font size needs to be adjusted
-		// so that it uses pixel sizes rather than abstract sizes
-		DisplayHead dh = DisplayManager.defaultDisplayHead();
-		return new Font(FontManager.FONT_MANAGER.createFont(__face, __style,
-			dh.fontSizeToPixelSize(__size)));*/
+		// If no fonts were found, use a default font with a derived pixel
+		// size as such
+		if (scan.length == 0)
+		{
+			// Try to derive this font to the style and size, but if that
+			// fails then just do the style
+			Font d = Font.getDefaultFont();
+			try
+			{
+				return d.deriveFont(__style,
+					FontSizeConversion.logicalSizeToPixelSize(__size));
+			}
+			catch (IllegalArgumentException e)
+			{
+				try
+				{
+					return d.deriveFont(__style, d.getPixelSize());
+				}
+				catch (IllegalArgumentException f)
+				{
+					return d;
+				}
+			}
+		}
+		
+		// Use the first font, since it should be correct hopefully
+		return scan[0];
 	}
 	
+	/**
+	 * Returns a font which matches the given name.
+	 *
+	 * @param __name The name of the font to find.
+	 * @param __style The style to use.
+	 * @param __pxs The pixel size of the font.
+	 * @return The font.
+	 * @throws IllegalArgumentException If no font was found or the style
+	 * and/or pixel size were not correct.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/24
+	 */
 	public static Font getFont(String __name, int __style, int __pxs)
+		throws IllegalArgumentException, NullPointerException
 	{
-		throw new todo.TODO();
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		// Find the font then derive it
+		for (Font f : Font.getAvailableFonts())
+			if (__name.equals(f.getFontName()))
+				return f.deriveFont(__style, __pxs);
+		
+		// {@squirreljme.error EB2f Could not locate a font by the given
+		// name. (The font name)}
+		throw new IllegalArgumentException("EB2f " + __name);
 	}
 	
+	/**
+	 * Returns the pixel size of the given font.
+	 *
+	 * @param __name The name of the font.
+	 * @return The pixel size of the font.
+	 * @throws IllegalArgumentException If the font does not exist.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/24
+	 */
 	public static int getPixelSize(String __name)
+		throws IllegalArgumentException, NullPointerException
 	{
-		throw new todo.TODO();
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		for (Font f : Font.getAvailableFonts())
+			if (__name.equals(f.getFontName()))
+				return f.getPixelSize();
+		
+		// {@squirreljme.error EB2h No font with the given name exists.
+		// (The font name)}
+		throw new IllegalArgumentException("EB2h " + __name);
 	}
 	
+	/**
+	 * Returns the style of the given font.
+	 *
+	 * @param __name The name of the font.
+	 * @return The style of the font.
+	 * @throws IllegalArgumentException If the font does not exist.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/24
+	 */
 	public static int getStyle(String __name)
+		throws IllegalArgumentException, NullPointerException
 	{
-		throw new todo.TODO();
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		for (Font f : Font.getAvailableFonts())
+			if (__name.equals(f.getFontName()))
+				return f.getStyle();
+		
+		// {@squirreljme.error EB2j No font with the given name exists.
+		// (The font name)}
+		throw new IllegalArgumentException("EB2g " + __name);
 	}
 }
 
