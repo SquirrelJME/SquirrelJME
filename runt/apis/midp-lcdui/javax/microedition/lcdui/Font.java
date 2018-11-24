@@ -83,13 +83,36 @@ public final class Font
 	public static final int STYLE_UNDERLINED =
 		4;
 	
+	/** The default font size. */
+	private static final int _DEFAULT_FONT_SIZE =
+		16;
+	
+	/** The name of this font. */
+	private final String _name;
+	
+	/** The style of this font. */
+	private final int _style;
+	
+	/** The pixel size of the font. */
+	private final int _pixelsize;
+	
 	/**
 	 * Initializes the font.
 	 *
+	 * @param __n The name of this font.
+	 * @param __st The style of this font.
+	 * @param __px The pixel size of this font.
 	 * @since 2017/10/20
 	 */
-	private Font()
+	private Font(String __n, int __st, int __px)
+		throws NullPointerException
 	{
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		this._name = __n;
+		this._style = __st;
+		this._pixelsize = __px;
 	}
 	
 	/**
@@ -146,7 +169,17 @@ public final class Font
 		if (__pxs == 0)
 			__pxs = FontSizeConversion.logicalSizeToPixelSize(SIZE_MEDIUM);
 		
-		throw new todo.TODO();
+		// {@squirreljme.error EB2k The pixel size of a font cannot be
+		// negative.}
+		else if (__pxs < 0)
+			throw new IllegalArgumentException("EB2k");
+		
+		// Same exact font?
+		if (this._style == __style && this._pixelsize == __pxs)
+			return this;
+		
+		// Create font handle
+		return new Font(this._name, __style, __pxs);
 	}
 	
 	@Override
@@ -235,14 +268,26 @@ public final class Font
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the size of this font in pixels.
+	 *
+	 * @return The font size in pixels.
+	 * @since 2018/11/24
+	 */
 	public int getPixelSize()
 	{
-		throw new todo.TODO();
+		return this._pixelsize;
 	}
 	
+	/**
+	 * Returns the logical size of the font.
+	 *
+	 * @return The logical font size.
+	 * @since 2018/11/24
+	 */
 	public int getSize()
 	{
-		throw new todo.TODO();
+		return FontSizeConversion.pixelSizeToLogicalSize(this._pixelsize);
 	}
 	
 	public int getStyle()
@@ -348,7 +393,13 @@ public final class Font
 	 */
 	public static Font[] getAvailableFonts()
 	{
-		throw new todo.TODO();
+		// There are currently just three built-in fonts
+		return new Font[]
+			{
+				new Font("sansserif", 0, _DEFAULT_FONT_SIZE),
+				new Font("serif", 0, _DEFAULT_FONT_SIZE),
+				new Font("monospace", 0, _DEFAULT_FONT_SIZE),
+			};
 	}
 	
 	/**
@@ -427,7 +478,7 @@ public final class Font
 	 */
 	public static Font getDefaultFont()
 	{
-		return getAvailableFonts()[0];
+		return Font.getAvailableFonts()[0];
 	}
 	
 	/**
