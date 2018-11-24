@@ -790,7 +790,10 @@ public abstract class AbstractArrayGraphics
 		int __anchor)
 		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		this.drawSubstring(__s, 0, __s.length(), __x, __y, __anchor);
 	}
 	
 	/**
@@ -802,7 +805,67 @@ public abstract class AbstractArrayGraphics
 		int __y, int __anchor)
 		throws NullPointerException, StringIndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __s.length())
+			throw new StringIndexOutOfBoundsException("IOOB");
+		
+		// Default anchor point
+		if (__anchor == 0)
+			__anchor = TOP | LEFT;
+		
+		// Translate
+		__x += this.transx;
+		__y += this.transy;
+		
+		// Need the font
+		Font font = this.font;
+		
+		// Extract parameters from the font
+		int style = font.getStyle(),
+			pixelsize = font.getPixelSize(),
+			height = font.getHeight();
+		
+		// Horizontal anchoring (This is the most complicated)
+		if ((__anchor & (HCENTER | RIGHT)) != 0)
+		{
+			int strw = font.stringWidth(__s);
+			
+			if ((__anchor & HCENTER) != 0)
+				__x -= (strw >> 1);
+			else
+				__x -= strw;
+		}
+		
+		// Vertical anchoring
+		if ((__anchor & BOTTOM) != 0)
+			__y -= height;
+		else if ((__anchor & BASELINE) != 0)
+			__y -= height - font.getBaselinePosition();
+		
+		// Need to remember the base positions
+		int basex = __x,
+			basey = __y;
+		
+		// Draw each character individually
+		int color = this.color;
+		for (int e = __o + __l; __o < e; __o++)
+		{
+			char c = __s.charAt(__o);
+			
+			// Carriage return and newline
+			if (c == '\r')
+				__x = basex;
+			else if (c == '\n')
+			{
+				__x = basex;
+				__y += height;
+			}
+			
+			// Otherwise render this character
+			else
+				this.__drawDirectChar(c, font, color, __x, __y);
+		}
 	}
 	
 	/**
@@ -1398,6 +1461,41 @@ public abstract class AbstractArrayGraphics
 			rv |= _CLIP_LEFT;
 		
 		return rv;
+	}
+	
+	/**
+	 * Draws the given character sequence.
+	 *
+	 * @param __s The sequence to draw.
+	 * @param __o The offset into the sequence.
+	 * @param __l The number of characters to draw.
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __anchor The anchor point.
+	 * @throws NullPointerException On null arguments.
+	 * @throws StringIndexOutOfBoundsException If the offset and/or length
+	 * are negative or exceed the sequence bounds.
+	 * @since 2018/11/24
+	 */
+	private final void __drawCharSequence(CharSequence __s, int __o, int __l,
+		int __x, int __y, int __anchor)
+		throws NullPointerException, StringIndexOutOfBoundsException
+	{
+	}
+	
+	/**
+	 * Draws the given character directly, no translation is used.
+	 *
+	 * @param __c The character to draw.
+	 * @param __f The font to use.
+	 * @param __color The color to draw in.
+	 * @param __x The X coordinate, this must be pre-translated.
+	 * @param __y The Y coordinate, this must be pre-translated.
+	 */
+	private final void __drawDirectChar(char __c, Font __f, int __color,
+		int __x, int __y)
+	{
+		throw new todo.TODO();
 	}
 }
 
