@@ -290,9 +290,15 @@ public final class Font
 		return FontSizeConversion.pixelSizeToLogicalSize(this._pixelsize);
 	}
 	
+	/**
+	 * Gets the style of the font.
+	 *
+	 * @return The style used.
+	 * @since 2018/11/24
+	 */
 	public int getStyle()
 	{
-		throw new todo.TODO();
+		return this._style;
 	}
 	
 	/**
