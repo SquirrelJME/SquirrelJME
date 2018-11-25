@@ -53,7 +53,7 @@ import java.util.Set;
 import net.multiphasicapps.collections.CloseableList;
 import net.multiphasicapps.collections.SortedTreeMap;
 import net.multiphasicapps.collections.UnmodifiableCollection;
-import net.multiphasicapps.io.Base64Decoder;
+import net.multiphasicapps.io.MIMEFileDecoder;
 import net.multiphasicapps.javac.Compiler;
 import net.multiphasicapps.javac.CompilerException;
 import net.multiphasicapps.javac.CompilerInput;
@@ -308,13 +308,13 @@ public final class BinaryManager
 						// Detect UUEncoded binary files, that I encode due
 						// to the pure text requirements of the repository
 						String inname = j.fileName();
-						boolean isbase64;
-						if ((isbase64 = inname.endsWith(".__base64")))
+						boolean ismime;
+						if ((ismime = inname.endsWith(".__mime")))
 							inname = inname.substring(0, inname.length() - 9);
 						
 						// Copy data directly or just decode it
-						try (InputStream ei = (!isbase64 ? j.open() :
-							new Base64Decoder(new InputStreamReader(j.open(),
+						try (InputStream ei = (!ismime ? j.open() :
+							new MIMEFileDecoder(new InputStreamReader(j.open(),
 							"utf-8")));
 							OutputStream eo = out.output(inname))
 						{
