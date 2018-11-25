@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-import net.multiphasicapps.tac.TestFunction;
+import net.multiphasicapps.tac.TestBiConsumer;
 import net.multiphasicapps.io.Base64Alphabet;
 import net.multiphasicapps.io.Base64Decoder;
 
@@ -18,18 +18,20 @@ import net.multiphasicapps.io.Base64Decoder;
  * @since 2018/03/06
  */
 public class TestBase64Decoder
-	extends TestFunction<String, String>
+	extends TestBiConsumer<String, String>
 {
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/03/06	
 	 */
 	@Override
-	public String test(String __i)
+	public void test(String __a, String __b)
 		throws Throwable
 	{
-		return new String(Base64Decoder.decode(__i, Base64Alphabet.BASIC),
-			"utf-8");
+		this.secondary("a", new String(Base64Decoder.decode(__a,
+			Base64Alphabet.BASIC), "utf-8"));
+		this.secondary("b", new String(Base64Decoder.decode(__b,
+			Base64Alphabet.BASIC), "utf-8"));
 	}
 }
 
