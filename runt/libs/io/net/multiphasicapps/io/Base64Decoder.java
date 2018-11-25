@@ -49,7 +49,7 @@ public final class Base64Decoder
 	private volatile int _bits;
 	
 	/** Has EOF been reached if the pad has been detected? */
-	private volatile boolean _paddedeof;
+	private volatile boolean _readeof;
 	
 	/** The current output drain position. */
 	private volatile int _drained =
@@ -57,7 +57,7 @@ public final class Base64Decoder
 	
 	/** The maximum value for drained values. */
 	private volatile int _drainedmax =
-		3;
+		-1;
 	
 	/**
 	 * Initializes the decode the default MIME alphabet.
@@ -244,7 +244,7 @@ public final class Base64Decoder
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Did a previous read cause a padded EOF?
-		boolean paddedeof = this._paddedeof;
+		boolean readeof = this._readeof;
 		
 		// Need lookups
 		Reader in = this.in;
@@ -259,124 +259,141 @@ public final class Base64Decoder
 			drained = this._drained,
 			drainedmax = this._drainedmax;
 		
-		// Fill the input in as much as possible
-		int base = __o,
-			eo = __o + __l;
-		while (__o < eo)
+		// Keep trying to fill bytes in
+		int rv = 0;
+		while (rv < __l)
 		{
-			// Enough bits were read to add to the output, so do so
-			if (bits >= 24)
+			// Still need to drain bytes away
+			if (drained != -1 && drained < drainedmax)
 			{
-				drain[0] = (byte)((buffer & 0xFF0000) >>> 16);
-				drain[1] = (byte)((buffer & 0x00FF00) >>> 8);
-				drain[2] = (byte)((buffer & 0x0000FF));
-				
-				// Empty buffer
-				buffer = 0;
-				bits = 0;
-				drained = 0;
-				
-				// Set the max drain if not previously set
-				if (drainedmax < 0)
-					drainedmax = 3;
-			}
-			
-			// Bytes to drain to the output?
-			if (drained >= 0)
-			{
+				// Drain it
 				__b[__o++] = drain[drained++];
+				rv++;
 				
-				// No more bytes to drain
+				// Drained all the characters
 				if (drained == drainedmax)
-					drained = -1;
+					drained = drainedmax = -1;
 				
-				// Continue draining
+				// Try again
 				else
 					continue;
 			}
 			
-			// Previous read ended in EOF of padded data
-			if (paddedeof)
+			// EOF was reached
+			if (readeof)
 				break;
 			
-			// EOF
-			int val = 0;
+			// Read in character and decode it
 			int ch = in.read();
+			
+			// Is EOF?
 			if (ch < 0)
 			{
-				paddedeof = true;
-				continue;
+				// {@squirreljme.error BD20 Read EOF from input when there
+				// were expected to be more characters or the ending padding
+				// character. (The bits in the buffer)}
+				if (bits != 0)
+					throw new IOException("BD20 " + bits);
+				
+				// Did read EOF
+				readeof = true;
+				break;
 			}
 			
 			// Determine the value of the character
 			if (ch < 128)
-				val = ascii[ch];
+				ch = ascii[ch];
 			else
 			{
-				for (val = 0; val < 65; val++)
-					if (ch == alphabet[val])
+				ch = -1;
+				for (int i = 0; i < 65; i++)
+					if (i == alphabet[i])
+					{
+						ch = i;
 						break;
-				if (val == 65)
-					val = -1;
+					}
 			}
 			
-			// Value is not valid, ignore it
-			if (val < 0)
+			// Invalid, ignore and continue
+			if (ch == -1 || (ignorepadding && ch == 64))
 				continue;
 			
-			// Special padding value, indicates EOF
-			if (val == 64)
+			// Decoded padding character
+			else if (ch == 64)
 			{
-				// Treat as an invalid character
-				if (ignorepadding)
-					continue;
+				// {@squirreljme.error BD21 Did not expect a padding character.
+				// (The number of decoded bits in queue)}
+				if (bits == 0 || bits == 24)
+					throw new IOException("BD21 " + bits);
 				
-				// Trigger padded EOF
-				paddedeof = true;
-				
-				// Consume extra equal sign for missing bits
-				if (bits < 12)
+				// Only want to store a single extra byte since that is
+				// all that is valid
+				else if (bits < 16)
 				{
-					int padchar = alphabet[64],
-						gotchar = in.read();
+					// {@squirreljme.error BD22 Expected another padding
+					// character.}
+					if (in.read() != alphabet[64])
+						throw new IOException("BD22");
 					
-					// {@squirreljme.error BD01 Expected padding character to
-					// follow for the last remaining bytes. (The expected
-					// character; The read character; The remaining bits)}
-					if (gotchar != padchar)
-						throw new IOException(String.format("BD01 %d %d %d",
-							padchar, gotchar, bits));
+					drain[0] = (byte)(buffer >>> 4);
+					
+					drainedmax = 1;
 				}
 				
-				// The number of valid bytes in the drained data is only
-				// equal to the number of read bytes
-				drainedmax = (bits / 8);
+				// Otherwise there will be two characters to drain
+				else
+				{
+					drain[0] = (byte)(buffer >>> 10);
+					drain[1] = (byte)(buffer >>> 2);
+					
+					drainedmax = 2;
+				}
 				
-				// Fill to 24
-				buffer <<= (24 - bits);
-				bits = 24;
+				// Need to drain all
+				drained = 0;
+					
+				// Clear the buffer
+				buffer = bits = 0;
+				
+				// Did read EOF
+				readeof = true;
 			}
 			
-			// Is valid character
+			// Normal data
 			else
 			{
 				// Shift in six bits
 				buffer <<= 6;
-				buffer |= val;
+				buffer |= ch;
 				bits += 6;
+				
+				// Drain and empty the buffer
+				if (bits == 24)
+				{
+					// Fill the drain
+					drain[0] = (byte)(buffer >>> 16);
+					drain[1] = (byte)(buffer >>> 8);
+					drain[2] = (byte)buffer;
+					
+					// Set these to drain
+					drained = 0;
+					drainedmax = 3;
+					
+					// Clear the buffer
+					buffer = bits = 0;
+				}
 			}
 		}
 		
 		// Store state for next run
 		this._buffer = buffer;
 		this._bits = bits;
-		this._paddedeof = paddedeof;
+		this._readeof = readeof;
 		this._drained = drained;
 		this._drainedmax = drainedmax;
 		
 		// Return the read count
-		int rv = __o - base;
-		if (paddedeof && rv == 0)
+		if (readeof && rv == 0)
 			return -1;
 		return rv;
 	}

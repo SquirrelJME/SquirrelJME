@@ -1,4 +1,7 @@
 argument-1: string:SSBsb3ZlIHNxdWlycmVscyE=
-result: string:I\_love\_squirrels!
+argument-2: string:SSBsb3ZlIExlYWggYW5kIEppbmV0dGUsIEkgcmVhbGx5IGRvIQ==
+result: NoResult
 thrown: NoExceptionThrown
+secondary-a: string:I\_love\_squirrels!
+secondary-b: string:I\_love\_Leah\_and\_Jinette,\_I\_really\_do!
 
