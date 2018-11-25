@@ -257,6 +257,10 @@ public final class MIMEFileDecoder
 			if (!this._didheader)
 				this.__readHeader();
 			
+			// If the footer was read, this means EOF
+			if (this._didfooter)
+				return -1;
+			
 			// Where to read from
 			StringBuilder sb = this._sb;
 			int at = this._at,
