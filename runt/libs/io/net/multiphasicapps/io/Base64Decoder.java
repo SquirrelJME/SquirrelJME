@@ -277,7 +277,7 @@ public final class Base64Decoder
 				drained = 0;
 				
 				// Set the max drain if not previously set
-				//if (drainedmax < 0)
+				if (drainedmax < 0)
 					drainedmax = 3;
 			}
 			
@@ -361,15 +361,8 @@ public final class Base64Decoder
 			else
 			{
 				// Shift in six bits
-				if (true)
-				{
-					buffer |= (val & 0b111111) << bits;
-				}
-				else
-				{
-					buffer <<= 6;
-					buffer |= val;
-				}
+				buffer <<= 6;
+				buffer |= val;
 				bits += 6;
 			}
 		}
