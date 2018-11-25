@@ -310,7 +310,7 @@ public final class BinaryManager
 						String inname = j.fileName();
 						boolean ismime;
 						if ((ismime = inname.endsWith(".__mime")))
-							inname = inname.substring(0, inname.length() - 9);
+							inname = inname.substring(0, inname.length() - 6);
 						
 						// Copy data directly or just decode it
 						try (InputStream ei = (!ismime ? j.open() :
