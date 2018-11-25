@@ -1,0 +1,17 @@
+# 2018/11/24
+
+## 19:38
+
+Creating fonts is a ton of work. There are three fonts with three sizes
+with 191 characters each. This means 3 * 3 * 191 = 1719 characters to
+draw. This is a ton. This means I have 1,528 characters left to draw
+which is quite a bunch. If I can draw 60 characters in an hour then I
+would complete in 25 hours. If I spend 4 hours a day drawing fonts then
+it would take an entire week to draw every single character. This is a
+ton of drawing.
+
+## 19:44
+
+So thinking... I could cheat with serif font and just base it off the
+sans serif one. Most of the characters would be the same just with
+thingies on them.
