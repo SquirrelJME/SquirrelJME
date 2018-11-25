@@ -276,8 +276,9 @@ public final class Base64Decoder
 				bits = 0;
 				drained = 0;
 				
-				// Only three bytes are valid
-				drainedmax = 3;
+				// Set the max drain if not previously set
+				if (drainedmax < 0)
+					drainedmax = 3;
 			}
 			
 			// Bytes to drain to the output?
