@@ -196,6 +196,23 @@ public final class Base64Decoder
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2018/11/25
+	 */
+	@Override
+	public final int available()
+		throws IOException
+	{
+		int drained = this._drained;
+		
+		// There are bytes which are ready and in the drain that we do not
+		// need to block reading them?
+		if (drained != -1)
+			return this._drainedmax - drained;
+		return 0;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/03/05
 	 */
 	@Override
@@ -213,6 +230,34 @@ public final class Base64Decoder
 	public final int read()
 		throws IOException
 	{
+		// If there is stuff to be drained, quickly drain that so we do not
+		// need to go deeper into the heavier method
+		int drained = this._drained;
+		if (drained != -1)
+		{
+			// Read in drained character
+			int rv = this._drain[drained++] & 0xFF;
+			
+			// Reached the drain limit?
+			if (drained == this._drainedmax)
+			{
+				this._drained = -1;
+				this._drainedmax = -1;
+			}
+			
+			// Would still be drain
+			else
+				this._drained = drained;
+			
+			// Return the value
+			return rv;
+		}
+		
+		// Previously read EOF, so this will just return EOF
+		if (this._readeof)
+			return -1;
+		
+		// Otherwise decode and read
 		byte[] next = new byte[1];
 		for (;;)
 		{
@@ -228,6 +273,20 @@ public final class Base64Decoder
 			
 			return (next[0] & 0xFF);
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/25
+	 */
+	@Override
+	public final int read(byte[] __b)
+		throws IOException, NullPointerException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		return this.read(__b, 0, __b.length);
 	}
 	
 	/**

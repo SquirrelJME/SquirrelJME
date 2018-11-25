@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.io;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.Reader;
@@ -25,17 +26,8 @@ import java.io.Reader;
 public final class MIMEFileDecoder
 	extends InputStream
 {
-	/** The base reader. */
-	protected final Reader in;
-	
-	/** Read header? */
-	private volatile boolean _readheader;
-	
-	/** Read EOF? */
-	private volatile boolean _readeof;
-	
-	/** The input MIME data. */
-	private volatile InputStream _datain;
+	/** The input base64 data. */
+	protected Base64Decoder mime;
 	
 	/** The read mode. */
 	private volatile int _mode =
@@ -57,7 +49,20 @@ public final class MIMEFileDecoder
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
-		this.in = __in;
+		// Directly wrap the reader with the MIME decoder which reads from
+		// a source reader that is internally maintained
+		this.mime = new Base64Decoder(new __SubReader__(__in));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/25
+	 */
+	@Override
+	public final int available()
+		throws IOException
+	{
+		return this.mime.available();
 	}
 	
 	/**
@@ -68,7 +73,7 @@ public final class MIMEFileDecoder
 	public final void close()
 		throws IOException
 	{
-		this.in.close();
+		this.mime.close();
 	}
 	
 	/**
@@ -103,19 +108,18 @@ public final class MIMEFileDecoder
 	public final int read()
 		throws IOException
 	{
-		byte[] next = new byte[1];
-		for (;;)
-		{
-			int rc = this.read(next, 0, 1);
-			if (rc < 0)
-				return -1;
-			else if (rc == 0)
-				continue;
-			else if (rc == 1)
-				return (next[0] & 0xFF);
-			else
-				throw new todo.OOPS();
-		}
+		return this.mime.read();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/25
+	 */
+	@Override
+	public final int read(byte[] __b)
+		throws IOException
+	{
+		return this.mime.read(__b);
 	}
 	
 	/**
@@ -126,114 +130,88 @@ public final class MIMEFileDecoder
 	public final int read(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, IOException, NullPointerException
 	{
-		if (__b == null)
-			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
-			throw new IndexOutOfBoundsException("IOOB");
+		return this.mime.read(__b, __o, __l);
+	}
+	
+	/**
+	 * This is a sub-reader which handles parsing of the MIME header and
+	 * otherwise just passing the data to the Base64Decoder instance.
+	 *
+	 * @since 2018/11/25
+	 */
+	private final class __SubReader__
+		extends Reader
+	{
+		/** The line-by-line reader for data. */
+		protected final BufferedReader in;
 		
-		// Read EOF, nothing needs to be done
-		if (this._readeof)
-			return -1;
-		
-		// Reads the file data
-		InputStream datain = this._datain;
-		
-		// Need to read the MIME header?
-		if (!this._readheader)
+		/**
+		 * Initializes the sub-reader for the MIME data.
+		 *
+		 * @param __in The source reader.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2018/11/24
+		 */
+		__SubReader__(Reader __in)
+			throws NullPointerException
 		{
-			Reader in = this.in;
+			if (__in == null)
+				throw new NullPointerException("NARG");
 			
-			// Read a single line from the input
-			StringBuilder sb = new StringBuilder();
-			for (;;)
-			{
-				int ch = in.read();
-				
-				// {@squirreljme.error BD1i Reached EOF trying to read the
-				// MIME file header.}
-				if (ch < 0)
-					throw new IOException("BD1i");
-				
-				// End of line
-				else if (ch == '\r' || ch == '\n')
-					break;
-				
-				sb.append((char)ch);
-			}
-			String header = sb.toString();
-			
-			// {@squirreljme.error BD1j First line of file does not start
-			// with "{@code begin-base64 }".}
-			if (!header.startsWith("begin-base64 "))
-				throw new IOException("BD1j");
-			
-			// Read mode and filename potentially
-			header = header.substring(13).trim();
-			int fs = header.indexOf(' ');
-			
-			// Only if the space is valid
-			if (fs >= 1)
-			{
-				// Read mode
-				try
-				{
-					this._mode = Integer.parseInt(header.substring(0, fs), 8);
-				}
-			
-				// {@squirreljme.error BD1k Could not parse the mode.
-				catch (NumberFormatException e)
-				{
-					throw new IOException("BD1k", e);
-				}
-				
-				// Read filename
-				this._filename = header.substring(fs).trim();
-			}
-			
-			// Header read
-			this._readheader = true;
-			
-			// Start reading encoded data
-			datain = new Base64Decoder(in, Base64Alphabet.BASIC);
-			this._datain = datain;
+			this.in = new BufferedReader(__in, 80);
 		}
 		
-		// Read wrapped data
-		int rc = datain.read(__b, __o, __l);
-		
-		// EOF reached? Attempt read of the footer data
-		if (rc < 0)
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/11/25
+		 */
+		@Override
+		public void close()
+			throws IOException
 		{
-			Reader in = this.in;
-			
-			// Read final data
-			StringBuilder sb = new StringBuilder();
-			for (;;)
-			{
-				int ch = in.read();
-				
-				if (ch < 0)
-					break;
-				
-				// Skip whitespace
-				else if (ch <= ' ')
-					continue;
-				
-				// Append sequence
-				sb.append((char)ch);
-			}
-			String end = sb.toString().trim();
-			
-			// {@squirreljme.error BD1l End of the mime file data must end
-			// with four equal signs on a single line.
-			if (!end.equals("===="))
-				throw new IOException("BD1l");
-			
-			this._readeof = true;
+			this.in.close();
 		}
 		
-		// Return the read count
-		return rc;
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/11/25
+		 */
+		@Override
+		public int read()
+			throws IOException
+		{
+			throw new todo.TODO();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/11/25
+		 */
+		@Override
+		public int read(char[] __c)
+			throws IOException
+		{
+			if (__c == null)
+				throw new NullPointerException("NARG");
+			
+			return this.read(__c, 0, __c.length);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/11/25
+		 */
+		@Override
+		public int read(char[] __c, int __o, int __l)
+			throws IOException
+		{
+			if (__c == null)
+				throw new NullPointerException("NARG");
+			if (__o < 0 || __l < 0 || (__o + __l) > __c.length)
+				throw new IndexOutOfBoundsException("IOOB");
+			
+			throw new todo.TODO();
+		}
 	}
 }
 
