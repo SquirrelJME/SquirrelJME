@@ -91,7 +91,7 @@ public enum ConstantValueType
 					"Ljava/lang/Class;".equals(__d.toString());
 			
 			default:
-				throw new RuntimeException("OOPS");
+				throw new todo.OOPS();
 		}
 	}
 	

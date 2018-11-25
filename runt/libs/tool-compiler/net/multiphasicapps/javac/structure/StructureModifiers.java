@@ -301,7 +301,7 @@ public final class StructureModifiers
 						break;
 						
 					default:
-						throw new RuntimeException("OOPS");
+						throw new todo.OOPS();
 				}
 				
 				rv.add(got);

@@ -81,7 +81,7 @@ public final class UTF8Decoder
 				
 				// Should not occur
 			default:
-				throw new RuntimeException("OOPS");
+				throw new todo.OOPS();
 		}
 	}
 	

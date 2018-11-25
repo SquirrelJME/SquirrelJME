@@ -426,7 +426,7 @@ public final class SpringClass
 					return (__v instanceof Double);
 				
 				default:
-					throw new RuntimeException("OOPS");
+					throw new todo.OOPS();
 			}
 			
 		// Would be an assignable reference
@@ -439,7 +439,7 @@ public final class SpringClass
 		
 		// Unknown
 		else
-			throw new RuntimeException("OOPS");
+			throw new todo.OOPS();
 	}
 	
 	/**

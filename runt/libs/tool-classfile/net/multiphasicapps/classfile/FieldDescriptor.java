@@ -319,7 +319,7 @@ public final class FieldDescriptor
 			
 				// Should not occur
 			default:
-				throw new RuntimeException("OOPS");
+				throw new todo.OOPS();
 		}
 	}
 	

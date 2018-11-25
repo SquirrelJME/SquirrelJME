@@ -48,7 +48,7 @@ public enum SuiteDependencyType
 			case PROPRIETARY:	return "proprietary";
 			
 			default:
-				throw new RuntimeException("OOPS");
+				throw new todo.OOPS();
 		}
 	}
 	

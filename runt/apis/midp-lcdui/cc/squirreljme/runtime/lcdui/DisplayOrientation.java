@@ -49,7 +49,7 @@ public enum DisplayOrientation
 			case PORTRAIT:		return Display.ORIENTATION_PORTRAIT;
 			case PORTRAIT_180:	return Display.ORIENTATION_PORTRAIT_180;
 			default:
-				throw new RuntimeException("OOPS");
+				throw new todo.OOPS();
 		}
 	}
 }

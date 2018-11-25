@@ -125,7 +125,7 @@ final class __EventLoop__
 					break;
 					
 				default:
-					throw new RuntimeException("OOPS " + t);
+					throw new todo.OOPS("" + t);
 			}
 		}
 	}

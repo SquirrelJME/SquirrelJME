@@ -201,7 +201,7 @@ enum __PrintFConversion__
 				return __PrintFCategory__.DATE_TIME;
 				
 			default:
-				throw new RuntimeException("OOPS");
+				throw new todo.OOPS();
 		}
 	}
 	

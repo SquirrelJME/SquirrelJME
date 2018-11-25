@@ -75,7 +75,7 @@ public final class SpringArrayObjectGeneric
 					break;
 				
 				default:
-					throw new RuntimeException("OOPS");
+					throw new todo.OOPS();
 			}
 		
 		// Set all elements to an initial value depending on the type

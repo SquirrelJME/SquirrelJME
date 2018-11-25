@@ -123,7 +123,7 @@ public final class Units
 				
 				// Unknown
 			default:
-				throw new RuntimeException("OOPS");
+				throw new todo.OOPS();
 		}
 		
 		// Move unit to the specified position

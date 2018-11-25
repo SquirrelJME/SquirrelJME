@@ -1212,7 +1212,7 @@ public class Tokenizer
 		// Should never happen
 		catch (UnsupportedEncodingException e)
 		{
-			throw new RuntimeException("OOPS", e);
+			throw new todo.OOPS(e);
 		}
 	}
 }

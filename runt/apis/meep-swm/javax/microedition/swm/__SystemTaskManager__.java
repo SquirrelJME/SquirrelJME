@@ -212,7 +212,7 @@ final class __SystemTaskManager__
 			Integer k = __tid;
 			Task rv = tasks.get(k);
 			if (rv != null)
-				throw new RuntimeException("OOPS");
+				throw new todo.OOPS();
 			
 			tasks.put(k, (rv = new Task(__tid, __s)));
 			return rv;

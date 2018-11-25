@@ -81,7 +81,7 @@ public enum MethodFlag
 			case SYNTHETIC:		return 0x1000;
 
 			default:
-				throw new RuntimeException("OOPS");
+				throw new todo.OOPS();
 		}
 	}
 }
