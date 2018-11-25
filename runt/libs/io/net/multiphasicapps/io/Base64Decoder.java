@@ -334,17 +334,17 @@ public final class Base64Decoder
 				paddedeof = true;
 				
 				// Consume extra equal sign for missing bits
-				if (bits < 16)
+				if (bits < 12)
 				{
-					int padchar,
-						gotchar;
+					int padchar = alphabet[64],
+						gotchar = in.read();
 					
 					// {@squirreljme.error BD01 Expected padding character to
 					// follow for the last remaining bytes. (The expected
-					// character; The read character)}
-					if ((gotchar = in.read()) != (padchar = alphabet[64]))
-						throw new IOException(String.format("BD01 %c %c",
-							padchar, gotchar));
+					// character; The read character; The remaining bits)}
+					if (gotchar != padchar)
+						throw new IOException(String.format("BD01 %d %d %d",
+							padchar, gotchar, bits));
 				}
 				
 				// The number of valid bytes in the drained data is only
