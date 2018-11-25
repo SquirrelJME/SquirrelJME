@@ -33,7 +33,7 @@ public class TODO
 	private static final boolean _SQUELCH;
 	
 	/** Used to detect TODOs recursively being called. */
-	private static volatile boolean _DOUBLE_TRIP;
+	static volatile boolean _DOUBLE_TRIP;
 	
 	/** Suppress infinite note TODOs being printed over and over. */
 	private static volatile boolean _notelock;
@@ -105,6 +105,13 @@ public class TODO
 				ps.print(__s);
 			ps.println();
 			
+			// Print the current thread
+			ps.print("IN THREAD: ");
+			ps.println(Thread.currentThread());
+			
+			// Spacer
+			ps.println();
+			
 			// Print the trace
 			this.printStackTrace(ps);
 			
@@ -127,7 +134,7 @@ public class TODO
 			System.getProperty("cc.squirreljme.notodoexit")))
 			try
 			{
-				System.exit(3);
+				System.exit(126);
 			}
 		
 			// Ignore
