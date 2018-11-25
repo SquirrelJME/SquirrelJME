@@ -9,7 +9,6 @@
 // ---------------------------------------------------------------------------
 
 import net.multiphasicapps.tac.TestSupplier;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
