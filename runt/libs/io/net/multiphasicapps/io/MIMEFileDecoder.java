@@ -21,6 +21,8 @@ import java.io.Reader;
  * This format usually begins with {@code begin-base64 mode filename} and
  * ends with the padding sequence {@code ====}.
  *
+ * This class is not thread safe.
+ *
  * @since 2018/03/05
  */
 public final class MIMEFileDecoder
@@ -30,11 +32,11 @@ public final class MIMEFileDecoder
 	protected Base64Decoder mime;
 	
 	/** The read mode. */
-	private volatile int _mode =
+	private int _mode =
 		Integer.MIN_VALUE;
 	
 	/** The read filename. */
-	private volatile String _filename; 
+	private String _filename; 
 	
 	/**
 	 * Initializes the MIME file decoder from the given set of characters.
@@ -145,6 +147,22 @@ public final class MIMEFileDecoder
 		/** The line-by-line reader for data. */
 		protected final BufferedReader in;
 		
+		/** The input character buffer. */
+		private final StringBuilder _sb =
+			new StringBuilder(80);
+		
+		/** The current read in the buffer. */
+		private int _at;
+		
+		/** The current limit of the buffer. */
+		private int _limit;
+		
+		/** Did we read the header? */
+		private boolean _didheader;
+		
+		/** Did we read the footer? */
+		private boolean _didfooter;
+		
 		/**
 		 * Initializes the sub-reader for the MIME data.
 		 *
@@ -180,7 +198,32 @@ public final class MIMEFileDecoder
 		public int read()
 			throws IOException
 		{
-			throw new todo.TODO();
+			// Read header?
+			if (!this._didheader)
+				this.__readHeader();
+			
+			// If the footer was read, this means EOF
+			if (this._didfooter)
+				return -1;
+			
+			// Need to read more from the buffer
+			int at = this._at,
+				limit = this._limit;
+			if (at >= limit)
+			{
+				// Read line next
+				if (!this.__readNext())
+					return -1;
+				
+				// Re-read
+				at = this._at;
+				limit = this._limit;
+			}
+			
+			// Read the next character
+			int rv = this._sb.charAt(at);
+			this._at = at + 1;
+			return rv;
 		}
 		
 		/**
@@ -210,7 +253,122 @@ public final class MIMEFileDecoder
 			if (__o < 0 || __l < 0 || (__o + __l) > __c.length)
 				throw new IndexOutOfBoundsException("IOOB");
 			
-			throw new todo.TODO();
+			// Read header?
+			if (!this._didheader)
+				this.__readHeader();
+			
+			// Where to read from
+			StringBuilder sb = this._sb;
+			int at = this._at,
+				limit = this._limit;
+			
+			// Read in all characters
+			int rv = 0;
+			while (rv < __l)
+			{
+				// Need to read more?
+				if (at >= limit)
+				{
+					// EOF?
+					if (!this.__readNext())
+						return (rv == 0 ? -1 : rv);
+					
+					// Re-read
+					at = this._at;
+					limit = this._limit;
+				}
+				
+				// Read the next character
+				__c[__o++] = sb.charAt(at++);
+			}
+			
+			// Store new at position
+			this._at = at;
+			
+			return rv;
+		}
+		
+		/**
+		 * Reads the header information.
+		 *
+		 * @throws IOException On read errors.
+		 * @since 2018/11/25
+		 */
+		private final void __readHeader()
+			throws IOException
+		{
+			BufferedReader in = this.in;
+			
+			// {@squirreljme.error BD23 Unexpected end of file while trying
+			// to read MIME header.}
+			String ln = in.readLine();
+			if (ln == null)
+				throw new IOException("BD23");
+			
+			// The header is in this format:
+			// begin-base64 <unixmode> <filename>
+			// {@squirreljme.error BD24 MIME encoded does not start with
+			// MIME header.}
+			if (!ln.startsWith("begin-base64"))
+				throw new IOException("BD24");
+			
+			// UNIX mode?
+			int fs = ln.indexOf(' ');
+			if (fs >= 0)
+			{
+				int ss = ln.indexOf(' ', fs + 1);
+				
+				// Decode octal mode bits
+				MIMEFileDecoder.this._mode = Integer.parseInt(
+					ln.substring(fs + 1, (ss < 0 ? ln.length() : ss)), 8);
+				
+				// Filename?
+				if (ss >= 0)
+					MIMEFileDecoder.this._filename =
+						ln.substring(ss + 1);
+			}
+			
+			// Set as read
+			this._didheader = true;
+		}
+		
+		/**
+		 * Reads the next line into the character.
+		 *
+		 * @return If a line was read.
+		 * @throws IOException On read errors.
+		 * @since 2018/11/25
+		 */
+		private final boolean __readNext()
+			throws IOException
+		{
+			// {@squirreljme.error BD25 Unexpected EOF while read the MIME
+			// file data.}
+			String ln = this.in.readLine();
+			if (ln == null)
+				throw new IOException("BD25");
+			
+			// End of MIME data?
+			if (ln.equals("===="))
+			{
+				// Footer was read, so EOF now
+				this._didfooter = true;
+				
+				// Was EOF
+				return false;
+			}
+			
+			// Fill buffer
+			StringBuilder sb = this._sb;
+			sb.setLength(0);
+			sb.append(ln);
+			
+			// Set properties
+			this._at = 0;
+			this._limit = ln.length();
+			
+			// Was not EOF
+			return true;
 		}
 	}
 }
