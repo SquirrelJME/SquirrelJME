@@ -84,7 +84,7 @@ public final class SpringFieldStorage
 			
 				// Should not occur
 			default:
-				throw new RuntimeException("OOPS");
+				throw new todo.OOPS();
 		}
 		
 		// If the field starts with a constant, it must be initialized

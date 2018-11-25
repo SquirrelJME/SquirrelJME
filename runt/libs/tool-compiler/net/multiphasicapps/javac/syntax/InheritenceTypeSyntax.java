@@ -50,7 +50,7 @@ public enum InheritenceTypeSyntax
 				return __n >= 0;
 			
 			default:
-				throw new RuntimeException("OOPS");
+				throw new todo.OOPS();
 		}
 	}
 }

@@ -115,7 +115,7 @@ public final class JavaType
 	{
 		// Check
 		if (__i == 0)
-			throw new RuntimeException("OOPS");
+			throw new todo.OOPS();
 		
 		this._internal = __i;
 		this.type = null;

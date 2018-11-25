@@ -307,7 +307,7 @@ public class Suite
 				
 				// Unknown
 			default:
-				throw new RuntimeException("OOPS");
+				throw new todo.OOPS();
 		}
 	}
 	

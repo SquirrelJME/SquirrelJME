@@ -88,7 +88,7 @@ public enum PixelFormat
 			
 				// Unknown
 			default:
-				throw new RuntimeException("OOPS");
+				throw new todo.OOPS();
 		}
 	}
 	
@@ -204,7 +204,7 @@ public enum PixelFormat
 			
 				// Unknown
 			default:
-				throw new RuntimeException("OOPS");
+				throw new todo.OOPS();
 		}
 	}
 	

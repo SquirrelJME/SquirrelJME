@@ -69,7 +69,7 @@ public enum CompressionLevel
 			case SLOWEST:	return 1024;
 			
 			default:
-				throw new RuntimeException("OOPS");
+				throw new todo.OOPS();
 		}
 	}
 	

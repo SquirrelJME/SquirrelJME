@@ -360,7 +360,7 @@ public class ClassName
 				return new ClassName("double");
 			
 			default:
-				throw new RuntimeException("OOPS");
+				throw new todo.OOPS();
 		}
 	}
 }

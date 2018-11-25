@@ -194,7 +194,7 @@ public final class IBM437CodePage
 			
 				// Should not occur but in case it does
 			default:
-				throw new RuntimeException("OOPS");
+				throw new todo.OOPS();
 		}
 	}
 	

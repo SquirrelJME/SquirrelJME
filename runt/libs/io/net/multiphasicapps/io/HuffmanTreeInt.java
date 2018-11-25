@@ -183,7 +183,7 @@ public class HuffmanTreeInt
 		}
 		
 		// Should not occur
-		throw new RuntimeException("OOPS");
+		throw new todo.OOPS();
 	}
 	
 	/**

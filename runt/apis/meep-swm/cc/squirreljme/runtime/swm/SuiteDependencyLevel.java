@@ -61,7 +61,7 @@ public enum SuiteDependencyLevel
 			case REQUIRED:	return "required";
 			case OPTIONAL:	return "optional";
 			default:
-				throw new RuntimeException("OOPS");
+				throw new todo.OOPS();
 		}
 	}
 	
@@ -88,7 +88,7 @@ public enum SuiteDependencyLevel
 			
 				// Should not happen
 			default:
-				throw new RuntimeException("OOPS");
+				throw new todo.OOPS();
 		}
 	}
 }

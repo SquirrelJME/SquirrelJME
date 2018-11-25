@@ -72,7 +72,7 @@ public enum InnerClassFlag
 			case ENUM:			return 0x4000;
 			
 			default:
-				throw new RuntimeException("OOPS");
+				throw new todo.OOPS();
 		}
 	}
 }

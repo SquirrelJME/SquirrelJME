@@ -27,7 +27,7 @@ public final class Objects
 	 */
 	private Objects()
 	{
-		throw new RuntimeException("OOPS");
+		throw new todo.OOPS();
 	}
 	
 	/**

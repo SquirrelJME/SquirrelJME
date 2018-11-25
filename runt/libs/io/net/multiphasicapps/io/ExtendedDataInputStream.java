@@ -280,7 +280,7 @@ public class ExtendedDataInputStream
 			
 				// Unknown
 			default:
-				throw new RuntimeException("OOPS");
+				throw new todo.OOPS();
 		}
 	}
 	
@@ -327,7 +327,7 @@ public class ExtendedDataInputStream
 			
 				// Unknown
 			default:
-				throw new RuntimeException("OOPS");
+				throw new todo.OOPS();
 		}
 	}
 	
@@ -353,7 +353,7 @@ public class ExtendedDataInputStream
 			
 				// Unknown
 			default:
-				throw new RuntimeException("OOPS");
+				throw new todo.OOPS();
 		}
 	}
 	

@@ -358,7 +358,7 @@ public final class Pool
 					break;
 					
 				default:
-					throw new RuntimeException("OOPS");
+					throw new todo.OOPS();
 			}
 			
 			// Add to order

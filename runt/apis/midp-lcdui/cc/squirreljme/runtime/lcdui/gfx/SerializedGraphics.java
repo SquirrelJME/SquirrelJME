@@ -665,7 +665,7 @@ public abstract class SerializedGraphics
 				return null;
 			
 			default:
-				throw new RuntimeException("OOPS " + __func);
+				throw new todo.OOPS("" + __func);
 		}
 	}
 }

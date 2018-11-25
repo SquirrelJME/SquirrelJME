@@ -110,7 +110,7 @@ abstract class __Widget__
 	 */
 	int __supportBit()
 	{
-		throw new RuntimeException("OOPS " + this.getClass().getName());
+		throw new todo.OOPS(this.getClass().getName());
 	}
 }
 

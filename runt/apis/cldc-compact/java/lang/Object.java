@@ -239,7 +239,7 @@ public class Object
 				
 				// Should not happen
 			default:
-				throw new RuntimeException("OOPS");
+				throw new todo.OOPS();
 		}
 	}
 }

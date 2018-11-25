@@ -127,7 +127,7 @@ public final class ColorInfo
 				throw new RuntimeException(String.format("AF09 %s", pf));
 			
 			default:
-				throw new RuntimeException("OOPS");
+				throw new todo.OOPS();
 		}
 		
 		// Store

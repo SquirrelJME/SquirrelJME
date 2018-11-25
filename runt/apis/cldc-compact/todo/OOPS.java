@@ -30,7 +30,7 @@ public class OOPS
 	 */
 	public OOPS()
 	{
-		this(null);
+		this(null, null);
 	}
 	
 	/**
@@ -39,9 +39,32 @@ public class OOPS
 	 * @param __m The message to use.
 	 * @since 2018/11/25
 	 */
-	public OOPS(Object __m)
+	public OOPS(String __m)
 	{
-		super((__m == null ? null : __m.toString()));
+		this(__m, null);
+	}
+	
+	/**
+	 * Generates an oops with the given cause.
+	 *
+	 * @param __t The cause to use.
+	 * @since 2018/11/25
+	 */
+	public OOPS(Throwable __t)
+	{
+		this(null, __t);
+	}
+	
+	/**
+	 * Generates an oops with the given message and cause.
+	 *
+	 * @param __m The message to use.
+	 * @param __t The cause.
+	 * @since 2018/11/25
+	 */
+	public OOPS(String __m, Throwable __t)
+	{
+		super(__m, __t);
 		
 		// Detect OOPSes/TODOs tripping multiple times and fail
 		boolean doubletripped = TODO._DOUBLE_TRIP;

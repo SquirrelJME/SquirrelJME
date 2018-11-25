@@ -73,7 +73,7 @@ enum __PrintFCategory__
 				return false;
 				
 			default:
-				throw new RuntimeException("OOPS");
+				throw new todo.OOPS();
 		}
 	}
 	

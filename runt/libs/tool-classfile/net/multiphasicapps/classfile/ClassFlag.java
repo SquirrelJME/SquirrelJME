@@ -63,7 +63,7 @@ public enum ClassFlag
 			case ANNOTATION:	return 0x2000;
 			case ENUM:			return 0x4000;
 			default:
-				throw new RuntimeException("OOPS");
+				throw new todo.OOPS();
 		}
 	}
 }

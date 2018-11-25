@@ -114,7 +114,7 @@ public final class MIMEFileDecoder
 			else if (rc == 1)
 				return (next[0] & 0xFF);
 			else
-				throw new RuntimeException("OOPS");
+				throw new todo.OOPS();
 		}
 	}
 	
