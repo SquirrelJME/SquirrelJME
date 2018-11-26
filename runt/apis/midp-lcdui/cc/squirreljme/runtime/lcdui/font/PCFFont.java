@@ -10,6 +10,12 @@
 
 package cc.squirreljme.runtime.lcdui.font;
 
+import java.io.DataInputStream;
+import java.io.InputStream;
+import java.io.IOException;
+import java.util.Set;
+import net.multiphasicapps.collections.SortedTreeSet;
+
 /**
  * This class is capable of reading PCF formatted fonts and reading all of
  * the information from it.
@@ -25,5 +31,126 @@ package cc.squirreljme.runtime.lcdui.font;
  */
 public class PCFFont
 {
+	/**
+	 * Reads the given stream for PCF font information.
+	 *
+	 * @param __in The stream to read from.
+	 * @return The decoded font information.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/25
+	 */
+	public static final PCFFont read(InputStream __in)
+		throws IOException, NullPointerException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		// Need to read in the data!
+		DataInputStream dos = new DataInputStream(__in);
+		
+		// {@squirreljme.error EB2g Invalid PCF magic number.}
+		int magic;
+		if ((magic = dos.readInt()) != 0x01666370)
+			throw new IOException(String.format("EB2g %08x", magic));
+		
+		// Read each table entry, since they have offsets into the file they
+		// could be in any random order which would be bad
+		Set<__PCFFontTable__> tables = new SortedTreeSet<>();
+		int numtables = Integer.reverseBytes(dos.readInt());
+		for (int i = 0; i < numtables; i++)
+			tables.add(new __PCFFontTable__(
+				Integer.reverseBytes(dos.readInt()),
+				Integer.reverseBytes(dos.readInt()),
+				Integer.reverseBytes(dos.readInt()),
+				Integer.reverseBytes(dos.readInt())));
+		
+		// Determine the base position of the read pointer
+		int readptr = 8 + (numtables * 16);
+		
+		// Debug
+		todo.DEBUG.note("Table: %s, ended at %d", tables, readptr);
+		
+		// Go through all table entries and parse them, they will be sorted
+		// by their offset and handled as such
+		for (__PCFFontTable__ te : tables)
+		{
+			// Skip bytes needed to reach the destination
+			int skippy = te._offset - readptr;
+			if (skippy > 0)
+				dos.skipBytes(skippy);
+			
+			// Read in data that makes up this section
+			byte[] data = new byte[te._size];
+			dos.readFully(data);
+			
+			// Handle the data in the section
+			switch (te._type)
+			{
+					// Properties
+				case 1:
+					if (true)
+						throw new todo.TODO();
+					break;
+					
+					// Accelerators
+				case 2:
+					if (true)
+						throw new todo.TODO();
+					break;
+					
+					// Metrics
+				case 4:
+					if (true)
+						throw new todo.TODO();
+					break;
+					
+					// Bitmaps
+				case 8:
+					if (true)
+						throw new todo.TODO();
+					break;
+					
+					// Ink Metrics
+				case 16:
+					if (true)
+						throw new todo.TODO();
+					break;
+					
+					// BDF Encodings
+				case 32:
+					if (true)
+						throw new todo.TODO();
+					break;
+					
+					// SWidths
+				case 64:
+					if (true)
+						throw new todo.TODO();
+					break;
+					
+					// Glyph Names
+				case 128:
+					if (true)
+						throw new todo.TODO();
+					break;
+					
+					// BDF Accelerators
+				case 256:
+					if (true)
+						throw new todo.TODO();
+					break;
+					
+					// {@squirreljme.error EB2l Unknown PCF type. (The type)}
+				default:
+					throw new IOException("EB2l " + te._type);
+			}
+			
+			// Set pointer for next run
+			readptr += skippy;
+		}
+		
+		throw new todo.TODO();
+	}
 }
 
