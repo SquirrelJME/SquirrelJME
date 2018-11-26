@@ -1,0 +1,40 @@
+# 2018/11/25
+
+## 10:19
+
+Okay, so I do not know how to continue with the font stuff. But what I can
+continue with though is reading of the PCF file. I think after that I
+will have a better idea how to do things. So I will develop a midp-lcdui
+test that just reads a font and makes sure it is read and such. It will
+be disguised as a test just for loading the font format.
+
+## 14:07
+
+Before I can decode the PCF format, I need to fix the Base64 decoder because
+it is completely messed up!
+
+## 15:38
+
+Okay so that works, now need to figure out the MIME decoder now. Pretty sure
+I will make this line based with a `BufferedReader` so that way I can kinda
+just more easily handle the logic. Although it would be a bit slower to
+be honest.
+
+## 15:40
+
+Would be a bit slower, but it would be a bit more easier to implement and
+likely a bunch more sane.
+
+## 17:55
+
+Okay that works nicely, so now that I have that I can continue to font
+decoding. But at least all of that decoding stuff is fine now.
+
+## 18:25
+
+Maybe as a side thing I can work on is the SDK for compiling against. I think
+the best route would be to like merge everything as a single project and just
+compile source from it and such. Like make all the APIs in the CLDC libraries
+the classes to be used. Strip all code and everything else from it. So like
+you could not run it, you would need to run it on SquirrelJME itself. This
+would simplify things and such for example.
