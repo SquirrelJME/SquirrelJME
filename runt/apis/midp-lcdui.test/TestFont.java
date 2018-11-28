@@ -53,6 +53,8 @@ public class TestFont
 			catch (Throwable t)
 			{
 				this.secondary(s, t);
+				
+				t.printStackTrace();
 			}
 	}
 }
