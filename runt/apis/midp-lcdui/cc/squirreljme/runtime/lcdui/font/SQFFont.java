@@ -33,6 +33,46 @@ import java.io.IOException;
  */
 public final class SQFFont
 {
+	/** The pixel height of the font. */
+	public final byte pixelheight;
+	
+	/** The descent of the font. */
+	public final byte descent;
+	
+	/** The bytes per scan. */
+	public final byte bytesperscan;
+	
+	/** The character widths. */
+	private final byte[] _charwidths;
+	
+	/** The character bitmap. */
+	private final byte[] _charbmp;
+	
+	/**
+	 * Initializes the SQF Font.
+	 *
+	 * @param __ph The pixel height.
+	 * @param __d The descent.
+	 * @param __bps The bytes per scan.
+	 * @param __cw Character widths.
+	 * @param __bmp The bitmap data.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/27
+	 */
+	private SQFFont(byte __ph, byte __d, byte __bps, byte[] __cw,
+		byte[] __bmp)
+		throws NullPointerException
+	{
+		if (__cw == null || __bmp == null)
+			throw new NullPointerException("NARG");
+		
+		this.pixelheight = __ph;
+		this.descent = __d;
+		this.bytesperscan = __bps;
+		this._charwidths = __cw;
+		this._charbmp = __bmp;
+	}
+	
 	/**
 	 * Reads and returns a SQF Font.
 	 *
