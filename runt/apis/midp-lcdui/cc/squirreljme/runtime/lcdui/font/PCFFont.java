@@ -86,6 +86,10 @@ public class PCFFont
 			if (skippy > 0)
 				dos.skipBytes(skippy);
 			
+			// {@squirreljme.error EB2m Negative skip distance.}
+			else if (skippy < 0)
+				throw new IOException("EB2m");
+			
 			// Read in data that makes up this section
 			byte[] data = new byte[te._size];
 			dos.readFully(data);
