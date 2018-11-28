@@ -8,14 +8,11 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.lcdui.font;
-
 /**
- * This represents a font with contained pixel data.
+ * This package is for the conversion of PCFs to SQFs.
  *
- * @since 2018/11/23
+ * @since 2018/11/27
  */
-public final class PixelFont
-{
-}
+
+package net.multiphasicapps.pcftosqf;
 
