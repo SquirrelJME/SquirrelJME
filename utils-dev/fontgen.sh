@@ -54,17 +54,24 @@ do
 	# Get base name
 	__base="$(basename -- "$__file" .bdf)"
 	
-	# Convert first
-	echo "Converting $__base!"
-	if ! bdftopcf -M -p4 -u1 -t "$__file" | uuencode -m "$__base.pcf" > \
-		"/tmp/$$/ok"
+	# Convert to PCF
+	echo "Converting to PCF: $__base"
+	if ! bdftopcf -M -p4 -u1 -t "$__file" > "/tmp/$$/ok"
 	then
-		echo "Failed to convert $__base!"
+		echo "Failed to convert $__base to PCF!"
 		exit 2
 	fi
 	
-	# Only use valid files
-	mv -vf "/tmp/$$/ok" "$__out/$__base.pcf.__mime"
+	# Convert to SQF
+	echo "Converting to SQF: $__base"
+	if ! "$__exedir/hostedlaunch.sh" "pcf-to-sqf" "/tmp/$$/ok" > "/tmp/$$/ok.2"
+	then
+		echo "Failed to convert $__base to SQF!"
+		exit 3
+	fi
+	
+	# Encode and store the font
+	uuencode -m "$__base.sqf" < "/tmp/$$/ok.2" > "$__out/$__base.sqf.__mime"
 done
 
 # Cleanup
