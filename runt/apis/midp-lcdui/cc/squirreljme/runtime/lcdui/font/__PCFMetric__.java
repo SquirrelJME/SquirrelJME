@@ -136,7 +136,7 @@ final class __PCFMetric__
 		
 		// Are these compressed metrics
 		if (((Integer.reverseBytes(__dis.readInt())) &
-			_PCF_COMPRESSED_METRICS) == 1)
+			_PCF_COMPRESSED_METRICS) != 0)
 		{
 			// Read length
 			int n = __dis.readUnsignedShort();
