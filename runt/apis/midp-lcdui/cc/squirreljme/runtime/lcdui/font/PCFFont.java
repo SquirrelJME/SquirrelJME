@@ -10,6 +10,7 @@
 
 package cc.squirreljme.runtime.lcdui.font;
 
+import java.io.ByteArrayInputStream;	
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
@@ -71,6 +72,9 @@ public class PCFFont
 		// Debug
 		todo.DEBUG.note("Table: %s, ended at %d", tables, readptr);
 		
+		// Parsed fields
+		__PCFProperties__ pcfp = null;
+		
 		// Go through all table entries and parse them, they will be sorted
 		// by their offset and handled as such
 		for (__PCFFontTable__ te : tables)
@@ -89,8 +93,11 @@ public class PCFFont
 			{
 					// Properties
 				case 1:
-					if (true)
-						throw new todo.TODO();
+					try (DataInputStream dis = new DataInputStream(
+						new ByteArrayInputStream(data)))
+					{
+						pcfp = __PCFProperties__.__read(dis);
+					}
 					break;
 					
 					// Accelerators
