@@ -14,6 +14,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 
 /**
  * This contains a single metric within a PCF file.
@@ -22,6 +23,10 @@ import java.lang.ref.WeakReference;
  */
 final class __PCFMetric__
 {
+	/** Compressed metrics format. */
+	static final int _PCF_COMPRESSED_METRICS =
+		0x00000100;
+	
 	/** Left side bearing. */
 	final short _leftsidebearing;
 	
@@ -102,13 +107,65 @@ final class __PCFMetric__
 			throw new NullPointerException("NARG");
 		
 		// All are unsigned bytes with implied attributes of zero
+		// All of the values are offset signed
 		return new __PCFMetric__(
-			(short)__dis.readUnsignedByte(),
-			(short)__dis.readUnsignedByte(),
-			(short)__dis.readUnsignedByte(),
-			(short)__dis.readUnsignedByte(),
-			(short)__dis.readUnsignedByte(),
+			(short)(__dis.readUnsignedByte() - 0x80),
+			(short)(__dis.readUnsignedByte() - 0x80),
+			(short)(__dis.readUnsignedByte() - 0x80),
+			(short)(__dis.readUnsignedByte() - 0x80),
+			(short)(__dis.readUnsignedByte() - 0x80),
 			0);
+	}
+	
+	/**
+	 * Reads the metric table.
+	 *
+	 * @param __dis The stream to read from.
+	 * @return The read metrics.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/27
+	 */
+	static final __PCFMetric__[] __readMetrics(DataInputStream __dis)
+		throws IOException, NullPointerException
+	{
+		if (__dis == null)
+			throw new NullPointerException("NARG");
+		
+		__PCFMetric__[] rv;
+		
+		// Are these compressed metrics
+		if (((Integer.reverseBytes(__dis.readInt())) &
+			_PCF_COMPRESSED_METRICS) == 1)
+		{
+			// Read length
+			int n = __dis.readUnsignedShort();
+			rv = new __PCFMetric__[n];
+			
+			// Read all metrics			
+			for (int i = 0; i < n; i++)
+				rv[i] = __PCFMetric__.__readCompressed(__dis);
+		}
+		
+		// They are uncompressed
+		else
+		{
+			// Read length
+			int n = __dis.readInt();
+			rv = new __PCFMetric__[n];
+			
+			// Read all metrics			
+			for (int i = 0; i < n; i++)
+			{
+				__PCFMetric__ m;
+				
+				rv[i] = (m = __PCFMetric__.__readUncompressed(__dis));
+				
+				todo.DEBUG.note("%d/%d = %s", i, n, m);
+			}
+		}
+		
+		return rv;
 	}
 	
 	/**

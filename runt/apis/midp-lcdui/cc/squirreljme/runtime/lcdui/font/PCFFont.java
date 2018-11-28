@@ -75,6 +75,7 @@ public class PCFFont
 		// Parsed fields
 		__PCFProperties__ pcfp = null;
 		__PCFAccelerators__ pcfaccel = null;
+		__PCFMetric__[] metrics = null;
 		
 		// Go through all table entries and parse them, they will be sorted
 		// by their offset and handled as such
@@ -112,8 +113,11 @@ public class PCFFont
 					
 					// Metrics
 				case 4:
-					if (true)
-						throw new todo.TODO();
+					try (DataInputStream dis = new DataInputStream(
+						new ByteArrayInputStream(data)))
+					{
+						metrics = __PCFMetric__.__readMetrics(dis);
+					}
 					break;
 					
 					// Bitmaps
