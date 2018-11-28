@@ -156,7 +156,7 @@ final class __PCFMetric__
 			
 			// Read all metrics			
 			for (int i = 0; i < n; i++)
-				rv[i] = (m = __PCFMetric__.__readUncompressed(__dis));
+				rv[i] = __PCFMetric__.__readUncompressed(__dis);
 		}
 		
 		// Debug
