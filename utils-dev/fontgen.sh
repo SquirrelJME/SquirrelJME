@@ -64,7 +64,7 @@ do
 	fi
 	
 	# Only use valid files
-	mv -vf "/tmp/$$/ok" "$__out/$__base.pcf.__base64"
+	mv -vf "/tmp/$$/ok" "$__out/$__base.pcf.__mime"
 done
 
 # Cleanup
