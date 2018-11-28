@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.lcdui.font;
+package net.multiphasicapps.pcftosqf;
 
 /**
  * This represents a single table within the PCF.
