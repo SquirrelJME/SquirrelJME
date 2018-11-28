@@ -9,4 +9,5 @@ X-SquirrelJME-Description: This converts PCF font data into SQF fonts
  from within SquirrelJME.
 X-SquirrelJME-Depends: io midp-lcdui
 Microedition-Configuration: CLDC-1.8
+Main-Class: net.multiphasicapps.pcftosqf.Main
 
