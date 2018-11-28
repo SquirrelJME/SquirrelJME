@@ -156,14 +156,11 @@ final class __PCFMetric__
 			
 			// Read all metrics			
 			for (int i = 0; i < n; i++)
-			{
-				__PCFMetric__ m;
-				
 				rv[i] = (m = __PCFMetric__.__readUncompressed(__dis));
-				
-				todo.DEBUG.note("%d/%d = %s", i, n, m);
-			}
 		}
+		
+		// Debug
+		todo.DEBUG.note("Metrics=%s", Arrays.asList(rv));
 		
 		return rv;
 	}
