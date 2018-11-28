@@ -107,7 +107,8 @@ final class __PCFProperties__
 		// Debug
 		todo.DEBUG.note("format=%d, props=%s", format, values);
 		
-		throw new todo.TODO();
+		// Finish properties
+		return new __PCFProperties__(format, values);
 	}
 	
 	/**
