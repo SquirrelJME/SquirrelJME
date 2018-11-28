@@ -169,7 +169,7 @@ public class PCFFont
 			}
 			
 			// Set pointer for next run
-			readptr += skippy;
+			readptr += te._size;
 		}
 		
 		throw new todo.TODO();
