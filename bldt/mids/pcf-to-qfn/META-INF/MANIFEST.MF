@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-UUID: 913f028e-3ecc-4a95-8a6f-0c7b1dc38d16
+X-SquirrelJME-Error: AP
+X-SquirrelJME-Name: PCF to QFN Font Conversion
+X-SquirrelJME-Vendor: Stephanie Gawroriski
+X-SquirrelJME-Version: 0.2.0
+X-SquirrelJME-Description: This converts PCF font data into QFN fonts 
+ which are smaller, simpler, and faster to read than supporting PCF 
+ from within SquirrelJME.
+X-SquirrelJME-Depends: io midp-lcdui
+Microedition-Configuration: CLDC-1.8
+
