@@ -129,8 +129,12 @@ public class PCFFont
 					
 					// Bitmaps
 				case 8:
-					if (true)
-						throw new todo.TODO();
+					try (DataInputStream dis = new DataInputStream(
+						new ByteArrayInputStream(data)))
+					{
+						if (true)
+							throw new todo.TODO();
+					}
 					break;
 					
 					// Ink Metrics
