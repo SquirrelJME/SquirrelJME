@@ -11,7 +11,7 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.lcdui.font.FontSizeConversion;
-import cc.squirreljme.runtime.lcdui.font.PixelFont;
+import cc.squirreljme.runtime.lcdui.font.SQFFont;
 import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;

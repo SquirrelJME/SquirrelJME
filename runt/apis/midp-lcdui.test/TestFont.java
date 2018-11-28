@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-import cc.squirreljme.runtime.lcdui.font.PCFFont;
+import cc.squirreljme.runtime.lcdui.font.SQFFont;
 import java.io.InputStream;
 import net.multiphasicapps.tac.TestRunnable;
 
@@ -23,15 +23,15 @@ public class TestFont
 	/** The fonts to test reading. */
 	private static final String[] _FONTS =
 		{
-			"monospace-8.pcf",
-			"monospace-16.pcf",
-			"monospace-24.pcf",
-			"sansserif-8.pcf",
-			"sansserif-16.pcf",
-			"sansserif-24.pcf",
-			"serif-8.pcf",
-			"serif-16.pcf",
-			"serif-24.pcf",
+			"monospace-8.sqf",
+			"monospace-16.sqf",
+			"monospace-24.sqf",
+			"sansserif-8.sqf",
+			"sansserif-16.sqf",
+			"sansserif-24.sqf",
+			"serif-8.sqf",
+			"serif-16.sqf",
+			"serif-24.sqf",
 		};
 	
 	/**
@@ -42,10 +42,10 @@ public class TestFont
 	public void test()
 	{
 		for (String s : _FONTS)
-			try (InputStream in = PCFFont.class.getResourceAsStream(s))
+			try (InputStream in = SQFFont.class.getResourceAsStream(s))
 			{
 				// Try to read
-				PCFFont f = PCFFont.read(in);
+				SQFFont f = SQFFont.read(in);
 				
 				// Did read
 				this.secondary(s, true);
