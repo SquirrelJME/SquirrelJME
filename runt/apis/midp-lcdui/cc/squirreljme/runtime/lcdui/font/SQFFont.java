@@ -23,10 +23,10 @@ import java.io.IOException;
  * their width can differ.
  *
  * The font is in the following format:
- *  - uint8 pixelheight.
- *  - uint8 descent.
- *  - uint8 bytesperscan (The number of bytes per scanline).
- *  - uint8[256] charwidths.
+ *  - int8 pixelheight.
+ *  - int8 descent.
+ *  - int8 bytesperscan (The number of bytes per scanline).
+ *  - int8[256] charwidths.
  *  - uint[256 * bytesperscan * pixelheight] charbmp.
  *
  * @since 2018/11/27
@@ -88,7 +88,25 @@ public final class SQFFont
 		if (__in == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Makes it easier to handle things
+		DataInputStream dis = new DataInputStream(__in);
+		
+		// Read fields
+		byte pixelheight = dis.readByte(),
+			descent = dis.readByte(),
+			bytesperscan = dis.readByte();
+		
+		// Read the widths
+		byte[] charwidths = new byte[256];
+		dis.readFully(charwidths);
+		
+		// Read the bitmaps
+		byte[] charbmp = new byte[256 * bytesperscan * pixelheight];
+		dis.readFully(charbmp);
+		
+		// Build font
+		return new SQFFont(pixelheight, descent, bytesperscan,
+			charwidths, charbmp);
 	}
 }
 
