@@ -43,11 +43,12 @@ do
 	fi
 done
 
-# Convert to PCFs which would be easier to handle, since integers are best way
-# to handle things (since Java is naturally in ints), all fonts are treated
-# as a bunch of ints! This allows the font data to just be read as quickly as
-# needed be. Since Java is in big endian, the compiled font is in big endian
-# format.
+# Convert to PCFs which are optimized in the given format:
+#  * BIG ENDIAN
+#  * PADDED TO INT
+#  * DATA REPRESENTED AS BYTE
+#  * MAKE EVERY CHARACTER THE SAME WIDTH RATHER THAN VARIABLE WIDTH
+#    (TERMINAL FONT MODE, IF POSSIBLE)
 for __file in "/tmp/$$/"*.bdf
 do
 	# Get base name
@@ -55,7 +56,7 @@ do
 	
 	# Convert first
 	echo "Converting $__base!"
-	if ! bdftopcf -p4 -u4 -M "$__file" | uuencode -m "$__base.pcf" > \
+	if ! bdftopcf -M -p4 -u1 -t "$__file" | uuencode -m "$__base.pcf" > \
 		"/tmp/$$/ok"
 	then
 		echo "Failed to convert $__base!"
