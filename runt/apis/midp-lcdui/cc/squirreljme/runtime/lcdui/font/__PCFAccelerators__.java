@@ -12,6 +12,8 @@ package cc.squirreljme.runtime.lcdui.font;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 
 /**
  * This represents the accelerator table found in PCF fonts, just general
@@ -70,6 +72,9 @@ final class __PCFAccelerators__
 	/** Maximum ink bounds, is optional. */
 	final __PCFMetric__ _inkmaxbounds;
 	
+	/** String representation. */
+	private Reference<String> _string;
+	
 	/**
 	 * Initializes the accelerators.
 	 *
@@ -118,6 +123,52 @@ final class __PCFAccelerators__
 		this._maxbounds = __maxbounds;
 		this._inkminbounds = __inkminbounds;
 		this._inkmaxbounds = __inkmaxbounds;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/11/27
+	 */
+	@Override
+	public final String toString()
+	{
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>((rv = String.format("{" +
+				"_format=%x, " +
+				"_nooverlap=%s, " +
+				"_constantmetrics=%s, " +
+				"_terminalfont=%s, " +
+				"_constantwidth=%s, " +
+				"_inkinside=%s, " +
+				"_inkmetrics=%s, " +
+				"_drawdirection=%s, " +
+				"_ascent=%s, " +
+				"_descent=%s, " +
+				"_maxoverlap=%s, " +
+				"_minbounds=%s, " +
+				"_maxbounds=%s, " +
+				"_inkminbounds=%s, " +
+				"_inkmaxbounds=%s" +
+				"}", this._format,
+				this._nooverlap,
+				this._constantmetrics,
+				this._terminalfont,
+				this._constantwidth,
+				this._inkinside,
+				this._inkmetrics,
+				this._drawdirection,
+				this._ascent,
+				this._descent,
+				this._maxoverlap,
+				this._minbounds,
+				this._maxbounds,
+				this._inkminbounds,
+				this._inkmaxbounds)));
+		
+		return rv;
 	}
 	
 	/**

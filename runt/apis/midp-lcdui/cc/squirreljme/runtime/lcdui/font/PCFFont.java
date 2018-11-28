@@ -112,6 +112,9 @@ public class PCFFont
 						new ByteArrayInputStream(data)))
 					{
 						pcfaccel = __PCFAccelerators__.__read(dis);
+						
+						// Debug
+						todo.DEBUG.note("Accelerators -- %s", pcfaccel);
 					}
 					break;
 					
