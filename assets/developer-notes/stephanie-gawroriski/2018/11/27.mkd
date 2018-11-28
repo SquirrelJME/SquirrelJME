@@ -1,0 +1,20 @@
+# 2018/11/27
+
+## 22:28
+
+PCF data was not being read correctly, but I was incrementing the read pointer
+by the wrong amount (the offset and not the size).
+
+## 22:53
+
+Parsing some of the files, it just seems that the font data is going to be
+wasted for the most part. Like there are properties, other things and such. I
+think it would be best to just load the font, then draw something much simpler
+like a basic bitmap table of bytes or similar. Since much of the information
+is going to be dropped by SquirrelJME anyway. I think what is needed is a
+basic ascent and descent (in pixels). Each glyph would have its width in
+pixels (just a byte) then there would be the actual pixel data and such. That
+would be the fastest and simplest to load, would use the least amount of
+memory. Otherwise weaker systems are just going to stall heavily on font
+stuff. Everything can be pretty much enforced ISO that I use already. I think
+it is ISO-8859-15.
