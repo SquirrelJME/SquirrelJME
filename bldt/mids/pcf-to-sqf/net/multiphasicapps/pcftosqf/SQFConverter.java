@@ -37,7 +37,7 @@ public class SQFConverter
 		new byte[256];
 	
 	/** Character to glyph index. */
-	private final Map<Character, Integer> _chartoglyph;
+	private final Map<Integer, Integer> _chartoglyph;
 	
 	/**
 	 * Initializes the converter
@@ -67,17 +67,36 @@ public class SQFConverter
 		
 		// Map characters to glyph indexes, that way we can quickly find
 		// them as such
-		Map<Character, Integer> chartoglyph = new HashMap<>();
+		Map<Integer, Integer> chartoglyph = new HashMap<>();
 		for (Map.Entry<Integer, String> e : __pcf.glyphnames.names.
 			entrySet())
 		{
 			int ch = GlyphNames.toChar(e.getValue());
 			if (ch >= 0)
-				chartoglyph.put((char)ch, e.getKey());
+				chartoglyph.put(ch, e.getKey());
 		}
 		
 		// Store
 		this._chartoglyph = chartoglyph;
+		
+		// Obtain all the widths
+		byte[] charwidths = this._charwidths;
+		for (int i = 0; i < 256; i++)
+		{
+			// No glyph here, ignore
+			if (!chartoglyph.containsKey(i))
+				continue;
+			
+			// Get the index
+			int pcfdx = chartoglyph.get(i);
+			
+			// Extract the width
+			int cw = __pcf.metrics.get(pcfdx).charwidth;
+			charwidths[i] = (byte)cw;
+			
+			// Debug
+			todo.DEBUG.note("%02x.width=%d", i, cw);
+		}
 	}
 	
 	/**
