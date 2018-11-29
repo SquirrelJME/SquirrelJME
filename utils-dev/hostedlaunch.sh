@@ -127,11 +127,6 @@ __gen_classpath()
 	echo "$__rv"
 }
 
-if [ "$__numb" = "-1" ]
-then
-	echo
-fi
-
 # Run the JVM with the bootstrap followed
 __main="$("$__exedir/mainclass.sh" "$__run")"
 "$__javacmd" -classpath "$(__gen_classpath "$__run")" \
