@@ -87,6 +87,9 @@ public final class Font
 	private static final int _DEFAULT_FONT_SIZE =
 		16;
 	
+	/** SQF font data. */
+	private final SQFFont _sqf;
+	
 	/** The name of this font. */
 	private final String _name;
 	
@@ -113,6 +116,9 @@ public final class Font
 		this._name = __n;
 		this._style = __st;
 		this._pixelsize = __px;
+		
+		// Load SQF
+		this._sqf = SQFFont.cacheFont(__n + "-" + __px + ".sqf");
 	}
 	
 	/**
