@@ -13,6 +13,8 @@ package cc.squirreljme.runtime.lcdui.font;
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This represents a SQF Font (SquirrelJME Font) which is a compacted and
@@ -34,6 +36,10 @@ import java.io.IOException;
  */
 public final class SQFFont
 {
+	/** SQF Font data. */
+	private static final Map<String, SQFFont> _FONT_CACHE =
+		new HashMap<>();
+	
 	/** The pixel height of the font. */
 	public final byte pixelheight;
 	
@@ -77,6 +83,59 @@ public final class SQFFont
 		this._charwidths = __cw;
 		this._isvalidchar = __ivc;
 		this._charbmp = __bmp;
+	}
+	
+	/**
+	 * Caches the SQF font.
+	 *
+	 * @param __n The name of the font.
+	 * @return The font.
+	 * @throws IllegalArgumentException If the font does not exist or is not
+	 * valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/29
+	 */
+	public static final SQFFont cacheFont(String __n)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__n == null)
+			throw new NullPointerException("NARG");	
+		
+		Map<String, SQFFont> cache = _FONT_CACHE;
+		synchronized (cache)
+		{
+			// Already cached?
+			SQFFont rv = cache.get(__n);
+			if (rv != null)
+				return rv;
+			
+			// Read the SQF Font
+			try (InputStream in = SQFFont.class.getResourceAsStream(__n))
+			{
+				// {@squirreljme.error EB2l The font does not exist.
+				// (The name)}
+				if (in == null)
+					throw new IllegalArgumentException(
+						String.format("EB2l %s", __n));
+				
+				// Read font data
+				rv = SQFFont.read(in);
+				
+				// Cache the data
+				cache.put(__n, rv);
+			}
+			
+			// {@squirreljme.error EB2m Could not load the font data.
+			// (The name)}
+			catch (IOException e)
+			{
+				throw new IllegalArgumentException(
+					String.format("EB2m %s", __n), e);
+			}
+			
+			// Use it!
+			return rv;
+		}
 	}
 	
 	/**
