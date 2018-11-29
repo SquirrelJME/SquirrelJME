@@ -53,6 +53,19 @@ public final class PCFBitmap
 		this.numglyphs = __numglyphs;
 		this._offsets = __offsets.clone();
 		this._data = __data.clone();
+		
+		// Debug
+		StringBuilder sb = new StringBuilder();
+		for (int j = 0, n = __data.length; j < n; j++)
+		{
+			sb.setLength(0);
+			
+			byte b = __data[j];
+			for (int i = 7; i >= 0; i--)
+				sb.append(((b & (1 << i)) != 0 ? '#' : '.'));
+			
+			todo.DEBUG.note("%04d: %s", j, sb);
+		}
 	}
 	
 	/**
