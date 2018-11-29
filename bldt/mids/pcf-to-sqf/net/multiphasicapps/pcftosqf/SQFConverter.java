@@ -230,6 +230,9 @@ public class SQFConverter
 			__os.write((b ? 1 : 0));
 		
 		__os.write(bitmap);
+		
+		// Flush because this might be a buffered output
+		__os.flush();
 	}
 }
 
