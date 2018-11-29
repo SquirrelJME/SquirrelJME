@@ -62,6 +62,7 @@ public class Main
 		
 		// Write output SQF
 		System.out.write(sqf);
+		System.out.flush();
 	}
 }
 
