@@ -202,7 +202,7 @@ public class SQFConverter
 				{
 					// If we are not setting the bit or it is outside of
 					// the bounds ignore
-					if ((sub & (i << sdx)) == 0 ||
+					if ((sub & (1 << sdx)) == 0 ||
 						px < 0 || px >= bitsperscan ||
 						py < 0 || py >= pixelheight)
 					{
