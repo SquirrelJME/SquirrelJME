@@ -32,9 +32,15 @@ public class SQFConverter
 	/** The descent of the font. */
 	protected final int descent;
 	
+	/** Bytes per scan. */
+	protected final int bytesperscan;
+	
 	/** The character widths. */
 	private final byte[] _charwidths =
 		new byte[256];
+	
+	/** Bitmap data. */
+	private final byte[] _bitmap;
 	
 	/** Character to glyph index. */
 	private final Map<Integer, Integer> _chartoglyph;
@@ -57,13 +63,14 @@ public class SQFConverter
 		
 		// Extract properties
 		int ascent = __pcf.accelerators.ascent,
-			descent = __pcf.accelerators.descent;
+			descent = __pcf.accelerators.descent,
+			pixelheight = ascent + descent;
 		this.descent = descent;
-		this.pixelheight = ascent + descent;
+		this.pixelheight = pixelheight;
 		
 		// Debug
 		todo.DEBUG.note("Asc + Des = PxH: %d + %d = %d",
-			ascent, descent, this.pixelheight);
+			ascent, descent, pixelheight);
 		
 		// Map characters to glyph indexes, that way we can quickly find
 		// them as such
@@ -80,6 +87,7 @@ public class SQFConverter
 		this._chartoglyph = chartoglyph;
 		
 		// Obtain all the widths
+		int maxwidth = 0;
 		byte[] charwidths = this._charwidths;
 		for (int i = 0; i < 256; i++)
 		{
@@ -94,9 +102,17 @@ public class SQFConverter
 			int cw = __pcf.metrics.get(pcfdx).charwidth;
 			charwidths[i] = (byte)cw;
 			
-			// Debug
-			todo.DEBUG.note("%02x.width=%d", i, cw);
+			// Use greater width
+			if (cw > maxwidth)
+				maxwidth = cw;
 		}
+		
+		// Bytes per scanline
+		int bytesperscan = ((maxwidth - 1) / 8) + 1;
+		this.bytesperscan = bytesperscan;
+		
+		// Setup bitmap
+		this._bitmap = new byte[256 * bytesperscan * pixelheight];
 	}
 	
 	/**
@@ -115,15 +131,14 @@ public class SQFConverter
 		
 		// Get basic details
 		int descent = this.descent,
-			pixelheight = this.pixelheight;
+			pixelheight = this.pixelheight,
+			bytesperscan = this.bytesperscan;
 		
-		// Go through every character and determine how long each character
-		// is, this way we can determine the bytes per scan
-		int maxwidth = 0;
+		// Needed to build character data
 		byte[] charwidths = this._charwidths;
+		byte[] bitmap = this._bitmap;
 		
-		// Calculate and draw the glyph data
-		int bytesperscan = 0;
+		// Draw glyphs
 		if (true)
 			throw new todo.TODO();
 		
@@ -131,9 +146,8 @@ public class SQFConverter
 		__os.write(pixelheight);
 		__os.write(descent);
 		__os.write(bytesperscan);
-		__os.write(this._charwidths);
-		
-		throw new todo.TODO();
+		__os.write(charwidths);
+		__os.write(bitmap);
 	}
 }
 
