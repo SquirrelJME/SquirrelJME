@@ -14,8 +14,11 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import net.multiphasicapps.collections.SortedTreeSet;
+import net.multiphasicapps.collections.UnmodifiableList;
 
 /**
  * This class is capable of reading PCF formatted fonts and reading all of
@@ -32,6 +35,60 @@ import net.multiphasicapps.collections.SortedTreeSet;
  */
 public class PCFFont
 {
+	/** Properties. */
+	public final PCFProperties properties;
+	
+	/** Accelerators. */
+	public final PCFAccelerators accelerators;
+	
+	/** Metrics. */
+	public final List<PCFMetric> metrics;
+	
+	/** Bitmap. */
+	public final PCFBitmap bitmap;
+	
+	/** Encoding. */
+	public final PCFEncoding encoding;
+	
+	/** Scalable widths. */
+	public final PCFScalableWidths scalablewidths;
+	
+	/** The glyph names. */
+	public final PCFGlyphNames glyphnames;
+	
+	/**
+	 * Initializes the font.
+	 *
+	 * @param __properties 
+	 * @param __accelerators 
+	 * @param __metrics 
+	 * @param __bitmap 
+	 * @param __encoding 
+	 * @param __scalablewidths 
+	 * @param __glyphnames 
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/28
+	 */
+	public PCFFont(PCFProperties __properties, PCFAccelerators __accelerators,
+		PCFMetric[] __metrics, PCFBitmap __bitmap, PCFEncoding __encoding,
+		PCFScalableWidths __scalablewidths, PCFGlyphNames __glyphnames)
+		throws NullPointerException
+	{
+		if (__properties == null || __accelerators == null ||
+			__metrics == null || __bitmap == null || __encoding == null ||
+			__scalablewidths == null || __glyphnames == null)
+			throw new NullPointerException("NARG");
+		
+		this.properties = __properties;
+		this.accelerators = __accelerators;
+		this.metrics = UnmodifiableList.<PCFMetric>of(
+			Arrays.<PCFMetric>asList(__metrics.clone()));
+		this.bitmap = __bitmap;
+		this.encoding = __encoding;
+		this.scalablewidths = __scalablewidths;
+		this.glyphnames = __glyphnames;
+	}
+	
 	/**
 	 * Reads the given stream for PCF font information.
 	 *
@@ -213,7 +270,9 @@ public class PCFFont
 			readptr += te.size;
 		}
 		
-		throw new todo.TODO();
+		// Build font
+		return new PCFFont(pcfp, pcfaccel, metrics, bitmap,
+			encoding, scalablewidths, glyphnames);
 	}
 }
 
