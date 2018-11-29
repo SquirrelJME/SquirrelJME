@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.pcftosqf;
+package net.multiphasicapps.pcftosqf.pcf;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -22,13 +22,13 @@ import net.multiphasicapps.collections.UnmodifiableMap;
  *
  * @since 2018/11/27
  */
-final class __PCFProperties__
+public final class PCFProperties
 {
 	/** The format of the event table. */
-	final int _format;
+	public final int format;
 	
 	/** Values within the table. */
-	final Map<String, Object> _values;
+	public final Map<String, Object> values;
 	
 	/**
 	 * Initializes the properties.
@@ -38,14 +38,14 @@ final class __PCFProperties__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/27
 	 */
-	private __PCFProperties__(int __f, Map<String, Object> __v)
+	private PCFProperties(int __f, Map<String, Object> __v)
 		throws NullPointerException
 	{
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		this._format = __f;
-		this._values = __v;
+		this.format = __f;
+		this.values = UnmodifiableMap.<String, Object>of(__v);
 	}
 	
 	/**
@@ -57,7 +57,7 @@ final class __PCFProperties__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/27
 	 */
-	static final __PCFProperties__ __read(DataInputStream __dis)
+	public static final PCFProperties read(DataInputStream __dis)
 		throws IOException, NullPointerException
 	{
 		if (__dis == null)
@@ -97,18 +97,18 @@ final class __PCFProperties__
 		Map<String, Object> values = new HashMap<>();
 		for (int i = 0; i < nprops; i++)
 		{
-			String key = __PCFProperties__.__readString(sschars, pnameoff[i]);
+			String key = PCFProperties.__readString(sschars, pnameoff[i]);
 			
 			// Store a value into map
 			values.put(key, (!pisstr[i] ? Integer.valueOf(pvalue[i]) :
-				__PCFProperties__.__readString(sschars, pvalue[i])));
+				PCFProperties.__readString(sschars, pvalue[i])));
 		}
 		
 		// Debug
 		todo.DEBUG.note("format=%d, props=%s", format, values);
 		
 		// Finish properties
-		return new __PCFProperties__(format, values);
+		return new PCFProperties(format, values);
 	}
 	
 	/**

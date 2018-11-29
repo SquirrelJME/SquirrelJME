@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.pcftosqf;
+package net.multiphasicapps.pcftosqf.pcf;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -21,56 +21,56 @@ import java.lang.ref.WeakReference;
  *
  * @since 2018/11/27
  */
-final class __PCFAccelerators__
+public final class PCFAccelerators
 {
 	/** Accelerators with ink bounds. */
 	static final int _PCF_ACCEL_W_INKBOUNDS =
 		0x00000100;
 	
 	/** The format. */
-	final int _format;
+	public final int format;
 	
 	/** No overlap? */
-	final boolean _nooverlap;
+	public final boolean nooverlap;
 	
 	/** Constant metrics? */
-	final boolean _constantmetrics;
+	public final boolean constantmetrics;
 	
 	/** Terminal font? */
-	final boolean _terminalfont;
+	public final boolean terminalfont;
 	
 	/** Constant width? */
-	final boolean _constantwidth;
+	public final boolean constantwidth;
 	
 	/** Ink inside the bounds? */
-	final boolean _inkinside;
+	public final boolean inkinside;
 	
 	/** Do the ink metrics differ ever? */
-	final boolean _inkmetrics;
+	public final boolean inkmetrics;
 	
 	/** Draw direction, false=LTR, true=RTL. */
-	final boolean _drawdirection;
+	public final boolean drawdirection;
 	
 	/** Ascent. */
-	final int _ascent;
+	public final int ascent;
 	
 	/** Descent. */
-	final int _descent;
+	public final int descent;
 	
 	/** Maximum overlap. */
-	final int _maxoverlap;
+	public final int maxoverlap;
 	
 	/** Minimum bounds. */
-	final __PCFMetric__ _minbounds;
+	public final PCFMetric minbounds;
 	
 	/** Maximum bounds. */
-	final __PCFMetric__ _maxbounds;
+	public final PCFMetric maxbounds;
 	
 	/** Minimum ink bounds, is optional. */
-	final __PCFMetric__ _inkminbounds;
+	public final PCFMetric inkminbounds;
 	
 	/** Maximum ink bounds, is optional. */
-	final __PCFMetric__ _inkmaxbounds;
+	public final PCFMetric inkmaxbounds;
 	
 	/** String representation. */
 	private Reference<String> _string;
@@ -97,32 +97,32 @@ final class __PCFAccelerators__
 	 * specified.
 	 * @since 2018/11/27
 	 */
-	__PCFAccelerators__(int __format, boolean __nooverlap,
+	PCFAccelerators(int __format, boolean __nooverlap,
 		boolean __constantmetrics, boolean __terminalfont,
 		boolean __constantwidth, boolean __inkinside, boolean __inkmetrics,
 		boolean __drawdirection, int __ascent, int __descent, int __maxoverlap,
-		__PCFMetric__ __minbounds, __PCFMetric__ __maxbounds,
-		__PCFMetric__ __inkminbounds, __PCFMetric__ __inkmaxbounds)
+		PCFMetric __minbounds, PCFMetric __maxbounds,
+		PCFMetric __inkminbounds, PCFMetric __inkmaxbounds)
 		throws NullPointerException
 	{
 		if (__minbounds == null || __maxbounds == null)
 			throw new NullPointerException("NARG");
 		
-		this._format = __format;
-		this._nooverlap = __nooverlap;
-		this._constantmetrics = __constantmetrics;
-		this._terminalfont = __terminalfont;
-		this._constantwidth = __constantwidth;
-		this._inkinside = __inkinside;
-		this._inkmetrics = __inkmetrics;
-		this._drawdirection = __drawdirection;
-		this._ascent = __ascent;
-		this._descent = __descent;
-		this._maxoverlap = __maxoverlap;
-		this._minbounds = __minbounds;
-		this._maxbounds = __maxbounds;
-		this._inkminbounds = __inkminbounds;
-		this._inkmaxbounds = __inkmaxbounds;
+		this.format = __format;
+		this.nooverlap = __nooverlap;
+		this.constantmetrics = __constantmetrics;
+		this.terminalfont = __terminalfont;
+		this.constantwidth = __constantwidth;
+		this.inkinside = __inkinside;
+		this.inkmetrics = __inkmetrics;
+		this.drawdirection = __drawdirection;
+		this.ascent = __ascent;
+		this.descent = __descent;
+		this.maxoverlap = __maxoverlap;
+		this.minbounds = __minbounds;
+		this.maxbounds = __maxbounds;
+		this.inkminbounds = __inkminbounds;
+		this.inkmaxbounds = __inkmaxbounds;
 	}
 	
 	/**
@@ -137,36 +137,36 @@ final class __PCFAccelerators__
 		
 		if (ref == null || null == (rv = ref.get()))
 			this._string = new WeakReference<>((rv = String.format("{" +
-				"_format=%x, " +
-				"_nooverlap=%s, " +
-				"_constantmetrics=%s, " +
-				"_terminalfont=%s, " +
-				"_constantwidth=%s, " +
-				"_inkinside=%s, " +
-				"_inkmetrics=%s, " +
-				"_drawdirection=%s, " +
-				"_ascent=%s, " +
-				"_descent=%s, " +
-				"_maxoverlap=%s, " +
-				"_minbounds=%s, " +
-				"_maxbounds=%s, " +
-				"_inkminbounds=%s, " +
-				"_inkmaxbounds=%s" +
-				"}", this._format,
-				this._nooverlap,
-				this._constantmetrics,
-				this._terminalfont,
-				this._constantwidth,
-				this._inkinside,
-				this._inkmetrics,
-				this._drawdirection,
-				this._ascent,
-				this._descent,
-				this._maxoverlap,
-				this._minbounds,
-				this._maxbounds,
-				this._inkminbounds,
-				this._inkmaxbounds)));
+				"format=%x, " +
+				"nooverlap=%s, " +
+				"constantmetrics=%s, " +
+				"terminalfont=%s, " +
+				"constantwidth=%s, " +
+				"inkinside=%s, " +
+				"inkmetrics=%s, " +
+				"drawdirection=%s, " +
+				"ascent=%s, " +
+				"descent=%s, " +
+				"maxoverlap=%s, " +
+				"minbounds=%s, " +
+				"maxbounds=%s, " +
+				"inkminbounds=%s, " +
+				"inkmaxbounds=%s" +
+				"}", this.format,
+				this.nooverlap,
+				this.constantmetrics,
+				this.terminalfont,
+				this.constantwidth,
+				this.inkinside,
+				this.inkmetrics,
+				this.drawdirection,
+				this.ascent,
+				this.descent,
+				this.maxoverlap,
+				this.minbounds,
+				this.maxbounds,
+				this.inkminbounds,
+				this.inkmaxbounds)));
 		
 		return rv;
 	}
@@ -180,7 +180,7 @@ final class __PCFAccelerators__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/27
 	 */
-	static final __PCFAccelerators__ __read(DataInputStream __dis)
+	public static final PCFAccelerators read(DataInputStream __dis)
 		throws IOException, NullPointerException
 	{
 		if (__dis == null)
@@ -207,19 +207,19 @@ final class __PCFAccelerators__
 		int maxoverlap = __dis.readInt();
 		
 		// Read minimum and maximum bounds
-		__PCFMetric__ minbounds = __PCFMetric__.__readUncompressed(__dis);
-		__PCFMetric__ maxbounds = __PCFMetric__.__readUncompressed(__dis);
+		PCFMetric minbounds = PCFMetric.readUncompressed(__dis);
+		PCFMetric maxbounds = PCFMetric.readUncompressed(__dis);
 		
 		// These are optional only if the given format is used
-		__PCFMetric__ inkminbounds = null,
+		PCFMetric inkminbounds = null,
 			inkmaxbounds = null;
 		if ((format & _PCF_ACCEL_W_INKBOUNDS) != 0)
 		{
-			inkminbounds = __PCFMetric__.__readUncompressed(__dis);
-			inkmaxbounds = __PCFMetric__.__readUncompressed(__dis);
+			inkminbounds = PCFMetric.readUncompressed(__dis);
+			inkmaxbounds = PCFMetric.readUncompressed(__dis);
 		}
 		
-		return new __PCFAccelerators__(format, nooverlap, constantmetrics,
+		return new PCFAccelerators(format, nooverlap, constantmetrics,
 			terminalfont, constantwidth, inkinside, inkmetrics, drawdirection,
 			ascent, descent, maxoverlap, minbounds, maxbounds, inkminbounds,
 			inkmaxbounds);

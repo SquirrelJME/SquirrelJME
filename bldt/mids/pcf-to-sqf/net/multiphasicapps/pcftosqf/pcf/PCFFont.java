@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.pcftosqf;
+package net.multiphasicapps.pcftosqf.pcf;
 
 import java.io.ByteArrayInputStream;	
 import java.io.DataInputStream;
@@ -57,10 +57,10 @@ public class PCFFont
 		
 		// Read each table entry, since they have offsets into the file they
 		// could be in any random order which would be bad
-		Set<__PCFFontTable__> tables = new SortedTreeSet<>();
+		Set<PCFTableEntry> tables = new SortedTreeSet<>();
 		int numtables = Integer.reverseBytes(dos.readInt());
 		for (int i = 0; i < numtables; i++)
-			tables.add(new __PCFFontTable__(
+			tables.add(new PCFTableEntry(
 				Integer.reverseBytes(dos.readInt()),
 				Integer.reverseBytes(dos.readInt()),
 				Integer.reverseBytes(dos.readInt()),
@@ -73,16 +73,16 @@ public class PCFFont
 		todo.DEBUG.note("Table: %s, ended at %d", tables, readptr);
 		
 		// Parsed fields
-		__PCFProperties__ pcfp = null;
-		__PCFAccelerators__ pcfaccel = null;
-		__PCFMetric__[] metrics = null;
+		PCFProperties pcfp = null;
+		PCFAccelerators pcfaccel = null;
+		PCFMetric[] metrics = null;
 		
 		// Go through all table entries and parse them, they will be sorted
 		// by their offset and handled as such
-		for (__PCFFontTable__ te : tables)
+		for (PCFTableEntry te : tables)
 		{
 			// Skip bytes needed to reach the destination
-			int skippy = te._offset - readptr;
+			int skippy = te.offset - readptr;
 			if (skippy > 0)
 				dos.skipBytes(skippy);
 			
@@ -91,18 +91,18 @@ public class PCFFont
 				throw new IOException("EB2m");
 			
 			// Read in data that makes up this section
-			byte[] data = new byte[te._size];
+			byte[] data = new byte[te.size];
 			dos.readFully(data);
 			
 			// Handle the data in the section
-			switch (te._type)
+			switch (te.type)
 			{
 					// Properties
 				case 1:
 					try (DataInputStream dis = new DataInputStream(
 						new ByteArrayInputStream(data)))
 					{
-						pcfp = __PCFProperties__.__read(dis);
+						pcfp = PCFProperties.read(dis);
 					}
 					break;
 					
@@ -111,7 +111,7 @@ public class PCFFont
 					try (DataInputStream dis = new DataInputStream(
 						new ByteArrayInputStream(data)))
 					{
-						pcfaccel = __PCFAccelerators__.__read(dis);
+						pcfaccel = PCFAccelerators.read(dis);
 						
 						// Debug
 						todo.DEBUG.note("Accelerators -- %s", pcfaccel);
@@ -123,7 +123,7 @@ public class PCFFont
 					try (DataInputStream dis = new DataInputStream(
 						new ByteArrayInputStream(data)))
 					{
-						metrics = __PCFMetric__.__readMetrics(dis);
+						metrics = PCFMetric.readMetrics(dis);
 					}
 					break;
 					
@@ -169,11 +169,11 @@ public class PCFFont
 					
 					// {@squirreljme.error EB2l Unknown PCF type. (The type)}
 				default:
-					throw new IOException("EB2l " + te._type);
+					throw new IOException("EB2l " + te.type);
 			}
 			
 			// Set pointer for next run
-			readptr += te._size;
+			readptr += te.size;
 		}
 		
 		throw new todo.TODO();

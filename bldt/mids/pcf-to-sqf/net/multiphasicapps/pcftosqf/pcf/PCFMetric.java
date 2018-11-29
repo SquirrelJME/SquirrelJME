@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.pcftosqf;
+package net.multiphasicapps.pcftosqf.pcf;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -21,29 +21,29 @@ import java.util.Arrays;
  *
  * @since 2018/11/27
  */
-final class __PCFMetric__
+public final class PCFMetric
 {
 	/** Compressed metrics format. */
 	static final int _PCF_COMPRESSED_METRICS =
 		0x00000100;
 	
 	/** Left side bearing. */
-	final short _leftsidebearing;
+	public final short leftsidebearing;
 	
 	/** Right side bearing. */
-	final short _rightsidebearing;
+	public final short rightsidebearing;
 	
 	/** Character width. */
-	final short _charwidth;
+	public final short charwidth;
 	
 	/** Character ascent. */
-	final short _charascent;
+	public final short charascent;
 	
 	/** Character descent. */
-	final short _chardescent;
+	public final short chardescent;
 	
 	/** Character attributes. */
-	final int _attributes;
+	public final int attributes;
 	
 	/** String representation. */
 	private Reference<String> _string;
@@ -59,15 +59,15 @@ final class __PCFMetric__
 	 * @param __a Attributes.
 	 * @since 2018/11/27
 	 */
-	__PCFMetric__(short __lsb, short __rsb, short __cw, short __ca,
+	PCFMetric(short __lsb, short __rsb, short __cw, short __ca,
 		short __cd, int __a)
 	{
-		this._leftsidebearing = __lsb;
-		this._rightsidebearing = __rsb;
-		this._charwidth = __cw;
-		this._charascent = __ca;
-		this._chardescent = __cd;
-		this._attributes = __a;
+		this.leftsidebearing = __lsb;
+		this.rightsidebearing = __rsb;
+		this.charwidth = __cw;
+		this.charascent = __ca;
+		this.chardescent = __cd;
+		this.attributes = __a;
 	}
 	
 	/**
@@ -84,9 +84,9 @@ final class __PCFMetric__
 			this._string = new WeakReference<>((rv = String.format(
 				"{leftsidebearing=%d, rightsidebearing=%d, " +
 				"charwidth=%d, charascent=%d, chardescent=%d, " +
-				"attributes=%x}", this._leftsidebearing,
-				this._rightsidebearing, this._charwidth, this._charascent,
-				this._chardescent, this._attributes)));
+				"attributes=%x}", this.leftsidebearing,
+				this.rightsidebearing, this.charwidth, this.charascent,
+				this.chardescent, this.attributes)));
 		
 		return rv;
 	}
@@ -100,7 +100,7 @@ final class __PCFMetric__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/27
 	 */
-	static final __PCFMetric__ __readCompressed(DataInputStream __dis)
+	public static final PCFMetric readCompressed(DataInputStream __dis)
 		throws IOException, NullPointerException
 	{
 		if (__dis == null)
@@ -108,7 +108,7 @@ final class __PCFMetric__
 		
 		// All are unsigned bytes with implied attributes of zero
 		// All of the values are offset signed
-		return new __PCFMetric__(
+		return new PCFMetric(
 			(short)(__dis.readUnsignedByte() - 0x80),
 			(short)(__dis.readUnsignedByte() - 0x80),
 			(short)(__dis.readUnsignedByte() - 0x80),
@@ -126,13 +126,13 @@ final class __PCFMetric__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/27
 	 */
-	static final __PCFMetric__[] __readMetrics(DataInputStream __dis)
+	public static final PCFMetric[] readMetrics(DataInputStream __dis)
 		throws IOException, NullPointerException
 	{
 		if (__dis == null)
 			throw new NullPointerException("NARG");
 		
-		__PCFMetric__[] rv;
+		PCFMetric[] rv;
 		
 		// Are these compressed metrics
 		if (((Integer.reverseBytes(__dis.readInt())) &
@@ -140,11 +140,11 @@ final class __PCFMetric__
 		{
 			// Read length
 			int n = __dis.readUnsignedShort();
-			rv = new __PCFMetric__[n];
+			rv = new PCFMetric[n];
 			
 			// Read all metrics			
 			for (int i = 0; i < n; i++)
-				rv[i] = __PCFMetric__.__readCompressed(__dis);
+				rv[i] = PCFMetric.readCompressed(__dis);
 		}
 		
 		// They are uncompressed
@@ -152,11 +152,11 @@ final class __PCFMetric__
 		{
 			// Read length
 			int n = __dis.readInt();
-			rv = new __PCFMetric__[n];
+			rv = new PCFMetric[n];
 			
 			// Read all metrics			
 			for (int i = 0; i < n; i++)
-				rv[i] = __PCFMetric__.__readUncompressed(__dis);
+				rv[i] = PCFMetric.readUncompressed(__dis);
 		}
 		
 		// Debug
@@ -174,14 +174,14 @@ final class __PCFMetric__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/27
 	 */
-	static final __PCFMetric__ __readUncompressed(DataInputStream __dis)
+	public static final PCFMetric readUncompressed(DataInputStream __dis)
 		throws IOException, NullPointerException
 	{
 		if (__dis == null)
 			throw new NullPointerException("NARG");
 		
 		// All are unsigned bytes with implied attributes of zero
-		return new __PCFMetric__(
+		return new PCFMetric(
 			__dis.readShort(),
 			__dis.readShort(),
 			__dis.readShort(),

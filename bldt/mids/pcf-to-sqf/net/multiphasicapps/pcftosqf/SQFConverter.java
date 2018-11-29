@@ -12,6 +12,7 @@ package net.multiphasicapps.pcftosqf;
 
 import java.io.OutputStream;
 import java.io.IOException;
+import net.multiphasicapps.pcftosqf.pcf.PCFFont;
 
 /**
  * Converts to SQF format from another font.
