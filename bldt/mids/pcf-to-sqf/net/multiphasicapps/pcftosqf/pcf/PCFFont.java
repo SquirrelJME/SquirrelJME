@@ -50,10 +50,10 @@ public class PCFFont
 		// Need to read in the data!
 		DataInputStream dos = new DataInputStream(__in);
 		
-		// {@squirreljme.error EB2g Invalid PCF magic number.}
+		// {@squirreljme.error AP02 Invalid PCF magic number.}
 		int magic;
 		if ((magic = dos.readInt()) != 0x01666370)
-			throw new IOException(String.format("EB2g %08x", magic));
+			throw new IOException(String.format("AP02 %08x", magic));
 		
 		// Read each table entry, since they have offsets into the file they
 		// could be in any random order which would be bad
@@ -86,9 +86,9 @@ public class PCFFont
 			if (skippy > 0)
 				dos.skipBytes(skippy);
 			
-			// {@squirreljme.error EB2m Negative skip distance.}
+			// {@squirreljme.error AP01 Negative skip distance.}
 			else if (skippy < 0)
-				throw new IOException("EB2m");
+				throw new IOException("AP01");
 			
 			// Read in data that makes up this section
 			byte[] data = new byte[te.size];
@@ -167,9 +167,9 @@ public class PCFFont
 						throw new todo.TODO();
 					break;
 					
-					// {@squirreljme.error EB2l Unknown PCF type. (The type)}
+					// {@squirreljme.error AP03 Unknown PCF type. (The type)}
 				default:
-					throw new IOException("EB2l " + te.type);
+					throw new IOException("AP03 " + te.type);
 			}
 			
 			// Set pointer for next run
