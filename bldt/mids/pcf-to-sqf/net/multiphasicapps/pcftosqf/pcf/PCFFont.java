@@ -77,6 +77,7 @@ public class PCFFont
 		PCFAccelerators pcfaccel = null;
 		PCFMetric[] metrics = null;
 		PCFBitmap bitmap = null;
+		PCFEncoding encoding = null;
 		
 		// Go through all table entries and parse them, they will be sorted
 		// by their offset and handled as such
@@ -137,7 +138,7 @@ public class PCFFont
 					}
 					break;
 					
-					// Ink Metrics
+					// Ink Metrics (NOT USED???)
 				case 16:
 					if (true)
 						throw new todo.TODO();
@@ -145,8 +146,11 @@ public class PCFFont
 					
 					// BDF Encodings
 				case 32:
-					if (true)
-						throw new todo.TODO();
+					try (DataInputStream dis = new DataInputStream(
+						new ByteArrayInputStream(data)))
+					{
+						encoding = PCFEncoding.read(dis);
+					}
 					break;
 					
 					// SWidths
@@ -163,8 +167,8 @@ public class PCFFont
 					
 					// BDF Accelerators
 				case 256:
-					if (true)
-						throw new todo.TODO();
+					// Debug
+					todo.DEBUG.note("Ignoring BDF Accelerators");
 					break;
 					
 					// {@squirreljme.error AP03 Unknown PCF type. (The type)}
