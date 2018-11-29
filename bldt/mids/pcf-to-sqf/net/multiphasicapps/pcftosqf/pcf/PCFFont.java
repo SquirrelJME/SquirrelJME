@@ -78,6 +78,7 @@ public class PCFFont
 		PCFMetric[] metrics = null;
 		PCFBitmap bitmap = null;
 		PCFEncoding encoding = null;
+		PCFScalableWidths scalablewidths = null;
 		
 		// Go through all table entries and parse them, they will be sorted
 		// by their offset and handled as such
@@ -155,8 +156,11 @@ public class PCFFont
 					
 					// SWidths
 				case 64:
-					if (true)
-						throw new todo.TODO();
+					try (DataInputStream dis = new DataInputStream(
+						new ByteArrayInputStream(data)))
+					{
+						scalablewidths = PCFScalableWidths.read(dis);
+					}
 					break;
 					
 					// Glyph Names
