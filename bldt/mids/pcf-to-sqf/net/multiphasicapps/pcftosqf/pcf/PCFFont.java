@@ -79,6 +79,7 @@ public class PCFFont
 		PCFBitmap bitmap = null;
 		PCFEncoding encoding = null;
 		PCFScalableWidths scalablewidths = null;
+		PCFGlyphNames glyphnames = null;
 		
 		// Go through all table entries and parse them, they will be sorted
 		// by their offset and handled as such
@@ -92,6 +93,9 @@ public class PCFFont
 			// {@squirreljme.error AP01 Negative skip distance.}
 			else if (skippy < 0)
 				throw new IOException("AP01");
+			
+			// Debug
+			todo.DEBUG.note("Read entry %s", te);
 			
 			// Read in data that makes up this section
 			byte[] data = new byte[te.size];
@@ -165,8 +169,11 @@ public class PCFFont
 					
 					// Glyph Names
 				case 128:
-					if (true)
-						throw new todo.TODO();
+					try (DataInputStream dis = new DataInputStream(
+						new ByteArrayInputStream(data)))
+					{
+						glyphnames = PCFGlyphNames.read(dis); 
+					}
 					break;
 					
 					// BDF Accelerators
