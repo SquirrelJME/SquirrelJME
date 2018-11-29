@@ -66,6 +66,17 @@ public final class PCFGlyphMap
 	}
 	
 	/**
+	 * Returns a copy of the glyph data.
+	 *
+	 * @return The glyph data.
+	 * @since 2018/11/29
+	 */
+	public final byte[] data()
+	{
+		return this._data.clone();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/11/29
 	 */

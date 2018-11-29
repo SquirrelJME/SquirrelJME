@@ -27,6 +27,7 @@ import java.io.IOException;
  *  - int8 descent.
  *  - int8 bytesperscan (The number of bytes per scanline).
  *  - int8[256] charwidths.
+ *  - int8[256] isvalidchar.
  *  - uint[256 * bytesperscan * pixelheight] charbmp.
  *
  * @since 2018/11/27
@@ -42,6 +43,9 @@ public final class SQFFont
 	/** The bytes per scan. */
 	public final byte bytesperscan;
 	
+	/** Is this character valid? */
+	private final boolean[] _isvalidchar;
+	
 	/** The character widths. */
 	private final byte[] _charwidths;
 	
@@ -55,21 +59,23 @@ public final class SQFFont
 	 * @param __d The descent.
 	 * @param __bps The bytes per scan.
 	 * @param __cw Character widths.
+	 * @param __ivc Is this a valid character?
 	 * @param __bmp The bitmap data.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/27
 	 */
 	private SQFFont(byte __ph, byte __d, byte __bps, byte[] __cw,
-		byte[] __bmp)
+		boolean[] __ivc, byte[] __bmp)
 		throws NullPointerException
 	{
-		if (__cw == null || __bmp == null)
+		if (__cw == null || __ivc == null || __bmp == null)
 			throw new NullPointerException("NARG");
 		
 		this.pixelheight = __ph;
 		this.descent = __d;
 		this.bytesperscan = __bps;
 		this._charwidths = __cw;
+		this._isvalidchar = __ivc;
 		this._charbmp = __bmp;
 	}
 	
@@ -100,13 +106,19 @@ public final class SQFFont
 		byte[] charwidths = new byte[256];
 		dis.readFully(charwidths);
 		
+		// Valid characters?
+		boolean[] isvalidchar = new boolean[256];
+		for (int i = 0; i < 256; i++)
+			if (dis.readByte() != 0)
+				isvalidchar[i] = true;
+		
 		// Read the bitmaps
 		byte[] charbmp = new byte[256 * bytesperscan * pixelheight];
 		dis.readFully(charbmp);
 		
 		// Build font
 		return new SQFFont(pixelheight, descent, bytesperscan,
-			charwidths, charbmp);
+			charwidths, isvalidchar, charbmp);
 	}
 }
 
