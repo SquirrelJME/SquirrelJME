@@ -1,0 +1,21 @@
+# 2018/11/28
+
+## 18:56
+
+There seems to be no utility that I can use to convert the BDFs or otherwise
+to some kind of bitmap with information that I need. So I will just resume
+with decoding PCFs. That will be the best route anyway.
+
+## 19:08
+
+Only thing to do is continue reading PCFs then figure out what to do with
+them.
+
+## 19:24
+
+Good thing I decided to go with a simpler font format because PCFs would take
+so much memory and otherwise to parse.
+
+## 20:11
+
+So PCF entries could be clipped by EOF, that is a bit dumb.
