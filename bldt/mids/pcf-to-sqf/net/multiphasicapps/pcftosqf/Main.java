@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import net.multiphasicapps.pcftosqf.pcf.PCFFont;
 
 /**
  * This is the main entry point for the font conversion.

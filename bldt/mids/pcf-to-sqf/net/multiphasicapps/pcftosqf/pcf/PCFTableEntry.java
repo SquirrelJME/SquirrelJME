@@ -8,27 +8,27 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.pcftosqf;
+package net.multiphasicapps.pcftosqf.pcf;
 
 /**
  * This represents a single table within the PCF.
  *
  * @since 2018/11/25
  */
-final class __PCFFontTable__
-	implements Comparable<__PCFFontTable__>
+public final class PCFTableEntry
+	implements Comparable<PCFTableEntry>
 {
 	/** The type of table entry this is. */
-	final int _type;
+	public final int type;
 	
 	/** The format of the entry. */
-	final int _format;
+	public final int format;
 	
 	/** The size of the entry. */
-	final int _size;
+	public final int size;
 	
 	/** The offset to the entry. */
-	final int _offset;
+	public final int offset;
 	
 	/**
 	 * Initializes the table entry.
@@ -39,12 +39,12 @@ final class __PCFFontTable__
 	 * @param __o The offset.
 	 * @since 2018/11/25
 	 */
-	__PCFFontTable__(int __t, int __f, int __s, int __o)
+	public PCFTableEntry(int __t, int __f, int __s, int __o)
 	{
-		this._type = __t;
-		this._format = __f;
-		this._size = __s;
-		this._offset = __o;
+		this.type = __t;
+		this.format = __f;
+		this.size = __s;
+		this.offset = __o;
 	}
 	
 	/**
@@ -52,9 +52,9 @@ final class __PCFFontTable__
 	 * @since 2018/11/25
 	 */
 	@Override
-	public int compareTo(__PCFFontTable__ __o)
+	public int compareTo(PCFTableEntry __o)
 	{
-		return this._offset - __o._offset;
+		return this.offset - __o.offset;
 	}
 	
 	/**
@@ -65,7 +65,7 @@ final class __PCFFontTable__
 	public String toString()
 	{
 		return String.format("(type=%d, format=%d, size=%d, offset=%d)",
-			this._type, this._format, this._size, this._offset);
+			this.type, this.format, this.size, this.offset);
 	}
 }
 
