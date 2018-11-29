@@ -44,13 +44,13 @@ public final class PCFEncoding
 	/**
 	 * Initializes the encoding.
 	 *
-	 * @param __boop 
-	 * @param __boop 
-	 * @param __boop 
-	 * @param __boop 
-	 * @param __boop 
-	 * @param __boop 
-	 * @param __boop 
+	 * @param __format Format.
+	 * @param __mincharorbyte2 Minimum char or byte2?
+	 * @param __maxcharorbyte2 Maximum char or byte2?
+	 * @param __minbyte1 Min byte1?
+	 * @param __maxbyte1 Max byte1?
+	 * @param __defaultchar Default character.
+	 * @param __glyphindexes Glyph indexes.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/28
 	 */
