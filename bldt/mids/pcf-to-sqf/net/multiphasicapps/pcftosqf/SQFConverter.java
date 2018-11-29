@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import net.multiphasicapps.pcftosqf.pcf.PCFFont;
+import net.multiphasicapps.pcftosqf.pcf.PCFGlyphMap;
+import net.multiphasicapps.pcftosqf.pcf.PCFMetric;
 
 /**
  * Converts to SQF format from another font.
@@ -98,8 +100,9 @@ public class SQFConverter
 			// Get the index
 			int pcfdx = chartoglyph.get(i);
 			
-			// Extract the width
-			int cw = __pcf.metrics.get(pcfdx).charwidth;
+			// Extract the width, use the right side bearing since this is the
+			// edge of the font
+			int cw = __pcf.metrics.get(pcfdx).rightsidebearing;
 			charwidths[i] = (byte)cw;
 			
 			// Use greater width
@@ -138,16 +141,98 @@ public class SQFConverter
 		byte[] charwidths = this._charwidths;
 		byte[] bitmap = this._bitmap;
 		
+		// Debug
+		todo.DEBUG.note("Bitmap size: %d bytes", bitmap.length);
+		
+		// Used to only map valid characters
+		boolean[] isvalidchar = new boolean[256];
+		
+		// Bits per scan
+		int bitsperscan = bytesperscan * 8;
+		
 		// Draw glyphs
-		if (true)
-			throw new todo.TODO();
+		Map<Integer, Integer> chartoglyph = this._chartoglyph;
+		PCFFont pcf = this.pcf;
+		for (int i = 0; i < 256; i++)
+		{
+			// Only draw known characters
+			Integer uc = chartoglyph.get(i);
+			if (uc == null)
+				continue;
+			
+			// Only draw valid characters
+			PCFGlyphMap gm = pcf.bitmap.glyphmaps.get(uc);
+			if (gm == null)
+				continue;
+			
+			// Is valid
+			isvalidchar[i] = true;
+			
+			// Get the input glyph data to draw
+			byte[] in = gm.data();
+			
+			// Determine the output position and where it ends
+			int outdx = i * bytesperscan * pixelheight,
+				enddx = outdx + bytesperscan;
+			
+			// Determine the initial pen position. it is based on the bearing
+			// and how far down the font is
+			// The ascent of the font is length of the font from the baseline
+			PCFMetric metrics = pcf.metrics.get(uc);
+			int penxstart = metrics.leftsidebearing,
+				px = penxstart,
+				py = (pixelheight - descent) - metrics.charascent;
+			todo.DEBUG.note("Pen start: (%d, %d) for %d", px, py, i);
+			
+			// Used to debug
+			StringBuilder sb = new StringBuilder(32);
+			
+			// Draw through all input lines
+			for (int idx = 0, inn = in.length; idx < inn; idx++, py++)
+			{
+				// Clear debug
+				sb.setLength(0);
+				
+				// Reset the X position to the starting left side
+				px = penxstart;
+				
+				// Draw each sub-character, the X position always increases
+				byte sub = in[idx];
+				for (int sdx = 7; sdx >= 0; sdx--, px++)
+				{
+					// If we are not setting the bit or it is outside of
+					// the bounds ignore
+					if ((sub & (i << sdx)) == 0 ||
+						px < 0 || px >= bitsperscan ||
+						py < 0 || py >= pixelheight)
+					{
+						sb.append('.');
+						continue;
+					}
+					else
+						sb.append('#');
+					
+					// Pen this position
+					bitmap[outdx + py + (px / 8)] |= (byte)(1 << (px % 8));
+				}
+				
+				todo.DEBUG.note("Map: %s", sb);
+			}
+		}
 		
 		// Write font data
 		__os.write(pixelheight);
 		__os.write(descent);
 		__os.write(bytesperscan);
 		__os.write(charwidths);
+		
+		for (boolean b : isvalidchar)
+			__os.write((b ? 1 : 0));
+		
 		__os.write(bitmap);
+		
+		if (true)
+			throw new todo.TODO();
 	}
 }
 
