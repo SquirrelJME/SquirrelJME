@@ -76,6 +76,7 @@ public class PCFFont
 		PCFProperties pcfp = null;
 		PCFAccelerators pcfaccel = null;
 		PCFMetric[] metrics = null;
+		PCFBitmap bitmap = null;
 		
 		// Go through all table entries and parse them, they will be sorted
 		// by their offset and handled as such
@@ -132,8 +133,7 @@ public class PCFFont
 					try (DataInputStream dis = new DataInputStream(
 						new ByteArrayInputStream(data)))
 					{
-						if (true)
-							throw new todo.TODO();
+						bitmap = PCFBitmap.read(dis);
 					}
 					break;
 					
