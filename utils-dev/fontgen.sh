@@ -45,7 +45,7 @@ done
 
 # Convert to PCFs which are optimized in the given format:
 #  * BIG ENDIAN
-#  * PADDED TO INT
+#  * PADDED TO BYTE
 #  * DATA REPRESENTED AS BYTE
 #  * MAKE EVERY CHARACTER THE SAME WIDTH RATHER THAN VARIABLE WIDTH
 #    (TERMINAL FONT MODE, IF POSSIBLE)
@@ -59,7 +59,7 @@ do
 	
 	# Convert to PCF
 	echo "Converting to PCF: $__base"
-	if ! bdftopcf -M -p4 -u1 -t "$__file" > "/tmp/$$/ok"
+	if ! bdftopcf -M -p1 -u1 -t "$__file" > "/tmp/$$/ok"
 	then
 		echo "Failed to convert $__base to PCF!"
 		exit 2
