@@ -230,9 +230,6 @@ public class SQFConverter
 			__os.write((b ? 1 : 0));
 		
 		__os.write(bitmap);
-		
-		if (true)
-			throw new todo.TODO();
 	}
 }
 
