@@ -12,6 +12,14 @@ package net.multiphasicapps.pcftosqf.pcf;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import net.multiphasicapps.collections.SortedTreeSet;
+import net.multiphasicapps.collections.UnmodifiableMap;
 
 /**
  * This represents the bitmap from within a PCF file.
@@ -26,11 +34,8 @@ public final class PCFBitmap
 	/** The number of glyphs. */
 	public final int numglyphs;
 	
-	/** The offsets. */
-	private final int[] _offsets;
-	
-	/** The bitmap data. */
-	private final byte[] _data;
+	/** The glyph map. */
+	public final Map<Integer, PCFGlyphMap> glyphmaps;
 	
 	/**
 	 * Initializes the bitmap data.
@@ -51,21 +56,88 @@ public final class PCFBitmap
 		
 		this.format = __format;
 		this.numglyphs = __numglyphs;
-		this._offsets = __offsets.clone();
-		this._data = __data.clone();
+		
+		// This class is used to sort all of the offsets but still keep the
+		// original indexes
+		final class __Index__
+			implements Comparable<__Index__>
+		{
+			/** The offset. */
+			public final int offset;
+			
+			/** The index. */
+			public final int index;
+			
+			/**
+			 * Initializes the index.
+			 *
+			 * @param __o The offset.
+			 * @param __i The index.
+			 * @since 2018/11/29
+			 */
+			__Index__(int __o, int __i)
+			{
+				this.offset = __o;
+				this.index = __i;
+			}
+			
+			/**
+			 * {@inheritDoc}
+			 * @since 2018/11/29
+			 */
+			@Override
+			public int compareTo(__Index__ __o)
+			{
+				// Sort by the offset first, but it is possible that some
+				// glyphs might share the same offset, so do not lose them!
+				int rv = this.offset - __o.offset;
+				if (rv != 0)
+					return rv;
+				return this.index - __o.index;
+			}
+		}
+		
+		// Go through all the offsets and determine all of the bounds
+		Set<__Index__> index = new SortedTreeSet<>();
+		for (int i = 0; i < numglyphs; i++)
+			index.add(new __Index__(__offsets[i], i));
+		
+		// Need to determine the bounds for every glyph to extract the data
+		// for it, so mark when an index ends and such. So go through
+		// and mark where a new glyph starts.
+		int datalen = __data.length;
+		boolean[] boops = new boolean[datalen];
+		for (__Index__ i : index)
+			boops[i.offset] = true;
+		
+		// Build the bitmaps for each map of glyphs so they can be converted
+		// accordingly
+		Map<Integer, PCFGlyphMap> glyphmaps = new HashMap<>();
+		for (__Index__ i : index)
+		{
+			// Start with a dynamic set of copied byte data
+			List<Byte> bm = new ArrayList<>();
+			
+			// Add all the bits that make up the glyph data there
+			for (int o = i.offset; o < datalen;)
+			{
+				// Add this byte always
+				bm.add(__data[o++]);
+				
+				// Since we are at the next index check for the end or if
+				// it signaled a new glyph here
+				if (o >= datalen || boops[o])
+					break;
+			}
+			
+			// Store the glyph data
+			glyphmaps.put(i.index, new PCFGlyphMap(bm));
+		}
 		
 		// Debug
-		StringBuilder sb = new StringBuilder();
-		for (int j = 0, n = __data.length; j < n; j++)
-		{
-			sb.setLength(0);
-			
-			byte b = __data[j];
-			for (int i = 7; i >= 0; i--)
-				sb.append(((b & (1 << i)) != 0 ? '#' : '.'));
-			
-			todo.DEBUG.note("%04d: %s", j, sb);
-		}
+		todo.DEBUG.note("glyphmaps=%s", glyphmaps);
+		
+		this.glyphmaps = glyphmaps;
 	}
 	
 	/**
