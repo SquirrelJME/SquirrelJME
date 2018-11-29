@@ -83,8 +83,15 @@ public class PCFFont
 		
 		// Go through all table entries and parse them, they will be sorted
 		// by their offset and handled as such
+		boolean waseofing = false;
 		for (PCFTableEntry te : tables)
 		{
+			// {@squirreljme.error AP04 Expected EOF to occur on the last
+			// entry, this likely means the file was truncated more than
+			// what was expected.}
+			if (waseofing)
+				throw new IOException("AP04");
+			
 			// Skip bytes needed to reach the destination
 			int skippy = te.offset - readptr;
 			if (skippy > 0)
@@ -97,9 +104,24 @@ public class PCFFont
 			// Debug
 			todo.DEBUG.note("Read entry %s", te);
 			
-			// Read in data that makes up this section
-			byte[] data = new byte[te.size];
-			dos.readFully(data);
+			// Read in data that makes up this section, but the entries could
+			// be clipped short and have a size larger than the file. So just
+			// assume zero padding is used and hope it works
+			int tesize;
+			byte[] data = new byte[(tesize = te.size)];
+			for (int i = 0; i < tesize; i++)
+			{
+				int rc = dos.read();
+				
+				// Make sure this is the last entry on EOF!
+				if (rc < 0)
+				{
+					waseofing = true;
+					break;
+				}
+				
+				data[i] = (byte)rc;
+			}
 			
 			// Handle the data in the section
 			switch (te.type)

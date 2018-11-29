@@ -54,6 +54,9 @@ do
 	# Get base name
 	__base="$(basename -- "$__file" .bdf)"
 	
+	# Info on file
+	ls -al "$__file"
+	
 	# Convert to PCF
 	echo "Converting to PCF: $__base"
 	if ! bdftopcf -M -p4 -u1 -t "$__file" > "/tmp/$$/ok"
@@ -61,6 +64,9 @@ do
 		echo "Failed to convert $__base to PCF!"
 		exit 2
 	fi
+	
+	# Info on file again
+	ls -al "/tmp/$$/ok"
 	
 	# Convert to SQF
 	echo "Converting to SQF: $__base"
