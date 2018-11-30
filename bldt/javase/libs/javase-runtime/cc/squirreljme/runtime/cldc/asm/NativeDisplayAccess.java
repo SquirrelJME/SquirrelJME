@@ -27,6 +27,9 @@ import java.awt.image.DataBufferShort;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.SystemColor;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +38,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
+import net.multiphasicapps.io.MIMEFileDecoder;
 
 /**
  * Java SE implementation of the native display system using Swing.
@@ -478,10 +482,50 @@ public final class NativeDisplayAccess
 			List<Image> icons = new ArrayList<>();
 			for (int i : new int[]{8, 16, 24, 32, 48, 64})
 			{
-				URL rc = ColorInfo.class.getResource(String.format(
-					"head_%dx%d.png", i, i));
+				String rcname = String.format("head_%dx%d.png", i, i);
+				URL rc = ColorInfo.class.getResource(rcname);
+				
+				// If it does not exist, try loading MIME data instead
+				// The new bootstrap does not decode these
 				if (rc == null)
+				{
+					try (InputStream in = ColorInfo.class.getResourceAsStream(
+						rcname + ".__mime"))
+					{
+						// Still does not exist
+						if (in == null)
+							continue;
+						
+						// Decode MIME data
+						try (ByteArrayOutputStream baos = new
+							ByteArrayOutputStream();
+							InputStream inx = new MIMEFileDecoder(in, "utf-8"))
+						{
+							byte[] buf = new byte[512];
+							for (;;)
+							{
+								int rcx = inx.read(buf);
+								
+								if (rcx < 0)
+									break;
+								
+								baos.write(buf, 0, rcx);
+							}
+							
+							// Load icon
+							icons.add(new ImageIcon(baos.toByteArray()).
+								getImage());
+						}
+					}
+					
+					// Ignore
+					catch (IOException e)
+					{
+					}
+					
+					// Go to the next icon
 					continue;
+				}
 				
 				// Add the icon
 				icons.add(new ImageIcon(rc).getImage());

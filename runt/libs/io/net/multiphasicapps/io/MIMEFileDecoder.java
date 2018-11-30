@@ -12,8 +12,10 @@ package net.multiphasicapps.io;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 
 /**
  * This class is used to decode input streams which have been encoded in the
@@ -36,7 +38,35 @@ public final class MIMEFileDecoder
 		Integer.MIN_VALUE;
 	
 	/** The read filename. */
-	private String _filename; 
+	private String _filename;
+	
+	/**
+	 * Initializes the MIME file decoder using the default encoding.
+	 *
+	 * @param __in The input source.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/30
+	 */
+	public MIMEFileDecoder(InputStream __in)
+		throws NullPointerException
+	{
+		this(new InputStreamReader(__in));
+	}
+	
+	/**
+	 * Initializes the MIME file decoder using the given encoding.
+	 *
+	 * @param __in The input source.
+	 * @param __enc The encoding used.
+	 * @throws NullPointerException On null arguments.
+	 * @throws UnsupportedEncodingException If the encoding is not supported.
+	 * @since 2018/11/30
+	 */
+	public MIMEFileDecoder(InputStream __in, String __enc)
+		throws NullPointerException, UnsupportedEncodingException
+	{
+		this(new InputStreamReader(__in, __enc));
+	}
 	
 	/**
 	 * Initializes the MIME file decoder from the given set of characters.
