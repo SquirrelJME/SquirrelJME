@@ -206,9 +206,15 @@ public final class Font
 		return this._sqf.ascent;
 	}
 	
+	/**
+	 * Returns the baseline position of the font which is the maximum baseline.
+	 *
+	 * @return The baseline of the font.
+	 * @since 2018/11/29
+	 */
 	public int getBaselinePosition()
 	{
-		throw new todo.TODO();
+		return this._sqf.maxascent;
 	}
 	
 	/**
