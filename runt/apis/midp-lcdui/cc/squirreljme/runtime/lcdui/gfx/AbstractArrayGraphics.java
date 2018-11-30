@@ -1387,47 +1387,29 @@ public abstract class AbstractArrayGraphics
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/29
 	 */
-	private static final Text __buildText(String __s)
+	private final Text __buildText(String __s)
 		throws NullPointerException
 	{
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		Text rv = new Text();
+		// Get the font, or fallback to the default if it was not set
+		Font font = this.font;
+		if (font == null)
+			font = Font.getDefaultFont();
+		
+		// Setup, use a zero height for now since it will be calculated after
+		// the font and such has been set
+		Text rv = new Text(__s,
+			font.stringWidth(__s), 0);
 		
 		// Set text properties
+		rv.setFont(font);
+		rv.setForegroundColor(this.color);
 		
-		return rv;
-	}
-	
-	/**
-	 * Determines the Cohen-Sutherland clipping flags.
-	 *
-	 * @param __x Input X coordinate.
-	 * @param __y Input Y coordinate.
-	 * @param __csx Clipping box starting X.
-	 * @param __csy Clipping box starting Y.
-	 * @param __cex Clipping box ending X.
-	 * @param __cey Clipping box ending Y.
-	 * @return The clipping bit flags.
-	 * @since 2017/09/10
-	 */
-	private static final int __csOut(int __x, int __y, int __csx, int __csy,
-		int __cex, int __cey)
-	{
-		int rv = 0;
-		
-		// Clips above or below?
-		if (__y > __cey)
-			rv |= _CLIP_ABOVE;
-		else if (__y < __csy)
-			rv |= _CLIP_BELOW;
-		
-		// Clips right or left?
-		if (__x > __cex)
-			rv |= _CLIP_RIGHT;
-		else if (__x < __csx)
-			rv |= _CLIP_LEFT;
+		// Set the height to the required height of the box now that the
+		// parameters have been set
+		rv.setHeight(rv.getRequiredHeight());
 		
 		return rv;
 	}
@@ -1522,6 +1504,38 @@ public abstract class AbstractArrayGraphics
 			}
 		}
 		*/
+	}
+	
+	/**
+	 * Determines the Cohen-Sutherland clipping flags.
+	 *
+	 * @param __x Input X coordinate.
+	 * @param __y Input Y coordinate.
+	 * @param __csx Clipping box starting X.
+	 * @param __csy Clipping box starting Y.
+	 * @param __cex Clipping box ending X.
+	 * @param __cey Clipping box ending Y.
+	 * @return The clipping bit flags.
+	 * @since 2017/09/10
+	 */
+	private static final int __csOut(int __x, int __y, int __csx, int __csy,
+		int __cex, int __cey)
+	{
+		int rv = 0;
+		
+		// Clips above or below?
+		if (__y > __cey)
+			rv |= _CLIP_ABOVE;
+		else if (__y < __csy)
+			rv |= _CLIP_BELOW;
+		
+		// Clips right or left?
+		if (__x > __cex)
+			rv |= _CLIP_RIGHT;
+		else if (__x < __csx)
+			rv |= _CLIP_LEFT;
+		
+		return rv;
 	}
 }
 
