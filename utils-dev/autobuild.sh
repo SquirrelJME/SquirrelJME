@@ -8,6 +8,8 @@
 # See license.mkd for licensing and copyright information.
 # ---------------------------------------------------------------------------
 # DESCRIPTION: Automated SquirrelJME builds!
+# Note the return value is the number of successful builds, so zero means
+# failure!
 
 # Force C locale
 export LC_ALL=C
@@ -44,6 +46,7 @@ fi
 cd "$__realexedir"
 
 # Upload each one
+__okay="0"
 for __upload in "/tmp/$$/squirreljme-javase.jar" \
 	"/tmp/$$/squirreljme-javame.jar"
 do
@@ -72,6 +75,9 @@ do
 			# Add date file as well!
 			fossil unversion add "$__tmp/date" \
 				--as "auto/$(basename -- "$__upload").date.mkd"
+			
+			# Mark as uploaded
+			__okay="$(($__okay + 1))"
 		fi
 	fi
 done
@@ -79,4 +85,6 @@ done
 # Cleanup
 echo rm -rvf "$__tmp"
 
+# Return with the number of builds done
+exit $__okay
 
