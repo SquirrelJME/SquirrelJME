@@ -31,6 +31,9 @@ public class SQFConverter
 	/** The pixel height of the font. */
 	protected final int pixelheight;
 	
+	/** The ascent of the font. */
+	protected final int ascent;
+	
 	/** The descent of the font. */
 	protected final int descent;
 	
@@ -224,7 +227,7 @@ public class SQFConverter
 		
 		// Write font data
 		__os.write(pixelheight);
-		__os.write(ascent);
+		__os.write(this.ascent);
 		__os.write(descent);
 		__os.write(bytesperscan);
 		__os.write(charwidths);
