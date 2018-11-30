@@ -26,6 +26,7 @@ import java.util.Map;
  *
  * The font is in the following format:
  *  - int8 pixelheight.
+ *  - int8 ascent.
  *  - int8 descent.
  *  - int8 bytesperscan (The number of bytes per scanline).
  *  - int8[256] charwidths.
@@ -42,6 +43,9 @@ public final class SQFFont
 	
 	/** The pixel height of the font. */
 	public final byte pixelheight;
+	
+	/** The ascent of the font. */
+	public final byte ascent;
 	
 	/** The descent of the font. */
 	public final byte descent;
@@ -62,6 +66,7 @@ public final class SQFFont
 	 * Initializes the SQF Font.
 	 *
 	 * @param __ph The pixel height.
+	 * @param __a The ascent.
 	 * @param __d The descent.
 	 * @param __bps The bytes per scan.
 	 * @param __cw Character widths.
@@ -70,7 +75,7 @@ public final class SQFFont
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/27
 	 */
-	private SQFFont(byte __ph, byte __d, byte __bps, byte[] __cw,
+	private SQFFont(byte __ph, byte __a, byte __d, byte __bps, byte[] __cw,
 		boolean[] __ivc, byte[] __bmp)
 		throws NullPointerException
 	{
@@ -78,6 +83,7 @@ public final class SQFFont
 			throw new NullPointerException("NARG");
 		
 		this.pixelheight = __ph;
+		this.ascent = __a;
 		this.descent = __d;
 		this.bytesperscan = __bps;
 		this._charwidths = __cw;
@@ -158,6 +164,7 @@ public final class SQFFont
 		
 		// Read fields
 		byte pixelheight = dis.readByte(),
+			ascent = dis.readByte(),
 			descent = dis.readByte(),
 			bytesperscan = dis.readByte();
 		
@@ -176,7 +183,7 @@ public final class SQFFont
 		dis.readFully(charbmp);
 		
 		// Build font
-		return new SQFFont(pixelheight, descent, bytesperscan,
+		return new SQFFont(pixelheight, ascent, descent, bytesperscan,
 			charwidths, isvalidchar, charbmp);
 	}
 }
