@@ -53,6 +53,14 @@ public final class SQFFont
 	/** The bytes per scan. */
 	public final byte bytesperscan;
 	
+	/**
+	 * The leading of the font.
+	 * It is unspecified what this value actually should be so for now it is
+	 * just a constant.
+	 */
+	public final byte leading =
+		2;
+	
 	/** Is this character valid? */
 	private final boolean[] _isvalidchar;
 	

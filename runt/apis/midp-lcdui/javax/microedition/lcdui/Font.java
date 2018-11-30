@@ -203,7 +203,7 @@ public final class Font
 	 */
 	public int getAscent()
 	{
-		throw new todo.TODO();
+		return this._sqf.ascent;
 	}
 	
 	public int getBaselinePosition()
@@ -220,7 +220,7 @@ public final class Font
 	 */
 	public int getDescent()
 	{
-		throw new todo.TODO();
+		return this._sqf.descent;
 	}
 	
 	public int getFace()
@@ -261,7 +261,7 @@ public final class Font
 	 */
 	public int getLeading()
 	{
-		throw new todo.TODO();
+		return this._sqf.leading;
 	}
 	
 	public int getMaxAscent()
