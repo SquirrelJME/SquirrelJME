@@ -24,9 +24,14 @@ import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferInt;
 import java.awt.image.DataBufferShort;
+import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.SystemColor;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import javax.microedition.lcdui.Display;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
@@ -468,6 +473,20 @@ public final class NativeDisplayAccess
 			// Use a better panel size
 			rv.setMinimumSize(new Dimension(160, 160));
 			rv.setPreferredSize(new Dimension(640, 480));
+			
+			// Load icons, for those that exist anyway
+			List<Image> icons = new ArrayList<>();
+			for (int i : new int[]{8, 16, 24, 32, 48, 64})
+			{
+				URL rc = ColorInfo.class.getResource(String.format(
+					"head_%dx%d.png", i, i));
+				if (rc == null)
+					continue;
+				
+				// Add the icon
+				icons.add(new ImageIcon(rc).getImage());
+			}
+			rv.setIconImages(icons);
 			
 			return rv;
 		}
