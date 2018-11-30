@@ -107,6 +107,21 @@ public final class SQFFont
 	}
 	
 	/**
+	 * Returns the width of the specified character.
+	 *
+	 * @param __c The character to get the width of.
+	 * @return The width of the given character.
+	 * @since 2018/11/30
+	 */
+	public int charWidth(char __c)
+	{
+		byte[] charwidths = this._charwidths;
+		if (__c > 256 || !this._isvalidchar[__c])
+			return charwidths[0];
+		return charwidths[__c];
+	}
+	
+	/**
 	 * Caches the SQF font.
 	 *
 	 * @param __n The name of the font.

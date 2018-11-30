@@ -130,7 +130,7 @@ public final class Font
 	 */
 	public int charWidth(char __c)
 	{
-		throw new todo.TODO();
+		return this._sqf.charWidth(__c);
 	}
 	
 	public int charsWidth(char[] __a, int __b, int __c)
@@ -380,10 +380,33 @@ public final class Font
 		
 		try
 		{
-			throw new todo.TODO();
-			/*
-			return this._handle.sequencePixelWidth(__s, __o, __l);
-			*/
+			SQFFont sqf = this._sqf;
+			
+			// Need to know the max width due to newlines
+			int maxwidth = 0,
+				curwidth = 0;
+			for (int e = __o + __l; __o < e; __o++)
+			{
+				char c = __s.charAt(__o);
+				if (c == '\r' || c == '\n')
+				{
+					// Only use longer lines
+					if (curwidth > maxwidth)
+						maxwidth = curwidth;
+					
+					// Reset because at start of line now
+					curwidth = 0;
+					continue;
+				}
+				
+				// Add the character's width
+				curwidth += sqf.charWidth(c);
+			}
+			
+			// Use the greater width
+			if (curwidth > maxwidth)
+				return curwidth;
+			return maxwidth;
 		}
 		
 		// For compatibility just wrap out of bounds, since it is
