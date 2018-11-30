@@ -67,6 +67,7 @@ public class SQFConverter
 		int ascent = __pcf.accelerators.ascent,
 			descent = __pcf.accelerators.descent,
 			pixelheight = ascent + descent;
+		this.ascent = ascent;
 		this.descent = descent;
 		this.pixelheight = pixelheight;
 		
@@ -216,12 +217,14 @@ public class SQFConverter
 					bitmap[outdx + py + (px / 8)] |= (byte)(1 << (px % 8));
 				}
 				
-				todo.DEBUG.note("Map: %s", sb);
+				// Debug
+				/*todo.DEBUG.note("Map: %s", sb);*/
 			}
 		}
 		
 		// Write font data
 		__os.write(pixelheight);
+		__os.write(ascent);
 		__os.write(descent);
 		__os.write(bytesperscan);
 		__os.write(charwidths);
