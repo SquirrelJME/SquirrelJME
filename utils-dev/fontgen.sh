@@ -70,14 +70,21 @@ do
 	
 	# Convert to SQF
 	echo "Converting to SQF: $__base"
-	if ! "$__exedir/hostedlaunch.sh" "pcf-to-sqf" "/tmp/$$/ok" > "/tmp/$$/ok.2"
+	if ! "$__exedir/hostedlaunch.sh" "pcf-to-sqf" "/tmp/$$/ok" > "/tmp/$$/$__base.sqf"
 	then
 		echo "Failed to convert $__base to SQF!"
 		exit 3
 	fi
+done
+
+# Store all the fonts in last step, to reduce massive rebuilds all the time
+for __file in "/tmp/$$/"*.sqf
+do
+	# Get base name
+	__base="$(basename -- "$__file" .sqf)"
 	
 	# Encode and store the font
-	uuencode -m "$__base.sqf" < "/tmp/$$/ok.2" > "$__out/$__base.sqf.__mime"
+	uuencode -m "$__base.sqf" < "$__file" > "$__out/$__base.sqf.__mime"
 done
 
 # Cleanup
