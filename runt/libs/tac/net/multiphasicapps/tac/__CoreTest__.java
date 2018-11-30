@@ -252,6 +252,8 @@ abstract class __CoreTest__
 					c = 'p';
 				else if (c == '#')
 					c = 'h';
+				else if (c == '.')
+					c = 'd';
 				
 				sb.append(c);
 			}
