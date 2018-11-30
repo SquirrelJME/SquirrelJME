@@ -812,7 +812,7 @@ public abstract class AbstractArrayGraphics
 		if (__o < 0 || __l < 0 || (__o + __l) > __s.length())
 			throw new StringIndexOutOfBoundsException("IOOB");
 		
-		this.__drawText(this.__buildText(__s.substring(__o, __l)),
+		this.__drawText(this.__buildText(__s.substring(__o, __o + __l)),
 			__x, __y, __anchor);
 	}
 	

@@ -10,6 +10,13 @@
 
 package javax.microedition.lcdui;
 
+/**
+ * This text class is one which handles all of the text metrics and drawing and
+ * such. It handles different fonts, colors, and styles on a per character
+ * basis and performs all the needed operations to support text drawing.
+ *
+ * @since 2018/11/29
+ */
 public class Text
 {
 	public static final int ALIGN_CENTER =
@@ -36,19 +43,70 @@ public class Text
 	public static final int DIRECTION_RTL =
 		11;
 	
+	/** The width. */
+	private int _width;
+	
+	/** The height. */
+	private int _height;
+	
+	/**
+	 * Initializes the text with no width or height.
+	 *
+	 * @since 2018/11/29
+	 */
 	public Text()
 	{
-		throw new todo.TODO();
+		this("", 0, 0);
 	}
 	
+	/**
+	 * Initializes the text with the given width and height.
+	 *
+	 * @param __c The text to use.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @throws IllegalArgumentException If the width or height are negative.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/29
+	 */
 	public Text(String __c, int __w, int __h)
+		throws IllegalArgumentException, NullPointerException
 	{
-		throw new todo.TODO();
+		this(__c, 0, __c.length(), __w, __h);
 	}
 	
+	/**
+	 * Initializes the text with the given width and height.
+	 *
+	 * @param __c The text to use.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @throws IllegalArgumentException If the width or height are negative.
+	 * @throws IndexOutOfBoundsException If the offset and/or length are
+	 * negative or exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/29
+	 */
 	public Text(String __c, int __o, int __l, int __w, int __h)
+		throws IllegalArgumentException, IndexOutOfBoundsException,
+			NullPointerException
 	{
-		throw new todo.TODO();
+		if (__c == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __c.length())
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// {@squirreljme.error EB2n The width and height cannot be negative
+		// for text.}
+		if (__w < 0 || __h < 0)
+			throw new IllegalArgumentException("EB2n");
+		
+		// Set sizes first
+		this._width = __w;
+		this._height = __h;
+		
+		// Insert all of the text
+		this.insert(0, __c.substring(__o, __o + __l));
 	}
 	
 	public void delete(int __i, int __l)
