@@ -1,0 +1,30 @@
+# 2018/11/29
+
+## 18:51
+
+Fonts are not being read correctly however in the output file there is a
+newline at the start, which means that somewhere is outputting a newline
+into the output. This needs to be removed or changed to print to the
+error stream.
+
+## 18:57
+
+The hostedlaunch script was adding a newline, hopefully removing that
+fixes things.
+
+## 21:38
+
+I need something better for the font engine. That can more easily handle
+drawing and is not associated with specific graphics.
+
+## 21:43
+
+Well, maybe just a font cache that changes accordingly like properties
+change and such. That way it is faster and such. Could maybe render things
+to a monochrome bitmap of sorts. I would want font drawing to be fast but
+it seems it is going to be a bit complex.
+
+## 21:46
+
+Or when drawing things, I can setup a temporary text object and such and
+then just map that to some bitmap.
