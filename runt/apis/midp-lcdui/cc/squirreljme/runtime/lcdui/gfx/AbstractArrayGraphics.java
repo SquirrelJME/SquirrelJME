@@ -386,7 +386,8 @@ public abstract class AbstractArrayGraphics
 	@Override
 	public final void drawChar(char __s, int __x, int __y, int __anchor)
 	{
-		throw new todo.TODO();
+		this.__drawText(this.__buildText(
+			Character.valueOf(__s).toString()), __x, __y, __anchor);
 	}
 	
 	/**
@@ -398,7 +399,8 @@ public abstract class AbstractArrayGraphics
 		int __y, int __anchor)
 		throws NullPointerException
 	{
-		throw new todo.TODO();
+		this.__drawText(this.__buildText(
+			new String(__s, __o, __l)), __x, __y, __anchor);
 	}
 	
 	/**
@@ -793,7 +795,7 @@ public abstract class AbstractArrayGraphics
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		this.drawSubstring(__s, 0, __s.length(), __x, __y, __anchor);
+		this.__drawText(this.__buildText(__s), __x, __y, __anchor);
 	}
 	
 	/**
@@ -810,62 +812,8 @@ public abstract class AbstractArrayGraphics
 		if (__o < 0 || __l < 0 || (__o + __l) > __s.length())
 			throw new StringIndexOutOfBoundsException("IOOB");
 		
-		// Default anchor point
-		if (__anchor == 0)
-			__anchor = TOP | LEFT;
-		
-		// Translate
-		__x += this.transx;
-		__y += this.transy;
-		
-		// Need the font
-		Font font = this.font;
-		
-		// Extract parameters from the font
-		int style = font.getStyle(),
-			pixelsize = font.getPixelSize(),
-			height = font.getHeight();
-		
-		// Horizontal anchoring (This is the most complicated)
-		if ((__anchor & (HCENTER | RIGHT)) != 0)
-		{
-			int strw = font.stringWidth(__s);
-			
-			if ((__anchor & HCENTER) != 0)
-				__x -= (strw >> 1);
-			else
-				__x -= strw;
-		}
-		
-		// Vertical anchoring
-		if ((__anchor & BOTTOM) != 0)
-			__y -= height;
-		else if ((__anchor & BASELINE) != 0)
-			__y -= height - font.getBaselinePosition();
-		
-		// Need to remember the base positions
-		int basex = __x,
-			basey = __y;
-		
-		// Draw each character individually
-		int color = this.color;
-		for (int e = __o + __l; __o < e; __o++)
-		{
-			char c = __s.charAt(__o);
-			
-			// Carriage return and newline
-			if (c == '\r')
-				__x = basex;
-			else if (c == '\n')
-			{
-				__x = basex;
-				__y += height;
-			}
-			
-			// Otherwise render this character
-			else
-				this.__drawDirectChar(c, font, color, __x, __y);
-		}
+		this.__drawText(this.__buildText(__s.substring(__o, __l)),
+			__x, __y, __anchor);
 	}
 	
 	/**
@@ -875,7 +823,7 @@ public abstract class AbstractArrayGraphics
 	@Override
 	public final void drawText(Text __t, int __x, int __y)
 	{
-		throw new todo.TODO();
+		this.__drawText(__t, __x, __y, 0);
 	}
 	
 	/**
@@ -1432,6 +1380,27 @@ public abstract class AbstractArrayGraphics
 	}
 	
 	/**
+	 * Builds and returns a text object for usage.
+	 *
+	 * @param __s The string used.
+	 * @return A new text object.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/29
+	 */
+	private static final Text __buildText(String __s)
+		throws NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		Text rv = new Text();
+		
+		// Set text properties
+		
+		return rv;
+	}
+	
+	/**
 	 * Determines the Cohen-Sutherland clipping flags.
 	 *
 	 * @param __x Input X coordinate.
@@ -1464,38 +1433,95 @@ public abstract class AbstractArrayGraphics
 	}
 	
 	/**
-	 * Draws the given character sequence.
+	 * Draws the given text object.
 	 *
-	 * @param __s The sequence to draw.
-	 * @param __o The offset into the sequence.
-	 * @param __l The number of characters to draw.
-	 * @param __x The X coordinate.
-	 * @param __y The Y coordinate.
-	 * @param __anchor The anchor point.
+	 * @param __t The text object to draw.
+	 * @param __x The X position.
+	 * @param __y The Y position.
+	 * @param __anchor The, this just adjusts determines how the actual text
+	 * box region is drawn. If baseline is used, Y is just offset by the
+	 * baseline for the first character and not the entire block size.
 	 * @throws NullPointerException On null arguments.
-	 * @throws StringIndexOutOfBoundsException If the offset and/or length
-	 * are negative or exceed the sequence bounds.
-	 * @since 2018/11/24
+	 * @since 2018/11/29
 	 */
-	private final void __drawCharSequence(CharSequence __s, int __o, int __l,
-		int __x, int __y, int __anchor)
-		throws NullPointerException, StringIndexOutOfBoundsException
+	final void __drawText(Text __t, int __x, int __y, int __anchor)
+		throws NullPointerException
 	{
-	}
-	
-	/**
-	 * Draws the given character directly, no translation is used.
-	 *
-	 * @param __c The character to draw.
-	 * @param __f The font to use.
-	 * @param __color The color to draw in.
-	 * @param __x The X coordinate, this must be pre-translated.
-	 * @param __y The Y coordinate, this must be pre-translated.
-	 */
-	private final void __drawDirectChar(char __c, Font __f, int __color,
-		int __x, int __y)
-	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Translate to the displayed coordinate space
+		__x += this.transx;
+		__y += this.transy;
+		
 		throw new todo.TODO();
+		/*
+		// Default anchor point
+		if (__anchor == 0)
+			__anchor = TOP | LEFT;
+		
+		// Translate
+		__x += this.transx;
+		__y += this.transy;
+		
+		// Need the font
+		Font font = this.font;
+		
+		// Extract parameters from the font
+		int style = font.getStyle(),
+			pixelsize = font.getPixelSize(),
+			height = font.getHeight(),
+			ascent = font.getAscent();
+		
+		// Horizontal anchoring (This is the most complicated)
+		if ((__anchor & (HCENTER | RIGHT)) != 0)
+		{
+			int strw = font.stringWidth(__s);
+			
+			if ((__anchor & HCENTER) != 0)
+				__x -= (strw >> 1);
+			else
+				__x -= strw;
+		}
+		
+		// Vertical anchoring
+		if ((__anchor & BOTTOM) != 0)
+			__y -= height;
+		else if ((__anchor & BASELINE) != 0)
+			__y -= height - font.getBaselinePosition();
+		
+		// Need to remember the base positions
+		int basex = __x,
+			basey = __y;
+		
+		// Style properties
+		boolean isunderline = ((style & Font.STYLE_UNDERLINED) != 0),
+			isbold = ((style & Font.STYLE_BOLD) != 0),
+			isitalic = ((style & Font.STYLE_ITALIC) != 0);
+		
+		// Draw each character individually
+		int color = this.color;
+		for (int e = __o + __l; __o < e; __o++)
+		{
+			char c = __s.charAt(__o);
+			
+			// Carriage return and newline
+			if (c == '\r')
+				__x = basex;
+			else if (c == '\n')
+			{
+				__x = basex;
+				__y += height;
+			}
+			
+			// Otherwise render this character
+			else
+			{
+				// Render
+				this.__drawDirectChar(c, font, color, __x, __y);
+			}
+		}
+		*/
 	}
 }
 
