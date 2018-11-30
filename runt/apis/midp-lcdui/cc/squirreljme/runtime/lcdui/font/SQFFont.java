@@ -47,6 +47,9 @@ public final class SQFFont
 	/** The ascent of the font. */
 	public final byte ascent;
 	
+	/** The maximum ascent of the font. */
+	public final byte maxascent;
+	
 	/** The descent of the font. */
 	public final byte descent;
 	
@@ -97,6 +100,10 @@ public final class SQFFont
 		this._charwidths = __cw;
 		this._isvalidchar = __ivc;
 		this._charbmp = __bmp;
+		
+		// The maximum ascent is just the ascent since all SQFs have the
+		// same properties
+		this.maxascent = __a;
 	}
 	
 	/**
