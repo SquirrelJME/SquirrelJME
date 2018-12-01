@@ -97,14 +97,14 @@ public final class IntegerRGB888ArrayGraphics
 				__scanoff = resetscanoff;
 				
 				// Draw each scan from the bitmap
-				for (; __scanoff < __scanlen; __scanoff++)
+				for (; __scanoff < __scanlen; __scanoff++, p++)
 				{
 					// Get the byte that represents the scan here
 					byte b = __bmp[bi + (__scanoff >>> 3)];	
 					
 					// If there is a pixel here, draw it
 					if ((b & (1 << (__scanoff & 0x7))) != 0)
-						data[p++] = __color;
+						data[p] = __color;
 				}
 			}
 		}
