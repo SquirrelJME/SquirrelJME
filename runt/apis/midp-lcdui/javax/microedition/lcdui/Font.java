@@ -188,10 +188,25 @@ public final class Font
 		return new Font(this._name, __style, __pxs);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/01
+	 */
 	@Override
 	public boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		// Same object?
+		if (__o == this)
+			return true;
+		
+		// Not a font?
+		if (!(__o instanceof Font))
+			return false;
+		
+		Font o = (Font)__o;
+		return this._pixelsize == o._pixelsize &&
+			this._style == o._style &&
+			this._name.equals(o._name);
 	}
 	
 	/**
@@ -320,7 +335,9 @@ public final class Font
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		return this._name.hashCode() ^
+			this._style ^
+			this._pixelsize;
 	}
 	
 	public boolean isBold()

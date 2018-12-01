@@ -321,9 +321,14 @@ public class Text
 		if (__f == null)
 			throw new NullPointerException("NARG");
 		
-		this._defaultfont = __f;
+		// If this is the same font, just ignore it
+		Font olddefaultfont = this._defaultfont;
+		if (__f.equals(olddefaultfont))
+			return;
 		
-		// Becomes dirty
+		// Changing the font becomes dirty since we need to measure the
+		// metrics again
+		this._defaultfont = __f;
 		this._dirty = true;
 	}
 	
