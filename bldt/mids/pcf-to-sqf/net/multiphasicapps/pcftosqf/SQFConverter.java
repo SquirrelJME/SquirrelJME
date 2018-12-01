@@ -104,9 +104,8 @@ public class SQFConverter
 			// Get the index
 			int pcfdx = chartoglyph.get(i);
 			
-			// Extract the width, use the right side bearing since this is the
-			// edge of the font
-			int cw = __pcf.metrics.get(pcfdx).rightsidebearing;
+			// The width of this font
+			int cw = __pcf.metrics.get(pcfdx).charwidth;
 			charwidths[i] = (byte)cw;
 			
 			// Use greater width

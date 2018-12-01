@@ -208,6 +208,10 @@ public final class SQFFont
 			int charwidth = (int)charwidths[ch],
 				gapw = charwidth + 1;
 			
+			// Force font to single character
+			if (charwidth < 1)
+				charwidth = 1;
+			
 			// Put description line
 			sb[0].append(String.format(
 				"%-" + charwidth + "." + charwidth + "s",
