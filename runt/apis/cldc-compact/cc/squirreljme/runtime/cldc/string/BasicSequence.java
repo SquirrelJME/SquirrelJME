@@ -21,7 +21,7 @@ package cc.squirreljme.runtime.cldc.string;
  *
  * @since 2018/02/24
  */
-public interface BasicSequence
+public abstract class BasicSequence
 {
 	/**
 	 * Returns the character at the given index.
@@ -42,5 +42,21 @@ public interface BasicSequence
 	 * @since 2018/02/24
 	 */
 	public abstract int length();
+	
+	
+	/**
+	 * Returns the subsequence of this sequence.
+	 *
+	 * @param __s The starting point.
+	 * @param __e The ending point.
+	 * @return The subsequence.
+	 * @throws IndexOutOfBoundsException If the sequence is out of bounds.
+	 * @since 2018/12/01
+	 */
+	public SubBasicSequenceSequence subSequence(int __s, int __e)
+		throws IndexOutOfBoundsException
+	{
+		return new SubBasicSequenceSequence(this, __s, __e);
+	}
 }
 

@@ -18,7 +18,7 @@ package cc.squirreljme.runtime.cldc.string;
  * @since 2018/09/16
  */
 public final class CharArraySequence
-	implements BasicSequence
+	extends BasicSequence
 {
 	/** The array data. */
 	protected final char[] data;

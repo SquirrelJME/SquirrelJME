@@ -16,7 +16,7 @@ package cc.squirreljme.runtime.cldc.string;
  * @since 2018/10/12
  */
 public final class SingleCharacterSequence
-	implements BasicSequence
+	extends BasicSequence
 {
 	/** The value to store. */
 	protected final char value;

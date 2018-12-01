@@ -16,7 +16,7 @@ package cc.squirreljme.runtime.cldc.string;
  * @since 2018/09/20
  */
 public final class CharSequenceSequence
-	implements BasicSequence
+	extends BasicSequence
 {
 	/** The sequence to wrap. */
 	protected final CharSequence sequence;

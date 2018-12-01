@@ -20,7 +20,7 @@ package cc.squirreljme.runtime.cldc.string;
  * @since 2018/11/11
  */
 public final class ClassConstantCharArraySequence
-	implements BasicSequence
+	extends BasicSequence
 {
 	/** The array data. */
 	protected final char[] data;
