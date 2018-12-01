@@ -178,6 +178,11 @@ public class Text
 	 *
 	 * @param __i The character to get.
 	 * @param __ext The extents of the character: x, y, width, height.
+	 * @throws IllegalArgumentException If the extend array has a length less
+	 * than four.
+	 * @throws IndexOutOfBoundsException If the character index is out of
+	 * bounds.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/01
 	 */
 	public void getCharExtent(int __i, int[] __ext)
@@ -186,10 +191,6 @@ public class Text
 	{
 		if (__ext == null)
 			throw new NullPointerException("NARG");
-		
-		// {@squirreljme.error EB2q Extent array length must at least be 4.}
-		if (__ext.length < 4)
-			throw new IllegalArgumentException("EB2q");
 			
 		// Update
 		if (this._dirty)
@@ -199,16 +200,30 @@ public class Text
 		// the height of it
 		__Storage__ storage = this._storage;
 		
+		// Exceeds storage size?
+		if (__i >= storage._size)
+			throw new IndexOutOfBoundsException("IOOB");
+		
 		// Default font?
 		Font font = storage._font[__i];
 		if (font == null)
 			font = this._defaultfont;
 		
 		// Set extents, the width and height come from the character data
-		__ext[0] = storage._x[__i];
-		__ext[1] = storage._y[__i];
-		__ext[2] = font.charWidth(storage._chars[__i]);
-		__ext[3] = font.getHeight();
+		try
+		{
+			__ext[0] = storage._x[__i];
+			__ext[1] = storage._y[__i];
+			__ext[2] = font.charWidth(storage._chars[__i]);
+			__ext[3] = font.getHeight();
+		}
+		catch (IndexOutOfBoundsException e)
+		{
+			// {@squirreljme.error EB2q Extent array length must at least
+			// be 4.}
+			if (__ext.length < 4)
+				throw new IllegalArgumentException("EB2q");
+		}
 	}
 	
 	public int getCharIndex(int __x, int __y)
@@ -231,9 +246,26 @@ public class Text
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Gets the foreground color for a character.
+	 *
+	 * @param __i The character to get.
+	 * @return The color for that character.
+	 * @since 2018/12/01
+	 */
 	public int getForegroundColor(int __i)
+		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		__Storage__ storage = this._storage;
+		
+		// Exceeds storage size?
+		if (__i >= storage._size)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Only use a color if one was set
+		if (storage._iscolor[__i])
+			return storage._color[__i];
+		return this._defaultcolor;
 	}
 	
 	/**
@@ -806,6 +838,10 @@ public class Text
 		Font[] _font =
 			new Font[0];
 		
+		/** Has color? */
+		boolean[] _iscolor =
+			new boolean[0];
+		
 		/** Color storage. */
 		int[] _color =
 			new int[0];
@@ -841,6 +877,7 @@ public class Text
 			// Storage areas
 			char[] chars = this._chars;
 			Font[] font = this._font;
+			boolean[] iscolor = this._iscolor;
 			int[] color = this._color;
 			short[] x = this._x;
 			short[] y = this._y;
@@ -856,6 +893,7 @@ public class Text
 				// Resize all the arrays
 				this._chars = (chars = Arrays.copyOf(chars, newlimit));
 				this._font = (font = Arrays.<Font>copyOf(font, newlimit));
+				this._iscolor = (iscolor = Arrays.copyOf(iscolor, newlimit));
 				this._color = (color = Arrays.copyOf(color, newlimit));
 				this._x = (x = Arrays.copyOf(x, newlimit));
 				this._y = (y = Arrays.copyOf(y, newlimit));
@@ -873,6 +911,7 @@ public class Text
 			{
 				chars[o] = chars[i];
 				font[o] = font[i];
+				iscolor[o] = iscolor[i];
 				color[o] = color[i];
 			}
 			

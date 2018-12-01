@@ -1432,77 +1432,35 @@ public abstract class AbstractArrayGraphics
 			throw new NullPointerException("NARG");
 		
 		// Translate to the displayed coordinate space
-		__x += this.transx;
-		__y += this.transy;
+		/*__x += this.transx;
+		__y += this.transy;*/
 		
-		throw new todo.TODO();
-		/*
-		// Default anchor point
-		if (__anchor == 0)
-			__anchor = TOP | LEFT;
-		
-		// Translate
-		__x += this.transx;
-		__y += this.transy;
-		
-		// Need the font
-		Font font = this.font;
-		
-		// Extract parameters from the font
-		int style = font.getStyle(),
-			pixelsize = font.getPixelSize(),
-			height = font.getHeight(),
-			ascent = font.getAscent();
-		
-		// Horizontal anchoring (This is the most complicated)
-		if ((__anchor & (HCENTER | RIGHT)) != 0)
+		// Need to store the properties since drawing of the text will
+		// change how characters are drawn
+		int oldcolor = this.color;
+		try
 		{
-			int strw = font.stringWidth(__s);
-			
-			if ((__anchor & HCENTER) != 0)
-				__x -= (strw >> 1);
-			else
-				__x -= strw;
-		}
-		
-		// Vertical anchoring
-		if ((__anchor & BOTTOM) != 0)
-			__y -= height;
-		else if ((__anchor & BASELINE) != 0)
-			__y -= height - font.getBaselinePosition();
-		
-		// Need to remember the base positions
-		int basex = __x,
-			basey = __y;
-		
-		// Style properties
-		boolean isunderline = ((style & Font.STYLE_UNDERLINED) != 0),
-			isbold = ((style & Font.STYLE_BOLD) != 0),
-			isitalic = ((style & Font.STYLE_ITALIC) != 0);
-		
-		// Draw each character individually
-		int color = this.color;
-		for (int e = __o + __l; __o < e; __o++)
-		{
-			char c = __s.charAt(__o);
-			
-			// Carriage return and newline
-			if (c == '\r')
-				__x = basex;
-			else if (c == '\n')
+			// Draw each character according to their metrics
+			int[] metrics = new int[4];
+			for (int i = 0, n = __t.getTextLength(); i < n; i++)
 			{
-				__x = basex;
-				__y += height;
-			}
-			
-			// Otherwise render this character
-			else
-			{
-				// Render
-				this.__drawDirectChar(c, font, color, __x, __y);
+				// Set color to the foreground color of this character
+				this.color = __t.getForegroundColor(i);
+				
+				// Get the metrics for the character
+				__t.getCharExtent(i, metrics);
+				
+				// For now just draw a box for each character
+				this.drawRect(__x + metrics[0], __y + metrics[1],
+					metrics[2], metrics[3]);
 			}
 		}
-		*/
+		
+		// Just in case revert properties
+		finally
+		{
+			this.color = oldcolor;
+		}
 	}
 	
 	/**
