@@ -103,7 +103,7 @@ public final class IntegerRGB888ArrayGraphics
 					byte b = __bmp[bi + (__scanoff >>> 3)];	
 					
 					// If there is a pixel here, draw it
-					if ((b & (1 << (__scanoff & 0x3))) != 0)
+					if ((b & (1 << (__scanoff & 0x7))) != 0)
 						data[p++] = __color;
 				}
 			}
