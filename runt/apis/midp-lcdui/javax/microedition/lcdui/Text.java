@@ -84,7 +84,8 @@ public class Text
 	private int _indentation;
 	
 	/** The direction of the text. */
-	private int _direction;
+	private int _direction =
+		DIRECTION_NEUTRAL;
 	
 	/** Scrolling offset (scrolled up by n pixels). */
 	private int _scrolloffset;
