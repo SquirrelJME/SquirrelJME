@@ -1457,16 +1457,26 @@ public abstract class AbstractArrayGraphics
 		// Cache the default font in the event it is never changed ever
 		Font lastfont = __t.getFont();
 		SQFFont sqf = SQFFont.cacheFont(lastfont);
+		byte[] bmp = new byte[sqf.charBitmapSize()];
 		
 		// Need to store the properties since drawing of the text will
 		// change how characters are drawn
 		int oldcolor = this.color;
 		try
 		{
+			// Read in all the text characters
+			int n = __t.getTextLength();
+			String chars = __t.getText(0, n);
+			
 			// Draw each character according to their metrics
 			int[] metrics = new int[4];
-			for (int i = 0, n = __t.getTextLength(); i < n; i++)
+			for (int i = 0; i < n; i++)
 			{
+				// Ignore certain characters
+				char c = chars.charAt(i);
+				if (c == '\r' || c == '\n')
+					continue;
+				
 				// Set color to the foreground color of this character
 				this.color = __t.getForegroundColor(i);
 				
@@ -1476,6 +1486,7 @@ public abstract class AbstractArrayGraphics
 				{
 					lastfont = drawfont;
 					sqf = SQFFont.cacheFont(lastfont);
+					bmp = new byte[sqf.charBitmapSize()];
 				}
 				
 				// Get the metrics for the character
@@ -1498,6 +1509,9 @@ public abstract class AbstractArrayGraphics
 					(__x + metrics[0]) - this.transx,
 					(__y + metrics[1]) - this.transy,
 					metrics[2], metrics[3]);
+				
+				// Load the bitmap for the character to draw it
+				int bps = sqf.loadCharBitmap(c, bmp);
 			}
 		}
 		

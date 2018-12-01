@@ -10,6 +10,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import java.util.Arrays;
 
 /**
@@ -371,9 +372,28 @@ public class Text
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the text contained within this object.
+	 *
+	 * @param __i The starting index.
+	 * @param __l The length.
+	 * @return The string for the text.
+	 * @throws IndexOutOfBoundsException If the index and/or length exceed
+	 * the text bounds.
+	 * @since 2018/12/01
+	 */
 	public String getText(int __i, int __l)
+		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		__Storage__ storage = this._storage;
+		
+		// Exceeds storage size?
+		int size = storage._size;
+		if (__l < 0 || __i >= size || (__i + __l) > size)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Create string from it
+		return new String(storage._chars, __i, __l);
 	}
 	
 	/**

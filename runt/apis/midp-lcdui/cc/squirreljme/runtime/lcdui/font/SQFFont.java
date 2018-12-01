@@ -57,6 +57,9 @@ public final class SQFFont
 	/** The bytes per scan. */
 	public final byte bytesperscan;
 	
+	/** The number of bytes that make up a character's bitmap. */
+	public final int charbitmapsize;
+	
 	/**
 	 * The leading of the font.
 	 * It is unspecified what this value actually should be so for now it is
@@ -101,10 +104,23 @@ public final class SQFFont
 		this._charwidths = __cw;
 		this._isvalidchar = __ivc;
 		this._charbmp = __bmp;
+		this.charbitmapsize = __bps * __ph;
 		
 		// The maximum ascent is just the ascent since all SQFs have the
 		// same properties
 		this.maxascent = __a;
+	}
+	
+	/**
+	 * Returns the number of bytes each character requires to store its
+	 * bitmap data.
+	 *
+	 * @return The character bitmap size.
+	 * @since 2018/12/01
+	 */
+	public final int charBitmapSize()
+	{
+		return this.charbitmapsize;
 	}
 	
 	/**
@@ -114,12 +130,41 @@ public final class SQFFont
 	 * @return The width of the given character.
 	 * @since 2018/11/30
 	 */
-	public int charWidth(char __c)
+	public final int charWidth(char __c)
 	{
 		byte[] charwidths = this._charwidths;
 		if (__c > 256 || !this._isvalidchar[__c])
 			return charwidths[0];
 		return charwidths[__c];
+	}
+	
+	/**
+	 * Loads the bitmap
+	 *
+	 * @param __c The character to get.
+	 * @param __bmp The output bitmap.
+	 * @return The bytes per scanline.
+	 * @throws IndexOutOfBoundsException If the bitmap is out of bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/12/01
+	 */
+	public final int loadCharBitmap(char __c, byte[] __bmp)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		// Illegal character? Use the replacement
+		if (__c > 256 || !this._isvalidchar[__c])
+			__c = 0;
+		
+		// Need to know this to copy each scanline of the font
+		int charbitmapsize = this.charbitmapsize;
+		
+		// Copy bitmap data
+		byte[] charbmp = this._charbmp;
+		for (int o = 0, i = __c * charbitmapsize; o < charbitmapsize; o++, i++)
+			__bmp[o] = charbmp[i];
+		
+		// Return the bytes per scan
+		return this.bytesperscan;
 	}
 	
 	/**
