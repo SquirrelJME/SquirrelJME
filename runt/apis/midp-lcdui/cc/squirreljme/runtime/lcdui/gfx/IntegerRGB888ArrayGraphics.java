@@ -95,10 +95,11 @@ public final class IntegerRGB888ArrayGraphics
 			for (; __lineoff < __linelen; __lineoff++, __dsy++)
 			{
 				// Reset parameters for this line
+				int p = basep;
 				__scanoff = resetscanoff;
 				
 				// Draw each scan from the bitmap
-				for (int p = basep; __scanoff < __scanlen; __scanoff++, p++)
+				for (; __scanoff < __scanlen; __scanoff++, p++)
 				{
 					// Get the byte that represents the scan here
 					byte b = __bmp[bi + (__scanoff >>> 3)];	
