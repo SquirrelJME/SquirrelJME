@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import javax.microedition.lcdui.Font;
 
 /**
  * This represents a SQF Font (SquirrelJME Font) which is a compacted and
@@ -38,7 +39,7 @@ import java.util.Map;
 public final class SQFFont
 {
 	/** SQF Font data. */
-	private static final Map<String, SQFFont> _FONT_CACHE =
+	private static final Map<SQFFontSpecifier, SQFFont> _FONT_CACHE =
 		new HashMap<>();
 	
 	/** The pixel height of the font. */
@@ -125,53 +126,77 @@ public final class SQFFont
 	 * Caches the SQF font.
 	 *
 	 * @param __n The name of the font.
+	 * @param __pxs The pixel size of the font.
 	 * @return The font.
 	 * @throws IllegalArgumentException If the font does not exist or is not
 	 * valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/29
 	 */
-	public static final SQFFont cacheFont(String __n)
+	public static final SQFFont cacheFont(String __n, int __pxs)
 		throws IllegalArgumentException, NullPointerException
 	{
 		if (__n == null)
 			throw new NullPointerException("NARG");	
 		
-		Map<String, SQFFont> cache = _FONT_CACHE;
+		// Build specifier
+		SQFFontSpecifier spec = new SQFFontSpecifier(__n, __pxs);
+		
+		Map<SQFFontSpecifier, SQFFont> cache = _FONT_CACHE;
 		synchronized (cache)
 		{
 			// Already cached?
-			SQFFont rv = cache.get(__n);
+			SQFFont rv = cache.get(spec);
 			if (rv != null)
 				return rv;
 			
 			// Read the SQF Font
-			try (InputStream in = SQFFont.class.getResourceAsStream(__n))
+			try (InputStream in = SQFFont.class.getResourceAsStream(
+				spec.toFileName()))
 			{
 				// {@squirreljme.error EB2l The font does not exist.
-				// (The name)}
+				// (The name; The pixel size)}
 				if (in == null)
 					throw new IllegalArgumentException(
-						String.format("EB2l %s", __n));
+						String.format("EB2l %s %d", __n, __pxs));
 				
 				// Read font data
 				rv = SQFFont.read(in);
 				
 				// Cache the data
-				cache.put(__n, rv);
+				cache.put(spec, rv);
 			}
 			
 			// {@squirreljme.error EB2m Could not load the font data.
-			// (The name)}
+			// (The name; The pixel size)}
 			catch (IOException e)
 			{
 				throw new IllegalArgumentException(
-					String.format("EB2m %s", __n), e);
+					String.format("EB2m %s %d", __n, __pxs), e);
 			}
 			
 			// Use it!
 			return rv;
 		}
+	}
+	
+	/**
+	 * Caches the SQF font based on the passed font object.
+	 *
+	 * @param __f The font to cache.
+	 * @return The SQF data for this font.
+	 * @throws IllegalArgumentException If the font does not exist or is not
+	 * valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/29
+	 */
+	public static final SQFFont cacheFont(Font __f)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
+		return SQFFont.cacheFont(__f.getFontName(), __f.getPixelSize());
 	}
 	
 	/**
