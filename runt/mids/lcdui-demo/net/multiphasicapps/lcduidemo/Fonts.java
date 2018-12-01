@@ -108,8 +108,8 @@ public class Fonts
 				__g.drawString("The quick gray squirrel burried all of " +
 					"her acorns.", x, y, Graphics.BASELINE);
 				
-				// Move position
-				y += f.getHeight();
+				// Move position with some extra room
+				y += f.getHeight() + 5;
 			}
 		}
 	}
