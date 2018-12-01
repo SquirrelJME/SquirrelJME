@@ -47,10 +47,6 @@ public class TestFont
 				// Try to read
 				SQFFont f = SQFFont.read(in);
 				
-				// Debug print glyph format
-				if (s.equals("monospace-16.sqf"))
-					f.printGlyphs(System.err);
-				
 				// Did read
 				this.secondary(s, true);
 			}
