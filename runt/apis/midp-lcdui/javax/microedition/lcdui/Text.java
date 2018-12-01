@@ -17,6 +17,8 @@ import java.util.Arrays;
  * such. It handles different fonts, colors, and styles on a per character
  * basis and performs all the needed operations to support text drawing.
  *
+ * The color defaults to {@code Display.getColor(Display.COLOR_FOREGROUND)}.
+ *
  * @since 2018/11/29
  */
 public class Text
@@ -54,6 +56,14 @@ public class Text
 	
 	/** The height. */
 	private int _height;
+	
+	/** The default font. */
+	private Font _defaultfont =
+		Font.getDefaultFont();
+	
+	/** The default foreground color. */
+	private int _defaultcolor =
+		Display.getDisplays(0)[0].getColor(Display.COLOR_FOREGROUND);
 	
 	/** Does character placement have to be updated. */
 	private boolean _dirty;
@@ -268,6 +278,9 @@ public class Text
 		char[] chars = storage._chars;
 		for (int i = 0; i < sn; i++)
 			chars[__i++] = __s.charAt(i);
+		
+		// Becomes dirty
+		this._dirty = true;
 	}
 	
 	public int lastRenderedIndex()
@@ -295,9 +308,23 @@ public class Text
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Sets the default font to use when no font has been specified.
+	 *
+	 * @param __f The default font to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/30
+	 */
 	public void setFont(Font __f)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
+		this._defaultfont = __f;
+		
+		// Becomes dirty
+		this._dirty = true;
 	}
 	
 	public void setFont(Font __f, int __i, int __l)
@@ -305,9 +332,17 @@ public class Text
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Sets the default foreground color to use when drawing.
+	 *
+	 * @param __argb The color to use.
+	 * @since 2018/12/01
+	 */
 	public void setForegroundColor(int __argb)
 	{
-		throw new todo.TODO();
+		// This does not dirty anything because it is just a color change,
+		// nothing needs to be recomputed
+		this._defaultcolor = __argb;
 	}
 	
 	public void setForegroundColor(int __argb, int __i, int __l)
