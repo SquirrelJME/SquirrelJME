@@ -101,15 +101,23 @@ public class Fonts
 			// Draw a sample for each font, for each size!
 			for (Font f : this._fonts)
 			{
+				__g.setColor(0x00FF00);
+				__g.drawLine(33 + 191, 0, 33 + 191, 900);
+				__g.setColor(0x000000);
+				__g.setClip(33, 17, 192, 148);
+				
 				// Use this font
 				__g.setFont(f);
 				
 				// Draw sample
 				__g.drawString("The quick gray squirrel burried all of " +
-					"her acorns! 01234567", x, y, Graphics.BASELINE);
+					"her acorns! 0123456789", x, y, Graphics.BASELINE);
 				
 				// Move position with some extra room
 				y += f.getHeight() + 5;
+				
+				// Slowly creep the x down
+				x -= 2;
 			}
 		}
 	}

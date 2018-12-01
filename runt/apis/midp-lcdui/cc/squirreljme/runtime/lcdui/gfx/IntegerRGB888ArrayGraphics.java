@@ -69,11 +69,18 @@ public final class IntegerRGB888ArrayGraphics
 			pitch = this.pitch;
 		
 		// Treat lens as end indexes
+		int origscanlen = __scanlen;
 		__scanlen += __scanoff;
 		__linelen += __lineoff;
 		
 		// Remember the old scan offset, because we reset
 		int resetscanoff = __scanoff;
+		
+		// Determine the draw pointer for this line
+		int basep = offset + (__dsy * pitch) + __dsx;
+		
+		// Base source offset line according to the line offset
+		int bi = __lineoff * __bytesperscan;
 		
 		// Blending?
 		if (__blend)
@@ -87,17 +94,11 @@ public final class IntegerRGB888ArrayGraphics
 			// Drew each line
 			for (; __lineoff < __linelen; __lineoff++, __dsy++)
 			{
-				// Determine the draw pointer for this line
-				int p = offset + (__dsy * pitch) + __dsx;
-				
-				// Base source offset line according to the line offset
-				int bi = __lineoff * __bytesperscan;
-				
 				// Reset parameters for this line
 				__scanoff = resetscanoff;
 				
 				// Draw each scan from the bitmap
-				for (; __scanoff < __scanlen; __scanoff++, p++)
+				for (int p = basep; __scanoff < __scanlen; __scanoff++, p++)
 				{
 					// Get the byte that represents the scan here
 					byte b = __bmp[bi + (__scanoff >>> 3)];	
@@ -106,6 +107,10 @@ public final class IntegerRGB888ArrayGraphics
 					if ((b & (1 << (__scanoff & 0x7))) != 0)
 						data[p] = __color;
 				}
+				
+				// Move the source and dest pointers to the next line
+				basep += pitch;
+				bi += __bytesperscan;
 			}
 		}
 	}
