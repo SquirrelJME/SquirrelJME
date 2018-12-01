@@ -358,69 +358,40 @@ public class Display
 	 * {@link #COLOR_IDLE_HIGHLIGHTED_FOREGROUND}
 	 *
 	 * @param __c The color to get.
-	 * @return The RGB color for the specified user interface item.
+	 * @return The ARGB color for the specified user interface item.
 	 * @throws IllegalArgumentException If the specified color is not valid.
 	 * @since 2016/10/14
 	 */
 	public int getColor(int __c)
 		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
-		/*
-		// Depends
-		DisplayProperty p;
 		switch (__c)
 		{
-			case COLOR_BACKGROUND:
-				p = DisplayProperty.COLOR_BACKGROUND;
-				break;
-				
 			case COLOR_BORDER:
-				p = DisplayProperty.COLOR_BORDER;
-				break;
-				
-			case COLOR_FORsEGROUND:
-				p = DisplayProperty.COLOR_FOREGROUND;
-				break;
-				
-			case COLOR_HIGHLIGHTED_BACKGROUND:
-				p = DisplayProperty.COLOR_HIGHLIGHTED_BACKGROUND;
-				break;
-				
-			case COLOR_HIGHLIGHTED_BORDER:
-				p = DisplayProperty.COLOR_HIGHLIGHTED_BORDER;
-				break;
-				
-			case COLOR_HIGHLIGHTED_FOREGROUND:
-				p = DisplayProperty.COLOR_HIGHLIGHTED_FOREGROUND;
-				break;
-				
+				return 0x00_000000;
+			
+			case COLOR_BACKGROUND:
 			case COLOR_IDLE_BACKGROUND:
-				p = DisplayProperty.COLOR_IDLE_BACKGROUND;
-				break;
-				
+				return 0x00_FFFFFF;
+			
+			case COLOR_FOREGROUND:
 			case COLOR_IDLE_FOREGROUND:
-				p = DisplayProperty.COLOR_IDLE_FOREGROUND;
-				break;
-				
+				return 0x00_000000;
+			
+			case COLOR_HIGHLIGHTED_BORDER:
+			case COLOR_HIGHLIGHTED_BACKGROUND:
 			case COLOR_IDLE_HIGHLIGHTED_BACKGROUND:
-				p = DisplayProperty.COLOR_IDLE_HIGHLIGHTED_BACKGROUND;
-				break;
-				
+				return 0x00_000080;
+			
+			case COLOR_HIGHLIGHTED_FOREGROUND:
 			case COLOR_IDLE_HIGHLIGHTED_FOREGROUND:
-				p = DisplayProperty.COLOR_IDLE_HIGHLIGHTED_FOREGROUND;
-				break;
-				
-				// {@squirreljme.error EB1b The specified color is not valid.
-				// (The color ID)}
-			default:
-				throw new IllegalArgumentException(String.format("EB1b %d",
-					__c));
-		}
+				return 0x00_FFFFFF;
 		
-		// Get color
-		return this._properties[p.ordinal()];
-		*/
+				// {@squirreljme.error EB2p Unknown color specifier. (The
+				// color specifier)}
+			default:
+				throw new IllegalArgumentException("EB2p " + __c);
+		}
 	}
 	
 	public CommandLayoutPolicy getCommandLayoutPolicy()

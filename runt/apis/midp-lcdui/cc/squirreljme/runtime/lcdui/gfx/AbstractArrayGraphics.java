@@ -1395,8 +1395,6 @@ public abstract class AbstractArrayGraphics
 		
 		// Get the font, or fallback to the default if it was not set
 		Font font = this.font;
-		if (font == null)
-			font = Font.getDefaultFont();
 		
 		// Setup, use a zero height for now since it will be calculated after
 		// the font and such has been set
@@ -1404,7 +1402,8 @@ public abstract class AbstractArrayGraphics
 			font.stringWidth(__s), 0);
 		
 		// Set text properties
-		rv.setFont(font);
+		if (font != null)
+			rv.setFont(font);
 		rv.setForegroundColor(this.color);
 		
 		// Set the height to the required height of the box now that the
