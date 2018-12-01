@@ -62,6 +62,15 @@ public enum GraphicsFunction
 	/** Fill rectangle. */
 	FILL_RECT,
 	
+	/** Sets the fonts for the graphics. */
+	SET_FONT,
+	
+	/** Gets the font to use for drawing. */
+	GET_FONT,
+	
+	/** Draw sub-characters. */
+	DRAW_SUB_CHARS,
+	
 	/** End. */
 	;
 	
@@ -94,6 +103,9 @@ public enum GraphicsFunction
 			case 12:	return GET_ALPHA_COLOR;
 			case 13:	return SET_ALPHA_COLOR;
 			case 14:	return FILL_RECT;
+			case 15:	return SET_FONT;
+			case 16:	return GET_FONT;
+			case 17:	return DRAW_SUB_CHARS;
 			
 				// {@squirreljme.error EB2d Invalid graphics function.
 				// (The function ID)}

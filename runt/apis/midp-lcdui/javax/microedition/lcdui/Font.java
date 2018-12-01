@@ -258,9 +258,15 @@ public final class Font
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the name of this font.
+	 *
+	 * @return The font name.
+	 * @since 2018/12/01
+	 */
 	public String getFontName()
 	{
-		throw new todo.TODO();
+		return this._name;
 	}
 	
 	/**
