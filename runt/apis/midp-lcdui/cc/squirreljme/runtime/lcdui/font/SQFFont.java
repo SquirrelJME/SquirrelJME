@@ -13,6 +13,7 @@ package cc.squirreljme.runtime.lcdui.font;
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
 import javax.microedition.lcdui.Font;
@@ -169,6 +170,88 @@ public final class SQFFont
 		
 		// Return the bytes per scan
 		return this.bytesperscan;
+	}
+	
+	/**
+	 * Prints the glyph data to the given stream.
+	 *
+	 * @param __ps The stream to print to.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/12/01
+	 */
+	public final void printGlyphs(PrintStream __ps)
+		throws NullPointerException
+	{
+		if (__ps == null)
+			throw new NullPointerException("NARG");
+		
+		int pixelheight = this.pixelheight,
+			bytesperscan = this.bytesperscan,
+			bitsperscan = this.bitsperscan;
+		
+		// Setup string builders to handle each line
+		int pipecount = 0;
+		StringBuilder[] sb = new StringBuilder[pixelheight + 1];
+		for (int i = 0; i < pixelheight + 1; i++)
+			sb[i] = new StringBuilder();
+		
+		// Print each character
+		byte[] charwidths = this._charwidths,
+			charbmp = this._charbmp;
+		boolean[] isvalidchar = this._isvalidchar;
+		for (int ch = 0; ch < 256; ch++)
+		{
+			// Ignore unspecified characters
+			if (!isvalidchar[ch])
+				continue;
+			
+			int charwidth = (int)charwidths[ch],
+				gapw = charwidth + 1;
+			
+			// Put description line
+			sb[0].append(String.format(
+				"%-" + charwidth + "." + charwidth + "s",
+				String.format("%02x,%d", ch, charwidth)));
+			sb[0].append('|');
+			
+			// Draw each line
+			for (int y = 0; y < pixelheight; y++)
+			{
+				int p = (ch * bytesperscan * pixelheight) +
+					(y * bytesperscan);
+				
+				// Draw each column into the buffers
+				for (int x = 0; x < charwidth; x++)
+					sb[y + 1].append(
+						(((charbmp[p + (x >>> 3)] & (1 << (x & 0x7))) != 0) ?
+						'#' : '.'));
+				
+				// End in pipe
+				sb[y + 1].append('|');
+			}
+			
+			// Draw string builders and clear
+			pipecount += (charwidth + 1);
+			if (pipecount >= 70)
+			{
+				// Clear out
+				for (int i = 0, n = sb.length; i < n; i++)
+				{
+					__ps.println(sb[i]);
+					sb[i].setLength(0);
+				}
+				
+				// Reset for next time
+				pipecount = 0;
+			}
+		}
+		
+		// Clear out
+		if (pipecount > 0)
+		{
+			for (int i = 0, n = sb.length; i < n; i++)
+				__ps.println(sb[i]);
+		}
 	}
 	
 	/**
