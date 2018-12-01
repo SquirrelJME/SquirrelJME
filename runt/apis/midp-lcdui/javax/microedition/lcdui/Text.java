@@ -173,9 +173,42 @@ public class Text
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the extents of the given character.
+	 *
+	 * @param __i The character to get.
+	 * @param __ext The extents of the character: x, y, width, height.
+	 * @since 2018/12/01
+	 */
 	public void getCharExtent(int __i, int[] __ext)
+		throws IllegalArgumentException, IndexOutOfBoundsException,
+			NullPointerException
 	{
-		throw new todo.TODO();
+		if (__ext == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error EB2q Extent array length must at least be 4.}
+		if (__ext.length < 4)
+			throw new IllegalArgumentException("EB2q");
+			
+		// Update
+		if (this._dirty)
+			this.__undirty();
+		
+		// Need to extract the character and font to determine the width and
+		// the height of it
+		__Storage__ storage = this._storage;
+		
+		// Default font?
+		Font font = storage._font[__i];
+		if (font == null)
+			font = this._defaultfont;
+		
+		// Set extents, the width and height come from the character data
+		__ext[0] = storage._x[__i];
+		__ext[1] = storage._y[__i];
+		__ext[2] = font.charWidth(storage._chars[__i]);
+		__ext[3] = font.getHeight();
 	}
 	
 	public int getCharIndex(int __x, int __y)
@@ -420,9 +453,25 @@ public class Text
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Sets the height of the text.
+	 *
+	 * @param __h The new height.
+	 * @throws IllegalArgumentException If the height is negative.
+	 * @since 2018/12/01
+	 */
 	public void setHeight(int __h)
+		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error EB2r The height of a font cannot be
+		// negative.}
+		if (__h < 0)
+			throw new IllegalArgumentException("EB2r");
+		
+		// Just set the height, we do not need to clear the dirty bit because
+		// as long as the requiredheight is still within the height the text
+		// fits
+		this._height = __h;
 	}
 	
 	public void setHighlight(int __i, int __l)
@@ -479,9 +528,22 @@ public class Text
 		this._dirty = true;
 	}
 	
+	/**
+	 * Returns whether all of the text fits within the bounds of the box.
+	 *
+	 * @return If all of the text fits within the bounds of the box.
+	 * @since 2018/12/01
+	 */
 	public boolean textFits()
 	{
-		throw new todo.TODO();
+		// Update
+		if (this._dirty)
+			this.__undirty();
+		
+		// The text will fit if the height needed to display everything is at
+		// or below the height of the actual box. This is to make height
+		// changes not require a recalculate.
+		return this._requiredheight <= this._height;
 	}
 	
 	/**
@@ -494,19 +556,233 @@ public class Text
 	{
 		if (!this._dirty)
 			return;
+		todo.DEBUG.note("Text is dirty");
+		// Using this gobal stuff
+		Font defaultfont = this._defaultfont;
+		int width = this._width;
+		int height = this._height;
+		int spaceabove = this._spaceabove;
+		int spacebelow = this._spacebelow;
+		int align = this._align;
+		int indentation = this._indentation;
+		int direction = this._direction;
+		int scrolloffset = this._scrolloffset;
 		
-		if (true)
-			throw new todo.TODO();
+		// If the direction is neutral, this just becomes the locale default
+		// For now just treat it as LTR
+		if (direction == DIRECTION_NEUTRAL)
+			direction = DIRECTION_LTR;
+		
+		// Are we going right to left?
+		boolean dortl = (direction == DIRECTION_RTL);
+		
+		// Will use this storage stuff
+		__Storage__ storage = this._storage;
+		char[] chars = storage._chars;
+		Font[] font = storage._font;
+		short[] cx = storage._x;
+		short[] cy = storage._y;
+		
+		// The starting Y position is 
+		// The starting X and Y position is always zero, when other alignments
+		// and such are used they are calculated when the line ends
+		// X is offset by the indentation and Y is offset by the scrolling
+		int y = -scrolloffset + spaceabove,
+			nexty = y;
+		
+		// X starts with indentation, but that might be modified in right
+		// to left mode
+		int x = (dortl ? width : 0),
+			startx = x;
+		
+		// Cache parameters of font
+		Font lastfont = null;
+		int fontheight = 0,
+			fontascent = 0,
+			fontdescent = 0;
+		
+		// For the end of line calculator, these are the indexes which are
+		// used for each character
+		int linedxstart = 0,
+			linedxend = 0;
 			
-		// private int _requiredheight;
-		// private int _requiredlines;
-		// private int _spaceabove;
-		// private int _spacebelow;
-		// private int _align;
-		// private int _indentation;
-		// private int _direction;
-		// private int _scrolloffset;
+		// Redo handling of the current character, this will happen if
+		// the line overflows
+		boolean redo = false;
 		
+		// Go through and calculate every character line by line, carefully
+		// handling alignment and justification
+		// The line height is calculated so that if different fonts of
+		// different sizes are on the same line, they all are on the baseline
+		int linecount = 0,
+			linemaxheight = 0,
+			linemaxascent = 0,
+			linemaxdescent = 0;
+		for (int i = 0, n = storage._size; i <= n; i++)
+		{todo.DEBUG.note("Running %d <= %d", i, n);
+			// Since we need to handle line indentation, justification and
+			// otherwise we need a flag to know when the next line was hit
+			// to calculate
+			// But the last character always has line stuff done to handle the
+			// final alignment/directions and such
+			// For now only the X positions are considered because
+			boolean donextline = (i == n),
+				wasnewlinech = false;
+			if (!donextline)
+			{
+				// Need the character and font here, for metrics
+				char ch = chars[i];
+				Font f = font[i];
+				if (f == null)
+					f = defaultfont;
+				
+				// Font has changed?
+				if (lastfont != f)
+				{
+					// Cache parameters
+					fontheight = f.getHeight();
+					fontascent = f.getAscent();
+					fontdescent = f.getDescent();
+					
+					// Keep track so we do not need to update every time
+					lastfont = f;
+					
+					// Properties of the line changed due to the font?
+					// Cache them and check here accordingly
+					if (fontascent > linemaxascent)
+						linemaxascent = fontascent;
+					if (fontheight > linemaxheight)
+						linemaxheight = fontheight;
+					if (fontdescent > linemaxdescent)
+						linemaxdescent = fontdescent;
+				}
+				
+				// Ignore carriage returns
+				if (ch == '\r')
+					continue;
+				
+				// Newlines do go to the next line, if a newline was detected
+				// then the X position will be set to indentation, otherwise
+				// zero.
+				else if (ch == '\n')
+				{
+					donextline = true;
+					wasnewlinech = true;
+					
+					// Clear a redo
+					redo = false;
+				}
+				
+				// Draw every other character
+				else
+				{
+					// Get the properties of this character
+					int chw = f.charWidth(ch);
+					
+					// Calculate draw position and the next X position
+					// accordingly
+					int dx, nx;
+					if (dortl)
+					{
+						dx = x - chw;
+						nx = dx;
+					}
+					else
+					{
+						dx = x;
+						nx = x + chw;
+					}
+					
+					// Character is still within the bounds?
+					if (nx >= 0 && nx < width)
+					{
+						// Store current X position, this may change due to
+						// right to left mode
+						cx[i] = (short)dx;
+						
+						// Next character will be here
+						x = nx;
+						
+						// Store the ascent of the character in the Y slot,
+						// this is later used at end of line handler to
+						// correctly place each character on the baseline
+						cy[i] = (short)fontascent;
+						
+						// Clear a redo
+						redo = false;
+					}
+					
+					// Character exceeds the bounds, need to redo and handle
+					// end of line
+					else
+					{
+						// Redo should not be triggered twice
+						if (redo)
+							throw new todo.OOPS();
+						
+						donextline = true;
+						redo = true;
+					}
+				}
+			}
+			
+			// End of line reached, handle alignment, justification, etc.
+			// Perform any position updates as needed
+			if (donextline)
+			{
+				// The line ends on this index (this is either strlen, a
+				// newline, or a character placed on a newline so this is
+				// always going to be exclusive)
+				linedxend = i;
+				
+				// The next Y position is going to be the max font height
+				// for this line.
+				// An extra space above is only added if this was a newline,
+				// so that way the next line has the actual space above
+				nexty = y + linemaxheight + spacebelow +
+					(wasnewlinech ? spaceabove : 0);
+				
+				// Calculate the correct Y position for each character
+				for (int q = linedxstart; q < linedxend; q++)
+				{
+					// Get the original ascent of the character
+					int origascent = cy[q];
+					
+					// The Y position is just the difference in space between
+					// the line's max ascent and the character's actual ascent
+					cy[q] = (short)(y + (linemaxascent - origascent));
+				}
+				
+				// Handle non-default alignments
+				if ((dortl && align != ALIGN_RIGHT) ||
+					(!dortl && align != ALIGN_LEFT))
+				{
+					throw new todo.TODO();
+				}
+				
+				// A line was here so the line count goes up
+				linecount++;
+				
+				// If redoing this character, decrement i so that way it
+				// negates the loop increment
+				if (redo)
+					i--;
+				
+				// The new start index
+				linedxstart = i + 1;
+				
+				// Set the previously calculated Y position
+				y = nexty;
+			}
+		}
+		
+		// Update other needed parameters
+		// The required height is our nexty because either at the end or
+		// a newline this will always be set
+		this._requiredheight = nexty;
+		this._requiredlines = linecount;
+			
+		// Has been updated, no longer dirty
 		this._dirty = false;
 	}
 	
@@ -534,6 +810,14 @@ public class Text
 		int[] _color =
 			new int[0];
 		
+		/** X position. */
+		short[] _x =
+			new short[0];
+		
+		/** Y position. */
+		short[] _y =
+			new short[0];
+		
 		/** The number of stored characters and their attributes. */
 		int _size;
 		
@@ -558,6 +842,8 @@ public class Text
 			char[] chars = this._chars;
 			Font[] font = this._font;
 			int[] color = this._color;
+			short[] x = this._x;
+			short[] y = this._y;
 			
 			// Need to grow the buffer?
 			int newsize = size + __l,
@@ -571,6 +857,8 @@ public class Text
 				this._chars = (chars = Arrays.copyOf(chars, newlimit));
 				this._font = (font = Arrays.<Font>copyOf(font, newlimit));
 				this._color = (color = Arrays.copyOf(color, newlimit));
+				this._x = (x = Arrays.copyOf(x, newlimit));
+				this._y = (y = Arrays.copyOf(y, newlimit));
 				
 				// Set new limit
 				this._limit = (limit = newlimit);
@@ -578,12 +866,18 @@ public class Text
 			
 			// Move over all the entries to the index to make room for this
 			// start from the very right end
+			// X and Y are resized but their values are not moved around
+			// because the insertion of new elements makes things dirty and
+			// all of the X and Y values would be invalidated anyway
 			for (int o = newsize - 1, i = size - 1; i >= __i; o--, i--)
 			{
 				chars[o] = chars[i];
 				font[o] = font[i];
 				color[o] = color[i];
 			}
+			
+			// Set new size
+			this._size = newsize;
 		}
 	}
 }
