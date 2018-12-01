@@ -619,7 +619,7 @@ public class Text
 			linemaxascent = 0,
 			linemaxdescent = 0;
 		for (int i = 0, n = storage._size; i <= n; i++)
-		{todo.DEBUG.note("Running %d <= %d", i, n);
+		{
 			// Since we need to handle line indentation, justification and
 			// otherwise we need a flag to know when the next line was hit
 			// to calculate
@@ -694,7 +694,7 @@ public class Text
 					}
 					
 					// Character is still within the bounds?
-					if (nx >= 0 && nx < width)
+					if (nx >= 0 && nx <= width)
 					{
 						// Store current X position, this may change due to
 						// right to left mode
