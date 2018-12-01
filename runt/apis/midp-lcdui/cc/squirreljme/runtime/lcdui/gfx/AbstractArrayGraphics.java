@@ -1543,10 +1543,6 @@ public abstract class AbstractArrayGraphics
 					lineoff = (cldy < 0 ? -cldy : 0),
 					linelen = (xldy < 0 ? pixelheight + xldy : pixelheight);
 				
-				// For now just draw a box for each character
-				this.drawRect(dsx - this.transx, dsy - this.transy,
-					dex - dsx, dey - dsy);
-				
 				// Draw the bitmap for the character
 				int bps = sqf.loadCharBitmap(c, bmp);
 				this.internalDrawCharBitmap(doblending, color,
