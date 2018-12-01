@@ -1441,6 +1441,18 @@ public abstract class AbstractArrayGraphics
 			clipex = this.clipex,
 			clipey = this.clipey;
 		
+		// Wanting to draw a bunch of text completely out of the clip? Ignore
+		if (__x >= clipex || __y >= clipey)
+			return;
+		
+		// Trying to draw the text completely out of the clip as well?
+		int textw = __t.getWidth(),
+			texth = __t.getHeight(),
+			dex = __x + textw,
+			dey = __y + texth;
+		if (dex < clipsx || dey < clipex)
+			return;
+		
 		// Need to store the properties since drawing of the text will
 		// change how characters are drawn
 		int oldcolor = this.color;
