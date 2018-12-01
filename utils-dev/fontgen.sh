@@ -29,7 +29,7 @@ __out="$__exedir/../runt/apis/midp-lcdui/cc/squirreljme/runtime/lcdui/font/"
 mkdir -p "/tmp/$$"
 
 # Generate a bunch of fonts first
-for __dir in "$__exedir/../assets/font/"sansserif.sfdir # *.sfdir
+for __dir in "$__exedir/../assets/font/"*.sfdir
 do
 	# Get base name
 	__base="$(basename -- "$__dir" .sfdir)"
@@ -49,7 +49,7 @@ done
 #  * DATA REPRESENTED AS BYTE
 #  * MAKE EVERY CHARACTER THE SAME WIDTH RATHER THAN VARIABLE WIDTH
 #    (TERMINAL FONT MODE, IF POSSIBLE)
-for __file in "/tmp/$$/"sansserif-16.bdf #*.bdf
+for __file in "/tmp/$$/"*.bdf
 do
 	# Get base name
 	__base="$(basename -- "$__file" .bdf)"

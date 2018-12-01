@@ -175,8 +175,8 @@ public class SQFConverter
 			byte[] in = gm.data();
 			
 			// Just print for debugging
-			for (byte x : in)
-				todo.DEBUG.note("%8s", Integer.toString(x & 0xFF, 2));
+			/*for (byte x : in)
+				todo.DEBUG.note("%8s", Integer.toString(x & 0xFF, 2));*/
 			
 			// Determine the output position and where it ends
 			int outdx = i * bytesperscan * pixelheight,
@@ -220,9 +220,10 @@ public class SQFConverter
 			int scanbitlen = (srcxend + 7) & ~7;
 			
 			// Debug
+			/*
 			todo.DEBUG.note("src=(%d, %d)->(%d, %d) | pen=(%d, %d)->(%d, %d)",
 				srcxstart, srcystart, srcxend, srcyend,
-				penxstart, penystart, penxend, penyend);
+				penxstart, penystart, penxend, penyend);*/
 			
 			// Go through each pixel in the source glyph and just copy it to
 			// the destination
@@ -247,8 +248,8 @@ public class SQFConverter
 						idx = psp >>> 3,
 						sub = 7 - (psp & 7);
 					
-					todo.DEBUG.note("(%d, %d) -> [%d] << %d", srcx, srcy,
-						idx, sub);
+					/*todo.DEBUG.note("(%d, %d) -> [%d] << %d", srcx, srcy,
+						idx, sub);*/
 					
 					// If the bit is not lit then no pixel is to be drawn
 					if ((in[idx] & (1 << sub)) == 0)
