@@ -1459,8 +1459,8 @@ public abstract class AbstractArrayGraphics
 		// Get clipping region
 		int clipsx = this.clipsx,
 			clipsy = this.clipsy,
-			clipex = this.clipex,
-			clipey = this.clipey;
+			clipex = this.clipex - 1,
+			clipey = this.clipey - 1;
 		
 		// Wanting to draw a bunch of text completely out of the clip? Ignore
 		if (__x >= clipex || __y >= clipey)
@@ -1522,8 +1522,8 @@ public abstract class AbstractArrayGraphics
 				// Calculate the draw position of the character
 				int dsx = __x + metrics[0],
 					dsy = __y + metrics[1],
-					dex = __x + metrics[2],
-					dey = __y + metrics[3];
+					dex = dsx + metrics[2],
+					dey = dsy + metrics[3];
 				
 				// Completely out of bounds, ignore because we cannot draw it
 				// anyway
@@ -1531,17 +1531,41 @@ public abstract class AbstractArrayGraphics
 					dsy >= clipey || dey <= 0)
 					continue;
 				
-				// Clip differences
-				int cldx = dsx - clipsx,
-					cldy = dsy - clipsy,
-					xldx = clipex - dex,
-					xldy = clipey - dey;
+				// Base scan offsets and such
+				int scanoff = 0,
+					scanlen = bitsperscan,
+					lineoff = 0,
+					linelen = pixelheight;
 				
-				// Determine the initial scan offset and such
-				int scanoff = (cldx < 0 ? -cldx : 0),
-					scanlen = (xldx < 0 ? bitsperscan + xldx : bitsperscan),
-					lineoff = (cldy < 0 ? -cldy : 0),
-					linelen = (xldy < 0 ? pixelheight + xldy : pixelheight);
+				// Off the left side?
+				if (dsx < clipsx)
+				{
+					int diff = clipsx - dsx;
+					scanoff += diff;
+					scanlen -= diff;
+					
+					// Reset to clip bound
+					dsx = clipsx;
+				}
+				
+				// Off the right side
+				if (dex > clipex)
+					scanlen -= (dex - clipex);
+				
+				// Off the top?
+				if (dsy < clipsy)
+				{
+					int diff = clipsy - dsy;
+					lineoff += diff;
+					linelen -= diff;
+					
+					// Reset to clip bound
+					dsy = clipsy;
+				}
+				
+				// Off the bottom
+				if (dey > clipey)
+					linelen -= (dey - clipey);
 				
 				// Draw the bitmap for the character
 				int bps = sqf.loadCharBitmap(c, bmp);
