@@ -198,10 +198,9 @@ public class SQFConverter
 			int penxstart = metrics.leftsidebearing,
 				srcxstart = 0;
 			
-			// The X position ends at the width minus both the bearing
+			// The ending X position is just the right side bearing
 			// The source ends at the difference between these
-			int penxend = penxstart + (metrics.charwidth -
-				(metrics.rightsidebearing + metrics.leftsidebearing)),
+			int penxend = metrics.rightsidebearing,
 				srcxend = penxend - penxstart;
 			
 			// The ascent is the height of the symbol character from the
