@@ -1474,6 +1474,17 @@ public abstract class AbstractArrayGraphics
 		if (tex < clipsx || tey < clipsy)
 			return;
 		
+		// The text box acts as an extra clip, so force everything to clip
+		// in there
+		if (__x > clipsx)
+			clipsx = __x;
+		if (tex < clipex)
+			clipex = tex;
+		if (__y > clipsy)
+			clipsy = __y;
+		if (tey < clipey)
+			clipey = tey;
+		
 		// Cache the default font in the event it is never changed ever
 		Font lastfont = __t.getFont();
 		SQFFont sqf = SQFFont.cacheFont(lastfont);
