@@ -176,6 +176,26 @@ public abstract class AbstractArrayGraphics
 	}
 	
 	/**
+	 * Internally draws a bitmap character.
+	 *
+	 * @param __blend Is blending to be done?
+	 * @param __color The color to draw.
+	 * @param __dsx The drawing X coordinate.
+	 * @param __dsy The drawing Y coordinate.
+	 * @param __bmp The bitmap data.
+	 * @param __bytesperscan The number of bytes per scanline.
+	 * @param __scanoff The start X offset to start reading scan data from.
+	 * @param __scanlen The number of X scans to draw.
+	 * @param __lineoff The start Y offset (lines) to staart reading scans
+	 * from.
+	 * @param __linelen The number of scan lines to draw.
+	 * @since 2018/12/01 
+	 */
+	protected abstract void internalDrawCharBitmap(boolean __blend,
+		int __color, int __dsx, int __dsy, byte[] __bmp, int __bytesperscan,
+		int __scanoff, int __scanlen, int __lineoff, int __linelen);
+	
+	/**
 	 * Internal line draw.
 	 *
 	 * @param __x The X coordinate.
@@ -1457,7 +1477,12 @@ public abstract class AbstractArrayGraphics
 		// Cache the default font in the event it is never changed ever
 		Font lastfont = __t.getFont();
 		SQFFont sqf = SQFFont.cacheFont(lastfont);
-		byte[] bmp = new byte[sqf.charBitmapSize()];
+		byte[] bmp = new byte[sqf.charbitmapsize];
+		int pixelheight = sqf.pixelheight,
+			bitsperscan = sqf.bitsperscan;
+		
+		// Blending the text?
+		boolean doblending = this.doblending;
 		
 		// Need to store the properties since drawing of the text will
 		// change how characters are drawn
@@ -1486,7 +1511,9 @@ public abstract class AbstractArrayGraphics
 				{
 					lastfont = drawfont;
 					sqf = SQFFont.cacheFont(lastfont);
-					bmp = new byte[sqf.charBitmapSize()];
+					bmp = new byte[sqf.charbitmapsize];
+					pixelheight = sqf.pixelheight;
+					bitsperscan = sqf.bitsperscan;
 				}
 				
 				// Get the metrics for the character
@@ -1500,18 +1527,30 @@ public abstract class AbstractArrayGraphics
 				
 				// Completely out of bounds, ignore because we cannot draw it
 				// anyway
-				if (dsx > clipex || dex < 0 ||
-					dsy > clipey || dey < 0)
+				if (dsx >= clipex || dex <= 0 ||
+					dsy >= clipey || dey <= 0)
 					continue;
 				
-				// For now just draw a box for each character
-				this.drawRect(
-					(__x + metrics[0]) - this.transx,
-					(__y + metrics[1]) - this.transy,
-					metrics[2], metrics[3]);
+				// Clip differences
+				int cldx = dsx - clipsx,
+					cldy = dsy - clipsy,
+					xldx = clipex - dex,
+					xldy = clipey - dey;
 				
-				// Load the bitmap for the character to draw it
+				// Determine the initial scan offset and such
+				int scanoff = (cldx < 0 ? -cldx : 0),
+					scanlen = (xldx < 0 ? bitsperscan + xldx : bitsperscan),
+					lineoff = (cldy < 0 ? -cldy : 0),
+					linelen = (xldy < 0 ? pixelheight + xldy : pixelheight);
+				
+				// For now just draw a box for each character
+				this.drawRect(dsx - this.transx, dsy - this.transy,
+					dex - dsx, dey - dsy);
+				
+				// Draw the bitmap for the character
 				int bps = sqf.loadCharBitmap(c, bmp);
+				this.internalDrawCharBitmap(doblending, color,
+					dsx, dsy, bmp, bps, scanoff, scanlen, lineoff, linelen);
 			}
 		}
 		
