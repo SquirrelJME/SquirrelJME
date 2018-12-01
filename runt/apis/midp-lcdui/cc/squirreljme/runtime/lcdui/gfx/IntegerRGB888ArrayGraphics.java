@@ -109,7 +109,7 @@ public final class IntegerRGB888ArrayGraphics
 		int __x2, int __y2)
 	{
 		int[] data = this.buffer;
-		int iw = this.width,
+		int iw = this.pitch,
 			dx = __x2 - __x1;
 		
 		int dy = __y2 - __y1;
@@ -243,7 +243,7 @@ public final class IntegerRGB888ArrayGraphics
 		int __x, int __y, int __w, int __h)
 	{
 		int[] data = this.buffer;
-		int iw = this.width;
+		int iw = this.pitch;
 		
 		// The distance from the end of a row to the scanline, this way the
 		// source variable does not need an extra copy
