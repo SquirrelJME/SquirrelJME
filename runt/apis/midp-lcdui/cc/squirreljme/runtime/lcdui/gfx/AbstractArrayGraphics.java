@@ -1544,7 +1544,7 @@ public abstract class AbstractArrayGraphics
 				
 				// Base scan offsets and such
 				int scanoff = 0,
-					scanlen = bitsperscan,
+					scanlen = sqf.charWidth(c),
 					lineoff = 0,
 					linelen = pixelheight;
 				
