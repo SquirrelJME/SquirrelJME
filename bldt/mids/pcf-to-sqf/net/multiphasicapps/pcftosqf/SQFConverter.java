@@ -185,42 +185,31 @@ public class SQFConverter
 			int penxstart = metrics.leftsidebearing,
 				px = penxstart,
 				py = (pixelheight - descent) - metrics.charascent;
-			todo.DEBUG.note("Pen start: (%d, %d) for %d", px, py, i);
 			
-			// Used to debug
-			StringBuilder sb = new StringBuilder(32);
-			
-			// Draw through all input lines
+			// Draw all input lines
 			for (int idx = 0, inn = in.length; idx < inn; idx++, py++)
 			{
-				// Clear debug
-				sb.setLength(0);
-				
 				// Reset the X position to the starting left side
 				px = penxstart;
 				
-				// Draw each sub-character, the X position always increases
-				byte sub = in[idx];
-				for (int sdx = 7; sdx >= 0; sdx--, px++)
+				// Draw for the entire width of the glyph
+				for (int sx = 0; sx < 8; sx++, px++)
 				{
-					// If we are not setting the bit or it is outside of
-					// the bounds ignore
-					if ((sub & (1 << sdx)) == 0 ||
-						px < 0 || px >= bitsperscan ||
-						py < 0 || py >= pixelheight)
-					{
-						sb.append('.');
-						continue;
-					}
-					else
-						sb.append('#');
+					// The bitmap is encoded where the higher bits are the
+					// left most pixels, so that needs to be swapped
+					int subpx = 7 - (sx & 0x7);
 					
-					// Pen this position
+					// No mark here?
+					if ((in[idx + (sx >>> 3)] & (1 << subpx)) == 0)
+						continue;
+					
+					// Pen outside bounds?
+					if (px < 0 || px >= bitsperscan ||
+						py < 0 || py >= pixelheight)
+						continue;
+					
 					bitmap[outdx + py + (px / 8)] |= (byte)(1 << (px % 8));
 				}
-				
-				// Debug
-				/*todo.DEBUG.note("Map: %s", sb);*/
 			}
 		}
 		
