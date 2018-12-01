@@ -106,7 +106,7 @@ public class Fonts
 				
 				// Draw sample
 				__g.drawString("The quick gray squirrel burried all of " +
-					"her acorns.", x, y, Graphics.BASELINE);
+					"her acorns! 01234567", x, y, Graphics.BASELINE);
 				
 				// Move position with some extra room
 				y += f.getHeight() + 5;
