@@ -90,12 +90,22 @@ public final class IntegerRGB888ArrayGraphics
 				// Determine the draw pointer for this line
 				int p = offset + (__dsy * pitch) + __dsx;
 				
+				// Base source offset line according to the line offset
+				int bi = __lineoff * __bytesperscan;
+				
 				// Reset parameters for this line
 				__scanoff = resetscanoff;
 				
 				// Draw each scan from the bitmap
 				for (; __scanoff < __scanlen; __scanoff++)
-					data[p++] = __color;
+				{
+					// Get the byte that represents the scan here
+					byte b = __bmp[bi + (__scanoff >>> 3)];	
+					
+					// If there is a pixel here, draw it
+					if ((b & (1 << (__scanoff & 0x3))) != 0)
+						data[p++] = __color;
+				}
 			}
 		}
 	}
