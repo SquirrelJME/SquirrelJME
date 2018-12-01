@@ -174,10 +174,94 @@ public class SQFConverter
 			// Get the input glyph data to draw
 			byte[] in = gm.data();
 			
+			// Just print for debugging
+			for (byte x : in)
+				todo.DEBUG.note("%8s", Integer.toString(x & 0xFF, 2));
+			
 			// Determine the output position and where it ends
 			int outdx = i * bytesperscan * pixelheight,
 				enddx = outdx + bytesperscan;
 			
+			// Metrics of the PCF are the following
+			//  lb v   v rb
+			//      ###  | ascent
+			//     #   # |
+			//     ##### |
+			//     #   # |
+			//     #   # |
+			//        #  + descent
+			//       #   |
+			PCFMetric metrics = pcf.metrics.get(uc);
+			
+			// The X position starts at the left side bearing
+			// The source X is zero
+			int penxstart = metrics.leftsidebearing,
+				srcxstart = 0;
+			
+			// The X position ends at the width minus both the bearing
+			// The source ends at the difference between these
+			int penxend = penxstart + (metrics.charwidth -
+				(metrics.rightsidebearing + metrics.leftsidebearing)),
+				srcxend = penxend - penxstart;
+			
+			// The ascent is the height of the symbol character from the
+			// baseline to the top (or top to baseline)
+			// The baseline is the font's own ascent
+			// The Y position is just the font's ascent minus our ascent
+			int baseliney = pcf.accelerators.ascent,
+				penystart = baseliney - metrics.charascent,
+				srcystart = 0;
+			
+			// The end Y position is just the ascent and descent of the
+			// character
+			int srcyend = metrics.charascent + metrics.chardescent,
+				penyend = penystart + srcyend;
+			
+			// The number of bits which make up a single scan of the glyph
+			int scanbitlen = (srcxend + 7) & ~7;
+			
+			// Debug
+			todo.DEBUG.note("src=(%d, %d)->(%d, %d) | pen=(%d, %d)->(%d, %d)",
+				srcxstart, srcystart, srcxend, srcyend,
+				penxstart, penystart, penxend, penyend);
+			
+			// Go through each pixel in the source glyph and just copy it to
+			// the destination
+			for (int peny = penystart, srcy = srcystart; peny < penyend;
+				peny++, srcy++)
+			{
+				// Draw each column
+				for (int penx = penxstart, srcx = srcxstart; penx < penxend;
+					penx++, srcx++)
+				{
+					// If the pen is outside of the bounds, do not draw
+					// anything because it would cause an overflow
+					if (penx < 0 || penx >= bitsperscan ||
+						peny < 0 || peny >= pixelheight)
+						continue;
+					
+					// Determine the index offset into the input glyph
+					// bitmap, additionally map the bit that is used as
+					// well which is reversed because it goes from highest
+					// to lowest
+					int psp = (srcy * scanbitlen) + srcx,
+						idx = psp >>> 3,
+						sub = 7 - (psp & 7);
+					
+					todo.DEBUG.note("(%d, %d) -> [%d] << %d", srcx, srcy,
+						idx, sub);
+					
+					// If the bit is not lit then no pixel is to be drawn
+					if ((in[idx] & (1 << sub)) == 0)
+						continue;
+					
+					// Draw into the destination bitmap
+					bitmap[outdx + (bytesperscan * peny) + (penx >>> 3)] |=
+						(byte)(1 << (penx & 7));
+				}
+			}
+			
+			/*
 			// Determine the initial pen position. it is based on the bearing
 			// and how far down the font is
 			// The ascent of the font is length of the font from the baseline
@@ -233,6 +317,7 @@ public class SQFConverter
 						(byte)(1 << (px % 8));
 				}
 			}
+			*/
 			/*
 			// Draw all input lines
 			int sxlimit = (metrics.charwidth + 7) & ~7;
