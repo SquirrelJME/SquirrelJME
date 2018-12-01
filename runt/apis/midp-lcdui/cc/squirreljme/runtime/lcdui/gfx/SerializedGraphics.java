@@ -207,7 +207,10 @@ public abstract class SerializedGraphics
 		int __anchor)
 		throws NullPointerException
 	{
-		throw new todo.TODO();
+		// Just pass the chars of the string since we cannot represent
+		// string at all
+		this.serialize(GraphicsFunction.DRAW_SUB_CHARS,
+			__s.toCharArray(), 0, __s.length(), __x, __y, __anchor);
 	}
 	
 	/**
@@ -383,7 +386,10 @@ public abstract class SerializedGraphics
 	@Override
 	public Font getFont()
 	{
-		throw new todo.TODO();
+		// The font data is encoded in a character array
+		char[] data = (char[])this.serialize(GraphicsFunction.GET_FONT);
+		return Font.getFont(new String(data, 2, data.length - 2),
+			data[0], data[1]);
 	}
 	
 	/**
@@ -526,9 +532,17 @@ public abstract class SerializedGraphics
 	 * @since 2018/11/19
 	 */
 	@Override
-	public void setFont(Font __a)
+	public void setFont(Font __f)
 	{
-		throw new todo.TODO();
+		// Default?
+		if (__f == null)
+			__f = Font.getDefaultFont();
+		
+		// Serialize it
+		this.serialize(GraphicsFunction.SET_FONT,
+			__f.getFontName().toCharArray(),
+			__f.getStyle(),
+			__f.getPixelSize());
 	}
 	
 	/**
@@ -662,6 +676,47 @@ public abstract class SerializedGraphics
 					(Integer)__args[1],
 					(Integer)__args[2],
 					(Integer)__args[3]);
+				return null;
+				
+				// Set font
+			case SET_FONT:
+				__g.setFont(Font.getFont(
+					new String((char[])__args[0]),
+					(Integer)__args[1],
+					(Integer)__args[2]));
+				return null;
+				
+				// Get font
+			case GET_FONT:
+				char[] fontspec;
+				{
+					Font f = __g.getFont();
+					
+					// The font data needs to be encoded into a character
+					// array in order to derive it correctly on the other end
+					String name = f.getFontName();
+					int nl = name.length();
+					
+					// Setup base parameters
+					fontspec = new char[nl + 2];
+					fontspec[0] = (char)f.getStyle();
+					fontspec[1] = (char)f.getPixelSize();
+					
+					// Store name
+					for (int i = 0, o = 2; i < nl; i++, o++)
+						fontspec[o] = name.charAt(i);
+				}
+				return fontspec;
+				
+				// Draw sub-characters
+			case DRAW_SUB_CHARS:
+				__g.drawChars(
+					(char[])__args[0],
+					(Integer)__args[1],
+					(Integer)__args[2],
+					(Integer)__args[3],
+					(Integer)__args[4],
+					(Integer)__args[5]);
 				return null;
 			
 			default:
