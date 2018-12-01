@@ -538,6 +538,10 @@ public final class String
 		BasicSequence sa = this._sequence,
 			sb = o._sequence;
 		
+		// If the sequence is the same then this represents the same string
+		if (sa == sb)
+			return true;
+		
 		// If the length differs, they are not equal
 		an = sa.length();
 		bn = sb.length();
@@ -972,12 +976,8 @@ public final class String
 			throw new IndexOutOfBoundsException("ZZ0z " + __s + " " + __e +
 				" " + n);
 		
-		// If this is already a subsequence, split it off more so that there
-		// is no insane amount of depth involved when reading string data
-		if (sequence instanceof SubBasicSequenceSequence)
-			return new String(
-				((SubBasicSequenceSequence)sequence).subSequence(__s, __e));
-		return new String(new SubBasicSequenceSequence(sequence, __s, __e));
+		// Derive sub-sequence
+		return new String(sequence.subSequence(__s, __e));
 	}
 	
 	/**

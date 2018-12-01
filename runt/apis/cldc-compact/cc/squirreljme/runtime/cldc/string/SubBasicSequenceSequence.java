@@ -16,7 +16,7 @@ package cc.squirreljme.runtime.cldc.string;
  * @since 2018/09/29
  */
 public final class SubBasicSequenceSequence
-	implements BasicSequence
+	extends BasicSequence
 {
 	/** The sequence to wrap. */
 	protected final BasicSequence sequence;
@@ -80,14 +80,10 @@ public final class SubBasicSequenceSequence
 	}
 	
 	/**
-	 * Returns the subsequence of this sequence.
-	 *
-	 * @param __s The starting point.
-	 * @param __e The ending point.
-	 * @return The subsequence.
-	 * @throws IndexOutOfBoundsException If the sequence is out of bounds.
+	 * {@inheritDoc}
 	 * @since 2018/09/29
 	 */
+	@Override
 	public final SubBasicSequenceSequence subSequence(int __s, int __e)
 		throws IndexOutOfBoundsException
 	{

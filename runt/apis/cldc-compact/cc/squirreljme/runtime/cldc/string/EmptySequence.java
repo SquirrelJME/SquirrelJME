@@ -16,7 +16,7 @@ package cc.squirreljme.runtime.cldc.string;
  * @since 2018/02/24
  */
 public final class EmptySequence
-	implements BasicSequence
+	extends BasicSequence
 {
 	/** Single instance of the empty string. */
 	public static final EmptySequence INSTANCE =
