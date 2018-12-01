@@ -633,7 +633,7 @@ public class Text
 	{
 		if (!this._dirty)
 			return;
-		todo.DEBUG.note("Text is dirty");
+		
 		// Using this gobal stuff
 		Font defaultfont = this._defaultfont;
 		int width = this._width;
