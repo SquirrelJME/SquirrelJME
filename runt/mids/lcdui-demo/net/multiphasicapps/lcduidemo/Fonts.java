@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.lcduidemo;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Font;
@@ -59,8 +61,7 @@ public class Fonts
 		extends Canvas
 	{
 		/** Fonts to use. */
-		private final Font[] _fonts =
-			Font.getAvailableFonts();
+		private final Font[] _fonts;
 		
 		/**
 		 * Initializes the canvas.
@@ -69,6 +70,21 @@ public class Fonts
 		 */
 		{
 			this.setTitle("Font Demo");
+			
+			// Try to get fonts of various pixel sizes
+			List<Font> fonts = new ArrayList<>();
+			for (Font f : Font.getAvailableFonts())
+				for (int i = 4; i <= 36; i += 4)
+					try
+					{
+						fonts.add(f.deriveFont(i));
+					}
+					catch (IllegalArgumentException e)
+					{
+					}
+			
+			// Set font list
+			this._fonts = fonts.<Font>toArray(new Font[fonts.size()]);
 		}
 		
 		/**
@@ -82,7 +98,7 @@ public class Fonts
 			int x = 10,
 				y = 10;
 			
-			// Draw a sample for each font
+			// Draw a sample for each font, for each size!
 			for (Font f : this._fonts)
 			{
 				// Use this font
