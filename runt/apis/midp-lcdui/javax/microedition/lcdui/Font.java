@@ -99,6 +99,10 @@ public final class Font
 	/** The pixel size of the font. */
 	private final int _pixelsize;
 	
+	/** The height of the font, is pre-calculated. */
+	private int _height =
+		-1;
+	
 	/**
 	 * Initializes the font.
 	 *
@@ -268,7 +272,11 @@ public final class Font
 	 */
 	public int getHeight()
 	{
-		return this.getLeading() + this.getAscent() + this.getDescent();
+		int height = this._height;
+		if (height == -1)
+			this._height = (height = this.getLeading() + this.getAscent() +
+				this.getDescent());
+		return height;
 	}
 	
 	/**
