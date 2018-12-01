@@ -10,6 +10,8 @@
 
 package javax.microedition.lcdui;
 
+import java.util.Arrays;
+
 /**
  * This text class is one which handles all of the text metrics and drawing and
  * such. It handles different fonts, colors, and styles on a per character
@@ -385,6 +387,10 @@ public class Text
 	 */
 	private static final class __Storage__
 	{
+		/** The number of characters to grow at a time. */
+		private static final int _GROWTH =
+			16;
+		
 		/** Character storage. */
 		char[] _chars =
 			new char[0];
@@ -417,10 +423,36 @@ public class Text
 			if (__i < 0 || __i > size || __l < 0)
 				throw new IndexOutOfBoundsException("IOOB");
 			
-			// int _size;
-			// int _limit;
+			// Storage areas
+			char[] chars = this._chars;
+			Font[] font = this._font;
+			int[] color = this._color;
 			
-			throw new todo.TODO();
+			// Need to grow the buffer?
+			int newsize = size + __l,
+				limit = this._limit;
+			if (newsize > limit)
+			{
+				// Calculate a new limit with some extra room
+				int newlimit = newsize + _GROWTH;
+				
+				// Resize all the arrays
+				this._chars = (chars = Arrays.copyOf(chars, newlimit));
+				this._font = (font = Arrays.<Font>copyOf(font, newlimit));
+				this._color = (color = Arrays.copyOf(color, newlimit));
+				
+				// Set new limit
+				this._limit = (limit = newlimit);
+			}
+			
+			// Move over all the entries to the index to make room for this
+			// start from the very right end
+			for (int o = newsize - 1, i = size - 1; i >= __i; o--, i--)
+			{
+				chars[o] = chars[i];
+				font[o] = font[i];
+				color[o] = color[i];
+			}
 		}
 	}
 }
