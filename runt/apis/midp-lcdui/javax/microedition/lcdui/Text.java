@@ -43,11 +43,18 @@ public class Text
 	public static final int DIRECTION_RTL =
 		11;
 	
+	/** Storage for the text. */
+	private final __Storage__ _storage =
+		new __Storage__();
+	
 	/** The width. */
 	private int _width;
 	
 	/** The height. */
 	private int _height;
+	
+	/** Does character placement have to be updated. */
+	private boolean _dirty;
 	
 	/**
 	 * Initializes the text with no width or height.
@@ -224,9 +231,41 @@ public class Text
 		throw new todo.TODO();
 	}
 	
-	public void insert(int __i, String __c)
+	/**
+	 * Inserts the given string at the position.
+	 *
+	 * @param __i The index to insert at, the index is always forced within
+	 * the bounds of the buffer (negative values are inserted at zero and
+	 * positions greater than the size are inserted at the end).
+	 * @param __s The stirng to index.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/30
+	 */
+	public void insert(int __i, String __s)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Ignore adding empty strings as there is no purpose to it
+		if (__s.isEmpty())
+			return;
+		
+		// The index is always in the bounds of the storage
+		__Storage__ storage = this._storage;
+		if (__i < 0)
+			__i = 0;
+		else if (__i > storage._size)
+			__i = storage._size;
+		
+		// Insert space to store the characters
+		int sn = __s.length();
+		storage.__insert(__i, sn);
+		
+		// Set character data here
+		char[] chars = storage._chars;
+		for (int i = 0; i < sn; i++)
+			chars[__i++] = __s.charAt(i);
 	}
 	
 	public int lastRenderedIndex()
@@ -309,14 +348,80 @@ public class Text
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Sets the width of this text to the specified width.
+	 *
+	 * @param __w The width to set.
+	 * @throws IllegalArgumentException If the width is negative.
+	 * @since 2018/11/30
+	 */
 	public void setWidth(int __w)
+		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error EB2o Cannot set the width to a negative value.}
+		if (__w < 0)
+			throw new IllegalArgumentException("EB2o");
+		
+		// Ignore on no changes
+		int oldwidth = this._width;
+		if (__w == oldwidth)
+			return;
+		
+		// Set and mark dirty
+		this._width = __w;
+		this._dirty = true;
 	}
 	
 	public boolean textFits()
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Manages the storage for the text in multiple different arrays at once
+	 * for simplicity.
+	 *
+	 * @since 2018/11/30
+	 */
+	private static final class __Storage__
+	{
+		/** Character storage. */
+		char[] _chars =
+			new char[0];
+		
+		/** Font storage. */
+		Font[] _font =
+			new Font[0];
+		
+		/** Color storage. */
+		int[] _color =
+			new int[0];
+		
+		/** The number of stored characters and their attributes. */
+		int _size;
+		
+		/** The limit of the arrays. */
+		int _limit;
+		
+		/**
+		 * Inserts space to store the given length at the given index.
+		 *
+		 * @throws IndexOutOfBoundsException If the insertion index is negative
+		 * or exceeds the size of the storage, or if the length is negative.
+		 * @since 2018/11/30
+		 */
+		final void __insert(int __i, int __l)
+			throws IndexOutOfBoundsException
+		{
+			int size = this._size;
+			if (__i < 0 || __i > size || __l < 0)
+				throw new IndexOutOfBoundsException("IOOB");
+			
+			// int _size;
+			// int _limit;
+			
+			throw new todo.TODO();
+		}
 	}
 }
 
