@@ -1042,11 +1042,6 @@ public class Display
 	void __drawChain(Graphics __g)
 	{
 		__DrawChain__ dc = this._drawchain;
-		
-		// Draw a box
-		__g.setColor(0xFF0000);
-		__g.drawLine(0, 0, dc.w, dc.h);
-		__g.drawLine(0, dc.h, dc.w, 0);
 	}
 	
 	/**
