@@ -159,9 +159,6 @@ public final class PCFMetric
 				rv[i] = PCFMetric.readUncompressed(__dis);
 		}
 		
-		// Debug
-		todo.DEBUG.note("Metrics=%s", Arrays.asList(rv));
-		
 		return rv;
 	}
 	

@@ -83,9 +83,6 @@ public final class PCFGlyphNames
 		for (int i = 0; i < numglyphs; i++)
 			names.put(i, PCFProperties.__readString(strings, offsets[i]));
 		
-		// Debug
-		todo.DEBUG.note("Glyph names: %s", names);
-		
 		// Build
 		return new PCFGlyphNames(format, names);
 	}

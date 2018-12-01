@@ -134,9 +134,6 @@ public final class PCFBitmap
 			glyphmaps.put(i.index, new PCFGlyphMap(bm));
 		}
 		
-		// Debug
-		todo.DEBUG.note("glyphmaps=%s", glyphmaps);
-		
 		this.glyphmaps = glyphmaps;
 	}
 	
