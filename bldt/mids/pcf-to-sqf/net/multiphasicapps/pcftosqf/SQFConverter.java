@@ -183,24 +183,74 @@ public class SQFConverter
 			// The ascent of the font is length of the font from the baseline
 			PCFMetric metrics = pcf.metrics.get(uc);
 			int penxstart = metrics.leftsidebearing,
-				px = penxstart,
-				py = (pixelheight - descent) - metrics.charascent;
+				penystart = (pixelheight - metrics.chardescent) -
+					metrics.charascent,
+				penxend = penxstart + (metrics.charwidth -
+					(metrics.rightsidebearing + metrics.leftsidebearing)),
+				penyend = penystart +
+					(metrics.charascent + metrics.chardescent),
+				py = penystart,
+				viswidth = penxend - penxstart;
 			
+			// Bytes per viswidth
+			int bpvw = (viswidth / 8) + 1;
+			
+			// penystart was (pixelheight - descent) - metrics.charascent
+			
+			// Draw each line
+			for (; py < penyend; py++)
+			{
+				// Draw each column
+				for (int px = penxstart; px < penxend; px++)
+				{
+					todo.DEBUG.note("Pen=(%d, %d)", px, py);
+					
+					// Pen outside bounds of destination character?
+					if (px < 0 || px >= bitsperscan ||
+						py < 0 || py >= pixelheight)
+						continue;
+					
+					// Difference between the pen positions
+					int pdiffx = (px - penxstart),
+						pdiffy = (py - penystart);
+					
+					// Glyph pixels are padded to bytes
+					int adx = pdiffy * bpvw;
+					
+					// Outside the array bounds
+					if (adx < 0 || adx >= in.length)
+						continue;
+					
+					// Figure out the position to check in the sub-pixel
+					// Higher values are higher pixels
+					int subpx = 7 - (pdiffx & 0x7);
+					
+					// If this not lit?
+					if ((in[adx] & (1 << subpx)) == 0)
+						continue;
+					
+					bitmap[outdx + (bytesperscan * py) + (px / 8)] |=
+						(byte)(1 << (px % 8));
+				}
+			}
+			/*
 			// Draw all input lines
+			int sxlimit = (metrics.charwidth + 7) & ~7;
 			for (int idx = 0, inn = in.length; idx < inn; idx++, py++)
 			{
 				// Reset the X position to the starting left side
 				px = penxstart;
 				
 				// Draw for the entire width of the glyph
-				for (int sx = 0; sx < 8; sx++, px++)
+				for (int sx = 0; sx < sxlimit; sx++, px++)
 				{
 					// The bitmap is encoded where the higher bits are the
 					// left most pixels, so that needs to be swapped
 					int subpx = 7 - (sx & 0x7);
 					
 					// No mark here?
-					if ((in[idx + (sx >>> 3)] & (1 << subpx)) == 0)
+					int uidx = idx + (sx >>> 3);
+					if (uidx >= in.length || (in[uidx] & (1 << subpx)) == 0)
 						continue;
 					
 					// Pen outside bounds?
@@ -210,7 +260,7 @@ public class SQFConverter
 					
 					bitmap[outdx + py + (px / 8)] |= (byte)(1 << (px % 8));
 				}
-			}
+			}*/
 		}
 		
 		// Write font data
