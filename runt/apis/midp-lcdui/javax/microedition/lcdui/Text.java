@@ -65,6 +65,30 @@ public class Text
 	private int _defaultcolor =
 		Display.getDisplays(0)[0].getColor(Display.COLOR_FOREGROUND);
 	
+	/** The required display height, is cached. */
+	private int _requiredheight;
+	
+	/** The required line count, is cached. */
+	private int _requiredlines;
+	
+	/** Space above each line. */
+	private int _spaceabove;
+	
+	/** Space below each line. */
+	private int _spacebelow;
+	
+	/** The alignment of each line. */
+	private int _align;
+	
+	/** Indentation. */
+	private int _indentation;
+	
+	/** The direction of the text. */
+	private int _direction;
+	
+	/** Scrolling offset (scrolled up by n pixels). */
+	private int _scrolloffset;
+	
 	/** Does character placement have to be updated. */
 	private boolean _dirty;
 	
@@ -178,9 +202,15 @@ public class Text
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the height of the text.
+	 *
+	 * @return The height of the text.
+	 * @since 2018/12/01
+	 */
 	public int getHeight()
 	{
-		throw new todo.TODO();
+		return this._height;
 	}
 	
 	public int getHighlightIndex()
@@ -203,14 +233,36 @@ public class Text
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the height which is required to completely display all of the
+	 * text within.
+	 *
+	 * @return The required height to draw.
+	 * @since 2018/12/01
+	 */
 	public int getRequiredHeight()
 	{
-		throw new todo.TODO();
+		// Update
+		if (this._dirty)
+			this.__undirty();
+		
+		return this._requiredheight;
 	}
 	
+	/**
+	 * Returns the number of lines which are required to display all of the
+	 * text within.
+	 *
+	 * @return The number of lines which are required.
+	 * @since 2018/12/01
+	 */
 	public int getRequiredLineCount()
 	{
-		throw new todo.TODO();
+		// Update
+		if (this._dirty)
+			this.__undirty();
+		
+		return this._requiredlines;
 	}
 	
 	public int getScrollOffset()
@@ -233,14 +285,26 @@ public class Text
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the length of this text object.
+	 *
+	 * @return The length of the text object.
+	 * @since 2018/12/01
+	 */
 	public int getTextLength()
 	{
-		throw new todo.TODO();
+		return this._storage._size;
 	}
 	
+	/**
+	 * Returns the width of this text.
+	 *
+	 * @return The text width.
+	 * @since 2018/12/01
+	 */
 	public int getWidth()
 	{
-		throw new todo.TODO();
+		return this._width;
 	}
 	
 	/**
@@ -417,6 +481,32 @@ public class Text
 	public boolean textFits()
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Undirties the text within and calculates all of the needed bounds and
+	 * metrics for each character.
+	 *
+	 * @since 2018/12/01
+	 */
+	private final void __undirty()
+	{
+		if (!this._dirty)
+			return;
+		
+		if (true)
+			throw new todo.TODO();
+			
+		// private int _requiredheight;
+		// private int _requiredlines;
+		// private int _spaceabove;
+		// private int _spacebelow;
+		// private int _align;
+		// private int _indentation;
+		// private int _direction;
+		// private int _scrolloffset;
+		
+		this._dirty = false;
 	}
 	
 	/**
