@@ -57,6 +57,9 @@ public final class SQFFont
 	/** The bytes per scan. */
 	public final byte bytesperscan;
 	
+	/** The bits per scan. */
+	public final byte bitsperscan;
+	
 	/** The number of bytes that make up a character's bitmap. */
 	public final int charbitmapsize;
 	
@@ -101,6 +104,7 @@ public final class SQFFont
 		this.ascent = __a;
 		this.descent = __d;
 		this.bytesperscan = __bps;
+		this.bitsperscan = (byte)(__bps * 8);
 		this._charwidths = __cw;
 		this._isvalidchar = __ivc;
 		this._charbmp = __bmp;

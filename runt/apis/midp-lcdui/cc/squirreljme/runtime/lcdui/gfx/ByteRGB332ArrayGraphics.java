@@ -57,6 +57,18 @@ public final class ByteRGB332ArrayGraphics
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2018/12/01 
+	 */
+	@Override
+	protected final void internalDrawCharBitmap(boolean __blend, int __color,
+		int __dsx, int __dsy, byte[] __bmp, int __bytesperscan,
+		int __scanoff, int __scanlen, int __lineoff, int __linelen)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/11/18
 	 */
 	@Override
