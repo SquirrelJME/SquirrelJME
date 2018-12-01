@@ -56,7 +56,7 @@ public class Main
 			// Check that the font is valid
 			try (ByteArrayInputStream bais = new ByteArrayInputStream(sqf))
 			{
-				SQFFont.read(bais);
+				SQFFont.read(bais).printGlyphs(System.err);
 			}
 		}
 		
