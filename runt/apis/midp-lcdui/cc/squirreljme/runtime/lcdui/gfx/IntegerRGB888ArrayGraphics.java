@@ -64,7 +64,40 @@ public final class IntegerRGB888ArrayGraphics
 		int __dsx, int __dsy, byte[] __bmp, int __bytesperscan,
 		int __scanoff, int __scanlen, int __lineoff, int __linelen)
 	{
-		throw new todo.TODO();
+		int[] data = this.buffer;
+		int offset = this.offset,
+			pitch = this.pitch;
+		
+		// Treat lens as end indexes
+		__scanlen += __scanoff;
+		__linelen += __lineoff;
+		
+		// Remember the old scan offset, because we reset
+		int resetscanoff = __scanoff;
+		
+		// Blending?
+		if (__blend)
+		{
+			throw new todo.TODO();
+		}
+		
+		// Not blending
+		else
+		{
+			// Drew each line
+			for (; __lineoff < __linelen; __lineoff++, __dsy++)
+			{
+				// Determine the draw pointer for this line
+				int p = offset + (__dsy * pitch) + __dsx;
+				
+				// Reset parameters for this line
+				__scanoff = resetscanoff;
+				
+				// Draw each scan from the bitmap
+				for (; __scanoff < __scanlen; __scanoff++)
+					data[p++] = __color;
+			}
+		}
 	}
 	
 	/**
