@@ -231,14 +231,39 @@ public class Text
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the default font.
+	 *
+	 * @return The default font.
+	 * @since 2018/12/01
+	 */
 	public Font getFont()
 	{
-		throw new todo.TODO();
+		return this._defaultfont;
 	}
 	
+	/**
+	 * Returns the font which is used by the given character.
+	 *
+	 * @param __i The index of the character to get.
+	 * @return The font for the given index.
+	 * @throws IndexOutOfBoundsException If the index it outside of bounds.
+	 * @since 2018/12/01
+	 */
 	public Font getFont(int __i)
+		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		__Storage__ storage = this._storage;
+		
+		// Exceeds storage size?
+		if (__i >= storage._size)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Only if a font is set
+		Font rv = storage._font[__i];
+		if (rv != null)
+			return rv;
+		return this._defaultfont;
 	}
 	
 	public int getForegroundColor()

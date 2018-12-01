@@ -122,7 +122,7 @@ public final class Font
 		this._pixelsize = __px;
 		
 		// Load SQF
-		this._sqf = SQFFont.cacheFont(__n + "-" + __px + ".sqf");
+		this._sqf = SQFFont.cacheFont(__n, __px);
 	}
 	
 	/**

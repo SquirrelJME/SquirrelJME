@@ -10,6 +10,7 @@
 
 package cc.squirreljme.runtime.lcdui.gfx;
 
+import cc.squirreljme.runtime.lcdui.font.SQFFont;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
@@ -1448,10 +1449,14 @@ public abstract class AbstractArrayGraphics
 		// Trying to draw the text completely out of the clip as well?
 		int textw = __t.getWidth(),
 			texth = __t.getHeight(),
-			dex = __x + textw,
-			dey = __y + texth;
-		if (dex < clipsx || dey < clipex)
+			tex = __x + textw,
+			tey = __y + texth;
+		if (tex < clipsx || tey < clipsy)
 			return;
+		
+		// Cache the default font in the event it is never changed ever
+		Font lastfont = __t.getFont();
+		SQFFont sqf = SQFFont.cacheFont(lastfont);
 		
 		// Need to store the properties since drawing of the text will
 		// change how characters are drawn
@@ -1464,6 +1469,14 @@ public abstract class AbstractArrayGraphics
 			{
 				// Set color to the foreground color of this character
 				this.color = __t.getForegroundColor(i);
+				
+				// Need to find the SQF for this font again?
+				Font drawfont = __t.getFont(i);
+				if (drawfont != lastfont)
+				{
+					lastfont = drawfont;
+					sqf = SQFFont.cacheFont(lastfont);
+				}
 				
 				// Get the metrics for the character
 				__t.getCharExtent(i, metrics);
