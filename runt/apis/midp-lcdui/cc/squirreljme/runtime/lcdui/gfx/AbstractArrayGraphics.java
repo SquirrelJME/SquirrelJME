@@ -1432,8 +1432,14 @@ public abstract class AbstractArrayGraphics
 			throw new NullPointerException("NARG");
 		
 		// Translate to the displayed coordinate space
-		/*__x += this.transx;
-		__y += this.transy;*/
+		__x += this.transx;
+		__y += this.transy;
+		
+		// Get clipping region
+		int clipsx = this.clipsx,
+			clipsy = this.clipsy,
+			clipex = this.clipex,
+			clipey = this.clipey;
 		
 		// Need to store the properties since drawing of the text will
 		// change how characters are drawn
@@ -1450,8 +1456,22 @@ public abstract class AbstractArrayGraphics
 				// Get the metrics for the character
 				__t.getCharExtent(i, metrics);
 				
+				// Calculate the draw position of the character
+				int dsx = __x + metrics[0],
+					dsy = __y + metrics[1],
+					dex = __x + metrics[2],
+					dey = __y + metrics[3];
+				
+				// Completely out of bounds, ignore because we cannot draw it
+				// anyway
+				if (dsx > clipex || dex < 0 ||
+					dsy > clipey || dey < 0)
+					continue;
+				
 				// For now just draw a box for each character
-				this.drawRect(__x + metrics[0], __y + metrics[1],
+				this.drawRect(
+					(__x + metrics[0]) - this.transx,
+					(__y + metrics[1]) - this.transy,
 					metrics[2], metrics[3]);
 			}
 		}
