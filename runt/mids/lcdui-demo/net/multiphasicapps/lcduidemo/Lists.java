@@ -44,6 +44,10 @@ public class Lists
 		// Setup list
 		List list = new List("List Demo", List.MULTIPLE);
 		
+		// Exit command
+		list.addCommand(Exit.command);
+		list.setCommandListener(new Exit());
+		
 		// Add things to the list
 		list.append("Sciurus aberti", null);
 		list.append("Sciurus aestuans", null);
@@ -78,6 +82,5 @@ public class Lists
 		// Display the list
 		Display.getDisplay(this).setCurrent(list);
 	}
-	
 }
 
