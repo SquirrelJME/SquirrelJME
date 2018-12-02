@@ -50,7 +50,7 @@ public final class EnforcedDrawingAreaGraphics
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/02
 	 */
-	public EnforcedDrawingArea(Graphics __g, int __x, int __y,
+	public EnforcedDrawingAreaGraphics(Graphics __g, int __x, int __y,
 		int __w, int __h)
 		throws NullPointerException
 	{
