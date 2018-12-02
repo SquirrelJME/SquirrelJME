@@ -10,6 +10,9 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.lcdui.common.CommonColors;
+import cc.squirreljme.runtime.lcdui.common.CommonMetrics;
+
 public class List
 	extends Screen
 	implements Choice
@@ -213,7 +216,23 @@ public class List
 	@Override
 	void __drawChain(Graphics __g)
 	{
-		throw new todo.TODO();
+		// Get the properties of this chain
+		__DrawChain__ chain = this._drawchain;
+		int x = chain.x,
+			y = chain.y,
+			w = chain.w,
+			h = chain.h;
+		
+		// Draw a rectangle in the list area with the background color
+		__g.setColor(CommonColors.BACKGROUND);
+		__g.fillRect(x, y, w, h);
+		
+		// Leave room for the scroll bar
+		w -= CommonMetrics.SCROLLBAR_WIDTH;
+		
+		// Draw border
+		__g.setColor(CommonColors.BORDER);
+		__g.drawRect(x, y, w, h);
 	}
 	
 	/**
