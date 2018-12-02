@@ -90,7 +90,6 @@ public class EntryPoints
 		// Finalize
 		EntryPoint[] entrypoints = target.<EntryPoint>toArray(
 			new EntryPoint[target.size()]);
-		Arrays.sort(entrypoints);
 		this._entrypoints = entrypoints;
 	}
 	
