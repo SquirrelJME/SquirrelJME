@@ -681,9 +681,8 @@ public abstract class Canvas
 		__g.drawRect(dc.x + 15, dc.y + 15, dc.w - 30, dc.h - 30);
 		__g.setAlphaColor(oldc);
 		
-		// Drawing this widget transparently? This just draws a color below
-		// it accordingly
-		if (this._transparent)
+		// Transparent is set when the widget does not draw every pixel
+		//if (this._transparent)
 		{
 			// The graphics object gets the color pre-initialized so make sure
 			// to restore it after the paint
@@ -691,8 +690,8 @@ public abstract class Canvas
 			
 			// Fill the area accordingly
 			ed.setAlphaColor(CommonColors.CANVAS_BACKGROUND);
-			ed.fillRect(__g.getClipX(), ed.getClipY(),
-				ed.getClipWidth(), ed.getClipHeight());
+			__g.setAlphaColor(CommonColors.CANVAS_BACKGROUND);
+			ed.fillRect(0, 0, dc.w, dc.h);
 			
 			// Restore old color
 			ed.setAlphaColor(old);
