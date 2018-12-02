@@ -83,6 +83,17 @@ public final class KeyNames
 				// Other keys
 			case NonStandardKey.LOGO:	return "LOGO";
 			
+				// Non-standard game keys (used by the VM perhaps)
+			case NonStandardKey.GAME_UP:	return "VirtualGameUp";
+			case NonStandardKey.GAME_DOWN:	return "VirtualGameDown";
+			case NonStandardKey.GAME_LEFT:	return "VirtualGameLeft";
+			case NonStandardKey.GAME_RIGHT:	return "VirtualGameRight";
+			case NonStandardKey.GAME_FIRE:	return "VirtualGameFire";
+			case NonStandardKey.GAME_A:		return "VirtualGameA";
+			case NonStandardKey.GAME_B:		return "VirtualGameB";
+			case NonStandardKey.GAME_C:		return "VirtualGameC";
+			case NonStandardKey.GAME_D:		return "VirtualGameD";
+			
 				// Unknown or default
 			default:
 				// Default ASCII character, use the glyph name
