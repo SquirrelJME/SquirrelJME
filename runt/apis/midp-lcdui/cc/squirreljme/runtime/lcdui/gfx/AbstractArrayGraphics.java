@@ -1500,7 +1500,7 @@ public abstract class AbstractArrayGraphics
 		
 		// Need to store the properties since drawing of the text will
 		// change how characters are drawn
-		int oldcolor = this.color;
+		int oldcolor = this.getAlphaColor();
 		try
 		{
 			// Read in all the text characters
@@ -1517,7 +1517,7 @@ public abstract class AbstractArrayGraphics
 					continue;
 				
 				// Set color to the foreground color of this character
-				this.color = __t.getForegroundColor(i);
+				this.setAlphaColor(__t.getForegroundColor(i));
 				
 				// Need to find the SQF for this font again?
 				Font drawfont = __t.getFont(i);
@@ -1591,7 +1591,7 @@ public abstract class AbstractArrayGraphics
 		// Just in case revert properties
 		finally
 		{
-			this.color = oldcolor;
+			this.setAlphaColor(oldcolor);
 		}
 	}
 	

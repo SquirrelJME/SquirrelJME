@@ -10,6 +10,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.lcdui.common.CommonColors;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import java.util.Arrays;
 
@@ -64,7 +65,7 @@ public class Text
 	
 	/** The default foreground color. */
 	private int _defaultcolor =
-		Display.getDisplays(0)[0].getColor(Display.COLOR_FOREGROUND);
+		CommonColors.DEFAULT_TEXT_COLOR;
 	
 	/** The required display height, is cached. */
 	private int _requiredheight;

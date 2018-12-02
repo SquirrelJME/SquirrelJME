@@ -17,6 +17,10 @@ package cc.squirreljme.runtime.lcdui.common;
  */
 public interface CommonColors
 {
+	/** Default text color. */
+	public static final int DEFAULT_TEXT_COLOR =
+		0xFF_000000;
+	
 	/** Border color. */
 	public static final int BORDER =
 		0xFF_000000;
