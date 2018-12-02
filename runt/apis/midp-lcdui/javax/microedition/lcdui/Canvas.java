@@ -13,6 +13,7 @@ package javax.microedition.lcdui;
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
 import cc.squirreljme.runtime.lcdui.event.EventType;
 import cc.squirreljme.runtime.lcdui.event.KeyNames;
+import cc.squirreljme.runtime.lcdui.event.NonStandardKey;
 import cc.squirreljme.runtime.lcdui.gfx.BasicGraphics;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 
@@ -191,14 +192,23 @@ public abstract class Canvas
 	public int getGameAction(int __kc)
 		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
-		/*
-		DisplayInstance instance = this._instance;
-		if (instance != null)
-			return instance.getActionForKey(__kc);
-		
-		// If no display is bound, treat as unknown
-		return 0;*/
+		switch (__kc)
+		{
+				// Virtually mapped game keys, likely from a VM running on top
+			case NonStandardKey.GAME_UP:	return UP;
+			case NonStandardKey.GAME_DOWN:	return DOWN;
+			case NonStandardKey.GAME_LEFT:	return LEFT;
+			case NonStandardKey.GAME_RIGHT:	return RIGHT;
+			case NonStandardKey.GAME_FIRE:	return FIRE;
+			case NonStandardKey.GAME_A:		return GAME_A;
+			case NonStandardKey.GAME_B:		return GAME_B;
+			case NonStandardKey.GAME_C:		return GAME_C;
+			case NonStandardKey.GAME_D:		return GAME_D;
+			
+				// Invalid
+			default:
+				return 0;
+		}
 	}
 	
 	/**
@@ -532,6 +542,32 @@ public abstract class Canvas
 	protected void sizeChanged(int __w, int __h)
 	{
 		super.sizeChanged(__w, __h);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/02
+	 */
+	@Override
+	void __doKeyAction(int __type, int __kc, int __time)
+	{
+		switch (__type)
+		{
+			case _KEY_PRESSED:
+				this.keyPressed(__kc);
+				break;
+			
+			case _KEY_REPEATED:
+				this.keyRepeated(__kc);
+				break;
+			
+			case _KEY_RELEASED:
+				this.keyReleased(__kc);
+				break;
+			
+			default:
+				break;
+		}
 	}
 	
 	/**
