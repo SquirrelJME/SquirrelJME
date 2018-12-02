@@ -157,13 +157,15 @@ public class Events
 			int height = font.getHeight(),
 				x = 2,
 				y = 2 - height,
-				keycode = this._keycode;
+				keycode = this._keycode,
+				gamecode = -1;
 			
 			// Get the key name, but it might not even be valid
 			String keyname = null;
 			try
 			{
 				keyname = this.getKeyName(keycode);
+				gamecode = this.getGameAction(keycode);
 			}
 			catch (IllegalArgumentException e)
 			{
@@ -177,8 +179,8 @@ public class Events
 			__g.drawString(String.format("Pointer: (%d, %d) %s",
 				this._pointerx, this._pointery, this._pointertype),
 				x, y += height, 0);
-			__g.drawString(String.format("Key: \"%s\" (%d) %s",
-				keyname, keycode, this._keyboardtype),
+			__g.drawString(String.format("Key: \"%s\" (Code=%d Game=%d) %s",
+				keyname, keycode, gamecode, this._keyboardtype),
 				x, y += height, 0);
 		}
 		

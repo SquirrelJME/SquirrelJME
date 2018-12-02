@@ -120,5 +120,41 @@ public interface NonStandardKey
 	/** Logo Key. */
 	public static final int LOGO =
 		-(0xFF + 25);
+	
+	/** Game Up. */
+	public static final int GAME_UP =
+		-(0xFF + 26);
+	
+	/** Game Down. */
+	public static final int GAME_DOWN =
+		-(0xFF + 27);
+	
+	/** Game Left. */
+	public static final int GAME_LEFT =
+		-(0xFF + 28);
+	
+	/** Game Right. */
+	public static final int GAME_RIGHT =
+		-(0xFF + 29);
+	
+	/** Game fire. */
+	public static final int GAME_FIRE =
+		-(0xFF + 30);
+	
+	/** Game A. */
+	public static final int GAME_A =
+		-(0xFF + 31);
+	
+	/** Game B. */
+	public static final int GAME_B =
+		-(0xFF + 32);
+	
+	/** Game C. */
+	public static final int GAME_C =
+		-(0xFF + 33);
+	
+	/** Game D. */
+	public static final int GAME_D =
+		-(0xFF + 34);
 }
 

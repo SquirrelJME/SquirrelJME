@@ -12,6 +12,7 @@ package cc.squirreljme.vm;
 
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
 import cc.squirreljme.runtime.lcdui.event.EventType;
+import cc.squirreljme.runtime.lcdui.event.NonStandardKey;
 import cc.squirreljme.runtime.lcdui.gfx.AcceleratedGraphics;
 import cc.squirreljme.runtime.lcdui.gfx.GraphicsFunction;
 import cc.squirreljme.runtime.lcdui.gfx.PixelFormat;
@@ -523,6 +524,37 @@ public class VMNativeDisplayAccess
 	public final class VMCanvas
 		extends Canvas
 	{
+			
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/12/01
+		 */
+		@Override
+		public void keyPressed(int __code)
+		{
+			this.__postKey(EventType.KEY_PRESSED, __code);
+		}
+			
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/12/01
+		 */
+		@Override
+		public void keyReleased(int __code)
+		{
+			this.__postKey(EventType.KEY_RELEASED, __code);
+		}
+			
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/12/01
+		 */
+		@Override
+		public void keyRepeated(int __code)
+		{
+			this.__postKey(EventType.KEY_REPEATED, __code);
+		}
+		
 		/**
 		 * {@inheritDoc}
 		 * @since 2018/11/18
@@ -556,6 +588,73 @@ public class VMNativeDisplayAccess
 			VMNativeDisplayAccess.this.postEvent(
 				EventType.DISPLAY_SIZE_CHANGED.ordinal(),
 				0, __w, __h, -1, -1);
+		}
+		
+		/**
+		 * Post key event.
+		 *
+		 * @param __et The event type to post.
+		 * @param __kc The keycode used.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2018/12/01
+		 */
+		final void __postKey(EventType __et, int __kc)
+			throws NullPointerException
+		{
+			// Try to map to a game key if possible
+			try
+			{
+				switch (gamekey)
+				{
+					case Canvas.UP:
+						__kc = NonStandardKey.GAME_UP;
+						break;
+						
+					case Canvas.DOWN:
+						__kc = NonStandardKey.GAME_DOWN;
+						break;
+						
+					case Canvas.LEFT:
+						__kc = NonStandardKey.GAME_LEFT;
+						break;
+						
+					case Canvas.RIGHT:
+						__kc = NonStandardKey.GAME_RIGHT;
+						break;
+					
+					case Canvas.FIRE:
+						__kc = NonStandardKey.GAME_FIRE;
+						break;
+					
+					case Canvas.GAME_A:
+						__kc = NonStandardKey.GAME_A;
+						break;
+					
+					case Canvas.GAME_B:
+						__kc = NonStandardKey.GAME_B;
+						break;
+					
+					case Canvas.GAME_C:
+						__kc = NonStandardKey.GAME_C;
+						break;
+					
+					case Canvas.GAME_D:
+						__kc = NonStandardKey.GAME_D;
+						break;
+					
+						// Unknown, do not remap!
+					default:
+						break;
+				}
+			}
+			
+			// Ignore unknown game keys
+			catch (IllegalArgumentException e)
+			{
+			}
+			
+			// Post event
+			VMNativeDisplayAccess.this.postEvent(__et.ordinal(), __kc);
 		}
 	}
 }
