@@ -669,7 +669,8 @@ public final class NativeDisplayAccess
 		{
 			NativeDisplayAccess.postEvent(
 				EventType.KEY_PRESSED.ordinal(),
-				__KeyMap__.__map(__e), (int)__e.getWhen(), -1, -1, -1);
+				__KeyMap__.__map(__e), __KeyMap__.__char(__e),
+				(int)__e.getWhen(), -1, -1);
 		}
 		
 		/**
@@ -681,7 +682,8 @@ public final class NativeDisplayAccess
 		{
 			NativeDisplayAccess.postEvent(
 				EventType.KEY_RELEASED.ordinal(),
-				__KeyMap__.__map(__e), (int)__e.getWhen(), -1, -1, -1);
+				__KeyMap__.__map(__e), __KeyMap__.__char(__e),
+				(int)__e.getWhen(), -1, -1);
 		}
 		
 		/**
@@ -691,6 +693,10 @@ public final class NativeDisplayAccess
 		@Override
 		public void keyTyped(KeyEvent __e)
 		{
+			NativeDisplayAccess.postEvent(
+				EventType.KEY_PRESSED.ordinal(),
+				__KeyMap__.__map(__e), __KeyMap__.__char(__e),
+				(int)__e.getWhen(), -1, -1);
 		}
 		
 		/**

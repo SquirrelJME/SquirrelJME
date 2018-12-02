@@ -544,6 +544,11 @@ public abstract class Canvas
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * This is called when the canvas has been shown.
+	 *
+	 * @since 2018/12/02.
+	 */
 	@SerializedEvent
 	protected void showNotify()
 	{
@@ -574,6 +579,17 @@ public abstract class Canvas
 		if (__kc == NonStandardKey.UNKNOWN)
 			return;
 		
+		// Since we really only care about actions, if we happen to detect
+		// that the character is one of these symbols map them to the
+		// appropriate key.
+		// Keycodes for the same characters might not be mapped to the actual
+		// event in the event of natural keyboards.
+		if (__ch == '#')
+			__kc = KEY_POUND;
+		else if (__ch == '*')
+			__kc = KEY_STAR;
+		
+		// Depends on the action
 		switch (__type)
 		{
 			case _KEY_PRESSED:
