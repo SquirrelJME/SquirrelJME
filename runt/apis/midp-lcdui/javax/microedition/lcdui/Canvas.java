@@ -549,6 +549,7 @@ public abstract class Canvas
 	 * @since 2018/12/02
 	 */
 	@Override
+	@SerializedEvent
 	void __doKeyAction(int __type, int __kc, int __time)
 	{
 		switch (__type)
@@ -572,9 +573,37 @@ public abstract class Canvas
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2018/12/02
+	 */
+	@Override
+	@SerializedEvent
+	void __doPointerAction(int __type, int __x, int __y, int __time)
+	{
+		switch (__type)
+		{
+			case _POINTER_DRAGGED:
+				this.pointerDragged(__x, __y);
+				break;
+			
+			case _POINTER_PRESSED:
+				this.pointerPressed(__x, __y);
+				break;
+			
+			case _POINTER_RELEASED:
+				this.pointerReleased(__x, __y);
+				break;
+			
+			default:
+				break;
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/12/01
 	 */
 	@Override
+	@SerializedEvent
 	void __doShown(boolean __shown)
 	{
 		if (__shown)

@@ -19,6 +19,9 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.Graphics2D;
@@ -568,6 +571,8 @@ public final class NativeDisplayAccess
 			frame.addComponentListener(rv);
 			frame.addWindowListener(rv);
 			frame.addKeyListener(rv);
+			frame.addMouseListener(rv);
+			frame.addMouseMotionListener(rv);
 			
 			// Pack the frame
 			frame.pack();
@@ -587,11 +592,16 @@ public final class NativeDisplayAccess
 	 */
 	public static final class SwingPanel
 		extends JPanel
-		implements ComponentListener, KeyListener, WindowListener
+		implements ComponentListener, KeyListener, MouseListener,
+			MouseMotionListener, WindowListener
 	{
 		/** The image to be displayed. */
 		volatile BufferedImage _image =
 			ColorInfo.create(1, 1, new Color(0xFFFFFFFF));
+		
+		/** The last mouse button pressed. */
+		volatile int _lastbutton =
+			Integer.MIN_VALUE;
 		
 		/**
 		 * {@inheritDoc}
@@ -681,6 +691,72 @@ public final class NativeDisplayAccess
 		@Override
 		public void keyTyped(KeyEvent __e)
 		{
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/12/02
+		 */
+		@Override
+		public void mouseClicked(MouseEvent __e)
+		{
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/12/02
+		 */
+		@Override
+		public void mouseDragged(MouseEvent __e)
+		{
+			this.__mouseEvent(__e, EventType.POINTER_DRAGGED);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/12/02
+		 */
+		@Override
+		public void mouseEntered(MouseEvent __e)
+		{
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/12/02
+		 */
+		@Override
+		public void mouseExited(MouseEvent __e)
+		{
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/12/02
+		 */
+		@Override
+		public void mouseMoved(MouseEvent __e)
+		{
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/12/02
+		 */
+		@Override
+		public void mousePressed(MouseEvent __e)
+		{
+			this.__mouseEvent(__e, EventType.POINTER_PRESSED);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/12/02
+		 */
+		@Override
+		public void mouseReleased(MouseEvent __e)
+		{
+			this.__mouseEvent(__e, EventType.POINTER_RELEASED);
 		}
 		
 		/**
@@ -808,6 +884,47 @@ public final class NativeDisplayAccess
 		@Override
 		public void windowOpened(WindowEvent __e)
 		{
+		}
+		
+		/**
+		 * Handles mouse event.
+		 *
+		 * @param __e The event.
+		 * @param __t The event type.
+		 * @since 2018/12/02
+		 */
+		private final void __mouseEvent(MouseEvent __e, EventType __t)
+		{
+			int mybutton = __e.getButton(),
+				lastbutton = this._lastbutton;
+			
+			// Depends on the event
+			switch (__t)
+			{
+				case POINTER_DRAGGED:
+					// For some reason in Swing, the mouse being dragged is
+					// always button zero, so just send drag event no matter
+					// what without any button filtering
+					break;
+				
+				case POINTER_PRESSED:
+					if (lastbutton < 0 || mybutton == lastbutton)
+						this._lastbutton = mybutton;
+					else
+						return;
+					break;
+				
+				case POINTER_RELEASED:
+					if (mybutton == lastbutton)
+						this._lastbutton = Integer.MIN_VALUE;
+					else
+						return;
+					break;
+			}
+			
+			// Post event
+			NativeDisplayAccess.postEvent(__t.ordinal(),
+				__e.getX(), __e.getY(), (int)__e.getWhen(), -1, -1);
 		}
 	}
 }

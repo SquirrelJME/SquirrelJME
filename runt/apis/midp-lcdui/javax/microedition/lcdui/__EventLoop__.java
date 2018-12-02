@@ -90,17 +90,13 @@ final class __EventLoop__
 					Display.__mapDisplay(0).__doKeyAction(t, data[0], data[1]);
 					break;
 					
-					// Pointer Dragged.
+					// Pointer Dragged, pressed, or released.
 				case POINTER_DRAGGED:
-					throw new todo.TODO();
-
-					// Pointer Pressed.
 				case POINTER_PRESSED:
-					throw new todo.TODO();
-
-					// Pointer Released.
 				case POINTER_RELEASED:
-					throw new todo.TODO();
+					Display.__mapDisplay(0).__doPointerAction(t,
+						data[0], data[1], data[2]);
+					break;
 
 					// Repaint the current display
 				case DISPLAY_REPAINT:
