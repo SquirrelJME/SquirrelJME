@@ -23,99 +23,99 @@ public interface NonStandardKey
 	
 	/** F1. */
 	public static final int F1 =
-		-(0xFF + 1);
+		-(0xFF + 24);
 	
 	/** F2. */
 	public static final int F2 =
-		-(0xFF + 2);
+		-(0xFF + 23);
 	
 	/** F3. */
 	public static final int F3 =
-		-(0xFF + 3);
+		-(0xFF + 22);
 	
 	/** F4. */
 	public static final int F4 =
-		-(0xFF + 4);
+		-(0xFF + 21);
 	
 	/** F5. */
 	public static final int F5 =
-		-(0xFF + 5);
+		-(0xFF + 20);
 	
 	/** F6. */
 	public static final int F6 =
-		-(0xFF + 6);
+		-(0xFF + 19);
 	
 	/** F7. */
 	public static final int F7 =
-		-(0xFF + 7);
+		-(0xFF + 18);
 	
 	/** F8. */
 	public static final int F8 =
-		-(0xFF + 8);
+		-(0xFF + 17);
 	
 	/** F9. */
 	public static final int F9 =
-		-(0xFF + 9);
+		-(0xFF + 16);
 	
 	/** F10. */
 	public static final int F10 =
-		-(0xFF + 10);
+		-(0xFF + 15);
 		
 	/** F11. */
 	public static final int F11 =
-		-(0xFF + 11);
+		-(0xFF + 14);
 	
 	/** F12. */
 	public static final int F12 =
-		-(0xFF + 12);
+		-(0xFF + 13);
 	
 	/** F13. */
 	public static final int F13 =
-		-(0xFF + 13);
+		-(0xFF + 12);
 	
 	/** F14. */
 	public static final int F14 =
-		-(0xFF + 14);
+		-(0xFF + 11);
 	
 	/** F15. */
 	public static final int F15 =
-		-(0xFF + 15);
+		-(0xFF + 10);
 	
 	/** F16. */
 	public static final int F16 =
-		-(0xFF + 16);
+		-(0xFF + 9);
 	
 	/** F17. */
 	public static final int F17 =
-		-(0xFF + 17);
+		-(0xFF + 8);
 	
 	/** F18. */
 	public static final int F18 =
-		-(0xFF + 18);
+		-(0xFF + 7);
 	
 	/** F19. */
 	public static final int F19 =
-		-(0xFF + 19);
+		-(0xFF + 6);
 	
 	/** F20. */
 	public static final int F20 =
-		-(0xFF + 20);
+		-(0xFF + 5);
 		
 	/** F21. */
 	public static final int F21 =
-		-(0xFF + 21);
+		-(0xFF + 4);
 	
 	/** F22. */
 	public static final int F22 =
-		-(0xFF + 22);
+		-(0xFF + 3);
 	
 	/** F23. */
 	public static final int F23 =
-		-(0xFF + 23);
+		-(0xFF + 2);
 	
 	/** F24. */
 	public static final int F24 =
-		-(0xFF + 24);
+		-(0xFF + 1);
 	
 	/** Logo Key. */
 	public static final int LOGO =
@@ -455,42 +455,42 @@ public interface NonStandardKey
 	
 	/** Number pad 0. */
 	public static final int NUMPAD0 =
-		-(0xFF + 130);
+		-(0xFF + 139);
 	
 	/** Number pad 1. */
 	public static final int NUMPAD1 =
-		-(0xFF + 131);
+		-(0xFF + 138);
 	
 	/** Number pad 2. */
 	public static final int NUMPAD2 =
-		-(0xFF + 132);
+		-(0xFF + 137);
 	
 	/** Number pad 3. */
 	public static final int NUMPAD3 =
-		-(0xFF + 133);
+		-(0xFF + 136);
 	
 	/** Number pad 4. */
 	public static final int NUMPAD4 =
-		-(0xFF + 134);
+		-(0xFF + 135);
 	
 	/** Number pad 5. */
 	public static final int NUMPAD5 =
-		-(0xFF + 135);
+		-(0xFF + 134);
 	
 	/** Number pad 6. */
 	public static final int NUMPAD6 =
-		-(0xFF + 136);
+		-(0xFF + 133);
 	
 	/** Number pad 7. */
 	public static final int NUMPAD7 =
-		-(0xFF + 137);
+		-(0xFF + 132);
 	
 	/** Number pad 8. */
 	public static final int NUMPAD8 =
-		-(0xFF + 138);
+		-(0xFF + 131);
 	
 	/** Number pad 9. */
 	public static final int NUMPAD9 =
-		-(0xFF + 139);
+		-(0xFF + 130);
 }
 
