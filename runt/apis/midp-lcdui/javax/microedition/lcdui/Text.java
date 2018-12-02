@@ -103,6 +103,14 @@ public class Text
 	/** Scrolling offset (scrolled up by n pixels). */
 	private int _scrolloffset;
 	
+	/** The highlight index. */
+	private int _highlightdx =
+		-1;
+	
+	/** The highlight length. */
+	private int _highlightlen =
+		0;
+	
 	/** Does character placement have to be updated. */
 	private boolean _dirty;
 	
@@ -319,9 +327,15 @@ public class Text
 		return this._defaultfont;
 	}
 	
+	/**
+	 * Returns the default foreground color.
+	 *
+	 * @return The default foreground color.
+	 * @since 2018/12/02
+	 */
 	public int getForegroundColor()
 	{
-		throw new todo.TODO();
+		return this._defaultcolor;
 	}
 	
 	/**
@@ -357,24 +371,48 @@ public class Text
 		return this._height;
 	}
 	
+	/**
+	 * Returns the highlight index.
+	 *
+	 * @return The highlight index or {@code -1} if none.
+	 * @since 2018/12/02
+	 */
 	public int getHighlightIndex()
 	{
-		throw new todo.TODO();
+		return this._highlightdx;
 	}
 	
+	/**
+	 * Returns the length of highlighted characters.
+	 *
+	 * @return The number of characters highlighted, {@code 0} if none.
+	 * @since 2018/12/02
+	 */
 	public int getHighlightLength()
 	{
-		throw new todo.TODO();
+		return this._highlightlen;
 	}
 	
+	/**
+	 * Returns the current indentation.
+	 *
+	 * @return The indentation.
+	 * @since 2018/12/02
+	 */
 	public int getIndent()
 	{
-		throw new todo.TODO();
+		return this._indentation;
 	}
 	
+	/**
+	 * Returns the initial direction.
+	 *
+	 * @return The initial direction.
+	 * @since 2018/12/02
+	 */
 	public int getInitialDirection()
 	{
-		throw new todo.TODO();
+		return this._direction;
 	}
 	
 	/**
@@ -409,19 +447,37 @@ public class Text
 		return this._requiredlines;
 	}
 	
+	/**
+	 * Returns the scroll offset.
+	 *
+	 * @return The scroll offset.
+	 * @since 2018/12/02
+	 */
 	public int getScrollOffset()
 	{
-		throw new todo.TODO();
+		return this._scrolloffset;
 	}
 	
+	/**
+	 * Returns the space above each line.
+	 *
+	 * @return The space above.
+	 * @since 2018/12/02
+	 */
 	public int getSpaceAbove()
 	{
-		throw new todo.TODO();
+		return this._spaceabove;
 	}
 	
+	/**
+	 * Returns the space below each line.
+	 *
+	 * @return The space below.
+	 * @since 2018/12/02
+	 */
 	public int getSpaceBelow()
 	{
-		throw new todo.TODO();
+		return this._spacebelow;
 	}
 	
 	/**
