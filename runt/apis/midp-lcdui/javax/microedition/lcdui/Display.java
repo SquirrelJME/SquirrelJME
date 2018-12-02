@@ -216,6 +216,10 @@ public class Display
 	/** The Native ID of this display. */
 	final int _nid;
 	
+	/** Set of keys which are down already, used to detect repeats on press. */
+	private final Set<Integer> _downkeys =
+		new HashSet<>();
+	
 	/** The displayable to show. */
 	private volatile Displayable _current;
 	
@@ -987,6 +991,10 @@ public class Display
 		if (__kt == null)
 			throw new NullPointerException("NARG");
 		
+		// This is used to detect repeats from press events
+		Set<Integer> downkeys = this._downkeys;
+		Integer kci = Integer.valueOf(__kc);
+		
 		// Forward to the displayable
 		Displayable current = this._current;
 		if (current != null)
@@ -995,9 +1003,31 @@ public class Display
 			int type;
 			switch (__kt)
 			{
-				case KEY_PRESSED:	type = _KEY_PRESSED; break;
+				case KEY_PRESSED:
+					{
+						// If the key was never in the set then it will be
+						// a press
+						if (downkeys.add(kci))
+							type = _KEY_PRESSED;
+						
+						// Otherwise it is in the set, so it becomes a repeat
+						else
+							type = _KEY_REPEATED;
+					}
+					break;
+					
+					// Remove keys from set
+				case KEY_RELEASED:
+					{
+						type = _KEY_RELEASED;
+						
+						// Key was released, so remove it from the set
+						downkeys.remove(kci);
+					}
+					break;
+					
+					// Just forward repeats
 				case KEY_REPEATED:	type = _KEY_REPEATED; break;
-				case KEY_RELEASED:	type = _KEY_RELEASED; break;
 				
 				default:
 					throw new todo.OOPS();
