@@ -524,6 +524,9 @@ public class VMNativeDisplayAccess
 	public final class VMCanvas
 		extends Canvas
 	{
+		/** Key time index tracking. */
+		private volatile int _keyindex;
+		
 		/**
 		 * {@inheritDoc}
 		 * @since 2018/12/01
@@ -629,7 +632,7 @@ public class VMNativeDisplayAccess
 			// Try to map to a game key if possible
 			try
 			{
-				switch (gamekey)
+				switch (this.getGameAction(__kc))
 				{
 					case Canvas.UP:
 						__kc = NonStandardKey.GAME_UP;
@@ -679,7 +682,8 @@ public class VMNativeDisplayAccess
 			}
 			
 			// Post event
-			VMNativeDisplayAccess.this.postEvent(__et.ordinal(), __kc);
+			VMNativeDisplayAccess.this.postEvent(__et.ordinal(),
+				__kc, ++this._keyindex, -1, -1, -1);
 		}
 	}
 }
