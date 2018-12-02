@@ -16,6 +16,7 @@ import cc.squirreljme.runtime.lcdui.common.CommonMetrics;
 import cc.squirreljme.runtime.lcdui.DisplayOrientation;
 import cc.squirreljme.runtime.lcdui.DisplayState;
 import cc.squirreljme.runtime.lcdui.event.EventType;
+import cc.squirreljme.runtime.lcdui.event.NonStandardKey;
 import cc.squirreljme.runtime.lcdui.gfx.AcceleratedGraphics;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import java.io.DataInputStream;
@@ -914,6 +915,34 @@ public class Display
 	}
 	
 	/**
+	 * Performs a command event on the target displayable.
+	 *
+	 * @param __i The command index.
+	 * @since 2018/12/02
+	 */
+	@SerializedEvent
+	final void __doCommandAction(int __i)
+	{
+		// No current, do nothing
+		Displayable current = this._current;
+		if (current == null)
+			return;
+		
+		// If there is no command listener then nothing can ever happen
+		CommandListener cmdlistener = current._cmdlistener;
+		if (cmdlistener == null)
+			return;
+		
+		// Check if the command index is in bounds
+		Object[] rawcommands = current._commands.values();
+		if (__i < 0 || __i >=  rawcommands.length)
+			return;
+		
+		// Otherwise execute the command
+		cmdlistener.commandAction((Command)rawcommands[__i], current);
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @param __shown Is the display being shown?
 	 * @since 2018/03/24
@@ -1018,6 +1047,15 @@ public class Display
 	{
 		if (__kt == null)
 			throw new NullPointerException("NARG");
+		
+		// If a function key is pressed, just treat it as a command which
+		// has been executed
+		if (__kc >= NonStandardKey.F1 && __kc <= NonStandardKey.F24)
+		{
+			if (__kt == EventType.KEY_PRESSED)
+				this.__doCommandAction(__kc - NonStandardKey.F1);
+			return;
+		}
 		
 		// This is used to detect repeats from press events
 		Set<Integer> downkeys = this._downkeys;

@@ -120,5 +120,13 @@ public interface NonStandardKey
 	/** Insert. */
 	public static final byte INSERT =
 		-33;
+	
+	/** F24. */
+	public static final byte F24 =
+		-34;
+	
+	/** F1. */
+	public static final byte F1 =
+		F24 - 24;
 }
 
