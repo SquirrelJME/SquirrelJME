@@ -12,10 +12,13 @@ package cc.squirreljme.runtime.cldc.asm;
 
 import cc.squirreljme.runtime.javase.lcdui.ColorInfo;
 import cc.squirreljme.runtime.lcdui.event.EventType;
+import cc.squirreljme.runtime.lcdui.event.NonStandardKey;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.Graphics2D;
@@ -564,6 +567,7 @@ public final class NativeDisplayAccess
 			// Record some events
 			frame.addComponentListener(rv);
 			frame.addWindowListener(rv);
+			frame.addKeyListener(rv);
 			
 			// Pack the frame
 			frame.pack();
@@ -583,7 +587,7 @@ public final class NativeDisplayAccess
 	 */
 	public static final class SwingPanel
 		extends JPanel
-		implements ComponentListener, WindowListener
+		implements ComponentListener, KeyListener, WindowListener
 	{
 		/** The image to be displayed. */
 		volatile BufferedImage _image =
@@ -596,6 +600,9 @@ public final class NativeDisplayAccess
 		@Override
 		public void componentHidden(ComponentEvent __e)
 		{
+			NativeDisplayAccess.postEvent(
+				EventType.DISPLAY_HIDDEN.ordinal(),
+				0, -1, -1, -1, -1);
 		}
 		
 		/**
@@ -637,6 +644,42 @@ public final class NativeDisplayAccess
 		 */
 		@Override
 		public void componentShown(ComponentEvent __e)
+		{
+			NativeDisplayAccess.postEvent(
+				EventType.DISPLAY_SHOWN.ordinal(),
+				0, -1, -1, -1, -1);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/12/01
+		 */
+		@Override
+		public void keyPressed(KeyEvent __e)
+		{
+			NativeDisplayAccess.postEvent(
+				EventType.KEY_PRESSED.ordinal(),
+				__KeyMap__.__map(__e), (int)__e.getWhen(), -1, -1, -1);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/12/01
+		 */
+		@Override
+		public void keyReleased(KeyEvent __e)
+		{
+			NativeDisplayAccess.postEvent(
+				EventType.KEY_RELEASED.ordinal(),
+				__KeyMap__.__map(__e), (int)__e.getWhen(), -1, -1, -1);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/12/01
+		 */
+		@Override
+		public void keyTyped(KeyEvent __e)
 		{
 		}
 		
