@@ -47,6 +47,12 @@ public enum EventType
 	/** Exit program requested. */
 	EXIT_REQUEST,
 	
+	/** Display shown. */
+	DISPLAY_SHOWN,
+	
+	/** Display hidden. */
+	DISPLAY_HIDDEN,
+	
 	/** End. */
 	;
 	
@@ -75,6 +81,8 @@ public enum EventType
 			case 7:		return DISPLAY_REPAINT;
 			case 8:		return DISPLAY_SIZE_CHANGED;
 			case 9:		return EXIT_REQUEST;
+			case 10:	return DISPLAY_SHOWN;
+			case 11:	return DISPLAY_HIDDEN;
 			
 				// {@squirreljme.error EB2a Unknown event type. (The event
 				// type)}
