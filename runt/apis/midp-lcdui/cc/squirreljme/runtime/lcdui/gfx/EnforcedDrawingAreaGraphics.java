@@ -88,8 +88,10 @@ public final class EnforcedDrawingAreaGraphics
 		this.height = __h;
 		
 		// Initialize our translation with our offsets
-		this._transx = __x;
-		this._transy = __y;
+		this._transx = 0;
+		this._transy = 0;
+		this._dx = __x;
+		this._dy = __y;
 	}
 	
 	/**
@@ -543,6 +545,12 @@ public final class EnforcedDrawingAreaGraphics
 		this._clipy = 0;
 		this._clipw = width;
 		this._cliph = height;
+		
+		// Reset translation and draw position
+		this._dx = x;
+		this._dy = y;
+		this._transx = 0;
+		this._transy = 0;
 	}
 	
 	/**
