@@ -30,7 +30,7 @@ final class __KeyMap__
 	 */
 	static final int __map(KeyEvent __e)
 	{
-		int keycode = __e.getKeyCode();
+		int keycode = __e.getExtendedKeyCode();
 		switch (keycode)
 		{
 			case KeyEvent.VK_0:
