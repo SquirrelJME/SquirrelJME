@@ -234,9 +234,10 @@ public class DataOutputStream
 	public final void writeShort(int __v)
 		throws IOException
 	{
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
+		OutputStream out = this.out;
+		out.write(__v >> 8);
+		out.write(__v);
+		this.written += 2;
 	}
 	
 	/**

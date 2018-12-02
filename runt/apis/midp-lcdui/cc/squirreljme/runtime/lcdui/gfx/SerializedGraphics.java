@@ -752,6 +752,28 @@ public abstract class SerializedGraphics
 	}
 	
 	/**
+	 * Deserializes the font.
+	 *
+	 * @param __dis The stream to read from.
+	 * @return The deserialized font.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/12/02
+	 */
+	public static Font fontDeserialize(DataInputStream __dis)
+		throws IOException, NullPointerException
+	{
+		if (__dis == null)
+			throw new NullPointerException("NARG");
+		
+		// Read byte data
+		int len = __dis.readUnsignedShort();
+		byte[] ser = new byte[len];
+		__dis.readFully(ser);
+		return SerializedGraphics.fontDeserialize(ser);
+	}
+	
+	/**
 	 * Serializes the font.
 	 *
 	 * @param __f The font to serialize.
@@ -787,6 +809,27 @@ public abstract class SerializedGraphics
 	}
 	
 	/**
+	 * Serializes the font.
+	 *
+	 * @param __dos The stream to write to.
+	 * @param __f The font to serialize.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/12/02
+	 */
+	public static void fontSerialize(DataOutputStream __dos, Font __f)
+		throws IOException, NullPointerException
+	{
+		if (__dos == null || __f == null)
+			throw new NullPointerException("NARG");
+		
+		// Record data
+		byte[] ser = SerializedGraphics.fontSerialize(__f);
+		__dos.writeShort(ser.length);
+		__dos.write(ser);
+	}
+	
+	/**
 	 * Deserializes the byte array to a {@link Text} object.
 	 *
 	 * @param __b The byte array to deserialize.
@@ -806,8 +849,38 @@ public abstract class SerializedGraphics
 			Text rv = new Text();
 			try (DataInputStream dis = new DataInputStream(bais))
 			{
-				if (true)
-					throw new todo.TODO();
+				rv.setWidth(dis.readInt());
+				rv.setHeight(dis.readInt());
+				rv.setAlignment(dis.readInt());
+				rv.setBackgroundColor(dis.readInt());
+				rv.setFont(SerializedGraphics.fontDeserialize(dis));
+				rv.setForegroundColor(dis.readInt());
+				rv.setIndent(dis.readInt());
+				rv.setInitialDirection(dis.readInt());
+				rv.setScrollOffset(dis.readInt());
+				rv.setSpaceAbove(dis.readInt());
+				rv.setSpaceBelow(dis.readInt());
+				
+				// Read length
+				int n = dis.readInt();
+				
+				// Read in text string
+				rv.insert(0, dis.readUTF());
+				
+				// Read all character properties
+				for (int i = 0; i < n; i++)
+				{
+					rv.setForegroundColor(dis.readInt(), i, 1);
+					
+					// Was a font used?
+					if (dis.readBoolean())
+						rv.setFont(
+							SerializedGraphics.fontDeserialize(dis), i, 1);
+				}
+				
+				// And now that there is proper length
+				rv.setCaret(dis.readInt());
+				rv.setHighlight(dis.readInt(), dis.readInt());
 			}
 			
 			// Return it
@@ -841,18 +914,18 @@ public abstract class SerializedGraphics
 			try (DataOutputStream dos = new DataOutputStream(baos))
 			{
 				// Properties which do not need characters
+				dos.writeInt(__t.getWidth());
+				dos.writeInt(__t.getHeight());
 				dos.writeInt(__t.getAlignment());
 				dos.writeInt(__t.getBackgroundColor());
-				dos.write(SerializedGraphics.fontSerialize(__t.getFont()));
+				SerializedGraphics.fontSerialize(dos, __t.getFont());
 				dos.writeInt(__t.getForegroundColor());
-				dos.writeInt(__t.getHeight());
 				dos.writeInt(__t.getForegroundColor());
 				dos.writeInt(__t.getIndent());
 				dos.writeInt(__t.getInitialDirection());
 				dos.writeInt(__t.getScrollOffset());
 				dos.writeInt(__t.getSpaceAbove());
 				dos.writeInt(__t.getSpaceBelow());
-				dos.writeInt(__t.getWidth());
 				
 				// Record length
 				int n = __t.getTextLength();
@@ -873,7 +946,7 @@ public abstract class SerializedGraphics
 					else
 					{
 						dos.writeBoolean(true);
-						dos.write(SerializedGraphics.fontSerialize(f));
+						SerializedGraphics.fontSerialize(dos, f);
 					}
 				}
 				
