@@ -663,6 +663,9 @@ public abstract class Canvas
 	{
 		__DrawChain__ dc = this._drawchain;
 		
+		// Setup an enforced draw region to prevent programs from drawing
+		// outside of the canvas
+		
 		// Drawing this widget transparently? This just draws a color below
 		// it accordingly
 		if (this._transparent)

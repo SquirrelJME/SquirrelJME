@@ -48,6 +48,10 @@ public class Fonts
 		// Setup canvas
 		DemoCanvas cv = new DemoCanvas();
 		
+		// Exit command
+		cv.addCommand(Exit.command);
+		cv.setCommandListener(new Exit());
+		
 		// Set display to the canvas
 		Display.getDisplay(this).setCurrent(cv);
 	}
