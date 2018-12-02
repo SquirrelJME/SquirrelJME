@@ -390,7 +390,8 @@ final class __BucketMap__<K, V>
 	 * @param __preunlinked If this is true then the link chain will not have
 	 * the entry removed by this method, it is assumed it was already
 	 * removed by an iterator.
-	 * @return 
+	 * @return The removed map entry or {@code null} if one did not exist.
+	 * @since 2018/11/04
 	 */
 	public final __BucketMapEntry__<K, V> removeEntry(Object __k,
 		boolean __preunlinked)
