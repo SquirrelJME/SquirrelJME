@@ -195,15 +195,15 @@ public abstract class Canvas
 		switch (__kc)
 		{
 				// Virtually mapped game keys, likely from a VM running on top
-			case NonStandardKey.GAME_UP:	return UP;
-			case NonStandardKey.GAME_DOWN:	return DOWN;
-			case NonStandardKey.GAME_LEFT:	return LEFT;
-			case NonStandardKey.GAME_RIGHT:	return RIGHT;
-			case NonStandardKey.GAME_FIRE:	return FIRE;
-			case NonStandardKey.GAME_A:		return GAME_A;
-			case NonStandardKey.GAME_B:		return GAME_B;
-			case NonStandardKey.GAME_C:		return GAME_C;
-			case NonStandardKey.GAME_D:		return GAME_D;
+			case NonStandardKey.VGAME_UP:		return UP;
+			case NonStandardKey.VGAME_DOWN:		return DOWN;
+			case NonStandardKey.VGAME_LEFT:		return LEFT;
+			case NonStandardKey.VGAME_RIGHT:	return RIGHT;
+			case NonStandardKey.VGAME_FIRE:		return FIRE;
+			case NonStandardKey.VGAME_A:		return GAME_A;
+			case NonStandardKey.VGAME_B:		return GAME_B;
+			case NonStandardKey.VGAME_C:		return GAME_C;
+			case NonStandardKey.VGAME_D:		return GAME_D;
 			
 				// Invalid
 			default:
