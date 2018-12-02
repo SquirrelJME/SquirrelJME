@@ -124,6 +124,16 @@ final class __EventLoop__
 					Display.__mapDisplay(data[0]).__doExitRequest();
 					break;
 					
+					// Display shown
+				case DISPLAY_SHOWN:
+					Display.__mapDisplay(data[0]).__doDisplayShown(true);
+					break;
+					
+					// Display hidden
+				case DISPLAY_HIDDEN:
+					Display.__mapDisplay(data[0]).__doDisplayShown(false);
+					break;
+					
 				default:
 					throw new todo.OOPS("" + t);
 			}
