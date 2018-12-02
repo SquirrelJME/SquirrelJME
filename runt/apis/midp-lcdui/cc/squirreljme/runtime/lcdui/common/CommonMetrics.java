@@ -8,17 +8,17 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package javax.microedition.lcdui;
+package cc.squirreljme.runtime.lcdui.common;
 
 /**
- * Constants used for LCDUI.
+ * Common widget metrics.
  *
- * @since 2018/11/18
+ * @since 2018/12/02
  */
-final class __Constants__
+public interface CommonMetrics
 {
-	/** The transparent color used for drawing. */
-	public static final int TRANSPARENT_COLOR =
-		0xEEEEEE;
+	/** Width of the scroll bar. */
+	public static final int SCROLLBAR_WIDTH =
+		8;
 }
 

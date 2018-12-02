@@ -11,6 +11,7 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
+import cc.squirreljme.runtime.lcdui.common.CommonColors;
 import cc.squirreljme.runtime.lcdui.event.EventType;
 import cc.squirreljme.runtime.lcdui.event.KeyNames;
 import cc.squirreljme.runtime.lcdui.event.NonStandardKey;
@@ -671,7 +672,7 @@ public abstract class Canvas
 			int old = __g.getAlphaColor();
 			
 			// Fill the area accordingly
-			__g.setAlphaColor(__Constants__.TRANSPARENT_COLOR | 0xFF000000);
+			__g.setAlphaColor(CommonColors.CANVAS_BACKGROUND);
 			__g.fillRect(__g.getClipX(), __g.getClipY(),
 				__g.getClipWidth(), __g.getClipHeight());
 			

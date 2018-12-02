@@ -11,6 +11,7 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
+import cc.squirreljme.runtime.lcdui.common.CommonColors;
 import cc.squirreljme.runtime.lcdui.DisplayOrientation;
 import cc.squirreljme.runtime.lcdui.DisplayState;
 import cc.squirreljme.runtime.lcdui.event.EventType;
@@ -375,24 +376,26 @@ public class Display
 		switch (__c)
 		{
 			case COLOR_BORDER:
-				return 0x00_000000;
+				return CommonColors.BORDER;
 			
 			case COLOR_BACKGROUND:
 			case COLOR_IDLE_BACKGROUND:
-				return 0x00_FFFFFF;
+				return CommonColors.BACKGROUND;
 			
 			case COLOR_FOREGROUND:
 			case COLOR_IDLE_FOREGROUND:
-				return 0x00_000000;
+				return CommonColors.FOREGROUND;
 			
 			case COLOR_HIGHLIGHTED_BORDER:
+				return CommonColors.HIGHLIGHTED_BORDER;
+				
 			case COLOR_HIGHLIGHTED_BACKGROUND:
 			case COLOR_IDLE_HIGHLIGHTED_BACKGROUND:
-				return 0x00_000080;
+				return CommonColors.HIGHLIGHTED_BACKGROUND;
 			
 			case COLOR_HIGHLIGHTED_FOREGROUND:
 			case COLOR_IDLE_HIGHLIGHTED_FOREGROUND:
-				return 0x00_FFFFFF;
+				return CommonColors.HIGHLIGHTED_FOREGROUND;
 		
 				// {@squirreljme.error EB2p Unknown color specifier. (The
 				// color specifier)}
