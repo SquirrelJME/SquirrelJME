@@ -44,5 +44,13 @@ public interface CommonColors
 	/** Canvas background. */
 	public static final int CANVAS_BACKGROUND =
 		0x00_FFFFFF;
+	
+	/** Command bar background. */
+	public static final int COMMANDBAR_BACKGROUND =
+		0x00_000000;
+	
+	/** Command bar foreground. */
+	public static final int COMMANDBAR_FOREGROUND =
+		0x00_FFFFFFF;
 }
 

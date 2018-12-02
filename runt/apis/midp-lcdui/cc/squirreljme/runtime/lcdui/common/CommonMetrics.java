@@ -20,5 +20,14 @@ public interface CommonMetrics
 	/** Width of the scroll bar. */
 	public static final int SCROLLBAR_WIDTH =
 		8;
+	
+	/** Command bar height. */
+	public static final int COMMANDBAR_HEIGHT =
+		18;
+	
+	/** Command bar font size. */
+	public static final int COMMANDBAR_FONT_SIZE =
+		16;
+		
 }
 

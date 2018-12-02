@@ -32,8 +32,24 @@ abstract class __Drawable__
 	/**
 	 * Updates the draw chain for this widget.
 	 *
+	 * @param __sl The draw slice which specifies the area that is available.
 	 * @since 2018/11/18
 	 */
 	abstract void __updateDrawChain(__DrawSlice__ __sl);
+	
+	/**
+	 * Performs drawing of the widgets, but with wrappers and such.
+	 *
+	 * @param __g The graphics to draw into.
+	 * @since 2018/11/18
+	 */
+	final void __drawChainWrapped(Graphics __g)
+	{
+		// Normal draw chain
+		this.__drawChain(__g);
+		
+		// Draw the children widgets
+		this._drawchain.drawChildren(__g);
+	}
 }
 
