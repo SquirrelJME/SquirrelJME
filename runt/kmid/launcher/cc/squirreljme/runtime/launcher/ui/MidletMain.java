@@ -73,8 +73,14 @@ public class MidletMain
 	 */
 	public void refresh()
 	{
+		// When a refresh is happening, change the title so that is
+		// indicated
+		List programlist = this.programlist;
+		programlist.setTitle("Loading...");
+		
 		// Go through all of the available application suites and build the
 		// program list
+		int foundcount = 0;
 		ArrayList<__Program__> programs = new ArrayList<>();
 		for (Suite suite : ManagerFactory.getSuiteManager().getSuites(
 			SuiteType.APPLICATION))
@@ -102,15 +108,22 @@ public class MidletMain
 				
 				// Build program
 				programs.add(new __Program__(suite, main, title));
+				
+				// Say it was found via the title
+				programlist.setTitle(String.format(
+					"Loading (%d Found)...", ++foundcount));
 			}
 		}
+		
+		// Indicate that the program list is being built
+		programlist.setTitle(String.format(
+			"Building List (%d Found)...", ++foundcount));
 		
 		// Build program array
 		__Program__[] arrprogs = programs.<__Program__>toArray(
 			new __Program__[programs.size()]);
 		
 		// Clear the program list
-		List programlist = this.programlist;
 		programlist.deleteAll();
 		
 		// Build the list in the program order
@@ -119,6 +132,9 @@ public class MidletMain
 		
 		// Use this list
 		this._programs = arrprogs;
+		
+		// All done so, return the title back
+		programlist.setTitle("SquirrelJME Launcher");
 	}
 	
 	/**
@@ -141,12 +157,21 @@ public class MidletMain
 		// Need to handle commands and such
 		programlist.setCommandListener(new __CommandHandler__());
 		
-		// Initial load of all the programs that are available, more
-		// efficient to refresh before it is fully displayed
-		this.refresh();
-		
 		// Display the program list
 		disp.setCurrent(programlist);
+		
+		// Only load the programs when the list is on the screen so that way
+		// if the user is impatient and thinks nothing is happening when
+		// something is.  Loading the program list can take awhile because
+		// it checks through everything, so best to have an indicator of it.
+		while (!programlist.isShown())
+		{
+			// Do the refresh
+			this.refresh();
+			
+			// Yield thread to give another a chance
+			Thread.yield();
+		}
 	}
 	
 	/**
