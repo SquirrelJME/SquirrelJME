@@ -39,6 +39,30 @@ public final class EnforcedDrawingAreaGraphics
 	/** The height. */
 	protected final int height;
 	
+	/** Draw X actual. */
+	private int _dx;
+	
+	/** Draw Y actual. */
+	private int _dy;
+	
+	/** Current X translation. */
+	private int _transx;
+	
+	/** Current Y translation. */
+	private int _transy;
+	
+	/** Clip X. */
+	private int _clipx;
+	
+	/** Clip Y. */
+	private int _clipy;
+	
+	/** Clip Width. */
+	private int _clipw;
+	
+	/** Clip Height. */
+	private int _cliph;
+	
 	/**
 	 * Initializes the enforced drawing area.
 	 *
@@ -62,6 +86,10 @@ public final class EnforcedDrawingAreaGraphics
 		this.y = __y;
 		this.width = __w;
 		this.height = __h;
+		
+		// Initialize our translation with our offsets
+		this._transx = __x;
+		this._transy = __y;
 	}
 	
 	/**
@@ -83,7 +111,8 @@ public final class EnforcedDrawingAreaGraphics
 		int __dx, int __dy, int __anchor)
 		throws IllegalArgumentException, IllegalStateException
 	{
-		throw new todo.TODO();
+		this.graphics.copyArea(this._dx + __sx, this._dy + __sy,
+			__w, __h, this._dx + __dx, this._dy + __dy, __anchor);
 	}
 	
 	/**
@@ -94,7 +123,8 @@ public final class EnforcedDrawingAreaGraphics
 	public final void drawArc(int __x, int __y, int __w, int __h, int __sa,
 		int __aa)
 	{
-		throw new todo.TODO();
+		this.graphics.drawArc(this._dx + __x, this._dy + __y,
+			__w, __h, __sa, __aa);
 	}
 	
 	/**
@@ -106,7 +136,8 @@ public final class EnforcedDrawingAreaGraphics
 		int __x, int __y, int __w, int __h)
 		throws NullPointerException
 	{
-		throw new todo.TODO();
+		this.graphics.drawARGB16(__data, __off, __scanlen,
+			this._dx + __x, this._dy + __y, __w, __h);
 	}
 	
 	/**
@@ -116,7 +147,8 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final void drawChar(char __s, int __x, int __y, int __anchor)
 	{
-		throw new todo.TODO();
+		this.graphics.drawChar(__s, this._dx + __x, this._dy + __y,
+			__anchor);
 	}
 	
 	/**
@@ -128,7 +160,9 @@ public final class EnforcedDrawingAreaGraphics
 		int __y, int __anchor)
 		throws NullPointerException
 	{
-		throw new todo.TODO();
+		this.graphics.drawChars(__s, __o, __l,
+			this._dx + __x, this._dy + __y,
+			__anchor);
 	}
 	
 	/**
@@ -139,7 +173,8 @@ public final class EnforcedDrawingAreaGraphics
 	public final void drawImage(Image __i, int __x, int __y, int __anchor)
 		throws IllegalArgumentException, NullPointerException
 	{
-		throw new todo.TODO();
+		this.graphics.drawImage(__i, this._dx + __x, this._dy + __y,
+			__anchor);
 	}
 	
 	/**
@@ -149,7 +184,8 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final void drawLine(int __x1, int __y1, int __x2, int __y2)
 	{
-		throw new todo.TODO();
+		this.graphics.drawLine(this._dx + __x1, this._dy + __y1,
+			this._dx + __x2, this._dy + __y2);
 	}
 	
 	/**
@@ -161,7 +197,8 @@ public final class EnforcedDrawingAreaGraphics
 		int __x, int __y, int __w, int __h, boolean __alpha)
 		throws NullPointerException
 	{
-		throw new todo.TODO();
+		this.graphics.drawRGB(__data, __off, __scanlen,
+			this._dx + __x, this._dy + __y, __w, __h, __alpha);
 	}
 	
 	/**
@@ -173,7 +210,8 @@ public final class EnforcedDrawingAreaGraphics
 		int __x, int __y, int __w, int __h)
 		throws NullPointerException
 	{
-		throw new todo.TODO();
+		this.graphics.drawRGB16(__data, __off, __scanlen,
+			this._dx + __x, this._dy + __y, __w, __h);
 	}
 	
 	/**
@@ -183,7 +221,8 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final void drawRect(int __x, int __y, int __w, int __h)
 	{
-		throw new todo.TODO();
+		this.graphics.drawRect(this._dx + __x, this._dy + __y,
+			__w, __h);
 	}
 	
 	/**
@@ -196,7 +235,8 @@ public final class EnforcedDrawingAreaGraphics
 		int __anch)
 		throws IllegalArgumentException, NullPointerException
 	{
-		throw new todo.TODO();
+		this.graphics.drawRegion(__src, __xsrc, __ysrc, __wsrc, __hsrc,
+			__trans, this._dx + __xdest, this._dy + __ydest, __anch);
 	}
 	
 	/**
@@ -209,7 +249,9 @@ public final class EnforcedDrawingAreaGraphics
 		int __anch, int __wdest, int __hdest)
 		throws IllegalArgumentException, NullPointerException
 	{
-		throw new todo.TODO();
+		this.graphics.drawRegion(__src, __xsrc, __ysrc, __wsrc, __hsrc,
+			__trans, this._dx + __xdest, this._dy + __ydest, __anch,
+			__wdest, __hdest);
 	}
 	
 	/**
@@ -220,7 +262,8 @@ public final class EnforcedDrawingAreaGraphics
 	public final void drawRoundRect(int __x, int __y, int __w, int __h,
 		int __aw, int __ah)
 	{
-		throw new todo.TODO();
+		this.graphics.drawRoundRect(this._dx + __x, this._dy + __y,
+			__w, __h, __aw, __ah);
 	}
 	
 	/**
@@ -232,7 +275,8 @@ public final class EnforcedDrawingAreaGraphics
 		int __anchor)
 		throws NullPointerException
 	{
-		throw new todo.TODO();
+		this.graphics.drawString(__s, this._dx + __x, this._dy + __y,
+			__anchor);
 	}
 	
 	/**
@@ -244,7 +288,8 @@ public final class EnforcedDrawingAreaGraphics
 		int __y, int __anchor)
 		throws NullPointerException, StringIndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		this.graphics.drawSubstring(__s, __o, __l,
+			this._dx + __x, this._dy + __y, __anchor);
 	}
 	
 	/**
@@ -254,7 +299,7 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final void drawText(Text __t, int __x, int __y)
 	{
-		throw new todo.TODO();
+		this.graphics.drawText(__t, this._dx + __x, this._dy + __y);
 	}
 	
 	/**
@@ -265,7 +310,8 @@ public final class EnforcedDrawingAreaGraphics
 	public final void fillArc(int __x, int __y, int __w, int __h, int __sa,
 		int __aa)
 	{
-		throw new todo.TODO();
+		this.graphics.fillArc(this._dx + __x, this._dy + __y,
+			__w, __h, __sa, __aa);
 	}
 	
 	/**
@@ -275,7 +321,8 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final void fillRect(int __x, int __y, int __w, int __h)
 	{
-		throw new todo.TODO();
+		this.graphics.fillRect(this._dx + __x, this._dy + __y,
+			__w, __h);
 	}
 	
 	/**
@@ -286,7 +333,8 @@ public final class EnforcedDrawingAreaGraphics
 	public final void fillRoundRect(int __x, int __y, int __w, int __h,
 		int __aw, int __ah)
 	{
-		throw new todo.TODO();
+		this.graphics.fillRoundRect(this._dx + __x, this._dy + __y,
+			__w, __h, __aw, __ah);
 	}
 	
 	/**
@@ -297,7 +345,11 @@ public final class EnforcedDrawingAreaGraphics
 	public final void fillTriangle(int __x1, int __y1, int __x2, int __y2,
 		int __x3, int __y3)
 	{
-		throw new todo.TODO();
+		int x = this._transx, y = this._transy;
+		this.graphics.fillTriangle(
+			x + __x1, y + __y1,
+			x + __x2, y + __y2,
+			x + __x3, y + __y3);
 	}
 	
 	/**
@@ -307,7 +359,7 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final int getAlpha()
 	{
-		throw new todo.TODO();
+		return this.graphics.getAlpha();
 	}
 	
 	/**
@@ -317,7 +369,7 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final int getAlphaColor()
 	{
-		throw new todo.TODO();
+		return this.graphics.getAlphaColor();
 	}
 	
 	/**
@@ -327,7 +379,7 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final int getBlendingMode()
 	{
-		throw new todo.TODO();
+		return this.graphics.getBlendingMode();
 	}
 	
 	/**
@@ -337,7 +389,7 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final int getBlueComponent()
 	{
-		throw new todo.TODO();
+		return this.graphics.getBlueComponent();
 	}
 	
 	/**
@@ -387,7 +439,7 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final int getColor()
 	{
-		throw new todo.TODO();
+		return this.graphics.getColor();
 	}
 	
 	/**
@@ -397,7 +449,7 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final int getDisplayColor(int __rgb)
 	{
-		throw new todo.TODO();
+		return this.graphics.getDisplayColor(__rgb);
 	}
 	
 	/**
@@ -407,7 +459,7 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final Font getFont()
 	{
-		throw new todo.TODO();
+		return this.graphics.getFont();
 	}
 	
 	/**
@@ -417,7 +469,7 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final int getGrayScale()
 	{
-		throw new todo.TODO();
+		return this.graphics.getGrayScale();
 	}
 	
 	/**
@@ -427,7 +479,7 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final int getGreenComponent()
 	{
-		throw new todo.TODO();
+		return this.graphics.getGreenComponent();
 	}
 	
 	/**
@@ -437,7 +489,7 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final int getRedComponent()
 	{
-		throw new todo.TODO();
+		return this.graphics.getRedComponent();
 	}
 	
 	/**
@@ -447,7 +499,7 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final int getStrokeStyle()
 	{
-		throw new todo.TODO();
+		return this.graphics.getStrokeStyle();
 	}
 	
 	/**
@@ -457,7 +509,7 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final int getTranslateX()
 	{
-		throw new todo.TODO();
+		return this._transx;
 	}
 	
 	/**
@@ -467,7 +519,7 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final int getTranslateY()
 	{
-		throw new todo.TODO();
+		return this._transy;
 	}
 	
 	/**
@@ -477,7 +529,20 @@ public final class EnforcedDrawingAreaGraphics
 	 */
 	public final void initializeTarget()
 	{
-		throw new todo.TODO();
+		Graphics g = this.graphics;
+		
+		// Our viewing area
+		int x = this.x,
+			y = this.y,
+			width = this.width,
+			height = this.height;
+		
+		// Set new clipping area
+		g.clipRect(x, y, width, height);
+		this._clipx = 0;
+		this._clipy = 0;
+		this._clipw = width;
+		this._cliph = height;
 	}
 	
 	/**
@@ -488,7 +553,7 @@ public final class EnforcedDrawingAreaGraphics
 	public final void setAlpha(int __a)
 		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		this.graphics.setAlpha(__a);
 	}
 	
 	/**
@@ -498,7 +563,7 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final void setAlphaColor(int __argb)
 	{
-		throw new todo.TODO();
+		this.graphics.setAlphaColor(__argb);
 	}
 	
 	/**
@@ -509,7 +574,7 @@ public final class EnforcedDrawingAreaGraphics
 	public final void setAlphaColor(int __a, int __r, int __g, int __b)
 		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		this.graphics.setAlphaColor(__a, __r, __g, __b);
 	}
 	
 	/**
@@ -520,7 +585,7 @@ public final class EnforcedDrawingAreaGraphics
 	public final void setBlendingMode(int __m)
 		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		this.graphics.setBlendingMode(__m);
 	}
 	
 	/**
@@ -540,7 +605,7 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final void setColor(int __rgb)
 	{
-		throw new todo.TODO();
+		this.graphics.setColor(__rgb);
 	}
 	
 	/**
@@ -551,7 +616,7 @@ public final class EnforcedDrawingAreaGraphics
 	public final void setColor(int __r, int __g, int __b)
 		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		this.graphics.setColor(__r, __g, __b);
 	}
 	
 	/**
@@ -559,9 +624,9 @@ public final class EnforcedDrawingAreaGraphics
 	 * @since 2018/12/02
 	 */
 	@Override
-	public final void setFont(Font __a)
+	public final void setFont(Font __f)
 	{
-		throw new todo.TODO();
+		this.graphics.setFont(__f);
 	}
 	
 	/**
@@ -571,7 +636,7 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final void setGrayScale(int __v)
 	{
-		throw new todo.TODO();
+		this.graphics.setGrayScale(__v);
 	}
 	
 	/**
@@ -579,10 +644,10 @@ public final class EnforcedDrawingAreaGraphics
 	 * @since 2018/12/02
 	 */
 	@Override
-	public final void setStrokeStyle(int __a)
+	public final void setStrokeStyle(int __s)
 		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		this.graphics.setStrokeStyle(__s);
 	}
 	
 	/**
@@ -592,7 +657,17 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final void translate(int __x, int __y)
 	{
-		throw new todo.TODO();
+		// Add our translation, we manage it ourselves
+		int transx = this._transx + __x,
+			transy = this._transy + __y;
+		
+		// Set our own translation but not to the target
+		this._transx = transx;
+		this._transy = transy;
+		
+		// Our draw offset is our offset and our own translation
+		this._dx = this.x + transx;
+		this._dy = this.y + transy;
 	}
 }
 
