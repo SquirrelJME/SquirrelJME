@@ -686,7 +686,7 @@ public class Text
 		
 		// X starts with indentation, but that might be modified in right
 		// to left mode
-		int x = (dortl ? width : 0),
+		int x = (dortl ? width : indentation),
 			startx = x;
 		
 		// Cache parameters of font
@@ -788,7 +788,11 @@ public class Text
 					}
 					
 					// Character is still within the bounds?
-					if (nx >= 0 && nx <= width)
+					// Additionally if the X coordinate is at the start and
+					// cannot even fit in the width just force it to be
+					// placed
+					if ((nx >= 0 && nx <= width) ||
+						(x <= startx && chw <= width))
 					{
 						// Store current X position, this may change due to
 						// right to left mode
