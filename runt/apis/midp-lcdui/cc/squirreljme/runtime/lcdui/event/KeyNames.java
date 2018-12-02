@@ -41,7 +41,7 @@ public final class KeyNames
 	{
 		switch (__c)
 		{
-				// Less friendly names
+				// More friendly names
 			case Canvas.KEY_BACKSPACE:	return "Backspace";
 			case Canvas.KEY_DELETE:		return "Delete";
 			case Canvas.KEY_DOWN:		return "Down";
