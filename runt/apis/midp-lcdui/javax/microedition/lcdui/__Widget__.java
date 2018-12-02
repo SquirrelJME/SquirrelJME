@@ -134,21 +134,6 @@ abstract class __Widget__
 	}
 	
 	/**
-	 * Performs drawing of the widgets, but with wrappers and such.
-	 *
-	 * @param __g The graphics to draw into.
-	 * @since 2018/11/18
-	 */
-	final void __drawChainWrapped(Graphics __g)
-	{
-		// Normal draw chain
-		this.__drawChain(__g);
-		
-		// Draw the children widgets
-		this._drawchain.drawChildren(__g);
-	}
-	
-	/**
 	 * The bit that is used to check support.
 	 *
 	 * @return The bit for support.

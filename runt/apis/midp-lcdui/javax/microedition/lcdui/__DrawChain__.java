@@ -19,7 +19,7 @@ package javax.microedition.lcdui;
 final class __DrawChain__
 {
 	/** Sub-links to get their chain drawn. */
-	public final __VolatileList__<__Widget__> links =
+	public final __VolatileList__<__Drawable__> links =
 		new __VolatileList__<>();
 	
 	/** The X position. */
@@ -41,7 +41,7 @@ final class __DrawChain__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/18
 	 */
-	public void addLink(__Widget__ __w)
+	public void addLink(__Drawable__ __w)
 		throws NullPointerException
 	{
 		if (__w == null)
@@ -58,7 +58,7 @@ final class __DrawChain__
 	 */
 	public void drawChildren(Graphics __g)
 	{
-		for (__Widget__ w : this.links)
+		for (__Drawable__ w : this.links)
 			w.__drawChainWrapped(__g);
 	}
 	

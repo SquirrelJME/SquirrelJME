@@ -12,6 +12,7 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
 import cc.squirreljme.runtime.lcdui.common.CommonColors;
+import cc.squirreljme.runtime.lcdui.common.CommonMetrics;
 import cc.squirreljme.runtime.lcdui.DisplayOrientation;
 import cc.squirreljme.runtime.lcdui.DisplayState;
 import cc.squirreljme.runtime.lcdui.event.EventType;
@@ -198,10 +199,6 @@ public class Display
 
 	public static final int TAB =
 		4;
-	
-	/** The space needed for command buttons. */
-	private static final int _COMMAND_BUTTON_SIZE =
-		16;
 	
 	/** The displays which currently exist based on their index. */
 	private static final Map<Integer, Display> _DISPLAYS =
@@ -1225,8 +1222,8 @@ public class Display
 		
 		// If there are no commands or if we are showing a full-screen canvas
 		// then there will be no command buttons
-		__VolatileList__<Command> cc = current._commands;
-		int numcommands = cc.size();
+		Object[] commands = current._commands.values();
+		int numcommands = commands.length;
 		if (numcommands == 0 || ((current instanceof Canvas) &&
 			((Canvas)current)._isfullscreen))
 		{
@@ -1238,21 +1235,27 @@ public class Display
 		// Otherwise we will need to fit the command somewhere
 		else
 		{
-			// How many sides do we cut away?
-			int cutsides = (numcommands == 1 ? 1 : 2);
-			
-			// Landscape, remove from the sides to store the commands
-			__DrawSlice__ newslice;
-			if ((__sl.w - (_COMMAND_BUTTON_SIZE * cutsides)) > __sl.h)
-				newslice = new __DrawSlice__(
-					__sl.x + _COMMAND_BUTTON_SIZE, __sl.y,
-					__sl.w - (_COMMAND_BUTTON_SIZE * cutsides), __sl.h);
-			
-			// Portrait, remove from the bottom
-			else
-				newslice = new __DrawSlice__(
+			// Cut away bottom
+			__DrawSlice__ newslice = new __DrawSlice__(
 					__sl.x, __sl.y,
-					__sl.w, __sl.h - _COMMAND_BUTTON_SIZE);
+					__sl.w, __sl.h - CommonMetrics.COMMANDBAR_HEIGHT);
+			
+			// Only draw the first two commands
+			int maxcommands = (numcommands >= 2 ? 2 : numcommands);
+			for (int i = 0, n = maxcommands; i < n; i++)
+			{
+				// Setup sub slice for this command
+				__DrawSlice__ cmdslice = new __DrawSlice__(
+					newslice.x, newslice.y + newslice.h,
+					newslice.w + (newslice.w / 2),
+						CommonMetrics.COMMANDBAR_HEIGHT);
+				
+				// Setup drawable for the command
+				__Drawable__ subdraw = new __CommandDrawable__(
+					(Command)commands[i]);
+				subdraw.__updateDrawChain(cmdslice);
+				dc.addLink(subdraw);
+			}
 			
 			// Update draw chain for whatever is being displayed
 			current.__updateDrawChain(newslice);

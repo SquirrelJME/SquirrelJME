@@ -154,9 +154,26 @@ public class Text
 		this.insert(0, __c.substring(__o, __o + __l));
 	}
 	
+	/**
+	 * Deletes the specified text.
+	 *
+	 * @param __i The index to start deletion at.
+	 * @param __l The number of characters to delete.
+	 * @throws IndexOutOfBoundsException If the index is out of bounds.
+	 * @since 2018/12/02
+	 */
 	public void delete(int __i, int __l)
+		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		// Perform the delete
+		this._storage.__delete(__i, __l);
+		
+		// Deleting nothing?
+		if (__l <= 0)
+			return;
+		
+		// Mark dirty
+		this._dirty = true;
 	}
 	
 	public int getAlignment()
@@ -906,8 +923,52 @@ public class Text
 		int _limit;
 		
 		/**
+		 * Deletes space at the given index.
+		 *
+		 * @param __i The index.
+		 * @param __l The length.
+		 * @throws IndexOutOfBoundsException If the deletion index is out
+		 * of bounds.
+		 * @since 2018/12/02
+		 */
+		final void __delete(int __i, int __l)
+			throws IndexOutOfBoundsException
+		{
+			// Check bounds
+			int size = this._size;
+			if (__i < 0 || __i > size || __l < 0 || (__i + __l) > size)
+				throw new IndexOutOfBoundsException("IOOB");
+			
+			// Storage areas
+			char[] chars = this._chars;
+			Font[] font = this._font;
+			boolean[] iscolor = this._iscolor;
+			int[] color = this._color;
+			short[] x = this._x;
+			short[] y = this._y;
+			
+			// Determine the new size
+			int newsize = size - __l;
+			
+			// Move everything down from the higher point
+			for (int o = __i, eo = __i + __l, i = eo; o < eo && i < size;
+				o++, i++)
+			{
+				chars[o] = chars[i];
+				font[o] = font[i];
+				iscolor[o] = iscolor[i];
+				color[o] = color[i];
+			}
+			
+			// Set new size
+			this._size = newsize;
+		}
+		
+		/**
 		 * Inserts space to store the given length at the given index.
 		 *
+		 * @param __i The index.
+		 * @param __l The length.
 		 * @throws IndexOutOfBoundsException If the insertion index is negative
 		 * or exceeds the size of the storage, or if the length is negative.
 		 * @since 2018/11/30
