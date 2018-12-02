@@ -41,6 +41,9 @@ public final class KeyNames
 	{
 		switch (__c)
 		{
+				// Unknown
+			case NonStandardKey.UNKNOWN:	return "Unknown";
+			
 				// More friendly names
 			case Canvas.KEY_BACKSPACE:		return "Backspace";
 			case Canvas.KEY_DELETE:			return "Delete";
@@ -53,6 +56,10 @@ public final class KeyNames
 			case Canvas.KEY_SPACE:			return "Space";
 			case Canvas.KEY_TAB:			return "Tab";
 			case Canvas.KEY_UP:				return "Up";
+			
+				// Dial keys
+			case Canvas.KEY_STAR:			return "Star";
+			case Canvas.KEY_POUND:			return "Pound";
 			
 				// Other keys
 			case NonStandardKey.ALT:		return "Alt";
@@ -85,8 +92,8 @@ public final class KeyNames
 			
 				// Default character or unknown
 			default:
-				// Anything space and above just becomes the unicode character 
-				if (__c >= ' ')
+				// These are purely valid characters
+				if (__c > 0)
 					return Character.valueOf((char)__c).toString();
 				
 				// {@squirreljme.error EB06 Cannot get the name for the given

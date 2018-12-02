@@ -974,13 +974,14 @@ public class Display
 	 *
 	 * @param __kt The event type.
 	 * @param __kc Key code.
+	 * @param __ch Character code.
 	 * @param __time Time code.
 	 * @throws IllegalArgumentException If the key type is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/02
 	 */
 	@SerializedEvent
-	final void __doKeyAction(EventType __kt, int __kc, int __time)
+	final void __doKeyAction(EventType __kt, int __kc, char __ch, int __time)
 		throws IllegalArgumentException, NullPointerException
 	{
 		if (__kt == null)
@@ -1003,7 +1004,7 @@ public class Display
 			}
 			
 			// Forward
-			current.__doKeyAction(type, __kc, __time);
+			current.__doKeyAction(type, __kc, __ch, __time);
 		}
 	}
 	

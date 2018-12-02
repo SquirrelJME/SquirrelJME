@@ -60,7 +60,7 @@ final class __KeyMap__
 
 			case KeyEvent.VK_ADD:				return '+';
 			case KeyEvent.VK_AMPERSAND:			return '&';
-			case KeyEvent.VK_ASTERISK:			return '*';
+			case KeyEvent.VK_ASTERISK:			return Canvas.KEY_STAR;
 			case KeyEvent.VK_AT:				return '@';
 			case KeyEvent.VK_BACK_QUOTE:		return '`';
 			case KeyEvent.VK_BACK_SLASH:		return '\\';
@@ -81,7 +81,7 @@ final class __KeyMap__
 			case KeyEvent.VK_LESS:				return '<';
 			case KeyEvent.VK_MINUS:				return '-';
 			case KeyEvent.VK_MULTIPLY:			return '*';
-			case KeyEvent.VK_NUMBER_SIGN:		return '#';
+			case KeyEvent.VK_NUMBER_SIGN:		return Canvas.KEY_POUND;
 			case KeyEvent.VK_OPEN_BRACKET:		return '[';
 			case KeyEvent.VK_RIGHT_PARENTHESIS:	return ')';
 			case KeyEvent.VK_PERIOD:			return '.';
@@ -181,15 +181,14 @@ final class __KeyMap__
 			
 				// Probably a character
 			default:
+				// Shift is not handled because these are raw key codes
+				if (keycode >= KeyEvent.VK_A && keycode <= KeyEvent.VK_Z)
+					return 'A' + (keycode - KeyEvent.VK_A);
+				
 				// Known key?
 				int keychar = __e.getKeyChar();
 				if (keychar != KeyEvent.CHAR_UNDEFINED)
 					return keychar;
-				
-				// Handle shift so that letter are done like that
-				if (keycode >= KeyEvent.VK_A && keycode <= KeyEvent.VK_Z)
-					return (__e.isShiftDown() ? 'A' : 'a') +
-						(keycode - KeyEvent.VK_A);
 				
 				// Unknown
 				return NonStandardKey.UNKNOWN;

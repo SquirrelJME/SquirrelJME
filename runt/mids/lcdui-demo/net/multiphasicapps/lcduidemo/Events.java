@@ -52,6 +52,35 @@ public class Events
 	}
 	
 	/**
+	 * Converts the game code to a string.
+	 *
+	 * @param __gc The game code.
+	 * @return The string for this game code.
+	 * @since 2018/12/02
+	 */
+	static final String __gamecodeToString(int __gc)
+	{
+		switch (__gc)
+		{
+			case 0:					return "Unknown";
+			
+			case Canvas.UP:			return "Up";
+			case Canvas.DOWN:		return "Down";
+			case Canvas.LEFT:		return "Left";
+			case Canvas.RIGHT:		return "Right";
+			
+			case Canvas.FIRE:		return "Fire";
+			
+			case Canvas.GAME_A:		return "A";
+			case Canvas.GAME_B:		return "B";
+			case Canvas.GAME_C:		return "C";
+			case Canvas.GAME_D:		return "D";
+			
+			default:				return "Invalid";
+		}
+	}
+	
+	/**
 	 * The demo canvas which does the event handling and other things.
 	 *
 	 * @since 2018/12/01
@@ -179,8 +208,9 @@ public class Events
 			__g.drawString(String.format("Pointer: (%d, %d) %s",
 				this._pointerx, this._pointery, this._pointertype),
 				x, y += height, 0);
-			__g.drawString(String.format("Key: \"%s\" (Code=%d Game=%d) %s",
-				keyname, keycode, gamecode, this._keyboardtype),
+			__g.drawString(String.format("Key: \"%s\" (Code=%d Game=%s) %s",
+				keyname, keycode, Events.__gamecodeToString(gamecode),
+				this._keyboardtype),
 				x, y += height, 0);
 		}
 		

@@ -117,11 +117,12 @@ abstract class __Widget__
 	 *
 	 * @param __type The key type.
 	 * @param __kc The key code.
+	 * @param __ch The character code.
 	 * @param __time The time code.
 	 * @since 2018/12/02
 	 */
 	@SerializedEvent
-	void __doKeyAction(int __type, int __kc, int __time)
+	void __doKeyAction(int __type, int __kc, char __ch, int __time)
 	{
 	}
 	

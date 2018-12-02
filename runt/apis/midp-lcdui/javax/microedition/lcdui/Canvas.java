@@ -194,6 +194,23 @@ public abstract class Canvas
 	{
 		switch (__kc)
 		{
+				// Map these keys to standard keys
+			case KEY_UP:		return UP;
+			case KEY_DOWN:		return DOWN;
+			case KEY_LEFT:		return LEFT;
+			case KEY_RIGHT:		return RIGHT;
+			
+				// Map these character keys to specific keys
+			case ' ':			return FIRE;
+			case 'a': case 'A':
+			case 'h': case 'H':	return GAME_A;
+			case 's': case 'S':
+			case 'j': case 'J':	return GAME_B;
+			case 'd': case 'D':
+			case 'k': case 'K':	return GAME_C;
+			case 'f': case 'F':
+			case 'l': case 'L':	return GAME_D;
+			
 				// Virtually mapped game keys, likely from a VM running on top
 			case NonStandardKey.VGAME_UP:		return UP;
 			case NonStandardKey.VGAME_DOWN:		return DOWN;
@@ -550,8 +567,13 @@ public abstract class Canvas
 	 */
 	@Override
 	@SerializedEvent
-	void __doKeyAction(int __type, int __kc, int __time)
+	void __doKeyAction(int __type, int __kc, char __ch, int __time)
 	{
+		// Canvases only care about keycodes and not characters, so only
+		// do something if the key code is actually valid!
+		if (__kc == NonStandardKey.UNKNOWN)
+			return;
+		
 		switch (__type)
 		{
 			case _KEY_PRESSED:

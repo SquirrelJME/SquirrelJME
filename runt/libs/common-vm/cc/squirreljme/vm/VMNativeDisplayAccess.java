@@ -719,7 +719,7 @@ public class VMNativeDisplayAccess
 			
 			// Post event
 			VMNativeDisplayAccess.this.postEvent(__et.ordinal(),
-				__kc, ++this._keyindex, -1, -1, -1);
+				__kc, 0, ++this._keyindex, -1, -1);
 		}
 	}
 }
