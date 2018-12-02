@@ -161,10 +161,17 @@ public class HashSet<E>
 		return this._map.keySet().iterator();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/02
+	 */
 	@Override
-	public boolean remove(Object __a)
+	public boolean remove(Object __v)
 	{
-		throw new todo.TODO();
+		// Only return true when there is an entry and it is our special
+		// taken value
+		__BucketMapEntry__<E, Object> rv = this._map.removeEntry(__v, false);
+		return rv != null && rv.getValue() == __BucketMap__._TAKEN;
 	}
 	
 	/**
