@@ -229,6 +229,9 @@ public class Display
 	/** The framebuffer for this display. */
 	private volatile __Framebuffer__ _framebuffer;
 	
+	/** Is this display being shown? */
+	private volatile boolean _isshown;
+	
 	/**
 	 * Initializes the display instance.
 	 *
@@ -746,11 +749,22 @@ public class Display
 		if (__show._parent != null)
 			throw new IllegalStateException("EB28");
 		
-		// Relink
+		// Clear current's parent
 		if (current != null)
+		{
 			current._parent = null;
+			
+			// Clear the shown state for this widget
+			current._isshown = false;
+		}
+		// Set new parent
 		__show._parent = this;
 		this._current = __show;
+		
+		// For the displayable, inherit the shown state from this display
+		// since if the display is not being shown then the widget will not
+		// be shown until it happens to be shown.
+		__show._isshown = this._isshown;
 		
 		// The event loop is needed to process the events but it also must
 		// run serially so only a single event loop exists at once
@@ -899,6 +913,9 @@ public class Display
 		// If this is being shown, load the framebuffer
 		if (__shown)
 			this.__loadFrame(false);
+		
+		// Internally set the display as shown or not
+		this._isshown = __shown;
 		
 		// Report that visibility has changed
 		int state = (__shown ? Display.STATE_VISIBLE :

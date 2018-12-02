@@ -644,6 +644,9 @@ public abstract class Canvas
 	@SerializedEvent
 	void __doShown(boolean __shown)
 	{
+		// Needed for isShown()
+		super.__doShown(__shown);	
+		
 		if (__shown)
 			this.showNotify();
 		else

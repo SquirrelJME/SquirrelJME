@@ -39,6 +39,9 @@ public abstract class Displayable
 	/** The ticker of the displayable. */
 	volatile Ticker _ticker;
 	
+	/** Is this widget shown? */
+	volatile boolean _isshown;
+	
 	/**
 	 * Initializes the base displayable object.
 	 *
@@ -156,9 +159,17 @@ public abstract class Displayable
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns if this displayable is currently being shown.
+	 *
+	 * @return If the displayable is being shown.
+	 * @since 2018/12/02
+	 */
 	public boolean isShown()
 	{
-		throw new todo.TODO();
+		// Must be shown and have a parent, because anything without a
+		// parent is invisible
+		return this._isshown && this._parent != null;
 	}
 	
 	public void removeCommand(Command __a)
@@ -247,6 +258,16 @@ public abstract class Displayable
 	protected void sizeChanged(int __w, int __h)
 	{
 		// Implemented by sub-classes
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/02
+	 */
+	@Override
+	void __doShown(boolean __shown)
+	{
+		this._isshown = __shown;
 	}
 }
 
