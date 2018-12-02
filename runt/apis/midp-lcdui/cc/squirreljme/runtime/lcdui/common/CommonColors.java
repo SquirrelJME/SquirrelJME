@@ -21,6 +21,10 @@ public interface CommonColors
 	public static final int DEFAULT_TEXT_COLOR =
 		0xFF_000000;
 	
+	/** Default text background color. */
+	public static final int DEFAULT_TEXT_BACKGROUND_COLOR =
+		0x00_FFFFFF;
+	
 	/** Border color. */
 	public static final int BORDER =
 		0xFF_000000;
