@@ -88,6 +88,17 @@ abstract class __Widget__
 	}
 	
 	/**
+	 * This is called when the widget has its shown changed, this may be
+	 * overridden as it is needed.
+	 *
+	 * @param __shown Is this shown?
+	 * @since 2018/12/01
+	 */
+	void __doShown(boolean __shown)
+	{
+	}
+	
+	/**
 	 * Performs drawing of the widgets, but with wrappers and such.
 	 *
 	 * @param __g The graphics to draw into.

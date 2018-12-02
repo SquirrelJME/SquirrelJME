@@ -536,6 +536,19 @@ public abstract class Canvas
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2018/12/01
+	 */
+	@Override
+	void __doShown(boolean __shown)
+	{
+		if (__shown)
+			this.showNotify();
+		else
+			this.hideNotify();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/11/18
 	 */
 	@Override
