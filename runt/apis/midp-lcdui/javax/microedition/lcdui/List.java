@@ -76,9 +76,18 @@ public class List
 			this.append(__strs[i], (__imgs == null ? null : __imgs[i]));
 	}
 	
-	public int append(String __a, Image __b)
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/01
+	 */
+	@Override
+	public int append(String __s, Image __i)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		return this._items.append(new __ChoiceEntry__(__s, __i));
 	}
 	
 	public void delete(int __a)

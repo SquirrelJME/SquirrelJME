@@ -55,9 +55,10 @@ final class __VolatileList__<T>
 	 * Append the specified element to the list.
 	 *
 	 * @param __v The value to add.
+	 * @return The index of this entry.
 	 * @since 2018/11/17
 	 */
-	public final void append(T __v)
+	public final int append(T __v)
 	{
 		Object[] values = this._values;
 		
@@ -70,6 +71,9 @@ final class __VolatileList__<T>
 		
 		// Use this new array
 		this._values = values;
+		
+		// Return the index of this entry
+		return n;
 	}
 	
 	/**
