@@ -10,6 +10,11 @@
 
 package cc.squirreljme.runtime.lcdui.gfx;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
@@ -232,7 +237,8 @@ public abstract class SerializedGraphics
 	@Override
 	public void drawText(Text __t, int __x, int __y)
 	{
-		throw new todo.TODO();
+		this.serialize(GraphicsFunction.DRAW_TEXT,
+			SerializedGraphics.textSerialize(__t), __x, __y);
 	}
 	
 	/**
@@ -718,9 +724,86 @@ public abstract class SerializedGraphics
 					(Integer)__args[4],
 					(Integer)__args[5]);
 				return null;
+				
+				// Draw text
+			case DRAW_TEXT:
+				__g.drawText(
+					SerializedGraphics.textDeserialize((byte[])__args[0]),
+					(Integer)__args[1],
+					(Integer)__args[2]);
+				return null;
 			
 			default:
 				throw new todo.OOPS("" + __func);
+		}
+	}
+	
+	/**
+	 * Deserializes the byte array to a {@link Text} object.
+	 *
+	 * @param __b The byte array to deserialize.
+	 * @return The deserialized text.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/12/02
+	 */
+	public static Text textDeserialize(byte[] __b)
+		throws NullPointerException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		// Deserialize all of the data
+		try (ByteArrayInputStream bais = new ByteArrayInputStream(__b))
+		{
+			Text rv = new Text();
+			try (DataInputStream dis = new DataInputStream(bais))
+			{
+				if (true)
+					throw new todo.TODO();
+			}
+			
+			// Return it
+			return rv;
+		}
+		
+		// {@squirreljme.error EB2s Could not serialize the text object.}
+		catch (IOException e)
+		{
+			throw new RuntimeException("EB2s", e);
+		}
+	}
+	
+	/**
+	 * Serializes the text object to a byte array.
+	 *
+	 * @param __t The text to serialize.
+	 * @return The serialized byte array.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/12/02
+	 */
+	public static byte[] textSerialize(Text __t)
+		throws NullPointerException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Serialize all of the data
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(4096))
+		{
+			try (DataOutputStream dos = new DataOutputStream(baos))
+			{
+				if (true)
+					throw new todo.TODO();
+			}
+			
+			// Return it
+			return baos.toByteArray();
+		}
+		
+		// {@squirreljme.error EB2s Could not serialize the text object.}
+		catch (IOException e)
+		{
+			throw new RuntimeException("EB2s", e);
 		}
 	}
 }
