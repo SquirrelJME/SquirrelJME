@@ -671,39 +671,39 @@ public class VMNativeDisplayAccess
 				switch (this.getGameAction(__kc))
 				{
 					case Canvas.UP:
-						__kc = NonStandardKey.GAME_UP;
+						__kc = NonStandardKey.VGAME_UP;
 						break;
 						
 					case Canvas.DOWN:
-						__kc = NonStandardKey.GAME_DOWN;
+						__kc = NonStandardKey.VGAME_DOWN;
 						break;
 						
 					case Canvas.LEFT:
-						__kc = NonStandardKey.GAME_LEFT;
+						__kc = NonStandardKey.VGAME_LEFT;
 						break;
 						
 					case Canvas.RIGHT:
-						__kc = NonStandardKey.GAME_RIGHT;
+						__kc = NonStandardKey.VGAME_RIGHT;
 						break;
 					
 					case Canvas.FIRE:
-						__kc = NonStandardKey.GAME_FIRE;
+						__kc = NonStandardKey.VGAME_FIRE;
 						break;
 					
 					case Canvas.GAME_A:
-						__kc = NonStandardKey.GAME_A;
+						__kc = NonStandardKey.VGAME_A;
 						break;
 					
 					case Canvas.GAME_B:
-						__kc = NonStandardKey.GAME_B;
+						__kc = NonStandardKey.VGAME_B;
 						break;
 					
 					case Canvas.GAME_C:
-						__kc = NonStandardKey.GAME_C;
+						__kc = NonStandardKey.VGAME_C;
 						break;
 					
 					case Canvas.GAME_D:
-						__kc = NonStandardKey.GAME_D;
+						__kc = NonStandardKey.VGAME_D;
 						break;
 					
 						// Unknown, do not remap!

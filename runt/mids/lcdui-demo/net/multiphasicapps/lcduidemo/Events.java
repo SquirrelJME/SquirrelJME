@@ -147,6 +147,9 @@ public class Events
 			this._keyboardtype = KeyboardType.PRESSED;
 			this._numkeys++;
 			
+			// Report event
+			System.err.printf("Key Pressed: %d%n", __code);
+			
 			// Repaint to update stuff
 			this.repaint();
 		}
@@ -162,6 +165,9 @@ public class Events
 			this._keyboardtype = KeyboardType.RELEASED;
 			this._numkeys++;
 			
+			// Report event
+			System.err.printf("Key Released: %d%n", __code);
+			
 			// Repaint to update stuff
 			this.repaint();
 		}
@@ -176,6 +182,9 @@ public class Events
 			this._keycode = __code;
 			this._keyboardtype = KeyboardType.REPEATED;
 			this._numkeys++;
+			
+			// Report event
+			System.err.printf("Key Repeated: %d%n", __code);
 			
 			// Repaint to update stuff
 			this.repaint();
