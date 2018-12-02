@@ -998,13 +998,48 @@ public class Display
 				case KEY_REPEATED:	type = _KEY_REPEATED; break;
 				case KEY_RELEASED:	type = _KEY_RELEASED; break;
 				
-					// {@squirreljme.error EB2s Unknown event type.}
 				default:
-					throw new IllegalArgumentException("EB2s");
+					throw new todo.OOPS();
 			}
 			
 			// Forward
 			current.__doKeyAction(type, __kc, __time);
+		}
+	}
+	
+	/**
+	 * Performs a mouse pointer action.
+	 *
+	 * @param __t The event type.
+	 * @param __x X coordinate.
+	 * @param __y Y coordinate.
+	 * @param __time Timecode.
+	 * @throws IllegalArgumentException If the event is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/12/02
+	 */
+	@SerializedEvent
+	final void __doPointerAction(EventType __t, int __x, int __y, int __time)
+		throws IllegalArgumentException, NullPointerException
+	{
+		// Forward to the displayable
+		Displayable current = this._current;
+		if (current != null)
+		{
+			// Map to type
+			int type;
+			switch (__t)
+			{
+				case POINTER_DRAGGED:	type = _POINTER_DRAGGED; break;
+				case POINTER_PRESSED:	type = _POINTER_PRESSED; break;
+				case POINTER_RELEASED:	type = _POINTER_RELEASED; break;
+				
+				default:
+					throw new todo.OOPS();
+			}
+			
+			// Forward
+			current.__doPointerAction(type, __x, __y, __time);
 		}
 	}
 	

@@ -31,6 +31,18 @@ abstract class __Widget__
 	static final int _KEY_RELEASED =
 		2;
 	
+	/** Pointer dragged. */
+	static final int _POINTER_DRAGGED =
+		0;
+	
+	/** Pointer pressed. */
+	static final int _POINTER_PRESSED =
+		1;
+	
+	/** Pointer released. */
+	static final int _POINTER_RELEASED =
+		2;
+	
 	/** The draw chain of this widget. */
 	final __DrawChain__ _drawchain =
 		new __DrawChain__();
@@ -108,7 +120,22 @@ abstract class __Widget__
 	 * @param __time The time code.
 	 * @since 2018/12/02
 	 */
+	@SerializedEvent
 	void __doKeyAction(int __type, int __kc, int __time)
+	{
+	}
+	
+	/**
+	 * This is called when a pointer action happens.
+	 *
+	 * @param __type The event type.
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __time The time code.
+	 * @since 2018/12/02
+	 */
+	@SerializedEvent
+	void __doPointerAction(int __type, int __x, int __y, int __time)
 	{
 	}
 	

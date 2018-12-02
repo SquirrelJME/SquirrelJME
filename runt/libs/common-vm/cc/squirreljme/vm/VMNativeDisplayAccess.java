@@ -588,6 +588,42 @@ public class VMNativeDisplayAccess
 				VMNativeDisplayAccess.this._fbh,
 				false);
 		}
+			
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/12/02
+		 */
+		@Override
+		public void pointerDragged(int __x, int __y)
+		{
+			VMNativeDisplayAccess.this.postEvent(
+				EventType.POINTER_DRAGGED.ordinal(),
+				__x, __y, ++this._keyindex, -1, -1);
+		}
+			
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/12/02
+		 */
+		@Override
+		public void pointerPressed(int __x, int __y)
+		{
+			VMNativeDisplayAccess.this.postEvent(
+				EventType.POINTER_PRESSED.ordinal(),
+				__x, __y, ++this._keyindex, -1, -1);
+		}
+			
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/12/02
+		 */
+		@Override
+		public void pointerReleased(int __x, int __y)
+		{
+			VMNativeDisplayAccess.this.postEvent(
+				EventType.POINTER_RELEASED.ordinal(),
+				__x, __y, ++this._keyindex, -1, -1);
+		}
 		
 		/**
 		 * {@inheritDoc}
