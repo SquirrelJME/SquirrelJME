@@ -1,0 +1,12 @@
+# 2018/12/02
+
+## 01:51
+
+Having all of the static fields for key indexes is going to be very messy
+for the most part. It also will consume a bunch of the class space code and
+such as well.
+
+## 01:53
+
+I really just need a better way to map keys and such, perhaps with scan
+codes and whatnot. Then additionally a scan to keyname kind of thing.
