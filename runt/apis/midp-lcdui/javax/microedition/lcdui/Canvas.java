@@ -16,6 +16,7 @@ import cc.squirreljme.runtime.lcdui.event.EventType;
 import cc.squirreljme.runtime.lcdui.event.KeyNames;
 import cc.squirreljme.runtime.lcdui.event.NonStandardKey;
 import cc.squirreljme.runtime.lcdui.gfx.BasicGraphics;
+import cc.squirreljme.runtime.lcdui.gfx.EnforcedDrawingAreaGraphics;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 
 /**
@@ -665,6 +666,9 @@ public abstract class Canvas
 		
 		// Setup an enforced draw region to prevent programs from drawing
 		// outside of the canvas
+		EnforcedDrawingAreaGraphics ed = new EnforcedDrawingAreaGraphics(
+			__g, dc.x, dc.y, dc.w, dc.h);
+		ed.initializeTarget();
 		
 		// Drawing this widget transparently? This just draws a color below
 		// it accordingly
@@ -672,21 +676,21 @@ public abstract class Canvas
 		{
 			// The graphics object gets the color pre-initialized so make sure
 			// to restore it after the paint
-			int old = __g.getAlphaColor();
+			int old = ed.getAlphaColor();
 			
 			// Fill the area accordingly
-			__g.setAlphaColor(CommonColors.CANVAS_BACKGROUND);
-			__g.fillRect(__g.getClipX(), __g.getClipY(),
-				__g.getClipWidth(), __g.getClipHeight());
+			ed.setAlphaColor(CommonColors.CANVAS_BACKGROUND);
+			ed.fillRect(__g.getClipX(), ed.getClipY(),
+				ed.getClipWidth(), ed.getClipHeight());
 			
 			// Restore old color
-			__g.setAlphaColor(old);
+			ed.setAlphaColor(old);
 		}
 		
 		// Draw whatever the canvas wants drawn on this
 		try
 		{
-			this.paint(__g);
+			this.paint(ed);
 		}
 		
 		// Ignore any exceptions user code makes here
