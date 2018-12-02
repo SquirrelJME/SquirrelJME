@@ -901,6 +901,11 @@ public class Display
 			Display.STATE_BACKGROUND);
 		for (DisplayListener dl : Display.__listeners())
 			dl.displayStateChanged(this, state);
+		
+		// Show the widget
+		Displayable current = this._current;
+		if (current != null)
+			current.__doShown(__shown);
 	}
 	
 	/**
