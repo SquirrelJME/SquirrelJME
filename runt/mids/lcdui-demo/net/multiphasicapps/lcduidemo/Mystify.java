@@ -307,7 +307,7 @@ public class Mystify
 				if (newx < 0 || newx >= __w)
 				{
 					if (newx < -WAY_OFF || newy > __w + WAY_OFF)
-						newx = random.nextInt(__w);
+						newx = random.nextInt((__w > 0 ? __w : 1));
 					else
 					{
 						if (newx < 0)
@@ -320,7 +320,7 @@ public class Mystify
 				if (newy < 0 || newy >= __h)
 				{
 					if (newy < -WAY_OFF || newy > __h + WAY_OFF)
-						newy = random.nextInt(__h);
+						newy = random.nextInt((__h > 0 ? __h : 1));
 					else
 					{
 						if (newy < 0)

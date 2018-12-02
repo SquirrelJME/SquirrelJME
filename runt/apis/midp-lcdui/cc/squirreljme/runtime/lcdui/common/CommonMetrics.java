@@ -28,6 +28,5 @@ public interface CommonMetrics
 	/** Command bar font size. */
 	public static final int COMMANDBAR_FONT_SIZE =
 		16;
-		
 }
 

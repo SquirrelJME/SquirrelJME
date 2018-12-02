@@ -60,9 +60,11 @@ class __CommandDrawable__
 		
 		// Draw background color
 		int color = __g.getAlphaColor();
-		__g.setColor(CommonColors.COMMANDBAR_BACKGROUND);
+		__g.setAlphaColor(CommonColors.COMMANDBAR_BACKGROUND);
 		__g.fillRect(x, y, w, h);
 		__g.setAlphaColor(color);
+		
+		todo.DEBUG.note("(%d, %d) [%d, %d]", x, y, w, h);
 		
 		// Update text with our command's text
 		Command command = this.command;
@@ -70,8 +72,12 @@ class __CommandDrawable__
 		text.delete(0, text.getTextLength());
 		text.insert(0, command._shortlabel);
 		
-		// Draw this text
-		__g.drawText(text, x, y);
+		// Draw this text, centered naturally
+		int tw = text.getWidth(),
+			th = text.getHeight();
+		__g.drawText(text,
+			x + ((w >> 1) - (tw >> 1)),
+			y + ((h >> 1) - (th >> 1)));
 	}
 	
 	/**
@@ -87,9 +93,12 @@ class __CommandDrawable__
 		
 		// Copy properties to the chain
 		__DrawChain__ chain = this._drawchain;
+		chain.set(__sl);
 		
 		// Setup properties for the text
 		Text text = this.text;
+		text.setFont(Font.getDefaultFont().
+			deriveFont(CommonMetrics.COMMANDBAR_FONT_SIZE));
 		text.setWidth(w);
 		text.setHeight(h);
 		text.setForegroundColor(CommonColors.COMMANDBAR_FOREGROUND);
