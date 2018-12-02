@@ -24,6 +24,9 @@ final class __ChoiceEntry__
 	/** The image to display for this choice. */
 	volatile Image _image;
 	
+	/** The font to use for this choice. */
+	volatile Font _font;
+	
 	/** Is this entry selected? */
 	volatile boolean _selected;
 	

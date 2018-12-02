@@ -87,6 +87,12 @@ public final class Font
 	private static final int _DEFAULT_FONT_SIZE =
 		16;
 	
+	/** Built-in available fonts. */
+	private static Font[] _BUILTIN_FONTS;
+	
+	/** The default font. */
+	private static Font _DEFAULT_FONT;
+	
 	/** SQF font data. */
 	private final SQFFont _sqf;
 	
@@ -465,13 +471,19 @@ public final class Font
 	 */
 	public static Font[] getAvailableFonts()
 	{
+		// Already read these fonts?
+		Font[] rv = _BUILTIN_FONTS;
+		if (rv != null)
+			return rv.clone();
+		
 		// There are currently just three built-in fonts
-		return new Font[]
+		_BUILTIN_FONTS = (rv = new Font[]
 			{
 				new Font("sansserif", 0, _DEFAULT_FONT_SIZE),
 				new Font("serif", 0, _DEFAULT_FONT_SIZE),
 				new Font("monospace", 0, _DEFAULT_FONT_SIZE),
-			};
+			});
+		return rv.clone();
 	}
 	
 	/**
@@ -550,7 +562,14 @@ public final class Font
 	 */
 	public static Font getDefaultFont()
 	{
-		return Font.getAvailableFonts()[0];
+		// 
+		Font rv = _DEFAULT_FONT;
+		if (rv != null)
+			return rv;
+		
+		// Use the first found font as the default
+		_DEFAULT_FONT = (rv = Font.getAvailableFonts()[0]);
+		return rv;
 	}
 	
 	/**
