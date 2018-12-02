@@ -22,6 +22,21 @@ import javax.microedition.lcdui.Canvas;
 final class __KeyMap__
 {
 	/**
+	 * Gets a character for a key event.
+	 *
+	 * @param __e The event to look up.
+	 * @return The character for the key.
+	 * @since 2018/12/02
+	 */
+	static final char __char(KeyEvent __e)
+	{
+		char ch = __e.getKeyChar();
+		if (ch == KeyEvent.CHAR_UNDEFINED)
+			return 0;
+		return ch;
+	}
+	
+	/**
 	 * Maps the key event to a key.
 	 *
 	 * @param __e The event to map.
