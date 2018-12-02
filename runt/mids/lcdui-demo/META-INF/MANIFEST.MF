@@ -11,4 +11,5 @@ Microedition-Configuration: CLDC-1.8-Compact
 MIDlet-1: LCDUI Demo (Fonts), , net.multiphasicapps.lcduidemo.Fonts
 MIDlet-2: LCDUI Demo (Mystify), , net.multiphasicapps.lcduidemo.Mystify
 MIDlet-3: LCDUI Demo (Events), , net.multiphasicapps.lcduidemo.Events
+MIDlet-4: LCDUI Demo (Lists), , net.multiphasicapps.lcduidemo.Lists
 
