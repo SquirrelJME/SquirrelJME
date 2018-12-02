@@ -205,10 +205,11 @@ public class DataOutputStream
 	public final void writeInt(int __v)
 		throws IOException
 	{
-		this.out.write(__v >> 24);
-		this.out.write(__v >> 16);
-		this.out.write(__v >> 8);
-		this.out.write(__v);
+		OutputStream out = this.out;
+		out.write(__v >> 24);
+		out.write(__v >> 16);
+		out.write(__v >> 8);
+		out.write(__v);
 		this.written += 4;
 	}
 	
@@ -244,11 +245,56 @@ public class DataOutputStream
 	 */
 	@Override
 	public final void writeUTF(String __v)
-		throws IOException
+		throws IOException, NullPointerException
 	{
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		OutputStream out = this.out;
+		
+		// Write length of string
+		int n = __v.length();
+		out.write(n >> 8);
+		out.write(n);
+		
+		// Write string contents in modified UTF-8
+		int written = 2;
+		for (int i = 0; i < n; i++)
+		{
+			char c = __v.charAt(i);
+			
+			// Single byte
+			if (c >= 0x0001 && c <= 0x007F)
+			{
+				out.write((byte)c);
+				
+				written += 1;
+			}
+			
+			// Double byte
+			// as: (char)(((a & 0x1F) << 6) | (b & 0x3F))
+			else if (c == 0 || (c >= 0x0080 && c <= 0x07FF))
+			{
+				out.write(0b110_00000 | ((c >>> 6) & 0x1F));
+				out.write(0b10_000000 | (c & 0x3F));
+				
+				written += 2;
+			}
+			
+			// Triple byte
+			// as: (char)(((a & 0x0F) << 12) | ((b & 0x3F) << 6) | (c & 0x3F))
+			else
+			{
+				out.write(0b1110_0000 | ((c >>> 12) & 0x0F));
+				out.write(0b10_000000 | ((c >>> 6) & 0x3F));
+				out.write(0b10_000000 | (c & 0x3F));
+				
+				written += 3;
+			}
+		}
+		
+		// Record it
+		this.written += written;
 	}
 }
 
