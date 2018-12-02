@@ -18,6 +18,7 @@ import cc.squirreljme.runtime.lcdui.SerializedEvent;
  * @since 2018/03/23
  */
 abstract class __Widget__
+	extends __Drawable__
 {
 	/** Key was pressed. */
 	static final int _KEY_PRESSED =
@@ -43,27 +44,8 @@ abstract class __Widget__
 	static final int _POINTER_RELEASED =
 		2;
 	
-	/** The draw chain of this widget. */
-	final __DrawChain__ _drawchain =
-		new __DrawChain__();
-	
 	/** The parent widget being used. */
 	volatile __Widget__ _parent;
-	
-	/**
-	 * Performs drawing of the widgets.
-	 *
-	 * @param __g The graphics to draw into.
-	 * @since 2018/11/18
-	 */
-	abstract void __drawChain(Graphics __g);
-	
-	/**
-	 * Updates the draw chain for this widget.
-	 *
-	 * @since 2018/11/18
-	 */
-	abstract void __updateDrawChain(__DrawSlice__ __sl);
 	
 	/**
 	 * Returns the current display.

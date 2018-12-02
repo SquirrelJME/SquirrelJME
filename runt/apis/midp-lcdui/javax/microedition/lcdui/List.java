@@ -233,7 +233,29 @@ public class List
 	@Override
 	void __updateDrawChain(__DrawSlice__ __sl)
 	{
-		throw new todo.TODO();
+		// We will be updating our own draw chain
+		__DrawChain__ chain = this._drawchain;
+		chain.reset();
+		
+		// Just grab the entire slice because this is a full-screen widget
+		// anyway
+		int x, y, w, h;
+		chain.x = (x = __sl.x);
+		chain.y = (y = __sl.y);
+		chain.w = (w = __sl.w);
+		chain.h = (h = __sl.h);
+		
+		// Need to get the default font because there may be per-entry fonts
+		// but we use the default otherwise...
+		Font defaultfont = Font.getDefaultFont();
+		
+		// Go through each item in the list
+		for (Object re : this._items.values())
+		{
+			__ChoiceEntry__ e = (__ChoiceEntry__)re;
+			
+			throw new todo.TODO();
+		}
 	}
 }
 
