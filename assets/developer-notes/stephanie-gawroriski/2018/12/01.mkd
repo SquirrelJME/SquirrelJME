@@ -4,3 +4,54 @@
 
 It is now December!
 
+## 09:53
+
+One optimization I can do I guess which probably will not work is to have a
+shorthand error string. I do sometimes wonder if all of the error strings will
+take up too much memory. But if they do I can manage that with a special
+method and such that can handle things.
+
+## 11:06
+
+This text placement code is pretty complex. I should probably do a rewrite of
+it and have it logically done on draw lines internally rather than individual
+characters. I think that would probably be easier to handle as well. At that
+point alignment would be cheap because it operates on an entire junk. The
+only trouble would be justification which will have to spread the characters
+out a bunch. But even then it would be simpler. So I would say logical lines
+are the best. It would also probably be easier to understand as well.
+
+## 11:43
+
+Okay! I figured out how to handle LTR and RTL! I will use the line logic
+because that makes it easier. The line logic simplifies everything pretty much
+but anyway this is how it goes: When in LTR mode the insertion index of where
+a character is placed in a line is always at the end of the line. However for
+RTL, the insertion index is not adjusted at all. So if a unicode indicator
+says we should switch to RTL we can handle that by just saying: do not
+increment the index anymore. Going back to LTR mode will just mean setting
+the insertion index at the current end of the line. It should work pretty
+much. Also, doing it by line as before just makes center and right alignment
+a single operation rather than messing with each character. So line based
+handling is completely a win.
+
+## 12:13
+
+I think before I refactor the text drawing code to operate in logical lines
+I will get characters drawing first. I think that would be amazing for the
+most part.
+
+## 13:37
+
+Okay so, the basic sequence stuff for fonts and things should be an abstract
+class instead of an interface. It is being used like an abstract class plus
+abstract classes are faster potentially.
+
+## 14:23
+
+I believe some of the drawing stuff is wrong if the pitch is off.
+
+## 15:05
+
+Did some debugging of my font and monospace fonts are not monospace! So this
+definitely needs some fixing.
