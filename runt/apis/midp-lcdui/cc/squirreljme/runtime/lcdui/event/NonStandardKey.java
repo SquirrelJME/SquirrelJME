@@ -17,9 +17,9 @@ package cc.squirreljme.runtime.lcdui.event;
  */
 public interface NonStandardKey
 {
-	/** Unknown. */
+	/** Unknown, zero is the invalid index so always make it known. */
 	public static final byte UNKNOWN =
-		-8;
+		0;
 	
 	/** Game Up. */
 	public static final byte VGAME_UP =

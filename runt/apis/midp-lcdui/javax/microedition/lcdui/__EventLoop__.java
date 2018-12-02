@@ -87,7 +87,8 @@ final class __EventLoop__
 				case KEY_PRESSED:
 				case KEY_REPEATED:
 				case KEY_RELEASED:
-					Display.__mapDisplay(0).__doKeyAction(t, data[0], data[1]);
+					Display.__mapDisplay(0).__doKeyAction(t,
+						data[0], (char)data[1], data[2]);
 					break;
 					
 					// Pointer Dragged, pressed, or released.
