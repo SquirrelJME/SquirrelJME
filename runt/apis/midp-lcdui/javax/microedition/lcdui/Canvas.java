@@ -574,11 +574,6 @@ public abstract class Canvas
 	@SerializedEvent
 	void __doKeyAction(int __type, int __kc, char __ch, int __time)
 	{
-		// Canvases only care about keycodes and not characters, so only
-		// do something if the key code is actually valid!
-		if (__kc == NonStandardKey.UNKNOWN)
-			return;
-		
 		// Since we really only care about actions, if we happen to detect
 		// that the character is one of these symbols map them to the
 		// appropriate key.
@@ -588,6 +583,11 @@ public abstract class Canvas
 			__kc = KEY_POUND;
 		else if (__ch == '*')
 			__kc = KEY_STAR;
+		
+		// Canvases only care about keycodes and not characters, so only
+		// do something if the key code is actually valid!
+		if (__kc == NonStandardKey.UNKNOWN)
+			return;
 		
 		// Depends on the action
 		switch (__type)
