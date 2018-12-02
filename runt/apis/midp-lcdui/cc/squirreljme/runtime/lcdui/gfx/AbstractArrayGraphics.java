@@ -1078,7 +1078,10 @@ public abstract class AbstractArrayGraphics
 	@Override
 	public final Font getFont()
 	{
-		return this.font;
+		Font rv = this.font;
+		if (rv == null)
+			rv = Font.getDefaultFont();
+		return rv;
 	}
 	
 	/**
@@ -1415,7 +1418,7 @@ public abstract class AbstractArrayGraphics
 			throw new NullPointerException("NARG");
 		
 		// Get the font, or fallback to the default if it was not set
-		Font font = this.font;
+		Font font = this.getFont();
 		
 		// Setup, use a zero height for now since it will be calculated after
 		// the font and such has been set
