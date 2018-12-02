@@ -446,8 +446,16 @@ public class VMNativeDisplayAccess
 			this._canvas = (canvas = new VMCanvas());
 			this._usedisplay.setCurrent(canvas);
 			
-			// Add exit command
+			// Listener for function commands
 			canvas.setCommandListener(new __CommandListener__());
+			
+			// Add function key wrappers to forward commands which have
+			// occurred
+			for (int i = 1; i <= 24; i++)
+				canvas.addCommand(new Command("F" + i, Command.SCREEN,
+					i));
+			
+			// Add exit command
 			canvas.addCommand(new Command("Exit", Command.EXIT,
 				Integer.MAX_VALUE));
 			
@@ -513,6 +521,12 @@ public class VMNativeDisplayAccess
 				VMNativeDisplayAccess.this.postEvent(
 					EventType.EXIT_REQUEST.ordinal(),
 					0, -1, -1, -1, -1);
+			
+			// Function menu key
+			else if (__c.getLabel().startsWith("F"))
+				VMNativeDisplayAccess.this.postEvent(
+					EventType.COMMAND.ordinal(),
+					0, __c.getPriority() - 1, -1, -1, -1);
 		}
 	}
 	
