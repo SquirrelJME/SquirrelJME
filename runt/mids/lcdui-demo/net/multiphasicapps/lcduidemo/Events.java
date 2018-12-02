@@ -101,6 +101,9 @@ public class Events
 		/** Pointer event type. */
 		volatile PointerType _pointertype;
 		
+		/** The number of key events which happened. */
+		volatile int _numkeys;
+		
 		/** The last key event. */
 		volatile int _keycode;
 		
@@ -142,6 +145,7 @@ public class Events
 		{
 			this._keycode = __code;
 			this._keyboardtype = KeyboardType.PRESSED;
+			this._numkeys++;
 			
 			// Repaint to update stuff
 			this.repaint();
@@ -156,6 +160,7 @@ public class Events
 		{
 			this._keycode = __code;
 			this._keyboardtype = KeyboardType.RELEASED;
+			this._numkeys++;
 			
 			// Repaint to update stuff
 			this.repaint();
@@ -170,6 +175,7 @@ public class Events
 		{
 			this._keycode = __code;
 			this._keyboardtype = KeyboardType.REPEATED;
+			this._numkeys++;
 			
 			// Repaint to update stuff
 			this.repaint();
@@ -208,9 +214,10 @@ public class Events
 			__g.drawString(String.format("Pointer: (%d, %d) %s",
 				this._pointerx, this._pointery, this._pointertype),
 				x, y += height, 0);
-			__g.drawString(String.format("Key: \"%s\" (Code=%d Game=%s) %s",
+			__g.drawString(String.format(
+				"Key: \"%s\" (Code=%d Game=%s) %s [Count=%d]",
 				keyname, keycode, Events.__gamecodeToString(gamecode),
-				this._keyboardtype),
+				this._keyboardtype, this._numkeys),
 				x, y += height, 0);
 		}
 		
