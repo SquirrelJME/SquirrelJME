@@ -81,7 +81,8 @@ final class __EventLoop__
 			{
 					// Command activated
 				case COMMAND:
-					throw new todo.TODO();
+					Display.__mapDisplay(data[0]).__doCommandAction(data[1]);
+					break;
 
 					// Key was pressed, repeated, or released
 				case KEY_PRESSED:

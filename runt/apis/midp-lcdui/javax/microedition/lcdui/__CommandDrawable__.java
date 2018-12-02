@@ -64,8 +64,6 @@ class __CommandDrawable__
 		__g.fillRect(x, y, w, h);
 		__g.setAlphaColor(color);
 		
-		todo.DEBUG.note("(%d, %d) [%d, %d]", x, y, w, h);
-		
 		// Update text with our command's text
 		Command command = this.command;
 		Text text = this.text;

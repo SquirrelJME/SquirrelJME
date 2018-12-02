@@ -72,6 +72,33 @@ final class __KeyMap__
 			case KeyEvent.VK_NUMPAD9:
 				return Canvas.KEY_NUM0 +
 					(keycode - KeyEvent.VK_NUMPAD0);
+			
+			case KeyEvent.VK_F1:
+			case KeyEvent.VK_F2:
+			case KeyEvent.VK_F3:
+			case KeyEvent.VK_F4:
+			case KeyEvent.VK_F5:
+			case KeyEvent.VK_F6:
+			case KeyEvent.VK_F7:
+			case KeyEvent.VK_F8:
+			case KeyEvent.VK_F9:
+			case KeyEvent.VK_F10:
+			case KeyEvent.VK_F11:
+			case KeyEvent.VK_F12:
+			case KeyEvent.VK_F13:
+			case KeyEvent.VK_F14:
+			case KeyEvent.VK_F15:
+			case KeyEvent.VK_F16:
+			case KeyEvent.VK_F17:
+			case KeyEvent.VK_F18:
+			case KeyEvent.VK_F19:
+			case KeyEvent.VK_F20:
+			case KeyEvent.VK_F21:
+			case KeyEvent.VK_F22:
+			case KeyEvent.VK_F23:
+			case KeyEvent.VK_F24:
+				return NonStandardKey.F1 +
+					(keycode - KeyEvent.VK_F1);
 
 			case KeyEvent.VK_ADD:				return '+';
 			case KeyEvent.VK_AMPERSAND:			return '&';
