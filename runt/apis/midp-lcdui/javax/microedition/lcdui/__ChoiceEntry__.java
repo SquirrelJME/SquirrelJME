@@ -25,7 +25,7 @@ final class __ChoiceEntry__
 	volatile Image _image;
 	
 	/** Is this entry selected? */
-	volatile boolean _selected; 
+	volatile boolean _selected;
 	
 	/**
 	 * Initializes a choice entry with default values.
