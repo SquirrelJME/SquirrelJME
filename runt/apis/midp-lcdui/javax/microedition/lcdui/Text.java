@@ -67,6 +67,17 @@ public class Text
 	private int _defaultcolor =
 		CommonColors.DEFAULT_TEXT_COLOR;
 	
+	/** The background color. */
+	private int _backgroundcolor =
+		CommonColors.DEFAULT_TEXT_BACKGROUND_COLOR;
+	
+	/** The alignment. */
+	private int _alignment;
+	
+	/** The caret position. */
+	private int _caret =
+		-1;
+	
 	/** The required display height, is cached. */
 	private int _requiredheight;
 	
@@ -175,21 +186,44 @@ public class Text
 		
 		// Mark dirty
 		this._dirty = true;
+		
+		// Adjust the caret?
+		int caret = this._caret;
+		if (caret > __i)
+			this._caret = caret - Math.max(__l - (caret - __i), __l);
 	}
 	
+	/**
+	 * Returns the alignment of the text.
+	 *
+	 * @return The text alignment.
+	 * @since 2018/12/02
+	 */
 	public int getAlignment()
 	{
-		throw new todo.TODO();
+		return this._alignment;
 	}
 	
+	/**
+	 * Returns the background color.
+	 *
+	 * @return The background color.
+	 * @since 2018/12/02
+	 */
 	public int getBackgroundColor()
 	{
-		throw new todo.TODO();
+		return this._backgroundcolor;
 	}
 	
+	/**
+	 * Returns the caret position.
+	 *
+	 * @return The caret position or {@code -1} if it is not used.
+	 * @since 2018/12/02
+	 */
 	public int getCaret()
 	{
-		throw new todo.TODO();
+		return this._caret;
 	}
 	
 	/**
@@ -471,6 +505,11 @@ public class Text
 		char[] chars = storage._chars;
 		for (int i = 0; i < sn; i++)
 			chars[__i++] = __s.charAt(i);
+		
+		// Adjust the caret?
+		int caret = this._caret;
+		if (__i < caret)
+			this._caret = caret + sn;
 		
 		// Becomes dirty
 		this._dirty = true;

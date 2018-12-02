@@ -392,10 +392,8 @@ public abstract class SerializedGraphics
 	@Override
 	public Font getFont()
 	{
-		// The font data is encoded in a character array
-		char[] data = (char[])this.serialize(GraphicsFunction.GET_FONT);
-		return Font.getFont(new String(data, 2, data.length - 2),
-			data[0], data[1]);
+		return SerializedGraphics.fontDeserialize(
+			(byte[])this.serialize(GraphicsFunction.GET_FONT));
 	}
 	
 	/**
@@ -546,9 +544,7 @@ public abstract class SerializedGraphics
 		
 		// Serialize it
 		this.serialize(GraphicsFunction.SET_FONT,
-			__f.getFontName().toCharArray(),
-			__f.getStyle(),
-			__f.getPixelSize());
+			SerializedGraphics.fontSerialize(__f));
 	}
 	
 	/**
@@ -686,33 +682,13 @@ public abstract class SerializedGraphics
 				
 				// Set font
 			case SET_FONT:
-				__g.setFont(Font.getFont(
-					new String((char[])__args[0]),
-					(Integer)__args[1],
-					(Integer)__args[2]));
+				__g.setFont(SerializedGraphics.fontDeserialize(
+					(byte[])__args[0]));
 				return null;
 				
 				// Get font
 			case GET_FONT:
-				char[] fontspec;
-				{
-					Font f = __g.getFont();
-					
-					// The font data needs to be encoded into a character
-					// array in order to derive it correctly on the other end
-					String name = f.getFontName();
-					int nl = name.length();
-					
-					// Setup base parameters
-					fontspec = new char[nl + 2];
-					fontspec[0] = (char)f.getStyle();
-					fontspec[1] = (char)f.getPixelSize();
-					
-					// Store name
-					for (int i = 0, o = 2; i < nl; i++, o++)
-						fontspec[o] = name.charAt(i);
-				}
-				return fontspec;
+				return SerializedGraphics.fontSerialize(__g.getFont());
 				
 				// Draw sub-characters
 			case DRAW_SUB_CHARS:
@@ -735,6 +711,78 @@ public abstract class SerializedGraphics
 			
 			default:
 				throw new todo.OOPS("" + __func);
+		}
+	}
+	
+	/**
+	 * Deserializes the font.
+	 *
+	 * @param __b The input byte data.
+	 * @return The resulting font.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/12/02
+	 */
+	public static Font fontDeserialize(byte[] __b)
+		throws NullPointerException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		// Deserialize all of the data
+		try (ByteArrayInputStream bais = new ByteArrayInputStream(__b))
+		{
+			int style, pixelsize;
+			String name;
+			
+			try (DataInputStream dis = new DataInputStream(bais))
+			{
+				style = dis.readInt();
+				pixelsize = dis.readInt();
+				name = dis.readUTF();
+			}
+			
+			return Font.getFont(name, style, pixelsize);
+		}
+		
+		// {@squirreljme.error EB2s Could not serialize the text object.}
+		catch (IOException e)
+		{
+			throw new RuntimeException("EB2s", e);
+		}
+	}
+	
+	/**
+	 * Serializes the font.
+	 *
+	 * @param __f The font to serialize.
+	 * @return The resulting byte data.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/12/02
+	 */
+	public static byte[] fontSerialize(Font __f)
+		throws NullPointerException
+	{
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
+		// Serialize all of the data
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(64))
+		{
+			try (DataOutputStream dos = new DataOutputStream(baos))
+			{
+				dos.writeInt(__f.getStyle());
+				dos.writeInt(__f.getPixelSize());
+				dos.writeUTF(__f.getFontName());
+			}
+			
+			// Return it
+			return baos.toByteArray();
+		}
+		
+		// {@squirreljme.error EB2s Could not serialize the text object.}
+		catch (IOException e)
+		{
+			throw new RuntimeException("EB2s", e);
 		}
 	}
 	
@@ -792,8 +840,47 @@ public abstract class SerializedGraphics
 		{
 			try (DataOutputStream dos = new DataOutputStream(baos))
 			{
-				if (true)
-					throw new todo.TODO();
+				// Properties which do not need characters
+				dos.writeInt(__t.getAlignment());
+				dos.writeInt(__t.getBackgroundColor());
+				dos.write(SerializedGraphics.fontSerialize(__t.getFont()));
+				dos.writeInt(__t.getForegroundColor());
+				dos.writeInt(__t.getHeight());
+				dos.writeInt(__t.getForegroundColor());
+				dos.writeInt(__t.getIndent());
+				dos.writeInt(__t.getInitialDirection());
+				dos.writeInt(__t.getScrollOffset());
+				dos.writeInt(__t.getSpaceAbove());
+				dos.writeInt(__t.getSpaceBelow());
+				dos.writeInt(__t.getWidth());
+				
+				// Record length
+				int n = __t.getTextLength();
+				dos.writeInt(n);
+				
+				// Record the string
+				dos.writeUTF(__t.getText(0, n));
+				
+				// Record all the character properties
+				for (int i = 0; i < n; i++)
+				{
+					dos.writeInt(__t.getForegroundColor(i));
+					
+					// Font needs serialization
+					Font f = __t.getFont(i);
+					if (f == null)
+						dos.writeBoolean(false);
+					else
+					{
+						dos.writeBoolean(true);
+						dos.write(SerializedGraphics.fontSerialize(f));
+					}
+				}
+				
+				// Depends on character stuff
+				dos.writeInt(__t.getCaret());
+				dos.writeInt(__t.getHighlightIndex());
+				dos.writeInt(__t.getHighlightLength());
 			}
 			
 			// Return it
