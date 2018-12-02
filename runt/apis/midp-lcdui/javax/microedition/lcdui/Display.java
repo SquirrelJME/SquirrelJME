@@ -363,42 +363,53 @@ public class Display
 	 * {@link #COLOR_IDLE_HIGHLIGHTED_FOREGROUND}
 	 *
 	 * @param __c The color to get.
-	 * @return The ARGB color for the specified user interface item.
+	 * @return The ARGB color for the specified user interface item, it will
+	 * be in the form of {@code 0x00RRGGBB}.
 	 * @throws IllegalArgumentException If the specified color is not valid.
 	 * @since 2016/10/14
 	 */
 	public int getColor(int __c)
 		throws IllegalArgumentException
 	{
+		int rv;
 		switch (__c)
 		{
 			case COLOR_BORDER:
-				return CommonColors.BORDER;
+				rv = CommonColors.BORDER;
+				break;
 			
 			case COLOR_BACKGROUND:
 			case COLOR_IDLE_BACKGROUND:
-				return CommonColors.BACKGROUND;
+				rv = CommonColors.BACKGROUND;
+				break;
 			
 			case COLOR_FOREGROUND:
 			case COLOR_IDLE_FOREGROUND:
-				return CommonColors.FOREGROUND;
+				rv = CommonColors.FOREGROUND;
+				break;
 			
 			case COLOR_HIGHLIGHTED_BORDER:
-				return CommonColors.HIGHLIGHTED_BORDER;
+				rv = CommonColors.HIGHLIGHTED_BORDER;
+				break;
 				
 			case COLOR_HIGHLIGHTED_BACKGROUND:
 			case COLOR_IDLE_HIGHLIGHTED_BACKGROUND:
-				return CommonColors.HIGHLIGHTED_BACKGROUND;
+				rv = CommonColors.HIGHLIGHTED_BACKGROUND;
+				break;
 			
 			case COLOR_HIGHLIGHTED_FOREGROUND:
 			case COLOR_IDLE_HIGHLIGHTED_FOREGROUND:
-				return CommonColors.HIGHLIGHTED_FOREGROUND;
+				rv = CommonColors.HIGHLIGHTED_FOREGROUND;
+				break;
 		
 				// {@squirreljme.error EB2p Unknown color specifier. (The
 				// color specifier)}
 			default:
 				throw new IllegalArgumentException("EB2p " + __c);
 		}
+		
+		// Clip the alpha away
+		return (rv & 0xFFFFFF);
 	}
 	
 	public CommandLayoutPolicy getCommandLayoutPolicy()

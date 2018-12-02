@@ -792,7 +792,7 @@ public class Text
 					// cannot even fit in the width just force it to be
 					// placed
 					if ((nx >= 0 && nx <= width) ||
-						(x <= startx && chw <= width))
+						(x <= startx && x + chw <= width))
 					{
 						// Store current X position, this may change due to
 						// right to left mode

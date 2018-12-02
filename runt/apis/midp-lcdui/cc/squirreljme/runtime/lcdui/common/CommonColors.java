@@ -19,38 +19,38 @@ public interface CommonColors
 {
 	/** Border color. */
 	public static final int BORDER =
-		0x00_000000;
+		0xFF_000000;
 	
 	/** Background color. */
 	public static final int BACKGROUND =
-		0x00_FFFFFF;
+		0xFF_FFFFFF;
 	
 	/** Foreground color. */
 	public static final int FOREGROUND =
-		0x00_000000;
+		0xFF_000000;
 	
 	/** Highlighted border. */
 	public static final int HIGHLIGHTED_BORDER =
-		0x00_0000FF;
+		0xFF_0000FF;
 	
 	/** Highlighted background. */
 	public static final int HIGHLIGHTED_BACKGROUND =
-		0x00_000080;
+		0xFF_000080;
 	
 	/** Highlighted foreground. */
 	public static final int HIGHLIGHTED_FOREGROUND =
-		0x00_FFFFFF;
+		0xFF_FFFFFF;
 	
 	/** Canvas background. */
 	public static final int CANVAS_BACKGROUND =
-		0x00_FFFFFF;
+		0xFF_FFFFFF;
 	
 	/** Command bar background. */
 	public static final int COMMANDBAR_BACKGROUND =
-		0x00_000000;
+		0xFF_000000;
 	
 	/** Command bar foreground. */
 	public static final int COMMANDBAR_FOREGROUND =
-		0x00_FFFFFFF;
+		0xFF_FFFFFF;
 }
 

@@ -401,7 +401,7 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final int getClipHeight()
 	{
-		throw new todo.TODO();
+		return this._cliph;
 	}
 	
 	/**
@@ -411,7 +411,7 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final int getClipWidth()
 	{
-		throw new todo.TODO();
+		return this._clipw;
 	}
 	
 	/**
@@ -421,7 +421,7 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final int getClipX()
 	{
-		throw new todo.TODO();
+		return this._clipx;
 	}
 	
 	/**
@@ -431,7 +431,7 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final int getClipY()
 	{
-		throw new todo.TODO();
+		return this._clipy;
 	}
 	
 	/**
