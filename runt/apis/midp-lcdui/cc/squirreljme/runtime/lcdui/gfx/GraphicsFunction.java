@@ -71,6 +71,9 @@ public enum GraphicsFunction
 	/** Draw sub-characters. */
 	DRAW_SUB_CHARS,
 	
+	/** Draw text. */
+	DRAW_TEXT,
+	
 	/** End. */
 	;
 	
@@ -106,6 +109,7 @@ public enum GraphicsFunction
 			case 15:	return SET_FONT;
 			case 16:	return GET_FONT;
 			case 17:	return DRAW_SUB_CHARS;
+			case 18:	return DRAW_TEXT;
 			
 				// {@squirreljme.error EB2d Invalid graphics function.
 				// (The function ID)}
