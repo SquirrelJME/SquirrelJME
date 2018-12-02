@@ -130,7 +130,7 @@ public final class String
 		
 		// Copy characters
 		char[] copy = new char[__l];
-		for (int i = __o, o = 0; i < __l; i++, o++)
+		for (int i = __o, o = 0; o < __l; i++, o++)
 			copy[o] = __c[i];
 		
 		// Just use the copied buffer
