@@ -83,18 +83,13 @@ final class __EventLoop__
 				case COMMAND:
 					throw new todo.TODO();
 
-					// Key was pressed.
+					// Key was pressed, repeated, or released
 				case KEY_PRESSED:
-					throw new todo.TODO();
-
-					// Key was released.
-				case KEY_RELEASED:
-					throw new todo.TODO();
-
-					// Key was repeated.
 				case KEY_REPEATED:
-					throw new todo.TODO();
-
+				case KEY_RELEASED:
+					Display.__mapDisplay(0).__doKeyAction(t, data[0], data[1]);
+					break;
+					
 					// Pointer Dragged.
 				case POINTER_DRAGGED:
 					throw new todo.TODO();

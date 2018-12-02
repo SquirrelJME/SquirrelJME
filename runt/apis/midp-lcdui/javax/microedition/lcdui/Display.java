@@ -970,6 +970,45 @@ public class Display
 	}
 	
 	/**
+	 * Performs a key action.
+	 *
+	 * @param __kt The event type.
+	 * @param __kc Key code.
+	 * @param __time Time code.
+	 * @throws IllegalArgumentException If the key type is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/12/02
+	 */
+	@SerializedEvent
+	final void __doKeyAction(EventType __kt, int __kc, int __time)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__kt == null)
+			throw new NullPointerException("NARG");
+		
+		// Forward to the displayable
+		Displayable current = this._current;
+		if (current != null)
+		{
+			// Map to type
+			int type;
+			switch (__kt)
+			{
+				case KEY_PRESSED:	type = _KEY_PRESSED; break;
+				case KEY_REPEATED:	type = _KEY_REPEATED; break;
+				case KEY_RELEASED:	type = _KEY_RELEASED; break;
+				
+					// {@squirreljme.error EB2s Unknown event type.}
+				default:
+					throw new IllegalArgumentException("EB2s");
+			}
+			
+			// Forward
+			current.__doKeyAction(type, __kc, __time);
+		}
+	}
+	
+	/**
 	 * Performs a repaint of the frame.
 	 *
 	 * @param __x X clip.

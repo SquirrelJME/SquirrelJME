@@ -19,6 +19,18 @@ import cc.squirreljme.runtime.lcdui.SerializedEvent;
  */
 abstract class __Widget__
 {
+	/** Key was pressed. */
+	static final int _KEY_PRESSED =
+		0;
+	
+	/** Key was repeated. */
+	static final int _KEY_REPEATED =
+		1;
+	
+	/** Key released. */
+	static final int _KEY_RELEASED =
+		2;
+	
 	/** The draw chain of this widget. */
 	final __DrawChain__ _drawchain =
 		new __DrawChain__();
@@ -85,6 +97,19 @@ abstract class __Widget__
 		if (parent == null)
 			return Display.getDisplays(0)[0].getWidth();
 		return this._drawchain.w;
+	}
+	
+	/**
+	 * This is called when a key action has been performed. This should be
+	 * overridden as needed.
+	 *
+	 * @param __type The key type.
+	 * @param __kc The key code.
+	 * @param __time The time code.
+	 * @since 2018/12/02
+	 */
+	void __doKeyAction(int __type, int __kc, int __time)
+	{
 	}
 	
 	/**
