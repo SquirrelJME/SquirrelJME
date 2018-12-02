@@ -200,11 +200,6 @@ final class __KeyMap__
 				if (keycode >= KeyEvent.VK_A && keycode <= KeyEvent.VK_Z)
 					return 'A' + (keycode - KeyEvent.VK_A);
 				
-				// Known key?
-				int keychar = __e.getKeyChar();
-				if (keychar != KeyEvent.CHAR_UNDEFINED)
-					return keychar;
-				
 				// Unknown
 				return NonStandardKey.UNKNOWN;
 		}
