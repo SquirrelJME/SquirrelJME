@@ -524,7 +524,19 @@ public class VMNativeDisplayAccess
 	public final class VMCanvas
 		extends Canvas
 	{
-			
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/12/01
+		 */
+		@Override
+		public void hideNotify()
+		{
+			// Post event
+			VMNativeDisplayAccess.this.postEvent(
+				EventType.DISPLAY_HIDDEN.ordinal(),
+				0, -1, -1, -1, -1);
+		}
+		
 		/**
 		 * {@inheritDoc}
 		 * @since 2018/12/01
@@ -572,6 +584,19 @@ public class VMNativeDisplayAccess
 				fbw,
 				VMNativeDisplayAccess.this._fbh,
 				false);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/12/01
+		 */
+		@Override
+		public void showNotify()
+		{
+			// Post event
+			VMNativeDisplayAccess.this.postEvent(
+				EventType.DISPLAY_SHOWN.ordinal(),
+				0, -1, -1, -1, -1);
 		}
 		
 		/**
