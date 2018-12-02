@@ -664,11 +664,22 @@ public abstract class Canvas
 	{
 		__DrawChain__ dc = this._drawchain;
 		
+		int oldc = __g.getAlphaColor();
+		__g.setColor(0x00FF00);
+		__g.fillRect(dc.x, dc.y, dc.w, dc.h);
+		__g.setAlphaColor(oldc);
+		
 		// Setup an enforced draw region to prevent programs from drawing
 		// outside of the canvas
 		EnforcedDrawingAreaGraphics ed = new EnforcedDrawingAreaGraphics(
-			__g, dc.x, dc.y, dc.w, dc.h);
+			__g, dc.x + 15, dc.y + 15, dc.w - 30, dc.h - 30);
 		ed.initializeTarget();
+		
+		// Boundary test
+		oldc = __g.getAlphaColor();
+		__g.setColor(0xFF0000);
+		__g.drawRect(dc.x + 15, dc.y + 15, dc.w - 30, dc.h - 30);
+		__g.setAlphaColor(oldc);
 		
 		// Drawing this widget transparently? This just draws a color below
 		// it accordingly
