@@ -232,6 +232,16 @@ public class Display
 	private volatile boolean _isshown;
 	
 	/**
+	 * Initializes the probe.
+	 *
+	 * @since 2018/12/02
+	 */
+	static
+	{
+		new __LCDUIProbe__();
+	}
+	
+	/**
 	 * Initializes the display instance.
 	 *
 	 * @param __id The native ID of the display.
