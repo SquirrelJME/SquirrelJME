@@ -19,5 +19,7 @@ import javax.microedition.lcdui.Display;
  */
 public final class UIDisplayState
 {
+	/** The framebuffer for this display. */
+	protected UIFramebuffer framebuffer;
 }
 
