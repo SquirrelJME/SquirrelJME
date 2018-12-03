@@ -12,6 +12,7 @@ package cc.squirreljme.runtime.lcdui.ui;
 
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
 import cc.squirreljme.runtime.lcdui.gfx.AcceleratedGraphics;
+import cc.squirreljme.runtime.lcdui.gfx.EnforcedDrawingAreaGraphics;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Graphics;
 
@@ -67,7 +68,7 @@ public final class UIDisplayState
 		// parameters have changed and it must be updated
 		int nid = this.nativeid,
 			statecount = this._statecount,
-			newcount;
+			newcount = statecount;
 		if (statecount != (newcount =
 			NativeDisplayAccess.framebufferStateCount(nid)))
 		{
@@ -108,6 +109,22 @@ public final class UIDisplayState
 			catch (ArrayIndexOutOfBoundsException e)
 			{
 			}
+	}
+	
+	/**
+	 * Gets a graphics object which is only valid for the given region.
+	 *
+	 * @param __x The X position.
+	 * @param __y The Y position.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @return Graphics which covers the given region in the framebuffer.
+	 * @since 2018/12/02
+	 */
+	public final Graphics graphics(int __x, int __y, int __w, int __h)
+	{
+		return new EnforcedDrawingAreaGraphics(this.graphics(),
+			__x, __y, __w, __h);
 	}
 	
 	/**

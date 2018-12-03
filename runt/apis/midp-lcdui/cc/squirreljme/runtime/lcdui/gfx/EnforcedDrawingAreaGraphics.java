@@ -84,6 +84,12 @@ public final class EnforcedDrawingAreaGraphics
 		if (__g == null)
 			throw new NullPointerException("NARG");
 		
+		// Clip in
+		if (__x < 0)
+			__x = 0;
+		if (__y < 0)
+			__y = 0;
+		
 		this.graphics = __g;
 		this.x = __x;
 		this.y = __y;

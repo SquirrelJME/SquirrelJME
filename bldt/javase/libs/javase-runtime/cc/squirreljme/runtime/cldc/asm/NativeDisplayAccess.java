@@ -660,9 +660,9 @@ public final class NativeDisplayAccess
 			// Recreate the image if the size has changed
 			if (xw != oldw || xh != oldh)
 			{
+				NativeDisplayAccess._statecount++;
 				this._image = (image = ColorInfo.create(xw, xh,
 					new Color(0xFFFFFFFF)));
-				NativeDisplayAccess._statecount++;
 			}
 			
 			// Indicate that the size changed
