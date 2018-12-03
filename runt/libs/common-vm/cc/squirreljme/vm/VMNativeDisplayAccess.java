@@ -87,6 +87,9 @@ public class VMNativeDisplayAccess
 	/** Accelerated graphics instance. */
 	volatile Graphics _accelgfx;
 	
+	/** The state count of the framebuffer. */
+	volatile int _statecount;
+	
 	/**
 	 * Initialize and/or reset accelerated graphics operations.
 	 *
@@ -98,6 +101,9 @@ public class VMNativeDisplayAccess
 	{
 		if (__id != 0)
 			return false;
+		
+		// Check for framebuffer update
+		this.__checkFramebuffer();
 		
 		// Setup instance
 		int fbw = this._fbw;
@@ -225,6 +231,26 @@ public class VMNativeDisplayAccess
 		rv[NativeDisplayAccess.PARAMETER_VIRTYOFF] = 0;
 		
 		return rv;
+	}
+	
+	/**
+	 * Returns the state count of this framebuffer which is used to detect
+	 * when the parameters have changed, where they must all be recalculated
+	 * (that is the framebuffer wrapper must be recreated).
+	 *
+	 * @param __id The display ID.
+	 * @return The state count for the framebuffer.
+	 * @since 2018/12/02
+	 */
+	public final int framebufferStateCount(int __id)
+	{
+		if (__id != 0)
+			return -1;
+		
+		// Check for framebuffer update
+		this.__checkFramebuffer();
+		
+		return this._statecount;
 	}
 	
 	/**
@@ -482,6 +508,9 @@ public class VMNativeDisplayAccess
 			// Initialize the framebuffer to white
 			for (int i = 0; i < n; i++)
 				fbrgb[i] = 0xFFFFFF;
+			
+			// Increase the state count
+			this._statecount++;
 		}
 		
 		return canvas;

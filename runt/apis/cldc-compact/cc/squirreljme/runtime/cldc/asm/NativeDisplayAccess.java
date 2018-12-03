@@ -135,6 +135,17 @@ public final class NativeDisplayAccess
 	public static final native int[] framebufferParameters(int __id);
 	
 	/**
+	 * Returns the state count of this framebuffer which is used to detect
+	 * when the parameters have changed, where they must all be recalculated
+	 * (that is the framebuffer wrapper must be recreated).
+	 *
+	 * @param __id The display ID.
+	 * @return The state count for the framebuffer.
+	 * @since 2018/12/02
+	 */
+	public static final native int framebufferStateCount(int __id);
+	
+	/**
 	 * Is the specified display upsidedown?
 	 *
 	 * @param __id The ID of the display.

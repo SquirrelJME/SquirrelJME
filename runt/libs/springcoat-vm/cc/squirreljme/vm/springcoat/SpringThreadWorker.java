@@ -1159,6 +1159,12 @@ public final class SpringThreadWorker
 				"framebufferParameters:(I)[I":
 				return this.asWrappedArray(this.machine.nativedisplay.
 					framebufferParameters((Integer)__args[0]));
+					
+				// Framebuffer state count
+			case "cc/squirreljme/runtime/cldc/asm/NativeDisplayAccess::" +
+				"framebufferStateCount:(I)I":
+				return this.machine.nativedisplay.
+					framebufferStateCount((Integer)__args[0]);
 				
 				// Capabilities of a display
 			case "cc/squirreljme/runtime/cldc/asm/NativeDisplayAccess::" +

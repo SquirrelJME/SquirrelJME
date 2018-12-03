@@ -17,8 +17,9 @@ import cc.squirreljme.runtime.lcdui.DisplayOrientation;
 import cc.squirreljme.runtime.lcdui.DisplayState;
 import cc.squirreljme.runtime.lcdui.event.EventType;
 import cc.squirreljme.runtime.lcdui.event.NonStandardKey;
-import cc.squirreljme.runtime.lcdui.gfx.AcceleratedGraphics;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
+import cc.squirreljme.runtime.lcdui.ui.UIDisplayState;
+import cc.squirreljme.runtime.lcdui.ui.UIFramebuffer;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -37,14 +38,6 @@ import javax.microedition.midlet.MIDlet;
 public class Display
 	extends __Widget__
 {
-	/**
-	 * {@squirreljme.property cc.squirreljme.lcdui.acceleration=bool
-	 * Should accelerated graphics be used if it is available?}
-	 */
-	private static boolean _ACCELERATION =
-		Boolean.valueOf(
-			System.getProperty("cc.squirreljme.lcdui.acceleration", "true"));
-	
 	public static final int ALERT =
 		3;
 
@@ -212,7 +205,11 @@ public class Display
 	/** The serialized event loop for handling events. */
 	static volatile __EventLoop__ _EVENT_LOOP;
 	
+	/** The display state for this Display. */
+	final UIDisplayState _state;
+	
 	/** The Native ID of this display. */
+	@Deprecated
 	final int _nid;
 	
 	/** Set of keys which are down already, used to detect repeats on press. */
@@ -224,9 +221,6 @@ public class Display
 	
 	/** The displayable to show on exit. */
 	private volatile Displayable _exit;
-	
-	/** The framebuffer for this display. */
-	private volatile __Framebuffer__ _framebuffer;
 	
 	/** Is this display being shown? */
 	private volatile boolean _isshown;
@@ -249,6 +243,7 @@ public class Display
 	 */
 	Display(int __id)
 	{
+		this._state = new UIDisplayState(__id);
 		this._nid = __id;
 	}
 	
@@ -482,7 +477,7 @@ public class Display
 	 */
 	public int getHeight()
 	{
-		return this.__loadFrame(false).bufferheight;
+		return this._state.framebuffer().bufferheight;
 	}
 	
 	public IdleItem getIdleItem()
@@ -533,7 +528,7 @@ public class Display
 	 */
 	public int getWidth()
 	{
-		return this.__loadFrame(false).bufferwidth;
+		return this._state.framebuffer().bufferheight;
 	}
 	
 	/**
@@ -807,7 +802,7 @@ public class Display
 		NativeDisplayAccess.setDisplayTitle(nid, __show.getTitle());
 		
 		// Update widgets
-		__Framebuffer__ fb = this.__loadFrame(false);
+		UIFramebuffer fb = this._state.framebuffer();
 		this.__updateDrawChain(new __DrawSlice__(0, 0,
 			fb.bufferwidth, fb.bufferheight));
 	}
@@ -962,7 +957,7 @@ public class Display
 	{
 		// If this is being shown, load the framebuffer
 		if (__shown)
-			this.__loadFrame(false);
+			this._state.framebuffer();
 		
 		// Internally set the display as shown or not
 		this._isshown = __shown;
@@ -989,12 +984,12 @@ public class Display
 	@SerializedEvent
 	final void __doDisplaySizeChanged(int __w, int __h)
 	{
+		// Update the framebuffer because everything relies on it
+		this._state.framebuffer();
+		
 		// Report that the size changed for events
 		for (DisplayListener dl : Display.__listeners())
 			dl.sizeChanged(this, __w, __h);
-		
-		// Invalidate the framebuffer
-		this.__loadFrame(true);
 		
 		// Tell the current displayable that the size has changed
 		Displayable d = this.getCurrent();
@@ -1162,44 +1157,8 @@ public class Display
 	@SerializedEvent
 	final void __doRepaint(int __x, int __y, int __w, int __h)
 	{
-		// Get the graphics for this frame
-		__Framebuffer__ frame = this.__loadFrame(false);
-		Graphics g = null;
-		for (;;)
-			try
-			{
-				// Try to use native graphics where possible, if it is even
-				// supported
-				try
-				{
-					// Use acceleration?
-					if (_ACCELERATION)
-						g = AcceleratedGraphics.instance(this._nid);
-					
-					// Do not use it
-					else
-						g = frame.graphics();
-				}
-				
-				// Accelerated graphics not supported, use the general purpose
-				// but far slower graphics operations
-				catch (UnsupportedOperationException e)
-				{
-					g = frame.graphics();
-				}
-				
-				// Do not try again
-				break;
-			}
-			catch (ArrayIndexOutOfBoundsException e)
-			{
-				todo.DEBUG.note("Load frame failed with out of bounds, " +
-					"the framebuffer was likely resized between " +
-					"parameter access. Trying again!");
-				
-				// Reload the frame again from scratch
-				frame = this.__loadFrame(true);
-			}
+		// Get graphics for this state
+		Graphics g = this._state.graphics();
 		
 		// Set the initial clipping region
 		g.clipRect(__x, __y, __w, __h);
@@ -1231,32 +1190,13 @@ public class Display
 	}
 	
 	/**
-	 * Loads the framebuffer.
-	 *
-	 * @param __new Setup new frame?
-	 * @return The framebuffer.
-	 * @since 2018/11/18
-	 */
-	final __Framebuffer__ __loadFrame(boolean __new)
-	{
-		__Framebuffer__ rv = this._framebuffer;
-		
-		// Load new framebuffer
-		if (__new || rv == null)
-			this._framebuffer = (rv = __Framebuffer__.__loadFrame(
-				this._nid));
-		
-		return rv;
-	}
-	
-	/**
 	 * Updates the draw chain with a full frame slice.
 	 *
 	 * @since 2018/11/18
 	 */
 	void __updateDrawChain()
 	{
-		__Framebuffer__ fb = this.__loadFrame(false);
+		UIFramebuffer fb = this._state.framebuffer();
 		this.__updateDrawChain(new __DrawSlice__(0, 0,
 			fb.bufferwidth, fb.bufferheight));
 	}
