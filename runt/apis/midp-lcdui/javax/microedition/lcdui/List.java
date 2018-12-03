@@ -28,6 +28,10 @@ public class List
 	/** The type of list this is. */
 	private final int _type;
 	
+	/** The scrollbar for this list. */
+	private final __Scrollbar__ _scrollbar =
+		new __Scrollbar__();
+	
 	/**
 	 * Initializes the list.
 	 *
@@ -227,9 +231,6 @@ public class List
 		__g.setColor(CommonColors.BACKGROUND);
 		__g.fillRect(x, y, w, h);
 		
-		// Leave room for the scroll bar
-		w -= CommonMetrics.SCROLLBAR_WIDTH;
-		
 		// Draw border
 		__g.setColor(CommonColors.BORDER);
 		__g.drawRect(x, y, w, h);
@@ -256,21 +257,29 @@ public class List
 		__DrawChain__ chain = this._drawchain;
 		chain.reset();
 		
-		// Just grab the entire slice because this is a full-screen widget
-		// anyway
-		int x, y, w, h;
-		chain.x = (x = __sl.x);
-		chain.y = (y = __sl.y);
-		chain.w = (w = __sl.w);
-		chain.h = (h = __sl.h);
+		// Slice in the scrollbar
+		__Scrollbar__ scrollbar = this._scrollbar;
+		__sl = scrollbar.__sliceIn(__sl);
+		chain.addLink(scrollbar);
+		
+		// Use the remaining slice here
+		chain.set(__sl);
 		
 		// Need to get the default font because there may be per-entry fonts
 		// but we use the default otherwise...
 		Font defaultfont = Font.getDefaultFont();
 		
 		// Go through each item in the list
+		int x = __sl.x,
+			y = __sl.y,
+			w = __sl.w,
+			h = __sl.h;
 		for (Object re : this._items.values())
 		{
+			// Stop adding entries because no more can fit
+			if (y >= h)
+				break;
+			
 			__ChoiceEntry__ e = (__ChoiceEntry__)re;
 			
 			throw new todo.TODO();
