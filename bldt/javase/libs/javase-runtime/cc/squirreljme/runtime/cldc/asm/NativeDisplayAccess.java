@@ -15,6 +15,8 @@ import cc.squirreljme.runtime.lcdui.event.EventType;
 import cc.squirreljme.runtime.lcdui.event.NonStandardKey;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
@@ -43,6 +45,7 @@ import javax.microedition.lcdui.Display;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 import javax.swing.WindowConstants;
 import net.multiphasicapps.io.MIMEFileDecoder;
 
@@ -612,9 +615,13 @@ public final class NativeDisplayAccess
 	 */
 	public static final class SwingPanel
 		extends JPanel
-		implements ComponentListener, KeyListener, MouseListener,
-			MouseMotionListener, WindowListener
+		implements ActionListener, ComponentListener, KeyListener,
+			MouseListener, MouseMotionListener, WindowListener
 	{
+		/** Resize lock timer. */
+		final Timer _resizetimer =
+			new Timer(500, this);
+		
 		/** The image to be displayed. */
 		volatile BufferedImage _image =
 			ColorInfo.create(1, 1, new Color(0xFFFFFFFF));
@@ -622,6 +629,44 @@ public final class NativeDisplayAccess
 		/** The last mouse button pressed. */
 		volatile int _lastbutton =
 			Integer.MIN_VALUE;
+		
+		/**
+		 * Initializes more panel details.
+		 *
+		 * @since 2018/12/03
+		 */
+		{
+			this._resizetimer.setRepeats(false);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/12/03
+		 */
+		@Override
+		public void actionPerformed(ActionEvent __e)
+		{
+			todo.DEBUG.note("Performed!");
+			
+			BufferedImage image = this._image;
+			int oldw = image.getWidth(),
+				oldh = image.getHeight(),
+				xw = this.getWidth(),
+				xh = this.getHeight();
+		
+			// Recreate the image if the size has changed
+			if (xw != oldw || xh != oldh)
+			{
+				NativeDisplayAccess._statecount++;
+				this._image = (image = ColorInfo.create(xw, xh,
+					new Color(0xFFFFFFFF)));
+			}
+			
+			// Indicate that the size changed
+			NativeDisplayAccess.postEvent(
+				EventType.DISPLAY_SIZE_CHANGED.ordinal(),
+				0, xw, xh, -1, -1);
+		}
 		
 		/**
 		 * {@inheritDoc}
@@ -651,24 +696,9 @@ public final class NativeDisplayAccess
 		@Override
 		public void componentResized(ComponentEvent __e)
 		{
-			BufferedImage image = this._image;
-			int oldw = image.getWidth(),
-				oldh = image.getHeight(),
-				xw = this.getWidth(),
-				xh = this.getHeight();
-		
-			// Recreate the image if the size has changed
-			if (xw != oldw || xh != oldh)
-			{
-				NativeDisplayAccess._statecount++;
-				this._image = (image = ColorInfo.create(xw, xh,
-					new Color(0xFFFFFFFF)));
-			}
-			
-			// Indicate that the size changed
-			NativeDisplayAccess.postEvent(
-				EventType.DISPLAY_SIZE_CHANGED.ordinal(),
-				0, xw, xh, -1, -1);
+			// Restart the resize timer so that resizes are not flooding
+			// everything
+			this._resizetimer.restart();
 		}
 		
 		/**
