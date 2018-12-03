@@ -63,6 +63,9 @@ public final class EnforcedDrawingAreaGraphics
 	/** Clip Height. */
 	private int _cliph;
 	
+	/** Has this been initialized? */
+	private boolean _beeninit;
+	
 	/**
 	 * Initializes the enforced drawing area.
 	 *
@@ -101,6 +104,10 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final void clipRect(int __x, int __y, int __w, int __h)
 	{
+		// Initialize?
+		if (!this._beeninit)
+			this.initialize();
+		
 		throw new todo.TODO();
 	}
 	
@@ -113,6 +120,10 @@ public final class EnforcedDrawingAreaGraphics
 		int __dx, int __dy, int __anchor)
 		throws IllegalArgumentException, IllegalStateException
 	{
+		// Initialize?
+		if (!this._beeninit)
+			this.initialize();
+		
 		this.graphics.copyArea(this._dx + __sx, this._dy + __sy,
 			__w, __h, this._dx + __dx, this._dy + __dy, __anchor);
 	}
@@ -125,6 +136,10 @@ public final class EnforcedDrawingAreaGraphics
 	public final void drawArc(int __x, int __y, int __w, int __h, int __sa,
 		int __aa)
 	{
+		// Initialize?
+		if (!this._beeninit)
+			this.initialize();
+		
 		this.graphics.drawArc(this._dx + __x, this._dy + __y,
 			__w, __h, __sa, __aa);
 	}
@@ -138,6 +153,10 @@ public final class EnforcedDrawingAreaGraphics
 		int __x, int __y, int __w, int __h)
 		throws NullPointerException
 	{
+		// Initialize?
+		if (!this._beeninit)
+			this.initialize();
+		
 		this.graphics.drawARGB16(__data, __off, __scanlen,
 			this._dx + __x, this._dy + __y, __w, __h);
 	}
@@ -149,6 +168,10 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final void drawChar(char __s, int __x, int __y, int __anchor)
 	{
+		// Initialize?
+		if (!this._beeninit)
+			this.initialize();
+		
 		this.graphics.drawChar(__s, this._dx + __x, this._dy + __y,
 			__anchor);
 	}
@@ -162,6 +185,10 @@ public final class EnforcedDrawingAreaGraphics
 		int __y, int __anchor)
 		throws NullPointerException
 	{
+		// Initialize?
+		if (!this._beeninit)
+			this.initialize();
+		
 		this.graphics.drawChars(__s, __o, __l,
 			this._dx + __x, this._dy + __y,
 			__anchor);
@@ -175,6 +202,10 @@ public final class EnforcedDrawingAreaGraphics
 	public final void drawImage(Image __i, int __x, int __y, int __anchor)
 		throws IllegalArgumentException, NullPointerException
 	{
+		// Initialize?
+		if (!this._beeninit)
+			this.initialize();
+		
 		this.graphics.drawImage(__i, this._dx + __x, this._dy + __y,
 			__anchor);
 	}
@@ -186,6 +217,10 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final void drawLine(int __x1, int __y1, int __x2, int __y2)
 	{
+		// Initialize?
+		if (!this._beeninit)
+			this.initialize();
+		
 		this.graphics.drawLine(this._dx + __x1, this._dy + __y1,
 			this._dx + __x2, this._dy + __y2);
 	}
@@ -199,6 +234,10 @@ public final class EnforcedDrawingAreaGraphics
 		int __x, int __y, int __w, int __h, boolean __alpha)
 		throws NullPointerException
 	{
+		// Initialize?
+		if (!this._beeninit)
+			this.initialize();
+		
 		this.graphics.drawRGB(__data, __off, __scanlen,
 			this._dx + __x, this._dy + __y, __w, __h, __alpha);
 	}
@@ -212,6 +251,10 @@ public final class EnforcedDrawingAreaGraphics
 		int __x, int __y, int __w, int __h)
 		throws NullPointerException
 	{
+		// Initialize?
+		if (!this._beeninit)
+			this.initialize();
+		
 		this.graphics.drawRGB16(__data, __off, __scanlen,
 			this._dx + __x, this._dy + __y, __w, __h);
 	}
@@ -223,6 +266,10 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final void drawRect(int __x, int __y, int __w, int __h)
 	{
+		// Initialize?
+		if (!this._beeninit)
+			this.initialize();
+		
 		this.graphics.drawRect(this._dx + __x, this._dy + __y,
 			__w, __h);
 	}
@@ -237,6 +284,10 @@ public final class EnforcedDrawingAreaGraphics
 		int __anch)
 		throws IllegalArgumentException, NullPointerException
 	{
+		// Initialize?
+		if (!this._beeninit)
+			this.initialize();
+		
 		this.graphics.drawRegion(__src, __xsrc, __ysrc, __wsrc, __hsrc,
 			__trans, this._dx + __xdest, this._dy + __ydest, __anch);
 	}
@@ -251,6 +302,10 @@ public final class EnforcedDrawingAreaGraphics
 		int __anch, int __wdest, int __hdest)
 		throws IllegalArgumentException, NullPointerException
 	{
+		// Initialize?
+		if (!this._beeninit)
+			this.initialize();
+		
 		this.graphics.drawRegion(__src, __xsrc, __ysrc, __wsrc, __hsrc,
 			__trans, this._dx + __xdest, this._dy + __ydest, __anch,
 			__wdest, __hdest);
@@ -264,6 +319,10 @@ public final class EnforcedDrawingAreaGraphics
 	public final void drawRoundRect(int __x, int __y, int __w, int __h,
 		int __aw, int __ah)
 	{
+		// Initialize?
+		if (!this._beeninit)
+			this.initialize();
+		
 		this.graphics.drawRoundRect(this._dx + __x, this._dy + __y,
 			__w, __h, __aw, __ah);
 	}
@@ -277,6 +336,10 @@ public final class EnforcedDrawingAreaGraphics
 		int __anchor)
 		throws NullPointerException
 	{
+		// Initialize?
+		if (!this._beeninit)
+			this.initialize();
+		
 		this.graphics.drawString(__s, this._dx + __x, this._dy + __y,
 			__anchor);
 	}
@@ -290,6 +353,10 @@ public final class EnforcedDrawingAreaGraphics
 		int __y, int __anchor)
 		throws NullPointerException, StringIndexOutOfBoundsException
 	{
+		// Initialize?
+		if (!this._beeninit)
+			this.initialize();
+		
 		this.graphics.drawSubstring(__s, __o, __l,
 			this._dx + __x, this._dy + __y, __anchor);
 	}
@@ -301,6 +368,10 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final void drawText(Text __t, int __x, int __y)
 	{
+		// Initialize?
+		if (!this._beeninit)
+			this.initialize();
+		
 		this.graphics.drawText(__t, this._dx + __x, this._dy + __y);
 	}
 	
@@ -312,6 +383,10 @@ public final class EnforcedDrawingAreaGraphics
 	public final void fillArc(int __x, int __y, int __w, int __h, int __sa,
 		int __aa)
 	{
+		// Initialize?
+		if (!this._beeninit)
+			this.initialize();
+		
 		this.graphics.fillArc(this._dx + __x, this._dy + __y,
 			__w, __h, __sa, __aa);
 	}
@@ -323,6 +398,10 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final void fillRect(int __x, int __y, int __w, int __h)
 	{
+		// Initialize?
+		if (!this._beeninit)
+			this.initialize();
+		
 		this.graphics.fillRect(this._dx + __x, this._dy + __y,
 			__w, __h);
 	}
@@ -335,6 +414,10 @@ public final class EnforcedDrawingAreaGraphics
 	public final void fillRoundRect(int __x, int __y, int __w, int __h,
 		int __aw, int __ah)
 	{
+		// Initialize?
+		if (!this._beeninit)
+			this.initialize();
+		
 		this.graphics.fillRoundRect(this._dx + __x, this._dy + __y,
 			__w, __h, __aw, __ah);
 	}
@@ -347,6 +430,10 @@ public final class EnforcedDrawingAreaGraphics
 	public final void fillTriangle(int __x1, int __y1, int __x2, int __y2,
 		int __x3, int __y3)
 	{
+		// Initialize?
+		if (!this._beeninit)
+			this.initialize();
+		
 		int x = this._transx, y = this._transy;
 		this.graphics.fillTriangle(
 			x + __x1, y + __y1,
@@ -401,6 +488,10 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final int getClipHeight()
 	{
+		// Initialize?
+		if (!this._beeninit)
+			this.initialize();
+		
 		return this._cliph;
 	}
 	
@@ -411,6 +502,10 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final int getClipWidth()
 	{
+		// Initialize?
+		if (!this._beeninit)
+			this.initialize();
+		
 		return this._clipw;
 	}
 	
@@ -421,6 +516,10 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final int getClipX()
 	{
+		// Initialize?
+		if (!this._beeninit)
+			this.initialize();
+		
 		return this._clipx;
 	}
 	
@@ -431,6 +530,10 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final int getClipY()
 	{
+		// Initialize?
+		if (!this._beeninit)
+			this.initialize();
+		
 		return this._clipy;
 	}
 	
@@ -511,6 +614,10 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final int getTranslateX()
 	{
+		// Initialize?
+		if (!this._beeninit)
+			this.initialize();
+		
 		return this._transx;
 	}
 	
@@ -521,6 +628,10 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final int getTranslateY()
 	{
+		// Initialize?
+		if (!this._beeninit)
+			this.initialize();
+		
 		return this._transy;
 	}
 	
@@ -529,7 +640,7 @@ public final class EnforcedDrawingAreaGraphics
 	 *
 	 * @since 2018/12/02
 	 */
-	public final void initializeTarget()
+	public final void initialize()
 	{
 		Graphics g = this.graphics;
 		
@@ -551,6 +662,9 @@ public final class EnforcedDrawingAreaGraphics
 		this._dy = y;
 		this._transx = 0;
 		this._transy = 0;
+		
+		// Set as initialized
+		this._beeninit = true;
 	}
 	
 	/**
@@ -603,6 +717,10 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final void setClip(int __x, int __y, int __w, int __h)
 	{
+		// Initialize?
+		if (!this._beeninit)
+			this.initialize();
+		
 		throw new todo.TODO();
 	}
 	
@@ -665,6 +783,10 @@ public final class EnforcedDrawingAreaGraphics
 	@Override
 	public final void translate(int __x, int __y)
 	{
+		// Initialize?
+		if (!this._beeninit)
+			this.initialize();
+		
 		// Add our translation, we manage it ourselves
 		int transx = this._transx + __x,
 			transy = this._transy + __y;
