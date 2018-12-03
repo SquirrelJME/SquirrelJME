@@ -920,7 +920,6 @@ public abstract class SerializedGraphics
 				dos.writeInt(__t.getBackgroundColor());
 				SerializedGraphics.fontSerialize(dos, __t.getFont());
 				dos.writeInt(__t.getForegroundColor());
-				dos.writeInt(__t.getForegroundColor());
 				dos.writeInt(__t.getIndent());
 				dos.writeInt(__t.getInitialDirection());
 				dos.writeInt(__t.getScrollOffset());
