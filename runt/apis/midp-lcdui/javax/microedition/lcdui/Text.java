@@ -354,9 +354,10 @@ public class Text
 		if (__i >= storage._size)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		// Only use a color if one was set
-		if (storage._iscolor[__i])
-			return storage._color[__i];
+		// Zero means that the default color is to be used
+		int rv = storage._color[__i];
+		if (rv != 0)
+			return rv;
 		return this._defaultcolor;
 	}
 	
@@ -564,7 +565,7 @@ public class Text
 		
 		// Adjust the caret?
 		int caret = this._caret;
-		if (__i < caret)
+		if (caret >= 0 && __i < caret)
 			this._caret = caret + sn;
 		
 		// Becomes dirty
@@ -581,18 +582,53 @@ public class Text
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Sets the alignment of the text.
+	 *
+	 * @param __a If the alignment is not valid.
+	 * @throws IllegalArgumentException If the alignment is not valid.
+	 * @since 2018/12/02
+	 */
 	public void setAlignment(int __a)
+		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error EB2t Invalid alignment. (The alignment)}
+		if (__a != ALIGN_LEFT && __a != ALIGN_CENTER && __a != ALIGN_RIGHT &&
+			__a != ALIGN_JUSTIFY && __a != ALIGN_DEFAULT)
+			throw new IllegalArgumentException("EB2t " + __a);
+		
+		this._alignment = __a;
 	}
 	
+	/**
+	 * Sets the background color.
+	 *
+	 * @param __argb The color to use.
+	 * @since 2018/12/02
+	 */
 	public void setBackgroundColor(int __argb)
 	{
-		throw new todo.TODO();
+		this._backgroundcolor = __argb;
 	}
 	
+	/**
+	 * Sets the position of the caret.
+	 *
+	 * @param __i The position to use, {@code -1} clears the caret
+	 * @throws IndexOutOfBoundsException If the caret is outside of the
+	 * text bounds.
+	 * @since 2018/12/02
+	 */
 	public void setCaret(int __i)
+		throws IndexOutOfBoundsException
 	{
+		// Clear it
+		if (__i == -1)
+		{
+			this._caret = -1;
+			return;
+		}
+		
 		throw new todo.TODO();
 	}
 	
@@ -620,9 +656,31 @@ public class Text
 		this._dirty = true;
 	}
 	
+	/**
+	 * Sets the font at the given positions.
+	 *
+	 * @param __f The font to set, {@code null} clears.
+	 * @param __i The index.
+	 * @param __l The length.
+	 * @throws IndexOutOfBoundsException If the given range is out of bounds.
+	 * @since 2018/12/02
+	 */
 	public void setFont(Font __f, int __i, int __l)
 	{
-		throw new todo.TODO();
+		__Storage__ storage = this._storage;
+		
+		// Exceeds storage size?
+		int size = storage._size;
+		if (__i < 0 || __l < 0 || __i >= size || (__i + __l) > size)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Set
+		Font[] font = storage._font;
+		for (int i = 0; i < __l; i++)
+			font[__i++] = __f;
+		
+		// Is dirty now
+		this._dirty = true;
 	}
 	
 	/**
@@ -638,9 +696,31 @@ public class Text
 		this._defaultcolor = __argb;
 	}
 	
+	/**
+	 * Sets the color at the given positions.
+	 *
+	 * @param __argb The ARGB color, zero removes the color.
+	 * @param __i The index.
+	 * @param __l The length.
+	 * @throws IndexOutOfBoundsException If the given range is out of bounds.
+	 * @since 2018/12/02
+	 */
 	public void setForegroundColor(int __argb, int __i, int __l)
 	{
-		throw new todo.TODO();
+		__Storage__ storage = this._storage;
+		
+		// Exceeds storage size?
+		int size = storage._size;
+		if (__i < 0 || __l < 0 || __i >= size || (__i + __l) > size)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Set
+		int[] color = storage._color;
+		for (int i = 0; i < __l; i++)
+			color[__i++] = __argb;
+		
+		// Is dirty now
+		this._dirty = true;
 	}
 	
 	/**
@@ -664,34 +744,88 @@ public class Text
 		this._height = __h;
 	}
 	
+	/**
+	 * Sets the highlight position.
+	 *
+	 * @param __i The starting index, {@code -1} clears the highlight.
+	 * @param __l The number of characters to highlight.
+	 * @throws IndexOutOfBoundsException If the index and/or length are out
+	 * of bounds.
+	 */
 	public void setHighlight(int __i, int __l)
+		throws IndexOutOfBoundsException
 	{
+		// Clear it
+		if (__i == -1)
+		{
+			this._highlightdx = -1;
+			this._highlightlen = 0;
+			return;
+		}
+		
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Sets the indentation.
+	 *
+	 * @param __i The indentation.
+	 * @since 2018/12/02
+	 */
 	public void setIndent(int __i)
 	{
-		throw new todo.TODO();
+		this._indentation = __i;
 	}
 	
+	/**
+	 * Sets the initial direction.
+	 *
+	 * @param __dir The initial direction.
+	 * @throws IllegalArgumentException If the direction is not valid.
+	 * @since 2018/12/02
+	 */
 	public void setInitialDirection(int __dir)
+		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error EB2u The direction to use. (The direction)}
+		if (__dir == DIRECTION_LTR || __dir == DIRECTION_RTL ||
+			__dir == DIRECTION_NEUTRAL)
+			throw new IllegalArgumentException("EB2u " + __dir);
+		
+		this._direction = __dir;
 	}
 	
+	/**
+	 * Sets the scroll offset.
+	 *
+	 * @param __o The offset.
+	 * @since 2018/12/02
+	 */
 	public void setScrollOffset(int __o)
 	{
-		throw new todo.TODO();
+		this._scrolloffset = __o;
 	}
 	
+	/**
+	 * Sets the space above each line.
+	 *
+	 * @param __sa The space above in pixels.
+	 * @since 2018/12/02
+	 */
 	public void setSpaceAbove(int __sa)
 	{
-		throw new todo.TODO();
+		this._spaceabove = __sa;
 	}
 	
+	/**
+	 * Sets the space below each line.
+	 *
+	 * @param __sb The space below in pixels.
+	 * @since 2018/12/02
+	 */
 	public void setSpaceBelow(int __sb)
 	{
-		throw new todo.TODO();
+		this._spacebelow = __sb;
 	}
 	
 	/**
@@ -1000,11 +1134,7 @@ public class Text
 		Font[] _font =
 			new Font[0];
 		
-		/** Has color? */
-		boolean[] _iscolor =
-			new boolean[0];
-		
-		/** Color storage. */
+		/** Color storage, zero is use default. */
 		int[] _color =
 			new int[0];
 		
@@ -1042,10 +1172,7 @@ public class Text
 			// Storage areas
 			char[] chars = this._chars;
 			Font[] font = this._font;
-			boolean[] iscolor = this._iscolor;
 			int[] color = this._color;
-			short[] x = this._x;
-			short[] y = this._y;
 			
 			// Determine the new size
 			int newsize = size - __l;
@@ -1056,7 +1183,6 @@ public class Text
 			{
 				chars[o] = chars[i];
 				font[o] = font[i];
-				iscolor[o] = iscolor[i];
 				color[o] = color[i];
 			}
 			
@@ -1083,7 +1209,6 @@ public class Text
 			// Storage areas
 			char[] chars = this._chars;
 			Font[] font = this._font;
-			boolean[] iscolor = this._iscolor;
 			int[] color = this._color;
 			short[] x = this._x;
 			short[] y = this._y;
@@ -1099,7 +1224,6 @@ public class Text
 				// Resize all the arrays
 				this._chars = (chars = Arrays.copyOf(chars, newlimit));
 				this._font = (font = Arrays.<Font>copyOf(font, newlimit));
-				this._iscolor = (iscolor = Arrays.copyOf(iscolor, newlimit));
 				this._color = (color = Arrays.copyOf(color, newlimit));
 				this._x = (x = Arrays.copyOf(x, newlimit));
 				this._y = (y = Arrays.copyOf(y, newlimit));
@@ -1117,7 +1241,6 @@ public class Text
 			{
 				chars[o] = chars[i];
 				font[o] = font[i];
-				iscolor[o] = iscolor[i];
 				color[o] = color[i];
 			}
 			
