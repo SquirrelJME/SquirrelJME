@@ -10,3 +10,79 @@ such as well.
 
 I really just need a better way to map keys and such, perhaps with scan
 codes and whatnot. Then additionally a scan to keyname kind of thing.
+
+## 12:24
+
+I have command buttons on the side, but honestly that would be hard to draw
+with vertical text, so back to horizontal.
+
+## 13:32
+
+I need an enforced drawable area graphics which forces a given clip to be
+used no matter what. This is for canvases and such. It has to handle the
+clip and also additionally as well translation.
+
+## 20:59
+
+I am seeing a need for a scrollable area that I will have to act on and
+such. I am going to be writing the scrolling code over and over again so I
+think the best thing to do is to make a scrollable drawable area. That
+can simplify and pass through events. Also the scrolling code will be shared
+by lots of other code as well. So I suppose what I need is a virtual draw
+slice which it just manages and such. What I have now works though although
+it is pretty ugly and rigid. Although it is much better than what it was
+before. Implementing alot of the widgets is going to be ugly since LCDUI is
+not really the best.
+
+## 20:56
+
+Perhaps I am conflating event handling with drawables. The only thing is
+that LCDUI is just super messy and it is really cracked and hacked together
+for the most part. I do not even think I can write a sane looking
+implementation with the way that it works.
+
+## 20:59
+
+The good thing is that I actually have the event code and such. The event
+code is fine and so is the wrapped VM code. It is just that drawing everything
+is a huge pain. It might be best if the drawing specific code were separated
+into its own place, that might make things easier. LCDUI is a big part of
+the interface and I have already rewritten it a number of times. Actually,
+this may be the thing. I know I had problems with object oriented stuff
+because I tried to design the stuff this way. But honestly I do not think
+this will work. I am going to need a class which is basically an abstract
+class but it provides me direct access into all of the LCDUI internals of
+everything that is thrown at it. Then I might be able to get rid of some
+widgets and such. But it will be a class which provides access to the
+internals. That is really the only way I think it will be clean.
+
+## 21:38
+
+What I need for the array graphics is a permanent clipping rectangle because
+the buffer would overflow and it would be a bit complicated to do some things
+by adjusting all the parameters and such.
+
+## 21:41
+
+Also this means that accelerated graphics has changed because it operates
+on access to a single framebuffer object, but we kind of need it to allow for
+multiple drawable views per UI element drawn. Or just completely get rid of.
+But no, I do not even need this because I made the enforced drawing area
+graphics so I do not even need to worry about this. I just need a base
+drawable that goes into things. I just need a way to sub-clip enforced drawing
+areas without having it nested so much.
+
+## 21:56
+
+Now with the state count tracker, there will be no need to manage it ourselves
+so whenever there is a framebuffer resize we just have a single counter now.
+
+## 21:57
+
+Display as well also does not need to have certain conditions where the
+framebuffer is re-created, so easier to use and more optimal.
+
+## 23:58
+
+I need to unify the chain drawing stuff and simplify it so it is not a giant
+mess.
