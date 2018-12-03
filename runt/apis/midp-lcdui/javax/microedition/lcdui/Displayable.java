@@ -244,7 +244,7 @@ public abstract class Displayable
 		// Set the title of the display
 		Display d = this.__currentDisplay();
 		if (d != null)
-			NativeDisplayAccess.setDisplayTitle(d._nid, __t);
+			d._state.setTitle(__t);
 	}
 	
 	/**

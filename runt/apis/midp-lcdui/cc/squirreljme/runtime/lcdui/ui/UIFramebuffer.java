@@ -8,10 +8,11 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package javax.microedition.lcdui;
+package cc.squirreljme.runtime.lcdui.ui;
 
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
 import cc.squirreljme.runtime.lcdui.gfx.PixelFormat;
+import javax.microedition.lcdui.Graphics;
 
 /**
  * This class contains information on the framebuffer.
@@ -30,10 +31,10 @@ public final class UIFramebuffer
 	protected final int[] palette;
 	
 	/** The buffer width. */
-	protected final int bufferwidth;
+	public final int bufferwidth;
 	
 	/** The buffer height. */
-	protected final int bufferheight;
+	public final int bufferheight;
 	
 	/** Is the alpha channel used? */
 	protected final boolean alpha;
@@ -44,7 +45,7 @@ public final class UIFramebuffer
 	/** The offset into the buffer. */
 	protected final int offset;
 	
-	/** The virtual X origina. */
+	/** The virtual X origin. */
 	protected final int virtxorig;
 	
 	/** The virtual Y origin. */

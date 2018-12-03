@@ -668,7 +668,6 @@ public abstract class Canvas
 		// outside of the canvas
 		EnforcedDrawingAreaGraphics ed = new EnforcedDrawingAreaGraphics(
 			__g, dc.x, dc.y, dc.w, dc.h);
-		ed.initializeTarget();
 		
 		// Transparent is set when the widget does not draw every pixel
 		if (this._transparent)

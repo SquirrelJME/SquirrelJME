@@ -130,6 +130,9 @@ public final class NativeDisplayAccess
 		_repaintw,
 		_repainth;
 	
+	/** State count for this framebuffer. */
+	static volatile int _statecount;
+	
 	/**
 	 * Initializes some things
 	 *
@@ -263,6 +266,23 @@ public final class NativeDisplayAccess
 		rv[NativeDisplayAccess.PARAMETER_VIRTYOFF] = 0;
 		
 		return rv;
+	}
+	
+	/**
+	 * Returns the state count of this framebuffer which is used to detect
+	 * when the parameters have changed, where they must all be recalculated
+	 * (that is the framebuffer wrapper must be recreated).
+	 *
+	 * @param __id The display ID.
+	 * @return The state count for the framebuffer.
+	 * @since 2018/12/02
+	 */
+	public static final int framebufferStateCount(int __id)
+	{
+		if (__id != 0)
+			return -1;
+		
+		return NativeDisplayAccess._statecount;
 	}
 	
 	/**
@@ -639,8 +659,11 @@ public final class NativeDisplayAccess
 		
 			// Recreate the image if the size has changed
 			if (xw != oldw || xh != oldh)
+			{
 				this._image = (image = ColorInfo.create(xw, xh,
 					new Color(0xFFFFFFFF)));
+				NativeDisplayAccess._statecount++;
+			}
 			
 			// Indicate that the size changed
 			NativeDisplayAccess.postEvent(
