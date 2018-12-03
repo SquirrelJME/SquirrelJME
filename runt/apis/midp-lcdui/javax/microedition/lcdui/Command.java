@@ -234,7 +234,7 @@ public class Command
 		if (this._implspec)
 			return "";
 		
-		throw new todo.TODO();
+		return this._shortlabel;
 	}
 	
 	/**
@@ -249,7 +249,7 @@ public class Command
 		if (this._implspec)
 			return null;
 		
-		throw new todo.TODO();
+		return this._longlabel;
 	}
 	
 	public int getPriority()
