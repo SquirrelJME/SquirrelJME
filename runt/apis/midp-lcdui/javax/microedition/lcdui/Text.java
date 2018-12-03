@@ -788,8 +788,8 @@ public class Text
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error EB2u The direction to use. (The direction)}
-		if (__dir == DIRECTION_LTR || __dir == DIRECTION_RTL ||
-			__dir == DIRECTION_NEUTRAL)
+		if (__dir != DIRECTION_LTR && __dir != DIRECTION_RTL &&
+			__dir != DIRECTION_NEUTRAL)
 			throw new IllegalArgumentException("EB2u " + __dir);
 		
 		this._direction = __dir;
