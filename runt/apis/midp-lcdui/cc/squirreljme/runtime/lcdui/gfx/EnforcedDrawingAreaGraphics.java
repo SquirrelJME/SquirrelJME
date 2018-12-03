@@ -642,6 +642,10 @@ public final class EnforcedDrawingAreaGraphics
 	 */
 	public final void initialize()
 	{
+		// Only initialize once
+		if (this._beeninit)
+			return;
+		
 		Graphics g = this.graphics;
 		
 		// Our viewing area
