@@ -18,7 +18,7 @@ import cc.squirreljme.runtime.lcdui.gfx.PixelFormat;
  *
  * @since 2018/11/18
  */
-final class __Framebuffer__
+public final class UIFramebuffer
 {
 	/** The pixel format of the buffer. */
 	protected final PixelFormat pixelformat;
@@ -66,7 +66,7 @@ final class __Framebuffer__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/18
 	 */
-	__Framebuffer__(PixelFormat __pf, Object __buf, int[] __pal,
+	public UIFramebuffer(PixelFormat __pf, Object __buf, int[] __pal,
 		int __bw, int __bh, boolean __alpha, int __p, int __off,
 		int __vxo, int __vyo)
 		throws NullPointerException
@@ -87,7 +87,8 @@ final class __Framebuffer__
 	}
 	
 	/**
-	 * Returns the graphics object for this framebuffer.
+	 * Returns the graphics object for this framebuffer, covering the entire
+	 * area.
 	 *
 	 * @return The graphics for this framebuffer.
 	 * @since 2018/11/18
@@ -101,13 +102,94 @@ final class __Framebuffer__
 	}
 	
 	/**
+	 * Returns a graphics object for this framebuffer which covers the given
+	 * area, the graphics object has an origin of zero.
+	 *
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @return The framebuffer covering only the given area.
+	 * @since 2018/11/18
+	 */
+	public final Graphics graphics(int __x, int __y, int __w, int __h)
+	{
+		int bufferwidth = this.bufferwidth,
+			bufferheight = this.bufferheight,
+			pitch = this.pitch,
+			offset = this.offset,
+			virtxorig = this.virtxorig,
+			virtyorig = this.virtyorig;
+		
+		// Force X in bounds
+		if (__x < 0)
+			__x = 0;
+		else if (__x >= bufferwidth)
+			__x = bufferwidth - 1;
+		
+		// Force Y in bounds
+		if (__y < 0)
+			__y = 0;
+		else if (__y >= bufferheight)
+			__y = bufferheight - 1;
+		
+		// End coordinates
+		int ex = __x + __w,
+			ey = __y + __h;
+		
+		// Force width in bounds
+		if (ex > bufferwidth)
+		{
+			__w = bufferwidth - __x;
+			ex = bufferwidth;
+		}
+		
+		// Force height in bounds
+		if (ey > bufferheight)
+		{
+			__h = bufferheight - __y;
+			ey = bufferheight;
+		}
+		
+		// If we have an X start which is above zero then our starting
+		// position in the buffer will be offset on the first column, so
+		// we need to skip that
+		int extraoffset = __x;
+		
+		// The new buffer width and height
+		
+		if (__x
+		
+		// A new offset has to be calculated because 
+		
+		this.pixelformat = __pf;
+		this.buffer = __buf;
+		this.palette = __pal;
+		this.bufferwidth = __bw;
+		this.bufferheight = __bh;
+		this.alpha = __alpha;
+		this.pitch = __p;
+		this.offset = __off;
+		this.virtxorig = __vxo;
+		this.virtyorig = __vyo;
+		
+		// Most properties are the same, but the pitch remains the same as it
+		// is before because that is an actual row which is now just a view
+		// into the buffer
+		return this.pixelformat.createGraphics(
+			this.buffer, this.palette, newbufferwidth, newbufferheight,
+			this.alpha, newpitch, this.offset + extraoffset,
+			newvirtxorig, newvirtyorig);
+	}
+	
+	/**
 	 * Loads the frame buffer for the given native display.
 	 *
 	 * @param __nid The native display.
 	 * @return The framebuffer for this display.
 	 * @since 2018/11/18
 	 */
-	static __Framebuffer__ __loadFrame(int __nid)
+	public static UIFramebuffer loadNativeFramebuffer(int __nid)
 	{
 		// Get framebuffer data
 		Object buf = NativeDisplayAccess.framebufferObject(__nid);
@@ -115,7 +197,7 @@ final class __Framebuffer__
 		int[] params = NativeDisplayAccess.framebufferParameters(__nid);
 		
 		// Build framebuffer object
-		return new __Framebuffer__(
+		return new UIFramebuffer(
 			PixelFormat.of(params[NativeDisplayAccess.PARAMETER_PIXELFORMAT]),
 			buf,
 			pal,
