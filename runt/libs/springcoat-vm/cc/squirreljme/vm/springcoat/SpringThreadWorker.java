@@ -3633,6 +3633,19 @@ public final class SpringThreadWorker
 			}
 		}
 		
+		// Arithmetic exception, a divide by zero happened somewhere
+		catch (ArithmeticException e)
+		{
+			// PC converts?
+			nextpc = this.__handleException(
+				(SpringObject)this.asVMObject(new SpringArithmeticException(
+				e.getMessage())));
+			
+			// Do not set PC address?
+			if (nextpc < 0)
+				return;
+		}
+		
 		// Use the original exception, just add a suppression note on it since
 		// that is the simplest action
 		catch (SpringException e)
@@ -3642,6 +3655,7 @@ public final class SpringThreadWorker
 				(e instanceof SpringMachineExitException))
 				throw e;
 			
+			// Now the exception is either converted or tossed for failure
 			// Is this a convertable exception on the VM?
 			if (e instanceof SpringConvertableThrowable)
 			{

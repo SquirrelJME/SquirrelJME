@@ -10,17 +10,32 @@
 
 package java.lang;
 
+/**
+ * This is usually thrown when an attempt is made to use a monitor which is
+ * not owned by the current thread.
+ *
+ * @since 2018/12/04
+ */
 public class IllegalMonitorStateException
 	extends RuntimeException
 {
+	/**
+	 * Initializes the exception with no message or cause.
+	 *
+	 * @since 2018/12/04
+	 */
 	public IllegalMonitorStateException()
 	{
-		throw new todo.TODO();
 	}
 	
-	public IllegalMonitorStateException(String __a)
+	/**
+	 * Initializes the exception with the given message and no cause.
+	 *
+	 * @since 2018/12/04
+	 */
+	public IllegalMonitorStateException(String __m)
 	{
-		throw new todo.TODO();
+		super(__m);
 	}
 }
 

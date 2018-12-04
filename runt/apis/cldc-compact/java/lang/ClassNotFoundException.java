@@ -10,36 +10,55 @@
 
 package java.lang;
 
+/**
+ * This is thrown when a class has not been found.
+ *
+ * @since 2018/12/04
+ */
 public class ClassNotFoundException
 	extends Exception
 {
+	/**
+	 * Initializes the exception with no message or cause.
+	 *
+	 * @since 2018/12/04
+	 */
 	public ClassNotFoundException()
 	{
-		super();
-		throw new todo.TODO();
 	}
 	
-	public ClassNotFoundException(String __a)
+	/**
+	 * Initializes the exception with the given message and no cause.
+	 *
+	 * @param __m The message.
+	 * @since 2018/09/16
+	 */
+	public ClassNotFoundException(String __m)
 	{
-		super();
-		throw new todo.TODO();
+		super(__m);
 	}
 	
-	public ClassNotFoundException(String __a, Throwable __b)
+	/**
+	 * Initializes the exception with the given message and cause.
+	 *
+	 * @param __m The message.
+	 * @param __t The cause.
+	 * @since 2018/09/16
+	 */
+	public ClassNotFoundException(String __m, Throwable __t)
 	{
-		super();
-		throw new todo.TODO();
+		super(__m, __t);
 	}
 	
-	@Override
-	public Throwable getCause()
-	{
-		throw new todo.TODO();
-	}
-	
+	/**
+	 * This returns the cause of the exception.
+	 *
+	 * @return The cause of the exception.
+	 * @since 2018/12/04
+	 */
 	public Throwable getException()
 	{
-		throw new todo.TODO();
+		return this.getCause();
 	}
 }
 

@@ -10,17 +10,31 @@
 
 package java.lang;
 
+/**
+ * This is thrown when access is denied.
+ *
+ * @since 2018/12/04
+ */
 public class IllegalAccessException
 	extends Exception
 {
+	/**
+	 * Initializes the exception with no message or cause.
+	 *
+	 * @since 2018/12/04
+	 */
 	public IllegalAccessException()
 	{
-		throw new todo.TODO();
 	}
 	
-	public IllegalAccessException(String __a)
+	/**
+	 * Initializes the exception with the given message and no cause.
+	 *
+	 * @since 2018/12/04
+	 */
+	public IllegalAccessException(String __m)
 	{
-		throw new todo.TODO();
+		super(__m);
 	}
 }
 

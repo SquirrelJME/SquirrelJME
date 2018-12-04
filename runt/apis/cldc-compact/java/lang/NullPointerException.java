@@ -19,14 +19,23 @@ package java.lang;
 public class NullPointerException
 	extends RuntimeException
 {
+	/**
+	 * Initializes the exception with no message or cause.
+	 *
+	 * @since 2018/12/04
+	 */
 	public NullPointerException()
 	{
-		throw new todo.TODO();
 	}
 	
-	public NullPointerException(String __a)
+	/**
+	 * Initializes the exception with the given message and no cause.
+	 *
+	 * @since 2018/12/04
+	 */
+	public NullPointerException(String __m)
 	{
-		throw new todo.TODO();
+		super(__m);
 	}
 }
 

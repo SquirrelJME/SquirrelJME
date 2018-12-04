@@ -10,19 +10,31 @@
 
 package java.lang;
 
+/**
+ * This is thrown when a field in a class does not exist.
+ *
+ * @since 2018/12/04
+ */
 public class NoSuchFieldError
 	extends IncompatibleClassChangeError
 {
+	/**
+	 * Initializes the exception with no message or cause.
+	 *
+	 * @since 2018/12/04
+	 */
 	public NoSuchFieldError()
 	{
-		super();
-		throw new todo.TODO();
 	}
 	
-	public NoSuchFieldError(String __a)
+	/**
+	 * Initializes the exception with the given message and no cause.
+	 *
+	 * @since 2018/12/04
+	 */
+	public NoSuchFieldError(String __m)
 	{
-		super();
-		throw new todo.TODO();
+		super(__m);
 	}
 }
 
