@@ -11,11 +11,11 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
+import cc.squirreljme.runtime.cldc.asm.NativeDisplayEventCallback;
 import cc.squirreljme.runtime.lcdui.common.CommonColors;
 import cc.squirreljme.runtime.lcdui.common.CommonMetrics;
 import cc.squirreljme.runtime.lcdui.DisplayOrientation;
 import cc.squirreljme.runtime.lcdui.DisplayState;
-import cc.squirreljme.runtime.lcdui.event.EventType;
 import cc.squirreljme.runtime.lcdui.event.NonStandardKey;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.ui.UIDisplayState;
@@ -202,9 +202,6 @@ public class Display
 	private static final List<DisplayListener> _LISTENERS =
 		new ArrayList<>();
 	
-	/** The serialized event loop for handling events. */
-	static volatile __EventLoop__ _EVENT_LOOP;
-	
 	/** The display state for this Display. */
 	final UIDisplayState _state;
 	
@@ -232,7 +229,11 @@ public class Display
 	 */
 	static
 	{
+		// Setup the probe that accesses LCDUI internals
 		new __LCDUIProbe__();
+		
+		// Register the callback so events can be executed in the LCDUI code
+		NativeDisplayAccess.registerEventCallback(__EventCallback__._CALLBACK);
 	}
 	
 	/**
@@ -783,21 +784,9 @@ public class Display
 		// be shown until it happens to be shown.
 		__show._isshown = this._isshown;
 		
-		// The event loop is needed to process the events but it also must
-		// run serially so only a single event loop exists at once
-		__EventLoop__ eventloop = Display._EVENT_LOOP;
-		if (eventloop == null)
-		{
-			Display._EVENT_LOOP = (eventloop = new __EventLoop__());
-			new Thread(eventloop, "SquirrelJME-LCDUIEventLoop").start();
-		}
-		
 		// If this is the main display, it gets events pushed to it
 		// specifically
 		int nid = this._nid;
-		if (nid == 0)
-			eventloop._main = this;
-		
 		// Use the title of this thing
 		NativeDisplayAccess.setDisplayTitle(nid, __show.getTitle());
 		
@@ -998,12 +987,6 @@ public class Display
 		
 		// Update widgets
 		this.__updateDrawChain(new __DrawSlice__(0, 0, __w, __h));
-		
-		// Just post a repaint event, do not actually repaint!
-		if (d != null)
-			NativeDisplayAccess.postEvent(
-				EventType.DISPLAY_REPAINT.ordinal(),
-				this._nid, 0, 0, __w, __h);
 	}
 	
 	/**
@@ -1043,21 +1026,17 @@ public class Display
 	 * @param __ch Character code.
 	 * @param __time Time code.
 	 * @throws IllegalArgumentException If the key type is not valid.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/02
 	 */
 	@SerializedEvent
-	final void __doKeyAction(EventType __kt, int __kc, char __ch, int __time)
-		throws IllegalArgumentException, NullPointerException
+	final void __doKeyAction(int __kt, int __kc, char __ch, int __time)
+		throws IllegalArgumentException
 	{
-		if (__kt == null)
-			throw new NullPointerException("NARG");
-		
 		// If a function key is pressed, just treat it as a command which
 		// has been executed
 		if (__kc >= NonStandardKey.F1 && __kc <= NonStandardKey.F24)
 		{
-			if (__kt == EventType.KEY_PRESSED)
+			if (__kt == NativeDisplayEventCallback.KEY_PRESSED)
 				this.__doCommandAction(__kc - NonStandardKey.F1);
 			return;
 		}
@@ -1070,42 +1049,19 @@ public class Display
 		Displayable current = this._current;
 		if (current != null)
 		{
-			// Map to type
-			int type;
-			switch (__kt)
+			// Turn duplicate key press events into repeat events
+			if (__kt == NativeDisplayEventCallback.KEY_PRESSED)
 			{
-				case KEY_PRESSED:
-					{
-						// If the key was never in the set then it will be
-						// a press
-						if (downkeys.add(kci))
-							type = _KEY_PRESSED;
-						
-						// Otherwise it is in the set, so it becomes a repeat
-						else
-							type = _KEY_REPEATED;
-					}
-					break;
-					
-					// Remove keys from set
-				case KEY_RELEASED:
-					{
-						type = _KEY_RELEASED;
-						
-						// Key was released, so remove it from the set
-						downkeys.remove(kci);
-					}
-					break;
-					
-					// Just forward repeats
-				case KEY_REPEATED:	type = _KEY_REPEATED; break;
-				
-				default:
-					throw new todo.OOPS();
+				if (downkeys.add(kci))
+					__kt = NativeDisplayEventCallback.KEY_REPEATED;
 			}
 			
+			// Remove released keys
+			else if (__kt == NativeDisplayEventCallback.KEY_RELEASED)
+				downkeys.remove(kci);
+			
 			// Forward
-			current.__doKeyAction(type, __kc, __ch, __time);
+			current.__doKeyAction(__kt, __kc, __ch, __time);
 		}
 	}
 	
@@ -1117,32 +1073,16 @@ public class Display
 	 * @param __y Y coordinate.
 	 * @param __time Timecode.
 	 * @throws IllegalArgumentException If the event is not valid.
-	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/02
 	 */
 	@SerializedEvent
-	final void __doPointerAction(EventType __t, int __x, int __y, int __time)
-		throws IllegalArgumentException, NullPointerException
+	final void __doPointerAction(int __t, int __x, int __y, int __time)
+		throws IllegalArgumentException
 	{
 		// Forward to the displayable
 		Displayable current = this._current;
 		if (current != null)
-		{
-			// Map to type
-			int type;
-			switch (__t)
-			{
-				case POINTER_DRAGGED:	type = _POINTER_DRAGGED; break;
-				case POINTER_PRESSED:	type = _POINTER_PRESSED; break;
-				case POINTER_RELEASED:	type = _POINTER_RELEASED; break;
-				
-				default:
-					throw new todo.OOPS();
-			}
-			
-			// Forward
-			current.__doPointerAction(type, __x, __y, __time);
-		}
+			current.__doPointerAction(__t, __x, __y, __time);
 	}
 	
 	/**

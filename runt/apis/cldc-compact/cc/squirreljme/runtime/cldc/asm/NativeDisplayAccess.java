@@ -100,6 +100,19 @@ public final class NativeDisplayAccess
 	public static final native int capabilities(int __id);
 	
 	/**
+	 * Requests that the display should be repainted.
+	 *
+	 * @param __id The display ID.
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @since 2018/12/03
+	 */
+	public static final native int displayRepaint(int __id,
+		int __x, int __y, int __w, int __h);
+	
+	/**
 	 * Returns the object representing the framebuffer data.
 	 *
 	 * @param __id The display ID.
