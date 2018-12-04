@@ -11,7 +11,7 @@
 package cc.squirreljme.vm;
 
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
-import cc.squirreljme.runtime.lcdui.event.EventType;
+import cc.squirreljme.runtime.cldc.asm.NativeDisplayEventCallback;
 import cc.squirreljme.runtime.lcdui.event.NonStandardKey;
 import cc.squirreljme.runtime.lcdui.gfx.AcceleratedGraphics;
 import cc.squirreljme.runtime.lcdui.gfx.GraphicsFunction;
@@ -32,31 +32,9 @@ import javax.microedition.lcdui.Graphics;
  */
 public class VMNativeDisplayAccess
 {
-	/** The event queue size with the type. */
-	public static final int EVENT_SIZE_WITH_TYPE =
-		NativeDisplayAccess.EVENT_SIZE + 1;
-	
-	/** The number of events to store in the buffer. */
-	public static final int QUEUE_SIZE =
-		256;
-	
-	/** The limit of the event queue. */
-	public static final int QUEUE_LIMIT =
-		EVENT_SIZE_WITH_TYPE * QUEUE_SIZE;
-	
 	/** The pixel format to use for the framebuffer. */
 	public static final PixelFormat FRAMEBUFFER_PIXELFORMAT =
 		PixelFormat.INTEGER_RGB888;
-	
-	/** The event queue, a circular buffer. */
-	private final short[] _eventqueue =
-		new short[EVENT_SIZE_WITH_TYPE * QUEUE_SIZE];
-	
-	/** The read position. */
-	private int _eventread;
-	
-	/** The write position. */
-	private int _eventwrite;
 	
 	/** The display to back on, lazily initialized to prevent crashing. */
 	Display _usedisplay;
@@ -89,6 +67,9 @@ public class VMNativeDisplayAccess
 	
 	/** The state count of the framebuffer. */
 	volatile int _statecount;
+	
+	/** Event callback. */
+	volatile NativeDisplayEventCallback _callback;
 	
 	/**
 	 * Initialize and/or reset accelerated graphics operations.
@@ -146,6 +127,25 @@ public class VMNativeDisplayAccess
 		
 		// Just directly pass the capabilities of this display
 		return this.__display().getCapabilities();
+	}
+	
+	/**
+	 * Requests that the display should be repainted.
+	 *
+	 * @param __id The display ID.
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @since 2018/12/03
+	 */
+	public final void displayRepaint(int __id,
+		int __x, int __y, int __w, int __h)
+	{
+		if (__id != 0)
+			return;
+		
+		this.__checkFramebuffer().repaint(__x, __y, __w, __h);
 	}
 	
 	/**
@@ -290,155 +290,14 @@ public class VMNativeDisplayAccess
 	}
 	
 	/**
-	 * Polls the next event, blocking until the next one occurs.
+	 * Registers the event callback.
 	 *
-	 * @param __ed Event data.
-	 * @return The next event, this will be the even type.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/11/17
+	 * @param __e The event to call.
+	 * @since 2018/12/03
 	 */
-	public final int pollEvent(short[] __ed)
-		throws NullPointerException
+	public final void registerEventCallback(NativeDisplayEventCallback __e)
 	{
-		if (__ed == null)
-			throw new NullPointerException("NARG");
-		
-		// Maximum number of data points to write
-		int edlen = Math.min(__ed.length, NativeDisplayAccess.EVENT_SIZE);
-		
-		// Constantly poll for events
-		short[] eventqueue = this._eventqueue;
-		for (;;)
-			synchronized (eventqueue)
-			{
-				// Read positions
-				int eventread = this._eventread,
-					eventwrite = this._eventwrite;
-				
-				// This a circular buffer, so if the values do not match
-				// then that means an event was found.
-				if (eventread != eventwrite)
-				{
-					// Base pointer for reading events
-					int baseptr = eventread;
-					
-					// Read the type for later return
-					int type = eventqueue[baseptr++];
-					
-					// Copy event data
-					for (int o = 0; o < edlen;)
-						__ed[o++] = eventqueue[baseptr++];
-					
-					// Make sure the read position does not overflow the
-					// buffer
-					int nexter = eventread + EVENT_SIZE_WITH_TYPE;
-					if (nexter >= QUEUE_LIMIT)
-						nexter = 0;
-					this._eventread = nexter;
-					
-					// If this a repaint type, use the single repaint
-					// parameters instead
-					if (type == EventType.DISPLAY_REPAINT.ordinal())
-					{
-						// Ignored the stored parameters and instead use
-						// the repaint ones
-						__ed[1] = (short)this._repaintx;
-						__ed[2] = (short)this._repainty;
-						__ed[3] = (short)this._repaintw;
-						__ed[4] = (short)this._repainth;
-						this._repaint = false;
-					}
-					
-					// And the type of the event
-					return type;
-				}
-				
-				// Wait for an event to appear
-				try
-				{
-					eventqueue.wait();
-				}
-				
-				// Just treat like an event might have happened
-				catch (InterruptedException e)
-				{
-				}
-			}
-	}
-	
-	/**
-	 * Posts the specified event to the end of the event queue.
-	 *
-	 * @param __type The event type to push.
-	 * @param __d0 Datapoint 1.
-	 * @param __d1 Datapoint 2.
-	 * @param __d2 Datapoint 3.
-	 * @param __d3 Datapoint 4.
-	 * @param __d4 Datapoint 5.
-	 * @since 2018/11/18
-	 */
-	public final void postEvent(int __type,
-		int __d0, int __d1, int __d2, int __d3, int __d4)
-	{
-		// Lock on the queue
-		short[] eventqueue = this._eventqueue;
-		synchronized (eventqueue)
-		{
-			// Prevent repaint flooding
-			if (__type == EventType.DISPLAY_REPAINT.ordinal())
-			{
-				// Doing a repaint
-				boolean repaint = this._repaint;
-				if (!repaint)
-				{
-					this._repaintx = __d1;
-					this._repainty = __d2;
-					this._repaintw = __d3;
-					this._repainth = __d4;
-					this._repaint = true;
-				}
-				
-				// Otherwise update parameters
-				else
-				{
-					this._repaintx = Math.min(this._repaintx, __d1);
-					this._repainty = Math.min(this._repainty, __d2);
-					this._repaintw = Math.max(this._repaintw, __d3);
-					this._repainth = Math.max(this._repainth, __d4);
-					
-					// Do not write an event, since there is a repaint in
-					// the queue
-					return;
-				}
-			}
-			
-			int eventwrite = this._eventwrite;
-			
-			// Overwrite all the data
-			eventqueue[eventwrite++] = (short)__type;
-			eventqueue[eventwrite++] = (short)__d0;
-			eventqueue[eventwrite++] = (short)__d1;
-			eventqueue[eventwrite++] = (short)__d2;
-			eventqueue[eventwrite++] = (short)__d3;
-			eventqueue[eventwrite++] = (short)__d4;
-			
-			// Go back to the start?
-			if (eventwrite >= QUEUE_LIMIT)
-				eventwrite = 0;
-			
-			// Overflowed?
-			if (eventwrite == this._eventread)
-			{
-				todo.DEBUG.note("Event loop overflow!");
-				return;
-			}
-			
-			// Set new position
-			this._eventwrite = eventwrite;
-			
-			// Notify that an event was put in the queue
-			eventqueue.notify();
-		}
+		this._callback = __e;
 	}
 	
 	/**
@@ -547,15 +406,12 @@ public class VMNativeDisplayAccess
 		{
 			// Exiting the VM?
 			if (__c.getCommandType() == Command.EXIT)
-				VMNativeDisplayAccess.this.postEvent(
-					EventType.EXIT_REQUEST.ordinal(),
-					0, -1, -1, -1, -1);
+				VMNativeDisplayAccess.this._callback.exitRequest(0);
 			
 			// Function menu key
 			else if (__c.getLabel().startsWith("F"))
-				VMNativeDisplayAccess.this.postEvent(
-					EventType.COMMAND.ordinal(),
-					0, __c.getPriority() - 1, -1, -1, -1);
+				VMNativeDisplayAccess.this._callback.command(0,
+					__c.getPriority());
 		}
 	}
 	
@@ -577,10 +433,7 @@ public class VMNativeDisplayAccess
 		@Override
 		public void hideNotify()
 		{
-			// Post event
-			VMNativeDisplayAccess.this.postEvent(
-				EventType.DISPLAY_HIDDEN.ordinal(),
-				0, -1, -1, -1, -1);
+			VMNativeDisplayAccess.this._callback.shown(0, 0);
 		}
 		
 		/**
@@ -590,7 +443,7 @@ public class VMNativeDisplayAccess
 		@Override
 		public void keyPressed(int __code)
 		{
-			this.__postKey(EventType.KEY_PRESSED, __code);
+			this.__postKey(NativeDisplayEventCallback.KEY_PRESSED, __code);
 		}
 			
 		/**
@@ -600,7 +453,7 @@ public class VMNativeDisplayAccess
 		@Override
 		public void keyReleased(int __code)
 		{
-			this.__postKey(EventType.KEY_RELEASED, __code);
+			this.__postKey(NativeDisplayEventCallback.KEY_RELEASED, __code);
 		}
 			
 		/**
@@ -610,7 +463,7 @@ public class VMNativeDisplayAccess
 		@Override
 		public void keyRepeated(int __code)
 		{
-			this.__postKey(EventType.KEY_REPEATED, __code);
+			this.__postKey(NativeDisplayEventCallback.KEY_REPEATED, __code);
 		}
 		
 		/**
@@ -620,6 +473,15 @@ public class VMNativeDisplayAccess
 		@Override
 		public void paint(Graphics __g)
 		{
+			int x = __g.getClipX(),
+				y = __g.getClipY(),
+				w = __g.getClipWidth(),
+				h = __g.getClipHeight();
+			
+			// Call paint code
+			VMNativeDisplayAccess.this._callback.paintDisplay(0,
+				x, y, w, h);
+			
 			// Just draw the raw RGB data
 			int fbw = VMNativeDisplayAccess.this._fbw;
 			__g.drawRGB(VMNativeDisplayAccess.this._fbrgb,
@@ -639,9 +501,9 @@ public class VMNativeDisplayAccess
 		@Override
 		public void pointerDragged(int __x, int __y)
 		{
-			VMNativeDisplayAccess.this.postEvent(
-				EventType.POINTER_DRAGGED.ordinal(),
-				__x, __y, ++this._keyindex, -1, -1);
+			VMNativeDisplayAccess.this._callback.pointerEvent(0,
+				NativeDisplayEventCallback.POINTER_DRAGGED, __x, __y,
+				++this._keyindex);
 		}
 			
 		/**
@@ -651,9 +513,9 @@ public class VMNativeDisplayAccess
 		@Override
 		public void pointerPressed(int __x, int __y)
 		{
-			VMNativeDisplayAccess.this.postEvent(
-				EventType.POINTER_PRESSED.ordinal(),
-				__x, __y, ++this._keyindex, -1, -1);
+			VMNativeDisplayAccess.this._callback.pointerEvent(0,
+				NativeDisplayEventCallback.POINTER_PRESSED, __x, __y,
+				++this._keyindex);
 		}
 			
 		/**
@@ -663,9 +525,9 @@ public class VMNativeDisplayAccess
 		@Override
 		public void pointerReleased(int __x, int __y)
 		{
-			VMNativeDisplayAccess.this.postEvent(
-				EventType.POINTER_RELEASED.ordinal(),
-				__x, __y, ++this._keyindex, -1, -1);
+			VMNativeDisplayAccess.this._callback.pointerEvent(0,
+				NativeDisplayEventCallback.POINTER_RELEASED, __x, __y,
+				++this._keyindex);
 		}
 		
 		/**
@@ -675,10 +537,7 @@ public class VMNativeDisplayAccess
 		@Override
 		public void showNotify()
 		{
-			// Post event
-			VMNativeDisplayAccess.this.postEvent(
-				EventType.DISPLAY_SHOWN.ordinal(),
-				0, -1, -1, -1, -1);
+			VMNativeDisplayAccess.this._callback.shown(0, 1);
 		}
 		
 		/**
@@ -691,10 +550,9 @@ public class VMNativeDisplayAccess
 			// The framebuffer will need to be redone
 			VMNativeDisplayAccess.this.__checkFramebuffer();
 			
-			// Post event
-			VMNativeDisplayAccess.this.postEvent(
-				EventType.DISPLAY_SIZE_CHANGED.ordinal(),
-				0, __w, __h, -1, -1);
+			// Post
+			VMNativeDisplayAccess.this._callback.sizeChanged(0,
+				__w, __h);
 		}
 		
 		/**
@@ -705,7 +563,7 @@ public class VMNativeDisplayAccess
 		 * @throws NullPointerException On null arguments.
 		 * @since 2018/12/01
 		 */
-		final void __postKey(EventType __et, int __kc)
+		final void __postKey(int __et, int __kc)
 			throws NullPointerException
 		{
 			// Try to map to a game key if possible
@@ -761,8 +619,8 @@ public class VMNativeDisplayAccess
 			}
 			
 			// Post event
-			VMNativeDisplayAccess.this.postEvent(__et.ordinal(),
-				__kc, 0, ++this._keyindex, -1, -1);
+			VMNativeDisplayAccess.this._callback.keyEvent(0,
+				__et, __kc, 0, ++this._keyindex);
 		}
 	}
 }
