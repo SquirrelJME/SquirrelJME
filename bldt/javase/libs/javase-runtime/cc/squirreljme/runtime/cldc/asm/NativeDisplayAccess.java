@@ -462,7 +462,8 @@ public final class NativeDisplayAccess
 		
 		/** The image to be displayed. */
 		volatile BufferedImage _image =
-			ColorInfo.create(1, 1, new Color(0xFFFFFFFF));
+			ColorInfo.create(Math.max(320, this.getWidth()),
+				Math.max(240, this.getHeight()), new Color(0xFFFFFFFF));
 		
 		/** The last mouse button pressed. */
 		volatile int _lastbutton =
