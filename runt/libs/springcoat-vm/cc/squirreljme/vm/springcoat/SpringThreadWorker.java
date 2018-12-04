@@ -558,13 +558,40 @@ public final class SpringThreadWorker
 				new MethodDescriptor("(D)V"), __in);
 		
 		// As-is
-		else if (__in instanceof Integer || __in instanceof Long ||
-			__in instanceof Float || __in instanceof Double ||
-			__in instanceof SpringObject)
+		else if (__in instanceof SpringObject)
 			return __in;
 		
 		else
 			return this.asVMObject(__in);
+	}
+	
+	/**
+	 * As VM object, if it is an array it is wrapped otherwise if the object is
+	 * a primitive type it becomes boxed.
+	 *
+	 * @param __in The object to convert.
+	 * @return The converted object.
+	 * @since 2018/12/03
+	 */
+	public final Object asVMObjectBoxedOrWrappedArray(Object __in)
+	{
+		if (__in == null)
+			return SpringNullObject.NULL;
+		
+		// Array types
+		else if (__in instanceof boolean[] ||
+			__in instanceof byte[] ||
+			__in instanceof short[] ||
+			__in instanceof char[] ||
+			__in instanceof int[] ||
+			__in instanceof long[] ||
+			__in instanceof float[] ||
+			__in instanceof double[])
+			return this.asWrappedArray(__in);
+		
+		// As boxed type instead
+		else
+			return this.asVMObjectBoxed(__in);
 	}
 	
 	/**
@@ -1134,7 +1161,8 @@ public final class SpringThreadWorker
 							Object.class, sao.<Object>get(Object.class, i));
 					
 					// Forward
-					return this.asVMObjectBoxed(this.machine.nativedisplay.
+					return this.asVMObjectBoxedOrWrappedArray(
+						this.machine.nativedisplay.
 						accelGfxFunc((Integer)__args[0], (Integer)__args[1],
 						rawr));
 				}
