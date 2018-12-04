@@ -43,5 +43,15 @@ public final class EmptySequence
 	{
 		return -1;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/04
+	 */
+	@Override
+	public char[] toCharArray()
+	{
+		return new char[0];
+	}
 }
 

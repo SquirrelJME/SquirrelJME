@@ -70,5 +70,15 @@ public final class CharArraySequence
 	{
 		return this.length;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/04
+	 */
+	@Override
+	public char[] toCharArray()
+	{
+		return this.data.clone();
+	}
 }
 
