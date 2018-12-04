@@ -194,6 +194,10 @@ public class Display
 	public static final int TAB =
 		4;
 	
+	/** The number of down keys to store, for a single hand. */
+	private static final int _NUM_DOWNKEYS =
+		5;
+	
 	/** The displays which currently exist based on their index. */
 	private static final Map<Integer, Display> _DISPLAYS =
 		new HashMap<>();
@@ -210,8 +214,8 @@ public class Display
 	final int _nid;
 	
 	/** Set of keys which are down already, used to detect repeats on press. */
-	private final Set<Integer> _downkeys =
-		new HashSet<>();
+	private final int[] _downkeys =
+		new int[_NUM_DOWNKEYS];
 	
 	/** The displayable to show. */
 	private volatile Displayable _current;
@@ -1042,23 +1046,52 @@ public class Display
 		}
 		
 		// This is used to detect repeats from press events
-		Set<Integer> downkeys = this._downkeys;
-		Integer kci = Integer.valueOf(__kc);
+		int[] downkeys = this._downkeys;
 		
 		// Forward to the displayable
 		Displayable current = this._current;
 		if (current != null)
 		{
-			// Turn duplicate key press events into repeat events
-			if (__kt == NativeDisplayEventCallback.KEY_PRESSED)
+			// If the key code is not invalid, then detect if duplicate
+			// press events should be turned into repeats
+			if (__kc != 0)
 			{
-				if (downkeys.add(kci))
-					__kt = NativeDisplayEventCallback.KEY_REPEATED;
+				// Turn duplicate key press events into repeat events
+				if (__kt == NativeDisplayEventCallback.KEY_PRESSED)
+				{
+					// Check for key repeat
+					boolean isrepeat = false;
+					int lastslot = -1;
+					for (int i = 0; i < _NUM_DOWNKEYS; i++)
+						if (downkeys[i] == 0)
+							lastslot = i;
+						else if (downkeys[i] == __kc)
+						{
+							isrepeat = true;
+							break;
+						}
+					
+					// Change to repeat event
+					if (isrepeat)
+						__kt = NativeDisplayEventCallback.KEY_REPEATED;
+					
+					// Store key which is down for later
+					else if (lastslot >= 0)
+						downkeys[lastslot] = __kc;
+				}
+				
+				// Remove released keys
+				else if (__kt == NativeDisplayEventCallback.KEY_RELEASED)
+				{
+					// Remove from the down key set
+					for (int i = 0; i < _NUM_DOWNKEYS; i++)
+						if (__kc == downkeys[i])
+						{
+							downkeys[i] = 0;
+							break;
+						}
+				}
 			}
-			
-			// Remove released keys
-			else if (__kt == NativeDisplayEventCallback.KEY_RELEASED)
-				downkeys.remove(kci);
 			
 			// Forward
 			current.__doKeyAction(__kt, __kc, __ch, __time);
