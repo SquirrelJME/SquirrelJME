@@ -1044,9 +1044,13 @@ public class Text
 					// end of line
 					else
 					{
-						// Redo should not be triggered twice
+						// Redo should not be triggered twice, so just
+						// clear it and never bother again
 						if (redo)
-							throw new todo.OOPS();
+						{
+							redo = false;
+							continue;
+						}
 						
 						donextline = true;
 						redo = true;
