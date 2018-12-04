@@ -11,7 +11,6 @@
 package cc.squirreljme.runtime.cldc.asm;
 
 import cc.squirreljme.runtime.javase.lcdui.ColorInfo;
-import cc.squirreljme.runtime.lcdui.event.EventType;
 import cc.squirreljme.runtime.lcdui.event.NonStandardKey;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -56,10 +55,6 @@ import net.multiphasicapps.io.MIMEFileDecoder;
  */
 public final class NativeDisplayAccess
 {
-	/** The maximum number of integers for event data. */
-	public static final int EVENT_SIZE =
-		5;
-	
 	/** The number of parameters available. */
 	public static final int NUM_PARAMETERS =
 		8;
@@ -96,42 +91,14 @@ public final class NativeDisplayAccess
 	public static final int PARAMETER_VIRTYOFF =
 		7;
 	
-	/** The event queue size with the type. */
-	public static final int EVENT_SIZE_WITH_TYPE =
-		NativeDisplayAccess.EVENT_SIZE + 1;
-	
-	/** The number of events to store in the buffer. */
-	public static final int QUEUE_SIZE =
-		96;
-	
-	/** The limit of the event queue. */
-	public static final int QUEUE_LIMIT =
-		EVENT_SIZE_WITH_TYPE * QUEUE_SIZE;
-	
-	/** The event queue, a circular buffer. */
-	private static final short[] _eventqueue =
-		new short[EVENT_SIZE_WITH_TYPE * QUEUE_SIZE];
-	
-	/** The read position. */
-	private static int _eventread;
-	
-	/** The write position. */
-	private static int _eventwrite;
+	/** The callback for events. */
+	private static volatile NativeDisplayEventCallback _CALLBACK;
 	
 	/** The frame to display. */
 	private static volatile JFrame _frame;
 	
 	/** The panel used to display graphics on. */
 	private static volatile SwingPanel _panel;
-	
-	/** Doing a repaint? */
-	static volatile boolean _repaint;
-	
-	/** Repaint parameters. */
-	static volatile int _repaintx,
-		_repainty,
-		_repaintw,
-		_repainth;
 	
 	/** State count for this framebuffer. */
 	static volatile int _statecount;
@@ -199,6 +166,25 @@ public final class NativeDisplayAccess
 	}
 	
 	/**
+	 * Requests that the display should be repainted.
+	 *
+	 * @param __id The display ID.
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @since 2018/12/03
+	 */
+	public static final void displayRepaint(int __id,
+		int __x, int __y, int __w, int __h)
+	{
+		if (__id != 0)
+			return;
+		
+		NativeDisplayAccess.__panel().repaint(__x, __y, __w, __h);
+	}
+	
+	/**
 	 * Returns the object representing the framebuffer data.
 	 *
 	 * @param __id The display ID.
@@ -211,20 +197,6 @@ public final class NativeDisplayAccess
 			return null;
 		
 		return ColorInfo.getArray(NativeDisplayAccess.__panel()._image);
-	}
-	
-	/**
-	 * Specifies that the framebuffer has been painted.
-	 *
-	 * @param __id The display ID.
-	 * @since 2018/11/18
-	 */
-	public static final void framebufferPainted(int __id)
-	{
-		if (__id != 0)
-			return;
-		
-		NativeDisplayAccess.__panel().repaint();
 	}
 	
 	/**
@@ -314,150 +286,16 @@ public final class NativeDisplayAccess
 	}
 	
 	/**
-	 * Polls the next event, blocking until the next one occurs.
+	 * Registers the class to be called for when display events are to be
+	 * called.
 	 *
-	 * @param __ed Event data.
-	 * @return The next event, this will be the even type.
-	 * @since 2018/11/17
+	 * @param __cb The callback.
+	 * @since 2018/12/03
 	 */
-	public static final int pollEvent(short[] __ed)
+	public static final void registerEventCallback(
+		NativeDisplayEventCallback __cb)
 	{
-		if (__ed == null)
-			throw new NullPointerException("NARG");
-		
-		// Maximum number of data points to write
-		int edlen = Math.min(__ed.length, NativeDisplayAccess.EVENT_SIZE);
-		
-		// Constantly poll for events
-		short[] eventqueue = NativeDisplayAccess._eventqueue;
-		for (;;)
-			synchronized (eventqueue)
-			{
-				// Read positions
-				int eventread = NativeDisplayAccess._eventread,
-					eventwrite = NativeDisplayAccess._eventwrite;
-				
-				// This a circular buffer, so if the values do not match
-				// then that means an event was found.
-				if (eventread != eventwrite)
-				{
-					// Base pointer for reading events
-					int baseptr = eventread;
-					
-					// Read the type for later return
-					int type = eventqueue[baseptr++];
-					
-					// Copy event data
-					for (int o = 0; o < edlen;)
-						__ed[o++] = eventqueue[baseptr++];
-					
-					// Make sure the read position does not overflow the
-					// buffer
-					int nexter = eventread + EVENT_SIZE_WITH_TYPE;
-					if (nexter >= QUEUE_LIMIT)
-						nexter = 0;
-					NativeDisplayAccess._eventread = nexter;
-					
-					// If this a repaint type, use the single repaint
-					// parameters instead
-					if (type == EventType.DISPLAY_REPAINT.ordinal())
-					{
-						// Ignored the stored parameters and instead use
-						// the repaint ones
-						__ed[1] = (short)NativeDisplayAccess._repaintx;
-						__ed[2] = (short)NativeDisplayAccess._repainty;
-						__ed[3] = (short)NativeDisplayAccess._repaintw;
-						__ed[4] = (short)NativeDisplayAccess._repainth;
-						NativeDisplayAccess._repaint = false;
-					}
-					
-					// And the type of the event
-					return type;
-				}
-				
-				// Wait for an event to appear
-				try
-				{
-					eventqueue.wait();
-				}
-				
-				// Just treat like an event might have happened
-				catch (InterruptedException e)
-				{
-				}
-			}
-	}
-	
-	/**
-	 * Posts the specified event to the end of the event queue.
-	 *
-	 * All fields only have the granularity of {@code short}.
-	 *
-	 * @param __type The event type to push.
-	 * @param __d0 Datapoint 1.
-	 * @param __d1 Datapoint 2.
-	 * @param __d2 Datapoint 3.
-	 * @param __d3 Datapoint 4.
-	 * @param __d4 Datapoint 5.
-	 * @since 2018/11/18
-	 */
-	public static final void postEvent(int __type,
-		int __d0, int __d1, int __d2, int __d3, int __d4)
-	{
-		// Lock on the queue
-		short[] eventqueue = NativeDisplayAccess._eventqueue;
-		synchronized (eventqueue)
-		{
-			// Prevent repaint flooding
-			if (__type == EventType.DISPLAY_REPAINT.ordinal())
-			{
-				// Doing a repaint
-				boolean repaint = NativeDisplayAccess._repaint;
-				if (!repaint)
-				{
-					NativeDisplayAccess._repaintx = __d1;
-					NativeDisplayAccess._repainty = __d2;
-					NativeDisplayAccess._repaintw = __d3;
-					NativeDisplayAccess._repainth = __d4;
-					NativeDisplayAccess._repaint = true;
-				}
-				
-				// Otherwise update parameters
-				else
-				{
-					NativeDisplayAccess._repaintx =
-						Math.min(NativeDisplayAccess._repaintx, __d1);
-					NativeDisplayAccess._repainty =
-						Math.min(NativeDisplayAccess._repainty, __d2);
-					NativeDisplayAccess._repaintw =
-						Math.max(NativeDisplayAccess._repaintw, __d3);
-					NativeDisplayAccess._repainth =
-						Math.max(NativeDisplayAccess._repainth, __d4);
-					
-					// Do not write an event, since there is a repaint in
-					// the queue
-					return;
-				}
-			}
-			
-			int eventwrite = NativeDisplayAccess._eventwrite;
-			
-			// Overwrite all the data
-			eventqueue[eventwrite++] = (short)__type;
-			eventqueue[eventwrite++] = (short)__d0;
-			eventqueue[eventwrite++] = (short)__d1;
-			eventqueue[eventwrite++] = (short)__d2;
-			eventqueue[eventwrite++] = (short)__d3;
-			eventqueue[eventwrite++] = (short)__d4;
-			
-			// Go back to the start?
-			if (eventwrite >= QUEUE_LIMIT)
-				eventwrite = 0;
-			NativeDisplayAccess._eventwrite = eventwrite;
-			
-			// Notify that an event was put in the queue
-			eventqueue.notify();
-		}
+		NativeDisplayAccess._CALLBACK = __cb;
 	}
 	
 	/**
@@ -646,7 +484,7 @@ public final class NativeDisplayAccess
 		@Override
 		public void actionPerformed(ActionEvent __e)
 		{
-			todo.DEBUG.note("Performed!");
+			todo.DEBUG.note("Performed resize!");
 			
 			BufferedImage image = this._image;
 			int oldw = image.getWidth(),
@@ -663,9 +501,7 @@ public final class NativeDisplayAccess
 			}
 			
 			// Indicate that the size changed
-			NativeDisplayAccess.postEvent(
-				EventType.DISPLAY_SIZE_CHANGED.ordinal(),
-				0, xw, xh, -1, -1);
+			NativeDisplayAccess._CALLBACK.sizeChanged(0, xw, xh);
 		}
 		
 		/**
@@ -675,9 +511,7 @@ public final class NativeDisplayAccess
 		@Override
 		public void componentHidden(ComponentEvent __e)
 		{
-			NativeDisplayAccess.postEvent(
-				EventType.DISPLAY_HIDDEN.ordinal(),
-				0, -1, -1, -1, -1);
+			NativeDisplayAccess._CALLBACK.shown(0, 0);
 		}
 		
 		/**
@@ -696,9 +530,14 @@ public final class NativeDisplayAccess
 		@Override
 		public void componentResized(ComponentEvent __e)
 		{
+			// Call the resize code directly
+			if (true)
+				this.actionPerformed(null);
+				
 			// Restart the resize timer so that resizes are not flooding
 			// everything
-			this._resizetimer.restart();
+			else
+				this._resizetimer.restart();
 		}
 		
 		/**
@@ -708,9 +547,7 @@ public final class NativeDisplayAccess
 		@Override
 		public void componentShown(ComponentEvent __e)
 		{
-			NativeDisplayAccess.postEvent(
-				EventType.DISPLAY_SHOWN.ordinal(),
-				0, -1, -1, -1, -1);
+			NativeDisplayAccess._CALLBACK.shown(0, 1);
 		}
 		
 		/**
@@ -720,10 +557,10 @@ public final class NativeDisplayAccess
 		@Override
 		public void keyPressed(KeyEvent __e)
 		{
-			NativeDisplayAccess.postEvent(
-				EventType.KEY_PRESSED.ordinal(),
+			NativeDisplayAccess._CALLBACK.keyEvent(0,
+				NativeDisplayEventCallback.KEY_PRESSED,
 				__KeyMap__.__map(__e), __KeyMap__.__char(__e),
-				(int)__e.getWhen(), -1, -1);
+				(int)__e.getWhen());
 		}
 		
 		/**
@@ -733,10 +570,10 @@ public final class NativeDisplayAccess
 		@Override
 		public void keyReleased(KeyEvent __e)
 		{
-			NativeDisplayAccess.postEvent(
-				EventType.KEY_RELEASED.ordinal(),
+			NativeDisplayAccess._CALLBACK.keyEvent(0,
+				NativeDisplayEventCallback.KEY_RELEASED,
 				__KeyMap__.__map(__e), __KeyMap__.__char(__e),
-				(int)__e.getWhen(), -1, -1);
+				(int)__e.getWhen());
 		}
 		
 		/**
@@ -746,10 +583,10 @@ public final class NativeDisplayAccess
 		@Override
 		public void keyTyped(KeyEvent __e)
 		{
-			NativeDisplayAccess.postEvent(
-				EventType.KEY_PRESSED.ordinal(),
+			NativeDisplayAccess._CALLBACK.keyEvent(0,
+				NativeDisplayEventCallback.KEY_PRESSED,
 				__KeyMap__.__map(__e), __KeyMap__.__char(__e),
-				(int)__e.getWhen(), -1, -1);
+				(int)__e.getWhen());
 		}
 		
 		/**
@@ -768,7 +605,8 @@ public final class NativeDisplayAccess
 		@Override
 		public void mouseDragged(MouseEvent __e)
 		{
-			this.__mouseEvent(__e, EventType.POINTER_DRAGGED);
+			this.__mouseEvent(__e,
+				NativeDisplayEventCallback.POINTER_DRAGGED);
 		}
 		
 		/**
@@ -805,7 +643,8 @@ public final class NativeDisplayAccess
 		@Override
 		public void mousePressed(MouseEvent __e)
 		{
-			this.__mouseEvent(__e, EventType.POINTER_PRESSED);
+			this.__mouseEvent(__e,
+				NativeDisplayEventCallback.POINTER_PRESSED);
 		}
 		
 		/**
@@ -815,39 +654,8 @@ public final class NativeDisplayAccess
 		@Override
 		public void mouseReleased(MouseEvent __e)
 		{
-			this.__mouseEvent(__e, EventType.POINTER_RELEASED);
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2018/11/18
-		 */
-		@Override
-		public void repaint(Rectangle __r)
-		{
-			// Post repaint event
-			/*NativeDisplayAccess.postEvent(
-				EventType.DISPLAY_REPAINT.ordinal(),
-				0, __r.x, __r.y, __r.width, __r.height);*/
-			
-			// Forward
-			super.repaint(__r);
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2018/11/18
-		 */
-		@Override
-		public void repaint(long __tm, int __x, int __y, int __w, int __h)
-		{
-			// Post repaint event
-			/*NativeDisplayAccess.postEvent(
-				EventType.DISPLAY_REPAINT.ordinal(),
-				0, __x, __y, __w, __h);*/
-			
-			// Forward
-			super.repaint(__tm, __x, __y, __w, __h);
+			this.__mouseEvent(__e,
+				NativeDisplayEventCallback.POINTER_RELEASED);
 		}
 		
 		/**
@@ -870,6 +678,13 @@ public final class NativeDisplayAccess
 			if (xw != oldw || xh != oldh)
 				this._image = (image = ColorInfo.create(xw, xh,
 					new Color(0xFFFFFFFF)));
+			
+			// Have the display client draw whatever is on this display, but
+			// only in the region we are drawing!
+			Rectangle rect = __g.getClipBounds();
+			NativeDisplayAccess._CALLBACK.paintDisplay(0,
+				rect.x, rect.y,
+				rect.width, rect.height);
 			
 			// Draw the backed buffered image
 			__g.drawImage(image, 0, 0, xw, xh,
@@ -904,9 +719,7 @@ public final class NativeDisplayAccess
 			todo.DEBUG.note("Window is closing!");
 			
 			// Post close event
-			NativeDisplayAccess.postEvent(
-				EventType.EXIT_REQUEST.ordinal(),
-				0, -1, -1, -1, -1);
+			NativeDisplayAccess._CALLBACK.exitRequest(0);
 		}
 		
 		/**
@@ -952,7 +765,7 @@ public final class NativeDisplayAccess
 		 * @param __t The event type.
 		 * @since 2018/12/02
 		 */
-		private final void __mouseEvent(MouseEvent __e, EventType __t)
+		private final void __mouseEvent(MouseEvent __e, int __t)
 		{
 			int mybutton = __e.getButton(),
 				lastbutton = this._lastbutton;
@@ -960,20 +773,20 @@ public final class NativeDisplayAccess
 			// Depends on the event
 			switch (__t)
 			{
-				case POINTER_DRAGGED:
+				case NativeDisplayEventCallback.POINTER_DRAGGED:
 					// For some reason in Swing, the mouse being dragged is
 					// always button zero, so just send drag event no matter
 					// what without any button filtering
 					break;
 				
-				case POINTER_PRESSED:
+				case NativeDisplayEventCallback.POINTER_PRESSED:
 					if (lastbutton < 0 || mybutton == lastbutton)
 						this._lastbutton = mybutton;
 					else
 						return;
 					break;
 				
-				case POINTER_RELEASED:
+				case NativeDisplayEventCallback.POINTER_RELEASED:
 					if (mybutton == lastbutton)
 						this._lastbutton = Integer.MIN_VALUE;
 					else
@@ -982,8 +795,8 @@ public final class NativeDisplayAccess
 			}
 			
 			// Post event
-			NativeDisplayAccess.postEvent(__t.ordinal(),
-				__e.getX(), __e.getY(), (int)__e.getWhen(), -1, -1);
+			NativeDisplayAccess._CALLBACK.pointerEvent(0,
+				__t, __e.getX(), __e.getY(), (int)__e.getWhen());
 		}
 	}
 }

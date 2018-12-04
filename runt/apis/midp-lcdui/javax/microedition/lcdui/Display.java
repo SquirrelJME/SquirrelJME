@@ -1114,9 +1114,6 @@ public class Display
 		{
 			t.printStackTrace();
 		}
-		
-		// Was repainted!
-		NativeDisplayAccess.framebufferPainted(this._nid);
 	}
 	
 	/**
