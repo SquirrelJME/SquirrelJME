@@ -495,9 +495,9 @@ public final class NativeDisplayAccess
 			// Recreate the image if the size has changed
 			if (xw != oldw || xh != oldh)
 			{
-				NativeDisplayAccess._statecount++;
 				this._image = (image = ColorInfo.create(xw, xh,
 					new Color(0xFFFFFFFF)));
+				NativeDisplayAccess._statecount++;
 			}
 			
 			// Indicate that the size changed
@@ -531,7 +531,7 @@ public final class NativeDisplayAccess
 		public void componentResized(ComponentEvent __e)
 		{
 			// Call the resize code directly
-			if (true)
+			if (false)
 				this.actionPerformed(null);
 				
 			// Restart the resize timer so that resizes are not flooding
@@ -676,8 +676,11 @@ public final class NativeDisplayAccess
 		
 			// Recreate the image if the size has changed
 			if (xw != oldw || xh != oldh)
+			{
 				this._image = (image = ColorInfo.create(xw, xh,
 					new Color(0xFFFFFFFF)));
+				NativeDisplayAccess._statecount++;
+			}
 			
 			// Have the display client draw whatever is on this display, but
 			// only in the region we are drawing!

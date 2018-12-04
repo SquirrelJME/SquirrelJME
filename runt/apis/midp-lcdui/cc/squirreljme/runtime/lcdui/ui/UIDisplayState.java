@@ -68,13 +68,14 @@ public final class UIDisplayState
 		// parameters have changed and it must be updated
 		int nid = this.nativeid,
 			statecount = this._statecount,
-			newcount = statecount;
-		if (statecount != (newcount =
-			NativeDisplayAccess.framebufferStateCount(nid)))
+			newcount = NativeDisplayAccess.framebufferStateCount(nid);
+		if (statecount != newcount)
 		{
 			this.framebuffer = (rv = UIFramebuffer.loadNativeFramebuffer(nid));
 			this._statecount = newcount;
 		}
+		
+		todo.DEBUG.note("State old=%d new=%d", statecount, newcount);
 		
 		// Use it
 		return rv;
