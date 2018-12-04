@@ -11,8 +11,8 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
+import cc.squirreljme.runtime.cldc.asm.NativeDisplayEventCallback;
 import cc.squirreljme.runtime.lcdui.common.CommonColors;
-import cc.squirreljme.runtime.lcdui.event.EventType;
 import cc.squirreljme.runtime.lcdui.event.KeyNames;
 import cc.squirreljme.runtime.lcdui.event.NonStandardKey;
 import cc.squirreljme.runtime.lcdui.gfx.BasicGraphics;
@@ -465,8 +465,7 @@ public abstract class Canvas
 		// Tell the display to repaint itself
 		Display display = this.getCurrentDisplay();
 		if (display != null)
-			NativeDisplayAccess.postEvent(
-				EventType.DISPLAY_REPAINT.ordinal(),
+			NativeDisplayAccess.displayRepaint(
 				display._nid, __x, __y, __w, __h);
 	}
 	
@@ -594,15 +593,15 @@ public abstract class Canvas
 		// Depends on the action
 		switch (__type)
 		{
-			case _KEY_PRESSED:
+			case NativeDisplayEventCallback.KEY_PRESSED:
 				this.keyPressed(__kc);
 				break;
 			
-			case _KEY_REPEATED:
+			case NativeDisplayEventCallback.KEY_REPEATED:
 				this.keyRepeated(__kc);
 				break;
 			
-			case _KEY_RELEASED:
+			case NativeDisplayEventCallback.KEY_RELEASED:
 				this.keyReleased(__kc);
 				break;
 			
@@ -621,15 +620,15 @@ public abstract class Canvas
 	{
 		switch (__type)
 		{
-			case _POINTER_DRAGGED:
+			case NativeDisplayEventCallback.POINTER_DRAGGED:
 				this.pointerDragged(__x, __y);
 				break;
 			
-			case _POINTER_PRESSED:
+			case NativeDisplayEventCallback.POINTER_PRESSED:
 				this.pointerPressed(__x, __y);
 				break;
 			
-			case _POINTER_RELEASED:
+			case NativeDisplayEventCallback.POINTER_RELEASED:
 				this.pointerReleased(__x, __y);
 				break;
 			

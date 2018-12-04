@@ -20,30 +20,6 @@ import cc.squirreljme.runtime.lcdui.SerializedEvent;
 abstract class __Widget__
 	extends __Drawable__
 {
-	/** Key was pressed. */
-	static final int _KEY_PRESSED =
-		0;
-	
-	/** Key was repeated. */
-	static final int _KEY_REPEATED =
-		1;
-	
-	/** Key released. */
-	static final int _KEY_RELEASED =
-		2;
-	
-	/** Pointer dragged. */
-	static final int _POINTER_DRAGGED =
-		0;
-	
-	/** Pointer pressed. */
-	static final int _POINTER_PRESSED =
-		1;
-	
-	/** Pointer released. */
-	static final int _POINTER_RELEASED =
-		2;
-	
 	/** The parent widget being used. */
 	volatile __Widget__ _parent;
 	

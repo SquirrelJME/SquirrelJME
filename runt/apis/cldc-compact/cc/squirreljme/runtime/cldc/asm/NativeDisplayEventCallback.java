@@ -69,13 +69,14 @@ public interface NativeDisplayEventCallback
 	/**
 	 * Key action has been performed.
 	 *
+	 * @param __d The display ID.
 	 * @param __ty The type of key event.
 	 * @param __kc The key code.
 	 * @param __ch The key character, {@code -1} is not valid.
 	 * @param __time Timecode.
 	 * @since 2018/12/03
 	 */
-	public abstract void keyEvent(int __ty, int __kc, int __ch,
+	public abstract void keyEvent(int __d, int __ty, int __kc, int __ch,
 		int __time);
 	
 	/**
@@ -94,13 +95,14 @@ public interface NativeDisplayEventCallback
 	/**
 	 * Pointer event has occured.
 	 *
+	 * @param __d The display to have the end.
 	 * @param __ty The type of pointer event.
 	 * @param __x The X coordinate.
 	 * @param __y The Y coordinate.
 	 * @param __time Timecode.
 	 * @since 2018/12/03
 	 */
-	public abstract void pointerEvent(int __ty, int __x, int __y,
+	public abstract void pointerEvent(int __d, int __ty, int __x, int __y,
 		int __time);
 	
 	/**
