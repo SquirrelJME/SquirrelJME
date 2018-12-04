@@ -338,7 +338,7 @@ public class VMNativeDisplayAccess
 			// occurred
 			for (int i = 1; i <= 24; i++)
 				canvas.addCommand(new Command("F" + i, Command.SCREEN,
-					i));
+					i - 1));
 			
 			// Add exit command
 			canvas.addCommand(new Command("Exit", Command.EXIT,
