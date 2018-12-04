@@ -129,7 +129,8 @@ public final class IntegerRGB888ArrayGraphics
 			dx = __x2 - __x1;
 		
 		int dy = __y2 - __y1;
-		if (dy < 0)
+		boolean neg;
+		if ((neg = dy < 0))
 			dy = -dy;	
 		
 		int sy = (__y1 < __y2 ? 1 : -1),
@@ -140,11 +141,15 @@ public final class IntegerRGB888ArrayGraphics
 		
 		for (;;)
 		{
-			data[dest] = color;
-			
-			// End
-			if (((__x1 ^ __x2) | (__y1 ^ __y2)) == 0)
+			// End, it ends when the X coordinate exceeds the end because there
+			// is nothing to draw again
+			// Y ends after it reaches the bound
+			//if (((__x1 ^ __x2) | (__y1 ^ __y2)) == 0)
+			if (__x1 >= __x2 &&
+				((neg && __y1 <= __y2) || (!neg && __y1 >= __y2)))
 				break;
+			
+			data[dest] = color;
 			
 			// Increase X
 			int brr = err;
