@@ -18,6 +18,7 @@ package cc.squirreljme.vm.springcoat;
  */
 public class SpringArrayStoreException
 	extends SpringException
+	implements SpringConvertableThrowable
 {
 	/**
 	 * Initialize the exception with no message or cause.
@@ -60,6 +61,16 @@ public class SpringArrayStoreException
 	public SpringArrayStoreException(Throwable __c)
 	{
 		super(__c);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/04
+	 */
+	@Override
+	public String targetClass()
+	{
+		return "java/lang/ArrayStoreException";
 	}
 }
 

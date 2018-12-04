@@ -389,6 +389,17 @@ public final class SpringThreadWorker
 			return rv;
 		}
 		
+		// Convertable exception
+		else if (__in instanceof SpringConvertableThrowable)
+		{
+			SpringConvertableThrowable e = (SpringConvertableThrowable)__in;
+			
+			// Initialize new instance with this type, use the input message
+			return this.newInstance(new ClassName(e.targetClass()),
+				new MethodDescriptor("(Ljava/lang/String;)V"),
+				this.asVMObject(e.getMessage()));
+		}
+		
 		// String object
 		else if (__in instanceof String)
 		{
@@ -1774,6 +1785,9 @@ public final class SpringThreadWorker
 	{
 		if (__o == null)
 			throw new NullPointerException("NARG");
+			
+		// Are we exiting in the middle of an exception throwing?
+		this.machine.exitCheck();
 		
 		// Need the current frame and its byte code
 		SpringThread thread = this.thread;
@@ -3628,34 +3642,50 @@ public final class SpringThreadWorker
 				(e instanceof SpringMachineExitException))
 				throw e;
 			
-			// Kill the VM
-			this.machine.exitNoException(127);
+			// Is this a convertable exception on the VM?
+			if (e instanceof SpringConvertableThrowable)
+			{
+				// PC converts?
+				nextpc = this.__handleException(
+					(SpringObject)this.asVMObject(e));
+				
+				// Do not set PC address?
+				if (nextpc < 0)
+					return;
+			}
 			
-			// Print the stack trace
-			thread.printStackTrace(System.err);
-			
-			// Where is this located?
-			SpringMethod inmethod = frame.method();
-			ClassName inclassname = inmethod.inClass();
-			SpringClass inclass = machine.classLoader().loadClass(
-				inclassname);
-			
-			// Location information if debugging is used, this makes it easier
-			// to see exactly where failed code happened
-			String onfile = inclass.file().sourceFile();
-			int online = code.lineOfAddress(pc);
-			
-			// {@squirreljme.error BK2c An exception was thrown in the virtual
-			// machine while executing the specified location. (The class;
-			// The method; The program counter; The file in source code,
-			// null means it is unknown; The line in source code, negative
-			// values are unknown; The instruction)}
-			e.addSuppressed(new SpringVirtualMachineException(
-				String.format("BK2c %s %s %d %s %d %s", inclassname,
-				inmethod.nameAndType(), pc, onfile, online, inst)));
-			
-			// {@squirreljme.error BK2d Fatal VM exception.}
-			throw new SpringFatalException("BK2d", e);
+			// Not a wrapped exception, kill the VM
+			else
+			{
+				// Kill the VM
+				this.machine.exitNoException(127);
+				
+				// Print the stack trace
+				thread.printStackTrace(System.err);
+				
+				// Where is this located?
+				SpringMethod inmethod = frame.method();
+				ClassName inclassname = inmethod.inClass();
+				SpringClass inclass = machine.classLoader().loadClass(
+					inclassname);
+				
+				// Location information if debugging is used, this makes it
+				// easier to see exactly where failed code happened
+				String onfile = inclass.file().sourceFile();
+				int online = code.lineOfAddress(pc);
+				
+				// {@squirreljme.error BK2c An exception was thrown in the
+				// virtual machine while executing the specified location.
+				// (The class; The method; The program counter; The file in
+				// source code, null means it is unknown; The line in source
+				// code, negative values are unknown; The instruction)}
+				e.addSuppressed(new SpringVirtualMachineException(
+					String.format("BK2c %s %s %d %s %d %s", inclassname,
+					inmethod.nameAndType(), pc, onfile, online, inst)));
+				
+				// {@squirreljme.error BK2d Fatal VM exception.}
+				throw new SpringFatalException("BK2d", e);
+			}
 		}
 		
 		// Set implicit next PC address, if it has not been set or the next
