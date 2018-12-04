@@ -33,7 +33,14 @@ final class __EventCallback__
 	@Override
 	public final void command(int __d, int __c)
 	{
-		Display.__mapDisplay(__d).__doCommandAction(__c);
+		try
+		{
+			Display.__mapDisplay(__d).__doCommandAction(__c);
+		}
+		catch (Exception t)
+		{
+			t.printStackTrace();
+		}
 	}
 	
 	/**
@@ -43,7 +50,14 @@ final class __EventCallback__
 	@Override
 	public final void exitRequest(int __d)
 	{
-		Display.__mapDisplay(__d).__doExitRequest();
+		try
+		{
+			Display.__mapDisplay(__d).__doExitRequest();
+		}
+		catch (Exception t)
+		{
+			t.printStackTrace();
+		}
 	}
 	
 	/**
@@ -54,8 +68,15 @@ final class __EventCallback__
 	public final void keyEvent(int __d, int __ty, int __kc, int __ch,
 		int __time)
 	{
-		Display.__mapDisplay(__d).__doKeyAction(__ty, __kc,
-			(__ch < 0 ? 0 : (char)__ch), __time);
+		try
+		{
+			Display.__mapDisplay(__d).__doKeyAction(__ty, __kc,
+				(__ch < 0 ? 0 : (char)__ch), __time);
+		}
+		catch (Exception t)
+		{
+			t.printStackTrace();
+		}
 	}
 	
 	/**
@@ -66,7 +87,14 @@ final class __EventCallback__
 	public final void paintDisplay(int __d, int __x, int __y,
 		int __w, int __h)
 	{
-		Display.__mapDisplay(__d).__doRepaint(__x, __y, __w, __h);
+		try
+		{
+			Display.__mapDisplay(__d).__doRepaint(__x, __y, __w, __h);
+		}
+		catch (Exception t)
+		{
+			t.printStackTrace();
+		}
 	}
 	
 	/**
@@ -77,7 +105,15 @@ final class __EventCallback__
 	public final void pointerEvent(int __d, int __ty, int __x, int __y,
 		int __time)
 	{
-		Display.__mapDisplay(__d).__doPointerAction(__ty, __x, __y, __time);
+		try
+		{
+			Display.__mapDisplay(__d).
+				__doPointerAction(__ty, __x, __y, __time);
+		}
+		catch (Exception t)
+		{
+			t.printStackTrace();
+		}
 	}
 	
 	/**
@@ -87,7 +123,14 @@ final class __EventCallback__
 	@Override
 	public final void shown(int __d, int __shown)
 	{
-		Display.__mapDisplay(__d).__doDisplayShown(__shown != 0);
+		try
+		{
+			Display.__mapDisplay(__d).__doDisplayShown(__shown != 0);
+		}
+		catch (Exception t)
+		{
+			t.printStackTrace();
+		}
 	}
 	
 	/**
@@ -97,7 +140,14 @@ final class __EventCallback__
 	@Override
 	public final void sizeChanged(int __d, int __w, int __h)
 	{
-		Display.__mapDisplay(__d).__doDisplaySizeChanged(__w, __h);
+		try
+		{
+			Display.__mapDisplay(__d).__doDisplaySizeChanged(__w, __h);
+		}
+		catch (Exception t)
+		{
+			t.printStackTrace();
+		}
 	}
 }
 
