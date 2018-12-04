@@ -1,0 +1,15 @@
+# 2018/12/03
+
+## 19:29
+
+Having a callback to perform native display events actually will be much
+easier to implement and I can do call serially kinds of things as well.
+
+## 19:54
+
+And yay! My refactor works at least with the Swing code! So that is nice.
+
+## 19:56
+
+Any exceptions which occur in the event handlers, destroys the spring thread
+and then nothing ever runs again.
