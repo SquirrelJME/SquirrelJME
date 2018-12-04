@@ -20,10 +20,6 @@ package cc.squirreljme.runtime.cldc.asm;
  */
 public final class NativeDisplayAccess
 {
-	/** The maximum number of integers for event data. */
-	public static final int EVENT_SIZE =
-		5;
-	
 	/** The number of parameters available. */
 	public static final int NUM_PARAMETERS =
 		8;
@@ -109,7 +105,7 @@ public final class NativeDisplayAccess
 	 * @param __h The height.
 	 * @since 2018/12/03
 	 */
-	public static final native int displayRepaint(int __id,
+	public static final native void displayRepaint(int __id,
 		int __x, int __y, int __w, int __h);
 	
 	/**
@@ -120,14 +116,6 @@ public final class NativeDisplayAccess
 	 * @since 2018/11/18
 	 */
 	public static final native Object framebufferObject(int __id);
-	
-	/**
-	 * Specifies that the framebuffer has been painted.
-	 *
-	 * @param __id The display ID.
-	 * @since 2018/11/18
-	 */
-	public static final native void framebufferPainted(int __id);
 	
 	/**
 	 * Returns the palette of the framebuffer.
