@@ -17,6 +17,7 @@ package cc.squirreljme.vm.springcoat;
  */
 public class SpringIllegalMonitorStateException
 	extends SpringException
+	implements SpringConvertableThrowable
 {
 	/**
 	 * Initialize the exception with no message or cause.
@@ -59,6 +60,16 @@ public class SpringIllegalMonitorStateException
 	public SpringIllegalMonitorStateException(Throwable __c)
 	{
 		super(__c);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/04
+	 */
+	@Override
+	public String targetClass()
+	{
+		return "java/lang/IllegalMonitorStateException";
 	}
 }
 
