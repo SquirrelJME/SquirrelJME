@@ -541,18 +541,34 @@ public abstract class AbstractArrayGraphics
 			__y2 = boopy;
 		}
 		
+		// The resulting line should never be out of bounds
+		if (__x1 < clipsx || __x2 < clipsx || __y1 < clipsy || __y2 < clipsy ||
+			__x1 > clipex || __x2 > clipex || __y1 > clipey || __y2 > clipey)
+			return;
+		
 		// Forward depending on blending and/or dots
-		boolean dotted = (this.strokestyle == DOTTED);
-		if (this.doblending)
-			if (dotted)
-				this.internalDrawLineBlendedDotted(__x1, __y1, __x2, __y2);
+		try
+		{
+			boolean dotted = (this.strokestyle == DOTTED);
+			if (this.doblending)
+				if (dotted)
+					this.internalDrawLineBlendedDotted(__x1, __y1, __x2, __y2);
+				else
+					this.internalDrawLineBlended(__x1, __y1, __x2, __y2);
 			else
-				this.internalDrawLineBlended(__x1, __y1, __x2, __y2);
-		else
-			if (dotted)
-				this.internalDrawLineDotted(__x1, __y1, __x2, __y2);
-			else
-				this.internalDrawLine(__x1, __y1, __x2, __y2);
+				if (dotted)
+					this.internalDrawLineDotted(__x1, __y1, __x2, __y2);
+				else
+					this.internalDrawLine(__x1, __y1, __x2, __y2);
+		}
+		
+		// Exception happened when drawing a line
+		catch (IndexOutOfBoundsException e)
+		{
+			todo.DEBUG.note("Line (%d, %d) -> (%d, %d)", __x1, __y1,
+				__x2, __y2);
+			e.printStackTrace();
+		}
 	}
 	
 	/**
