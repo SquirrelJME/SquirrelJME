@@ -252,9 +252,15 @@ public class Command
 		return this._longlabel;
 	}
 	
+	/**
+	 * Returns the priority of the command.
+	 *
+	 * @return The command priority.
+	 * @since 2018/12/03
+	 */
 	public int getPriority()
 	{
-		throw new todo.TODO();
+		return this._priority;
 	}
 	
 	/**

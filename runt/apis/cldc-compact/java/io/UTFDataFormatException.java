@@ -10,19 +10,32 @@
 
 package java.io;
 
+/**
+ * This is thrown when the format of a UTF string is not correct.
+ *
+ * @since 2018/12/03
+ */
 public class UTFDataFormatException
 	extends IOException
 {
+	/**
+	 * Initializes the exception with no message or cause.
+	 *
+	 * @since 2018/12/03
+	 */
 	public UTFDataFormatException()
 	{
-		super();
-		throw new todo.TODO();
 	}
 	
-	public UTFDataFormatException(String __a)
+	/**
+	 * Initializes the exception with the given cause.
+	 *
+	 * @param __m The message to use.
+	 * @since 2018/12/03
+	 */
+	public UTFDataFormatException(String __m)
 	{
-		super();
-		throw new todo.TODO();
+		super(__m);
 	}
 }
 
