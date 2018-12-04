@@ -807,11 +807,21 @@ public final class SpringThreadWorker
 		if (__cl == null || __nat == null || __args == null)
 			throw new NullPointerException("NARG");
 		
-		// Lookup class
-		SpringClass cl = this.resolveClass(__cl);
+		// Lookup class and method for the static method
+		SpringClass cl;
+		SpringMethod method;
+		if (__static)
+		{
+			cl = this.resolveClass(__cl);
+			method = cl.lookupMethod(__static, __nat);
+		}
 		
-		// Lookup method
-		SpringMethod method = cl.lookupMethod(__static, __nat);
+		// Call it based on the object instead
+		else
+		{
+			cl = ((SpringObject)__args[0]).type();
+			method = cl.lookupMethod(false, __nat);
+		} 
 		
 		// Add blank frame for protection, this is used to hold the return
 		// value on the stack
@@ -1135,6 +1145,17 @@ public final class SpringThreadWorker
 				return this.machine.nativedisplay.capabilities(
 					(Integer)__args[0]);
 					
+				// Repaint display
+			case "cc/squirreljme/runtime/cldc/asm/NativeDisplayAccess::" +
+				"displayRepaint:(IIIII)V":
+				this.machine.nativedisplay.displayRepaint(
+					(Integer)__args[0],
+					(Integer)__args[1],
+					(Integer)__args[2],
+					(Integer)__args[3],
+					(Integer)__args[4]);
+				return null;
+					
 				// The framebuffer was painted to
 			case "cc/squirreljme/runtime/cldc/asm/NativeDisplayAccess::" +
 				"framebufferPainted:(I)V":
@@ -1177,39 +1198,13 @@ public final class SpringThreadWorker
 				"numDisplays:()I":
 				return this.machine.nativedisplay.numDisplays();
 				
-				// Poll for the next event
+				// Register event callback
 			case "cc/squirreljme/runtime/cldc/asm/NativeDisplayAccess::" +
-				"pollEvent:([S)I":
-				{
-					SpringArrayObjectShort data =
-						(SpringArrayObjectShort)__args[0];
-					
-					// Pass a copy of the original data
-					int n = data.length();
-					short[] wrap = new short[n];
-					for (int i = 0; i < n; i++)
-						wrap[i] = ((Integer)data.get(Integer.class, i)).
-							shortValue();
-					
-					// Perform the call
-					int rv = this.machine.nativedisplay.pollEvent(wrap);
-					
-					// Convert the data back
-					for (int i = 0; i < n; i++)
-						data.set(i, (int)wrap[i]);
-					return rv;
-				}
-				
-				// Post event
-			case "cc/squirreljme/runtime/cldc/asm/NativeDisplayAccess::" +
-				"postEvent:(IIIIII)V":
-				this.machine.nativedisplay.postEvent(
-					((Integer)__args[0]).intValue(),
-					((Integer)__args[1]).intValue(),
-					((Integer)__args[2]).intValue(),
-					((Integer)__args[3]).intValue(),
-					((Integer)__args[4]).intValue(),
-					((Integer)__args[5]).intValue());
+				"registerEventCallback:(Lcc/squirreljme/runtime/cldc/" +
+				"asm/NativeDisplayEventCallback;)V":
+				this.machine.nativedisplay.registerEventCallback(
+					new SpringDisplayEventCallback(this.machine,
+					(SpringObject)__args[0]));
 				return null;
 				
 				// Sets the display title
