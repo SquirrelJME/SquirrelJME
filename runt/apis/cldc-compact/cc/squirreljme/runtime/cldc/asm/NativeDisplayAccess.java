@@ -164,29 +164,14 @@ public final class NativeDisplayAccess
 	public static final native int numDisplays();
 	
 	/**
-	 * Polls the next event, blocking until the next one occurs.
+	 * Registers the class to be called for when display events are to be
+	 * called.
 	 *
-	 * @param __ed Event data.
-	 * @return The next event, this will be the even type.
-	 * @since 2018/11/17
+	 * @param __cb The callback.
+	 * @since 2018/12/03
 	 */
-	public static final native int pollEvent(short[] __ed);
-	
-	/**
-	 * Posts the specified event to the end of the event queue.
-	 *
-	 * All fields only have the granularity of {@code short}.
-	 *
-	 * @param __type The event type to push.
-	 * @param __d0 Datapoint 1.
-	 * @param __d1 Datapoint 2.
-	 * @param __d2 Datapoint 3.
-	 * @param __d3 Datapoint 4.
-	 * @param __d4 Datapoint 5.
-	 * @since 2018/11/18
-	 */
-	public static final native void postEvent(int __type,
-		int __d0, int __d1, int __d2, int __d3, int __d4);
+	public static final native void registerEventCallback(
+		NativeDisplayEventCallback __cb);
 	
 	/**
 	 * Sets the title of the display.
