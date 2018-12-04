@@ -10,19 +10,31 @@
 
 package java.lang;
 
+/**
+ * This is thrown when a class cannot be cast to another class.
+ *
+ * @since 2018/12/04
+ */
 public class ClassCastException
 	extends RuntimeException
 {
+	/**
+	 * Initializes the exception with no message or cause.
+	 *
+	 * @since 2018/12/04
+	 */
 	public ClassCastException()
 	{
-		super();
-		throw new todo.TODO();
 	}
 	
-	public ClassCastException(String __a)
+	/**
+	 * Initializes the exception with the given message and no cause.
+	 *
+	 * @since 2018/12/04
+	 */
+	public ClassCastException(String __m)
 	{
-		super();
-		throw new todo.TODO();
+		super(__m);
 	}
 }
 

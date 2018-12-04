@@ -10,17 +10,31 @@
 
 package java.lang;
 
+/**
+ * This is thrown when an instance could not be instantiated.
+ *
+ * @since 2018/12/04
+ */
 public class InstantiationException
 	extends Exception
 {
+	/**
+	 * Initializes the exception with no message or cause.
+	 *
+	 * @since 2018/12/04
+	 */
 	public InstantiationException()
 	{
-		throw new todo.TODO();
 	}
 	
-	public InstantiationException(String __a)
+	/**
+	 * Initializes the exception with the given message and no cause.
+	 *
+	 * @since 2018/12/04
+	 */
+	public InstantiationException(String __m)
 	{
-		throw new todo.TODO();
+		super(__m);
 	}
 }
 

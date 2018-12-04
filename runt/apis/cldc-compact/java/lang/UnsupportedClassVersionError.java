@@ -11,19 +11,19 @@
 package java.lang;
 
 /**
- * This is thrown when the format of a class is not valid.
+ * This is thrown when the version of a class is not supported.
  *
  * @since 2018/12/04
  */
-public class ClassFormatError
-	extends LinkageError
+public class UnsupportedClassVersionError
+	extends ClassFormatError
 {
 	/**
 	 * Initializes the exception with no message or cause.
 	 *
 	 * @since 2018/12/04
 	 */
-	public ClassFormatError()
+	public UnsupportedClassVersionError()
 	{
 	}
 	
@@ -32,7 +32,7 @@ public class ClassFormatError
 	 *
 	 * @since 2018/12/04
 	 */
-	public ClassFormatError(String __m)
+	public UnsupportedClassVersionError(String __m)
 	{
 		super(__m);
 	}

@@ -11,11 +11,11 @@
 package java.lang;
 
 /**
- * This is thrown when the format of a class is not valid.
+ * This is thrown when no class definition was found.
  *
  * @since 2018/12/04
  */
-public class ClassFormatError
+public class NoClassDefFoundError
 	extends LinkageError
 {
 	/**
@@ -23,7 +23,7 @@ public class ClassFormatError
 	 *
 	 * @since 2018/12/04
 	 */
-	public ClassFormatError()
+	public NoClassDefFoundError()
 	{
 	}
 	
@@ -32,7 +32,7 @@ public class ClassFormatError
 	 *
 	 * @since 2018/12/04
 	 */
-	public ClassFormatError(String __m)
+	public NoClassDefFoundError(String __m)
 	{
 		super(__m);
 	}

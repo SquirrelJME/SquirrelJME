@@ -10,19 +10,31 @@
 
 package java.lang;
 
+/**
+ * This is thrown when the virtual machine has encountered an error.
+ *
+ * @since 2018/12/04
+ */
 public class VirtualMachineError
 	extends Error
 {
+	/**
+	 * Initializes the exception with no message or cause.
+	 *
+	 * @since 2018/12/04
+	 */
 	public VirtualMachineError()
 	{
-		super();
-		throw new todo.TODO();
 	}
 	
-	public VirtualMachineError(String __a)
+	/**
+	 * Initializes the exception with the given message and no cause.
+	 *
+	 * @since 2018/12/04
+	 */
+	public VirtualMachineError(String __m)
 	{
-		super();
-		throw new todo.TODO();
+		super(__m);
 	}
 }
 

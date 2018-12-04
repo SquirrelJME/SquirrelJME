@@ -10,19 +10,32 @@
 
 package java.lang;
 
+/**
+ * This is thrown when a class has changed and when that change is no longer
+ * compatible.
+ *
+ * @since 2018/12/04
+ */
 public class IncompatibleClassChangeError
 	extends LinkageError
 {
+	/**
+	 * Initializes the exception with no message or cause.
+	 *
+	 * @since 2018/12/04
+	 */
 	public IncompatibleClassChangeError()
 	{
-		super();
-		throw new todo.TODO();
 	}
 	
-	public IncompatibleClassChangeError(String __a)
+	/**
+	 * Initializes the exception with the given message and no cause.
+	 *
+	 * @since 2018/12/04
+	 */
+	public IncompatibleClassChangeError(String __m)
 	{
-		super();
-		throw new todo.TODO();
+		super(__m);
 	}
 }
 

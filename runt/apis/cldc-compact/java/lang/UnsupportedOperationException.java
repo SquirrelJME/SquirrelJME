@@ -13,24 +13,47 @@ package java.lang;
 public class UnsupportedOperationException
 	extends RuntimeException
 {
+	/**
+	 * Initializes the exception with no message or cause.
+	 *
+	 * @since 2018/12/04
+	 */
 	public UnsupportedOperationException()
 	{
-		throw new todo.TODO();
 	}
 	
-	public UnsupportedOperationException(String __a)
+	/**
+	 * Initializes the exception with the given message and no cause.
+	 *
+	 * @param __m The message.
+	 * @since 2018/12/04
+	 */
+	public UnsupportedOperationException(String __m)
 	{
-		throw new todo.TODO();
+		super(__m);
 	}
 	
-	public UnsupportedOperationException(String __a, Throwable __b)
+	/**
+	 * Initializes the exception with the given message and cause.
+	 *
+	 * @param __m The message.
+	 * @param __t The cause.
+	 * @since 2018/12/04
+	 */
+	public UnsupportedOperationException(String __m, Throwable __t)
 	{
-		throw new todo.TODO();
+		super(__m, __t);
 	}
 	
-	public UnsupportedOperationException(Throwable __a)
+	/**
+	 * Initializes the exception with the given cause and no message.
+	 *
+	 * @param __t The cause.
+	 * @since 2018/12/04
+	 */
+	public UnsupportedOperationException(Throwable __t)
 	{
-		throw new todo.TODO();
+		super(__t);
 	}
 }
 

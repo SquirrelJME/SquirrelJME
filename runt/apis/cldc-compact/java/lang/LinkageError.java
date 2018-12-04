@@ -10,19 +10,31 @@
 
 package java.lang;
 
+/**
+ * This is thrown when a class could not be linked into the virtual machine.
+ *
+ * @since 2018/12/04
+ */
 public class LinkageError
 	extends Error
 {
+	/**
+	 * Initializes the exception with no message or cause.
+	 *
+	 * @since 2018/12/04
+	 */
 	public LinkageError()
 	{
-		super();
-		throw new todo.TODO();
 	}
 	
-	public LinkageError(String __a)
+	/**
+	 * Initializes the exception with the given message and no cause.
+	 *
+	 * @since 2018/12/04
+	 */
+	public LinkageError(String __m)
 	{
-		super();
-		throw new todo.TODO();
+		super(__m);
 	}
 }
 

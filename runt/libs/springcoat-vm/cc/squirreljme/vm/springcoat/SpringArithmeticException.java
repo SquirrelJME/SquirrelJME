@@ -8,57 +8,68 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package java.lang;
+package cc.squirreljme.vm.springcoat;
 
 /**
- * This is thrown when a certain state is invalid.
+ * This is thrown when a divide by zero occurs.
  *
  * @since 2018/12/04
  */
-public class IllegalStateException
-	extends RuntimeException
+public class SpringArithmeticException
+	extends SpringException
+	implements SpringConvertableThrowable
 {
 	/**
-	 * Initializes the exception with no message or cause.
+	 * Initialize the exception with no message or cause.
 	 *
 	 * @since 2018/12/04
 	 */
-	public IllegalStateException()
+	public SpringArithmeticException()
 	{
 	}
 	
 	/**
-	 * Initializes the exception with the given message and no cause.
+	 * Initialize the exception with a message and no cause.
 	 *
 	 * @param __m The message.
 	 * @since 2018/12/04
 	 */
-	public IllegalStateException(String __m)
+	public SpringArithmeticException(String __m)
 	{
 		super(__m);
 	}
 	
 	/**
-	 * Initializes the exception with the given message and cause.
+	 * Initialize the exception with a message and cause.
 	 *
 	 * @param __m The message.
-	 * @param __t The cause.
+	 * @param __c The cause.
 	 * @since 2018/12/04
 	 */
-	public IllegalStateException(String __m, Throwable __t)
+	public SpringArithmeticException(String __m, Throwable __c)
 	{
-		super(__m, __t);
+		super(__m, __c);
 	}
 	
 	/**
-	 * Initializes the exception with the given cause and no message.
+	 * Initialize the exception with no message and with a cause.
 	 *
-	 * @param __t The cause.
+	 * @param __c The cause.
 	 * @since 2018/12/04
 	 */
-	public IllegalStateException(Throwable __t)
+	public SpringArithmeticException(Throwable __c)
 	{
-		super(__t);
+		super(__c);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/04
+	 */
+	@Override
+	public String targetClass()
+	{
+		return "java/lang/ArithmeticException";
 	}
 }
 

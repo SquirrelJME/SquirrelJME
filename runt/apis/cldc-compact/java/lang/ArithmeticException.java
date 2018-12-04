@@ -11,19 +11,19 @@
 package java.lang;
 
 /**
- * This is thrown when the format of a class is not valid.
+ * This is thrown when there is a divide by zero.
  *
  * @since 2018/12/04
  */
-public class ClassFormatError
-	extends LinkageError
+public class ArithmeticException
+	extends RuntimeException
 {
 	/**
 	 * Initializes the exception with no message or cause.
 	 *
 	 * @since 2018/12/04
 	 */
-	public ClassFormatError()
+	public ArithmeticException()
 	{
 	}
 	
@@ -32,7 +32,7 @@ public class ClassFormatError
 	 *
 	 * @since 2018/12/04
 	 */
-	public ClassFormatError(String __m)
+	public ArithmeticException(String __m)
 	{
 		super(__m);
 	}

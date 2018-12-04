@@ -10,25 +10,46 @@
 
 package java.lang;
 
+/**
+ * This is thrown when an attempt is made to read from or write to an array
+ * index which is out of bounds.
+ *
+ * @since 2018/12/04
+ */
 public class ArrayIndexOutOfBoundsException
 	extends IndexOutOfBoundsException
 {
+	/**
+	 * Initializes the exception with no message or cause.
+	 *
+	 * @since 2018/12/04
+	 */
 	public ArrayIndexOutOfBoundsException()
 	{
-		super();
-		throw new todo.TODO();
 	}
 	
-	public ArrayIndexOutOfBoundsException(int __a)
+	/**
+	 * Initializes the exception with the index specified as the message and
+	 * no cause.
+	 *
+	 * @param __i The out of bounds index.
+	 * @since 2018/12/04
+	 */
+	public ArrayIndexOutOfBoundsException(int __i)
 	{
-		super();
-		throw new todo.TODO();
+		// {@squirreljme.error ZZ33 Array index out of bounds. (The index)}
+		super("ZZ33 " + __i);
 	}
 	
-	public ArrayIndexOutOfBoundsException(String __a)
+	/**
+	 * Initializes the exception with the given message and no cause.
+	 *
+	 * @param __m The exception message.
+	 * @since 2018/12/04
+	 */
+	public ArrayIndexOutOfBoundsException(String __m)
 	{
-		super();
-		throw new todo.TODO();
+		super(__m);
 	}
 }
 
