@@ -168,10 +168,9 @@ public class HashSet<E>
 	@Override
 	public boolean remove(Object __v)
 	{
-		// Only return true when there is an entry and it is our special
-		// taken value
+		// Return true if there was an entry for this key
 		__BucketMapEntry__<E, Object> rv = this._map.removeEntry(__v, false);
-		return rv != null && rv.getValue() == __BucketMap__._TAKEN;
+		return rv != null;
 	}
 	
 	/**
