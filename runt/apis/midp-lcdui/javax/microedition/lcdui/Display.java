@@ -206,6 +206,9 @@ public class Display
 	private static final List<DisplayListener> _LISTENERS =
 		new ArrayList<>();
 	
+	/** Quick reference to the 0th display without needing a lock. */
+	private static volatile Display _DISPLAY_ZERO;
+	
 	/** The display state for this Display. */
 	final UIDisplayState _state;
 	
@@ -1397,6 +1400,16 @@ public class Display
 	 */
 	static Display __mapDisplay(int __did)
 	{
+		// If we are requesting the 0th display, since it is requested so often
+		// allow getting it without needing to lock and load from the map
+		// This in general should improve performance nicely
+		if (__did == 0)
+		{
+			Display rv = _DISPLAY_ZERO;
+			if (rv != null)
+				return rv;
+		}
+		
 		// Lock since multiple threads could be messing with the displays
 		Map<Integer, Display> displays = Display._DISPLAYS;
 		synchronized (displays)
@@ -1406,7 +1419,13 @@ public class Display
 			
 			// Create mapping for this display?
 			if (rv == null)
+			{
 				displays.put(k, (rv = new Display(__did)));
+				
+				// Cache display zero?
+				if (__did == 0)
+					_DISPLAY_ZERO = rv;
+			}
 			
 			return rv;
 		}
