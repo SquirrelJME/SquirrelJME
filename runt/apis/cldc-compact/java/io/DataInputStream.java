@@ -401,12 +401,23 @@ public class DataInputStream
 		int len = __in.readUnsignedShort();
 		char[] buf = new char[len];
 		
+		// Instead of calling read multiple times to get multiple bytes we
+		// can just do a full read of the entire length. If the queue only
+		// contains single byte characters then we end up in the fast route
+		// otherwise once the queue is finished, we will start reading from
+		// the stream
+		byte[] queue = new byte[len];
+		int queueat = 0;
+		if (len > 0)
+			__in.readFully(queue);
+		
 		// Read all encoded character data, if EOF ever happens it will be
 		// generated for us
 		for (int i = 0; i < len; i++)
 		{
 			// Read character
-			int a = __in.readUnsignedByte();
+			int a = (queueat < len ? (queue[queueat++] & 0xFF) :
+				__in.readUnsignedByte());
 			
 			// Single byte
 			if ((a & 0b1000_0000) == 0b0000_0000)
@@ -422,7 +433,8 @@ public class DataInputStream
 			// Double byte
 			else if ((a & 0b1110_0000) == 0b1100_0000)
 			{
-				int b = __in.readUnsignedByte();
+				int b = (queueat < len ? (queue[queueat++] & 0xFF) :
+					__in.readUnsignedByte());
 				
 				// {@squirreljme.error ZZ32 Invalid double byte character.
 				// (The byte sequence)}
@@ -437,8 +449,21 @@ public class DataInputStream
 			// Triple byte
 			else if ((a & 0b1111_0000) == 0b1110_0000)
 			{
-				int b = __in.readUnsignedByte(),
+				// Can we quickly read at least one byte from the stream?
+				int b, c;
+				if (queueat < len)
+				{
+					b = queue[queueat++] & 0xFF;
+					c = (queueat < len ? (queue[queueat++] & 0xFF) :
+						__in.readUnsignedByte());
+				}
+				
+				// Nothing
+				else
+				{
+					b = __in.readUnsignedByte();
 					c = __in.readUnsignedByte();
+				}
 				
 				// {@squirreljme.error ZZ32 Invalid double byte character.
 				// (The byte sequence)}

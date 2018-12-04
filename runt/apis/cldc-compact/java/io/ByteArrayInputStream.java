@@ -135,6 +135,45 @@ public class ByteArrayInputStream
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2018/12/03
+	 */
+	@Override
+	public int read(byte[] __b)
+		throws NullPointerException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		// Only read this many bytes
+		int len = __b.length;
+		
+		synchronized (this)
+		{
+			// Determine how many bytes we can read
+			byte[] buf = this.buf;
+			int pos = this.pos,
+				count = this.count,
+				read = count - pos;
+			
+			// Do not exceed this
+			if (len < read)
+				read = len;
+			
+			// Copy bytes
+			for (int i = 0; i < len; i++)
+				__b[i] = buf[pos++];
+			
+			// Store new position
+			this.pos = pos;
+			
+			if (read == 0)
+				return (pos >= count ? -1 : 0);
+			return read;
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/11/11
 	 */
 	@Override
@@ -143,7 +182,7 @@ public class ByteArrayInputStream
 	{
 		if (__b == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) >= __b.length)
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		synchronized (this)
