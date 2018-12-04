@@ -258,18 +258,53 @@ public class DataOutputStream
 		out.write(n >> 8);
 		out.write(n);
 		
+		// Load string into character array to more quickly access it
+		char[] chars = __v.toCharArray();
+		
 		// Write string contents in modified UTF-8
 		int written = 2;
 		for (int i = 0; i < n; i++)
 		{
-			char c = __v.charAt(i);
+			char c = chars[i];
 			
 			// Single byte
 			if (c >= 0x0001 && c <= 0x007F)
 			{
-				out.write((byte)c);
+				// As a sort of turbo mode, scan the string to see how many
+				// single characters we can write all at once instead of
+				// writing call so many times. Since most of the time these
+				// single characters will be ones which are read
+				int end = i + 1;
+				for (; end < n; end++)
+				{
+					char d = chars[end];
+					if (d == 0 || c > 0x007F)
+						break;
+				}
 				
-				written += 1;
+				// Just a single byte
+				if (end == i)
+				{
+					out.write((byte)c);
+					
+					written += 1;
+				}
+				
+				// Multiple bytes were so, convert and write in bulk
+				else
+				{
+					int xl = end - i;
+					
+					// Convert to bytes
+					byte[] chunk = new byte[xl];
+					for (int o = 0; o < xl; o++, i++)
+						chunk[o] = (byte)chars[i];
+					
+					// Write all at once
+					out.write(chunk, 0, xl);
+					
+					written += xl;
+				}
 			}
 			
 			// Double byte
