@@ -174,8 +174,22 @@ public final class SpringDisplayEventCallback
 		
 		// Call method
 		SpringThreadWorker worker = this.worker;
-		Object rv = worker.invokeMethod(false,
-			_CALLBACK_CLASS, new MethodNameAndType(__func, __desc), args);
+		Object rv;
+		try
+		{
+			rv = worker.invokeMethod(false,
+				_CALLBACK_CLASS, new MethodNameAndType(__func, __desc), args);
+		}
+		
+		// The VM is exiting from the method, we cannot propogate the method
+		// up we could just do nothing, just cancel what has happened.
+		catch (SpringMachineExitException e)
+		{
+			// Debug it
+			todo.DEBUG.note("VM in exit state, canceling display function.");
+			
+			return null;
+		}
 		
 		// Handle return value or keep it as void
 		if (rv != null)

@@ -121,7 +121,7 @@ public final class SpringMachine
 	private volatile boolean _exiting;
 	
 	/** Exit code of the VM. */
-	private volatile int _exitcode;
+	volatile int _exitcode;
 	
 	/**
 	 * Initializes the virtual machine.

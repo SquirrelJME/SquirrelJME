@@ -862,10 +862,20 @@ public final class SpringThreadWorker
 		// Execute this method
 		this.run(framelimit);
 		
-		// {@squirreljme.error BK1g Current frame is not our blank frame.}
+		// This is an error unless the thread signaled exit
 		SpringThread.Frame currentframe = thread.currentFrame();
 		if (currentframe != blank)
+		{
+			// If our thread just happened to signal an exit of the VM, then
+			// the current frame will be invalid anyway, so since the
+			// exception or otherwise might be signaled we must make an
+			// exception for exit here so it continues going down.
+			if (thread._signaledexit)
+				throw new SpringMachineExitException(this.machine._exitcode);
+			
+			// {@squirreljme.error BK1g Current frame is not our blank frame.}
 			throw new SpringVirtualMachineException("BK1g");
+		}
 		
 		// Read return value from the blank frame
 		Object rv;
@@ -1691,6 +1701,7 @@ public final class SpringThreadWorker
 		{
 			// Thread is okay to exit!
 			thread._terminate = true;
+			thread._signaledexit = true;
 			
 			// Exit all frames
 			thread.exitAllFrames();
