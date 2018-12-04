@@ -12,6 +12,7 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayEventCallback;
 import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**
@@ -57,6 +58,15 @@ public final class SpringDisplayEventCallback
 		// Setup thread
 		SpringThread thread = __m.createThread("SpringCoat-LCDUIThread");
 		SpringThreadWorker worker = new SpringThreadWorker(__m, thread, false);
+		
+		// Need to initialize a thread object because this thread has to be
+		// registered with the runtime in order for programs to operate
+		// correctly on it, even though it is a weird thread
+		// This is always registered until it is explicitely not registered
+		SpringObject fakethread = worker.newInstance(
+			new ClassName("java/lang/Thread"), new MethodDescriptor(
+				"(ILjava/lang/String;)V"), thread.id,
+				worker.asVMObject(thread.name));
 		
 		// Store
 		this.thread = thread;

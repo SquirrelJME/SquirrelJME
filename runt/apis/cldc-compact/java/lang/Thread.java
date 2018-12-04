@@ -151,6 +151,41 @@ public class Thread
 	}
 	
 	/**
+	 * Initializes a thread which is registered in this constructor and
+	 * additionally has the given name and real ID.
+	 *
+	 * The thread is started in the started state and technically is not
+	 * removed ever. This is generally used by the native display thread
+	 * since there has to be a thread running as the VM sees it otherwise
+	 * things will break much. A thread started this way never terminates
+	 * unless that termination is explicit.
+	 *
+	 * @param __n The thread name.
+	 * @param __rid The real ID.
+	 * @since 2018/12/03
+	 */
+	private Thread(int __rid, String __n)
+	{
+		this._startkind = -1;
+		this._runmethod = null;
+		this._runargument = null;
+		this._realid = __rid;
+		this._name = __n;
+		this._started = true;
+		this._isalive = true;
+		
+		// Obtain the next virtual ID to use
+		int virtid;
+		synchronized (Thread.class)
+		{
+			this._virtid = (virtid = _NEXT_VIRTUAL_ID++);
+		}
+		
+		// Now register this thread in the main objects
+		this.__registerThread();
+	}
+	
+	/**
 	 * Initializes the thread to execute the given static method.
 	 *
 	 * @param __n The name of the thread.
@@ -482,6 +517,68 @@ public class Thread
 	}
 	
 	/**
+	 * Registers this thread so that way it is in the thread list and can be
+	 * obtained and such.
+	 *
+	 * @since 2018/12/03
+	 */
+	final void __registerThread()
+	{
+		// Lock
+		synchronized (Thread.class)
+		{
+			// Increase the active thread count
+			Thread._ACTIVE_THREADS++;
+			
+			// Add threads to the thread list
+			Map<Integer, Thread> byvirtid = Thread._BY_VIRTID,
+				byrealid = Thread._BY_REALID;
+			byvirtid.put(this._virtid, this);
+			byrealid.put(this._realid, this);
+		}
+	}
+	
+	/**
+	 * Ends the current thread and cleans up its registration.
+	 *
+	 * @since 2018/12/03
+	 */
+	final void __revokeThread()
+	{
+		// Thread no longer alive
+		this._isalive = false;
+		
+		// Lock
+		synchronized (Thread.class)
+		{
+			// Decrease the active count
+			Thread._ACTIVE_THREADS--;
+			
+			// Remove from the thread list
+			Map<Integer, Thread> byvirtid = Thread._BY_VIRTID,
+				byrealid = Thread._BY_REALID;
+			byvirtid.remove(this._virtid);
+			byrealid.remove(this._realid);
+		}
+		
+		// Signal all threads which are waiting on a join for this thread
+		// only
+		synchronized (this)
+		{
+			this.notifyAll();
+		}
+		
+		// Signal anything waiting on the class itself, to indicate that
+		// a thread has finished
+		int startkind = this._startkind;
+		if (startkind != _START_MAIN && startkind != _START_MIDLET)
+			synchronized (Thread.class)
+			{
+				Thread.class.notifyAll();
+			}
+	}
+	
+	/**
 	 * This is the starting point for all threads, including the main thread
 	 * and such.
 	 *
@@ -526,18 +623,8 @@ public class Thread
 		// Execution setup
 		try
 		{
-			// Lock
-			synchronized (Thread.class)
-			{
-				// Increase the active thread count
-				Thread._ACTIVE_THREADS++;
-				
-				// Add threads to the thread list
-				Map<Integer, Thread> byvirtid = Thread._BY_VIRTID,
-					byrealid = Thread._BY_REALID;
-				byvirtid.put(virtid, this);
-				byrealid.put(realid, this);
-			}
+			// Register this thread
+			this.__registerThread();
 				
 			// Set the thread as alive
 			this._isalive = true;
@@ -597,36 +684,8 @@ public class Thread
 		//  * Set thread as not alive
 		finally
 		{
-			// Thread no longer alive
-			this._isalive = false;
-			
-			// Lock
-			synchronized (Thread.class)
-			{
-				// Decrease the active count
-				Thread._ACTIVE_THREADS--;
-				
-				// Remove from the thread list
-				Map<Integer, Thread> byvirtid = Thread._BY_VIRTID,
-					byrealid = Thread._BY_REALID;
-				byvirtid.remove(virtid);
-				byrealid.remove(realid);
-			}
-			
-			// Signal all threads which are waiting on a join for this thread
-			// only
-			synchronized (this)
-			{
-				this.notifyAll();
-			}
-			
-			// Signal anything waiting on the class itself, to indicate that
-			// a thread has finished
-			if (!ismain)
-				synchronized (Thread.class)
-				{
-					Thread.class.notifyAll();
-				}
+			// Revoke this thread
+			this.__revokeThread();
 		}
 		
 		// If this is the main thread, wait for every other thread to
