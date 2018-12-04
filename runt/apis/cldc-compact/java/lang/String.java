@@ -989,13 +989,8 @@ public final class String
 	 */
 	public char[] toCharArray()
 	{
-		int n = this.length();
-		char[] rv = new char[n];
-		
-		for (int i = 0; i < n; i++)
-			rv[i] = this.charAt(i);
-		
-		return rv;
+		// The sequence may have a faster way to setup a char array
+		return this._sequence.toCharArray();
 	}
 	
 	/**

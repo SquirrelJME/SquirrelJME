@@ -43,7 +43,6 @@ public abstract class BasicSequence
 	 */
 	public abstract int length();
 	
-	
 	/**
 	 * Returns the subsequence of this sequence.
 	 *
@@ -57,6 +56,23 @@ public abstract class BasicSequence
 		throws IndexOutOfBoundsException
 	{
 		return new SubBasicSequenceSequence(this, __s, __e);
+	}
+	
+	/**
+	 * Converts this basic sequence to a character array.
+	 *
+	 * @return The resulting character array.
+	 * @since 2018/12/04
+	 */
+	public char[] toCharArray()
+	{
+		int len = this.length();
+		char[] rv = new char[len];
+		
+		for (int i = 0; i < len; i++)
+			rv[i] = this.charAt(i);
+		
+		return rv;
 	}
 }
 
