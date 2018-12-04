@@ -42,22 +42,26 @@ public class DataInputStream
 		in = __in;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/03
+	 */
 	@Override
 	public int available()
 		throws IOException
 	{
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
+		return this.in.available();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/03
+	 */
 	@Override
 	public void close()
 		throws IOException
 	{
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
+		this.in.close();
 	}
 	
 	@Override
@@ -72,40 +76,53 @@ public class DataInputStream
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/03
+	 */
 	@Override
 	public final int read()
 		throws IOException
 	{
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
+		return this.in.read();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/03
+	 */
 	@Override
-	public final int read(byte[] __a)
+	public final int read(byte[] __b)
 		throws IOException
 	{
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
+		return this.in.read(__b);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/03
+	 */
 	@Override
-	public final int read(byte[] __a, int __b, int __c)
+	public final int read(byte[] __b, int __o, int __l)
 		throws IOException
 	{
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
+		return this.in.read(__b, __o, __l);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/03
+	 */
 	@Override
 	public final boolean readBoolean()
-		throws IOException
+		throws EOFException, IOException
 	{
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
+		int rv = this.in.read();
+		
+		if (rv < 0)
+			throw new EOFException("EOFF");
+		
+		return (rv != 0);
 	}
 	
 	/**
@@ -114,7 +131,7 @@ public class DataInputStream
 	 */
 	@Override
 	public final byte readByte()
-		throws IOException
+		throws EOFException, IOException
 	{
 		int rv = this.in.read();
 		
@@ -124,18 +141,32 @@ public class DataInputStream
 		return (byte)rv;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/03
+	 */
 	@Override
 	public final char readChar()
-		throws IOException
+		throws EOFException, IOException
 	{
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
+		InputStream in = this.in;
+		
+		// Read all values
+		int a = in.read(),
+			b = in.read();
+		
+		// If any were negative then all will be with OR
+		if ((a | b) < 0)
+			throw new EOFException("EOFF");
+		
+		// Remap values
+		return (char)(((a & 0xFF) << 8) |
+			(b & 0xFF));
 	}
 	
 	@Override
 	public final double readDouble()
-		throws IOException
+		throws EOFException, IOException
 	{
 		if (false)
 			throw new IOException();
@@ -144,7 +175,7 @@ public class DataInputStream
 	
 	@Override
 	public final float readFloat()
-		throws IOException
+		throws EOFException, IOException
 	{
 		if (false)
 			throw new IOException();
@@ -157,7 +188,7 @@ public class DataInputStream
 	 */
 	@Override
 	public final void readFully(byte[] __b)
-		throws IOException, NullPointerException
+		throws EOFException, IOException, NullPointerException
 	{
 		if (__b == null)
 			throw new NullPointerException("NARG");
@@ -181,67 +212,144 @@ public class DataInputStream
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/03
+	 */
 	@Override
 	public final void readFully(byte[] __b, int __o, int __l)
-		throws IOException
+		throws EOFException, IOException
 	{
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		int rv = 0;
+		
+		// Constantly read in as many chunks as possible
+		InputStream in = this.in;
+		while (rv < __l)
+		{
+			// Read entire chunk
+			int rc = in.read(__b, __o + rv, __l - rv);
+			
+			// Reached EOF
+			if (rc < 0)
+				throw new EOFException("EOFF");
+			
+			// These many characters were read, we might try again
+			rv += rc;
+		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/03
+	 */
 	@Override
 	public final int readInt()
-		throws IOException
+		throws EOFException, IOException
 	{
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
+		InputStream in = this.in;
+		
+		// Read all values
+		int a = in.read(),
+			b = in.read(),
+			c = in.read(),
+			d = in.read();
+		
+		// If any were negative then all will be with OR
+		if ((a | b | c | d) < 0)
+			throw new EOFException("EOFF");
+		
+		// Remap values
+		return ((a & 0xFF) << 24) |
+			((b & 0xFF) << 16) |
+			((c & 0xFF) << 8) |
+			(d & 0xFF);
 	}
 	
 	@Override
 	public final long readLong()
-		throws IOException
+		throws EOFException, IOException
 	{
 		if (false)
 			throw new IOException();
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/03
+	 */
 	@Override
 	public final short readShort()
-		throws IOException
+		throws EOFException, IOException
 	{
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
+		InputStream in = this.in;
+		
+		// Read all values
+		int a = in.read(),
+			b = in.read();
+		
+		// If any were negative then all will be with OR
+		if ((a | b) < 0)
+			throw new EOFException("EOFF");
+		
+		// Remap values
+		return (short)(((a & 0xFF) << 8) |
+			(b & 0xFF));
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/03
+	 */
 	@Override
 	public final int readUnsignedByte()
-		throws IOException
+		throws EOFException, IOException
 	{
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
+		int rv = this.in.read();
+		
+		if (rv < 0)
+			throw new EOFException("EOFF");
+		
+		return rv & 0xFF;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/03
+	 */
 	@Override
 	public final int readUnsignedShort()
-		throws IOException
+		throws EOFException, IOException
 	{
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
+		InputStream in = this.in;
+		
+		// Read all values
+		int a = in.read(),
+			b = in.read();
+		
+		// If any were negative then all will be with OR
+		if ((a | b) < 0)
+			throw new EOFException("EOFF");
+		
+		// Remap values
+		return (int)(((a & 0xFF) << 8) |
+			(b & 0xFF));
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/03
+	 */
 	@Override
 	public final String readUTF()
-		throws IOException
+		throws EOFException, IOException, UTFDataFormatException
 	{
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
+		return DataInputStream.readUTF(this);
 	}
 	
 	@Override
@@ -271,12 +379,87 @@ public class DataInputStream
 		throw new todo.TODO();
 	}
 	
-	public static final String readUTF(DataInput __a)
-		throws IOException
+	/**
+	 * Reads a modified-UTF sequence from the input.
+	 *
+	 * @param __in The input.
+	 * @return The decoded string.
+	 * @throws EOFException On end of file.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @throws UTFDataFormatException If the input UTF data is not correct.
+	 * @since 2018/12/03
+	 */
+	public static final String readUTF(DataInput __in)
+		throws EOFException, IOException, NullPointerException,
+			UTFDataFormatException
 	{
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		// Read length and setup buffer
+		int len = __in.readUnsignedShort();
+		char[] buf = new char[len];
+		
+		// Read all encoded character data, if EOF ever happens it will be
+		// generated for us
+		for (int i = 0; i < len; i++)
+		{
+			// Read character
+			int a = __in.readUnsignedByte();
+			
+			// Single byte
+			if ((a & 0b1000_0000) == 0b0000_0000)
+			{
+				// {@squirreljme.error ZZ31 The zero byte cannot be represented
+				// with a zero value.}
+				if (a == 0)
+					throw new UTFDataFormatException("ZZ31");
+				
+				buf[i] = (char)a;
+			}
+			
+			// Double byte
+			else if ((a & 0b1110_0000) == 0b1100_0000)
+			{
+				int b = __in.readUnsignedByte();
+				
+				// {@squirreljme.error ZZ32 Invalid double byte character.
+				// (The byte sequence)}
+				if ((b & 0b1100_0000) != 0b1000_0000)
+					throw new UTFDataFormatException(String.format(
+						"ZZ32 %02x%02x", a, b));
+				
+				// Decode
+				buf[i] = (char)(((a & 0x1F) << 6) | (b & 0x3F));
+			}
+			
+			// Triple byte
+			else if ((a & 0b1111_0000) == 0b1110_0000)
+			{
+				int b = __in.readUnsignedByte(),
+					c = __in.readUnsignedByte();
+				
+				// {@squirreljme.error ZZ32 Invalid double byte character.
+				// (The byte sequence)}
+				if (((b & 0b1100_0000) != 0b1000_0000) ||
+					((c & 0b1100_0000) != 0b1000_0000))
+					throw new UTFDataFormatException(String.format(
+						"ZZ32 %02x%02x%02x", a, b, c));
+				
+				// Decode
+				buf[i] = (char)(((a & 0x0F) << 12) | ((b & 0x3F) << 6) |
+					(c & 0x3F));
+			}
+			
+			// {@squirreljme.error ZZ30 Invalid byte sequence. (The byte)}
+			else
+				throw new UTFDataFormatException(String.format("ZZ30 %02x",
+					a));
+		}
+		
+		// Convert to string
+		return new String(buf);
 	}
 }
 
