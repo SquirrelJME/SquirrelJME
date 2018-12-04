@@ -75,8 +75,6 @@ public final class UIDisplayState
 			this._statecount = newcount;
 		}
 		
-		todo.DEBUG.note("State old=%d new=%d", statecount, newcount);
-		
 		// Use it
 		return rv;
 	}
