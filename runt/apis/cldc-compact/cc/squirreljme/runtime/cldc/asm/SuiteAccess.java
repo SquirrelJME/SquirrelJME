@@ -26,6 +26,7 @@ public class SuiteAccess
 	 * @return The suites which are available for usage.
 	 * @since 2018/10/26
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native String[] availableSuites();
 }
 

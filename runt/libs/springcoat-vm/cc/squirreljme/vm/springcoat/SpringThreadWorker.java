@@ -1375,8 +1375,17 @@ public final class SpringThreadWorker
 				// Get the class by the name of whatever is input
 			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
 				"classByName:(Ljava/lang/String;)Ljava/lang/Class;":
-				return new ClassName(this.<String>asNativeObject(String.class,
-					(SpringObject)__args[0]));
+				return this.asVMObject(new ClassName(
+					this.<String>asNativeObject(String.class,
+					(SpringObject)__args[0]), true));
+				
+				// Returns the class data for a class object
+			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
+				"classData:(Ljava/lang/Class;)Lcc/squirreljme/" +
+				"runtime/cldc/lang/ClassData;":
+				{
+					throw new todo.TODO();
+				}
 				
 				// Get the class object for an object
 			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
@@ -1429,13 +1438,6 @@ public final class SpringThreadWorker
 					monitorWait(this.thread, (Long)__args[1],
 						(Integer)__args[2]);
 				
-				// New instance by name
-			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
-				"newInstanceByName:(Ljava/lang/String;)Ljava/lang/Object;":
-				return this.newInstance((new ClassName(
-					this.<String>asNativeObject(String.class, __args[0]))),
-					new MethodDescriptor("()V"));
-				
 				// Create new primitive weak reference
 			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
 				"newWeakReference:" +
@@ -1478,6 +1480,16 @@ public final class SpringThreadWorker
 				"longBitsToDouble:(J)D":
 				return Double.longBitsToDouble((Long)__args[0]);
 				
+				// Is the registry present?
+			case "cc/squirreljme/runtime/cldc/asm/RegistryAccess::" +
+				"present:()Z":
+				return false;
+				
+				// Returns the number of bytes available in the resource.
+			case "cc/squirreljme/runtime/clcdc/asm/ResourceAccess::" +
+				"available:(I)I":
+				throw new todo.TODO();
+				
 				// Close resource in JAR
 			case "cc/squirreljme/runtime/cldc/asm/ResourceAccess::" +
 				"close:(I)I":
@@ -1511,6 +1523,16 @@ public final class SpringThreadWorker
 				this.thread.profiler.exitAll(System.nanoTime());
 				this.machine.exit((Integer)__args[0]);
 				return null;
+				
+				// Get environment variable
+			case "cc/squirreljme/runtime/cldc/asm/SystemAccess::" +
+				"getEnv:(Ljava/lang/String;)Ljava/lang/String;":
+				throw new todo.TODO();
+				
+				// Get the operating system type
+			case "cc/squirreljme/runtime/cldc/asm/SystemAccess::" +
+				"operatingSystemType:()I":
+				throw new todo.TODO();
 			
 				// Returns the API level of the VM
 			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
@@ -1585,7 +1607,16 @@ public final class SpringThreadWorker
 				"sleep:(JI)Z":
 				try
 				{
-					Thread.sleep((Long)__args[0], (Integer)__args[1]);
+					long ms = (Long)__args[0];
+					int ns = (Integer)__args[1];
+					
+					// Zero time is a yield
+					if (ms == 0 && ns == 0)
+						Thread.yield(0);
+					
+					// Otherwise sleep for given time
+					else
+						Thread.sleep(ms, ns);
 					return 0;
 				}
 				catch (InterruptedException e)

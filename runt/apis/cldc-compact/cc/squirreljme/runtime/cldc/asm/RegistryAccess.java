@@ -36,6 +36,7 @@ public final class RegistryAccess
 	 * @return If a registry is present.
 	 * @since 2018/10/14
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native boolean present();
 }
 

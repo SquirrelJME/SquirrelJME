@@ -511,9 +511,16 @@ public class Thread
 		}
 	}
 	
+	/**
+	 * Yields the current thread giving up its execution slice, but allowing
+	 * it to continue instantly resuming as needed.
+	 *
+	 * @since 2018/12/05
+	 */
 	public static void yield()
 	{
-		throw new todo.TODO();
+		// Zero times means to yield
+		TaskAccess.sleep(0, 0);
 	}
 	
 	/**

@@ -35,6 +35,7 @@ public final class TimeAccess
 	 * @return The since since the epoch in UTC milliseconds.
 	 * @since 2018/03/01
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native long currentTimeMillis();
 	
 	/**
@@ -43,6 +44,7 @@ public final class TimeAccess
 	 * @return The current monotonic clock time.
 	 * @since 2018/03/01
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native long nanoTime();
 }
 

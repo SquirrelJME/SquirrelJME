@@ -35,6 +35,7 @@ public final class SystemAccess
 	 * @param __code The exit code.
 	 * @since 2018/10/13
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native void exit(int __code);
 	
 	/**
@@ -48,6 +49,7 @@ public final class SystemAccess
 	 * @return The value of that variable or {@code null} if it is not set.
 	 * @since 2018/10/14
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native String getEnv(String __e);
 	
 	/**
@@ -56,6 +58,7 @@ public final class SystemAccess
 	 * @return The type of operating system SquirrelJME is running on.
 	 * @since 2018/10/14
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int operatingSystemType();
 }
 

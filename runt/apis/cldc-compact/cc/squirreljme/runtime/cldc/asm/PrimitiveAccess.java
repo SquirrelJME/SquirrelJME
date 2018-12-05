@@ -36,6 +36,7 @@ public final class PrimitiveAccess
 	 * @return The raw long bits.
 	 * @since 2018/11/03
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native long doubleToRawLongBits(double __d);
 	
 	/**
@@ -45,6 +46,7 @@ public final class PrimitiveAccess
 	 * @return The raw int bits.
 	 * @since 2018/11/04
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int floatToRawIntBits(float __f);
 	
 	/**
@@ -54,6 +56,7 @@ public final class PrimitiveAccess
 	 * @return The resulting float.
 	 * @since 2018/11/04
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native float intBitsToFloat(int __b);
 	
 	/**
@@ -63,6 +66,7 @@ public final class PrimitiveAccess
 	 * @return The resulting double.
 	 * @since 2018/11/03
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native double longBitsToDouble(long __b);
 }
 
