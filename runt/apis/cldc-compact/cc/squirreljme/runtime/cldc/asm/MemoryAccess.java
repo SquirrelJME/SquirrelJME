@@ -10,6 +10,9 @@
 
 package cc.squirreljme.runtime.cldc.asm;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.lang.ApiLevel;
+
 /**
  * This class contains static methods which are replaced by the compiler to
  * provide native access to memory.
@@ -33,6 +36,7 @@ public final class MemoryAccess
 	 * @return The amount of free memory.
 	 * @since 2018/10/14
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native long freeMemory();
 	
 	/**
@@ -40,8 +44,8 @@ public final class MemoryAccess
 	 *
 	 * @since 2018/10/14
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native void gc();
-	
 	
 	/**
 	 * Returns the maximum amount of memory that the virtual machine will
@@ -51,6 +55,7 @@ public final class MemoryAccess
 	 * @return The maximum amount of memory available to the virtual machine.
 	 * @since 2018/10/14
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native long maxMemory();
 	
 	/**
@@ -61,6 +66,7 @@ public final class MemoryAccess
 	 * @return The amount of memory being used by the virtual machine.
 	 * @since 2018/10/14
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native long totalMemory();
 }
 

@@ -284,6 +284,18 @@ public final class System
 				// SquirrelJME guest depth
 			case "cc.squirreljme.guests":
 				return Integer.toString(SystemProperties.guestDepth());
+				
+				// SquirrelJME free memory
+			case "cc.squirreljme.vm.freemem":
+				return Long.toString(Runtime.getRuntime().freeMemory());
+				
+				// SquirrelJME total memory
+			case "cc.squirreljme.vm.totalmem":
+				return Long.toString(Runtime.getRuntime().totalMemory());
+				
+				// SquirrelJME free memory
+			case "cc.squirreljme.vm.maxmem":
+				return Long.toString(Runtime.getRuntime().maxMemory());
 			
 				// The version of the Java virtual machine (fixed value)
 			case "java.version":

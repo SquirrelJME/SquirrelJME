@@ -10,6 +10,9 @@
 
 package cc.squirreljme.runtime.cldc.asm;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.lang.ApiLevel;
+
 /**
  * Used for printing to the console.
  *
@@ -50,6 +53,7 @@ public final class ConsoleOutput
 	 * @return Zero on success, negative values for EOF.
 	 * @since 2018/09/21
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int write(int __fd, int __c);
 }
 
