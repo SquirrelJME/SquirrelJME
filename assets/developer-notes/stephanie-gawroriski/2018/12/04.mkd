@@ -1,0 +1,9 @@
+# 2018/12/04
+
+## 20:19
+
+I think `Class` would be best if it were passed an object which had publically
+available stuff for information. So I do not need to mess with the constructor
+at all whenever I want to add something new, I can just set fields. It would
+also be better for backwards compatibility across VMs.
+
