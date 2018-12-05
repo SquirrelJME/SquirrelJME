@@ -1306,6 +1306,13 @@ public final class SpringThreadWorker
 					this.<String>asNativeObject(String.class, __args[1]));
 				return null;
 				
+				// Allocate object but do not construct it
+			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
+				"allocateObject:(Ljava/lang/String;)Ljava/lang/Object;":
+				return this.allocateObject(this.loadClass(
+					new ClassName(this.<String>asNativeObject(
+					String.class, ((SpringObject)__args[0])))));
+				
 				// Return the length of the array
 			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
 				"arrayLength:(Ljava/lang/Object;)I":
