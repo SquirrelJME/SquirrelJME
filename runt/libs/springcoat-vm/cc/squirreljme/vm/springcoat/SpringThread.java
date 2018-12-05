@@ -176,6 +176,51 @@ public final class SpringThread
 		// Undo termination
 		this._terminate = false;
 		
+		// Handle synchronized method
+		if (__m.flags().isSynchronized())
+		{
+			SpringObject monitor;
+			
+			// Monitor on the class object, needs the worker since we need to
+			// load a class
+			if (__m.flags().isStatic())
+			{
+				// {@squirreljme.error BK37 Cannot enter a synchronized static
+				// method without a thread working, since we need to load
+				// the class object.}
+				SpringThreadWorker worker = this._worker;
+				if (worker == null)
+					throw new SpringVirtualMachineException("BK37");
+				
+				// Use the class object
+				monitor = (SpringObject)worker.asVMObject(__m.inClass(), true);
+			}
+			
+			// On this object
+			else
+			{
+				// {@squirreljme.error BK36 Cannot enter a synchronized
+				// instance method with no arguments passed.}
+				if (__args.length <= 0)
+					throw new SpringVirtualMachineException("BK36");
+				
+				// {@squirreljme.error BK38 Cannot enter a monitor of nothing
+				// or a non-object.}
+				Object argzero = __args[0];
+				if (argzero == null || !(argzero instanceof SpringObject))
+					throw new SpringVirtualMachineException("BK38");
+				
+				// Use this as the monitor
+				monitor = (SpringObject)argzero;
+			}
+			
+			// Set to unlock later on
+			rv._monitor = monitor;
+			
+			// Enter the monitor and just wait around
+			monitor.monitor().enter(this);
+		}
+		
 		return rv;
 	}
 	
@@ -262,6 +307,7 @@ public final class SpringThread
 		this.profiler.exitFrame(System.nanoTime());
 		
 		// Pop from the stack
+		SpringThread.Frame rv;
 		List<SpringThread.Frame> frames = this._frames;
 		synchronized (frames)
 		{
@@ -270,8 +316,15 @@ public final class SpringThread
 			if ((n = frames.size()) <= 0)
 				throw new SpringVirtualMachineException("BK15");	
 			
-			return frames.remove(n - 1);
+			rv = frames.remove(n - 1);
 		}
+		
+		// If there is a monitor associated with this then leave it
+		SpringObject monitor = rv._monitor;
+		if (monitor != null)
+			monitor.monitor().exit(this, true);
+		
+		return rv;
 	}
 	
 	/**
@@ -378,6 +431,9 @@ public final class SpringThread
 		
 		/** Exception which was tossed into this frame. */
 		private SpringObject _tossedexception;
+		
+		/** Object which has a monitor for quicker unlock. */
+		private volatile SpringObject _monitor;
 		
 		/**
 		 * Initializes a blank guard frame.
