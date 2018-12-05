@@ -52,17 +52,8 @@ public final class ObjectAccess
 	 * constructor.
 	 * @since 2018/12/04
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native Object allocateObject(String __cl);
-	
-	/**
-	 * Returns the component type of the given array.
-	 *
-	 * @param __cl The class to get the component type of.
-	 * @return The component type or {@code null} if it is not valid.
-	 * @since 2018/09/25
-	 */
-	@Deprecated
-	public static final native Class<?> arrayComponentType(Class<?> __cl);
 	
 	/**
 	 * Returns the length of the given array.
@@ -72,6 +63,7 @@ public final class ObjectAccess
 	 * array.
 	 * @since 2018/09/25
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int arrayLength(Object __a);
 	
 	/**
@@ -83,6 +75,7 @@ public final class ObjectAccess
 	 * @return An array allocated to the given length.
 	 * @since 2018/09/25
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native Object arrayNew(Class<?> __t, int __l);
 	
 	/**
@@ -93,6 +86,7 @@ public final class ObjectAccess
 	 * does not exist.
 	 * @since 2018/09/23 
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native Class<?> classByName(String __s);
 	
 	/**
@@ -102,6 +96,7 @@ public final class ObjectAccess
 	 * @return The resulting class data.
 	 * @since 2018/12/04
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native ClassData classData(Class<?> __cl);
 	
 	/**
@@ -112,6 +107,7 @@ public final class ObjectAccess
 	 * class.
 	 * @since 2018/09/22
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native Class<?> classOf(Object __v);
 	
 	/**
@@ -122,6 +118,7 @@ public final class ObjectAccess
 	 * @return If the lock is held.
 	 * @since 2018/11/21
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native boolean holdsLock(int __ntid, Object __o);
 	
 	/**
@@ -130,6 +127,7 @@ public final class ObjectAccess
 	 * @return The identity hashcode.
 	 * @since 2018/10/14
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int identityHashCode(Object __o);
 	
 	/**
@@ -139,6 +137,7 @@ public final class ObjectAccess
 	 * @param __v The value to pass to the method.
 	 * @since 2018/11/20
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native void invokeStatic(StaticMethod __m, Object __v);
 	
 	/**
@@ -149,6 +148,7 @@ public final class ObjectAccess
 	 * @return If the monitor was a success or not.
 	 * @since 2018/11/20
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int monitorNotify(Object __o, boolean __all);
 	
 	/**
@@ -160,21 +160,9 @@ public final class ObjectAccess
 	 * @return The wait status.
 	 * @since 2018/11/21
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int monitorWait(Object __o, long __ms,
 		int __ns);
-	
-	/**
-	 * Constructs and initializes a new instance of the class by the given
-	 * name. Access checks are ignored and the class is initialized
-	 * if it is a class which can be initialized.
-	 *
-	 * @param __n The name of the class to initialize.
-	 * @return The initialization of the class or {@code null} if it could
-	 * not be initialized.
-	 * @since 2018/11/20
-	 */
-	@Deprecated
-	public static final native Object newInstanceByName(String __n);
 	
 	/**
 	 * Creates a new primitive weak reference. Note that it is not valid to
@@ -184,6 +172,7 @@ public final class ObjectAccess
 	 * @return The primitive weak reference.
 	 * @since 2018/09/23
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native PrimitiveReference newWeakReference();
 	
 	/**
@@ -194,6 +183,7 @@ public final class ObjectAccess
 	 * is not valid, it was garbage collected, or it was never set.
 	 * @since 2018/09/23
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native Object referenceGet(PrimitiveReference __r);
 	
 	/**
@@ -203,6 +193,7 @@ public final class ObjectAccess
 	 * @param __v The value to set.
 	 * @since 2018/09/23
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native void referenceSet(PrimitiveReference __r,
 		Object __v);
 	

@@ -171,43 +171,6 @@ public final class ResourceInputStream
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @since 2018/10/07
-	 */
-	@Override
-	public final long skip(long __n)
-	{
-		// Nothing to skip
-		if (__n <= 0)
-			return 0;
-		
-		// Counting total
-		long total = 0;
-		
-		// Still bytes to be skipped?
-		int fd = this.fd;
-		while (__n > 0)
-		{
-			// This method uses long but resource input stream uses integers
-			// for simplicity, so just skip in max value chunks
-			int count = (int)Math.min(Integer.MAX_VALUE, __n);
-			
-			// Skip these bytes
-			int skipped = ResourceAccess.skip(fd, count);
-			
-			// No bytes were skipped, just stop trying to skip then
-			if (skipped <= 0)
-				break;
-			
-			// Add to skip count
-			total += skipped;
-		}
-		
-		// This might not match the input
-		return total;
-	}
-	
-	/**
 	 * Opens the specified resource in the given JAR.
 	 *
 	 * @param __jar The JAR to look within.

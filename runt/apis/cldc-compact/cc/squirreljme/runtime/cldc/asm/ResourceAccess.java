@@ -67,6 +67,7 @@ public final class ResourceAccess
 	 * @return The number of available bytes.
 	 * @since 2018/10/07
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int available(int __fd);
 	
 	/**
@@ -76,6 +77,7 @@ public final class ResourceAccess
 	 * @return A negative value indicating the reason for the failure.
 	 * @since 2018/10/07
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int close(int __fd);
 	
 	/**
@@ -89,6 +91,7 @@ public final class ResourceAccess
 	 * load the resource.
 	 * @since 2018/10/07
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int open(String __jar, String __res);
 	
 	/**
@@ -102,18 +105,8 @@ public final class ResourceAccess
 	 * stream was reached.
 	 * @since 2018/10/07
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int read(int __fd, byte[] __b, int __o,
 		int __l);
-	
-	/**
-	 * Skips the given number of bytes in the resource stream.
-	 *
-	 * @param __fd The file descriptor to skip in.
-	 * @param __n The number of bytes to skip.
-	 * @return The number of skipped bytes, this may be zero if no bytes
-	 * were skipped.
-	 * @since 2018/10/07
-	 */
-	public static final native int skip(int __fd, int __n);
 }
 

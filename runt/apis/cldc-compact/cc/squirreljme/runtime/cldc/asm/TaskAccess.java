@@ -43,6 +43,7 @@ public final class TaskAccess
 	 * @return The current thread ID.
 	 * @since 2018/11/20
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int currentThread();
 	
 	/**
@@ -51,10 +52,13 @@ public final class TaskAccess
 	 * @param __tid The thread to signal.
 	 * @since 2018/11/21
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native void signalInterrupt(int __tid);
 	
 	/**
 	 * Causes the thread to sleep for the given milliseconds and nanoseconds.
+	 *
+	 * If both values are zero this means to yield instead.
 	 *
 	 * @param __ms The milliseconds to sleep for.
 	 * @param __ns The nanoseconds to sleep for, in the range of 0-999999.
@@ -62,6 +66,7 @@ public final class TaskAccess
 	 * {@code false}.
 	 * @since 2018/11/04
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native boolean sleep(long __ms, int __ns);
 	
 	/**
@@ -74,6 +79,7 @@ public final class TaskAccess
 	 * not start.
 	 * @since 2018/11/04
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int startTask(String[] __cp, String __main,
 		String[] __args);
 	
@@ -86,6 +92,7 @@ public final class TaskAccess
 	 * @return The thread ID.
 	 * @since 2018/11/17
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int startThread(Thread __t, String __n);
 	
 	/**
@@ -95,6 +102,7 @@ public final class TaskAccess
 	 * @return The status for the given task.
 	 * @since 2018/11/04
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int taskStatus(int __tid);
 }
 
