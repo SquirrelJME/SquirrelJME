@@ -13,6 +13,7 @@ package java.lang;
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import cc.squirreljme.runtime.cldc.asm.ResourceAccess;
 import cc.squirreljme.runtime.cldc.io.ResourceInputStream;
+import cc.squirreljme.runtime.cldc.lang.ClassData;
 import java.io.InputStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -24,29 +25,8 @@ public final class Class<T>
 	private static final String _ASSERTION_PREFIX =
 		"cc.squirreljme.runtime.noassert.";
 	
-	/** The super class of this class. */
-	private final Class<?> _superclass;
-	
-	/** The interface classes of this class. */
-	private final Class<?>[] _interfaceclasses;
-	
-	/** The component type. */
-	private final Class<?> _component;
-	
-	/** The binary name of this class. */
-	final String _binaryname;
-	
-	/** Special class reference index. */
-	private final int _specialindex;
-	
-	/** The number of dimensions. */
-	private final int _dimensions;
-	
-	/** The JAR this class is in. */
-	private final String _injar;
-	
-	/** Class flags. */
-	private final int _flags;
+	/** The class data storage. */
+	final ClassData _data;
 	
 	/** Has the assertion status been checked already? */
 	private volatile boolean _checkedassert;
@@ -61,37 +41,19 @@ public final class Class<T>
 	private Reference<String> _string;
 	
 	/**
-	 * This constructor is internally called as needed.
+	 * Initializes the class with the class data.
 	 *
-	 * @param __csi Class special index.
-	 * @param __bn The binary name of this class.
-	 * @param __sc Super classes.
-	 * @param __ic Interface classes.
-	 * @param __ij The JAR this class is in.
-	 * @param __flags Class flags.
+	 * @param __d The data to use.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2016/04/12
+	 * @since 2018/12/04
 	 */
-	private Class(int __csi, String __bn, Class<?> __sc, Class<?>[] __ic,
-		Class<?> __ct, String __ij, int __flags)
+	private Class(ClassData __d)
 		throws NullPointerException
 	{
-		if (__bn == null)
+		if (__d == null)
 			throw new NullPointerException("NARG");
 		
-		this._specialindex = __csi;
-		this._binaryname = __bn;
-		this._superclass = __sc;
-		this._interfaceclasses = __ic;
-		this._component = __ct;
-		this._injar = __ij;
-		this._flags = __flags;
-		
-		// Count dimensions, used for comparison purposes
-		int dims = 0;
-		for (; __bn.charAt(dims) == '['; dims++)
-			;
-		this._dimensions = dims;
+		this._data = __d;
 	}
 	
 	/**
@@ -183,7 +145,7 @@ public final class Class<T>
 		
 		if (ref == null || null == (rv = ref.get()))
 		{
-			String bn = this._binaryname;
+			String bn = this._data.binaryName();
 			
 			// Slashes become dots
 			this._name = new WeakReference<>((rv = bn.replace('/', '.')));
@@ -226,7 +188,7 @@ public final class Class<T>
 			throw new NullPointerException("NARG");
 		
 		// This is not within any JAR, so nothing will ever be found
-		String injar = this._injar;
+		String injar = this._data.inJar();
 		if (injar == null)
 			return null;
 		
@@ -239,7 +201,7 @@ public final class Class<T>
 		else
 		{
 			// Has a package
-			String pkg = this._binaryname;
+			String pkg = this._data.binaryName();
 			int ld = pkg.lastIndexOf('/');
 			if (ld >= 0)
 				want = pkg.substring(0, ld + 1) + __name;
@@ -262,7 +224,7 @@ public final class Class<T>
 	@SuppressWarnings({"unchecked"})
 	public Class<? super T> getSuperclass()
 	{
-		return (Class<? super T>)((Object)this._superclass);
+		return (Class<? super T>)((Object)this._data.superClass());
 	}
 	
 	/**
@@ -275,7 +237,7 @@ public final class Class<T>
 	{
 		// Guess what! Every array starts with with brackets so this is quite
 		// easily something which can be determined from the classname
-		return this._binaryname.startsWith("[");
+		return this._data.binaryName().startsWith("[");
 	}
 	
 	/**
@@ -295,13 +257,13 @@ public final class Class<T>
 			throw new NullPointerException("NARG");
 		
 		// Go through target superclasses to find this class
-		for (Class<?> r = __cl; r != null; r = r._superclass)
+		for (Class<?> r = __cl; r != null; r = r._data.superClass())
 		{
 			if (r == this)
 				return true;
 		
 			// Go through interfaces for the class to find this class
-			for (Class<?> i : r._interfaceclasses)
+			for (Class<?> i : r._data.interfaceClasses())
 				if (i == this)
 					return true;
 		}
@@ -309,8 +271,8 @@ public final class Class<T>
 		// If this is an array and the other type is an array with the same
 		// number of dimensions, then compare the base type so that say
 		// Number[] is assignable from Integer[].
-		int thisdims = this._dimensions,
-			otherdims = __cl._dimensions;
+		int thisdims = this._data.dimensions(),
+			otherdims = __cl._data.dimensions();
 		if (thisdims > 0 && thisdims == otherdims)
 			if (this.__rootType().isAssignableFrom(__cl.__rootType()))
 				return true;
@@ -327,7 +289,7 @@ public final class Class<T>
 	 */
 	public boolean isInterface()
 	{
-		return (this._flags & ClassFlag.INTERFACE) != 0;
+		return (this._data.flags() & ClassFlag.INTERFACE) != 0;
 	}
 	
 	/**
@@ -366,7 +328,7 @@ public final class Class<T>
 		if (ref == null || null == (rv = ref.get()))
 		{
 			// Based on the binary name
-			String binaryname = this._binaryname;
+			String binaryname = this._data.binaryName();
 			switch (binaryname)
 			{
 					// Primitive types have the same binary name
@@ -478,7 +440,7 @@ public final class Class<T>
 	private final Class<?> __rootType()
 	{
 		Class<?> rv = this;
-		for (Class<?> r = this; r != null; r = r._component)
+		for (Class<?> r = this; r != null; r = r._data.component())
 			rv = r;
 		return rv;
 	}

@@ -512,9 +512,10 @@ public final class SpringThreadWorker
 				for (int i = 0; i < ni; i++)
 					ints.set(i, this.asVMObject(interfaces[i]));
 				
-				// Initialize class with special class index and some class
-				// information
-				rv = this.newInstance(classobj.name(),
+				// Initialize V1 class data which is initialized with class
+				// data
+				SpringObject cdata = this.newInstance(new ClassName(
+					"cc/squirreljme/runtime/cldc/lang/ClassDataV1"),
 					new MethodDescriptor("(ILjava/lang/String;" +
 						"Ljava/lang/Class;[Ljava/lang/Class;" +
 						"Ljava/lang/Class;Ljava/lang/String;I)V"),
@@ -526,6 +527,12 @@ public final class SpringThreadWorker
 						this.asVMObject(resclass.componentType())),
 					this.asVMObject(resclass.inJar()),
 					resclass.flags().toJavaBits());
+				
+				// Initialize class with special class index and some class
+				// information
+				rv = this.newInstance(classobj.name(),
+					new MethodDescriptor(
+					"(Lcc/squirreljme/runtime/cldc/lang/ClassData;)V"), cdata);
 				
 				// Cache and use it
 				com.put(name, rv);
