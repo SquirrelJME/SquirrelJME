@@ -8,4 +8,10 @@ secondary-sub-after-notify: int:4
 secondary-sub-after-sleep: int:5
 secondary-sub-in-lock: int:3
 secondary-thread-created: int:2
-
+secondary-in-lock2: int:8
+secondary-thread-created2: int:9
+secondary-after-lock2: int:14
+secondary-expected-resume2: int:13
+secondary-sub-after-notify2: int:11
+secondary-sub-after-sleep2: int:12
+secondary-sub-in-lock2: int:10

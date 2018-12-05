@@ -66,6 +66,40 @@ public class TestSynchronizedMethod
 		
 		// Note
 		this.secondary("after-lock", this._count++);
+		
+		// Perform another test
+		synchronized (TestSynchronizedMethod.class)
+		{
+			// Note
+			this.secondary("in-lock2", this._count++);
+			
+			// Create new thread
+			Thread t = new Thread(new __Cl__(), "SynchronizedMethodTest2");
+			t.start();
+			
+			// Note
+			this.secondary("thread-created2", this._count++);
+			
+			// Wait on monitor
+			try
+			{
+				// Wait forever
+				TestSynchronizedMethod.class.wait();
+				
+				// Note
+				this.secondary("expected-resume2", this._count++);
+			}
+			
+			// Interrupted?
+			catch (InterruptedException e)
+			{
+				// Note
+				this.secondary("interrupted2", this._count++);
+			}
+		}
+		
+		// Note
+		this.secondary("after-lock2", this._count++);
 	}
 	
 	/**
@@ -98,16 +132,65 @@ public class TestSynchronizedMethod
 	}
 	
 	/**
+	 * Same as above, but static.
+	 *
+	 * @param __m The method to report to.
+	 * @since 2018/12/04
+	 */
+	public static synchronized void testStatic(TestSynchronizedMethod __m)
+	{
+		// Note
+		__m.secondary("sub-in-lock2", __m._count++);
+		
+		// Notify other thread
+		TestSynchronizedMethod.class.notify();
+		
+		// Note
+		__m.secondary("sub-after-notify2", __m._count++);
+		
+		// Sleep for a bit, for sanity
+		try
+		{
+			Thread.sleep(1000);
+		}
+		catch (InterruptedException e)
+		{
+		}
+		
+		// Sub continued
+		__m.secondary("sub-after-sleep2", __m._count++);
+	}
+	
+	/**
+	 * Sub-thread which runs on the class!
+	 *
+	 * @since 2018/12/04
+	 */
+	final class __Cl__
+		implements Runnable
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2018/12/04
+		 */
+		@Override
+		public void run()
+		{
+			TestSynchronizedMethod.testStatic(TestSynchronizedMethod.this);
+		}
+	}
+	
+	/**
 	 * Sub-thread which runs.
 	 *
-	 * @since 2018/11/21
+	 * @since 2018/12/04
 	 */
 	final class __Sub__
 		implements Runnable
 	{
 		/**
 		 * {@inheritDoc}
-		 * @since 2018/11/21
+		 * @since 2018/12/04
 		 */
 		@Override
 		public void run()
