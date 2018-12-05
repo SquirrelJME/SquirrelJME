@@ -512,13 +512,33 @@ public final class SpringThreadWorker
 				for (int i = 0; i < ni; i++)
 					ints.set(i, this.asVMObject(interfaces[i]));
 				
+				// See if there is a default constructor
+				SpringMethod defconmeth = resclass.lookupDefaultConstructor();
+				
+				// Get static method for this constructor
+				int defconflags;
+				SpringObject defconsm;
+				if (defconmeth != null)
+				{
+					defconflags = defconmeth.flags().toJavaBits();
+					defconsm = new SpringVMStaticMethod(defconmeth);
+				}
+				
+				// There is none
+				else
+				{
+					defconflags = 0;
+					defconsm = SpringNullObject.NULL;
+				}
+				
 				// Initialize V1 class data which is initialized with class
 				// data
 				SpringObject cdata = this.newInstance(new ClassName(
 					"cc/squirreljme/runtime/cldc/lang/ClassDataV1"),
 					new MethodDescriptor("(ILjava/lang/String;" +
 						"Ljava/lang/Class;[Ljava/lang/Class;" +
-						"Ljava/lang/Class;Ljava/lang/String;I)V"),
+						"Ljava/lang/Class;Ljava/lang/String;II" +
+						"Lcc/squirreljme/runtime/cldc/asm/StaticMethod;)V"),
 					resclass.specialIndex(),
 					this.asVMObject(name.toString()),
 					this.asVMObject(resclass.superClass()),
@@ -526,7 +546,8 @@ public final class SpringThreadWorker
 					(!resclass.isArray() ? SpringNullObject.NULL :
 						this.asVMObject(resclass.componentType())),
 					this.asVMObject(resclass.inJar()),
-					resclass.flags().toJavaBits());
+					resclass.flags().toJavaBits(),
+					defconflags, defconsm);
 				
 				// Initialize class with special class index and some class
 				// information

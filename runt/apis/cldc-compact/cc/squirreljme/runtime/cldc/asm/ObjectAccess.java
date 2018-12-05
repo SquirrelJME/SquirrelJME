@@ -10,6 +10,7 @@
 
 package cc.squirreljme.runtime.cldc.asm;
 
+import cc.squirreljme.runtime.cldc.lang.ClassData;
 import cc.squirreljme.runtime.cldc.ref.PrimitiveReference;
 import cc.squirreljme.runtime.cldc.ref.PrimitiveWeakReference;
 
@@ -42,12 +43,23 @@ public final class ObjectAccess
 	}
 	
 	/**
+	 * Allocates an object but does not construct it
+	 *
+	 * @param __cl The class to allocate.
+	 * @return An object for the class, it is not initialized with a
+	 * constructor.
+	 * @since 2018/12/04
+	 */
+	public static final native Object allocateObject(String __cl);
+	
+	/**
 	 * Returns the component type of the given array.
 	 *
 	 * @param __cl The class to get the component type of.
 	 * @return The component type or {@code null} if it is not valid.
 	 * @since 2018/09/25
 	 */
+	@Deprecated
 	public static final native Class<?> arrayComponentType(Class<?> __cl);
 	
 	/**
@@ -80,6 +92,15 @@ public final class ObjectAccess
 	 * @since 2018/09/23 
 	 */
 	public static final native Class<?> classByName(String __s);
+	
+	/**
+	 * Returns the class data which is attached to the given class object.
+	 *
+	 * @param __cl The class to get the data from.
+	 * @return The resulting class data.
+	 * @since 2018/12/04
+	 */
+	public static final native ClassData classData(Class<?> __cl);
 	
 	/**
 	 * Returns the class object for the given object.
@@ -150,6 +171,7 @@ public final class ObjectAccess
 	 * not be initialized.
 	 * @since 2018/11/20
 	 */
+	@Deprecated
 	public static final native Object newInstanceByName(String __n);
 	
 	/**
