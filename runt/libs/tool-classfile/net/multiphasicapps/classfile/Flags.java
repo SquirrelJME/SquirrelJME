@@ -123,6 +123,22 @@ public abstract class Flags<F extends Flag>
 	}
 	
 	/**
+	 * Converts the flags to Java bits.
+	 *
+	 * @return The Java bits.
+	 * @since 2018/12/04
+	 */
+	public final int toJavaBits()
+	{
+		int rv = 0;
+		
+		for (Flag f : this)
+			rv |= f.javaBitMask();
+		
+		return rv;
+	}
+	
+	/**
 	 * Decodes the specified bitfield and returns the used flags.
 	 *
 	 * @param <F> The type of flags to decode.
