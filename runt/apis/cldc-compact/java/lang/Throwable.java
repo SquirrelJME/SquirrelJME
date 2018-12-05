@@ -371,7 +371,7 @@ public class Throwable
 			// Resolve the name for this class, because it will be at the
 			// bottom of the constructor stack
 			long lid = DebugAccess.unresolveString(
-				__this.getClass()._binaryname);
+				__this.getClass()._data.binaryName());
 			
 			// Split off IDs
 			int lhi = (int)(lid >>> 32),
