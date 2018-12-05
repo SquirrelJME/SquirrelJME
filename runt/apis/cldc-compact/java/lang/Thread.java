@@ -649,7 +649,8 @@ public class Thread
 					// Start MIDlet, construct then startApp()
 				case _START_MIDLET:
 					ObjectAccess.invokeStatic(runmethod,
-						ObjectAccess.newInstanceByName((String)runargument));
+						ObjectAccess.classByName((String)runargument).
+						__newInstance());
 					break;
 					
 					// Start main(String) method
