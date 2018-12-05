@@ -316,6 +316,19 @@ public final class SpringThreadWorker
 	 */
 	public final Object asVMObject(Object __in)
 	{
+		return this.asVMObject(__in, false);
+	}
+	
+	/**
+	 * Converts the specified native object to a virtual machine object.
+	 *
+	 * @param __in The input object.
+	 * @param __noclassres Do not use class resolution? Just load the class?
+	 * @return The resulting VM object.
+	 * @since 2018/09/16
+	 */
+	public final Object asVMObject(Object __in, boolean __noclassres)
+	{
 		// Null is converted to null
 		if (__in == null)
 			return SpringNullObject.NULL;
@@ -499,7 +512,8 @@ public final class SpringThreadWorker
 					return rv;
 				
 				// Resolve the input class, so it is initialized
-				SpringClass resclass = this.resolveClass(name);
+				SpringClass resclass = (__noclassres ? this.loadClass(name) :
+					this.resolveClass(name));
 				
 				// Resolve the class object
 				SpringClass classobj = this.resolveClass(
@@ -540,11 +554,11 @@ public final class SpringThreadWorker
 						"Ljava/lang/Class;Ljava/lang/String;II" +
 						"Lcc/squirreljme/runtime/cldc/asm/StaticMethod;)V"),
 					resclass.specialIndex(),
-					this.asVMObject(name.toString()),
-					this.asVMObject(resclass.superClass()),
+					this.asVMObject(name.toString(), true),
+					this.asVMObject(resclass.superClass(), true),
 					ints,
 					(!resclass.isArray() ? SpringNullObject.NULL :
-						this.asVMObject(resclass.componentType())),
+						this.asVMObject(resclass.componentType(), true)),
 					this.asVMObject(resclass.inJar()),
 					resclass.flags().toJavaBits(),
 					defconflags, defconsm);
@@ -3901,7 +3915,7 @@ public final class SpringThreadWorker
 			
 			// Push native object to the stack
 			if (type.hasReturnValue())
-				__f.pushToStack(this.asVMObject(rv));
+				__f.pushToStack(this.asVMObject(rv, true));
 		}
 		
 		// Real code that exists in class file format
