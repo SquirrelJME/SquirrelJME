@@ -12,6 +12,7 @@ package java.lang;
 
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import cc.squirreljme.runtime.cldc.asm.ResourceAccess;
+import cc.squirreljme.runtime.cldc.asm.StaticMethod;
 import cc.squirreljme.runtime.cldc.io.ResourceInputStream;
 import cc.squirreljme.runtime.cldc.lang.ClassData;
 import java.io.InputStream;
@@ -309,10 +310,20 @@ public final class Class<T>
 		return this.isAssignableFrom(__o.getClass());
 	}
 	
+	/**
+	 * Constructs a new instance of this class.
+	 *
+	 * @throws InstantiationException If the default constructor cannot be
+	 * accessed by the calling method.
+	 * @throws IllegalAccessException If the class or constructor could not
+	 * be accessed.
+	 * @since 2018/12/04
+	 */
+	@SuppressWarnings({"unchecked"})
 	public T newInstance()
 		throws InstantiationException, IllegalAccessException
 	{
-		throw new todo.TODO();
+		return (T)((Object)this.__newInstance());
 	}
 	
 	/**
@@ -358,43 +369,6 @@ public final class Class<T>
 	}
 	
 	/**
-	 * Locates the class with the given name and returns it, otherwise an
-	 * exception is thrown.
-	 *
-	 * The expected form of the class is a name as is mostly used in the
-	 * Java language ({@code some.package.Foo}) and not one that is internal
-	 * to the virtual machine except in the case of an array. Inner classes do
-	 * not follow dot notation, an inner class is usually separated by a dollar
-	 * sign '$'. For example {@code Map.Entry} is {@code java.util.Map$Entry}.
-	 *
-	 * If an array is requested then it must only be of a primitive type using
-	 * a Java internal type descriptor.
-	 *
-	 * @param __n The name of the class to find.
-	 * @return The class with the given name.
-	 * @throws ClassNotFoundException If the given class was not found.
-	 * @throws NullPointerException If no name was specified.
-	 * @since 2016/03/01
-	 */
-	public static Class<?> forName(String __n)
-		throws ClassNotFoundException
-	{
-		// No class specified
-		if (__n == null)
-			throw new NullPointerException();
-		
-		// The name will have to be converted to binary form since that is
-		// what is internally used
-		Class<?> rv = ObjectAccess.classByName(__n.replace('.', '/'));
-		
-		// {@squirreljme.error ZZ0m Could not find the specified class. (The
-		// name of the class)}
-		if (rv == null)
-			throw new ClassNotFoundException(String.format("ZZ0m %s", __n));
-		return rv;
-	}
-	
-	/**
 	 * This checks whether assertions should be **disabled** for this class (or
 	 * for the entire package).
 	 *
@@ -432,6 +406,38 @@ public final class Class<T>
 	}
 	
 	/**
+	 * Constructs a new instance of this class.
+	 *
+	 * @throws InstantiationException If the default constructor cannot be
+	 * accessed by the calling method.
+	 * @throws IllegalAccessException If the class or constructor could not
+	 * be accessed.
+	 * @since 2018/12/04
+	 */
+	public final Object __newInstance()
+		throws InstantiationException, IllegalAccessException
+	{
+		// Get class details
+		ClassData data = this._data;
+		String binaryname = data.binaryName();
+		
+		// {@squirreljme.error ZZ35 Cannot construct new instance of class
+		// because it has no default constructor.}
+		StaticMethod sm = data.defaultConstructorMethod();
+		if (sm == null)
+			throw new InstantiationException("ZZ35 " + binaryname);
+		
+		// Allocate class instance
+		Object rv = ObjectAccess.allocateObject(binaryname);
+		
+		// Call default constructor
+		ObjectAccess.invokeStatic(sm, rv);
+		
+		// All done!
+		return rv;
+	}
+	
+	/**
 	 * Returns the root type, the base of the component.
 	 *
 	 * @return The root type of this type.
@@ -442,6 +448,43 @@ public final class Class<T>
 		Class<?> rv = this;
 		for (Class<?> r = this; r != null; r = r._data.component())
 			rv = r;
+		return rv;
+	}
+	
+	/**
+	 * Locates the class with the given name and returns it, otherwise an
+	 * exception is thrown.
+	 *
+	 * The expected form of the class is a name as is mostly used in the
+	 * Java language ({@code some.package.Foo}) and not one that is internal
+	 * to the virtual machine except in the case of an array. Inner classes do
+	 * not follow dot notation, an inner class is usually separated by a dollar
+	 * sign '$'. For example {@code Map.Entry} is {@code java.util.Map$Entry}.
+	 *
+	 * If an array is requested then it must only be of a primitive type using
+	 * a Java internal type descriptor.
+	 *
+	 * @param __n The name of the class to find.
+	 * @return The class with the given name.
+	 * @throws ClassNotFoundException If the given class was not found.
+	 * @throws NullPointerException If no name was specified.
+	 * @since 2016/03/01
+	 */
+	public static Class<?> forName(String __n)
+		throws ClassNotFoundException
+	{
+		// No class specified
+		if (__n == null)
+			throw new NullPointerException();
+		
+		// The name will have to be converted to binary form since that is
+		// what is internally used
+		Class<?> rv = ObjectAccess.classByName(__n.replace('.', '/'));
+		
+		// {@squirreljme.error ZZ0m Could not find the specified class. (The
+		// name of the class)}
+		if (rv == null)
+			throw new ClassNotFoundException(String.format("ZZ0m %s", __n));
 		return rv;
 	}
 }
