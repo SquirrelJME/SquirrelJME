@@ -1377,7 +1377,7 @@ public final class SpringThreadWorker
 				"classByName:(Ljava/lang/String;)Ljava/lang/Class;":
 				return this.asVMObject(new ClassName(
 					this.<String>asNativeObject(String.class,
-					(SpringObject)__args[0]), true));
+					(SpringObject)__args[0])), true);
 				
 				// Returns the class data for a class object
 			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
@@ -1612,7 +1612,7 @@ public final class SpringThreadWorker
 					
 					// Zero time is a yield
 					if (ms == 0 && ns == 0)
-						Thread.yield(0);
+						Thread.yield();
 					
 					// Otherwise sleep for given time
 					else
