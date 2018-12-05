@@ -16,6 +16,7 @@ import cc.squirreljme.runtime.cldc.io.ResourceInputStream;
 import java.io.InputStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import cc.squirreljme.runtime.cldc.lang.ClassFlag;
 
 public final class Class<T>
 {
@@ -44,8 +45,8 @@ public final class Class<T>
 	/** The JAR this class is in. */
 	private final String _injar;
 	
-	/** Is this an interface. */
-	private final boolean _isinterface;
+	/** Class flags. */
+	private final int _flags;
 	
 	/** Has the assertion status been checked already? */
 	private volatile boolean _checkedassert;
@@ -67,12 +68,12 @@ public final class Class<T>
 	 * @param __sc Super classes.
 	 * @param __ic Interface classes.
 	 * @param __ij The JAR this class is in.
-	 * @param __int Is this an interface?
+	 * @param __flags Class flags.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/12
 	 */
 	private Class(int __csi, String __bn, Class<?> __sc, Class<?>[] __ic,
-		Class<?> __ct, String __ij, boolean __int)
+		Class<?> __ct, String __ij, int __flags)
 		throws NullPointerException
 	{
 		if (__bn == null)
@@ -84,7 +85,7 @@ public final class Class<T>
 		this._interfaceclasses = __ic;
 		this._component = __ct;
 		this._injar = __ij;
-		this._isinterface = __int;
+		this._flags = __flags;
 		
 		// Count dimensions, used for comparison purposes
 		int dims = 0;
@@ -326,7 +327,7 @@ public final class Class<T>
 	 */
 	public boolean isInterface()
 	{
-		return this._isinterface;
+		return (this._flags & ClassFlag.INTERFACE) != 0;
 	}
 	
 	/**
@@ -382,7 +383,7 @@ public final class Class<T>
 				
 					// Otherwise build a string
 				default:
-					rv = (this._isinterface ? "interface " : "class ") +
+					rv = (this.isInterface() ? "interface " : "class ") +
 						this.getName(); 
 					break;
 			}
