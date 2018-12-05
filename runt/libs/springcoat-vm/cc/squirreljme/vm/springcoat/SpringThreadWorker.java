@@ -1110,6 +1110,11 @@ public final class SpringThreadWorker
 					else
 						return ConsoleOutput.ERROR_INVALIDFD;
 				}
+				
+				// Access to database
+			case "cc/squirreljme/runtime/cldc/asm/DatabaseAccess::" +
+				"present:()Z":
+				return false;
 			
 				// Fatal report of a raw call trace in early TODO code
 			case "cc/squirreljme/runtime/cldc/asm/DebugAccess::" +
@@ -1212,6 +1217,27 @@ public final class SpringThreadWorker
 				"unresolveString:(Ljava/lang/String;)J":
 				return this.machine.debugUnresolveString(
 					this.<String>asNativeObject(String.class, __args[0]));
+				
+				// Free memory
+			case "cc/squirreljme/runtime/cldc/asm/MemoryAccess::" +
+				"freeMemory:()J":
+				return Runtime.getRuntime().freeMemory();
+				
+				// Garbage collect suggestion
+			case "cc/squirreljme/runtime/cldc/asm/MemoryAccess::" +
+				"gc:()V":
+				Runtime.getRuntime().gc();
+				return null;
+				
+				// Max memory
+			case "cc/squirreljme/runtime/cldc/asm/MemoryAccess::" +
+				"maxMemory:()J":
+				return Runtime.getRuntime().maxMemory();
+				
+				// Max memory
+			case "cc/squirreljme/runtime/cldc/asm/MemoryAccess::" +
+				"totalMemory:()J":
+				return Runtime.getRuntime().totalMemory();
 				
 				// Accelerated graphics
 			case "cc/squirreljme/runtime/cldc/asm/NativeDisplayAccess::" +

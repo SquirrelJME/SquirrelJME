@@ -10,6 +10,9 @@
 
 package cc.squirreljme.runtime.cldc.asm;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.lang.ApiLevel;
+
 /**
  * This is used to access the system registry which is compatible in a fashion
  * that is compatible with an extrapolation of Windows registries.

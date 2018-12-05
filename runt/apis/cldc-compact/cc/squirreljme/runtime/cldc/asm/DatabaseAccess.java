@@ -10,6 +10,9 @@
 
 package cc.squirreljme.runtime.cldc.asm;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.lang.ApiLevel;
+
 /**
  * This is used to access databases which are compatible in a fashion that is
  * compatible with an extrapolation of Palm OS databases.
@@ -33,6 +36,7 @@ public final class DatabaseAccess
 	 * @return If a database is present.
 	 * @since 2018/10/14
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native boolean present();
 }
 

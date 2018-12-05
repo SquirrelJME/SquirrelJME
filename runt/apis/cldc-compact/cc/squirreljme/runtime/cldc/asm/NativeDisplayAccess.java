@@ -10,6 +10,9 @@
 
 package cc.squirreljme.runtime.cldc.asm;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.lang.ApiLevel;
+
 /**
  * This class provides access to the native display system that is used by the
  * LCDUI code to display widgets and such to the screen. Any application may

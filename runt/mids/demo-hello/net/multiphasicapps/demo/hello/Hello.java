@@ -40,6 +40,9 @@ public class Hello
 			"os.version",
 			"microedition.locale",
 			"microedition.profiles",
+			"cc.squirreljme.vm.freemem",
+			"cc.squirreljme.vm.totalmem",
+			"cc.squirreljme.vm.maxmem",
 		};
 	
 	/**

@@ -10,6 +10,9 @@
 
 package cc.squirreljme.runtime.cldc.asm;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.lang.ApiLevel;
+
 /**
  * Access to suites and other suites which are available for usage.
  *

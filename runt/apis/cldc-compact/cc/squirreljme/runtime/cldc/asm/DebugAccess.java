@@ -10,7 +10,9 @@
 
 package cc.squirreljme.runtime.cldc.asm;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
+import cc.squirreljme.runtime.cldc.lang.ApiLevel;
 
 /**
  * This is used to provide debug access to the virtual machine and to do
@@ -43,6 +45,7 @@ public final class DebugAccess
 	 * @param __rct The raw trace code.
 	 * @since 2018/09/19
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native void fatalTodoReport(int[] __rct);
 	
 	/**
@@ -62,6 +65,7 @@ public final class DebugAccess
 	 * @return The raw call trace in pointer and value format.
 	 * @since 2018/09/16
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int[] rawCallTrace();
 	
 	/**
@@ -72,6 +76,7 @@ public final class DebugAccess
 	 * resolution.
 	 * @since 2018/09/29
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native String resolveString(long __p);
 	
 	/**
@@ -81,6 +86,7 @@ public final class DebugAccess
 	 * @return The pointer to the string, or {@code -1} if it is not valid.
 	 * @since 2018/09/29
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native long unresolveString(String __s);
 	
 	/**
