@@ -80,6 +80,15 @@ public final class SpringThreadWorker
 		this.machine = __m;
 		this.thread = __t;
 		this.signalinstead = (__main ? Thread.currentThread() : null);
+		
+		// Set the thread's worker to this
+		if (__t._worker == null)
+			__t._worker = this;
+		
+		// {@squirreljme.error BK39 Thread already has a worker associated
+		// with it.}
+		else
+			throw new SpringVirtualMachineException("BK39");
 	}
 	
 	/**
