@@ -10,6 +10,8 @@
 
 package cc.squirreljme.runtime.cldc.lang;
 
+import cc.squirreljme.runtime.cldc.asm.StaticMethod;
+
 /**
  * Version 1 class data.
  *
@@ -42,6 +44,12 @@ public class ClassDataV1
 	/** Class flags. */
 	private final int _flags;
 	
+	/** Default constructor flags. */
+	private final int _defaultconflags;
+	
+	/** Default constructor method. */
+	private final StaticMethod _defaultconmethod;
+	
 	/**
 	 * Version 1 constructor.
 	 *
@@ -51,11 +59,13 @@ public class ClassDataV1
 	 * @param __ic Interface classes.
 	 * @param __ij The JAR this class is in.
 	 * @param __flags Class flags.
+	 * @param __dcf Default constructor flag.
+	 * @param __dcm Default constructor method.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/12
 	 */
 	public ClassDataV1(int __csi, String __bn, Class<?> __sc, Class<?>[] __ic,
-		Class<?> __ct, String __ij, int __flags)
+		Class<?> __ct, String __ij, int __flags, int __dcf, StaticMethod __dcm)
 		throws NullPointerException
 	{
 		super(1);
@@ -70,6 +80,8 @@ public class ClassDataV1
 		this._component = __ct;
 		this._injar = __ij;
 		this._flags = __flags;
+		this._defaultconflags = __dcf;
+		this._defaultconmethod = __dcm;
 		
 		// Count dimensions, used for comparison purposes
 		int dims = 0;
@@ -89,14 +101,33 @@ public class ClassDataV1
 	}
 	
 	/**
-	 * Returns the component of the array.
-	 *
-	 * @return The array component.
+	 * {@inheritDoc}
 	 * @since 2018/12/04
 	 */
+	@Override
 	public Class<?> component()
 	{
 		return this._component;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/04
+	 */
+	@Override
+	public int defaultConstructorFlags()
+	{
+		return this._defaultconflags;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/04
+	 */
+	@Override
+	public StaticMethod defaultConstructorMethod()
+	{
+		return this._defaultconmethod;
 	}
 	
 	/**

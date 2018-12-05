@@ -10,6 +10,8 @@
 
 package cc.squirreljme.runtime.cldc.lang;
 
+import cc.squirreljme.runtime.cldc.asm.StaticMethod;
+
 /**
  * This class contains information that is needed by the class object.
  *
@@ -50,6 +52,22 @@ public abstract class ClassData
 	 * @since 2018/12/04
 	 */
 	public abstract Class<?> component();
+	
+	/**
+	 * Returns the flags for the default constructor.
+	 *
+	 * @return The default constructor flags.
+	 * @since 2018/12/04
+	 */
+	public abstract int defaultConstructorFlags();
+	
+	/**
+	 * Returns the method which is used for the default constructor.
+	 *
+	 * @return The static method for the default constructor.
+	 * @since 2018/12/04
+	 */
+	public abstract StaticMethod defaultConstructorMethod();
 	
 	/**
 	 * Returns the number of dimensions for the array.

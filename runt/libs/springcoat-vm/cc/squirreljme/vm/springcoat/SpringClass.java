@@ -495,8 +495,15 @@ public final class SpringClass
 	 */
 	public final SpringMethod lookupDefaultConstructor()
 	{
-		return this.lookupMethodNonVirtual(new MethodNameAndType("<init>",
-			"()V"));
+		try
+		{
+			return this.lookupMethodNonVirtual(new MethodNameAndType("<init>",
+				"()V"));
+		}
+		catch (SpringNoSuchMethodException e)
+		{
+			return null;
+		}
 	}
 	
 	/**
