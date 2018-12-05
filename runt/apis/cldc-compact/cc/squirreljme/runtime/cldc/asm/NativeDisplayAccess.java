@@ -75,6 +75,7 @@ public final class NativeDisplayAccess
 	 * @return {@code true} if acceleration is supported.
 	 * @since 2018/11/19
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native boolean accelGfx(int __id);
 	
 	/**
@@ -86,6 +87,7 @@ public final class NativeDisplayAccess
 	 * @return The result of the operation.
 	 * @since 2018/11/19
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native Object accelGfxFunc(int __id, int __func,
 		Object... __args);
 	
@@ -96,6 +98,7 @@ public final class NativeDisplayAccess
 	 * @return The capabilities of the display.
 	 * @since 2018/11/17
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int capabilities(int __id);
 	
 	/**
@@ -108,6 +111,7 @@ public final class NativeDisplayAccess
 	 * @param __h The height.
 	 * @since 2018/12/03
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native void displayRepaint(int __id,
 		int __x, int __y, int __w, int __h);
 	
@@ -118,6 +122,7 @@ public final class NativeDisplayAccess
 	 * @return The framebuffer array.
 	 * @since 2018/11/18
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native Object framebufferObject(int __id);
 	
 	/**
@@ -127,6 +132,7 @@ public final class NativeDisplayAccess
 	 * @return The palette of the framebuffer.
 	 * @since 2018/11/18
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int[] framebufferPalette(int __id);
 	
 	/**
@@ -136,6 +142,7 @@ public final class NativeDisplayAccess
 	 * @return The framebuffer parameters.
 	 * @since 2018/11/18
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int[] framebufferParameters(int __id);
 	
 	/**
@@ -147,6 +154,7 @@ public final class NativeDisplayAccess
 	 * @return The state count for the framebuffer.
 	 * @since 2018/12/02
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int framebufferStateCount(int __id);
 	
 	/**
@@ -156,6 +164,7 @@ public final class NativeDisplayAccess
 	 * @return If the display is upsidedown.
 	 * @since 2018/11/17
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native boolean isUpsideDown(int __id);
 	
 	/**
@@ -165,6 +174,7 @@ public final class NativeDisplayAccess
 	 * @return The number of displays attached to the system.
 	 * @since 2018/11/16
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native int numDisplays();
 	
 	/**
@@ -174,6 +184,7 @@ public final class NativeDisplayAccess
 	 * @param __cb The callback.
 	 * @since 2018/12/03
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native void registerEventCallback(
 		NativeDisplayEventCallback __cb);
 	
@@ -184,6 +195,7 @@ public final class NativeDisplayAccess
 	 * @param __t The title to use.
 	 * @since 2018/11/18
 	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native void setDisplayTitle(int __id, String __t);
 }
 
