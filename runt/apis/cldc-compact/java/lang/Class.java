@@ -323,6 +323,8 @@ public final class Class<T>
 	public T newInstance()
 		throws InstantiationException, IllegalAccessException
 	{
+		todo.TODO.note("Implement newInstance() access checks.");
+		
 		return (T)((Object)this.__newInstance());
 	}
 	

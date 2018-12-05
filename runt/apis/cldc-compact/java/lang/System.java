@@ -16,6 +16,7 @@ import cc.squirreljme.runtime.cldc.asm.SystemProperties;
 import cc.squirreljme.runtime.cldc.asm.TimeAccess;
 import cc.squirreljme.runtime.cldc.io.StandardError;
 import cc.squirreljme.runtime.cldc.io.StandardOutput;
+import cc.squirreljme.runtime.cldc.lang.ApiLevel;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.security.Permission;
@@ -276,6 +277,10 @@ public final class System
 		// Depends on the property
 		switch (__k)
 		{
+				// API level of SquirrelJME
+			case "cc.squirreljme.apilevel":
+				return ApiLevel.levelToString(ApiLevel.CURRENT_LEVEL);
+			
 				// SquirrelJME guest depth
 			case "cc.squirreljme.guests":
 				return Integer.toString(SystemProperties.guestDepth());

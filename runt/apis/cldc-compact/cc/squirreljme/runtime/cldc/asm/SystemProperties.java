@@ -46,6 +46,14 @@ public final class SystemProperties
 	}
 	
 	/**
+	 * Returns the API level of the virtual machine.
+	 *
+	 * @return The API level.
+	 * @since 2018/12/05
+	 */
+	public static native int apiLevel();
+	
+	/**
 	 * Returns the e-mail to contact for the virtual machine.
 	 *
 	 * @return The contact e-mail for the virtual machine.

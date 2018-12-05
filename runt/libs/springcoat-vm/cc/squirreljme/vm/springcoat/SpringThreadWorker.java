@@ -12,6 +12,7 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.runtime.cldc.asm.ConsoleOutput;
 import cc.squirreljme.runtime.cldc.asm.DebugAccess;
+import cc.squirreljme.runtime.cldc.lang.ApiLevel;
 import cc.squirreljme.runtime.cldc.lang.GuestDepth;
 import java.io.PrintStream;
 import java.util.Formatter;
@@ -1491,6 +1492,11 @@ public final class SpringThreadWorker
 				this.thread.profiler.exitAll(System.nanoTime());
 				this.machine.exit((Integer)__args[0]);
 				return null;
+			
+				// Returns the API level of the VM
+			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
+				"apiLevel:()I":
+				return ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225;
 				
 				// The guest depth of this virtual machine
 			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
