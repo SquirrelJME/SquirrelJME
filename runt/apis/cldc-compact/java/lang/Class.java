@@ -408,6 +408,19 @@ public final class Class<T>
 	}
 	
 	/**
+	 * Returns the class data.
+	 *
+	 * SpringCoat depends on this method to exist.
+	 *
+	 * @return The class data.
+	 * @since 2018/12/05
+	 */
+	final ClassData __classData()
+	{
+		return this._data;
+	}
+	
+	/**
 	 * Constructs a new instance of this class.
 	 *
 	 * @throws InstantiationException If the default constructor cannot be
@@ -416,7 +429,7 @@ public final class Class<T>
 	 * be accessed.
 	 * @since 2018/12/04
 	 */
-	public final Object __newInstance()
+	final Object __newInstance()
 		throws InstantiationException, IllegalAccessException
 	{
 		// Get class details
