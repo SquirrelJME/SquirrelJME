@@ -1116,24 +1116,24 @@ public final class String
 	 */
 	public String trim()
 	{
-		// If there are no viable characters to trim, then return self
-		int n = this.length();
-		if (n <= 0 ||
-			(charAt(0) > _MIN_TRIM_CHAR && charAt(n - 1) > _MIN_TRIM_CHAR))
+		// Empty strings do not need trimming
+		BasicSequence sequence = this._sequence;
+		int n = sequence.length();
+		if (n <= 0)
 			return this;
 		
 		// Find starting trim position
 		int s;
-		for (s = 0; s < n && charAt(s) <= _MIN_TRIM_CHAR; s++)
+		for (s = 0; s < n && sequence.charAt(s) <= _MIN_TRIM_CHAR; s++)
 			;
 		
 		// Find ending trim position
 		int e;
-		for (e = n - 1; e >= 0 && charAt(e) <= _MIN_TRIM_CHAR; e--)
+		for (e = n - 1; e > s && sequence.charAt(e) <= _MIN_TRIM_CHAR; e--)
 			;
 		
 		// Return trimmed variant of it
-		return substring(s, e + 1);
+		return substring(s, e);
 	}
 	
 	/**
