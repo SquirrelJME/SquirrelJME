@@ -31,23 +31,42 @@ public final class StandardError
 		throws IOException
 	{
 		// {@squirreljme.error ZZ07 Error writing to standard error.}
-		if (ConsoleOutput.write(ConsoleOutput.ERROR, __b) != 0)
+		if (ConsoleOutput.write(ConsoleOutput.ERROR, __b) < 0)
 			throw new IOException("ZZ07");
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2016/08/07
+	 * @since 2018/12/05
 	 */
 	@Override
-	public void write(byte[] __b, int __o, int __l)
+	public void write(byte[] __b)
 		throws IOException, NullPointerException
 	{
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		
-		for (int i = __o, e = (__o + __l); i < e; i++)
-			this.write(__b[i]);
+		// {@squirreljme.error ZZ39 Error writing to standard error.}
+		if (ConsoleOutput.write(ConsoleOutput.ERROR, __b, 0, __b.length) < 0)
+			throw new IOException("ZZ39");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/05
+	 */
+	@Override
+	public void write(byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, IOException, NullPointerException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// {@squirreljme.error ZZ37 Error writing to standard error.}
+		if (ConsoleOutput.write(ConsoleOutput.ERROR, __b, __o, __l) < 0)
+			throw new IOException("ZZ37");
 	}
 }
 

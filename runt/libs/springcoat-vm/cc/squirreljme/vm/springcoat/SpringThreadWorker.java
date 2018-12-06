@@ -1113,6 +1113,28 @@ public final class SpringThreadWorker
 						return ConsoleOutput.ERROR_INVALIDFD;
 				}
 				
+				// Write to the console (bulk)
+			case "cc/squirreljme/runtime/cldc/asm/ConsoleOutput::" +
+				"write:(I[BII)I":
+				{
+					int fd = (Integer)__args[0];
+					PrintStream to = (fd == ConsoleOutput.OUTPUT ?
+						System.out : (fd == ConsoleOutput.ERROR ?
+						System.err : null));
+					
+					// Write if it exists
+					if (to != null)
+					{
+						to.write(
+							(byte[])((SpringArrayObjectByte)__args[1]).array(),
+							(Integer)__args[2],
+							(Integer)__args[3]);
+						return 0;
+					}
+					else
+						return ConsoleOutput.ERROR_INVALIDFD;
+				}
+				
 				// Access to database
 			case "cc/squirreljme/runtime/cldc/asm/DatabaseAccess::" +
 				"present:()Z":
