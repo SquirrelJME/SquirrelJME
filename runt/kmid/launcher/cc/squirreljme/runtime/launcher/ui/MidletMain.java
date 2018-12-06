@@ -76,18 +76,26 @@ public class MidletMain
 		// When a refresh is happening, change the title so that is
 		// indicated
 		List programlist = this.programlist;
-		programlist.setTitle("Loading...");
+		programlist.setTitle("Loading (Querying Suites)...");
 		
 		// Go through all of the available application suites and build the
 		// program list
+		boolean queried = false;
 		int foundcount = 0;
 		ArrayList<__Program__> programs = new ArrayList<>();
 		for (Suite suite : ManagerFactory.getSuiteManager().getSuites(
 			SuiteType.APPLICATION))
 		{
+			// Query is done, scan suites
+			if (!queried)
+			{
+				programlist.setTitle("Loading (Scanning Suites)...");
+				queried = true;
+			}
+			
 			// Since we need the program name AND the entry point we need
 			// to decode the parts that make it up!
-			for (int i = 0; i >= 1; i++)
+			for (int i = 1; i >= 1; i++)
 			{
 				// No more programs in this suite
 				String value = suite.getAttributeValue("MIDlet-" + i);
