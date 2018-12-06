@@ -10,8 +10,9 @@
 
 package cc.squirreljme.runtime.cldc.full;
 
-import cc.squirreljme.runtime.cldc.OperatingSystemType;
 import cc.squirreljme.runtime.cldc.asm.SystemAccess;
+import cc.squirreljme.runtime.cldc.asm.SystemProperties;
+import cc.squirreljme.runtime.cldc.lang.OperatingSystemType;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.nio.file.Path;
@@ -211,14 +212,17 @@ public final class StandardPaths
 	private static Path[] __defaultPathsOs()
 	{
 		// Based on OS
-		OperatingSystemType ostype = OperatingSystemType.systemType();
+		int ostype = SystemProperties.operatingSystemType();
 		
 		// These may be used by either OS
 		Path userhome = StandardPaths.__getPropertyPath("user.home");
 		Path userdir = StandardPaths.__getPropertyPath("user.dir");
 		
+		if (true)
+			throw new todo.TODO();
+		
 		// Unix systems
-		if (ostype.isUnix())
+		if (false)
 		{
 			Path[] rv = new Path[]
 				{

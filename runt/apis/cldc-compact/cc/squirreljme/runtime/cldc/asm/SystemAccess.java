@@ -51,14 +51,5 @@ public final class SystemAccess
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native String getEnv(String __e);
-	
-	/**
-	 * Returns the type of operating SquirrelJME is running on.
-	 *
-	 * @return The type of operating system SquirrelJME is running on.
-	 * @since 2018/10/14
-	 */
-	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
-	public static final native int operatingSystemType();
 }
 
