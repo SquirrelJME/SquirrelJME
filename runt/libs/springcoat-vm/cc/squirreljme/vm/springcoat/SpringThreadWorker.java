@@ -12,6 +12,7 @@ package cc.squirreljme.vm.springcoat;
 
 import cc.squirreljme.runtime.cldc.asm.ConsoleOutput;
 import cc.squirreljme.runtime.cldc.asm.DebugAccess;
+import cc.squirreljme.runtime.cldc.asm.SystemAccess;
 import cc.squirreljme.runtime.cldc.lang.ApiLevel;
 import cc.squirreljme.runtime.cldc.lang.GuestDepth;
 import cc.squirreljme.runtime.cldc.lang.OperatingSystemType;
@@ -1491,7 +1492,8 @@ public final class SpringThreadWorker
 				// Returns the number of bytes available in the resource.
 			case "cc/squirreljme/runtime/clcdc/asm/ResourceAccess::" +
 				"available:(I)I":
-				throw new todo.TODO();
+				return this.machine.resourceAccess().available(
+					(Integer)__args[0]);
 				
 				// Close resource in JAR
 			case "cc/squirreljme/runtime/cldc/asm/ResourceAccess::" +
