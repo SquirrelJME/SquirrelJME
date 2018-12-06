@@ -93,6 +93,15 @@ public final class SystemProperties
 	public static native String javaVMVersion();
 	
 	/**
+	 * Returns the type of operating SquirrelJME is running on.
+	 *
+	 * @return The type of operating system SquirrelJME is running on.
+	 * @since 2018/10/14
+	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
+	public static final native int operatingSystemType();
+	
+	/**
 	 * Returns a system property for the given value.
 	 *
 	 * @param __k The key to get.

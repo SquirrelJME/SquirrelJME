@@ -14,6 +14,7 @@ import cc.squirreljme.runtime.cldc.asm.ConsoleOutput;
 import cc.squirreljme.runtime.cldc.asm.DebugAccess;
 import cc.squirreljme.runtime.cldc.lang.ApiLevel;
 import cc.squirreljme.runtime.cldc.lang.GuestDepth;
+import cc.squirreljme.runtime.cldc.lang.OperatingSystemType;
 import java.io.PrintStream;
 import java.util.Formatter;
 import java.util.Map;
@@ -1528,11 +1529,6 @@ public final class SpringThreadWorker
 			case "cc/squirreljme/runtime/cldc/asm/SystemAccess::" +
 				"getEnv:(Ljava/lang/String;)Ljava/lang/String;":
 				throw new todo.TODO();
-				
-				// Get the operating system type
-			case "cc/squirreljme/runtime/cldc/asm/SystemAccess::" +
-				"operatingSystemType:()I":
-				throw new todo.TODO();
 			
 				// Returns the API level of the VM
 			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
@@ -1568,6 +1564,11 @@ public final class SpringThreadWorker
 			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
 				"javaVMVersion:()Ljava/lang/String;":
 				return "0.2.0";
+				
+				// Get the operating system type
+			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
+				"operatingSystemType:()I":
+				return OperatingSystemType.UNKNOWN;
 				
 				// Get system property
 			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
