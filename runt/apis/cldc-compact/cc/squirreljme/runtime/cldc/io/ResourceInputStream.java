@@ -45,10 +45,13 @@ public final class ResourceInputStream
 	 */
 	@Override
 	public final int available()
+		throws IOException
 	{
+		// {@squirreljme.error ZZ36 Could not obtain the available
+		// number of bytes left. (The error value)}
 		int rv = ResourceAccess.available(this.fd);
 		if (rv < 0)
-			return 0;
+			throw new IOException("ZZ36 " + rv);
 		return rv;
 	}
 	

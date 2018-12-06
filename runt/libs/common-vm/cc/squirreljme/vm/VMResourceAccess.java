@@ -49,6 +49,40 @@ public final class VMResourceAccess
 	}
 	
 	/**
+	 * Checks how many bytes are quickly available for read within a resource.
+	 *
+	 * @param __fd The file descriptor.
+	 * @return The number of bytes available quickly or negative on failure.
+	 * @since 2018/12/05
+	 */
+	public int available(int __fd)
+	{
+		// Locate the stream to read from
+		InputStream in;
+		Map<Integer, InputStream> streams = this._streams;
+		synchronized (streams)
+		{
+			in = streams.get(__fd);
+		}
+		
+		// No stream was found, so fail
+		if (in == null)
+			return -2;
+		
+		// Do the check
+		try
+		{
+			return in.available();
+		}
+		
+		// Failed so just pass that some exception happened
+		catch (IOException e)
+		{
+			return -3;
+		}
+	}
+	
+	/**
 	 * Closes the open resource.
 	 *
 	 * @param __fd The file descriptor.
