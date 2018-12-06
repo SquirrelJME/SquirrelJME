@@ -38,7 +38,10 @@ public final class SystemProperties
 	 * @since 2018/12/05
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
-	public static native int apiLevel();
+	public static int apiLevel()
+	{
+		return ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225;
+	}
 	
 	/**
 	 * Returns the depth of the guests within the virtual machine.
@@ -47,7 +50,10 @@ public final class SystemProperties
 	 * @since 2018/11/04
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
-	public static final native int guestDepth();
+	public static final int guestDepth()
+	{
+		return 0;
+	}
 	
 	/**
 	 * Returns the e-mail to contact for the virtual machine.
@@ -56,7 +62,10 @@ public final class SystemProperties
 	 * @since 2017/10/02
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
-	public static native String javaVMEmail();
+	public static String javaVMEmail()
+	{
+		return "xer@multiphasicapps.net";
+	}
 	
 	/**
 	 * Returns the name of the Java virtual machine.
@@ -65,7 +74,10 @@ public final class SystemProperties
 	 * @since 2017/10/02
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
-	public static native String javaVMName();
+	public static String javaVMName()
+	{
+		return "JavaSE Virtual Environment";
+	}
 	
 	/**
 	 * Returns the URL to the virtual machine's vendor's URL.
@@ -74,7 +86,10 @@ public final class SystemProperties
 	 * @since 2017/10/02
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
-	public static native String javaVMURL();
+	public static String javaVMURL()
+	{
+		return "http://multiphasicapps.net/";
+	}
 	
 	/**
 	 * Returns the vendor of the Java virtual machine.
@@ -83,7 +98,10 @@ public final class SystemProperties
 	 * @since 2017/10/02
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
-	public static native String javaVMVendor();
+	public static String javaVMVendor()
+	{
+		return "Stephanie Gawroriski";
+	}
 	
 	/**
 	 * Returns the full version of the Java virtual machine.
@@ -92,7 +110,10 @@ public final class SystemProperties
 	 * @since 2017/08/13
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
-	public static native String javaVMVersion();
+	public static String javaVMVersion()
+	{
+		return "0.2.0";
+	}
 	
 	/**
 	 * Returns the type of operating SquirrelJME is running on.
@@ -101,7 +122,10 @@ public final class SystemProperties
 	 * @since 2018/10/14
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
-	public static final native int operatingSystemType();
+	public static final int operatingSystemType()
+	{
+		return OperatingSystemType.UNKNOWN;
+	}
 	
 	/**
 	 * Returns a system property for the given value.
@@ -112,7 +136,10 @@ public final class SystemProperties
 	 * @since 2018/09/20
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
-	public static native String systemProperty(String __k);
+	public static String systemProperty(String __k)
+	{
+		return System.getProperty(__k);
+	}
 	
 	/**
 	 * Returns the version of the class libraries.
