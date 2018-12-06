@@ -179,6 +179,10 @@ abstract class __CoreTest__
 			passedth = __CoreTest__.__equals(thstr, expectth),
 			passedse = __CoreTest__.__equals(secondary, expectse);
 		
+		// Print the throwable stack since this was not expected
+		if (!passedth && (thrown instanceof Throwable))
+			((Throwable)thrown).printStackTrace();
+		
 		// Print test result, the passed format is shorter as expected values
 		// are not needed
 		boolean passed = passedrv && passedth && passedse;
