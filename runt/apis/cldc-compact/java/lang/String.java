@@ -1129,7 +1129,7 @@ public final class String
 		
 		// Find ending trim position
 		int e;
-		for (e = n - 1; e > s && sequence.charAt(e) <= _MIN_TRIM_CHAR; e--)
+		for (e = n; e > s && sequence.charAt(e - 1) <= _MIN_TRIM_CHAR; e--)
 			;
 		
 		// Return trimmed variant of it
