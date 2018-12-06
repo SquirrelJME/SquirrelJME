@@ -29,7 +29,7 @@ import java.awt.Transparency;
 public final class ColorInfo
 {
 	/**
-	 * {@squirreljme.error cc.squirreljme.runtime.javase.lcdui.pixelformat=f
+	 * {@squirreljme.property cc.squirreljme.runtime.javase.lcdui.pixelformat=f
 	 * This selects the format to use for the display when creating images.}
 	 */
 	public static final String PIXEL_FORMAT_PROPERTY =
