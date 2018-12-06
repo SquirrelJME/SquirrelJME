@@ -38,17 +38,36 @@ public final class StandardOutput
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2016/08/07
+	 * @since 2018/12/05
 	 */
 	@Override
-	public void write(byte[] __b, int __o, int __l)
+	public void write(byte[] __b)
 		throws IOException, NullPointerException
 	{
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		
-		for (int i = __o, e = (__o + __l); i < e; i++)
-			this.write(__b[i]);
+		// {@squirreljme.error ZZ3a Error writing to standard output.}
+		if (ConsoleOutput.write(ConsoleOutput.OUTPUT, __b, 0, __b.length) < 0)
+			throw new IOException("ZZ3a");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/05
+	 */
+	@Override
+	public void write(byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, IOException, NullPointerException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// {@squirreljme.error ZZ38 Error writing to standard output.}
+		if (ConsoleOutput.write(ConsoleOutput.OUTPUT, __b, __o, __l) < 0)
+			throw new IOException("ZZ38");
 	}
 }
 

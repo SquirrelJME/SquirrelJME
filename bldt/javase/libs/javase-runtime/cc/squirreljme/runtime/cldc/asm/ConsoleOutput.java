@@ -12,6 +12,7 @@ package cc.squirreljme.runtime.cldc.asm;
 
 import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.lang.ApiLevel;
+import java.io.IOException;
 
 /**
  * Used for printing to the console.
@@ -50,11 +51,24 @@ public final class ConsoleOutput
 	 *
 	 * @param __fd The file descriptor to write to.
 	 * @param __c The byte to write, only the lowest 8-bits are used.
-	 * @return Zero on success, negative values for failure.
+	 * @return Zero on success, negative values for EOF.
 	 * @since 2018/09/21
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
-	public static final native int write(int __fd, int __c);
+	public static final int write(int __fd, int __c)
+	{
+		if (__fd == OUTPUT)
+			System.out.write(__c);
+		
+		else if (__fd == ERROR)
+			System.err.write(__c);
+		
+		// Unknown
+		else
+			return ERROR_INVALIDFD;
+		
+		return 0;
+	}
 	
 	/**
 	 * Writes the given bytes to the console output.
@@ -67,7 +81,20 @@ public final class ConsoleOutput
 	 * @since 2018/12/05
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
-	public static final native int write(int __fd,
-		byte[] __b, int __o, int __l);
+	public static final int write(int __fd,
+		byte[] __b, int __o, int __l)
+	{
+		if (__fd == OUTPUT)
+			System.out.write(__b, __o, __l);
+		
+		else if (__fd == ERROR)
+			System.err.write(__b, __o, __l);
+		
+		// Unknown
+		else
+			return ERROR_INVALIDFD;
+		
+		return 0;
+	}
 }
 
