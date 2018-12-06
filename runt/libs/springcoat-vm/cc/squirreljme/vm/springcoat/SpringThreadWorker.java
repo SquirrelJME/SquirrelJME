@@ -1530,7 +1530,8 @@ public final class SpringThreadWorker
 				// Get environment variable
 			case "cc/squirreljme/runtime/cldc/asm/SystemAccess::" +
 				"getEnv:(Ljava/lang/String;)Ljava/lang/String;":
-				throw new todo.TODO();
+				return this.asVMObject(SystemAccess.getEnv(
+					this.<String>asNativeObject(String.class, __args[0])));
 			
 				// Returns the API level of the VM
 			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
