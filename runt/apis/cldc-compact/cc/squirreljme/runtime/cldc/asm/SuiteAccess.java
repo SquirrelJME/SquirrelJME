@@ -28,5 +28,14 @@ public class SuiteAccess
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native String[] availableSuites();
+	
+	/**
+	 * Returns the current classpath that is being used.
+	 *
+	 * @return The current classpath.
+	 * @since 2018/12/06
+	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
+	public static final native String[] currentClassPath();
 }
 

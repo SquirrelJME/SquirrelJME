@@ -31,5 +31,17 @@ public class SuiteAccess
 	{
 		return new String[0];
 	}
+	
+	/**
+	 * Returns the current classpath that is being used.
+	 *
+	 * @return The current classpath.
+	 * @since 2018/12/06
+	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
+	public static final String[] currentClassPath()
+	{
+		return new String[0];
+	}
 }
 

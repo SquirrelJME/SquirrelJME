@@ -16,6 +16,7 @@ import cc.squirreljme.runtime.cldc.asm.SystemAccess;
 import cc.squirreljme.runtime.cldc.lang.ApiLevel;
 import cc.squirreljme.runtime.cldc.lang.GuestDepth;
 import cc.squirreljme.runtime.cldc.lang.OperatingSystemType;
+import cc.squirreljme.vm.VMClassLibrary;
 import java.io.PrintStream;
 import java.util.Formatter;
 import java.util.Map;
@@ -1543,6 +1544,18 @@ public final class SpringThreadWorker
 			case "cc/squirreljme/runtime/cldc/asm/SuiteAccess::" +
 				"availableSuites:()[Ljava/lang/String;":
 				return this.machine.suiteManager().listLibraryNames();
+			
+				// List current class path
+			case "cc/squirreljme/runtime/cldc/asm/SuiteAccess::" +
+				"currentClassPath:()[Ljava/lang/String;":
+				{
+					VMClassLibrary[] vp = this.machine.classloader.classPath();
+					int n = vp.length;
+					String[] rv = new String[n];
+					for (int i = 0; i < n; i++)
+						rv[i] = vp[i].name();
+					return this.asVMObject(rv);
+				}
 			
 				// Exit the virtual machine
 			case "cc/squirreljme/runtime/cldc/asm/SystemAccess::" +
