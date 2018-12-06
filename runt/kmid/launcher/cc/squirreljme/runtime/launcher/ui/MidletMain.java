@@ -117,7 +117,7 @@ public class MidletMain
 		
 		// Indicate that the program list is being built
 		programlist.setTitle(String.format(
-			"Building List (%d Found)...", ++foundcount));
+			"Building List (%d Found)...", foundcount));
 		
 		// Build program array
 		__Program__[] arrprogs = programs.<__Program__>toArray(
@@ -164,14 +164,12 @@ public class MidletMain
 		// if the user is impatient and thinks nothing is happening when
 		// something is.  Loading the program list can take awhile because
 		// it checks through everything, so best to have an indicator of it.
+		// Yield thread to give another a chance
 		while (!programlist.isShown())
-		{
-			// Do the refresh
-			this.refresh();
-			
-			// Yield thread to give another a chance
 			Thread.yield();
-		}
+		
+		// Do the refresh now that it has been displayed
+		this.refresh();
 	}
 	
 	/**
