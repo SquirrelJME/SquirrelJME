@@ -85,6 +85,17 @@ public final class SpringClassLoader
 	}
 	
 	/**
+	 * Returns the class path.
+	 *
+	 * @return The classpath.
+	 * @since 2018/12/06
+	 */
+	public final VMClassLibrary[] classPath()
+	{
+		return this._classpath.clone();
+	}
+	
+	/**
 	 * Finds the specified library.
 	 *
 	 * @param __n The library to find.
