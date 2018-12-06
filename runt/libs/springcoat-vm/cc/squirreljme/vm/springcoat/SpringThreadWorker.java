@@ -1384,9 +1384,11 @@ public final class SpringThreadWorker
 			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
 				"classData:(Ljava/lang/Class;)Lcc/squirreljme/" +
 				"runtime/cldc/lang/ClassData;":
-				{
-					throw new todo.TODO();
-				}
+				return this.invokeMethod(false,
+					new ClassName("java/lang/Class"),
+					new MethodNameAndType("__classData",
+					"()Lcc/squirreljme/runtime/cldc/lang/ClassData;"),
+					(SpringObject)__args[0]);
 				
 				// Get the class object for an object
 			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
