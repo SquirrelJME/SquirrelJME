@@ -445,6 +445,10 @@ public final class Class<T>
 		// Allocate class instance
 		Object rv = ObjectAccess.allocateObject(binaryname);
 		
+		// {@squirreljme.error ZZ3b Could not allocate new instance.}
+		if (rv == null)
+			throw new OutOfMemoryError("ZZ3b");
+		
 		// Call default constructor
 		ObjectAccess.invokeStatic(sm, rv);
 		

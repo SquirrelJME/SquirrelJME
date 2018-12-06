@@ -15,15 +15,7 @@ package cc.squirreljme.runtime.cldc.ref;
  *
  * @since 2018/09/23
  */
-public abstract class PrimitiveReference
+public interface PrimitiveReference
 {
-	/**
-	 * Internally created.
-	 *
-	 * @since 2018/09/23
-	 */
-	PrimitiveReference()
-	{
-	}
 }
 

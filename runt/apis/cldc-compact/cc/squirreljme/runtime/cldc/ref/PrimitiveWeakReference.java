@@ -16,16 +16,8 @@ package cc.squirreljme.runtime.cldc.ref;
  *
  * @since 2018/09/23
  */
-public final class PrimitiveWeakReference
+public interface PrimitiveWeakReference
 	extends PrimitiveReference
 {
-	/**
-	 * Not used.
-	 *
-	 * @since 2018/09/23
-	 */
-	private PrimitiveWeakReference()
-	{
-	}
 }
 

@@ -15,6 +15,7 @@ import cc.squirreljme.runtime.cldc.lang.ApiLevel;
 import cc.squirreljme.runtime.cldc.lang.ClassData;
 import cc.squirreljme.runtime.cldc.ref.PrimitiveReference;
 import cc.squirreljme.runtime.cldc.ref.PrimitiveWeakReference;
+import java.lang.reflect.Array;
 
 /**
  * This contains accessors for object information.
@@ -53,7 +54,10 @@ public final class ObjectAccess
 	 * @since 2018/12/04
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
-	public static final native Object allocateObject(String __cl);
+	public static final Object allocateObject(String __cl)
+	{
+		return null;
+	}
 	
 	/**
 	 * Returns the length of the given array.
@@ -64,7 +68,10 @@ public final class ObjectAccess
 	 * @since 2018/09/25
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
-	public static final native int arrayLength(Object __a);
+	public static final int arrayLength(Object __a)
+	{
+		return Array.getLength(__a);
+	}
 	
 	/**
 	 * Creates a new array of the given type, this is the actual array and
@@ -76,7 +83,10 @@ public final class ObjectAccess
 	 * @since 2018/09/25
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
-	public static final native Object arrayNew(Class<?> __t, int __l);
+	public static final Object arrayNew(Class<?> __t, int __l)
+	{
+		return Array.newInstance(__t.getComponentType(), __l);
+	}
 	
 	/**
 	 * Returns the class object for the specified class by its binary name.
@@ -87,7 +97,17 @@ public final class ObjectAccess
 	 * @since 2018/09/23 
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
-	public static final native Class<?> classByName(String __s);
+	public static final Class<?> classByName(String __s)
+	{
+		try
+		{
+			return Class.forName(__s.replace('/', '.'));
+		}
+		catch (ClassNotFoundException e)
+		{
+			return null;
+		}
+	}
 	
 	/**
 	 * Returns the class data which is attached to the given class object.
@@ -97,7 +117,11 @@ public final class ObjectAccess
 	 * @since 2018/12/04
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
-	public static final native ClassData classData(Class<?> __cl);
+	public static final ClassData classData(Class<?> __cl)
+	{
+		// {@squirreljme.error AF0c Cannot obtain class data.}
+		throw new Error("AF0c");
+	}
 	
 	/**
 	 * Returns the class object for the given object.
@@ -108,7 +132,12 @@ public final class ObjectAccess
 	 * @since 2018/09/22
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
-	public static final native Class<?> classOf(Object __v);
+	public static final Class<?> classOf(Object __v)
+	{
+		if (__v == null)
+			return null;
+		return __v.getClass();
+	}
 	
 	/**
 	 * Checks if the given thread holds the given object in a lock.
@@ -119,7 +148,15 @@ public final class ObjectAccess
 	 * @since 2018/11/21
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
-	public static final native boolean holdsLock(int __ntid, Object __o);
+	public static final boolean holdsLock(int __ntid, Object __o)
+	{
+		if (__ntid == Thread.currentThread().getId())
+			Thread.holdsLock(__o);
+		
+		// {@squirreljme.error AF0d Cannot check if another thread holds
+		// a lock for an object.}
+		throw new Error("AF0d");
+	}
 	
 	/**
 	 * Returns the identity hashcode of the object.
@@ -128,7 +165,10 @@ public final class ObjectAccess
 	 * @since 2018/10/14
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
-	public static final native int identityHashCode(Object __o);
+	public static final int identityHashCode(Object __o)
+	{
+		return System.identityHashCode(__o);
+	}
 	
 	/**
 	 * Invokes the specified static method.
@@ -138,7 +178,11 @@ public final class ObjectAccess
 	 * @since 2018/11/20
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
-	public static final native void invokeStatic(StaticMethod __m, Object __v);
+	public static final void invokeStatic(StaticMethod __m, Object __v)
+	{
+		// {@squirreljme.error AF0e Cannot invoke static method.}
+		throw new Error("AF0e");
+	}
 	
 	/**
 	 * Notifies threads waiting on the monitor.
@@ -149,7 +193,22 @@ public final class ObjectAccess
 	 * @since 2018/11/20
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
-	public static final native int monitorNotify(Object __o, boolean __all);
+	public static final int monitorNotify(Object __o, boolean __all)
+	{
+		try
+		{
+			if (__all)
+				__o.notifyAll();
+			else
+				__o.notify();
+			
+			return MONITOR_NOT_INTERRUPTED;
+		}
+		catch (IllegalMonitorStateException e)
+		{
+			return MONITOR_NOT_OWNED;
+		}
+	}
 	
 	/**
 	 * Waits for a notification on a monitor.
@@ -161,8 +220,27 @@ public final class ObjectAccess
 	 * @since 2018/11/21
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
-	public static final native int monitorWait(Object __o, long __ms,
-		int __ns);
+	public static final int monitorWait(Object __o, long __ms,
+		int __ns)
+	{
+		try
+		{
+			if (__ms == 0 && __ns == 0)
+				__o.wait();
+			else
+				__o.wait(__ms, __ns);
+			
+			return MONITOR_NOT_INTERRUPTED;
+		}
+		catch (IllegalMonitorStateException e)
+		{
+			return MONITOR_NOT_OWNED;
+		}
+		catch (InterruptedException e)
+		{
+			return MONITOR_INTERRUPTED;
+		}
+	}
 	
 	/**
 	 * Creates a new primitive weak reference. Note that it is not valid to
@@ -173,7 +251,10 @@ public final class ObjectAccess
 	 * @since 2018/09/23
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
-	public static final native PrimitiveReference newWeakReference();
+	public static final PrimitiveReference newWeakReference()
+	{
+		return new __WeakRef__();
+	}
 	
 	/**
 	 * Gets the given reference.
@@ -184,7 +265,10 @@ public final class ObjectAccess
 	 * @since 2018/09/23
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
-	public static final native Object referenceGet(PrimitiveReference __r);
+	public static final Object referenceGet(PrimitiveReference __r)
+	{
+		return ((__WeakRef__)__r).__get();
+	}
 	
 	/**
 	 * Sets the given reference to the given value.
@@ -194,8 +278,11 @@ public final class ObjectAccess
 	 * @since 2018/09/23
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
-	public static final native void referenceSet(PrimitiveReference __r,
-		Object __v);
+	public static final void referenceSet(PrimitiveReference __r,
+		Object __v)
+	{
+		((__WeakRef__)__r).__set(__v);
+	}
 	
 	/**
 	 * Returns the class object for the specified class by its binary name.
