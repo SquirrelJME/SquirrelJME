@@ -629,6 +629,10 @@ abstract class __CoreTest__
 				if (snip.equals(__exp))
 					return true;
 				
+				// Nothing else to check, stop
+				if (ld < 0)
+					break;
+				
 				// Skip
 				i = ld + 1;
 			}
