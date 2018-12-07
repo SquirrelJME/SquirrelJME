@@ -10,6 +10,13 @@
 
 package java.util;
 
+/**
+ * This is an abstract set which provides only a few more methods than the
+ * base collection class.
+ *
+ * @param <E> The storage type.
+ * @since 2018/12/07
+ */
 public abstract class AbstractSet<E>
 	extends AbstractCollection<E>
 	implements Set<E>
@@ -23,22 +30,84 @@ public abstract class AbstractSet<E>
 	{
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/07
+	 */
 	@Override
-	public boolean equals(Object __a)
+	public boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		if (__o == this)
+			return true;
+		
+		if (!(__o instanceof Set))
+			return false;
+		
+		// Compare size first
+		Set<?> o = (Set<?>)__o;
+		if (this.size() != o.size())
+			return false;
+		
+		// Just check if this set contains everything in the other set
+		return this.containsAll(o);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/07
+	 */
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		int rv = 0;
+		for (E e : this)
+			rv += (e == null ? 0 : e.hashCode());
+		return rv;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/07
+	 */
 	@Override
-	public boolean removeAll(Collection<?> __a)
+	public boolean removeAll(Collection<?> __c)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__c == null)
+			throw new NullPointerException("NARG");
+		
+		// Iterate over our set and remove
+		boolean did = false;
+		if (this.size() <= __c.size())
+		{
+			for (Iterator<E> it = this.iterator(); it.hasNext();)
+			{
+				E e = it.next();
+				
+				if (__c.contains(e))
+				{
+					it.remove();
+					did = true;
+				}
+			}
+		}
+		
+		// Iterate over the other set and remove from ours
+		else
+		{
+			for (Iterator<?> it = __c.iterator(); it.hasNext();)
+			{
+				Object e = it.next();
+				
+				if (this.contains(e))
+				{
+					this.remove(e);
+					did = true;
+				}
+			}
+		}
+		
+		return did;
 	}
 }
 

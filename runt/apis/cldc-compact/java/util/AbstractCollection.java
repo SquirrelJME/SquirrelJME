@@ -129,6 +129,10 @@ public abstract class AbstractCollection<E>
 			total++;
 			if (this.contains(e))
 				found++;
+			
+			// Entry is missing so this will later return false
+			else
+				return false;
 		}
 		
 		return found == total;
@@ -172,8 +176,11 @@ public abstract class AbstractCollection<E>
 			E e = it.next();
 			
 			// If it is in the collection, remove it
-			if ((did |= __c.contains(e)))
+			if (__c.contains(e))
+			{
 				it.remove();
+				did = true;
+			}
 		}
 		
 		return did;
@@ -196,8 +203,11 @@ public abstract class AbstractCollection<E>
 			E e = it.next();
 			
 			// If it is not in the collection, remove it
-			if ((did |= (!__c.contains(e))))
+			if (!__c.contains(e))
+			{
 				it.remove();
+				did = true;
+			}
 		}
 		
 		return did;
