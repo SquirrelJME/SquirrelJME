@@ -75,13 +75,15 @@ public class InputStreamReader
 		this._store = new byte[d.maximumSequenceLength()];
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/06
+	 */
 	@Override
 	public void close()
 		throws IOException
 	{
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
+		this._in.close();
 	}
 	
 	public String getEncoding()
