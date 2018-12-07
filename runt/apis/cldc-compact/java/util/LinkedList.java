@@ -281,16 +281,15 @@ public class LinkedList<E>
 	@Override
 	public E pollFirst()
 	{
-		try
-		{
-			return this.removeFirst();
-		}
-		
-		// Is empty
-		catch (NoSuchElementException e)
-		{
+		if (this.isEmpty())
 			return null;
-		}
+		
+		ListIterator<E> it = this.listIterator(0);
+		
+		// Remove the first element
+		E rv = it.next();
+		it.remove();
+		return rv;
 	}
 	
 	/**
