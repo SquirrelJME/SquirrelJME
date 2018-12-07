@@ -1985,7 +1985,7 @@ public final class SpringThreadWorker
 		SpringThread thread = this.thread;
 		SpringThread.Frame frame = thread.currentFrame();
 		ByteCode code = frame.byteCode();
-		int pc = frame.pc();
+		int pc = frame.lastExecutedPc();
 		
 		// Get the handler for the given exception at the
 		// given address
