@@ -49,10 +49,14 @@ public abstract class AbstractCollection<E>
 	@Override
 	public abstract int size();
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/06
+	 */
 	@Override
 	public boolean add(E __a)
 	{
-		throw new todo.TODO();
+		throw new UnsupportedOperationException("RORO");
 	}
 	
 	/**
@@ -90,16 +94,44 @@ public abstract class AbstractCollection<E>
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/06
+	 */
 	@Override
-	public boolean contains(Object __a)
+	public boolean contains(Object __v)
 	{
-		throw new todo.TODO();
+		// Slow as it checks each entry
+		for (E e : this)
+			if (__v == null ? e == null : __v.equals(e))
+				return true;
+		
+		// Not found
+		return false;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/06
+	 */
 	@Override
-	public boolean containsAll(Collection<?> __a)
+	public boolean containsAll(Collection<?> __c)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__c == null)
+			throw new NullPointerException("NARG");
+		
+		// Check each entry
+		int total = 0,
+			found = 0;
+		for (Object e : __c)
+		{
+			total++;
+			if (this.contains(e))
+				found++;
+		}
+		
+		return found == total;
 	}
 	
 	/**
@@ -112,28 +144,79 @@ public abstract class AbstractCollection<E>
 		return this.size() == 0;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/06
+	 */
 	@Override
-	public boolean remove(Object __a)
+	public boolean remove(Object __v)
 	{
-		throw new todo.TODO();
+		throw new UnsupportedOperationException("RORO");
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/06
+	 */
 	@Override
-	public boolean removeAll(Collection<?> __a)
+	public boolean removeAll(Collection<?> __c)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__c == null)
+			throw new NullPointerException("NARG");
+		
+		// Remove things through our own iterator
+		boolean did = false;
+		for (Iterator<E> it = this.iterator(); it.hasNext();)
+		{
+			E e = it.next();
+			
+			// If it is in the collection, remove it
+			if ((did |= __c.contains(e)))
+				it.remove();
+		}
+		
+		return did;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/06
+	 */
 	@Override
-	public boolean retainAll(Collection<?> __a)
+	public boolean retainAll(Collection<?> __c)
 	{
-		throw new todo.TODO();
+		if (__c == null)
+			throw new NullPointerException("NARG");
+		
+		// Remove things through our own iterator
+		boolean did = false;
+		for (Iterator<E> it = this.iterator(); it.hasNext();)
+		{
+			E e = it.next();
+			
+			// If it is not in the collection, remove it
+			if ((did |= (!__c.contains(e))))
+				it.remove();
+		}
+		
+		return did;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/06
+	 */
 	@Override
 	public Object[] toArray()
 	{
-		throw new todo.TODO();
+		int n = this.size();
+		Object[] rv = new Object[n];
+		int i = 0;
+		for (Iterator<E> it = this.iterator(); it.hasNext();)
+			rv[i++] = it.next();
+		
+		return rv;
 	}
 	
 	/**
