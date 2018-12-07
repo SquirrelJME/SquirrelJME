@@ -758,7 +758,7 @@ public final class String
 	 */
 	public int lastIndexOf(int __c)
 	{
-		return this.lastIndexOf(__c, this.length() - 1);
+		return this.lastIndexOf(__c, Integer.MAX_VALUE);
 	}
 	
 	/**
