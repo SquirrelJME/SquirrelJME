@@ -1924,6 +1924,43 @@ public final class SpringThreadWorker
 	}
 	
 	/**
+	 * Checks if an exception is being thrown and sets up the state from it.
+	 *
+	 * @return True if an exception was detected.
+	 * @since 2018/12/06
+	 */
+	boolean __checkException()
+	{
+		// Are we exiting in the middle of an exception throwing?
+		this.machine.exitCheck();
+		
+		// Check if this frame handles the exception
+		SpringThread.Frame frame = this.thread.currentFrame();
+		SpringObject tossing = frame.tossedException();
+		if (tossing != null)
+		{
+			// Handling the tossed exception, so do not try handling it again
+			frame.tossException(null);
+			
+			// Handle it
+			int pc = this.__handleException(tossing);
+			if (pc < 0)
+				return true;
+			
+			// Put it on an empty stack
+			frame.clearStack();
+			frame.pushToStack(tossing);
+			
+			// Execute at the handler address now
+			frame.setPc(pc);
+			return true;
+		}
+		
+		// No exception thrown
+		return false;
+	}
+	
+	/**
 	 * Handles the exception, if it is in this frame to be handled then it
 	 * will say that the instruction is to be moved elsewhere. Otherwise it
 	 * will flag the frame above that an exception occurred and should be
@@ -2141,25 +2178,8 @@ public final class SpringThreadWorker
 		Instruction inst = code.getByAddress(pc);
 		
 		// If we are tossing an exception, we need to handle it
-		SpringObject tossing = frame.tossedException();
-		if (tossing != null)
-		{
-			// Handling the tossed exception, so do not try handling it again
-			frame.tossException(null);
-			
-			// Handle it
-			pc = this.__handleException(tossing);
-			if (pc < 0)
-				return;
-			
-			// Put it on an empty stack
-			frame.clearStack();
-			frame.pushToStack(tossing);
-			
-			// Execute at the handler address now
-			frame.setPc(pc);
+		if (this.__checkException())
 			return;
-		}
 		
 		// This PC is about to be executed, so set it as executed since if an
 		// exception is thrown this could change potentially
@@ -3292,22 +3312,38 @@ public final class SpringThreadWorker
 					// Invoke interface method
 				case InstructionIndex.INVOKEINTERFACE:
 					this.__vmInvokeInterface(inst, thread, frame);
+					
+					// Exception to be handled?
+					if (this.__checkException())
+						return;
 					break;
 					
 					// Invoke special method (constructor, superclass,
 					// or private)
 				case InstructionIndex.INVOKESPECIAL:
 					this.__vmInvokeSpecial(inst, thread, frame);
+					
+					// Exception to be handled?
+					if (this.__checkException())
+						return;
 					break;
 					
 					// Invoke static method
 				case InstructionIndex.INVOKESTATIC:
 					this.__vmInvokeStatic(inst, thread, frame);
+					
+					// Exception to be handled?
+					if (this.__checkException())
+						return;
 					break;
 					
 					// Invoke virtual method
 				case InstructionIndex.INVOKEVIRTUAL:
 					this.__vmInvokeVirtual(inst, thread, frame);
+					
+					// Exception to be handled?
+					if (this.__checkException())
+						return;
 					break;
 				
 					// OR integer
@@ -3654,6 +3690,10 @@ public final class SpringThreadWorker
 							new MethodNameAndType("multiANewArray",
 								"(Ljava/lang/Class;I[I)Ljava/lang/Object;"),
 							this.asVMObject(ccl), 0, this.asVMObject(pops)));
+						
+						// Exception to be handled?
+						if (this.__checkException())
+							return;
 					}
 					break;
 					
