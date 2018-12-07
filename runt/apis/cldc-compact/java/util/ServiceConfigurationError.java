@@ -10,19 +10,35 @@
 
 package java.util;
 
+/**
+ * This is thrown when a service has not been configured properly.
+ *
+ * @since 2018/12/06
+ */
 public class ServiceConfigurationError
 	extends Error
 {
-	public ServiceConfigurationError(String __a)
+	/**
+	 * Initializes the exception with the given message and no cause.
+	 *
+	 * @param __m The message.
+	 * @since 2018/12/06
+	 */
+	public ServiceConfigurationError(String __m)
 	{
-		super();
-		throw new todo.TODO();
+		super(__m);
 	}
 	
-	public ServiceConfigurationError(String __a, Throwable __b)
+	/**
+	 * Initializes the error with a message and the given cause.
+	 *
+	 * @param __m The message to use.
+	 * @param __t The cause of this error.
+	 * @since 2018/12/06
+	 */
+	public ServiceConfigurationError(String __m, Throwable __t)
 	{
-		super();
-		throw new todo.TODO();
+		super(__m, __t);
 	}
 }
 

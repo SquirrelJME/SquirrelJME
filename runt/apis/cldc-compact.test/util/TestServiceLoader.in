@@ -1,9 +1,21 @@
 result: NoResult
 thrown: NoExceptionThrown
-secondary-utildserviceloaderdimplsdcomfortabledrey: string:
+secondary-again-utildserviceloaderdimplsdcomfortabledrey: string:
  A\_very\_comfortable\_drey!
-secondary-utildserviceloaderdimplsdcutesquirrels: string:
+secondary-again-utildserviceloaderdimplsdcutesquirrels: string:
  Cute\_squirrels!
-secondary-utildserviceloaderdimplsdstashtheacorns: string:
+secondary-again-utildserviceloaderdimplsdstashtheacorns: string:
+ Stash\_all\_the\_acorns!
+secondary-cache-utildserviceloaderdimplsdcomfortabledrey: string:
+ A\_very\_comfortable\_drey!
+secondary-cache-utildserviceloaderdimplsdcutesquirrels: string:
+ Cute\_squirrels!
+secondary-cache-utildserviceloaderdimplsdstashtheacorns: string:
+ Stash\_all\_the\_acorns!
+secondary-init-utildserviceloaderdimplsdcomfortabledrey: string:
+ A\_very\_comfortable\_drey!
+secondary-init-utildserviceloaderdimplsdcutesquirrels: string:
+ Cute\_squirrels!
+secondary-init-utildserviceloaderdimplsdstashtheacorns: string:
  Stash\_all\_the\_acorns!
 
