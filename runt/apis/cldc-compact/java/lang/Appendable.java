@@ -12,15 +12,46 @@ package java.lang;
 
 import java.io.IOException;
 
+/**
+ * This is an appendable which is given characters and character sequences
+ * to be written into the output.
+ *
+ * @since 2018/12/07
+ */
 public interface Appendable
 {
-	public abstract Appendable append(CharSequence __a)
+	/**
+	 * Appends a character sequence to the output.
+	 *
+	 * @param __c The sequence to append.
+	 * @throws IOException On write errors.
+	 * @since 2018/12/07
+	 */
+	public abstract Appendable append(CharSequence __c)
 		throws IOException;
 	
-	public abstract Appendable append(CharSequence __a, int __b, int __c)
-		throws IOException;
+	/**
+	 * Appends a character sequence to the output.
+	 *
+	 * @param __c The sequence to append.
+	 * @param __s The start index.
+	 * @param __e The end index.
+	 * @throws IndexOutOfBoundsException If the start or end is outside of
+	 * the bounds of the sequence, or the start exceeds the end.
+	 * @throws IOException On write errors.
+	 * @since 2018/12/07
+	 */
+	public abstract Appendable append(CharSequence __c, int __s, int __e)
+		throws IndexOutOfBoundsException, IOException;
 	
-	public abstract Appendable append(char __a)
+	/**
+	 * Appends a single character to the output.
+	 *
+	 * @param __c The character to append.
+	 * @throws IOException On write errors.
+	 * @since 2018/12/07
+	 */
+	public abstract Appendable append(char __c)
 		throws IOException;
 }
 
