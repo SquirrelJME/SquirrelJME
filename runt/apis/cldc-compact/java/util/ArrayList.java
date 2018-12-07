@@ -149,10 +149,14 @@ public class ArrayList<E>
 		this.modCount++;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/07
+	 */
 	@Override
 	public Object clone()
 	{
-		throw new todo.TODO();
+		return new ArrayList<>(this);
 	}
 	
 	@Override
