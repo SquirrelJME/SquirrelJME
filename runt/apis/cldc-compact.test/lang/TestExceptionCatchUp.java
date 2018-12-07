@@ -19,17 +19,16 @@ import java.util.NoSuchElementException;
  * @since 2018/12/06
  */
 public class TestExceptionCatchUp
-	extends TestSupplier<Throwable>
+	extends TestSupplier<String>
 {
 	/**
 	 * Throws an exception.
 	 *
 	 * @since 2018/12/06
 	 */
-	public final void levelA()
+	public final String levelA()
 	{
-		todo.DEBUG.note("A");
-		this.levelB();
+		return this.levelB();
 	}
 	
 	/**
@@ -37,9 +36,8 @@ public class TestExceptionCatchUp
 	 *
 	 * @since 2018/12/06
 	 */
-	public final void levelB()
+	public final String levelB()
 	{
-		todo.DEBUG.note("B");
 		throw new NoSuchElementException("TEST");
 	}
 	
@@ -48,18 +46,15 @@ public class TestExceptionCatchUp
 	 * @since 2018/12/06
 	 */
 	@Override
-	public Throwable test()
+	public String test()
 	{
 		try
 		{
-			todo.DEBUG.note("0");
-			
-			this.levelA();
-			return null;
+			return this.levelA();
 		}
 		catch (NoSuchElementException t)
 		{
-			return t;
+			throw new IllegalArgumentException(t);
 		}
 	}
 }
