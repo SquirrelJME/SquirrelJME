@@ -621,17 +621,13 @@ abstract class __CoreTest__
 				String snip = __act.substring(i, ld);
 				
 				// Only consider the base name
-				ld = snip.lastIndexOf('.');
-				if (ld >= 0)
-					snip = snip.substring(ld + 1);
+				int xld = snip.lastIndexOf('.');
+				if (xld >= 0)
+					snip = snip.substring(xld + 1);
 				
 				// Is a match
 				if (snip.equals(__exp))
 					return true;
-				
-				// Nothing else to check, stop
-				if (ld < 0)
-					break;
 				
 				// Skip
 				i = ld + 1;
