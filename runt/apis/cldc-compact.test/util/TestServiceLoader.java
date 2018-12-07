@@ -29,9 +29,23 @@ public class TestServiceLoader
 	@Override
 	public void test()
 	{
-		for (ServiceThingy sv : ServiceLoader.<ServiceThingy>load(
-			ServiceThingy.class))
-			this.secondary(sv.getClass().getName(), sv.toString());
+		ServiceLoader<ServiceThingy> sl = ServiceLoader.<ServiceThingy>load(
+			ServiceThingy.class);
+		
+		// Initial run
+		for (ServiceThingy sv : sl)
+			this.secondary("init-" + sv.getClass().getName(), sv.toString());
+		
+		// Cached run
+		for (ServiceThingy sv : sl)
+			this.secondary("cache-" + sv.getClass().getName(), sv.toString());
+		
+		// Clear cache
+		sl.reload();
+		
+		// Should be fresh
+		for (ServiceThingy sv : sl)
+			this.secondary("again-" + sv.getClass().getName(), sv.toString());
 	}
 }
 

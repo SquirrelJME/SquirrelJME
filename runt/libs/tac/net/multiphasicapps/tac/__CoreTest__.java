@@ -152,7 +152,7 @@ abstract class __CoreTest__
 		
 		// Longest string, used for secondary value formatting when failure
 		// happens
-		int longskeylen = 0;
+		int longskeylen = 1;
 		
 		// Find the longest secondary value and make a copy of it
 		Map<String, String> secondary = this._secondary;
