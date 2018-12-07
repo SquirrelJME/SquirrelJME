@@ -29,6 +29,10 @@ public abstract class AbstractSequentialList<E>
 	{
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/07
+	 */
 	@Override
 	public abstract ListIterator<E> listIterator(int __i);
 	
@@ -43,16 +47,39 @@ public abstract class AbstractSequentialList<E>
 		this.listIterator(__i).add(__v);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/07
+	 */
 	@Override
-	public boolean addAll(int __a, Collection<? extends E> __b)
+	public boolean addAll(int __i, Collection<? extends E> __c)
+		throws IndexOutOfBoundsException, NullPointerException
 	{
-		throw new todo.TODO();
+		if (__c == null)
+			throw new NullPointerException("NARG");
+		
+		boolean mod = false;
+		ListIterator<E> li = this.listIterator(__i);
+		for (E e : __c)
+		{
+			li.add(e);
+			li.next();
+			
+			// Modified
+			mod = true;
+		}
+		
+		return mod;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/07
+	 */
 	@Override
-	public E get(int __a)
+	public E get(int __i)
 	{
-		throw new todo.TODO();
+		return this.listIterator(__i).next();
 	}
 	
 	/**
@@ -65,16 +92,30 @@ public abstract class AbstractSequentialList<E>
 		return this.listIterator(0);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/07
+	 */
 	@Override
-	public E remove(int __a)
+	public E remove(int __i)
 	{
-		throw new todo.TODO();
+		ListIterator<E> li = this.listIterator(__i);
+		E rv = li.next();
+		li.remove();
+		return rv;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/07
+	 */
 	@Override
-	public E set(int __a, E __b)
+	public E set(int __i, E __v)
 	{
-		throw new todo.TODO();
+		ListIterator<E> li = this.listIterator(__i);
+		E rv = li.next();
+		li.set(__v);
+		return rv;
 	}
 }
 
