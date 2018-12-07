@@ -1,0 +1,5 @@
+# 2018/12/06
+
+## 20:29
+
+Okay so SpringCoat is not propogating exceptions upwards! This is not good.
