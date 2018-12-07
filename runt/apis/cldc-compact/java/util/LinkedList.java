@@ -121,7 +121,7 @@ public class LinkedList<E>
 	@Override
 	public Object clone()
 	{
-		throw new todo.TODO();
+		return new LinkedList<>(this);
 	}
 	
 	/**

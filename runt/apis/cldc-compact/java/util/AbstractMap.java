@@ -29,13 +29,15 @@ public abstract class AbstractMap<K, V>
 		this.entrySet().clear();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/07
+	 */
 	@Override
 	protected Object clone()
 		throws CloneNotSupportedException
 	{
-		if (false)
-			throw new CloneNotSupportedException();
-		throw new todo.TODO();
+		return (AbstractMap<?, ?>)super.clone();
 	}
 	
 	public boolean containsKey(Object __a)
