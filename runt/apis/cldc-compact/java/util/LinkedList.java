@@ -271,7 +271,7 @@ public class LinkedList<E>
 	@Override
 	public E poll()
 	{
-		return pollFirst();
+		return this.pollFirst();
 	}
 	
 	/**
@@ -319,7 +319,7 @@ public class LinkedList<E>
 	@Override
 	public E pop()
 	{
-		return removeFirst();
+		return this.removeFirst();
 	}
 	
 	/**
