@@ -13,6 +13,11 @@ package java.util;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.annotation.ProgrammerTip;
 
+/**
+ * This is the base class for all list types.
+ *
+ * @since 2018/12/07
+ */
 public abstract class AbstractList<E>
 	extends AbstractCollection<E>
 	implements List<E>
@@ -32,8 +37,13 @@ public abstract class AbstractList<E>
 	{
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/07
+	 */
 	@Override
-	public abstract E get(int __a);
+	public abstract E get(int __i)
+		throws IndexOutOfBoundsException;
 	
 	/**
 	 * {@inheritDoc}
@@ -58,10 +68,26 @@ public abstract class AbstractList<E>
 		throw new UnsupportedOperationException("RORO");
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/07
+	 */
 	@Override
-	public boolean addAll(int __a, Collection<? extends E> __b)
+	public boolean addAll(int __i, Collection<? extends E> __c)
+		throws IndexOutOfBoundsException, NullPointerException
 	{
-		throw new todo.TODO();
+		if (__c == null)
+			throw new NullPointerException("NARG");
+		int n = this.size();
+		if (__i < 0 || __i > n)
+			throw new IndexOutOfBoundsException("NARG");
+		
+		// Add all elements
+		for (E e : __c)
+			this.add(__i++, e);
+		
+		// If the size changed the list was modified
+		return this.size() != n;
 	}
 	
 	/**
@@ -166,16 +192,34 @@ public abstract class AbstractList<E>
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/07
+	 */
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		int rv = 1;
+		for (E e : this)
+			rv = 31 * rv + (e == null ? 0 : e.hashCode());
+		return rv;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/07
+	 */
 	@Override
-	public int indexOf(Object __a)
+	public int indexOf(Object __v)
 	{
-		throw new todo.TODO();
+		for (int i = 0, n = this.size(); i < n; i++)
+		{
+			E e = this.get(i);
+			if ((__v == null ? e == null : __v.equals(e)))
+				return i;
+		}
+		
+		return -1;
 	}
 	
 	/**
@@ -188,10 +232,21 @@ public abstract class AbstractList<E>
 		return new __ListIterator__(0);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/07
+	 */
 	@Override
-	public int lastIndexOf(Object __a)
+	public int lastIndexOf(Object __v)
 	{
-		throw new todo.TODO();
+		for (int i = this.size() - 1; i >= 0; i--)
+		{
+			E e = this.get(i);
+			if ((__v == null ? e == null : __v.equals(e)))
+				return i;
+		}
+		
+		return -1;
 	}
 	
 	/**
@@ -242,7 +297,18 @@ public abstract class AbstractList<E>
 		"busy operation.")
 	protected void removeRange(int __from, int __to)
 	{
-		throw new todo.TODO();
+		int left = __to - __from;
+		ListIterator<E> li = this.listIterator(__from);
+		while (left > 0)
+		{
+			if (!li.hasNext())
+				break;
+			
+			// Get and remove
+			li.next();
+			li.remove();
+			left--;
+		}
 	}
 	
 	/**
