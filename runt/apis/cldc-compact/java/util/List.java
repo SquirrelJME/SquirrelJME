@@ -30,7 +30,17 @@ public interface List<E>
 	@Override
 	public abstract boolean equals(Object __a);
 	
-	public abstract E get(int __a);
+	/**
+	 * Gets the value at the specified index.
+	 *
+	 * @param __i The index to get.
+	 * @return The value at this index.
+	 * @throws IndexOutOfBoundsException If the index it out of bounds for the
+	 * list.
+	 * @since 2018/12/07
+	 */
+	public abstract E get(int __i)
+		throws IndexOutOfBoundsException;
 	
 	@Override
 	public abstract int hashCode();
