@@ -14,6 +14,9 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.lang.ApiLevel;
 import cc.squirreljme.runtime.cldc.lang.OperatingSystemType;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
+import java.net.URL;
+import java.security.CodeSource;
+import java.security.ProtectionDomain;
 
 /**
  * Access to system properties.
@@ -41,6 +44,48 @@ public final class SystemProperties
 	public static int apiLevel()
 	{
 		return ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225;
+	}
+	
+	/**
+	 * Returns the approximated path where the VM's executable exists. This
+	 * will be the actual JVM's JAR or EXE file.
+	 *
+	 * @return The approximated executable path or {@code null} if it is not
+	 * known.
+	 * @since 2018/12/08
+	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
+	public static final String executablePath()
+	{
+		// Try using these methods
+		try
+		{
+			// Try in the protection domain first
+			ProtectionDomain pd = SystemProperties.class.getProtectionDomain();
+			if (pd != null)
+			{
+				CodeSource cs = pd.getCodeSource();
+				if (cs != null)
+				{
+					URL loc = cs.getLocation();
+					if (loc != null)
+					{
+						String path = loc.getPath();
+						if (path != null)
+							return path;
+					}
+				}
+			}
+		}
+		
+		// Could not get
+		catch (Throwable t)
+		{
+			return null;
+		}
+		
+		//return new File(MyClass.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath();
+		throw new todo.TODO();
 	}
 	
 	/**

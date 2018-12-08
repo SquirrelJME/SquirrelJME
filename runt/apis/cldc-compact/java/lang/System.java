@@ -287,6 +287,10 @@ public final class System
 			case "cc.squirreljme.guests":
 				return Integer.toString(SystemProperties.guestDepth());
 				
+				// SquirrelJME VM executable path
+			case "cc.squirreljme.vm.execpath":
+				return SystemProperties.executablePath();
+				
 				// SquirrelJME free memory
 			case "cc.squirreljme.vm.freemem":
 				return Long.toString(Runtime.getRuntime().freeMemory());

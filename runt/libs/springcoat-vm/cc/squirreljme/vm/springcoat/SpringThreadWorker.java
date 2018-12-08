@@ -13,6 +13,7 @@ package cc.squirreljme.vm.springcoat;
 import cc.squirreljme.runtime.cldc.asm.ConsoleOutput;
 import cc.squirreljme.runtime.cldc.asm.DebugAccess;
 import cc.squirreljme.runtime.cldc.asm.SystemAccess;
+import cc.squirreljme.runtime.cldc.asm.SystemProperties;
 import cc.squirreljme.runtime.cldc.lang.ApiLevel;
 import cc.squirreljme.runtime.cldc.lang.GuestDepth;
 import cc.squirreljme.runtime.cldc.lang.OperatingSystemType;
@@ -1629,6 +1630,12 @@ public final class SpringThreadWorker
 			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
 				"apiLevel:()I":
 				return ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225;
+				
+				// Approximated executable path
+			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
+				"executablePath:()Ljava/lang/String;":
+				// Just use the one of the host VM, if it is known anyway
+				return this.asVMObject(SystemProperties.executablePath());
 				
 				// The guest depth of this virtual machine
 			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
