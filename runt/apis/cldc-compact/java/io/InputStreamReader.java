@@ -86,9 +86,15 @@ public class InputStreamReader
 		this._in.close();
 	}
 	
+	/**
+	 * Returns the name of the encoding.
+	 *
+	 * @return The encoding name.
+	 * @since 2018/12/08
+	 */
 	public String getEncoding()
 	{
-		throw new todo.TODO();
+		return this._decoder.encodingName();
 	}
 	
 	/**
