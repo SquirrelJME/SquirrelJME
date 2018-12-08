@@ -56,7 +56,7 @@ public class Timer
 		throw new todo.TODO();
 	}
 	
-	public void scheduleAtFixedRate(TimerTask __task, Data __first,
+	public void scheduleAtFixedRate(TimerTask __task, Date __first,
 		long __period)
 	{
 		throw new todo.TODO();
