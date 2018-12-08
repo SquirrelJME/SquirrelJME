@@ -1441,13 +1441,29 @@ public final class SpringThreadWorker
 				// Invoke static method
 			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
 				"invokeStatic:(Lcc/squirreljme/runtime/cldc/asm/" +
-				"StaticMethod;Ljava/lang/Object;)V":
+				"StaticMethod;[Ljava/lang/Object;)Ljava/lang/Object;":
 				{
-					// Enter a frame for this method
-					this.thread.enterFrame(((SpringVMStaticMethod)__args[0]).
-						method, __args[1]);
+					// We will need this to pass object arguments
+					SpringArrayObject vargs = (SpringArrayObject)__args[1];
 					
-					// No return value
+					// Copy object values
+					int n = vargs.length();
+					Object[] xargs = new Object[n];
+					for (int i = 0; i < n; i++)
+						xargs[i] = vargs.get(Object.class, i);
+					
+					// The method to execute
+					SpringMethod m = ((SpringVMStaticMethod)__args[0]).method;
+					
+					// Enter the frame for this method
+					this.thread.enterFrame(m, xargs);
+					
+					// If the method has no return value, just push a null to
+					// the stack
+					if (!m.nameAndType().type().hasReturnValue())
+						return SpringNullObject.NULL;
+					
+					// No return value, sort of
 					return null;
 				}
 				

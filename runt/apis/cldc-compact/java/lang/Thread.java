@@ -384,7 +384,7 @@ public class Thread
 				
 				// Otherwise wait on our own monitor
 				long diff = end - now;
-				this.wait(diff / 1_000_000L, diff % 1_000_000L);
+				this.wait(diff / 1_000_000L, (int)(diff % 1_000_000L));
 			}
 		}
 	}

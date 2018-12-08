@@ -10,6 +10,9 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
+import cc.squirreljme.runtime.cldc.lang.ClassData;
+
 /**
  * This is the base class for enum types.
  *
@@ -66,10 +69,19 @@ public abstract class Enum<E extends Enum<E>>
 	 * @since 2018/09/24
 	 */
 	@Override
-	public final int compareTo(E __a)
-		throws NullPointerException
+	public final int compareTo(E __o)
+		throws ClassCastException, NullPointerException
 	{
-		throw new todo.TODO();
+		if (__o == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error ZZ3h Cannot compare enums of a different
+		// type.}
+		if (Enum.__pivotClass(this) != Enum.__pivotClass(__o))
+			throw new ClassCastException("ZZ3h");
+		
+		// Just ordinal subtraction
+		return this.ordinal() - __o.ordinal();
 	}
 	
 	/**
@@ -144,11 +156,56 @@ public abstract class Enum<E extends Enum<E>>
 		return this._name;
 	}
 	
-	public static <T extends Enum<T>> T valueOf(Class<T> __a, 
-		String __b)
+	/**
+	 * From the given enumeration, find a value which matches the given name.
+	 *
+	 * @param <T> The enumeration type to search in.
+	 * @param __cl The class to lookup.
+	 * @param __s The string to search for.
+	 * @return The enumeration value.
+	 * @throws IllegalArgumentException If the value was not found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/12/07
+	 */
+	public static <T extends Enum<T>> T valueOf(Class<T> __cl, String __s)
+		throws IllegalArgumentException, NullPointerException
 	{
+		if (__cl == null || __s == null)
+			throw new NullPointerException("NARG");
+		
+		// Get the data for this class because the enum information will be
+		// in here somewhere
+		ClassData data = ObjectAccess.classData(__cl);
+		
 		throw new todo.TODO();
 	}
+	
+	/**
+	 * Returns the pivot class for the enumeration object.
+	 *
+	 * @param __o The object to get the pivot class for.
+	 * @return The pivot class for the object.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/12/07
+	 */
+	private static final Class<?> __pivotClass(Object __o)
+		throws NullPointerException
+	{
+		if (__o == null)
+			throw new NullPointerException("NARG");
+		
+		// Start at this class
+		Class<?> of = __o.getClass();
+		
+		// If the super class is Enum, then this is not a per-object Enum
+		// so that means we went too far
+		Class<?> ofsuper = of.getSuperclass();
+		if (ofsuper == Enum.class)
+			return of;
+		
+		// It is per-class enum, so use the super-class
+		else
+			return ofsuper;
+	}
 }
-
 

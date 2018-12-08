@@ -91,7 +91,7 @@ public final class Byte
 	@Override
 	public int compareTo(Byte __o)
 	{
-		return Byte.compare(this._value, __o._value);
+		return this._value - __o._value;
 	}
 	
 	/**
@@ -204,7 +204,7 @@ public final class Byte
 			throw new NullPointerException("NARG");
 		
 		// {@squirreljme.error ZZ3e Byte value out of bounds.}
-		int val = Integer.decode(__s)
+		int val = Integer.decode(__s);
 		if (val < MIN_VALUE || val > MAX_VALUE)
 			throw new NumberFormatException("ZZ3e");
 		

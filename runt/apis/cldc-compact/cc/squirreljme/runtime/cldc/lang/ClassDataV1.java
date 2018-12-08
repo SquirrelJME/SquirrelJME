@@ -61,6 +61,7 @@ public class ClassDataV1
 	 * @param __flags Class flags.
 	 * @param __dcf Default constructor flag.
 	 * @param __dcm Default constructor method.
+	 * @param __efm The method used to fill enumerations.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/12
 	 */
