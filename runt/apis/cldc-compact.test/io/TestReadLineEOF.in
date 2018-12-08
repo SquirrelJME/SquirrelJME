@@ -1,0 +1,7 @@
+result: int:5
+thrown: NoExceptionThrown
+secondary-line-1: string:Rodents\_are\_softly\_cute!
+secondary-line-2: string:Squirrels!
+secondary-line-3: string:Mice!
+secondary-line-4: string:And\_rats!
+

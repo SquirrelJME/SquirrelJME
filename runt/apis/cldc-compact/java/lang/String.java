@@ -16,11 +16,14 @@ import cc.squirreljme.runtime.cldc.i18n.DefaultLocale;
 import cc.squirreljme.runtime.cldc.i18n.Locale;
 import cc.squirreljme.runtime.cldc.io.CodecFactory;
 import cc.squirreljme.runtime.cldc.io.Decoder;
+import cc.squirreljme.runtime.cldc.io.Encoder;
 import cc.squirreljme.runtime.cldc.string.BasicSequence;
 import cc.squirreljme.runtime.cldc.string.CharArraySequence;
 import cc.squirreljme.runtime.cldc.string.CharSequenceSequence;
 import cc.squirreljme.runtime.cldc.string.EmptySequence;
 import cc.squirreljme.runtime.cldc.string.SubBasicSequenceSequence;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -603,6 +606,17 @@ public final class String
 	}
 	
 	/**
+	 * Translates this string into a byte array using the default encoding.
+	 *
+	 * @return The resulting byte array.
+	 * @since 2018/12/08
+	 */
+	public byte[] getBytes()
+	{
+		return this.__getBytes(CodecFactory.defaultEncoder());
+	}
+	
+	/**
 	 * Translates this string using into a byte array using the specified
 	 * character encoding.
 	 *
@@ -619,22 +633,17 @@ public final class String
 		if (__enc == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
-	}
-	
-	public byte[] getBytes()
-	{
 		// Wrap it
 		try
 		{
-			return getBytes(System.getProperty("microedition.encoding"));
+			return this.__getBytes(CodecFactory.encoder(__enc));
 		}
 		
-		// {@squirreljme.error ZZ0x The default encoding is not supported by
-		// the virtual machine.}
+		// {@squirreljme.error ZZ0x The specified encoding is not supported by
+		// the virtual machine. (The encoding)}
 		catch (UnsupportedEncodingException uee)
 		{
-			throw new AssertionError("ZZ0x");
+			throw new AssertionError("ZZ0x " + __enc);
 		}
 	}
 	
@@ -1164,6 +1173,55 @@ public final class String
 		
 		// If reached, they are equal
 		return true;
+	}
+	
+	/**
+	 * Returns the encoded byte sequence.
+	 *
+	 * @param __e The encoder to use when writing bytes.
+	 * @return The bytes from this string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/12/08
+	 */
+	private final byte[] __getBytes(Encoder __e)
+		throws NullPointerException
+	{
+		if (__e == null)
+			throw new NullPointerException("NARG");
+		
+		// Maximum size of sequences that can be encoded
+		int msl;
+		byte[] seq = new byte[(msl = __e.maximumSequenceLength())];
+		
+		// We operate directly on the sequence
+		BasicSequence sequence = this._sequence;
+		int n = sequence.length();
+		
+		// Write here
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(
+			(int)(n * __e.averageSequenceLength())))
+		{
+			// Encode every character!
+			for (int i = 0; i < n; i++)
+			{
+				int sz = __e.encode(sequence.charAt(i), seq, 0, msl);
+				
+				// Should not occur
+				if (sz < 0)
+					throw new todo.OOPS();
+				
+				baos.write(seq, 0, sz);
+			}
+			
+			// Use this byte array
+			return baos.toByteArray();
+		}
+		
+		// Should not occur
+		catch (IOException e)
+		{
+			throw new todo.OOPS();
+		}
 	}
 	
 	/**

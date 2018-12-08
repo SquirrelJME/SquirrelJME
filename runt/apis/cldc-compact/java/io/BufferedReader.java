@@ -268,7 +268,8 @@ public class BufferedReader
 		{
 			// Was newline read? Did we stop on a CR?
 			boolean readnl = false,
-				stoppedoncr = false;
+				stoppedoncr = false,
+				readeof = false;
 			
 			// Scan
 			int ln = rp;
@@ -311,6 +312,8 @@ public class BufferedReader
 					// True EOF
 					if (!wasinbuf && sb.length() == 0)
 						return null;
+					
+					readeof = true;
 				}
 				
 				// Set new properties
@@ -376,6 +379,10 @@ public class BufferedReader
 				// Stop
 				break;
 			}
+			
+			// Nothing else to do on EOF
+			if (readeof)
+				break;
 		}
 		
 		// Use this line

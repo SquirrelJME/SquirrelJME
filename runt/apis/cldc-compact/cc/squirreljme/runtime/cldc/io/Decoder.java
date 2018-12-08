@@ -20,15 +20,6 @@ public interface Decoder
 	extends NamedCodec
 {
 	/**
-	 * The average sequence length used for characters, used to estimate how
-	 * big of an array to allocate for characters.
-	 *
-	 * @return The average sequence length.
-	 * @since 2018/11/06
-	 */
-	public abstract double averageSequenceLength();
-	
-	/**
 	 * Decodes the input bytes.
 	 *
 	 * @param __b The input byte array.
@@ -50,14 +41,5 @@ public interface Decoder
 	 */
 	public abstract int decode(byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, NullPointerException;
-	
-	/**
-	 * Returns a hint which specifies the maximum length of a byte sequence
-	 * for decoding.
-	 *
-	 * @return The maximum sequence length for decoding.
-	 * @since 2018/10/13
-	 */
-	public abstract int maximumSequenceLength();
 }
 

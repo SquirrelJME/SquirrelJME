@@ -45,6 +45,16 @@ public final class IBM037Encoder
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2018/12/08
+	 */
+	@Override
+	public final double averageSequenceLength()
+	{
+		return 1.0;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/09/24
 	 */
 	@Override
@@ -80,6 +90,16 @@ public final class IBM037Encoder
 	public final String encodingName()
 	{
 		return "ibm037";
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/08
+	 */
+	@Override
+	public final int maximumSequenceLength()
+	{
+		return 1;
 	}
 }
 
