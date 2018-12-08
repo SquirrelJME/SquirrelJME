@@ -194,34 +194,103 @@ public final class Character
 		return (char)('a' + (__dig - 10));
 	}
 	
-	public static boolean isDigit(char __a)
+	/**
+	 * Returns true if the character is a digit.
+	 *
+	 * @param __c The character to check.
+	 * @return True if the character is a digit.
+	 * @since 2018/12/08
+	 */
+	public static boolean isDigit(char __c)
 	{
-		throw new todo.TODO();
+		return (__c >= '0' && __c <= '9');
 	}
 	
-	public static boolean isISOControl(char __a)
+	/**
+	 * Returns true if the character is an ISO control code.
+	 *
+	 * @param __c The character to check.
+	 * @return True if the character is an ISO control code.
+	 * @since 2018/12/08
+	 */
+	public static boolean isISOControl(char __c)
 	{
-		throw new todo.TODO();
+		return (__c >= 0 && __c <= 0x1F) || (__c >= 0x7F && __c <= 0x9F);
 	}
 	
-	public static boolean isLowerCase(char __a)
+	/**
+	 * Returns true if the character is lowercase.
+	 *
+	 * Java ME only supports the Latin-1 characters.
+	 *
+	 * @param __c The character to check.
+	 * @return True if the character is lowercase.
+	 * @since 2018/12/08
+	 */
+	public static boolean isLowerCase(char __c)
 	{
-		throw new todo.TODO();
+		// 0xF7 is Divide
+		return ((__c >= 'a' && __c <= 'z') ||
+			(__c != 0xF7 && __c >= 0xDF && __c <= 0xFF));
 	}
 	
-	public static boolean isSpaceChar(char __a)
+	/**
+	 * Returns true if the character is a space character.
+	 *
+	 * @param __c The character to check.
+	 * @return True if the character is a space character.
+	 * @since 2018/12/08
+	 */
+	public static boolean isSpaceChar(char __c)
 	{
-		throw new todo.TODO();
+		return (__c == 0x09 || __c == 0x0A || __c == 0x0C || __c == 0x0D ||
+			__c = 0x20);
 	}
 	
-	public static boolean isUpperCase(char __a)
+	/**
+	 * Returns true if the character is uppercase.
+	 *
+	 * Java ME only supports the Latin-1 characters.
+	 *
+	 * @param __c The character to check.
+	 * @return True if the character is uppercase.
+	 * @since 2018/12/08
+	 */
+	public static boolean isUpperCase(char __c)
 	{
-		throw new todo.TODO();
+		// 0xD7 is multiply
+		return (__c >= 'A' && __c <= 'Z') ||
+			(__c != 0xD7 && __c >= 0xC0 && __c <= 0xDE);
 	}
 	
-	public static boolean isWhitespace(char __a)
+	/**
+	 * Returns true if this is a whitespace character according to Java.
+	 *
+	 * @param __c The character to check.
+	 * @return True if the character is whitespace.
+	 * @since 2018/12/08
+	 */
+	public static boolean isWhitespace(char __c)
 	{
-		throw new todo.TODO();
+		switch (__c)
+		{
+			case 0x000A:
+			case 0x2007:
+			case 0x202F:
+			case 0x0009:
+			case 0x000A:
+			case 0x000B:
+			case 0x000C:
+			case 0x000D:
+			case 0x001C:
+			case 0x001D:
+			case 0x001E:
+			case 0x001F:
+				return true;
+			
+			default:
+				return false;
+		}
 	}
 	
 	/**
