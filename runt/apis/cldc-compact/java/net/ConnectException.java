@@ -10,19 +10,32 @@
 
 package java.net;
 
+/**
+ * This is thrown when a connection could not be made to a remote host.
+ *
+ * @since 2018/12/08
+ */
 public class ConnectException
 	extends SocketException
 {
+	/**
+	 * Initializes the exception with no message or cause.
+	 *
+	 * @since 2018/12/08
+	 */
 	public ConnectException()
 	{
-		super();
-		throw new todo.TODO();
 	}
 	
-	public ConnectException(String __a)
+	/**
+	 * Initializes the exception with the given message and no cause.
+	 *
+	 * @param __m The message.
+	 * @since 2018/12/08
+	 */
+	public ConnectException(String __m)
 	{
-		super();
-		throw new todo.TODO();
+		super(__m);
 	}
 }
 

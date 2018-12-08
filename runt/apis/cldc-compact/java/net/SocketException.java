@@ -12,19 +12,32 @@ package java.net;
 
 import java.io.IOException;
 
+/**
+ * This is thrown for general socket exceptions.
+ *
+ * @since 2018/12/08
+ */
 public class SocketException
 	extends IOException
 {
+	/**
+	 * Initializes the exception with no message or cause.
+	 *
+	 * @since 2018/12/08
+	 */
 	public SocketException()
 	{
-		super();
-		throw new todo.TODO();
 	}
 	
-	public SocketException(String __a)
+	/**
+	 * Initializes the exception with the given message and no cause.
+	 *
+	 * @param __m The message.
+	 * @since 2018/12/08
+	 */
+	public SocketException(String __m)
 	{
-		super();
-		throw new todo.TODO();
+		super(__m);
 	}
 }
 

@@ -10,19 +10,33 @@
 
 package java.net;
 
+/**
+ * This is thrown when an attempt to bind to a local address and/or port has
+ * failed.
+ *
+ * @since 2018/12/08
+ */
 public class BindException
 	extends SocketException
 {
+	/**
+	 * Initializes the exception with no message or cause.
+	 *
+	 * @since 2018/12/08
+	 */
 	public BindException()
 	{
-		super();
-		throw new todo.TODO();
 	}
 	
-	public BindException(String __a)
+	/**
+	 * Initializes the exception with the given message and no cause.
+	 *
+	 * @param __m The message.
+	 * @since 2018/12/08
+	 */
+	public BindException(String __m)
 	{
-		super();
-		throw new todo.TODO();
+		super(__m);
 	}
 }
 
