@@ -11,6 +11,7 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
+import cc.squirreljme.runtime.lcdui.ui.UIStack;
 
 /**
  * This class acts as the lowest base for displays and items.
@@ -18,10 +19,20 @@ import cc.squirreljme.runtime.lcdui.SerializedEvent;
  * @since 2018/03/23
  */
 abstract class __Widget__
-	extends __Drawable__
 {
 	/** The parent widget being used. */
 	volatile __Widget__ _parent;
+	
+	/** The UI Stack for drawing. */
+	volatile UIStack _uistack;
+	
+	/**
+	 * Updates the UI stack.
+	 *
+	 * @param __parent The parent draw stack.
+	 * @since 2018/12/08
+	 */
+	abstract void __updateUIStack(UIStack __parent);
 	
 	/**
 	 * Returns the current display.
@@ -52,7 +63,7 @@ abstract class __Widget__
 		__Widget__ parent = this._parent;
 		if (parent == null)
 			return Display.getDisplays(0)[0].getHeight();
-		return this._drawchain.h;
+		return this._uistack.reservedheight;
 	}
 	
 	/**
@@ -66,7 +77,7 @@ abstract class __Widget__
 		__Widget__ parent = this._parent;
 		if (parent == null)
 			return Display.getDisplays(0)[0].getWidth();
-		return this._drawchain.w;
+		return this._uistack.reservedwidth;
 	}
 	
 	/**

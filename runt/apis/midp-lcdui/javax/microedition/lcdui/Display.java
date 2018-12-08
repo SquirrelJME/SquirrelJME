@@ -20,6 +20,7 @@ import cc.squirreljme.runtime.lcdui.event.NonStandardKey;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.ui.UIDisplayState;
 import cc.squirreljme.runtime.lcdui.ui.UIFramebuffer;
+import cc.squirreljme.runtime.lcdui.ui.UIStack;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -228,6 +229,9 @@ public class Display
 	
 	/** Is this display being shown? */
 	private volatile boolean _isshown;
+	
+	/** The draw stack of this display. */
+	volatile UIStack _uistack;
 	
 	/**
 	 * Initializes the probe.
@@ -791,16 +795,11 @@ public class Display
 		// be shown until it happens to be shown.
 		__show._isshown = this._isshown;
 		
-		// If this is the main display, it gets events pushed to it
-		// specifically
-		int nid = this._nid;
 		// Use the title of this thing
 		NativeDisplayAccess.setDisplayTitle(nid, __show.getTitle());
 		
-		// Update widgets
-		UIFramebuffer fb = this._state.framebuffer();
-		this.__updateDrawChain(new __DrawSlice__(0, 0,
-			fb.bufferwidth, fb.bufferheight));
+		// Update the UI stack
+		this.__updateUIStack(null);
 	}
 	
 	public void setCurrentItem(Item __a)
@@ -992,8 +991,8 @@ public class Display
 		if (d != null)
 			d.sizeChanged(__w, __h);
 		
-		// Update widgets
-		this.__updateDrawChain(new __DrawSlice__(0, 0, __w, __h));
+		// Update the UI stack
+		this.__updateUIStack(null);
 	}
 	
 	/**
@@ -1154,43 +1153,17 @@ public class Display
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/11/18
+	 * @since 2018/12/08
 	 */
 	@Override
-	void __drawChain(Graphics __g)
-	{
-		__DrawChain__ dc = this._drawchain;
-	}
-	
-	/**
-	 * Updates the draw chain with a full frame slice.
-	 *
-	 * @since 2018/11/18
-	 */
-	void __updateDrawChain()
+	final void __updateUIStack(UIStack __parent)
 	{
 		UIFramebuffer fb = this._state.framebuffer();
-		this.__updateDrawChain(new __DrawSlice__(0, 0,
-			fb.bufferwidth, fb.bufferheight));
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/11/18
-	 */
-	@Override
-	void __updateDrawChain(__DrawSlice__ __sl)
-	{
-		// Use the slice as our drawing area
-		__DrawChain__ dc = this._drawchain;
-		dc.set(__sl);
+		int w = fb.bufferwidth,
+			h = fb.bufferheight;
 		
-		// Not drawing anything
-		Displayable current = this._current;
-		if (current == null)
-		{
-			// Nothing will be drawn at all
-		}
+		// This will be initialized depending on if there are commands or not
+		UIStack stack;
 		
 		// If there are no commands or if we are showing a full-screen canvas
 		// then there will be no command buttons
@@ -1198,41 +1171,17 @@ public class Display
 		int numcommands = commands.length;
 		if (numcommands == 0 || ((current instanceof Canvas) &&
 			((Canvas)current)._isfullscreen))
-		{
-			// Use the same slice as the display
-			current.__updateDrawChain(__sl);
-			dc.addLink(current);
-		}
-		
-		// Otherwise we will need to fit the command somewhere
+			stack = new UIStack(w, h);
 		else
-		{
-			// Cut away bottom
-			__DrawSlice__ newslice = new __DrawSlice__(
-					__sl.x, __sl.y,
-					__sl.w, __sl.h - CommonMetrics.COMMANDBAR_HEIGHT);
-			
-			// Only draw the first two commands
-			int maxcommands = (numcommands >= 2 ? 2 : numcommands);
-			for (int i = 0, n = maxcommands; i < n; i++)
-			{
-				// Setup sub slice for this command
-				__DrawSlice__ cmdslice = new __DrawSlice__(
-					newslice.x, newslice.y + newslice.h,
-					newslice.w + (newslice.w / 2),
-						CommonMetrics.COMMANDBAR_HEIGHT);
-				
-				// Setup drawable for the command
-				__Drawable__ subdraw = new __CommandDrawable__(
-					(Command)commands[i]);
-				subdraw.__updateDrawChain(cmdslice);
-				dc.addLink(subdraw);
-			}
-			
-			// Update draw chain for whatever is being displayed
-			current.__updateDrawChain(newslice);
-			dc.addLink(current);
-		}
+			stack = new UIStack(w, h - CommonMetrics.COMMANDBAR_HEIGHT);
+		
+		// Update the stack of the widget accordingly
+		Displayable current = this._current;
+		if (current != null)
+			current.__updateUIStack(stack);
+		
+		// Store the stack for drawing
+		this._stack = stack;
 	}
 	
 	/**
