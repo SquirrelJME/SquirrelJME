@@ -13,19 +13,29 @@ package java.lang;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.util.FDMLMath;
 
+/**
+ * This class contains mathematical functions.
+ *
+ * @since 2018/12/08
+ */
 @ImplementationNote("This class uses strict floating point.")
 public strictfp final class Math
 {
+	/** E. */
 	public static final double E =
 		+0x1.5BF0A8B145769p1D;
 	
+	/** Pi. */
 	public static final double PI =
 		+0x1.921FB54442D18p1D;
 	
+	/**
+	 * Not used.
+	 *
+	 * @since 2018/12/08
+	 */
 	private Math()
 	{
-		super();
-		throw new todo.TODO();
 	}
 	
 	public static int abs(int __a)
@@ -164,19 +174,49 @@ public strictfp final class Math
 		return __b;
 	}
 	
+	/**
+	 * Returns the lower of the two values.
+	 *
+	 * @param __a The first.
+	 * @param __b The second.
+	 * @return The lower value.
+	 * @since 2018/12/08
+	 */
 	public static long min(long __a, long __b)
 	{
-		throw new todo.TODO();
+		if (__a < __b)
+			return __a;
+		return __b;
 	}
 	
+	/**
+	 * Returns the lower of the two values.
+	 *
+	 * @param __a The first.
+	 * @param __b The second.
+	 * @return The lower value.
+	 * @since 2018/12/08
+	 */
 	public static float min(float __a, float __b)
 	{
-		throw new todo.TODO();
+		if (__a < __b)
+			return __a;
+		return __b;
 	}
 	
+	/**
+	 * Returns the lower of the two values.
+	 *
+	 * @param __a The first.
+	 * @param __b The second.
+	 * @return The lower value.
+	 * @since 2018/12/08
+	 */
 	public static double min(double __a, double __b)
 	{
-		throw new todo.TODO();
+		if (__a < __b)
+			return __a;
+		return __b;
 	}
 	
 	public static double random()
