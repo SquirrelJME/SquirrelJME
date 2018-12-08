@@ -69,15 +69,10 @@ public final class Boolean
 	}
 	
 	/**
-	 * Compares this boolean to another.
-	 *
-	 * True comes before false.
-	 *
-	 * @param __o The other value.
-	 * @return The comparison.
-	 * @throws NullPointerException On null arguments.
+	 * {@inheritDoc}
 	 * @since 2018/12/07
 	 */
+	@Override
 	public int compareTo(Boolean __o)
 		throws NullPointerException
 	{

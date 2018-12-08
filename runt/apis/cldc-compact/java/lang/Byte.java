@@ -15,16 +15,24 @@ import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
+/**
+ * This represents a boxed byte value.
+ *
+ * @since 2018/12/07
+ */
 public final class Byte
 	extends Number
 	implements Comparable<Byte>
 {
+	/** The maximum value. */
 	public static final byte MAX_VALUE =
 		127;
 	
+	/** The minimum value. */
 	public static final byte MIN_VALUE =
 		-128;
 	
+	/** The number of bits in a byte. */
 	public static final int SIZE =
 		8;
 	
@@ -49,65 +57,117 @@ public final class Byte
 		this._value = __v;
 	}
 	
-	public Byte(String __a)
-		throws NumberFormatException
+	/**
+	 * Initializes the byte value from the string.
+	 *
+	 * @param __s The string to parse.
+	 * @throws NumberFormatException If the string is not a valid number.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/12/07
+	 */
+	public Byte(String __s)
+		throws NumberFormatException, NullPointerException
 	{
-		super();
-		if (false)
-			throw new NumberFormatException();
-		throw new todo.TODO();
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		this._value = Byte.parseByte(__s);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/07
+	 */
 	@Override
 	public byte byteValue()
 	{
-		throw new todo.TODO();
+		return this._value;
 	}
 	
-	public int compareTo(Byte __a)
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/07
+	 */
+	@Override
+	public int compareTo(Byte __o)
 	{
-		throw new todo.TODO();
+		return Byte.compare(this._value, __o._value);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/07
+	 */
 	@Override
 	public double doubleValue()
 	{
-		throw new todo.TODO();
+		return this._value;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/07
+	 */
 	@Override
-	public boolean equals(Object __a)
+	public boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		if (this == __o)
+			return true;
+		
+		if (!(__o instanceof Byte))
+			return false;
+		
+		return this._value == ((Byte)__o)._value;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/07
+	 */
 	@Override
 	public float floatValue()
 	{
-		throw new todo.TODO();
+		return this._value;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/07
+	 */
+	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		return this._value;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/07
+	 */
 	@Override
 	public int intValue()
 	{
-		throw new todo.TODO();
+		return this._value;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/07
+	 */
 	@Override
 	public long longValue()
 	{
-		throw new todo.TODO();
+		return this._value;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/07
+	 */
 	@Override
 	public short shortValue()
 	{
-		throw new todo.TODO();
+		return this._value;
 	}
 	
 	/**
@@ -127,33 +187,67 @@ public final class Byte
 		return rv;
 	}
 	
-	public static int compare(byte __a, byte __b)
+	/**
+	 * Decodes a byte value from the string in the same form as
+	 * {@link Integer#decode(String)}.
+	 *
+	 * @param __s The string to decode.
+	 * @return The byte value.
+	 * @throws NumberFormatException If the value is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/12/07
+	 */
+	public static Byte decode(String __s)
+		throws NumberFormatException, NullPointerException
 	{
-		throw new todo.TODO();
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error ZZ3e Byte value out of bounds.}
+		int val = Integer.decode(__s)
+		if (val < MIN_VALUE || val > MAX_VALUE)
+			throw new NumberFormatException("ZZ3e");
+		
+		return Byte.valueOf((byte)val);
 	}
 	
-	public static Byte decode(String __a)
-		throws NumberFormatException
+	/**
+	 * Parses the given byte using the given radix.
+	 *
+	 * @param __s The string to parse.
+	 * @param __r The radix of the value.
+	 * @return The parsed value.
+	 * @throws NumberFormatException If the byte is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/12/07
+	 */
+	public static byte parseByte(String __s, int __r)
+		throws NumberFormatException, NullPointerException
 	{
-		if (false)
-			throw new NumberFormatException();
-		throw new todo.TODO();
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error ZZ3f Byte value out of range.}
+		int val = Integer.parseInt(__s, __r);
+		if (val < MIN_VALUE || val > MAX_VALUE)
+			throw new NumberFormatException("ZZ3f");
+		
+		return (byte)val;
 	}
 	
-	public static byte parseByte(String __a, int __b)
-		throws NumberFormatException
+	/**
+	 * Parses the given string to a byte.
+	 *
+	 * @param __s The string to parse.
+	 * @return The parsed value.
+	 * @throws NumberFormatException If the byte is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/12/07
+	 */
+	public static byte parseByte(String __s)
+		throws NumberFormatException, NullPointerException
 	{
-		if (false)
-			throw new NumberFormatException();
-		throw new todo.TODO();
-	}
-	
-	public static byte parseByte(String __a)
-		throws NumberFormatException
-	{
-		if (false)
-			throw new NumberFormatException();
-		throw new todo.TODO();
+		return Byte.parseByte(__s, 10);
 	}
 	
 	/**
@@ -180,20 +274,35 @@ public final class Byte
 		return new Byte(__v);
 	}
 	
-	public static Byte valueOf(String __a, int __b)
-		throws NumberFormatException
+	/**
+	 * Parses the string to the given byte value.
+	 *
+	 * @param __s The string to parse.
+	 * @param __r The radix.
+	 * @return The decoded value.
+	 * @throws NumberFormatException If the byte is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/12/07
+	 */
+	public static Byte valueOf(String __s, int __r)
+		throws NumberFormatException, NullPointerException
 	{
-		if (false)
-			throw new NumberFormatException();
-		throw new todo.TODO();
+		return new Byte(Byte.parseByte(__s, __r));
 	}
 	
-	public static Byte valueOf(String __a)
-		throws NumberFormatException
+	/**
+	 * Parses the string to the given byte value.
+	 *
+	 * @param __s The string to parse.
+	 * @return The decoded value.
+	 * @throws NumberFormatException If the byte is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/12/07
+	 */
+	public static Byte valueOf(String __s)
+		throws NumberFormatException, NullPointerException
 	{
-		if (false)
-			throw new NumberFormatException();
-		throw new todo.TODO();
+		return new Byte(Byte.parseByte(__s, 10));
 	}
 }
 
