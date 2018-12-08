@@ -10,14 +10,47 @@
 
 package java.lang;
 
+/**
+ * This represents a sequence of characters.
+ *
+ * @since 2018/12/07
+ */
 public interface CharSequence
-{	
-	public abstract char charAt(int __a);
+{
+	/**
+	 * Returns the character at the given index.
+	 *
+	 * @param __i The index to get.
+	 * @throws IndexOutOfBoundsException If the index is out of bounds.
+	 * @since 2018/12/07
+	 */
+	public abstract char charAt(int __i)
+		throws IndexOutOfBoundsException;
 	
+	/**
+	 * Returns the length of the character sequence.
+	 *
+	 * @return The length of the sequence.
+	 * @since 2018/12/07
+	 */
 	public abstract int length();
 	
-	public abstract CharSequence subSequence(int __a, int __b);
+	/**
+	 * Returns a sub-sequence of this character sequence.
+	 *
+	 * @param __s The start index.
+	 * @param __e The end index.
+	 * @throws IndexOutOfBoundsException If the start or end exceed the
+	 * sequence bounds or start is greater than end.
+	 * @since 2018/12/07
+	 */
+	public abstract CharSequence subSequence(int __s, int __e)
+		throws IndexOutOfBoundsException;
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/07
+	 */
 	@Override
 	public abstract String toString();
 }
