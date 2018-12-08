@@ -10,21 +10,35 @@
 
 package java.io;
 
+/**
+ * This is thrown when an I/O operation was interrupted.
+ *
+ * @since 2018/12/08
+ */
 public class InterruptedIOException
 	extends IOException
 {
+	/** The number of bytes which were transferred. */
 	public int bytesTransferred;
 	
+	/**
+	 * Initializes the exception with no message or cause.
+	 *
+	 * @since 2018/12/08
+	 */
 	public InterruptedIOException()
 	{
-		super();
-		throw new todo.TODO();
 	}
 	
-	public InterruptedIOException(String __a)
+	/**
+	 * Initializes the exception with the given message and no cause.
+	 *
+	 * @param __m The message.
+	 * @since 2018/12/08
+	 */
+	public InterruptedIOException(String __m)
 	{
-		super();
-		throw new todo.TODO();
+		super(__m);
 	}
 }
 
