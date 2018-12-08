@@ -50,6 +50,24 @@ public final class TaskAccess
 	}
 	
 	/**
+	 * Sets the priority of the thread.
+	 *
+	 * @param __tid The thread ID.
+	 * @param __p The priority.
+	 * @since 2018/12/07
+	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
+	public static final void setThreadPriority(int __tid, int __p)
+	{
+		for (Thread t : Thread.getAllStackTraces().keySet())
+			if ((int)t.getId() == __tid)
+			{
+				t.setPriority(__p);
+				break;
+			}
+	}
+	
+	/**
 	 * Signals a hardware interrupt on the given thread.
 	 *
 	 * @param __tid The thread to signal.
