@@ -10,19 +10,33 @@
 
 package java.util;
 
+/**
+ * This is thrown when through iteration the structure of the collection
+ * was modified between iterations.
+ *
+ * @since 2018/12/08
+ */
 public class ConcurrentModificationException
 	extends RuntimeException
 {
+	/**
+	 * Initializes the exception with no message or cause.
+	 *
+	 * @since 2018/12/08
+	 */
 	public ConcurrentModificationException()
 	{
-		super();
-		throw new todo.TODO();
 	}
 	
-	public ConcurrentModificationException(String __a)
+	/**
+	 * Initializes the exception with the given message and no cause.
+	 *
+	 * @param __m The message.
+	 * @since 2018/12/08
+	 */
+	public ConcurrentModificationException(String __m)
 	{
-		super();
-		throw new todo.TODO();
+		super(__m);
 	}
 }
 
