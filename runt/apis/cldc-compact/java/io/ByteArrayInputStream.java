@@ -226,14 +226,31 @@ public class ByteArrayInputStream
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/11/11
+	 * @since 2018/12/08
 	 */
 	@Override
 	public long skip(long __n)
 	{
+		// Doing nothing?
+		if (__n <= 0)
+			return 0;
+		
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			int pos = this.pos,
+				count = this.count,
+				read = count - pos,
+				newpos;
+			
+			// Reading less bytes than what is available
+			if (__n < read)
+				this.pos = (newpos = (int)(pos + __n));
+			
+			// No more bytes to read
+			else
+				this.pos = (newpos = count);
+			
+			return newpos - pos;
 		}
 	}
 }
