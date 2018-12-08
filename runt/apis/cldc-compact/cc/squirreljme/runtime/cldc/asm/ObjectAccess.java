@@ -134,11 +134,15 @@ public final class ObjectAccess
 	 * Invokes the specified static method.
 	 *
 	 * @param __m The method to invoke.
-	 * @param __v The value to pass to the method.
+	 * @param __args Arguments to the method, the parameters will be passed
+	 * as-is and will not be unboxed, so the method must accept boxed values.
+	 * @return The value to return from the method, {@code void} will return
+	 * {@code null}.
 	 * @since 2018/11/20
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
-	public static final native void invokeStatic(StaticMethod __m, Object __v);
+	public static final native Object invokeStatic(StaticMethod __m,
+		Object... __args);
 	
 	/**
 	 * Notifies threads waiting on the monitor.
