@@ -13,6 +13,15 @@ package java.security;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
+/**
+ * This is the base class for all permissions.
+ *
+ * Permissions have a name and may have multiple actions.
+ *
+ * Actions are comma separated and they must be returned in a fixed order.
+ *
+ * @since 2018/12/08
+ */
 public abstract class Permission
 {
 	/** The permission name. */
@@ -32,26 +41,70 @@ public abstract class Permission
 		this._name = __name;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/08
+	 */
 	@Override
 	public abstract boolean equals(Object __a);
 	
+	/**
+	 * Returns the actions which are performed on this permission.
+	 *
+	 * @return The actions performed on this permission.
+	 * @since 2018/12/08
+	 */
 	public abstract String getActions();
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/08
+	 */
 	@Override
 	public abstract int hashCode();
 	
-	public abstract boolean implies(Permission __a);
+	/**
+	 * Checks if this permission implies the given permission.
+	 *
+	 * @param __p The other permission to check.
+	 * @return If this permission implies the specified one.
+	 * @since 2018/12/08
+	 */
+	public abstract boolean implies(Permission __p);
 	
+	/**
+	 * Returns the name of this permission.
+	 *
+	 * @return The permission name.
+	 * @since 2018/12/08
+	 */
 	public final String getName()
 	{
-		throw new todo.TODO();
+		return this._name;
 	}
 	
+	/**
+	 * Returns an empty permission collection for this given permission or
+	 * {@code null} if one is not defined. This collection may be used by
+	 * permission implementation to check if there are any implied
+	 * permissions via {@link #implies(Permission)}. If {@code null} is
+	 * returned this means the caller may store this within any collection
+	 * of permissions.
+	 *
+	 * The default implementation returns {@code null}.
+	 *
+	 * @return The permission collection.
+	 * @since 2018/12/08
+	 */
 	public PermissionCollection newPermissionCollection()
 	{
-		throw new todo.TODO();
+		return null;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/08
+	 */
 	@Override
 	public String toString()
 	{
