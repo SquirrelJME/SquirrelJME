@@ -15,13 +15,40 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * This wraps the standard default error stream.
+ * This provides an output stream which writes to a console file descriptor.
  *
- * @since 2016/06/16
+ * @since 2018/12/08
  */
-public final class StandardError
+public final class ConsoleOutputStream
 	extends OutputStream
 {
+	/** the file descriptor to write to. */
+	protected final int fd;
+	
+	/**
+	 * Initializes the output stream.
+	 *
+	 * @param __fd The descriptor to write to.
+	 * @since 2018/12/08
+	 */
+	public ConsoleOutputStream(int __fd)
+	{
+		this.fd = __fd;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/08
+	 */
+	@Override
+	public void flush()
+		throws IOException
+	{
+		// {@squirreljme.error ZZ3m Could not flush the console.}
+		if (ConsoleOutput.flush(this.fd) < 0)
+			throw new IOException("ZZ3m");
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2016/06/16
@@ -30,9 +57,9 @@ public final class StandardError
 	public void write(int __b)
 		throws IOException
 	{
-		// {@squirreljme.error ZZ07 Error writing to standard error.}
-		if (ConsoleOutput.write(ConsoleOutput.ERROR, __b) < 0)
-			throw new IOException("ZZ07");
+		// {@squirreljme.error ZZ08 Error writing to console.}
+		if (ConsoleOutput.write(this.fd, __b) != 0)
+			throw new IOException("ZZ08");
 	}
 	
 	/**
@@ -46,9 +73,9 @@ public final class StandardError
 		if (__b == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error ZZ39 Error writing to standard error.}
-		if (ConsoleOutput.write(ConsoleOutput.ERROR, __b, 0, __b.length) < 0)
-			throw new IOException("ZZ39");
+		// {@squirreljme.error ZZ3a Error writing to console.}
+		if (ConsoleOutput.write(this.fd, __b, 0, __b.length) < 0)
+			throw new IOException("ZZ3a");
 	}
 	
 	/**
@@ -64,9 +91,9 @@ public final class StandardError
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		// {@squirreljme.error ZZ37 Error writing to standard error.}
-		if (ConsoleOutput.write(ConsoleOutput.ERROR, __b, __o, __l) < 0)
-			throw new IOException("ZZ37");
+		// {@squirreljme.error ZZ38 Error writing to console.}
+		if (ConsoleOutput.write(this.fd, __b, __o, __l) < 0)
+			throw new IOException("ZZ38");
 	}
 }
 
