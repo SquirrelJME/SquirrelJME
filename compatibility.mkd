@@ -4,15 +4,10 @@ SquirrelJME aims to be compatible with most programs however there are
 situations and rare edge cases where there will be no compatibility. This is
 to make the implementation easier.
 
-## `Flushable` Classes
+## `Flushable` Interface
 
-Class which were made `Flushable` to match Java SE, since in Java ME they
-were not marked as being flushable. Since Java ME is designed to be a subset
-and there were some errors made when updating Java ME, it is assumed that
-this was intended to be done but was forgotten.
-
-   * `Formatter`
-   * `Writer`
+The interface `Flushable` does not exist in Java ME and as such it does not
+exist.
 
 ## LCDUI Display Input
 
