@@ -10,27 +10,55 @@
 
 package java.io;
 
+/**
+ * This is thrown when there is a general input and/or output exception.
+ *
+ * @since 2018/12/08
+ */
 public class IOException
 	extends Exception
 {
+	/**
+	 * Initializes the exception with no message or cause.
+	 *
+	 * @since 2018/12/08
+	 */
 	public IOException()
 	{
-		throw new todo.TODO();
 	}
 	
-	public IOException(String __a)
+	/**
+	 * Initializes the exception with the given message and no cause.
+	 *
+	 * @param __m The message.
+	 * @since 2018/12/08
+	 */
+	public IOException(String __m)
 	{
-		throw new todo.TODO();
+		super(__m);
 	}
 	
-	public IOException(String __a, Throwable __b)
+	/**
+	 * Initializes the exception with the given message and cause.
+	 *
+	 * @param __m The message.
+	 * @param __t The cause.
+	 * @since 2018/12/08
+	 */
+	public RuntimeException(String __m, Throwable __t)
 	{
-		throw new todo.TODO();
+		super(__m, __t);
 	}
 	
-	public IOException(Throwable __a)
+	/**
+	 * Initializes the exception with the given cause and no message.
+	 *
+	 * @param __t The cause.
+	 * @since 2018/12/08
+	 */
+	public IOException(Throwable __t)
 	{
-		throw new todo.TODO();
+		super(__t);
 	}
 }
 
