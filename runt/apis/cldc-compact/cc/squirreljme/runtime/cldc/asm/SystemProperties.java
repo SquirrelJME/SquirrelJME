@@ -41,6 +41,17 @@ public final class SystemProperties
 	public static native int apiLevel();
 	
 	/**
+	 * Returns the approximated path where the VM's executable exists. This
+	 * will be the actual JVM's JAR or EXE file.
+	 *
+	 * @return The approximated executable path or {@code null} if it is not
+	 * known.
+	 * @since 2018/12/08
+	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
+	public static native String executablePath();
+	
+	/**
 	 * Returns the depth of the guests within the virtual machine.
 	 *
 	 * @return The number of guests.
