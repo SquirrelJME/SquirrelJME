@@ -12,8 +12,21 @@ package java.lang;
 
 import java.util.Iterator;
 
+/**
+ * This represents a class which can be iterated through giving one or more
+ * values.
+ *
+ * @param <T> The type this returns.
+ * @since 2018/12/08
+ */
 public interface Iterable<T>
 {
+	/**
+	 * Returns the iterator over the object.
+	 *
+	 * @return The object iterator.
+	 * @since 2018/12/08
+	 */
 	public abstract Iterator<T> iterator();
 }
 
