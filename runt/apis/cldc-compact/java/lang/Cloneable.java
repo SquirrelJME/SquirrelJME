@@ -10,6 +10,12 @@
 
 package java.lang;
 
+/**
+ * This represents an object which may be cloned via the {@link Object#clone()}
+ * method.
+ *
+ * @since 2018/12/07
+ */
 public interface Cloneable
 {
 }
