@@ -10,6 +10,12 @@
 
 package java.util;
 
+/**
+ * This represents a collection which may be randomly accessed without
+ * additional cost.
+ *
+ * @since 2018/12/08
+ */
 public interface RandomAccess
 {
 }
