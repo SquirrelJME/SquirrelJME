@@ -12,6 +12,11 @@ package java.lang;
 
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 
+/**
+ * This is a boxed boolean value.
+ *
+ * @since 2018/12/07
+ */
 public final class Boolean
 	implements Comparable<Boolean>
 {
@@ -41,10 +46,15 @@ public final class Boolean
 		this._value = __v;
 	}
 	
-	public Boolean(String __a)
+	/**
+	 * Initializes the boolean from the given string.
+	 *
+	 * @param __s String boolean representation.
+	 * @since 2018/12/07
+	 */
+	public Boolean(String __s)
 	{
-		super();
-		throw new todo.TODO();
+		this(Boolean.valueOf(__s)._value);
 	}
 	
 	/**
@@ -58,20 +68,56 @@ public final class Boolean
 		return this._value;
 	}
 	
-	public int compareTo(Boolean __a)
+	/**
+	 * Compares this boolean to another.
+	 *
+	 * True comes before false.
+	 *
+	 * @param __o The other value.
+	 * @return The comparison.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/12/07
+	 */
+	public int compareTo(Boolean __o)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__o == null)
+			throw new NullPointerException("NARG");
+		
+		boolean a = this._value,
+			b = __o._value;
+		
+		if (a == b)
+			return 0;
+		else if (a)
+			return 1;
+		return -1;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/07
+	 */
 	@Override
-	public boolean equals(Object __a)
+	public boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		if (this == __o)
+			return true;
+		
+		if (!(__o instanceof Boolean))
+			return false;
+		
+		return this._value == ((Boolean)__o)._value;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/07
+	 */
+	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		return (this._value ? 1231 : 1237);
 	}
 	
 	/**
@@ -84,14 +130,34 @@ public final class Boolean
 		return Boolean.toString(this._value);
 	}
 	
-	public static boolean getBoolean(String __a)
+	/**
+	 * Gets boolean value from the system property.
+	 *
+	 * @param __p The property to get.
+	 * @return The value of the boolean.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SecurityException If it is not permitted to get the property.
+	 * @since 2018/12/07
+	 */
+	public static boolean getBoolean(String __p)
+		throws NullPointerException, SecurityException
 	{
-		throw new todo.TODO();
+		if (__p == null)
+			throw new NullPointerException("NARG");
+		
+		return Boolean.parseBoolean(System.getProperty(__p));
 	}
 	
-	public static boolean parseBoolean(String __a)
+	/**
+	 * Parses the given boolean value without regards to case.
+	 *
+	 * @param __v The value to parse.
+	 * @return The boolean of the parse.
+	 * @since 2018/12/07
+	 */
+	public static boolean parseBoolean(String __v)
 	{
-		return (__a != null && __a.equalsIgnoreCase("true"));
+		return (__v != null && __v.equalsIgnoreCase("true"));
 	}
 	
 	/**
@@ -122,9 +188,16 @@ public final class Boolean
 		return FALSE;
 	}
 	
-	public static Boolean valueOf(String __a)
+	/**
+	 * Returns the value of the given boolean.
+	 *
+	 * @param __v The value to parse.
+	 * @return The boolean value.
+	 * @since 2018/12/07
+	 */
+	public static Boolean valueOf(String __v)
 	{
-		if (__a != null && __a.equalsIgnoreCase("true"))
+		if (__v != null && __v.equalsIgnoreCase("true"))
 			return TRUE;
 		return FALSE;
 	}
