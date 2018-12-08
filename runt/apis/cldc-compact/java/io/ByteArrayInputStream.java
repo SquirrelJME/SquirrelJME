@@ -199,7 +199,7 @@ public class ByteArrayInputStream
 				read = __l;
 			
 			// Copy bytes
-			for (int i = 0; i < __l; i++)
+			for (int i = 0; i < read; i++)
 				__b[__o++] = buf[pos++];
 			
 			// Store new position
