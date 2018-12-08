@@ -10,12 +10,12 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.asm.ConsoleOutput;
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import cc.squirreljme.runtime.cldc.asm.SystemAccess;
 import cc.squirreljme.runtime.cldc.asm.SystemProperties;
 import cc.squirreljme.runtime.cldc.asm.TimeAccess;
-import cc.squirreljme.runtime.cldc.io.StandardError;
-import cc.squirreljme.runtime.cldc.io.StandardOutput;
+import cc.squirreljme.runtime.cldc.io.ConsoleOutputStream;
 import cc.squirreljme.runtime.cldc.lang.ApiLevel;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -31,11 +31,13 @@ public final class System
 {
 	/** Standard error stream (stderr). */
 	public static final PrintStream err =
-		new __CanSetPrintStream__(new PrintStream(new StandardError(), true));
+		new __CanSetPrintStream__(new PrintStream(
+			new ConsoleOutputStream(ConsoleOutput.ERROR), true));
 	
 	/** Standard output stream (stdout). */
 	public static final PrintStream out =
-		new __CanSetPrintStream__(new PrintStream(new StandardOutput(), true));
+		new __CanSetPrintStream__(new PrintStream(
+			new ConsoleOutputStream(ConsoleOutput.OUTPUT), true));
 	
 	/**
 	 * Not used.
