@@ -13,6 +13,7 @@ package javax.microedition.lcdui;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import java.util.Date;
 import java.util.TimeZone;
+import cc.squirreljme.runtime.lcdui.ui.UIStack;
 
 public class DateField
 	extends Item
@@ -60,20 +61,10 @@ public class DateField
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/11/18
+	 * @since 2018/12/08
 	 */
 	@Override
-	void __drawChain(Graphics __g)
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/11/18
-	 */
-	@Override
-	void __updateDrawChain(__DrawSlice__ __sl)
+	final void __updateUIStack(UIStack __parent)
 	{
 		throw new todo.TODO();
 	}

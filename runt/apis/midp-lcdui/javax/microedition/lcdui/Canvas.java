@@ -18,6 +18,7 @@ import cc.squirreljme.runtime.lcdui.event.NonStandardKey;
 import cc.squirreljme.runtime.lcdui.gfx.BasicGraphics;
 import cc.squirreljme.runtime.lcdui.gfx.EnforcedDrawingAreaGraphics;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
+import cc.squirreljme.runtime.lcdui.ui.UIStack;
 
 /**
  * The canvas acts as the base class for primary display interfaces that
@@ -503,7 +504,7 @@ public abstract class Canvas
 		// such are chopped off
 		__Widget__ parent = this._parent;
 		if (parent != null && parent instanceof Display)
-			((Display)parent).__updateDrawChain();
+			((Display)parent).__updateUIStack(null);
 	}
 	
 	/**
@@ -659,48 +660,6 @@ public abstract class Canvas
 	 * @since 2018/11/18
 	 */
 	@Override
-	void __drawChain(Graphics __g)
-	{
-		__DrawChain__ dc = this._drawchain;
-		
-		// Setup an enforced draw region to prevent programs from drawing
-		// outside of the canvas
-		EnforcedDrawingAreaGraphics ed = new EnforcedDrawingAreaGraphics(
-			__g, dc.x, dc.y, dc.w, dc.h);
-		
-		// Transparent is set when the widget does not draw every pixel
-		if (this._transparent)
-		{
-			// The graphics object gets the color pre-initialized so make sure
-			// to restore it after the paint
-			int old = ed.getAlphaColor();
-			
-			// Fill the area accordingly
-			ed.setAlphaColor(CommonColors.CANVAS_BACKGROUND);
-			ed.fillRect(0, 0, dc.w, dc.h);
-			
-			// Restore old color
-			ed.setAlphaColor(old);
-		}
-		
-		// Draw whatever the canvas wants drawn on this
-		try
-		{
-			this.paint(ed);
-		}
-		
-		// Ignore any exceptions user code makes here
-		catch (Throwable t)
-		{
-			t.printStackTrace();
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/11/18
-	 */
-	@Override
 	int __supportBit()
 	{
 		// Canvases are always supported
@@ -709,15 +668,12 @@ public abstract class Canvas
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/11/18
+	 * @since 2018/12/08
 	 */
 	@Override
-	final void __updateDrawChain(__DrawSlice__ __sl)
+	final void __updateUIStack(UIStack __parent)
 	{
-		// We will be using the same drawing area as the slice we were given
-		// whatever it was
-		__DrawChain__ dc = this._drawchain;
-		dc.set(__sl);
+		throw new todo.TODO();
 	}
 }
 
