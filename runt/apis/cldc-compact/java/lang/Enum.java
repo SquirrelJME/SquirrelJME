@@ -11,6 +11,7 @@
 package java.lang;
 
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
+import cc.squirreljme.runtime.cldc.asm.StaticMethod;
 import cc.squirreljme.runtime.cldc.lang.ClassData;
 
 /**
@@ -77,7 +78,7 @@ public abstract class Enum<E extends Enum<E>>
 		
 		// {@squirreljme.error ZZ3h Cannot compare enums of a different
 		// type.}
-		if (Enum.__pivotClass(this) != Enum.__pivotClass(__o))
+		if (this.getDeclaringClass() != __o.getDeclaringClass())
 			throw new ClassCastException("ZZ3h");
 		
 		// Just ordinal subtraction
@@ -177,35 +178,19 @@ public abstract class Enum<E extends Enum<E>>
 		// in here somewhere
 		ClassData data = ObjectAccess.classData(__cl);
 		
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * Returns the pivot class for the enumeration object.
-	 *
-	 * @param __o The object to get the pivot class for.
-	 * @return The pivot class for the object.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/12/07
-	 */
-	private static final Class<?> __pivotClass(Object __o)
-		throws NullPointerException
-	{
-		if (__o == null)
-			throw new NullPointerException("NARG");
+		// {@squirreljme.error ZZ3i Cannot get the value of a non-enumeration
+		// type or it has no implicit {@code values()} method.}
+		StaticMethod getvalues = data.enumValues();
+		if (getvalues == null)
+			throw new ClassCastException("ZZ3i");
 		
-		// Start at this class
-		Class<?> of = __o.getClass();
+		// Go through and check all the names
+		for (Enum e : (Enum[])ObjectAccess.invokeStatic(getvalues))
+			if (__s.equals(e.name()))
+				return __cl.cast(e);
 		
-		// If the super class is Enum, then this is not a per-object Enum
-		// so that means we went too far
-		Class<?> ofsuper = of.getSuperclass();
-		if (ofsuper == Enum.class)
-			return of;
-		
-		// It is per-class enum, so use the super-class
-		else
-			return ofsuper;
+		// {@squirreljme.error ZZ3j Not an enumeration value. (The value)}
+		throw new IllegalArgumentException(String.format("ZZ3j %s", __s));
 	}
 }
 

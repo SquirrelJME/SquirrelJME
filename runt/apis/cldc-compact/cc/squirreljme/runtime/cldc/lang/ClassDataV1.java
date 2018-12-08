@@ -50,6 +50,9 @@ public class ClassDataV1
 	/** Default constructor method. */
 	private final StaticMethod _defaultconmethod;
 	
+	/** Enumeration values. */
+	private final StaticMethod _enumvalues;
+	
 	/**
 	 * Version 1 constructor.
 	 *
@@ -66,7 +69,8 @@ public class ClassDataV1
 	 * @since 2016/04/12
 	 */
 	public ClassDataV1(int __csi, String __bn, Class<?> __sc, Class<?>[] __ic,
-		Class<?> __ct, String __ij, int __flags, int __dcf, StaticMethod __dcm)
+		Class<?> __ct, String __ij, int __flags, int __dcf, StaticMethod __dcm,
+		StaticMethod __efm)
 		throws NullPointerException
 	{
 		super(1);
@@ -83,6 +87,7 @@ public class ClassDataV1
 		this._flags = __flags;
 		this._defaultconflags = __dcf;
 		this._defaultconmethod = __dcm;
+		this._enumvalues = __efm;
 		
 		// Count dimensions, used for comparison purposes
 		int dims = 0;
@@ -139,6 +144,16 @@ public class ClassDataV1
 	public int dimensions()
 	{
 		return this._dimensions;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/08
+	 */
+	@Override
+	public StaticMethod enumValues()
+	{
+		return this._enumvalues;
 	}
 	
 	/**
