@@ -20,6 +20,13 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import cc.squirreljme.runtime.cldc.lang.ClassFlag;
 
+/**
+ * This class is the in-language representation of a Java class, the CLDC
+ * allows for minimal reflection via {@link Class#forName(String)} and
+ * {@link Class#newInstance()}.
+ *
+ * @since 2018/12/08
+ */
 public final class Class<T>
 {
 	/** This is the prefix that is used for assertion checks. */
@@ -70,17 +77,23 @@ public final class Class<T>
 	 * @throws ClassCastException If the specified class is not a sub-class of
 	 * this class type.
 	 * @throws NullPointerException On null arguments.
+	 * @see Class#isAssignableFrom(Class)
 	 * @since 2016/06/13
 	 */
 	@SuppressWarnings({"unchecked"})
 	public <U> Class<? extends U> asSubclass(Class<U> __cl)
 		throws ClassCastException, NullPointerException
 	{
-		// Check
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// {@squirreljme.error ZZ3k The specifed class is not a sub-class
+		// of this class. (The class being checked; The current class)}
+		if (!this.isAssignableFrom(__cl))
+			throw new ClassCastException(
+				String.format("ZZ3k %s %s", __cl, this));
+		
+		return (Class<? extends U>)this;
 	}
 	
 	/**
