@@ -10,19 +10,32 @@
 
 package java.net;
 
+/**
+ * This is thrown when the remote system has a port which cannot be reached.
+ *
+ * @since 2018/12/08
+ */
 public class PortUnreachableException
 	extends SocketException
 {
+	/**
+	 * Initializes the exception with no message or cause.
+	 *
+	 * @since 2018/12/08
+	 */
 	public PortUnreachableException()
 	{
-		super();
-		throw new todo.TODO();
 	}
 	
-	public PortUnreachableException(String __a)
+	/**
+	 * Initializes the exception with the given message and no cause.
+	 *
+	 * @param __m The message.
+	 * @since 2018/12/08
+	 */
+	public PortUnreachableException(String __m)
 	{
-		super();
-		throw new todo.TODO();
+		super(__m);
 	}
 }
 

@@ -12,18 +12,31 @@ package java.net;
 
 import java.io.IOException;
 
+/**
+ * This is thrown when a host is looked up, however it is not valid.
+ *
+ * @since 2018/12/08
+ */
 public class UnknownHostException
 	extends IOException
 {
-	public UnknownHostException(String __a)
-	{
-		super();
-		throw new todo.TODO();
-	}
-	
+	/**
+	 * Initializes the exception with no message or cause.
+	 *
+	 * @since 2018/12/08
+	 */
 	public UnknownHostException()
 	{
-		super();
-		throw new todo.TODO();
+	}
+	
+	/**
+	 * Initializes the exception with the given message and no cause.
+	 *
+	 * @param __m The message.
+	 * @since 2018/12/08
+	 */
+	public UnknownHostException(String __m)
+	{
+		super(__m);
 	}
 }

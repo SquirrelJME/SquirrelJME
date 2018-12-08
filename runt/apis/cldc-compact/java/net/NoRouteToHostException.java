@@ -10,19 +10,32 @@
 
 package java.net;
 
+/**
+ * This is thrown when there is no route to the remote destination.
+ *
+ * @since 2018/12/08
+ */
 public class NoRouteToHostException
 	extends SocketException
 {
+	/**
+	 * Initializes the exception with no message or cause.
+	 *
+	 * @since 2018/12/08
+	 */
 	public NoRouteToHostException()
 	{
-		super();
-		throw new todo.TODO();
 	}
 	
-	public NoRouteToHostException(String __a)
+	/**
+	 * Initializes the exception with the given message and no cause.
+	 *
+	 * @param __m The message.
+	 * @since 2018/12/08
+	 */
+	public NoRouteToHostException(String __m)
 	{
-		super();
-		throw new todo.TODO();
+		super(__m);
 	}
 }
 
