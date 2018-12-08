@@ -32,7 +32,7 @@ public interface VMSuiteManager
 	 * be reused accordingly as such.
 	 *
 	 * @param __s The name of the library to load.
-	 * @return The loaded library.
+	 * @return The loaded library, or {@code null} if it does not exist.
 	 * @since 2018/10/16
 	 */
 	public abstract VMClassLibrary loadLibrary(String __s)

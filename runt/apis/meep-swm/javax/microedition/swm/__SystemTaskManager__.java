@@ -171,6 +171,12 @@ final class __SystemTaskManager__
 			// when starting task. (The entry point)}
 			if (tid == TaskAccess.ERROR_INVALID_ENTRY)
 				throw new IllegalArgumentException("DG0x " + __cn);
+			
+			// {@squirreljme.error DG0y Could not launch the task because of
+			// an unspecified error. (The error)}
+			else if (tid < 0)
+				throw new IllegalArgumentException("DG0y " + tid);
+			
 			return new Task(tid, __s);
 		}
 		

@@ -24,6 +24,10 @@ public final class TaskAccess
 	public static final int ERROR_INVALID_ENTRY =
 		-2;
 	
+	/** Library in the classpath is missing. */
+	public static final int ERROR_MISSING_LIBRARY =
+		-3;
+	
 	/** Exit code indicating bad task things. */
 	public static final int EXIT_CODE_FATAL_EXCEPTION =
 		127;
