@@ -10,19 +10,32 @@
 
 package java.io;
 
+/**
+ * This thrown when the end of file has been reached.
+ *
+ * @since 2018/12/08
+ */
 public class EOFException
 	extends IOException
 {
+	/**
+	 * Initializes the exception with no message or cause.
+	 *
+	 * @since 2018/12/08
+	 */
 	public EOFException()
 	{
-		super();
-		throw new todo.TODO();
 	}
 	
-	public EOFException(String __a)
+	/**
+	 * Initializes the exception with the given message and no cause.
+	 *
+	 * @param __m The message.
+	 * @since 2018/12/08
+	 */
+	public EOFException(String __m)
 	{
-		super();
-		throw new todo.TODO();
+		super(__m);
 	}
 }
 

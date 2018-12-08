@@ -10,17 +10,32 @@
 
 package java.io;
 
+/**
+ * This is thrown when the encoding is not supported.
+ *
+ * @since 2018/12/08
+ */
 public class UnsupportedEncodingException
 	extends IOException
 {
+	/**
+	 * Initializes the exception with no message or cause.
+	 *
+	 * @since 2018/12/08
+	 */
 	public UnsupportedEncodingException()
 	{
-		throw new todo.TODO();
 	}
 	
-	public UnsupportedEncodingException(String __a)
+	/**
+	 * Initializes the exception with the given message and no cause.
+	 *
+	 * @param __m The message.
+	 * @since 2018/12/08
+	 */
+	public UnsupportedEncodingException(String __m)
 	{
-		throw new todo.TODO();
+		super(__m);
 	}
 }
 
