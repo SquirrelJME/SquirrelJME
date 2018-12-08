@@ -46,6 +46,16 @@ public final class ConsoleOutput
 	}
 	
 	/**
+	 * Flushes the stream.
+	 *
+	 * @param __fd The file descriptor to flush.
+	 * @return Zero on success, negative values for failure.
+	 * @since 2018/12/08
+	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
+	public static final native int flush(int __fd);
+	
+	/**
 	 * Writes the character to the console output.
 	 *
 	 * @param __fd The file descriptor to write to.
