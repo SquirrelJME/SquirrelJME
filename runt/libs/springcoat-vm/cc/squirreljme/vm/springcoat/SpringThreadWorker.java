@@ -558,6 +558,25 @@ public final class SpringThreadWorker
 					defconsm = SpringNullObject.NULL;
 				}
 				
+				// Get the static method for enumeration values
+				ClassFlags classflags = resclass.flags();
+				SpringObject enumsm;
+				if (classflags.isEnum())
+					try
+					{
+						enumsm = new SpringVMStaticMethod(
+							resclass.lookupMethod(true,
+							new MethodName("values"),
+							new MethodDescriptor(name.addDimensions(1).
+							field())));
+					}
+					catch (SpringIncompatibleClassChangeException e)
+					{
+						enumsm = SpringNullObject.NULL;
+					}
+				else
+					enumsm = SpringNullObject.NULL;
+				
 				// Initialize V1 class data which is initialized with class
 				// data
 				SpringObject cdata = this.newInstance(new ClassName(
@@ -565,6 +584,7 @@ public final class SpringThreadWorker
 					new MethodDescriptor("(ILjava/lang/String;" +
 						"Ljava/lang/Class;[Ljava/lang/Class;" +
 						"Ljava/lang/Class;Ljava/lang/String;II" +
+						"Lcc/squirreljme/runtime/cldc/asm/StaticMethod;" +
 						"Lcc/squirreljme/runtime/cldc/asm/StaticMethod;)V"),
 					resclass.specialIndex(),
 					this.asVMObject(name.toString(), true),
@@ -573,8 +593,8 @@ public final class SpringThreadWorker
 					(!resclass.isArray() ? SpringNullObject.NULL :
 						this.asVMObject(resclass.componentType(), true)),
 					this.asVMObject(resclass.inJar()),
-					resclass.flags().toJavaBits(),
-					defconflags, defconsm);
+					classflags.toJavaBits(),
+					defconflags, defconsm, enumsm);
 				
 				// Initialize class with special class index and some class
 				// information

@@ -78,6 +78,14 @@ public abstract class ClassData
 	public abstract int dimensions();
 	
 	/**
+	 * Method which returns the enumeration values, if an enum.
+	 *
+	 * @return The enumeration values getter.
+	 * @since 2018/12/08
+	 */
+	public abstract StaticMethod enumValues();
+	
+	/**
 	 * Returns the class flags.
 	 *
 	 * @return The class flags.

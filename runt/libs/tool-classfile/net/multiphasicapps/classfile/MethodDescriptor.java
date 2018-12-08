@@ -31,10 +31,50 @@ public final class MethodDescriptor
 	private final FieldDescriptor[] _args;
 	
 	/**
+	 * Initializes the descriptor with the given descriptors.
+	 *
+	 * @param __rv The return value.
+	 * @param __args Arguments to the descriptor.
+	 * @throws InvalidClassFormatException If the descriptor is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/12/08
+	 */
+	public MethodDescriptor(FieldDescriptor __rv, FieldDescriptor... __args)
+		throws InvalidClassFormatException, NullPointerException
+	{
+		if (__rv == null || __args == null)
+			throw new NullPointerException("NARG");
+		
+		// Need to build the string representation
+		StringBuilder sb = new StringBuilder();
+		sb.append('(');
+		
+		// Check for more nulls and build the string
+		__args = __args.clone();
+		for (FieldDescriptor f : __args)
+		{
+			if (f == null)
+				throw new NullPointerException("NARG");
+			
+			sb.append(f.toString());
+		}
+		
+		// Finish with the return value
+		sb.append(')');
+		sb.append((__rv == null ? "V" : __rv.toString()));
+		
+		// Set because these are copies
+		this.rvalue = __rv;
+		this._args = __args;
+		this.string = sb.toString();
+	}
+	
+	/**
 	 * Initializes the method descriptor.
 	 *
 	 * @param __n The method descriptor to decode.
-	 * @throws InvalidClassFormatException If it is not a valid method descriptor.
+	 * @throws InvalidClassFormatException If it is not a valid method
+	 * descriptor.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/06/12
 	 */
