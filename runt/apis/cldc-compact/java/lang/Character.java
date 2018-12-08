@@ -244,7 +244,7 @@ public final class Character
 	public static boolean isSpaceChar(char __c)
 	{
 		return (__c == 0x09 || __c == 0x0A || __c == 0x0C || __c == 0x0D ||
-			__c = 0x20);
+			__c == 0x20);
 	}
 	
 	/**
@@ -274,7 +274,7 @@ public final class Character
 	{
 		switch (__c)
 		{
-			case 0x000A:
+			case 0x00A0:
 			case 0x2007:
 			case 0x202F:
 			case 0x0009:
