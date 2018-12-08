@@ -12,7 +12,6 @@ package java.util;
 
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import java.io.Closeable;
-import java.io.Flushable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -69,7 +68,7 @@ import java.io.Writer;
  */
 @ImplementationNote("")
 public final class Formatter
-	implements Closeable, Flushable
+	implements Closeable
 {
 	/** The newline sequence. */
 	private static final String _NEWLINE;
@@ -175,7 +174,6 @@ public final class Formatter
 	 * @throws IllegalStateException If this formatter was closed.
 	 * @since 2018/09/23
 	 */
-	@Override
 	public void flush()
 		throws IllegalStateException
 	{
@@ -183,17 +181,13 @@ public final class Formatter
 		if (this._closed)
 			throw new IllegalStateException("ZZ1p");
 		
-		// Can only be done if it is flushable
+		// Java ME has no Flushable interface so only certain classes have
+		// the flush method
 		Appendable out = this._out;
-		if (out instanceof Flushable)
-			try
-			{
-				((Flushable)out).flush();
-			}
-			catch (IOException e)
-			{
-				this._ioe = e;
-			}
+		if (out instanceof OutputStream)
+			((OutputStream)out).flush();
+		else if (out instanceof Writer)
+			((Writer)out).flush();
 	}
 	
 	/**

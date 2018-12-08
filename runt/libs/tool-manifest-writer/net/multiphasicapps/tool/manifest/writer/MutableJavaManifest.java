@@ -14,7 +14,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
-import java.io.Flushable;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -140,10 +139,9 @@ public class MutableJavaManifest
 			try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
 			{
 				// Write to output
-				write(baos);
+				this.write(baos);
 			
 				// Extract array
-				baos.flush();
 				bytes = baos.toByteArray();
 			}
 		
@@ -264,9 +262,11 @@ public class MutableJavaManifest
 			__write(__os, e.getValue());
 		}
 		
-		// Flush the output in case of queues
-		if (__os instanceof Flushable)
-			((Flushable)__os).flush();
+		// Java ME has no flushable so we only know two classes which are
+		if (__os instanceof OutputStream)
+			((OutputStream)__os).flush();
+		else if (__os instanceof Writer)
+			((Writer)__os).flush();
 		
 		return __os;
 	}

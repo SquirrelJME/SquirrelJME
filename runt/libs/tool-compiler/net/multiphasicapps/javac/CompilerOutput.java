@@ -10,7 +10,6 @@
 
 package net.multiphasicapps.javac;
 
-import java.io.Flushable;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -25,14 +24,13 @@ import java.io.OutputStream;
  * @since 2017/11/28
  */
 public interface CompilerOutput
-	extends Flushable
 {
 	/**
-	 * {@inheritDoc}
+	 * Flushes the output.
+	 *
 	 * @throws CompilerException If there was an error flushing.
 	 * @since 2017/11/28
 	 */
-	@Override
 	public abstract void flush()
 		throws CompilerException;
 	

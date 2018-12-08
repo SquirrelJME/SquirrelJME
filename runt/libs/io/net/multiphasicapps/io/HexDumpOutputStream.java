@@ -11,7 +11,6 @@
 package net.multiphasicapps.io;
 
 import java.io.Closeable;
-import java.io.Flushable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -142,10 +141,8 @@ public class HexDumpOutputStream
 	public void flush()
 		throws IOException
 	{
-		// Flush the pipe
-		Flushable f = this.pipe;
-		if (f != null)
-			f.flush();
+		// Flush the forward pipe
+		this.pipe.flush();
 		
 		// And the dump
 		this.dump.flush();

@@ -16,7 +16,7 @@ package java.io;
  * @since 2016/04/16
  */
 public abstract class OutputStream
-	implements Closeable, Flushable
+	implements Closeable
 {
 	/**
 	 * Initializes the base output stream.
@@ -55,13 +55,12 @@ public abstract class OutputStream
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * This is used to indicate that the stream should be flushed.
 	 *
 	 * If this method is not overridden by a sub-class then this does nothing.
 	 *
 	 * @since 2016/04/16
 	 */
-	@Override
 	public void flush()
 		throws IOException
 	{
