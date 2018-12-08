@@ -12,6 +12,7 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.lcdui.common.CommonColors;
 import cc.squirreljme.runtime.lcdui.common.CommonMetrics;
+import cc.squirreljme.runtime.lcdui.ui.UIStack;
 
 public class List
 	extends Screen
@@ -27,10 +28,6 @@ public class List
 	
 	/** The type of list this is. */
 	private final int _type;
-	
-	/** The scrollbar for this list. */
-	private final __Scrollbar__ _scrollbar =
-		new __Scrollbar__();
 	
 	/**
 	 * Initializes the list.
@@ -215,29 +212,6 @@ public class List
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/11/18
-	 */
-	@Override
-	void __drawChain(Graphics __g)
-	{
-		// Get the properties of this chain
-		__DrawChain__ chain = this._drawchain;
-		int x = chain.x,
-			y = chain.y,
-			w = chain.w,
-			h = chain.h;
-		
-		// Draw a rectangle in the list area with the background color
-		__g.setColor(CommonColors.BACKGROUND);
-		__g.fillRect(x, y, w, h);
-		
-		// Draw border
-		__g.setColor(CommonColors.BORDER);
-		__g.drawRect(x, y, w, h);
-	}
-	
-	/**
-	 * {@inheritDoc}
 	 * @since 2018/11/17
 	 */
 	@Override
@@ -248,42 +222,12 @@ public class List
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/11/18
+	 * @since 2018/12/08
 	 */
 	@Override
-	void __updateDrawChain(__DrawSlice__ __sl)
+	final void __updateUIStack(UIStack __parent)
 	{
-		// We will be updating our own draw chain
-		__DrawChain__ chain = this._drawchain;
-		chain.reset();
-		
-		// Slice in the scrollbar
-		__Scrollbar__ scrollbar = this._scrollbar;
-		__sl = scrollbar.__sliceIn(__sl);
-		chain.addLink(scrollbar);
-		
-		// Use the remaining slice here
-		chain.set(__sl);
-		
-		// Need to get the default font because there may be per-entry fonts
-		// but we use the default otherwise...
-		Font defaultfont = Font.getDefaultFont();
-		
-		// Go through each item in the list
-		int x = __sl.x,
-			y = __sl.y,
-			w = __sl.w,
-			h = __sl.h;
-		for (Object re : this._items.values())
-		{
-			// Stop adding entries because no more can fit
-			if (y >= h)
-				break;
-			
-			__ChoiceEntry__ e = (__ChoiceEntry__)re;
-			
-			throw new todo.TODO();
-		}
+		throw new todo.TODO();
 	}
 }
 

@@ -796,7 +796,8 @@ public class Display
 		__show._isshown = this._isshown;
 		
 		// Use the title of this thing
-		NativeDisplayAccess.setDisplayTitle(nid, __show.getTitle());
+		NativeDisplayAccess.setDisplayTitle(this._state.nativeid,
+			__show.getTitle());
 		
 		// Update the UI stack
 		this.__updateUIStack(null);
@@ -1138,10 +1139,10 @@ public class Display
 		// Set the initial clipping region
 		g.clipRect(__x, __y, __w, __h);
 		
-		// Call internal paint, which draws our entire chain
+		// Call internal paint, which draws our stack
 		try
 		{
-			this.__drawChainWrapped(g);
+			throw new todo.TODO();
 		}
 		
 		// Catch all of these, but keep drawing!
@@ -1162,13 +1163,17 @@ public class Display
 		int w = fb.bufferwidth,
 			h = fb.bufferheight;
 		
+		// The current thing to be drawn
+		Displayable current = this._current;
+		
 		// This will be initialized depending on if there are commands or not
 		UIStack stack;
 		
 		// If there are no commands or if we are showing a full-screen canvas
 		// then there will be no command buttons
-		Object[] commands = current._commands.values();
-		int numcommands = commands.length;
+		Object[] commands = (current == null ? null :
+			current._commands.values());
+		int numcommands = (current == null ? 0 : commands.length);
 		if (numcommands == 0 || ((current instanceof Canvas) &&
 			((Canvas)current)._isfullscreen))
 			stack = new UIStack(w, h);
@@ -1176,12 +1181,11 @@ public class Display
 			stack = new UIStack(w, h - CommonMetrics.COMMANDBAR_HEIGHT);
 		
 		// Update the stack of the widget accordingly
-		Displayable current = this._current;
 		if (current != null)
 			current.__updateUIStack(stack);
 		
 		// Store the stack for drawing
-		this._stack = stack;
+		this._uistack = stack;
 	}
 	
 	/**

@@ -34,7 +34,7 @@ public final class UIDisplayState
 			"true"));
 	
 	/** The native display ID. */
-	protected final int nativeid;
+	public final int nativeid;
 	
 	/** The framebuffer for this display. */
 	protected UIFramebuffer framebuffer;
