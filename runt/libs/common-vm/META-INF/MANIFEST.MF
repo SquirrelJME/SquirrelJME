@@ -8,6 +8,6 @@ X-SquirrelJME-Description: This contains classes which are common across
  the various SquirrelJME VMs, and these only need to be written once 
  as such.
 X-SquirrelJME-Depends: midp-lcdui meep-swm meep-midlet tool-profiler 
- tool-manifest-reader
+ tool-manifest-reader zip
 Microedition-Configuration: CLDC-1.8
 

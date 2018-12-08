@@ -10,12 +10,16 @@
 
 package cc.squirreljme.vm;
 
+import cc.squirreljme.runtime.cldc.asm.SystemProperties;
 import cc.squirreljme.runtime.cldc.lang.GuestDepth;
 import cc.squirreljme.runtime.swm.EntryPoint;
 import cc.squirreljme.runtime.swm.EntryPoints;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -235,11 +239,11 @@ public abstract class VMFactory
 			man = (in == null ? new JavaManifest() : new JavaManifest(in));
 		}
 		
-		// {@squirreljme.error BK38 Could not read the manifest to load the
+		// {@squirreljme.error AK09 Could not read the manifest to load the
 		// launcher's classpath.}
 		catch (IOException e)
 		{
-			throw new RuntimeException("BK38", e);
+			throw new RuntimeException("AK09", e);
 		}
 		
 		// These are parameters which will be parsed to handle how to start
@@ -338,6 +342,49 @@ public abstract class VMFactory
 			// Skip the split character
 			i = sp + 1;
 		}
+		
+		// Since we are shaded, we might want to load some extra suites from
+		// some directory
+		// Try to find the directory of our executable
+		Path execpath = null;
+		try
+		{
+			String execraw = SystemProperties.executablePath();
+			if (execraw == null)
+			{
+				execraw = System.getProperty("user.dir");
+				if (execraw != null)
+					execpath = Paths.get(execraw);
+			}
+			else
+			{
+				execpath = Paths.get(execraw);
+				
+				// Look in parent directory because we got the path of
+				// our executable
+				Path p = execpath.getParent();
+				if (p != null)
+					execpath = p;
+			}
+		}
+		catch (InvalidPathException e)
+		{
+		}
+		
+		// Only if it exists can we actually use it
+		if (execpath != null)
+			try
+			{
+				sm = new MergedSuiteManager(sm,
+					new PathSuiteManager(execpath.resolve("lib")));
+			}
+			catch (InvalidPathException e)
+			{
+				execpath = null;
+			}
+		
+		// Debug
+		todo.DEBUG.note("Loaded EXEC Path: %s", execpath);
 		
 		// Create the VM
 		VirtualMachine vm = VMFactory.main(null, null,
