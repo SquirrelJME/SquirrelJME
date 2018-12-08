@@ -1115,6 +1115,25 @@ public final class SpringThreadWorker
 		// Depends on the function
 		switch (__func)
 		{
+				// Flush the console
+			case "cc/squirreljme/runtime/cldc/asm/ConsoleOutput::" +
+				"flush:(I)I":
+				{
+					int fd = (Integer)__args[0];
+					PrintStream to = (fd == ConsoleOutput.OUTPUT ?
+						System.out : (fd == ConsoleOutput.ERROR ?
+						System.err : null));
+					
+					// Flush if valid
+					if (to != null)
+					{
+						to.flush();
+						return 0;
+					}
+					else
+						return ConsoleOutput.ERROR_INVALIDFD;
+				}
+			
 				// Write to the console
 			case "cc/squirreljme/runtime/cldc/asm/ConsoleOutput::" +
 				"write:(II)I":

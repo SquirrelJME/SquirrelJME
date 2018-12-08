@@ -183,11 +183,20 @@ public final class Formatter
 		
 		// Java ME has no Flushable interface so only certain classes have
 		// the flush method
-		Appendable out = this._out;
-		if (out instanceof OutputStream)
-			((OutputStream)out).flush();
-		else if (out instanceof Writer)
-			((Writer)out).flush();
+		try
+		{
+			Appendable out = this._out;
+			if (out instanceof OutputStream)
+				((OutputStream)out).flush();
+			else if (out instanceof Writer)
+				((Writer)out).flush();
+		}
+		
+		// {@squirreljme.error ZZ3l Could not flush the formatter.}
+		catch (IOException e)
+		{
+			throw new RuntimeException("ZZ3l", e);
+		}
 	}
 	
 	/**
