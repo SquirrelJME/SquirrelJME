@@ -91,7 +91,15 @@ public final class SpringTaskManager
 		int cpn = __cp.length;
 		VMClassLibrary[] scl = new VMClassLibrary[cpn];
 		for (int i = 0; i < cpn; i++)
-			scl[i] = suites.loadLibrary(__cp[i]);
+		{
+			VMClassLibrary lib = suites.loadLibrary(__cp[i]);
+			
+			// If missing, cannot continue
+			if (lib == null)
+				return TaskAccess.ERROR_MISSING_LIBRARY;
+			
+			scl[i] = lib;
+		}
 		
 		// Get the boot library since we need to look at the entry points
 		VMClassLibrary boot = scl[cpn - 1];

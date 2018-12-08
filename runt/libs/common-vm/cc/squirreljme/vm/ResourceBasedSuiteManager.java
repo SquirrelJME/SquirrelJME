@@ -138,9 +138,29 @@ public final class ResourceBasedSuiteManager
 			VMClassLibrary rv;
 			
 			if (ref == null || null == (rv = ref.get()))
+			{
+				// Pre-cached to not exist
+				if (cache.containsKey(__s))
+					return null;
+				
+				// Make sure it is actually valid
+				boolean found = false;
+				for (String q : this.listLibraryNames())
+					if ((found |= q.equals(__s)))
+						break;
+				
+				// If it was not found, it does not exist so cache it and fail
+				if (!found)
+				{
+					cache.put(__s, null);
+					return null;
+				}
+				
+				// Load and store it
 				cache.put(__s, new WeakReference<>((
 					rv = new ResourceBasedClassLibrary(this.actingclass,
 						this.prefix + __s + '/', __s))));
+			}
 			
 			return rv;
 		}
