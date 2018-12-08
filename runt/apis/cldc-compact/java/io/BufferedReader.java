@@ -275,11 +275,11 @@ public class BufferedReader
 			int ln = rp;
 			if (ln < wp)
 			{
+				// Was something in the buffer?
+				wasinbuf = true;
+				
 				while (ln < wp)
 				{
-					// Was something in the buffer?
-					wasinbuf = true;
-					
 					// Stop on end of line characters
 					char c = buf[ln];
 					if ((stoppedoncr = (c == '\r')) || c == '\n')
@@ -318,7 +318,7 @@ public class BufferedReader
 				
 				// Set new properties
 				this._rp = (rp = ln = 0);
-				this._wp = (wp = rc);
+				this._wp = (wp = (rc > 0 ? rc : 0));
 			}
 			
 			// Eat newline?
@@ -352,12 +352,12 @@ public class BufferedReader
 						// If the character is not a newline and is not EOF
 						// we will just place it in the buffer as if it
 						// were a fresh buffer
-						if (rx > 0 && rx != '\n')
+						if (rx >= 0 && rx != '\n')
 						{
 							// Store character state
-							buf[0] = (char)rx;
-							this._rp = 0;
-							this._wp = 1;
+							buf[wp++] = (char)rx;
+							this._rp = rp;
+							this._wp = wp;
 							
 							// Do not do any more of our loop stuff
 							break;
