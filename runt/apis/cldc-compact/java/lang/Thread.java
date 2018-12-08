@@ -18,6 +18,18 @@ import cc.squirreljme.runtime.cldc.lang.UncaughtExceptionHandler;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A thread represents literally a single stream of execution that can
+ * execute concurrently (or not).
+ *
+ * SquirrelJME may be running with multiple threads executing at once or it
+ * may also be executing cooperatively (only a single thread at a time). If
+ * SquirrelJME is running cooperatively then only locking,
+ * {@link Thread.sleep(long, int)}, or {@link Thread.yield()} will allow
+ * another thread to run.
+ *
+ * @since 2018/12/07
+ */
 public class Thread
 	implements Runnable
 {
@@ -25,12 +37,15 @@ public class Thread
 	private static final String _USE_FAKE_NAME =
 		new String();
 	
+	/** Maximum supported priority. */
 	public static final int MAX_PRIORITY =
 		10;
 	
+	/** Minimum supported priority. */
 	public static final int MIN_PRIORITY =
 		1;
 	
+	/** Default priority. */
 	public static final int NORM_PRIORITY =
 		5;
 	
@@ -255,9 +270,15 @@ public class Thread
 		return this._name;
 	}
 	
+	/**
+	 * Returns the priority of the thread.
+	 *
+	 * @return The thread priority.
+	 * @since 2018/12/07
+	 */
 	public final int getPriority()
 	{
-		throw new todo.TODO();
+		return this._priority;
 	}
 	
 	/**
@@ -298,36 +319,74 @@ public class Thread
 		return this._interrupted;
 	}
 	
-	public final void join(long __a)
-		throws InterruptedException
-	{
-		synchronized (this)
-		{
-			if (false)
-				throw new
-					InterruptedException();
-			throw new todo.TODO();
-		}
-	}
-	
-	public final void join(long __a, int __b)
-		throws InterruptedException
-	{
-		synchronized (this)
-		{
-			if (false)
-				throw new
-					InterruptedException();
-			throw new todo.TODO();
-		}
-	}
-	
+	/**
+	 * Waits forever for a thread to die or until interrupted.
+	 *
+	 * @throws InterruptedException If the thread was interrupted while
+	 * waiting.
+	 * @since 2018/12/07
+	 */
 	public final void join()
 		throws InterruptedException
 	{
-		if (false)
-			throw new InterruptedException();
-		throw new todo.TODO();
+		this.join(0, 0);
+	}
+	
+	/**
+	 * Waits for a thread to die.
+	 *
+	 * @param __ms The milliseconds to wait for, if this is zero then this
+	 * will wait forever.
+	 * @throws IllegalArgumentException If the timeout is negative.
+	 * @throws InterruptedException If the thread was interrupted while
+	 * waiting.
+	 * @since 2018/12/07
+	 */
+	public final void join(long __ms)
+		throws IllegalArgumentException, InterruptedException
+	{
+		this.join(__ms, 0);
+	}
+	
+	/**
+	 * Waits for a thread to die.
+	 *
+	 * If both milliseconds and nanoseconds are zero this will wait forever.
+	 *
+	 * @param __ms The milliseconds to wait for.
+	 * @param __ns The nanoseconds to wait for.
+	 * @throws IllegalArgumentException If the timeout is negative.
+	 * @throws InterruptedException If the thread was interrupted while
+	 * waiting.
+	 * @since 2018/12/07
+	 */
+	public final void join(long __ms, int __ns)
+		throws IllegalArgumentException, InterruptedException
+	{
+		// The end time, since our thread could be notified
+		long end = (__ms == 0 && __ns == 0 ? Long.MAX_VALUE :
+			System.nanoTime() + (__ms * 1_000_000L) + __ns);
+		
+		// Lock on self
+		synchronized (this)
+		{
+			// Loop constantly until the thread is dead
+			for (;;)
+			{
+				// Time ended?
+				long now;
+				if ((now = System.nanoTime()) >= end)
+					return;
+				
+				// Did the thread die yet?
+				if (this._started && !this._isalive)
+					return;
+				
+				// Otherwise wait on our own monitor
+				long diff = end - now;
+				this.wait(diff / 1_000_000L, diff % 1_000_000L);
+			}
+		}
 	}
 	
 	/**
@@ -363,9 +422,31 @@ public class Thread
 		}
 	}
 	
-	public final void setPriority(int __a)
+	/**
+	 * Sets the priority of the thread.
+	 *
+	 * @param __p The thread priority.
+	 * @throws IllegalArgumentException If the priority is not valid.
+	 * @throws SecurityException If setting the priority is not permitted.
+	 * @since 2018/12/07
+	 */
+	public final void setPriority(int __p)
+		throws IllegalArgumentException, SecurityException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error ZZ3g Invalid priority.}
+		if (__p < MIN_PRIORITY || __p > MAX_PRIORITY)
+			throw new IllegalArgumentException("ZZ3g");
+		
+		// Check access
+		this.checkAccess();
+		
+		// Store for later
+		this._priority = __p;
+		
+		// Only set the priority if the thread is active
+		int realid = this._realid;
+		if (realid >= 0)
+			TaskAccess.setThreadPriority(realid, __p);
 	}
 	
 	/**
@@ -391,6 +472,10 @@ public class Thread
 			// {@squirreljme.error ZZ2s Could not start the thread.}
 			if (realid < 0)
 				throw new RuntimeException("ZZ2s");
+			
+			// Set the initial priority of the thread
+			TaskAccess.setThreadPriority(realid, this._priority);
+			this._isalive = true;
 		}
 	}
 	

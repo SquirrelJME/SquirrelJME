@@ -1621,6 +1621,28 @@ public final class SpringThreadWorker
 				"currentThread:()I":
 				return this.thread.id;
 				
+				// Set thread priority
+			case "cc/squirreljme/runtime/cldc/asm/TaskAccess::" +
+				"setThreadPriority:(II)V":
+				{
+					SpringThread st = this.machine.getThread(
+						(Integer)__args[0]);
+					if (st != null)
+					{
+						SpringThreadWorker stw = st._worker;
+						if (stw != null)
+						{
+							Thread signal = stw.signalinstead;
+							if (signal != null)
+								signal.setPriority((Integer)__args[1]);
+							else
+								stw.setPriority((Integer)__args[1]);
+						}
+					}
+					
+					return null;
+				}
+				
 				// Interrupt the given thread
 			case "cc/squirreljme/runtime/cldc/asm/TaskAccess::" +
 				"signalInterrupt:(I)V":
