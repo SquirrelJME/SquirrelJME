@@ -11,7 +11,6 @@
 package net.multiphasicapps.markdownwriter;
 
 import java.io.Closeable;
-import java.io.Flushable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -35,7 +34,7 @@ import java.util.Objects;
  * @since 2016/09/13
  */
 public class MarkdownWriter
-	implements Appendable, Closeable, Flushable
+	implements Appendable, Closeable
 {
 	/** Markdown right column limit. */
 	public static final int RIGHT_COLUMN =
@@ -136,17 +135,20 @@ public class MarkdownWriter
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Flushes this writer.
+	 *
+	 * @throws IOException If it could not be flushed.
 	 * @since 2016/09/13
 	 */
-	@Override
 	public void flush()
 		throws IOException
 	{
-		// Only flush if the target is appendable also
+		// Java ME has no Flushable so we only know of these two classes
 		Appendable append = this.append;
-		if (append instanceof Flushable)
-			((Flushable)append).flush();
+		if (append instanceof OutputStream)
+			((OutputStream)append).flush();
+		else if (append instanceof Writer)
+			((Writer)append).flush();
 	}
 	
 	/**

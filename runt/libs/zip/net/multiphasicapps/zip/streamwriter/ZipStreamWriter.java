@@ -11,7 +11,6 @@
 package net.multiphasicapps.zip.streamwriter;
 
 import java.io.Closeable;
-import java.io.Flushable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Calendar;
@@ -35,7 +34,7 @@ import net.multiphasicapps.zip.ZipCRCConstants;
  * @since 2016/07/09
  */
 public class ZipStreamWriter
-	implements Closeable, Flushable
+	implements Closeable
 {
 	/** The magic number for local files. */
 	private static final int _LOCAL_FILE_MAGIC_NUMBER =
@@ -223,10 +222,11 @@ public class ZipStreamWriter
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Flushes the output.
+	 *
+	 * @throws IOException If it could not be flushed.
 	 * @since 2016/07/09
 	 */
-	@Override
 	public void flush()
 		throws IOException
 	{

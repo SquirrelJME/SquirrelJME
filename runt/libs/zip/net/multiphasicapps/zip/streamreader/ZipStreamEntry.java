@@ -10,7 +10,6 @@
 
 package net.multiphasicapps.zip.streamreader;
 
-import java.io.Flushable;
 import java.io.InputStream;
 import java.io.IOException;
 import net.multiphasicapps.io.CRC32Calculator;
