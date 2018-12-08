@@ -45,7 +45,7 @@ public class IOException
 	 * @param __t The cause.
 	 * @since 2018/12/08
 	 */
-	public RuntimeException(String __m, Throwable __t)
+	public IOException(String __m, Throwable __t)
 	{
 		super(__m, __t);
 	}
