@@ -60,6 +60,7 @@ public class ByteArrayInputStream
 		
 		this.buf = __b;
 		this.pos = __o;
+		this.mark = __o;
 		this.count = Math.min(__o + __l, __b.length);
 	}
 	
