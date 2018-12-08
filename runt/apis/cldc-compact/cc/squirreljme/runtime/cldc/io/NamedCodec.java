@@ -18,11 +18,29 @@ package cc.squirreljme.runtime.cldc.io;
 public interface NamedCodec
 {
 	/**
+	 * The average sequence length used for characters, used to estimate how
+	 * big of an array to allocate for characters.
+	 *
+	 * @return The average sequence length.
+	 * @since 2018/11/06
+	 */
+	public abstract double averageSequenceLength();
+	
+	/**
 	 * Returns the name of the encoding.
 	 *
 	 * @return The encoding name.
 	 * @since 2018/10/13
 	 */
 	public abstract String encodingName();
+	
+	/**
+	 * Returns a hint which specifies the maximum length of a byte sequence
+	 * for decoding.
+	 *
+	 * @return The maximum sequence length for decoding.
+	 * @since 2018/10/13
+	 */
+	public abstract int maximumSequenceLength();
 }
 

@@ -22,6 +22,16 @@ public final class UTF8Encoder
 {
 	/**
 	 * {@inheritDoc}
+	 * @since 2018/11/06
+	 */
+	@Override
+	public final double averageSequenceLength()
+	{
+		return 1.3333;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/09/21
 	 */
 	@Override
@@ -32,6 +42,17 @@ public final class UTF8Encoder
 			throw new NullPointerException("NARG");
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("IOOB");
+		
+		// U+0000 to U+007F
+		if (__c >= 0x0000 && __c <= 0x007F)
+		{
+			if (__l < 1)
+				return -1;
+			
+			__b[__o] = (byte)__c;
+			
+			return 1;
+		}
 		
 		throw new todo.TODO();
 	}
@@ -44,6 +65,16 @@ public final class UTF8Encoder
 	public final String encodingName()
 	{
 		return "utf-8";
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/08
+	 */
+	@Override
+	public final int maximumSequenceLength()
+	{
+		return 4;
 	}
 }
 

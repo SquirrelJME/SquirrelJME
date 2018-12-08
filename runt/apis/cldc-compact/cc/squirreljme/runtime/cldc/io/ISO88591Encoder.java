@@ -20,6 +20,16 @@ public final class ISO88591Encoder
 {
 	/**
 	 * {@inheritDoc}
+	 * @since 2018/12/08
+	 */
+	@Override
+	public final double averageSequenceLength()
+	{
+		return 1.0;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/09/21
 	 */
 	@Override
@@ -57,6 +67,16 @@ public final class ISO88591Encoder
 	public final String encodingName()
 	{
 		return "iso-8859-1";
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/08
+	 */
+	@Override
+	public final int maximumSequenceLength()
+	{
+		return 1;
 	}
 }
 
