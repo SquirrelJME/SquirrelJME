@@ -1207,10 +1207,14 @@ public class Display
 			for (int i = 0, n = (numcommands == 1 ? 1 : 2); i < n; i++)
 			{
 				// Calculation position
-				stack.addExact(new UIStack((Command)commands[i],
-					hw, CommonMetrics.COMMANDBAR_HEIGHT),
+				UIStack s;
+				stack.addExact((s = new UIStack((Command)commands[i],
+					hw, CommonMetrics.COMMANDBAR_HEIGHT)),
 					0 + (i * hw), ph,
 					hw, CommonMetrics.COMMANDBAR_HEIGHT);
+				
+				// Do not clip to the parent
+				s.noclip = true;
 			}
 		}
 		

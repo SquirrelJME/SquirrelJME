@@ -51,6 +51,9 @@ public final class UIStack
 	/** The total drawing height. */
 	public int drawheight;
 	
+	/** Disable parent clipping. */
+	public boolean noclip;
+	
 	/** Reference to the parent item. */
 	private Reference<UIStack> _parentref;
 	
@@ -192,6 +195,19 @@ public final class UIStack
 			origstoke = __g.getStrokeStyle();
 		Font origfont = __g.getFont();
 		
+		// The area where the parent is, for clipping purposes
+		int px = origclipx,
+			py = origclipy,
+			pw = origclipw,
+			ph = origcliph;
+		if (__parent != null)
+		{
+			px = __parent.xoffset;
+			py = __parent.yoffset;
+			pw = __parent.drawwidth;
+			ph = __parent.drawheight;
+		}
+		
 		// Draw all the kids
 		for (UIStack kid : this.kids)
 		{
@@ -210,6 +226,11 @@ public final class UIStack
 			// Set the clip for this child so that is always in that area
 			__g.setClip(kid.xoffset, kid.yoffset,
 				kid.drawwidth, kid.drawheight);
+			
+			// Clip to the parent area so the child widgets do not bleed
+			if (!kid.noclip)
+				__g.clipRect(px, py,
+					pw, ph);
 			
 			// Then limit the clip into our original clipping bound so that
 			// we do not draw outside of it
