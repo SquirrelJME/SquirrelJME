@@ -105,7 +105,7 @@ public class Main
 		{
 			// Build from the test system so we have access to all of those
 			// JARs including the tests
-			BinaryManager bm = pm.binaryManager(TimeSpaceType.TEST);
+			BinaryManager bm = pm.binaryManager(TimeSpaceType.RUNTIME);
 			
 			// Create temporary file to place the JAR at
 			tempfile = Files.createTempFile("squirreljme-", ".ja_");
