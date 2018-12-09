@@ -79,6 +79,15 @@ public class Lists
 		list.append("Sciurus vulgaris", null);
 		list.append("Sciurus yucatanensis", null);
 		
+		// Select some items for us
+		list.setSelectedIndex(1, true);
+		list.setSelectedIndex(6, true);
+		list.setSelectedIndex(12, true);
+		
+		// Disable some items
+		list.setEnabled(8, false);
+		list.setEnabled(12, false);
+		
 		// Display the list
 		Display.getDisplay(this).setCurrent(list);
 	}

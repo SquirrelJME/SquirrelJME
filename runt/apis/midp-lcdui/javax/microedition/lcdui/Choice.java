@@ -54,9 +54,13 @@ public interface Choice
 	
 	public abstract void insert(int __a, String __b, Image __c);
 	
+	public abstract boolean isEnabled(int __i);
+	
 	public abstract boolean isSelected(int __a);
 	
 	public abstract void set(int __a, String __b, Image __c);
+	
+	public abstract void setEnabled(int __i, boolean __e);
 	
 	public abstract void setFitPolicy(int __a);
 	
