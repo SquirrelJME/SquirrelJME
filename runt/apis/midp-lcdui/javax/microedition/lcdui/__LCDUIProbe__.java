@@ -33,5 +33,21 @@ final class __LCDUIProbe__
 	{
 		((__Drawable__)__drawable).__draw(__parent, __self, __g);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/08
+	 */
+	@Override
+	public void hintDimensions(UIDrawable __draw, int __w, int __h)
+	{
+		if (__draw instanceof __Widget__)
+		{
+			__Widget__ w = ((__Widget__)__draw);
+			
+			w._lastuiwidth = __w;
+			w._lastuiheight = __h;
+		}
+	}
 }
 

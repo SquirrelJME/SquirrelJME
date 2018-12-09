@@ -25,6 +25,12 @@ abstract class __Widget__
 	/** The parent widget being used. */
 	volatile __Widget__ _parent;
 	
+	/** The last UI width. */
+	volatile int _lastuiwidth;
+	
+	/** The last UI height. */
+	volatile int _lastuiheight;
+	
 	/**
 	 * Updates the UI stack.
 	 *
@@ -62,9 +68,7 @@ abstract class __Widget__
 		__Widget__ parent = this._parent;
 		if (parent == null)
 			return Display.getDisplays(0)[0].getHeight();
-		
-		throw new todo.TODO();
-		//return this._uistack.reservedheight;
+		return this._lastuiheight;
 	}
 	
 	/**
@@ -78,9 +82,7 @@ abstract class __Widget__
 		__Widget__ parent = this._parent;
 		if (parent == null)
 			return Display.getDisplays(0)[0].getWidth();
-		
-		throw new todo.TODO();
-		//return this._uistack.reservedwidth;
+		return this._lastuiwidth;
 	}
 	
 	/**
