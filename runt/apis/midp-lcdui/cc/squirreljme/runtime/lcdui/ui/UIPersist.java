@@ -17,6 +17,9 @@ package cc.squirreljme.runtime.lcdui.ui;
  */
 public final class UIPersist
 {
+	/** Is a recalculation going to be done? */
+	public volatile boolean recalc;
+	
 	/**
 	 * This is called when something has been updated visually, so redraw
 	 * must happen.
@@ -28,6 +31,9 @@ public final class UIPersist
 	 */
 	public final void visualUpdate(boolean __recalc)
 	{
+		// Recalculate?
+		if (__recalc)
+			this.recalc |= true;
 	}
 }
 

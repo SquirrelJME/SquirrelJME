@@ -1139,6 +1139,17 @@ public class Display
 	@SerializedEvent
 	final void __doRepaint(int __x, int __y, int __w, int __h)
 	{
+		// Reclaulcate the draw stack?
+		UIPersist uipersist = this._uipersist;
+		if (uipersist.recalc)
+		{
+			// Do not recalculate again
+			uipersist.recalc = false;
+			
+			// Update the UI stack
+			this.__updateUIStack(uipersist, null);
+		}
+		
 		// Get graphics for this state
 		Graphics g = this._state.graphics();
 		
