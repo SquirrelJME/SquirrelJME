@@ -51,6 +51,9 @@ public final class UIStack
 	/** The total drawing height. */
 	public int drawheight;
 	
+	/** The virtual drawing height (used for scrolling). */
+	public int virtualdrawheight;
+	
 	/** Disable parent clipping. */
 	public boolean noclip;
 	
@@ -93,8 +96,10 @@ public final class UIStack
 		// Get the drawing height because we will stack our height on top of
 		// that!
 		int drawheight = this.drawheight,
+			virtualdrawheight = this.virtualdrawheight,
+			selfresheight = this.reservedheight,
 			subresheight = __s.reservedheight,
-			newdrawheight = drawheight + subresheight;
+			newdrawheight = virtualdrawheight + subresheight;
 		
 		// Set position of the child relative to our own offset, stack
 		// drawable going down more
@@ -106,7 +111,11 @@ public final class UIStack
 			__s.drawheight = subresheight;
 		
 		// For next run or for drawing
-		this.drawheight = newdrawheight;
+		this.virtualdrawheight = newdrawheight;
+		
+		// The draw height shall never exceed the parent's height
+		this.drawheight = (newdrawheight < selfresheight ?
+			newdrawheight : selfresheight);
 		
 		// Add to kids to make sure it draws
 		this.kids.add(__s);
