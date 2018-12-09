@@ -1146,7 +1146,7 @@ public class Display
 			// Render the draw stack
 			UIStack stack = this._uistack;
 			if (stack != null)
-				stack.render(g);
+				stack.render(null, g);
 		}
 		
 		// Catch all of these, but keep drawing!
@@ -1154,6 +1154,16 @@ public class Display
 		{
 			t.printStackTrace();
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/08
+	 */
+	@Override
+	final void __draw(UIStack __parent, UIStack __self, Graphics __g)
+	{
+		// Nothing needed at all
 	}
 	
 	/**
@@ -1192,8 +1202,8 @@ public class Display
 			for (int i = 0, n = (numcommands == 1 ? 1 : 2); i < n; i++)
 			{
 				// Calculation position
-				stack.addExact(
-					new UIStack(null, hw, CommonMetrics.COMMANDBAR_HEIGHT),
+				stack.addExact(new UIStack((Command)commands[i],
+					hw, CommonMetrics.COMMANDBAR_HEIGHT),
 					0 + (i * hw), ph,
 					hw, CommonMetrics.COMMANDBAR_HEIGHT);
 			}

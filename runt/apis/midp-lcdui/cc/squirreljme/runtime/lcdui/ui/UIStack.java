@@ -10,6 +10,7 @@
 
 package cc.squirreljme.runtime.lcdui.ui;
 
+import cc.squirreljme.runtime.lcdui.LCDUIProbe;
 import javax.microedition.lcdui.Graphics;
 import java.util.LinkedList;
 import java.util.List;
@@ -127,11 +128,12 @@ public final class UIStack
 	/**
 	 * Renders this stack item.
 	 *
+	 * @param __parent The parent draw stack.
 	 * @param __g The graphics to draw into.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/08
 	 */
-	public final void render(Graphics __g)
+	public final void render(UIStack __parent, Graphics __g)
 		throws NullPointerException
 	{
 		if (__g == null)
@@ -174,11 +176,16 @@ public final class UIStack
 				__g.drawRect(0, 0, kid.drawwidth - 2, kid.drawheight - 2);
 				__g.drawLine(0, 0, kid.drawwidth, kid.drawheight);
 				__g.drawLine(0, kid.drawheight, kid.drawwidth, 0);
+				
+				// Draw whatever drawable this is
+				UIDrawable drawable = this.drawable;
+				if (drawable != null)
+					LCDUIProbe.probe().draw(drawable, __parent, this, __g);
 			}
 			
 			// Draw child
 			else
-				kid.render(__g);
+				kid.render(this, __g);
 		}
 		
 		// Reset the translation

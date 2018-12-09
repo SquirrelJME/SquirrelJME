@@ -11,6 +11,8 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.lcdui.LCDUIProbe;
+import cc.squirreljme.runtime.lcdui.ui.UIDrawable;
+import cc.squirreljme.runtime.lcdui.ui.UIStack;
 
 /**
  * This is the actual probe implementation which allows access to LCDUI
@@ -21,5 +23,15 @@ import cc.squirreljme.runtime.lcdui.LCDUIProbe;
 final class __LCDUIProbe__
 	extends LCDUIProbe
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/08
+	 */
+	@Override
+	public final void draw(UIDrawable __drawable, UIStack __parent,
+		UIStack __self, Graphics __g)
+	{
+		((__Drawable__)__drawable).__draw(__parent, __self, __g);
+	}
 }
 

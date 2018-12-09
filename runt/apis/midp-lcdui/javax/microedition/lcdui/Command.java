@@ -11,6 +11,7 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+import cc.squirreljme.runtime.lcdui.ui.UIStack;
 
 public class Command
 	extends __Action__
@@ -380,6 +381,17 @@ public class Command
 		/*
 		this.__setLabels(this._shortlabel, __s, this._image);
 		*/
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/08
+	 */
+	@Override
+	final void __draw(UIStack __parent, UIStack __self, Graphics __g)
+	{
+		__g.drawString(this.getClass().getName().toString(),
+			__g.getClipX(), __g.getClipY(), 0);
 	}
 }
 
