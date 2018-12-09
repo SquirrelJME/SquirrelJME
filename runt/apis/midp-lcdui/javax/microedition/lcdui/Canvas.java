@@ -657,6 +657,48 @@ public abstract class Canvas
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2018/12/08
+	 */
+	@Override
+	final void __draw(UIStack __parent, UIStack __self, Graphics __g)
+	{
+		// Setup an enforced draw region to prevent programs from drawing
+		// outside of the canvas
+		int dw = __self.drawwidth,
+			dh = __self.drawheight;
+		EnforcedDrawingAreaGraphics ed = new EnforcedDrawingAreaGraphics(
+			__g, __self.xoffset, __self.yoffset, dw, dh);
+		
+		// Transparent is set when the widget does not draw every pixel
+		if (this._transparent)
+		{
+			// The graphics object gets the color pre-initialized so make sure
+			// to restore it after the paint
+			int old = ed.getAlphaColor();
+			
+			// Fill the area accordingly
+			ed.setAlphaColor(CommonColors.CANVAS_BACKGROUND);
+			ed.fillRect(0, 0, dw, dh);
+			
+			// Restore old color
+			ed.setAlphaColor(old);
+		}
+		
+		// Draw whatever the canvas wants drawn on this
+		try
+		{
+			this.paint(ed);
+		}
+		
+		// Ignore any exceptions user code makes here
+		catch (Throwable t)
+		{
+			t.printStackTrace();
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/11/18
 	 */
 	@Override

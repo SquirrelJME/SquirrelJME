@@ -10,30 +10,25 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.lcdui.ui.UIDrawable;
+import cc.squirreljme.runtime.lcdui.ui.UIStack;
+
 /**
- * This represents the base for an action which may be given a label, an
- * image, and could be enabled or disabled.
+ * Represents something can be drawn on.
  *
- * @since 2018/03/31
+ * @since 2018/12/08
  */
-abstract class __Action__
-	extends __Drawable__
+public abstract class __Drawable__
+	implements UIDrawable
 {
-	/** The image used. */
-	volatile Image _image;
-	
-	/** The short label. */
-	volatile String _shortlabel;
-	
-	/** The long label. */
-	volatile String _longlabel;
-	
 	/**
-	 * This is called when the enabled state of the parent has changed.
+	 * Draws this drawble.
 	 *
-	 * @param __e If the parent is enabled or disabled.
-	 * @since 2018/04/01
+	 * @param __parent The parent stack.
+	 * @param __self The self stack.
+	 * @param __g The graphics to draw into.
+	 * @since 2018/12/08
 	 */
-	abstract void onParentEnabled(boolean __e);
+	abstract void __draw(UIStack __parent, UIStack __self, Graphics __g);
 }
 

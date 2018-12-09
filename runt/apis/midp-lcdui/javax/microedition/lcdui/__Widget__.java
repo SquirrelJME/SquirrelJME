@@ -20,7 +20,7 @@ import cc.squirreljme.runtime.lcdui.ui.UIStack;
  * @since 2018/03/23
  */
 abstract class __Widget__
-	implements UIDrawable
+	extends __Drawable__
 {
 	/** The parent widget being used. */
 	volatile __Widget__ _parent;

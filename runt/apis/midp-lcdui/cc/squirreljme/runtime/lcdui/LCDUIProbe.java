@@ -10,6 +10,10 @@
 
 package cc.squirreljme.runtime.lcdui;
 
+import cc.squirreljme.runtime.lcdui.ui.UIDrawable;
+import cc.squirreljme.runtime.lcdui.ui.UIStack;
+import javax.microedition.lcdui.Graphics;
+
 /**
  * This is a class which provides a probe into any LCDUI object's internals
  * as needed. This is made to simplify the implementation and allow very
@@ -35,6 +39,18 @@ public abstract class LCDUIProbe
 		if (LCDUIProbe._PROBE == null)
 			LCDUIProbe._PROBE = this;
 	}
+	
+	/**
+	 * Draws the given drawble.
+	 *
+	 * @param __drawable The drawable.
+	 * @param __parent The parent stack.
+	 * @param __self The self stack.
+	 * @param __g The graphics to draw into.
+	 * @since 2018/12/08
+	 */
+	public abstract void draw(UIDrawable __drawable, UIStack __parent,
+		UIStack __self, Graphics __g);
 	
 	/**
 	 * Returns the probe.

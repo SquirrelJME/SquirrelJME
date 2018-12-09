@@ -180,6 +180,17 @@ public class TextEditor
 	 * @since 2018/12/08
 	 */
 	@Override
+	void __draw(UIStack __parent, UIStack __self, Graphics __g)
+	{
+		__g.drawString(this.getClass().getName().toString(),
+			__g.getClipX(), __g.getClipY(), 0);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/08
+	 */
+	@Override
 	final void __updateUIStack(UIStack __parent)
 	{
 		throw new todo.TODO();
