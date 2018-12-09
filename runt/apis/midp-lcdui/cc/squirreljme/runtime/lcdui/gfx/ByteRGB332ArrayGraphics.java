@@ -72,41 +72,8 @@ public final class ByteRGB332ArrayGraphics
 	 * @since 2018/11/18
 	 */
 	@Override
-	protected final void internalDrawLine(int __x, int __y,
-		int __ex, int __ey)
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/11/18
-	 */
-	@Override
-	protected final void internalDrawLineBlended(int __x, int __y,
-		int __ex, int __ey)
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/11/18
-	 */
-	@Override
-	protected final void internalDrawLineDotted(int __x, int __y,
-		int __ex, int __ey)
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/11/18
-	 */
-	@Override
-	protected final void internalDrawLineBlendedDotted(int __x, int __y,
-		int __ex, int __ey)
+	protected final void internalDrawLine(boolean __blend, boolean __dot,
+		int __x, int __y, int __ex, int __ey)
 	{
 		throw new todo.TODO();
 	}
@@ -116,19 +83,8 @@ public final class ByteRGB332ArrayGraphics
 	 * @since 2018/03/25
 	 */
 	@Override
-	protected final void internalFillRectBlend(int __x, int __y, int __ex,
-		int __ey, int __w, int __h)
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/03/25
-	 */
-	@Override
-	protected final void internalFillRectSolid(int __x, int __y, int __ex,
-		int __ey, int __w, int __h)
+	protected final void internalFillRect(boolean __blend,
+		int __x, int __y, int __ex, int __ey, int __w, int __h)
 	{
 		throw new todo.TODO();
 	}

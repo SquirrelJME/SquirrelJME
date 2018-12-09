@@ -198,54 +198,21 @@ public abstract class AbstractArrayGraphics
 	/**
 	 * Internal line draw.
 	 *
+	 * @param __blend Blended.
+	 * @param __dot Dotted.
 	 * @param __x The X coordinate.
 	 * @param __y The Y coordinate.
 	 * @param __ex The end X coordinate.
 	 * @param __ey The end Y coordinate.
 	 * @since 2018/11/18
 	 */
-	protected abstract void internalDrawLine(int __x, int __y,
-		int __ex, int __ey);
+	protected abstract void internalDrawLine(boolean __blend, boolean __dot,
+		int __x, int __y, int __ex, int __ey);
 	
 	/**
-	 * Internal line draw with blending.
+	 * Internal rectangle fill.
 	 *
-	 * @param __x The X coordinate.
-	 * @param __y The Y coordinate.
-	 * @param __ex The end X coordinate.
-	 * @param __ey The end Y coordinate.
-	 * @since 2018/11/18
-	 */
-	protected abstract void internalDrawLineBlended(int __x, int __y,
-		int __ex, int __ey);
-	
-	/**
-	 * Internal dotted line draw.
-	 *
-	 * @param __x The X coordinate.
-	 * @param __y The Y coordinate.
-	 * @param __ex The end X coordinate.
-	 * @param __ey The end Y coordinate.
-	 * @since 2018/11/18
-	 */
-	protected abstract void internalDrawLineDotted(int __x, int __y,
-		int __ex, int __ey);
-	
-	/**
-	 * Internal dotted line draw with blending.
-	 *
-	 * @param __x The X coordinate.
-	 * @param __y The Y coordinate.
-	 * @param __ex The end X coordinate.
-	 * @param __ey The end Y coordinate.
-	 * @since 2018/11/18
-	 */
-	protected abstract void internalDrawLineBlendedDotted(int __x, int __y,
-		int __ex, int __ey);
-	
-	/**
-	 * Internal rectangle fill with blending.
-	 *
+	 * @param __blend Blend?
 	 * @param __x The X coordinate.
 	 * @param __y The Y coordinate.
 	 * @param __ex The end X coordinate.
@@ -254,22 +221,8 @@ public abstract class AbstractArrayGraphics
 	 * @param __h The height.
 	 * @since 2018/03/25
 	 */
-	protected abstract void internalFillRectBlend(int __x, int __y, int __ex,
-		int __ey, int __w, int __h);
-	
-	/**
-	 * Internal rectangle fill with blending.
-	 *
-	 * @param __x The X coordinate.
-	 * @param __y The Y coordinate.
-	 * @param __ex The end X coordinate.
-	 * @param __ey The end Y coordinate.
-	 * @param __w The width.
-	 * @param __h The height.
-	 * @since 2018/03/25
-	 */
-	protected abstract void internalFillRectSolid(int __x, int __y, int __ex,
-		int __ey, int __w, int __h);
+	protected abstract void internalFillRect(boolean __blend,
+		int __x, int __y, int __ex, int __ey, int __w, int __h);
 	
 	/**
 	 * Draws a primitive RGB tile.
@@ -549,17 +502,8 @@ public abstract class AbstractArrayGraphics
 		// Forward depending on blending and/or dots
 		try
 		{
-			boolean dotted = (this.strokestyle == DOTTED);
-			if (this.doblending)
-				if (dotted)
-					this.internalDrawLineBlendedDotted(__x1, __y1, __x2, __y2);
-				else
-					this.internalDrawLineBlended(__x1, __y1, __x2, __y2);
-			else
-				if (dotted)
-					this.internalDrawLineDotted(__x1, __y1, __x2, __y2);
-				else
-					this.internalDrawLine(__x1, __y1, __x2, __y2);
+			this.internalDrawLine(this.doblending,
+				(this.strokestyle == DOTTED), __x1, __y1, __x2, __y2);
 		}
 		
 		// Exception happened when drawing a line
@@ -734,53 +678,17 @@ public abstract class AbstractArrayGraphics
 			__h = ey - __y;
 		
 		// Draw the box
-		boolean dotted = (this.strokestyle == DOTTED);
-		if (this.doblending)
-			if (dotted)
-			{
-				if (!bhs)
-					this.internalDrawLineBlendedDotted(__x, __y, ex, __y);
-				if (!ths)
-					this.internalDrawLineBlendedDotted(__x, ey, ex, ey);
-				if (!lvs)
-					this.internalDrawLineBlendedDotted(__x, __y, __x, ey);
-				if (!rvs)
-					this.internalDrawLineBlendedDotted(ex, __y, ex, ey);
-			}
-			else
-			{
-				if (!bhs)
-					this.internalDrawLineBlended(__x, __y, ex, __y);
-				if (!ths)
-					this.internalDrawLineBlended(__x, ey, ex, ey);
-				if (!lvs)
-					this.internalDrawLineBlended(__x, __y, __x, ey);
-				if (!rvs)
-					this.internalDrawLineBlended(ex, __y, ex, ey);
-			}
-		else
-			if (dotted)
-			{
-				if (!bhs)
-					this.internalDrawLineDotted(__x, __y, ex, __y);
-				if (!ths)
-					this.internalDrawLineDotted(__x, ey, ex, ey);
-				if (!lvs)
-					this.internalDrawLineDotted(__x, __y, __x, ey);
-				if (!rvs)
-					this.internalDrawLineDotted(ex, __y, ex, ey);
-			}
-			else
-			{
-				if (!bhs)
-					this.internalDrawLine(__x, __y, ex, __y);
-				if (!ths)
-					this.internalDrawLine(__x, ey, ex, ey);
-				if (!lvs)
-					this.internalDrawLine(__x, __y, __x, ey);
-				if (!rvs)
-					this.internalDrawLine(ex, __y, ex, ey);
-			}
+		boolean blend = this.doblending;
+		boolean dot = (this.strokestyle == DOTTED);
+		
+		if (!bhs)
+			this.internalDrawLine(blend, dot, __x, __y, ex, __y);
+		if (!ths)
+			this.internalDrawLine(blend, dot, __x, ey, ex, ey);
+		if (!lvs)
+			this.internalDrawLine(blend, dot, __x, __y, __x, ey);
+		if (!rvs)
+			this.internalDrawLine(blend, dot, ex, __y, ex, ey);
 	}
 	
 	/**
@@ -932,10 +840,7 @@ public abstract class AbstractArrayGraphics
 		__h = ey - __y;
 		
 		// Perform drawing
-		if (this.doblending)
-			this.internalFillRectBlend(__x, __y, ex, ey, __w, __h);
-		else
-			this.internalFillRectSolid(__x, __y, ex, ey, __w, __h);
+		this.internalFillRect(this.doblending, __x, __y, ex, ey, __w, __h);
 	}
 	
 	/**
