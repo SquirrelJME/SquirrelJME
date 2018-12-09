@@ -239,7 +239,19 @@ public class List
 	@Override
 	final void __updateUIStack(UIPersist __keep, UIStack __parent)
 	{
-		throw new todo.TODO();
+		// All items are the width of the parent
+		int rw = __parent.reservedwidth;
+		
+		// Add each item in the list to be drawn
+		for (__ChoiceEntry__ e : this._items)
+		{
+			// Need the height of the font to draw this item
+			Font f = e._font;
+			int fh = (f == null ? Font.getDefaultFont() : f).getPixelSize();
+			
+			// Add to the stack
+			__parent.add(new UIStack(e, rw, fh));
+		}
 	}
 }
 
