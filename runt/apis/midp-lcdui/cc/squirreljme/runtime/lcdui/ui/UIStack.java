@@ -153,6 +153,21 @@ public final class UIStack
 	}
 	
 	/**
+	 * Returns the parent UI stack.
+	 *
+	 * @return The parent UI stack or {@code null} if this is the top level
+	 * stack or it was garbage collected.
+	 * @since 2018/12/08
+	 */
+	public final UIStack parent()
+	{
+		Reference<UIStack> ref = this._parentref;
+		if (ref != null)
+			return ref.get();
+		return null;
+	}
+	
+	/**
 	 * Renders this stack item.
 	 *
 	 * @param __parent The parent draw stack.
