@@ -12,6 +12,7 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.ui.UIDrawable;
+import cc.squirreljme.runtime.lcdui.ui.UIPersist;
 import cc.squirreljme.runtime.lcdui.ui.UIStack;
 
 /**
@@ -34,10 +35,11 @@ abstract class __Widget__
 	/**
 	 * Updates the UI stack.
 	 *
+	 * @param __keep Persistent UI data.
 	 * @param __parent The parent draw stack.
 	 * @since 2018/12/08
 	 */
-	abstract void __updateUIStack(UIStack __parent);
+	abstract void __updateUIStack(UIPersist __keep, UIStack __parent);
 	
 	/**
 	 * Returns the current display.

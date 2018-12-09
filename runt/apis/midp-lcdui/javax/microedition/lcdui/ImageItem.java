@@ -11,6 +11,7 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
+import cc.squirreljme.runtime.lcdui.ui.UIPersist;
 import cc.squirreljme.runtime.lcdui.ui.UIStack;
 
 public class ImageItem
@@ -121,7 +122,7 @@ public class ImageItem
 	 * @since 2018/12/08
 	 */
 	@Override
-	final void __updateUIStack(UIStack __parent)
+	final void __updateUIStack(UIPersist __keep, UIStack __parent)
 	{
 		throw new todo.TODO();
 	}

@@ -12,6 +12,7 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.lcdui.common.CommonColors;
 import cc.squirreljme.runtime.lcdui.common.CommonMetrics;
+import cc.squirreljme.runtime.lcdui.ui.UIPersist;
 import cc.squirreljme.runtime.lcdui.ui.UIStack;
 
 public class List
@@ -236,10 +237,9 @@ public class List
 	 * @since 2018/12/08
 	 */
 	@Override
-	final void __updateUIStack(UIStack __parent)
+	final void __updateUIStack(UIPersist __keep, UIStack __parent)
 	{
 		throw new todo.TODO();
 	}
 }
-
 

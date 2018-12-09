@@ -12,6 +12,7 @@ package javax.microedition.lcdui;
 
 import java.util.ArrayList;
 import java.util.List;
+import cc.squirreljme.runtime.lcdui.ui.UIPersist;
 import cc.squirreljme.runtime.lcdui.ui.UIStack;
 
 public class TabbedPane
@@ -108,7 +109,7 @@ public class TabbedPane
 	 * @since 2018/12/08
 	 */
 	@Override
-	final void __updateUIStack(UIStack __parent)
+	final void __updateUIStack(UIPersist __keep, UIStack __parent)
 	{
 		throw new todo.TODO();
 	}
