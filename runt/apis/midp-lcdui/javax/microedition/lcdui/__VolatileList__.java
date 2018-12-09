@@ -12,6 +12,7 @@ package javax.microedition.lcdui;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * This is a list which is volatile but not synchronized but is backed by an
@@ -118,6 +119,18 @@ final class __VolatileList__<T>
 	public final Object[] values()
 	{
 		return this._values;
+	}
+	
+	/**
+	 * Returns the values in this list as a list.
+	 *
+	 * @return The list of values.
+	 * @since 2018/12/09
+	 */
+	@SuppressWarnings({"unchecked"})
+	public final List<T> valuesAsList()
+	{
+		return (List<T>)Arrays.<Object>asList(this._values);
 	}
 }
 
