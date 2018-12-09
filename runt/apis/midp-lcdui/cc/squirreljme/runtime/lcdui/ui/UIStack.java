@@ -196,11 +196,6 @@ public final class UIStack
 			// Drawing ourself
 			if (kid == this)
 			{
-				// Debug
-				__g.drawRect(0, 0, kid.drawwidth - 2, kid.drawheight - 2);
-				__g.drawLine(0, 0, kid.drawwidth, kid.drawheight);
-				__g.drawLine(0, kid.drawheight, kid.drawwidth, 0);
-				
 				// Draw whatever drawable this is
 				UIDrawable drawable = this.drawable;
 				if (drawable != null)
