@@ -674,7 +674,7 @@ public abstract class Canvas
 	final void __updateUIStack(UIStack __parent)
 	{
 		// Just use the entire screen space
-		UIStack stack = new UIStack(__parent.reservedwidth,
+		UIStack stack = new UIStack(this, __parent.reservedwidth,
 			__parent.reservedheight);
 		
 		// Add to the parent

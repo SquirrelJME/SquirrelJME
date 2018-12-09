@@ -11,6 +11,7 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
+import cc.squirreljme.runtime.lcdui.ui.UIDrawable;
 import cc.squirreljme.runtime.lcdui.ui.UIStack;
 
 /**
@@ -19,12 +20,10 @@ import cc.squirreljme.runtime.lcdui.ui.UIStack;
  * @since 2018/03/23
  */
 abstract class __Widget__
+	implements UIDrawable
 {
 	/** The parent widget being used. */
 	volatile __Widget__ _parent;
-	
-	/** The UI Stack for drawing. */
-	volatile UIStack _uistack;
 	
 	/**
 	 * Updates the UI stack.
@@ -63,7 +62,9 @@ abstract class __Widget__
 		__Widget__ parent = this._parent;
 		if (parent == null)
 			return Display.getDisplays(0)[0].getHeight();
-		return this._uistack.reservedheight;
+		
+		throw new todo.TODO();
+		//return this._uistack.reservedheight;
 	}
 	
 	/**
@@ -77,7 +78,9 @@ abstract class __Widget__
 		__Widget__ parent = this._parent;
 		if (parent == null)
 			return Display.getDisplays(0)[0].getWidth();
-		return this._uistack.reservedwidth;
+		
+		throw new todo.TODO();
+		//return this._uistack.reservedwidth;
 	}
 	
 	/**

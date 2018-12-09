@@ -22,6 +22,9 @@ import java.util.List;
  */
 public final class UIStack
 {
+	/** The drawable thing. */
+	public final UIDrawable drawable;
+	
 	/** The reserved width. */
 	public final int reservedwidth;
 	
@@ -47,17 +50,22 @@ public final class UIStack
 	/**
 	 * Initializes the stack with the given view width and height.
 	 *
+	 * @param __d The drawable thing.
 	 * @param __w Reserved width.
 	 * @param __h Reserved height.
 	 * @since 2018/12/08
 	 */
-	public UIStack(int __w, int __h)
+	public UIStack(UIDrawable __d, int __w, int __h)
 	{
+		this.drawable = __d;
 		this.reservedwidth = __w;
 		this.reservedheight = __h;
 		
 		// Draw width defaults to the reserved width
 		this.drawwidth = __w;
+		
+		// Draw self but using the same code as the kids!
+		this.kids.add(null);
 	}
 	
 	/**
@@ -89,6 +97,73 @@ public final class UIStack
 		
 		// For next run or for drawing
 		this.drawheight = newdrawheight;
+	}
+	
+	/**
+	 * Renders this stack item.
+	 *
+	 * @param __g The graphics to draw into.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/12/08
+	 */
+	public final void render(Graphics __g)
+		throws NullPointerException
+	{
+		if (__g == null)
+			throw new NullPointerException("NARG");
+		
+		// Remember the base translation and clip details
+		int origtransx = __g.getTranslateX(),
+			origtransy = __g.getTranslateY(),
+			origclipx = __g.getClipX(),
+			origclipy = __g.getClipY(),
+			origclipw = __g.getClipWidth(),
+			origcliph = __g.getClipHeight();
+		
+		// Draw all the kids
+		for (UIStack kid : this.kids)
+		{
+			// If no kid was specified this is ourself
+			if (kid == null)
+				kid = this;
+			
+			// Reset the translation
+			__g.translate(-__g.getTranslateX(), -__g.getTranslateY());
+			
+			// Set the clip for this child so that is always in that area
+			__g.setClip(kid.xoffset, kid.yoffset,
+				kid.drawwidth, kid.drawheight);
+			
+			// Then limit the clip into our original clipping bound so that
+			// we do not draw outside of it
+			__g.clipRect(origclipx, origclipy,
+				origclipw, origcliph);
+			
+			// Translate to the child's coordinate space so it is (0, 0).
+			__g.translate(kid.xoffset, kid.yoffset);
+			
+			// Drawing ourself
+			if (kid == this)
+			{
+				// Debug
+				__g.drawRect(0, 0, kid.drawwidth - 2, kid.drawheight - 2);
+				__g.drawLine(0, 0, kid.drawwidth, kid.drawheight);
+				__g.drawLine(0, kid.drawheight, kid.drawwidth, 0);
+			}
+			
+			// Draw child
+			else
+				kid.render(__g);
+		}
+		
+		// Reset the translation
+		__g.translate(-__g.getTranslateX(), -__g.getTranslateY());
+		
+		// Restore the old clip
+		__g.setClip(origclipx, origclipy, origclipw, origcliph);
+		
+		// Then restore the old translation
+		__g.translate(origtransx, origtransy);
 	}
 }
 
