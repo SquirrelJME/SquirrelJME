@@ -74,6 +74,12 @@ public enum GraphicsFunction
 	/** Draw text. */
 	DRAW_TEXT,
 	
+	/** Get stroke style. */
+	GET_STROKE_STYLE,
+	
+	/** Set stroke style. */
+	SET_STROKE_STYLE,
+	
 	/** End. */
 	;
 	
@@ -110,6 +116,8 @@ public enum GraphicsFunction
 			case 16:	return GET_FONT;
 			case 17:	return DRAW_SUB_CHARS;
 			case 18:	return DRAW_TEXT;
+			case 19:	return GET_STROKE_STYLE;
+			case 20:	return SET_STROKE_STYLE;
 			
 				// {@squirreljme.error EB2d Invalid graphics function.
 				// (The function ID)}

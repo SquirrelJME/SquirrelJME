@@ -292,7 +292,7 @@ public abstract class SerializedGraphics
 	@Override
 	public int getAlpha()
 	{
-		throw new todo.TODO();
+		return (this.getAlphaColor() >> 24) & 0xFF;
 	}
 	
 	/**
@@ -322,7 +322,7 @@ public abstract class SerializedGraphics
 	@Override
 	public int getBlueComponent()
 	{
-		throw new todo.TODO();
+		return (this.getAlphaColor()) & 0xFF;
 	}
 	
 	/**
@@ -372,7 +372,7 @@ public abstract class SerializedGraphics
 	@Override
 	public int getColor()
 	{
-		throw new todo.TODO();
+		return this.getAlphaColor() & 0xFFFFFF;
 	}
 	
 	/**
@@ -403,7 +403,8 @@ public abstract class SerializedGraphics
 	@Override
 	public int getGrayScale()
 	{
-		throw new todo.TODO();
+		return (this.getRedComponent() + this.getGreenComponent() +
+			this.getBlueComponent()) / 3;
 	}
 	
 	/**
@@ -413,7 +414,7 @@ public abstract class SerializedGraphics
 	@Override
 	public int getGreenComponent()
 	{
-		throw new todo.TODO();
+		return (this.getAlphaColor() >> 8) & 0xFF;
 	}
 	
 	/**
@@ -423,7 +424,7 @@ public abstract class SerializedGraphics
 	@Override
 	public int getRedComponent()
 	{
-		throw new todo.TODO();
+		return (this.getAlphaColor() >> 16) & 0xFF;
 	}
 	
 	/**
@@ -433,7 +434,7 @@ public abstract class SerializedGraphics
 	@Override
 	public int getStrokeStyle()
 	{
-		throw new todo.TODO();
+		return (Integer)this.serialize(GraphicsFunction.GET_STROKE_STYLE);
 	}
 	
 	/**
@@ -464,7 +465,8 @@ public abstract class SerializedGraphics
 	public void setAlpha(int __a)
 		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		this.setAlphaColor(__a, this.getRedComponent(),
+			this.getGreenComponent(), this.getBlueComponent());
 	}
 	
 	/**
@@ -485,7 +487,11 @@ public abstract class SerializedGraphics
 	public void setAlphaColor(int __a, int __r, int __g, int __b)
 		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		this.serialize(GraphicsFunction.SET_ALPHA_COLOR,
+			((__a & 0xFF) << 24) |
+			((__r & 0xFF) << 16) |
+			((__g & 0xFF) << 8) |
+			(__b & 0xFF));
 	}
 	
 	/**
@@ -528,7 +534,10 @@ public abstract class SerializedGraphics
 	public void setColor(int __r, int __g, int __b)
 		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		this.serialize(GraphicsFunction.SET_COLOR,
+			((__r & 0xFF) << 16) |
+			((__g & 0xFF) << 8) |
+			(__b & 0xFF));
 	}
 	
 	/**
@@ -554,7 +563,7 @@ public abstract class SerializedGraphics
 	@Override
 	public void setGrayScale(int __v)
 	{
-		throw new todo.TODO();
+		this.setAlphaColor(this.getAlpha(), __v, __v, __v);
 	}
 	
 	/**
@@ -562,10 +571,11 @@ public abstract class SerializedGraphics
 	 * @since 2018/11/19
 	 */
 	@Override
-	public void setStrokeStyle(int __a)
+	public void setStrokeStyle(int __s)
 		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		this.serialize(GraphicsFunction.SET_STROKE_STYLE,
+			__s);
 	}
 	
 	/**
@@ -707,6 +717,15 @@ public abstract class SerializedGraphics
 					SerializedGraphics.textDeserialize((byte[])__args[0]),
 					(Integer)__args[1],
 					(Integer)__args[2]);
+				return null;
+				
+				// Get stroke style
+			case GET_STROKE_STYLE:
+				return __g.getStrokeStyle();
+				
+				// Set stroke style
+			case SET_STROKE_STYLE:
+				__g.setStrokeStyle((Integer)__args[0]);
 				return null;
 			
 			default:

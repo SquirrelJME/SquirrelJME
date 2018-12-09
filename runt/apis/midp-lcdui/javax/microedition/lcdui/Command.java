@@ -11,6 +11,8 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+import cc.squirreljme.runtime.lcdui.common.CommonColors;
+import cc.squirreljme.runtime.lcdui.common.CommonMetrics;
 import cc.squirreljme.runtime.lcdui.ui.UIStack;
 
 public class Command
@@ -390,8 +392,28 @@ public class Command
 	@Override
 	final void __draw(UIStack __parent, UIStack __self, Graphics __g)
 	{
-		__g.drawString(this.getClass().getName().toString(),
-			__g.getClipX(), __g.getClipY(), 0);
+		int w = __self.drawwidth,
+			h = __self.drawheight;
+		
+		// The text to draw
+		String label = this._shortlabel;
+		if (label == null)
+			label = "<null>";
+		
+		// Draw background of the command bar
+		__g.setColor(CommonColors.COMMANDBAR_BACKGROUND);
+		__g.fillRect(0, 0, w, h);
+		
+		// Determine size of the command text
+		Font font = Font.getDefaultFont().deriveFont(
+			CommonMetrics.COMMANDBAR_FONT_SIZE);
+		int sw = font.stringWidth(label),
+			sh = font.getPixelSize();
+		
+		// Draw command label
+		__g.setColor(CommonColors.COMMANDBAR_FOREGROUND);
+		__g.drawString(label,
+			(w >> 1) - (sw >> 1), (h >> 1) - (sh >> 1), 0);
 	}
 }
 
