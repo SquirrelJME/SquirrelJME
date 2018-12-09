@@ -111,13 +111,14 @@ final class __ChoiceEntry__
 			
 		// Draw foreground text
 		__g.setAlphaColor(fg);
+		__g.setFont(f);
 		__g.drawString(this._string, dx, 0, Graphics.TOP | Graphics.LEFT);
 		
 		// Strike out disabled items
 		if (disabled)
 		{
 			int hh = __self.drawheight >> 1;
-			__g.drawLine(dx, hh, __self.drawwidth, hh);
+			__g.drawLine(dx, hh, f.stringWidth(this._string), hh);
 		}
 	}
 }
