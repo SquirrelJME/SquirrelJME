@@ -17,5 +17,17 @@ package cc.squirreljme.runtime.lcdui.ui;
  */
 public final class UIPersist
 {
+	/**
+	 * This is called when something has been updated visually, so redraw
+	 * must happen.
+	 *
+	 * @param __recalc Should everything be recalculated? This means there
+	 * were entry changes where we need to completely determine how things
+	 * are laid out instead of just rendered.
+	 * @since 2018/12/09
+	 */
+	public final void visualUpdate(boolean __recalc)
+	{
+	}
 }
 

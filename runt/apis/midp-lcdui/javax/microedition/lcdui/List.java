@@ -30,6 +30,9 @@ public class List
 	/** The type of list this is. */
 	private final int _type;
 	
+	/** Last persist. */
+	UIPersist _lastpersist;
+	
 	/**
 	 * Initializes the list.
 	 *
@@ -92,7 +95,14 @@ public class List
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		return this._items.append(new __ChoiceEntry__(__s, __i));
+		int rv = this._items.append(new __ChoiceEntry__(__s, __i));
+		
+		// Visual changed, need to recalculate
+		UIPersist lastpersist = this._lastpersist;
+		if (lastpersist != null)
+			lastpersist.visualUpdate(true);
+		
+		return rv;
 	}
 	
 	public void delete(int __a)
@@ -165,6 +175,13 @@ public class List
 		throw new todo.TODO();
 	}
 	
+	@Override
+	public boolean isEnabled(int __i)
+	{
+		throw new todo.TODO();
+	}
+	
+	@Override
 	public boolean isSelected(int __a)
 	{
 		throw new todo.TODO();
@@ -179,6 +196,21 @@ public class List
 	public void set(int __a, String __b, Image __c)
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/09
+	 */
+	@Override
+	public void setEnabled(int __i, boolean __e)
+	{
+		this._items.get(__i)._disabled = !__e;
+		
+		// Visual changed, need to update
+		UIPersist lastpersist = this._lastpersist;
+		if (lastpersist != null)
+			lastpersist.visualUpdate(false);
 	}
 	
 	public void setFitPolicy(int __a)
@@ -201,9 +233,20 @@ public class List
 		throw new todo.TODO();
 	}
 	
-	public void setSelectedIndex(int __a, boolean __b)
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/09
+	 */
+	@Override
+	public void setSelectedIndex(int __i, boolean __e)
+		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		this._items.get(__i)._selected = true;
+		
+		// Visual changed, need to update
+		UIPersist lastpersist = this._lastpersist;
+		if (lastpersist != null)
+			lastpersist.visualUpdate(false);
 	}
 	
 	public int size()
@@ -239,6 +282,9 @@ public class List
 	@Override
 	final void __updateUIStack(UIPersist __keep, UIStack __parent)
 	{
+		// We need this for future updates
+		this._lastpersist = __keep;
+		
 		// All items are the width of the parent
 		int rw = __parent.reservedwidth;
 		

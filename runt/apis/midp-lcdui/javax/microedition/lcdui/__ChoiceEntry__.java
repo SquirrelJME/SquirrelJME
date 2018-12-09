@@ -35,6 +35,9 @@ final class __ChoiceEntry__
 	/** Is this entry selected? */
 	volatile boolean _selected;
 	
+	/** Is this item disabled (is enabled by default)? */
+	volatile boolean _disabled;
+	
 	/**
 	 * Initializes a choice entry with default values.
 	 *
@@ -71,24 +74,39 @@ final class __ChoiceEntry__
 		if (f == null)
 			f = Font.getDefaultFont();
 		
-		// If the item is selected, draw a highlighted background and set the
-		// text color
-		boolean selected = this._selected;
+		// Color changes according to selected and enabled state
+		boolean selected = this._selected,
+			disabled = this._disabled;
+		int fg, bg;
 		if (selected)
-		{
-			// Draw rectangle where the widget is for its background
-			__g.setAlphaColor(CommonColors.HIGHLIGHTED_BACKGROUND);
-			__g.fillRect(0, 0, __self.drawwidth, __self.drawheight);
-			
-			// Set text color
-			__g.setAlphaColor(CommonColors.HIGHLIGHTED_FOREGROUND);
-		}
-		
-		// Otherwise use a normal color
+			if (disabled)
+			{
+				bg = CommonColors.DISABLED_HIGHLIGHTED_BACKGROUND;
+				fg = CommonColors.DISABLED_HIGHLIGHTED_FOREGROUND;
+			}
+			else
+			{
+				bg = CommonColors.HIGHLIGHTED_BACKGROUND;
+				fg = CommonColors.HIGHLIGHTED_FOREGROUND;
+			}
 		else
-			__g.setAlphaColor(CommonColors.FOREGROUND);
+			if (disabled)
+			{
+				bg = CommonColors.DISABLED_BACKGROUND;
+				fg = CommonColors.DISABLED_FOREGROUND;
+			}
+			else
+			{
+				bg = CommonColors.BACKGROUND;
+				fg = CommonColors.FOREGROUND;
+			}
 		
-		// Draw the list text
+		// Draw rectangle where the widget is for its background
+		__g.setAlphaColor(bg);
+		__g.fillRect(0, 0, __self.drawwidth, __self.drawheight);
+			
+		// Draw foreground text
+		__g.setAlphaColor(fg);
 		__g.drawString(this._string, dx, 0, Graphics.TOP | Graphics.LEFT);
 	}
 }

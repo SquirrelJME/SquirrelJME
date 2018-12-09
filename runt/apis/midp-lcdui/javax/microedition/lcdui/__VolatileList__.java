@@ -88,6 +88,26 @@ final class __VolatileList__<T>
 	}
 	
 	/**
+	 * Gets the element at the given index.
+	 *
+	 * @param __i The index to get.
+	 * @return The element.
+	 * @throws IndexOutOfBoundsException If the index is out of bounds.
+	 * @since 2018/12/09
+	 */
+	@SuppressWarnings({"unchecked"})
+	public final T get(int __i)
+		throws IndexOutOfBoundsException
+	{
+		// Is this in bounds?
+		Object[] values = this._values;
+		if (__i < 0 || __i >= values.length)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		return (T)values[__i];
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/11/18
 	 */
