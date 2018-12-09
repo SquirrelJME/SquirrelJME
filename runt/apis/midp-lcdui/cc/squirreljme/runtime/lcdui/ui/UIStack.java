@@ -104,7 +104,7 @@ public final class UIStack
 		// Set position of the child relative to our own offset, stack
 		// drawable going down more
 		__s.xoffset = this.xoffset + 0;
-		__s.yoffset = this.yoffset + drawheight;
+		__s.yoffset = this.yoffset + virtualdrawheight;
 		
 		// If the child never set a drawheight, set it for them
 		if (__s.drawheight == 0)
