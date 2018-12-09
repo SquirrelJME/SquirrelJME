@@ -13,6 +13,8 @@ package cc.squirreljme.runtime.lcdui.ui;
 import cc.squirreljme.runtime.lcdui.LCDUIProbe;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -48,6 +50,9 @@ public final class UIStack
 	
 	/** The total drawing height. */
 	public int drawheight;
+	
+	/** Reference to the parent item. */
+	private Reference<UIStack> _parentref;
 	
 	/**
 	 * Initializes the stack with the given view width and height.
@@ -103,6 +108,9 @@ public final class UIStack
 		// Add to kids to make sure it draws
 		this.kids.add(__s);
 		
+		// Link back to us to allow going back up the stack
+		__s._parentref = new WeakReference<>(this);
+		
 		// Hint dimensions
 		UIDrawable drawable = __s.drawable;
 		if (drawable != null)
@@ -133,6 +141,9 @@ public final class UIStack
 		
 		// Add kid
 		this.kids.add(__s);
+		
+		// Link back to us to allow going back up the stack
+		__s._parentref = new WeakReference<>(this);
 		
 		// Hint dimensions
 		UIDrawable drawable = __s.drawable;
