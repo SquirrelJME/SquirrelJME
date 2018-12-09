@@ -467,7 +467,7 @@ public abstract class Canvas
 		Display display = this.getCurrentDisplay();
 		if (display != null)
 			NativeDisplayAccess.displayRepaint(
-				display._nid, __x, __y, __w, __h);
+				display._state.nativeid, __x, __y, __w, __h);
 	}
 	
 	public final void serviceRepaints()
@@ -673,7 +673,12 @@ public abstract class Canvas
 	@Override
 	final void __updateUIStack(UIStack __parent)
 	{
-		throw new todo.TODO();
+		// Just use the entire screen space
+		UIStack stack = new UIStack(__parent.reservedwidth,
+			__parent.reservedheight);
+		
+		// Add to the parent
+		__parent.add(stack);
 	}
 }
 
