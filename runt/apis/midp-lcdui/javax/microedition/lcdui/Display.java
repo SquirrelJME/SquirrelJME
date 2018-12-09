@@ -981,7 +981,8 @@ public class Display
 	final void __doDisplaySizeChanged(int __w, int __h)
 	{
 		// Update the framebuffer because everything relies on it
-		this._state.framebuffer();
+		UIDisplayState state = this._state;
+		state.framebuffer();
 		
 		// Report that the size changed for events
 		for (DisplayListener dl : Display.__listeners())
@@ -994,6 +995,9 @@ public class Display
 		
 		// Update the UI stack
 		this.__updateUIStack(null);
+		
+		// Tell everything to repaint since it was resized
+		NativeDisplayAccess.displayRepaint(state.nativeid, 0, 0, __w, __h);
 	}
 	
 	/**
