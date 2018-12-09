@@ -995,9 +995,6 @@ public class Display
 		
 		// Update the UI stack
 		this.__updateUIStack(null);
-		
-		// Tell everything to repaint since it was resized
-		NativeDisplayAccess.displayRepaint(state.nativeid, 0, 0, __w, __h);
 	}
 	
 	/**
@@ -1166,7 +1163,8 @@ public class Display
 	@Override
 	final void __updateUIStack(UIStack __parent)
 	{
-		UIFramebuffer fb = this._state.framebuffer();
+		UIDisplayState state = this._state;
+		UIFramebuffer fb = state.framebuffer();
 		int w = fb.bufferwidth,
 			h = fb.bufferheight;
 		
@@ -1193,6 +1191,9 @@ public class Display
 		
 		// Store the stack for drawing
 		this._uistack = stack;
+		
+		// Tell everything to repaint since it was resized
+		NativeDisplayAccess.displayRepaint(state.nativeid, 0, 0, w, h);
 	}
 	
 	/**
