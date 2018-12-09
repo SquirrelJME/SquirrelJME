@@ -115,10 +115,10 @@ public final class UIStack
 			throw new NullPointerException("NARG");
 		
 		// Just set directly
-		this.xoffset = __x;
-		this.yoffset = __y;
-		this.drawwidth = __w;
-		this.drawheight = __h;
+		__s.xoffset = __x;
+		__s.yoffset = __y;
+		__s.drawwidth = __w;
+		__s.drawheight = __h;
 		
 		// Add kid
 		this.kids.add(__s);
