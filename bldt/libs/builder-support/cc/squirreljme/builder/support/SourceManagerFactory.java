@@ -115,7 +115,8 @@ public class SourceManagerFactory
 		}
 		
 		// Setup source manager
-		return new SourceManager(from.<Path>toArray(new Path[from.size()]));
+		return new SourceManager(__t,
+			from.<Path>toArray(new Path[from.size()]));
 	}
 }
 
