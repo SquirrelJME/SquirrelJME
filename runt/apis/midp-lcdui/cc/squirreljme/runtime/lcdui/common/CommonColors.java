@@ -39,11 +39,11 @@ public interface CommonColors
 	
 	/** Disabled background. */
 	public static final int DISABLED_BACKGROUND =
-		0xFF_3C3C3C;
+		0xFF_FFFFFF;
 	
 	/** Disabled foreground. */
 	public static final int DISABLED_FOREGROUND =
-		0xFF_1E1E1E;
+		0xFF_3C3C3C;
 	
 	/** Highlighted border. */
 	public static final int HIGHLIGHTED_BORDER =
@@ -63,11 +63,11 @@ public interface CommonColors
 	
 	/** Disabled Highlighted background. */
 	public static final int DISABLED_HIGHLIGHTED_BACKGROUND =
-		0xFF_00001E;
+		0xFF_3C3C3C;
 	
 	/** Disabled Highlighted foreground. */
 	public static final int DISABLED_HIGHLIGHTED_FOREGROUND =
-		0xFF_3C3C3C;
+		0xFF_9C9C9C;
 	
 	/** Canvas background. */
 	public static final int CANVAS_BACKGROUND =

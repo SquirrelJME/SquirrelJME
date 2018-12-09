@@ -261,6 +261,9 @@ public class List
 	@Override
 	final void __draw(UIStack __parent, UIStack __self, Graphics __g)
 	{
+		// Draw background of the list
+		__g.setAlphaColor(CommonColors.BACKGROUND);
+		__g.fillRect(0, 0, __self.drawwidth, __self.drawheight);
 	}
 	
 	/**
@@ -283,8 +286,10 @@ public class List
 		// We need this for future updates
 		this._lastpersist = __keep;
 		
-		// All items are the width of the parent
+		// Setup our list stack
 		int rw = __parent.reservedwidth;
+		UIStack stack = new UIStack(this, rw, __parent.reservedheight);
+		__parent.add(stack);
 		
 		// Add each item in the list to be drawn
 		for (__ChoiceEntry__ e : this._items)
@@ -294,7 +299,7 @@ public class List
 			int fh = (f == null ? Font.getDefaultFont() : f).getPixelSize();
 			
 			// Add to the stack
-			__parent.add(new UIStack(e, rw, fh));
+			stack.add(new UIStack(e, rw, fh));
 		}
 	}
 }
