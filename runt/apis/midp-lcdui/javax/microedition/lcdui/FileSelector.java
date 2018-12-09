@@ -13,6 +13,7 @@ package javax.microedition.lcdui;
 import java.io.IOException;
 import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.StreamConnection;
+import cc.squirreljme.runtime.lcdui.ui.UIPersist;
 import cc.squirreljme.runtime.lcdui.ui.UIStack;
 
 public class FileSelector
@@ -119,7 +120,7 @@ public class FileSelector
 	 * @since 2018/12/08
 	 */
 	@Override
-	final void __updateUIStack(UIStack __parent)
+	final void __updateUIStack(UIPersist __keep, UIStack __parent)
 	{
 		throw new todo.TODO();
 	}

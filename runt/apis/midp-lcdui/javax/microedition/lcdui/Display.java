@@ -20,6 +20,7 @@ import cc.squirreljme.runtime.lcdui.event.NonStandardKey;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.ui.UIDisplayState;
 import cc.squirreljme.runtime.lcdui.ui.UIFramebuffer;
+import cc.squirreljme.runtime.lcdui.ui.UIPersist;
 import cc.squirreljme.runtime.lcdui.ui.UIStack;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -212,6 +213,10 @@ public class Display
 	
 	/** The display state for this Display. */
 	final UIDisplayState _state;
+	
+	/** Persistent UI state. */
+	final UIPersist _uipersist =
+		new UIPersist();
 	
 	/** The Native ID of this display. */
 	@Deprecated
@@ -800,7 +805,7 @@ public class Display
 			__show.getTitle());
 		
 		// Update the UI stack
-		this.__updateUIStack(null);
+		this.__updateUIStack(this._uipersist, null);
 	}
 	
 	public void setCurrentItem(Item __a)
@@ -994,7 +999,7 @@ public class Display
 			d.sizeChanged(__w, __h);
 		
 		// Update the UI stack
-		this.__updateUIStack(null);
+		this.__updateUIStack(this._uipersist, null);
 	}
 	
 	/**
@@ -1171,7 +1176,7 @@ public class Display
 	 * @since 2018/12/08
 	 */
 	@Override
-	final void __updateUIStack(UIStack __parent)
+	final void __updateUIStack(UIPersist __keep, UIStack __parent)
 	{
 		UIDisplayState state = this._state;
 		UIFramebuffer fb = state.framebuffer();
@@ -1211,7 +1216,7 @@ public class Display
 		
 		// Update the stack of the widget accordingly
 		if (current != null)
-			current.__updateUIStack(stack);
+			current.__updateUIStack(__keep, stack);
 		
 		// Store the stack for drawing
 		this._uistack = stack;

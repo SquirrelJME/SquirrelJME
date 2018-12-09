@@ -18,6 +18,7 @@ import cc.squirreljme.runtime.lcdui.event.NonStandardKey;
 import cc.squirreljme.runtime.lcdui.gfx.BasicGraphics;
 import cc.squirreljme.runtime.lcdui.gfx.EnforcedDrawingAreaGraphics;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
+import cc.squirreljme.runtime.lcdui.ui.UIPersist;
 import cc.squirreljme.runtime.lcdui.ui.UIStack;
 
 /**
@@ -504,7 +505,10 @@ public abstract class Canvas
 		// such are chopped off
 		__Widget__ parent = this._parent;
 		if (parent != null && parent instanceof Display)
-			((Display)parent).__updateUIStack(null);
+		{
+			Display d = (Display)parent;
+			d.__updateUIStack(d._uipersist, null);
+		}
 	}
 	
 	/**
@@ -713,7 +717,7 @@ public abstract class Canvas
 	 * @since 2018/12/08
 	 */
 	@Override
-	final void __updateUIStack(UIStack __parent)
+	final void __updateUIStack(UIPersist __keep, UIStack __parent)
 	{
 		// Just use the entire screen space
 		UIStack stack = new UIStack(this, __parent.reservedwidth,
