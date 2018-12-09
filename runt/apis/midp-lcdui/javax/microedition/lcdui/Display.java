@@ -921,6 +921,26 @@ public class Display
 	}
 	
 	/**
+	 * Checks that a repaint needs to be done.
+	 *
+	 * @since 2018/12/09
+	 */
+	final void __checkRepaint()
+	{
+		UIPersist uipersist = this._uipersist;
+		if (uipersist.repaint)
+		{
+			// Do not repaint
+			uipersist.repaint = false;
+			
+			// Request it
+			NativeDisplayAccess.displayRepaint(
+				this._state.nativeid, 0, 0,
+				this.getWidth(), this.getHeight());
+		}
+	}
+	
+	/**
 	 * Performs a command event on the target displayable.
 	 *
 	 * @param __i The command index.
@@ -1105,6 +1125,9 @@ public class Display
 			// Forward
 			current.__doKeyAction(__kt, __kc, __ch, __time);
 		}
+		
+		// Check repaint
+		this.__checkRepaint();
 	}
 	
 	/**
@@ -1125,6 +1148,9 @@ public class Display
 		Displayable current = this._current;
 		if (current != null)
 			current.__doPointerAction(__t, __x, __y, __time);
+		
+		// Check repaint
+		this.__checkRepaint();
 	}
 	
 	/**
@@ -1149,6 +1175,9 @@ public class Display
 			// Update the UI stack
 			this.__updateUIStack(uipersist, null);
 		}
+		
+		// A repaint is happening now so always clear it
+		uipersist.repaint = false;
 		
 		// Get graphics for this state
 		Graphics g = this._state.graphics();
@@ -1236,7 +1265,7 @@ public class Display
 		// Store the stack for drawing
 		this._uistack = stack;
 		
-		// Tell everything to repaint since it was resized
+		// Tell everything to repaint since everything was calculated
 		NativeDisplayAccess.displayRepaint(state.nativeid, 0, 0, w, h);
 	}
 	

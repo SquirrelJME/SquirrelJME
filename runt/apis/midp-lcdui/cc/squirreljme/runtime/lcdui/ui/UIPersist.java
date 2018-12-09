@@ -20,6 +20,9 @@ public final class UIPersist
 	/** Is a recalculation going to be done? */
 	public volatile boolean recalc;
 	
+	/** Should a repaint be done? */
+	public volatile boolean repaint;
+	
 	/**
 	 * This is called when something has been updated visually, so redraw
 	 * must happen.
@@ -31,6 +34,9 @@ public final class UIPersist
 	 */
 	public final void visualUpdate(boolean __recalc)
 	{
+		// Repaint always
+		this.repaint = true;	
+		
 		// Recalculate?
 		if (__recalc)
 			this.recalc |= true;
