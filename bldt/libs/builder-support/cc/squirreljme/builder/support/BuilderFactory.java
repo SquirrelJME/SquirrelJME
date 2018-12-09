@@ -206,7 +206,7 @@ public class BuilderFactory
 	public SourceManager sourceManager(TimeSpaceType __t)
 		throws IOException, NullPointerException
 	{
-		return this.sourceManager(__t);
+		return this.projectmanager.sourceManager(__t);
 	}
 	
 	/**

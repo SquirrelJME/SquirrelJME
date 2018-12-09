@@ -36,23 +36,29 @@ import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 public final class SourceManager
 	implements Iterable<Source>
 {
+	/** The timespace used. */
+	protected final TimeSpaceType timespace;
+	
 	/** Sources which are available. */
 	private final Map<SourceName, Source> _sources;
 	
 	/**
 	 * Initializes the source code manager.
 	 *
+	 * @param __t The timespace.
 	 * @param __roots The root directories which contain namespaces where
 	 * source projects are located.
 	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/10/31
 	 */
-	public SourceManager(Path... __roots)
+	public SourceManager(TimeSpaceType __t, Path... __roots)
 		throws IOException, NullPointerException
 	{
 		if (__roots == null)
 			throw new NullPointerException("NARG");
+		
+		this.timespace = __t;
 		
 		// Go through all the roots and detect the namespaces which are
 		// valid
@@ -72,7 +78,7 @@ public final class SourceManager
 			
 			// Go through path and decode projects
 			for (Path p : e.getValue())
-				__scanSources(p, sources, type);
+				__scanSources(__t, p, sources, type);
 		}
 		
 		// Set
@@ -194,6 +200,7 @@ public final class SourceManager
 	 * This scans the given directory for source projects and adds them to the
 	 * given map.
 	 *
+	 * @param __t Timespace type.
 	 * @param __base The base directory to scan.
 	 * @param __out The output map where projects are placed.
 	 * @param __type The type 
@@ -201,11 +208,11 @@ public final class SourceManager
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/10/31
 	 */
-	private static final void __scanSources(Path __base,
+	private static final void __scanSources(TimeSpaceType __t, Path __base,
 		Map<SourceName, Source> __out, ProjectType __type)
 		throws IOException, NullPointerException
 	{
-		if (__base == null || __out == null || __type == null)
+		if (__t == null || __base == null || __out == null || __type == null)
 			throw new NullPointerException("NARG");
 		
 		// Go through directories
@@ -241,11 +248,16 @@ public final class SourceManager
 					__out.put(name, src);
 					
 					// If a test project exists, initialize it
-					SourceName tn = new SourceName(name.name() + ".test");
-					Path tr = p.resolveSibling(tn.name());
-					if (Files.isRegularFile(tr.resolve("META-INF").resolve(
-						"TEST.MF")))
-						__out.put(tn, new TestSource(tr, src));
+					// But only if this is a the test timespace because
+					// otherwise we will just get tons of tests in the way!
+					if (__t.ordinal() >= TimeSpaceType.TEST.ordinal())
+					{
+						SourceName tn = new SourceName(name.name() + ".test");
+						Path tr = p.resolveSibling(tn.name());
+						if (Files.isRegularFile(tr.resolve("META-INF").resolve(
+							"TEST.MF")))
+							__out.put(tn, new TestSource(tr, src));
+					}
 				}
 				
 				// Ignore
