@@ -75,6 +75,9 @@ public class Fonts
 		{
 			this.setTitle("Font Demo");
 			
+			// Draw as transparent
+			this.setPaintMode(false);
+			
 			// Try to get fonts of various pixel sizes
 			List<Font> fonts = new ArrayList<>();
 			for (Font f : Font.getAvailableFonts())

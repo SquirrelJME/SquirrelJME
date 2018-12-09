@@ -11,6 +11,7 @@
 package cc.squirreljme.runtime.lcdui.ui;
 
 import cc.squirreljme.runtime.lcdui.LCDUIProbe;
+import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import java.util.LinkedList;
 import java.util.List;
@@ -160,7 +161,10 @@ public final class UIStack
 			origclipx = __g.getClipX(),
 			origclipy = __g.getClipY(),
 			origclipw = __g.getClipWidth(),
-			origcliph = __g.getClipHeight();
+			origcliph = __g.getClipHeight(),
+			origcolor = __g.getAlphaColor(),
+			origstoke = __g.getStrokeStyle();
+		Font origfont = __g.getFont();
 		
 		// Draw all the kids
 		for (UIStack kid : this.kids)
@@ -168,6 +172,11 @@ public final class UIStack
 			// If no kid was specified this is ourself
 			if (kid == null)
 				kid = this;
+			
+			// Reset pen details
+			__g.setAlphaColor(origcolor);
+			__g.setStrokeStyle(origstoke);
+			__g.setFont(origfont);
 			
 			// Reset the translation
 			__g.translate(-__g.getTranslateX(), -__g.getTranslateY());
@@ -202,6 +211,11 @@ public final class UIStack
 			else
 				kid.render(this, __g);
 		}
+		
+		// Reset pen details
+		__g.setAlphaColor(origcolor);
+		__g.setStrokeStyle(origstoke);
+		__g.setFont(origfont);
 		
 		// Reset the translation
 		__g.translate(-__g.getTranslateX(), -__g.getTranslateY());
