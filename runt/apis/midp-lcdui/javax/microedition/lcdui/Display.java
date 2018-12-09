@@ -1142,7 +1142,10 @@ public class Display
 		// Call internal paint, which draws our stack
 		try
 		{
-			throw new todo.TODO();
+			// Render the draw stack
+			UIStack stack = this._uistack;
+			if (stack != null)
+				stack.render(g);
 		}
 		
 		// Catch all of these, but keep drawing!
@@ -1176,9 +1179,9 @@ public class Display
 		int numcommands = (current == null ? 0 : commands.length);
 		if (numcommands == 0 || ((current instanceof Canvas) &&
 			((Canvas)current)._isfullscreen))
-			stack = new UIStack(w, h);
+			stack = new UIStack(null, w, h);
 		else
-			stack = new UIStack(w, h - CommonMetrics.COMMANDBAR_HEIGHT);
+			stack = new UIStack(null, w, h - CommonMetrics.COMMANDBAR_HEIGHT);
 		
 		// Update the stack of the widget accordingly
 		if (current != null)
