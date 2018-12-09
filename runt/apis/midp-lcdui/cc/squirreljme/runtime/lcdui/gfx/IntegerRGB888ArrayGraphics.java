@@ -121,8 +121,8 @@ public final class IntegerRGB888ArrayGraphics
 	 * @since 2018/11/18
 	 */
 	@Override
-	protected final void internalDrawLine(int __x1, int __y1,
-		int __x2, int __y2)
+	protected final void internalDrawLine(boolean __blend, boolean __dot,
+		int __x1, int __y1, int __x2, int __y2)
 	{
 		int[] data = this.buffer;
 		int iw = this.pitch,
@@ -139,120 +139,100 @@ public final class IntegerRGB888ArrayGraphics
 			color = this.paintcolor,
 			dest = this.offset + (iw * __y1) + __x1;
 		
-		for (;;)
+		// Blended?
+		if (__blend)
 		{
-			// End, it ends when the X coordinate exceeds the end because there
-			// is nothing to draw again
-			// Y ends after it reaches the bound
-			//if (((__x1 ^ __x2) | (__y1 ^ __y2)) == 0)
-			if (__x1 >= __x2 &&
-				((neg && __y1 <= __y2) || (!neg && __y1 >= __y2)))
-				break;
+			// Dotted
+			if (__dot)
+				throw new todo.TODO();
 			
-			data[dest] = color;
+			// Not dotted
+			else
+				throw new todo.TODO();
+		}
+		
+		// Not blended?
+		else
+		{
+			// Dotted
+			if (__dot)
+				throw new todo.TODO();
 			
-			// Increase X
-			int brr = err;
-			if (brr > -dx)
-			{
-				err -= dy;
-				__x1++;
-				dest++;
-			}
-	
-			// Increase Y
-			if (brr < dy)
-			{
-				err += dx;
-				__y1 += sy;
-				dest += ssy;
-			}
+			// Not dotted
+			else
+				for (;;)
+				{
+					// Nothing left to draw?
+					if (__x1 >= __x2 &&
+						((neg && __y1 <= __y2) || (!neg && __y1 >= __y2)))
+						break;
+					
+					data[dest] = color;
+					
+					// Increase X
+					int brr = err;
+					if (brr > -dx)
+					{
+						err -= dy;
+						__x1++;
+						dest++;
+					}
+			
+					// Increase Y
+					if (brr < dy)
+					{
+						err += dx;
+						__y1 += sy;
+						dest += ssy;
+					}
+				}
 		}
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/11/18
-	 */
-	@Override
-	protected final void internalDrawLineBlended(int __x, int __y,
-		int __ex, int __ey)
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/11/18
-	 */
-	@Override
-	protected final void internalDrawLineDotted(int __x, int __y,
-		int __ex, int __ey)
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/11/18
-	 */
-	@Override
-	protected final void internalDrawLineBlendedDotted(int __x, int __y,
-		int __ex, int __ey)
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
 	 * @since 2018/03/25
 	 */
 	@Override
-	protected final void internalFillRectBlend(int __x, int __y, int __ex,
-		int __ey, int __w, int __h)
+	protected final void internalFillRect(boolean __blend,
+		int __x, int __y, int __ex, int __ey, int __w, int __h)
 	{
-		int[] buffer = this.buffer;
-		
-		int pac = this.paintcolor,
-			sa = this.paintalpha,
-			na = (sa ^ 0xFF),
-			srb = ((pac & 0xFF00FF) * sa),
-			sgg = (((pac >>> 8) & 0xFF) * sa);
-		
-		// Blend each color
-		int mod = 0;
-		boolean did = false;
-		for (int y = __y; y < __ey; y++)
-			for (int dest = offset + (y * pitch) + __x, pex = dest + __w;
-				dest < pex; dest++)
-			{
-				int dcc = buffer[dest],
-					xrb = (srb + ((dcc & 0xFF00FF) * na)) >>> 8,
-					xgg = (((sgg + (((dcc >>> 8) & 0xFF) * na)) + 1) * 257)
-						>>> 16;
-				
-				buffer[dest] = ((xrb & 0xFF00FF) | ((xgg & 0xFF) << 8));
-			}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/03/25
-	 */
-	@Override
-	protected final void internalFillRectSolid(int __x, int __y, int __ex,
-		int __ey, int __w, int __h)
-	{
-		int b = this.paintcolor;
+		int pac = this.paintcolor;
 		int[] buffer = this.buffer;
 		int pitch = this.pitch,
 			offset = this.offset;
 		
+		// Blending
+		if (__blend)
+		{
+			int sa = this.paintalpha,
+				na = (sa ^ 0xFF),
+				srb = ((pac & 0xFF00FF) * sa),
+				sgg = (((pac >>> 8) & 0xFF) * sa);
+			
+			// Blend each color
+			int mod = 0;
+			for (int y = __y; y < __ey; y++)
+				for (int dest = offset + (y * pitch) + __x, pex = dest + __w;
+					dest < pex; dest++)
+				{
+					int dcc = buffer[dest],
+						xrb = (srb + ((dcc & 0xFF00FF) * na)) >>> 8,
+						xgg = (((sgg + (((dcc >>> 8) & 0xFF) * na)) + 1) * 257)
+							>>> 16;
+					
+					buffer[dest] = ((xrb & 0xFF00FF) | ((xgg & 0xFF) << 8));
+				}
+		}
+		
 		// Just a simple color fill
-		for (int y = __y; y < __ey; y++)
-			for (int dest = offset + (y * pitch) + __x, pex = dest + __w;
-				dest < pex; dest++)
-				buffer[dest] = b;
+		else
+		{
+			for (int y = __y; y < __ey; y++)
+				for (int dest = offset + (y * pitch) + __x, pex = dest + __w;
+					dest < pex; dest++)
+					buffer[dest] = pac;
+		}
 	}
 	
 	/**
