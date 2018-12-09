@@ -101,6 +101,12 @@ public final class UIStack
 		
 		// Add to kids to make sure it draws
 		this.kids.add(__s);
+		
+		// Hint dimensions
+		UIDrawable drawable = __s.drawable;
+		if (drawable != null)
+			LCDUIProbe.probe().hintDimensions(drawable,
+				__s.drawwidth, __s.drawheight);
 	}
 	
 	/**
@@ -126,6 +132,12 @@ public final class UIStack
 		
 		// Add kid
 		this.kids.add(__s);
+		
+		// Hint dimensions
+		UIDrawable drawable = __s.drawable;
+		if (drawable != null)
+			LCDUIProbe.probe().hintDimensions(drawable,
+				__w, __h);
 	}
 	
 	/**

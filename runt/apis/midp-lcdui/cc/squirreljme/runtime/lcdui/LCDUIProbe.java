@@ -53,6 +53,16 @@ public abstract class LCDUIProbe
 		UIStack __self, Graphics __g);
 	
 	/**
+	 * Hints the given dimensions.
+	 *
+	 * @param __draw The drawable to hint.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @since 2018/12/08
+	 */
+	public abstract void hintDimensions(UIDrawable __draw, int __w, int __h);
+	
+	/**
 	 * Returns the probe.
 	 *
 	 * @return The probe.
