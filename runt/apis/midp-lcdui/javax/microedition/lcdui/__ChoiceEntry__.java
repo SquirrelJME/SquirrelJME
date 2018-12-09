@@ -101,13 +101,24 @@ final class __ChoiceEntry__
 				fg = CommonColors.FOREGROUND;
 			}
 		
-		// Draw rectangle where the widget is for its background
-		__g.setAlphaColor(bg);
-		__g.fillRect(0, 0, __self.drawwidth, __self.drawheight);
+		// Draw rectangle where the widget is for its background, but the list
+		// will already be the neutral background
+		if (selected || disabled)
+		{
+			__g.setAlphaColor(bg);
+			__g.fillRect(0, 0, __self.drawwidth, __self.drawheight);
+		}
 			
 		// Draw foreground text
 		__g.setAlphaColor(fg);
 		__g.drawString(this._string, dx, 0, Graphics.TOP | Graphics.LEFT);
+		
+		// Strike out disabled items
+		if (disabled)
+		{
+			int hh = __self.drawheight >> 1;
+			__g.drawLine(dx, hh, __self.drawwidth, hh);
+		}
 	}
 }
 
