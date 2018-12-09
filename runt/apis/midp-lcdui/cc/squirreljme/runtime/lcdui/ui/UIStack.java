@@ -100,6 +100,31 @@ public final class UIStack
 	}
 	
 	/**
+	 * Add stack item which is at an exact position.
+	 *
+	 * @param __s The item to add.
+	 * @param __x X position.
+	 * @param __y Y position.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @since 2018/12/08
+	 */
+	public final void addExact(UIStack __s, int __x, int __y, int __w, int __h)
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Just set directly
+		this.xoffset = __x;
+		this.yoffset = __y;
+		this.drawwidth = __w;
+		this.drawheight = __h;
+		
+		// Add kid
+		this.kids.add(__s);
+	}
+	
+	/**
 	 * Renders this stack item.
 	 *
 	 * @param __g The graphics to draw into.
