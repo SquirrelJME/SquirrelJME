@@ -1183,7 +1183,21 @@ public class Display
 			((Canvas)current)._isfullscreen))
 			stack = new UIStack(null, w, h);
 		else
-			stack = new UIStack(null, w, h - CommonMetrics.COMMANDBAR_HEIGHT);
+		{
+			int hw = w / 2,
+				ph = h - CommonMetrics.COMMANDBAR_HEIGHT;
+			stack = new UIStack(null, w, ph);
+			
+			// Add the first two commands to be drawn
+			for (int i = 0, n = (numcommands == 1 ? 1 : 2); i < n; i++)
+			{
+				// Calculation position
+				stack.addExact(
+					new UIStack(null, hw, CommonMetrics.COMMANDBAR_HEIGHT),
+					0 + (i * hw), ph,
+					hw, CommonMetrics.COMMANDBAR_HEIGHT);
+			}
+		}
 		
 		// Update the stack of the widget accordingly
 		if (current != null)
