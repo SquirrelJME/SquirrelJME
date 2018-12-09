@@ -458,7 +458,7 @@ public final class NativeDisplayAccess
 	{
 		/** Resize lock timer. */
 		final Timer _resizetimer =
-			new Timer(500, this);
+			new Timer(100, this);
 		
 		/** The image to be displayed. */
 		volatile BufferedImage _image =
