@@ -98,6 +98,9 @@ public final class UIStack
 		
 		// For next run or for drawing
 		this.drawheight = newdrawheight;
+		
+		// Add to kids to make sure it draws
+		this.kids.add(__s);
 	}
 	
 	/**
