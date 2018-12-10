@@ -19,7 +19,7 @@ __exedir="$(dirname -- "$0")"
 find "$__exedir/.." -type f | grep '\.java$' | while read __file
 do
 	__classname="$("$__exedir/longclass.sh" "$__file")"
-	__charlen="$(echo -n "$__classname" | wc -c)"
+	__charlen="$(printf '%s' "$__classname" | wc -c)"
 	
 	# SquirrelJME forces 79 columns, so this means
 	# "import ;" causes a loss of 8 from 79, so characters cannot exceed

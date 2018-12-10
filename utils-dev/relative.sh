@@ -68,7 +68,7 @@ do
 	fi
 	
 	# Add slash
-	echo -n "../"
+	printf '%s' "../"
 done
 
 # Append elements on the second set from the base to the result
@@ -85,13 +85,13 @@ do
 	fi
 	
 	# Add that element
-	echo -n "$__b"
+	printf '%s' "$__b"
 	
 	# If this is not the last element, add the slash
 	__zb="$(echo "$__targ" | cut -d '/' -f "$__j")"
 	if ! [ -z "$__zb" ]
 	then
-		echo -n "/"
+		printf '%s' "/"
 	fi
 done
 

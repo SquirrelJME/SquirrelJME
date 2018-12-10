@@ -194,10 +194,10 @@ do
 		__tidir="$(dirname -- "$__tabsf")"
 	
 		# Get extension of file
-		__tbase="$(echo -n "$__tfile" | sed 's/\(.*\)\..*$/\1/')"
+		__tbase="$(printf '%s' "$__tfile" | sed 's/\(.*\)\..*$/\1/')"
 		if echo "$__tfile" | grep '\.' > /dev/null
 		then
-			__tfext="$(echo -n "$__tfile" | sed 's/.*\.\(.*\)$/\1/')"
+			__tfext="$(printf '%s' "$__tfile" | sed 's/.*\.\(.*\)$/\1/')"
 		else
 			__tfext=""
 		fi

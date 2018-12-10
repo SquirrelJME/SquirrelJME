@@ -165,7 +165,7 @@ __primary()
 			fi
 			
 			# Mark start
-			echo -n ' * '
+			printf '%s' ' * '
 			
 			# If this is the first week then add a bunch of spaces at the
 			# start of the week so that it is aligned
@@ -176,7 +176,7 @@ __primary()
 				__origi="$__i"
 				while [ "$__i" -lt "7" ]
 				do
-					echo -n '`--` '
+					printf '%s' '`--` '
 					__i="$(expr "$__i" + 1)"
 				done
 				
@@ -192,7 +192,7 @@ __primary()
 			for __d in $__week
 			do
 				# Correct day to always use double digits
-				if [ "$(echo -n "$__d" | wc -c)" -eq "1" ]
+				if [ "$(printf '%s' "$__d" | wc -c)" -eq "1" ]
 				then
 					__d="0$__d"
 				fi
@@ -220,7 +220,7 @@ __primary()
 				__i="$__days"
 				while [ "$__i" -lt "7" ]
 				do
-					echo -n ' `--`'
+					printf '%s' ' `--`'
 					__i="$(expr "$__i" + 1)"
 				done
 				

@@ -45,7 +45,7 @@ __dep_print()
 {
 	__recursive_deps "$1" | while read __line
 	do
-		echo -n ":$__line"
+		printf '%s' ":$__line"
 	done
 }
 

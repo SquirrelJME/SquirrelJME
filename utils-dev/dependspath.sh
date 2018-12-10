@@ -30,12 +30,12 @@ do
 	# Separator?
 	if [ "$__i" -eq "1" ] 
 	then
-		echo -n ":"
+		printf '%s' ":"
 	fi
 	__i="1"
 	
 	# Add line
-	echo -n "bins/$__line.jar"
+	printf '%s' "bins/$__line.jar"
 done
 echo ""
 

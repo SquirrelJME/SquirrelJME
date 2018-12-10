@@ -55,7 +55,7 @@ __src="$("$__exedir/absolute.sh" "$1")"
 __dest="$("$__exedir/absolute.sh" "$2")"
 
 # Need to cut characters from the source path so it is known where they are
-__cut="$(expr $(echo -n "$__src" | wc -m) + 2)"
+__cut="$(expr $(printf '%s' "$__src" | wc -m) + 2)"
 
 # Go through each file in the source, only consider files
 find "$__src" -type f | while read __file
