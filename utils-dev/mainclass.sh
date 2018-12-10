@@ -34,7 +34,7 @@ else
 	else
 		cat "$__base/META-INF/MANIFEST.MF"
 	fi
-fi ) | tr -d '\r' | tr '\n' '\v' | sed 's/\v //g' | tr '\v' '\n' | \
+fi ) | tr -d '\r' | tr '\n' '|' | sed 's/| //g' | tr '|' '\n' | \
 	while read __line
 do
 	echo "$__line" | grep -i '^ *main-class' | cut -d ':' -f 2 | \
