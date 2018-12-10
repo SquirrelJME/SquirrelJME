@@ -296,7 +296,7 @@ public class List
 		{
 			// Need the height of the font to draw this item
 			Font f = e._font;
-			int fh = (f == null ? Font.getDefaultFont() : f).getPixelSize();
+			int fh = (f == null ? Font.getDefaultFont() : f).getHeight();
 			
 			// Add to the stack
 			stack.add(new UIStack(e, rw, fh));
