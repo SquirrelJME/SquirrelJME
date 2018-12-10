@@ -26,7 +26,7 @@ fi
 # Need file due to argument stuff.
 rm -f /tmp/$$.abs
 touch /tmp/$$.abs
-echo "$__yuck" | sed 's/\//\n/g' | while read __seg
+echo "$__yuck" | tr '/' '\n' | while read __seg
 do
 	# If this segment is ".", ignore it
 	# Also ignore blank segments too
