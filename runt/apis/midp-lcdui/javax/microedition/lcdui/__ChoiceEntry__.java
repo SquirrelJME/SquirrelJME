@@ -12,6 +12,7 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.lcdui.common.CommonColors;
 import cc.squirreljme.runtime.lcdui.ui.UIDrawable;
+import cc.squirreljme.runtime.lcdui.ui.UIPersist;
 import cc.squirreljme.runtime.lcdui.ui.UIStack;
 
 /**
@@ -57,7 +58,8 @@ final class __ChoiceEntry__
 	 * @since 2018/12/09
 	 */
 	@Override
-	void __draw(UIStack __parent, UIStack __self, Graphics __g)
+	final void __draw(UIPersist __persist, UIStack __parent, UIStack __self,
+		Graphics __g)
 	{
 		// Draw X position
 		int dx = 0;

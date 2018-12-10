@@ -156,7 +156,33 @@ public final class IntegerRGB888ArrayGraphics
 		{
 			// Dotted
 			if (__dot)
-				throw new todo.TODO();
+				for (boolean blip = true;; blip = !blip)
+				{
+					// Nothing left to draw?
+					if (__x1 >= __x2 &&
+						((neg && __y1 <= __y2) || (!neg && __y1 >= __y2)))
+						break;
+					
+					if (blip)
+						data[dest] = color;
+					
+					// Increase X
+					int brr = err;
+					if (brr > -dx)
+					{
+						err -= dy;
+						__x1++;
+						dest++;
+					}
+			
+					// Increase Y
+					if (brr < dy)
+					{
+						err += dx;
+						__y1 += sy;
+						dest += ssy;
+					}
+				}
 			
 			// Not dotted
 			else

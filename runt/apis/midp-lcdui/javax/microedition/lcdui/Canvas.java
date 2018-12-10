@@ -18,6 +18,7 @@ import cc.squirreljme.runtime.lcdui.event.NonStandardKey;
 import cc.squirreljme.runtime.lcdui.gfx.BasicGraphics;
 import cc.squirreljme.runtime.lcdui.gfx.EnforcedDrawingAreaGraphics;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
+import cc.squirreljme.runtime.lcdui.ui.UIEventTranslate;
 import cc.squirreljme.runtime.lcdui.ui.UIPersist;
 import cc.squirreljme.runtime.lcdui.ui.UIStack;
 
@@ -196,40 +197,7 @@ public abstract class Canvas
 	public int getGameAction(int __kc)
 		throws IllegalArgumentException
 	{
-		switch (__kc)
-		{
-				// Map these keys to standard keys
-			case KEY_UP:		return UP;
-			case KEY_DOWN:		return DOWN;
-			case KEY_LEFT:		return LEFT;
-			case KEY_RIGHT:		return RIGHT;
-			
-				// Map these character keys to specific keys
-			case ' ':			return FIRE;
-			case 'a': case 'A':
-			case 'h': case 'H':	return GAME_A;
-			case 's': case 'S':
-			case 'j': case 'J':	return GAME_B;
-			case 'd': case 'D':
-			case 'k': case 'K':	return GAME_C;
-			case 'f': case 'F':
-			case 'l': case 'L':	return GAME_D;
-			
-				// Virtually mapped game keys, likely from a VM running on top
-			case NonStandardKey.VGAME_UP:		return UP;
-			case NonStandardKey.VGAME_DOWN:		return DOWN;
-			case NonStandardKey.VGAME_LEFT:		return LEFT;
-			case NonStandardKey.VGAME_RIGHT:	return RIGHT;
-			case NonStandardKey.VGAME_FIRE:		return FIRE;
-			case NonStandardKey.VGAME_A:		return GAME_A;
-			case NonStandardKey.VGAME_B:		return GAME_B;
-			case NonStandardKey.VGAME_C:		return GAME_C;
-			case NonStandardKey.VGAME_D:		return GAME_D;
-			
-				// Invalid
-			default:
-				return 0;
-		}
+		return UIEventTranslate.keyCodeToGameAction(__kc);
 	}
 	
 	/**
@@ -664,7 +632,8 @@ public abstract class Canvas
 	 * @since 2018/12/08
 	 */
 	@Override
-	final void __draw(UIStack __parent, UIStack __self, Graphics __g)
+	final void __draw(UIPersist __persist, UIStack __parent, UIStack __self,
+		Graphics __g)
 	{
 		// Setup an enforced draw region to prevent programs from drawing
 		// outside of the canvas

@@ -10,8 +10,11 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.asm.NativeDisplayEventCallback;
 import cc.squirreljme.runtime.lcdui.common.CommonColors;
 import cc.squirreljme.runtime.lcdui.common.CommonMetrics;
+import cc.squirreljme.runtime.lcdui.SerializedEvent;
+import cc.squirreljme.runtime.lcdui.ui.UIEventTranslate;
 import cc.squirreljme.runtime.lcdui.ui.UIPersist;
 import cc.squirreljme.runtime.lcdui.ui.UIStack;
 
@@ -32,6 +35,9 @@ public class List
 	
 	/** Last persist. */
 	UIPersist _lastpersist;
+	
+	/** The focal index. */
+	volatile int _focalindex;
 	
 	/**
 	 * Initializes the list.
@@ -256,14 +262,63 @@ public class List
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2018/12/09
+	 */
+	@SerializedEvent
+	@Override
+	void __doKeyAction(int __type, int __kc, char __ch, int __time)
+	{
+		// Ignore these
+		if (__type != NativeDisplayEventCallback.KEY_PRESSED &&
+			__type != NativeDisplayEventCallback.KEY_REPEATED)
+			return;
+		
+		// Flag for repaint?
+		boolean repaint = false;
+		
+		// Depends on the game action used
+		switch (UIEventTranslate.keyCodeToGameAction(__kc))
+		{
+				// Focus up
+			case Canvas.UP:
+				break;
+				
+				// Focus down
+			case Canvas.DOWN:
+				break;
+				
+				// Select item (or toggle select)
+			case Canvas.FIRE:
+				break;
+				
+				// Nothing
+			default:
+				break;
+		}
+		
+		// Visually update if there were changes
+		UIPersist lastpersist = this._lastpersist;
+		if (lastpersist != null)
+			lastpersist.visualUpdate(false);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/12/08
 	 */
 	@Override
-	final void __draw(UIStack __parent, UIStack __self, Graphics __g)
+	final void __draw(UIPersist __persist, UIStack __parent, UIStack __self,
+		Graphics __g)
 	{
 		// Draw background of the list
 		__g.setAlphaColor(CommonColors.BACKGROUND);
 		__g.fillRect(0, 0, __self.drawwidth, __self.drawheight);
+		
+		// Focus on this item
+		int focalindex = this._focalindex;
+		java.util.List<UIStack> kids = __self.kids;
+		if (focalindex >= 0 && focalindex < kids.size())
+			__persist.focalstack = kids.get(1 + focalindex);
 	}
 	
 	/**
@@ -299,7 +354,8 @@ public class List
 			int fh = (f == null ? Font.getDefaultFont() : f).getHeight();
 			
 			// Add to the stack
-			stack.add(new UIStack(e, rw, fh));
+			UIStack s;
+			stack.add((s = new UIStack(e, rw, fh)));
 		}
 	}
 }

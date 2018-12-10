@@ -80,5 +80,13 @@ public interface CommonColors
 	/** Command bar foreground. */
 	public static final int COMMANDBAR_FOREGROUND =
 		0xFF_FFFFFF;
+	
+	/** Focused item color. */
+	public static final int FOCUSED_COLOR =
+		0xFF_FFFF00;
+	
+	/** Secondary focused item color. */
+	public static final int FOCUSED_COLOR_TWO =
+		0xFF_FF00FF;
 }
 
