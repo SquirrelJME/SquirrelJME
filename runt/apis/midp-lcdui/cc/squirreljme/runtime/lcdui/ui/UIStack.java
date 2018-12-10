@@ -15,6 +15,7 @@ import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -37,7 +38,7 @@ public final class UIStack
 	
 	/** Children stacks. */
 	public final List<UIStack> kids =
-		new LinkedList<>();
+		new ArrayList<>();
 	
 	/** The X position from the parent. */
 	public int xoffset;
@@ -182,15 +183,17 @@ public final class UIStack
 	/**
 	 * Renders this stack item.
 	 *
+	 * @param __persist Persistent data.
 	 * @param __parent The parent draw stack.
 	 * @param __g The graphics to draw into.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/08
 	 */
-	public final void render(UIStack __parent, Graphics __g)
+	public final void render(UIPersist __persist, UIStack __parent,
+		Graphics __g)
 		throws NullPointerException
 	{
-		if (__g == null)
+		if (__persist == null || __g == null)
 			throw new NullPointerException("NARG");
 		
 		// Remember the base translation and clip details
@@ -255,12 +258,13 @@ public final class UIStack
 				// Draw whatever drawable this is
 				UIDrawable drawable = this.drawable;
 				if (drawable != null)
-					LCDUIProbe.probe().draw(drawable, __parent, this, __g);
+					LCDUIProbe.probe().draw(drawable, __persist, __parent,
+						this, __g);
 			}
 			
 			// Draw child
 			else
-				kid.render(this, __g);
+				kid.render(__persist, this, __g);
 		}
 		
 		// Reset pen details

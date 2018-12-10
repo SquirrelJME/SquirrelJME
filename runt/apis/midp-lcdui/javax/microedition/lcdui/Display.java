@@ -1188,10 +1188,33 @@ public class Display
 		// Call internal paint, which draws our stack
 		try
 		{
+			// Clear the old focal item, it gets set on a redraw
+			uipersist.focalstack = null;
+			
 			// Render the draw stack
 			UIStack stack = this._uistack;
 			if (stack != null)
-				stack.render(null, g);
+				stack.render(uipersist, null, g);
+			
+			// Draw the focal item if there is one
+			UIStack focalstack = uipersist.focalstack;
+			if (focalstack != null)
+			{
+				int sx = focalstack.xoffset,
+					sy = focalstack.yoffset,
+					sw = focalstack.drawwidth - 2,
+					sh = focalstack.drawheight - 1;
+				
+				// Draw back line first
+				g.setAlphaColor(CommonColors.FOCUSED_COLOR_TWO);
+				g.setStrokeStyle(Graphics.SOLID);
+				g.drawRect(sx, sy, sw, sh);
+				
+				// Then opposite color line1
+				g.setAlphaColor(CommonColors.FOCUSED_COLOR);
+				g.setStrokeStyle(Graphics.DOTTED);
+				g.drawRect(sx, sy, sw, sh);
+			}
 		}
 		
 		// Catch all of these, but keep drawing!
@@ -1206,7 +1229,8 @@ public class Display
 	 * @since 2018/12/08
 	 */
 	@Override
-	final void __draw(UIStack __parent, UIStack __self, Graphics __g)
+	final void __draw(UIPersist __persist, UIStack __parent, UIStack __self,
+		Graphics __g)
 	{
 		// Nothing needed at all
 	}
@@ -1218,6 +1242,11 @@ public class Display
 	@Override
 	final void __updateUIStack(UIPersist __keep, UIStack __parent)
 	{
+		// Clear the old focal item
+		UIPersist uipersist = this._uipersist;
+		uipersist.focalstack = null;
+		
+		// Need these
 		UIDisplayState state = this._state;
 		UIFramebuffer fb = state.framebuffer();
 		int w = fb.bufferwidth,

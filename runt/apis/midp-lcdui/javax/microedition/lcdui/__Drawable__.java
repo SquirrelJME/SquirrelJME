@@ -11,6 +11,7 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.lcdui.ui.UIDrawable;
+import cc.squirreljme.runtime.lcdui.ui.UIPersist;
 import cc.squirreljme.runtime.lcdui.ui.UIStack;
 
 /**
@@ -24,11 +25,13 @@ public abstract class __Drawable__
 	/**
 	 * Draws this drawble.
 	 *
+	 * @param __persist Persistent data.
 	 * @param __parent The parent stack.
 	 * @param __self The self stack.
 	 * @param __g The graphics to draw into.
 	 * @since 2018/12/08
 	 */
-	abstract void __draw(UIStack __parent, UIStack __self, Graphics __g);
+	abstract void __draw(UIPersist __persist, UIStack __parent, UIStack __self,
+		Graphics __g);
 }
 

@@ -23,6 +23,9 @@ public final class UIPersist
 	/** Should a repaint be done? */
 	public volatile boolean repaint;
 	
+	/** Focal stack item, used after draw to show the focus. */
+	public volatile UIStack focalstack;
+	
 	/**
 	 * This is called when something has been updated visually, so redraw
 	 * must happen.

@@ -88,7 +88,8 @@ public class Gauge
 	 * @since 2018/12/08
 	 */
 	@Override
-	final void __draw(UIStack __parent, UIStack __self, Graphics __g)
+	final void __draw(UIPersist __persist, UIStack __parent, UIStack __self,
+		Graphics __g)
 	{
 		__g.drawString(this.getClass().getName().toString(),
 			__g.getClipX(), __g.getClipY(), 0);

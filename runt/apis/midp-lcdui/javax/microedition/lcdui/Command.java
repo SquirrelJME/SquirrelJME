@@ -13,6 +13,7 @@ package javax.microedition.lcdui;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.lcdui.common.CommonColors;
 import cc.squirreljme.runtime.lcdui.common.CommonMetrics;
+import cc.squirreljme.runtime.lcdui.ui.UIPersist;
 import cc.squirreljme.runtime.lcdui.ui.UIStack;
 
 public class Command
@@ -390,7 +391,8 @@ public class Command
 	 * @since 2018/12/08
 	 */
 	@Override
-	final void __draw(UIStack __parent, UIStack __self, Graphics __g)
+	final void __draw(UIPersist __persist, UIStack __parent, UIStack __self,
+		Graphics __g)
 	{
 		int w = __self.drawwidth,
 			h = __self.drawheight;

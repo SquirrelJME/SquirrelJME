@@ -12,6 +12,7 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.lcdui.LCDUIProbe;
 import cc.squirreljme.runtime.lcdui.ui.UIDrawable;
+import cc.squirreljme.runtime.lcdui.ui.UIPersist;
 import cc.squirreljme.runtime.lcdui.ui.UIStack;
 
 /**
@@ -28,10 +29,10 @@ final class __LCDUIProbe__
 	 * @since 2018/12/08
 	 */
 	@Override
-	public final void draw(UIDrawable __drawable, UIStack __parent,
-		UIStack __self, Graphics __g)
+	public final void draw(UIDrawable __drawable, UIPersist __persist,
+		UIStack __parent, UIStack __self, Graphics __g)
 	{
-		((__Drawable__)__drawable).__draw(__parent, __self, __g);
+		((__Drawable__)__drawable).__draw(__persist, __parent, __self, __g);
 	}
 	
 	/**
