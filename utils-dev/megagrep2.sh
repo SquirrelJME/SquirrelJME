@@ -19,7 +19,7 @@ export LC_ALL=C
 __exedir="$(dirname -- "$0")"
 
 # Trigger to indicate that the request is being made, since it can take awhile
-echo -n "...generating request..." 1>&2
+printf '%s' "...generating request..." 1>&2
 __requested=0
 
 # The HTTP interface allows one to get the list of all the blobs, however

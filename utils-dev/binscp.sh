@@ -23,9 +23,9 @@ do
 	then
 		__peg="1"
 	else
-		echo -n ":"
+		printf '%s' ":"
 	fi
-	echo -n "$__jar"
+	printf '%s' "$__jar"
 done
 
 # New line

@@ -42,10 +42,10 @@ do
 	if [ "$__nl" -ge "1" ]
 	then
 		# For line count cheat on stderr
-		echo -n "$__file"
+		printf '%s' "$__file"
 		
 		# Cheat space on stderr
-		echo -n " ($__nl)" 1>&2
+		printf '%s' " ($__nl)" 1>&2
 		
 		# Ending line
 		echo

@@ -95,13 +95,13 @@ else
 		for __q in $__ya $__yb
 		do
 			case $__q in
-				10) echo -n "a";;
-				11) echo -n "b";;
-				12) echo -n "c";;
-				13) echo -n "d";;
-				14) echo -n "e";;
-				15) echo -n "f";;
-				*) echo -n "$__q";;
+				10) printf '%s' "a";;
+				11) printf '%s' "b";;
+				12) printf '%s' "c";;
+				13) printf '%s' "d";;
+				14) printf '%s' "e";;
+				15) printf '%s' "f";;
+				*) printf '%s' "$__q";;
 			esac
 		done
 		

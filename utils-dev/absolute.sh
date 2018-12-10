@@ -42,7 +42,7 @@ do
 	
 	# Otherwise append to path
 	else
-		echo -n "/$__seg" >> /tmp/$$.abs
+		printf '%s' "/$__seg" >> /tmp/$$.abs
 	fi
 done
 
