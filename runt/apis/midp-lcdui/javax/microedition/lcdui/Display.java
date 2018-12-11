@@ -773,7 +773,14 @@ public class Display
 			// our callback is the one which is registered so that way we
 			// take control of the screen
 			if (__show != null)
+			{
 				__EventCallback__._CALLBACK.__register();
+				
+				// Since we took over, we should recalculate the entire display
+				// because we would have missed resize events and other such
+				// things
+				this.__updateUIStack(this._uipersist, null);
+			}
 			
 			return;
 		}

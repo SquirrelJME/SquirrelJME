@@ -136,6 +136,10 @@ final class __Program__
 						"Could not launch %s:%s.", suite, main): msg),
 						null, AlertType.ERROR));
 			}
+			
+			// Setup timer to recover our display on termination
+			MidletMain._TIMER.schedule(new __ReControlTask__(
+				MidletMain._MAIN_DISPLAY, activetask), 500, 500);
 		}
 	}
 }
