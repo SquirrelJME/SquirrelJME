@@ -301,7 +301,7 @@ public class List
 					int nlen = this._items.size(),
 						focalindex = this._focalindex;
 					
-					if (focalindex < nlen)
+					if (focalindex < nlen - 1)
 						this._focalindex = focalindex + 1;
 				}
 				break;
@@ -337,7 +337,7 @@ public class List
 		int focalindex = this._focalindex;
 		java.util.List<UIStack> kids = __self.kids;
 		int klen = kids.size();
-		if (focalindex >= 0 && focalindex < klen)
+		if (focalindex >= 0 && focalindex < klen - 1)
 			__persist.focalstack = kids.get(1 + focalindex);
 	}
 	
