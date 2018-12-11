@@ -198,6 +198,9 @@ public class MidletMain
 			// Launching a program?
 			if (__c == MidletMain.this.launchcommand)
 			{
+				// Indication that something is happening
+				MidletMain.this.programlist.setTitle("Launching...");
+				
 				// Launch this program
 				MidletMain.this._programs[((List)__d).getSelectedIndex()].
 					__launch();
@@ -206,6 +209,9 @@ public class MidletMain
 			// Exiting the VM?
 			else if (__c == MidletMain.this.exitcommand)
 			{
+				// Indication that something is happening
+				MidletMain.this.programlist.setTitle("Exiting...");
+				
 				System.exit(0);
 			}
 		}
