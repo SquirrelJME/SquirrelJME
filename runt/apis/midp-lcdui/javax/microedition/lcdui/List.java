@@ -163,9 +163,28 @@ public class List
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/10
+	 */
+	@Override
 	public int getSelectedIndex()
 	{
-		throw new todo.TODO();
+		// Multiple choice is always invalid
+		if (this._type == Choice.MULTIPLE)
+			return -1;
+		
+		// Find the first entry!
+		int at = 0;
+		for (__ChoiceEntry__ e : this._items)
+		{
+			if (e._selected)
+				return at;
+			at++;
+		}
+		
+		// Not found
+		return -1;
 	}
 	
 	public String getString(int __a)
@@ -289,27 +308,38 @@ public class List
 		boolean repaint = false;
 		
 		// Depends on the game action used
-		switch (UIEventTranslate.keyCodeToGameAction(__kc))
+		int ga;
+		switch ((ga = UIEventTranslate.keyCodeToGameAction(__kc)))
 		{
-				// Focus up
+				// Focus up/down
 			case Canvas.UP:
-				{
-					int nlen = this._items.size(),
-						focalindex = this._focalindex;
-					
-					if (focalindex > 0)
-						this._focalindex = focalindex - 1;
-				}
-				break;
-				
-				// Focus down
 			case Canvas.DOWN:
 				{
-					int nlen = this._items.size(),
-						focalindex = this._focalindex;
+					__VolatileList__<__ChoiceEntry__> items = this._items;
+					int nlen = items.size(),
+						oldfocalindex = this._focalindex,
+						newfocalindex = oldfocalindex +
+							(ga == Canvas.UP ? -1 : 1);
 					
-					if (focalindex < nlen - 1)
-						this._focalindex = focalindex + 1;
+					// If in range, adjust
+					if (newfocalindex >= 0 && newfocalindex < nlen)
+					{
+						// Set new focal
+						this._focalindex = newfocalindex;
+						
+						// Implicit items always follow the focal index
+						if (this._type == Choice.IMPLICIT &&
+							oldfocalindex != newfocalindex &&
+							oldfocalindex >= 0 && oldfocalindex < nlen &&
+							newfocalindex >= 0 && newfocalindex < nlen)
+						{
+							items.get(oldfocalindex)._selected = false;
+							items.get(newfocalindex)._selected = true;
+						}
+						
+						// Do a repaint!
+						repaint = true;
+					}
 				}
 				break;
 				
@@ -336,7 +366,7 @@ public class List
 									// Clear all items
 									int at = 0;
 									for (__ChoiceEntry__ f : items)
-										f._selected = (at == focalindex);
+										f._selected = ((at++) == focalindex);
 									
 									// Is updated
 									repaint = true;
