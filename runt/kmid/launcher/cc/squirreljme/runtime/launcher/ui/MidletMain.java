@@ -11,6 +11,7 @@
 package cc.squirreljme.runtime.launcher.ui;
 
 import java.util.ArrayList;
+import java.util.Timer;
 import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.AlertType;
 import javax.microedition.lcdui.Choice;
@@ -38,6 +39,10 @@ import javax.microedition.swm.TaskStatus;
 public class MidletMain
 	extends MIDlet
 {
+	/** Timer used to reschedule things. */
+	static final Timer _TIMER =
+		new Timer("LauncherRecoverThread");
+	
 	/** The display that is being used. */
 	static volatile Display _MAIN_DISPLAY;
 	
@@ -55,7 +60,7 @@ public class MidletMain
 	
 	/** The active task. */
 	private final __ActiveTask__ _activetask =
-		new __ActiveTask__();;
+		new __ActiveTask__();
 	
 	/** The programs which are mapped to the list. */
 	private volatile __Program__[] _programs;
@@ -212,6 +217,9 @@ public class MidletMain
 				// Launch this program
 				MidletMain.this._programs[((List)__d).getSelectedIndex()].
 					__launch();
+				
+				// All done so, return the title back
+				programlist.setTitle("SquirrelJME Launcher");
 			}
 			
 			// Exiting the VM?
