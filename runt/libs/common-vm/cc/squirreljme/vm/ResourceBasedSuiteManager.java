@@ -37,7 +37,7 @@ public final class ResourceBasedSuiteManager
 	protected final String prefix;
 	
 	/** Cache of libraries. */
-	private final Map<String, Reference<VMClassLibrary>> _cache =
+	private final Map<String, VMClassLibrary> _cache =
 		new HashMap<>();
 	
 	/** Cache of all available suites. */
@@ -131,36 +131,35 @@ public final class ResourceBasedSuiteManager
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		Map<String, Reference<VMClassLibrary>> cache = this._cache;
+		Map<String, VMClassLibrary> cache = this._cache;
 		synchronized (cache)
 		{
-			Reference<VMClassLibrary> ref = cache.get(__s);
-			VMClassLibrary rv;
+			// Already got?
+			VMClassLibrary rv = cache.get(__s);
+			if (rv != null)
+				return rv;
 			
-			if (ref == null || null == (rv = ref.get()))
+			// Pre-cached to not exist
+			if (cache.containsKey(__s))
+				return null;
+			
+			// Make sure it is actually valid
+			boolean found = false;
+			for (String q : this.listLibraryNames())
+				if ((found |= q.equals(__s)))
+					break;
+			
+			// If it was not found, it does not exist so cache it and fail
+			if (!found)
 			{
-				// Pre-cached to not exist
-				if (cache.containsKey(__s))
-					return null;
-				
-				// Make sure it is actually valid
-				boolean found = false;
-				for (String q : this.listLibraryNames())
-					if ((found |= q.equals(__s)))
-						break;
-				
-				// If it was not found, it does not exist so cache it and fail
-				if (!found)
-				{
-					cache.put(__s, null);
-					return null;
-				}
-				
-				// Load and store it
-				cache.put(__s, new WeakReference<>((
-					rv = new ResourceBasedClassLibrary(this.actingclass,
-						this.prefix + __s + '/', __s))));
+				cache.put(__s, null);
+				return null;
 			}
+			
+			// Load and store it
+			cache.put(__s,
+				(rv = new ResourceBasedClassLibrary(this.actingclass,
+					this.prefix + __s + '/', __s)));
 			
 			return rv;
 		}
