@@ -545,7 +545,7 @@ public class Display
 	 */
 	public int getWidth()
 	{
-		return this._state.framebuffer().bufferheight;
+		return this._state.framebuffer().bufferwidth;
 	}
 	
 	/**
