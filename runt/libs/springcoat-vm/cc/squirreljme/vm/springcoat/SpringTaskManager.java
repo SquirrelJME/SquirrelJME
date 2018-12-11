@@ -96,7 +96,10 @@ public final class SpringTaskManager
 			
 			// If missing, cannot continue
 			if (lib == null)
+			{
+				todo.TODO.note("Could not find library: %s", __cp[i]);
 				return TaskAccess.ERROR_MISSING_LIBRARY;
+			}
 			
 			scl[i] = lib;
 		}
