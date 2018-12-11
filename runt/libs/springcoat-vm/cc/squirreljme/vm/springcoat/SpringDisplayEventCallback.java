@@ -106,6 +106,16 @@ public final class SpringDisplayEventCallback
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2018/12/10
+	 */
+	@Override
+	public final void lostCallback()
+	{
+		this.__exec("lostCallback", "()V");
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/12/03
 	 */
 	@Override

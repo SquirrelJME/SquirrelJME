@@ -295,6 +295,22 @@ public final class NativeDisplayAccess
 	public static final void registerEventCallback(
 		NativeDisplayEventCallback __cb)
 	{
+		// Do not change to self!
+		NativeDisplayEventCallback old = NativeDisplayAccess._CALLBACK;
+		if (old == __cb)
+			return;
+		
+		// Tell the old handler that the callback is now gone
+		if (old != null)
+			try
+			{
+				old.lostCallback();
+			}
+			catch (Throwable e)
+			{
+				e.printStackTrace();
+			}
+		
 		NativeDisplayAccess._CALLBACK = __cb;
 	}
 	

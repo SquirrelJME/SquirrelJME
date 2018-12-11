@@ -247,9 +247,6 @@ public class Display
 	{
 		// Setup the probe that accesses LCDUI internals
 		new __LCDUIProbe__();
-		
-		// Register the callback so events can be executed in the LCDUI code
-		NativeDisplayAccess.registerEventCallback(__EventCallback__._CALLBACK);
 	}
 	
 	/**
@@ -481,9 +478,17 @@ public class Display
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the current harware state.
+	 *
+	 * @return The hardware state.
+	 * @since 2018/12/10
+	 */
 	public int getHardwareState()
 	{
-		throw new todo.TODO();
+		if (__EventCallback__._CALLBACK._registered)
+			return DISPLAY_HARDWARE_ENABLED;
+		return DISPLAY_HARDWARE_DISABLED;
 	}
 	
 	/**
@@ -756,7 +761,6 @@ public class Display
 		// Enter background state?
 		if (__show == null)
 		{
-			throw new todo.TODO();
 			/*head.setState(DisplayState.BACKGROUND);
 			return;*/
 		}
@@ -764,7 +768,15 @@ public class Display
 		// If we are trying to show the same display, do nothing
 		Displayable current = this._current;
 		if (current == __show)
+		{
+			// If we just set current with no actual change, just make sure
+			// our callback is the one which is registered so that way we
+			// take control of the screen
+			if (__show != null)
+				__EventCallback__._CALLBACK.__register();
+			
 			return;
+		}
 		
 		// {@squirreljme.error EB29 The display does not support this type
 		// of displayable.}
@@ -799,6 +811,10 @@ public class Display
 		// since if the display is not being shown then the widget will not
 		// be shown until it happens to be shown.
 		__show._isshown = this._isshown;
+		
+		// Register the callback so events can be executed in the LCDUI event
+		// loop, if it is lost then
+		__EventCallback__._CALLBACK.__register();
 		
 		// Use the title of this thing
 		NativeDisplayAccess.setDisplayTitle(this._state.nativeid,
