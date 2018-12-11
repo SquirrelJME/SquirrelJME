@@ -101,7 +101,14 @@ public class List
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		int rv = this._items.append(new __ChoiceEntry__(__s, __i));
+		// Append item
+		__ChoiceEntry__ e;
+		__VolatileList__<__ChoiceEntry__> items = this._items;
+		int rv = items.append((e = new __ChoiceEntry__(__s, __i)));
+		
+		// If this is the only item and this is an exclusive list, select it
+		if (items.size() == 1 && this._type == Choice.EXCLUSIVE)
+			e._selected = true;
 		
 		// Visual changed, need to recalculate
 		UIPersist lastpersist = this._lastpersist;
@@ -306,8 +313,59 @@ public class List
 				}
 				break;
 				
-				// Select item (or toggle select)
+				// Select item (or toggle select, depends on the list type)
 			case Canvas.FIRE:
+				{
+					// Get items and the current selected item
+					__VolatileList__<__ChoiceEntry__> items = this._items;
+					int nlen = items.size(),
+						focalindex = this._focalindex;
+					
+					// Depends on the list type
+					switch (this._type)
+					{
+							// Only a single item
+						case Choice.EXCLUSIVE:
+							if (focalindex >= 0 && focalindex < nlen)
+							{
+								__ChoiceEntry__ e = items.get(focalindex);
+								
+								// Disabled items cannot be selected
+								if (!e._disabled)
+								{
+									// Clear all items
+									int at = 0;
+									for (__ChoiceEntry__ f : items)
+										f._selected = (at == focalindex);
+									
+									// Is updated
+									repaint = true;
+								}
+							}
+							break;
+						
+							// Multiple choice
+						case Choice.MULTIPLE:
+							if (focalindex >= 0 && focalindex < nlen)
+							{
+								__ChoiceEntry__ e = items.get(focalindex);
+								
+								// If this is disabled then it cannot be
+								// selected
+								if (!e._disabled)
+								{
+									e._selected = !e._selected;
+									repaint = true;
+								}
+							}
+							break;
+						
+							// Do nothing
+						default:
+							break;
+					}
+				}
+				
 				break;
 				
 				// Nothing
