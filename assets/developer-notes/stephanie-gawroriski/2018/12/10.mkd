@@ -1,0 +1,5 @@
+# 2018/12/10
+
+## 11:27
+
+I need to switch `echo -n` to `printf` because it is not supported on Mac OS.
