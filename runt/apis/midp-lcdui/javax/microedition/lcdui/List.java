@@ -255,9 +255,14 @@ public class List
 			lastpersist.visualUpdate(false);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/10
+	 */
+	@Override
 	public int size()
 	{
-		throw new todo.TODO();
+		return this._items.size();
 	}
 	
 	/**
@@ -281,10 +286,24 @@ public class List
 		{
 				// Focus up
 			case Canvas.UP:
+				{
+					int nlen = this._items.size(),
+						focalindex = this._focalindex;
+					
+					if (focalindex > 0)
+						this._focalindex = focalindex - 1;
+				}
 				break;
 				
 				// Focus down
 			case Canvas.DOWN:
+				{
+					int nlen = this._items.size(),
+						focalindex = this._focalindex;
+					
+					if (focalindex < nlen)
+						this._focalindex = focalindex + 1;
+				}
 				break;
 				
 				// Select item (or toggle select)
@@ -317,7 +336,8 @@ public class List
 		// Focus on this item
 		int focalindex = this._focalindex;
 		java.util.List<UIStack> kids = __self.kids;
-		if (focalindex >= 0 && focalindex < kids.size())
+		int klen = kids.size();
+		if (focalindex >= 0 && focalindex < klen)
 			__persist.focalstack = kids.get(1 + focalindex);
 	}
 	
