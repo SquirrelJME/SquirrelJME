@@ -80,6 +80,15 @@ public interface NativeDisplayEventCallback
 		int __time);
 	
 	/**
+	 * This is called when the callback has been lost, another task has claimed
+	 * access to the display event handler. This should be called before
+	 * a registration occurs.
+	 *
+	 * @since 2018/12/10
+	 */
+	public abstract void lostCallback();
+	
+	/**
 	 * Paints the display.
 	 *
 	 * @param __d The display.

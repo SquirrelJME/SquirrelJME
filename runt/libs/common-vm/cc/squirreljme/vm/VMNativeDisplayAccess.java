@@ -297,6 +297,23 @@ public class VMNativeDisplayAccess
 	 */
 	public final void registerEventCallback(NativeDisplayEventCallback __e)
 	{
+		// Do not change to self!
+		NativeDisplayEventCallback old = this._callback;
+		if (old == __e)
+			return;	
+		
+		// Tell the old handler that the callback is now gone
+		if (old != null)
+			try
+			{
+				old.lostCallback();
+			}
+			catch (Throwable e)
+			{
+				e.printStackTrace();
+			}
+		
+		// Set new
 		this._callback = __e;
 	}
 	

@@ -26,6 +26,9 @@ final class __EventCallback__
 	static final __EventCallback__ _CALLBACK =
 		new __EventCallback__();
 	
+	/** Is this registered? */
+	volatile boolean _registered;
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/12/03
@@ -77,6 +80,17 @@ final class __EventCallback__
 		{
 			t.printStackTrace();
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/10
+	 */
+	@Override
+	public final void lostCallback()
+	{
+		todo.DEBUG.note("Lost callback.");
+		this._registered = false;
 	}
 	
 	/**
@@ -148,6 +162,17 @@ final class __EventCallback__
 		{
 			t.printStackTrace();
 		}
+	}
+	
+	/**
+	 * Registers the display.
+	 *
+	 * @since 2018/12/10
+	 */
+	final void __register()
+	{
+		NativeDisplayAccess.registerEventCallback(_CALLBACK);
+		this._registered = true;
 	}
 }
 
