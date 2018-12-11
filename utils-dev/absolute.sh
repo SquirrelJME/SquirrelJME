@@ -42,7 +42,8 @@ do
 	
 	# Otherwise append to path
 	else
-		printf '%s' "/$__seg" >> /tmp/$$.abs
+		__part="$(cat "/tmp/$$.abs")"
+		printf '%s/%s' "$__part" "$__seg" > /tmp/$$.abs
 	fi
 done
 
