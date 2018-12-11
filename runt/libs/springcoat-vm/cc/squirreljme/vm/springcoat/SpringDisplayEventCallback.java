@@ -187,8 +187,12 @@ public final class SpringDisplayEventCallback
 		Object rv;
 		try
 		{
-			rv = worker.invokeMethod(false,
-				_CALLBACK_CLASS, new MethodNameAndType(__func, __desc), args);
+			// Only allow a single call to be performed at a time
+			synchronized (this)
+			{
+				rv = worker.invokeMethod(false, _CALLBACK_CLASS,
+					new MethodNameAndType(__func, __desc), args);
+			}
 		}
 		
 		// The VM is exiting from the method, we cannot propogate the method
