@@ -28,6 +28,7 @@ import javax.microedition.swm.SuiteManager;
 import javax.microedition.swm.SuiteType;
 import javax.microedition.swm.Task;
 import javax.microedition.swm.TaskManager;
+import javax.microedition.swm.TaskStatus;
 
 /**
  * This is the main midlet for the LCDUI based launcher interface.
@@ -51,6 +52,10 @@ public class MidletMain
 	/** Command used to exit the launcher and terminate. */
 	protected final Command exitcommand =
 		new Command("Exit", Command.EXIT, 2);
+	
+	/** The active task. */
+	private final __ActiveTask__ _activetask =
+		new __ActiveTask__();;
 	
 	/** The programs which are mapped to the list. */
 	private volatile __Program__[] _programs;
@@ -77,6 +82,9 @@ public class MidletMain
 		// indicated
 		List programlist = this.programlist;
 		programlist.setTitle("Loading (Querying Suites)...");
+		
+		// Used for checking and such
+		__ActiveTask__ activetask = this._activetask;
 		
 		// Go through all of the available application suites and build the
 		// program list
@@ -115,7 +123,7 @@ public class MidletMain
 					main = value.substring(sc + 1).trim();
 				
 				// Build program
-				programs.add(new __Program__(suite, main, title));
+				programs.add(new __Program__(suite, main, title, activetask));
 				
 				// Say it was found via the title
 				programlist.setTitle(String.format(
@@ -218,6 +226,17 @@ public class MidletMain
 	}
 	
 	/**
+	 * The currently active task.
+	 *
+	 * @since 2018/12/10
+	 */
+	private static final class __ActiveTask__
+	{
+		/** The current task. */
+		volatile Task _task;
+	}
+	
+	/**
 	 * Stores the program information which is mapped to what is displayed.
 	 *
 	 * @since 2018/11/16
@@ -233,25 +252,31 @@ public class MidletMain
 		/** The display name of this suite. */
 		protected final String displayname;
 		
+		/** The active task. */
+		final __ActiveTask__ _activetask;
+		
 		/**
 		 * Initializes the program.
 		 *
 		 * @param __suite The suite used.
 		 * @param __main The main class.
 		 * @param __dn The display name of this suite.
+		 * @param __at The active task.
 		 * @throws NullPointerException On null arguments.
 		 * @since 2018/11/16
 		 */
-		__Program__(Suite __suite, String __main, String __dn)
+		__Program__(Suite __suite, String __main, String __dn,
+			__ActiveTask__ __at)
 			throws NullPointerException
 		{
-			if (__suite == null || __main == null)
+			if (__suite == null || __main == null || __at == null)
 				throw new NullPointerException("NARG");
 			
 			this.suite = __suite;
 			this.main = __main;
 			this.displayname = (__dn != null ? __dn :
 				__suite.getName() + " " + __main);
+			this._activetask = __at;
 		}
 		
 		/**
@@ -285,28 +310,50 @@ public class MidletMain
 		 */
 		final void __launch()
 		{
+			// Need these
 			Suite suite = this.suite;
 			String main = this.main;
 			
-			// Start the task
-			try
+			// Make it so only a single thing can be launched
+			__ActiveTask__ activetask = this._activetask;
+			synchronized (activetask)
 			{
-				Task task = ManagerFactory.getTaskManager().
-					startTask(suite, main);
-			}
-			
-			// Could not launch so, oh well!
-			catch (IllegalArgumentException|IllegalStateException e)
-			{
-				// Debug to the system console
-				e.printStackTrace();
+				// Do not start another task until the current one has finished
+				Task oldtask = activetask._task;
+				if (oldtask != null)
+				{
+					TaskStatus status = oldtask.getStatus();
+					if (status == TaskStatus.RUNNING ||
+						status == TaskStatus.STARTING)
+					{
+						todo.DEBUG.note("Other task has not finished yet!");
+						return;
+					}
+					
+					// Not running, so we can forget it
+					activetask._task = null;
+				}
 				
-				// Then pop up a nasty message!
-				String msg = e.getMessage();
-				_MAIN_DISPLAY.setCurrent(
-					new Alert("Oopsie!", (msg == null ? String.format(
-						"Could not launch %s:%s.", suite, main): msg),
-						null, AlertType.ERROR));
+				// Start the task
+				try
+				{
+					Task task = ManagerFactory.getTaskManager().
+						startTask(suite, main);
+				}
+				
+				// Could not launch so, oh well!
+				catch (IllegalArgumentException|IllegalStateException e)
+				{
+					// Debug to the system console
+					e.printStackTrace();
+					
+					// Then pop up a nasty message!
+					String msg = e.getMessage();
+					_MAIN_DISPLAY.setCurrent(
+						new Alert("Oopsie!", (msg == null ? String.format(
+							"Could not launch %s:%s.", suite, main): msg),
+							null, AlertType.ERROR));
+				}
 			}
 		}
 	}
