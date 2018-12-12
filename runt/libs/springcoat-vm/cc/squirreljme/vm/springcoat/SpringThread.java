@@ -730,7 +730,7 @@ public final class SpringThread
 		 * the stack underflows.
 		 * @since 2018/12/11
 		 */
-		public final <C> popFromStackNotNull(Class<C> __cl)
+		public final <C> C popFromStackNotNull(Class<C> __cl)
 			throws NullPointerException, SpringNullPointerException,
 				SpringVirtualMachineException
 		{
