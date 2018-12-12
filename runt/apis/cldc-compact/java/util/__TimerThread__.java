@@ -197,17 +197,37 @@ final class __TimerThread__
 		
 		// When is the time to be scheduled?
 		long now = System.currentTimeMillis(),
-			sched = now + delay;
+			sched = now + __delay;
 		
 		// Lock on self
+		List<TimerTask> tasks = this._tasks;
 		synchronized (this)
 		{
 			// {@squirreljme.error ZZ3q Cannot add a task to a timer which
-			// was cancelled.}
-			if (this._cancel)
+			// was cancelled or a task which was cancelled.}
+			if (this._cancel || __task._cancel)
 				throw new IllegalStateException("ZZ3q");
 			
-			throw new todo.TODO();
+			// Set task properties
+			__task._schedtime = sched;
+			__task._scheduled = true;
+			__task._repeated = __rep;
+			__task._fixed = __fixed;
+			__task._period = __period;
+			
+			// Add task to the task list, but in task sorted order
+			// It is always inserted into the correct location
+			int dx = (tasks.isEmpty() ? 0 :
+				Collections.<TimerTask>binarySearch(tasks,
+				__task, new __TaskSchedComparator__()));
+			if (dx < 0)
+				dx = (-(dx) - 1);
+			
+			// Add task at the index we found it should be at
+			tasks.add(dx, __task);
+			
+			// And notify that there is a new task in place
+			this.notifyAll();
 		}
 	}
 }
