@@ -31,6 +31,12 @@ public abstract class TimerTask
 	/** Is this a repeated execution? */
 	volatile boolean _repeated;
 	
+	/** Fixed repeat? */
+	volatile boolean _fixed;
+	
+	/** The period. */
+	volatile long _period;
+	
 	/**
 	 * Initializes the base timer task.
 	 *

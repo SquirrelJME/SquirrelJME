@@ -122,5 +122,93 @@ final class __TimerThread__
 				}
 			}
 	}
+	
+	/**
+	 * Schedules the task.
+	 *
+	 * @param __task The task to run.
+	 * @param __first The time when the task should run.
+	 * @param __rep Repeat the task?
+	 * @param __fixed Fixed delays from execution?
+	 * @param __period The period between each repetition.
+	 * @throws IllegalArgumentException If the date is negative or the
+	 * period is zero or negative.
+	 * @throws IllegalStateException If a task was already scheduled, a task
+	 * was cancelled, or this timer was cancelled.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/12/11
+	 */
+	void __schedule(TimerTask __task, Date __first,
+		boolean __rep, boolean __fixed, long __period)
+		throws IllegalArgumentException, IllegalStateException,
+			NullPointerException
+	{
+		if (__task == null || __first == null)
+			throw new NullPointerException("NARG");
+		
+		// Need to determine when 
+		long datemilli = __first.getTime(),
+			nowtime = System.currentTimeMillis(),
+			diff = datemilli - nowtime;
+		
+		// {@squirreljme.error ZZ3n Cannot use a date which is far into the
+		// past.}
+		if (datemilli < 0)
+			throw new IllegalArgumentException("ZZ3n");
+		
+		// Schedule immedietly?
+		if (diff < 0)
+			diff = 0;
+		
+		// Forward since we use fixed delay schedule
+		this.__schedule(__task, diff, __rep, __fixed, __period);
+	}
+	
+	/**
+	 * Schedules the task.
+	 *
+	 * @param __task The task to run.
+	 * @param __delay The delay before the first invocation.
+	 * @param __rep Repeat the task?
+	 * @param __fixed Fixed delays from execution?
+	 * @param __period The period between each repetition.
+	 * @throws IllegalArgumentException If the delay is negative or the
+	 * period is zero or negative.
+	 * @throws IllegalStateException If a task was already scheduled, a task
+	 * was cancelled, or this timer was cancelled.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/12/11
+	 */
+	void __schedule(TimerTask __task, long __delay,
+		boolean __rep, boolean __fixed, long __period)
+		throws IllegalArgumentException, IllegalStateException,
+			NullPointerException
+	{
+		if (__task == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error ZZ3o The delay cannot be negative.}
+		if (__delay < 0)
+			throw new IllegalArgumentException("ZZ3o");
+		
+		// {@squirreljme.error ZZ3p The period cannot be zero or negative.}
+		if (__rep && __period <= 0)
+			throw new IllegalArgumentException("ZZ3p");
+		
+		// When is the time to be scheduled?
+		long now = System.currentTimeMillis(),
+			sched = now + delay;
+		
+		// Lock on self
+		synchronized (this)
+		{
+			// {@squirreljme.error ZZ3q Cannot add a task to a timer which
+			// was cancelled.}
+			if (this._cancel)
+				throw new IllegalStateException("ZZ3q");
+			
+			throw new todo.TODO();
+		}
+	}
 }
 
