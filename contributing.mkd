@@ -6,6 +6,19 @@ that SquirrelJME is under. You should abide by the
 contribution will not be accepted since it can create a toxic and unwelcoming
 environment for developers and users.
 
+ * For instructions on building, see [this document](building.mkd).
+
+SquirrelJME uses the [Fossil](https://fossil-scm.org/) source control
+system and as such it generally is expected that it is to be used.
+
+Development can happen on any operating system, however most of the scripts are
+developed targeting Unix compatible systems, this means the following:
+
+ * Linux
+ * BSD
+ * Mac OS X
+ * Cygwin or MSYS2 (Windows)
+
 ## Contributor Agreement
 
 **ALL CONTRIBUTORS MUST ACCEPT THE FOLLOWING AGREEMENT BEFORE THEIR CODE WILL**
