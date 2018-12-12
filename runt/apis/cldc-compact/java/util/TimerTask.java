@@ -13,6 +13,13 @@ package java.util;
 public abstract class TimerTask
 	implements Runnable
 {
+	/** Indicates the task has been cancelled. */
+	volatile boolean _cancel;
+	
+	/** The scheduled time for the task, undefined at first. */
+	volatile long _schedtime =
+		Long.MIN_VALUE;
+	
 	protected TimerTask()
 	{
 		throw new todo.TODO();
@@ -23,9 +30,17 @@ public abstract class TimerTask
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the scheduled execution time.
+	 *
+	 * If this task has not been scheduled, this value is undefined.
+	 *
+	 * @return The scheduled execution time.
+	 * @since 2018/12/11
+	 */
 	public long scheduledExcutionTime()
 	{
-		throw new todo.TODO();
+		return this._schedtime;
 	}
 }
 
