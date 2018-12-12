@@ -87,72 +87,127 @@ public class Timer
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Schedules a task to run once at the given time.
+	 *
+	 * @param __task The task to run.
+	 * @param __time The time when the task should run.
+	 * @throws IllegalArgumentException If the date is negative.
+	 * @throws IllegalStateException If a task was already scheduled, a task
+	 * was cancelled, or this timer was cancelled.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/12/11
+	 */
 	public void schedule(TimerTask __task, Date __time)
 		throws IllegalArgumentException, IllegalStateException,
 			NullPointerException
 	{
-		this.__schedule(__task, __time, false, false, 0);
+		this._thread.__schedule(__task, __time, false, false, 0);
 	}
 	
+	/**
+	 * Schedules a task to run multiple times starting at the given date and
+	 * executing every period.
+	 *
+	 * @param __task The task to run.
+	 * @param __time The time when the task should run.
+	 * @param __period The duration of time between each invocation.
+	 * @throws IllegalArgumentException If the date is negative or the period
+	 * is zero or negative.
+	 * @throws IllegalStateException If a task was already scheduled, a task
+	 * was cancelled, or this timer was cancelled.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/12/11
+	 */
 	public void schedule(TimerTask __task, Date __time, long __period)
 		throws IllegalArgumentException, IllegalStateException,
 			NullPointerException
 	{
-		this.__schedule(__task, __time, true, false, __period);
+		this._thread.__schedule(__task, __time, true, false, __period);
 	}
 	
+	/**
+	 * Schedules a task to run once at the given time.
+	 *
+	 * @param __task The task to run.
+	 * @param __delay The delay before this task runs.
+	 * @throws IllegalArgumentException If the delay is negative.
+	 * @throws IllegalStateException If a task was already scheduled, a task
+	 * was cancelled, or this timer was cancelled.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/12/11
+	 */
 	public void schedule(TimerTask __task, long __delay)
 		throws IllegalArgumentException, IllegalStateException,
 			NullPointerException
 	{
-		this.__schedule(__task, __delay, false, false, 0);
+		this._thread.__schedule(__task, __delay, false, false, 0);
 	}
 	
+	/**
+	 * Schedules a task to run once at the given time repeating for the given
+	 * period.
+	 *
+	 * @param __task The task to run.
+	 * @param __delay The delay before this task runs.
+	 * @param __period The delay before each subsequence execution.
+	 * @throws IllegalArgumentException If the delay is negative or the period
+	 * is zero or negative.
+	 * @throws IllegalStateException If a task was already scheduled, a task
+	 * was cancelled, or this timer was cancelled.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/12/11
+	 */
 	public void schedule(TimerTask __task, long __delay, long __period)
 		throws IllegalArgumentException, IllegalStateException,
 			NullPointerException
 	{
-		this.__schedule(__task, __delay, true, false, __period);
+		this._thread.__schedule(__task, __delay, true, false, __period);
 	}
 	
+	/**
+	 * Schedules a task to run multiple times starting at the given date and
+	 * executing every period, the tasks are scheduled again at the start of
+	 * each execution rather than the end.
+	 *
+	 * @param __task The task to run.
+	 * @param __time The time when the task should run.
+	 * @param __period The duration of time between each invocation.
+	 * @throws IllegalArgumentException If the date is negative or the period
+	 * is zero or negative.
+	 * @throws IllegalStateException If a task was already scheduled, a task
+	 * was cancelled, or this timer was cancelled.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/12/11
+	 */
 	public void scheduleAtFixedRate(TimerTask __task, Date __first,
 		long __period)
 		throws IllegalArgumentException, IllegalStateException,
 			NullPointerException
 	{
-		this.__schedule(__task, __first, true, true, __period);
+		this._thread.__schedule(__task, __first, true, true, __period);
 	}
 	
+	/**
+	 * Schedules a task to run once at the given time repeating for the given
+	 * period, execution is scheduled from the start of execution.
+	 *
+	 * @param __task The task to run.
+	 * @param __delay The delay before this task runs.
+	 * @param __period The delay before each subsequence execution.
+	 * @throws IllegalArgumentException If the delay is negative or the period
+	 * is zero or negative.
+	 * @throws IllegalStateException If a task was already scheduled, a task
+	 * was cancelled, or this timer was cancelled.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/12/11
+	 */
 	public void scheduleAtFixedRate(TimerTask __task, long __delay,
 		long __period)
 		throws IllegalArgumentException, IllegalStateException,
 			NullPointerException
 	{
-		this.__schedule(__task, __delay, true, true, __period);
-	}
-	
-	private void __schedule(TimerTask __task, Date __first,
-		boolean __rep, boolean __fixed, long __period)
-		throws IllegalArgumentException, IllegalStateException,
-			NullPointerException
-	{
-		if (__task == null || __first == null)
-			throw new NullPointerException("NARG");
-		
-		long datemilli = __first.getTime();
-		
-		throw new todo.TODO();
-	}
-	
-	private void __schedule(TimerTask __task, long __delay,
-		boolean __rep, boolean __fixed, long __period)
-		throws IllegalArgumentException, IllegalStateException,
-			NullPointerException
-	{
-		if (__task == null)
-			throw new NullPointerException("NARG");
-		
-		throw new todo.TODO();
+		this._thread.__schedule(__task, __delay, true, true, __period);
 	}
 }
 
