@@ -136,7 +136,7 @@ public class ArrayList<E>
 	@Override
 	public void clear()
 	{
-		// Clear the entire 
+		// Clear the entire array so things get collected
 		E[] elements = this._elements;
 		int size = this._size;
 		for (int i = 0; i < size; i++)
@@ -208,10 +208,33 @@ public class ArrayList<E>
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/12
+	 */
 	@Override
-	public E remove(int __a)
+	public E remove(int __i)
+		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		// Out of bounds?
+		int size = this._size;
+		if (__i < 0 || __i >= size)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Get the old element first
+		E[] elements = this._elements;
+		E rv = elements[__i];
+		
+		// Copy all of the elements down
+		for (int o = __i, i = __i + 1; i < size; o++, i++)
+			elements[o] = elements[i];
+		elements[size - 1] = null;
+		
+		// Set new size
+		this._size = size - 1;
+		
+		// And the old element
+		return rv;
 	}
 	
 	@Override

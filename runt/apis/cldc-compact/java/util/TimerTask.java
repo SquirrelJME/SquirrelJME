@@ -25,6 +25,13 @@ public abstract class TimerTask
 	volatile long _schedtime =
 		Long.MIN_VALUE;
 	
+	/** The last run time. */
+	volatile long _lastrun =
+		Long.MIN_VALUE;
+	
+	/** Is this being run? */
+	volatile boolean _inrun;
+	
 	/** Was this scheduled? */
 	volatile boolean _scheduled;
 	
@@ -71,6 +78,8 @@ public abstract class TimerTask
 	 */
 	public long scheduledExcutionTime()
 	{
+		if (this._inrun)
+			return this._lastrun;
 		return this._schedtime;
 	}
 }
