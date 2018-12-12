@@ -87,8 +87,16 @@ final class __TimerThread__
 						long now = System.currentTimeMillis(),
 							sched = next._schedtime;
 						
+						// We cancelled the task, so remove and do not bother
+						// at all
+						if (next._cancel)
+						{
+							tasks.remove(0);
+							continue;
+						}
+						
 						// We can execute it!
-						if (sched <= now)
+						else if (sched <= now)
 						{
 							execute = next;
 							tasks.remove(0);

@@ -10,6 +10,11 @@
 
 package java.util;
 
+/**
+ * This represents a tasks which can be run within a timer.
+ *
+ * @since 2018/12/11
+ */
 public abstract class TimerTask
 	implements Runnable
 {
@@ -20,14 +25,34 @@ public abstract class TimerTask
 	volatile long _schedtime =
 		Long.MIN_VALUE;
 	
+	/** Was this scheduled? */
+	volatile boolean _scheduled;
+	
+	/** Is this a repeated execution? */
+	volatile boolean _repeated;
+	
+	/**
+	 * Initializes the base timer task.
+	 *
+	 * @since 2018/12/11
+	 */
 	protected TimerTask()
 	{
-		throw new todo.TODO();
 	}
 	
+	/**
+	 * Cancels this task so that it no longer runs.
+	 *
+	 * @return This will return true if a future execution was canceled.
+	 * @since 2018/12/11
+	 */
 	public boolean cancel()
 	{
-		throw new todo.TODO();
+		// Was already canceled
+		if (this._cancel)
+			return false;
+		
+		return this._repeated || this._scheduled;
 	}
 	
 	/**
