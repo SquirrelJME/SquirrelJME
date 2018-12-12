@@ -24,11 +24,12 @@ SquirrelJME has three types of files which fall under different licenses:
  * Fonts:
    * **SIL Open Font License Version 1.1**
 
-Contributors must agree to the contributor license before their code may be
-accepted.
+Contributors must agree to the [contributor license](contibuting.mkd) before
+their code may be accepted.
 
 Additionally, if the **GNU GPLv3** and **CC-BY-SA 4.0** are not desirable a
-proprietary license may be purchased for a negotiable fee.
+proprietary license may be purchased for a negotiable fee. The terms of the
+contract are to be negotiated.
 
 Note that there is no linking exception to the **GNU GPLv3**, this is because:
 
@@ -1254,139 +1255,4 @@ cheap to produce).
 	DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 	FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
 	OTHER DEALINGS IN THE FONT SOFTWARE.
-
-## Contributor License
-
-**ALL CONTRIBUTORS MUST ACCEPT THE FOLLOWING LICENSE BEFORE THEIR CODE WILL**
-**BE ACCEPTED IN THE PROJECT. IF THE DEVELOPER IS EMPLOYED AND DEVELOPS THE**
-**CODE "ON THE CLOCK" OR UNDER CONTRACT, THEN THAT DEVELOPER MUST SEEK THE**
-**PERMISSION OF THE EMPLOYER.**
-
-	You grant Multi-Phasic Applications and Stephanie Gawroriski an irrevocable
-	license that:
-	
-	 1. Grants a patent license, as per the GNU GPLv3.
-	 2. The ability to re-license the contributing code under any license.
-	 3. Specified that you have not derived your contribution and/or knowledge
-	    from the specified virtual machine implementations via direct
-	    source code or reverse engineering (but not limited to):
-	    * Android (Google)
-	    * Apache Harmony (Apache Foundation)
-	    * CVM (Sun Microsystems/Oracle)
-	    * Excelsior JET (Excelsior LLC)
-	    * GNU Classpath (Free Software Foundation)
-	    * GNU GCJ/GIJ (Free Software Foundation)
-	    * JamVM (Robert Lougher)
-	    * Microsoft Java Virtual Machine (Microsoft)
-	    * Microsoft .NET (Microsoft)
-	    * Mono (Microsoft)
-	    * OpenJDK (Sun Microsystems/Oracle)
-	    * PhoneME (Sun Microsystems/Oracle)
-	 4. If employed by a company, you have a right by that company to provide
-	    contributions to this project.
-
-## Multi-Phasic Applications: SquirrelJME Proprietary License
-
-**THIS LICENSE MAY ONLY BE USED BY ENTITIES WHICH HAVE PURCHASED THIS**
-**SPECIFIC LICENSE. GENERALLY LICENSES WOULD BE GRANTED ON ALL PLATFORMS**
-**FOR SPECIFIC RELEASES OF SQUIRRELJME, HOWEVER IF ONLY A SMALL SUBSET OF**
-**PLATFORMS ARE DESIRED THEN THE PRICE MAY BE LOWERED TO A MORE DESIRABLE**
-**AMOUNT. GENERALLY YOU SHOULD USE THE GNU GPLV3 LICENSE SOFTWARE, HOWEVER**
-**THIS MIGHT NOT BE POSSIBLE. GNUPG IS REQUIRED BEFORE A LICENSE MAY BE**
-**PURCHASED.**
-
-One can read <https://www.fsf.org/blogs/rms/selling-exceptions>, which is
-something that I agree with since it does not harm the main program. Any
-profits made from licenses may be used to purchase hardware and to keep
-the primary developers alive.
-
-	Multi-Phasic Applications: SquirrelJME Proprietary License
-	
-	THE PROPRIETARY LICENSE MAY ONLY BE GRANTED BY STEPHANIE GAWRORISKI AND/OR
-	MULTI-PHASIC APPLICATIONS. DOWNSTREAM PROJECTS AND/OR FORKS DO NOT OWN THE
-	COPYRIGHT FOR THIS CODE AND ARE NOT PERMITTED TO APPLY THEIR OWN
-	PROPRIETARY LICENSE. THIS LICENSE IS ONLY AVAILBLE TO THOSE WHO HAVE
-	PURCHASED IT. IT IS NOT TRANSFERABLE.
-	
-	License Cost:
-		This license has a cost which is negotiated.
-	
-	GNUPG Key:
-		To protect the licensee and the licensor, information about the
-		licensor will be kept in the official SquirrelJME repository. This
-		information would be stored so that entities that purchase a license
-		are not mistaken for GPL violations. All information is ASCII armored.
-		
-		1. The licensor's information and contact information will be placed
-		   in the repository.
-		2. The information will be signed by both parties.
-		3. The signatures will then be signed by the opposite ends of the
-		   parties.
-		4. The licensor's PGP public key will be stored in the repository.
-		
-		If a license is in doubt, the one who questions may compose a message
-		and send it to the licensor. The licensor can then sign their own
-		reply back stating that they have a legal proprietary license and that
-		it will match the keys within the repository. It is highly recommended
-		that the licensor not sign any text or data, as one could for example
-		send a malware infected binary or other file to masquerade as the
-		licensor.
-	
-	Usage:
-		The software may only be used under the following terms: 
-		<USAGE TERMS>
-	
-	Claim of Development:
-		The licensor must not specify that they themselves have developed
-		SquirrelJME. A licensor is not required to state that they have
-		licensed the software.
-	
-	Copyright, Logo/Mascot Visibility:
-		<OPTION A>
-		
-		The copyright and logo/mascot must be displayed prominently such as
-		on a splash screen or similar that a user will see at the start of
-		execution. No detail may be modified except that the GNU GPLv3
-		statement is replaced by "SquirrelJME is licensed from
-		Stephanie Gawroriski and/or Multi-Phasic Applications
-		<http://multiphasicapps.net/>".
-		
-		<OPTION B>
-		
-		The copyrights and logo/mascot do not have to be displayed.
-	
-	Patents:
-		A patent grant is given, however the patent grant only covers
-		SquirrelJME and not any other portion of software or proprietary
-		modifications of SquirrelJME. If the licensor owns any patents which
-		pertain to SquirrelJME then there is an implicit license which allows
-		SquirrelJME to use said patents.
-	
-	Open Sourcing:
-		If the licensor desires to open source their licensed copy, then their
-		only choice is to use the license that SquirrelJME is under (the GNU
-		GPLv3). Otherwise, source code must not be released and be kept
-		confidential or for non-entity crossing internal use only.
-	
-	Updates:
-		<OPTION A>
-		
-		The licensor may remain with only a single release version, although
-		any security updates and bug fixes that are applied to a release branch
-		may be used.
-		
-		<OPTION B>
-		
-		This license is restricted to a single revision.
-		
-		<OPTION C>
-		
-		This license is restricted to a range of revisions starting from a
-		specific one and ending at a specific date (all times Earth UTC, or if
-		applicable a standardized universal date).
-	
-	THIS SOFTWARE COMES WITH NO WARRANTY EITHER EXPRESSED OR IMPLIED. ANY
-	DAMAGE THAT IS DIRECTLY OR INDIRECTLY CAUSED BY THIS SOFTWARE IS THE
-	RESPONSIBILITY OF THE LICENSEE. THE LICENSEE MAY ADD A WARRANTY ON THE
-	SOFTWARE IF DESIRED.
 
