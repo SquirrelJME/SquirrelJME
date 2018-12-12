@@ -1,11 +1,11 @@
 # Contributing
 
 Before you contribute you should read and understand the [license](license.mkd)
-that SquirrelJME is under.
+that SquirrelJME is under. Otherwise continue reading.
 
-## Contributor License
+## Contributor Agreement
 
-**ALL CONTRIBUTORS MUST ACCEPT THE FOLLOWING LICENSE BEFORE THEIR CODE WILL**
+**ALL CONTRIBUTORS MUST ACCEPT THE FOLLOWING AGREEMENT BEFORE THEIR CODE WILL**
 **BE ACCEPTED IN THE PROJECT. IF THE DEVELOPER IS EMPLOYED AND DEVELOPS THE**
 **CODE "ON THE CLOCK" OR UNDER CONTRACT, THEN THAT DEVELOPER MUST SEEK THE**
 **PERMISSION OF THE EMPLOYER.**
@@ -14,8 +14,14 @@ that SquirrelJME is under.
 	license that:
 	
 	 1. Grants a patent license, as per the GNU GPLv3.
-	 2. The ability to re-license the contributing code under any license.
-	 3. Specified that you have not derived your contribution and/or knowledge
+	 2. The license of the code you are contributing is one of:
+	    1. Public Domain
+	    2. GNU GPLv3, CC-BY-SA 4.0, or SIL OFL v1.1 appropriately.
+	    3. Granting Multi-Phasic Applications and Stephanie Gawroriski the
+	       ability to re-license the work without any conditions and without
+	       any approval or notice. Effectively gifting your own code to the
+	       project and giving full freedom for that code.
+	 2. Specified that you have not derived your contribution and/or knowledge
 	    from the specified virtual machine implementations via direct
 	    source code or reverse engineering (but not limited to):
 	    * Android (Google)
@@ -30,6 +36,6 @@ that SquirrelJME is under.
 	    * Mono (Microsoft)
 	    * OpenJDK (Sun Microsystems/Oracle)
 	    * PhoneME (Sun Microsystems/Oracle)
-	 4. If employed by a company, you have a right by that company to provide
+	 3. If employed by a company, you have a right by that company to provide
 	    contributions to this project.
 
