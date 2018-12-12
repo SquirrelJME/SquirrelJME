@@ -169,6 +169,7 @@ public class MidletMain
 		// We will need to access our own display to build the list of
 		// MIDlets that could actually be ran
 		Display disp = Display.getDisplay(this);
+		_MAIN_DISPLAY = disp;
 		
 		// Add commands to the list so things can be done with them
 		List programlist = this.programlist;
@@ -211,12 +212,16 @@ public class MidletMain
 			// Launching a program?
 			if (__c == MidletMain.this.launchcommand)
 			{
+				// If the list is empty then do nothing because it will NPE
+				List list = (List)__d;
+				if (list.size() <= 0)
+					return;
+				
 				// Indication that something is happening
 				MidletMain.this.programlist.setTitle("Launching...");
 				
 				// Launch this program
-				MidletMain.this._programs[((List)__d).getSelectedIndex()].
-					__launch();
+				MidletMain.this._programs[list.getSelectedIndex()].__launch();
 				
 				// All done so, return the title back
 				programlist.setTitle("SquirrelJME Launcher");
