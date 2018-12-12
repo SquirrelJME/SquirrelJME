@@ -1,7 +1,10 @@
 # Contributing
 
 Before you contribute you should read and understand the [license](license.mkd)
-that SquirrelJME is under. Otherwise continue reading.
+that SquirrelJME is under. You should abide by the
+[Code of Conduct](code-of-conduct.mkd), if you fail to keep the pledge your
+contribution will not be accepted since it can create a toxic and unwelcoming
+environment for developers and users.
 
 ## Contributor Agreement
 
@@ -38,4 +41,5 @@ that SquirrelJME is under. Otherwise continue reading.
 	    * PhoneME (Sun Microsystems/Oracle)
 	 3. If employed by a company, you have a right by that company to provide
 	    contributions to this project.
+	 4. Have pledged to follow the Code of Conduct.
 
