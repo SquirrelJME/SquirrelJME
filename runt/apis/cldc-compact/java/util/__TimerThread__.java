@@ -118,9 +118,75 @@ final class __TimerThread__
 				// Execute if things are to be done
 				if (execute != null)
 				{
-					throw new todo.TODO();
+					// We need to set the last one because fixed scheduling
+					// will set a new schedule time while delayed will wait
+					// on that
+					long schedtime = execute._schedtime;
+					execute._lastrun = schedtime;
+					
+					// Fixed scheduling has it where the next event gets the
+					// period added to the scheduling time. This way if the
+					// task runs too slowly it gets built up.
+					boolean repeated = execute._repeated,
+						fixed = execute._fixed;
+					long period = execute._period;
+					if (repeated && fixed)
+					{
+						execute._schedtime = schedtime + period;
+						this.__addTask(execute);
+					}
+					
+					// Execute the task
+					execute._inrun = true;
+					try
+					{
+						execute.run();
+					}
+					catch (Throwable t)
+					{
+						// Ignore
+						t.printStackTrace();
+					}
+					execute._inrun = false;
+					
+					// Non-fixed (delay) scheduling is always a delay from
+					// the end invocation, but since that varies we need the
+					// current time to determine where to actually work from
+					if (repeated && !fixed)
+					{
+						execute._schedtime = System.currentTimeMillis() +
+							period;
+						this.__addTask(execute);
+					}
 				}
 			}
+	}
+	
+	/**
+	 * Adds the specified task.
+	 *
+	 * @param __task The task to add.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/12/12
+	 */
+	private void __addTask(TimerTask __task)
+		throws NullPointerException
+	{
+		if (__task == null)
+			throw new NullPointerException("NARG");
+		
+		List<TimerTask> tasks = this._tasks;
+		
+		// Add task to the task list, but in task sorted order
+		// It is always inserted into the correct location
+		int dx = (tasks.isEmpty() ? 0 :
+			Collections.<TimerTask>binarySearch(tasks,
+			__task, new __TaskSchedComparator__()));
+		if (dx < 0)
+			dx = (-(dx) - 1);
+		
+		// Add task at the index we found it should be at
+		tasks.add(dx, __task);
 	}
 	
 	/**
@@ -215,16 +281,8 @@ final class __TimerThread__
 			__task._fixed = __fixed;
 			__task._period = __period;
 			
-			// Add task to the task list, but in task sorted order
-			// It is always inserted into the correct location
-			int dx = (tasks.isEmpty() ? 0 :
-				Collections.<TimerTask>binarySearch(tasks,
-				__task, new __TaskSchedComparator__()));
-			if (dx < 0)
-				dx = (-(dx) - 1);
-			
-			// Add task at the index we found it should be at
-			tasks.add(dx, __task);
+			// Add the task
+			this.__addTask(__task);
 			
 			// And notify that there is a new task in place
 			this.notifyAll();

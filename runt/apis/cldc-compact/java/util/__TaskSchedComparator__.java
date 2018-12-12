@@ -15,6 +15,7 @@ package java.util;
  *
  * @since 2018/12/11
  */
+@Deprecated
 final class __TaskSchedComparator__
 	implements Comparator<TimerTask>
 {
