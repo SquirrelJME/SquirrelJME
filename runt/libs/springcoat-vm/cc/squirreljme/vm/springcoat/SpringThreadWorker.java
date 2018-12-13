@@ -966,10 +966,10 @@ public final class SpringThreadWorker
 		
 		// Read return value from the blank frame
 		Object rv;
-		if (!__nat.type().hasReturnValue())
-			rv = null;
-		else
+		if (__nat.type().hasReturnValue())
 			rv = blank.popFromStack();
+		else
+			rv = null;
 		
 		// Pop the blank frame, we do not need it anymore
 		thread.popFrame();
