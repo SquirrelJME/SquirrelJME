@@ -1259,14 +1259,27 @@ public class Display
 	}
 	
 	/**
+	 * Updates the UI stack.
+	 *
+	 * @since 2018/12/13
+	 */
+	final void __updateUIStack()
+	{
+		this.__updateUIStack(null, null);
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/12/08
 	 */
 	@Override
 	final void __updateUIStack(UIPersist __keep, UIStack __parent)
 	{
-		// Clear the old focal item
+		// Just use this!
 		UIPersist uipersist = this._uipersist;
+		__keep = uipersist;
+		
+		// Clear the old focal item
 		uipersist.focalstack = null;
 		
 		// Need these
