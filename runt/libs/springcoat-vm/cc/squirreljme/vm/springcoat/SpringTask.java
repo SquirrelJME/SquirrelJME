@@ -31,6 +31,9 @@ public final class SpringTask
 	volatile int _exitcode =
 		Integer.MIN_VALUE;
 	
+	/** Is this terminated? */
+	volatile boolean _isterminated;
+	
 	/**
 	 * Initializes the task.
 	 *
@@ -57,6 +60,10 @@ public final class SpringTask
 	public final void run()
 	{
 		this._exitcode = this.machine.runVm();
+		this._isterminated = true;
+		
+		// Debug
+		todo.DEBUG.note("Task is terminated!");
 	}
 }
 

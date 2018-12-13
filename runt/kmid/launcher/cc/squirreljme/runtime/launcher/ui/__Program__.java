@@ -121,6 +121,7 @@ final class __Program__
 			{
 				Task task = ManagerFactory.getTaskManager().
 					startTask(suite, main);
+				activetask._task = task;
 			}
 			
 			// Could not launch so, oh well!
