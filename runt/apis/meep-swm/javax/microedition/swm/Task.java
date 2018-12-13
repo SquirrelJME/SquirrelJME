@@ -31,22 +31,27 @@ public final class Task
 	/** The suite of this task. */
 	final Suite _suite;
 	
+	/** The entry class of the task. */
+	final String _entry;
+	
 	/**
 	 * Initializes the task.
 	 *
 	 * @param __tid The task ID, zero is the system task.
 	 * @param __s The suite used.
+	 * @param __e The entry name of the task.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/06/24
 	 */
-	Task(int __tid, Suite __s)
+	Task(int __tid, Suite __s, String __e)
 		throws NullPointerException
 	{
-		if (__s == null)
+		if (__s == null || __e == null)
 			throw new NullPointerException("NARG");
 		
 		this._tid = __tid;
 		this._suite = __s;
+		this._entry = __e;
 	}
 	
 	/**
@@ -60,8 +65,9 @@ public final class Task
 	@Override
 	public boolean equals(Object __o)
 	{
-		throw new todo.TODO();
-		/*
+		if (this == __o)
+			return true;
+		
 		// Must be another task
 		if (!(__o instanceof Task))
 			return false;
@@ -70,7 +76,6 @@ public final class Task
 		Task o = (Task)__o;
 		return Objects.equals(this.getSuite(), o.getSuite()) &&
 			Objects.equals(this.getName(), o.getName());
-		*/
 	}
 	
 	/**
@@ -105,7 +110,7 @@ public final class Task
 		if (this.isSystemTask())
 			return null;
 		
-		throw new todo.TODO();
+		return this._entry;
 	}
 	
 	/**
@@ -155,7 +160,7 @@ public final class Task
 		if (this.isSystemTask())
 			return Suite.SYSTEM_SUITE;
 		
-		throw new todo.TODO();
+		return this._suite;
 	}
 	
 	/**
@@ -180,10 +185,8 @@ public final class Task
 	 */
 	public boolean isSystemTask()
 	{
-		throw new todo.TODO();
-		/*
-		return (0 != (this._task.flags() & SystemTaskFlag.SYSTEM));
-		*/
+		// System task is always zero
+		return this._tid == 0;
 	}
 }
 

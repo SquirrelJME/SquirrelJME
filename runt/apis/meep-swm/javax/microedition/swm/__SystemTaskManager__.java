@@ -163,8 +163,7 @@ final class __SystemTaskManager__
 		todo.DEBUG.note("Suites: %s", Arrays.<String>asList(names));
 		
 		// Setup new task internally
-		int tid = TaskAccess.startTask(names, __cn,
-			new String[0]);
+		int tid = TaskAccess.startTask(names, __cn, new String[0]);
 		if (tid < 0)
 		{
 			// {@squirreljme.error DG0x Invalid entry point was specified
@@ -174,14 +173,14 @@ final class __SystemTaskManager__
 			
 			// {@squirreljme.error DG0y Could not launch the task because of
 			// an unspecified error. (The error)}
-			else if (tid < 0)
-				throw new IllegalArgumentException("DG0y " + tid);
-			
-			return new Task(tid, __s);
+			throw new IllegalArgumentException("DG0y " + tid);
 		}
 		
+		// Debug
+		todo.DEBUG.note("Created task with TID %d", tid);
+		
 		// Otherwise use cached form
-		return this.__getTask(tid, __s);
+		return this.__getTask(tid, __s, __cn);
 	}
 	
 	/**
@@ -200,14 +199,15 @@ final class __SystemTaskManager__
 	 *
 	 * @param __tid The task ID.
 	 * @param __s The suite used.
+	 * @param __n The starting class of the task, gives its name.
 	 * @return The task for the task.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/04
 	 */
-	static final Task __getTask(int __tid, Suite __s)
+	static final Task __getTask(int __tid, Suite __s, String __n)
 		throws NullPointerException
 	{
-		if (__s == null)
+		if (__s == null || __n == null)
 			throw new NullPointerException("NARG");
 		
 		// Lock on the tasks
@@ -220,7 +220,7 @@ final class __SystemTaskManager__
 			if (rv != null)
 				throw new todo.OOPS();
 			
-			tasks.put(k, (rv = new Task(__tid, __s)));
+			tasks.put(k, (rv = new Task(__tid, __s, __n)));
 			return rv;
 		}
 	}
