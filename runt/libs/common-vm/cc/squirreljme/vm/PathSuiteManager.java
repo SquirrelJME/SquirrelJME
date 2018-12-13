@@ -88,6 +88,12 @@ public final class PathSuiteManager
 			return rv.<String>toArray(new String[rv.size()]);
 		}
 		
+		// Was not found, ignore
+		catch (NoSuchFileException e)
+		{
+			return new String[0];
+		}
+		
 		// Could not load!
 		catch (IOException e)
 		{
