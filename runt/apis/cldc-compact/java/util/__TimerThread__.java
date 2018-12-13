@@ -131,10 +131,7 @@ final class __TimerThread__
 						fixed = execute._fixed;
 					long period = execute._period;
 					if (repeated && fixed)
-					{
-						execute._schedtime = schedtime + period;
-						this.__addTask(execute);
-					}
+						schedtime += period;
 					
 					// Execute the task
 					execute._inrun = true;
@@ -149,13 +146,16 @@ final class __TimerThread__
 					}
 					execute._inrun = false;
 					
-					// Non-fixed (delay) scheduling is always a delay from
-					// the end invocation, but since that varies we need the
-					// current time to determine where to actually work from
-					if (repeated && !fixed)
+					// Repeat as long as the task is not cancelled
+					if (repeated && !execute._cancel)
 					{
-						execute._schedtime = System.currentTimeMillis() +
-							period;
+						// If not fixed use delay from the end of this
+						// execution
+						if (!fixed)
+							schedtime = System.currentTimeMillis() + period;
+						
+						// Schedule for re-execution
+						execute._schedtime = schedtime;
 						this.__addTask(execute);
 					}
 				}

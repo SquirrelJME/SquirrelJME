@@ -80,6 +80,9 @@ final class __ReControlTask__
 			// Recover our display?
 			if (recover)
 			{
+				// Note it
+				todo.DEBUG.note("Recovering...");
+				
 				// Make it current which takes the display over again, we
 				// do not need to specify which displayable it was because the
 				// display remembers it
