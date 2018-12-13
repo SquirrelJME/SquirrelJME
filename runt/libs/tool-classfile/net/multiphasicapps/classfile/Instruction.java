@@ -358,11 +358,14 @@ public final class Instruction
 				
 				// Load constant value
 			case InstructionIndex.LDC:
+			case InstructionIndex.LDC_W:
 				naturalflow = true;
 				
 				// Could vary in type
 				Object ldcv = __pool.<Object>require(Object.class,
-					Instruction.__readUnsignedByte(__code, argbase));
+					(op == InstructionIndex.LDC_W ?
+					Instruction.__readUnsignedShort(__code, argbase) :
+					Instruction.__readUnsignedByte(__code, argbase)));
 				
 				// Turn into a class value
 				ConstantValue cvalue;
