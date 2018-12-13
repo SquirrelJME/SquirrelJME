@@ -89,7 +89,7 @@ public class Timer
 		synchronized (thread)
 		{
 			// Remove every task which has been cancelled
-			for (Iterator<TimerTask> it = thread._tasks.iterator;
+			for (Iterator<TimerTask> it = thread._tasks.iterator();
 				it.hasNext();)
 				if (it.next()._cancel)
 					it.remove();
