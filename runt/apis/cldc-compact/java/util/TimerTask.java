@@ -65,6 +65,7 @@ public abstract class TimerTask
 		if (this._cancel)
 			return false;
 		
+		this._cancel = true;
 		return this._repeated || this._scheduled;
 	}
 	
