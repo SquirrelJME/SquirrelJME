@@ -238,25 +238,7 @@ public class ArrayList<E>
 	}
 	
 	@Override
-	public boolean remove(Object __a)
-	{
-		throw new todo.TODO();
-	}
-	
-	@Override
-	public boolean removeAll(Collection<?> __a)
-	{
-		throw new todo.TODO();
-	}
-	
-	@Override
 	protected void removeRange(int __a, int __b)
-	{
-		throw new todo.TODO();
-	}
-	
-	@Override
-	public boolean retainAll(Collection<?> __a)
 	{
 		throw new todo.TODO();
 	}
