@@ -56,37 +56,7 @@ public final class SpringTask
 	@Override
 	public final void run()
 	{
-		// Run the VM until it terminates
-		try
-		{
-			machine.run();
-		}
-		
-		// Exiting with some given code
-		catch (SpringMachineExitException e)
-		{
-			this._exitcode = e.code();
-		}
-		
-		// Any other exception is fatal and the task must be made to exit
-		// with the error code otherwise the VM will stick trying to wait
-		// to exit
-		catch (RuntimeException|Error e)
-		{
-			this._exitcode = TaskAccess.EXIT_CODE_FATAL_EXCEPTION;
-			
-			PrintStream err = System.err;
-			
-			err.println("****************************");
-			
-			// Print the real stack trace
-			err.println("*** EXTERNAL STACK TRACE ***");
-			e.printStackTrace(err);
-			err.println();
-			
-			err.println("****************************");
-			
-		}
+		this._exitcode = this.machine.runVm();
 	}
 }
 

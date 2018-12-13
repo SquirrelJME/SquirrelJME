@@ -595,6 +595,25 @@ public final class SpringMachine
 		{
 			return TaskAccess.EXIT_CODE_FATAL_EXCEPTION;
 		}
+		
+		// Any other exception is fatal and the task must be made to exit
+		// with the error code otherwise the VM will stick trying to wait
+		// to exit
+		catch (RuntimeException|Error e)
+		{
+			PrintStream err = System.err;
+			
+			err.println("****************************");
+			
+			// Print the real stack trace
+			err.println("*** EXTERNAL STACK TRACE ***");
+			e.printStackTrace(err);
+			err.println();
+			
+			err.println("****************************");
+			
+			return TaskAccess.EXIT_CODE_FATAL_EXCEPTION;
+		}
 	}
 	
 	/**
