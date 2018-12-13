@@ -8,9 +8,6 @@ environment for developers and users.
 
  * For instructions on building, see [this document](building.mkd).
 
-SquirrelJME uses the [Fossil](https://fossil-scm.org/) source control
-system and as such it generally is expected that it is to be used.
-
 Development can happen on any operating system, however most of the scripts are
 developed targeting Unix compatible systems, this means the following:
 
@@ -18,6 +15,14 @@ developed targeting Unix compatible systems, this means the following:
  * BSD
  * Mac OS X
  * Cygwin or MSYS2 (Windows)
+ 
+
+SquirrelJME uses the [Fossil](https://fossil-scm.org/) source control
+system and as such it generally is expected that it is to be used. There also
+are [GitHub Pull Requests](https://github.com/XerTheSquirrel/SquirrelJME/pulls)
+however since the Git is a mirror, when these are merged there will not be
+an indication that they were merged because any writes to the Git repository
+will be destroyed.
 
 ## Contributor Agreement
 
