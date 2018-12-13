@@ -1995,8 +1995,8 @@
  * `09`
 [**`10`**](stephanie-gawroriski/2018/12/10.mkd)
 `11`
-`12`
-`13`
+[**`12`**](stephanie-gawroriski/2018/12/12.mkd)
+[**`13`**](stephanie-gawroriski/2018/12/13.mkd)
 `14`
 `15`
  * `16`
