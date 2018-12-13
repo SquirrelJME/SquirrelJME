@@ -105,6 +105,9 @@ public final class Font
 	/** The pixel size of the font. */
 	private final int _pixelsize;
 	
+	/** The face of the font. */
+	private final int _face;
+	
 	/** The height of the font, is pre-calculated. */
 	private int _height =
 		-1;
@@ -128,7 +131,15 @@ public final class Font
 		this._pixelsize = __px;
 		
 		// Load SQF
-		this._sqf = SQFFont.cacheFont(__n, __px);
+		SQFFont sqf;
+		this._sqf = (sqf = SQFFont.cacheFont(__n, __px));
+		
+		// Determine if the font is monospaced or proportional
+		int totalwidth = 0;
+		for (char c = 0; c < 128; c++)
+			totalwidth += sqf.charWidth(c);
+		this._face = ((totalwidth / 128) == sqf.charWidth('\0') ?
+			FACE_MONOSPACE : FACE_PROPORTIONAL);
 	}
 	
 	/**
@@ -254,9 +265,15 @@ public final class Font
 		return this._sqf.descent;
 	}
 	
+	/**
+	 * Returns the face of the font.
+	 *
+	 * @return The font face.
+	 * @since 2018/12/13
+	 */
 	public int getFace()
 	{
-		throw new todo.TODO();
+		return this._face;
 	}
 	
 	public String getFamily()
