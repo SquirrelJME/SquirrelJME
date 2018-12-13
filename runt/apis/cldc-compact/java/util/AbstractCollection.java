@@ -155,7 +155,19 @@ public abstract class AbstractCollection<E>
 	@Override
 	public boolean remove(Object __v)
 	{
-		throw new UnsupportedOperationException("RORO");
+		// Find it and remove it
+		for (Iterator<E> it = this.iterator(); it.hasNext();)
+		{
+			E e = it.next();
+			if (__v == null ? e == null : __v.equals(e))
+			{
+				it.remove();
+				return true;
+			}
+		}
+		
+		// No changes
+		return false;
 	}
 	
 	/**
