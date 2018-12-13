@@ -18,7 +18,7 @@ import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
  *
  * @since 2018/11/03
  */
-public final class MultiANewArray
+public final class ArrayUtils
 {
 	/** Boolean array. */
 	public static final byte ARRAY_BOOLEAN =
@@ -61,7 +61,7 @@ public final class MultiANewArray
 	 *
 	 * @since 2018/11/03
 	 */
-	private MultiANewArray()
+	private ArrayUtils()
 	{
 	}
 	
@@ -81,7 +81,7 @@ public final class MultiANewArray
 		throws ArrayIndexOutOfBoundsException, ClassCastException,
 			IllegalArgumentException, NullPointerException
 	{
-		MultiANewArray.arraySet(MultiANewArray.arrayType(__a), __a, __dx, __v);
+		ArrayUtils.arraySet(ArrayUtils.arrayType(__a), __a, __dx, __v);
 	}
 	
 	/**
@@ -224,7 +224,7 @@ public final class MultiANewArray
 		Object rv = ObjectAccess.arrayNew(__type, numelem);
 		
 		// Need to determine the type for setting
-		int type = MultiANewArray.arrayType(rv);
+		int type = ArrayUtils.arrayType(rv);
 		
 		// The array has more dimensions which must be set
 		if (dims > 1)
@@ -250,8 +250,8 @@ public final class MultiANewArray
 			
 			// Allocate
 			for (int i = 0; i < numelem; i++)
-				MultiANewArray.arraySet(type, rv, i,
-					MultiANewArray.multiANewArray(subtype, nxskip, __dims));
+				ArrayUtils.arraySet(type, rv, i,
+					ArrayUtils.multiANewArray(subtype, nxskip, __dims));
 		}
 		
 		return (Object)rv;
