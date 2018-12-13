@@ -90,7 +90,10 @@ final class __EventCallback__
 	public final void lostCallback()
 	{
 		todo.DEBUG.note("Lost callback.");
-		this._registered = false;
+		synchronized (this)
+		{
+			this._registered = false;
+		}
 	}
 	
 	/**
@@ -171,8 +174,16 @@ final class __EventCallback__
 	 */
 	final void __register()
 	{
-		NativeDisplayAccess.registerEventCallback(_CALLBACK);
-		this._registered = true;
+		// Do not allow the variable to go crazy
+		synchronized (this)
+		{
+			// Only register once!
+			if (!this._registered)
+			{
+				NativeDisplayAccess.registerEventCallback(_CALLBACK);
+				this._registered = true;
+			}
+		}
 	}
 }
 
