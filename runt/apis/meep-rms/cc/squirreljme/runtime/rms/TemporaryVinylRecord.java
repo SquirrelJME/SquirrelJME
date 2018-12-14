@@ -19,6 +19,10 @@ package cc.squirreljme.runtime.rms;
 public final class TemporaryVinylRecord
 	extends VinylRecord
 {
+	/** The lock for this record. */
+	protected final BasicVinylLock lock =
+		new BasicVinylLock();
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/12/14
@@ -26,7 +30,7 @@ public final class TemporaryVinylRecord
 	@Override
 	public final VinylLock lock()
 	{
-		throw new todo.TODO();
+		return this.lock.lock();
 	}
 }
 

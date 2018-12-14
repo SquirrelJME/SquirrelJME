@@ -11,23 +11,62 @@
 package cc.squirreljme.runtime.rms;
 
 /**
- * This is a single record which stores multiple tracks of data.
+ * This is a basic lock which is entirely managed within the current
+ * application.
  *
- * Vinyls have a single lock on them.
- *
- * @see VinylTrack
- * @since 2018/12/13
+ * @since 2018/12/14
  */
-public abstract class VinylRecord
+public final class BasicVinylLock
+	implements VinylLock
 {
+	/** The state of the lock. */
+	private volatile boolean _locked;
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/14
+	 */
+	@Override
+	public final void close()
+	{
+		synchronized (this)
+		{
+			this._locked = false;
+		}
+	}
+	
 	/**
 	 * Locks this record so only a single set of actions can be performed on
 	 * them, even for the same thread.
 	 *
-	 * @return The lock used to eventually unlock, to be used with
-	 * try-with-resources.
+	 * @return {@code this}.
 	 * @since 2018/12/14
 	 */
-	public abstract VinylLock lock();
+	public final VinylLock lock()
+	{
+		for (;;)
+			synchronized (this)
+			{
+				// Wait for the lock if it is locked
+				if (this._locked)
+				{
+					try
+					{
+						this.wait();
+					}
+					catch (InterruptedException e)
+					{
+						// Ignore
+					}
+					
+					// Try again
+					continue;
+				}
+				
+				// Otherwise lock and return self
+				this._locked = true;
+				return this;
+			}
+	}
 }
 
