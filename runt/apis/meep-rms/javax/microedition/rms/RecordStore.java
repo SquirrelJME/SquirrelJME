@@ -10,12 +10,12 @@
 
 package javax.microedition.rms;
 
+import cc.squirreljme.runtime.cldc.lang.ImplementationClass;
+import cc.squirreljme.runtime.midlet.ActiveMidlet;
+import cc.squirreljme.runtime.rms.VinylRecord;
+import cc.squirreljme.runtime.rms.TemporaryVinylRecord;
 import cc.squirreljme.runtime.swm.SuiteName;
 import cc.squirreljme.runtime.swm.SuiteVendor;
-import cc.squirreljme.runtime.midlet.ActiveMidlet;
-import cc.squirreljme.runtime.rms.RecordCluster;
-import cc.squirreljme.runtime.rms.RecordClusterManager;
-import cc.squirreljme.runtime.rms.RecordStoreOwner;
 import javax.microedition.midlet.MIDlet;
 
 /**
@@ -45,15 +45,8 @@ public class RecordStore
 	public static final int AUTHMODE_PRIVATE =
 		0;
 	
-	/** The record store manager. */
-	private static final RecordClusterManager _MANAGER;
-	
-	/** Lock on the cluster. */
-	private static final Object _THIS_CLUSTER_LOCK =
-		new Object();
-	
-	/** The cluster for this midlet suite. */
-	private static volatile RecordCluster _THIS_CLUSTER;
+	/** The vinyl record where everything is stored. */
+	static final VinylRecord _VINYL;
 	
 	/**
 	 * Initializes the record store manager.
@@ -62,15 +55,25 @@ public class RecordStore
 	 */
 	static
 	{
-		if (true)
-			throw new todo.TODO();
-		/*
-		// {@squirreljme.error DC04 No record store manager exists.}
-		_MANAGER = SystemEnvironment.<RecordClusterManager>systemService(
-			RecordClusterManager.class);
-		if (_MANAGER == null)
-			throw new RuntimeException("DC04");
-		*/
+		// See if there is a service
+		VinylRecord vr;
+		try
+		{
+			String vclass = ImplementationClass.implementationClass(
+				VinylRecord.class.getName());
+			vr = (vclass == null ? new TemporaryVinylRecord() :
+				(VinylRecord)Class.forName(vclass).newInstance());
+		}
+		
+		// If it fails to initialize, just use a blank one
+		catch (ClassNotFoundException|IllegalAccessException|
+			InstantiationException e)
+		{
+			vr = new TemporaryVinylRecord();
+		}
+		
+		// Set
+		_VINYL = vr;
 	}
 	
 	/**
@@ -127,7 +130,7 @@ public class RecordStore
 			RecordStoreNotOpenException, RecordStoreException,
 			RecordStoreFullException
 	{
-		return addRecord(__b, __o, __l, 0);
+		return this.addRecord(__b, __o, __l, 0);
 	}
 	
 	/**
@@ -153,7 +156,7 @@ public class RecordStore
 	public void close()
 		throws RecordStoreNotOpenException, RecordStoreException
 	{
-		closeRecordStore();
+		this.closeRecordStore();
 	}
 	
 	/**
@@ -500,7 +503,7 @@ public class RecordStore
 			NullPointerException, RecordStoreException,
 			RecordStoreFullException, RecordStoreNotOpenException
 	{
-		setRecord(__id, __b, __o, __l, getTag(__id));
+		this.setRecord(__id, __b, __o, __l, getTag(__id));
 	}
 	
 	/**
@@ -535,17 +538,7 @@ public class RecordStore
 	 */
 	public static String[] listRecordStores()
 	{
-		// Internally all operations throw an exception
-		try
-		{
-			return __thisCluster().listRecordStores();
-		}
-		
-		// But if they fail then say there are no records
-		catch (RecordStoreException e)
-		{
-			return null;
-		}
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -639,7 +632,8 @@ public class RecordStore
 			RecordStoreFullException, RecordStoreNotFoundException,
 			SecureRecordStoreException, SecurityException
 	{
-		return openRecordStore(__n, __create, AUTHMODE_PRIVATE, true, "");
+		return RecordStore.openRecordStore(__n, __create, AUTHMODE_PRIVATE,
+			true, "");
 	}
 	
 	/**
@@ -699,31 +693,7 @@ public class RecordStore
 			RecordStoreNotFoundException, SecureRecordStoreException,
 			SecurityException
 	{
-		return openRecordStore(__n, __vend, __suite, "");
-	}
-	
-	/**
-	 * Returns the cluster for this MIDlet.
-	 *
-	 * @return The cluster for this MIDlet.
-	 * @throws RecordStoreException If there was a problem opening this
-	 * cluster.
-	 * @since 2017/02/27
-	 */
-	private static RecordCluster __thisCluster()
-		throws RecordStoreException
-	{
-		// Lock
-		synchronized (_THIS_CLUSTER_LOCK)
-		{
-			// Open cluster connection?
-			RecordCluster rv = _THIS_CLUSTER;
-			if (rv == null)
-				_THIS_CLUSTER = (rv =
-					_MANAGER.open(RecordClusterManager.thisOwner()));
-			
-			return rv;
-		}
+		return RecordStore.openRecordStore(__n, __vend, __suite, "");
 	}
 }
 
