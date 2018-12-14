@@ -18,6 +18,7 @@ import javax.microedition.rms.RecordStoreException;
  *
  * @since 2017/02/27
  */
+@Deprecated
 public abstract class RecordCluster
 {
 	/** Lock on operations in the record cluster, since they are atomic. */
