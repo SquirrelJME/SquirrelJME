@@ -11,21 +11,18 @@
 package cc.squirreljme.runtime.rms;
 
 /**
- * This is a single record which stores multiple tracks of data.
+ * This is a lock for a vinyl record which may be unlocked when closed.
  *
- * Vinyls have a single lock on them.
- *
- * @see VinylTrack
- * @since 2018/12/13
+ * @since 2018/12/14
  */
-public abstract class VinylRecord
+public interface VinylLock
+	extends AutoCloseable
 {
 	/**
-	 * Locks this record so only a single set of actions can be performed on
-	 * them, even for the same thread.
-	 *
+	 * {@inheritDoc}
 	 * @since 2018/12/14
 	 */
-	public abstract VinylLock lock();
+	@Override
+	public abstract void close();
 }
 
