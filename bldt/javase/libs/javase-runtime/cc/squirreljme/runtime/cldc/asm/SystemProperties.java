@@ -101,6 +101,20 @@ public final class SystemProperties
 	}
 	
 	/**
+	 * The class to use for a given implementation of something.
+	 *
+	 * @param __n The class name to lookup.
+	 * @return The class that should get its instance created or {@code null}
+	 * if there is no implementation.
+	 * @since 2018/12/13
+	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
+	public static final String implementationClass(String __n)
+	{
+		return null;
+	}
+	
+	/**
 	 * Returns the e-mail to contact for the virtual machine.
 	 *
 	 * @return The contact e-mail for the virtual machine.

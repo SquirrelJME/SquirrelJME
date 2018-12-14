@@ -8,11 +8,14 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-/**
- * This package contains the file based record store manager.
- *
- * @since 2017/02/27
- */
+package cc.squirreljme.runtime.rms;
 
-package cc.squirreljme.runtime.rms.file;
+/**
+ * This represents a single track of data within a {@link VinylRecord}.
+ *
+ * @since 2018/12/13
+ */
+public abstract class VinylTrack
+{
+}
 

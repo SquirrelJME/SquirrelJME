@@ -1642,6 +1642,12 @@ public final class SpringThreadWorker
 				"guestDepth:()I":
 				return this.machine.guestdepth;
 				
+				// The class to use for an implementation of something, by
+				// default
+			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
+				"implementationClass:(Ljava/lang/String;)Ljava/lang/String;":
+				return SpringNullObject.NULL;
+				
 				// VM e-mail
 			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
 				"javaVMEmail:()Ljava/lang/String;":
