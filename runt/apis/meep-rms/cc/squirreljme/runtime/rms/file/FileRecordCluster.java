@@ -43,6 +43,7 @@ import net.multiphasicapps.tool.manifest.writer.MutableJavaManifestAttributes;
  *
  * @since 2017/02/28
  */
+@Deprecated
 public class FileRecordCluster
 	extends RecordCluster
 {

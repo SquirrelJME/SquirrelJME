@@ -26,6 +26,7 @@ import javax.microedition.rms.RecordStoreException;
  *
  * @since 2017/02/27
  */
+@Deprecated
 public abstract class RecordClusterManager
 {
 	/** The current owner. */

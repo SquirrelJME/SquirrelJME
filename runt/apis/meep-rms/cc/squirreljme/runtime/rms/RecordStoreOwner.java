@@ -21,6 +21,7 @@ import java.lang.ref.WeakReference;
  *
  * @since 2017/02/27
  */
+@Deprecated
 public final class RecordStoreOwner
 {
 	/** The name of the suite. */
