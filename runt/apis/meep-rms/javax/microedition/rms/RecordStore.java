@@ -12,6 +12,7 @@ package javax.microedition.rms;
 
 import cc.squirreljme.runtime.cldc.lang.ImplementationClass;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
+import cc.squirreljme.runtime.rms.VinylLock;
 import cc.squirreljme.runtime.rms.VinylRecord;
 import cc.squirreljme.runtime.rms.TemporaryVinylRecord;
 import cc.squirreljme.runtime.swm.SuiteName;
@@ -524,7 +525,11 @@ public class RecordStore
 	public static void deleteRecordStore(String __n)
 		throws RecordStoreException, RecordStoreNotFoundException
 	{
-		throw new todo.TODO();
+		VinylRecord vinyl = _VINYL;
+		try (VinylLock lock = vinyl.lock())
+		{
+			throw new todo.TODO();
+		}
 	}
 	
 	/**
@@ -538,7 +543,11 @@ public class RecordStore
 	 */
 	public static String[] listRecordStores()
 	{
-		throw new todo.TODO();
+		VinylRecord vinyl = _VINYL;
+		try (VinylLock lock = vinyl.lock())
+		{
+			throw new todo.TODO();
+		}
 	}
 	
 	/**
@@ -607,7 +616,7 @@ public class RecordStore
 			RecordStoreFullException, RecordStoreNotFoundException,
 			SecureRecordStoreException, SecurityException
 	{
-		return openRecordStore(__n, __create, __auth, __write, "");
+		return RecordStore.openRecordStore(__n, __create, __auth, __write, "");
 	}
 	
 	/**
@@ -670,7 +679,11 @@ public class RecordStore
 			RecordStoreNotFoundException, SecureRecordStoreException,
 			SecurityException
 	{
-		throw new todo.TODO();
+		VinylRecord vinyl = _VINYL;
+		try (VinylLock lock = vinyl.lock())
+		{
+			throw new todo.TODO();
+		}
 	}
 	
 	/**
