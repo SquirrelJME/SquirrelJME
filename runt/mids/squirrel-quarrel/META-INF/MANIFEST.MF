@@ -10,4 +10,5 @@ X-SquirrelJME-Depends: tool-manifest-reader midp-lcdui
 Microedition-Configuration: CLDC-1.8-Compact
 MIDlet-1: Squirrel Quarrel (LCDUI), , net.multiphasicapps.squirrelquarr
  el.lcdui.MainMidlet
+X-SquirrelJME-NoLauncher: true
 
