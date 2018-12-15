@@ -91,6 +91,18 @@ public class MidletMain
 		// Used for checking and such
 		__ActiveTask__ activetask = this._activetask;
 		
+		// The list was previously not used
+		if (programlist.size() <= 0)
+		{
+			// Add a message saying what is going on
+			programlist.append("Loading available programs...", null);
+			programlist.append("This might take awhile!", null);
+			
+			// Re-flip on this display
+			if (_MAIN_DISPLAY.getCurrent() == programlist)
+				_MAIN_DISPLAY.setCurrent(programlist);
+		}
+		
 		// Go through all of the available application suites and build the
 		// program list
 		boolean queried = false;
@@ -99,6 +111,11 @@ public class MidletMain
 		for (Suite suite : ManagerFactory.getSuiteManager().getSuites(
 			SuiteType.APPLICATION))
 		{
+			// Hide this on the SquirrelJME launcher?
+			if (Boolean.valueOf(suite.getAttributeValue(
+				"X-SquirrelJME-NoLauncher")))
+				continue;
+			
 			// Query is done, scan suites
 			if (!queried)
 			{
@@ -110,11 +127,6 @@ public class MidletMain
 			// to decode the parts that make it up!
 			for (int i = 1; i >= 1; i++)
 			{
-				// Hide these on the SquirrelJME launcher?
-				if (Boolean.valueOf(suite.getAttributeValue(
-					"X-SquirrelJME-NoLauncher")))
-					continue;
-				
 				// No more programs in this suite
 				String value = suite.getAttributeValue("MIDlet-" + i);
 				if (value == null)
@@ -161,6 +173,10 @@ public class MidletMain
 		
 		// All done so, return the title back
 		programlist.setTitle("SquirrelJME Launcher");
+		
+		// Re-flip on this display
+		if (_MAIN_DISPLAY.getCurrent() == programlist)
+			_MAIN_DISPLAY.setCurrent(programlist);
 	}
 	
 	/**
@@ -217,16 +233,20 @@ public class MidletMain
 			// Launching a program?
 			if (__c == MidletMain.this.launchcommand)
 			{
+				__Program__[] programs = MidletMain.this._programs;
+				
 				// If the list is empty then do nothing because it will NPE
+				// or out of bounds if the selection is off
 				List list = (List)__d;
-				if (list.size() <= 0)
+				int seldx = list.getSelectedIndex();
+				if (list.size() <= 0 || seldx < 0 || seldx >= programs.length)
 					return;
 				
 				// Indication that something is happening
 				MidletMain.this.programlist.setTitle("Launching...");
 				
 				// Launch this program
-				MidletMain.this._programs[list.getSelectedIndex()].__launch();
+				programs[seldx].__launch();
 				
 				// All done so, return the title back
 				programlist.setTitle("SquirrelJME Launcher");
