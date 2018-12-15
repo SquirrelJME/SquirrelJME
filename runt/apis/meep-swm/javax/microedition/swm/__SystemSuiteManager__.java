@@ -36,7 +36,7 @@ final class __SystemSuiteManager__
 	implements SuiteManager
 {
 	/** Cache of suites which are available. */
-	private static final Map<String, Reference<Suite>> _SUITES =
+	private static final Map<String, Suite> _SUITES =
 		new HashMap<>();
 	
 	/** Internal lock for suite management. */
@@ -140,7 +140,12 @@ final class __SystemSuiteManager__
 		// Just get every suite
 		List<Suite> rv = new ArrayList<>();
 		for (String as : SuiteAccess.availableSuites())
-			rv.add(__SystemSuiteManager__.__getSuite(as));
+		{
+			// It is possible they might not load
+			Suite s = __SystemSuiteManager__.__getSuite(as);
+			if (s != null)
+				rv.add(s);
+		}
 		
 		return rv;
 	}
@@ -159,15 +164,20 @@ final class __SystemSuiteManager__
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		Map<String, Reference<Suite>> suites = __SystemSuiteManager__._SUITES;
+		Map<String, Suite> suites = __SystemSuiteManager__._SUITES;
 		synchronized (suites)
 		{
-			Reference<Suite> ref = suites.get(__s);
-			Suite rv;
+			// Preloaded?
+			Suite rv = suites.get(__s);
+			if (rv != null)
+				return rv;
 			
-			if (ref == null || null == (rv = ref.get()))
-				suites.put(__s, new WeakReference<>((rv = new Suite(__s))));
+			// Previously did not exist or failed to load
+			if (suites.containsKey(__s))
+				return null;
 			
+			// Cache the suite
+			suites.put(__s, (rv = new Suite(__s)));
 			return rv;
 		}
 	}
