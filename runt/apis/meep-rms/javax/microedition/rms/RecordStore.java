@@ -591,7 +591,11 @@ public class RecordStore
 			RecordStoreFullException, RecordStoreNotFoundException,
 			SecureRecordStoreException, SecurityException
 	{
-		throw new todo.TODO();
+		MIDlet mid = ActiveMidlet.get();
+		return RecordStore.__openRecordStore(__n,
+			mid.getAppProperty("MIDlet-Vendor"),
+			mid.getAppProperty("MIDlet-Name"), __create, __auth, __write,
+			__pass);
 	}
 	
 	/**
@@ -679,11 +683,8 @@ public class RecordStore
 			RecordStoreNotFoundException, SecureRecordStoreException,
 			SecurityException
 	{
-		VinylRecord vinyl = _VINYL;
-		try (VinylLock lock = vinyl.lock())
-		{
-			throw new todo.TODO();
-		}
+		return RecordStore.__openRecordStore(__n, __vend, __suite, false,
+			AUTHMODE_ANY, false, __pass);
 	}
 	
 	/**
@@ -707,6 +708,55 @@ public class RecordStore
 			SecurityException
 	{
 		return RecordStore.openRecordStore(__n, __vend, __suite, "");
+	}
+	
+	/**
+	 * Attempts to open and optionally create the record store for the
+	 * specified MIDlet.
+	 *
+	 * If a password is specified then the record store will be encrypted to
+	 * prevent tampering.
+	 *
+	 * If the record store has already been opened then it will return a
+	 * previously opened record store.
+	 *
+	 * @param __n The name of the record store, must consist of 1 to 32
+	 * Unicode characters.
+	 * @param __create If {@code true} then if the record store does not
+	 * exist it will be created.
+	 * @param __auth The authorization mode of the record which may permit
+	 * other applications to access this record. If the record already exists
+	 * then this argument will be ignored.
+	 * @param __write If {@code true} then the record store may be written to
+	 * by other suites. If the record already exists then this argument will be
+	 * ignored.
+	 * @return The newly opened or created record store, if the record store
+	 * is already open then it will return the already open one.
+	 * @throws IllegalArgumentException If the name is not valid or the
+	 * authorization mode is not valid.
+	 * @throws RecordStoreException If it could not be opened for another
+	 * reason.
+	 * @throws RecordStoreFullException If there is no space remaining.
+	 * @throws RecordStoreNotFoundException If the record store could not be
+	 * located.
+	 * @throws SecureRecordStoreException The secured record could not be
+	 * initialized.
+	 * @throws SecurityException If the encryption password does not
+	 * match an existing password.
+	 * @since 2018/12/15
+	 */
+	private static RecordStore __openRecordStore(String __name, String __vend,
+		String __suite, boolean __create, int __auth, boolean __write,
+		String __pass)
+		throws IllegalArgumentException, RecordStoreException,
+			RecordStoreFullException, RecordStoreNotFoundException,
+			SecureRecordStoreException, SecurityException
+	{
+		VinylRecord vinyl = _VINYL;
+		try (VinylLock lock = vinyl.lock())
+		{
+			throw new todo.TODO();
+		}
 	}
 }
 
