@@ -536,8 +536,12 @@ public class Suite
 			}
 			catch (IOException e)
 			{
-				// {@squirreljme.error DG0t Could not load suite manifest.}
-				throw new RuntimeException("DG0a", e);
+				// Print the manifest issue
+				e.printStackTrace();
+				
+				// Just say there is no manifest
+				rv = new JavaManifest();
+				this._nomanifest = true;
 			}
 		
 		// Cache
