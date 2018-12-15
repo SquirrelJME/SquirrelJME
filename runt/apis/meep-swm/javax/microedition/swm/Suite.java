@@ -95,6 +95,9 @@ public class Suite
 			throw new NullPointerException("NARG");
 		
 		this._name = __n;
+		
+		// Pre-cache the manifest and subsequently the suite info
+		this.__suiteInfo();
 	}
 	
 	/**

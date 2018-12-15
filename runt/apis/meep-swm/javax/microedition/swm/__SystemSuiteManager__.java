@@ -12,6 +12,7 @@ package javax.microedition.swm;
 
 import cc.squirreljme.runtime.swm.ByteArrayJarStreamSupplier;
 import cc.squirreljme.runtime.swm.DependencyInfo;
+import cc.squirreljme.runtime.swm.InvalidSuiteException;
 import cc.squirreljme.runtime.swm.MatchResult;
 import cc.squirreljme.runtime.swm.ProvidedInfo;
 import cc.squirreljme.runtime.cldc.asm.SuiteAccess;
@@ -176,9 +177,21 @@ final class __SystemSuiteManager__
 			if (suites.containsKey(__s))
 				return null;
 			
-			// Cache the suite
-			suites.put(__s, (rv = new Suite(__s)));
-			return rv;
+			try
+			{
+				// Cache the suite
+				suites.put(__s, (rv = new Suite(__s)));
+				return rv;
+			}
+			catch (InvalidSuiteException e)
+			{
+				// Debug it
+				e.printStackTrace();
+				
+				// Just cache it as invalid
+				suites.put(__s, null);
+				return null;
+			}
 		}
 	}
 	
