@@ -110,6 +110,11 @@ public class MidletMain
 			// to decode the parts that make it up!
 			for (int i = 1; i >= 1; i++)
 			{
+				// Hide these on the SquirrelJME launcher?
+				if (Boolean.valueOf(suite.getAttributeValue(
+					"X-SquirrelJME-NoLauncher")))
+					continue;
+				
 				// No more programs in this suite
 				String value = suite.getAttributeValue("MIDlet-" + i);
 				if (value == null)
