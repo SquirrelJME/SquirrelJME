@@ -97,6 +97,9 @@ public class MidletMain
 			// Add a message saying what is going on
 			programlist.append("Loading available programs...", null);
 			programlist.append("This might take awhile!", null);
+			programlist.append("UP/DOWN -- Adjust focused item", null);
+			programlist.append("FIRE    -- Select item", null);
+			programlist.append("The SPACEBAR key is the FIRE key", null);
 			
 			// Re-flip on this display
 			if (_MAIN_DISPLAY.getCurrent() == programlist)
