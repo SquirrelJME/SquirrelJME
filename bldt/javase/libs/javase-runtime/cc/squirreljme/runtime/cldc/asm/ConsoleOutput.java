@@ -47,6 +47,28 @@ public final class ConsoleOutput
 	}
 	
 	/**
+	 * Reads the display console, that is anything which was output to the
+	 * console itself.
+	 *
+	 * @param __dim The output dimensions of the console, columns and rows.
+	 * This array must always have a length of at least two.
+	 * @param __b The output byte array.
+	 * @param __o The offset.
+	 * @param __l The length.
+	 * @return The number of bytes which were read, this will be the minimum
+	 * of either {@code __dim[0] * __dim[1]} or {@code __l}. Zero may be
+	 * returned if this is not supported.
+	 * @since 2018/12/16
+	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
+	public static final int displayRead(int[] __dim,
+		byte[] __b, int __o, int __l)
+	{
+		// Not supported so always returns zero as nothing read
+		return 0;
+	}
+	
+	/**
 	 * Flushes the stream.
 	 *
 	 * @param __fd The file descriptor to flush.
