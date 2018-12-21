@@ -1116,6 +1116,11 @@ public final class SpringThreadWorker
 		// Depends on the function
 		switch (__func)
 		{
+				// Read console buffer
+			case "cc/squirreljme/runtime/cldc/asm/ConsoleOutput::" +
+				"displayRead:([I[BII)I":
+				return 0;
+				
 				// Flush the console
 			case "cc/squirreljme/runtime/cldc/asm/ConsoleOutput::" +
 				"flush:(I)I":
