@@ -1,4 +1,4 @@
-@ECHO OFF
+REM @ECHO OFF
 REM ---------------------------------------------------------------------------
 REM Multi-Phasic Applications: SquirrelJME
 REM     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
@@ -7,8 +7,8 @@ REM ---------------------------------------------------------------------------
 REM SquirrelJME is under the GNU General Public License v3, or later.
 REM See license.mkd for licensing and copyright information.
 REM ---------------------------------------------------------------------------
-REM DESCRIPTION: Builds whatever is needed to support hairball and then invokes
-REM it using the host virtual machine.
+REM DESCRIPTION: Builds whatever is needed to support the builder and then
+REM invokes it using the host virtual machine.
 
 REM Location of EXE file (for out of tree builds)
 set __EXEDIR=%~dp0
@@ -26,17 +26,17 @@ if not defined JAVA set JAVA=java
 if not defined JAVAC set JAVAC=javac
 if not defined BOOTSTRAP_CLASS set BOOTSTRAP_CLASS=NewBootstrap
 
-REM Make sure commands exist (try to call them(
+REM Make sure commands exist (try to call them)
 %JAVA% -version 2> NUL > NUL
 if %ERRORLEVEL% neq 0 (
 	echo The java command is missing, please set %%JAVA%%.
-	exit /b 1
+	exit /b 2
 )
 
 %JAVAC% -version 2> NUL > NUL
 if %ERRORLEVEL% neq 0 (
 	echo The javac command is missing, please set %%JAVAC%%.
-	exit /b 1
+	exit /b 3
 )
 
 REM If the build system class does not exist, compile it
@@ -52,7 +52,7 @@ if not exist %__HB_VCLS% (
 		echo Failed to compile the build system.
 		
 		REM Fail
-		exit /b 1
+		exit /b 4
 	)
 )
 

@@ -1,4 +1,6 @@
 *.bat
+build.cmd
+build.bat
 hairball.bat
 hairball.cmd
 /hairball.bat
