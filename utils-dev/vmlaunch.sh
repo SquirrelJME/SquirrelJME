@@ -35,13 +35,13 @@ then
 fi
 
 # Parse arguments
-__wineswitch=""
+__wine=0
 __numb=-1
 while getopts wp: __opt
 do
 	case "$__opt" in
 		w)
-			__wineswitch="-w"
+			__wine=1
 			;;
 		
 		p)
@@ -67,8 +67,13 @@ else
 fi
 shift
 
-# Forward to hosted launch with the known parameters
-"$__exedir/hostedlaunch.sh" $__wineswitch vm-build \
-	"$__file" "$@"
-exit $?
+# Forward to the VM launcher
+if [ "$__wine" -ne "0" ]
+then
+	"$__exedir/buildwine.sh" -B launch "$__file" "$@"
+	exit $?
+else
+	"$__exedir/../build.sh" -B launch "$__file" "$@"
+	exit $?
+fi
 
