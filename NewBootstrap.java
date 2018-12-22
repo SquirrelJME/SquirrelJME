@@ -1148,14 +1148,25 @@ public class NewBootstrap
 								if (fns.endsWith(".java"))
 									return;
 								
+								// Detect MIME files?
+								boolean ismime = false;
+								if (fns.endsWith(".__mime"))
+								{
+									ismime = true;
+									fns = fns.substring(0, fns.length() - 7);
+								}
+								
 								// Create new entry
 								out.putNextEntry(
-									new ZipEntry(__zipName(__s, __p)));
+									new ZipEntry(__zipName(__s,
+										__p.resolveSibling(fns))));
 								
 								// Copy data
-								try (InputStream is = Channels.newInputStream(
+								try (InputStream src = Channels.newInputStream(
 									FileChannel.open(__p,
-									StandardOpenOption.READ)))
+										StandardOpenOption.READ));
+									InputStream is = (!ismime ? src :
+										new MIMEFileDecoder(src)))
 								{
 									for (;;)
 									{
