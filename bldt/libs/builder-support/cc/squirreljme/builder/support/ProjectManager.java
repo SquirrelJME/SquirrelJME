@@ -333,7 +333,7 @@ public final class ProjectManager
 					// -J: Default timespace is JIT;
 					// -T: Default timespace is tests;
 					// -B: Default timespace is build-time}
-				case "-?":
+				case "?":
 				default:
 					throw new IllegalArgumentException(
 						String.format("AU0l %s", parse[0]));
