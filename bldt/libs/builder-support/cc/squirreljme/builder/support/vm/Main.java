@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.build.vm;
+package cc.squirreljme.builder.support.vm;
 
 import cc.squirreljme.builder.support.Binary;
 import cc.squirreljme.builder.support.ProjectManager;
@@ -45,13 +45,20 @@ public class Main
 		};
 	
 	/**
-	 * Main entry point.
+	 * Main entry point using the given project manager.
 	 *
+	 * @param __pm The project manager.
+	 * @param __pn The project to be launched.
 	 * @param __args Program arguments.
-	 * @since 2018/09/13
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/12/22
 	 */
-	public static void main(String... __args)
+	public static void main(ProjectManager __pm, String __pn, String... __args)
+		throws NullPointerException
 	{
+		if (__pm == null || __pn == null)
+			throw new NullPointerException("NARG");
+			
 		// Copy arguments for processing
 		Queue<String> args = new ArrayDeque<>();
 		if (__args != null)
@@ -59,16 +66,8 @@ public class Main
 				if (a != null)
 					args.add(a);
 		
-		// Setup project manager
-		ProjectManager pm = ProjectManager.fromArguments(args);
-		
-		// {@squirreljme.error BA03 No project to launch was specified. The
-		// format is project-name or project-name:entry-point-id.}
-		if (args.isEmpty())
-			throw new IllegalArgumentException("BA03");
-		
 		// Determine the project and launch ID to execute
-		String project = args.remove();
+		String project = __pn;
 		int launchid = 0;
 		
 		// Check if a launch ID was specified, separate with colon because
@@ -87,12 +86,12 @@ public class Main
 		// can run a few more programs rather than what is in the base library
 		Set<Binary> xclasspath = new LinkedHashSet<>();
 		for (String fp : _FIXED_PROJECTS)
-			for (Binary b : pm.build(TimeSpaceType.BUILD, fp))
+			for (Binary b : __pm.build(TimeSpaceType.BUILD, fp))
 				xclasspath.add(b);
 		
 		// Get the project and all of its dependencies built which forms
 		// the class path
-		Binary[] vclasspath = pm.build(TimeSpaceType.TEST, project);
+		Binary[] vclasspath = __pm.build(TimeSpaceType.TEST, project);
 		
 		// The boot entry always must be last
 		Binary bootp = vclasspath[vclasspath.length - 1];
@@ -124,7 +123,7 @@ public class Main
 		
 		// Initialize the virtual machine with our launch ID
 		VirtualMachine machine = VMFactory.main(null, profiler,
-			new BuildSuiteManager(pm, TimeSpaceType.TEST), classpath,
+			new BuildSuiteManager(__pm, TimeSpaceType.TEST), classpath,
 			null, launchid, -1, null,
 			args.<String>toArray(new String[args.size()]));
 		
@@ -165,6 +164,34 @@ public class Main
 		// Exit with our given code, we cannot exit before the finally
 		// because then the profiler would never be generatedg
 		System.exit(exitcode);
+	}
+	
+	/**
+	 * Main entry point (for old compatibility).
+	 *
+	 * @param __args Program arguments.
+	 * @since 2018/09/13
+	 */
+	public static void main(String... __args)
+	{
+		// Copy arguments for processing
+		Queue<String> args = new ArrayDeque<>();
+		if (__args != null)
+			for (String a : __args)
+				if (a != null)
+					args.add(a);
+		
+		// Setup project manager
+		ProjectManager pm = ProjectManager.fromArguments(args);
+		
+		// {@squirreljme.error BA03 No project to launch was specified. The
+		// format is project-name or project-name:entry-point-id.}
+		if (args.isEmpty())
+			throw new IllegalArgumentException("BA03");
+		
+		// Forward
+		Main.main(pm, args.remove(),
+			args.<String>toArray(new String[args.size()]));
 	}
 }
 
