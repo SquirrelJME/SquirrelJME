@@ -339,7 +339,7 @@ public final class BinaryManager
 				Files.createDirectories(outpath.getParent());
 				
 				// Replace output file with temporary one
-				Files.move(temp, outpath, StandardCopyOption.ATOMIC_MOVE,
+				Files.move(temp, outpath,
 					StandardCopyOption.REPLACE_EXISTING);
 			}
 			
