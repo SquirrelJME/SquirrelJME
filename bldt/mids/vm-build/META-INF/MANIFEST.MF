@@ -4,10 +4,10 @@ X-SquirrelJME-Error: BA
 X-SquirrelJME-Name: Virtual Machine on the Build System
 X-SquirrelJME-Vendor: Stephanie Gawroriski
 X-SquirrelJME-Version: 0.2.0
-X-SquirrelJME-Depends: all-vms builder-support
-X-SquirrelJME-Description: This is the implementation of a VM on 
- top of the SquirrelJME build system. All of the JARs that the virtual 
- machine will see are derived from the build system.
+X-SquirrelJME-Depends: builder-support
+X-SquirrelJME-Description: This project is for compatibility purposes only 
+ as the VM on top of the build system has been moved into the build 
+ system.
 Microedition-Configuration: CLDC-1.8-Compact
 Main-Class: cc.squirreljme.build.vm.Main
 

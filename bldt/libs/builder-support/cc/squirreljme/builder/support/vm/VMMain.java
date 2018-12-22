@@ -33,7 +33,7 @@ import net.multiphasicapps.profiler.ProfilerSnapshot;
  *
  * @since 2018/09/13
  */
-public class Main
+public class VMMain
 {
 	/** Fixed projects to always include. */
 	private static final String[] _FIXED_PROJECTS =
@@ -190,7 +190,7 @@ public class Main
 			throw new IllegalArgumentException("BA03");
 		
 		// Forward
-		Main.main(pm, args.remove(),
+		VMMain.main(pm, args.remove(),
 			args.<String>toArray(new String[args.size()]));
 	}
 }
