@@ -7,7 +7,7 @@ to make the implementation easier.
 ## `Flushable` Interface
 
 The interface `Flushable` does not exist in Java ME and as such it does not
-exist.
+exist in SquirrelJME.
 
 ## LCDUI Display Input
 
@@ -39,9 +39,9 @@ be ignored and assumed to be set.
 
 Only the following character encodings are supported:
 
+ * _ASCII_
  * _IBM037_
  * _ISO-8859-1_
- * _ASCII_
  * _UTF-8_
 
 Note that UTF codepoints above U+FFFF are not fully supported and are not
