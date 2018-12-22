@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Timespace-Title: Tests
+X-SquirrelJME-Timespace-Type: test
+X-SquirrelJME-Timespace-Description: The timespace contains all of the
+ tests.
+
