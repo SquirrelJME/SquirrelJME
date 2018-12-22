@@ -156,14 +156,10 @@ public class BuilderFactory
 						}
 					
 					// Run the builder
-					build(space,
+					this.build(space,
 						args.<String>toArray(new String[args.size()]));
 				}
 				break;
-				
-				// Compile project to C code for bootstrap purposes
-			case "c":
-				throw new todo.TODO();
 				
 				// Perform SDK actions
 			case "sdk":
@@ -186,7 +182,7 @@ public class BuilderFactory
 				// {@squirreljme.error AU0g Unknown command specified.
 				// Usage: command (command arguments...);
 				// Valid commands are:
-				// build, c, sdk, suite, task
+				// build, sdk, suite, task
 				// .(The switch)}
 			default:
 				throw new IllegalArgumentException(String.format("AU0g %s",
