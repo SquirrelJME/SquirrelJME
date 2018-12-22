@@ -11,48 +11,43 @@ REM DESCRIPTION: Builds whatever is needed to support the builder and then
 REM invokes it using the host virtual machine.
 
 REM Location of EXE file (for out of tree builds)
-set __EXEDIR=%~dp0
+SET __EXEDIR=%~dp0
 
-REM Do not give any variable assignments to the calling shell
+REM Do NOT give any variable assignments to the calling shell
 setlocal
 setlocal enableextensions
 
 REM reset error level
-set ERRORLEVEL=
-cmd /c "exit /b 0"
+SET ERRORLEVEL=
+cmd /c "EXIT /b 0"
 
 REM Set some variables
-if not defined JAVA set JAVA=java
-if not defined JAVAC set JAVAC=javac
-if not defined BOOTSTRAP_CLASS set BOOTSTRAP_CLASS=NewBootstrap
+IF NOT DEFINED JAVA SET JAVA=java
+IF NOT DEFINED JAVAC SET JAVAC=javac
+IF NOT DEFINED BOOTSTRAP_CLASS SET BOOTSTRAP_CLASS=NewBootstrap
 
 REM Make sure commands exist (try to call them)
 %JAVA% -version 2> NUL > NUL
-if %ERRORLEVEL% neq 0 (
-	echo The java command is missing, please set %%JAVA%%.
-	exit /b 2
+IF %ERRORLEVEL% NEQ 0 (
+	ECHO The java command is missing, please SET %%JAVA%%.
+	EXIT /b 2
 )
 
 %JAVAC% -version 2> NUL > NUL
-if %ERRORLEVEL% neq 0 (
-	echo The javac command is missing, please set %%JAVAC%%.
-	exit /b 3
+IF %ERRORLEVEL% NEQ 0 (
+	ECHO The javac command is missing, please SET %%JAVAC%%.
+	EXIT /b 3
 )
 
-REM If the build system class does not exist, compile it
-set __HB_VCLS=%BOOTSTRAP_CLASS%.class
-set __HB_VSRC=%__EXEDIR%\%BOOTSTRAP_CLASS%.java
-if not exist %__HB_VCLS% (
-	echo Compiling the build system...
-	
-	REM Compile it
+REM If the build system class does NOT exist, compile it
+SET __HB_VCLS=%BOOTSTRAP_CLASS%.class
+SET __HB_VSRC=%__EXEDIR%\%BOOTSTRAP_CLASS%.java
+IF NOT EXIST %__HB_VCLS% (
+	ECHO Compiling the build system...
 	%JAVAC% -source 1.7 -target 1.7 -d . %__HB_VSRC%
-	if %ERRORLEVEL% neq 0 (
-		REM Note it
-		echo Failed to compile the build system.
-		
-		REM Fail
-		exit /b 4
+	IF %ERRORLEVEL% NEQ 0 (
+		ECHO Failed to compile the build system.
+		EXIT /b 4
 	)
 )
 
@@ -63,9 +58,9 @@ REM Execute Java
 	%BOOTSTRAP_CLASS% %*
 
 REM Failed to build the bootstrap (stage 1)
-if %ERRORLEVEL% neq 0 (
-	echo Failed to build the build system.
-	exit /b %ERRORLEVEL%
+IF %ERRORLEVEL% NEQ 0 (
+	ECHO Failed to build the build system.
+	EXIT /b %ERRORLEVEL%
 )
 
 REM Execute Java, since Proxy interfaces are a mess, a double invocation of
@@ -79,5 +74,5 @@ REM the JVM is performed.
 	-jar sjmeboot.jar %*
 
 REM Failed?
-exit /b %ERRORLEVEL%
+EXIT /b %ERRORLEVEL%
 
