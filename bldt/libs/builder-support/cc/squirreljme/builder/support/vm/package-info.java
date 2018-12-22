@@ -15,5 +15,5 @@
  * @since 2018/09/13
  */
 
-package cc.squirreljme.build.vm;
+package cc.squirreljme.builder.support.vm;
 
