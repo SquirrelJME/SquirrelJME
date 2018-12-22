@@ -267,56 +267,56 @@ public final class ProjectManager
 		// Allow paths to be modified
 		String[] parse;
 		while (null != (parse = BuilderFactory.__getopts(
-			":?s:o:j:t:b:RJTB", __args)))
+			":?RJTBs:o:j:t:b:", __args)))
 			switch (parse[0])
 			{
 					// Change source code root
-				case "-s":
+				case "s":
 					sourceroot = Paths.get(parse[1]);
 					break;
 					
 					// Change binary output base root
-				case "-o":
+				case "o":
 					binroot = Paths.get(parse[1]);
 					break;
 					
 					// Run-time build path
-				case "-r":
+				case "r":
 					binruntime = Paths.get(parse[1]);
 					break;
 					
 					// JIT-time build path
-				case "-j":
+				case "j":
 					binjit = Paths.get(parse[1]);
 					break;
 					
 					// Test-time build path
-				case "-t":
+				case "t":
 					bintest = Paths.get(parse[1]);
 					break;
 					
 					// Build-time build path
-				case "-b":
+				case "b":
 					binbuild = Paths.get(parse[1]);
 					break;
 					
 					// Default RUNTIME
-				case "-R":
+				case "R":
 					deftimespace = TimeSpaceType.RUNTIME;
 					break;
 					
 					// Default JIT
-				case "-J":
+				case "J":
 					deftimespace = TimeSpaceType.JIT;
 					break;
 					
 					// Default Tests
-				case "-T":
+				case "T":
 					deftimespace = TimeSpaceType.TEST;
 					break;
 					
 					// Default build time
-				case "-B":
+				case "B":
 					deftimespace = TimeSpaceType.BUILD;
 					break;
 				
@@ -336,7 +336,7 @@ public final class ProjectManager
 				case "-?":
 				default:
 					throw new IllegalArgumentException(
-						String.format("AU0l %s", parse[1]));
+						String.format("AU0l %s", parse[0]));
 			}
 		
 		// Fill with defaults if missing
