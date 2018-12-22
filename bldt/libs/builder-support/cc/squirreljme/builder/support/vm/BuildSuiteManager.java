@@ -36,9 +36,6 @@ public final class BuildSuiteManager
 	/** The project manager which is used. */
 	protected final ProjectManager manager;
 	
-	/** The timespace to act in. */
-	protected final TimeSpaceType timespace;
-	
 	/** Loaded libraries. */
 	private final Map<String, VMClassLibrary> _libraries =
 		new HashMap<>();
@@ -47,18 +44,16 @@ public final class BuildSuiteManager
 	 * Initializes the suite manager.
 	 *
 	 * @param __pm The project manager that is used.
-	 * @param __ts The timespace to act in.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/10/16
 	 */
-	public BuildSuiteManager(ProjectManager __pm, TimeSpaceType __ts)
+	public BuildSuiteManager(ProjectManager __pm)
 		throws NullPointerException
 	{
-		if (__pm == null || __ts == null)
+		if (__pm == null)
 			throw new NullPointerException("NARG");
 		
 		this.manager = __pm;
-		this.timespace = __ts;
 	}
 	
 	/**
@@ -70,18 +65,17 @@ public final class BuildSuiteManager
 	{
 		Set<String> rv = new SortedTreeSet<>();
 		
-		TimeSpaceType timespace = this.timespace;
 		ProjectManager manager = this.manager;
 		
 		// Could fail
 		try
 		{
 			// Add sources
-			for (Source s : manager.sourceManager(timespace))
+			for (Source s : manager.sourceManager())
 				rv.add(s.name().toString() + ".jar");
 			
 			// Add binaries
-			for (Binary b : manager.binaryManager(timespace))
+			for (Binary b : manager.binaryManager())
 				rv.add(b.name().toString() + ".jar");
 		}
 		
@@ -119,7 +113,7 @@ public final class BuildSuiteManager
 				return rv;
 			
 			// Build the binaries for this finding the matching one
-			for (Binary b : this.manager.build(this.timespace, __s))
+			for (Binary b : this.manager.build(__s))
 				if (__s.equals(b.name().toString()))
 				{
 					libraries.put(__s, (rv = new BuildClassLibrary(b)));
