@@ -1,4 +1,4 @@
-REM @ECHO OFF
+@ECHO OFF
 REM ---------------------------------------------------------------------------
 REM Multi-Phasic Applications: SquirrelJME
 REM     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
