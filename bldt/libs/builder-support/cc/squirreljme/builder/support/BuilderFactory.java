@@ -123,32 +123,36 @@ public class BuilderFactory
 					// Try to determine the timespace to use, which determines
 					// the available projects
 					String[] parse;
-					while (null != (parse = __getopts(":?rjtb", args)))
+					while (null != (parse = __getopts(":?rjtbRJTB", args)))
 						switch (parse[0])
 						{
 							case "r":
+							case "R":
 								space = TimeSpaceType.RUNTIME;
 								break;
 							
 							case "j":
+							case "J":
 								space = TimeSpaceType.JIT;
 								break;
 								
 							case "t":
+							case "T":
 								space = TimeSpaceType.TEST;
 								break;
 							
 							case "b":
+							case "B":
 								space = TimeSpaceType.BUILD;
 								break;
 							
 								// {@squirreljme.error AU0f Unknown argument.
-								// Usage: build [-r] [-j] [-t] [-b]
+								// Usage: build [-R] [-J] [-T] [-B]
 								// (projects...);
-								// -r: Build for run-time;
-								// -j: Build for jit-time;
-								// -t: Build for tests;
-								// -b: Build for build-time;
+								// -R: Build for run-time;
+								// -J: Build for jit-time;
+								// -T: Build for tests;
+								// -B: Build for build-time;
 								// (The switch)}
 							default:
 								throw new IllegalArgumentException(
