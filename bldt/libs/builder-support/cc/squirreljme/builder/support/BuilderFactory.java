@@ -10,6 +10,7 @@
 
 package cc.squirreljme.builder.support;
 
+import cc.squirreljme.builder.support.vm.VMMain;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -101,6 +102,32 @@ public class BuilderFactory
 	}
 	
 	/**
+	 * Launch program.
+	 *
+	 * @param __args Arguments to use.
+	 * @since 2018/12/22
+	 */
+	public void launch(String... __args)
+	{
+		// Load arguments into a queue
+		Deque<String> args = new ArrayDeque<>();
+		if (__args != null)
+			for (String a : __args)
+				if (a != null)
+					args.add(a);
+		
+		// {@squirreljme.error AU14 Launch of program using a SquirrelJME
+		// VM requires a program to be launched.
+		String program = args.pollFirst();
+		if (program == null)
+			throw new IllegalArgumentException("AU14");
+		
+		// Run the VM
+		VMMain.main(this.projectmanager, program,
+			args.<String>toArray(new String[args.size()]));
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/11/09
 	 */
@@ -165,28 +192,30 @@ public class BuilderFactory
 				}
 				break;
 				
+				// Launch project within a VM
+			case "launch":
+				this.launch(args.<String>toArray(new String[args.size()]));
+				break;
+				
 				// Perform SDK actions
 			case "sdk":
-				this.sdk(
-					args.<String>toArray(new String[args.size()]));
+				this.sdk(args.<String>toArray(new String[args.size()]));
 				break;
 				
 				// Perform suite related operations
 			case "suite":
-				this.suite(
-					args.<String>toArray(new String[args.size()]));
+				this.suite(args.<String>toArray(new String[args.size()]));
 				break;
 				
 				// Perform task related operations
 			case "task":
-				this.task(
-					args.<String>toArray(new String[args.size()]));
+				this.task(args.<String>toArray(new String[args.size()]));
 				break;
 				
 				// {@squirreljme.error AU0g Unknown command specified.
 				// Usage: command (command arguments...);
 				// Valid commands are:
-				// build, sdk, suite, task
+				// build, launch, sdk, suite, task
 				// .(The switch)}
 			default:
 				throw new IllegalArgumentException(String.format("AU0g %s",

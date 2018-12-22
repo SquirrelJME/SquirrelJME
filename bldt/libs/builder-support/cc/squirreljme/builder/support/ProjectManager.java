@@ -117,6 +117,20 @@ public final class ProjectManager
 	}
 	
 	/**
+	 * Builds the specified projects using the default time-space.
+	 *
+	 * @param __p The projects to be built.
+	 * @return The binaries which are associated with the given project.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/12/22
+	 */
+	public Binary[] build(String... __p)
+		throws NullPointerException
+	{
+		return this.build(this.deftimespace, __p);
+	}
+	
+	/**
 	 * Builds the specified projects.
 	 *
 	 * @param __t The timespace to use for projects.
@@ -130,8 +144,6 @@ public final class ProjectManager
 	{
 		if (__t == null || __p == null)
 			throw new NullPointerException("NARG");
-		
-		todo.DEBUG.note("%s: %s%n", __t, Arrays.asList(__p));
 		
 		// Need the binary manager to build these projects
 		BinaryManager bm;

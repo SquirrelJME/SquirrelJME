@@ -35,15 +35,6 @@ import net.multiphasicapps.profiler.ProfilerSnapshot;
  */
 public class VMMain
 {
-	/** Fixed projects to always include. */
-	private static final String[] _FIXED_PROJECTS =
-		new String[]
-		{
-			"midp-lcdui",
-			"meep-rms",
-			"media-api",
-		};
-	
 	/**
 	 * Main entry point using the given project manager.
 	 *
@@ -82,16 +73,10 @@ public class VMMain
 			project = project.substring(0, col);
 		}
 		
-		// Include some dependenices to always be included so that SpringCoat
-		// can run a few more programs rather than what is in the base library
-		Set<Binary> xclasspath = new LinkedHashSet<>();
-		for (String fp : _FIXED_PROJECTS)
-			for (Binary b : __pm.build(TimeSpaceType.BUILD, fp))
-				xclasspath.add(b);
-		
 		// Get the project and all of its dependencies built which forms
 		// the class path
-		Binary[] vclasspath = __pm.build(TimeSpaceType.TEST, project);
+		Set<Binary> xclasspath = new LinkedHashSet<>();
+		Binary[] vclasspath = __pm.build(project);
 		
 		// The boot entry always must be last
 		Binary bootp = vclasspath[vclasspath.length - 1];
@@ -123,7 +108,7 @@ public class VMMain
 		
 		// Initialize the virtual machine with our launch ID
 		VirtualMachine machine = VMFactory.main(null, profiler,
-			new BuildSuiteManager(__pm, TimeSpaceType.TEST), classpath,
+			new BuildSuiteManager(__pm), classpath,
 			null, launchid, -1, null,
 			args.<String>toArray(new String[args.size()]));
 		
