@@ -260,8 +260,9 @@ public final class ProjectManager
 			bintest = null,
 			binbuild = null;
 		
-		// Default timespace?
-		TimeSpaceType deftimespace = TimeSpaceType.RUNTIME;
+		// Default timespace? Default to the build for compatibility purposes
+		// since everything does that
+		TimeSpaceType deftimespace = TimeSpaceType.BUILD;
 		
 		// Allow paths to be modified
 		String[] parse;
