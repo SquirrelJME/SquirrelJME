@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+X-SquirrelJME-Namespace-Title: Test MIDlets
+X-SquirrelJME-Namespace-Type: midlet
+X-SquirrelJME-Namespace-Description: Programs that can be run to do the 
+ actual test stuff.
+
