@@ -33,6 +33,9 @@ public final class ProjectManager
 	/** The directory for the project root (source code). */
 	protected final Path sourceroot;
 	
+	/** The default timespace to use for projects. */
+	protected final TimeSpaceType deftimespace;
+	
 	/** The directory for each timespace binaries. */
 	private final Path[] _bin;
 	
@@ -49,15 +52,16 @@ public final class ProjectManager
 	 *
 	 * @param __sr The source root.
 	 * @param __brs The binary output roots.
+	 * @param __dts Default time space.
 	 * @throws IllegalArgumentException If the binary outputs does not match
 	 * the number of available timespaces.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/07/29
 	 */
-	public ProjectManager(Path __sr, Path[] __brs)
+	public ProjectManager(Path __sr, Path[] __brs, TimeSpaceType __dts)
 		throws IllegalArgumentException, NullPointerException
 	{
-		if (__sr == null || __brs == null)
+		if (__sr == null || __brs == null || __dts == null)
 			throw new NullPointerException("NARG");
 		
 		// {@squirreljme.error AU0j Binary paths array count does not match
@@ -72,6 +76,20 @@ public final class ProjectManager
 		
 		this.sourceroot = __sr;
 		this._bin = __brs;
+		this.deftimespace = __dts;
+	}
+	
+	/**
+	 * Initializes a binary manager using the default timespace.
+	 *
+	 * @return The binary manager with the default timespace.
+	 * @throws IOException On read errors.
+	 * @since 2018/12/22
+	 */
+	public BinaryManager binaryManager()
+		throws IOException
+	{
+		return this.binaryManager(this.deftimespace);
 	}
 	
 	/**
@@ -148,6 +166,19 @@ public final class ProjectManager
 	}
 	
 	/**
+	 * Initializes a source manager using the default timespace.
+	 *
+	 * @return The source manager with the default timespace.
+	 * @throws IOException On read errors.
+	 * @since 2018/12/22
+	 */
+	public SourceManager sourceManager()
+		throws IOException
+	{
+		return this.sourceManager(this.deftimespace);
+	}
+	
+	/**
 	 * Returns the source manager to use for source code retrieval.
 	 *
 	 * @param __t The timespace to build for.
@@ -217,10 +248,13 @@ public final class ProjectManager
 			bintest = null,
 			binbuild = null;
 		
+		// Default timespace?
+		TimeSpaceType deftimespace = TimeSpaceType.RUNTIME;
+		
 		// Allow paths to be modified
 		String[] parse;
 		while (null != (parse = BuilderFactory.__getopts(
-			":?s:o:j:t:b:", __args)))
+			":?s:o:j:t:b:RJTB", __args)))
 			switch (parse[0])
 			{
 					// Change source code root
@@ -252,6 +286,26 @@ public final class ProjectManager
 				case "-b":
 					binbuild = Paths.get(parse[1]);
 					break;
+					
+					// Default RUNTIME
+				case "-R":
+					deftimespace = TimeSpaceType.RUNTIME;
+					break;
+					
+					// Default JIT
+				case "-J":
+					deftimespace = TimeSpaceType.JIT;
+					break;
+					
+					// Default Tests
+				case "-T":
+					deftimespace = TimeSpaceType.TEST;
+					break;
+					
+					// Default build time
+				case "-B":
+					deftimespace = TimeSpaceType.BUILD;
+					break;
 				
 					// {@squirreljme.error AU0l Unknown project argument.
 					// Usage: [-s path] [-o path] [-r path] [-j path]
@@ -261,7 +315,11 @@ public final class ProjectManager
 					// -r: The binary path for the run-time;
 					// -j: The binary path for the jit-time;
 					// -t: The binary path for the tests;
-					// -b: The binary path for the build-time}
+					// -b: The binary path for the build-time;
+					// -R: Default timespace is run-time;
+					// -J: Default timespace is JIT;
+					// -T: Default timespace is tests;
+					// -B: Default timespace is build-time}
 				case "-?":
 				default:
 					throw new IllegalArgumentException(
@@ -280,7 +338,7 @@ public final class ProjectManager
 		
 		// Set paths
 		return new ProjectManager(sourceroot,
-			new Path[]{binruntime, binjit, bintest, binbuild});
+			new Path[]{binruntime, binjit, bintest, binbuild}, deftimespace);
 	}
 }
 
