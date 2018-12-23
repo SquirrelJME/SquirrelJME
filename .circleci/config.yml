@@ -19,7 +19,7 @@ commands:
   initialize_buildenv:
     description: "Initializes the build environment"
     steps:
-      - checkout
+      - checkout:
           path: ~/squirreljme
       - run:
           name: Setup directory
