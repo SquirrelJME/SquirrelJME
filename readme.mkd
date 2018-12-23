@@ -40,9 +40,8 @@ Information:
    * [Compatibility](compatibility.mkd)
    * [History](history.mkd)
    * [Release Route](route.mkd)
- * _Developer Documents_
-   * [Version 0.2.0 Release Progress (GitHub)](
-     https://github.com/XerTheSquirrel/SquirrelJME/projects/2)
+ * _Developer Resources_
+   * [CircleCI Status](https://circleci.com/gh/XerTheSquirrel/SquirrelJME)
    * [Developer Notes](assets/developer-notes/index.mkd)
    * [Design Document](design.mkd)
    * [Project Scope](scope.mkd)
