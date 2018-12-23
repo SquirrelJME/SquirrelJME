@@ -29,12 +29,14 @@ jobs:
   build_shade_javase:
     executor: buildenv
     steps:
+      - initialize_buildenv
       - run:
           name: Shade JavaSE
           command: ~/squirreljme/build.sh vmshade -b squirreljme-javase.jar
   build_shade_javame:
     executor: buildenv
     steps:
+      - initialize_buildenv
       - run:
           name: Shade JavaME
           command: ~/squirreljme/build.sh vmshade squirreljme-javame.jar
