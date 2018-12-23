@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.vmshader;
+package cc.squirreljme.builder.support.vmshader;
 
 import cc.squirreljme.builder.support.Binary;
 import cc.squirreljme.builder.support.BinaryManager;
@@ -28,6 +28,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Queue;
 import java.util.Set;
@@ -46,138 +47,69 @@ import net.multiphasicapps.zip.streamwriter.ZipStreamWriter;
  *
  * @since 2018/11/16
  */
-public class Main
+public class Shader
 {
 	/**
-	 * Main entry point.
+	 * Shades the JAR.
 	 *
-	 * @param __args Main entry points.
-	 * @since 2018/11/16
+	 * @param __pm The project manager to use.
+	 * @param __ts The timespace type.
+	 * @param __withboot Use the bootstrap?
+	 * @param __bootjar Bootstrap JAR to use.
+	 * @param __out The stream to write the ZIP to.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/12/22
 	 */
-	public static void main(String... __args)
+	public static void shade(ProjectManager __pm, TimeSpaceType __ts,
+		boolean __withboot, Path __bootjar, OutputStream __out)
+		throws IOException, NullPointerException
 	{
-		// Copy arguments for processing
-		Queue<String> args = new ArrayDeque<>();
-		if (__args != null)
-			for (String a : __args)
-				if (a != null)
-					args.add(a);
+		if (__pm == null || __ts == null ||
+			(__withboot && __bootjar == null) || __out == null)
+			throw new NullPointerException("NARG");
 		
-		// Setup project manager
-		ProjectManager pm = ProjectManager.fromArguments(args);
+		// Setup output ZIP stream
+		ZipStreamWriter zsw = new ZipStreamWriter(__out);
 		
-		// Remove this, because this is annoying
-		if ("--".equals(args.peek()))
-			args.remove();
+		// Files which were put in the JAR, to detect duplicates and
+		// such!
+		Set<String> putin = new HashSet<>();
 		
-		// Flavor this to Java SE or Java ME?
-		boolean javaseflavor = false;
-		Path extraruntjar = null;
-		if (!args.isEmpty())
-			switch (args.peek())
-			{
-				case "-javase":
-					javaseflavor = true;
-					args.remove();
-					
-					// {@squirreljme.error AE02 Need to specify the run-time
-					// JAR to support Java SE systems, on default SquirrelJME
-					// this will be `bootsjme/javase-runtime.jar`.}
-					if (args.isEmpty())
-						throw new IllegalArgumentException("AE02");
-					extraruntjar = Paths.get(args.remove());
-					break;
-					
-				case "-javame":
-					javaseflavor = false;
-					args.remove();
-					break;
-			}
+		// Make sure that the bootstrap is always placed in first, this
+		// provides the API and such (for example on Java SE systems we need
+		// to provide the Swing code and such)
+		if (__withboot)
+			Shader.__injectRuntimeJar(zsw, __bootjar, putin);
 		
-		// Determine the path where our shaded JAR will be built
-		Path output = Paths.get((args.isEmpty() ? "squirreljme-" +
-			(javaseflavor ? "javase" : "javame") + ".jar" :
-			args.remove()));
+		// Completely shade in the JAR for the entire run-time which we
+		// selected
+		BinaryManager bm = __pm.binaryManager(__ts);
+		Shader.__shadeJar(zsw, bm);
 		
-		// Build the output JAR at this path
-		Path tempfile = null;
-		try
-		{
-			// Build from the test system so we have access to all of those
-			// JARs including the tests
-			BinaryManager bm = pm.binaryManager(TimeSpaceType.RUNTIME);
-			
-			// Create temporary file to place the JAR at
-			tempfile = Files.createTempFile("squirreljme-", ".ja_");
-			
-			// Open output ZIP in that spot
-			try (ZipStreamWriter zsw = new ZipStreamWriter(
-				Files.newOutputStream(tempfile,
-					StandardOpenOption.CREATE,
-					StandardOpenOption.WRITE,
-					StandardOpenOption.TRUNCATE_EXISTING)))
-			{
-				// Files which were put in the JAR, to detect duplicates and
-				// such!
-				Set<String> putin = new HashSet<>();
-				
-				// Inject our Java SE binary?
-				if (extraruntjar != null)
-					Main.__injectRuntimeJar(zsw, extraruntjar, putin);
-				
-				// Shade the JAR
-				Main.__shadeJar(zsw, bm);
-				
-				// We need to include some base libraries needed for the VM
-				// to run on Java SE for example.
-				// But the extra run-time JAR is used for this
-				Binary[] sscp;
-				if (javaseflavor)
-					sscp = new Binary[0];
-				
-				// Otherwise this is running on Java ME, so use some of our
-				// own provided stubs for this
-				else
-					sscp = bm.compile(bm.get("common-vm-stubs"));
-				
-				// Only use the last library for the shade support stuff
-				List<Binary> mergebins = new ArrayList<>();
-				if (sscp.length > 0)
-					mergebins.add(sscp[sscp.length - 1]);
-				
-				// Then add our normal classpath dependencies as needed
-				for (Binary bin : bm.compile(bm.get("all-vms")))
-					mergebins.add(bin);
-				
-				// SpringCoat is to be placed in the JAR now
-				Main.__bootIn(zsw, bm, mergebins.<Binary>toArray(
-					new Binary[mergebins.size()]), putin);
-			}
-			
-			// Move the file to the output since it was built!
-			Files.move(tempfile, output,
-				StandardCopyOption.REPLACE_EXISTING);
-		}
+		// All of our binaries are going to be merged into one and shaded in
+		// the top level JAR. This includes the VM implementation
+		Set<Binary> mergebins = new LinkedHashSet<>();
 		
-		// {@squirreljme.error AE01 Could not build the output shaded JAR.}
-		catch (IOException e)
-		{
-			throw new IllegalArgumentException("AE01", e);
-		}
+		// We might be runnign on a Java SE or Java ME system which does not
+		// have the full API available, so in that case provide a bunch of
+		// stub APIs so that things still somewhat work.
+		for (Binary b : bm.compile(bm.get("common-vm-stubs")))
+			mergebins.add(b);
 		
-		// No matter what, always try to clear the temp file
-		finally
-		{
-			if (tempfile != null)
-				try
-				{
-					Files.delete(tempfile);
-				}
-				catch (IOException e)
-				{
-					// Ignore this
-				}
-		}
+		// Then we just include every single virtual machine that exists, so
+		// that way they can be switched to in the event an older one is
+		// desired.
+		for (Binary bin : bm.compile(bm.get("all-vms")))
+			mergebins.add(bin);
+		
+		// Merge all of those and those binaries into the output JAR as needed
+		Shader.__bootIn(zsw, bm, mergebins.<Binary>toArray(
+			new Binary[mergebins.size()]), putin);
+		
+		// End the stream
+		zsw.flush();
+		zsw.close();
 	}
 	
 	/**
@@ -218,7 +150,8 @@ public class Main
 						continue;
 					
 					// Not allowed to add stuff under this package?
-					if (name.endsWith(".class") && !Main.__checkPackage(name))
+					if (name.endsWith(".class") &&
+						!Shader.__checkPackage(name))
 						continue;
 					
 					// This was added, so it gets ignored
@@ -294,7 +227,7 @@ public class Main
 	}
 	
 	/**
-	 * Checks to make sure that the given packet
+	 * Checks to make sure that the given package should be included.
 	 *
 	 * @param __name The name of the class to check.
 	 * @return If the class can be stored.

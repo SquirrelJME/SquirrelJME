@@ -11,9 +11,14 @@
 package cc.squirreljme.builder.support;
 
 import cc.squirreljme.builder.support.vm.VMMain;
+import cc.squirreljme.builder.support.vmshader.Shader;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
@@ -183,7 +188,7 @@ public class BuilderFactory
 								// (The switch)}
 							default:
 								throw new IllegalArgumentException(
-									String.format("AU0f %s", parse[1]));
+									String.format("AU0f %s", parse[0]));
 						}
 					
 					// Run the builder
@@ -212,10 +217,18 @@ public class BuilderFactory
 				this.task(args.<String>toArray(new String[args.size()]));
 				break;
 				
+				// Shade VM provided JAR
+			case "vmshade":
+			case "vmshaded":
+			case "shadevm":
+			case "shadedvm":
+				this.vmShade(args.<String>toArray(new String[args.size()]));
+				break;
+				
 				// {@squirreljme.error AU0g Unknown command specified.
 				// Usage: command (command arguments...);
 				// Valid commands are:
-				// build, launch, sdk, suite, task
+				// build, launch, sdk, suite, task, vmshade
 				// .(The switch)}
 			default:
 				throw new IllegalArgumentException(String.format("AU0g %s",
@@ -279,6 +292,127 @@ public class BuilderFactory
 	public void task(String... __args)
 	{
 		new TaskFactory(__args).run();
+	}
+	
+	/**
+	 * Shaded VM output.
+	 *
+	 * @param __args Shader arguments.
+	 * @since 2018/12/22
+	 */
+	public void vmShade(String... __args)
+	{
+		// Copy arguments for processing
+		Deque<String> args = new ArrayDeque<>();
+		if (__args != null)
+			for (String a : __args)
+				if (a != null)
+					args.addLast(a);
+		
+		// Bootstrap JAR path, for bootstrap variants (not pure ME)
+		Path bootstrapjar = Paths.get("bootsjme", "javase-runtime.jar");
+		
+		// Build with the bootstrap?
+		boolean withbootstrap = false;
+		
+		// Override the timespace?
+		ProjectManager pm = this.projectmanager;
+		TimeSpaceType pmts = TimeSpaceType.RUNTIME;
+		
+		// Determine how shading is to be handled
+		String[] parse;
+		while (null != (parse = __getopts(":?p:bRJTB", args)))
+			switch (parse[0])
+			{
+					// Bootstrap path
+				case "p":
+					bootstrapjar = Paths.get(parse[1]);
+					break;
+					
+					// Build with bootstrap JAR
+				case "b":
+					withbootstrap = true;
+					break;
+					
+					// Use run-time timespace
+				case "R":
+					pmts = TimeSpaceType.RUNTIME;
+					break;
+					
+					// Use JIT timespace
+				case "J":
+					pmts = TimeSpaceType.JIT;
+					break;
+					
+					// Use test timespace
+				case "T":
+					pmts = TimeSpaceType.TEST;
+					break;
+					
+					// Use build timespace
+				case "B":
+					pmts = TimeSpaceType.BUILD;
+					break;
+				
+					// {@squirreljme.error AU15 Unknown argument.
+					// Usage: vmshade [-b JAR] [output];
+					// -p: Bootstrap JAR Path, defaults to
+					// {@code bootsjme/javase-runtime.jar};
+					// -b: Build and include the bootstrap;
+					// -R: Build with run-time level (the default);
+					// -J: Build with jit-time level;
+					// -T: Build with tests level;
+					// -B: Build with build-time level;
+					// (The switch)}
+				case "?":
+				default:
+					throw new IllegalArgumentException(
+						String.format("AU15 %s", parse[0]));
+			}
+		
+		// Output file name, which is optional
+		String outfile = args.pollFirst();
+		if (outfile == null)
+			outfile = "squirreljme.jar";
+		
+		// Need to write to temporary to not kludge files
+		Path tempfile = null;
+		try
+		{
+			// Need a temporary file
+			tempfile = Files.createTempFile("squirreljme-shaded", ".ja_");
+			
+			// Write to temporary stream first
+			try (OutputStream out = Files.newOutputStream(tempfile,
+				StandardOpenOption.CREATE,
+				StandardOpenOption.WRITE,
+				StandardOpenOption.TRUNCATE_EXISTING))
+			{
+				Shader.shade(pm, pmts, withbootstrap, bootstrapjar, out);
+			}
+			
+			// Move the file to the output since it was built!
+			Files.move(tempfile, Paths.get(outfile),
+				StandardCopyOption.REPLACE_EXISTING);
+		}
+		catch (IOException e)
+		{
+			// {@squirreljme.error AU16 Could not build the shaded JAR.}
+			throw new RuntimeException("AU16", e);
+		}
+		finally
+		{
+			// Delete temporary file if there is one
+			if (tempfile != null)
+				try
+				{
+					Files.delete(tempfile);
+				}
+				catch (IOException e)
+				{
+					// Ignore
+				}
+		}
 	}
 	
 	/**
