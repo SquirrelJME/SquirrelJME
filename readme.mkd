@@ -26,6 +26,11 @@ missing or not supported it will run.
 
 You may support me on [Patreon](https://www.patreon.com/SquirrelJME)!
 
+Badges:
+
+ * ![CircleCI](
+   https://circleci.com/gh/XerTheSquirrel/SquirrelJME/tree/trunk.png)
+
 Information:
 
  * [Code of Conduct](code-of-conduct.mkd)
@@ -41,7 +46,8 @@ Information:
    * [History](history.mkd)
    * [Release Route](route.mkd)
  * _Developer Resources_
-   * [CircleCI Status](https://circleci.com/gh/XerTheSquirrel/SquirrelJME)
+   * [CircleCI Status](
+     https://circleci.com/gh/XerTheSquirrel/SquirrelJME/tree/trunk)
    * [Developer Notes](assets/developer-notes/index.mkd)
    * [Design Document](design.mkd)
    * [Project Scope](scope.mkd)
