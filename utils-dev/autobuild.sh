@@ -30,14 +30,13 @@ cd "$__tmp"
 echo "$__date" > "$__tmp/date"
 
 # Build the Java SE binary
-if ! "$__realexedir/hostedlaunch.sh" vm-shader -- \
-	-javase bootsjme/javase-runtime.jar
+if ! "$__realexedir/../build.sh" vmshade -b squirreljme-javase.jar
 then
 	echo "Failed to build the Java SE binary."
 fi
 
 # Build the Java ME binary
-if ! "$__realexedir/hostedlaunch.sh" vm-shader -- -javame
+if ! "$__realexedir/../build.sh" vmshade squirreljme-javame.jar
 then
 	echo "Failed to build the Java ME binary."
 fi
