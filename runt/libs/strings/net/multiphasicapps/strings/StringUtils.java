@@ -121,6 +121,20 @@ public final class StringUtils
 	}
 	
 	/**
+	 * Splits the given string using the specified delimeter.
+	 *
+	 * @param __delim The delimeter to use.
+	 * @param __s The string to split.
+	 * @return The split string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/12/23
+	 */
+	public static final String[] basicSplit(char __delim, String __s)
+	{
+		return StringUtils.basicSplit(new char[]{__delim}, __s);
+	}
+	
+	/**
 	 * Splits the given string using the specified delimeters.
 	 *
 	 * @param __delim The delimeters to use.

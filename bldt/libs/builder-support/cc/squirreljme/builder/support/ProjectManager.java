@@ -10,15 +10,21 @@
 
 package cc.squirreljme.builder.support;
 
+import java.io.InputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedHashSet;
 import java.util.Queue;
 import java.util.Set;
+import net.multiphasicapps.io.MIMEFileDecoder;
+import net.multiphasicapps.strings.StringUtils;
 
 /**
  * This class is used to initialize and setup source and binary project
@@ -175,6 +181,51 @@ public final class ProjectManager
 		
 		// Return the completed set
 		return rv.<Binary>toArray(new Binary[rv.size()]);
+	}
+	
+	/**
+	 * Opens the given root file from the source tree. This also handles MIME
+	 * encoded files if they exist and decodes them accordingly.
+	 *
+	 * @param __fn The filename to open.
+	 * @return The input file or {@code null} if it does not exist.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/12/23
+	 */
+	public final InputStream rootFile(String __fn)
+		throws IOException, NullPointerException
+	{
+		if (__fn == null)
+			throw new NullPointerException("NARG");
+		
+		// Handle slashes and 
+		Path sourceroot = this.sourceroot,
+			open = sourceroot;
+		for (String s : StringUtils.basicSplit('/', __fn))
+			open = open.resolve(s);
+		
+		// Try to open a MIME file first and decode that
+		try
+		{
+			return new MIMEFileDecoder(Files.newInputStream(
+				open.resolveSibling(open.getFileName() + ".__mime"),
+				StandardOpenOption.READ));
+		}
+		catch (NoSuchFileException e)
+		{
+			// Otherwise just use a normal file
+			try
+			{
+				return Files.newInputStream(open,
+					StandardOpenOption.READ);
+			}
+			catch (NoSuchFileException f)
+			{
+				// Does not exist
+				return null;
+			}
+		}
 	}
 	
 	/**
