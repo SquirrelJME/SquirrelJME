@@ -131,7 +131,7 @@ public final class DebugAccess
 	{
 		if (__v == null)
 			throw new NullPointerException("NARG");
-		
+		 
 		int rawlen = __v.length,
 			numframes = rawlen / TRACE_COUNT;
 		
