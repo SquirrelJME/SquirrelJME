@@ -116,34 +116,32 @@ of using and running the class library. This virtual machine has a speed
 penalty because it is running the Java byte code itself however it is a
 compatible environment.
 
-Building of shaded JARs requires a host Linux system (or a compatible UNIX
-like system which can run the needed shell scripts). There are two flavors
-of bootstrap JARs which may be built:
+Building of shaded JARs will result in two flavors:
 
- * _Java SE_ -- Designed to run on Java SE.
- * _Java ME_ -- Designed to run on Java ME (includes SquirrelJME).
+ * _Bootstrapped_ -- Add code which is needed to make it operate in
+   environments which may be different from Java ME, such as Java SE.
+ * _Native_ -- Built without a bootstrap, requires that everything is naturally
+   supported.
 
-For all instructions, it is assumed that the environment variable `SQUIRRELJME`
-is the directory where the source code has been extracted. It is recommended
-that an out-of-tree build is performed (this means building from another
-directory that is no in the SquirrelJME source tree).
+It is recommended that an out-of-tree build is performed (this means building
+from another directory that is not in the SquirrelJME source tree). All the
+commands pertain specifically to the build system itself.
 
-## Building for Java SE
+## Building for Java SE (Or With Bootstrap)
 
 This build requires a run-time that bridges what SquirrelJME needs with what
 Java SE provides, as such it must be specified in the build.
 
- * `$SQUIRRELJME/utils-dev/hostedlaunch.sh vm-shader -- `
-   `-javase bootsjme/javase-runtime.jar`
+ * `vmshade -b squirreljme-javase.jar`
 
-By default the output will be called `squirreljme-javase.jar`.
+If for some reason you wish to use an alternative bootstrap:
+
+ * `vmshade -p bootstrap.jar -b squirreljme-other.jar`
 
 ## Building for Java ME
 
 ***NOTE:*** If the shaded JAR is not running on SquirrelJME, some features
 will not be available for use. It should still run however.
 
- * `$SQUIRRELJME/utils-dev/hostedlaunch.sh vm-shader -- -javame`
- 
-By default the output will be called `squirreljme-javame.jar`.
+ * `vmshade squirreljme-javame.jar`
 
