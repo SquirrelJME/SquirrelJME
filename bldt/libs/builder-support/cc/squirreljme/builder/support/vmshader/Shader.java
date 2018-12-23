@@ -200,8 +200,8 @@ public class Shader
 			"cc.squirreljme.vm.VMEntryShadedMain");
 		
 		// Needed for Java ME
-		attr.putValue("MIDlet-1",
-			"cc.squirreljme.vm.VMEntryShadedMIDlet,,SquirrelJME");
+		attr.putValue("MIDlet-1", "SquirrelJME," +
+			"squirrejme-vm.png,cc.squirreljme.vm.VMEntryShadedMIDlet");
 		attr.putValue("MicroEdition-Configuration", "CLDC-1.8");
 		attr.putValue("MicroEdition-Profile", "MEEP-8.0 MIDP-3.1");
 		attr.putValue("MIDlet-Name", "SquirrelJME");
