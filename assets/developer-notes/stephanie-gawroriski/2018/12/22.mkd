@@ -1,0 +1,11 @@
+# 2018/12/22
+
+## 12:20
+
+Just a few days until release, not going to work on the library at all for the
+most part. Since my time was limited it was easier to just not implement all
+of LCDUI. Plus I kinda need a faster VM since things are a bit slow with
+SpringCoat being a pure interpreter. Having a much faster VM will definitely
+improve things and such. Since my testing and running cycle is really slow due
+to the speed limit. First I need to go through the cards and prioritize final
+things.
