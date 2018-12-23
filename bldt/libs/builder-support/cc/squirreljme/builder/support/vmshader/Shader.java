@@ -94,8 +94,11 @@ public class Shader
 		// We might be runnign on a Java SE or Java ME system which does not
 		// have the full API available, so in that case provide a bunch of
 		// stub APIs so that things still somewhat work.
-		for (Binary b : bm.compile(bm.get("common-vm-stubs")))
-			mergebins.add(b);
+		// However add these in reverse order so that the stubs are always
+		// first!
+		Binary[] vmstubs = bm.compile(bm.get("common-vm-stubs"));
+		for (int i = vmstubs.length - 1; i >= 0; i--)
+			mergebins.add(vmstubs[i]);
 		
 		// Then we just include every single virtual machine that exists, so
 		// that way they can be switched to in the event an older one is
