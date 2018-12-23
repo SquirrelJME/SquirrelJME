@@ -14,9 +14,6 @@ import cc.squirreljme.runtime.cldc.annotation.Api;
 import cc.squirreljme.runtime.cldc.lang.ApiLevel;
 import cc.squirreljme.runtime.cldc.lang.OperatingSystemType;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
-import java.net.URL;
-import java.security.CodeSource;
-import java.security.ProtectionDomain;
 
 /**
  * Access to system properties.
@@ -57,34 +54,6 @@ public final class SystemProperties
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final String executablePath()
 	{
-		// Try using these methods
-		try
-		{
-			// Try in the protection domain first
-			ProtectionDomain pd = SystemProperties.class.getProtectionDomain();
-			if (pd != null)
-			{
-				CodeSource cs = pd.getCodeSource();
-				if (cs != null)
-				{
-					URL loc = cs.getLocation();
-					if (loc != null)
-					{
-						String path = loc.getPath();
-						if (path != null)
-							return path;
-					}
-				}
-			}
-		}
-		
-		// Could not get
-		catch (Throwable t)
-		{
-			return null;
-		}
-		
-		// Unknown
 		return null;
 	}
 	
@@ -135,7 +104,7 @@ public final class SystemProperties
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static String javaVMName()
 	{
-		return "JavaSE Virtual Environment";
+		return "Common VM Stub Environment";
 	}
 	
 	/**
