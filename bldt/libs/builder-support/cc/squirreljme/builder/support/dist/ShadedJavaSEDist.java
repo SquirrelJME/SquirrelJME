@@ -27,5 +27,19 @@ public class ShadedJavaSEDist
 	{
 		super("shaded-javase");
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/12/24
+	 */
+	@Override
+	protected void specific(ProjectManager __pm, ZipCompilerOutput __out)
+		throws IOException, NullPointerException
+	{
+		if (__pm == null || __out == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 }
 
