@@ -364,6 +364,10 @@ public final class ServiceLoader<S>
 								if (ln.isEmpty())
 									continue;
 								
+								// Ignore comments
+								if (ln.startsWith("#"))
+									continue;
+								
 								// Add otherwise
 								classes.add(ln);
 							}
