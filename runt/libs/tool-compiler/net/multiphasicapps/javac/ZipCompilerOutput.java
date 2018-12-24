@@ -45,6 +45,23 @@ public final class ZipCompilerOutput
 		new LinkedHashMap<>();
 	
 	/**
+	 * Initializes the output which writes to the given output stream which
+	 * is wrapped by a ZIP.
+	 *
+	 * @param __out The output stream.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/12/24
+	 */
+	public ZipCompilerOutput(OutputStream __out)
+		throws NullPointerException
+	{
+		if (__out == null)
+			throw new NullPointerException("NARG");
+		
+		this.zip = new ZipStreamWriter(__out);
+	}
+	
+	/**
 	 * Initialize the output which writes to the given ZIP file.
 	 *
 	 * @param __out The output ZIP to write to.
