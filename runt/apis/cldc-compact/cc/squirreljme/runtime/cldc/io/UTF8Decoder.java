@@ -48,16 +48,16 @@ public final class UTF8Decoder
 		// Determine the length of the sequence
 		byte a = __b[__o];
 		int seqlen = 
-			(((a & 0b1000_0000) == 0b0000_0000) ? 1 :
-			(((a & 0b1110_0000) == 0b1100_0000) ? 2 :
+			(((a & 0b1_0000000) == 0b0_0000000) ? 1 :
+			(((a & 0b111_00000) == 0b110_00000) ? 2 :
 			(((a & 0b1111_0000) == 0b1110_0000) ? 3 :
-			(((a & 0b1111_1000) == 0b1111_0000) ? 4 :
+			(((a & 0b11111_000) == 0b11110_000) ? 4 :
 			-1))));
 		
 		// Either some unknown sequence or it is a character after U+FFFF which
 		// is not supported
 		if (seqlen < 0 || seqlen == 4)
-			return 0xFFFD | (seqlen > 0 ? (seqlen << 16) : 0);
+			return 0xFFFD | (seqlen > 0 ? (seqlen << 16) : 0x1_0000);
 		
 		// Cannot decode the entire sequence because there is not enough
 		// room
@@ -73,11 +73,14 @@ public final class UTF8Decoder
 				
 				// U+0080 to U+07FF
 			case 2:
-				throw new todo.TODO();
+				return (((__b[__o + 0] & 0b11111) << 6) |
+					(__b[__o + 1] & 0b111111)) | 0x2_0000;
 				
 				// U+0800 to U+FFFF
 			case 3:
-				throw new todo.TODO();
+				return (((__b[__o + 0] & 0b1111) << 12) |
+					((__b[__o + 1] & 0b111111) << 6) |
+					(__b[__o + 2] & 0b111111)) | 0x3_0000;
 				
 				// Should not occur
 			default:
