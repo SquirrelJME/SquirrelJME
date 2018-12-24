@@ -604,19 +604,22 @@ public class NewBootstrap
 					try (BufferedReader br = new BufferedReader(
 						new InputStreamReader(new ByteArrayInputStream(data))))
 					{
-						String ln = br.readLine();
-						
-						// EOF?
-						if (ln == null)
-							break;
-						
-						// Ignore whitespace and empty lines
-						ln = ln.trim();
-						if (ln.length() <= 0)
-							continue;
-						
-						// Add service
-						into.add(ln);
+						for (;;)
+						{
+							String ln = br.readLine();
+							
+							// EOF?
+							if (ln == null)
+								break;
+							
+							// Ignore whitespace and empty lines
+							ln = ln.trim();
+							if (ln.length() <= 0)
+								continue;
+							
+							// Add service
+							into.add(ln);
+						}
 					}
 					
 					// Do not write this entry
