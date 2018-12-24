@@ -51,6 +51,19 @@ public abstract class DistBuilder
 	}
 	
 	/**
+	 * Performs specific build stuff.
+	 *
+	 * @param __pm The project manager used.
+	 * @param __out The output ZIP.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/12/24
+	 */
+	protected abstract void specific(ProjectManager __pm,
+		ZipCompilerOutput __out)
+		throws IOException, NullPointerException;
+	
+	/**
 	 * Builds this distribution.
 	 *
 	 * @param __pm The project manager, needed to get resources.
@@ -130,7 +143,8 @@ public abstract class DistBuilder
 		{
 		}
 		
-		throw new todo.TODO();
+		// Do specific build stuff, which depends on the distrubution target.
+		this.specific(__pm, __out);
 	}
 	
 	/**
