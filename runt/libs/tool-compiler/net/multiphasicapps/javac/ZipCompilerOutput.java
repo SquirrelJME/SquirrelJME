@@ -85,6 +85,9 @@ public final class ZipCompilerOutput
 	public void close()
 		throws IOException
 	{
+		// Flush self so the contents are written
+		this.flush();
+		
 		// Flush and close the ZIP
 		ZipStreamWriter zip = this.zip;
 		zip.flush();
