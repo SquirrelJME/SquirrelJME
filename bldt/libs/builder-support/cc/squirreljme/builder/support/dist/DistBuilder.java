@@ -54,33 +54,33 @@ public abstract class DistBuilder
 	 * Performs specific build stuff.
 	 *
 	 * @param __pm The project manager used.
-	 * @param __out The output ZIP.
+	 * @param __zip The output ZIP.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/24
 	 */
 	protected abstract void specific(ProjectManager __pm,
-		ZipCompilerOutput __out)
+		ZipCompilerOutput __zip)
 		throws IOException, NullPointerException;
 	
 	/**
 	 * Builds this distribution.
 	 *
 	 * @param __pm The project manager, needed to get resources.
-	 * @param __os The output ZIP file.
+	 * @param __zip The output ZIP file.
 	 * @throws IOException On read/write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/12/24
 	 */
-	public final void build(ProjectManager __pm, ZipCompilerOutput __out)
+	public final void build(ProjectManager __pm, ZipCompilerOutput __zip)
 		throws IOException, NullPointerException
 	{
-		if (__pm == null || __out == null)
+		if (__pm == null || __zip == null)
 			throw new NullPointerException("NARG");
 		
 		// Add some information about the build
 		long buildtime = System.currentTimeMillis();
-		DistBuilder.copyStrings(__out, "SQUIRRELJME-BUILD.MF",
+		DistBuilder.copyStrings(__zip, "SQUIRRELJME-BUILD.MF",
 			"Manifest-Version: 1.0",
 			"Distribution-Name: " + this.name,
 			"Build-Date: " + new Date(buildtime),
@@ -117,26 +117,26 @@ public abstract class DistBuilder
 				+ System.getProperty("os.version"));
 		
 		// Copy a bunch of root files which should always exist
-		DistBuilder.copyRootFile(__out, "asruntime.mkd", __pm);
-		DistBuilder.copyRootFile(__out, "building.mkd", __pm);
-		DistBuilder.copyRootFile(__out, "changelog.mkd", __pm);
-		DistBuilder.copyRootFile(__out, "code-of-conduct.mkd", __pm);
-		DistBuilder.copyRootFile(__out, "compatibility.mkd", __pm);
-		DistBuilder.copyRootFile(__out, "contributing.mkd", __pm);
-		DistBuilder.copyRootFile(__out, "design.mkd", __pm);
-		DistBuilder.copyRootFile(__out, "history.mkd", __pm);
-		DistBuilder.copyRootFile(__out, "license.mkd", __pm);
-		DistBuilder.copyRootFile(__out, "public-key.gpg.mkd", __pm);
-		DistBuilder.copyRootFile(__out, "readme.mkd", __pm);
-		DistBuilder.copyRootFile(__out, "scope.mkd", __pm);
-		DistBuilder.copyRootFile(__out, "squirreljme-version", __pm);
+		DistBuilder.copyRootFile(__zip, "asruntime.mkd", __pm);
+		DistBuilder.copyRootFile(__zip, "building.mkd", __pm);
+		DistBuilder.copyRootFile(__zip, "changelog.mkd", __pm);
+		DistBuilder.copyRootFile(__zip, "code-of-conduct.mkd", __pm);
+		DistBuilder.copyRootFile(__zip, "compatibility.mkd", __pm);
+		DistBuilder.copyRootFile(__zip, "contributing.mkd", __pm);
+		DistBuilder.copyRootFile(__zip, "design.mkd", __pm);
+		DistBuilder.copyRootFile(__zip, "history.mkd", __pm);
+		DistBuilder.copyRootFile(__zip, "license.mkd", __pm);
+		DistBuilder.copyRootFile(__zip, "public-key.gpg.mkd", __pm);
+		DistBuilder.copyRootFile(__zip, "readme.mkd", __pm);
+		DistBuilder.copyRootFile(__zip, "scope.mkd", __pm);
+		DistBuilder.copyRootFile(__zip, "squirreljme-version", __pm);
 		
 		// Fossil specific stuff
 		try
 		{
-			DistBuilder.copyRootFile(__out, "repo-manifest",
+			DistBuilder.copyRootFile(__zip, "repo-manifest",
 				__pm, "manifest");
-			DistBuilder.copyRootFile(__out, "repo-revision",
+			DistBuilder.copyRootFile(__zip, "repo-revision",
 				__pm, "manifest.uuid");
 		}
 		catch (NoSuchFileException e)
@@ -144,7 +144,7 @@ public abstract class DistBuilder
 		}
 		
 		// Do specific build stuff, which depends on the distrubution target.
-		this.specific(__pm, __out);
+		this.specific(__pm, __zip);
 	}
 	
 	/**
