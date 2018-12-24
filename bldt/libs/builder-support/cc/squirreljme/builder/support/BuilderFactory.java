@@ -213,6 +213,18 @@ public class BuilderFactory
 	}
 	
 	/**
+	 * Lists distributions available to standard output.
+	 *
+	 * @since 2018/12/24
+	 */
+	public void distList()
+	{
+		PrintStream out = System.out;
+		for (String d : DistBuilder.listBuilders())
+			out.println(d);
+	}
+	
+	/**
 	 * Launch program.
 	 *
 	 * @param __args Arguments to use.
@@ -306,6 +318,12 @@ public class BuilderFactory
 				// Build distribution
 			case "dist":
 				this.dist(args.<String>toArray(new String[args.size()]));
+				break;
+			
+			case "lsdist:
+			case "distlist":
+			case "dist-list":
+				this.distList();
 				break;
 				
 				// Build all distributions
