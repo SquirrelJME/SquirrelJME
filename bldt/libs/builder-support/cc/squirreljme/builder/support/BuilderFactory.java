@@ -15,6 +15,7 @@ import cc.squirreljme.builder.support.vm.VMMain;
 import cc.squirreljme.builder.support.vmshader.Shader;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -320,7 +321,7 @@ public class BuilderFactory
 				this.dist(args.<String>toArray(new String[args.size()]));
 				break;
 			
-			case "lsdist:
+			case "lsdist":
 			case "distlist":
 			case "dist-list":
 				this.distList();

@@ -29,55 +29,55 @@ cd "$__tmp"
 # Place the date somewhere
 echo "$__date" > "$__tmp/date"
 
-# Build the Java SE binary
-if ! "$__realexedir/../build.sh" vmshade -b squirreljme-javase.jar
-then
-	echo "Failed to build the Java SE binary."
-fi
-
-# Build the Java ME binary
-if ! "$__realexedir/../build.sh" vmshade squirreljme-javame.jar
-then
-	echo "Failed to build the Java ME binary."
-fi
-
-# Need to access the fossil unversion
-cd "$__realexedir"
-
-# Upload each one
+# Go through all distributions and build them all
 __okay="0"
-for __upload in "/tmp/$$/squirreljme-javase.jar" \
-	"/tmp/$$/squirreljme-javame.jar"
+"$__realexedir/../build.sh" dist-list | while read __dist
 do
-	if [ -f "$__upload" ]
+	# Output ZIP name
+	__zip="squirreljme-$__dist.zip"
+	
+	# Build from temporary directory
+	cd "$__tmp"
+	
+	# Build the distribytion
+	if ! "$__realexedir/../build.sh" dist "$__dist"
 	then
-		# Repack because SquirrelJME lacks compression for now so we do not
-		# want to waste space in the JAR for upload
-		if which pack200
+		echo "Failed to build $__dist." 1>&2
+		continue
+	fi
+	
+	# Make sure it exists
+	if [ ! -f "$__zip" ]
+	then
+		echo "Output ZIP $__zip does not exist?" 1>&2
+		continue
+	fi
+	
+	# Repack because SquirrelJME lacks compression for now so we do not
+	# want to waste space in the JAR for upload
+	if which pack200
+	then
+		echo "Original size: $(stat -c %s "$__zip")"
+		if pack200 --repack --no-gzip -G -O -E9 /tmp/$$.jar "$__zip"
 		then
-			if echo "$__upload" | grep '\.jar$'
-			then
-				echo "Original size: $(stat -c %s "$__upload")"
-				if pack200 --repack --no-gzip -G -O -E9 /tmp/$$.jar "$__upload"
-				then
-					mv -f /tmp/$$.jar "$__upload"
-					echo "Compressed size: $(stat -c %s "$__upload")"
-				fi
-
-			fi
+			mv -f /tmp/$$.jar "$__zip"
+			echo "Compressed size: $(stat -c %s "$__zip")"
 		fi
+	fi
+	
+	# Need to access the fossil unversion
+	cd "$__realexedir"
+	
+	# Add it
+	if fossil unversion add "$__zip" \
+		--as "auto/$(basename -- "$__zip")"
+	then
+		# Add date file as well!
+		fossil unversion add "$__tmp/date" \
+			--as "auto/$(basename -- "$__zip").date.mkd"
 		
-		# Add it
-		if fossil unversion add "$__upload" \
-			--as "auto/$(basename -- "$__upload")"
-		then
-			# Add date file as well!
-			fossil unversion add "$__tmp/date" \
-				--as "auto/$(basename -- "$__upload").date.mkd"
-			
-			# Mark as uploaded
-			__okay="$(($__okay + 1))"
-		fi
+		# Mark as uploaded
+		__okay="$(($__okay + 1))"
 	fi
 done
 

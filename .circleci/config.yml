@@ -26,25 +26,25 @@ commands:
           command: mkdir -p ~/squirreljme-build
 
 jobs:
-  build_shade_javase:
+  build_javase:
     executor: buildenv
     steps:
       - initialize_buildenv
       - run:
           name: Shade JavaSE
-          command: ~/squirreljme/build.sh vmshade -b squirreljme-javase.jar
-  build_shade_javame:
+          command: ~/squirreljme/build.sh dist javase
+  build_javame:
     executor: buildenv
     steps:
       - initialize_buildenv
       - run:
           name: Shade JavaME
-          command: ~/squirreljme/build.sh vmshade squirreljme-javame.jar
+          command: ~/squirreljme/build.sh dist javame
 
 workflows:
   version: 2
   build:
     jobs:
-      - build_shade_javase
-      - build_shade_javame
+      - build_javase
+      - build_javame
 
