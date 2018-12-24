@@ -71,4 +71,5 @@ public final class ASCIIDecoder
 	{
 		return 1;
 	}
+}
 
