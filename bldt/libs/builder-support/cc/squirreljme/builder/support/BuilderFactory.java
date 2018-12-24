@@ -146,7 +146,8 @@ public class BuilderFactory
 				}
 				
 				// Move the file to the output since it was built!
-				Files.move(tempfile, Paths.get(db.name() + ".zip"),
+				Files.move(tempfile, Paths.get(
+					"squirreljme-" + db.name() + ".zip"),
 					StandardCopyOption.REPLACE_EXISTING);
 			}
 			
