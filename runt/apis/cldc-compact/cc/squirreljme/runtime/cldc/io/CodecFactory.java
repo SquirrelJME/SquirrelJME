@@ -55,7 +55,7 @@ public final class CodecFactory
 		{
 				// ASCII
 			case "ascii":
-				throw new todo.TODO();
+				return new ASCIIDecoder();
 				
 				// IBM037
 			case "ibm037":
@@ -170,7 +170,7 @@ public final class CodecFactory
 		{
 				// ASCII
 			case "ascii":
-				throw new todo.TODO();
+				return new ASCIIEncoder();
 				
 				// IBM037
 			case "ibm037":
