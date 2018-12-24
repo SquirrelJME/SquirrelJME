@@ -69,7 +69,7 @@ do
 	cd "$__realexedir"
 	
 	# Add it
-	if fossil unversion add "$__zip" \
+	if fossil unversion add "$__tmp/$__zip" \
 		--as "auto/$(basename -- "$__zip")"
 	then
 		# Add date file as well!
