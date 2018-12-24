@@ -357,6 +357,9 @@ public final class ServiceLoader<S>
 								if (ln == null)
 									break;
 								
+								// Trim the line
+								ln = ln.trim();
+								
 								// Ignore blank lines
 								if (ln.isEmpty())
 									continue;
