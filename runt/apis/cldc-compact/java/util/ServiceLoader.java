@@ -17,6 +17,8 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
+import java.util.Set;
+import java.util.LinkedHashSet;
 
 /**
  * The service loader is used to lookup services which may be defined in the
@@ -347,6 +349,7 @@ public final class ServiceLoader<S>
 							continue;
 						
 						// Read by line
+						Set<String> pushy = new LinkedHashSet<>();
 						try (BufferedReader br = new BufferedReader(
 							new InputStreamReader(in, "utf-8")))
 						{
@@ -369,9 +372,13 @@ public final class ServiceLoader<S>
 									continue;
 								
 								// Add otherwise
-								classes.add(ln);
+								pushy.add(ln);
 							}
 						}
+						
+						// Add unique entries
+						for (String ln : pushy)
+							classes.add(ln);
 					}
 					
 					// {@squirreljme.error ZZ3d Could not read the services
