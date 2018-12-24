@@ -43,7 +43,7 @@ public final class UTF8Encoder
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		// U+0000 to U+007F
+		// One byte
 		if (__c >= 0x0000 && __c <= 0x007F)
 		{
 			if (__l < 1)
@@ -54,7 +54,30 @@ public final class UTF8Encoder
 			return 1;
 		}
 		
-		throw new todo.TODO();
+		// Two Byte
+		else if (__c >= 0x0080 && __c <= 0x07FF)
+		{
+			if (__l < 2)
+				return -2;
+			
+			__b[__o + 0] = (byte)(((__c >>> 6) & 0b11111) | 0b110_00000); 
+			__b[__o + 1] = (byte)((__c & 0b111111) | 0b10_000000);
+			
+			return 2;
+		}
+		
+		// Three byte (__c >= 0x0800 && __c <= 0xFFFF)
+		else
+		{
+			if (__l < 3)
+				return -3;
+				
+			__b[__o + 0] = (byte)(((__c >>> 12) & 0b1111) | 0b1110_0000); 
+			__b[__o + 1] = (byte)(((__c >>> 6) & 0b111111) | 0b10_000000);
+			__b[__o + 2] = (byte)((__c & 0b111111) | 0b10_000000);
+			
+			return 3;
+		}
 	}
 	
 	/**
