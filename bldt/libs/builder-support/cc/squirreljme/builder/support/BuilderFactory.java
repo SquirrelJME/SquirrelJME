@@ -10,6 +10,7 @@
 
 package cc.squirreljme.builder.support;
 
+import cc.squirreljme.builder.support.dist.DistBuilder;
 import cc.squirreljme.builder.support.vm.VMMain;
 import cc.squirreljme.builder.support.vmshader.Shader;
 import java.io.IOException;
@@ -25,6 +26,7 @@ import java.util.Deque;
 import java.util.LinkedHashSet;
 import java.util.Queue;
 import java.util.Set;
+import net.multiphasicapps.javac.ZipCompilerOutput;
 
 /**
  * This is a factory which can invoke the build system using a common set
@@ -107,6 +109,109 @@ public class BuilderFactory
 	}
 	
 	/**
+	 * Builds the given distributions.
+	 *
+	 * @param __args The distributions to build.
+	 * @since 2018/12/24
+	 */
+	public void dist(String... __args)
+	{
+		ProjectManager projectmanager = this.projectmanager;
+		
+		// Build each requested distribution
+		boolean builtone = false;
+		for (String d : __args)
+		{
+			if (d == null)
+				continue;
+			
+			// Get the builder for this
+			DistBuilder db = DistBuilder.builder(d);
+			
+			// Work with a temporary file so nothing breaks
+			Path tempfile = null;
+			try
+			{
+				// Need a temporary file
+				tempfile = Files.createTempFile("squirreljme-shaded", ".ja_");
+				
+				// Write to temporary stream first
+				try (ZipCompilerOutput zco = new ZipCompilerOutput(
+					Files.newOutputStream(tempfile,
+					StandardOpenOption.CREATE,
+					StandardOpenOption.WRITE,
+					StandardOpenOption.TRUNCATE_EXISTING)))
+				{
+					db.build(projectmanager, zco);
+				}
+				
+				// Move the file to the output since it was built!
+				Files.move(tempfile, Paths.get(db.name() + ".zip"),
+					StandardCopyOption.REPLACE_EXISTING);
+			}
+			
+			// {@squirreljme.error AU19 Could not build the distribution.
+			// (The failed distribution)}
+			catch (IOException e)
+			{
+				throw new RuntimeException("AU19 " + d, e);
+			}
+			
+			// Cleanup temp file
+			finally
+			{
+				if (tempfile != null)
+					try
+					{
+						Files.delete(tempfile);
+					}
+					catch (IOException e)
+					{
+					}
+			}
+			
+			// Did build one
+			builtone = true;
+		}
+		
+		// {@squirreljme.error AU1a No distributions were specified for
+		// building.}
+		if (!builtone)
+			throw new IllegalArgumentException("AU1a");
+	}
+	
+	/**
+	 * Builds all distributions.
+	 *
+	 * @param __args Arguments.
+	 * @since 2018/12/24
+	 */
+	public void distAll(String... __args)
+	{
+		// {@squirreljme.error AU18 Could not build at least one distribution.}
+		RuntimeException fail = new RuntimeException("AU18");
+		boolean failed = false;
+		
+		// Build them one at a time so all of them are made regardless if they
+		// all fail or not
+		for (String d : DistBuilder.listBuilders())
+			try
+			{
+				this.dist(d);
+			}
+			catch (RuntimeException t)
+			{
+				// Suppress it
+				failed = true;
+				fail.addSuppressed(t);
+			}
+		
+		// If any failed, we throw the exception we made before
+		if (failed)
+			throw fail;
+	}
+	
+	/**
 	 * Launch program.
 	 *
 	 * @param __args Arguments to use.
@@ -122,7 +227,7 @@ public class BuilderFactory
 					args.add(a);
 		
 		// {@squirreljme.error AU14 Launch of program using a SquirrelJME
-		// VM requires a program to be launched.
+		// VM requires a program to be launched.}
 		String program = args.pollFirst();
 		if (program == null)
 			throw new IllegalArgumentException("AU14");
@@ -195,6 +300,17 @@ public class BuilderFactory
 					this.build(space,
 						args.<String>toArray(new String[args.size()]));
 				}
+				break;
+				
+				// Build distribution
+			case "dist":
+				this.dist(args.<String>toArray(new String[args.size()]));
+				break;
+				
+				// Build all distributions
+			case "distall":
+			case "dist-all":
+				this.distAll(args.<String>toArray(new String[args.size()]));
 				break;
 				
 				// Launch project within a VM
