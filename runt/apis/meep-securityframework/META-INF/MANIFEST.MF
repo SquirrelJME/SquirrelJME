@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Name: MEEP Security Framework
 X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.2.0
+X-SquirrelJME-Version: 0.3.0
 X-SquirrelJME-Description: This is used to control and potentially grant
   or deny access to specific features that applicationsmay use.
 X-SquirrelJME-Error: DO

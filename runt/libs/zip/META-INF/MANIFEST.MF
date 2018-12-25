@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Name: ZIP Support
 X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.2.0
+X-SquirrelJME-Version: 0.3.0
 X-SquirrelJME-Description: The library contains the support for ZIP 
  files and any data interfaces needed for ZIP files.
 X-SquirrelJME-Depends: io

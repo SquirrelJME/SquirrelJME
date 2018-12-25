@@ -32,6 +32,10 @@ public final class ApiLevel
 	public static final int LEVEL_SQUIRRELJME_0_2_0_20181225 =
 		2_0_18359;
 	
+	/** SquirrelJME 0.3.0 (Development). */
+	public static final int LEVEL_SQUIRRELJME_0_3_0_DEV =
+		3_0_19001;
+	
 	/**
 	 * Not used.
 	 *

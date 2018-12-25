@@ -3,7 +3,7 @@ X-SquirrelJME-UUID: 101f95b0-320f-44c8-a26a-e60343fefb76
 X-SquirrelJME-Error: AJ
 X-SquirrelJME-Name: SpringCoat VM Java ME Stubs
 X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.2.0
+X-SquirrelJME-Version: 0.3.0
 X-SquirrelJME-Description: This project contains the stubs which are 
  needed by non-SquirrelJME Java ME systems, since internal SquirrelJME 
  APIs are used in some classes.

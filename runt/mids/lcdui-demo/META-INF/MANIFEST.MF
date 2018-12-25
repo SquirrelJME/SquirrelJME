@@ -3,7 +3,7 @@ X-SquirrelJME-UUID: 63e1de74-9cde-45e4-878c-ce335f0288db
 X-SquirrelJME-Error: AW
 X-SquirrelJME-Name: LCDUI Graphics Demo
 X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.2.0
+X-SquirrelJME-Version: 0.3.0
 X-SquirrelJME-Description: This is a demo which is used to demonstrate 
  how the graphic operations operate.
 X-SquirrelJME-Depends: midp-lcdui

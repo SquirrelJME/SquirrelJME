@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Name: MEEP Cellular Networking
 X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.2.0
+X-SquirrelJME-Version: 0.3.0
 X-SquirrelJME-Description: This provides an implementation which is used
   to access cellular networks.
 X-SquirrelJME-Error: DH

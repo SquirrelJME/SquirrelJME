@@ -3,7 +3,7 @@ X-SquirrelJME-UUID: 8d3e10bc-91f3-411d-a89e-db7397afab58
 X-SquirrelJME-Error: JC
 X-SquirrelJME-Name: Class File Reader
 X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.2.0
+X-SquirrelJME-Version: 0.3.0
 X-SquirrelJME-Description: This contains support for reading class files.
 X-SquirrelJME-Depends: collections io
 Microedition-Configuration: CLDC-1.8-Compact

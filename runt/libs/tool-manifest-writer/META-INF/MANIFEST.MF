@@ -3,7 +3,7 @@ X-SquirrelJME-UUID: 890370ee-0c73-4552-a49e-b38c6c2c9bd1
 X-SquirrelJME-Error: AB
 X-SquirrelJME-Name: Mutable Java Manifest
 X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.2.0
+X-SquirrelJME-Version: 0.3.0
 X-SquirrelJME-Depends: tool-manifest-reader
 X-SquirrelJME-Description: This project allows for creating standard 
  Java manifest files using a mutable class.
