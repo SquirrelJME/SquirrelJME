@@ -39,7 +39,7 @@ then
 	cd "$__realexedir"
 	
 	# Create ZIP
-	if ! fossil zip "$__vcomm" "squirreljme-src-$__vspec.zip" \
+	if ! fossil zip "$__vcomm" "$__indir/squirreljme-src-$__vspec.zip" \
 		--name "squirreljme-$__vspec"
 	then
 		echo "Could not ZIP revision." 1>&2
@@ -47,7 +47,7 @@ then
 	fi
 	
 	# Create TGZ
-	if ! fossil tar "$__vcomm" "squirreljme-src-$__vspec.tgz" \
+	if ! fossil tar "$__vcomm" "$__indir/squirreljme-src-$__vspec.tgz" \
 		--name "squirreljme-$__vspec"
 	then
 		echo "Could not TAR revision." 1>&2
