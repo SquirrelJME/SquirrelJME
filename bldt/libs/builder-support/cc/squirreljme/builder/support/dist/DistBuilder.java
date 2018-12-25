@@ -143,6 +143,16 @@ public abstract class DistBuilder
 		{
 		}
 		
+		// Dist specific usage file
+		try
+		{
+			DistBuilder.copyRootFile(__zip, "usage.mkd",
+				__pm, "assets/doc/usage-" + this.name + ".mkd");
+		}
+		catch (NoSuchFileException e)
+		{
+		}
+		
 		// Do specific build stuff, which depends on the distrubution target.
 		this.specific(__pm, __zip);
 	}

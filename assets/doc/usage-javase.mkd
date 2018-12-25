@@ -1,0 +1,38 @@
+# JavaSE (Shaded) Usage
+
+SquirrelJME's Shaded JavaSE JAR requires at least a Java SE 7 virtual
+machine. For most systems, it may be downloaded from the following locations:
+
+ * <https://adoptopenjdk.net/>
+ * <http://www.oracle.com/technetwork/java/javase/downloads/index.html>
+ * In Debian/Ubuntu, OpenJDK is available in the repository.
+
+Generally SquirrelJME will work best with at least a Java 8 virtual machine.
+
+The JAR file `squirreljme-javase.jar` may be run by running the following:
+
+ * `java -jar squirreljme-javase.jar`
+
+When run, it should start the launcher and provide a list of available
+programs.
+
+The following keys are used:
+
+ * _F1_ - _F12_: Command actions, these are placed at the bottom of the screen.
+ * _Arrow Keys_: Directional actions.
+ * _Spacebar_  : _Fire_ action.
+ * _ABCD_      : _A_, _B_, _C_, and _D_ game actions.
+
+## Third-party Libraries and Applications
+
+Third-party libraries and applications may be used, however currently these
+may or may not be supported fully. The JARs must be valid J2ME or Java ME
+libraries or applications (generally CLDC, MIDP, or MEEP). Additionally if
+an application requires the use of libraries then all dependencies which are
+not optional must be included.
+
+SquirrelJME will try to look in the following locations:
+
+ * A directory called `lib` at the same path in the JAR file.
+ * A directory called `lib` in the current working directory.
+
