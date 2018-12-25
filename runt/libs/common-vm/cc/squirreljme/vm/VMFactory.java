@@ -345,46 +345,37 @@ public abstract class VMFactory
 		
 		// Since we are shaded, we might want to load some extra suites from
 		// some directory
-		// Try to find the directory of our executable
-		Path execpath = null;
-		try
-		{
-			String execraw = SystemProperties.executablePath();
-			if (execraw == null)
-			{
-				execraw = System.getProperty("user.dir");
-				if (execraw != null)
-					execpath = Paths.get(execraw);
-			}
-			else
-			{
-				execpath = Paths.get(execraw);
-				
-				// Look in parent directory because we got the path of
-				// our executable
-				Path p = execpath.getParent();
-				if (p != null)
-					execpath = p;
-			}
-		}
-		catch (InvalidPathException e)
-		{
-		}
+		List<VMSuiteManager> mergesm = new ArrayList<>();
+		mergesm.add(sm);
 		
-		// Only if it exists can we actually use it
-		if (execpath != null)
+		// Check our working directory
+		String workdir = System.getProperty("user.dir");
+		if (workdir != null)
 			try
 			{
-				sm = new MergedSuiteManager(sm,
-					new PathSuiteManager(execpath.resolve("lib")));
+				mergesm.add(new PathSuiteManager(
+					Paths.get("workdir").resolve("lib")));
 			}
 			catch (InvalidPathException e)
 			{
-				execpath = null;
 			}
 		
-		// Debug
-		todo.DEBUG.note("Loaded EXEC Path: %s", execpath);
+		// Check our executable path
+		String execpath = SystemProperties.executablePath();
+		if (execpath != null)
+			try
+			{
+				mergesm.add(new PathSuiteManager(
+					Paths.get("execpath").getParent().resolve("lib")));
+			}
+			catch (InvalidPathException|NullPointerException e)
+			{
+			}
+		
+		// Do the merge?
+		if (mergesm.size() > 1)
+			sm = new MergedSuiteManager(mergesm.<VMSuiteManager>toArray(
+				new VMSuiteManager[mergesm.size()]));
 		
 		// Create the VM
 		VirtualMachine vm = VMFactory.main(null, null,
