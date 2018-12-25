@@ -354,7 +354,7 @@ public abstract class VMFactory
 			try
 			{
 				mergesm.add(new PathSuiteManager(
-					Paths.get("workdir").resolve("lib")));
+					Paths.get(workdir).resolve("lib")));
 			}
 			catch (InvalidPathException e)
 			{
@@ -366,7 +366,7 @@ public abstract class VMFactory
 			try
 			{
 				mergesm.add(new PathSuiteManager(
-					Paths.get("execpath").getParent().resolve("lib")));
+					Paths.get(execpath).getParent().resolve("lib")));
 			}
 			catch (InvalidPathException|NullPointerException e)
 			{
