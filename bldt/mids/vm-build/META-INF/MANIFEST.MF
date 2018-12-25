@@ -3,7 +3,7 @@ X-SquirrelJME-UUID: 82dcdfbb-27da-48a6-87f7-7a0a8810360f
 X-SquirrelJME-Error: BA
 X-SquirrelJME-Name: Virtual Machine on the Build System
 X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.2.0
+X-SquirrelJME-Version: 0.3.0
 X-SquirrelJME-Depends: builder-support
 X-SquirrelJME-Description: This project is for compatibility purposes only 
  as the VM on top of the build system has been moved into the build 

@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 X-SquirrelJME-Name: Manifest File Decoder
 X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.2.0
+X-SquirrelJME-Version: 0.3.0
 X-SquirrelJME-Description: This provides a decoder for standardJava 
  manifest files.
 X-SquirrelJME-Error: BB

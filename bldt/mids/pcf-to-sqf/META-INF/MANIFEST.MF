@@ -3,7 +3,7 @@ X-SquirrelJME-UUID: 913f028e-3ecc-4a95-8a6f-0c7b1dc38d16
 X-SquirrelJME-Error: AP
 X-SquirrelJME-Name: PCF to SQF Font Conversion
 X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.2.0
+X-SquirrelJME-Version: 0.3.0
 X-SquirrelJME-Description: This converts PCF font data into SQF fonts 
  which are smaller, simpler, and faster to read than supporting PCF 
  from within SquirrelJME.

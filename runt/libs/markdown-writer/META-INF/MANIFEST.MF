@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Name: Markdown Writer
 X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.2.0
+X-SquirrelJME-Version: 0.3.0
 X-SquirrelJME-Description: This project contains a formatted markdown 
  writer which allows documents to be written to a standard stream yet 
  have state on which properties to apply to the output.

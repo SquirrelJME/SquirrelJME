@@ -3,7 +3,7 @@ X-SquirrelJME-UUID: f119ce1b-cd4f-4c7b-a229-5f12448f5d1c
 X-SquirrelJME-Error: AC
 X-SquirrelJME-Name: Collections
 X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.2.0
+X-SquirrelJME-Version: 0.3.0
 X-SquirrelJME-Description: This class contains various collections 
  which can be used to store objects.
 Microedition-Configuration: CLDC-1.8-Compact

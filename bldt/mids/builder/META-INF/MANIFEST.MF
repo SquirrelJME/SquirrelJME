@@ -4,7 +4,7 @@ X-SquirrelJME-Depends: builder-support builder-implementation
 X-SquirrelJME-Name: Build System
 X-SquirrelJME-Error: AO
 X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.2.0
+X-SquirrelJME-Version: 0.3.0
 X-SquirrelJME-Description: This contains the build system which is 
  used to generate target SquirrelJME binaries.
 Microedition-Configuration: CLDC-1.8

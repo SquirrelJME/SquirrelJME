@@ -140,7 +140,7 @@ public final class SystemProperties
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static String javaVMVersion()
 	{
-		return "0.2.0";
+		return "0.3.0";
 	}
 	
 	/**

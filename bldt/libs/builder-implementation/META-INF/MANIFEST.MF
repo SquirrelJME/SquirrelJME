@@ -3,7 +3,7 @@ X-SquirrelJME-UUID: 77ca1f69-76f9-402f-a7b1-c89d7e312c60
 X-SquirrelJME-Error: AG
 X-SquirrelJME-Name: Builder Implementation
 X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.2.0
+X-SquirrelJME-Version: 0.3.0
 X-SquirrelJME-Description: This contains the entry system which runs 
  on Java ME environments such as SquirrelJME. This allows for example 
  SquirrelJME to build itself.

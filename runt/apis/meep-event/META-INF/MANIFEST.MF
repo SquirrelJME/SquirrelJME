@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 X-SquirrelJME-Type: liblet
 X-SquirrelJME-Name: MEEP Event Management
 X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.2.0
+X-SquirrelJME-Version: 0.3.0
 X-SquirrelJME-Description: This provides an interface which allows an 
  application to receive events from the system along withsending events 
  to other running applications.

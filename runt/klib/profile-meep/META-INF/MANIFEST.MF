@@ -3,7 +3,7 @@ X-SquirrelJME-UUID: a825a13b-6c9e-4429-ae36-6f878abc1f6f
 X-SquirrelJME-Error: AR
 X-SquirrelJME-Name: MEEP 8.0 Profile
 X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.2.0
+X-SquirrelJME-Version: 0.3.0
 X-SquirrelJME-Description: This defines the MEEP profile and is a 
  virtual project depends on others.
 X-SquirrelJME-DefinedProfiles: MIDP-1.0 MIDP-2.0 MIDP-3.1 MEEP-8

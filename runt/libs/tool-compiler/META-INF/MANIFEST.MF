@@ -3,7 +3,7 @@ X-SquirrelJME-UUID: 8fbf0127-aca6-477f-8220-cde2ce21da48
 X-SquirrelJME-Error: AQ
 X-SquirrelJME-Name: Java Compiler
 X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.2.0
+X-SquirrelJME-Version: 0.3.0
 X-SquirrelJME-Description: This project is used to compile and 
  document Java source code. 
 X-SquirrelJME-Depends: collections zip io tool-classfile collections

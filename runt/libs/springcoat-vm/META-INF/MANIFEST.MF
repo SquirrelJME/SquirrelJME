@@ -3,7 +3,7 @@ X-SquirrelJME-UUID: 82dcdfbb-27da-48a6-87f7-7a0a8810360f
 X-SquirrelJME-Error: BK
 X-SquirrelJME-Name: SpringCoat Virtual Machine
 X-SquirrelJME-Vendor: Stephanie Gawroriski
-X-SquirrelJME-Version: 0.2.0
+X-SquirrelJME-Version: 0.3.0
 X-SquirrelJME-Depends: tool-classfile tool-manifest-reader meep-swm 
  tool-profiler meep-midlet common-vm
 X-SquirrelJME-Description: This is a SpringCoat virtual machine which 
