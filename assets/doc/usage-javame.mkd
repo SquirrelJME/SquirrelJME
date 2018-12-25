@@ -1,0 +1,6 @@
+# JavaME (Shaded) Usage
+
+SquirrelJME's Shaded JavaME JAR requires a Java ME 8 virtual machine, this
+includes SquirrelJME itself. Installation into existing virtual machine is
+implementation dependent.
+

@@ -1,0 +1,8 @@
+# SquirrelJME Usage
+
+Specific distributions include their usage document, however you may still
+access the usage information for each virtual machine.
+
+ * [JavaME (Shaded)](assets/doc/usage-javame.mkd)
+ * [JavaSE (Shaded)](assets/doc/usage-javase.mkd)
+
