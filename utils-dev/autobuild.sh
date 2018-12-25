@@ -60,6 +60,18 @@ __tmp="/tmp/$$"
 mkdir -p "$__tmp"
 cd "$__tmp"
 
+# Build from these sources instead of using the commit tree, so that way it
+# is super clean!
+if [ ! -z "$__indir" ]
+then
+	# Extract
+	tar -xzvf "$__indir/squirreljme-src-$__vspec.tgz"
+	
+	# Set our directories to the source location here
+	__exedir="$__tmp/squirreljme-$__vspec/utils-dev"
+	__realexedir="$("$__exedir/absolute.sh" "$__exedir")"
+fi
+
 # Place the date somewhere
 echo "$__date" > "$__tmp/date"
 
@@ -124,7 +136,7 @@ do
 		
 		# Move it there
 		mv -v "$__tmp/$__zip" \
-			"$__indir/$(basename -- "$__zip" .zip)-$__vspec.zip)"
+			"$__indir/$(basename -- "$__zip" .zip)-$__vspec.zip"
 	fi
 done
 
