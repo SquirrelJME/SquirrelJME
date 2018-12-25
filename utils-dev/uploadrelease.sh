@@ -32,7 +32,7 @@ then
 fi
 
 # Upload the release to the repository
-for __file in "$__specdir/"*.zip
+for __file in "$__specdir/"*.*
 do
 	# Need to access the fossil unversion
 	cd "$__realexedir"
