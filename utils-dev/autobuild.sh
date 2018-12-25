@@ -77,6 +77,7 @@ echo "$__date" > "$__tmp/date"
 
 # Go through all distributions and build them all
 __okay="0"
+__fail="0"
 "$__realexedir/../build.sh" dist-list | while read __dist
 do
 	# Output ZIP name
@@ -88,6 +89,7 @@ do
 	# Build the distribytion
 	if ! "$__realexedir/../build.sh" dist "$__dist"
 	then
+		__fail="1"
 		echo "Failed to build $__dist." 1>&2
 		continue
 	fi
@@ -95,6 +97,7 @@ do
 	# Make sure it exists
 	if [ ! -f "$__zip" ]
 	then
+		__fail="1"
 		echo "Output ZIP $__zip does not exist?" 1>&2
 		continue
 	fi
@@ -127,6 +130,8 @@ do
 			
 			# Mark as uploaded
 			__okay="$(($__okay + 1))"
+		else
+			__fail="1"
 		fi
 	
 	# Place into the given directory
@@ -135,14 +140,23 @@ do
 		mkdir -p "$__indir"
 		
 		# Move it there
-		mv -v "$__tmp/$__zip" \
+		if ! mv -v "$__tmp/$__zip" \
 			"$__indir/$(basename -- "$__zip" .zip)-$__vspec.zip"
+		then
+			__fail="1"
+		else
+			__okay="$(($__okay + 1))"
+		fi
 	fi
 done
 
 # Cleanup
 echo rm -rvf "$__tmp"
 
-# Return with the number of builds done
-exit $__okay
+# Return failure if any build failed
+if [ "$__fail" -ne "0" ]
+then
+	exit "$__fail"
+fi 
+exit 0
 
