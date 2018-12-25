@@ -28,8 +28,9 @@ You may support me on [Patreon](https://www.patreon.com/SquirrelJME)!
 
 Badges:
 
- * ![CircleCI](
-   https://circleci.com/gh/XerTheSquirrel/SquirrelJME/tree/trunk.png)
+ * [![CircleCI](
+   https://circleci.com/gh/XerTheSquirrel/SquirrelJME/tree/trunk.png)](
+   https://circleci.com/gh/XerTheSquirrel/SquirrelJME/tree/trunk)
 
 Information:
 
