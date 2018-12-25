@@ -21,6 +21,40 @@ __realexedir="$("$__exedir/absolute.sh" "$__exedir")"
 # Current build date, for record keeping
 __date="$(date --utc +%s) $(date --utc)"
 
+# Directory to place final things instead of in fossil?
+__indir=""
+if [ ! -z "$1" ]
+then
+	__indir="$("$__exedir/absolute.sh" "$1")"
+fi
+
+# Version specifier for sources?
+__vspec="$(cat "$__realexedir/../squirreljme-version")"
+__vcomm="$(cat "$__realexedir/../manifest.uuid")"
+
+# Build source code set there as well
+if [ ! -z "$__indir" ]
+then
+	# Need to access the fossil repo
+	cd "$__realexedir"
+	
+	# Create ZIP
+	if ! fossil zip "$__vcomm" "squirreljme-src-$__vspec.zip" \
+		--name "squirreljme-$__vspec"
+	then
+		echo "Could not ZIP revision." 1>&2
+		exit 4
+	fi
+	
+	# Create TGZ
+	if ! fossil tar "$__vcomm" "squirreljme-src-$__vspec.tgz" \
+		--name "squirreljme-$__vspec"
+	then
+		echo "Could not TAR revision." 1>&2
+		exit 5
+	fi
+fi
+
 # Go to temporary directory to build things
 __tmp="/tmp/$$"
 mkdir -p "$__tmp"
@@ -65,19 +99,32 @@ do
 		fi
 	fi
 	
-	# Need to access the fossil unversion
-	cd "$__realexedir"
-	
-	# Add it
-	if fossil unversion add "$__tmp/$__zip" \
-		--as "auto/$(basename -- "$__zip")"
+	# Store into fossil
+	if [ -z "$__indir" ]
 	then
-		# Add date file as well!
-		fossil unversion add "$__tmp/date" \
-			--as "auto/$(basename -- "$__zip").date.mkd"
+		# Need to access the fossil unversion
+		cd "$__realexedir"
 		
-		# Mark as uploaded
-		__okay="$(($__okay + 1))"
+		# Add it
+		if fossil unversion add "$__tmp/$__zip" \
+			--as "auto/$(basename -- "$__zip")"
+		then
+			# Add date file as well!
+			fossil unversion add "$__tmp/date" \
+				--as "auto/$(basename -- "$__zip").date.mkd"
+			
+			# Mark as uploaded
+			__okay="$(($__okay + 1))"
+		fi
+	
+	# Place into the given directory
+	else
+		# Make sure it exists
+		mkdir -p "$__indir"
+		
+		# Move it there
+		mv -v "$__tmp/$__zip" \
+			"$__indir/$(basename -- "$__zip" .zip)-$__vspec.zip)"
 	fi
 done
 
