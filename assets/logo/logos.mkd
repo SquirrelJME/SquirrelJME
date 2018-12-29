@@ -1,8 +1,8 @@
 # SquirrelJME Logos
 
- * Copyright (C) 2013-2018 Stephanie Gawroriski <xer@multiphasicapps.net>
- * Copyright (C) 2013-2018 Multi-Phasic Applications <multiphasicapps.net>
- * "SquirrelJME" is trademarked by Stephanie Gawroriski 2016-2018
+ * Copyright (C) 2013-2019 Stephanie Gawroriski <xer@multiphasicapps.net>
+ * Copyright (C) 2013-2019 Multi-Phasic Applications <multiphasicapps.net>
+ * "SquirrelJME" is trademarked by Stephanie Gawroriski 2016-2019
  * The SquirrelJME Logo was illustrated by...
    * Kat Adam-MacEwen
    * Kat@CMYKat Designs & Illustrations <www.cmykat-designs.com>

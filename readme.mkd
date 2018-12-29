@@ -15,11 +15,11 @@ it is ported to Java ME. However some programs may run since Java ME is a
 subset of Java SE, so provided the desktop software does not use what is
 missing or not supported it will run.
 
- * Copyright (C) 2013-2018 Stephanie Gawroriski
+ * Copyright (C) 2013-2019 Stephanie Gawroriski
    <xer@multiphasicapps.net>
- * Copyright (C) 2013-2018 Multi-Phasic Applications
+ * Copyright (C) 2013-2019 Multi-Phasic Applications
    <http://multiphasicapps.net/>
- * "SquirrelJME" and "Lex" are trademarked by Stephanie Gawroriski 2016-2018
+ * "SquirrelJME" and "Lex" are trademarked by Stephanie Gawroriski 2016-2019
  * _Lex_ and The _SquirrelJME_ Logo were illustrated by...
    * Kat Adam-MacEwen
    * Kat@CMYKat Designs & Illustrations <http://www.cmykat-designs.com/>

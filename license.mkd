@@ -2,11 +2,11 @@
 
 SquirrelJME is copyright:
 
- * Copyright (C) 2013-2018 Stephanie Gawroriski
+ * Copyright (C) 2013-2019 Stephanie Gawroriski
    <xer@multiphasicapps.net>
- * Copyright (C) 2013-2018 Multi-Phasic Applications
+ * Copyright (C) 2013-2019 Multi-Phasic Applications
    <http://multiphasicapps.net/>
- * "SquirrelJME" and "Lex" are trademarked by Stephanie Gawroriski 2016-2018
+ * "SquirrelJME" and "Lex" are trademarked by Stephanie Gawroriski 2016-2019
 
 Works of art with a credit to the original author, note that these works were
 commissioned under contract:
