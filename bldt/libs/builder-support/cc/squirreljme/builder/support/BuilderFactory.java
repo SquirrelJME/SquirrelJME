@@ -240,6 +240,30 @@ public class BuilderFactory
 				if (a != null)
 					args.add(a);
 		
+		// Allows the VM to be overridden
+		String vmname = null;
+		
+		// Determine how shading is to be handled
+		String[] parse;
+		while (null != (parse = __getopts(":?v:", args)))
+			switch (parse[0])
+			{
+					// Use build timespace
+				case "v":
+					vmname = parse[1];
+					break;
+				
+					// {@squirreljme.error AU1e Unknown argument.
+					// Usage: vmshade [-v vmname] (program);
+					// -v: The name of the virtual machine to use, this may
+					// be springcoat or summercoat.
+					// (The switch)}
+				case "?":
+				default:
+					throw new IllegalArgumentException(
+						String.format("AU1e %s", parse[0]));
+			}
+		
 		// {@squirreljme.error AU14 Launch of program using a SquirrelJME
 		// VM requires a program to be launched.}
 		String program = args.pollFirst();
@@ -247,7 +271,7 @@ public class BuilderFactory
 			throw new IllegalArgumentException("AU14");
 		
 		// Run the VM
-		VMMain.main(this.projectmanager, program,
+		VMMain.main(vmname, this.projectmanager, program,
 			args.<String>toArray(new String[args.size()]));
 	}
 	
