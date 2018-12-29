@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+X-SquirrelJME-UUID: 217c48ac-ed98-48ea-9f61-aceb3175baa0
+X-SquirrelJME-Error: AE
+X-SquirrelJME-Name: SummerCoat Virtual Machine
+X-SquirrelJME-Vendor: Stephanie Gawroriski
+X-SquirrelJME-Version: 0.3.0
+X-SquirrelJME-Depends: tool-classfile tool-manifest-reader meep-swm 
+ tool-profiler meep-midlet common-vm
+X-SquirrelJME-Description: This is the SummerCoat VM which is a more 
+ optimized register based virtual machine which should result in faster 
+ code execution.
+Microedition-Configuration: CLDC-1.8
+

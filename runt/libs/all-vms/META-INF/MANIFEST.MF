@@ -6,6 +6,6 @@ X-SquirrelJME-Vendor: Stephanie Gawroriski
 X-SquirrelJME-Version: 0.3.0
 X-SquirrelJME-Description: This is a virtual package which depends on 
  all the virtual machines which are available.
-X-SquirrelJME-Depends: springcoat-vm
+X-SquirrelJME-Depends: springcoat-vm summercoat-vm
 Microedition-Configuration: CLDC-1.8-Compact
 

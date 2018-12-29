@@ -42,9 +42,26 @@ public class VMMain
 	 * @param __pn The project to be launched.
 	 * @param __args Program arguments.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2018/12/22
+	 * @since 2018/12/29
 	 */
 	public static void main(ProjectManager __pm, String __pn, String... __args)
+		throws NullPointerException
+	{
+		VMMain.main(null, __pm, __pn, __args);
+	}
+	
+	/**
+	 * Main entry point using the given project manager.
+	 *
+	 * @param __vm The name of the VM engine to use, may be blank.
+	 * @param __pm The project manager.
+	 * @param __pn The project to be launched.
+	 * @param __args Program arguments.
+	 * @throws NullPointerException On null arguments, except for {@code __vm}.
+	 * @since 2018/12/22
+	 */
+	public static void main(String __vm, ProjectManager __pm, String __pn,
+		String... __args)
 		throws NullPointerException
 	{
 		if (__pm == null || __pn == null)
@@ -107,7 +124,7 @@ public class VMMain
 		ProfilerSnapshot profiler = new ProfilerSnapshot();
 		
 		// Initialize the virtual machine with our launch ID
-		VirtualMachine machine = VMFactory.main(null, profiler,
+		VirtualMachine machine = VMFactory.main(__vm, profiler,
 			new BuildSuiteManager(__pm), classpath,
 			null, launchid, -1, null,
 			args.<String>toArray(new String[args.size()]));
