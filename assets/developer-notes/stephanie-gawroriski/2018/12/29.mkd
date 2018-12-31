@@ -1,0 +1,19 @@
+# 2018/12/29
+
+## 13:38
+
+Okay so some ideas for SummerCoat after wokring on SpringCoat. Since there are
+multiple tasks and such, I will need a central task manager which will be very
+important and such. So, the `VirtualMachine` instance will be each individual
+task. This will be created by a kind of hub class which then spawns VMs. In
+SpringCoat the task manager was kind of slapped on after the fact because I
+did not have any concept of tasks so it is a bit odd. For this next VM, having
+a central task manager which spawns even the main task will be much easier to
+handle. Then at least global resources like the framebuffer can be shared using
+the single root information thingy. Of course to simplify garbage collection
+and such, I will need to figure things out. Since SpringCoat cannot be garbage
+collected using reference counting. I want the layout to be in a way where
+SummerCoat can be garbage collected. Also, SummerCoat need not be able to
+handle threading and garbage collection itself. The later RatufaCoat will need
+to have the ability to do cooperative threading since not all systems may have
+threads and such.
