@@ -50,6 +50,7 @@ Information:
  * _Developer Resources_
    * [CircleCI Status](
      https://circleci.com/gh/XerTheSquirrel/SquirrelJME/tree/trunk)
+   * [Developer Guide](developer-guide.mkd)
    * [Developer Notes](assets/developer-notes/index.mkd)
    * [Design Document](design.mkd)
    * [Project Scope](scope.mkd)
