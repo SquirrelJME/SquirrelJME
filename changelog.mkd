@@ -1,5 +1,9 @@
 # Changelog
 
+# 0.4.0 (To Be Determined)
+
+To Be Determined.
+
 # 0.2.0 (December 25, 2018)
 
 SquirrelJME's first release!

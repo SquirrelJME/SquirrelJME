@@ -1,0 +1,70 @@
+# Developer Guide
+
+This is a guide for developers to follow for various parts of the repository.
+
+## Releasing
+
+When a release is to be made, it is performed in another branch and becomes
+separate from `trunk`. This means that `trunk` is always in a state of
+perpetual development. Within these branches, there are bug fixes and
+releases. When a commit is ready for a release then it should just be tagged
+and built accordingly. It is best to avoid having releases and such in the
+`trunk` branch because it will complicate bug fixes and other things. So
+when a release is to be made:
+
+ * Update the changelog with the planned release date if it is known at the
+   time, otherwise it is not known.
+ * Fork the branch and make a new branch from `trunk` for the release to
+   be done, an example would be `release-0.2.x`.
+ * In the new `release-0.2.x` branch, update the version numbers in the
+   appropriate places so things are updated.
+ * Tag the commit as `0.2.0` or an increasing release version
+   (example: `0.2.1`) for each increasing release.
+ * Do all the common release stuff.
+ * While in `trunk`, do the following:
+   * The development version can be bumped in which case
+     the version will be incremented by two and will be odd (3, 5, 7, etc.).
+   * Add the next version to the changelog, so that it may be updated when
+     there is a new major change.
+
+### Bug-fix and Otherwise Releases
+
+If a bug-fix or otherwise has to be done on a release version, since the
+release is in its own branch, the work can be done in that branch. Any fixes
+should have already been made in `trunk` if applicable, then it can be
+cherry picked into the release branch. Then once the fixes have been made and
+a new version is released the release version should be incremented (that is
+`0.2.0` to `0.2.1` to `0.2.2`). Then any of the release related stuff should
+be done.
+
+### Common Release Stuff
+
+When a release is done, all of the binaries and according information must be
+updated. It is assumed that `SQUIRRELJME` is an environment variable to the
+root of the SquirrelJME source tree. Checkout the tag or commit which the
+release is to be done on. Then run the following command:
+
+ * `$SQUIRRELJME/utils-dev/uploadrelease.sh $__release_version__`
+
+This will perform an auto-build of everything and then store the release in
+the `$__release_version__` directory, these binaries are important. Once the
+binaries and sources are built, they should be uploaded to the following
+locations:
+
+ * Fossil (<https://multiphasicapps.net/>)
+   * The `uploadrelease.sh` script takes care of putting the files in the
+     repository.
+   * You will need to edit the download page to add the new version, this
+     will be done with `fossil unversion edit download.mkd`.
+   * Synchronize the repository with the unversioned space.
+ * GitHub
+   * Go to releases.
+   * Draft a new release.
+   * Choose the release tag you just made. Note that there might be a delay
+     before GitHub is updated, so be patient or force it to update manually.
+   * Title the release.
+ * SourceForge
+   * Create a new directory for the release number.
+   * Upload all of the files into that directory.
+   * Appropriately set the operating systems for the binaries.
+
