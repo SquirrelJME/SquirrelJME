@@ -11,6 +11,7 @@
 package cc.squirreljme.vm.summercoat;
 
 import cc.squirreljme.vm.VirtualMachine;
+import cc.squirreljme.vm.VMException;
 
 /**
  * This represents a task which is running within the virtual machine.
