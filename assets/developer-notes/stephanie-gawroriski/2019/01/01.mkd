@@ -1,0 +1,470 @@
+# 2019/01/01
+
+## 10:07
+
+So now that a new year has happened, I will continue the tradition of doing
+the year in review, essentially a retrospective of it.
+
+## 10:15
+
+Okay, so commit wise under my dead name and my legal name, my legal name is
+at 50% and to meet the same amount it would be 3,383 commits so quite awhile
+before it is overtaken. But there will never be a new commit under that so as
+time goes on, it will dwindle. At least I convert the stuff in the Git
+repositories so it does not exist in the author data at all.
+
+## 10:18
+
+As for the review, I should eat breakfast first then get into it.
+
+## 11:17
+
+So now for the year in review... I will say that 2018 was the year with the
+first release of SquirrelJME which is nice, more releases are definitely
+coming this year. I am excited for the eventual ability to run more software
+and have it be faster, along with some ports to platforms such as RetroArch.
+Note that this was descriptive then just started turning into a changelog.
+
+ * January
+   * Since December I did independent contracting for IOpipe and also had my
+     main retail job.
+   * I worked on the ill-fated kernel and the old complicated service code
+     which was stripped away since it complicated things greatly.
+   * Mostly worked on the packet system for the ill-fated kernel, since it
+     was IPC based and used streams for the most part.
+   * I simplified the Kernel and the IPC by stripping a bunch of stuff
+     out of it.
+   * I made the IPC interface much faster by optimizing the communication
+     means. With things being simpler it performed better because the overhead
+     was great.
+   * More work on the defunct kernel services, improving them.
+   * Made corrections to the IPC interface.
+   * More service related changes.
+   * Corrected the fossil building script, since I did have exports.
+   * I added permissions to the defunct kernel, sort of.
+   * Re-ordered all the error codes.
+   * JamVM on Linux is messed up and does not work properly with tools.jar, so
+     a hack was done to fix this.
+   * I bought <http://squirreljme.cc/> and as such, I moved everything in the
+     namespaces over. I did this because `net.multiphasicapps.squirreljme` was
+     really long, took up a bunch of space, and was annoying to type all the
+     time.
+   * Did some code cleanups following this.
+   * More work on packets.
+   * More kernel trust work.
+ * February
+   * Added a basic shell for a potential Java to C compiler, but this did not
+     pan out. Perhaps later it will, but there is RatufaCoat which will be
+     written in C.
+   * More kernel trust work.
+   * Started a defunct WinterCoat idea, using compiled ROMs. WinterCoat was
+     the original C based VM, but that will be done with RatufaCoat now.
+   * Worked on a bunch of ROM compilation stuff, which eventually was
+     stripped in the future.
+   * Class file parsing improvements.
+   * Removed link to the IRC channel and closed it, it is no longer around.
+   * Created a scope document (which is still around) which specifies which
+     APIs I will implement and which ones to not consider because they are
+     not Java ME
+   * Dependency system work, which the code is pretty much still used
+     today.
+ * March
+   * This was a happy month for me because I started Hormone Replacement
+     Therapy. I am a transgender woman and honestly since starting HRT I have
+     felt much better and it has been reflected in SquirrelJME.
+   * Remove a bunch of the old system call stuff and simplify it.
+   * The kernel packet system was moved to its own library, although later it
+     would be deleted.
+   * System calls were switched from using a stream of bytes over IPC to using
+     calls to implemented classes.
+   * Refactoring of the system call interface.
+   * Added Base64 and MIME decoders, which are still used today.
+   * Added a test framework, however this one would never actually really be
+     implemented. The newer TAC is much simpler. This is when I wanted very
+     complicated parsing of class files to find tests and such.
+   * Corrected some of the utility scripts.
+   * Added ability to get path sets in the build system which are compatible
+     with the compiler.
+   * The defunct JavaSE main preferred `Main-Class` over `MIDlet-n`.
+   * Added the only test for Base64 decoding but that really did not do
+     anything.
+   * Defined super complex annotations for declaring tests and their
+     parameters, later in TAC this would instead be done with resources since
+     it does not require a special compiler.
+   * Complicated lookup of class trees.
+   * Worked on a Java language tokenizer, that is still around although I
+     will probably redo the other compiler stuff in the future. The tokenizer
+     is good however.
+   * Refactored the tokenizer to make it much better.
+   * Did more work on the abstract class system services code.
+   * Added a LCDUI interface, to interact with the host system. This would
+     later be removed for something far simpler and portable.
+   * PGP key updated.
+   * Worked on a bunch of the LCDUI code, this would later be deleted.
+   * Worked on Squirrel Quarrel, this would be sitting idle for the most part
+     but it is a planned StarCraft clone (logically for the most part) for
+     fun.
+   * Added an event and replay system for Squirrel Quarrel, which would be
+     useful for tests and such when it gets there.
+   * Added some useful methods to the manifest class.
+   * Made a more optimized `BasicGraphics` which does all the pixel drawing
+     routines, this would later be deprecated. Still need to figure out a
+     better way to do this with auto-generation or something.
+   * More work on the tokenizer.
+   * More LCDUI work, adding a bunch of things which would later be removed.
+   * Removed the `TemplateArrayGraphics` because it ended up being a huge
+     mess. This is the more optimal solution but I think for the future
+     instead of implementing all of the formats by hand, I might make a basic
+     language or similar.
+   * Renamed the LCDUI demos to be a better name.
+   * Took awhile figuring out how alpha blending is to work and such.
+   * Added `PixelFormat` for LCDUI, this is still used today and is very
+     useful.
+   * The LCDUI interface at the time used native widgets which meant that
+     manual garbage collection and cleanup has to be used. This was later
+     removed with a simple framebuffer.
+ * April
+   * Added `TODO.note()` which is used today, is useful.
+   * Pretty sure I redid the LCDUI interface again to simplify things, but
+     naturally those changes were removed.
+   * Worked on more Java source code parsing.
+   * Base for building the structure of a Java source file.
+   * Added a palette for Squirrel Quarrel to keep it simple and colorful
+     and additionally color-blind safe.
+   * More parsing of class files into structures.
+   * More token parsing.
+   * Redoing of the class structure interface.
+   * Updated the As-A-Runtime document.
+   * As a note, the test parsing stuff used the tokenizer and class structure
+     to find test that are available. Of course this was complex.
+ * May
+   * Made the source code limit 79 columns because it messed with `nano` and
+     caused lines to scroll all the way left making them hard to read at the
+     end of lines.
+   * Worked on expression and such for the Java source parser.
+   * in `TODO` and `DEBUG` use a simplified and shortened location for traces
+     because including the entire package took so much space on screen.
+   * More compiler work.
+   * Added a parser for `package-info.java` files.
+   * Still more compiler work.
+   * Added a dumper for class files and such, for testing.
+   * More compiler stuff.
+   * Switch from my own code of conduct which was very punny to a more format
+     and serious one: Contributor Covenant Code of Conduct.
+ * June
+   * I got a full-time job at IOpipe, so I removed the for-hire notice in my
+     project. I started June 25, 2018. I was very happy for this moment.
+   * Since I was starting a new job, I had to finish off my retail job which
+     gave me a ton of hours so my time was not as available.
+   * I decided to take a haitus on SquirrelJME to concentrate on life first,
+     which I sort of did.
+   * I just worked on the annotation parser for SquirrelJME.
+ * July
+   * My birthday was on July 6 so happy birthday me!
+   * I went to AnthroCon for my birthday, this is a furry convention and I had
+     a wonderful time there meeting with friends and generally being happy.
+   * I moved to Pittsburgh this month as well (July 20), leaving a very
+     abusive situation. I lived in horrible conditions and additionally it was
+     a very dangerous and transphobic area (I lived in West Virginia). Since
+     moving out my blood pressure dropped so much, I lost weight, and I got so
+     much healthier.
+   * Had a mid-project crisis, effectively I found myself endlessly running
+     around in loops and doing nothing. With my short time working at IOpipe I
+     pretty much learned how to run a project myself.
+   * Started the SpringCoat VM, which has been finished for the most part and
+     was released in December under version 0.2.0. SpringCoat was designed to
+     be not the best implementation being a pure interpreter.
+     * You can read more at [2018/07/21](../../2018/07/21.mkd).
+   * Nothing much was really done with SquirrelJME, however with better living
+     conditions at the end of the month and learning things from my Job I
+     was able to save SquirrelJME. Realizing that I was over-designing and
+     doing things I did not really have a grasp for yet, basically climbing
+     a mountain before I even learned to climb.
+   * This is the turning point for SquirrelJME as previously stated.
+ * August
+   * I am still very much moving in and working my new job, still getting
+     settled so not much was done at all. Just a few things.
+   * I read more of the class file data needed for SpringCoat since some
+     things were not implemented yet.
+   * I cycled the Discord invite since I changed the starting channel to the
+     about channel.
+   * In a community I helped manage, which took a bunch of my time since it
+     was a volunteer effort, formed a giant angry mob and I was picked as the
+     target. Despite the angry mob generally saying I was a friendly, helpful,
+     and made their day better I was sent death threats and rape threats by
+     people joining in on the "fun". I then left and since that took up some
+     of my time, I was able to work on SquirrelJME more. Definitely learned a
+     lesson in community management that you need to have a zero tolerance
+     policy on toxicity since it starts to pool and then when it spills it is
+     impossible to cleanup.
+ * September
+   * This month was far more active since I was more adjusted to living in my
+     own apartment and I had more spare time on my hands despite working a
+     full time job.
+   * I corrected the developer notes calendar being wrong.
+   * More class file parsing which was needed by SpringCoat, luckily this code
+     is completely reuseable and that will be done for SummerCoat and such.
+     * Annotations.
+     * Source code file the class was compiled from.
+     * Line numbers.
+   * Add a script to mirror Fossil's unversion space to GitHub Wiki, which is
+     a very horrible and limited feature.
+   * Much implementation of SpringCoat, lots of work on instruction parsing
+     and many other things.
+   * Added the now modern SquirrelJME API which has made it to release. This
+     one is far simpler and definitely makes porting easier because of its
+     simplicity and such.
+   * Implementing a bunch of methods in the library.
+   * Added the ability to run SpringCoat using the projects provided by the
+     build system, this simplified running things because I could just launch
+     them directly.
+   * Add some annotations `ImplementationNote` since it
+     will be quite useful for the standard libraries that developers should
+     know. Kind of a gotcha.
+   * SpringCoat used to be in the build system, but now it is an actual
+     runtime library which makes it easier to use.
+   * Lots and lots of instruction handling.
+   * Added `DebugAccess` API for debugging stuff, this helped early on even
+     before printing was supported.
+   * Made the raw stack traces uses `int[]` so that way it could more quickly
+     be initialized rather than resolving everything.
+   * Implemented calling of the native API methods.
+   * Made the `TODO` and `DEBUG` text more condensed and easier to read since
+     it took so much screen space.
+   * Deprecated the old service calls and such that existed before hand, these
+     were incredibly complex interfaces and they were starting to go away.
+   * Added encodings ISO-8859-1 and UTF-8.
+   * Added base `SecurityManager`.
+   * Added some missing classes in the CLDC.
+   * Implemented a bunch of CLDC classes like String and such.
+   * Added a link to my Mastodon account, since I did have my Twitter linked
+     as well.
+   * Added a note that SquirrelJME is not Java SE and it cannot run Java SE
+     programs.
+   * If `new TODO()` is hit twice, halt the VM and exit with a fatal TODO
+     exit instead of infinitely hitting TODOs as the TODO is being handled.
+   * Added base for system property support.
+   * Corrections to stack map table parsing (for later verification although
+     it is not used in SpringCoat).
+   * Added a guard for `TODO` and `DEBUG` printing so that way it does not
+     splice messages. It would infinite loop with recursion and then fail, so
+     it is just symbolized with a caret.
+   * Added weak references, which are useful for very short lived caches and
+     such but not long lived ones.
+   * On September 23, 2018, with a minor removal of some code which causes
+     TODOs to fire the first ever running instance of SquirrelJME in all of
+     its history happened. This was very exciting even though it was a simple
+     hello world.
+   * More stack map parsing fixes.
+   * Made `Throwable`'s stack trace printing much cleaner and easier to read.
+   * Worked on `Formatter` which is very complex, but not yet complete fully.
+   * I supported EBDIC 037 just for fun, it was interesting.
+   * Removed the old WinterCoat which is in C, this will be replaced by the
+     eventual RatufaCoat later this year.
+   * Simplified the licenses.
+   * An actual logo for SquirrelJME drawn by _Kat Adam-MacEwen_, she did a
+     wonderful job!
+   * I found out that the Fossil to Git conversion failed due to the
+     `x-new-month` and `x-new-year` tags being duplicated which made all the
+     tags go away in Git. It is valid in Fossil to have duplicate tags, but
+     since I want it to work in Git I removed all of them.
+   * I additionally added the tag `x-date-201807` because I forgot it.
+   * I updated the SquirrelJME Patreon and made it much better using the
+     new logos and such.
+   * Made corrections to class name handling.
+   * More `Formatter` work.
+   * Much more library work to make things better.
+   * On September 29, I made the same demo as before run but without
+     commenting and code out, so it ran as is.
+ * October
+   * Made the public key a markdown document for easy access.
+   * Added TAC which is a far simpler test framework, easier to implement and
+     saved a bunch of time.
+   * Corrected the documentation URLs because they were not correct for
+     Markdown.
+   * Test projects are now just MIDlets instead of being parsed through source
+     code, this made it very simple.
+   * Implemented class resource lookup.
+   * Implement more SpringCoat instructions.
+   * Implement more CLDC classes.
+   * Wrote the backing bucket map for the various map methods which use the
+     same base for classes.
+   * Correct the auto-flushing of `PrintStream` since it was very odd.
+   * Corrected out of bounds array access throwing the wrong exception.
+   * Implemented `System.exit()` being called in the VM.
+   * Deleted a bunch of the old and defunct JIT related stuff, it was nasty
+     and it was also very moldy and stale.
+   * Removed an old interpreter I never really started, SpringCoat is the
+     current VM.
+   * Refactoring and moving around of the project layout.
+   * Removed the old IPC based system call interfaces.
+   * Removed all of the old kernel code along with the IPC interfaces.
+   * Added a system call to get the Operating System type.
+   * Added base setup for database access, for Windows and Palm OS.
+   * Cycled CryptoCurrency addresses due to CoinBase changing things, this is
+     for crypto donations.
+   * Corrected projects not being compiled properly due to missing projects
+     and classes.
+   * Added notice in `asruntime.mkd` stating that is out of date.
+   * Removed the LCDUI server based code, to later be replaced with a
+     framebuffer.
+   * Lex has been completely redone by _Kat Adam-MacEwen_ and gosh she made
+     him look so handsome. Really greatful for her work.
+   * Added a runner capable to running every single TAC test.
+   * Added support for multiple suites and such in SpringCoat.
+   * Implemented uninitialized `this` in the stack map parser.
+   * Removed the old interpreter project, it was never used or worked on.
+   * Added the `ProgrammerTip` annotation to help the developer out.
+   * Made class `instanceof` actually be correct in SpringCoat and the
+     library.
+ * November
+   * On November 3, Mu and SquirrelJME became sister projects. We both
+     released on December 25, which was very cool.
+   * Work on the common collections.
+   * Added base math needed for `Random`.
+   * Implemented `Random`.
+   * Implemented a bunch more missing instructions in SpringCoat.
+   * Implemented square root calculation, which surprisingly works.
+   * Implemented `MULTIANEWARRAY`.
+   * Implemented more library routines.
+   * Added the ability to launch new tasks in SpringCoat via SWM.
+   * Added an easier to use Base64 decoder method for quicker decode without
+     messing with streams.
+   * Draw a bunch of fonts for the LCDUI interface.
+   * Stopped using BDFs and instead used PCFs, however this was short lived
+     because PDF is too complex.
+   * Switched from using 0.0.2 to 0.2.0, so release versions could be done
+     such as bug fixes.
+   * Added profiling to SpringCoat so things can be run in VisualVM, this
+     helped find slow points and actually was useful for debugging.
+   * Reordered all of the errors.
+   * Added base for compressing ZIP data although it just writes compressed
+     streams with no compression, this was needed by the profiler since it
+     uses GZip in its snapshot format.
+   * Removed a bunch of thread safety from the ZIP classes, this improved
+     performance.
+   * Removed a bunch of `volatile` variable usages.
+   * Implemented ZLib compression, which is used by the profiler.
+   * Implemented more library classes.
+   * Refactored decompression routines to be faster and easier to use.
+   * Added distinct array types for SpringCoat, greatly reducing memory and
+     increasing array speed.
+   * Added native VM array wrapping for SpringCoat, so inside and outside
+     of SpringCoat could access the same array data.
+   * Implemented a shaded VM which exists within a single JAR, this would
+     later be used for release.
+   * Additionally made two variants for the shaded VM: Java SE and Java ME.
+   * Wrote a bunch of documentation on building.
+   * Implemented a bunch of the LCDUI launcher to run other programs.
+   * Added a common VM project since a bunch of things will end up being
+     reused by the other VMs.
+   * The common VM can be initialized by a factory, this unifies the VM
+     interfaces and allows for easy switching.
+   * Added date to output ZIPs although it is not valid, because `pack200`
+     fails if the date is invalid for the ZIP.
+   * Implement a bunch of LCDUI stuff.
+   * Threads can now be created in SpringCoat.
+   * Added a more optimized VM graphics call via serialized graphics so the
+     host VM does the drawing instead of the code in SpringCoat.
+   * Added the ability to invoke static methods.
+   * Made `Thread` handle all of the thread starting code.
+   * Corrected `Object.wait(long, int)` having the wrong signature.
+   * Learned that notifying on an object does not relinquish the lock it just
+     sets a flag, I learned something new.
+   * Optimized the Java manifest reader because it took lots of time.
+   * If in the source tree any file ends with `.__base64` it will be decoded
+     and stored in the JAR. I do not like binary files in source repositories
+     and also it cannot be printed in books.
+   * Made a bunch of adjustments to the font to make them look nicer.
+   * Removed unused font characters, saved space.
+   * Instead use files ending in `.__mime` (and not `.__base64`) and decode
+     those into the output JAR.
+   * Refactor MIME file decoding to be line based and generally much faster
+     and simpler.
+   * Reading of PCF data in the LCDUI code, however I found that it is very
+     complex of a format and would be too complicated and slow for SquirrelJME
+     to use. So I made a new format called SQF which is smaller and easier to
+     read.
+   * Lots of font related work.
+   * Corrected the hosted launch script because it was wrong.
+   * LCDUI work.
+ * December
+   * SquirrelJME was released on December 25 along with Mu.
+   * Lots of PCF to SQF conversion work.
+   * A bunch of LCDUI work which would be later be refactored.
+   * Made LCDUI much simpler by refactoring the layout code which made
+     everything look much cleaner.
+   * Implemented more library classes.
+   * Implemented monitors and support for `synchronized` in SpringCoat.
+   * Implemented `Class.newInstance()`.
+   * Implement a bunch of API methods.
+   * Implemented the service loader.
+   * Merged `StandardOutput` and `StandardError` into one, this was much
+     easier and removed duplicated code.
+   * Remove `Flushable` it is not in Java ME and should not be there at all.
+   * Added an API to get the executable path of the JAR or program.
+   * Redid the LCDUI draw stack to be much better.
+   * Removed the old graphics routines.
+   * The shaded JARs now use the run-time instead of test so that way it is
+     smaller and the hundreds of tests are not included.
+   * Corrections for the scripts on Mac OS X and make it work there. Sed on
+     Mac OS X is weird.
+   * Implemented more of the launching and ways to go back to it.
+   * Added a scheme to gain control of the display via the event loop and get
+     it back.
+   * Implemented `Timer` which took a bit.
+   * Update the contributing document and simplified things because it was
+     too complicated.
+   * Hid Squirrel Quarrel as it is not ready.
+   * Refactored the project layout and moved everything around.
+   * In the bootstrap handle MIME files as well by including the MIME decoder
+     in it, this makes the binary files in the source worked because fonts
+     used it and the code crashed due to missing fonts.
+   * Added launching to the build system so it works on every system.
+   * Added shading to the build system rather than being in an external
+     script.
+   * Removed invalid project references.
+   * Added SquirrelJME to CircleCI and have it run each project for testing to
+     see if it builds. Since CircleCI is time limited for the free tier,
+     going to wait for a faster VM because otherwise it would consume all of
+     the available time.
+   * Implemented the encoders and decoders for UTF-8.
+   * Added a means to grab files from the SquirrelJME source tree.
+   * Added usage instructions for the various builds.
+   * Added a release script.
+   * In the VM, allow `lib` to be specified in `user.dir` and the executable
+     path instead of just one or the other.
+   * Released SquirrelJME 0.2.0, yay! This is very exciting and it has been a
+     long time coming. Mu was also released here, which is a cool project.
+   * Added the base for SummerCoat VM.
+   * The year ends now.
+
+## 13:52
+
+Okay so this took about three hours to write, so it was quite a bunch of work
+and now I am hungry again. It was fine but then it turned into a changelog.
+But next year it should be much cleaner.
+
+## 20:04
+
+I suppose I will work on SummerCoat. First I will start with a base VM manager
+of sorts which is at the upper level.
+
+## 20:19
+
+I need a name for the main class which contains the "containers" for each
+running task. It is kind of like a hub. It will run multiple virtual machines
+as their own individual tasks with their own memory and such.
+
+## 20:44
+
+Pretty sure I am going to need a compiled register representation form for
+class files and such. This could be cached and be allowed to be dumped into
+caches for faster operation. It could just act on a per-class basis which
+would be pretty simple. Although it would need to manage linking and such. It
+definitely needs to be cacheable, it also definitely needs to be reused by
+later parts of the virtual machine. Like so I can just dump things into a
+ROM file, which would be used by RatufaCoat. That would be really important.
+Then if I do caching of the ROMs and put the stuff on the filesystem then
+pretty much what I can do is make subsequent executions much faster if there
+is an available filesystem.
