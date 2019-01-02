@@ -52,7 +52,8 @@ public class SummerCoatFactory
 		// Setup root machine which has our base suite manager
 		RootMachine rm = new RootMachine(__sm, __ps, __gd);
 		
-		throw new todo.TODO();
+		// Now create the starting main task
+		return rm.createTask(__cp, __maincl, __ismid, __sprops, __args);
 	}
 }
 
