@@ -10,7 +10,11 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import cc.squirreljme.vm.VMClassLibrary;
+import cc.squirreljme.vm.VMException;
 import cc.squirreljme.vm.VMSuiteManager;
+import java.util.HashMap;
+import java.util.Map;
 import net.multiphasicapps.profiler.ProfilerSnapshot;
 
 /**
@@ -50,6 +54,37 @@ public final class RootMachine
 		this.suites = __s;
 		this.profiler = __p;
 		this.baseguestdepth = __gd;
+	}
+	
+	/**
+	 * Creates a new task which runs within a new instance of the virtual
+	 * machine which uses the specified parameters based on the root machine's
+	 * suite manager and such.
+	 *
+	 * @param __cp The classpath used.
+	 * @param __maincl The main entry class.
+	 * @param __ismid Is this a MIDlet?
+	 * @param __sprops System properties.
+	 * @param __args Arguments to the task.
+	 * @return A new running task which when ran will execute the VM code
+	 * accordingly.
+	 * @throws NullPointerException On null arguments.
+	 * @throws VMException If the task could not be initialized.
+	 * @since 2019/01/01
+	 */
+	public final RunningTask createTask(VMClassLibrary[] __cp, String __maincl,
+		boolean __ismid, Map<String, String> __sprops, String[] __args)
+		throws NullPointerException, VMException
+	{
+		if (__cp == null || __maincl == null)
+			throw new NullPointerException("NARG");
+		
+		// Defensive copy the system properties and arguments
+		__sprops = (__sprops == null ? new HashMap<>() :
+			new HashMap<>(__sprops));
+		__args = (__args == null ? new String[0] : __args.clone());
+		
+		throw new todo.TODO();
 	}
 }
 
