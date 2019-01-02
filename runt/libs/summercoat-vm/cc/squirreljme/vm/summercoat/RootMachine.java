@@ -80,7 +80,7 @@ public final class RootMachine
 			throw new NullPointerException("NARG");
 		
 		// Defensive copy the system properties and arguments
-		__sprops = (__sprops == null ? new HashMap<>() :
+		__sprops = (__sprops == null ? new HashMap<String, String>() :
 			new HashMap<>(__sprops));
 		__args = (__args == null ? new String[0] : __args.clone());
 		
