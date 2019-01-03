@@ -84,6 +84,17 @@ public final class RootMachine
 			new HashMap<>(__sprops));
 		__args = (__args == null ? new String[0] : __args.clone());
 		
+		// Check for nulls
+		for (VMClassLibrary l : __cp)
+			if (l == null)
+				throw new NullPointerException("NARG");
+		for (String s : __args)
+			if (s == null)
+				throw new NullPointerException("NARG");
+		for (Map.Entry<String, String> e : __sprops.entrySet())
+			if (e.getKey() == null || e.getValue() == null)
+				throw new NullPointerException("NARG");
+		
 		throw new todo.TODO();
 	}
 }
