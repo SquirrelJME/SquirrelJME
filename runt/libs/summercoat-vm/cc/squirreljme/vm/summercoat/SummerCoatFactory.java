@@ -53,7 +53,8 @@ public class SummerCoatFactory
 		RootMachine rm = new RootMachine(__sm, __ps, __gd);
 		
 		// Now create the starting main task
-		return rm.createTask(__cp, __maincl, __ismid, __sprops, __args);
+		return new ExitAwaiter(rm,
+			rm.createTask(__cp, __maincl, __ismid, __sprops, __args));
 	}
 }
 
