@@ -23,8 +23,8 @@ import cc.squirreljme.vm.VMException;
 public final class ExitAwaiter
 	implements VirtualMachine
 {
-	/** The root machine to check for all tasks being terminated. */
-	protected final RootMachine machine;
+	/** Object containing all the task statuses, for termination checks. */
+	protected final TaskStatuses statuses;
 	
 	/** The main task to run. */
 	protected final RunningTask task;
@@ -33,18 +33,18 @@ public final class ExitAwaiter
 	 * Initializes the exit awaiter, when the running task ends it will wait
 	 * until the root machine has no running tasks.
 	 *
-	 * @param __rm The machine with the tasks.
+	 * @param __ts The statuses for each task, to determine if any are running.
 	 * @param __t The task to run.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/01/02
 	 */
-	public ExitAwaiter(RootMachine __rm, RunningTask __t)
+	public ExitAwaiter(TaskStatuses __ts, RunningTask __t)
 		throws NullPointerException
 	{
-		if (__rm == null || __t == null)
+		if (__ts == null || __t == null)
 			throw new NullPointerException("NARG");
 		
-		this.machine = __rm;
+		this.statuses = __ts;
 		this.task = __t;
 	}
 	
@@ -56,7 +56,36 @@ public final class ExitAwaiter
 	public final int runVm()
 		throws VMException
 	{
-		throw new todo.TODO();
+		// A task could run, but also additionally the VM could have some kind
+		// of exception where it cannot continue
+		int rv = Integer.MIN_VALUE;
+		VMException oopsie = null;
+		try
+		{
+			rv = this.task.runVm();
+		}
+		catch (VMException e)
+		{
+			oopsie = e;
+		}
+		
+		// Wait for all tasks to complete
+		for (TaskStatuses statuses = this.statuses;;)
+			try
+			{
+				if (statuses.awaitFinished(0))
+					break;
+			}
+			catch (InterruptedException e)
+			{
+				// Do not care if we get interrupted, just try again
+			}
+		
+		// Throw any caught VM exception, but otherwise use the exit code of
+		// the main task since that is the one we care about
+		if (oopsie != null)
+			throw oopsie;
+		return rv;
 	}
 }
 

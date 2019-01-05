@@ -36,6 +36,10 @@ public final class RootMachine
 	/** The base depth of this virtual machine. */
 	protected final int baseguestdepth;
 	
+	/** Statuses for each task. */
+	protected final TaskStatuses statuses =
+		new TaskStatuses();
+	
 	/**
 	 * Initializes the root machine.
 	 *
@@ -79,7 +83,8 @@ public final class RootMachine
 		if (__cp == null || __maincl == null)
 			throw new NullPointerException("NARG");
 		
-		// Defensive copy the system properties and arguments
+		// Defensive copy so things are not changed
+		__cp = __cp.clone();
 		__sprops = (__sprops == null ? new HashMap<String, String>() :
 			new HashMap<>(__sprops));
 		__args = (__args == null ? new String[0] : __args.clone());
@@ -94,6 +99,10 @@ public final class RootMachine
 		for (Map.Entry<String, String> e : __sprops.entrySet())
 			if (e.getKey() == null || e.getValue() == null)
 				throw new NullPointerException("NARG");
+		
+		// Create a new status for this task which contains some global
+		// information that is needed
+		TaskStatus status = this.statuses.createNew();
 		
 		throw new todo.TODO();
 	}
