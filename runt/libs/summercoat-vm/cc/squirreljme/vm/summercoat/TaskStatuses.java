@@ -22,6 +22,10 @@ import java.util.Map;
  */
 public final class TaskStatuses
 {
+	/** The monitor for thread status. */
+	protected final Object monitor =
+		new Object();
+	
 	/** Tasks which are currently available. */
 	private final Map<Integer, TaskStatus> _statuses =
 		new HashMap<>();
@@ -42,9 +46,10 @@ public final class TaskStatuses
 	public final boolean awaitFinished(long __ms)
 		throws InterruptedException
 	{
-		// Lock on self since we control the map
+		// Lock on our monitor since we need notifications
+		Object monitor = this.monitor;
 		Map<Integer, TaskStatus> statuses = this._statuses;
-		synchronized (this)
+		synchronized (monitor)
 		{
 			// This loop is only here for the wait forever case because signal
 			// might end otherwise.
@@ -74,7 +79,7 @@ public final class TaskStatuses
 				// Wait for signal on self, 0 is to wait forever
 				// If InterruptedException is thrown then it will be sent to
 				// the calling method accordingly
-				this.wait(__ms);
+				monitor.wait(__ms);
 			}
 		}
 	}
@@ -88,11 +93,12 @@ public final class TaskStatuses
 	public final TaskStatus createNew()
 	{
 		// Lock on self
-		synchronized (this)
+		Object monitor = this.monitor;
+		synchronized (monitor)
 		{
 			// Setup new task with this ID
 			int tid;
-			TaskStatus rv = new TaskStatus((tid = this._nextid++));
+			TaskStatus rv = new TaskStatus(monitor, (tid = this._nextid++));
 			
 			// Need to keep track of this task, so we know when it exits
 			this._statuses.put(tid, rv);
