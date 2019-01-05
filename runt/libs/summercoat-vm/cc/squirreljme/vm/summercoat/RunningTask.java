@@ -14,24 +14,65 @@ import cc.squirreljme.vm.VirtualMachine;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.VMException;
 import cc.squirreljme.vm.VMSuiteManager;
+import java.util.HashMap;
+import java.util.Map;
 import net.multiphasicapps.profiler.ProfilerSnapshot;
+
 /**
  * This represents a task which is running within the virtual machine.
  *
  * @since 2019/01/01
  */
 public final class RunningTask
-	implements VirtualMachine
 {
+	/** The status of this task. */
+	protected final TaskStatus status;
+	
+	/** The class loader. */
+	protected final ClassLoader classloader;
+	
+	/** The profiler information output. */
+	protected final ProfilerSnapshot profiler;
+	
+	/** System properties. */
+	private final Map<String, String> _sysprops;
+	
+	/** Threads which are available for usage. */
+	private final Map<Integer, RunningThread> _threads =
+		new HashMap<>();
+	
+	/** The next thread ID. */
+	private volatile int _nextthreadid;
+	
 	/**
-	 * {@inheritDoc}
-	 * @since 2019/01/01
+	 * Initializes the running task.
+	 *
+	 * @param __st The task status.
+	 * @param __cl The class loader.
+	 * @param __sprops System properties.
+	 * @param __p Profiler information.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/01/05
 	 */
-	@Override
-	public final int runVm()
-		throws VMException
+	public RunningTask(TaskStatus __st, ClassLoader __cl,
+		Map<String, String> __sprops, ProfilerSnapshot __p)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__st == null || __cl == null)
+			throw new NullPointerException("NARG");
+		
+		// Defensive copy and check for nulls
+		__sprops = (__sprops == null ? new HashMap<String, String>() :
+			new HashMap<>(__sprops));
+		for (Map.Entry<String, String> e : __sprops.entrySet())
+			if (e.getKey() == null || e.getValue() == null)
+				throw new NullPointerException("NARG");
+		
+		// Set
+		this.status = __st;
+		this.classloader = __cl;
+		this.profiler = __p;
+		this._sysprops = __sprops;
 	}
 }
 

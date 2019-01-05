@@ -745,7 +745,7 @@ public class Thread
 						__newInstance());
 					break;
 					
-					// Start main(String) method
+					// Start main(String[]) method
 				case _START_MAIN:
 					ObjectAccess.invokeStatic(runmethod, runargument);
 					break;

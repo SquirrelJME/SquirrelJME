@@ -40,6 +40,10 @@ public final class RootMachine
 	protected final TaskStatuses statuses =
 		new TaskStatuses();
 	
+	/** Cache of classes. */
+	protected final RuntimeClassCache runtimeclasscache =
+		new RuntimeClassCache();
+	
 	/**
 	 * Initializes the root machine.
 	 *
@@ -100,11 +104,23 @@ public final class RootMachine
 			if (e.getKey() == null || e.getValue() == null)
 				throw new NullPointerException("NARG");
 		
+		// Setup class loader for this task
+		ClassLoader cl = new ClassLoader(this.runtimeclasscache, suites, __cp);
+		
 		// Create a new status for this task which contains some global
 		// information that is needed
 		TaskStatus status = this.statuses.createNew();
 		
-		throw new todo.TODO();
+		// Setup a new base running task, which has no threads yet until the
+		// first is created
+		RunningTask rv = new RunningTask(status, cl, __sprops, this.profiler);
+		
+		// Setup main thread
+		if (true)
+			throw new todo.TODO();
+		
+		// Return out created task
+		return rv;
 	}
 }
 
