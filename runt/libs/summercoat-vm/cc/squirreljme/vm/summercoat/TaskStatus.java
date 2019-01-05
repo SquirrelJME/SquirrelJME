@@ -20,6 +20,9 @@ import cc.squirreljme.runtime.cldc.asm.NativeDisplayEventCallback;
  */
 public class TaskStatus
 {
+	/** The monitor or the task statuses, used to signal state changes. */
+	protected final Object monitor;
+	
 	/** The ID of this task. */
 	protected final int id;
 	
@@ -44,11 +47,18 @@ public class TaskStatus
 	/**
 	 * Initializes the task.
 	 *
+	 * @param __m The monitor to notify when the task changes state.
 	 * @param __id The ID of the task.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2019/01/05
 	 */
-	public TaskStatus(int __id)
+	public TaskStatus(Object __m, int __id)
+		throws NullPointerException
 	{
+		if (__m == null)
+			throw new NullPointerException("NARG");
+		
+		this.monitor = __m;
 		this.id = __id;
 	}
 }
