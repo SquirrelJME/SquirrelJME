@@ -10,28 +10,34 @@
 
 package cc.squirreljme.vm.summercoat;
 
-import cc.squirreljme.vm.VirtualMachine;
-import cc.squirreljme.vm.VMClassLibrary;
-import cc.squirreljme.vm.VMException;
-import cc.squirreljme.vm.VMSuiteManager;
-import net.multiphasicapps.profiler.ProfilerSnapshot;
 /**
- * This represents a task which is running within the virtual machine.
+ * This represents the current state of a task.
  *
- * @since 2019/01/01
+ * @since 2019/01/05
  */
-public final class RunningTask
-	implements VirtualMachine
+public enum TaskState
 {
+	/** Task is starting. */
+	STARTING,
+	
+	/** Task is running. */
+	RUNNING,
+	
+	/** Task has exited. */
+	EXITED,
+	
+	/** End. */
+	;
+	
 	/**
-	 * {@inheritDoc}
-	 * @since 2019/01/01
+	 * Is this state considered exited?
+	 *
+	 * @return If the state is considered to be exited.
+	 * @since 2019/01/05
 	 */
-	@Override
-	public final int runVm()
-		throws VMException
+	public final boolean isExited()
 	{
-		throw new todo.TODO();
+		return this == EXITED;
 	}
 }
 
