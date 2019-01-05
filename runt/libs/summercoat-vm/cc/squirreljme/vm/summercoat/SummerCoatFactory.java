@@ -54,7 +54,7 @@ public class SummerCoatFactory
 		
 		// Now create the starting main task
 		return new ExitAwaiter(rm.statuses,
-			rm.createTask(__cp, __maincl, __ismid, __sprops, __args));
+			rm.createTask(__cp, __maincl, __ismid, __sprops, __args).status);
 	}
 }
 

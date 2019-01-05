@@ -23,6 +23,10 @@ public class TaskStatus
 	/** The ID of this task. */
 	protected final int id;
 	
+	/** The exit code for this virtual machine. */
+	volatile int _exitcode =
+		Integer.MIN_VALUE;
+	
 	/** The state of the task, is initially starting. */
 	volatile TaskState _state =
 		TaskState.STARTING;

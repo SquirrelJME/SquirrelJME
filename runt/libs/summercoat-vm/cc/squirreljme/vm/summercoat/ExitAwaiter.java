@@ -26,26 +26,26 @@ public final class ExitAwaiter
 	/** Object containing all the task statuses, for termination checks. */
 	protected final TaskStatuses statuses;
 	
-	/** The main task to run. */
-	protected final RunningTask task;
+	/** The main task being run. */
+	protected final TaskStatus maintask;
 	
 	/**
 	 * Initializes the exit awaiter, when the running task ends it will wait
 	 * until the root machine has no running tasks.
 	 *
 	 * @param __ts The statuses for each task, to determine if any are running.
-	 * @param __t The task to run.
+	 * @param __t The main task status.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/01/02
 	 */
-	public ExitAwaiter(TaskStatuses __ts, RunningTask __t)
+	public ExitAwaiter(TaskStatuses __ts, TaskStatus __t)
 		throws NullPointerException
 	{
 		if (__ts == null || __t == null)
 			throw new NullPointerException("NARG");
 		
 		this.statuses = __ts;
-		this.task = __t;
+		this.maintask = __t;
 	}
 	
 	/**
@@ -56,19 +56,6 @@ public final class ExitAwaiter
 	public final int runVm()
 		throws VMException
 	{
-		// A task could run, but also additionally the VM could have some kind
-		// of exception where it cannot continue
-		int rv = Integer.MIN_VALUE;
-		VMException oopsie = null;
-		try
-		{
-			rv = this.task.runVm();
-		}
-		catch (VMException e)
-		{
-			oopsie = e;
-		}
-		
 		// Wait for all tasks to complete
 		for (TaskStatuses statuses = this.statuses;;)
 			try
@@ -81,11 +68,8 @@ public final class ExitAwaiter
 				// Do not care if we get interrupted, just try again
 			}
 		
-		// Throw any caught VM exception, but otherwise use the exit code of
-		// the main task since that is the one we care about
-		if (oopsie != null)
-			throw oopsie;
-		return rv;
+		// Return the exit code for the main task
+		return this.maintask._exitcode;
 	}
 }
 
