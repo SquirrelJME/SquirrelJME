@@ -115,6 +115,10 @@ public final class RootMachine
 		// first is created
 		RunningTask rv = new RunningTask(status, cl, __sprops, this.profiler);
 		
+		// Create a new main thread which will be where our execution context
+		// will be (since we need to initialize objects)
+		RunningThread thr = rv.createThread();
+		
 		// Setup main thread
 		if (true)
 			throw new todo.TODO();

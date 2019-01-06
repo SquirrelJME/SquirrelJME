@@ -49,5 +49,21 @@ public final class ClassLoader
 		this.suites = __sm;
 		this._classpath = __cp.clone();
 	}
+	
+	/**
+	 * Loads the given class.
+	 *
+	 * @param __n The class to load.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/01/06
+	 */
+	public final LoadedClass loadClass(String __n)
+		throws NullPointerException
+	{
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();			
+	}
 }
 
