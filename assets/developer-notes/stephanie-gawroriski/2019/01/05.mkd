@@ -1,0 +1,29 @@
+# 2019/01/05
+
+## 13:36
+
+For SummerCoat I am going to need a cache system for the register class form
+and such, at least that would be the quicket solution to things anyway. But
+basically it will be able to cache and load the various register forms of
+classes and such for their byte code. The big thing though probably before I
+get most things running is the class translation.
+
+## 14:28
+
+I am going to need a SCRF merger, so that way multiple SCRFs with super
+classes and interfaces can be combined into a single piece. Although this
+might not be needed and it might cause more space to be used. I do not want
+to go too crazy on this because otherwise I might end up feature creeping
+before anything is ready. So I will figure it out later. I have learned a
+bunch of things from SpringCoat which definitely is now affecting how I am
+writing SummerCoat.
+
+## 16:18
+
+So the hardest part is that initial stuff like object allocation. Like I need
+a thread and stuff that can run, along with a means of allocating things so
+I kind of have to work on class loading and such. Not too sure yet how I want
+to handle having classes initialize. I do need a thread before objects can
+be initialized so I do need running code and such. I should just build the
+overlying structure for that and fill in the pieces. I did it for SpringCoat
+so I am really just doing something very similar.
