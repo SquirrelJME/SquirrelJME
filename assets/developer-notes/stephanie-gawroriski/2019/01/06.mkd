@@ -1,0 +1,19 @@
+# 2019/01/06
+
+## 17:10
+
+I had an idea, what if I had a global memory space?
+
+## 17:12
+
+Actually I am running into the same problem as before SpringCoat where I would
+over design something before it was even done. I am doing this for SummerCoat.
+Of course I can iterate but I am complicating things much. SummerCoat is going
+to rely on a register based format for class files and such, kind of a less
+complicated form of it. For SpringCoat I pretty much had all of the class code
+written, but for SummerCoat I have none of the register code. Since that is an
+important part, I should write that first so that way I will know how it
+works and such. I want it to be a bit closer to native systems, so SummerCoat
+would probably have a CPU and means of accessing memory. Tasks and threads
+would then just use this memory and CPU executors and kind of just be there
+for them.
