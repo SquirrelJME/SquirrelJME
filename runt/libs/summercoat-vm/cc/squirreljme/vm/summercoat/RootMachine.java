@@ -104,16 +104,16 @@ public final class RootMachine
 			if (e.getKey() == null || e.getValue() == null)
 				throw new NullPointerException("NARG");
 		
-		// Setup class loader for this task
-		ClassLoader cl = new ClassLoader(this.runtimeclasscache, suites, __cp);
-		
 		// Create a new status for this task which contains some global
-		// information that is needed
-		TaskStatus status = this.statuses.createNew();
+		// information that is needed, it needs our system properties and the
+		// classpath since they both may be accessed
+		TaskStatus status = this.statuses.createNew(
+			new ClassLoader(this.runtimeclasscache, suites, __cp),
+			__sprops, this.profiler);
 		
 		// Setup a new base running task, which has no threads yet until the
 		// first is created
-		RunningTask rv = new RunningTask(status, cl, __sprops, this.profiler);
+		RunningTask rv = new RunningTask(status);
 		
 		// Create a new main thread which will be where our execution context
 		// will be (since we need to initialize objects)
