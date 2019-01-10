@@ -10,8 +10,11 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
+import net.multiphasicapps.profiler.ProfilerSnapshot;
 
 /**
  * This contains and records the state for multiple tasks which would be
@@ -87,18 +90,28 @@ public final class TaskStatuses
 	/**
 	 * Creates a status holder for a task giving it a unique ID.
 	 *
+	 * @param __cl The class loader used.
+	 * @param __sp System properties used.
+	 * @param __ps The profiler snapshot, is optional.
 	 * @return The newly created task with a newly allocated ID.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2019/01/05
 	 */
-	public final TaskStatus createNew()
+	public final TaskStatus createNew(ClassLoader __cl,
+		Map<String, String> __sp, ProfilerSnapshot __ps)
+		throws NullPointerException
 	{
+		if (__cl == null || __sp == null)
+			throw new NullPointerException("NARG");
+		
 		// Lock on self
 		Object monitor = this.monitor;
 		synchronized (monitor)
 		{
 			// Setup new task with this ID
 			int tid;
-			TaskStatus rv = new TaskStatus(monitor, (tid = this._nextid++));
+			TaskStatus rv = new TaskStatus(monitor, (tid = this._nextid++),
+				__cl, __sp, __ps);
 			
 			// Need to keep track of this task, so we know when it exits
 			this._statuses.put(tid, rv);

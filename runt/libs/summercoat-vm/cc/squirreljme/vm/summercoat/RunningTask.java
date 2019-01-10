@@ -28,19 +28,6 @@ public final class RunningTask
 	/** The status of this task. */
 	protected final TaskStatus status;
 	
-	/** The class loader. */
-	protected final ClassLoader classloader;
-	
-	/** The profiler information output. */
-	protected final ProfilerSnapshot profiler;
-	
-	/** System properties. */
-	private final Map<String, String> _sysprops;
-	
-	/** Threads which are available for usage. */
-	private final Map<Integer, RunningThread> _threads =
-		new HashMap<>();
-	
 	/** The next thread ID. */
 	private volatile int _nextthreadid;
 	
@@ -54,25 +41,44 @@ public final class RunningTask
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/01/05
 	 */
-	public RunningTask(TaskStatus __st, ClassLoader __cl,
-		Map<String, String> __sprops, ProfilerSnapshot __p)
+	public RunningTask(TaskStatus __st)
 		throws NullPointerException
 	{
-		if (__st == null || __cl == null)
+		if (__st == null)
 			throw new NullPointerException("NARG");
-		
-		// Defensive copy and check for nulls
-		__sprops = (__sprops == null ? new HashMap<String, String>() :
-			new HashMap<>(__sprops));
-		for (Map.Entry<String, String> e : __sprops.entrySet())
-			if (e.getKey() == null || e.getValue() == null)
-				throw new NullPointerException("NARG");
 		
 		// Set
 		this.status = __st;
-		this.classloader = __cl;
-		this.profiler = __p;
-		this._sysprops = __sprops;
+	}
+	
+	/**
+	 * Creates a new thread and returns it, the thread will be blank and will
+	 * have no state attached to it. It is not started unless it is explictely
+	 * started.
+	 *
+	 * @return The created thread.
+	 * @since 2019/01/10
+	 */
+	public final RunningThread createThread()
+	{
+		// Lock on self since we need to increment our next ID and add the
+		// actual thread
+		synchronized (this)
+		{
+			// Use the next thread ID, whatever that is
+			int usetid = this._nextthreadid++;
+			
+			// Setup new thread using our status since the state information
+			// is there instead of in this task instance
+			TaskStatus status = this.status;
+			RunningThread rv = new RunningThread(usetid, status);
+			
+			// Register thread with our status
+			status.__registerThread(rv);
+			
+			// The thread being returned will be blank
+			return rv;
+		}
 	}
 }
 
