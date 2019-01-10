@@ -107,8 +107,9 @@ public final class RootMachine
 		// Create a new status for this task which contains some global
 		// information that is needed, it needs our system properties and the
 		// classpath since they both may be accessed
+		ClassLoader cl;
 		TaskStatus status = this.statuses.createNew(
-			new ClassLoader(this.runtimeclasscache, suites, __cp),
+			(cl = new ClassLoader(this.runtimeclasscache, suites, __cp)),
 			__sprops, this.profiler);
 		
 		// Setup a new base running task, which has no threads yet until the
@@ -122,6 +123,11 @@ public final class RootMachine
 		// Setup main thread
 		if (true)
 			throw new todo.TODO();
+		
+		// Now that the thread has been initialized it must be started, it
+		// will keep running executing the method it starts in until
+		// termination occurs
+		thr.start();
 		
 		// Return out created task
 		return rv;
