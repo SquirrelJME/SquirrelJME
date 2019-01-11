@@ -50,6 +50,25 @@ public final class RunningThread
 	}
 	
 	/**
+	 * Sets up the thread so that the given method is enterred from this
+	 * thread.
+	 *
+	 * @param __static Is this method static?
+	 * @param __cl The class to enter.
+	 * @param __name The method name.
+	 * @param __desc The method type.
+	 * @param __args The method arguments.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/01/10
+	 */
+	public void execEnterMethod(boolean __static, String __cl, String __name,
+		String __desc, Value... __args)
+		throws NullPointerException
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2019/01/05
 	 */
