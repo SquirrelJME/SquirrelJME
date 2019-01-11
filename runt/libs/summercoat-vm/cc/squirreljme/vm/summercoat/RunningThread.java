@@ -10,6 +10,8 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodNameAndType;
@@ -30,6 +32,9 @@ public final class RunningThread
 	
 	/** The task status this reports on. */
 	protected final TaskStatus status;
+	
+	/** Has this thread been started via the run method. */
+	private volatile boolean _didstart;
 	
 	/**
 	 * Initializes the thread.
@@ -75,6 +80,40 @@ public final class RunningThread
 	@Override
 	public void run()
 	{
+		// Thread is started by this, so method runs may only occur when the
+		// current thread is self
+		this._didstart = true;
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Runs the specified method within the context of this thread and then
+	 * returns the value of the execution. Note that if this thread has ever
+	 * been started (its {@link run()} method called, then this must only
+	 * ever be called by this self.
+	 *
+	 * @param __static Is this method static?
+	 * @param __cl The class to enter.
+	 * @param __name The method name.
+	 * @param __desc The method type.
+	 * @param __args The method arguments.
+	 * @return The return value of the method, will be {@code null} on void
+	 * types.
+	 * @throws IllegalStateException If this thread has been run and the
+	 * thread calling this method is not itself.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/01/10
+	 */
+	public Value runMethod(boolean __static, String __cl, String __name,
+		String __desc, Value... __args)
+		throws IllegalStateException, NullPointerException
+	{
+		// {@squirreljme.error AE01 This thread has already been started and
+		// as such this method may only be called from within that thread.}
+		if (this._didstart && this != Thread.currentThread())
+			throw new IllegalStateException("AE01");
+		
 		throw new todo.TODO();
 	}
 	
