@@ -123,20 +123,24 @@ public final class RootMachine
 		// will be (since we need to initialize objects)
 		RunningThread thr = rv.createThread();
 		
+		// Need the thread class to get some methods off it
+		LoadedClass thrclass = cl.loadClass("java/lang/Thread");
+		
 		// Determine the entry method and the entry arguments to use
 		Instance vmsm;
 		Instance entryarg;
 		if (__ismid)
 		{
-			vmsm = thr.vmStaticMethod(false,
-				"javax/microedition/midlet/MIDlet",
-				"startApp", "()V");
+			vmsm = thr.vmStaticMethod(cl.
+				loadClass("javax/microedition/midlet/MIDlet").lookupMethod(
+				MethodLookupType.INSTANCE, false, "startApp", "()V"));
 			entryarg = thr.vmTranslateString(__maincl);
 		}
 		else
 		{
-			vmsm = thr.vmStaticMethod(true, __maincl,
-				"main", "([Ljava/lang/String;)V");
+			vmsm = thr.vmStaticMethod(cl.loadClass(__maincl).
+				lookupMethod(MethodLookupType.STATIC, true, "main",
+				"([Ljava/lang/String;)V"));
 			
 			// Setup array that is the same size as the input arguments
 			int n = __args.length;
@@ -158,7 +162,8 @@ public final class RootMachine
 			IntegerValue.of((__ismid ? 3 : 4)), vmsm, entryarg);
 		
 		// Enter the __start() method for Thread
-		thr.execEnterMethod(false, "java/lang/Thread", "__start", "()V");
+		thr.execEnterMethod(thrclass.lookupMethod(
+			MethodLookupType.STATIC, false, "__start", "()V"));
 		
 		// Now that the thread has been initialized it must be started, it
 		// will keep running executing the method it starts in until

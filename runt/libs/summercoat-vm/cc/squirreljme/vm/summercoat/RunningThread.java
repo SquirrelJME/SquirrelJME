@@ -55,21 +55,24 @@ public final class RunningThread
 	}
 	
 	/**
-	 * Sets up the thread so that the given method is enterred from this
-	 * thread.
+	 * Sets up the thread so that the given method is entered from this
+	 * thread, it is not started.
 	 *
-	 * @param __static Is this method static?
-	 * @param __cl The class to enter.
-	 * @param __name The method name.
-	 * @param __desc The method type.
+	 * @param __mh The method handle.
 	 * @param __args The method arguments.
+	 * @throws IllegalStateException If the thread has been started and this
+	 * is not the current thread.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/01/10
 	 */
-	public void execEnterMethod(boolean __static, String __cl, String __name,
-		String __desc, Value... __args)
-		throws NullPointerException
+	public void execEnterMethod(MethodHandle __mh, Value... __args)
+		throws IllegalStateException, NullPointerException
 	{
+		// {@squirreljme.error AE02 This thread has already been started and
+		// as such this method may only be called from within that thread.}
+		if (this._didstart && this != Thread.currentThread())
+			throw new IllegalStateException("AE02");
+		
 		throw new todo.TODO();
 	}
 	
@@ -93,11 +96,8 @@ public final class RunningThread
 	 * been started (its {@link run()} method called, then this must only
 	 * ever be called by this self.
 	 *
-	 * @param __static Is this method static?
-	 * @param __cl The class to enter.
-	 * @param __name The method name.
-	 * @param __desc The method type.
-	 * @param __args The method arguments.
+	 * @param __mh The method handle.
+	 * @param __args The arguments to the call.
 	 * @return The return value of the method, will be {@code null} on void
 	 * types.
 	 * @throws IllegalStateException If this thread has been run and the
@@ -105,10 +105,12 @@ public final class RunningThread
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/01/10
 	 */
-	public Value runMethod(boolean __static, String __cl, String __name,
-		String __desc, Value... __args)
+	public Value runMethod(MethodHandle __mh, Value... __args)
 		throws IllegalStateException, NullPointerException
 	{
+		if (__mh == null)
+			throw new NullPointerException("NARG");
+		
 		// {@squirreljme.error AE01 This thread has already been started and
 		// as such this method may only be called from within that thread.}
 		if (this._didstart && this != Thread.currentThread())
@@ -196,59 +198,14 @@ public final class RunningThread
 	/**
 	 * Returns a {@code StaticMethod} to execute the given method.
 	 *
-	 * @param __static Should a static method be resolved?
-	 * @param __cl The class to lookup.
-	 * @param __name The method name.
-	 * @param __desc The method type.
+	 * @param __mh The method handle.
 	 * @return The virtual static method.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/01/10
 	 */
-	public final Instance vmStaticMethod(boolean __static, String __cl,
-		String __name, String __desc)
+	public final Instance vmStaticMethod(MethodHandle __mh)
 		throws NullPointerException
 	{
-		return this.vmStaticMethod(__static,
-			this.status.classloader.loadClass(__cl),
-			new MethodNameAndType(__name, __desc));
-	}
-	
-	/**
-	 * Returns a {@code StaticMethod} to execute the given method.
-	 *
-	 * @param __static Should a static method be resolved?
-	 * @param __cl The class to lookup.
-	 * @param __name The method name.
-	 * @param __desc The method type.
-	 * @return The virtual static method.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/01/10
-	 */
-	public final Instance vmStaticMethod(boolean __static, LoadedClass __cl,
-		String __name, String __desc)
-		throws NullPointerException
-	{
-		return this.vmStaticMethod(__static, __cl,
-			new MethodNameAndType(__name, __desc));
-	}
-	
-	/**
-	 * Returns a {@code StaticMethod} to execute the given method.
-	 *
-	 * @param __static Should a static method be resolved?
-	 * @param __cl The class to lookup.
-	 * @param __nat The method name and type.
-	 * @return The virtual static method.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/01/10
-	 */
-	public final Instance vmStaticMethod(boolean __static, LoadedClass __cl,
-		MethodNameAndType __nat)
-		throws NullPointerException
-	{
-		if (__cl == null || __nat == null)
-			throw new NullPointerException("NARG");
-		
 		throw new todo.TODO();
 	}
 	
