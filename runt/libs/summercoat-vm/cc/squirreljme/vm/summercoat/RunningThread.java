@@ -68,10 +68,8 @@ public final class RunningThread
 	public void execEnterMethod(MethodHandle __mh, Value... __args)
 		throws IllegalStateException, NullPointerException
 	{
-		// {@squirreljme.error AE02 This thread has already been started and
-		// as such this method may only be called from within that thread.}
-		if (this._didstart && this != Thread.currentThread())
-			throw new IllegalStateException("AE02");
+		// Must be the same thread
+		__checkSameThread();
 		
 		throw new todo.TODO();
 	}
@@ -111,10 +109,8 @@ public final class RunningThread
 		if (__mh == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AE01 This thread has already been started and
-		// as such this method may only be called from within that thread.}
-		if (this._didstart && this != Thread.currentThread())
-			throw new IllegalStateException("AE01");
+		// Must be the same thread
+		__checkSameThread();
 		
 		throw new todo.TODO();
 	}
@@ -150,6 +146,9 @@ public final class RunningThread
 	{
 		if (__cl == null)
 			throw new NullPointerException("NARG");
+		
+		// Must be the same thread
+		__checkSameThread();
 		
 		throw new todo.TODO();
 	}
@@ -189,6 +188,9 @@ public final class RunningThread
 		if (__cl == null || __desc == null)
 			throw new NullPointerException("NARG");
 		
+		// Must be the same thread
+		__checkSameThread();
+		
 		// Defensive copy
 		__args = (__args == null ? new Value[0] : __args.clone());
 		
@@ -206,6 +208,9 @@ public final class RunningThread
 	public final Instance vmStaticMethod(MethodHandle __mh)
 		throws NullPointerException
 	{
+		// Must be the same thread
+		__checkSameThread();
+		
 		throw new todo.TODO();
 	}
 	
@@ -218,7 +223,28 @@ public final class RunningThread
 	 */
 	public final Instance vmTranslateString(String __in)
 	{
+		// Must be the same thread
+		__checkSameThread();
+		
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Checks that the call was done in the same thread, since when the thread
+	 * is running it will completely break if another thread decides it wants
+	 * to do things in this thread.
+	 *
+	 * @throws IllegalStateException If the thread was started and the check
+	 * was performed in a different thread.
+	 * @since 2019/01/10
+	 */
+	private final void __checkSameThread()
+		throws IllegalStateException
+	{
+		// {@squirreljme.error AE01 This thread has already been started and
+		// as such this method may only be called from within that thread.}
+		if (this._didstart && this != Thread.currentThread())
+			throw new IllegalStateException("AE01");
 	}
 }
 
