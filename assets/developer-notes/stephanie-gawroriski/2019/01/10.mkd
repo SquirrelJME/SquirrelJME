@@ -1,0 +1,27 @@
+# 2019/01/10
+
+## 16:40
+
+Rather itching to get back into developing this a bit. I think I just need to
+keep it simple for the most part. Not going to do CPU engines and such, just
+going to basically have tasks and threads. Of course before I can even run
+code and such I am going to need the SCRF stuff. I think the cleanest thing
+for me to do would be to write a translator for class files and such. But
+instead of writing all of it at once, I can just write it as I go along since
+I know how the JVM works and I have some ideas for things. One idea would be
+turning the native call methods and a few other methods into optimized code
+or system calls and whatnot.
+
+## 16:49
+
+What I can do is actually move some things like the profiler and the class
+loader into the task status. Maybe there could be a thing where I can get the
+suites for a task which is running? Probably would be best to put system
+properties in there as well, might be useful.
+
+## 20:47
+
+What I need is a way to enter the thread for execution for example from the
+LCDUI event handler, since that is always done from a single thread. I should
+handle that case first in a way where it is not a complete hack and such.
+Since the LCDUI thread is kind of explicit and is magically created I guess.
