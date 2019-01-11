@@ -36,6 +36,12 @@ public final class RunningThread
 	/** Has this thread been started via the run method. */
 	private volatile boolean _didstart;
 	
+	/** Owner thread, for when it is not started and has been called. */
+	private volatile Thread _rmthread;
+	
+	/** The counts for the current thread run. */
+	private volatile int _rmcount;
+	
 	/**
 	 * Initializes the thread.
 	 *
@@ -110,9 +116,52 @@ public final class RunningThread
 			throw new NullPointerException("NARG");
 		
 		// Must be the same thread
-		__checkSameThread();
+		boolean didstart = __checkSameThread();
+		if (!didstart)
+			synchronized (this)
+			{
+				// Current thread is always used
+				Thread current = Thread.currentThread();
+				
+				// Take over for this thread
+				Thread rmthread = this._rmthread;
+				if (rmthread == null)
+				{
+					this._rmthread = current;
+					this._rmcount = 1;
+				}
+				
+				// Count up the thread usage
+				else
+				{
+					// {@squirreljme.error AE02 Cannot run a method which is
+					// crossed from another thread which is running a method.}
+					if (rmthread != Thread.currentThread())
+						throw new IllegalStateException("AE02");
+					
+					this._rmcount++;
+				}
+			}
 		
-		throw new todo.TODO();
+		// Needed to clear the current thread
+		try
+		{
+			throw new todo.TODO();
+		}
+		
+		// Make sure this is always run
+		finally
+		{
+			// If the thread has not been started then reduce our count and
+			// additionally make sure if it clears that the current context
+			// thread is also cleared
+			if (!didstart)
+				synchronized (this)
+				{
+					if ((--this._rmcount) <= 0)
+						this._rmthread = null;
+				}
+		}
 	}
 	
 	/**
@@ -234,17 +283,20 @@ public final class RunningThread
 	 * is running it will completely break if another thread decides it wants
 	 * to do things in this thread.
 	 *
+	 * @return If the thread has been started, and is using {@link #run()}.
 	 * @throws IllegalStateException If the thread was started and the check
 	 * was performed in a different thread.
 	 * @since 2019/01/10
 	 */
-	private final void __checkSameThread()
+	private final boolean __checkSameThread()
 		throws IllegalStateException
 	{
 		// {@squirreljme.error AE01 This thread has already been started and
 		// as such this method may only be called from within that thread.}
-		if (this._didstart && this != Thread.currentThread())
+		boolean didstart = this._didstart;
+		if (didstart && this != Thread.currentThread())
 			throw new IllegalStateException("AE01");
+		return didstart;
 	}
 }
 
