@@ -158,8 +158,7 @@ public final class RootMachine
 			IntegerValue.of((__ismid ? 3 : 4)), vmsm, entryarg);
 		
 		// Enter the __start() method for Thread
-		if (true)
-			throw new todo.TODO();
+		thr.execEnterMethod(false, "java/lang/Thread", "__start", "()V");
 		
 		// Now that the thread has been initialized it must be started, it
 		// will keep running executing the method it starts in until
