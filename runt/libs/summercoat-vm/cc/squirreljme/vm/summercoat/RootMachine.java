@@ -40,9 +40,9 @@ public final class RootMachine
 	protected final TaskStatuses statuses =
 		new TaskStatuses();
 	
-	/** Cache of classes. */
-	protected final RuntimeClassCache runtimeclasscache =
-		new RuntimeClassCache();
+	/** Cache of SCRF classes. */
+	protected final RegisterClassCache scrfcache =
+		new RegisterClassCache();
 	
 	/**
 	 * Initializes the root machine.
@@ -104,12 +104,15 @@ public final class RootMachine
 			if (e.getKey() == null || e.getValue() == null)
 				throw new NullPointerException("NARG");
 		
+		// Normalize the main class
+		__maincl = __maincl.replace('.', '/');
+		
 		// Create a new status for this task which contains some global
 		// information that is needed, it needs our system properties and the
 		// classpath since they both may be accessed
 		ClassLoader cl;
 		TaskStatus status = this.statuses.createNew(
-			(cl = new ClassLoader(this.runtimeclasscache, suites, __cp)),
+			(cl = new ClassLoader(this.scrfcache, suites, __cp)),
 			__sprops, this.profiler);
 		
 		// Setup a new base running task, which has no threads yet until the
@@ -120,7 +123,41 @@ public final class RootMachine
 		// will be (since we need to initialize objects)
 		RunningThread thr = rv.createThread();
 		
-		// Setup main thread
+		// Determine the entry method and the entry arguments to use
+		Instance vmsm;
+		Instance entryarg;
+		if (__ismid)
+		{
+			vmsm = thr.vmStaticMethod(false,
+				"javax/microedition/midlet/MIDlet",
+				"startApp", "()V");
+			entryarg = thr.vmTranslateString(__maincl);
+		}
+		else
+		{
+			vmsm = thr.vmStaticMethod(true, __maincl,
+				"main", "([Ljava/lang/String;)V");
+			
+			// Setup array that is the same size as the input arguments
+			int n = __args.length;
+			ArrayInstance ai = thr.vmNewArray("[Ljava/lang/String;", n);
+			
+			// Translate string arguments
+			for (int i = 0; i < n; i++)
+				ai.set(i, thr.vmTranslateString(__args[i]));
+			
+			// We just pass this to the thread
+			entryarg = ai;
+		}
+		
+		// Create main thread instance which uses our given starting points
+		// accordingly so it knows which method to invoke
+		Instance threadobj = thr.vmNewInstance("java/lang/Thread",
+			"(Ljava/lang/String;ILcc/squirreljme/runtime/cldc/asm/" +
+			"StaticMethod;Ljava/lang/Object;)V", thr.vmTranslateString("Main"),
+			IntegerValue.of((__ismid ? 3 : 4)), vmsm, entryarg);
+		
+		// Enter the __start() method for Thread
 		if (true)
 			throw new todo.TODO();
 		

@@ -11,12 +11,12 @@
 package cc.squirreljme.vm.summercoat;
 
 /**
- * This is a cache of classes so that SCRF translation is kept in the run-time
- * rather than being repeated multiple times over and over.
+ * This interface represents an instance of an object.
  *
- * @since 2019/01/05
+ * @since 2019/01/10
  */
-public final class RuntimeClassCache
+public interface Instance
+	extends Value
 {
 }
 
