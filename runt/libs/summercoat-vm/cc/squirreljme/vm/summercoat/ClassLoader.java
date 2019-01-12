@@ -11,11 +11,16 @@
 package cc.squirreljme.vm.summercoat;
 
 import cc.squirreljme.vm.VMClassLibrary;
+import cc.squirreljme.vm.VMException;
 import cc.squirreljme.vm.VMSuiteManager;
+import java.io.InputStream;
+import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
+import net.multiphasicapps.classfile.InvalidClassFormatException;
+import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.scrf.RegisterClass;
 
@@ -66,10 +71,11 @@ public final class ClassLoader
 	 * @param __n The class to load.
 	 * @return The loaded class.
 	 * @throws NullPointerException On null arguments.
+	 * @throws VMClassNotFoundException If the class was not found.
 	 * @since 2019/01/06
 	 */
 	public final LoadedClass loadClass(String __n)
-		throws NullPointerException
+		throws NullPointerException, VMClassNotFoundException
 	{
 		if (__n == null)
 			throw new NullPointerException("NARG");
@@ -83,15 +89,79 @@ public final class ClassLoader
 	 * @param __n The class to load.
 	 * @return The loaded class.
 	 * @throws NullPointerException On null arguments.
+	 * @throws VMClassNotFoundException If the class was not found.
 	 * @since 2019/01/10
 	 */
 	public final LoadedClass loadClass(ClassName __n)
-		throws NullPointerException
+		throws NullPointerException, VMClassNotFoundException
 	{
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Lock on self as new classes are loaded
+		synchronized (this)
+		{
+			// If the class has already been loaded use that one
+			Map<ClassName, LoadedClass> classes = this._classes;
+			LoadedClass rv = classes.get(__n);
+			if (rv != null)
+				return rv;
+			
+			// If this is a primitive type or array then it is a special thing
+			// and will not be in a resource
+			ClassFile cf;
+			VMClassLibrary inlib;
+			if (__n.isPrimitive() || __n.isArray())
+			{
+				cf = ClassFile.special(__n.field());
+				inlib = null;
+			}
+			
+			// Load class from resource instead
+			else
+			{
+				// This is the class that is read, in binary form
+				String fileform = __n.toString() + ".class";
+				
+				// Go through our classpath looking for this class in its
+				// resource format
+				cf = null;
+				inlib = null;
+				for (VMClassLibrary b : this._classpath)
+					try (InputStream in = b.resourceAsStream(fileform))
+					{
+						// Not found
+						if (in == null)
+							continue;
+						
+						// Load it
+						cf = ClassFile.decode(in);
+						inlib = b;
+						
+						// Stop
+						break;
+					}
+					catch (InvalidClassFormatException e)
+					{
+						// {@squirreljme.error AE05 The class is not formatted
+						// correctly. (The class name)}
+						throw new VMException("AE05 " + __n, e);
+					}
+					catch (IOException e)
+					{
+						// {@squirreljme.error AE04 Read error trying to read
+						// the class file. (The class)}
+						throw new VMException("AE04 " + __n, e);
+					}
+				
+				// {@squirreljme.error AE03 Could not find the specified class.
+				// (The name of the class)}
+				if (cf == null || inlib == null)
+					throw new VMClassNotFoundException("AE03 " + __n);
+			}
+			
+			throw new todo.TODO();
+		}
 	}
 }
 
