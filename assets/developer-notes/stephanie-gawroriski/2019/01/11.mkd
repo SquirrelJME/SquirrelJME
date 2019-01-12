@@ -1,0 +1,13 @@
+# 2019/01/11
+
+## 12:38
+
+For checking files for cache I can do MurmurHash3 in the future since it is
+simple and works enough, it is not crypto safe and there is no intention for
+it to be used as such anyway.
+
+## 21:59
+
+I think something that could help at least with arguments would be register
+windows like SPARC. So that way the output arguments become the input
+arguments for method calls and such. I think this keeps things simpler.
