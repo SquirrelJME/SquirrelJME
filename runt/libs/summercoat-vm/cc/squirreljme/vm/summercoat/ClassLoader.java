@@ -22,6 +22,8 @@ import java.util.Map;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.scrf.compiler.ClassProcessException;
+import net.multiphasicapps.scrf.compiler.ClassProcessor;
 import net.multiphasicapps.scrf.RegisterClass;
 
 /**
@@ -158,6 +160,19 @@ public final class ClassLoader
 				// (The name of the class)}
 				if (cf == null || inlib == null)
 					throw new VMClassNotFoundException("AE03 " + __n);
+			}
+			
+			// Process the class and compile it to the register format
+			RegisterClass rc;
+			try
+			{
+				rc = ClassProcessor.process(cf);
+			}
+			catch (ClassProcessException e)
+			{
+				// {@squirreljme.error AE06 The register compiler could not
+				// process the input class. (The class)}
+				throw new VMException("AE06 " + __n, e);
 			}
 			
 			throw new todo.TODO();
