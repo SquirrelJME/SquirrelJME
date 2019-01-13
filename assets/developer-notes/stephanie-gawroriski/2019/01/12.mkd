@@ -1,0 +1,12 @@
+# 2019/01/12
+
+## 10:11
+
+For SummerCoat I am going to use VTables and I am going to keep each part of
+the class independent. That way there is no merging at all. Most everything
+will be initialized in the class VTable when it is loaded. So this will
+contain the class size, interfaces, the super class, any fields, the class
+size and such when allocated, and more. Having just individual class units
+will be nice because I can share the classes and potentially have
+different inheritence for various different programs. It will all be done by
+the VTable essentially. Then there will be an export table.
