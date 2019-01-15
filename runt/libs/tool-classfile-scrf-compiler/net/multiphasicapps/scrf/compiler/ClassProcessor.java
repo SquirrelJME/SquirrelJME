@@ -24,6 +24,10 @@ public final class ClassProcessor
 	/** The input class to process. */
 	protected final ClassFile input;
 	
+	/** We will always be building the vtable, so this always exists. */
+	protected final VTableBuilder vtable =
+		new VTableBuilder();
+	
 	/**
 	 * Initializes the class processor.
 	 *
@@ -50,6 +54,8 @@ public final class ClassProcessor
 	public final RegisterClass process()
 		throws ClassProcessException
 	{
+		// 
+		
 		throw new todo.TODO();
 	}
 	
