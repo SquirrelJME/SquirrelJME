@@ -1,0 +1,72 @@
+# RatufaCat (SquirrelJME)
+
+***RatufaCoat*** is a Java ME Virtual Machine which is capable of running the
+SquirrelJME run-time. It is written in C and is intended to be used as an
+included library into other programs such as RetroArch. A _SummerCoat Register_
+_Format_ ROM is required for this to operate, to which the SquirrelJME project
+must be referred to accordingly.
+
+ * Copyright (C) 2013-2019 Stephanie Gawroriski
+   <xer@multiphasicapps.net>
+ * Copyright (C) 2013-2019 Multi-Phasic Applications
+   <http://multiphasicapps.net/>
+ * "SquirrelJME" and "Lex" are trademarked by Stephanie Gawroriski 2016-2019
+ * _Lex_ and The _SquirrelJME_ Logo were illustrated by...
+   * Kat Adam-MacEwen
+   * Kat@CMYKat Designs & Illustrations <http://www.cmykat-designs.com/>
+
+You may support me on [Patreon](https://www.patreon.com/SquirrelJME)!
+
+ * [Code of Conduct](code-of-conduct.mkd)
+ * [License](license.mkd)
+   * _Source_: GNU General Public License, Version 3 or later
+   * _Assets_: Creative Commons CC-BY-SA 4.0
+   * _Fonts_ : SIL Open Font License Version 1.1
+ * [Contributing to SquirrelJME](contributing.mkd)
+ 
+Also check out SquirrelJME's sister project _Mu_ at:
+
+ * <https://github.com/meepingsnesroms/Mu>
+
+## Donations
+
+You may donate to SquirrelJME to which would be used by the author to keep the
+web server online, the purchasing of new hardware/software, and for the
+purchasing of food items for consumption.
+
+ * [Ko-Fi](http://ko-fi.com/xerthesquirrel)
+ * [Patreon](https://www.patreon.com/SquirrelJME)
+ * BitCoin (**BTC/XBT**): [`3EjFDnmECNtL8C8up6R5DTNy1XDrWaaMw5`](
+   bitcoin:3EjFDnmECNtL8C8up6R5DTNy1XDrWaaMw5)
+ * BitCoin Cash (**BCH**): [`qrgww4z9aalgxyyddh5ax8jyy34c89phxuklp3hcwd`](
+   bitcoincash:qrgww4z9aalgxyyddh5ax8jyy34c89phxuklp3hcwd)
+ * Ethereum (**ETH**): [`0x7C2316f5336C63855C199784a6e145921145B74a`](
+   ethereum:0x7C2316f5336C63855C199784a6e145921145B74a)
+ * Ethereum Classic (**ETC**): [`0x1b30e6411bd7da6dd72cA35dabD5b98BA25A0Ae7`](
+   ethereum:0x1b30e6411bd7da6dd72cA35dabD5b98BA25A0Ae7)
+ * LiteCoin (**LTC**): [`MAogNXdjPQ7ZABtpeXztCHf4UXvfiwTuGX`](
+   litecoin:MAogNXdjPQ7ZABtpeXztCHf4UXvfiwTuGX)
+
+## Important Statements
+
+***JAVA AND ALL OTHER RELATED TRADEMARKS AND COPYRIGHTS ARE OWNED BY ORACLE
+CORPORATION <http://www.oracle.com/>.***
+
+***SQUIRRELJME IS NEITHER PRODUCED BY NOR ENDORSED BY ORACLE CORPORATION.***
+
+***ALL SOURCE CODE IS WRITTEN BY MYSELF WITH FUNCTIONALITY DETERMINED BY THE
+DOCUMENTED APIS AND RUN-TIME BEHAVIOR. I HAVE NOT LOOKED AT THE SOURCE CODE FOR
+OTHER IMPLEMENTATIONS, NEITHER FREE SOFTWARE NOR PROPRIETARY IMPLEMENTATIONS.
+ESSENTIALLY SQUIRRELJME IS A CLEAN-ROOM IMPLEMENTATION OF THE DESIGN OF JAVA
+ME 8. THE IMPLEMENTATIONS OF THE JAVA ME 8
+APIS AND ASSOCIATED JSRS/JEPS IS CONSIDERED BY MYSELF TO BE IN THE FAIR USE
+(AND IT ALSO HELPS THE JAVA ECOSYSTEM BY PERMITTING IT TO RUN IN MORE PLACES
+WHERE IT IS NOT SUPPORTED BY ORACLE).***
+
+***THIS SOFTWARE IS INCOMPLETE AND IN ITS CURRENT STATE IS NOT CURRENTLY
+100% COMPATIBLE WITH JAVA ME 8. THERE ARE CURRENTLY NO RELEASED VERSIONS OF
+THIS SOFTWARE. AS SUCH THE FIRST RELEASE WILL BE WHEN IT IS COMPATIBLE SO AS TO
+NOT VIOLATE POTENTIAL LICENSES, AND IF POSSIBLE BE VERIFIED WITH ANY
+APPLICABLE TCKS (SO IT WOULD BE AN "OFFICIAL" IMPLEMENTATION).***
+
+
