@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.javac.classtree;
 
+import net.multiphasicapps.javac.CompilerException;
+
 /**
  * This is the root of the class hierachy which contains all of the various
  * packages with classes in them.
@@ -18,5 +20,10 @@ package net.multiphasicapps.javac.classtree;
  */
 public final class Packages
 {
+	public static final 
+		throws CompilerException
+	{
+		throw new todo.TODO();
+	}
 }
 

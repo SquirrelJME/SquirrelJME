@@ -35,7 +35,6 @@ import net.multiphasicapps.javac.CompilerPathSet;
 import net.multiphasicapps.javac.FileNameLineAndColumn;
 import net.multiphasicapps.javac.LineAndColumn;
 import net.multiphasicapps.javac.LocationAware;
-import net.multiphasicapps.javac.MergedPathSet;
 import net.multiphasicapps.javac.MessageType;
 import net.multiphasicapps.javac.structure.RuntimeInput;
 
@@ -58,7 +57,7 @@ public class CuteRunnable
 	protected final CompilerOptions options;
 	
 	/** Paths for the compiler. */
-	protected final Map<CompilerInputLocation, CompilerPathSet> paths;
+	protected final Map<CompilerInputLocation, List<CompilerPathSet>> paths;
 	
 	/** Input for the compiler. */
 	protected final List<CompilerInput> input;
@@ -90,11 +89,14 @@ public class CuteRunnable
 		this.options = __opt;
 		
 		// Copy paths
-		Map<CompilerInputLocation, CompilerPathSet> paths = new HashMap<>();
+		Map<CompilerInputLocation, List<CompilerPathSet>> paths =
+			new HashMap<>();
 		for (CompilerInputLocation cil : CompilerInputLocation.values())
-			paths.put(cil, new MergedPathSet(__paths[cil.ordinal()]));
+			paths.put(cil, UnmodifiableList.<CompilerPathSet>of(
+				Arrays.<CompilerPathSet>asList(
+				__paths[cil.ordinal()].clone())));
 		this.paths = UnmodifiableMap.<CompilerInputLocation,
-			CompilerPathSet>of(paths);
+			List<CompilerPathSet>>of(paths);
 		
 		// Copy input
 		this.input = UnmodifiableList.<CompilerInput>of(
@@ -112,10 +114,10 @@ public class CuteRunnable
 		CompilerLogger log = this.log;
 		
 		// Setup input which processes input classes
-		Map<CompilerInputLocation, CompilerPathSet> paths = this.paths;
+		Map<CompilerInputLocation, List<CompilerPathSet>> paths = this.paths;
 		RuntimeInput ri = new RuntimeInput(
-			new CompilerPathSet[]{paths.get(CompilerInputLocation.CLASS)},
-			new CompilerPathSet[]{paths.get(CompilerInputLocation.SOURCE)});
+			paths.get(CompilerInputLocation.CLASS),
+			paths.get(CompilerInputLocation.SOURCE));
 		
 		// Run compilation step
 		try
