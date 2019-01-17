@@ -18,6 +18,7 @@ import net.multiphasicapps.javac.syntax.TypeSyntax;
  *
  * @since 2018/05/10
  */
+@Deprecated
 public final class TypeParametersNameLookup
 	implements NameLookup
 {

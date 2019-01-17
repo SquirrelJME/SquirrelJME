@@ -19,6 +19,7 @@ import net.multiphasicapps.classfile.FieldName;
  *
  * @since 2018/05/10
  */
+@Deprecated
 public final class FormalParameter
 {
 	/** The name of the parameter. */

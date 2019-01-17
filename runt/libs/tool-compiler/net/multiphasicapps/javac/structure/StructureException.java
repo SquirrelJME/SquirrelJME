@@ -19,6 +19,7 @@ import net.multiphasicapps.javac.LocationAware;
  *
  * @since 2018/05/03
  */
+@Deprecated
 public class StructureException
 	extends CompilerException
 {

@@ -23,6 +23,7 @@ import net.multiphasicapps.javac.syntax.ModifierSyntax;
  *
  * @since 2018/05/07
  */
+@Deprecated
 public final class PackageInfoParser
 	implements Runnable
 {

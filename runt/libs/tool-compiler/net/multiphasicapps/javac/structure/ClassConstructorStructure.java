@@ -17,6 +17,7 @@ import net.multiphasicapps.javac.syntax.UnparsedExpressions;
  *
  * @since 2018/05/08
  */
+@Deprecated
 public final class ClassConstructorStructure
 	implements ClassMemberStructure
 {

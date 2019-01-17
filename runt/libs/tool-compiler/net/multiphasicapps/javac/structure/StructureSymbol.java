@@ -15,6 +15,7 @@ package net.multiphasicapps.javac.structure;
  *
  * @since 2018/05/03
  */
+@Deprecated
 public interface StructureSymbol
 {
 }

@@ -36,6 +36,7 @@ import net.multiphasicapps.javac.token.BufferedTokenSource;
  *
  * @since 2018/05/03
  */
+@Deprecated
 public final class RuntimeInput
 {
 	/** Output structure information. */

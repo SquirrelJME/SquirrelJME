@@ -16,6 +16,7 @@ package net.multiphasicapps.javac.structure;
  *
  * @since 2018/05/12
  */
+@Deprecated
 public interface StructureModifier
 {
 }

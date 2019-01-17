@@ -226,6 +226,17 @@ public class BuilderFactory
 	}
 	
 	/**
+	 * Generate all of the Javadoc.
+	 *
+	 * @param __args Arguments.
+	 * @since 2019/01/17
+	 */
+	public void javaDoc(String... __args)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Launch program.
 	 *
 	 * @param __args Arguments to use.
@@ -357,6 +368,11 @@ public class BuilderFactory
 				this.distAll(args.<String>toArray(new String[args.size()]));
 				break;
 				
+				// Generate all of the JavaDoc
+			case "javadoc":
+				this.javaDoc(args.<String>toArray(new String[args.size()]));
+				break;
+				
 				// Launch project within a VM
 			case "launch":
 				this.launch(args.<String>toArray(new String[args.size()]));
@@ -388,7 +404,7 @@ public class BuilderFactory
 				// {@squirreljme.error AU0g Unknown command specified.
 				// Usage: command (command arguments...);
 				// Valid commands are:
-				// build, launch, sdk, suite, task, vmshade
+				// build, javadoc, launch, sdk, suite, task, vmshade
 				// .(The switch)}
 			default:
 				throw new IllegalArgumentException(String.format("AU0g %s",
