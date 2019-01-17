@@ -236,6 +236,9 @@ public final class RuntimeInput
 			throw new StructureException(sfn, "AQ0s", e);
 		}
 		
+		// Debug the layout
+		todo.DEBUG.note("%s", cus);
+		
 		// {@squirreljme.error AQ0t Source code file specified a package which
 		// does not match the package represented in the source code itself.
 		// (The package the source is in; The package the source code actually

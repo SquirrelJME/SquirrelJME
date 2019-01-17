@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.javac.syntax;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -29,7 +31,10 @@ public final class ModifiersSyntax
 	implements Iterable<ModifierSyntax>
 {
 	/** The modifiers to use. */
-	private final Set<ModifierSyntax> _modifiers;	
+	private final Set<ModifierSyntax> _modifiers;
+	
+	/** String representation. */
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes the modifier set.
@@ -263,7 +268,14 @@ public final class ModifiersSyntax
 	@Override
 	public final String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>((rv =
+				this._modifiers.toString()));
+		
+		return rv;
 	}
 	
 	/**

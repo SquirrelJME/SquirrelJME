@@ -10,7 +10,10 @@
 
 package net.multiphasicapps.javac.syntax;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
@@ -31,6 +34,9 @@ public final class UnparsedExpressions
 	
 	/** The hashcode for these expressions. */
 	private final int _hashcode;
+	
+	/** String form. */
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes the unparsed expression.
@@ -87,7 +93,14 @@ public final class UnparsedExpressions
 	@Override
 	public final String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>((rv =
+				Arrays.asList(this._tokens).toString()));
+		
+		return rv;
 	}
 	
 	/**

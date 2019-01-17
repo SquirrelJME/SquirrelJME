@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.javac.syntax;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.Map;
 import net.multiphasicapps.classfile.BinaryName;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
@@ -23,6 +26,7 @@ import net.multiphasicapps.javac.token.TokenType;
  * @since 2018/04/21
  */
 public final class ImportStatementSyntax
+	implements MapView
 {
 	/** Is this static? */
 	protected final boolean isstatic;
@@ -32,6 +36,12 @@ public final class ImportStatementSyntax
 	
 	/** Is it a wildcard? */
 	protected final boolean wildcard;
+	
+	/** Map view. */
+	private Reference<Map<String, Object>> _map;
+	
+	/** String representation. */
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes the import declaration.
@@ -50,6 +60,25 @@ public final class ImportStatementSyntax
 		this.isstatic = __static;
 		this.what = __what;
 		this.wildcard = __what.toString().endsWith("/*");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/01/17
+	 */
+	@Override
+	public Map<String, Object> asMap()
+	{
+		Reference<Map<String, Object>> ref = this._map;
+		Map<String, Object> rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._map = new WeakReference<>((rv = new __TreeBuilder__().
+				add("static", this.isstatic).
+				add("wildcard", this.wildcard).
+				add("what", this.what).build()));
+		
+		return rv;
 	}
 	
 	/**
@@ -109,7 +138,13 @@ public final class ImportStatementSyntax
 	@Override
 	public final String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>((rv = this.asMap().toString()));
+		
+		return rv;
 	}
 	
 	/**

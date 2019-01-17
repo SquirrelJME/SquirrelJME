@@ -10,8 +10,11 @@
 
 package net.multiphasicapps.javac.syntax;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import net.multiphasicapps.classfile.FieldName;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.Token;
@@ -24,6 +27,7 @@ import net.multiphasicapps.javac.token.TokenType;
  * @since 2018/04/28
  */
 public final class FormalParameterSyntax
+	implements MapView
 {
 	/** The modifiers used. */
 	protected final ModifiersSyntax modifiers;
@@ -33,6 +37,12 @@ public final class FormalParameterSyntax
 	
 	/** The name of the field. */
 	protected final FieldName name;
+	
+	/** Map view. */
+	private Reference<Map<String, Object>> _map;
+	
+	/** String form. */
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes the formal parameter.
@@ -63,6 +73,25 @@ public final class FormalParameterSyntax
 		this.modifiers = __mods;
 		this.type = __type;
 		this.name = __name;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/01/17
+	 */
+	@Override
+	public Map<String, Object> asMap()
+	{
+		Reference<Map<String, Object>> ref = this._map;
+		Map<String, Object> rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._map = new WeakReference<>((rv = new __TreeBuilder__().
+				add("modifiers", this.modifiers).
+				add("type", this.type).
+				add("name", this.name).build()));
+		
+		return rv;
 	}
 	
 	/**
@@ -114,7 +143,13 @@ public final class FormalParameterSyntax
 	@Override
 	public final String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>((rv = this.asMap().toString()));
+		
+		return rv;
 	}
 	
 	/**

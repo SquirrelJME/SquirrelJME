@@ -10,11 +10,14 @@
 
 package net.multiphasicapps.javac.syntax;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.classfile.ClassIdentifier;
 import net.multiphasicapps.classfile.FieldName;
@@ -32,7 +35,7 @@ import net.multiphasicapps.javac.token.TokenType;
  * @since 2018/04/21
  */
 public final class ClassSyntax
-	implements MemberSyntax
+	implements MapView, MemberSyntax
 {
 	/** The type of class this is. */
 	protected final ClassSyntaxType type;
@@ -54,6 +57,12 @@ public final class ClassSyntax
 	
 	/** The members of the class. */
 	private final MemberSyntax[] _members;
+	
+	/** Map view. */
+	private Reference<Map<String, Object>> _map;
+	
+	/** String form. */
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes the class structure information.
@@ -210,6 +219,29 @@ public final class ClassSyntax
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2019/01/17
+	 */
+	@Override
+	public Map<String, Object> asMap()
+	{
+		Reference<Map<String, Object>> ref = this._map;
+		Map<String, Object> rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._map = new WeakReference<>((rv = new __TreeBuilder__().
+				add("type", this.type).
+				add("modifiers", this.modifiers).
+				add("name", this.name).
+				add("typeparams", this.typeparams).
+				addList("extends", (Object[])this._extends).
+				addList("implements", (Object[])this._implements).
+				addList("members", (Object[])this._members).build()));
+		
+		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/05/08
 	 */
 	@Override
@@ -294,7 +326,13 @@ public final class ClassSyntax
 	@Override
 	public final String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>((rv = this.asMap().toString()));
+		
+		return rv;
 	}
 	
 	/**

@@ -10,10 +10,13 @@
 
 package net.multiphasicapps.javac.syntax;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.classfile.BinaryName;
 import net.multiphasicapps.collections.UnmodifiableArrayList;
@@ -29,6 +32,7 @@ import net.multiphasicapps.javac.token.TokenType;
  * @since 2018/04/21
  */
 public final class CompilationUnitSyntax
+	implements MapView
 {
 	/** The modifiers for the package. */
 	protected final ModifiersSyntax modifiers;
@@ -41,6 +45,12 @@ public final class CompilationUnitSyntax
 	
 	/** The classes being declared. */
 	private final ClassSyntax[] _classes;
+	
+	/** Map view. */
+	private Reference<Map<String, Object>> _map;
+	
+	/** String form. */
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes the compilation unit.
@@ -153,6 +163,26 @@ public final class CompilationUnitSyntax
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2019/01/17
+	 */
+	@Override
+	public Map<String, Object> asMap()
+	{
+		Reference<Map<String, Object>> ref = this._map;
+		Map<String, Object> rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._map = new WeakReference<>((rv = new __TreeBuilder__().
+				add("packagemodifiers", this.modifiers).
+				add("package", this.inpackage).
+				addList("imports", (Object[])this._imports).
+				addList("classes", (Object[])this._classes).build()));
+		
+		return rv;
+	}
+	
+	/**
 	 * Returns the classes which have been defined.
 	 *
 	 * @return The defined classes.
@@ -214,7 +244,13 @@ public final class CompilationUnitSyntax
 	@Override
 	public final String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>((rv = this.asMap().toString()));
+		
+		return rv;
 	}
 	
 	/**
