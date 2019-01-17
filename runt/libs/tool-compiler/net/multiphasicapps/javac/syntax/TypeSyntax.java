@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.javac.syntax;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
 import net.multiphasicapps.javac.token.Token;
 import net.multiphasicapps.javac.token.TokenSource;
@@ -31,6 +33,9 @@ public final class TypeSyntax
 	
 	/** The dimensions. */
 	protected final int dimensions;
+	
+	/** String form. */
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes the type using a basic qualified identifier.
@@ -81,7 +86,7 @@ public final class TypeSyntax
 	 */
 	public final int dimensions()
 	{
-		throw new todo.TODO();
+		return this.dimensions;
 	}
 	
 	/**
@@ -111,7 +116,18 @@ public final class TypeSyntax
 	@Override
 	public final String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+		{
+			int dims = this.dimensions;
+			this._string = new WeakReference<>(
+				(rv = (this.simpletype.toString() +
+					(dims <= 0 ? "" : "[" + dims + "]"))));
+		}
+		
+		return rv;
 	}
 	
 	/**

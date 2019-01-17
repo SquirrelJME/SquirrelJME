@@ -10,7 +10,10 @@
 
 package net.multiphasicapps.javac.syntax;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.javac.token.BufferedTokenSource;
@@ -24,7 +27,7 @@ import net.multiphasicapps.javac.token.TokenType;
  * @since 2018/04/28
  */
 public final class SimpleMethodSyntax
-	implements MethodSyntax
+	implements MapView, MethodSyntax
 {
 	/** ModifiersSyntax to the constructor. */
 	protected final ModifiersSyntax modifiers;
@@ -46,6 +49,12 @@ public final class SimpleMethodSyntax
 	
 	/** The thrown classes. */
 	private final QualifiedIdentifierSyntax[] _thrown;
+	
+	/** Map view. */
+	private Reference<Map<String, Object>> _map;
+	
+	/** String form. */
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes simple method.
@@ -110,6 +119,29 @@ public final class SimpleMethodSyntax
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2019/01/17
+	 */
+	@Override
+	public Map<String, Object> asMap()
+	{
+		Reference<Map<String, Object>> ref = this._map;
+		Map<String, Object> rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._map = new WeakReference<>((rv = new __TreeBuilder__().
+				add("modifiers", this.modifiers).
+				add("typeparams", this.typeparameters).
+				add("name", this.name).
+				add("return", this.returntype).
+				add("parameters", this.parameters).
+				addList("thrown", (Object[])this._thrown).
+				add("code", this.code).build()));
+		
+		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/04/28
 	 */
 	@Override
@@ -155,7 +187,13 @@ public final class SimpleMethodSyntax
 	@Override
 	public final String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>((rv = this.asMap().toString()));
+		
+		return rv;
 	}
 	
 	/**

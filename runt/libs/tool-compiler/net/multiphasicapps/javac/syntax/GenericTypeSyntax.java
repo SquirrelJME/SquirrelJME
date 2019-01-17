@@ -27,6 +27,9 @@ public final class GenericTypeSyntax
 	/** The identifier. */
 	protected final QualifiedIdentifierSyntax identifier;
 	
+	/** Is there generic info? */
+	protected final boolean hasgenerics;
+	
 	/**
 	 * Initializes the generic type with no generic information.
 	 *
@@ -41,6 +44,7 @@ public final class GenericTypeSyntax
 			throw new NullPointerException("NARG");
 		
 		this.identifier = __id;
+		this.hasgenerics = false;
 	}
 	
 	/**
@@ -70,6 +74,9 @@ public final class GenericTypeSyntax
 	@Override
 	public final String toString()
 	{
+		if (!this.hasgenerics)
+			return this.identifier.toString();
+		
 		throw new todo.TODO();
 	}
 	

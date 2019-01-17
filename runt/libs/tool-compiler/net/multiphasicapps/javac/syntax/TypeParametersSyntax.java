@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.javac.syntax;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -30,6 +32,9 @@ public final class TypeParametersSyntax
 {
 	/** Type parameters used. */
 	private final TypeParameterSyntax[] _params;
+	
+	/** String form. */
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes the type parameters.
@@ -108,7 +113,14 @@ public final class TypeParametersSyntax
 	@Override
 	public final String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>((rv =
+				Arrays.asList(this._params).toString()));
+		
+		return rv;
 	}
 	
 	/**
