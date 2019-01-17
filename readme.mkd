@@ -140,6 +140,8 @@ purchasing of food items for consumption.
    ethereum:0x1b30e6411bd7da6dd72cA35dabD5b98BA25A0Ae7)
  * LiteCoin (**LTC**): [`MAogNXdjPQ7ZABtpeXztCHf4UXvfiwTuGX`](
    litecoin:MAogNXdjPQ7ZABtpeXztCHf4UXvfiwTuGX)
+ * Stellar Lumens (**XLM**):
+   `GB4O2MAMTINKS6GM6RH34KO32TJMF4QZKZTFJBE4HIPFMKRBXFQ7IAF6`.
 
 ## Important Statements
 
