@@ -19,6 +19,7 @@ import net.multiphasicapps.javac.syntax.CompilationUnitSyntax;
  *
  * @since 2018/05/07
  */
+@Deprecated
 public final class CompilationUnitParser
 	implements Runnable
 {

@@ -18,6 +18,7 @@ import net.multiphasicapps.javac.syntax.AnnotationSyntax;
  *
  * @since 2018/05/07
  */
+@Deprecated
 public final class AnnotationModifier
 	implements StructureModifier
 {

@@ -25,6 +25,7 @@ import net.multiphasicapps.javac.syntax.TypeParameterSyntax;
  *
  * @since 2018/05/10
  */
+@Deprecated
 public final class TypeParameters
 {
 	/** The type parameters used. */

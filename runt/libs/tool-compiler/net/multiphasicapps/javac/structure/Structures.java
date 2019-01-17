@@ -18,6 +18,7 @@ import java.util.Map;
  *
  * @since 2018/05/05
  */
+@Deprecated
 public final class Structures
 {
 	/** Mapping of symbols to structures. */

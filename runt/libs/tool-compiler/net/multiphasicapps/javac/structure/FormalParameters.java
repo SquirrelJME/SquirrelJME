@@ -27,6 +27,7 @@ import net.multiphasicapps.javac.syntax.ModifierSyntax;
  *
  * @since 2018/05/10
  */
+@Deprecated
 public final class FormalParameters
 {
 	/** The formal parameters which are used. */

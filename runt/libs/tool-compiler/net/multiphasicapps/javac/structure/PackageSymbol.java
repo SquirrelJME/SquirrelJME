@@ -19,6 +19,7 @@ import net.multiphasicapps.classfile.BinaryName;
  *
  * @since 2018/05/05
  */
+@Deprecated
 public final class PackageSymbol
 	implements StructureSymbol
 {

@@ -18,6 +18,7 @@ import net.multiphasicapps.javac.syntax.TypeSyntax;
  *
  * @since 2018/05/07
  */
+@Deprecated
 public interface NameLookup
 {
 	/**

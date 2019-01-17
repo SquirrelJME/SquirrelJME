@@ -25,6 +25,7 @@ import net.multiphasicapps.javac.syntax.TypeSyntax;
  *
  * @since 2018/05/08
  */
+@Deprecated
 public final class ClassSyntaxParser
 	implements Runnable
 {

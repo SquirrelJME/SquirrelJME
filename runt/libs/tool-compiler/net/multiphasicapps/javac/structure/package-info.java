@@ -16,5 +16,6 @@
  * @since 2018/05/03
  */
 
+@Deprecated
 package net.multiphasicapps.javac.structure;
 
