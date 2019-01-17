@@ -10,10 +10,12 @@
 
 package net.multiphasicapps.javac;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -48,6 +50,31 @@ public final class MergedPathSet
 				throw new NullPointerException("NARG");
 		
 		this._sets = __sets;
+	}
+	
+	/**
+	 * Initializes a merged path set from an iterable sequence.
+	 *
+	 * @param __sets The sets to merge together.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/01/17
+	 */
+	public MergedPathSet(Iterable<CompilerPathSet> __sets)
+		throws NullPointerException
+	{
+		if (__sets == null)
+			throw new NullPointerException("NARG");
+		
+		// Ensure non-null and store into list for later usage
+		List<CompilerPathSet> rv = new ArrayList<>();
+		for (CompilerPathSet s : __sets)
+			if (s == null)
+				throw new NullPointerException("NARG");
+			else
+				rv.add(s);
+		
+		this._sets = rv.<CompilerPathSet>toArray(
+			new CompilerPathSet[rv.size()]);
 	}
 	
 	/**
