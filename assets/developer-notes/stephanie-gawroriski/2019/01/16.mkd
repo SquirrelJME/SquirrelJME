@@ -1,0 +1,10 @@
+# 2019/01/16
+
+## 20:09
+
+I was thinking for the graphics stuff, just having hand optimized or similar
+Java byte code for the drawing methods just to maximize things and such. Then
+use a template with that as well, so it need not be redone over and over
+again. Or maybe I am over complicating things with graphics, should I just
+force 32-bit? Maybe I am just over complicating things and having too much
+variety when the only thing I really need is 32-bit RGB and RGBA.
