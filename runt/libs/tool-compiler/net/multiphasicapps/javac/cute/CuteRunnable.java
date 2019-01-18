@@ -24,6 +24,7 @@ import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.collections.UnmodifiableList;
 import net.multiphasicapps.collections.UnmodifiableMap;
 import net.multiphasicapps.collections.UnmodifiableSet;
+import net.multiphasicapps.javac.classtree.Packages;
 import net.multiphasicapps.javac.Compiler;
 import net.multiphasicapps.javac.CompilerException;
 import net.multiphasicapps.javac.CompilerInput;
@@ -113,8 +114,18 @@ public class CuteRunnable
 	{
 		CompilerLogger log = this.log;
 		
-		// Setup input which processes input classes
+		// Load packages and the classes which belong in each package
 		Map<CompilerInputLocation, List<CompilerPathSet>> paths = this.paths;
+		Packages packages = Packages.loadPackages(
+			paths.get(CompilerInputLocation.CLASS),
+			paths.get(CompilerInputLocation.SOURCE));
+		todo.DEBUG.note("Packages: %s", packages);
+		
+		// OLDER CODE BELOW
+		if (true)
+			throw new todo.TODO();
+		
+		// Setup input which processes input classes
 		RuntimeInput ri = new RuntimeInput(
 			paths.get(CompilerInputLocation.CLASS),
 			paths.get(CompilerInputLocation.SOURCE));
