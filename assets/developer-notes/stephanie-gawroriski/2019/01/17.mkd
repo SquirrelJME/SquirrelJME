@@ -1,0 +1,87 @@
+# 2019/01/17
+
+## 12:41
+
+I think I want to continue on the compiler and get more of that done so I can
+at least get JavaDoc going on. Definitely I think at this point I want to
+keep the class structure stuff even though it is a bit big and such. But I
+do need a better way to potentially wrap syntax errors and have potential
+syntax errors as well. Since there could be multiple possibilities.
+
+## 12:44
+
+I want there to be a better way to report the...
+
+## 13:07
+
+...syntax errors.
+
+## 17:54
+
+Also I figured out for JavaDoc, I can just extract everything from the source
+code pretty much. I do not really need to worry about some complex things at
+all. I can just treat each part of the class as its own unit and extract
+documentation from it. It will not be perfect and there might be some dead
+links potentially, but honestly I do not really need complex stuff. So
+previously when handling it, I have just overly complicated things for the
+most part.
+
+## 18:01
+
+However, it would heavily lack context and such for inner classes. That
+would be quite breaking. This includes things like dependencies and such as
+well. I do plan though on writing a compiler and a documentation tool if I
+write it into the existing compiler code will end up being that supporting
+code. That would reduce the eventual duplicate code if JavaDoc is elsewhere.
+So I just need a contexualized location aware kind of thing. That is turning
+all the various syntax things into resolved things. I just need a base for a
+doc tool which is similar to {@code Compiler}, just branch that off and
+then include other things.
+
+## 18:13
+
+So I want to turn the raw syntax stuff into actual lookupable structures that
+can be resolved. So maybe this part would be called the resolver and it would
+return resolved classes. It would just return resolved symbols and such. So I
+think a base resolution class where you can request class and such. Only issue
+and pain point are inner classes. So I think I am over complicating things
+very much. I am concerning myself with actual compilation as it is right now,
+I think the best thing to do is forget about compiling. Do not worry at all
+about the classes and such that need to be compiled, just load the sources
+and do recursive resolution of everything. What I can do is have unresolved
+short names for things, then lazily resolve those later. So basically there
+would be a type or name or otherwise, which is non-constant. This would break
+the constant things which are nice and it would actually complicate things.
+Maybe instead I put everything into a gigantic list for the most part.
+I would essentially have package parts for the most part which contain
+classes. Really the highest level of things I need to consider are classes
+along with any inherited classes and such.
+
+## 18:24
+
+Actually, I think a bonus here would be to not resolve any identifiers that
+may be potentially ambigious or otherwise. I think the next step following
+things would be to sort everything into a package and class tree, and this
+includes inner classes as well. I need to build some basic structure out of
+things, I think this would be the easiest. Instead of pointing to other
+things, I can just refer to compilation units and actual classes as well as
+which things belong where.
+
+## 18:28
+
+Although it would not be as efficient, I could have the entire compilation
+structure loaded in memory rather than being loaded on demand. I think that
+would simplify the design in the long run, because everything would be
+available and it would be constant as well. It could handle both source and
+binary classes.
+
+## 18:36
+
+Only problem is path sets are not iterable, so it is not known the files which
+actually exist unless they are explicitely called for. So this complicates
+things a bit.
+
+## 18:41
+
+Actually `CompilerPathSet` is already `Iterable` so this is something which
+already exists, which is nice.
