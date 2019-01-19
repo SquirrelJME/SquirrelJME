@@ -302,7 +302,7 @@ public abstract class VMFactory
 		if (useactiveclass == null)
 			useactiveclass = VMFactory.class.getName();
 		if (useprefix == null)
-			useprefix = "/__squirreljme/";
+			useprefix = "/__-squirreljme/";
 		if (bootid < 0)
 			bootid = 0;
 		
