@@ -24,9 +24,13 @@ public final class ClassProcessor
 	/** The input class to process. */
 	protected final ClassFile input;
 	
+	/** String table. */
+	protected final StringTableBuilder strings =
+		new StringTableBuilder();
+	
 	/** We will always be building the vtable, so this always exists. */
 	protected final VTableBuilder vtable =
-		new VTableBuilder();
+		new VTableBuilder(this.strings);
 	
 	/**
 	 * Initializes the class processor.

@@ -14,57 +14,36 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * This is the builder for vtables which are used to contain some run-time
- * determined information about a class, it effectively allows the VM to
- * access other classes and information without needing to build a combined
- * structure, just interlinked.
+ * This is the builder for the string table used in SCRFs, since they may
+ * potentially be combined as an optimization.
  *
- * @since 2019/01/12
+ * @since 2019/01/19
  */
-public final class VTableBuilder
+public final class StringTableBuilder
 {
-	/** String table. */
-	protected final StringTableBuilder strings;
-	
-	/** The table of entries which may accordingly be mapped. */
-	private final Map<Object, Integer> _table =
+	/** Strings in the table. */
+	private final Map<String, Integer> _table =
 		new LinkedHashMap<>();
 	
 	/** The next ID to use for entries. */
 	private int _nextid;
 	
 	/**
-	 * Initializes the VTable builder.
+	 * Adds a single entry to the string table.
 	 *
-	 * @param __s The string table to use.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/01/19
-	 */
-	public VTableBuilder(StringTableBuilder __s)
-		throws NullPointerException
-	{
-		if (__s == null)
-			throw new NullPointerException("NARG");
-		
-		this.strings = __s;
-	}
-	
-	/**
-	 * Adds a single entry to the vtable.
-	 *
-	 * @param __o The item to add.
+	 * @param __o The string to add.
 	 * @return The position of the entry in the table.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/01/19
 	 */
-	public final int add(Object __o)
+	public final int add(String __o)
 		throws NullPointerException
 	{
 		if (__o == null)
 			throw new NullPointerException("NARG");
 		
 		// Prevent multiple threads from building the VTable
-		Map<Object, Integer> table = this._table;
+		Map<String, Integer> table = this._table;
 		synchronized (this)
 		{
 			// If there is already a slot for this entry then use that
@@ -77,7 +56,7 @@ public final class VTableBuilder
 			table.put(__o, id);
 			
 			// Debug
-			todo.DEBUG.note("@%d = %s", id, __o);
+			todo.DEBUG.note("S@%d = %s", id, __o);
 			
 			// Return the ID of this new entry
 			return id;
