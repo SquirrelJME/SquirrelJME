@@ -16,6 +16,7 @@ package net.multiphasicapps.classfile;
  *
  * @since 2018/05/14
  */
+@Deprecated
 public interface ExecutableCode
 {
 }
