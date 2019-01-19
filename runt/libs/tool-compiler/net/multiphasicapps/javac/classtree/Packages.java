@@ -10,9 +10,13 @@
 
 package net.multiphasicapps.javac.classtree;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import net.multiphasicapps.collections.SortedTreeMap;
 import net.multiphasicapps.javac.CompilerException;
 import net.multiphasicapps.javac.CompilerInput;
 import net.multiphasicapps.javac.CompilerPathSet;
@@ -28,6 +32,9 @@ public final class Packages
 	/** The mapping of available packages. */
 	private final Map<String, Package> _packages;
 	
+	/** String representation. */
+	private Reference<String> _string;
+	
 	/**
 	 * Initializes the package tree.
 	 *
@@ -41,7 +48,37 @@ public final class Packages
 		if (__m == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Translate everything
+		Map<String, Package> packages = new SortedTreeMap<>();
+		for (Map.Entry<String, Map<String, Unit>> e : __m.entrySet())
+		{
+			// Make sure there are no nulls
+			String k = e.getKey();
+			Map<String, Unit> v = e.getValue();
+			if (k == null || v == null)
+				throw new NullPointerException("NARG");
+			
+			packages.put(k, new Package(k, v));
+		}
+		
+		this._packages = packages;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/01/19
+	 */
+	@Override
+	public final String toString()
+	{
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>(
+				(rv = this._packages.toString()));
+		
+		return rv;
 	}
 	
 	/**
