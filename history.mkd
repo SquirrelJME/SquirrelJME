@@ -152,6 +152,9 @@ shortly before this project ended.
 I never really got past the JIT stage in the project. It was also quite massive
 of a project.
 
+Anything that was made for documentation was written in LaTeX, which is far
+less friendly compared to Markdown.
+
 ## k8/Squirrnix (2014/04/26 - 2016/02/25)
 
 This is the direct predecessor to SquirrelJME.
