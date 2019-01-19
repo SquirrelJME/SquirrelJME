@@ -337,7 +337,7 @@ public final class ByteCode
 	}
 	
 	/**
-	 * Returns the instruction based on an index in the order it apperas within
+	 * Returns the instruction based on an index in the order it appears within
 	 * the byte code rather than by address.
 	 *
 	 * @param __i The instruction index to get.
