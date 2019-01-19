@@ -369,7 +369,7 @@ public class Shader
 			suitelist.println(name);
 			
 			// Base prefix for this JAR
-			String base = "__squirreljme/" + name + "/";
+			String base = "__-squirreljme/" + name + "/";
 			
 			// Will be copying every single entry to the output
 			try (ZipBlockReader zbr = bin.zipBlock())
@@ -393,7 +393,7 @@ public class Shader
 		}
 		
 		// Write the raw suite list to the JAR since it is needed for shading
-		try (OutputStream os = __zsw.nextEntry("__squirreljme/suites.list"))
+		try (OutputStream os = __zsw.nextEntry("__-squirreljme/suites.list"))
 		{
 			rawsuites.writeTo(os);
 		}
