@@ -80,6 +80,11 @@ public final class MethodProcessor
 		if (__bc == null)
 			throw new NullPointerException("NARG");
 		
+		for (int vi = 0, vin = __bc.instructionCount(); vi < vin; vi++)
+		{
+			todo.DEBUG.note("@%-3d: %s", vi, __bc.getByIndex(vi));
+		}
+		
 		throw new todo.TODO();
 	}
 	
