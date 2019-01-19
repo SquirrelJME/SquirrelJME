@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.scrf.compiler;
 
+import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.Method;
 import net.multiphasicapps.scrf.RegisterMethod;
 
@@ -57,6 +58,27 @@ public final class MethodProcessor
 	{
 		Method input = this.input;
 		VTableBuilder vtable = this.vtable;
+		
+		// Process the byte code of the method
+		ByteCode bc = input.byteCode();
+		if (bc != null)
+			this.__processByteCode(bc);
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Processes the byte code.
+	 *
+	 * @param __bc The byte code to process.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/01/19
+	 */
+	private final void __processByteCode(ByteCode __bc)
+		throws NullPointerException
+	{
+		if (__bc == null)
+			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
 	}
