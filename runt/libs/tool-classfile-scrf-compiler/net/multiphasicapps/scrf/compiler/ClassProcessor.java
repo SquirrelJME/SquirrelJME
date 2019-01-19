@@ -11,6 +11,7 @@
 package net.multiphasicapps.scrf.compiler;
 
 import net.multiphasicapps.classfile.ClassFile;
+import net.multiphasicapps.scrf.CTableEntryIndex;
 import net.multiphasicapps.scrf.RegisterClass;
 
 /**
@@ -31,6 +32,10 @@ public final class ClassProcessor
 	/** We will always be building the vtable, so this always exists. */
 	protected final VTableBuilder vtable =
 		new VTableBuilder(this.strings);
+	
+	/** Class description table for building. */
+	protected final CTableBuilder ctable =
+		new CTableBuilder(this.strings);
 	
 	/**
 	 * Initializes the class processor.
@@ -59,10 +64,11 @@ public final class ClassProcessor
 		throws ClassProcessException
 	{
 		ClassFile input = this.input;
+		CTableBuilder ctable = this.ctable;
 		VTableBuilder vtable = this.vtable;
 		
-		// Store flags in the vtable
-		int fid = vtable.add(input.flags().toJavaBits());
+		// Store the raw flags in the CTable
+		ctable.set(CTableEntryIndex.FLAGS, input.flags().toJavaBits());
 		
 		throw new todo.TODO();
 	}
