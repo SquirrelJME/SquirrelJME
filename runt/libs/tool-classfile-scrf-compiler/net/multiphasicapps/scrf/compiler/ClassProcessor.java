@@ -54,7 +54,11 @@ public final class ClassProcessor
 	public final RegisterClass process()
 		throws ClassProcessException
 	{
-		// 
+		ClassFile input = this.input;
+		VTableBuilder vtable = this.vtable;
+		
+		// Store flags in the vtable
+		int fid = vtable.add(input.flags().toJavaBits());
 		
 		throw new todo.TODO();
 	}
