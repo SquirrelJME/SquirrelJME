@@ -11,8 +11,10 @@
 package net.multiphasicapps.scrf.compiler;
 
 import net.multiphasicapps.classfile.ClassFile;
+import net.multiphasicapps.classfile.Method;
 import net.multiphasicapps.scrf.CTableEntryIndex;
 import net.multiphasicapps.scrf.RegisterClass;
+import net.multiphasicapps.scrf.RegisterMethod;
 
 /**
  * This is a processor which translates standard Java class files with their
@@ -69,6 +71,15 @@ public final class ClassProcessor
 		
 		// Store the raw flags in the CTable
 		ctable.set(CTableEntryIndex.FLAGS, input.flags().toJavaBits());
+		
+		// Process input methods
+		for (Method m : input.methods())
+		{
+			// Process the method
+			RegisterMethod rm = MethodProcessor.process(vtable, m);
+			
+			throw new todo.TODO();
+		}
 		
 		throw new todo.TODO();
 	}
