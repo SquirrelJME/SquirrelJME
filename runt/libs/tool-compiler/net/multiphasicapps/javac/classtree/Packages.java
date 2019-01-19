@@ -25,6 +25,25 @@ import net.multiphasicapps.javac.CompilerPathSet;
  */
 public final class Packages
 {
+	/** The mapping of available packages. */
+	private final Map<String, Package> _packages;
+	
+	/**
+	 * Initializes the package tree.
+	 *
+	 * @param __m The input map.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/01/18
+	 */
+	public Packages(Map<String, Map<String, Unit>> __m)
+		throws NullPointerException
+	{
+		if (__m == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
 	/**
 	 * Loads packages from the input path sets, from classes and sources and
 	 * performing resolution of them.
@@ -110,8 +129,6 @@ public final class Packages
 					else
 						continue;
 					
-					todo.DEBUG.note("File: %s", i);
-					
 					// Determine the package the piece belongs in
 					Map<String, Unit> pkg = rv.get(dirname);
 					if (pkg == null)
@@ -122,7 +139,7 @@ public final class Packages
 						new BinaryUnit(i)));
 				}
 		
-		throw new todo.TODO();
+		return new Packages(rv);
 	}
 }
 
