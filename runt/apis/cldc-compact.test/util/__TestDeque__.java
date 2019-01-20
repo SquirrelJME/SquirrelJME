@@ -62,7 +62,7 @@ abstract class __TestDeque__
 		
 		// Queue
 		q.add(500);
-		q.offer(500);
+		q.offer(600);
 		
 		// Stack
 		q.push(1234);
