@@ -1,0 +1,22 @@
+# 2019/01/19
+
+## 11:35
+
+So I need to figure out, is there a quick to read and compact form for
+class names and such. I really want to exploit the string table because
+that would minimize the space usage greatly. For example there are going
+to be ton of stuff that is like `net.multiphasicapps` and having those
+strings repeated over and over again for each class is going to be quite
+big. So I really need a class to specially handle this. I think something
+which is more useful to what would be needed by a VM would be good.
+
+## 13:31
+
+Actually instead of throwing everything into a VTable, it would be far
+cleaner and easier to parse the format if it were in multiple tables. I
+added CTables which will just contain the description of the class. This
+will definitely help with not needing to parse a VTable. It also reduces
+the size of the VTable since class flags are not being stored in there
+for example. So this reduces the run-time requirement. I also just want
+the VTable initialized at run-time per method as well so that is faster
+and far less information is duplicated as well.
