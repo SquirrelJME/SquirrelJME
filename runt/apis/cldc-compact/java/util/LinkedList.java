@@ -131,7 +131,7 @@ public class LinkedList<E>
 	@Override
 	public Iterator<E> descendingIterator()
 	{
-		throw new todo.TODO();
+		return new __DescendingIterator__<E>(new __ListIterator__(this._size));
 	}
 	
 	/**
@@ -281,7 +281,7 @@ public class LinkedList<E>
 	@Override
 	public E pollFirst()
 	{
-		if (this.isEmpty())
+		if (this._size == 0)
 			return null;
 		
 		ListIterator<E> it = this.listIterator(0);
@@ -299,16 +299,15 @@ public class LinkedList<E>
 	@Override
 	public E pollLast()
 	{
-		try
-		{
-			return this.removeLast();
-		}
+		if (this._size == 0)
+			throw new NoSuchElementException("NSEE");
 		
-		// Is empty
-		catch (NoSuchElementException e)
-		{
-			return null;
-		}
+		ListIterator<E> it = this.listIterator(this._size);
+		
+		// Remove the last element
+		E rv = it.previous();
+		it.remove();
+		return rv;
 	}
 	
 	/**
@@ -349,7 +348,7 @@ public class LinkedList<E>
 	public E removeFirst()
 		throws NoSuchElementException
 	{
-		if (this.isEmpty())
+		if (this._size == 0)
 			throw new NoSuchElementException("NSEE");
 		
 		ListIterator<E> it = this.listIterator(0);
@@ -392,7 +391,15 @@ public class LinkedList<E>
 	@Override
 	public E removeLast()
 	{
-		throw new todo.TODO();
+		if (this._size == 0)
+			throw new NoSuchElementException("NSEE");
+		
+		ListIterator<E> it = this.listIterator(this._size);
+		
+		// Remove the last element
+		E rv = it.previous();
+		it.remove();
+		return rv;
 	}
 	
 	/**
@@ -721,6 +728,65 @@ public class LinkedList<E>
 				// Fail
 				throw new ConcurrentModificationException("ZZ21");
 			}
+		}
+	}
+	
+	/**
+	 * Descending iterator over the linked list.
+	 *
+	 * @param <E> The class type.
+	 * @since 2019/01/20
+	 */
+	static final class __DescendingIterator__<E>
+		implements Iterator<E>
+	{
+		/** The list iterator to use. */
+		protected final ListIterator<E> it;
+		
+		/**
+		 * Initializes the descending iterator.
+		 *
+		 * @param __it The input iterator.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2019/01/20
+		 */
+		__DescendingIterator__(ListIterator<E> __it)
+			throws NullPointerException
+		{
+			if (__it == null)
+				throw new NullPointerException("NARG");
+			
+			this.it = __it;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2019/01/20
+		 */
+		@Override
+		public final boolean hasNext()
+		{
+			return this.it.hasPrevious();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2019/01/20
+		 */
+		@Override
+		public final E next()
+		{
+			return this.it.previous();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2019/01/20
+		 */
+		@Override
+		public final void remove()
+		{
+			this.it.remove();
 		}
 	}
 	
