@@ -95,10 +95,6 @@ public class Main
 		if (startwild.isEmpty())
 			startwild = null;
 		
-		todo.DEBUG.note("sp=%s", specific);
-		todo.DEBUG.note("ew=%s", endwild);
-		todo.DEBUG.note("sw=%s", startwild);
-		
 		// Checking for tests?
 		boolean check = (specific != null || endwild != null ||
 			startwild != null);
@@ -141,10 +137,7 @@ public class Main
 				
 				// Not found, ignore!
 				if (!found)
-				{
-					System.err.printf("Skipping %s...%n", fn);
 					continue;
-				}
 			}
 			
 			// Run the test
