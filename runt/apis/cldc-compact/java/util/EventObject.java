@@ -10,24 +10,54 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+
+/**
+ * The class which all event objects shall be derived from.
+ *
+ * @since 2019/01/20
+ */
 public class EventObject
 {
-	protected transient Object source;
+	/** The source of the event. */
+	private Object _source;
 	
-	public EventObject(Object __a)
+	/**
+	 * Initializes the object.
+	 *
+	 * @param __s The source of the event.
+	 * @throws IllegalArgumentException If no source was specified.
+	 * @since 2019/01/20
+	 */
+	@ImplementationNote("Throwing IllegalArgumentException is intended.")
+	public EventObject(Object __s)
+		throws IllegalArgumentException
 	{
-		super();
-		throw new todo.TODO();
+		if (__s == null)
+			throw new IllegalArgumentException("NARG");
+		
+		this._source = __s;
 	}
 	
+	/**
+	 * Returns the source object.
+	 *
+	 * @return The source object.
+	 * @since 2019/01/20
+	 */
 	public Object getSource()
 	{
-		throw new todo.TODO();
+		return this._source;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/01/20
+	 */
 	@Override
 	public String toString()
 	{
-		throw new todo.TODO();
+		// Matches what Java SE returns
+		return this.getClass().getName() + "[source=" + this._source + "]";
 	}
 }
