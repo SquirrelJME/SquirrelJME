@@ -298,5 +298,12 @@ projects.
 
 ## The First Release
 
+The first version of SquirrelJME was released along with Mu on
+December 25, 2018.
+
+## The Second Release
+
+To be written...
+
  * [There is this article here you may read](assets/articles/anewvm.mkd)!
 
