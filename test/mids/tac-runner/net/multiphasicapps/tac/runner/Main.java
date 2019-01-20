@@ -43,8 +43,11 @@ public class Main
 		Database db = Database.build();
 		
 		// List tests?
-		if ("-l".equals(args.pollFirst()))
+		if ("-l".equals(args.peekFirst()))
 		{
+			// Remove it!
+			args.pollFirst();
+			
 			// Banner to standard error
 			System.err.println("Available tests:");
 			
