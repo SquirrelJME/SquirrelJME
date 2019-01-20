@@ -1,6 +1,6 @@
 result: NoResult
 thrown: NoExceptionThrown
-secondary-array: int[17]:1234,200,100,0,1,2,3,4,5,6,7,8,9,300,400,500,500
+secondary-array: int[17]:1234,200,100,0,1,2,3,4,5,6,7,8,9,300,400,500,600
 secondary-array2: int[10]:2,3,4,5,6,7,8,9,300,400
 secondary-element: int:1
 secondary-getfirst: int:200
@@ -16,9 +16,9 @@ secondary-init-add-7: true
 secondary-init-add-8: true
 secondary-init-add-9: true
 secondary-iterator-ascending: int[17]:
- 1234,200,100,0,1,2,3,4,5,6,7,8,9,300,400,500,500
+ 1234,200,100,0,1,2,3,4,5,6,7,8,9,300,400,500,600
 secondary-iterator-descending: int[17]:
- 500,500,400,300,9,8,7,6,5,4,3,2,1,0,100,200,1234
+ 600,500,400,300,9,8,7,6,5,4,3,2,1,0,100,200,1234
 secondary-offer-first: true
 secondary-offer-last: true
 secondary-peek: int:1
@@ -30,7 +30,7 @@ secondary-polllast: int:500
 secondary-pop: int:1
 secondary-remove: int:100
 secondary-removefirst: int:1234
-secondary-removelast: int:500
+secondary-removelast: int:600
 secondary-size-a: int:12
 secondary-size-b: int:17
 
