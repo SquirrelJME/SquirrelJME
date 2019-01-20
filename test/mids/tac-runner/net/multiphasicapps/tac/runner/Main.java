@@ -92,6 +92,10 @@ public class Main
 		if (startwild.isEmpty())
 			startwild = null;
 		
+		// Checking for tests?
+		boolean check = (specific != null || endwild != null ||
+			startwild != null);
+		
 		// Run each test
 		int total = 0,
 			pass = 0,
@@ -102,7 +106,7 @@ public class Main
 			String fn = su.fullName();
 			
 			// Check if we want to run this test
-			if (specific != null || endwild != null || startwild != null)
+			if (check)
 			{
 				boolean found = false;
 				
