@@ -10,6 +10,7 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import cc.squirreljme.runtime.cldc.asm.StaticMethod;
 import cc.squirreljme.runtime.cldc.asm.SystemAccess;
@@ -30,6 +31,8 @@ import java.util.Map;
  *
  * @since 2018/12/07
  */
+@ImplementationNote("Internally all threads start in the Thread.__start() " +
+	"method which sets up the thread and such.")
 public class Thread
 	implements Runnable
 {
@@ -678,6 +681,7 @@ public class Thread
 	 * started.
 	 * @since 2018/11/20
 	 */
+	@ImplementationNote("This is the starting point of all threads.")
 	final void __start()
 		throws IllegalThreadStateException
 	{
