@@ -157,7 +157,10 @@ less friendly compared to Markdown.
 
 ## k8/Squirrnix (2014/04/26 - 2016/02/25)
 
-This is the direct predecessor to SquirrelJME.
+This is the direct predecessor to SquirrelJME. Utilities and classes in
+SquirrelJME have been derived from this project. Generally if I find a class
+which is missing in SquirrelJME I check this project and copy all of the code
+from there since the bulk of it is just placeholder.
 
 This project had a massive number of commits: 9041.
 
@@ -283,7 +286,7 @@ changed.
 He was uploaded on 2016/05/07 to the repository.
 
 He has subsequently been redrawn on 2018/10/19 by Kat Adam-MacEwen, where he
-ended up very handsome.
+ended up very handsome. She is quite a wonderful artist.
 
 ## Gaining a Sister Project
 
