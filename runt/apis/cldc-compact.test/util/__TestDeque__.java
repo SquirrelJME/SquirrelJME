@@ -104,6 +104,32 @@ abstract class __TestDeque__
 		
 		// Array form again
 		this.secondary("array2", q.<Integer>toArray(new Integer[q.size()]));
+		
+		// Contains some things?
+		this.secondary("has7", q.contains(7));
+		this.secondary("has14", q.contains(14));
+		this.secondary("has500", q.contains(500));
+		
+		// Add a bunch of numbers
+		for (int i = 0; i < 10; i++)
+			this.secondary("other-add-" + i, q.add(i));
+			
+		// Array form again!
+		this.secondary("array3", q.<Integer>toArray(new Integer[q.size()]));
+		
+		// Remove first occurance of value
+		for (int i = 0; i < 15; i += 2)
+			this.secondary("remove-first-" + i, q.removeFirstOccurrence(i));
+		this.secondary("array4", q.<Integer>toArray(new Integer[q.size()]));
+		
+		// Remove last occurance of value
+		for (int i = 1; i < 15; i += 2)
+			this.secondary("remove-last-" + i, q.removeLastOccurrence(i));
+		this.secondary("array5", q.<Integer>toArray(new Integer[q.size()]));
+		
+		// Clear it
+		q.clear();
+		this.secondary("array6", q.<Integer>toArray(new Integer[q.size()]));
 	}
 }
 
