@@ -10,7 +10,10 @@
 
 package net.multiphasicapps.tac.runner;
 
+import java.io.PrintStream;
+import java.util.Deque;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Set;
 
 /**
@@ -28,11 +31,31 @@ public class Main
 	 */
 	public static void main(String... __args)
 	{
+		// Load arguments
 		if (__args == null)
 			__args = new String[0];
+		Deque<String> args = new LinkedList<>();
+		for (String s : __args)
+			if (s != null)
+				args.add(s);
 		
 		// Load the database
 		Database db = Database.build();
+		
+		// List tests?
+		if ("-l".equals(args.pollFirst()))
+		{
+			// Banner to standard error
+			System.err.println("Available tests:");
+			
+			// Output the tests to standard output
+			PrintStream out = System.out;
+			for (SingleUnit u : db)
+				out.println(u.fullName());
+			
+			// Stop
+			return;
+		}
 		
 		// Run each test
 		int total = 0,
