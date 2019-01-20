@@ -60,7 +60,11 @@ abstract class __TestDeque__
 		q.addLast(300);
 		this.secondary("offer-last", q.offerLast(400));
 		
-		// Push a value
+		// Queue
+		q.add(500);
+		q.offer(500);
+		
+		// Stack
 		q.push(1234);
 		
 		// Size of this
@@ -80,7 +84,26 @@ abstract class __TestDeque__
 			ita[i] = it.next().intValue();
 		this.secondary("iterator-descending", ita);
 		
-		throw new todo.TODO();
+		// As array form
+		this.secondary("array", q.<Integer>toArray(new Integer[q.size()]));
+		
+		// Do removals
+		this.secondary("removefirst", q.removeFirst());
+		this.secondary("getfirst", q.getFirst());
+		this.secondary("pollfirst", q.pollFirst());
+		this.secondary("peekfirst", q.peekFirst());
+		this.secondary("removelast", q.removeLast());
+		this.secondary("polllast", q.pollLast());
+		this.secondary("getlast", q.getLast());
+		this.secondary("peeklast", q.peekLast());
+		this.secondary("remove", q.remove());
+		this.secondary("poll", q.poll());
+		this.secondary("element", q.element());
+		this.secondary("peek", q.peek());
+		this.secondary("pop", q.pop());
+		
+		// Array form again
+		this.secondary("array2", q.<Integer>toArray(new Integer[q.size()]));
 	}
 }
 
