@@ -59,7 +59,8 @@ public final class SingleUnit
 			sqname = sqname.substring(0, sqname.length() - 5);
 		
 		// Setup full name
-		this.fullname = SingleUnit.__crimpName(sqname) + "." + __m;
+		this.fullname = SingleUnit.__crimpName(sqname) + "." +
+			SingleUnit.__crimpName(__m);
 	}
 	
 	/**
