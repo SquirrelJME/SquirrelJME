@@ -506,9 +506,43 @@ public final class String
 		return __contentEquals(__s);
 	}
 	
-	public boolean endsWith(String __a)
+	/**
+	 * Tests if this string ends with the given string.
+	 *
+	 * @param __s The string to test.
+	 * @return If this string ends with the other string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/01/20
+	 */
+	public boolean endsWith(String __s)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Empty string is always a match
+		if (__s.equals(""))
+			return true;
+		
+		// Work on sequences
+		BasicSequence sa = this._sequence,
+			sb = __s._sequence;
+		
+		// If our string is smaller than the other string then it will not
+		// fit and as such, will not work
+		int na = sa.length(),
+			nb = sb.length();
+		if (na < nb)
+			return false;
+		
+		// Check all characters at the end of the string, we fail if there is
+		// a mismatch
+		for (int ia = na - nb, ib = 0; ia < na; ia++, ib++)
+			if (sa.charAt(ia) != sb.charAt(ib))
+				return false;
+		
+		// Is a match since nothing failed!
+		return true;
 	}
 	
 	/**
