@@ -10,9 +10,22 @@
 
 package java.io;
 
+import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+import cc.squirreljme.runtime.cldc.annotation.ProgrammerTip;
+
+/**
+ * This is the base class for any input stream which is used for reading a
+ * stream of bytes.
+ *
+ * @since 2019/01/20
+ */
 public abstract class InputStream
 	implements Closeable
 {
+	/** The number of bytes to skip at a time. */
+	private static final int _SKIP_LEN =
+		256;
+	
 	/**
 	 * Initializes the base input stream.
 	 *
@@ -33,26 +46,56 @@ public abstract class InputStream
 	public abstract int read()
 		throws IOException;
 	
+	/**
+	 * Returns the number of bytes which can be read from the stream without
+	 * blocking.
+	 *
+	 * @return The number of bytes which can be read.
+	 * @throws IOException On read errors.
+	 * @since 2019/01/20
+	 */
+	@ProgrammerTip("The base implementation always returns 0.")
 	public int available()
 		throws IOException
 	{
-		throw new todo.TODO();
+		return 0;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/01/20
+	 */
+	@Override
 	public void close()
 		throws IOException
 	{
-		throw new todo.TODO();
 	}
 	
-	public void mark(int __a)
+	/**
+	 * Marks the stream so that a future {@link #reset()} returns to the point
+	 * that was marked, if it is still within the bounds of the read limit.
+	 *
+	 * After the limit has been reached, the mark may become invalidated.
+	 *
+	 * @param __l The number of bytes to store for later resets before the
+	 * mark becomes invalid.
+	 * @since 2019/01/20
+	 */
+	@ProgrammerTip("The base implementation does nothing.")
+	public void mark(int __l)
 	{
-		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns whether or not marking is supported on the input stream.
+	 *
+	 * @return If marking is supported.
+	 * @since 2019/01/20
+	 */
+	@ProgrammerTip("The base implementation always returns false.")
 	public boolean markSupported()
 	{
-		throw new todo.TODO();
+		return false;
 	}
 	
 	/**
@@ -134,16 +177,63 @@ public abstract class InputStream
 		return __l;
 	}
 	
+	/**
+	 * Resets the stream to a previously marked position.
+	 *
+	 * @throws IOException If marking is not supported or the mark has been
+	 * invalidated by reading more than the limit bytes.
+	 * @since 2019/01/20
+	 */
 	public void reset()
 		throws IOException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error ZZ3t Reset is not supported.}
+		throw new IOException("ZZ3t");
 	}
 	
-	public long skip(long __a)
+	/**
+	 * Attemps to skip over the given number of bytes.
+	 *
+	 * It is not required for the actual number of bytes skipped to match the
+	 * input amount, this could be specific to the input stream implementation
+	 * or the end of file has been reached.
+	 *
+	 * @param __n The number of bytes to skip, if this value is negative then
+	 * no bytes are skipped.
+	 * @return The number of skipped bytes.
+	 * @throws IOException On read errors.
+	 * @since 2019/01/20
+	 */
+	@ProgrammerTip("The base implementation allocates an array and reads " +
+		"into that array until all bytes have been skipped.")
+	public long skip(long __n)
 		throws IOException
 	{
-		throw new todo.TODO();
+		// Not doing anything
+		if (__n <= 0)
+			return 0;
+		
+		// Keep reading bytes
+		byte[] buf = new byte[_SKIP_LEN];
+		long actual = 0;
+		while (__n > 0)
+		{
+			// Only skip the small group
+			int now = (int)(_SKIP_LEN < __n ? _SKIP_LEN : __n);
+			
+			// Try to skip these bytes
+			int rv = this.read(buf, 0, now);
+			
+			// EOF?
+			if (rv < 0)
+				return actual;
+			
+			// Discard the bytes
+			actual += rv;
+			__n -= rv;
+		}
+		
+		return actual;
 	}
 }
 
