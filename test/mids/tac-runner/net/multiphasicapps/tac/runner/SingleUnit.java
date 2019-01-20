@@ -49,8 +49,17 @@ public final class SingleUnit
 		this.suite = __s;
 		this.midlet = __m;
 		
+		// The MIDlet name can be quite long, so see if there is an internal
+		// name for the project used by SquirrelJME
+		String sqname = __s.getAttributeValue(
+			"X-SquirrelJME-InternalProjectName");
+		if (sqname == null)
+			sqname = __s.getName();
+		else if (sqname.endsWith(".test"))
+			sqname = sqname.substring(0, sqname.length() - 5);
+		
 		// Setup full name
-		this.fullname = SingleUnit.__crimpName(__s.getName()) + "." + __m;
+		this.fullname = SingleUnit.__crimpName(sqname) + "." + __m;
 	}
 	
 	/**
