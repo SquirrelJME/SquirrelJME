@@ -262,7 +262,7 @@ public abstract class AbstractCollection<E>
 		{
 			// If the array is too small, reallocate it to fit
 			if (__v.length < size)
-				throw new todo.TODO();
+				__v = Arrays.<T>copyOf(__v, size);
 			
 			// Copy elements based on the iteration order, just ignore the
 			// class and hope it works
