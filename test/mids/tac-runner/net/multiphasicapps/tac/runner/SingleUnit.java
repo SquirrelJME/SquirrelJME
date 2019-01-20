@@ -129,7 +129,7 @@ public final class SingleUnit
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/10/29
 	 */
-	private static final String __crimpName(String __in)
+	static final String __crimpName(String __in)
 		throws NullPointerException
 	{
 		if (__in == null)
@@ -152,7 +152,7 @@ public final class SingleUnit
 			// Ignore anything outside of this range
 			else if (!((c >= 'a' && c <= 'z') ||
 				(c >= '0' && c <= '9') ||
-				c == '.' || c == '-'))
+				c == '.' || c == '-' || c == '*'))
 				continue;
 			
 			rv.append(c);

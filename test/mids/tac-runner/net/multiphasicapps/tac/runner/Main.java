@@ -57,6 +57,41 @@ public class Main
 			return;
 		}
 		
+		// Running specific tests? These get crimped accordingly
+		Set<String> specific = new HashSet<>(),
+			endwild = new HashSet<>(),
+			startwild = new HashSet<>();
+		while (!args.isEmpty())
+		{
+			// Ignore nulls
+			String s = args.pollFirst();
+			if (s == null)
+				continue;
+			
+			// Crimp to simplify it
+			s = SingleUnit.__crimpName(s);
+			
+			// Ending wildcard? Run all tests
+			if (s.endsWith("*"))
+				endwild.add(s.substring(0, s.length() - 1));
+			
+			// Starts with wildcard?
+			else if (s.startsWith("*"))
+				startwild.add(s.substring(1));
+			
+			// Run specific test
+			else
+				specific.add(s);
+		}
+		
+		// If there is no specific test, just ignore it
+		if (specific.isEmpty())
+			specific = null;
+		if (endwild.isEmpty())
+			endwild = null;
+		if (startwild.isEmpty())
+			startwild = null;
+		
 		// Run each test
 		int total = 0,
 			pass = 0,
@@ -64,6 +99,45 @@ public class Main
 		boolean hasfailed = false;
 		for (SingleUnit su : db)
 		{
+			String fn = su.fullName();
+			
+			// Check if we want to run this test
+			if (specific != null || endwild != null || startwild != null)
+			{
+				boolean found = false;
+				
+				// Is this a specific test being run?
+				if (specific != null && specific.contains(fn))
+					found = true;
+				
+				// Ends in a wildcard? Run multiple tests?
+				if (!found && endwild != null)
+					for (String prefix : endwild)
+						if (fn.startsWith(prefix))
+						{
+							found = true;
+							break;
+						}
+				
+				// Starts with a wildcard?
+				if (!found && startwild != null)
+					for (String suffix : startwild)
+						if (fn.endsWith(suffix))
+						{
+							found = true;
+							break;
+						}
+				
+				// Not found, ignore!
+				if (!found)
+				{
+					System.err.printf("Skipping %s...%n", fn);
+					continue;
+				}
+			}
+			
+			// Run the test
+			System.err.printf("Running %s...%n", fn);
 			boolean passed = su.run();
 			
 			// Keep track
