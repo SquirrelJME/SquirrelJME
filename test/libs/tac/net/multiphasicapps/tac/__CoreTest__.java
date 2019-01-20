@@ -499,6 +499,35 @@ abstract class __CoreTest__
 		else if (__o instanceof Long)
 			return "long:" + __o;
 		
+		// Integer array
+		else if ((__o instanceof int[]) || __o instanceof Integer[])
+		{
+			// Convert first
+			if (__o instanceof Integer[])
+			{
+				Integer[] a = (Integer[])__o;
+				int n = a.length;
+				int[] b = new int[n];
+				for (int i = 0; i < n; i++)
+					b[i] = a[i].intValue();
+				__o = b;
+			}
+			
+			// Print values
+			int[] a = (int[])__o;
+			int n = a.length;
+			StringBuilder sb = new StringBuilder(
+				String.format("int[%d]:", n));
+			for (int i = 0; i < n; i++)
+			{
+				if (i > 0)
+					sb.append(",");
+				sb.append(a[i]);
+			}
+			return sb.toString();
+			
+		}
+		
 		// Throwable, meta data is used
 		else if (__o instanceof Throwable)
 		{
