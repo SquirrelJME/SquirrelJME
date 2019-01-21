@@ -1,0 +1,46 @@
+# 2019/01/20
+
+## 09:51
+
+I am waiting for the dragon book to arrive so I can continue work on the
+compiler, so that way I can hopefully get an understanding of how it works
+and such. So otherwise I will be pretty much waiting for that to happen.
+
+## 10:18
+
+I guess I will see how much I can get the build system running and such in
+SummerCoat, would help and I think it would be interesting. Although I lack
+a compiler so not much could be done though. I can though at least have stubs
+for the filesystem and such.
+
+## 11:19
+
+Could use a slight refactor of the test framework when it comes to
+serialization and deserialization.
+
+## 17:51
+
+Want to make it easier to launch tests. The name of the tests in the database
+is stuff like
+`testsforconnectionlimiteddeviceconfigurationcompact.lang.TestInvokeSuper`
+which is quite a long string to enter lol.
+
+## 18:03
+
+The suite query is just very slow, especially with SpringCoat... I think I
+might want to multi-thread it so it can complete a bit faster.
+
+## 18:04
+
+And now the test names are far more simplified:
+`cldc-compact.lang.TestInvokeSuper`! So this makes things much easier to
+call a specific test.
+
+## 18:30
+
+Main arguments are not being passed to launch in the build system so this
+definitly needs fixing.
+
+## 18:31
+
+Actually no, I am polling and not peeking so it gets removed.
