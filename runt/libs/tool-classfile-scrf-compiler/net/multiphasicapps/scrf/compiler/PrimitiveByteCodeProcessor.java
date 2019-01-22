@@ -11,6 +11,7 @@
 package net.multiphasicapps.scrf.compiler;
 
 import net.multiphasicapps.classfile.ByteCode;
+import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.scrf.RegisterCode;
 
 /**
@@ -23,6 +24,9 @@ import net.multiphasicapps.scrf.RegisterCode;
 public class PrimitiveByteCodeProcessor
 	extends ByteCodeProcessor
 {
+	/** The set of registers to work with. */
+	protected final RegisterSet registers;
+	
 	/**
 	 * Initializes the primitive processor.
 	 *
@@ -35,6 +39,17 @@ public class PrimitiveByteCodeProcessor
 		throws NullPointerException
 	{
 		super(__mp, __bc);
+		
+		// Initialize the register set, it will store all the locals and the
+		// stack variables. The virtual stack position is the end of the
+		// local variables accordingly
+		int ml = __bc.maxLocals(),
+			ms = __bc.maxStack();
+		RegisterSet rs = new RegisterSet(ml + ms, ml);
+		
+		todo.DEBUG.note("SMT = %s", __bc.stackMapTable());
+		
+		throw new todo.TODO();
 	}
 	
 	/**
