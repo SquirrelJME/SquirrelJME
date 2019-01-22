@@ -12,6 +12,7 @@ package net.multiphasicapps.scrf.compiler;
 
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.Method;
+import net.multiphasicapps.classfile.StackMapTable;
 import net.multiphasicapps.scrf.RegisterCode;
 import net.multiphasicapps.scrf.RegisterMethod;
 
@@ -65,27 +66,6 @@ public final class MethodProcessor
 		RegisterCode rc = null;
 		if (bc != null)
 			rc = ByteCodeProcessor.process(this, bc);
-		
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * Processes the byte code.
-	 *
-	 * @param __bc The byte code to process.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/01/19
-	 */
-	private final void __processByteCode(ByteCode __bc)
-		throws NullPointerException
-	{
-		if (__bc == null)
-			throw new NullPointerException("NARG");
-		
-		for (int vi = 0, vin = __bc.instructionCount(); vi < vin; vi++)
-		{
-			todo.DEBUG.note("@%-3d: %s", vi, __bc.getByIndex(vi));
-		}
 		
 		throw new todo.TODO();
 	}

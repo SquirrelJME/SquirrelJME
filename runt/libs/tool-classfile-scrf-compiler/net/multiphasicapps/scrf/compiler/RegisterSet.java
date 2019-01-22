@@ -42,5 +42,17 @@ public final class RegisterSet
 		this._registers = registers;
 		this.vstackbase = __vsb;
 	}
+	
+	/**
+	 * Returns the register at the given index.
+	 *
+	 * @param __i The index to get.
+	 * @return The register at the given index.
+	 * @since 2019/01/22
+	 */
+	public final WorkRegister get(int __i)
+	{
+		return this._registers[__i];
+	}
 }
 
