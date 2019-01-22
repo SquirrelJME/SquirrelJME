@@ -11,6 +11,7 @@
 package net.multiphasicapps.scrf.compiler;
 
 import net.multiphasicapps.classfile.ByteCode;
+import net.multiphasicapps.classfile.JavaType;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.StackMapTable;
 import net.multiphasicapps.classfile.StackMapTableState;
@@ -53,7 +54,7 @@ public class PrimitiveByteCodeProcessor
 		// local variables accordingly
 		int ml = __bc.maxLocals(),
 			ms = __bc.maxStack();
-		RegisterSet rs = new RegisterSet(ml + ms + 1, ml + 1);
+		RegisterSet rs = new RegisterSet(ml + ms, ml);
 		this.registers = rs;
 		
 		// Get explicit special use registers
@@ -92,12 +93,40 @@ public class PrimitiveByteCodeProcessor
 			// Initialize the state of registers from the stack map state?
 			StackMapTableState sms = smt.get(iaddr);
 			if (sms != null)
-				throw new todo.TODO();
+				this.__setSMT(sms);
 			
 			throw new todo.TODO();
 		}
 		
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Sets the stack map table state.
+	 *
+	 * @param __s The state of the stack map.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/01/22
+	 */
+	private final void __setSMT(StackMapTableState __s)
+		throws NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		ByteCode input = this.input;
+		RegisterSet registers = this.registers;
+		
+		// Copy local types
+		int nl = input.maxLocals();
+		for (int i = 0; i < nl; i++)
+			registers.get(i).setJavaType(__s.getLocal(i).type());
+		
+		// Copy the stack
+		int ns = __s.depth();
+		registers.setJavaStackPos(nl + ns);
+		for (int i = 0, o = nl; i < ns; i++, o++)
+			registers.get(o).setJavaType(__s.getStack(i).type());
 	}
 }
 
