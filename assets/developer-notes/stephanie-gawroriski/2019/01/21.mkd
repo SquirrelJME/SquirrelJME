@@ -1,0 +1,75 @@
+# 2019/01/21
+
+## 20:01
+
+I wonder if I could do some more optimizations to the suite list
+initialization.
+
+## 20:16
+
+I definitely need a faster hash map algorithm. Maybe I can use partitions.
+Basically, think of a filesystem. Then the buckets and such will just use
+pointers into the partition table.
+
+## 20:20
+
+Maybe I can do a partition based scheme, where I have a base set of items.
+If there is a collision I could split, although that seems a bit
+complicated.
+
+## 21:01
+
+So I was thinking maybe for SummerCoat initially since I do not have the
+books I need yet, what I could do is just translate the stack directly to
+a register machine with all of the stack operations in place already. It
+would not be efficient but it would be something. Then I can just adapt
+that to RatufaCoat as well. I think that would be a first good process so
+that way when I run the actual optimizations, things work as expected and
+such. So design the VM with a literal direct stack translation first.
+
+## 21:20
+
+Definitely! This will be similar to SummerCoat but it would be faster and
+I could do RatufaCoat earlier. This just will save the hassle of making
+sure things will work, because I would have a working VM! So really the
+first thing I need to do is initialize the initial set of entry registers
+and such, figuring out the space needed for registers. They will be
+considered as 32-bit, only their lower value matters. So internally the
+VM will just be purely 32-bit. 64-bit operations will be done by special
+instructions, which could be handled accordingly. Initializing the initial
+set of registers is simple because it is just static and the input
+arguments. The first set of registers will be the method arguments and
+such!
+
+## 21:23
+
+But first though, I need helper classes to help me setup the registers
+and track them! Squeak! At least with a linear pass, I do not really
+need to worry about anything. When it comes to the stack map table I do
+not care which values are where or how they are replaced. So according
+to the stack map, an initial register state will be set to match what
+is needed. There will just be a virtual stack pointer as such.
+
+## 21:32
+
+I think the stack map table is initialized with the states I need... so
+I might not need to even touch the descriptor processing stuff. At least
+the stack map table should be implicit, at least I believe I wrote it
+where there is always an entry even if it was never defined.
+
+## 21:34
+
+I sort of do not need the virtual register set, like I do not even need
+to really care for types as much as I do. I do not care about the stuff
+and the type might be derivable from the code. However much of it is
+implicit so that means I need to keep track of at least the Java types on
+the stack anyway. So I need that.
+
+## 21:41
+
+I do not even have printing of stack map tables.
+
+## 21:45
+
+Okay, I am getting a bit tired and sleepy so. I do not want to push myself
+since I am feeling a bit limited.
