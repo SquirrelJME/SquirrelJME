@@ -36,6 +36,9 @@ public class PrimitiveByteCodeProcessor
 	/** Explicit monitor register. */
 	protected final WorkRegister rmonitor;
 	
+	/** Builder for register codes. */
+	protected final RegisterCodeBuilder codebuilder;
+	
 	/**
 	 * Initializes the primitive processor.
 	 *
@@ -63,6 +66,9 @@ public class PrimitiveByteCodeProcessor
 		// Cache the stack map table, it will be used much to initialize in
 		// areas which registers are what
 		this.smt = __bc.stackMapTable();
+		
+		// Initialize the code builder
+		this.codebuilder = new RegisterCodeBuilder(__mp.vtable);
 	}
 	
 	/**
