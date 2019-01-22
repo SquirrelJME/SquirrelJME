@@ -12,6 +12,7 @@ package net.multiphasicapps.scrf.compiler;
 
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.Method;
+import net.multiphasicapps.scrf.RegisterCode;
 import net.multiphasicapps.scrf.RegisterMethod;
 
 /**
@@ -61,8 +62,9 @@ public final class MethodProcessor
 		
 		// Process the byte code of the method
 		ByteCode bc = input.byteCode();
+		RegisterCode rc = null;
 		if (bc != null)
-			this.__processByteCode(bc);
+			rc = ByteCodeProcessor.process(this, bc);
 		
 		throw new todo.TODO();
 	}
