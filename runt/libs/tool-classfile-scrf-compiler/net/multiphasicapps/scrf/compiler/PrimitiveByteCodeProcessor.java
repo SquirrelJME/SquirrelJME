@@ -12,6 +12,8 @@ package net.multiphasicapps.scrf.compiler;
 
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.MethodDescriptor;
+import net.multiphasicapps.classfile.StackMapTable;
+import net.multiphasicapps.classfile.StackMapTableState;
 import net.multiphasicapps.scrf.RegisterCode;
 
 /**
@@ -26,6 +28,12 @@ public class PrimitiveByteCodeProcessor
 {
 	/** The set of registers to work with. */
 	protected final RegisterSet registers;
+	
+	/** The types and state of the stack will be initialized with this. */
+	protected final StackMapTable smt;
+	
+	/** Explicit monitor register. */
+	protected final WorkRegister rmonitor;
 	
 	/**
 	 * Initializes the primitive processor.
@@ -45,11 +53,15 @@ public class PrimitiveByteCodeProcessor
 		// local variables accordingly
 		int ml = __bc.maxLocals(),
 			ms = __bc.maxStack();
-		RegisterSet rs = new RegisterSet(ml + ms, ml);
+		RegisterSet rs = new RegisterSet(ml + ms + 1, ml + 1);
+		this.registers = rs;
 		
-		todo.DEBUG.note("SMT = %s", __bc.stackMapTable());
+		// Get explicit special use registers
+		this.rmonitor = rs.get(ml);
 		
-		throw new todo.TODO();
+		// Cache the stack map table, it will be used much to initialize in
+		// areas which registers are what
+		this.smt = __bc.stackMapTable();
 	}
 	
 	/**
@@ -60,6 +72,31 @@ public class PrimitiveByteCodeProcessor
 	public RegisterCode process()
 		throws ClassProcessException
 	{
+		ByteCode input = this.input;
+		StackMapTable smt = this.smt;
+		RegisterSet registers = this.registers;
+		
+		// If this is synchronized, we enter the monitor explicitely here
+		boolean issync = this.methodprocessor.input.flags().isSynchronized();
+		if (issync)
+			throw new todo.TODO();
+		
+		// Process byte codes
+		for (int vi = 0, vin = input.instructionCount(); vi < vin; vi++)
+		{
+			todo.DEBUG.note("@%-3d: %s", vi, input.getByIndex(vi));
+			
+			// The address of this instruction
+			int iaddr = input.indexToAddress(vi);
+			
+			// Initialize the state of registers from the stack map state?
+			StackMapTableState sms = smt.get(iaddr);
+			if (sms != null)
+				throw new todo.TODO();
+			
+			throw new todo.TODO();
+		}
+		
 		throw new todo.TODO();
 	}
 }
