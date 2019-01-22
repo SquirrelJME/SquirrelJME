@@ -13,6 +13,8 @@ package net.multiphasicapps.classfile;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.Map;
 import net.multiphasicapps.collections.SortedTreeMap;
 
@@ -25,6 +27,9 @@ public final class StackMapTable
 {
 	/** Stack map states. */
 	private final Map<Integer, StackMapTableState> _states;
+	
+	/** String form. */
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes the stack map table.
@@ -53,6 +58,22 @@ public final class StackMapTable
 	public StackMapTableState get(int __a)
 	{
 		return this._states.get(__a);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/01/21
+	 */
+	@Override
+	public final String toString()
+	{
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>((rv = this._states.toString()));
+		
+		return rv;
 	}
 }
 
