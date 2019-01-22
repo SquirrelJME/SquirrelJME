@@ -23,6 +23,9 @@ public final class RegisterSet
 	/** Work registers. */
 	private final WorkRegister[] _registers;
 	
+	/** The position of the virtual stack pointer. */
+	private int _vstackptr;
+	
 	/**
 	 * Initializes the register set.
 	 *
@@ -53,6 +56,26 @@ public final class RegisterSet
 	public final WorkRegister get(int __i)
 	{
 		return this._registers[__i];
+	}
+	
+	/**
+	 * Sets the virtual Java stack position.
+	 *
+	 * @param __p The position to set.
+	 * @throws IllegalArgumentException If the stack pointer is not within
+	 * bounds of the virtual stack.
+	 * @since 2019/01/22
+	 */
+	public final void setJavaStackPos(int __p)
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error AT02 Cannot set the Java stack position because
+		// it is not within the bounds of the virtual stack. (The stack
+		// position)}
+		if (__p < this.vstackbase || __p >= this._registers.length)
+			throw new IllegalArgumentException("AT02 " + __p);
+		
+		this._vstackptr = __p;
 	}
 }
 
