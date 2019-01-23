@@ -25,8 +25,12 @@ public interface RegisterInstructionIndex
 	public static final int COPY =
 		1;
 	
+	/** Load constant value (int). */
+	public static final int CONST =
+		2;
+	
 	/** The number of valid instructions. */
 	public static final int NUM_INSTRUCTIONS =
-		2;
+		3;
 }
 
