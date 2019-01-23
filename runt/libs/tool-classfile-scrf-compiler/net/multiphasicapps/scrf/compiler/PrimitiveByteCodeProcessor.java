@@ -59,7 +59,7 @@ public class PrimitiveByteCodeProcessor
 		// local variables accordingly
 		int ml = __bc.maxLocals(),
 			ms = __bc.maxStack();
-		RegisterSet rs = new RegisterSet(ml + ms, ml);
+		RegisterSet rs = new RegisterSet(ml + ms, ml, ml + ms);
 		this.registers = rs;
 		
 		// Get explicit special use registers
@@ -106,18 +106,34 @@ public class PrimitiveByteCodeProcessor
 				this.__setSMT(sms);
 			
 			// Depends on the instruction itself
-			switch (inst.operation())
+			int vop;
+			switch ((vop = PrimitiveByteCodeProcessor.__aliasOp(
+				inst.operation())))
 			{
 					// Nop
 				case InstructionIndex.NOP:
 					cb.addNop();
 					break;
+					
+					// Load from indexed local
+				case JavaInstructionAlias.XLOAD:
+					cb.addCopy(inst.<Integer>argument(0, Integer.class),
+						registers.virtualPush());
+					break;
+					
+					// Load from quick indexed local
+				case JavaInstructionAlias.XLOAD_0:
+				case JavaInstructionAlias.XLOAD_1:
+				case JavaInstructionAlias.XLOAD_2:
+				case JavaInstructionAlias.XLOAD_3:
+					cb.addCopy(vop - JavaInstructionAlias.XLOAD_0,
+						registers.virtualPush());
+					break;
 				
+					// Unhandled, needs to be supported
 				default:
 					throw new todo.TODO(inst.toString());
 			}
-			
-			throw new todo.TODO();
 		}
 		
 		throw new todo.TODO();
@@ -149,6 +165,49 @@ public class PrimitiveByteCodeProcessor
 		registers.setJavaStackPos(nl + ns);
 		for (int i = 0, o = nl; i < ns; i++, o++)
 			registers.get(o).setJavaType(__s.getStack(i).type());
+	}
+	
+	/**
+	 * Aliases the operation so that certain instructions which are effectively
+	 * the same are duplicated so that handlers need not be duplicated.
+	 *
+	 * @param __i The instruction to alias.
+	 * @return The aliased instruction or {@code __i} if not aliased.
+	 * @since 2019/01/23
+	 */
+	static final int __aliasOp(int __i)
+	{
+		switch (__i)
+		{
+			case InstructionIndex.ALOAD:
+			case InstructionIndex.ILOAD:
+			case InstructionIndex.FLOAD:
+				return JavaInstructionAlias.XLOAD;
+			
+			case InstructionIndex.ALOAD_0:
+			case InstructionIndex.ILOAD_0:
+			case InstructionIndex.FLOAD_0:
+				return JavaInstructionAlias.XLOAD_0;
+			
+			case InstructionIndex.ALOAD_1:
+			case InstructionIndex.ILOAD_1:
+			case InstructionIndex.FLOAD_1:
+				return JavaInstructionAlias.XLOAD_1;
+			
+			case InstructionIndex.ALOAD_2:
+			case InstructionIndex.ILOAD_2:
+			case InstructionIndex.FLOAD_2:
+				return JavaInstructionAlias.XLOAD_2;
+			
+			case InstructionIndex.ALOAD_3:
+			case InstructionIndex.ILOAD_3:
+			case InstructionIndex.FLOAD_3:
+				return JavaInstructionAlias.XLOAD_3;
+			
+				// Un-translated
+			default:
+				return __i;
+		}
 	}
 }
 

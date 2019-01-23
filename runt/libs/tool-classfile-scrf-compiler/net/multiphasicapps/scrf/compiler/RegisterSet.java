@@ -20,6 +20,9 @@ public final class RegisterSet
 	/** Virtual stack base, which register starts the virtual stack. */
 	protected final int vstackbase;
 	
+	/** The limit to the stack. */
+	protected final int vstacklimit;
+	
 	/** Work registers. */
 	private final WorkRegister[] _registers;
 	
@@ -32,9 +35,10 @@ public final class RegisterSet
 	 * @param __n The number of registers to store.
 	 * @param __vsb The virtual stack base index, used to simulate the Java
 	 * stack.
+	 * @param __vsl The virtual stack limit.
 	 * @since 2019/01/21
 	 */
-	public RegisterSet(int __n, int __vsb)
+	public RegisterSet(int __n, int __vsb, int __vsl)
 	{
 		// Initialize work registers
 		WorkRegister[] registers = new WorkRegister[__n];
@@ -44,6 +48,7 @@ public final class RegisterSet
 		// Set
 		this._registers = registers;
 		this.vstackbase = __vsb;
+		this.vstacklimit = __vsl;
 	}
 	
 	/**
@@ -76,6 +81,31 @@ public final class RegisterSet
 			throw new IllegalArgumentException("AT02 " + __p);
 		
 		this._vstackptr = __p;
+	}
+	
+	/**
+	 * Virtual push to the stack.
+	 *
+	 * @return The index of the entry that was pushed to the stack.
+	 * @throws IllegalStateException If the stack overflows.
+	 * @since 2019/01/23
+	 */
+	public final int virtualPush()
+		throws IllegalStateException
+	{
+		// The old top is 
+		int vstackptr = this._vstackptr;
+		
+		// {@squirreljme.error AT03 Stack overflow.}
+		int next = vstackptr + 1;
+		if (next >= this.vstacklimit)
+			throw new IllegalStateException("AT03");
+		
+		// Set next pointer
+		this._vstackptr = vstackptr;
+		
+		// Returns the old top
+		return vstackptr;
 	}
 }
 
