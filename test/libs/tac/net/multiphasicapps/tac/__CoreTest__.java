@@ -116,10 +116,27 @@ abstract class __CoreTest__
 		// Read the inputs for the test
 		Object[] args = this.__parseInput(classname, __mainargs, attr);
 		
+		// Remember the old output stream because it will be replaced with
+		// stderr, this way when tests run they do not inadvertently output
+		// to standard output. Standard output being printed to will mess up
+		// the test results generated at the end of tac-runner
+		PrintStream oldout = System.out;
+		
 		// Run the test, catch any exception to report it
 		Object rv, thrown;
 		try
 		{
+			// Set the output stream to standard error as noted above
+			try
+			{
+				System.setOut(System.err);
+			}
+			catch (SecurityException e)
+			{
+				// Ignore, oh well
+			}
+			
+			// Run the test
 			rv = this.__runTest(args);
 			thrown = new __NoExceptionThrown__();
 		}
@@ -141,6 +158,18 @@ abstract class __CoreTest__
 			// Indicate an exception was thrown
 			rv = new __ExceptionThrown__();
 			thrown = t;
+		}
+		finally
+		{
+			// Restore the old output stream
+			try
+			{
+				System.setOut(oldout);
+			}
+			catch (SecurityException e)
+			{
+				// Ignore, things happen
+			}
 		}
 		
 		// Get string result representation and the expected value from the
