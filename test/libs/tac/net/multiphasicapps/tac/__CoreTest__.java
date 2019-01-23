@@ -214,8 +214,10 @@ abstract class __CoreTest__
 		
 		// Print test result, the passed format is shorter as expected values
 		// are not needed
+		// Just print to standard error instead of standard output since these
+		// are just keys to be used.
 		boolean passed = passedrv && passedth && passedse;
-		PrintStream out = System.out;
+		PrintStream out = System.err;
 		if (passed)
 			out.printf("%s: PASS %s %s %s%n",
 				classname, rvstr, thstr, secondary);
