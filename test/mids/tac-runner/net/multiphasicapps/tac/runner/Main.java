@@ -99,6 +99,9 @@ public class Main
 		boolean check = (specific != null || endwild != null ||
 			startwild != null);
 		
+		// Report for tests to run
+		Report report = new Report();
+		
 		// Run each test
 		int total = 0,
 			pass = 0,
@@ -142,6 +145,7 @@ public class Main
 			
 			// Run the test
 			System.err.printf("Running %s...%n", fn);
+			long startns = System.nanoTime();
 			boolean passed = su.run();
 			
 			// Keep track
@@ -153,11 +157,20 @@ public class Main
 			}
 			else
 				pass++;
+			
+			// How long did this take?
+			long durns = System.nanoTime() - startns;
+			
+			// Send to the report for later usage
+			report.add(fn, passed, durns);
 		}
 		
 		// Note it
 		System.err.printf("Ran %d tests: %d passed, %d failed.%n",
 			total, pass, fail);
+		
+		// Generate report
+		report.generate(System.out, ReportType.JUNIT);
 		
 		// Exit with failure if there are bad tests
 		if (hasfailed)
