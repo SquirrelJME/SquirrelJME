@@ -11,6 +11,8 @@
 package net.multiphasicapps.scrf.compiler;
 
 import net.multiphasicapps.classfile.ByteCode;
+import net.multiphasicapps.classfile.Instruction;
+import net.multiphasicapps.classfile.InstructionIndex;
 import net.multiphasicapps.classfile.JavaType;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.StackMapTable;
@@ -82,6 +84,7 @@ public class PrimitiveByteCodeProcessor
 		ByteCode input = this.input;
 		StackMapTable smt = this.smt;
 		RegisterSet registers = this.registers;
+		RegisterCodeBuilder cb = this.codebuilder;
 		
 		// If this is synchronized, we enter the monitor explicitely here
 		boolean issync = this.methodprocessor.input.flags().isSynchronized();
@@ -95,11 +98,24 @@ public class PrimitiveByteCodeProcessor
 			
 			// The address of this instruction
 			int iaddr = input.indexToAddress(vi);
+			Instruction inst = input.getByIndex(vi);
 			
 			// Initialize the state of registers from the stack map state?
 			StackMapTableState sms = smt.get(iaddr);
 			if (sms != null)
 				this.__setSMT(sms);
+			
+			// Depends on the instruction itself
+			switch (inst.operation())
+			{
+					// Nop
+				case InstructionIndex.NOP:
+					cb.addNop();
+					break;
+				
+				default:
+					throw new todo.TODO(inst.toString());
+			}
 			
 			throw new todo.TODO();
 		}
