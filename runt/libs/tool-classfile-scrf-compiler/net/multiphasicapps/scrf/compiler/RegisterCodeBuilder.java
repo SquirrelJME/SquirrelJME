@@ -10,6 +10,11 @@
 
 package net.multiphasicapps.scrf.compiler;
 
+import java.util.ArrayList;
+import java.util.List;
+import net.multiphasicapps.scrf.RegisterInstruction;
+import net.multiphasicapps.scrf.RegisterInstructionIndex;
+
 /**
  * This is used to build the register based code which is for later execution.
  *
@@ -19,6 +24,10 @@ public final class RegisterCodeBuilder
 {
 	/** The VTable for this class. */
 	protected final VTableBuilder vtable;
+	
+	/** Instructions to use in the target method. */
+	private final List<RegisterInstruction> _insts =
+		new ArrayList<>();
 	
 	/**
 	 * Initializes the code builder.
@@ -34,6 +43,38 @@ public final class RegisterCodeBuilder
 			throw new NullPointerException("NARG");
 		
 		this.vtable = __vt;
+	}
+	
+	/**
+	 * Adds the specified instruction to the code.
+	 *
+	 * @param __i The instruction to add.
+	 * @return The index of the instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/01/23
+	 */
+	public final int add(RegisterInstruction __i)
+		throws NullPointerException
+	{
+		if (__i == null)
+			throw new NullPointerException("NARG");
+		
+		// The instruction index gets returned
+		List<RegisterInstruction> insts = this._insts;
+		int rv = insts.size();
+		insts.add(__i);
+		return rv;
+	}
+	
+	/**
+	 * Adds a NOP instruction.
+	 *
+	 * @return The index of the added instruction.
+	 * @since 2019/01/23
+	 */
+	public final int addNop()
+	{
+		return this.add(new RegisterInstruction(RegisterInstructionIndex.NOP));
 	}
 }
 
