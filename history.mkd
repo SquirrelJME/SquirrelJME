@@ -288,12 +288,15 @@ He was uploaded on 2016/05/07 to the repository.
 He has subsequently been redrawn on 2018/10/19 by Kat Adam-MacEwen, where he
 ended up very handsome. She is quite a wonderful artist.
 
+The C based virtual machine **RatufaCoat** was named by _meepingsnesroms_ of
+the Mu project. Ratufa being the sub-species of squirrels in southeast Asia.
+
 ## Gaining a Sister Project
 
-On 2018/11/03 the developer of Mu wanted to become a sister project of
-SquirrelJME, so this is very exciting! The link to her repository is in
-the [readme](readme.mkd)! We will be cooperating mostly by word of mouth by
-linking to each other's projects to hopefully gain interest in both of our
+On 2018/11/03 the developer of Mu, _meepingsnesroms_, wanted to become a sister
+project of SquirrelJME, so this was very exciting! The link to her repository
+is in the [readme](readme.mkd)! We will be cooperating mostly by word of mouth
+by linking to each other's projects to hopefully gain interest in both of our
 projects.
 
 ## The First Release
