@@ -20,14 +20,18 @@ public final class RegisterInstruction
 	/** The operation. */
 	protected final int op;
 	
+	/** Arguments. */
+	private final Object[] _args;
+	
 	/**
 	 * Initializes the register instruction.
 	 *
 	 * @param __op The operation.
+	 * @param __args Arguments to the operation.
 	 * @throws IllegalArgumentException If the operation is not valid.
 	 * @since 2019/01/23
 	 */
-	public RegisterInstruction(int __op)
+	public RegisterInstruction(int __op, Object... __args)
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error AV01 Invalid operation. (The operation)}
@@ -35,6 +39,13 @@ public final class RegisterInstruction
 			throw new IllegalArgumentException("AV01 " + __op);
 		
 		this.op = __op;
+		this._args = (__args = (__args == null ? new Object[0] :
+			__args.clone()));
+		
+		// Check arguments for null
+		for (Object a : __args)
+			if (a == null)
+				throw new NullPointerException("NARG");
 	}
 }
 

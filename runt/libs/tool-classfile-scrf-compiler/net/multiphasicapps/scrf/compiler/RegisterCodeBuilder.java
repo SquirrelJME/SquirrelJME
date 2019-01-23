@@ -67,6 +67,19 @@ public final class RegisterCodeBuilder
 	}
 	
 	/**
+	 * Adds a copy from one register to another.
+	 *
+	 * @param __from The source.
+	 * @param __to The destination.
+	 * @since 2019/01/23
+	 */
+	public final int addCopy(int __from, int __to)
+	{
+		return this.add(new RegisterInstruction(
+			RegisterInstructionIndex.COPY, __from, __to));
+	}
+	
+	/**
 	 * Adds a NOP instruction.
 	 *
 	 * @return The index of the added instruction.
