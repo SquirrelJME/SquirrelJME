@@ -17,7 +17,7 @@ More detailed changes:
      * An alternative VM may be specified.
      * The profiler snapshot can be written to a specific file.
      * System properties may be defined and passed to the launched program.
-   * Started work on JavaDoc generation
+   * Started work on JavaDoc generation.
  * Tests
    * Adjusted the results in the logarithm test to adjust the ulp to what
      SquirrelJME generates. The results are still valid as it is valid to
@@ -53,7 +53,7 @@ More detailed changes:
        so that classes technically become invalid.
      * Allow properties to be obtained from internally passed system
        properties.
-     * Added string representation for the stack map table.`
+     * Added string representation for the stack map table.
    * SpringCoat
    * SummerCoat
      * New Virtual Machine, register based.
