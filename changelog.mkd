@@ -3,14 +3,66 @@
 # 0.4.0 (April 21, 2019)
 
 Now SquirrelJME has the SummerCoat virtual machine which is much lighter and
-faster than SpringCoat.
+faster than SpringCoat. There should definitely be very noticable performance
+increases.
 
-SquirrelJME is also available on RetroArch now since it has been ported to C
-using the RatufaCoat virtual machine.
+SquirrelJME is also available on RetroArch since the implementation of
+RatufaCoat which is written in C and is capable of using the SquirrelJME
+Runtime.
 
-Other changes:
+More detailed changes:
 
- * To be determined.
+ * Build system
+   * Launching
+     * An alternative VM may be specified.
+     * The profiler snapshot can be written to a specific file.
+     * System properties may be defined and passed to the launched program.
+   * Started work on JavaDoc generation
+ * Tests
+   * Adjusted the results in the logarithm test to adjust the ulp to what
+     SquirrelJME generates. The results are still valid as it is valid to
+     be within a 1 ulp range, however the test framework only supports
+     exact values.
+   * Added the missing _mimemessage_ file for the MIME file decoding test.
+ * Classes
+   * Implemented
+     * `java.io.InputStream`
+     * `java.util.EventObject`
+     * `java.util.LinkedList`
+   * Deprecations
+     * `net.multiphasicapps.classfile.ExecutableCode`, not used.
+   * Additions
+     * `java.util.Vector`, was missing.
+ * Programs and Libraries
+   * `demo-hello`
+     * Made the system properties array `final`.
+   * `tac`
+     * Override standard output and forward to standard error while a test is
+       running, so things are not kludged.
+   * `tac-runner`
+     * Allow specific tests to be ran via the main arguments.
+     * Generate JUnit output which can be used in test environments.
+     * Performed some refactoring on the deserialization/serialization code.
+ * Compiler Backend
+   * `MergedPathSet` can be initialized by iterables now.
+   * Implemented a new tree based unit system for packages and classes.
+   * Added a bunch of string representations for class structures.
+ * Virtual Machines
+   * General
+     * Adjusted the Shaded JAR directory layout and added a dash in the path
+       so that classes technically become invalid.
+     * Allow properties to be obtained from internally passed system
+       properties.
+     * Added string representation for the stack map table.`
+   * SpringCoat
+   * SummerCoat
+     * New Virtual Machine, register based.
+     * Vast improvements over SpringCoat, faster and slimmer.
+   * RatufaCoat
+     * New Virtual Machine, based off SummerCoat.
+     * Fast and slim.
+ * Cleanup
+   * Removed the `test.sh` script, it was empty.
 
 # 0.2.0 (December 25, 2018)
 
