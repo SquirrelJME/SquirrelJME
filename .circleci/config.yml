@@ -57,6 +57,7 @@ jobs:
           path: jut
       - store_artifacts:
           path: springcoat.nps
+          destination: /nps
   tests_summercoat:
     executor: buildenv
     steps:
@@ -74,6 +75,7 @@ jobs:
           path: jut
       - store_artifacts:
           path: summercoat.nps
+          destination: /nps
 
 workflows:
   version: 2
