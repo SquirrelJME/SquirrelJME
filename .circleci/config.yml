@@ -40,28 +40,34 @@ jobs:
       - run:
           name: Shade JavaME
           command: ~/squirreljme/build.sh dist javame
-  tests_stablevm:
+  tests_springcoat:
     executor: buildenv
     steps:
       - initialize_buildenv
       - run:
-          name: Create test directory
-          command: mkdir -p jut/stablevm
+          name: Clear old test results
+          command: rm -f jut/springcoat/results.xml
       - run:
-          name: Running Stable VM
-          command: ~/squirreljme/build.sh launch tac-runner > jut/stablevm/results.xml
+          name: Create test directory
+          command: mkdir -p jut/springcoat
+      - run:
+          name: Running SpringCoat VM
+          command: ~/squirreljme/build.sh launch -v springcoat tac-runner > jut/springcoat/results.xml
       - store_test_results:
           path: jut
-  tests_unstablevm:
+  tests_summercoat:
     executor: buildenv
     steps:
       - initialize_buildenv
       - run:
-          name: Create test directory
-          command: mkdir -p jut/unstablevm
+          name: Clear old test results
+          command: rm -f jut/summercoat/results.xml
       - run:
-          name: Running Unstable VM
-          command: ~/squirreljme/build.sh launch -v summercoat tac-runner > jut/unstablevm/results.xml
+          name: Create test directory
+          command: mkdir -p jut/summercoat
+      - run:
+          name: Running SummerCoat VM
+          command: ~/squirreljme/build.sh launch -v summercoat tac-runner > jut/summercoat/results.xml
       - store_test_results:
           path: jut
 
@@ -73,6 +79,6 @@ workflows:
       - build_javame
   tests:
     jobs:
-      - tests_stablevm
-      - tests_unstablevm
+      - tests_springcoat
+      - tests_summercoat
 
