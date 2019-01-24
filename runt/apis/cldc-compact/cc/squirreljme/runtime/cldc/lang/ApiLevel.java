@@ -18,7 +18,8 @@ import cc.squirreljme.runtime.cldc.asm.SystemProperties;
  * This is used for backwards compatibility.
  *
  * Levels are in the form of {@code 0M_mm_R_yyDDD} (Major version, minor
- * version, release version, year (20yy), day of year).
+ * version, release version, year (20yy), day of year). This means they are
+ * limited to the form of {@code [0-9].[0-99].[0-9] (Day [0-999] of 20[0-99])}.
  *
  * @since 2018/12/05
  */
