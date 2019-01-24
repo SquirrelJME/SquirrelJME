@@ -24,7 +24,9 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import net.multiphasicapps.javac.ZipCompilerOutput;
@@ -257,9 +259,12 @@ public class BuilderFactory
 		// Alternative NPS location
 		String npspath = null;
 		
+		// Extra system properties
+		Map<String, String> sprops = new HashMap<>();
+		
 		// Determine how shading is to be handled
 		String[] parse;
-		while (null != (parse = __getopts(":?v:n:", args)))
+		while (null != (parse = __getopts(":?v:n:D:", args)))
 			switch (parse[0])
 			{
 					// Use build timespace
@@ -271,12 +276,25 @@ public class BuilderFactory
 				case "n":
 					npspath = parse[1];
 					break;
+					
+					// System property
+				case "D":
+					String spl = parse[1];
+					int eq = spl.indexOf('=');
+					if (eq >= 0)
+						sprops.put(spl.substring(0, eq),
+							spl.substring(eq + 1));
+					else
+						sprops.put(spl, "");
+					break;
 				
 					// {@squirreljme.error AU1e Unknown argument.
-					// Usage: vmshade [-v vmname] [-n NPS path] (program);
+					// Usage: vmshade [-v vmname] [-n NPS path] [-Dkey=value]
+					// (program);
 					// -v: The name of the virtual machine to use, this may
 					// be springcoat or summercoat.
 					// -n: Path to write NPS files to.
+					// -D: System property key/value pair.
 					// (The switch)}
 				case "?":
 				default:
@@ -291,7 +309,7 @@ public class BuilderFactory
 			throw new IllegalArgumentException("AU14");
 		
 		// Run the VM
-		VMMain.main(vmname, npspath, this.projectmanager, program,
+		VMMain.main(vmname, npspath, sprops, this.projectmanager, program,
 			args.<String>toArray(new String[args.size()]));
 	}
 	

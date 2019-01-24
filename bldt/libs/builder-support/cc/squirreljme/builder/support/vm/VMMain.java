@@ -24,7 +24,9 @@ import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayDeque;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import net.multiphasicapps.profiler.ProfilerSnapshot;
@@ -61,9 +63,29 @@ public class VMMain
 	 * @param __pn The project to be launched.
 	 * @param __args Program arguments.
 	 * @throws NullPointerException On null arguments, except for {@code __vm}.
-	 * @since 2018/12/22
+	 * @since 2019/01/23
 	 */
 	public static void main(String __vm, String __nps, ProjectManager __pm,
+		String __pn, String... __args)
+		throws NullPointerException
+	{
+		VMMain.main(null, null, null, __pm, __pn, __args);
+	}
+	
+	/**
+	 * Main entry point using the given project manager.
+	 *
+	 * @param __vm The name of the VM engine to use, may be blank.
+	 * @param __nps Profiler snapshot to use instead.
+	 * @param __sprops System properties to use for the VM.
+	 * @param __pm The project manager.
+	 * @param __pn The project to be launched.
+	 * @param __args Program arguments.
+	 * @throws NullPointerException On null arguments, except for {@code __vm}.
+	 * @since 2019/01/23
+	 */
+	public static void main(String __vm, String __nps,
+		Map<String, String> __sprops, ProjectManager __pm,
 		String __pn, String... __args)
 		throws NullPointerException
 	{
@@ -129,7 +151,7 @@ public class VMMain
 		// Initialize the virtual machine with our launch ID
 		VirtualMachine machine = VMFactory.main(__vm, profiler,
 			new BuildSuiteManager(__pm), classpath,
-			null, launchid, -1, null,
+			null, launchid, -1, __sprops,
 			args.<String>toArray(new String[args.size()]));
 		
 		// Run the VM until it terminates
