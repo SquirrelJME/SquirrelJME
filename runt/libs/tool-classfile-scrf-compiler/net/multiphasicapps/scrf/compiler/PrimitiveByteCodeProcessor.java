@@ -110,6 +110,11 @@ public class PrimitiveByteCodeProcessor
 			switch ((vop = PrimitiveByteCodeProcessor.__aliasOp(
 				inst.operation())))
 			{
+					// Null reference
+				case InstructionIndex.ACONST_NULL:
+					cb.addConst(registers.virtualPush(), 0);
+					break;
+				
 					// Nop
 				case InstructionIndex.NOP:
 					cb.addNop();
