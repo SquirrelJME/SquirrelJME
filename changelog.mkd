@@ -60,7 +60,7 @@ More detailed changes:
      * Vast improvements over SpringCoat, faster and slimmer.
    * RatufaCoat
      * New Virtual Machine, based off SummerCoat.
-     * Fast and slim.
+     * Fast and slim, written in C.
  * Cleanup
    * Removed the `test.sh` script, it was empty.
 
