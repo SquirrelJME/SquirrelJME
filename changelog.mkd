@@ -1,8 +1,16 @@
 # Changelog
 
-# 0.4.0 (To Be Determined)
+# 0.4.0 (April 21, 2019)
 
-To Be Determined.
+Now SquirrelJME has the SummerCoat virtual machine which is much lighter and
+faster than SpringCoat.
+
+SquirrelJME is also available on RetroArch now since it has been ported to C
+using the RatufaCoat virtual machine.
+
+Other changes:
+
+ * To be determined.
 
 # 0.2.0 (December 25, 2018)
 
