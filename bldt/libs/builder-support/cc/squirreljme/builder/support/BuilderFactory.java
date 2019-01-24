@@ -254,20 +254,29 @@ public class BuilderFactory
 		// Allows the VM to be overridden
 		String vmname = null;
 		
+		// Alternative NPS location
+		String npspath = null;
+		
 		// Determine how shading is to be handled
 		String[] parse;
-		while (null != (parse = __getopts(":?v:", args)))
+		while (null != (parse = __getopts(":?v:n:", args)))
 			switch (parse[0])
 			{
 					// Use build timespace
 				case "v":
 					vmname = parse[1];
 					break;
+					
+					// Write NPS somewhere
+				case "n":
+					npspath = parse[1];
+					break;
 				
 					// {@squirreljme.error AU1e Unknown argument.
-					// Usage: vmshade [-v vmname] (program);
+					// Usage: vmshade [-v vmname] [-n NPS path] (program);
 					// -v: The name of the virtual machine to use, this may
 					// be springcoat or summercoat.
+					// -n: Path to write NPS files to.
 					// (The switch)}
 				case "?":
 				default:
@@ -282,7 +291,7 @@ public class BuilderFactory
 			throw new IllegalArgumentException("AU14");
 		
 		// Run the VM
-		VMMain.main(vmname, this.projectmanager, program,
+		VMMain.main(vmname, npspath, this.projectmanager, program,
 			args.<String>toArray(new String[args.size()]));
 	}
 	

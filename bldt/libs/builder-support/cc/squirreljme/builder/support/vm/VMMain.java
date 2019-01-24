@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayDeque;
 import java.util.Calendar;
@@ -47,21 +49,22 @@ public class VMMain
 	public static void main(ProjectManager __pm, String __pn, String... __args)
 		throws NullPointerException
 	{
-		VMMain.main(null, __pm, __pn, __args);
+		VMMain.main(null, null, __pm, __pn, __args);
 	}
 	
 	/**
 	 * Main entry point using the given project manager.
 	 *
 	 * @param __vm The name of the VM engine to use, may be blank.
+	 * @param __nps Profiler snapshot to use instead.
 	 * @param __pm The project manager.
 	 * @param __pn The project to be launched.
 	 * @param __args Program arguments.
 	 * @throws NullPointerException On null arguments, except for {@code __vm}.
 	 * @since 2018/12/22
 	 */
-	public static void main(String __vm, ProjectManager __pm, String __pn,
-		String... __args)
+	public static void main(String __vm, String __nps, ProjectManager __pm,
+		String __pn, String... __args)
 		throws NullPointerException
 	{
 		if (__pm == null || __pn == null)
@@ -154,6 +157,18 @@ public class VMMain
 				{
 					profiler.writeTo(os);
 				}
+				
+				// Move the NPS somewhere?
+				if (__nps != null)
+					try
+					{
+						Files.move(temp, Paths.get(__nps),
+							StandardCopyOption.REPLACE_EXISTING);
+					}
+					catch (IOException e)
+					{
+						e.printStackTrace();
+					}
 			}
 			
 			// Ignore
