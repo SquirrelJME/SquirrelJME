@@ -112,7 +112,22 @@ public class PrimitiveByteCodeProcessor
 			{
 					// Null reference
 				case InstructionIndex.ACONST_NULL:
-					cb.addConst(registers.virtualPush(), 0);
+					cb.addConstPointer(registers.virtualPush(), 0);
+					break;
+					
+					// Load reference
+				case InstructionIndex.ALOAD:
+					cb.addCopyPointer(inst.<Integer>argument(0, Integer.class),
+						registers.virtualPush());
+					break;
+					
+					// Load reference (quick)
+				case InstructionIndex.ALOAD_0:
+				case InstructionIndex.ALOAD_1:
+				case InstructionIndex.ALOAD_2:
+				case InstructionIndex.ALOAD_3:
+					cb.addCopyPointer(vop - InstructionIndex.ALOAD_0,
+						registers.virtualPush());
 					break;
 				
 					// Nop
@@ -184,27 +199,22 @@ public class PrimitiveByteCodeProcessor
 	{
 		switch (__i)
 		{
-			case InstructionIndex.ALOAD:
 			case InstructionIndex.ILOAD:
 			case InstructionIndex.FLOAD:
 				return JavaInstructionAlias.XLOAD;
 			
-			case InstructionIndex.ALOAD_0:
 			case InstructionIndex.ILOAD_0:
 			case InstructionIndex.FLOAD_0:
 				return JavaInstructionAlias.XLOAD_0;
 			
-			case InstructionIndex.ALOAD_1:
 			case InstructionIndex.ILOAD_1:
 			case InstructionIndex.FLOAD_1:
 				return JavaInstructionAlias.XLOAD_1;
 			
-			case InstructionIndex.ALOAD_2:
 			case InstructionIndex.ILOAD_2:
 			case InstructionIndex.FLOAD_2:
 				return JavaInstructionAlias.XLOAD_2;
 			
-			case InstructionIndex.ALOAD_3:
 			case InstructionIndex.ILOAD_3:
 			case InstructionIndex.FLOAD_3:
 				return JavaInstructionAlias.XLOAD_3;

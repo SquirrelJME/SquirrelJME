@@ -81,6 +81,20 @@ public final class RegisterCodeBuilder
 	}
 	
 	/**
+	 * Adds constant value (pointer).
+	 *
+	 * @param __dest The destination.
+	 * @param __v The value to set.
+	 * @return The instruction index.
+	 * @since 2019/01/24
+	 */
+	public final int addConstPointer(int __dest, long __v)
+	{
+		return this.add(new RegisterInstruction(
+			RegisterInstructionIndex.CONST_POINTER, __dest, __v));
+	}
+	
+	/**
 	 * Adds a copy from one register to another.
 	 *
 	 * @param __from The source.
@@ -92,6 +106,20 @@ public final class RegisterCodeBuilder
 	{
 		return this.add(new RegisterInstruction(
 			RegisterInstructionIndex.COPY, __from, __to));
+	}
+	
+	/**
+	 * Adds a copy pointer from one register to another.
+	 *
+	 * @param __from The source.
+	 * @param __to The destination.
+	 * @return The instruction index.
+	 * @since 2019/01/23
+	 */
+	public final int addCopyPointer(int __from, int __to)
+	{
+		return this.add(new RegisterInstruction(
+			RegisterInstructionIndex.COPY_POINTER, __from, __to));
 	}
 	
 	/**

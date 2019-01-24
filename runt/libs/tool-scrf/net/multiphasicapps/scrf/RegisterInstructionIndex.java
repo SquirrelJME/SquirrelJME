@@ -25,12 +25,28 @@ public interface RegisterInstructionIndex
 	public static final int COPY =
 		1;
 	
+	/** Copy pointer. */
+	public static final int COPY_POINTER =
+		2;
+	
+	/** Copy long. */
+	public static final int COPY_LONG =
+		3;
+	
 	/** Load constant value (int). */
 	public static final int CONST =
-		2;
+		4;
+	
+	/** Load constant value (pointer). */
+	public static final int CONST_POINTER =
+		5;
+	
+	/** Load constant value (long). */
+	public static final int CONST_LONG =
+		6;
 	
 	/** The number of valid instructions. */
 	public static final int NUM_INSTRUCTIONS =
-		3;
+		7;
 }
 
