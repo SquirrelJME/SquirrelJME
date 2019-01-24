@@ -37,7 +37,8 @@ secondary-value--02: long:-2251799813685248
 secondary-value-000: long:-4503599627370496
 secondary-value-001: long:0
 secondary-value-002: long:4604418534313441775
-secondary-value-003: long:4607626529066517259
+secondary-value-003: long:4607626529066517258
+original-ulp-secondary-value-003: long:4607626529066517259
 secondary-value-004: long:4608922133940812271
 secondary-value-005: long:4609927083155361075
 secondary-value-006: long:4610748186450599938
@@ -82,7 +83,8 @@ secondary-value-044: long:4615703656312624195
 secondary-value-045: long:4615754260685244836
 secondary-value-046: long:4615803752783299180
 secondary-value-047: long:4615852180452208822
-secondary-value-048: long:4615899588515117941
+secondary-value-048: long:4615899588515117940
+original-ulp-secondary-value-048: long:4615899588515117941
 secondary-value-049: long:4615946019022199383
 secondary-value-050: long:4615991511474772911
 secondary-value-051: long:4616036103027228927
