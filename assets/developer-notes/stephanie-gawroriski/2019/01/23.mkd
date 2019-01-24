@@ -1,0 +1,12 @@
+# 2019/01/23
+
+## 17:35
+
+I want to add test metadata for CircleCI so I can get more visibility on how
+things are running. Additionally this is using XML.
+
+## 20:21
+
+It would be useful to specify the profile snapshot and store that in with
+CircleCI, so that way I can get profiler snapshots of the things which have
+run. That will definitely be useful.
