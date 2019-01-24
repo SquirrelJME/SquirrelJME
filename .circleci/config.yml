@@ -45,31 +45,35 @@ jobs:
     steps:
       - initialize_buildenv
       - run:
-          name: Clear old test results
-          command: rm -f jut/springcoat/results.xml
+          name: Clear old test results and snapshot
+          command: rm -f jut/springcoat/results.xml springcoat.nps
       - run:
           name: Create test directory
           command: mkdir -p jut/springcoat
       - run:
           name: Running SpringCoat VM
-          command: ~/squirreljme/build.sh launch -v springcoat tac-runner > jut/springcoat/results.xml
+          command: ~/squirreljme/build.sh launch -v springcoat -n springcoat.nps tac-runner > jut/springcoat/results.xml
       - store_test_results:
           path: jut
+      - store_artifacts:
+          path: springcoat.nps
   tests_summercoat:
     executor: buildenv
     steps:
       - initialize_buildenv
       - run:
-          name: Clear old test results
-          command: rm -f jut/summercoat/results.xml
+          name: Clear old test results and snapshot
+          command: rm -f jut/summercoat/results.xml summercoat.nps
       - run:
           name: Create test directory
           command: mkdir -p jut/summercoat
       - run:
           name: Running SummerCoat VM
-          command: ~/squirreljme/build.sh launch -v summercoat tac-runner > jut/summercoat/results.xml
+          command: ~/squirreljme/build.sh launch -v summercoat -n summercoat.nps tac-runner > jut/summercoat/results.xml
       - store_test_results:
           path: jut
+      - store_artifacts:
+          path: summercoat.nps
 
 workflows:
   version: 2
