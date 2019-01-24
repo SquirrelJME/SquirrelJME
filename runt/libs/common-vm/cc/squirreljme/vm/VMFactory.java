@@ -120,13 +120,19 @@ public abstract class VMFactory
 		if (__bootcl == null && __bootid < 0)
 			throw new IllegalArgumentException("AK02");
 		
+		// Always exists
+		__args = (__args == null ? new String[0] : __args.clone());
+		__sprops = (__sprops == null ? new HashMap<String, String>() :
+			new HashMap<String, String>(__sprops));
+		
 		// If not specified, check the system property that specifies the VM
 		if (__vm == null)
 			try
 			{
 				// {@squirreljme.property cc.squirreljme.vm.name Specifies the
 				// name of the virtual machine to use.}
-				__vm = System.getProperty("cc.squirreljme.vm.name");
+				__vm = VMFactory.__getProperty(__sprops,
+					"cc.squirreljme.vm.name");
 			}
 			catch (SecurityException e)
 			{
@@ -149,12 +155,6 @@ public abstract class VMFactory
 		// exist. (The virtual machine name)}
 		if (factory == null)
 			throw new VMException("AK06 " + __vm);
-		
-		// Always exists
-		if (__args == null)
-			__args = new String[0];
-		if (__sprops == null)
-			__sprops = new HashMap<>();
 		
 		// Automatically determined guest depth? This is always deeper!
 		if (__gd < 0)
@@ -226,9 +226,23 @@ public abstract class VMFactory
 	 */
 	public static final void shadedMain(String... __args)
 	{
-		// Force to exist
-		if (__args == null)
-			__args = new String[0];
+		VMFactory.shadedMain((Map<String, String>)null, __args);
+	}
+	
+	/**
+	 * Shaded main entry point, with extra properties map.
+	 *
+	 * @param __sprops Properties map to use.
+	 * @param __args Arguments to the program.
+	 * @since 2018/11/17
+	 */
+	public static final void shadedMain(Map<String, String> __sprops,
+		String... __args)
+	{
+		// Defensive copy and force to exist
+		__args = (__args == null ? new String[0] : __args.clone());
+		__sprops = (__sprops == null ? new HashMap<String, String>() :
+			new HashMap<String, String>(__sprops));
 		
 		// We may be able to grab some properties from the shaded manifest
 		// information, if one is even available
@@ -254,32 +268,36 @@ public abstract class VMFactory
 			usemain = null;
 		int bootid = -1;
 		
+		// Profiler snapshot to generate to
+		ProfilerSnapshot psnap = null;
+		
 		// Try loading these from properties first, to take more priority
 		try
 		{
 			// {@squirreljme.property cc.squirreljme.vm.shadeactiveclass=class
 			// The class to use to load resources from.}
-			useactiveclass = System.getProperty(
+			useactiveclass = VMFactory.__getProperty(__sprops,
 				"cc.squirreljme.vm.shadeactiveclass");
 			
 			// {@squirreljme.property cc.squirreljme.vm.shadeprefix=prefix
 			// The resource lookup prefix for the classes.}
-			useprefix = System.getProperty(
+			useprefix = VMFactory.__getProperty(__sprops,
 				"cc.squirreljme.vm.shadeprefix");
 			
 			// {@squirreljme.property cc.squirreljme.vm.shadeclasspath=[class:]
 			// The classes which make up the class path for execution.}
-			usecp = System.getProperty(
+			usecp = VMFactory.__getProperty(__sprops,
 				"cc.squirreljme.vm.shadeclasspath");
 			
 			// {@squirreljme.property cc.squirreljme.vm.shademain=class
 			// The class to use as the main entry point for the VM.}
-			usemain = System.getProperty(
+			usemain = VMFactory.__getProperty(__sprops,
 				"cc.squirreljme.vm.shademain");
 			
 			// {@squirreljme.property cc.squirreljme.vm.shadebootid=id
 			// The MIDlet or Main class number to use for entering the JAR.}
-			bootid = Integer.getInteger("cc.squirreljme.vm.shadebootid", -1);
+			bootid = Integer.valueOf(VMFactory.__getProperty(__sprops,
+				"cc.squirreljme.vm.shadebootid", "-1"));
 		}
 		catch (SecurityException e)
 		{
@@ -349,7 +367,7 @@ public abstract class VMFactory
 		mergesm.add(sm);
 		
 		// Check our working directory
-		String workdir = System.getProperty("user.dir");
+		String workdir = VMFactory.__getProperty(__sprops, "user.dir");
 		if (workdir != null)
 			try
 			{
@@ -384,6 +402,57 @@ public abstract class VMFactory
 		
 		// Run the VM and exit with the code it generates
 		System.exit(vm.runVm());
+	}
+	
+	/**
+	 * Tries to get a property from a passed map otherwise reads from the
+	 * system properties used.
+	 *
+	 * @param __props The properties to check first.
+	 * @param __key The key to get.
+	 * @return The value for the given key, {@code null} means it is not set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/01/23
+	 */
+	private static final String __getProperty(Map<String, String> __props,
+		String __key)
+		throws NullPointerException
+	{
+		return VMFactory.__getProperty(__props, __key, null);
+	}
+	
+	/**
+	 * Tries to get a property from a passed map otherwise reads from the
+	 * system properties used.
+	 *
+	 * @param __props The properties to check first.
+	 * @param __key The key to get.
+	 * @param __def Default value.
+	 * @return The value for the given key, {@code __def} means it is not set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/01/23
+	 */
+	private static final String __getProperty(Map<String, String> __props,
+		String __key, String __def)
+		throws NullPointerException
+	{
+		if (__props == null || __key == null)
+			throw new NullPointerException("NARG");
+		
+		// Grab from these properties first
+		String rv = __props.get(__key);
+		if (rv != null)
+			return rv;
+		
+		// Otherwise try a property instead
+		try
+		{
+			return System.getProperty(__key);
+		}
+		catch (SecurityException e)
+		{
+			return __def;
+		}
 	}
 }
 
