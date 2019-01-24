@@ -72,7 +72,7 @@ public class TestMIMEFileDecoder
 			decoded = baos.toByteArray();
 		}
 		
-		// They must changed
+		// They must be the same
 		return Arrays.equals(expected, decoded);
 	}
 }
