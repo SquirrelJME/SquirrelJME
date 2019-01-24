@@ -20,7 +20,7 @@ import java.io.PrintStream;
 public class Hello
 {
 	/** Properties to print. */
-	private static String[] _PROPERTIES =
+	private static final String[] _PROPERTIES =
 		new String[]
 		{
 			"java.version",
