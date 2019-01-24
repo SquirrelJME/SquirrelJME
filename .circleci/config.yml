@@ -40,6 +40,30 @@ jobs:
       - run:
           name: Shade JavaME
           command: ~/squirreljme/build.sh dist javame
+  tests_stablevm:
+    executor: buildenv
+    steps:
+      - initialize_buildenv
+      - run:
+          name: Create test directory
+          command: mkdir -p jut/stablevm
+      - run:
+          name: Running Stable VM
+          command: ~/squirreljme/build.sh launch tac-runner > jut/stablevm/results.xml
+      - store_test_results:
+          path: jut
+  tests_unstablevm:
+    executor: buildenv
+    steps:
+      - initialize_buildenv
+      - run:
+          name: Create test directory
+          command: mkdir -p jut/unstablevm
+      - run:
+          name: Running Unstable VM
+          command: ~/squirreljme/build.sh launch -v summercoat tac-runner > jut/unstablevm/results.xml
+      - store_test_results:
+          path: jut
 
 workflows:
   version: 2
@@ -47,4 +71,8 @@ workflows:
     jobs:
       - build_javase
       - build_javame
+  tests:
+    jobs:
+      - tests_stablevm
+      - tests_unstablevm
 
