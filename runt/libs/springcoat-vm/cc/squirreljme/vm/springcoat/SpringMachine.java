@@ -111,6 +111,9 @@ public final class SpringMachine
 	private final Map<String, Long> _strstringtolong =
 		new HashMap<>();
 	
+	/** System properties. */
+	final Map<String, String> _sysproperties;
+	
 	/** The next thread ID to use. */
 	private volatile int _nextthreadid;
 	
@@ -136,6 +139,7 @@ public final class SpringMachine
 	 * @param __gd Guest depth.
 	 * @param __profiler The profiler to use.
 	 * @param __nda The native display provider.
+	 * @param __sprops System properties.
 	 * @param __args Main entry point arguments.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/03
@@ -143,7 +147,8 @@ public final class SpringMachine
 	public SpringMachine(VMSuiteManager __sm, SpringClassLoader __cl,
 		SpringTaskManager __tm, String __bootcl, boolean __bootmid,
 		int __bootdx, int __gd, ProfilerSnapshot __profiler,
-		VMNativeDisplayAccess __nda, String... __args)
+		VMNativeDisplayAccess __nda, Map<String, String> __sprops,
+		String... __args)
 		throws NullPointerException
 	{
 		if (__cl == null || __sm == null || __nda == null)
@@ -160,6 +165,8 @@ public final class SpringMachine
 		this._args = (__args == null ? new String[0] : __args.clone());
 		this.profiler = (__profiler != null ? __profiler :
 			new ProfilerSnapshot());
+		this._sysproperties = (__sprops == null ?
+			new HashMap<String, String>() : new HashMap<>(__sprops));
 		
 		// Setup resource accessor
 		this.resourceaccessor = new VMResourceAccess(__sm);

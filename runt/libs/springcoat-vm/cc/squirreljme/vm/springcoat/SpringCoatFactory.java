@@ -49,10 +49,10 @@ public class SpringCoatFactory
 		throws IllegalArgumentException, NullPointerException, VMException
 	{
 		// Create a new instance of the VM
-		SpringTaskManager tm = new SpringTaskManager(__sm, __ps);
+		SpringTaskManager tm = new SpringTaskManager(__sm, __ps, __sprops);
 		return new SpringMachine(__sm, new SpringClassLoader(__cp),
 			tm, __maincl, __ismid, -1,
-			__gd, __ps, tm.nativedisplay, __args);
+			__gd, __ps, tm.nativedisplay, __sprops, __args);
 	}
 }
 

@@ -55,6 +55,8 @@ More detailed changes:
        properties.
      * Added string representation for the stack map table.
    * SpringCoat
+     * Add support for system properties being based to virtual machine
+       instances.
    * SummerCoat
      * New Virtual Machine, register based.
      * Vast improvements over SpringCoat, faster and slimmer.

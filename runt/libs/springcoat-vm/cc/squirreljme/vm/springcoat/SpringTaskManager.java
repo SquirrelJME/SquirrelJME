@@ -42,6 +42,9 @@ public final class SpringTaskManager
 	private final Map<Integer, SpringTask> _tasks =
 		new HashMap<>();
 	
+	/** System properties. */
+	private final Map<String, String> _sysprops;
+	
 	/** Access to the native display. */
 	protected final VMNativeDisplayAccess nativedisplay =
 		new VMNativeDisplayAccess();
@@ -54,10 +57,12 @@ public final class SpringTaskManager
 	 *
 	 * @param __sm The suite manager.
 	 * @param __ps The snapshot for profiling.
+	 * @param __sp System properties.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/04
 	 */
-	public SpringTaskManager(VMSuiteManager __sm, ProfilerSnapshot __ps)
+	public SpringTaskManager(VMSuiteManager __sm, ProfilerSnapshot __ps,
+		Map<String, String> __sp)
 		throws NullPointerException
 	{
 		if (__sm == null)
@@ -65,6 +70,8 @@ public final class SpringTaskManager
 		
 		this.suites = __sm;
 		this.profiler = (__ps == null ? new ProfilerSnapshot() : __ps);
+		this._sysprops = (__sp == null ? new HashMap<String, String>() :
+			new HashMap<>(__sp));
 	}
 	
 	/**
@@ -140,7 +147,7 @@ public final class SpringTaskManager
 		// Build machine for the task
 		SpringMachine machine = new SpringMachine(suites,
 			new SpringClassLoader(scl), this, null, false, bootdx, __gd + 1,
-			this.profiler, this.nativedisplay, __args);
+			this.profiler, this.nativedisplay, this._sysprops, __args);
 		
 		// Lock on tasks
 		Map<Integer, SpringTask> tasks = this._tasks;
