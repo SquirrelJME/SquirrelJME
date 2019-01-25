@@ -447,7 +447,10 @@ public abstract class VMFactory
 		// Otherwise try a property instead
 		try
 		{
-			return System.getProperty(__key);
+			rv = System.getProperty(__key);
+			if (rv != null)
+				return rv;
+			return __def;
 		}
 		catch (SecurityException e)
 		{
