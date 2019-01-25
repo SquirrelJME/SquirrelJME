@@ -1686,8 +1686,12 @@ public final class SpringThreadWorker
 				// Get system property
 			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
 				"systemProperty:(Ljava/lang/String;)Ljava/lang/String;":
-				return System.getProperty(this.<String>asNativeObject(
-					String.class, __args[0]));
+				String pk = this.<String>asNativeObject(String.class,
+					__args[0]),
+					pv = this.machine._sysproperties.get(pk);
+				if (pv != null)
+					return pv;
+				return System.getProperty(pk);
 				
 				// Current thread ID
 			case "cc/squirreljme/runtime/cldc/asm/TaskAccess::" +
