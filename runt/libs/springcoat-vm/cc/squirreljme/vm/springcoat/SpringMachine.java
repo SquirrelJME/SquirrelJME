@@ -204,7 +204,8 @@ public final class SpringMachine
 			// Initialize new thread
 			int v;
 			SpringThread rv = new SpringThread((v = ++this._nextthreadid), __n,
-				this.profiler.measureThread(String.format("vm%08x-%d-%s",
+				this.profiler.measureThread(String.format("%s-vm%08x-%d-%s",
+				this.classloader.bootLibrary().name(),
 				System.identityHashCode(this), v, __n)));
 			
 			// Store thread
