@@ -57,6 +57,8 @@ More detailed changes:
    * SpringCoat
      * Add support for system properties being based to virtual machine
        instances.
+     * Profiler thread lists are easier to read because the main suite is
+       listed instead of the VM identifier.
    * SummerCoat
      * New Virtual Machine, register based.
      * Vast improvements over SpringCoat, faster and slimmer.
