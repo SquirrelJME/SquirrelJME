@@ -467,49 +467,292 @@ public class Arrays
 		return rv;
 	}
 	
+	/**
+	 * Checks if both arrays are equal to each other.
+	 *
+	 * @param __a The first array.
+	 * @param __b The second array.
+	 * @return If the two arrays are equal.
+	 * @since 2019/01/24
+	 */
 	public static boolean equals(long[] __a, long[] __b)
 	{
-		throw new todo.TODO();
+		// Same reference or both null is equal
+		if (__a == __b)
+			return true;
+		
+		// Either one is null
+		if (__a == null || __b == null)
+			return false;
+		
+		// Differing lengths?
+		int na = __a.length,
+			nb = __b.length;
+		if (na != nb)
+			return false;
+		
+		for (int i = 0; i < na; i++)
+			if (__a[i] != __b[i])
+				return false;
+		
+		// No mismatches
+		return true;
 	}
 	
+	/**
+	 * Checks if both arrays are equal to each other.
+	 *
+	 * @param __a The first array.
+	 * @param __b The second array.
+	 * @return If the two arrays are equal.
+	 * @since 2019/01/24
+	 */
 	public static boolean equals(int[] __a, int[] __b)
 	{
-		throw new todo.TODO();
+		// Same reference or both null is equal
+		if (__a == __b)
+			return true;
+		
+		// Either one is null
+		if (__a == null || __b == null)
+			return false;
+		
+		// Differing lengths?
+		int na = __a.length,
+			nb = __b.length;
+		if (na != nb)
+			return false;
+		
+		for (int i = 0; i < na; i++)
+			if (__a[i] != __b[i])
+				return false;
+		
+		// No mismatches
+		return true;
 	}
 	
+	/**
+	 * Checks if both arrays are equal to each other.
+	 *
+	 * @param __a The first array.
+	 * @param __b The second array.
+	 * @return If the two arrays are equal.
+	 * @since 2019/01/24
+	 */
 	public static boolean equals(short[] __a, short[] __b)
 	{
-		throw new todo.TODO();
+		// Same reference or both null is equal
+		if (__a == __b)
+			return true;
+		
+		// Either one is null
+		if (__a == null || __b == null)
+			return false;
+		
+		// Differing lengths?
+		int na = __a.length,
+			nb = __b.length;
+		if (na != nb)
+			return false;
+		
+		for (int i = 0; i < na; i++)
+			if (__a[i] != __b[i])
+				return false;
+		
+		// No mismatches
+		return true;
 	}
 	
+	/**
+	 * Checks if both arrays are equal to each other.
+	 *
+	 * @param __a The first array.
+	 * @param __b The second array.
+	 * @return If the two arrays are equal.
+	 * @since 2019/01/24
+	 */
 	public static boolean equals(char[] __a, char[] __b)
 	{
-		throw new todo.TODO();
+		// Same reference or both null is equal
+		if (__a == __b)
+			return true;
+		
+		// Either one is null
+		if (__a == null || __b == null)
+			return false;
+		
+		// Differing lengths?
+		int na = __a.length,
+			nb = __b.length;
+		if (na != nb)
+			return false;
+		
+		for (int i = 0; i < na; i++)
+			if (__a[i] != __b[i])
+				return false;
+		
+		// No mismatches
+		return true;
 	}
 	
+	/**
+	 * Checks if both arrays are equal to each other.
+	 *
+	 * @param __a The first array.
+	 * @param __b The second array.
+	 * @return If the two arrays are equal.
+	 * @since 2019/01/24
+	 */
 	public static boolean equals(byte[] __a, byte[] __b)
 	{
-		throw new todo.TODO();
+		// Same reference or both null is equal
+		if (__a == __b)
+			return true;
+		
+		// Either one is null
+		if (__a == null || __b == null)
+			return false;
+		
+		// Differing lengths?
+		int na = __a.length,
+			nb = __b.length;
+		if (na != nb)
+			return false;
+		
+		for (int i = 0; i < na; i++)
+			if (__a[i] != __b[i])
+				return false;
+		
+		// No mismatches
+		return true;
 	}
 	
+	/**
+	 * Checks if both arrays are equal to each other.
+	 *
+	 * @param __a The first array.
+	 * @param __b The second array.
+	 * @return If the two arrays are equal.
+	 * @since 2019/01/24
+	 */
 	public static boolean equals(boolean[] __a, boolean[] __b)
 	{
-		throw new todo.TODO();
+		// Same reference or both null is equal
+		if (__a == __b)
+			return true;
+		
+		// Either one is null
+		if (__a == null || __b == null)
+			return false;
+		
+		// Differing lengths?
+		int na = __a.length,
+			nb = __b.length;
+		if (na != nb)
+			return false;
+		
+		for (int i = 0; i < na; i++)
+			if (__a[i] != __b[i])
+				return false;
+		
+		// No mismatches
+		return true;
 	}
 	
+	/**
+	 * Checks if both arrays are equal to each other.
+	 *
+	 * @param __a The first array.
+	 * @param __b The second array.
+	 * @return If the two arrays are equal.
+	 * @since 2019/01/24
+	 */
 	public static boolean equals(double[] __a, double[] __b)
 	{
-		throw new todo.TODO();
+		// Same reference or both null is equal
+		if (__a == __b)
+			return true;
+		
+		// Either one is null
+		if (__a == null || __b == null)
+			return false;
+		
+		// Differing lengths?
+		int na = __a.length,
+			nb = __b.length;
+		if (na != nb)
+			return false;
+		
+		for (int i = 0; i < na; i++)
+			if (__a[i] != __b[i])
+				return false;
+		
+		// No mismatches
+		return true;
 	}
 	
+	/**
+	 * Checks if both arrays are equal to each other.
+	 *
+	 * @param __a The first array.
+	 * @param __b The second array.
+	 * @return If the two arrays are equal.
+	 * @since 2019/01/24
+	 */
 	public static boolean equals(float[] __a, float[] __b)
 	{
-		throw new todo.TODO();
+		// Same reference or both null is equal
+		if (__a == __b)
+			return true;
+		
+		// Either one is null
+		if (__a == null || __b == null)
+			return false;
+		
+		// Differing lengths?
+		int na = __a.length,
+			nb = __b.length;
+		if (na != nb)
+			return false;
+		
+		for (int i = 0; i < na; i++)
+			if (__a[i] != __b[i])
+				return false;
+		
+		// No mismatches
+		return true;
 	}
 	
+	/**
+	 * Checks if both arrays are equal to each other.
+	 *
+	 * @param __a The first array.
+	 * @param __b The second array.
+	 * @return If the two arrays are equal.
+	 * @since 2019/01/24
+	 */
 	public static boolean equals(Object[] __a, Object[] __b)
 	{
-		throw new todo.TODO();
+		// Same reference or both null is equal
+		if (__a == __b)
+			return true;
+		
+		// Either one is null
+		if (__a == null || __b == null)
+			return false;
+		
+		// Differing lengths?
+		int na = __a.length,
+			nb = __b.length;
+		if (na != nb)
+			return false;
+		
+		for (int i = 0; i < na; i++)
+			if (Objects.equals(__a[i], __b[i]))
+				return false;
+		
+		// No mismatches
+		return true;
 	}
 	
 	public static void fill(long[] __a, long __b)
