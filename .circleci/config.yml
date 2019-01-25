@@ -52,7 +52,7 @@ jobs:
           command: mkdir -p jut/springcoat
       - run:
           name: Running SpringCoat VM
-          command: ~/squirreljme/build.sh launch -v springcoat -n springcoat.nps tac-runner > jut/springcoat/results.xml
+          command: ~/squirreljme/build.sh launch -v springcoat -n springcoat.nps -Dcc.squirreljme.debug=false tac-runner > jut/springcoat/results.xml
       - store_test_results:
           path: jut
       - store_artifacts:
@@ -70,7 +70,7 @@ jobs:
           command: mkdir -p jut/summercoat
       - run:
           name: Running SummerCoat VM
-          command: ~/squirreljme/build.sh launch -v summercoat -n summercoat.nps tac-runner > jut/summercoat/results.xml
+          command: ~/squirreljme/build.sh launch -v summercoat -n summercoat.nps -Dcc.squirreljme.debug=false tac-runner > jut/summercoat/results.xml
       - store_test_results:
           path: jut
       - store_artifacts:
