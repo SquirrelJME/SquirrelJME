@@ -1,0 +1,7 @@
+# 2019/01/25
+
+## 18:27
+
+I got a new laptop which runs Windows, but I can still do development for
+SquirrelJME hopefully in WSL.
+
