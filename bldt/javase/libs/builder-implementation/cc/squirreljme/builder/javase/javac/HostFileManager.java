@@ -246,7 +246,7 @@ public class HostFileManager
 					// This is required for Java 9's compiler to generate
 					// code
 				case CLASS_OUTPUT:
-					return Arrays.<File>asList(new File("squirreljme://"));
+					return Arrays.<File>asList(new File("squirreljme$//"));
 				
 					// Unknown
 				default:
