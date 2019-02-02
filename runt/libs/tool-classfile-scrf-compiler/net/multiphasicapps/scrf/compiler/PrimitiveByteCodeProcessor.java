@@ -129,6 +129,10 @@ public class PrimitiveByteCodeProcessor
 					cb.addCopyPointer(vop - InstructionIndex.ALOAD_0,
 						registers.virtualPush());
 					break;
+					
+					// Load static field
+				case InstructionIndex.GETSTATIC:
+					throw new todo.TODO();
 				
 					// Nop
 				case InstructionIndex.NOP:
