@@ -66,5 +66,17 @@ public final class ApiLevel
 			__l % 1000,
 			2000 + ((__l / 1000) % 100));
 	}
+	
+	/**
+	 * Checks if the runtime API level is at a minimum this given level.
+	 *
+	 * @param __l The level to check.
+	 * @return If the minimum level is met.
+	 * @since 2019/02/02
+	 */
+	public static boolean minimumLevel(int __l)
+	{
+		return (SystemProperties.apiLevel() >= __l);
+	}
 }
 

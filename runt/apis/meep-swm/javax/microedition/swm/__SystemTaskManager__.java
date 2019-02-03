@@ -11,9 +11,12 @@
 package javax.microedition.swm;
 
 import cc.squirreljme.runtime.cldc.asm.TaskAccess;
+import cc.squirreljme.runtime.cldc.lang.ApiLevel;
 import cc.squirreljme.runtime.swm.DependencyInfo;
+import cc.squirreljme.runtime.swm.ExtendedTaskManager;
 import cc.squirreljme.runtime.swm.MatchResult;
 import cc.squirreljme.runtime.swm.ProvidedInfo;
+import java.io.OutputStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -21,6 +24,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +37,7 @@ import java.util.Set;
  * @since 2017/12/07
  */
 final class __SystemTaskManager__
-	implements TaskManager
+	implements ExtendedTaskManager, TaskManager
 {
 	/** Mapping of task IDs to tasks. */
 	static final Map<Integer, Task> _TASKS =
@@ -134,8 +138,40 @@ final class __SystemTaskManager__
 		throws IllegalArgumentException, IllegalStateException,
 			NullPointerException
 	{
+		// Forward to the extended task start
+		return this.startTask(__s, __cn, null, null, null, null);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/02/02
+	 */
+	@Override
+	public final Task startTask(Suite __s, String __cn,
+		Map<String, String> __sprops, String[] __args, OutputStream __stdout,
+		OutputStream __stderr)
+		throws IllegalArgumentException, IllegalStateException,
+			NullPointerException
+	{
 		if (__s == null || __cn == null)
 			throw new NullPointerException("NARG");
+		
+		// Defensive copies
+		__args = (__args == null ? new String[0] : __args.clone());
+		__sprops = (__sprops == null ? new HashMap<String, String>() :
+			new HashMap<String, String>(__sprops));
+		
+		// Make sure values are actually valid
+		for (int i = 0, n = __args.length; i < n; i++)
+			if (__args[i] == null)
+				throw new NullPointerException("NARG");
+		for (Map.Entry<String, String> e : __sprops.entrySet())
+		{
+			String k = e.getKey(),
+				v = e.getValue();
+			if (k == null || v == null)
+				throw new NullPointerException("NARG");
+		}
 		
 		// {@squirreljme.error DG0w Cannot start a non-application suite.}
 		if (__s.getSuiteType() != SuiteType.APPLICATION)
@@ -162,8 +198,33 @@ final class __SystemTaskManager__
 		// Debug
 		todo.DEBUG.note("Suites: %s", Arrays.<String>asList(names));
 		
-		// Setup new task internally
-		int tid = TaskAccess.startTask(names, __cn, new String[0]);
+		// SquirrelJME 0.3.0 allows system properties and alternative output
+		// streams to be specified as well
+		int tid;
+		if (ApiLevel.minimumLevel(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV))
+		{
+			// Copy system properties to key/value pair array
+			int spn = __sprops.size();
+			String[] xprops = new String[spn * 2];
+			Iterator<Map.Entry<String, String>> eit = __sprops.entrySet().
+				iterator();
+			for (int i = 0, o = 0; i < spn; i++, o += 2)
+			{
+				Map.Entry<String, String> e = eit.next();
+				
+				xprops[o] = e.getKey();
+				xprops[o + 1] = e.getValue();
+			}
+			
+			// Forward launch
+			tid = TaskAccess.startTask(names, __cn, __args, xprops,
+				(__stdout == null ? null : new __CCWrapper__(__stdout)),
+				(__stderr == null ? null : new __CCWrapper__(__stderr)));
+		}
+		else
+			tid = TaskAccess.startTask(names, __cn, __args);
+		
+		// It did not work
 		if (tid < 0)
 		{
 			// {@squirreljme.error DG0x Invalid entry point was specified
