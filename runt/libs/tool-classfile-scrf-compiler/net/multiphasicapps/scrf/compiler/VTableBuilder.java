@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.scrf.compiler;
 
+import net.multiphasicapps.classfile.FieldReference;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -82,6 +83,24 @@ public final class VTableBuilder
 			// Return the ID of this new entry
 			return id;
 		}
+	}
+	
+	/**
+	 * Adds a field reference to the vtable.
+	 *
+	 * @param __static Is this field static?
+	 * @param __f The field to add.
+	 * @return The index of the added entry.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/02/03
+	 */
+	public final int addFieldReference(boolean __static, FieldReference __f)
+		throws NullPointerException
+	{
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 }
 
