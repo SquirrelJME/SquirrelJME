@@ -1,0 +1,15 @@
+# 2019/02/02
+
+## 16:55
+
+I have vacation for the next bunch of days so I can slowly work on things
+while relaxing and such as well. I think I need to make `tac` a bit more
+intelligent with things. Basically I need it to have multiple return
+values and otherwise or some other way to report status to the running
+application. Well right now it is basic but in the future I could have it
+use IPC and such. This IPC would basically just be a communication bridge,
+I also will nede to eventually support pipes for child tasks as well so
+they could be monitored accordingly and their output managed rather than
+directing straight to the console. Of course I need a better task manager
+for this. I could just have an advanced interface attached to the task
+manager so I could actually pass more properties to things.
