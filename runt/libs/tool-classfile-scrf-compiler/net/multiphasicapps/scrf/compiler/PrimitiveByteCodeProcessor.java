@@ -11,6 +11,7 @@
 package net.multiphasicapps.scrf.compiler;
 
 import net.multiphasicapps.classfile.ByteCode;
+import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
 import net.multiphasicapps.classfile.JavaType;
@@ -37,6 +38,9 @@ public class PrimitiveByteCodeProcessor
 	
 	/** Explicit monitor register. */
 	protected final WorkRegister rmonitor;
+	
+	/** The VTable of imports and exports. */
+	protected final VTableBuilder vtable;
 	
 	/** Builder for register codes. */
 	protected final RegisterCodeBuilder codebuilder;
@@ -71,6 +75,9 @@ public class PrimitiveByteCodeProcessor
 		
 		// Initialize the code builder
 		this.codebuilder = new RegisterCodeBuilder(__mp.vtable);
+		
+		// We need the vtable to refer to things
+		this.vtable = __mp.vtable;
 	}
 	
 	/**
@@ -132,7 +139,19 @@ public class PrimitiveByteCodeProcessor
 					
 					// Load static field
 				case InstructionIndex.GETSTATIC:
-					throw new todo.TODO();
+					FieldReference sfr = inst.<FieldReference>argument(0,
+						FieldReference.class);
+					switch (MemoryType.of(sfr))
+					{
+						case POINTER:
+							if (true)
+								throw new todo.TODO();
+							break;
+						
+						default:
+							throw new todo.TODO(sfr.toString());
+					}
+					break;
 				
 					// Nop
 				case InstructionIndex.NOP:
