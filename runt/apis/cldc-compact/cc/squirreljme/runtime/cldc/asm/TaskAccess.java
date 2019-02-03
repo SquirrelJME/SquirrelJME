@@ -98,6 +98,27 @@ public final class TaskAccess
 		String[] __args);
 	
 	/**
+	 * Starts the specified task.
+	 *
+	 * @param __cp The classpath used.
+	 * @param __main The main entry point.
+	 * @param __args Arguments to start the task with.
+	 * @param __sprops System properties in key/value pairs to pass to the
+	 * target environment.
+	 * @param __stdout Callback to receive standard output data, may be
+	 * {@code null} to ignore.
+	 * @param __stderr Callback to receive standard error data, may be
+	 * {@code null} to ignore.
+	 * @return The task identifier or a negative number if the task could
+	 * not start.
+	 * @since 2019/02/02
+	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
+	public static final native int startTask(String[] __cp, String __main,
+		String[] __args, String[] __sprops, ConsoleCallback __stdout,
+		ConsoleCallback __stderr);
+	
+	/**
 	 * Starts the given thread.
 	 *
 	 * @param __t The thread which is to run, the execution point of the
