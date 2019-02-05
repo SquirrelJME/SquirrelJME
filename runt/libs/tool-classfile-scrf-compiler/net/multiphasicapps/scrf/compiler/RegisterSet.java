@@ -93,6 +93,27 @@ public final class RegisterSet
 	public final int virtualPush()
 		throws IllegalStateException
 	{
+		return this.virtualPush(1);
+	}
+	
+	/**
+	 * Virtual push to the stack, multiple values can be pushed at once.
+	 *
+	 * @param __n The number of entries to push.
+	 * @return The index of the first entry which was pushed.
+	 * @throws IllegalArgumentException If the count to push is zero or
+	 * negative.
+	 * @throws IllegalStateException If the stack overflows.
+	 * @since 2019/02/05
+	 */
+	public final int virtualPush(int __n)
+		throws IllegalArgumentException, IllegalStateException
+	{
+		// {@squirreljme.error AT04 Cannot push a negative number of
+		// registers.}
+		if (__n <= 0)
+			throw new IllegalArgumentException("AT04");
+		
 		// The old top is 
 		int vstackptr = this._vstackptr;
 		
