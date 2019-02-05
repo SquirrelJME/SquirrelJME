@@ -15,7 +15,7 @@ package net.multiphasicapps.scrf;
  *
  * @since 2019/01/23
  */
-public interface RegisterInstructionIndex
+public interface RegisterInstructionType
 {
 	/** No-operation. */
 	public static final int NOP =
@@ -25,28 +25,20 @@ public interface RegisterInstructionIndex
 	public static final int COPY =
 		1;
 	
-	/** Copy pointer. */
-	public static final int COPY_POINTER =
+	/** Load constant value. */
+	public static final int CONST =
 		2;
 	
-	/** Copy long. */
-	public static final int COPY_LONG =
+	/** Load from memory into a register. */
+	public static final int LOAD =
 		3;
 	
-	/** Load constant value (int). */
-	public static final int CONST =
+	/** Store from a register to memory. */
+	public static final int STORE =
 		4;
-	
-	/** Load constant value (pointer). */
-	public static final int CONST_POINTER =
-		5;
-	
-	/** Load constant value (long). */
-	public static final int CONST_LONG =
-		6;
 	
 	/** The number of valid instructions. */
 	public static final int NUM_INSTRUCTIONS =
-		7;
+		5;
 }
 

@@ -13,7 +13,7 @@ package net.multiphasicapps.scrf.compiler;
 import java.util.ArrayList;
 import java.util.List;
 import net.multiphasicapps.scrf.RegisterInstruction;
-import net.multiphasicapps.scrf.RegisterInstructionIndex;
+import net.multiphasicapps.scrf.RegisterInstructionType;
 
 /**
  * This is used to build the register based code which is for later execution.
@@ -69,57 +69,59 @@ public final class RegisterCodeBuilder
 	/**
 	 * Adds constant value.
 	 *
-	 * @param __dest The destination.
+	 * @param __t The type of memory to form a constant from.
+	 * @param __dest The destination register.
 	 * @param __v The value to set.
 	 * @return The instruction index.
 	 * @since 2019/01/24
 	 */
-	public final int addConst(int __dest, int __v)
+	public final int addConst(MemoryType __t, int __dest, long __v)
+		throws NullPointerException
 	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
 		return this.add(new RegisterInstruction(
-			RegisterInstructionIndex.CONST, __dest, __v));
-	}
-	
-	/**
-	 * Adds constant value (pointer).
-	 *
-	 * @param __dest The destination.
-	 * @param __v The value to set.
-	 * @return The instruction index.
-	 * @since 2019/01/24
-	 */
-	public final int addConstPointer(int __dest, long __v)
-	{
-		return this.add(new RegisterInstruction(
-			RegisterInstructionIndex.CONST_POINTER, __dest, __v));
+			RegisterInstructionType.CONST, __t, __dest, , __v));
 	}
 	
 	/**
 	 * Adds a copy from one register to another.
 	 *
+	 * @param __t The type of value to copy.
 	 * @param __from The source.
 	 * @param __to The destination.
+	 * @throws NullPointerException
 	 * @return The instruction index.
 	 * @since 2019/01/23
 	 */
-	public final int addCopy(int __from, int __to)
+	public final int addCopy(MemoryType __t, int __from, int __to)
+		throws NullPointerException
 	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
 		return this.add(new RegisterInstruction(
-			RegisterInstructionIndex.COPY, __from, __to));
+			RegisterInstructionType.COPY, __t, __from, __to));
 	}
 	
 	/**
-	 * Adds a copy pointer from one register to another.
+	 * Adds a load from memory instruction.
 	 *
-	 * @param __from The source.
-	 * @param __to The destination.
-	 * @return The instruction index.
-	 * @since 2019/01/23
+	 * @param __t The type of value to copy.
+	 * @param __from The memory source to read from.
+	 * @param __to The destination register.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/02/05
 	 */
-	public final int addCopyPointer(int __from, int __to)
+	public final int addLoad(MemoryType __t, MemorySource __from, int __to)
+		throws NullPointerException
 	{
+		if (__t == null || __from == null)
+			throw new NullPointerException("NARG");
+	
 		return this.add(new RegisterInstruction(
-			RegisterInstructionIndex.COPY_POINTER, __from, __to));
+			RegisterInstructionType.LOAD, __t, __from, __to));
 	}
 	
 	/**
