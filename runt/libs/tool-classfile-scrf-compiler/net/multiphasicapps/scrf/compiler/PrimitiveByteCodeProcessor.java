@@ -18,6 +18,7 @@ import net.multiphasicapps.classfile.JavaType;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.StackMapTable;
 import net.multiphasicapps.classfile.StackMapTableState;
+import net.multiphasicapps.scrf.MemoryType;
 import net.multiphasicapps.scrf.RegisterCode;
 
 /**
@@ -119,12 +120,14 @@ public class PrimitiveByteCodeProcessor
 			{
 					// Null reference
 				case InstructionIndex.ACONST_NULL:
-					cb.addConstPointer(registers.virtualPush(), 0);
+					cb.addConst(MemoryType.POINTER, registers.virtualPush(),
+						0);
 					break;
 					
 					// Load reference
 				case InstructionIndex.ALOAD:
-					cb.addCopyPointer(inst.<Integer>argument(0, Integer.class),
+					cb.addCopy(MemoryType.POINTER,
+						inst.<Integer>argument(0, Integer.class),
 						registers.virtualPush());
 					break;
 					
@@ -133,7 +136,8 @@ public class PrimitiveByteCodeProcessor
 				case InstructionIndex.ALOAD_1:
 				case InstructionIndex.ALOAD_2:
 				case InstructionIndex.ALOAD_3:
-					cb.addCopyPointer(vop - InstructionIndex.ALOAD_0,
+					cb.addCopy(MemoryType.POINTER,
+						vop - InstructionIndex.ALOAD_0,
 						registers.virtualPush());
 					break;
 					
@@ -141,16 +145,8 @@ public class PrimitiveByteCodeProcessor
 				case InstructionIndex.GETSTATIC:
 					FieldReference sfr = inst.<FieldReference>argument(0,
 						FieldReference.class);
-					switch (MemoryType.of(sfr))
-					{
-						case POINTER:
-							if (true)
-								throw new todo.TODO();
-							break;
-						
-						default:
-							throw new todo.TODO(sfr.toString());
-					}
+					if (true)
+						throw new todo.TODO();
 					break;
 				
 					// Nop
@@ -160,7 +156,8 @@ public class PrimitiveByteCodeProcessor
 					
 					// Load from indexed local
 				case JavaInstructionAlias.XLOAD:
-					cb.addCopy(inst.<Integer>argument(0, Integer.class),
+					cb.addCopy(MemoryType.INTEGER,
+						inst.<Integer>argument(0, Integer.class),
 						registers.virtualPush());
 					break;
 					
@@ -169,7 +166,8 @@ public class PrimitiveByteCodeProcessor
 				case JavaInstructionAlias.XLOAD_1:
 				case JavaInstructionAlias.XLOAD_2:
 				case JavaInstructionAlias.XLOAD_3:
-					cb.addCopy(vop - JavaInstructionAlias.XLOAD_0,
+					cb.addCopy(MemoryType.INTEGER,
+						vop - JavaInstructionAlias.XLOAD_0,
 						registers.virtualPush());
 					break;
 				

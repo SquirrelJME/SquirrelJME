@@ -35,7 +35,7 @@ public final class RegisterInstruction
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error AV01 Invalid operation. (The operation)}
-		if (__op < 0 || __op >= RegisterInstructionIndex.NUM_INSTRUCTIONS)
+		if (__op < 0 || __op >= RegisterInstructionType.NUM_INSTRUCTIONS)
 			throw new IllegalArgumentException("AV01 " + __op);
 		
 		this.op = __op;
