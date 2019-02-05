@@ -16,7 +16,46 @@ package net.multiphasicapps.scrf;
  * @since 2019/02/05
  */
 public class VTableIndex
-	implements MemorySource
+	implements Comparable<VTableIndex>, MemorySource
 {
+	/** The vtable index. */
+	protected final int index;
+	
+	/**
+	 * Initializes the index.
+	 *
+	 * @param __i The index of the vtable entry.
+	 * @since 2019/02/05
+	 */
+	public VTableIndex(int __i)
+	{
+		this.index = __i;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/02/05
+	 */
+	@Override
+	public final int compareTo(VTableIndex __o)
+	{
+		return this.index - __o.index;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/02/05
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		if (this == __o)
+			return true;
+		
+		if (!(__o instanceof VTableIndex))
+			return false;
+		
+		return this.index == ((VTableIndex)__o).index;
+	}
 }
 

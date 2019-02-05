@@ -12,8 +12,11 @@ package net.multiphasicapps.scrf.compiler;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.multiphasicapps.scrf.RegisterIndex;
 import net.multiphasicapps.scrf.RegisterInstruction;
 import net.multiphasicapps.scrf.RegisterInstructionType;
+import net.multiphasicapps.scrf.MemorySource;
+import net.multiphasicapps.scrf.MemoryType;
 
 /**
  * This is used to build the register based code which is for later execution.
@@ -81,8 +84,8 @@ public final class RegisterCodeBuilder
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		return this.add(new RegisterInstruction(
-			RegisterInstructionType.CONST, __t, __dest, , __v));
+		return this.add(new RegisterInstruction(RegisterInstructionType.CONST,
+			__t, new RegisterIndex(__dest), __v));
 	}
 	
 	/**
@@ -102,7 +105,8 @@ public final class RegisterCodeBuilder
 			throw new NullPointerException("NARG");
 		
 		return this.add(new RegisterInstruction(
-			RegisterInstructionType.COPY, __t, __from, __to));
+			RegisterInstructionType.COPY, __t, new RegisterIndex(__from),
+			new RegisterIndex(__to)));
 	}
 	
 	/**
@@ -121,7 +125,8 @@ public final class RegisterCodeBuilder
 			throw new NullPointerException("NARG");
 	
 		return this.add(new RegisterInstruction(
-			RegisterInstructionType.LOAD, __t, __from, __to));
+			RegisterInstructionType.LOAD, __t, __from,
+			new RegisterIndex(__to)));
 	}
 	
 	/**
@@ -132,7 +137,7 @@ public final class RegisterCodeBuilder
 	 */
 	public final int addNop()
 	{
-		return this.add(new RegisterInstruction(RegisterInstructionIndex.NOP));
+		return this.add(new RegisterInstruction(RegisterInstructionType.NOP));
 	}
 }
 
