@@ -93,8 +93,9 @@ public class PrimitiveByteCodeProcessor
 		StackMapTable smt = this.smt;
 		RegisterSet registers = this.registers;
 		RegisterCodeBuilder cb = this.codebuilder;
+		VTableBuilder vtable = this.vtable;
 		
-		// If this is synchronized, we enter the monitor explicitely here
+		// If this is synchronized, we enter the monitor explicitly here
 		boolean issync = this.methodprocessor.input.flags().isSynchronized();
 		if (issync)
 			throw new todo.TODO();
@@ -147,6 +148,11 @@ public class PrimitiveByteCodeProcessor
 						FieldReference.class);
 					if (true)
 						throw new todo.TODO();
+					/*
+					cb.addLoad(???, vtable., registers.virtualPush());
+					MemoryType __t, MemorySource __from, int __to)
+					if (true)
+						throw new todo.TODO();*/
 					break;
 				
 					// Nop
