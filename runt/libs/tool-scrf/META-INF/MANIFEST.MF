@@ -8,5 +8,6 @@ X-SquirrelJME-Description: This contains the code needed to run and
  parse files which contains a register compiled format for the 
  SummerCoat virtual machine. Class files are stored in a format which 
  may be cached for later loading of the virtual machine.
+X-SquirrelJME-Depends: tool-classfile
 Microedition-Configuration: CLDC-1.8-Compact
 

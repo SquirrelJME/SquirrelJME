@@ -10,7 +10,12 @@
 
 package net.multiphasicapps.scrf.compiler;
 
+import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.FieldDescriptor;
 import net.multiphasicapps.classfile.FieldReference;
+import net.multiphasicapps.classfile.MemberDescriptor;
+import net.multiphasicapps.classfile.MemberName;
+import net.multiphasicapps.scrf.VTableFieldReference;
 import net.multiphasicapps.scrf.VTableIndex;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -102,7 +107,12 @@ public final class VTableBuilder
 		if (__f == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Need to register the names and such for the reference
+		StringTableBuilder strings = this.strings;
+		return this.add(new VTableFieldReference(__static,
+			strings.<ClassName>register(__f.className()),
+			strings.<MemberName>register(__f.memberName()),
+			strings.<FieldDescriptor>register(__f.memberType())));
 	}
 }
 

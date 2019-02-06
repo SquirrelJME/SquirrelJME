@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.scrf;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+
 /**
  * This represents an index a VTable for the current class.
  *
@@ -20,6 +23,9 @@ public class VTableIndex
 {
 	/** The vtable index. */
 	protected final int index;
+	
+	/** The string representation. */
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes the index.
@@ -56,6 +62,23 @@ public class VTableIndex
 			return false;
 		
 		return this.index == ((VTableIndex)__o).index;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/02/06
+	 */
+	@Override
+	public final String toString()
+	{
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<String>((rv = String.format(
+			"VT@%d", this.index)));
+		
+		return rv;
 	}
 }
 

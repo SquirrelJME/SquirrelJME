@@ -66,6 +66,11 @@ public final class RegisterCodeBuilder
 		List<RegisterInstruction> insts = this._insts;
 		int rv = insts.size();
 		insts.add(__i);
+		
+		// Debug
+		todo.DEBUG.note("I@%d: %s", rv, __i);
+		
+		// Return the index
 		return rv;
 	}
 	

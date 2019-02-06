@@ -10,6 +10,10 @@
 
 package net.multiphasicapps.scrf;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.Arrays;
+
 /**
  * This represents a single instruction within the compiled register format.
  *
@@ -22,6 +26,9 @@ public final class RegisterInstruction
 	
 	/** Arguments. */
 	private final Object[] _args;
+	
+	/** String representation. */
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes the register instruction.
@@ -46,6 +53,24 @@ public final class RegisterInstruction
 		for (Object a : __args)
 			if (a == null)
 				throw new NullPointerException("NARG");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/02/06
+	 */
+	@Override
+	public final String toString()
+	{
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>((rv = String.format(
+				"%s=%s", RegisterInstructionMnemonic.of(this.op),
+				Arrays.asList(this._args))));
+		
+		return rv;
 	}
 }
 
