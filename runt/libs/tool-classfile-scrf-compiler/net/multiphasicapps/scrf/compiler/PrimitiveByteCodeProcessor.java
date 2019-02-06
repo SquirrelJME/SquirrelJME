@@ -146,13 +146,9 @@ public class PrimitiveByteCodeProcessor
 				case InstructionIndex.GETSTATIC:
 					FieldReference sfr = inst.<FieldReference>argument(0,
 						FieldReference.class);
-					if (true)
-						throw new todo.TODO();
-					/*
-					cb.addLoad(???, vtable., registers.virtualPush());
-					MemoryType __t, MemorySource __from, int __to)
-					if (true)
-						throw new todo.TODO();*/
+					MemoryType sfmt = ProcessorUtils.memoryTypeOf(sfr);
+					cb.addLoad(sfmt, vtable.addFieldReference(true, sfr),
+						registers.virtualPush(sfr.memberType().stackWidth()));
 					break;
 				
 					// Nop

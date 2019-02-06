@@ -11,6 +11,7 @@
 package net.multiphasicapps.scrf.compiler;
 
 import net.multiphasicapps.classfile.FieldReference;
+import net.multiphasicapps.scrf.VTableIndex;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -28,7 +29,7 @@ public final class VTableBuilder
 	protected final StringTableBuilder strings;
 	
 	/** The table of entries which may accordingly be mapped. */
-	private final Map<Object, Integer> _table =
+	private final Map<Object, VTableIndex> _table =
 		new LinkedHashMap<>();
 	
 	/** The next ID to use for entries. */
@@ -58,30 +59,30 @@ public final class VTableBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/01/19
 	 */
-	public final int add(Object __o)
+	public final VTableIndex add(Object __o)
 		throws NullPointerException
 	{
 		if (__o == null)
 			throw new NullPointerException("NARG");
 		
 		// Prevent multiple threads from building the VTable
-		Map<Object, Integer> table = this._table;
+		Map<Object, VTableIndex> table = this._table;
 		synchronized (this)
 		{
 			// If there is already a slot for this entry then use that
-			Integer vx = table.get(__o);
+			VTableIndex vx = table.get(__o);
 			if (vx != null)
 				return vx;
 			
 			// The index to store this entry at
 			int id = this._nextid++;
-			table.put(__o, id);
+			table.put(__o, (vx = new VTableIndex(id)));
 			
 			// Debug
 			todo.DEBUG.note("@%d = %s", id, __o);
 			
 			// Return the ID of this new entry
-			return id;
+			return vx;
 		}
 	}
 	
@@ -94,7 +95,8 @@ public final class VTableBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/02/03
 	 */
-	public final int addFieldReference(boolean __static, FieldReference __f)
+	public final VTableIndex addFieldReference(boolean __static,
+		FieldReference __f)
 		throws NullPointerException
 	{
 		if (__f == null)
