@@ -259,6 +259,27 @@ public final class FieldDescriptor
 	}
 	
 	/**
+	 * Returns if this is a wide field or not.
+	 *
+	 * @return If this is a wide field.
+	 * @since 2019/02/05
+	 */
+	public final boolean isWide()
+	{
+		if (this.isObject())
+			return false;
+		switch (this.primitiveType())
+		{
+			case LONG:
+			case DOUBLE:
+				return true;
+			
+			default:
+				return false;
+		}
+	}
+	
+	/**
 	 * Returns the primitive type for this field.
 	 *
 	 * @return The primitive type to use or {@code null} if there is none.
@@ -321,6 +342,17 @@ public final class FieldDescriptor
 			default:
 				throw new todo.OOPS();
 		}
+	}
+	
+	/**
+	 * Returns the width of this field on the stack.
+	 *
+	 * @return The width of the field on the stack.
+	 * @since 2019/02/05
+	 */
+	public final int stackWidth()
+	{
+		return (this.isWide() ? 2 : 1);
 	}
 	
 	/**
