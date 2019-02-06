@@ -62,5 +62,25 @@ public final class StringTableBuilder
 			return id;
 		}
 	}
+	
+	/**
+	 * Adds the string representation of the given object to the string table.
+	 *
+	 * @param <O> The type of object to register.
+	 * @param __o The object to register.
+	 * @return {@code __o}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/02/06
+	 */
+	public final <O> O register(O __o)
+		throws NullPointerException
+	{
+		if (__o == null)
+			throw new NullPointerException("NARG");
+		
+		// Add the string representation of this object
+		this.add(__o.toString());
+		return __o;
+	}
 }
 

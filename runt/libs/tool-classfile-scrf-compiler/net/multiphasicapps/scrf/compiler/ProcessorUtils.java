@@ -61,7 +61,31 @@ public final class ProcessorUtils
 		if (__f == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Pointer Types
+		if (__f.isObject())
+			return MemoryType.POINTER;
+		
+		// Primitives otherwise
+		switch (__f.primitiveType())
+		{
+			case BYTE:
+				return MemoryType.BYTE;
+			
+			case SHORT:
+			case CHARACTER:
+				return MemoryType.SHORT;
+			
+			case INTEGER:
+			case FLOAT:
+				return MemoryType.INTEGER;
+			
+			case LONG:
+			case DOUBLE:
+				return MemoryType.LONG;
+			
+			default:
+				throw new todo.OOPS(__f.toString());
+		}
 	}
 }
 
