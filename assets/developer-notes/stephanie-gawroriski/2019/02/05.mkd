@@ -1,0 +1,10 @@
+# 2019/02/05
+
+## 13:44
+
+Okay so I figured out what I can do for the various instructions and such,
+since I do not want to needlessly duplicate work and things. Right now I have
+different instruction indexes for each memory type, but I should really just
+have multiple memory types and such. That would be the best. It will still be
+pretty fast and even then a future SCRF interpreter could just cache the
+results and types or whatever.
