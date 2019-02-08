@@ -22,21 +22,29 @@ import net.multiphasicapps.classfile.MethodDescriptor;
 public final class VTableMethodReference
 	extends VTableMemberReference
 {
+	/** The invocation type. */
+	protected final InvokeType invoketype;
+	
 	/**
 	 * Initializes the reference.
 	 *
-	 * @param __s Is this static?
+	 * @param __it Invocation type.
 	 * @param __cl The class name.
 	 * @param __mn The member name.
 	 * @param __mt The member type.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/02/07
 	 */
-	public VTableMethodReference(boolean __s, ClassName __cl, MemberName __mn,
-		MethodDescriptor __mt)
+	public VTableMethodReference(InvokeType __it, ClassName __cl,
+		MemberName __mn, MethodDescriptor __mt)
 		throws NullPointerException
 	{
-		super(__s, __cl, __mn, __mt);
+		super((__it == InvokeType.STATIC), __cl, __mn, __mt);
+		
+		if (__it == null)
+			throw new NullPointerException("NARG");
+		
+		this.invoketype = __it;
 	}
 	
 	/**
@@ -46,7 +54,13 @@ public final class VTableMethodReference
 	@Override
 	public boolean equals(Object __o)
 	{
-		return super.equals(__o) && (__o instanceof VTableMethodReference);
+		if (!super.equals(__o))
+			return false;
+		
+		if (!(__o instanceof VTableMethodReference))
+			return false;
+		
+		return this.invoketype == ((VTableMethodReference)__o).invoketype;
 	}
 }
 

@@ -15,8 +15,12 @@ import net.multiphasicapps.classfile.FieldDescriptor;
 import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.MemberDescriptor;
 import net.multiphasicapps.classfile.MemberName;
+import net.multiphasicapps.classfile.MethodDescriptor;
+import net.multiphasicapps.classfile.MethodReference;
+import net.multiphasicapps.scrf.InvokeType;
 import net.multiphasicapps.scrf.VTableFieldReference;
 import net.multiphasicapps.scrf.VTableIndex;
+import net.multiphasicapps.scrf.VTableMethodReference;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -113,6 +117,30 @@ public final class VTableBuilder
 			strings.<ClassName>register(__f.className()),
 			strings.<MemberName>register(__f.memberName()),
 			strings.<FieldDescriptor>register(__f.memberType())));
+	}
+	
+	/**
+	 * Adds a method reference to the vtable.
+	 *
+	 * @param __it The type of invocation to perform (when linking).
+	 * @param __f The method to add.
+	 * @return The index of the added entry.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/02/07
+	 */
+	public final VTableIndex addMethodReference(InvokeType __it,
+		MethodReference __f)
+		throws NullPointerException
+	{
+		if (__it == null || __f == null)
+			throw new NullPointerException("NARG");
+		
+		// Need to register the names and such for the reference
+		StringTableBuilder strings = this.strings;
+		return this.add(new VTableMethodReference(__it,
+			strings.<ClassName>register(__f.className()),
+			strings.<MemberName>register(__f.memberName()),
+			strings.<MethodDescriptor>register(__f.memberType())));
 	}
 }
 
