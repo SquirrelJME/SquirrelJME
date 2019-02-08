@@ -1,0 +1,7 @@
+# 2019/02/07
+
+## 10:04
+
+So I think for `invokespecial` I am going to need to branch a few different
+ways. If the invoke is in the same class then invoke exact. Just basically
+other things and such. Instructions will be based on the method.
