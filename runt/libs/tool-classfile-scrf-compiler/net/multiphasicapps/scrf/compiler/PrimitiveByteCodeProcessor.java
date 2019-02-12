@@ -150,6 +150,10 @@ public class PrimitiveByteCodeProcessor
 					cb.addLoad(sfmt, vtable.addFieldReference(true, sfr),
 						registers.virtualPush(sfr.memberType().stackWidth()));
 					break;
+					
+					// Invoke special method (private/super/constructor)
+				case InstructionIndex.INVOKESPECIAL:
+					throw new todo.TODO();
 				
 					// Nop
 				case InstructionIndex.NOP:
