@@ -37,8 +37,12 @@ public interface RegisterInstructionType
 	public static final int STORE =
 		4;
 	
+	/** Invoke a method. */
+	public static final int INVOKE =
+		5;
+	
 	/** The number of valid instructions. */
 	public static final int NUM_INSTRUCTIONS =
-		5;
+		6;
 }
 
