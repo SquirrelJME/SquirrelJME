@@ -16,8 +16,10 @@ import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
 import net.multiphasicapps.classfile.JavaType;
 import net.multiphasicapps.classfile.MethodDescriptor;
+import net.multiphasicapps.classfile.MethodReference;
 import net.multiphasicapps.classfile.StackMapTable;
 import net.multiphasicapps.classfile.StackMapTableState;
+import net.multiphasicapps.scrf.InvokeType;
 import net.multiphasicapps.scrf.MemoryType;
 import net.multiphasicapps.scrf.RegisterCode;
 
@@ -153,7 +155,9 @@ public class PrimitiveByteCodeProcessor
 					
 					// Invoke special method (private/super/constructor)
 				case InstructionIndex.INVOKESPECIAL:
-					throw new todo.TODO();
+					this.__addInvoke(InvokeType.STATIC, inst.<MethodReference>
+						argument(0, MethodReference.class));
+					break;
 				
 					// Nop
 				case InstructionIndex.NOP:
@@ -182,6 +186,23 @@ public class PrimitiveByteCodeProcessor
 					throw new todo.TODO(inst.toString());
 			}
 		}
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Adds an invoke of the given method.
+	 *
+	 * @param __it The type of method to invoke.
+	 * @param __mr The reference to the invoked method.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/02/14
+	 */
+	private final void __addInvoke(InvokeType __it, MethodReference __mr)
+		throws NullPointerException
+	{
+		if (__it == null || __mr == null)
+			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
 	}
