@@ -115,6 +115,32 @@ public final class RegisterCodeBuilder
 	}
 	
 	/**
+	 * Adds invoke of a pointer, potentially somewhere in the vtable or
+	 * otherwise.
+	 *
+	 * @param __ptr The memory pointer.
+	 * @param __rr Register to contain the return value of the invoked
+	 * method, negative values are not used.
+	 * @param __rt Register to contain the thrown exception, if applicable.
+	 * @param __ra Registers which contain the input arguments to the method
+	 * call.
+	 * @return The index of the operation.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/02/14
+	 */
+	public final int addInvoke(MemorySource __ptr, int __rr, int __rt,
+		int... __ra)
+		throws NullPointerException
+	{
+		if (__ptr == null)
+			throw new NullPointerException("NARG");
+		
+		__ra = (__ra == null ? new int[0] : __ra.clone());
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Adds a load from memory instruction.
 	 *
 	 * @param __t The type of value to copy.
