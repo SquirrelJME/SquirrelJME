@@ -57,6 +57,18 @@ public final class RegisterLocation
 	}
 	
 	/**
+	 * Returns this register as a narrow one.
+	 *
+	 * @return The narrow register.
+	 * @since 2019/02/16
+	 */
+	public final RegisterLocation asNarrow()
+	{
+		return (this.iswide ? new RegisterLocation(this.register, false) :
+			this);
+	}
+	
+	/**
 	 * Returns this register as a wide one.
 	 *
 	 * @return The wide register.
@@ -66,6 +78,18 @@ public final class RegisterLocation
 	{
 		return (this.iswide ? this :
 			new RegisterLocation(this.register, true));
+	}
+	
+	/**
+	 * Returns the wide state of this register according to the given flag.
+	 *
+	 * @param __w Return a wide register?
+	 * @return The narrow or wide register.
+	 * @since 2019/02/16
+	 */
+	public final RegisterLocation asWide(boolean __w)
+	{
+		return (__w ? this.asWide() : this.asNarrow());
 	}
 	
 	/**

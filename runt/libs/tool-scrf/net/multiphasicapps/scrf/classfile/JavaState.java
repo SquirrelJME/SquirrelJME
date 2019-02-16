@@ -28,6 +28,9 @@ public final class JavaState
 	/** Stack variables. */
 	private final Slot[] _stack;
 	
+	/** The current top of the stack. */
+	private int _stacktop;
+	
 	/**
 	 * Initializes the base Java state.
 	 *
@@ -79,8 +82,7 @@ public final class JavaState
 	public final Result localGet(int __dx)
 	{
 		Slot sl = this._locals[__dx];
-		return new Result(sl._type, (sl._type.isWide() ? sl.register.asWide() :
-			sl.register));
+		return new Result(sl._type, sl.register.asWide(sl._type.isWide()));
 	}
 	
 	/**
@@ -104,14 +106,12 @@ public final class JavaState
 		(sl = locals[__dx])._type = __t;
 		
 		// Set top for wide local?
-		if (__t.isWide())
-		{
+		boolean wide;
+		if ((wide = __t.isWide()))
 			locals[__dx + 1]._type = __t.topType();
-			return new Result(__t, sl.register.asWide());
-		}
 		
 		// Just a narrow set
-		return new Result(__t, sl.register);
+		return new Result(__t, sl.register.asWide(wide));
 	}
 	
 	/**
@@ -122,6 +122,13 @@ public final class JavaState
 	 */
 	public final Result stackPop()
 	{
+		int stacktop = this._stacktop;
+		Slot[] stack = this._stack;
+		
+		// {@squirreljme.error AV03 Stack underflow.}
+		if ((--stacktop) < 0)
+			throw new SummerFormatException("AV03");
+		
 		throw new todo.TODO();
 	}
 	
@@ -139,7 +146,29 @@ public final class JavaState
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// {@squirreljme.error AV04 Stack overflow.}
+		int stacktop = this._stacktop;
+		Slot[] stack = this._stack;
+		if (stacktop >= stack.length)
+			throw new SummerFormatException("AV04");
+		
+		// Just needs simple set of type
+		Slot at = stack[stacktop];
+		at._type = __t;
+		
+		// Set required top type
+		boolean wide;
+		if ((wide = __t.isWide()))
+		{
+			Slot top = stack[++stacktop];
+			top._type = __t.topType();
+		}
+		
+		// Store new top
+		this._stacktop = stacktop + 1;
+		
+		// Build result
+		return Result(__t, at.register.asWide(wide));
 	}
 	
 	/**
