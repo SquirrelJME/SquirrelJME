@@ -13,6 +13,7 @@ package net.multiphasicapps.scrf.classfile;
 import net.multiphasicapps.classfile.JavaType;
 import net.multiphasicapps.classfile.StackMapTableState;
 import net.multiphasicapps.scrf.RegisterLocation;
+import net.multiphasicapps.scrf.SummerFormatException;
 
 /**
  * This class contains the state of the Java stack, it gets initialized to
@@ -129,7 +130,16 @@ public final class JavaState
 		if ((--stacktop) < 0)
 			throw new SummerFormatException("AV03");
 		
-		throw new todo.TODO();
+		// Read from top of stack, also handle wide values
+		Slot at = stack[stacktop];
+		boolean wide;
+		if ((wide = at._type.isTop()))
+			at = stack[--stacktop];
+		
+		// Set new stack top
+		this._stacktop = stacktop;
+		
+		return new Result(at._type, at.register.asWide(wide));
 	}
 	
 	/**
@@ -168,7 +178,7 @@ public final class JavaState
 		this._stacktop = stacktop + 1;
 		
 		// Build result
-		return Result(__t, at.register.asWide(wide));
+		return new Result(__t, at.register.asWide(wide));
 	}
 	
 	/**
