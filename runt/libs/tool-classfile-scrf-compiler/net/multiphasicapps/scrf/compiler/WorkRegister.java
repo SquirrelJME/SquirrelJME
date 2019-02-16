@@ -17,6 +17,7 @@ import net.multiphasicapps.classfile.JavaType;
  *
  * @since 2019/01/21
  */
+@Deprecated
 public final class WorkRegister
 {
 	/** The index of this work register. */

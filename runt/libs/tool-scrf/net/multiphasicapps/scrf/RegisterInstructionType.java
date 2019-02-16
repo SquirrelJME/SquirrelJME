@@ -15,6 +15,7 @@ package net.multiphasicapps.scrf;
  *
  * @since 2019/01/23
  */
+@Deprecated
 public interface RegisterInstructionType
 {
 	/** No-operation. */

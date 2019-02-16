@@ -16,6 +16,7 @@ package net.multiphasicapps.scrf;
  *
  * @since 2019/01/19
  */
+@Deprecated
 public final class RegisterMethod
 {
 }

@@ -15,6 +15,7 @@ package net.multiphasicapps.scrf.compiler;
  *
  * @since 2019/01/23
  */
+@Deprecated
 public interface JavaInstructionAlias
 {
 	/** Load zeroth local. */

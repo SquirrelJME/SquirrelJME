@@ -15,5 +15,6 @@
  * @since 2019/01/05
  */
 
+@Deprecated
 package net.multiphasicapps.scrf.compiler;
 

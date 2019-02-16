@@ -18,6 +18,7 @@ import net.multiphasicapps.scrf.RegisterCode;
  *
  * @since 2019/01/21
  */
+@Deprecated
 public abstract class ByteCodeProcessor
 {
 	/** The owning method processor. */

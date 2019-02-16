@@ -15,6 +15,7 @@ package net.multiphasicapps.scrf;
  *
  * @since 2019/02/06
  */
+@Deprecated
 public class RegisterInstructionMnemonic
 {
 	/**

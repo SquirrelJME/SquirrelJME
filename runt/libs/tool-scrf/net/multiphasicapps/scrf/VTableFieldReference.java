@@ -19,6 +19,7 @@ import net.multiphasicapps.classfile.MemberName;
  *
  * @since 2019/02/06
  */
+@Deprecated
 public final class VTableFieldReference
 	extends VTableMemberReference
 {

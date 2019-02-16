@@ -22,6 +22,7 @@ import net.multiphasicapps.scrf.RegisterMethod;
  *
  * @since 2019/01/05
  */
+@Deprecated
 public final class ClassProcessor
 {
 	/** The input class to process. */

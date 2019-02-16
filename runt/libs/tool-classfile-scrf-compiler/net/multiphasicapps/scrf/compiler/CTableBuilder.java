@@ -19,6 +19,7 @@ import net.multiphasicapps.scrf.CTableEntryIndex;
  *
  * @since 2019/01/19
  */
+@Deprecated
 public final class CTableBuilder
 {
 	/** The string table. */

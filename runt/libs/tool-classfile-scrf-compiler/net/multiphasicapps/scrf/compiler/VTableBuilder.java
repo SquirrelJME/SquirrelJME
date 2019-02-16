@@ -32,6 +32,7 @@ import java.util.Map;
  *
  * @since 2019/01/12
  */
+@Deprecated
 public final class VTableBuilder
 {
 	/** String table. */
