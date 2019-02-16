@@ -15,6 +15,7 @@ package net.multiphasicapps.scrf.compiler;
  *
  * @since 2019/01/21
  */
+@Deprecated
 public final class RegisterSet
 {
 	/** Virtual stack base, which register starts the virtual stack. */

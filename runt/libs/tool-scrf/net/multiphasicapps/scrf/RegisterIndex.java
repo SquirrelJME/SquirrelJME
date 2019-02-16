@@ -18,6 +18,7 @@ import java.lang.ref.WeakReference;
  *
  * @since 2019/02/05
  */
+@Deprecated
 public final class RegisterIndex
 	implements Comparable<RegisterIndex>
 {

@@ -15,6 +15,7 @@ package net.multiphasicapps.scrf;
  *
  * @since 2019/01/19
  */
+@Deprecated
 public enum CTableEntryIndex
 {
 	/** Class access flags. */

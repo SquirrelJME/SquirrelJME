@@ -30,6 +30,7 @@ import net.multiphasicapps.scrf.RegisterCode;
  *
  * @since 2019/01/21
  */
+@Deprecated
 public class PrimitiveByteCodeProcessor
 	extends ByteCodeProcessor
 {

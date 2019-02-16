@@ -19,6 +19,7 @@ import net.multiphasicapps.classfile.MethodDescriptor;
  *
  * @since 2019/02/07
  */
+@Deprecated
 public final class VTableMethodReference
 	extends VTableMemberReference
 {

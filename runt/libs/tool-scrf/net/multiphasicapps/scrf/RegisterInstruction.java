@@ -19,6 +19,7 @@ import java.util.Arrays;
  *
  * @since 2019/01/23
  */
+@Deprecated
 public final class RegisterInstruction
 {
 	/** The operation. */

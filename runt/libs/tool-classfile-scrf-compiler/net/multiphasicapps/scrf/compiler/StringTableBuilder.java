@@ -19,6 +19,7 @@ import java.util.Map;
  *
  * @since 2019/01/19
  */
+@Deprecated
 public final class StringTableBuilder
 {
 	/** Strings in the table. */

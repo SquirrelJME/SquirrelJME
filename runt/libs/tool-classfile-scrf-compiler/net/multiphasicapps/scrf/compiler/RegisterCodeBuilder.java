@@ -23,6 +23,7 @@ import net.multiphasicapps.scrf.MemoryType;
  *
  * @since 2019/01/22
  */
+@Deprecated
 public final class RegisterCodeBuilder
 {
 	/** The VTable for this class. */

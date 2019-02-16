@@ -18,6 +18,7 @@ import net.multiphasicapps.classfile.InvalidClassFormatException;
  *
  * @since 2019/01/11
  */
+@Deprecated
 public class ClassProcessException
 	extends InvalidClassFormatException
 {
