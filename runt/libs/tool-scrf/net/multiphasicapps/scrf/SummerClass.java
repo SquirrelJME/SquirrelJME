@@ -11,6 +11,8 @@
 package net.multiphasicapps.scrf;
 
 import net.multiphasicapps.classfile.ClassFile;
+import net.multiphasicapps.classfile.InvalidClassFormatException;
+import net.multiphasicapps.scrf.classfile.ClassFileProcessor;
 
 /**
  * This represents a SummerCoat class file.
@@ -35,7 +37,18 @@ public final class SummerClass
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Conversion could fail with a bad class format
+		try
+		{
+			return new ClassFileProcessor(__cl).process();
+		}
+		
+		// {@squirreljme.error AV02 Could not load standard Java class file
+		// as a SummerCoat class due to a format error.}
+		catch (InvalidClassFormatException e)
+		{
+			throw new SummerFormatException("AV02", e);
+		}
 	}
 }
 
