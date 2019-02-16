@@ -11,6 +11,7 @@
 package net.multiphasicapps.scrf.classfile;
 
 import net.multiphasicapps.classfile.JavaType;
+import net.multiphasicapps.classfile.StackMapTableState;
 
 /**
  * This class contains the state of the Java stack, it gets initialized to
@@ -51,6 +52,22 @@ public final class JavaState
 		this._stack = stack;
 	}
 	
+	/**
+	 * Loads the Java state from the given stack map table state.
+	 *
+	 * @param __smt The state to read from.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/02/16
+	 */
+	public final void fromState(StackMapTableState __smt)
+		throws NullPointerException
+	{
+		if (__smt == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+		
 	/**
 	 * Obtains the information in a local variable.
 	 *
