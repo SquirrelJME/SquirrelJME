@@ -25,6 +25,7 @@ import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.scrf.compiler.ClassProcessException;
 import net.multiphasicapps.scrf.compiler.ClassProcessor;
 import net.multiphasicapps.scrf.RegisterClass;
+import net.multiphasicapps.scrf.SummerClass;
 
 /**
  * This is a class loader which manages and can cache multiple classes.
@@ -163,10 +164,10 @@ public final class ClassLoader
 			}
 			
 			// Process the class and compile it to the register format
-			RegisterClass rc;
+			SummerClass rc;
 			try
 			{
-				rc = ClassProcessor.process(cf);
+				rc = SummerClass.ofClassFile(cf);
 			}
 			catch (ClassProcessException e)
 			{
