@@ -57,6 +57,18 @@ public final class RegisterLocation
 	}
 	
 	/**
+	 * Returns this register as a wide one.
+	 *
+	 * @return The wide register.
+	 * @since 2019/02/16
+	 */
+	public final RegisterLocation asWide()
+	{
+		return (this.iswide ? this :
+			new RegisterLocation(this.register, true));
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2019/02/16
 	 */
@@ -82,6 +94,17 @@ public final class RegisterLocation
 	public final int hashCode()
 	{
 		return this.register ^ (this.iswide ? -1 : 0);
+	}
+	
+	/**
+	 * Returns the base register.
+	 *
+	 * @return The base register.
+	 * @since 2019/02/16
+	 */
+	public final int register()
+	{
+		return this.register;
 	}
 	
 	/**
