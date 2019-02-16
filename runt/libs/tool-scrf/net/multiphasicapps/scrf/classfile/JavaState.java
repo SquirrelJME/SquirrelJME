@@ -12,6 +12,7 @@ package net.multiphasicapps.scrf.classfile;
 
 import net.multiphasicapps.classfile.JavaType;
 import net.multiphasicapps.classfile.StackMapTableState;
+import net.multiphasicapps.scrf.RegisterLocation;
 
 /**
  * This class contains the state of the Java stack, it gets initialized to
@@ -77,7 +78,9 @@ public final class JavaState
 	 */
 	public final Result localGet(int __dx)
 	{
-		throw new todo.TODO();
+		Slot sl = this._locals[__dx];
+		return new Result(sl._type, (sl._type.isWide() ? sl.register.asWide() :
+			sl.register));
 	}
 	
 	/**
@@ -95,7 +98,20 @@ public final class JavaState
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Set base register
+		Slot[] locals = this._locals;
+		Slot sl;
+		(sl = locals[__dx])._type = __t;
+		
+		// Set top for wide local?
+		if (__t.isWide())
+		{
+			locals[__dx + 1]._type = __t.topType();
+			return new Result(__t, sl.register.asWide());
+		}
+		
+		// Just a narrow set
+		return new Result(__t, sl.register);
 	}
 	
 	/**
@@ -137,22 +153,27 @@ public final class JavaState
 	public static final class Result
 	{
 		/** The Java type which is involved here. */
-		public final JavaType jtype;
+		public final JavaType type;
+		
+		/** The register used. */
+		public final RegisterLocation register;
 		
 		/**
 		 * Initializes the result.
 		 *
 		 * @param __jt The Java type.
+		 * @param __rl The register location.
 		 * @throws NullPointerException On null arguments.
 		 * @since 2019/02/16
 		 */
-		public Result(JavaType __jt)
+		public Result(JavaType __jt, RegisterLocation __rl)
 			throws NullPointerException
 		{
-			if (__jt == null)
+			if (__jt == null || __rl == null)
 				throw new NullPointerException("NARG");
 			
-			throw new todo.TODO();
+			this.type = __jt;
+			this.register = __rl;
 		}
 	}
 	
@@ -164,10 +185,10 @@ public final class JavaState
 	public static final class Slot
 	{
 		/** Virtual register index. */
-		protected final int vrdx;
+		protected final RegisterLocation register;
 		
 		/** The Java type stored here. */
-		private JavaType _jtype;
+		private JavaType _type;
 		
 		/**
 		 * Initializes the slot.
@@ -177,7 +198,7 @@ public final class JavaState
 		 */
 		private Slot(int __vr)
 		{
-			this.vrdx = __vr;
+			this.register = new RegisterLocation(__vr);
 		}
 	}
 }
