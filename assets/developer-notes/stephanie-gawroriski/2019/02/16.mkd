@@ -1,0 +1,26 @@
+# 2019/02/16
+
+## 09:35
+
+Okay, so currently I am not really happy with the SCRF compiler and such how
+it is currently turning out. Definitely believe that it is far too messy and
+such. I could also just have the compiler also in `tool-scrf` so that it is
+all in one place and not in multiple places. Definitely during conversion I
+am going to need to convert the Java stack state to SummerCoat. So I need
+better handlers and converters for that.
+
+## 10:22
+
+Not sure where to go right now, so I will just work on some of the supporting
+classes and such.
+
+## 10:30
+
+Okay, having this operation result for stack entries is going to be very nice
+since it will give more information such as which virtual registers were
+involved along with the type information.
+
+## 18:35
+
+I should actually deprecate the old stuff I am removing, so I am sure that it
+is not really used anymore.
