@@ -70,7 +70,18 @@ public final class JavaState
 		if (__smt == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		Slot[] locals = this._locals;
+		Slot[] stack = this._stack;
+		
+		// Copy locals
+		for (int i = 0, n = locals.length; i < n; i++)
+			locals[i]._type = __smt.getLocal(i).type();
+		
+		// Copy the stack
+		int depth = __smt.depth();
+		for (int i = 0; i < depth; i++)
+			stack[i]._type = __smt.getStack(i).type();
+		this._stacktop = depth;
 	}
 		
 	/**
