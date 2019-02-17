@@ -25,7 +25,7 @@ import java.util.NoSuchElementException;
  * @since 2017/10/09
  */
 public final class ByteCode
-	implements ExecutableCode
+	implements ExecutableCode, Iterable<Instruction>
 {
 	/** The code is always at this offset. */
 	static final int _CODE_OFFSET =
@@ -392,6 +392,18 @@ public final class ByteCode
 	}
 	
 	/**
+	 * This returns an iterator over the instructions which are defined within
+	 * this method.
+	 *
+	 * @return The iterator over byte code instructions.
+	 * @since 2017/05/20
+	 */
+	public Iterator<Instruction> instructionIterator()
+	{
+		return new __InstructionIterator__();
+	}
+	
+	/**
 	 * Checks whether the given address is a valid instruction address.
 	 *
 	 * @param __a The address to check.
@@ -409,15 +421,13 @@ public final class ByteCode
 	}
 	
 	/**
-	 * This returns an iterator over the instructions which are defined within
-	 * this method.
-	 *
-	 * @return The iterator over byte code instructions.
-	 * @since 2017/05/20
+	 * {@inheritDoc}
+	 * @since 2019/02/17
 	 */
-	public Iterator<Instruction> instructionIterator()
+	@Override
+	public final Iterator<Instruction> iterator()
 	{
-		return new __InstructionIterator__();
+		return this.instructionIterator();
 	}
 	
 	/**

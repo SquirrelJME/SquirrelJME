@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.scrf.classfile;
 
+import net.multiphasicapps.classfile.ByteCode;
+import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.Method;
 import net.multiphasicapps.scrf.ILCode;
 
@@ -25,6 +27,9 @@ public final class MethodProcessor
 	
 	/** The method to process. */
 	protected final Method input;
+	
+	/** The input byte code. */
+	protected final ByteCode bytecode;
 	
 	/**
 	 * Initializes the method processor.
@@ -42,6 +47,7 @@ public final class MethodProcessor
 		
 		this.classprocessor = __cp;
 		this.input = __in;
+		this.bytecode = __in.byteCode();
 	}
 	
 	/**
@@ -52,6 +58,23 @@ public final class MethodProcessor
 	 */
 	public final ILCode process()
 	{
+		ByteCode bytecode = this.bytecode;
+		
+		// Process each instruction
+		for (Instruction inst : bytecode)
+		{
+			// Debug
+			todo.DEBUG.note("Instruction: %s", inst);
+			
+			switch (inst.operation())
+			{
+					// {@squirreljme.error AV05 Unhandled instruction. (The
+					// instruction)}
+				default:
+					throw new RuntimeException("AV05 " + inst);
+			}
+		}
+		
 		throw new todo.TODO();
 	}
 }
