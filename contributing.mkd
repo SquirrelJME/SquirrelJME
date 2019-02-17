@@ -15,7 +15,7 @@ developed targeting Unix compatible systems, this means the following:
  * Linux
  * BSD
  * Mac OS X
- * Cygwin or MSYS2 (Windows)
+ * Cygwin or WSL (Windows)
 
 SquirrelJME uses the [Fossil](https://fossil-scm.org/) source control
 system and as such it generally is expected that it is to be used. There also
