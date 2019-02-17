@@ -12,6 +12,7 @@ package net.multiphasicapps.scrf.classfile;
 
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.Instruction;
+import net.multiphasicapps.classfile.InstructionIndex;
 import net.multiphasicapps.classfile.Method;
 import net.multiphasicapps.classfile.StackMapTable;
 import net.multiphasicapps.classfile.StackMapTableState;
@@ -116,12 +117,34 @@ public final class MethodProcessor
 		ILCodeBuilder ilcb = this.codebuilder;
 		
 		// Depends on the operation to process
-		switch (__i.operation())
+		int op;
+		switch ((op = __i.operation()))
 		{
+			case InstructionIndex.ALOAD_0:
+			case InstructionIndex.ALOAD_1:
+			case InstructionIndex.ALOAD_2:
+			case InstructionIndex.ALOAD_3:
+				this.__runLoad(op - InstructionIndex.ALOAD_0);
+				break;
+			
 				// {@squirreljme.error AV05 Unhandled instruction. (The
 				// instruction)}
 			default:
 				throw new RuntimeException("AV05 " + __i);
 		}
+	}
+	
+	/**
+	 * Loads from local variable.
+	 *
+	 * @param __from The variable to load from.
+	 * @since 2019/02/17
+	 */
+	private final void __runLoad(int __from)
+	{
+		JavaState state = this.state;
+		ILCodeBuilder ilcb = this.codebuilder;
+		
+		throw new todo.TODO();
 	}
 }
