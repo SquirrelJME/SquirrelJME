@@ -11,6 +11,9 @@
 package net.multiphasicapps.scrf.classfile;
 
 import net.multiphasicapps.classfile.ClassFile;
+import net.multiphasicapps.classfile.Method;
+import net.multiphasicapps.classfile.MethodFlags;
+import net.multiphasicapps.scrf.ILCode;
 import net.multiphasicapps.scrf.SummerClass;
 import net.multiphasicapps.scrf.SummerFormatException;
 
@@ -51,6 +54,20 @@ public final class ClassFileProcessor
 	public final SummerClass process()
 		throws SummerFormatException
 	{
+		// Process each method
+		for (Method m : input.methods())
+		{
+			// Intermediate code for this method
+			ILCode ilc = null;
+			
+			// Process byte code in the method
+			MethodFlags mf = m.flags();
+			if (!mf.isNative() && !mf.isAbstract())
+				ilc = new MethodProcessor(this, m).process();
+			
+			throw new todo.TODO();
+		}
+		
 		throw new todo.TODO();
 	}
 }
