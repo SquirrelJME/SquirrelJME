@@ -129,6 +129,28 @@ public final class StackMapTableState
 	}
 	
 	/**
+	 * Returns the maximum number of local variables.
+	 *
+	 * @return The local variable count.
+	 * @since 2019/02/17
+	 */
+	public final int maxLocals()
+	{
+		return this._locals.length;
+	}
+	
+	/**
+	 * Returns the maximum number of stack variables.
+	 *
+	 * @return The stack variable count.
+	 * @since 2019/02/17
+	 */
+	public final int maxStack()
+	{
+		return this._stack.length;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2017/07/28
 	 */
