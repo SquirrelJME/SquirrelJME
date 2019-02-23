@@ -22,10 +22,8 @@ import java.util.Map;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
-import net.multiphasicapps.scrf.compiler.ClassProcessException;
-import net.multiphasicapps.scrf.compiler.ClassProcessor;
-import net.multiphasicapps.scrf.RegisterClass;
 import net.multiphasicapps.scrf.SummerClass;
+import net.multiphasicapps.scrf.SummerFormatException;
 
 /**
  * This is a class loader which manages and can cache multiple classes.
@@ -169,7 +167,7 @@ public final class ClassLoader
 			{
 				rc = SummerClass.ofClassFile(cf);
 			}
-			catch (ClassProcessException e)
+			catch (SummerFormatException e)
 			{
 				// {@squirreljme.error AE06 The register compiler could not
 				// process the input class. (The class)}

@@ -138,6 +138,10 @@ public final class MethodProcessor
 			case InstructionIndex.ALOAD_3:
 				this.__runLoad(op - InstructionIndex.ALOAD_0);
 				break;
+				
+				// Read static field
+			case InstructionIndex.GETSTATIC:
+				throw new todo.TODO();
 			
 				// {@squirreljme.error AV05 Unhandled instruction. (The
 				// instruction)}
