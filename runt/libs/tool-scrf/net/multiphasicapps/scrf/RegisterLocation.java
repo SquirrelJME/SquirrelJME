@@ -121,6 +121,17 @@ public final class RegisterLocation
 	}
 	
 	/**
+	 * Returns if this is wide or not.
+	 *
+	 * @return If this is wide or not.
+	 * @since 2019/02/23
+	 */
+	public final boolean isWide()
+	{
+		return this.iswide;
+	}
+	
+	/**
 	 * Returns the base register.
 	 *
 	 * @return The base register.
