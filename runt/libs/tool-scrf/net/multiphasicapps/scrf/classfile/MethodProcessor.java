@@ -17,6 +17,7 @@ import net.multiphasicapps.classfile.Method;
 import net.multiphasicapps.classfile.StackMapTable;
 import net.multiphasicapps.classfile.StackMapTableState;
 import net.multiphasicapps.scrf.building.ILCodeBuilder;
+import net.multiphasicapps.scrf.CodeLocation;
 import net.multiphasicapps.scrf.ILCode;
 
 /**
@@ -138,13 +139,21 @@ public final class MethodProcessor
 	 * Loads from local variable.
 	 *
 	 * @param __from The variable to load from.
+	 * @return The location of the added code.
 	 * @since 2019/02/17
 	 */
-	private final void __runLoad(int __from)
+	private final CodeLocation __runLoad(int __from)
 	{
 		JavaState state = this.state;
 		ILCodeBuilder ilcb = this.codebuilder;
 		
-		throw new todo.TODO();
+		// Need to read local variable
+		JavaStateResult lf = state.localGet(__from);
+		
+		// And additionally push it to the stack
+		JavaStateResult sp = state.stackPush(lf.type);
+		
+		// Add copy operation
+		return ilcb.addCopy(lf.register, sp.register);
 	}
 }

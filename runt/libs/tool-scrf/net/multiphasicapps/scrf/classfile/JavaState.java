@@ -12,6 +12,7 @@ package net.multiphasicapps.scrf.classfile;
 
 import net.multiphasicapps.classfile.JavaType;
 import net.multiphasicapps.classfile.StackMapTableState;
+import net.multiphasicapps.scrf.CodeLocation;
 import net.multiphasicapps.scrf.RegisterLocation;
 import net.multiphasicapps.scrf.SummerFormatException;
 
@@ -91,10 +92,11 @@ public final class JavaState
 	 * @return The result of the operation.
 	 * @since 2019/02/16
 	 */
-	public final Result localGet(int __dx)
+	public final JavaStateResult localGet(int __dx)
 	{
 		Slot sl = this._locals[__dx];
-		return new Result(sl._type, sl.register.asWide(sl._type.isWide()));
+		return new JavaStateResult(sl._type,
+			sl.register.asWide(sl._type.isWide()));
 	}
 	
 	/**
@@ -106,7 +108,7 @@ public final class JavaState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/02/16
 	 */
-	public final Result localSet(int __dx, JavaType __t)
+	public final JavaStateResult localSet(int __dx, JavaType __t)
 		throws NullPointerException
 	{
 		if (__t == null)
@@ -123,7 +125,7 @@ public final class JavaState
 			locals[__dx + 1]._type = __t.topType();
 		
 		// Just a narrow set
-		return new Result(__t, sl.register.asWide(wide));
+		return new JavaStateResult(__t, sl.register.asWide(wide));
 	}
 	
 	/**
@@ -132,7 +134,7 @@ public final class JavaState
 	 * @return The result of the pop.
 	 * @since 2019/02/16
 	 */
-	public final Result stackPop()
+	public final JavaStateResult stackPop()
 	{
 		int stacktop = this._stacktop;
 		Slot[] stack = this._stack;
@@ -150,7 +152,7 @@ public final class JavaState
 		// Set new stack top
 		this._stacktop = stacktop;
 		
-		return new Result(at._type, at.register.asWide(wide));
+		return new JavaStateResult(at._type, at.register.asWide(wide));
 	}
 	
 	/**
@@ -161,7 +163,7 @@ public final class JavaState
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/02/16
 	 */
-	public final Result stackPush(JavaType __t)
+	public final JavaStateResult stackPush(JavaType __t)
 		throws NullPointerException
 	{
 		if (__t == null)
@@ -189,42 +191,7 @@ public final class JavaState
 		this._stacktop = stacktop + 1;
 		
 		// Build result
-		return new Result(__t, at.register.asWide(wide));
-	}
-	
-	/**
-	 * This contains the result of the operation when a push or pop has been
-	 * performed. Since pushing/popping is complicated and will involve
-	 * information on the type and registers, this is needed to
-	 * simplify the design of the processor.
-	 *
-	 * @since 2019/02/16
-	 */
-	public static final class Result
-	{
-		/** The Java type which is involved here. */
-		public final JavaType type;
-		
-		/** The register used. */
-		public final RegisterLocation register;
-		
-		/**
-		 * Initializes the result.
-		 *
-		 * @param __jt The Java type.
-		 * @param __rl The register location.
-		 * @throws NullPointerException On null arguments.
-		 * @since 2019/02/16
-		 */
-		public Result(JavaType __jt, RegisterLocation __rl)
-			throws NullPointerException
-		{
-			if (__jt == null || __rl == null)
-				throw new NullPointerException("NARG");
-			
-			this.type = __jt;
-			this.register = __rl;
-		}
+		return new JavaStateResult(__t, at.register.asWide(wide));
 	}
 	
 	/**
