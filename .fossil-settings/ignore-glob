@@ -45,3 +45,5 @@ ci-comment*.txt
 *.png
 assets/wintercoat/wintercoat
 assets/wintercoat/wintercoat.exe
+*.bak
+
