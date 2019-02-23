@@ -13,6 +13,7 @@ package net.multiphasicapps.scrf.building;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import net.multiphasicapps.scrf.CodeLocation;
+import net.multiphasicapps.scrf.FixedMemoryLocation;
 import net.multiphasicapps.scrf.ILInstruction;
 import net.multiphasicapps.scrf.ILInstructionType;
 import net.multiphasicapps.scrf.RegisterLocation;
@@ -57,17 +58,53 @@ public final class ILCodeBuilder
 	}
 	
 	/**
+	 * Adds constant reference.
+	 *
+	 * @param __dest Destination register.
+	 * @param __v The value to store.
+	 * @return The index of the added instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @throws SummerFormatException If the value is not valid.
+	 * @since 2019/02/23
+	 */
+	public final CodeLocation addConst(RegisterLocation __dest, Object __v)
+		throws NullPointerException, SummerFormatException
+	{
+		if (__dest == null || __v == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error AV07 Wide value cannot be placed in a narrow
+		// register. (The destination; The value)}
+		if ((__v instanceof Long || __v instanceof Double) &&
+			!__dest.isWide())
+			throw new SummerFormatException(String.format(
+				"AV07 %s %s", __dest, __v));
+		
+		// {@squirreljme.error AV08 Cannot set register to constant value
+		// because it's value is not actually constant.}
+		if (!(__v instanceof Integer ||
+			__v instanceof Long ||
+			__v instanceof Float ||
+			__v instanceof Double ||
+			__v instanceof FixedMemoryLocation))
+			throw new SummerFormatException("AV08 " + __v);
+		
+		// Generate
+		return this.add(ILInstructionType.CONST, __dest, __v);
+	}
+	
+	/**
 	 * Adds a copy from one location to another.
 	 *
-	 * @param __from The source to copy from.
 	 * @param __to The destination to copy to.
+	 * @param __from The source to copy from.
 	 * @return The location of the added instruction.
 	 * @throws NullPointerException On null arguments.
 	 * @throws SummerFormatException If the copy is not valid.
 	 * @since 2019/02/23
 	 */
-	public final CodeLocation addCopy(RegisterLocation __from,
-		RegisterLocation __to)
+	public final CodeLocation addCopy(RegisterLocation __to,
+		RegisterLocation __from)
 		throws NullPointerException, SummerFormatException
 	{
 		if (__from == null || __to == null)

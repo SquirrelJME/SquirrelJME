@@ -23,6 +23,9 @@ public enum ILInstructionType
 	/** Copy. */
 	COPY,
 	
+	/** Constant. */
+	CONST,
+	
 	/** End. */
 	;
 }

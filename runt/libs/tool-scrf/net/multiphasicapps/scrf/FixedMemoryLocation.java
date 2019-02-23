@@ -14,14 +14,15 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
 /**
- * This represents a location within the IL code.
+ * This represents memory pointing to a fixed location.
  *
  * @since 2019/02/23
  */
-public final class CodeLocation
+public final class FixedMemoryLocation
+	implements MemoryLocation
 {
-	/** The index of the instruction. */
-	protected final int index;
+	/** The address of the location. */
+	protected final long address;
 	
 	/** String representation. */
 	private Reference<String> _string;
@@ -29,12 +30,12 @@ public final class CodeLocation
 	/**
 	 * Initializes the location.
 	 *
-	 * @param __i The index.
+	 * @param __p The memory address.
 	 * @since 2019/02/23
 	 */
-	public CodeLocation(int __i)
+	public FixedMemoryLocation(long __p)
 	{
-		this.index = __i;
+		this.address = __p;
 	}
 	
 	/**
@@ -47,11 +48,11 @@ public final class CodeLocation
 		if (this == __o)
 			return true;
 		
-		if (!(__o instanceof CodeLocation))
+		if (!(__o instanceof FixedMemoryLocation))
 			return false;
 		
-		CodeLocation o = (CodeLocation)__o;
-		return this.index == o.index;
+		FixedMemoryLocation o = (FixedMemoryLocation)__o;
+		return this.address == o.address;
 	}
 	
 	/**
@@ -61,18 +62,8 @@ public final class CodeLocation
 	@Override
 	public final int hashCode()
 	{
-		return this.index;
-	}
-	
-	/**
-	 * Returns the index location.
-	 *
-	 * @return The index location.
-	 * @since 2019/02/23
-	 */
-	public final int index()
-	{
-		return this.index;
+		long address = this.address;
+		return (int)((address >>> 32) | address);
 	}
 	
 	/**
@@ -86,7 +77,8 @@ public final class CodeLocation
 		String rv;
 		
 		if (ref == null || null == (rv = ref.get()))
-			this._string = new WeakReference<>((rv = "i@" + this.index));
+			this._string = new WeakReference<>((rv =
+				String.format("m@%x", this.address)));
 		
 		return rv;
 	}
