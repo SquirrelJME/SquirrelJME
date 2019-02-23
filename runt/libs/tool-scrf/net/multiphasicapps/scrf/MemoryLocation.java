@@ -11,34 +11,12 @@
 package net.multiphasicapps.scrf;
 
 /**
- * Individual intermediate language instruction.
+ * This represents a location which points to memory somewhere.
  *
  * @since 2019/02/23
  */
-public final class ILInstruction
+public interface MemoryLocation
+	extends Location
 {
-	/** The instruction type. */
-	protected final ILInstructionType type;
-	
-	/** Arguments. */
-	private final Object[] _args;
-	
-	/**
-	 * Initializes the instruction.
-	 *
-	 * @param __type The instruction type.
-	 * @param __args The instruction arguments.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/02/23
-	 */
-	public ILInstruction(ILInstructionType __type, Object... __args)
-		throws NullPointerException
-	{
-		if (__type == null)
-			throw new NullPointerException("NARG");
-		
-		this.type = __type;
-		this._args = (__args == null ? new Object[0] : __args.clone());
-	}
 }
 

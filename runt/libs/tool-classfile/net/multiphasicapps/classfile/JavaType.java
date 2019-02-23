@@ -67,7 +67,6 @@ public final class JavaType
 	 * Initializes the stack map type.
 	 *
 	 * @param __cn The name of the field.
-	 * @param __init Is this object initialized?
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/07/28
 	 */

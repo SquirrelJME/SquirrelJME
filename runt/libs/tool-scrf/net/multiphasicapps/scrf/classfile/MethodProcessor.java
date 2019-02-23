@@ -11,13 +11,16 @@
 package net.multiphasicapps.scrf.classfile;
 
 import net.multiphasicapps.classfile.ByteCode;
+import net.multiphasicapps.classfile.FieldDescriptor;
 import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
+import net.multiphasicapps.classfile.JavaType;
 import net.multiphasicapps.classfile.Method;
 import net.multiphasicapps.classfile.StackMapTable;
 import net.multiphasicapps.classfile.StackMapTableState;
 import net.multiphasicapps.scrf.building.ILCodeBuilder;
 import net.multiphasicapps.scrf.CodeLocation;
+import net.multiphasicapps.scrf.FixedMemoryLocation;
 import net.multiphasicapps.scrf.ILCode;
 
 /**
@@ -121,6 +124,14 @@ public final class MethodProcessor
 		int op;
 		switch ((op = __i.operation()))
 		{
+				// Load null reference
+			case InstructionIndex.ACONST_NULL:
+				this.__runConst(new JavaType(
+					new FieldDescriptor("Ljava/lang/Object;")),
+					new FixedMemoryLocation(0));
+				break;
+				
+				// Load reference
 			case InstructionIndex.ALOAD_0:
 			case InstructionIndex.ALOAD_1:
 			case InstructionIndex.ALOAD_2:
@@ -136,6 +147,28 @@ public final class MethodProcessor
 	}
 	
 	/**
+	 * Pushes the given constant value to the stack.
+	 *
+	 * @param __t The type to push.
+	 * @param __v The value to push.
+	 * @return The code location.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/02/23
+	 */
+	private final CodeLocation __runConst(JavaType __t, Object __v)
+		throws NullPointerException
+	{
+		if (__t == null || __v == null)
+			throw new NullPointerException("NARG");
+		
+		// Push type to the stack
+		JavaStateResult sp = this.state.stackPush(__t);
+		
+		// Generate instruction
+		return this.codebuilder.addConst(sp.register, __v);
+	}
+	
+	/**
 	 * Loads from local variable.
 	 *
 	 * @param __from The variable to load from.
@@ -144,16 +177,14 @@ public final class MethodProcessor
 	 */
 	private final CodeLocation __runLoad(int __from)
 	{
-		JavaState state = this.state;
-		ILCodeBuilder ilcb = this.codebuilder;
-		
 		// Need to read local variable
+		JavaState state = this.state;
 		JavaStateResult lf = state.localGet(__from);
 		
 		// And additionally push it to the stack
 		JavaStateResult sp = state.stackPush(lf.type);
 		
 		// Add copy operation
-		return ilcb.addCopy(lf.register, sp.register);
+		return this.codebuilder.addCopy(sp.register, lf.register);
 	}
 }
