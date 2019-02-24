@@ -13,6 +13,7 @@ package net.multiphasicapps.scrf.building;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import net.multiphasicapps.scrf.CodeLocation;
+import net.multiphasicapps.scrf.DynTableLocation;
 import net.multiphasicapps.scrf.FixedMemoryLocation;
 import net.multiphasicapps.scrf.ILInstruction;
 import net.multiphasicapps.scrf.ILInstructionType;
@@ -116,6 +117,26 @@ public final class ILCodeBuilder
 			throw new SummerFormatException("AV06 " + __from + " " + __to);
 		
 		return this.add(ILInstructionType.COPY, __from, __to);
+	}
+	
+	/**
+	 * Adds invocation for adding.
+	 *
+	 * @param __l Location of the reference in the dynamic table.
+	 * @param __rv The return register.
+	 * @param __args Arguments to the method call.
+	 * @return The location of the instruction in code.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/02/24
+	 */
+	public final CodeLocation addInvoke(DynTableLocation __l,
+		RegisterLocation __rv, RegisterLocation... __args)
+		throws NullPointerException
+	{
+		if (__l == null || __rv == null || __args == null)
+			throw new NullPointerException("NARG");
+		
+		return this.add(ILInstructionType.INVOKE, __l, __rv, __args);
 	}
 }
 

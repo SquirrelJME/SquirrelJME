@@ -16,12 +16,17 @@ import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
 import net.multiphasicapps.classfile.JavaType;
 import net.multiphasicapps.classfile.Method;
+import net.multiphasicapps.classfile.MethodDescriptor;
+import net.multiphasicapps.classfile.MethodReference;
 import net.multiphasicapps.classfile.StackMapTable;
 import net.multiphasicapps.classfile.StackMapTableState;
+import net.multiphasicapps.scrf.building.DynTableBuilder;
 import net.multiphasicapps.scrf.building.ILCodeBuilder;
 import net.multiphasicapps.scrf.CodeLocation;
 import net.multiphasicapps.scrf.FixedMemoryLocation;
 import net.multiphasicapps.scrf.ILCode;
+import net.multiphasicapps.scrf.InvokeType;
+import net.multiphasicapps.scrf.RegisterLocation;
 
 /**
  * This is used to process a single method within a class file.
@@ -32,6 +37,9 @@ public final class MethodProcessor
 {
 	/** The owning processor. */
 	protected final ClassFileProcessor classprocessor;
+	
+	/** Dynamic table builder. */
+	protected final DynTableBuilder dyntable;
 	
 	/** The method to process. */
 	protected final Method input;
@@ -65,6 +73,7 @@ public final class MethodProcessor
 		
 		this.classprocessor = __cp;
 		this.input = __in;
+		this.dyntable = __cp.dyntable;
 		
 		ByteCode bc;
 		this.bytecode = (bc = __in.byteCode());
@@ -142,6 +151,12 @@ public final class MethodProcessor
 				// Read static field
 			case InstructionIndex.GETSTATIC:
 				throw new todo.TODO();
+				
+				// Invoke static method
+			case InstructionIndex.INVOKESTATIC:
+				this.__runInvoke(InvokeType.STATIC, __i.
+					<MethodReference>argument(0, MethodReference.class));
+				break;
 			
 				// {@squirreljme.error AV05 Unhandled instruction. (The
 				// instruction)}
@@ -170,6 +185,41 @@ public final class MethodProcessor
 		
 		// Generate instruction
 		return this.codebuilder.addConst(sp.register, __v);
+	}
+	
+	/**
+	 * Handles invocation of a method reference.
+	 *
+	 * @param __t The type of invocation to perform.
+	 * @param __m The target method.
+	 * @return The location of the added code.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/02/24
+	 */
+	private final CodeLocation __runInvoke(InvokeType __t, MethodReference __m)
+		throws NullPointerException
+	{
+		if (__t == null || __m == null)
+			throw new NullPointerException("NARG");
+		
+		JavaState state = this.state;
+		
+		// Pop all method arguments from the stack to determine what to pass to
+		// the method argument size
+		MethodDescriptor md = __m.memberType();
+		int nargs = md.argumentCount() + (__t == InvokeType.STATIC ? 0 : 1);
+		RegisterLocation[] args = new RegisterLocation[nargs];
+		for (int i = nargs - 1; i >= 0; i--)
+			args[i] = state.stackPop().register;
+		
+		// If there is a return value then push an extra thing to the stack
+		RegisterLocation rv = (md.hasReturnValue() ?
+			state.stackPush(new JavaType(md.returnValue())).register :
+			new RegisterLocation(-1));
+		
+		// Invoke this method
+		return this.codebuilder.addInvoke(this.dyntable.addInvoke(__t, __m),
+			rv, args);
 	}
 	
 	/**

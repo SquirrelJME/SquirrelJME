@@ -40,10 +40,6 @@ public final class RootMachine
 	protected final TaskStatuses statuses =
 		new TaskStatuses();
 	
-	/** Cache of SCRF classes. */
-	protected final RegisterClassCache scrfcache =
-		new RegisterClassCache();
-	
 	/**
 	 * Initializes the root machine.
 	 *
@@ -112,7 +108,7 @@ public final class RootMachine
 		// classpath since they both may be accessed
 		ClassLoader cl;
 		TaskStatus status = this.statuses.createNew(
-			(cl = new ClassLoader(this.scrfcache, suites, __cp)),
+			(cl = new ClassLoader(suites, __cp)),
 			__sprops, this.profiler);
 		
 		// Setup a new base running task, which has no threads yet until the
