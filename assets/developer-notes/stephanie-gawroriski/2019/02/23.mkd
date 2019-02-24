@@ -1,0 +1,7 @@
+# 2019/02/23
+
+## 17:16
+
+So definitely this refactor is going much better, I think I can remove the old
+code that exists now.
+
