@@ -111,7 +111,8 @@ public final class MethodProcessor
 			this.__processInstruction(inst);
 		}
 		
-		throw new todo.TODO();
+		// Build the code now
+		return this.codebuilder.build();
 	}
 	
 	/**

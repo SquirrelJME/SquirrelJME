@@ -17,5 +17,23 @@ package net.multiphasicapps.scrf;
  */
 public final class ILCode
 {
+	/** Instructions in this code. */
+	private final ILInstruction[] _insts;
+	
+	/**
+	 * Initializes the code.
+	 *
+	 * @param __i Input instructions.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/02/24
+	 */
+	public ILCode(ILInstruction[] __i)
+		throws NullPointerException
+	{
+		if (__i == null)
+			throw new NullPointerException("NARG");
+		
+		this._insts = (__i == null ? new ILInstruction[0] : __i.clone());
+	}
 }
 
