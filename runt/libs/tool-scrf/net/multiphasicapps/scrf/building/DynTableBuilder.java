@@ -12,10 +12,12 @@ package net.multiphasicapps.scrf.building;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.MethodReference;
 import net.multiphasicapps.scrf.DynTableLocation;
 import net.multiphasicapps.scrf.InvokedMethodReference;
 import net.multiphasicapps.scrf.InvokeType;
+import net.multiphasicapps.scrf.StaticFieldReference;
 
 /**
  * This class is used to build the dynamic table which refers to locations
@@ -26,7 +28,7 @@ import net.multiphasicapps.scrf.InvokeType;
 public final class DynTableBuilder
 {
 	/** Dynamic table map. */
-	private final Map<Integer, Object> _dyntable =
+	private final Map<Object, Integer> _dyntable =
 		new LinkedHashMap<>();
 	
 	/** The next index in the table. */
@@ -46,12 +48,38 @@ public final class DynTableBuilder
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
+		// If it is already in the table, use that slot
+		Map<Object, Integer> dyntable = this._dyntable;
+		Integer pdx = dyntable.get(__v);
+		if (pdx != null)
+			return new DynTableLocation(pdx);
+		
 		// Push to dynamic table
 		int dx = this._nextdx++;
-		this._dyntable.put(dx, __v);
+		this._dyntable.put(__v, dx);
 		
 		// New location
 		return new DynTableLocation(dx);
+	}
+	
+	/**
+	 * Add field reference.
+	 *
+	 * @param __s Refers to a static field?
+	 * @param __f Reference of field.
+	 * @return The location in the dynamic table.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/02/24
+	 */
+	public final DynTableLocation addField(boolean __s, FieldReference __f)
+		throws NullPointerException
+	{
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
+		if (__s)
+			return this.add(new StaticFieldReference(__f));
+		throw new todo.TODO();
 	}
 	
 	/**

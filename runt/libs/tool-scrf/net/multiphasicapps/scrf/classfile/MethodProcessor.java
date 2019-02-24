@@ -12,6 +12,7 @@ package net.multiphasicapps.scrf.classfile;
 
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.FieldDescriptor;
+import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
 import net.multiphasicapps.classfile.JavaType;
@@ -150,7 +151,9 @@ public final class MethodProcessor
 				
 				// Read static field
 			case InstructionIndex.GETSTATIC:
-				throw new todo.TODO();
+				this.__runGetField(true, __i.<FieldReference>argument(0,
+					FieldReference.class));
+				break;
 				
 				// Invoke static method
 			case InstructionIndex.INVOKESTATIC:
@@ -185,6 +188,33 @@ public final class MethodProcessor
 		
 		// Generate instruction
 		return this.codebuilder.addConst(sp.register, __v);
+	}
+	
+	/**
+	 * Handles get of field.
+	 *
+	 * @param __s Is this static?
+	 * @param __f Field reference.
+	 * @return The location of added code.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/02/24
+	 */
+	private final CodeLocation __runGetField(boolean __s, FieldReference __f)
+		throws NullPointerException
+	{
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
+		// Always will be pushed
+		RegisterLocation dest = this.state.stackPush(new JavaType(
+			__f.memberType())).register;
+		
+		// Static field is an absolute address, while instance fields are
+		// always relative
+		if (__s)
+			return this.codebuilder.addRead(dest,
+				this.dyntable.addField(__s, __f));
+		throw new todo.TODO();
 	}
 	
 	/**
