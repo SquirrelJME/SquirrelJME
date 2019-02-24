@@ -155,6 +155,12 @@ public final class MethodProcessor
 					FieldReference.class));
 				break;
 				
+				// Invoke special method
+			case InstructionIndex.INVOKESPECIAL:
+				this.__runInvoke(InvokeType.SPECIAL, __i.
+					<MethodReference>argument(0, MethodReference.class));
+				break;
+				
 				// Invoke static method
 			case InstructionIndex.INVOKESTATIC:
 				this.__runInvoke(InvokeType.STATIC, __i.
