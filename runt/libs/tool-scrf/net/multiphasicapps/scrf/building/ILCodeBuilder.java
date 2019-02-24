@@ -158,5 +158,22 @@ public final class ILCodeBuilder
 		
 		return this.add(ILInstructionType.READ, __dest, __src);
 	}
+	
+	/**
+	 * Adds return from method.
+	 *
+	 * @param __rv The register to return from.
+	 * @return The resulting code location.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/02/24
+	 */
+	public final CodeLocation addReturn(RegisterLocation __rv)
+		throws NullPointerException
+	{
+		if (__rv == null)
+			throw new NullPointerException("NARG");
+		
+		return this.add(ILInstructionType.RETURN, __rv);
+	}
 }
 

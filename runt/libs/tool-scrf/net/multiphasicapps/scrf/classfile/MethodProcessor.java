@@ -128,7 +128,7 @@ public final class MethodProcessor
 			throw new NullPointerException("NARG");
 		
 		// Needed to store instruction data
-		ILCodeBuilder ilcb = this.codebuilder;
+		ILCodeBuilder codebuilder = this.codebuilder;
 		
 		// Depends on the operation to process
 		int op;
@@ -165,6 +165,11 @@ public final class MethodProcessor
 			case InstructionIndex.INVOKESTATIC:
 				this.__runInvoke(InvokeType.STATIC, __i.
 					<MethodReference>argument(0, MethodReference.class));
+				break;
+				
+				// Return from method
+			case InstructionIndex.RETURN:
+				codebuilder.addReturn(new RegisterLocation(-1));
 				break;
 			
 				// {@squirreljme.error AV05 Unhandled instruction. (The
