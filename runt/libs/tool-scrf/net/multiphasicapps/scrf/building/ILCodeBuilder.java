@@ -15,6 +15,7 @@ import java.util.Map;
 import net.multiphasicapps.scrf.CodeLocation;
 import net.multiphasicapps.scrf.DynTableLocation;
 import net.multiphasicapps.scrf.FixedMemoryLocation;
+import net.multiphasicapps.scrf.ILCode;
 import net.multiphasicapps.scrf.ILInstruction;
 import net.multiphasicapps.scrf.ILInstructionType;
 import net.multiphasicapps.scrf.MemoryLocation;
@@ -174,6 +175,18 @@ public final class ILCodeBuilder
 			throw new NullPointerException("NARG");
 		
 		return this.add(ILInstructionType.RETURN, __rv);
+	}
+	
+	/**
+	 * Builds the resulting code.
+	 *
+	 * @return The resulting code.
+	 * @since 2019/09/24
+	 */
+	public final ILCode build()
+	{
+		return new ILCode(this._code.values().<ILInstruction>toArray(
+			new ILInstruction[this._nextaddr]));
 	}
 }
 
