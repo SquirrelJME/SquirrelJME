@@ -17,6 +17,7 @@ import net.multiphasicapps.scrf.DynTableLocation;
 import net.multiphasicapps.scrf.FixedMemoryLocation;
 import net.multiphasicapps.scrf.ILInstruction;
 import net.multiphasicapps.scrf.ILInstructionType;
+import net.multiphasicapps.scrf.MemoryLocation;
 import net.multiphasicapps.scrf.RegisterLocation;
 import net.multiphasicapps.scrf.SummerFormatException;
 
@@ -137,6 +138,25 @@ public final class ILCodeBuilder
 			throw new NullPointerException("NARG");
 		
 		return this.add(ILInstructionType.INVOKE, __l, __rv, __args);
+	}
+	
+	/**
+	 * Adds a read from memory to the given destination.
+	 *
+	 * @param __dest The destination register.
+	 * @param __src The source memory location.
+	 * @return The code location.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/02/24
+	 */
+	public final CodeLocation addRead(RegisterLocation __dest,
+		MemoryLocation __src)
+		throws NullPointerException
+	{
+		if (__dest == null || __src == null)
+			throw new NullPointerException("NARG");
+		
+		return this.add(ILInstructionType.READ, __dest, __src);
 	}
 }
 

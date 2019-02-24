@@ -63,7 +63,15 @@ public final class FieldReference
 	@Override
 	public boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		if (this == __o)
+			return true;
+		
+		if (!(__o instanceof FieldReference))
+			return false;
+		
+		FieldReference o = (FieldReference)__o;
+		return this.name.equals(o.name) &&
+			this.type.equals(o.type);
 	}
 	
 	/**
@@ -73,7 +81,8 @@ public final class FieldReference
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		return this.name.hashCode() ^
+			this.type.hashCode();
 	}
 	
 	/**
