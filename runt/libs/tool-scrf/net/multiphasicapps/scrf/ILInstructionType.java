@@ -29,6 +29,9 @@ public enum ILInstructionType
 	/** Invoke something. */
 	INVOKE,
 	
+	/** Return from method. */
+	RETURN,
+	
 	/** Read memory. */
 	READ,
 	
