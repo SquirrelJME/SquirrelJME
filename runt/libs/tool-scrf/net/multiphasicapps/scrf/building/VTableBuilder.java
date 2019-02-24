@@ -11,7 +11,8 @@
 package net.multiphasicapps.scrf.building;
 
 /**
- * DESCRIBE THIS.
+ * This class is used to build the VTable which refers to locations which are
+ * dynamically linked.
  *
  * @since 2019/02/23
  */
