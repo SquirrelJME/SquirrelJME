@@ -26,6 +26,9 @@ public enum ILInstructionType
 	/** Constant. */
 	CONST,
 	
+	/** Invoke something. */
+	INVOKE,
+	
 	/** End. */
 	;
 }

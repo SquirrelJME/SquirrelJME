@@ -32,9 +32,6 @@ import net.multiphasicapps.scrf.SummerFormatException;
  */
 public final class ClassLoader
 {
-	/** The class cache. */
-	protected final RegisterClassCache scrfcache;
-	
 	/** The suite manager. */
 	protected final VMSuiteManager suites;
 	
@@ -48,20 +45,17 @@ public final class ClassLoader
 	/**
 	 * Initializes the class loader.
 	 *
-	 * @param __rcc The SCRF class cache.
 	 * @param __sm The suite manager.
 	 * @param __cp The classpath.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/01/05
 	 */
-	public ClassLoader(RegisterClassCache __rcc, VMSuiteManager __sm,
-		VMClassLibrary[] __cp)
+	public ClassLoader(VMSuiteManager __sm, VMClassLibrary[] __cp)
 		throws NullPointerException
 	{
-		if (__rcc == null || __sm == null || __cp == null)
+		if (__sm == null || __cp == null)
 			throw new NullPointerException("NARG");
 		
-		this.scrfcache = __rcc;
 		this.suites = __sm;
 		this._classpath = __cp.clone();
 	}

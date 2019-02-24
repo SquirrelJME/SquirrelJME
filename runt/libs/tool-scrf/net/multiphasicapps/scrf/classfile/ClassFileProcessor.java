@@ -13,6 +13,7 @@ package net.multiphasicapps.scrf.classfile;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.Method;
 import net.multiphasicapps.classfile.MethodFlags;
+import net.multiphasicapps.scrf.building.DynTableBuilder;
 import net.multiphasicapps.scrf.ILCode;
 import net.multiphasicapps.scrf.SummerClass;
 import net.multiphasicapps.scrf.SummerFormatException;
@@ -27,6 +28,10 @@ public final class ClassFileProcessor
 {
 	/** The classfile to process. */
 	protected final ClassFile input;
+	
+	/** Dynamic table builder for this class. */
+	protected final DynTableBuilder dyntable =
+		new DynTableBuilder();
 	
 	/**
 	 * Initializes the processor.
@@ -54,6 +59,8 @@ public final class ClassFileProcessor
 	public final SummerClass process()
 		throws SummerFormatException
 	{
+		DynTableBuilder dyntable = this.dyntable;
+		
 		// Process each method
 		for (Method m : input.methods())
 		{
