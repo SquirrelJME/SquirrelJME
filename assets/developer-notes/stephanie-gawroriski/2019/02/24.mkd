@@ -1,0 +1,5 @@
+# 2019/02/24
+
+## 17:37
+
+So what I need to do now is handle branches and such.
