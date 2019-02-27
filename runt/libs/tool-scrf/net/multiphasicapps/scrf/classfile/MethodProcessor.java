@@ -15,6 +15,7 @@ import net.multiphasicapps.classfile.FieldDescriptor;
 import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
+import net.multiphasicapps.classfile.InstructionJumpTarget;
 import net.multiphasicapps.classfile.JavaType;
 import net.multiphasicapps.classfile.Method;
 import net.multiphasicapps.classfile.MethodDescriptor;
@@ -26,6 +27,7 @@ import net.multiphasicapps.scrf.building.ILCodeBuilder;
 import net.multiphasicapps.scrf.CodeLocation;
 import net.multiphasicapps.scrf.FixedMemoryLocation;
 import net.multiphasicapps.scrf.ILCode;
+import net.multiphasicapps.scrf.ILPointerConstCompareType;
 import net.multiphasicapps.scrf.InvokeType;
 import net.multiphasicapps.scrf.RegisterLocation;
 
@@ -156,6 +158,20 @@ public final class MethodProcessor
 					FieldReference.class));
 				break;
 				
+				// If not-null, branch
+			case InstructionIndex.IFNONNULL:
+				this.__runIfPointerConst(ILPointerConstCompareType.NONNULL,
+					__i.<InstructionJumpTarget>argument(0,
+					InstructionJumpTarget.class));
+				break;
+				
+				// If null, branch
+			case InstructionIndex.IFNULL:
+				this.__runIfPointerConst(ILPointerConstCompareType.NULL,
+					__i.<InstructionJumpTarget>argument(0,
+					InstructionJumpTarget.class));
+				break;
+				
 				// Invoke special method
 			case InstructionIndex.INVOKESPECIAL:
 				this.__runInvoke(InvokeType.SPECIAL, __i.
@@ -227,6 +243,25 @@ public final class MethodProcessor
 			return this.codebuilder.addRead(dest,
 				this.dyntable.addField(__s, __f));
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Compares a pointer against a constant and potentially jumps.
+	 *
+	 * @param __jt Jump target.
+	 * @return The location of the added instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/02/27
+	 */
+	private final CodeLocation __runIfPointerConst(
+		ILPointerConstCompareType __ct, InstructionJumpTarget __jt)
+		throws NullPointerException
+	{
+		if (__ct == null || __jt == null)
+			throw new NullPointerException("NARG");
+		
+		return this.codebuilder.addIfPointerConst(__ct, new CodeLocation(
+			this.bytecode.addressToIndex(__jt.target())));
 	}
 	
 	/**

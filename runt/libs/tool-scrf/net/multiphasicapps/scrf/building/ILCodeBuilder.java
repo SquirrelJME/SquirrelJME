@@ -18,6 +18,7 @@ import net.multiphasicapps.scrf.FixedMemoryLocation;
 import net.multiphasicapps.scrf.ILCode;
 import net.multiphasicapps.scrf.ILInstruction;
 import net.multiphasicapps.scrf.ILInstructionType;
+import net.multiphasicapps.scrf.ILPointerConstCompareType;
 import net.multiphasicapps.scrf.MemoryLocation;
 import net.multiphasicapps.scrf.RegisterLocation;
 import net.multiphasicapps.scrf.SummerFormatException;
@@ -119,6 +120,25 @@ public final class ILCodeBuilder
 			throw new SummerFormatException("AV06 " + __from + " " + __to);
 		
 		return this.add(ILInstructionType.COPY, __from, __to);
+	}
+	
+	/**
+	 * Adds pointer comparison to constant pointer.
+	 *
+	 * @param __ct The constant pointer to compare against.
+	 * @param __jt Branch target if the condition is true.
+	 * @return The location of this code.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/02/27
+	 */
+	public final CodeLocation addIfPointerConst(ILPointerConstCompareType __ct,
+		CodeLocation __jt)
+		throws NullPointerException
+	{
+		if (__ct == null || __jt == null)
+			throw new NullPointerException("NARG");
+		
+		return this.add(ILInstructionType.IFPOINTERCONST, __ct, __jt);
 	}
 	
 	/**
