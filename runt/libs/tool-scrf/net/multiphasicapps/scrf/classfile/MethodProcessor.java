@@ -54,11 +54,17 @@ public final class MethodProcessor
 	protected final ILCodeBuilder codebuilder =
 		new ILCodeBuilder();
 	
+	/** Code builder for exceptions. */
+	protected final ILCodeBuilder exceptionbuilder;
+	
 	/** The stack map table. */
 	protected final StackMapTable stackmap;
 	
 	/** The Java register/stack state. */
 	protected final JavaState state;
+	
+	/** This flag specifies whether something may cause an exception. */
+	private boolean _mightexception;
 	
 	/**
 	 * Initializes the method processor.
@@ -78,10 +84,15 @@ public final class MethodProcessor
 		this.input = __in;
 		this.dyntable = __cp.dyntable;
 		
+		// Pre-load these since they are checked for every instruction
 		ByteCode bc;
 		this.bytecode = (bc = __in.byteCode());
 		this.stackmap = bc.stackMapTable();
 		this.state = new JavaState(bc.maxLocals(), bc.maxStack());
+		
+		// The exception handlers are built from tables to code at the end
+		// of the normal instructions
+		this.exceptionbuilder = new ILCodeBuilder(bc.instructionCount());
 	}
 	
 	/**
@@ -113,8 +124,15 @@ public final class MethodProcessor
 			this.__processInstruction(inst);
 		}
 		
+		// If any instruction could generate an exception, if so append the
+		// exception handler code accordingly. But if an exception is not
+		// possible ever then no table will ever be appended.
+		CodeBuilder codebuilder = this.codebuilder;
+		if (this._mightexception)
+			codebuilder.append(this.exceptionbuilder);
+		
 		// Build the code now
-		return this.codebuilder.build();
+		return codebuilder.build();
 	}
 	
 	/**
