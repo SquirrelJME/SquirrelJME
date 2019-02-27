@@ -144,6 +144,23 @@ public final class ILCodeBuilder
 	}
 	
 	/**
+	 * Adds unconditional jump to location.
+	 *
+	 * @param __l The target location.
+	 * @return The generated address.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/02/27
+	 */
+	public final CodeLocation addGoto(CodeLocation __l)
+		throws NullPointerException
+	{
+		if (__l == null)
+			throw new NullPointerException("NARG");
+		
+		return this.add(ILInstructionType.GOTO, __l);
+	}
+	
+	/**
 	 * Adds pointer comparison to constant pointer.
 	 *
 	 * @param __ct The constant pointer to compare against.
