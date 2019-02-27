@@ -39,6 +39,27 @@ public final class ILCodeBuilder
 	private int _nextaddr;
 	
 	/**
+	 * Initializes the code builder at the default address (zero).
+	 *
+	 * @since 2019/02/27
+	 */
+	public ILCodeBuilder()
+	{
+		this(0);
+	}
+	
+	/**
+	 * Initializes the code builder which starts at the given address.
+	 *
+	 * @param __start The start address.
+	 * @since 2019/02/27
+	 */
+	public ILCodeBuilder(int __start)
+	{
+		this._nextaddr = __start;
+	}
+	
+	/**
 	 * Adds a single instruction.
 	 *
 	 * @param __type The instruction type.
