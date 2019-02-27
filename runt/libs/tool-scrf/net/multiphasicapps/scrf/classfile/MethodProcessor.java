@@ -127,7 +127,7 @@ public final class MethodProcessor
 		// If any instruction could generate an exception, if so append the
 		// exception handler code accordingly. But if an exception is not
 		// possible ever then no table will ever be appended.
-		CodeBuilder codebuilder = this.codebuilder;
+		ILCodeBuilder codebuilder = this.codebuilder;
 		if (this._mightexception)
 			codebuilder.append(this.exceptionbuilder);
 		
@@ -174,6 +174,18 @@ public final class MethodProcessor
 			case InstructionIndex.GETSTATIC:
 				this.__runGetField(true, __i.<FieldReference>argument(0,
 					FieldReference.class));
+				break;
+				
+				// Integer Constant
+			case InstructionIndex.ICONST_M1:
+			case InstructionIndex.ICONST_0:
+			case InstructionIndex.ICONST_1:
+			case InstructionIndex.ICONST_2:
+			case InstructionIndex.ICONST_3:
+			case InstructionIndex.ICONST_4:
+			case InstructionIndex.ICONST_5:
+				this.__runConst(JavaType.INTEGER,
+					(-1) + (op -  InstructionIndex.ICONST_M1));
 				break;
 				
 				// If not-null, branch
@@ -229,11 +241,9 @@ public final class MethodProcessor
 		if (__t == null || __v == null)
 			throw new NullPointerException("NARG");
 		
-		// Push type to the stack
-		JavaStateResult sp = this.state.stackPush(__t);
-		
-		// Generate instruction
-		return this.codebuilder.addConst(sp.register, __v);
+		// Push and generate instruction
+		return this.codebuilder.addConst(this.state.stackPush(__t).register,
+			__v);
 	}
 	
 	/**
@@ -278,7 +288,8 @@ public final class MethodProcessor
 		if (__ct == null || __jt == null)
 			throw new NullPointerException("NARG");
 		
-		return this.codebuilder.addIfPointerConst(__ct, new CodeLocation(
+		return this.codebuilder.addIfPointerConst(__ct,
+			this.state.stackPop().register, new CodeLocation(
 			this.bytecode.addressToIndex(__jt.target())));
 	}
 	

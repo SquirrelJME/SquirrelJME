@@ -147,19 +147,20 @@ public final class ILCodeBuilder
 	 * Adds pointer comparison to constant pointer.
 	 *
 	 * @param __ct The constant pointer to compare against.
+	 * @param __a The register to check.
 	 * @param __jt Branch target if the condition is true.
 	 * @return The location of this code.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/02/27
 	 */
 	public final CodeLocation addIfPointerConst(ILPointerConstCompareType __ct,
-		CodeLocation __jt)
+		RegisterLocation __a, CodeLocation __jt)
 		throws NullPointerException
 	{
-		if (__ct == null || __jt == null)
+		if (__ct == null || __a == null || __jt == null)
 			throw new NullPointerException("NARG");
 		
-		return this.add(ILInstructionType.IFPOINTERCONST, __ct, __jt);
+		return this.add(ILInstructionType.IFPOINTERCONST, __ct, __a, __jt);
 	}
 	
 	/**
