@@ -149,6 +149,7 @@ public final class MethodProcessor
 			throw new NullPointerException("NARG");
 		
 		// Needed to store instruction data
+		ByteCode bytecode = this.bytecode;
 		ILCodeBuilder codebuilder = this.codebuilder;
 		
 		// Depends on the operation to process
@@ -174,6 +175,13 @@ public final class MethodProcessor
 			case InstructionIndex.GETSTATIC:
 				this.__runGetField(true, __i.<FieldReference>argument(0,
 					FieldReference.class));
+				break;
+				
+				// Goto address
+			case InstructionIndex.GOTO:
+				codebuilder.addGoto(new CodeLocation(bytecode.addressToIndex(
+					__i.<InstructionJumpTarget>argument(0,
+					InstructionJumpTarget.class).target())));
 				break;
 				
 				// Integer Constant
