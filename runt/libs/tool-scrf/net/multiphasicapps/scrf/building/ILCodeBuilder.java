@@ -219,6 +219,40 @@ public final class ILCodeBuilder
 	}
 	
 	/**
+	 * Appends all of the instructions from another code builder to this one.
+	 *
+	 * @param __il The other code builder to append from.
+	 * @return {@code this}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/02/27
+	 */
+	public final ILCodeBuilder append(ILCodeBuilder __il)
+		throws NullPointerException
+	{
+		if (__il == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Appends all of the instructions from another code to this one.
+	 *
+	 * @param __il The other code to append from.
+	 * @return {@code this}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/02/27
+	 */
+	public final ILCodeBuilder append(ILCode __il)
+		throws NullPointerException
+	{
+		if (__il == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Builds the resulting code.
 	 *
 	 * @return The resulting code.
