@@ -11,35 +11,17 @@
 package net.multiphasicapps.scrf;
 
 /**
- * Represents the type of instruction used.
+ * Comparison type for a pointer against a constant.
  *
- * @since 2019/02/23
+ * @since 2019/02/27
  */
-public enum ILInstructionType
+public enum ILPointerConstCompareType
 {
-	/** No operation. */
-	NOP,
+	/** Non-null. */
+	NONNULL,
 	
-	/** Copy. */
-	COPY,
-	
-	/** Constant. */
-	CONST,
-	
-	/** Invoke something. */
-	INVOKE,
-	
-	/** Return from method. */
-	RETURN,
-	
-	/** Goto to another instruction. */
-	GOTO,
-	
-	/** Compare register against null. */
-	IFPOINTERCONST,
-	
-	/** Read memory. */
-	READ,
+	/** Null. */
+	NULL,
 	
 	/** End. */
 	;
