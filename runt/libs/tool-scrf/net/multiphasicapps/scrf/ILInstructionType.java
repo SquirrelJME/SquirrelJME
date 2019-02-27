@@ -41,6 +41,9 @@ public enum ILInstructionType
 	/** Read memory. */
 	READ,
 	
+	/** Write memory. */
+	WRITE,
+	
 	/** End. */
 	;
 }
