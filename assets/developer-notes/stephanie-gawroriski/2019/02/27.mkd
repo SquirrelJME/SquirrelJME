@@ -1,0 +1,32 @@
+# 2019/02/27
+
+## 06:42
+
+For simplicity, Java instructions are going to map one to one to IL
+instructions since that is the easiest thing to pretty much do. Of
+course there will be some operations which do not need the specific
+type stuff since I want to remove that need. That is the type of
+a variable will be done in the copy and not encoded in the instruction.
+
+## 07:24
+
+Okay, so I have an idea what to do for exceptions. For this I will have
+a separate pre-built code area which is for the exception handlers which
+will need to be processed. They will just be offset and be at the end of
+the code area. Throws will just be jumps to exception handlers, although
+I have not yet handled how propogating up the stack will be done but
+perhaps that is done with a special instruction. This means that for
+invokes or anything that could generate an instruction there will need to
+be an instructional jump target. So for Java instructions which throw an
+exception, I will need to pass a reference to a method which generates the
+exception and then also pass the exception handler address. For simplicity
+I want to completely decouple exception handling and just treat it as
+normal methods, code jumps, and compares. Also for `isinstance` I can just
+do a table of sorts in the loaded class object which contains class
+pointers to every instance that a class is. It works and is just a linear
+scan. This keeps things a bit simple. At least when classes load at the
+root they just need to copy all of the instance pointers as a set then
+just the current class has to be scanned. Well the current class is scanned
+and then for the extend and each interface all of those class pointers will
+be loaded to the table. It is only recursive at a single level so that is
+fine.
