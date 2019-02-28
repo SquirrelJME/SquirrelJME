@@ -171,6 +171,12 @@ public final class MethodProcessor
 				this.__runLoad(op - InstructionIndex.ALOAD_0);
 				break;
 				
+				// Read instance field
+			case InstructionIndex.GETFIELD:
+				this.__runGetField(false, __i.<FieldReference>argument(0,
+					FieldReference.class));
+				break;
+				
 				// Read static field
 			case InstructionIndex.GETSTATIC:
 				this.__runGetField(true, __i.<FieldReference>argument(0,
@@ -220,6 +226,12 @@ public final class MethodProcessor
 			case InstructionIndex.INVOKESTATIC:
 				this.__runInvoke(InvokeType.STATIC, __i.
 					<MethodReference>argument(0, MethodReference.class));
+				break;
+				
+				// Put instance field
+			case InstructionIndex.PUTFIELD:
+				this.__runPutField(false, __i.<FieldReference>argument(0,
+					FieldReference.class));
 				break;
 				
 				// Put static field
