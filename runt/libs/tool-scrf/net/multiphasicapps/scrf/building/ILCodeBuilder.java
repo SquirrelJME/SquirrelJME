@@ -237,6 +237,25 @@ public final class ILCodeBuilder
 	}
 	
 	/**
+	 * Adds a write from a register to a given destination.
+	 *
+	 * @param __dest The destination memory location.
+	 * @param __src The source register.
+	 * @return The code location.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/02/24
+	 */
+	public final CodeLocation addWrite(MemoryLocation __dest,
+		RegisterLocation __src)
+		throws NullPointerException
+	{
+		if (__dest == null || __src == null)
+			throw new NullPointerException("NARG");
+		
+		return this.add(ILInstructionType.WRITE, __dest, __src);
+	}
+	
+	/**
 	 * Appends all of the instructions from another code builder to this one.
 	 *
 	 * @param __il The other code builder to append from.

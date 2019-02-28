@@ -222,6 +222,12 @@ public final class MethodProcessor
 					<MethodReference>argument(0, MethodReference.class));
 				break;
 				
+				// Put static field
+			case InstructionIndex.PUTSTATIC:
+				this.__runPutField(true, __i.<FieldReference>argument(0,
+					FieldReference.class));
+				break;
+				
 				// Return from method
 			case InstructionIndex.RETURN:
 				codebuilder.addReturn(new RegisterLocation(-1));
@@ -354,5 +360,31 @@ public final class MethodProcessor
 		
 		// Add copy operation
 		return this.codebuilder.addCopy(sp.register, lf.register);
+	}
+	
+	/**
+	 * Handles put of field.
+	 *
+	 * @param __s Is this static?
+	 * @param __f Field reference.
+	 * @return The location of added code.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/02/24
+	 */
+	private final CodeLocation __runPutField(boolean __s, FieldReference __f)
+		throws NullPointerException
+	{
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
+		// Pop something
+		RegisterLocation src = this.state.stackPop().register;
+		
+		// Static field is an absolute address, while instance fields are
+		// always relative
+		if (__s)
+			return this.codebuilder.addWrite(this.dyntable.addField(__s, __f),
+				src);
+		throw new todo.TODO();
 	}
 }
