@@ -205,18 +205,19 @@ public final class ILCodeBuilder
 	 *
 	 * @param __dest The destination register.
 	 * @param __src The source memory location.
+	 * @param __off Offset from the source address.
 	 * @return The code location.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/02/24
 	 */
 	public final CodeLocation addRead(RegisterLocation __dest,
-		MemoryLocation __src)
+		MemoryLocation __src, MemoryOffset __off)
 		throws NullPointerException
 	{
-		if (__dest == null || __src == null)
+		if (__dest == null || __src == null || __off == null)
 			throw new NullPointerException("NARG");
 		
-		return this.add(ILInstructionType.READ, __dest, __src);
+		return this.add(ILInstructionType.READ, __dest, __src, __off);
 	}
 	
 	/**
@@ -240,19 +241,20 @@ public final class ILCodeBuilder
 	 * Adds a write from a register to a given destination.
 	 *
 	 * @param __dest The destination memory location.
+	 * @param __off Offset from the destination.
 	 * @param __src The source register.
 	 * @return The code location.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/02/24
 	 */
 	public final CodeLocation addWrite(MemoryLocation __dest,
-		RegisterLocation __src)
+		MemoryOffset __off, RegisterLocation __src)
 		throws NullPointerException
 	{
-		if (__dest == null || __src == null)
+		if (__dest == null || __off == null || __src == null)
 			throw new NullPointerException("NARG");
 		
-		return this.add(ILInstructionType.WRITE, __dest, __src);
+		return this.add(ILInstructionType.WRITE, __dest, __off, __src);
 	}
 	
 	/**
