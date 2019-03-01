@@ -1,0 +1,14 @@
+# 2019/02/28
+
+## 08:21
+
+I think for read and write of fields it should be simple and the read/write
+ops should just be relative memory read/write with offsets. I also will need
+coerced things as well. So a `MemoryOffset` class along with a
+`RegisterLocationAsMemoryOffset` and `RegisterLocationAsMemoryAddress`.
+
+## 18:23
+
+Okay so, the various types and such are kinda messy. I definitely a better way
+to refer to things which are in the vtable, stuff that are in offsets.
+Something that is not a complete mess.
