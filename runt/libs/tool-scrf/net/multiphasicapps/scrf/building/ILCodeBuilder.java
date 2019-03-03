@@ -19,6 +19,7 @@ import net.multiphasicapps.scrf.ILCode;
 import net.multiphasicapps.scrf.ILInstruction;
 import net.multiphasicapps.scrf.ILInstructionType;
 import net.multiphasicapps.scrf.ILPointerConstCompareType;
+import net.multiphasicapps.scrf.InterpretAs;
 import net.multiphasicapps.scrf.MemoryLocation;
 import net.multiphasicapps.scrf.RegisterLocation;
 import net.multiphasicapps.scrf.SummerFormatException;
@@ -211,7 +212,7 @@ public final class ILCodeBuilder
 	 * @since 2019/02/24
 	 */
 	public final CodeLocation addRead(RegisterLocation __dest,
-		MemoryLocation __src, MemoryOffset __off)
+		MemoryLocation __src, Object __off)
 		throws NullPointerException
 	{
 		if (__dest == null || __src == null || __off == null)
@@ -248,7 +249,7 @@ public final class ILCodeBuilder
 	 * @since 2019/02/24
 	 */
 	public final CodeLocation addWrite(MemoryLocation __dest,
-		MemoryOffset __off, RegisterLocation __src)
+		Object __off, RegisterLocation __src)
 		throws NullPointerException
 	{
 		if (__dest == null || __off == null || __src == null)
