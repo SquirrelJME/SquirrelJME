@@ -15,6 +15,7 @@ package net.multiphasicapps.scrf;
  *
  * @since 2019/02/28
  */
+@Deprecated
 public final class RegisterLocationAsMemoryOffset
 	implements MemoryOffset
 {

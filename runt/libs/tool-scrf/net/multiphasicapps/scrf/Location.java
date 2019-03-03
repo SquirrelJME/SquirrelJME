@@ -16,6 +16,7 @@ package net.multiphasicapps.scrf;
  *
  * @since 2019/02/16
  */
+@Deprecated
 public interface Location
 {
 }
