@@ -30,6 +30,9 @@ public enum InterpretType
 	/** Interpret as the index of a an entry in the VTable. */
 	VTABLE_INDEX,
 	
+	/** Interpret as an index to an instruction. */
+	INSTRUCTION_INDEX,
+	
 	/** End. */
 	;
 }
