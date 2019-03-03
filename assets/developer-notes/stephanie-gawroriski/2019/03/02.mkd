@@ -1,0 +1,6 @@
+# 2019/03/02
+
+## 18:45
+
+So, not really happy with the instruction representation with the various
+memory types and such.
