@@ -15,6 +15,7 @@ package net.multiphasicapps.scrf;
  *
  * @since 2019/02/23
  */
+@Deprecated
 public interface MemoryLocation
 	extends Location
 {

@@ -19,6 +19,7 @@ import java.lang.ref.WeakReference;
  *
  * @since 2019/02/16
  */
+@Deprecated
 public final class RegisterLocation
 	implements Location
 {

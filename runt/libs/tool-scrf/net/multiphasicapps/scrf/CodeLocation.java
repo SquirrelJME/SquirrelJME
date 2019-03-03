@@ -18,6 +18,7 @@ import java.lang.ref.WeakReference;
  *
  * @since 2019/02/23
  */
+@Deprecated
 public final class CodeLocation
 {
 	/** The index of the instruction. */
