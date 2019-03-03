@@ -287,6 +287,8 @@ public final class MethodProcessor
 		if (__f == null)
 			throw new NullPointerException("NARG");
 		
+		throw new todo.TODO();
+		/*
 		// Always will be pushed
 		RegisterLocation dest = this.state.stackPush(new JavaType(
 			__f.memberType())).register;
@@ -297,6 +299,7 @@ public final class MethodProcessor
 			return this.codebuilder.addRead(dest,
 				this.dyntable.addField(__s, __f));
 		throw new todo.TODO();
+		*/
 	}
 	
 	/**
@@ -389,6 +392,8 @@ public final class MethodProcessor
 		if (__f == null)
 			throw new NullPointerException("NARG");
 		
+		throw new todo.TODO();
+		/*
 		// Pop something
 		RegisterLocation src = this.state.stackPop().register;
 		
@@ -398,5 +403,6 @@ public final class MethodProcessor
 			return this.codebuilder.addWrite(this.dyntable.addField(__s, __f),
 				src);
 		throw new todo.TODO();
+		*/
 	}
 }
