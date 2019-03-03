@@ -24,11 +24,11 @@ public enum InterpretType
 	/** Interpret as a register which contains a value. */
 	REGISTER_VALUE,
 	
-	/** Interpret as a value contained within the given VTable index. */
-	VTABLE_VALUE,
+	/** Interpret as a value contained within the given DynTable index. */
+	DYNTABLE_VALUE,
 	
-	/** Interpret as the index of a an entry in the VTable. */
-	VTABLE_INDEX,
+	/** Interpret as the index of a an entry in the DynTable. */
+	DYNTABLE_INDEX,
 	
 	/** Interpret as an index to an instruction. */
 	INSTRUCTION_INDEX,
