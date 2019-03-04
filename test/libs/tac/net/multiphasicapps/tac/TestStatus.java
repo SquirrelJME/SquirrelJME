@@ -29,6 +29,9 @@ public enum TestStatus
 	/** Test was not run yet. */
 	NOT_RUN,
 	
+	/** Untestable. */
+	UNTESTABLE,
+	
 	/** End. */
 	;
 }
