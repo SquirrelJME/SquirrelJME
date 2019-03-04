@@ -10,6 +10,8 @@
 
 import javax.microedition.rms.RecordStore;
 
+import cc.squirreljme.runtime.cldc.lang.ApiLevel;
+
 /**
  * Tests that nothing is done on the record.
  *
@@ -25,6 +27,9 @@ public class TestNothing
 	@Override
 	public Object test(RecordStore __rs)
 	{
+		// Needs RMS support first
+		this.testApiLevel(ApiLevel.UNDEFINED);
+		
 		return null;
 	}
 }

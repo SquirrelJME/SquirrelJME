@@ -29,6 +29,10 @@ public final class ApiLevel
 	public static final int CURRENT_LEVEL =
 		SystemProperties.apiLevel();
 	
+	/** Undefined. */
+	public static final int UNDEFINED =
+		0x7FFFFFFF;
+	
 	/** SquirrelJME 0.2.0 (December 25, 2018). */
 	public static final int LEVEL_SQUIRRELJME_0_2_0_20181225 =
 		2_0_18359;
