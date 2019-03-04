@@ -17,6 +17,7 @@ package net.multiphasicapps.tac;
  * @since 2019/03/04
  */
 public class UntestableException
+	extends RuntimeException
 {
 	/**
 	 * Initialize the exception with no message or cause.

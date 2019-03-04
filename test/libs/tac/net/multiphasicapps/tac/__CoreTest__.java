@@ -58,6 +58,22 @@ abstract class __CoreTest__
 		throws Throwable;
 	
 	/**
+	 * Tests the minimum API level.
+	 *
+	 * @param __lv The level to test.
+	 * @throws InvalidTestException If the API level is not met.
+	 * @since 2019/03/14
+	 */
+	public final void checkApiLevel(int __lv)
+		throws InvalidTestException
+	{
+		// {@squirreljme.error BU0b Minimum API level has not been met.
+		// (The required API level)}
+		if (!ApiLevel.minimumLevel(__lv))
+			throw new InvalidTestException(String.format("BU0b %x", __lv));
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/10/06
 	 */
@@ -145,8 +161,14 @@ abstract class __CoreTest__
 		// Cannot be tested
 		catch (UntestableException e)
 		{
+			// {@squirreljme.error BU0d Test could not be ran.
+			// (The given test)}
+			System.err.printf("BU0d %s%n", classname);
+			e.printStackTrace(System.err);
+			
+			// Cannot be tested so it shall fail
 			this._status = TestStatus.UNTESTABLE;
-			return 0;
+			return;
 		}
 		
 		// Test failure
@@ -338,22 +360,6 @@ abstract class __CoreTest__
 	public final TestStatus status()
 	{
 		return this._status;
-	}
-	
-	/**
-	 * Tests the minimum API level.
-	 *
-	 * @param __lv The level to test.
-	 * @throws InvalidTestException If the API level is not met.
-	 * @since 2019/03/14
-	 */
-	public final void testApiLevel(int __lv)
-		throws InvalidTestException
-	{
-		// {@squirreljme.error BU0b Minimum API level has not been met.
-		// (The required API level)}
-		if (!ApiLevel.minimumLevel(__lv))
-			throw new InvalidTestException(String.format("BU0b %x", __lv));
 	}
 	
 	/**

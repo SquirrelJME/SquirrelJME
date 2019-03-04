@@ -27,8 +27,7 @@ public class TestDisplay
 	@Override
 	public void test()
 	{
-		Display[] displays = Display.getDisplays(0);
-		return (displays != null && displays.length >= 1);
+		__Utils__.getDisplay();
 	}
 }
 
