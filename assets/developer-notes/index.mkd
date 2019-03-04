@@ -2092,8 +2092,8 @@
 
  * `--` `--` `--` `--` `--` 
 [**`01`**](stephanie-gawroriski/2019/03/01.mkd)
-`02`
- * `03`
+[**`02`**](stephanie-gawroriski/2019/03/02.mkd)
+ * [**`03`**](stephanie-gawroriski/2019/03/03.mkd)
 `04`
 `05`
 `06`
