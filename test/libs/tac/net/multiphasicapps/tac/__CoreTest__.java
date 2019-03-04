@@ -140,6 +140,15 @@ abstract class __CoreTest__
 			rv = this.__runTest(args);
 			thrown = new __NoExceptionThrown__();
 		}
+		
+		// Cannot be tested
+		catch (UntestableException e)
+		{
+			this._status = TestStatus.UNTESTABLE;
+			return 0;
+		}
+		
+		// Test failure
 		catch (Throwable t)
 		{
 			// The test parameter is not valid, so whoops!
