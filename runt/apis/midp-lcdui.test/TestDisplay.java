@@ -28,8 +28,7 @@ public class TestDisplay
 	public void test()
 	{
 		Display[] displays = Display.getDisplays(0);
-		
-		throw new todo.TODO();
+		return (displays != null && displays.length >= 1);
 	}
 }
 
