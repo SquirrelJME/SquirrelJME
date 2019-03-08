@@ -1,0 +1,7 @@
+# 2019/03/07
+
+## 8:48
+
+Okay so, I think what I actually need to do is keep this simplified and have
+it just be a register format for Java instructions. So just map one to one
+pretty much and that keeps it simpler.
