@@ -52,9 +52,16 @@ public class SummerCoatFactory
 		// Setup root machine which has our base suite manager
 		RootMachine rm = new RootMachine(__sm, __ps, __gd);
 		
+		// Need to map to cached VMs
+		CachingSuiteManager suites = rm.suites;
+		int n = __cp.length;
+		CachingClassLibrary[] libs = new CachingClassLibrary[n];
+		for (int i = 0; i < n; i++)
+			libs[i] = suites.loadLibrary(__cp[i]);
+		
 		// Now create the starting main task
 		return new ExitAwaiter(rm.statuses,
-			rm.createTask(__cp, __maincl, __ismid, __sprops, __args).status);
+			rm.createTask(libs, __maincl, __ismid, __sprops, __args).status);
 	}
 }
 

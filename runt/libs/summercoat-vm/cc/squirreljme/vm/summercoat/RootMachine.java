@@ -28,7 +28,7 @@ import net.multiphasicapps.profiler.ProfilerSnapshot;
 public final class RootMachine
 {
 	/** The manager for suites. */
-	protected final VMSuiteManager suites;
+	protected final CachingSuiteManager suites;
 	
 	/** The profiler information output. */
 	protected final ProfilerSnapshot profiler;
@@ -55,7 +55,7 @@ public final class RootMachine
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		this.suites = __s;
+		this.suites = new CachingSuiteManager(__s);
 		this.profiler = __p;
 		this.baseguestdepth = __gd;
 	}
@@ -76,8 +76,9 @@ public final class RootMachine
 	 * @throws VMException If the task could not be initialized.
 	 * @since 2019/01/01
 	 */
-	public final RunningTask createTask(VMClassLibrary[] __cp, String __maincl,
-		boolean __ismid, Map<String, String> __sprops, String[] __args)
+	public final RunningTask createTask(CachingClassLibrary[] __cp,
+		String __maincl, boolean __ismid, Map<String, String> __sprops,
+		String[] __args)
 		throws NullPointerException, VMException
 	{
 		if (__cp == null || __maincl == null)
@@ -90,7 +91,7 @@ public final class RootMachine
 		__args = (__args == null ? new String[0] : __args.clone());
 		
 		// Check for nulls
-		for (VMClassLibrary l : __cp)
+		for (CachingClassLibrary l : __cp)
 			if (l == null)
 				throw new NullPointerException("NARG");
 		for (String s : __args)
@@ -107,6 +108,7 @@ public final class RootMachine
 		// information that is needed, it needs our system properties and the
 		// classpath since they both may be accessed
 		ClassLoader cl;
+		CachingSuiteManager suites = this.suites;
 		TaskStatus status = this.statuses.createNew(
 			(cl = new ClassLoader(suites, __cp)),
 			__sprops, this.profiler);

@@ -31,14 +31,14 @@ import net.multiphasicapps.classfile.ClassName;
 public final class ClassLoader
 {
 	/** The suite manager. */
-	protected final VMSuiteManager suites;
+	protected final CachingSuiteManager suites;
 	
 	/** Loaded class cache. */
 	private final Map<ClassName, LoadedClass> _classes =
 		new HashMap<>();
 	
 	/** The classes in the class path. */
-	private final VMClassLibrary[] _classpath;
+	private final CachingClassLibrary[] _classpath;
 	
 	/**
 	 * Initializes the class loader.
@@ -48,7 +48,7 @@ public final class ClassLoader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/01/05
 	 */
-	public ClassLoader(VMSuiteManager __sm, VMClassLibrary[] __cp)
+	public ClassLoader(CachingSuiteManager __sm, CachingClassLibrary[] __cp)
 		throws NullPointerException
 	{
 		if (__sm == null || __cp == null)
@@ -103,7 +103,7 @@ public final class ClassLoader
 			// If this is a primitive type or array then it is a special thing
 			// and will not be in a resource
 			ClassFile cf;
-			VMClassLibrary inlib;
+			CachingClassLibrary inlib;
 			if (__n.isPrimitive() || __n.isArray())
 			{
 				cf = ClassFile.special(__n.field());
@@ -116,35 +116,14 @@ public final class ClassLoader
 				// This is the class that is read, in binary form
 				String fileform = __n.toString() + ".class";
 				
-				// Go through our classpath looking for this class in its
-				// resource format
+				// Load the raw class file since we need that information
 				cf = null;
 				inlib = null;
-				for (VMClassLibrary b : this._classpath)
-					try (InputStream in = b.resourceAsStream(fileform))
+				for (CachingClassLibrary b : this._classpath)
+					if (null != (cf = b.cacheClassFile(fileform)))
 					{
-						// Not found
-						if (in == null)
-							continue;
-						
-						// Load it
-						cf = ClassFile.decode(in);
 						inlib = b;
-						
-						// Stop
 						break;
-					}
-					catch (InvalidClassFormatException e)
-					{
-						// {@squirreljme.error AE05 The class is not formatted
-						// correctly. (The class name)}
-						throw new VMException("AE05 " + __n, e);
-					}
-					catch (IOException e)
-					{
-						// {@squirreljme.error AE04 Read error trying to read
-						// the class file. (The class)}
-						throw new VMException("AE04 " + __n, e);
 					}
 				
 				// {@squirreljme.error AE03 Could not find the specified class.
