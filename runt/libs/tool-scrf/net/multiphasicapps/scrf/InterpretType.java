@@ -16,6 +16,7 @@ package net.multiphasicapps.scrf;
  *
  * @since 2019/03/03
  */
+@Deprecated
 public enum InterpretType
 {
 	/** Interpret value as purely a constant value. */
