@@ -59,6 +59,9 @@ public final class Method
 	/** The method byte code. */
 	private Reference<ByteCode> _bytecode;
 	
+	/** Register code. */
+	private Reference<RegisterCode> _regcode;
+	
 	/** Name and type reference. */
 	private Reference<MethodNameAndType> _nameandtype;
 	
@@ -238,6 +241,25 @@ public final class Method
 	public final Pool pool()
 	{
 		return this.pool;
+	}
+	
+	/**
+	 * Returns the code of this method in a register based format that is
+	 * more efficient than pure Java byte code.
+	 *
+	 * @return The code of this method in a register based format.
+	 * @since 2019/03/09
+	 */
+	public final RegisterCode registerCode()
+	{
+		Reference<RegisterCode> ref = this._regcode;
+		RegisterCode rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._regcode = new WeakReference<>(
+				(rv = RegisterCode.of(this.byteCode())));
+		
+		return rv;
 	}
 	
 	/**
