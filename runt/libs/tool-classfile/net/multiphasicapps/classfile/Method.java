@@ -252,6 +252,12 @@ public final class Method
 	 */
 	public final RegisterCode registerCode()
 	{
+		// If there is no code atribute there is no byte code
+		byte[] rawcodeattr = this._rawcodeattr;
+		if (rawcodeattr == null)
+			return null;
+		
+		// Cache it
 		Reference<RegisterCode> ref = this._regcode;
 		RegisterCode rv;
 		
