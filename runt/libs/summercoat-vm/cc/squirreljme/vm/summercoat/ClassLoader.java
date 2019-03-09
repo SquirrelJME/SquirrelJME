@@ -22,8 +22,6 @@ import java.util.Map;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
-import net.multiphasicapps.scrf.SummerClass;
-import net.multiphasicapps.scrf.SummerFormatException;
 
 /**
  * This is a class loader which manages and can cache multiple classes.
@@ -153,19 +151,6 @@ public final class ClassLoader
 				// (The name of the class)}
 				if (cf == null || inlib == null)
 					throw new VMClassNotFoundException("AE03 " + __n);
-			}
-			
-			// Process the class and compile it to the register format
-			SummerClass rc;
-			try
-			{
-				rc = SummerClass.ofClassFile(cf);
-			}
-			catch (SummerFormatException e)
-			{
-				// {@squirreljme.error AE06 The register compiler could not
-				// process the input class. (The class)}
-				throw new VMException("AE06 " + __n, e);
 			}
 			
 			throw new todo.TODO();
