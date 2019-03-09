@@ -5,7 +5,7 @@ X-SquirrelJME-Name: SummerCoat Virtual Machine
 X-SquirrelJME-Vendor: Stephanie Gawroriski
 X-SquirrelJME-Version: 0.3.0
 X-SquirrelJME-Depends: tool-classfile tool-manifest-reader meep-swm 
- tool-profiler meep-midlet common-vm tool-scrf
+ tool-profiler meep-midlet common-vm
 X-SquirrelJME-Description: This is the SummerCoat VM which is a more 
  optimized register based virtual machine which should result in faster 
  code execution.
