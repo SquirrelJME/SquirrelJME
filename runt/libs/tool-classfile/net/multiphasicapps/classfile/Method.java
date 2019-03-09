@@ -50,6 +50,9 @@ public final class Method
 	/** The type of the method. */
 	protected final MethodDescriptor methodtype;
 	
+	/** Does this method have code? */
+	protected final boolean hascode;
+	
 	/** Annotated values. */
 	private final AnnotationTable annotations;
 	
@@ -103,6 +106,7 @@ public final class Method
 		this.methodtype = __mt;
 		this.annotations = __avs;
 		this._rawcodeattr = __mc;
+		this.hascode = !__mf.isNative() && !__mf.isAbstract();
 	}
 	
 	/**
@@ -127,7 +131,7 @@ public final class Method
 	{
 		// If there is no code atribute there is no byte code
 		byte[] rawcodeattr = this._rawcodeattr;
-		if (rawcodeattr == null)
+		if (!this.hascode)
 			return null;
 		
 		// Otherwise load a representation of it
@@ -252,9 +256,8 @@ public final class Method
 	 */
 	public final RegisterCode registerCode()
 	{
-		// If there is no code atribute there is no byte code
-		byte[] rawcodeattr = this._rawcodeattr;
-		if (rawcodeattr == null)
+		// Abstract and native methods have no code
+		if (!this.hascode)
 			return null;
 		
 		// Cache it
