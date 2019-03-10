@@ -12,6 +12,7 @@ package net.multiphasicapps.classfile.mini;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -26,6 +27,45 @@ import net.multiphasicapps.classfile.InvalidClassFormatException;
  */
 public final class Minimizer
 {
+	/** The class file to minimize. */
+	protected final ClassFile input;
+	
+	/**
+	 * Initializes the minimizer.
+	 *
+	 * @param __cf The class to minimize.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/10
+	 */
+	private Minimizer(ClassFile __cf)
+		throws NullPointerException
+	{
+		if (__cf == null)
+			throw new NullPointerException("NARG");
+		
+		this.input = __cf;
+	}
+	
+	/**
+	 * Performs the minimization process.
+	 *
+	 * @param __dos The stream to write the result to.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/10
+	 */
+	private final void __run(DataOutputStream __dos)
+		throws IOException, NullPointerException
+	{
+		if (__dos == null)
+			throw new NullPointerException("NARG");
+		
+		// Write magic number to specify this format
+		__dos.writeInt(MinimizedClassFile.MAGIC_NUMBER);
+		
+		throw new todo.TODO();
+	}
+	
 	/**
 	 * Minimizes the given class and returns the minimized version of it.
 	 *
@@ -81,7 +121,7 @@ public final class Minimizer
 		if (__cf == null || __os == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		new Minimizer(__cf).__run(new DataOutputStream(__os));
 	}
 }
 

@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.classfile.mini;
 
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
@@ -23,6 +24,10 @@ import net.multiphasicapps.classfile.InvalidClassFormatException;
  */
 public final class MinimizedClassFile
 {
+	/** The magic number for the files. */
+	public static final int MAGIC_NUMBER =
+		0x00586572;
+	
 	/**
 	 * Decodes and returns the minimized representation of the class file.
 	 *
@@ -39,6 +44,13 @@ public final class MinimizedClassFile
 	{
 		if (__is == null)
 			throw new NullPointerException("NARG");
+		
+		// Wrap stream for reading
+		DataInputStream dis = new DataInputStream(__is);
+		
+		// {@squirreljme.error JC2l Invalid minimized class magic number.}
+		if (MAGIC_NUMBER != dis.readInt())
+			throw new InvalidClassFormatException("JC2l");
 		
 		throw new todo.TODO();
 	}
