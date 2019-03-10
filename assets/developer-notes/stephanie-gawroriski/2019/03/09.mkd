@@ -1,0 +1,52 @@
+# 2019/03/09
+
+## 08:19
+
+Okay, maybe I have been complicating things a bit for SummerCoat. I think the
+thing I should do in this case is do the direct stack to register translation
+but that code could all exist in the `tool-classfile` project. It will be like
+I planned before, literally a 1:1 mapping of a `ClassFile` to a
+`RegisterClassFile`. It will be simple. I shall keep a bunch of the Java
+semantics accordingly. I will use this as a stepping stone between SpringCoat
+and SummerCoat. Or... I could just make it SummerCoat. This simplifies the
+scope of SummerCoat and it will be executable faster. I definitely think
+simplifying the scope of SummerCoat would be the simplest. Although the thing
+is not all projects would need this register translated class file, so it
+would be best in another project. But effectively it will be the same exact
+thing. This would be the simplest, AutumnCoat can instead become the more
+optimized version of the register code once I have figured everything out.
+As it stands, take things simpler rather than jumping through too much
+complexity.
+
+## 08:27
+
+Actually, it can be in the same place... Methods have code and for the most
+part the only difference between class files and register class files is the
+byte code. So I am just going to extend the method stuff so that there is a
+`RegisterCode` that can be obtained from a method. This is the simplest and
+reduces so much work that is needed.
+
+## 08:36
+
+Was thinking of unfolding exceptions but I think that is too complicated. I
+think what I will need though is a serialization of class files and class
+files in the register format.
+
+## 09:04
+
+Okay I just got an idea, for SummerCoat it will be a rewrite/refactor of
+SpringCoat. Then once that is fully executed it will then use the register
+based execution method. This way I can have a fully working virtual machine
+even though it will essentially initially be a duplicate of SpringCoat. I
+think this is better because I can see how much faster it will be even if
+it is still stack based. Then I will add an execution engine on top which is
+able to use the register code format for execution and such. I think this is
+a good first step duplicating everything because then I can say optimize
+everything and such. Then I can compound and build on top. Then eventually
+when AutumnCoat comes around with a more optimized class and register format
+I can modify SummerCoat to handle that as well.
+
+## 13:09
+
+I will make a caching suite manager so that class files need not be loaded
+multiple times and such.
