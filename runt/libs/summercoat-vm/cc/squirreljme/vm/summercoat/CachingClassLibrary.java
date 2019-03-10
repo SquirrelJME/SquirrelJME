@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.Map;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
+import net.multiphasicapps.classfile.mini.MinimizedClassFile;
+import net.multiphasicapps.classfile.mini.Minimizer;
 
 /**
  * This is a class which caches classes within class libraries, it is intended
@@ -31,7 +33,7 @@ public final class CachingClassLibrary
 	protected final VMClassLibrary library;
 	
 	/** Loaded class files that have been cached. */
-	protected final Map<String, ClassFile> _cache =
+	protected final Map<String, MinimizedClassFile> _cache =
 		new HashMap<>();
 	
 	/**
@@ -54,56 +56,67 @@ public final class CachingClassLibrary
 	 * Checks the cache if the given file as been loaded as a class and returns
 	 * it, otherwise it is cached.
 	 *
-	 * @param __fn The file name to cache as a class.
+	 * @param __bn The binary name to cache as a class.
 	 * @return The cached class file or {@code null} if it does not exist.
 	 * @throws NullPointerException On null arguments.
 	 * @throws VMException If the class could not load properly.
 	 * @since 2019/03/09
 	 */
-	public final ClassFile cacheClassFile(String __fn)
+	public final MinimizedClassFile cacheClass(String __bn)
 		throws NullPointerException, VMException
 	{
-		if (__fn == null)
+		if (__bn == null)
 			throw new NullPointerException("NARG");
 		
 		// Check the cache
-		Map<String, ClassFile> cache = this._cache;
+		Map<String, MinimizedClassFile> cache = this._cache;
 		synchronized (this)
 		{
 			// Pre-cached to either exist or not exist, use that given status
 			// to prevent multiple lookups of unknown classes
-			ClassFile rv = cache.get(__fn);
-			if (cache.containsKey(__fn))
+			MinimizedClassFile rv = cache.get(__bn);
+			if (cache.containsKey(__bn))
 				return rv;
 			
-			// Try loading the class
-			try (InputStream in = this.library.resourceAsStream(__fn))
+			// Just going to look in our own library
+			VMClassLibrary library = this.library;
+			
+			try
 			{
-				// Not found
-				if (in == null)
-				{
-					cache.put(__fn, null);
-					return null;
-				}
+				// Load already cached minimized class?
+				if (rv == null)
+					try (InputStream in = library.resourceAsStream(
+						__bn + ".sjz"))
+					{
+						// Load it?
+						if (in != null)
+							rv = MinimizedClassFile.decode(in);
+					}
 				
-				// Load it
-				rv = ClassFile.decode(in);
+				// Minimize plain class file?
+				if (rv == null)
+					try (InputStream in = library.resourceAsStream(
+						__bn + ".class"))
+					{
+						if (in != null)
+							rv = Minimizer.minimize(ClassFile.decode(in));
+					}
 			}
 			catch (InvalidClassFormatException e)
 			{
 				// {@squirreljme.error AE05 The class is not formatted
 				// correctly. (The class name)}
-				throw new VMException("AE05 " + __fn, e);
+				throw new VMException("AE05 " + __bn, e);
 			}
 			catch (IOException e)
 			{
 				// {@squirreljme.error AE04 Read error trying to read
 				// the class file. (The class)}
-				throw new VMException("AE04 " + __fn, e);
+				throw new VMException("AE04 " + __bn, e);
 			}
 			
-			// Cache it
-			cache.put(__fn, rv);
+			// Cache it, even it null it will be cached as null
+			cache.put(__bn, rv);
 			return rv;
 		}
 	}
