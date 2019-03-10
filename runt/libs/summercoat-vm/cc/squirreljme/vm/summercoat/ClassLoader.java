@@ -22,6 +22,7 @@ import java.util.Map;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.mini.Minimizer;
 
 /**
  * This is a class loader which manages and can cache multiple classes.
