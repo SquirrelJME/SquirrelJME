@@ -19,9 +19,10 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
-import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.InvalidClassFormatException;
+import net.multiphasicapps.classfile.mini.MinimizedClassFile;
 import net.multiphasicapps.classfile.mini.Minimizer;
 
 /**
@@ -101,27 +102,32 @@ public final class ClassLoader
 			if (rv != null)
 				return rv;
 			
+			// Resulting minimized class and the library it is within
+			MinimizedClassFile cf;
+			CachingClassLibrary inlib;
+			
 			// If this is a primitive type or array then it is a special thing
 			// and will not be in a resource
-			ClassFile cf;
-			CachingClassLibrary inlib;
 			if (__n.isPrimitive() || __n.isArray())
 			{
-				cf = ClassFile.special(__n.field());
+				// Just minimize these dynamically generated classes
+				cf = Minimizer.minimize(ClassFile.special(__n.field()));
 				inlib = null;
 			}
 			
 			// Load class from resource instead
 			else
 			{
-				// This is the class that is read, in binary form
-				String fileform = __n.toString() + ".class";
-				
-				// Load the raw class file since we need that information
+				// Nothing is found initially yet
 				cf = null;
 				inlib = null;
+				
+				// The name to check, multiple extensions will be used!
+				String basename = __n.toString();
+				
+				// Go through each library and check cache for the class data
 				for (CachingClassLibrary b : this._classpath)
-					if (null != (cf = b.cacheClassFile(fileform)))
+					if (null != (cf = b.cacheClass(basename)))
 					{
 						inlib = b;
 						break;
