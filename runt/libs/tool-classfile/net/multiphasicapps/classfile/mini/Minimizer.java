@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.Field;
@@ -90,8 +91,13 @@ public final class Minimizer
 		__TempFields__[] rv = new __TempFields__[]{
 			new __TempFields__(), new __TempFields__()};
 		
+		// Perform some sorting to optimize slightly and make the layout a
+		// bit friendlier
+		List<Field> sorted = new ArrayList<>(this.input.fields());
+		Collections.sort(sorted, new __MinimizerFieldSort__());
+		
 		// Process each field
-		for (Field f : this.input.fields())
+		for (Field f : sorted)
 		{
 			// These are stored in their own rows
 			__TempFields__ temp = rv[(f.flags().isStatic() ? 1 : 0)];
