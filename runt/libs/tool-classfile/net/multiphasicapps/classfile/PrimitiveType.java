@@ -45,6 +45,29 @@ public enum PrimitiveType
 	;
 	
 	/**
+	 * The number of bytes needed to store this type.
+	 *
+	 * @return The number of bytes required to store data for this type.
+	 * @since 2019/03/11
+	 */
+	public final int bytes()
+	{
+		switch (this)
+		{
+			case BOOLEAN:
+			case BYTE:		return 1;
+			case SHORT:
+			case CHARACTER:	return 2;
+			case INTEGER:
+			case FLOAT:		return 4;
+			case LONG:
+			case DOUBLE:	return 8;
+			default:
+				throw new RuntimeException("OOPS");
+		}
+	}
+	
+	/**
 	 * Is this a wide type?
 	 *
 	 * @return If this is a wide type.

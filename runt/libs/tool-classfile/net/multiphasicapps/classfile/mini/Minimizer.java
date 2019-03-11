@@ -16,8 +16,12 @@ import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import net.multiphasicapps.classfile.ClassFile;
+import net.multiphasicapps.classfile.Field;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
+import net.multiphasicapps.classfile.PrimitiveType;
 
 /**
  * This takes an input class file and translates it to the minimized format
@@ -29,6 +33,10 @@ public final class Minimizer
 {
 	/** The class file to minimize. */
 	protected final ClassFile input;
+	
+	/** The constant pool builder to use. */
+	protected final MinimizedPoolBuilder pool =
+		new MinimizedPoolBuilder();
 	
 	/**
 	 * Initializes the minimizer.
@@ -63,7 +71,59 @@ public final class Minimizer
 		// Write magic number to specify this format
 		__dos.writeInt(MinimizedClassFile.MAGIC_NUMBER);
 		
+		// Process all fields
+		__TempFields__[] fields = this.__doFields();
+		
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Process fields.
+	 *
+	 * @return The resulting fields, static and instance split into each.
+	 * @since 2019/03/11
+	 */
+	private final __TempFields__[] __doFields()
+	{
+		// Static and instance fields are split because they are stored
+		// in different places
+		__TempFields__[] rv = new __TempFields__[]{
+			new __TempFields__(), new __TempFields__()};
+		
+		// Process each field
+		for (Field f : this.input.fields())
+		{
+			// These are stored in their own rows
+			__TempFields__ temp = rv[(f.flags().isStatic() ? 1 : 0)];
+			
+			// Determine the size of this entry (and its alignment)
+			PrimitiveType pt = f.type().primitiveType();
+			int fsz = (pt == null ? 4 : pt.bytes());
+			
+			// Determine the base position and check if any alignment is needed
+			// assuming types of a given size are always aligned
+			int basep = (temp.bytes + (fsz - 1)) & ~(fsz - 1);
+			
+			// Build field information
+			MinimizedField q;
+			temp.fields.add((q = new MinimizedField(
+				f.flags().toJavaBits(),
+				basep,
+				fsz,
+				f.name(),
+				f.type(),
+				f.constantValue())));
+			
+			// Debug
+			todo.DEBUG.note("Add field %s", q);
+			
+			// Handle table sizes
+			temp.bytes = basep + fsz;
+			temp.count++;
+		}
+		
+		// Return static and instance fields
+		return rv;
 	}
 	
 	/**
