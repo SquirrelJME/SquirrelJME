@@ -28,8 +28,8 @@ public class TestClassLoad
 	public void test()
 		throws Throwable
 	{
-		for (String x : new String[]{"ByteDeque.class",
-			"InflaterInputStream.class"})
+		for (String x : new String[]{"ByteDeque.data",
+			"InflaterInputStream.data"})
 			try (InputStream in = TestClassLoad.class.getResourceAsStream(x))
 			{
 				ClassFile.decode(in);
