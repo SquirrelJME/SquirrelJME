@@ -1,0 +1,49 @@
+# 2019/03/10
+
+## 16:15
+
+Well thinking of things, using the class file and all of the other such this
+is going to really depend on many things and will not be that light where
+it could easily be made into RatufaCoat. I think what I need here is a
+minimizer of sorts that takes an input class file and turns it into a tinier
+format for easier loading and usage. Then I just use these minimized classes
+and such for running things. At least initially I do not have to go crazy in
+what I am doing, literally just making a mini format. I can read the class
+file although it would be a bit more complex of a format to parse especially
+considering the constant pool and all the variable length data. I can keep
+this in the classfile stuff, but I can have a convert to minified format which
+uses the same format as the class file except with alternative constant pools.
+It would be a proprietary format used for SquirrelJME. I mean all of the stuff
+uses the constant pool. In this case I would really just be using an optimized
+constant pool for things. I think this will be the first case, at least
+something that can output a lighter format for this reason. I do not need to
+go that far for things. Of course minified classes would be completely not
+compatible with standard JVMs but I could just reuse the format and such. But
+to signify mini classes, I can have a different major and minor version that
+is not normaly class file compatible but SquirrelJME knows about it. At least
+according to the version used. Of course what I think I need first is
+something which can output the same input classes and such.
+
+## 16:33
+
+So the `ClassFile` class is great for things, but it is not something that
+would result in a performant format for execution since it is expected that
+the JVM will do all the optimization itself. So I think even using this
+format is just going to needlessly complicate and slow things down. I
+definitely do though want a pre-mapped constant pool reference thing so that
+when a class is loaded those things are resolved as needed, at least after
+the base class structure has been loaded.
+
+## 16:36
+
+I do know what I need exactly to run a virtual machine and the current
+format just adds too much information for that. At least initialy for code I
+do not need to perform much translation for the byte code, it will just be
+for optimizing things essentially so it can be more easily used by the
+VM. Of course the end result as a guess should end up being faster with most
+of the cruft and checks in the format removed.
+
+## 17:02
+
+I should make a test for the actual class file parsing and such just to be
+sure that it works properly.
