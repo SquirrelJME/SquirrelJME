@@ -50,3 +50,10 @@ I can modify SummerCoat to handle that as well.
 
 I will make a caching suite manager so that class files need not be loaded
 multiple times and such.
+
+## 13:56
+
+As an alternative I can pre-lookup references classes in the constant pool
+instead of performing at run-time or similar. I think the best thing here
+would be to just that if an instruction uses something like a method it
+can just load cached information for that instruction point.
