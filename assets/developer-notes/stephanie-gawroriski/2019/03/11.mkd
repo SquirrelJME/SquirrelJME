@@ -1,0 +1,24 @@
+# 2019/03/11
+
+## 08:42
+
+So now I will be having to write the minimizing code.
+
+## 10:50
+
+Actually I need to update the project board first so I can get a grasp of
+what I have to do since I can set it all down in that moment.
+
+## 10:52
+
+Additionally while in the shower I thought that I should definitely use
+a register based format for the minimized format. That is much simpler to
+do and handle by the VM. Instead of having multiple execution engines which
+would complicate the design of the VM and such. I want to make writing VMs
+easier. It will still be a very 1:1 format however.
+
+## 14:58
+
+A simple and quick optimization I can do is sorting the fields so that they
+are in primitive size order, this way when it comes to how data is packed it
+is more efficient due to alignment requirements.
