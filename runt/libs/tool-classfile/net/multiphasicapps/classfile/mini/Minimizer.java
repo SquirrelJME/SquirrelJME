@@ -22,6 +22,7 @@ import java.util.List;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.Field;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
+import net.multiphasicapps.classfile.Method;
 import net.multiphasicapps.classfile.PrimitiveType;
 
 /**
@@ -73,7 +74,10 @@ public final class Minimizer
 		__dos.writeInt(MinimizedClassFile.MAGIC_NUMBER);
 		
 		// Process all fields
-		__TempFields__[] fields = this.__doFields();
+		__TempFields__[] fields = this.__doFields(); 
+		
+		// Process all methods
+		__TempMethods__[] methods = this.__doMethods();
 		
 		throw new todo.TODO();
 	}
@@ -129,6 +133,28 @@ public final class Minimizer
 		}
 		
 		// Return static and instance fields
+		return rv;
+	}
+	
+	/**
+	 * Processes all methods within the class.
+	 *
+	 * @return The processed static and instance methods.
+	 * @since 2019/03/13
+	 */
+	private final __TempMethods__[] __doMethods()
+	{
+		// Split static and instance methods to make them easier to locate
+		// accordingly
+		__TempMethods__[] rv = new __TempMethods__[]{
+			new __TempMethods__(), new __TempMethods__()};
+		
+		// Process each method
+		for (Method m : this.input.methods())
+		{
+			throw new todo.TODO();
+		}
+		
 		return rv;
 	}
 	
