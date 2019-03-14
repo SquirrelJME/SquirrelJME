@@ -8,7 +8,14 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.classfile;
+package net.multiphasicapps.classfile.register;
+
+import net.multiphasicapps.classfile.ByteCode;
+import net.multiphasicapps.classfile.Instruction;
+import net.multiphasicapps.classfile.InstructionIndex;
+import net.multiphasicapps.classfile.JavaType;
+import net.multiphasicapps.classfile.StackMapTable;
+import net.multiphasicapps.classfile.StackMapTableState;
 
 /**
  * This class is used to transform normal byte code into register code that
@@ -80,16 +87,42 @@ final class __Registerize__
 	/**
 	 * Processes a single instruction.
 	 *
-	 * @param __inst The instruction to process.
+	 * @param __i The instruction to process.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/14
 	 */
-	private final void __process(Instruction __inst)
+	private final void __process(Instruction __i)
 		throws NullPointerException
 	{
-		if (__inst == null)
+		if (__i == null)
 			throw new NullPointerException("NARG");
 		
+		// Depends on the operation to process
+		int op;
+		switch ((op = __i.operation()))
+		{
+			case InstructionIndex.ALOAD_0:
+			case InstructionIndex.ALOAD_1:
+			case InstructionIndex.ALOAD_2:
+			case InstructionIndex.ALOAD_3:
+				__runALoad(op - InstructionIndex.ALOAD_0);
+				break;
+			
+			default:
+				throw new todo.TODO(__i.toString());
+		}
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Loads single reference from a local to the stack.
+	 *
+	 * @param __l The reference to load.
+	 * @since 2019/03/14
+	 */
+	private final void __runALoad(int __l)
+	{
 		throw new todo.TODO();
 	}
 }
