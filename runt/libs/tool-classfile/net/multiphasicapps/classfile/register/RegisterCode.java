@@ -8,7 +8,9 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.classfile;
+package net.multiphasicapps.classfile.register;
+
+import net.multiphasicapps.classfile.ByteCode;
 
 /**
  * This is similar to {@link ByteCode} except that it instead of using a

@@ -8,7 +8,11 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.classfile;
+package net.multiphasicapps.classfile.register;
+
+import net.multiphasicapps.classfile.InvalidClassFormatException;
+import net.multiphasicapps.classfile.JavaType;
+import net.multiphasicapps.classfile.StackMapTableState;
 
 /**
  * This class contains the state of the Java stack, it gets initialized to

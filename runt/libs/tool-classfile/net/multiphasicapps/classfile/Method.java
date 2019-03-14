@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import net.multiphasicapps.classfile.register.RegisterCode;
 import net.multiphasicapps.collections.UnmodifiableArrayList;
 
 /**

@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.classfile;
+package net.multiphasicapps.classfile.register;
 
 import net.multiphasicapps.classfile.JavaType;
 
