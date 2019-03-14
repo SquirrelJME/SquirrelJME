@@ -23,6 +23,7 @@ import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.Field;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.Method;
+import net.multiphasicapps.classfile.MethodFlags;
 import net.multiphasicapps.classfile.PrimitiveType;
 
 /**
@@ -112,11 +113,11 @@ public final class Minimizer
 			
 			// Determine the base position and check if any alignment is needed
 			// assuming types of a given size are always aligned
-			int basep = (temp.bytes + (fsz - 1)) & ~(fsz - 1);
+			int basep = (temp._bytes + (fsz - 1)) & ~(fsz - 1);
 			
 			// Build field information
 			MinimizedField q;
-			temp.fields.add((q = new MinimizedField(
+			temp._fields.add((q = new MinimizedField(
 				f.flags().toJavaBits(),
 				basep,
 				fsz,
@@ -128,8 +129,8 @@ public final class Minimizer
 			todo.DEBUG.note("Add field %s", q);
 			
 			// Handle table sizes
-			temp.bytes = basep + fsz;
-			temp.count++;
+			temp._bytes = basep + fsz;
+			temp._count++;
 		}
 		
 		// Return static and instance fields
@@ -152,7 +153,22 @@ public final class Minimizer
 		// Process each method
 		for (Method m : this.input.methods())
 		{
-			throw new todo.TODO();
+			// These are stored in their own rows
+			__TempMethods__ temp = rv[(m.flags().isStatic() ? 1 : 0)];
+			
+			// Need to translate and serialize the byte code into a register
+			// form and remap any used references.
+			MethodFlags mf = m.flags();
+			byte[] transcode = null;
+			if (!mf.isAbstract() && !mf.isNative())
+				throw new todo.TODO();
+			
+			// Add method
+			temp._methods.add(new MinimizedMethod(mf.toJavaBits(), temp._count,
+				m.name(), m.type(), transcode));
+			
+			// Quick count for used methods
+			temp._count++;
 		}
 		
 		return rv;

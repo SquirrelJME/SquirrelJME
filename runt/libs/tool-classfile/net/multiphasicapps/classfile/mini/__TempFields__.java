@@ -21,13 +21,13 @@ import java.util.List;
 final class __TempFields__
 {
 	/** The fields in the table. */
-	final List<MinimizedField> fields =
+	final List<MinimizedField> _fields =
 		new ArrayList<>();
 	
 	/** The number of fields in the table. */
-	int count;
+	int _count;
 	
 	/** The current byte size of the field table. */
-	int bytes;
+	int _bytes;
 }
 

@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.classfile.mini;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Contains temporary method information.
  *
@@ -17,5 +20,11 @@ package net.multiphasicapps.classfile.mini;
  */
 final class __TempMethods__
 {
+	/** The methods in this table. */
+	final List<MinimizedMethod> _methods =
+		new ArrayList<>();
+	
+	/** The number of methods that are available. */
+	int _count;
 }
 
