@@ -1,0 +1,5 @@
+# 2019/03/13
+
+## 11:15
+
+I should definitely refactor my `Set` implementation.
