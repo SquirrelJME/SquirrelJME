@@ -164,8 +164,12 @@ public final class Minimizer
 				throw new todo.TODO();
 			
 			// Add method
-			temp._methods.add(new MinimizedMethod(mf.toJavaBits(), temp._count,
-				m.name(), m.type(), transcode));
+			MinimizedMethod q;
+			temp._methods.add((q = new MinimizedMethod(mf.toJavaBits(),
+				temp._count, m.name(), m.type(), transcode)));
+			
+			// Debug
+			todo.DEBUG.note("Add method %s", q);
 			
 			// Quick count for used methods
 			temp._count++;
