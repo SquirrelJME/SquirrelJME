@@ -21,6 +21,12 @@ final class __Registerize__
 	/** The input byte code to translate. */
 	protected final ByteCode bytecode;
 	
+	/** The state of the stack. */
+	protected final __StackState__ stack;
+	
+	/** The stack map table. */
+	protected final StackMapTable stackmap;
+	
 	/**
 	 * Converts the input byte code to a register based code.
 	 *
@@ -35,6 +41,8 @@ final class __Registerize__
 			throw new NullPointerException("NARG");
 		
 		this.bytecode = __bc;
+		this.stackmap = __bc.stackMapTable();
+		this.stack = new __StackState__(__bc.maxLocals(), __bc.maxStack());
 	}
 	
 	/**
@@ -46,12 +54,21 @@ final class __Registerize__
 	public RegisterCode convert()
 	{
 		ByteCode bytecode = this.bytecode;
+		StackMapTable stackmap = this.stackmap;
+		__StackState__ stack = this.stack;
 		
 		// Process every instruction
-		for (Instruction i : bytecode)
+		for (Instruction inst : bytecode)
 		{
 			// Debug
-			todo.DEBUG.note("Xlate %s", i);
+			todo.DEBUG.note("Xlate %s", inst);
+			
+			// If there is a defined stack map table state (this will be for
+			// any kind of branch or exception handler), load that so it can
+			// be worked from
+			StackMapTableState smts = stackmap.get(inst.address());
+			if (smts != null)
+				stack.fromState(smts);
 			
 			throw new todo.TODO();
 		}
