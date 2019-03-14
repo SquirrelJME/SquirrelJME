@@ -45,6 +45,17 @@ final class __Registerize__
 	 */
 	public RegisterCode convert()
 	{
+		ByteCode bytecode = this.bytecode;
+		
+		// Process every instruction
+		for (Instruction i : bytecode)
+		{
+			// Debug
+			todo.DEBUG.note("Xlate %s", i);
+			
+			throw new todo.TODO();
+		}
+		
 		throw new todo.TODO();
 	}
 }
