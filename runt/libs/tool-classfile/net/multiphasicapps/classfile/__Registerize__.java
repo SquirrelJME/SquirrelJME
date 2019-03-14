@@ -11,31 +11,41 @@
 package net.multiphasicapps.classfile;
 
 /**
- * This is similar to {@link ByteCode} except that it instead of using a
- * stack for intermediate Java operations, this instead uses registers. This
- * provides a more concise and easier to use format by virtual machines.
+ * This class is used to transform normal byte code into register code that
+ * is more optimized for VMs.
  *
- * @see ByteCode
- * @since 2019/03/09
+ * @since 2019/03/14
  */
-public final class RegisterCode
+final class __Registerize__
 {
+	/** The input byte code to translate. */
+	protected final ByteCode bytecode;
+	
 	/**
-	 * This translates the input byte code and creates a register code which
-	 * removes all stack operations and maps them to register operations.
+	 * Converts the input byte code to a register based code.
 	 *
-	 * @param __bc The input byte code.
-	 * @return The resulting register code.
+	 * @param __bc The byte code to translate.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2019/03/09
+	 * @since 2019/03/14
 	 */
-	public static final RegisterCode of(ByteCode __bc)
+	__Registerize__(ByteCode __bc)
 		throws NullPointerException
 	{
 		if (__bc == null)
 			throw new NullPointerException("NARG");
 		
-		return new __Registerize__(__bc).convert();
+		this.bytecode = __bc;
+	}
+	
+	/**
+	 * Converts the byte code into register code.
+	 *
+	 * @return The resulting register code.
+	 * @since 2019/03/14
+	 */
+	public RegisterCode convert()
+	{
+		throw new todo.TODO();
 	}
 }
 

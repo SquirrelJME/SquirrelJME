@@ -161,7 +161,10 @@ public final class Minimizer
 			MethodFlags mf = m.flags();
 			byte[] transcode = null;
 			if (!mf.isAbstract() && !mf.isNative())
+			{
+				m.registerCode();
 				throw new todo.TODO();
+			}
 			
 			// Add method
 			MinimizedMethod q;
