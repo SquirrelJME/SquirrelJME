@@ -70,8 +70,25 @@ final class __Registerize__
 			if (smts != null)
 				stack.fromState(smts);
 			
-			throw new todo.TODO();
+			// Process instructions
+			this.__process(inst);
 		}
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Processes a single instruction.
+	 *
+	 * @param __inst The instruction to process.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/14
+	 */
+	private final void __process(Instruction __inst)
+		throws NullPointerException
+	{
+		if (__inst == null)
+			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
 	}
