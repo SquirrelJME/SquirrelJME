@@ -1,0 +1,15 @@
+# 2019/03/14
+
+## 09:00
+
+Okay so, back to SquirrelJME from the job search (taking a break today). So
+let me think... it is time to translate methods and such. The biggest work
+of course would be the register translation and then the minification of
+that to something a bit more simplified. It will definitely work however and
+really after that what I need to do is to translate things.
+
+## 11:56
+
+This register code should have stuff for reference counting and also removed
+exception handlers done in normal code. I am going to have Rust style multiple
+return types for method calls and such. This simplifies things a bunch.
