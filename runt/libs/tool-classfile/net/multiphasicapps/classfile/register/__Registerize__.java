@@ -28,11 +28,15 @@ final class __Registerize__
 	/** The input byte code to translate. */
 	protected final ByteCode bytecode;
 	
-	/** The state of the stack. */
-	protected final __StackState__ stack;
+	/** The state of the locals and stack. */
+	protected final __StackState__ state;
 	
 	/** The stack map table. */
 	protected final StackMapTable stackmap;
+	
+	/** Used to build register codes. */
+	protected final __RegisterCodeBuilder__ codebuilder =
+		new __RegisterCodeBuilder__();
 	
 	/**
 	 * Converts the input byte code to a register based code.
@@ -49,7 +53,7 @@ final class __Registerize__
 		
 		this.bytecode = __bc;
 		this.stackmap = __bc.stackMapTable();
-		this.stack = new __StackState__(__bc.maxLocals(), __bc.maxStack());
+		this.state = new __StackState__(__bc.maxLocals(), __bc.maxStack());
 	}
 	
 	/**
@@ -62,7 +66,7 @@ final class __Registerize__
 	{
 		ByteCode bytecode = this.bytecode;
 		StackMapTable stackmap = this.stackmap;
-		__StackState__ stack = this.stack;
+		__StackState__ state = this.state;
 		
 		// Process every instruction
 		for (Instruction inst : bytecode)
@@ -75,7 +79,7 @@ final class __Registerize__
 			// be worked from
 			StackMapTableState smts = stackmap.get(inst.address());
 			if (smts != null)
-				stack.fromState(smts);
+				state.fromState(smts);
 			
 			// Process instructions
 			this.__process(inst);
@@ -123,6 +127,13 @@ final class __Registerize__
 	 */
 	private final void __runALoad(int __l)
 	{
+		__StackState__ state = this.state;
+		
+		// Load from local and push to the stack
+		__StackResult__ src = state.localGet(__l);
+		__StackResult__ dest = state.stackPush(src.type);
+		
+		// Add instruction
 		throw new todo.TODO();
 	}
 }
