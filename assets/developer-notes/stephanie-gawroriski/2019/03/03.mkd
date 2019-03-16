@@ -1,0 +1,13 @@
+# 2019/03/03
+
+## 06:27
+
+So idea perhaps, instead of having various different locations and such, just
+kinda keep it plain for instructions. Perhaps what I need is an interpretation
+and interpretation types for instructions. Basically, how is said value
+determined?
+
+## 06:30
+
+It will literally be an interpret whatever value as something, whether it be
+a register or otherwise.

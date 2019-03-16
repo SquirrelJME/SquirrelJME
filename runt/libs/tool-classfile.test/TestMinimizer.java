@@ -8,29 +8,35 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-import javax.microedition.rms.RecordStore;
-
-import cc.squirreljme.runtime.cldc.lang.ApiLevel;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import net.multiphasicapps.classfile.ClassFile;
+import net.multiphasicapps.classfile.mini.Minimizer;
+import net.multiphasicapps.tac.TestRunnable;
 
 /**
- * Tests that nothing is done on the record.
+ * Tests that minimizing is performed properly.
  *
- * @since 2018/12/13
+ * @since 2019/03/10
  */
-public class TestNothing
-	extends __RecordTest__<Object>
+public class TestMinimizer
+	extends TestRunnable
 {
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/12/13
+	 * @since 2019/03/10
 	 */
 	@Override
-	public Object test(RecordStore __rs)
+	public void test()
+		throws Throwable
 	{
-		// Needs RMS support first
-		this.checkApiLevel(ApiLevel.UNDEFINED);
-		
-		return null;
+		for (String x : new String[]{"ByteDeque.data",
+			"InflaterInputStream.data"})
+			try (InputStream in = TestClassLoad.class.getResourceAsStream(x);
+				ByteArrayOutputStream out = new ByteArrayOutputStream())
+			{
+				Minimizer.minimize(ClassFile.decode(in), out);
+			}
 	}
 }
 

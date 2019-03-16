@@ -8,29 +8,12 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-import javax.microedition.rms.RecordStore;
-
-import cc.squirreljme.runtime.cldc.lang.ApiLevel;
-
 /**
- * Tests that nothing is done on the record.
+ * This package contains all of the various classes and utilities which are
+ * used to represent and manipulate register based codes.
  *
- * @since 2018/12/13
+ * @since 2019/03/14
  */
-public class TestNothing
-	extends __RecordTest__<Object>
-{
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/12/13
-	 */
-	@Override
-	public Object test(RecordStore __rs)
-	{
-		// Needs RMS support first
-		this.checkApiLevel(ApiLevel.UNDEFINED);
-		
-		return null;
-	}
-}
+
+package net.multiphasicapps.classfile.register;
 

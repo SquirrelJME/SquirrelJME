@@ -25,7 +25,7 @@ import java.util.NoSuchElementException;
  * @since 2017/10/09
  */
 public final class ByteCode
-	implements ExecutableCode, Iterable<Instruction>
+	implements Iterable<Instruction>
 {
 	/** The code is always at this offset. */
 	static final int _CODE_OFFSET =

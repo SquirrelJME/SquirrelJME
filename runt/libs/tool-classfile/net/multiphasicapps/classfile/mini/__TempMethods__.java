@@ -8,29 +8,23 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-import javax.microedition.rms.RecordStore;
+package net.multiphasicapps.classfile.mini;
 
-import cc.squirreljme.runtime.cldc.lang.ApiLevel;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Tests that nothing is done on the record.
+ * Contains temporary method information.
  *
- * @since 2018/12/13
+ * @since 2019/03/13
  */
-public class TestNothing
-	extends __RecordTest__<Object>
+final class __TempMethods__
 {
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/12/13
-	 */
-	@Override
-	public Object test(RecordStore __rs)
-	{
-		// Needs RMS support first
-		this.checkApiLevel(ApiLevel.UNDEFINED);
-		
-		return null;
-	}
+	/** The methods in this table. */
+	final List<MinimizedMethod> _methods =
+		new ArrayList<>();
+	
+	/** The number of methods that are available. */
+	int _count;
 }
 

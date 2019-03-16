@@ -8,29 +8,15 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-import javax.microedition.rms.RecordStore;
-
-import cc.squirreljme.runtime.cldc.lang.ApiLevel;
-
 /**
- * Tests that nothing is done on the record.
+ * This contains the support for the creation of minitature (compressed)
+ * classes which contain easy to read by computer formats and only the
+ * required parts of the class that are used to execute code. It is meant to
+ * be easier to use for virtual machines without needing to worry too much
+ * about the class file format.
  *
- * @since 2018/12/13
+ * @since 2019/03/10
  */
-public class TestNothing
-	extends __RecordTest__<Object>
-{
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/12/13
-	 */
-	@Override
-	public Object test(RecordStore __rs)
-	{
-		// Needs RMS support first
-		this.checkApiLevel(ApiLevel.UNDEFINED);
-		
-		return null;
-	}
-}
+
+package net.multiphasicapps.classfile.mini;
 
