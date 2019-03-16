@@ -8,29 +8,36 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-import javax.microedition.rms.RecordStore;
-
-import cc.squirreljme.runtime.cldc.lang.ApiLevel;
+import javax.microedition.lcdui.Display;
+import net.multiphasicapps.tac.InvalidTestException;
 
 /**
- * Tests that nothing is done on the record.
+ * Utilities for the LCDUI tests.
  *
- * @since 2018/12/13
+ * @since 2019/03/04
  */
-public class TestNothing
-	extends __RecordTest__<Object>
+final class __Utils__
 {
 	/**
-	 * {@inheritDoc}
-	 * @since 2018/12/13
+	 * Attempts to obtain the display, otherwise the test cannot be ran.
+	 *
+	 * @return The display to use.
+	 * @throws InvalidTestException If the display could not be obtained.
+	 * @since 2019/03/04
 	 */
-	@Override
-	public Object test(RecordStore __rs)
+	public static final Display getDisplay()
+		throws InvalidTestException
 	{
-		// Needs RMS support first
-		this.checkApiLevel(ApiLevel.UNDEFINED);
+		try
+		{
+			return Display.getDisplays(0)[0];
+		}
 		
-		return null;
+		// No display possible?
+		catch (Throwable e)
+		{
+			throw new InvalidTestException(e);
+		}
 	}
 }
 

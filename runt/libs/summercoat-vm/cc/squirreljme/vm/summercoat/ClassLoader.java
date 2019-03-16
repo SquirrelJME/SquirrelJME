@@ -19,11 +19,11 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
-import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
-import net.multiphasicapps.scrf.SummerClass;
-import net.multiphasicapps.scrf.SummerFormatException;
+import net.multiphasicapps.classfile.InvalidClassFormatException;
+import net.multiphasicapps.classfile.mini.MinimizedClassFile;
+import net.multiphasicapps.classfile.mini.Minimizer;
 
 /**
  * This is a class loader which manages and can cache multiple classes.
@@ -33,14 +33,14 @@ import net.multiphasicapps.scrf.SummerFormatException;
 public final class ClassLoader
 {
 	/** The suite manager. */
-	protected final VMSuiteManager suites;
+	protected final CachingSuiteManager suites;
 	
 	/** Loaded class cache. */
 	private final Map<ClassName, LoadedClass> _classes =
 		new HashMap<>();
 	
 	/** The classes in the class path. */
-	private final VMClassLibrary[] _classpath;
+	private final CachingClassLibrary[] _classpath;
 	
 	/**
 	 * Initializes the class loader.
@@ -50,7 +50,7 @@ public final class ClassLoader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/01/05
 	 */
-	public ClassLoader(VMSuiteManager __sm, VMClassLibrary[] __cp)
+	public ClassLoader(CachingSuiteManager __sm, CachingClassLibrary[] __cp)
 		throws NullPointerException
 	{
 		if (__sm == null || __cp == null)
@@ -102,70 +102,41 @@ public final class ClassLoader
 			if (rv != null)
 				return rv;
 			
+			// Resulting minimized class and the library it is within
+			MinimizedClassFile cf;
+			CachingClassLibrary inlib;
+			
 			// If this is a primitive type or array then it is a special thing
 			// and will not be in a resource
-			ClassFile cf;
-			VMClassLibrary inlib;
 			if (__n.isPrimitive() || __n.isArray())
 			{
-				cf = ClassFile.special(__n.field());
+				// Just minimize these dynamically generated classes
+				cf = Minimizer.minimize(ClassFile.special(__n.field()));
 				inlib = null;
 			}
 			
 			// Load class from resource instead
 			else
 			{
-				// This is the class that is read, in binary form
-				String fileform = __n.toString() + ".class";
-				
-				// Go through our classpath looking for this class in its
-				// resource format
+				// Nothing is found initially yet
 				cf = null;
 				inlib = null;
-				for (VMClassLibrary b : this._classpath)
-					try (InputStream in = b.resourceAsStream(fileform))
+				
+				// The name to check, multiple extensions will be used!
+				String basename = __n.toString();
+				
+				// Go through each library and check cache for the class data
+				for (CachingClassLibrary b : this._classpath)
+					if (null != (cf = b.cacheClass(basename)))
 					{
-						// Not found
-						if (in == null)
-							continue;
-						
-						// Load it
-						cf = ClassFile.decode(in);
 						inlib = b;
-						
-						// Stop
 						break;
-					}
-					catch (InvalidClassFormatException e)
-					{
-						// {@squirreljme.error AE05 The class is not formatted
-						// correctly. (The class name)}
-						throw new VMException("AE05 " + __n, e);
-					}
-					catch (IOException e)
-					{
-						// {@squirreljme.error AE04 Read error trying to read
-						// the class file. (The class)}
-						throw new VMException("AE04 " + __n, e);
 					}
 				
 				// {@squirreljme.error AE03 Could not find the specified class.
 				// (The name of the class)}
 				if (cf == null || inlib == null)
 					throw new VMClassNotFoundException("AE03 " + __n);
-			}
-			
-			// Process the class and compile it to the register format
-			SummerClass rc;
-			try
-			{
-				rc = SummerClass.ofClassFile(cf);
-			}
-			catch (SummerFormatException e)
-			{
-				// {@squirreljme.error AE06 The register compiler could not
-				// process the input class. (The class)}
-				throw new VMException("AE06 " + __n, e);
 			}
 			
 			throw new todo.TODO();

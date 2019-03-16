@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.tac;
 
+import cc.squirreljme.runtime.cldc.lang.ApiLevel;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -55,6 +56,22 @@ abstract class __CoreTest__
 	 */
 	abstract Object __runTest(Object... __args)
 		throws Throwable;
+	
+	/**
+	 * Tests the minimum API level.
+	 *
+	 * @param __lv The level to test.
+	 * @throws InvalidTestException If the API level is not met.
+	 * @since 2019/03/14
+	 */
+	public final void checkApiLevel(int __lv)
+		throws InvalidTestException
+	{
+		// {@squirreljme.error BU0b Minimum API level has not been met.
+		// (The required API level)}
+		if (!ApiLevel.minimumLevel(__lv))
+			throw new InvalidTestException(String.format("BU0b %x", __lv));
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -140,6 +157,21 @@ abstract class __CoreTest__
 			rv = this.__runTest(args);
 			thrown = new __NoExceptionThrown__();
 		}
+		
+		// Cannot be tested
+		catch (UntestableException e)
+		{
+			// {@squirreljme.error BU0d Test could not be ran.
+			// (The given test)}
+			System.err.printf("BU0d %s%n", classname);
+			e.printStackTrace(System.err);
+			
+			// Cannot be tested so it shall fail
+			this._status = TestStatus.UNTESTABLE;
+			return;
+		}
+		
+		// Test failure
 		catch (Throwable t)
 		{
 			// The test parameter is not valid, so whoops!

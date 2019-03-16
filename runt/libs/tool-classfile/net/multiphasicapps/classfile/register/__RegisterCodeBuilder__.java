@@ -8,29 +8,23 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-import javax.microedition.rms.RecordStore;
+package net.multiphasicapps.classfile.register;
 
-import cc.squirreljme.runtime.cldc.lang.ApiLevel;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
- * Tests that nothing is done on the record.
+ * This is used to build {@link RegisterCode} and add instructions to it.
  *
- * @since 2018/12/13
+ * @since 2019/03/16
  */
-public class TestNothing
-	extends __RecordTest__<Object>
+final class __RegisterCodeBuilder__
 {
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/12/13
-	 */
-	@Override
-	public Object test(RecordStore __rs)
-	{
-		// Needs RMS support first
-		this.checkApiLevel(ApiLevel.UNDEFINED);
-		
-		return null;
-	}
+	/** Temporary instruction layout. */
+	final Map<Integer, __TempInstruction__> _instructions =
+		new LinkedHashMap<>();
+	
+	/** Next address to use. */
+	int _nextaddr;
 }
 

@@ -1,0 +1,10 @@
+# 2019/03/06
+
+## 12:32
+
+I went to the local library to work on SquirrelJME, it is quite a new
+environment. I was going crazy at home. So I think what I need is to have
+a kind of argument builder...? Like I want an interpret as kind of thing
+placed inside as well... but something safe enough to where it does not
+mess up in cases where type safety or breaking Java is concerned. At
+times like this, I kinda wish there were tuples easily made and such.

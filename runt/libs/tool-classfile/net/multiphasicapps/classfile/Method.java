@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import net.multiphasicapps.classfile.register.RegisterCode;
 import net.multiphasicapps.collections.UnmodifiableArrayList;
 
 /**
@@ -50,6 +51,9 @@ public final class Method
 	/** The type of the method. */
 	protected final MethodDescriptor methodtype;
 	
+	/** Does this method have code? */
+	protected final boolean hascode;
+	
 	/** Annotated values. */
 	private final AnnotationTable annotations;
 	
@@ -58,6 +62,9 @@ public final class Method
 	
 	/** The method byte code. */
 	private Reference<ByteCode> _bytecode;
+	
+	/** Register code. */
+	private Reference<RegisterCode> _regcode;
 	
 	/** Name and type reference. */
 	private Reference<MethodNameAndType> _nameandtype;
@@ -100,6 +107,7 @@ public final class Method
 		this.methodtype = __mt;
 		this.annotations = __avs;
 		this._rawcodeattr = __mc;
+		this.hascode = !__mf.isNative() && !__mf.isAbstract();
 	}
 	
 	/**
@@ -124,7 +132,7 @@ public final class Method
 	{
 		// If there is no code atribute there is no byte code
 		byte[] rawcodeattr = this._rawcodeattr;
-		if (rawcodeattr == null)
+		if (!this.hascode)
 			return null;
 		
 		// Otherwise load a representation of it
@@ -238,6 +246,30 @@ public final class Method
 	public final Pool pool()
 	{
 		return this.pool;
+	}
+	
+	/**
+	 * Returns the code of this method in a register based format that is
+	 * more efficient than pure Java byte code.
+	 *
+	 * @return The code of this method in a register based format.
+	 * @since 2019/03/09
+	 */
+	public final RegisterCode registerCode()
+	{
+		// Abstract and native methods have no code
+		if (!this.hascode)
+			return null;
+		
+		// Cache it
+		Reference<RegisterCode> ref = this._regcode;
+		RegisterCode rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._regcode = new WeakReference<>(
+				(rv = RegisterCode.of(this.byteCode())));
+		
+		return rv;
 	}
 	
 	/**

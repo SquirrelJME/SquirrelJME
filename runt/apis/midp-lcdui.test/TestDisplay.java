@@ -27,9 +27,7 @@ public class TestDisplay
 	@Override
 	public void test()
 	{
-		Display[] displays = Display.getDisplays(0);
-		
-		throw new todo.TODO();
+		__Utils__.getDisplay();
 	}
 }
 

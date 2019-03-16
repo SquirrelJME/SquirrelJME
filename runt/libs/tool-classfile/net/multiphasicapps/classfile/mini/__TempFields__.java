@@ -8,29 +8,26 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-import javax.microedition.rms.RecordStore;
+package net.multiphasicapps.classfile.mini;
 
-import cc.squirreljme.runtime.cldc.lang.ApiLevel;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Tests that nothing is done on the record.
+ * Stores temporary field data as it is processed.
  *
- * @since 2018/12/13
+ * @since 2019/03/11
  */
-public class TestNothing
-	extends __RecordTest__<Object>
+final class __TempFields__
 {
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/12/13
-	 */
-	@Override
-	public Object test(RecordStore __rs)
-	{
-		// Needs RMS support first
-		this.checkApiLevel(ApiLevel.UNDEFINED);
-		
-		return null;
-	}
+	/** The fields in the table. */
+	final List<MinimizedField> _fields =
+		new ArrayList<>();
+	
+	/** The number of fields in the table. */
+	int _count;
+	
+	/** The current byte size of the field table. */
+	int _bytes;
 }
 

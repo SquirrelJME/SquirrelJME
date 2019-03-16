@@ -8,29 +8,14 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-import javax.microedition.rms.RecordStore;
-
-import cc.squirreljme.runtime.cldc.lang.ApiLevel;
+package net.multiphasicapps.classfile.mini;
 
 /**
- * Tests that nothing is done on the record.
+ * This class is used to build the constant pool for a minimized class.
  *
- * @since 2018/12/13
+ * @since 2019/03/11
  */
-public class TestNothing
-	extends __RecordTest__<Object>
+public final class MinimizedPoolBuilder
 {
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/12/13
-	 */
-	@Override
-	public Object test(RecordStore __rs)
-	{
-		// Needs RMS support first
-		this.checkApiLevel(ApiLevel.UNDEFINED);
-		
-		return null;
-	}
 }
 

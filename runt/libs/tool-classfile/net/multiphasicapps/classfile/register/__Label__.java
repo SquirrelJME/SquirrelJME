@@ -8,29 +8,37 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-import javax.microedition.rms.RecordStore;
-
-import cc.squirreljme.runtime.cldc.lang.ApiLevel;
+package net.multiphasicapps.classfile.register;
 
 /**
- * Tests that nothing is done on the record.
+ * Label which refers to a location in code.
  *
- * @since 2018/12/13
+ * @since 2019/03/16
  */
-public class TestNothing
-	extends __RecordTest__<Object>
+final class __Label__
 {
+	/** The locality. */
+	public final String locality;
+	
+	/** The associated address. */
+	public final int address;
+	
 	/**
-	 * {@inheritDoc}
-	 * @since 2018/12/13
+	 * Initializes the lable.
+	 *
+	 * @param __l The locality.
+	 * @param __a The address.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/16
 	 */
-	@Override
-	public Object test(RecordStore __rs)
+	public __Label__(String __l, int __a)
+		throws NullPointerException
 	{
-		// Needs RMS support first
-		this.checkApiLevel(ApiLevel.UNDEFINED);
+		if (__l == null)
+			throw new NullPointerException("NARG");
 		
-		return null;
+		this.locality = __l;
+		this.address = __a;
 	}
 }
 

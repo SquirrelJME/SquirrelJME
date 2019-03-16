@@ -29,13 +29,13 @@ More detailed changes:
      * `java.io.InputStream`
      * `java.util.EventObject`
      * `java.util.LinkedList`
-   * Deprecations
-     * `net.multiphasicapps.classfile.ExecutableCode`, not used.
    * Additions
      * `java.util.Vector`, was missing.
      * Added proprietary `ExtendedTaskManager` interface which can be used
        to specify arguments, system properties, and console output alternatives
        to launched tasks.
+   * Removals
+     * `net.multiphasicapps.classfile.ExecutableCode`, not used.
  * Programs and Libraries
    * `demo-hello`
      * Made the system properties array `final`.

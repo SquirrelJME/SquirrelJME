@@ -1,0 +1,8 @@
+# 2019/03/15
+
+## 16:31
+
+Okay so, I attempted to write a utility to implement the locking stuff but it
+is a bit more complicated than I expected. Additionally POSIX has some really
+back file locks. So I am just going to have to be careful when working on
+SquirrelJME so I do not corrupt the database.
