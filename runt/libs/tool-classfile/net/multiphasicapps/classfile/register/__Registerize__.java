@@ -115,8 +115,6 @@ final class __Registerize__
 			default:
 				throw new todo.TODO(__i.toString());
 		}
-		
-		throw new todo.TODO();
 	}
 	
 	/**
