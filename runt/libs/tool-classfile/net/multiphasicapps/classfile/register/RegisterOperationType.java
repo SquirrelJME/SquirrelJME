@@ -11,34 +11,26 @@
 package net.multiphasicapps.classfile.register;
 
 /**
- * Temporary instruction.
+ * Represents the type of operation to perform.
  *
- * @since 2019/03/16
+ * @since 2019/03/17
  */
-final class __TempInstruction__
+public interface RegisterOperationType
 {
-	/** The index of this instruction. */
-	protected final int index;
+	/** No operation. */
+	public static final int NOP =
+		0;
 	
-	/** The operation. */
-	protected final int op;
+	/** Copy narrow. */
+	public static final int NARROW_COPY =
+		1;
 	
-	/** The arguments. */
-	final Object[] _args;
+	/** Copy narrow and reference count destination. */
+	public static final int NARROW_COPY_AND_COUNT_DEST =
+		2;
 	
-	/**
-	 * Initializes the temporary instruction.
-	 *
-	 * @param __dx The instruction index.
-	 * @param __op The operation.
-	 * @param __args The arguments.
-	 * @since 2019/03/17
-	 */
-	__TempInstruction__(int __dx, int __op, Object... __args)
-	{
-		this.index = __dx;
-		this.op = __op;
-		this._args = (__args == null ? new Object[0] : __args.clone());
-	}
+	/** Copy wide. */
+	public static final int WIDE_COPY =
+		3;
 }
 

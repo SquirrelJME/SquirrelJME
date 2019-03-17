@@ -134,7 +134,8 @@ final class __Registerize__
 		__StackResult__ dest = state.stackPush(src.type);
 		
 		// Add instruction
-		throw new todo.TODO();
+		this.codebuilder.add(RegisterOperationType.NARROW_COPY_AND_COUNT_DEST,
+			src.register, dest.register);
 	}
 }
 

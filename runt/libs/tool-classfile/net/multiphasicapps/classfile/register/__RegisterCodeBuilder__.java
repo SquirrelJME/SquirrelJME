@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.classfile.register;
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -26,5 +27,20 @@ final class __RegisterCodeBuilder__
 	
 	/** Next address to use. */
 	int _nextaddr;
+	
+	public final __TempInstruction__ add(int op, Object... __args)
+	{
+		// Create instruction
+		int atdx;
+		__TempInstruction__ rv = new __TempInstruction__(
+			(atdx = this._nextaddr++), op, __args);
+		
+		// Debug
+		todo.DEBUG.note("@%d -> %d %s", atdx, op, Arrays.asList(__args));
+		
+		// Store and return the instruction, it will have the address
+		this._instructions.put(atdx, rv);
+		return rv;
+	}
 }
 
