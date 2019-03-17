@@ -36,7 +36,8 @@ final class __RegisterCodeBuilder__
 			(atdx = this._nextaddr++), op, __args);
 		
 		// Debug
-		todo.DEBUG.note("@%d -> %d %s", atdx, op, Arrays.asList(__args));
+		todo.DEBUG.note("@%d -> %s %s", atdx,
+			RegisterOperationMnemonics.toString(op), Arrays.asList(__args));
 		
 		// Store and return the instruction, it will have the address
 		this._instructions.put(atdx, rv);
