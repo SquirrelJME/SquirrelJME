@@ -168,13 +168,13 @@ final class __Registerize__
 			case INTEGER:
 			case FLOAT:
 				codebuilder.add(RegisterOperationType.NARROW_CONST,
-					__v.boxedValue());
+					__v.boxedValue(), dest.register);
 				break;
 			
 			case LONG:
 			case DOUBLE:
 				codebuilder.add(RegisterOperationType.WIDE_CONST,
-					__v.boxedValue());
+					__v.boxedValue(), dest.register);
 				break;
 			
 			case STRING:
