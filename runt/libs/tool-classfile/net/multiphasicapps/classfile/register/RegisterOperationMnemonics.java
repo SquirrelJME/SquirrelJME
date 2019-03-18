@@ -45,6 +45,10 @@ public final class RegisterOperationMnemonics
 				return "NARROW_COPY_AND_COUNT_DEST";
 			case RegisterOperationType.WIDE_COPY:
 				return "WIDE_COPY";
+			case RegisterOperationType.NARROW_CONST:
+				return "NARROW_CONST";
+			case RegisterOperationType.WIDE_CONST:
+				return "WIDE_CONST";
 			
 				// Unknown
 			default:

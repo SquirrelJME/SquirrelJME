@@ -11,6 +11,7 @@
 package net.multiphasicapps.classfile.register;
 
 import net.multiphasicapps.classfile.ByteCode;
+import net.multiphasicapps.classfile.ConstantValue;
 import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
 import net.multiphasicapps.classfile.JavaType;
@@ -109,7 +110,12 @@ final class __Registerize__
 			case InstructionIndex.ALOAD_1:
 			case InstructionIndex.ALOAD_2:
 			case InstructionIndex.ALOAD_3:
-				__runALoad(op - InstructionIndex.ALOAD_0);
+				this.__runALoad(op - InstructionIndex.ALOAD_0);
+				break;
+			
+			case InstructionIndex.LDC:
+				this.__runLdc(__i.<ConstantValue>argument(
+					0, ConstantValue.class));
 				break;
 			
 			default:
@@ -134,6 +140,50 @@ final class __Registerize__
 		// Add instruction
 		this.codebuilder.add(RegisterOperationType.NARROW_COPY_AND_COUNT_DEST,
 			src.register, dest.register);
+	}
+	
+	/**
+	 * Load of constant value.
+	 *
+	 * @param __v The value to push.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/17
+	 */
+	private final void __runLdc(ConstantValue __v)
+		throws NullPointerException
+	{
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		// Get push properties
+		JavaType jt = __v.type().javaType();
+		
+		// Push to the stack
+		__StackResult__ dest = state.stackPush(jt);
+		
+		// Generate instruction
+		__RegisterCodeBuilder__ codebuilder = this.codebuilder;
+		switch (__v.type())
+		{
+			case INTEGER:
+			case FLOAT:
+				codebuilder.add(RegisterOperationType.NARROW_CONST,
+					__v.boxedValue());
+				break;
+			
+			case LONG:
+			case DOUBLE:
+				codebuilder.add(RegisterOperationType.WIDE_CONST,
+					__v.boxedValue());
+				break;
+			
+			case STRING:
+			case CLASS:
+				throw new todo.TODO();
+			
+			default:
+				throw new todo.OOPS();
+		}
 	}
 }
 
