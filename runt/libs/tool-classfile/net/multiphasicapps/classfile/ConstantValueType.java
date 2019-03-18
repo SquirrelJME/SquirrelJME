@@ -134,5 +134,29 @@ public enum ConstantValueType
 				return false;
 		}
 	}
+	
+	/**
+	 * Returns the Java type for the constant value.
+	 *
+	 * @return The Java type that is used.
+	 * @since 2019/03/17
+	 */
+	public final JavaType javaType()
+	{
+		switch (this)
+		{
+			case INTEGER:	return JavaType.INTEGER;
+			case LONG:		return JavaType.LONG;
+			case FLOAT:		return JavaType.FLOAT;
+			case DOUBLE:	return JavaType.DOUBLE;
+			case STRING:	return new JavaType(new FieldDescriptor(
+				"Ljava/lang/String;"));
+			case CLASS:		return new JavaType(new FieldDescriptor(
+				"Ljava/lang/Class;"));
+			
+			default:
+				throw new todo.OOPS();
+		}
+	}
 }
 

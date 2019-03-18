@@ -32,5 +32,13 @@ public interface RegisterOperationType
 	/** Copy wide. */
 	public static final int WIDE_COPY =
 		3;
+	
+	/** Narrow constant. */
+	public static final int NARROW_CONST =
+		4;
+	
+	/** Wide constant. */
+	public static final int WIDE_CONST =
+		5;
 }
 
