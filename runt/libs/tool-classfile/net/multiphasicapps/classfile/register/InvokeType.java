@@ -17,10 +17,24 @@ package net.multiphasicapps.classfile.register;
  */
 public enum InvokeType
 {
+	/** Static invoke. */
+	STATIC,
+	
 	/** Special invoke. */
 	SPECIAL,
 	
 	/** End. */
 	;
+	
+	/**
+	 * Does this use an instance variable?
+	 *
+	 * @return If there is an instance variable that is used.
+	 * @since 2019/03/20
+	 */
+	public final boolean hasInstance()
+	{
+		return this != STATIC;
+	}
 }
 
