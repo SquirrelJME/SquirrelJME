@@ -39,6 +39,9 @@ final class __Registerize__
 	protected final __RegisterCodeBuilder__ codebuilder =
 		new __RegisterCodeBuilder__();
 	
+	/** The instruction throws an exception, it must be checked. */
+	private boolean _exceptioncheck;
+	
 	/**
 	 * Converts the input byte code to a register based code.
 	 *
@@ -75,6 +78,10 @@ final class __Registerize__
 			// Debug
 			todo.DEBUG.note("Xlate %s", inst);
 			
+			// Clear the exception check since not every instruction will
+			// generate an exception, this will reduce the code size greatly
+			this._exceptioncheck = false;
+			
 			// If there is a defined stack map table state (this will be for
 			// any kind of branch or exception handler), load that so it can
 			// be worked from
@@ -84,6 +91,13 @@ final class __Registerize__
 			
 			// Process instructions
 			this.__process(inst);
+			
+			// If an exception is thrown it needs to be handled accordingly
+			// This means uncounting anything on the stack, reading the
+			// exception register value, then jumping to the exception handler
+			// for this instruction
+			if (this._exceptioncheck)
+				throw new todo.TODO();
 		}
 		
 		throw new todo.TODO();
@@ -160,6 +174,9 @@ final class __Registerize__
 	{
 		if (__t == null || __r == null)
 			throw new NullPointerException("NARG");
+		
+		// The invoked method may throw an exception
+		this._exceptioncheck = true;
 		
 		throw new todo.TODO();
 	}
