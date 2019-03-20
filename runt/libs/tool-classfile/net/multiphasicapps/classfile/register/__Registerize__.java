@@ -120,6 +120,10 @@ final class __Registerize__
 		int op;
 		switch ((op = __i.operation()))
 		{
+			case InstructionIndex.ALOAD:
+				this.__runALoad(__i.<Integer>argument(0, Integer.class));
+				break;
+			
 			case InstructionIndex.ALOAD_0:
 			case InstructionIndex.ALOAD_1:
 			case InstructionIndex.ALOAD_2:
