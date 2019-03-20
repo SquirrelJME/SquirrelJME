@@ -113,6 +113,11 @@ final class __Registerize__
 				this.__runALoad(op - InstructionIndex.ALOAD_0);
 				break;
 			
+			case InstructionIndex.INVOKESPECIAL:
+				this.__runInvoke(InvokeType.SPECIAL,
+					__i.<MethodReference>argument(0, MethodReference.class));
+				break;
+			
 			case InstructionIndex.LDC:
 				this.__runLdc(__i.<ConstantValue>argument(
 					0, ConstantValue.class));
@@ -140,6 +145,23 @@ final class __Registerize__
 		// Add instruction
 		this.codebuilder.add(RegisterOperationType.NARROW_COPY_AND_COUNT_DEST,
 			src.register, dest.register);
+	}
+	
+	/**
+	 * Handles invocation of other methods.
+	 *
+	 * @param __t The type of invocation to perform.
+	 * @param __r The method to invoke.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/20
+	 */
+	private final void __runInvoke(InvokeType __t, MethodReference __r)
+		throws NullPointerException
+	{
+		if (__t == null || __r == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 	
 	/**
