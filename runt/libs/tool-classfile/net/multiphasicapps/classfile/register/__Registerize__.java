@@ -15,6 +15,7 @@ import net.multiphasicapps.classfile.ConstantValue;
 import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
 import net.multiphasicapps.classfile.JavaType;
+import net.multiphasicapps.classfile.MethodReference;
 import net.multiphasicapps.classfile.StackMapTable;
 import net.multiphasicapps.classfile.StackMapTableState;
 
