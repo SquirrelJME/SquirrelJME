@@ -138,6 +138,17 @@ public final class ExceptionHandler
 	}
 	
 	/**
+	 * Returns the range of this exception handler.
+	 *
+	 * @return The exception handler range.
+	 * @since 2019/03/21
+	 */
+	public final InstructionAddressRange range()
+	{
+		return new InstructionAddressRange(this.startpc, this.endpc);
+	}
+	
+	/**
 	 * Returns the start address.
 	 *
 	 * @return The start address.
