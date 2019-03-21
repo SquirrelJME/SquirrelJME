@@ -89,7 +89,8 @@ public final class ExceptionHandlerTable
 		if (!(__o instanceof ExceptionHandlerTable))
 			return false;
 		
-		throw new todo.TODO();
+		// The exception handler table has a strict order
+		return Arrays.equals(this._table, ((ExceptionHandlerTable)__o)._table);
 	}
 	
 	/**
@@ -110,7 +111,11 @@ public final class ExceptionHandlerTable
 	@Override
 	public final int hashCode()
 	{
-		throw new todo.TODO();
+		// Just add up all of the entries quickly
+		int rv = 0;
+		for (ExceptionHandler e : this._table)
+			rv += e.hashCode();
+		return rv;
 	}
 	
 	/**
