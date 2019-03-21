@@ -1,0 +1,6 @@
+# 2019/03/20
+
+## 12:33
+
+I need special registers to use for exceptions and such, or at least an
+exception has been thrown bit.
