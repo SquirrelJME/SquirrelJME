@@ -130,6 +130,18 @@ public final class ExceptionHandlerTable
 	}
 	
 	/**
+	 * Returns an exception handler table for the given address.
+	 *
+	 * @param __pc The address to get an exception handler table from.
+	 * @return A table representing only the exceptions at a given address.
+	 * @since 2019/03/21
+	 */
+	public final ExceptionHandlerTable tableAt(int __pc)
+	{
+		return new ExceptionHandlerTable(this.at(__pc));
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/10/13
 	 */
