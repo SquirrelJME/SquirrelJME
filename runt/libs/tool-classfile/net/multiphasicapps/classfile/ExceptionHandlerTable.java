@@ -119,6 +119,17 @@ public final class ExceptionHandlerTable
 	}
 	
 	/**
+	 * Returns the instruction range.
+	 *
+	 * @return The instruction range.
+	 * @since 2019/03/21
+	 */
+	public final InstructionAddressRange range()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Returns the number of exception handlers that exist.
 	 *
 	 * @return The total number of exception handlers.
