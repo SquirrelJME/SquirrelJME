@@ -17,7 +17,9 @@ import java.lang.ref.WeakReference;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.RandomAccess;
 
 /**
@@ -115,6 +117,47 @@ public final class ExceptionHandlerTable
 		int rv = 0;
 		for (ExceptionHandler e : this._table)
 			rv += e.hashCode();
+		return rv;
+	}
+	
+	/**
+	 * Returns a map of all the ranges that exist within the exception table
+	 * that are unique to each other.
+	 *
+	 * @return A mapping of ranges and table entries.
+	 * @since 2019/03/21
+	 */
+	public final Map<InstructionAddressRange, ExceptionHandlerTable>
+		mappedUniqueRanges()
+	{
+		Map<InstructionAddressRange, ExceptionHandlerTable> rv =
+			new LinkedHashMap<>();
+		
+		// Go through all addresses in range
+		ExceptionHandlerTable current = null;
+		for (int i = 0, n = this.maximumEndAddress(); i < n; i++)
+		{
+			throw new todo.TODO();
+		}
+		
+		return rv;
+	}
+	
+	/**
+	 * Returns the maximum end address that is used in the table.
+	 *
+	 * @return The highest end address used in the table.
+	 * @since 2019/03/21
+	 */
+	public final int maximumEndAddress()
+	{
+		int rv = 0;
+		for (ExceptionHandler e : this._table)
+		{
+			int epc = e.endpc;
+			if (epc > rv)
+				rv = epc;
+		}
 		return rv;
 	}
 	
