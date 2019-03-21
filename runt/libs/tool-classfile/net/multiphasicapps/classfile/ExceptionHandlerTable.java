@@ -77,6 +77,22 @@ public final class ExceptionHandlerTable
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2019/03/21
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		if (this == __o)
+			return true;
+		
+		if (!(__o instanceof ExceptionHandlerTable))
+			return false;
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Returns the exception handler at the given index.
 	 *
 	 * @return The exception handler at the given index.
@@ -85,6 +101,16 @@ public final class ExceptionHandlerTable
 	public final ExceptionHandler get(int __i)
 	{
 		return this._table[__i];
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/03/21
+	 */
+	@Override
+	public final int hashCode()
+	{
+		throw new todo.TODO();
 	}
 	
 	/**
