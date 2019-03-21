@@ -43,6 +43,9 @@ final class __Registerize__
 	protected final __RegisterCodeBuilder__ codebuilder =
 		new __RegisterCodeBuilder__();
 	
+	/** Exception tracker. */
+	protected final __ExceptionTracker__ exceptiontracker;
+	
 	/** The instruction throws an exception, it must be checked. */
 	private boolean _exceptioncheck;
 	
@@ -62,6 +65,7 @@ final class __Registerize__
 		this.bytecode = __bc;
 		this.stackmap = __bc.stackMapTable();
 		this.state = new __StackState__(__bc.maxLocals(), __bc.maxStack());
+		this.exceptiontracker = new __ExceptionTracker__(__bc);
 	}
 	
 	/**
@@ -75,6 +79,7 @@ final class __Registerize__
 		ByteCode bytecode = this.bytecode;
 		StackMapTable stackmap = this.stackmap;
 		__StackState__ state = this.state;
+		__ExceptionTracker__ exceptiontracker = this.exceptiontracker;
 		
 		// Process every instruction
 		for (Instruction inst : bytecode)
@@ -101,7 +106,9 @@ final class __Registerize__
 			// exception register value, then jumping to the exception handler
 			// for this instruction
 			if (this._exceptioncheck)
+			{
 				throw new todo.TODO();
+			}
 		}
 		
 		throw new todo.TODO();
