@@ -40,5 +40,21 @@ public interface RegisterOperationType
 	/** Wide constant. */
 	public static final int WIDE_CONST =
 		5;
+	
+	/** Invoke pointer from constant pool. */
+	public static final int INVOKE_FROM_CONSTANT_POOL =
+		6;
+	
+	/** Invoke pointer. */
+	public static final int INVOKE_POINTER =
+		7;
+	
+	/** Reference count. */
+	public static final int COUNT =
+		8;
+	
+	/** Un-reference count. */
+	public static final int UNCOUNT =
+		9;
 }
 
