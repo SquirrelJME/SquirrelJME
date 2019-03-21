@@ -28,16 +28,24 @@ final class __RegisterCodeBuilder__
 	/** Next address to use. */
 	int _nextaddr;
 	
-	public final __TempInstruction__ add(int op, Object... __args)
+	/**
+	 * Adds a new instruction.
+	 *
+	 * @param __op The operation to add.
+	 * @param __args The arguments to the operation.
+	 * @return The resulting temporary instruction.
+	 * @since 2019/03/16
+	 */
+	public final __TempInstruction__ add(int __op, Object... __args)
 	{
 		// Create instruction
 		int atdx;
 		__TempInstruction__ rv = new __TempInstruction__(
-			(atdx = this._nextaddr++), op, __args);
+			(atdx = this._nextaddr++), __op, __args);
 		
 		// Debug
 		todo.DEBUG.note("@%d -> %s %s", atdx,
-			RegisterOperationMnemonics.toString(op), Arrays.asList(__args));
+			RegisterOperationMnemonics.toString(__op), Arrays.asList(__args));
 		
 		// Store and return the instruction, it will have the address
 		this._instructions.put(atdx, rv);

@@ -10,8 +10,11 @@
 
 package net.multiphasicapps.classfile.register;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ConstantValue;
+import net.multiphasicapps.classfile.FieldDescriptor;
 import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
 import net.multiphasicapps.classfile.JavaType;
@@ -183,7 +186,41 @@ final class __Registerize__
 		// The invoked method may throw an exception
 		this._exceptioncheck = true;
 		
-		throw new todo.TODO();
+		// The old top of the stack is used to determine how many arguments
+		// to forward (into the locals)
+		__StackState__ state = this.state;
+		int oldtop = state.stackTopRegister();
+		
+		// Pop all entries off the stack, note any entries which are references
+		// that need to be uncounted after the call
+		List<Integer> uncount = new ArrayList<>();
+		for (JavaType js : __r.handle().javaStack(__t.hasInstance()))
+		{
+			int pr = state.stackPop().register;
+			
+			// Uncount reference later?
+			if (js.isObject())
+				uncount.add(pr);
+		}
+		
+		// The base of the stack is the last popped register
+		int newbase = state.stackTopRegister();
+		
+		// Generate the call, pass the base register and the number of
+		// registers to pass to the target method
+		__RegisterCodeBuilder__ codebuilder = this.codebuilder;
+		codebuilder.add(RegisterOperationType.INVOKE_FROM_CONSTANT_POOL,
+			new InvokedMethod(__t, __r.handle()), newbase, oldtop - newbase);
+		
+		// For any references that are used, uncount the positions
+		for (Integer i : uncount)
+			codebuilder.add(RegisterOperationType.UNCOUNT, i);
+		
+		// If there is a return result, read it into the register at the top
+		// of the stack
+		FieldDescriptor rvfd = __r.memberType().returnValue();
+		if (rvfd != null)
+			throw new todo.TODO();
 	}
 	
 	/**
@@ -203,7 +240,7 @@ final class __Registerize__
 		JavaType jt = __v.type().javaType();
 		
 		// Push to the stack
-		__StackResult__ dest = state.stackPush(jt);
+		__StackResult__ dest = this.state.stackPush(jt);
 		
 		// Generate instruction
 		__RegisterCodeBuilder__ codebuilder = this.codebuilder;

@@ -192,6 +192,20 @@ final class __StackState__
 	}
 	
 	/**
+	 * Returns the register that would be used if the stack were to be pushed
+	 * to, this may exceed the index of valid registers.
+	 *
+	 * @return The register at the top of the stack.
+	 * @since 2019/03/21
+	 */
+	public final int stackTopRegister()
+	{
+		// This will just be the distance from the lowest register to the
+		// current top of the stack
+		return this._stack[0].register + this._stacktop;
+	}
+	
+	/**
 	 * Represents a slot within Java locals or the stack.
 	 *
 	 * @since 2019/02/16
