@@ -10,7 +10,10 @@
 
 package net.multiphasicapps.classfile.register;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 
 /**
  * This represents a single instruction.
@@ -24,6 +27,9 @@ public final class RegisterInstruction
 	
 	/** The arguments. */
 	final Object[] _args;
+	
+	/** String form. */
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes the temporary instruction.
@@ -66,6 +72,24 @@ public final class RegisterInstruction
 		for (Object o : args)
 			if (o == null)
 				throw new NullPointerException("NARG");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/03/22
+	 */
+	@Override
+	public final String toString()
+	{
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>((rv =
+				RegisterOperationMnemonics.toString(this.op) + ":" +
+				Arrays.asList(this._args)));
+		
+		return rv;
 	}
 }
 
