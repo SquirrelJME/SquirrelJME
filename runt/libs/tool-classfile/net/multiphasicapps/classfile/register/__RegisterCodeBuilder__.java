@@ -29,6 +29,27 @@ final class __RegisterCodeBuilder__
 	int _nextaddr;
 	
 	/**
+	 * Initializes the code builder at the default start address.
+	 *
+	 * @since 2019/03/22
+	 */
+	__RegisterCodeBuilder__()
+	{
+		this._nextaddr = 0;
+	}
+	
+	/**
+	 * Initializes the code builder at the given start address.
+	 *
+	 * @param __pc The address to start at.
+	 * @since 2019/03/22
+	 */
+	__RegisterCodeBuilder__(int __pc)
+	{
+		this._nextaddr = __pc;
+	}
+	
+	/**
 	 * Adds a new instruction.
 	 *
 	 * @param __op The operation to add.

@@ -11,10 +11,12 @@
 package net.multiphasicapps.classfile.register;
 
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ExceptionHandlerTable;
 import net.multiphasicapps.classfile.InstructionAddressRange;
+import net.multiphasicapps.classfile.StackMapTable;
 
 /**
  * This class is used to keep track of the exceptions in the methods.
