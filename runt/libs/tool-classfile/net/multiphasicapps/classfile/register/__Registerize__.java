@@ -91,6 +91,9 @@ final class __Registerize__
 			// Debug
 			todo.DEBUG.note("Xlate %s", inst);
 			
+			// Add label to refer to this instruction in Java terms
+			codebuilder.label("java", inst.address());
+			
 			// Clear the exception check since not every instruction will
 			// generate an exception, this will reduce the code size greatly
 			this._exceptioncheck = false;
