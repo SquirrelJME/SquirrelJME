@@ -10,7 +10,11 @@
 
 package net.multiphasicapps.classfile.register;
 
+import java.util.Collection;
+import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
+import net.multiphasicapps.classfile.ExceptionHandlerTable;
+import net.multiphasicapps.classfile.InstructionAddressRange;
 
 /**
  * This class is used to keep track of the exceptions in the methods.
@@ -19,6 +23,12 @@ import net.multiphasicapps.classfile.ByteCode;
  */
 final class __ExceptionTracker__
 {
+	/** The full table. */
+	protected final ExceptionHandlerTable full;
+	
+	/** Ranges for exceptions mapped to specific ranges. */
+	private final Map<InstructionAddressRange, ExceptionHandlerTable> _ranges;
+	
 	/**
 	 * Initializes the exception tracker.
 	 *
@@ -32,7 +42,41 @@ final class __ExceptionTracker__
 		if (__bc == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Get the complete exception handler table
+		ExceptionHandlerTable full = __bc.exceptions();
+		this.full = full;
+		
+		// Load the full exception table ranges, this is used to locate
+		// which table belongs to what
+		this._ranges = full.mappedUniqueRanges();
+		
+		// Debug
+		todo.DEBUG.note("EHRanges: %s", this._ranges);
+	}
+	
+	/**
+	 * Returns the table at the given PC address.
+	 *
+	 * @param __pc The address to get.
+	 * @return The table at the given address.
+	 * @since 2019/03/22
+	 */
+	public final ExceptionHandlerTable tableOf(int __pc)
+	{
+		ExceptionHandlerTable last = null;
+		for (Map.Entry<InstructionAddressRange, ExceptionHandlerTable> e :
+			this._ranges.entrySet())
+		{
+			if (e.getKey().inRange(__pc))
+				return e.getValue();
+			last = e.getValue();
+		}
+		
+		// Always return the last table because the exception handlers might
+		// not cover the entire method (in the case of where there are no
+		// handlers, the blank table will be only at address 0 while the
+		// remaining instructions are the end)
+		return last;
 	}
 }
 

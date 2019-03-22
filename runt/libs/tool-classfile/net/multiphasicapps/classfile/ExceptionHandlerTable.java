@@ -17,6 +17,7 @@ import java.lang.ref.WeakReference;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +57,29 @@ public final class ExceptionHandlerTable
 		
 		// Set
 		this._table = __t;
+	}
+	
+	/**
+	 * Initializes the exception handler table.
+	 *
+	 * @param __t The entries to handle.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/22
+	 */
+	ExceptionHandlerTable(Collection<ExceptionHandler> __t)
+		throws NullPointerException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Copy array
+		ExceptionHandler[] t = __t.<ExceptionHandler>toArray(
+			new ExceptionHandler[__t.size()]);
+		for (ExceptionHandler e : t)
+			if (e == null)
+				throw new NullPointerException("NARG");
+		
+		this._table = t;
 	}
 	
 	/**
@@ -133,12 +157,34 @@ public final class ExceptionHandlerTable
 		Map<InstructionAddressRange, ExceptionHandlerTable> rv =
 			new LinkedHashMap<>();
 		
+		// Start of range
+		int rangestart = 0;
+		ExceptionHandlerTable current = this.tableAt(0);
+		
 		// Go through all addresses in range
-		ExceptionHandlerTable current = null;
-		for (int i = 0, n = this.maximumEndAddress(); i < n; i++)
+		// We include the end address because after that point there would
+		// be no exception handlers after that point. This forces a range
+		// to be specified where anything after this end point has no handlers
+		int ma = this.maximumEndAddress();
+		for (int i = 1; i <= ma; i++)
 		{
-			throw new todo.TODO();
+			// Get table at this address
+			ExceptionHandlerTable now = this.tableAt(i);
+			
+			// If the table is different, then a new range is used
+			if (!current.equals(now))
+			{
+				// Store the range
+				rv.put(new InstructionAddressRange(rangestart, i), current);
+				
+				// Set for next scan
+				rangestart = i;
+				current = now;
+			}
 		}
+		
+		// Always store the final range
+		rv.put(new InstructionAddressRange(rangestart, ma), current);
 		
 		return rv;
 	}
