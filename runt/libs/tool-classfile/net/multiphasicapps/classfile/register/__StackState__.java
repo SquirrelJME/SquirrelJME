@@ -231,6 +231,10 @@ final class __StackState__
 		// Set new stack top
 		this._stacktop = stacktop;
 		
+		// If the source value was cached, then use the cached value
+		Slot cached = at._cached;
+		if (cached != null)
+			return new __StackResult__(cached._type, cached.register, true);
 		return new __StackResult__(at._type, at.register);
 	}
 	
