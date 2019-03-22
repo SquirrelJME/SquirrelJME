@@ -87,6 +87,18 @@ public final class InstructionAddressRange
 	}
 	
 	/**
+	 * Checks if the given address is in the range of this range.
+	 *
+	 * @param __pc The address to check.
+	 * @return If the address is in range.
+	 * @since 2019/03/22
+	 */
+	public final boolean inRange(int __pc)
+	{
+		return __pc >= this.start && __pc < this.end;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2019/03/21
 	 */
