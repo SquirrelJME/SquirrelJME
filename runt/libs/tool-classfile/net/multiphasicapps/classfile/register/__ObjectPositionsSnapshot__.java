@@ -21,17 +21,22 @@ import java.util.Arrays;
  */
 final class __ObjectPositionsSnapshot__
 {
+	/** The index where the stack starts. */
+	protected final int stackstart;
+	
 	/** Position data. */
 	private final int[] _pos;
 	
 	/**
 	 * Initializes the positions.
 	 *
+	 * @param __ss The stack start position.
 	 * @param __p The positions to use.
 	 * @since 2019/03/22
 	 */
-	__ObjectPositionsSnapshot__(int... __p)
+	__ObjectPositionsSnapshot__(int __ss, int... __p)
 	{
+		this.stackstart = __ss;
 		this._pos = (__p == null ? new int[0] : __p.clone());
 	}
 	

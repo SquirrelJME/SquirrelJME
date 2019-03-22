@@ -160,7 +160,7 @@ final class __StackState__
 		int[] rv = new int[n];
 		for (int i = 0; i < n; i++)
 			rv[i] = brv.get(i);
-		return new __ObjectPositionsSnapshot__(rv);
+		return new __ObjectPositionsSnapshot__(locals.length, rv);
 	}
 	
 	/**
