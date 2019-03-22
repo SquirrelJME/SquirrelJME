@@ -126,6 +126,17 @@ final class __StackState__
 	}
 	
 	/**
+	 * Creates a snapshot of object positions.
+	 *
+	 * @return The snapshot of all the object positions.
+	 * @since 2019/03/22
+	 */
+	public final __ObjectPositionsSnapshot__ objectSnapshot()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Pops a single value from the stack.
 	 *
 	 * @return The result of the pop.

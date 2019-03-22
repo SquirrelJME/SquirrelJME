@@ -10,41 +10,38 @@
 
 package net.multiphasicapps.classfile.register;
 
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
+import net.multiphasicapps.classfile.ExceptionHandlerTable;
 
 /**
- * Label which refers to a location in code.
+ * This is a combination of an objects snapshot and exception handler table.
  *
- * @since 2019/03/16
+ * @since 2019/03/22
  */
-final class __Label__
+final class __ExceptionCombo__
 {
-	/** The locality. */
-	public final String locality;
+	/** The object positions. */
+	protected final __ObjectPositionsSnapshot__ ops;
 	
-	/** The associated address. */
-	public final int address;
-	
-	/** String form. */
-	private Reference<String> _string;
+	/** The exception handle table. */
+	protected final ExceptionHandlerTable table;
 	
 	/**
-	 * Initializes the lable.
+	 * Initializes the exception combo.
 	 *
-	 * @param __l The locality.
-	 * @param __a The address.
+	 * @param __ops The object positions.
+	 * @param __t The table used.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2019/03/16
+	 * @since 2019/03/22
 	 */
-	public __Label__(String __l, int __a)
+	__ExceptionCombo__(__ObjectPositionsSnapshot__ __ops,
+		ExceptionHandlerTable __t)
 		throws NullPointerException
 	{
-		if (__l == null)
+		if (__ops == null || __t == null)
 			throw new NullPointerException("NARG");
 		
-		this.locality = __l;
-		this.address = __a;
+		this.ops = __ops;
+		this.table = __t;
 	}
 	
 	/**
@@ -54,15 +51,15 @@ final class __Label__
 	@Override
 	public final boolean equals(Object __o)
 	{
-		if (this == __o)
+		if (__o == this)
 			return true;
 		
-		if (!(__o instanceof __Label__))
+		if (!(__o instanceof __ExceptionCombo__))
 			return false;
 		
-		__Label__ o = (__Label__)__o;
-		return this.locality.equals(o.locality) &&
-			this.address == o.address;
+		__ExceptionCombo__ o = (__ExceptionCombo__)__o;
+		return this.ops.equals(o.ops) &&
+			this.table.equals(o.table);
 	}
 	
 	/**
@@ -72,24 +69,7 @@ final class __Label__
 	@Override
 	public final int hashCode()
 	{
-		return (~this.locality.hashCode()) - this.address;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/03/22
-	 */
-	@Override
-	public final String toString()
-	{
-		Reference<String> ref = this._string;
-		String rv;
-		
-		if (ref == null || null == (rv = ref.get()))
-			this._string = new WeakReference<>((rv = "@" + this.locality +
-				":" + this.address));
-		
-		return rv;
+		return this.ops.hashCode() ^ this.table.hashCode();
 	}
 }
 
