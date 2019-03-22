@@ -125,7 +125,17 @@ public final class RegisterCodeBuilder
 			// an index following this since it would be off by one
 			if ((i + 1) == labels.get(lt))
 			{
-				throw new todo.TODO();
+				// Remove this instruction, it is pointless
+				in.remove(i);
+				
+				// Move all of the label values down
+				for (Map.Entry<RegisterCodeLabel, Integer> e :
+					labels.entrySet())
+				{
+					int val = e.getValue();
+					if (val > i)
+						e.setValue(val - 1);
+				}
 			}
 		}
 		
