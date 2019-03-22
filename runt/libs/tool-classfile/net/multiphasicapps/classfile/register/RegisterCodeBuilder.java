@@ -120,7 +120,13 @@ public final class RegisterCodeBuilder
 					continue;
 			}
 			
-			throw new todo.TODO();
+			// If this points to the index directly following this, then delete
+			// this instruction and move down every single label which targets
+			// an index following this since it would be off by one
+			if ((i + 1) == labels.get(lt))
+			{
+				throw new todo.TODO();
+			}
 		}
 		
 		// Output instructions
