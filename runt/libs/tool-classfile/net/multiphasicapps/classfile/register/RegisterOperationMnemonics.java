@@ -57,10 +57,12 @@ public final class RegisterOperationMnemonics
 				return "COUNT";
 			case RegisterOperationType.UNCOUNT:
 				return "UNCOUNT";
-			case RegisterOperationType.JUMP_ON_EXCEPTION_AND_CLEAR:
-				return "JUMP_ON_EXCEPTION_AND_CLEAR";
+			case RegisterOperationType.JUMP_ON_EXCEPTION:
+				return "JUMP_ON_EXCEPTION";
 			case RegisterOperationType.RETURN:
 				return "RETURN";
+			case RegisterOperationType.EXCEPTION_CLASS_JUMP:
+				return "EXCEPTION_CLASS_JUMP";
 			
 				// Unknown
 			default:

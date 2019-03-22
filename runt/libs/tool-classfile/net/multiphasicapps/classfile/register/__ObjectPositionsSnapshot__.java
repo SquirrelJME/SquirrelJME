@@ -53,8 +53,9 @@ final class __ObjectPositionsSnapshot__
 		if (!(__o instanceof __ObjectPositionsSnapshot__))
 			return false;
 		
-		return Arrays.equals(this._pos,
-			((__ObjectPositionsSnapshot__)__o)._pos);
+		__ObjectPositionsSnapshot__ o = (__ObjectPositionsSnapshot__)__o;
+		return this.stackstart == o.stackstart &&
+			Arrays.equals(this._pos, o._pos);
 	}
 	
 	/**
@@ -64,10 +65,44 @@ final class __ObjectPositionsSnapshot__
 	@Override
 	public final int hashCode()
 	{
-		int rv = 0;
+		int rv = ~this.stackstart;
 		for (int i : this._pos)
 			rv += i;
 		return rv;
+	}
+	
+	/**
+	 * Gets the register for the given index.
+	 *
+	 * @param __dx The index to get.
+	 * @return The register.
+	 * @since 2019/03/22
+	 */
+	public final int get(int __dx)
+	{
+		return this._pos[__dx];
+	}
+	
+	/**
+	 * Returns the size of the snapshot.
+	 *
+	 * @return The size of the snapshot.
+	 * @since 2019/03/22
+	 */
+	public final int size()
+	{
+		return this._pos.length;
+	}
+	
+	/**
+	 * Returns the start of the stack.
+	 *
+	 * @return The start of the stack.
+	 * @since 2019/03/22
+	 */
+	public final int stackStart()
+	{
+		return this.stackstart;
 	}
 }
 

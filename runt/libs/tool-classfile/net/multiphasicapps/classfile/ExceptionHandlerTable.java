@@ -18,10 +18,12 @@ import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.RandomAccess;
+import net.multiphasicapps.collections.UnmodifiableIterator;
 
 /**
  * This represents a every exception that exists within a method.
@@ -29,6 +31,7 @@ import java.util.RandomAccess;
  * @since 2017/02/09
  */
 public final class ExceptionHandlerTable
+	implements Iterable<ExceptionHandler>
 {
 	/** The exception handler table. */
 	private final ExceptionHandler[] _table;
@@ -142,6 +145,16 @@ public final class ExceptionHandlerTable
 		for (ExceptionHandler e : this._table)
 			rv += e.hashCode();
 		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/03/22
+	 */
+	@Override
+	public final Iterator<ExceptionHandler> iterator()
+	{
+		return UnmodifiableIterator.<ExceptionHandler>of(this._table);
 	}
 	
 	/**
