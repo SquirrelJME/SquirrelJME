@@ -257,6 +257,7 @@ final class __StackState__
 		// Just needs simple set of type
 		Slot at = stack[stacktop];
 		at._type = __t;
+		at._cached = null;
 		
 		// Set required top type
 		boolean wide;
@@ -264,6 +265,7 @@ final class __StackState__
 		{
 			Slot top = stack[++stacktop];
 			top._type = __t.topType();
+			top._cached = null;
 		}
 		
 		// Store new top
