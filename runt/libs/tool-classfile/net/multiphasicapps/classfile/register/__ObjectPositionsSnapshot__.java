@@ -84,6 +84,17 @@ final class __ObjectPositionsSnapshot__
 	}
 	
 	/**
+	 * Select only locals.
+	 *
+	 * @return Snapshot but with only locals.
+	 * @since 2019/03/22
+	 */
+	public final __ObjectPositionsSnapshot__ localsOnly()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Returns the size of the snapshot.
 	 *
 	 * @return The size of the snapshot.
