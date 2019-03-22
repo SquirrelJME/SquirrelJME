@@ -10,13 +10,31 @@
 
 package net.multiphasicapps.classfile.register;
 
+import java.util.Arrays;
+
 /**
- * This is a snapshot of object positions that appear within a state.
+ * This is a snapshot of object positions that appear within a state. Note that
+ * these refer to register positions and as such, stack and local values do
+ * not have a defined meaning here.
  *
  * @since 2019/03/22
  */
 final class __ObjectPositionsSnapshot__
 {
+	/** Position data. */
+	private final int[] _pos;
+	
+	/**
+	 * Initializes the positions.
+	 *
+	 * @param __p The positions to use.
+	 * @since 2019/03/22
+	 */
+	__ObjectPositionsSnapshot__(int... __p)
+	{
+		this._pos = (__p == null ? new int[0] : __p.clone());
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2019/03/22
@@ -30,7 +48,8 @@ final class __ObjectPositionsSnapshot__
 		if (!(__o instanceof __ObjectPositionsSnapshot__))
 			return false;
 		
-		throw new todo.TODO();
+		return Arrays.equals(this._pos,
+			((__ObjectPositionsSnapshot__)__o)._pos);
 	}
 	
 	/**
@@ -40,7 +59,10 @@ final class __ObjectPositionsSnapshot__
 	@Override
 	public final int hashCode()
 	{
-		throw new todo.TODO();
+		int rv = 0;
+		for (int i : this._pos)
+			rv += i;
+		return rv;
 	}
 }
 

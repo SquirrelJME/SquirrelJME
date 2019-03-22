@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.classfile.register;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.JavaType;
 import net.multiphasicapps.classfile.StackMapTableState;
@@ -133,7 +135,32 @@ final class __StackState__
 	 */
 	public final __ObjectPositionsSnapshot__ objectSnapshot()
 	{
-		throw new todo.TODO();
+		List<Integer> brv = new ArrayList<>();
+		
+		// Scan locals
+		Slot[] locals = this._locals;
+		for (int i = 0, n = locals.length; i < n; i++)
+		{
+			Slot s = locals[i];
+			if (s.isObject())
+				brv.add(s.register);
+		}
+		
+		// Scan stack entries
+		Slot[] stack = this._stack;
+		for (int i = 0, n = this._stacktop; i < n; i++)
+		{
+			Slot s = stack[i];
+			if (s.isObject())
+				brv.add(s.register);
+		}
+		
+		// Translate entries
+		int n = brv.size();
+		int[] rv = new int[n];
+		for (int i = 0; i < n; i++)
+			rv[i] = brv.get(i);
+		return new __ObjectPositionsSnapshot__(rv);
 	}
 	
 	/**
@@ -238,6 +265,18 @@ final class __StackState__
 		private Slot(int __vr)
 		{
 			this.register = __vr;
+		}
+		
+		/**
+		 * Does this refer to an object?
+		 *
+		 * @return If this refers to an object.
+		 * @since 2019/03/22
+		 */
+		public final boolean isObject()
+		{
+			JavaType type = this._type;
+			return type != null && type.isObject();
 		}
 	}
 }
