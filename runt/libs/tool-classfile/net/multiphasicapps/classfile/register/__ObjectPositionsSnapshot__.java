@@ -36,8 +36,8 @@ final class __ObjectPositionsSnapshot__
 	 */
 	__ObjectPositionsSnapshot__(int __ss, int... __p)
 	{
-		this.stackstart = __ss;
-		this._pos = (__p == null ? new int[0] : __p.clone());
+		this._pos = (__p = (__p == null ? new int[0] : __p.clone()));
+		this.stackstart = (__ss > __p.length ? __p.length : __ss);
 	}
 	
 	/**

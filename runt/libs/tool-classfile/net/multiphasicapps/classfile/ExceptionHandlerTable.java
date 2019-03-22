@@ -148,6 +148,17 @@ public final class ExceptionHandlerTable
 	}
 	
 	/**
+	 * Is this exception table empty?
+	 *
+	 * @return If the table is empty.
+	 * @since 2019/03/22
+	 */
+	public final boolean isEmpty()
+	{
+		return this._table.length == 0;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2019/03/22
 	 */

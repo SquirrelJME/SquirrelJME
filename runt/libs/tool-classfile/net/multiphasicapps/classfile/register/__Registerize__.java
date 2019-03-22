@@ -276,6 +276,35 @@ final class __Registerize__
 		__ObjectPositionsSnapshot__ ops = __ec.ops;
 		ExceptionHandlerTable ehtable = __ec.table;
 		
+		// If the exception handler table is empty, we are just going to
+		// go up the stack anyway, so there is no point in generating our
+		// own handler!
+		if (ehtable.isEmpty())
+		{
+			// If there was already a return point which represents how we
+			// would uncount and return, then just make the exception point
+			// at this jump point. So when the labels are resolved no jumps
+			// are generated, the JUMP_ON_EXCEPTION will just point to one
+			// of the return points
+			Map<__ObjectPositionsSnapshot__, RegisterCodeLabel> rs =
+				this._returns;
+			RegisterCodeLabel rcl = rs.get(ops);
+			if (rcl != null)
+			{
+				// Just point this exception to that return location
+				codebuilder.label("exception", __edx,
+					codebuilder.labelTarget(rcl));
+				return;
+			}
+			
+			// Label here has usual and just create a return
+			codebuilder.label("exception", __edx);
+			this.__return(ops);
+			
+			// Do no more work
+			return;
+		}
+		
 		// Mark the current position as the handler, so other parts of the
 		// code can jump here
 		codebuilder.label("exception", __edx);

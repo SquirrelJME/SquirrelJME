@@ -178,5 +178,24 @@ public final class RegisterCodeBuilder
 		this._labels.put(__l, __pc);
 		return __l;
 	}
+	
+	/**
+	 * Returns the target of the specified label.
+	 *
+	 * @param __l The label to get the target of.
+	 * @return The index of the instruction or {@code -1} if the label is not
+	 * valid or the position is not yet known.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/22
+	 */
+	public final int labelTarget(RegisterCodeLabel __l)
+		throws NullPointerException
+	{
+		if (__l == null)
+			throw new NullPointerException("NARG");
+		
+		Integer rv = this._labels.get(__l);
+		return (rv == null ? -1 : rv);
+	}
 }
 
