@@ -68,5 +68,9 @@ public interface RegisterOperationType
 	/** Jump if class matches, load/clear exception to specified register. */
 	public static final int EXCEPTION_CLASS_JUMP =
 		12;
+	
+	/** Jump to address. */
+	public static final int JUMP =
+		13;
 }
 

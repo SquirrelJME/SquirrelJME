@@ -63,6 +63,8 @@ public final class RegisterOperationMnemonics
 				return "RETURN";
 			case RegisterOperationType.EXCEPTION_CLASS_JUMP:
 				return "EXCEPTION_CLASS_JUMP";
+			case RegisterOperationType.JUMP:
+				return "JUMP";
 			
 				// Unknown
 			default:
