@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.classfile.register;
 
+import java.util.Collection;
 import net.multiphasicapps.classfile.ByteCode;
 
 /**
@@ -22,6 +23,49 @@ import net.multiphasicapps.classfile.ByteCode;
  */
 public final class RegisterCode
 {
+	/** Instructions for this code. */
+	private final RegisterInstruction[] _instructions;
+	
+	/**
+	 * Initializes the register code.
+	 *
+	 * @param __i The associated instructions.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/22
+	 */
+	public RegisterCode(RegisterInstruction... __i)
+		throws NullPointerException
+	{
+		__i = (__i == null ? new RegisterInstruction[0] : __i.clone());
+		for (RegisterInstruction i : __i)
+			if (i == null)
+				throw new NullPointerException("NARG");
+		
+		this._instructions = __i;
+	}
+	
+	/**
+	 * Initializes the register code.
+	 *
+	 * @param __i The associated instructions.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/22
+	 */
+	public RegisterCode(Collection<RegisterInstruction> __i)
+		throws NullPointerException
+	{
+		if (__i == null)
+			throw new NullPointerException("NARG");
+		
+		RegisterInstruction[] ii = __i.<RegisterInstruction>toArray(
+			new RegisterInstruction[__i.size()]);
+		for (RegisterInstruction i : ii)
+			if (i == null)
+				throw new NullPointerException("NARG");
+		
+		this._instructions = ii;
+	}
+	
 	/**
 	 * This translates the input byte code and creates a register code which
 	 * removes all stack operations and maps them to register operations.
