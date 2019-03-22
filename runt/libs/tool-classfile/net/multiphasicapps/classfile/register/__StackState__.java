@@ -146,6 +146,9 @@ final class __StackState__
 				brv.add(s.register);
 		}
 		
+		// Start of stack is here
+		int stackstart = brv.size();
+		
 		// Scan stack entries
 		Slot[] stack = this._stack;
 		for (int i = 0, n = this._stacktop; i < n; i++)
@@ -160,7 +163,7 @@ final class __StackState__
 		int[] rv = new int[n];
 		for (int i = 0; i < n; i++)
 			rv[i] = brv.get(i);
-		return new __ObjectPositionsSnapshot__(locals.length, rv);
+		return new __ObjectPositionsSnapshot__(stackstart, rv);
 	}
 	
 	/**

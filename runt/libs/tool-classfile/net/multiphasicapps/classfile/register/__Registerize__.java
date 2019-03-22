@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ConstantValue;
+import net.multiphasicapps.classfile.ExceptionHandler;
+import net.multiphasicapps.classfile.ExceptionHandlerTable;
 import net.multiphasicapps.classfile.FieldDescriptor;
 import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
@@ -121,19 +123,60 @@ final class __Registerize__
 				
 				// Just create a jump here
 				codebuilder.add(
-					RegisterOperationType.JUMP_ON_EXCEPTION_AND_CLEAR, ehlab);
+					RegisterOperationType.JUMP_ON_EXCEPTION, ehlab);
 			}
 		}
 		
 		// If we need to generate exception tables, do it now
 		List<__ExceptionCombo__> usedexceptions = this._usedexceptions;
 		if (!usedexceptions.isEmpty())
-		{
-			throw new todo.TODO();
-		}
+			for (int i = 0, n = usedexceptions.size(); i < n; i++)
+				this.__exceptionGenerate(usedexceptions.get(i), i);
 		
 		// Build the final code table
 		return codebuilder.build();
+	}
+	
+	/**
+	 * Generates exception handler code for the given index.
+	 *
+	 * @param __ec The combo to generate for.
+	 * @param __edx The index of the used exception table.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/22
+	 */
+	private final void __exceptionGenerate(__ExceptionCombo__ __ec, int __edx)
+		throws NullPointerException
+	{
+		if (__ec == null)
+			throw new NullPointerException("NARG");
+		
+		__RegisterCodeBuilder__ codebuilder = this.codebuilder;
+		__ObjectPositionsSnapshot__ ops = __ec.ops;
+		ExceptionHandlerTable ehtable = __ec.table;
+		
+		// Mark the current position as the handler, so other parts of the
+		// code can jump here
+		codebuilder.label("exception", __edx);
+		
+		// Un-count all stack entries
+		int stackstart = ops.stackStart();
+		for (int i = stackstart, n = ops.size(); i < n; i++)
+			codebuilder.add(RegisterOperationType.UNCOUNT, ops.get(i));
+		
+		// For each exception type, perform a check and a jump to the target
+		for (ExceptionHandler eh : ehtable)
+			codebuilder.add(RegisterOperationType.EXCEPTION_CLASS_JUMP,
+				eh.type(), new __Label__("java", eh.handlerAddress()));
+		
+		// If this point ever gets reached in code then this will mean that
+		// there are no handlers for the exception, uncount any used registers
+		for (int i = 0; i < stackstart; i++)
+			codebuilder.add(RegisterOperationType.UNCOUNT, ops.get(i));
+		
+		// Then generate a return, the exception register will remain flagged
+		// and containing an exception
+		codebuilder.add(RegisterOperationType.RETURN);
 	}
 	
 	/**

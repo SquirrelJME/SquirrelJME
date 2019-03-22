@@ -57,12 +57,16 @@ public interface RegisterOperationType
 	public static final int UNCOUNT =
 		9;
 	
-	/** Jump if exception flag is set, clear exception flag. */
-	public static final int JUMP_ON_EXCEPTION_AND_CLEAR =
+	/** Jump if exception flag is set. */
+	public static final int JUMP_ON_EXCEPTION =
 		10;
 	
 	/** Return from method. */
 	public static final int RETURN =
 		11;
+	
+	/** Jump if class matches, load/clear exception to specified register. */
+	public static final int EXCEPTION_CLASS_JUMP =
+		12;
 }
 
