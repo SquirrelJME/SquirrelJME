@@ -18,7 +18,7 @@ import java.lang.ref.WeakReference;
  *
  * @since 2019/03/16
  */
-final class __Label__
+public final class RegisterCodeLabel
 {
 	/** The locality. */
 	public final String locality;
@@ -37,7 +37,7 @@ final class __Label__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/16
 	 */
-	public __Label__(String __l, int __a)
+	public RegisterCodeLabel(String __l, int __a)
 		throws NullPointerException
 	{
 		if (__l == null)
@@ -57,10 +57,10 @@ final class __Label__
 		if (this == __o)
 			return true;
 		
-		if (!(__o instanceof __Label__))
+		if (!(__o instanceof RegisterCodeLabel))
 			return false;
 		
-		__Label__ o = (__Label__)__o;
+		RegisterCodeLabel o = (RegisterCodeLabel)__o;
 		return this.locality.equals(o.locality) &&
 			this.address == o.address;
 	}

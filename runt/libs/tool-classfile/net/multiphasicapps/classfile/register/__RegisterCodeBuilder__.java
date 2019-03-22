@@ -10,9 +10,12 @@
 
 package net.multiphasicapps.classfile.register;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import net.multiphasicapps.classfile.InstructionJumpTarget;
 
 /**
  * This is used to build {@link RegisterCode} and add instructions to it.
@@ -22,11 +25,11 @@ import java.util.Map;
 final class __RegisterCodeBuilder__
 {
 	/** Temporary instruction layout. */
-	final Map<Integer, __TempInstruction__> _instructions =
+	final Map<Integer, RegisterInstruction> _instructions =
 		new LinkedHashMap<>();
 	
 	/** Label positions. */
-	final Map<__Label__, Integer> _labels =
+	final Map<RegisterCodeLabel, Integer> _labels =
 		new LinkedHashMap<>();
 	
 	/** Next address to use. */
@@ -61,12 +64,11 @@ final class __RegisterCodeBuilder__
 	 * @return The resulting temporary instruction.
 	 * @since 2019/03/16
 	 */
-	public final __TempInstruction__ add(int __op, Object... __args)
+	public final RegisterInstruction add(int __op, Object... __args)
 	{
 		// Create instruction
-		int atdx;
-		__TempInstruction__ rv = new __TempInstruction__(
-			(atdx = this._nextaddr++), __op, __args);
+		int atdx = this._nextaddr++;
+		RegisterInstruction rv = new RegisterInstruction(__op, __args);
 		
 		// Debug
 		todo.DEBUG.note("@%d -> %s %s", atdx,
@@ -86,7 +88,34 @@ final class __RegisterCodeBuilder__
 	 */
 	public final RegisterCode build()
 	{
-		throw new todo.TODO();
+		// Working area for arguments
+		List<Object> workargs = new ArrayList<>();
+		
+		// Output instructions
+		List<RegisterInstruction> out = new ArrayList<>();
+		
+		// Go through input instructions and map them to real instructions
+		Map<RegisterCodeLabel, Integer> labels = this._labels;
+		for (RegisterInstruction i : this._instructions.values())
+		{
+			// Fill in working arguments, with translated labels
+			workargs.clear();
+			for (Object a : i._args)
+			{
+				// Map any labels to indexes
+				if (a instanceof RegisterCodeLabel)
+					a = new InstructionJumpTarget(
+						out.get((RegisterCodeLabel)a));
+				
+				workargs.add(a);
+			}
+			
+			// Build instruction
+			out.add(new RegisterInstruction(i.op, workargs));
+		}
+		
+		// Build
+		return new RegisterCode(out);
 	}
 	
 	/**
@@ -97,9 +126,9 @@ final class __RegisterCodeBuilder__
 	 * @return The added label.
 	 * @since 2019/03/22
 	 */
-	public final __Label__ label(String __lo, int __dx)
+	public final RegisterCodeLabel label(String __lo, int __dx)
 	{
-		return this.label(new __Label__(__lo, __dx), this._nextaddr);
+		return this.label(new RegisterCodeLabel(__lo, __dx), this._nextaddr);
 	}
 	
 	/**
@@ -111,9 +140,9 @@ final class __RegisterCodeBuilder__
 	 * @return The added label.
 	 * @since 2019/03/22
 	 */
-	public final __Label__ label(String __lo, int __dx, int __pc)
+	public final RegisterCodeLabel label(String __lo, int __dx, int __pc)
 	{
-		return this.label(new __Label__(__lo, __dx), __pc);
+		return this.label(new RegisterCodeLabel(__lo, __dx), __pc);
 	}
 	
 	/**
@@ -124,7 +153,7 @@ final class __RegisterCodeBuilder__
 	 * @return The added label.
 	 * @since 2019/03/22
 	 */
-	public final __Label__ label(__Label__ __l)
+	public final RegisterCodeLabel label(__Label__ __l)
 	{
 		return this.label(__l, this._nextaddr);
 	}
@@ -136,7 +165,7 @@ final class __RegisterCodeBuilder__
 	 * @return The added label.
 	 * @since 2019/03/22
 	 */
-	public final __Label__ label(__Label__ __l, int __pc)
+	public final RegisterCodeLabel label(__Label__ __l, int __pc)
 	{
 		// Debug
 		todo.DEBUG.note("Label %s -> @%d", __l, __pc);
