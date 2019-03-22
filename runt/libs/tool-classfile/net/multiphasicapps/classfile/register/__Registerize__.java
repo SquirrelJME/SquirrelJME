@@ -297,12 +297,13 @@ final class __Registerize__
 		// Pop all entries off the stack, note any entries which are references
 		// that need to be uncounted after the call
 		List<Integer> uncount = new ArrayList<>();
-		for (JavaType js : __r.handle().javaStack(__t.hasInstance()))
+		JavaType[] pops = __r.handle().javaStack(__t.hasInstance());
+		for (int i = pops.length - 1; i >= 0; i--)
 		{
 			int pr = state.stackPop().register;
 			
 			// Uncount reference later?
-			if (js.isObject())
+			if (pops[i].isObject())
 				uncount.add(pr);
 		}
 		
