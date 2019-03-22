@@ -378,6 +378,7 @@ final class __Registerize__
 	 */
 	private final void __runReturn(JavaType __rt)
 	{
+		__StackState__ state = this.state;
 		RegisterCodeBuilder codebuilder = this.codebuilder;
 		
 		// If we are returning a value, we need to store it into the return
@@ -386,6 +387,11 @@ final class __Registerize__
 		{
 			throw new todo.TODO();
 		}
+		
+		// Un-count any references in locals or the stack
+		__ObjectPositionsSnapshot__ snap = this.state.objectSnapshot();
+		for (int i = 0, n = snap.size(); i < n; i++)
+			codebuilder.add(RegisterOperationType.UNCOUNT, snap.get(i));
 		
 		// All returns are plain due to the fact that return address registers
 		// are used
