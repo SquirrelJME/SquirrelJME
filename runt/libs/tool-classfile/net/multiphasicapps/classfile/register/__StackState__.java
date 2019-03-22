@@ -314,6 +314,9 @@ final class __StackState__
 		/** Is this slot written to? */
 		boolean _written;
 		
+		/** Is this currently a cache from a local? */
+		private Slot _cached;
+		
 		/**
 		 * Initializes the slot.
 		 *
@@ -344,7 +347,9 @@ final class __StackState__
 		@Override
 		public final String toString()
 		{
-			return "R" + this.register + (this._written ? "w" : "") + ":" +
+			Slot cached = this._cached;
+			return "R" + this.register + (this._written ? "w" : "") + "," +
+				(cached == null ? "NotCached" : cached.toString()) + ":" +
 				this._type;
 		}
 	}
