@@ -158,7 +158,8 @@ final class __StackState__
 	}
 	
 	/**
-	 * Creates a snapshot of object positions.
+	 * Creates a snapshot of object positions for uncounting, this does not
+	 * include cached stack entries.
 	 *
 	 * @return The snapshot of all the object positions.
 	 * @since 2019/03/22
@@ -184,7 +185,7 @@ final class __StackState__
 		for (int i = 0, n = this._stacktop; i < n; i++)
 		{
 			Slot s = stack[i];
-			if (s.isObject())
+			if (s._cached != null && s.isObject())
 				brv.add(s.register);
 		}
 		
