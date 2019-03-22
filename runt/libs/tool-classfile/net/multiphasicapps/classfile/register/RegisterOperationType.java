@@ -60,5 +60,9 @@ public interface RegisterOperationType
 	/** Jump if exception flag is set, clear exception flag. */
 	public static final int JUMP_ON_EXCEPTION_AND_CLEAR =
 		10;
+	
+	/** Return from method. */
+	public static final int RETURN =
+		11;
 }
 

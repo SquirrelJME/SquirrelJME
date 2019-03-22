@@ -72,5 +72,17 @@ final class __RegisterCodeBuilder__
 		this._instructions.put(atdx, rv);
 		return rv;
 	}
+	
+	/**
+	 * Builds the register code, all references to other portions in the
+	 * code itself are resolved.
+	 *
+	 * @return The built register code.
+	 * @since 2019/03/22
+	 */
+	public final RegisterCode build()
+	{
+		throw new todo.TODO();
+	}
 }
 

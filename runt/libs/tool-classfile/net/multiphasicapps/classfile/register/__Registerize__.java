@@ -122,7 +122,15 @@ final class __Registerize__
 			}
 		}
 		
-		throw new todo.TODO();
+		// If we need to generate exception tables, do it now
+		List<__ExceptionCombo__> usedexceptions = this._usedexceptions;
+		if (!usedexceptions.isEmpty())
+		{
+			throw new todo.TODO();
+		}
+		
+		// Build the final code table
+		return codebuilder.build();
 	}
 	
 	/**
@@ -187,6 +195,10 @@ final class __Registerize__
 			case InstructionIndex.LDC:
 				this.__runLdc(__i.<ConstantValue>argument(
 					0, ConstantValue.class));
+				break;
+			
+			case InstructionIndex.RETURN:
+				this.__runReturn(null);
 				break;
 			
 			default:
@@ -309,6 +321,28 @@ final class __Registerize__
 			default:
 				throw new todo.OOPS();
 		}
+	}
+	
+	/**
+	 * Handles method return.
+	 *
+	 * @param __rt The return type, {@code null} indicates a void return.
+	 * @since 2019/03/22
+	 */
+	private final void __runReturn(JavaType __rt)
+	{
+		__RegisterCodeBuilder__ codebuilder = this.codebuilder;
+		
+		// If we are returning a value, we need to store it into the return
+		// register
+		if (__rt != null)
+		{
+			throw new todo.TODO();
+		}
+		
+		// All returns are plain due to the fact that return address registers
+		// are used
+		codebuilder.add(RegisterOperationType.RETURN);
 	}
 }
 
