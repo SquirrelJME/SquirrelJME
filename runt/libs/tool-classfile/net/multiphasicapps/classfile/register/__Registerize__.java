@@ -291,14 +291,8 @@ final class __Registerize__
 				eh.type(), new RegisterCodeLabel("java", eh.handlerAddress()),
 				this.state.stackBaseRegister());
 		
-		// If this point ever gets reached in code then this will mean that
-		// there are no handlers for the exception, uncount any used registers
-		for (int i = 0; i < stackstart; i++)
-			codebuilder.add(RegisterOperationType.UNCOUNT, ops.get(i));
-		
-		// Then generate a return, the exception register will remain flagged
-		// and containing an exception
-		codebuilder.add(RegisterOperationType.RETURN);
+		// Uncount just the locals and perform a return to propogate up
+		this.__return(ops.localsOnly());
 	}
 	
 	/**

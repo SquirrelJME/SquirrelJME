@@ -91,7 +91,14 @@ final class __ObjectPositionsSnapshot__
 	 */
 	public final __ObjectPositionsSnapshot__ localsOnly()
 	{
-		throw new todo.TODO();
+		// Copy just up to the stack part
+		int[] from = this._pos;
+		int ss = this.stackstart;
+		int[] rv = new int[ss];
+		for (int i = 0; i < ss; i++)
+			rv[i] = from[i];
+		
+		return new __ObjectPositionsSnapshot__(ss, rv);
 	}
 	
 	/**
