@@ -11,6 +11,7 @@
 package net.multiphasicapps.classfile.register;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.JavaType;
@@ -54,7 +55,13 @@ final class __StackState__
 		// Initialize stack
 		Slot[] stack = new Slot[__ns];
 		for (int i = 0; i < __ns; i++)
-			stack[i] = new Slot(vr++);
+		{
+			Slot s;
+			stack[i] = (s = new Slot(vr++));
+			
+			// All stack entries are written to, they are never cachable
+			s._written = true;
+		}
 		this._stack = stack;
 	}
 	
@@ -125,6 +132,29 @@ final class __StackState__
 		
 		// Just a narrow set
 		return new __StackResult__(__t, sl.register);
+	}
+	
+	/**
+	 * Returns the slot for the local variable.
+	 *
+	 * @param __dx The index to get
+	 * @return The slot for the given local.
+	 * @since 2019/03/22
+	 */
+	public final __StackState__.Slot localSlot(int __dx)
+	{
+		return this._locals[__dx];
+	}
+	
+	/**
+	 * Returns the number of local variables available.
+	 *
+	 * @return The number of used locals.
+	 * @since 2019/03/22
+	 */
+	public final int numLocals()
+	{
+		return this._locals.length;
 	}
 	
 	/**
@@ -258,6 +288,17 @@ final class __StackState__
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2019/03/22
+	 */
+	@Override
+	public final String toString()
+	{
+		return "[L=" + Arrays.asList(this._locals) + ", S=" +
+			Arrays.asList(this._stack) + "]";
+	}
+	
+	/**
 	 * Represents a slot within Java locals or the stack.
 	 *
 	 * @since 2019/02/16
@@ -269,6 +310,9 @@ final class __StackState__
 		
 		/** The Java type stored here. */
 		private JavaType _type;
+		
+		/** Is this slot written to? */
+		boolean _written;
 		
 		/**
 		 * Initializes the slot.
@@ -291,6 +335,17 @@ final class __StackState__
 		{
 			JavaType type = this._type;
 			return type != null && type.isObject();
+		}
+		
+		/** 
+		 * {@inheritDoc}
+		 * @since 2019/03/22
+		 */
+		@Override
+		public final String toString()
+		{
+			return "R" + this.register + (this._written ? "w" : "") + ":" +
+				this._type;
 		}
 	}
 }

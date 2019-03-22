@@ -87,6 +87,9 @@ final class __Registerize__
 		__StackState__ state = this.state;
 		RegisterCodeBuilder codebuilder = this.codebuilder;
 		
+		// Scan the code to see if basic stack caching can be performed
+		this.__checkBasicStackCache();
+		
 		// Process every instruction
 		for (Instruction inst : bytecode)
 		{
@@ -135,6 +138,114 @@ final class __Registerize__
 		
 		// Build the final code table
 		return codebuilder.build();
+	}
+	
+	/**
+	 * Goes through all of the instructions and flags any local variables which
+	 * are written to. This is a quick and simple way to determine if some
+	 * pointless copies can be removed.
+	 *
+	 * @since 2019/03/22
+	 */
+	private final void __checkBasicStackCache()
+	{
+		__StackState__ state = this.state;
+		
+		// Set initial entry state, so we know which locals are actually
+		// touchable
+		state.fromState(this.stackmap.get(0));
+		
+		// Go through every instruction to find ones which touch locals
+		for (Instruction inst : this.bytecode)
+		{
+			// Anything which is wide hits the adjacent local as well
+			boolean wide = false;
+			
+			// Only specific instructions will do so
+			int hit, op;
+			switch ((op = inst.operation()))
+			{
+				case InstructionIndex.ASTORE:
+				case InstructionIndex.WIDE_ASTORE:
+					hit = inst.intArgument(0);
+					break;
+				
+				case InstructionIndex.ASTORE_0:
+				case InstructionIndex.ASTORE_1:
+				case InstructionIndex.ASTORE_2:
+				case InstructionIndex.ASTORE_3:
+					hit = op - InstructionIndex.ASTORE_0;
+					break;
+				
+				case InstructionIndex.DSTORE:
+				case InstructionIndex.WIDE_DSTORE:
+					hit = inst.intArgument(0);
+					wide = true;
+					break;
+				
+				case InstructionIndex.DSTORE_0:
+				case InstructionIndex.DSTORE_1:
+				case InstructionIndex.DSTORE_2:
+				case InstructionIndex.DSTORE_3:
+					hit = op = InstructionIndex.DSTORE_0;
+					wide = true;
+					break;
+				
+				case InstructionIndex.FSTORE:
+				case InstructionIndex.WIDE_FSTORE:
+					hit = inst.intArgument(0);
+					break;
+				
+				case InstructionIndex.FSTORE_0:
+				case InstructionIndex.FSTORE_1:
+				case InstructionIndex.FSTORE_2:
+				case InstructionIndex.FSTORE_3:
+					hit = op = InstructionIndex.FSTORE_0;
+					break;
+				
+				case InstructionIndex.IINC:
+				case InstructionIndex.WIDE_IINC:
+					hit = inst.intArgument(0);
+					break;
+				
+				case InstructionIndex.ISTORE:
+				case InstructionIndex.WIDE_ISTORE:
+					hit = inst.intArgument(0);
+					break;
+				
+				case InstructionIndex.ISTORE_0:
+				case InstructionIndex.ISTORE_1:
+				case InstructionIndex.ISTORE_2:
+				case InstructionIndex.ISTORE_3:
+					hit = op = InstructionIndex.ISTORE_0;
+					break;
+				
+				case InstructionIndex.LSTORE:
+				case InstructionIndex.WIDE_LSTORE:
+					hit = inst.intArgument(0);
+					wide = true;
+					break;
+				
+				case InstructionIndex.LSTORE_0:
+				case InstructionIndex.LSTORE_1:
+				case InstructionIndex.LSTORE_2:
+				case InstructionIndex.LSTORE_3:
+					hit = op = InstructionIndex.LSTORE_0;
+					wide = true;
+					break;
+				
+				default:
+					continue;
+			}
+			
+			// Set local as being written to, handle wides as well
+			state.localSlot(hit)._written = true;
+			if (wide)
+				state.localSlot(hit + 1)._written = true;
+		}
+		
+		// Debug
+		todo.DEBUG.note("QuickCache: %s", state);
 	}
 	
 	/**
