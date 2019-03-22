@@ -167,7 +167,8 @@ final class __Registerize__
 		// For each exception type, perform a check and a jump to the target
 		for (ExceptionHandler eh : ehtable)
 			codebuilder.add(RegisterOperationType.EXCEPTION_CLASS_JUMP,
-				eh.type(), new __Label__("java", eh.handlerAddress()));
+				eh.type(), new __Label__("java", eh.handlerAddress()),
+				this.state.stackBaseRegister());
 		
 		// If this point ever gets reached in code then this will mean that
 		// there are no handlers for the exception, uncount any used registers
