@@ -102,7 +102,34 @@ final class __StackState__
 	public final __StackResult__ localGet(int __dx)
 	{
 		Slot sl = this._locals[__dx];
-		return new __StackResult__(sl._type, sl.register);
+		return new __StackResult__(sl, sl._type, sl.register);
+	}
+	
+	/**
+	 * Loads the given local variable onto the stack, it may be cached.
+	 *
+	 * @param __dx The index to load from.
+	 * @return The result of the operation, the result will be that of the
+	 * destination.
+	 * @since 2019/03/22
+	 */
+	public final __StackResult__ localLoad(int __dx)
+	{
+		// Perform the push logic to the stack
+		Slot sl = this._locals[__dx];
+		__StackResult__ result = this.stackPush(sl._type);
+		
+		// If the local is not quick cachable then just return the result of
+		// the push
+		if (sl._written)
+			return result;
+		
+		// Otherwise, set the stack entry as cached
+		Slot xs = result.slot;
+		xs._cached = sl;
+		
+		// Use the cached local instead
+		return new __StackResult__(sl, sl._type, sl.register, true);
 	}
 	
 	/**
@@ -131,7 +158,7 @@ final class __StackState__
 			locals[__dx + 1]._type = __t.topType();
 		
 		// Just a narrow set
-		return new __StackResult__(__t, sl.register);
+		return new __StackResult__(sl, __t, sl.register);
 	}
 	
 	/**
@@ -235,8 +262,9 @@ final class __StackState__
 		// If the source value was cached, then use the cached value
 		Slot cached = at._cached;
 		if (cached != null)
-			return new __StackResult__(cached._type, cached.register, true);
-		return new __StackResult__(at._type, at.register);
+			return new __StackResult__(cached, cached._type, cached.register,
+				true);
+		return new __StackResult__(at, at._type, at.register);
 	}
 	
 	/**
@@ -277,7 +305,7 @@ final class __StackState__
 		this._stacktop = stacktop + 1;
 		
 		// Build result
-		return new __StackResult__(__t, at.register);
+		return new __StackResult__(at, __t, at.register);
 	}
 	
 	/**

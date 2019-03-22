@@ -374,13 +374,16 @@ final class __Registerize__
 	{
 		__StackState__ state = this.state;
 		
-		// Load from local and push to the stack
+		// Load from local to the stack
 		__StackResult__ src = state.localGet(__l);
-		__StackResult__ dest = state.stackPush(src.type);
+		__StackResult__ dest = state.localLoad(__l);
 		
-		// Add instruction
-		this.codebuilder.add(RegisterOperationType.NARROW_COPY_AND_COUNT_DEST,
-			src.register, dest.register);
+		// Only actually copy and count the destination if it has not been
+		// cached!
+		if (!dest.cached)
+			this.codebuilder.add(
+				RegisterOperationType.NARROW_COPY_AND_COUNT_DEST,
+				src.register, dest.register);
 	}
 	
 	/**

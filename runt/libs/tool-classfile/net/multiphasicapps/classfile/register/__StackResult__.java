@@ -22,6 +22,9 @@ import net.multiphasicapps.classfile.JavaType;
  */
 final class __StackResult__
 {
+	/** The slot this references. */
+	public final __StackState__.Slot slot;
+	
 	/** The Java type which is involved here. */
 	public final JavaType type;
 	
@@ -34,17 +37,19 @@ final class __StackResult__
 	/**
 	 * Initializes the result.
 	 *
+	 * @param __s The slot to use.
 	 * @param __jt The Java type.
 	 * @param __rl The register location.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/02/16
 	 */
-	__StackResult__(JavaType __jt, int __rl)
+	__StackResult__(__StackState__.Slot __s, JavaType __jt, int __rl)
 		throws NullPointerException
 	{
-		if (__jt == null)
+		if (__s == null || __jt == null)
 			throw new NullPointerException("NARG");
 		
+		this.slot = __s;
 		this.type = __jt;
 		this.register = __rl;
 		this.cached = false;
@@ -53,18 +58,21 @@ final class __StackResult__
 	/**
 	 * Initializes the result.
 	 *
+	 * @param __s The slot this uses.
 	 * @param __jt The Java type.
 	 * @param __rl The register location.
 	 * @param __ch Is this cached?
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/02/16
 	 */
-	__StackResult__(JavaType __jt, int __rl, boolean __ch)
+	__StackResult__(__StackState__.Slot __s, JavaType __jt, int __rl,
+		boolean __ch)
 		throws NullPointerException
 	{
-		if (__jt == null)
+		if (__s == null || __jt == null)
 			throw new NullPointerException("NARG");
 		
+		this.slot = __s;
 		this.type = __jt;
 		this.register = __rl;
 		this.cached = __ch;
