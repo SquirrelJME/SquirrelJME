@@ -56,5 +56,9 @@ public interface RegisterOperationType
 	/** Un-reference count. */
 	public static final int UNCOUNT =
 		9;
+	
+	/** Jump if exception flag is set, clear exception flag. */
+	public static final int JUMP_ON_EXCEPTION_AND_CLEAR =
+		10;
 }
 

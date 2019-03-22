@@ -49,6 +49,10 @@ final class __Registerize__
 	/** The instruction throws an exception, it must be checked. */
 	private boolean _exceptioncheck;
 	
+	/** Exception handler combinations to generate. */
+	private final List<__ExceptionCombo__> _usedexceptions =
+		new ArrayList<>();
+	
 	/**
 	 * Converts the input byte code to a register based code.
 	 *
@@ -79,7 +83,7 @@ final class __Registerize__
 		ByteCode bytecode = this.bytecode;
 		StackMapTable stackmap = this.stackmap;
 		__StackState__ state = this.state;
-		__ExceptionTracker__ exceptiontracker = this.exceptiontracker;
+		__RegisterCodeBuilder__ codebuilder = this.codebuilder;
 		
 		// Process every instruction
 		for (Instruction inst : bytecode)
@@ -94,7 +98,8 @@ final class __Registerize__
 			// If there is a defined stack map table state (this will be for
 			// any kind of branch or exception handler), load that so it can
 			// be worked from
-			StackMapTableState smts = stackmap.get(inst.address());
+			int pcaddr;
+			StackMapTableState smts = stackmap.get((pcaddr = inst.address()));
 			if (smts != null)
 				state.fromState(smts);
 			
@@ -107,11 +112,43 @@ final class __Registerize__
 			// for this instruction
 			if (this._exceptioncheck)
 			{
-				throw new todo.TODO();
+				// Create jumping label for this exception
+				__Label__ ehlab = new __Label__("exception",
+					this.__exceptionTrack(pcaddr));
+				
+				// Just create a jump here
+				codebuilder.add(
+					RegisterOperationType.JUMP_ON_EXCEPTION_AND_CLEAR, ehlab);
 			}
 		}
 		
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Handles the process of exceptions, this just defers the generation
+	 * of exception data until the end.
+	 *
+	 * @param __pc The current PC address.
+	 * @return The exception combo index.
+	 * @since 2019/03/22
+	 */
+	private final int __exceptionTrack(int __pc)
+	{
+		// Create combo for the object and exception data
+		__ExceptionCombo__ ec = this.exceptiontracker.createCombo(
+			this.state.objectSnapshot(), __pc);
+		
+		// If this combo is already in the table, do not add it
+		List<__ExceptionCombo__> usedexceptions = this._usedexceptions;
+		int dx = usedexceptions.indexOf(ec);
+		if (dx >= 0)
+			return dx;
+		
+		// Otherwise just add it
+		dx = usedexceptions.size();
+		usedexceptions.add(ec);
+		return dx;
 	}
 	
 	/**

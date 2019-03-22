@@ -57,6 +57,25 @@ final class __ExceptionTracker__
 	}
 	
 	/**
+	 * Creates a combo containing the object snapshots and the exception
+	 * handler table.
+	 *
+	 * @param __ops The object positions.
+	 * @param __pc The PC address.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/22
+	 */
+	public final __ExceptionCombo__ createCombo(
+		__ObjectPositionsSnapshot__ __ops, int __pc)
+		throws NullPointerException
+	{
+		if (__ops == null)
+			throw new NullPointerException("NARG");
+		
+		return new __ExceptionCombo__(__ops, this.tableOf(__pc));
+	}
+	
+	/**
 	 * Returns the table at the given PC address.
 	 *
 	 * @param __pc The address to get.
