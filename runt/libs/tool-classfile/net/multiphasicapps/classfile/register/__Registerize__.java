@@ -294,6 +294,9 @@ final class __Registerize__
 		__StackState__ state = this.state;
 		int oldtop = state.stackTopRegister();
 		
+		// Registers to use for the method call
+		List<Integer> callargs = new ArrayList<>();
+		
 		// Pop all entries off the stack, note any entries which are references
 		// that need to be uncounted after the call
 		List<Integer> uncount = new ArrayList<>();
@@ -301,6 +304,11 @@ final class __Registerize__
 		for (int i = pops.length - 1; i >= 0; i--)
 		{
 			int pr = state.stackPop().register;
+			
+			// Arguments to pass to the call
+			if (pops[i].isWide())
+				callargs.add(0, pr + 1);
+			callargs.add(0, pr);
 			
 			// Uncount reference later?
 			if (pops[i].isObject())
@@ -314,7 +322,7 @@ final class __Registerize__
 		// registers to pass to the target method
 		RegisterCodeBuilder codebuilder = this.codebuilder;
 		codebuilder.add(RegisterOperationType.INVOKE_FROM_CONSTANT_POOL,
-			new InvokedMethod(__t, __r.handle()), newbase, oldtop - newbase);
+			new InvokedMethod(__t, __r.handle()), new RegisterList(callargs));
 		
 		// For any references that are used, uncount the positions
 		for (Integer i : uncount)
