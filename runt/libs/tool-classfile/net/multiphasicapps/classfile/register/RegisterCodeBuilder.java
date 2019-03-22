@@ -22,7 +22,7 @@ import net.multiphasicapps.classfile.InstructionJumpTarget;
  *
  * @since 2019/03/16
  */
-final class __RegisterCodeBuilder__
+public final class RegisterCodeBuilder
 {
 	/** Temporary instruction layout. */
 	final Map<Integer, RegisterInstruction> _instructions =
@@ -40,7 +40,7 @@ final class __RegisterCodeBuilder__
 	 *
 	 * @since 2019/03/22
 	 */
-	__RegisterCodeBuilder__()
+	public RegisterCodeBuilder()
 	{
 		this._nextaddr = 0;
 	}
@@ -51,7 +51,7 @@ final class __RegisterCodeBuilder__
 	 * @param __pc The address to start at.
 	 * @since 2019/03/22
 	 */
-	__RegisterCodeBuilder__(int __pc)
+	public RegisterCodeBuilder(int __pc)
 	{
 		this._nextaddr = __pc;
 	}
@@ -105,7 +105,7 @@ final class __RegisterCodeBuilder__
 				// Map any labels to indexes
 				if (a instanceof RegisterCodeLabel)
 					a = new InstructionJumpTarget(
-						out.get((RegisterCodeLabel)a));
+						labels.get((RegisterCodeLabel)a));
 				
 				workargs.add(a);
 			}
@@ -113,6 +113,10 @@ final class __RegisterCodeBuilder__
 			// Build instruction
 			out.add(new RegisterInstruction(i.op, workargs));
 		}
+		
+		// Debug
+		for (int i = 0, n = out.size(); i < n; i++)
+			todo.DEBUG.note("@%-3d: %s", i, out.get(i));
 		
 		// Build
 		return new RegisterCode(out);
@@ -153,7 +157,7 @@ final class __RegisterCodeBuilder__
 	 * @return The added label.
 	 * @since 2019/03/22
 	 */
-	public final RegisterCodeLabel label(__Label__ __l)
+	public final RegisterCodeLabel label(RegisterCodeLabel __l)
 	{
 		return this.label(__l, this._nextaddr);
 	}
@@ -165,7 +169,7 @@ final class __RegisterCodeBuilder__
 	 * @return The added label.
 	 * @since 2019/03/22
 	 */
-	public final RegisterCodeLabel label(__Label__ __l, int __pc)
+	public final RegisterCodeLabel label(RegisterCodeLabel __l, int __pc)
 	{
 		// Debug
 		todo.DEBUG.note("Label %s -> @%d", __l, __pc);

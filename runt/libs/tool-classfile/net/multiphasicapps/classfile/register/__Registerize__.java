@@ -42,8 +42,8 @@ final class __Registerize__
 	protected final StackMapTable stackmap;
 	
 	/** Used to build register codes. */
-	protected final __RegisterCodeBuilder__ codebuilder =
-		new __RegisterCodeBuilder__();
+	protected final RegisterCodeBuilder codebuilder =
+		new RegisterCodeBuilder();
 	
 	/** Exception tracker. */
 	protected final __ExceptionTracker__ exceptiontracker;
@@ -85,7 +85,7 @@ final class __Registerize__
 		ByteCode bytecode = this.bytecode;
 		StackMapTable stackmap = this.stackmap;
 		__StackState__ state = this.state;
-		__RegisterCodeBuilder__ codebuilder = this.codebuilder;
+		RegisterCodeBuilder codebuilder = this.codebuilder;
 		
 		// Process every instruction
 		for (Instruction inst : bytecode)
@@ -118,7 +118,7 @@ final class __Registerize__
 			if (this._exceptioncheck)
 			{
 				// Create jumping label for this exception
-				__Label__ ehlab = new __Label__("exception",
+				RegisterCodeLabel ehlab = new RegisterCodeLabel("exception",
 					this.__exceptionTrack(pcaddr));
 				
 				// Just create a jump here
@@ -151,7 +151,7 @@ final class __Registerize__
 		if (__ec == null)
 			throw new NullPointerException("NARG");
 		
-		__RegisterCodeBuilder__ codebuilder = this.codebuilder;
+		RegisterCodeBuilder codebuilder = this.codebuilder;
 		__ObjectPositionsSnapshot__ ops = __ec.ops;
 		ExceptionHandlerTable ehtable = __ec.table;
 		
@@ -167,7 +167,7 @@ final class __Registerize__
 		// For each exception type, perform a check and a jump to the target
 		for (ExceptionHandler eh : ehtable)
 			codebuilder.add(RegisterOperationType.EXCEPTION_CLASS_JUMP,
-				eh.type(), new __Label__("java", eh.handlerAddress()),
+				eh.type(), new RegisterCodeLabel("java", eh.handlerAddress()),
 				this.state.stackBaseRegister());
 		
 		// If this point ever gets reached in code then this will mean that
@@ -311,7 +311,7 @@ final class __Registerize__
 		
 		// Generate the call, pass the base register and the number of
 		// registers to pass to the target method
-		__RegisterCodeBuilder__ codebuilder = this.codebuilder;
+		RegisterCodeBuilder codebuilder = this.codebuilder;
 		codebuilder.add(RegisterOperationType.INVOKE_FROM_CONSTANT_POOL,
 			new InvokedMethod(__t, __r.handle()), newbase, oldtop - newbase);
 		
@@ -346,7 +346,7 @@ final class __Registerize__
 		__StackResult__ dest = this.state.stackPush(jt);
 		
 		// Generate instruction
-		__RegisterCodeBuilder__ codebuilder = this.codebuilder;
+		RegisterCodeBuilder codebuilder = this.codebuilder;
 		switch (__v.type())
 		{
 			case INTEGER:
@@ -378,7 +378,7 @@ final class __Registerize__
 	 */
 	private final void __runReturn(JavaType __rt)
 	{
-		__RegisterCodeBuilder__ codebuilder = this.codebuilder;
+		RegisterCodeBuilder codebuilder = this.codebuilder;
 		
 		// If we are returning a value, we need to store it into the return
 		// register
