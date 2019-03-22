@@ -90,13 +90,44 @@ public final class RegisterCodeBuilder
 	{
 		// Working area for arguments
 		List<Object> workargs = new ArrayList<>();
+
+		// Labels which point to addresses
+		Map<RegisterCodeLabel, Integer> labels = this._labels;
+		
+		// If there are any jump points which refer to the instruction index
+		// directly following it, then remove the jump
+		// This will happen in constructors that call another constructor since
+		// there will be an exception handler jump that points to the next
+		// instruction
+		// This only handle conditional and basic jumps.
+		List<RegisterInstruction> in = new ArrayList<>(
+			this._instructions.values());
+		for (int i = in.size() - 1; i >= 0; i--)
+		{
+			RegisterInstruction ri = in.get(i);
+			
+			// Determine if it is a basic conditional jump
+			RegisterCodeLabel lt;
+			switch (ri.op)
+			{
+				case JUMP:
+				case JUMP_ON_EXCEPTION:
+					lt = ri._args[0];
+					break;
+				
+					// Not a jump
+				default:
+					continue;
+			}
+			
+			throw new todo.TODO();
+		}
 		
 		// Output instructions
 		List<RegisterInstruction> out = new ArrayList<>();
 		
 		// Go through input instructions and map them to real instructions
-		Map<RegisterCodeLabel, Integer> labels = this._labels;
-		for (RegisterInstruction i : this._instructions.values())
+		for (RegisterInstruction i : in)
 		{
 			// Fill in working arguments, with translated labels
 			workargs.clear();
