@@ -414,15 +414,18 @@ final class __Registerize__
 		JavaType[] pops = __r.handle().javaStack(__t.hasInstance());
 		for (int i = pops.length - 1; i >= 0; i--)
 		{
-			int pr = state.stackPop().register;
+			__StackResult__ st = state.stackPop();
 			
-			// Arguments to pass to the call
+			// Add to call arguments, added at the start because we pop the
+			// last argument first
+			int pr = st.register;
 			if (pops[i].isWide())
 				callargs.add(0, pr + 1);
 			callargs.add(0, pr);
 			
-			// Uncount reference later?
-			if (pops[i].isObject())
+			// Uncount later? Only do this if the register is not cached
+			// because otherwise we might end up early-freeing objects
+			if (!st.cached && pops[i].isObject())
 				uncount.add(pr);
 		}
 		
