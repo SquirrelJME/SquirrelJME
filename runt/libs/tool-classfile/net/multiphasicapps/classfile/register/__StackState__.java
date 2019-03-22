@@ -167,6 +167,17 @@ final class __StackState__
 	}
 	
 	/**
+	 * Returns the register at the base of the stack.
+	 *
+	 * @return The register at the base of the stack.
+	 * @since 2019/03/22
+	 */
+	public final int stackBaseRegister()
+	{
+		return this._stack[0].register;
+	}
+	
+	/**
 	 * Pops a single value from the stack.
 	 *
 	 * @return The result of the pop.
