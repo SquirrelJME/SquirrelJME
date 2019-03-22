@@ -11,7 +11,9 @@
 package net.multiphasicapps.classfile.register;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ConstantValue;
 import net.multiphasicapps.classfile.ExceptionHandler;
@@ -54,6 +56,14 @@ final class __Registerize__
 	/** Exception handler combinations to generate. */
 	private final List<__ExceptionCombo__> _usedexceptions =
 		new ArrayList<>();
+	
+	/** Object position maps to return label points. */
+	private final Map<__ObjectPositionsSnapshot__, RegisterCodeLabel>
+		_returns =
+		new LinkedHashMap<>();
+	
+	/** Next returning index? */
+	private int _nextreturndx;
 	
 	/**
 	 * Converts the input byte code to a register based code.
@@ -365,6 +375,52 @@ final class __Registerize__
 	}
 	
 	/**
+	 * Generate code or a jump for a return using the given object position
+	 * snapshot.
+	 *
+	 * @param __ops The position snapshot to use.
+	 * @return The label of the target that is used.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/22
+	 */
+	private final RegisterCodeLabel __return(__ObjectPositionsSnapshot__ __ops)
+		throws NullPointerException
+	{
+		if (__ops == null)
+			throw new NullPointerException("NARG");
+		
+		RegisterCodeBuilder codebuilder = this.codebuilder;
+		Map<__ObjectPositionsSnapshot__, RegisterCodeLabel> returns =
+			this._returns;
+		
+		// If the return for this operation has already been handled, just
+		// do not bother duplicating it
+		RegisterCodeLabel label = returns.get(__ops);
+		if (label == null)
+		{
+			// Create label at this point and store it for this cleanup state
+			label = codebuilder.label("return", this._nextreturndx);
+			returns.put(__ops, label);
+			
+			// Un-count any references in locals or the stack
+			__ObjectPositionsSnapshot__ snap = this.state.objectSnapshot();
+			for (int i = 0, n = snap.size(); i < n; i++)
+				codebuilder.add(RegisterOperationType.UNCOUNT, snap.get(i));
+			
+			// All returns are plain due to the fact that return address registers
+			// are used
+			codebuilder.add(RegisterOperationType.RETURN);
+		}
+		
+		// Otherwise we just perform a jump to that point since it shares
+		// the same cleanup code
+		else
+			codebuilder.add(RegisterOperationType.JUMP, label);
+		
+		return label;
+	}
+	
+	/**
 	 * Loads single reference from a local to the stack.
 	 *
 	 * @param __l The reference to load.
@@ -514,14 +570,8 @@ final class __Registerize__
 			throw new todo.TODO();
 		}
 		
-		// Un-count any references in locals or the stack
-		__ObjectPositionsSnapshot__ snap = this.state.objectSnapshot();
-		for (int i = 0, n = snap.size(); i < n; i++)
-			codebuilder.add(RegisterOperationType.UNCOUNT, snap.get(i));
-		
-		// All returns are plain due to the fact that return address registers
-		// are used
-		codebuilder.add(RegisterOperationType.RETURN);
+		// Either generate a new cleanup or jump to it
+		this.__return(this.state.objectSnapshot());
 	}
 }
 
