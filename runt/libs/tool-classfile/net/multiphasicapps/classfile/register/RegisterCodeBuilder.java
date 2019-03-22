@@ -110,9 +110,9 @@ public final class RegisterCodeBuilder
 			RegisterCodeLabel lt;
 			switch (ri.op)
 			{
-				case JUMP:
-				case JUMP_ON_EXCEPTION:
-					lt = ri._args[0];
+				case RegisterOperationType.JUMP:
+				case RegisterOperationType.JUMP_ON_EXCEPTION:
+					lt = (RegisterCodeLabel)ri._args[0];
 					break;
 				
 					// Not a jump
