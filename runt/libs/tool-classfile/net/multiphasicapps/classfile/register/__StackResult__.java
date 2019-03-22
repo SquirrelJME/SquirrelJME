@@ -28,6 +28,9 @@ final class __StackResult__
 	/** The register used. */
 	public final int register;
 	
+	/** Is this cached? */
+	public final boolean cached;
+	
 	/**
 	 * Initializes the result.
 	 *
@@ -44,5 +47,26 @@ final class __StackResult__
 		
 		this.type = __jt;
 		this.register = __rl;
+		this.cached = false;
+	}
+	
+	/**
+	 * Initializes the result.
+	 *
+	 * @param __jt The Java type.
+	 * @param __rl The register location.
+	 * @param __ch Is this cached?
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/02/16
+	 */
+	__StackResult__(JavaType __jt, int __rl, boolean __ch)
+		throws NullPointerException
+	{
+		if (__jt == null)
+			throw new NullPointerException("NARG");
+		
+		this.type = __jt;
+		this.register = __rl;
+		this.cached = __ch;
 	}
 }
