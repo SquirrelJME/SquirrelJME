@@ -1,0 +1,19 @@
+# 2019/03/21
+
+## 14:39
+
+To help exception handling, I am going to need a table which contains the
+unique set of possible exception handlers for each possible instruction
+address. This way it will be easier to group them together and reduce the
+work needed to calculate it each time an exception is needed.
+
+## 14:58
+
+This can just be a part of `ExceptionHandlerTable`, basically a subset for
+a given address.
+
+## 15:28
+
+Now with equals and hashCode, I can easily check if two tables are the same.
+Now I will essentially just do a method which returns exception tables for
+a specific address.
