@@ -25,6 +25,10 @@ import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.Method;
 import net.multiphasicapps.classfile.MethodFlags;
 import net.multiphasicapps.classfile.PrimitiveType;
+import net.multiphasicapps.classfile.register.RegisterCode;
+import net.multiphasicapps.classfile.register.RegisterInstruction;
+import net.multiphasicapps.classfile.register.RegisterOperationMnemonics;
+import net.multiphasicapps.classfile.register.RegisterOperationType;
 
 /**
  * This takes an input class file and translates it to the minimized format
@@ -160,16 +164,23 @@ public final class Minimizer
 			// form and remap any used references.
 			MethodFlags mf = m.flags();
 			byte[] transcode = null;
+			byte[] lnt = null;
 			if (!mf.isAbstract() && !mf.isNative())
 			{
-				m.registerCode();
+				// The minified classes use register code since it is easier
+				// to handle by the VM
+				RegisterCode rc = m.registerCode();
+				
+				// Encode to bytes
+				transcode = __translateCode(rc);
+				
 				throw new todo.TODO();
 			}
 			
 			// Add method
 			MinimizedMethod q;
 			temp._methods.add((q = new MinimizedMethod(mf.toJavaBits(),
-				temp._count, m.name(), m.type(), transcode)));
+				temp._count, m.name(), m.type(), transcode, lnt)));
 			
 			// Debug
 			todo.DEBUG.note("Add method %s", q);
@@ -179,6 +190,48 @@ public final class Minimizer
 		}
 		
 		return rv;
+	}
+	
+	/**
+	 * Translates code.
+	 *
+	 * @param __rc The register code used.
+	 * @return The resulting translation to code.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/23
+	 */
+	private final byte[] __translateCode(RegisterCode __rc)
+		throws NullPointerException
+	{
+		if (__rc == null)
+			throw new NullPointerException("NARG");
+		
+		// Perform the translation
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
+		{
+			// Go through each instruction
+			for (RegisterInstruction i : __rc)
+			{
+				// Write operation
+				int op = i.operation();
+				baos.write(op);
+				
+				// This depends on the operation
+				switch (op)
+				{
+					default:
+						throw new todo.TODO(
+							RegisterOperationMnemonics.toString(op));
+				}
+			}
+			
+			// Use this
+			return baos.toByteArray();
+		}
+		catch (IOException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 	
 	/**
