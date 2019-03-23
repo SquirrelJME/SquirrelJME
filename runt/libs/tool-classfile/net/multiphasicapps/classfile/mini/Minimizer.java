@@ -206,19 +206,48 @@ public final class Minimizer
 		if (__rc == null)
 			throw new NullPointerException("NARG");
 		
+		// Operations will reference this constant pool
+		MinimizedPoolBuilder pool = this.pool;
+		
 		// Perform the translation
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			DataOutputStream dos = new DataOutputStream(baos))
 		{
 			// Go through each instruction
 			for (RegisterInstruction i : __rc)
 			{
 				// Write operation
 				int op = i.operation();
-				baos.write(op);
+				dos.write(op);
 				
 				// This depends on the operation
 				switch (op)
 				{
+					case RegisterOperationType.NARROW_CONST:
+						{
+							Object c = i.<Object>argument(0, Object.class);
+							
+							// Integer
+							if (c instanceof Integer)
+							{
+								dos.write('I');
+								dos.writeInt((Integer)c);
+							}
+							
+							// Float
+							else if (c instanceof Float)
+							{
+								dos.write('F');
+								dos.writeInt(Float.floatToRawIntBits(
+									(Float)c));
+							}
+							
+							// Unknown
+							else
+								throw new todo.OOPS(c.getClass().toString());
+						}
+						break;
+					
 					default:
 						throw new todo.TODO(
 							RegisterOperationMnemonics.toString(op));
@@ -226,6 +255,7 @@ public final class Minimizer
 			}
 			
 			// Use this
+			dos.flush();
 			return baos.toByteArray();
 		}
 		catch (IOException e)
