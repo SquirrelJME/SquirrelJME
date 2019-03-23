@@ -106,8 +106,12 @@ final class __Registerize__
 			// Debug
 			todo.DEBUG.note("Xlate %s", inst);
 			
+			// Set source line for this instruction for debugging purposes
+			int addr = inst.address();
+			codebuilder.setSourceLine(bytecode.lineOfAddress(addr));
+			
 			// Add label to refer to this instruction in Java terms
-			codebuilder.label("java", inst.address());
+			codebuilder.label("java", addr);
 			
 			// Clear the exception check since not every instruction will
 			// generate an exception, this will reduce the code size greatly
@@ -117,7 +121,7 @@ final class __Registerize__
 			// any kind of branch or exception handler), load that so it can
 			// be worked from
 			int pcaddr;
-			StackMapTableState smts = stackmap.get((pcaddr = inst.address()));
+			StackMapTableState smts = stackmap.get((pcaddr = addr));
 			if (smts != null)
 				state.fromState(smts);
 			
@@ -139,6 +143,9 @@ final class __Registerize__
 					RegisterOperationType.JUMP_ON_EXCEPTION, ehlab);
 			}
 		}
+		
+		// Invalidate source lines for the exception table
+		codebuilder.setSourceLine(-1);
 		
 		// If we need to generate exception tables, do it now
 		List<__ExceptionCombo__> usedexceptions = this._usedexceptions;

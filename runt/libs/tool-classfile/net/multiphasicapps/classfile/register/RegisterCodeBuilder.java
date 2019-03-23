@@ -32,8 +32,16 @@ public final class RegisterCodeBuilder
 	final Map<RegisterCodeLabel, Integer> _labels =
 		new LinkedHashMap<>();
 	
+	/** Current line number table. */
+	final List<Integer> _lines =
+		new ArrayList<>();
+	
 	/** Next address to use. */
 	int _nextaddr;
+	
+	/** Current line address. */
+	int _cursrcline =
+		-1;
 	
 	/**
 	 * Initializes the code builder at the default start address.
@@ -76,6 +84,7 @@ public final class RegisterCodeBuilder
 		
 		// Store and return the instruction, it will have the address
 		this._instructions.put(atdx, rv);
+		this._lines.add(this._cursrcline);
 		return rv;
 	}
 	
@@ -102,6 +111,7 @@ public final class RegisterCodeBuilder
 		// This only handle conditional and basic jumps.
 		List<RegisterInstruction> in = new ArrayList<>(
 			this._instructions.values());
+		List<Integer> lines = new ArrayList<>(this._lines);
 		for (int i = in.size() - 1; i >= 0; i--)
 		{
 			RegisterInstruction ri = in.get(i);
@@ -127,6 +137,7 @@ public final class RegisterCodeBuilder
 			{
 				// Remove this instruction, it is pointless
 				in.remove(i);
+				lines.remove(i);
 				
 				// Move all of the label values down
 				for (Map.Entry<RegisterCodeLabel, Integer> e :
@@ -161,12 +172,19 @@ public final class RegisterCodeBuilder
 			out.add(new RegisterInstruction(i.op, workargs));
 		}
 		
+		// Translate line number table
+		int no = Math.min(out.size(), lines.size());
+		short[] xlines = new short[no];
+		for (int i = 0; i < no; i++)
+			xlines[i] = lines.get(i).shortValue();
+		
 		// Debug
 		for (int i = 0, n = out.size(); i < n; i++)
-			todo.DEBUG.note("@%-3d: %s", i, out.get(i));
+			todo.DEBUG.note("@%-2d L%d:%s", i, xlines[i] & 0xFFFF,
+				out.get(i));
 		
 		// Build
-		return new RegisterCode(out);
+		return new RegisterCode(out, xlines);
 	}
 	
 	/**
@@ -243,6 +261,17 @@ public final class RegisterCodeBuilder
 		
 		Integer rv = this._labels.get(__l);
 		return (rv == null ? -1 : rv);
+	}
+	
+	/**
+	 * Sets the current source line.
+	 *
+	 * @param __l The line to set.
+	 * @since 2019/03/23
+	 */
+	public final void setSourceLine(int __l)
+	{
+		this._cursrcline = __l;
 	}
 }
 
