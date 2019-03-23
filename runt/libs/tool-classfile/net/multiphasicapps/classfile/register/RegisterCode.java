@@ -26,14 +26,18 @@ public final class RegisterCode
 	/** Instructions for this code. */
 	private final RegisterInstruction[] _instructions;
 	
+	/** Line number table. */
+	private final short[] _lines;
+	
 	/**
 	 * Initializes the register code.
 	 *
 	 * @param __i The associated instructions.
+	 * @param __l The lines for each instruction.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/22
 	 */
-	public RegisterCode(RegisterInstruction... __i)
+	public RegisterCode(RegisterInstruction[] __i, short[] __l)
 		throws NullPointerException
 	{
 		__i = (__i == null ? new RegisterInstruction[0] : __i.clone());
@@ -42,16 +46,18 @@ public final class RegisterCode
 				throw new NullPointerException("NARG");
 		
 		this._instructions = __i;
+		this._lines = (__l == null ? new short[0] : __l.clone());
 	}
 	
 	/**
 	 * Initializes the register code.
 	 *
 	 * @param __i The associated instructions.
+	 * @param __l The lines for each instruction.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/22
 	 */
-	public RegisterCode(Collection<RegisterInstruction> __i)
+	public RegisterCode(Collection<RegisterInstruction> __i, short[] __l)
 		throws NullPointerException
 	{
 		if (__i == null)
@@ -64,6 +70,7 @@ public final class RegisterCode
 				throw new NullPointerException("NARG");
 		
 		this._instructions = ii;
+		this._lines = (__l == null ? new short[0] : __l.clone());
 	}
 	
 	/**
