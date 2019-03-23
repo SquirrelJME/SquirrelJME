@@ -1,0 +1,57 @@
+# 2019/03/22
+
+## 09:05
+
+I am going to need a jumping point for the exception handler table. Like, I
+am going to have to handle uncounting on the stack for any references that
+exist before jumping to an exception handler. Local variables generally are
+not cleared at all, except in the case where the target jump address has no
+locals defined there (that is objects can turn into nothing). So there would
+have to be locals and stack states, the exception handlers would need to
+uncount any locals which are cleared out. So this means that we cannot have
+an intermediate uncounter and jump to a generic table, the state of the
+locals and stack is unique to the target. However, two different instructions
+with the same object set states will of course use the same table.
+
+## 09:11
+
+Actually I do not even need to use temporary code builders, I can just store
+the unique combinations in the table and worry about it at the end.
+
+## 09:55
+
+I really like the idea of dedicated registers and instructions for exceptions
+and return values. This makes it so I do not need to jumble them with the main
+set of registers. Also returning is easy because these registers are global
+per thread. It just overall simplifies things greatly.
+
+## 13:28
+
+I see areas of return being a spot with a high potential of duplicate code
+when the return is being done. So like the exception stuff I am going to make
+it so that are condensed with returning points and such.
+
+## 13:43
+
+Another trick I can do to minimize code, is that if there is no exception
+handlers defined then I can just do a return with the entire stack and
+return point. Going up the stack has the same result as a return in this case.
+
+## 14:24
+
+I figured out how I can do stack caching, well basic stack caching at least
+with arguments passed to a method. I can just scan every instruction and flag
+ones which write to a local. Any local which is not written to is considered
+final and can be cached when used. This also means I have to turn invokes into
+register lists for the arguments.
+
+## 15:40
+
+I can also optimize the JUMP_ON_EXCEPTION when it comes to default handlers
+with no exceptions to actually handle. They can just jump to one of the return
+points by overridding a label.
+
+## 18:24
+
+Okay so, I managed to remove useless jumps which means that the code that just
+calls the other constructors is very simple.
