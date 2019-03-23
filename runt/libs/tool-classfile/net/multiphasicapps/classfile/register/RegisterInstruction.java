@@ -75,6 +75,57 @@ public final class RegisterInstruction
 	}
 	
 	/**
+	 * Returns the argument for this given instruction.
+	 *
+	 * @param <T> The type of argument to get.
+	 * @param __i The index of the argument.
+	 * @param __cl The class to cast to.
+	 * @return The argument as the given class.
+	 * @throws ClassCastException If the class is not of the given type.
+	 * @throws IndexOutOfBoundsException If the argument index is not
+	 * within bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/23
+	 */
+	public <T> T argument(int __i, Class<T> __cl)
+		throws ClassCastException, IndexOutOfBoundsException,
+			NullPointerException
+	{
+		// Check
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		return __cl.cast(this._args[__i]);
+	}
+	
+	/**
+	 * The number of arguments the instruction takes.
+	 *
+	 * @return The argument count.
+	 * @since 2019/03/23
+	 */
+	public int count()
+	{
+		return this._args.length;
+	}
+	
+	/**
+	 * Obtains the given argument as an integer.
+	 *
+	 * @param __i The argument to get.
+	 * @return The value of the argument.
+	 * @throws ClassCastException If the given argument is not an integer.
+	 * @throws IndexOutOfBoundsException If the index is not within the
+	 * bounds of the instruction arguments.
+	 * @since 2018/03/23
+	 */
+	public int intArgument(int __i)
+		throws ClassCastException, IndexOutOfBoundsException
+	{
+		return this.<Integer>argument(__i, Integer.class).intValue();
+	}
+	
+	/**
 	 * Returns the operation this instruction performs.
 	 *
 	 * @return The operation performed.
