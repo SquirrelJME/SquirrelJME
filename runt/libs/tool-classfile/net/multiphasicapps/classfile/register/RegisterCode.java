@@ -11,7 +11,9 @@
 package net.multiphasicapps.classfile.register;
 
 import java.util.Collection;
+import java.util.Iterator;
 import net.multiphasicapps.classfile.ByteCode;
+import net.multiphasicapps.collections.UnmodifiableIterator;
 
 /**
  * This is similar to {@link ByteCode} except that it instead of using a
@@ -22,6 +24,7 @@ import net.multiphasicapps.classfile.ByteCode;
  * @since 2019/03/09
  */
 public final class RegisterCode
+	implements Iterable<RegisterInstruction>
 {
 	/** Instructions for this code. */
 	private final RegisterInstruction[] _instructions;
@@ -71,6 +74,17 @@ public final class RegisterCode
 		
 		this._instructions = ii;
 		this._lines = (__l == null ? new short[0] : __l.clone());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/03/23
+	 */
+	@Override
+	public final Iterator<RegisterInstruction> iterator()
+	{
+		return UnmodifiableIterator.<RegisterInstruction>of(
+			this._instructions);
 	}
 	
 	/**

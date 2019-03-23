@@ -75,6 +75,17 @@ public final class RegisterInstruction
 	}
 	
 	/**
+	 * Returns the operation this instruction performs.
+	 *
+	 * @return The operation performed.
+	 * @since 2019/03/23
+	 */
+	public final int operation()
+	{
+		return this.op;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2019/03/22
 	 */

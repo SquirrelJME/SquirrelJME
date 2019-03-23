@@ -37,6 +37,9 @@ public final class MinimizedMethod
 	/** Translated method code. */
 	private final byte[] _code;
 	
+	/** Line number table. */
+	private final byte[] _lines;
+	
 	/**
 	 * Initializes the minimized method.
 	 *
@@ -45,11 +48,12 @@ public final class MinimizedMethod
 	 * @param __n The method name.
 	 * @param __t The method type.
 	 * @param __tc Transcoded instructions.
+	 * @param __ln Line number table.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/14
 	 */
 	public MinimizedMethod(int __f, int __o,
-		MethodName __n, MethodDescriptor __t, byte[] __tc)
+		MethodName __n, MethodDescriptor __t, byte[] __tc, byte[] __ln)
 		throws NullPointerException
 	{
 		if (__n == null || __t == null)
@@ -60,6 +64,7 @@ public final class MinimizedMethod
 		this.name = __n;
 		this.type = __t;
 		this._code = (__tc == null ? new byte[0] : __tc.clone());
+		this._lines = (__ln == null ? new byte[0] : __ln.clone());
 	}
 }
 
