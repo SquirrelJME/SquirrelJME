@@ -72,6 +72,17 @@ final class __ObjectPositionsSnapshot__
 	}
 	
 	/**
+	 * Is this object positions empty?
+	 *
+	 * @return If the positions are empty.
+	 * @since 2019/03/24
+	 */
+	public final boolean isEmpty()
+	{
+		return this._pos.length == 0;
+	}
+	
+	/**
 	 * Gets the register for the given index.
 	 *
 	 * @param __dx The index to get.

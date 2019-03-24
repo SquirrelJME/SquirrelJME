@@ -429,13 +429,30 @@ final class __Registerize__
 			throw new NullPointerException("NARG");
 		
 		RegisterCodeBuilder codebuilder = this.codebuilder;
+		
+		// Try to get existing labels
 		Map<__ObjectPositionsSnapshot__, RegisterCodeLabel> returns =
 			this._returns;
+		RegisterCodeLabel label = returns.get(__ops);
+		
+		// If the object operations is empty and nothing needs to be uncounted
+		// we can just return directly. This is faster than jumping to another
+		// point that returns
+		if (__ops.isEmpty())
+		{
+			codebuilder.add(RegisterOperationType.RETURN);
+			
+			// Always create the label if it does not exist
+			if (label == null)
+			{
+				label = codebuilder.label("return", this._nextreturndx);
+				returns.put(__ops, label);
+			}
+		}
 		
 		// If the return for this operation has already been handled, just
 		// do not bother duplicating it
-		RegisterCodeLabel label = returns.get(__ops);
-		if (label == null)
+		else if (label == null)
 		{
 			// Create label at this point and store it for this cleanup state
 			label = codebuilder.label("return", this._nextreturndx);
@@ -446,8 +463,8 @@ final class __Registerize__
 			for (int i = 0, n = snap.size(); i < n; i++)
 				codebuilder.add(RegisterOperationType.UNCOUNT, snap.get(i));
 			
-			// All returns are plain due to the fact that return address registers
-			// are used
+			// All returns are plain due to the fact that return address
+			// registers are used
 			codebuilder.add(RegisterOperationType.RETURN);
 		}
 		
