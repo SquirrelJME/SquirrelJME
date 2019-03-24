@@ -53,6 +53,9 @@ public final class ByteCode
 	/** This type. */
 	protected final ClassName thistype;
 	
+	/** The name of this method. */
+	protected final MethodName methodname;
+	
 	/** The input attribute code, used for instruction lookup. */
 	private final byte[] _rawattributedata;
 	
@@ -99,12 +102,17 @@ public final class ByteCode
 		if (__mr == null || __ca == null || __tt == null)
 			throw new NullPointerException("NARG");
 		
+		// Needed
+		Method method = __mr.get();
+		
 		// Set
 		this._methodref = __mr;
 		this._rawattributedata = __ca;
 		
+		// Is this an initializer method?
+		this.methodname = method.name();
+		
 		// If any IOExceptions are generated then the attribute is not valid
-		Method method = __mr.get();
 		Pool pool = method.pool();
 		try (DataInputStream in = new DataInputStream(
 			new ByteArrayInputStream(__ca)))
@@ -404,6 +412,28 @@ public final class ByteCode
 	}
 	
 	/**
+	 * Returns whether this is a constructor or not.
+	 *
+	 * @return Whether this is a constructor or not.
+	 * @since 2019/03/24
+	 */
+	public final boolean isInstanceInitializer()
+	{
+		return this.methodname.isInstanceInitializer();
+	}
+	
+	/**
+	 * Returns whether this is a static initializer or not.
+	 *
+	 * @return Whether this is a static initializer or not.
+	 * @since 2019/03/24
+	 */
+	public final boolean isStaticInitializer()
+	{
+		return this.methodname.isStaticInitializer();
+	}
+	
+	/**
 	 * Checks whether the given address is a valid instruction address.
 	 *
 	 * @param __a The address to check.
@@ -555,6 +585,17 @@ public final class ByteCode
 				this, new JavaType(this.thistype)).get());
 		
 		return rv;
+	}
+	
+	/**
+	 * Returns the name of the current class.
+	 *
+	 * @return The current class name.
+	 * @since 2019/03/24
+	 */
+	public final ClassName thisType()
+	{
+		return this.thistype;
 	}
 	
 	/**
