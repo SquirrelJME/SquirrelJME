@@ -10,6 +10,8 @@
 
 package cc.squirreljme.runtime.lcdui.gfx;
 
+import javax.microedition.lcdui.Graphics;
+
 /**
  * This represents the pixel format that is used.
  *
@@ -49,6 +51,14 @@ public enum PixelFormat
 	
 	/** End. */
 	;
+	
+	/**
+	 * {@squirreljme.property cc.squirreljme.lcdui.advanced=bool
+	 * If this is set to true, then advanced graphics will be used instead
+	 * of the older deprecated routines.}
+	 */
+	public static final boolean USE_ADVANCED_GRAPHICS =
+		Boolean.getBoolean("cc.squirreljme.lcdui.advanced");
 	
 	/**
 	 * Creates an array buffer which is capable of containing an image of
@@ -110,7 +120,7 @@ public enum PixelFormat
 	 * unless an indexed mode is used.
 	 * @since 2018/03/28
 	 */
-	public final AbstractArrayGraphics createGraphics(Object __buf,
+	public final Graphics createGraphics(Object __buf,
 		int[] __pal, int __bw, int __bh, boolean __alpha, int __pitch,
 		int __offset)
 		throws ClassCastException, NullPointerException
@@ -141,13 +151,32 @@ public enum PixelFormat
 	 * unless an indexed mode is used.
 	 * @since 2018/03/28
 	 */
-	public final AbstractArrayGraphics createGraphics(Object __buf,
+	public final Graphics createGraphics(Object __buf,
 		int[] __pal, int __bw, int __bh, boolean __alpha, int __pitch,
 		int __offset, int __atx, int __aty)
 		throws ClassCastException, NullPointerException
 	{
 		if (__buf == null)
 			throw new NullPointerException("NARG");
+		
+		// If using advanced, use these alternative graphics objects instead
+		// while they are being developed
+		if (USE_ADVANCED_GRAPHICS)
+			switch (this)
+			{
+				case INTEGER_ARGB8888:
+					return new AdvancedGraphics((int[])__buf, true, null,
+						__bw, __bh, __pitch, __offset, __atx, __aty);
+				
+				case INTEGER_RGB888:
+					return new AdvancedGraphics((int[])__buf, false, null,
+						__bw, __bh, __pitch, __offset, __atx, __aty);
+				
+					// Ignore this case here and fallback to the old
+					// handlers instead
+				default:
+					break;
+			}
 		
 		// Depends on the format
 		switch (this)

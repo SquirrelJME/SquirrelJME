@@ -11,40 +11,18 @@
 package cc.squirreljme.runtime.lcdui.gfx;
 
 /**
- * This contains the various functions that may be set by
- * {@link AdvancedGraphics} and called accordingly when needed.
- *
- * All functions operate on pixels which are backed by a 32-bit integer
- * array.
+ * This is the base class for buffer adapters, instances of these classes are
+ * used to translate the 32-bit integer format to lower quality buffer formats.
  *
  * @since 2019/03/24
  */
-public enum AdvancedFunction
+public abstract class AdvancedBufferAdapter
 {
-	/** Do nothing. */
-	NOP
-	{
-		/**
-		 * {@inheritDoc}
-		 * @since 2019/03/24
-		 */
-		public void function(AdvancedGraphics __ag, int[] __vi, Object[] __va)
-		{
-		}
-	},
-	
-	/** End. */
-	;
-	
 	/**
-	 * Executes the graphics function.
+	 * Adapts the buffer data.
 	 *
-	 * @param __ag The advanced graphics state.
-	 * @param __vi Integer arguments.
-	 * @param __va Object arguments.
 	 * @since 2019/03/24
 	 */
-	public abstract void function(AdvancedGraphics __ag, int[] __vi,
-		Object[] __va);
+	public abstract void adapt();
 }
 
