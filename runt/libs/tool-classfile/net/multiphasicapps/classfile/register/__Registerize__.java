@@ -761,6 +761,9 @@ final class __Registerize__
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
+		// Allocation may fail or the class could be invalid
+		this._exceptioncheck = true;
+		
 		// Although len and dst are in the same spot in the stack, the length
 		// could be cached
 		__StackState__ state = this.state;
