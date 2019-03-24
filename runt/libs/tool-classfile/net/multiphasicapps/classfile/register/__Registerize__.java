@@ -409,18 +409,43 @@ final class __Registerize__
 		switch ((op = __i.operation()))
 		{
 			case InstructionIndex.ALOAD:
-				this.__runALoad(__i.<Integer>argument(0, Integer.class));
+			case InstructionIndex.WIDE_ALOAD:
+				this.__runLoad(__i.<Integer>argument(0, Integer.class));
 				break;
 			
 			case InstructionIndex.ALOAD_0:
 			case InstructionIndex.ALOAD_1:
 			case InstructionIndex.ALOAD_2:
 			case InstructionIndex.ALOAD_3:
-				this.__runALoad(op - InstructionIndex.ALOAD_0);
+				this.__runLoad(op - InstructionIndex.ALOAD_0);
+				break;
+				
+			case InstructionIndex.DLOAD:
+			case InstructionIndex.WIDE_DLOAD:
+				this.__runLoad(__i.<Integer>argument(0, Integer.class));
+				break;
+			
+			case InstructionIndex.DLOAD_0:
+			case InstructionIndex.DLOAD_1:
+			case InstructionIndex.DLOAD_2:
+			case InstructionIndex.DLOAD_3:
+				this.__runLoad(op - InstructionIndex.DLOAD_0);
 				break;
 			
 			case InstructionIndex.DUP:
 				this.__runDup();
+				break;
+				
+			case InstructionIndex.FLOAD:
+			case InstructionIndex.WIDE_FLOAD:
+				this.__runLoad(__i.<Integer>argument(0, Integer.class));
+				break;
+			
+			case InstructionIndex.FLOAD_0:
+			case InstructionIndex.FLOAD_1:
+			case InstructionIndex.FLOAD_2:
+			case InstructionIndex.FLOAD_3:
+				this.__runLoad(op - InstructionIndex.FLOAD_0);
 				break;
 			
 			case InstructionIndex.ICONST_M1:
@@ -433,6 +458,18 @@ final class __Registerize__
 				this.__runLdc(new ConstantValueInteger(
 					op - InstructionIndex.ICONST_0));
 				break;
+				
+			case InstructionIndex.ILOAD:
+			case InstructionIndex.WIDE_ILOAD:
+				this.__runLoad(__i.<Integer>argument(0, Integer.class));
+				break;
+			
+			case InstructionIndex.ILOAD_0:
+			case InstructionIndex.ILOAD_1:
+			case InstructionIndex.ILOAD_2:
+			case InstructionIndex.ILOAD_3:
+				this.__runLoad(op - InstructionIndex.ILOAD_0);
+				break;
 			
 			case InstructionIndex.INVOKESPECIAL:
 				this.__runInvoke(InvokeType.SPECIAL,
@@ -442,6 +479,18 @@ final class __Registerize__
 			case InstructionIndex.LDC:
 				this.__runLdc(__i.<ConstantValue>argument(
 					0, ConstantValue.class));
+				break;
+				
+			case InstructionIndex.LLOAD:
+			case InstructionIndex.WIDE_LLOAD:
+				this.__runLoad(__i.<Integer>argument(0, Integer.class));
+				break;
+			
+			case InstructionIndex.LLOAD_0:
+			case InstructionIndex.LLOAD_1:
+			case InstructionIndex.LLOAD_2:
+			case InstructionIndex.LLOAD_3:
+				this.__runLoad(op - InstructionIndex.LLOAD_0);
 				break;
 			
 			case InstructionIndex.NEW:
@@ -529,28 +578,6 @@ final class __Registerize__
 			codebuilder.add(RegisterOperationType.JUMP, label);
 		
 		return label;
-	}
-	
-	/**
-	 * Loads single reference from a local to the stack.
-	 *
-	 * @param __l The reference to load.
-	 * @since 2019/03/14
-	 */
-	private final void __runALoad(int __l)
-	{
-		__StackState__ state = this.state;
-		
-		// Load from local to the stack
-		__StackResult__ src = state.localGet(__l);
-		__StackResult__ dest = state.localLoad(__l);
-		
-		// Only actually copy and count the destination if it has not been
-		// cached!
-		if (!dest.cached)
-			this.codebuilder.add(
-				RegisterOperationType.NARROW_COPY_AND_COUNT_DEST,
-				src.register, dest.register);
 	}
 	
 	/**
@@ -673,6 +700,31 @@ final class __Registerize__
 			default:
 				throw new todo.OOPS();
 		}
+	}
+	
+	/**
+	 * Loads from a local onto the stack.
+	 *
+	 * @param __l The local to load.
+	 * @since 2019/03/14
+	 */
+	private final void __runLoad(int __l)
+	{
+		__StackState__ state = this.state;
+		
+		// Load from local to the stack
+		__StackResult__ src = state.localGet(__l);
+		__StackResult__ dest = state.localLoad(__l);
+		
+		// If not cached, the operation to perform depends on the type
+		if (!dest.cached)
+			this.codebuilder.add(
+				(src.type.isObject() ?
+						RegisterOperationType.NARROW_COPY_AND_COUNT_DEST :
+					(src.type.isWide() ?
+						RegisterOperationType.WIDE_COPY :
+						RegisterOperationType.NARROW_COPY)),
+				src.register, dest.register);
 	}
 	
 	/**
