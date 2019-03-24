@@ -24,6 +24,35 @@ import javax.microedition.lcdui.Text;
 public class AdvancedGraphics
 	extends Graphics
 {
+	/** The array buffer. */
+	protected final int[] buffer;
+	
+	/**
+	 * Initializes the graphics.
+	 *
+	 * @param __buf The buffer.
+	 * @param __alphabuf Does the buffer actually use the alpha channel?
+	 * @param __aba Advanced buffer adapter, used to translate the internal
+	 * integer based buffer to other formats.
+	 * @param __w The image width.
+	 * @param __h The image height.
+	 * @param __p The image pitch.
+	 * @param __o The buffer offset.
+	 * @param __atx Absolute X translation.
+	 * @param __aty Absolute Y translation.
+	 * @throws IllegalArgumentException If the input parameters are not
+	 * correct.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/24
+	 */
+	public AdvancedGraphics(int[] __buf, boolean __alphabuf,
+		AdvancedBufferAdapter __aba,
+		int __w, int __h, int __p, int __o, int __atx, int __aty)
+		throws IllegalArgumentException, NullPointerException
+	{
+		throw new todo.TODO();
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2019/03/24
