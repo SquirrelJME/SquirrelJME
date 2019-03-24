@@ -1,0 +1,7 @@
+# 2019/03/23
+
+## 08:56
+
+Okay, so the thing I should do is translate the line number table from the
+input byte code to the output register code so that way debugging is a bit
+easier since it will be known where the code is coming from.
