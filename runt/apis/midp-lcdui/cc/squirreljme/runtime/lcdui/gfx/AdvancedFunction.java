@@ -42,7 +42,22 @@ public enum AdvancedFunction
 		 */
 		public void function(AdvancedGraphics __ag, int[] __vi, Object[] __va)
 		{
-			throw new todo.TODO();
+			int pac = __ag.paintcolor;
+			int[] buffer = __ag.buffer;
+			int pitch = __ag.pitch,
+				offset = __ag.offset;
+			
+			int __x = __vi[0],
+				__y = __vi[1],
+				__ex = __vi[2],
+				__ey = __vi[3],
+				__w = __vi[4],
+				__h = __vi[5];
+			
+			for (int y = __y; y < __ey; y++)
+				for (int dest = offset + (y * pitch) + __x, pex = dest + __w;
+					dest < pex; dest++)
+					buffer[dest] = pac;
 		}
 	},
 	
