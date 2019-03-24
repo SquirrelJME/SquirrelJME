@@ -172,7 +172,16 @@ public final class Minimizer
 				RegisterCode rc = m.registerCode();
 				
 				// Encode to bytes
-				transcode = __translateCode(rc);
+				try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					DataOutputStream dos = new DataOutputStream(baos))
+				{
+					this.__translateCode(rc, dos);
+					transcode = baos.toByteArray();
+				}
+				catch (IOException e)
+				{
+					throw new RuntimeException(e);
+				}
 				
 				throw new todo.TODO();
 			}
@@ -196,71 +205,37 @@ public final class Minimizer
 	 * Translates code.
 	 *
 	 * @param __rc The register code used.
-	 * @return The resulting translation to code.
+	 * @param __dos The stream to write to.
+	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/23
 	 */
-	private final byte[] __translateCode(RegisterCode __rc)
-		throws NullPointerException
+	private final void __translateCode(RegisterCode __rc,
+		DataOutputStream __dos)
+		throws IOException, NullPointerException
 	{
-		if (__rc == null)
+		if (__rc == null || __dos == null)
 			throw new NullPointerException("NARG");
 		
 		// Operations will reference this constant pool
 		MinimizedPoolBuilder pool = this.pool;
 		
-		// Perform the translation
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			DataOutputStream dos = new DataOutputStream(baos))
+		// Go through each instruction
+		for (RegisterInstruction i : __rc)
 		{
-			// Go through each instruction
-			for (RegisterInstruction i : __rc)
-			{
-				// Write operation
-				int op = i.operation();
-				dos.write(op);
-				
-				// This depends on the operation
-				switch (op)
-				{
-					case RegisterOperationType.NARROW_CONST:
-						{
-							Object c = i.<Object>argument(0, Object.class);
-							
-							// Integer
-							if (c instanceof Integer)
-							{
-								dos.write('I');
-								dos.writeInt((Integer)c);
-							}
-							
-							// Float
-							else if (c instanceof Float)
-							{
-								dos.write('F');
-								dos.writeInt(Float.floatToRawIntBits(
-									(Float)c));
-							}
-							
-							// Unknown
-							else
-								throw new todo.OOPS(c.getClass().toString());
-						}
-						break;
-					
-					default:
-						throw new todo.TODO(
-							RegisterOperationMnemonics.toString(op));
-				}
-			}
+			// Write operation
+			int op = i.operation();
+			__dos.write(op);
 			
-			// Use this
-			dos.flush();
-			return baos.toByteArray();
-		}
-		catch (IOException e)
-		{
-			throw new RuntimeException(e);
+			// All instructions use a pre-defined format, so doing it this way
+			// simplifies handling various instructions as they will just use
+			// a common layout.
+			InstructionFormat ef = InstructionFormat.of(op);
+			switch (ef)
+			{
+				default:
+					throw new todo.OOPS(ef.toString());
+			}
 		}
 	}
 	
