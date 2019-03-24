@@ -233,6 +233,10 @@ public final class Minimizer
 			InstructionFormat ef = InstructionFormat.of(op);
 			switch (ef)
 			{
+					// Plain format, just the opcode
+				case PLAIN:
+					break;
+				
 					// Constant pool reference
 				case POOL16:
 					__dos.writeShort(pool.add(i.argument(0)));
@@ -260,6 +264,12 @@ public final class Minimizer
 						else
 							throw new todo.OOPS(v.toString());
 					}
+					break;
+					
+					// Unsigned 16-bit integer
+				case U16:
+					__dos.writeShort(i.<Number>argument(0, Number.class).
+						shortValue());
 					break;
 					
 				default:
