@@ -43,9 +43,10 @@ final class __StackState__
 	 */
 	__StackState__(int __nl, int __ns)
 	{
-		// Virtual register index counter, this leaves two registers which
-		// could be used as temporaries if ever needed
-		int vr = 2;
+		// Virtual register index counter
+		// This can be set to 1 or 2 in the future to indicate that
+		// temporary registers can be used.
+		int vr = 0;
 		
 		// Initialize locals
 		Slot[] locals = new Slot[__nl];
