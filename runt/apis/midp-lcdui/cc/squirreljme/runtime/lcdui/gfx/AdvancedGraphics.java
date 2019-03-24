@@ -118,6 +118,9 @@ public class AdvancedGraphics
 	/** Function for filled rectangle. */
 	protected AdvancedFunction funcfillrect;
 	
+	/** Function for drawing characters. */
+	protected AdvancedFunction funccharbmp;
+	
 	/**
 	 * Initializes the graphics.
 	 *
@@ -1195,10 +1198,10 @@ public class AdvancedGraphics
 				
 				// Draw the bitmap for the character
 				int bps = sqf.loadCharBitmap(c, bmp);
-				if (true)
-					throw new todo.TODO();
-				/*this.internalDrawCharBitmap(doblending, color,
-					dsx, dsy, bmp, bps, scanoff, scanlen, lineoff, linelen);*/
+				this.funccharbmp.function(this,
+					new int[]{color, dsx, dsy, bps, scanoff, scanlen,
+						lineoff, linelen},
+					new Object[]{bmp});
 			}
 		}
 		
@@ -1220,6 +1223,8 @@ public class AdvancedGraphics
 		
 		this.funcfillrect = (doblending ? AdvancedFunction.FILLRECT_BLEND :
 			AdvancedFunction.FILLRECT_NOBLEND);
+		this.funccharbmp = (doblending ? AdvancedFunction.CHARBITMAP_BLEND :
+			AdvancedFunction.CHARBITMAP_NOBLEND);
 	}
 }
 
