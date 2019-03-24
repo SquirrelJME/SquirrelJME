@@ -443,6 +443,7 @@ final class __Registerize__
 			codebuilder.add(RegisterOperationType.RETURN);
 			
 			// Always create the label if it does not exist
+			// This might be used by exception handlers potentially
 			if (label == null)
 			{
 				label = codebuilder.label("return", this._nextreturndx);
