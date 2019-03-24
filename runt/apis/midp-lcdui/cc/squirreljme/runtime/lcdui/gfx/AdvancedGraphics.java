@@ -180,6 +180,9 @@ public class AdvancedGraphics
 		// Initial clipping rectangle has the image bounds
 		this.clipex = __w;
 		this.clipey = __h;
+		
+		// Reset all initial functions
+		this.resetParameters(true);
 	}
 	
 	/**
@@ -777,7 +780,41 @@ public class AdvancedGraphics
 	public void setBlendingMode(int __m)
 		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		boolean candoblending,
+			oldcandoblending = this.candoblending;
+		
+		// Just use source pixels
+		if (__m == SRC)
+		{
+			// {@squirreljme.error EB0b Cannot set the overlay blending mode
+			// because this graphics context does not have the alpha channel.}
+			if (!this.hasalphachannel)
+				throw new IllegalArgumentException("EB0b");
+			
+			candoblending = false;
+		}
+		
+		// Perform blending since this is the default mode
+		else if (__m == SRC_OVER)
+		{
+			candoblending = true;
+		}
+		
+		// {@squirreljme.error EB0c Unknown blending mode.}
+		else
+			throw new IllegalArgumentException("EB0c");
+		
+		// Set
+		this.blendmode = __m;
+		this.candoblending = candoblending;
+		
+		// If the blending mode has changed then possible blending tables
+		// need to be recalculated accordingly
+		if (candoblending != oldcandoblending)
+			this.setAlphaColor(this.getAlphaColor());
+		
+		// Update functions
+		this.__updateFunctions();
 	}
 	
 	/**
