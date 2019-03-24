@@ -49,6 +49,17 @@ public final class InvokedMethod
 	}
 	
 	/**
+	 * Returns the method handle.
+	 *
+	 * @return The method handle.
+	 * @since 2019/03/24
+	 */
+	public final MethodHandle handle()
+	{
+		return this.handle;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2019/03/21
 	 */

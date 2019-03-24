@@ -75,7 +75,22 @@ public final class RegisterInstruction
 	}
 	
 	/**
-	 * Returns the argument for this given instruction.
+	 * Returns the argument for the given index.
+	 *
+	 * @param __i The index of the argument.
+	 * @return The argument.
+	 * @throws IndexOutOfBoundsException If the argument index is not
+	 * within bounds.
+	 * @since 2019/03/24
+	 */
+	public Object argument(int __i)
+		throws IndexOutOfBoundsException
+	{
+		return this._args[__i];
+	}
+	
+	/**
+	 * Returns the argument for the given index.
 	 *
 	 * @param <T> The type of argument to get.
 	 * @param __i The index of the argument.

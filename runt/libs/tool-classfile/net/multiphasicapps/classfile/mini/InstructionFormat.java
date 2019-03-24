@@ -21,6 +21,12 @@ import net.multiphasicapps.classfile.register.RegisterOperationType;
  */
 public enum InstructionFormat
 {
+	/** Type and 32-bit integer. */
+	TI32,
+	
+	/** Pool reference. */
+	POOL16,
+	
 	/** End. */
 	;
 	
@@ -37,6 +43,11 @@ public enum InstructionFormat
 	{
 		switch (__op)
 		{
+			case RegisterOperationType.INVOKE_FROM_CONSTANT_POOL:
+				return POOL16;
+			case RegisterOperationType.NARROW_CONST:
+				return TI32;
+			
 				// {@squirreljme.error JC2m Could not get the format for the
 				// given operation. (The operation)}
 			default:
