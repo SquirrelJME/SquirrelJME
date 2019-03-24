@@ -114,6 +114,9 @@ public class AdvancedGraphics
 	/** The alpha color and normal color for painting. */
 	protected int paintalphacolor;
 	
+	/** Function for filled rectangle. */
+	protected AdvancedFunction funcfillrect;
+	
 	/**
 	 * Initializes the graphics.
 	 *
@@ -454,7 +457,60 @@ public class AdvancedGraphics
 	@Override
 	public void fillRect(int __x, int __y, int __w, int __h)
 	{
-		throw new todo.TODO();
+		// Get actual end points
+		int ex = __x + __w,
+			ey = __y + __h;
+			
+		// Translate all coordinates
+		int transx = this.transx,
+			transy = this.transy;
+		__x += transx;
+		__y += transy;
+		ex += transx;
+		ey += transy;
+		
+		// Force lower X
+		if (ex < __x)
+		{
+			int boop = ex;
+			ex = __x;
+			__x = boop;
+		}
+		
+		// Force lower Y
+		if (ey < __y)
+		{
+			int boop = ey;
+			ey = __y;
+			__y = boop;
+		}
+		
+		// Get clipping region
+		int clipsx = this.clipsx,
+			clipsy = this.clipsy,
+			clipex = this.clipex - 1,
+			clipey = this.clipey - 1;
+		
+		// Never clip past the left/top
+		if (__x < clipsx)
+			__x = clipsx;
+		if (__y < clipsy)
+			__y = clipsy;
+		
+		// Never clip past the right/bottom
+		if (ex > clipex)
+			ex = clipex;
+		if (ey > clipey)
+			ey = clipey;
+		
+		// Calculate actual dimensions used
+		__w = ex - __x;
+		__h = ey - __y;
+		
+		// Call function
+		this.funcfillrect.function(this,
+			new int[]{__x, __y, ex, ey, __w, __h},
+			null);
 	}
 	
 	/**
@@ -956,6 +1012,10 @@ public class AdvancedGraphics
 	 */
 	private final void __updateFunctions()
 	{
+		boolean doblending = this.doblending;
+		
+		this.funcfillrect = (doblending ? AdvancedFunction.FILLRECT_BLEND :
+			AdvancedFunction.FILLRECT_NOBLEND);
 	}
 }
 

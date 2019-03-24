@@ -33,6 +33,32 @@ public enum AdvancedFunction
 		}
 	},
 	
+	/** Fill rectangle, no blending. */
+	FILLRECT_NOBLEND
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2019/03/24
+		 */
+		public void function(AdvancedGraphics __ag, int[] __vi, Object[] __va)
+		{
+			throw new todo.TODO();
+		}
+	},
+	
+	/** Fill rectangle, with blending. */
+	FILLRECT_BLEND
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2019/03/24
+		 */
+		public void function(AdvancedGraphics __ag, int[] __vi, Object[] __va)
+		{
+			throw new todo.TODO();
+		}
+	},
+	
 	/** End. */
 	;
 	
