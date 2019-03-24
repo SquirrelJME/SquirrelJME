@@ -189,8 +189,6 @@ public final class Minimizer
 				{
 					throw new RuntimeException(e);
 				}
-				
-				throw new todo.TODO();
 			}
 			
 			// Add method
