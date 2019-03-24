@@ -17,6 +17,7 @@ import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ConstantValue;
+import net.multiphasicapps.classfile.ConstantValueInteger;
 import net.multiphasicapps.classfile.ExceptionHandler;
 import net.multiphasicapps.classfile.ExceptionHandlerTable;
 import net.multiphasicapps.classfile.FieldDescriptor;
@@ -420,6 +421,17 @@ final class __Registerize__
 			
 			case InstructionIndex.DUP:
 				this.__runDup();
+				break;
+			
+			case InstructionIndex.ICONST_M1:
+			case InstructionIndex.ICONST_0:
+			case InstructionIndex.ICONST_1:
+			case InstructionIndex.ICONST_2:
+			case InstructionIndex.ICONST_3:
+			case InstructionIndex.ICONST_4:
+			case InstructionIndex.ICONST_5:
+				this.__runLdc(new ConstantValueInteger(
+					op - InstructionIndex.ICONST_0));
 				break;
 			
 			case InstructionIndex.INVOKESPECIAL:
