@@ -102,6 +102,18 @@ public class AdvancedGraphics
 	/** The current color. */
 	protected int color;
 	
+	/** The painting alpha color. */
+	protected int paintalpha;
+	
+	/** The color to use for painting. */
+	protected int paintcolor;
+	
+	/** Paint color with the alpha channel set to the max. */
+	protected int paintcolorhigh;
+	
+	/** The alpha color and normal color for painting. */
+	protected int paintalphacolor;
+	
 	/**
 	 * Initializes the graphics.
 	 *
@@ -716,7 +728,23 @@ public class AdvancedGraphics
 	@Override
 	public void setAlphaColor(int __argb)
 	{
-		throw new todo.TODO();
+		// Set the original color directly
+		this.color = __argb;
+		
+		// Determine if blending is to be performed or it is just directly
+		// setting values, blending is only performed if the alpha channel
+		// is not fully opaque and blending is permitted
+		int alpha = (__argb >>> 24);
+		boolean doblending = (this.candoblending && alpha != 0xFF);
+		
+		// Set internal blend mode
+		this.doblending = doblending;
+		
+		// Set painting colors
+		this.paintalpha = alpha;
+		this.paintcolor = __argb & 0xFFFFFF;
+		this.paintcolorhigh = __argb | 0xFF000000;
+		this.paintalphacolor = __argb;
 	}
 	
 	/**
