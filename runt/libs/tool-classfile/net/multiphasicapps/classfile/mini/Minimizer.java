@@ -173,10 +173,17 @@ public final class Minimizer
 				
 				// Encode to bytes
 				try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-					DataOutputStream dos = new DataOutputStream(baos))
+					ByteArrayOutputStream lnb = new ByteArrayOutputStream();
+					DataOutputStream dos = new DataOutputStream(baos);
+					DataOutputStream lbd = new DataOutputStream(lnb))
 				{
+					// Translate code
 					this.__translateCode(rc, dos);
 					transcode = baos.toByteArray();
+					
+					// Translate lines
+					this.__translateLines(rc.lines(), lbd);
+					lnt = lnb.toByteArray();
 				}
 				catch (IOException e)
 				{
@@ -274,6 +281,57 @@ public final class Minimizer
 					
 				default:
 					throw new todo.OOPS(ef.toString());
+			}
+		}
+	}
+	
+	/**
+	 * Encodes the line number table for operations. This compacts the line
+	 * number table to a more compact format.
+	 *
+	 * @param __ln The input table.
+	 * @param __dos The output stream.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/24
+	 */
+	private final void __translateLines(short[] __ln, DataOutputStream __dos)
+		throws IOException, NullPointerException
+	{
+		if (__ln == null || __dos == null)
+			throw new NullPointerException("NARG");
+		
+		// Go through every entry, compacting it accordingly
+		int lastline = -1,
+			lastpc = 0;
+		for (int i = 0, n = __ln.length; i < n; i++)
+		{
+			int nowline = __ln[i];
+			
+			// If there is a really long stretch of instructions which point
+			// to the same exact line, force it to be reset so that way the
+			// number table after this point is not complete garbage
+			boolean force = ((i - lastpc) >= 255);
+			
+			// Line number has changed, need to encode the information
+			if (force || nowline != lastline)
+			{
+				// Since multiple instruction addresses can share line info,
+				// to reduce the size of the table just record an offset from
+				// the last PC address
+				// Just a single byte is used for the difference since in
+				// general these ranges will be small
+				int diff = i - lastpc;
+				__dos.write(diff);
+				
+				// Write line position here, just as a 16-bit value without
+				// any different encoding since values can jump all over the
+				// place
+				__dos.writeShort(nowline);
+				
+				// For next time
+				lastline = nowline;
+				lastpc = i;
 			}
 		}
 	}

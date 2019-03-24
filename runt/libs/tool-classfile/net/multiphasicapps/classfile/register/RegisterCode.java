@@ -88,6 +88,17 @@ public final class RegisterCode
 	}
 	
 	/**
+	 * The line number table.
+	 *
+	 * @return The line number table.
+	 * @since 2018/03/24
+	 */
+	public final short[] lines()
+	{
+		return this._lines.clone();
+	}
+	
+	/**
 	 * This translates the input byte code and creates a register code which
 	 * removes all stack operations and maps them to register operations.
 	 *
