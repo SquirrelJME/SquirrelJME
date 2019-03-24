@@ -20,10 +20,12 @@ import net.multiphasicapps.classfile.ConstantValue;
 import net.multiphasicapps.classfile.ExceptionHandler;
 import net.multiphasicapps.classfile.ExceptionHandlerTable;
 import net.multiphasicapps.classfile.FieldDescriptor;
+import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
 import net.multiphasicapps.classfile.JavaType;
 import net.multiphasicapps.classfile.MethodReference;
+import net.multiphasicapps.classfile.PrimitiveType;
 import net.multiphasicapps.classfile.StackMapTable;
 import net.multiphasicapps.classfile.StackMapTableState;
 
@@ -50,6 +52,9 @@ final class __Registerize__
 	
 	/** Exception tracker. */
 	protected final __ExceptionTracker__ exceptiontracker;
+	
+	/** Default field access type, to determine how fields are accessed. */
+	protected final FieldAccessTime defaultfieldaccesstime;
 	
 	/** The instruction throws an exception, it must be checked. */
 	private boolean _exceptioncheck;
@@ -83,6 +88,9 @@ final class __Registerize__
 		this.stackmap = __bc.stackMapTable();
 		this.state = new __StackState__(__bc.maxLocals(), __bc.maxStack());
 		this.exceptiontracker = new __ExceptionTracker__(__bc);
+		this.defaultfieldaccesstime = ((__bc.isInstanceInitializer() ||
+			__bc.isStaticInitializer()) ? FieldAccessTime.INITIALIZER :
+			FieldAccessTime.NORMAL);
 	}
 	
 	/**
@@ -359,6 +367,25 @@ final class __Registerize__
 	}
 	
 	/**
+	 * Generates an access to a field.
+	 *
+	 * @param __at The type of access to perform.
+	 * @param __fr The reference to the field.
+	 * @return The accessed field.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/24
+	 */
+	private final AccessedField __fieldAccess(FieldAccessType __at,
+		FieldReference __fr)
+		throws NullPointerException
+	{
+		if (__at == null || __fr == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Processes a single instruction.
 	 *
 	 * @param __i The instruction to process.
@@ -402,6 +429,11 @@ final class __Registerize__
 			
 			case InstructionIndex.NEW:
 				this.__runNew(__i.<ClassName>argument(0, ClassName.class));
+				break;
+			
+			case InstructionIndex.PUTFIELD:
+				this.__runPutField(__i.<FieldReference>argument(0,
+					FieldReference.class));
 				break;
 			
 			case InstructionIndex.RETURN:
@@ -640,6 +672,38 @@ final class __Registerize__
 		// Allocate and store into register
 		this.codebuilder.add(RegisterOperationType.ALLOCATE_CLASS, __cn,
 			this.state.stackPush(new JavaType(__cn)).register);
+	}
+	
+	/**
+	 * Puts a value into a field.
+	 *
+	 * @param __fr The field to put into.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/24
+	 */
+	private final void __runPutField(FieldReference __fr)
+		throws NullPointerException
+	{
+		if (__fr == null)
+			throw new NullPointerException("NARG");
+		
+		// Pop the value from the stack
+		int from = this.state.stackPop().register;
+		
+		// Need to setup field access
+		AccessedField af = this.__fieldAccess(FieldAccessType.INSTANCE, __fr);
+		
+		// Generate code
+		RegisterCodeBuilder codebuilder = this.codebuilder;
+		PrimitiveType pt = __fr.memberType().primitiveType();
+		if (pt == null)
+			throw new todo.TODO();
+		else
+			switch (pt)
+			{
+				default:
+					throw new todo.OOPS(__fr.toString());
+			}
 	}
 	
 	/**

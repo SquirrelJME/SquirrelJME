@@ -18,6 +18,7 @@ import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodHandle;
 import net.multiphasicapps.classfile.MethodName;
+import net.multiphasicapps.classfile.register.AccessedField;
 import net.multiphasicapps.classfile.register.InvokedMethod;
 
 /**
@@ -49,8 +50,12 @@ public final class MinimizedPoolBuilder
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
+		// Field access
+		if (__v instanceof AccessedField)
+			throw new todo.TODO();
+		
 		// Class name
-		if (__v instanceof ClassName)
+		else if (__v instanceof ClassName)
 			return this.__add(__v, this.add(__v.toString()));
 		
 		// Record handle for the method
