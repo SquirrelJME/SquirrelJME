@@ -745,6 +745,9 @@ public class AdvancedGraphics
 		this.paintcolor = __argb & 0xFFFFFF;
 		this.paintcolorhigh = __argb | 0xFF000000;
 		this.paintalphacolor = __argb;
+		
+		// Update functions
+		this.__updateFunctions();
 	}
 	
 	/**
@@ -886,7 +889,16 @@ public class AdvancedGraphics
 	public void setStrokeStyle(int __a)
 		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error EB0d Illegal stroke style.}
+		if (__a != SOLID && __a != DOTTED)
+			throw new IllegalArgumentException("EB0d");
+		
+		// Set
+		this.strokestyle = __a;
+		this.dotstroke = (__a == DOTTED);
+		
+		// Update functions
+		this.__updateFunctions();
 	}
 	
 	/**
@@ -898,6 +910,15 @@ public class AdvancedGraphics
 	{
 		this.transx += __x;
 		this.transy += __y;
+	}
+	
+	/**
+	 * Updates the graphics drawing functions to what is needed.
+	 *
+	 * @since 2019/03/24
+	 */
+	private final void __updateFunctions()
+	{
 	}
 }
 
