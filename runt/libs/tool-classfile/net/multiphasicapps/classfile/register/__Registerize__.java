@@ -15,6 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
+import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ConstantValue;
 import net.multiphasicapps.classfile.ExceptionHandler;
 import net.multiphasicapps.classfile.ExceptionHandlerTable;
@@ -395,6 +396,10 @@ final class __Registerize__
 					0, ConstantValue.class));
 				break;
 			
+			case InstructionIndex.NEW:
+				this.__runNew(__i.<ClassName>argument(0, ClassName.class));
+				break;
+			
 			case InstructionIndex.RETURN:
 				this.__runReturn(null);
 				break;
@@ -580,6 +585,27 @@ final class __Registerize__
 			default:
 				throw new todo.OOPS();
 		}
+	}
+	
+	/**
+	 * Handles class allocation.
+	 *
+	 * @param __cn The class to allocate.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/24
+	 */
+	private final void __runNew(ClassName __cn)
+		throws NullPointerException
+	{
+		if (__cn == null)
+			throw new NullPointerException("NARG");
+		
+		// Allocation may fail or the class could be invalid
+		this._exceptioncheck = true;
+		
+		// Allocate and store into register
+		this.codebuilder.add(RegisterOperationType.ALLOCATE_CLASS, __cn,
+			this.state.stackPush(new JavaType(__cn)).register);
 	}
 	
 	/**
