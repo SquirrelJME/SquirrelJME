@@ -236,6 +236,56 @@ final class __StackState__
 	}
 	
 	/**
+	 * Duplicates the top-most entry on the stack.
+	 *
+	 * @return The result of the duplication.
+	 * @since 2019/03/22
+	 */
+	public final __StackResult__ stackDup()
+	{
+		// Peek the current entry so we can get the type information
+		__StackResult__ cur = this.stackPeek();
+		Slot cs = cur.slot;
+		
+		// Push entry to the stack of the same type
+		__StackResult__ push = this.stackPush(cur.type);
+		Slot ps = push.slot;
+		
+		// The top-most entry is just a cache of the one before it
+		ps._cached = cs;
+		return new __StackResult__(cs, cs._type, cs.register, true);
+	}
+	
+	/**
+	 * Peeks the value at the top of the stack.
+	 *
+	 * @return The peeked value and type at the top of the stack.
+	 * @since 2019/03/24
+	 */
+	public final __StackResult__ stackPeek()
+	{
+		int stacktop = this._stacktop;
+		Slot[] stack = this._stack;
+		
+		// {@squirreljme.error JC2p Stack underflow.}
+		if ((--stacktop) < 0)
+			throw new InvalidClassFormatException("JC2p");
+		
+		// Read from top of stack, also handle wide values
+		Slot at = stack[stacktop];
+		boolean wide;
+		if ((wide = at._type.isTop()))
+			at = stack[--stacktop];
+		
+		// If the source value was cached, then use the cached value
+		Slot cached = at._cached;
+		if (cached != null)
+			return new __StackResult__(cached, cached._type, cached.register,
+				true);
+		return new __StackResult__(at, at._type, at.register);
+	}
+	
+	/**
 	 * Pops a single value from the stack.
 	 *
 	 * @return The result of the pop.
@@ -246,9 +296,9 @@ final class __StackState__
 		int stacktop = this._stacktop;
 		Slot[] stack = this._stack;
 		
-		// {@squirreljme.error AV03 Stack underflow.}
+		// {@squirreljme.error JC2n Stack underflow.}
 		if ((--stacktop) < 0)
-			throw new InvalidClassFormatException("AV03");
+			throw new InvalidClassFormatException("JC2n");
 		
 		// Read from top of stack, also handle wide values
 		Slot at = stack[stacktop];
@@ -281,11 +331,11 @@ final class __StackState__
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		// {@squirreljme.error AV04 Stack overflow.}
+		// {@squirreljme.error JC2o Stack overflow.}
 		int stacktop = this._stacktop;
 		Slot[] stack = this._stack;
 		if (stacktop >= stack.length)
-			throw new InvalidClassFormatException("AV04");
+			throw new InvalidClassFormatException("JC2o");
 		
 		// Just needs simple set of type
 		Slot at = stack[stacktop];

@@ -65,6 +65,8 @@ public final class RegisterOperationMnemonics
 				return "EXCEPTION_CLASS_JUMP";
 			case RegisterOperationType.JUMP:
 				return "JUMP";
+			case RegisterOperationType.ALLOCATE_CLASS:
+				return "ALLOCATE_CLASS";
 			
 				// Unknown
 			default:
