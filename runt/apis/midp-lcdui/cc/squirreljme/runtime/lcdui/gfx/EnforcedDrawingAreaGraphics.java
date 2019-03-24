@@ -731,7 +731,36 @@ public final class EnforcedDrawingAreaGraphics
 		if (!this._beeninit)
 			this.initialize();
 		
-		throw new todo.TODO();
+		// Translate
+		__x += this._transx;
+		__y += this._transy;
+		
+		// Our viewing area
+		int vx = this.x,
+			vy = this.y,
+			vw = this.width,
+			vh = this.height;
+		
+		// Calculate start area
+		int cx = vx + __x,
+			cy = vy + __y;
+		if (cx < vx)
+			cx = vx;
+		if (cy < vy)
+			cy = vy;
+			
+		// Calculate and snap end area
+		int ex = (cx + __w),
+			ey = (cy + __h),
+			vex = vx + vw,
+			vey = vy + vh;
+		if (ex > vex)
+			ex = vex;
+		if (ey > vey)
+			ey = vey;
+		
+		// Set the clip
+		this.graphics.setClip(cx, cy, ex - cx, ey - cy);
 	}
 	
 	/**
