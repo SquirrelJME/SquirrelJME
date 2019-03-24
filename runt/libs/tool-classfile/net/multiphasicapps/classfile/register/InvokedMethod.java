@@ -49,6 +49,24 @@ public final class InvokedMethod
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/24
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		if (this == __o)
+			return true;
+		
+		if (!(__o instanceof InvokedMethod))
+			return false;
+		
+		InvokedMethod o = (InvokedMethod)__o;
+		return this.type.equals(o.type) &&
+			this.handle.equals(o.handle);
+	}
+	
+	/**
 	 * Returns the method handle.
 	 *
 	 * @return The method handle.
@@ -57,6 +75,16 @@ public final class InvokedMethod
 	public final MethodHandle handle()
 	{
 		return this.handle;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2018/03/24
+	 */
+	@Override
+	public final int hashCode()
+	{
+		return this.type.hashCode() ^ this.handle.hashCode();
 	}
 	
 	/**
