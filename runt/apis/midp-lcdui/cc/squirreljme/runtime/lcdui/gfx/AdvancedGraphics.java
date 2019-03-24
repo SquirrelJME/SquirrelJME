@@ -177,7 +177,65 @@ public class AdvancedGraphics
 	@Override
 	public void clipRect(int __x, int __y, int __w, int __h)
 	{
-		throw new todo.TODO();
+		// Translate
+		__x += this.transx;
+		__y += this.transy;
+		
+		// Get right end coordinates
+		int ex = __x + __w,
+			ey = __y + __h;
+		
+		// Swap X if lower
+		if (ex < __x)
+		{
+			int boop = __x;
+			__x = ex;
+			ex = boop;
+		}
+		
+		// Same for Y
+		if (ey < __y)
+		{
+			int boop = __y;
+			__y = ey;
+			ey = boop;
+		}
+		
+		// Never go past the end of the viewport because pixels will never
+		// be drawn in negative regions
+		if (__x < 0)
+			__x = 0;
+		if (__y < 0)
+			__y = 0;
+		
+		// Additionally do not go past the edge ever that way the end
+		// clipping point is always valid
+		int width = this.width,
+			height = this.height;
+		if (ex > width)
+			ex = width;
+		if (ey > height)
+			ey = height;
+		
+		// Get the old clipping bounds
+		int oldclipsx = this.clipsx,
+			oldclipsy = this.clipsy,
+			oldclipex = this.clipex,
+			oldclipey = this.clipey;
+		
+		// Only set the clipping bounds if they exceed the previous ones
+		if (__x > oldclipsx)
+			this.clipsx = __x;
+		if (__y > oldclipsy)
+			this.clipsy = __y;
+		if (ex < clipex)
+			this.clipex = ex;
+		if (ey < clipey)
+			this.clipey = ey;
+		
+		// Set width/height
+		this.clipw = ex - __x;
+		this.cliph = ey - __y;
 	}
 	
 	/**
@@ -413,7 +471,7 @@ public class AdvancedGraphics
 	@Override
 	public int getAlpha()
 	{
-		throw new todo.TODO();
+		return (this.color >> 24) & 0xFF;
 	}
 	
 	/**
@@ -423,7 +481,7 @@ public class AdvancedGraphics
 	@Override
 	public int getAlphaColor()
 	{
-		throw new todo.TODO();
+		return this.color;
 	}
 	
 	/**
@@ -433,7 +491,7 @@ public class AdvancedGraphics
 	@Override
 	public int getBlendingMode()
 	{
-		throw new todo.TODO();
+		return this.blendmode;
 	}
 	
 	/**
@@ -443,7 +501,33 @@ public class AdvancedGraphics
 	@Override
 	public int getBlueComponent()
 	{
-		throw new todo.TODO();
+		return (this.color) & 0xFF;
+	}
+	
+	/**
+	 * Returns the element in the input array which represents the end of the
+	 * clipping rectangle.
+	 *
+	 * @return The element which contains the end of the clipping rectangle.
+	 * @since 2019/03/24
+	 */
+	public final int getClipElementEnd()
+	{
+		// Subtract one from the Y because it is on the next row
+		return this.offset + (((this.pitch * (this.clipey - 1)) +
+			(this.clipex)));
+	}
+	
+	/**
+	 * Returns the element in the input array which represents the start of
+	 * the clipping rectangle.
+	 *
+	 * @return The element which contains the start of the clipping rectangle.
+	 * @since 2019/03/24
+	 */
+	public final int getClipElementStart()
+	{
+		return this.offset + (((this.pitch * this.clipsy) + this.clipsx));
 	}
 	
 	/**
@@ -453,7 +537,7 @@ public class AdvancedGraphics
 	@Override
 	public int getClipHeight()
 	{
-		throw new todo.TODO();
+		return this.cliph;
 	}
 	
 	/**
@@ -463,7 +547,7 @@ public class AdvancedGraphics
 	@Override
 	public int getClipWidth()
 	{
-		throw new todo.TODO();
+		return this.clipw;
 	}
 	
 	/**
@@ -473,7 +557,7 @@ public class AdvancedGraphics
 	@Override
 	public int getClipX()
 	{
-		throw new todo.TODO();
+		return this.clipsx - this.transx;
 	}
 	
 	/**
@@ -483,7 +567,7 @@ public class AdvancedGraphics
 	@Override
 	public int getClipY()
 	{
-		throw new todo.TODO();
+		return this.clipsy - this.transy;
 	}
 	
 	/**
@@ -493,7 +577,7 @@ public class AdvancedGraphics
 	@Override
 	public int getColor()
 	{
-		throw new todo.TODO();
+		return this.color & 0xFFFFFF;
 	}
 	
 	/**
@@ -513,7 +597,10 @@ public class AdvancedGraphics
 	@Override
 	public Font getFont()
 	{
-		throw new todo.TODO();
+		Font rv = this.font;
+		if (rv == null)
+			rv = Font.getDefaultFont();
+		return rv;
 	}
 	
 	/**
@@ -523,7 +610,8 @@ public class AdvancedGraphics
 	@Override
 	public int getGrayScale()
 	{
-		throw new todo.TODO();
+		return (getRedComponent() + getGreenComponent() +
+			getBlueComponent()) / 3;
 	}
 	
 	/**
@@ -533,7 +621,7 @@ public class AdvancedGraphics
 	@Override
 	public int getGreenComponent()
 	{
-		throw new todo.TODO();
+		return (this.color >> 8) & 0xFF;
 	}
 	
 	/**
@@ -543,7 +631,7 @@ public class AdvancedGraphics
 	@Override
 	public int getRedComponent()
 	{
-		throw new todo.TODO();
+		return (this.color >> 16) & 0xFF;
 	}
 	
 	/**
@@ -553,7 +641,7 @@ public class AdvancedGraphics
 	@Override
 	public int getStrokeStyle()
 	{
-		throw new todo.TODO();
+		return this.strokestyle;
 	}
 	
 	/**
@@ -563,7 +651,7 @@ public class AdvancedGraphics
 	@Override
 	public int getTranslateX()
 	{
-		throw new todo.TODO();
+		return this.transx - this.abstransx;
 	}
 	
 	/**
@@ -573,7 +661,40 @@ public class AdvancedGraphics
 	@Override
 	public int getTranslateY()
 	{
-		throw new todo.TODO();
+		return this.transy - this.abstransy;
+	}
+	
+	/**
+	 * Resets all parameters of the graphics output.
+	 *
+	 * @param __clip If {@code true} then the clip is also reset.
+	 * @since 2019/03/24
+	 */
+	public void resetParameters(boolean __clip)
+	{
+		// Clear translation
+		this.transx = this.abstransx;
+		this.transy = this.abstransy;
+	
+		// Reset clip also
+		if (__clip)
+		{
+			int width = this.width,
+				height = this.height;
+			
+			this.clipsx = 0;
+			this.clipsy = 0;
+			this.clipex = width;
+			this.clipey = height;
+			this.clipw = width;
+			this.cliph = height;
+		}
+		
+		// Always reset these
+		this.setAlphaColor(0xFF000000);
+		this.setBlendingMode(SRC_OVER);
+		this.setStrokeStyle(SOLID);
+		this.setFont(null);
 	}
 	
 	/**
@@ -584,7 +705,8 @@ public class AdvancedGraphics
 	public void setAlpha(int __a)
 		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		this.setAlphaColor(__a, getRedComponent(), getGreenComponent(),
+			getBlueComponent());
 	}
 	
 	/**
@@ -605,7 +727,15 @@ public class AdvancedGraphics
 	public void setAlphaColor(int __a, int __r, int __g, int __b)
 		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error EB0a Color out of range. (Alpha; Red; Green;
+		// Blue)}
+		if (__a < 0 || __a > 255 || __r < 0 || __r > 255 ||
+			__g < 0 || __g > 255 || __b < 0 || __b > 255)
+			throw new IllegalArgumentException(String.format(
+				"EB0a %d %d %d %d", __a, __r, __g, __b));
+		
+		// Set
+		this.setAlphaColor((__a << 24) | (__r << 16) | (__g << 8) | __b);
 	}
 	
 	/**
@@ -626,7 +756,55 @@ public class AdvancedGraphics
 	@Override
 	public void setClip(int __x, int __y, int __w, int __h)
 	{
-		throw new todo.TODO();
+		// Translate
+		__x += this.transx;
+		__y += this.transy;
+		
+		// Get right end coordinates
+		int ex = __x + __w,
+			ey = __y + __h;
+		
+		// Swap X if lower
+		if (ex < __x)
+		{
+			int boop = __x;
+			__x = ex;
+			ex = boop;
+		}
+		
+		// Same for Y
+		if (ey < __y)
+		{
+			int boop = __y;
+			__y = ey;
+			ey = boop;
+		}
+		
+		// Never go past the end of the viewport because pixels will never
+		// be drawn in negative regions
+		if (__x < 0)
+			__x = 0;
+		if (__y < 0)
+			__y = 0;
+		
+		// Additionally do not go past the edge ever that way the end
+		// clipping point is always valid
+		int width = this.width,
+			height = this.height;
+		if (ex > width)
+			ex = width;
+		if (ey > height)
+			ey = height;
+		
+		// Set
+		this.clipsx = __x;
+		this.clipsy = __y;
+		this.clipex = ex;
+		this.clipey = ey;
+		
+		// Set width/height
+		this.clipw = ex - __x;
+		this.cliph = ey - __y;
 	}
 	
 	/**
@@ -636,7 +814,8 @@ public class AdvancedGraphics
 	@Override
 	public void setColor(int __rgb)
 	{
-		throw new todo.TODO();
+		this.setAlphaColor((this.getAlphaColor() & 0xFF_000000) |
+			(__rgb & 0x00_FFFFFF));
 	}
 	
 	/**
@@ -647,7 +826,7 @@ public class AdvancedGraphics
 	public void setColor(int __r, int __g, int __b)
 		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		this.setAlphaColor(getAlpha(), __r, __g, __b);
 	}
 	
 	/**
@@ -657,7 +836,8 @@ public class AdvancedGraphics
 	@Override
 	public void setFont(Font __a)
 	{
-		throw new todo.TODO();
+		// Just set it
+		this.font = __a;
 	}
 	
 	/**
@@ -667,7 +847,7 @@ public class AdvancedGraphics
 	@Override
 	public void setGrayScale(int __v)
 	{
-		throw new todo.TODO();
+		this.setAlphaColor(getAlpha(), __v, __v, __v);
 	}
 	
 	/**
@@ -688,7 +868,8 @@ public class AdvancedGraphics
 	@Override
 	public void translate(int __x, int __y)
 	{
-		throw new todo.TODO();
+		this.transx += __x;
+		this.transy += __y;
 	}
 }
 
