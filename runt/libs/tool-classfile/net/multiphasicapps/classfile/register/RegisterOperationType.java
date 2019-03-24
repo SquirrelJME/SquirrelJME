@@ -80,5 +80,9 @@ public interface RegisterOperationType
 	/** Write to a memory address using an offset from a pool. */
 	public static final int WRITE_POINTER_WITH_POOL_OFFSET =
 		15;
+	
+	/** Allocate array. */
+	public static final int ALLOCATE_ARRAY =
+		16;
 }
 
