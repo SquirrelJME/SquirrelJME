@@ -53,7 +53,7 @@ public enum InstructionFormat
 			case RegisterOperationType.RETURN:
 				return PLAIN;
 			
-			case RegisterOperationType.INVOKE_FROM_CONSTANT_POOL:
+			case RegisterOperationType.INVOKE_FROM_POOL:
 				return POOL16;
 				
 			case RegisterOperationType.NARROW_CONST:
