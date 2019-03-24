@@ -212,7 +212,7 @@ final class __StackState__
 		for (int i = 0, n = this._stacktop; i < n; i++)
 		{
 			Slot s = stack[i];
-			if (s._cached != null && s.isObject())
+			if (s._cached == null && s.isObject())
 				brv.add(s.register);
 		}
 		
