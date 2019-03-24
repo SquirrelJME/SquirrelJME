@@ -43,7 +43,8 @@ final class __StackState__
 	 */
 	__StackState__(int __nl, int __ns)
 	{
-		// Virtual register index counter
+		// Virtual register index counter, this leaves two registers which
+		// could be used as temporaries if ever needed
 		int vr = 2;
 		
 		// Initialize locals
