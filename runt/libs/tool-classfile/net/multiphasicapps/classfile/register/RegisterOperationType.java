@@ -72,5 +72,9 @@ public interface RegisterOperationType
 	/** Jump to address. */
 	public static final int JUMP =
 		13;
+	
+	/** Allocate class. */
+	public static final int ALLOCATE_CLASS =
+		14;
 }
 
