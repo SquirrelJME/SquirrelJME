@@ -49,8 +49,8 @@ public final class RegisterOperationMnemonics
 				return "NARROW_CONST";
 			case RegisterOperationType.WIDE_CONST:
 				return "WIDE_CONST";
-			case RegisterOperationType.INVOKE_FROM_CONSTANT_POOL:
-				return "INVOKE_FROM_CONSTANT_POOL";
+			case RegisterOperationType.INVOKE_FROM_POOL:
+				return "INVOKE_FROM_POOL";
 			case RegisterOperationType.INVOKE_POINTER:
 				return "INVOKE_POINTER";
 			case RegisterOperationType.COUNT:
@@ -67,6 +67,8 @@ public final class RegisterOperationMnemonics
 				return "JUMP";
 			case RegisterOperationType.ALLOCATE_CLASS:
 				return "ALLOCATE_CLASS";
+			case RegisterOperationType.WRITE_POINTER_WITH_POOL_OFFSET:
+				return "WRITE_POINTER_WITH_POOL_OFFSET";
 			
 				// Unknown
 			default:

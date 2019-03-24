@@ -382,7 +382,12 @@ final class __Registerize__
 		if (__at == null || __fr == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Accessing final fields of another class will always be treated as
+		// normal despite being in the constructor of a class
+		ByteCode bytecode = this.bytecode;
+		if (!bytecode.thisType().equals(__fr.className()))
+			return new AccessedField(FieldAccessTime.NORMAL, __at, __fr);
+		return new AccessedField(this.defaultfieldaccesstime, __at, __fr);
 	}
 	
 	/**
@@ -595,7 +600,7 @@ final class __Registerize__
 		// Generate the call, pass the base register and the number of
 		// registers to pass to the target method
 		RegisterCodeBuilder codebuilder = this.codebuilder;
-		codebuilder.add(RegisterOperationType.INVOKE_FROM_CONSTANT_POOL,
+		codebuilder.add(RegisterOperationType.INVOKE_FROM_POOL,
 			new InvokedMethod(__t, __r.handle()), new RegisterList(callargs));
 		
 		// For any references that are used, uncount the positions
@@ -687,23 +692,16 @@ final class __Registerize__
 		if (__fr == null)
 			throw new NullPointerException("NARG");
 		
-		// Pop the value from the stack
-		int from = this.state.stackPop().register;
-		
-		// Need to setup field access
-		AccessedField af = this.__fieldAccess(FieldAccessType.INSTANCE, __fr);
+		// Pop the value and instance from the stack
+		int value = this.state.stackPop().register,
+			inst = this.state.stackPop().register;
 		
 		// Generate code
-		RegisterCodeBuilder codebuilder = this.codebuilder;
-		PrimitiveType pt = __fr.memberType().primitiveType();
-		if (pt == null)
-			throw new todo.TODO();
-		else
-			switch (pt)
-			{
-				default:
-					throw new todo.OOPS(__fr.toString());
-			}
+		this.codebuilder.add(
+			RegisterOperationType.WRITE_POINTER_WITH_POOL_OFFSET,
+			value,
+			DataType.of(__fr.memberType().primitiveType()),
+			inst, this.__fieldAccess(FieldAccessType.INSTANCE, __fr));
 	}
 	
 	/**

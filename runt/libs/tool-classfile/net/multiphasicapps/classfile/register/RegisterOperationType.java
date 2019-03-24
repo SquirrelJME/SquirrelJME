@@ -42,7 +42,7 @@ public interface RegisterOperationType
 		5;
 	
 	/** Invoke pointer from constant pool. */
-	public static final int INVOKE_FROM_CONSTANT_POOL =
+	public static final int INVOKE_FROM_POOL =
 		6;
 	
 	/** Invoke pointer. */
@@ -76,5 +76,9 @@ public interface RegisterOperationType
 	/** Allocate class. */
 	public static final int ALLOCATE_CLASS =
 		14;
+	
+	/** Write to a memory address using an offset from a pool. */
+	public static final int WRITE_POINTER_WITH_POOL_OFFSET =
+		15;
 }
 
