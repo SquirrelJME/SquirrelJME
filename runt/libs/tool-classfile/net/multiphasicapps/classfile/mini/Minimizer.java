@@ -233,6 +233,35 @@ public final class Minimizer
 			InstructionFormat ef = InstructionFormat.of(op);
 			switch (ef)
 			{
+					// Constant pool reference
+				case POOL16:
+					__dos.writeShort(pool.add(i.argument(0)));
+					break;
+				
+					// Type + 32-bit integer
+				case TI32:
+					{
+						// Integer
+						Number v = i.<Number>argument(0, Number.class);
+						if (v instanceof Integer)
+						{
+							__dos.write('I');
+							__dos.writeInt((Integer)v);
+						}
+						
+						// Float
+						else if (v instanceof Float)
+						{
+							__dos.write('F');
+							__dos.writeInt(Float.floatToRawIntBits((Float)v));
+						}
+						
+						// Unknown
+						else
+							throw new todo.OOPS(v.toString());
+					}
+					break;
+					
 				default:
 					throw new todo.OOPS(ef.toString());
 			}
