@@ -386,6 +386,10 @@ final class __Registerize__
 				this.__runALoad(op - InstructionIndex.ALOAD_0);
 				break;
 			
+			case InstructionIndex.DUP:
+				this.__runDup();
+				break;
+			
 			case InstructionIndex.INVOKESPECIAL:
 				this.__runInvoke(InvokeType.SPECIAL,
 					__i.<MethodReference>argument(0, MethodReference.class));
@@ -475,6 +479,18 @@ final class __Registerize__
 			this.codebuilder.add(
 				RegisterOperationType.NARROW_COPY_AND_COUNT_DEST,
 				src.register, dest.register);
+	}
+	
+	/**
+	 * Duplicate top most stack entry.
+	 *
+	 * @since 2019/03/24
+	 */
+	private final void __runDup()
+	{
+		// No complex work is needed, the top-most entry is just a cached
+		// alias of the entry just above it
+		this.state.stackDup();
 	}
 	
 	/**
