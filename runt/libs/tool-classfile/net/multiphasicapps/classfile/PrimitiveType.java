@@ -98,5 +98,29 @@ public enum PrimitiveType
 				return false;
 		}
 	}
+	
+	/**
+	 * Returns the class name for the given type.
+	 *
+	 * @return The type's class name.
+	 * @since 2019/03/24
+	 */
+	public final ClassName toClassName()
+	{
+		switch (this)
+		{
+			case BOOLEAN:	return new ClassName("boolean");
+			case BYTE:		return new ClassName("byte");
+			case SHORT:		return new ClassName("short");
+			case CHARACTER:	return new ClassName("char");
+			case INTEGER:	return new ClassName("int");
+			case LONG:		return new ClassName("long");
+			case FLOAT:		return new ClassName("float");
+			case DOUBLE:	return new ClassName("double");
+			
+			default:
+				throw new todo.OOPS(this.toString());
+		}
+	}
 }
 

@@ -448,6 +448,11 @@ final class __Registerize__
 				this.__runNew(__i.<ClassName>argument(0, ClassName.class));
 				break;
 			
+			case InstructionIndex.NEWARRAY:
+				this.__runNewArray(__i.<PrimitiveType>argument(0,
+					PrimitiveType.class).toClassName());
+				break;
+			
 			case InstructionIndex.PUTFIELD:
 				this.__runPutField(__i.<FieldReference>argument(0,
 					FieldReference.class));
@@ -689,6 +694,30 @@ final class __Registerize__
 		// Allocate and store into register
 		this.codebuilder.add(RegisterOperationType.ALLOCATE_CLASS, __cn,
 			this.state.stackPush(new JavaType(__cn)).register);
+	}
+	
+	/**
+	 * Allocate a new array.
+	 *
+	 * @param __t The type of array to create.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/24
+	 */
+	private final void __runNewArray(ClassName __t)
+		throws NullPointerException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Although len and dst are in the same spot in the stack, the length
+		// could be cached
+		__StackState__ state = this.state;
+		int len = state.stackPop().register,
+			dst = state.stackPush(new JavaType(__t.addDimensions(1))).register;
+		
+		// Generate instruction
+		this.codebuilder.add(RegisterOperationType.ALLOCATE_ARRAY, __t,
+			len, dst);
 	}
 	
 	/**
