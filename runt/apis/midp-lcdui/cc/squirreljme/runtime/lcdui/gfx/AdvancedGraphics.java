@@ -27,11 +27,86 @@ public class AdvancedGraphics
 	/** The array buffer. */
 	protected final int[] buffer;
 	
+	/** The length of the buffer. */
+	protected final int bufferlen;
+	
+	/** The width of the image. */
+	protected final int width;
+	
+	/** The height of the image. */
+	protected final int height;
+	
+	/** The pitch of the image. */
+	protected final int pitch;
+	
+	/** The buffer offset. */
+	protected final int offset;
+	
+	/** The number of elements that consist of pixel data. */
+	protected final int numelements;
+	
+	/** Physical end of the buffer. */
+	protected final int lastelement;
+	
+	/** Is there an alpha channel? */
+	protected final boolean hasalphachannel;
+	
+	/** Absolute translated X coordinate. */
+	protected final int abstransx;
+	
+	/** Absolute translated Y coordinate. */
+	protected final int abstransy;
+	
+	/** The current stroke style. */
+	protected int strokestyle;
+	
+	/** Is a dot stroke being used? */
+	protected boolean dotstroke;
+	
+	/** Translated X coordinate. */
+	protected int transx;
+	
+	/** Translated Y coordinate. */
+	protected int transy;
+	
+	/** The starting X clip. */
+	protected int clipsx;
+	
+	/** The starting Y clip. */
+	protected int clipsy;
+	
+	/** The ending X clip. */
+	protected int clipex;
+	
+	/** The ending Y clip. */
+	protected int clipey;
+	
+	/** The clip width. */
+	protected int clipw;
+	
+	/** The clip height. */
+	protected int cliph;
+	
+	/** The current font, null means default. */
+	protected Font font;
+	
+	/** The current blending mode. */
+	protected int blendmode;
+	
+	/** Could blending be done? */
+	protected boolean candoblending;
+	
+	/** Is blending actually going to be done? */
+	protected boolean doblending;
+	
+	/** The current color. */
+	protected int color;
+	
 	/**
 	 * Initializes the graphics.
 	 *
 	 * @param __buf The buffer.
-	 * @param __alphabuf Does the buffer actually use the alpha channel?
+	 * @param __alpha Does the buffer actually use the alpha channel?
 	 * @param __aba Advanced buffer adapter, used to translate the internal
 	 * integer based buffer to other formats.
 	 * @param __w The image width.
@@ -45,12 +120,54 @@ public class AdvancedGraphics
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/24
 	 */
-	public AdvancedGraphics(int[] __buf, boolean __alphabuf,
+	public AdvancedGraphics(int[] __buf, boolean __alpha,
 		AdvancedBufferAdapter __aba,
 		int __w, int __h, int __p, int __o, int __atx, int __aty)
 		throws IllegalArgumentException, NullPointerException
 	{
-		throw new todo.TODO();
+		if (__buf == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error EB2v Invalid width and/or height specified.}
+		if (__w <= 0 || __h <= 0)
+			throw new IllegalArgumentException("EB2v");
+		
+		// {@squirreljme.error EB2w The pitch is less than the width.}
+		if (__p < __w)
+			throw new IllegalArgumentException("EB2w");
+		
+		// {@squirreljme.error EB2x The specified parameters exceed the bounds
+		// of the array. (The width; The height; The offset; The pitch;
+		// The array length; The number of elements in the image)}
+		int numelements = (__p * __h),
+			lastelement = __o + numelements,
+			buflen = __buf.length;
+		if (__o < 0 || lastelement > buflen)
+			throw new ArrayIndexOutOfBoundsException(
+				String.format("EB2x %d %d %d %d %d %d", __w, __h,
+				__o, __p, buflen, numelements));
+		
+		// Set
+		this.buffer = __buf;
+		this.bufferlen = buflen;
+		this.width = __w;
+		this.height = __h;
+		this.pitch = __p;
+		this.offset = __o;
+		this.numelements = numelements;
+		this.lastelement = lastelement;
+		this.hasalphachannel = __alpha;
+		
+		// Setup absolute translation and initialize the base translation
+		// which is at the absolute origin
+		this.abstransx = __atx;
+		this.abstransy = __aty;
+		this.transx = __atx;
+		this.transy = __aty;
+		
+		// Initial clipping rectangle has the image bounds
+		this.clipex = __w;
+		this.clipey = __h;
 	}
 	
 	/**
