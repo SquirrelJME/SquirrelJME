@@ -10,6 +10,7 @@
 
 package cc.squirreljme.runtime.lcdui.gfx;
 
+import cc.squirreljme.runtime.lcdui.font.SQFFont;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
@@ -414,7 +415,10 @@ public class AdvancedGraphics
 		int __anchor)
 		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		this.__drawText(this.__buildText(__s), __x, __y, __anchor);
 	}
 	
 	/**
@@ -426,7 +430,13 @@ public class AdvancedGraphics
 		int __y, int __anchor)
 		throws NullPointerException, StringIndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __s.length())
+			throw new StringIndexOutOfBoundsException("IOOB");
+		
+		this.__drawText(this.__buildText(__s.substring(__o, __o + __l)),
+			__x, __y, __anchor);
 	}
 	
 	/**
@@ -436,7 +446,7 @@ public class AdvancedGraphics
 	@Override
 	public void drawText(Text __t, int __x, int __y)
 	{
-		throw new todo.TODO();
+		this.__drawText(__t, __x, __y, 0);
 	}
 	
 	/**
@@ -1003,6 +1013,200 @@ public class AdvancedGraphics
 	{
 		this.transx += __x;
 		this.transy += __y;
+	}
+	
+	/**
+	 * Builds and returns a text object for usage.
+	 *
+	 * @param __s The string used.
+	 * @return A new text object.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/29
+	 */
+	private final Text __buildText(String __s)
+		throws NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Get the font, or fallback to the default if it was not set
+		Font font = this.getFont();
+		
+		// Setup, use a zero height for now since it will be calculated after
+		// the font and such has been set
+		Text rv = new Text(__s,
+			font.stringWidth(__s), 0);
+		
+		// Set text properties
+		if (font != null)
+			rv.setFont(font);
+		rv.setForegroundColor(this.color);
+		
+		// Set the height to the required height of the box now that the
+		// parameters have been set
+		rv.setHeight(rv.getRequiredHeight());
+		
+		return rv;
+	}
+	
+	/**
+	 * Draws the given text object.
+	 *
+	 * @param __t The text object to draw.
+	 * @param __x The X position.
+	 * @param __y The Y position.
+	 * @param __anchor The, this just adjusts determines how the actual text
+	 * box region is drawn. If baseline is used, Y is just offset by the
+	 * baseline for the first character and not the entire block size.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/11/29
+	 */
+	final void __drawText(Text __t, int __x, int __y, int __anchor)
+		throws NullPointerException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Translate to the displayed coordinate space
+		__x += this.transx;
+		__y += this.transy;
+		
+		// Get clipping region
+		int clipsx = this.clipsx,
+			clipsy = this.clipsy,
+			clipex = this.clipex - 1,
+			clipey = this.clipey - 1;
+		
+		// Wanting to draw a bunch of text completely out of the clip? Ignore
+		if (__x >= clipex || __y >= clipey)
+			return;
+		
+		// Trying to draw the text completely out of the clip as well?
+		int textw = __t.getWidth(),
+			texth = __t.getHeight(),
+			tex = __x + textw,
+			tey = __y + texth;
+		if (tex < clipsx || tey < clipsy)
+			return;
+		
+		// The text box acts as an extra clip, so force everything to clip
+		// in there
+		if (__x > clipsx)
+			clipsx = __x;
+		if (tex < clipex)
+			clipex = tex;
+		if (__y > clipsy)
+			clipsy = __y;
+		if (tey < clipey)
+			clipey = tey;
+		
+		// Cache the default font in the event it is never changed ever
+		Font lastfont = __t.getFont();
+		SQFFont sqf = SQFFont.cacheFont(lastfont);
+		byte[] bmp = new byte[sqf.charbitmapsize];
+		int pixelheight = sqf.pixelheight,
+			bitsperscan = sqf.bitsperscan;
+		
+		// Blending the text?
+		boolean doblending = this.doblending;
+		
+		// Need to store the properties since drawing of the text will
+		// change how characters are drawn
+		int oldcolor = this.getAlphaColor();
+		try
+		{
+			// Read in all the text characters
+			int n = __t.getTextLength();
+			String chars = __t.getText(0, n);
+			
+			// Draw each character according to their metrics
+			int[] metrics = new int[4];
+			for (int i = 0; i < n; i++)
+			{
+				// Ignore certain characters
+				char c = chars.charAt(i);
+				if (c == '\r' || c == '\n')
+					continue;
+				
+				// Set color to the foreground color of this character
+				this.setAlphaColor(__t.getForegroundColor(i));
+				
+				// Need to find the SQF for this font again?
+				Font drawfont = __t.getFont(i);
+				if (drawfont != lastfont)
+				{
+					lastfont = drawfont;
+					sqf = SQFFont.cacheFont(lastfont);
+					bmp = new byte[sqf.charbitmapsize];
+					pixelheight = sqf.pixelheight;
+					bitsperscan = sqf.bitsperscan;
+				}
+				
+				// Get the metrics for the character
+				__t.getCharExtent(i, metrics);
+				
+				// Calculate the draw position of the character
+				int dsx = __x + metrics[0],
+					dsy = __y + metrics[1],
+					dex = dsx + metrics[2],
+					dey = dsy + metrics[3];
+				
+				// Completely out of bounds, ignore because we cannot draw it
+				// anyway
+				if (dsx >= clipex || dex <= 0 ||
+					dsy >= clipey || dey <= 0)
+					continue;
+				
+				// Base scan offsets and such
+				int scanoff = 0,
+					scanlen = sqf.charWidth(c),
+					lineoff = 0,
+					linelen = pixelheight;
+				
+				// Off the left side?
+				if (dsx < clipsx)
+				{
+					int diff = clipsx - dsx;
+					scanoff += diff;
+					scanlen -= diff;
+					
+					// Reset to clip bound
+					dsx = clipsx;
+				}
+				
+				// Off the right side
+				if (dex > clipex)
+					scanlen -= (dex - clipex);
+				
+				// Off the top?
+				if (dsy < clipsy)
+				{
+					int diff = clipsy - dsy;
+					lineoff += diff;
+					linelen -= diff;
+					
+					// Reset to clip bound
+					dsy = clipsy;
+				}
+				
+				// Off the bottom
+				if (dey > clipey)
+					linelen -= (dey - clipey);
+				
+				// Draw the bitmap for the character
+				int bps = sqf.loadCharBitmap(c, bmp);
+				if (true)
+					throw new todo.TODO();
+				/*this.internalDrawCharBitmap(doblending, color,
+					dsx, dsy, bmp, bps, scanoff, scanlen, lineoff, linelen);*/
+			}
+		}
+		
+		// Just in case revert properties
+		finally
+		{
+			this.setAlphaColor(oldcolor);
+		}
 	}
 	
 	/**
