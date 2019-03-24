@@ -100,6 +100,81 @@ public enum AdvancedFunction
 		}
 	},
 	
+	/** Character bitmap, no blending. */
+	CHARBITMAP_NOBLEND
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2019/03/24
+		 */
+		public void function(AdvancedGraphics __ag, int[] __vi, Object[] __va)
+		{
+			int __color = __vi[0],
+				__dsx = __vi[1],
+				__dsy = __vi[2],
+				__bytesperscan = __vi[3],
+				__scanoff = __vi[4],
+				__scanlen = __vi[5],
+				__lineoff = __vi[6],
+				__linelen = __vi[7];
+			byte[] __bmp = (byte[])__va[0];
+			
+			int[] data = __ag.buffer;
+			int offset = __ag.offset,
+				pitch = __ag.pitch;
+			
+			// Treat lens as end indexes
+			int origscanlen = __scanlen;
+			__scanlen += __scanoff;
+			__linelen += __lineoff;
+			
+			// Remember the old scan offset, because we reset
+			int resetscanoff = __scanoff;
+			
+			// Determine the draw pointer for this line
+			int basep = offset + (__dsy * pitch) + __dsx;
+			
+			// Base source offset line according to the line offset
+			int bi = __lineoff * __bytesperscan;
+			
+			// Drew each line
+			for (; __lineoff < __linelen; __lineoff++, __dsy++)
+			{
+				// Reset parameters for this line
+				int p = basep;
+				__scanoff = resetscanoff;
+				
+				// Draw each scan from the bitmap
+				for (; __scanoff < __scanlen; __scanoff++, p++)
+				{
+					// Get the byte that represents the scan here
+					byte b = __bmp[bi + (__scanoff >>> 3)];	
+					
+					// If there is a pixel here, draw it
+					if ((b & (1 << (__scanoff & 0x7))) != 0)
+						data[p] = __color;
+				}
+				
+				// Move the source and dest pointers to the next line
+				basep += pitch;
+				bi += __bytesperscan;
+			}
+		}
+	},
+	
+	/** Character bitmap, with blending. */
+	CHARBITMAP_BLEND
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2019/03/24
+		 */
+		public void function(AdvancedGraphics __ag, int[] __vi, Object[] __va)
+		{
+			throw new todo.TODO();
+		}
+	},
+	
 	/** End. */
 	;
 	
