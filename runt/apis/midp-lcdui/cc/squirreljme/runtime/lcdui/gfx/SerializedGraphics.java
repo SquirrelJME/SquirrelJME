@@ -122,7 +122,11 @@ public abstract class SerializedGraphics
 	public void drawImage(Image __i, int __x, int __y, int __anchor)
 		throws IllegalArgumentException, NullPointerException
 	{
-		throw new todo.TODO();
+		if (__i == null)
+			throw new NullPointerException("NARG");
+		
+		this.drawRegion(__i, 0, 0, __i.getWidth(), __i.getHeight(), 0,
+			__x, __y, __anchor);
 	}
 	
 	/**
@@ -183,7 +187,11 @@ public abstract class SerializedGraphics
 		int __anch)
 		throws IllegalArgumentException, NullPointerException
 	{
-		throw new todo.TODO();
+		if (__src == null)
+			throw new NullPointerException("NARG");
+		
+		this.drawRegion(__src, __xsrc, __ysrc, __wsrc, __hsrc, __trans,
+			__xdest, __ydest, __anch, __wsrc, __hsrc);
 	}
 	
 	/**
@@ -196,7 +204,20 @@ public abstract class SerializedGraphics
 		int __anch, int __wdest, int __hdest)
 		throws IllegalArgumentException, NullPointerException
 	{
-		throw new todo.TODO();
+		if (__src == null)
+			throw new NullPointerException("NARG");
+		
+		// Extract image pixel data before sending over
+		int numpixels = __wsrc * __hsrc;
+		int[] data = new int[numpixels];
+		__src.getRGB(data, 0, __wsrc, __xsrc, __ysrc, __wsrc, __hsrc);
+		
+		// {@squirreljme.error EB30 Illegal region draw.}
+		int rv = (Integer)this.serialize(GraphicsFunction.DRAW_REGION,
+			data, __xsrc, __ysrc, __wsrc, __hsrc, __trans, __xdest, __ydest,
+			__anch, __wdest, __hdest);
+		if (rv < 0)
+			throw new IllegalArgumentException("EB30");
 	}
 	
 	/**
@@ -757,7 +778,7 @@ public abstract class SerializedGraphics
 				}
 				return 0;
 				
-			// Copy area.
+				// Copy area.
 			case COPY_AREA:
 				__g.copyArea(
 					(Integer)__args[0],
@@ -769,7 +790,7 @@ public abstract class SerializedGraphics
 					(Integer)__args[6]);
 				return null;
 			
-			// Draw arc.
+				// Draw arc.
 			case DRAW_ARC:
 				__g.drawArc(
 					(Integer)__args[0],
@@ -780,7 +801,7 @@ public abstract class SerializedGraphics
 					(Integer)__args[5]);
 				return null;
 			
-			// Draw ARGB16.
+				// Draw ARGB16.
 			case DRAW_ARGB16:
 				__g.drawARGB16(
 					(short[])__args[0],
@@ -792,7 +813,7 @@ public abstract class SerializedGraphics
 					(Integer)__args[6]);
 				return null;
 			
-			// Draw character.
+				// Draw character.
 			case DRAW_CHAR:
 				__g.drawChar(
 					(char)(((Integer)__args[0]).intValue()),
@@ -801,7 +822,7 @@ public abstract class SerializedGraphics
 					(Integer)__args[3]);
 				return null;
 			
-			// Draw characters.
+				// Draw characters.
 			case DRAW_CHARS:
 				__g.drawChars(
 					(char[])__args[0],
@@ -812,7 +833,7 @@ public abstract class SerializedGraphics
 					(Integer)__args[5]);
 				return null;
 			
-			// Draw RGB.
+				// Draw RGB.
 			case DRAW_RGB:
 				__g.drawRGB(
 					(int[])__args[0],
@@ -825,7 +846,7 @@ public abstract class SerializedGraphics
 					(((Integer)__args[7]) != 0 ? true : false));
 				return null;
 			
-			// Draw RGB16.
+				// Draw RGB16.
 			case DRAW_RGB16:
 				__g.drawRGB16(
 					(short[])__args[0],
@@ -837,7 +858,7 @@ public abstract class SerializedGraphics
 					(Integer)__args[6]);
 				return null;
 			
-			// Draw round rectangle.
+				// Draw round rectangle.
 			case DRAW_ROUND_RECT:
 				__g.drawRoundRect(
 					(Integer)__args[0],
@@ -848,7 +869,7 @@ public abstract class SerializedGraphics
 					(Integer)__args[5]);
 				return null;
 			
-			// Fill arc.
+				// Fill arc.
 			case FILL_ARC:
 				__g.fillArc(
 					(Integer)__args[0],
@@ -859,7 +880,7 @@ public abstract class SerializedGraphics
 					(Integer)__args[5]);
 				return null;
 			
-			// Fill round rectangle.
+				// Fill round rectangle.
 			case FILL_ROUND_RECT:
 				__g.fillRoundRect(
 					(Integer)__args[0],
@@ -870,7 +891,7 @@ public abstract class SerializedGraphics
 					(Integer)__args[5]);
 				return null;
 			
-			// Fill triangle.
+				// Fill triangle.
 			case FILL_TRIANGLE:
 				__g.fillTriangle(
 					(Integer)__args[0],
@@ -881,19 +902,46 @@ public abstract class SerializedGraphics
 					(Integer)__args[5]);
 				return null;
 			
-			// Get blending mode.
+				// Get blending mode.
 			case GET_BLENDING_MODE:
 				return __g.getBlendingMode();
 			
-			// Get display color.
+				// Get display color.
 			case GET_DISPLAY_COLOR:
 				return __g.getDisplayColor((Integer)__args[0]);
 			
-			// Set blending mode.
+				// Set blending mode.
 			case SET_BLENDING_MODE:
 				try
 				{
 					__g.setBlendingMode((Integer)__args[0]);
+				}
+				catch (IllegalArgumentException e)
+				{
+					return -1;
+				}
+				return 0;
+			
+				// Draw region
+			case DRAW_REGION:
+				try
+				{
+					int sw = (Integer)__args[3],
+						sh = (Integer)__args[4];
+					
+					// Note that the passed buffer only contains image data
+					// from the source region, as such the source coordinates
+					// will always be zero
+					__g.drawRegion(Image.createRGBImage(
+							(int[])__args[0], sw, sh, true),
+						0, 0,
+						sw, sh,
+						(Integer)__args[5],
+						(Integer)__args[6],
+						(Integer)__args[7],
+						(Integer)__args[8],
+						(Integer)__args[9],
+						(Integer)__args[10]);
 				}
 				catch (IllegalArgumentException e)
 				{
