@@ -54,7 +54,8 @@ public enum UnitType
 				if (in == null)
 					throw new RuntimeException("BE0m " + this);
 				
-				this._info = (rv = new BaseUnitInfo(new JavaManifest(in)));
+				this._info = (rv = new BaseUnitInfo(this.ordinal(),
+					new JavaManifest(in)));
 			}
 			
 			// {@squirreljme.error BE0l Could not load unit information.}

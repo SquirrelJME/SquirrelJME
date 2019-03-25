@@ -31,7 +31,7 @@ public final class Units
 		new ArrayList<>();
 	
 	/** The ID of the next unit to create. */
-	private volatile int _nextid;
+	private int _nextid;
 	
 	/**
 	 * Initializes the units.
@@ -90,8 +90,12 @@ public final class Units
 		if (__spt == null || __t == null)
 			throw new NullPointerException("NARG");
 		
-		// Load the base unit info which describes how it is spawned
-		BaseUnitInfo baseinfo = __t.baseInfo();
+		// Create new unit and add it to the list
+		Unit rv;
+		this._units.add((rv = new Unit(this._nextid++)));
+		
+		// Morph this unit to the resulting type
+		rv.morph(__t);
 		
 		throw new todo.TODO();
 		/*

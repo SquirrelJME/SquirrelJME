@@ -31,6 +31,9 @@ import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
  */
 public final class BaseUnitInfo
 {
+	/** The type ID of the unit. */
+	public final int typeid;
+	
 	/** The name of the unit. */
 	public final String name;
 	
@@ -94,16 +97,20 @@ public final class BaseUnitInfo
 	/**
 	 * Initializes the unit information from the given manifest.
 	 *
+	 * @param __tid Unit type ID.
 	 * @param __m The input unit manifest.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/18
 	 */
-	BaseUnitInfo(JavaManifest __m)
+	BaseUnitInfo(int __tid, JavaManifest __m)
 		throws NullPointerException
 	{
 		// Check
 		if (__m == null)
 			throw new NullPointerException("NARG");
+		
+		// Type ID is used to modify unit details
+		this.typeid = __tid;
 		
 		// Need the attributes!
 		JavaManifestAttributes attr = __m.getMainAttributes();
