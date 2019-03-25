@@ -24,7 +24,8 @@ import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 
 /**
- * This contains a cachable.
+ * This contains the base information about a unit which is fixed and never
+ * changes.
  *
  * @since 2017/02/14
  */

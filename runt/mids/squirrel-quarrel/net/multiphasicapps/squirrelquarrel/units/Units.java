@@ -90,6 +90,9 @@ public final class Units
 		if (__spt == null || __t == null)
 			throw new NullPointerException("NARG");
 		
+		// Load the base unit info which describes how it is spawned
+		BaseUnitInfo baseinfo = __t.baseInfo();
+		
 		throw new todo.TODO();
 		/*
 		// Setup unit
