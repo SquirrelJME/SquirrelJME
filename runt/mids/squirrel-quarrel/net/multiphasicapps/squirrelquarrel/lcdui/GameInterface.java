@@ -111,9 +111,7 @@ public final class GameInterface
 	@Override
 	protected void pointerDragged(int __x, int __y)
 	{
-		throw new todo.TODO();
-		/*
-		this.inputhandler.pointerDragged(__x, __y);*/
+		todo.DEBUG.note("pointerDragged(%d, %d)", __x, __y);
 	}
 	
 	/**
@@ -123,9 +121,7 @@ public final class GameInterface
 	@Override
 	protected void pointerPressed(int __x, int __y)
 	{
-		throw new todo.TODO();
-		/*
-		this.inputhandler.pointerPressed(__x, __y);*/
+		todo.DEBUG.note("pointerPressed(%d, %d)", __x, __y);
 	}
 	
 	/**
@@ -135,9 +131,7 @@ public final class GameInterface
 	@Override
 	protected void pointerReleased(int __x, int __y)
 	{
-		throw new todo.TODO();
-		/*
-		this.inputhandler.pointerReleased(__x, __y);*/
+		todo.DEBUG.note("pointerReleased(%d, %d)", __x, __y);
 	}
 	
 	/**
