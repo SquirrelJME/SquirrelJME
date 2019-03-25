@@ -34,6 +34,8 @@ More detailed changes:
      * Added proprietary `ExtendedTaskManager` interface which can be used
        to specify arguments, system properties, and console output alternatives
        to launched tasks.
+   * Changes
+     * Moved the graphics drawing operations to another class.
    * Removals
      * `net.multiphasicapps.classfile.ExecutableCode`, not used.
  * Programs and Libraries
