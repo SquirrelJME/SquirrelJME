@@ -10,8 +10,9 @@
 
 package net.multiphasicapps.squirrelquarrel.units;
 
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
+import java.io.InputStream;
+import java.io.IOException;
+import net.multiphasicapps.tool.manifest.JavaManifest;
 
 /**
  * These are the units which are available in the game and what are actively
@@ -30,8 +31,8 @@ public enum UnitType
 	/** End. */
 	;
 	
-	/** A reference to the unit information. */
-	private Reference<BaseUnitInfo> _info;
+	/** Base unit information and its properties. */
+	private BaseUnitInfo _info;
 	
 	/**
 	 * Returns the information which is associated with the given unit.
@@ -41,13 +42,26 @@ public enum UnitType
 	 */
 	public BaseUnitInfo baseInfo()
 	{
-		Reference<BaseUnitInfo> ref = this._info;
-		BaseUnitInfo rv;
-		
-		// Cache?
-		if (ref == null || null == (rv = ref.get()))
-			throw new todo.TODO();
-			/*this._info = new WeakReference<>(rv = new UnitInfo(this));*/
+		// If the info has not been cached then load it
+		BaseUnitInfo rv = this._info;
+		if (rv == null)
+			try (InputStream in = UnitType.class.getResourceAsStream(
+				"/net/multiphasicapps/squirreljme/data/units/" +
+				this.name().toLowerCase() + "/info"))
+			{
+				// {@squirreljme.error BE0m Unit information for the given
+				// unit does not exist. (The unit)}
+				if (in == null)
+					throw new RuntimeException("BE0m " + this);
+				
+				this._info = (rv = new BaseUnitInfo(new JavaManifest(in)));
+			}
+			
+			// {@squirreljme.error BE0l Could not load unit information.}
+			catch (IOException e)
+			{
+				throw new RuntimeException("BE0l", e);
+			}
 		
 		return rv;
 	}
