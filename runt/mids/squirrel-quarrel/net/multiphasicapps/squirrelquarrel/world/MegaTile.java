@@ -44,11 +44,17 @@ public class MegaTile
 	public static final int PIXEL_SIZE =
 		256;
 	
+	/** The megatile index. */
+	public final MegaTileIndex index;
+	
 	/** Megatile X position. */
-	protected final int megax;
+	public final int megax;
 	
 	/** Megatile Y position. */
-	protected final int megay;
+	public final int megay;
+	
+	/** Mega tile ordinal. */
+	public final int megaordinal;
 	
 	/** Terrain information. */
 	private final byte[] _terrain =
@@ -77,11 +83,13 @@ public class MegaTile
 	 * @param __y Megatile Y position.
 	 * @since 2017/02/10
 	 */
-	public MegaTile(int __mx, int __my)
+	public MegaTile(int __mx, int __my, int __mi)
 	{
 		// Set
 		this.megax = __mx;
 		this.megay = __my;
+		this.megaordinal = __mi;
+		this.index = new MegaTileIndex(__mx, __my, __mi);
 		
 		// Initialize it with some pattern
 		byte[] terrain = this._terrain;
