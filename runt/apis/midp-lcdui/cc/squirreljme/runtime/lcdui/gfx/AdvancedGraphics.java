@@ -1420,6 +1420,7 @@ public class AdvancedGraphics
 	{
 		boolean doblending = this.doblending,
 			dotstroke = this.dotstroke;
+		int blendmode = this.blendmode;
 		
 		// Blending
 		if (doblending)
