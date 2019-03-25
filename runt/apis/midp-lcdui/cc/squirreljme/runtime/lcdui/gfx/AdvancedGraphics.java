@@ -294,7 +294,7 @@ public class AdvancedGraphics
 		int __dx, int __dy, int __anchor)
 		throws IllegalArgumentException, IllegalStateException
 	{
-		throw new todo.TODO();
+		this.__unimplemented(__dx, __dy, "copyArea");
 	}
 	
 	/**
@@ -305,7 +305,7 @@ public class AdvancedGraphics
 	public void drawArc(int __x, int __y, int __w, int __h, int __sa,
 		int __aa)
 	{
-		throw new todo.TODO();
+		this.__unimplemented(__x, __y, "drawArc");
 	}
 	
 	/**
@@ -317,7 +317,7 @@ public class AdvancedGraphics
 		int __x, int __y, int __w, int __h)
 		throws NullPointerException
 	{
-		throw new todo.TODO();
+		this.__unimplemented(__x, __y, "drawARGB16");
 	}
 	
 	/**
@@ -327,7 +327,7 @@ public class AdvancedGraphics
 	@Override
 	public void drawChar(char __s, int __x, int __y, int __anchor)
 	{
-		throw new todo.TODO();
+		this.__unimplemented(__x, __y, "drawChar");
 	}
 	
 	/**
@@ -339,7 +339,7 @@ public class AdvancedGraphics
 		int __y, int __anchor)
 		throws NullPointerException
 	{
-		throw new todo.TODO();
+		this.__unimplemented(__x, __y, "drawChars");
 	}
 	
 	/**
@@ -350,7 +350,7 @@ public class AdvancedGraphics
 	public void drawImage(Image __i, int __x, int __y, int __anchor)
 		throws IllegalArgumentException, NullPointerException
 	{
-		throw new todo.TODO();
+		this.__unimplemented(__x, __y, "drawImage");
 	}
 	
 	/**
@@ -547,7 +547,7 @@ public class AdvancedGraphics
 		int __x, int __y, int __w, int __h)
 		throws NullPointerException
 	{
-		throw new todo.TODO();
+		this.__unimplemented(__x, __y, "drawRGB16");
 	}
 	
 	/**
@@ -581,7 +581,7 @@ public class AdvancedGraphics
 		int __anch)
 		throws IllegalArgumentException, NullPointerException
 	{
-		throw new todo.TODO();
+		this.__unimplemented(__xdest, __ydest, "drawRegion");
 	}
 	
 	/**
@@ -594,7 +594,7 @@ public class AdvancedGraphics
 		int __anch, int __wdest, int __hdest)
 		throws IllegalArgumentException, NullPointerException
 	{
-		throw new todo.TODO();
+		this.__unimplemented(__xdest, __ydest, "drawRegion");
 	}
 	
 	/**
@@ -605,7 +605,7 @@ public class AdvancedGraphics
 	public void drawRoundRect(int __x, int __y, int __w, int __h,
 		int __aw, int __ah)
 	{
-		throw new todo.TODO();
+		this.__unimplemented(__x, __y, "drawRoundRect");
 	}
 	
 	/**
@@ -659,7 +659,7 @@ public class AdvancedGraphics
 	public void fillArc(int __x, int __y, int __w, int __h, int __sa,
 		int __aa)
 	{
-		throw new todo.TODO();
+		this.__unimplemented(__x, __y, "fillArc");
 	}
 	
 	/**
@@ -733,7 +733,7 @@ public class AdvancedGraphics
 	public void fillRoundRect(int __x, int __y, int __w, int __h,
 		int __aw, int __ah)
 	{
-		throw new todo.TODO();
+		this.__unimplemented(__x, __y, "fillRoundRect");
 	}
 	
 	/**
@@ -744,7 +744,7 @@ public class AdvancedGraphics
 	public void fillTriangle(int __x1, int __y1, int __x2, int __y2,
 		int __x3, int __y3)
 	{
-		throw new todo.TODO();
+		this.__unimplemented(__x1, __y1, "fillTriangle");
 	}
 	
 	/**
@@ -870,7 +870,8 @@ public class AdvancedGraphics
 	@Override
 	public int getDisplayColor(int __rgb)
 	{
-		throw new todo.TODO();
+		// Just use the original input color
+		return __rgb | 0xFF_000000;
 	}
 	
 	/**
@@ -1409,6 +1410,26 @@ public class AdvancedGraphics
 		{
 			this.setAlphaColor(oldcolor);
 		}
+	}
+	
+	/**
+	 * Draw a string which just says not implemented.
+	 *
+	 * @param __x X Coordinate.
+	 * @param __y Y Coordinate.
+	 * @param __txt The message text.
+	 * @since 2019/03/25
+	 */
+	private final void __unimplemented(int __x, int __y, String __txt)
+		throws NullPointerException
+	{
+		if (__txt == null)
+			throw new NullPointerException("NARG");
+		
+		// Just draw crosshair and a string
+		this.drawLine(__x - 5, __y, __x + 5, __y);
+		this.drawLine(__x, __y - 5, __x, __y + 5);
+		this.drawString(__txt, __x, __y, 0);
 	}
 	
 	/**
