@@ -140,6 +140,12 @@ public class AdvancedGraphics
 	/** Function for drawing lines. */
 	protected AdvancedFunction funcline;
 	
+	/** RGB tile. */
+	protected AdvancedFunction funcrgbtile;
+	
+	/** ARGB tile. */
+	protected AdvancedFunction funcargbtile;
+	
 	/**
 	 * Initializes the graphics.
 	 *
@@ -484,7 +490,52 @@ public class AdvancedGraphics
 		int __x, int __y, int __w, int __h, boolean __alpha)
 		throws NullPointerException
 	{
-		throw new todo.TODO();
+		// Transform
+		__x += this.transx;
+		__y += this.transy;
+		
+		// Determine ending position
+		int ex = __x + __w,
+			ey = __y + __h;
+		
+		// Get clipping region
+		int clipsx = this.clipsx,
+			clipsy = this.clipsy,
+			clipex = this.clipex,
+			clipey = this.clipey;
+		
+		// Box is completely outside the bounds of the clip, do not draw
+		if (ex < clipsx || __x >= clipex || ey < clipsy || __y >= clipey)
+			return;
+		
+		// Determine sub-clipping area
+		int subx = __x - clipsx,
+			suby = __y - clipsy;
+		
+		// Clip into bounds
+		if (__x < 0)
+			__x = 0;
+		if (__y < 0)
+			__y = 0;
+		if (ex >= clipex)
+			ex = clipex;
+		if (ey >= clipey)
+			ey = clipey;
+		
+		// New tile size
+		int tw = ex - __x,
+			th = ey - __y;
+		
+		// We might have multiplied alpha blending, or just normal blending
+		// If __alpha is true then this is 32-bit RGBA!
+		if (__alpha)
+			this.funcargbtile.function(this,
+				new int[]{__off, __scanlen, __x, __y, tw, th},
+				new Object[]{__data});
+		else
+			this.funcrgbtile.function(this,
+				new int[]{__off, __scanlen, __x, __y, tw, th},
+				new Object[]{__data});
 	}
 	
 	/**
@@ -1375,6 +1426,8 @@ public class AdvancedGraphics
 		{
 			this.funcfillrect = AdvancedFunction.FILLRECT_BLEND;
 			this.funccharbmp = AdvancedFunction.CHARBITMAP_BLEND;
+			this.funcrgbtile = AdvancedFunction.RGBTILE_BLEND;
+			this.funcargbtile = AdvancedFunction.ARGBTILE_BLEND;
 			
 			// Dotted
 			if (dotstroke)
@@ -1394,6 +1447,8 @@ public class AdvancedGraphics
 		{
 			this.funcfillrect = AdvancedFunction.FILLRECT_NOBLEND;
 			this.funccharbmp = AdvancedFunction.CHARBITMAP_NOBLEND;
+			this.funcrgbtile = AdvancedFunction.RGBTILE_NOBLEND;
+			this.funcargbtile = AdvancedFunction.ARGBTILE_NOBLEND;
 			
 			// Dotted
 			if (dotstroke)
