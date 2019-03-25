@@ -10,7 +10,7 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.runtime.lcdui.gfx.IntegerRGB888ArrayGraphics;
+import cc.squirreljme.runtime.lcdui.gfx.AdvancedGraphics;
 import cc.squirreljme.runtime.lcdui.image.ImageReaderDispatcher;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import java.io.ByteArrayInputStream;
@@ -104,7 +104,7 @@ public class Image
 			throw new IllegalStateException("EB1q");
 		
 		// Create
-		return new IntegerRGB888ArrayGraphics(this._data, this._width,
+		return new AdvancedGraphics(this._data, false, null, this._width,
 			this._height, this._width, 0, 0, 0);
 	}
 	
