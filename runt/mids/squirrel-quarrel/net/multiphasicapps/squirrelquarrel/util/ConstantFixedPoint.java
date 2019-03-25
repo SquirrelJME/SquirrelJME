@@ -18,6 +18,17 @@ package net.multiphasicapps.squirrelquarrel.util;
 public final class ConstantFixedPoint
 	implements Comparable<FixedPoint>, FixedPoint
 {
+	/** Bit shift. */
+	public static final int SHIFT =
+		16;
+	
+	/** Mask. */
+	public static final int MASK =
+		0xFFFF;
+	
+	/** The value. */
+	private int _value;
+	
 	/**
 	 * Initializes the fixed point value with the given whole number.
 	 *
@@ -26,7 +37,7 @@ public final class ConstantFixedPoint
 	 */
 	public ConstantFixedPoint(int __whole)
 	{
-		throw new todo.TODO();
+		this._value = __whole << SHIFT;
 	}
 	
 	/**
@@ -39,6 +50,7 @@ public final class ConstantFixedPoint
 	 */
 	public ConstantFixedPoint(int __whole, int __frac)
 	{
+		this._value = (__whole << SHIFT) | (__frac & MASK);
 	}
 	
 	/**
@@ -71,7 +83,18 @@ public final class ConstantFixedPoint
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		int value;
+		
+		// Is a whole number
+		int dot = __s.indexOf('.');
+		if (dot < 0)
+			value = Integer.parseInt(__s, 10) << SHIFT;
+		
+		// Is fractional value
+		else
+			throw new todo.TODO();
+		
+		this._value = value;
 	}
 	
 	/**
