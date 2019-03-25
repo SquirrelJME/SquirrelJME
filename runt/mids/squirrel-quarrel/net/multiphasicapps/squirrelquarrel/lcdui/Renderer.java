@@ -78,10 +78,6 @@ public final class Renderer
 			sw = __scr.width(),
 			sh = __scr.height();
 		
-		// Draw a basic border around the screen
-		__g.setColor(playercolor.rgb());
-		__g.drawRect(sx, sy, sw - 2, sh - 2);
-		
 		/*
 		// If already painting, do not duplicate a paint
 		if (this._inpaint)
@@ -194,6 +190,10 @@ public final class Renderer
 		// No longer painting
 		this._inpaint = false;
 		*/
+		
+		// Draw the player's color around the screen
+		__g.setColor(playercolor.rgb());
+		__g.drawRect(sx, sy, sw - 2, sh - 2);
 	}
 	
 	/**
