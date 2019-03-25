@@ -29,6 +29,10 @@ More detailed changes:
      * `java.io.InputStream`
      * `java.util.EventObject`
      * `java.util.LinkedList`
+     * `cc.squirreljme.runtime.lcdui.gfx.Serialized Graphics` -- This allows
+       all of the graphics drawing functions to be forwarded when graphics
+       acceleration is used, previously only a subset of methods were
+       implemented.
    * Additions
      * `java.util.Vector`, was missing.
      * Added proprietary `ExtendedTaskManager` interface which can be used
