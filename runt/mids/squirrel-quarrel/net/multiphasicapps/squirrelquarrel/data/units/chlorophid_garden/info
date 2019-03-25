@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+name: Garden
+hp: 1250
+armor: 1
+salt-cost: 300
+build-time: 1800
+supply-provided: 2
+sight: 288
+score-build: 300
+score-destroy: 900
+size: large
+tile-dimensions: [4, 3]
+pixel-dimensions: [99, 65]
+pixel-offset: (15, 16)
+abilities: regenerates_hp

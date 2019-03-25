@@ -31,6 +31,9 @@ import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
  */
 public final class BaseUnitInfo
 {
+	/** The name of the unit. */
+	public final String name;
+	
 	/** Unit hitpoints. */
 	public final int hp;
 	
@@ -106,6 +109,7 @@ public final class BaseUnitInfo
 		JavaManifestAttributes attr = __m.getMainAttributes();
 		
 		// Load these values directly
+		this.name = attr.getValue("name", "Squirrels are cute!");
 		this.hp = Integer.parseInt(
 			attr.getValue("hp", "0"));
 		this.shields = Integer.parseInt(
@@ -156,7 +160,7 @@ public final class BaseUnitInfo
 		this.centerpointoffset = new Point(pixeldimension.width / 2,
 			pixeldimension.height / 2);
 		
-		// Get total size of unit in tiles, rounded up to the megatile
+		// Get total size of unit in tiles, rounded up to the tile
 		int pxw = (pixeldimension.width + offset.x +
 				Tile.PIXEL_SIZE) & ~(Tile.PIXEL_MASK),
 			pxh = (pixeldimension.height + offset.y +

@@ -46,7 +46,7 @@ public enum UnitType
 		BaseUnitInfo rv = this._info;
 		if (rv == null)
 			try (InputStream in = UnitType.class.getResourceAsStream(
-				"/net/multiphasicapps/squirreljme/data/units/" +
+				"/net/multiphasicapps/squirrelquarrel/data/units/" +
 				this.name().toLowerCase() + "/info"))
 			{
 				// {@squirreljme.error BE0m Unit information for the given
