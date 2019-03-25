@@ -44,6 +44,9 @@ public class Game
 	/** The current game frame. */
 	private volatile int _framenum;
 	
+	/** Has the initial game setup been booted? */
+	private boolean _booted;
+	
 	/**
 	 * Initializes a game with the default initialization rules.
 	 *
@@ -113,6 +116,14 @@ public class Game
 		// Get current frame
 		int framenum = this._framenum;
 		
+		// On the first frame if the game is not booted, spawn everything
+		// as needed so it is all done within the loop
+		if (!this._booted)
+		{
+			this.__boot();
+			this._booted = true;
+		}
+		
 		// Run all the sub-logic
 		world.run(framenum);
 		units.run(framenum);
@@ -130,6 +141,15 @@ public class Game
 	public World world()
 	{
 		return this.world;
+	}
+	
+	/**
+	 * Boots the game spawning everything as needed.
+	 *
+	 * @since 2019/03/24
+	 */
+	private final void __boot()
+	{
 	}
 }
 
