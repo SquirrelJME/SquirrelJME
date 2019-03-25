@@ -327,7 +327,9 @@ public class AdvancedGraphics
 	@Override
 	public void drawChar(char __s, int __x, int __y, int __anchor)
 	{
-		this.__unimplemented(__x, __y, "drawChar");
+		// Same as drawing strings
+		this.drawString(new String(new char[]{__s}, 0, 1),
+			__x, __y, __anchor);
 	}
 	
 	/**
@@ -339,7 +341,12 @@ public class AdvancedGraphics
 		int __y, int __anchor)
 		throws NullPointerException
 	{
-		this.__unimplemented(__x, __y, "drawChars");
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Same as drawing string
+		this.drawString(new String(__s, __o, __l),
+			__x, __y, __anchor);
 	}
 	
 	/**
