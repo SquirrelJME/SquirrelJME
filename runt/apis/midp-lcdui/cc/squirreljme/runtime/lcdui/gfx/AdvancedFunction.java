@@ -358,6 +358,78 @@ public enum AdvancedFunction
 		}
 	},
 	
+	/** RGB Tile, no blending. */
+	RGBTILE_NOBLEND
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2019/03/24
+		 */
+		public void function(AdvancedGraphics __ag, int[] __vi, Object[] __va)
+		{
+			int __o = __vi[0],
+				__l = __vi[1],
+				__x = __vi[2],
+				__y = __vi[3],
+				__w = __vi[4],
+				__h = __vi[5];
+			int[] __b = (int[])__va[0];
+			
+			int[] data = __ag.buffer;
+			int iw = __ag.pitch;
+			
+			// The distance from the end of a row to the scanline, this way the
+			// source variable does not need an extra copy
+			int eosa = __l - __w;
+			
+			// Draw tile data
+			int dest = __ag.offset + (__y * iw) + __x, src = 0, ey = __y + __h;
+			for (; __y < ey; __y++, dest += iw, src += eosa)
+				for (int spend = src + __w, dp = dest; src < spend;
+					dp++, src++)
+					data[dp] = __b[src];
+		}
+	},
+	
+	/** RGB Tile, blending. */
+	RGBTILE_BLEND
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2019/03/24
+		 */
+		public void function(AdvancedGraphics __ag, int[] __vi, Object[] __va)
+		{
+			throw new todo.TODO();
+		}
+	},
+	
+	/** ARGB Tile, no blending. */
+	ARGBTILE_NOBLEND
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2019/03/24
+		 */
+		public void function(AdvancedGraphics __ag, int[] __vi, Object[] __va)
+		{
+			throw new todo.TODO();
+		}
+	},
+	
+	/** ARGB Tile, blending. */
+	ARGBTILE_BLEND
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2019/03/24
+		 */
+		public void function(AdvancedGraphics __ag, int[] __vi, Object[] __va)
+		{
+			throw new todo.TODO();
+		}
+	},
+	
 	/** End. */
 	;
 	
