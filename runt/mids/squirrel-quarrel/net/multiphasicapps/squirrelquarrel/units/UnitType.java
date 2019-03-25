@@ -24,6 +24,9 @@ public enum UnitType
 	/** Starting location. */
 	START_LOCATION,
 	
+	/** Chlorophid: Garden. */
+	CHLOROPHID_GARDEN,
+	
 	/** End. */
 	;
 	

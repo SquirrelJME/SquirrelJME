@@ -18,7 +18,10 @@ import java.util.List;
 import net.multiphasicapps.squirrelquarrel.player.Player;
 import net.multiphasicapps.squirrelquarrel.player.Players;
 import net.multiphasicapps.squirrelquarrel.player.PlayerColor;
+import net.multiphasicapps.squirrelquarrel.units.SpawnPlacementType;
+import net.multiphasicapps.squirrelquarrel.units.Unit;
 import net.multiphasicapps.squirrelquarrel.units.Units;
+import net.multiphasicapps.squirrelquarrel.units.UnitType;
 import net.multiphasicapps.squirrelquarrel.util.GameRandom;
 import net.multiphasicapps.squirrelquarrel.world.World;
 
@@ -150,6 +153,25 @@ public class Game
 	 */
 	private final void __boot()
 	{
+		Units units = this.units;
+		Players players = this.players;
+		
+		// Create initial game units for players who are playing
+		for (int i = 0, n = PlayerColor.NUM_COLORS; i < n; i++)
+		{
+			// Only if the player is playing
+			Player p = players.get(i);
+			if (p.isPlaying())
+			{
+				// Create building
+				Unit base = units.createUnit(SpawnPlacementType.BUILDING,
+					UnitType.CHLOROPHID_GARDEN, (Unit)null,
+					64 + (128 * i), 64);
+				
+				// Create workers from the building
+				todo.TODO.note("Spawn workers!");
+			}
+		}
 	}
 }
 
