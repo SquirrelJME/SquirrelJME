@@ -61,7 +61,8 @@ public abstract class SerializedGraphics
 		int __dx, int __dy, int __anchor)
 		throws IllegalArgumentException, IllegalStateException
 	{
-		throw new todo.TODO();
+		this.serialize(GraphicsFunction.COPY_AREA,
+			__sx, __sy, __w, __h, __dx, __dy, __anchor);
 	}
 	
 	/**
@@ -72,7 +73,8 @@ public abstract class SerializedGraphics
 	public void drawArc(int __x, int __y, int __w, int __h, int __sa,
 		int __aa)
 	{
-		throw new todo.TODO();
+		this.serialize(GraphicsFunction.DRAW_ARC,
+			__x, __y, __w, __h, __sa, __aa);
 	}
 	
 	/**
@@ -84,7 +86,8 @@ public abstract class SerializedGraphics
 		int __x, int __y, int __w, int __h)
 		throws NullPointerException
 	{
-		throw new todo.TODO();
+		this.serialize(GraphicsFunction.DRAW_ARGB16,
+			__data, __off, __scanlen, __x, __y, __w, __h);
 	}
 	
 	/**
@@ -94,7 +97,8 @@ public abstract class SerializedGraphics
 	@Override
 	public void drawChar(char __s, int __x, int __y, int __anchor)
 	{
-		throw new todo.TODO();
+		this.serialize(GraphicsFunction.DRAW_CHAR,
+			(int)__s, __x, __y, __anchor);
 	}
 	
 	/**
@@ -106,7 +110,8 @@ public abstract class SerializedGraphics
 		int __y, int __anchor)
 		throws NullPointerException
 	{
-		throw new todo.TODO();
+		this.serialize(GraphicsFunction.DRAW_CHARS,
+			__s, __o, __l, __x, __y, __anchor);
 	}
 	
 	/**
@@ -140,7 +145,8 @@ public abstract class SerializedGraphics
 		int __x, int __y, int __w, int __h, boolean __alpha)
 		throws NullPointerException
 	{
-		throw new todo.TODO();
+		this.serialize(GraphicsFunction.DRAW_RGB,
+			__data, __off, __scanlen, __x, __y, __w, __h, (__alpha ? 1 : 0));
 	}
 	
 	/**
@@ -152,7 +158,8 @@ public abstract class SerializedGraphics
 		int __x, int __y, int __w, int __h)
 		throws NullPointerException
 	{
-		throw new todo.TODO();
+		this.serialize(GraphicsFunction.DRAW_RGB16,
+			__data, __off, __scanlen, __x, __y, __w, __h);
 	}
 	
 	/**
@@ -200,7 +207,8 @@ public abstract class SerializedGraphics
 	public void drawRoundRect(int __x, int __y, int __w, int __h,
 		int __aw, int __ah)
 	{
-		throw new todo.TODO();
+		this.serialize(GraphicsFunction.DRAW_ROUND_RECT,
+			__x, __y, __w, __h, __aw, __ah);
 	}
 	
 	/**
@@ -227,7 +235,10 @@ public abstract class SerializedGraphics
 		int __y, int __anchor)
 		throws NullPointerException, StringIndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		// Just pass the chars of the string since we cannot represent
+		// string at all
+		this.serialize(GraphicsFunction.DRAW_SUB_CHARS,
+			__s.toCharArray(), __o, __l, __x, __y, __anchor);
 	}
 	
 	/**
@@ -249,7 +260,8 @@ public abstract class SerializedGraphics
 	public void fillArc(int __x, int __y, int __w, int __h, int __sa,
 		int __aa)
 	{
-		throw new todo.TODO();
+		this.serialize(GraphicsFunction.FILL_ARC,
+			__x, __y, __w, __h, __sa, __aa);
 	}
 	
 	/**
@@ -271,7 +283,8 @@ public abstract class SerializedGraphics
 	public void fillRoundRect(int __x, int __y, int __w, int __h,
 		int __aw, int __ah)
 	{
-		throw new todo.TODO();
+		this.serialize(GraphicsFunction.FILL_ROUND_RECT,
+			__x, __y, __w, __h, __aw, __ah);
 	}
 	
 	/**
@@ -282,7 +295,8 @@ public abstract class SerializedGraphics
 	public void fillTriangle(int __x1, int __y1, int __x2, int __y2,
 		int __x3, int __y3)
 	{
-		throw new todo.TODO();
+		this.serialize(GraphicsFunction.FILL_TRIANGLE,
+			__x1, __y1, __x2, __y2, __x3, __y3);
 	}
 	
 	/**
@@ -312,7 +326,7 @@ public abstract class SerializedGraphics
 	@Override
 	public int getBlendingMode()
 	{
-		throw new todo.TODO();
+		return (Integer)this.serialize(GraphicsFunction.GET_BLENDING_MODE);
 	}
 	
 	/**
@@ -382,7 +396,8 @@ public abstract class SerializedGraphics
 	@Override
 	public int getDisplayColor(int __rgb)
 	{
-		throw new todo.TODO();
+		return (Integer)this.serialize(GraphicsFunction.GET_DISPLAY_COLOR,
+			__rgb);
 	}
 	
 	/**
@@ -502,7 +517,11 @@ public abstract class SerializedGraphics
 	public void setBlendingMode(int __m)
 		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error EB2y Failed to set blending mode.}
+		int okay = (Integer)this.serialize(GraphicsFunction.SET_BLENDING_MODE,
+			__m);
+		if (okay < 0)
+			throw new IllegalArgumentException("EB2y");
 	}
 	
 	/**
@@ -574,8 +593,11 @@ public abstract class SerializedGraphics
 	public void setStrokeStyle(int __s)
 		throws IllegalArgumentException
 	{
-		this.serialize(GraphicsFunction.SET_STROKE_STYLE,
+		// {@squirreljme.error EB2z Failed to set stroke style.}
+		int okay = (Integer)this.serialize(GraphicsFunction.SET_STROKE_STYLE,
 			__s);
+		if (okay < 0)
+			throw new IllegalArgumentException("EB2z");
 	}
 	
 	/**
@@ -725,8 +747,159 @@ public abstract class SerializedGraphics
 				
 				// Set stroke style
 			case SET_STROKE_STYLE:
-				__g.setStrokeStyle((Integer)__args[0]);
+				try
+				{
+					__g.setStrokeStyle((Integer)__args[0]);
+				}
+				catch (IllegalArgumentException e)
+				{
+					return -1;
+				}
+				return 0;
+				
+			// Copy area.
+			case COPY_AREA:
+				__g.copyArea(
+					(Integer)__args[0],
+					(Integer)__args[1],
+					(Integer)__args[2],
+					(Integer)__args[3],
+					(Integer)__args[4],
+					(Integer)__args[5],
+					(Integer)__args[6]);
 				return null;
+			
+			// Draw arc.
+			case DRAW_ARC:
+				__g.drawArc(
+					(Integer)__args[0],
+					(Integer)__args[1],
+					(Integer)__args[2],
+					(Integer)__args[3],
+					(Integer)__args[4],
+					(Integer)__args[5]);
+				return null;
+			
+			// Draw ARGB16.
+			case DRAW_ARGB16:
+				__g.drawARGB16(
+					(short[])__args[0],
+					(Integer)__args[1],
+					(Integer)__args[2],
+					(Integer)__args[3],
+					(Integer)__args[4],
+					(Integer)__args[5],
+					(Integer)__args[6]);
+				return null;
+			
+			// Draw character.
+			case DRAW_CHAR:
+				__g.drawChar(
+					(char)(((Integer)__args[0]).intValue()),
+					(Integer)__args[1],
+					(Integer)__args[2],
+					(Integer)__args[3]);
+				return null;
+			
+			// Draw characters.
+			case DRAW_CHARS:
+				__g.drawChars(
+					(char[])__args[0],
+					(Integer)__args[1],
+					(Integer)__args[2],
+					(Integer)__args[3],
+					(Integer)__args[4],
+					(Integer)__args[5]);
+				return null;
+			
+			// Draw RGB.
+			case DRAW_RGB:
+				__g.drawRGB(
+					(int[])__args[0],
+					(Integer)__args[1],
+					(Integer)__args[2],
+					(Integer)__args[3],
+					(Integer)__args[4],
+					(Integer)__args[5],
+					(Integer)__args[6],
+					(((Integer)__args[7]) != 0 ? true : false));
+				return null;
+			
+			// Draw RGB16.
+			case DRAW_RGB16:
+				__g.drawRGB16(
+					(short[])__args[0],
+					(Integer)__args[1],
+					(Integer)__args[2],
+					(Integer)__args[3],
+					(Integer)__args[4],
+					(Integer)__args[5],
+					(Integer)__args[6]);
+				return null;
+			
+			// Draw round rectangle.
+			case DRAW_ROUND_RECT:
+				__g.drawRoundRect(
+					(Integer)__args[0],
+					(Integer)__args[1],
+					(Integer)__args[2],
+					(Integer)__args[3],
+					(Integer)__args[4],
+					(Integer)__args[5]);
+				return null;
+			
+			// Fill arc.
+			case FILL_ARC:
+				__g.fillArc(
+					(Integer)__args[0],
+					(Integer)__args[1],
+					(Integer)__args[2],
+					(Integer)__args[3],
+					(Integer)__args[4],
+					(Integer)__args[5]);
+				return null;
+			
+			// Fill round rectangle.
+			case FILL_ROUND_RECT:
+				__g.fillRoundRect(
+					(Integer)__args[0],
+					(Integer)__args[1],
+					(Integer)__args[2],
+					(Integer)__args[3],
+					(Integer)__args[4],
+					(Integer)__args[5]);
+				return null;
+			
+			// Fill triangle.
+			case FILL_TRIANGLE:
+				__g.fillTriangle(
+					(Integer)__args[0],
+					(Integer)__args[1],
+					(Integer)__args[2],
+					(Integer)__args[3],
+					(Integer)__args[4],
+					(Integer)__args[5]);
+				return null;
+			
+			// Get blending mode.
+			case GET_BLENDING_MODE:
+				return __g.getBlendingMode();
+			
+			// Get display color.
+			case GET_DISPLAY_COLOR:
+				return __g.getDisplayColor((Integer)__args[0]);
+			
+			// Set blending mode.
+			case SET_BLENDING_MODE:
+				try
+				{
+					__g.setBlendingMode((Integer)__args[0]);
+				}
+				catch (IllegalArgumentException e)
+				{
+					return -1;
+				}
+				return 0;
 			
 			default:
 				throw new todo.OOPS("" + __func);
