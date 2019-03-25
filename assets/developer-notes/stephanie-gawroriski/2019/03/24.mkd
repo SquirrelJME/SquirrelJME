@@ -1,0 +1,51 @@
+# 2019/03/24
+
+## 10:25
+
+What I can do is have standard forms for instructions, then just decode for
+those instead of handling each instruction. Basically the minimizer will have
+instruction formats to be used and such. This is only needed where the
+minimizer is, not the register code.
+
+## 12:23
+
+Stack operations like `DUP` will just call the stack handling stuff as needed
+although they will make a copy unless it is a cached local.
+
+## 12:26
+
+I can do stack caching on the stack as long as entries at higher positions of
+the stack only point to entries which are below. This will remove many
+pointless `DUP` operations and make the code more efficient. However the swap
+operations might end up being a bit more complex to handle.
+
+## 14:15
+
+I wonder if putting exception handlers last would work, but not really no.
+
+## 14:31
+
+By chance found a bug in the snapshot code where only cached objects on the
+stack were to be cleared, that would have been a really fun bug to fix in the
+future. Luckily it was caught.
+
+## 16:11
+
+So the next thing are branches which should not be difficult at all. Every
+point has a Java label so translation is simple.
+
+## 18:01
+
+Okay, I think there are too many graphics things. All of those graphics are so
+duplicated and pretty messy. Also it is a bit complicated as well... I think
+what I want to do, although it will add some slight overhead, is to make a
+graphics state and then have an enum of all the graphics functions. Whenever
+something is called for the enum it is literally just going to run whatever
+things. This means so that when dotted lines and such happen it can call that
+stuff directly rather than doing a branch and complicating things. I guess
+what I want is something that is much simpler to isolate graphics wise.
+
+## 20:34
+
+Okay so I moved over all the stuff, so can remove the old stuff and make it
+the default now.
