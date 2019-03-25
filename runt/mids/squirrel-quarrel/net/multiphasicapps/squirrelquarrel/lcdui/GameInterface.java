@@ -13,6 +13,7 @@ package net.multiphasicapps.squirrelquarrel.lcdui;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.KeyListener;
+import net.multiphasicapps.squirrelquarrel.game.EventSource;
 import net.multiphasicapps.squirrelquarrel.game.Game;
 import net.multiphasicapps.squirrelquarrel.game.GameLooper;
 import net.multiphasicapps.squirrelquarrel.ui.FrameSync;
@@ -37,6 +38,9 @@ public final class GameInterface
 	/** The renderer for the game. */
 	protected final Renderer renderer;
 	
+	/** Controller input. */
+	protected final ControllerEventSource controller;
+	
 	/**
 	 * Initializes the game interface.
 	 *
@@ -50,7 +54,6 @@ public final class GameInterface
 		if (__g == null)
 			throw new NullPointerException("NARG");
 		
-		
 		// Setup details
 		setTitle("Squirrel Quarrel");
 		
@@ -58,6 +61,17 @@ public final class GameInterface
 		SplitScreen splitscreen;
 		this.splitscreen = (splitscreen = new SplitScreen(__g));
 		this.renderer = new Renderer(__g, splitscreen);
+		
+		// Setup basic controller events
+		ControllerEventSource controller = new ControllerEventSource(
+			__g.game(), splitscreen);
+		this.controller = controller;
+		
+		// If there is no source for events, just use controller events
+		// generated from the user
+		EventSource eswas = __g.eventSource();
+		if (eswas == null)
+			__g.setEventSource(controller);
 	}
 	
 	/**

@@ -55,7 +55,7 @@ public class MainMidlet
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
 		{
 			// Setup game with the loop
-			GameLooper looper = new GameLooper(baos);
+			GameLooper looper = new GameLooper(baos, null);
 			
 			// Setup game canvas with an initial game
 			GameInterface gi = new GameInterface(looper);

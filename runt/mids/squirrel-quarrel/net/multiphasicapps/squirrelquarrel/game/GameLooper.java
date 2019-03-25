@@ -13,6 +13,7 @@ package net.multiphasicapps.squirrelquarrel.game;
 import java.io.InputStream;
 import java.io.OutputStream;
 import net.multiphasicapps.squirrelquarrel.ui.FrameSync;
+import net.multiphasicapps.squirrelquarrel.util.ReplayEventSource;
 import net.multiphasicapps.squirrelquarrel.util.ReplayInputStream;
 import net.multiphasicapps.squirrelquarrel.util.ReplayOutputStream;
 
@@ -29,6 +30,9 @@ public final class GameLooper
 	/** The game to loop for. */
 	protected final Game game;
 	
+	/** The source where events come from. */
+	private EventSource _events;
+	
 	/** The speed the game runs at. */
 	private volatile GameSpeed _speed =
 		GameSpeed.NORMAL;
@@ -37,24 +41,27 @@ public final class GameLooper
 	 * Initializes the game looper with the default settings.
 	 *
 	 * @param __out The stream to write replay data to.
+	 * @param __evs The source where events come from.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/18
 	 */
-	public GameLooper(OutputStream __out)
+	public GameLooper(OutputStream __out, EventSource __evs)
 		throws NullPointerException
 	{
-		this(__out, new InitialSettingsBuilder().build());
+		this(__out, __evs, new InitialSettingsBuilder().build());
 	}
 	
 	/**
 	 * Initializes the game looper.
 	 *
 	 * @param __out The stream to write replay data to.
+	 * @param __evs The source where events come from.
 	 * @param __i The initial settings for the game.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/18
 	 */
-	public GameLooper(OutputStream __out, InitialSettings __i)
+	public GameLooper(OutputStream __out, EventSource __evs,
+		InitialSettings __i)
 		throws NullPointerException
 	{
 		if (__out == null || __i == null)
@@ -67,6 +74,20 @@ public final class GameLooper
 		
 		// Initialize the game with basic settings
 		this.game = new Game(__i);
+		
+		// Set event source which is used per-frame to control players
+		this._events = __evs;
+	}
+	
+	/**
+	 * Returns the event source in use.
+	 *
+	 * @return The event source in use.
+	 * @since 2019/03/24
+	 */
+	public final EventSource eventSource()
+	{
+		return this._events;
 	}
 	
 	/**
@@ -136,6 +157,22 @@ public final class GameLooper
 	}
 	
 	/**
+	 * Sets the event source.
+	 *
+	 * @param __es The event source to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/24
+	 */
+	public final void setEventSource(EventSource __es)
+		throws NullPointerException
+	{
+		if (__es == null)
+			throw new NullPointerException("NARG");
+		
+		this._events = __es;
+	}
+	
+	/**
 	 * Initialize a game loop which either resumes the game from the given
 	 * point or plays it back in a replay.
 	 *
@@ -157,10 +194,8 @@ public final class GameLooper
 		
 		// Read initial settings from the replay and initialize the game
 		InitialSettings init = InitialSettings.demoReplay(replay);
-		GameLooper rv = new GameLooper(__out, init);
-		
-		if (true)
-			throw new todo.TODO();
+		GameLooper rv = new GameLooper(__out,
+			new ReplayEventSource(replay), init);
 		
 		return rv;
 	}
