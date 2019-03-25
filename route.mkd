@@ -1,12 +1,23 @@
 # Release Route
 
-# 0.4.0 (TBD)
+# 0.6.0 (TBD)
+
+This is a future release and the specified changes are proposed.
+
+ * Virtual Machine: AutumnCoat
+   * Native code generation.
+ * SpringCoat becomes deprecated.
+ * Support for file systems.
+
+# 0.4.0 (April 21, 2019)
 
 This is the second version of SquirrelJME which provides virtual machine
 improvements.
 
  * Virtual Machine: SummerCoat
    * Basic optimizing register based virtual machine.
+ * Virtual machine: RatufaCoat
+   * A port of SummerCoat to C, intended for RetroArch.
 
 # 0.2.0 (December 25, 2018)
 
