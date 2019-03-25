@@ -171,7 +171,8 @@ public enum AdvancedFunction
 		 */
 		public void function(AdvancedGraphics __ag, int[] __vi, Object[] __va)
 		{
-			throw new todo.TODO();
+			// Not implemented, use basic function
+			AdvancedFunction.CHARBITMAP_NOBLEND.function(__ag, __vi, __va);
 		}
 	},
 	
@@ -301,6 +302,13 @@ public enum AdvancedFunction
 		 */
 		public void function(AdvancedGraphics __ag, int[] __vi, Object[] __va)
 		{
+			// Not implemented, use basic function
+			if (true)
+			{
+				AdvancedFunction.LINE_NOBLEND_NODOT.function(__ag, __vi, __va);
+				return;
+			}
+			
 			int __x1 = __vi[0],
 				__y1 = __vi[1],
 				__x2 = __vi[2],
@@ -334,6 +342,13 @@ public enum AdvancedFunction
 		 */
 		public void function(AdvancedGraphics __ag, int[] __vi, Object[] __va)
 		{
+			// Not implemented, use basic function
+			if (true)
+			{
+				AdvancedFunction.LINE_NOBLEND_DOT.function(__ag, __vi, __va);
+				return;
+			}
+			
 			int __x1 = __vi[0],
 				__y1 = __vi[1],
 				__x2 = __vi[2],
@@ -400,7 +415,8 @@ public enum AdvancedFunction
 		 */
 		public void function(AdvancedGraphics __ag, int[] __vi, Object[] __va)
 		{
-			throw new todo.TODO();
+			// Not implemented, use basic function
+			AdvancedFunction.RGBTILE_NOBLEND.function(__ag, __vi, __va);
 		}
 	},
 	
@@ -413,7 +429,8 @@ public enum AdvancedFunction
 		 */
 		public void function(AdvancedGraphics __ag, int[] __vi, Object[] __va)
 		{
-			throw new todo.TODO();
+			// Not implemented, use basic function
+			AdvancedFunction.RGBTILE_NOBLEND.function(__ag, __vi, __va);
 		}
 	},
 	
@@ -426,7 +443,8 @@ public enum AdvancedFunction
 		 */
 		public void function(AdvancedGraphics __ag, int[] __vi, Object[] __va)
 		{
-			throw new todo.TODO();
+			// Not implemented, use basic function
+			AdvancedFunction.RGBTILE_NOBLEND.function(__ag, __vi, __va);
 		}
 	},
 	
