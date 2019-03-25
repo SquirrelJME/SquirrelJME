@@ -138,6 +138,19 @@ public class MegaTile
 	}
 	
 	/**
+	 * Runs the megatile logic.
+	 *
+	 * @param __frame The current frame.
+	 * @since 2017/02/14
+	 */
+	public void run(int __frame)
+	{
+		// Cycle the fog of war?
+		if ((__frame & _FOG_OF_WAR_CYCLE_MASK) == 0)
+			__cycleFog();
+	}
+	
+	/**
 	 * This cycles the fog of war.
 	 *
 	 * @since 2017/02/14
@@ -155,19 +168,6 @@ public class MegaTile
 			// Clear the first
 			fogcyclea[i] = 0;
 		}
-	}
-	
-	/**
-	 * Runs the megatile logic.
-	 *
-	 * @param __frame The current frame.
-	 * @since 2017/02/14
-	 */
-	public void run(int __frame)
-	{
-		// Cycle the fog of war?
-		if ((__frame & _FOG_OF_WAR_CYCLE_MASK) == 0)
-			__cycleFog();
 	}
 }
 
