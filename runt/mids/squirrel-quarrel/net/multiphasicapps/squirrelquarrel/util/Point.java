@@ -54,7 +54,25 @@ public final class Point
 	public Point(String __s)
 		throws IllegalArgumentException, NullPointerException
 	{
-		throw new todo.TODO();
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error BE0p Point must start and end with parenthesis.
+		// (The input string)}
+		if (!__s.startsWith("(") || !__s.endsWith(")"))
+			throw new IllegalArgumentException("BE0p " + __s);
+		
+		// Trim those out
+		__s = __s.substring(1, __s.length() - 1);
+		
+		// {@squirreljme.error BE0q Point must have a comma between the
+		// units. (The input string)}
+		int com = __s.indexOf(',');
+		if (com < 0)
+			throw new IllegalArgumentException("BE0q " + __s);
+		
+		this.x = Integer.parseInt(__s.substring(0, com).trim(), 10);
+		this.y = Integer.parseInt(__s.substring(com + 1).trim(), 10);
 	}
 	
 	/**
