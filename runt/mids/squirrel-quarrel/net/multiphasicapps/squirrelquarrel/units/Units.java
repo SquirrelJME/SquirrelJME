@@ -64,11 +64,9 @@ public final class Units
 		Unit __creator, int __x, int __y)
 		throws NullPointerException
 	{
-		throw new todo.TODO();
-		/*
-		return this.createUnit(__spt, __t, (__creator != null ?
-			__creator.pointer() : null), __x, __y);
-		*/
+		return this.createUnit(__spt, __t,
+			(UnitReference)(__creator == null ? null : __creator.reference()),
+			__x, __y);
 	}
 	
 	/**
