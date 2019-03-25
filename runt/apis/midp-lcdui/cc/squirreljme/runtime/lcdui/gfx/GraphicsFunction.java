@@ -80,6 +80,48 @@ public enum GraphicsFunction
 	/** Set stroke style. */
 	SET_STROKE_STYLE,
 	
+	/** Copy area. */
+	COPY_AREA,
+	
+	/** Draw arc. */
+	DRAW_ARC,
+	
+	/** Draw ARGB16. */
+	DRAW_ARGB16,
+	
+	/** Draw character. */
+	DRAW_CHAR,
+	
+	/** Draw characters. */
+	DRAW_CHARS,
+	
+	/** Draw RGB. */
+	DRAW_RGB,
+	
+	/** Draw RGB16. */
+	DRAW_RGB16,
+	
+	/** Draw round rectangle. */
+	DRAW_ROUND_RECT,
+	
+	/** Fill arc. */
+	FILL_ARC,
+	
+	/** Fill round rectangle. */
+	FILL_ROUND_RECT,
+	
+	/** Fill triangle. */
+	FILL_TRIANGLE,
+	
+	/** Get blending mode. */
+	GET_BLENDING_MODE,
+	
+	/** Get display color. */
+	GET_DISPLAY_COLOR,
+	
+	/** Set blending mode. */
+	SET_BLENDING_MODE,
+	
 	/** End. */
 	;
 	
@@ -118,6 +160,20 @@ public enum GraphicsFunction
 			case 18:	return DRAW_TEXT;
 			case 19:	return GET_STROKE_STYLE;
 			case 20:	return SET_STROKE_STYLE;
+			case 21:	return COPY_AREA;
+			case 22:	return DRAW_ARC;
+			case 23:	return DRAW_ARGB16;
+			case 24:	return DRAW_CHAR;
+			case 25:	return DRAW_CHARS;
+			case 26:	return DRAW_RGB;
+			case 27:	return DRAW_RGB16;
+			case 28:	return DRAW_ROUND_RECT;
+			case 29:	return FILL_ARC;
+			case 30:	return FILL_ROUND_RECT;
+			case 31:	return FILL_TRIANGLE;
+			case 32:	return GET_BLENDING_MODE;
+			case 33:	return GET_DISPLAY_COLOR;
+			case 34:	return SET_BLENDING_MODE;
 			
 				// {@squirreljme.error EB2d Invalid graphics function.
 				// (The function ID)}
