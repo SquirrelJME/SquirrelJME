@@ -122,6 +122,9 @@ public enum GraphicsFunction
 	/** Set blending mode. */
 	SET_BLENDING_MODE,
 	
+	/** Draw region. */
+	DRAW_REGION,
+	
 	/** End. */
 	;
 	
@@ -174,6 +177,7 @@ public enum GraphicsFunction
 			case 32:	return GET_BLENDING_MODE;
 			case 33:	return GET_DISPLAY_COLOR;
 			case 34:	return SET_BLENDING_MODE;
+			case 35:	return DRAW_REGION;
 			
 				// {@squirreljme.error EB2d Invalid graphics function.
 				// (The function ID)}
