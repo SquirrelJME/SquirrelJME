@@ -53,14 +53,6 @@ public enum PixelFormat
 	;
 	
 	/**
-	 * {@squirreljme.property cc.squirreljme.lcdui.advanced=bool
-	 * If this is set to true, then advanced graphics will be used instead
-	 * of the older deprecated routines.}
-	 */
-	public static final boolean USE_ADVANCED_GRAPHICS =
-		Boolean.getBoolean("cc.squirreljme.lcdui.advanced");
-	
-	/**
 	 * Creates an array buffer which is capable of containing an image of
 	 * the specified size.
 	 *
@@ -159,81 +151,19 @@ public enum PixelFormat
 		if (__buf == null)
 			throw new NullPointerException("NARG");
 		
-		// If using advanced, use these alternative graphics objects instead
-		// while they are being developed
-		if (USE_ADVANCED_GRAPHICS)
-			switch (this)
-			{
-				case INTEGER_ARGB8888:
-					return new AdvancedGraphics((int[])__buf, true, null,
-						__bw, __bh, __pitch, __offset, __atx, __aty);
-				
-				case INTEGER_RGB888:
-					return new AdvancedGraphics((int[])__buf, false, null,
-						__bw, __bh, __pitch, __offset, __atx, __aty);
-				
-					// Ignore this case here and fallback to the old
-					// handlers instead
-				default:
-					break;
-			}
-		
-		// Depends on the format
+		// Initialize graphics according to the pixel type
 		switch (this)
 		{
-			case BYTE_INDEXED1:
-				return new ByteIndexed1ArrayGraphics(
-					(byte[])__buf, __pal,
-					__bw, __bh, __pitch, __offset, __atx, __aty);
-					
-			case BYTE_INDEXED2:
-				return new ByteIndexed2ArrayGraphics(
-					(byte[])__buf, __pal,
-					__bw, __bh, __pitch, __offset, __atx, __aty);
-					
-			case BYTE_INDEXED4:
-				return new ByteIndexed4ArrayGraphics(
-					(byte[])__buf, __pal,
-					__bw, __bh, __pitch, __offset, __atx, __aty);
-					
-			case BYTE_INDEXED8:
-				return new ByteIndexed8ArrayGraphics(
-					(byte[])__buf, __pal,
-					__bw, __bh, __pitch, __offset, __atx, __aty);
-					
-			case SHORT_INDEXED16:
-				return new ShortIndexed16ArrayGraphics(
-					(short[])__buf, __pal,
-					__bw, __bh, __pitch, __offset, __atx, __aty);
-			
-			case BYTE_RGB332:
-				return new ByteRGB332ArrayGraphics(
-					(byte[])__buf,
-					__bw, __bh, __pitch, __offset, __atx, __aty);
-			
-			case SHORT_ARGB4444:
-				return new ShortARGB4444ArrayGraphics(
-					(short[])__buf,
-					__bw, __bh, __pitch, __offset, __atx, __aty);
-			
-			case SHORT_RGB565:
-				return new ShortRGB565ArrayGraphics(
-					(short[])__buf,
-					__bw, __bh, __pitch, __offset, __atx, __aty);
-			
 			case INTEGER_ARGB8888:
-				return new IntegerARGB8888ArrayGraphics(
-					(int[])__buf,
+				return new AdvancedGraphics((int[])__buf, true, null,
 					__bw, __bh, __pitch, __offset, __atx, __aty);
 			
 			case INTEGER_RGB888:
-				return new IntegerRGB888ArrayGraphics(
-					(int[])__buf,
+				return new AdvancedGraphics((int[])__buf, false, null,
 					__bw, __bh, __pitch, __offset, __atx, __aty);
 			
-				// Unknown
 			default:
-				throw new todo.OOPS();
+				throw new todo.OOPS(this.toString());
 		}
 	}
 	
