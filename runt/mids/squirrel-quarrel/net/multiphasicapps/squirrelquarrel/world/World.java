@@ -169,7 +169,7 @@ public class World
 		// Initialize
 		MegaTile[] tiles = new MegaTile[megaw * megah];
 		for (int i = 0, n = tiles.length; i < n; i++)
-			tiles[i] = new MegaTile(i % megaw, i / megaw);
+			tiles[i] = new MegaTile(i % megaw, i / megaw, i);
 		
 		return tiles;
 	}

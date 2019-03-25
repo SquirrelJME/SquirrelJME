@@ -19,24 +19,27 @@ public final class MegaTileIndex
 	implements Comparable<MegaTileIndex>
 {
 	/** The x coordinate. */
-	protected final int x;
+	public final int x;
 	
 	/** The y coordinate. */
-	protected final int y;
+	public final int y;
 	
 	/** The ordinal index. */
-	protected final int ordinal;
+	public final int ordinal;
 	
 	/**
 	 * Initializes the mega tile index.
 	 *
 	 * @param __x The x coordinate.
 	 * @param __y The y coordinate.
+	 * @param __i The ordinal.
 	 * @since 2018/03/18
 	 */
-	public MegaTileIndex(int __x, int __y)
+	public MegaTileIndex(int __x, int __y, int __i)
 	{
-		throw new todo.TODO();
+		this.x = __x;
+		this.y = __y;
+		this.ordinal = __i;
 	}
 	
 	/**
@@ -46,7 +49,7 @@ public final class MegaTileIndex
 	@Override
 	public final int compareTo(MegaTileIndex __o)
 	{
-		throw new todo.TODO();
+		return this.ordinal - __o.ordinal;
 	}
 	
 	/**
@@ -56,7 +59,14 @@ public final class MegaTileIndex
 	@Override
 	public final boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		if (this == __o)
+			return true;
+		
+		if (!(__o instanceof MegaTileIndex))
+			return false;
+		
+		MegaTileIndex o = (MegaTileIndex)__o;
+		return this.ordinal == o.ordinal;
 	}
 	
 	/**
@@ -66,7 +76,7 @@ public final class MegaTileIndex
 	@Override
 	public final int hashCode()
 	{
-		throw new todo.TODO();
+		return this.ordinal;
 	}
 	
 	/**
