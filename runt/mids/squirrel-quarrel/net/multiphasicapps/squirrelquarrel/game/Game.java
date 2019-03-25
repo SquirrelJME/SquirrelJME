@@ -28,7 +28,6 @@ import net.multiphasicapps.squirrelquarrel.world.World;
  * @since 2017/02/08
  */
 public class Game
-	implements Runnable
 {
 	/** The player manager. */
 	protected final Players players;
@@ -83,30 +82,6 @@ public class Game
 	}
 	
 	/**
-	 * Initializes a game from a previous game serialization such as a saved
-	 * game or replay.
-	 *
-	 * @param __is The input stream to read the game from.
-	 * @throws IOException On read errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/02/10
-	 */
-	public Game(DataInputStream __is)
-		throws IOException, NullPointerException
-	{
-		// Check
-		if (__is == null)
-			throw new NullPointerException("NARG");
-		
-		// Re-initialize the random number generator
-		GameRandom random = new GameRandom(0);
-		random.setRawSeed((((long)__is.readInt()) << 32L) |
-			__is.readInt());
-		
-		throw new todo.TODO();
-	}
-	
-	/**
 	 * Returns the current game frame.
 	 *
 	 * @return The game frame.
@@ -129,10 +104,10 @@ public class Game
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Runs a single game frame.
+	 *
 	 * @since 2017/02/10
 	 */
-	@Override
 	public final void run()
 	{
 		// Get current frame
