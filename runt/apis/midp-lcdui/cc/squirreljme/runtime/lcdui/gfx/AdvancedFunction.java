@@ -175,6 +175,189 @@ public enum AdvancedFunction
 		}
 	},
 	
+	/** Draw line, no blend or dots. */
+	LINE_NOBLEND_NODOT
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2019/03/24
+		 */
+		public void function(AdvancedGraphics __ag, int[] __vi, Object[] __va)
+		{
+			int __x1 = __vi[0],
+				__y1 = __vi[1],
+				__x2 = __vi[2],
+				__y2 = __vi[3];
+			
+			int[] data = __ag.buffer;
+			int iw = __ag.pitch,
+				dx = __x2 - __x1;
+			
+			int dy = __y2 - __y1;
+			boolean neg;
+			if ((neg = dy < 0))
+				dy = -dy;	
+			
+			int sy = (__y1 < __y2 ? 1 : -1),
+				ssy = iw * sy,
+				err = (dx > dy ? dx : -dy) >> 2,
+				color = __ag.paintcolor,
+				dest = __ag.offset + (iw * __y1) + __x1;
+			
+			for (;;)
+			{
+				// Nothing left to draw?
+				if (__x1 >= __x2 &&
+					((neg && __y1 <= __y2) || (!neg && __y1 >= __y2)))
+					break;
+				
+				data[dest] = color;
+				
+				// Increase X
+				int brr = err;
+				if (brr > -dx)
+				{
+					err -= dy;
+					__x1++;
+					dest++;
+				}
+		
+				// Increase Y
+				if (brr < dy)
+				{
+					err += dx;
+					__y1 += sy;
+					dest += ssy;
+				}
+			}
+		}
+	},
+	
+	/** Draw line, no blend with dots. */
+	LINE_NOBLEND_DOT
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2019/03/24
+		 */
+		public void function(AdvancedGraphics __ag, int[] __vi, Object[] __va)
+		{
+			int __x1 = __vi[0],
+				__y1 = __vi[1],
+				__x2 = __vi[2],
+				__y2 = __vi[3];
+			
+			int[] data = __ag.buffer;
+			int iw = __ag.pitch,
+				dx = __x2 - __x1;
+			
+			int dy = __y2 - __y1;
+			boolean neg;
+			if ((neg = dy < 0))
+				dy = -dy;	
+			
+			int sy = (__y1 < __y2 ? 1 : -1),
+				ssy = iw * sy,
+				err = (dx > dy ? dx : -dy) >> 2,
+				color = __ag.paintcolor,
+				dest = __ag.offset + (iw * __y1) + __x1;
+			
+			for (boolean blip = true;; blip = !blip)
+			{
+				// Nothing left to draw?
+				if (__x1 >= __x2 &&
+					((neg && __y1 <= __y2) || (!neg && __y1 >= __y2)))
+					break;
+				
+				if (blip)
+					data[dest] = color;
+				
+				// Increase X
+				int brr = err;
+				if (brr > -dx)
+				{
+					err -= dy;
+					__x1++;
+					dest++;
+				}
+		
+				// Increase Y
+				if (brr < dy)
+				{
+					err += dx;
+					__y1 += sy;
+					dest += ssy;
+				}
+			}
+		}
+	},
+	
+	/** Draw line, blend with no dots. */
+	LINE_BLEND_NODOT
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2019/03/24
+		 */
+		public void function(AdvancedGraphics __ag, int[] __vi, Object[] __va)
+		{
+			int __x1 = __vi[0],
+				__y1 = __vi[1],
+				__x2 = __vi[2],
+				__y2 = __vi[3];
+			
+			int[] data = __ag.buffer;
+			int iw = __ag.pitch,
+				dx = __x2 - __x1;
+			
+			int dy = __y2 - __y1;
+			boolean neg;
+			if ((neg = dy < 0))
+				dy = -dy;	
+			
+			int sy = (__y1 < __y2 ? 1 : -1),
+				ssy = iw * sy,
+				err = (dx > dy ? dx : -dy) >> 2,
+				color = __ag.paintcolor,
+				dest = __ag.offset + (iw * __y1) + __x1;
+			
+			throw new todo.TODO();
+		}
+	},
+	
+	/** Draw line, blend with dots. */
+	LINE_BLEND_DOT
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2019/03/24
+		 */
+		public void function(AdvancedGraphics __ag, int[] __vi, Object[] __va)
+		{
+			int __x1 = __vi[0],
+				__y1 = __vi[1],
+				__x2 = __vi[2],
+				__y2 = __vi[3];
+			
+			int[] data = __ag.buffer;
+			int iw = __ag.pitch,
+				dx = __x2 - __x1;
+			
+			int dy = __y2 - __y1;
+			boolean neg;
+			if ((neg = dy < 0))
+				dy = -dy;	
+			
+			int sy = (__y1 < __y2 ? 1 : -1),
+				ssy = iw * sy,
+				err = (dx > dy ? dx : -dy) >> 2,
+				color = __ag.paintcolor,
+				dest = __ag.offset + (iw * __y1) + __x1;
+			
+			throw new todo.TODO();
+		}
+	},
+	
 	/** End. */
 	;
 	

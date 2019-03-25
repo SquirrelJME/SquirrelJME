@@ -25,6 +25,22 @@ import javax.microedition.lcdui.Text;
 public class AdvancedGraphics
 	extends Graphics
 {
+	/** Clipping above. */
+	private static final int _CLIP_ABOVE =
+		1;
+	
+	/** Clipping below. */
+	private static final int _CLIP_BELOW =
+		2;
+	
+	/** Clip right. */
+	private static final int _CLIP_RIGHT =
+		4;
+	
+	/** Clip left. */
+	private static final int _CLIP_LEFT =
+		8;
+	
 	/** The array buffer. */
 	protected final int[] buffer;
 	
@@ -120,6 +136,9 @@ public class AdvancedGraphics
 	
 	/** Function for drawing characters. */
 	protected AdvancedFunction funccharbmp;
+	
+	/** Function for drawing lines. */
+	protected AdvancedFunction funcline;
 	
 	/**
 	 * Initializes the graphics.
@@ -335,7 +354,125 @@ public class AdvancedGraphics
 	@Override
 	public void drawLine(int __x1, int __y1, int __x2, int __y2)
 	{
-		throw new todo.TODO();
+		// Translate all coordinates
+		int transx = this.transx,
+			transy = this.transy;
+		__x1 += transx;
+		__y1 += transy;
+		__x2 += transx;
+		__y2 += transy;
+		
+		// Get clipping region
+		int clipsx = this.clipsx,
+			clipsy = this.clipsy,
+			clipex = this.clipex,
+			clipey = this.clipey;
+		
+		// Perform Cohen-Sutherland line clipping
+		for (;;)
+		{
+			// Determine points that lie outside the box
+			int outa = AdvancedGraphics.__csOut(__x1, __y1,
+					clipsx, clipsy, clipex - 1,clipey - 1),
+				outb = AdvancedGraphics.__csOut(__x2, __y2, clipsx,
+					clipsy, clipex - 1, clipey - 1);
+			
+			// Both points are outside the box, do nothing
+			if ((outa & outb) != 0)
+				return;
+			
+			// Both points are inside the box, use this line
+			if (outa == 0 && outb == 0)
+				break;
+			
+			// Only the second point is outside, swap the points so that the
+			// first point is outside and the first is not
+			if (outa == 0)
+			{
+				// Swap X
+				int boop = __x1;
+				__x1 = __x2;
+				__x2 = boop;
+				
+				// Swap Y
+				boop = __y1;
+				__y1 = __y2;
+				__y2 = boop;
+				
+				// Swap clip flags
+				boop = outb;
+				outb = outa;
+				outa = boop;
+			}
+			
+			// The point is clipped
+			if (outa != 0)
+			{
+				// Differences of points
+				int dx = __x2 - __x1,
+					dy = __y2 - __y1;
+				
+				// Clips above the box
+				if ((outa & _CLIP_ABOVE) != 0)
+				{
+					__x1 += dx * (clipey - __y1) / dy;
+					__y1 = clipey - 1;
+				}
+			
+				// Clips below
+				else if ((outa & _CLIP_BELOW) != 0)
+				{
+					__x1 += dx * (clipsy - __y1) / dy;
+					__y1 = clipsy;
+				}
+			
+				// Clips the right side
+				else if ((outa & _CLIP_RIGHT) != 0)
+				{
+					__y1 += dy * (clipex - __x1) / dx;
+					__x1 = clipex - 1;
+				}
+			
+				// Clips the left side
+				else if ((outa & _CLIP_LEFT) != 0)
+				{
+					__y1 += dy * (clipsx - __x1) / dx;
+					__x1 = clipsx;
+				}
+			}
+		}
+		
+		// Have lines which always go to the right
+		if (__x2 < __x1)
+		{
+			int boopx = __x1,
+				boopy = __y1;
+			__x1 = __x2;
+			__y1 = __y2;
+			__x2 = boopx;
+			__y2 = boopy;
+		}
+		
+		// The resulting line should never be out of bounds
+		if (__x1 < clipsx || __x2 < clipsx || __y1 < clipsy || __y2 < clipsy ||
+			__x1 > clipex || __x2 > clipex || __y1 > clipey || __y2 > clipey)
+			return;
+		
+		// Forward depending on blending and/or dots
+		try
+		{
+			this.funcline.function(this,
+				new int[]{__x1, __y1, __x2, __y2},
+				null);
+		}
+		
+		// Exception happened when drawing a line
+		catch (IndexOutOfBoundsException e)
+		{
+			todo.DEBUG.note("Line (%d, %d) -> (%d, %d)", __x1, __y1,
+				__x2, __y2);
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -369,7 +506,18 @@ public class AdvancedGraphics
 	@Override
 	public void drawRect(int __x, int __y, int __w, int __h)
 	{
-		throw new todo.TODO();
+		// The width and height are increased by a single pixel
+		__w += 1;
+		__h += 1;
+		
+		// For now just cheat and draw four lines
+		int ex = __x + __w,
+			ey = __y + __h;
+		
+		this.drawLine(__x, __y, ex, __y);
+		this.drawLine(__x, ey, ex, ey);
+		this.drawLine(__x, __y, __x, ey);
+		this.drawLine(ex, __y, ex, ey);
 	}
 	
 	/**
@@ -1219,12 +1367,78 @@ public class AdvancedGraphics
 	 */
 	private final void __updateFunctions()
 	{
-		boolean doblending = this.doblending;
+		boolean doblending = this.doblending,
+			dotstroke = this.dotstroke;
 		
-		this.funcfillrect = (doblending ? AdvancedFunction.FILLRECT_BLEND :
-			AdvancedFunction.FILLRECT_NOBLEND);
-		this.funccharbmp = (doblending ? AdvancedFunction.CHARBITMAP_BLEND :
-			AdvancedFunction.CHARBITMAP_NOBLEND);
+		// Blending
+		if (doblending)
+		{
+			this.funcfillrect = AdvancedFunction.FILLRECT_BLEND;
+			this.funccharbmp = AdvancedFunction.CHARBITMAP_BLEND;
+			
+			// Dotted
+			if (dotstroke)
+			{
+				this.funcline = AdvancedFunction.LINE_BLEND_DOT;
+			}
+			
+			// Not dotted
+			else
+			{
+				this.funcline = AdvancedFunction.LINE_BLEND_NODOT;
+			}
+		}
+		
+		// Not blending
+		else
+		{
+			this.funcfillrect = AdvancedFunction.FILLRECT_NOBLEND;
+			this.funccharbmp = AdvancedFunction.CHARBITMAP_NOBLEND;
+			
+			// Dotted
+			if (dotstroke)
+			{
+				this.funcline = AdvancedFunction.LINE_NOBLEND_DOT;
+			}
+			
+			// Not dotted
+			else
+			{
+				this.funcline = AdvancedFunction.LINE_NOBLEND_NODOT;
+			}
+		}
+	}
+	
+	/**
+	 * Determines the Cohen-Sutherland clipping flags.
+	 *
+	 * @param __x Input X coordinate.
+	 * @param __y Input Y coordinate.
+	 * @param __csx Clipping box starting X.
+	 * @param __csy Clipping box starting Y.
+	 * @param __cex Clipping box ending X.
+	 * @param __cey Clipping box ending Y.
+	 * @return The clipping bit flags.
+	 * @since 2017/09/10
+	 */
+	private static final int __csOut(int __x, int __y, int __csx, int __csy,
+		int __cex, int __cey)
+	{
+		int rv = 0;
+		
+		// Clips above or below?
+		if (__y > __cey)
+			rv |= _CLIP_ABOVE;
+		else if (__y < __csy)
+			rv |= _CLIP_BELOW;
+		
+		// Clips right or left?
+		if (__x > __cex)
+			rv |= _CLIP_RIGHT;
+		else if (__x < __csx)
+			rv |= _CLIP_LEFT;
+		
+		return rv;
 	}
 }
 
