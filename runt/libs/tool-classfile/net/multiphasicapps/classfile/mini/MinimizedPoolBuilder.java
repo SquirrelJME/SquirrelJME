@@ -15,6 +15,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.FieldDescriptor;
+import net.multiphasicapps.classfile.FieldName;
+import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodHandle;
 import net.multiphasicapps.classfile.MethodName;
@@ -52,19 +55,43 @@ public final class MinimizedPoolBuilder
 		
 		// Field access
 		if (__v instanceof AccessedField)
-			throw new todo.TODO();
+		{
+			AccessedField v = (AccessedField)__v;
+			return this.__add(__v,
+				this.add(v.field()));
+		}
 		
 		// Class name
 		else if (__v instanceof ClassName)
-			return this.__add(__v, this.add(__v.toString()));
+			return this.__add(__v,
+				this.add(__v.toString()));
 		
 		// Record handle for the method
 		else if (__v instanceof InvokedMethod)
-			return this.__add(__v, this.add(((InvokedMethod)__v).handle()));
+			return this.__add(__v,
+				this.add(((InvokedMethod)__v).handle()));
 		
-		// Method descriptor
-		else if (__v instanceof MethodDescriptor)
-			return this.__add(__v, this.add(__v.toString()));
+		// Field/Method descriptor
+		else if (__v instanceof FieldDescriptor ||
+			__v instanceof MethodDescriptor)
+			return this.__add(__v,
+				this.add(__v.toString()));
+		
+		// Field/Method name
+		else if (__v instanceof FieldName ||
+			__v instanceof MethodName)
+			return this.__add(__v,
+				this.add(__v.toString()));
+		
+		// Field reference
+		else if (__v instanceof FieldReference)
+		{
+			FieldReference v = (FieldReference)__v;
+			return this.__add(__v,
+				this.add(v.className()),
+				this.add(v.memberName()),
+				this.add(v.memberType()));
+		}
 		
 		// Method handle
 		else if (__v instanceof MethodHandle)
@@ -75,10 +102,6 @@ public final class MinimizedPoolBuilder
 				this.add(v.name()),
 				this.add(v.descriptor()));
 		}
-		
-		// Method name
-		else if (__v instanceof MethodName)
-			return this.__add(__v, this.add(__v.toString()));
 		
 		// Untranslated
 		else

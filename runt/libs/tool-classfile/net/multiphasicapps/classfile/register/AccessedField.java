@@ -74,6 +74,17 @@ public final class AccessedField
 	}
 	
 	/**
+	 * Returns the field reference.
+	 *
+	 * @return The field reference.
+	 * @since 2019/03/26
+	 */
+	public final FieldReference field()
+	{
+		return this.field;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2019/03/24
 	 */
