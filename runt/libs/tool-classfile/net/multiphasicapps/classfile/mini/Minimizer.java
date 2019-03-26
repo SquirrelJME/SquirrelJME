@@ -28,6 +28,7 @@ import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.Method;
 import net.multiphasicapps.classfile.MethodFlags;
 import net.multiphasicapps.classfile.PrimitiveType;
+import net.multiphasicapps.classfile.register.CompareType;
 import net.multiphasicapps.classfile.register.DataType;
 import net.multiphasicapps.classfile.register.RegisterCode;
 import net.multiphasicapps.classfile.register.RegisterInstruction;
@@ -277,6 +278,13 @@ public final class Minimizer
 					dos.writeShort(pool.add(i.argument(0)));
 					dos.writeShort(i.shortArgument(1));
 					break;
+					
+					// Pool + uint16 + uint16
+				case POOL16_U16_U16:
+					dos.writeShort(pool.add(i.argument(0)));
+					dos.writeShort(i.shortArgument(1));
+					dos.writeShort(i.shortArgument(2));
+					break;
 				
 					// Type + 32-bit integer
 				case TI32:
@@ -305,6 +313,18 @@ public final class Minimizer
 					// Unsigned 16-bit integer
 				case U16:
 					dos.writeShort(i.shortArgument(0));
+					break;
+					
+					// uint16 + condition + jump
+				case U16_CT_J16:
+					dos.writeShort(i.shortArgument(0));
+					dos.write(i.<CompareType>argument(1, CompareType.class).
+						ordinal());
+					
+					// Jump replacement
+					jumpreps.put(dos.size(), i.<InstructionJumpTarget>
+						argument(2, InstructionJumpTarget.class));
+					dos.writeShort(0);
 					break;
 					
 					// uint16 + datatype + uint16 + pool
