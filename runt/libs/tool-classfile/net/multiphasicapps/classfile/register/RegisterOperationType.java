@@ -23,82 +23,82 @@ public interface RegisterOperationType
 	
 	/** Copy narrow. */
 	public static final int NARROW_COPY =
-		1;
+		21;
 	
 	/** Copy narrow and reference count destination. */
 	public static final int NARROW_COPY_AND_COUNT_DEST =
-		2;
+		22;
 	
 	/** Copy wide. */
 	public static final int WIDE_COPY =
-		3;
+		23;
 	
 	/** Narrow constant. */
 	public static final int NARROW_CONST =
-		4;
+		24;
 	
 	/** Wide constant. */
 	public static final int WIDE_CONST =
-		5;
+		25;
 	
 	/** Invoke pointer from constant pool. */
 	public static final int INVOKE_FROM_POOL =
-		6;
+		26;
 	
 	/** Invoke pointer. */
 	public static final int INVOKE_POINTER =
-		7;
+		27;
 	
 	/** Reference count. */
 	public static final int COUNT =
-		8;
+		28;
 	
 	/** Un-reference count. */
 	public static final int UNCOUNT =
-		9;
+		29;
 	
 	/** Jump if exception flag is set. */
 	public static final int JUMP_ON_EXCEPTION =
-		10;
+		210;
 	
 	/** Return from method. */
 	public static final int RETURN =
-		11;
+		211;
 	
 	/** Jump if class matches, load/clear exception to specified register. */
 	public static final int EXCEPTION_CLASS_JUMP =
-		12;
+		212;
 	
 	/** Jump to address. */
 	public static final int JUMP =
-		13;
+		213;
 	
 	/** Allocate class. */
 	public static final int ALLOCATE_CLASS =
-		14;
+		214;
 	
 	/** Write to a memory address using an offset from a pool. */
 	public static final int WRITE_POINTER_WITH_POOL_OFFSET =
-		15;
+		215;
 	
 	/** Allocate array. */
 	public static final int ALLOCATE_ARRAY =
-		16;
+		216;
 	
 	/** Compare int against zero and jump. */
 	public static final int IF_INT_COMP_ZERO_THEN_JUMP =
-		17;
+		217;
 	
 	/** Narrow constant from constant pool. */
 	public static final int NARROW_CONST_FROM_POOL =
-		18;
+		218;
 	
 	/** Set exception flag and store exception. */
 	public static final int SET_EXCEPTION =
-		19;
+		219;
 	
 	/** Read from a memory address using an offset from a pool. */
 	public static final int READ_POINTER_WITH_POOL_OFFSET =
-		20;
+		220;
 }
 
