@@ -75,6 +75,8 @@ public final class RegisterOperationMnemonics
 				return "IF_INT_COMP_ZERO_THEN_JUMP";
 			case RegisterOperationType.NARROW_CONST_FROM_POOL:
 				return "NARROW_CONST_FROM_POOL";
+			case RegisterOperationType.SET_EXCEPTION:
+				return "SET_EXCEPTION";
 			
 				// Unknown
 			default:
