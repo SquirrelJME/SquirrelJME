@@ -420,6 +420,10 @@ final class __Registerize__
 			case InstructionIndex.ALOAD_3:
 				this.__runLoad(op - InstructionIndex.ALOAD_0);
 				break;
+			
+			case InstructionIndex.ATHROW:
+				this.__runAThrow();
+				break;
 				
 			case InstructionIndex.DLOAD:
 			case InstructionIndex.WIDE_DLOAD:
@@ -618,6 +622,24 @@ final class __Registerize__
 	}
 	
 	/**
+	 * Throws exception.
+	 *
+	 * @since 2019/03/26
+	 */
+	private final void __runAThrow()
+	{
+		// This operation throws an exception, so we will just go to checking
+		// it.
+		this._exceptioncheck = true;
+		
+		// Sets the exception flag and puts the exception in
+		// There is a net reference count, so no count adjustments need to
+		// be performed
+		this.codebuilder.add(RegisterOperationType.SET_EXCEPTION,
+			this.state.stackPop().register);
+	}
+	
+	/**
 	 * Duplicate top most stack entry.
 	 *
 	 * @since 2019/03/24
@@ -753,7 +775,11 @@ final class __Registerize__
 			case STRING:
 			case CLASS:
 				codebuilder.add(RegisterOperationType.NARROW_CONST_FROM_POOL,
-					__v.boxedValue());
+					__v.boxedValue(), dest.register);
+				
+				// Need to count it as well, even though it will never be
+				// freed ever
+				codebuilder.add(RegisterOperationType.COUNT, dest.register);
 				break;
 			
 			default:

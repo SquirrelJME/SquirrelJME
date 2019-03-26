@@ -92,5 +92,9 @@ public interface RegisterOperationType
 	/** Narrow constant from constant pool. */
 	public static final int NARROW_CONST_FROM_POOL =
 		18;
+	
+	/** Set exception flag and store exception. */
+	public static final int SET_EXCEPTION =
+		19;
 }
 
