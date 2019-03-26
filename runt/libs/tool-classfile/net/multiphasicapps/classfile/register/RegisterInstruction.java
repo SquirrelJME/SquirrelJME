@@ -129,7 +129,7 @@ public final class RegisterInstruction
 	 *
 	 * @param __i The argument to get.
 	 * @return The value of the argument.
-	 * @throws ClassCastException If the given argument is not an integer.
+	 * @throws ClassCastException If the given argument is not an number.
 	 * @throws IndexOutOfBoundsException If the index is not within the
 	 * bounds of the instruction arguments.
 	 * @since 2018/03/23
@@ -137,7 +137,7 @@ public final class RegisterInstruction
 	public int intArgument(int __i)
 		throws ClassCastException, IndexOutOfBoundsException
 	{
-		return this.<Integer>argument(__i, Integer.class).intValue();
+		return this.<Number>argument(__i, Number.class).intValue();
 	}
 	
 	/**
@@ -149,6 +149,22 @@ public final class RegisterInstruction
 	public final int operation()
 	{
 		return this.op;
+	}
+	
+	/**
+	 * Obtains the given argument as a short.
+	 *
+	 * @param __i The argument to get.
+	 * @return The value of the argument.
+	 * @throws ClassCastException If the given argument is not a number.
+	 * @throws IndexOutOfBoundsException If the index is not within the
+	 * bounds of the instruction arguments.
+	 * @since 2018/03/23
+	 */
+	public short shortArgument(int __i)
+		throws ClassCastException, IndexOutOfBoundsException
+	{
+		return this.<Number>argument(__i, Number.class).shortValue();
 	}
 	
 	/**
