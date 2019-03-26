@@ -73,9 +73,9 @@ More detailed changes:
    * SummerCoat
      * New Virtual Machine, register based.
      * Vast improvements over SpringCoat, faster and slimmer.
-   * ~~RatufaCoat~~
-     * ~~New Virtual Machine, based off SummerCoat.~~
-     * ~~Fast and slim, written in C.~~
+   * RatufaCoat
+     * New Virtual Machine, based off SummerCoat.
+     * Fast and slim, written in C.
  * Cleanup
    * Removed the `test.sh` script, it was empty.
 
