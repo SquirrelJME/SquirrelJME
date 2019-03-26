@@ -28,6 +28,7 @@ import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.Method;
 import net.multiphasicapps.classfile.MethodFlags;
 import net.multiphasicapps.classfile.PrimitiveType;
+import net.multiphasicapps.classfile.register.DataType;
 import net.multiphasicapps.classfile.register.RegisterCode;
 import net.multiphasicapps.classfile.register.RegisterInstruction;
 import net.multiphasicapps.classfile.register.RegisterOperationMnemonics;
@@ -304,6 +305,15 @@ public final class Minimizer
 					// Unsigned 16-bit integer
 				case U16:
 					dos.writeShort(i.shortArgument(0));
+					break;
+					
+					// uint16 + datatype + uint16 + pool
+				case U16_DT_U16_POOL16:
+					dos.writeShort(i.shortArgument(0));
+					dos.write(i.<DataType>argument(1, DataType.class).
+						ordinal());
+					dos.writeShort(i.shortArgument(2));
+					dos.writeShort(pool.add(i.argument(3)));
 					break;
 					
 					// Unsigned 16-bit and jump target
