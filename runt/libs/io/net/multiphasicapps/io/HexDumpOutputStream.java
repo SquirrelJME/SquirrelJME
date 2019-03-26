@@ -250,5 +250,59 @@ public class HexDumpOutputStream
 			this._at = 0;
 		}
 	}
+	
+	/**
+	 * Dumps the resulting byte array to the given stream.
+	 *
+	 * @param __dump The target stream.
+	 * @param __b The byte array to dump.
+	 * @return If the dump completed without an {@link IOException}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/26
+	 */
+	public static final boolean dump(PrintStream __dump, byte[] __b)
+		throws NullPointerException
+	{
+		if (__dump == null || __b == null)
+			throw new NullPointerException("NARG");
+		
+		return HexDumpOutputStream.dump(__dump, __b, 0, __b.length);
+	}	
+	
+	/**
+	 * Dumps the resulting byte array to the given stream.
+	 *
+	 * @param __dump The target stream.
+	 * @param __b The byte array to dump.
+	 * @param __o The offset.
+	 * @param __l The length.
+	 * @return If the dump completed without an {@link IOException}.
+	 * @throws IndexOutOfBoundsException If the offset and/or length are
+	 * negative or exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/26
+	 */
+	public static final boolean dump(PrintStream __dump, byte[] __b, int __o,
+		int __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		if (__dump == null || __b == null)
+			throw new NullPointerException("NARG");
+		
+		// Open dump output
+		try (HexDumpOutputStream hdos = new HexDumpOutputStream(__dump))
+		{
+			hdos.write(__b, __o, __l);
+		}
+		
+		// Failed
+		catch (IOException e)
+		{
+			return false;
+		}
+		
+		// Okay
+		return true;
+	}
 }
 
