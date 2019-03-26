@@ -96,5 +96,9 @@ public interface RegisterOperationType
 	/** Set exception flag and store exception. */
 	public static final int SET_EXCEPTION =
 		19;
+	
+	/** Read from a memory address using an offset from a pool. */
+	public static final int READ_POINTER_WITH_POOL_OFFSET =
+		20;
 }
 
