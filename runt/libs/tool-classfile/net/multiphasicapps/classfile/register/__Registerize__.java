@@ -590,7 +590,7 @@ final class __Registerize__
 			// This might be used by exception handlers potentially
 			if (label == null)
 			{
-				label = codebuilder.label("return", this._nextreturndx);
+				label = codebuilder.label("return", this._nextreturndx++);
 				returns.put(__ops, label);
 			}
 		}
@@ -600,7 +600,7 @@ final class __Registerize__
 		else if (label == null)
 		{
 			// Create label at this point and store it for this cleanup state
-			label = codebuilder.label("return", this._nextreturndx);
+			label = codebuilder.label("return", this._nextreturndx++);
 			returns.put(__ops, label);
 			
 			// Un-count any references in locals or the stack
