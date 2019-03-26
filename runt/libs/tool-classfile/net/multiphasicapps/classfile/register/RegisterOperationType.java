@@ -84,5 +84,9 @@ public interface RegisterOperationType
 	/** Allocate array. */
 	public static final int ALLOCATE_ARRAY =
 		16;
+	
+	/** Compare int against zero and jump. */
+	public static final int IF_INT_COMP_ZERO_THEN_JUMP =
+		17;
 }
 

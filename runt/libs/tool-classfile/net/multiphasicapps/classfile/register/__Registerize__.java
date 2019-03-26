@@ -24,6 +24,7 @@ import net.multiphasicapps.classfile.FieldDescriptor;
 import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
+import net.multiphasicapps.classfile.InstructionJumpTarget;
 import net.multiphasicapps.classfile.JavaType;
 import net.multiphasicapps.classfile.MethodReference;
 import net.multiphasicapps.classfile.PrimitiveType;
@@ -458,6 +459,42 @@ final class __Registerize__
 				this.__runLdc(new ConstantValueInteger(
 					op - InstructionIndex.ICONST_0));
 				break;
+			
+			case InstructionIndex.IFEQ:
+				this.__runIfZero(CompareType.EQUALS,
+					__i.<InstructionJumpTarget>argument(0,
+						InstructionJumpTarget.class));
+				break;
+				
+			case InstructionIndex.IFNE:
+				this.__runIfZero(CompareType.NOT_EQUALS,
+					__i.<InstructionJumpTarget>argument(0,
+						InstructionJumpTarget.class));
+				break;
+				
+			case InstructionIndex.IFLT:
+				this.__runIfZero(CompareType.LESS_THAN,
+					__i.<InstructionJumpTarget>argument(0,
+						InstructionJumpTarget.class));
+				break;
+				
+			case InstructionIndex.IFGE:
+				this.__runIfZero(CompareType.GREATER_THAN_OR_EQUALS,
+					__i.<InstructionJumpTarget>argument(0,
+						InstructionJumpTarget.class));
+				break;
+				
+			case InstructionIndex.IFGT:
+				this.__runIfZero(CompareType.GREATER_THAN,
+					__i.<InstructionJumpTarget>argument(0,
+						InstructionJumpTarget.class));
+				break;
+				
+			case InstructionIndex.IFLE:
+				this.__runIfZero(CompareType.LESS_THAN_OR_EQUALS,
+					__i.<InstructionJumpTarget>argument(0,
+						InstructionJumpTarget.class));
+				break;
 				
 			case InstructionIndex.ILOAD:
 			case InstructionIndex.WIDE_ILOAD:
@@ -590,6 +627,26 @@ final class __Registerize__
 		// No complex work is needed, the top-most entry is just a cached
 		// alias of the entry just above it
 		this.state.stackDup();
+	}
+	
+	/**
+	 * Compars against zero.
+	 *
+	 * @param __ct The comparison type to perform.
+	 * @param __j The jump target.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/26
+	 */
+	private final void __runIfZero(CompareType __ct, InstructionJumpTarget __j)
+		throws NullPointerException
+	{
+		if (__ct == null || __j == null)
+			throw new NullPointerException("NARG");
+		
+		// Generate
+		this.codebuilder.add(RegisterOperationType.IF_INT_COMP_ZERO_THEN_JUMP,
+			this.state.stackPop().register, __ct,
+			new RegisterCodeLabel("java", __j.target()));
 	}
 	
 	/**

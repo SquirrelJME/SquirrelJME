@@ -71,6 +71,8 @@ public final class RegisterOperationMnemonics
 				return "WRITE_POINTER_WITH_POOL_OFFSET";
 			case RegisterOperationType.ALLOCATE_ARRAY:
 				return "ALLOCATE_ARRAY";
+			case RegisterOperationType.IF_INT_COMP_ZERO_THEN_JUMP:
+				return "IF_INT_COMP_ZERO_THEN_JUMP";
 			
 				// Unknown
 			default:
