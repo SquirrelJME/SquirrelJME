@@ -30,11 +30,17 @@ public enum InstructionFormat
 	/** Pool reference. */
 	POOL16,
 	
+	/** Pool reference, unsigned 16-bit int. */
+	POOL16_U16,
+	
 	/** Type and 32-bit integer. */
 	TI32,
 	
 	/** 16-bit unsigned integer. */
 	U16,
+	
+	/** uint16 + data type + uint16 + pool ref. */
+	U16_DT_U16_POOL16,
 	
 	/** 16-bit unsigned int, 16-bit jump address. */
 	U16_J16,
@@ -59,11 +65,14 @@ public enum InstructionFormat
 			case RegisterOperationType.RETURN:
 				return PLAIN;
 			
+			case RegisterOperationType.JUMP_ON_EXCEPTION:
+				return J16;
+			
 			case RegisterOperationType.INVOKE_FROM_POOL:
 				return POOL16;
 			
-			case RegisterOperationType.JUMP_ON_EXCEPTION:
-				return J16;
+			case RegisterOperationType.ALLOCATE_CLASS:
+				return POOL16_U16;
 				
 			case RegisterOperationType.NARROW_CONST:
 				return TI32;
@@ -71,6 +80,9 @@ public enum InstructionFormat
 			case RegisterOperationType.COUNT:
 			case RegisterOperationType.UNCOUNT:
 				return U16;
+			
+			case RegisterOperationType.WRITE_POINTER_WITH_POOL_OFFSET:
+				return U16_DT_U16_POOL16;
 			
 				// {@squirreljme.error JC2m Could not get the format for the
 				// given operation. (The operation)}
