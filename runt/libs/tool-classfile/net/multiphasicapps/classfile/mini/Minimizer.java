@@ -270,6 +270,13 @@ public final class Minimizer
 				case POOL16:
 					dos.writeShort(pool.add(i.argument(0)));
 					break;
+					
+					// Pool + uint16
+				case POOL16_U16:
+					dos.writeShort(pool.add(i.argument(0)));
+					dos.writeShort(i.<Number>argument(1, Number.class).
+						shortValue());
+					break;
 				
 					// Type + 32-bit integer
 				case TI32:
