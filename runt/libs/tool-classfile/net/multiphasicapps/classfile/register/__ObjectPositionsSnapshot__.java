@@ -133,5 +133,57 @@ final class __ObjectPositionsSnapshot__
 	{
 		return this.stackstart;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/03/26
+	 */
+	@Override
+	public final String toString()
+	{
+		StringBuilder sb = new StringBuilder("OPS[");
+		
+		int stackstart = this.stackstart, dx = 0;
+		boolean comma = false;
+		for (int v : this._pos)
+		{
+			if (dx++ == stackstart)
+				sb.append("| ");
+			else if (comma)
+				sb.append(", ");
+			comma = true;
+			
+			sb.append(v);
+		}
+		if (dx == stackstart)
+			sb.append('|');
+		sb.append(']');
+		
+		return sb.toString();
+	}
+	
+	/**
+	 * Trims the top-most entry from the snapshot and returns one with the top
+	 * missing.
+	 *
+	 * @return Snapshot with the top-most entry removed, or {@code this} if
+	 * this is empty.
+	 * @since 2019/03/26
+	 */
+	public final __ObjectPositionsSnapshot__ trimTop()
+	{
+		// Do not trim empty pieces
+		int[] from = this._pos;
+		int n = from.length - 1;
+		if (n < 0)
+			return this;
+		
+		// Copy bits
+		int[] rv = new int[n];
+		for (int i = 0; i < n; i++)
+			rv[i] = from[i];
+		
+		return new __ObjectPositionsSnapshot__(this.stackstart, rv);
+	}
 }
 

@@ -294,6 +294,9 @@ final class __Registerize__
 		__ObjectPositionsSnapshot__ ops = __ec.ops;
 		ExceptionHandlerTable ehtable = __ec.table;
 		
+		// Debug
+		todo.DEBUG.note("Exception gen %s,%s -> %d", ops, ehtable, __edx);
+		
 		// If the exception handler table is empty, we are just going to
 		// go up the stack anyway, so there is no point in generating our
 		// own handler!
@@ -579,6 +582,9 @@ final class __Registerize__
 			this._returns;
 		RegisterCodeLabel label = returns.get(__ops);
 		
+		// Debug
+		todo.DEBUG.note("return %s -> %s", __ops, label);
+		
 		// If the object operations is empty and nothing needs to be uncounted
 		// we can just return directly. This is faster than jumping to another
 		// point that returns
@@ -596,21 +602,28 @@ final class __Registerize__
 		}
 		
 		// If the return for this operation has already been handled, just
-		// do not bother duplicating it
+		// do not bother duplicating it. As an optimization to group as many
+		// returns up as possible, only a single entry will be uncounted and
+		// this method will recursively handle returns until the state is
+		// empty
 		else if (label == null)
 		{
 			// Create label at this point and store it for this cleanup state
 			label = codebuilder.label("return", this._nextreturndx++);
 			returns.put(__ops, label);
 			
-			// Un-count any references in locals or the stack
-			__ObjectPositionsSnapshot__ snap = this.state.objectSnapshot();
-			for (int i = 0, n = snap.size(); i < n; i++)
-				codebuilder.add(RegisterOperationType.UNCOUNT, snap.get(i));
+			// Uncount the top-most entry
+			int top = __ops.size() - 1;
+			codebuilder.add(RegisterOperationType.UNCOUNT, __ops.get(top));
 			
-			// All returns are plain due to the fact that return address
-			// registers are used
-			codebuilder.add(RegisterOperationType.RETURN);
+			// Recursively handle this return point, this will generate
+			// other cleanup points that can be jumped to. So if this one
+			// cleans up 0, 1, and 3 then a cleanup that just does 0 will
+			// jump to a point near this.
+			this.__return(__ops.trimTop());
+			
+			// Return the original label for this point!
+			return label;
 		}
 		
 		// Otherwise we just perform a jump to that point since it shares
