@@ -33,11 +33,17 @@ public enum InstructionFormat
 	/** Pool reference, unsigned 16-bit int. */
 	POOL16_U16,
 	
+	/** Pool + uint16 + uint16. */
+	POOL16_U16_U16,
+	
 	/** Type and 32-bit integer. */
 	TI32,
 	
 	/** 16-bit unsigned integer. */
 	U16,
+	
+	/** uint16 + condition type + jump16. */
+	U16_CT_J16,
 	
 	/** uint16 + data type + uint16 + pool ref. */
 	U16_DT_U16_POOL16,
@@ -65,6 +71,7 @@ public enum InstructionFormat
 			case RegisterOperationType.RETURN:
 				return PLAIN;
 			
+			case RegisterOperationType.JUMP:
 			case RegisterOperationType.JUMP_ON_EXCEPTION:
 				return J16;
 			
@@ -72,14 +79,22 @@ public enum InstructionFormat
 				return POOL16;
 			
 			case RegisterOperationType.ALLOCATE_CLASS:
+			case RegisterOperationType.NARROW_CONST_FROM_POOL:
 				return POOL16_U16;
+			
+			case RegisterOperationType.ALLOCATE_ARRAY:
+				return POOL16_U16_U16;
 				
 			case RegisterOperationType.NARROW_CONST:
 				return TI32;
 				
 			case RegisterOperationType.COUNT:
+			case RegisterOperationType.SET_EXCEPTION:
 			case RegisterOperationType.UNCOUNT:
 				return U16;
+			
+			case RegisterOperationType.IF_INT_COMP_ZERO_THEN_JUMP:
+				return U16_CT_J16;
 			
 			case RegisterOperationType.WRITE_POINTER_WITH_POOL_OFFSET:
 				return U16_DT_U16_POOL16;
