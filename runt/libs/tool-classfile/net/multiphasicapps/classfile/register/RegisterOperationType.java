@@ -88,5 +88,9 @@ public interface RegisterOperationType
 	/** Compare int against zero and jump. */
 	public static final int IF_INT_COMP_ZERO_THEN_JUMP =
 		17;
+	
+	/** Narrow constant from constant pool. */
+	public static final int NARROW_CONST_FROM_POOL =
+		18;
 }
 
