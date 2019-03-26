@@ -32,6 +32,7 @@ import net.multiphasicapps.classfile.register.CompareType;
 import net.multiphasicapps.classfile.register.DataType;
 import net.multiphasicapps.classfile.register.RegisterCode;
 import net.multiphasicapps.classfile.register.RegisterInstruction;
+import net.multiphasicapps.classfile.register.RegisterList;
 import net.multiphasicapps.classfile.register.RegisterOperationMnemonics;
 import net.multiphasicapps.classfile.register.RegisterOperationType;
 
@@ -271,6 +272,21 @@ public final class Minimizer
 					// Constant pool reference
 				case POOL16:
 					dos.writeShort(pool.add(i.argument(0)));
+					break;
+					
+					// Pool + reglist
+				case POOL16_REGLIST:
+					{
+						dos.writeShort(pool.add(i.argument(0)));
+						
+						// Write register list
+						RegisterList rl = i.<RegisterList>argument(1,
+							RegisterList.class);
+						int rn = rl.size();
+						dos.writeShort(rn);
+						for (int r = 0; r < rn; r++)
+							dos.writeShort(rl.get(r));
+					}
 					break;
 					
 					// Pool + uint16

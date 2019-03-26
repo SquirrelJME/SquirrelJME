@@ -30,6 +30,9 @@ public enum InstructionFormat
 	/** Pool reference. */
 	POOL16,
 	
+	/** Pool reference + register list. */
+	POOL16_REGLIST,
+	
 	/** Pool reference, unsigned 16-bit int. */
 	POOL16_U16,
 	
@@ -76,7 +79,7 @@ public enum InstructionFormat
 				return J16;
 			
 			case RegisterOperationType.INVOKE_FROM_POOL:
-				return POOL16;
+				return POOL16_REGLIST;
 			
 			case RegisterOperationType.ALLOCATE_CLASS:
 			case RegisterOperationType.NARROW_CONST_FROM_POOL:
