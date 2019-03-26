@@ -24,6 +24,9 @@ public enum InstructionFormat
 	/** Format is nothing, just plain operation. */
 	PLAIN,
 	
+	/** 16-bit jump address. */
+	J16,
+	
 	/** Pool reference. */
 	POOL16,
 	
@@ -32,6 +35,9 @@ public enum InstructionFormat
 	
 	/** 16-bit unsigned integer. */
 	U16,
+	
+	/** 16-bit unsigned int, 16-bit jump address. */
+	U16_J16,
 	
 	/** End. */
 	;
@@ -55,6 +61,9 @@ public enum InstructionFormat
 			
 			case RegisterOperationType.INVOKE_FROM_POOL:
 				return POOL16;
+			
+			case RegisterOperationType.JUMP_ON_EXCEPTION:
+				return J16;
 				
 			case RegisterOperationType.NARROW_CONST:
 				return TI32;

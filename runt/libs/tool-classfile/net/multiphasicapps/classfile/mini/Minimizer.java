@@ -18,9 +18,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.Field;
+import net.multiphasicapps.classfile.InstructionJumpTarget;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.Method;
 import net.multiphasicapps.classfile.MethodFlags;
@@ -172,14 +175,11 @@ public final class Minimizer
 				RegisterCode rc = m.registerCode();
 				
 				// Encode to bytes
-				try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-					ByteArrayOutputStream lnb = new ByteArrayOutputStream();
-					DataOutputStream dos = new DataOutputStream(baos);
+				try (ByteArrayOutputStream lnb = new ByteArrayOutputStream();
 					DataOutputStream lbd = new DataOutputStream(lnb))
 				{
 					// Translate code
-					this.__translateCode(rc, dos);
-					transcode = baos.toByteArray();
+					transcode = this.__translateCode(rc);
 					
 					// Translate lines
 					this.__translateLines(rc.lines(), lbd);
@@ -211,26 +211,43 @@ public final class Minimizer
 	 *
 	 * @param __rc The register code used.
 	 * @param __dos The stream to write to.
+	 * @return The resulting stream.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/23
 	 */
-	private final void __translateCode(RegisterCode __rc,
-		DataOutputStream __dos)
+	private final byte[] __translateCode(RegisterCode __rc)
 		throws IOException, NullPointerException
 	{
-		if (__rc == null || __dos == null)
+		if (__rc == null)
 			throw new NullPointerException("NARG");
+		
+		// Where stuff gets written to
+		ByteArrayOutputStream baos = new ByteArrayOutputStream(256);
+		DataOutputStream dos = new DataOutputStream(baos);
+		
+		// Positions where all the instructions are in the byte array
+		int cdn = __rc.length();
+		int[] indexpos = new int[cdn];
+		
+		// Locations which have jump targets to be replaced
+		Map<Integer, InstructionJumpTarget> jumpreps = new HashMap<>();
 		
 		// Operations will reference this constant pool
 		MinimizedPoolBuilder pool = this.pool;
 		
 		// Go through each instruction
-		for (RegisterInstruction i : __rc)
+		for (int cdx = 0; cdx < cdn; cdx++)
 		{
+			// Get instruction here
+			RegisterInstruction i = __rc.get(cdx);
+			
+			// Record that the instruction is at this position
+			indexpos[cdx] = dos.size();
+			
 			// Write operation
 			int op = i.operation();
-			__dos.write(op);
+			dos.write(op);
 			
 			// All instructions use a pre-defined format, so doing it this way
 			// simplifies handling various instructions as they will just use
@@ -242,9 +259,16 @@ public final class Minimizer
 				case PLAIN:
 					break;
 				
+					// 16-bit jump address
+				case J16:
+					jumpreps.put(dos.size(), i.<InstructionJumpTarget>
+						argument(0, InstructionJumpTarget.class));
+					dos.writeShort(0);
+					break;
+				
 					// Constant pool reference
 				case POOL16:
-					__dos.writeShort(pool.add(i.argument(0)));
+					dos.writeShort(pool.add(i.argument(0)));
 					break;
 				
 					// Type + 32-bit integer
@@ -254,15 +278,15 @@ public final class Minimizer
 						Number v = i.<Number>argument(0, Number.class);
 						if (v instanceof Integer)
 						{
-							__dos.write('I');
-							__dos.writeInt((Integer)v);
+							dos.write('I');
+							dos.writeInt((Integer)v);
 						}
 						
 						// Float
 						else if (v instanceof Float)
 						{
-							__dos.write('F');
-							__dos.writeInt(Float.floatToRawIntBits((Float)v));
+							dos.write('F');
+							dos.writeInt(Float.floatToRawIntBits((Float)v));
 						}
 						
 						// Unknown
@@ -273,14 +297,42 @@ public final class Minimizer
 					
 					// Unsigned 16-bit integer
 				case U16:
-					__dos.writeShort(i.<Number>argument(0, Number.class).
+					dos.writeShort(i.<Number>argument(0, Number.class).
 						shortValue());
+					break;
+					
+					// Unsigned 16-bit and jump target
+				case U16_J16:
+					dos.writeShort(i.<Number>argument(0, Number.class).
+						shortValue());
+					
+					// Jump replacement
+					jumpreps.put(dos.size(), i.<InstructionJumpTarget>
+						argument(1, InstructionJumpTarget.class));
+					dos.writeShort(0);
 					break;
 					
 				default:
 					throw new todo.OOPS(ef.toString());
 			}
 		}
+		
+		// Generate array
+		byte[] rv = baos.toByteArray();
+		
+		// Replace jumps
+		for (Map.Entry<Integer, InstructionJumpTarget> e : jumpreps.entrySet())
+		{
+			int ai = e.getKey(),
+				jt = e.getValue().target();
+			
+			// Remember that values are big endian
+			rv[ai + 0] = (byte)(jt >>> 8);
+			rv[ai + 1] = (byte)(jt);
+		}
+		
+		// Return array
+		return rv;
 	}
 	
 	/**
