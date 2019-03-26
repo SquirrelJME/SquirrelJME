@@ -456,6 +456,11 @@ final class __Registerize__
 				this.__runLoad(op - InstructionIndex.FLOAD_0);
 				break;
 			
+			case InstructionIndex.GETFIELD:
+				this.__runGetField(__i.<FieldReference>argument(0,
+					FieldReference.class));
+				break;
+			
 			case InstructionIndex.ICONST_M1:
 			case InstructionIndex.ICONST_0:
 			case InstructionIndex.ICONST_1:
@@ -662,6 +667,41 @@ final class __Registerize__
 		// No complex work is needed, the top-most entry is just a cached
 		// alias of the entry just above it
 		this.state.stackDup();
+	}
+	
+	/**
+	 * Read a value from a field.
+	 *
+	 * @param __fr The field to read from.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/26
+	 */
+	private final void __runGetField(FieldReference __fr)
+		throws NullPointerException
+	{
+		if (__fr == null)
+			throw new NullPointerException("NARG");
+		
+		// Read instance to read from
+		__StackState__ state = this.state;
+		int inst = state.stackPop().register;
+		
+		// Need to know the type to push
+		JavaType pushtype = new JavaType(__fr.memberType());
+		
+		// Push field
+		int value = state.stackPush(pushtype).register;
+		
+		// Generate code
+		RegisterCodeBuilder codebuilder = this.codebuilder;
+		codebuilder.add(RegisterOperationType.READ_POINTER_WITH_POOL_OFFSET,
+			inst,
+			DataType.of(__fr.memberType().primitiveType()),
+			value, this.__fieldAccess(FieldAccessType.INSTANCE, __fr));
+		
+		// Count if an object
+		if (pushtype.isObject())
+			codebuilder.add(RegisterOperationType.COUNT, value);
 	}
 	
 	/**

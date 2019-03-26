@@ -77,6 +77,8 @@ public final class RegisterOperationMnemonics
 				return "NARROW_CONST_FROM_POOL";
 			case RegisterOperationType.SET_EXCEPTION:
 				return "SET_EXCEPTION";
+			case RegisterOperationType.READ_POINTER_WITH_POOL_OFFSET:
+				return "READ_POINTER_WITH_POOL_OFFSET";
 			
 				// Unknown
 			default:
