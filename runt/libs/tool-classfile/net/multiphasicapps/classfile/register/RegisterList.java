@@ -62,6 +62,29 @@ public final class RegisterList
 	}
 	
 	/**
+	 * Gets the register at the given index.
+	 *
+	 * @param __i The index to get.
+	 * @return The register at the given index.
+	 * @since 2019/03/26
+	 */
+	public final int get(int __i)
+	{
+		return this._registers[__i];
+	}
+	
+	/**
+	 * Returns the size of the list.
+	 *
+	 * @return The list size.
+	 * @since 2019/03/26
+	 */
+	public final int size()
+	{
+		return this._registers.length;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2019/03/22
 	 */
