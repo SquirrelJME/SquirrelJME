@@ -752,7 +752,9 @@ final class __Registerize__
 			
 			case STRING:
 			case CLASS:
-				throw new todo.TODO();
+				codebuilder.add(RegisterOperationType.NARROW_CONST_FROM_POOL,
+					__v.boxedValue());
+				break;
 			
 			default:
 				throw new todo.OOPS();

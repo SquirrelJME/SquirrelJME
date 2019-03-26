@@ -73,6 +73,8 @@ public final class RegisterOperationMnemonics
 				return "ALLOCATE_ARRAY";
 			case RegisterOperationType.IF_INT_COMP_ZERO_THEN_JUMP:
 				return "IF_INT_COMP_ZERO_THEN_JUMP";
+			case RegisterOperationType.NARROW_CONST_FROM_POOL:
+				return "NARROW_CONST_FROM_POOL";
 			
 				// Unknown
 			default:
