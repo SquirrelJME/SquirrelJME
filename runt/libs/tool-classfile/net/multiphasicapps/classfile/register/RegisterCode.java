@@ -77,6 +77,18 @@ public final class RegisterCode
 	}
 	
 	/**
+	 * Gets the instruction at this index.
+	 *
+	 * @param __dx The index to get.
+	 * @return The register at this index.
+	 * @since 2019/03/26
+	 */
+	public final RegisterInstruction get(int __dx)
+	{
+		return this._instructions[__dx];
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2019/03/23
 	 */
@@ -85,6 +97,17 @@ public final class RegisterCode
 	{
 		return UnmodifiableIterator.<RegisterInstruction>of(
 			this._instructions);
+	}
+	
+	/**
+	 * Returns the length of the register code.
+	 *
+	 * @return The register code length.
+	 * @since 2019/03/26
+	 */
+	public final int length()
+	{
+		return this._instructions.length;
 	}
 	
 	/**
