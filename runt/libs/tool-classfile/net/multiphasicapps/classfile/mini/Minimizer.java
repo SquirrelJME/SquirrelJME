@@ -274,8 +274,7 @@ public final class Minimizer
 					// Pool + uint16
 				case POOL16_U16:
 					dos.writeShort(pool.add(i.argument(0)));
-					dos.writeShort(i.<Number>argument(1, Number.class).
-						shortValue());
+					dos.writeShort(i.shortArgument(1));
 					break;
 				
 					// Type + 32-bit integer
@@ -304,14 +303,12 @@ public final class Minimizer
 					
 					// Unsigned 16-bit integer
 				case U16:
-					dos.writeShort(i.<Number>argument(0, Number.class).
-						shortValue());
+					dos.writeShort(i.shortArgument(0));
 					break;
 					
 					// Unsigned 16-bit and jump target
 				case U16_J16:
-					dos.writeShort(i.<Number>argument(0, Number.class).
-						shortValue());
+					dos.writeShort(i.shortArgument(0));
 					
 					// Jump replacement
 					jumpreps.put(dos.size(), i.<InstructionJumpTarget>
