@@ -151,7 +151,7 @@ final class __Registerize__
 				
 				// Just create a jump here
 				codebuilder.add(
-					RegisterOperationType.JUMP_ON_EXCEPTION, ehlab);
+					RegisterOperationType.JUMP_IF_EXCEPTION, ehlab);
 			}
 		}
 		
@@ -336,10 +336,12 @@ final class __Registerize__
 			codebuilder.add(RegisterOperationType.UNCOUNT, ops.get(i));
 		
 		// For each exception type, perform a check and a jump to the target
+		int sbreg = this.state.stackBaseRegister();
 		for (ExceptionHandler eh : ehtable)
-			codebuilder.add(RegisterOperationType.EXCEPTION_CLASS_JUMP,
+			codebuilder.add(
+				RegisterOperationType.JUMP_IF_INSTANCE_GET_EXCEPTION,
 				eh.type(), new RegisterCodeLabel("java", eh.handlerAddress()),
-				this.state.stackBaseRegister());
+				sbreg);
 		
 		// Uncount just the locals and perform a return to propogate up
 		this.__return(ops.localsOnly());
@@ -650,11 +652,18 @@ final class __Registerize__
 		// it.
 		this._exceptioncheck = true;
 		
-		// Sets the exception flag and puts the exception in
-		// There is a net reference count, so no count adjustments need to
-		// be performed
-		this.codebuilder.add(RegisterOperationType.SET_EXCEPTION,
-			this.state.stackPop().register);
+		// The exception to toss
+		__StackResult__ pop = this.state.stackPop();
+		
+		// Set exception register and flag it
+		RegisterCodeBuilder codebuilder = this.codebuilder;
+		codebuilder.add(RegisterOperationType.SET_AND_FLAG_EXCEPTION,
+			pop.register);
+		
+		// Need to uncount this exception?
+		if (pop.needsCounting())
+			codebuilder.add(RegisterOperationType.UNCOUNT,
+				pop.register);
 	}
 	
 	/**
@@ -682,26 +691,49 @@ final class __Registerize__
 		if (__fr == null)
 			throw new NullPointerException("NARG");
 		
-		// Instance to read field from
 		__StackState__ state = this.state;
-		int inst = state.stackPop().register;
-		
-		// Need to know the type to push
-		JavaType pushtype = new JavaType(__fr.memberType());
-		
-		// Push field
-		int value = state.stackPush(pushtype).register;
-		
-		// Generate code
 		RegisterCodeBuilder codebuilder = this.codebuilder;
-		codebuilder.add(RegisterOperationType.READ_POINTER_WITH_POOL_OFFSET,
-			inst,
-			DataType.of(__fr.memberType().primitiveType()),
-			value, this.__fieldAccess(FieldAccessType.INSTANCE, __fr));
 		
-		// Count if an object
-		if (pushtype.isObject())
-			codebuilder.add(RegisterOperationType.COUNT, value);
+		// The data type determined which instruction to use
+		DataType dt = DataType.of(__fr.memberType().primitiveType());
+		
+		// Field access information
+		AccessedField ac = this.__fieldAccess(FieldAccessType.INSTANCE, __fr);
+		
+		// The instance of the object to read from along with where the object
+		// goes
+		__StackResult__ inst = state.stackPop(),
+			dest = state.stackPush(new JavaType(__fr.memberType()));
+		
+		// If the instance needs counting, before we can replace it we need
+		// to read the field
+		if (inst.needsCounting())
+		{
+			// Load value into the field register first
+			codebuilder.add(dt.fieldAccessOperation(false, false),
+				ac,
+				inst.register,
+				-1);
+			
+			// Uncount the instance
+			codebuilder.add(RegisterOperationType.UNCOUNT,
+				inst.register);
+			
+			// Load from the field register
+			codebuilder.add(
+				dt.fieldRegisterOperation(dest.needsCounting(), false),
+				dest.register);
+		}
+		
+		// Otherwise if it does not need uncounting, we can just overwrite
+		// the value here
+		else
+		{
+			codebuilder.add(dt.fieldAccessOperation(false, false),
+				ac,
+				inst.register,
+				dest.register);
+		}
 	}
 	
 	/**
@@ -720,17 +752,38 @@ final class __Registerize__
 		
 		__StackResult__ pop = this.state.stackPop();
 		
-		// If an object this needs uncounting
+		// The target of the jump is derived from the jump target
+		RegisterCodeLabel label = new RegisterCodeLabel("java", __j.target());
+		
+		// If this is something that needs counting, we cannot directly
+		// operate on it so it must first be loaded into the field value
+		// before we go off and branch
 		RegisterCodeBuilder codebuilder = this.codebuilder;
 		if (pop.needsCounting())
+		{	
+			// Need this since each operation is slightly different
+			DataType dt = DataType.of(pop.type);
+			
+			// Load value into field register
+			codebuilder.add(dt.fieldRegisterOperation(true, true),
+				pop.register);
+			
+			// Uncount the thing
 			codebuilder.add(RegisterOperationType.UNCOUNT,
 				pop.register);
+			
+			// Branch but do it against the field value instead
+			codebuilder.add(__ct.fieldIfZeroOperation(),
+				label);
+		}
 		
-		// Generate branch
-		codebuilder.add(
-			__ct.ifZeroOperation(),
-			pop.register,
-			new RegisterCodeLabel("java", __j.target()));
+		// Otherwise we can operate directly on the register
+		else
+		{
+			codebuilder.add(__ct.ifZeroOperation(),
+				pop.register,
+				label);
+		}
 	}
 	
 	/**
@@ -949,7 +1002,7 @@ final class __Registerize__
 		RegisterCodeBuilder codebuilder = this.codebuilder;
 		codebuilder.add(
 			DataType.of(__fr.memberType().primitiveType()).
-				fieldOperation(false, true),
+				fieldAccessOperation(false, true),
 			this.__fieldAccess(FieldAccessType.INSTANCE, __fr),
 			inst.register,
 			value.register);

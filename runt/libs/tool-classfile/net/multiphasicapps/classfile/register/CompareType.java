@@ -39,6 +39,34 @@ public enum CompareType
 	;
 	
 	/**
+	 * The operation used when comparing the field register against zero.
+	 *
+	 * @return The operation to use when comparing against zero.
+	 * @since 2019/03/27
+	 */
+	public final int fieldIfZeroOperation()
+	{
+		switch (this)
+		{
+			case EQUALS:
+				return RegisterOperationType.FIELD_IFEQ;
+			case NOT_EQUALS:
+				return RegisterOperationType.FIELD_IFNE;
+			case LESS_THAN:
+				return RegisterOperationType.FIELD_IFLT;
+			case LESS_THAN_OR_EQUALS:
+				return RegisterOperationType.FIELD_IFLE;
+			case GREATER_THAN:
+				return RegisterOperationType.FIELD_IFGT;
+			case GREATER_THAN_OR_EQUALS:
+				return RegisterOperationType.FIELD_IFGE;
+		}
+		
+		// Should not be reached
+		throw new todo.OOPS();
+	}
+	
+	/**
 	 * The operation used when comparing against zero.
 	 *
 	 * @return The operation to use when comparing against zero.
