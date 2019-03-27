@@ -289,6 +289,37 @@ public final class RegisterOperationMnemonics
 				return "X64_FIELD_LOAD";
 			case RegisterOperationType.X64_FIELD_STORE:
 				return "X64_FIELD_STORE";
+				
+			case RegisterOperationType.COUNT:
+				return "COUNT";
+			case RegisterOperationType.UNCOUNT:
+				return "UNCOUNT";
+			case RegisterOperationType.INT_NEG:
+				return "INT_NEG";
+			case RegisterOperationType.LONG_NEG:
+				return "LONG_NEG";
+			case RegisterOperationType.FLOAT_NEG:
+				return "FLOAT_NEG";
+			case RegisterOperationType.DOUBLE_NEG:
+				return "DOUBLE_NEG";
+			case RegisterOperationType.ARRAY_LENGTH:
+				return "ARRAY_LENGTH";
+			case RegisterOperationType.MONITOR_ENTER:
+				return "MONITOR_ENTER";
+			case RegisterOperationType.MONITOR_EXIT:
+				return "MONITOR_EXIT";
+			case RegisterOperationType.SET_AND_FLAG_EXCEPTION:
+				return "SET_AND_FLAG_EXCEPTION";
+			case RegisterOperationType.GET_AND_CLEAR_EXCEPTION:
+				return "GET_AND_CLEAR_EXCEPTION";
+			case RegisterOperationType.SET_X32_RETURN_VALUE:
+				return "SET_X32_RETURN_VALUE";
+			case RegisterOperationType.SET_X64_RETURN_VALUE:
+				return "SET_X64_RETURN_VALUE";
+			case RegisterOperationType.GET_X32_RETURN_VALUE:
+				return "GET_X32_RETURN_VALUE";
+			case RegisterOperationType.GET_X64_RETURN_VALUE:
+				return "GET_X64_RETURN_VALUE";
 			
 				// Unknown
 			default:

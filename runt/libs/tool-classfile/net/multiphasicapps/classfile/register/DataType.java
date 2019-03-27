@@ -48,9 +48,10 @@ public enum DataType
 	 * Returns the operation used for copies.
 	 *
 	 * @param __nc Is counting needed?
+	 * @return The operation to use.
 	 * @since 2019/03/27
 	 */
-	public static final int copyOperation(boolean __nc)
+	public final int copyOperation(boolean __nc)
 	{
 		switch (this)
 		{
@@ -82,7 +83,7 @@ public enum DataType
 	 * @return The operation to use when accessing a field of this type.
 	 * @since 2019/03/27
 	 */
-	public static final int fieldOperation(boolean __static, boolean __write)
+	public final int fieldAccessOperation(boolean __static, boolean __write)
 	{
 		if (__static)
 			if (__write)
@@ -150,6 +151,57 @@ public enum DataType
 					case DOUBLE:
 						return RegisterOperationType.IFIELD_LOAD_X64;
 				}
+		
+		// Should not be reached
+		throw new todo.OOPS();
+	}
+	
+	/**
+	 * Returns the operation used for copies.
+	 *
+	 * @param __nc Is counting needed?
+	 * @param __store Is this a store?
+	 * @return The operation to use.
+	 * @since 2019/03/27
+	 */
+	public final int fieldRegisterOperation(boolean __nc, boolean __store)
+	{
+		if (__store)
+			switch (this)
+			{
+				case POINTER:
+					if (__nc)
+						return RegisterOperationType.OBJECT_FIELD_STORE;
+					return RegisterOperationType.X32_FIELD_STORE;
+				
+				case BYTE:
+				case SHORT:
+				case INTEGER:
+				case FLOAT:
+					return RegisterOperationType.X32_FIELD_STORE;
+				
+				case LONG:
+				case DOUBLE:
+					return RegisterOperationType.X64_FIELD_STORE;
+			}
+		else
+			switch (this)
+			{
+				case POINTER:
+					if (__nc)
+						return RegisterOperationType.OBJECT_FIELD_LOAD;
+					return RegisterOperationType.X32_FIELD_LOAD;
+				
+				case BYTE:
+				case SHORT:
+				case INTEGER:
+				case FLOAT:
+					return RegisterOperationType.X32_FIELD_LOAD;
+				
+				case LONG:
+				case DOUBLE:
+					return RegisterOperationType.X64_FIELD_LOAD;
+			}
 		
 		// Should not be reached
 		throw new todo.OOPS();

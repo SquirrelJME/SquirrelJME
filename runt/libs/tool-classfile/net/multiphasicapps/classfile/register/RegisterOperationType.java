@@ -272,6 +272,66 @@ public interface RegisterOperationType
 	/** new_array_const. */
 	public static final int NEW_ARRAY_CONST =
 		ENCODING_POOL16_U16_U16 + 12;
+	
+	/** array_length. */
+	public static final int ARRAY_LENGTH =
+		ENCODING_U16 + 0;
+
+	/** count. */
+	public static final int COUNT =
+		ENCODING_U16 + 1;
+
+	/** double_neg. */
+	public static final int DOUBLE_NEG =
+		ENCODING_U16 + 2;
+
+	/** float_neg. */
+	public static final int FLOAT_NEG =
+		ENCODING_U16 + 3;
+
+	/** get_and_clear_exception. */
+	public static final int GET_AND_CLEAR_EXCEPTION =
+		ENCODING_U16 + 4;
+
+	/** get_x32_return_value. */
+	public static final int GET_X32_RETURN_VALUE =
+		ENCODING_U16 + 5;
+
+	/** get_x64_return_value. */
+	public static final int GET_X64_RETURN_VALUE =
+		ENCODING_U16 + 6;
+
+	/** int_neg. */
+	public static final int INT_NEG =
+		ENCODING_U16 + 7;
+
+	/** long_neg. */
+	public static final int LONG_NEG =
+		ENCODING_U16 + 8;
+
+	/** monitor_enter. */
+	public static final int MONITOR_ENTER =
+		ENCODING_U16 + 9;
+
+	/** monitor_exit. */
+	public static final int MONITOR_EXIT =
+		ENCODING_U16 + 10;
+
+	/** set_and_flag_exception. */
+	public static final int SET_AND_FLAG_EXCEPTION =
+		ENCODING_U16 + 11;
+
+	/** set_x32_return_value. */
+	public static final int SET_X32_RETURN_VALUE =
+		ENCODING_U16 + 12;
+
+	/** set_x64_return_value. */
+	public static final int SET_X64_RETURN_VALUE =
+		ENCODING_U16 + 13;
+
+	/** uncount. */
+	public static final int UNCOUNT =
+		ENCODING_U16 + 14;
 
 	/** ifeq/ifnull. */
 	public static final int IFEQ =
