@@ -234,7 +234,7 @@ public final class RegisterInstruction
 			case RegisterOperationType.ENCODING_U16_U16_U16_3:
 				return 3;
 				
-			case RegisterOperationType.JUMP_IF_INSTANCE_EXCEPTION_CLEAR:
+			case RegisterOperationType.JUMP_IF_INSTANCE_GET_EXCEPTION:
 				return 4;
 				
 			case RegisterOperationType.TABLESWITCH:

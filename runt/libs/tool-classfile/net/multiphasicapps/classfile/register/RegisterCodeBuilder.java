@@ -70,10 +70,22 @@ public final class RegisterCodeBuilder
 	 * @param __op The operation to add.
 	 * @param __args The arguments to the operation.
 	 * @return The resulting temporary instruction.
+	 * @throws IllegalArgumentException If the argument count is incorrect.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/16
 	 */
 	public final RegisterInstruction add(int __op, Object... __args)
+		throws IllegalArgumentException, NullPointerException
 	{
+		// {@squirreljme.error JC2q Operation has an incorrect number of
+		// arguments.}
+		if (RegisterInstruction.argumentCount(__op) != __args.length)
+			throw new IllegalArgumentException("JC2q");
+		
+		for (Object o : __args)
+			if (o == null)
+				throw new NullPointerException("NARG");
+		
 		// Create instruction
 		int atdx = this._nextaddr++;
 		RegisterInstruction rv = new RegisterInstruction(__op, __args);
