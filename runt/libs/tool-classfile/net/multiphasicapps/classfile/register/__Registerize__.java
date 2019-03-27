@@ -943,7 +943,7 @@ final class __Registerize__
 		
 		// Pop value from stack
 		__StackResult__ value = this.state.stackPop();
-		int inst = this.state.stackPop().register;
+		__StackResult__ inst = this.state.stackPop();
 		
 		// Generate code
 		RegisterCodeBuilder codebuilder = this.codebuilder;
@@ -951,13 +951,16 @@ final class __Registerize__
 			DataType.of(__fr.memberType().primitiveType()).
 				fieldOperation(false, true),
 			this.__fieldAccess(FieldAccessType.INSTANCE, __fr),
-			inst,
+			inst.register,
 			value.register);
 		
-		// Need to uncount when removing from the stack
+		// Need to uncount when removing from the stack?
 		if (value.needsCounting())
 			codebuilder.add(RegisterOperationType.UNCOUNT,
-				value);
+				value.register);
+		if (inst.needsCounting())
+			codebuilder.add(RegisterOperationType.UNCOUNT,
+				inst.register);
 	}
 	
 	/**

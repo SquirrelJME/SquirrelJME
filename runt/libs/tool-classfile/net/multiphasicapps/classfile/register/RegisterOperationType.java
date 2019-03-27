@@ -107,11 +107,23 @@ public interface RegisterOperationType
 	
 	/** x64_field_load [u16]. */
 	public static final int X64_FIELD_LOAD =
-		ENCODING_SPECIAL + 9;
+		ENCODING_SPECIAL + 10;
 	
 	/** object_field_load [u16]. */
 	public static final int OBJECT_FIELD_LOAD =
-		ENCODING_SPECIAL + 9;
+		ENCODING_SPECIAL + 11;
+	
+	/** x32_field_store [u16]. */
+	public static final int X32_FIELD_STORE =
+		ENCODING_SPECIAL + 12;
+	
+	/** x64_field_store [u16]. */
+	public static final int X64_FIELD_STORE =
+		ENCODING_SPECIAL + 13;
+	
+	/** object_field_store [u16]. */
+	public static final int OBJECT_FIELD_STORE =
+		ENCODING_SPECIAL + 14;
 	
 	/** jump. */
 	public static final int JUMP =
@@ -124,6 +136,38 @@ public interface RegisterOperationType
 	/** jump_if_return. */
 	public static final int JUMP_IF_RETURN =
 		ENCODING_J16 + 2;
+	
+	/** field_ifeq. */
+	public static final int FIELD_IFEQ =
+		ENCODING_J16 + 3;
+	
+	/** field_ifnull. */
+	public static final int FIELD_IFNULL =
+		FIELD_IFEQ;
+	
+	/** field_ifne. */
+	public static final int FIELD_IFNE =
+		ENCODING_J16 + 4;
+	
+	/** field_ifnonnull. */
+	public static final int FIELD_IFNONNULL =
+		FIELD_IFNE;
+	
+	/** field_iflt. */
+	public static final int FIELD_IFLT =
+		ENCODING_J16 + 5;
+	
+	/** field_ifle. */
+	public static final int FIELD_IFLE =
+		ENCODING_J16 + 6;
+	
+	/** field_ifgt. */
+	public static final int FIELD_IFGT =
+		ENCODING_J16 + 7;
+	
+	/** field_ifge. */
+	public static final int FIELD_IFGE =
+		ENCODING_J16 + 8;
 
 	/** checkcast. */
 	public static final int CHECKCAST =
