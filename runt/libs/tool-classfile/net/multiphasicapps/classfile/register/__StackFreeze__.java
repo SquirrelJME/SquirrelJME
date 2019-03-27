@@ -17,5 +17,24 @@ package net.multiphasicapps.classfile.register;
  */
 final class __StackFreeze__
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/03/27
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/03/27
+	 */
+	@Override
+	public final int hashCode()
+	{
+		throw new todo.TODO();
+	}
 }
 
