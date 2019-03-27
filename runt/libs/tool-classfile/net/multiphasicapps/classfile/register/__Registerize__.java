@@ -682,7 +682,7 @@ final class __Registerize__
 		if (__fr == null)
 			throw new NullPointerException("NARG");
 		
-		// Read instance to read from
+		// Instance to read field from
 		__StackState__ state = this.state;
 		int inst = state.stackPop().register;
 		
@@ -718,9 +718,18 @@ final class __Registerize__
 		if (__ct == null || __j == null)
 			throw new NullPointerException("NARG");
 		
-		// Generate
-		this.codebuilder.add(RegisterOperationType.IF_INT_COMP_ZERO_THEN_JUMP,
-			this.state.stackPop().register, __ct,
+		__StackResult__ pop = this.state.stackPop();
+		
+		// If an object this needs uncounting
+		RegisterCodeBuilder codebuilder = this.codebuilder;
+		if (pop.needsCounting())
+			codebuilder.add(RegisterOperationType.UNCOUNT,
+				pop.register);
+		
+		// Generate branch
+		codebuilder.add(
+			__ct.ifZeroOperation(),
+			pop.register,
 			new RegisterCodeLabel("java", __j.target()));
 	}
 	
@@ -766,7 +775,7 @@ final class __Registerize__
 			
 			// Uncount later? Only do this if the register is not cached
 			// because otherwise we might end up early-freeing objects
-			if (!st.cached && pops[i].isObject())
+			if (st.needsCounting())
 				uncount.add(pr);
 		}
 		
@@ -776,7 +785,7 @@ final class __Registerize__
 		// Generate the call, pass the base register and the number of
 		// registers to pass to the target method
 		RegisterCodeBuilder codebuilder = this.codebuilder;
-		codebuilder.add(RegisterOperationType.INVOKE_FROM_POOL,
+		codebuilder.add(RegisterOperationType.INVOKE_METHOD,
 			new InvokedMethod(__t, __r.handle()), new RegisterList(callargs));
 		
 		// For any references that are used, uncount the positions
@@ -814,25 +823,35 @@ final class __Registerize__
 		switch (__v.type())
 		{
 			case INTEGER:
+				codebuilder.add(RegisterOperationType.X32_CONST,
+					(Integer)__v.boxedValue(), dest.register);
+				break;
+				
 			case FLOAT:
-				codebuilder.add(RegisterOperationType.NARROW_CONST,
-					__v.boxedValue(), dest.register);
+				codebuilder.add(RegisterOperationType.X32_CONST,
+					Float.floatToRawIntBits((Float)__v.boxedValue()),
+					dest.register);
 				break;
 			
 			case LONG:
-			case DOUBLE:
-				codebuilder.add(RegisterOperationType.WIDE_CONST,
+				codebuilder.add(RegisterOperationType.X64_CONST,
 					__v.boxedValue(), dest.register);
+				break;
+				
+			case DOUBLE:
+				codebuilder.add(RegisterOperationType.X64_CONST,
+					Double.doubleToRawLongBits((Double)__v.boxedValue()),
+					dest.register);
 				break;
 			
 			case STRING:
 			case CLASS:
-				codebuilder.add(RegisterOperationType.NARROW_CONST_FROM_POOL,
+				codebuilder.add(RegisterOperationType.LOAD_POOL_VALUE,
 					__v.boxedValue(), dest.register);
 				
-				// Need to count it as well, even though it will never be
-				// freed ever
-				codebuilder.add(RegisterOperationType.COUNT, dest.register);
+				// Do not count the object because it will always have at
+				// least one reference due to it being a constant global
+				dest.slot._nocounting = true;
 				break;
 			
 			default:
@@ -854,14 +873,10 @@ final class __Registerize__
 		__StackResult__ src = state.localGet(__l);
 		__StackResult__ dest = state.localLoad(__l);
 		
-		// If not cached, the operation to perform depends on the type
-		if (!dest.cached)
+		// If not cached, we need to actually copy the value
+		if (!dest.isCached())
 			this.codebuilder.add(
-				(src.type.isObject() ?
-						RegisterOperationType.NARROW_COPY_AND_COUNT_DEST :
-					(src.type.isWide() ?
-						RegisterOperationType.WIDE_COPY :
-						RegisterOperationType.NARROW_COPY)),
+				DataType.of(src.type).copyOperation(dest.needsCounting()),
 				src.register, dest.register);
 	}
 	
@@ -882,8 +897,8 @@ final class __Registerize__
 		this._exceptioncheck = true;
 		
 		// Allocate and store into register
-		this.codebuilder.add(RegisterOperationType.ALLOCATE_CLASS, __cn,
-			this.state.stackPush(new JavaType(__cn)).register);
+		this.codebuilder.add(RegisterOperationType.NEW,
+			__cn, this.state.stackPush(new JavaType(__cn)).register);
 	}
 	
 	/**
@@ -909,8 +924,8 @@ final class __Registerize__
 			dst = state.stackPush(new JavaType(__t.addDimensions(1))).register;
 		
 		// Generate instruction
-		this.codebuilder.add(RegisterOperationType.ALLOCATE_ARRAY, __t,
-			len, dst);
+		this.codebuilder.add(RegisterOperationType.NEW_ARRAY,
+			__t, len, dst);
 	}
 	
 	/**
@@ -926,16 +941,23 @@ final class __Registerize__
 		if (__fr == null)
 			throw new NullPointerException("NARG");
 		
-		// Pop the value and instance from the stack
-		int value = this.state.stackPop().register,
-			inst = this.state.stackPop().register;
+		// Pop value from stack
+		__StackResult__ value = this.state.stackPop();
+		int inst = this.state.stackPop().register;
 		
 		// Generate code
-		this.codebuilder.add(
-			RegisterOperationType.WRITE_POINTER_WITH_POOL_OFFSET,
-			value,
-			DataType.of(__fr.memberType().primitiveType()),
-			inst, this.__fieldAccess(FieldAccessType.INSTANCE, __fr));
+		RegisterCodeBuilder codebuilder = this.codebuilder;
+		codebuilder.add(
+			DataType.of(__fr.memberType().primitiveType()).
+				fieldOperation(false, true),
+			this.__fieldAccess(FieldAccessType.INSTANCE, __fr),
+			inst,
+			value.register);
+		
+		// Need to uncount when removing from the stack
+		if (value.needsCounting())
+			codebuilder.add(RegisterOperationType.UNCOUNT,
+				value);
 	}
 	
 	/**

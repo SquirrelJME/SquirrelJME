@@ -37,5 +37,33 @@ public enum CompareType
 	
 	/** End. */
 	;
+	
+	/**
+	 * The operation used when comparing against zero.
+	 *
+	 * @return The operation to use when comparing against zero.
+	 * @since 2019/03/27
+	 */
+	public final int ifZeroOperation()
+	{
+		switch (this)
+		{
+			case EQUALS:
+				return RegisterOperationType.IFEQ;
+			case NOT_EQUALS:
+				return RegisterOperationType.IFNE;
+			case LESS_THAN:
+				return RegisterOperationType.IFLT;
+			case LESS_THAN_OR_EQUALS:
+				return RegisterOperationType.IFLE;
+			case GREATER_THAN:
+				return RegisterOperationType.IFGT;
+			case GREATER_THAN_OR_EQUALS:
+				return RegisterOperationType.IFGE;
+		}
+		
+		// Should not be reached
+		throw new todo.OOPS();
+	}
 }
 
