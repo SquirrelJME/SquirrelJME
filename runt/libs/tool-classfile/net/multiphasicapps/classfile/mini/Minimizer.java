@@ -151,7 +151,8 @@ public final class Minimizer
 		// Always align the field area to 8 bytes so that way if there are
 		// any long/double in the fields for an object following this, it will
 		// properly be aligned
-		temp._bytes = (temp._bytes + 7) & ~7;
+		for (__TempFields__ temp : rv)
+			temp._bytes = (temp._bytes + 7) & ~7;
 		
 		// Return static and instance fields
 		return rv;
