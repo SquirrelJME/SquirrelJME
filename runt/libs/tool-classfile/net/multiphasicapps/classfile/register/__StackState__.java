@@ -85,12 +85,24 @@ final class __StackState__
 		
 		// Copy locals
 		for (int i = 0, n = locals.length; i < n; i++)
-			locals[i]._type = __smt.getLocal(i).type();
+		{
+			Slot s = locals[i];
+			
+			s._type = __smt.getLocal(i).type();
+			s._cached = null;
+			s._nocounting = false;
+		}
 		
 		// Copy the stack
 		int depth = __smt.depth();
 		for (int i = 0; i < depth; i++)
-			stack[i]._type = __smt.getStack(i).type();
+		{
+			Slot s = stack[i];
+			
+			s._type = __smt.getStack(i).type();
+			s._cached = null;
+			s._nocounting = false;
+		}
 		this._stacktop = depth;
 	}
 		
@@ -127,9 +139,10 @@ final class __StackState__
 		if (sl._written)
 			return result;
 		
-		// Otherwise, set the stack entry as cached
+		// Otherwise, set the stack entry as cached and do not count it
 		Slot xs = result.slot;
 		xs._cached = sl;
+		xs._nocounting = true;
 		
 		// Use the cached local instead
 		return new __StackResult__(sl, sl._type, sl.register,
@@ -156,6 +169,7 @@ final class __StackState__
 		
 		// Set register details
 		sl._type = __t;
+		sl._cached = null;
 		sl._nocounting = false;
 		
 		// Set top for wide local?
@@ -164,6 +178,7 @@ final class __StackState__
 		{
 			Slot xs = locals[__dx + 1];
 			xs._type = __t.topType();
+			xs._cached = null;
 			xs._nocounting = false;
 		}
 		
