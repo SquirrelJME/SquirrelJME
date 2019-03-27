@@ -11,10 +11,13 @@
 package net.multiphasicapps.classfile.register;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ConstantValue;
@@ -67,7 +70,7 @@ final class __Registerize__
 		new HashMap<>();
 	
 	/** Mapping of all instructions which jump to a given instruction. */
-	private final Map<Integer, List<Integer>> _jumpfroms =
+	private final Map<Integer, Set<Integer>> _jumpfroms =
 		new HashMap<>();
 	
 	/** Exception handler combinations to generate. */
@@ -121,7 +124,7 @@ final class __Registerize__
 		__StackState__ state = this.state;
 		RegisterCodeBuilder codebuilder = this.codebuilder;
 		Map<Integer, __StackFreeze__> freezes = this._freezes;
-		Map<Integer, List<Integer>> jumpfroms = this._jumpfroms;
+		Map<Integer, Set<Integer>> jumpfroms = this._jumpfroms;
 		
 		// Scan the code to see if basic stack caching can be performed
 		this.__checkBasicStackCache();
@@ -141,12 +144,11 @@ final class __Registerize__
 			
 			// If this instruction is jumped to from a future address then
 			// we need to invalidate our cache
-			List<Integer> frompcs = jumpfroms.get(addr);
+			Collection<Integer> frompcs = jumpfroms.get(addr);
 			if (frompcs != null)
-				for (int i = 0, n = frompcs.size(); i < n; i++)
+				for (int frompc : frompcs)
 				{
-					// Ignore jump to selfs and source addresses in the pas
-					int frompc = frompcs.get(i);
+					// Ignore jump to selfs and source addresses in the past
 					if (frompc <= addr)
 						continue;
 					
@@ -323,7 +325,69 @@ final class __Registerize__
 	 */
 	private final void __checkJumps()
 	{
-		throw new todo.TODO();
+		Map<Integer, Set<Integer>> jumpfroms = this._jumpfroms;
+		List<Integer> fill = new ArrayList<>();
+		
+		// Go through every instruction and load the jump targets
+		ByteCode bytecode = this.bytecode;
+		ExceptionHandlerTable eht = bytecode.exceptions();
+		for (Instruction inst : this.bytecode)
+		{
+			// Clear the fill
+			fill.clear();
+			
+			// Depending on the operation set te jump target
+			switch (inst.operation())
+			{
+				case InstructionIndex.IFEQ:
+				case InstructionIndex.IFNE:
+				case InstructionIndex.IFLT:
+				case InstructionIndex.IFLE:
+				case InstructionIndex.IFGT:
+				case InstructionIndex.IFGE:
+				case InstructionIndex.IF_ICMPEQ:
+				case InstructionIndex.IF_ICMPNE:
+				case InstructionIndex.IF_ICMPLT:
+				case InstructionIndex.IF_ICMPLE:
+				case InstructionIndex.IF_ICMPGT:
+				case InstructionIndex.IF_ICMPGE:
+				case InstructionIndex.IF_ACMPEQ:
+				case InstructionIndex.IF_ACMPNE:
+					fill.add(inst.<InstructionJumpTarget>argument(0,
+						InstructionJumpTarget.class).target());
+					break;
+				
+				case InstructionIndex.LOOKUPSWITCH:
+					throw new todo.TODO();
+				
+				case InstructionIndex.TABLESWITCH:
+					throw new todo.TODO();
+				
+					// Not a branch
+				default:
+					continue;
+			}
+			
+			// Go through the exception handlers
+			int thisaddr = inst.address();
+			for (ExceptionHandler eh : eht)
+				if (eh.inRange(thisaddr))
+					fill.add(eh.handlerAddress());
+			
+			// Fill in target jump table
+			Integer ithisaddr = thisaddr;
+			for (Integer j : fill)
+			{
+				Set<Integer> froms = jumpfroms.get(j);
+				if (froms == null)
+					jumpfroms.put(j, (froms = new LinkedHashSet<>()));
+				
+				froms.add(ithisaddr);
+			}
+		}
+		
+		// Debug
+		todo.DEBUG.note("Froms: %s", jumpfroms);
 	}
 	
 	/**
