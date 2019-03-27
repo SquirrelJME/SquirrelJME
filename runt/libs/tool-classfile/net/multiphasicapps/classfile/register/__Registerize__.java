@@ -171,6 +171,11 @@ final class __Registerize__
 			for (int i = 0, n = usedexceptions.size(); i < n; i++)
 				this.__exceptionGenerate(usedexceptions.get(i), i);
 		
+		// Go through the labels and make it so that any "freezejava" labels
+		// which are not set go directly to their original instruction
+		if (true)
+			throw new todo.TODO();
+		
 		// Build the final code table
 		return codebuilder.build();
 	}
@@ -347,7 +352,7 @@ final class __Registerize__
 		for (ExceptionHandler eh : ehtable)
 			codebuilder.add(
 				RegisterOperationType.JUMP_IF_INSTANCE_GET_EXCEPTION,
-				eh.type(), new RegisterCodeLabel("java", eh.handlerAddress()),
+				eh.type(), this.__javaLabel(eh.handlerAddress()),
 				sbreg);
 		
 		// Uncount just the locals and perform a return to propogate up
@@ -423,6 +428,18 @@ final class __Registerize__
 	 * @since 2019/03/27
 	 */
 	private final void __freezeJump(int... __dz)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Refers to a freeze label in the event there is a state mismatch.
+	 *
+	 * @param __addr The address to point to.
+	 * @return The label to jump to.
+	 * @since 2019/03/27
+	 */
+	private final RegisterCodeLabel __javaLabel(int __addr)
 	{
 		throw new todo.TODO();
 	}
@@ -783,7 +800,7 @@ final class __Registerize__
 		__StackResult__ pop = this.state.stackPop();
 		
 		// The target of the jump is derived from the jump target
-		RegisterCodeLabel label = new RegisterCodeLabel("java", __j.target());
+		RegisterCodeLabel label = this.__javaLabel(__j.target());
 		
 		// If this is something that needs counting, we cannot directly
 		// operate on it so it must first be loaded into the field value
