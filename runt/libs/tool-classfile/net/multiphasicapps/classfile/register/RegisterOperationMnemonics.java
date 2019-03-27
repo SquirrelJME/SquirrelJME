@@ -272,7 +272,7 @@ public final class RegisterOperationMnemonics
 			
 				// Unknown
 			default:
-				return String.format("UNKNOWN_%04X", __op);
+				return String.format("UNKNOWN_%02X", __op);
 		}
 	}
 }
