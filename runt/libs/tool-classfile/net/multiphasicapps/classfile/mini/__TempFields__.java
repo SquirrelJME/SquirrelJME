@@ -29,5 +29,8 @@ final class __TempFields__
 	
 	/** The current byte size of the field table. */
 	int _bytes;
+	
+	/** The total number of objects in the table. */
+	int _objects;
 }
 

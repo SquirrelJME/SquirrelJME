@@ -121,6 +121,11 @@ public final class Minimizer
 			PrimitiveType pt = f.type().primitiveType();
 			int fsz = (pt == null ? 4 : pt.bytes());
 			
+			// If this is an object increase the object count, this is needed
+			// by the garbage collector to determine the addresses to scan
+			if (pt == null)
+				temp._objects++;
+			
 			// Determine the base position and check if any alignment is needed
 			// assuming types of a given size are always aligned
 			int basep = (temp._bytes + (fsz - 1)) & ~(fsz - 1);
@@ -142,6 +147,11 @@ public final class Minimizer
 			temp._bytes = basep + fsz;
 			temp._count++;
 		}
+		
+		// Always align the field area to 8 bytes so that way if there are
+		// any long/double in the fields for an object following this, it will
+		// properly be aligned
+		temp._bytes = (temp._bytes + 7) & ~7;
 		
 		// Return static and instance fields
 		return rv;

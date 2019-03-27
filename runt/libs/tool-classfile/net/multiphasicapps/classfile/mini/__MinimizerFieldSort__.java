@@ -44,9 +44,12 @@ final class __MinimizerFieldSort__
 			return 1;
 		
 		// Compare sizes first to force alignables to be close to each other
+		// Make it so larger fields are always first since they take up the
+		// most room, it is easier to compact smaller fields following because
+		// it should take up less room
 		int sa = (pa == null ? 4 : pa.bytes()),
 			sb = (pb == null ? 4 : pb.bytes());
-		int rv = sa - sb;
+		int rv = sb - sa;
 		if (rv != 0)
 			return rv;
 		
