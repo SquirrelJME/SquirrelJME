@@ -75,15 +75,15 @@ commuting every day (which wastes time). Interest can be e-mailed to me
 
 ## Repository
 
- * [Online repository](http://multiphasicapps.net/)
-   ([HTTPS](https://multiphasicapps.net/),
+ * [Online repository](http://squirreljme.cc/)
+   ([HTTPS](https://squirreljme.cc/),
    [Tor (A)](http://squirrelzarhffxz.onion/),
    [Tor (B)](http://squirrelmfbf2udn.onion/))
  * SquirrelJME uses `fossil` <http://fossil-scm.org/>.
  * The repository may be cloned using Fossil:
    * One of these commands:
-     * `fossil clone -u http://multiphasicapps.net/ squirreljme.fossil`
-     * `fossil clone -u https://multiphasicapps.net/ squirreljme.fossil`
+     * `fossil clone -u http://squirreljme.cc/ squirreljme.fossil`
+     * `fossil clone -u https://squirreljme.cc/ squirreljme.fossil`
      * `fossil clone -u http://squirrelzarhffxz.onion/ squirreljme.fossil`
      * `fossil clone -u http://squirrelmfbf2udn.onion/ squirreljme.fossil`
    * `mkdir squirreljme`
@@ -92,7 +92,7 @@ commuting every day (which wastes time). Interest can be e-mailed to me
  * Alternatively via [GitHub](https://github.com/XerTheSquirrel/SquirrelJME):
    * `git clone https://github.com/XerTheSquirrel/SquirrelJME`
    * `cd SquirrelJME`
- * Trunk Source Snapshot (`fossil serve` only):
+ * Trunk Source Snapshot (Main website or `fossil serve` only):
    * [TAR.GZ](/tarball/squirreljme-trunk.tar.gz?uuid=trunk)
    * [ZIP](/zip/squirreljme-trunk.zip?uuid=trunk)
 
