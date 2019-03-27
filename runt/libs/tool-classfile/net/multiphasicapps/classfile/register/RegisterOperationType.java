@@ -345,6 +345,10 @@ public interface RegisterOperationType
 	public static final int IF_ICMPNE =
 		ENCODING_U16_U16_J16 + 4;
 
+	/** if_icmpge. */
+	public static final int IF_ICMPGE =
+		ENCODING_U16_U16_J16 + 5;
+
 	/** if_icmpne/if_acmpne. */
 	public static final int IF_ACMPNE =
 		IF_ICMPNE;

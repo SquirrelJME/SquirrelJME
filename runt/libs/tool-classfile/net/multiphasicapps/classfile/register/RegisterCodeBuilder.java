@@ -120,7 +120,6 @@ public final class RegisterCodeBuilder
 		// This will happen in constructors that call another constructor since
 		// there will be an exception handler jump that points to the next
 		// instruction
-		// This only handle conditional and basic jumps.
 		List<RegisterInstruction> in = new ArrayList<>(
 			this._instructions.values());
 		List<Integer> lines = new ArrayList<>(this._lines);
@@ -128,13 +127,34 @@ public final class RegisterCodeBuilder
 		{
 			RegisterInstruction ri = in.get(i);
 			
-			// Determine if it is a basic conditional jump
+			// This includes all of the various types of jumps that would
+			// do nothing if they led to the next instruction
 			RegisterCodeLabel lt;
 			switch (ri.op)
 			{
 				case RegisterOperationType.JUMP:
-				case RegisterOperationType.JUMP_ON_EXCEPTION:
+				case RegisterOperationType.JUMP_IF_EXCEPTION:
+				case RegisterOperationType.JUMP_IF_RETURN:
 					lt = (RegisterCodeLabel)ri._args[0];
+					break;
+				
+				case RegisterOperationType.IFEQ:
+				case RegisterOperationType.IFNE:
+				case RegisterOperationType.IFLT:
+				case RegisterOperationType.IFGE:
+				case RegisterOperationType.IFGT:
+				case RegisterOperationType.IFLE:
+					lt = (RegisterCodeLabel)ri._args[1];
+					break;
+				
+				case RegisterOperationType.IF_ICMPEQ:
+				case RegisterOperationType.IF_ICMPNE:
+				case RegisterOperationType.IF_ICMPLT:
+				case RegisterOperationType.IF_ICMPGT:
+				case RegisterOperationType.IF_ICMPLE:
+				case RegisterOperationType.IF_ICMPGE:
+				case RegisterOperationType.JUMP_IF_INSTANCE:
+					lt = (RegisterCodeLabel)ri._args[2];
 					break;
 				
 					// Not a jump

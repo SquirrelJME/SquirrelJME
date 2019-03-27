@@ -201,9 +201,11 @@ public final class RegisterInstruction
 	 *
 	 * @param __op The operation to get the argument count of.
 	 * @return The number of used arguments.
+	 * @throws IllegalArgumentException If the encoding is not known.
 	 * @since 2019/03/27
 	 */
 	public static final int argumentCount(int __op)
+		throws IllegalArgumentException
 	{
 		// Depends on the encoding
 		switch (RegisterInstruction.encoding(__op))
@@ -239,6 +241,11 @@ public final class RegisterInstruction
 				
 			case RegisterOperationType.TABLESWITCH:
 				return 6;
+			
+				// {@squirreljme.error JC2r Unknown instruction argument
+				// count.}
+			default:
+				throw new IllegalArgumentException("JC2r " + __op);
 		}
 	}
 	

@@ -252,30 +252,68 @@ public final class Minimizer
 			int op = i.operation();
 			dos.write(op);
 			
-			// All instructions use a pre-defined format, so doing it this way
+			// Most instructions use a pre-defined format, so doing it this way
 			// simplifies handling various instructions as they will just use
 			// a common layout.
-			InstructionFormat ef = InstructionFormat.of(op);
-			switch (ef)
+			switch (i.encoding())
 			{
-					// Plain format, just the opcode
-				case PLAIN:
+				case RegisterOperationType.NOP:
+				case RegisterOperationType.RETURN:
 					break;
-				
-					// 16-bit jump address
-				case J16:
+					
+				case RegisterOperationType.ENCODING_U16:
+					dos.writeShort(i.shortArgument(0));
+					break;
+					
+				case RegisterOperationType.ENCODING_J16:
 					jumpreps.put(dos.size(), i.<InstructionJumpTarget>
 						argument(0, InstructionJumpTarget.class));
 					dos.writeShort(0);
 					break;
-				
-					// Constant pool reference
-				case POOL16:
-					dos.writeShort(pool.add(i.argument(0)));
+					
+				case RegisterOperationType.ENCODING_U16_J16:
+					dos.writeShort(i.shortArgument(0));
+					
+					jumpreps.put(dos.size(), i.<InstructionJumpTarget>
+						argument(1, InstructionJumpTarget.class));
+					dos.writeShort(0);
 					break;
 					
-					// Pool + reglist
-				case POOL16_REGLIST:
+				case RegisterOperationType.ENCODING_POOL16_U16:
+					dos.writeShort(pool.add(i.argument(0)));
+					dos.writeShort(i.shortArgument(1));
+					break;
+					
+				case RegisterOperationType.ENCODING_U16_U16:
+				case RegisterOperationType.ENCODING_U16_U16_2:
+					dos.writeShort(i.shortArgument(0));
+					dos.writeShort(i.shortArgument(1));
+					break;
+					
+				case RegisterOperationType.ENCODING_U16_U16_J16:
+					dos.writeShort(i.shortArgument(0));
+					dos.writeShort(i.shortArgument(1));
+					
+					jumpreps.put(dos.size(), i.<InstructionJumpTarget>
+						argument(2, InstructionJumpTarget.class));
+					dos.writeShort(0);
+					break;
+					
+				case RegisterOperationType.ENCODING_POOL16_U16_U16:
+					dos.writeShort(pool.add(i.argument(0)));
+					dos.writeShort(i.shortArgument(1));
+					dos.writeShort(i.shortArgument(2));
+					break;
+					
+				case RegisterOperationType.ENCODING_U16_U16_U16:
+				case RegisterOperationType.ENCODING_U16_U16_U16_2:
+				case RegisterOperationType.ENCODING_U16_U16_U16_3:
+					dos.writeShort(i.shortArgument(0));
+					dos.writeShort(i.shortArgument(1));
+					dos.writeShort(i.shortArgument(2));
+					break;
+					
+				case RegisterOperationType.INVOKE_METHOD:
 					{
 						dos.writeShort(pool.add(i.argument(0)));
 						
@@ -289,36 +327,39 @@ public final class Minimizer
 					}
 					break;
 					
-					// Pool + uint16
-				case POOL16_U16:
+				case RegisterOperationType.JUMP_IF_INSTANCE:
 					dos.writeShort(pool.add(i.argument(0)));
 					dos.writeShort(i.shortArgument(1));
+					
+					jumpreps.put(dos.size(), i.<InstructionJumpTarget>
+						argument(2, InstructionJumpTarget.class));
+					dos.writeShort(0);
 					break;
 					
-					// Pool + uint16 + uint16
-				case POOL16_U16_U16:
+				case RegisterOperationType.JUMP_IF_INSTANCE_GET_EXCEPTION:
 					dos.writeShort(pool.add(i.argument(0)));
 					dos.writeShort(i.shortArgument(1));
-					dos.writeShort(i.shortArgument(2));
+					
+					jumpreps.put(dos.size(), i.<InstructionJumpTarget>
+						argument(2, InstructionJumpTarget.class));
+					dos.writeShort(0);
+					
+					dos.writeShort(i.shortArgument(3));
 					break;
+					
+				case RegisterOperationType.LOOKUPSWITCH:
+					throw new todo.TODO();
 				
-					// Type + 32-bit integer
-				case TI32:
+				case RegisterOperationType.X32_CONST:
 					{
 						// Integer
 						Number v = i.<Number>argument(0, Number.class);
 						if (v instanceof Integer)
-						{
-							dos.write('I');
 							dos.writeInt((Integer)v);
-						}
 						
 						// Float
 						else if (v instanceof Float)
-						{
-							dos.write('F');
 							dos.writeInt(Float.floatToRawIntBits((Float)v));
-						}
 						
 						// Unknown
 						else
@@ -326,44 +367,29 @@ public final class Minimizer
 					}
 					break;
 					
-					// Unsigned 16-bit integer
-				case U16:
-					dos.writeShort(i.shortArgument(0));
+				case RegisterOperationType.X64_CONST:
+					{
+						// Long
+						Number v = i.<Number>argument(0, Number.class);
+						if (v instanceof Long)
+							dos.writeLong((Long)v);
+						
+						// Double
+						else if (v instanceof Double)
+							dos.writeLong(
+								Double.doubleToRawLongBits((Double)v));
+						
+						// Unknown
+						else
+							throw new todo.OOPS(v.toString());
+					}
 					break;
 					
-					// uint16 + condition + jump
-				case U16_CT_J16:
-					dos.writeShort(i.shortArgument(0));
-					dos.write(i.<CompareType>argument(1, CompareType.class).
-						ordinal());
-					
-					// Jump replacement
-					jumpreps.put(dos.size(), i.<InstructionJumpTarget>
-						argument(2, InstructionJumpTarget.class));
-					dos.writeShort(0);
-					break;
-					
-					// uint16 + datatype + uint16 + pool
-				case U16_DT_U16_POOL16:
-					dos.writeShort(i.shortArgument(0));
-					dos.write(i.<DataType>argument(1, DataType.class).
-						ordinal());
-					dos.writeShort(i.shortArgument(2));
-					dos.writeShort(pool.add(i.argument(3)));
-					break;
-					
-					// Unsigned 16-bit and jump target
-				case U16_J16:
-					dos.writeShort(i.shortArgument(0));
-					
-					// Jump replacement
-					jumpreps.put(dos.size(), i.<InstructionJumpTarget>
-						argument(1, InstructionJumpTarget.class));
-					dos.writeShort(0);
-					break;
-					
+				case RegisterOperationType.TABLESWITCH:
+					throw new todo.TODO();
+				
 				default:
-					throw new todo.OOPS(ef.toString());
+					throw new todo.OOPS();
 			}
 		}
 		
