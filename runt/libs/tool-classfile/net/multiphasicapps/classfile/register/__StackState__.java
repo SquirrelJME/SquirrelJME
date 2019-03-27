@@ -104,7 +104,8 @@ final class __StackState__
 	public final __StackResult__ localGet(int __dx)
 	{
 		Slot sl = this._locals[__dx];
-		return new __StackResult__(sl, sl._type, sl.register);
+		return new __StackResult__(sl, sl._type, sl.register,
+			false, sl._nocounting);
 	}
 	
 	/**
@@ -131,7 +132,8 @@ final class __StackState__
 		xs._cached = sl;
 		
 		// Use the cached local instead
-		return new __StackResult__(sl, sl._type, sl.register, true);
+		return new __StackResult__(sl, sl._type, sl.register,
+			true, sl._nocounting);
 	}
 	
 	/**
@@ -149,15 +151,21 @@ final class __StackState__
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		// Set base register
 		Slot[] locals = this._locals;
-		Slot sl;
-		(sl = locals[__dx])._type = __t;
+		Slot sl = locals[__dx];
+		
+		// Set register details
+		sl._type = __t;
+		sl._nocounting = false;
 		
 		// Set top for wide local?
 		boolean wide;
 		if ((wide = __t.isWide()))
-			locals[__dx + 1]._type = __t.topType();
+		{
+			Slot xs = locals[__dx + 1];
+			xs._type = __t.topType();
+			xs._nocounting = false;
+		}
 		
 		// Just a narrow set
 		return new __StackResult__(sl, __t, sl.register);
@@ -202,7 +210,7 @@ final class __StackState__
 		for (int i = 0, n = locals.length; i < n; i++)
 		{
 			Slot s = locals[i];
-			if (s.isObject())
+			if (s.isObject() && !s._nocounting)
 				brv.add(s.register);
 		}
 		
@@ -214,7 +222,7 @@ final class __StackState__
 		for (int i = 0, n = this._stacktop; i < n; i++)
 		{
 			Slot s = stack[i];
-			if (s._cached == null && s.isObject())
+			if (s.isObject() && s._cached == null && !s._nocounting)
 				brv.add(s.register);
 		}
 		
@@ -255,7 +263,7 @@ final class __StackState__
 		
 		// The top-most entry is just a cache of the one before it
 		ps._cached = cs;
-		return new __StackResult__(cs, cs._type, cs.register, true);
+		return new __StackResult__(cs, cs._type, cs.register, true, true);
 	}
 	
 	/**
@@ -283,8 +291,9 @@ final class __StackState__
 		Slot cached = at._cached;
 		if (cached != null)
 			return new __StackResult__(cached, cached._type, cached.register,
-				true);
-		return new __StackResult__(at, at._type, at.register);
+				true, true);
+		return new __StackResult__(at, at._type, at.register,
+			false, at._nocounting);
 	}
 	
 	/**
@@ -315,8 +324,9 @@ final class __StackState__
 		Slot cached = at._cached;
 		if (cached != null)
 			return new __StackResult__(cached, cached._type, cached.register,
-				true);
-		return new __StackResult__(at, at._type, at.register);
+				true, true);
+		return new __StackResult__(at, at._type, at.register,
+			false, at._nocounting);
 	}
 	
 	/**
@@ -343,6 +353,7 @@ final class __StackState__
 		Slot at = stack[stacktop];
 		at._type = __t;
 		at._cached = null;
+		at._nocounting = false;
 		
 		// Set required top type
 		boolean wide;
@@ -351,6 +362,7 @@ final class __StackState__
 			Slot top = stack[++stacktop];
 			top._type = __t.topType();
 			top._cached = null;
+			top._nocounting = false;
 		}
 		
 		// Store new top
