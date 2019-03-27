@@ -68,6 +68,33 @@ final class __StackState__
 	}
 	
 	/**
+	 * Freezes the given state.
+	 *
+	 * @return The frozen state.
+	 * @since 2019/03/27
+	 */
+	public final __StackFreeze__ freeze()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Restores the state from a previously frozen state.
+	 *
+	 * @param __frz The state to restore from.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/27
+	 */
+	public final void fromState(__StackFreeze__ __frz)
+		throws NullPointerException
+	{
+		if (__frz == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Loads the Java state from the given stack map table state.
 	 *
 	 * @param __smt The state to read from.
