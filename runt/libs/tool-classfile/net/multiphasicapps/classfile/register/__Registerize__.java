@@ -11,6 +11,7 @@
 package net.multiphasicapps.classfile.register;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,6 +62,10 @@ final class __Registerize__
 	/** The instruction throws an exception, it must be checked. */
 	private boolean _exceptioncheck;
 	
+	/** Freezes which represent the state of following instructions. */
+	private final Map<Integer, __StackFreeze__> _freezes =
+		new HashMap<>();
+	
 	/** Exception handler combinations to generate. */
 	private final List<__ExceptionCombo__> _usedexceptions =
 		new ArrayList<>();
@@ -107,6 +112,7 @@ final class __Registerize__
 		StackMapTable stackmap = this.stackmap;
 		__StackState__ state = this.state;
 		RegisterCodeBuilder codebuilder = this.codebuilder;
+		Map<Integer, __StackFreeze__> freezes = this._freezes;
 		
 		// Scan the code to see if basic stack caching can be performed
 		this.__checkBasicStackCache();
@@ -128,13 +134,14 @@ final class __Registerize__
 			// generate an exception, this will reduce the code size greatly
 			this._exceptioncheck = false;
 			
-			// If there is a defined stack map table state (this will be for
-			// any kind of branch or exception handler), load that so it can
-			// be worked from
-			int pcaddr;
-			StackMapTableState smts = stackmap.get((pcaddr = addr));
-			if (smts != null)
-				state.fromState(smts);
+			// If there is a frozen state for this point, restore it
+			__StackFreeze__ freeze = freezes.get(addr);
+			if (freeze != null)
+				state.fromState(freeze);
+			
+			// Otherwise, store the frozen state for later
+			else
+				freezes.put(addr, state.freeze());
 			
 			// Process instructions
 			this.__process(inst);
@@ -147,7 +154,7 @@ final class __Registerize__
 			{
 				// Create jumping label for this exception
 				RegisterCodeLabel ehlab = new RegisterCodeLabel("exception",
-					this.__exceptionTrack(pcaddr));
+					this.__exceptionTrack(addr));
 				
 				// Just create a jump here
 				codebuilder.add(
@@ -395,6 +402,29 @@ final class __Registerize__
 		if (!bytecode.thisType().equals(__fr.className()))
 			return new AccessedField(FieldAccessTime.NORMAL, __at, __fr);
 		return new AccessedField(this.defaultfieldaccesstime, __at, __fr);
+	}
+	
+	/**
+	 * Freeze the state for an exception handler.
+	 *
+	 * @param __eh The exception handler target.
+	 * @since 2019/03/27
+	 */
+	private final void __freezeException(int __eh)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Freeze the state from control flow or a jump.
+	 *
+	 * @param __dz The destination targets, {@code -1} indicates the next
+	 * instruction.
+	 * @since 2019/03/27
+	 */
+	private final void __freezeJump(int... __dz)
+	{
+		throw new todo.TODO();
 	}
 	
 	/**
