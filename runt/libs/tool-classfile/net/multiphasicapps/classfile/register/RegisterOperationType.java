@@ -17,6 +17,54 @@ package net.multiphasicapps.classfile.register;
  */
 public interface RegisterOperationType
 {
+	/** Encoding: Special. */
+	public static final int ENCODING_SPECIAL =
+		0x00;
+	
+	/** Encoding: [U16]. */
+	public static final int ENCODING_U16 =
+		0x10;
+	
+	/** Encoding: [J16]. */
+	public static final int ENCODING_J16 =
+		0x20;
+	
+	/** Encoding: [U16, J16]. */
+	public static final int ENCODING_U16_J16 =
+		0x30;
+	
+	/** Encoding: [POOL16, U16]. */
+	public static final int ENCODING_POOL16_U16 =
+		0x40;
+	
+	/** Encoding: [U16, U16, J16]. */
+	public static final int ENCODING_U16_U16_J16 =
+		0x50;
+	
+	/** Encoding: [POOL16, U16, U16]. */
+	public static final int ENCODING_POOL16_U16_U16 =
+		0x60;
+	
+	/** Encoding: [U16, U16] (1). */
+	public static final int ENCODING_U16_U16 =
+		0x70;
+	
+	/** Encoding: [U16, U16] (2). */
+	public static final int ENCODING_U16_U16_2 =
+		0x80;
+	
+	/** Encoding: [U16, U16, U16]. */
+	public static final int ENCODING_U16_U16_U16 =
+		0x90:
+	
+	/** Encoding: [U16, U16, U16]. */
+	public static final int ENCODING_U16_U16_U16_2 =
+		0xA0:
+	
+	/** Encoding: [U16, U16, U16]. */
+	public static final int ENCODING_U16_U16_U16_3 =
+		0xB0:
+	
 	/** No operation. */
 	public static final int NOP =
 		0;
