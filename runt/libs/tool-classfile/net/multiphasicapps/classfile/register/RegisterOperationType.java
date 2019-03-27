@@ -101,6 +101,18 @@ public interface RegisterOperationType
 	public static final int JUMP_IF_INSTANCE_GET_EXCEPTION =
 		ENCODING_SPECIAL + 8;
 	
+	/** x32_field_load [u16]. */
+	public static final int X32_FIELD_LOAD =
+		ENCODING_SPECIAL + 9;
+	
+	/** x64_field_load [u16]. */
+	public static final int X64_FIELD_LOAD =
+		ENCODING_SPECIAL + 9;
+	
+	/** object_field_load [u16]. */
+	public static final int OBJECT_FIELD_LOAD =
+		ENCODING_SPECIAL + 9;
+	
 	/** jump. */
 	public static final int JUMP =
 		ENCODING_J16 + 0;

@@ -233,6 +233,8 @@ public final class RegisterOperationMnemonics
 				return "NOP";
 			case RegisterOperationType.OBJECT_COPY:
 				return "OBJECT_COPY";
+			case RegisterOperationType.OBJECT_FIELD_LOAD:
+				return "OBJECT_FIELD_LOAD";
 			case RegisterOperationType.RETURN:
 				return "RETURN";
 			case RegisterOperationType.SFIELD_LOAD_OBJECT:
@@ -261,10 +263,14 @@ public final class RegisterOperationMnemonics
 				return "X32_CONST";
 			case RegisterOperationType.X32_COPY:
 				return "X32_COPY";
+			case RegisterOperationType.X32_FIELD_LOAD:
+				return "X32_FIELD_LOAD";
 			case RegisterOperationType.X64_CONST:
 				return "X64_CONST";
 			case RegisterOperationType.X64_COPY:
 				return "X64_COPY";
+			case RegisterOperationType.X64_FIELD_LOAD:
+				return "X64_FIELD_LOAD";
 			
 				// Unknown
 			default:
