@@ -197,6 +197,52 @@ public final class RegisterInstruction
 	}
 	
 	/**
+	 * Returns the argument count of the operation.
+	 *
+	 * @param __op The operation to get the argument count of.
+	 * @return The number of used arguments.
+	 * @since 2019/03/27
+	 */
+	public static final int argumentCount(int __op)
+	{
+		// Depends on the encoding
+		switch (RegisterInstruction.encoding(__op))
+		{
+			case RegisterOperationType.NOP:
+			case RegisterOperationType.RETURN:
+				return 0;
+			
+			case RegisterOperationType.X32_CONST:
+			case RegisterOperationType.X64_CONST:
+			case RegisterOperationType.ENCODING_U16:
+			case RegisterOperationType.ENCODING_J16:
+				return 1;
+				
+			case RegisterOperationType.INVOKE_METHOD:
+			case RegisterOperationType.ENCODING_U16_J16:
+			case RegisterOperationType.ENCODING_POOL16_U16:
+			case RegisterOperationType.ENCODING_U16_U16:
+			case RegisterOperationType.ENCODING_U16_U16_2:
+				return 2;
+				
+			case RegisterOperationType.LOOKUPSWITCH:
+			case RegisterOperationType.JUMP_IF_INSTANCE:
+			case RegisterOperationType.ENCODING_U16_U16_J16:
+			case RegisterOperationType.ENCODING_POOL16_U16_U16:
+			case RegisterOperationType.ENCODING_U16_U16_U16:
+			case RegisterOperationType.ENCODING_U16_U16_U16_2:
+			case RegisterOperationType.ENCODING_U16_U16_U16_3:
+				return 3;
+				
+			case RegisterOperationType.JUMP_IF_INSTANCE_EXCEPTION_CLEAR:
+				return 4;
+				
+			case RegisterOperationType.TABLESWITCH:
+				return 6;
+		}
+	}
+	
+	/**
 	 * Returns the encoding of the given instruction.
 	 *
 	 * @param __op The operation to get the encoding of.
