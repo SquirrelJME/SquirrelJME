@@ -34,6 +34,9 @@ final class __StackResult__
 	/** Is this cached? */
 	public final boolean cached;
 	
+	/** Is this not being counted? */
+	public final boolean notcounting;
+	
 	/**
 	 * Initializes the result.
 	 *
@@ -53,6 +56,7 @@ final class __StackResult__
 		this.type = __jt;
 		this.register = __rl;
 		this.cached = false;
+		this.notcounting = false;
 	}
 	
 	/**
@@ -62,11 +66,12 @@ final class __StackResult__
 	 * @param __jt The Java type.
 	 * @param __rl The register location.
 	 * @param __ch Is this cached?
+	 * @param __nc Not counting this?
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/02/16
 	 */
 	__StackResult__(__StackState__.Slot __s, JavaType __jt, int __rl,
-		boolean __ch)
+		boolean __ch, boolean __nc)
 		throws NullPointerException
 	{
 		if (__s == null || __jt == null)
@@ -76,6 +81,7 @@ final class __StackResult__
 		this.type = __jt;
 		this.register = __rl;
 		this.cached = __ch;
+		this.notcounting = __nc;
 	}
 	
 	/**
@@ -97,6 +103,6 @@ final class __StackResult__
 	 */
 	public final boolean needsCounting()
 	{
-		return this.type.isObject() && !this.cached;
+		return this.type.isObject() && !this.cached && this.notcounting;
 	}
 }
