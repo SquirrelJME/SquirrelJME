@@ -181,16 +181,12 @@ public final class RegisterOperationMnemonics
 				return "INVOKE_METHOD";
 			case RegisterOperationType.JUMP:
 				return "JUMP";
-			case RegisterOperationType.JUMP:
-				return "JUMP";
-			case RegisterOperationType.JUMP_IF_EXCEPTION:
-				return "JUMP_IF_EXCEPTION";
 			case RegisterOperationType.JUMP_IF_EXCEPTION:
 				return "JUMP_IF_EXCEPTION";
 			case RegisterOperationType.JUMP_IF_INSTANCE:
 				return "JUMP_IF_INSTANCE";
-			case RegisterOperationType.JUMP_IF_RETURN:
-				return "JUMP_IF_RETURN";
+			case RegisterOperationType.JUMP_IF_INSTANCE_GET_EXCEPTION:
+				return "JUMP_IF_INSTANCE_GET_EXCEPTION";
 			case RegisterOperationType.JUMP_IF_RETURN:
 				return "JUMP_IF_RETURN";
 			case RegisterOperationType.LCMP:

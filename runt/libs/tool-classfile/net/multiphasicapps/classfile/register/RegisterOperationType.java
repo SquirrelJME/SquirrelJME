@@ -97,6 +97,10 @@ public interface RegisterOperationType
 	public static final int JUMP_IF_INSTANCE =
 		ENCODING_SPECIAL + 7;
 	
+	/** jump_if_instance_get_exception [pool16, u16, j16, u16]. */
+	public static final int JUMP_IF_INSTANCE_GET_EXCEPTION =
+		ENCODING_SPECIAL + 8;
+	
 	/** jump. */
 	public static final int JUMP =
 		ENCODING_J16 + 0;
@@ -212,18 +216,6 @@ public interface RegisterOperationType
 	/** new_array_const. */
 	public static final int NEW_ARRAY_CONST =
 		ENCODING_POOL16_U16_U16 + 12;
-
-	/** jump. */
-	public static final int JUMP =
-		ENCODING_U16 + 0;
-
-	/** jump_if_exception. */
-	public static final int JUMP_IF_EXCEPTION =
-		ENCODING_U16 + 1;
-
-	/** jump_if_return. */
-	public static final int JUMP_IF_RETURN =
-		ENCODING_U16 + 2;
 
 	/** ifeq/ifnull. */
 	public static final int IFEQ =
