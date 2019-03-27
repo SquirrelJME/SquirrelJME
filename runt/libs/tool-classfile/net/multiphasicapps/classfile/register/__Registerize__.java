@@ -66,6 +66,10 @@ final class __Registerize__
 	private final Map<Integer, __StackFreeze__> _freezes =
 		new HashMap<>();
 	
+	/** Mapping of all instructions which jump to a given instruction. */
+	private final Map<Integer, List<Integer>> _jumpfroms =
+		new HashMap<>();
+	
 	/** Exception handler combinations to generate. */
 	private final List<__ExceptionCombo__> _usedexceptions =
 		new ArrayList<>();
@@ -74,6 +78,10 @@ final class __Registerize__
 	private final Map<__ObjectPositionsSnapshot__, RegisterCodeLabel>
 		_returns =
 		new LinkedHashMap<>();
+	
+	/** The current PC being processed. */
+	private int _currentprocesspc =
+		-1;
 	
 	/** Next returning index? */
 	private int _nextreturndx;
@@ -113,9 +121,13 @@ final class __Registerize__
 		__StackState__ state = this.state;
 		RegisterCodeBuilder codebuilder = this.codebuilder;
 		Map<Integer, __StackFreeze__> freezes = this._freezes;
+		Map<Integer, List<Integer>> jumpfroms = this._jumpfroms;
 		
 		// Scan the code to see if basic stack caching can be performed
 		this.__checkBasicStackCache();
+		
+		// Scan the code for jumps
+		this.__checkJumps();
 		
 		// Process every instruction
 		for (Instruction inst : bytecode)
@@ -127,8 +139,25 @@ final class __Registerize__
 			int addr = inst.address();
 			codebuilder.setSourceLine(bytecode.lineOfAddress(addr));
 			
+			// If this instruction is jumped to from a future address then
+			// we need to invalidate our cache
+			List<Integer> frompcs = jumpfroms.get(addr);
+			if (frompcs != null)
+				for (int i = 0, n = frompcs.size(); i < n; i++)
+				{
+					// Ignore jump to selfs and source addresses in the pas
+					int frompc = frompcs.get(i);
+					if (frompc <= addr)
+						continue;
+					
+					throw new todo.TODO();
+				}
+			
 			// Add label to refer to this instruction in Java terms
 			codebuilder.label("java", addr);
+			
+			// Used for back jumping detection
+			this._currentprocesspc = addr;
 			
 			// Clear the exception check since not every instruction will
 			// generate an exception, this will reduce the code size greatly
@@ -153,8 +182,7 @@ final class __Registerize__
 			if (this._exceptioncheck)
 			{
 				// Create jumping label for this exception
-				RegisterCodeLabel ehlab = new RegisterCodeLabel("exception",
-					this.__exceptionTrack(addr));
+				RegisterCodeLabel ehlab = this.__exceptionTrack(addr);
 				
 				// Just create a jump here
 				codebuilder.add(
@@ -289,6 +317,16 @@ final class __Registerize__
 	}
 	
 	/**
+	 * Checks the code for jumps.
+	 *
+	 * @since 2019/03/27
+	 */
+	private final void __checkJumps()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Generates exception handler code for the given index.
 	 *
 	 * @param __ec The combo to generate for.
@@ -367,7 +405,7 @@ final class __Registerize__
 	 * @return The exception combo index.
 	 * @since 2019/03/22
 	 */
-	private final int __exceptionTrack(int __pc)
+	private final RegisterCodeLabel __exceptionTrack(int __pc)
 	{
 		// Create combo for the object and exception data
 		__ExceptionCombo__ ec = this.exceptiontracker.createCombo(
@@ -377,12 +415,14 @@ final class __Registerize__
 		List<__ExceptionCombo__> usedexceptions = this._usedexceptions;
 		int dx = usedexceptions.indexOf(ec);
 		if (dx >= 0)
-			return dx;
+			return new RegisterCodeLabel("exception", dx);
 		
 		// Otherwise just add it
 		dx = usedexceptions.size();
 		usedexceptions.add(ec);
-		return dx;
+		
+		// Label to jump to
+		return new RegisterCodeLabel("exception", dx);
 	}
 	
 	/**
@@ -410,30 +450,11 @@ final class __Registerize__
 	}
 	
 	/**
-	 * Freeze the state for an exception handler.
+	 * Creates a label referring to a Java address, this could be replaced
+	 * potentially.
 	 *
-	 * @param __eh The exception handler target.
-	 * @since 2019/03/27
-	 */
-	private final void __freezeException(int __eh)
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * Freeze the state from control flow or a jump.
-	 *
-	 * @param __dz The destination targets, {@code -1} indicates the next
-	 * instruction.
-	 * @since 2019/03/27
-	 */
-	private final void __freezeJump(int... __dz)
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * Refers to a freeze label in the event there is a state mismatch.
+	 * This method should be called after all stack operations have been
+	 * performed, otherwise it may result in a confusing state.
 	 *
 	 * @param __addr The address to point to.
 	 * @return The label to jump to.
@@ -441,6 +462,17 @@ final class __Registerize__
 	 */
 	private final RegisterCodeLabel __javaLabel(int __addr)
 	{
+		// If the address we are jumping to is at a future point we can use
+		// a simple jump ahead
+		int currentprocesspc = this._currentprocesspc;
+		if (__addr >= currentprocesspc)
+			return new RegisterCodeLabel("java", __addr);
+		
+		// Otherwise we will need to uncount any local variables which are
+		// not at the previous location. Additionally since that past
+		// instruction would have had its caches and counts completely wiped
+		// we need to do the same when entering to make sure it matches the
+		// same state
 		throw new todo.TODO();
 	}
 	
