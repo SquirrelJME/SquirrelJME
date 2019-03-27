@@ -1,0 +1,77 @@
+# 2019/03/26
+
+## 14:53
+
+Got more code generated. The duplicate UNCOUNT+RETURN pairs still seem to be
+happening in this second constructor. Not sure why they are appearing, they
+should not.
+
+## 14:54
+
+Oh, the next return index is never incremented.
+
+## 15:07
+
+Okay, so it seems like the operation tables are not considered the same? The
+stack entries should be freed but it appears no code is generated for them
+just the zero uncount.
+
+## 15:10
+
+A left over from when I cut and pasted the return stuff over. The return
+points were different but I was only handling the final state which was
+incorrect.
+
+## 15:43
+
+I wonder if I can make it so that before a final return I can handle
+exceptions first or similar. But that would probably complicate things.
+
+## 17:21
+
+I need to keep track of what has been counted and not counted. For example
+input arguments to a method do not need to be counted because they are
+passed already. As such they should not be uncounted at the end. I definitely
+will need a more advanced state tracker. I mean if an object is sent to a
+method then it will always have at least one reference then it does not
+need to be freed. I definitely need to refactor things. I think having a
+more standard instruction format will help as well. I should refactor this
+now before I continue so that way it does not get extremely messy. But for
+the code builder, I will do checks to ensure that only the right instruction
+format is used for writing to prevent programmatical errors from occuring.
+So as it stands I am going to have quite a mess of instructions.
+
+## 17:34
+
+I definitely want to store the encoding type in the operation, so I guess the
+number of encodings may be a bit small perhaps. How much can I fit in 8-bits?
+So here is a table:
+
+ * Enc (Max) : Op (Max)
+ *   1 (  2) :  7 (128)
+ *   2 (  4) :  6 ( 64)
+ *   3 (  8) :  5 ( 32)
+ *   4 ( 16) :  4 ( 16)
+ *   5 ( 32) :  3 (  8)
+ *   6 ( 64) :  2 (  4)
+ *   7 (128) :  1 (  2)
+
+I mean realistically if I run out of room I can have encoding groups that are
+the same for two different groups. I know the encoding group that would be
+the biggest would be the math and conversion operations which convert from one
+type to another. I will have to make a spreadsheet and the encodings just to
+see how the layout is. Of course each operation would be a unique instruction
+the encoding just describes what it looks like. So I think 4-bits will work,
+have 16 different encoding types with 16 instructions each. For the tons of
+math operations they can just be last and use one big group since there are
+definitely more than 16 of them.
+
+## 19:40
+
+Okay I have a table of operations and it seems the most efficient is 8 groups
+of 32 which can pretty much fit everything.
+
+## 19:42
+
+But I can have 16 groups of 16 instructions. Currently I have 114 instructions
+taking up 13 groups, so that works. The three u16 group takes up 4 groups!
