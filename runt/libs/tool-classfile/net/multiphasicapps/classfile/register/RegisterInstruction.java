@@ -125,6 +125,17 @@ public final class RegisterInstruction
 	}
 	
 	/**
+	 * Returns the encoding of this instruction.
+	 *
+	 * @return The instruction encoding.
+	 * @since 2019/03/27
+	 */
+	public final int encoding()
+	{
+		return RegisterInstruction.encoding(this.op);
+	}
+	
+	/**
 	 * Obtains the given argument as an integer.
 	 *
 	 * @param __i The argument to get.
@@ -183,6 +194,24 @@ public final class RegisterInstruction
 				Arrays.asList(this._args)));
 		
 		return rv;
+	}
+	
+	/**
+	 * Returns the encoding of the given instruction.
+	 *
+	 * @param __op The operation to get the encoding of.
+	 * @return The encoding for the given operation.
+	 * @since 2019/03/24
+	 */
+	public static final int encoding(int __op)
+	{
+		// Special operations all use unique encodings so just return their
+		// opcode, while all of the other operations use one of the pre-defined
+		// encodings.
+		int upper = __op & 0xF0;
+		if (upper != RegisterOperationType.ENCODING_SPECIAL)
+			return upper;
+		return __op;
 	}
 }
 
