@@ -34,9 +34,16 @@ final class __MinimizerFieldSort__
 	 */
 	public int compare(Field __a, Field __b)
 	{
-		// Compare sizes first to force alignables to be close to each other
+		// Make objects always first so we can quickly scan through objects
+		// when clearing references out
 		PrimitiveType pa = __a.type().primitiveType(),
 			pb = __b.type().primitiveType();
+		if (pa == null && pb != null)
+			return -1;
+		else if (pa != null && pb == null)
+			return 1;
+		
+		// Compare sizes first to force alignables to be close to each other
 		int sa = (pa == null ? 4 : pa.bytes()),
 			sb = (pb == null ? 4 : pb.bytes());
 		int rv = sa - sb;
