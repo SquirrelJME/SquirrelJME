@@ -65,6 +65,38 @@ public interface RegisterOperationType
 	public static final int ENCODING_U16_U16_U16_3 =
 		0xB0:
 	
+	/** nop []. */
+	public static final int NOP =
+		ENCODING_SPECIAL + 0;
+
+	/** return []. */
+	public static final int RETURN =
+		ENCODING_SPECIAL + 1;
+
+	/** invoke_method [pool16, reglist]. */
+	public static final int INVOKE_METHOD =
+		ENCODING_SPECIAL + 2;
+
+	/** x32_const [u32, u16]. */
+	public static final int X32_CONST =
+		ENCODING_SPECIAL + 3;
+
+	/** x64_const [u64, u16]. */
+	public static final int X64_CONST =
+		ENCODING_SPECIAL + 4;
+
+	/** lookupswitch [u16, u16, [i32, i32, j16]...]. */
+	public static final int LOOKUPSWITCH =
+		ENCODING_SPECIAL + 5;
+
+	/** tableswitch [u16, i32, i32, i32, u16, [i32, j16]...]. */
+	public static final int TABLESWITCH =
+		ENCODING_SPECIAL + 6;
+
+	/** jump_if_instance [pool16, u16, j16]. */
+	public static final int JUMP_IF_INSTANCE =
+		ENCODING_SPECIAL + 7;
+	
 	/** No operation. */
 	public static final int NOP =
 		0;
