@@ -119,7 +119,7 @@ public final class RegisterInstruction
 	 * @return The argument count.
 	 * @since 2019/03/23
 	 */
-	public int count()
+	public int argumentCount()
 	{
 		return this._args.length;
 	}
