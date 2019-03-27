@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.classfile.register;
 
+import net.multiphasicapps.classfile.JavaType;
 import net.multiphasicapps.classfile.PrimitiveType;
 
 /**
@@ -44,6 +45,117 @@ public enum DataType
 	;
 	
 	/**
+	 * Returns the operation used for copies.
+	 *
+	 * @param __nc Is counting needed?
+	 * @since 2019/03/27
+	 */
+	public static final int copyOperation(boolean __nc)
+	{
+		switch (this)
+		{
+			case OBJECT:
+				if (__nc)
+					return RegisterOperationType.OBJECT_COPY;
+				return RegisterOperationType.X32_COPY;
+			
+			case BYTE:
+			case SHORT:
+			case INTEGER:
+			case FLOAT:
+				return RegisterOperationType.X32_COPY;
+			
+			case LONG:
+			case DOUBLE:
+				return RegisterOperationType.X64_COPY;
+		}
+		
+		// Should not be reached
+		throw new todo.OOPS();
+	}
+	
+	/**
+	 * Returns the operation that should be used to operate on the field.
+	 *
+	 * @param __static Is the field static?
+	 * @param __write Is the field written to?
+	 * @return The operation to use when accessing a field of this type.
+	 * @since 2019/03/27
+	 */
+	public static final int fieldOperation(boolean __static, boolean __write)
+	{
+		if (__static)
+			if (__write)
+				switch (this)
+				{
+					case POINTER:
+						return RegisterOperationType.SFIELD_STORE_OBJECT;
+					case BYTE:
+						return RegisterOperationType.SFIELD_STORE_X8;
+					case SHORT:
+						return RegisterOperationType.SFIELD_STORE_X16;
+					case INTEGER:
+					case FLOAT:
+						return RegisterOperationType.SFIELD_STORE_X32;
+					case LONG:
+					case DOUBLE:
+						return RegisterOperationType.SFIELD_STORE_X64;
+				}
+			else
+				switch (this)
+				{
+					case POINTER:
+						return RegisterOperationType.SFIELD_LOAD_OBJECT;
+					case BYTE:
+						return RegisterOperationType.SFIELD_LOAD_X8;
+					case SHORT:
+						return RegisterOperationType.SFIELD_LOAD_X16;
+					case INTEGER:
+					case FLOAT:
+						return RegisterOperationType.SFIELD_LOAD_X32;
+					case LONG:
+					case DOUBLE:
+						return RegisterOperationType.SFIELD_LOAD_X64;
+				}
+		else
+			if (__write)
+				switch (this)
+				{
+					case POINTER:
+						return RegisterOperationType.IFIELD_STORE_OBJECT;
+					case BYTE:
+						return RegisterOperationType.IFIELD_STORE_X8;
+					case SHORT:
+						return RegisterOperationType.IFIELD_STORE_X16;
+					case INTEGER:
+					case FLOAT:
+						return RegisterOperationType.IFIELD_STORE_X32;
+					case LONG:
+					case DOUBLE:
+						return RegisterOperationType.IFIELD_STORE_X64;
+				}
+			else
+				switch (this)
+				{
+					case POINTER:
+						return RegisterOperationType.IFIELD_LOAD_OBJECT;
+					case BYTE:
+						return RegisterOperationType.IFIELD_LOAD_X8;
+					case SHORT:
+						return RegisterOperationType.IFIELD_LOAD_X16;
+					case INTEGER:
+					case FLOAT:
+						return RegisterOperationType.IFIELD_LOAD_X32;
+					case LONG:
+					case DOUBLE:
+						return RegisterOperationType.IFIELD_LOAD_X64;
+				}
+		
+		// Should not be reached
+		throw new todo.OOPS();
+	}
+	
+	/**
 	 * Returns the data type used for the primitive type.
 	 *
 	 * @param __t The type to use, {@code null} is treated as a pointer.
@@ -68,6 +180,23 @@ public enum DataType
 			default:
 				throw new todo.OOPS(__t.toString());
 		}
+	}
+	
+	/**
+	 * Returns the data type of the given Java type.
+	 *
+	 * @param __t The type to get.
+	 * @return The data type used for this type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/27
+	 */
+	public static final DataType of(JavaType __t)
+		throws NullPointerException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		return DataType.of(__t.primitiveType());
 	}
 }
 

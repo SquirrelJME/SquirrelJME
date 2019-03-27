@@ -77,4 +77,26 @@ final class __StackResult__
 		this.register = __rl;
 		this.cached = __ch;
 	}
+	
+	/**
+	 * Is this result cached?
+	 *
+	 * @return If this result is cached.
+	 * @since 2019/03/27
+	 */
+	public final boolean isCached()
+	{
+		return this.cached;
+	}
+	
+	/**
+	 * Does this result need counting when it is operated on?
+	 *
+	 * @return If this needs counting.
+	 * @since 2019/03/27
+	 */
+	public final boolean needsCounting()
+	{
+		return this.type.isObject() && !this.cached;
+	}
 }

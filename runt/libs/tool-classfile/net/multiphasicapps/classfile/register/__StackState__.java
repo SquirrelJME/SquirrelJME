@@ -401,6 +401,9 @@ final class __StackState__
 		/** Is this slot written to? */
 		boolean _written;
 		
+		/** Reference counting is not enabled for this value. */
+		boolean _nocounting;
+		
 		/** Is this currently a cache from a local? */
 		private Slot _cached;
 		
