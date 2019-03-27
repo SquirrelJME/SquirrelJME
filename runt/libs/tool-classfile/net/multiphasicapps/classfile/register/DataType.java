@@ -55,7 +55,7 @@ public enum DataType
 	{
 		switch (this)
 		{
-			case OBJECT:
+			case POINTER:
 				if (__nc)
 					return RegisterOperationType.OBJECT_COPY;
 				return RegisterOperationType.X32_COPY;
@@ -248,7 +248,7 @@ public enum DataType
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		return DataType.of(__t.primitiveType());
+		return DataType.of(__t.type().primitiveType());
 	}
 }
 
