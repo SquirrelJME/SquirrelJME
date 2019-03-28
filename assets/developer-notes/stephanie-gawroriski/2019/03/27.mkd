@@ -1,0 +1,46 @@
+# 2019/03/27
+
+## 10:20
+
+Okay so this refactor is going nicely. I do like that all the instructions
+have been pre-planned out. This time right now almost all of the encodings
+have code to write them to the output stream, and this handles the bulk of
+the instructions. So I really do not need to worry about how the instructions
+are written out for the time being. I pretty much just have to pick the right
+instructions to use and their correct encoding of course. Once those are
+translated, I am going to need to add a pre-counted flag to the stack state
+slots so that way useless counting/uncounting is removed especially with
+method arguments and such. But in the long run at least my second
+constructor should end up being much shorter since if I will stop counting
+the locals for uncounting there would be no need to clear them. Additionally
+this can handle constant classes and strings as well.
+
+## 13:22
+
+Actually, since on the stack I might need to uncount the field instances
+there might be no way to do that. So what I need is that when a field is read
+it will store the value into temporary register which is then read from.
+
+## 13:36
+
+Actually, since I already allocated the instruction space and it will be tough
+to move things around, I figure what I can do for field puts and stores is
+that if the register argument is -1 it will be treated as: store it in the
+field register.
+
+## 14:28
+
+Just realized the stack map states since now that I have caching and such,
+that information would be lost for any jump target. When initializing from
+nothing, I need to setup the proper state with no caches.
+
+## 15:04
+
+Actually I was thinking, I do not need to do any of the freeze jump label
+stuff really. What I can do instead of just create a mapping of which
+instructions jump to a given point. If an instruction is jumped to from a
+future point (a loop), at that point before I create the Java label I can
+undo the caches and counts on the stack then resume from there. I think
+that would be the simplest way to go without requiring back processing
+or otherwise. This of course would be for any jump including exception
+handlers.
