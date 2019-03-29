@@ -333,11 +333,11 @@ public final class System
 				
 				// Non-standard e-mail address
 			case "java.vendor.email":
-				return "xer@multiphasicapps.net";
+				return "xerthesquirrel@gmail.com";
 				
 				// The URL to the virtual machine's site
 			case "java.vendor.url":
-				return "http://multiphasicapps.net/";
+				return "http://squirreljme.ccl/";
 				
 				// The name of the runtime library
 			case "java.runtime.name":
