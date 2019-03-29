@@ -337,7 +337,7 @@ public final class System
 				
 				// The URL to the virtual machine's site
 			case "java.vendor.url":
-				return "http://squirreljme.ccl/";
+				return "http://squirreljme.cc/";
 				
 				// The name of the runtime library
 			case "java.runtime.name":
