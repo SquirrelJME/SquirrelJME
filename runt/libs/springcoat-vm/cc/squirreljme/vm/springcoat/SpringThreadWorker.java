@@ -1656,7 +1656,7 @@ public final class SpringThreadWorker
 				// VM e-mail
 			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
 				"javaVMEmail:()Ljava/lang/String;":
-				return "xer@multiphasicapps.net";
+				return "xerthesquirrel@gmail.com";
 				
 				// VM name
 			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
@@ -1666,7 +1666,7 @@ public final class SpringThreadWorker
 				// VM URL
 			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
 				"javaVMURL:()Ljava/lang/String;":
-				return "http://multiphasicapps.net/";
+				return "http://squirreljme.cc/";
 				
 				// VM vendor
 			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
