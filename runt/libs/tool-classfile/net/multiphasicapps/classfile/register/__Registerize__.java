@@ -934,9 +934,13 @@ final class __Registerize__
 		// Allocation may fail or the class could be invalid
 		this._exceptioncheck = true;
 		
+		// Just the type is pushed to the stack
+		JavaStackResult result = this._stack.doStack(0, new JavaType(__cn));
+		this._stack = result.after();
+		
 		// Allocate and store into register
 		this.codebuilder.add(RegisterOperationType.NEW,
-			__cn, this.state.stackPush(new JavaType(__cn)).register);
+			__cn, result.out(0).register);
 	}
 	
 	/**
