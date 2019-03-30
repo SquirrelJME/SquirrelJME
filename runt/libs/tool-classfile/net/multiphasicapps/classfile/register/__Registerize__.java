@@ -541,10 +541,15 @@ final class __Registerize__
 	 * Generates code to enqueue registers, if there are any.
 	 *
 	 * @param __r The registers to enqueue.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/30
 	 */
-	private final void __refEnqueue(int... __r)
+	private final void __refEnqueue(JavaStackEnqueueList __r)
+		throws NullPointerException
 	{
+		if (__r == null)
+			throw new NullPointerException("NARG");
+		
 		throw new todo.TODO();
 	}
 	
