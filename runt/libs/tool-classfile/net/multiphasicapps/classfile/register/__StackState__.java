@@ -484,7 +484,7 @@ final class __StackState__
 		 * @param __vr The virtual register index.
 		 * @since 2019/02/16
 		 */
-		private Slot(int __vr)
+		Slot(int __vr)
 		{
 			this.register = __vr;
 		}
