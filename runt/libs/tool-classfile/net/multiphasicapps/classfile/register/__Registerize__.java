@@ -678,49 +678,28 @@ final class __Registerize__
 		if (__fr == null)
 			throw new NullPointerException("NARG");
 		
-		__StackState__ state = this.state;
-		RegisterCodeBuilder codebuilder = this.codebuilder;
-		
-		// The data type determined which instruction to use
+		// The data type determines which instruction to use
 		DataType dt = DataType.of(__fr.memberType().primitiveType());
 		
 		// Field access information
 		AccessedField ac = this.__fieldAccess(FieldAccessType.INSTANCE, __fr);
 		
-		// The instance of the object to read from along with where the object
-		// goes
-		__StackResult__ inst = state.stackPop(),
-			dest = state.stackPush(new JavaType(__fr.memberType()));
+		// Do stack operations
+		JavaStackResult result = this._stack.doStack(1,
+			new JavaType(__fr.memberType()));
+		this._stack = result.after();
 		
-		// If the instance needs counting, before we can replace it we need
-		// to read the field
-		if (inst.needsCounting())
-		{
-			// Load value into the field register first
-			codebuilder.add(dt.fieldAccessOperation(false, false),
-				ac,
-				inst.register,
-				-1);
-			
-			// Uncount the instance
-			codebuilder.add(RegisterOperationType.UNCOUNT,
-				inst.register);
-			
-			// Load from the field register
-			codebuilder.add(
-				dt.fieldRegisterOperation(dest.needsCounting(), false),
-				dest.register);
-		}
+		// Enqueue instance possibly
+		this.__refEnqueue(result.enqueue());
 		
-		// Otherwise if it does not need uncounting, we can just overwrite
-		// the value here
-		else
-		{
-			codebuilder.add(dt.fieldAccessOperation(false, false),
-				ac,
-				inst.register,
-				dest.register);
-		}
+		// Generate code
+		this.codebuilder.add(dt.fieldAccessOperation(false, false),
+			ac,
+			result.in(0).register,
+			result.out(0).register);
+		
+		// Clear references
+		this.__refClear();
 	}
 	
 	/**
