@@ -969,7 +969,7 @@ final class __Registerize__
 			value.in(1).register);
 		
 		// Run operations on stack output
-		this.__stackGenerateCode(result);
+		this.__stackBumpOut(true, result);
 		
 		// Pop value from stack
 		__StackResult__ value = this.state.stackPop();
