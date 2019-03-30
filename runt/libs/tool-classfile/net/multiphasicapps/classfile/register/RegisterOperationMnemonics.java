@@ -324,6 +324,10 @@ public final class RegisterOperationMnemonics
 				return "REF_ENQUEUE";
 			case RegisterOperationType.REF_CLEAR:
 				return "REF_CLEAR";
+			case RegisterOperationType.IFEQ_REF_CLEAR:
+				return "IFEQ_REF_CLEAR";
+			case RegisterOperationType.IFNE_REF_CLEAR:
+				return "IFNE_REF_CLEAR";
 			
 				// Unknown
 			default:
