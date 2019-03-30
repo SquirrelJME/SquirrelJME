@@ -562,7 +562,7 @@ final class __Registerize__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/22
 	 */
-	private final RegisterCodeLabel __return(__ObjectPositionsSnapshot__ __ops)
+	private final RegisterCodeLabel __return(JavaStackEnqueueList __ops)
 		throws NullPointerException
 	{
 		if (__ops == null)
@@ -571,8 +571,7 @@ final class __Registerize__
 		RegisterCodeBuilder codebuilder = this.codebuilder;
 		
 		// Try to get existing labels
-		Map<__ObjectPositionsSnapshot__, RegisterCodeLabel> returns =
-			this._returns;
+		Map<JavaStackEnqueueList, RegisterCodeLabel> returns = this._returns;
 		RegisterCodeLabel label = returns.get(__ops);
 		
 		// Debug
