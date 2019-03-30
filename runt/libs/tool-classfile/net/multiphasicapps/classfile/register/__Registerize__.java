@@ -29,6 +29,7 @@ import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
 import net.multiphasicapps.classfile.InstructionJumpTarget;
+import net.multiphasicapps.classfile.InstructionJumpTargets;
 import net.multiphasicapps.classfile.JavaType;
 import net.multiphasicapps.classfile.MethodReference;
 import net.multiphasicapps.classfile.PrimitiveType;
@@ -65,12 +66,11 @@ final class __Registerize__
 	/** The instruction throws an exception, it must be checked. */
 	private boolean _exceptioncheck;
 	
+	/** Reverse jump table. */
+	private Map<Integer, InstructionJumpTargets> _revjumps;
+	
 	/** Freezes which represent the state of following instructions. */
 	private final Map<Integer, __StackFreeze__> _freezes =
-		new HashMap<>();
-	
-	/** Mapping of all instructions which jump to a given instruction. */
-	private final Map<Integer, Set<Integer>> _jumpfroms =
 		new HashMap<>();
 	
 	/** Exception handler combinations to generate. */
@@ -109,6 +109,9 @@ final class __Registerize__
 		this.defaultfieldaccesstime = ((__bc.isInstanceInitializer() ||
 			__bc.isStaticInitializer()) ? FieldAccessTime.INITIALIZER :
 			FieldAccessTime.NORMAL);
+		
+		// Load reverse jump table
+		this._revjumps = __bc.reverseJumpTargets();
 	}
 	
 	/**
@@ -124,13 +127,10 @@ final class __Registerize__
 		__StackState__ state = this.state;
 		RegisterCodeBuilder codebuilder = this.codebuilder;
 		Map<Integer, __StackFreeze__> freezes = this._freezes;
-		Map<Integer, Set<Integer>> jumpfroms = this._jumpfroms;
+		Map<Integer, InstructionJumpTargets> revjumps = this._revjumps;
 		
 		// Scan the code to see if basic stack caching can be performed
 		this.__checkBasicStackCache();
-		
-		// Scan the code for jumps
-		this.__checkJumps();
 		
 		// Process every instruction
 		for (Instruction inst : bytecode)
@@ -143,17 +143,13 @@ final class __Registerize__
 			codebuilder.setSourceLine(bytecode.lineOfAddress(addr));
 			
 			// If this instruction is jumped to from a future address then
-			// we need to invalidate our cache
-			Collection<Integer> frompcs = jumpfroms.get(addr);
-			if (frompcs != null)
-				for (int frompc : frompcs)
-				{
-					// Ignore jump to selfs and source addresses in the past
-					if (frompc <= addr)
-						continue;
-					
-					throw new todo.TODO();
-				}
+			// we need to invalidate our cached stack items
+			// This is done to keep the code generator simpler so it does not
+			// have to mess around with various different steps and we can
+			// keep processing the method linearly
+			InstructionJumpTargets ijt = revjumps.get(addr);
+			if (ijt != null && ijt.hasLaterAddress(addr))
+				throw new todo.TODO();
 			
 			// Add label to refer to this instruction in Java terms
 			codebuilder.label("java", addr);
@@ -316,78 +312,6 @@ final class __Registerize__
 		
 		// Debug
 		todo.DEBUG.note("QuickCache: %s", state);
-	}
-	
-	/**
-	 * Checks the code for jumps.
-	 *
-	 * @since 2019/03/27
-	 */
-	private final void __checkJumps()
-	{
-		Map<Integer, Set<Integer>> jumpfroms = this._jumpfroms;
-		List<Integer> fill = new ArrayList<>();
-		
-		// Go through every instruction and load the jump targets
-		ByteCode bytecode = this.bytecode;
-		ExceptionHandlerTable eht = bytecode.exceptions();
-		for (Instruction inst : this.bytecode)
-		{
-			// Clear the fill
-			fill.clear();
-			
-			// Depending on the operation set te jump target
-			switch (inst.operation())
-			{
-				case InstructionIndex.IFEQ:
-				case InstructionIndex.IFNE:
-				case InstructionIndex.IFLT:
-				case InstructionIndex.IFLE:
-				case InstructionIndex.IFGT:
-				case InstructionIndex.IFGE:
-				case InstructionIndex.IF_ICMPEQ:
-				case InstructionIndex.IF_ICMPNE:
-				case InstructionIndex.IF_ICMPLT:
-				case InstructionIndex.IF_ICMPLE:
-				case InstructionIndex.IF_ICMPGT:
-				case InstructionIndex.IF_ICMPGE:
-				case InstructionIndex.IF_ACMPEQ:
-				case InstructionIndex.IF_ACMPNE:
-					fill.add(inst.<InstructionJumpTarget>argument(0,
-						InstructionJumpTarget.class).target());
-					break;
-				
-				case InstructionIndex.LOOKUPSWITCH:
-					throw new todo.TODO();
-				
-				case InstructionIndex.TABLESWITCH:
-					throw new todo.TODO();
-				
-					// Not a branch
-				default:
-					continue;
-			}
-			
-			// Go through the exception handlers
-			int thisaddr = inst.address();
-			for (ExceptionHandler eh : eht)
-				if (eh.inRange(thisaddr))
-					fill.add(eh.handlerAddress());
-			
-			// Fill in target jump table
-			Integer ithisaddr = thisaddr;
-			for (Integer j : fill)
-			{
-				Set<Integer> froms = jumpfroms.get(j);
-				if (froms == null)
-					jumpfroms.put(j, (froms = new LinkedHashSet<>()));
-				
-				froms.add(ithisaddr);
-			}
-		}
-		
-		// Debug
-		todo.DEBUG.note("Froms: %s", jumpfroms);
 	}
 	
 	/**

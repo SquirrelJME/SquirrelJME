@@ -66,6 +66,20 @@ public final class InstructionJumpTargets
 	}
 	
 	/**
+	 * Checks if any of the jump targets has an address which follows the
+	 * given address.
+	 *
+	 * @param __pc The address to check.
+	 * @return True if any address in the jump targets has an address which
+	 * is higher than this address.
+	 * @since 2019/03/30
+	 */
+	public final boolean hasLaterAddress(int __pc)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2019/03/30
 	 */
