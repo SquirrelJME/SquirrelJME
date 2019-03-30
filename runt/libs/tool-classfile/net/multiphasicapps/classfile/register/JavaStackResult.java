@@ -11,6 +11,7 @@ package net.multiphasicapps.classfile.register;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.classfile.JavaType;
 
 /**
  * This represents the result of operations performed on the Java stack.
@@ -92,6 +93,17 @@ public final class JavaStackResult
 	}
 	
 	/**
+	 * Returns the number of generated inputs.
+	 *
+	 * @return The input count.
+	 * @since 2019/03/30
+	 */
+	public final int inCount()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Returns the information on the output.
 	 *
 	 * @param __i The output to get.
@@ -99,6 +111,17 @@ public final class JavaStackResult
 	 * @since 2019/03/30
 	 */
 	public final JavaStackResult.Output out(int __i)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the number of generated outputs.
+	 *
+	 * @return The output count.
+	 * @since 2019/03/30
+	 */
+	public final int outCount()
 	{
 		throw new todo.TODO();
 	}
@@ -123,6 +146,10 @@ public final class JavaStackResult
 		/** The register used for input. */
 		public final int register =
 			-1;
+		
+		/** The type which was read. */
+		public final JavaType type =
+			null;
 	}
 	
 	/**

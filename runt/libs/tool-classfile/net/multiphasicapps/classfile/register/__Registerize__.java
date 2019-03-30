@@ -31,6 +31,7 @@ import net.multiphasicapps.classfile.InstructionIndex;
 import net.multiphasicapps.classfile.InstructionJumpTarget;
 import net.multiphasicapps.classfile.InstructionJumpTargets;
 import net.multiphasicapps.classfile.JavaType;
+import net.multiphasicapps.classfile.MethodHandle;
 import net.multiphasicapps.classfile.MethodReference;
 import net.multiphasicapps.classfile.PrimitiveType;
 import net.multiphasicapps.classfile.StackMapTable;
@@ -788,37 +789,35 @@ final class __Registerize__
 		// The invoked method may throw an exception
 		this._exceptioncheck = true;
 		
-		// The old top of the stack is used to determine how many arguments
-		// to forward (into the locals)
-		__StackState__ state = this.state;
-		int oldtop = state.stackTopRegister();
+		// Return value type, if any
+		MethodHandle mf = __r.handle();
+		FieldDescriptor rv = mf.descriptor().returnValue();
+		boolean hasrv = (rv != null);
 		
-		// Registers to use for the method call
-		List<Integer> callargs = new ArrayList<>();
+		// Number of argument to pop
+		int popcount = mf.javaStack(__t.hasInstance()).length;
 		
-		// Pop all entries off the stack, note any entries which are references
-		// that need to be uncounted after the call
-		List<Integer> uncount = new ArrayList<>();
-		JavaType[] pops = __r.handle().javaStack(__t.hasInstance());
-		for (int i = pops.length - 1; i >= 0; i--)
+		// Perform stack operation
+		JavaStackResult result = (!hasrv ? this._stack.doStack(popcount) :
+			this._stack.doStack(popcount, new JavaType(rv)));
+		this._stack = result.after();
+		
+		// Enqueue the input for counting
+		this.__refEnqueue(result.enqueue());
+		
+		// Setup registers to use for the method call
+		List<Integer> callargs = new ArrayList<>(popcount);
+		for (int i = 0; i < popcount; i++)
 		{
-			__StackResult__ st = state.stackPop();
+			// Add the input register
+			JavaStackResult.Input in = result.in(i);
+			callargs.add(in.register);
 			
-			// Add to call arguments, added at the start because we pop the
-			// last argument first
-			int pr = st.register;
-			if (pops[i].isWide())
-				callargs.add(0, pr + 1);
-			callargs.add(0, pr);
-			
-			// Uncount later? Only do this if the register is not cached
-			// because otherwise we might end up early-freeing objects
-			if (st.needsCounting())
-				uncount.add(pr);
+			// But also if it is wide, we need to pass the other one or else
+			// the value will be clipped
+			if (in.type.isWide())
+				callargs.add(in.register + 1);
 		}
-		
-		// The base of the stack is the last popped register
-		int newbase = state.stackTopRegister();
 		
 		// Generate the call, pass the base register and the number of
 		// registers to pass to the target method
@@ -826,14 +825,11 @@ final class __Registerize__
 		codebuilder.add(RegisterOperationType.INVOKE_METHOD,
 			new InvokedMethod(__t, __r.handle()), new RegisterList(callargs));
 		
-		// For any references that are used, uncount the positions
-		for (Integer i : uncount)
-			codebuilder.add(RegisterOperationType.UNCOUNT, i);
+		// Uncount any used references
+		this.__refClear();
 		
-		// If there is a return result, read it into the register at the top
-		// of the stack
-		FieldDescriptor rvfd = __r.memberType().returnValue();
-		if (rvfd != null)
+		// Load the return value onto the stack
+		if (hasrv)
 			throw new todo.TODO();
 	}
 	
