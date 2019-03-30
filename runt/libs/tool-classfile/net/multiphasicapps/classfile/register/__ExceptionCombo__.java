@@ -19,8 +19,8 @@ import net.multiphasicapps.classfile.ExceptionHandlerTable;
  */
 final class __ExceptionCombo__
 {
-	/** The object positions. */
-	protected final __ObjectPositionsSnapshot__ ops;
+	/** The enqueued positions. */
+	protected final JavaStackEnqueueList enqueue;
 	
 	/** The exception handle table. */
 	protected final ExceptionHandlerTable table;
@@ -28,19 +28,19 @@ final class __ExceptionCombo__
 	/**
 	 * Initializes the exception combo.
 	 *
-	 * @param __ops The object positions.
+	 * @param __ops The enqueued registers.
 	 * @param __t The table used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/22
 	 */
-	__ExceptionCombo__(__ObjectPositionsSnapshot__ __ops,
+	__ExceptionCombo__(JavaStackEnqueueList __ops,
 		ExceptionHandlerTable __t)
 		throws NullPointerException
 	{
 		if (__ops == null || __t == null)
 			throw new NullPointerException("NARG");
 		
-		this.ops = __ops;
+		this.enqueue = __ops;
 		this.table = __t;
 	}
 	
@@ -58,7 +58,7 @@ final class __ExceptionCombo__
 			return false;
 		
 		__ExceptionCombo__ o = (__ExceptionCombo__)__o;
-		return this.ops.equals(o.ops) &&
+		return this.enqueue.equals(o.ops) &&
 			this.table.equals(o.table);
 	}
 	
@@ -69,7 +69,7 @@ final class __ExceptionCombo__
 	@Override
 	public final int hashCode()
 	{
-		return this.ops.hashCode() ^ this.table.hashCode();
+		return this.enqueue.hashCode() ^ this.table.hashCode();
 	}
 }
 

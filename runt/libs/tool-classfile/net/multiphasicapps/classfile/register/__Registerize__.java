@@ -68,8 +68,7 @@ final class __Registerize__
 		new ArrayList<>();
 	
 	/** Object position maps to return label points. */
-	private final Map<__ObjectPositionsSnapshot__, RegisterCodeLabel>
-		_returns =
+	private final Map<JavaStackEnqueueList, RegisterCodeLabel> _returns =
 		new LinkedHashMap<>();
 	
 	/** The stacks which have been recorded. */
@@ -1006,18 +1005,19 @@ final class __Registerize__
 	 */
 	private final void __runReturn(JavaType __rt)
 	{
-		__StackState__ state = this.state;
-		RegisterCodeBuilder codebuilder = this.codebuilder;
+		// Destroy the entire stack
+		JavaStackResult result = this._stack.doDestroy(__rt != null);
 		
-		// If we are returning a value, we need to store it into the return
-		// register
+		// If returning a value, load it into the return register
 		if (__rt != null)
 		{
+			RegisterCodeBuilder codebuilder = this.codebuilder;
+			
 			throw new todo.TODO();
 		}
 		
-		// Either generate a new cleanup or jump to it
-		this.__return(this.state.objectSnapshot());
+		// Generate or jump to return which has this enqueue state
+		this.__return(result.enqueue());
 	}
 }
 
