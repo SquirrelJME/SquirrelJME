@@ -163,6 +163,18 @@ public final class JavaStackState
 	}
 	
 	/**
+	 * Returns all of the enqueues which are possible if the entire stack
+	 * and locals were to be flushed.
+	 *
+	 * @return The maximum possible enqueue list.
+	 * @since 2019/03/30
+	 */
+	public final JavaStackEnqueueList possibleEnqueue()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2019/03/30
 	 */
