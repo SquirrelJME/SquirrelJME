@@ -988,7 +988,7 @@ final class __Registerize__
 				fieldAccessOperation(false, true),
 			this.__fieldAccess(FieldAccessType.INSTANCE, __fr),
 			result.in(0).register,
-			value.in(1).register);
+			result.in(1).register);
 		
 		// Clear references as needed
 		this.__refClear();
