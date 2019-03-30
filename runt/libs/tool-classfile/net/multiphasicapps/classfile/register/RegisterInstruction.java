@@ -218,6 +218,7 @@ public final class RegisterInstruction
 			case RegisterOperationType.X64_FIELD_LOAD:
 			case RegisterOperationType.OBJECT_FIELD_LOAD:
 			case RegisterOperationType.ENCODING_U16:
+			case RegisterOperationType.ENCODING_U16_2:
 			case RegisterOperationType.ENCODING_J16:
 				return 1;
 				
