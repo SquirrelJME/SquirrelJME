@@ -953,6 +953,24 @@ final class __Registerize__
 		if (__fr == null)
 			throw new NullPointerException("NARG");
 		
+		// [inst, value] ->
+		JavaStackResult result = this._stack.doStack(2);
+		
+		// We will use this state
+		this._stack = result.after();
+		
+		// Generate code
+		RegisterCodeBuilder codebuilder = this.codebuilder;
+		codebuilder.add(
+			DataType.of(__fr.memberType().primitiveType()).
+				fieldAccessOperation(false, true),
+			this.__fieldAccess(FieldAccessType.INSTANCE, __fr),
+			result.in(0).register,
+			value.in(1).register);
+		
+		// Run operations on stack output
+		this.__stackGenerateCode(result);
+		
 		// Pop value from stack
 		__StackResult__ value = this.state.stackPop();
 		__StackResult__ inst = this.state.stackPop();
