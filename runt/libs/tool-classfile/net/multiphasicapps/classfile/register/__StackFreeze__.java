@@ -36,5 +36,14 @@ final class __StackFreeze__
 	{
 		throw new todo.TODO();
 	}
+	
+	/**
+	 * Represents a frozen stack slot.
+	 *
+	 * @since 2019/03/30
+	 */
+	public static final class FreezeSlot
+	{
+	}
 }
 
