@@ -20,6 +20,7 @@ import net.multiphasicapps.classfile.JavaType;
  *
  * @since 2019/02/23
  */
+@Deprecated
 final class __StackResult__
 {
 	/** The slot this references. */

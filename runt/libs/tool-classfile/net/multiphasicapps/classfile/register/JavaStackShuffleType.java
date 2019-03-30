@@ -10,41 +10,42 @@
 package net.multiphasicapps.classfile.register;
 
 /**
- * This represents a frozen state of the stack which is used to keep track
- * of and restore the various cache and counting types.
+ * This represents the type of stack shuffle to perform. Since these
+ * operations depend on the types on the stack, this is used to contain the
+ * information to simplify the operations.
  *
- * @since 2019/03/27
+ * @since 2019/03/30
  */
-@Deprecated
-final class __StackFreeze__
+public enum JavaStackShuffleType
 {
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/03/27
-	 */
-	@Override
-	public final boolean equals(Object __o)
-	{
-		throw new todo.TODO();
-	}
+	/** dup. */
+	DUP,
 	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/03/27
-	 */
-	@Override
-	public final int hashCode()
-	{
-		throw new todo.TODO();
-	}
+	/** dup_x1. */
+	DUP_X1,
 	
-	/**
-	 * Represents a frozen stack slot.
-	 *
-	 * @since 2019/03/30
-	 */
-	public static final class FreezeSlot
-	{
-	}
+	/** dup_x2. */
+	DUP_X2,
+	
+	/** dup2. */
+	DUP2,
+	
+	/** dup2_x1. */
+	DUP2_X1,
+	
+	/** dup2_x2. */
+	DUP2_X2,
+	
+	/** pop. */
+	POP,
+	
+	/** pop2. */
+	POP2,
+	
+	/** swap. */
+	SWAP,
+	
+	/** End. */
+	;
 }
 
