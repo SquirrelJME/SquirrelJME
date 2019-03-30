@@ -79,11 +79,32 @@ public final class JavaStackState
 	 * all of the target stack operations as new freshly obtained values
 	 * with no caching performed on them.
 	 *
+	 * @param __n The number of locals to pop.
 	 * @param __t The types to push.
 	 * @return The result of the operation.
 	 * @since 2019/03/30
 	 */
 	public final JavaStackResult doStack(int __n, JavaType... __t)
+	{
+		return this.doStack(__n, false, __t);
+	}
+	
+	/**
+	 * Pops a certain number of variables and then pushes the given types
+	 * to the stack, this may also force caching on pushed values. Note that
+	 * all results of this operation will treat
+	 * all of the target stack operations as new freshly obtained values
+	 * with no caching performed on them.
+	 *
+	 * @param __n The number of locals to pop.
+	 * @param __nc If true then all the values being pushed will not be
+	 * reference countable.
+	 * @param __t The types to push.
+	 * @return The result of the operation.
+	 * @since 2019/03/30
+	 */
+	public final JavaStackResult doStack(int __n, boolean __nc,
+		JavaType... __t)
 	{
 		if (__t == null)
 			__t = new JavaType[0];

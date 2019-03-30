@@ -853,8 +853,9 @@ final class __Registerize__
 		// Get push properties
 		JavaType jt = __v.type().javaType();
 		
-		// Push to the stack
-		__StackResult__ dest = this.state.stackPush(jt);
+		// Push to the stack this type
+		JavaStackResult result = this._stack.doStack(0, true, jt);
+		this._stack = result.after();
 		
 		// Generate instruction
 		RegisterCodeBuilder codebuilder = this.codebuilder;
@@ -862,34 +863,33 @@ final class __Registerize__
 		{
 			case INTEGER:
 				codebuilder.add(RegisterOperationType.X32_CONST,
-					(Integer)__v.boxedValue(), dest.register);
+					(Integer)__v.boxedValue(),
+					result.out(0).register);
 				break;
 				
 			case FLOAT:
 				codebuilder.add(RegisterOperationType.X32_CONST,
 					Float.floatToRawIntBits((Float)__v.boxedValue()),
-					dest.register);
+					result.out(0).register);
 				break;
 			
 			case LONG:
 				codebuilder.add(RegisterOperationType.X64_CONST,
-					__v.boxedValue(), dest.register);
+					__v.boxedValue(),
+					result.out(0).register);
 				break;
 				
 			case DOUBLE:
 				codebuilder.add(RegisterOperationType.X64_CONST,
 					Double.doubleToRawLongBits((Double)__v.boxedValue()),
-					dest.register);
+					result.out(0).register);
 				break;
 			
 			case STRING:
 			case CLASS:
 				codebuilder.add(RegisterOperationType.LOAD_POOL_VALUE,
-					__v.boxedValue(), dest.register);
-				
-				// Do not count the object because it will always have at
-				// least one reference due to it being a constant global
-				dest.slot._nocounting = true;
+					__v.boxedValue(),
+					result.out(0).register);
 				break;
 			
 			default:
@@ -906,7 +906,7 @@ final class __Registerize__
 	private final void __runLoad(int __l)
 	{
 		// Just before the load
-		JavaStackResult result = this._stack.doLoad(__l);
+		JavaStackResult result = this._stack.doLocalLoad(__l);
 		this._stack = result.after();
 	}
 	
