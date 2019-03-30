@@ -955,15 +955,14 @@ final class __Registerize__
 		// Allocation may fail or the class could be invalid
 		this._exceptioncheck = true;
 		
-		// Although len and dst are in the same spot in the stack, the length
-		// could be cached
-		__StackState__ state = this.state;
-		int len = state.stackPop().register,
-			dst = state.stackPush(new JavaType(__t.addDimensions(1))).register;
+		// Only the length is on the stack
+		JavaStackResult result = this._stack.doStack(1,
+			new JavaType(__t.addDimensions(1)));
+		this._stack = result.after();
 		
-		// Generate instruction
+		// Generate
 		this.codebuilder.add(RegisterOperationType.NEW_ARRAY,
-			__t, len, dst);
+			__t, result.in(0).register, result.out(0).register);
 	}
 	
 	/**
@@ -981,6 +980,7 @@ final class __Registerize__
 		
 		// [inst, value] ->
 		JavaStackResult result = this._stack.doStack(2);
+		this._stack = result.after();
 		
 		// The input may have been wiped
 		this.__refEnqueue(result.enqueue());
@@ -996,9 +996,6 @@ final class __Registerize__
 		
 		// Clear references as needed
 		this.__refClear();
-		
-		// For next operations
-		this._stack = result.after();
 	}
 	
 	/**
