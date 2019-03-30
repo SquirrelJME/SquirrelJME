@@ -39,7 +39,7 @@ public enum CompareType
 	;
 	
 	/**
-	 * The operation used when comparing the field register against zero.
+	 * The operation used when comparing against zero.
 	 *
 	 * @return The operation to use when comparing against zero.
 	 * @since 2019/03/27
@@ -69,16 +69,21 @@ public enum CompareType
 	/**
 	 * The operation used when comparing against zero.
 	 *
+	 * @param __enq Is enqueueing being performed?
 	 * @return The operation to use when comparing against zero.
 	 * @since 2019/03/27
 	 */
-	public final int ifZeroOperation()
+	public final int ifZeroOperation(boolean __enq)
 	{
 		switch (this)
 		{
 			case EQUALS:
+				if (__enq)
+					return RegisterOperationType.IFEQ_REF_CLEAR;
 				return RegisterOperationType.IFEQ;
 			case NOT_EQUALS:
+				if (__enq)
+					return RegisterOperationType.IFNE_REF_CLEAR;
 				return RegisterOperationType.IFNE;
 			case LESS_THAN:
 				return RegisterOperationType.IFLT;

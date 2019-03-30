@@ -436,37 +436,37 @@ final class __Registerize__
 				break;
 			
 			case InstructionIndex.IFEQ:
-				this.__runIfZero(CompareType.EQUALS,
+				this.__runIfZero(false, CompareType.EQUALS,
 					__i.<InstructionJumpTarget>argument(0,
 						InstructionJumpTarget.class));
 				break;
 				
 			case InstructionIndex.IFNE:
-				this.__runIfZero(CompareType.NOT_EQUALS,
+				this.__runIfZero(false, CompareType.NOT_EQUALS,
 					__i.<InstructionJumpTarget>argument(0,
 						InstructionJumpTarget.class));
 				break;
 				
 			case InstructionIndex.IFLT:
-				this.__runIfZero(CompareType.LESS_THAN,
+				this.__runIfZero(false, CompareType.LESS_THAN,
 					__i.<InstructionJumpTarget>argument(0,
 						InstructionJumpTarget.class));
 				break;
 				
 			case InstructionIndex.IFGE:
-				this.__runIfZero(CompareType.GREATER_THAN_OR_EQUALS,
+				this.__runIfZero(false, CompareType.GREATER_THAN_OR_EQUALS,
 					__i.<InstructionJumpTarget>argument(0,
 						InstructionJumpTarget.class));
 				break;
 				
 			case InstructionIndex.IFGT:
-				this.__runIfZero(CompareType.GREATER_THAN,
+				this.__runIfZero(false, CompareType.GREATER_THAN,
 					__i.<InstructionJumpTarget>argument(0,
 						InstructionJumpTarget.class));
 				break;
 				
 			case InstructionIndex.IFLE:
-				this.__runIfZero(CompareType.LESS_THAN_OR_EQUALS,
+				this.__runIfZero(false, CompareType.LESS_THAN_OR_EQUALS,
 					__i.<InstructionJumpTarget>argument(0,
 						InstructionJumpTarget.class));
 				break;
@@ -542,10 +542,11 @@ final class __Registerize__
 	 * Generates code to enqueue registers, if there are any.
 	 *
 	 * @param __r The registers to enqueue.
+	 * @return True if the enqueue list was not empty.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/30
 	 */
-	private final void __refEnqueue(JavaStackEnqueueList __r)
+	private final boolean __refEnqueue(JavaStackEnqueueList __r)
 		throws NullPointerException
 	{
 		if (__r == null)
@@ -725,51 +726,33 @@ final class __Registerize__
 	/**
 	 * Compars against zero.
 	 *
+	 * @param __ref Are these references?
 	 * @param __ct The comparison type to perform.
 	 * @param __j The jump target.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/26
 	 */
-	private final void __runIfZero(CompareType __ct, InstructionJumpTarget __j)
+	private final void __runIfZero(boolean __ref, CompareType __ct,
+		InstructionJumpTarget __j)
 		throws NullPointerException
 	{
 		if (__ct == null || __j == null)
 			throw new NullPointerException("NARG");
 		
-		__StackResult__ pop = this.state.stackPop();
+		// Pop input from the stack
+		JavaStackResult result = this._stack.doStack(1);
+		this._stack = result.after();
 		
-		// The target of the jump is derived from the jump target
-		RegisterCodeLabel label = this.__javaLabel(__j.target());
+		// Enqueue the input for counting
+		boolean doenq = this.__refEnqueue(result.enqueue());
 		
-		// If this is something that needs counting, we cannot directly
-		// operate on it so it must first be loaded into the field value
-		// before we go off and branch
-		RegisterCodeBuilder codebuilder = this.codebuilder;
-		if (pop.needsCounting())
-		{	
-			// Need this since each operation is slightly different
-			DataType dt = DataType.of(pop.type);
-			
-			// Load value into field register
-			codebuilder.add(dt.fieldRegisterOperation(true, true),
-				pop.register);
-			
-			// Uncount the thing
-			codebuilder.add(RegisterOperationType.UNCOUNT,
-				pop.register);
-			
-			// Branch but do it against the field value instead
-			codebuilder.add(__ct.fieldIfZeroOperation(),
-				label);
-		}
+		// Generate code
+		this.codebuilder.add(__ct.ifZeroOperation(doenq),
+			result.in(0).register, this.__javaLabel(__j.target()));
 		
-		// Otherwise we can operate directly on the register
-		else
-		{
-			codebuilder.add(__ct.ifZeroOperation(),
-				pop.register,
-				label);
-		}
+		// Clean up references
+		if (doenq)
+			this.__refClear();
 	}
 	
 	/**
