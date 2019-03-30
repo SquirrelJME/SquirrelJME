@@ -86,6 +86,8 @@ final class __Registerize__
 	/** Next returning index? */
 	private int _nextreturndx;
 	
+	/** Registers to 
+	
 	/**
 	 * Converts the input byte code to a register based code.
 	 *
@@ -527,6 +529,27 @@ final class __Registerize__
 	}
 	
 	/**
+	 * If anything has been previous enqueued then generate code to clear it.
+	 *
+	 * @since 2019/03/30
+	 */
+	private final void __refClear()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Generates code to enqueue registers, if there are any.
+	 *
+	 * @param __r The registers to enqueue.
+	 * @since 2019/03/30
+	 */
+	private final void __refEnqueue(int... __r)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Generate code or a jump for a return using the given object position
 	 * snapshot.
 	 *
@@ -956,8 +979,8 @@ final class __Registerize__
 		// [inst, value] ->
 		JavaStackResult result = this._stack.doStack(2);
 		
-		// We will use this state
-		this._stack = result.after();
+		// The input may have been wiped
+		this.__refEnqueue(result.enqueue());
 		
 		// Generate code
 		RegisterCodeBuilder codebuilder = this.codebuilder;
@@ -968,29 +991,11 @@ final class __Registerize__
 			result.in(0).register,
 			value.in(1).register);
 		
-		// Run operations on stack output
-		this.__stackBumpOut(true, result);
+		// Clear references as needed
+		this.__refClear();
 		
-		// Pop value from stack
-		__StackResult__ value = this.state.stackPop();
-		__StackResult__ inst = this.state.stackPop();
-		
-		// Generate code
-		RegisterCodeBuilder codebuilder = this.codebuilder;
-		codebuilder.add(
-			DataType.of(__fr.memberType().primitiveType()).
-				fieldAccessOperation(false, true),
-			this.__fieldAccess(FieldAccessType.INSTANCE, __fr),
-			inst.register,
-			value.register);
-		
-		// Need to uncount when removing from the stack?
-		if (value.needsCounting())
-			codebuilder.add(RegisterOperationType.UNCOUNT,
-				value.register);
-		if (inst.needsCounting())
-			codebuilder.add(RegisterOperationType.UNCOUNT,
-				inst.register);
+		// For next operations
+		this._stack = result.after();
 	}
 	
 	/**

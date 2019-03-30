@@ -47,6 +47,20 @@ public final class JavaStackResult
 	}
 	
 	/**
+	 * Returns the registers which need to be enqueued then later uncounted,
+	 * this is to prevent messing with temporary registers and such just to
+	 * uncount inputs.
+	 *
+	 * @return The registers to enqueue, will be empty if there is nothing
+	 * to enqueue.
+	 * @since 2019/03/30
+	 */
+	public final int[] enqueue()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2019/03/30
 	 */
