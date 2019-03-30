@@ -309,6 +309,23 @@ final class __StackState__
 	}
 	
 	/**
+	 * Modifies the stack so only the specified type is on the stack.
+	 *
+	 * @param __t The type to only place on the stack.
+	 * @return The result of operation.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/30
+	 */
+	public final __StackResult__ stackOnly(JavaType __t)
+		throw NullPointerException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Peeks the value at the top of the stack.
 	 *
 	 * @return The peeked value and type at the top of the stack.
