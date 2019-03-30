@@ -905,17 +905,9 @@ final class __Registerize__
 	 */
 	private final void __runLoad(int __l)
 	{
-		__StackState__ state = this.state;
-		
-		// Load from local to the stack
-		__StackResult__ src = state.localGet(__l);
-		__StackResult__ dest = state.localLoad(__l);
-		
-		// If not cached, we need to actually copy the value
-		if (!dest.isCached())
-			this.codebuilder.add(
-				DataType.of(src.type).copyOperation(dest.needsCounting()),
-				src.register, dest.register);
+		// Just before the load
+		JavaStackResult result = this._stack.doLoad(__l);
+		this._stack = result.after();
 	}
 	
 	/**
