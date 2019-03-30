@@ -19,6 +19,7 @@ import java.util.Arrays;
  *
  * @since 2019/03/22
  */
+@Deprecated
 final class __ObjectPositionsSnapshot__
 {
 	/** The index where the stack starts. */

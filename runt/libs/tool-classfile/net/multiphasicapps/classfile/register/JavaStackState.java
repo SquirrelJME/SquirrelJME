@@ -28,6 +28,17 @@ public final class JavaStackState
 	private Reference<String> _string;
 	
 	/**
+	 * Destroys all local variables and stack variables returning the process
+	 * that is needed to clear out the entire state.
+	 *
+	 * @since 2019/03/30
+	 */
+	public final JavaStackResult doDestroy()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Removes all stack variables and places a single entry on the stack
 	 * for exception handling.
 	 *
