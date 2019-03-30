@@ -659,6 +659,17 @@ public final class ByteCode
 	}
 	
 	/**
+	 * Returns all of the local variables which are written to.
+	 *
+	 * @return The local variables which are written to.
+	 * @since 2019/03/30
+	 */
+	public final int[] writtenLocals()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Returns the method which owns this byte code.
 	 *
 	 * @return The owning method.
