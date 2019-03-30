@@ -320,6 +320,10 @@ public final class RegisterOperationMnemonics
 				return "GET_X32_RETURN_VALUE";
 			case RegisterOperationType.GET_X64_RETURN_VALUE:
 				return "GET_X64_RETURN_VALUE";
+			case RegisterOperationType.REF_ENQUEUE:
+				return "REF_ENQUEUE";
+			case RegisterOperationType.REF_CLEAR:
+				return "REF_CLEAR";
 			
 				// Unknown
 			default:

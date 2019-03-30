@@ -272,9 +272,6 @@ public final class Minimizer
 				case RegisterOperationType.RETURN:
 					break;
 				
-				case RegisterOperationType.X32_FIELD_LOAD:
-				case RegisterOperationType.X64_FIELD_LOAD:
-				case RegisterOperationType.OBJECT_FIELD_LOAD:
 				case RegisterOperationType.ENCODING_U16:
 				case RegisterOperationType.ENCODING_U16_2:
 					dos.writeShort(i.shortArgument(0));

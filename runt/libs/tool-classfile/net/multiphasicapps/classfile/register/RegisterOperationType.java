@@ -105,29 +105,13 @@ public interface RegisterOperationType
 	public static final int JUMP_IF_INSTANCE_GET_EXCEPTION =
 		ENCODING_SPECIAL + 8;
 	
-	/** x32_field_load [u16]. */
-	public static final int X32_FIELD_LOAD =
+	/** ref_enqueue [reglist]. */
+	public static final int REF_ENQUEUE =
 		ENCODING_SPECIAL + 9;
 	
-	/** x64_field_load [u16]. */
-	public static final int X64_FIELD_LOAD =
+	/** ref_clear []. */
+	public static final int REF_CLEAR =
 		ENCODING_SPECIAL + 10;
-	
-	/** object_field_load [u16]. */
-	public static final int OBJECT_FIELD_LOAD =
-		ENCODING_SPECIAL + 11;
-	
-	/** x32_field_store [u16]. */
-	public static final int X32_FIELD_STORE =
-		ENCODING_SPECIAL + 12;
-	
-	/** x64_field_store [u16]. */
-	public static final int X64_FIELD_STORE =
-		ENCODING_SPECIAL + 13;
-	
-	/** object_field_store [u16]. */
-	public static final int OBJECT_FIELD_STORE =
-		ENCODING_SPECIAL + 14;
 	
 	/** jump. */
 	public static final int JUMP =
@@ -336,6 +320,30 @@ public interface RegisterOperationType
 	/** uncount. */
 	public static final int UNCOUNT =
 		ENCODING_U16 + 14;
+	
+	/** x32_field_load [u16]. */
+	public static final int X32_FIELD_LOAD =
+		ENCODING_U16 + 15;
+	
+	/** x64_field_load [u16]. */
+	public static final int X64_FIELD_LOAD =
+		ENCODING_U16 + 16;
+	
+	/** object_field_load [u16]. */
+	public static final int OBJECT_FIELD_LOAD =
+		ENCODING_U16 + 17;
+	
+	/** x32_field_store [u16]. */
+	public static final int X32_FIELD_STORE =
+		ENCODING_U16 + 18;
+	
+	/** x64_field_store [u16]. */
+	public static final int X64_FIELD_STORE =
+		ENCODING_U16 + 19;
+	
+	/** object_field_store [u16]. */
+	public static final int OBJECT_FIELD_STORE =
+		ENCODING_U16 + 20;
 
 	/** ifeq/ifnull. */
 	public static final int IFEQ =
