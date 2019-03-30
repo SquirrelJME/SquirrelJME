@@ -23,6 +23,7 @@ import net.multiphasicapps.classfile.StackMapTableState;
  *
  * @since 2019/02/16
  */
+@Deprecated
 final class __StackState__
 {
 	/** Local variables. */
@@ -317,7 +318,7 @@ final class __StackState__
 	 * @since 2019/03/30
 	 */
 	public final __StackResult__ stackOnly(JavaType __t)
-		throw NullPointerException
+		throws NullPointerException
 	{
 		if (__t == null)
 			throw new NullPointerException("NARG");
