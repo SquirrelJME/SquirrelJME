@@ -660,9 +660,7 @@ final class __Registerize__
 	 */
 	private final void __runDup()
 	{
-		// No complex work is needed, the top-most entry is just a cached
-		// alias of the entry just above it
-		this.state.stackDup();
+		this._stack = this._stack.doStackShuffle(JavaStackShuffleType.DUP);
 	}
 	
 	/**
@@ -962,6 +960,7 @@ final class __Registerize__
 	{
 		// Destroy the entire stack
 		JavaStackResult result = this._stack.doDestroy(__rt != null);
+		this._stack = result.after();
 		
 		// If returning a value, load it into the return register
 		if (__rt != null)
