@@ -59,7 +59,9 @@ public final class JavaStackState
 	
 	/**
 	 * Pops a certain number of variables and then pushes the given types
-	 * to the stack.
+	 * to the stack. Note that all results of this operation will treat
+	 * all of the target stack operations as new freshly obtained values
+	 * with no caching performed on them.
 	 *
 	 * @param __t The types to push.
 	 * @return The result of the operation.

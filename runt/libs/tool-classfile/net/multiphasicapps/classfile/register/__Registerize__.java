@@ -47,12 +47,6 @@ final class __Registerize__
 	/** The input byte code to translate. */
 	protected final ByteCode bytecode;
 	
-	/** The state of the locals and stack. */
-	protected final __StackState__ state;
-	
-	/** The stack map table. */
-	protected final StackMapTable stackmap;
-	
 	/** Used to build register codes. */
 	protected final RegisterCodeBuilder codebuilder =
 		new RegisterCodeBuilder();
@@ -69,10 +63,6 @@ final class __Registerize__
 	/** Reverse jump table. */
 	private Map<Integer, InstructionJumpTargets> _revjumps;
 	
-	/** Freezes which represent the state of following instructions. */
-	private final Map<Integer, __StackFreeze__> _freezes =
-		new HashMap<>();
-	
 	/** Exception handler combinations to generate. */
 	private final List<__ExceptionCombo__> _usedexceptions =
 		new ArrayList<>();
@@ -81,6 +71,13 @@ final class __Registerize__
 	private final Map<__ObjectPositionsSnapshot__, RegisterCodeLabel>
 		_returns =
 		new LinkedHashMap<>();
+	
+	/** The stacks which have been recorded. */
+	private final Map<Integer, JavaStackState> _stacks =
+		new LinkedHashMap<>();
+	
+	/** The current state of the stack. */
+	private JavaStackState _stack;
 	
 	/** The current PC being processed. */
 	private int _currentprocesspc =
@@ -103,12 +100,15 @@ final class __Registerize__
 			throw new NullPointerException("NARG");
 		
 		this.bytecode = __bc;
-		this.stackmap = __bc.stackMapTable();
-		this.state = new __StackState__(__bc.maxLocals(), __bc.maxStack());
 		this.exceptiontracker = new __ExceptionTracker__(__bc);
 		this.defaultfieldaccesstime = ((__bc.isInstanceInitializer() ||
 			__bc.isStaticInitializer()) ? FieldAccessTime.INITIALIZER :
 			FieldAccessTime.NORMAL);
+		
+		// Load initial Java stack state from the initial stack map
+		JavaStackState s;
+		this._stack = (s = JavaStackState.of(__bc.stackMapTable().get(0)));
+		this._stacks.put(0, s);
 		
 		// Load reverse jump table
 		this._revjumps = __bc.reverseJumpTargets();
@@ -123,11 +123,11 @@ final class __Registerize__
 	public RegisterCode convert()
 	{
 		ByteCode bytecode = this.bytecode;
-		StackMapTable stackmap = this.stackmap;
-		__StackState__ state = this.state;
 		RegisterCodeBuilder codebuilder = this.codebuilder;
-		Map<Integer, __StackFreeze__> freezes = this._freezes;
 		Map<Integer, InstructionJumpTargets> revjumps = this._revjumps;
+		
+		// Stacks for target methods
+		Map<Integer, JavaStackState> stacks = this._stacks;
 		
 		// Scan the code to see if basic stack caching can be performed
 		this.__checkBasicStackCache();
@@ -138,9 +138,22 @@ final class __Registerize__
 			// Debug
 			todo.DEBUG.note("Xlate %s", inst);
 			
-			// Set source line for this instruction for debugging purposes
+			// Current processing this address
 			int addr = inst.address();
+			this._currentprocesspc = addr;
+			
+			// Clear the exception check since not every instruction will
+			// generate an exception, this will reduce the code size greatly
+			this._exceptioncheck = false;
+			
+			// Set source line for this instruction for debugging purposes
 			codebuilder.setSourceLine(bytecode.lineOfAddress(addr));
+			
+			// {@squirreljme.error JC2s No recorded stack state for this
+			// position. (The address to check)}
+			JavaStackState stack = stacks.get(addr);
+			if (stack == null)
+				throw new IllegalArgumentException("JC2s " + addr);
 			
 			// If this instruction is jumped to from a future address then
 			// we need to invalidate our cached stack items
@@ -153,22 +166,6 @@ final class __Registerize__
 			
 			// Add label to refer to this instruction in Java terms
 			codebuilder.label("java", addr);
-			
-			// Used for back jumping detection
-			this._currentprocesspc = addr;
-			
-			// Clear the exception check since not every instruction will
-			// generate an exception, this will reduce the code size greatly
-			this._exceptioncheck = false;
-			
-			// If there is a frozen state for this point, restore it
-			__StackFreeze__ freeze = freezes.get(addr);
-			if (freeze != null)
-				state.fromState(freeze);
-			
-			// Otherwise, store the frozen state for later
-			else
-				freezes.put(addr, state.freeze());
 			
 			// Process instructions
 			this.__process(inst);
@@ -186,6 +183,11 @@ final class __Registerize__
 				codebuilder.add(
 					RegisterOperationType.JUMP_IF_EXCEPTION, ehlab);
 			}
+			
+			// Set target stack states for destinations of this instruction
+			ijt = inst.jumpTargets();
+			if (true)
+				 throw new todo.TODO();
 		}
 		
 		// Invalidate source lines for the exception table
