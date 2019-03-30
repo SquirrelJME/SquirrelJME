@@ -328,6 +328,10 @@ public final class RegisterOperationMnemonics
 				return "IFEQ_REF_CLEAR";
 			case RegisterOperationType.IFNE_REF_CLEAR:
 				return "IFNE_REF_CLEAR";
+			case RegisterOperationType.IF_ICMPEQ_REF_CLEAR:
+				return "IF_ICMPEQ_REF_CLEAR";
+			case RegisterOperationType.IF_ICMPNE_REF_CLEAR:
+				return "IF_ICMPNE_REF_CLEAR";
 			
 				// Unknown
 			default:

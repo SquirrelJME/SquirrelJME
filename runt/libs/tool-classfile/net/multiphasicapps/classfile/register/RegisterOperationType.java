@@ -489,13 +489,30 @@ public interface RegisterOperationType
 	public static final int IF_ICMPNE =
 		ENCODING_U16_U16_J16 + 4;
 
+	/** if_icmpne/if_acmpne. */
+	public static final int IF_ACMPNE =
+		IF_ICMPNE;
+
 	/** if_icmpge. */
 	public static final int IF_ICMPGE =
 		ENCODING_U16_U16_J16 + 5;
 
-	/** if_icmpne/if_acmpne. */
-	public static final int IF_ACMPNE =
-		IF_ICMPNE;
+	/** if_icmpeq_ref_clear/if_acmpeq_ref_clear. */
+	public static final int IF_ICMPEQ_REF_CLEAR =
+		ENCODING_U16_U16_J16 + 6;
+
+	/** if_icmpeq_ref_clear/if_acmpeq_ref_clear. */
+	public static final int IF_ACMPEQ_REF_CLEAR =
+		IF_ICMPEQ_REF_CLEAR;
+
+	/** if_icmpne_ref_clear/if_acmpne_ref_clear. */
+	public static final int IF_ICMPNE_REF_CLEAR =
+		ENCODING_U16_U16_J16 + 7;
+
+	/** if_icmpne_ref_clear/if_acmpne_ref_clear. */
+	public static final int IF_ACMPNE_REF_CLEAR =
+		IF_ICMPNE_REF_CLEAR;
+
 
 	/** array_load_object. */
 	public static final int ARRAY_LOAD_OBJECT =
