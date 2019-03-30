@@ -140,15 +140,20 @@ public final class JavaStackState
 	 * this should only be used for the initial seed of the stack state.
 	 *
 	 * @param __s The state to base off.
+	 * @param __lw Local variables which have been written, this is used to
+	 * set flags where locals are cached and can never be written to.
 	 * @return The result stack state.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/30
 	 */
-	public static final JavaStackState of(StackMapTableState __s)
+	public static final JavaStackState of(StackMapTableState __s, int... __lw)
 		throws NullPointerException
 	{
 		if (__s == null)
 			throw new NullPointerException("NARG");
+		
+		// Optional, might not be specified
+		__lw = (__lw == null ? new int[0] : __lw.clone());
 		
 		throw new todo.TODO();
 	}
