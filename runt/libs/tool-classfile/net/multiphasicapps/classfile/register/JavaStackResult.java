@@ -67,6 +67,30 @@ public final class JavaStackResult
 	}
 	
 	/**
+	 * Returns the information on the input.
+	 *
+	 * @param __i The input to get.
+	 * @return The information on the input.
+	 * @since 2019/03/30
+	 */
+	public final JavaStackResult.Input in(int __i)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the information on the output.
+	 *
+	 * @param __i The output to get.
+	 * @return The information on the output.
+	 * @since 2019/03/30
+	 */
+	public final JavaStackResult.Output out(int __i)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2019/03/30
 	 */
@@ -74,6 +98,30 @@ public final class JavaStackResult
 	public final String toString()
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Input information.
+	 *
+	 * @since 2019/03/30
+	 */
+	public static final class Input
+	{
+		/** The register used for input. */
+		public final int register =
+			-1;
+	}
+	
+	/**
+	 * Output information.
+	 *
+	 * @since 2019/03/30
+	 */
+	public static final class Output
+	{
+		/** The register used for output. */
+		public final int register =
+			-1;
 	}
 }
 
