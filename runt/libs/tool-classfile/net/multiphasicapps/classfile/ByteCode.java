@@ -463,6 +463,17 @@ public final class ByteCode
 	}
 	
 	/**
+	 * Returns the jump targets for this byte code.
+	 *
+	 * @return The jump targets.
+	 * @since 2019/03/30
+	 */
+	public final Map<Integer, InstructionJumpTargets> jumpTargets()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Returns the length of the byte code.
 	 *
 	 * @return The byte code length.
@@ -568,6 +579,19 @@ public final class ByteCode
 		int d = __addr + ByteCode._CODE_OFFSET;
 		return ((rad[d] & 0xFF) << 8) |
 			(rad[d + 1] & 0xFF);
+	}
+	
+	/**
+	 * Returns the reverse jump targets, this essentially specifies the
+	 * instructions and exception handlers at given points jump to the
+	 * key addresses.
+	 *
+	 * @return The reverse jump targets.
+	 * @since 2019/03/30
+	 */
+	public final Map<Integer, InstructionJumpTargets> reverseJumpTargets()
+	{
+		throw new todo.TODO();
 	}
 	
 	/**
