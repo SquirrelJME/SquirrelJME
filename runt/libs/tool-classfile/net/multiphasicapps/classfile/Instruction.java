@@ -606,6 +606,17 @@ public final class Instruction
 	}
 	
 	/**
+	 * Returns the jump targets for this instruction.
+	 *
+	 * @return The jump targets for this instruction.
+	 * @since 2019/03/30
+	 */
+	public final InstructionJumpTargets jumpTargets()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Returns the mnemonic of this instruction.
 	 *
 	 * @return The instruction mnemonic.
