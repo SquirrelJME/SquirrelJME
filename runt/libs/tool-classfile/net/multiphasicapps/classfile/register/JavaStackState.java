@@ -31,9 +31,14 @@ public final class JavaStackState
 	 * Destroys all local variables and stack variables returning the process
 	 * that is needed to clear out the entire state.
 	 *
+	 * Any references that need to be cleared when the code completes will be
+	 * placed in the enqueue list.
+	 *
+	 * @param __rv If true then a return value will be popped before everything
+	 * is destroyed.
 	 * @since 2019/03/30
 	 */
-	public final JavaStackResult doDestroy()
+	public final JavaStackResult doDestroy(boolean __rv)
 	{
 		throw new todo.TODO();
 	}
