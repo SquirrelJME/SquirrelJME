@@ -289,9 +289,9 @@ final class __Registerize__
 	 */
 	private final RegisterCodeLabel __exceptionTrack(int __pc)
 	{
-		// Create combo for the object and exception data
+		// Create combo for the enqueues (for clearing) and exception data
 		__ExceptionCombo__ ec = this.exceptiontracker.createCombo(
-			this.state.objectSnapshot(), __pc);
+			this._stack.possibleEnqueue(), __pc);
 		
 		// If this combo is already in the table, do not add it
 		List<__ExceptionCombo__> usedexceptions = this._usedexceptions;
@@ -639,18 +639,20 @@ final class __Registerize__
 		// it.
 		this._exceptioncheck = true;
 		
-		// The exception to toss
-		__StackResult__ pop = this.state.stackPop();
+		// Pop from the stack
+		JavaStackResult result = this._stack.doStack(1);
+		this._stack = result.after();
 		
-		// Set exception register and flag it
-		RegisterCodeBuilder codebuilder = this.codebuilder;
-		codebuilder.add(RegisterOperationType.SET_AND_FLAG_EXCEPTION,
-			pop.register);
+		// Enqueue?
+		boolean doenq = this.__refEnqueue(result.enqueue());
 		
-		// Need to uncount this exception?
-		if (pop.needsCounting())
-			codebuilder.add(RegisterOperationType.UNCOUNT,
-				pop.register);
+		// Generate code
+		this.codebuilder.add(RegisterOperationType.SET_AND_FLAG_EXCEPTION,
+			result.in(0).register);
+		
+		// Clear references
+		if (doenq)
+			this.__refClear();
 	}
 	
 	/**
@@ -660,7 +662,8 @@ final class __Registerize__
 	 */
 	private final void __runDup()
 	{
-		this._stack = this._stack.doStackShuffle(JavaStackShuffleType.DUP);
+		this._stack = this._stack.doStackShuffle(JavaStackShuffleType.DUP).
+			after();
 	}
 	
 	/**
