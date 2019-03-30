@@ -37,6 +37,18 @@ public final class JavaStackEnqueueList
 	}
 	
 	/**
+	 * Gets the given entry.
+	 *
+	 * @param __i The index to get.
+	 * @return The register at this index.
+	 * @since 2019/03/30
+	 */
+	public final int get(int __i)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2019/03/30
 	 */
@@ -64,6 +76,17 @@ public final class JavaStackEnqueueList
 	 * @since 2019/03/30
 	 */
 	public final int[] registers()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the number of entries here.
+	 *
+	 * @return The number of entries.
+	 * @since 2019/03/30
+	 */
+	public final int size()
 	{
 		throw new todo.TODO();
 	}
