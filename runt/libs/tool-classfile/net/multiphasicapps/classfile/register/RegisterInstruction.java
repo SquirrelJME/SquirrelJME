@@ -214,9 +214,6 @@ public final class RegisterInstruction
 			case RegisterOperationType.RETURN:
 				return 0;
 			
-			case RegisterOperationType.X32_FIELD_LOAD:
-			case RegisterOperationType.X64_FIELD_LOAD:
-			case RegisterOperationType.OBJECT_FIELD_LOAD:
 			case RegisterOperationType.ENCODING_U16:
 			case RegisterOperationType.ENCODING_U16_2:
 			case RegisterOperationType.ENCODING_J16:
