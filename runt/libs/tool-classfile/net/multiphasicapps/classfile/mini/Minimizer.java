@@ -270,6 +270,7 @@ public final class Minimizer
 			{
 				case RegisterOperationType.NOP:
 				case RegisterOperationType.RETURN:
+				case RegisterOperationType.REF_CLEAR:
 					break;
 				
 				case RegisterOperationType.ENCODING_U16:
@@ -323,6 +324,18 @@ public final class Minimizer
 					dos.writeShort(i.shortArgument(0));
 					dos.writeShort(i.shortArgument(1));
 					dos.writeShort(i.shortArgument(2));
+					break;
+					
+				case RegisterOperationType.REF_ENQUEUE:
+					{
+						// Write register list
+						RegisterList rl = i.<RegisterList>argument(0,
+							RegisterList.class);
+						int rn = rl.size();
+						dos.writeShort(rn);
+						for (int r = 0; r < rn; r++)
+							dos.writeShort(rl.get(r));
+					}
 					break;
 					
 				case RegisterOperationType.INVOKE_METHOD:
