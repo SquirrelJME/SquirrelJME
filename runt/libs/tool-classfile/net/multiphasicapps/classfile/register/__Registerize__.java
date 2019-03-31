@@ -86,7 +86,8 @@ final class __Registerize__
 	/** Next returning index? */
 	private int _nextreturndx;
 	
-	/** Registers to 
+	/** Last registers enqueued. */
+	private JavaStackEnqueueList _lastenqueue;
 	
 	/**
 	 * Converts the input byte code to a register based code.
@@ -578,7 +579,16 @@ final class __Registerize__
 	 */
 	private final void __refClear()
 	{
-		throw new todo.TODO();
+		// Do nothing if nothing has been enqueued
+		JavaStackEnqueueList lastenqueue = this._lastenqueue;
+		if (lastenqueue == null)
+			return;
+		
+		// Generate instruction to clear the enqueue
+		this.codebuilder.add(RegisterOperationType.REF_CLEAR);
+		
+		// No need to clear anymore
+		this._lastenqueue = null;
 	}
 	
 	/**
@@ -595,7 +605,20 @@ final class __Registerize__
 		if (__r == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Nothing to enqueue?
+		if (__r.isEmpty())
+		{
+			this._lastenqueue = null;
+			return false;
+		}
+		
+		// Generate enqueue and set for clearing next time
+		this.codebuilder.add(RegisterOperationType.REF_ENQUEUE,
+			new RegisterList(__r.registers()));
+		this._lastenqueue = __r;
+		
+		// Did enqueue something
+		return true;
 	}
 	
 	/**
@@ -769,13 +792,10 @@ final class __Registerize__
 		// Enqueue the input for counting
 		boolean doenq = this.__refEnqueue(result.enqueue());
 		
-		// Generate code
+		// Generate code, no later refclear needs to be done because if
+		// zero operation if doenq is set will clear the references
 		this.codebuilder.add(__ct.ifZeroOperation(doenq),
 			result.in(0).register, this.__javaLabel(__j.target()));
-		
-		// Clean up references
-		if (doenq)
-			this.__refClear();
 	}
 	
 	/**
