@@ -126,6 +126,17 @@ public final class InstructionJumpTargets
 	}
 	
 	/**
+	 * Returns if this is empty or not.
+	 *
+	 * @return If this is empty or not.
+	 * @since 2019/03/31
+	 */
+	public final boolean isEmpty()
+	{
+		return this.size() == 0;
+	}
+	
+	/**
 	 * Returns if this is an exception jump.
 	 *
 	 * @param __i The index to get.

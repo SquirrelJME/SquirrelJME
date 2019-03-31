@@ -184,10 +184,38 @@ final class __Registerize__
 					RegisterOperationType.JUMP_IF_EXCEPTION, ehlab);
 			}
 			
+			// New stack state would have been replaced
+			JavaStackState newstack = this._stack;
+			
+			// And a hypothetical state for exceptions
+			JavaStackState hypoex = newstack.doExceptionHandler(
+				new JavaType(new ClassName("java/lang/Throwable"))).after();
+			
 			// Set target stack states for destinations of this instruction
 			ijt = inst.jumpTargets();
-			if (true)
-				 throw new todo.TODO();
+			if (ijt != null && !ijt.isEmpty())
+				for (int i = 0, n = ijt.size(); i < n; i++)
+				{
+					int jta = ijt.get(i).target();
+					
+					// The type of stack to target
+					JavaStackState use = (ijt.isException(i) ? hypoex :
+						newstack);
+					
+					// Is empty state
+					JavaStackState dss = stacks.get(jta);
+					if (dss == null)
+						stacks.put(jta, use);
+					
+					// May need adapting
+					else
+					{
+						// Debug
+						todo.DEBUG.note("Adapt %s -> %s", use, dss);
+						
+						throw new todo.TODO();
+					}
+				}
 		}
 		
 		// Invalidate source lines for the exception table
