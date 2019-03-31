@@ -187,20 +187,24 @@ final class __Registerize__
 			// New stack state would have been replaced
 			JavaStackState newstack = this._stack;
 			
-			// And a hypothetical state for exceptions
-			JavaStackState hypoex = newstack.doExceptionHandler(
-				new JavaType(new ClassName("java/lang/Throwable"))).after();
-			
 			// Set target stack states for destinations of this instruction
+			// Calculate the exception state only if it is needed
+			JavaStackState hypoex = null;
 			ijt = inst.jumpTargets();
 			if (ijt != null && !ijt.isEmpty())
 				for (int i = 0, n = ijt.size(); i < n; i++)
 				{
 					int jta = ijt.get(i).target();
 					
+					// Lazily calculate the exception handler since it might
+					// not always be needed
+					boolean isexception = ijt.isException(i);
+					if (isexception && hypoex == null)
+						hypoex = newstack.doExceptionHandler(new JavaType(
+							new ClassName("java/lang/Throwable"))).after();
+					
 					// The type of stack to target
-					JavaStackState use = (ijt.isException(i) ? hypoex :
-						newstack);
+					JavaStackState use = (isexception ? hypoex : newstack);
 					
 					// Is empty state
 					JavaStackState dss = stacks.get(jta);
