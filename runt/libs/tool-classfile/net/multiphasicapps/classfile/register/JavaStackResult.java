@@ -12,6 +12,7 @@ package net.multiphasicapps.classfile.register;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import net.multiphasicapps.classfile.JavaType;
 
@@ -76,6 +77,9 @@ public final class JavaStackResult
 		this.enqueue = (__eq == null ? new JavaStackEnqueueList(0) : __eq);
 		this._in = in.<Input>toArray(new Input[in.size()]);
 		this._out = out.<Output>toArray(new Output[out.size()]);
+		
+		// Debug
+		todo.DEBUG.note("Result %s", this);
 	}
 	
 	/**
@@ -186,7 +190,16 @@ public final class JavaStackResult
 	@Override
 	public final String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>((rv = String.format(
+				"Result {bef=%s, aft=%s, enq=%s, in=%s, out=%s}",
+				this.before, this.after, this.enqueue,
+				Arrays.asList(this._in), Arrays.asList(this._out))));
+		
+		return rv;
 	}
 	
 	/**
@@ -231,6 +244,12 @@ public final class JavaStackResult
 		/** The type which was read. */
 		public final JavaType type;
 		
+		/** Not counting? */
+		public final boolean nocounting;
+	
+		/** String representation. */
+		private Reference<String> _string;
+		
 		/**
 		 * Initializes the input.
 		 *
@@ -246,6 +265,45 @@ public final class JavaStackResult
 			
 			this.register = __i.value;
 			this.type = __i.type;
+			this.nocounting = __i.nocounting;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2019/03/31
+		 */
+		@Override
+		public final boolean equals(Object __o)
+		{
+			throw new todo.TODO();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2019/03/31
+		 */
+		@Override
+		public final int hashCode()
+		{
+			throw new todo.TODO();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2019/03/31
+		 */
+		@Override
+		public final String toString()
+		{
+			Reference<String> ref = this._string;
+			String rv;
+			
+			if (ref == null || null == (rv = ref.get()))
+				this._string = new WeakReference<>((rv = String.format(
+					"In:{r=r%d, type=%s, flags=%s}",
+					this.register, this.type, (this.nocounting ? "NC" : ""))));
+			
+			return rv;
 		}
 	}
 	
@@ -272,6 +330,12 @@ public final class JavaStackResult
 		/** The output type. */
 		public final JavaType type;
 		
+		/** Not counting? */
+		public final boolean nocounting;
+	
+		/** String representation. */
+		private Reference<String> _string;
+		
 		/**
 		 * Initializes the output.
 		 *
@@ -287,6 +351,45 @@ public final class JavaStackResult
 			
 			this.register = __i.value;
 			this.type = __i.type;
+			this.nocounting = __i.nocounting;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2019/03/31
+		 */
+		@Override
+		public final boolean equals(Object __o)
+		{
+			throw new todo.TODO();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2019/03/31
+		 */
+		@Override
+		public final int hashCode()
+		{
+			throw new todo.TODO();
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2019/03/31
+		 */
+		@Override
+		public final String toString()
+		{
+			Reference<String> ref = this._string;
+			String rv;
+			
+			if (ref == null || null == (rv = ref.get()))
+				this._string = new WeakReference<>((rv = String.format(
+					"Out:{r=r%d, type=%s, flags=%s}",
+					this.register, this.type, (this.nocounting ? "NC" : ""))));
+			
+			return rv;
 		}
 	}
 }
