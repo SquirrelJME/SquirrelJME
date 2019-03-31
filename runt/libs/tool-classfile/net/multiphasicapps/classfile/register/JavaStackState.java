@@ -294,7 +294,7 @@ public final class JavaStackState
 			
 			// Only enqueue objects which are counting and which do not have
 			// values of another register
-			if (!inf.canEnqueue())
+			if (inf.canEnqueue())
 				enqs.add(inf.value);
 			
 			// Was popped, so add to to the pop list
