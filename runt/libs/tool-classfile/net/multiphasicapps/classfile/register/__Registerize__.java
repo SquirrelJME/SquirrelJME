@@ -650,8 +650,6 @@ final class __Registerize__
 		// point that returns
 		if (__ops.isEmpty())
 		{
-			codebuilder.add(RegisterOperationType.RETURN);
-			
 			// Always create the label if it does not exist
 			// This might be used by exception handlers potentially
 			if (label == null)
@@ -659,6 +657,9 @@ final class __Registerize__
 				label = codebuilder.label("return", this._nextreturndx++);
 				returns.put(__ops, label);
 			}
+			
+			// Generate return
+			codebuilder.add(RegisterOperationType.RETURN);
 		}
 		
 		// If the return for this operation has already been handled, just
