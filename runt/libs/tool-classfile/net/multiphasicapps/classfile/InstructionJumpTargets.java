@@ -11,6 +11,7 @@ package net.multiphasicapps.classfile;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 import java.util.Set;
 import net.multiphasicapps.collections.SortedTreeSet;
 
@@ -125,6 +126,18 @@ public final class InstructionJumpTargets
 	}
 	
 	/**
+	 * Returns if this is an exception jump.
+	 *
+	 * @param __i The index to get.
+	 * @return If this is an exception index.
+	 * @since 2019/03/31
+	 */
+	public final boolean isException(int __i)
+	{
+		return __i >= this._normal.length;
+	}
+	
+	/**
 	 * Returns the number of jump targets.
 	 *
 	 * @return The number of jump targets.
@@ -142,7 +155,15 @@ public final class InstructionJumpTargets
 	@Override
 	public final String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>((rv =
+				"[N:" + Arrays.asList(this._normal) +
+				", E: " + Arrays.asList(this._exception) + "]"));
+		
+		return rv;
 	}
 }
 

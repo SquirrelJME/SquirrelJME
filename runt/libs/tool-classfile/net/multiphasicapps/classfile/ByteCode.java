@@ -602,7 +602,63 @@ public final class ByteCode
 		// Get the original jump table
 		Map<Integer, InstructionJumpTargets> jumpmap = this.jumpTargets();
 		
-		throw new todo.TODO();
+		// The target jump table has both normals and exceptions so it must
+		// remember that state accordingly
+		class Working
+		{
+			Set<InstructionJumpTarget> normal =
+				new LinkedHashSet<>();
+			
+			Set<InstructionJumpTarget> exception =
+				new LinkedHashSet<>();
+		}
+		Map<Integer, Working> works = new LinkedHashMap<>();
+		
+		// Go through all the original jump targets and add them
+		for (Map.Entry<Integer, InstructionJumpTargets> e : jumpmap.entrySet())
+		{
+			InstructionJumpTarget addr = new InstructionJumpTarget(e.getKey());
+			InstructionJumpTargets jumps = e.getValue();
+			
+			for (int i = 0, n = jumps.size(); i < n; i++)
+			{
+				int targ = jumps.get(i).target();
+				boolean isex = jumps.isException(i);
+				
+				// Create work if missing
+				Working work = works.get(targ);
+				if (work == null)
+					works.put(targ, (work = new Working()));
+				
+				// Add
+				if (isex)
+					work.normal.add(addr);
+				else
+					work.exception.add(addr);
+			}
+		}
+		
+		// Finalize for returning
+		Map<Integer, InstructionJumpTargets> rv = new LinkedHashMap<>();
+		for (Map.Entry<Integer, Working> e : works.entrySet())
+		{
+			Working work = e.getValue();
+			Set<InstructionJumpTarget> nrm = work.normal,
+				exe = work.exception;
+			
+			// Convert
+			rv.put(e.getKey(), new InstructionJumpTargets(
+				nrm.<InstructionJumpTarget>toArray(
+					new InstructionJumpTarget[nrm.size()]),
+				exe.<InstructionJumpTarget>toArray(
+					new InstructionJumpTarget[exe.size()])));
+		}
+		
+		// Debug
+		todo.DEBUG.note("normal jumps = %s", jumpmap);
+		todo.DEBUG.note("revers jumps = %s", rv);
+		
+		return rv;
 	}
 	
 	/**
