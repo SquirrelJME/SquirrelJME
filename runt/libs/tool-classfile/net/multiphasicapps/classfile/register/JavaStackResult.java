@@ -79,7 +79,7 @@ public final class JavaStackResult
 		this._out = out.<Output>toArray(new Output[out.size()]);
 		
 		// Debug
-		todo.DEBUG.note("Result %s", this);
+		todo.DEBUG.note("%s", this);
 	}
 	
 	/**
