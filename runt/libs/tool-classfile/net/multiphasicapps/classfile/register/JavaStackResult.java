@@ -195,7 +195,7 @@ public final class JavaStackResult
 		
 		if (ref == null || null == (rv = ref.get()))
 			this._string = new WeakReference<>((rv = String.format(
-				"Result {bef=%s, aft=%s, enq=%s, in=%s, out=%s}",
+				"Result:{bef=%s, aft=%s, enq=%s, in=%s, out=%s}",
 				this.before, this.after, this.enqueue,
 				Arrays.asList(this._in), Arrays.asList(this._out))));
 		
