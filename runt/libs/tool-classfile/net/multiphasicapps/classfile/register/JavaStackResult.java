@@ -11,6 +11,8 @@ package net.multiphasicapps.classfile.register;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 import net.multiphasicapps.classfile.JavaType;
 
 /**
@@ -22,8 +24,54 @@ import net.multiphasicapps.classfile.JavaType;
  */
 public final class JavaStackResult
 {
+	/** The stack state before. */
+	protected final JavaStackState before;
+	
+	/** The stack state after. */
+	protected final JavaStackState after;
+	
+	/** Input. */
+	private final JavaStackResult.Input[] _in;
+	
+	/** Output. */
+	private final JavaStackResult.Output[] _out;
+	
 	/** String representation. */
 	private Reference<String> _string;
+	
+	/**
+	 * Initializes the result of the operation
+	 *
+	 * @param __bs The previous stack state.
+	 * @param __as The after (the new) stack state.
+	 * @param __io Input/output.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/31
+	 */
+	public JavaStackResult(JavaStackState __bs, JavaStackState __as,
+		InputOutput... __io)
+		throws NullPointerException
+	{
+		if (__bs == null || __as == null)
+			throw new NullPointerException("NARG");
+		
+		// Sort through input/output and put into their own pile
+		List<Input> in = new ArrayList<>();
+		List<Output> out = new ArrayList<>();
+		for (InputOutput x : (__io = (__io == null ?
+			new InputOutput[0] : __io.clone())))
+			if (x == null)
+				throw new NullPointerException("NARG");
+			else if (x instanceof Input)
+				in.add((Input)x);
+			else
+				out.add((Output)x);
+		
+		this.before = __bs;
+		this.after = __as;
+		this._in = in.<Input>toArray(new Input[in.size()]);
+		this._out = out.<Output>toArray(new Output[out.size()]);
+	}
 	
 	/**
 	 * Represents the new state after the operation was performed.
@@ -33,7 +81,7 @@ public final class JavaStackResult
 	 */
 	public final JavaStackState after()
 	{
-		throw new todo.TODO();
+		return this.after;
 	}
 	
 	/**
@@ -44,7 +92,7 @@ public final class JavaStackResult
 	 */
 	public final JavaStackState before()
 	{
-		throw new todo.TODO();
+		return this.before;
 	}
 	
 	/**
@@ -89,7 +137,7 @@ public final class JavaStackResult
 	 */
 	public final JavaStackResult.Input in(int __i)
 	{
-		throw new todo.TODO();
+		return this._in[__i];
 	}
 	
 	/**
@@ -100,7 +148,7 @@ public final class JavaStackResult
 	 */
 	public final int inCount()
 	{
-		throw new todo.TODO();
+		return this._in.length;
 	}
 	
 	/**
@@ -112,7 +160,7 @@ public final class JavaStackResult
 	 */
 	public final JavaStackResult.Output out(int __i)
 	{
-		throw new todo.TODO();
+		return this._out[__i];
 	}
 	
 	/**
@@ -123,7 +171,7 @@ public final class JavaStackResult
 	 */
 	public final int outCount()
 	{
-		throw new todo.TODO();
+		return this._out.length;
 	}
 	
 	/**
@@ -137,19 +185,72 @@ public final class JavaStackResult
 	}
 	
 	/**
+	 * Makes an input.
+	 *
+	 * @param __i The info to base from.
+	 * @return The input.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/31
+	 */
+	public static final Input makeInput(JavaStackState.Info __i)
+		throws NullPointerException
+	{
+		return new Input(__i);
+	}
+	
+	/**
+	 * Makes an output.
+	 *
+	 * @param __i The info to base from.
+	 * @return The output.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/31
+	 */
+	public static final Output makeOutput(JavaStackState.Info __i)
+		throws NullPointerException
+	{
+		return new Output(__i);
+	}
+	
+	/**
 	 * Input information.
 	 *
 	 * @since 2019/03/30
 	 */
 	public static final class Input
+		implements InputOutput
 	{
 		/** The register used for input. */
-		public final int register =
-			-1;
+		public final int register;
 		
 		/** The type which was read. */
-		public final JavaType type =
-			null;
+		public final JavaType type;
+		
+		/**
+		 * Initializes the input.
+		 *
+		 * @param __i The info to base off.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2019/03/31
+		 */
+		public Input(JavaStackState.Info __i)
+			throws NullPointerException
+		{
+			if (__i == null)
+				throw new NullPointerException("NARG");
+			
+			this.register = __i.value;
+			this.type = __i.type;
+		}
+	}
+	
+	/**
+	 * Used to flag input and output.
+	 *
+	 * @since 2019/03/31
+	 */
+	public static interface InputOutput
+	{
 	}
 	
 	/**
@@ -158,10 +259,30 @@ public final class JavaStackResult
 	 * @since 2019/03/30
 	 */
 	public static final class Output
+		implements InputOutput
 	{
 		/** The register used for output. */
-		public final int register =
-			-1;
+		public final int register;
+		
+		/** The output type. */
+		public final JavaType type;
+		
+		/**
+		 * Initializes the output.
+		 *
+		 * @param __i The info to base off.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2019/03/31
+		 */
+		public Output(JavaStackState.Info __i)
+			throws NullPointerException
+		{
+			if (__i == null)
+				throw new NullPointerException("NARG");
+			
+			this.register = __i.value;
+			this.type = __i.type;
+		}
 	}
 }
 
