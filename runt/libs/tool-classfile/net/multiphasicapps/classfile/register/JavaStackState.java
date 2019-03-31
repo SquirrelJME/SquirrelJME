@@ -12,6 +12,7 @@ package net.multiphasicapps.classfile.register;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
+import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.JavaType;
 import net.multiphasicapps.classfile.StackMapTableEntry;
 import net.multiphasicapps.classfile.StackMapTableState;
@@ -129,11 +130,45 @@ public final class JavaStackState
 	 *
 	 * @param __i The local to load from.
 	 * @return The result of the operation.
+	 * @throws InvalidClassFormatException If the local is not valid or
+	 * the stack overflows.
 	 * @since 2019/03/30
 	 */
 	public final JavaStackResult doLocalLoad(int __i)
+		throws InvalidClassFormatException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error JC2t Load of local with no value.}
+		Info from = this._locals[__i];
+		if (from.type.isNothing())
+			throw new InvalidClassFormatException("JC2t");
+		
+		// Space needed to be used on the stack
+		JavaType type = from.type;
+		boolean iswide = type.isWide();
+		int space = (iswide ? 2 : 1);
+		
+		// {@squirreljme.error JC2u Stack would overflow loading local value.}
+		Info[] stack = this._stack;
+		int stacktop = this.stacktop;
+		if (stacktop + space > stack.length)
+			throw new InvalidClassFormatException("JC2u");
+		
+		// Setup new stack
+		Info[] newstack = stack.clone();
+		Info dest;
+		newstack[stacktop] = (dest = stack[stacktop].newTypeValue(type,
+			from.value));
+		
+		// Add top entry as well
+		if (iswide)
+			newstack[stacktop + 1] = stack[stacktop + 1].newTypeValue(
+				type.topType(), from.value + 1);
+		
+		// Create resulting state
+		return new JavaStackResult(this,
+			new JavaStackState(this._locals, newstack, stacktop + space),
+			JavaStackResult.makeInput(from),
+			JavaStackResult.makeOutput(dest));
 	}
 	
 	/**
@@ -404,6 +439,21 @@ public final class JavaStackState
 		 * @param __rp The register.
 		 * @param __t The type.
 		 * @param __rv The value register.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2019/03/31
+		 */
+		public Info(int __rp, JavaType __t, int __rv)
+			throws NullPointerException
+		{
+			this(__rp, __t, __rv, false);
+		}
+		
+		/**
+		 * Initializes the information.
+		 *
+		 * @param __rp The register.
+		 * @param __t The type.
+		 * @param __rv The value register.
 		 * @param __ro Is this read-only?
 		 * @throws NullPointerException On null arguments.
 		 * @since 2019/03/31
@@ -443,6 +493,21 @@ public final class JavaStackState
 		public final int hashCode()
 		{
 			throw new todo.TODO();
+		}
+		
+		/**
+		 * Returns information with a new type and value.
+		 *
+		 * @param __t The type to use.
+		 * @param __v The value to use.
+		 * @return The new information.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2019/03/31
+		 */
+		public final Info newTypeValue(JavaType __t, int __v)
+			throws NullPointerException
+		{
+			return new Info(this.register, __t, __v, false);
 		}
 		
 		/**
