@@ -638,7 +638,21 @@ public final class JavaStackState
 		@Override
 		public final boolean equals(Object __o)
 		{
-			throw new todo.TODO();
+			if (this == __o)
+				return true;
+			
+			if (!(__o instanceof Info))
+				return false;
+			
+			Info o = (Info)__o;
+			if (this.hashCode() != o.hashCode())
+				return false;
+			
+			return this.register == o.register &&
+				this.type.equals(o.type) &&
+				this.value == o.value &&
+				this.readonly == o.readonly &&
+				this.nocounting == o.nocounting;
 		}
 		
 		/**
@@ -648,7 +662,12 @@ public final class JavaStackState
 		@Override
 		public final int hashCode()
 		{
-			throw new todo.TODO();
+			int rv = this._hash;
+			if (rv == 0)
+				this._hash = (rv = this.register + this.type.hashCode() +
+					this.value + (this.readonly ? 12873 : -18723) +
+					(this.nocounting ? 987214 : -2143));
+			return rv;
 		}
 		
 		/**
