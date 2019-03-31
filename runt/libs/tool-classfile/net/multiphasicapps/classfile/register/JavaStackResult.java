@@ -30,6 +30,9 @@ public final class JavaStackResult
 	/** The stack state after. */
 	protected final JavaStackState after;
 	
+	/** Enqueue list. */
+	protected final JavaStackEnqueueList enqueue;
+	
 	/** Input. */
 	private final JavaStackResult.Input[] _in;
 	
@@ -44,12 +47,13 @@ public final class JavaStackResult
 	 *
 	 * @param __bs The previous stack state.
 	 * @param __as The after (the new) stack state.
+	 * @param __eq Enqueue list, may be {@code null}.
 	 * @param __io Input/output.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/31
 	 */
 	public JavaStackResult(JavaStackState __bs, JavaStackState __as,
-		InputOutput... __io)
+		JavaStackEnqueueList __eq, InputOutput... __io)
 		throws NullPointerException
 	{
 		if (__bs == null || __as == null)
@@ -69,6 +73,7 @@ public final class JavaStackResult
 		
 		this.before = __bs;
 		this.after = __as;
+		this.enqueue = (__eq == null ? new JavaStackEnqueueList() : __eq);
 		this._in = in.<Input>toArray(new Input[in.size()]);
 		this._out = out.<Output>toArray(new Output[out.size()]);
 	}
@@ -105,7 +110,7 @@ public final class JavaStackResult
 	 */
 	public final JavaStackEnqueueList enqueue()
 	{
-		throw new todo.TODO();
+		return this.enqueue;
 	}
 	
 	/**
