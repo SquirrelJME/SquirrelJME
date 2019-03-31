@@ -189,7 +189,25 @@ public final class JavaStackEnqueueList
 	@Override
 	public final String toString()
 	{
-		throw new todo.TODO();
+		StringBuilder sb = new StringBuilder("ENQ[");
+		
+		int stackstart = this.stackstart, dx = 0;
+		boolean comma = false;
+		for (int v : this._registers)
+		{
+			if (dx++ == stackstart)
+				sb.append("| ");
+			else if (comma)
+				sb.append(", ");
+			comma = true;
+			
+			sb.append(v);
+		}
+		if (dx == stackstart)
+			sb.append('|');
+		sb.append(']');
+		
+		return sb.toString();
 	}
 	
 	/**
