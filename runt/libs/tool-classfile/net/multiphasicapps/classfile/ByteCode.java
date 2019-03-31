@@ -632,9 +632,9 @@ public final class ByteCode
 				
 				// Add
 				if (isex)
-					work.normal.add(addr);
-				else
 					work.exception.add(addr);
+				else
+					work.normal.add(addr);
 			}
 		}
 		
