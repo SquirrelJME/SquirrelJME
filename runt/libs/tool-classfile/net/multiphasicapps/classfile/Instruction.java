@@ -12,6 +12,8 @@ package net.multiphasicapps.classfile;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * This represents a single instruction within the byte code.
@@ -32,6 +34,9 @@ public final class Instruction
 	/** Stack map table entry for this instruction. */
 	protected final StackMapTableState smtstate;
 	
+	/** Jump targets. */
+	protected final InstructionJumpTargets jumptargets;
+	
 	/** Instruction arguments. */
 	private final Object[] _args;
 	
@@ -46,12 +51,13 @@ public final class Instruction
 	 * @param __a The instruction address.
 	 * @param __eh Exception handler table.
 	 * @param __smt The stack map table data.
+	 * @param __af Address of the instruction which follows this.
 	 * @throws InvalidClassFormatException If the instruction is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/05/18
 	 */
 	Instruction(byte[] __code, Pool __pool, int __a,
-		ExceptionHandlerTable __eh, StackMapTable __smt)
+		ExceptionHandlerTable __eh, StackMapTable __smt, int __af)
 		throws InvalidClassFormatException, NullPointerException
 	{
 		// Check
@@ -530,6 +536,38 @@ public final class Instruction
 		// Set
 		this._args = args;
 		this.naturalflow = naturalflow;
+		
+		// Figure out normal jump targets
+		Set<InstructionJumpTarget> normal = new LinkedHashSet<>();
+		if (naturalflow)
+			normal.add(new InstructionJumpTarget(__af));
+		for (int i = 0, n = args.length; i < n; i++)
+		{
+			Object v = args[i];
+			
+			// Jump
+			if (v instanceof InstructionJumpTarget)
+				normal.add((InstructionJumpTarget)v);
+			
+			// A table
+			else if (v instanceof IntMatchingJumpTable)
+				for (InstructionJumpTarget j :
+					((IntMatchingJumpTable)v).targets())
+					normal.add(j);
+		}
+		
+		// Determine exceptional jump targets
+		Set<InstructionJumpTarget> exception = new LinkedHashSet<>();
+		for (ExceptionHandler eh : __eh)
+			if (eh.inRange(__a))
+				exception.add(new InstructionJumpTarget(eh.handlerAddress()));
+		
+		// Set jump targets
+		this.jumptargets = new InstructionJumpTargets(
+			normal.<InstructionJumpTarget>toArray(
+				new InstructionJumpTarget[normal.size()]),
+			exception.<InstructionJumpTarget>toArray(
+				new InstructionJumpTarget[exception.size()]));
 	}
 	
 	/**
@@ -613,108 +651,7 @@ public final class Instruction
 	 */
 	public final InstructionJumpTargets jumpTargets()
 	{
-		throw new todo.TODO();
-		
-		/*
-		
-		__StackState__ state = this.state;
-		
-		// Set initial entry state, so we know which locals are actually
-		// touchable
-		state.fromState(this.stackmap.get(0));
-		
-		// Go through every instruction to find ones which touch locals
-		for (Instruction inst : this.bytecode)
-		{
-			// Anything which is wide hits the adjacent local as well
-			boolean wide = false;
-			
-			// Only specific instructions will do so
-			int hit, op;
-			switch ((op = inst.operation()))
-			{
-				case InstructionIndex.ASTORE:
-				case InstructionIndex.WIDE_ASTORE:
-					hit = inst.intArgument(0);
-					break;
-				
-				case InstructionIndex.ASTORE_0:
-				case InstructionIndex.ASTORE_1:
-				case InstructionIndex.ASTORE_2:
-				case InstructionIndex.ASTORE_3:
-					hit = op - InstructionIndex.ASTORE_0;
-					break;
-				
-				case InstructionIndex.DSTORE:
-				case InstructionIndex.WIDE_DSTORE:
-					hit = inst.intArgument(0);
-					wide = true;
-					break;
-				
-				case InstructionIndex.DSTORE_0:
-				case InstructionIndex.DSTORE_1:
-				case InstructionIndex.DSTORE_2:
-				case InstructionIndex.DSTORE_3:
-					hit = op = InstructionIndex.DSTORE_0;
-					wide = true;
-					break;
-				
-				case InstructionIndex.FSTORE:
-				case InstructionIndex.WIDE_FSTORE:
-					hit = inst.intArgument(0);
-					break;
-				
-				case InstructionIndex.FSTORE_0:
-				case InstructionIndex.FSTORE_1:
-				case InstructionIndex.FSTORE_2:
-				case InstructionIndex.FSTORE_3:
-					hit = op = InstructionIndex.FSTORE_0;
-					break;
-				
-				case InstructionIndex.IINC:
-				case InstructionIndex.WIDE_IINC:
-					hit = inst.intArgument(0);
-					break;
-				
-				case InstructionIndex.ISTORE:
-				case InstructionIndex.WIDE_ISTORE:
-					hit = inst.intArgument(0);
-					break;
-				
-				case InstructionIndex.ISTORE_0:
-				case InstructionIndex.ISTORE_1:
-				case InstructionIndex.ISTORE_2:
-				case InstructionIndex.ISTORE_3:
-					hit = op = InstructionIndex.ISTORE_0;
-					break;
-				
-				case InstructionIndex.LSTORE:
-				case InstructionIndex.WIDE_LSTORE:
-					hit = inst.intArgument(0);
-					wide = true;
-					break;
-				
-				case InstructionIndex.LSTORE_0:
-				case InstructionIndex.LSTORE_1:
-				case InstructionIndex.LSTORE_2:
-				case InstructionIndex.LSTORE_3:
-					hit = op = InstructionIndex.LSTORE_0;
-					wide = true;
-					break;
-				
-				default:
-					continue;
-			}
-			
-			// Set local as being written to, handle wides as well
-			state.localSlot(hit)._written = true;
-			if (wide)
-				state.localSlot(hit + 1)._written = true;
-		}
-		
-		// Debug
-		todo.DEBUG.note("QuickCache: %s", state);
-		*/
+		return this.jumptargets;
 	}
 	
 	/**

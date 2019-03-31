@@ -343,7 +343,7 @@ public final class ByteCode
 		if (ref == null || null == (rv = ref.get()))
 			icache[__a] = new WeakReference<>((rv = new Instruction(
 				this._rawattributedata, this.pool, __a, this.exceptions,
-				stackMapTable())));
+				stackMapTable(), this.addressFollowing(__a))));
 		
 		return rv;
 	}
@@ -472,7 +472,13 @@ public final class ByteCode
 	 */
 	public final Map<Integer, InstructionJumpTargets> jumpTargets()
 	{
-		throw new todo.TODO();
+		Map<Integer, InstructionJumpTargets> rv = new LinkedHashMap<>();
+		
+		// Just fill addresses with instruction info
+		for (Instruction i : this)
+			rv.put(i.address(), i.jumpTargets());
+		
+		return rv;
 	}
 	
 	/**
@@ -593,6 +599,9 @@ public final class ByteCode
 	 */
 	public final Map<Integer, InstructionJumpTargets> reverseJumpTargets()
 	{
+		// Get the original jump table
+		Map<Integer, InstructionJumpTargets> jumpmap = this.jumpTargets();
+		
 		throw new todo.TODO();
 	}
 	
