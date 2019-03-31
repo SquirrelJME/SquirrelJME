@@ -101,12 +101,55 @@ public final class JavaStackState
 	 * placed in the enqueue list.
 	 *
 	 * @param __rv If true then a return value will be popped before everything
-	 * is destroyed.
+	 * is destroyed, this will be the single input available.
 	 * @since 2019/03/30
 	 */
 	public final JavaStackResult doDestroy(boolean __rv)
 	{
-		throw new todo.TODO();
+		Info inf;
+		Info[] locals = this._locals,
+			stack = this._stack;
+		int stacktop = this.stacktop;
+		
+		// Setup new locals
+		Info[] newlocals = locals.clone();
+		
+		// Find locals to enqueue
+		List<Integer> enqueue = new ArrayList<>();
+		for (int i = 0, n = locals.length; i < n; i++)
+		{
+			inf = locals[i];
+			
+			// Enqueue?
+			if (inf.canEnqueue())
+				enqueue.add(inf.value);
+			
+			// Clear out
+			newlocals[i] = inf.newTypeValue(JavaType.NOTHING, -1, false);
+		}
+		
+		// Return value?
+		List<JavaStackResult.InputOutput> io = new ArrayList<>();
+		if (__rv)
+			throw new todo.TODO();
+		
+		// Enqueue stack items, they do not need clearing out because setting
+		// a limiting top will auto-clear
+		int eqss = enqueue.size();
+		for (int i = 0; i < stacktop; i++)
+		{
+			inf = stack[i];
+			
+			if (inf.canEnqueue())
+				enqueue.add(inf.value);
+		}
+		
+		// Create result
+		return new JavaStackResult(this,
+			new JavaStackState(newlocals, stack, 0),
+			new JavaStackEnqueueList(eqss, enqueue),
+			io.<JavaStackResult.InputOutput>toArray(
+				new JavaStackResult.InputOutput[io.size()]));
 	}
 	
 	/**
@@ -251,8 +294,7 @@ public final class JavaStackState
 			
 			// Only enqueue objects which are counting and which do not have
 			// values of another register
-			if (!inf.nocounting && inf.type.isObject() &&
-				inf.register == inf.value)
+			if (!inf.canEnqueue())
 				enqs.add(inf.value);
 			
 			// Was popped, so add to to the pop list
@@ -571,6 +613,18 @@ public final class JavaStackState
 			this.value = (__rv = (__t.isNothing() ? -1 : __rv));
 			this.readonly = __ro;
 			this.nocounting = (__nc || __rp != __rv);
+		}
+		
+		/**
+		 * Can this be enqueued?
+		 *
+		 * @return If this can be enqueued.
+		 * @since 2019/03/31
+		 */
+		public final boolean canEnqueue()
+		{
+			return this.nocounting && this.type.isObject() &&
+				this.register == this.value;
 		}
 		
 		/**
