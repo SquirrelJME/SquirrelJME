@@ -11,7 +11,9 @@ package net.multiphasicapps.classfile.register;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 import net.multiphasicapps.classfile.JavaType;
+import net.multiphasicapps.classfile.StackMapTableEntry;
 import net.multiphasicapps.classfile.StackMapTableState;
 
 /**
@@ -24,8 +26,66 @@ import net.multiphasicapps.classfile.StackMapTableState;
  */
 public final class JavaStackState
 {
+	/** The top of the stack. */
+	protected final int stacktop;
+	
+	/** The local variables defined. */
+	private final Info[] _locals;
+	
+	/** The stack variables. */
+	private final Info[] _stack;
+	
 	/** String representation. */
 	private Reference<String> _string;
+	
+	/** Hash code. */
+	private int _hash;
+	
+	/**
+	 * Initializes the stack state, the state will be modified to ensure that
+	 * it is correct for normalization purposes.
+	 *
+	 * @param __l The locals.
+	 * @param __s The stack.
+	 * @param __ss The top of the stack.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/31
+	 */
+	public JavaStackState(Info[] __l, Info[] __s, int __ss)
+		throws NullPointerException
+	{
+		if (__l == null || __s == null)
+			throw new NullPointerException("NARG");
+		
+		for (Info i : (__l = __l.clone()))
+			if (i == null)
+				throw new NullPointerException("NARG");
+		
+		for (Info i : (__s = __s.clone()))
+			if (i == null)
+				throw new NullPointerException("NARG");
+		
+		// Correct pre-stack entries?
+		for (int i = 0; i < __ss; i++)
+		{
+			Info x = __s[i];
+			if (x.readonly)
+				__s[i] = new Info(x.register, x.type, x.value, false);
+		}
+		
+		// Correct post-stack entries
+		for (int i = __ss, n = __s.length; i < n; i++)
+		{
+			Info x = __s[i];
+			if (!x.type.isNothing() || x.value != -1 || x.readonly)
+				__s[i] = new Info(x.register, JavaType.NOTHING, -1, false);
+		}
+		
+		// Set
+		this._locals = __l;
+		this._stack = __s;
+		this.stacktop = __ss;
+	}
 	
 	/**
 	 * Destroys all local variables and stack variables returning the process
@@ -140,7 +200,20 @@ public final class JavaStackState
 	@Override
 	public final boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		if (this == __o)
+			return true;
+		
+		if (!(__o instanceof JavaStackState))
+			return false;
+		
+		// Faster to compare hashcodes first since there are lots of values
+		JavaStackState o = (JavaStackState)__o;
+		if (this.hashCode() != o.hashCode())
+			return false;
+		
+		return this.stacktop == o.stacktop &&
+			Arrays.equals(this._locals, o._locals) &&
+			Arrays.equals(this._stack, o._stack);
 	}
 	
 	/**
@@ -152,7 +225,19 @@ public final class JavaStackState
 	 */
 	public final JavaStackState.Info getLocal(int __i)
 	{
-		throw new todo.TODO();
+		return this._locals[__i];
+	}
+	
+	/**
+	 * Obtains the given stack entry.
+	 *
+	 * @param __i The stack entry to obtain.
+	 * @return The information for the stack entry.
+	 * @since 2019/03/30
+	 */
+	public final JavaStackState.Info getStack(int __i)
+	{
+		return this._stack[__i];
 	}
 	
 	/**
@@ -162,7 +247,12 @@ public final class JavaStackState
 	@Override
 	public final int hashCode()
 	{
-		throw new todo.TODO();
+		int hash = this._hash;
+		if (hash == 0)
+			this._hash = (hash = this.stacktop -
+				Arrays.asList(this._locals).hashCode() ^
+				Arrays.asList(this._stack).hashCode());
+		return hash;
 	}
 	
 	/**
@@ -184,7 +274,32 @@ public final class JavaStackState
 	@Override
 	public final String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+		{
+			StringBuilder sb = new StringBuilder("State L=");
+			
+			// Add locals
+			sb.append(Arrays.asList(this._locals));
+			
+			// Add stack entries
+			Info[] stack = this._stack;
+			sb.append(", S=[");
+			for (int i = 0, n = this.stacktop; i < n; i++)
+			{
+				if (i > 0)
+					sb.append(", ");
+				sb.append(stack[i]);
+			}
+			sb.append("]");
+			
+			// Build
+			this._string = new WeakReference<>((rv = sb.toString()));
+		}
+		
+		return rv;
 	}
 	
 	/**
@@ -204,10 +319,58 @@ public final class JavaStackState
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		// Optional, might not be specified
+		// Optional, might not be specified, but also sort it for searching
 		__lw = (__lw == null ? new int[0] : __lw.clone());
+		Arrays.sort(__lw);
 		
-		throw new todo.TODO();
+		// Get size of the entries
+		int maxlocals = __s.maxLocals(),
+			maxstack = __s.maxStack(),
+			stacktop = __s.depth();
+		
+		// Setup output infos
+		Info[] locals = new Info[maxlocals],
+			stack = new Info[maxstack];
+		
+		// Register position for the slot
+		int rpos = 0;
+		
+		// Initialize locals
+		for (int i = 0; i < maxlocals; i++)
+		{
+			StackMapTableEntry from = __s.getLocal(i);
+			
+			// This local is considered read-only if it is not written to
+			boolean ro = !(Arrays.binarySearch(__lw, i) >= 0);
+			
+			// Is there a type here?
+			JavaType t = from.type();
+			
+			// Setup info here
+			locals[i] = new Info(rpos, t, (t.isNothing() ? -1 : rpos), ro);
+			rpos++;
+		}
+		
+		// Initialize stack
+		for (int i = 0; i < maxstack; i++)
+		{
+			// Past end of stack?
+			if (i >= stacktop)
+				stack[i] = new Info(rpos++, JavaType.NOTHING, -1, false);
+			
+			// Normal entry
+			else
+			{
+				StackMapTableEntry from = __s.getStack(i);
+				
+				// Setup info here
+				stack[i] = new Info(rpos, from.type(), rpos, false);
+				rpos++;
+			}
+		}
+		
+		// Build it
+		return new JavaStackState(locals, stack, stacktop);
 	}
 	
 	/**
@@ -217,6 +380,51 @@ public final class JavaStackState
 	 */
 	public static final class Info
 	{
+		/** The register position. */
+		public final int register;
+		
+		/** The type. */
+		public final JavaType type;
+		
+		/** The value register. */
+		public final int value;
+		
+		/** Is this read-only? */
+		public final boolean readonly;
+		
+		/** String representation. */
+		private Reference<String> _string;
+		
+		/** Hash. */
+		private int _hash;
+		
+		/**
+		 * Initializes the information.
+		 *
+		 * @param __rp The register.
+		 * @param __t The type.
+		 * @param __rv The value register.
+		 * @param __ro Is this read-only?
+		 * @throws NullPointerException On null arguments.
+		 * @since 2019/03/31
+		 */
+		public Info(int __rp, JavaType __t, int __rv, boolean __ro)
+			throws NullPointerException
+		{
+			if (__t == null)
+				throw new NullPointerException("NARG");
+			
+			// If no value was set, just set it to the position
+			if (!__t.isNothing() && __rv < 0)
+				__rv = __rp;
+			
+			// Set
+			this.register = __rp;
+			this.type = __t;
+			this.value = (__t.isNothing() ? -1 : __rv);
+			this.readonly = __ro;
+		}
+		
 		/**
 		 * {@inheritDoc}
 		 * @since 2019/03/30
