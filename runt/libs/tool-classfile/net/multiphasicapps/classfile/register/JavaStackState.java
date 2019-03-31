@@ -432,7 +432,8 @@ public final class JavaStackState
 	 */
 	public final JavaStackEnqueueList possibleEnqueue()
 	{
-		throw new todo.TODO();
+		// This is the same as a destroy
+		return this.doDestroy(false).enqueue();
 	}
 	
 	/**

@@ -212,11 +212,13 @@ public final class RegisterInstruction
 		{
 			case RegisterOperationType.NOP:
 			case RegisterOperationType.RETURN:
+			case RegisterOperationType.REF_CLEAR:
 				return 0;
 			
 			case RegisterOperationType.ENCODING_U16:
 			case RegisterOperationType.ENCODING_U16_2:
 			case RegisterOperationType.ENCODING_J16:
+			case RegisterOperationType.REF_ENQUEUE:
 				return 1;
 				
 			case RegisterOperationType.X32_CONST:
