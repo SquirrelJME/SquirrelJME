@@ -200,13 +200,24 @@ public final class JavaStackState
 	 * reference countable.
 	 * @param __t The types to push.
 	 * @return The result of the operation.
+	 * @throws IllegalArgumentException If the local count is negative.
 	 * @since 2019/03/30
 	 */
 	public final JavaStackResult doStack(int __n, boolean __nc,
 		JavaType... __t)
+		throws IllegalArgumentException
 	{
+		// {@squirreljme.error JC2v Cannot pop a negative number of entries.}
+		if (__n < 0)
+			throw new IllegalArgumentException("JC2v");
+		
+		// Force blank types for pushing
 		if (__t == null)
 			__t = new JavaType[0];
+		
+		// Only the stack is operated on!
+		Info[] stack = this._stack;
+		int stacktop = this.stacktop;
 		
 		throw new todo.TODO();
 	}
