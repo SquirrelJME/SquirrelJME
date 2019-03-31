@@ -122,7 +122,11 @@ public final class InstructionJumpTargets
 	 */
 	public final boolean hasLaterAddress(int __pc)
 	{
-		throw new todo.TODO();
+		for (int i = 0, n = this.size(); i < n; i++)
+			if (this.get(i).target() > __pc)
+				return true;
+		
+		return false;
 	}
 	
 	/**
