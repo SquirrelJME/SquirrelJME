@@ -613,7 +613,7 @@ public final class JavaStackState
 			this.type = __t;
 			this.value = (__rv = (__t.isNothing() ? -1 : __rv));
 			this.readonly = __ro;
-			this.nocounting = (__nc || __rp != __rv);
+			this.nocounting = (__nc || __rp != __rv || __rv < 0);
 		}
 		
 		/**
@@ -624,7 +624,10 @@ public final class JavaStackState
 		 */
 		public final boolean canEnqueue()
 		{
-			return this.nocounting && this.type.isObject() &&
+			if (this.nocounting)
+				return false;
+			
+			return this.type.isObject() &&
 				this.register == this.value;
 		}
 		
