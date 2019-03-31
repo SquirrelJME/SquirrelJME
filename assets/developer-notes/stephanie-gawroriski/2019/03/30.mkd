@@ -1,0 +1,79 @@
+# 2019/03/30
+
+## 08:40
+
+I definitley feel that `__StackState__` needs some refactoring. Something that
+is easy to copy for freezes and does not involve using references to other
+slots. Wonder if I can rework all of that to do such things.
+
+## 14:43
+
+Actually, SquirrelJME is to be released in four weeks. So that will be
+something to work twords. Probably going to have to take some time snipping to
+make the release on time. Hopefully SummerCoat does not turn out horrible.
+
+## 14:45
+
+Actually, idea.... what if I made the stack state immutable? I could easily
+compare it with other states and store them accordingly. I would just have to
+do bulk pushes and pops of course. Basically I would need to build stack
+actions and such. I think this would be easier to use than an immutable state
+and I could easily save it without having a third class.
+
+## 14:07
+
+Also for stuff like swap and all the dup exchanges, I was thinking of perhaps
+having a shadow stack that is operated from. Essentially the swap and
+duplication do not actually do anything it just seems like they do.
+
+## 15:10
+
+Or really what I can do are value registers and positional registers. This
+could work actually! There will have to be state stored for the value
+registers as well. But for example swapping will swap two types on the stack
+but their value register is swapped as well so nothing actually moves.
+
+## 15:35
+
+For the stack result I am going to have to do availability or similar.
+basically say something needs to be uncounted, it will need to be done first
+before the register is made available or similar. I just have a very basic
+idea at this point.
+
+## 15:42
+
+Actually, using the register value stuff instead of aliases will be easier
+for cache invalidation matching.
+
+## 16:04
+
+Actually in the stack state I was adding proposals, but then I realized that
+the stuff is immutable which means I can actually do the destroy and get the
+result without actually setting the new state. Cool. This actually removes a
+ton of mess that I had previously which is nice. I am just kind of not sure
+how the uncaches will be done if they still need to be done the same as how
+they were before.
+
+## 16:24
+
+Okay, so moving things around due to uncounting will be a huge pain to do.
+It just complicates things for the most part. So I think the best thing to do
+in this case would be to add a new instruction called `REF_ENQUEUE` which
+copies the values of registers to be reference uncounted. Then a call to
+`REF_CLEAR` will go through every enqueued copy to remove the reference
+counts. That way there is no insane complication or juggling of values and
+such. This simplifies things as well. I may though need new jumps for
+`IF_ACMPEQ`, `IF_ACMPNE`, `IFNE, and `IFEQ` because these can operate on
+objects potentially. Like I need a copy of all of those but ones that also
+do a `REF_CLEAR` after the condition is checked.
+
+## 16:49
+
+Okay this seems much better than before, much easier to code for and I do
+not have to go crazy with the stack just to uncount references.
+
+## 18:50
+
+The code is actually much smaller as a result as well and much easier to
+operate with. Even though I have TODOs in the stack stuff, I really like the
+new `REF_ENQUEUE` instruction as it solves so many things for me.
