@@ -73,7 +73,7 @@ public final class JavaStackResult
 		
 		this.before = __bs;
 		this.after = __as;
-		this.enqueue = (__eq == null ? new JavaStackEnqueueList() : __eq);
+		this.enqueue = (__eq == null ? new JavaStackEnqueueList(0) : __eq);
 		this._in = in.<Input>toArray(new Input[in.size()]);
 		this._out = out.<Output>toArray(new Output[out.size()]);
 	}

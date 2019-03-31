@@ -11,7 +11,9 @@ package net.multiphasicapps.classfile.register;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.JavaType;
 import net.multiphasicapps.classfile.StackMapTableEntry;
@@ -71,15 +73,18 @@ public final class JavaStackState
 		{
 			Info x = __s[i];
 			if (x.readonly)
-				__s[i] = new Info(x.register, x.type, x.value, false);
+				__s[i] = new Info(x.register, x.type, x.value, false,
+					x.nocounting);
 		}
 		
 		// Correct post-stack entries
 		for (int i = __ss, n = __s.length; i < n; i++)
 		{
 			Info x = __s[i];
-			if (!x.type.isNothing() || x.value != -1 || x.readonly)
-				__s[i] = new Info(x.register, JavaType.NOTHING, -1, false);
+			if (!x.type.isNothing() || x.value != -1 || x.readonly ||
+				x.nocounting)
+				__s[i] = new Info(x.register, JavaType.NOTHING, -1, false,
+					false);
 		}
 		
 		// Set
@@ -157,12 +162,12 @@ public final class JavaStackState
 		Info[] newstack = stack.clone();
 		Info dest;
 		newstack[stacktop] = (dest = stack[stacktop].newTypeValue(type,
-			from.value));
+			from.value, true));
 		
 		// Add top entry as well
 		if (iswide)
 			newstack[stacktop + 1] = stack[stacktop + 1].newTypeValue(
-				type.topType(), from.value + 1);
+				type.topType(), from.value + 1, true);
 		
 		// Create resulting state
 		return new JavaStackResult(this,
@@ -198,26 +203,63 @@ public final class JavaStackState
 	 * @param __n The number of locals to pop.
 	 * @param __nc If true then all the values being pushed will not be
 	 * reference countable.
-	 * @param __t The types to push.
+	 * @param __pts The types to push.
 	 * @return The result of the operation.
-	 * @throws IllegalArgumentException If the local count is negative.
+	 * @throws IllegalArgumentException If the local count is negative or an
+	 * attempt is made to push a top or nothing type.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/30
 	 */
 	public final JavaStackResult doStack(int __n, boolean __nc,
-		JavaType... __t)
-		throws IllegalArgumentException
+		JavaType... __pts)
+		throws IllegalArgumentException, NullPointerException
 	{
 		// {@squirreljme.error JC2v Cannot pop a negative number of entries.}
 		if (__n < 0)
 			throw new IllegalArgumentException("JC2v");
 		
 		// Force blank types for pushing
-		if (__t == null)
-			__t = new JavaType[0];
+		__pts = (__pts == null ? new JavaType[0] : __pts.clone());
+		for (JavaType pt : __pts)
+			if (pt == null)
+				throw new NullPointerException("NARG");
+			
+			// {@squirreljme.error JC2x Cannot push nothing or top type.}
+			else if (pt.isNothing() || pt.isTop())
+				throw new IllegalArgumentException("JC2x");
 		
 		// Only the stack is operated on!
 		Info[] stack = this._stack;
 		int stacktop = this.stacktop;
+		
+		// Enqueues to clear popped entries
+		List<Integer> enqs = new ArrayList<>();
+		
+		// Pop entries off the stack first
+		List<Info> popped = new ArrayList<>();
+		for (int i = 0; i < __n; i++)
+		{
+			// {@squirreljme.error JC2w Stack underflow.}
+			if (stacktop == 0)
+				throw new IllegalArgumentException("JC2w");
+			
+			// Read top most entry, handle tops accordingly
+			Info inf = stack[--stacktop];
+			if (inf.type.isTop())
+				inf = stack[--stacktop];
+			
+			// Only enqueue objects which are counting and which do not have
+			// values of another register
+			if (!inf.nocounting && inf.type.isObject() &&
+				inf.register == inf.value)
+				enqs.add(inf.value);
+			
+			// Was popped, so add to to the pop list
+			popped.add(0, inf);
+		}
+		
+		// Setup new stack for pushing
+		Info[] newstack = stack.clone();
 		
 		throw new todo.TODO();
 	}
@@ -394,7 +436,7 @@ public final class JavaStackState
 			JavaType t = from.type();
 			
 			// Setup info here
-			locals[i] = new Info(rpos, t, (t.isNothing() ? -1 : rpos), ro);
+			locals[i] = new Info(rpos, t, (t.isNothing() ? -1 : rpos), ro, ro);
 			rpos++;
 		}
 		
@@ -403,7 +445,8 @@ public final class JavaStackState
 		{
 			// Past end of stack?
 			if (i >= stacktop)
-				stack[i] = new Info(rpos++, JavaType.NOTHING, -1, false);
+				stack[i] = new Info(rpos++, JavaType.NOTHING, -1, false,
+					false);
 			
 			// Normal entry
 			else
@@ -411,7 +454,7 @@ public final class JavaStackState
 				StackMapTableEntry from = __s.getStack(i);
 				
 				// Setup info here
-				stack[i] = new Info(rpos, from.type(), rpos, false);
+				stack[i] = new Info(rpos, from.type(), rpos, false, false);
 				rpos++;
 			}
 		}
@@ -439,6 +482,9 @@ public final class JavaStackState
 		/** Is this read-only? */
 		public final boolean readonly;
 		
+		/** Do not use counting. */
+		public final boolean nocounting;
+		
 		/** String representation. */
 		private Reference<String> _string;
 		
@@ -457,7 +503,7 @@ public final class JavaStackState
 		public Info(int __rp, JavaType __t, int __rv)
 			throws NullPointerException
 		{
-			this(__rp, __t, __rv, false);
+			this(__rp, __t, __rv, false, false);
 		}
 		
 		/**
@@ -467,10 +513,12 @@ public final class JavaStackState
 		 * @param __t The type.
 		 * @param __rv The value register.
 		 * @param __ro Is this read-only?
+		 * @param __nc Is no counting to be used?
 		 * @throws NullPointerException On null arguments.
 		 * @since 2019/03/31
 		 */
-		public Info(int __rp, JavaType __t, int __rv, boolean __ro)
+		public Info(int __rp, JavaType __t, int __rv, boolean __ro,
+			boolean __nc)
 			throws NullPointerException
 		{
 			if (__t == null)
@@ -483,8 +531,9 @@ public final class JavaStackState
 			// Set
 			this.register = __rp;
 			this.type = __t;
-			this.value = (__t.isNothing() ? -1 : __rv);
+			this.value = (__rv = (__t.isNothing() ? -1 : __rv));
 			this.readonly = __ro;
+			this.nocounting = (__nc || __rp != __rv);
 		}
 		
 		/**
@@ -512,14 +561,15 @@ public final class JavaStackState
 		 *
 		 * @param __t The type to use.
 		 * @param __v The value to use.
+		 * @param __nc Is counting to be used?
 		 * @return The new information.
 		 * @throws NullPointerException On null arguments.
 		 * @since 2019/03/31
 		 */
-		public final Info newTypeValue(JavaType __t, int __v)
+		public final Info newTypeValue(JavaType __t, int __v, boolean __nc)
 			throws NullPointerException
 		{
-			return new Info(this.register, __t, __v, false);
+			return new Info(this.register, __t, __v, false, __nc);
 		}
 		
 		/**
@@ -529,7 +579,16 @@ public final class JavaStackState
 		@Override
 		public final String toString()
 		{
-			throw new todo.TODO();
+			Reference<String> ref = this._string;
+			String rv;
+			
+			if (ref == null || null == (rv = ref.get()))
+				this._string = new WeakReference<>((rv = String.format(
+					"{V=r%d (r%d), T=%s, F=%s%s", this.value, this.value,
+					this.type, (this.readonly ? "RO" : ""),
+					(this.nocounting ? "NC" : ""))));
+			
+			return rv;
 		}
 	}
 }
