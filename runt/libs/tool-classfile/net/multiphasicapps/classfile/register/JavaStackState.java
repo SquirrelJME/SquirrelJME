@@ -621,7 +621,7 @@ public final class JavaStackState
 			
 			if (ref == null || null == (rv = ref.get()))
 				this._string = new WeakReference<>((rv = String.format(
-					"{V=r%d (r%d), T=%s, F=%s%s}", this.value, this.value,
+					"{V=r%d (r%d), T=%s, F=%s%s}", this.value, this.register,
 					this.type, (this.readonly ? "RO" : ""),
 					(this.nocounting ? "NC" : ""))));
 			
