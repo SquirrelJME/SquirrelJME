@@ -230,7 +230,8 @@ public final class JavaStackState
 		
 		// Only the stack is operated on!
 		Info[] stack = this._stack;
-		int stacktop = this.stacktop;
+		int stacktop = this.stacktop,
+			stacklimit = stack.length;
 		
 		// Enqueues to clear popped entries
 		List<Integer> enqs = new ArrayList<>();
@@ -240,7 +241,7 @@ public final class JavaStackState
 		for (int i = 0; i < __n; i++)
 		{
 			// {@squirreljme.error JC2w Stack underflow.}
-			if (stacktop == 0)
+			if (stacktop <= 0)
 				throw new IllegalArgumentException("JC2w");
 			
 			// Read top most entry, handle tops accordingly
@@ -261,7 +262,43 @@ public final class JavaStackState
 		// Setup new stack for pushing
 		Info[] newstack = stack.clone();
 		
-		throw new todo.TODO();
+		// Push new entries to the stack
+		List<Info> pushed = new ArrayList<>();
+		for (JavaType pt : __pts)
+		{
+			// {@squirreljme.error JC2y Stack overflow.}
+			if (stacktop >= stacklimit)
+				throw new IllegalArgumentException("JC2y");
+			
+			// Setup entry
+			Info inf = newstack[stacktop];
+			newstack[stacktop] = (inf = inf.newTypeValue(
+				pt, inf.register, __nc));
+			stacktop++;
+			if (pt.isWide())
+			{
+				newstack[stacktop] = newstack[stacktop].newTypeValue(
+					pt.topType(), inf.value + 1, __nc);
+				stacktop++;
+			}
+			
+			// Add to pushed set
+			pushed.add(inf);
+		}
+		
+		// Convert infos to I/O
+		List<JavaStackResult.InputOutput> ios = new ArrayList<>();
+		for (Info i : popped)
+			ios.add(JavaStackResult.makeInput(i));
+		for (Info o : pushed)
+			ios.add(JavaStackResult.makeOutput(o));
+		
+		// Build result
+		return new JavaStackResult(this,
+			new JavaStackState(this._locals, newstack, stacktop),
+			new JavaStackEnqueueList(enqs.size(), enqs),
+			ios.<JavaStackResult.InputOutput>toArray(
+				new JavaStackResult.InputOutput[ios.size()]));
 	}
 	
 	/**
