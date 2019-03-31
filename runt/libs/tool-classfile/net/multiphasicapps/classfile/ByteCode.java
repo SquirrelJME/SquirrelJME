@@ -18,8 +18,10 @@ import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 /**
  * This class represents the byte code within a method.
@@ -666,7 +668,104 @@ public final class ByteCode
 	 */
 	public final int[] writtenLocals()
 	{
-		throw new todo.TODO();
+		Set<Integer> written = new LinkedHashSet<>();
+		
+		// Go through all instructions and count anything which is written to
+		for (Instruction inst : this)
+		{
+			// Anything which is wide hits the adjacent local as well
+			boolean wide = false;
+			
+			// Only specific instructions will do so
+			int hit, op;
+			switch ((op = inst.operation()))
+			{
+				case InstructionIndex.ASTORE:
+				case InstructionIndex.WIDE_ASTORE:
+					hit = inst.intArgument(0);
+					break;
+				
+				case InstructionIndex.ASTORE_0:
+				case InstructionIndex.ASTORE_1:
+				case InstructionIndex.ASTORE_2:
+				case InstructionIndex.ASTORE_3:
+					hit = op - InstructionIndex.ASTORE_0;
+					break;
+				
+				case InstructionIndex.DSTORE:
+				case InstructionIndex.WIDE_DSTORE:
+					hit = inst.intArgument(0);
+					wide = true;
+					break;
+				
+				case InstructionIndex.DSTORE_0:
+				case InstructionIndex.DSTORE_1:
+				case InstructionIndex.DSTORE_2:
+				case InstructionIndex.DSTORE_3:
+					hit = op = InstructionIndex.DSTORE_0;
+					wide = true;
+					break;
+				
+				case InstructionIndex.FSTORE:
+				case InstructionIndex.WIDE_FSTORE:
+					hit = inst.intArgument(0);
+					break;
+				
+				case InstructionIndex.FSTORE_0:
+				case InstructionIndex.FSTORE_1:
+				case InstructionIndex.FSTORE_2:
+				case InstructionIndex.FSTORE_3:
+					hit = op = InstructionIndex.FSTORE_0;
+					break;
+				
+				case InstructionIndex.IINC:
+				case InstructionIndex.WIDE_IINC:
+					hit = inst.intArgument(0);
+					break;
+				
+				case InstructionIndex.ISTORE:
+				case InstructionIndex.WIDE_ISTORE:
+					hit = inst.intArgument(0);
+					break;
+				
+				case InstructionIndex.ISTORE_0:
+				case InstructionIndex.ISTORE_1:
+				case InstructionIndex.ISTORE_2:
+				case InstructionIndex.ISTORE_3:
+					hit = op = InstructionIndex.ISTORE_0;
+					break;
+				
+				case InstructionIndex.LSTORE:
+				case InstructionIndex.WIDE_LSTORE:
+					hit = inst.intArgument(0);
+					wide = true;
+					break;
+				
+				case InstructionIndex.LSTORE_0:
+				case InstructionIndex.LSTORE_1:
+				case InstructionIndex.LSTORE_2:
+				case InstructionIndex.LSTORE_3:
+					hit = op = InstructionIndex.LSTORE_0;
+					wide = true;
+					break;
+				
+				default:
+					continue;
+			}
+			
+			// Set local as being written to, handle wides as well
+			written.add(hit);
+			if (wide)
+				written.add(hit + 1);
+		}
+		
+		// Convert to array
+		Integer[] from = written.<Integer>toArray(new Integer[written.size()]);
+		int n = from.length;
+		int[] rv = new int[n];
+		for (int i = 0; i < n; i++)
+			rv[i] = from[i];
+		return rv;
 	}
 	
 	/**
