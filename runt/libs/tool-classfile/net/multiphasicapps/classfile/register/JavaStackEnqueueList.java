@@ -11,6 +11,7 @@ package net.multiphasicapps.classfile.register;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 import java.util.Set;
 import net.multiphasicapps.collections.SortedTreeSet;
 
@@ -33,6 +34,9 @@ public final class JavaStackEnqueueList
 	
 	/** String representation. */
 	private Reference<String> _string;
+	
+	/** Hashcode. */
+	private int _hash;
 	
 	/**
 	 * Initializes the enqueue list.
@@ -97,7 +101,18 @@ public final class JavaStackEnqueueList
 	@Override
 	public final boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		if (__o == this)
+			return true;
+		
+		if (!(__o instanceof JavaStackEnqueueList))
+			return false;
+		
+		JavaStackEnqueueList o = (JavaStackEnqueueList)__o;
+		if (this.hashCode() != o.hashCode())
+			return false;
+		
+		return this.stackstart == o.stackstart &&
+			Arrays.equals(this._registers, o._registers);
 	}
 	
 	/**
@@ -109,7 +124,7 @@ public final class JavaStackEnqueueList
 	 */
 	public final int get(int __i)
 	{
-		throw new todo.TODO();
+		return this._registers[__i];
 	}
 	
 	/**
@@ -119,7 +134,16 @@ public final class JavaStackEnqueueList
 	@Override
 	public final int hashCode()
 	{
-		throw new todo.TODO();
+		int rv = this._hash;
+		if (rv == 0)
+		{
+			rv = ~this.stackstart;
+			for (int i : this._registers)
+				rv -= i;
+			
+			this._hash = rv;
+		}
+		return rv;
 	}
 	
 	/**
@@ -141,7 +165,14 @@ public final class JavaStackEnqueueList
 	 */
 	public final JavaStackEnqueueList onlyLocals()
 	{
-		throw new todo.TODO();
+		// Copy just up to the stack part
+		int[] from = this._registers;
+		int ss = this.stackstart;
+		int[] rv = new int[ss];
+		for (int i = 0; i < ss; i++)
+			rv[i] = from[i];
+		
+		return new JavaStackEnqueueList(ss, rv);
 	}
 	
 	/**
@@ -219,10 +250,18 @@ public final class JavaStackEnqueueList
 	 */
 	public final JavaStackEnqueueList trimTop()
 	{
-		if (this.isEmpty())
+		// Do not trim empty pieces
+		int[] from = this._registers;
+		int n = from.length - 1;
+		if (n < 0)
 			return this;
 		
-		throw new todo.TODO();
+		// Copy bits
+		int[] rv = new int[n];
+		for (int i = 0; i < n; i++)
+			rv[i] = from[i];
+		
+		return new JavaStackEnqueueList(this.stackstart, rv);
 	}
 }
 
