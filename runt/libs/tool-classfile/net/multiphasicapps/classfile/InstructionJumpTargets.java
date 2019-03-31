@@ -11,6 +11,8 @@ package net.multiphasicapps.classfile;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Set;
+import net.multiphasicapps.collections.SortedTreeSet;
 
 /**
  * This represents the targets of jumps that an instruction may jump to.
@@ -28,6 +30,9 @@ public final class InstructionJumpTargets
 	/** String representation. */
 	private Reference<String> _string;
 	
+	/** Hashcode. */
+	private int _hash;
+	
 	/**
 	 * Initializes the jump targets.
 	 * @param __n Normal jumps.
@@ -42,7 +47,29 @@ public final class InstructionJumpTargets
 		if (__n == null || __e == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Load into sorted sets
+		Set<InstructionJumpTarget> nrm = new SortedTreeSet<>(),
+			exe = new SortedTreeSet<>();
+		
+		// Add normals
+		for (InstructionJumpTarget i : __n)
+			if (i == null)
+				throw new NullPointerException("NARG");
+			else
+				nrm.add(i);
+		
+		// Add exceptional
+		for (InstructionJumpTarget i : __e)
+			if (i == null)
+				throw new NullPointerException("NARG");
+			else
+				exe.add(i);
+		
+		// Set
+		this._normal = nrm.<InstructionJumpTarget>toArray(
+			new InstructionJumpTarget[nrm.size()]);
+		this._exception = exe.<InstructionJumpTarget>toArray(
+			new InstructionJumpTarget[exe.size()]);
 	}
 	
 	/**
@@ -53,6 +80,24 @@ public final class InstructionJumpTargets
 	public final boolean equals(Object __o)
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Obtains the given jump target.
+	 *
+	 * @param __i The index.
+	 * @return The target jump target.
+	 * @since 2019/03/31
+	 */
+	public final InstructionJumpTarget get(int __i)
+	{
+		InstructionJumpTarget[] normal = this._normal;
+		int numnormal = normal.length;
+		
+		// Treat both arrays as a single part
+		if (__i >= numnormal)
+			return this._exception[__i - numnormal];
+		return this._normal[__i];
 	}
 	
 	/**
@@ -77,6 +122,17 @@ public final class InstructionJumpTargets
 	public final boolean hasLaterAddress(int __pc)
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the number of jump targets.
+	 *
+	 * @return The number of jump targets.
+	 * @since 2019/03/31
+	 */
+	public final int size()
+	{
+		return this._normal.length + this._exception.length;
 	}
 	
 	/**

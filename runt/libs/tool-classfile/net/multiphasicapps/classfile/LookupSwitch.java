@@ -105,6 +105,27 @@ public final class LookupSwitch
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2019/03/31
+	 */
+	@Override
+	public final InstructionJumpTarget[] targets()
+	{
+		InstructionJumpTarget[] jumps = this._jumps;
+		int n = jumps.length;
+		
+		// Start off array with the default jump
+		InstructionJumpTarget[] rv = new InstructionJumpTarget[n + 1];
+		rv[0] = this.defaultjump;
+		
+		// Add all the others
+		for (int i = 0, o = 1; i < n; i++, o++)
+			rv[o] = jumps[i];
+		
+		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/09/20
 	 */
 	@Override
