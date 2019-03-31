@@ -232,11 +232,6 @@ final class __Registerize__
 			for (int i = 0, n = usedexceptions.size(); i < n; i++)
 				this.__exceptionGenerate(usedexceptions.get(i), i);
 		
-		// Go through the labels and make it so that any "freezejava" labels
-		// which are not set go directly to their original instruction
-		if (true)
-			throw new todo.TODO();
-		
 		// Build the final code table
 		return codebuilder.build();
 	}
