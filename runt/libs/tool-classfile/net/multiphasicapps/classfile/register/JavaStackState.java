@@ -167,6 +167,7 @@ public final class JavaStackState
 		// Create resulting state
 		return new JavaStackResult(this,
 			new JavaStackState(this._locals, newstack, stacktop + space),
+			null,
 			JavaStackResult.makeInput(from),
 			JavaStackResult.makeOutput(dest));
 	}

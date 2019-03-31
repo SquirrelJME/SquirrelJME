@@ -27,6 +27,18 @@ public final class JavaStackEnqueueList
 	private Reference<String> _string;
 	
 	/**
+	 * Initializes the enqueue list.
+	 *
+	 * @param __rs The registers to enqueue.
+	 * @since 2019/03/31
+	 */
+	public JavaStackEnqueueList(int... __rs)
+	{
+		// Copy
+		__rs = (__rs == null ? new int[0] : __rs.clone());
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2019/03/30
 	 */
