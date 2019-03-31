@@ -70,6 +70,17 @@ public final class JavaStackEnqueueList
 	}
 	
 	/**
+	 * Returns an enqueue list which contains only locals.
+	 *
+	 * @return An enqueue list containing only locals.
+	 * @since 2019/03/30
+	 */
+	public final JavaStackEnqueueList onlyLocals()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Returns all of the registers that have been enqueued.
 	 *
 	 * @return The enqueued set of registers.

@@ -13,14 +13,14 @@ package net.multiphasicapps.classfile.register;
 import net.multiphasicapps.classfile.ExceptionHandlerTable;
 
 /**
- * This is a combination of an objects snapshot and exception handler table.
+ * This is a combination of a stack and exception handler table.
  *
  * @since 2019/03/22
  */
 final class __ExceptionCombo__
 {
-	/** The enqueued positions. */
-	protected final JavaStackEnqueueList enqueue;
+	/** The state of the stack. */
+	protected final JavaStackState stack;
 	
 	/** The exception handle table. */
 	protected final ExceptionHandlerTable table;
@@ -28,19 +28,18 @@ final class __ExceptionCombo__
 	/**
 	 * Initializes the exception combo.
 	 *
-	 * @param __ops The enqueued registers.
+	 * @param __ops The stack state.
 	 * @param __t The table used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/22
 	 */
-	__ExceptionCombo__(JavaStackEnqueueList __ops,
-		ExceptionHandlerTable __t)
+	__ExceptionCombo__(JavaStackState __ops, ExceptionHandlerTable __t)
 		throws NullPointerException
 	{
 		if (__ops == null || __t == null)
 			throw new NullPointerException("NARG");
 		
-		this.enqueue = __ops;
+		this.stack = __ops;
 		this.table = __t;
 	}
 	
@@ -58,7 +57,7 @@ final class __ExceptionCombo__
 			return false;
 		
 		__ExceptionCombo__ o = (__ExceptionCombo__)__o;
-		return this.enqueue.equals(o.ops) &&
+		return this.stack.equals(o.stack) &&
 			this.table.equals(o.table);
 	}
 	
@@ -69,7 +68,7 @@ final class __ExceptionCombo__
 	@Override
 	public final int hashCode()
 	{
-		return this.enqueue.hashCode() ^ this.table.hashCode();
+		return this.stack.hashCode() ^ this.table.hashCode();
 	}
 }
 

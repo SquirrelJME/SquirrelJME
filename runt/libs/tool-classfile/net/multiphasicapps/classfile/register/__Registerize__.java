@@ -223,11 +223,12 @@ final class __Registerize__
 			throw new NullPointerException("NARG");
 		
 		RegisterCodeBuilder codebuilder = this.codebuilder;
-		__ObjectPositionsSnapshot__ ops = __ec.ops;
+		JavaStackState ehstack = __ec.stack;
 		ExceptionHandlerTable ehtable = __ec.table;
+		JavaStackEnqueueList allenq = ehstack.possibleEnqueue();
 		
 		// Debug
-		todo.DEBUG.note("Exception gen %s,%s -> %d", ops, ehtable, __edx);
+		todo.DEBUG.note("Exception gen %s,%s -> %d", ehstack, ehtable, __edx);
 		
 		// If the exception handler table is empty, we are just going to
 		// go up the stack anyway, so there is no point in generating our
@@ -238,10 +239,9 @@ final class __Registerize__
 			// would uncount and return, then just make the exception point
 			// at this jump point. So when the labels are resolved no jumps
 			// are generated, the JUMP_ON_EXCEPTION will just point to one
-			// of the return points
-			Map<__ObjectPositionsSnapshot__, RegisterCodeLabel> rs =
-				this._returns;
-			RegisterCodeLabel rcl = rs.get(ops);
+			// of the cleanup and return points
+			Map<JavaStackEnqueueList, RegisterCodeLabel> rs = this._returns;
+			RegisterCodeLabel rcl = rs.get(allenq);
 			if (rcl != null)
 			{
 				// Just point this exception to that return location
@@ -252,7 +252,7 @@ final class __Registerize__
 			
 			// Label here has usual and just create a return
 			codebuilder.label("exception", __edx);
-			this.__return(ops);
+			this.__return(allenq);
 			
 			// Do no more work
 			return;
@@ -262,21 +262,32 @@ final class __Registerize__
 		// code can jump here
 		codebuilder.label("exception", __edx);
 		
+		// Just setup a target stack
+		JavaStackResult result = ehstack.doExceptionHandler(
+			new JavaType(new ClassName("java/lang/Throwable")));
+		
+		// Even though everything is done processing, this is done for
+		// the __javaLabel() call which refers to the current stack
+		JavaStackState poststack;
+		this._stack = (poststack = result.after());
+		
 		// Un-count all stack entries
-		int stackstart = ops.stackStart();
-		for (int i = stackstart, n = ops.size(); i < n; i++)
-			codebuilder.add(RegisterOperationType.UNCOUNT, ops.get(i));
+		JavaStackEnqueueList seq = result.enqueue();
+		for (int i = 0, n = seq.size(); i < n; i++)
+			codebuilder.add(RegisterOperationType.UNCOUNT, seq.get(i));
 		
 		// For each exception type, perform a check and a jump to the target
-		int sbreg = this.state.stackBaseRegister();
+		int sbreg = result.out(0).register;
 		for (ExceptionHandler eh : ehtable)
 			codebuilder.add(
 				RegisterOperationType.JUMP_IF_INSTANCE_GET_EXCEPTION,
 				eh.type(), this.__javaLabel(eh.handlerAddress()),
 				sbreg);
 		
-		// Uncount just the locals and perform a return to propogate up
-		this.__return(ops.localsOnly());
+		// For returning destroy everything then go to the return route
+		// There would have been no pushed stack entry so just ignore it
+		JavaStackResult boom = poststack.doDestroy(false);
+		this.__return(boom.enqueue().onlyLocals());
 	}
 	
 	/**
@@ -289,9 +300,9 @@ final class __Registerize__
 	 */
 	private final RegisterCodeLabel __exceptionTrack(int __pc)
 	{
-		// Create combo for the enqueues (for clearing) and exception data
+		// Create combo for the stack and exception data
 		__ExceptionCombo__ ec = this.exceptiontracker.createCombo(
-			this._stack.possibleEnqueue(), __pc);
+			this._stack, __pc);
 		
 		// If this combo is already in the table, do not add it
 		List<__ExceptionCombo__> usedexceptions = this._usedexceptions;

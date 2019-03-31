@@ -66,7 +66,7 @@ final class __ExceptionTracker__
 	 * @since 2019/03/22
 	 */
 	public final __ExceptionCombo__ createCombo(
-		JavaStackEnqueueList __ops, int __pc)
+		JavaStackState __ops, int __pc)
 		throws NullPointerException
 	{
 		if (__ops == null)
