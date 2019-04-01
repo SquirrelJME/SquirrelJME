@@ -81,13 +81,18 @@ public class Main
 	{
 		// Instruction Counts
 		Map<Integer, Counter> counts = new LinkedHashMap<>();
-		long total = 0;
 		
 		// Load project manager
 		ProjectManager pm = ProjectManager.fromArguments(__args);
 		
 		// For a progress indicator
 		PrintStream ps = System.err;
+		
+		// Totals, which might be useful
+		long totalclass = 0,
+			totalmeths = 0,
+			totalnamth = 0,
+			totalinsts = 0;
 		
 		// Go through every binary that exists
 		for (Binary b : pm.binaryManager(TimeSpaceType.BUILD))
@@ -113,6 +118,7 @@ public class Main
 						
 						// Decode class file
 						ClassFile cf = ClassFile.decode(ent);
+						totalclass++;
 						
 						// Go through methods and count instructions
 						for (Method m : cf.methods())
@@ -120,13 +126,19 @@ public class Main
 							// Print method
 							ps.printf("\tMethod %s%n", m.nameAndType());
 							
+							// Count
+							totalmeths++;
+							
 							// Must have code
 							ByteCode bc = m.byteCode();
 							if (bc == null)
 								continue;
 							
+							// Count methods with code
+							totalnamth++;
+							
 							// Count it
-							total += Main.countByteCode(bc, counts);
+							totalinsts += Main.countByteCode(bc, counts);
 						}
 					}
 			}
@@ -148,7 +160,10 @@ public class Main
 		ps = System.out;
 		
 		// Print total then every instruction
-		ps.printf("Total Instructions: %d%n", total);
+		ps.printf("Total Classes     : %d%n", totalclass);
+		ps.printf("Total Methods     : %d%n", totalmeths);
+		ps.printf("Total Methods+Code: %d%n", totalnamth);
+		ps.printf("Total Instructions: %d%n", totalinsts);
 		for (Reverse r : revs)
 			ps.printf("%15s: %d%n",
 				InstructionMnemonics.toString(r.op), r.count);
