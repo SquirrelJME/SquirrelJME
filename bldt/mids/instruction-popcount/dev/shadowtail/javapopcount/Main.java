@@ -148,9 +148,9 @@ public class Main
 		ps = System.out;
 		
 		// Print total then every instruction
-		ps.printf("Total: %d%n", total);
+		ps.printf("Total Instructions: %d%n", total);
 		for (Reverse r : revs)
-			ps.printf("%15s: %-d%n",
+			ps.printf("%15s: %d%n",
 				InstructionMnemonics.toString(r.op), r.count);
 	}
 	
