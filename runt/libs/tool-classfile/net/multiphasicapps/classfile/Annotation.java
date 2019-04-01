@@ -173,69 +173,79 @@ public final class Annotation
 		Map<MethodName, AnnotationValue> values = new LinkedHashMap<>();
 		int n = __in.readUnsignedShort();
 		for (int i = 0; i < n; i++)
-		{
-			// Read element name
-			MethodName elemname = new MethodName(__pool.<UTFConstantEntry>get(
-				UTFConstantEntry.class, __in.readUnsignedShort()).toString());
-			
-			// Value which was read
-			AnnotationValue value;
-			
-			// Read tag, which represents the type of things
-			int tag = __in.readUnsignedByte();
-			switch (tag)
-			{
-				case 'B':
-				case 'C':
-				case 'I':
-				case 'S':
-				case 'Z':
-					throw new todo.TODO();
-				
-				case 'D':
-					throw new todo.TODO();
-				
-				case 'F':
-					throw new todo.TODO();
-				
-				case 'J':
-					throw new todo.TODO();
-				
-				case 's':
-					throw new todo.TODO();
-				
-					// Enumeration
-				case 'e':
-					value = new AnnotationValueEnum(
-						new FieldDescriptor(__pool.<UTFConstantEntry>get(
-							UTFConstantEntry.class, __in.readUnsignedShort()).
-							toString()),
-						new FieldName(__pool.<UTFConstantEntry>get(
-							UTFConstantEntry.class, __in.readUnsignedShort()).
-							toString()));
-					break;
-				
-				case 'c':
-					throw new todo.TODO();
-				
-				case '@':
-					throw new todo.TODO();
-				
-				case '[':
-					throw new todo.TODO();
-				
-					// {@squirreljme.error JC03 Invalid tag specified in
-					// annotation. (The tag used)}
-				default:
-					throw new InvalidClassFormatException(
-						String.format("JC03 %c", tag));
-			}
-			
-			// Add in value
-			values.put(elemname, value);
-		}
+			values.put(new MethodName(__pool.<UTFConstantEntry>get(
+				UTFConstantEntry.class, __in.readUnsignedShort()).toString()),
+				Annotation.parseValue(__pool, __in));
 		
 		return new Annotation(typename, values);
+	}
+	
+	/**
+	 * Parses a single annotation value.
+	 *
+	 * @param __pool The pool to read from.
+	 * @param __in The input stream.
+	 * @return The read value.
+	 * @throws InvalidClassFormatException If the value is not valid.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/01
+	 */
+	public static final AnnotationValue parseValue(Pool __pool,
+		DataInputStream __in)
+		throws InvalidClassFormatException, IOException, NullPointerException
+	{
+		if (__pool == null || __in == null)
+			throw new NullPointerException("NARG");
+		
+		// Read tag, which represents the type of things
+		int tag = __in.readUnsignedByte();
+		switch (tag)
+		{
+			case 'B':
+			case 'C':
+			case 'I':
+			case 'S':
+			case 'Z':
+				throw new todo.TODO();
+			
+			case 'D':
+				throw new todo.TODO();
+			
+			case 'F':
+				throw new todo.TODO();
+			
+			case 'J':
+				throw new todo.TODO();
+			
+			case 's':
+				throw new todo.TODO();
+			
+				// Enumeration
+			case 'e':
+				return new AnnotationValueEnum(
+					new FieldDescriptor(__pool.<UTFConstantEntry>get(
+						UTFConstantEntry.class, __in.readUnsignedShort()).
+						toString()),
+					new FieldName(__pool.<UTFConstantEntry>get(
+						UTFConstantEntry.class, __in.readUnsignedShort()).
+						toString()));
+			
+			case 'c':
+				throw new todo.TODO();
+			
+			case '@':
+				throw new todo.TODO();
+			
+			case '[':
+				throw new todo.TODO();
+			
+				// {@squirreljme.error JC03 Invalid tag specified in
+				// annotation. (The tag used)}
+			default:
+				throw new InvalidClassFormatException(
+					String.format("JC03 %c", tag));
+		}
 	}
 }
 
