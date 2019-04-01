@@ -163,14 +163,21 @@ public class Main
 		// Switch to output
 		ps = System.out;
 		
+		// Used for percentage cuts
+		double dtotalinsts = (double)totalinsts;
+		
 		// Print total then every instruction
 		ps.printf("Total Classes     : %d%n", totalclass);
 		ps.printf("Total Methods     : %d%n", totalmeths);
 		ps.printf("Total Methods+Code: %d%n", totalnamth);
 		ps.printf("Total Instructions: %d%n", totalinsts);
 		for (Reverse r : revs)
-			ps.printf("%15s: %d%n",
-				InstructionMnemonics.toString(r.op), r.count);
+		{
+			long ic = r.count;
+			ps.printf("%15s: %-5d (%02.4g%%)%n",
+				InstructionMnemonics.toString(r.op), ic,
+				((double)ic / dtotalinsts) * 100.0);
+		}
 	}
 	
 	/**
