@@ -55,7 +55,7 @@ public enum JavaStackShuffleType
 	;
 	
 	/** Forms of this operation. */
-	private final String[] _forms;
+	private final Function[] _functions;
 	
 	/**
 	 * Initialize the shuffle form information.
@@ -71,7 +71,113 @@ public enum JavaStackShuffleType
 	 */
 	private JavaStackShuffleType(String... __fs)
 	{
-		this._forms = __fs;
+		int n = __fs.length;
+		Function[] functions = new Function[n];
+		for (int i = 0; i < n; i++)
+			functions[i] = Function.of(__fs[i]);
+		this._functions = functions;
+	}
+	
+	/**
+	 * Contains information on how to push or pop operations.
+	 *
+	 * @since 2019/04/01
+	 */
+	public static final class Function
+	{
+		/** Input slots. */
+		public final Slots in;
+		
+		/** Output slots. */
+		public final Slots out;
+		
+		/**
+		 * Initializes the function.
+		 *
+		 * @param __in The input.
+		 * @param __out The output.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2019/04/01
+		 */
+		public Function(Slots __in, Slots __out)
+			throws NullPointerException
+		{
+			if (__in == null || __out == null)
+				throw new NullPointerException("NARG");
+			
+			this.in = __in;
+			this.out = __out;
+		}
+		
+		/**
+		 * Returns the function for the given string.
+		 *
+		 * @param __s The string to parse.
+		 * @throws IllegalArgumentException If the function is not valid.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2019/04/01
+		 */
+		public static final Function of(String __s)
+			throws IllegalArgumentException, NullPointerException
+		{
+			if (__s == null)
+				throw new NullPointerException("NARG");
+			
+			// {@squirreljme.error JC31 Expected colon in function form.}
+			int col = __s.indexOf(':');
+			if (col < 0)
+				throw new IllegalArgumentException("JC31");
+			
+			return new Function(new Slots(__s.substring(0, col)),
+				new Slots(__s.substring(col + 1)));
+		}
+	}
+	
+	/**
+	 * Represents the slots used for the stack.
+	 *
+	 * @since 2019/04/01
+	 */
+	public static final class Slots
+	{
+		/** The variable index. */
+		final byte[] _var;
+		
+		/** Which slots are considered wide or not. */
+		final boolean[] _wide;
+		
+		/**
+		 * Initializes the slots.
+		 *
+		 * @param __s The string source.
+		 * @throws IllegalArgumentException If the slots are not valid.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2019/04/01
+		 */
+		public Slots(String __s)
+			throws IllegalArgumentException, NullPointerException
+		{
+			if (__s == null)
+				throw new NullPointerException("NARG");
+			
+			// Setup storage for wide and variables
+			int n = __s.length();
+			byte[] var = new byte[n];
+			boolean[] wide = new boolean[n];
+			
+			// Setup arrays
+			for (int i = 0; i < n; i++)
+			{
+				char c = __s.charAt(i);
+				
+				var[i] = (byte)(Character.toLowerCase(c) - 'a');
+				wide[i] = Character.isUpperCase(c);
+			}
+			
+			// Store
+			this._var = var;
+			this._wide = wide;
+		}
 	}
 }
 
