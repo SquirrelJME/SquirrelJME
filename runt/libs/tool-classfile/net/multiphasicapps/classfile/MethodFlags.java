@@ -22,40 +22,44 @@ public final class MethodFlags
 	 * Initializes the method flags.
 	 *
 	 * @param __oc The outer class.
+	 * @param __nm The name of the method.
 	 * @param __fl The method flags.
 	 * @since 2016/04/23
 	 */
-	public MethodFlags(ClassFlags __oc, MethodFlag... __fl)
+	public MethodFlags(ClassFlags __oc, MethodName __mn, MethodFlag... __fl)
 	{
 		super(MethodFlag.class, __fl);
 		
-		__checkFlags(__oc);
+		__checkFlags(__oc, __mn);
 	}
 	
 	/**
 	 * Initializes the method flags.
 	 *
 	 * @param __oc The outer class.
+	 * @param __nm The name of the method.
 	 * @param __fl The method flags.
 	 * @since 2016/04/23
 	 */
-	public MethodFlags(ClassFlags __oc, Iterable<MethodFlag> __fl)
+	public MethodFlags(ClassFlags __oc, MethodName __mn,
+		Iterable<MethodFlag> __fl)
 	{
 		super(MethodFlag.class, __fl);
 		
-		__checkFlags(__oc);
+		__checkFlags(__oc, __mn);
 	}
 	
 	/**
 	 * Decodes method flags from the bit field.
 	 *
 	 * @param __oc The outer class flags.
+	 * @param __nm The name of the method.
 	 * @param __i The bitfield to decode.
 	 * @since 2017/07/07
 	 */
-	public MethodFlags(ClassFlags __oc, int __i)
+	public MethodFlags(ClassFlags __oc, MethodName __mn, int __i)
 	{
-		this(__oc, Flags.<MethodFlag>__decode(__i, MethodFlag.values()));
+		this(__oc, __mn, Flags.<MethodFlag>__decode(__i, MethodFlag.values()));
 	}
 	
 	/**
@@ -188,15 +192,16 @@ public final class MethodFlags
 	 * Checks that the given flags are valid.
 	 *
 	 * @param __oc The outer class.
+	 * @param __mn The name of the method.
 	 * @throws InvalidClassFormatException If they are not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/23
 	 */
-	private final void __checkFlags(ClassFlags __oc)
+	private final void __checkFlags(ClassFlags __oc, MethodName __mn)
 		throws InvalidClassFormatException
 	{
 		// Check
-		if (__oc == null)
+		if (__oc == null || __mn == null)
 			throw new NullPointerException("NARG");
 		
 		// {@squirreljme.error JC1s An {@code abstract} method cannot be
@@ -210,7 +215,10 @@ public final class MethodFlags
 					String.format("JC1s %s", this));
 		
 		// If the class is an interface it cannot have specific flags set
-		if (__oc.isInterface())
+		// Ignore checking these interface flags if we are in an interface and
+		// this is a static constructor because otherwise the check will fail
+		// since there cannot be static items
+		if (__oc.isInterface() && !__mn.isStaticInitializer())
 			for (MethodFlag f : MethodFlag.values())
 			{
 				// Must have these
