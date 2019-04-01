@@ -55,7 +55,7 @@ public enum JavaStackShuffleType
 	;
 	
 	/** Forms of this operation. */
-	private final Function[] _functions;
+	final Function[] _functions;
 	
 	/**
 	 * Initialize the shuffle form information.
@@ -140,7 +140,10 @@ public enum JavaStackShuffleType
 	 */
 	public static final class Slots
 	{
-		/** The variable index. */
+		/** The maximum pop count. */
+		public final int maxpop;
+		
+		/** The variable index, negative values mean top types. */
 		final byte[] _var;
 		
 		/** Which slots are considered wide or not. */
@@ -160,21 +163,37 @@ public enum JavaStackShuffleType
 			if (__s == null)
 				throw new NullPointerException("NARG");
 			
-			// Setup storage for wide and variables
-			int n = __s.length();
-			byte[] var = new byte[n];
-			boolean[] wide = new boolean[n];
-			
-			// Setup arrays
+			// Determine the actual popping, with top types and such
+			int n = __s.length(),
+				maxpop = 0;
 			for (int i = 0; i < n; i++)
+				if (Character.isUpperCase(__s.charAt(i)))
+					maxpop += 2;
+				else
+					maxpop += 1;
+			
+			// Stores top and wide states
+			byte[] var = new byte[maxpop];
+			boolean[] wide = new boolean[maxpop];
+			
+			// Go through again and fill the output
+			for (int i = 0, o = 0; i < n; i++)
 			{
 				char c = __s.charAt(i);
+				boolean iswide = Character.isUpperCase(c);
 				
-				var[i] = (byte)(Character.toLowerCase(c) - 'a');
-				wide[i] = Character.isUpperCase(c);
+				// Store information here
+				var[o] = (byte)(Character.toLowerCase(c) - 'a');
+				wide[o++] = iswide;
+				
+				// The tops of wide types are considered narrow but also have
+				// no variable type
+				if (iswide)
+					var[o++] = -1;
 			}
 			
 			// Store
+			this.maxpop = maxpop;
 			this._var = var;
 			this._wide = wide;
 		}
