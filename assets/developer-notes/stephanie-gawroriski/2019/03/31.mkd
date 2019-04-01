@@ -1,0 +1,45 @@
+# 2019/03/31
+
+## 12:25
+
+So I had an idea about Squirrel Quarrel. I definitely am going to make it more
+limited and inspired by something much simpler. I think it will work for a
+mobile game on limited devices. So it would be more like Warcraft 2. But
+anyway I had the idea of not having resources that you would mine so to speak.
+The first available species would be a plant based species, but I figured that
+they could morph gardens and such to produce resources needed to do things.
+Basically as long as you could build the building you could get a return on
+the resources used to build it. Of course if you made a ton of them you could
+get really rich.
+
+## 12:49
+
+That would probably make it easier on the AI and such.
+
+In other parts of the code such as for the register code, I think the cache
+barrier does not really matter for going back loops. Like what I mean is when
+jump back is done the target is after the cache has been destroyed. So there
+could still be future caching for the loop operations and such. Although to be
+honest it might be best to just scan every single instruction and determine
+which instructions have areas which areas that need to be invalidated if the
+value register does not match. Of course this would mean undoing everything. I
+do not exactly need to worry about code generation, the only thing that I
+mostly would care about here is the stack states and which ones are unmatched.
+Running all the code around and such should for the most part end in the same
+code hopefully.
+
+## 19:15
+
+Been programming all day, so do not believe I can go any further unless I push
+myself which I will not do. I just need to implement stack shuffle operations
+for like DUP and such. That definitely will be complex. Need to remember to
+have to implement available register usage. For example when values are
+swapped on the stack and only one is popped off only the position is set.
+Right now the stuff cannot handle cases where positions are different from
+values. But actually I should add a tool which does a population count on all
+of the instructions in SquirrelJME. I want to do this so I can determine if it
+is worth the effort to allow previous stack entries to point to future
+registers and such. Although this could potentially work to make sure previous
+values always point to later values, although this means variables will not be
+in fixed slots anymore. Actually I do not think it will work because of double
+or long. The assumption I make for that will break it.
