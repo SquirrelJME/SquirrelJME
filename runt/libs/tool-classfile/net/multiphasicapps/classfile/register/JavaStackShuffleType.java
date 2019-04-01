@@ -140,8 +140,8 @@ public enum JavaStackShuffleType
 	 */
 	public static final class Slots
 	{
-		/** The maximum pop count. */
-		public final int maxpop;
+		/** The maximum push/pop count. */
+		public final int max;
 		
 		/** The variable index, negative values mean top types. */
 		final byte[] _var;
@@ -165,16 +165,16 @@ public enum JavaStackShuffleType
 			
 			// Determine the actual popping, with top types and such
 			int n = __s.length(),
-				maxpop = 0;
+				max = 0;
 			for (int i = 0; i < n; i++)
 				if (Character.isUpperCase(__s.charAt(i)))
-					maxpop += 2;
+					max += 2;
 				else
-					maxpop += 1;
+					max += 1;
 			
 			// Stores top and wide states
-			byte[] var = new byte[maxpop];
-			boolean[] wide = new boolean[maxpop];
+			byte[] var = new byte[max];
+			boolean[] wide = new boolean[max];
 			
 			// Go through again and fill the output
 			for (int i = 0, o = 0; i < n; i++)
@@ -193,7 +193,7 @@ public enum JavaStackShuffleType
 			}
 			
 			// Store
-			this.maxpop = maxpop;
+			this.max = max;
 			this._var = var;
 			this._wide = wide;
 		}

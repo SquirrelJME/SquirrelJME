@@ -13,7 +13,10 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.JavaType;
 import net.multiphasicapps.classfile.StackMapTableEntry;
@@ -388,7 +391,8 @@ public final class JavaStackState
 		
 		// Working pop list when match is found
 		List<Info> pops = new ArrayList<>();
-		int basetop = -1;
+		int basetop = -1,
+			maxpop = -1;
 		
 		// Search for the matching function to use for this state
 		JavaStackShuffleType.Function func = null;
@@ -402,7 +406,7 @@ public final class JavaStackState
 			JavaStackShuffleType.Slots sls = tryf.in;
 			
 			// Too little on the stack to pop everything?
-			int maxpop = sls.maxpop;
+			maxpop = sls.max;
 			basetop = stacktop - maxpop;
 			if (basetop < 0)
 				continue;
@@ -436,7 +440,79 @@ public final class JavaStackState
 		if (func == null)
 			throw new InvalidClassFormatException("JC32");
 		
-		throw new todo.TODO();
+		// Input and output slots
+		JavaStackShuffleType.Slots sin = func.in,
+			sout = func.out;
+		
+		// Map virtual variables to entries on the input so we know what is
+		// what. Also include the register values are stored at for caching.
+		Map<Integer, Info> source = new LinkedHashMap<>();
+		Map<Integer, Integer> storedat = new LinkedHashMap<>();
+		for (int ldx = 0; ldx < maxpop; ldx++)
+		{
+			int var = sin._var[ldx];
+			if (var >= 0)
+			{
+				source.put(var, pops.get(ldx));
+				storedat.put(var, -1);
+			}
+		}
+		
+		// Debug
+		todo.DEBUG.note("Source map: %s", source);
+		
+		// Number of entries to push
+		int pushcount = sout.max;
+		
+		// Initialize new stack
+		Info[] newstack = stack.clone();
+		int newstacktop = basetop + pushcount;
+		
+		// Any enqueues
+		List<Integer> enqs = new ArrayList<>();
+		
+		// Setup the new stack by pushing around
+		for (int at = basetop, ldx = 0; ldx < pushcount; at++, ldx++)
+		{
+			// Pushing a top type?
+			int vardx = sout._var[ldx];
+			if (vardx < 0)
+			{
+				// Set the current to the appropriate top type of the entry
+				// before this one
+				Info prev = newstack[at - 1];
+				newstack[at] = newstack[at].newTypeValue(prev.type.topType(),
+					-1, false);
+				
+				continue;
+			}
+			
+			// Get the source info to use for this slot
+			// Also the original destination
+			Info ssl = source.get(vardx),
+				ods = newstack[at];
+			
+			// If the value was never used before, try to use the original
+			// register for it
+			int useval = storedat.get(vardx);
+			if (useval < 0)
+				useval = ssl.value;
+			
+			// Using the value position would violate the strict no-aliasing
+			// of future registers
+			if (useval > ods.register)
+				throw new todo.TODO();
+			
+			// Set value as being stored here
+			storedat.put(vardx, useval);
+			
+			throw new todo.TODO();
+		}
+		
+		// Build
+		return new JavaStackResult(this,
+			new JavaStackState(this._locals, newstack, newstacktop),
+			new JavaStackEnqueueList(enqs.size(), enqs));
 	}
 	
 	/**
