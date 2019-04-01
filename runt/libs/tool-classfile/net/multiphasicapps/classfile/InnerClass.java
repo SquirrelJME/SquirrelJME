@@ -58,17 +58,19 @@ public final class InnerClass
 	 * Initializes a standard inner class.
 	 *
 	 * @param __n The name of the class.
-	 * @param __o The class this is a member of.
+	 * @param __o The class this is a member of. If this is {@code null} then
+	 * the class is either: a top-level class/interface, a local class (one
+	 * that exists only in a method), or is a member of an anonymous class.
 	 * @param __i The identifier used to name the class.
 	 * @param __f The class flags.
-	 * @throws NullPointerException On null arguments.
+	 * @throws NullPointerException On null arguments, except for {@code __o}.
 	 * @since 2018/05/21
 	 */
 	public InnerClass(ClassName __n, ClassName __o, ClassIdentifier __i,
 		InnerClassFlags __f)
 		throws NullPointerException
 	{
-		if (__n == null || __o == null || __i == null || __f == null)
+		if (__n == null || __i == null || __f == null)
 			throw new NullPointerException("NARG");
 		
 		this.name = __n;
