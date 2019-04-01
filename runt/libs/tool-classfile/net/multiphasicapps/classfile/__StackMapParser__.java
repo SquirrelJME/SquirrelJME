@@ -584,9 +584,21 @@ final class __StackMapParser__
 	private int __sameLocalsSingleStack(int __delta)
 		throws IOException
 	{
-		// Set the single stack
-		this._stacktop = 1;
-		this._nextstack[0] = __loadInfo();
+		// Load single entry
+		StackMapTableEntry ent;
+		this._nextstack[0] = (ent = __loadInfo());
+		
+		// If the entry is wide then the top type will not be specified as it
+		// will be implicit, so we need to set the according type
+		if (ent.isWide())
+		{
+			this._nextstack[1] = ent.topType();
+			this._stacktop = 2;
+		}
+		
+		// Only a single entry exists
+		else
+			this._stacktop = 1;
 		
 		return __delta;
 	}
