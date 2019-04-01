@@ -18,6 +18,25 @@ package net.multiphasicapps.classfile;
 public final class AnnotationValueClass
 	implements AnnotationValue
 {
+	/** The class name. */
+	protected final FieldDescriptor name;
+	
+	/**
+	 * Initializes the class annotation.
+	 *
+	 * @param __n The name used
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/01
+	 */
+	public AnnotationValueClass(FieldDescriptor __n)
+		throws NullPointerException
+	{
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		this.name = __n;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/06/16

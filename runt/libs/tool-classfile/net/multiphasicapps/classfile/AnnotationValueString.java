@@ -18,6 +18,25 @@ package net.multiphasicapps.classfile;
 public final class AnnotationValueString
 	implements AnnotationValue
 {
+	/** The string value. */
+	protected final String value;
+	
+	/**
+	 * Initializes the string value.
+	 *
+	 * @param __v The value used
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/01
+	 */
+	public AnnotationValueString(String __v)
+		throws NullPointerException
+	{
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		this.value = __v;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/06/16

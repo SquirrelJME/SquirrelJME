@@ -23,6 +23,27 @@ public final class AnnotationValueArray
 	extends AbstractList<AnnotationValue>
 	implements AnnotationValue, List<AnnotationValue>, RandomAccess
 {
+	/** The elements of the array. */
+	private final AnnotationValue[] _values;
+	
+	/**
+	 * Initializes the values.
+	 *
+	 * @param __vs The input values.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/01
+	 */
+	public AnnotationValueArray(AnnotationValue... __vs)
+		throws NullPointerException
+	{
+		for (AnnotationValue v : (__vs = (__vs == null ?
+			new AnnotationValue[0] : __vs.clone())))
+			if (v == null)
+				throw new NullPointerException("NARG");
+		
+		this._values = __vs;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/06/16

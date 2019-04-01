@@ -19,6 +19,25 @@ public final class AnnotationValuePrimitive
 	extends Number
 	implements AnnotationValue
 {
+	/** The represented number value. */
+	protected final Number value;
+	
+	/**
+	 * Initializes the primitive value.
+	 *
+	 * @param __v The value used
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/01
+	 */
+	public AnnotationValuePrimitive(Number __v)
+		throws NullPointerException
+	{
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		this.value = __v;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/06/16
