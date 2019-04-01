@@ -21,7 +21,9 @@ import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassFile;
+import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.Instruction;
+import net.multiphasicapps.classfile.InstructionIndex;
 import net.multiphasicapps.classfile.InstructionMnemonics;
 import net.multiphasicapps.classfile.Method;
 import net.multiphasicapps.zip.streamreader.ZipStreamEntry;
@@ -39,22 +41,37 @@ public class Main
 	 *
 	 * @param __bc The byte code to go through.
 	 * @param __c The output count.
-	 * @return
+	 * @param __p Various progress indicators.
+	 * @return The total number of instructions.
+	 * @throws NullPointerException
 	 * @since 2019/03/31
 	 */
-	public static int countByteCode(ByteCode __bc, Map<Integer, Counter> __c)
+	public static int countByteCode(ByteCode __bc, Map<Integer, Counter> __c,
+		Progress __p)
 		throws NullPointerException
 	{
-		if (__bc == null || __c == null)
+		if (__bc == null || __c == null || __p == null)
 			throw new NullPointerException("NARG");
 		
 		// Total number of instructions
 		int rv = 0;
 		
 		// Go through every instruction
+		boolean newtodo = false;
 		for (Instruction i : __bc)
 		{
 			int op = i.operation();
+			
+			// Is this a todo? Note we cannot count throws because those
+			// are objects on the stack, just check how many times TODOs
+			// were allocated
+			if (op == InstructionIndex.NEW &&
+				i.<ClassName>argument(0, ClassName.class).toString().equals(
+				"todo/TODO"))
+			{
+				__p.todos++;
+				newtodo = true;
+			}
 			
 			// Get counter
 			Counter c = __c.get(op);
@@ -65,6 +82,12 @@ public class Main
 			c.count++;
 			rv++;
 		}
+		
+		// Method made a todo, count it
+		if (newtodo)
+			__p.methodtodos++;
+		else
+			__p.methodnotodos++;
 		
 		// Return the total!
 		return rv;
@@ -94,6 +117,7 @@ public class Main
 			totalmeths = 0,
 			totalnamth = 0,
 			totalinsts = 0;
+		Progress progress = new Progress();
 		
 		// Go through every binary that exists
 		for (Binary b : pm.binaryManager(TimeSpaceType.BUILD))
@@ -142,7 +166,8 @@ public class Main
 							totalnamth++;
 							
 							// Count it
-							totalinsts += Main.countByteCode(bc, counts);
+							totalinsts += Main.countByteCode(bc, counts,
+								progress);
 						}
 					}
 			}
@@ -171,6 +196,9 @@ public class Main
 		ps.printf("Total Methods     : %d%n", totalmeths);
 		ps.printf("Total Methods+Code: %d%n", totalnamth);
 		ps.printf("Total Instructions: %d%n", totalinsts);
+		ps.printf("Total TODOs       : %d%n", progress.todos);
+		ps.printf("Total Methods+TODO: %d%n", progress.methodtodos);
+		ps.printf("Total Methods+NoTD: %d%n", progress.methodnotodos);
 		for (Reverse r : revs)
 		{
 			long ic = r.count;
@@ -229,6 +257,23 @@ public class Main
 		{
 			return Long.toString(count);
 		}
+	}
+	
+	/**
+	 * Progress indicators.
+	 *
+	 * @since 2019/04/01
+	 */
+	public static final class Progress
+	{
+		/** The number of TODOs initialized. */
+		public long todos;
+		
+		/** The number of methods containing at least one todo. */
+		public long methodtodos;
+		
+		/** Methods not throwing any todo. */
+		public long methodnotodos;
 	}
 	
 	/**
