@@ -189,7 +189,8 @@ public class Main
 		ps = System.out;
 		
 		// Used for percentage cuts
-		double dtotalinsts = (double)totalinsts;
+		double dtotalinsts = (double)totalinsts,
+			dtotalnamth = (double)totalnamth;
 		
 		// Print total then every instruction
 		ps.printf("Total Classes     : %d%n", totalclass);
@@ -197,8 +198,12 @@ public class Main
 		ps.printf("Total Methods+Code: %d%n", totalnamth);
 		ps.printf("Total Instructions: %d%n", totalinsts);
 		ps.printf("Total TODOs       : %d%n", progress.todos);
-		ps.printf("Total Methods+TODO: %d%n", progress.methodtodos);
-		ps.printf("Total Methods+NoTD: %d%n", progress.methodnotodos);
+		ps.printf("Total Methods+TODO: %d (~%6.3f%%)%n",
+			progress.methodtodos,
+			((double)progress.methodtodos / dtotalnamth) * 100.0);
+		ps.printf("Total Methods+NoTD: %d (~%6.3f%%)%n",
+			progress.methodnotodos,
+			((double)progress.methodnotodos / dtotalnamth) * 100.0);
 		for (Reverse r : revs)
 		{
 			long ic = r.count;
