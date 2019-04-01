@@ -25,6 +25,7 @@ import java.nio.file.attribute.FileTime;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -326,7 +327,8 @@ public final class Binary
 			throw new OutOfDateBinaryException(
 				String.format("AU05 %s", this.name));
 		
-		throw new todo.TODO();
+		return new ZipStreamReader(Files.newInputStream(this.path,
+			StandardOpenOption.READ));
 	}
 }
 
