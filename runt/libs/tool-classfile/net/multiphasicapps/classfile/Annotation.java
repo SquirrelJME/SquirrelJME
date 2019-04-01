@@ -178,10 +178,26 @@ public final class Annotation
 			MethodName elemname = new MethodName(__pool.<UTFConstantEntry>get(
 				UTFConstantEntry.class, __in.readUnsignedShort()).toString());
 			
-			// Read tag, which represents the type of
+			// Read tag, which represents the type of things
 			int tag = __in.readUnsignedByte();
 			switch (tag)
 			{
+				case 'B':
+				case 'C':
+				case 'I':
+				case 'S':
+				case 'Z':
+					throw new todo.TODO();
+				
+				case 'D':
+					throw new todo.TODO();
+				
+				case 'F':
+					throw new todo.TODO();
+				
+				case 'J':
+					throw new todo.TODO();
+				
 				case 's':
 					throw new todo.TODO();
 				
