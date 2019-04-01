@@ -162,7 +162,7 @@ public final class InnerClasses
 					// {@squirreljme.error JC18 An anonymous inner class
 					// cannot have a declared outer class or name. (The inner
 					// class; The outer class it is in; The name of the class)}
-					if (outerclass == null || name == null)
+					if (name == null && outerclass != null)
 						throw new InvalidClassFormatException(
 							String.format("JC18 %s %s %s",
 							innerclass, outerclass, name));
