@@ -75,6 +75,15 @@ public final class JavaStackState
 			if (x.readonly)
 				__s[i] = (x = new Info(x.register, x.type, x.value, false,
 					x.nocounting));
+			
+			// Checks if there is something here
+			if (!x.type.isNothing())
+			{
+				// {@squirreljme.error JC2z Local variables cannot be an alias
+				// of another variable. (The local)}
+				if (x.value != x.register)
+					throw new InvalidClassFormatException("JC2z " + x);
+			}
 		}
 		
 		// Correct post-stack entries
@@ -85,6 +94,15 @@ public final class JavaStackState
 				x.nocounting)
 				__s[i] = (x = new Info(x.register, JavaType.NOTHING, -1, false,
 					false));
+					
+			// Checks if there is something here
+			if (!x.type.isNothing())
+			{
+				// {@squirreljme.error JC30 Stack variables cannot alias
+				// variables at higher indexes. (The stack variable)}
+				if (x.value > x.register)
+					throw new InvalidClassFormatException("JC30 " + x);
+			}
 		}
 		
 		// Set
