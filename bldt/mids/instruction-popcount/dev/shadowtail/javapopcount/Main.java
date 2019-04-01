@@ -115,7 +115,7 @@ public class Main
 							continue;
 						
 						// Print the class
-						ps.printf("Class %s%n", ent.name());
+						//ps.printf("Class %s%n", ent.name());
 						
 						// Decode class file
 						ClassFile cf = ClassFile.decode(ent);
@@ -125,7 +125,7 @@ public class Main
 						for (Method m : cf.methods())
 						{
 							// Print method
-							ps.printf("\tMethod %s%n", m.nameAndType());
+							//ps.printf("\tMethod %s%n", m.nameAndType());
 							
 							// Count
 							totalmeths++;
@@ -134,6 +134,9 @@ public class Main
 							ByteCode bc = m.byteCode();
 							if (bc == null)
 								continue;
+							
+							// Progress indicator
+							ps.print('.');
 							
 							// Count methods with code
 							totalnamth++;
