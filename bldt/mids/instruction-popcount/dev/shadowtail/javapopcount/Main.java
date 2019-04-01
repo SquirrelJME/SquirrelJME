@@ -189,7 +189,7 @@ public class Main
 		public final int compare(Reverse __a, Reverse __b)
 		{
 			// Compare counts first to group them together
-			long lc = __b.count - __a.count;
+			long lc = __a.count - __b.count;
 			if (lc < 0)
 				return -1;
 			else if (lc > 0)
