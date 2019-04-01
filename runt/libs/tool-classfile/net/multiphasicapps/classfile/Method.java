@@ -311,11 +311,19 @@ public final class Method
 		// Parse fields
 		for (int i = 0; i < nm; i++)
 		{
-			MethodFlags flags = new MethodFlags(__cf,
-				__in.readUnsignedShort());
+			// Read the flags but do not initialize them yet
+			int rawflags = __in.readUnsignedShort();
+			
+			// Parse name, this is needed to see if it is a constructor
 			MethodName name = new MethodName(
 				__pool.<UTFConstantEntry>require(UTFConstantEntry.class,
 				__in.readUnsignedShort()).toString());
+			
+			// Initialize the flags now that we know the class name, this way
+			// we can determine if this is a constructor or not
+			MethodFlags flags = new MethodFlags(__cf, name, rawflags);
+			
+			// Continue reading the type
 			MethodDescriptor type = new MethodDescriptor(
 				__pool.<UTFConstantEntry>require(UTFConstantEntry.class,
 				__in.readUnsignedShort()).toString());
