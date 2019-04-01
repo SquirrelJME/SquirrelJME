@@ -106,29 +106,24 @@ public class Main
 						
 						// Only consider class files
 						if (!ent.name().endsWith(".class"))
-						{
-							ps.print('.');
 							continue;
-						}
+						
+						// Print the class
+						ps.printf("Class %s%n", ent.name());
 						
 						// Decode class file
 						ClassFile cf = ClassFile.decode(ent);
 						
-						// Show a hit
-						ps.print('+');
-						
 						// Go through methods and count instructions
 						for (Method m : cf.methods())
 						{
+							// Print method
+							ps.printf("\tMethod %s%n", m.nameAndType());
+							
+							// Must have code
 							ByteCode bc = m.byteCode();
 							if (bc == null)
-							{
-								ps.print('-');
 								continue;
-							}
-							
-							// Show method being processed
-							ps.print('!');
 							
 							// Count it
 							total += Main.countByteCode(bc, counts);
