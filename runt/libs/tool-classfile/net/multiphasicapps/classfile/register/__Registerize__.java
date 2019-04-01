@@ -443,7 +443,27 @@ final class __Registerize__
 				break;
 			
 			case InstructionIndex.DUP:
-				this.__runDup();
+				this.__runShuffle(JavaStackShuffleType.DUP);
+				break;
+			
+			case InstructionIndex.DUP_X1:
+				this.__runShuffle(JavaStackShuffleType.DUP_X1);
+				break;
+			
+			case InstructionIndex.DUP_X2:
+				this.__runShuffle(JavaStackShuffleType.DUP_X2);
+				break;
+			
+			case InstructionIndex.DUP2:
+				this.__runShuffle(JavaStackShuffleType.DUP2);
+				break;
+			
+			case InstructionIndex.DUP2_X1:
+				this.__runShuffle(JavaStackShuffleType.DUP2_X1);
+				break;
+			
+			case InstructionIndex.DUP2_X2:
+				this.__runShuffle(JavaStackShuffleType.DUP2_X2);
 				break;
 				
 			case InstructionIndex.FLOAD:
@@ -553,6 +573,14 @@ final class __Registerize__
 					PrimitiveType.class).toClassName());
 				break;
 			
+			case InstructionIndex.POP:
+				this.__runShuffle(JavaStackShuffleType.POP);
+				break;
+			
+			case InstructionIndex.POP2:
+				this.__runShuffle(JavaStackShuffleType.POP2);
+				break;
+			
 			case InstructionIndex.PUTFIELD:
 				this.__runPutField(__i.<FieldReference>argument(0,
 					FieldReference.class));
@@ -560,6 +588,10 @@ final class __Registerize__
 			
 			case InstructionIndex.RETURN:
 				this.__runReturn(null);
+				break;
+			
+			case InstructionIndex.SWAP:
+				this.__runShuffle(JavaStackShuffleType.SWAP);
 				break;
 			
 			default:
@@ -715,17 +747,6 @@ final class __Registerize__
 		// Clear references
 		if (doenq)
 			this.__refClear();
-	}
-	
-	/**
-	 * Duplicate top most stack entry.
-	 *
-	 * @since 2019/03/24
-	 */
-	private final void __runDup()
-	{
-		this._stack = this._stack.doStackShuffle(JavaStackShuffleType.DUP).
-			after();
 	}
 	
 	/**
@@ -1034,6 +1055,19 @@ final class __Registerize__
 		
 		// Generate or jump to return which has this enqueue state
 		this.__return(result.enqueue());
+	}
+	
+	/**
+	 * Performs stack shuffling.
+	 *
+	 * @param __jsst The type of shuffle to perform.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/24
+	 */
+	private final void __runShuffle(JavaStackShuffleType __jsst)
+		throws NullPointerException
+	{
+		this._stack = this._stack.doStackShuffle(__jsst).after();
 	}
 }
 
