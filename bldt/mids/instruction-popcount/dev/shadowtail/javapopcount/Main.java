@@ -13,11 +13,15 @@ import cc.squirreljme.builder.support.Binary;
 import cc.squirreljme.builder.support.ProjectManager;
 import cc.squirreljme.builder.support.TimeSpaceType;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.Instruction;
+import net.multiphasicapps.classfile.InstructionMnemonics;
 import net.multiphasicapps.classfile.Method;
 import net.multiphasicapps.zip.streamreader.ZipStreamEntry;
 import net.multiphasicapps.zip.streamreader.ZipStreamReader;
@@ -133,14 +137,26 @@ public class Main
 			}
 		}
 		
-		// End indicator
+		// End progress indicator
 		ps.println();
 		
-		// Show totals
-		todo.DEBUG.note("Total %d", total);
-		todo.DEBUG.note("Counts %s", counts);
+		// Build reverses
+		List<Reverse> revs = new ArrayList<>(counts.size());
+		for (Map.Entry<Integer, Counter> e : counts.entrySet())
+			revs.add(new Reverse(e.getKey(), e.getValue().count));
 		
-		throw new todo.TODO();
+		// Sort and reverse so higher values are first
+		Collections.sort(revs);
+		Collections.reverse(revs);
+		
+		// Switch to output
+		ps = System.out;
+		
+		// Print total then every instruction
+		ps.printf("Total: %d%n", total);
+		for (Reverse r : revs)
+			ps.printf("%15s: %-d%n",
+				InstructionMnemonics.toString(r.op), r.count);
 	}
 	
 	/**
@@ -152,7 +168,7 @@ public class Main
 	public static final class Counter
 	{
 		/** Count. */
-		public int count;
+		public long count;
 		
 		/**
 		 * {@inheritDoc}
@@ -161,7 +177,46 @@ public class Main
 		@Override
 		public final String toString()
 		{
-			return Integer.toString(count);
+			return Long.toString(count);
+		}
+	}
+	
+	/**
+	 * Contains reverse instruction information.
+	 *
+	 * @since 2019/03/31
+	 */
+	public static final class Reverse
+		implements Comparable<Reverse>
+	{
+		/** The operation. */
+		protected final int op;
+		
+		/** The total count. */
+		protected final long count;
+		
+		/**
+		 * Initializes the reverse.
+		 *
+		 * @param __o The operation.
+		 * @param __c The count.
+		 * @since 2019/03/31
+		 */
+		public Reverse(int __o, long __c)
+		{
+			this.op = __o;
+			this.count = __c;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2019/03/31
+		 */
+		@Override
+		public final int compareTo(Reverse __b)
+		{
+			return (int)Math.min(Integer.MAX_VALUE,
+				Math.max(Integer.MIN_VALUE, this.count - __b.count));
 		}
 	}
 }
