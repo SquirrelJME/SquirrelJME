@@ -382,6 +382,60 @@ public final class JavaStackState
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
+		// Input stack properties
+		Info[] stack = this._stack;
+		int stacktop = this.stacktop;
+		
+		// Working pop list when match is found
+		List<Info> pops = new ArrayList<>();
+		int basetop = -1;
+		
+		// Search for the matching function to use for this state
+		JavaStackShuffleType.Function func = null;
+		for (JavaStackShuffleType.Function tryf : __t._functions)
+		{
+			// Clear for run
+			pops.clear();
+			basetop = -1;
+			
+			// Input slots are used
+			JavaStackShuffleType.Slots sls = tryf.in;
+			
+			// Too little on the stack to pop everything?
+			int maxpop = sls.maxpop;
+			basetop = stacktop - maxpop;
+			if (basetop < 0)
+				continue;
+			
+			// Go through slots and see if this is a match or not
+			int at = basetop;
+			for (int ldx = 0; at < stacktop; ldx++, at++)
+			{
+				Info i = stack[at];
+				JavaType it = i.type;
+				
+				// Top-ness and wide-ness does not match
+				if (it.isTop() != (sls._var[ldx] < 0) ||
+					it.isWide() != sls._wide[ldx])
+					break;
+				
+				// Add this to the input to be popped
+				pops.add(i);
+			}
+			
+			// If this index was reached then everything was valid
+			if (at == stacktop)
+			{
+				func = tryf;
+				break;
+			}
+		}
+		
+		// {@squirreljme.error JC32 Could not find a match for performing
+		// shuffled stack operations.}
+		if (func == null)
+			throw new InvalidClassFormatException("JC32");
+		
 		throw new todo.TODO();
 	}
 	
