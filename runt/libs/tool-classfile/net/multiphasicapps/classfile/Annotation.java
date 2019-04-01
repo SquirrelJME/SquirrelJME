@@ -207,21 +207,18 @@ public final class Annotation
 			case 'I':
 			case 'S':
 			case 'Z':
-				throw new todo.TODO();
-			
 			case 'D':
-				throw new todo.TODO();
-			
 			case 'F':
-				throw new todo.TODO();
-			
 			case 'J':
-				throw new todo.TODO();
+				return new AnnotationValuePrimitive(
+					__pool.<ConstantValueNumber>get(ConstantValueNumber.class,
+					__in.readUnsignedShort()).number());
 			
 			case 's':
-				throw new todo.TODO();
+				return new AnnotationValueString(
+					__pool.<ConstantValueString>get(ConstantValueString.class,
+					__in.readUnsignedShort()).toString());
 			
-				// Enumeration
 			case 'e':
 				return new AnnotationValueEnum(
 					new FieldDescriptor(__pool.<UTFConstantEntry>get(
@@ -232,13 +229,26 @@ public final class Annotation
 						toString()));
 			
 			case 'c':
-				throw new todo.TODO();
+				return new AnnotationValueClass(new FieldDescriptor(
+					__pool.<UTFConstantEntry>get(UTFConstantEntry.class,
+					__in.readUnsignedShort()).toString()));
 			
 			case '@':
-				throw new todo.TODO();
+				return Annotation.parse(__pool, __in);
 			
 			case '[':
-				throw new todo.TODO();
+				{
+					// Read length
+					int len = __in.readUnsignedShort();
+					
+					// Read in all values
+					AnnotationValue[] values = new AnnotationValue[len];
+					for (int i = 0; i < len; i++)
+						values[i] = Annotation.parseValue(__pool, __in);
+					
+					// Build
+					return new AnnotationValueArray(values);
+				}
 			
 				// {@squirreljme.error JC03 Invalid tag specified in
 				// annotation. (The tag used)}
