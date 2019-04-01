@@ -68,13 +68,10 @@ public final class JavaStackState
 			if (i == null)
 				throw new NullPointerException("NARG");
 		
-		// Correct pre-stack entries?
-		for (int i = 0; i < __ss; i++)
+		// Make sure locals are correct
+		for (int i = 0, n = __l.length; i < n; i++)
 		{
-			Info x = __s[i];
-			if (x.readonly)
-				__s[i] = (x = new Info(x.register, x.type, x.value, false,
-					x.nocounting));
+			Info x = __l[i];
 			
 			// Checks if there is something here
 			if (!x.type.isNothing())
@@ -86,15 +83,14 @@ public final class JavaStackState
 			}
 		}
 		
-		// Correct post-stack entries
-		for (int i = __ss, n = __s.length; i < n; i++)
+		// Correct pre-stack entries?
+		for (int i = 0; i < __ss; i++)
 		{
 			Info x = __s[i];
-			if (!x.type.isNothing() || x.value != -1 || x.readonly ||
-				x.nocounting)
-				__s[i] = (x = new Info(x.register, JavaType.NOTHING, -1, false,
-					false));
-					
+			if (x.readonly)
+				__s[i] = (x = new Info(x.register, x.type, x.value, false,
+					x.nocounting));
+			
 			// Checks if there is something here
 			if (!x.type.isNothing())
 			{
@@ -103,6 +99,16 @@ public final class JavaStackState
 				if (x.value > x.register)
 					throw new InvalidClassFormatException("JC30 " + x);
 			}
+		}
+		
+		// Correct post-stack entries
+		for (int i = __ss, n = __s.length; i < n; i++)
+		{
+			Info x = __s[i];
+			if (!x.type.isNothing() || x.value != -1 || x.readonly ||
+				x.nocounting)
+				__s[i] = (x = new Info(x.register, JavaType.NOTHING, -1, false,
+					false));
 		}
 		
 		// Set
@@ -231,7 +237,7 @@ public final class JavaStackState
 				type.topType(), from.value + 1, true);
 		
 		// Create resulting state
-		return new JavaStackResult(this,
+ 		return new JavaStackResult(this,
 			new JavaStackState(this._locals, newstack, stacktop + space),
 			null,
 			JavaStackResult.makeInput(from),
