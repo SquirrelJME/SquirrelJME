@@ -190,6 +190,10 @@ public class Main
 		{
 			// Compare counts first to group them together
 			long lc = __b.count - __a.count;
+			if (lc < 0)
+				return -1;
+			else if (lc > 0)
+				return 1;
 			
 			// Then just compare the opcode mnemonic so the output list
 			// appears more stable
