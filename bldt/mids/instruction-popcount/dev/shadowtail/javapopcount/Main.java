@@ -15,6 +15,7 @@ import cc.squirreljme.builder.support.TimeSpaceType;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -153,7 +154,7 @@ public class Main
 			revs.add(new Reverse(e.getKey(), e.getValue().count));
 		
 		// Sort and reverse so higher values are first
-		Collections.sort(revs);
+		Collections.sort(revs, new CompareReverse());
 		Collections.reverse(revs);
 		
 		// Switch to output
@@ -167,6 +168,31 @@ public class Main
 		for (Reverse r : revs)
 			ps.printf("%15s: %d%n",
 				InstructionMnemonics.toString(r.op), r.count);
+	}
+	
+	/**
+	 * Comparator for reverse operations.
+	 *
+	 * @since 2019/04/01
+	 */
+	public static final class CompareReverse
+		implements Comparator<Reverse>
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2019/04/01
+		 */
+		@Override
+		public final int compare(Reverse __a, Reverse __b)
+		{
+			// Compare counts first to group them together
+			long lc = __b.count - __a.count;
+			
+			// Then just compare the opcode mnemonic so the output list
+			// appears more stable
+			return InstructionMnemonics.toString(__a.op).compareTo(
+				InstructionMnemonics.toString(__b.op));
+		}
 	}
 	
 	/**
