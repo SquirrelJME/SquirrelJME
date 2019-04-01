@@ -178,6 +178,9 @@ public final class Annotation
 			MethodName elemname = new MethodName(__pool.<UTFConstantEntry>get(
 				UTFConstantEntry.class, __in.readUnsignedShort()).toString());
 			
+			// Value which was read
+			AnnotationValue value;
+			
 			// Read tag, which represents the type of things
 			int tag = __in.readUnsignedByte();
 			switch (tag)
@@ -201,8 +204,16 @@ public final class Annotation
 				case 's':
 					throw new todo.TODO();
 				
+					// Enumeration
 				case 'e':
-					throw new todo.TODO();
+					value = new AnnotationValueEnum(
+						new FieldDescriptor(__pool.<UTFConstantEntry>get(
+							UTFConstantEntry.class, __in.readUnsignedShort()).
+							toString()),
+						new FieldName(__pool.<UTFConstantEntry>get(
+							UTFConstantEntry.class, __in.readUnsignedShort()).
+							toString()));
+					break;
 				
 				case 'c':
 					throw new todo.TODO();
@@ -219,6 +230,9 @@ public final class Annotation
 					throw new InvalidClassFormatException(
 						String.format("JC03 %c", tag));
 			}
+			
+			// Add in value
+			values.put(elemname, value);
 		}
 		
 		return new Annotation(typename, values);
