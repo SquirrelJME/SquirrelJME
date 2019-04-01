@@ -482,7 +482,7 @@ public final class JavaStackState
 				// before this one
 				Info prev = newstack[at - 1];
 				newstack[at] = newstack[at].newTypeValue(prev.type.topType(),
-					-1, false);
+					prev.value + 1, false);
 				
 				continue;
 			}
@@ -506,7 +506,9 @@ public final class JavaStackState
 			// Set value as being stored here
 			storedat.put(vardx, useval);
 			
-			throw new todo.TODO();
+			// Setup slot
+			newstack[at] = newstack[at].newTypeValue(ssl.type, useval,
+				ssl.nocounting);
 		}
 		
 		// Build
