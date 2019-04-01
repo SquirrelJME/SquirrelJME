@@ -174,7 +174,7 @@ public class Main
 		for (Reverse r : revs)
 		{
 			long ic = r.count;
-			ps.printf("%15s: %-5d (%02.4g%%)%n",
+			ps.printf("%15s: %-5d (%6.3f%%)%n",
 				InstructionMnemonics.toString(r.op), ic,
 				((double)ic / dtotalinsts) * 100.0);
 		}
