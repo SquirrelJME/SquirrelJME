@@ -73,8 +73,8 @@ public final class JavaStackState
 		{
 			Info x = __s[i];
 			if (x.readonly)
-				__s[i] = new Info(x.register, x.type, x.value, false,
-					x.nocounting);
+				__s[i] = (x = new Info(x.register, x.type, x.value, false,
+					x.nocounting));
 		}
 		
 		// Correct post-stack entries
@@ -83,8 +83,8 @@ public final class JavaStackState
 			Info x = __s[i];
 			if (!x.type.isNothing() || x.value != -1 || x.readonly ||
 				x.nocounting)
-				__s[i] = new Info(x.register, JavaType.NOTHING, -1, false,
-					false);
+				__s[i] = (x = new Info(x.register, JavaType.NOTHING, -1, false,
+					false));
 		}
 		
 		// Set
