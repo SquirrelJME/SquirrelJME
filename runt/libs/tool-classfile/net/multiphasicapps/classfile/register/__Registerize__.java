@@ -673,7 +673,15 @@ final class __Registerize__
 				break;
 			
 			case InstructionIndex.RETURN:
-				this.__runReturn(null);
+				this.__runReturn(false);
+				break;
+			
+			case InstructionIndex.ARETURN:
+			case InstructionIndex.DRETURN:
+			case InstructionIndex.FRETURN:
+			case InstructionIndex.IRETURN:
+			case InstructionIndex.LRETURN:
+				this.__runReturn(true);
 				break;
 				
 			case InstructionIndex.SIPUSH:
@@ -1126,17 +1134,17 @@ final class __Registerize__
 	/**
 	 * Handles method return.
 	 *
-	 * @param __rt The return type, {@code null} indicates a void return.
+	 * @param __dr Is something to be returned?
 	 * @since 2019/03/22
 	 */
-	private final void __runReturn(JavaType __rt)
+	private final void __runReturn(boolean __dr)
 	{
 		// Destroy the entire stack
-		JavaStackResult result = this._stack.doDestroy(__rt != null);
+		JavaStackResult result = this._stack.doDestroy(__dr);
 		this._stack = result.after();
 		
 		// If returning a value, load it into the return register
-		if (__rt != null)
+		if (__dr)
 		{
 			RegisterCodeBuilder codebuilder = this.codebuilder;
 			
