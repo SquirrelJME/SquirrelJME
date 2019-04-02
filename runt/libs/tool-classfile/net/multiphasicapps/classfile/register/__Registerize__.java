@@ -414,6 +414,14 @@ final class __Registerize__
 		int op;
 		switch ((op = __i.operation()))
 		{
+			case InstructionIndex.AALOAD:
+				this.__runArrayLoad(null);
+				break;
+			
+			case InstructionIndex.AASTORE:
+				this.__runArrayStore(null);
+				break;
+			
 			case InstructionIndex.ALOAD:
 			case InstructionIndex.WIDE_ALOAD:
 				this.__runLoad(__i.intArgument(0));
@@ -442,8 +450,32 @@ final class __Registerize__
 				this.__runAThrow();
 				break;
 				
+			case InstructionIndex.BALOAD:
+				this.__runArrayLoad(PrimitiveType.BYTE);
+				break;
+			
+			case InstructionIndex.BASTORE:
+				this.__runArrayStore(PrimitiveType.BYTE);
+				break;
+				
 			case InstructionIndex.BIPUSH:
 				this.__runLdc(new ConstantValueInteger(__i.intArgument(0)));
+				break;
+			
+			case InstructionIndex.CALOAD:
+				this.__runArrayLoad(PrimitiveType.CHARACTER);
+				break;
+			
+			case InstructionIndex.CASTORE:
+				this.__runArrayStore(PrimitiveType.CHARACTER);
+				break;
+				
+			case InstructionIndex.DALOAD:
+				this.__runArrayLoad(PrimitiveType.DOUBLE);
+				break;
+			
+			case InstructionIndex.DASTORE:
+				this.__runArrayStore(PrimitiveType.DOUBLE);
 				break;
 				
 			case InstructionIndex.DLOAD:
@@ -494,6 +526,14 @@ final class __Registerize__
 				this.__runShuffle(JavaStackShuffleType.DUP2_X2);
 				break;
 				
+			case InstructionIndex.FALOAD:
+				this.__runArrayLoad(PrimitiveType.FLOAT);
+				break;
+			
+			case InstructionIndex.FASTORE:
+				this.__runArrayStore(PrimitiveType.FLOAT);
+				break;
+				
 			case InstructionIndex.FLOAD:
 			case InstructionIndex.WIDE_FLOAD:
 				this.__runLoad(__i.intArgument(0));
@@ -521,6 +561,14 @@ final class __Registerize__
 			case InstructionIndex.GETFIELD:
 				this.__runGetField(__i.<FieldReference>argument(0,
 					FieldReference.class));
+				break;
+				
+			case InstructionIndex.IALOAD:
+				this.__runArrayLoad(PrimitiveType.INTEGER);
+				break;
+			
+			case InstructionIndex.IASTORE:
+				this.__runArrayStore(PrimitiveType.INTEGER);
 				break;
 			
 			case InstructionIndex.ICONST_M1:
@@ -615,6 +663,14 @@ final class __Registerize__
 			case InstructionIndex.ISTORE_3:
 				this.__runStore(op - InstructionIndex.ISTORE_0);
 				break;
+				
+			case InstructionIndex.LALOAD:
+				this.__runArrayLoad(PrimitiveType.LONG);
+				break;
+			
+			case InstructionIndex.LASTORE:
+				this.__runArrayStore(PrimitiveType.LONG);
+				break;
 			
 			case InstructionIndex.LDC:
 			case InstructionIndex.LDC_W:
@@ -682,6 +738,14 @@ final class __Registerize__
 			case InstructionIndex.IRETURN:
 			case InstructionIndex.LRETURN:
 				this.__runReturn(true);
+				break;
+				
+			case InstructionIndex.SALOAD:
+				this.__runArrayLoad(PrimitiveType.SHORT);
+				break;
+			
+			case InstructionIndex.SASTORE:
+				this.__runArrayStore(PrimitiveType.SHORT);
 				break;
 				
 			case InstructionIndex.SIPUSH:
@@ -818,6 +882,28 @@ final class __Registerize__
 			codebuilder.add(RegisterOperationType.JUMP, label);
 		
 		return label;
+	}
+	
+	/**
+	 * Load fromarray.
+	 *
+	 * @param __pt The type to load, {@code null} is object.
+	 * @since 2019/04/02
+	 */
+	private final void __runArrayLoad(PrimitiveType __pt)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Store into array.
+	 *
+	 * @param __pt The type to store, {@code null} is object.
+	 * @since 2019/04/02
+	 */
+	private final void __runArrayStore(PrimitiveType __pt)
+	{
+		throw new todo.TODO();
 	}
 	
 	/**
