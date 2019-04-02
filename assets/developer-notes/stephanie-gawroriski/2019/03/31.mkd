@@ -43,3 +43,8 @@ registers and such. Although this could potentially work to make sure previous
 values always point to later values, although this means variables will not be
 in fixed slots anymore. Actually I do not think it will work because of double
 or long. The assumption I make for that will break it.
+
+## 20:41
+
+Writing the instruction and I hit some TODOs in the class file code. Seems
+that annotations are not fully read! So this will be interesting.
