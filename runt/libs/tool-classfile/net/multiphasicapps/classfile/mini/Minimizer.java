@@ -326,17 +326,6 @@ public final class Minimizer
 					dos.writeShort(i.shortArgument(2));
 					break;
 					
-				case RegisterOperationType.ARRAY_LOAD_CHECK:
-				case RegisterOperationType.ARRAY_STORE_CHECK:
-					dos.writeShort(i.shortArgument(0));
-					dos.writeShort(i.shortArgument(1));
-					dos.writeShort(i.shortArgument(2));
-					
-					jumpreps.put(dos.size(), i.<InstructionJumpTarget>
-						argument(3, InstructionJumpTarget.class));
-					dos.writeShort(0);
-					break;
-					
 				case RegisterOperationType.REF_ENQUEUE:
 					{
 						// Write register list

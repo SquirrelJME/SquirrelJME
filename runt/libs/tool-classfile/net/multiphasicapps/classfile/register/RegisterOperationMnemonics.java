@@ -336,10 +336,10 @@ public final class RegisterOperationMnemonics
 				return "SIGN_X8";
 			case RegisterOperationType.SIGN_X16:
 				return "SIGN_X16";
-			case RegisterOperationType.ARRAY_LOAD_CHECK:
-				return "ARRAY_LOAD_CHECK";
-			case RegisterOperationType.ARRAY_STORE_CHECK:
-				return "ARRAY_STORE_CHECK";
+			case RegisterOperationType.ARRAY_BOUND_CHECK_AND_REF_CLEAR:
+				return "ARRAY_BOUND_CHECK_AND_REF_CLEAR";
+			case RegisterOperationType.ARRAY_STORE_CHECK_AND_REF_CLEAR:
+				return "ARRAY_STORE_CHECK_AND_REF_CLEAR";
 			
 				// Unknown
 			default:

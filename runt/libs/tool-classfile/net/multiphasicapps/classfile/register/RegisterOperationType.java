@@ -113,14 +113,6 @@ public interface RegisterOperationType
 	public static final int REF_CLEAR =
 		ENCODING_SPECIAL + 10;
 	
-	/** array_store_check [u16, u16, u16, j16]. */
-	public static final int ARRAY_STORE_CHECK =
-		ENCODING_SPECIAL + 11;
-	
-	/** array_load_check [u16, u16, u16, j16]. */
-	public static final int ARRAY_LOAD_CHECK =
-		ENCODING_SPECIAL + 12;
-	
 	/** jump. */
 	public static final int JUMP =
 		ENCODING_J16 + 0;
@@ -529,6 +521,13 @@ public interface RegisterOperationType
 	public static final int IF_ACMPNE_REF_CLEAR =
 		IF_ICMPNE_REF_CLEAR;
 
+	/** array_bound_check_and_ref_clear. */
+	public static final int ARRAY_BOUND_CHECK_AND_REF_CLEAR =
+		ENCODING_U16_U16_J16 + 8;
+
+	/** array_store_check_and_ref_clear. */
+	public static final int ARRAY_STORE_CHECK_AND_REF_CLEAR =
+		ENCODING_U16_U16_J16 + 9;
 
 	/** array_load_object. */
 	public static final int ARRAY_LOAD_OBJECT =
