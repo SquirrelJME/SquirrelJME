@@ -442,6 +442,10 @@ final class __Registerize__
 				this.__runAThrow();
 				break;
 				
+			case InstructionIndex.BIPUSH:
+				this.__runLdc(new ConstantValueInteger(__i.intArgument(0)));
+				break;
+				
 			case InstructionIndex.DLOAD:
 			case InstructionIndex.WIDE_DLOAD:
 				this.__runLoad(__i.intArgument(0));
@@ -596,6 +600,8 @@ final class __Registerize__
 				break;
 			
 			case InstructionIndex.LDC:
+			case InstructionIndex.LDC_W:
+			case InstructionIndex.LDC2_W:
 				this.__runLdc(__i.<ConstantValue>argument(
 					0, ConstantValue.class));
 				break;
@@ -648,6 +654,10 @@ final class __Registerize__
 			
 			case InstructionIndex.RETURN:
 				this.__runReturn(null);
+				break;
+				
+			case InstructionIndex.SIPUSH:
+				this.__runLdc(new ConstantValueInteger(__i.intArgument(0)));
 				break;
 			
 			case InstructionIndex.SWAP:
