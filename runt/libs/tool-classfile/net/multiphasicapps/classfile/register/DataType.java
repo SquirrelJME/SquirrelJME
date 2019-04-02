@@ -274,6 +274,7 @@ public enum DataType
 		
 		switch (__t)
 		{
+			case BOOLEAN:
 			case BYTE:		return BYTE;
 			case CHARACTER:
 			case SHORT:		return SHORT;

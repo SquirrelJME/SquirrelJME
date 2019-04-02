@@ -63,7 +63,7 @@ public enum PrimitiveType
 			case LONG:
 			case DOUBLE:	return 8;
 			default:
-				throw new RuntimeException("OOPS");
+				throw new todo.OOPS();
 		}
 	}
 	
@@ -96,6 +96,29 @@ public enum PrimitiveType
 			
 			default:
 				return false;
+		}
+	}
+	
+	/**
+	 * Returns the Java type this uses on the stack.
+	 *
+	 * @return The Java type this uses on the stack.
+	 * @since 2019/04/02
+	 */
+	public final JavaType stackJavaType()
+	{
+		switch (this)
+		{
+			case BOOLEAN:
+			case BYTE:
+			case SHORT:
+			case CHARACTER:
+			case INTEGER:	return JavaType.INTEGER;
+			case FLOAT:		return JavaType.FLOAT;
+			case LONG:		return JavaType.LONG;
+			case DOUBLE:	return JavaType.DOUBLE;
+			default:
+				throw new todo.OOPS();
 		}
 	}
 	
