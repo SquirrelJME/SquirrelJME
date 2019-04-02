@@ -898,9 +898,6 @@ final class __Registerize__
 	 */
 	private final void __runArrayLoad(PrimitiveType __pt)
 	{
-		// Could throw NPE or OOB
-		this._exceptioncheck = true;
-		
 		// [array, index] -> [value]
 		JavaStackResult result = this._stack.doStack(2, __pt.stackJavaType());
 		this._stack = result.after();
@@ -908,8 +905,15 @@ final class __Registerize__
 		// Possibly clear the instance later
 		this.__refEnqueue(result.enqueue());
 		
-		// Generate
+		// Checks for NPE and OOB, possibly jumps+clear
 		RegisterCodeBuilder codebuilder = this.codebuilder;
+		codebuilder.add(RegisterOperationType.ARRAY_LOAD_CHECK,
+			result.in(0).register,
+			result.in(1).register,
+			result.out(0).register,
+			this.__exceptionTrack(this._currentprocesspc));
+		
+		// Generate
 		codebuilder.add(DataType.of(__pt).arrayOperation(false),
 			result.in(0).register,
 			result.in(1).register,
@@ -934,15 +938,20 @@ final class __Registerize__
 	 */
 	private final void __runArrayStore(PrimitiveType __pt)
 	{
-		// Could throw NPE, OOB, or ASE
-		this._exceptioncheck = true;
-		
 		// [array, index, value]
 		JavaStackResult result = this._stack.doStack(3);
 		this._stack = result.after();
 		
 		// Possibly clear the instance or value later
 		this.__refEnqueue(result.enqueue());
+		
+		// Checks for NPE, OOB, and ASA, possibly jumps+clear
+		RegisterCodeBuilder codebuilder = this.codebuilder;
+		codebuilder.add(RegisterOperationType.ARRAY_STORE_CHECK,
+			result.in(0).register,
+			result.in(1).register,
+			result.in(2).register,
+			this.__exceptionTrack(this._currentprocesspc));
 		
 		// Generate
 		this.codebuilder.add(DataType.of(__pt).arrayOperation(true),
