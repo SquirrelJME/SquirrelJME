@@ -398,6 +398,23 @@ final class __Registerize__
 	}
 	
 	/**
+	 * Defers for later an exception generator.
+	 *
+	 * @param __cn The class name to generate.
+	 * @return The label to the generation point.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/02
+	 */
+	private final RegisterCodeLabel __makeException(ClassName __cn)
+		throws NullPointerException
+	{
+		if (__cn == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Processes a single instruction.
 	 *
 	 * @param __i The instruction to process.
@@ -432,6 +449,10 @@ final class __Registerize__
 			case InstructionIndex.ALOAD_2:
 			case InstructionIndex.ALOAD_3:
 				this.__runLoad(op - InstructionIndex.ALOAD_0);
+				break;
+			
+			case InstructionIndex.ARRAYLENGTH:
+				this.__runArrayLength();
 				break;
 			
 			case InstructionIndex.ASTORE:
@@ -891,6 +912,37 @@ final class __Registerize__
 	}
 	
 	/**
+	 * Get length of array.
+	 *
+	 * Array operations have a non-standard exception
+	 *
+	 * @since 2019/04/02
+	 */
+	private final void __runArrayLength()
+	{
+		// [array] -> [len]
+		JavaStackResult result = this._stack.doStack(1, JavaType.INTEGER);
+		this._stack = result.after();
+		
+		// Possibly clear the instance later
+		this.__refEnqueue(result.enqueue());
+		
+		// Perform some checks on the array
+		RegisterCodeBuilder codebuilder = this.codebuilder;
+		codebuilder.add(RegisterOperationType.IFNULL_REF_CLEAR,
+			result.in(0).register, this.__makeException(
+				new ClassName("java/lang/NullPointerException")));
+		
+		// Get length
+		codebuilder.add(RegisterOperationType.ARRAY_LENGTH,
+			result.in(0).register,
+			result.out(0).register);
+		
+		// Clear references
+		this.__refClear();
+	}
+	
+	/**
 	 * Load fromarray.
 	 *
 	 * @param __pt The type to load, {@code null} is object.
@@ -899,19 +951,22 @@ final class __Registerize__
 	private final void __runArrayLoad(PrimitiveType __pt)
 	{
 		// [array, index] -> [value]
-		JavaStackResult result = this._stack.doStack(2, __pt.stackJavaType());
+		JavaStackResult result = this._stack.doStack(2, (__pt == null ?
+			new JavaType(new ClassName("java/lang/Object")) :
+			__pt.stackJavaType()));
 		this._stack = result.after();
 		
 		// Possibly clear the instance later
 		this.__refEnqueue(result.enqueue());
 		
-		// Checks for NPE and OOB, possibly jumps+clear
+		// Check for NPE, and OOB
 		RegisterCodeBuilder codebuilder = this.codebuilder;
-		codebuilder.add(RegisterOperationType.ARRAY_LOAD_CHECK,
-			result.in(0).register,
-			result.in(1).register,
-			result.out(0).register,
-			this.__exceptionTrack(this._currentprocesspc));
+		codebuilder.add(RegisterOperationType.IFNULL_REF_CLEAR,
+			result.in(0).register, this.__makeException(
+				new ClassName("java/lang/NullPointerException")));
+		codebuilder.add(RegisterOperationType.ARRAY_BOUND_CHECK_AND_REF_CLEAR,
+			result.in(0).register, result.in(1).register, this.__makeException(
+				new ClassName("java/lang/IndexOutOfBoundsException")));
 		
 		// Generate
 		codebuilder.add(DataType.of(__pt).arrayOperation(false),
@@ -945,13 +1000,22 @@ final class __Registerize__
 		// Possibly clear the instance or value later
 		this.__refEnqueue(result.enqueue());
 		
-		// Checks for NPE, OOB, and ASA, possibly jumps+clear
+		// Check for NPE and OOB
 		RegisterCodeBuilder codebuilder = this.codebuilder;
-		codebuilder.add(RegisterOperationType.ARRAY_STORE_CHECK,
-			result.in(0).register,
-			result.in(1).register,
-			result.in(2).register,
-			this.__exceptionTrack(this._currentprocesspc));
+		codebuilder.add(RegisterOperationType.IFNULL_REF_CLEAR,
+			result.in(0).register, this.__makeException(
+				new ClassName("java/lang/NullPointerException")));
+		codebuilder.add(RegisterOperationType.ARRAY_BOUND_CHECK_AND_REF_CLEAR,
+			result.in(0).register, result.in(1).register, this.__makeException(
+				new ClassName("java/lang/IndexOutOfBoundsException")));
+		
+		// Check for store exception
+		if (__pt == null)
+			codebuilder.add(
+				RegisterOperationType.ARRAY_STORE_CHECK_AND_REF_CLEAR,
+				result.in(0).register, result.in(2).register,
+					this.__makeException(
+					new ClassName("java/lang/ArrayStoreException")));
 		
 		// Generate
 		this.codebuilder.add(DataType.of(__pt).arrayOperation(true),
