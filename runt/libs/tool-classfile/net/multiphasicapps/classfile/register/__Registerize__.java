@@ -584,8 +584,23 @@ final class __Registerize__
 				this.__runLoad(op - InstructionIndex.ILOAD_0);
 				break;
 			
+			case InstructionIndex.INVOKEINTERFACE:
+				this.__runInvoke(InvokeType.INTERFACE,
+					__i.<MethodReference>argument(0, MethodReference.class));
+				break;
+			
 			case InstructionIndex.INVOKESPECIAL:
 				this.__runInvoke(InvokeType.SPECIAL,
+					__i.<MethodReference>argument(0, MethodReference.class));
+				break;
+			
+			case InstructionIndex.INVOKESTATIC:
+				this.__runInvoke(InvokeType.STATIC,
+					__i.<MethodReference>argument(0, MethodReference.class));
+				break;
+				
+			case InstructionIndex.INVOKEVIRTUAL:
+				this.__runInvoke(InvokeType.VIRTUAL,
 					__i.<MethodReference>argument(0, MethodReference.class));
 				break;
 			

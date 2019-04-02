@@ -23,6 +23,12 @@ public enum InvokeType
 	/** Special invoke. */
 	SPECIAL,
 	
+	/** Virtual. */
+	VIRTUAL,
+	
+	/** Interface. */
+	INTERFACE,
+	
 	/** End. */
 	;
 	
