@@ -1004,7 +1004,8 @@ final class __Registerize__
 			throw new NullPointerException("NARG");
 		
 		// The data type determines which instruction to use
-		DataType dt = DataType.of(__fr.memberType().primitiveType());
+		PrimitiveType pt = __fr.memberType().primitiveType();
+		DataType dt = DataType.of(pt);
 		
 		// Field access information
 		AccessedField ac = this.__fieldAccess(FieldAccessType.INSTANCE, __fr);
@@ -1022,6 +1023,13 @@ final class __Registerize__
 			ac,
 			result.in(0).register,
 			result.out(0).register);
+		
+		// Sign-extend signed types?
+		if (pt == PrimitiveType.BYTE || pt == PrimitiveType.SHORT)
+			codebuilder.add((pt == PrimitiveType.BYTE ?
+					RegisterOperationType.SIGN_X8 :
+					RegisterOperationType.SIGN_X16),
+				result.out(0).register);
 		
 		// Clear references
 		this.__refClear();
