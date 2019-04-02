@@ -248,6 +248,74 @@ public final class JavaStackState
 	}
 	
 	/**
+	 * Writes into the specified local variable from the top-most stack entry.
+	 *
+	 * @param __l The local to store.
+	 * @throws InvalidClassFormatException If the local cannot be written to.
+	 * @since 2019/04/02
+	 */
+	public final JavaStackResult doLocalStore(int __l)
+		throws InvalidClassFormatException
+	{
+		Info[] locals = this._locals,
+			stack = this._stack;
+		int stacktop = this.stacktop;
+		
+		// Used for the new stack which just has pops
+		int newstacktop = stacktop;
+		
+		// Pop from the stack to figure out what to store
+		Info popped = stack[--newstacktop];
+		if (popped.type.isTop())
+			popped = stack[--newstacktop];
+		
+		// {@squirreljme.error JC33 Cannot write over a local variable which
+		// is read-only. (The local)}
+		Info olddest = locals[__l];
+		if (olddest.readonly)
+			throw new InvalidClassFormatException("JC33 " + olddest);
+		
+		// If the target local is an object it could be enqueued
+		List<Integer> enq = new ArrayList<>();
+		if (olddest.canEnqueue())
+			enq.add(olddest.value);
+		
+		// If we are going to be writing over two locals we need to check
+		// the other as well
+		if (popped.type.isWide())
+		{
+			// {@squirreljme.error JC34 Cannot write over a local variable
+			// which is read-only. (The local)}
+			Info wolddest = locals[__l + 1];
+			if (wolddest.readonly)
+				throw new InvalidClassFormatException("JC34 " + wolddest);
+			
+			// If the target local is an object it could be enqueued
+			if (wolddest.canEnqueue())
+				enq.add(wolddest.value);
+		}
+		
+		// Setup new base local, remember that locals are never aliased but
+		// they might use no counting
+		Info[] newlocals = locals.clone();
+		Info pushed;
+		newlocals[__l] = (pushed = olddest.newTypeValue(popped.type,
+			olddest.register, popped.nocounting));
+		
+		// Additionally push top type as well
+		if (popped.type.isWide())
+			newlocals[__l + 1] = newlocals[__l + 1].newTypeValue(
+				pushed.type.topType(), pushed.register + 1, false);
+		
+		// Create resulting state
+ 		return new JavaStackResult(this,
+			new JavaStackState(newlocals, stack, newstacktop),
+			new JavaStackEnqueueList(enq.size(), enq),
+			JavaStackResult.makeInput(popped),
+			JavaStackResult.makeOutput(pushed));
+	}
+	
+	/**
 	 * Pops a certain number of variables and then pushes the given types
 	 * to the stack. Note that all results of this operation will treat
 	 * all of the target stack operations as new freshly obtained values

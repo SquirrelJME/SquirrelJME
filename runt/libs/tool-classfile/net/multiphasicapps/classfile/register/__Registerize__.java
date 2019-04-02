@@ -1176,7 +1176,26 @@ final class __Registerize__
 	 */
 	private final void __runStore(int __l)
 	{
-		throw new todo.TODO();
+		JavaStackResult result = this._stack.doLocalStore(__l);
+		this._stack = result.after();
+		
+		// The destination potentially is being overwritten, so uncount it
+		RegisterCodeBuilder codebuilder = this.codebuilder;
+		JavaStackEnqueueList enq = result.enqueue();
+		if (!enq.isEmpty())
+			for (int i = 0, n = enq.size(); i < n; i++)
+				codebuilder.add(RegisterOperationType.UNCOUNT,
+					enq.get(i));
+		
+		// Variables being touched
+		JavaStackResult.Input in = result.in(0);
+		JavaStackResult.Output out = result.out(0);
+		
+		// Just do a plain copy, there is no need to perform counting on it
+		// because the stack would uncount and then the local would count so
+		// there would be a net zero count
+		codebuilder.add((in.type.isWide() ? RegisterOperationType.X64_COPY :
+			RegisterOperationType.X32_COPY), in.register, out.register);
 	}
 }
 
