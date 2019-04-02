@@ -1,0 +1,51 @@
+# 2019/04/01
+
+## 09:28
+
+Working on the population count code and fixing all of the various bugs in the
+class loading code. Since every class is read, I guess this works as a nice
+test.
+
+## 10:09
+
+Okay, so need to make a decision on implementing or doing complex stuff
+related to stack shuffling. So far the instruction totals are this:
+
+ * `DUP`    : 10613 ( 6.137%)
+ * `DUP_X1` : 67    ( 0.039%)
+ * `DUP2`   : 9     ( 0.005%)
+ * `DUP_X2` : 3     ( 0.002%)
+ * `DUP2_X1`: 1     ( 0.001%)
+
+So I think this helps. I am not going to put much effort into it since I do
+not see the point in making all this complex stuff for what amounts to
+less than 1% of the instruction space. Plus DUP_X1 is [v2, v1] popped and
+[v1, v2, v1] pushed, so I can copy v1 and then alias it for the second
+usage of it. I think that is simple enough. Speaking of this, I should add
+a check in the stack state that ensures locals always have the same value
+and that stack entry values only point to self and lower entries.
+
+## 10:19
+
+Also speaking of that I want to count TODOs as well.
+
+## 10:33
+
+So of all the methods with code, 30% of them throw at least one TODO. So
+this rather puts down how much of SquirrelJME is incomplete as of the current
+code that exists. Of course this number will fluctuate when new features are
+added.
+
+## 14:28
+
+Okay so, for the stack shuffle states since the stuff is so complex and
+potentially error prone, I am going to use strings to represent how the stack
+is transformed. Before I used objects and since the stuff was long it was very
+hard to verify it.
+
+## 23:07
+
+I have been thinking, I am going to delay AutumnCoat by a release so that way
+I am not just writing virtual machines. I think SummerCoat/RatufaCoat would be
+good enough for now. If I get more programs supported I think that would be
+nice.
