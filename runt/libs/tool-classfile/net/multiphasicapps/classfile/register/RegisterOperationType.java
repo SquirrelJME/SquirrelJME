@@ -397,6 +397,10 @@ public interface RegisterOperationType
 	public static final int IFNONNULL_REF_CLEAR =
 		IFNE_REF_CLEAR;
 
+	/** iflt_ref_clear. */
+	public static final int IFLT_REF_CLEAR =
+		ENCODING_U16_J16 + 8;
+
 	/** double_to_float. */
 	public static final int DOUBLE_TO_FLOAT =
 		ENCODING_U16_U16 + 0;

@@ -927,7 +927,7 @@ final class __Registerize__
 		// Possibly clear the instance later
 		this.__refEnqueue(result.enqueue());
 		
-		// Perform some checks on the array
+		// Cannot be null
 		RegisterCodeBuilder codebuilder = this.codebuilder;
 		codebuilder.add(RegisterOperationType.IFNULL_REF_CLEAR,
 			result.in(0).register, this.__makeException(
@@ -1045,8 +1045,14 @@ final class __Registerize__
 		// Enqueue?
 		boolean doenq = this.__refEnqueue(result.enqueue());
 		
+		// Cannot be null
+		RegisterCodeBuilder codebuilder = this.codebuilder;
+		codebuilder.add(RegisterOperationType.IFNULL_REF_CLEAR,
+			result.in(0).register, this.__makeException(
+			new ClassName("java/lang/NullPointerException")));
+		
 		// Generate code
-		this.codebuilder.add(RegisterOperationType.SET_AND_FLAG_EXCEPTION,
+		codebuilder.add(RegisterOperationType.SET_AND_FLAG_EXCEPTION,
 			result.in(0).register);
 		
 		// Clear references
@@ -1082,8 +1088,14 @@ final class __Registerize__
 		// Enqueue instance possibly
 		this.__refEnqueue(result.enqueue());
 		
+		// Cannot be null
+		RegisterCodeBuilder codebuilder = this.codebuilder;
+		codebuilder.add(RegisterOperationType.IFNULL_REF_CLEAR,
+			result.in(0).register, this.__makeException(
+			new ClassName("java/lang/NullPointerException")));
+		
 		// Generate code
-		this.codebuilder.add(dt.fieldAccessOperation(false, false),
+		codebuilder.add(dt.fieldAccessOperation(false, false),
 			ac,
 			result.in(0).register,
 			result.out(0).register);
@@ -1179,6 +1191,13 @@ final class __Registerize__
 		// Enqueue the input for counting
 		this.__refEnqueue(result.enqueue());
 		
+		// Cannot be null if an instance type
+		RegisterCodeBuilder codebuilder = this.codebuilder;
+		if (__t.hasInstance())
+			codebuilder.add(RegisterOperationType.IFNULL_REF_CLEAR,
+				result.in(0).register, this.__makeException(
+				new ClassName("java/lang/NullPointerException")));
+		
 		// Setup registers to use for the method call
 		List<Integer> callargs = new ArrayList<>(popcount);
 		for (int i = 0; i < popcount; i++)
@@ -1195,7 +1214,6 @@ final class __Registerize__
 		
 		// Generate the call, pass the base register and the number of
 		// registers to pass to the target method
-		RegisterCodeBuilder codebuilder = this.codebuilder;
 		codebuilder.add(RegisterOperationType.INVOKE_METHOD,
 			new InvokedMethod(__t, __r.handle()), new RegisterList(callargs));
 		
@@ -1283,6 +1301,9 @@ final class __Registerize__
 	/**
 	 * Handles class allocation.
 	 *
+	 * New is intended to be replaced by a special method call by the compiler
+	 * or VM.
+	 *
 	 * @param __cn The class to allocate.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/24
@@ -1293,7 +1314,7 @@ final class __Registerize__
 		if (__cn == null)
 			throw new NullPointerException("NARG");
 		
-		// Allocation may fail or the class could be invalid
+		// New is a complex operation and could fail for many reasons
 		this._exceptioncheck = true;
 		
 		// Just the type is pushed to the stack
@@ -1301,8 +1322,17 @@ final class __Registerize__
 		this._stack = result.after();
 		
 		// Allocate and store into register
-		this.codebuilder.add(RegisterOperationType.NEW,
+		RegisterCodeBuilder codebuilder = this.codebuilder;
+		codebuilder.add(RegisterOperationType.NEW,
 			__cn, result.out(0).register);
+			
+		// If null is returned then out of memory
+		// Disabled since this should be thrown by the implementation of NEW
+		// which should be like a static method call to an allocator
+		if (false)
+			codebuilder.add(RegisterOperationType.IFNULL,
+				result.out(0).register, this.__makeException(
+				new ClassName("java/lang/OutOfMemoryError")));
 	}
 	
 	/**
@@ -1326,9 +1356,20 @@ final class __Registerize__
 			new JavaType(__t.addDimensions(1)));
 		this._stack = result.after();
 		
+		// Cannot be negative
+		RegisterCodeBuilder codebuilder = this.codebuilder;
+		codebuilder.add(RegisterOperationType.IFLT_REF_CLEAR,
+			result.in(0).register, this.__makeException(
+			new ClassName("java/lang/NegativeArraySizeException")));
+		
 		// Generate
-		this.codebuilder.add(RegisterOperationType.NEW_ARRAY,
+		codebuilder.add(RegisterOperationType.NEW_ARRAY,
 			__t, result.in(0).register, result.out(0).register);
+		
+		// If null is returned then out of memory
+		codebuilder.add(RegisterOperationType.IFNULL,
+			result.out(0).register, this.__makeException(
+			new ClassName("java/lang/OutOfMemoryError")));
 	}
 	
 	/**
@@ -1351,8 +1392,13 @@ final class __Registerize__
 		// The input may have been wiped
 		this.__refEnqueue(result.enqueue());
 		
-		// Generate code
+		// Cannot be null
 		RegisterCodeBuilder codebuilder = this.codebuilder;
+		codebuilder.add(RegisterOperationType.IFNULL_REF_CLEAR,
+			result.in(0).register, this.__makeException(
+			new ClassName("java/lang/NullPointerException")));
+		
+		// Generate code
 		codebuilder.add(
 			DataType.of(__fr.memberType().primitiveType()).
 				fieldAccessOperation(false, true),

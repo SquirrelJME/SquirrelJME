@@ -340,6 +340,8 @@ public final class RegisterOperationMnemonics
 				return "ARRAY_BOUND_CHECK_AND_REF_CLEAR";
 			case RegisterOperationType.ARRAY_STORE_CHECK_AND_REF_CLEAR:
 				return "ARRAY_STORE_CHECK_AND_REF_CLEAR";
+			case RegisterOperationType.IFLT_REF_CLEAR:
+				return "IFLT_REF_CLEAR";
 			
 				// Unknown
 			default:
