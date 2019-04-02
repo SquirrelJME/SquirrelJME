@@ -416,7 +416,7 @@ final class __Registerize__
 		{
 			case InstructionIndex.ALOAD:
 			case InstructionIndex.WIDE_ALOAD:
-				this.__runLoad(__i.<Integer>argument(0, Integer.class));
+				this.__runLoad(__i.intArgument(0));
 				break;
 			
 			case InstructionIndex.ALOAD_0:
@@ -426,13 +426,25 @@ final class __Registerize__
 				this.__runLoad(op - InstructionIndex.ALOAD_0);
 				break;
 			
+			case InstructionIndex.ASTORE:
+			case InstructionIndex.WIDE_ASTORE:
+				this.__runStore(__i.intArgument(0));
+				break;
+			
+			case InstructionIndex.ASTORE_0:
+			case InstructionIndex.ASTORE_1:
+			case InstructionIndex.ASTORE_2:
+			case InstructionIndex.ASTORE_3:
+				this.__runStore(op - InstructionIndex.ASTORE_0);
+				break;
+			
 			case InstructionIndex.ATHROW:
 				this.__runAThrow();
 				break;
 				
 			case InstructionIndex.DLOAD:
 			case InstructionIndex.WIDE_DLOAD:
-				this.__runLoad(__i.<Integer>argument(0, Integer.class));
+				this.__runLoad(__i.intArgument(0));
 				break;
 			
 			case InstructionIndex.DLOAD_0:
@@ -440,6 +452,18 @@ final class __Registerize__
 			case InstructionIndex.DLOAD_2:
 			case InstructionIndex.DLOAD_3:
 				this.__runLoad(op - InstructionIndex.DLOAD_0);
+				break;
+			
+			case InstructionIndex.DSTORE:
+			case InstructionIndex.WIDE_DSTORE:
+				this.__runStore(__i.intArgument(0));
+				break;
+			
+			case InstructionIndex.DSTORE_0:
+			case InstructionIndex.DSTORE_1:
+			case InstructionIndex.DSTORE_2:
+			case InstructionIndex.DSTORE_3:
+				this.__runStore(op - InstructionIndex.DSTORE_0);
 				break;
 			
 			case InstructionIndex.DUP:
@@ -468,7 +492,7 @@ final class __Registerize__
 				
 			case InstructionIndex.FLOAD:
 			case InstructionIndex.WIDE_FLOAD:
-				this.__runLoad(__i.<Integer>argument(0, Integer.class));
+				this.__runLoad(__i.intArgument(0));
 				break;
 			
 			case InstructionIndex.FLOAD_0:
@@ -476,6 +500,18 @@ final class __Registerize__
 			case InstructionIndex.FLOAD_2:
 			case InstructionIndex.FLOAD_3:
 				this.__runLoad(op - InstructionIndex.FLOAD_0);
+				break;
+			
+			case InstructionIndex.FSTORE:
+			case InstructionIndex.WIDE_FSTORE:
+				this.__runStore(__i.intArgument(0));
+				break;
+			
+			case InstructionIndex.FSTORE_0:
+			case InstructionIndex.FSTORE_1:
+			case InstructionIndex.FSTORE_2:
+			case InstructionIndex.FSTORE_3:
+				this.__runStore(op - InstructionIndex.FSTORE_0);
 				break;
 			
 			case InstructionIndex.GETFIELD:
@@ -547,6 +583,18 @@ final class __Registerize__
 					__i.<MethodReference>argument(0, MethodReference.class));
 				break;
 			
+			case InstructionIndex.ISTORE:
+			case InstructionIndex.WIDE_ISTORE:
+				this.__runStore(__i.intArgument(0));
+				break;
+			
+			case InstructionIndex.ISTORE_0:
+			case InstructionIndex.ISTORE_1:
+			case InstructionIndex.ISTORE_2:
+			case InstructionIndex.ISTORE_3:
+				this.__runStore(op - InstructionIndex.ISTORE_0);
+				break;
+			
 			case InstructionIndex.LDC:
 				this.__runLdc(__i.<ConstantValue>argument(
 					0, ConstantValue.class));
@@ -554,7 +602,7 @@ final class __Registerize__
 				
 			case InstructionIndex.LLOAD:
 			case InstructionIndex.WIDE_LLOAD:
-				this.__runLoad(__i.<Integer>argument(0, Integer.class));
+				this.__runLoad(__i.intArgument(0));
 				break;
 			
 			case InstructionIndex.LLOAD_0:
@@ -562,6 +610,18 @@ final class __Registerize__
 			case InstructionIndex.LLOAD_2:
 			case InstructionIndex.LLOAD_3:
 				this.__runLoad(op - InstructionIndex.LLOAD_0);
+				break;
+			
+			case InstructionIndex.LSTORE:
+			case InstructionIndex.WIDE_LSTORE:
+				this.__runStore(__i.intArgument(0));
+				break;
+			
+			case InstructionIndex.LSTORE_0:
+			case InstructionIndex.LSTORE_1:
+			case InstructionIndex.LSTORE_2:
+			case InstructionIndex.LSTORE_3:
+				this.__runStore(op - InstructionIndex.LSTORE_0);
 				break;
 			
 			case InstructionIndex.NEW:
@@ -1068,6 +1128,17 @@ final class __Registerize__
 		throws NullPointerException
 	{
 		this._stack = this._stack.doStackShuffle(__jsst).after();
+	}
+	
+	/**
+	 * Stores stack value into a local.
+	 *
+	 * @param __l The value to store.
+	 * @since 2019/04/01
+	 */
+	private final void __runStore(int __l)
+	{
+		throw new todo.TODO();
 	}
 }
 
