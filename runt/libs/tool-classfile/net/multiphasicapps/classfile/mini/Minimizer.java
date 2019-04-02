@@ -333,7 +333,7 @@ public final class Minimizer
 					dos.writeShort(i.shortArgument(2));
 					
 					jumpreps.put(dos.size(), i.<InstructionJumpTarget>
-						argument(4, InstructionJumpTarget.class));
+						argument(3, InstructionJumpTarget.class));
 					dos.writeShort(0);
 					break;
 					
