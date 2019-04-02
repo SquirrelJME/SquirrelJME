@@ -344,6 +344,14 @@ public interface RegisterOperationType
 	/** object_field_store [u16]. */
 	public static final int OBJECT_FIELD_STORE =
 		ENCODING_U16 + 20;
+	
+	/** sign_x8 [u16]. */
+	public static final int SIGN_X8 =
+		ENCODING_U16 + 21;
+	
+	/** sign_x16 [u16]. */
+	public static final int SIGN_X16 =
+		ENCODING_U16 + 22;
 
 	/** ifeq/ifnull. */
 	public static final int IFEQ =

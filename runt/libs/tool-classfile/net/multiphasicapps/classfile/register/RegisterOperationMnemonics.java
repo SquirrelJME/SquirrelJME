@@ -332,6 +332,10 @@ public final class RegisterOperationMnemonics
 				return "IF_ICMPEQ_REF_CLEAR";
 			case RegisterOperationType.IF_ICMPNE_REF_CLEAR:
 				return "IF_ICMPNE_REF_CLEAR";
+			case RegisterOperationType.SIGN_X8:
+				return "SIGN_X8";
+			case RegisterOperationType.SIGN_X16:
+				return "SIGN_X16";
 			
 				// Unknown
 			default:
