@@ -1,13 +1,17 @@
 # Release Route
 
-# 0.6.0 (TBD)
-
-This is a future release and the specified changes are proposed.
+# 0.8.0 (TBD - January 2020?)
 
  * Virtual Machine: AutumnCoat
    * Native code generation.
+
+# 0.6.0 (TBD - September 2019?)
+
+This is a future release and the specified changes are proposed.
+
  * SpringCoat becomes deprecated.
  * Support for file systems.
+ * Implementation of APIs to allow more programs to run.
 
 # 0.4.0 (April 21, 2019)
 
