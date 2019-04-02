@@ -260,98 +260,94 @@ public interface RegisterOperationType
 	/** new_array_const. */
 	public static final int NEW_ARRAY_CONST =
 		ENCODING_POOL16_U16_U16 + 12;
-	
-	/** array_length. */
-	public static final int ARRAY_LENGTH =
-		ENCODING_U16 + 0;
 
 	/** count. */
 	public static final int COUNT =
-		ENCODING_U16 + 1;
+		ENCODING_U16 + 0;
 
 	/** double_neg. */
 	public static final int DOUBLE_NEG =
-		ENCODING_U16 + 2;
+		ENCODING_U16 + 1;
 
 	/** float_neg. */
 	public static final int FLOAT_NEG =
-		ENCODING_U16 + 3;
+		ENCODING_U16 + 2;
 
 	/** get_and_clear_exception. */
 	public static final int GET_AND_CLEAR_EXCEPTION =
-		ENCODING_U16 + 4;
+		ENCODING_U16 + 3;
 
 	/** get_x32_return_value. */
 	public static final int GET_X32_RETURN_VALUE =
-		ENCODING_U16 + 5;
+		ENCODING_U16 + 4;
 
 	/** get_x64_return_value. */
 	public static final int GET_X64_RETURN_VALUE =
-		ENCODING_U16 + 6;
+		ENCODING_U16 + 5;
 
 	/** int_neg. */
 	public static final int INT_NEG =
-		ENCODING_U16 + 7;
+		ENCODING_U16 + 6;
 
 	/** long_neg. */
 	public static final int LONG_NEG =
-		ENCODING_U16 + 8;
+		ENCODING_U16 + 7;
 
 	/** monitor_enter. */
 	public static final int MONITOR_ENTER =
-		ENCODING_U16 + 9;
+		ENCODING_U16 + 8;
 
 	/** monitor_exit. */
 	public static final int MONITOR_EXIT =
-		ENCODING_U16 + 10;
+		ENCODING_U16 + 9;
 
 	/** set_and_flag_exception. */
 	public static final int SET_AND_FLAG_EXCEPTION =
-		ENCODING_U16 + 11;
+		ENCODING_U16 + 10;
 
 	/** set_x32_return_value. */
 	public static final int SET_X32_RETURN_VALUE =
-		ENCODING_U16 + 12;
+		ENCODING_U16 + 11;
 
 	/** set_x64_return_value. */
 	public static final int SET_X64_RETURN_VALUE =
-		ENCODING_U16 + 13;
+		ENCODING_U16 + 12;
 
 	/** uncount. */
 	public static final int UNCOUNT =
-		ENCODING_U16 + 14;
+		ENCODING_U16 + 13;
 	
 	/** x32_field_load [u16]. */
 	public static final int X32_FIELD_LOAD =
-		ENCODING_U16 + 15;
+		ENCODING_U16 + 14;
 	
 	/** x64_field_load [u16]. */
 	public static final int X64_FIELD_LOAD =
-		ENCODING_U16 + 16;
+		ENCODING_U16 + 15;
 	
 	/** object_field_load [u16]. */
 	public static final int OBJECT_FIELD_LOAD =
-		ENCODING_U16 + 17;
+		ENCODING_U16 + 16;
 	
 	/** x32_field_store [u16]. */
 	public static final int X32_FIELD_STORE =
-		ENCODING_U16 + 18;
+		ENCODING_U16 + 17;
 	
 	/** x64_field_store [u16]. */
 	public static final int X64_FIELD_STORE =
-		ENCODING_U16 + 19;
+		ENCODING_U16 + 18;
 	
 	/** object_field_store [u16]. */
 	public static final int OBJECT_FIELD_STORE =
-		ENCODING_U16 + 20;
+		ENCODING_U16 + 19;
 	
 	/** sign_x8 [u16]. */
 	public static final int SIGN_X8 =
-		ENCODING_U16 + 21;
+		ENCODING_U16 + 20;
 	
 	/** sign_x16 [u16]. */
 	public static final int SIGN_X16 =
-		ENCODING_U16 + 22;
+		ENCODING_U16 + 21;
 
 	/** ifeq/ifnull. */
 	public static final int IFEQ =
@@ -472,6 +468,10 @@ public interface RegisterOperationType
 	/** x64_copy. */
 	public static final int X64_COPY =
 		ENCODING_U16_U16 + 17;
+	
+	/** array_length. */
+	public static final int ARRAY_LENGTH =
+		ENCODING_U16_U16 + 18;
 
 	/** if_icmpeq/if_acmpeq. */
 	public static final int IF_ICMPEQ =
