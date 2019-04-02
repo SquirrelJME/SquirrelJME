@@ -641,6 +641,9 @@ final class __Registerize__
 					PrimitiveType.class).toClassName());
 				break;
 			
+			case InstructionIndex.NOP:
+				break;
+			
 			case InstructionIndex.POP:
 				this.__runShuffle(JavaStackShuffleType.POP);
 				break;
