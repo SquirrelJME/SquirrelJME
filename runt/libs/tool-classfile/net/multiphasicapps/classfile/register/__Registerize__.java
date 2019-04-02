@@ -901,7 +901,29 @@ final class __Registerize__
 		// Could throw NPE or OOB
 		this._exceptioncheck = true;
 		
-		throw new todo.TODO();
+		// [array, index] -> [value]
+		JavaStackResult result = this._stack.doStack(2, __pt.stackJavaType());
+		this._stack = result.after();
+		
+		// Possibly clear the instance later
+		this.__refEnqueue(result.enqueue());
+		
+		// Generate
+		RegisterCodeBuilder codebuilder = this.codebuilder;
+		codebuilder.add(DataType.of(__pt).arrayOperation(false),
+			result.in(0).register,
+			result.in(1).register,
+			result.out(0).register);
+		
+		// Sign-extend signed types?
+		if (__pt == PrimitiveType.BYTE || __pt == PrimitiveType.SHORT)
+			codebuilder.add((__pt == PrimitiveType.BYTE ?
+					RegisterOperationType.SIGN_X8 :
+					RegisterOperationType.SIGN_X16),
+				result.out(0).register);
+		
+		// Clear references
+		this.__refClear();
 	}
 	
 	/**
