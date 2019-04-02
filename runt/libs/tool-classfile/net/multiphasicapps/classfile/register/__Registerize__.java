@@ -562,6 +562,12 @@ final class __Registerize__
 				this.__runGetField(__i.<FieldReference>argument(0,
 					FieldReference.class));
 				break;
+			
+			case InstructionIndex.GOTO:
+			case InstructionIndex.GOTO_W:
+				this.__runGoto(__i.<InstructionJumpTarget>argument(0,
+					InstructionJumpTarget.class));
+				break;
 				
 			case InstructionIndex.IALOAD:
 				this.__runArrayLoad(PrimitiveType.INTEGER);
@@ -971,7 +977,25 @@ final class __Registerize__
 	}
 	
 	/**
-	 * Compars against zero.
+	 * Jumps to another location.
+	 *
+	 * @param __t The target.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/02
+	 */
+	private final void __runGoto(InstructionJumpTarget __t)
+		throws NullPointerException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Gotos are just basic jumps to a label
+		this.codebuilder.add(RegisterOperationType.JUMP,
+			this.__javaLabel(__t.target()));
+	}
+	
+	/**
+	 * Compares against zero.
 	 *
 	 * @param __ref Are these references?
 	 * @param __ct The comparison type to perform.
