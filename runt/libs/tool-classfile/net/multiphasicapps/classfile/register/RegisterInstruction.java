@@ -239,6 +239,8 @@ public final class RegisterInstruction
 			case RegisterOperationType.ENCODING_U16_U16_U16_3:
 				return 3;
 				
+			case RegisterOperationType.ARRAY_LOAD_CHECK:
+			case RegisterOperationType.ARRAY_STORE_CHECK:
 			case RegisterOperationType.JUMP_IF_INSTANCE_GET_EXCEPTION:
 				return 4;
 				

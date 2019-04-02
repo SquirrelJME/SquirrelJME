@@ -113,6 +113,14 @@ public interface RegisterOperationType
 	public static final int REF_CLEAR =
 		ENCODING_SPECIAL + 10;
 	
+	/** array_store_check [u16, u16, u16, j16]. */
+	public static final int ARRAY_STORE_CHECK =
+		ENCODING_SPECIAL + 11;
+	
+	/** array_load_check [u16, u16, u16, j16]. */
+	public static final int ARRAY_LOAD_CHECK =
+		ENCODING_SPECIAL + 12;
+	
 	/** jump. */
 	public static final int JUMP =
 		ENCODING_J16 + 0;
