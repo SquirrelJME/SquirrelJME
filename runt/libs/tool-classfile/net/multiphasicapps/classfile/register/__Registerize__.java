@@ -535,12 +535,14 @@ final class __Registerize__
 				break;
 			
 			case InstructionIndex.IFEQ:
+			case InstructionIndex.IFNULL:
 				this.__runIfZero(false, CompareType.EQUALS,
 					__i.<InstructionJumpTarget>argument(0,
 						InstructionJumpTarget.class));
 				break;
 				
 			case InstructionIndex.IFNE:
+			case InstructionIndex.IFNONNULL:
 				this.__runIfZero(false, CompareType.NOT_EQUALS,
 					__i.<InstructionJumpTarget>argument(0,
 						InstructionJumpTarget.class));
@@ -569,7 +571,7 @@ final class __Registerize__
 					__i.<InstructionJumpTarget>argument(0,
 						InstructionJumpTarget.class));
 				break;
-				
+			
 			case InstructionIndex.ILOAD:
 			case InstructionIndex.WIDE_ILOAD:
 				this.__runLoad(__i.<Integer>argument(0, Integer.class));
