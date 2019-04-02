@@ -45,6 +45,59 @@ public enum DataType
 	;
 	
 	/**
+	 * Return the operation to use for array operations.
+	 *
+	 * @param __s Store into array?
+	 * @return The operation to use for arrays.
+	 * @since 2019/04/02
+	 */
+	public final int arrayOperation(boolean __s)
+	{
+		if (__s)
+			switch (this)
+			{
+				case POINTER:
+					return RegisterOperationType.ARRAY_STORE_OBJECT;
+				
+				case BYTE:
+					return RegisterOperationType.ARRAY_STORE_X8;
+					
+				case SHORT:
+					return RegisterOperationType.ARRAY_STORE_X16;
+					
+				case INTEGER:
+				case FLOAT:
+					return RegisterOperationType.ARRAY_STORE_X32;
+				
+				case LONG:
+				case DOUBLE:
+					return RegisterOperationType.ARRAY_STORE_X64;
+			}
+		else
+			switch (this)
+			{
+				case POINTER:
+					return RegisterOperationType.ARRAY_LOAD_OBJECT;
+				
+				case BYTE:
+					return RegisterOperationType.ARRAY_LOAD_X8;
+					
+				case SHORT:
+					return RegisterOperationType.ARRAY_LOAD_X16;
+					
+				case INTEGER:
+				case FLOAT:
+					return RegisterOperationType.ARRAY_LOAD_X32;
+				
+				case LONG:
+				case DOUBLE:
+					return RegisterOperationType.ARRAY_LOAD_X64;
+			}
+		
+		throw new todo.OOPS();
+	}
+	
+	/**
 	 * Returns the operation used for copies.
 	 *
 	 * @param __nc Is counting needed?
@@ -57,8 +110,8 @@ public enum DataType
 		{
 			case POINTER:
 				if (__nc)
-					return RegisterOperationType.OBJECT_COPY;
-				return RegisterOperationType.X32_COPY;
+					return RegisterOperationType.X32_COPY;
+				return RegisterOperationType.OBJECT_COPY;
 			
 			case BYTE:
 			case SHORT:

@@ -898,6 +898,9 @@ final class __Registerize__
 	 */
 	private final void __runArrayLoad(PrimitiveType __pt)
 	{
+		// Could throw NPE or OOB
+		this._exceptioncheck = true;
+		
 		throw new todo.TODO();
 	}
 	
@@ -909,7 +912,24 @@ final class __Registerize__
 	 */
 	private final void __runArrayStore(PrimitiveType __pt)
 	{
-		throw new todo.TODO();
+		// Could throw NPE, OOB, or ASE
+		this._exceptioncheck = true;
+		
+		// [array, index, value]
+		JavaStackResult result = this._stack.doStack(3);
+		this._stack = result.after();
+		
+		// Possibly clear the instance or value later
+		this.__refEnqueue(result.enqueue());
+		
+		// Generate
+		this.codebuilder.add(DataType.of(__pt).arrayOperation(true),
+			result.in(0).register,
+			result.in(1).register,
+			result.in(2).register);
+		
+		// Clear references
+		this.__refClear();
 	}
 	
 	/**
