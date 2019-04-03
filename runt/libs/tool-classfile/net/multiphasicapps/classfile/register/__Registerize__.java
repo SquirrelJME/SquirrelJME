@@ -227,7 +227,7 @@ final class __Registerize__
 						stacks.put(jta, use);
 					
 					// May need adapting
-					else
+					else if (!use.equals(dss))
 					{
 						// Debug
 						todo.DEBUG.note("Adapt %s -> %s", use, dss);
