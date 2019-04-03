@@ -22,7 +22,7 @@ public final class __MadeException__
 	protected final ClassName name;
 	
 	/** The exception combo to target. */
-	protected final __ExceptionCombo__ combo;
+	protected final ExceptionStackAndTable combo;
 	
 	/**
 	 * Initializes the made exception.
@@ -32,7 +32,7 @@ public final class __MadeException__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/02
 	 */
-	public __MadeException__(ClassName __n, __ExceptionCombo__ __c)
+	public __MadeException__(ClassName __n, ExceptionStackAndTable __c)
 		throws NullPointerException
 	{
 		if (__n == null || __c == null)

@@ -55,7 +55,7 @@ public class QuickTranslator
 		new RegisterCodeBuilder();
 	
 	/** Exception tracker. */
-	protected final __ExceptionTracker__ exceptiontracker;
+	protected final ExceptionHandlerRanges exceptiontracker;
 	
 	/** Default field access type, to determine how fields are accessed. */
 	protected final FieldAccessTime defaultfieldaccesstime;
@@ -88,7 +88,7 @@ public class QuickTranslator
 			throw new NullPointerException("NARG");
 		
 		this.bytecode = __bc;
-		this.exceptiontracker = new __ExceptionTracker__(__bc);
+		this.exceptiontracker = new ExceptionHandlerRanges(__bc);
 		this.defaultfieldaccesstime = ((__bc.isInstanceInitializer() ||
 			__bc.isStaticInitializer()) ? FieldAccessTime.INITIALIZER :
 			FieldAccessTime.NORMAL);

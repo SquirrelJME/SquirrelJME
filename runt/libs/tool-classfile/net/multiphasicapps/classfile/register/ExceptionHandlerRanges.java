@@ -23,7 +23,7 @@ import net.multiphasicapps.classfile.StackMapTable;
  *
  * @since 2019/03/21
  */
-final class __ExceptionTracker__
+public final class ExceptionHandlerRanges
 {
 	/** The full table. */
 	protected final ExceptionHandlerTable full;
@@ -38,7 +38,7 @@ final class __ExceptionTracker__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/21
 	 */
-	__ExceptionTracker__(ByteCode __bc)
+	public ExceptionHandlerRanges(ByteCode __bc)
 		throws NullPointerException
 	{
 		if (__bc == null)
@@ -57,22 +57,22 @@ final class __ExceptionTracker__
 	}
 	
 	/**
-	 * Creates a combo containing the object snapshots and the exception
-	 * handler table.
+	 * Creates a stack and table representation.
 	 *
 	 * @param __ops The object positions.
 	 * @param __pc The PC address.
+	 * @return The stack and table information.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/22
 	 */
-	public final __ExceptionCombo__ createCombo(
-		JavaStackState __ops, int __pc)
+	public final ExceptionStackAndTable stackAndTable(JavaStackState __ops,
+		int __pc)
 		throws NullPointerException
 	{
 		if (__ops == null)
 			throw new NullPointerException("NARG");
 		
-		return new __ExceptionCombo__(__ops, this.tableOf(__pc));
+		return new ExceptionStackAndTable(__ops, this.tableOf(__pc));
 	}
 	
 	/**
