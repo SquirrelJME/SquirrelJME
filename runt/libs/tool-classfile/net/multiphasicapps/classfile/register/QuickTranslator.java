@@ -55,7 +55,7 @@ public class QuickTranslator
 		new RegisterCodeBuilder();
 	
 	/** Exception tracker. */
-	protected final ExceptionHandlerRanges exceptiontracker;
+	protected final ExceptionHandlerRanges exceptionranges;
 	
 	/** Default field access type, to determine how fields are accessed. */
 	protected final FieldAccessTime defaultfieldaccesstime;
@@ -63,6 +63,10 @@ public class QuickTranslator
 	/** The stacks which have been recorded. */
 	private final Map<Integer, JavaStackState> _stacks =
 		new LinkedHashMap<>();
+	
+	/** Table of made exceptions. */
+	private final List<ExceptionClassStackAndTable> _ecsttable =
+		new ArrayList<>();
 	
 	/** The current state of the stack. */
 	private JavaStackState _stack;
@@ -88,7 +92,7 @@ public class QuickTranslator
 			throw new NullPointerException("NARG");
 		
 		this.bytecode = __bc;
-		this.exceptiontracker = new ExceptionHandlerRanges(__bc);
+		this.exceptionranges = new ExceptionHandlerRanges(__bc);
 		this.defaultfieldaccesstime = ((__bc.isInstanceInitializer() ||
 			__bc.isStaticInitializer()) ? FieldAccessTime.INITIALIZER :
 			FieldAccessTime.NORMAL);
@@ -381,7 +385,18 @@ public class QuickTranslator
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Setup
+		ExceptionClassStackAndTable cst = this.exceptionranges.
+			classStackAndTable(new ClassName(__cl), this._stack, this._addr);
+		
+		// Store into the table if it is missing
+		List<ExceptionClassStackAndTable> ecsttable = this._ecsttable;
+		int dx = ecsttable.indexOf(cst);
+		if (dx < 0)
+			ecsttable.add((dx = ecsttable.size()), cst);
+		
+		// Just create a label to reference it, it is generated later
+		return new RegisterCodeLabel("makeexception", dx);
 	}
 	
 	/**

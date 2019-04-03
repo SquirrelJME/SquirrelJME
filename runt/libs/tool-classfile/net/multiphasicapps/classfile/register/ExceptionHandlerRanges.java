@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
+import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ExceptionHandlerTable;
 import net.multiphasicapps.classfile.InstructionAddressRange;
 import net.multiphasicapps.classfile.StackMapTable;
@@ -54,6 +55,27 @@ public final class ExceptionHandlerRanges
 		
 		// Debug
 		todo.DEBUG.note("EHRanges: %s", this._ranges);
+	}
+	
+	/**
+	 * Creates a class, stack, and exception table representation.
+	 *
+	 * @param __cn The class name.
+	 * @param __ops The stack state.
+	 * @param __pc The address.
+	 * @return The class, stack, and exception table
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/03
+	 */
+	public final ExceptionClassStackAndTable classStackAndTable(
+		ClassName __cn, JavaStackState __ops, int __pc)
+		throws NullPointerException
+	{
+		if (__cn == null || __ops == null)
+			throw new NullPointerException("NARG");
+		
+		return new ExceptionClassStackAndTable(__cn,
+			this.stackAndTable(__ops, __pc));
 	}
 	
 	/**
