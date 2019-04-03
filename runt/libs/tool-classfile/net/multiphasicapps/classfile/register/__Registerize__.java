@@ -874,7 +874,167 @@ final class __Registerize__
 			case InstructionIndex.SWAP:
 				this.__runShuffle(JavaStackShuffleType.SWAP);
 				break;
-			
+				
+			case InstructionIndex.IADD:
+				this.__runMathABC(RegisterOperationType.INT_ADD,
+					JavaType.INTEGER);
+				break;
+
+			case InstructionIndex.ISUB:
+				this.__runMathABC(RegisterOperationType.INT_SUB,
+					JavaType.INTEGER);
+				break;
+
+			case InstructionIndex.IMUL:
+				this.__runMathABC(RegisterOperationType.INT_MUL,
+					JavaType.INTEGER);
+				break;
+
+			case InstructionIndex.IDIV:
+				this.__runMathABC(RegisterOperationType.INT_DIV,
+					JavaType.INTEGER);
+				break;
+
+			case InstructionIndex.IREM:
+				this.__runMathABC(RegisterOperationType.INT_REM,
+					JavaType.INTEGER);
+				break;
+
+			case InstructionIndex.ISHL:
+				this.__runMathABC(RegisterOperationType.INT_SHL,
+					JavaType.INTEGER);
+				break;
+
+			case InstructionIndex.ISHR:
+				this.__runMathABC(RegisterOperationType.INT_SHR,
+					JavaType.INTEGER);
+				break;
+
+			case InstructionIndex.IUSHR:
+				this.__runMathABC(RegisterOperationType.INT_USHR,
+					JavaType.INTEGER);
+				break;
+
+			case InstructionIndex.IAND:
+				this.__runMathABC(RegisterOperationType.INT_AND,
+					JavaType.INTEGER);
+				break;
+
+			case InstructionIndex.IOR:
+				this.__runMathABC(RegisterOperationType.INT_OR,
+					JavaType.INTEGER);
+				break;
+
+			case InstructionIndex.IXOR:
+				this.__runMathABC(RegisterOperationType.INT_XOR,
+					JavaType.INTEGER);
+				break;
+
+			case InstructionIndex.LADD:
+				this.__runMathABC(RegisterOperationType.LONG_ADD,
+					JavaType.LONG);
+				break;
+
+			case InstructionIndex.LSUB:
+				this.__runMathABC(RegisterOperationType.LONG_SUB,
+					JavaType.LONG);
+				break;
+
+			case InstructionIndex.LMUL:
+				this.__runMathABC(RegisterOperationType.LONG_MUL,
+					JavaType.LONG);
+				break;
+
+			case InstructionIndex.LDIV:
+				this.__runMathABC(RegisterOperationType.LONG_DIV,
+					JavaType.LONG);
+				break;
+
+			case InstructionIndex.LREM:
+				this.__runMathABC(RegisterOperationType.LONG_REM,
+					JavaType.LONG);
+				break;
+
+			case InstructionIndex.LSHL:
+				this.__runMathABC(RegisterOperationType.LONG_SHL,
+					JavaType.LONG);
+				break;
+
+			case InstructionIndex.LSHR:
+				this.__runMathABC(RegisterOperationType.LONG_SHR,
+					JavaType.LONG);
+				break;
+
+			case InstructionIndex.LUSHR:
+				this.__runMathABC(RegisterOperationType.LONG_USHR,
+					JavaType.LONG);
+				break;
+
+			case InstructionIndex.LAND:
+				this.__runMathABC(RegisterOperationType.LONG_AND,
+					JavaType.LONG);
+				break;
+
+			case InstructionIndex.LOR:
+				this.__runMathABC(RegisterOperationType.LONG_OR,
+					JavaType.LONG);
+				break;
+
+			case InstructionIndex.LXOR:
+				this.__runMathABC(RegisterOperationType.LONG_XOR,
+					JavaType.LONG);
+				break;
+
+			case InstructionIndex.FADD:
+				this.__runMathABC(RegisterOperationType.FLOAT_ADD,
+					JavaType.FLOAT);
+				break;
+
+			case InstructionIndex.FSUB:
+				this.__runMathABC(RegisterOperationType.FLOAT_SUB,
+					JavaType.FLOAT);
+				break;
+
+			case InstructionIndex.FMUL:
+				this.__runMathABC(RegisterOperationType.FLOAT_MUL,
+					JavaType.FLOAT);
+				break;
+
+			case InstructionIndex.FDIV:
+				this.__runMathABC(RegisterOperationType.FLOAT_DIV,
+					JavaType.FLOAT);
+				break;
+
+			case InstructionIndex.FREM:
+				this.__runMathABC(RegisterOperationType.FLOAT_REM,
+					JavaType.FLOAT);
+				break;
+
+			case InstructionIndex.DADD:
+				this.__runMathABC(RegisterOperationType.DOUBLE_ADD,
+					JavaType.DOUBLE);
+				break;
+
+			case InstructionIndex.DSUB:
+				this.__runMathABC(RegisterOperationType.DOUBLE_SUB,
+					JavaType.DOUBLE);
+				break;
+
+			case InstructionIndex.DMUL:
+				this.__runMathABC(RegisterOperationType.DOUBLE_MUL,
+					JavaType.DOUBLE);
+				break;
+
+			case InstructionIndex.DDIV:
+				this.__runMathABC(RegisterOperationType.DOUBLE_DIV,
+					JavaType.DOUBLE);
+				break;
+
+			case InstructionIndex.DREM:
+				this.__runMathABC(RegisterOperationType.DOUBLE_REM,
+					JavaType.DOUBLE);
+				break;
+
 			default:
 				throw new todo.TODO(__i.toString());
 		}
@@ -1388,6 +1548,31 @@ final class __Registerize__
 		// Just before the load
 		JavaStackResult result = this._stack.doLocalLoad(__l);
 		this._stack = result.after();
+	}
+	
+	/**
+	 * Runs the given math operation (c = a + b).
+	 *
+	 * @param __op The operation to use.
+	 * @param __t The type on the stack.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/02
+	 */
+	private final void __runMathABC(int __op, JavaType __t)
+		throws NullPointerException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Pop two values to operate and push one
+		JavaStackResult result = this._stack.doStack(2, __t);
+		this._stack = result.after();
+		
+		// Perform the work
+		this.codebuilder.add(__op,
+			result.in(0).register,
+			result.in(1).register,
+			result.out(0).register);
 	}
 	
 	/**
