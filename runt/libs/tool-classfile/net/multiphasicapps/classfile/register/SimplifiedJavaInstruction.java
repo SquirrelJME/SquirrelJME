@@ -18,6 +18,7 @@ import net.multiphasicapps.classfile.ConstantValueInteger;
 import net.multiphasicapps.classfile.ConstantValueLong;
 import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
+import net.multiphasicapps.classfile.InstructionMnemonics;
 import net.multiphasicapps.classfile.JavaType;
 
 /**
@@ -967,7 +968,7 @@ public final class SimplifiedJavaInstruction
 			
 				// Fallback to standard stuff
 			default:
-				return RegisterOperationMnemonics.toString(__op);
+				return InstructionMnemonics.toString(__op);
 		}
 	}
 }
