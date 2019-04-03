@@ -135,6 +135,12 @@ public class QuickTranslator
 			// Handle the operation
 			switch (sji.operation())
 			{
+					// Load local variable to the stack
+				case SimplifiedJavaInstruction.LOAD:
+					this.__doLoad(sji.<JavaType>argument(0, JavaType.class),
+						sji.intArgument(1));
+					break;
+					
 					// This literally does nothing so no output code needs to
 					// be generated at all
 				case InstructionIndex.NOP:
@@ -143,7 +149,7 @@ public class QuickTranslator
 					// Not yet implemented
 				default:
 					throw new todo.OOPS(
-						sji.toString() + " " + inst.toString());
+						sji.toString() + "/" + inst.toString());
 			}
 			
 			// After the operation a new stack is now used
@@ -180,6 +186,30 @@ public class QuickTranslator
 		
 		// Build the final code
 		return codebuilder.build();
+	}
+	
+	/**
+	 * Loads from a local and puts to the stack.
+	 *
+	 * @param __jt The type to push.
+	 * @param __from The source local.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/03
+	 */
+	private final void __doLoad(JavaType __jt, int __from)
+		throws NullPointerException
+	{
+		if (__jt == null)
+			throw new NullPointerException("NARG");
+		
+		// Push to the stack
+		JavaStackResult result = this._stack.doStack(0, __jt);
+		this._stack = result.after();
+		
+		// Do the copy
+		this.codebuilder.add(DataType.of(__jt).copyOperation(false),
+			result.before().getLocal(__from).register,
+			result.out(0).register);
 	}
 }
 
