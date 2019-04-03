@@ -17,7 +17,7 @@ import net.multiphasicapps.classfile.ExceptionHandlerTable;
  *
  * @since 2019/03/22
  */
-final class __ExceptionCombo__
+public final class ExceptionStackAndTable
 {
 	/** The state of the stack. */
 	protected final JavaStackState stack;
@@ -33,7 +33,8 @@ final class __ExceptionCombo__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/22
 	 */
-	__ExceptionCombo__(JavaStackState __ops, ExceptionHandlerTable __t)
+	public ExceptionStackAndTable(JavaStackState __ops,
+		ExceptionHandlerTable __t)
 		throws NullPointerException
 	{
 		if (__ops == null || __t == null)
@@ -53,10 +54,10 @@ final class __ExceptionCombo__
 		if (__o == this)
 			return true;
 		
-		if (!(__o instanceof __ExceptionCombo__))
+		if (!(__o instanceof ExceptionStackAndTable))
 			return false;
 		
-		__ExceptionCombo__ o = (__ExceptionCombo__)__o;
+		ExceptionStackAndTable o = (ExceptionStackAndTable)__o;
 		return this.stack.equals(o.stack) &&
 			this.table.equals(o.table);
 	}

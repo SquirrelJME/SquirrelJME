@@ -56,7 +56,7 @@ public final class ExperimentalTranslator
 		new RegisterCodeBuilder();
 	
 	/** Exception tracker. */
-	protected final __ExceptionTracker__ exceptiontracker;
+	protected final ExceptionHandlerRanges exceptiontracker;
 	
 	/** Default field access type, to determine how fields are accessed. */
 	protected final FieldAccessTime defaultfieldaccesstime;
@@ -68,7 +68,7 @@ public final class ExperimentalTranslator
 	private Map<Integer, InstructionJumpTargets> _revjumps;
 	
 	/** Exception handler combinations to generate. */
-	private final List<__ExceptionCombo__> _usedexceptions =
+	private final List<ExceptionStackAndTable> _usedexceptions =
 		new ArrayList<>();
 	
 	/** Used exception lines. */
@@ -118,7 +118,7 @@ public final class ExperimentalTranslator
 			throw new NullPointerException("NARG");
 		
 		this.bytecode = __bc;
-		this.exceptiontracker = new __ExceptionTracker__(__bc);
+		this.exceptiontracker = new ExceptionHandlerRanges(__bc);
 		this.defaultfieldaccesstime = ((__bc.isInstanceInitializer() ||
 			__bc.isStaticInitializer()) ? FieldAccessTime.INITIALIZER :
 			FieldAccessTime.NORMAL);
@@ -248,7 +248,7 @@ public final class ExperimentalTranslator
 				this.__madeExceptionGenerate(madeexceptions.get(i), i);
 		
 		// If we need to generate exception tables, do it now
-		List<__ExceptionCombo__> usedexceptions = this._usedexceptions;
+		List<ExceptionStackAndTable> usedexceptions = this._usedexceptions;
 		if (!usedexceptions.isEmpty())
 			for (int i = 0, n = usedexceptions.size(); i < n; i++)
 				this.__exceptionGenerate(usedexceptions.get(i), i);
@@ -265,7 +265,7 @@ public final class ExperimentalTranslator
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/22
 	 */
-	private final void __exceptionGenerate(__ExceptionCombo__ __ec, int __edx)
+	private final void __exceptionGenerate(ExceptionStackAndTable __ec, int __edx)
 		throws NullPointerException
 	{
 		if (__ec == null)
@@ -349,14 +349,14 @@ public final class ExperimentalTranslator
 	 * @return The exception combo.
 	 * @since 2019/04/02
 	 */
-	private final __ExceptionCombo__ __exceptionCombo(int __pc)
+	private final ExceptionStackAndTable __exceptionCombo(int __pc)
 	{
 		// Create combo for the stack and exception data
-		__ExceptionCombo__ ec = this.exceptiontracker.createCombo(
+		ExceptionStackAndTable ec = this.exceptiontracker.stackAndTable(
 			this._stack, __pc);
 		
 		// Add the combo to the list
-		List<__ExceptionCombo__> usedexceptions = this._usedexceptions;
+		List<ExceptionStackAndTable> usedexceptions = this._usedexceptions;
 		if (usedexceptions.indexOf(ec) < 0)
 		{
 			usedexceptions.add(ec);
