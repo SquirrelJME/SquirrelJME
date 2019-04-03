@@ -1,0 +1,55 @@
+# 2019/04/02
+
+## 08:42
+
+Okay so now to working on the compiler, I think the hardest bits are done. The
+rest is just math. Things like the super complex `multianewarray` I have
+already done in SpringCoat by using a helper method.
+
+## 17:18
+
+I have an idea to simplify array store operations, the logic is complex and
+could throw an exception so I was thinking of a `JUMP_IF_NULL_OR_OOB_REFCLEAR`
+that can jump to two different positions. Then I can just have a general
+exception handler accordingly instead of other things I suppose.
+
+## 18:32
+
+Okay so with these expanded checks to make up whole instructions such as the
+`IFLT_REF_CLEAR` jump I can do things like making and checking things part
+of the output code. I think in the end this would be far simpler because it
+splits out the complexity of Java operations and instead just has it part of
+the code. I mean I did place in exception handlers for this reason. Plus any
+future optimizer could optimize out some of these checks anyway and instead
+of handling super complex operations, this will just make it so things are a
+bit simpler.
+
+## 21:58
+
+Okay so SquirrelJME's release is in less than three weeks and I need to make
+SummerCoat and RatufaCoat. The register based code is a bit complex	and it is
+nearing 2000 lines of code. There are also a bunch of other parts of the code
+as well. I do not know if I should continue with what I have and try to make
+it work or drop it and take a step back from what I have learned. The compiler
+is much more complex than I anticipated. I already have the bulk of what the
+library does, I just need a compiler to run the more optimized byte code and
+such. So...
+
+## 22:10
+
+Okay so... what I have is essentially super complex and I worry about the
+register stuff like for stack caching and such and all of that. I know the
+stack machine is really slow but perhaps what I can do instead is just to a
+straight up 1:1 translation of the byte code. I have all the instructions I
+need for this and I do not need to at all make up new ones. Like I literally
+could just 1:1 map things with no caching. I should hopefully be able to do
+it in a few days if I work on it hard. At least once I have that I can still
+use the minimizer and still write SummerCoat and such.
+
+## 22:22
+
+I think an extremely niave approach is the first thing to do then. It is
+the simplest, and then I can write SummerCoat and RatufaCoat. It will not be
+as fast as I intended it to be, but that could be the next release or the
+release after. I do not really want to write compilers for awhile, I want to
+just work on the library.
