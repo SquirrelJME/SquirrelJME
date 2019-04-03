@@ -214,8 +214,12 @@ public class QuickTranslator
 				}
 		}
 		
-		if (true)
+		// Generate the code needed for the ECS table
+		List<ExceptionClassStackAndTable> ecsttable = this._ecsttable;
+		if (!ecsttable.isEmpty())
+		{
 			throw new todo.TODO();
+		}
 		
 		// Build the final code
 		return codebuilder.build();
