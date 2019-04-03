@@ -68,6 +68,10 @@ public class QuickTranslator
 	private final List<ExceptionClassStackAndTable> _ecsttable =
 		new ArrayList<>();
 	
+	/** The returns which have been performed. */
+	private final List<JavaStackEnqueueList> _returns =
+		new ArrayList<>();
+	
 	/** The current state of the stack. */
 	private JavaStackState _stack;
 	
@@ -177,6 +181,11 @@ public class QuickTranslator
 					// This literally does nothing so no output code needs to
 					// be generated at all
 				case InstructionIndex.NOP:
+					break;
+				
+					// Return from method, with no return value
+				case InstructionIndex.RETURN:
+					this.__doReturn(null);
 					break;
 				
 					// Not yet implemented
@@ -372,6 +381,91 @@ public class QuickTranslator
 		this.codebuilder.add(DataType.of(__jt).copyOperation(false),
 			result.before().getLocal(__from).register,
 			result.out(0).register);
+	}
+	
+	/**
+	 * Handles returning.
+	 *
+	 * @param __rt The type to return, {@code null} means nothing is to be
+	 * returned.
+	 * @since 2019/04/03
+	 */
+	private final void __doReturn(JavaType __rt)
+	{
+		// Return this value?
+		if (__rt != null)
+		{
+			throw new todo.TODO();
+		}
+		
+		// Return from this point or jump to an existing return/cleanup point
+		this.__generateReturn(this._stack);
+	}
+	
+	/**
+	 * Generates a return point.
+	 *
+	 * @param __jss The current stack state.
+	 * @since 2019/04/03
+	 */
+	private final RegisterCodeLabel __generateReturn(JavaStackState __jss)
+		throws NullPointerException
+	{
+		if (__jss == null)
+			throw new NullPointerException("NARG");
+		
+		return this.__generateReturn(__jss.possibleEnqueue());
+	}
+	
+	/**
+	 * Generates a return point.
+	 *
+	 * @param __eq Enqueue list.
+	 * @return A label for the return point.
+	 * @since 2019/04/03
+	 */
+	private final RegisterCodeLabel __generateReturn(JavaStackEnqueueList __eq)
+		throws NullPointerException
+	{
+		if (__eq == null)
+			throw new NullPointerException("NARG");
+		
+		// Find unique return point
+		boolean freshdx;
+		List<JavaStackEnqueueList> returns = this._returns;
+		int dx = returns.indexOf(__eq);
+		if ((freshdx = (dx < 0)))
+			returns.add((dx = returns.size()), __eq);
+		
+		// Label used for return
+		RegisterCodeLabel lb = new RegisterCodeLabel("return", dx);
+		
+		// If this was never added here, make sure a label exists
+		if (freshdx)
+			codebuilder.label(lb);
+		
+		// If the enqueue list
+		RegisterCodeBuilder codebuilder = this.codebuilder;
+		if (__eq.isEmpty())
+		{
+			// Since there is nothing to uncount, just return
+			codebuilder.add(RegisterOperationType.RETURN);
+			
+			return lb;
+		}
+		
+		// Since the enqueue list is not empty, we can just trim a register
+		// from the top and recursively go down
+		// So uncount the top
+		codebuilder.add(RegisterOperationType.UNCOUNT,
+			__eq.top());
+		
+		// Recursively go down since the enqueues may possibly be shared
+		this.__generateReturn(__eq.trimTop());
+		
+		// Note that we do not return the recursive result because that
+		// will be for another enqueue state
+		return lb;
 	}
 	
 	/**
