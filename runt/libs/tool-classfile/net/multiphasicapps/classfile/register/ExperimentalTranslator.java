@@ -76,7 +76,7 @@ public final class ExperimentalTranslator
 		new ArrayList<>();
 	
 	/** Exceptions which were made from some operations. */
-	private final List<__MadeException__> _madeexceptions =
+	private final List<ExceptionClassStackAndTable> _madeexceptions =
 		new ArrayList<>();
 	
 	/** Made exception lines. */
@@ -242,7 +242,7 @@ public final class ExperimentalTranslator
 		
 		// Generates all of the made exceptions which initialize an exception
 		// then handle it
-		List<__MadeException__> madeexceptions = this._madeexceptions;
+		List<ExceptionClassStackAndTable> madeexceptions = this._madeexceptions;
 		if (!madeexceptions.isEmpty())
 			for (int i = 0, n = madeexceptions.size(); i < n; i++)
 				this.__madeExceptionGenerate(madeexceptions.get(i), i);
@@ -440,7 +440,7 @@ public final class ExperimentalTranslator
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/02
 	 */
-	private final void __madeExceptionGenerate(__MadeException__ __me, int __d)
+	private final void __madeExceptionGenerate(ExceptionClassStackAndTable __me, int __d)
 		throws NullPointerException
 	{
 		if (__me == null)
@@ -473,7 +473,7 @@ public final class ExperimentalTranslator
 		// Generate jump to exception
 		codebuilder.add(RegisterOperationType.JUMP,
 			new RegisterCodeLabel("exception",
-			this._usedexceptions.indexOf(__me.combo)));
+			this._usedexceptions.indexOf(__me.stackandtable)));
 	}
 	
 	/**
@@ -491,11 +491,11 @@ public final class ExperimentalTranslator
 			throw new NullPointerException("NARG");
 		
 		// Track exception, the stack state, and the exception handle
-		__MadeException__ me = new __MadeException__(__cn,
+		ExceptionClassStackAndTable me = new ExceptionClassStackAndTable(__cn,
 			this.__exceptionCombo(this._currentprocesspc));
 		
 		// Find index, add if missing
-		List<__MadeException__> madeexceptions = this._madeexceptions;
+		List<ExceptionClassStackAndTable> madeexceptions = this._madeexceptions;
 		int dx = madeexceptions.indexOf(me);
 		if (dx < 0)
 		{

@@ -10,36 +10,55 @@
 package net.multiphasicapps.classfile.register;
 
 import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.ExceptionHandlerTable;
 
 /**
- * This stores an exception which was made in code.
+ * This is used to specify a class which is created along with any associated
+ * exception handlers as needed.
  *
  * @since 2019/04/02
  */
-public final class __MadeException__
+public final class ExceptionClassStackAndTable
 {
 	/** The class name to use. */
 	protected final ClassName name;
 	
 	/** The exception combo to target. */
-	protected final ExceptionStackAndTable combo;
+	protected final ExceptionStackAndTable stackandtable;
 	
 	/**
-	 * Initializes the made exception.
+	 * Initializes the exception information.
+	 *
+	 * @param __n The class to target.
+	 * @param __ops The stack state.
+	 * @param __t The exception table.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/03
+	 */
+	public ExceptionClassStackAndTable(ClassName __n,
+		JavaStackState __ops, ExceptionHandlerTable __t)
+		throws NullPointerException
+	{
+		this(__n, new ExceptionStackAndTable(__ops, __t));
+	}
+	
+	/**
+	 * Initializes the exception information.
 	 *
 	 * @param __n The class to target.
 	 * @param __c The target for the exception handler.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/02
 	 */
-	public __MadeException__(ClassName __n, ExceptionStackAndTable __c)
+	public ExceptionClassStackAndTable(ClassName __n,
+		ExceptionStackAndTable __c)
 		throws NullPointerException
 	{
 		if (__n == null || __c == null)
 			throw new NullPointerException("NARG");
 		
 		this.name = __n;
-		this.combo = __c;
+		this.stackandtable = __c;
 	}
 	
 	/**
@@ -52,12 +71,12 @@ public final class __MadeException__
 		if (__o == this)
 			return true;
 		
-		if (!(__o instanceof __MadeException__))
+		if (!(__o instanceof ExceptionClassStackAndTable))
 			return false;
 		
-		__MadeException__ o = (__MadeException__)__o;
+		ExceptionClassStackAndTable o = (ExceptionClassStackAndTable)__o;
 		return this.name.equals(o.name) &&
-			this.combo.equals(o.combo);
+			this.stackandtable.equals(o.stackandtable);
 	}
 	
 	/**
@@ -67,7 +86,7 @@ public final class __MadeException__
 	@Override
 	public final int hashCode()
 	{
-		return this.name.hashCode() ^ this.combo.hashCode();
+		return this.name.hashCode() ^ this.stackandtable.hashCode();
 	}
 }
 
