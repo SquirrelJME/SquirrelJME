@@ -194,8 +194,15 @@ public final class RegisterCodeBuilder
 			{
 				// Map any labels to indexes
 				if (a instanceof RegisterCodeLabel)
-					a = new InstructionJumpTarget(
-						labels.get((RegisterCodeLabel)a));
+				{
+					// {@squirreljme.error JC35 The specified label was
+					// never defined. (The label)}
+					Integer rlp = labels.get((RegisterCodeLabel)a);
+					if (rlp == null)
+						throw new IllegalArgumentException("JC35 " + a);
+					
+					a = new InstructionJumpTarget(rlp);
+				}
 				
 				workargs.add(a);
 			}

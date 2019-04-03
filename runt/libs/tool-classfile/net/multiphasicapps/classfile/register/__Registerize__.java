@@ -31,7 +31,9 @@ import net.multiphasicapps.classfile.InstructionIndex;
 import net.multiphasicapps.classfile.InstructionJumpTarget;
 import net.multiphasicapps.classfile.InstructionJumpTargets;
 import net.multiphasicapps.classfile.JavaType;
+import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodHandle;
+import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.classfile.MethodReference;
 import net.multiphasicapps.classfile.PrimitiveType;
 import net.multiphasicapps.classfile.StackMapTable;
@@ -68,8 +70,16 @@ final class __Registerize__
 	private final List<__ExceptionCombo__> _usedexceptions =
 		new ArrayList<>();
 	
+	/** Used exception lines. */
+	private final List<Integer> _usedexceptionsln =
+		new ArrayList<>();
+	
 	/** Exceptions which were made from some operations. */
 	private final List<__MadeException__> _madeexceptions =
+		new ArrayList<>();
+	
+	/** Made exception lines. */
+	private final List<Integer> _madeexceptionsln =
 		new ArrayList<>();
 	
 	/** Object position maps to return label points. */
@@ -266,6 +276,9 @@ final class __Registerize__
 		ExceptionHandlerTable ehtable = __ec.table;
 		JavaStackEnqueueList allenq = ehstack.possibleEnqueue();
 		
+		// Set line for code generation
+		codebuilder.setSourceLine(this._usedexceptionsln.get(__edx));
+		
 		// Debug
 		todo.DEBUG.note("Exception gen %s,%s -> %d", ehstack, ehtable, __edx);
 		
@@ -345,7 +358,10 @@ final class __Registerize__
 		// Add the combo to the list
 		List<__ExceptionCombo__> usedexceptions = this._usedexceptions;
 		if (usedexceptions.indexOf(ec) < 0)
+		{
 			usedexceptions.add(ec);
+			this._usedexceptionsln.add(__pc);
+		}
 		
 		return ec;
 	}
@@ -430,8 +446,34 @@ final class __Registerize__
 		if (__me == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Used in generating the make area
+		RegisterCodeBuilder codebuilder = this.codebuilder;
 		
+		// Set line for code generation
+		codebuilder.setSourceLine(this._madeexceptionsln.get(__d));
+		
+		// Label for here
+		codebuilder.label("makeexception", __d);
+		
+		// Allocate exception
+		int tempreg = this._stack.usedregisters;
+		codebuilder.add(RegisterOperationType.NEW,
+			__me.name, tempreg);
+		
+		// Call the constructor on it
+		codebuilder.add(RegisterOperationType.INVOKE_METHOD,
+			new InvokedMethod(InvokeType.SPECIAL, new MethodHandle(__me.name,
+			new MethodName("<init>"), new MethodDescriptor("()V"))),
+			new RegisterList(tempreg));
+		
+		// Load it into exception register
+		codebuilder.add(RegisterOperationType.SET_AND_FLAG_EXCEPTION,
+			tempreg);
+		
+		// Generate jump to exception
+		codebuilder.add(RegisterOperationType.JUMP,
+			new RegisterCodeLabel("exception",
+			this._usedexceptions.indexOf(__me.combo)));
 	}
 	
 	/**
@@ -456,7 +498,10 @@ final class __Registerize__
 		List<__MadeException__> madeexceptions = this._madeexceptions;
 		int dx = madeexceptions.indexOf(me);
 		if (dx < 0)
+		{
 			madeexceptions.add((dx = madeexceptions.size()), me);
+			this._madeexceptionsln.add(this._currentprocesspc);
+		}
 		
 		return new RegisterCodeLabel("makeexception", dx);
 	}

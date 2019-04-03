@@ -35,6 +35,9 @@ public final class JavaStackState
 	/** The top of the stack. */
 	protected final int stacktop;
 	
+	/** Number of used registers. */
+	protected final int usedregisters;
+	
 	/** The local variables defined. */
 	private final Info[] _locals;
 	
@@ -118,6 +121,14 @@ public final class JavaStackState
 		this._locals = __l;
 		this._stack = __s;
 		this.stacktop = __ss;
+		
+		// Determine used registers
+		int usedregisters = 0;
+		for (Info i : __l)
+			usedregisters = Math.max(usedregisters, i.register + 1);
+		for (Info i : __s)
+			usedregisters = Math.max(usedregisters, i.register + 1);
+		this.usedregisters = usedregisters + 1;
 	}
 	
 	/**
