@@ -367,7 +367,8 @@ public class QuickTranslator
 	}
 	
 	/**
-	 * Creates a label which
+	 * Creates a label which points to code that generates the given
+	 * exception.
 	 *
 	 * @param __cl The class type to throw.
 	 * @return The label to the exception generator.
