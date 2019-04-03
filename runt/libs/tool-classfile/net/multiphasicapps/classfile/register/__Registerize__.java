@@ -46,6 +46,7 @@ import net.multiphasicapps.classfile.StackMapTableState;
  * @since 2019/03/14
  */
 final class __Registerize__
+	implements Translator
 {
 	/** The input byte code to translate. */
 	protected final ByteCode bytecode;
@@ -133,11 +134,10 @@ final class __Registerize__
 	}
 	
 	/**
-	 * Converts the byte code into register code.
-	 *
-	 * @return The resulting register code.
+	 * {@inheritDoc}
 	 * @since 2019/03/14
 	 */
+	@Override
 	public RegisterCode convert()
 	{
 		ByteCode bytecode = this.bytecode;

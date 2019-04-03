@@ -26,11 +26,46 @@ import net.multiphasicapps.collections.UnmodifiableIterator;
 public final class RegisterCode
 	implements Iterable<RegisterInstruction>
 {
+	/** The translation method to use. */
+	public static final TranslationMethod USED_METHOD;
+	
 	/** Instructions for this code. */
 	private final RegisterInstruction[] _instructions;
 	
 	/** Line number table. */
 	private final short[] _lines;
+	
+	/**
+	 * Initializes the translation method.
+	 *
+	 * @since 2019/04/03
+	 */
+	static
+	{
+		// Get from system property
+		TranslationMethod use = null;
+		try
+		{
+			// {@squirreljme.property cc.squirreljme.register.method=method
+			// This specifies the method to use when translating the byte code
+			// to register code. (quick; experimental)}
+			String val = System.getProperty("cc.squirreljme.register.method");
+			if (val != null)
+				try
+				{
+					use = TranslationMethod.valueOf(val.toUpperCase());
+				}
+				catch (IllegalArgumentException e)
+				{
+				}
+		}
+		catch (SecurityException e)
+		{
+		}
+		
+		// Set
+		USED_METHOD = (use == null ? TranslationMethod.DEFAULT : use);
+	}
 	
 	/**
 	 * Initializes the register code.
@@ -133,10 +168,27 @@ public final class RegisterCode
 	public static final RegisterCode of(ByteCode __bc)
 		throws NullPointerException
 	{
-		if (__bc == null)
+		return RegisterCode.of(__bc, TranslationMethod.DEFAULT);
+	}
+	
+	/**
+	 * This translates the input byte code and creates a register code which
+	 * removes all stack operations and maps them to register operations. A
+	 * specific translator is used.
+	 *
+	 * @param __bc The input byte code.
+	 * @param __tm The translator to use.
+	 * @return The resulting register code.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/03
+	 */
+	public static final RegisterCode of(ByteCode __bc, TranslationMethod __tm)
+		throws NullPointerException
+	{
+		if (__bc == null || __tm == null)
 			throw new NullPointerException("NARG");
 		
-		return new __Registerize__(__bc).convert();
+		return __tm.translator(__bc).convert();
 	}
 }
 
