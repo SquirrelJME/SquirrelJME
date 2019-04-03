@@ -249,10 +249,10 @@ public class QuickTranslator
 		
 		// Cannot be null if an instance type
 		RegisterCodeBuilder codebuilder = this.codebuilder;
-		/*if (__t.hasInstance())
+		if (__t.hasInstance())
 			codebuilder.add(RegisterOperationType.IFNULL_REF_CLEAR,
-				result.in(0).register, this.__makeException(
-				new ClassName("java/lang/NullPointerException")));*/
+				result.in(0).register, this.__makeExceptionLabel(
+				"java/lang/NullPointerException"));
 		
 		// Setup registers to use for the method call
 		List<Integer> callargs = new ArrayList<>(popcount);
@@ -364,6 +364,23 @@ public class QuickTranslator
 		this.codebuilder.add(DataType.of(__jt).copyOperation(false),
 			result.before().getLocal(__from).register,
 			result.out(0).register);
+	}
+	
+	/**
+	 * Creates a label which
+	 *
+	 * @param __cl The class type to throw.
+	 * @return The label to the exception generator.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/03
+	 */
+	private final RegisterCodeLabel __makeExceptionLabel(String __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 	
 	/**
