@@ -172,15 +172,6 @@ public class QuickTranslator
 					JavaStackState dss = stacks.get(jta);
 					if (dss == null)
 						stacks.put(jta, use);
-					
-					// May need adapting
-					else if (!use.equals(dss))
-					{
-						// Debug
-						todo.DEBUG.note("Adapt %s -> %s", use, dss);
-						
-						throw new todo.TODO();
-					}
 				}
 		}
 		
