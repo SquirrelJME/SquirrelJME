@@ -20,7 +20,7 @@ import java.util.Set;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ConstantValue;
-import net.multiphasicapps.classfile.ConstantValueInteger;
+import net.multiphasicapps.classfile.ConstantValueNumber;
 import net.multiphasicapps.classfile.ExceptionHandler;
 import net.multiphasicapps.classfile.ExceptionHandlerTable;
 import net.multiphasicapps.classfile.FieldDescriptor;
@@ -140,6 +140,12 @@ public class QuickTranslator
 					this.__doLoad(sji.<JavaType>argument(0, JavaType.class),
 						sji.intArgument(1));
 					break;
+				
+					// Load constant
+				case InstructionIndex.LDC:
+					this.__doLdc(sji.<ConstantValue>argument(0,
+						ConstantValue.class));
+					break;
 					
 					// This literally does nothing so no output code needs to
 					// be generated at all
@@ -186,6 +192,67 @@ public class QuickTranslator
 		
 		// Build the final code
 		return codebuilder.build();
+	}
+	
+	/**
+	 * Loads constant value onto the stack.
+	 *
+	 * @param __v The value to push.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/03
+	 */
+	private final void __doLdc(ConstantValue __v)
+		throws NullPointerException
+	{
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		// Get push properties
+		JavaType jt = __v.type().javaType();
+		
+		// Push to the stack this type
+		JavaStackResult result = this._stack.doStack(0, jt);
+		this._stack = result.after();
+		
+		// Generate instruction
+		RegisterCodeBuilder codebuilder = this.codebuilder;
+		switch (__v.type())
+		{
+			case INTEGER:
+				codebuilder.add(RegisterOperationType.X32_CONST,
+					(Integer)__v.boxedValue(),
+					result.out(0).register);
+				break;
+				
+			case FLOAT:
+				codebuilder.add(RegisterOperationType.X32_CONST,
+					Float.floatToRawIntBits((Float)__v.boxedValue()),
+					result.out(0).register);
+				break;
+			
+			case LONG:
+				codebuilder.add(RegisterOperationType.X64_CONST,
+					__v.boxedValue(),
+					result.out(0).register);
+				break;
+				
+			case DOUBLE:
+				codebuilder.add(RegisterOperationType.X64_CONST,
+					Double.doubleToRawLongBits((Double)__v.boxedValue()),
+					result.out(0).register);
+				break;
+			
+			case STRING:
+			case CLASS:
+				codebuilder.add(RegisterOperationType.LOAD_POOL_VALUE,
+					__v.boxedValue(), result.out(0).register);
+				codebuilder.add(RegisterOperationType.COUNT,
+					result.out(0).register);
+				break;
+			
+			default:
+				throw new todo.OOPS();
+		}
 	}
 	
 	/**
