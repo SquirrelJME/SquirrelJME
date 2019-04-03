@@ -68,7 +68,8 @@ public class QuickTranslator
 	private JavaStackState _stack;
 	
 	/** The current address being processed. */
-	private int _currentprocesspc;
+	private int _addr =
+		-1;
 	
 	/**
 	 * Converts the input byte code to a register based code.
@@ -105,6 +106,7 @@ public class QuickTranslator
 	{
 		ByteCode bytecode = this.bytecode;
 		RegisterCodeBuilder codebuilder = this.codebuilder;
+		Map<Integer, JavaStackState> stacks = this._stacks;
 		
 		// Process every instruction
 		for (Instruction inst : bytecode)
@@ -118,9 +120,68 @@ public class QuickTranslator
 			
 			// Current processing this address
 			int addr = inst.address();
-			this._currentprocesspc = addr;
+			this._addr = addr;
 			
-			throw new todo.TODO();
+			// {@squirreljme.error JC37 No recorded stack state for this
+			// position. (The address to check)}
+			JavaStackState stack = stacks.get(addr);
+			if (stack == null)
+				throw new IllegalArgumentException("JC37 " + addr);
+			
+			// Add label to refer to this instruction in the Java instruction
+			// space
+			codebuilder.label("java", addr);
+			
+			// Handle the operation
+			switch (sji.operation())
+			{
+					// This literally does nothing so no output code needs to
+					// be generated at all
+				case InstructionIndex.NOP:
+					break;
+				
+					// Not yet implemented
+				default:
+					throw new todo.OOPS(
+						sji.toString() + " " + inst.toString());
+			}
+			
+			// After the operation a new stack is now used
+			JavaStackState newstack = this._stack;
+			
+			// Set target stack states for destinations of this instruction
+			// Calculate the exception state only if it is needed
+			JavaStackState hypoex = null;
+			InstructionJumpTargets ijt = inst.jumpTargets();
+			if (ijt != null && !ijt.isEmpty())
+				for (int i = 0, n = ijt.size(); i < n; i++)
+				{
+					int jta = ijt.get(i).target();
+					
+					// Lazily calculate the exception handler since it might
+					// not always be needed
+					boolean isexception = ijt.isException(i);
+					if (isexception && hypoex == null)
+						hypoex = newstack.doExceptionHandler(new JavaType(
+							new ClassName("java/lang/Throwable"))).after();
+					
+					// The type of stack to target
+					JavaStackState use = (isexception ? hypoex : newstack);
+					
+					// Is empty state
+					JavaStackState dss = stacks.get(jta);
+					if (dss == null)
+						stacks.put(jta, use);
+					
+					// May need adapting
+					else if (!use.equals(dss))
+					{
+						// Debug
+						todo.DEBUG.note("Adapt %s -> %s", use, dss);
+						
+						throw new todo.TODO();
+					}
+				}
 		}
 		
 		if (true)
