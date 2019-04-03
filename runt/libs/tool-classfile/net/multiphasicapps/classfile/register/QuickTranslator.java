@@ -23,6 +23,10 @@ public class QuickTranslator
 	/** The byte code to translate. */
 	protected final ByteCode bytecode;
 	
+	/** Used to build register codes. */
+	protected final RegisterCodeBuilder codebuilder =
+		new RegisterCodeBuilder();
+	
 	/**
 	 * Converts the input byte code to a register based code.
 	 *
