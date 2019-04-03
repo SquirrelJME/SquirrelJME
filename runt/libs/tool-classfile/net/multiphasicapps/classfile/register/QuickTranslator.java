@@ -71,6 +71,9 @@ public class QuickTranslator
 	private int _addr =
 		-1;
 	
+	/** Last registers enqueued. */
+	private JavaStackEnqueueList _lastenqueue;
+	
 	/**
 	 * Converts the input byte code to a register based code.
 	 *
@@ -140,6 +143,26 @@ public class QuickTranslator
 					this.__doLoad(sji.<JavaType>argument(0, JavaType.class),
 						sji.intArgument(1));
 					break;
+					
+				case InstructionIndex.INVOKEINTERFACE:
+					this.__doInvoke(InvokeType.INTERFACE, sji.<MethodReference>
+						argument(0, MethodReference.class));
+					break;
+				
+				case InstructionIndex.INVOKESPECIAL:
+					this.__doInvoke(InvokeType.SPECIAL, sji.<MethodReference>
+						argument(0, MethodReference.class));
+					break;
+				
+				case InstructionIndex.INVOKESTATIC:
+					this.__doInvoke(InvokeType.STATIC, sji.<MethodReference>
+						argument(0, MethodReference.class));
+					break;
+					
+				case InstructionIndex.INVOKEVIRTUAL:
+					this.__doInvoke(InvokeType.VIRTUAL, sji.<MethodReference>
+						argument(0, MethodReference.class));
+					break;
 				
 					// Load constant
 				case InstructionIndex.LDC:
@@ -192,6 +215,70 @@ public class QuickTranslator
 		
 		// Build the final code
 		return codebuilder.build();
+	}
+	
+	/**
+	 * Handles invocation of other methods.
+	 *
+	 * @param __t The type of invocation to perform.
+	 * @param __r The method to invoke.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/03
+	 */
+	private final void __doInvoke(InvokeType __t, MethodReference __r)
+		throws NullPointerException
+	{
+		if (__t == null || __r == null)
+			throw new NullPointerException("NARG");
+		
+		// Return value type, if any
+		MethodHandle mf = __r.handle();
+		FieldDescriptor rv = mf.descriptor().returnValue();
+		boolean hasrv = (rv != null);
+		
+		// Number of argument to pop
+		int popcount = mf.javaStack(__t.hasInstance()).length;
+		
+		// Perform stack operation
+		JavaStackResult result = (!hasrv ? this._stack.doStack(popcount) :
+			this._stack.doStack(popcount, new JavaType(rv)));
+		this._stack = result.after();
+		
+		// Enqueue the input for counting
+		this.__refEnqueue(result.enqueue());
+		
+		// Cannot be null if an instance type
+		RegisterCodeBuilder codebuilder = this.codebuilder;
+		/*if (__t.hasInstance())
+			codebuilder.add(RegisterOperationType.IFNULL_REF_CLEAR,
+				result.in(0).register, this.__makeException(
+				new ClassName("java/lang/NullPointerException")));*/
+		
+		// Setup registers to use for the method call
+		List<Integer> callargs = new ArrayList<>(popcount);
+		for (int i = 0; i < popcount; i++)
+		{
+			// Add the input register
+			JavaStackResult.Input in = result.in(i);
+			callargs.add(in.register);
+			
+			// But also if it is wide, we need to pass the other one or else
+			// the value will be clipped
+			if (in.type.isWide())
+				callargs.add(in.register + 1);
+		}
+		
+		// Generate the call, pass the base register and the number of
+		// registers to pass to the target method
+		codebuilder.add(RegisterOperationType.INVOKE_METHOD,
+			new InvokedMethod(__t, __r.handle()), new RegisterList(callargs));
+		
+		// Uncount any used references
+		this.__refClear();
+		
+		// Load the return value onto the stack
+		if (hasrv)
+			throw new todo.TODO();
 	}
 	
 	/**
@@ -277,6 +364,55 @@ public class QuickTranslator
 		this.codebuilder.add(DataType.of(__jt).copyOperation(false),
 			result.before().getLocal(__from).register,
 			result.out(0).register);
+	}
+	
+	/**
+	 * If anything has been previous enqueued then generate code to clear it.
+	 *
+	 * @since 2019/03/30
+	 */
+	private final void __refClear()
+	{
+		// Do nothing if nothing has been enqueued
+		JavaStackEnqueueList lastenqueue = this._lastenqueue;
+		if (lastenqueue == null)
+			return;
+		
+		// Generate instruction to clear the enqueue
+		this.codebuilder.add(RegisterOperationType.REF_CLEAR);
+		
+		// No need to clear anymore
+		this._lastenqueue = null;
+	}
+	
+	/**
+	 * Generates code to enqueue registers, if there are any.
+	 *
+	 * @param __r The registers to enqueue.
+	 * @return True if the enqueue list was not empty.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/30
+	 */
+	private final boolean __refEnqueue(JavaStackEnqueueList __r)
+		throws NullPointerException
+	{
+		if (__r == null)
+			throw new NullPointerException("NARG");
+		
+		// Nothing to enqueue?
+		if (__r.isEmpty())
+		{
+			this._lastenqueue = null;
+			return false;
+		}
+		
+		// Generate enqueue and set for clearing next time
+		this.codebuilder.add(RegisterOperationType.REF_ENQUEUE,
+			new RegisterList(__r.registers()));
+		this._lastenqueue = __r;
+		
+		// Did enqueue something
+		return true;
 	}
 }
 
