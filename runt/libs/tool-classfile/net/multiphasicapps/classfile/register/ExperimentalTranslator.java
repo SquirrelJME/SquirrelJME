@@ -45,7 +45,7 @@ import net.multiphasicapps.classfile.StackMapTableState;
  *
  * @since 2019/03/14
  */
-final class __Registerize__
+public final class ExperimentalTranslator
 	implements Translator
 {
 	/** The input byte code to translate. */
@@ -111,7 +111,7 @@ final class __Registerize__
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/14
 	 */
-	__Registerize__(ByteCode __bc)
+	public ExperimentalTranslator(ByteCode __bc)
 		throws NullPointerException
 	{
 		if (__bc == null)

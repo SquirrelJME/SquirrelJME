@@ -48,7 +48,7 @@ public final class RegisterCode
 		{
 			// {@squirreljme.property cc.squirreljme.register.method=method
 			// This specifies the method to use when translating the byte code
-			// to register code. (quick; experimental)}
+			// to register code.		 (quick; experimental)}
 			String val = System.getProperty("cc.squirreljme.register.method");
 			if (val != null)
 				try

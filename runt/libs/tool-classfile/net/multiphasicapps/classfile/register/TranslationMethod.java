@@ -48,7 +48,7 @@ public enum TranslationMethod
 		switch (this)
 		{
 			case QUICK:			return new QuickTranslator(__bc);
-			case EXPERIMENTAL:	return new __Registerize__(__bc);
+			case EXPERIMENTAL:	return new ExperimentalTranslator(__bc);
 		}
 		
 		throw new todo.OOPS();
