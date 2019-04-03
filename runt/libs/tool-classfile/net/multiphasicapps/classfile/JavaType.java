@@ -54,6 +54,10 @@ public final class JavaType
 	public static final JavaType DOUBLE =
 		new JavaType(new FieldDescriptor("D"));
 	
+	/** Plain object. */
+	public static final JavaType OBJECT =
+		new JavaType(new FieldDescriptor("Ljava/lang/Object;"));
+	
 	/** The type this refers to. */
 	protected final FieldDescriptor type;
 	

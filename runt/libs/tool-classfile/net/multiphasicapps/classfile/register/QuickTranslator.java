@@ -67,6 +67,9 @@ public class QuickTranslator
 	/** The current state of the stack. */
 	private JavaStackState _stack;
 	
+	/** The current address being processed. */
+	private int _currentprocesspc;
+	
 	/**
 	 * Converts the input byte code to a register based code.
 	 *
@@ -100,7 +103,31 @@ public class QuickTranslator
 	@Override
 	public RegisterCode convert()
 	{
-		throw new todo.TODO();
+		ByteCode bytecode = this.bytecode;
+		RegisterCodeBuilder codebuilder = this.codebuilder;
+		
+		// Process every instruction
+		for (Instruction inst : bytecode)
+		{
+			// Translate to simple instruction for easier handling
+			SimplifiedJavaInstruction sji =
+				new SimplifiedJavaInstruction(inst);
+			
+			// Debug
+			todo.DEBUG.note("Xlate %s (%s)", sji, inst);
+			
+			// Current processing this address
+			int addr = inst.address();
+			this._currentprocesspc = addr;
+			
+			throw new todo.TODO();
+		}
+		
+		if (true)
+			throw new todo.TODO();
+		
+		// Build the final code
+		return codebuilder.build();
 	}
 }
 

@@ -606,6 +606,33 @@ public final class Instruction
 	}
 	
 	/**
+	 * Returns all of the arguments.
+	 *
+	 * @return The arguments.
+	 * @since 2019/04/03
+	 */
+	public final Object[] arguments()
+	{
+		return this._args.clone();
+	}
+	
+	/**
+	 * Obtains the given argument as a byte.
+	 *
+	 * @param __i The argument to get.
+	 * @return The value of the argument.
+	 * @throws ClassCastException If the given argument is not an number.
+	 * @throws IndexOutOfBoundsException If the index is not within the
+	 * bounds of the instruction arguments.
+	 * @since 2019/04/03
+	 */
+	public byte byteArgument(int __i)
+		throws ClassCastException, IndexOutOfBoundsException
+	{
+		return this.<Number>argument(__i, Number.class).byteValue();
+	}
+	
+	/**
 	 * The number of arguments the instruction takes.
 	 *
 	 * @return The argument count.
@@ -674,6 +701,22 @@ public final class Instruction
 	public int operation()
 	{
 		return op;
+	}
+	
+	/**
+	 * Obtains the given argument as a short.
+	 *
+	 * @param __i The argument to get.
+	 * @return The value of the argument.
+	 * @throws ClassCastException If the given argument is not an number.
+	 * @throws IndexOutOfBoundsException If the index is not within the
+	 * bounds of the instruction arguments.
+	 * @since 2019/04/03
+	 */
+	public final short shortArgument(int __i)
+		throws ClassCastException, IndexOutOfBoundsException
+	{
+		return this.<Number>argument(__i, Number.class).shortValue();
 	}
 	
 	/**
