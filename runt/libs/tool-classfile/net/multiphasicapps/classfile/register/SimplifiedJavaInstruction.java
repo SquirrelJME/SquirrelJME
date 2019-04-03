@@ -83,6 +83,7 @@ public final class SimplifiedJavaInstruction
 		Object[] args = __inst.arguments();
 		
 		// Possibly map the instruction
+		int baseop = op;
 		switch (op)
 		{
 			case InstructionIndex.ALOAD:
@@ -102,7 +103,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						JavaType.OBJECT,
-						op - InstructionIndex.ALOAD_0,
+						baseop - InstructionIndex.ALOAD_0,
 					};
 				break;
 				
@@ -131,7 +132,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						JavaType.OBJECT,
-						op - InstructionIndex.ASTORE_0,
+						baseop - InstructionIndex.ASTORE_0,
 					};
 				break;
 			
@@ -158,7 +159,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						new ConstantValueDouble(
-							op - InstructionIndex.DCONST_0),
+							baseop - InstructionIndex.DCONST_0),
 					};
 				break;
 				
@@ -189,7 +190,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						JavaType.DOUBLE,
-						op - InstructionIndex.DLOAD_0,
+						baseop - InstructionIndex.DLOAD_0,
 					};
 				break;
 				
@@ -227,7 +228,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						JavaType.DOUBLE,
-						op - InstructionIndex.DSTORE_0,
+						baseop - InstructionIndex.DSTORE_0,
 					};
 				break;
 			
@@ -256,7 +257,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						new ConstantValueFloat(
-							op - InstructionIndex.FCONST_0),
+							baseop - InstructionIndex.FCONST_0),
 					};
 				break;
 				
@@ -286,7 +287,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						JavaType.FLOAT,
-						op - InstructionIndex.FLOAD_0,
+						baseop - InstructionIndex.FLOAD_0,
 					};
 				break;
 				
@@ -324,7 +325,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						JavaType.FLOAT,
-						op - InstructionIndex.FSTORE_0,
+						baseop - InstructionIndex.FSTORE_0,
 					};
 				break;
 			
@@ -369,7 +370,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						new ConstantValueInteger(
-							op - InstructionIndex.ICONST_0),
+							baseop - InstructionIndex.ICONST_0),
 					};
 				break;
 				
@@ -543,7 +544,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						JavaType.INTEGER,
-						op - InstructionIndex.ILOAD_0,
+						baseop - InstructionIndex.ILOAD_0,
 					};
 				break;
 				
@@ -608,7 +609,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						JavaType.INTEGER,
-						op - InstructionIndex.ISTORE_0,
+						baseop - InstructionIndex.ISTORE_0,
 					};
 				break;
 			
@@ -663,7 +664,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						new ConstantValueLong(
-							op - InstructionIndex.LCONST_0),
+							baseop - InstructionIndex.LCONST_0),
 					};
 				break;
 			
@@ -698,7 +699,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						JavaType.LONG,
-						op - InstructionIndex.LLOAD_0,
+						baseop - InstructionIndex.LLOAD_0,
 					};
 				break;
 				
@@ -763,7 +764,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						JavaType.LONG,
-						op - InstructionIndex.LSTORE_0,
+						baseop - InstructionIndex.LSTORE_0,
 					};
 				break;
 			
