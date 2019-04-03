@@ -119,9 +119,36 @@ public final class RegisterInstruction
 	 * @return The argument count.
 	 * @since 2019/03/23
 	 */
-	public int argumentCount()
+	public final int argumentCount()
 	{
 		return this._args.length;
+	}
+	
+	/**
+	 * Returns all of the arguments.
+	 *
+	 * @return The arguments.
+	 * @since 2019/04/03
+	 */
+	public final Object[] arguments()
+	{
+		return this._args.clone();
+	}
+	
+	/**
+	 * Obtains the given argument as a byte.
+	 *
+	 * @param __i The argument to get.
+	 * @return The value of the argument.
+	 * @throws ClassCastException If the given argument is not an number.
+	 * @throws IndexOutOfBoundsException If the index is not within the
+	 * bounds of the instruction arguments.
+	 * @since 2019/04/03
+	 */
+	public byte byteArgument(int __i)
+		throws ClassCastException, IndexOutOfBoundsException
+	{
+		return this.<Number>argument(__i, Number.class).byteValue();
 	}
 	
 	/**
