@@ -68,6 +68,10 @@ final class __Registerize__
 	private final List<__ExceptionCombo__> _usedexceptions =
 		new ArrayList<>();
 	
+	/** Exceptions which were made from some operations. */
+	private final List<__MadeException__> _madeexceptions =
+		new ArrayList<>();
+	
 	/** Object position maps to return label points. */
 	private final Map<JavaStackEnqueueList, RegisterCodeLabel> _returns =
 		new LinkedHashMap<>();
@@ -223,8 +227,15 @@ final class __Registerize__
 				}
 		}
 		
-		// Invalidate source lines for the exception table
+		// Invalidate source lines for the exception tables
 		codebuilder.setSourceLine(-1);
+		
+		// Generates all of the made exceptions which initialize an exception
+		// then handle it
+		List<__MadeException__> madeexceptions = this._madeexceptions;
+		if (!madeexceptions.isEmpty())
+			for (int i = 0, n = madeexceptions.size(); i < n; i++)
+				this.__madeExceptionGenerate(madeexceptions.get(i), i);
 		
 		// If we need to generate exception tables, do it now
 		List<__ExceptionCombo__> usedexceptions = this._usedexceptions;
@@ -319,6 +330,27 @@ final class __Registerize__
 	}
 	
 	/**
+	 * Creates and stores an exception combo.
+	 *
+	 * @param __pc The address to get.
+	 * @return The exception combo.
+	 * @since 2019/04/02
+	 */
+	private final __ExceptionCombo__ __exceptionCombo(int __pc)
+	{
+		// Create combo for the stack and exception data
+		__ExceptionCombo__ ec = this.exceptiontracker.createCombo(
+			this._stack, __pc);
+		
+		// Add the combo to the list
+		List<__ExceptionCombo__> usedexceptions = this._usedexceptions;
+		if (usedexceptions.indexOf(ec) < 0)
+			usedexceptions.add(ec);
+		
+		return ec;
+	}
+	
+	/**
 	 * Handles the process of exceptions, this just defers the generation
 	 * of exception data until the end.
 	 *
@@ -328,22 +360,9 @@ final class __Registerize__
 	 */
 	private final RegisterCodeLabel __exceptionTrack(int __pc)
 	{
-		// Create combo for the stack and exception data
-		__ExceptionCombo__ ec = this.exceptiontracker.createCombo(
-			this._stack, __pc);
-		
-		// If this combo is already in the table, do not add it
-		List<__ExceptionCombo__> usedexceptions = this._usedexceptions;
-		int dx = usedexceptions.indexOf(ec);
-		if (dx >= 0)
-			return new RegisterCodeLabel("exception", dx);
-		
-		// Otherwise just add it
-		dx = usedexceptions.size();
-		usedexceptions.add(ec);
-		
-		// Label to jump to
-		return new RegisterCodeLabel("exception", dx);
+		// Create combo and search for it
+		return new RegisterCodeLabel("exception",
+			this._usedexceptions.indexOf(this.__exceptionCombo(__pc)));
 	}
 	
 	/**
@@ -398,6 +417,24 @@ final class __Registerize__
 	}
 	
 	/**
+	 * Generates made exceptions.
+	 *
+	 * @param __me The exception to make.
+	 * @param __d The index of this exception.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/02
+	 */
+	private final void __madeExceptionGenerate(__MadeException__ __me, int __d)
+		throws NullPointerException
+	{
+		if (__me == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+		
+	}
+	
+	/**
 	 * Defers for later an exception generator.
 	 *
 	 * @param __cn The class name to generate.
@@ -411,7 +448,17 @@ final class __Registerize__
 		if (__cn == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Track exception, the stack state, and the exception handle
+		__MadeException__ me = new __MadeException__(__cn,
+			this.__exceptionCombo(this._currentprocesspc));
+		
+		// Find index, add if missing
+		List<__MadeException__> madeexceptions = this._madeexceptions;
+		int dx = madeexceptions.indexOf(me);
+		if (dx < 0)
+			madeexceptions.add((dx = madeexceptions.size()), me);
+		
+		return new RegisterCodeLabel("makeexception", dx);
 	}
 	
 	/**
