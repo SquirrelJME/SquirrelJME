@@ -353,6 +353,7 @@ public final class Minimizer
 					break;
 					
 				case RegisterOperationType.JUMP_IF_INSTANCE:
+				case RegisterOperationType.JUMP_IF_NOT_INSTANCE:
 					dos.writeShort(pool.add(i.argument(0)));
 					dos.writeShort(i.shortArgument(1));
 					

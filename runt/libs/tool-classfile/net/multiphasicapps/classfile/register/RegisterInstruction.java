@@ -259,6 +259,7 @@ public final class RegisterInstruction
 				
 			case RegisterOperationType.LOOKUPSWITCH:
 			case RegisterOperationType.JUMP_IF_INSTANCE:
+			case RegisterOperationType.JUMP_IF_NOT_INSTANCE:
 			case RegisterOperationType.ENCODING_U16_U16_J16:
 			case RegisterOperationType.ENCODING_POOL16_U16_U16:
 			case RegisterOperationType.ENCODING_U16_U16_U16:
