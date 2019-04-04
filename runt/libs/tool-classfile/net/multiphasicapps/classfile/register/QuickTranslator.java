@@ -557,11 +557,41 @@ public class QuickTranslator
 	{
 		if (__ecsts == null)
 			throw new NullPointerException("NARG");
+			
+		// Used in generating the pilot area
+		RegisterCodeBuilder codebuilder = this.codebuilder;
+		
+		// This table is used for secondary jump points
+		List<ExceptionEnqueueAndTable> eettable = this._eettable;
 		
 		// Go through the table and process everything
-		for (ExceptionClassStackAndTable ecst : __ecsts)
+		for (int dx = 0, dxn = __ecsts.size(); dx < dxn; dx++)
 		{
-			throw new todo.TODO();
+			// Get details
+			ExceptionClassStackAndTable ecst = __ecsts.get(dx);
+			ClassName exn = ecst.name;
+			
+			// Mark label here for this
+			codebuilder.label("makeexception", dx);
+			
+			// Allocate exception at the highest register point which acts
+			// as a temporary
+			int tempreg = this._stack.usedregisters;
+			codebuilder.add(RegisterOperationType.NEW,
+				exn, tempreg);
+			
+			// Initialize object with constructor
+			codebuilder.add(RegisterOperationType.INVOKE_METHOD,
+				new InvokedMethod(InvokeType.SPECIAL, new MethodHandle(exn,
+				new MethodName("<init>"), new MethodDescriptor("()V"))),
+				new RegisterList(tempreg));
+			
+			// Generate jump to exception
+			ExceptionStackAndTable sat = ecst.stackandtable;
+			codebuilder.add(RegisterOperationType.JUMP,
+				new RegisterCodeLabel("exception", eettable.indexOf(
+					new ExceptionEnqueueAndTable(sat.stack.possibleEnqueue(),
+						sat.table))));
 		}
 	}
 	
