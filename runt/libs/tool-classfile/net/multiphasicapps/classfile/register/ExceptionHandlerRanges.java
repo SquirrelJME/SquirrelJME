@@ -58,6 +58,25 @@ public final class ExceptionHandlerRanges
 	}
 	
 	/**
+	 * Creates a enqueue and table representation.
+	 *
+	 * @param __ops The object positions.
+	 * @param __pc The PC address.
+	 * @return The stack and table information.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/22
+	 */
+	public final ExceptionEnqueueAndTable enqueueAndTable(
+		JavaStackEnqueueList __ops, int __pc)
+		throws NullPointerException
+	{
+		if (__ops == null)
+			throw new NullPointerException("NARG");
+		
+		return new ExceptionEnqueueAndTable(__ops, this.tableOf(__pc));
+	}
+	
+	/**
 	 * Creates a class, stack, and exception table representation.
 	 *
 	 * @param __cn The class name.
