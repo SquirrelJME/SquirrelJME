@@ -206,6 +206,12 @@ public class QuickTranslator
 				case InstructionIndex.NOP:
 					break;
 				
+					// Put of instance field
+				case InstructionIndex.PUTFIELD:
+					this.__doPutField(sji.<FieldReference>argument(0,
+						FieldReference.class));
+					break;
+				
 					// Return from method, with no return value
 				case InstructionIndex.RETURN:
 					this.__doReturn(null);
@@ -453,6 +459,48 @@ public class QuickTranslator
 	}
 	
 	/**
+	 * Puts a value into a field.
+	 *
+	 * @param __fr The field reference.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/04
+	 */
+	private final void __doPutField(FieldReference __fr)
+		throws NullPointerException
+	{
+		if (__fr == null)
+			throw new NullPointerException("NARG");
+		
+		// [inst, value] ->
+		JavaStackResult result = this._stack.doStack(2);
+		this._stack = result.after();
+		
+		// Clear out any input references
+		this.__refEnqueue(result.enqueue());
+		
+		// Cannot be null
+		RegisterCodeBuilder codebuilder = this.codebuilder;
+		codebuilder.add(RegisterOperationType.IFNULL_REF_CLEAR,
+			result.in(0).register,
+			this.__makeExceptionLabel("java/lang/NullPointerException"));
+		
+		// Also has to be the right type
+		codebuilder.add(RegisterOperationType.JUMP_IF_NOT_INSTANCE_REF_CLEAR,
+			__fr.className(), result.in(0).register,
+			this.__makeExceptionLabel("java/lang/ClassCastException"));
+		
+		// Generate code
+		codebuilder.add(DataType.of(__fr.memberType().primitiveType()).
+				fieldAccessOperation(false, true),
+			this.__fieldAccess(FieldAccessType.INSTANCE, __fr),
+			result.in(0).register,
+			result.in(1).register);
+		
+		// Clear references as needed
+		this.__refClear();
+	}
+	
+	/**
 	 * Handles returning.
 	 *
 	 * @param __rt The type to return, {@code null} means nothing is to be
@@ -593,6 +641,30 @@ public class QuickTranslator
 		
 		// Just create a label to reference it, it is generated later
 		return new RegisterCodeLabel("exception", dx);
+	}
+	
+	/**
+	 * Generates an access to a field.
+	 *
+	 * @param __at The type of access to perform.
+	 * @param __fr The reference to the field.
+	 * @return The accessed field.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/24
+	 */
+	private final AccessedField __fieldAccess(FieldAccessType __at,
+		FieldReference __fr)
+		throws NullPointerException
+	{
+		if (__at == null || __fr == null)
+			throw new NullPointerException("NARG");
+		
+		// Accessing final fields of another class will always be treated as
+		// normal despite being in the constructor of a class
+		ByteCode bytecode = this.bytecode;
+		if (!bytecode.thisType().equals(__fr.className()))
+			return new AccessedField(FieldAccessTime.NORMAL, __at, __fr);
+		return new AccessedField(this.defaultfieldaccesstime, __at, __fr);
 	}
 	
 	/**
