@@ -9,6 +9,9 @@
 
 package net.multiphasicapps.classfile.register;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+
 /**
  * This represents the type of stack shuffle to perform. Since these
  * operations depend on the types on the stack, this is used to contain the
@@ -91,6 +94,9 @@ public enum JavaStackShuffleType
 		/** Output slots. */
 		public final Slots out;
 		
+		/** String reference. */
+		private Reference<String> _string;
+		
 		/**
 		 * Initializes the function.
 		 *
@@ -107,6 +113,23 @@ public enum JavaStackShuffleType
 			
 			this.in = __in;
 			this.out = __out;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2019/04/04
+		 */
+		@Override
+		public final String toString()
+		{
+			Reference<String> ref = this._string;
+			String rv;
+			
+			if (ref == null || null == (rv = ref.get()))
+				this._string = new WeakReference<>((rv =
+					"[" + this.in + " -> " + this.out + "]"));
+			
+			return rv;
 		}
 		
 		/**
@@ -148,6 +171,9 @@ public enum JavaStackShuffleType
 		
 		/** Which slots are considered wide or not. */
 		final boolean[] _wide;
+		
+		/** String reference. */
+		private Reference<String> _string;
 		
 		/**
 		 * Initializes the slots.
@@ -196,6 +222,45 @@ public enum JavaStackShuffleType
 			this.max = max;
 			this._var = var;
 			this._wide = wide;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2019/04/04
+		 */
+		@Override
+		public final String toString()
+		{
+			Reference<String> ref = this._string;
+			String rv;
+			
+			if (ref == null || null == (rv = ref.get()))
+			{
+				StringBuilder sb = new StringBuilder("[");
+				
+				// Convert back to close to the original form
+				byte[] var = this._var;
+				boolean[] wide = this._wide;
+				for (int i = 0, n = this.max; i < n; i++)
+				{
+					int v = var[i];
+					boolean w = wide[i];
+					
+					if (v < 0)
+						sb.append('+');
+					else
+					{
+						char c = (char)('a' + v);
+						sb.append((w ? Character.toUpperCase(c) : c));
+					}
+				}
+				
+				// Finish and cache it
+				sb.append(']');
+				this._string = new WeakReference<>((rv = sb.toString()));
+			}
+			
+			return rv;
 		}
 	}
 }
