@@ -113,6 +113,10 @@ public interface RegisterOperationType
 	public static final int REF_CLEAR =
 		ENCODING_SPECIAL + 10;
 	
+	/** jump_if_not_instance [pool16, u16, j16]. */
+	public static final int JUMP_IF_NOT_INSTANCE =
+		ENCODING_SPECIAL + 11;
+	
 	/** jump. */
 	public static final int JUMP =
 		ENCODING_J16 + 0;

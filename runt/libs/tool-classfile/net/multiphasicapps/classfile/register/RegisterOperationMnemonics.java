@@ -342,6 +342,8 @@ public final class RegisterOperationMnemonics
 				return "ARRAY_STORE_CHECK_AND_REF_CLEAR";
 			case RegisterOperationType.IFLT_REF_CLEAR:
 				return "IFLT_REF_CLEAR";
+			case RegisterOperationType.JUMP_IF_NOT_INSTANCE:
+				return "JUMP_IF_NOT_INSTANCE";
 			
 				// Unknown
 			default:
