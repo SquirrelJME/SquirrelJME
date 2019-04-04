@@ -298,12 +298,21 @@ public class QuickTranslator
 		// Enqueue the input for counting
 		this.__refEnqueue(result.enqueue());
 		
-		// Cannot be null if an instance type
+		// Checks on the instance
 		RegisterCodeBuilder codebuilder = this.codebuilder;
 		if (__t.hasInstance())
+		{
+			// Cannot be null
 			codebuilder.add(RegisterOperationType.IFNULL_REF_CLEAR,
 				result.in(0).register, this.__makeExceptionLabel(
 				"java/lang/NullPointerException"));
+			
+			// Must also be the right type of object as well
+			codebuilder.add(
+				RegisterOperationType.JUMP_IF_NOT_INSTANCE_REF_CLEAR,
+				__r.handle().outerClass(), result.in(0).register,
+				this.__makeExceptionLabel("java/lang/ClassCastException"));
+		}
 		
 		// Setup registers to use for the method call
 		List<Integer> callargs = new ArrayList<>(popcount);
