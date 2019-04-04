@@ -64,6 +64,10 @@ public class QuickTranslator
 	private final Map<Integer, JavaStackState> _stacks =
 		new LinkedHashMap<>();
 	
+	/** Exception and stack table. */
+	private final List<ExceptionStackAndTable> _esttable =
+		new ArrayList<>();
+	
 	/** Table of made exceptions. */
 	private final List<ExceptionClassStackAndTable> _ecsttable =
 		new ArrayList<>();
@@ -74,6 +78,9 @@ public class QuickTranslator
 	
 	/** The current state of the stack. */
 	private JavaStackState _stack;
+	
+	/** The instruction throws an exception, it must be checked. */
+	private boolean _exceptioncheck;
 	
 	/** The current address being processed. */
 	private int _addr =
@@ -132,6 +139,9 @@ public class QuickTranslator
 			// Current processing this address
 			int addr = inst.address();
 			this._addr = addr;
+			
+			// Reset exception check
+			this._exceptioncheck = false;
 			
 			// {@squirreljme.error JC37 No recorded stack state for this
 			// position. (The address to check)}
@@ -197,6 +207,11 @@ public class QuickTranslator
 			// After the operation a new stack is now used
 			JavaStackState newstack = this._stack;
 			
+			// Generate exception handler?
+			if (this._exceptioncheck)
+				codebuilder.add(RegisterOperationType.JUMP_IF_EXCEPTION,
+					this.__exceptionLabel());
+			
 			// Set target stack states for destinations of this instruction
 			// Calculate the exception state only if it is needed
 			JavaStackState hypoex = null;
@@ -226,9 +241,12 @@ public class QuickTranslator
 		// Generate the code needed for the ECS table
 		List<ExceptionClassStackAndTable> ecsttable = this._ecsttable;
 		if (!ecsttable.isEmpty())
-		{
-			throw new todo.TODO();
-		}
+			this.__processECSTTable(ecsttable);
+		
+		// Generate exception handlers
+		List<ExceptionStackAndTable> esttable = this._esttable;
+		if (!esttable.isEmpty())
+			this.__processESTTable(esttable);
 		
 		// Build the final code
 		return codebuilder.build();
@@ -247,6 +265,9 @@ public class QuickTranslator
 	{
 		if (__t == null || __r == null)
 			throw new NullPointerException("NARG");
+		
+		// Handle exceptions following
+		this._exceptioncheck = true;
 		
 		// Return value type, if any
 		MethodHandle mf = __r.handle();
@@ -403,6 +424,28 @@ public class QuickTranslator
 	}
 	
 	/**
+	 * Creates and stores an exception.
+	 *
+	 * @return The label to the exception.
+	 * @since 2019/04/09
+	 */
+	private final RegisterCodeLabel __exceptionLabel()
+	{
+		// Setup
+		ExceptionStackAndTable st = this.exceptionranges.stackAndTable(
+			this._stack, this._addr);
+		
+		// Store into the table if it is missing
+		List<ExceptionStackAndTable> esttable = this._esttable;
+		int dx = esttable.indexOf(st);
+		if (dx < 0)
+			esttable.add((dx = esttable.size()), st);
+		
+		// Just create a label to reference it, it is generated later
+		return new RegisterCodeLabel("exception", dx);
+	}
+	
+	/**
 	 * Generates a return point.
 	 *
 	 * @param __jss The current stack state.
@@ -483,6 +526,10 @@ public class QuickTranslator
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
+		// We need a label at generation time that has the current state of
+		// the stack and such after the operation is performed
+		this.__exceptionLabel();
+		
 		// Setup
 		ExceptionClassStackAndTable cst = this.exceptionranges.
 			classStackAndTable(new ClassName(__cl), this._stack, this._addr);
@@ -495,6 +542,48 @@ public class QuickTranslator
 		
 		// Just create a label to reference it, it is generated later
 		return new RegisterCodeLabel("makeexception", dx);
+	}
+	
+	/**
+	 * Processes the ECST table.
+	 *
+	 * @param __ecsts The exception class and stack table.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/03
+	 */
+	private final void __processECSTTable(
+		List<ExceptionClassStackAndTable> __ecsts)
+		throws NullPointerException
+	{
+		if (__ecsts == null)
+			throw new NullPointerException("NARG");
+		
+		// Go through the table and process everything
+		for (ExceptionClassStackAndTable ecst : __ecsts)
+		{
+			throw new todo.TODO();
+		}
+	}
+	
+	/**
+	 * Processes the ECST table.
+	 *
+	 * @param __ests The exception stack table.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/03
+	 */
+	private final void __processESTTable(
+		List<ExceptionStackAndTable> __ests)
+		throws NullPointerException
+	{
+		if (__ests == null)
+			throw new NullPointerException("NARG");
+		
+		// Go through the table and process everything
+		for (ExceptionStackAndTable est : __ests)
+		{
+			throw new todo.TODO();
+		}
 	}
 	
 	/**
