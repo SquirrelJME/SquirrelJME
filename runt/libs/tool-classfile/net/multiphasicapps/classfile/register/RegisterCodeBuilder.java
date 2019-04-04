@@ -286,6 +286,25 @@ public final class RegisterCodeBuilder
 	/**
 	 * Returns the target of the specified label.
 	 *
+	 * @param __n The label name.
+	 * @param __dx The label index.
+	 * @return The index of the instruction or {@code -1} if the label is not
+	 * valid or the position is not yet known.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/04
+	 */
+	public final int labelTarget(String __n, int __dx)
+		throws NullPointerException
+	{
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		return this.labelTarget(new RegisterCodeLabel(__n, __dx));
+	}
+	
+	/**
+	 * Returns the target of the specified label.
+	 *
 	 * @param __l The label to get the target of.
 	 * @return The index of the instruction or {@code -1} if the label is not
 	 * valid or the position is not yet known.

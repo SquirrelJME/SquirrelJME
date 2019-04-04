@@ -609,10 +609,68 @@ public class QuickTranslator
 		if (__eets == null)
 			throw new NullPointerException("NARG");
 		
+		// For code building
+		RegisterCodeBuilder codebuilder = this.codebuilder;
+		
+		// Used to detect when nothing is to be done
+		List<JavaStackEnqueueList> returns = this._returns;
+		
+		// The base register where exceptions will go on the stack
+		int basereg = this._stack.getStack(0).register;
+		
 		// Go through the table and process everything
-		for (ExceptionEnqueueAndTable eet : __eets)
+		for (int dx = 0, dxn = __eets.size(); dx < dxn; dx++)
 		{
-			throw new todo.TODO();
+			// Get details
+			ExceptionEnqueueAndTable eet = __eets.get(dx);
+			JavaStackEnqueueList enq = eet.enqueue;
+			ExceptionHandlerTable ehtable = eet.table;
+			
+			// If the exception handler is empty then we do not have to check
+			// anything so just, cleanup and end
+			if (ehtable.isEmpty())
+			{
+				// If we never saw a cleanup for this return yet we can
+				// generate one here to be used for later points
+				int rdx = returns.indexOf(enq);
+				if (rdx < 0)
+					this.__generateReturn(enq);
+				
+				// We can just alias this exception to the return point to
+				// cleanup everything
+				codebuilder.label("exception", dx,
+					codebuilder.labelTarget("return", rdx));
+				
+				// Handle others
+				continue;
+			}
+			
+			// Code will be going here for this exception now, so mark it
+			codebuilder.label("exception", dx);
+			
+			// Uncount anything needed off the stack
+			int stackstart = enq.stackstart;
+			while (enq.size() > stackstart)
+			{
+				// Uncount the top
+				codebuilder.add(RegisterOperationType.UNCOUNT,
+					enq.top());
+				
+				// Trim off the top and remember the state when we want to
+				// make the return
+				enq = enq.trimTop();
+			}
+			
+			// Add jumps to labels
+			for (ExceptionHandler eh : ehtable)
+				codebuilder.add(
+					RegisterOperationType.JUMP_IF_INSTANCE_GET_EXCEPTION,
+					eh.type(),
+					new RegisterCodeLabel("java", eh.handlerAddress()),
+					basereg);
+			
+			// Generate return point with our remaining enqueue
+			this.__generateReturn(enq);
 		}
 	}
 	
