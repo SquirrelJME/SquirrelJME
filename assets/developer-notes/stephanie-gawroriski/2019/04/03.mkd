@@ -1,0 +1,40 @@
+# 2019/04/03
+
+## 08:06
+
+Okay so I am not going to dump my old code, I am just going to have a fork
+with an option that allows me to choose between different registerizers.
+
+## 08:29
+
+For the quick translation it is just going to be assumed that all registers
+are unique and there are no aliases.
+
+## 08:33
+
+I think what I can do is have a sane format for the register instructions so
+I do not have duplicated code all over the place. For example instead of
+handling `ALOAD_2` it will just be `ALOAD`. I think this will greatly
+simplify things. The same can be said for comparison types and all of the
+various math operations as well. Just something where I can throw all the
+stuff in and get less duplicated code in.
+
+## 13:03
+
+So it seems LDC got turned into `FLOAT_NEG:[2147483647]/@1#LDC~:[2147483647]`
+and I wonder how that happened.
+
+## 13:04
+
+Was just using the wrong mnemonic get.
+
+## 15:42
+
+Okay so for the made exceptions, I could make the exceptions then just jump
+according to the cleanup states. Like I should have a variant but for the
+register enqueuing since with the super quick method that is all that matters.
+
+## 16:30
+
+So later processing of returns is never needed because all of them should be
+generated at the time they are called.
