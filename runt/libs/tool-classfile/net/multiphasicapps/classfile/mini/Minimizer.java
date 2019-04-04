@@ -354,6 +354,7 @@ public final class Minimizer
 					
 				case RegisterOperationType.JUMP_IF_INSTANCE:
 				case RegisterOperationType.JUMP_IF_NOT_INSTANCE:
+				case RegisterOperationType.JUMP_IF_NOT_INSTANCE_REF_CLEAR:
 					dos.writeShort(pool.add(i.argument(0)));
 					dos.writeShort(i.shortArgument(1));
 					
