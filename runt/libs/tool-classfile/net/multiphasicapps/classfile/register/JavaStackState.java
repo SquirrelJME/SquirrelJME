@@ -468,56 +468,17 @@ public final class JavaStackState
 		Info[] stack = this._stack;
 		int stacktop = this.stacktop;
 		
-		// Working pop list when match is found
-		List<Info> pops = new ArrayList<>();
-		int basetop = -1,
-			maxpop = -1;
+		// Find function
+		JavaStackShuffleType.Function func = this.findShuffleFunction(__t);
 		
-		// Search for the matching function to use for this state
-		JavaStackShuffleType.Function func = null;
-		for (JavaStackShuffleType.Function tryf : __t._functions)
-		{
-			// Clear for run
-			pops.clear();
-			basetop = -1;
-			
-			// Input slots are used
-			JavaStackShuffleType.Slots sls = tryf.in;
-			
-			// Too little on the stack to pop everything?
-			maxpop = sls.max;
+		// Determine stack properties of the pop
+		int maxpop = func.in.max,
 			basetop = stacktop - maxpop;
-			if (basetop < 0)
-				continue;
-			
-			// Go through slots and see if this is a match or not
-			int at = basetop;
-			for (int ldx = 0; at < stacktop; ldx++, at++)
-			{
-				Info i = stack[at];
-				JavaType it = i.type;
-				
-				// Top-ness and wide-ness does not match
-				if (it.isTop() != (sls._var[ldx] < 0) ||
-					it.isWide() != sls._wide[ldx])
-					break;
-				
-				// Add this to the input to be popped
-				pops.add(i);
-			}
-			
-			// If this index was reached then everything was valid
-			if (at == stacktop)
-			{
-				func = tryf;
-				break;
-			}
-		}
 		
-		// {@squirreljme.error JC32 Could not find a match for performing
-		// shuffled stack operations.}
-		if (func == null)
-			throw new InvalidClassFormatException("JC32");
+		// Load section of stack to be popped
+		List<Info> pops = new ArrayList<>(maxpop);
+		for (int i = basetop; i < stacktop; i++)
+			pops.add(stack[i]);
 		
 		// Input and output slots
 		JavaStackShuffleType.Slots sin = func.in,
@@ -617,6 +578,70 @@ public final class JavaStackState
 		return this.stacktop == o.stacktop &&
 			Arrays.equals(this._locals, o._locals) &&
 			Arrays.equals(this._stack, o._stack);
+	}
+	
+	/**
+	 * Locates the shuffle function that is used to pop from the stack
+	 * accordingly to this stack state.
+	 *
+	 * @param __t The type of shuffle to perform.
+	 * @return The matching shuffle function.
+	 * @throws InvalidClassFormatException If the shuffle function was not
+	 * found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/04
+	 */
+	public final JavaStackShuffleType.Function findShuffleFunction(
+		JavaStackShuffleType __t)
+		throws InvalidClassFormatException, NullPointerException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		// Input stack properties
+		Info[] stack = this._stack;
+		int stacktop = this.stacktop;
+		
+		// Working pop list when match is found
+		int basetop = -1,
+			maxpop = -1;
+		
+		// Search for the matching function to use for this state
+		for (JavaStackShuffleType.Function tryf : __t._functions)
+		{
+			// Clear for run
+			basetop = -1;
+			
+			// Input slots are used
+			JavaStackShuffleType.Slots sls = tryf.in;
+			
+			// Too little on the stack to pop everything?
+			maxpop = sls.max;
+			basetop = stacktop - maxpop;
+			if (basetop < 0)
+				continue;
+			
+			// Go through slots and see if this is a match or not
+			int at = basetop;
+			for (int ldx = 0; at < stacktop; ldx++, at++)
+			{
+				Info i = stack[at];
+				JavaType it = i.type;
+				
+				// Top-ness and wide-ness does not match
+				if (it.isTop() != (sls._var[ldx] < 0) ||
+					it.isWide() != sls._wide[ldx])
+					break;
+			}
+			
+			// If this index was reached then everything was valid
+			if (at == stacktop)
+				return tryf;
+		}
+		
+		// {@squirreljme.error JC32 Could not find a match for performing
+		// shuffled stack operations.}
+		throw new InvalidClassFormatException("JC32");
 	}
 	
 	/**

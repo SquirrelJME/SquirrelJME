@@ -159,6 +159,11 @@ public class QuickTranslator
 			// Handle the operation
 			switch (sji.operation())
 			{
+					// Dup
+				case InstructionIndex.DUP:
+					this.__doStackShuffle(JavaStackShuffleType.DUP);
+					break;
+				
 					// Load local variable to the stack
 				case SimplifiedJavaInstruction.LOAD:
 					this.__doLoad(sji.<JavaType>argument(0, JavaType.class),
@@ -455,6 +460,29 @@ public class QuickTranslator
 		
 		// Return from this point or jump to an existing return/cleanup point
 		this.__generateReturn(this._stack);
+	}
+	
+	/**
+	 * Performs shuffling of the stack.
+	 *
+	 * @param __st The type of shuffle to do.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/04
+	 */
+	private final void __doStackShuffle(JavaStackShuffleType __st)
+		throws NullPointerException
+	{
+		if (__st == null)
+			throw new NullPointerException("NARG");
+		
+		// Find shuffle function to use
+		JavaStackState stack = this._stack;
+		JavaStackShuffleType.Function stfunc = stack.findShuffleFunction(__st);
+		
+		// Debug
+		todo.DEBUG.note("Found function: %s", stfunc);
+		
+		throw new todo.TODO();
 	}
 	
 	/**
