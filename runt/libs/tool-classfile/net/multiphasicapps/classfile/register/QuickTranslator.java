@@ -190,6 +190,11 @@ public class QuickTranslator
 					this.__doLdc(sji.<ConstantValue>argument(0,
 						ConstantValue.class));
 					break;
+				
+					// Create new instance of something
+				case InstructionIndex.NEW:
+					this.__doNew(sji.<ClassName>argument(0, ClassName.class));
+					break;
 					
 					// This literally does nothing so no output code needs to
 					// be generated at all
@@ -405,6 +410,32 @@ public class QuickTranslator
 		this.codebuilder.add(DataType.of(__jt).copyOperation(false),
 			result.before().getLocal(__from).register,
 			result.out(0).register);
+	}
+	
+	/**
+	 * Creates a new instance of the given class.
+	 *
+	 * @param __cn The class to create.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/04
+	 */
+	private final void __doNew(ClassName __cn)
+		throws NullPointerException
+	{
+		if (__cn == null)
+			throw new NullPointerException("NARG");
+		
+		// New is a complex operation and could fail for many reasons
+		this._exceptioncheck = true;
+		
+		// Just the type is pushed to the stack
+		JavaStackResult result = this._stack.doStack(0, new JavaType(__cn));
+		this._stack = result.after();
+		
+		// Allocate and store into register
+		RegisterCodeBuilder codebuilder = this.codebuilder;
+		codebuilder.add(RegisterOperationType.NEW,
+			__cn, result.out(0).register);
 	}
 	
 	/**
