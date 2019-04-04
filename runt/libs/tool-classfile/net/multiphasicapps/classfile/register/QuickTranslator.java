@@ -140,6 +140,9 @@ public class QuickTranslator
 			int addr = inst.address();
 			this._addr = addr;
 			
+			// Set line for code generation
+			codebuilder.setSourceLine(bytecode.lineOfAddress(addr));
+			
 			// Reset exception check
 			this._exceptioncheck = false;
 			
@@ -559,6 +562,7 @@ public class QuickTranslator
 			throw new NullPointerException("NARG");
 			
 		// Used in generating the pilot area
+		ByteCode bytecode = this.bytecode;
 		RegisterCodeBuilder codebuilder = this.codebuilder;
 		
 		// This table is used for secondary jump points
@@ -569,7 +573,14 @@ public class QuickTranslator
 		{
 			// Get details
 			ExceptionClassStackAndTable ecst = __ecsts.get(dx);
+			ExceptionStackAndTable sat = ecst.stackandtable;
 			ClassName exn = ecst.name;
+			ExceptionHandlerTable ehtable = sat.table;
+			
+			// Set source line as a guess based on highest start address
+			// of the table
+			codebuilder.setSourceLine(bytecode.lineOfAddress(
+				ehtable.maximumStartAddress()));
 			
 			// Mark label here for this
 			codebuilder.label("makeexception", dx);
@@ -587,7 +598,6 @@ public class QuickTranslator
 				new RegisterList(tempreg));
 			
 			// Generate jump to exception
-			ExceptionStackAndTable sat = ecst.stackandtable;
 			codebuilder.add(RegisterOperationType.JUMP,
 				new RegisterCodeLabel("exception", eettable.indexOf(
 					new ExceptionEnqueueAndTable(sat.stack.possibleEnqueue(),
@@ -610,6 +620,7 @@ public class QuickTranslator
 			throw new NullPointerException("NARG");
 		
 		// For code building
+		ByteCode bytecode = this.bytecode;
 		RegisterCodeBuilder codebuilder = this.codebuilder;
 		
 		// Used to detect when nothing is to be done
@@ -625,6 +636,11 @@ public class QuickTranslator
 			ExceptionEnqueueAndTable eet = __eets.get(dx);
 			JavaStackEnqueueList enq = eet.enqueue;
 			ExceptionHandlerTable ehtable = eet.table;
+			
+			// Set source line as a guess based on highest start address
+			// of the table
+			codebuilder.setSourceLine(bytecode.lineOfAddress(
+				ehtable.maximumStartAddress()));
 			
 			// If the exception handler is empty then we do not have to check
 			// anything so just, cleanup and end

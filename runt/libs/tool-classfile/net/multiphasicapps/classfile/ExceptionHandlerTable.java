@@ -232,6 +232,24 @@ public final class ExceptionHandlerTable
 	}
 	
 	/**
+	 * Returns the maximum used start address in the table.
+	 *
+	 * @return The maximum start address.
+	 * @since 2019/04/04
+	 */
+	public final int maximumStartAddress()
+	{
+		int rv = 0;
+		for (ExceptionHandler e : this._table)
+		{
+			int spc = e.startpc;
+			if (spc > rv)
+				rv = spc;
+		}
+		return rv;
+	}
+	
+	/**
 	 * Returns the instruction range.
 	 *
 	 * @return The instruction range.
