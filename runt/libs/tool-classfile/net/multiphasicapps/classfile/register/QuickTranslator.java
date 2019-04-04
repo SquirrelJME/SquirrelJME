@@ -64,8 +64,8 @@ public class QuickTranslator
 	private final Map<Integer, JavaStackState> _stacks =
 		new LinkedHashMap<>();
 	
-	/** Exception and stack table. */
-	private final List<ExceptionStackAndTable> _esttable =
+	/** Exception and enqueue table. */
+	private final List<ExceptionEnqueueAndTable> _eettable =
 		new ArrayList<>();
 	
 	/** Table of made exceptions. */
@@ -244,9 +244,9 @@ public class QuickTranslator
 			this.__processECSTTable(ecsttable);
 		
 		// Generate exception handlers
-		List<ExceptionStackAndTable> esttable = this._esttable;
-		if (!esttable.isEmpty())
-			this.__processESTTable(esttable);
+		List<ExceptionEnqueueAndTable> eettable = this._eettable;
+		if (!eettable.isEmpty())
+			this.__processEETTable(eettable);
 		
 		// Build the final code
 		return codebuilder.build();
@@ -432,14 +432,14 @@ public class QuickTranslator
 	private final RegisterCodeLabel __exceptionLabel()
 	{
 		// Setup
-		ExceptionStackAndTable st = this.exceptionranges.stackAndTable(
-			this._stack, this._addr);
+		ExceptionEnqueueAndTable st = this.exceptionranges.enqueueAndTable(
+			this._stack.possibleEnqueue(), this._addr);
 		
 		// Store into the table if it is missing
-		List<ExceptionStackAndTable> esttable = this._esttable;
-		int dx = esttable.indexOf(st);
+		List<ExceptionEnqueueAndTable> eettable = this._eettable;
+		int dx = eettable.indexOf(st);
 		if (dx < 0)
-			esttable.add((dx = esttable.size()), st);
+			eettable.add((dx = eettable.size()), st);
 		
 		// Just create a label to reference it, it is generated later
 		return new RegisterCodeLabel("exception", dx);
@@ -566,21 +566,21 @@ public class QuickTranslator
 	}
 	
 	/**
-	 * Processes the ECST table.
+	 * Processes the EET table.
 	 *
-	 * @param __ests The exception stack table.
+	 * @param __eets The exception enqueue table.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/03
 	 */
-	private final void __processESTTable(
-		List<ExceptionStackAndTable> __ests)
+	private final void __processEETTable(
+		List<ExceptionEnqueueAndTable> __eets)
 		throws NullPointerException
 	{
-		if (__ests == null)
+		if (__eets == null)
 			throw new NullPointerException("NARG");
 		
 		// Go through the table and process everything
-		for (ExceptionStackAndTable est : __ests)
+		for (ExceptionEnqueueAndTable eet : __eets)
 		{
 			throw new todo.TODO();
 		}
