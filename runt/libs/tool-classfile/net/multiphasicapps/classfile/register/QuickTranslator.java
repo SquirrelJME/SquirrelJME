@@ -475,6 +475,8 @@ public class QuickTranslator
 		if (__st == null)
 			throw new NullPointerException("NARG");
 		
+		RegisterCodeBuilder codebuilder = this.codebuilder;
+		
 		// Find shuffle function to use
 		JavaStackState stack = this._stack;
 		JavaStackShuffleType.Function stfunc = stack.findShuffleFunction(__st);
@@ -482,7 +484,84 @@ public class QuickTranslator
 		// Debug
 		todo.DEBUG.note("Found function: %s", stfunc);
 		
-		throw new todo.TODO();
+		// Pop all the input values, making sure it affects the stack
+		JavaStackResult result = stack.doStack(stfunc.in.max);
+		
+		// One simple way to handle this operation without doing anything
+		// really that complex is to move off the temporaries to a new
+		// location after all the defined variables. Then once they are
+		// all copied, they are copied back
+		// The following contains the position information and where
+		// registered are stored.
+		int tempbase = stack.usedregisters,
+			stackbase = result.in(0).register,
+			numpop = result.inCount();
+		int[] virt = new int[numpop];
+		
+		// First do plain copies of the input to a bunch of temporary
+		// registers
+		JavaStackResult.Input[] ins = new JavaStackResult.Input[numpop];
+		for (int i = 0; i < numpop; i++)
+		{
+			// Keep track of input here
+			JavaStackResult.Input in = result.in(i);
+			ins[i] = in;
+			
+			// The virtual register is from the temporary base and the
+			// pop index
+			int vat = tempbase + (in.register - stackbase);
+			virt[i] = vat;
+			
+			// Perform the non-counting copy
+			codebuilder.add(DataType.of(in.type).copyOperation(true),
+				in.register, vat);
+		}
+		
+		// This will keep track of how many times an input is used so it will
+		// either be uncounted on zero, or counted for every value above 1
+		int[] inusage = new int[numpop];
+		
+		// Before the stack can be pushed to we need to fill it with the
+		// right types, so go through the destination placements and place
+		// accordingly. Note that the amount to push is not 1:1 to the
+		// function pushes
+		List<JavaType> pushtypes = new ArrayList<>();
+		List<Integer> pushindex = new ArrayList<>();
+		for (int i = 0, n = stfunc.out.max; i < n; i++)
+		{
+			// Ignore negative values because this represents a top one
+			int povar = stfunc.out.variable(i);
+			if (povar < 0)
+				continue;
+			
+			// Get the variable we are wanting to push
+			JavaStackResult.Input pin = ins[povar];
+			
+			// Register it for pushing
+			pushtypes.add(pin.type);
+			pushindex.add(povar);
+			
+			// If a variable is used more than once count it up
+			if (++inusage[povar] > 1)
+				if (pin.type.isObject())
+					codebuilder.add(RegisterOperationType.COUNT, virt[povar]);
+		}
+		
+		// For any variables which were not used at all, do not count
+		for (int i = 0; i < numpop; i++)
+			if (inusage[i] == 0)
+				codebuilder.add(RegisterOperationType.UNCOUNT, virt[i]);
+		
+		// Push all of the types and store this stack result
+		result = result.after().doStack(0,
+			pushtypes.<JavaType>toArray(new JavaType[pushtypes.size()]));
+		this._stack = result.after();
+		
+		// Do data copies of the variables from temporary space
+		for (int i = 0, n = result.outCount(); i < n; i++)
+			codebuilder.add(
+				DataType.of(result.out(i).type).copyOperation(true),
+				virt[pushindex.get(i)], result.out(i).register);
 	}
 	
 	/**

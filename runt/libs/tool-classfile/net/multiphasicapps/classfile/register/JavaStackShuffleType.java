@@ -262,6 +262,18 @@ public enum JavaStackShuffleType
 			
 			return rv;
 		}
+		
+		/**
+		 * Returns the variable to use.
+		 *
+		 * @param __i The index to get.
+		 * @return The variable here, {@code -1} represents a top type.
+		 * @since 2019/04/04
+		 */
+		public final int variable(int __i)
+		{
+			return this._var[__i];
+		}
 	}
 }
 
