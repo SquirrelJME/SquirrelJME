@@ -12,6 +12,7 @@ package net.multiphasicapps.classfile.register;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
+import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ConstantValueDouble;
 import net.multiphasicapps.classfile.ConstantValueFloat;
 import net.multiphasicapps.classfile.ConstantValueInteger;
@@ -20,6 +21,7 @@ import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
 import net.multiphasicapps.classfile.InstructionMnemonics;
 import net.multiphasicapps.classfile.JavaType;
+import net.multiphasicapps.classfile.PrimitiveType;
 
 /**
  * This represents a simplified Java instruction which modifies the operation
@@ -793,6 +795,16 @@ public final class SimplifiedJavaInstruction
 					{
 						DataType.LONG,
 						MathOperationType.XOR,
+					};
+				break;
+			
+				// Make all array allocations just use the class name
+			case InstructionIndex.NEWARRAY:
+				op = InstructionIndex.ANEWARRAY;
+				args = new Object[]
+					{
+						ClassName.fromPrimitiveType(__inst.<PrimitiveType>
+							argument(0, PrimitiveType.class)),
 					};
 				break;
 			
