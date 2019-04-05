@@ -164,6 +164,11 @@ public class QuickTranslator
 					this.__doNewArray(sji.<ClassName>argument(0,
 						ClassName.class));
 					break;
+					
+					// Throw exception
+				case InstructionIndex.ATHROW:
+					this.__doThrow();
+					break;
 				
 					// Dup
 				case InstructionIndex.DUP:
@@ -694,6 +699,16 @@ public class QuickTranslator
 			codebuilder.add(
 				DataType.of(result.out(i).type).copyOperation(true),
 				virt[pushindex.get(i)], result.out(i).register);
+	}
+	
+	/**
+	 * Performs a throw of an exception on the stack.
+	 *
+	 * @since 2019/04/05
+	 */
+	private final void __doThrow()
+	{
+		throw new todo.TODO();
 	}
 	
 	/**
