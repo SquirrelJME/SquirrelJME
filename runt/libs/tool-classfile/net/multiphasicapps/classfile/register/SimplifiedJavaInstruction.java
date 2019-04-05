@@ -19,6 +19,7 @@ import net.multiphasicapps.classfile.ConstantValueInteger;
 import net.multiphasicapps.classfile.ConstantValueLong;
 import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
+import net.multiphasicapps.classfile.InstructionJumpTarget;
 import net.multiphasicapps.classfile.InstructionMnemonics;
 import net.multiphasicapps.classfile.JavaType;
 import net.multiphasicapps.classfile.PrimitiveType;
@@ -392,6 +393,8 @@ public final class SimplifiedJavaInstruction
 					{
 						JavaType.INTEGER,
 						CompareType.EQUALS,
+						__inst.<InstructionJumpTarget>argument(0,
+							InstructionJumpTarget.class),
 					};
 				break;
 				
@@ -401,6 +404,8 @@ public final class SimplifiedJavaInstruction
 					{
 						JavaType.INTEGER,
 						CompareType.GREATER_THAN_OR_EQUALS,
+						__inst.<InstructionJumpTarget>argument(0,
+							InstructionJumpTarget.class),
 					};
 				break;
 				
@@ -410,6 +415,8 @@ public final class SimplifiedJavaInstruction
 					{
 						JavaType.INTEGER,
 						CompareType.GREATER_THAN,
+						__inst.<InstructionJumpTarget>argument(0,
+							InstructionJumpTarget.class),
 					};
 				break;
 				
@@ -419,6 +426,8 @@ public final class SimplifiedJavaInstruction
 					{
 						JavaType.INTEGER,
 						CompareType.LESS_THAN_OR_EQUALS,
+						__inst.<InstructionJumpTarget>argument(0,
+							InstructionJumpTarget.class),
 					};
 				break;
 			
@@ -428,6 +437,8 @@ public final class SimplifiedJavaInstruction
 					{
 						JavaType.INTEGER,
 						CompareType.LESS_THAN,
+						__inst.<InstructionJumpTarget>argument(0,
+							InstructionJumpTarget.class),
 					};
 				break;
 			
@@ -437,6 +448,8 @@ public final class SimplifiedJavaInstruction
 					{
 						JavaType.INTEGER,
 						CompareType.NOT_EQUALS,
+						__inst.<InstructionJumpTarget>argument(0,
+							InstructionJumpTarget.class),
 					};
 				break;
 			
@@ -446,6 +459,8 @@ public final class SimplifiedJavaInstruction
 					{
 						JavaType.OBJECT,
 						CompareType.NOT_EQUALS,
+						__inst.<InstructionJumpTarget>argument(0,
+							InstructionJumpTarget.class),
 					};
 				break;
 			
@@ -455,6 +470,8 @@ public final class SimplifiedJavaInstruction
 					{
 						JavaType.OBJECT,
 						CompareType.EQUALS,
+						__inst.<InstructionJumpTarget>argument(0,
+							InstructionJumpTarget.class),
 					};
 				break;
 				
@@ -464,6 +481,8 @@ public final class SimplifiedJavaInstruction
 					{
 						JavaType.OBJECT,
 						CompareType.EQUALS,
+						__inst.<InstructionJumpTarget>argument(0,
+							InstructionJumpTarget.class),
 					};
 				break;
 				
@@ -473,6 +492,8 @@ public final class SimplifiedJavaInstruction
 					{
 						JavaType.OBJECT,
 						CompareType.NOT_EQUALS,
+						__inst.<InstructionJumpTarget>argument(0,
+							InstructionJumpTarget.class),
 					};
 				break;
 				
@@ -482,6 +503,8 @@ public final class SimplifiedJavaInstruction
 					{
 						JavaType.INTEGER,
 						CompareType.EQUALS,
+						__inst.<InstructionJumpTarget>argument(0,
+							InstructionJumpTarget.class),
 					};
 				break;
 				
@@ -491,6 +514,8 @@ public final class SimplifiedJavaInstruction
 					{
 						JavaType.INTEGER,
 						CompareType.GREATER_THAN_OR_EQUALS,
+						__inst.<InstructionJumpTarget>argument(0,
+							InstructionJumpTarget.class),
 					};
 				break;
 				
@@ -500,6 +525,8 @@ public final class SimplifiedJavaInstruction
 					{
 						JavaType.INTEGER,
 						CompareType.GREATER_THAN,
+						__inst.<InstructionJumpTarget>argument(0,
+							InstructionJumpTarget.class),
 					};
 				break;
 				
@@ -509,6 +536,8 @@ public final class SimplifiedJavaInstruction
 					{
 						JavaType.INTEGER,
 						CompareType.LESS_THAN_OR_EQUALS,
+						__inst.<InstructionJumpTarget>argument(0,
+							InstructionJumpTarget.class),
 					};
 				break;
 				
@@ -518,6 +547,8 @@ public final class SimplifiedJavaInstruction
 					{
 						JavaType.INTEGER,
 						CompareType.LESS_THAN,
+						__inst.<InstructionJumpTarget>argument(0,
+							InstructionJumpTarget.class),
 					};
 				break;
 				
@@ -527,6 +558,8 @@ public final class SimplifiedJavaInstruction
 					{
 						JavaType.INTEGER,
 						CompareType.NOT_EQUALS,
+						__inst.<InstructionJumpTarget>argument(0,
+							InstructionJumpTarget.class),
 					};
 				break;
 			
