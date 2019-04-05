@@ -169,11 +169,13 @@ public class QuickTranslator
 				case InstructionIndex.DUP:
 					this.__doStackShuffle(JavaStackShuffleType.DUP);
 					break;
-				
-					// Load local variable to the stack
-				case SimplifiedJavaInstruction.LOAD:
-					this.__doLoad(sji.<JavaType>argument(0, JavaType.class),
-						sji.intArgument(1));
+					
+					// If comparison against zero
+				case SimplifiedJavaInstruction.IF:
+					this.__doIf(sji.<JavaType>argument(0, JavaType.class),
+						sji.<CompareType>argument(1, CompareType.class),
+						sji.<InstructionJumpTarget>argument(2,
+							InstructionJumpTarget.class));
 					break;
 					
 				case InstructionIndex.INVOKEINTERFACE:
@@ -200,6 +202,12 @@ public class QuickTranslator
 				case InstructionIndex.LDC:
 					this.__doLdc(sji.<ConstantValue>argument(0,
 						ConstantValue.class));
+					break;
+				
+					// Load local variable to the stack
+				case SimplifiedJavaInstruction.LOAD:
+					this.__doLoad(sji.<JavaType>argument(0, JavaType.class),
+						sji.intArgument(1));
 					break;
 				
 					// Create new instance of something
@@ -275,6 +283,35 @@ public class QuickTranslator
 		
 		// Build the final code
 		return codebuilder.build();
+	}
+	
+	/**
+	 * Performs if comparison against zero.
+	 *
+	 * @param __type The type to work with on the stack.
+	 * @param __ct The comparison type.
+	 * @param __ijt The instruction jump target.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/05
+	 */
+	private final void __doIf(JavaType __type, CompareType __ct,
+		InstructionJumpTarget __ijt)
+		throws NullPointerException
+	{
+		if (__type == null || __ct == null || __ijt == null)
+			throw new NullPointerException("NARG");
+		
+		// Pop input from the stack
+		JavaStackResult result = this._stack.doStack(1);
+		this._stack = result.after();
+		
+		// Enqueue the input for counting
+		boolean doenq = this.__refEnqueue(result.enqueue());
+		
+		// Generate code, no later refclear needs to be done because if
+		// zero operation if doenq is set will clear the references
+		this.codebuilder.add(__ct.ifZeroOperation(doenq),
+			result.in(0).register, this.__javaLabel(__ijt));
 	}
 	
 	/**
@@ -769,6 +806,23 @@ public class QuickTranslator
 		// Note that we do not return the recursive result because that
 		// will be for another enqueue state
 		return lb;
+	}
+	
+	/**
+	 * Creates a Java label.
+	 *
+	 * @param __ijt The target of the jump.
+	 * @return The label to the jump target.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/05
+	 */
+	private final RegisterCodeLabel __javaLabel(InstructionJumpTarget __ijt)
+		throws NullPointerException
+	{
+		if (__ijt == null)
+			throw new NullPointerException("NARG");
+		
+		return new RegisterCodeLabel("java", __ijt.target());
 	}
 	
 	/**
