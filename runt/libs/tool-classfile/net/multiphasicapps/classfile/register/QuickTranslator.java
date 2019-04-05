@@ -159,6 +159,12 @@ public class QuickTranslator
 			// Handle the operation
 			switch (sji.operation())
 			{
+					// Allocate new array
+				case InstructionIndex.ANEWARRAY:
+					this.__doNewArray(sji.<ClassName>argument(0,
+						ClassName.class));
+					break;
+				
 					// Dup
 				case InstructionIndex.DUP:
 					this.__doStackShuffle(JavaStackShuffleType.DUP);
@@ -456,6 +462,38 @@ public class QuickTranslator
 		RegisterCodeBuilder codebuilder = this.codebuilder;
 		codebuilder.add(RegisterOperationType.NEW,
 			__cn, result.out(0).register);
+	}
+	
+	/**
+	 * Allocates a new array.
+	 *
+	 * @param __cn The class to allocate.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/05
+	 */
+	private final void __doNewArray(ClassName __cn)
+		throws NullPointerException
+	{
+		if (__cn == null)
+			throw new NullPointerException("NARG");
+		
+		// Allocation may fail or the class could be invalid
+		this._exceptioncheck = true;
+		
+		// Only the length is on the stack
+		JavaStackResult result = this._stack.doStack(1,
+			new JavaType(__cn.addDimensions(1)));
+		this._stack = result.after();
+		
+		// Cannot be negative
+		RegisterCodeBuilder codebuilder = this.codebuilder;
+		codebuilder.add(RegisterOperationType.IFLT,
+			result.in(0).register, this.__makeExceptionLabel(
+			"java/lang/NegativeArraySizeException"));
+		
+		// Generate
+		codebuilder.add(RegisterOperationType.NEW_ARRAY,
+			__cn, result.in(0).register, result.out(0).register);
 	}
 	
 	/**
