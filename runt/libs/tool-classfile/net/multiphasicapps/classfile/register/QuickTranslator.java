@@ -175,6 +175,12 @@ public class QuickTranslator
 					this.__doStackShuffle(JavaStackShuffleType.DUP);
 					break;
 					
+					// Get field
+				case InstructionIndex.GETFIELD:
+					this.__doFieldGet(sji.<FieldReference>argument(0,
+						FieldReference.class));
+					break;
+					
 					// If comparison against zero
 				case SimplifiedJavaInstruction.IF:
 					this.__doIf(sji.<JavaType>argument(0, JavaType.class),
@@ -227,7 +233,7 @@ public class QuickTranslator
 				
 					// Put of instance field
 				case InstructionIndex.PUTFIELD:
-					this.__doPutField(sji.<FieldReference>argument(0,
+					this.__doFieldPut(sji.<FieldReference>argument(0,
 						FieldReference.class));
 					break;
 				
@@ -288,6 +294,104 @@ public class QuickTranslator
 		
 		// Build the final code
 		return codebuilder.build();
+	}
+	
+	/**
+	 * Reads a value from a field.
+	 *
+	 * @param __fr The field reference.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/06
+	 */
+	private final void __doFieldGet(FieldReference __fr)
+		throws NullPointerException
+	{
+		if (__fr == null)
+			throw new NullPointerException("NARG");
+		
+		// The data type determines which instruction to use
+		PrimitiveType pt = __fr.memberType().primitiveType();
+		DataType dt = DataType.of(pt);
+		
+		// Field access information
+		AccessedField ac = this.__fieldAccess(FieldAccessType.INSTANCE, __fr);
+		
+		// Do stack operations
+		JavaStackResult result = this._stack.doStack(1,
+			new JavaType(__fr.memberType()));
+		this._stack = result.after();
+		
+		// Enqueue instance possibly
+		this.__refEnqueue(result.enqueue());
+		
+		// Cannot be null
+		RegisterCodeBuilder codebuilder = this.codebuilder;
+		codebuilder.add(RegisterOperationType.IFNULL_REF_CLEAR,
+			result.in(0).register, this.__makeExceptionLabel(
+			"java/lang/NullPointerException"));
+			
+		// Also has to be the right type
+		codebuilder.add(RegisterOperationType.JUMP_IF_NOT_INSTANCE_REF_CLEAR,
+			__fr.className(), result.in(0).register,
+			this.__makeExceptionLabel("java/lang/ClassCastException"));
+		
+		// Generate code
+		codebuilder.add(dt.fieldAccessOperation(false, false),
+			ac,
+			result.in(0).register,
+			result.out(0).register);
+		
+		// Sign-extend signed types?
+		if (pt == PrimitiveType.BYTE || pt == PrimitiveType.SHORT)
+			codebuilder.add((pt == PrimitiveType.BYTE ?
+					RegisterOperationType.SIGN_X8 :
+					RegisterOperationType.SIGN_X16),
+				result.out(0).register);
+		
+		// Clear references
+		this.__refClear();
+	}
+	
+	/**
+	 * Puts a value into a field.
+	 *
+	 * @param __fr The field reference.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/04
+	 */
+	private final void __doFieldPut(FieldReference __fr)
+		throws NullPointerException
+	{
+		if (__fr == null)
+			throw new NullPointerException("NARG");
+		
+		// [inst, value] ->
+		JavaStackResult result = this._stack.doStack(2);
+		this._stack = result.after();
+		
+		// Clear out any input references
+		this.__refEnqueue(result.enqueue());
+		
+		// Cannot be null
+		RegisterCodeBuilder codebuilder = this.codebuilder;
+		codebuilder.add(RegisterOperationType.IFNULL_REF_CLEAR,
+			result.in(0).register,
+			this.__makeExceptionLabel("java/lang/NullPointerException"));
+		
+		// Also has to be the right type
+		codebuilder.add(RegisterOperationType.JUMP_IF_NOT_INSTANCE_REF_CLEAR,
+			__fr.className(), result.in(0).register,
+			this.__makeExceptionLabel("java/lang/ClassCastException"));
+		
+		// Generate code
+		codebuilder.add(DataType.of(__fr.memberType().primitiveType()).
+				fieldAccessOperation(false, true),
+			this.__fieldAccess(FieldAccessType.INSTANCE, __fr),
+			result.in(0).register,
+			result.in(1).register);
+		
+		// Clear references as needed
+		this.__refClear();
 	}
 	
 	/**
@@ -536,48 +640,6 @@ public class QuickTranslator
 		// Generate
 		codebuilder.add(RegisterOperationType.NEW_ARRAY,
 			__cn, result.in(0).register, result.out(0).register);
-	}
-	
-	/**
-	 * Puts a value into a field.
-	 *
-	 * @param __fr The field reference.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/04/04
-	 */
-	private final void __doPutField(FieldReference __fr)
-		throws NullPointerException
-	{
-		if (__fr == null)
-			throw new NullPointerException("NARG");
-		
-		// [inst, value] ->
-		JavaStackResult result = this._stack.doStack(2);
-		this._stack = result.after();
-		
-		// Clear out any input references
-		this.__refEnqueue(result.enqueue());
-		
-		// Cannot be null
-		RegisterCodeBuilder codebuilder = this.codebuilder;
-		codebuilder.add(RegisterOperationType.IFNULL_REF_CLEAR,
-			result.in(0).register,
-			this.__makeExceptionLabel("java/lang/NullPointerException"));
-		
-		// Also has to be the right type
-		codebuilder.add(RegisterOperationType.JUMP_IF_NOT_INSTANCE_REF_CLEAR,
-			__fr.className(), result.in(0).register,
-			this.__makeExceptionLabel("java/lang/ClassCastException"));
-		
-		// Generate code
-		codebuilder.add(DataType.of(__fr.memberType().primitiveType()).
-				fieldAccessOperation(false, true),
-			this.__fieldAccess(FieldAccessType.INSTANCE, __fr),
-			result.in(0).register,
-			result.in(1).register);
-		
-		// Clear references as needed
-		this.__refClear();
 	}
 	
 	/**
