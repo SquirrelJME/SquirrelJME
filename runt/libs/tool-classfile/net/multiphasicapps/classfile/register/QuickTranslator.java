@@ -175,6 +175,11 @@ public class QuickTranslator
 						ClassName.class));
 					break;
 					
+					// Length of array
+				case InstructionIndex.ARRAYLENGTH:
+					this.__doArrayLength();
+					break;
+					
 					// Throw exception
 				case InstructionIndex.ATHROW:
 					this.__doThrow();
@@ -322,6 +327,35 @@ public class QuickTranslator
 		
 		// Build the final code
 		return codebuilder.build();
+	}
+	
+	/**
+	 * Gets length of array.
+	 *
+	 * @since 2019/04/06
+	 */
+	private final void __doArrayLength()
+	{
+		// [array] -> [len]
+		JavaStackResult result = this._stack.doStack(1, JavaType.INTEGER);
+		this._stack = result.after();
+		
+		// Possibly clear the instance later
+		this.__refEnqueue(result.enqueue());
+		
+		// Cannot be null
+		RegisterCodeBuilder codebuilder = this.codebuilder;
+		codebuilder.add(RegisterOperationType.IFNULL_REF_CLEAR,
+			result.in(0).register,
+			this.__makeExceptionLabel("java/lang/NullPointerException"));
+		
+		// Get length
+		codebuilder.add(RegisterOperationType.ARRAY_LENGTH,
+			result.in(0).register,
+			result.out(0).register);
+		
+		// Clear references
+		this.__refClear();
 	}
 	
 	/**
