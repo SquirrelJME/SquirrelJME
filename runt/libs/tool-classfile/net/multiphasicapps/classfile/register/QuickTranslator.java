@@ -159,6 +159,16 @@ public class QuickTranslator
 			// Handle the operation
 			switch (sji.operation())
 			{
+					// Object array load
+				case InstructionIndex.AALOAD:
+					this.__doArrayLoad(null);
+					break;
+					
+					// Object array store
+				case InstructionIndex.AASTORE:
+					this.__doArrayStore(null);
+					break;
+					
 					// Allocate new array
 				case InstructionIndex.ANEWARRAY:
 					this.__doNewArray(sji.<ClassName>argument(0,
@@ -230,6 +240,18 @@ public class QuickTranslator
 					// be generated at all
 				case InstructionIndex.NOP:
 					break;
+					
+					// Primitive array load
+				case SimplifiedJavaInstruction.PALOAD:
+					this.__doArrayLoad(sji.<PrimitiveType>argument(0,
+						PrimitiveType.class));
+					break;
+					
+					// Primitive array store
+				case SimplifiedJavaInstruction.PASTORE:
+					this.__doArrayStore(sji.<PrimitiveType>argument(0,
+						PrimitiveType.class));
+					break;
 				
 					// Put of instance field
 				case InstructionIndex.PUTFIELD:
@@ -300,6 +322,92 @@ public class QuickTranslator
 		
 		// Build the final code
 		return codebuilder.build();
+	}
+	
+	/**
+	 * Loads value from value.
+	 *
+	 * @param __pt The type to load, {@code null} is considered to be an
+	 * object.
+	 * @since 2019/04/06
+	 */
+	private final void __doArrayLoad(PrimitiveType __pt)
+	{
+		// [array, index] -> [value]
+		JavaStackResult result = this._stack.doStack(2, (__pt == null ?
+			new JavaType(new ClassName("java/lang/Object")) :
+			__pt.stackJavaType()));
+		this._stack = result.after();
+		
+		// Possibly clear the instance later
+		this.__refEnqueue(result.enqueue());
+		
+		// Check for NPE, and OOB
+		RegisterCodeBuilder codebuilder = this.codebuilder;
+		codebuilder.add(RegisterOperationType.IFNULL_REF_CLEAR,
+			result.in(0).register,
+			this.__makeExceptionLabel("java/lang/NullPointerException"));
+		codebuilder.add(RegisterOperationType.ARRAY_BOUND_CHECK_AND_REF_CLEAR,
+			result.in(0).register, result.in(1).register,
+			this.__makeExceptionLabel("java/lang/IndexOutOfBoundsException"));
+		
+		// Generate
+		codebuilder.add(DataType.of(__pt).arrayOperation(false),
+			result.in(0).register,
+			result.in(1).register,
+			result.out(0).register);
+		
+		// Sign-extend signed types?
+		if (__pt == PrimitiveType.BYTE || __pt == PrimitiveType.SHORT)
+			codebuilder.add((__pt == PrimitiveType.BYTE ?
+					RegisterOperationType.SIGN_X8 :
+					RegisterOperationType.SIGN_X16),
+				result.out(0).register);
+		
+		// Clear references
+		this.__refClear();
+	}
+	
+	/**
+	 * Stores value into an array.
+	 *
+	 * @param __pt The type to store, {@code null} is considered to be an
+	 * object.
+	 * @since 2019/04/06
+	 */
+	private final void __doArrayStore(PrimitiveType __pt)
+	{
+		// [array, index, value]
+		JavaStackResult result = this._stack.doStack(3);
+		this._stack = result.after();
+		
+		// Possibly clear the instance or value later
+		this.__refEnqueue(result.enqueue());
+		
+		// Check for NPE and OOB
+		RegisterCodeBuilder codebuilder = this.codebuilder;
+		codebuilder.add(RegisterOperationType.IFNULL_REF_CLEAR,
+			result.in(0).register, this.__makeExceptionLabel(
+			"java/lang/NullPointerException"));
+		codebuilder.add(RegisterOperationType.ARRAY_BOUND_CHECK_AND_REF_CLEAR,
+			result.in(0).register, result.in(1).register,
+			this.__makeExceptionLabel("java/lang/IndexOutOfBoundsException"));
+		
+		// Check for store exception
+		if (__pt == null)
+			codebuilder.add(
+				RegisterOperationType.ARRAY_STORE_CHECK_AND_REF_CLEAR,
+				result.in(0).register, result.in(2).register,
+				this.__makeExceptionLabel("java/lang/ArrayStoreException"));
+		
+		// Generate
+		this.codebuilder.add(DataType.of(__pt).arrayOperation(true),
+			result.in(0).register,
+			result.in(1).register,
+			result.in(2).register);
+		
+		// Clear references
+		this.__refClear();
 	}
 	
 	/**
