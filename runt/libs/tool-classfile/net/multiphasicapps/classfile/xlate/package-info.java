@@ -15,5 +15,5 @@
  * @since 2019/04/06
  */
 
-package net.multiphasicapps.classfile.xlate;
+package dev.shadowtail.classfile.xlate;
 
