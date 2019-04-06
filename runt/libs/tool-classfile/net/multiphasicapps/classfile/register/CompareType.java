@@ -67,6 +67,39 @@ public enum CompareType
 	}
 	
 	/**
+	 * Comparison instructions against each other.
+	 *
+	 * @param __enq Is enqueueing being performed?
+	 * @return The operation to use when comparing against two values.
+	 * @since 2019/04/06
+	 */
+	public final int ifABOperation(boolean __enq)
+	{
+		switch (this)
+		{
+			case EQUALS:
+				if (__enq)
+					return RegisterOperationType.IF_ICMPEQ_REF_CLEAR;
+				return RegisterOperationType.IF_ICMPEQ;
+			case NOT_EQUALS:
+				if (__enq)
+					return RegisterOperationType.IF_ICMPNE_REF_CLEAR;
+				return RegisterOperationType.IF_ICMPNE;
+			case LESS_THAN:
+				return RegisterOperationType.IF_ICMPLT;
+			case LESS_THAN_OR_EQUALS:
+				return RegisterOperationType.IF_ICMPLE;
+			case GREATER_THAN:
+				return RegisterOperationType.IF_ICMPGT;
+			case GREATER_THAN_OR_EQUALS:
+				return RegisterOperationType.IF_ICMPGE;
+		}
+		
+		// Should not be reached
+		throw new todo.OOPS();
+	}
+	
+	/**
 	 * The operation used when comparing against zero.
 	 *
 	 * @param __enq Is enqueueing being performed?
