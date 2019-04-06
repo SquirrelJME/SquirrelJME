@@ -100,6 +100,7 @@ commuting every day (which wastes time). Interest can be e-mailed to me
 
  * [My Portfolio](https://shadowtail.dev/)
  * [My Public PGP Key](public-key.gpg.mkd)
+ * [SquirrelJME Twitter](https://twitter.com/MultiPhasicApps)
  * Locations where you can get support:
    * [Discord](https://discord.gg/9PkMMKt)
  * Front facing social media:
@@ -110,7 +111,7 @@ commuting every day (which wastes time). Interest can be e-mailed to me
    * [Keybase](https://keybase.io/xerthesquirrel)
    * [LinkedIn](https://www.linkedin.com/in/xerthesquirrel/)
    * [Mastodon (awoo.space)](https://awoo.space/@XerTheSquirrel)
-   * [Twitter](https://twitter.com/MultiPhasicApps)
+   * [Twitter](https://twitter.com/XerShadowTail)
    * E-Mail: <xer@multiphasicapps.net>
 
 ## Goals
