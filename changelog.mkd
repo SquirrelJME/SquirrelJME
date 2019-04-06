@@ -10,6 +10,11 @@ SquirrelJME is also available on RetroArch since the implementation of
 RatufaCoat which is written in C and is capable of using the SquirrelJME
 Runtime.
 
+_Note that this is a work in progress and not everything will run, due to_
+_the implementation being incomplete. However it does work and is proven to_
+_work, which means progress can continue as such. Later releases of_
+_SquirrelJME will always be an improvement over the older versions._
+
 More detailed changes:
 
  * Build system
