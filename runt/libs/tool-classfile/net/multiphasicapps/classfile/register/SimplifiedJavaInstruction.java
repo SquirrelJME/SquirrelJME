@@ -365,6 +365,7 @@ public final class SimplifiedJavaInstruction
 				break;
 			
 			case InstructionIndex.ICONST_M1:
+			case InstructionIndex.ICONST_0:
 			case InstructionIndex.ICONST_1:
 			case InstructionIndex.ICONST_2:
 			case InstructionIndex.ICONST_3:
