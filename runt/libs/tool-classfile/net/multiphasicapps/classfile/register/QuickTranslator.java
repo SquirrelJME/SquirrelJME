@@ -708,7 +708,30 @@ public class QuickTranslator
 	 */
 	private final void __doThrow()
 	{
-		throw new todo.TODO();
+		// This operation throws an exception, so we will just go to checking
+		// it.
+		this._exceptioncheck = true;
+		
+		// Pop from the stack
+		JavaStackResult result = this._stack.doStack(1);
+		this._stack = result.after();
+		
+		// Enqueue?
+		boolean doenq = this.__refEnqueue(result.enqueue());
+		
+		// Cannot be null
+		RegisterCodeBuilder codebuilder = this.codebuilder;
+		codebuilder.add(RegisterOperationType.IFNULL_REF_CLEAR,
+			result.in(0).register, this.__makeExceptionLabel(
+			"java/lang/NullPointerException"));
+		
+		// Generate code
+		codebuilder.add(RegisterOperationType.SET_AND_FLAG_EXCEPTION,
+			result.in(0).register);
+		
+		// Clear references
+		if (doenq)
+			this.__refClear();
 	}
 	
 	/**
@@ -976,12 +999,14 @@ public class QuickTranslator
 				// generate one here to be used for later points
 				int rdx = returns.indexOf(enq);
 				if (rdx < 0)
-					this.__generateReturn(enq);
+					codebuilder.label("exception", dx,
+						codebuilder.labelTarget(this.__generateReturn(enq)));
 				
 				// We can just alias this exception to the return point to
 				// cleanup everything
-				codebuilder.label("exception", dx,
-					codebuilder.labelTarget("return", rdx));
+				else
+					codebuilder.label("exception", dx,
+						codebuilder.labelTarget("return", rdx));
 				
 				// Handle others
 				continue;
