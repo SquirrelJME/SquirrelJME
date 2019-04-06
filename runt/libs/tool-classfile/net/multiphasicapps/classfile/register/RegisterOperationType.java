@@ -121,6 +121,10 @@ public interface RegisterOperationType
 	public static final int JUMP_IF_NOT_INSTANCE_REF_CLEAR =
 		ENCODING_SPECIAL + 12;
 	
+	/** ref_reset []. */
+	public static final int REF_RESET =
+		ENCODING_SPECIAL + 13;
+	
 	/** jump. */
 	public static final int JUMP =
 		ENCODING_J16 + 0;

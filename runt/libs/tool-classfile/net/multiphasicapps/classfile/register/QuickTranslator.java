@@ -184,6 +184,12 @@ public class QuickTranslator
 				case InstructionIndex.ATHROW:
 					this.__doThrow();
 					break;
+					
+					// Check that object is of a type, or fail
+				case InstructionIndex.CHECKCAST:
+					this.__doCheckCast(sji.<ClassName>argument(0,
+						ClassName.class));
+					break;
 				
 					// Dup
 				case InstructionIndex.DUP:
@@ -473,6 +479,36 @@ public class QuickTranslator
 		
 		// Clear references
 		this.__refClear();
+	}
+	
+	/**
+	 * Checks that the object on the stack is of the given type.
+	 *
+	 * @param __cn The name of the class to check.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/06
+	 */
+	private final void __doCheckCast(ClassName __cn)
+		throws NullPointerException
+	{
+		if (__cn == null)
+			throw new NullPointerException("NARG");
+		
+		// The stack is unchanged, we just push the same type
+		JavaStackResult result = this._stack.doStack(1,
+			new JavaType(__cn));
+		
+		// Enqueue instance possibly, is only cleared on jump
+		this.__refEnqueue(result.enqueue());
+		
+		// Has to be of the right type
+		this.codebuilder.add(
+			RegisterOperationType.JUMP_IF_NOT_INSTANCE_REF_CLEAR,
+			__cn, result.in(0).register,
+			this.__makeExceptionLabel("java/lang/ClassCastException"));
+		
+		// Reset enqueues
+		this.codebuilder.add(RegisterOperationType.REF_RESET);
 	}
 	
 	/**
