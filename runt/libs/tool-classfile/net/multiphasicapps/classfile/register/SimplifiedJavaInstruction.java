@@ -102,7 +102,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.LOAD;
 				args = new Object[]
 					{
-						JavaType.OBJECT,
+						DataType.POINTER,
 						__inst.intArgument(0),
 					};
 				break;
@@ -114,7 +114,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.LOAD;
 				args = new Object[]
 					{
-						JavaType.OBJECT,
+						DataType.POINTER,
 						baseop - InstructionIndex.ALOAD_0,
 					};
 				break;
@@ -123,7 +123,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.VRETURN;
 				args = new Object[]
 					{
-						JavaType.OBJECT,
+						DataType.POINTER,
 					};
 				break;
 			
@@ -131,7 +131,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.STORE;
 				args = new Object[]
 					{
-						JavaType.OBJECT,
+						DataType.POINTER,
 						__inst.intArgument(0),
 					};
 				break;
@@ -143,7 +143,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.STORE;
 				args = new Object[]
 					{
-						JavaType.OBJECT,
+						DataType.POINTER,
 						baseop - InstructionIndex.ASTORE_0,
 					};
 				break;
@@ -237,7 +237,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.LOAD;
 				args = new Object[]
 					{
-						JavaType.DOUBLE,
+						DataType.DOUBLE,
 						__inst.intArgument(0),
 					};
 				break;
@@ -249,7 +249,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.LOAD;
 				args = new Object[]
 					{
-						JavaType.DOUBLE,
+						DataType.DOUBLE,
 						baseop - InstructionIndex.DLOAD_0,
 					};
 				break;
@@ -267,7 +267,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.VRETURN;
 				args = new Object[]
 					{
-						JavaType.DOUBLE,
+						DataType.DOUBLE,
 					};
 				break;
 			
@@ -275,7 +275,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.STORE;
 				args = new Object[]
 					{
-						JavaType.DOUBLE,
+						DataType.DOUBLE,
 						__inst.intArgument(0),
 					};
 				break;
@@ -287,7 +287,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.STORE;
 				args = new Object[]
 					{
-						JavaType.DOUBLE,
+						DataType.DOUBLE,
 						baseop - InstructionIndex.DSTORE_0,
 					};
 				break;
@@ -350,7 +350,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.LOAD;
 				args = new Object[]
 					{
-						JavaType.FLOAT,
+						DataType.FLOAT,
 						__inst.intArgument(0),
 					};
 				break;
@@ -362,7 +362,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.LOAD;
 				args = new Object[]
 					{
-						JavaType.FLOAT,
+						DataType.FLOAT,
 						baseop - InstructionIndex.FLOAD_0,
 					};
 				break;
@@ -380,7 +380,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.VRETURN;
 				args = new Object[]
 					{
-						JavaType.FLOAT,
+						DataType.FLOAT,
 					};
 				break;
 			
@@ -388,7 +388,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.STORE;
 				args = new Object[]
 					{
-						JavaType.FLOAT,
+						DataType.FLOAT,
 						__inst.intArgument(0),
 					};
 				break;
@@ -400,7 +400,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.STORE;
 				args = new Object[]
 					{
-						JavaType.FLOAT,
+						DataType.FLOAT,
 						baseop - InstructionIndex.FSTORE_0,
 					};
 				break;
@@ -480,7 +480,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.IF;
 				args = new Object[]
 					{
-						JavaType.INTEGER,
+						DataType.INTEGER,
 						CompareType.EQUALS,
 						__inst.<InstructionJumpTarget>argument(0,
 							InstructionJumpTarget.class),
@@ -491,7 +491,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.IF;
 				args = new Object[]
 					{
-						JavaType.INTEGER,
+						DataType.INTEGER,
 						CompareType.GREATER_THAN_OR_EQUALS,
 						__inst.<InstructionJumpTarget>argument(0,
 							InstructionJumpTarget.class),
@@ -502,7 +502,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.IF;
 				args = new Object[]
 					{
-						JavaType.INTEGER,
+						DataType.INTEGER,
 						CompareType.GREATER_THAN,
 						__inst.<InstructionJumpTarget>argument(0,
 							InstructionJumpTarget.class),
@@ -513,7 +513,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.IF;
 				args = new Object[]
 					{
-						JavaType.INTEGER,
+						DataType.INTEGER,
 						CompareType.LESS_THAN_OR_EQUALS,
 						__inst.<InstructionJumpTarget>argument(0,
 							InstructionJumpTarget.class),
@@ -524,7 +524,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.IF;
 				args = new Object[]
 					{
-						JavaType.INTEGER,
+						DataType.INTEGER,
 						CompareType.LESS_THAN,
 						__inst.<InstructionJumpTarget>argument(0,
 							InstructionJumpTarget.class),
@@ -535,7 +535,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.IF;
 				args = new Object[]
 					{
-						JavaType.INTEGER,
+						DataType.INTEGER,
 						CompareType.NOT_EQUALS,
 						__inst.<InstructionJumpTarget>argument(0,
 							InstructionJumpTarget.class),
@@ -546,7 +546,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.IF;
 				args = new Object[]
 					{
-						JavaType.OBJECT,
+						DataType.POINTER,
 						CompareType.NOT_EQUALS,
 						__inst.<InstructionJumpTarget>argument(0,
 							InstructionJumpTarget.class),
@@ -557,7 +557,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.IF;
 				args = new Object[]
 					{
-						JavaType.OBJECT,
+						DataType.POINTER,
 						CompareType.EQUALS,
 						__inst.<InstructionJumpTarget>argument(0,
 							InstructionJumpTarget.class),
@@ -568,7 +568,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.IF_CMP;
 				args = new Object[]
 					{
-						JavaType.OBJECT,
+						DataType.POINTER,
 						CompareType.EQUALS,
 						__inst.<InstructionJumpTarget>argument(0,
 							InstructionJumpTarget.class),
@@ -579,7 +579,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.IF_CMP;
 				args = new Object[]
 					{
-						JavaType.OBJECT,
+						DataType.POINTER,
 						CompareType.NOT_EQUALS,
 						__inst.<InstructionJumpTarget>argument(0,
 							InstructionJumpTarget.class),
@@ -590,7 +590,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.IF_CMP;
 				args = new Object[]
 					{
-						JavaType.INTEGER,
+						DataType.INTEGER,
 						CompareType.EQUALS,
 						__inst.<InstructionJumpTarget>argument(0,
 							InstructionJumpTarget.class),
@@ -601,7 +601,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.IF_CMP;
 				args = new Object[]
 					{
-						JavaType.INTEGER,
+						DataType.INTEGER,
 						CompareType.GREATER_THAN_OR_EQUALS,
 						__inst.<InstructionJumpTarget>argument(0,
 							InstructionJumpTarget.class),
@@ -612,7 +612,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.IF_CMP;
 				args = new Object[]
 					{
-						JavaType.INTEGER,
+						DataType.INTEGER,
 						CompareType.GREATER_THAN,
 						__inst.<InstructionJumpTarget>argument(0,
 							InstructionJumpTarget.class),
@@ -623,7 +623,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.IF_CMP;
 				args = new Object[]
 					{
-						JavaType.INTEGER,
+						DataType.INTEGER,
 						CompareType.LESS_THAN_OR_EQUALS,
 						__inst.<InstructionJumpTarget>argument(0,
 							InstructionJumpTarget.class),
@@ -634,7 +634,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.IF_CMP;
 				args = new Object[]
 					{
-						JavaType.INTEGER,
+						DataType.INTEGER,
 						CompareType.LESS_THAN,
 						__inst.<InstructionJumpTarget>argument(0,
 							InstructionJumpTarget.class),
@@ -645,7 +645,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.IF_CMP;
 				args = new Object[]
 					{
-						JavaType.INTEGER,
+						DataType.INTEGER,
 						CompareType.NOT_EQUALS,
 						__inst.<InstructionJumpTarget>argument(0,
 							InstructionJumpTarget.class),
@@ -656,7 +656,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.LOAD;
 				args = new Object[]
 					{
-						JavaType.INTEGER,
+						DataType.INTEGER,
 						__inst.intArgument(0),
 					};
 				break;
@@ -668,7 +668,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.LOAD;
 				args = new Object[]
 					{
-						JavaType.INTEGER,
+						DataType.INTEGER,
 						baseop - InstructionIndex.ILOAD_0,
 					};
 				break;
@@ -695,7 +695,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.VRETURN;
 				args = new Object[]
 					{
-						JavaType.INTEGER,
+						DataType.INTEGER,
 					};
 				break;
 			
@@ -721,7 +721,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.STORE;
 				args = new Object[]
 					{
-						JavaType.INTEGER,
+						DataType.INTEGER,
 						__inst.intArgument(0),
 					};
 				break;
@@ -733,7 +733,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.STORE;
 				args = new Object[]
 					{
-						JavaType.INTEGER,
+						DataType.INTEGER,
 						baseop - InstructionIndex.ISTORE_0,
 					};
 				break;
@@ -827,7 +827,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.LOAD;
 				args = new Object[]
 					{
-						JavaType.LONG,
+						DataType.LONG,
 						__inst.intArgument(0),
 					};
 				break;
@@ -839,7 +839,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.LOAD;
 				args = new Object[]
 					{
-						JavaType.LONG,
+						DataType.LONG,
 						baseop - InstructionIndex.LLOAD_0,
 					};
 				break;
@@ -866,7 +866,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.VRETURN;
 				args = new Object[]
 					{
-						JavaType.LONG,
+						DataType.LONG,
 					};
 				break;
 				
@@ -892,7 +892,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.STORE;
 				args = new Object[]
 					{
-						JavaType.LONG,
+						DataType.LONG,
 						__inst.intArgument(0),
 					};
 				break;
@@ -904,7 +904,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.STORE;
 				args = new Object[]
 					{
-						JavaType.LONG,
+						DataType.LONG,
 						baseop - InstructionIndex.LSTORE_0,
 					};
 				break;

@@ -198,7 +198,7 @@ public class QuickTranslator
 					
 					// If comparison against zero
 				case SimplifiedJavaInstruction.IF:
-					this.__doIf(sji.<JavaType>argument(0, JavaType.class),
+					this.__doIf(sji.<DataType>argument(0, DataType.class),
 						sji.<CompareType>argument(1, CompareType.class),
 						sji.<InstructionJumpTarget>argument(2,
 							InstructionJumpTarget.class));
@@ -232,7 +232,7 @@ public class QuickTranslator
 				
 					// Load local variable to the stack
 				case SimplifiedJavaInstruction.LOAD:
-					this.__doLoad(sji.<JavaType>argument(0, JavaType.class),
+					this.__doLoad(sji.<DataType>argument(0, DataType.class),
 						sji.intArgument(1));
 					break;
 					
@@ -278,7 +278,7 @@ public class QuickTranslator
 				
 					// Place stack variable into local
 				case SimplifiedJavaInstruction.STORE:
-					this.__doStore(sji.<JavaType>argument(0, JavaType.class),
+					this.__doStore(sji.<DataType>argument(0, DataType.class),
 						sji.intArgument(1));
 					break;
 				
@@ -558,7 +558,7 @@ public class QuickTranslator
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/05
 	 */
-	private final void __doIf(JavaType __type, CompareType __ct,
+	private final void __doIf(DataType __type, CompareType __ct,
 		InstructionJumpTarget __ijt)
 		throws NullPointerException
 	{
@@ -723,18 +723,18 @@ public class QuickTranslator
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/03
 	 */
-	private final void __doLoad(JavaType __jt, int __from)
+	private final void __doLoad(DataType __jt, int __from)
 		throws NullPointerException
 	{
 		if (__jt == null)
 			throw new NullPointerException("NARG");
 		
 		// Push to the stack
-		JavaStackResult result = this._stack.doStack(0, __jt);
+		JavaStackResult result = this._stack.doStack(0, __jt.toJavaType());
 		this._stack = result.after();
 		
 		// Do the copy
-		this.codebuilder.add(DataType.of(__jt).copyOperation(false),
+		this.codebuilder.add(__jt.copyOperation(false),
 			result.before().getLocal(__from).register,
 			result.out(0).register);
 	}
@@ -951,7 +951,7 @@ public class QuickTranslator
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/06
 	 */
-	private final void __doStore(JavaType __jt, int __to)
+	private final void __doStore(DataType __jt, int __to)
 		throws NullPointerException
 	{
 		if (__jt == null)
@@ -973,7 +973,7 @@ public class QuickTranslator
 				i);
 		
 		// Do the copy, do not count because there will be a net result
-		codebuilder.add(DataType.of(__jt).copyOperation(true),
+		codebuilder.add(__jt.copyOperation(true),
 			in.register, result.out(0).register);
 	}
 	
