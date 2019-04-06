@@ -261,6 +261,28 @@ public enum DataType
 	}
 	
 	/**
+	 * Returns this as a basic Java type.
+	 *
+	 * @return The Java type of this.
+	 * @since 2019/04/06
+	 */
+	public final JavaType toJavaType()
+	{
+		switch (this)
+		{
+			case POINTER:	return JavaType.OBJECT;
+			case BYTE:
+			case SHORT:
+			case INTEGER:	return JavaType.INTEGER;
+			case FLOAT:		return JavaType.FLOAT;
+			case LONG:		return JavaType.LONG;
+			case DOUBLE:	return JavaType.DOUBLE;
+		}
+		
+		throw new todo.OOPS(this.name());
+	}
+	
+	/**
 	 * Returns the data type used for the primitive type.
 	 *
 	 * @param __t The type to use, {@code null} is treated as a pointer.

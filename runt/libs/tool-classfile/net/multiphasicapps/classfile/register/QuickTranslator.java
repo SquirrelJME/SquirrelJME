@@ -235,6 +235,13 @@ public class QuickTranslator
 					this.__doLoad(sji.<JavaType>argument(0, JavaType.class),
 						sji.intArgument(1));
 					break;
+					
+					// Math
+				case SimplifiedJavaInstruction.MATH:
+					this.__doMath(sji.<DataType>argument(0, DataType.class), 
+						sji.<MathOperationType>argument(1,
+							MathOperationType.class));
+					break;
 				
 					// Create new instance of something
 				case InstructionIndex.NEW:
@@ -729,6 +736,31 @@ public class QuickTranslator
 		// Do the copy
 		this.codebuilder.add(DataType.of(__jt).copyOperation(false),
 			result.before().getLocal(__from).register,
+			result.out(0).register);
+	}
+	
+	/**
+	 * Performs math operation.
+	 *
+	 * @param __pt The primitive type.
+	 * @param __mot The math operation type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/06
+	 */
+	private final void __doMath(DataType __pt, MathOperationType __mot)
+		throws NullPointerException
+	{
+		if (__pt == null || __mot == null)
+			throw new NullPointerException("NARG");
+		
+		// [a, b] -> [result]
+		JavaStackResult result = this._stack.doStack(2, __pt.toJavaType());
+		this._stack = result.after();
+		
+		// Perform the math
+		RegisterCodeBuilder codebuilder = this.codebuilder;
+		codebuilder.add(__mot.operation(__pt),
+			result.in(0).register, result.in(1).register,
 			result.out(0).register);
 	}
 	
