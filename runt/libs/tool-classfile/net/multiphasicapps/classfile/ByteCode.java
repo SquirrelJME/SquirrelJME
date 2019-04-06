@@ -780,7 +780,7 @@ public final class ByteCode
 				case InstructionIndex.FSTORE_1:
 				case InstructionIndex.FSTORE_2:
 				case InstructionIndex.FSTORE_3:
-					hit = op = InstructionIndex.FSTORE_0;
+					hit = op - InstructionIndex.FSTORE_0;
 					break;
 				
 				case InstructionIndex.IINC:
@@ -797,7 +797,7 @@ public final class ByteCode
 				case InstructionIndex.ISTORE_1:
 				case InstructionIndex.ISTORE_2:
 				case InstructionIndex.ISTORE_3:
-					hit = op = InstructionIndex.ISTORE_0;
+					hit = op - InstructionIndex.ISTORE_0;
 					break;
 				
 				case InstructionIndex.LSTORE:
@@ -810,7 +810,7 @@ public final class ByteCode
 				case InstructionIndex.LSTORE_1:
 				case InstructionIndex.LSTORE_2:
 				case InstructionIndex.LSTORE_3:
-					hit = op = InstructionIndex.LSTORE_0;
+					hit = op - InstructionIndex.LSTORE_0;
 					wide = true;
 					break;
 				
