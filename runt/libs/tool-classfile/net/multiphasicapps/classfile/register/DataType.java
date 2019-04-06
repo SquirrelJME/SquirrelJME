@@ -287,6 +287,31 @@ public enum DataType
 	}
 	
 	/**
+	 * The operation to use when loading the return value.
+	 *
+	 * @return The operation used.
+	 * @since 2019/04/06
+	 */
+	public final int returnValueStoreOperation()
+	{
+		switch (this)
+		{
+			case POINTER:
+			case BYTE:
+			case SHORT:
+			case INTEGER:
+			case FLOAT:
+				return RegisterOperationType.SET_X32_RETURN_VALUE;
+				
+			case LONG:
+			case DOUBLE:
+				return RegisterOperationType.SET_X64_RETURN_VALUE;
+		}
+		
+		throw new todo.OOPS();
+	}
+	
+	/**
 	 * Returns this as a basic Java type.
 	 *
 	 * @return The Java type of this.
