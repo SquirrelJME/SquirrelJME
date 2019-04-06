@@ -10,6 +10,7 @@
 
 package net.multiphasicapps.classfile.register;
 
+import net.multiphasicapps.classfile.FieldDescriptor;
 import net.multiphasicapps.classfile.JavaType;
 import net.multiphasicapps.classfile.PrimitiveType;
 
@@ -261,6 +262,31 @@ public enum DataType
 	}
 	
 	/**
+	 * The operation to use when loading the return value.
+	 *
+	 * @return The operation used.
+	 * @since 2019/04/06
+	 */
+	public final int returnValueLoadOperation()
+	{
+		switch (this)
+		{
+			case POINTER:
+			case BYTE:
+			case SHORT:
+			case INTEGER:
+			case FLOAT:
+				return RegisterOperationType.GET_X32_RETURN_VALUE;
+				
+			case LONG:
+			case DOUBLE:
+				return RegisterOperationType.GET_X64_RETURN_VALUE;
+		}
+		
+		throw new todo.OOPS();
+	}
+	
+	/**
 	 * Returns this as a basic Java type.
 	 *
 	 * @return The Java type of this.
@@ -325,6 +351,23 @@ public enum DataType
 			throw new NullPointerException("NARG");
 		
 		return DataType.of(__t.type().primitiveType());
+	}
+	
+	/**
+	 * Returns the data type of the given field descriptor.
+	 *
+	 * @param __t The type to get.
+	 * @return The data type used for this type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/06
+	 */
+	public static final DataType of(FieldDescriptor __t)
+		throws NullPointerException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		return DataType.of(__t.primitiveType());
 	}
 }
 

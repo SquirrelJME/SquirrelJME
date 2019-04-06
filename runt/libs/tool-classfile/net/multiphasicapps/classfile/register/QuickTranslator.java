@@ -693,7 +693,8 @@ public class QuickTranslator
 		
 		// Load the return value onto the stack
 		if (hasrv)
-			throw new todo.TODO();
+			codebuilder.add(DataType.of(rv).returnValueLoadOperation(),
+				result.out(0).register);
 	}
 	
 	/**
