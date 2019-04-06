@@ -346,6 +346,8 @@ public final class RegisterOperationMnemonics
 				return "JUMP_IF_NOT_INSTANCE";
 			case RegisterOperationType.JUMP_IF_NOT_INSTANCE_REF_CLEAR:
 				return "JUMP_IF_NOT_INSTANCE_REF_CLEAR";
+			case RegisterOperationType.REF_RESET:
+				return "REF_RESET";
 			
 				// Unknown
 			default:
