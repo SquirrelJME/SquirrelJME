@@ -204,21 +204,25 @@ public class QuickTranslator
 							InstructionJumpTarget.class));
 					break;
 					
+					// Invoke interface
 				case InstructionIndex.INVOKEINTERFACE:
 					this.__doInvoke(InvokeType.INTERFACE, sji.<MethodReference>
 						argument(0, MethodReference.class));
 					break;
 				
+					// Invoke special
 				case InstructionIndex.INVOKESPECIAL:
 					this.__doInvoke(InvokeType.SPECIAL, sji.<MethodReference>
 						argument(0, MethodReference.class));
 					break;
 				
+					// Invoke static
 				case InstructionIndex.INVOKESTATIC:
 					this.__doInvoke(InvokeType.STATIC, sji.<MethodReference>
 						argument(0, MethodReference.class));
 					break;
 					
+					// Invoke virtual
 				case InstructionIndex.INVOKEVIRTUAL:
 					this.__doInvoke(InvokeType.VIRTUAL, sji.<MethodReference>
 						argument(0, MethodReference.class));
