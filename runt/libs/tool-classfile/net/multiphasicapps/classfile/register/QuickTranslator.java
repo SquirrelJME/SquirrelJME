@@ -230,6 +230,11 @@ public class QuickTranslator
 							InstructionJumpTarget.class));
 					break;
 					
+					// Increment local
+				case InstructionIndex.IINC:
+					this.__doIInc(sji.intArgument(0), sji.intArgument(1));
+					break;
+					
 					// Invoke interface
 				case InstructionIndex.INVOKEINTERFACE:
 					this.__doInvoke(InvokeType.INTERFACE, sji.<MethodReference>
@@ -683,6 +688,29 @@ public class QuickTranslator
 		this.codebuilder.add(__ct.ifABOperation(doenq),
 			result.in(0).register, result.in(1).register,
 			this.__javaLabel(__ijt));
+	}
+	
+	/**
+	 * Increments local variable.
+	 *
+	 * @param __l The local to increment.
+	 * @param __v The value to increment by.
+	 * @since 2019/04/06
+	 */
+	private final void __doIInc(int __l, int __v)
+	{
+		RegisterCodeBuilder codebuilder = this.codebuilder;
+		
+		// Load constant into temporary register
+		JavaStackState stack = this._stack;
+		int tempbase = stack.usedregisters;
+		codebuilder.add(RegisterOperationType.X32_CONST,
+			__v, tempbase);
+		
+		// Perform the add with the topmost local
+		JavaStackState.Info local = stack.getLocal(__l);
+		codebuilder.add(RegisterOperationType.INT_ADD,
+			local.register, tempbase, local.register);
 	}
 	
 	/**

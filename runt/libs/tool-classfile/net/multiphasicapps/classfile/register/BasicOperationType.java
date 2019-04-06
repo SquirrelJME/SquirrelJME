@@ -24,11 +24,5 @@ package net.multiphasicapps.classfile.register;
  */
 public interface BasicOperationType
 {
-	/**
-	 * nop.
-	 *
-	 * Does nothing.
-	 */
-	public static final interface
 }
 

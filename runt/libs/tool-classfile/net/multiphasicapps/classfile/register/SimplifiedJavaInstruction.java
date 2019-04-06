@@ -969,6 +969,10 @@ public final class SimplifiedJavaInstruction
 						new ConstantValueInteger(__inst.shortArgument(0)),
 					};
 				break;
+			
+			case InstructionIndex.WIDE_IINC:
+				op = InstructionIndex.IINC;
+				break;
 		}
 		
 		// Store them

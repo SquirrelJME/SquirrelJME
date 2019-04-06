@@ -240,6 +240,7 @@ public final class RegisterInstruction
 			case RegisterOperationType.NOP:
 			case RegisterOperationType.RETURN:
 			case RegisterOperationType.REF_CLEAR:
+			case RegisterOperationType.REF_RESET:
 				return 0;
 			
 			case RegisterOperationType.ENCODING_U16:
