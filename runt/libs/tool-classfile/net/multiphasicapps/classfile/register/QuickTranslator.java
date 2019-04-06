@@ -196,6 +196,12 @@ public class QuickTranslator
 						FieldReference.class));
 					break;
 					
+					// Get static
+				case InstructionIndex.GETSTATIC:
+					this.__doStaticGet(sji.<FieldReference>argument(0,
+						FieldReference.class));
+					break;
+					
 					// If comparison against zero
 				case SimplifiedJavaInstruction.IF:
 					this.__doIf(sji.<DataType>argument(0, DataType.class),
@@ -984,6 +990,43 @@ public class QuickTranslator
 			codebuilder.add(
 				DataType.of(result.out(i).type).copyOperation(true),
 				virt[pushindex.get(i)], result.out(i).register);
+	}
+	
+	/**
+	 * Reads a value from a static field.
+	 *
+	 * @param __fr The field reference.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/06
+	 */
+	private final void __doStaticGet(FieldReference __fr)
+		throws NullPointerException
+	{
+		if (__fr == null)
+			throw new NullPointerException("NARG");
+		
+		// The data type determines which instruction to use
+		PrimitiveType pt = __fr.memberType().primitiveType();
+		DataType dt = DataType.of(pt);
+		
+		// Field access information
+		AccessedField ac = this.__fieldAccess(FieldAccessType.STATIC, __fr);
+		
+		// Do stack operations
+		JavaStackResult result = this._stack.doStack(0,
+			new JavaType(__fr.memberType()));
+		this._stack = result.after();
+		
+		// Generate code
+		codebuilder.add(dt.fieldAccessOperation(true, false),
+			ac, result.out(0).register);
+		
+		// Sign-extend signed types?
+		if (pt == PrimitiveType.BYTE || pt == PrimitiveType.SHORT)
+			codebuilder.add((pt == PrimitiveType.BYTE ?
+					RegisterOperationType.SIGN_X8 :
+					RegisterOperationType.SIGN_X16),
+				result.out(0).register);
 	}
 	
 	/**
