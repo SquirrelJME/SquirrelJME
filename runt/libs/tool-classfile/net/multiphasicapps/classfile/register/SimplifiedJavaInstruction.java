@@ -60,6 +60,14 @@ public final class SimplifiedJavaInstruction
 	public static final int IF_CMP =
 		-7;
 	
+	/** Primitive array store. */
+	public static final int PASTORE =
+		-8;
+	
+	/** Primitive array load. */
+	public static final int PALOAD =
+		-9;
+	
 	/** The operation. */
 	protected final int op;
 	
@@ -139,12 +147,44 @@ public final class SimplifiedJavaInstruction
 						baseop - InstructionIndex.ASTORE_0,
 					};
 				break;
+				
+			case InstructionIndex.BALOAD:
+				op = SimplifiedJavaInstruction.PALOAD;
+				args = new Object[]
+					{
+						PrimitiveType.BYTE,
+					};
+				break;
+				
+			case InstructionIndex.BASTORE:
+				op = SimplifiedJavaInstruction.PASTORE;
+				args = new Object[]
+					{
+						PrimitiveType.BYTE,
+					};
+				break;
 			
 			case InstructionIndex.BIPUSH:
 				op = InstructionIndex.LDC;
 				args = new Object[]
 					{
 						new ConstantValueInteger(__inst.byteArgument(0)),
+					};
+				break;
+				
+			case InstructionIndex.CALOAD:
+				op = SimplifiedJavaInstruction.PALOAD;
+				args = new Object[]
+					{
+						PrimitiveType.CHARACTER,
+					};
+				break;
+				
+			case InstructionIndex.CASTORE:
+				op = SimplifiedJavaInstruction.PASTORE;
+				args = new Object[]
+					{
+						PrimitiveType.CHARACTER,
 					};
 				break;
 			
@@ -154,6 +194,22 @@ public final class SimplifiedJavaInstruction
 					{
 						DataType.DOUBLE,
 						MathOperationType.ADD,
+					};
+				break;
+				
+			case InstructionIndex.DALOAD:
+				op = SimplifiedJavaInstruction.PALOAD;
+				args = new Object[]
+					{
+						PrimitiveType.DOUBLE,
+					};
+				break;
+				
+			case InstructionIndex.DASTORE:
+				op = SimplifiedJavaInstruction.PASTORE;
+				args = new Object[]
+					{
+						PrimitiveType.DOUBLE,
 					};
 				break;
 			
@@ -251,6 +307,22 @@ public final class SimplifiedJavaInstruction
 					{
 						DataType.FLOAT,
 						MathOperationType.ADD,
+					};
+				break;
+				
+			case InstructionIndex.FALOAD:
+				op = SimplifiedJavaInstruction.PALOAD;
+				args = new Object[]
+					{
+						PrimitiveType.FLOAT,
+					};
+				break;
+				
+			case InstructionIndex.FASTORE:
+				op = SimplifiedJavaInstruction.PASTORE;
+				args = new Object[]
+					{
+						PrimitiveType.FLOAT,
 					};
 				break;
 			
@@ -355,12 +427,28 @@ public final class SimplifiedJavaInstruction
 					};
 				break;
 				
+			case InstructionIndex.IALOAD:
+				op = SimplifiedJavaInstruction.PALOAD;
+				args = new Object[]
+					{
+						PrimitiveType.INTEGER,
+					};
+				break;
+				
 			case InstructionIndex.IAND:
 				op = SimplifiedJavaInstruction.MATH;
 				args = new Object[]
 					{
 						DataType.INTEGER,
 						MathOperationType.AND,
+					};
+				break;
+				
+			case InstructionIndex.IASTORE:
+				op = SimplifiedJavaInstruction.PASTORE;
+				args = new Object[]
+					{
+						PrimitiveType.INTEGER,
 					};
 				break;
 			
@@ -686,12 +774,28 @@ public final class SimplifiedJavaInstruction
 					};
 				break;
 				
+			case InstructionIndex.LALOAD:
+				op = SimplifiedJavaInstruction.PALOAD;
+				args = new Object[]
+					{
+						PrimitiveType.LONG,
+					};
+				break;
+				
 			case InstructionIndex.LAND:
 				op = SimplifiedJavaInstruction.MATH;
 				args = new Object[]
 					{
 						DataType.LONG,
 						MathOperationType.AND,
+					};
+				break;
+				
+			case InstructionIndex.LASTORE:
+				op = SimplifiedJavaInstruction.PASTORE;
+				args = new Object[]
+					{
+						PrimitiveType.LONG,
 					};
 				break;
 			
@@ -839,6 +943,22 @@ public final class SimplifiedJavaInstruction
 					{
 						ClassName.fromPrimitiveType(__inst.<PrimitiveType>
 							argument(0, PrimitiveType.class)),
+					};
+				break;
+				
+			case InstructionIndex.SALOAD:
+				op = SimplifiedJavaInstruction.PALOAD;
+				args = new Object[]
+					{
+						PrimitiveType.SHORT,
+					};
+				break;
+				
+			case InstructionIndex.SASTORE:
+				op = SimplifiedJavaInstruction.PASTORE;
+				args = new Object[]
+					{
+						PrimitiveType.SHORT,
 					};
 				break;
 			
@@ -1011,6 +1131,8 @@ public final class SimplifiedJavaInstruction
 			case MATH:		return "MATH";
 			case IF:		return "IF";
 			case IF_CMP:	return "IF_CMP";
+			case PASTORE:	return "PASTORE";
+			case PALOAD:	return "PALOAD";
 			
 				// Fallback to standard stuff
 			default:
