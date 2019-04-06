@@ -271,6 +271,7 @@ public final class Minimizer
 				case RegisterOperationType.NOP:
 				case RegisterOperationType.RETURN:
 				case RegisterOperationType.REF_CLEAR:
+				case RegisterOperationType.REF_RESET:
 					break;
 				
 				case RegisterOperationType.ENCODING_U16:
