@@ -12,6 +12,8 @@ package net.multiphasicapps.classfile.register;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import net.multiphasicapps.collections.SortedTreeSet;
 
@@ -25,6 +27,7 @@ import net.multiphasicapps.collections.SortedTreeSet;
  * @since 2019/03/30
  */
 public final class JavaStackEnqueueList
+	implements Iterable<Integer>
 {
 	/** The index where the stack entries start. */
 	protected final int stackstart;
@@ -158,6 +161,16 @@ public final class JavaStackEnqueueList
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/06
+	 */
+	@Override
+	public final Iterator<Integer> iterator()
+	{
+		return new __Iterator__(this._registers);
+	}
+	
+	/**
 	 * Returns an enqueue list which contains only locals.
 	 *
 	 * @return An enqueue list containing only locals.
@@ -262,6 +275,74 @@ public final class JavaStackEnqueueList
 			rv[i] = from[i];
 		
 		return new JavaStackEnqueueList(this.stackstart, rv);
+	}
+	
+	/**
+	 * Iterator over stack slots.
+	 *
+	 * @since 2019/04/06
+	 */
+	private static final class __Iterator__
+		implements Iterator<Integer>
+	{
+		/** Input register. */
+		private final int[] _registers;
+		
+		/** Current index. */
+		private int _at;
+		
+		/**
+		 * Initializes the iterator.
+		 *
+		 * @param __r The registers used.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2019/04/06
+		 */
+		private __Iterator__(int[] __r)
+			throws NullPointerException
+		{
+			if (__r == null)
+				throw new NullPointerException("NARG");
+			
+			this._registers = __r;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2019/04/06
+		 */
+		@Override
+		public final boolean hasNext()
+		{
+			return (this._at < this._registers.length);
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2019/04/06
+		 */
+		@Override
+		public final Integer next()
+		{
+			int at = this._at;
+			int[] registers = this._registers;
+			
+			if (at >= registers.length)
+				throw new NoSuchElementException("NSEE");
+			
+			this._at = at + 1;
+			return registers[at];
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2019/04/06
+		 */
+		@Override
+		public final void remove()
+		{
+			throw new UnsupportedOperationException("RORO");
+		}
 	}
 }
 
