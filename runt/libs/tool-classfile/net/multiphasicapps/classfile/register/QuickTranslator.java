@@ -202,6 +202,12 @@ public class QuickTranslator
 						FieldReference.class));
 					break;
 					
+					// Goto
+				case InstructionIndex.GOTO:
+					this.__doGoto(sji.<InstructionJumpTarget>argument(0,
+						InstructionJumpTarget.class));
+					break;
+					
 					// If comparison against zero
 				case SimplifiedJavaInstruction.IF:
 					this.__doIf(sji.<DataType>argument(0, DataType.class),
@@ -565,6 +571,23 @@ public class QuickTranslator
 		
 		// Clear references as needed
 		this.__refClear();
+	}
+	
+	/**
+	 * Goes to another address.
+	 *
+	 * @param __jt The target.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/06
+	 */
+	private final void __doGoto(InstructionJumpTarget __jt)
+		throws NullPointerException
+	{
+		if (__jt == null)
+			throw new NullPointerException("NARG");
+		
+		this.codebuilder.add(RegisterOperationType.JUMP,
+			this.__javaLabel(__jt));
 	}
 	
 	/**
