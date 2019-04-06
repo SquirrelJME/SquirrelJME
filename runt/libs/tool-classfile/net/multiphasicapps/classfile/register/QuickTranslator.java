@@ -204,6 +204,14 @@ public class QuickTranslator
 							InstructionJumpTarget.class));
 					break;
 					
+					// Compare two values
+				case SimplifiedJavaInstruction.IF_CMP:
+					this.__doIfCmp(sji.<DataType>argument(0, DataType.class),
+						sji.<CompareType>argument(1, CompareType.class),
+						sji.<InstructionJumpTarget>argument(2,
+							InstructionJumpTarget.class));
+					break;
+					
 					// Invoke interface
 				case InstructionIndex.INVOKEINTERFACE:
 					this.__doInvoke(InvokeType.INTERFACE, sji.<MethodReference>
@@ -580,6 +588,36 @@ public class QuickTranslator
 		// zero operation if doenq is set will clear the references
 		this.codebuilder.add(__ct.ifZeroOperation(doenq),
 			result.in(0).register, this.__javaLabel(__ijt));
+	}
+	
+	/**
+	 * Performs if comparison of two values against each other.
+	 *
+	 * @param __type The type to work with on the stack.
+	 * @param __ct The comparison type.
+	 * @param __ijt The instruction jump target.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/06
+	 */
+	private final void __doIfCmp(DataType __type, CompareType __ct,
+		InstructionJumpTarget __ijt)
+		throws NullPointerException
+	{
+		if (__type == null || __ct == null || __ijt == null)
+			throw new NullPointerException("NARG");
+		
+		// Pop input from the stack
+		JavaStackResult result = this._stack.doStack(2);
+		this._stack = result.after();
+		
+		// Enqueue the input for counting
+		boolean doenq = this.__refEnqueue(result.enqueue());
+		
+		// Generate code, no later refclear needs to be done because if
+		// zero operation if doenq is set will clear the references
+		this.codebuilder.add(__ct.ifABOperation(doenq),
+			result.in(0).register, result.in(1).register,
+			this.__javaLabel(__ijt));
 	}
 	
 	/**
