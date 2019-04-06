@@ -259,6 +259,68 @@ public final class JavaStackState
 	}
 	
 	/**
+	 * Sets a local variable.
+	 *
+	 * @param __jt The type of entry to set.
+	 * @param __l The local to set.
+	 * @return Return the result of the set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/06
+	 */
+	public final JavaStackResult doLocalSet(JavaType __jt, int __l)
+		throws NullPointerException
+	{
+		if (__jt == null)
+			throw new NullPointerException("NARG");
+			
+		Info[] locals = this._locals;
+		
+		// {@squirreljme.error JC38 Cannot write over a local variable which
+		// is read-only. (The local)}
+		Info olddest = locals[__l];
+		if (olddest.readonly)
+			throw new InvalidClassFormatException("JC38 " + olddest);
+		
+		// If the target local is an object it could be enqueued
+		List<Integer> enq = new ArrayList<>();
+		if (olddest.canEnqueue())
+			enq.add(olddest.value);
+		
+		// If we are going to be writing over two locals we need to check
+		// the other as well
+		if (__jt.isWide())
+		{
+			// {@squirreljme.error JC34 Cannot write over a local variable
+			// which is read-only. (The local)}
+			Info wolddest = locals[__l + 1];
+			if (wolddest.readonly)
+				throw new InvalidClassFormatException("JC34 " + wolddest);
+			
+			// If the target local is an object it could be enqueued
+			if (wolddest.canEnqueue())
+				enq.add(wolddest.value);
+		}
+		
+		// Setup new base local, remember that locals are never aliased but
+		// they might use no counting
+		Info[] newlocals = locals.clone();
+		Info pushed;
+		newlocals[__l] = (pushed = olddest.newTypeValue(__jt,
+			olddest.register, false));
+		
+		// Additionally push top type as well
+		if (__jt.isWide())
+			newlocals[__l + 1] = newlocals[__l + 1].newTypeValue(
+				__jt.topType(), pushed.register + 1, false);
+		
+		// Create resulting state
+ 		return new JavaStackResult(this,
+			new JavaStackState(newlocals, this._stack, this.stacktop),
+			new JavaStackEnqueueList(enq.size(), enq),
+			JavaStackResult.makeOutput(pushed));
+	}
+	
+	/**
 	 * Writes into the specified local variable from the top-most stack entry.
 	 *
 	 * @param __l The local to store.
@@ -681,6 +743,28 @@ public final class JavaStackState
 				Arrays.asList(this._locals).hashCode() ^
 				Arrays.asList(this._stack).hashCode());
 		return hash;
+	}
+	
+	/**
+	 * Returns the number of local used.
+	 *
+	 * @return The locals used.
+	 * @since 2019/04/06
+	 */
+	public final int maxLocals()
+	{
+		return this._locals.length;
+	}
+	
+	/**
+	 * Returns the maximum stack size.
+	 *
+	 * @return The maximum stack size.
+	 * @since 2019/04/06
+	 */
+	public final int maxStack()
+	{
+		return this._stack.length;
 	}
 	
 	/**

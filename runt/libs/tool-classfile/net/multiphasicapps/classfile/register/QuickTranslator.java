@@ -242,6 +242,12 @@ public class QuickTranslator
 					this.__doReturn(null);
 					break;
 				
+					// Place stack variable into local
+				case SimplifiedJavaInstruction.STORE:
+					this.__doStore(sji.<JavaType>argument(0, JavaType.class),
+						sji.intArgument(1));
+					break;
+				
 					// Not yet implemented
 				default:
 					throw new todo.OOPS(
@@ -761,6 +767,40 @@ public class QuickTranslator
 			codebuilder.add(
 				DataType.of(result.out(i).type).copyOperation(true),
 				virt[pushindex.get(i)], result.out(i).register);
+	}
+	
+	/**
+	 * Stores an entry on the stack.
+	 *
+	 * @param __jt The type to pop.
+	 * @param __to The destination local.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/06
+	 */
+	private final void __doStore(JavaType __jt, int __to)
+		throws NullPointerException
+	{
+		if (__jt == null)
+			throw new NullPointerException("NARG");
+		
+		// Pop from the stack, but since we set a new result remember the
+		// input
+		JavaStackResult result = this._stack.doStack(1);
+		JavaStackResult.Input in = result.in(0);
+		
+		// Store into the local as well
+		result = result.after().doLocalSet(in.type, __to);
+		this._stack = result.after();
+		
+		// Uncount destination area
+		RegisterCodeBuilder codebuilder = this.codebuilder;
+		for (int i : result.enqueue())
+			codebuilder.add(RegisterOperationType.UNCOUNT,
+				i);
+		
+		// Do the copy, do not count because there will be a net result
+		codebuilder.add(DataType.of(__jt).copyOperation(true),
+			in.register, result.out(0).register);
 	}
 	
 	/**
