@@ -43,7 +43,7 @@ Information:
    * [Changelog](changelog.mkd)
    * [Compatibility](compatibility.mkd)
    * [History](history.mkd)
-   * [Release Route](route.mkd)
+   * [Release Roadmap](route.mkd)
    * [Usage](usage.mkd)
  * _Developer Resources_
    * [CircleCI Status](
