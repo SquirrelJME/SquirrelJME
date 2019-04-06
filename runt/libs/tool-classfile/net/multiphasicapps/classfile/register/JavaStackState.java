@@ -476,9 +476,10 @@ public final class JavaStackState
 		List<Info> pushed = new ArrayList<>();
 		for (JavaType pt : __pts)
 		{
-			// {@squirreljme.error JC2y Stack overflow.}
+			// {@squirreljme.error JC2y Stack overflow. (Top; Limit)}
 			if (stacktop >= stacklimit)
-				throw new IllegalArgumentException("JC2y");
+				throw new IllegalArgumentException("JC2y " + stacktop + " " +
+					stacklimit);
 			
 			// Setup entry
 			Info inf = newstack[stacktop];
