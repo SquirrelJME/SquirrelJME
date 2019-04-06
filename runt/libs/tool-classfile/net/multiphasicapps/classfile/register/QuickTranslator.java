@@ -316,6 +316,12 @@ public class QuickTranslator
 					this.__doStore(sji.<DataType>argument(0, DataType.class),
 						sji.intArgument(1));
 					break;
+					
+					// Return value
+				case SimplifiedJavaInstruction.VRETURN:
+					this.__doReturn(sji.<DataType>argument(0, DataType.class).
+						toJavaType());
+					break;
 				
 					// Not yet implemented
 				default:
@@ -970,7 +976,13 @@ public class QuickTranslator
 		// Return this value?
 		if (__rt != null)
 		{
-			throw new todo.TODO();
+			// Pop return value
+			JavaStackResult result = this._stack.doStack(1);
+			this._stack = result.after();
+			
+			// Store into the return register
+			this.codebuilder.add(DataType.of(__rt).returnValueStoreOperation(),
+				result.in(0).register);
 		}
 		
 		// Return from this point or jump to an existing return/cleanup point
