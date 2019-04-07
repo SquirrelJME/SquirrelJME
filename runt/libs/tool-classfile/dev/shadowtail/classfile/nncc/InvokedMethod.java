@@ -10,6 +10,7 @@
 
 package dev.shadowtail.classfile.nncc;
 
+import dev.shadowtail.classfile.xlate.InvokeType;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.classfile.MethodHandle;

@@ -9,6 +9,7 @@
 
 package dev.shadowtail.classfile.xlate;
 
+import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ConstantValue;
@@ -87,7 +88,7 @@ public final class ByteCodeProcessor
 	{
 		ByteCode bytecode = this.bytecode;
 		ByteCodeState state = this.state;
-		Map<Integer, JavaStackState> stacks = this._stacks;
+		Map<Integer, JavaStackState> stacks = state.stacks;
 		
 		// Process every instruction
 		for (Instruction inst : bytecode)
@@ -98,6 +99,10 @@ public final class ByteCodeProcessor
 			
 			// Debug
 			todo.DEBUG.note("Process %s (%s)", sji, inst);
+			
+			// Current instruction info
+			state.instruction = inst;
+			state.simplified = sji;
 			
 			// Current processing this address
 			int addr = inst.address();
@@ -234,8 +239,8 @@ public final class ByteCodeProcessor
 					// Math
 				case SimplifiedJavaInstruction.MATH:
 					this.__doMath(sji.<DataType>argument(0, DataType.class), 
-						sji.<MathOperationType>argument(1,
-							MathOperationType.class));
+						sji.<MathType>argument(1,
+							MathType.class));
 					break;
 				
 					// Create new instance of something
@@ -844,7 +849,7 @@ public final class ByteCodeProcessor
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/06
 	 */
-	private final void __doMath(DataType __pt, MathOperationType __mot)
+	private final void __doMath(DataType __pt, MathType __mot)
 		throws NullPointerException
 	{
 		if (__pt == null || __mot == null)
@@ -926,6 +931,16 @@ public final class ByteCodeProcessor
 		codebuilder.add(RegisterOperationType.NEW_ARRAY,
 			__cn, result.in(0).register, result.out(0).register);
 		*/
+	}
+	
+	/**
+	 * Do nothing.
+	 *
+	 * @since 2019/04/07
+	 */
+	private final void __doNop()
+	{
+		throw new todo.TODO();
 	}
 	
 	/**

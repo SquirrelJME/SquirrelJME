@@ -10,6 +10,11 @@
 
 package dev.shadowtail.classfile.mini;
 
+import dev.shadowtail.classfile.nncc.NativeCode;
+import dev.shadowtail.classfile.nncc.NativeInstruction;
+import dev.shadowtail.classfile.xlate.CompareType;
+import dev.shadowtail.classfile.xlate.DataType;
+import dev.shadowtail.classfile.xlate.MathType;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -28,13 +33,6 @@ import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.Method;
 import net.multiphasicapps.classfile.MethodFlags;
 import net.multiphasicapps.classfile.PrimitiveType;
-import net.multiphasicapps.classfile.register.CompareType;
-import net.multiphasicapps.classfile.register.DataType;
-import net.multiphasicapps.classfile.register.RegisterCode;
-import net.multiphasicapps.classfile.register.RegisterInstruction;
-import net.multiphasicapps.classfile.register.RegisterList;
-import net.multiphasicapps.classfile.register.RegisterOperationMnemonics;
-import net.multiphasicapps.classfile.register.RegisterOperationType;
 
 /**
  * This takes an input class file and translates it to the minimized format
@@ -186,7 +184,7 @@ public final class Minimizer
 			{
 				// The minified classes use register code since it is easier
 				// to handle by the VM
-				RegisterCode rc = m.registerCode();
+				NativeCode rc = m.nativeCode();
 				
 				// Encode to bytes
 				try (ByteArrayOutputStream lnb = new ByteArrayOutputStream();
@@ -230,7 +228,7 @@ public final class Minimizer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/23
 	 */
-	private final byte[] __translateCode(RegisterCode __rc)
+	private final byte[] __translateCode(NativeCode __rc)
 		throws IOException, NullPointerException
 	{
 		if (__rc == null)
@@ -254,7 +252,7 @@ public final class Minimizer
 		for (int cdx = 0; cdx < cdn; cdx++)
 		{
 			// Get instruction here
-			RegisterInstruction i = __rc.get(cdx);
+			NativeInstruction i = __rc.get(cdx);
 			
 			// Record that the instruction is at this position
 			indexpos[cdx] = dos.size();
@@ -268,6 +266,7 @@ public final class Minimizer
 			// a common layout.
 			switch (i.encoding())
 			{
+				/*
 				case RegisterOperationType.NOP:
 				case RegisterOperationType.RETURN:
 				case RegisterOperationType.REF_CLEAR:
@@ -415,7 +414,7 @@ public final class Minimizer
 					
 				case RegisterOperationType.TABLESWITCH:
 					throw new todo.TODO();
-				
+					*/
 				default:
 					throw new todo.OOPS();
 			}

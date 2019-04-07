@@ -9,6 +9,7 @@
 
 package dev.shadowtail.classfile.xlate;
 
+import net.multiphasicapps.classfile.Instruction;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -19,6 +20,12 @@ import java.util.Map;
  */
 public final class ByteCodeState
 {
+	/** Java instruction. */
+	public Instruction instruction;
+	
+	/** Simplified instruction. */
+	public SimplifiedJavaInstruction simplified;
+	
 	/** The resulting stack. */
 	public JavaStackState stack;
 	
