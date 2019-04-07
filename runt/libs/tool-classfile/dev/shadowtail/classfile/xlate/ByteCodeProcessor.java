@@ -22,20 +22,47 @@ public final class ByteCodeProcessor
 	/** The input byte code to be read. */
 	protected final ByteCode bytecode;
 	
+	/** Handle for byte-code operations. */
+	protected final ByteCodeHandler handler;
+	
+	/** The state of the byte code. */
+	protected final ByteCodeState state;
+	
 	/**
 	 * Initializes the byte code processor.
 	 *
 	 * @param __bc The target byte code.
+	 * @param __h Handler for the byte code operations.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/06
 	 */
-	public ByteCodeProcessor(ByteCode __bc)
+	public ByteCodeProcessor(ByteCode __bc, ByteCodeHandler __h)
 		throws NullPointerException
 	{
-		if (__bc == null)
+		if (__bc == null || __h == null)
 			throw new NullPointerException("NARG");
 		
 		this.bytecode = __bc;
+		this.handler = __h;
+		
+		// The state is used to share between the processor and the handler
+		ByteCodeState state = __h.state();
+		this.state = state;
+		
+		// Load initial Java stack state from the initial stack map
+		JavaStackState s;
+		state.stack = (s = JavaStackState.of(__bc.stackMapTable().get(0),
+			__bc.writtenLocals()));
+	}
+	
+	/**
+	 * Processes the byte code and calls the destination handler.
+	 *
+	 * @since 2019/04/06
+	 */
+	public final void process()
+	{
+		throw new todo.TODO();
 	}
 }
 
