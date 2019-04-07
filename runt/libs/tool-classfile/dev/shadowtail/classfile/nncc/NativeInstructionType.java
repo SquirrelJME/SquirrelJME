@@ -19,91 +19,92 @@ public interface NativeInstructionType
 {
 	/**
 	 * Math, R=RR, Integer.
-	 * {@code iiiiMMMM}.
+	 * {@code iiiiMMMM, r3 = r1 ? r2}.
 	 */
 	public static final int MATH_REG_INT =
 		0x00;
 	
 	/**
 	 * Math, R=RR, Long.
-	 * {@code iiiiMMMM}.
+	 * {@code iiiiMMMM, r3 = r1 ? r2}.
 	 */
 	public static final int MATH_REG_LONG =
 		0x10;
 	
 	/**
 	 * Math, R=RR, Float.
-	 * {@code iiiiMMMM}.
+	 * {@code iiiiMMMM, r3 = r1 ? r2}.
 	 */
 	public static final int MATH_REG_FLOAT =
 		0x20;
 	
 	/**
 	 * Math, R=RR, Double.
-	 * {@code iiiiMMMM}.
+	 * {@code iiiiMMMM, r3 = r1 ? r2}.
 	 */
 	public static final int MATH_REG_DOUBLE =
 		0x30;
 	
 	/**
 	 * Int comparison, then maybe jump.
-	 * {@code iiiiRccc}.
+	 * {@code iiiiRccc, if (r1 ? r2) jump->j3}.
 	 */
 	public static final int IF_ICMP =
 		0x40;
 	
 	/**
 	 * Memory access, offset is in register.
-	 * {@code iiiiLddd}.
+	 * {@code iiiiLddd, L=T load r1 = *(r2 + r3), L=F set *(r2 + r3) = r1}.
 	 */
 	public static final int MEMORY_OFF_REG =
 		0x50;
 	
+	
 	/**
-	 * Atomic memory access, offset is in register.
-	 * {@code iiiiLddd}.
+	 * Unused.
+	 * {@code iiii????}.
 	 */
-	public static final int ATOMIC_MEMORY_OFF_REG =
+	public static final int UNUSED_6 =
 		0x60;
 	
 	/**
 	 * Array access.
-	 * {@code iiiiLddd}.
+	 * {@code iiiiLddd, L=T load r1 = r2[r3], L=F set r2[r3] = r1}.
 	 */
 	public static final int ARRAY_ACCESS =
 		0x70;
 	
 	/**
 	 * Math, R=RC, Integer.
-	 * {@code iiiiMMMM}.
+	 * {@code iiiiMMMM, r3 = r1 ? c2}.
 	 */
 	public static final int MATH_CONST_INT =
 		0x80;
 	
 	/**
 	 * Math, R=RC, Long.
-	 * {@code iiiiMMMM}.
+	 * {@code iiiiMMMM, r3 = r1 ? c2}.
 	 */
 	public static final int MATH_CONST_LONG =
 		0x90;
 	
 	/**
 	 * Math, R=RC, Float.
-	 * {@code iiiiMMMM}.
+	 * {@code iiiiMMMM, r3 = r1 ? c2}.
 	 */
 	public static final int MATH_CONST_FLOAT =
 		0xA0;
 	
 	/**
 	 * Math, R=RC, Double.
-	 * {@code iiiiMMMM}.
+	 * {@code iiiiMMMM, r3 = r1 ? c2}.
 	 */
 	public static final int MATH_CONST_DOUBLE =
 		0xB0;
 	
 	/**
 	 * Conversion.
-	 * {@code iiiiFFTT}.
+	 * {@code iiiiFFTT, r2 <= r1}.
 	 */
 	public static final int CONVERSION =
 		0xC0;
@@ -111,16 +112,16 @@ public interface NativeInstructionType
 	
 	/**
 	 * Memory access, offset is a constant.
-	 * {@code iiiiLddd}.
+	 * {@code iiiiLddd, L=T load r1 = *(r2 + r3), L=F set *(r2 + r3) = r1}.
 	 */
 	public static final int MEMORY_OFF_ICONST =
 		0xD0;
 	
 	/**
-	 * Atomic memory access, offset is a constant.
-	 * {@code iiiiLddd}.
+	 * Unused.
+	 * {@code iiii????}.
 	 */
-	public static final int ATOMIC_MEMORY_OFF_ICONST =
+	public static final int UNUSED_E =
 		0xE0;
 	
 	/**
@@ -130,67 +131,113 @@ public interface NativeInstructionType
 	public static final int SPECIAL =
 		0xF0;
 	
-	/** New. */
+	/**
+	 * New. 
+	 * {@code iiiixxxx, r2 = new p1}.
+	 */
 	public static final int NEW =
 		0xF0;
 	
-	/** New array. */
+	/**
+	 * New array. 
+	 * {@code iiiixxxx, r2 = new p1[r3]}.
+	 */
 	public static final int NEWARRAY =
 		0xF1;
 	
-	/** Array length. */
+	/**
+	 * Array length. 
+	 * {@code iiiixxxx, r2 = r1.length}.
+	 */
 	public static final int ARRAYLEN =
 		0xF2;
 	
-	/** Return. */
+	/**
+	 * Return. 
+	 * {@code iiiixxxx, return}.
+	 */
 	public static final int RETURN =
 		0xF3;
 	
-	/** Lookup Switch. */
+	/**
+	 * Lookup Switch. 
+	 * {@code iiiixxxx}.
+	 */
 	public static final int LOOKUPSWITCH =
 		0xF4;
 	
-	/** Table Switch. */
+	/**
+	 * Table Switch. 
+	 * {@code iiiixxxx}.
+	 */
 	public static final int TABLESWITCH =
 		0xF5;
 	
-	/** Monitor enter. */
+	/**
+	 * Monitor enter. 
+	 * {@code iiiixxxx}.
+	 */
 	public static final int MONITORENTER =
 		0xF6;
 	
-	/** Invoke. */
+	/**
+	 * Invoke. 
+	 * {@code iiiixxxx}.
+	 */
 	public static final int INVOKE =
 		0xF7;
 	
-	/** Reference push. */
+	/**
+	 * Reference push. */
 	public static final int REF_PUSH =
 		0xF8;
 	
-	/** Reference clear. */
+	/**
+	 * Reference clear. 
+	 * {@code iiiixxxx}.
+	 */
 	public static final int REF_CLEAR =
 		0xF9;
 	
-	/** Reference reset. */
+	/**
+	 * Reference reset. 
+	 * {@code iiiixxxx}.
+	 */
 	public static final int REF_RESET =
 		0xFA;
 	
-	/** Count. */
+	/**
+	 * Count. 
+	 * {@code iiiixxxx}.
+	 */
 	public static final int COUNT =
 		0xFB;
 	
-	/** Uncount. */
+	/**
+	 * Uncount. 
+	 * {@code iiiixxxx}.
+	 */
 	public static final int UNCOUNT =
 		0xFC;
 	
-	/** Breakpoint. */
+	/**
+	 * Compare and exchange. 
+	 * {@code iiiixxxx}.
+	 */
 	public static final int BREAKPOINT =
 		0xFD;
 	
-	/** Monitor exit. */
+	/**
+	 * Monitor exit. 
+	 * {@code iiiixxxx}.
+	 */
 	public static final int MONITOREXIT =
 		0xFE;
 	
-	/** Load from pool. */
+	/**
+	 * Load from pool. 
+	 * {@code iiiixxxx}.
+	 */
 	public static final int LOAD_POOL =
 		0xFF;
 }

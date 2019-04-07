@@ -237,44 +237,42 @@ public final class NativeInstruction
 		// Depends on the encoding
 		switch (NativeInstruction.encoding(__op))
 		{
-			case NativeInstructionType.NOP:
-			case NativeInstructionType.RETURN:
 			case NativeInstructionType.REF_CLEAR:
 			case NativeInstructionType.REF_RESET:
+			case NativeInstructionType.RETURN:
 				return 0;
 			
-			case NativeInstructionType.ENCODING_U16:
-			case NativeInstructionType.ENCODING_U16_2:
-			case NativeInstructionType.ENCODING_J16:
-			case NativeInstructionType.REF_ENQUEUE:
+			case NativeInstructionType.COUNT:
+			case NativeInstructionType.INVOKE:
+			case NativeInstructionType.LOAD_POOL:
+			case NativeInstructionType.REF_PUSH:
+			case NativeInstructionType.MONITORENTER:
+			case NativeInstructionType.MONITOREXIT:
+			case NativeInstructionType.UNCOUNT:
 				return 1;
 				
-			case NativeInstructionType.X32_CONST:
-			case NativeInstructionType.X64_CONST:
-			case NativeInstructionType.INVOKE_METHOD:
-			case NativeInstructionType.ENCODING_U16_J16:
-			case NativeInstructionType.ENCODING_POOL16_U16:
-			case NativeInstructionType.ENCODING_U16_U16:
-			case NativeInstructionType.ENCODING_U16_U16_2:
-				return 2;
-				
+			case NativeInstructionType.ARRAYLEN:
+			case NativeInstructionType.CONVERSION:
 			case NativeInstructionType.LOOKUPSWITCH:
-			case NativeInstructionType.JUMP_IF_INSTANCE:
-			case NativeInstructionType.JUMP_IF_NOT_INSTANCE:
-			case NativeInstructionType.JUMP_IF_NOT_INSTANCE_REF_CLEAR:
-			case NativeInstructionType.ENCODING_U16_U16_J16:
-			case NativeInstructionType.ENCODING_POOL16_U16_U16:
-			case NativeInstructionType.ENCODING_U16_U16_U16:
-			case NativeInstructionType.ENCODING_U16_U16_U16_2:
-			case NativeInstructionType.ENCODING_U16_U16_U16_3:
+			case NativeInstructionType.NEW:
+			case NativeInstructionType.TABLESWITCH:
+				return 2;
+			
+			case NativeInstructionType.ARRAY_ACCESS:
+			case NativeInstructionType.IF_ICMP:
+			case NativeInstructionType.MATH_REG_INT:
+			case NativeInstructionType.MATH_REG_LONG:
+			case NativeInstructionType.MATH_REG_FLOAT:
+			case NativeInstructionType.MATH_REG_DOUBLE:
+			case NativeInstructionType.MATH_CONST_INT:
+			case NativeInstructionType.MATH_CONST_LONG:
+			case NativeInstructionType.MATH_CONST_FLOAT:
+			case NativeInstructionType.MATH_CONST_DOUBLE:
+			case NativeInstructionType.MEMORY_OFF_REG:
+			case NativeInstructionType.MEMORY_OFF_ICONST:
+			case NativeInstructionType.NEWARRAY:
 				return 3;
 				
-			case NativeInstructionType.JUMP_IF_INSTANCE_GET_EXCEPTION:
-				return 4;
-				
-			case NativeInstructionType.TABLESWITCH:
-				return 6;
-			
 				// {@squirreljme.error JC2r Unknown instruction argument
 				// count.}
 			default:
@@ -295,7 +293,7 @@ public final class NativeInstruction
 		// opcode, while all of the other operations use one of the pre-defined
 		// encodings.
 		int upper = __op & 0xF0;
-		if (upper != NativeInstructionType.ENCODING_SPECIAL)
+		if (upper == NativeInstructionType.SPECIAL)
 			return upper;
 		return __op;
 	}
