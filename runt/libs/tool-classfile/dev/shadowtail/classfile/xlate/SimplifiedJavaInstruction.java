@@ -102,7 +102,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.LOAD;
 				args = new Object[]
 					{
-						DataType.POINTER,
+						DataType.OBJECT,
 						__inst.intArgument(0),
 					};
 				break;
@@ -114,7 +114,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.LOAD;
 				args = new Object[]
 					{
-						DataType.POINTER,
+						DataType.OBJECT,
 						baseop - InstructionIndex.ALOAD_0,
 					};
 				break;
@@ -123,7 +123,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.VRETURN;
 				args = new Object[]
 					{
-						DataType.POINTER,
+						DataType.OBJECT,
 					};
 				break;
 			
@@ -131,7 +131,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.STORE;
 				args = new Object[]
 					{
-						DataType.POINTER,
+						DataType.OBJECT,
 						__inst.intArgument(0),
 					};
 				break;
@@ -143,7 +143,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.STORE;
 				args = new Object[]
 					{
-						DataType.POINTER,
+						DataType.OBJECT,
 						baseop - InstructionIndex.ASTORE_0,
 					};
 				break;
@@ -546,7 +546,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.IF;
 				args = new Object[]
 					{
-						DataType.POINTER,
+						DataType.OBJECT,
 						CompareType.NOT_EQUALS,
 						__inst.<InstructionJumpTarget>argument(0,
 							InstructionJumpTarget.class),
@@ -557,7 +557,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.IF;
 				args = new Object[]
 					{
-						DataType.POINTER,
+						DataType.OBJECT,
 						CompareType.EQUALS,
 						__inst.<InstructionJumpTarget>argument(0,
 							InstructionJumpTarget.class),
@@ -568,7 +568,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.IF_CMP;
 				args = new Object[]
 					{
-						DataType.POINTER,
+						DataType.OBJECT,
 						CompareType.EQUALS,
 						__inst.<InstructionJumpTarget>argument(0,
 							InstructionJumpTarget.class),
@@ -579,7 +579,7 @@ public final class SimplifiedJavaInstruction
 				op = SimplifiedJavaInstruction.IF_CMP;
 				args = new Object[]
 					{
-						DataType.POINTER,
+						DataType.OBJECT,
 						CompareType.NOT_EQUALS,
 						__inst.<InstructionJumpTarget>argument(0,
 							InstructionJumpTarget.class),
