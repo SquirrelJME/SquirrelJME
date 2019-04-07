@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.classfile.register;
+package dev.shadowtail.classfile.xlate;
 
 import dev.shadowtail.classfile.xlate.JavaStackEnqueueList;
 import dev.shadowtail.classfile.xlate.JavaStackState;

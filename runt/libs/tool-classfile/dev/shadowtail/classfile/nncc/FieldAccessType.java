@@ -8,20 +8,20 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.classfile.register;
+package dev.shadowtail.classfile.nncc;
 
 /**
- * This represents when a field is being accessed.
+ * Represents how a field is being accessed.
  *
  * @since 2019/03/24
  */
-public enum FieldAccessTime
+public enum FieldAccessType
 {
-	/** Accessed by constructor or static initializer. */
-	INITIALIZER,
+	/** Static. */
+	STATIC,
 	
-	/** Normal non-constructor access. */
-	NORMAL,
+	/** Instance. */
+	INSTANCE,
 	
 	/** End. */
 	;
