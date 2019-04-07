@@ -19,11 +19,20 @@ import java.util.Map;
  */
 public final class ByteCodeState
 {
-	/** The current state of the stack. */
+	/** The resulting stack. */
 	public JavaStackState stack;
+	
+	/** The result of the operation. */
+	public JavaStackResult result;
 	
 	/** The positions of all the stack information. */
 	public Map<Integer, JavaStackState> stacks =
 		new LinkedHashMap<>();
+	
+	/** The current source line being processed. */
+	public int line;
+	
+	/** The current address being processed. */
+	public int addr;
 }
 

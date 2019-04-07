@@ -25,7 +25,7 @@ import net.multiphasicapps.classfile.InstructionJumpTarget;
 public final class NativeCodeBuilder
 {
 	/** Temporary instruction layout. */
-	final Map<Integer, RegisterInstruction> _instructions =
+	final Map<Integer, NativeInstruction> _instructions =
 		new LinkedHashMap<>();
 	
 	/** Label positions. */
