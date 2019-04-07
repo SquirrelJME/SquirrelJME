@@ -35,6 +35,12 @@ public enum CompareType
 	/** Greater or equals. */
 	GREATER_THAN_OR_EQUALS,
 	
+	/** Always true. */
+	TRUE,
+	
+	/** Always false. */
+	FALSE,
+	
 	/** End. */
 	;
 	
