@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.classfile.register;
+package dev.shadowtail.classfile.nncc;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -18,7 +18,7 @@ import java.lang.ref.WeakReference;
  *
  * @since 2019/03/16
  */
-public final class RegisterCodeLabel
+public final class NativeCodeLabel
 {
 	/** The locality. */
 	public final String locality;
@@ -37,7 +37,7 @@ public final class RegisterCodeLabel
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/16
 	 */
-	public RegisterCodeLabel(String __l, int __a)
+	public NativeCodeLabel(String __l, int __a)
 		throws NullPointerException
 	{
 		if (__l == null)
@@ -57,10 +57,10 @@ public final class RegisterCodeLabel
 		if (this == __o)
 			return true;
 		
-		if (!(__o instanceof RegisterCodeLabel))
+		if (!(__o instanceof NativeCodeLabel))
 			return false;
 		
-		RegisterCodeLabel o = (RegisterCodeLabel)__o;
+		NativeCodeLabel o = (NativeCodeLabel)__o;
 		return this.locality.equals(o.locality) &&
 			this.address == o.address;
 	}

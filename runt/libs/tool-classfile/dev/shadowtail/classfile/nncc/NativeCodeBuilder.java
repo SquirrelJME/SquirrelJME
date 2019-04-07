@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.classfile.register;
+package dev.shadowtail.classfile.nncc;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,18 +18,18 @@ import java.util.Map;
 import net.multiphasicapps.classfile.InstructionJumpTarget;
 
 /**
- * This is used to build {@link RegisterCode} and add instructions to it.
+ * This is used to build {@link NativeCode} and add instructions to it.
  *
  * @since 2019/03/16
  */
-public final class RegisterCodeBuilder
+public final class NativeCodeBuilder
 {
 	/** Temporary instruction layout. */
 	final Map<Integer, RegisterInstruction> _instructions =
 		new LinkedHashMap<>();
 	
 	/** Label positions. */
-	final Map<RegisterCodeLabel, Integer> _labels =
+	final Map<NativeCodeLabel, Integer> _labels =
 		new LinkedHashMap<>();
 	
 	/** Current line number table. */
@@ -48,7 +48,7 @@ public final class RegisterCodeBuilder
 	 *
 	 * @since 2019/03/22
 	 */
-	public RegisterCodeBuilder()
+	public NativeCodeBuilder()
 	{
 		this._nextaddr = 0;
 	}
@@ -59,7 +59,7 @@ public final class RegisterCodeBuilder
 	 * @param __pc The address to start at.
 	 * @since 2019/03/22
 	 */
-	public RegisterCodeBuilder(int __pc)
+	public NativeCodeBuilder(int __pc)
 	{
 		this._nextaddr = __pc;
 	}
@@ -107,13 +107,13 @@ public final class RegisterCodeBuilder
 	 * @return The built register code.
 	 * @since 2019/03/22
 	 */
-	public final RegisterCode build()
+	public final NativeCode build()
 	{
 		// Working area for arguments
 		List<Object> workargs = new ArrayList<>();
 
 		// Labels which point to addresses
-		Map<RegisterCodeLabel, Integer> labels = this._labels;
+		Map<NativeCodeLabel, Integer> labels = this._labels;
 		
 		// If there are any jump points which refer to the instruction index
 		// directly following it, then remove the jump
@@ -129,13 +129,13 @@ public final class RegisterCodeBuilder
 			
 			// This includes all of the various types of jumps that would
 			// do nothing if they led to the next instruction
-			RegisterCodeLabel lt;
+			NativeCodeLabel lt;
 			switch (ri.op)
 			{
 				case RegisterOperationType.JUMP:
 				case RegisterOperationType.JUMP_IF_EXCEPTION:
 				case RegisterOperationType.JUMP_IF_RETURN:
-					lt = (RegisterCodeLabel)ri._args[0];
+					lt = (NativeCodeLabel)ri._args[0];
 					break;
 				
 				case RegisterOperationType.IFEQ:
@@ -144,7 +144,7 @@ public final class RegisterCodeBuilder
 				case RegisterOperationType.IFGE:
 				case RegisterOperationType.IFGT:
 				case RegisterOperationType.IFLE:
-					lt = (RegisterCodeLabel)ri._args[1];
+					lt = (NativeCodeLabel)ri._args[1];
 					break;
 				
 				case RegisterOperationType.IF_ICMPEQ:
@@ -154,7 +154,7 @@ public final class RegisterCodeBuilder
 				case RegisterOperationType.IF_ICMPLE:
 				case RegisterOperationType.IF_ICMPGE:
 				case RegisterOperationType.JUMP_IF_INSTANCE:
-					lt = (RegisterCodeLabel)ri._args[2];
+					lt = (NativeCodeLabel)ri._args[2];
 					break;
 				
 					// Not a jump
@@ -172,7 +172,7 @@ public final class RegisterCodeBuilder
 				lines.remove(i);
 				
 				// Move all of the label values down
-				for (Map.Entry<RegisterCodeLabel, Integer> e :
+				for (Map.Entry<NativeCodeLabel, Integer> e :
 					labels.entrySet())
 				{
 					int val = e.getValue();
@@ -193,11 +193,11 @@ public final class RegisterCodeBuilder
 			for (Object a : i._args)
 			{
 				// Map any labels to indexes
-				if (a instanceof RegisterCodeLabel)
+				if (a instanceof NativeCodeLabel)
 				{
 					// {@squirreljme.error JC35 The specified label was
 					// never defined. (The label)}
-					Integer rlp = labels.get((RegisterCodeLabel)a);
+					Integer rlp = labels.get((NativeCodeLabel)a);
 					if (rlp == null)
 						throw new IllegalArgumentException("JC35 " + a);
 					
@@ -223,7 +223,7 @@ public final class RegisterCodeBuilder
 				out.get(i));
 		
 		// Build
-		return new RegisterCode(out, xlines);
+		return new NativeCode(out, xlines);
 	}
 	
 	/**
@@ -234,9 +234,9 @@ public final class RegisterCodeBuilder
 	 * @return The added label.
 	 * @since 2019/03/22
 	 */
-	public final RegisterCodeLabel label(String __lo, int __dx)
+	public final NativeCodeLabel label(String __lo, int __dx)
 	{
-		return this.label(new RegisterCodeLabel(__lo, __dx), this._nextaddr);
+		return this.label(new NativeCodeLabel(__lo, __dx), this._nextaddr);
 	}
 	
 	/**
@@ -248,9 +248,9 @@ public final class RegisterCodeBuilder
 	 * @return The added label.
 	 * @since 2019/03/22
 	 */
-	public final RegisterCodeLabel label(String __lo, int __dx, int __pc)
+	public final NativeCodeLabel label(String __lo, int __dx, int __pc)
 	{
-		return this.label(new RegisterCodeLabel(__lo, __dx), __pc);
+		return this.label(new NativeCodeLabel(__lo, __dx), __pc);
 	}
 	
 	/**
@@ -261,7 +261,7 @@ public final class RegisterCodeBuilder
 	 * @return The added label.
 	 * @since 2019/03/22
 	 */
-	public final RegisterCodeLabel label(RegisterCodeLabel __l)
+	public final NativeCodeLabel label(NativeCodeLabel __l)
 	{
 		return this.label(__l, this._nextaddr);
 	}
@@ -273,7 +273,7 @@ public final class RegisterCodeBuilder
 	 * @return The added label.
 	 * @since 2019/03/22
 	 */
-	public final RegisterCodeLabel label(RegisterCodeLabel __l, int __pc)
+	public final NativeCodeLabel label(NativeCodeLabel __l, int __pc)
 	{
 		// Debug
 		todo.DEBUG.note("Label %s -> @%d", __l, __pc);
@@ -299,7 +299,7 @@ public final class RegisterCodeBuilder
 		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		return this.labelTarget(new RegisterCodeLabel(__n, __dx));
+		return this.labelTarget(new NativeCodeLabel(__n, __dx));
 	}
 	
 	/**
@@ -311,7 +311,7 @@ public final class RegisterCodeBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/22
 	 */
-	public final int labelTarget(RegisterCodeLabel __l)
+	public final int labelTarget(NativeCodeLabel __l)
 		throws NullPointerException
 	{
 		if (__l == null)

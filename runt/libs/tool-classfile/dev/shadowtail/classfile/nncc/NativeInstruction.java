@@ -20,7 +20,7 @@ import java.lang.ref.WeakReference;
  *
  * @since 2019/03/22
  */
-public final class RegisterInstruction
+public final class NativeInstruction
 {
 	/** The operation. */
 	protected final int op;
@@ -39,7 +39,7 @@ public final class RegisterInstruction
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/22
 	 */
-	public RegisterInstruction(int __op, Object... __args)
+	public NativeInstruction(int __op, Object... __args)
 		throws NullPointerException
 	{
 		this.op = __op;
@@ -59,7 +59,7 @@ public final class RegisterInstruction
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/22
 	 */
-	public RegisterInstruction(int __op, Collection<Object> __args)
+	public NativeInstruction(int __op, Collection<Object> __args)
 		throws NullPointerException
 	{
 		if (__args == null)
@@ -159,7 +159,7 @@ public final class RegisterInstruction
 	 */
 	public final int encoding()
 	{
-		return RegisterInstruction.encoding(this.op);
+		return NativeInstruction.encoding(this.op);
 	}
 	
 	/**
@@ -217,7 +217,7 @@ public final class RegisterInstruction
 		
 		if (ref == null || null == (rv = ref.get()))
 			this._string = new WeakReference<>((rv =
-				RegisterOperationMnemonics.toString(this.op) + ":" +
+				NativeInstruction.mnemonic(this.op) + ":" +
 				Arrays.asList(this._args)));
 		
 		return rv;
@@ -235,44 +235,44 @@ public final class RegisterInstruction
 		throws IllegalArgumentException
 	{
 		// Depends on the encoding
-		switch (RegisterInstruction.encoding(__op))
+		switch (NativeInstruction.encoding(__op))
 		{
-			case RegisterOperationType.NOP:
-			case RegisterOperationType.RETURN:
-			case RegisterOperationType.REF_CLEAR:
-			case RegisterOperationType.REF_RESET:
+			case NativeInstructionType.NOP:
+			case NativeInstructionType.RETURN:
+			case NativeInstructionType.REF_CLEAR:
+			case NativeInstructionType.REF_RESET:
 				return 0;
 			
-			case RegisterOperationType.ENCODING_U16:
-			case RegisterOperationType.ENCODING_U16_2:
-			case RegisterOperationType.ENCODING_J16:
-			case RegisterOperationType.REF_ENQUEUE:
+			case NativeInstructionType.ENCODING_U16:
+			case NativeInstructionType.ENCODING_U16_2:
+			case NativeInstructionType.ENCODING_J16:
+			case NativeInstructionType.REF_ENQUEUE:
 				return 1;
 				
-			case RegisterOperationType.X32_CONST:
-			case RegisterOperationType.X64_CONST:
-			case RegisterOperationType.INVOKE_METHOD:
-			case RegisterOperationType.ENCODING_U16_J16:
-			case RegisterOperationType.ENCODING_POOL16_U16:
-			case RegisterOperationType.ENCODING_U16_U16:
-			case RegisterOperationType.ENCODING_U16_U16_2:
+			case NativeInstructionType.X32_CONST:
+			case NativeInstructionType.X64_CONST:
+			case NativeInstructionType.INVOKE_METHOD:
+			case NativeInstructionType.ENCODING_U16_J16:
+			case NativeInstructionType.ENCODING_POOL16_U16:
+			case NativeInstructionType.ENCODING_U16_U16:
+			case NativeInstructionType.ENCODING_U16_U16_2:
 				return 2;
 				
-			case RegisterOperationType.LOOKUPSWITCH:
-			case RegisterOperationType.JUMP_IF_INSTANCE:
-			case RegisterOperationType.JUMP_IF_NOT_INSTANCE:
-			case RegisterOperationType.JUMP_IF_NOT_INSTANCE_REF_CLEAR:
-			case RegisterOperationType.ENCODING_U16_U16_J16:
-			case RegisterOperationType.ENCODING_POOL16_U16_U16:
-			case RegisterOperationType.ENCODING_U16_U16_U16:
-			case RegisterOperationType.ENCODING_U16_U16_U16_2:
-			case RegisterOperationType.ENCODING_U16_U16_U16_3:
+			case NativeInstructionType.LOOKUPSWITCH:
+			case NativeInstructionType.JUMP_IF_INSTANCE:
+			case NativeInstructionType.JUMP_IF_NOT_INSTANCE:
+			case NativeInstructionType.JUMP_IF_NOT_INSTANCE_REF_CLEAR:
+			case NativeInstructionType.ENCODING_U16_U16_J16:
+			case NativeInstructionType.ENCODING_POOL16_U16_U16:
+			case NativeInstructionType.ENCODING_U16_U16_U16:
+			case NativeInstructionType.ENCODING_U16_U16_U16_2:
+			case NativeInstructionType.ENCODING_U16_U16_U16_3:
 				return 3;
 				
-			case RegisterOperationType.JUMP_IF_INSTANCE_GET_EXCEPTION:
+			case NativeInstructionType.JUMP_IF_INSTANCE_GET_EXCEPTION:
 				return 4;
 				
-			case RegisterOperationType.TABLESWITCH:
+			case NativeInstructionType.TABLESWITCH:
 				return 6;
 			
 				// {@squirreljme.error JC2r Unknown instruction argument
@@ -295,7 +295,7 @@ public final class RegisterInstruction
 		// opcode, while all of the other operations use one of the pre-defined
 		// encodings.
 		int upper = __op & 0xF0;
-		if (upper != RegisterOperationType.ENCODING_SPECIAL)
+		if (upper != NativeInstructionType.ENCODING_SPECIAL)
 			return upper;
 		return __op;
 	}
