@@ -53,6 +53,7 @@ public final class ByteCodeProcessor
 		JavaStackState s;
 		state.stack = (s = JavaStackState.of(__bc.stackMapTable().get(0),
 			__bc.writtenLocals()));
+		state.stacks.put(0, s);
 	}
 	
 	/**
@@ -62,6 +63,10 @@ public final class ByteCodeProcessor
 	 */
 	public final void process()
 	{
+		ByteCode bytecode = this.bytecode;
+		ByteCodeState state = this.state;
+		Map<Integer, JavaStackState> stacks = this._stacks;
+		
 		throw new todo.TODO();
 	}
 }

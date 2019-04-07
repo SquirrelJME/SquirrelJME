@@ -9,6 +9,9 @@
 
 package dev.shadowtail.classfile.xlate;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * This represents the state of the byte code.
  *
@@ -18,5 +21,9 @@ public final class ByteCodeState
 {
 	/** The current state of the stack. */
 	public JavaStackState stack;
+	
+	/** The positions of all the stack information. */
+	public Map<Integer, JavaStackState> stacks =
+		new LinkedHashMap<>();
 }
 
