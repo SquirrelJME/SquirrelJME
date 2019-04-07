@@ -10,6 +10,8 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import dev.shadowtail.classfile.mini.MinimizedClassFile;
+import dev.shadowtail.classfile.mini.Minimizer;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.VMException;
 import java.io.InputStream;
@@ -18,8 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
-import net.multiphasicapps.classfile.mini.MinimizedClassFile;
-import net.multiphasicapps.classfile.mini.Minimizer;
 
 /**
  * This is a class which caches classes within class libraries, it is intended
