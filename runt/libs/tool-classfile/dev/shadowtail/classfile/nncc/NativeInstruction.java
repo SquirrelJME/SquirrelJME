@@ -297,5 +297,17 @@ public final class NativeInstruction
 			return upper;
 		return __op;
 	}
+	
+	/**
+	 * Returns the mnemonic of the given operation.
+	 *
+	 * @param __op The operation to get.
+	 * @return The mnemonic for the operation.
+	 * @since 2019/04/07
+	 */
+	public static final String mnemonic(int __op)
+	{
+		throw new todo.TODO();
+	}
 }
 

@@ -74,12 +74,12 @@ public final class NativeCodeBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/16
 	 */
-	public final RegisterInstruction add(int __op, Object... __args)
+	public final NativeInstruction add(int __op, Object... __args)
 		throws IllegalArgumentException, NullPointerException
 	{
 		// {@squirreljme.error JC2q Operation has an incorrect number of
 		// arguments.}
-		if (RegisterInstruction.argumentCount(__op) != __args.length)
+		if (NativeInstruction.argumentCount(__op) != __args.length)
 			throw new IllegalArgumentException("JC2q");
 		
 		for (Object o : __args)
@@ -88,11 +88,11 @@ public final class NativeCodeBuilder
 		
 		// Create instruction
 		int atdx = this._nextaddr++;
-		RegisterInstruction rv = new RegisterInstruction(__op, __args);
+		NativeInstruction rv = new NativeInstruction(__op, __args);
 		
 		// Debug
 		todo.DEBUG.note("@%d -> %s %s", atdx,
-			RegisterOperationMnemonics.toString(__op), Arrays.asList(__args));
+			NativeInstruction.mnemonic(__op), Arrays.asList(__args));
 		
 		// Store and return the instruction, it will have the address
 		this._instructions.put(atdx, rv);
@@ -120,13 +120,15 @@ public final class NativeCodeBuilder
 		// This will happen in constructors that call another constructor since
 		// there will be an exception handler jump that points to the next
 		// instruction
-		List<RegisterInstruction> in = new ArrayList<>(
+		List<NativeInstruction> in = new ArrayList<>(
 			this._instructions.values());
 		List<Integer> lines = new ArrayList<>(this._lines);
 		for (int i = in.size() - 1; i >= 0; i--)
 		{
-			RegisterInstruction ri = in.get(i);
+			NativeInstruction ri = in.get(i);
 			
+			throw new todo.TODO();
+			/*
 			// This includes all of the various types of jumps that would
 			// do nothing if they led to the next instruction
 			NativeCodeLabel lt;
@@ -180,13 +182,14 @@ public final class NativeCodeBuilder
 						e.setValue(val - 1);
 				}
 			}
+			*/
 		}
 		
 		// Output instructions
-		List<RegisterInstruction> out = new ArrayList<>();
+		List<NativeInstruction> out = new ArrayList<>();
 		
 		// Go through input instructions and map them to real instructions
-		for (RegisterInstruction i : in)
+		for (NativeInstruction i : in)
 		{
 			// Fill in working arguments, with translated labels
 			workargs.clear();
@@ -208,7 +211,7 @@ public final class NativeCodeBuilder
 			}
 			
 			// Build instruction
-			out.add(new RegisterInstruction(i.op, workargs));
+			out.add(new NativeInstruction(i.op, workargs));
 		}
 		
 		// Translate line number table

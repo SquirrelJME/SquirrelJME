@@ -260,7 +260,7 @@ public final class Method
 		{
 			// Process Code
 			NearNativeByteCodeHandler nnbc = new NearNativeByteCodeHandler();
-			new ByteCodeProcessor(__bc, nnbc).process();
+			new ByteCodeProcessor(this.byteCode(), nnbc).process();
 			
 			// Cache the result of it
 			this._regcode = new WeakReference<>((rv = nnbc.result()));

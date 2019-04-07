@@ -10,6 +10,8 @@
 
 package dev.shadowtail.classfile.mini;
 
+import dev.shadowtail.classfile.nncc.AccessedField;
+import dev.shadowtail.classfile.nncc.InvokedMethod;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -21,8 +23,6 @@ import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodHandle;
 import net.multiphasicapps.classfile.MethodName;
-import net.multiphasicapps.classfile.register.AccessedField;
-import net.multiphasicapps.classfile.register.InvokedMethod;
 
 /**
  * This class is used to build the constant pool for a minimized class.

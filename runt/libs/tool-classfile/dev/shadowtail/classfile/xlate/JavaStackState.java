@@ -397,7 +397,7 @@ public final class JavaStackState
 	 */
 	public final JavaStackResult doNothing()
 	{
-		return new JavaStackResult(this, tis, null);
+		return new JavaStackResult(this, this, null);
 	}
 	
 	/**
