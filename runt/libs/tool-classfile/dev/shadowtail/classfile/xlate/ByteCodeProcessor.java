@@ -769,55 +769,72 @@ public final class ByteCodeProcessor
 		if (__v == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
-		/*
 		// Get push properties
 		JavaType jt = __v.type().javaType();
 		
-		// Push to the stack this type
-		JavaStackResult result = this._stack.doStack(0, jt);
-		this._stack = result.after();
+		// Push to the stack this type, the result is always cached
+		JavaStackResult result = this.state.stack.doStack(0, true, jt);
+		this.__update(result);
 		
-		// Generate instruction
-		RegisterCodeBuilder codebuilder = this.codebuilder;
+		// Call the appropriate handler
+		ByteCodeHandler handler = this.handler;
 		switch (__v.type())
 		{
 			case INTEGER:
+				if (true)
+					throw new todo.TODO();
+				/*
 				codebuilder.add(RegisterOperationType.X32_CONST,
 					(Integer)__v.boxedValue(),
 					result.out(0).register);
+				*/
 				break;
 				
 			case FLOAT:
+				if (true)
+					throw new todo.TODO();
+				/*
 				codebuilder.add(RegisterOperationType.X32_CONST,
 					Float.floatToRawIntBits((Float)__v.boxedValue()),
 					result.out(0).register);
+				*/
 				break;
 			
 			case LONG:
+				if (true)
+					throw new todo.TODO();
+				/*
 				codebuilder.add(RegisterOperationType.X64_CONST,
 					__v.boxedValue(),
 					result.out(0).register);
+				*/
 				break;
 				
 			case DOUBLE:
+				if (true)
+					throw new todo.TODO();
+				/*
 				codebuilder.add(RegisterOperationType.X64_CONST,
 					Double.doubleToRawLongBits((Double)__v.boxedValue()),
 					result.out(0).register);
+				*/
 				break;
 			
 			case STRING:
 			case CLASS:
+				if (true)
+					throw new todo.TODO();
+				/*
 				codebuilder.add(RegisterOperationType.LOAD_POOL_VALUE,
 					__v.boxedValue(), result.out(0).register);
 				codebuilder.add(RegisterOperationType.COUNT,
 					result.out(0).register);
+				*/
 				break;
 			
 			default:
 				throw new todo.OOPS();
 		}
-		*/
 	}
 	
 	/**
