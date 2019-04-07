@@ -193,7 +193,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						DataType.DOUBLE,
-						MathOperationType.ADD,
+						MathType.ADD,
 					};
 				break;
 				
@@ -228,7 +228,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						DataType.DOUBLE,
-						MathOperationType.DIV,
+						MathType.DIV,
 					};
 				break;
 			
@@ -259,7 +259,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						DataType.DOUBLE,
-						MathOperationType.REM,
+						MathType.REM,
 					};
 				break;
 			
@@ -297,7 +297,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						DataType.DOUBLE,
-						MathOperationType.SUB,
+						MathType.SUB,
 					};
 				break;
 			
@@ -306,7 +306,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						DataType.FLOAT,
-						MathOperationType.ADD,
+						MathType.ADD,
 					};
 				break;
 				
@@ -342,7 +342,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						DataType.FLOAT,
-						MathOperationType.DIV,
+						MathType.DIV,
 					};
 				break;
 			
@@ -372,7 +372,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						DataType.FLOAT,
-						MathOperationType.REM,
+						MathType.REM,
 					};
 				break;
 				
@@ -410,7 +410,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						DataType.FLOAT,
-						MathOperationType.SUB,
+						MathType.SUB,
 					};
 				break;
 			
@@ -423,7 +423,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						DataType.INTEGER,
-						MathOperationType.ADD,
+						MathType.ADD,
 					};
 				break;
 				
@@ -440,7 +440,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						DataType.INTEGER,
-						MathOperationType.AND,
+						MathType.AND,
 					};
 				break;
 				
@@ -472,7 +472,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						DataType.INTEGER,
-						MathOperationType.DIV,
+						MathType.DIV,
 					};
 				break;
 				
@@ -678,7 +678,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						DataType.INTEGER,
-						MathOperationType.OR,
+						MathType.OR,
 					};
 				break;
 				
@@ -687,7 +687,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						DataType.INTEGER,
-						MathOperationType.REM,
+						MathType.REM,
 					};
 				break;
 				
@@ -704,7 +704,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						DataType.INTEGER,
-						MathOperationType.SHL,
+						MathType.SHL,
 					};
 				break;
 				
@@ -713,7 +713,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						DataType.INTEGER,
-						MathOperationType.SHR,
+						MathType.SHR,
 					};
 				break;
 			
@@ -743,7 +743,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						DataType.INTEGER,
-						MathOperationType.SUB,
+						MathType.SUB,
 					};
 				break;
 				
@@ -752,7 +752,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						DataType.INTEGER,
-						MathOperationType.USHR,
+						MathType.USHR,
 					};
 				break;
 				
@@ -761,7 +761,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						DataType.INTEGER,
-						MathOperationType.XOR,
+						MathType.XOR,
 					};
 				break;
 				
@@ -770,7 +770,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						DataType.LONG,
-						MathOperationType.ADD,
+						MathType.ADD,
 					};
 				break;
 				
@@ -787,7 +787,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						DataType.LONG,
-						MathOperationType.AND,
+						MathType.AND,
 					};
 				break;
 				
@@ -819,7 +819,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						DataType.LONG,
-						MathOperationType.DIV,
+						MathType.DIV,
 					};
 				break;
 			
@@ -849,7 +849,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						DataType.LONG,
-						MathOperationType.OR,
+						MathType.OR,
 					};
 				break;
 				
@@ -858,7 +858,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						DataType.LONG,
-						MathOperationType.REM,
+						MathType.REM,
 					};
 				break;
 				
@@ -875,7 +875,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						DataType.LONG,
-						MathOperationType.SHL,
+						MathType.SHL,
 					};
 				break;
 				
@@ -884,7 +884,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						DataType.LONG,
-						MathOperationType.SHR,
+						MathType.SHR,
 					};
 				break;
 			
@@ -914,7 +914,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						DataType.LONG,
-						MathOperationType.SUB,
+						MathType.SUB,
 					};
 				break;
 				
@@ -923,7 +923,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						DataType.LONG,
-						MathOperationType.USHR,
+						MathType.USHR,
 					};
 				break;
 				
@@ -932,7 +932,7 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						DataType.LONG,
-						MathOperationType.XOR,
+						MathType.XOR,
 					};
 				break;
 			
