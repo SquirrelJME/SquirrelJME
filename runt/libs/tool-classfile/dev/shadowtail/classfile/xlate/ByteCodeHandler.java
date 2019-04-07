@@ -18,6 +18,30 @@ package dev.shadowtail.classfile.xlate;
 public interface ByteCodeHandler
 {
 	/**
+	 * Performs a copy operation.
+	 *
+	 * @param __in The input.
+	 * @param __out The output.
+	 * @since 2019/04/07
+	 */
+	public abstract void doCopy(JavaStackResult.Input __in,
+		JavaStackResult.Output __out);
+	
+	/**
+	 * Finishes handling the instruction operation.
+	 *
+	 * @since 2019/04/07
+	 */
+	public abstract void instructionFinish();
+	
+	/**
+	 * Sets up before processing the instruction.
+	 *
+	 * @since 2019/04/07
+	 */
+	public abstract void instructionSetup();
+	
+	/**
 	 * Returns the state of the byte code, this must always return the
 	 * same object.
 	 *
