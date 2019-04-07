@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.classfile.register;
 
+import dev.shadowtail.classfile.nncc.NearNativeByteCodeHandler;
+import dev.shadowtail.classfile.xlate.ByteCodeProcessor;
 import java.util.Collection;
 import java.util.Iterator;
 import net.multiphasicapps.classfile.ByteCode;
@@ -187,6 +189,12 @@ public final class RegisterCode
 	{
 		if (__bc == null || __tm == null)
 			throw new NullPointerException("NARG");
+		
+		NearNativeByteCodeHandler nnbc = new NearNativeByteCodeHandler();
+		new ByteCodeProcessor(__bc, nnbc).process();
+		
+		if (true)
+			throw new todo.TODO();
 		
 		return __tm.translator(__bc).convert();
 	}
