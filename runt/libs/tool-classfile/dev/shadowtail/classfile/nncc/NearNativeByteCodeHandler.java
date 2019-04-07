@@ -24,6 +24,21 @@ public final class NearNativeByteCodeHandler
 	public final ByteCodeState state =
 		new ByteCodeState();
 	
+	/** Used to build native code. */
+	protected final NativeCodeBuilder codebuilder =
+		new NativeCodeBuilder();
+	
+	/**
+	 * Returns the result of the translation.
+	 *
+	 * @return The translation result.
+	 * @since 2019/04/07
+	 */
+	public final NativeCode result()
+	{
+		throw new todo.TODO();
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2019/04/06

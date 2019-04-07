@@ -10,6 +10,9 @@
 
 package net.multiphasicapps.classfile;
 
+import dev.shadowtail.classfile.nncc.NativeCode;
+import dev.shadowtail.classfile.nncc.NearNativeByteCodeHandler;
+import dev.shadowtail.classfile.xlate.ByteCodeProcessor;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
@@ -18,7 +21,6 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import net.multiphasicapps.classfile.register.RegisterCode;
 import net.multiphasicapps.collections.UnmodifiableArrayList;
 
 /**
@@ -63,8 +65,8 @@ public final class Method
 	/** The method byte code. */
 	private Reference<ByteCode> _bytecode;
 	
-	/** Register code. */
-	private Reference<RegisterCode> _regcode;
+	/** Native code. */
+	private Reference<NativeCode> _regcode;
 	
 	/** Name and type reference. */
 	private Reference<MethodNameAndType> _nameandtype;
@@ -238,6 +240,36 @@ public final class Method
 	}
 	
 	/**
+	 * Returns the code of this method in a register based format that is
+	 * more efficient than pure Java byte code.
+	 *
+	 * @return The code of this method in a register based format.
+	 * @since 2019/03/09
+	 */
+	public final NativeCode nativeCode()
+	{
+		// Abstract and native methods have no code
+		if (!this.hascode)
+			return null;
+		
+		// Cache it
+		Reference<NativeCode> ref = this._regcode;
+		NativeCode rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+		{
+			// Process Code
+			NearNativeByteCodeHandler nnbc = new NearNativeByteCodeHandler();
+			new ByteCodeProcessor(__bc, nnbc).process();
+			
+			// Cache the result of it
+			this._regcode = new WeakReference<>((rv = nnbc.result()));
+		}
+		
+		return rv;
+	}
+	
+	/**
 	 * Returns the constant pool this method uses.
 	 *
 	 * @return The constant pool which is used.
@@ -246,30 +278,6 @@ public final class Method
 	public final Pool pool()
 	{
 		return this.pool;
-	}
-	
-	/**
-	 * Returns the code of this method in a register based format that is
-	 * more efficient than pure Java byte code.
-	 *
-	 * @return The code of this method in a register based format.
-	 * @since 2019/03/09
-	 */
-	public final RegisterCode registerCode()
-	{
-		// Abstract and native methods have no code
-		if (!this.hascode)
-			return null;
-		
-		// Cache it
-		Reference<RegisterCode> ref = this._regcode;
-		RegisterCode rv;
-		
-		if (ref == null || null == (rv = ref.get()))
-			this._regcode = new WeakReference<>(
-				(rv = RegisterCode.of(this.byteCode())));
-		
-		return rv;
 	}
 	
 	/**
