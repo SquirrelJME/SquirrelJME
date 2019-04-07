@@ -36,7 +36,7 @@ public final class NearNativeByteCodeHandler
 	 */
 	public final NativeCode result()
 	{
-		throw new todo.TODO();
+		return this.codebuilder.build();
 	}
 	
 	/**

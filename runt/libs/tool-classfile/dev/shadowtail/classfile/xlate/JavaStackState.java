@@ -389,6 +389,18 @@ public final class JavaStackState
 	}
 	
 	/**
+	 * Does nothing, keeping the state exactly the same but producing a
+	 * result.
+	 *
+	 * @return The result of doing nothing.
+	 * @since 2019/04/07
+	 */
+	public final JavaStackResult doNothing()
+	{
+		return new JavaStackResult(this, tis, null);
+	}
+	
+	/**
 	 * Pops a certain number of variables and then pushes the given types
 	 * to the stack. Note that all results of this operation will treat
 	 * all of the target stack operations as new freshly obtained values
