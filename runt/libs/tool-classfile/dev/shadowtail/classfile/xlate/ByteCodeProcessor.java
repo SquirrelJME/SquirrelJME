@@ -89,6 +89,7 @@ public final class ByteCodeProcessor
 		ByteCode bytecode = this.bytecode;
 		ByteCodeState state = this.state;
 		Map<Integer, JavaStackState> stacks = state.stacks;
+		ByteCodeHandler handler = this.handler;
 		
 		// Process every instruction
 		for (Instruction inst : bytecode)
@@ -120,6 +121,9 @@ public final class ByteCodeProcessor
 			JavaStackState stack = stacks.get(addr);
 			if (stack == null)
 				throw new IllegalArgumentException("JC37 " + addr);
+			
+			// Call pre-handler
+			handler.instructionSetup();
 			
 			// Handle the operation
 			switch (sji.operation())
@@ -295,6 +299,8 @@ public final class ByteCodeProcessor
 						sji.toString() + "/" + inst.toString());
 			}
 			
+			// Call post-handler
+			handler.instructionFinish();
 		}
 	}
 	
@@ -828,17 +834,14 @@ public final class ByteCodeProcessor
 		if (__jt == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
-		/*
-		// Push to the stack
-		JavaStackResult result = this._stack.doStack(0, __jt.toJavaType());
-		this._stack = result.after();
+		// Load from local variable
+		JavaStackResult result = this.state.stack.doLocalLoad(__from);
+		this.__update(result);
 		
-		// Do the copy
-		this.codebuilder.add(__jt.copyOperation(false),
-			result.before().getLocal(__from).register,
-			result.out(0).register);
-		*/
+		// Only perform the copy if the value is different, because otherwise
+		// it would have just been cached
+		if (result.in(0).register != result.out(0).register)
+			this.handler.doCopy(result.in(0), result.out(0));
 	}
 	
 	/**
@@ -1190,13 +1193,13 @@ public final class ByteCodeProcessor
 	}
 	
 	/**
-	 * Updates the stack state.
+	 * Updates the stack state and result.
 	 *
 	 * @param __jsr The stack result.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/07
 	 */
-	private final void __updateStack(JavaStackResult __jsr)
+	private final void __update(JavaStackResult __jsr)
 		throws NullPointerException
 	{
 		if (__jsr == null)

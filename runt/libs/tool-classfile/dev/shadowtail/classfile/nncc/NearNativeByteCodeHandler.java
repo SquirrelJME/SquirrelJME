@@ -11,6 +11,7 @@ package dev.shadowtail.classfile.nncc;
 
 import dev.shadowtail.classfile.xlate.ByteCodeHandler;
 import dev.shadowtail.classfile.xlate.ByteCodeState;
+import dev.shadowtail.classfile.xlate.JavaStackResult;
 
 /**
  * This contains the handler for the near native byte code.
@@ -27,6 +28,40 @@ public final class NearNativeByteCodeHandler
 	/** Used to build native code. */
 	protected final NativeCodeBuilder codebuilder =
 		new NativeCodeBuilder();
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/07
+	 */
+	@Override
+	public final void doCopy(JavaStackResult.Input __in,
+		JavaStackResult.Output __out)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/07
+	 */
+	@Override
+	public final void instructionFinish()
+	{
+	}
+	
+	/**
+	 * Sets up before processing the instruction.
+	 *
+	 * @since 2019/04/07
+	 */
+	public final void instructionSetup()
+	{
+		NativeCodeBuilder codebuilder = this.codebuilder;
+		ByteCodeState state = this.state;
+		
+		// Setup a label for this current position
+		codebuilder.label("java", state.addr);
+	}
 	
 	/**
 	 * Returns the result of the translation.

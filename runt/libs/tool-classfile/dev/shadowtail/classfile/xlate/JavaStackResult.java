@@ -79,7 +79,13 @@ public final class JavaStackResult
 		this._out = out.<Output>toArray(new Output[out.size()]);
 		
 		// Debug
-		todo.DEBUG.note("%s", this);
+		todo.DEBUG.note("*** Stack Result ***");
+		todo.DEBUG.note("BEF: %s", __bs);
+		todo.DEBUG.note("AFT: %s", __as);
+		todo.DEBUG.note("ENQ: %s", __eq);
+		todo.DEBUG.note("IN : %s", in);
+		todo.DEBUG.note("OUT: %s", out);
+		todo.DEBUG.note("********************");
 	}
 	
 	/**

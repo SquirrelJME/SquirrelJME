@@ -18,7 +18,7 @@ import java.util.Map;
  *
  * @since 2019/04/06
  */
-public final class ByteCodeState
+public class ByteCodeState
 {
 	/** Java instruction. */
 	public Instruction instruction;
