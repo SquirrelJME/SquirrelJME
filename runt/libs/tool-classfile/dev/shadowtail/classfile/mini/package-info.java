@@ -18,5 +18,5 @@
  * @since 2019/03/10
  */
 
-package net.multiphasicapps.classfile.mini;
+package dev.shadowtail.classfile.mini;
 
