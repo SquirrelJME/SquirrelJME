@@ -8,49 +8,55 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.classfile.register;
+package dev.shadowtail.classfile.nncc;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import net.multiphasicapps.classfile.MethodHandle;
+import net.multiphasicapps.classfile.FieldReference;
 
 /**
- * Represents a method to be invoked.
+ * This represents a field which has been accessed.
  *
- * @since 2019/03/21
+ * @since 2019/03/24
  */
-public final class InvokedMethod
+public final class AccessedField
 {
-	/** The type of method to invoke. */
-	protected final InvokeType type;
+	/** The field reference. */
+	protected final FieldReference field;
 	
-	/** The handle of the method being invoke. */
-	protected final MethodHandle handle;
+	/** The access time. */
+	protected final FieldAccessTime time;
+	
+	/** The access type. */
+	protected final FieldAccessType type;
 	
 	/** String representation. */
 	private Reference<String> _string;
 	
 	/**
-	 * Initializes the invoked method.
+	 * Initializes the accessed field.
 	 *
-	 * @param __t The type of method to invoke.
-	 * @param __h The handle of the method.
+	 * @param __ti The access time.
+	 * @param __ty The access type.
+	 * @param __f The field to access.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2019/03/21
+	 * @since 2019/03/24
 	 */
-	public InvokedMethod(InvokeType __t, MethodHandle __h)
+	public AccessedField(FieldAccessTime __ti, FieldAccessType __ty,
+		FieldReference __f)
 		throws NullPointerException
 	{
-		if (__t == null || __h == null)
+		if (__ti == null || __ty == null || __f == null)
 			throw new NullPointerException("NARG");
 		
-		this.type = __t;
-		this.handle = __h;
+		this.time = __ti;
+		this.type = __ty;
+		this.field = __f;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/03/24
+	 * @since 2019/03/24
 	 */
 	@Override
 	public final boolean equals(Object __o)
@@ -58,38 +64,40 @@ public final class InvokedMethod
 		if (this == __o)
 			return true;
 		
-		if (!(__o instanceof InvokedMethod))
+		if (!(__o instanceof AccessedField))
 			return false;
 		
-		InvokedMethod o = (InvokedMethod)__o;
-		return this.type.equals(o.type) &&
-			this.handle.equals(o.handle);
+		AccessedField o = (AccessedField)__o;
+		return this.field.equals(o.field) &&
+			this.time.equals(o.time) &&
+			this.type.equals(o.type);
 	}
 	
 	/**
-	 * Returns the method handle.
+	 * Returns the field reference.
 	 *
-	 * @return The method handle.
-	 * @since 2019/03/24
+	 * @return The field reference.
+	 * @since 2019/03/26
 	 */
-	public final MethodHandle handle()
+	public final FieldReference field()
 	{
-		return this.handle;
+		return this.field;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/03/24
+	 * @since 2019/03/24
 	 */
 	@Override
 	public final int hashCode()
 	{
-		return this.type.hashCode() ^ this.handle.hashCode();
+		return this.field.hashCode() ^ this.time.hashCode() ^
+			this.type.hashCode();
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2019/03/21
+	 * @since 2019/03/24
 	 */
 	@Override
 	public final String toString()
@@ -98,8 +106,8 @@ public final class InvokedMethod
 		String rv;
 		
 		if (ref == null || null == (rv = ref.get()))
-			this._string = new WeakReference<>(
-				(rv = this.type + "+" + this.handle));
+			this._string = new WeakReference<>((rv =
+				this.time + "+" + this.type + "+" + this.field));
 		
 		return rv;
 	}
