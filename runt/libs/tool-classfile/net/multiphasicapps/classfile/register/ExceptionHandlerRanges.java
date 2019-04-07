@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.classfile.register;
 
+import dev.shadowtail.classfile.xlate.JavaStackEnqueueList;
+import dev.shadowtail.classfile.xlate.JavaStackState;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;

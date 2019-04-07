@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.classfile.register;
+package dev.shadowtail.classfile.xlate;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -33,10 +33,10 @@ import net.multiphasicapps.classfile.StackMapTableState;
 public final class JavaStackState
 {
 	/** The top of the stack. */
-	protected final int stacktop;
+	public final int stacktop;
 	
 	/** Number of used registers. */
-	protected final int usedregisters;
+	public final int usedregisters;
 	
 	/** The local variables defined. */
 	private final Info[] _locals;
