@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.classfile.register;
+package dev.shadowtail.classfile.nncc;
 
 import dev.shadowtail.classfile.nncc.NearNativeByteCodeHandler;
 import dev.shadowtail.classfile.xlate.ByteCodeProcessor;
@@ -25,14 +25,14 @@ import net.multiphasicapps.collections.UnmodifiableIterator;
  * @see ByteCode
  * @since 2019/03/09
  */
-public final class RegisterCode
-	implements Iterable<RegisterInstruction>
+public final class NativeCode
+	implements Iterable<NativeInstruction>
 {
 	/** The translation method to use. */
 	public static final TranslationMethod USED_METHOD;
 	
 	/** Instructions for this code. */
-	private final RegisterInstruction[] _instructions;
+	private final NativeInstruction[] _instructions;
 	
 	/** Line number table. */
 	private final short[] _lines;
@@ -77,11 +77,11 @@ public final class RegisterCode
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/22
 	 */
-	public RegisterCode(RegisterInstruction[] __i, short[] __l)
+	public NativeCode(NativeInstruction[] __i, short[] __l)
 		throws NullPointerException
 	{
-		__i = (__i == null ? new RegisterInstruction[0] : __i.clone());
-		for (RegisterInstruction i : __i)
+		__i = (__i == null ? new NativeInstruction[0] : __i.clone());
+		for (NativeInstruction i : __i)
 			if (i == null)
 				throw new NullPointerException("NARG");
 		
@@ -97,15 +97,15 @@ public final class RegisterCode
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/22
 	 */
-	public RegisterCode(Collection<RegisterInstruction> __i, short[] __l)
+	public NativeCode(Collection<NativeInstruction> __i, short[] __l)
 		throws NullPointerException
 	{
 		if (__i == null)
 			throw new NullPointerException("NARG");
 		
-		RegisterInstruction[] ii = __i.<RegisterInstruction>toArray(
-			new RegisterInstruction[__i.size()]);
-		for (RegisterInstruction i : ii)
+		NativeInstruction[] ii = __i.<NativeInstruction>toArray(
+			new NativeInstruction[__i.size()]);
+		for (NativeInstruction i : ii)
 			if (i == null)
 				throw new NullPointerException("NARG");
 		
@@ -120,7 +120,7 @@ public final class RegisterCode
 	 * @return The register at this index.
 	 * @since 2019/03/26
 	 */
-	public final RegisterInstruction get(int __dx)
+	public final NativeInstruction get(int __dx)
 	{
 		return this._instructions[__dx];
 	}
@@ -130,9 +130,9 @@ public final class RegisterCode
 	 * @since 2019/03/23
 	 */
 	@Override
-	public final Iterator<RegisterInstruction> iterator()
+	public final Iterator<NativeInstruction> iterator()
 	{
-		return UnmodifiableIterator.<RegisterInstruction>of(
+		return UnmodifiableIterator.<NativeInstruction>of(
 			this._instructions);
 	}
 	
@@ -167,10 +167,10 @@ public final class RegisterCode
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/09
 	 */
-	public static final RegisterCode of(ByteCode __bc)
+	public static final NativeCode of(ByteCode __bc)
 		throws NullPointerException
 	{
-		return RegisterCode.of(__bc, TranslationMethod.DEFAULT);
+		return NativeCode.of(__bc, TranslationMethod.DEFAULT);
 	}
 	
 	/**
@@ -184,7 +184,7 @@ public final class RegisterCode
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/03
 	 */
-	public static final RegisterCode of(ByteCode __bc, TranslationMethod __tm)
+	public static final NativeCode of(ByteCode __bc, TranslationMethod __tm)
 		throws NullPointerException
 	{
 		if (__bc == null || __tm == null)
