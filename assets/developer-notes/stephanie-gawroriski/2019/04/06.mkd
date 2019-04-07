@@ -1,0 +1,39 @@
+# 2019/04/06
+
+## 18:50
+
+I think what I want to do after I translate everything is to go through it
+again and make a simpler instruction set which is less like Java but more like
+native machines. Had an idea to do a hypercall which is like `invoke_method`
+but instead uses pre-defined set of methods. I would use this for stuff like
+new, monitors, instanceof, and otherwise. Basically I want everything to be
+more CPU-like rather than Java-like. I think this would involve as well having
+dedicated register areas. But I will do this after everything is translated
+since this seems rather complex. I would probably want to model it to be
+similar to MIPS or similar. But basically I want to remove the complexity and
+make it so less instructions have to be implemented and such.
+
+## 19:03
+
+Actually for the reference counting stack, it could be kept seperate. It
+could literally just be a memory address that is incremented when values are
+stored and such. That is a simple translation.
+
+## 19:07
+
+Also always a zero register. While writing everything here, I definitely can
+see how this more native set will turn out.
+
+## 19:43
+
+Okay these translators are still a bit too complex and I hit a bug where I
+have to go back and figure out which operation went wrong which is not going
+to be easy to do. I think what I am going to need in the class file stuff is
+to make translation utilities where I can just do abstract methods and such.
+I do like the simplified instructions, those are very nice.
+
+## 19:51
+
+Okay I definitely need to refactor and simplify the processor. I think what
+I will do is to do that first then see where to go. I think after that I can
+determine to continue or re-iterate on that.
