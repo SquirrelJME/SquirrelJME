@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.classfile.register;
+package dev.shadowtail.classfile.xlate;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -26,13 +26,13 @@ import net.multiphasicapps.classfile.JavaType;
 public final class JavaStackResult
 {
 	/** The stack state before. */
-	protected final JavaStackState before;
+	public final JavaStackState before;
 	
 	/** The stack state after. */
-	protected final JavaStackState after;
+	public final JavaStackState after;
 	
 	/** Enqueue list. */
-	protected final JavaStackEnqueueList enqueue;
+	public final JavaStackEnqueueList enqueue;
 	
 	/** Input. */
 	private final JavaStackResult.Input[] _in;

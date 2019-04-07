@@ -9,6 +9,10 @@
 
 package net.multiphasicapps.classfile.register;
 
+import dev.shadowtail.classfile.xlate.JavaStackEnqueueList;
+import dev.shadowtail.classfile.xlate.JavaStackResult;
+import dev.shadowtail.classfile.xlate.JavaStackShuffleType;
+import dev.shadowtail.classfile.xlate.JavaStackState;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;

@@ -7,7 +7,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.classfile.register;
+package dev.shadowtail.classfile.xlate;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -30,7 +30,7 @@ public final class JavaStackEnqueueList
 	implements Iterable<Integer>
 {
 	/** The index where the stack entries start. */
-	protected final int stackstart;
+	public final int stackstart;
 	
 	/** Registers used. */
 	private final int[] _registers;
