@@ -13,6 +13,7 @@ import dev.shadowtail.classfile.xlate.JavaStackEnqueueList;
 import dev.shadowtail.classfile.xlate.JavaStackResult;
 import dev.shadowtail.classfile.xlate.JavaStackShuffleType;
 import dev.shadowtail.classfile.xlate.JavaStackState;
+import dev.shadowtail.classfile.xlate.SimplifiedJavaInstruction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
