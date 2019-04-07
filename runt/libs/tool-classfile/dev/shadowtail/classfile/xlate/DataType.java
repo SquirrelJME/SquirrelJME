@@ -21,14 +21,14 @@ import net.multiphasicapps.classfile.PrimitiveType;
  */
 public enum DataType
 {
-	/** Pointer. */
-	POINTER,
-	
 	/** Byte. */
 	BYTE,
 	
 	/** Short. */
 	SHORT,
+	
+	/** Character. */
+	CHARACTER,
 	
 	/** Integer. */
 	INTEGER,
@@ -41,6 +41,9 @@ public enum DataType
 	
 	/** Double. */
 	DOUBLE,
+	
+	/** Object. */
+	OBJECT,
 	
 	/** End. */
 	;
