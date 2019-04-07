@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package net.multiphasicapps.classfile.mini;
+package dev.shadowtail.classfile.mini;
 
 import java.io.DataInputStream;
 import java.io.IOException;
