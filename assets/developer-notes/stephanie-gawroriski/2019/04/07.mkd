@@ -1,0 +1,21 @@
+# 2019/04/07
+
+## 08:36
+
+I do not really need the atomic operations, I can keep the areas open in the
+event I need to add more instructions.
+
+## 11:51
+
+Fell asleep after my exercise but woke up and showered, so back to SquirrelJME
+working on the latest refactor of the code.
+
+## 11:55
+
+I think the thing to do is after a stack is done, do the handling for the
+stack states like the storage into the map. That way the label are known and
+checked for remote states if ever needed.
+
+## 16:02
+
+Stuff like LDC is just going to be like constant math operations.
