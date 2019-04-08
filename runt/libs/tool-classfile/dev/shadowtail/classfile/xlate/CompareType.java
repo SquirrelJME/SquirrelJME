@@ -43,5 +43,30 @@ public enum CompareType
 	
 	/** End. */
 	;
+	
+	/**
+	 * Returns the compare type for the given index.
+	 *
+	 * @param __i The index.
+	 * @return The resulting compare type.
+	 * @since 2019/04/08
+	 */
+	public static final CompareType of(int __i)
+	{
+		switch (__i)
+		{
+			case 0:		return EQUALS;
+			case 1:		return NOT_EQUALS;
+			case 2:		return LESS_THAN;
+			case 3:		return LESS_THAN_OR_EQUALS;
+			case 4:		return GREATER_THAN;
+			case 5:		return GREATER_THAN_OR_EQUALS;
+			case 6:		return TRUE;
+			case 7:		return FALSE;
+		}
+		
+		// {@squirreljme.error JC3a Invalid compare operation.}
+		throw new IllegalArgumentException("JC3a");
+	}
 }
 
