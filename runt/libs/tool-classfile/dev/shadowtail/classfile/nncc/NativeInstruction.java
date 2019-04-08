@@ -298,8 +298,8 @@ public final class NativeInstruction
 		// encodings.
 		int upper = __op & 0xF0;
 		if (upper == NativeInstructionType.SPECIAL)
-			return upper;
-		return __op;
+			return __op;
+		return upper;
 	}
 	
 	/**
