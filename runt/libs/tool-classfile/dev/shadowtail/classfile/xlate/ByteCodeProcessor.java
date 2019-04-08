@@ -781,13 +781,9 @@ public final class ByteCodeProcessor
 		switch (__v.type())
 		{
 			case INTEGER:
-				if (true)
-					throw new todo.TODO();
-				/*
-				codebuilder.add(RegisterOperationType.X32_CONST,
-					(Integer)__v.boxedValue(),
-					result.out(0).register);
-				*/
+				handler.doMath(StackJavaType.INTEGER, MathType.ADD,
+					JavaStackResult.INPUT_ZERO, (Integer)__v.boxedValue(),
+					result.out(0));
 				break;
 				
 			case FLOAT:

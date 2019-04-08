@@ -25,6 +25,14 @@ import net.multiphasicapps.classfile.JavaType;
  */
 public final class JavaStackResult
 {
+	/** Input to the zero register. */
+	public static final JavaStackResult.Input INPUT_ZERO =
+		new JavaStackResult.Input(0, JavaType.NOTHING, true);
+	
+	/** Output to the zero register. */
+	public static final JavaStackResult.Output OUTPUT_ZERO =
+		new JavaStackResult.Output(0, JavaType.NOTHING, true);
+	
 	/** The stack state before. */
 	public final JavaStackState before;
 	
@@ -275,6 +283,26 @@ public final class JavaStackResult
 		}
 		
 		/**
+		 * Initializes the input.
+		 *
+		 * @param __r The register used.
+		 * @param __t The type used.
+		 * @param __nc Is not counting?
+		 * @throws NullPointerException On null arguments.
+		 * @since 2019/04/08
+		 */
+		public Input(int __r, JavaType __t, boolean __nc)
+			throws NullPointerException
+		{
+			if (__t == null)
+				throw new NullPointerException("NARG");
+			
+			this.register = __r;
+			this.type = __t;
+			this.nocounting = __nc;
+		}
+		
+		/**
 		 * {@inheritDoc}
 		 * @since 2019/03/31
 		 */
@@ -358,6 +386,26 @@ public final class JavaStackResult
 			this.register = __i.value;
 			this.type = __i.type;
 			this.nocounting = __i.nocounting;
+		}
+		
+		/**
+		 * Initializes the output.
+		 *
+		 * @param __r The register used.
+		 * @param __t The type used.
+		 * @param __nc Is not counting?
+		 * @throws NullPointerException On null arguments.
+		 * @since 2019/04/08
+		 */
+		public Output(int __r, JavaType __t, boolean __nc)
+			throws NullPointerException
+		{
+			if (__t == null)
+				throw new NullPointerException("NARG");
+			
+			this.register = __r;
+			this.type = __t;
+			this.nocounting = __nc;
 		}
 		
 		/**

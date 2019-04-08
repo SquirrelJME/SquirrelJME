@@ -12,6 +12,8 @@ package dev.shadowtail.classfile.nncc;
 import dev.shadowtail.classfile.xlate.ByteCodeHandler;
 import dev.shadowtail.classfile.xlate.ByteCodeState;
 import dev.shadowtail.classfile.xlate.JavaStackResult;
+import dev.shadowtail.classfile.xlate.MathType;
+import dev.shadowtail.classfile.xlate.StackJavaType;
 
 /**
  * This contains the handler for the near native byte code.
@@ -36,6 +38,29 @@ public final class NearNativeByteCodeHandler
 	@Override
 	public final void doCopy(JavaStackResult.Input __in,
 		JavaStackResult.Output __out)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/07
+	 */
+	@Override
+	public final void doMath(StackJavaType __dt, MathType __mt,
+		JavaStackResult.Input __a, JavaStackResult.Input __b,
+		JavaStackResult.Output __c)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/07
+	 */
+	@Override
+	public final void doMath(StackJavaType __dt, MathType __mt,
+		JavaStackResult.Input __a, Number __b, JavaStackResult.Output __c)
 	{
 		throw new todo.TODO();
 	}

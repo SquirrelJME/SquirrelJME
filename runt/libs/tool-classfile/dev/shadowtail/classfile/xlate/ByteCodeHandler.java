@@ -28,6 +28,33 @@ public interface ByteCodeHandler
 		JavaStackResult.Output __out);
 	
 	/**
+	 * Performs math operation.
+	 *
+	 * @param __dt The type to operate on.
+	 * @param __mt The math operation to perform.
+	 * @param __a Argument A.
+	 * @param __b Argument B.
+	 * @param __c Output.
+	 * @since 2019/04/07
+	 */
+	public abstract void doMath(StackJavaType __dt, MathType __mt,
+		JavaStackResult.Input __a, JavaStackResult.Input __b,
+		JavaStackResult.Output __c);
+	
+	/**
+	 * Performs math operation.
+	 *
+	 * @param __dt The type to operate on.
+	 * @param __mt The math operation to perform.
+	 * @param __a Argument A.
+	 * @param __b Constant B.
+	 * @param __c Output.
+	 * @since 2019/04/07
+	 */
+	public abstract void doMath(StackJavaType __dt, MathType __mt,
+		JavaStackResult.Input __a, Number __b, JavaStackResult.Output __c);
+	
+	/**
 	 * Finishes handling the instruction operation.
 	 *
 	 * @since 2019/04/07

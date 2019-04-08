@@ -32,6 +32,10 @@ import net.multiphasicapps.classfile.StackMapTableState;
  */
 public final class JavaStackState
 {
+	/** The base register where locals start. */
+	public static final int BASE_REGISTER =
+		1;
+	
 	/** The top of the stack. */
 	public final int stacktop;
 	
@@ -859,7 +863,7 @@ public final class JavaStackState
 			stack = new Info[maxstack];
 		
 		// Register position for the slot
-		int rpos = 0;
+		int rpos = BASE_REGISTER;
 		
 		// Initialize locals
 		for (int i = 0; i < maxlocals; i++)
