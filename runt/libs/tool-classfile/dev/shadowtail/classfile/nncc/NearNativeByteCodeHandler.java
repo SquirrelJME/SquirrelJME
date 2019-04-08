@@ -62,7 +62,8 @@ public final class NearNativeByteCodeHandler
 	public final void doMath(StackJavaType __dt, MathType __mt,
 		JavaStackResult.Input __a, Number __b, JavaStackResult.Output __c)
 	{
-		throw new todo.TODO();
+		this.codebuilder.addMathConst(__dt, __mt, __a.register, __b,
+			__c.register);
 	}
 	
 	/**
