@@ -781,39 +781,27 @@ public final class ByteCodeProcessor
 		switch (__v.type())
 		{
 			case INTEGER:
-				handler.doMath(StackJavaType.INTEGER, MathType.ADD,
+				handler.doMath(StackJavaType.INTEGER, MathType.OR,
 					JavaStackResult.INPUT_ZERO, (Integer)__v.boxedValue(),
 					result.out(0));
 				break;
 				
 			case FLOAT:
-				if (true)
-					throw new todo.TODO();
-				/*
-				codebuilder.add(RegisterOperationType.X32_CONST,
-					Float.floatToRawIntBits((Float)__v.boxedValue()),
-					result.out(0).register);
-				*/
+				handler.doMath(StackJavaType.FLOAT, MathType.OR,
+					JavaStackResult.INPUT_ZERO, (Float)__v.boxedValue(),
+					result.out(0));
 				break;
 			
 			case LONG:
-				if (true)
-					throw new todo.TODO();
-				/*
-				codebuilder.add(RegisterOperationType.X64_CONST,
-					__v.boxedValue(),
-					result.out(0).register);
-				*/
+				handler.doMath(StackJavaType.LONG, MathType.OR,
+					JavaStackResult.INPUT_ZERO, (Long)__v.boxedValue(),
+					result.out(0));
 				break;
 				
 			case DOUBLE:
-				if (true)
-					throw new todo.TODO();
-				/*
-				codebuilder.add(RegisterOperationType.X64_CONST,
-					Double.doubleToRawLongBits((Double)__v.boxedValue()),
-					result.out(0).register);
-				*/
+				handler.doMath(StackJavaType.DOUBLE, MathType.OR,
+					JavaStackResult.INPUT_ZERO, (Double)__v.boxedValue(),
+					result.out(0));
 				break;
 			
 			case STRING:
