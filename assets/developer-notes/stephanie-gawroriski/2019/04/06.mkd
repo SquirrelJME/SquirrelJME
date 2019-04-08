@@ -37,3 +37,9 @@ I do like the simplified instructions, those are very nice.
 Okay I definitely need to refactor and simplify the processor. I think what
 I will do is to do that first then see where to go. I think after that I can
 determine to continue or re-iterate on that.
+
+## 20:51
+
+Okay so I am going through the instructions and figuring out how to build the
+instruction set. But basically the CMP, CMPL, and CMPG will just be math
+operations since that is how they really work!
