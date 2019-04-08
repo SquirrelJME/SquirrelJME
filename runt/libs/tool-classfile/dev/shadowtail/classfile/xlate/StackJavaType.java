@@ -30,5 +30,27 @@ public enum StackJavaType
 	
 	/** End. */
 	;
+	
+	
+	/**
+	 * Returns the stack type for the given index.
+	 *
+	 * @param __i The index.
+	 * @return The resulting stack type.
+	 * @since 2019/04/08
+	 */
+	public static final StackJavaType of(int __i)
+	{
+		switch (__i)
+		{
+			case 0:		return INTEGER;
+			case 1:		return LONG;
+			case 2:		return FLOAT;
+			case 3:		return DOUBLE;
+		}
+		
+		// {@squirreljme.error JC3c Invalid stack Java type.}
+		throw new IllegalArgumentException("JC3c");
+	}
 }
 

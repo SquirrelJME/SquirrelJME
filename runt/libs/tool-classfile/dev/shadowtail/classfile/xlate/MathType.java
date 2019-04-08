@@ -68,5 +68,38 @@ public enum MathType
 	
 	/** End. */
 	;
+	
+	/**
+	 * Returns the math type for the given index.
+	 *
+	 * @param __i The index.
+	 * @return The resulting math type.
+	 * @since 2019/04/08
+	 */
+	public static final MathType of(int __i)
+	{
+		switch (__i)
+		{
+			case 0:		return ADD;
+			case 1:		return SUB;
+			case 2:		return MUL;
+			case 3:		return DIV;
+			case 4:		return REM;
+			case 5:		return NEG;
+			case 6:		return SHL;
+			case 7:		return SHR;
+			case 8:		return USHR;
+			case 9:		return AND;
+			case 10:	return OR;
+			case 11:	return XOR;
+			case 12:	return CMPL;
+			case 13:	return CMPG;
+			case 14:	return SIGN_X8;
+			case 15:	return SIGN_HALF;
+		}
+		
+		// {@squirreljme.error JC39 Invalid math operation.}
+		throw new IllegalArgumentException("JC39");
+	}
 }
 

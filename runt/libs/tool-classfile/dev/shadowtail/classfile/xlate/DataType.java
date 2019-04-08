@@ -71,6 +71,31 @@ public enum DataType
 	}
 	
 	/**
+	 * Returns the data type for the given index.
+	 *
+	 * @param __i The index.
+	 * @return The resulting compare type.
+	 * @since 2019/04/08
+	 */
+	public static final DataType of(int __i)
+	{
+		switch (__i)
+		{
+			case 0:		return BYTE;
+			case 1:		return SHORT;
+			case 2:		return CHARACTER;
+			case 3:		return INTEGER;
+			case 4:		return LONG;
+			case 5:		return FLOAT;
+			case 6:		return DOUBLE;
+			case 7:		return OBJECT;
+		}
+		
+		// {@squirreljme.error JC3b Invalid data type.}
+		throw new IllegalArgumentException("JC3b");
+	}
+	
+	/**
 	 * Returns the data type used for the primitive type.
 	 *
 	 * @param __t The type to use, {@code null} is treated as a pointer.

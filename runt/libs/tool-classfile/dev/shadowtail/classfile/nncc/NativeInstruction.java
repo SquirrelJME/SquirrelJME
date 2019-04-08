@@ -10,6 +10,10 @@
 
 package dev.shadowtail.classfile.nncc;
 
+import dev.shadowtail.classfile.xlate.CompareType;
+import dev.shadowtail.classfile.xlate.DataType;
+import dev.shadowtail.classfile.xlate.MathType;
+import dev.shadowtail.classfile.xlate.StackJavaType;
 import java.util.Arrays;
 import java.util.Collection;
 import java.lang.ref.Reference;
@@ -307,7 +311,67 @@ public final class NativeInstruction
 	 */
 	public static final String mnemonic(int __op)
 	{
-		throw new todo.TODO();
+		switch (NativeInstruction.encoding(__op))
+		{
+			case NativeInstructionType.MATH_REG_INT:
+			case NativeInstructionType.MATH_REG_LONG:
+			case NativeInstructionType.MATH_REG_FLOAT:
+			case NativeInstructionType.MATH_REG_DOUBLE:
+			case NativeInstructionType.MATH_CONST_INT:
+			case NativeInstructionType.MATH_CONST_LONG:
+			case NativeInstructionType.MATH_CONST_FLOAT:
+			case NativeInstructionType.MATH_CONST_DOUBLE:
+				return StackJavaType.of((__op >> 4) & 0x3).name() +
+					"_" +
+					MathType.of(__op & 0x0F).name() +
+					"_" +
+					(((__op & 0x80) != 0) ? "CONST" : "REG");
+			
+			case NativeInstructionType.IF_ICMP:
+				return "IF_ICMP_" +
+					CompareType.of(__op & 0x07).name() +
+					(((__op & 0x08) != 0) ? "_REF_CLEAR" : "");
+				
+			case NativeInstructionType.MEMORY_OFF_REG:
+			case NativeInstructionType.MEMORY_OFF_ICONST:
+				return "MEM_" +
+					(((__op & 0x08) != 0) ? "LOAD" : "STORE") +
+					"_" +
+					DataType.of(__op & 0x07).name() +
+					"_" +
+					(((__op & 0x80) != 0) ? "ICONST" : "REG");
+				
+			case NativeInstructionType.ARRAY_ACCESS:
+				return "ARRAY_" +
+					(((__op & 0x08) != 0) ? "LOAD" : "STORE") +
+					"_" +
+					DataType.of(__op & 0x07).name();
+			
+			case NativeInstructionType.CONVERSION:
+				return "CONV_" +
+					StackJavaType.of((__op >> 2) & 0x3).name() +
+					"_TO_" +
+					StackJavaType.of(__op & 0x03).name();
+
+			case NativeInstructionType.NEWARRAY:		return "NEWARRAY";
+			case NativeInstructionType.ARRAYLEN:		return "ARRAYLEN";
+			case NativeInstructionType.RETURN:			return "RETURN";
+			case NativeInstructionType.LOOKUPSWITCH:	return "LOOKUPSWITCH";
+			case NativeInstructionType.TABLESWITCH:		return "TABLESWITCH";
+			case NativeInstructionType.MONITORENTER:	return "MONITORENTER";
+			case NativeInstructionType.INVOKE:			return "INVOKE";
+			case NativeInstructionType.REF_PUSH:		return "REF_PUSH";
+			case NativeInstructionType.REF_CLEAR:		return "REF_CLEAR";
+			case NativeInstructionType.REF_RESET:		return "REF_RESET";
+			case NativeInstructionType.COUNT:			return "COUNT";
+			case NativeInstructionType.UNCOUNT:			return "UNCOUNT";
+			case NativeInstructionType.BREAKPOINT:		return "BREAKPOINT";
+			case NativeInstructionType.MONITOREXIT:		return "MONITOREXIT";
+			case NativeInstructionType.LOAD_POOL:		return "LOAD_POOL";
+			
+			default:
+				return String.format("UNKNOWN_%02x", __op);
+		}
 	}
 }
 
