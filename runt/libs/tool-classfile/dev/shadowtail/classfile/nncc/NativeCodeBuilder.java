@@ -10,6 +10,9 @@
 
 package dev.shadowtail.classfile.nncc;
 
+import dev.shadowtail.classfile.xlate.JavaStackResult;
+import dev.shadowtail.classfile.xlate.MathType;
+import dev.shadowtail.classfile.xlate.StackJavaType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -98,6 +101,98 @@ public final class NativeCodeBuilder
 		this._instructions.put(atdx, rv);
 		this._lines.add(this._cursrcline);
 		return rv;
+	}
+	
+	/**
+	 * Adds a math via constant operation.
+	 *
+	 * @param __jt The Java type.
+	 * @param __mf The math function.
+	 * @param __a Register A.
+	 * @param __b Constant B.
+	 * @param __c The result.
+	 * @return The resulting register.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/08
+	 */
+	public final NativeInstruction addMathConst(StackJavaType __jt,
+		MathType __mf, int __a, Number __b, int __c)
+		throws NullPointerException
+	{
+		if (__jt == null || __mf == null || __b == null)
+			throw new NullPointerException("NARG");
+		
+		int op;
+		switch (__jt)
+		{
+			case INTEGER:
+				op = NativeInstructionType.MATH_CONST_INT;
+				break;
+				
+			case LONG:
+				op = NativeInstructionType.MATH_CONST_LONG;
+				break;
+				
+			case FLOAT:
+				op = NativeInstructionType.MATH_CONST_FLOAT;
+				break;
+				
+			case DOUBLE:
+				op = NativeInstructionType.MATH_CONST_DOUBLE;
+				break;
+			
+			default:
+				throw new todo.OOPS(__jt.name());
+		}
+		
+		// Build operation
+		return this.add(op | __mf.ordinal(), __a, __b, __c);
+	}
+	
+	/**
+	 * Adds a math via register operation.
+	 *
+	 * @param __jt The Java type.
+	 * @param __mf The math function.
+	 * @param __a Register A.
+	 * @param __b Register B.
+	 * @param __c The result.
+	 * @return The resulting register.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/08
+	 */
+	public final NativeInstruction addMathReg(StackJavaType __jt,
+		MathType __mf, int __a, int __b, int __c)
+		throws NullPointerException
+	{
+		if (__jt == null || __mf == null)
+			throw new NullPointerException("NARG");
+		
+		int op;
+		switch (__jt)
+		{
+			case INTEGER:
+				op = NativeInstructionType.MATH_REG_INT;
+				break;
+				
+			case LONG:
+				op = NativeInstructionType.MATH_REG_LONG;
+				break;
+				
+			case FLOAT:
+				op = NativeInstructionType.MATH_REG_FLOAT;
+				break;
+				
+			case DOUBLE:
+				op = NativeInstructionType.MATH_REG_DOUBLE;
+				break;
+			
+			default:
+				throw new todo.OOPS(__jt.name());
+		}
+		
+		// Build operation
+		return this.add(op | __mf.ordinal(), __a, __b, __c);
 	}
 	
 	/**
