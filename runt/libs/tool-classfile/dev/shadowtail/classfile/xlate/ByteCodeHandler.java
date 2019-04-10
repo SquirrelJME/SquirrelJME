@@ -9,6 +9,8 @@
 
 package dev.shadowtail.classfile.xlate;
 
+import net.multiphasicapps.classfile.MethodReference;
+
 /**
  * This class is used by the byte code processor to handle all of the various
  * instructions and such.
@@ -26,6 +28,18 @@ public interface ByteCodeHandler
 	 */
 	public abstract void doCopy(JavaStackResult.Input __in,
 		JavaStackResult.Output __out);
+	
+	/**
+	 * Invocation of a method.
+	 *
+	 * @param __t The type of invoke to be performed.
+	 * @param __r The reference to the method.
+	 * @param __out The output.
+	 * @param __in The arguments to the method.
+	 * @since 2019/04/10
+	 */
+	public abstract void doInvoke(InvokeType __t, MethodReference __r,
+		JavaStackResult.Output __out, JavaStackResult.Input... __in);
 	
 	/**
 	 * Performs math operation.

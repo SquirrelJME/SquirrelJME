@@ -690,11 +690,6 @@ public final class ByteCodeProcessor
 		if (__t == null || __r == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
-		/*
-		// Handle exceptions following
-		this._exceptioncheck = true;
-		
 		// Return value type, if any
 		MethodHandle mf = __r.handle();
 		FieldDescriptor rv = mf.descriptor().returnValue();
@@ -704,12 +699,16 @@ public final class ByteCodeProcessor
 		int popcount = mf.javaStack(__t.hasInstance()).length;
 		
 		// Perform stack operation
-		JavaStackResult result = (!hasrv ? this._stack.doStack(popcount) :
-			this._stack.doStack(popcount, new JavaType(rv)));
-		this._stack = result.after();
+		ByteCodeState state = this.state;
+		JavaStackResult result = (!hasrv ? state.stack.doStack(popcount) :
+			stack.doStack(popcount, new JavaType(rv)));
+		this.__update(result);
 		
-		// Enqueue the input for counting
-		this.__refEnqueue(result.enqueue());
+		// Forward
+		this.handler.doInvoke(__t, __r, (!hasrv ? null :
+			result.out(0)), result.in());
+		
+		
 		
 		// Checks on the instance
 		RegisterCodeBuilder codebuilder = this.codebuilder;
