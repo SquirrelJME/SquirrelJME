@@ -121,15 +121,43 @@ public interface NativeInstructionType
 	 * Unused.
 	 * {@code iiii????}.
 	 */
-	public static final int UNUSED_E =
+	public static final int SPECIAL_A =
 		0xE0;
 	
 	/**
 	 * Special.
 	 * {@code iiiixxxx}.
 	 */
-	public static final int SPECIAL =
+	public static final int SPECIAL_B =
 		0xF0;
+	
+	/**
+	 * If not class.
+	 * {@code 1110000ir}.
+	 */
+	public static final int IFNOTCLASS =
+		0xE0;
+	
+	/**
+	 * If not class, refclear.
+	 * {@code 1110000ir}.
+	 */
+	public static final int IFNOTCLASS_REF_CLEAR =
+		0xE1;
+	
+	/**
+	 * If class.
+	 * {@code 1110000ir}.
+	 */
+	public static final int IFCLASS =
+		0xE2;
+	
+	/**
+	 * If class, refclear.
+	 * {@code 1110000ir}.
+	 */
+	public static final int IFCLASS_REF_CLEAR =
+		0xE3;
 	
 	/**
 	 * New. 
