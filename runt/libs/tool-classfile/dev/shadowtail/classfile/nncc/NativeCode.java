@@ -28,6 +28,18 @@ import net.multiphasicapps.collections.UnmodifiableIterator;
 public final class NativeCode
 	implements Iterable<NativeInstruction>
 {
+	/** The zero register. */
+	public static final int ZERO_REGISTER =
+		0;
+	
+	/** The return value register. */
+	public static final int RETURN_REGISTER =
+		65531;
+	
+	/** The thrown exception register. */
+	public static final int EXCEPTION_REGISTER =
+		65533;
+	
 	/** Instructions for this code. */
 	private final NativeInstruction[] _instructions;
 	

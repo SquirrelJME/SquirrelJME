@@ -10,6 +10,7 @@
 
 package dev.shadowtail.classfile.nncc;
 
+import dev.shadowtail.classfile.xlate.CompareType;
 import dev.shadowtail.classfile.xlate.JavaStackResult;
 import dev.shadowtail.classfile.xlate.MathType;
 import dev.shadowtail.classfile.xlate.StackJavaType;
@@ -101,6 +102,104 @@ public final class NativeCodeBuilder
 		this._instructions.put(atdx, rv);
 		this._lines.add(this._cursrcline);
 		return rv;
+	}
+	
+	/**
+	 * Adds an integer comparison instruction. No references will ever be
+	 * cleared if the comparison succeeds.
+	 *
+	 * @param __ct The type of comparison to make
+	 * @param __a The first register.
+	 * @param __b The register to compare against.
+	 * @param __jt The target of the jump.
+	 * @return The resulting instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/10
+	 */
+	public final NativeInstruction addICmp(CompareType __ct, int __a, int __b,
+		NativeCodeLabel __jt)
+		throws NullPointerException
+	{
+		return this.addICmp(__ct, __a, __b, __jt, false);
+	}
+	
+	/**
+	 * Adds an integer comparison instruction.
+	 *
+	 * @param __ct The type of comparison to make
+	 * @param __a The first register.
+	 * @param __b The register to compare against.
+	 * @param __jt The target of the jump.
+	 * @param __rc If true then a {@code REF_CLEAR} is performed if the jump
+	 * succeeds.
+	 * @return The resulting instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/10
+	 */
+	public final NativeInstruction addICmp(CompareType __ct, int __a, int __b,
+		NativeCodeLabel __jt, boolean __rc)
+		throws NullPointerException
+	{
+		if (__ct == null || __jt == null)
+			throw new NullPointerException("NARG");
+			
+		// Build operation
+		return this.add(NativeInstructionType.IF_ICMP |
+			(__rc ? 0b1000 : 0) | __ct.ordinal(), __a, __b, __jt);
+	}
+	
+	/**
+	 * Adds a jump if the given register is zero. No reference clears are
+	 * performed by this call.
+	 *
+	 * @param __a The register to check.
+	 * @param __jt The target of the jump.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/10
+	 */
+	public final NativeInstruction addIfZero(int __a, NativeCodeLabel __jt)
+		throws NullPointerException
+	{
+		return this.addIfZero(__a, __jt, false);
+	}
+	
+	/**
+	 * Adds a jump if the given register is zero.
+	 *
+	 * @param __a The register to check.
+	 * @param __jt The target of the jump.
+	 * @param __rc If the condition succeeds, do a {@code REF_CLEAR}.
+	 * @return The resulting instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/10
+	 */
+	public final NativeInstruction addIfZero(int __a, NativeCodeLabel __jt,
+		boolean __rc)
+		throws NullPointerException
+	{
+		if (__jt == null)
+			throw new NullPointerException("NARG");
+		
+		return this.addICmp(CompareType.EQUALS, __a, NativeCode.ZERO_REGISTER,
+			__jt, __rc);
+	}
+	
+	/**
+	 * Adds a goto which goes to the following location.
+	 *
+	 * @param __jt The target of the jump.
+	 * @return The resulting instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/10
+	 */
+	public final NativeInstruction addGoto(NativeCodeLabel __jt)
+		throws NullPointerException
+	{
+		if (__jt == null)
+			throw new NullPointerException("NARG");
+		
+		return this.addICmp(CompareType.TRUE, NativeCode.ZERO_REGISTER,
+			NativeCode.ZERO_REGISTER, __jt);
 	}
 	
 	/**

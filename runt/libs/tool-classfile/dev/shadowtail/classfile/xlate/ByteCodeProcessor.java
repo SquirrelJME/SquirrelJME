@@ -701,58 +701,12 @@ public final class ByteCodeProcessor
 		// Perform stack operation
 		ByteCodeState state = this.state;
 		JavaStackResult result = (!hasrv ? state.stack.doStack(popcount) :
-			stack.doStack(popcount, new JavaType(rv)));
+			state.stack.doStack(popcount, new JavaType(rv)));
 		this.__update(result);
 		
 		// Forward
 		this.handler.doInvoke(__t, __r, (!hasrv ? null :
 			result.out(0)), result.in());
-		
-		
-		
-		// Checks on the instance
-		RegisterCodeBuilder codebuilder = this.codebuilder;
-		if (__t.hasInstance())
-		{
-			// Cannot be null
-			codebuilder.add(RegisterOperationType.IFNULL_REF_CLEAR,
-				result.in(0).register, this.__makeExceptionLabel(
-				"java/lang/NullPointerException"));
-			
-			// Must also be the right type of object as well
-			codebuilder.add(
-				RegisterOperationType.JUMP_IF_NOT_INSTANCE_REF_CLEAR,
-				__r.handle().outerClass(), result.in(0).register,
-				this.__makeExceptionLabel("java/lang/ClassCastException"));
-		}
-		
-		// Setup registers to use for the method call
-		List<Integer> callargs = new ArrayList<>(popcount);
-		for (int i = 0; i < popcount; i++)
-		{
-			// Add the input register
-			JavaStackResult.Input in = result.in(i);
-			callargs.add(in.register);
-			
-			// But also if it is wide, we need to pass the other one or else
-			// the value will be clipped
-			if (in.type.isWide())
-				callargs.add(in.register + 1);
-		}
-		
-		// Generate the call, pass the base register and the number of
-		// registers to pass to the target method
-		codebuilder.add(RegisterOperationType.INVOKE_METHOD,
-			new InvokedMethod(__t, __r.handle()), new RegisterList(callargs));
-		
-		// Uncount any used references
-		this.__refClear();
-		
-		// Load the return value onto the stack
-		if (hasrv)
-			codebuilder.add(DataType.of(rv).returnValueLoadOperation(),
-				result.out(0).register);
-		*/
 	}
 	
 	/**
