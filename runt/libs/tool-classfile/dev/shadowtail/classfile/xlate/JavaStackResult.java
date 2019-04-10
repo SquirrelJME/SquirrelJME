@@ -152,6 +152,17 @@ public final class JavaStackResult
 	}
 	
 	/**
+	 * Returns the input.
+	 *
+	 * @return The input.
+	 * @since 2019/04/08
+	 */
+	public final JavaStackResult.Input[] in()
+	{
+		return this._in.clone();
+	}
+	
+	/**
 	 * Returns the information on the input.
 	 *
 	 * @param __i The input to get.
@@ -172,6 +183,17 @@ public final class JavaStackResult
 	public final int inCount()
 	{
 		return this._in.length;
+	}
+	
+	/**
+	 * Returns the output.
+	 *
+	 * @return The output.
+	 * @since 2019/04/08
+	 */
+	public final JavaStackResult.Output[] out()
+	{
+		return this._out.clone();
 	}
 	
 	/**

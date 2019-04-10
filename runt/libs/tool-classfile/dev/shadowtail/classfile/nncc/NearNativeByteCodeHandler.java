@@ -44,6 +44,17 @@ public final class NearNativeByteCodeHandler
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2019/04/10
+	 */
+	@Override
+	public final void doInvoke(InvokeType __t, MethodReference __r,
+		JavaStackResult.Output __out, JavaStackResult.Input... __in)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2019/04/07
 	 */
 	@Override
