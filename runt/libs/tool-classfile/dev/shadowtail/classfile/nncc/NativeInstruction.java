@@ -328,9 +328,19 @@ public final class NativeInstruction
 					(((__op & 0x80) != 0) ? "CONST" : "REG");
 			
 			case NativeInstructionType.IF_ICMP:
-				return "IF_ICMP_" +
-					CompareType.of(__op & 0x07).name() +
-					(((__op & 0x08) != 0) ? "_REF_CLEAR" : "");
+				{
+					boolean refclear = ((__op & 0x08) != 0);
+					
+					CompareType ct = CompareType.of(__op & 0x07);
+					if (ct == CompareType.TRUE)
+						return "GOTO" + (refclear ? "_REF_CLEAR" : "");
+					else if (ct == CompareType.FALSE)
+						return "NOP";
+					
+					return "IF_ICMP_" +
+						ct.name() +
+						(refclear ? "_REF_CLEAR" : "");
+				}
 				
 			case NativeInstructionType.MEMORY_OFF_REG:
 			case NativeInstructionType.MEMORY_OFF_ICONST:
@@ -348,10 +358,14 @@ public final class NativeInstruction
 					DataType.of(__op & 0x07).name();
 			
 			case NativeInstructionType.CONVERSION:
-				return "CONV_" +
-					StackJavaType.of((__op >> 2) & 0x3).name() +
-					"_TO_" +
-					StackJavaType.of(__op & 0x03).name();
+				{
+					StackJavaType a = StackJavaType.of((__op >> 2) & 0x3),
+						b = StackJavaType.of(__op & 0x03);
+					if (a == b)
+						return "COPY_" + a.name();
+					
+					return "CONV_" + a.name() + "_TO_" + b.name();
+				}
 
 			case NativeInstructionType.NEWARRAY:		return "NEWARRAY";
 			case NativeInstructionType.ARRAYLEN:		return "ARRAYLEN";
