@@ -264,6 +264,10 @@ public final class NativeInstruction
 			
 			case NativeInstructionType.ARRAY_ACCESS:
 			case NativeInstructionType.IF_ICMP:
+			case NativeInstructionType.IFCLASS:
+			case NativeInstructionType.IFCLASS_REF_CLEAR:
+			case NativeInstructionType.IFNOTCLASS:
+			case NativeInstructionType.IFNOTCLASS_REF_CLEAR:
 			case NativeInstructionType.MATH_REG_INT:
 			case NativeInstructionType.MATH_REG_LONG:
 			case NativeInstructionType.MATH_REG_FLOAT:
@@ -297,7 +301,8 @@ public final class NativeInstruction
 		// opcode, while all of the other operations use one of the pre-defined
 		// encodings.
 		int upper = __op & 0xF0;
-		if (upper == NativeInstructionType.SPECIAL)
+		if (upper == NativeInstructionType.SPECIAL_A ||
+			upper == NativeInstructionType.SPECIAL_B)
 			return __op;
 		return upper;
 	}
@@ -367,21 +372,27 @@ public final class NativeInstruction
 					return "CONV_" + a.name() + "_TO_" + b.name();
 				}
 
-			case NativeInstructionType.NEWARRAY:		return "NEWARRAY";
 			case NativeInstructionType.ARRAYLEN:		return "ARRAYLEN";
-			case NativeInstructionType.RETURN:			return "RETURN";
-			case NativeInstructionType.LOOKUPSWITCH:	return "LOOKUPSWITCH";
-			case NativeInstructionType.TABLESWITCH:		return "TABLESWITCH";
-			case NativeInstructionType.MONITORENTER:	return "MONITORENTER";
-			case NativeInstructionType.INVOKE:			return "INVOKE";
-			case NativeInstructionType.REF_PUSH:		return "REF_PUSH";
-			case NativeInstructionType.REF_CLEAR:		return "REF_CLEAR";
-			case NativeInstructionType.REF_RESET:		return "REF_RESET";
-			case NativeInstructionType.COUNT:			return "COUNT";
-			case NativeInstructionType.UNCOUNT:			return "UNCOUNT";
 			case NativeInstructionType.BREAKPOINT:		return "BREAKPOINT";
-			case NativeInstructionType.MONITOREXIT:		return "MONITOREXIT";
+			case NativeInstructionType.COUNT:			return "COUNT";
+			case NativeInstructionType.IFNOTCLASS:		return "IFNOTCLASS";
+			case NativeInstructionType.IFNOTCLASS_REF_CLEAR:
+				return "IFNOTCLASS_REF_CLEAR";
+			case NativeInstructionType.IFCLASS:			return "IFCLASS";
+			case NativeInstructionType.IFCLASS_REF_CLEAR:
+				return "IFCLASS_REF_CLEAR";
+			case NativeInstructionType.INVOKE:			return "INVOKE";
 			case NativeInstructionType.LOAD_POOL:		return "LOAD_POOL";
+			case NativeInstructionType.LOOKUPSWITCH:	return "LOOKUPSWITCH";
+			case NativeInstructionType.MONITORENTER:	return "MONITORENTER";
+			case NativeInstructionType.MONITOREXIT:		return "MONITOREXIT";
+			case NativeInstructionType.NEWARRAY:		return "NEWARRAY";
+			case NativeInstructionType.REF_CLEAR:		return "REF_CLEAR";
+			case NativeInstructionType.REF_PUSH:		return "REF_PUSH";
+			case NativeInstructionType.REF_RESET:		return "REF_RESET";
+			case NativeInstructionType.RETURN:			return "RETURN";
+			case NativeInstructionType.TABLESWITCH:		return "TABLESWITCH";
+			case NativeInstructionType.UNCOUNT:			return "UNCOUNT";
 			
 			default:
 				return String.format("UNKNOWN_%02x", __op);

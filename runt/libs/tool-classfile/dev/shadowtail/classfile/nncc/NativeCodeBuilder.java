@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.InstructionJumpTarget;
 
 /**
@@ -146,6 +147,45 @@ public final class NativeCodeBuilder
 		// Build operation
 		return this.add(NativeInstructionType.IF_ICMP |
 			(__rc ? 0b1000 : 0) | __ct.ordinal(), __a, __b, __jt);
+	}
+	
+	/**
+	 * Adds jump if the given register is an instance of the given class.
+	 *
+	 * @param __cn The class name to check.
+	 * @param __a The register to check.
+	 * @param __jt The target of the jump.
+	 * @return The resulting instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/10
+	 */
+	public final NativeInstruction addIfClass(ClassName __cn, int __a,
+		NativeCodeLabel __jt)
+		throws NullPointerException
+	{
+		return this.addIfClass(__cn, __a, __jt, false);
+	}
+	
+	/**
+	 * Adds jump if the given register is an instance of the given class.
+	 *
+	 * @param __cn The class name to check.
+	 * @param __a The register to check.
+	 * @param __jt The target of the jump.
+	 * @param __rc Reference clear.
+	 * @return The resulting instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/10
+	 */
+	public final NativeInstruction addIfClass(ClassName __cn, int __a,
+		NativeCodeLabel __jt, boolean __rc)
+		throws NullPointerException
+	{
+		if (__cn == null || __jt == null)
+			throw new NullPointerException("NARG");
+		
+		return this.add((__rc ? NativeInstructionType.IFCLASS_REF_CLEAR :
+			NativeInstructionType.IFCLASS), __cn, __a, __jt);
 	}
 	
 	/**
@@ -292,6 +332,45 @@ public final class NativeCodeBuilder
 		
 		// Build operation
 		return this.add(op | __mf.ordinal(), __a, __b, __c);
+	}
+	
+	/**
+	 * Adds jump if the given register is not an instance of the given class.
+	 *
+	 * @param __cn The class name to check.
+	 * @param __a The register to check.
+	 * @param __jt The target of the jump.
+	 * @return The resulting instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/10
+	 */
+	public final NativeInstruction addIfNotClass(ClassName __cn, int __a,
+		NativeCodeLabel __jt)
+		throws NullPointerException
+	{
+		return this.addIfNotClass(__cn, __a, __jt, false);
+	}
+	
+	/**
+	 * Adds jump if the given register is not an instance of the given class.
+	 *
+	 * @param __cn The class name to check.
+	 * @param __a The register to check.
+	 * @param __jt The target of the jump.
+	 * @param __rc Reference clear.
+	 * @return The resulting instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/10
+	 */
+	public final NativeInstruction addIfNotClass(ClassName __cn, int __a,
+		NativeCodeLabel __jt, boolean __rc)
+		throws NullPointerException
+	{
+		if (__cn == null || __jt == null)
+			throw new NullPointerException("NARG");
+		
+		return this.add((__rc ? NativeInstructionType.IFNOTCLASS_REF_CLEAR :
+			NativeInstructionType.IFNOTCLASS), __cn, __a, __jt);
 	}
 	
 	/**
