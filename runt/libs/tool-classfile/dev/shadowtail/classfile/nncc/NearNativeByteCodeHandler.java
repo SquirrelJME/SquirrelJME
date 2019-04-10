@@ -12,9 +12,12 @@ package dev.shadowtail.classfile.nncc;
 import dev.shadowtail.classfile.xlate.ByteCodeHandler;
 import dev.shadowtail.classfile.xlate.ByteCodeState;
 import dev.shadowtail.classfile.xlate.InvokeType;
+import dev.shadowtail.classfile.xlate.JavaStackEnqueueList;
 import dev.shadowtail.classfile.xlate.JavaStackResult;
 import dev.shadowtail.classfile.xlate.MathType;
 import dev.shadowtail.classfile.xlate.StackJavaType;
+import java.util.ArrayList;
+import java.util.List;
 import net.multiphasicapps.classfile.MethodReference;
 
 /**
@@ -32,6 +35,12 @@ public final class NearNativeByteCodeHandler
 	/** Used to build native code. */
 	protected final NativeCodeBuilder codebuilder =
 		new NativeCodeBuilder();
+	
+	/** Exceptions should be checked? */
+	private boolean _checkexception;
+	
+	/** Last registers enqueued. */
+	private JavaStackEnqueueList _lastenqueue;
 	
 	/**
 	 * {@inheritDoc}
@@ -54,6 +63,12 @@ public final class NearNativeByteCodeHandler
 	{
 		NativeCodeBuilder codebuilder = this.codebuilder;
 		
+		// Exceptions will be checked after the call
+		this._checkexception = true;
+		
+		// Push references
+		this.__refPush();
+		
 		// Checks on the instance
 		if (__t.hasInstance())
 		{
@@ -64,41 +79,19 @@ public final class NearNativeByteCodeHandler
 			codebuilder.addIfZero(ireg, this.__makeExceptionLabel(
 				"java/lang/NullPointerException"), true);
 			
-			throw new todo.TODO();
-			/*
-			// Must also be the right type of object as well
-			codebuilder.add(
-				RegisterOperationType.JUMP_IF_NOT_INSTANCE_REF_CLEAR,
-				__r.handle().outerClass(), result.in(0).register,
-				this.__makeExceptionLabel("java/lang/ClassCastException"));
-			*/
+			// Must be the given class
+			codebuilder.addIfNotClass(__r.handle().outerClass(), ireg,
+				this.__makeExceptionLabel("java/lang/ClassCastException"),
+				true);
 		}
 		
-		throw new todo.TODO();
-		
-		/*
-		// Checks on the instance
-		RegisterCodeBuilder codebuilder = this.codebuilder;
-		if (__t.hasInstance())
-		{
-			// Cannot be null
-			codebuilder.add(RegisterOperationType.IFNULL_REF_CLEAR,
-				result.in(0).register, this.__makeExceptionLabel(
-				"java/lang/NullPointerException"));
-			
-			// Must also be the right type of object as well
-			codebuilder.add(
-				RegisterOperationType.JUMP_IF_NOT_INSTANCE_REF_CLEAR,
-				__r.handle().outerClass(), result.in(0).register,
-				this.__makeExceptionLabel("java/lang/ClassCastException"));
-		}
-		
-		// Setup registers to use for the method call
-		List<Integer> callargs = new ArrayList<>(popcount);
-		for (int i = 0; i < popcount; i++)
+		// Fill in call arguments
+		List<Integer> callargs = new ArrayList<>(__in.length * 2);
+		for (int i = 0, n = __r.handle().javaStack(__t.hasInstance()).length;
+			i < n; i++)
 		{
 			// Add the input register
-			JavaStackResult.Input in = result.in(i);
+			JavaStackResult.Input in = __in[i];
 			callargs.add(in.register);
 			
 			// But also if it is wide, we need to pass the other one or else
@@ -107,19 +100,13 @@ public final class NearNativeByteCodeHandler
 				callargs.add(in.register + 1);
 		}
 		
-		// Generate the call, pass the base register and the number of
-		// registers to pass to the target method
-		codebuilder.add(RegisterOperationType.INVOKE_METHOD,
+		// Add invocation
+		codebuilder.add(NativeInstructionType.INVOKE,
 			new InvokedMethod(__t, __r.handle()), new RegisterList(callargs));
 		
-		// Uncount any used references
-		this.__refClear();
-		
-		// Load the return value onto the stack
-		if (hasrv)
-			codebuilder.add(DataType.of(rv).returnValueLoadOperation(),
-				result.out(0).register);
-		*/
+		// Read in return value
+		if (__out != null)
+			throw new todo.TODO();
 	}
 	
 	/**
@@ -153,6 +140,11 @@ public final class NearNativeByteCodeHandler
 	@Override
 	public final void instructionFinish()
 	{
+		// An exception check was requested, will generate one later
+		if (this._checkexception)
+		{
+			throw new todo.TODO();
+		}
 	}
 	
 	/**
@@ -167,6 +159,9 @@ public final class NearNativeByteCodeHandler
 		
 		// Setup a label for this current position
 		codebuilder.label("java", state.addr);
+		
+		// Do not check any exceptions by default
+		this._checkexception = false;
 	}
 	
 	/**
@@ -206,6 +201,68 @@ public final class NearNativeByteCodeHandler
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * If anything has been previously pushed then generate code to clear it.
+	 *
+	 * @since 2019/03/30
+	 */
+	private final void __refClear()
+	{
+		// Do nothing if nothing has been enqueued
+		JavaStackEnqueueList lastenqueue = this._lastenqueue;
+		if (lastenqueue == null)
+			return;
+		
+		// Generate instruction to clear the enqueue
+		this.codebuilder.add(NativeInstructionType.REF_CLEAR);
+		
+		// No need to clear anymore
+		this._lastenqueue = null;
+	}
+	
+	/**
+	 * Generates code to enqueue registers, if there are any. This implicitly
+	 * uses the registers from the state.
+	 *
+	 * @return True if the push list was not empty.
+	 * @since 2019/04/10
+	 */
+	private final boolean __refPush()
+		throws NullPointerException
+	{
+		return this.__refPush(this.state.result.enqueue());
+	}
+	
+	/**
+	 * Generates code to enqueue registers, if there are any.
+	 *
+	 * @param __r The registers to push.
+	 * @return True if the push list was not empty.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/30
+	 */
+	private final boolean __refPush(JavaStackEnqueueList __r)
+		throws NullPointerException
+	{
+		if (__r == null)
+			throw new NullPointerException("NARG");
+		
+		// Nothing to enqueue?
+		if (__r.isEmpty())
+		{
+			this._lastenqueue = null;
+			return false;
+		}
+		
+		// Generate code to push all the given registers
+		this.codebuilder.add(NativeInstructionType.REF_PUSH,
+			new RegisterList(__r.registers()));
+		this._lastenqueue = __r;
+		
+		// Did enqueue something
+		return true;
 	}
 }
 
