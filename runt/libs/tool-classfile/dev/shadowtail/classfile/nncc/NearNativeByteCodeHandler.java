@@ -47,8 +47,8 @@ public final class NearNativeByteCodeHandler
 	/** Exception tracker. */
 	protected final ExceptionHandlerRanges exceptionranges;
 	
-	/** Table of exceptions which were generated. */
-	private final Map<ExceptionClassEnqueueAndTable, __EData__> _ecettable =
+	/** Made exception table. */
+	private final Map<ClassStackAndLabel, __EData__> _metable =
 		new LinkedHashMap<>();
 	
 	/** Last registers enqueued. */
@@ -217,10 +217,9 @@ public final class NearNativeByteCodeHandler
 	 */
 	public final NativeCode result()
 	{
-		// Generate ECET wrappers
-		Map<ExceptionClassEnqueueAndTable, __EData__> ecettable =
-			this._ecettable;
-		if (!ecettable.isEmpty())
+		// Generate make exception code
+		Map<ClassStackAndLabel, __EData__> metable = this._metable;
+		if (!metable.isEmpty())
 		{
 			throw new todo.TODO();
 		}
@@ -278,29 +277,24 @@ public final class NearNativeByteCodeHandler
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		// We need a label at generation time that has the current state of
-		// the stack and such after the operation is performed
-		this.__labelException();
-		
-		// Create enqueue state
+		// Setup key, the label is the target to jump to after the exception
+		// has been generated and a throw is performed
 		ByteCodeState state = this.state;
-		ExceptionClassEnqueueAndTable cet = this.exceptionranges.
-			classEnqueueAndTable(new ClassName(__cl),
-			state.stack.possibleEnqueue(), state.addr);
+		ClassStackAndLabel key = new ClassStackAndLabel(new ClassName(__cl),
+			state.stack, this.__labelException());
 		
 		// Look in the table to see if we made it before
-		Map<ExceptionClassEnqueueAndTable, __EData__> ecettable =
-			this._ecettable;
-		__EData__ rv = ecettable.get(cet);
+		Map<ClassStackAndLabel, __EData__> metable = this._metable;
+		__EData__ rv = metable.get(key);
 		if (rv != null)
 			return rv.label;
 		
 		// Build new data to record this point
 		rv = new __EData__(state.addr, state.line,
-			new NativeCodeLabel("makeexception", ecettable.size()));
-		ecettable.put(cet, rv);
+			new NativeCodeLabel("makeexception", metable.size()));
+		metable.put(key, rv);
 		
-		// Return the created label
+		// Return the created label (where the caller jumps to)
 		return rv.label;
 	}
 	
