@@ -283,7 +283,6 @@ public final class NativeInstruction
 				return 0;
 			
 			case NativeInstructionType.COUNT:
-			case NativeInstructionType.INVOKE:
 			case NativeInstructionType.LOAD_POOL:
 			case NativeInstructionType.REF_PUSH:
 			case NativeInstructionType.MONITORENTER:
@@ -293,6 +292,7 @@ public final class NativeInstruction
 				
 			case NativeInstructionType.ARRAYLEN:
 			case NativeInstructionType.CONVERSION:
+			case NativeInstructionType.INVOKE:
 			case NativeInstructionType.LOOKUPSWITCH:
 			case NativeInstructionType.NEW:
 			case NativeInstructionType.TABLESWITCH:

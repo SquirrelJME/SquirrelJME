@@ -83,9 +83,10 @@ public final class NativeCodeBuilder
 		throws IllegalArgumentException, NullPointerException
 	{
 		// {@squirreljme.error JC2q Operation has an incorrect number of
-		// arguments.}
+		// arguments. (The mnemonic; The input arguments)}
 		if (NativeInstruction.argumentCount(__op) != __args.length)
-			throw new IllegalArgumentException("JC2q");
+			throw new IllegalArgumentException("JC2q " +
+				NativeInstruction.mnemonic(__op) + " " + __args.length);
 		
 		for (Object o : __args)
 			if (o == null)
