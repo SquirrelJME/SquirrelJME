@@ -35,6 +35,9 @@ public final class NativeInstruction
 	/** String form. */
 	private Reference<String> _string;
 	
+	/** Hash. */
+	private int _hash;
+	
 	/**
 	 * Initializes the temporary instruction.
 	 *
@@ -164,6 +167,39 @@ public final class NativeInstruction
 	public final int encoding()
 	{
 		return NativeInstruction.encoding(this.op);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/11
+	 */
+	@Override
+	public final boolean equals(Object __o)
+	{
+		if (this == __o)
+			return true;
+		
+		if (!(this instanceof NativeInstruction))
+			return false;
+		
+		NativeInstruction o = (NativeInstruction)__o;
+		return this.hashCode() == o.hashCode() &&
+			this.op == o.op &&
+			Arrays.equals(this._args, o._args);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/11
+	 */
+	@Override
+	public final int hashCode()
+	{
+		int rv = this._hash;
+		if (rv == 0)
+			this._hash = (rv = (this.op ^
+				Arrays.asList(this._args).hashCode()));
+		return rv;
 	}
 	
 	/**
