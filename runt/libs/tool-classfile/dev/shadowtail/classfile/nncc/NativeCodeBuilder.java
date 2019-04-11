@@ -190,6 +190,42 @@ public final class NativeCodeBuilder
 	}
 	
 	/**
+	 * Adds a jump if the given register is not zero. No reference clears are
+	 * performed by this call.
+	 *
+	 * @param __a The register to check.
+	 * @param __jt The target of the jump.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/11
+	 */
+	public final NativeInstruction addIfNonZero(int __a, NativeCodeLabel __jt)
+		throws NullPointerException
+	{
+		return this.addIfNonZero(__a, __jt, false);
+	}
+	
+	/**
+	 * Adds a jump if the given register is not zero.
+	 *
+	 * @param __a The register to check.
+	 * @param __jt The target of the jump.
+	 * @param __rc If the condition succeeds, do a {@code REF_CLEAR}.
+	 * @return The resulting instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/11
+	 */
+	public final NativeInstruction addIfNonZero(int __a, NativeCodeLabel __jt,
+		boolean __rc)
+		throws NullPointerException
+	{
+		if (__jt == null)
+			throw new NullPointerException("NARG");
+		
+		return this.addICmp(CompareType.NOT_EQUALS, __a,
+			NativeCode.ZERO_REGISTER, __jt, __rc);
+	}
+	
+	/**
 	 * Adds a jump if the given register is zero. No reference clears are
 	 * performed by this call.
 	 *
