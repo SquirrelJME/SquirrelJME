@@ -188,7 +188,16 @@ public final class NearNativeByteCodeHandler
 		// The resulting flushed stack is then used instead
 		if (state.reversejumptargets.hasLaterAddress(addr))
 		{
-			throw new todo.TODO();
+			// Perform a flush of the cache
+			JavaStackResult fres = state.stack.doCacheFlush();
+			
+			// Generate the moving around operations
+			if (true)
+				throw new todo.TODO();
+			
+			// Use the result of the flush as the state instead so that it
+			// propagates ahead from now on
+			state.stack = fres.after();
 		}
 		
 		// Setup a label for this current position, this is done after
