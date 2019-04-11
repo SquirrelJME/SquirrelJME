@@ -177,12 +177,20 @@ public final class NearNativeByteCodeHandler
 	{
 		NativeCodeBuilder codebuilder = this.codebuilder;
 		ByteCodeState state = this.state;
+		int addr = state.addr;
 		
 		// Setup a label for this current position
-		codebuilder.label("java", state.addr);
+		codebuilder.label("java", addr);
 		
 		// Do not check any exceptions by default
 		this._checkexception = false;
+		
+		// If we are jumping back to this instruction at any point we need
+		// to flush the stack so that nothing is cached on it
+		if (state.reversejumptargets.hasLaterAddress(addr))
+		{
+			throw new todo.TODO();
+		}
 	}
 	
 	/**
