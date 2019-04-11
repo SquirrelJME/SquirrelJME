@@ -1188,6 +1188,7 @@ public final class ByteCodeProcessor
 		// Needed for processing
 		ByteCodeState state = this.state;
 		Map<Integer, JavaStackState> stacks = state.stacks;
+		int addr = state.addr;
 		
 		// Store result and the new stack
 		state.result = __jsr;
@@ -1212,10 +1213,19 @@ public final class ByteCodeProcessor
 				// The type of stack to target
 				JavaStackState use = (isexception ? hypoex : newstack);
 				
-				// Is empty state
+				// Is empty state, use this state because we defined it first
 				JavaStackState dss = stacks.get(jta);
 				if (dss == null)
 					stacks.put(jta, use);
+				
+				// For later addresses which do not have an exact stack state
+				// match, a partial un-cache will have to be used.
+				// Note that jump backs are ignored here since those were
+				// processed and we cannot adjust the states anymore
+				else if (jta > addr && !use.equals(dss))
+				{
+					throw new todo.TODO();
+				}
 			}
 	}
 }
