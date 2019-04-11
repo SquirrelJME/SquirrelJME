@@ -170,7 +170,16 @@ public final class NearNativeByteCodeHandler
 	@Override
 	public final void doReturn(JavaStackResult.Input __in)
 	{
-		throw new todo.TODO();
+		NativeCodeBuilder codebuilder = this.codebuilder;
+		
+		// Returning a value?
+		if (__in != null)
+		{
+			throw new todo.TODO();
+		}
+		
+		// Do the return
+		codebuilder.add(NativeInstructionType.RETURN);
 	}
 	
 	/**
