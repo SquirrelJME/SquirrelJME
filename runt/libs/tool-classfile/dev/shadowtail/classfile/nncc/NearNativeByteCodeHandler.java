@@ -11,6 +11,7 @@ package dev.shadowtail.classfile.nncc;
 
 import dev.shadowtail.classfile.xlate.ByteCodeHandler;
 import dev.shadowtail.classfile.xlate.ByteCodeState;
+import dev.shadowtail.classfile.xlate.ExceptionHandlerRanges;
 import dev.shadowtail.classfile.xlate.InvokeType;
 import dev.shadowtail.classfile.xlate.JavaStackEnqueueList;
 import dev.shadowtail.classfile.xlate.JavaStackResult;
@@ -18,6 +19,7 @@ import dev.shadowtail.classfile.xlate.MathType;
 import dev.shadowtail.classfile.xlate.StackJavaType;
 import java.util.ArrayList;
 import java.util.List;
+import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.MethodReference;
 
 /**
@@ -36,11 +38,30 @@ public final class NearNativeByteCodeHandler
 	protected final NativeCodeBuilder codebuilder =
 		new NativeCodeBuilder();
 	
+	/** Exception tracker. */
+	protected final ExceptionHandlerRanges exceptionranges;
+	
 	/** Exceptions should be checked? */
 	private boolean _checkexception;
 	
 	/** Last registers enqueued. */
 	private JavaStackEnqueueList _lastenqueue;
+	
+	/**
+	 * Initializes the byte code handler.
+	 *
+	 * @param __bc The byte code.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/11
+	 */
+	public NearNativeByteCodeHandler(ByteCode __bc)
+		throws NullPointerException
+	{
+		if (__bc == null)
+			throw new NullPointerException("NARG");
+		
+		this.exceptionranges = new ExceptionHandlerRanges(__bc);
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -76,12 +97,12 @@ public final class NearNativeByteCodeHandler
 			int ireg = __in[0].register;
 			
 			// Cannot be null
-			codebuilder.addIfZero(ireg, this.__makeExceptionLabel(
+			codebuilder.addIfZero(ireg, this.__labelMakeException(
 				"java/lang/NullPointerException"), true);
 			
 			// Must be the given class
 			codebuilder.addIfNotClass(__r.handle().outerClass(), ireg,
-				this.__makeExceptionLabel("java/lang/ClassCastException"),
+				this.__labelMakeException("java/lang/ClassCastException"),
 				true);
 		}
 		
@@ -186,6 +207,31 @@ public final class NearNativeByteCodeHandler
 	}
 	
 	/**
+	 * Creates and stores an exception.
+	 *
+	 * @return The label to the exception.
+	 * @since 2019/04/09
+	 */
+	private final NativeCodeLabel __labelException()
+	{
+		throw new todo.TODO();
+		/*
+		// Setup
+		ExceptionEnqueueAndTable st = this.exceptionranges.enqueueAndTable(
+			this._stack.possibleEnqueue(), this._addr);
+		
+		// Store into the table if it is missing
+		List<ExceptionEnqueueAndTable> eettable = this._eettable;
+		int dx = eettable.indexOf(st);
+		if (dx < 0)
+			eettable.add((dx = eettable.size()), st);
+		
+		// Just create a label to reference it, it is generated later
+		return new NativeCodeLabel("exception", dx);
+		*/
+	}
+	
+	/**
 	 * Makes a label which creates the given exception then throws that
 	 * exception.
 	 *
@@ -194,13 +240,31 @@ public final class NearNativeByteCodeHandler
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/10
 	 */
-	private final NativeCodeLabel __makeExceptionLabel(String __cl)
+	private final NativeCodeLabel __labelMakeException(String __cl)
 		throws NullPointerException
 	{
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
+		/*
+		// We need a label at generation time that has the current state of
+		// the stack and such after the operation is performed
+		this.__exceptionLabel();
+		
+		// Setup
+		ExceptionClassStackAndTable cst = this.exceptionranges.
+			classStackAndTable(new ClassName(__cl), this._stack, this._addr);
+		
+		// Store into the table if it is missing
+		List<ExceptionClassStackAndTable> ecsttable = this._ecsttable;
+		int dx = ecsttable.indexOf(cst);
+		if (dx < 0)
+			ecsttable.add((dx = ecsttable.size()), cst);
+		
+		// Just create a label to reference it, it is generated later
+		return new NativeCodeLabel("makeexception", dx);
+		*/
 	}
 	
 	/**
