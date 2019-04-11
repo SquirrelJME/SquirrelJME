@@ -13,6 +13,7 @@ import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ConstantValue;
+import net.multiphasicapps.classfile.ConstantValueClass;
 import net.multiphasicapps.classfile.ConstantValueNumber;
 import net.multiphasicapps.classfile.ExceptionHandler;
 import net.multiphasicapps.classfile.ExceptionHandlerTable;
@@ -56,6 +57,9 @@ public final class ByteCodeProcessor
 	
 	/** Flase is the preprocessor state, otherwise run the handler. */
 	private boolean _dohandling;
+	
+	/** Is an exception possible. */
+	private boolean _canexception;
 	
 	/**
 	 * Initializes the byte code processor.
@@ -159,6 +163,11 @@ public final class ByteCodeProcessor
 				
 				// Load stack
 				state.stack = stack;
+				
+				// Reset exception possibility, this is used to determine
+				// if the stack update should actually accept exception
+				// targets even if they are specified
+				this._canexception = false;
 				
 				// Preprocessing operations
 				if (!dohandling)
@@ -433,6 +442,9 @@ public final class ByteCodeProcessor
 	 */
 	private final void __doArrayLoad(PrimitiveType __pt)
 	{
+		// An exception may be thrown
+		this._canexception = true;
+		
 		throw new todo.TODO();
 		/*
 		// [array, index] -> [value]
@@ -480,6 +492,9 @@ public final class ByteCodeProcessor
 	 */
 	private final void __doArrayStore(PrimitiveType __pt)
 	{
+		// An exception may be thrown
+		this._canexception = true;
+		
 		throw new todo.TODO();
 		/*
 		// [array, index, value]
@@ -526,6 +541,9 @@ public final class ByteCodeProcessor
 	private final void __doCheckCast(ClassName __cn)
 		throws NullPointerException
 	{
+		// An exception may be thrown
+		this._canexception = true;
+		
 		throw new todo.TODO();
 		/*
 		if (__cn == null)
@@ -561,6 +579,9 @@ public final class ByteCodeProcessor
 	{
 		if (__fr == null)
 			throw new NullPointerException("NARG");
+		
+		// An exception may be thrown
+		this._canexception = true;
 		
 		throw new todo.TODO();
 		/*
@@ -620,6 +641,9 @@ public final class ByteCodeProcessor
 	{
 		if (__fr == null)
 			throw new NullPointerException("NARG");
+		
+		// An exception may be thrown
+		this._canexception = true;
 		
 		throw new todo.TODO();
 		/*
@@ -778,6 +802,9 @@ public final class ByteCodeProcessor
 		if (__t == null || __r == null)
 			throw new NullPointerException("NARG");
 		
+		// An exception may be thrown
+		this._canexception = true;
+		
 		// Return value type, if any
 		MethodHandle mf = __r.handle();
 		FieldDescriptor rv = mf.descriptor().returnValue();
@@ -816,6 +843,10 @@ public final class ByteCodeProcessor
 		
 		// Get push properties
 		JavaType jt = __v.type().javaType();
+		
+		// An exception is only throwable on classes, because the class
+		// could potentially fail to initialize properly
+		this._canexception = (__v instanceof ConstantValueClass);
 		
 		// Push to the stack this type, the result is always cached
 		JavaStackResult result = this.state.stack.doStack(0, true, jt);
@@ -939,6 +970,9 @@ public final class ByteCodeProcessor
 		if (__cn == null)
 			throw new NullPointerException("NARG");
 		
+		// An exception may be thrown
+		this._canexception = true;
+		
 		throw new todo.TODO();
 		/*
 		// New is a complex operation and could fail for many reasons
@@ -967,6 +1001,9 @@ public final class ByteCodeProcessor
 	{
 		if (__cn == null)
 			throw new NullPointerException("NARG");
+		
+		// An exception may be thrown
+		this._canexception = true;
 		
 		throw new todo.TODO();
 		/*
@@ -1162,6 +1199,9 @@ public final class ByteCodeProcessor
 		if (__fr == null)
 			throw new NullPointerException("NARG");
 		
+		// An exception may be thrown
+		this._canexception = true;
+		
 		throw new todo.TODO();
 		/*
 		// The data type determines which instruction to use
@@ -1203,6 +1243,9 @@ public final class ByteCodeProcessor
 		if (__jt == null)
 			throw new NullPointerException("NARG");
 		
+		// An exception may be thrown
+		this._canexception = true;
+		
 		throw new todo.TODO();
 		/*
 		// Pop from the stack, but since we set a new result remember the
@@ -1233,6 +1276,9 @@ public final class ByteCodeProcessor
 	 */
 	private final void __doThrow()
 	{
+		// An exception may be thrown
+		this._canexception = true;
+		
 		throw new todo.TODO();
 		/*
 		// This operation throws an exception, so we will just go to checking
@@ -1297,6 +1343,9 @@ public final class ByteCodeProcessor
 		// being poisoned potentially
 		Map<Integer, JavaStackPoison> stackpoison = state.stackpoison;
 		
+		// Can an exception handler be called?
+		boolean canexception = this._canexception;
+		
 		// Set target stack states for destinations of this instruction
 		// Calculate the exception state only if it is needed
 		JavaStackState hypoex = null;
@@ -1306,9 +1355,15 @@ public final class ByteCodeProcessor
 			{
 				int jta = ijt.get(i).target();
 				
+				// If an exception is never thrown by the instruction being
+				// processed then just ignore any exception points which may
+				// be defined since they will have no effect
+				boolean isexception = ijt.isException(i);
+				if (!canexception && isexception)
+					continue;
+				
 				// Lazily calculate the exception handler since it might
 				// not always be needed
-				boolean isexception = ijt.isException(i);
 				if (isexception && hypoex == null)
 					hypoex = newstack.doExceptionHandler(new JavaType(
 						new ClassName("java/lang/Throwable"))).after();
