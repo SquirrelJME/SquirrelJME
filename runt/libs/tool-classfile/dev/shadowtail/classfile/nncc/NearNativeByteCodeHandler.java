@@ -15,6 +15,7 @@ import dev.shadowtail.classfile.xlate.ExceptionHandlerRanges;
 import dev.shadowtail.classfile.xlate.InvokeType;
 import dev.shadowtail.classfile.xlate.JavaStackEnqueueList;
 import dev.shadowtail.classfile.xlate.JavaStackResult;
+import dev.shadowtail.classfile.xlate.JavaStackState;
 import dev.shadowtail.classfile.xlate.MathType;
 import dev.shadowtail.classfile.xlate.StackJavaType;
 import java.util.ArrayList;
