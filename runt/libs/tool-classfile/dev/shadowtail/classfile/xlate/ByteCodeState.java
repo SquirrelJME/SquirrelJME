@@ -21,6 +21,14 @@ import java.util.Map;
  */
 public class ByteCodeState
 {
+	/** The positions of all the stack information. */
+	public final Map<Integer, JavaStackState> stacks =
+		new LinkedHashMap<>();
+		
+	/** Instructions where the stack has been poisoned. */
+	public final Map<Integer, JavaStackPoison> stackpoison =
+		new LinkedHashMap<>();
+	
 	/** Java instruction. */
 	public Instruction instruction;
 	
@@ -33,15 +41,17 @@ public class ByteCodeState
 	/** The result of the operation. */
 	public JavaStackResult result;
 	
-	/** The positions of all the stack information. */
-	public Map<Integer, JavaStackState> stacks =
-		new LinkedHashMap<>();
-	
 	/** The current source line being processed. */
-	public int line;
+	public int line =
+		-1;
+	
+	/** The last address processed. */
+	public int lastaddr =
+		-1;
 	
 	/** The current address being processed. */
-	public int addr;
+	public int addr =
+		-1;
 	
 	/** Jump targets for the instruction. */
 	public InstructionJumpTargets jumptargets;
