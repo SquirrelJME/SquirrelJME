@@ -182,11 +182,11 @@ public final class NearNativeByteCodeHandler
 	{
 		ByteCodeState state = this.state;
 		
-		// An exception check was requested, will generate one later
+		// An exception check was requested, do a check on the exception
+		// register and jump if there is something there
 		if (state.canexception)
-		{
-			throw new todo.TODO();
-		}
+			codebuilder.addIfNonZero(NativeCode.EXCEPTION_REGISTER,
+				this.__labelException(), true);
 	}
 	
 	/**
