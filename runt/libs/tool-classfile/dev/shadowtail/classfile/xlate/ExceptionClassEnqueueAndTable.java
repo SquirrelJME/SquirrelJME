@@ -22,10 +22,10 @@ import net.multiphasicapps.classfile.ExceptionHandlerTable;
 public final class ExceptionClassEnqueueAndTable
 {
 	/** The class name to use. */
-	protected final ClassName name;
+	public final ClassName name;
 	
 	/** The exception combo to target. */
-	protected final ExceptionEnqueueAndTable enqueueandtable;
+	public final ExceptionEnqueueAndTable enqueueandtable;
 	
 	/**
 	 * Initializes the exception information.

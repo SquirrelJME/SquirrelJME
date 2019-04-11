@@ -21,10 +21,10 @@ import net.multiphasicapps.classfile.ExceptionHandlerTable;
 public final class ExceptionEnqueueAndTable
 {
 	/** The enqueue of the stack. */
-	protected final JavaStackEnqueueList enqueue;
+	public final JavaStackEnqueueList enqueue;
 	
 	/** The exception handle table. */
-	protected final ExceptionHandlerTable table;
+	public final ExceptionHandlerTable table;
 	
 	/**
 	 * Initializes the exception combo.

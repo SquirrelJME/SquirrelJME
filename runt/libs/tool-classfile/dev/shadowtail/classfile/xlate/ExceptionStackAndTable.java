@@ -19,10 +19,10 @@ import net.multiphasicapps.classfile.ExceptionHandlerTable;
 public final class ExceptionStackAndTable
 {
 	/** The state of the stack. */
-	protected final JavaStackState stack;
+	public final JavaStackState stack;
 	
 	/** The exception handle table. */
-	protected final ExceptionHandlerTable table;
+	public final ExceptionHandlerTable table;
 	
 	/**
 	 * Initializes the exception combo.

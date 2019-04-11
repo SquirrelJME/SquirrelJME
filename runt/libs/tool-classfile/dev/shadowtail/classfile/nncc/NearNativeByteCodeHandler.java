@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.ExceptionHandlerTable;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodHandle;
 import net.multiphasicapps.classfile.MethodName;
@@ -243,6 +244,10 @@ public final class NearNativeByteCodeHandler
 	{
 		NativeCodeBuilder codebuilder = this.codebuilder;
 		ByteCodeState state = this.state;
+		List<JavaStackEnqueueList> returns = this._returns;
+		
+		// Temporary register base
+		int tempreg = state.stack.usedregisters;
 		
 		// Generate make exception code
 		Map<ClassStackAndLabel, __EData__> metable = this._metable;
@@ -265,7 +270,6 @@ public final class NearNativeByteCodeHandler
 			
 			// Allocate exception at the highest register point which acts
 			// as a temporary
-			int tempreg = csl.stack.usedregisters;
 			codebuilder.add(NativeInstructionType.NEW, exn, tempreg);
 			
 			// Initialize object with constructor
@@ -279,9 +283,44 @@ public final class NearNativeByteCodeHandler
 		}
 		
 		// Generate exception handler tables
-		Map<ExceptionStackAndTable, __EData__> ehtable = this._ehtable;
-		if (!ehtable.isEmpty())
+		Map<ExceptionStackAndTable, __EData__> ehtab = this._ehtable;
+		for (Map.Entry<ExceptionStackAndTable, __EData__> e : ehtab.entrySet())
 		{
+			ExceptionStackAndTable est = e.getKey();
+			JavaStackState jss = est.stack;
+			JavaStackEnqueueList enq = jss.possibleEnqueue();
+			ExceptionHandlerTable ehtable = est.table;
+			__EData__ ed = e.getValue();
+			
+			// Set line/address info
+			state.addr = ed.addr;
+			int line = ed.line;
+			state.line = line;
+			codebuilder.setSourceLine(line);
+			
+			// If the table is empty, just return
+			if (ehtable.isEmpty())
+			{
+				// If we never saw a cleanup for this return yet we can
+				// generate one here to be used for later points
+				int rdx = returns.indexOf(enq);
+				if (rdx < 0)
+					codebuilder.label(ed.label,
+						codebuilder.labelTarget(this.__generateReturn(enq)));
+				
+				// We can just alias this exception to the return point to
+				// cleanup everything
+				else
+					codebuilder.label(ed.label,
+						codebuilder.labelTarget("return", rdx));
+				
+				// Generate the next handler
+				continue;
+			}
+			
+			// Set label target for this one
+			codebuilder.label(ed.label);
+			
 			throw new todo.TODO();
 		}
 		
