@@ -136,6 +136,18 @@ public final class JavaStackState
 	}
 	
 	/**
+	 * Performs a flush of the entire state removing all cached values.
+	 *
+	 * @return The result of the cache flush.
+	 * @since 2019/04/11
+	 */
+	public final JavaStackResult doCacheFlush()
+	{
+		// This is just a transition to the non-cached state
+		return this.doTransition(this.nonCached());
+	}
+	
+	/**
 	 * Destroys all local variables and stack variables returning the process
 	 * that is needed to clear out the entire state.
 	 *
@@ -637,6 +649,28 @@ public final class JavaStackState
 	}
 	
 	/**
+	 * Transitions to the given stack state.
+	 *
+	 * @param __target The target to transition.
+	 * @return The result of the transition and the operations used.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/11
+	 */
+	public final JavaStackResult doTransition(JavaStackState __target)
+		throws NullPointerException
+	{
+		if (__target == null)
+			throw new NullPointerException("NARG");
+		
+		// If this state is exactly the same as this one then no actual
+		// transition work needs to be done, so no result is generated
+		if (this.equals(__target))
+			return new JavaStackResult(this, this, null);
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2019/03/30
 	 */
@@ -782,6 +816,47 @@ public final class JavaStackState
 	public final int maxStack()
 	{
 		return this._stack.length;
+	}
+	
+	/**
+	 * Returns the resulting stack state which would be as if nothing were
+	 * cached.
+	 *
+	 * @return The non-cached stack state.
+	 * @since 2019/04/11
+	 */
+	public final JavaStackState nonCached()
+	{
+		// Create new copies of the state
+		int stacktop = this.stacktop;
+		Info[] locals = this._locals.clone(),
+			stack = this._stack.clone();
+		
+		// Un-cache locals
+		for (int i = 0, n = locals.length; i < n; i++)
+		{
+			Info info = locals[i];
+			
+			// Read-only values are never un-cached
+			if (info.readonly)
+				continue;
+			
+			// Map value to the register
+			locals[i] = info.newValue(info.register, false);
+		}
+		
+		// Un-cache the stack
+		for (int i = 0; i < stacktop; i++)
+		{
+			Info info = stack[i];
+			stack[i] = info.newValue(info.register, false);
+		}
+		
+		// Build, do not return the new object if it ends up being the same
+		JavaStackState rv = new JavaStackState(locals, stack, stacktop);
+		if (this.equals(rv))
+			return this;
+		return rv;
 	}
 	
 	/**
@@ -1036,7 +1111,7 @@ public final class JavaStackState
 		 *
 		 * @param __t The type to use.
 		 * @param __v The value to use.
-		 * @param __nc Is counting to be used?
+		 * @param __nc Do not count this?
 		 * @return The new information.
 		 * @throws NullPointerException On null arguments.
 		 * @since 2019/03/31
@@ -1044,7 +1119,26 @@ public final class JavaStackState
 		public final Info newTypeValue(JavaType __t, int __v, boolean __nc)
 			throws NullPointerException
 		{
-			return new Info(this.register, __t, __v, false, __nc);
+			Info rv = new Info(this.register, __t, __v, false, __nc);
+			if (this.equals(rv))
+				return this;
+			return rv;
+		}
+		
+		/**
+		 * Sets up info with a new value, using the same type.
+		 *
+		 * @param __v The new value.
+		 * @param __nc Do not count this?
+		 * @return The resulting value.
+		 * @since 2019/04/11
+		 */
+		public final Info newValue(int __v, boolean __nc)
+		{
+			Info rv = new Info(this.register, this.type, __v, false, __nc);
+			if (this.equals(rv))
+				return this;
+			return rv;
 		}
 		
 		/**
