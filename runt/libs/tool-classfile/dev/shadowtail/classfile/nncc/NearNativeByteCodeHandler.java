@@ -13,6 +13,7 @@ import dev.shadowtail.classfile.xlate.ByteCodeHandler;
 import dev.shadowtail.classfile.xlate.ByteCodeState;
 import dev.shadowtail.classfile.xlate.ExceptionClassEnqueueAndTable;
 import dev.shadowtail.classfile.xlate.ExceptionHandlerRanges;
+import dev.shadowtail.classfile.xlate.ExceptionStackAndTable;
 import dev.shadowtail.classfile.xlate.InvokeType;
 import dev.shadowtail.classfile.xlate.JavaStackEnqueueList;
 import dev.shadowtail.classfile.xlate.JavaStackPoison;
@@ -46,6 +47,10 @@ public final class NearNativeByteCodeHandler
 	
 	/** Exception tracker. */
 	protected final ExceptionHandlerRanges exceptionranges;
+	
+	/** Standard exception handler table. */
+	private final Map<ExceptionStackAndTable, __EData__> _ehtable =
+		new LinkedHashMap<>();
 	
 	/** Made exception table. */
 	private final Map<ClassStackAndLabel, __EData__> _metable =
@@ -224,6 +229,13 @@ public final class NearNativeByteCodeHandler
 			throw new todo.TODO();
 		}
 		
+		// Generate exception handler tables
+		Map<ExceptionStackAndTable, __EData__> ehtable = this._ehtable;
+		if (!ehtable.isEmpty())
+		{
+			throw new todo.TODO();
+		}
+		
 		return this.codebuilder.build();
 	}
 	
@@ -245,21 +257,24 @@ public final class NearNativeByteCodeHandler
 	 */
 	private final NativeCodeLabel __labelException()
 	{
-		throw new todo.TODO();
-		/*
-		// Setup
-		ExceptionEnqueueAndTable st = this.exceptionranges.enqueueAndTable(
-			this._stack.possibleEnqueue(), this._addr);
+		// Setup key
+		ByteCodeState state = this.state;
+		ExceptionStackAndTable key = this.exceptionranges.stackAndTable(
+			state.stack, state.addr);
 		
-		// Store into the table if it is missing
-		List<ExceptionEnqueueAndTable> eettable = this._eettable;
-		int dx = eettable.indexOf(st);
-		if (dx < 0)
-			eettable.add((dx = eettable.size()), st);
+		// Try to use an already existing point
+		Map<ExceptionStackAndTable, __EData__> ehtable = this._ehtable;
+		__EData__ rv = ehtable.get(key);
+		if (rv != null)
+			return rv.label;
+			
+		// Build new data to record this point
+		rv = new __EData__(state.addr, state.line,
+			new NativeCodeLabel("exception", ehtable.size()));
+		ehtable.put(key, rv);
 		
-		// Just create a label to reference it, it is generated later
-		return new NativeCodeLabel("exception", dx);
-		*/
+		// Return the created label (where the caller jumps to)
+		return rv.label;
 	}
 	
 	/**
