@@ -14,6 +14,7 @@ import dev.shadowtail.classfile.xlate.ByteCodeState;
 import dev.shadowtail.classfile.xlate.ExceptionHandlerRanges;
 import dev.shadowtail.classfile.xlate.InvokeType;
 import dev.shadowtail.classfile.xlate.JavaStackEnqueueList;
+import dev.shadowtail.classfile.xlate.JavaStackPoison;
 import dev.shadowtail.classfile.xlate.JavaStackResult;
 import dev.shadowtail.classfile.xlate.JavaStackState;
 import dev.shadowtail.classfile.xlate.MathType;
@@ -190,8 +191,11 @@ public final class NearNativeByteCodeHandler
 		
 		// Check if we need to transition into this instruction from the
 		// previous natural execution point (not a result of a jump)
-		if (true)
+		JavaStackPoison poison = state.stackpoison.get(addr);
+		if (poison != null)
+		{
 			throw new todo.TODO();
+		}
 		
 		// Setup a label for this current position, this is done after
 		// potential flushing because it is assumed that the current state
