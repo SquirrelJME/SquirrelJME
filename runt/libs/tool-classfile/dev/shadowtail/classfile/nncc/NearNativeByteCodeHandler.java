@@ -180,18 +180,21 @@ public final class NearNativeByteCodeHandler
 		ByteCodeState state = this.state;
 		int addr = state.addr;
 		
-		// Setup a label for this current position
-		codebuilder.label("java", addr);
-		
 		// Do not check any exceptions by default
 		this._checkexception = false;
 		
 		// If we are jumping back to this instruction at any point we need
 		// to flush the stack so that nothing is cached on it
+		// The resulting flushed stack is then used instead
 		if (state.reversejumptargets.hasLaterAddress(addr))
 		{
 			throw new todo.TODO();
 		}
+		
+		// Setup a label for this current position, this is done after
+		// potential flushing because it is assumed that the current state
+		// is always valid even after a flush
+		codebuilder.label("java", addr);
 	}
 	
 	/**
