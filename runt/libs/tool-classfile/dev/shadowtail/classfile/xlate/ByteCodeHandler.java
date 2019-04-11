@@ -69,6 +69,14 @@ public interface ByteCodeHandler
 		JavaStackResult.Input __a, Number __b, JavaStackResult.Output __c);
 	
 	/**
+	 * Return of value.
+	 *
+	 * @param __rv The return value, {@code null} means no value was returned.
+	 * @since 2019/04/11
+	 */
+	public abstract void doReturn(JavaStackResult.Input __in);
+	
+	/**
 	 * Finishes handling the instruction operation.
 	 *
 	 * @since 2019/04/07

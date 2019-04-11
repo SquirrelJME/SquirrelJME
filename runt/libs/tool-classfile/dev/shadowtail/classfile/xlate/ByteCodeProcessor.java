@@ -1010,11 +1010,15 @@ public final class ByteCodeProcessor
 	 */
 	private final void __doReturn(JavaType __rt)
 	{
-		throw new todo.TODO();
-		/*
-		// Return this value?
+		ByteCodeState state = this.state;
+		JavaStackState stack = state.stack;
+		
+		// Handle returning a value?
+		JavaStackResult.Input rvslot;
 		if (__rt != null)
 		{
+			throw new todo.TODO();
+			/*
 			// Pop return value
 			JavaStackResult result = this._stack.doStack(1);
 			this._stack = result.after();
@@ -1022,11 +1026,22 @@ public final class ByteCodeProcessor
 			// Store into the return register
 			this.codebuilder.add(DataType.of(__rt).returnValueStoreOperation(),
 				result.in(0).register);
+			*/
 		}
 		
-		// Return from this point or jump to an existing return/cleanup point
-		this.__generateReturn(this._stack);
-		*/
+		// No value is returned
+		else
+		{
+			// No return value slot used
+			rvslot = null;
+		}
+		
+		// Stop pre-processing here
+		if (!this._dohandling)
+			return;
+		
+		// Call handler
+		this.handler.doReturn(rvslot);
 	}
 	
 	/**
