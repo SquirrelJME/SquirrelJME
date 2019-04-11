@@ -54,6 +54,9 @@ public final class ByteCodeProcessor
 	/** Jump targets for this instruction. */
 	private InstructionJumpTargets _ijt;
 	
+	/** Flase is the preprocessor state, otherwise run the handler. */
+	private boolean _dohandling;
+	
 	/**
 	 * Initializes the byte code processor.
 	 *
@@ -94,236 +97,298 @@ public final class ByteCodeProcessor
 	{
 		ByteCode bytecode = this.bytecode;
 		ByteCodeState state = this.state;
-		Map<Integer, JavaStackState> stacks = state.stacks;
 		ByteCodeHandler handler = this.handler;
+		Map<Integer, JavaStackState> stacks = state.stacks;
+		Map<Integer, JavaStackPoison> stackpoison = state.stackpoison;
 		
-		// Process every instruction
-		for (Instruction inst : bytecode)
+		// Go through each operation twice, performing pre-processing first
+		// to make things a bit simpler and more well known when it comes
+		// to caching.
+		for (int pp = 0; pp < 2; pp++)
 		{
-			// Translate to simple instruction for easier handling
-			SimplifiedJavaInstruction sji =
-				new SimplifiedJavaInstruction(inst);
+			// Is handling to be done?
+			boolean dohandling = (pp == 2);
+			this._dohandling = dohandling;
 			
-			// Debug
-			todo.DEBUG.note("Process %s (%s)", sji, inst);
+			// Since this is the start, the last address needs to be reset
+			// because it will be invalid!
+			state.lastaddr = -1;
 			
-			// Current instruction info
-			state.instruction = inst;
-			state.simplified = sji;
-			
-			// Current processing this address
-			int addr = inst.address();
-			state.addr = addr;
-			
-			// Set line where this code was found
-			state.line = bytecode.lineOfAddress(addr);
-			
-			// These jump targets are used to map out the state of stacks
-			// across various points
-			InstructionJumpTargets ijt, rijt;
-			this._ijt = (ijt = inst.jumpTargets());
-			state.jumptargets = ijt;
-			
-			// Reverse jump targets are used to detect jumps to previous
-			// addresses
-			rijt = this._revjumps.get(addr);
-			state.reversejumptargets = (rijt != null ? rijt :
-				new InstructionJumpTargets());
-			
-			// {@squirreljme.error JC37 No recorded stack state for this
-			// position. (The address to check)}
-			JavaStackState stack = stacks.get(addr);
-			if (stack == null)
-				throw new IllegalArgumentException("JC37 " + addr);
-			
-			// Load stack
-			state.stack = stack;
-			
-			// Call pre-handler
-			handler.instructionSetup();
-			
-			// If the stack has been adjusted for any reason, replace the
-			// stored stack for this point
-			JavaStackState mns = state.stack;
-			if (!stack.equals(mns))
-				stacks.put(addr, (stack = mns));
-			
-			// Handle the operation
-			switch (sji.operation())
+			// Process instruction
+			for (Instruction inst : bytecode)
 			{
-					// Object array load
-				case InstructionIndex.AALOAD:
-					this.__doArrayLoad(null);
-					break;
-					
-					// Object array store
-				case InstructionIndex.AASTORE:
-					this.__doArrayStore(null);
-					break;
-					
-					// Allocate new array
-				case InstructionIndex.ANEWARRAY:
-					this.__doNewArray(sji.<ClassName>argument(0,
-						ClassName.class));
-					break;
-					
-					// Length of array
-				case InstructionIndex.ARRAYLENGTH:
-					this.__doArrayLength();
-					break;
-					
-					// Throw exception
-				case InstructionIndex.ATHROW:
-					this.__doThrow();
-					break;
-					
-					// Check that object is of a type, or fail
-				case InstructionIndex.CHECKCAST:
-					this.__doCheckCast(sji.<ClassName>argument(0,
-						ClassName.class));
-					break;
+				// Translate to simple instruction for easier handling
+				SimplifiedJavaInstruction sji =
+					new SimplifiedJavaInstruction(inst);
 				
-					// Dup
-				case InstructionIndex.DUP:
-					this.__doStackShuffle(JavaStackShuffleType.DUP);
-					break;
+				// Debug
+				todo.DEBUG.note("%s %s (%s)", (dohandling ? "Handling" :
+					"Preprocessing"), sji, inst);
+				
+				// Current instruction info
+				state.instruction = inst;
+				state.simplified = sji;
+				
+				// Store the last processed address
+				state.lastaddr = state.addr;
+				
+				// Current processing this address
+				int addr = inst.address();
+				state.addr = addr;
+				
+				// Set line where this code was found
+				state.line = bytecode.lineOfAddress(addr);
+				
+				// These jump targets are used to map out the state of stacks
+				// across various points
+				InstructionJumpTargets ijt, rijt;
+				this._ijt = (ijt = inst.jumpTargets());
+				state.jumptargets = ijt;
+				
+				// Reverse jump targets are used to detect jumps to previous
+				// addresses
+				rijt = this._revjumps.get(addr);
+				state.reversejumptargets = (rijt != null ? rijt :
+					new InstructionJumpTargets());
+				
+				// {@squirreljme.error JC37 No recorded stack state for this
+				// position. (The address to check)}
+				JavaStackState stack = stacks.get(addr);
+				if (stack == null)
+					throw new IllegalArgumentException("JC37 " + addr);
+				
+				// Load stack
+				state.stack = stack;
+				
+				// Preprocessing operations
+				if (!dohandling)
+				{
+					// If we are jumping back to this instruction at any point
+					// we need to flush the stack so that nothing is cached on
+					// it. The resulting flushed stack is then used instead
+					// Note that if we jump to ourselves we might have entered
+					// with something cached and might end up using that when
+					// we do not want to
+					if (state.reversejumptargets.hasSameOrLaterAddress(addr))
+					{
+						// Perform a flush of the cache
+						JavaStackResult fres = stack.doCacheFlush();
+						
+						// Generate the moving around operations
+						if (true)
+							throw new todo.TODO();
+						
+						// Set stack as poisoned at this point
+						if (true)
+							stackpoison.put(addr, null);
+						
+						// Use the result of the flush as the state instead so
+						// that it propagates ahead from now on
+						stack = fres.after();
+					}
 					
-					// Get field
-				case InstructionIndex.GETFIELD:
-					this.__doFieldGet(sji.<FieldReference>argument(0,
-						FieldReference.class));
-					break;
+					// Was the stack change?
+					if (state.stack != stack)
+						state.stack = stack;
+				}
+				
+				// Handle instruction
+				else
+				{
+					// Call pre-handler
+					handler.instructionSetup();
 					
-					// Get static
-				case InstructionIndex.GETSTATIC:
-					this.__doStaticGet(sji.<FieldReference>argument(0,
-						FieldReference.class));
-					break;
+					// If the stack has been adjusted for any reason, replace
+					// the stored stack for this point
+					JavaStackState mns = state.stack;
+					if (!stack.equals(mns))
+						stacks.put(addr, (stack = mns));
+				}
+				
+				// Handle the operation
+				switch (sji.operation())
+				{
+						// Object array load
+					case InstructionIndex.AALOAD:
+						this.__doArrayLoad(null);
+						break;
+						
+						// Object array store
+					case InstructionIndex.AASTORE:
+						this.__doArrayStore(null);
+						break;
+						
+						// Allocate new array
+					case InstructionIndex.ANEWARRAY:
+						this.__doNewArray(sji.<ClassName>argument(0,
+							ClassName.class));
+						break;
+						
+						// Length of array
+					case InstructionIndex.ARRAYLENGTH:
+						this.__doArrayLength();
+						break;
+						
+						// Throw exception
+					case InstructionIndex.ATHROW:
+						this.__doThrow();
+						break;
+						
+						// Check that object is of a type, or fail
+					case InstructionIndex.CHECKCAST:
+						this.__doCheckCast(sji.<ClassName>argument(0,
+							ClassName.class));
+						break;
 					
-					// Goto
-				case InstructionIndex.GOTO:
-					this.__doGoto(sji.<InstructionJumpTarget>argument(0,
-						InstructionJumpTarget.class));
-					break;
-					
-					// If comparison against zero
-				case SimplifiedJavaInstruction.IF:
-					this.__doIf(sji.<DataType>argument(0, DataType.class),
-						sji.<CompareType>argument(1, CompareType.class),
-						sji.<InstructionJumpTarget>argument(2,
+						// Dup
+					case InstructionIndex.DUP:
+						this.__doStackShuffle(JavaStackShuffleType.DUP);
+						break;
+						
+						// Get field
+					case InstructionIndex.GETFIELD:
+						this.__doFieldGet(sji.<FieldReference>argument(0,
+							FieldReference.class));
+						break;
+						
+						// Get static
+					case InstructionIndex.GETSTATIC:
+						this.__doStaticGet(sji.<FieldReference>argument(0,
+							FieldReference.class));
+						break;
+						
+						// Goto
+					case InstructionIndex.GOTO:
+						this.__doGoto(sji.<InstructionJumpTarget>argument(0,
 							InstructionJumpTarget.class));
-					break;
+						break;
+						
+						// If comparison against zero
+					case SimplifiedJavaInstruction.IF:
+						this.__doIf(sji.<DataType>argument(0, DataType.class),
+							sji.<CompareType>argument(1, CompareType.class),
+							sji.<InstructionJumpTarget>argument(2,
+								InstructionJumpTarget.class));
+						break;
+						
+						// Compare two values
+					case SimplifiedJavaInstruction.IF_CMP:
+						this.__doIfCmp(
+							sji.<DataType>argument(0, DataType.class),
+							sji.<CompareType>argument(1, CompareType.class),
+							sji.<InstructionJumpTarget>argument(2,
+								InstructionJumpTarget.class));
+						break;
+						
+						// Increment local
+					case InstructionIndex.IINC:
+						this.__doIInc(sji.intArgument(0), sji.intArgument(1));
+						break;
+						
+						// Invoke interface
+					case InstructionIndex.INVOKEINTERFACE:
+						this.__doInvoke(InvokeType.INTERFACE,
+							sji.<MethodReference>argument(0,
+								MethodReference.class));
+						break;
 					
-					// Compare two values
-				case SimplifiedJavaInstruction.IF_CMP:
-					this.__doIfCmp(sji.<DataType>argument(0, DataType.class),
-						sji.<CompareType>argument(1, CompareType.class),
-						sji.<InstructionJumpTarget>argument(2,
-							InstructionJumpTarget.class));
-					break;
+						// Invoke special
+					case InstructionIndex.INVOKESPECIAL:
+						this.__doInvoke(InvokeType.SPECIAL,
+							sji.<MethodReference>argument(0,
+								MethodReference.class));
+						break;
 					
-					// Increment local
-				case InstructionIndex.IINC:
-					this.__doIInc(sji.intArgument(0), sji.intArgument(1));
-					break;
+						// Invoke static
+					case InstructionIndex.INVOKESTATIC:
+						this.__doInvoke(InvokeType.STATIC,
+							sji.<MethodReference>argument(0,
+								MethodReference.class));
+						break;
+						
+						// Invoke virtual
+					case InstructionIndex.INVOKEVIRTUAL:
+						this.__doInvoke(InvokeType.VIRTUAL,
+							sji.<MethodReference>argument(0,
+								MethodReference.class));
+						break;
 					
-					// Invoke interface
-				case InstructionIndex.INVOKEINTERFACE:
-					this.__doInvoke(InvokeType.INTERFACE, sji.<MethodReference>
-						argument(0, MethodReference.class));
-					break;
-				
-					// Invoke special
-				case InstructionIndex.INVOKESPECIAL:
-					this.__doInvoke(InvokeType.SPECIAL, sji.<MethodReference>
-						argument(0, MethodReference.class));
-					break;
-				
-					// Invoke static
-				case InstructionIndex.INVOKESTATIC:
-					this.__doInvoke(InvokeType.STATIC, sji.<MethodReference>
-						argument(0, MethodReference.class));
-					break;
+						// Load constant
+					case InstructionIndex.LDC:
+						this.__doLdc(sji.<ConstantValue>argument(0,
+							ConstantValue.class));
+						break;
 					
-					// Invoke virtual
-				case InstructionIndex.INVOKEVIRTUAL:
-					this.__doInvoke(InvokeType.VIRTUAL, sji.<MethodReference>
-						argument(0, MethodReference.class));
-					break;
-				
-					// Load constant
-				case InstructionIndex.LDC:
-					this.__doLdc(sji.<ConstantValue>argument(0,
-						ConstantValue.class));
-					break;
-				
-					// Load local variable to the stack
-				case SimplifiedJavaInstruction.LOAD:
-					this.__doLoad(sji.<DataType>argument(0, DataType.class),
-						sji.intArgument(1));
-					break;
+						// Load local variable to the stack
+					case SimplifiedJavaInstruction.LOAD:
+						this.__doLoad(sji.<DataType>argument(0,
+							DataType.class), sji.intArgument(1));
+						break;
+						
+						// Math
+					case SimplifiedJavaInstruction.MATH:
+						this.__doMath(sji.<DataType>argument(0,
+							DataType.class), sji.<MathType>argument(1,
+								MathType.class));
+						break;
 					
-					// Math
-				case SimplifiedJavaInstruction.MATH:
-					this.__doMath(sji.<DataType>argument(0, DataType.class), 
-						sji.<MathType>argument(1,
-							MathType.class));
-					break;
-				
-					// Create new instance of something
-				case InstructionIndex.NEW:
-					this.__doNew(sji.<ClassName>argument(0, ClassName.class));
-					break;
+						// Create new instance of something
+					case InstructionIndex.NEW:
+						this.__doNew(sji.<ClassName>argument(0,
+							ClassName.class));
+						break;
+						
+						// This literally does nothing so no output code needs to
+						// be generated at all
+					case InstructionIndex.NOP:
+						this.__doNop();
+						break;
+						
+						// Primitive array load
+					case SimplifiedJavaInstruction.PALOAD:
+						this.__doArrayLoad(sji.<PrimitiveType>argument(0,
+							PrimitiveType.class));
+						break;
+						
+						// Primitive array store
+					case SimplifiedJavaInstruction.PASTORE:
+						this.__doArrayStore(sji.<PrimitiveType>argument(0,
+							PrimitiveType.class));
+						break;
 					
-					// This literally does nothing so no output code needs to
-					// be generated at all
-				case InstructionIndex.NOP:
-					this.__doNop();
-					break;
+						// Put of instance field
+					case InstructionIndex.PUTFIELD:
+						this.__doFieldPut(sji.<FieldReference>argument(0,
+							FieldReference.class));
+						break;
 					
-					// Primitive array load
-				case SimplifiedJavaInstruction.PALOAD:
-					this.__doArrayLoad(sji.<PrimitiveType>argument(0,
-						PrimitiveType.class));
-					break;
+						// Return from method, with no return value
+					case InstructionIndex.RETURN:
+						this.__doReturn(null);
+						break;
 					
-					// Primitive array store
-				case SimplifiedJavaInstruction.PASTORE:
-					this.__doArrayStore(sji.<PrimitiveType>argument(0,
-						PrimitiveType.class));
-					break;
-				
-					// Put of instance field
-				case InstructionIndex.PUTFIELD:
-					this.__doFieldPut(sji.<FieldReference>argument(0,
-						FieldReference.class));
-					break;
-				
-					// Return from method, with no return value
-				case InstructionIndex.RETURN:
-					this.__doReturn(null);
-					break;
-				
-					// Place stack variable into local
-				case SimplifiedJavaInstruction.STORE:
-					this.__doStore(sji.<DataType>argument(0, DataType.class),
-						sji.intArgument(1));
-					break;
+						// Place stack variable into local
+					case SimplifiedJavaInstruction.STORE:
+						this.__doStore(sji.<DataType>argument(0, DataType.class),
+							sji.intArgument(1));
+						break;
+						
+						// Return value
+					case SimplifiedJavaInstruction.VRETURN:
+						this.__doReturn(sji.<DataType>argument(0, DataType.class).
+							toJavaType());
+						break;
 					
-					// Return value
-				case SimplifiedJavaInstruction.VRETURN:
-					this.__doReturn(sji.<DataType>argument(0, DataType.class).
-						toJavaType());
-					break;
+						// Not yet implemented
+					default:
+						throw new todo.OOPS(
+							sji.toString() + "/" + inst.toString());
+				}
 				
-					// Not yet implemented
-				default:
-					throw new todo.OOPS(
-						sji.toString() + "/" + inst.toString());
+				// Call post-handler
+				if (dohandling)
+					handler.instructionFinish();
 			}
-			
-			// Call post-handler
-			handler.instructionFinish();
 		}
 	}
 	
@@ -727,6 +792,10 @@ public final class ByteCodeProcessor
 			state.stack.doStack(popcount, new JavaType(rv)));
 		this.__update(result);
 		
+		// Stop processing here
+		if (!this._dohandling)
+			return;
+		
 		// Forward
 		this.handler.doInvoke(__t, __r, (!hasrv ? null :
 			result.out(0)), result.in());
@@ -751,6 +820,10 @@ public final class ByteCodeProcessor
 		// Push to the stack this type, the result is always cached
 		JavaStackResult result = this.state.stack.doStack(0, true, jt);
 		this.__update(result);
+		
+		// Do not call generator, we just want the stack result
+		if (!this._dohandling)
+			return;
 		
 		// Call the appropriate handler
 		ByteCodeHandler handler = this.handler;
@@ -814,6 +887,10 @@ public final class ByteCodeProcessor
 		// Load from local variable
 		JavaStackResult result = this.state.stack.doLocalLoad(__from);
 		this.__update(result);
+		
+		// Stop processing here
+		if (!this._dohandling)
+			return;
 		
 		// Only perform the copy if the value is different, because otherwise
 		// it would have just been cached
@@ -920,7 +997,8 @@ public final class ByteCodeProcessor
 	 */
 	private final void __doNop()
 	{
-		throw new todo.TODO();
+		// Just do nothing
+		this.__update(this.state.stack.doNothing());
 	}
 	
 	/**
@@ -1194,6 +1272,16 @@ public final class ByteCodeProcessor
 		state.result = __jsr;
 		state.stack = newstack;
 		
+		// Target stack states are not touched in the normal handling state
+		// because collisions and transitioning of states is handled in the
+		// pre-processing step
+		if (this._dohandling)
+			return;
+		
+		// The result of the jump calculations may result in the stack
+		// being poisoned potentially
+		Map<Integer, JavaStackPoison> stackpoison = state.stackpoison;
+		
 		// Set target stack states for destinations of this instruction
 		// Calculate the exception state only if it is needed
 		JavaStackState hypoex = null;
@@ -1224,6 +1312,8 @@ public final class ByteCodeProcessor
 				// processed and we cannot adjust the states anymore
 				else if (jta > addr && !use.equals(dss))
 				{
+					todo.DEBUG.note("Transition is required!");
+					
 					throw new todo.TODO();
 				}
 			}

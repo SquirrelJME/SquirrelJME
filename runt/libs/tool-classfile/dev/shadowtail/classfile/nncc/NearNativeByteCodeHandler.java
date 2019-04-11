@@ -185,24 +185,10 @@ public final class NearNativeByteCodeHandler
 		// Do not check any exceptions by default
 		this._checkexception = false;
 		
-		// If we are jumping back to this instruction at any point we need
-		// to flush the stack so that nothing is cached on it
-		// The resulting flushed stack is then used instead
-		// Note that if we jump to ourselves we might have entered with
-		// something cached and might end up using that when we do not want to
-		if (state.reversejumptargets.hasSameOrLaterAddress(addr))
-		{
-			// Perform a flush of the cache
-			JavaStackResult fres = state.stack.doCacheFlush();
-			
-			// Generate the moving around operations
-			if (true)
-				throw new todo.TODO();
-			
-			// Use the result of the flush as the state instead so that it
-			// propagates ahead from now on
-			state.stack = fres.after();
-		}
+		// Check if we need to transition into this instruction from the
+		// previous natural execution point (not a result of a jump)
+		if (true)
+			throw new todo.TODO();
 		
 		// Setup a label for this current position, this is done after
 		// potential flushing because it is assumed that the current state
