@@ -258,9 +258,11 @@ public final class Method
 		
 		if (ref == null || null == (rv = ref.get()))
 		{
+			ByteCode bc = this.byteCode();
+			
 			// Process Code
-			NearNativeByteCodeHandler nnbc = new NearNativeByteCodeHandler();
-			new ByteCodeProcessor(this.byteCode(), nnbc).process();
+			NearNativeByteCodeHandler nnbc = new NearNativeByteCodeHandler(bc);
+			new ByteCodeProcessor(bc, nnbc).process();
 			
 			// Cache the result of it
 			this._regcode = new WeakReference<>((rv = nnbc.result()));
