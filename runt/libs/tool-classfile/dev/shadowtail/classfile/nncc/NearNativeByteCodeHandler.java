@@ -44,9 +44,6 @@ public final class NearNativeByteCodeHandler
 	/** Exception tracker. */
 	protected final ExceptionHandlerRanges exceptionranges;
 	
-	/** Exceptions should be checked? */
-	private boolean _checkexception;
-	
 	/** Last registers enqueued. */
 	private JavaStackEnqueueList _lastenqueue;
 	
@@ -86,9 +83,6 @@ public final class NearNativeByteCodeHandler
 		JavaStackResult.Output __out, JavaStackResult.Input... __in)
 	{
 		NativeCodeBuilder codebuilder = this.codebuilder;
-		
-		// Exceptions will be checked after the call
-		this._checkexception = true;
 		
 		// Push references
 		this.__refPush();
@@ -174,8 +168,10 @@ public final class NearNativeByteCodeHandler
 	@Override
 	public final void instructionFinish()
 	{
+		ByteCodeState state = this.state;
+		
 		// An exception check was requested, will generate one later
-		if (this._checkexception)
+		if (state.canexception)
 		{
 			throw new todo.TODO();
 		}
@@ -191,9 +187,6 @@ public final class NearNativeByteCodeHandler
 		NativeCodeBuilder codebuilder = this.codebuilder;
 		ByteCodeState state = this.state;
 		int addr = state.addr;
-		
-		// Do not check any exceptions by default
-		this._checkexception = false;
 		
 		// Check if we need to transition into this instruction from the
 		// previous natural execution point (not a result of a jump)

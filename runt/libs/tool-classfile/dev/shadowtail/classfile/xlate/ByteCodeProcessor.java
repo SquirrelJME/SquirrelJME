@@ -168,6 +168,7 @@ public final class ByteCodeProcessor
 				// if the stack update should actually accept exception
 				// targets even if they are specified
 				this._canexception = false;
+				state.canexception = false;
 				
 				// Preprocessing operations
 				if (!dohandling)
@@ -1333,6 +1334,10 @@ public final class ByteCodeProcessor
 		state.result = __jsr;
 		state.stack = newstack;
 		
+		// Can an exception handler be called?
+		boolean canexception = this._canexception;
+		state.canexception = canexception;
+		
 		// Target stack states are not touched in the normal handling state
 		// because collisions and transitioning of states is handled in the
 		// pre-processing step
@@ -1342,9 +1347,6 @@ public final class ByteCodeProcessor
 		// The result of the jump calculations may result in the stack
 		// being poisoned potentially
 		Map<Integer, JavaStackPoison> stackpoison = state.stackpoison;
-		
-		// Can an exception handler be called?
-		boolean canexception = this._canexception;
 		
 		// Set target stack states for destinations of this instruction
 		// Calculate the exception state only if it is needed
