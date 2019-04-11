@@ -270,13 +270,14 @@ public final class NearNativeByteCodeHandler
 			
 			// Allocate exception at the highest register point which acts
 			// as a temporary
-			codebuilder.add(NativeInstructionType.NEW, exn, tempreg);
+			codebuilder.add(NativeInstructionType.NEW, exn,
+				NativeCode.EXCEPTION_REGISTER);
 			
 			// Initialize object with constructor
 			codebuilder.add(NativeInstructionType.INVOKE,
 				new InvokedMethod(InvokeType.SPECIAL, new MethodHandle(exn,
 				new MethodName("<init>"), new MethodDescriptor("()V"))),
-				new RegisterList(tempreg));
+				new RegisterList(NativeCode.EXCEPTION_REGISTER));
 			
 			// Generate jump to exception handler
 			codebuilder.addGoto(csl.label);
