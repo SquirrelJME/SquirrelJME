@@ -145,7 +145,7 @@ public final class ByteCodeProcessor
 			// If the stack has been adjusted for any reason, replace the
 			// stored stack for this point
 			JavaStackState mns = state.stack;
-			if (stack != mns)
+			if (!stack.equals(mns))
 				stacks.put(addr, (stack = mns));
 			
 			// Handle the operation
