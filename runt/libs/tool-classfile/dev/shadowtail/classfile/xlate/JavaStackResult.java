@@ -48,6 +48,9 @@ public final class JavaStackResult
 	/** Output. */
 	private final JavaStackResult.Output[] _out;
 	
+	/** State operations. */
+	private final StateOperation[] _ops;
+	
 	/** String representation. */
 	private Reference<String> _string;
 	
@@ -65,6 +68,24 @@ public final class JavaStackResult
 		JavaStackEnqueueList __eq, InputOutput... __io)
 		throws NullPointerException
 	{
+		this(__bs, __as, __eq, (StateOperation[])null, __io);
+	}
+	
+	/**
+	 * Initializes the result of the operation
+	 *
+	 * @param __bs The previous stack state.
+	 * @param __as The after (the new) stack state.
+	 * @param __eq Enqueue list, may be {@code null}.
+	 * @param __ops State operations.
+	 * @param __io Input/output.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/11
+	 */
+	public JavaStackResult(JavaStackState __bs, JavaStackState __as,
+		JavaStackEnqueueList __eq, StateOperation[] __ops, InputOutput... __io)
+		throws NullPointerException
+	{
 		if (__bs == null || __as == null)
 			throw new NullPointerException("NARG");
 		
@@ -80,11 +101,18 @@ public final class JavaStackResult
 			else
 				out.add((Output)x);
 		
+		// Make sure operations are valid
+		for (StateOperation x : (__ops = (__ops == null ?
+			new StateOperation[0] : __ops.clone())))
+			if (x == null)
+				throw new NullPointerException("NARG");
+		
 		this.before = __bs;
 		this.after = __as;
 		this.enqueue = (__eq == null ? new JavaStackEnqueueList(0) : __eq);
 		this._in = in.<Input>toArray(new Input[in.size()]);
 		this._out = out.<Output>toArray(new Output[out.size()]);
+		this._ops = __ops;
 		
 		// Debug
 		todo.DEBUG.note("*** Stack Result ***");
@@ -93,6 +121,7 @@ public final class JavaStackResult
 		todo.DEBUG.note("ENQ: %s", __eq);
 		todo.DEBUG.note("IN : %s", in);
 		todo.DEBUG.note("OUT: %s", out);
+		todo.DEBUG.note("OPS: %s", Arrays.asList(__ops));
 		todo.DEBUG.note("********************");
 	}
 	
@@ -186,6 +215,17 @@ public final class JavaStackResult
 	}
 	
 	/**
+	 * The operations to be performed.
+	 *
+	 * @return The operations to perform.
+	 * @since 2019/04/11
+	 */
+	public final StateOperation[] operations()
+	{
+		return this._ops.clone();
+	}
+	
+	/**
 	 * Returns the output.
 	 *
 	 * @return The output.
@@ -231,9 +271,10 @@ public final class JavaStackResult
 		
 		if (ref == null || null == (rv = ref.get()))
 			this._string = new WeakReference<>((rv = String.format(
-				"Result:{bef=%s, aft=%s, enq=%s, in=%s, out=%s}",
+				"Result:{bef=%s, aft=%s, enq=%s, in=%s, out=%s, ops=%s}",
 				this.before, this.after, this.enqueue,
-				Arrays.asList(this._in), Arrays.asList(this._out))));
+				Arrays.asList(this._in), Arrays.asList(this._out),
+				Arrays.asList(this._ops))));
 		
 		return rv;
 	}
