@@ -19,7 +19,9 @@ import dev.shadowtail.classfile.xlate.JavaStackState;
 import dev.shadowtail.classfile.xlate.MathType;
 import dev.shadowtail.classfile.xlate.StackJavaType;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.MethodReference;
 
@@ -273,7 +275,7 @@ public final class NearNativeByteCodeHandler
 		/*
 		// We need a label at generation time that has the current state of
 		// the stack and such after the operation is performed
-		this.__exceptionLabel();
+		this.__labelException();
 		
 		// Setup
 		ExceptionClassStackAndTable cst = this.exceptionranges.
