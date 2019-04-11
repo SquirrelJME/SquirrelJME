@@ -141,6 +141,24 @@ public final class InstructionJumpTargets
 	}
 	
 	/**
+	 * Checks if any of the jump targets has an address which is or follows
+	 * the given address.
+	 *
+	 * @param __pc The address to check.
+	 * @return True if any address in the jump targets has an address which
+	 * is the same or higher than this address.
+	 * @since 2019/04/11
+	 */
+	public final boolean hasSameOrLaterAddress(int __pc)
+	{
+		for (int i = 0, n = this.size(); i < n; i++)
+			if (this.get(i).target() >= __pc)
+				return true;
+		
+		return false;
+	}
+	
+	/**
 	 * Returns if this is empty or not.
 	 *
 	 * @return If this is empty or not.

@@ -186,7 +186,9 @@ public final class NearNativeByteCodeHandler
 		// If we are jumping back to this instruction at any point we need
 		// to flush the stack so that nothing is cached on it
 		// The resulting flushed stack is then used instead
-		if (state.reversejumptargets.hasLaterAddress(addr))
+		// Note that if we jump to ourselves we might have entered with
+		// something cached and might end up using that when we do not want to
+		if (state.reversejumptargets.hasSameOrLaterAddress(addr))
 		{
 			// Perform a flush of the cache
 			JavaStackResult fres = state.stack.doCacheFlush();
