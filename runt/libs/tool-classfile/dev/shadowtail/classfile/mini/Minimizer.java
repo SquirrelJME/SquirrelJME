@@ -12,6 +12,8 @@ package dev.shadowtail.classfile.mini;
 
 import dev.shadowtail.classfile.nncc.NativeCode;
 import dev.shadowtail.classfile.nncc.NativeInstruction;
+import dev.shadowtail.classfile.nncc.NativeInstructionType;
+import dev.shadowtail.classfile.nncc.RegisterList;
 import dev.shadowtail.classfile.xlate.CompareType;
 import dev.shadowtail.classfile.xlate.DataType;
 import dev.shadowtail.classfile.xlate.MathType;
@@ -266,44 +268,96 @@ public final class Minimizer
 			// a common layout.
 			switch (i.encoding())
 			{
-				/*
-				case RegisterOperationType.NOP:
-				case RegisterOperationType.RETURN:
-				case RegisterOperationType.REF_CLEAR:
-				case RegisterOperationType.REF_RESET:
+					// []
+				case NativeInstructionType.BREAKPOINT:
+				case NativeInstructionType.RETURN:
+				case NativeInstructionType.REF_CLEAR:
+				case NativeInstructionType.REF_RESET:
 					break;
-				
-				case RegisterOperationType.ENCODING_U16:
-				case RegisterOperationType.ENCODING_U16_2:
+					
+					// [u16]
+				case NativeInstructionType.COUNT:
+				case NativeInstructionType.MONITORENTER:
+				case NativeInstructionType.MONITOREXIT:
+				case NativeInstructionType.UNCOUNT:
 					dos.writeShort(i.shortArgument(0));
 					break;
 					
-				case RegisterOperationType.ENCODING_J16:
-					jumpreps.put(dos.size(), i.<InstructionJumpTarget>
-						argument(0, InstructionJumpTarget.class));
-					dos.writeShort(0);
-					break;
-					
-				case RegisterOperationType.ENCODING_U16_J16:
+					// [u16, u16]
+				case NativeInstructionType.ARRAYLEN:
+				case NativeInstructionType.CONVERSION:
 					dos.writeShort(i.shortArgument(0));
-					
-					jumpreps.put(dos.size(), i.<InstructionJumpTarget>
-						argument(1, InstructionJumpTarget.class));
-					dos.writeShort(0);
+					dos.writeShort(i.shortArgument(1));
 					break;
 					
-				case RegisterOperationType.ENCODING_POOL16_U16:
+					// [p16, u16]
+				case NativeInstructionType.LOAD_POOL:
+				case NativeInstructionType.NEW:
 					dos.writeShort(pool.add(i.argument(0)));
 					dos.writeShort(i.shortArgument(1));
 					break;
 					
-				case RegisterOperationType.ENCODING_U16_U16:
-				case RegisterOperationType.ENCODING_U16_U16_2:
+					// [u16, u16, u16]
+				case NativeInstructionType.ARRAY_ACCESS:
+				case NativeInstructionType.MATH_REG_DOUBLE:
+				case NativeInstructionType.MATH_REG_FLOAT:
+				case NativeInstructionType.MATH_REG_INT:
+				case NativeInstructionType.MATH_REG_LONG:
+				case NativeInstructionType.MEMORY_OFF_REG:
 					dos.writeShort(i.shortArgument(0));
 					dos.writeShort(i.shortArgument(1));
+					dos.writeShort(i.shortArgument(2));
 					break;
 					
-				case RegisterOperationType.ENCODING_U16_U16_J16:
+					// [u16, d64, u16]
+				case NativeInstructionType.MATH_CONST_DOUBLE:
+					dos.writeShort(i.shortArgument(0));
+					
+					dos.writeLong(Double.doubleToRawLongBits(
+						i.<Number>argument(1, Number.class).doubleValue()));
+					
+					dos.writeShort(i.shortArgument(2));
+					break;
+				
+					// [u16, f32, u16]
+				case NativeInstructionType.MATH_CONST_FLOAT:
+					dos.writeShort(i.shortArgument(0));
+					
+					dos.writeInt(Float.floatToRawIntBits(
+						i.<Number>argument(1, Number.class).floatValue()));
+						
+					dos.writeShort(i.shortArgument(2));
+					break;
+				
+					// [u16, i32, u16]
+				case NativeInstructionType.MATH_CONST_INT:
+					dos.writeShort(i.shortArgument(0));
+					
+					dos.writeInt(i.<Number>argument(1, Number.class).
+						intValue());
+					
+					dos.writeShort(i.shortArgument(2));
+					break;
+				
+					// [u16, l32, u16]
+				case NativeInstructionType.MATH_CONST_LONG:
+					dos.writeShort(i.shortArgument(0));
+					
+					dos.writeLong(i.<Number>argument(1, Number.class).
+						longValue());
+					
+					dos.writeInt(i.intArgument(1));
+					break;
+					
+					// [u16, u16, i32]
+				case NativeInstructionType.MEMORY_OFF_ICONST:
+					dos.writeShort(i.shortArgument(0));
+					dos.writeShort(i.shortArgument(1));
+					dos.writeInt(i.intArgument(2));
+					break;
+					
+					// [u16, u16, j16]
+				case NativeInstructionType.IF_ICMP:
 					dos.writeShort(i.shortArgument(0));
 					dos.writeShort(i.shortArgument(1));
 					
@@ -312,21 +366,28 @@ public final class Minimizer
 					dos.writeShort(0);
 					break;
 					
-				case RegisterOperationType.ENCODING_POOL16_U16_U16:
+					// [p16, u16, u16]
+				case NativeInstructionType.NEWARRAY:
 					dos.writeShort(pool.add(i.argument(0)));
 					dos.writeShort(i.shortArgument(1));
 					dos.writeShort(i.shortArgument(2));
 					break;
 					
-				case RegisterOperationType.ENCODING_U16_U16_U16:
-				case RegisterOperationType.ENCODING_U16_U16_U16_2:
-				case RegisterOperationType.ENCODING_U16_U16_U16_3:
-					dos.writeShort(i.shortArgument(0));
+					// [p16, u16, j16]
+				case NativeInstructionType.IFCLASS:
+				case NativeInstructionType.IFCLASS_REF_CLEAR:
+				case NativeInstructionType.IFNOTCLASS:
+				case NativeInstructionType.IFNOTCLASS_REF_CLEAR:
+					dos.writeShort(pool.add(i.argument(0)));
 					dos.writeShort(i.shortArgument(1));
-					dos.writeShort(i.shortArgument(2));
+					
+					jumpreps.put(dos.size(), i.<InstructionJumpTarget>
+						argument(2, InstructionJumpTarget.class));
+					dos.writeShort(0);
 					break;
 					
-				case RegisterOperationType.REF_ENQUEUE:
+					// [reglist]
+				case NativeInstructionType.REF_PUSH:
 					{
 						// Write register list
 						RegisterList rl = i.<RegisterList>argument(0,
@@ -338,7 +399,8 @@ public final class Minimizer
 					}
 					break;
 					
-				case RegisterOperationType.INVOKE_METHOD:
+					// [p16, reglist]
+				case NativeInstructionType.INVOKE:
 					{
 						dos.writeShort(pool.add(i.argument(0)));
 						
@@ -352,69 +414,11 @@ public final class Minimizer
 					}
 					break;
 					
-				case RegisterOperationType.JUMP_IF_INSTANCE:
-				case RegisterOperationType.JUMP_IF_NOT_INSTANCE:
-				case RegisterOperationType.JUMP_IF_NOT_INSTANCE_REF_CLEAR:
-					dos.writeShort(pool.add(i.argument(0)));
-					dos.writeShort(i.shortArgument(1));
-					
-					jumpreps.put(dos.size(), i.<InstructionJumpTarget>
-						argument(2, InstructionJumpTarget.class));
-					dos.writeShort(0);
-					break;
-					
-				case RegisterOperationType.JUMP_IF_INSTANCE_GET_EXCEPTION:
-					dos.writeShort(pool.add(i.argument(0)));
-					dos.writeShort(i.shortArgument(1));
-					
-					jumpreps.put(dos.size(), i.<InstructionJumpTarget>
-						argument(2, InstructionJumpTarget.class));
-					dos.writeShort(0);
-					
-					dos.writeShort(i.shortArgument(3));
-					break;
-					
-				case RegisterOperationType.LOOKUPSWITCH:
+					// ???
+				case NativeInstructionType.LOOKUPSWITCH:
+				case NativeInstructionType.TABLESWITCH:
 					throw new todo.TODO();
 				
-				case RegisterOperationType.X32_CONST:
-					{
-						// Integer
-						Number v = i.<Number>argument(0, Number.class);
-						if (v instanceof Integer)
-							dos.writeInt((Integer)v);
-						
-						// Float
-						else if (v instanceof Float)
-							dos.writeInt(Float.floatToRawIntBits((Float)v));
-						
-						// Unknown
-						else
-							throw new todo.OOPS(v.toString());
-					}
-					break;
-					
-				case RegisterOperationType.X64_CONST:
-					{
-						// Long
-						Number v = i.<Number>argument(0, Number.class);
-						if (v instanceof Long)
-							dos.writeLong((Long)v);
-						
-						// Double
-						else if (v instanceof Double)
-							dos.writeLong(
-								Double.doubleToRawLongBits((Double)v));
-						
-						// Unknown
-						else
-							throw new todo.OOPS(v.toString());
-					}
-					break;
-					
-				case RegisterOperationType.TABLESWITCH:
-					throw new todo.TODO();
-					*/
 				default:
 					throw new todo.OOPS();
 			}
