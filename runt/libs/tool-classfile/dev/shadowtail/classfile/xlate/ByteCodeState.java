@@ -41,6 +41,9 @@ public class ByteCodeState
 	/** The result of the operation. */
 	public JavaStackResult result;
 	
+	/** Can an exception handler be called? */
+	public boolean canexception;
+	
 	/** The current source line being processed. */
 	public int line =
 		-1;
