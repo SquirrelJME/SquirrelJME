@@ -21,10 +21,10 @@ import net.multiphasicapps.classfile.ExceptionHandlerTable;
 public final class ExceptionClassStackAndTable
 {
 	/** The class name to use. */
-	protected final ClassName name;
+	public final ClassName name;
 	
 	/** The exception combo to target. */
-	protected final ExceptionStackAndTable stackandtable;
+	public final ExceptionStackAndTable stackandtable;
 	
 	/**
 	 * Initializes the exception information.
