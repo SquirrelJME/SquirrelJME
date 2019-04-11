@@ -35,6 +35,17 @@ public final class InstructionJumpTargets
 	private int _hash;
 	
 	/**
+	 * Initializes empty jump targets.
+	 *
+	 * @since 2019/04/11
+	 */
+	public InstructionJumpTargets()
+	{
+		this._normal = new InstructionJumpTarget[0];
+		this._exception = new InstructionJumpTarget[0];
+	}
+	
+	/**
 	 * Initializes the jump targets.
 	 * @param __n Normal jumps.
 	 * @param __e Exceptional jumps.
