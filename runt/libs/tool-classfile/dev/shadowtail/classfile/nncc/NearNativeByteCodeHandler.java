@@ -203,7 +203,7 @@ public final class NearNativeByteCodeHandler
 		// register and jump if there is something there
 		if (state.canexception)
 			codebuilder.addIfNonZero(NativeCode.EXCEPTION_REGISTER,
-				this.__labelException(), true);
+				this.__labelException(), false);
 	}
 	
 	/**
