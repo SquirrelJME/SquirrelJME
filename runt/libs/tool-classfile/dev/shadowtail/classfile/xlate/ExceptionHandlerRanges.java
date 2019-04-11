@@ -79,6 +79,27 @@ public final class ExceptionHandlerRanges
 	}
 	
 	/**
+	 * Creates a class, stack, and exception table representation.
+	 *
+	 * @param __cn The class name.
+	 * @param __ops The stack state.
+	 * @param __pc The address.
+	 * @return The class, stack, and exception table
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/03
+	 */
+	public final ExceptionClassStackAndTable classStackAndTable(
+		ClassName __cn, JavaStackState __ops, int __pc)
+		throws NullPointerException
+	{
+		if (__cn == null || __ops == null)
+			throw new NullPointerException("NARG");
+		
+		return new ExceptionClassStackAndTable(__cn,
+			this.stackAndTable(__ops, __pc));
+	}
+	
+	/**
 	 * Creates a enqueue and table representation.
 	 *
 	 * @param __ops The object positions.
@@ -95,6 +116,25 @@ public final class ExceptionHandlerRanges
 			throw new NullPointerException("NARG");
 		
 		return new ExceptionEnqueueAndTable(__ops, this.tableOf(__pc));
+	}
+	
+	/**
+	 * Creates a stack and table representation.
+	 *
+	 * @param __ops The object positions.
+	 * @param __pc The PC address.
+	 * @return The stack and table information.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/22
+	 */
+	public final ExceptionStackAndTable stackAndTable(JavaStackState __ops,
+		int __pc)
+		throws NullPointerException
+	{
+		if (__ops == null)
+			throw new NullPointerException("NARG");
+		
+		return new ExceptionStackAndTable(__ops, this.tableOf(__pc));
 	}
 	
 	/**

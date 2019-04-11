@@ -11,6 +11,7 @@ package dev.shadowtail.classfile.nncc;
 
 import dev.shadowtail.classfile.xlate.ByteCodeHandler;
 import dev.shadowtail.classfile.xlate.ByteCodeState;
+import dev.shadowtail.classfile.xlate.ExceptionClassEnqueueAndTable;
 import dev.shadowtail.classfile.xlate.ExceptionHandlerRanges;
 import dev.shadowtail.classfile.xlate.InvokeType;
 import dev.shadowtail.classfile.xlate.JavaStackEnqueueList;
@@ -24,6 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
+import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodReference;
 
 /**
@@ -44,6 +46,10 @@ public final class NearNativeByteCodeHandler
 	
 	/** Exception tracker. */
 	protected final ExceptionHandlerRanges exceptionranges;
+	
+	/** Table of exceptions which were generated. */
+	private final Map<ExceptionClassEnqueueAndTable, __EData__> _ecettable =
+		new LinkedHashMap<>();
 	
 	/** Last registers enqueued. */
 	private JavaStackEnqueueList _lastenqueue;
@@ -211,6 +217,14 @@ public final class NearNativeByteCodeHandler
 	 */
 	public final NativeCode result()
 	{
+		// Generate ECET wrappers
+		Map<ExceptionClassEnqueueAndTable, __EData__> ecettable =
+			this._ecettable;
+		if (!ecettable.isEmpty())
+		{
+			throw new todo.TODO();
+		}
+		
 		return this.codebuilder.build();
 	}
 	
@@ -264,25 +278,30 @@ public final class NearNativeByteCodeHandler
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
-		/*
 		// We need a label at generation time that has the current state of
 		// the stack and such after the operation is performed
 		this.__labelException();
 		
-		// Setup
-		ExceptionClassStackAndTable cst = this.exceptionranges.
-			classStackAndTable(new ClassName(__cl), this._stack, this._addr);
+		// Create enqueue state
+		ByteCodeState state = this.state;
+		ExceptionClassEnqueueAndTable cet = this.exceptionranges.
+			classEnqueueAndTable(new ClassName(__cl),
+			state.stack.possibleEnqueue(), state.addr);
 		
-		// Store into the table if it is missing
-		List<ExceptionClassStackAndTable> ecsttable = this._ecsttable;
-		int dx = ecsttable.indexOf(cst);
-		if (dx < 0)
-			ecsttable.add((dx = ecsttable.size()), cst);
+		// Look in the table to see if we made it before
+		Map<ExceptionClassEnqueueAndTable, __EData__> ecettable =
+			this._ecettable;
+		__EData__ rv = ecettable.get(cet);
+		if (rv != null)
+			return rv.label;
 		
-		// Just create a label to reference it, it is generated later
-		return new NativeCodeLabel("makeexception", dx);
-		*/
+		// Build new data to record this point
+		rv = new __EData__(state.addr, state.line,
+			new NativeCodeLabel("makeexception", ecettable.size()));
+		ecettable.put(cet, rv);
+		
+		// Return the created label
+		return rv.label;
 	}
 	
 	/**
