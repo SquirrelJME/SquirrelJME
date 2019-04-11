@@ -422,6 +422,7 @@ public final class NativeInstruction
 			case NativeInstructionType.LOOKUPSWITCH:	return "LOOKUPSWITCH";
 			case NativeInstructionType.MONITORENTER:	return "MONITORENTER";
 			case NativeInstructionType.MONITOREXIT:		return "MONITOREXIT";
+			case NativeInstructionType.NEW:				return "NEW";
 			case NativeInstructionType.NEWARRAY:		return "NEWARRAY";
 			case NativeInstructionType.REF_CLEAR:		return "REF_CLEAR";
 			case NativeInstructionType.REF_PUSH:		return "REF_PUSH";

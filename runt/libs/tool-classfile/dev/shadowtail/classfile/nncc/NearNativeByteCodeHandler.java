@@ -27,6 +27,9 @@ import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.MethodDescriptor;
+import net.multiphasicapps.classfile.MethodHandle;
+import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.classfile.MethodReference;
 
 /**
@@ -213,6 +216,9 @@ public final class NearNativeByteCodeHandler
 		ByteCodeState state = this.state;
 		int addr = state.addr;
 		
+		// Set source line
+		codebuilder.setSourceLine(state.line);
+		
 		// Check if we need to transition into this instruction from the
 		// previous natural execution point (not a result of a jump)
 		JavaStackPoison poison = state.stackpoison.get(addr);
@@ -235,11 +241,41 @@ public final class NearNativeByteCodeHandler
 	 */
 	public final NativeCode result()
 	{
+		NativeCodeBuilder codebuilder = this.codebuilder;
+		ByteCodeState state = this.state;
+		
 		// Generate make exception code
 		Map<ClassStackAndLabel, __EData__> metable = this._metable;
-		if (!metable.isEmpty())
+		for (Map.Entry<ClassStackAndLabel, __EData__> e : metable.entrySet())
 		{
-			throw new todo.TODO();
+			ClassStackAndLabel csl = e.getKey();
+			__EData__ ed = e.getValue();
+			
+			// Set line/address info
+			state.addr = ed.addr;
+			int line = ed.line;
+			state.line = line;
+			codebuilder.setSourceLine(line);
+			
+			// Set label target for this one
+			codebuilder.label(ed.label);
+			
+			// The class name used
+			ClassName exn = csl.classname;
+			
+			// Allocate exception at the highest register point which acts
+			// as a temporary
+			int tempreg = csl.stack.usedregisters;
+			codebuilder.add(NativeInstructionType.NEW, exn, tempreg);
+			
+			// Initialize object with constructor
+			codebuilder.add(NativeInstructionType.INVOKE,
+				new InvokedMethod(InvokeType.SPECIAL, new MethodHandle(exn,
+				new MethodName("<init>"), new MethodDescriptor("()V"))),
+				new RegisterList(tempreg));
+			
+			// Generate jump to exception handler
+			codebuilder.addGoto(csl.label);
 		}
 		
 		// Generate exception handler tables
