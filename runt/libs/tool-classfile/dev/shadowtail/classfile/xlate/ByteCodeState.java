@@ -10,6 +10,7 @@
 package dev.shadowtail.classfile.xlate;
 
 import net.multiphasicapps.classfile.Instruction;
+import net.multiphasicapps.classfile.InstructionJumpTargets;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -41,5 +42,11 @@ public class ByteCodeState
 	
 	/** The current address being processed. */
 	public int addr;
+	
+	/** Jump targets for the instruction. */
+	public InstructionJumpTargets jumptargets;
+	
+	/** Reverse jump targets for this instruction. */
+	public InstructionJumpTargets reversejumptargets;
 }
 

@@ -48,6 +48,9 @@ public final class ByteCodeProcessor
 	/** The state of the byte code. */
 	protected final ByteCodeState state;
 	
+	/** Reverse jump table. */
+	private final Map<Integer, InstructionJumpTargets> _revjumps;
+	
 	/** Jump targets for this instruction. */
 	private InstructionJumpTargets _ijt;
 	
@@ -77,6 +80,9 @@ public final class ByteCodeProcessor
 		state.stack = (s = JavaStackState.of(__bc.stackMapTable().get(0),
 			__bc.writtenLocals()));
 		state.stacks.put(0, s);
+		
+		// Reverse jump table to detect jump backs
+		this._revjumps = __bc.reverseJumpTargets();
 	}
 	
 	/**
@@ -114,7 +120,15 @@ public final class ByteCodeProcessor
 			
 			// These jump targets are used to map out the state of stacks
 			// across various points
-			this._ijt = inst.jumpTargets();
+			InstructionJumpTargets ijt, rijt;
+			this._ijt = (ijt = inst.jumpTargets());
+			state.jumptargets = ijt;
+			
+			// Reverse jump targets are used to detect jumps to previous
+			// addresses
+			rijt = this._revjumps.get(addr);
+			state.reversejumptargets = (rijt != null ? rijt :
+				new InstructionJumpTargets());
 			
 			// {@squirreljme.error JC37 No recorded stack state for this
 			// position. (The address to check)}
@@ -122,8 +136,17 @@ public final class ByteCodeProcessor
 			if (stack == null)
 				throw new IllegalArgumentException("JC37 " + addr);
 			
+			// Load stack
+			state.stack = stack;
+			
 			// Call pre-handler
 			handler.instructionSetup();
+			
+			// If the stack has been adjusted for any reason, replace the
+			// stored stack for this point
+			JavaStackState mns = state.stack;
+			if (stack != mns)
+				stacks.put(addr, (stack = mns));
 			
 			// Handle the operation
 			switch (sji.operation())
