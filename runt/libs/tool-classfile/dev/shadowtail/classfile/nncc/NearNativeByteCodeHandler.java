@@ -56,6 +56,10 @@ public final class NearNativeByteCodeHandler
 	private final Map<ClassStackAndLabel, __EData__> _metable =
 		new LinkedHashMap<>();
 	
+	/** The returns which have been performed. */
+	private final List<JavaStackEnqueueList> _returns =
+		new ArrayList<>();
+	
 	/** Last registers enqueued. */
 	private JavaStackEnqueueList _lastenqueue;
 	
@@ -179,7 +183,7 @@ public final class NearNativeByteCodeHandler
 		}
 		
 		// Do the return
-		codebuilder.add(NativeInstructionType.RETURN);
+		this.__generateReturn();
 	}
 	
 	/**
@@ -256,6 +260,81 @@ public final class NearNativeByteCodeHandler
 	public final ByteCodeState state()
 	{
 		return this.state;
+	}
+	
+	/**
+	 * Generates or jumps to another return point.
+	 *
+	 * @return The label to this return point.
+	 * @since 2019/04/11
+	 */
+	private final NativeCodeLabel __generateReturn()
+	{
+		return this.__generateReturn(this.state.stack.possibleEnqueue());
+	}
+	
+	/**
+	 * Generates or jumps to another return point for the given enqueue.
+	 *
+	 * @param __eq The enqueue to return for.
+	 * @return The label to this return point.
+	 * @throws NullPointerException On null arguments.
+	 * @return
+	 */
+	private final NativeCodeLabel __generateReturn(JavaStackEnqueueList __eq)
+		throws NullPointerException
+	{
+		if (__eq == null)
+			throw new NullPointerException("NARG");
+		
+		// Find unique return point
+		boolean freshdx;
+		List<JavaStackEnqueueList> returns = this._returns;
+		int dx = returns.indexOf(__eq);
+		if ((freshdx = (dx < 0)))
+			returns.add((dx = returns.size()), __eq);
+		
+		// Label used for return
+		NativeCodeLabel lb = new NativeCodeLabel("return", dx);
+		
+		// If this was never added here, make sure a label exists
+		if (freshdx)
+			codebuilder.label(lb);
+		
+		// If the enqueue list is empty then the only thing we need to do
+		// is generate a return instruction
+		NativeCodeBuilder codebuilder = this.codebuilder;
+		if (__eq.isEmpty())
+		{
+			// Since there is nothing to uncount, just return
+			codebuilder.add(NativeInstructionType.RETURN);
+			
+			return lb;
+		}
+		
+		// If we are not making a fresh index there more things to clear out
+		// then just jump to the pre-existing return point
+		if (!freshdx && __eq.size() > 1)
+		{
+			// Jump to label
+			codebuilder.addGoto(lb);
+			
+			return lb;
+		}
+		
+		// Since the enqueue list is not empty, we can just trim a register
+		// from the top and recursively go down
+		// So uncount the top
+		codebuilder.add(NativeInstructionType.UNCOUNT, __eq.top());
+		
+		// Recursively go down since the enqueues may possibly be shared, if
+		// any of these enqueues were previously made then the recursive
+		// call will just make a goto
+		this.__generateReturn(__eq.trimTop());
+		
+		// Note that we do not return the recursive result because that
+		// will be for another enqueue state
+		return lb;
 	}
 	
 	/**
