@@ -466,8 +466,10 @@ public final class NativeCodeBuilder
 			}
 			
 			// Check if this points to the instruction directly following
-			// this
-			boolean ptonext = (jt != null && (i + 1) == labels.get(jt));
+			// this. Do not consider refclears since with that logic it is
+			// only cleared when the condition is met
+			boolean ptonext = (!refclear && jt != null &&
+				(i + 1) == labels.get(jt));
 			
 			// If it does point to the next instruction, we either delete it
 			// or replace the instruction with another depending on ref_clear
