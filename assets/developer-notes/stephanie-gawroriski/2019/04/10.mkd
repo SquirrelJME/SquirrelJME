@@ -1,0 +1,18 @@
+# 2019/04/10
+
+## 09:03
+
+With the zero register, I do not actually need explicit instructions for
+jumping to an address. I can just use the integer comparison instruction
+which is nice. This will actually reduce the number of instructions I need
+to implement in the VM by a large amount. I only have to implement right
+now 13 + 15 instructions, so 28! This is much better than before which I
+had to implement like 200 or so. This definitely will simplify the VM!
+
+## 09:07
+
+I actually am going to need a check cast, or rather a jump if a reference is
+not a given type. So this will definitely be removing the `BREAKPOINT`
+instruction since I do not feel I really need it. But it would be a very
+useful instruction to have. I do have a free space still so I might just add
+a new SPECIAL group.
