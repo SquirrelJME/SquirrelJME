@@ -426,47 +426,38 @@ public final class NativeCodeBuilder
 		Map<NativeCodeLabel, Integer> labels = this._labels;
 		
 		// If there are any jump points which refer to the instruction index
-		// directly following it, then remove the jump
-		// This will happen in constructors that call another constructor since
-		// there will be an exception handler jump that points to the next
-		// instruction
+		// directly following it, then remove the jump.
+		// If these jumps are ref clearing ones, then replace with a refclear
+		// Also possibly perform other modifications
 		List<NativeInstruction> in = new ArrayList<>(
 			this._instructions.values());
 		List<Integer> lines = new ArrayList<>(this._lines);
 		for (int i = in.size() - 1; i >= 0; i--)
 		{
+			// Get the instruction and its various properties
 			NativeInstruction ri = in.get(i);
+			int rie = ri.encoding();
 			
-			throw new todo.TODO();
-			/*
-			// This includes all of the various types of jumps that would
-			// do nothing if they led to the next instruction
-			NativeCodeLabel lt;
-			switch (ri.op)
+			NativeCodeLabel jt = null;
+			boolean refclear = false;
+			
+			// Depends on the encoding
+			switch (rie)
 			{
-				case RegisterOperationType.JUMP:
-				case RegisterOperationType.JUMP_IF_EXCEPTION:
-				case RegisterOperationType.JUMP_IF_RETURN:
-					lt = (NativeCodeLabel)ri._args[0];
+				case NativeInstructionType.IF_ICMP:
+					jt = (NativeCodeLabel)ri.argument(2);
+					refclear = ((ri.operation() & 0b1000) != 0);
 					break;
-				
-				case RegisterOperationType.IFEQ:
-				case RegisterOperationType.IFNE:
-				case RegisterOperationType.IFLT:
-				case RegisterOperationType.IFGE:
-				case RegisterOperationType.IFGT:
-				case RegisterOperationType.IFLE:
-					lt = (NativeCodeLabel)ri._args[1];
+					
+				case NativeInstructionType.IFNOTCLASS:
+				case NativeInstructionType.IFCLASS:
+					jt = (NativeCodeLabel)ri.argument(2);
 					break;
-				
-				case RegisterOperationType.IF_ICMPEQ:
-				case RegisterOperationType.IF_ICMPNE:
-				case RegisterOperationType.IF_ICMPLT:
-				case RegisterOperationType.IF_ICMPGT:
-				case RegisterOperationType.IF_ICMPLE:
-				case RegisterOperationType.IF_ICMPGE:
-				case RegisterOperationType.JUMP_IF_INSTANCE:
-					lt = (NativeCodeLabel)ri._args[2];
+					
+				case NativeInstructionType.IFNOTCLASS_REF_CLEAR:
+				case NativeInstructionType.IFCLASS_REF_CLEAR:
+					jt = (NativeCodeLabel)ri.argument(2);
+					refclear = true;
 					break;
 				
 					// Not a jump
@@ -474,25 +465,37 @@ public final class NativeCodeBuilder
 					continue;
 			}
 			
-			// If this points to the index directly following this, then delete
-			// this instruction and move down every single label which targets
-			// an index following this since it would be off by one
-			if ((i + 1) == labels.get(lt))
+			// Check if this points to the instruction directly following
+			// this
+			boolean ptonext = (jt != null && (i + 1) == labels.get(jt));
+			
+			// If it does point to the next instruction, we either delete it
+			// or replace the instruction with another depending on ref_clear
+			// and such
+			if (ptonext)
 			{
-				// Remove this instruction, it is pointless
-				in.remove(i);
-				lines.remove(i);
+				// Replace with a ref_clear
+				if (refclear)
+					in.set(i, new NativeInstruction(
+						NativeInstructionType.REF_CLEAR));
 				
-				// Move all of the label values down
-				for (Map.Entry<NativeCodeLabel, Integer> e :
-					labels.entrySet())
+				// Delete and move all down
+				else
 				{
-					int val = e.getValue();
-					if (val > i)
-						e.setValue(val - 1);
+					// Remove this instruction, it is pointless
+					in.remove(i);
+					lines.remove(i);
+					
+					// Move all of the label values down
+					for (Map.Entry<NativeCodeLabel, Integer> e :
+						labels.entrySet())
+					{
+						int val = e.getValue();
+						if (val > i)
+							e.setValue(val - 1);
+					}
 				}
 			}
-			*/
 		}
 		
 		// Output instructions
