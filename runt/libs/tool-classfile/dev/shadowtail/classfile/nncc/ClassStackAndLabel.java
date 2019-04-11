@@ -64,7 +64,19 @@ public final class ClassStackAndLabel
 	@Override
 	public boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		if (this == __o)
+			return true;
+		
+		if (!(__o instanceof ClassStackAndLabel))
+			return false;
+		
+		if (this.hashCode() != __o.hashCode())
+			return false;
+		
+		ClassStackAndLabel o = (ClassStackAndLabel)__o;
+		return this.classname.equals(o.classname) &&
+			this.stack.equals(o.stack) &&
+			this.label.equals(o.label);
 	}
 	
 	/**
@@ -74,7 +86,11 @@ public final class ClassStackAndLabel
 	@Override
 	public final int hashCode()
 	{
-		throw new todo.TODO();
+		int rv = this._hash;
+		if (rv == 0)
+			this._hash = (rv = this.classname.hashCode() ^
+				this.stack.hashCode() ^ this.label.hashCode());
+		return rv;
 	}
 	
 	/**
