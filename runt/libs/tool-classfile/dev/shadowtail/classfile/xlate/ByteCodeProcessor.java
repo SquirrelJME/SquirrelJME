@@ -107,7 +107,7 @@ public final class ByteCodeProcessor
 		for (int pp = 0; pp < 2; pp++)
 		{
 			// Is handling to be done?
-			boolean dohandling = (pp == 2);
+			boolean dohandling = (pp != 0);
 			this._dohandling = dohandling;
 			
 			// Since this is the start, the last address needs to be reset
