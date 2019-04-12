@@ -616,6 +616,13 @@ public final class NearNativeByteCodeHandler
 		if (__jt == null)
 			throw new NullPointerException("NARG");
 		
+		// If the target has not had a poisoned stack then we can directly
+		// jump to it since our states are compatible
+		int target = __jt.target();
+		JavaStackPoison poison = this.state.stackpoison.get(target);
+		if (poison == null)
+			return new NativeCodeLabel("java", target);
+		
 		throw new todo.TODO();
 	}
 	
