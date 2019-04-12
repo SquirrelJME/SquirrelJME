@@ -59,7 +59,6 @@ public interface NativeInstructionType
 	public static final int MEMORY_OFF_REG =
 		0x50;
 	
-	
 	/**
 	 * Unused.
 	 * {@code iiii????}.
@@ -109,7 +108,6 @@ public interface NativeInstructionType
 	public static final int CONVERSION =
 		0xC0;
 	
-	
 	/**
 	 * Memory access, offset is a constant.
 	 * {@code iiiiLddd, L=T load r1 = *(r2 + r3), L=F set *(r2 + r3) = r1}.
@@ -158,6 +156,18 @@ public interface NativeInstructionType
 	 */
 	public static final int IFCLASS_REF_CLEAR =
 		0xE3;
+	
+	/**
+	 * Reference clear and jump if array index is out of bounds.
+	 */
+	public static final int IFARRAY_INDEX_OOB_REF_CLEAR =
+		0xE4;
+	
+	/**
+	 * Reference clear and jump if array type is mismatched.
+	 */
+	public static final int IFARRAY_MISTYPE_REF_CLEAR =
+		0xE5;
 	
 	/**
 	 * New. 
