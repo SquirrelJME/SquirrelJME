@@ -303,6 +303,30 @@ public final class NearNativeByteCodeHandler
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2019/04/12
+	 */
+	@Override
+	public final void doThrow(JavaStackResult.Input __in)
+	{
+		NativeCodeBuilder codebuilder = this.codebuilder;
+		
+		// Push references
+		this.__refPush();
+		
+		// Cannot be null
+		codebuilder.addIfZero(__in.register, this.__labelMakeException(
+			"java/lang/NullPointerException"), true);
+		
+		// Copy into the exception register
+		codebuilder.addCopy(__in.register, NativeCode.EXCEPTION_REGISTER);
+		
+		// Do not jump at this point, just return the exception check will be
+		// flagged which will start the exception handling
+		return;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2019/04/07
 	 */
 	@Override

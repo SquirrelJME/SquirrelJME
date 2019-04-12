@@ -108,6 +108,42 @@ public final class NativeCodeBuilder
 	}
 	
 	/**
+	 * Adds conversion from one type to another.
+	 *
+	 * @param __fromt The source type.
+	 * @param __from The source register.
+	 * @param __tot The target type.
+	 * @param __to The target register.
+	 * @return The resulting instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/12
+	 */
+	public final NativeInstruction addConversion(StackJavaType __fromt,
+		int __from, StackJavaType __tot, int __to)
+		throws NullPointerException
+	{
+		if (__fromt == null || __tot == null)
+			throw new NullPointerException("NARG");
+		
+		return this.add(NativeInstructionType.CONVERSION |
+			(__fromt.ordinal() << 2) | (__tot.ordinal()), __from, __to);
+	}
+	
+	/**
+	 * Adds a copy from one register to another.
+	 *
+	 * @param __from The source.
+	 * @param __to The destination.
+	 * @return The resulting instruction.
+	 * @since 2019/04/12
+	 */
+	public final NativeInstruction addCopy(int __from, int __to)
+	{
+		return this.addConversion(StackJavaType.INTEGER, __from,
+			StackJavaType.INTEGER, __to);
+	}
+	
+	/**
 	 * Adds jump if the given register is an instance of the given class.
 	 *
 	 * @param __cn The class name to check.
