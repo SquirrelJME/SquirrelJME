@@ -300,6 +300,8 @@ public final class NativeInstruction
 			
 			case NativeInstructionType.ARRAY_ACCESS:
 			case NativeInstructionType.IF_ICMP:
+			case NativeInstructionType.IFARRAY_INDEX_OOB_REF_CLEAR:
+			case NativeInstructionType.IFARRAY_MISTYPE_REF_CLEAR:
 			case NativeInstructionType.IFCLASS:
 			case NativeInstructionType.IFCLASS_REF_CLEAR:
 			case NativeInstructionType.IFNOTCLASS:
@@ -411,6 +413,10 @@ public final class NativeInstruction
 			case NativeInstructionType.ARRAYLEN:		return "ARRAYLEN";
 			case NativeInstructionType.BREAKPOINT:		return "BREAKPOINT";
 			case NativeInstructionType.COUNT:			return "COUNT";
+			case NativeInstructionType.IFARRAY_INDEX_OOB_REF_CLEAR:
+				return "IFARRAY_INDEX_OOB_REF_CLEAR";
+			case NativeInstructionType.IFARRAY_MISTYPE_REF_CLEAR:
+				return "IFARRAY_MISTYPE_REF_CLEAR";
 			case NativeInstructionType.IFNOTCLASS:		return "IFNOTCLASS";
 			case NativeInstructionType.IFNOTCLASS_REF_CLEAR:
 				return "IFNOTCLASS_REF_CLEAR";

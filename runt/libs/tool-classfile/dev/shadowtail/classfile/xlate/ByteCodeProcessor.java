@@ -496,40 +496,17 @@ public final class ByteCodeProcessor
 		// An exception may be thrown
 		this._canexception = true;
 		
-		throw new todo.TODO();
-		/*
 		// [array, index, value]
-		JavaStackResult result = this._stack.doStack(3);
-		this._stack = result.after();
+		JavaStackResult result = state.stack.doStack(3);
+		this.__update(result);
 		
-		// Possibly clear the instance or value later
-		this.__refEnqueue(result.enqueue());
+		// Stop pre-processing here
+		if (!this._dohandling)
+			return;
 		
-		// Check for NPE and OOB
-		RegisterCodeBuilder codebuilder = this.codebuilder;
-		codebuilder.add(RegisterOperationType.IFNULL_REF_CLEAR,
-			result.in(0).register, this.__makeExceptionLabel(
-			"java/lang/NullPointerException"));
-		codebuilder.add(RegisterOperationType.ARRAY_BOUND_CHECK_AND_REF_CLEAR,
-			result.in(0).register, result.in(1).register,
-			this.__makeExceptionLabel("java/lang/IndexOutOfBoundsException"));
-		
-		// Check for store exception
-		if (__pt == null)
-			codebuilder.add(
-				RegisterOperationType.ARRAY_STORE_CHECK_AND_REF_CLEAR,
-				result.in(0).register, result.in(2).register,
-				this.__makeExceptionLabel("java/lang/ArrayStoreException"));
-		
-		// Generate
-		this.codebuilder.add(DataType.of(__pt).arrayOperation(true),
-			result.in(0).register,
-			result.in(1).register,
-			result.in(2).register);
-		
-		// Clear references
-		this.__refClear();
-		*/
+		// Handle
+		this.handler.doArrayStore(DataType.of(__pt), result.in(0),
+			result.in(1), result.in(2));
 	}
 	
 	/**

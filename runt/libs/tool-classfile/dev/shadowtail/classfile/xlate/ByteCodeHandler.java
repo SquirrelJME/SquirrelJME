@@ -23,6 +23,19 @@ import net.multiphasicapps.classfile.MethodReference;
 public interface ByteCodeHandler
 {
 	/**
+	 * Store into array.
+	 *
+	 * @param __dt The type of data to store.
+	 * @param __in The instance.
+	 * @param __dx The index.
+	 * @param __v The value.
+	 * @since 2019/04/12
+	 */
+	public abstract void doArrayStore(DataType __dt,
+		JavaStackResult.Input __in, JavaStackResult.Input __dx,
+		JavaStackResult.Input __v);
+	
+	/**
 	 * Performs a copy operation.
 	 *
 	 * @param __in The input.
