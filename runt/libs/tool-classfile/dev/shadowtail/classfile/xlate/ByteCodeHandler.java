@@ -114,6 +114,15 @@ public interface ByteCodeHandler
 		JavaStackResult.Input __len, JavaStackResult.Output __out);
 	
 	/**
+	 * Loads pool value.
+	 *
+	 * @param __v The value to load.
+	 * @param __out The output.
+	 * @since 2019/04/12
+	 */
+	public abstract void doPoolLoad(Object __v, JavaStackResult.Output __out);
+	
+	/**
 	 * Return of value.
 	 *
 	 * @param __rv The return value, {@code null} means no value was returned.
