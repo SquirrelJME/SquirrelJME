@@ -409,29 +409,19 @@ public final class ByteCodeProcessor
 	 */
 	private final void __doArrayLength()
 	{
-		throw new todo.TODO();
-		/*
+		// An exception may be thrown
+		this._canexception = true;
+		
 		// [array] -> [len]
-		JavaStackResult result = this._stack.doStack(1, JavaType.INTEGER);
-		this._stack = result.after();
+		JavaStackResult result = state.stack.doStack(1, JavaType.INTEGER);
+		this.__update(result);
 		
-		// Possibly clear the instance later
-		this.__refEnqueue(result.enqueue());
+		// Stop pre-processing here
+		if (!this._dohandling)
+			return;
 		
-		// Cannot be null
-		RegisterCodeBuilder codebuilder = this.codebuilder;
-		codebuilder.add(RegisterOperationType.IFNULL_REF_CLEAR,
-			result.in(0).register,
-			this.__makeExceptionLabel("java/lang/NullPointerException"));
-		
-		// Get length
-		codebuilder.add(RegisterOperationType.ARRAY_LENGTH,
-			result.in(0).register,
-			result.out(0).register);
-		
-		// Clear references
-		this.__refClear();
-		*/
+		// Handle
+		this.handler.doArrayLength(result.in(0), result.out(0));
 	}
 	
 	/**

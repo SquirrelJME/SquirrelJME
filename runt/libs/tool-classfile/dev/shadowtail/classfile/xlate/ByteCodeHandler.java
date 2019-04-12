@@ -23,6 +23,16 @@ import net.multiphasicapps.classfile.MethodReference;
 public interface ByteCodeHandler
 {
 	/**
+	 * Read length of array.
+	 *
+	 * @param __in The instance.
+	 * @param __len The output length.
+	 * @since 2019/04/12
+	 */
+	public abstract void doArrayLength(JavaStackResult.Input __in,
+		JavaStackResult.Output __len);
+	
+	/**
 	 * Store into array.
 	 *
 	 * @param __dt The type of data to store.

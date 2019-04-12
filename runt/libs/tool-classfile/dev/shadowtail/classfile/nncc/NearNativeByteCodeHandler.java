@@ -103,6 +103,31 @@ public final class NearNativeByteCodeHandler
 	 * @since 2019/04/12
 	 */
 	@Override
+	public final void doArrayLength(JavaStackResult.Input __in,
+		JavaStackResult.Output __len)
+	{
+		NativeCodeBuilder codebuilder = this.codebuilder;
+		
+		// Push references
+		this.__refPush();
+		
+		// Cannot be null
+		codebuilder.addIfZero(__in.register, this.__labelMakeException(
+			"java/lang/NullPointerException"), true);
+		
+		// Read length
+		codebuilder.add(NativeInstructionType.ARRAYLEN,
+			__in.register, __len.register);
+		
+		// Clear references
+		this.__refClear();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/12
+	 */
+	@Override
 	public final void doArrayStore(DataType __dt,
 		JavaStackResult.Input __in, JavaStackResult.Input __dx,
 		JavaStackResult.Input __v)
