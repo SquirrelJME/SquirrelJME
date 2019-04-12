@@ -672,6 +672,11 @@ public final class JavaStackState
 		if (this.equals(__target))
 			return new JavaStackResult(this, this, null);
 		
+		// Debug
+		todo.DEBUG.note("Will transition the stack!");
+		todo.DEBUG.note("From: %s", this);
+		todo.DEBUG.note("To  : %s", __target);
+		
 		throw new todo.TODO();
 	}
 	
