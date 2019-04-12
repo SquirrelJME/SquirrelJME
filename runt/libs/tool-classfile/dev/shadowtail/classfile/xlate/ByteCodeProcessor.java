@@ -971,7 +971,7 @@ public final class ByteCodeProcessor
 	/**
 	 * Allocates a new array.
 	 *
-	 * @param __cn The class to allocate.
+	 * @param __cn The component type of the array.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/05
 	 */
@@ -984,26 +984,20 @@ public final class ByteCodeProcessor
 		// An exception may be thrown
 		this._canexception = true;
 		
-		throw new todo.TODO();
-		/*
-		// Allocation may fail or the class could be invalid
-		this._exceptioncheck = true;
+		// Add dimension to the class since it lacks it
+		__cn = __cn.addDimensions(1);
 		
-		// Only the length is on the stack
-		JavaStackResult result = this._stack.doStack(1,
-			new JavaType(__cn.addDimensions(1)));
-		this._stack = result.after();
+		// [len] -> [array]
+		JavaStackResult result = this.state.stack.
+			doStack(1, new JavaType(__cn));
+		this.__update(result);
 		
-		// Cannot be negative
-		RegisterCodeBuilder codebuilder = this.codebuilder;
-		codebuilder.add(RegisterOperationType.IFLT,
-			result.in(0).register, this.__makeExceptionLabel(
-			"java/lang/NegativeArraySizeException"));
+		// Stop pre-processing here
+		if (!this._dohandling)
+			return;
 		
 		// Generate
-		codebuilder.add(RegisterOperationType.NEW_ARRAY,
-			__cn, result.in(0).register, result.out(0).register);
-		*/
+		this.handler.doNewArray(__cn, result.in(0), result.out(0));
 	}
 	
 	/**

@@ -91,6 +91,17 @@ public interface ByteCodeHandler
 	public abstract void doNew(ClassName __cn, JavaStackResult.Output __out);
 	
 	/**
+	 * Allocates a new array.
+	 *
+	 * @param __at The array type with all the needed dimensions.
+	 * @param __len The length of the array.
+	 * @param __out Where the array is to be stored.
+	 * @since 2019/04/12
+	 */
+	public abstract void doNewArray(ClassName __at,
+		JavaStackResult.Input __len, JavaStackResult.Output __out);
+	
+	/**
 	 * Return of value.
 	 *
 	 * @param __rv The return value, {@code null} means no value was returned.

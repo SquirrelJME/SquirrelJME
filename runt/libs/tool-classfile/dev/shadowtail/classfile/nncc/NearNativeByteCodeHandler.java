@@ -11,6 +11,7 @@ package dev.shadowtail.classfile.nncc;
 
 import dev.shadowtail.classfile.xlate.ByteCodeHandler;
 import dev.shadowtail.classfile.xlate.ByteCodeState;
+import dev.shadowtail.classfile.xlate.CompareType;
 import dev.shadowtail.classfile.xlate.DataType;
 import dev.shadowtail.classfile.xlate.ExceptionClassEnqueueAndTable;
 import dev.shadowtail.classfile.xlate.ExceptionHandlerRanges;
@@ -229,6 +230,26 @@ public final class NearNativeByteCodeHandler
 	{
 		this.codebuilder.add(NativeInstructionType.NEW,
 			__cn, __out.register);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/12
+	 */
+	@Override
+	public final void doNewArray(ClassName __at,
+		JavaStackResult.Input __len, JavaStackResult.Output __out)
+	{
+		NativeCodeBuilder codebuilder = this.codebuilder;
+		
+		// Cannot be negative
+		codebuilder.addIfICmp(CompareType.LESS_THAN, __len.register, 0,
+			this.__labelMakeException("java/lang/NegativeArraySizeException"),
+			true);
+		
+		// Allocate array
+		codebuilder.add(NativeInstructionType.NEWARRAY,
+			__at, __len.register, __out.register);
 	}
 	
 	/**
