@@ -1103,27 +1103,16 @@ public final class ByteCodeProcessor
 		// An exception may be thrown
 		this._canexception = true;
 		
-		throw new todo.TODO();
-		/*
-		// Pop from the stack, but since we set a new result remember the
-		// input
-		JavaStackResult result = this._stack.doStack(1);
-		JavaStackResult.Input in = result.in(0);
+		// Store onto the stack, locals are never cached
+		JavaStackResult result = this.state.stack.doLocalStore(__to);
+		this.__update(result);
 		
-		// Store into the local as well
-		result = result.after().doLocalSet(in.type, __to);
-		this._stack = result.after();
+		// Stop pre-processing here
+		if (!this._dohandling)
+			return;
 		
-		// Uncount destination area
-		RegisterCodeBuilder codebuilder = this.codebuilder;
-		for (int i : result.enqueue())
-			codebuilder.add(RegisterOperationType.UNCOUNT,
-				i);
-		
-		// Do the copy, do not count because there will be a net result
-		codebuilder.add(__jt.copyOperation(true),
-			in.register, result.out(0).register);
-		*/
+		// Perform plain copy
+		this.handler.doCopy(result.in(0), result.out(0));
 	}
 	
 	/**

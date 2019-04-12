@@ -339,6 +339,9 @@ public final class JavaStackState
 	/**
 	 * Writes into the specified local variable from the top-most stack entry.
 	 *
+	 * Locals which are written to are never cached and are exempt from
+	 * any kind caching.
+	 *
 	 * @param __l The local to store.
 	 * @throws InvalidClassFormatException If the local cannot be written to.
 	 * @since 2019/04/02

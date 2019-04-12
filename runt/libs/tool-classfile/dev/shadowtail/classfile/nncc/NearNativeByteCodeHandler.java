@@ -106,7 +106,18 @@ public final class NearNativeByteCodeHandler
 	public final void doCopy(JavaStackResult.Input __in,
 		JavaStackResult.Output __out)
 	{
-		throw new todo.TODO();
+		// Push references, the dest may be overwritten
+		this.__refPush();
+		
+		// Perform the copy, make sure to correctly handle wide copies!
+		NativeCodeBuilder codebuilder = this.codebuilder;
+		if (__in.type.isWide())
+			codebuilder.addCopyWide(__in.register, __out.register);
+		else
+			codebuilder.addCopy(__in.register, __out.register);
+		
+		// Clear references in the event it was overwritten
+		this.__refClear();
 	}
 	
 	/**
