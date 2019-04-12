@@ -274,6 +274,17 @@ public final class NearNativeByteCodeHandler
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2019/04/12
+	 */
+	@Override
+	public final void doPoolLoad(Object __v, JavaStackResult.Output __out)
+	{
+		this.codebuilder.add(NativeInstructionType.LOAD_POOL,
+			__v, __out.register);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2019/04/11
 	 */
 	@Override

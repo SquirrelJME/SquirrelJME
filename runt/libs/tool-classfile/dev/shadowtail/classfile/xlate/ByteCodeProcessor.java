@@ -869,14 +869,7 @@ public final class ByteCodeProcessor
 			
 			case STRING:
 			case CLASS:
-				if (true)
-					throw new todo.TODO();
-				/*
-				codebuilder.add(RegisterOperationType.LOAD_POOL_VALUE,
-					__v.boxedValue(), result.out(0).register);
-				codebuilder.add(RegisterOperationType.COUNT,
-					result.out(0).register);
-				*/
+				handler.doPoolLoad(__v.boxedValue(), result.out(0));
 				break;
 			
 			default:
