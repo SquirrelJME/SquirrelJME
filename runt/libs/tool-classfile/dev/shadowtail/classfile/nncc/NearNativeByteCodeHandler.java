@@ -21,6 +21,7 @@ import dev.shadowtail.classfile.xlate.JavaStackResult;
 import dev.shadowtail.classfile.xlate.JavaStackState;
 import dev.shadowtail.classfile.xlate.MathType;
 import dev.shadowtail.classfile.xlate.StackJavaType;
+import dev.shadowtail.classfile.xlate.StateOperation;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -199,6 +200,16 @@ public final class NearNativeByteCodeHandler
 		
 		// Do the return
 		this.__generateReturn();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/11
+	 */
+	@Override
+	public final void doStateOperations(StateOperation... __ops)
+	{
+		throw new todo.TODO();
 	}
 	
 	/**
