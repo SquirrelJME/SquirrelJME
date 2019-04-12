@@ -1162,10 +1162,33 @@ public final class JavaStackState
 			String rv;
 			
 			if (ref == null || null == (rv = ref.get()))
-				this._string = new WeakReference<>((rv = String.format(
-					"{V=r%d (r%d), T=%s, F=%s%s}", this.value, this.register,
-					this.type, (this.readonly ? "RO" : ""),
-					(this.nocounting ? "NC" : ""))));
+			{
+				int register = this.register;
+				JavaType type = this.type;
+				boolean ro = this.readonly,
+					nc = this.nocounting;
+				
+				// Use a compact format for nothing
+				if (type.isNothing())
+					rv = "--(r" + register + ")";
+				
+				// Otherwise use a more compact form
+				// Previously it was {V=r4 (r4), T=I, F=RONC}, however that
+				// takes up too much room and is hard to read
+				else
+				{
+					// If value == register, there is no point in duplicating
+					int value = this.value;
+					rv = String.format("%s:%s%s%s%s",
+						(value != register ?
+							("r" + value + "(" + register + ")") :
+							("r" + value)),
+						this.type, ((ro || nc) ? ":" : ""),
+						(ro ? "R" : ""), (nc ? "N" : ""));
+				}
+				
+				this._string = new WeakReference<>(rv);
+			}
 			
 			return rv;
 		}
