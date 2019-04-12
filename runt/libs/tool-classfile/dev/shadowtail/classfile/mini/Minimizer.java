@@ -358,6 +358,8 @@ public final class Minimizer
 					
 					// [u16, u16, j16]
 				case NativeInstructionType.IF_ICMP:
+				case NativeInstructionType.IFARRAY_INDEX_OOB_REF_CLEAR:
+				case NativeInstructionType.IFARRAY_MISTYPE_REF_CLEAR:
 					dos.writeShort(i.shortArgument(0));
 					dos.writeShort(i.shortArgument(1));
 					
