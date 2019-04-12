@@ -144,6 +144,20 @@ public final class NativeCodeBuilder
 	}
 	
 	/**
+	 * Adds a copy from one register to another, using wide values.
+	 *
+	 * @param __from The source.
+	 * @param __to The destination.
+	 * @return The resulting instruction.
+	 * @since 2019/04/12
+	 */
+	public final NativeInstruction addCopyWide(int __from, int __to)
+	{
+		return this.addConversion(StackJavaType.LONG, __from,
+			StackJavaType.LONG, __to);
+	}
+	
+	/**
 	 * Adds jump if the given register is an instance of the given class.
 	 *
 	 * @param __cn The class name to check.
