@@ -436,6 +436,31 @@ public final class NearNativeByteCodeHandler
 	 * @since 2019/04/12
 	 */
 	@Override
+	public final void doStaticGet(FieldReference __fr,
+		JavaStackResult.Output __v)
+	{
+		NativeCodeBuilder codebuilder = this.codebuilder;
+		
+		// Push references
+		this.__refPush();
+		
+		// Read of static memory
+		int tempreg = state.stack.usedregisters;
+		codebuilder.add(NativeInstructionType.LOAD_POOL,
+			this.__fieldAccess(FieldAccessType.STATIC, __fr), tempreg);
+		codebuilder.addMemoryOffConst(
+			DataType.of(__fr.memberType().primitiveType()), true,
+			__v.register, tempreg, 0);
+			
+		// Clear references as needed
+		this.__refClear();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/12
+	 */
+	@Override
 	public final void doThrow(JavaStackResult.Input __in)
 	{
 		NativeCodeBuilder codebuilder = this.codebuilder;
