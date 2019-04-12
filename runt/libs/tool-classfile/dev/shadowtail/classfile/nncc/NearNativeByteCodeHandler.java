@@ -32,6 +32,7 @@ import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ExceptionHandlerTable;
 import net.multiphasicapps.classfile.FieldReference;
+import net.multiphasicapps.classfile.InstructionJumpTarget;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodHandle;
 import net.multiphasicapps.classfile.MethodName;
@@ -140,6 +141,25 @@ public final class NearNativeByteCodeHandler
 			DataType.of(__fr.memberType().primitiveType()), false,
 			__v.register, ireg, tempreg);
 			
+		// Clear references as needed
+		this.__refClear();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/12
+	 */
+	@Override
+	public final void doIfICmp(CompareType __ct, JavaStackResult.Input __a,
+		JavaStackResult.Input __b, InstructionJumpTarget __ijt)
+	{
+		// Push references if needed
+		this.__refPush();
+		
+		// Add comparison
+		this.codebuilder.addIfICmp(__ct, __a.register, __b.register,
+			this.__labelJava(__ijt));
+		
 		// Clear references as needed
 		this.__refClear();
 	}
@@ -553,6 +573,26 @@ public final class NearNativeByteCodeHandler
 		
 		// Return the created label (where the caller jumps to)
 		return rv.label;
+	}
+	
+	/**
+	 * Makes a lable which goes from this address to the target address. If
+	 * the target address is poisoned then the current stack will be adapted
+	 * to the target state through a transition method. Otherwise if the target
+	 * is not poisoned it will be a normal jump.
+	 *
+	 * @param __jt The jump target.
+	 * @return The label of the jump.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/12
+	 */
+	private final NativeCodeLabel __labelJava(InstructionJumpTarget __jt)
+		throws NullPointerException
+	{
+		if (__jt == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 	
 	/**
