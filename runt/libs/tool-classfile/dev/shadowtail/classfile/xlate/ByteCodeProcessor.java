@@ -830,7 +830,7 @@ public final class ByteCodeProcessor
 		JavaStackResult result = this.state.stack.doLocalLoad(__from);
 		this.__update(result);
 		
-		// Stop processing here
+		// Stop pre-processing here
 		if (!this._dohandling)
 			return;
 		
@@ -854,18 +854,18 @@ public final class ByteCodeProcessor
 		if (__pt == null || __mot == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
-		/*
 		// [a, b] -> [result]
-		JavaStackResult result = this._stack.doStack(2, __pt.toJavaType());
-		this._stack = result.after();
+		JavaStackResult result = this.state.stack.doStack(2,
+			__pt.toJavaType());
+		this.__update(result);
+		
+		// Stop pre-processing here
+		if (!this._dohandling)
+			return;
 		
 		// Perform the math
-		RegisterCodeBuilder codebuilder = this.codebuilder;
-		codebuilder.add(__mot.operation(__pt),
-			result.in(0).register, result.in(1).register,
-			result.out(0).register);
-		*/
+		this.handler.doMath(__pt.toStackJavaType(), __mot, result.in(0),
+			result.in(1), result.out(0));
 	}
 	
 	/**
