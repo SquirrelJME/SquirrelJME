@@ -646,36 +646,17 @@ public final class ByteCodeProcessor
 		// An exception may be thrown
 		this._canexception = true;
 		
-		throw new todo.TODO();
-		/*
 		// [inst, value] ->
-		JavaStackResult result = this._stack.doStack(2);
-		this._stack = result.after();
+		ByteCodeState state = this.state;
+		JavaStackResult result = state.stack.doStack(2);
+		this.__update(result);
 		
-		// Clear out any input references
-		this.__refEnqueue(result.enqueue());
+		// Stop pre-processing here
+		if (!this._dohandling)
+			return;
 		
-		// Cannot be null
-		RegisterCodeBuilder codebuilder = this.codebuilder;
-		codebuilder.add(RegisterOperationType.IFNULL_REF_CLEAR,
-			result.in(0).register,
-			this.__makeExceptionLabel("java/lang/NullPointerException"));
-		
-		// Also has to be the right type
-		codebuilder.add(RegisterOperationType.JUMP_IF_NOT_INSTANCE_REF_CLEAR,
-			__fr.className(), result.in(0).register,
-			this.__makeExceptionLabel("java/lang/ClassCastException"));
-		
-		// Generate code
-		codebuilder.add(DataType.of(__fr.memberType().primitiveType()).
-				fieldAccessOperation(false, true),
-			this.__fieldAccess(FieldAccessType.INSTANCE, __fr),
-			result.in(0).register,
-			result.in(1).register);
-		
-		// Clear references as needed
-		this.__refClear();
-		*/
+		// Forward
+		this.handler.doFieldPut(__fr, result.in(0), result.in(1));
 	}
 	
 	/**
@@ -820,7 +801,7 @@ public final class ByteCodeProcessor
 			state.stack.doStack(popcount, new JavaType(rv)));
 		this.__update(result);
 		
-		// Stop processing here
+		// Stop pre-processing here
 		if (!this._dohandling)
 			return;
 		
