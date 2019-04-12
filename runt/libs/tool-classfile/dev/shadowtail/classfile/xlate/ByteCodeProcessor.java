@@ -596,51 +596,6 @@ public final class ByteCodeProcessor
 		
 		// Forward
 		this.handler.doFieldGet(__fr, result.in(0), result.out(0));
-		
-		throw new todo.TODO();
-		/*
-		// The data type determines which instruction to use
-		PrimitiveType pt = __fr.memberType().primitiveType();
-		DataType dt = DataType.of(pt);
-		
-		// Field access information
-		AccessedField ac = this.__fieldAccess(FieldAccessType.INSTANCE, __fr);
-		
-		// Do stack operations
-		JavaStackResult result = this._stack.doStack(1,
-			new JavaType(__fr.memberType()));
-		this._stack = result.after();
-		
-		// Enqueue instance possibly
-		this.__refEnqueue(result.enqueue());
-		
-		// Cannot be null
-		RegisterCodeBuilder codebuilder = this.codebuilder;
-		codebuilder.add(RegisterOperationType.IFNULL_REF_CLEAR,
-			result.in(0).register, this.__makeExceptionLabel(
-			"java/lang/NullPointerException"));
-			
-		// Also has to be the right type
-		codebuilder.add(RegisterOperationType.JUMP_IF_NOT_INSTANCE_REF_CLEAR,
-			__fr.className(), result.in(0).register,
-			this.__makeExceptionLabel("java/lang/ClassCastException"));
-		
-		// Generate code
-		codebuilder.add(dt.fieldAccessOperation(false, false),
-			ac,
-			result.in(0).register,
-			result.out(0).register);
-		
-		// Sign-extend signed types?
-		if (pt == PrimitiveType.BYTE || pt == PrimitiveType.SHORT)
-			codebuilder.add((pt == PrimitiveType.BYTE ?
-					RegisterOperationType.SIGN_X8 :
-					RegisterOperationType.SIGN_X16),
-				result.out(0).register);
-		
-		// Clear references
-		this.__refClear();
-		*/
 	}
 	
 	/**
