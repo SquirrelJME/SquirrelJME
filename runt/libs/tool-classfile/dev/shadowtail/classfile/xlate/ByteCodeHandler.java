@@ -130,6 +130,14 @@ public interface ByteCodeHandler
 	public abstract void doStateOperations(StateOperation... __ops);
 	
 	/**
+	 * Throws the given object.
+	 *
+	 * @param __in The object to throw.
+	 * @since 2019/04/12
+	 */
+	public abstract void doThrow(JavaStackResult.Input __in);
+	
+	/**
 	 * Finishes handling the instruction operation.
 	 *
 	 * @since 2019/04/07

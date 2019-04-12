@@ -1172,36 +1172,19 @@ public final class ByteCodeProcessor
 	 */
 	private final void __doThrow()
 	{
-		// An exception may be thrown
+		// An exception will be thrown
 		this._canexception = true;
 		
-		throw new todo.TODO();
-		/*
-		// This operation throws an exception, so we will just go to checking
-		// it.
-		this._exceptioncheck = true;
+		// Pop item from the stack
+		JavaStackResult result = this.state.stack.doStack(1);
+		this.__update(result);
 		
-		// Pop from the stack
-		JavaStackResult result = this._stack.doStack(1);
-		this._stack = result.after();
+		// Stop pre-processing here
+		if (!this._dohandling)
+			return;
 		
-		// Enqueue?
-		boolean doenq = this.__refEnqueue(result.enqueue());
-		
-		// Cannot be null
-		RegisterCodeBuilder codebuilder = this.codebuilder;
-		codebuilder.add(RegisterOperationType.IFNULL_REF_CLEAR,
-			result.in(0).register, this.__makeExceptionLabel(
-			"java/lang/NullPointerException"));
-		
-		// Generate code
-		codebuilder.add(RegisterOperationType.SET_AND_FLAG_EXCEPTION,
-			result.in(0).register);
-		
-		// Clear references
-		if (doenq)
-			this.__refClear();
-		*/
+		// Handle
+		this.handler.doThrow(result.in(0));
 	}
 	
 	/**
