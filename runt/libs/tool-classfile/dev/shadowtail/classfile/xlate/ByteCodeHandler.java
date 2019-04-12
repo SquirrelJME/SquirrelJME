@@ -87,6 +87,14 @@ public interface ByteCodeHandler
 	public abstract void doReturn(JavaStackResult.Input __in);
 	
 	/**
+	 * Generates code for state operations.
+	 *
+	 * @param __ops The operations to perform.
+	 * @since 2019/04/11
+	 */
+	public abstract void doStateOperations(StateOperation... __ops);
+	
+	/**
 	 * Finishes handling the instruction operation.
 	 *
 	 * @since 2019/04/07
