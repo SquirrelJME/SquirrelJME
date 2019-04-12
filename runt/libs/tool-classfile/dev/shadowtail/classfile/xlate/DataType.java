@@ -61,10 +61,34 @@ public enum DataType
 			case OBJECT:	return JavaType.OBJECT;
 			case BYTE:
 			case SHORT:
+			case CHARACTER:
 			case INTEGER:	return JavaType.INTEGER;
 			case FLOAT:		return JavaType.FLOAT;
 			case LONG:		return JavaType.LONG;
 			case DOUBLE:	return JavaType.DOUBLE;
+		}
+		
+		throw new todo.OOPS(this.name());
+	}
+	
+	/**
+	 * Returns the stack Java type for this data type.
+	 *
+	 * @return The stack type for this Java type.
+	 * @since 2019/04/12
+	 */
+	public final StackJavaType toStackJavaType()
+	{
+		switch (this)
+		{
+			case OBJECT:
+			case BYTE:
+			case SHORT:
+			case CHARACTER:
+			case INTEGER:	return StackJavaType.INTEGER;
+			case FLOAT:		return StackJavaType.FLOAT;
+			case LONG:		return StackJavaType.LONG;
+			case DOUBLE:	return StackJavaType.DOUBLE;
 		}
 		
 		throw new todo.OOPS(this.name());

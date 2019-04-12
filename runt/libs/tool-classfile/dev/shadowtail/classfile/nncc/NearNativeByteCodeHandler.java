@@ -339,7 +339,8 @@ public final class NearNativeByteCodeHandler
 		JavaStackResult.Input __a, JavaStackResult.Input __b,
 		JavaStackResult.Output __c)
 	{
-		throw new todo.TODO();
+		this.codebuilder.addMathReg(__dt, __mt, __a.register, __b.register,
+			__c.register);
 	}
 	
 	/**
