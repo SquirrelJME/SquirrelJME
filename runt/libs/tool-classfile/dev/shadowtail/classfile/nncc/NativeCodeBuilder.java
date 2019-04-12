@@ -108,50 +108,6 @@ public final class NativeCodeBuilder
 	}
 	
 	/**
-	 * Adds an integer comparison instruction. No references will ever be
-	 * cleared if the comparison succeeds.
-	 *
-	 * @param __ct The type of comparison to make
-	 * @param __a The first register.
-	 * @param __b The register to compare against.
-	 * @param __jt The target of the jump.
-	 * @return The resulting instruction.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/04/10
-	 */
-	public final NativeInstruction addICmp(CompareType __ct, int __a, int __b,
-		NativeCodeLabel __jt)
-		throws NullPointerException
-	{
-		return this.addICmp(__ct, __a, __b, __jt, false);
-	}
-	
-	/**
-	 * Adds an integer comparison instruction.
-	 *
-	 * @param __ct The type of comparison to make
-	 * @param __a The first register.
-	 * @param __b The register to compare against.
-	 * @param __jt The target of the jump.
-	 * @param __rc If true then a {@code REF_CLEAR} is performed if the jump
-	 * succeeds.
-	 * @return The resulting instruction.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/04/10
-	 */
-	public final NativeInstruction addICmp(CompareType __ct, int __a, int __b,
-		NativeCodeLabel __jt, boolean __rc)
-		throws NullPointerException
-	{
-		if (__ct == null || __jt == null)
-			throw new NullPointerException("NARG");
-			
-		// Build operation
-		return this.add(NativeInstructionType.IF_ICMP |
-			(__rc ? 0b1000 : 0) | __ct.ordinal(), __a, __b, __jt);
-	}
-	
-	/**
 	 * Adds jump if the given register is an instance of the given class.
 	 *
 	 * @param __cn The class name to check.
@@ -191,6 +147,50 @@ public final class NativeCodeBuilder
 	}
 	
 	/**
+	 * Adds an integer comparison instruction. No references will ever be
+	 * cleared if the comparison succeeds.
+	 *
+	 * @param __ct The type of comparison to make
+	 * @param __a The first register.
+	 * @param __b The register to compare against.
+	 * @param __jt The target of the jump.
+	 * @return The resulting instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/10
+	 */
+	public final NativeInstruction addIfICmp(CompareType __ct, int __a,
+		int __b, NativeCodeLabel __jt)
+		throws NullPointerException
+	{
+		return this.addIfICmp(__ct, __a, __b, __jt, false);
+	}
+	
+	/**
+	 * Adds an integer comparison instruction.
+	 *
+	 * @param __ct The type of comparison to make
+	 * @param __a The first register.
+	 * @param __b The register to compare against.
+	 * @param __jt The target of the jump.
+	 * @param __rc If true then a {@code REF_CLEAR} is performed if the jump
+	 * succeeds.
+	 * @return The resulting instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/10
+	 */
+	public final NativeInstruction addIfICmp(CompareType __ct, int __a,
+		int __b, NativeCodeLabel __jt, boolean __rc)
+		throws NullPointerException
+	{
+		if (__ct == null || __jt == null)
+			throw new NullPointerException("NARG");
+			
+		// Build operation
+		return this.add(NativeInstructionType.IF_ICMP |
+			(__rc ? 0b1000 : 0) | __ct.ordinal(), __a, __b, __jt);
+	}
+	
+	/**
 	 * Adds a jump if the given register is not zero. No reference clears are
 	 * performed by this call.
 	 *
@@ -222,7 +222,7 @@ public final class NativeCodeBuilder
 		if (__jt == null)
 			throw new NullPointerException("NARG");
 		
-		return this.addICmp(CompareType.NOT_EQUALS, __a,
+		return this.addIfICmp(CompareType.NOT_EQUALS, __a,
 			NativeCode.ZERO_REGISTER, __jt, __rc);
 	}
 	
@@ -297,8 +297,8 @@ public final class NativeCodeBuilder
 		if (__jt == null)
 			throw new NullPointerException("NARG");
 		
-		return this.addICmp(CompareType.EQUALS, __a, NativeCode.ZERO_REGISTER,
-			__jt, __rc);
+		return this.addIfICmp(CompareType.EQUALS, __a,
+			NativeCode.ZERO_REGISTER, __jt, __rc);
 	}
 	
 	/**
@@ -315,7 +315,7 @@ public final class NativeCodeBuilder
 		if (__jt == null)
 			throw new NullPointerException("NARG");
 		
-		return this.addICmp(CompareType.TRUE, NativeCode.ZERO_REGISTER,
+		return this.addIfICmp(CompareType.TRUE, NativeCode.ZERO_REGISTER,
 			NativeCode.ZERO_REGISTER, __jt);
 	}
 	
