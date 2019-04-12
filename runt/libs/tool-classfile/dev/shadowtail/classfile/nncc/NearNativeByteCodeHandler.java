@@ -325,9 +325,14 @@ public final class NearNativeByteCodeHandler
 		codebuilder.add(NativeInstructionType.INVOKE,
 			new InvokedMethod(__t, __r.handle()), new RegisterList(callargs));
 		
-		// Read in return value
+		// Read in return value, it is just a copy
 		if (__out != null)
-			throw new todo.TODO();
+			if (__out.type.isWide())
+				codebuilder.addCopyWide(NativeCode.RETURN_REGISTER,
+					__out.register);
+			else
+				codebuilder.addCopy(NativeCode.RETURN_REGISTER,
+					__out.register);
 	}
 	
 	/**
