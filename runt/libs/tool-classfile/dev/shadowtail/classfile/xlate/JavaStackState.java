@@ -599,8 +599,9 @@ public final class JavaStackState
 		Info[] newstack = stack.clone();
 		int newstacktop = basetop + pushcount;
 		
-		// Any enqueues
+		// Any enqueues and operations to perform
 		List<Integer> enqs = new ArrayList<>();
+		List<StateOperation> sops = new ArrayList<>();
 		
 		// Setup the new stack by pushing around
 		for (int at = basetop, ldx = 0; ldx < pushcount; at++, ldx++)
@@ -645,7 +646,8 @@ public final class JavaStackState
 		// Build
 		return new JavaStackResult(this,
 			new JavaStackState(this._locals, newstack, newstacktop),
-			new JavaStackEnqueueList(enqs.size(), enqs));
+			new JavaStackEnqueueList(enqs.size(), enqs),
+			sops.<StateOperation>toArray(new StateOperation[sops.size()]));
 	}
 	
 	/**
