@@ -173,6 +173,16 @@ public interface ByteCodeHandler
 	public abstract void doStateOperations(StateOperation... __ops);
 	
 	/**
+	 * Reads a static field.
+	 *
+	 * @param __fr The field to read from.
+	 * @param __v The output register.
+	 * @since 2019/04/12
+	 */
+	public abstract void doStaticGet(FieldReference __fr,
+		JavaStackResult.Output __v);
+	
+	/**
 	 * Throws the given object.
 	 *
 	 * @param __in The object to throw.
