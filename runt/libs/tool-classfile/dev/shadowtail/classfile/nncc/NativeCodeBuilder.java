@@ -11,6 +11,7 @@
 package dev.shadowtail.classfile.nncc;
 
 import dev.shadowtail.classfile.xlate.CompareType;
+import dev.shadowtail.classfile.xlate.DataType;
 import dev.shadowtail.classfile.xlate.JavaStackResult;
 import dev.shadowtail.classfile.xlate.MathType;
 import dev.shadowtail.classfile.xlate.StackJavaType;
@@ -226,6 +227,45 @@ public final class NativeCodeBuilder
 	}
 	
 	/**
+	 * Adds jump if the given register is not an instance of the given class.
+	 *
+	 * @param __cn The class name to check.
+	 * @param __a The register to check.
+	 * @param __jt The target of the jump.
+	 * @return The resulting instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/10
+	 */
+	public final NativeInstruction addIfNotClass(ClassName __cn, int __a,
+		NativeCodeLabel __jt)
+		throws NullPointerException
+	{
+		return this.addIfNotClass(__cn, __a, __jt, false);
+	}
+	
+	/**
+	 * Adds jump if the given register is not an instance of the given class.
+	 *
+	 * @param __cn The class name to check.
+	 * @param __a The register to check.
+	 * @param __jt The target of the jump.
+	 * @param __rc Reference clear.
+	 * @return The resulting instruction.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/10
+	 */
+	public final NativeInstruction addIfNotClass(ClassName __cn, int __a,
+		NativeCodeLabel __jt, boolean __rc)
+		throws NullPointerException
+	{
+		if (__cn == null || __jt == null)
+			throw new NullPointerException("NARG");
+		
+		return this.add((__rc ? NativeInstructionType.IFNOTCLASS_REF_CLEAR :
+			NativeInstructionType.IFNOTCLASS), __cn, __a, __jt);
+	}
+	
+	/**
 	 * Adds a jump if the given register is zero. No reference clears are
 	 * performed by this call.
 	 *
@@ -372,42 +412,27 @@ public final class NativeCodeBuilder
 	}
 	
 	/**
-	 * Adds jump if the given register is not an instance of the given class.
+	 * Adds memory offset by register.
 	 *
-	 * @param __cn The class name to check.
-	 * @param __a The register to check.
-	 * @param __jt The target of the jump.
-	 * @return The resulting instruction.
+	 * @param __dt The data type used.
+	 * @param __load Is this a load operation?
+	 * @param __v The value to store.
+	 * @param __p The pointer.
+	 * @param __o The offset.
+	 * @return The generated instruction.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2019/04/10
+	 * @since 2019/04/12
 	 */
-	public final NativeInstruction addIfNotClass(ClassName __cn, int __a,
-		NativeCodeLabel __jt)
+	public final NativeInstruction addMemoryOffReg(DataType __dt,
+		boolean __load, int __v, int __p, int __o)
 		throws NullPointerException
 	{
-		return this.addIfNotClass(__cn, __a, __jt, false);
-	}
-	
-	/**
-	 * Adds jump if the given register is not an instance of the given class.
-	 *
-	 * @param __cn The class name to check.
-	 * @param __a The register to check.
-	 * @param __jt The target of the jump.
-	 * @param __rc Reference clear.
-	 * @return The resulting instruction.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/04/10
-	 */
-	public final NativeInstruction addIfNotClass(ClassName __cn, int __a,
-		NativeCodeLabel __jt, boolean __rc)
-		throws NullPointerException
-	{
-		if (__cn == null || __jt == null)
+		if (__dt == null)
 			throw new NullPointerException("NARG");
 		
-		return this.add((__rc ? NativeInstructionType.IFNOTCLASS_REF_CLEAR :
-			NativeInstructionType.IFNOTCLASS), __cn, __a, __jt);
+		// Generate
+		return this.add(NativeInstructionType.MEMORY_OFF_REG |
+			(__load ? 0b1000 : 0) | __dt.ordinal(), __v, __p, __o);
 	}
 	
 	/**

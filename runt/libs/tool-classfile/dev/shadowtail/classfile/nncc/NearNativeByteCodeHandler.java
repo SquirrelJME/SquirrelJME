@@ -11,6 +11,7 @@ package dev.shadowtail.classfile.nncc;
 
 import dev.shadowtail.classfile.xlate.ByteCodeHandler;
 import dev.shadowtail.classfile.xlate.ByteCodeState;
+import dev.shadowtail.classfile.xlate.DataType;
 import dev.shadowtail.classfile.xlate.ExceptionClassEnqueueAndTable;
 import dev.shadowtail.classfile.xlate.ExceptionHandlerRanges;
 import dev.shadowtail.classfile.xlate.ExceptionStackAndTable;
@@ -29,6 +30,7 @@ import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ExceptionHandlerTable;
+import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodHandle;
 import net.multiphasicapps.classfile.MethodName;
@@ -52,6 +54,12 @@ public final class NearNativeByteCodeHandler
 	
 	/** Exception tracker. */
 	protected final ExceptionHandlerRanges exceptionranges;
+	
+	/** Default field access type, to determine how fields are accessed. */
+	protected final FieldAccessTime defaultfieldaccesstime;
+	
+	/** The type of the current class being processed. */
+	protected final ClassName thistype;
 	
 	/** Standard exception handler table. */
 	private final Map<ExceptionStackAndTable, __EData__> _ehtable =
@@ -82,6 +90,10 @@ public final class NearNativeByteCodeHandler
 			throw new NullPointerException("NARG");
 		
 		this.exceptionranges = new ExceptionHandlerRanges(__bc);
+		this.defaultfieldaccesstime = ((__bc.isInstanceInitializer() ||
+			__bc.isStaticInitializer()) ? FieldAccessTime.INITIALIZER :
+			FieldAccessTime.NORMAL);
+		this.thistype = __bc.thisType();
 	}
 	
 	/**
@@ -93,6 +105,42 @@ public final class NearNativeByteCodeHandler
 		JavaStackResult.Output __out)
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/12
+	 */
+	@Override
+	public final void doFieldPut(FieldReference __fr,
+		JavaStackResult.Input __i, JavaStackResult.Input __v)
+	{
+		NativeCodeBuilder codebuilder = this.codebuilder;
+		
+		// Push references
+		this.__refPush();
+		
+		// The instance register
+		int ireg = __i.register;
+		
+		// Cannot be null
+		codebuilder.addIfZero(ireg, this.__labelMakeException(
+			"java/lang/NullPointerException"), true);
+		
+		// Must be the given class
+		codebuilder.addIfNotClass(__fr.className(), ireg,
+			this.__labelMakeException("java/lang/ClassCastException"), true);
+		
+		// Read of field memory
+		int tempreg = state.stack.usedregisters;
+		codebuilder.add(NativeInstructionType.LOAD_POOL,
+			this.__fieldAccess(FieldAccessType.INSTANCE, __fr), tempreg);
+		codebuilder.addMemoryOffReg(
+			DataType.of(__fr.memberType().primitiveType()), false,
+			__v.register, ireg, tempreg);
+			
+		// Clear references as needed
+		this.__refClear();
 	}
 	
 	/**
@@ -358,6 +406,29 @@ public final class NearNativeByteCodeHandler
 	public final ByteCodeState state()
 	{
 		return this.state;
+	}
+	
+	/**
+	 * Generates an access to a field.
+	 *
+	 * @param __at The type of access to perform.
+	 * @param __fr The reference to the field.
+	 * @return The accessed field.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/24
+	 */
+	private final AccessedField __fieldAccess(FieldAccessType __at,
+		FieldReference __fr)
+		throws NullPointerException
+	{
+		if (__at == null || __fr == null)
+			throw new NullPointerException("NARG");
+		
+		// Accessing final fields of another class will always be treated as
+		// normal despite being in the constructor of a class
+		if (!thistype.equals(__fr.className()))
+			return new AccessedField(FieldAccessTime.NORMAL, __at, __fr);
+		return new AccessedField(this.defaultfieldaccesstime, __at, __fr);
 	}
 	
 	/**
