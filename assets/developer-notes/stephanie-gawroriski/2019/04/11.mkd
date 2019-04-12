@@ -1,0 +1,75 @@
+# 2019/04/11
+
+## 09:10
+
+What I actually need for all the labels are state transitions. Basically going
+from one stack state to another. Then according to the transition certain
+movement operations are created. Actual code generation would be on the
+movement operations to perform (counting and not counting). This means there
+needs to be equals and hashCode for instructions.
+
+## 09:33
+
+I also need to handle jump aheads, so if multiple points of code jump to the
+same point there might be different stack states used. So will need to do a
+partial flush or similar.
+
+## 09:38
+
+For forward jumps I can use enqueue register things to specify the slots which
+need to be partially uncached when the later instruction is actually handled.
+
+## 09:41
+
+`JavaStackState` can have a flush which returns a `JavaStackFlush` that shows
+copies and such. But also partial stack states can be handled as well in the
+stack state code to transition to other stack layouts. This code can be
+combined into two. Flushing a state is basically creating a new state with
+the same types but all the registers are at their fixed positions. So the
+code is effectively the same operation. This will greatly reduce the
+complexity of the code.
+
+## 09:45
+
+Actually just `JavaStackResult` has to be used, it will just get added to it
+instructions which handle moving things around and keeping the cache stuff
+decent.
+
+## 15:42
+
+Okay so, with the potential for the cached areas to collide into each other,
+handling exceptions becomes a bit complicated since I do not know how the code
+is laid out before the instruction has been reached. I think doing a pre-scan
+of every instruction and figuring out this information would be the most
+useful. Then I can worry about how things collide later on. Otherwise it just
+ends up being complex and I need more information just to do basic
+exceptions. And so far every time I have written the exception handler stuff
+it has gotten quite ugly.
+
+## 16:05
+
+So, I do not exactly know yet what is going to be in the poison area.
+
+## 16:09
+
+Actually another idea: do not do jump target states for instructions which
+do not throw exceptions at all. This should make it easier to match things
+properly.
+
+## 16:36
+
+You know I was thinking for make exception, is the table actually needed?
+Like it could just use the label, the class type, and the stack information.
+
+## 17:04
+
+So a note for normal jumps, that if the target has a poisoned stack then the
+registers need reworking. Otherwise if there is no poisoning at the target
+then just a plain quick jump can be done. This seems to be pretty simple.
+
+## 17:17
+
+Is the stack even needed for the make exception table? Entries point to labels
+which do have stack information stored in them currently so it seems a bit
+redundent. I mean the make exception stuff is just going to load a freshly
+created object into a register then jump to the exception handler.
