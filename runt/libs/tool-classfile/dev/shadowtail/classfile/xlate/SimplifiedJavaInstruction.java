@@ -213,6 +213,24 @@ public final class SimplifiedJavaInstruction
 					};
 				break;
 			
+			case InstructionIndex.DCMPG:
+				op = SimplifiedJavaInstruction.MATH;
+				args = new Object[]
+					{
+						DataType.DOUBLE,
+						MathType.CMPG,
+					};
+				break;
+			
+			case InstructionIndex.DCMPL:
+				op = SimplifiedJavaInstruction.MATH;
+				args = new Object[]
+					{
+						DataType.DOUBLE,
+						MathType.CMPL,
+					};
+				break;
+			
 			case InstructionIndex.DCONST_0:
 			case InstructionIndex.DCONST_1:
 				op = InstructionIndex.LDC;
@@ -323,6 +341,24 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						PrimitiveType.FLOAT,
+					};
+				break;
+			
+			case InstructionIndex.FCMPG:
+				op = SimplifiedJavaInstruction.MATH;
+				args = new Object[]
+					{
+						DataType.FLOAT,
+						MathType.CMPG,
+					};
+				break;
+			
+			case InstructionIndex.FCMPL:
+				op = SimplifiedJavaInstruction.MATH;
+				args = new Object[]
+					{
+						DataType.FLOAT,
+						MathType.CMPL,
 					};
 				break;
 			
@@ -796,6 +832,15 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						PrimitiveType.LONG,
+					};
+				break;
+			
+			case InstructionIndex.LCMP:
+				op = SimplifiedJavaInstruction.MATH;
+				args = new Object[]
+					{
+						DataType.LONG,
+						MathType.CMPG,
 					};
 				break;
 			
