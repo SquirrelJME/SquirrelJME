@@ -663,21 +663,20 @@ public final class ByteCodeProcessor
 		if (__type == null || __ct == null || __ijt == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
-		/*
-		// Pop input from the stack
-		JavaStackResult result = this._stack.doStack(2);
-		this._stack = result.after();
+		// {@squirreljme.error JC3e Cannot compare float or double.}
+		if (__type == DataType.FLOAT || __type == DataType.DOUBLE)
+			throw new IllegalArgumentException("JC3e");
 		
-		// Enqueue the input for counting
-		boolean doenq = this.__refEnqueue(result.enqueue());
+		// [a, b] ->
+		JavaStackResult result = this.state.stack.doStack(2);
+		this.__update(result);
 		
-		// Generate code, no later refclear needs to be done because if
-		// zero operation if doenq is set will clear the references
-		this.codebuilder.add(__ct.ifABOperation(doenq),
-			result.in(0).register, result.in(1).register,
-			this.__javaLabel(__ijt));
-		*/
+		// Stop pre-processing here
+		if (!this._dohandling)
+			return;
+		
+		// Forward
+		this.handler.doIfICmp(__ct, result.in(0), result.in(1), __ijt);
 	}
 	
 	/**
