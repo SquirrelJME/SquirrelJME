@@ -176,6 +176,17 @@ public final class NearNativeByteCodeHandler
 	 * @since 2019/04/11
 	 */
 	@Override
+	public final void doNew(ClassName __cn, JavaStackResult.Output __out)
+	{
+		this.codebuilder.add(NativeInstructionType.NEW,
+			__cn, __out.register);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/11
+	 */
+	@Override
 	public final void doReturn(JavaStackResult.Input __in)
 	{
 		NativeCodeBuilder codebuilder = this.codebuilder;

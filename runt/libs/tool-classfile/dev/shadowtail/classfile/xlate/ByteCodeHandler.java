@@ -9,6 +9,7 @@
 
 package dev.shadowtail.classfile.xlate;
 
+import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodReference;
 
 /**
@@ -67,6 +68,15 @@ public interface ByteCodeHandler
 	 */
 	public abstract void doMath(StackJavaType __dt, MathType __mt,
 		JavaStackResult.Input __a, Number __b, JavaStackResult.Output __c);
+	
+	/**
+	 * Allocates new class.
+	 *
+	 * @param __cn The class to allocate.
+	 * @param __out The output.
+	 * @since 2019/04/11
+	 */
+	public abstract void doNew(ClassName __cn, JavaStackResult.Output __out);
 	
 	/**
 	 * Return of value.

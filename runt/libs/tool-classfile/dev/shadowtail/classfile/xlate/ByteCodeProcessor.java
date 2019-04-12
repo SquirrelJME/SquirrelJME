@@ -974,20 +974,17 @@ public final class ByteCodeProcessor
 		// An exception may be thrown
 		this._canexception = true;
 		
-		throw new todo.TODO();
-		/*
-		// New is a complex operation and could fail for many reasons
-		this._exceptioncheck = true;
-		
 		// Just the type is pushed to the stack
-		JavaStackResult result = this._stack.doStack(0, new JavaType(__cn));
-		this._stack = result.after();
+		JavaStackResult result = this.state.stack.
+			doStack(0, new JavaType(__cn));
+		this.__update(result);
 		
-		// Allocate and store into register
-		RegisterCodeBuilder codebuilder = this.codebuilder;
-		codebuilder.add(RegisterOperationType.NEW,
-			__cn, result.out(0).register);
-		*/
+		// Stop pre-processing here
+		if (!this._dohandling)
+			return;
+		
+		// Forward
+		this.handler.doNew(__cn, result.out(0));
 	}
 	
 	/**
