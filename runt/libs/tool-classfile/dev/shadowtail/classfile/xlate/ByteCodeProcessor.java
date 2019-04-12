@@ -584,6 +584,19 @@ public final class ByteCodeProcessor
 		// An exception may be thrown
 		this._canexception = true;
 		
+		// [inst] -> [value]
+		ByteCodeState state = this.state;
+		JavaStackResult result = state.stack.doStack(1,
+			new JavaType(__fr.memberType()));
+		this.__update(result);
+		
+		// Stop pre-processing here
+		if (!this._dohandling)
+			return;
+		
+		// Forward
+		this.handler.doFieldGet(__fr, result.in(0), result.out(0));
+		
 		throw new todo.TODO();
 		/*
 		// The data type determines which instruction to use
