@@ -33,6 +33,17 @@ public interface ByteCodeHandler
 		JavaStackResult.Output __out);
 	
 	/**
+	 * Reads a field.
+	 *
+	 * @param __fr The field reference.
+	 * @param __i The instance.
+	 * @param __v The output value.
+	 * @since 2019/04/12
+	 */
+	public abstract void doFieldGet(FieldReference __fr,
+		JavaStackResult.Input __i, JavaStackResult.Output __v);
+	
+	/**
 	 * Puts a field.
 	 *
 	 * @param __fr The field reference.

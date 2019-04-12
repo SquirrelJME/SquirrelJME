@@ -110,6 +110,45 @@ public final class NearNativeByteCodeHandler
 	}
 	
 	/**
+	 * Reads a field.
+	 *
+	 * @param __fr The field reference.
+	 * @param __i The instance.
+	 * @param __v The output value.
+	 * @since 2019/04/12
+	 */
+	public final void doFieldGet(FieldReference __fr,
+		JavaStackResult.Input __i, JavaStackResult.Output __v)
+	{
+		NativeCodeBuilder codebuilder = this.codebuilder;
+		
+		// Push references
+		this.__refPush();
+		
+		// The instance register
+		int ireg = __i.register;
+		
+		// Cannot be null
+		codebuilder.addIfZero(ireg, this.__labelMakeException(
+			"java/lang/NullPointerException"), true);
+		
+		// Must be the given class
+		codebuilder.addIfNotClass(__fr.className(), ireg,
+			this.__labelMakeException("java/lang/ClassCastException"), true);
+		
+		// Read of field memory
+		int tempreg = state.stack.usedregisters;
+		codebuilder.add(NativeInstructionType.LOAD_POOL,
+			this.__fieldAccess(FieldAccessType.INSTANCE, __fr), tempreg);
+		codebuilder.addMemoryOffReg(
+			DataType.of(__fr.memberType().primitiveType()), true,
+			__v.register, ireg, tempreg);
+			
+		// Clear references as needed
+		this.__refClear();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2019/04/12
 	 */
