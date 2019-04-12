@@ -1059,7 +1059,8 @@ public final class JavaStackState
 			this.type = __t;
 			this.value = (__rv = (__t.isNothing() ? -1 : __rv));
 			this.readonly = __ro;
-			this.nocounting = (__nc || __rp != __rv || __rv < 0);
+			this.nocounting = __t.isObject() &&
+				(__nc || __rp != __rv || __rv < 0);
 		}
 		
 		/**
