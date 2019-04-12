@@ -11,6 +11,7 @@ package dev.shadowtail.classfile.xlate;
 
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.FieldReference;
+import net.multiphasicapps.classfile.InstructionJumpTarget;
 import net.multiphasicapps.classfile.MethodReference;
 
 /**
@@ -41,6 +42,17 @@ public interface ByteCodeHandler
 	 */
 	public abstract void doFieldPut(FieldReference __fr,
 		JavaStackResult.Input __i, JavaStackResult.Input __v);
+	
+	/**
+	 * Compares two values and then possibly jumps.
+	 *
+	 * @param __a The first value.
+	 * @param __b The second value.
+	 * @param __ijt The jump target.
+	 * @since 2019/04/12
+	 */
+	public abstract void doIfICmp(CompareType __ct, JavaStackResult.Input __a,
+		JavaStackResult.Input __b, InstructionJumpTarget __ijt);
 	
 	/**
 	 * Invocation of a method.
