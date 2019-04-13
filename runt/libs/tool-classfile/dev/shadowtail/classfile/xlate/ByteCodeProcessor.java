@@ -1033,32 +1033,6 @@ public final class ByteCodeProcessor
 		
 		// Forward
 		this.handler.doStaticGet(__fr, result.out(0));
-		
-		throw new todo.TODO();
-		/*
-		// The data type determines which instruction to use
-		PrimitiveType pt = __fr.memberType().primitiveType();
-		DataType dt = DataType.of(pt);
-		
-		// Field access information
-		AccessedField ac = this.__fieldAccess(FieldAccessType.STATIC, __fr);
-		
-		// Do stack operations
-		JavaStackResult result = this._stack.doStack(0,
-			new JavaType(__fr.memberType()));
-		this._stack = result.after();
-		
-		// Generate code
-		codebuilder.add(dt.fieldAccessOperation(true, false),
-			ac, result.out(0).register);
-		
-		// Sign-extend signed types?
-		if (pt == PrimitiveType.BYTE || pt == PrimitiveType.SHORT)
-			codebuilder.add((pt == PrimitiveType.BYTE ?
-					RegisterOperationType.SIGN_X8 :
-					RegisterOperationType.SIGN_X16),
-				result.out(0).register);
-		*/
 	}
 	
 	/**
