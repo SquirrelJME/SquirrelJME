@@ -874,9 +874,17 @@ public final class NearNativeByteCodeHandler
 		JavaStackResult handled = state.stack.doExceptionHandler(),
 			nothandled = state.stack.doDestroy(false);
 		
+		// The byte code handler does not know about exception registers so
+		// we need to add this operation in so it is handled correctly
+		List<StateOperation> newsop = new ArrayList<>();
+		for (StateOperation o : handled.operations())
+			newsop.add(o);
+		newsop.add(StateOperation.copy(false,
+			NativeCode.EXCEPTION_REGISTER, handled.out(0).register));
+		
 		// Setup key
 		ExceptionHandlerTransition key = new ExceptionHandlerTransition(
-			handled.operations(), nothandled.enqueue(),
+			new StateOperations(newsop), nothandled.enqueue(),
 			this.exceptionranges.tableOf(state.addr));
 		
 		// Try to use an already existing point
