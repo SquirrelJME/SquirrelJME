@@ -696,6 +696,11 @@ public final class ByteCodeProcessor
 		// Stop pre-processing here
 		if (!this._dohandling)
 			return;
+			
+		// There might be items on the stack which were cached and now no
+		// longer are because they got pulverized, so de-cache those
+		ByteCodeHandler handler = this.handler;
+		handler.doStateOperations(result.operations());
 		
 		// Add value
 		handler.doMath(StackJavaType.INTEGER, MathType.ADD,
@@ -834,7 +839,7 @@ public final class ByteCodeProcessor
 		// Only perform the copy if the value is different, because otherwise
 		// it would have just been cached
 		if (result.in(0).register != result.out(0).register)
-			this.handler.doCopy(result.in(0), result.out(0));
+			handler.doCopy(result.in(0), result.out(0));
 	}
 	
 	/**
@@ -1062,8 +1067,13 @@ public final class ByteCodeProcessor
 		if (!this._dohandling)
 			return;
 		
+		// There might be items on the stack which were cached and now no
+		// longer are because they got pulverized, so de-cache those
+		ByteCodeHandler handler = this.handler;
+		handler.doStateOperations(result.operations());
+		
 		// Perform plain copy
-		this.handler.doCopy(result.in(0), result.out(0));
+		handler.doCopy(result.in(0), result.out(0));
 	}
 	
 	/**

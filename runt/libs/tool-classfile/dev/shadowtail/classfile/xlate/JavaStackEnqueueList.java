@@ -255,6 +255,31 @@ public final class JavaStackEnqueueList
 	}
 	
 	/**
+	 * Merges both of these stack enqueue lists into one.
+	 *
+	 * @param __a The first.
+	 * @param __b The second.
+	 * @return The merged result.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/13
+	 */
+	public static final JavaStackEnqueueList merge(JavaStackEnqueueList __a,
+		JavaStackEnqueueList __b)
+		throws NullPointerException
+	{
+		if (__a == null || __b == null)
+			throw new NullPointerException("NARG");
+		
+		// If one side is empty just use the other
+		if (__a.isEmpty())
+			return __b;
+		else if (__b.isEmpty())
+			return __a;
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Trims the top entry from the enqueue list and returns the new list
 	 * with the top missing.
 	 *

@@ -317,6 +317,49 @@ public final class JavaStackState
 				enq.add(wolddest.value);
 		}
 		
+		// Go through the stack and uncache anything which refers to the
+		// old destination by value
+		Info[] newstack = this._stack.clone();
+		List<StateOperation> ops = new ArrayList<>();
+		int bumpreg = olddest.register,
+			stacktop = this.stacktop;
+		for (int i = 0; i < stacktop; i++)
+		{
+			Info ss = newstack[i];
+			
+			// If the value points to the local register then it is going to
+			// be destroyed, so make sure the value is correctly restored and
+			// the cached state of the stack is removed
+			if (ss.value == bumpreg)
+			{
+				int ssreg = ss.register;
+				JavaType sst = ss.type;
+				
+				// Copy the value from the local to the stack entry's true
+				// register
+				ops.add(new StateOperation((sst.isWide() ?
+					StateOperation.Type.WIDE_COPY : StateOperation.Type.COPY),
+					bumpreg, ssreg));
+				
+				// If the local is counted, then the destination spot on the
+				// stack needs to be counted
+				if (sst.isObject() && !olddest.nocounting)
+					ops.add(new StateOperation(StateOperation.Type.COUNT,
+						ssreg));
+				
+				// Then this slot on the stack becomes just a non-cached direct
+				// value
+				newstack[i] = new Info(ssreg, sst, ssreg, false,
+					olddest.nocounting);
+				
+				// Also un-cache wide values, remember that longs and doubles
+				// are never counted
+				if (sst.isWide())
+					newstack[i + 1] = new Info(ssreg + 1, sst.topType(),
+						ssreg + 1, false, false);
+			}
+		}
+		
 		// Setup new base local, remember that locals are never aliased but
 		// they might use no counting
 		Info[] newlocals = locals.clone();
@@ -331,8 +374,9 @@ public final class JavaStackState
 		
 		// Create resulting state
  		return new JavaStackResult(this,
-			new JavaStackState(newlocals, this._stack, this.stacktop),
+			new JavaStackState(newlocals, newstack, stacktop),
 			new JavaStackEnqueueList(enq.size(), enq),
+			new StateOperations(ops),
 			JavaStackResult.makeOutput(pushed));
 	}
 	
@@ -343,68 +387,28 @@ public final class JavaStackState
 	 * any kind caching.
 	 *
 	 * @param __l The local to store.
+	 * @return The result of the store.
 	 * @throws InvalidClassFormatException If the local cannot be written to.
 	 * @since 2019/04/02
 	 */
 	public final JavaStackResult doLocalStore(int __l)
 		throws InvalidClassFormatException
 	{
-		Info[] locals = this._locals,
-			stack = this._stack;
-		int stacktop = this.stacktop;
+		// Pop the value to store from the stack
+		JavaStackResult stackpop = this.doStack(1);
+		JavaStackResult.Input popped = stackpop.in(0);
 		
-		// Used for the new stack which just has pops
-		int newstacktop = stacktop;
+		// Then perform the store from this previous result
+		JavaStackResult stacksto = stackpop.after().doLocalSet(
+			popped.type, __l);
 		
-		// Pop from the stack to figure out what to store
-		Info popped = stack[--newstacktop];
-		if (popped.type.isTop())
-			popped = stack[--newstacktop];
-		
-		// {@squirreljme.error JC33 Cannot write over a local variable which
-		// is read-only. (The local)}
-		Info olddest = locals[__l];
-		if (olddest.readonly)
-			throw new InvalidClassFormatException("JC33 " + olddest);
-		
-		// If the target local is an object it could be enqueued
-		List<Integer> enq = new ArrayList<>();
-		if (olddest.canEnqueue())
-			enq.add(olddest.value);
-		
-		// If we are going to be writing over two locals we need to check
-		// the other as well
-		if (popped.type.isWide())
-		{
-			// {@squirreljme.error JC34 Cannot write over a local variable
-			// which is read-only. (The local)}
-			Info wolddest = locals[__l + 1];
-			if (wolddest.readonly)
-				throw new InvalidClassFormatException("JC34 " + wolddest);
-			
-			// If the target local is an object it could be enqueued
-			if (wolddest.canEnqueue())
-				enq.add(wolddest.value);
-		}
-		
-		// Setup new base local, remember that locals are never aliased but
-		// they might use no counting
-		Info[] newlocals = locals.clone();
-		Info pushed;
-		newlocals[__l] = (pushed = olddest.newTypeValue(popped.type,
-			olddest.register, popped.nocounting));
-		
-		// Additionally push top type as well
-		if (popped.type.isWide())
-			newlocals[__l + 1] = newlocals[__l + 1].newTypeValue(
-				pushed.type.topType(), pushed.register + 1, false);
-		
-		// Create resulting state
- 		return new JavaStackResult(this,
-			new JavaStackState(newlocals, stack, newstacktop),
-			new JavaStackEnqueueList(enq.size(), enq),
-			JavaStackResult.makeInput(popped),
-			JavaStackResult.makeOutput(pushed));
+		// Then combine these two states into a new result, make sure the
+		// enqueues are merged
+		return new JavaStackResult(this,
+			stacksto.after,
+			JavaStackEnqueueList.merge(stackpop.enqueue, stacksto.enqueue),
+			stacksto.operations(),
+			popped, stacksto.out(0));
 	}
 	
 	/**

@@ -485,7 +485,36 @@ public final class NearNativeByteCodeHandler
 		if (__ops == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// If there are no operations, just do not bother
+		if (__ops.isEmpty())
+			return;
+		
+		// Generate code for the operations
+		NativeCodeBuilder codebuilder = this.codebuilder;
+		for (StateOperation op : __ops)
+			switch (op.type)
+			{
+				case UNCOUNT:
+					codebuilder.add(NativeInstructionType.UNCOUNT,
+						op.a);
+					break;
+				
+				case COUNT:
+					codebuilder.add(NativeInstructionType.COUNT,
+						op.a);
+					break;
+				
+				case COPY:
+					codebuilder.addCopy(op.a, op.b);
+					break;
+				
+				case WIDE_COPY:
+					codebuilder.addCopyWide(op.a, op.b);
+					break;
+				
+				default:
+					throw new todo.OOPS();
+			}
 	}
 	
 	/**

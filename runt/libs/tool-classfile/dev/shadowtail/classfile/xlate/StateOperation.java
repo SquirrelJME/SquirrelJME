@@ -20,6 +20,55 @@ import java.lang.ref.WeakReference;
  */
 public final class StateOperation
 {
+	/** The type of operation to perform. */
+	public final StateOperation.Type type;
+	
+	/** The A register. */
+	public final int a;
+	
+	/** The B register. */
+	public final int b;
+	
+	/** Hashcode. */
+	private int _hash;
+	
+	/** String. */
+	private Reference<String> _string;
+	
+	/**
+	 * Initializes the state operation.
+	 *
+	 * @param __t The type.
+	 * @param __a Register A.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/13
+	 */
+	public StateOperation(StateOperation.Type __t, int __a)
+		throws NullPointerException
+	{
+		this(__t, __a, __a);
+	}
+	
+	/**
+	 * Initializes the state operation.
+	 *
+	 * @param __t The type.
+	 * @param __a Register A.
+	 * @param __b Register B.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/13
+	 */
+	public StateOperation(StateOperation.Type __t, int __a, int __b)
+		throws NullPointerException
+	{
+		if (__t == null)
+			throw new NullPointerException("NARG");
+		
+		this.type = __t;
+		this.a = __a;
+		this.b = __b;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2019/04/11
@@ -47,7 +96,14 @@ public final class StateOperation
 	@Override
 	public final String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>((rv = this.type + "(" +
+				this.a + ", " + this.b + ")"));
+		
+		return rv;
 	}
 	
 	/**
