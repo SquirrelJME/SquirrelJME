@@ -1,0 +1,41 @@
+# 2019/04/12
+
+## 17:33
+
+Forgot to do simple math stuff for the various CMP types.
+
+## 18:03
+
+Okay the stack state stuff is far too convoluted, like it takes up so much
+space and is hard to read.
+
+## 18:18
+
+Okay so, I see that no counting is set for integers..... this should never be
+set for non-objects because it does not make sense.
+
+## 18:20
+
+And doing that actually removed a transition which was flagged, so that is
+rather nice.
+
+## 20:00
+
+Okay so, stack poisons are only really needed for instructions which are
+jumped to from a future instruction. For jump forwards, there just needs
+transitions to be done which can be derived from the stack state.
+
+## 20:26
+
+Actually, transition to the next instruction should be jumped to by the
+Java label stuff. This is just in case that the target state does not
+match and it needs to be adjusted. This of course would mean that the
+entry poison is not needed. So would say if the directly following
+instruction (if we flow naturally) has a different state and it has not
+explicitely been poisoned then we do a transition to it.
+
+## 23:34
+
+I should sleep. But I have my first instance of going to another state
+for transitioning. Right now it is just a simple uncount and a forget
+about a bunch of other locals.
