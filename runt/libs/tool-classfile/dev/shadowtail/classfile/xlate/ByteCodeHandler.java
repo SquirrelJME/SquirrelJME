@@ -170,7 +170,7 @@ public interface ByteCodeHandler
 	 * @param __ops The operations to perform.
 	 * @since 2019/04/11
 	 */
-	public abstract void doStateOperations(StateOperation... __ops);
+	public abstract void doStateOperations(StateOperations __ops);
 	
 	/**
 	 * Reads a static field.

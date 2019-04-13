@@ -18,12 +18,12 @@ import dev.shadowtail.classfile.xlate.ExceptionHandlerRanges;
 import dev.shadowtail.classfile.xlate.ExceptionStackAndTable;
 import dev.shadowtail.classfile.xlate.InvokeType;
 import dev.shadowtail.classfile.xlate.JavaStackEnqueueList;
-import dev.shadowtail.classfile.xlate.JavaStackPoison;
 import dev.shadowtail.classfile.xlate.JavaStackResult;
 import dev.shadowtail.classfile.xlate.JavaStackState;
 import dev.shadowtail.classfile.xlate.MathType;
 import dev.shadowtail.classfile.xlate.StackJavaType;
 import dev.shadowtail.classfile.xlate.StateOperation;
+import dev.shadowtail.classfile.xlate.StateOperations;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -426,8 +426,12 @@ public final class NearNativeByteCodeHandler
 	 * @since 2019/04/11
 	 */
 	@Override
-	public final void doStateOperations(StateOperation... __ops)
+	public final void doStateOperations(StateOperations __ops)
+		throws NullPointerException
 	{
+		if (__ops == null)
+			throw new NullPointerException("NARG");
+		
 		throw new todo.TODO();
 	}
 	
@@ -510,13 +514,11 @@ public final class NearNativeByteCodeHandler
 		// Set source line
 		codebuilder.setSourceLine(state.line);
 		
-		// Check if we need to transition into this instruction from the
-		// previous natural execution point (not a result of a jump)
-		JavaStackPoison poison = state.stackpoison.get(addr);
+		// Check if there are operations that need to be performed to make
+		// sure the stack state is morphed into correctly
+		StateOperations poison = state.stackpoison.get(addr);
 		if (poison != null)
-		{
-			throw new todo.TODO();
-		}
+			this.doStateOperations(poison);
 		
 		// Setup a label for this current position, this is done after
 		// potential flushing because it is assumed that the current state
@@ -771,13 +773,18 @@ public final class NearNativeByteCodeHandler
 		if (__jt == null)
 			throw new NullPointerException("NARG");
 		
-		// If the target has not had a poisoned stack then we can directly
-		// jump to it since our states are compatible
+		ByteCodeState state = this.state;
+		JavaStackState sourcestack = state.stack;
+		
+		// If the target stack state matches the current state then no
+		// adapting is required at all
 		int target = __jt.target();
-		JavaStackPoison poison = this.state.stackpoison.get(target);
-		if (poison == null)
+		JavaStackState targetstack = state.stacks.get(target);
+		if (sourcestack.equals(targetstack))
 			return new NativeCodeLabel("java", target);
 		
+		// Otherwise, before a jump is done we need to adapt to the target
+		// address!
 		throw new todo.TODO();
 	}
 	

@@ -25,8 +25,8 @@ public class ByteCodeState
 	public final Map<Integer, JavaStackState> stacks =
 		new LinkedHashMap<>();
 		
-	/** Instructions where the stack has been poisoned. */
-	public final Map<Integer, JavaStackPoison> stackpoison =
+	/** Addresses where the natural entry to the operation is poisoned. */
+	public final Map<Integer, StateOperations> stackpoison =
 		new LinkedHashMap<>();
 	
 	/** Java instruction. */
