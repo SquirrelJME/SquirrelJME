@@ -466,6 +466,17 @@ public final class JavaStackResult
 		}
 		
 		/**
+		 * Returns this output as an input.
+		 *
+		 * @return The input.
+		 * @since 2019/04/12
+		 */
+		public final Input asInput()
+		{
+			return new Input(this.register, this.type, this.nocounting);
+		}
+		
+		/**
 		 * {@inheritDoc}
 		 * @since 2019/03/31
 		 */
