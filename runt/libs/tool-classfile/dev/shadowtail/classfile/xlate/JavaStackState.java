@@ -211,7 +211,9 @@ public final class JavaStackState
 	 * for exception handling.
 	 *
 	 * The input is filled with the entire stack. The output is a single
-	 * entry and contains the stack entry to place the value at.
+	 * entry and contains the stack entry to place the value at. The single
+	 * stack entry for the exception will never be cached to the exception
+	 * register.
 	 *
 	 * @param __t The type to push.
 	 * @since 2019/04/13
@@ -226,7 +228,9 @@ public final class JavaStackState
 	 * for exception handling.
 	 *
 	 * The input is filled with the entire stack. The output is a single
-	 * entry and contains the stack entry to place the value at.
+	 * entry and contains the stack entry to place the value at. The single
+	 * stack entry for the exception will never be cached to the exception
+	 * register.
 	 *
 	 * @param __t The type to push.
 	 * @return The result of the operation.
