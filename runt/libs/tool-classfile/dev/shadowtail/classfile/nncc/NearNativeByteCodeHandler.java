@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.ExceptionHandler;
 import net.multiphasicapps.classfile.ExceptionHandlerTable;
 import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.InstructionJumpTarget;
@@ -654,6 +655,9 @@ public final class NearNativeByteCodeHandler
 		// Temporary register base
 		int tempreg = state.stack.usedregisters;
 		
+		// Was an exception handler generated?
+		boolean didehfall = false;
+		
 		// Generate make exception code
 		Map<ClassAndLabel, __EData__> metable = this._metable;
 		for (Map.Entry<ClassAndLabel, __EData__> e : metable.entrySet())
@@ -728,7 +732,19 @@ public final class NearNativeByteCodeHandler
 			// Set label target for this one
 			codebuilder.label(ed.label);
 			
-			throw new todo.TODO();
+			// Go through and build the exception handler table
+			for (ExceptionHandler eh : ehtable)
+				codebuilder.addIfClass(eh.type(),
+					NativeCode.EXCEPTION_REGISTER,
+					this.__labelJavaTransition(sops,
+						new InstructionJumpTarget(eh.handlerAddress())));
+			
+			// No exception handler is available so, just fall through to the
+			// caller as needed
+			this.__generateReturn(enq);
+			
+			// Exception handler was generated
+			didehfall = true;
 		}
 		
 		// Generate transition labels
