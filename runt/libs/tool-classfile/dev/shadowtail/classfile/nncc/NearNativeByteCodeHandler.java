@@ -75,6 +75,10 @@ public final class NearNativeByteCodeHandler
 	private final List<JavaStackEnqueueList> _returns =
 		new ArrayList<>();
 	
+	/** Java transition labels. */
+	private final Map<StateOperationsAndTarget, __EData__> _transits =
+		new LinkedHashMap<>();
+	
 	/** Last registers enqueued. */
 	private JavaStackEnqueueList _lastenqueue;
 	
@@ -640,6 +644,13 @@ public final class NearNativeByteCodeHandler
 			throw new todo.TODO();
 		}
 		
+		// Generate transition labels
+		Map<StateOperationsAndTarget, __EData__> trs = this._transits;
+		for (Map.Entry<StateOperationsAndTarget, __EData__> e : trs.entrySet())
+		{
+			throw new todo.TODO();
+		}
+		
 		return this.codebuilder.build();
 	}
 	
@@ -806,9 +817,33 @@ public final class NearNativeByteCodeHandler
 		if (sourcestack.equals(targetstack))
 			return new NativeCodeLabel("java", target);
 		
-		// Otherwise, before a jump is done we need to adapt to the target
-		// address!
-		throw new todo.TODO();
+		// Do a transition to the target stack
+		JavaStackResult trans = sourcestack.doTransition(targetstack);
+		
+		// If no operations were generated then just use a normal jump since
+		// there is no point in transitioning anyway
+		StateOperations sops = trans.operations();
+		if (sops.isEmpty())
+			return new NativeCodeLabel("java", target);
+		
+		// Setup key
+		StateOperationsAndTarget key =
+			new StateOperationsAndTarget(sops, __jt);
+		
+		// Determine if such a transition was already done, since if the
+		// transition is exactly the same we do not need to actually do
+		// anything
+		Map<StateOperationsAndTarget, __EData__> transits = this._transits;
+		__EData__ rv = transits.get(key);
+		if (rv != null)
+			return rv.label;
+		
+		// Setup transition for later
+		rv = new __EData__(state.addr, state.line,
+			new NativeCodeLabel("makeexception", transits.size()));
+		transits.put(key, rv);
+		
+		return rv.label;
 	}
 	
 	/**

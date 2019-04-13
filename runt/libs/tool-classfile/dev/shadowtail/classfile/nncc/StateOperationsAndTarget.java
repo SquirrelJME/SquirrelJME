@@ -9,51 +9,52 @@
 
 package dev.shadowtail.classfile.nncc;
 
-import dev.shadowtail.classfile.xlate.JavaStackState;
+import dev.shadowtail.classfile.xlate.StateOperations;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.classfile.InstructionJumpTarget;
 
 /**
- * This represents a transition between one stack state and another.
+ * This represents state operations and a target.
  *
- * @since 2019/04/11
+ * @since 2019/04/12
  */
-@Deprecated
-public final class StateTransition
+public final class StateOperationsAndTarget
 {
-	/** The first state. */
-	protected final JavaStackState a;
+	/** State Operations. */
+	protected final StateOperations operations;
 	
-	/** The resulting state. */
-	protected final JavaStackState b;
-	
-	/** String representation. */
-	private Reference<String> _string;
+	/** Jump target. */
+	protected final InstructionJumpTarget target;
 	
 	/** Hashcode. */
 	private int _hash;
 	
+	/** String form. */
+	private Reference<String> _string;
+	
 	/**
-	 * Initializes the state transition.
+	 * Initializes the operations and target.
 	 *
-	 * @param __a From.
-	 * @param __b To.
+	 * @param __ops The operations.
+	 * @param __t The target.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2019/04/11
+	 * @since 2019/04/12
 	 */
-	public StateTransition(JavaStackState __a, JavaStackState __b)
+	public StateOperationsAndTarget(StateOperations __ops,
+		InstructionJumpTarget __t)
 		throws NullPointerException
 	{
-		if (__a == null || __b == null)
+		if (__ops == null || __t == null)
 			throw new NullPointerException("NARG");
 		
-		this.a = __a;
-		this.b = __b;
+		this.operations = __ops;
+		this.target = __t;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2019/04/11
+	 * @since 2019/04/12
 	 */
 	@Override
 	public final boolean equals(Object __o)
@@ -61,33 +62,34 @@ public final class StateTransition
 		if (this == __o)
 			return true;
 		
-		if (!(__o instanceof StateTransition))
+		if (!(__o instanceof StateOperationsAndTarget))
 			return false;
 		
 		if (this.hashCode() != __o.hashCode())
 			return false;
 		
-		StateTransition o = (StateTransition)__o;
-		return this.a.equals(o.a) &&
-			this.b.equals(o.b);
+		StateOperationsAndTarget o = (StateOperationsAndTarget)__o;
+		return this.operations.equals(o.operations) &&
+			this.target.equals(o.target);
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2019/04/11
+	 * @since 2019/04/12
 	 */
 	@Override
 	public final int hashCode()
 	{
 		int rv = this._hash;
 		if (rv == 0)
-			this._hash = (rv = this.a.hashCode() & this.b.hashCode());
+			this._hash = (rv = this.operations.hashCode() ^
+				this.target.hashCode());
 		return rv;
 	}
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2019/04/11
+	 * @since 2019/04/12
 	 */
 	@Override
 	public final String toString()
@@ -96,8 +98,8 @@ public final class StateTransition
 		String rv;
 		
 		if (ref == null || null == (rv = ref.get()))
-			this._string = new WeakReference<>((rv = String.format(
-				"Transition:%s->%s", this.a, this.b)));
+			this._string = new WeakReference<>((rv = this.operations + "+@" +
+				this.target));
 		
 		return rv;
 	}
