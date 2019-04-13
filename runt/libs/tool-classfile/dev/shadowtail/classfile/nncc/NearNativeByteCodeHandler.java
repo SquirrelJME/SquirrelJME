@@ -498,6 +498,29 @@ public final class NearNativeByteCodeHandler
 		if (state.canexception)
 			codebuilder.addIfNonZero(NativeCode.EXCEPTION_REGISTER,
 				this.__labelException(), false);
+		
+		// If this instruction naturally flows into another, determine we
+		// need to transition to that stack state in order to work properly
+		// with any cached values
+		if (state.instruction.hasNaturalFlow())
+		{
+			// Get following stack
+			int followaddr = state.followaddr;
+			JavaStackState nowstack = state.stack,
+				followstack = state.stacks.get(followaddr);
+			
+			// If our current stack is not compatible with the target stack
+			// then we need to transition to that state. However the Java label
+			// code already handles transition, so do this to remove duplicate
+			// code with just a minor jump around.
+			// However if the next state is poisoned we do not do this because
+			// we will just naturally transition to a pure de-cache at the
+			// start of everything anyway.
+			if (!nowstack.equals(followstack) &&
+				!state.stackpoison.containsKey(followaddr))
+				this.codebuilder.addGoto(
+					this.__labelJava(new InstructionJumpTarget(followaddr)));
+		}
 	}
 	
 	/**

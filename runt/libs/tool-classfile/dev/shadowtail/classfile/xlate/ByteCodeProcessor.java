@@ -117,6 +117,7 @@ public final class ByteCodeProcessor
 			// Since this is the start, the last address needs to be reset
 			// because it will be invalid!
 			state.lastaddr = -1;
+			state.followaddr = -1;
 			
 			// Process instruction
 			for (Instruction inst : bytecode)
@@ -142,6 +143,10 @@ public final class ByteCodeProcessor
 				
 				// Set line where this code was found
 				state.line = bytecode.lineOfAddress(addr);
+				
+				// Following address, may be used to calculate if the stack
+				// needs to be transitioned
+				state.followaddr = bytecode.addressFollowing(addr);
 				
 				// These jump targets are used to map out the state of stacks
 				// across various points

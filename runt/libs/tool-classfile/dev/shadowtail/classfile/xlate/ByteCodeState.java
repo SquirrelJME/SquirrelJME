@@ -56,6 +56,10 @@ public class ByteCodeState
 	public int addr =
 		-1;
 	
+	/** The address of the following instruction. */
+	public int followaddr =
+		-1;
+	
 	/** Jump targets for the instruction. */
 	public InstructionJumpTargets jumptargets;
 	
