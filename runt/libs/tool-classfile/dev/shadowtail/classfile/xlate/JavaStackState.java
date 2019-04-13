@@ -185,13 +185,24 @@ public final class JavaStackState
 		
 		// Return value?
 		List<JavaStackResult.InputOutput> io = new ArrayList<>();
+		int newstacktop = stacktop;
 		if (__rv)
-			throw new todo.TODO();
+		{
+			// Pop top item
+			Info popped = stack[--newstacktop];
+			if (popped.type.isWide())
+				popped = stack[--newstacktop];
+			
+			// Add to input
+			io.add(JavaStackResult.makeInput(popped));
+		}
 		
 		// Enqueue stack items, they do not need clearing out because setting
 		// a limiting top will auto-clear
+		// If returning a value do not enqueue what is being returned
+		// otherwise it might end up being garbage collected and returned
 		int eqss = enqueue.size();
-		for (int i = 0; i < stacktop; i++)
+		for (int i = 0; i < newstacktop; i++)
 		{
 			inf = stack[i];
 			
