@@ -68,7 +68,7 @@ public final class NearNativeByteCodeHandler
 		new LinkedHashMap<>();
 	
 	/** Made exception table. */
-	private final Map<ClassStackAndLabel, __EData__> _metable =
+	private final Map<ClassAndLabel, __EData__> _metable =
 		new LinkedHashMap<>();
 	
 	/** The returns which have been performed. */
@@ -647,10 +647,10 @@ public final class NearNativeByteCodeHandler
 		int tempreg = state.stack.usedregisters;
 		
 		// Generate make exception code
-		Map<ClassStackAndLabel, __EData__> metable = this._metable;
-		for (Map.Entry<ClassStackAndLabel, __EData__> e : metable.entrySet())
+		Map<ClassAndLabel, __EData__> metable = this._metable;
+		for (Map.Entry<ClassAndLabel, __EData__> e : metable.entrySet())
 		{
-			ClassStackAndLabel csl = e.getKey();
+			ClassAndLabel csl = e.getKey();
 			__EData__ ed = e.getValue();
 			
 			// Set line/address info
@@ -960,11 +960,11 @@ public final class NearNativeByteCodeHandler
 		// Setup key, the label is the target to jump to after the exception
 		// has been generated and a throw is performed
 		ByteCodeState state = this.state;
-		ClassStackAndLabel key = new ClassStackAndLabel(new ClassName(__cl),
-			state.stack, this.__labelException());
+		ClassAndLabel key = new ClassAndLabel(new ClassName(__cl),
+			this.__labelException());
 		
 		// Look in the table to see if we made it before
-		Map<ClassStackAndLabel, __EData__> metable = this._metable;
+		Map<ClassAndLabel, __EData__> metable = this._metable;
 		__EData__ rv = metable.get(key);
 		if (rv != null)
 			return rv.label;
