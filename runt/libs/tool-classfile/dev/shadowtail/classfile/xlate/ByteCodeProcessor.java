@@ -103,7 +103,7 @@ public final class ByteCodeProcessor
 		ByteCodeState state = this.state;
 		ByteCodeHandler handler = this.handler;
 		Map<Integer, JavaStackState> stacks = state.stacks;
-		Map<Integer, JavaStackPoison> stackpoison = state.stackpoison;
+		Map<Integer, StateOperations> stackpoison = state.stackpoison;
 		
 		// Go through each operation twice, performing pre-processing first
 		// to make things a bit simpler and more well known when it comes
@@ -184,13 +184,9 @@ public final class ByteCodeProcessor
 						// Perform a flush of the cache
 						JavaStackResult fres = stack.doCacheFlush();
 						
-						// Generate the moving around operations
-						if (true)
-							throw new todo.TODO();
-						
-						// Set stack as poisoned at this point
-						if (true)
-							stackpoison.put(addr, null);
+						// Set natural flow as poisoned, operations have to
+						// be done to match the correct state
+						stackpoison.put(addr, fres.operations());
 						
 						// Use the result of the flush as the state instead so
 						// that it propagates ahead from now on
@@ -1004,8 +1000,8 @@ public final class ByteCodeProcessor
 			return;
 		
 		// Potentially run state operations as needed
-		StateOperation[] ops = result.operations();
-		if (ops.length > 0)
+		StateOperations ops = result.operations();
+		if (!ops.isEmpty())
 			this.handler.doStateOperations(ops);
 	}
 	
@@ -1153,7 +1149,7 @@ public final class ByteCodeProcessor
 		
 		// The result of the jump calculations may result in the stack
 		// being poisoned potentially
-		Map<Integer, JavaStackPoison> stackpoison = state.stackpoison;
+		Map<Integer, StateOperations> stackpoison = state.stackpoison;
 		
 		// Set target stack states for destinations of this instruction
 		// Calculate the exception state only if it is needed

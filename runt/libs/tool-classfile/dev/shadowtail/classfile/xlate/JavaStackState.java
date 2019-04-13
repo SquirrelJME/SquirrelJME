@@ -650,7 +650,7 @@ public final class JavaStackState
 		return new JavaStackResult(this,
 			new JavaStackState(this._locals, newstack, newstacktop),
 			new JavaStackEnqueueList(enqs.size(), enqs),
-			sops.<StateOperation>toArray(new StateOperation[sops.size()]));
+			new StateOperations(sops));
 	}
 	
 	/**
