@@ -513,27 +513,22 @@ public final class ByteCodeProcessor
 		// An exception may be thrown
 		this._canexception = true;
 		
-		throw new todo.TODO();
-		/*
-		if (__cn == null)
-			throw new NullPointerException("NARG");
+		// Peek of the state to determine if this class item was counted
+		// counted or not so that it is retained
+		ByteCodeState state = this.state;
+		JavaStackResult flunked = state.stack.doStack(1);
 		
-		// The stack is unchanged, we just push the same type
-		JavaStackResult result = this._stack.doStack(1,
-			new JavaType(__cn));
+		// [object] -> [object]
+		JavaStackResult result = state.stack.doStack(1,
+			flunked.in(0).nocounting, new JavaType(__cn));
+		this.__update(result);
 		
-		// Enqueue instance possibly, is only cleared on jump
-		this.__refEnqueue(result.enqueue());
+		// Stop pre-processing here
+		if (!this._dohandling)
+			return;
 		
-		// Has to be of the right type
-		this.codebuilder.add(
-			RegisterOperationType.JUMP_IF_NOT_INSTANCE_REF_CLEAR,
-			__cn, result.in(0).register,
-			this.__makeExceptionLabel("java/lang/ClassCastException"));
-		
-		// Reset enqueues
-		this.codebuilder.add(RegisterOperationType.REF_RESET);
-		*/
+		// Do check cast
+		this.handler.doCheckCast(__cn, result.in(0));
 	}
 	
 	/**
