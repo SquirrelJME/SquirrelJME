@@ -214,6 +214,21 @@ public final class JavaStackState
 	 * entry and contains the stack entry to place the value at.
 	 *
 	 * @param __t The type to push.
+	 * @since 2019/04/13
+	 */
+	public final JavaStackResult doExceptionHandler()
+	{
+		return this.doExceptionHandler(JavaType.THROWABLE);
+	}
+	
+	/**
+	 * Removes all stack variables and places a single entry on the stack
+	 * for exception handling.
+	 *
+	 * The input is filled with the entire stack. The output is a single
+	 * entry and contains the stack entry to place the value at.
+	 *
+	 * @param __t The type to push.
 	 * @return The result of the operation.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/30

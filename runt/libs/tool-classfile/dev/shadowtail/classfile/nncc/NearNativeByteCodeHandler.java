@@ -15,6 +15,7 @@ import dev.shadowtail.classfile.xlate.CompareType;
 import dev.shadowtail.classfile.xlate.DataType;
 import dev.shadowtail.classfile.xlate.ExceptionClassEnqueueAndTable;
 import dev.shadowtail.classfile.xlate.ExceptionHandlerRanges;
+import dev.shadowtail.classfile.xlate.ExceptionHandlerTransition;
 import dev.shadowtail.classfile.xlate.ExceptionStackAndTable;
 import dev.shadowtail.classfile.xlate.InvokeType;
 import dev.shadowtail.classfile.xlate.JavaStackEnqueueList;
@@ -866,6 +867,8 @@ public final class NearNativeByteCodeHandler
 	 */
 	private final NativeCodeLabel __labelException()
 	{
+		// ExceptionHandlerTransition
+		
 		// Setup key
 		ByteCodeState state = this.state;
 		ExceptionStackAndTable key = this.exceptionranges.stackAndTable(
