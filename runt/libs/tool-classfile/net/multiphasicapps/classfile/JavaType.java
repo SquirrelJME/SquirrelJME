@@ -58,6 +58,10 @@ public final class JavaType
 	public static final JavaType OBJECT =
 		new JavaType(new FieldDescriptor("Ljava/lang/Object;"));
 	
+	/** Throwable. */
+	public static final JavaType THROWABLE =
+		new JavaType(new FieldDescriptor("Ljava/lang/Throwable;"));
+	
 	/** The type this refers to. */
 	protected final FieldDescriptor type;
 	
