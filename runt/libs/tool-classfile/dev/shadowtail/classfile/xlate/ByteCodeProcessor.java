@@ -252,11 +252,6 @@ public final class ByteCodeProcessor
 						this.__doCheckCast(sji.<ClassName>argument(0,
 							ClassName.class));
 						break;
-					
-						// Dup
-					case InstructionIndex.DUP:
-						this.__doStackShuffle(JavaStackShuffleType.DUP);
-						break;
 						
 						// Get field
 					case InstructionIndex.GETFIELD:
@@ -380,16 +375,23 @@ public final class ByteCodeProcessor
 						this.__doReturn(null);
 						break;
 					
+						// Stack shuffle
+					case SimplifiedJavaInstruction.STACKSHUFFLE:
+						this.__doStackShuffle(
+							sji.<JavaStackShuffleType>argument(0,
+								JavaStackShuffleType.class));
+						break;
+					
 						// Place stack variable into local
 					case SimplifiedJavaInstruction.STORE:
-						this.__doStore(sji.<DataType>argument(0, DataType.class),
-							sji.intArgument(1));
+						this.__doStore(sji.<DataType>argument(0,
+							DataType.class), sji.intArgument(1));
 						break;
 						
 						// Return value
 					case SimplifiedJavaInstruction.VRETURN:
-						this.__doReturn(sji.<DataType>argument(0, DataType.class).
-							toJavaType());
+						this.__doReturn(sji.<DataType>argument(0,
+							DataType.class).toJavaType());
 						break;
 					
 						// Not yet implemented

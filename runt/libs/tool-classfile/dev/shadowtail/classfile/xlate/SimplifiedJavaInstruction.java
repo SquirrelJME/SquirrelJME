@@ -68,6 +68,10 @@ public final class SimplifiedJavaInstruction
 	public static final int PALOAD =
 		-9;
 	
+	/** Stack shuffle. */
+	public static final int STACKSHUFFLE =
+		-10;
+	
 	/** The operation. */
 	protected final int op;
 	
@@ -316,6 +320,54 @@ public final class SimplifiedJavaInstruction
 					{
 						DataType.DOUBLE,
 						MathType.SUB,
+					};
+				break;
+			
+			case InstructionIndex.DUP:
+				op = SimplifiedJavaInstruction.STACKSHUFFLE;
+				args = new Object[]
+					{
+						JavaStackShuffleType.DUP,
+					};
+				break;
+			
+			case InstructionIndex.DUP_X1:
+				op = SimplifiedJavaInstruction.STACKSHUFFLE;
+				args = new Object[]
+					{
+						JavaStackShuffleType.DUP_X1,
+					};
+				break;
+			
+			case InstructionIndex.DUP_X2:
+				op = SimplifiedJavaInstruction.STACKSHUFFLE;
+				args = new Object[]
+					{
+						JavaStackShuffleType.DUP_X2,
+					};
+				break;
+			
+			case InstructionIndex.DUP2:
+				op = SimplifiedJavaInstruction.STACKSHUFFLE;
+				args = new Object[]
+					{
+						JavaStackShuffleType.DUP2,
+					};
+				break;
+			
+			case InstructionIndex.DUP2_X1:
+				op = SimplifiedJavaInstruction.STACKSHUFFLE;
+				args = new Object[]
+					{
+						JavaStackShuffleType.DUP2_X1,
+					};
+				break;
+			
+			case InstructionIndex.DUP2_X2:
+				op = SimplifiedJavaInstruction.STACKSHUFFLE;
+				args = new Object[]
+					{
+						JavaStackShuffleType.DUP2_X2,
 					};
 				break;
 			
@@ -990,6 +1042,22 @@ public final class SimplifiedJavaInstruction
 							argument(0, PrimitiveType.class)),
 					};
 				break;
+			
+			case InstructionIndex.POP:
+				op = SimplifiedJavaInstruction.STACKSHUFFLE;
+				args = new Object[]
+					{
+						JavaStackShuffleType.POP,
+					};
+				break;
+			
+			case InstructionIndex.POP2:
+				op = SimplifiedJavaInstruction.STACKSHUFFLE;
+				args = new Object[]
+					{
+						JavaStackShuffleType.POP2,
+					};
+				break;
 				
 			case InstructionIndex.SALOAD:
 				op = SimplifiedJavaInstruction.PALOAD;
@@ -1012,6 +1080,14 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						new ConstantValueInteger(__inst.shortArgument(0)),
+					};
+				break;
+			
+			case InstructionIndex.SWAP:
+				op = SimplifiedJavaInstruction.STACKSHUFFLE;
+				args = new Object[]
+					{
+						JavaStackShuffleType.SWAP,
 					};
 				break;
 			
@@ -1174,14 +1250,15 @@ public final class SimplifiedJavaInstruction
 	{
 		switch (__op)
 		{
-			case STORE:		return "STORE";
-			case LOAD:		return "LOAD";
-			case VRETURN:	return "VRETURN";
-			case MATH:		return "MATH";
-			case IF:		return "IF";
-			case IF_CMP:	return "IF_CMP";
-			case PASTORE:	return "PASTORE";
-			case PALOAD:	return "PALOAD";
+			case STORE:			return "STORE";
+			case LOAD:			return "LOAD";
+			case VRETURN:		return "VRETURN";
+			case MATH:			return "MATH";
+			case IF:			return "IF";
+			case IF_CMP:		return "IF_CMP";
+			case PASTORE:		return "PASTORE";
+			case PALOAD:		return "PALOAD";
+			case STACKSHUFFLE:	return "STACKSHUFFLE";
 			
 				// Fallback to standard stuff
 			default:
