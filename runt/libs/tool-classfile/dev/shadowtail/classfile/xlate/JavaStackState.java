@@ -660,28 +660,72 @@ public final class JavaStackState
 	/**
 	 * Transitions to the given stack state.
 	 *
-	 * @param __target The target to transition.
+	 * @param __ts The target to transition.
 	 * @return The result of the transition and the operations used.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/11
 	 */
-	public final JavaStackResult doTransition(JavaStackState __target)
+	public final JavaStackResult doTransition(JavaStackState __ts)
 		throws NullPointerException
 	{
-		if (__target == null)
+		if (__ts == null)
 			throw new NullPointerException("NARG");
 		
 		// If this state is exactly the same as this one then no actual
 		// transition work needs to be done, so no result is generated
-		if (this.equals(__target))
+		if (this.equals(__ts))
 			return new JavaStackResult(this, this, null);
 		
 		// Debug
 		todo.DEBUG.note("Will transition the stack!");
 		todo.DEBUG.note("From: %s", this);
-		todo.DEBUG.note("To  : %s", __target);
+		todo.DEBUG.note("To  : %s", __ts);
 		
-		throw new todo.TODO();
+		// {@squirreljme.error JC3f A transition cannot be made where the
+		// length of the stack differs. (The length of the first stack; The
+		// length of the second stack)}
+		int atop = this.stacktop,
+			btop = __ts.stacktop;
+		if (atop != btop)
+			throw new InvalidClassFormatException("JC3f " + atop + " " + btop);
+		
+		//
+		List<Integer> stackenq = new ArrayList<>(),
+			localenq = new ArrayList<>();
+		List<StateOperation> ops = new ArrayList<>();
+		
+		// Go through and transition the stack
+		Info[] asta = this._stack,
+			bsta = __ts._stack;
+		for (int i = 0; i < atop; i++)
+		{
+			throw new todo.TODO();
+		}
+		
+		// Go through and transition the registers
+		Info[] aloc = this._locals,
+			bloc = __ts._locals;
+		for (int i = 0, n = aloc.length; i < n; i++)
+		{
+			Info a = aloc[i],
+				b = bloc[i];
+			
+			// They are exactly the same, so nothing needs to be done
+			if (a.equals(b))
+				continue;
+			
+			throw new todo.TODO();
+		}
+		
+		// Merge the enqueues for locals and the stack
+		int eqsat = localenq.size();
+		localenq.addAll(stackenq);
+		
+		// The transition results in the target stack so we do not need to
+		// initialize it, however we do need enqueues and operations
+		return new JavaStackResult(this, __ts,
+			new JavaStackEnqueueList(eqsat, localenq),
+			new StateOperations(ops));
 	}
 	
 	/**
