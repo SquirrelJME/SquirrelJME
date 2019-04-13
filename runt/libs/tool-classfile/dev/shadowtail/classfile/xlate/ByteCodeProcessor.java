@@ -1153,7 +1153,10 @@ public final class ByteCodeProcessor
 				// processed and we cannot adjust the states anymore
 				else if (jta > addr && !use.equals(dss))
 				{
-					todo.DEBUG.note("Transition is required!");
+					todo.DEBUG.note("Transition is required! %d -> %d",
+						addr, jta);
+					todo.DEBUG.note("From: %s", use);
+					todo.DEBUG.note("To  : %s", dss);
 					
 					throw new todo.TODO();
 				}
