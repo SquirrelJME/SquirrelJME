@@ -76,7 +76,19 @@ public final class StateOperation
 	@Override
 	public final boolean equals(Object __o)
 	{
-		throw new todo.TODO();
+		if (this == __o)
+			return true;
+		
+		if (this.hashCode() != __o.hashCode())
+			return false;
+		
+		if (!(__o instanceof StateOperation))
+			return false;
+		
+		StateOperation o = (StateOperation)__o;
+		return this.type.equals(o.type) &&
+			this.a == o.a &&
+			this.b == o.b;
 	}
 	
 	/**
@@ -86,7 +98,10 @@ public final class StateOperation
 	@Override
 	public final int hashCode()
 	{
-		throw new todo.TODO();
+		int rv = this._hash;
+		if (rv == 0)
+			this._hash = (rv = this.type.hashCode() + this.a + this.b);
+		return rv;
 	}
 	
 	/**

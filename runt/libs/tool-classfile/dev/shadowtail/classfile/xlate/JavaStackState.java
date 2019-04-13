@@ -682,14 +682,14 @@ public final class JavaStackState
 		todo.DEBUG.note("To  : %s", __ts);
 		
 		// {@squirreljme.error JC3f A transition cannot be made where the
-		// length of the stack differs. (The length of the first stack; The
-		// length of the second stack)}
+		// length of the stack differs. (The length of the source stack; The
+		// length of the target stack)}
 		int atop = this.stacktop,
 			btop = __ts.stacktop;
 		if (atop != btop)
 			throw new InvalidClassFormatException("JC3f " + atop + " " + btop);
 		
-		//
+		// Used to store operations and enqueues
 		List<Integer> stackenq = new ArrayList<>(),
 			localenq = new ArrayList<>();
 		List<StateOperation> ops = new ArrayList<>();
@@ -700,6 +700,29 @@ public final class JavaStackState
 		for (int i = 0; i < atop; i++)
 		{
 			throw new todo.TODO();
+			
+			/*
+			// I HAD THIS CODE IN THE LOCAL HANDLING CODE HOWEVER THAT IS
+			// NOT CORRECT THERE BECAUSE LOCALS ARE NEVER CACHED, HOWEVER
+			// THE LOGIC I WROTE COULD BE FIXED AND ADJUSTED FOR STACK
+			// VALUES
+			// If the target value is different from the source value
+			// then the value from the source must be copied to the
+			// destination.
+			if (a.value != b.value)
+			{
+				// {@squirreljme.error JC3h (The source; The target)}
+				if (b.value != b.register)
+					throw new InvalidClassFormatException("JC3h " + a +
+						" " + b);
+				
+				ops.add(new StateOperation((at.isWide() ?
+					StateOperation.Type.WIDE_COPY :
+					StateOperation.Type.COPY), a.value, b.value));
+				
+				throw new todo.TODO();
+			}
+			*/
 		}
 		
 		// Go through and transition the registers
@@ -714,7 +737,33 @@ public final class JavaStackState
 			if (a.equals(b))
 				continue;
 			
-			throw new todo.TODO();
+			// If the target is transitioning to nothing, then it will be
+			// removed
+			JavaType at = a.type,
+				bt = b.type;
+			if (bt.isNothing())
+			{
+				// If the A local is an object that is countable, then just
+				// uncount it
+				if (a.canEnqueue())
+				{
+					localenq.add(a.value);
+					ops.add(new StateOperation(StateOperation.Type.UNCOUNT,
+						a.value));
+				}
+			}
+			
+			// Check to make sure the type is the same
+			else
+			{
+				// {@squirreljme.error JC3g A transition cannot be made
+				// to the target type because the types are not compatible.
+				// (The source; The target)}
+				if (at.isObject() != bt.isObject() ||
+					(!at.isObject() && !at.equals(bt)))
+					throw new InvalidClassFormatException(
+						"JC3g " + a + " " + b);
+			}
 		}
 		
 		// Merge the enqueues for locals and the stack

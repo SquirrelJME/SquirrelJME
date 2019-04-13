@@ -918,7 +918,7 @@ public final class NearNativeByteCodeHandler
 		
 		// Setup transition for later
 		rv = new __EData__(state.addr, state.line,
-			new NativeCodeLabel("makeexception", transits.size()));
+			new NativeCodeLabel("transit", transits.size()));
 		transits.put(key, rv);
 		
 		return rv.label;
