@@ -726,7 +726,25 @@ public final class NearNativeByteCodeHandler
 		Map<StateOperationsAndTarget, __EData__> trs = this._transits;
 		for (Map.Entry<StateOperationsAndTarget, __EData__> e : trs.entrySet())
 		{
-			throw new todo.TODO();
+			StateOperationsAndTarget sot = e.getKey();
+			StateOperations ops = sot.operations;
+			InstructionJumpTarget target = sot.target;
+			__EData__ ed = e.getValue();
+			
+			// Set line/address info
+			state.addr = ed.addr;
+			int line = ed.line;
+			state.line = line;
+			codebuilder.setSourceLine(line);
+			
+			// Set label target for this one
+			codebuilder.label(ed.label);
+			
+			// Generate operations
+			this.doStateOperations(ops);
+			
+			// Then just jump to the Java target
+			codebuilder.addGoto(new NativeCodeLabel("java", target.target()));
 		}
 		
 		return this.codebuilder.build();
