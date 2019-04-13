@@ -245,7 +245,39 @@ public final class JavaStackState
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Enqueues and operations
+		List<Integer> enq = new ArrayList<>();
+		List<StateOperation> ops = new ArrayList<>();
+		
+		// Setup new stack
+		int oldstacktop = this.stacktop;
+		Info[] newstack = this._stack.clone();
+		
+		// Cleanup everything on the stack!
+		for (int i = 0; i < oldstacktop; i++)
+		{
+			Info sit = newstack[i];
+			
+			// If there are objects here, then uncount them
+			if (sit.canEnqueue())
+			{
+				enq.add(sit.value);
+				ops.add(StateOperation.uncount(sit.value));
+			}
+		}
+		
+		// Setup new stack entry
+		Info olddest = newstack[0],
+			dest = newstack[0].newTypeValue(__t, olddest.register, false);
+		newstack[0] = dest;
+		
+		// Build result, only stack items were enqueued so all entries are
+		// stack entries
+		return new JavaStackResult(this,
+			new JavaStackState(this._locals, newstack, 1),
+			new JavaStackEnqueueList(0, enq),
+			new StateOperations(ops),
+			JavaStackResult.makeOutput(dest));
 	}
 	
 	/**
