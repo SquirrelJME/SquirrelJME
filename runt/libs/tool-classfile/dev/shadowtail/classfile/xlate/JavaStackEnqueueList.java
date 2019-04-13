@@ -168,6 +168,20 @@ public final class JavaStackEnqueueList
 	}
 	
 	/**
+	 * Checks if the enqueue contains the given register.
+	 *
+	 * @param __r The register to check.
+	 * @return If it is contained or not.
+	 * @since 2019/04/13
+	 */
+	public final boolean contains(int __r)
+	{
+		for (int x : this._registers)
+			return (x == __r);
+		return false;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2019/03/30
 	 */

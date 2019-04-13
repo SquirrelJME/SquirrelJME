@@ -1116,6 +1116,7 @@ public final class ByteCodeProcessor
 		// The result of the jump calculations may result in the stack
 		// being poisoned potentially
 		Map<Integer, StateOperations> stackpoison = state.stackpoison;
+		Map<Integer, JavaStackEnqueueList> stackcollides = state.stackcollides;
 		
 		// Set target stack states for destinations of this instruction
 		// Calculate the exception state only if it is needed
@@ -1151,14 +1152,28 @@ public final class ByteCodeProcessor
 				// match, a partial un-cache will have to be used.
 				// Note that jump backs are ignored here since those were
 				// processed and we cannot adjust the states anymore
-				else if (jta > addr && !use.equals(dss))
+				else if (jta > addr && !use.canTransition(dss))
 				{
+					// Debug
 					todo.DEBUG.note("Transition is required! %d -> %d",
 						addr, jta);
 					todo.DEBUG.note("From: %s", use);
 					todo.DEBUG.note("To  : %s", dss);
 					
-					throw new todo.TODO();
+					// Get pre-existing collision state here, if any
+					JavaStackEnqueueList preq = stackcollides.get(jta);
+					if (preq == null)
+						preq = new JavaStackEnqueueList(0);
+					
+					// Merge these two register lists
+					JavaStackEnqueueList mcol = JavaStackEnqueueList.merge(
+						preq, use.cacheCollision(dss));
+					
+					// Store the resulting collision
+					stacks.put(jta, (dss = dss.cacheClearState(mcol)));
+					
+					// Debug
+					todo.DEBUG.note("Coll: %s", dss);
 				}
 			}
 	}
