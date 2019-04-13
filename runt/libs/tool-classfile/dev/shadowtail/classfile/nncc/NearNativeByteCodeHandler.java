@@ -65,7 +65,7 @@ public final class NearNativeByteCodeHandler
 	protected final ClassName thistype;
 	
 	/** Standard exception handler table. */
-	private final Map<ExceptionStackAndTable, __EData__> _ehtable =
+	private final Map<ExceptionHandlerTransition, __EData__> _ehtable =
 		new LinkedHashMap<>();
 	
 	/** Made exception table. */
@@ -682,13 +682,14 @@ public final class NearNativeByteCodeHandler
 		}
 		
 		// Generate exception handler tables
-		Map<ExceptionStackAndTable, __EData__> ehtab = this._ehtable;
-		for (Map.Entry<ExceptionStackAndTable, __EData__> e : ehtab.entrySet())
+		Map<ExceptionHandlerTransition, __EData__> ehtab = this._ehtable;
+		for (Map.Entry<ExceptionHandlerTransition, __EData__> e :
+			ehtab.entrySet())
 		{
-			ExceptionStackAndTable est = e.getKey();
-			JavaStackState jss = est.stack;
-			JavaStackEnqueueList enq = jss.possibleEnqueue();
-			ExceptionHandlerTable ehtable = est.table;
+			ExceptionHandlerTransition ehtran = e.getKey();
+			StateOperations sops = ehtran.handled;
+			JavaStackEnqueueList enq = ehtran.nothandled;
+			ExceptionHandlerTable ehtable = ehtran.table;
 			__EData__ ed = e.getValue();
 			
 			// Set line/address info
@@ -867,15 +868,19 @@ public final class NearNativeByteCodeHandler
 	 */
 	private final NativeCodeLabel __labelException()
 	{
-		// ExceptionHandlerTransition
+		// Get both states for when an exception is handled (transition) and
+		// for where it is not handled (full cleanup)
+		ByteCodeState state = this.state;
+		JavaStackResult handled = state.stack.doExceptionHandler(),
+			nothandled = state.stack.doDestroy(false);
 		
 		// Setup key
-		ByteCodeState state = this.state;
-		ExceptionStackAndTable key = this.exceptionranges.stackAndTable(
-			state.stack, state.addr);
+		ExceptionHandlerTransition key = new ExceptionHandlerTransition(
+			handled.operations(), nothandled.enqueue(),
+			this.exceptionranges.tableOf(state.addr));
 		
 		// Try to use an already existing point
-		Map<ExceptionStackAndTable, __EData__> ehtable = this._ehtable;
+		Map<ExceptionHandlerTransition, __EData__> ehtable = this._ehtable;
 		__EData__ rv = ehtable.get(key);
 		if (rv != null)
 			return rv.label;
@@ -917,17 +922,34 @@ public final class NearNativeByteCodeHandler
 			return new NativeCodeLabel("java", target);
 		
 		// Do a transition to the target stack
-		JavaStackResult trans = sourcestack.doTransition(targetstack);
+		return this.__labelJavaTransition(sourcestack.
+			doTransition(targetstack).operations(), __jt);
+	}
+	
+	/**
+	 * Creates the actual label which is used for the state transition.
+	 *
+	 * @param __sops The operation to use.
+	 * @param __jt The jump target in the Java address space.
+	 * @return The label for this transition.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/13
+	 */
+	private final NativeCodeLabel __labelJavaTransition(StateOperations __sops,
+		InstructionJumpTarget __jt)
+		throws NullPointerException
+	{
+		if (__sops == null || __jt == null)
+			throw new NullPointerException("NARG");
 		
 		// If no operations were generated then just use a normal jump since
 		// there is no point in transitioning anyway
-		StateOperations sops = trans.operations();
-		if (sops.isEmpty())
-			return new NativeCodeLabel("java", target);
+		if (__sops.isEmpty())
+			return new NativeCodeLabel("java", __jt.target());
 		
 		// Setup key
 		StateOperationsAndTarget key =
-			new StateOperationsAndTarget(sops, __jt);
+			new StateOperationsAndTarget(__sops, __jt);
 		
 		// Determine if such a transition was already done, since if the
 		// transition is exactly the same we do not need to actually do
@@ -938,6 +960,7 @@ public final class NearNativeByteCodeHandler
 			return rv.label;
 		
 		// Setup transition for later
+		ByteCodeState state = this.state;
 		rv = new __EData__(state.addr, state.line,
 			new NativeCodeLabel("transit", transits.size()));
 		transits.put(key, rv);

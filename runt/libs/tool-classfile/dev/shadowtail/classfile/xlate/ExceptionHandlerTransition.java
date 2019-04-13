@@ -24,7 +24,7 @@ public final class ExceptionHandlerTransition
 	public final StateOperations handled;
 	
 	/** Cleanup for when there are no handlers and everything is tossed up. */
-	public final JavaStackEnqueueList tossupenqueue;
+	public final JavaStackEnqueueList nothandled;
 	
 	/** The exception table. */
 	public final ExceptionHandlerTable table;
@@ -52,7 +52,7 @@ public final class ExceptionHandlerTransition
 			throw new NullPointerException("NARG");
 		
 		this.handled = __h;
-		this.tossupenqueue = __q;
+		this.nothandled = __q;
 		this.table = __t;
 	}
 	
@@ -74,7 +74,7 @@ public final class ExceptionHandlerTransition
 		
 		ExceptionHandlerTransition o = (ExceptionHandlerTransition)__o;
 		return this.handled.equals(o.handled) &&
-			this.tossupenqueue.equals(o.tossupenqueue) &&
+			this.nothandled.equals(o.nothandled) &&
 			this.table.equals(o.table);
 	}
 	
@@ -88,7 +88,7 @@ public final class ExceptionHandlerTransition
 		int rv = this._hash;
 		if (rv == 0)
 			this._hash = (rv = this.handled.hashCode() ^
-				tossupenqueue.hashCode() ^ table.hashCode());
+				this.nothandled.hashCode() ^ this.table.hashCode());
 		return rv;
 	}
 	
