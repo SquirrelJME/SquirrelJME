@@ -49,6 +49,9 @@ public final class ByteCodeProcessor
 	/** The state of the byte code. */
 	protected final ByteCodeState state;
 	
+	/** Stack map table, needed for local wiping. */
+	protected final StackMapTable stackmaptable;
+	
 	/** Reverse jump table. */
 	private final Map<Integer, InstructionJumpTargets> _revjumps;
 	
@@ -84,7 +87,9 @@ public final class ByteCodeProcessor
 		
 		// Load initial Java stack state from the initial stack map
 		JavaStackState s;
-		state.stack = (s = JavaStackState.of(__bc.stackMapTable().get(0),
+		StackMapTable stackmaptable = __bc.stackMapTable();
+		this.stackmaptable = stackmaptable;
+		state.stack = (s = JavaStackState.of(stackmaptable.get(0),
 			__bc.writtenLocals()));
 		state.stacks.put(0, s);
 		
@@ -102,6 +107,7 @@ public final class ByteCodeProcessor
 		ByteCode bytecode = this.bytecode;
 		ByteCodeState state = this.state;
 		ByteCodeHandler handler = this.handler;
+		StackMapTable stackmaptable = this.stackmaptable;
 		Map<Integer, JavaStackState> stacks = state.stacks;
 		Map<Integer, StateOperations> stackpoison = state.stackpoison;
 		
@@ -178,6 +184,13 @@ public final class ByteCodeProcessor
 				// Preprocessing operations
 				if (!dohandling)
 				{
+					// If there is a stack map table, adjust types that are
+					// used on the stack along with the removal of locals
+					// and such
+					StackMapTableState smts = stackmaptable.get(addr);
+					if (smts != null)
+						stack = stack.filterByStackMap(smts);
+					
 					// If we are jumping back to this instruction at any point
 					// we need to flush the stack so that nothing is cached on
 					// it. The resulting flushed stack is then used instead
@@ -200,7 +213,7 @@ public final class ByteCodeProcessor
 						stack = fres.after();
 					}
 					
-					// Was the stack change?
+					// Was the stack changed?
 					if (state.stack != stack)
 						state.stack = stack;
 				}

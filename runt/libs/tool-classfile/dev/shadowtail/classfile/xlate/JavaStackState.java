@@ -1018,6 +1018,78 @@ public final class JavaStackState
 	}
 	
 	/**
+	 * Goes through the stack map and filters the locals and types so that
+	 * they match what is in the stack map table.
+	 *
+	 * @param __smts The source stack map.
+	 * @return The resulting stack which has been filtered.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/13
+	 */
+	public final JavaStackState filterByStackMap(StackMapTableState __smts)
+		throws NullPointerException
+	{
+		if (__smts == null)
+			throw new NullPointerException("NARG");
+			
+		// Input stack properties
+		Info[] locals = this._locals.clone(),
+			stack = this._stack.clone();
+		int stacktop = this.stacktop;
+		
+		// Used to just drop any changes if nothing changed
+		boolean changed = false;
+		
+		// Filter local variables
+		for (int i = 0, n = locals.length; i < n; i++)
+		{
+			// Get infos and state
+			Info inf = locals[i];
+			StackMapTableEntry sme = __smts.getLocal(i);
+			
+			// Type changed?
+			if (!inf.type.equals(sme.type()))
+			{
+				// The local is being wiped away
+				if (sme.type().isNothing())
+					inf = new Info(inf.register, JavaType.NOTHING,
+						inf.register, false, false);
+				
+				// Use this type instead
+				else if (inf.type.isObject())
+					inf = new Info(inf.register, sme.type(),
+						inf.value, inf.readonly, inf.nocounting);
+			}
+			
+			// Set if changed
+			if (changed |= (locals[i] != inf))
+				locals[i] = inf;
+		}
+		
+		// Filter stack variables
+		for (int i = 0; i < stacktop; i++)
+		{
+			// Get infos and state
+			Info inf = stack[i];
+			StackMapTableEntry sme = __smts.getStack(i);
+			
+			// Use type if the object is different
+			if (!inf.type.equals(sme.type()) && inf.type.isObject())
+				inf = new Info(inf.register, sme.type(),
+					inf.value, inf.readonly, inf.nocounting);
+			
+			// Set if changed
+			if (changed |= (stack[i] != inf))
+				stack[i] = inf;
+		}
+		
+		// Only return a new state if it actually changed
+		if (changed)
+			return new JavaStackState(locals, stack, stacktop);
+		return this;
+	}
+	
+	/**
 	 * Locates the shuffle function that is used to pop from the stack
 	 * accordingly to this stack state.
 	 *
