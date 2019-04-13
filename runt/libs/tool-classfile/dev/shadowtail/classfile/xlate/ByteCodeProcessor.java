@@ -952,37 +952,17 @@ public final class ByteCodeProcessor
 	private final void __doReturn(JavaType __rt)
 	{
 		ByteCodeState state = this.state;
-		JavaStackState stack = state.stack;
 		
-		// Handle returning a value?
-		JavaStackResult.Input rvslot;
-		if (__rt != null)
-		{
-			throw new todo.TODO();
-			/*
-			// Pop return value
-			JavaStackResult result = this._stack.doStack(1);
-			this._stack = result.after();
-			
-			// Store into the return register
-			this.codebuilder.add(DataType.of(__rt).returnValueStoreOperation(),
-				result.in(0).register);
-			*/
-		}
-		
-		// No value is returned
-		else
-		{
-			// No return value slot used
-			rvslot = null;
-		}
+		// Destroy everything and bring destruction to the method!!!
+		JavaStackResult result = state.stack.doDestroy(__rt != null);
+		this.__update(result);
 		
 		// Stop pre-processing here
 		if (!this._dohandling)
 			return;
 		
 		// Call handler
-		this.handler.doReturn(rvslot);
+		this.handler.doReturn((__rt != null ? result.in(0) : null));
 	}
 	
 	/**

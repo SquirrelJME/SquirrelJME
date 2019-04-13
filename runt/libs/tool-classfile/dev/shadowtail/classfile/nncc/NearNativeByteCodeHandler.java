@@ -465,11 +465,18 @@ public final class NearNativeByteCodeHandler
 	{
 		NativeCodeBuilder codebuilder = this.codebuilder;
 		
-		// Returning a value?
+		// Returning a value? Copy it to the return register
 		if (__in != null)
-		{
-			throw new todo.TODO();
-		}
+			if (__in.type.isWide())
+				codebuilder.addCopyWide(__in.register,
+					NativeCode.RETURN_REGISTER);
+			else
+				codebuilder.addCopy(__in.register,
+					NativeCode.RETURN_REGISTER);
+		
+		// Uncount anything which was enqueued
+		for (int q : this.state.result.enqueue())
+			codebuilder.add(NativeInstructionType.UNCOUNT, q);
 		
 		// Do the return
 		this.__generateReturn();
