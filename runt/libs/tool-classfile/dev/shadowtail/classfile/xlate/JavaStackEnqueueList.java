@@ -125,6 +125,49 @@ public final class JavaStackEnqueueList
 	}
 	
 	/**
+	 * Adds a single local variable to this enqueue.
+	 *
+	 * @param __r The register to add.
+	 * @return The resulting enqueue.
+	 * @since 2019/04/13
+	 */
+	public final JavaStackEnqueueList addLocal(int __r)
+	{
+		int[] orig = this._registers;
+		int origss = this.stackstart;
+		
+		// Add entry to the start of the array
+		int n = orig.length;
+		int[] now = new int[n + 1];
+		now[0] = __r;
+		for (int i = 0, o = 1; i < n; i++, o++)
+			now[o] = orig[i];
+		
+		// The stack is offset by one so the local is first
+		return new JavaStackEnqueueList(origss + 1, now);
+	}
+	
+	/**
+	 * Adds a single local variable to this enqueue.
+	 *
+	 * @param __r The register to add.
+	 * @return The resulting enqueue.
+	 * @since 2019/04/13
+	 */
+	public final JavaStackEnqueueList addStack(int __r)
+	{
+		// Since stack items are last, the register can just be added at
+		// the end
+		int[] orig = this._registers;
+		int n = orig.length;
+		int[] now = Arrays.copyOf(orig, n + 1);
+		now[n] = __r;
+		
+		// Just the new array is used
+		return new JavaStackEnqueueList(this.stackstart, now);
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2019/03/30
 	 */
