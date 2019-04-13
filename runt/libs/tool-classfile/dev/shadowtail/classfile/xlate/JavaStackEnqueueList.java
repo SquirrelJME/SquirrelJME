@@ -216,6 +216,25 @@ public final class JavaStackEnqueueList
 	}
 	
 	/**
+	 * Returns an enqueue list which contians only stack registers.
+	 *
+	 * @return An enqueue with only stack registers.
+	 * @since 2019/04/03
+	 */
+	public final JavaStackEnqueueList onlyStack()
+	{
+		// Copy just up to the stack part
+		int[] from = this._registers;
+		int n = from.length,
+			ss = this.stackstart;
+		int[] rv = new int[n - ss];
+		for (int i = ss, o = 0; i < n; i++, o++)
+			rv[o] = from[i];
+		
+		return new JavaStackEnqueueList(0, rv);
+	}
+	
+	/**
 	 * Returns all of the registers that have been enqueued.
 	 *
 	 * @return The enqueued set of registers.
