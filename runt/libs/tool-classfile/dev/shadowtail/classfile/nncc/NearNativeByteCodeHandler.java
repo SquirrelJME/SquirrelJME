@@ -167,6 +167,24 @@ public final class NearNativeByteCodeHandler
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2019/04/12
+	 */
+	@Override
+	public final void doCheckCast(ClassName __cl, JavaStackResult.Input __v)
+	{
+		// Push reference
+		this.__refPush();
+		
+		// Add cast check
+		this.codebuilder.addIfNotClass(__cl, __v.register,
+			this.__labelMakeException("java/lang/ClassCastException"), true);
+		
+		// Clear references in the event it was overwritten
+		this.__refClear();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2019/04/07
 	 */
 	@Override

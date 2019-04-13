@@ -46,6 +46,16 @@ public interface ByteCodeHandler
 		JavaStackResult.Input __v);
 	
 	/**
+	 * Check that an object is of a given type or thrown exception.
+	 *
+	 * @param __cl The class to check.
+	 * @param __v The object to check.
+	 * @since 2019/04/12
+	 */
+	public abstract void doCheckCast(ClassName __cl,
+		JavaStackResult.Input __v);
+	
+	/**
 	 * Performs a copy operation.
 	 *
 	 * @param __in The input.
