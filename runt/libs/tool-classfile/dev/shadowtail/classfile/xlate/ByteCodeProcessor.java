@@ -689,21 +689,19 @@ public final class ByteCodeProcessor
 	 */
 	private final void __doIInc(int __l, int __v)
 	{
-		throw new todo.TODO();
-		/*
-		RegisterCodeBuilder codebuilder = this.codebuilder;
+		// Just write an integer to the integer so its state is known
+		JavaStackResult result = this.state.stack.
+			doLocalSet(JavaType.INTEGER, __l);
+		this.__update(result);
 		
-		// Load constant into temporary register
-		JavaStackState stack = this._stack;
-		int tempbase = stack.usedregisters;
-		codebuilder.add(RegisterOperationType.X32_CONST,
-			__v, tempbase);
+		// Stop pre-processing here
+		if (!this._dohandling)
+			return;
 		
-		// Perform the add with the topmost local
-		JavaStackState.Info local = stack.getLocal(__l);
-		codebuilder.add(RegisterOperationType.INT_ADD,
-			local.register, tempbase, local.register);
-		*/
+		// Add value
+		handler.doMath(StackJavaType.INTEGER, MathType.ADD,
+			result.out(0).asInput(), __v,
+			result.out(0));
 	}
 	
 	/**
