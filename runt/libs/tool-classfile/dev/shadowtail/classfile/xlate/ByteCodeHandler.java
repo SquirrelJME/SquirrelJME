@@ -206,6 +206,16 @@ public interface ByteCodeHandler
 		JavaStackResult.Output __v);
 	
 	/**
+	 * Writes a static field.
+	 *
+	 * @param __fr The field to write to.
+	 * @param __v The input register.
+	 * @since 2019/04/13
+	 */
+	public abstract void doStaticPut(FieldReference __fr,
+		JavaStackResult.Input __v);
+	
+	/**
 	 * Throws the given object.
 	 *
 	 * @param __in The object to throw.

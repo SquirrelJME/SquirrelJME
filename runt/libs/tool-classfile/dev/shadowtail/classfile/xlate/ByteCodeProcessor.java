@@ -382,6 +382,12 @@ public final class ByteCodeProcessor
 						this.__doFieldPut(sji.<FieldReference>argument(0,
 							FieldReference.class));
 						break;
+						
+						// Put static field
+					case InstructionIndex.PUTSTATIC:
+						this.__doStaticPut(sji.<FieldReference>argument(0,
+							FieldReference.class));
+						break;
 					
 						// Return from method, with no return value
 					case InstructionIndex.RETURN:
@@ -1035,6 +1041,35 @@ public final class ByteCodeProcessor
 		
 		// Forward
 		this.handler.doStaticGet(__fr, result.out(0));
+	}
+	
+	/**
+	 * Writes to static field.
+	 *
+	 * @param __fr The field reference.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/13
+	 */
+	private final void __doStaticPut(FieldReference __fr)
+		throws NullPointerException
+	{
+		if (__fr == null)
+			throw new NullPointerException("NARG");
+		
+		// An exception may be thrown
+		this._canexception = true;
+		
+		// [value] ->
+		ByteCodeState state = this.state;
+		JavaStackResult result = state.stack.doStack(1);
+		this.__update(result);
+		
+		// Stop pre-processing here
+		if (!this._dohandling)
+			return;
+		
+		// Forward
+		this.handler.doStaticPut(__fr, result.in(0));
 	}
 	
 	/**
