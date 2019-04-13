@@ -11,8 +11,10 @@ package dev.shadowtail.classfile.xlate;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import net.multiphasicapps.collections.SortedTreeSet;
@@ -50,19 +52,31 @@ public final class JavaStackEnqueueList
 	 */
 	public JavaStackEnqueueList(int __ss, int... __rs)
 	{
-		// Unique and sort
-		Set<Integer> uniq = new SortedTreeSet<>();
-		for (int i : (__rs == null ? new int[0] : __rs.clone()))
-			uniq.add(i);
+		// Bin the registers into unique local and stack entries
+		__rs = (__rs == null ? new int[0] : __rs.clone());
+		Set<Integer> ll = new SortedTreeSet<>(),
+			ls = new SortedTreeSet<>();
+		for (int i = 0, n = __rs.length; i < n; i++)
+		{
+			int v = __rs[i];
+			
+			if (i < __ss)
+				ll.add(v);
+			else
+				ls.add(v);
+		}
+		
+		// Setup new resulting array
+		int[] registers = new int[ll.size() + ls.size()];
+		int at = 0;
+		for (int v : ll)
+			registers[at++] = v;
+		for (int v : ls)
+			registers[at++] = v;
 		
 		// Set
-		int n = uniq.size(),
-			i = 0;
-		int[] registers = new int[n];
-		for (Integer v : uniq)
-			registers[i++] = v;
 		this._registers = registers;
-		this.stackstart = (__ss > n ? n : __ss);
+		this.stackstart = ll.size();
 	}
 	
 	/**
@@ -79,22 +93,35 @@ public final class JavaStackEnqueueList
 		if (__rs == null)
 			throw new NullPointerException("NARG");
 		
-		// Add to sorted set
-		Set<Integer> uniq = new SortedTreeSet<>();
+		// Copy input list
+		List<Integer> inreg = new ArrayList<>();
 		for (Integer i : __rs)
-			if (i == null)
-				throw new NullPointerException("NARG");
+			inreg.add(i);
+		
+		// Bin the registers into unique local and stack entries
+		Set<Integer> ll = new SortedTreeSet<>(),
+			ls = new SortedTreeSet<>();
+		for (int i = 0, n = inreg.size(); i < n; i++)
+		{
+			int v = inreg.get(i);
+			
+			if (i < __ss)
+				ll.add(v);
 			else
-				uniq.add(i);
+				ls.add(v);
+		}
+		
+		// Setup new resulting array
+		int[] registers = new int[ll.size() + ls.size()];
+		int at = 0;
+		for (int v : ll)
+			registers[at++] = v;
+		for (int v : ls)
+			registers[at++] = v;
 		
 		// Set
-		int n = uniq.size(),
-			i = 0;
-		int[] registers = new int[n];
-		for (Integer v : uniq)
-			registers[i++] = v;
 		this._registers = registers;
-		this.stackstart = (__ss > n ? n : __ss);
+		this.stackstart = ll.size();
 	}
 	
 	/**
