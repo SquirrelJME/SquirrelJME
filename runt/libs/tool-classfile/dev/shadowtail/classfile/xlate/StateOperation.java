@@ -122,6 +122,33 @@ public final class StateOperation
 	}
 	
 	/**
+	 * Creates a copy operation.
+	 *
+	 * @param __w Is this wide?
+	 * @param __s The source.
+	 * @param __d The destination.
+	 * @return The operation.
+	 * @since 2019/04/13
+	 */
+	public static final StateOperation copy(boolean __w, int __a, int __b)
+	{
+		return new StateOperation((__w ? Type.WIDE_COPY : Type.COPY),
+			__a, __b);
+	}
+	
+	/**
+	 * Creates a uncounting operation.
+	 *
+	 * @param __a The register to uncount.
+	 * @return The operation.
+	 * @since 2019/04/13
+	 */
+	public static final StateOperation uncount(int __a)
+	{
+		return new StateOperation(Type.UNCOUNT, __a);
+	}
+	
+	/**
 	 * Represents the type of operation to perform.
 	 *
 	 * @since 2019/04/11

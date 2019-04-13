@@ -170,6 +170,7 @@ public final class JavaStackState
 		
 		// Find locals to enqueue
 		List<Integer> enqueue = new ArrayList<>();
+		List<StateOperation> sops = new ArrayList<>();
 		for (int i = 0, n = locals.length; i < n; i++)
 		{
 			inf = locals[i];
@@ -202,6 +203,7 @@ public final class JavaStackState
 		return new JavaStackResult(this,
 			new JavaStackState(newlocals, stack, 0),
 			new JavaStackEnqueueList(eqss, enqueue),
+			new StateOperations(sops),
 			io.<JavaStackResult.InputOutput>toArray(
 				new JavaStackResult.InputOutput[io.size()]));
 	}
@@ -316,8 +318,10 @@ public final class JavaStackState
 		if (olddest.readonly)
 			throw new InvalidClassFormatException("JC38 " + olddest);
 		
-		// If the target local is an object it could be enqueued
+		// If the target local is an object it could be enqueued and it has
+		// to be uncounted
 		List<Integer> enq = new ArrayList<>();
+		List<StateOperation> ops = new ArrayList<>();
 		if (olddest.canEnqueue())
 			enq.add(olddest.value);
 		
@@ -339,7 +343,6 @@ public final class JavaStackState
 		// Go through the stack and uncache anything which refers to the
 		// old destination by value
 		Info[] newstack = this._stack.clone();
-		List<StateOperation> ops = new ArrayList<>();
 		int bumpreg = olddest.register,
 			stacktop = this.stacktop;
 		for (int i = 0; i < stacktop; i++)
@@ -500,6 +503,7 @@ public final class JavaStackState
 		
 		// Enqueues to clear popped entries
 		List<Integer> enqs = new ArrayList<>();
+		List<StateOperation> ops = new ArrayList<>();
 		
 		// Pop entries off the stack first
 		List<Info> popped = new ArrayList<>();
@@ -562,6 +566,7 @@ public final class JavaStackState
 		return new JavaStackResult(this,
 			new JavaStackState(this._locals, newstack, stacktop),
 			new JavaStackEnqueueList(enqs.size(), enqs),
+			new StateOperations(ops),
 			ios.<JavaStackResult.InputOutput>toArray(
 				new JavaStackResult.InputOutput[ios.size()]));
 	}
