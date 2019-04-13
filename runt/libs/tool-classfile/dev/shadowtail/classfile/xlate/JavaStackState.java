@@ -753,6 +753,9 @@ public final class JavaStackState
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
+		// Note this!
+		todo.TODO.note("Implement proper stack shuffle with StateOps!");
+		
 		// Input stack properties
 		Info[] stack = this._stack;
 		int stacktop = this.stacktop;
@@ -890,38 +893,38 @@ public final class JavaStackState
 			bsta = __ts._stack;
 		for (int i = 0; i < atop; i++)
 		{
-			throw new todo.TODO();
+			Info a = asta[i],
+				b = bsta[i];
 			
-			/*
-			// I HAD THIS CODE IN THE LOCAL HANDLING CODE HOWEVER THAT IS
-			// NOT CORRECT THERE BECAUSE LOCALS ARE NEVER CACHED, HOWEVER
-			// THE LOGIC I WROTE COULD BE FIXED AND ADJUSTED FOR STACK
-			// VALUES
+			// No need to transition the same values
+			if (a.equals(b))
+				continue;
+				
+			JavaType at = a.type,
+				bt = b.type;
 			
-			// {@squirreljme.error JC3i The target stack has a cached
-			// value which does not point to the source stack register.
+			// {@squirreljme.error JC3m A transition cannot be made
+			// to the target type because the types are not compatible.
 			// (The source; The target)}
-			if (bt.value != bt.register && at.register != bt.value)
+			if (at.isObject() != bt.isObject() ||
+				(!at.isObject() && !at.equals(bt)))
 				throw new InvalidClassFormatException(
-					"JC3g " + a + " " + b);
-					
-			// If the target value is different from the source value
-			// then the value from the source must be copied to the
-			// destination.
+					"JC3m " + a + " " + b);
+			
+			// Copy to destination, if the values differ
 			if (a.value != b.value)
-			{
-				// {@squirreljme.error JC3h (The source; The target)}
-				if (b.value != b.register)
-					throw new InvalidClassFormatException("JC3h " + a +
-						" " + b);
-				
-				ops.add(new StateOperation((at.isWide() ?
-					StateOperation.Type.WIDE_COPY :
-					StateOperation.Type.COPY), a.value, b.value));
-				
-				throw new todo.TODO();
-			}
-			*/
+				ops.add(StateOperation.copy(
+					at.isWide(), a.value, b.value));
+			
+			// Transitioning from no-counting to counting means that A
+			// was never counted
+			if (!a.canEnqueue() && b.canEnqueue())
+				ops.add(StateOperation.count(b.value));
+			
+			// Going from counting to no counting means we probably have
+			// an extra count somewhere
+			else if (a.canEnqueue() && !b.canEnqueue())
+				ops.add(StateOperation.uncount(b.value));
 		}
 		
 		// Go through and transition the locals
@@ -963,15 +966,20 @@ public final class JavaStackState
 					throw new InvalidClassFormatException(
 						"JC3g " + a + " " + b);
 				
+				// Copy to destination, if the values differ
+				if (a.value != b.value)
+					ops.add(StateOperation.copy(
+						at.isWide(), a.value, b.value));
+				
 				// Transitioning from no-counting to counting means that A
 				// was never counted
 				if (!a.canEnqueue() && b.canEnqueue())
-					ops.add(StateOperation.count(a.register));
+					ops.add(StateOperation.count(b.value));
 				
 				// Going from counting to no counting means we probably have
 				// an extra count somewhere
 				else if (a.canEnqueue() && !b.canEnqueue())
-					ops.add(StateOperation.uncount(a.register));
+					ops.add(StateOperation.uncount(b.value));
 			}
 		}
 		
