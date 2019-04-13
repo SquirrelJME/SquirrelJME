@@ -136,6 +136,73 @@ public final class JavaStackState
 	}
 	
 	/**
+	 * Compare two stacks and returns a list of registers which have a
+	 * compatible or transferable type but collide in their cached value. This
+	 * does not check local variables, only stack entries.
+	 *
+	 * @param __ts The target stack.
+	 * @return A list of registers which collide.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/13
+	 */
+	public final JavaStackEnqueueList cacheCollision(JavaStackState __ts)
+		throws NullPointerException
+	{
+		if (__ts == null)
+			throw new NullPointerException("NARG");
+		
+		// If the two stacks are e
+		if (this.equals(__ts))
+			return new JavaStackEnqueueList(0);
+			
+		// {@squirreljme.error JC3k A collision cannot be made where the
+		// length of the stack differs. (The length of the source stack; The
+		// length of the target stack)}
+		int atop = this.stacktop,
+			btop = __ts.stacktop;
+		if (atop != btop)
+			throw new InvalidClassFormatException("JC3k " + atop + " " + btop);
+		
+		// Registers which collide
+		List<Integer> collides = new ArrayList<>();
+		
+		// Go through and determine which stack entries collide
+		Info[] astk = this._stack,
+			bstk = __ts._stack;
+		for (int i = 0; i < atop; i++)
+		{
+			Info a = astk[i],
+				b = bstk[i];
+			
+			// Entries which are the same would never collide
+			if (a.equals(b))
+				continue;
+			
+			// If the target type is nothing then there is no collision
+			// since the source can be dropped
+			JavaType at = a.type,
+				bt = b.type;
+			if (bt.isNothing())
+				continue;
+				
+			// {@squirreljme.error JC3l A collision cannot be found
+			// to the target type because the types are not compatible.
+			// (The source; The target)}
+			if (at.isObject() != bt.isObject() ||
+				(!at.isObject() && !at.equals(bt)))
+				throw new InvalidClassFormatException(
+					"JC3l " + a + " " + b);
+			
+			// The target entry is cached, but it has a value which does not
+			// map to this register
+			if (b.value != b.register && a.register != b.value)
+				collides.add(i);
+		}
+		
+		return new JavaStackEnqueueList(0, collides);
+	}
+	
+	/**
 	 * Performs a flush of the entire state removing all cached values.
 	 *
 	 * @return The result of the cache flush.
@@ -773,6 +840,14 @@ public final class JavaStackState
 			// NOT CORRECT THERE BECAUSE LOCALS ARE NEVER CACHED, HOWEVER
 			// THE LOGIC I WROTE COULD BE FIXED AND ADJUSTED FOR STACK
 			// VALUES
+			
+			// {@squirreljme.error JC3i The target stack has a cached
+			// value which does not point to the source stack register.
+			// (The source; The target)}
+			if (bt.value != bt.register && at.register != bt.value)
+				throw new InvalidClassFormatException(
+					"JC3g " + a + " " + b);
+					
 			// If the target value is different from the source value
 			// then the value from the source must be copied to the
 			// destination.
@@ -820,7 +895,7 @@ public final class JavaStackState
 				}
 			}
 			
-			// Check to make sure the type is the same
+			// Check if the types and values are compatible
 			else
 			{
 				// {@squirreljme.error JC3g A transition cannot be made
