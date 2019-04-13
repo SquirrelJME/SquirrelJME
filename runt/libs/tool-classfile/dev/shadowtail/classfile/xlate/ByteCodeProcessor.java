@@ -608,6 +608,13 @@ public final class ByteCodeProcessor
 		if (__jt == null)
 			throw new NullPointerException("NARG");
 		
+		// Do nothing!
+		this.__update(this.state.stack.doNothing());
+		
+		// Stop pre-processing here
+		if (!this._dohandling)
+			return;
+		
 		// Just do an always true comparison on the zero register
 		this.handler.doIfICmp(CompareType.TRUE, JavaStackResult.INPUT_ZERO,
 			JavaStackResult.INPUT_ZERO, __jt);
