@@ -137,6 +137,18 @@ public final class StateOperation
 	}
 	
 	/**
+	 * Creates a counting operation.
+	 *
+	 * @param __a The register to count.
+	 * @return The operation.
+	 * @since 2019/04/13
+	 */
+	public static final StateOperation count(int __a)
+	{
+		return new StateOperation(Type.COUNT, __a);
+	}
+	
+	/**
 	 * Creates a uncounting operation.
 	 *
 	 * @param __a The register to uncount.

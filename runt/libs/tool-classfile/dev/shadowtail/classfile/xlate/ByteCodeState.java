@@ -29,6 +29,10 @@ public class ByteCodeState
 	public final Map<Integer, StateOperations> stackpoison =
 		new LinkedHashMap<>();
 	
+	/** Stack collisions when a jump to the target does collide. */
+	public final Map<Integer, JavaStackEnqueueList> stackcollides =
+		new LinkedHashMap<>();
+	
 	/** Java instruction. */
 	public Instruction instruction;
 	

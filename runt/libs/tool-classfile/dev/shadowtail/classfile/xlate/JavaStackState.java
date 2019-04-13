@@ -196,10 +196,67 @@ public final class JavaStackState
 			// The target entry is cached, but it has a value which does not
 			// map to this register
 			if (b.value != b.register && a.register != b.value)
-				collides.add(i);
+				collides.add(b.register);
 		}
 		
 		return new JavaStackEnqueueList(0, collides);
+	}
+	
+	/**
+	 * Returns the state which would be used if the specified registers were
+	 * to have their caches cleared. Only the stack is considered as locals
+	 * are never cached.
+	 *
+	 * @param __enq The registers to clear.
+	 * @return The resulting stack.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/13
+	 */
+	public final JavaStackState cacheClearState(JavaStackEnqueueList __enq)
+		throws NullPointerException
+	{
+		if (__enq == null)
+			throw new NullPointerException("NARG");
+		
+		// If there is nothing to clear 
+		if (__enq.isEmpty())
+			return this;
+		
+		// Clear cache from these
+		Info[] stack = this._stack.clone();
+		int stacktop = this.stacktop;
+		
+		// Remove any cached slots
+		for (int i = 0; i < stacktop; i++)
+		{
+			Info inf = stack[i];
+			
+			// This is to be uncached
+			if (inf.value != inf.register && __enq.contains(inf.register))
+				stack[i] = new Info(inf.register, inf.type, inf.register,
+					false, inf.nocounting);
+		}
+		
+		// Build it
+		return new JavaStackState(this._locals, stack, stacktop);
+	}
+	
+	/**
+	 * Checks if transition can be made to the other state.
+	 *
+	 * @param __ts The state to check transition to.
+	 * @return If it can transition.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/13
+	 */
+	public final boolean canTransition(JavaStackState __ts)
+		throws NullPointerException
+	{
+		if (__ts == null)
+			throw new NullPointerException("NARG");
+		
+		// Transition is possible if there are no collisions
+		return this.cacheCollision(__ts).isEmpty();
 	}
 	
 	/**
@@ -867,7 +924,7 @@ public final class JavaStackState
 			*/
 		}
 		
-		// Go through and transition the registers
+		// Go through and transition the locals
 		Info[] aloc = this._locals,
 			bloc = __ts._locals;
 		for (int i = 0, n = aloc.length; i < n; i++)
@@ -905,6 +962,16 @@ public final class JavaStackState
 					(!at.isObject() && !at.equals(bt)))
 					throw new InvalidClassFormatException(
 						"JC3g " + a + " " + b);
+				
+				// Transitioning from no-counting to counting means that A
+				// was never counted
+				if (!a.canEnqueue() && b.canEnqueue())
+					ops.add(StateOperation.count(a.register));
+				
+				// Going from counting to no counting means we probably have
+				// an extra count somewhere
+				else if (a.canEnqueue() && !b.canEnqueue())
+					ops.add(StateOperation.uncount(a.register));
 			}
 		}
 		
