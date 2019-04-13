@@ -132,6 +132,37 @@ public final class NearNativeByteCodeHandler
 	 * @since 2019/04/12
 	 */
 	@Override
+	public final void doArrayLoad(DataType __dt,
+		JavaStackResult.Input __in, JavaStackResult.Input __dx,
+		JavaStackResult.Output __v)
+	{
+		NativeCodeBuilder codebuilder = this.codebuilder;
+		
+		// Push references
+		this.__refPush();
+		
+		// Cannot be null
+		codebuilder.addIfZero(__in.register, this.__labelMakeException(
+			"java/lang/NullPointerException"), true);
+		
+		// Check bounds
+		codebuilder.add(NativeInstructionType.IFARRAY_INDEX_OOB_REF_CLEAR,
+			__dx.register, __in.register, this.__labelMakeException(
+			"java/lang/ArrayIndexOutOfBoundsException"));
+		
+		// Load
+		codebuilder.addArrayAccess(__dt, true, __v.register, __in.register,
+			__dx.register);
+		
+		// Clear references
+		this.__refClear();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/12
+	 */
+	@Override
 	public final void doArrayStore(DataType __dt,
 		JavaStackResult.Input __in, JavaStackResult.Input __dx,
 		JavaStackResult.Input __v)

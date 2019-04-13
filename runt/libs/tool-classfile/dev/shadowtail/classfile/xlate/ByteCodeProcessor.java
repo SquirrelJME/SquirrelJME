@@ -437,42 +437,39 @@ public final class ByteCodeProcessor
 		// An exception may be thrown
 		this._canexception = true;
 		
-		throw new todo.TODO();
-		/*
+		// This is easily determined from the primitive type
+		JavaType faketype;
+		if (__pt != null)
+			faketype = new JavaType(__pt.toClassName());
+		
+		// Otherwise, pop twice and see what the array is and work from
+		// that
+		else
+		{
+			// Pop two
+			JavaStackResult wouldbe = state.stack.doStack(2);
+			
+			// Get the base type
+			ClassName maybecl = wouldbe.in(0).type.type().className();
+			
+			// If this is an array then get the component type and work
+			// from it, otherwise just assume it is Object since we could
+			// not derive that info at all
+			faketype = (maybecl.isArray() ?
+				new JavaType(maybecl.componentType()) : JavaType.OBJECT);
+		}
+		
 		// [array, index] -> [value]
-		JavaStackResult result = this._stack.doStack(2, (__pt == null ?
-			new JavaType(new ClassName("java/lang/Object")) :
-			__pt.stackJavaType()));
-		this._stack = result.after();
+		JavaStackResult result = state.stack.doStack(2, faketype);
+		this.__update(result);
 		
-		// Possibly clear the instance later
-		this.__refEnqueue(result.enqueue());
+		// Stop pre-processing here
+		if (!this._dohandling)
+			return;
 		
-		// Check for NPE, and OOB
-		RegisterCodeBuilder codebuilder = this.codebuilder;
-		codebuilder.add(RegisterOperationType.IFNULL_REF_CLEAR,
-			result.in(0).register,
-			this.__makeExceptionLabel("java/lang/NullPointerException"));
-		codebuilder.add(RegisterOperationType.ARRAY_BOUND_CHECK_AND_REF_CLEAR,
-			result.in(0).register, result.in(1).register,
-			this.__makeExceptionLabel("java/lang/IndexOutOfBoundsException"));
-		
-		// Generate
-		codebuilder.add(DataType.of(__pt).arrayOperation(false),
-			result.in(0).register,
-			result.in(1).register,
-			result.out(0).register);
-		
-		// Sign-extend signed types?
-		if (__pt == PrimitiveType.BYTE || __pt == PrimitiveType.SHORT)
-			codebuilder.add((__pt == PrimitiveType.BYTE ?
-					RegisterOperationType.SIGN_X8 :
-					RegisterOperationType.SIGN_X16),
-				result.out(0).register);
-		
-		// Clear references
-		this.__refClear();
-		*/
+		// Handle
+		this.handler.doArrayLoad(DataType.of(__pt), result.in(0),
+			result.in(1), result.out(0));
 	}
 	
 	/**

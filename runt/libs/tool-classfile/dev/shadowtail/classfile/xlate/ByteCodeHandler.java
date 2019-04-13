@@ -33,6 +33,19 @@ public interface ByteCodeHandler
 		JavaStackResult.Output __len);
 	
 	/**
+	 * Load from array.
+	 *
+	 * @param __dt The type of data to load.
+	 * @param __in The instance.
+	 * @param __dx The index.
+	 * @param __v The value.
+	 * @since 2019/04/12
+	 */
+	public abstract void doArrayLoad(DataType __dt,
+		JavaStackResult.Input __in, JavaStackResult.Input __dx,
+		JavaStackResult.Output __v);
+	
+	/**
 	 * Store into array.
 	 *
 	 * @param __dt The type of data to store.
