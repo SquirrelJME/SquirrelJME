@@ -191,7 +191,9 @@ public final class ByteCodeProcessor
 						
 						// Set natural flow as poisoned, operations have to
 						// be done to match the correct state
-						stackpoison.put(addr, fres.operations());
+						StateOperations sops = fres.operations();
+						if (!sops.isEmpty())
+							stackpoison.put(addr, sops);
 						
 						// Use the result of the flush as the state instead so
 						// that it propagates ahead from now on
