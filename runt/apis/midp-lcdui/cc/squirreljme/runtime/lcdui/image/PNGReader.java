@@ -10,6 +10,8 @@
 
 package cc.squirreljme.runtime.lcdui.image;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import javax.microedition.lcdui.Image;
@@ -104,6 +106,12 @@ public class PNGReader
 			in.readUnsignedByte() != 10)
 			throw new IOException("EB0t");
 		
+		// Buffer which contains the image chunk data, this is processed
+		// last so the transparency information can be parsed and such. Some
+		// PNG images have the image data followed by transparency which
+		// would be too complicated to handle
+		byte[] imagechunk = null;
+		
 		// Keep reading chunks in the file
 		for (;;)
 		{
@@ -144,7 +152,7 @@ public class PNGReader
 						
 						// Image data
 					case 0x49444154:
-						__parseImage(data);
+						imagechunk = PNGReader.__chunkLater(data);
 						break;
 						
 						// Transparency information
@@ -165,6 +173,14 @@ public class PNGReader
 				throw new IOException(String.format("EB0u %08x %08x %08x",
 					want, real, lasttype));
 		}
+		
+		// Process the image chunk now that the other information was read
+		if (imagechunk != null)
+			try (DataInputStream data = new DataInputStream(
+				new ByteArrayInputStream(imagechunk)))
+			{
+				this.__parseImage(data);
+			}
 		
 		// {@squirreljme.error EB0v No image data has been loaded.}
 		int[] argb = this._argb;
@@ -484,6 +500,42 @@ public class PNGReader
 			
 			// Fill in color
 			palette[i] = (r << 16) | (g << 8) | b;
+		}
+	}
+	
+	/**
+	 * Reads all the input data and returns a byte array for the data, so it
+	 * may be processed later.
+	 *
+	 * @param __dis The stream to read from.
+	 * @return The read data.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/14
+	 */
+	private static final byte[] __chunkLater(DataInputStream __dis)
+		throws IOException, NullPointerException
+	{
+		if (__dis == null)
+			throw new NullPointerException("NARG");
+		
+		// Read into this byte array
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(512))
+		{
+			// Read loop
+			byte[] buf = new byte[512];
+			for (;;)
+			{
+				int rc = __dis.read(buf);
+				
+				if (rc < 0)
+					break;
+				
+				baos.write(buf, 0, rc);
+			}
+			
+			// Return the data
+			return baos.toByteArray();
 		}
 	}
 }
