@@ -32,5 +32,16 @@ final class __TempFields__
 	
 	/** The total number of objects in the table. */
 	int _objects;
+	
+	/**
+	 * Returns the byte representation of the data here.
+	 *
+	 * @return The byte data representation.
+	 * @since 2019/04/14
+	 */
+	public final byte[] getBytes()
+	{
+		throw new todo.TODO();
+	}
 }
 

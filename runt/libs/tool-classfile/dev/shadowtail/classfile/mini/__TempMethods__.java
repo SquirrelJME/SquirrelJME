@@ -26,5 +26,16 @@ final class __TempMethods__
 	
 	/** The number of methods that are available. */
 	int _count;
+	
+	/**
+	 * Returns the byte representation of the data here.
+	 *
+	 * @return The byte data representation.
+	 * @since 2019/04/14
+	 */
+	public final byte[] getBytes()
+	{
+		throw new todo.TODO();
+	}
 }
 
