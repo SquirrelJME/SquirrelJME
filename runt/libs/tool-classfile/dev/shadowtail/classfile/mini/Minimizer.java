@@ -84,6 +84,10 @@ public final class Minimizer
 		// Write magic number to specify this format
 		__dos.writeInt(MinimizedClassFile.MAGIC_NUMBER);
 		
+		// Unused, may be used later when needed
+		__dos.writeShort(0);
+		__dos.writeShort(0);
+		
 		// Process all fields
 		__TempFields__[] fields = this.__doFields(); 
 		
@@ -659,7 +663,7 @@ public final class Minimizer
 	 * @throws InvalidClassFormatException If the short is out of range.
 	 * @since 2019/04/14
 	 */
-	private static final int __checkUShort(int __v)
+	static final int __checkUShort(int __v)
 		throws InvalidClassFormatException
 	{
 		// {@squirreljme.error JC3n Unsigned short out of range. (The value)}
@@ -676,7 +680,7 @@ public final class Minimizer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/14
 	 */
-	private static final void __dosRound(DataOutputStream __dos)
+	static final void __dosRound(DataOutputStream __dos)
 		throws IOException, NullPointerException
 	{
 		if (__dos == null)
@@ -698,7 +702,7 @@ public final class Minimizer
 	 * @param __v The offset to add.
 	 * @since 2019/04/14
 	 */
-	private static final int __relAdd(int __rel, int __v)
+	static final int __relAdd(int __rel, int __v)
 	{
 		// Debug
 		todo.DEBUG.note("%d + %d", __rel, __v);

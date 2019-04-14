@@ -12,6 +12,10 @@ package dev.shadowtail.classfile.mini;
 
 import dev.shadowtail.classfile.nncc.AccessedField;
 import dev.shadowtail.classfile.nncc.InvokedMethod;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -48,6 +52,7 @@ public final class MinimizedPoolBuilder
 	{
 		// Add null entry to mean nothing
 		this._pool.put(0, null);
+		this._parts.add(new int[0]);
 	}
 	
 	/**
@@ -182,7 +187,120 @@ public final class MinimizedPoolBuilder
 	 */
 	public final byte[] getBytes()
 	{
-		throw new todo.TODO();
+		Map<Object, Integer> pool = this._pool;
+		List<int[]> parts = this._parts;
+		
+		// Write data
+		try
+		{
+			// Table header information
+			ByteArrayOutputStream tbytes = new ByteArrayOutputStream();
+			DataOutputStream tdos = new DataOutputStream(tbytes);
+			
+			// Actual table data
+			ByteArrayOutputStream dbytes = new ByteArrayOutputStream();
+			DataOutputStream ddos = new DataOutputStream(dbytes);
+			
+			// Write the number of entries in the pool
+			int poolcount = pool.size();
+			tdos.writeInt(poolcount);
+			
+			// Guess where all the data will be written in the pool
+			int reloff = 4 + (poolcount * 4) + 4;
+			
+			// Write all the values in the pool, the value in the map is
+			// ignored because that just stores the index identifier
+			int pdx = 0;
+			for (Object value : pool.values())
+			{
+				// Get type and part information
+				MinimizedPoolEntryType et = (value == null ?
+					MinimizedPoolEntryType.NULL :
+					MinimizedPoolEntryType.ofClass(value.getClass()));
+				int[] part = parts.get(pdx++);
+				
+				// Write position and the entry type, use 24-bits for the
+				// entry offset just to use the space since maybe the pool
+				// will get pretty big? It is Java ME though so hopefully
+				// the pool never exceeds 65K.
+				int dxo = reloff + ddos.size();
+				tdos.writeByte(et.ordinal());
+				tdos.writeByte(dxo >>> 16);
+				tdos.writeShort(dxo & 0xFFFF);
+				
+				// Depends on the type used
+				switch (et)
+				{
+					// Just write a zero for null, just in case!
+					case NULL:
+						ddos.writeInt(0);
+						break;
+					
+						// String are special because they have actual
+						// string data stored
+					case STRING:
+						{
+							// Record hashCode and the String size as simple
+							// fields to read. Note that even though there is
+							// the UTF length, the length of the actual string
+							// could be useful
+							ddos.writeInt(part[0]);
+							ddos.writeShort(Minimizer.__checkUShort(part[1]));
+							
+							// Write string UTF data
+							ddos.writeUTF((String)value);
+						}
+						break;
+						
+						// Everything else just consists of parts which are
+						// either values to other indexes or an ordinal
+					case ACCESSED_FIELD:
+					case CLASS_NAME:
+					case INVOKED_METHOD:
+					case FIELD_DESCRIPTOR:
+					case FIELD_NAME:
+					case FIELD_REFERENCE:
+					case METHOD_DESCRIPTOR:
+					case METHOD_HANDLE:
+					case METHOD_NAME:
+						{
+							// Write number of parts
+							int npart = part.length;
+							ddos.writeShort(Minimizer.__checkUShort(npart));
+							
+							// Write all the parts
+							for (int i = 0; i < npart; i++)
+								ddos.writeShort(Minimizer.__checkUShort(
+									part[i]));
+						}
+						break;
+						
+						// Should not occur
+					default:
+						throw new todo.OOPS(et.name());
+				}
+				
+				// Round positions
+				Minimizer.__dosRound(ddos);
+			}
+			
+			// Write end of table marker and the table end area thing
+			int dxo = reloff + ddos.size();
+			tdos.writeByte(0xFF);
+			tdos.writeByte(dxo >>> 16);
+			tdos.writeShort(dxo & 0xFFFF);
+			
+			// Merge the data bytes into the table then use the completed
+			// table
+			tbytes.write(dbytes.toByteArray());
+			return tbytes.toByteArray();
+		}
+		
+		// Should not occur
+		catch (IOException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 	
 	/**
