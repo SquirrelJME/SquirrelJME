@@ -112,6 +112,19 @@ public class BuilderFactory
 	}
 	
 	/**
+	 * Builds every binary.
+	 *
+	 * @param __t The timespace to build in.
+	 * @return The resulting binaries.
+	 * @throws NullPointerException On null arguments.
+	 */
+	public Binary[] buildAll(TimeSpaceType __t, String... __p)
+		throws NullPointerException
+	{
+		return this.projectmanager.buildAll(__t);
+	}
+	
+	/**
 	 * Builds the given distributions.
 	 *
 	 * @param __args The distributions to build.
@@ -374,6 +387,56 @@ public class BuilderFactory
 					
 					// Run the builder
 					this.build(space,
+						args.<String>toArray(new String[args.size()]));
+				}
+				break;
+				
+				// Builds all projects
+			case "buildall":
+				{
+					TimeSpaceType space = TimeSpaceType.RUNTIME;
+					
+					// Try to determine the timespace to use, which determines
+					// the available projects
+					String[] parse;
+					while (null != (parse = __getopts(":?rjtbRJTB", args)))
+						switch (parse[0])
+						{
+							case "r":
+							case "R":
+								space = TimeSpaceType.RUNTIME;
+								break;
+							
+							case "j":
+							case "J":
+								space = TimeSpaceType.JIT;
+								break;
+								
+							case "t":
+							case "T":
+								space = TimeSpaceType.TEST;
+								break;
+							
+							case "b":
+							case "B":
+								space = TimeSpaceType.BUILD;
+								break;
+							
+								// {@squirreljme.error AU9f Unknown argument.
+								// Usage: build [-R] [-J] [-T] [-B]
+								// (projects...);
+								// -R: Build for run-time;
+								// -J: Build for jit-time;
+								// -T: Build for tests;
+								// -B: Build for build-time;
+								// (The switch)}
+							default:
+								throw new IllegalArgumentException(
+									String.format("AU9f %s", parse[0]));
+						}
+					
+					// Run the builder
+					this.buildAll(space,
 						args.<String>toArray(new String[args.size()]));
 				}
 				break;
