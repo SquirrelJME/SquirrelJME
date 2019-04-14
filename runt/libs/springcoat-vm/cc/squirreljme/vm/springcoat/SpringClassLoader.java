@@ -167,7 +167,7 @@ public final class SpringClassLoader
 				this.loadClass(supername));
 			
 			// Load any interfaces
-			ClassName[] interfacenames = cf.interfaceNames();
+			ClassName[] interfacenames = cf.interfaceNames().toArray();
 			int numinterfaces = interfacenames.length;
 			SpringClass[] interfaceclasses = new SpringClass[numinterfaces];
 			for (int i = 0; i < numinterfaces; i++)

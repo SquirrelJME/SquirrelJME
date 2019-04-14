@@ -29,11 +29,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.classfile.ClassFile;
+import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.Field;
+import net.multiphasicapps.classfile.FieldDescriptor;
+import net.multiphasicapps.classfile.FieldName;
 import net.multiphasicapps.classfile.InstructionJumpTarget;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.Method;
+import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodFlags;
+import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.classfile.PrimitiveType;
 
 /**
@@ -94,8 +99,28 @@ public final class Minimizer
 		// Process all methods
 		__TempMethods__[] methods = this.__doMethods();
 		
+		// Store the pool size
 		MinimizedPoolBuilder pool = this.pool;
 		__dos.writeShort(Minimizer.__checkUShort(pool.size()));
+		
+		// Store class information, such as the flags, name, superclass,
+		// interfaces, class type, and version
+		ClassFile input = this.input;
+		__dos.writeInt(input.flags().toJavaBits());
+		__dos.writeShort(Minimizer.__checkUShort(
+			pool.add(input.thisName())));
+		__dos.writeShort(Minimizer.__checkUShort(
+			pool.add(input.superName())));
+		__dos.writeShort(Minimizer.__checkUShort(
+			pool.add(input.interfaceNames())));
+		__dos.writeByte(input.type().ordinal());
+		__dos.writeByte(input.version().ordinal());
+		
+		// Needed for debugging to figure out what file the class is in,
+		// will be very useful
+		String sfn = input.sourceFile();
+		__dos.writeShort((sfn == null ? 0 : Minimizer.__checkUShort(
+			pool.add(sfn))));
 		
 		// Write static and instance field counts
 		for (int i = 0; i < 2; i++)
@@ -199,6 +224,8 @@ public final class Minimizer
 	 */
 	private final __TempFields__[] __doFields()
 	{
+		MinimizedPoolBuilder pool = this.pool;
+		
 		// Static and instance fields are split because they are stored
 		// in different places
 		__TempFields__[] rv = new __TempFields__[]{
@@ -228,15 +255,19 @@ public final class Minimizer
 			// assuming types of a given size are always aligned
 			int basep = (temp._bytes + (fsz - 1)) & ~(fsz - 1);
 			
+			// Constant value may be null, but if it is not then add it
+			// to the pool
+			Object cval = f.constantValue();
+			
 			// Build field information
 			MinimizedField q;
 			temp._fields.add((q = new MinimizedField(
 				f.flags().toJavaBits(),
 				basep,
 				fsz,
-				f.name(),
-				f.type(),
-				f.constantValue())));
+				pool.<FieldName>addSelf(f.name()),
+				pool.<FieldDescriptor>addSelf(f.type()),
+				(cval == null ? null : pool.<Object>addSelf(cval)))));
 			
 			// Debug
 			todo.DEBUG.note("Add field %s", q);
@@ -264,6 +295,8 @@ public final class Minimizer
 	 */
 	private final __TempMethods__[] __doMethods()
 	{
+		MinimizedPoolBuilder pool = this.pool;
+		
 		// Split static and instance methods to make them easier to locate
 		// accordingly
 		__TempMethods__[] rv = new __TempMethods__[]{
@@ -306,7 +339,11 @@ public final class Minimizer
 			// Add method
 			MinimizedMethod q;
 			temp._methods.add((q = new MinimizedMethod(mf.toJavaBits(),
-				temp._count, m.name(), m.type(), transcode, lnt)));
+				temp._count,
+				pool.<MethodName>addSelf(m.name()),
+				pool.<MethodDescriptor>addSelf(m.type()),
+				transcode,
+				lnt)));
 			
 			// Debug
 			todo.DEBUG.note("Add method %s", q);

@@ -55,7 +55,7 @@ public final class ClassFile
 	protected final String sourcefilename;
 	
 	/** The interfaces this class implements. */
-	private final ClassName[] _interfaces;
+	protected final ClassNames interfaces;
 	
 	/** The fields within this class. */
 	private final Field[] _fields;
@@ -113,7 +113,7 @@ public final class ClassFile
 		this.supername = __sn;
 		this.innerclasses = __icl;
 		this.annotations = __at;
-		this._interfaces = __in;
+		this.interfaces = new ClassNames(__in);
 		this._fields = __fs;
 		this._methods = __ms;
 		this.sourcefilename = __sfn;
@@ -167,9 +167,9 @@ public final class ClassFile
 	 * @return The implemented interface names.
 	 * @since 2017/10/09
 	 */
-	public final ClassName[] interfaceNames()
+	public final ClassNames interfaceNames()
 	{
-		return this._interfaces.clone();
+		return this.interfaces;
 	}
 	
 	/**
@@ -233,6 +233,17 @@ public final class ClassFile
 		else if (flags.isInterface())
 			return ClassType.INTERFACE;
 		return ClassType.CLASS;
+	}
+	
+	/**
+	 * Returns the class version.
+	 *
+	 * @return The class version.
+	 * @since 2019/04/14
+	 */
+	public final ClassVersion version()
+	{
+		return this.version;
 	}
 	
 	/**

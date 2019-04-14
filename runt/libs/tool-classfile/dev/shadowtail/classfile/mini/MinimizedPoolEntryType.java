@@ -28,6 +28,12 @@ public enum MinimizedPoolEntryType
 	/** Name of class. */
 	CLASS_NAME,
 	
+	/** Class names (used for interfaces). */
+	CLASS_NAMES,
+	
+	/** Double. */
+	DOUBLE,
+	
 	/** Invoked Method. */
 	INVOKED_METHOD,
 	
@@ -39,6 +45,15 @@ public enum MinimizedPoolEntryType
 	
 	/** Field Reference. */
 	FIELD_REFERENCE,
+	
+	/** Float. */
+	FLOAT,
+	
+	/** Integer. */
+	INTEGER,
+	
+	/** Long. */
+	LONG,
 	
 	/** Method Descriptor. */
 	METHOD_DESCRIPTOR,
@@ -72,12 +87,24 @@ public enum MinimizedPoolEntryType
 		{
 			case "java.lang.String":
 				return STRING;
+			case "java.lang.Integer":
+				return INTEGER;
+			case "java.lang.Long":
+				return LONG;
+			case "java.lang.Float":
+				return FLOAT;
+			case "java.lang.Double":
+				return DOUBLE;
 			case "dev.shadowtail.classfile.nncc.AccessedField":
 				return ACCESSED_FIELD;
 			case "dev.shadowtail.classfile.nncc.InvokedMethod":
 				return INVOKED_METHOD;
 			case "net.multiphasicapps.classfile.ClassName":
 				return CLASS_NAME;
+			case "net.multiphasicapps.classfile.ClassNames":
+				return CLASS_NAMES;
+			case "List net.multiphasicapps.classfile.ClassName":
+				return CLASS_NAMES;
 			case "net.multiphasicapps.classfile.FieldDescriptor":
 				return FIELD_DESCRIPTOR;
 			case "net.multiphasicapps.classfile.FieldName":

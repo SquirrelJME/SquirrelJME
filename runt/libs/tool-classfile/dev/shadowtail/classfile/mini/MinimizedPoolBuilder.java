@@ -17,10 +17,12 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.ClassNames;
 import net.multiphasicapps.classfile.FieldDescriptor;
 import net.multiphasicapps.classfile.FieldName;
 import net.multiphasicapps.classfile.FieldReference;
@@ -28,6 +30,7 @@ import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodHandle;
 import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.collections.IntegerList;
+import net.multiphasicapps.collections.UnmodifiableList;
 
 /**
  * This class is used to build the constant pool for a minimized class.
@@ -51,7 +54,7 @@ public final class MinimizedPoolBuilder
 	 */
 	{
 		// Add null entry to mean nothing
-		this._pool.put(0, null);
+		this._pool.put(null, 0);
 		this._parts.add(new int[0]);
 	}
 	
@@ -92,6 +95,22 @@ public final class MinimizedPoolBuilder
 			else
 				return this.__add(__v,
 					this.add(__v.toString()), 0);
+		}
+		
+		// Class names
+		else if (__v instanceof ClassNames)
+		{
+			// Adjust the value to map correctly
+			ClassNames names = (ClassNames)__v;
+			
+			// Fill into indexes
+			int n = names.size();
+			int[] indexes = new int[n];
+			for (int i = 0; i < n; i++)
+				indexes[i] = this.add(names.get(i));
+			
+			// Add it now
+			return this.__add(names, indexes);
 		}
 		
 		// Record handle for the method
@@ -174,10 +193,47 @@ public final class MinimizedPoolBuilder
 				__v.hashCode(),
 				((String)__v).length());
 		
+		// Primitives
+		else if (__v instanceof Integer ||
+			__v instanceof Long ||
+			__v instanceof Float ||
+			__v instanceof Double)
+			return this.__add(__v);
+		
 		// {@squirreljme.error JC3p Cannot add the specified entry to the
 		// constant pool. (The class type)}
 		else
 			throw new IllegalArgumentException("JC3p " + __v.getClass());
+	}
+	
+	/**
+	 * Adds the entry to the pool and returns the passed value.
+	 *
+	 * @param __v The value to add.
+	 * @return {@code __v}.
+	 * @since 2019/04/14
+	 */
+	public final <V> V addSelf(V __v)
+	{
+		this.add(__v);
+		return __v;
+	}
+	
+	/**
+	 * Gets the index of where the entry is stored in the pool.
+	 *
+	 * @param __v The entry to get.
+	 * @return The index of the entry.
+	 * @throws IllegalStateException If the entry is not in the pool.
+	 * @since 2019/04/14
+	 */
+	public final int get(Object __v)
+		throws IllegalStateException
+	{
+		Integer rv = this._pool.get(__v);
+		if (rv == null)
+			throw new IllegalStateException("JC3q " + __v);
+		return rv;
 	}
 	
 	/**
@@ -253,10 +309,33 @@ public final class MinimizedPoolBuilder
 						}
 						break;
 						
+						// Integer
+					case INTEGER:
+						ddos.writeInt((Integer)value);
+						break;
+						
+						// Long
+					case LONG:
+						ddos.writeLong((Long)value);
+						break;
+						
+						// Float
+					case FLOAT:
+						ddos.writeInt(
+							Float.floatToRawIntBits((Float)value));
+						break;
+						
+						// Double
+					case DOUBLE:
+						ddos.writeLong(
+							Double.doubleToRawLongBits((Double)value));
+						break;
+						
 						// Everything else just consists of parts which are
 						// either values to other indexes or an ordinal
 					case ACCESSED_FIELD:
 					case CLASS_NAME:
+					case CLASS_NAMES:
 					case INVOKED_METHOD:
 					case FIELD_DESCRIPTOR:
 					case FIELD_NAME:

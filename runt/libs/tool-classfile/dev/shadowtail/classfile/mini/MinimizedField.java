@@ -10,6 +10,7 @@
 
 package dev.shadowtail.classfile.mini;
 
+import dev.shadowtail.classfile.xlate.DataType;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.classfile.FieldDescriptor;
@@ -40,6 +41,9 @@ public final class MinimizedField
 	/** The field value. */
 	public final Object value;
 	
+	/** The data type. */
+	public final DataType datatype;
+	
 	/** String representation. */
 	private Reference<String> _string;
 	
@@ -68,6 +72,7 @@ public final class MinimizedField
 		this.name = __n;
 		this.type = __t;
 		this.value = __v;
+		this.datatype = DataType.of(__t);
 	}
 	
 	/**
