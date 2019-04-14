@@ -38,24 +38,49 @@ public strictfp final class Math
 	{
 	}
 	
-	public static int abs(int __a)
+	/**
+	 * Returns the absolute value.
+	 *
+	 * @return The absolute value.
+	 * @since 2019/04/14
+	 */
+	public static int abs(int __v)
 	{
-		throw new todo.TODO();
+		return (__v < 0 ? -__v : __v);
 	}
 	
-	public static long abs(long __a)
+	/**
+	 * Returns the absolute value.
+	 *
+	 * @return The absolute value.
+	 * @since 2019/04/14
+	 */
+	public static long abs(long __v)
 	{
-		throw new todo.TODO();
+		return (__v < 0 ? -__v : __v);
 	}
 	
-	public static float abs(float __a)
+	/**
+	 * Returns the absolute value.
+	 *
+	 * @return The absolute value.
+	 * @since 2019/04/14
+	 */
+	public static float abs(float __v)
 	{
-		throw new todo.TODO();
+		return Float.intBitsToFloat(0x7FFFFFFF & Float.floatToIntBits(__v));
 	}
 	
-	public static double abs(double __a)
+	/**
+	 * Returns the absolute value.
+	 *
+	 * @return The absolute value.
+	 * @since 2019/04/14
+	 */
+	public static double abs(double __v)
 	{
-		throw new todo.TODO();
+		return Double.longBitsToDouble(0x7FFFFFFFFFFFFFFFL &
+			Double.doubleToLongBits(__v));
 	}
 	
 	public static double acos(double __a)
