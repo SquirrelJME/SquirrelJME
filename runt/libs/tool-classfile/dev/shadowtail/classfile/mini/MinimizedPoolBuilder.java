@@ -276,12 +276,51 @@ public final class MinimizedPoolBuilder
 					MinimizedPoolEntryType.ofClass(value.getClass()));
 				int[] part = parts.get(pdx++);
 				
+				// Have two pool entry formats, a wide one and a narrow one
+				// This is to reduce the size of the constant pool in classes
+				// where small values can be used instead
+				// This adds extra types for parsing because otherwise having
+				// variable ints and such will be very confusing and
+				// complicated!
+				int faketype = et.ordinal();
+				switch (et)
+				{
+						// These are always fixed types and as such are never
+						// wide
+					case STRING:
+					case INTEGER:
+					case LONG:
+					case FLOAT:
+					case DOUBLE:
+						break;
+					
+						// If any reference part is outside of this basic
+						// range then use wide values here
+					default:
+						// If there are lots of parts then this needs to take
+						// up a larger area
+						if (part.length > 127)
+							faketype |= 0x80;
+						
+						// Scan parts
+						for (int i : part)
+							if (i < 0 || i > 127)
+							{
+								faketype |= 0x80;
+								break;
+							}
+						break;
+				}
+				
+				// Is wide being used?
+				boolean iswide = ((faketype & 0x80) != 0);
+				
 				// Write position and the entry type, use 24-bits for the
 				// entry offset just to use the space since maybe the pool
 				// will get pretty big? It is Java ME though so hopefully
 				// the pool never exceeds 65K.
 				int dxo = reloff + ddos.size();
-				tdos.writeByte(et.ordinal());
+				tdos.writeByte(faketype);
 				tdos.writeByte(dxo >>> 16);
 				tdos.writeShort(dxo & 0xFFFF);
 				
@@ -346,12 +385,19 @@ public final class MinimizedPoolBuilder
 						{
 							// Write number of parts
 							int npart = part.length;
-							ddos.writeShort(Minimizer.__checkUShort(npart));
+							if (iswide)
+								ddos.writeShort(
+									Minimizer.__checkUShort(npart));
+							else
+								ddos.writeByte(npart);
 							
 							// Write all the parts
 							for (int i = 0; i < npart; i++)
-								ddos.writeShort(Minimizer.__checkUShort(
-									part[i]));
+								if (iswide)
+									ddos.writeShort(Minimizer.__checkUShort(
+										part[i]));
+								else
+									ddos.writeByte(part[i]);
 						}
 						break;
 						
