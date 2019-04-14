@@ -216,9 +216,22 @@ public abstract class Canvas
 		return this.__defaultHeight();
 	}
 	
-	public int getKeyCode(int __a)
+	/**
+	 * Returns the key code for the given game action.
+	 *
+	 * @param __gc The game action to convert.
+	 * @return The key code
+	 * @throws IllegalArgumentException If the game action is not valid.
+	 * @since 2019/04/14
+	 */
+	public int getKeyCode(int __gc)
+		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error EB31 The specified game action is not valid.}
+		int rv = UIEventTranslate.gameActionToKeyCode(__gc);
+		if (rv == 0)
+			throw new IllegalArgumentException("EB31 " + __gc);
+		return rv;
 	}
 	
 	/**
