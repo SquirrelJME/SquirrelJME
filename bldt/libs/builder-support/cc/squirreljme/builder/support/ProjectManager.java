@@ -184,6 +184,33 @@ public final class ProjectManager
 	}
 	
 	/**
+	 * Builds every binary.
+	 *
+	 * @param __t The timespace to use.
+	 * @return All of the built binaries.
+	 * @since 2019/04/14
+	 */
+	public final Binary[] buildAll(TimeSpaceType __t)
+	{
+		Set<Binary> bin = new LinkedHashSet<>();
+		
+		try
+		{
+			// Build everything
+			BinaryManager bm = this.binaryManager(__t);
+			for (Binary b : bm)
+				for (Binary x : bm.compile(b))
+					bin.add(x);
+		}
+		catch (IOException e)
+		{
+			throw new RuntimeException(e);
+		}
+		
+		return bin.<Binary>toArray(new Binary[bin.size()]);
+	}
+	
+	/**
 	 * Opens the given root file from the source tree. This also handles MIME
 	 * encoded files if they exist and decodes them accordingly.
 	 *
