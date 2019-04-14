@@ -10,6 +10,10 @@
 
 package dev.shadowtail.classfile.mini;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,12 +34,111 @@ final class __TempMethods__
 	/**
 	 * Returns the byte representation of the data here.
 	 *
+	 * @param __pool The constant pool.
 	 * @return The byte data representation.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/14
 	 */
-	public final byte[] getBytes()
+	public final byte[] getBytes(MinimizedPoolBuilder __pool)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__pool == null)
+			throw new NullPointerException("NARG");
+		
+		// Write
+		try
+		{
+			List<MinimizedMethod> methods = this._methods;
+			
+			// Actual table data
+			ByteArrayOutputStream dbytes = new ByteArrayOutputStream();
+			DataOutputStream ddos = new DataOutputStream(dbytes);
+			
+			// Needed to filter in lines and code so that they are together
+			int count = this._count;
+			
+			// Merge all the code data
+			int[] offcode = new int[count];
+			ByteArrayOutputStream cbytes = new ByteArrayOutputStream();
+			DataOutputStream cdos = new DataOutputStream(cbytes);
+			for (int i = 0; i < count; i++)
+			{
+				MinimizedMethod m = methods.get(i);
+				
+				// Ignore if there is no code
+				byte[] code = m._code;
+				if (code == null)
+					continue;
+				
+				// Offset to this code
+				offcode[i] = cdos.size();
+				
+				// Write all the data
+				cdos.write(code);
+				
+				// Pad with the breakpoint operation
+				while ((cdos.size() & 3) != 0)
+					cdos.write(0xFF);
+			}
+			
+			// Merge all of the line data
+			int[] offline = new int[count];
+			ByteArrayOutputStream lbytes = new ByteArrayOutputStream();
+			DataOutputStream ldos = new DataOutputStream(lbytes);
+			for (int i = 0; i < count; i++)
+			{
+				MinimizedMethod m = methods.get(i);
+				
+				// Ignore if there are no lines
+				byte[] lines = m._lines;
+				if (lines == null)
+					continue;
+				
+				// Offset to these lines
+				offline[i] = ldos.size();
+				
+				// Write all the data
+				ldos.write(lines);
+				
+				// Pad
+				while ((ldos.size() & 3) != 0)
+					ldos.write(0);
+			}
+			
+			// Offset to code and line regions
+			int codeoff = 4 + (count * 16),
+				lineoff = codeoff + ldos.size();
+			
+			// Write field information
+			for (int i = 0; i < count; i++)
+			{
+				MinimizedMethod m = methods.get(i);
+				
+				// 16-bytes
+				ddos.writeInt(m.flags);
+				ddos.writeShort(Minimizer.__checkUShort(m.index));
+				ddos.writeShort(Minimizer.__checkUShort(__pool.get(m.name)));
+				ddos.writeShort(Minimizer.__checkUShort(__pool.get(m.type)));
+				ddos.writeShort(Minimizer.__checkUShort(codeoff + offcode[i]));
+				ddos.writeShort(Minimizer.__checkUShort(lineoff + offline[i]));
+				ddos.writeByte(0);
+				ddos.writeByte(0);
+			}
+			
+			// Write end of table
+			ddos.writeInt(0xFFFFFFFF);
+			
+			// Merge in the code and line information
+			ddos.write(cbytes.toByteArray());
+			ddos.write(lbytes.toByteArray());
+			return dbytes.toByteArray();
+		}
+		
+		// Should not occur
+		catch (IOException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 }
 

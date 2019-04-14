@@ -10,6 +10,10 @@
 
 package dev.shadowtail.classfile.mini;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,12 +40,50 @@ final class __TempFields__
 	/**
 	 * Returns the byte representation of the data here.
 	 *
+	 * @param __pool The constant pool.
 	 * @return The byte data representation.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/14
 	 */
-	public final byte[] getBytes()
+	public final byte[] getBytes(MinimizedPoolBuilder __pool)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__pool == null)
+			throw new NullPointerException("NARG");
+		
+		// Write
+		try
+		{
+			// Actual table data
+			ByteArrayOutputStream dbytes = new ByteArrayOutputStream();
+			DataOutputStream ddos = new DataOutputStream(dbytes);
+			
+			// Write field information
+			for (MinimizedField m : this._fields)
+			{
+				// 16-bytes
+				ddos.writeInt(m.flags);
+				ddos.writeShort(Minimizer.__checkUShort(m.offset));
+				ddos.writeShort(Minimizer.__checkUShort(m.size));
+				ddos.writeShort(Minimizer.__checkUShort(__pool.get(m.name)));
+				ddos.writeShort(Minimizer.__checkUShort(__pool.get(m.type)));
+				ddos.writeShort(Minimizer.__checkUShort(__pool.get(m.value)));
+				ddos.writeByte(m.datatype.ordinal());
+				ddos.writeByte(0);
+			}
+			
+			// Write end of table
+			ddos.writeInt(0xFFFFFFFF);
+			
+			// Finish
+			return dbytes.toByteArray();
+		}
+		
+		// Should not occur
+		catch (IOException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 }
 
