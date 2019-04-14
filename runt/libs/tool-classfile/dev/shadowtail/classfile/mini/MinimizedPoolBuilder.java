@@ -175,6 +175,17 @@ public final class MinimizedPoolBuilder
 	}
 	
 	/**
+	 * Returns the byte representation of the data here.
+	 *
+	 * @return The byte data representation.
+	 * @since 2019/04/14
+	 */
+	public final byte[] getBytes()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Returns the pool size.
 	 *
 	 * @return The pool size.

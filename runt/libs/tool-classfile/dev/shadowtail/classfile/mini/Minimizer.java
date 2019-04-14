@@ -111,7 +111,83 @@ public final class Minimizer
 			__dos.writeShort(Minimizer.__checkUShort(tm._count));
 		}
 		
-		throw new todo.TODO();
+		// Relative offset where all the data will end up being, starts at
+		// the constant pool address. Size is calculated as:
+		// written + field headers + method headers + data areas, plus total
+		// data area size and end address!
+		int reloff = __dos.size() + 12 + 4 + (5 * 8) + 8,
+			baserel = reloff;
+		
+		// Constant pool locator
+		byte[] pooldata = pool.getBytes();
+		__dos.writeInt(reloff);
+		__dos.writeInt(pooldata.length);
+		
+		// Round
+		reloff = Minimizer.__relAdd(reloff, pooldata.length);
+		
+		// Field locator
+		byte[][] fielddata = new byte[2][];
+		for (int i = 0; i < 2; i++)
+		{
+			__TempFields__ tf = fields[i];
+			
+			// Get bytes
+			byte[] data = tf.getBytes();
+			fielddata[i] = data;
+			
+			// Offset and size
+			__dos.writeInt(reloff);
+			__dos.writeInt(data.length);
+			
+			// Round
+			reloff = Minimizer.__relAdd(reloff, data.length);
+		}
+		
+		// Method locator
+		byte[][] methoddata = new byte[2][];
+		for (int i = 0; i < 2; i++)
+		{
+			__TempMethods__ tm = methods[i];
+			
+			// Get bytes
+			byte[] data = tm.getBytes();
+			methoddata[i] = data;
+			
+			// Offset and size
+			__dos.writeInt(reloff);
+			__dos.writeInt(data.length);
+			
+			// Round
+			reloff = Minimizer.__relAdd(reloff, data.length);
+		}
+		
+		// Write absolute file size! This saves time in calculating how big
+		// a file we have and we can just read that many bytes for all the
+		// data areas or similar if needed
+		__dos.writeInt(reloff);
+		__dos.writeInt(reloff - baserel);
+		
+		// Write constant pool
+		__dos.write(pooldata);
+		Minimizer.__dosRound(__dos);
+		
+		// Write field data
+		for (int i = 0; i < 2; i++)
+		{
+			__dos.write(fielddata[i]);
+			Minimizer.__dosRound(__dos);
+		}
+		
+		// Write method data
+		for (int i = 0; i < 2; i++)
+		{
+			__dos.write(methoddata[i]);
+			Minimizer.__dosRound(__dos);
+		}
+		
+		if (true)
+			throw new todo.TODO();
 	}
 	
 	/**
@@ -593,6 +669,45 @@ public final class Minimizer
 		if (__v < 0 || __v > 65535)
 			throw new InvalidClassFormatException("JC3n " + __v);
 		return __v;
+	}
+	
+	/**
+	 * Pads the output stream.
+	 *
+	 * @param __dos The stream to pad.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/14
+	 */
+	private static final void __dosRound(DataOutputStream __dos)
+		throws IOException, NullPointerException
+	{
+		if (__dos == null)
+			throw new NullPointerException("NARG");
+		
+		// Add padding
+		int at = __dos.size();
+		while ((at & 3) != 0)
+		{
+			__dos.write(0);
+			at++;
+		}
+	}
+	
+	/**
+	 * Adds length data to the relative offset.
+	 *
+	 * @param __rel Current relative offset.
+	 * @param __v The offset to add.
+	 * @since 2019/04/14
+	 */
+	private static final int __relAdd(int __rel, int __v)
+	{
+		// Debug
+		todo.DEBUG.note("%d + %d", __rel, __v);
+		
+		__rel += __v;
+		return (__rel + 3) & (~3);
 	}
 }
 
