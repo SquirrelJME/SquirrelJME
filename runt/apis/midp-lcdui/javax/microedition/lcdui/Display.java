@@ -776,6 +776,10 @@ public class Display
 			{
 				__EventCallback__._CALLBACK.__register();
 				
+				// Use the title of this thing
+				NativeDisplayAccess.setDisplayTitle(this._state.nativeid,
+					__show._dtitle);
+				
 				// Since we took over, we should recalculate the entire display
 				// because we would have missed resize events and other such
 				// things
@@ -825,7 +829,7 @@ public class Display
 		
 		// Use the title of this thing
 		NativeDisplayAccess.setDisplayTitle(this._state.nativeid,
-			__show.getTitle());
+			__show._dtitle);
 		
 		// Update the UI stack
 		this.__updateUIStack(this._uipersist, null);

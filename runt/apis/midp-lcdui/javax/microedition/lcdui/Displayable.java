@@ -12,8 +12,10 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
+import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import javax.microedition.midlet.MIDlet;
 
 /**
  * A displayable is a primary container such as a form or a canvas that can be
@@ -35,6 +37,9 @@ public abstract class Displayable
 	/** The title of the displayable. */
 	volatile String _title;
 	
+	/** Display title to use. */
+	volatile String _dtitle;
+	
 	/** The ticker of the displayable. */
 	volatile Ticker _ticker;
 	
@@ -48,6 +53,8 @@ public abstract class Displayable
 	 */
 	Displayable()
 	{
+		// Use a default title for now
+		this.__setTitle(null);
 	}
 	
 	/**
@@ -237,19 +244,8 @@ public abstract class Displayable
 	 */
 	public void setTitle(String __t)
 	{
-		// Cache it for later return
-		this._title = __t;
-		
-		// Set the title of the display
-		Display d = this.__currentDisplay();
-		if (d != null)
-		{
-			// Set title there
-			d._state.setTitle(__t);
-			
-			// Set as needing repaint
-			d._uipersist.repaint = true;
-		}
+		// Call internal title set
+		this.__setTitle(__t);
 	}
 	
 	/**
@@ -273,6 +269,54 @@ public abstract class Displayable
 	void __doShown(boolean __shown)
 	{
 		this._isshown = __shown;
+	}
+	
+	/**
+	 * Sets the title of this displayable, internal logic to.
+	 *
+	 * @param __t The title to use, {@code null} clears it.
+	 * @since 2019/04/14
+	 */
+	private void __setTitle(String __t)
+	{
+		// Cache it for later return
+		this._title = __t;
+		
+		// If no title is being set, fallback to a default one (derived from
+		// the suite)
+		if (__t == null)
+		{
+			// Try getting a sensible name from a system property
+			MIDlet amid = ActiveMidlet.optional();
+			if (amid != null)
+			{
+				// MIDlet Name
+				__t = amid.getAppProperty("midlet-name");
+				
+				// Otherwise this might not be a MIDlet, so just use the main
+				// class instead
+				if (__t == null)
+					__t = amid.getAppProperty("main-class");
+			}
+			
+			// Fallback to just using SquirrelJME
+			if (__t == null)
+				__t = "SquirrelJME";
+		}
+		
+		// Store this
+		this._dtitle = __t;
+		
+		// Set the title of the display
+		Display d = this.__currentDisplay();
+		if (d != null)
+		{
+			// Set title there
+			d._state.setTitle(__t);
+			
+			// Set as needing repaint
+			d._uipersist.repaint = true;
+		}
 	}
 }
 
