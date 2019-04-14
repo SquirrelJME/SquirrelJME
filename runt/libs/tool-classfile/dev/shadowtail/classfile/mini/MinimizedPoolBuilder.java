@@ -339,8 +339,9 @@ public final class MinimizedPoolBuilder
 							// Record hashCode and the String size as simple
 							// fields to read. Note that even though there is
 							// the UTF length, the length of the actual string
-							// could be useful
-							ddos.writeInt(part[0]);
+							// could be useful. But only keep the lowest part
+							// as that will be "good enough"
+							ddos.writeShort((short)part[0]);
 							ddos.writeShort(Minimizer.__checkUShort(part[1]));
 							
 							// Write string UTF data
