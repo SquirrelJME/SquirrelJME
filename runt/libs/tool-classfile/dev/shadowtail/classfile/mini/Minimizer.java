@@ -90,14 +90,17 @@ public final class Minimizer
 		// Process all methods
 		__TempMethods__[] methods = this.__doMethods();
 		
+		MinimizedPoolBuilder pool = this.pool;
+		__dos.writeShort(Minimizer.__checkUShort(pool.size()));
+		
 		// Write static and instance field counts
 		for (int i = 0; i < 2; i++)
 		{
 			__TempFields__ tf = fields[i];
 			
-			__dos.writeInt(tf._count);
-			__dos.writeInt(tf._bytes);
-			__dos.writeInt(tf._objects);
+			__dos.writeShort(Minimizer.__checkUShort(tf._count));
+			__dos.writeShort(Minimizer.__checkUShort(tf._bytes));
+			__dos.writeShort(Minimizer.__checkUShort(tf._objects));
 		}
 		
 		// Write static and instance method counts
@@ -105,7 +108,7 @@ public final class Minimizer
 		{
 			__TempMethods__ tm = methods[i];
 			
-			__dos.writeInt(tm._count);
+			__dos.writeShort(Minimizer.__checkUShort(tm._count));
 		}
 		
 		throw new todo.TODO();
@@ -573,6 +576,23 @@ public final class Minimizer
 			throw new NullPointerException("NARG");
 		
 		new Minimizer(__cf).__run(new DataOutputStream(__os));
+	}
+	
+	/**
+	 * Checks that the unsigned short is in range.
+	 *
+	 * @param __v The value to check.
+	 * @return {@code __v}.
+	 * @throws InvalidClassFormatException If the short is out of range.
+	 * @since 2019/04/14
+	 */
+	private static final int __checkUShort(int __v)
+		throws InvalidClassFormatException
+	{
+		// {@squirreljme.error JC3n Unsigned short out of range. (The value)}
+		if (__v < 0 || __v > 65535)
+			throw new InvalidClassFormatException("JC3n " + __v);
+		return __v;
 	}
 }
 

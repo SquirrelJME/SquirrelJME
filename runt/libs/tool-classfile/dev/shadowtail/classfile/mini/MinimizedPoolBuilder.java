@@ -175,6 +175,17 @@ public final class MinimizedPoolBuilder
 	}
 	
 	/**
+	 * Returns the pool size.
+	 *
+	 * @return The pool size.
+	 * @since 2019/04/14
+	 */
+	public final int size()
+	{
+		return this._pool.size();
+	}
+	
+	/**
 	 * Internal add logic.
 	 *
 	 * @param __v The entry to add.
