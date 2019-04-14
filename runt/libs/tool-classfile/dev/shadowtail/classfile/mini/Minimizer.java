@@ -185,9 +185,6 @@ public final class Minimizer
 			__dos.write(methoddata[i]);
 			Minimizer.__dosRound(__dos);
 		}
-		
-		if (true)
-			throw new todo.TODO();
 	}
 	
 	/**
