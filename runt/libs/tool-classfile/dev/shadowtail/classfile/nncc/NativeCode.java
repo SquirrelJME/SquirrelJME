@@ -34,11 +34,11 @@ public final class NativeCode
 	
 	/** The return value register. */
 	public static final int RETURN_REGISTER =
-		32768;
+		16384;
 	
 	/** The thrown exception register. */
 	public static final int EXCEPTION_REGISTER =
-		32770;
+		16386;
 	
 	/** Instructions for this code. */
 	private final NativeInstruction[] _instructions;
