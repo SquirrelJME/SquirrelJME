@@ -320,41 +320,14 @@ public final class Integer
 	 */
 	public static int numberOfLeadingZeros(int __v)
 	{
-		// If the number is negative then there will never be any leading
-		// zeros at all
-		if (__v < 0)
-			return 0;
+		// From https://stackoverflow.com/a/23857066/11286149
+		__v = __v | (__v >>> 1);
+		__v = __v | (__v >>> 2);
+		__v = __v | (__v >>> 4);
+		__v = __v | (__v >>> 8);
+		__v = __v | (__v >>> 16);
 		
-		int n = 0;
-		
-		if (__v <= 0x0000FFFF)
-		{
-			n += 16;
-			__v <<= 16;
-		}
-		
-		if (__v <= 0x00FFFFFF)
-		{
-			n += 8;
-			__v <<= 8;
-		}
-		
-		if (__v <= 0x0FFFFFFF)
-		{
-			n += 4;
-			__v <<= 4;
-		}
-		
-		if (__v <= 0x3FFFFFFF)
-		{
-			n += 2;
-			__v <<= 2;
-		}
-			
-		if (__v <= 0x7FFFFFFF)
-			n++;
-		
-		return n;
+		return Integer.bitCount(~__v);
 	}
 	
 	/**
