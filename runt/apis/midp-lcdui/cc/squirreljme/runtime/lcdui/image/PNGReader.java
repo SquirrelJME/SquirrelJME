@@ -14,6 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import javax.microedition.lcdui.Image;
 import net.multiphasicapps.io.ChecksumInputStream;
 import net.multiphasicapps.io.CRC32Calculator;
@@ -38,34 +39,46 @@ public class PNGReader
 	protected final DataInputStream in;
 	
 	/** Image width. */
-	private volatile int _width;
+	private int _width;
 	
 	/** Image height. */
-	private volatile int _height;
+	private int _height;
 	
 	/** The bit depth. */
-	private volatile int _bitdepth;
+	private int _bitdepth;
 	
 	/** The color type. */
-	private volatile int _colortype;
+	private int _colortype;
 	
 	/** Is adam7 interlacing being used? */
-	private volatile boolean _adamseven;
+	private boolean _adamseven;
 	
 	/** RGB image data. */
-	private volatile int[] _argb;
+	private int[] _argb;
 	
 	/** Palette data. */
-	private volatile int[] _palette;
+	private int[] _palette;
+	
+	/** Full transparency color map. */
+	private int[] _transmap;
 	
 	/** Was an alpha channel used? */
-	private volatile boolean _hasalpha;
+	private boolean _hasalpha;
+	
+	/** If this has been set, then do not force color sets. */
+	private boolean _blippedalpha;
 	
 	/** Initial value for read Y position, for multiple IDAT chunks. */
-	private volatile int _initvy;
+	private int _initvy;
 	
 	/** Initial value for read X position, for multiple IDAT chunks. */
-	private volatile int _initvx;
+	private int _initvx;
+	
+	/** The number of colors used. */
+	private int _numcolors;
+	
+	/** The maximum number of permitted colors. */
+	private int _maxcolors;
 	
 	/**
 	 * Initializes the PNG parser.
@@ -106,10 +119,10 @@ public class PNGReader
 			in.readUnsignedByte() != 10)
 			throw new IOException("EB0t");
 		
-		// Buffer which contains the image chunk data, this is processed
-		// last so the transparency information can be parsed and such. Some
-		// PNG images have the image data followed by transparency which
-		// would be too complicated to handle
+		// Some J2ME games such as Bobby Carrot have invalid PNG files that
+		// contain a tRNS chunk after the IDAT chunk. This violates the PNG
+		// standard so the image chunk has to cached and process later,
+		// otherwise the images will be corrupt.
 		byte[] imagechunk = null;
 		
 		// Keep reading chunks in the file
@@ -152,16 +165,35 @@ public class PNGReader
 						
 						// Image data
 					case 0x49444154:
-						imagechunk = PNGReader.__chunkLater(data);
+						// There may be multiple consecutive IDAT chunks which
+						// just continue where the previous one left off, so
+						// just smash them together
+						if (imagechunk != null)
+						{
+							// Read chunk data
+							byte[] xtrachunk = PNGReader.__chunkLater(data);
+							
+							// Setup new array which contains the original
+							// data but has more space
+							int gn = imagechunk.length,
+								xn = xtrachunk.length,
+								nl = gn + xn;
+							imagechunk = Arrays.copyOf(imagechunk, nl);
+							
+							// Write in all the data
+							for (int i = 0, o = gn; i < xn; i++, o++)
+								imagechunk[o] = xtrachunk[i];
+						}
+						
+						// The first chunk
+						else
+							imagechunk = PNGReader.__chunkLater(data);
 						break;
 						
 						// Transparency information
 					case 0x74524E53:
-						// Set as alpha existing, so the argb is not set with
-						// a fully opaque alpha
-						this._hasalpha = true;
-						
-						throw new todo.TODO();
+						this.__parseAlpha(data, len);
+						break;
 					
 						// Unknown, ignore
 					default:
@@ -185,7 +217,7 @@ public class PNGReader
 		
 		// If no alpha channel is set or there is no transparency info then
 		// make all pixels opaque
-		if (!this._hasalpha)
+		if (!this._hasalpha && !this._blippedalpha)
 			for (int i = 0, n = argb.length; i < n; i++)
 				argb[i] = 0xFF000000;
 		
@@ -200,6 +232,145 @@ public class PNGReader
 		// Create image
 		return Image.createRGBImage(argb, this._width, this._height,
 			this._hasalpha);
+	}
+	
+	/**
+	 * Parses the alpha transparency data.
+	 *
+	 * @param __in The stream to read data from.
+	 * @param __dlen The data length/
+	 * @throws IOException On parse errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/14
+	 */
+	private void __parseAlpha(DataInputStream __in, int __dlen)
+		throws IOException, NullPointerException
+	{
+		// Check
+		if (__in == null)
+			throw new NullPointerException("NARG");
+			
+		// Get output
+		int[] argb = this._argb;
+		int[] palette = this._palette;
+		int width = this._width,
+			height = this._height,
+			colortype = this._colortype,
+			bitdepth = this._bitdepth,
+			bitmask = (1 << bitdepth) - 1,
+			numpals = (palette != null ? palette.length : 0),
+			numcolors = this._numcolors,
+			maxcolors = this._maxcolors;
+		boolean adamseven = this._adamseven;
+		
+		// For these color types, only a specified color in a list
+		if (colortype == 0 || colortype == 2)
+		{
+			// Fill all colors
+			for (int i = 0, n = argb.length; i < n; i++)
+				argb[i] |= 0xFF000000;
+				
+			// Do not touch later
+			this._blippedalpha = true;
+		}
+		
+		// Full transparency map
+		int[] transmap = null;
+		
+		// Depends on the color type
+		switch (colortype)
+		{
+				// Grayscale, this specified which color indexes are to be
+				// fully transparent
+			case 0:
+				{
+					// Allocate
+					transmap = new int[__dlen / 2];
+					
+					// Read double-byte values
+					for (int at = 0;;)
+					{
+						// Read in color
+						int col = __in.read();
+						__in.read();
+						
+						// EOF?
+						if (col < 0)
+							break;
+						
+						// Add color
+						col &= 0xFF;
+						transmap[at++] = (col << 16) | (col << 8) | col;
+					}
+				}
+				break;
+			
+				// True-color
+			case 2:
+				{
+					// Allocate
+					transmap = new int[__dlen / 6];
+					
+					// Read double-byte values
+					for (int at = 0;;)
+					{
+						// Read in color
+						int r = __in.read();
+						__in.read();
+						int g = __in.read();
+						__in.read();
+						int b = __in.read();
+						__in.read();
+						
+						// EOF?
+						if (r < 0 || g < 0 || b < 0)
+							break;
+						
+						// Add color
+						transmap[at++] = ((r & 0xFF) << 16) |
+							((g & 0xFF) << 8) | (g & 0xFF);
+					}
+				}
+				break;
+				
+				// Indexed color;
+			case 3:
+				{
+					// Read as many entries as possible
+					int i = 0;
+					for (; i < numcolors; i++)
+					{
+						int val = __in.read();
+						
+						// Reached end of data, the rest are implied opaque
+						if (val < 0)
+							break;
+						
+						// Fill in color
+						palette[i] |= ((val & 0xFF) << 24);
+					}
+					
+					// The palette data can be short, which means that all of
+					// the following colors are fully opaque
+					for (; i < numcolors; i++)
+						palette[i] |= 0xFF000000;
+				}
+				break;
+			
+				// Just ignore the chunk if the color type is not valid
+			default:
+				return;
+		}
+		
+		// Sort the transparency map so the colors can be found easier
+		if (transmap != null)
+		{
+			Arrays.sort(transmap);
+			this._transmap = transmap;
+		}
+		
+		// Alpha channel was read!
+		this._hasalpha = true;
 	}
 	
 	/**
@@ -299,6 +470,7 @@ public class PNGReader
 		// Get output
 		int[] argb = this._argb;
 		int[] palette = this._palette;
+		int[] transmap = this._transmap;
 		int width = this._width,
 			height = this._height,
 			colortype = this._colortype,
@@ -306,6 +478,7 @@ public class PNGReader
 			bitmask = (1 << bitdepth) - 1,
 			numpals = (palette != null ? palette.length : 0);
 		boolean adamseven = this._adamseven;
+		boolean hastransmap = (transmap != null);
 		
 		// {@squirreljme.error EB13 Paletted PNG image has no palette.}
 		if (colortype == 3 && palette == null)
@@ -432,15 +605,7 @@ public class PNGReader
 					
 					// Palette
 					else if (colortype == 3)
-					{
-						// {@squirreljme.error EB14 Index exceeds the size of
-						// a palette. (The index; The palette size)}
-						int v = channels[0];
-						if (v >= numpals)
-							throw new IOException(String.format("EB14 %d %d",
-								v, numpals));
-						color = palette[v];
-					}
+						color = palette[channels[0]];
 					
 					// Triplet
 					else
@@ -452,6 +617,12 @@ public class PNGReader
 					// already
 					if (colortype == 4 || colortype == 6)
 						color |= (channels[numchannels - 1] << 24);
+					
+					// If there is a full transparency map then find the color
+					// that will be set.
+					if (hastransmap)
+						if (Arrays.binarySearch(transmap, color) < 0)
+							color |= 0xFF000000;
 					
 					// Place the pixel on the output buffer
 					// Interlaced
@@ -498,8 +669,13 @@ public class PNGReader
 		if (numcolors > maxcolors)
 			numcolors = maxcolors;
 		
-		// Load palette data
-		int[] palette = new int[numcolors];
+		// Set
+		this._numcolors = numcolors;
+		this._maxcolors = maxcolors;
+		
+		// Load palette data, any remaining colors are left uninitialized and
+		// are fully transparent or just black
+		int[] palette = new int[maxcolors];
 		this._palette = palette;
 		for (int i = 0; i < numcolors; i++)
 		{
