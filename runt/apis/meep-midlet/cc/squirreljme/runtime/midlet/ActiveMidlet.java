@@ -46,15 +46,28 @@ public final class ActiveMidlet
 	public static MIDlet get()
 		throws IllegalStateException
 	{
+		MIDlet rv = ActiveMidlet.optional();
+		
+		// {@squirreljme.error AD01 No MIDlet is currently active.}
+		if (rv == null)
+			throw new IllegalStateException("AD01");
+		
+		return rv;
+	}
+	
+	/**
+	 * Returns the currently active midlet.
+	 *
+	 * @return The active midlet or {@code null} if none is active.
+	 * @since 2019/04/14
+	 */
+	public static MIDlet optional()
+		throws IllegalStateException
+	{
 		// Lock
 		synchronized (_ACTIVE_LOCK)
 		{
-			// {@squirreljme.error AD01 No MIDlet is currently active.}
-			MIDlet rv = _ACTIVE_MIDLET;
-			if (rv == null)
-				throw new IllegalStateException("AD01");
-			
-			return rv;
+			return _ACTIVE_MIDLET;
 		}
 	}
 	
