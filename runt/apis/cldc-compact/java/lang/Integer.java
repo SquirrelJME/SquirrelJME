@@ -311,9 +311,50 @@ public final class Integer
 		throw new todo.TODO();
 	}
 	
-	public static int numberOfLeadingZeros(int __a)
+	/**
+	 * Returns the number of leading zeros in the bit representation.
+	 *
+	 * @param __v The value to process.
+	 * @return The number of leading zeros.
+	 * @since 2019/04/14
+	 */
+	public static int numberOfLeadingZeros(int __v)
 	{
-		throw new todo.TODO();
+		// If the number is negative then there will never be any leading
+		// zeros at all
+		if (__v < 0)
+			return 0;
+		
+		int n = 0;
+		
+		if (__v <= 0x0000FFFF)
+		{
+			n += 16;
+			__v <<= 16;
+		}
+		
+		if (__v <= 0x00FFFFFF)
+		{
+			n += 8;
+			__v <<= 8;
+		}
+		
+		if (__v <= 0x0FFFFFFF)
+		{
+			n += 4;
+			__v <<= 4;
+		}
+		
+		if (__v <= 0x3FFFFFFF)
+		{
+			n += 2;
+			__v <<= 2;
+		}
+			
+		if (__v <= 0x7FFFFFFF)
+			n++;
+		
+		return n;
 	}
 	
 	/**
