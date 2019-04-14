@@ -56,7 +56,9 @@ public class RecordStore
 	 */
 	static
 	{
-		// See if there is a service
+		// See if there is a service, this will fall back to an implementation
+		// that is not shared and will only exist as long as the current
+		// program is running
 		VinylRecord vr;
 		try
 		{
