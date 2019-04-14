@@ -96,6 +96,17 @@ public final class AccessedField
 	}
 	
 	/**
+	 * Returns the field access time.
+	 *
+	 * @return The access time.
+	 * @since 2019/04/14
+	 */
+	public final FieldAccessTime time()
+	{
+		return this.time;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2019/03/24
 	 */
@@ -110,6 +121,17 @@ public final class AccessedField
 				this.time + "+" + this.type + "+" + this.field));
 		
 		return rv;
+	}
+	
+	/**
+	 * Returns the field access type.
+	 *
+	 * @return The access type.
+	 * @since 2019/04/14
+	 */
+	public final FieldAccessType type()
+	{
+		return this.type;
 	}
 }
 

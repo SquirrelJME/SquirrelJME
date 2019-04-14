@@ -90,6 +90,24 @@ public final class Minimizer
 		// Process all methods
 		__TempMethods__[] methods = this.__doMethods();
 		
+		// Write static and instance field counts
+		for (int i = 0; i < 2; i++)
+		{
+			__TempFields__ tf = fields[i];
+			
+			__dos.writeInt(tf._count);
+			__dos.writeInt(tf._bytes);
+			__dos.writeInt(tf._objects);
+		}
+		
+		// Write static and instance method counts
+		for (int i = 0; i < 2; i++)
+		{
+			__TempMethods__ tm = methods[i];
+			
+			__dos.writeInt(tm._count);
+		}
+		
 		throw new todo.TODO();
 	}
 	

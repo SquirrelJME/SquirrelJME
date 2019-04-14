@@ -104,5 +104,16 @@ public final class InvokedMethod
 		
 		return rv;
 	}
+	
+	/**
+	 * Returns the invocation type.
+	 *
+	 * @return The invocation type.
+	 * @since 2019/04/14
+	 */
+	public final InvokeType type()
+	{
+		return this.type;
+	}
 }
 
