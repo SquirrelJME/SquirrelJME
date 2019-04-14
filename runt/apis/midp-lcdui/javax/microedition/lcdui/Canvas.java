@@ -160,6 +160,12 @@ public abstract class Canvas
 	/** Should this be ran full-screen? */
 	volatile boolean _isfullscreen;
 	
+	/** Service repaint counter. */
+	volatile int _paintservice;
+	
+	/** Was a repaint requested? */
+	volatile boolean _paintwanted;
+	
 	/**
 	 * Initializes the base canvas.
 	 *
@@ -435,13 +441,37 @@ public abstract class Canvas
 		// Tell the display to repaint itself
 		Display display = this.getCurrentDisplay();
 		if (display != null)
+		{
+			// Used for service repaints
+			this._paintwanted = true;
+			
+			// Call paint
 			NativeDisplayAccess.displayRepaint(
 				display._state.nativeid, __x, __y, __w, __h);
+		}
 	}
 	
+	/**
+	 * This forces any pending repaint requests to be serviced immedietely,
+	 * blocking until paint has been called. If the canvas is not visible on
+	 * the display or if there are no pending repaints then this call does
+	 * nothing.
+	 *
+	 * Note that if the caller of this method and the paint method uses a lock
+	 * then a deadlock may occur.
+	 *
+	 * @since 2019/04/14
+	 */
 	public final void serviceRepaints()
 	{
-		throw new todo.TODO();
+		// If a paint was not requested then do nothing
+		if (!this._paintwanted)
+			return;
+		
+		// Just wait until the service count changes
+		int nowpsv = this._paintservice;
+		while (nowpsv == this._paintservice)
+			break;
 	}
 	
 	/**
@@ -667,6 +697,13 @@ public abstract class Canvas
 		catch (Throwable t)
 		{
 			t.printStackTrace();
+		}
+		
+		// Increase paint service count and say that the paint was done
+		finally
+		{
+			this._paintservice++;
+			this._paintwanted = false;
 		}
 	}
 	
