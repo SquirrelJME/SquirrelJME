@@ -30,6 +30,32 @@ public final class UIEventTranslate
 	}
 	
 	/**
+	 * Converts the given game action to a key code.
+	 *
+	 * @param __gc The game action to convert.
+	 * @return The resulting key code or {@code 0} if the game action is not
+	 * valid.
+	 * @since 2019/04/14
+	 */
+	public static final int gameActionToKeyCode(int __gc)
+	{
+		switch (__gc)
+		{
+			case Canvas.UP:		return NonStandardKey.VGAME_UP;
+			case Canvas.DOWN:	return NonStandardKey.VGAME_DOWN;
+			case Canvas.LEFT:	return NonStandardKey.VGAME_LEFT;
+			case Canvas.RIGHT:	return NonStandardKey.VGAME_RIGHT;
+			case Canvas.FIRE:	return NonStandardKey.VGAME_FIRE;
+			case Canvas.GAME_A:	return NonStandardKey.VGAME_A;
+			case Canvas.GAME_B:	return NonStandardKey.VGAME_B;
+			case Canvas.GAME_C:	return NonStandardKey.VGAME_C;
+			case Canvas.GAME_D:	return NonStandardKey.VGAME_D;
+		}
+		
+		return 0;
+	}
+	
+	/**
 	 * Converts the key code to a game action.
 	 *
 	 * @param __kc The key code.
