@@ -187,6 +187,17 @@ public final class MethodDescriptor
 	}
 	
 	/**
+	 * Returns all of the arguments.
+	 *
+	 * @return The arguments.
+	 * @since 2019/04/14
+	 */
+	public FieldDescriptor[] arguments()
+	{
+		return this._args.clone();
+	}
+	
+	/**
 	 * Returns the number of arguments this descriptor has.
 	 *
 	 * @return The number of arguments this descriptor has.

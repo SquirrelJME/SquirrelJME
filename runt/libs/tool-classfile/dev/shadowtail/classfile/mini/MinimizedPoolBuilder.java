@@ -23,6 +23,7 @@ import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodHandle;
 import net.multiphasicapps.classfile.MethodName;
+import net.multiphasicapps.collections.IntegerList;
 
 /**
  * This class is used to build the constant pool for a minimized class.
@@ -38,6 +39,16 @@ public final class MinimizedPoolBuilder
 	/** Parts list. */
 	private final List<int[]> _parts =
 		new ArrayList<>();
+	
+	/**
+	 * Initializes the base pool.
+	 *
+	 * @since 2019/04/14
+	 */
+	{
+		// Add null entry to mean nothing
+		this._pool.put(0, null);
+	}
 	
 	/**
 	 * Adds the constant pool entry and returns the index to it.
@@ -56,26 +67,42 @@ public final class MinimizedPoolBuilder
 		// Field access
 		if (__v instanceof AccessedField)
 		{
-			AccessedField v = (AccessedField)__v;
+			AccessedField af = (AccessedField)__v;
 			return this.__add(__v,
-				this.add(v.field()));
+				af.time().ordinal(), af.type().ordinal(),
+				this.add(af.field()));
 		}
 		
 		// Class name
 		else if (__v instanceof ClassName)
-			return this.__add(__v,
-				this.add(__v.toString()));
+		{
+			// Write representation of array type and its component type to
+			// make sure they are always added
+			ClassName cn = (ClassName)__v;
+			if (cn.isArray())
+				return this.__add(__v,
+					this.add(__v.toString()), this.add(cn.componentType()));
+			
+			// Not an array
+			else
+				return this.__add(__v,
+					this.add(__v.toString()), 0);
+		}
 		
 		// Record handle for the method
 		else if (__v instanceof InvokedMethod)
+		{
+			InvokedMethod iv = (InvokedMethod)__v;
+			
 			return this.__add(__v,
-				this.add(((InvokedMethod)__v).handle()));
+				iv.type().ordinal(), this.add(iv.handle()));
+		}
 		
-		// Field/Method descriptor
-		else if (__v instanceof FieldDescriptor ||
-			__v instanceof MethodDescriptor)
+		// Field descriptor
+		else if (__v instanceof FieldDescriptor)
 			return this.__add(__v,
-				this.add(__v.toString()));
+				this.add(__v.toString()), this.add(
+					((FieldDescriptor)__v).className()));
 		
 		// Field/Method name
 		else if (__v instanceof FieldName ||
@@ -93,6 +120,39 @@ public final class MinimizedPoolBuilder
 				this.add(v.memberType()));
 		}
 		
+		// Method descriptor, add parts of the descriptor naturally
+		else if (__v instanceof MethodDescriptor)
+		{
+			MethodDescriptor md = (MethodDescriptor)__v;
+			
+			// Setup with initial string
+			List<Integer> sub = new ArrayList<>();
+			sub.add(this.add(__v.toString()));
+			
+			// Put in argument count
+			FieldDescriptor[] args = md.arguments();
+			sub.add(args.length);
+			
+			// Add return value
+			FieldDescriptor rv = md.returnValue();
+			sub.add((rv == null ? 0 : this.add(rv)));
+			
+			// Fill in arguments
+			FieldDescriptor[] margs = md.arguments();
+			for (FieldDescriptor marg : margs)
+				sub.add(this.add(marg));
+			
+			// Convert to integer
+			int n = sub.size();
+			int[] isubs = new int[n];
+			for (int i = 0; i < n; i++)
+				isubs[i] = sub.get(i);
+			
+			// Put in descriptor with all the pieces
+			return this.__add(__v,
+				isubs);
+		}
+		
 		// Method handle
 		else if (__v instanceof MethodHandle)
 		{
@@ -102,6 +162,12 @@ public final class MinimizedPoolBuilder
 				this.add(v.name()),
 				this.add(v.descriptor()));
 		}
+		
+		// String
+		else if (__v instanceof String)
+			return this.__add(__v,
+				__v.hashCode(),
+				((String)__v).length());
 		
 		// Untranslated
 		else
@@ -131,8 +197,9 @@ public final class MinimizedPoolBuilder
 			return pre;
 		
 		// Debug
-		todo.DEBUG.note("Pool add %s %s (%d parts)", __v.getClass().getName(),
-			__v, __parts.length);
+		todo.DEBUG.note("Pool add %s %s (%d parts: %s)",
+			__v.getClass().getName(), __v, __parts.length,
+			new IntegerList(__parts));
 		
 		// Otherwise it gets added at the end
 		int rv = pool.size();
