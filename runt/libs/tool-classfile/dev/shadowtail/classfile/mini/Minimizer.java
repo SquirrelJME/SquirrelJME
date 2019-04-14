@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.ConstantValue;
 import net.multiphasicapps.classfile.Field;
 import net.multiphasicapps.classfile.FieldDescriptor;
 import net.multiphasicapps.classfile.FieldName;
@@ -257,7 +258,7 @@ public final class Minimizer
 			
 			// Constant value may be null, but if it is not then add it
 			// to the pool
-			Object cval = f.constantValue();
+			ConstantValue cval = f.constantValue();
 			
 			// Build field information
 			MinimizedField q;
@@ -267,7 +268,8 @@ public final class Minimizer
 				fsz,
 				pool.<FieldName>addSelf(f.name()),
 				pool.<FieldDescriptor>addSelf(f.type()),
-				(cval == null ? null : pool.<Object>addSelf(cval)))));
+				(cval == null ? null :
+					pool.<Object>addSelf(cval.boxedValue())))));
 			
 			// Debug
 			todo.DEBUG.note("Add field %s", q);
