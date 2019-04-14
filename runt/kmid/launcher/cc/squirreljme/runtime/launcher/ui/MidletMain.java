@@ -39,6 +39,14 @@ import javax.microedition.swm.TaskStatus;
 public class MidletMain
 	extends MIDlet
 {
+	/**
+	 * {@squirreljme.property cc.squirreljme.autolaunch=program This specifies
+	 * the program that should be auto-launched once the program list has been
+	 * processed.}
+	 */
+	public static final String AUTOLAUNCH_PROPERTY =
+		"cc.squirreljme.autolaunch";
+	
 	/** Timer used to reschedule things. */
 	static final Timer _TIMER =
 		new Timer("LauncherRecoverThread");
@@ -64,6 +72,28 @@ public class MidletMain
 	
 	/** The programs which are mapped to the list. */
 	private volatile __Program__[] _programs;
+	
+	/** Automatic launch program. */
+	private volatile String _autolaunch;
+	
+	/**
+	 * Initializes the launcher.
+	 *
+	 * @since 2019/04/14
+	 */
+	{
+		// Do not crash if we cannot read properties
+		String al = null;
+		try
+		{
+			al = System.getProperty(AUTOLAUNCH_PROPERTY);
+		}
+		catch (SecurityException e)
+		{
+		}
+		
+		this._autolaunch = al;
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -180,6 +210,17 @@ public class MidletMain
 		// Re-flip on this display
 		if (_MAIN_DISPLAY.getCurrent() == programlist)
 			_MAIN_DISPLAY.setCurrent(programlist);
+		
+		// Automatically launch a program?
+		String autolaunch = this._autolaunch;
+		if (autolaunch != null)
+		{
+			this._autolaunch = null;
+			
+			// Launch it
+			System.err.println("Auto-launching " + autolaunch + "...");
+			this.__launch(autolaunch);
+		}
 	}
 	
 	/**
@@ -219,6 +260,99 @@ public class MidletMain
 	}
 	
 	/**
+	 * Launches the specified program.
+	 *
+	 * @param __p The program to launch.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/14
+	 */
+	private void __launch(__Program__ __p)
+		throws NullPointerException
+	{
+		if (__p == null)
+			throw new NullPointerException("NARG");
+		
+		// Indication that something is happening
+		this.programlist.setTitle("Launching " + __p.displayname + "...");
+		
+		// Launch this program
+		__p.__launch();
+		
+		// All done so, return the title back
+		this.programlist.setTitle("SquirrelJME Launcher");
+	}
+	
+	/**
+	 * Launches the specified program.
+	 *
+	 * @param __p The program to launch.
+	 * @since 2019/04/14
+	 */
+	private void __launch(int __p)
+	{
+		__Program__[] programs = this._programs;
+		
+		// Do nothing if out of bounds
+		if (__p < 0 || __p >= programs.length)
+			return;
+		
+		// Launch
+		this.__launch(programs[__p]);
+	}
+	
+	/**
+	 * Launches the specified program.
+	 *
+	 * @param __p The program to launch.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/14
+	 */
+	private void __launch(String __p)
+		throws NullPointerException
+	{
+		if (__p == null)
+			throw new NullPointerException("NARG");
+		
+		// This will use multiple matches, with less priority following
+		__Program__ bysj = null,
+			bydn = null,
+			bysn = null,
+			bymc = null;
+		
+		// Find all the possible matches for a program
+		for (__Program__ p : this._programs)
+			if (bysj == null && __p.equalsIgnoreCase(p.squirreljmename))
+				bysj = p;
+			else if (bydn == null && __p.equalsIgnoreCase(p.displayname))
+				bydn = p;
+			else if (bysn == null && __p.equalsIgnoreCase(p.suitename))
+				bysn = p;
+			else if (bymc == null && __p.equalsIgnoreCase(p.main))
+				bymc = p;
+		
+		// Use a priority based order
+		__Program__ p = (bysj != null ? bysj :
+			(bydn != null ? bydn :
+			(bysn != null ? bysn :
+			(bymc != null ? bymc : null))));
+		if (p != null)
+		{
+			this.__launch(p);
+			return;
+		}
+		
+		// If everything fails, just assume it is an index to a program on the
+		// program list
+		try
+		{
+			this.__launch(Integer.parseInt(__p));
+		}
+		catch (NumberFormatException e)
+		{
+		}
+	}
+	
+	/**
 	 * This is the handler for commands.
 	 *
 	 * @since 2018/11/16
@@ -236,23 +370,15 @@ public class MidletMain
 			// Launching a program?
 			if (__c == MidletMain.this.launchcommand)
 			{
-				__Program__[] programs = MidletMain.this._programs;
-				
 				// If the list is empty then do nothing because it will NPE
 				// or out of bounds if the selection is off
 				List list = (List)__d;
 				int seldx = list.getSelectedIndex();
-				if (list.size() <= 0 || seldx < 0 || seldx >= programs.length)
+				if (list.size() <= 0 || seldx < 0)
 					return;
 				
-				// Indication that something is happening
-				MidletMain.this.programlist.setTitle("Launching...");
-				
-				// Launch this program
-				programs[seldx].__launch();
-				
-				// All done so, return the title back
-				programlist.setTitle("SquirrelJME Launcher");
+				// Call other launcher
+				MidletMain.this.__launch(seldx);
 			}
 			
 			// Exiting the VM?
