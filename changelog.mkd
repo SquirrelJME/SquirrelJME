@@ -45,11 +45,18 @@ More detailed changes:
        to launched tasks.
    * Changes
      * Moved the graphics drawing operations to another class.
+     * Made all the graphics operations not throw a `TODO`, instead they will
+       just draw a placeholder graphic.
    * Removals
-     * `net.multiphasicapps.classfile.ExecutableCode`, not used.
+     * `net.multiphasicapps.classfile.ExecutableCode` was not used.
  * Programs and Libraries
    * `demo-hello`
      * Made the system properties array `final`.
+   * `launcher`
+     * Added the system property `cc.squirreljme.autolaunch` to automatically
+       launch a program once the program list is read.
+     * When a program is launched, instead of saying just "Loading..." instead
+       allow show the program which is being loaded in the title.
    * `tac`
      * Override standard output and forward to standard error while a test is
        running, so things are not kludged.

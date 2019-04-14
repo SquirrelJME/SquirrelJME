@@ -28,11 +28,17 @@ final class __Program__
 	/** The suite that is used. */
 	protected final Suite suite;
 	
+	/** The name of the suite. */
+	protected final String suitename;
+	
 	/** The main entry point. */
 	protected final String main;
 	
 	/** The display name of this suite. */
 	protected final String displayname;
+	
+	/** The SquirrelJME name. */
+	protected final String squirreljmename;
 	
 	/** The active task. */
 	final __ActiveTask__ _activetask;
@@ -56,9 +62,35 @@ final class __Program__
 		
 		this.suite = __suite;
 		this.main = __main;
-		this.displayname = (__dn != null ? __dn :
-			__suite.getName() + " " + __main);
+		
+		String suitename = __suite.getName();
+		this.suitename = suitename;
+		
+		String displayname;
+		this.displayname = (displayname = (__dn != null ? __dn :
+			suitename + " " + __main));
 		this._activetask = __at;
+		
+		// Try to get the internal project name for SquirrelJME, this is used
+		// for quick launching
+		String sjn = __suite.getAttributeValue(
+			"X-SquirrelJME-InternalProjectName");
+		if (sjn == null)
+		{
+			// Only add normal characters
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0, n = displayname.length(); i < n; i++)
+			{
+				char c = displayname.charAt(i);
+				if (Character.isDigit(c) || Character.isLowerCase(c) ||
+					Character.isUpperCase(c))
+					sb.append(c);
+			}
+			
+			sjn = sb.toString();
+		}
+		
+		this.squirreljmename = sjn.toLowerCase();
 	}
 	
 	/**
