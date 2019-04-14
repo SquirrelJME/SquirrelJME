@@ -35,10 +35,10 @@ public final class MinimizedMethod
 	public final MethodDescriptor type;
 	
 	/** Translated method code. */
-	private final byte[] _code;
+	final byte[] _code;
 	
 	/** Line number table. */
-	private final byte[] _lines;
+	final byte[] _lines;
 	
 	/**
 	 * Initializes the minimized method.

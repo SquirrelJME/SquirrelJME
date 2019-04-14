@@ -259,10 +259,10 @@ public interface NativeInstructionType
 		0xFC;
 	
 	/**
-	 * Compare and exchange. 
+	 * Load from pool. 
 	 * {@code iiiixxxx}.
 	 */
-	public static final int BREAKPOINT =
+	public static final int LOAD_POOL =
 		0xFD;
 	
 	/**
@@ -273,10 +273,10 @@ public interface NativeInstructionType
 		0xFE;
 	
 	/**
-	 * Load from pool. 
+	 * Compare and exchange. 
 	 * {@code iiiixxxx}.
 	 */
-	public static final int LOAD_POOL =
+	public static final int BREAKPOINT =
 		0xFF;
 }
 

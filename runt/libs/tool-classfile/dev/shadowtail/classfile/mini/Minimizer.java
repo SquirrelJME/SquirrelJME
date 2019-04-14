@@ -162,7 +162,7 @@ public final class Minimizer
 			__TempFields__ tf = fields[i];
 			
 			// Get bytes
-			byte[] data = tf.getBytes();
+			byte[] data = tf.getBytes(pool);
 			fielddata[i] = data;
 			
 			// Offset and size
@@ -180,7 +180,7 @@ public final class Minimizer
 			__TempMethods__ tm = methods[i];
 			
 			// Get bytes
-			byte[] data = tm.getBytes();
+			byte[] data = tm.getBytes(pool);
 			methoddata[i] = data;
 			
 			// Offset and size
