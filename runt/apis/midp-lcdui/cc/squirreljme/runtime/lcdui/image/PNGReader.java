@@ -157,6 +157,10 @@ public class PNGReader
 						
 						// Transparency information
 					case 0x74524E53:
+						// Set as alpha existing, so the argb is not set with
+						// a fully opaque alpha
+						this._hasalpha = true;
+						
 						throw new todo.TODO();
 					
 						// Unknown, ignore
@@ -174,6 +178,17 @@ public class PNGReader
 					want, real, lasttype));
 		}
 		
+		// {@squirreljme.error EB0v No image data has been loaded.}
+		int[] argb = this._argb;
+		if (argb == null)
+			throw new IOException("EB0v");
+		
+		// If no alpha channel is set or there is no transparency info then
+		// make all pixels opaque
+		if (!this._hasalpha)
+			for (int i = 0, n = argb.length; i < n; i++)
+				argb[i] = 0xFF000000;
+		
 		// Process the image chunk now that the other information was read
 		if (imagechunk != null)
 			try (DataInputStream data = new DataInputStream(
@@ -181,11 +196,6 @@ public class PNGReader
 			{
 				this.__parseImage(data);
 			}
-		
-		// {@squirreljme.error EB0v No image data has been loaded.}
-		int[] argb = this._argb;
-		if (argb == null)
-			throw new IOException("EB0v");
 		
 		// Create image
 		return Image.createRGBImage(argb, this._width, this._height,
@@ -244,7 +254,8 @@ public class PNGReader
 		this._bitdepth = bitdepth;
 		this._colortype = colortype;
 		
-		// These two color types have alpha
+		// These two color types have alpha, this field may be set later on
+		// if a transparency chunk was found
 		this._hasalpha = (colortype == 4 || colortype == 6);
 		
 		// {@squirreljme.error EB10 Only deflate compressed PNG images are
@@ -436,13 +447,11 @@ public class PNGReader
 						color = (channels[0] << 16) | (channels[1] << 8) |
 							channels[2];
 					
-					// Alpha channel
+					// Alpha channel defined in the image data, if it is
+					// defined in another chunk then the ARGB will be set
+					// already
 					if (colortype == 4 || colortype == 6)
 						color |= (channels[numchannels - 1] << 24);
-					
-					// No alpha
-					else
-						color |= 0xFF000000;
 					
 					// Place the pixel on the output buffer
 					// Interlaced
