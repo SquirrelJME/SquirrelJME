@@ -695,6 +695,39 @@ public final class Minimizer
 	}
 	
 	/**
+	 * Writes variable size unsigned short, only 15-bits are possible to be
+	 * written.
+	 *
+	 * @param __dos The stream to write to.
+	 * @param __v The value to write.
+	 * @throws IOException ON write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/14
+	 */
+	public static final void writeVUShort(DataOutputStream __dos, int __v)
+		throws IOException, NullPointerException
+	{
+		if (__dos == null)
+			throw new NullPointerException("NARG");
+		
+		// Single byte form (7-bit)
+		if (__v >= 0 && __v < 127)
+			__dos.writeByte(__v);
+		
+		// Double byte form (15-bits)
+		else if (__v >= 128 && __v < 32768)
+		{
+			__dos.writeByte(0x80 | (__v >>> 8));
+			__dos.writeByte(__v & 0xFF);
+		}
+		
+		// {@squirreljme.error JC3q Variable unsigned short out of range.
+		// (The value)}
+		else
+			throw new InvalidClassFormatException("JC3q " + __v);
+	}
+	
+	/**
 	 * Checks that the unsigned short is in range.
 	 *
 	 * @param __v The value to check.
