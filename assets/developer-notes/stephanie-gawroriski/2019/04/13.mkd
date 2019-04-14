@@ -1,0 +1,158 @@
+# 2019/04/13
+
+## 09:08
+
+When a local is stored into, I need to actually make sure there are no cached
+usages of the local. If there are then state operations need to be made to
+flush the old cache values off the stack. Then it will work. At least
+initially for state transitions, I can just do basic clipping for a start
+since that is the first thing I hit.
+
+## 09:37
+
+I should add access to mnemonics which have not been aliased to something
+else. Then I could use that to make a basic implementation of all the various
+system functions that can be used by SummerCoat and RatufaCoat.
+
+## 09:38
+
+Also for RatufaCoat and CircleCI, I am going to want to test both i386 and
+powerpc which hopefully if it works they work everywhere. But at least in that
+case QEMU can be used to run both binaries.
+
+## 09:41
+
+Okay so for the compiler, I should have a reference on the stack of all the
+string constants used. So like push constant string which is then stored and
+cached accordingly. This way I can use this for special methods which
+represent NNCC instructions. Basically I can fake invocations for each of the
+various instructions that exist.
+
+## 09:50
+
+Actually this could be changed to keep track of all constants that are used.
+This could be used for some more advanced optimizations. I think before I
+continue where I am I would want this to work. It could potentially be used
+to make smarter decisions on the code itself. I mean I can have a complete
+assumption kind of system and tracker. Although really I think my current code
+is fine. I could though have change count hints in the state although this
+would complicate things a bit. But actually this could be kept separate. It
+would just have to be passed to the various stack operations. This could just
+be a single object passed to the various operations which is used to set some
+assumptions. I mean it could work potentially.
+
+## 09:58
+
+Actually this could be a part of the stack state. It will of course be its
+own object. It would really be a change tracker of sorts. Assumptions would
+always be done on the value register rather than the position register. It
+would definitely optimize things. But I think at this point that would be
+creeping too much. The next release I can do these optimizations by making
+assumptions and mix it in somehow so that it is still compatible.
+
+## 10:12
+
+Since locals are never cached, would not `doLocalStore` and `doLocalSet` just
+end up being the same? I mean there is no caching at all and it for the most
+part just ends up exactly the same anyway. Just that local store knows the
+type to set on the stack. So I guess that works.
+
+## 10:34
+
+Also the stack enqueue lists are broken, if there are duplicates then the
+stack start index will be off.
+
+## 11:01
+
+So now that is done, this means store and iinc operations are correct and no
+longer will absolutely make all the all wrong code appear because of cached
+values not being corrected.
+
+## 11:02
+
+So now, I should eat. Then additionally after that, I will implement the
+uncaching of the various items potentially when doing a cache flush. I will
+have to handle this for every transition possibility. But basically I will
+run through the stack first. I really should eat before I think more about
+this since I am a bit hungry.
+
+## 11:04
+
+Of course the stack is empty, so I can just for now do a TODO and worry about
+that when that case happens. I can easily handle locals because they always
+are never cached and point to other values. So effectively there will just be
+uncounts. It is never a possibility that a NOTHING transitions into a
+SOMETHING because then the value would be undefined. So this is all the work
+that is needed for locals, just removal of locals and that is all.
+
+## 11:47
+
+I have an idea for benchmarks. Doing stuff like graphics operations in images
+for example. I could do like lines at first and stuff like alpha blending or
+otherwise.
+
+## 11:55
+
+Still need to fix the enqueues, but also I definitely need to reduce all of
+the tons of exception initializations and jumps into something a bit more
+compact. But basically, they can become instead `ClassStateOperationsAndLabel`
+pretty much I suppose? No idea.
+
+## 11:56
+
+Maybe it is just class and label, because the label that is used for the
+exception is used and the stack is not even though. So it can just become
+`ClassAndLabel` which will work perfectly fine. Then the exception handlers
+can just become enqueues and state operations, dropping the stack because
+that is made up from the result of the stack moving around and such. Then
+`StateOperationsAndTarget` can be duplicated to one that takes a label
+instead of a target. Then I can use that for the exception handlers as well
+and have them all just fall into each other and such. Then that should
+reduce the large amounts of duplicate code that is involved. So hopefully
+this works and such. But I can figure out more of this after I eat.
+
+## 12:55
+
+Okay so the exception stuff can be changed as well. It will become...
+`ExceptionCleanupOperationsAndTable` with has two `StateOperations` in it for
+well actually instead what can be used is state operations for when the target
+exception handler needs to be met then an enqueue for remaining cleaning along
+with the exception table. Then a full enqueue table can be made after the fact
+for exceptions.
+
+## 13:55
+
+Wow so doing that cut about 50 instructions for the make exceptions which
+honestly is very nice. I never expected it to be that good.
+
+## 14:31
+
+Well I was kind of thinking about this possibility and it seems it has
+actually happened now. But it is this `Transition is required! 40 -> 41` which
+means that the naturally flowing instruction reaches a different state. So I
+guess what I will need to do is to create lots of jumps to naturally flowing
+instructions just in case transitions are needed. Well, I do not think I
+really need that.
+
+## 14:33
+
+Oh, well I already do that so I guess it should be fine I hope.
+
+## 14:44
+
+I could repurpose the enqueue for collisions, since it has stack and local
+information.
+
+## 16:35
+
+Okay so things are going well. Currently my transition is hitting a case where
+an int want to turn to an object. This failed, but there is probably a stack
+map which clears locals. So I need to handle this and make sure that any
+missing slots are destroyed as needed and this should fix it.
+
+## 17:06
+
+Well, now I have the entire code processed for once... which is amazing. So
+now I just have to dump everything to the minimized class format! Which will
+be rather interesting. Dumping should be far simpler compared to the stack
+caching compiler.
