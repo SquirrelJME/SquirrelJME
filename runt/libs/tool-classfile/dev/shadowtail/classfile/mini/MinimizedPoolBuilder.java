@@ -174,9 +174,10 @@ public final class MinimizedPoolBuilder
 				__v.hashCode(),
 				((String)__v).length());
 		
-		// Untranslated
+		// {@squirreljme.error JC3p Cannot add the specified entry to the
+		// constant pool. (The class type)}
 		else
-			return this.__add(__v);
+			throw new IllegalArgumentException("JC3p " + __v.getClass());
 	}
 	
 	/**
@@ -211,10 +212,10 @@ public final class MinimizedPoolBuilder
 			// Write all the values in the pool, the value in the map is
 			// ignored because that just stores the index identifier
 			int pdx = 0;
-			for (Object value : pool.values())
+			for (Object value : pool.keySet())
 			{
 				// Get type and part information
-				MinimizedPoolEntryType et = (value == null ?
+				MinimizedPoolEntryType et = (pdx == 0 ?
 					MinimizedPoolEntryType.NULL :
 					MinimizedPoolEntryType.ofClass(value.getClass()));
 				int[] part = parts.get(pdx++);
