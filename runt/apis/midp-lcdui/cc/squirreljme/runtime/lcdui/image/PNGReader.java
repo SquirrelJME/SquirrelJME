@@ -451,7 +451,7 @@ public class PNGReader
 					
 					// Linear
 					else
-						argb[out++] = color;
+						argb[out++] |= color;
 				}
 			}
 			
