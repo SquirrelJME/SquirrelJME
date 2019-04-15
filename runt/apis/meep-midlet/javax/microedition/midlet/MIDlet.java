@@ -129,7 +129,8 @@ public abstract class MIDlet
 	
 	/**
 	 * Used by the application to notify the MIDlet that it is being destroyed
-	 * and resources should be cleaned up and such.
+	 * and resources should be cleaned up and such. When this is called the
+	 * program will be terminated.
 	 *
 	 * @since 2019/04/15
 	 */
