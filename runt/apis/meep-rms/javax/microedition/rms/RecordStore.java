@@ -613,11 +613,9 @@ public class RecordStore
 			RecordStoreFullException, RecordStoreNotFoundException,
 			SecureRecordStoreException, SecurityException
 	{
-		MIDlet mid = ActiveMidlet.get();
 		return RecordStore.__openRecordStore(__n,
-			mid.getAppProperty("MIDlet-Vendor"),
-			mid.getAppProperty("MIDlet-Name"), __create, __auth, __write,
-			__pass);
+			SuiteIdentifier.currentVendor(), SuiteIdentifier.currentName(),
+			__create, __auth, __write, __pass);
 	}
 	
 	/**
