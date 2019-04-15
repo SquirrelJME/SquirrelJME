@@ -10,6 +10,10 @@
 
 package cc.squirreljme.runtime.rms;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * This is a vinyl record which stores all of its data within in memory
  * buffers.
@@ -23,6 +27,14 @@ public final class TemporaryVinylRecord
 	protected final BasicVinylLock lock =
 		new BasicVinylLock();
 	
+	/** Tracks which are available. */
+	private final Map<Integer, Track> _tracks =
+		new LinkedHashMap<>();
+	
+	/** Next ID for storage. */
+	private final int _nextid =
+		1;
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2019/04/14
@@ -30,7 +42,18 @@ public final class TemporaryVinylRecord
 	@Override
 	public final int[] listRecords()
 	{
-		throw new todo.TODO();
+		Set<Integer> keys = this._tracks.keySet();
+		
+		// Setup basic integer array
+		int n = keys.size();
+		int[] rv = new int[n];
+		
+		// Fill in keys
+		int at = 0;
+		for (int v : keys)
+			rv[at++] = v;
+		
+		return rv;
 	}
 	
 	/**
@@ -61,6 +84,15 @@ public final class TemporaryVinylRecord
 	public final long recordSuiteIdentifier(int __rid)
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Represents a track in the record.
+	 *
+	 * @since 2019/04/14
+	 */
+	public static final class Track
+	{
 	}
 }
 
