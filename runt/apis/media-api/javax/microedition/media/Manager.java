@@ -10,6 +10,8 @@
 
 package javax.microedition.media;
 
+import cc.squirreljme.runtime.media.NullPlayer;
+import cc.squirreljme.runtime.media.SystemNanoTimeBase;
 import java.io.InputStream;
 import java.io.IOException;
 import javax.microedition.media.protocol.DataSource;
@@ -34,9 +36,9 @@ public final class Manager
 	public static Player createPlayer(InputStream __a, String __b)
 		throws IOException, MediaException
 	{
-		todo.DEBUG.note("createPlayer(%s, %s)%n", __a, __b);
+		todo.TODO.note("createPlayer(%s, %s)%n", __a, __b);
 		if (true)
-			throw new MediaException("TODO");
+			return new NullPlayer(__b);
 		
 		if (false)
 			throw new IOException();
@@ -48,9 +50,9 @@ public final class Manager
 	public static Player createPlayer(String __a)
 		throws IOException, MediaException
 	{
-		todo.DEBUG.note("createPlayer(%s)%n", __a);
+		todo.TODO.note("createPlayer(%s)%n", __a);
 		if (true)
-			throw new MediaException("TODO");
+			return new NullPlayer("application/octet-stream");
 			
 		if (false)
 			throw new IOException();
@@ -62,10 +64,10 @@ public final class Manager
 	public static Player createPlayer(DataSource __a)
 		throws IOException, MediaException
 	{
-		todo.DEBUG.note("createPlayer(%s)%n", __a);
+		todo.TODO.note("createPlayer(%s)%n", __a);
 		if (true)
-			throw new MediaException("TODO");
-			
+			return new NullPlayer(__a.getContentType());
+		
 		if (false)
 			throw new IOException();
 		if (false)
@@ -85,10 +87,15 @@ public final class Manager
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the default timebase.
+	 *
+	 * @return The default timebase.
+	 * @since 2019/04/15
+	 */
 	public static TimeBase getSystemTimeBase()
 	{
-		todo.DEBUG.note("getSystemTimeBase()%n");
-		throw new todo.TODO();
+		return new SystemNanoTimeBase();
 	}
 	
 	public static void playTone(int __a, int __b, int __c)
