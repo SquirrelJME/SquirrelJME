@@ -11,12 +11,16 @@
 package javax.microedition.rms;
 
 import cc.squirreljme.runtime.cldc.lang.ImplementationClass;
+import cc.squirreljme.runtime.cldc.asm.SuiteAccess;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import cc.squirreljme.runtime.rms.VinylLock;
 import cc.squirreljme.runtime.rms.VinylRecord;
+import cc.squirreljme.runtime.rms.SuiteIdentifier;
 import cc.squirreljme.runtime.rms.TemporaryVinylRecord;
 import cc.squirreljme.runtime.swm.SuiteName;
 import cc.squirreljme.runtime.swm.SuiteVendor;
+import java.util.ArrayList;
+import java.util.List;
 import javax.microedition.midlet.MIDlet;
 
 /**
@@ -545,10 +549,26 @@ public class RecordStore
 	 */
 	public static String[] listRecordStores()
 	{
+		// Our suite identifier to find our own records
+		long mysid = SuiteIdentifier.currentIdentifier();
+		
+		// Lock
 		VinylRecord vinyl = _VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
-			throw new todo.TODO();
+			List<String> rv = new ArrayList<>();
+			
+			// Go through all IDs and locate record store info
+			for (int rid : vinyl.listRecords())
+			{
+				// Do not add records which belong to another suite
+				if (mysid != vinyl.recordSuiteIdentifier(rid))
+					continue;
+				
+				rv.add(vinyl.recordName(rid));
+			}
+			
+			return rv.<String>toArray(new String[rv.size()]);
 		}
 	}
 	
