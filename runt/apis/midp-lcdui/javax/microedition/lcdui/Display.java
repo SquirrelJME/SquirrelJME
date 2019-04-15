@@ -876,6 +876,8 @@ public class Display
 	public boolean vibrate(int __d)
 		throws IllegalArgumentException
 	{
+		if (true)
+			return false;
 		throw new todo.TODO();
 		/*
 		// {@squirreljme.error EB1h Cannot vibrate for a negative duration.}

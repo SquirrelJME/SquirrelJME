@@ -618,8 +618,8 @@ public class PNGReader
 					if (colortype == 4 || colortype == 6)
 						color |= (channels[numchannels - 1] << 24);
 					
-					// If there is a full transparency map then find the color
-					// that will be set.
+					// If there is a full transparency map then any colors
+					// which are not in the map will be opaque.
 					if (hastransmap)
 						if (Arrays.binarySearch(transmap, color) < 0)
 							color |= 0xFF000000;
