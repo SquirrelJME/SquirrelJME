@@ -127,9 +127,15 @@ public abstract class MIDlet
 		return null;
 	}
 	
+	/**
+	 * Used by the application to notify the MIDlet that it is being destroyed
+	 * and resources should be cleaned up and such.
+	 *
+	 * @since 2019/04/15
+	 */
 	public final void notifyDestroyed()
 	{
-		throw new todo.TODO();
+		todo.DEBUG.note("Notification of destruction");
 	}
 	
 	/**
