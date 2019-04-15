@@ -13,6 +13,7 @@ package javax.microedition.lcdui;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This is a list which is volatile but not synchronized but is backed by an
@@ -117,6 +118,50 @@ final class __VolatileList__<T>
 	{
 		return (Iterator<T>)
 			((Object)(Arrays.<Object>asList(this._values).iterator()));
+	}
+	
+	/**
+	 * Removes the specified item from the list.
+	 *
+	 * @param __v The item to remove.
+	 * @return {@code true} if it was removed.
+	 * @since 2019/04/15
+	 */
+	@SuppressWarnings({"unchecked"})
+	public final boolean remove(T __v)
+	{
+		Object[] values = this._values;
+		
+		// Check if we have this item first
+		int dx = 0, n = values.length;
+		for (; dx < n; dx++)
+		{
+			Object t = values[dx];
+			
+			// No match
+			if ((__v == null) != (t == null) || !Objects.equals(t, __v))
+				continue;
+			
+			// Stop
+			break;
+		}
+		
+		// No match
+		if (dx >= n)
+			return false;
+		
+		// Setup new array and copy all elements before and after
+		Object[] newvalues = new Object[n - 1];
+		for (int i = 0; i < dx; i++)
+			newvalues[i] = values[i];
+		for (int i = dx + 1, o = dx; i < n; i++, o++)
+			newvalues[o] = values[i];
+			
+		// Use this new array
+		this._values = newvalues;
+		
+		// Was changed
+		return true;
 	}
 	
 	/**

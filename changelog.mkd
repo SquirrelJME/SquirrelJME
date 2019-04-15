@@ -45,15 +45,16 @@ More detailed changes:
        to launched tasks.
      * `java.util.Vector`, was missing.
    * Changes
-     * Moved the graphics drawing operations to another class.
      * Made all the graphics operations not throw a `TODO`, instead they will
        just draw a placeholder graphic.
-     * When a `Displayable` is made current and it is already the current
-       displayed item, always set the title since it may have been placed in
-       the background by another application calling `setCurrent()`.
+     * Moved the graphics drawing operations to another class.
+     * Update the `Display` when a command is added or removed.
      * Use a default title for a `Displayable` if one has not been set, this
        will be in the order of the suite name, the main class, and if those
        are not valid then "SquirrelJME" will be used instead.
+     * When a `Displayable` is made current and it is already the current
+       displayed item, always set the title since it may have been placed in
+       the background by another application calling `setCurrent()`.
    * Removals
      * `net.multiphasicapps.classfile.ExecutableCode` was not used.
  * Programs and Libraries
