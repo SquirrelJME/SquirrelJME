@@ -1,0 +1,44 @@
+# 2019/04/14
+
+## 09:39
+
+This minimizer writing is going well, following a good rest.
+
+## 15:33
+
+Okay so the mimized class for the `ByteDeque` class is 25K which is pretty
+big. Seems most of it is taken up by the code table. I could probably write
+the native code a bit more compact. I use shorts for everything but I could
+invent a 1 or 2 byte format. Since these values are unsigned, if the highest
+bit is set then read another byte. This would reduce the memory requirements
+because a single class taking up 25K is quite a bunch!
+
+## 15:56
+
+Okay so before and after the constant pool shortening:
+
+ * Before: 25,256 bytes
+ * After : 24,944 bytes
+
+So I did not reduce the space much.
+
+## 16:05
+
+Making the hashCode in STRING just be 16-bits gives me:
+
+ * 24,748 bytes
+
+So I think all the space is being taken up by the minimized instructions
+because there are a ton of 16-bit values.
+
+## 16:21
+
+I think I need to step away from the minimizer a bit and write a `javap`
+utility. This will be something that will integrate with the class format
+code along with the minimizer code. Definitely it should be made to help me
+debug the minimized format.
+
+## 21:17
+
+The good thing about suites is that I do not need the vendor and suite name,
+so I can use my idea to just keep them as hashcodes and such.
