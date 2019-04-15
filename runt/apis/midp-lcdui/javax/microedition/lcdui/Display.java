@@ -709,6 +709,9 @@ public class Display
 		if (__exit instanceof Alert)
 			throw new IllegalStateException("EB1e");
 		
+		// Debug
+		todo.DEBUG.note("Showing alert \"%s\"", __show._message);
+		
 		// Perform call on this display
 		throw new todo.TODO();
 		/*

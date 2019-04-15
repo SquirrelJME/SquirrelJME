@@ -27,20 +27,17 @@ public class Alert
 	public static final int FOREVER =
 		-2;
 	
-	/** The title of the alert. */
-	private final String _title;
-	
 	/** The message to display. */
-	private volatile String _message;
+	volatile String _message;
 	
 	/** The image to use. */
-	private volatile Image _image;
+	volatile Image _image;
 	
 	/** The type of alert this is. */
-	private volatile AlertType _type;
+	volatile AlertType _type;
 	
 	/** The duration the alert should last in milliseconds. */
-	private volatile int _timeout =
+	volatile int _timeout =
 		FOREVER;
 	
 	/**
@@ -66,7 +63,12 @@ public class Alert
 	public Alert(String __title, String __message, Image __icon,
 		AlertType __type)
 	{
-		throw new todo.TODO();
+		this._message = __message;
+		this._image = __icon;
+		this._type = __type;
+		
+		// Call internal title set
+		this.__setTitle(__title);
 	}
 	
 	@Override
@@ -194,8 +196,6 @@ public class Alert
 	public void setTimeout(int __ms)
 		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
-		/*
 		// {@squirreljme.error EB15 The specified number of milliseconds is
 		// negative. (The number of milliseconds specified)}
 		if (__ms < 0 && __ms != FOREVER)
@@ -203,7 +203,6 @@ public class Alert
 		
 		// Set
 		this._timeout = __ms;
-		*/
 	}
 	
 	/**
