@@ -21,7 +21,7 @@ import java.util.Set;
  * @since 2018/12/13
  */
 public final class TemporaryVinylRecord
-	extends VinylRecord
+	implements VinylRecord
 {
 	/** The lock for this record. */
 	protected final BasicVinylLock lock =
@@ -37,10 +37,48 @@ public final class TemporaryVinylRecord
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2018/12/14
+	 */
+	@Override
+	public final VinylLock lock()
+	{
+		return this.lock.lock();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/15
+	 */
+	@Override
+	public final int pageAdd(int __vid, byte[] __b, int __o, int __l,
+		int __tag)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Locate the volume
+		Volume vol = this._volumes.get(__vid);
+		if (vol == null)
+			return ERROR_NO_VOLUME;
+		
+		// Create new page
+		int pid = vol._nextpid++;
+		Page page;
+		vol._pages.put(pid, (page = new Page(pid)));
+		
+		// Store page data, will return the PID or error
+		return page.setData(__b, __o, __l, __tag);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2019/04/14
 	 */
 	@Override
-	public final int createVolume(long __sid, String __n, boolean __wo)
+	public final int volumeCreate(long __sid, String __n, boolean __wo)
 		throws NullPointerException
 	{
 		if (__n == null)
@@ -60,7 +98,7 @@ public final class TemporaryVinylRecord
 	 * @since 2019/04/14
 	 */
 	@Override
-	public final int[] listVolumes()
+	public final int[] volumeList()
 	{
 		Set<Integer> keys = this._volumes.keySet();
 		
@@ -78,20 +116,20 @@ public final class TemporaryVinylRecord
 	
 	/**
 	 * {@inheritDoc}
-	 * @since 2018/12/14
-	 */
-	@Override
-	public final VinylLock lock()
-	{
-		return this.lock.lock();
-	}
-	
-	/**
-	 * {@inheritDoc}
 	 * @since 2019/04/14
 	 */
 	@Override
 	public final String volumeName(int __vid)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/15
+	 */
+	@Override
+	public final boolean volumeOtherWritable(int __vid)
 	{
 		throw new todo.TODO();
 	}
@@ -107,7 +145,82 @@ public final class TemporaryVinylRecord
 	}
 	
 	/**
-	 * Represents a track in the record.
+	 * Represents a single page.
+	 *
+	 * @since 2019/04/15
+	 */
+	public static final class Page
+	{
+		/** The page ID. */
+		protected final int pid;
+		
+		/** The page data. */
+		volatile byte[] _data;
+		
+		/** The tag. */
+		volatile int _tag;
+		
+		/**
+		 * Initializes the page.
+		 *
+		 * @param __pid The page ID.
+		 * @since 2019/04/15
+		 */
+		public Page(int __pid)
+		{
+			// Setup PID
+			this.pid = __pid;
+		}
+		
+		/**
+		 * Sets the page data.
+		 *
+		 * @param __pid The page ID.
+		 * @param __b The data.
+		 * @param __o Offset into data.
+		 * @param __l The length of data.
+		 * @return The page ID or a negative value if an error.
+		 * @throws IndexOutOfBoundsException If the offset and/or length
+		 * exceed the array bounds.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2019/04/15
+		 */
+		public final int setData(byte[] __b, int __o, int __l, int __tag)
+			throws IndexOutOfBoundsException, NullPointerException
+		{
+			if (__b == null)
+				throw new NullPointerException("NARG");
+			if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+				throw new IndexOutOfBoundsException("IOOB");
+			
+			// Create copy of the data
+			try
+			{
+				// Allocate and copy data
+				byte[] place = new byte[__l];
+				for (int i = __o, o = 0; o < __l; i++, o++)
+					place[o] = __b[i];
+				
+				// Store this data
+				this._data = place;
+			}
+			
+			// No memory to store this data?
+			catch (OutOfMemoryError e)
+			{
+				return ERROR_NO_MEMORY;
+			}
+			
+			// Set tag
+			this._tag = __tag;
+			
+			// Return PID
+			return this.pid;
+		}
+	}
+	
+	/**
+	 * Represents a single volume.
 	 *
 	 * @since 2019/04/14
 	 */
@@ -124,6 +237,14 @@ public final class TemporaryVinylRecord
 		
 		/** Allow write by others? */
 		protected final boolean writeother;
+		
+		/** Pages in this volume. */
+		final Map<Integer, Page> _pages = 
+			new LinkedHashMap<>();
+		
+		/** The next page ID. */
+		volatile int _nextpid =
+			1;
 		
 		/**
 		 * Initializes the volume.
