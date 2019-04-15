@@ -357,7 +357,11 @@ public class AdvancedGraphics
 	public void drawImage(Image __i, int __x, int __y, int __anchor)
 		throws IllegalArgumentException, NullPointerException
 	{
-		this.__unimplemented(__x, __y, "drawImage");
+		if (__i == null)
+			throw new NullPointerException("NARG");
+		
+		this.drawRegion(__i, 0, 0, __i.getWidth(), __i.getHeight(), 0,
+			__x, __y, __anchor);
 	}
 	
 	/**
@@ -588,7 +592,11 @@ public class AdvancedGraphics
 		int __anch)
 		throws IllegalArgumentException, NullPointerException
 	{
-		this.__unimplemented(__xdest, __ydest, "drawRegion");
+		if (__src == null)
+			throw new NullPointerException("NARG");
+		
+		this.drawRegion(__src, __xsrc, __ysrc, __wsrc, __hsrc, __trans,
+			__xdest, __ydest, __anch, __wsrc, __hsrc);
 	}
 	
 	/**
