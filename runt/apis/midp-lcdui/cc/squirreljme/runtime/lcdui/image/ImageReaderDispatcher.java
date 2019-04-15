@@ -64,6 +64,10 @@ public class ImageReaderDispatcher
 		else if (head == '<')
 			throw new todo.TODO();
 		
+		// XPM?
+		else if (head == '/')
+			return new XPMReader().readImage(__is);
+		
 		// {@squirreljme.error EB0s Could not detect the image format used
 		// specified by the starting byte. (The starting byte)}
 		else
