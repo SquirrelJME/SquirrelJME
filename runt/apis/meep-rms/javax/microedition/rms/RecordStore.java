@@ -135,7 +135,21 @@ public class RecordStore
 			RecordStoreNotOpenException, RecordStoreException,
 			RecordStoreFullException
 	{
-		throw new todo.TODO();
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new ArrayIndexOutOfBoundsException("IOOB");
+		
+		// {@squirreljme.error DC04 Cannot write record to read-only store.}
+		if (!this._write)
+			throw new RecordStoreException("DC04");
+		
+		// Lock
+		VinylRecord vinyl = _VINYL;
+		try (VinylLock lock = vinyl.lock())
+		{
+			throw new todo.TODO();
+		}
 	}
 	
 	/**
@@ -218,7 +232,12 @@ public class RecordStore
 		throws InvalidRecordIDException, RecordStoreNotOpenException,
 			RecordStoreException, SecurityException
 	{
-		throw new todo.TODO();
+		// Lock
+		VinylRecord vinyl = _VINYL;
+		try (VinylLock lock = vinyl.lock())
+		{
+			throw new todo.TODO();
+		}
 	}
 	
 	/**
@@ -243,7 +262,12 @@ public class RecordStore
 		RecordComparator __c, boolean __ku, int[] __tags)
 		throws RecordStoreNotOpenException
 	{
-		throw new todo.TODO();
+		// Lock
+		VinylRecord vinyl = _VINYL;
+		try (VinylLock lock = vinyl.lock())
+		{
+			throw new todo.TODO();
+		}
 	}
 	
 	/**
@@ -273,7 +297,12 @@ public class RecordStore
 	public long getLastModified()
 		throws RecordStoreNotOpenException
 	{
-		throw new todo.TODO();
+		// Lock
+		VinylRecord vinyl = _VINYL;
+		try (VinylLock lock = vinyl.lock())
+		{
+			throw new todo.TODO();
+		}
 	}
 	
 	/**
@@ -305,7 +334,12 @@ public class RecordStore
 	public int getNextRecordID()
 		throws RecordStoreException, RecordStoreNotOpenException
 	{
-		throw new todo.TODO();
+		// Lock
+		VinylRecord vinyl = _VINYL;
+		try (VinylLock lock = vinyl.lock())
+		{
+			throw new todo.TODO();
+		}
 	}
 	
 	/**
@@ -324,7 +358,12 @@ public class RecordStore
 		throws InvalidRecordIDException, RecordStoreException,
 			RecordStoreNotOpenException
 	{
-		throw new todo.TODO();
+		// Lock
+		VinylRecord vinyl = _VINYL;
+		try (VinylLock lock = vinyl.lock())
+		{
+			throw new todo.TODO();
+		}
 	}
 	
 	/**
@@ -349,7 +388,12 @@ public class RecordStore
 			NullPointerException, RecordStoreException,
 			RecordStoreNotOpenException
 	{
-		throw new todo.TODO();
+		// Lock
+		VinylRecord vinyl = _VINYL;
+		try (VinylLock lock = vinyl.lock())
+		{
+			throw new todo.TODO();
+		}
 	}
 	
 	/**
@@ -367,7 +411,12 @@ public class RecordStore
 		throws InvalidRecordIDException, RecordStoreException,
 			RecordStoreNotOpenException
 	{
-		throw new todo.TODO();
+		// Lock
+		VinylRecord vinyl = _VINYL;
+		try (VinylLock lock = vinyl.lock())
+		{
+			throw new todo.TODO();
+		}
 	}
 	
 	/**
@@ -380,7 +429,12 @@ public class RecordStore
 	public RecordStoreInfo getRecordStoreInfo()
 		throws RecordStoreNotOpenException
 	{
-		throw new todo.TODO();
+		// Lock
+		VinylRecord vinyl = _VINYL;
+		try (VinylLock lock = vinyl.lock())
+		{
+			throw new todo.TODO();
+		}
 	}
 	
 	/**
@@ -429,7 +483,12 @@ public class RecordStore
 		throws InvalidRecordIDException, RecordStoreException,
 			RecordStoreNotOpenException
 	{
-		throw new todo.TODO();
+		// Lock
+		VinylRecord vinyl = _VINYL;
+		try (VinylLock lock = vinyl.lock())
+		{
+			throw new todo.TODO();
+		}
 	}
 	
 	/**
@@ -443,7 +502,12 @@ public class RecordStore
 	public int getVersion()
 		throws RecordStoreNotOpenException
 	{
-		throw new todo.TODO();
+		// Lock
+		VinylRecord vinyl = _VINYL;
+		try (VinylLock lock = vinyl.lock())
+		{
+			throw new todo.TODO();
+		}
 	}
 	
 	/**
@@ -480,7 +544,12 @@ public class RecordStore
 		throws IllegalArgumentException, IllegalStateException,
 			RecordStoreException, SecurityException
 	{
-		throw new todo.TODO();
+		// Lock
+		VinylRecord vinyl = _VINYL;
+		try (VinylLock lock = vinyl.lock())
+		{
+			throw new todo.TODO();
+		}
 	}
 	
 	/**
@@ -507,7 +576,12 @@ public class RecordStore
 			NullPointerException, RecordStoreException,
 			RecordStoreFullException, RecordStoreNotOpenException
 	{
-		throw new todo.TODO();
+		// Lock
+		VinylRecord vinyl = _VINYL;
+		try (VinylLock lock = vinyl.lock())
+		{
+			throw new todo.TODO();
+		}
 	}
 	
 	/**
@@ -530,7 +604,7 @@ public class RecordStore
 			NullPointerException, RecordStoreException,
 			RecordStoreFullException, RecordStoreNotOpenException
 	{
-		this.setRecord(__id, __b, __o, __l, getTag(__id));
+		this.setRecord(__id, __b, __o, __l, this.getTag(__id));
 	}
 	
 	/**
