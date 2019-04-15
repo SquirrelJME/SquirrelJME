@@ -169,8 +169,7 @@ public class PNGReader
 							// additionally so that the decoder does not need
 							// to worry about the data being compressed at
 							// all...
-							byte[] xtrachunk = PNGReader.__chunkLater(
-								new ZLibDecompressor(data));
+							byte[] xtrachunk = PNGReader.__chunkLater(data);
 							
 							// Setup new array which contains the original
 							// data but has more space
@@ -186,8 +185,7 @@ public class PNGReader
 						
 						// The first chunk
 						else
-							imagechunk = PNGReader.__chunkLater(
-								new ZLibDecompressor(data));
+							imagechunk = PNGReader.__chunkLater(data);
 						break;
 						
 						// Transparency information
@@ -244,7 +242,8 @@ public class PNGReader
 		
 		// Process the image chunk now that the other information was read
 		if (imagechunk != null)
-			try (InputStream data = new ByteArrayInputStream(imagechunk))
+			try (InputStream data = new ZLibDecompressor(
+				new ByteArrayInputStream(imagechunk)))
 			{
 				int colortype = this._colortype;
 				
@@ -538,21 +537,21 @@ public class PNGReader
 			limit = width * height;
 		
 		// Keep reading in data
-		for (int o = 0; o < limit; o++)
+		for (int o = 0; o < limit;)
 		{
 			// Read in all values, the mask is used to keep the sign bit in
 			// place but also cap the value to 255!
-			int a = __dis.read() & 0x800000FF,
-				r = __dis.read() & 0x800000FF,
+			int r = __dis.read() & 0x800000FF,
 				g = __dis.read() & 0x800000FF,
-				b = (__alpha ? (__dis.read() & 0x800000FF) : 0xFF);
+				b = __dis.read() & 0x800000FF,
+				a = (__alpha ? (__dis.read() & 0x800000FF) : 0xFF);
 			
 			// Have any hit EOF? Just need to OR all the bits
 			if ((r | g | b | a) < 0)
 				break;
 			
 			// Write pixel
-			argb[o] = (a << 24) | (r << 16) | (g << 8) | b;
+			argb[o++] = (a << 24) | (r << 16) | (g << 8) | b;
 		}
 	}
 	
