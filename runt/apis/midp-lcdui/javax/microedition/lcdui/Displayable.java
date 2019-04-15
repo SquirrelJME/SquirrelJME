@@ -277,7 +277,7 @@ public abstract class Displayable
 	 * @param __t The title to use, {@code null} clears it.
 	 * @since 2019/04/14
 	 */
-	private void __setTitle(String __t)
+	void __setTitle(String __t)
 	{
 		// Cache it for later return
 		this._title = __t;
