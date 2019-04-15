@@ -136,6 +136,9 @@ public abstract class MIDlet
 	public final void notifyDestroyed()
 	{
 		todo.DEBUG.note("Notification of destruction");
+		
+		// Kill the program
+		System.exit(0);
 	}
 	
 	/**
