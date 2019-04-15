@@ -12,6 +12,7 @@ package cc.squirreljme.runtime.lcdui.gfx;
 
 import cc.squirreljme.runtime.lcdui.font.SQFFont;
 import javax.microedition.lcdui.Font;
+import javax.microedition.lcdui.game.Sprite;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.Text;
@@ -501,6 +502,9 @@ public class AdvancedGraphics
 		int __x, int __y, int __w, int __h, boolean __alpha)
 		throws NullPointerException
 	{
+		if (__data == null)
+			throw new NullPointerException("NARG");
+		
 		// Transform
 		__x += this.transx;
 		__y += this.transy;
@@ -609,7 +613,51 @@ public class AdvancedGraphics
 		int __anch, int __wdest, int __hdest)
 		throws IllegalArgumentException, NullPointerException
 	{
-		this.__unimplemented(__xdest, __ydest, "drawRegion");
+		if (__src == null)
+			throw new NullPointerException("NARG");
+		
+		// Is alpha used?
+		boolean alpha = __src.hasAlpha();
+		
+		// Extract image pixel data
+		int numpixels = __wsrc * __hsrc;
+		int[] data = new int[numpixels];
+		__src.getRGB(data, 0, __wsrc, __xsrc, __ysrc, __wsrc, __hsrc);
+		
+		// Perform the transformation, possibly returning a new data buffer
+		int[] transdim = new int[2];
+		data = this.__transform(__trans, data, __wsrc, __hsrc, transdim);
+		
+		// Re-read the new image sizes!
+		__wsrc = transdim[0];
+		__hsrc = transdim[1];
+		
+		// Anchor horizontally?
+		if ((__anch & HCENTER) == HCENTER)
+			__xdest -= __wsrc >>> 1;
+		
+		// Anchor right?
+		else if ((__anch & RIGHT) == RIGHT)
+			__xdest -= __wsrc;
+		
+		// Anchor middle?
+		if ((__anch & VCENTER) == VCENTER)
+			__ydest -= __hsrc >>> 1;
+		
+		// Anchor bottom?
+		else if ((__anch & BOTTOM) == BOTTOM)
+			__ydest -= __hsrc;
+		
+		// If this is non-stretched we can just use the standard RGB
+		// drawing function!
+		if (__wsrc == __wdest && __hsrc == __hdest)
+			this.drawRGB(data, 0, __wsrc, __xdest, __ydest, __wsrc, __hsrc,
+				alpha);
+		
+		// Use stretchy draw
+		else
+			this.__drawRGBStretched(data, 0, __wsrc, __xdest, __ydest,
+				__wsrc, __hsrc, alpha, __wdest, __hdest);
 	}
 	
 	/**
@@ -1268,6 +1316,33 @@ public class AdvancedGraphics
 	}
 	
 	/**
+	 * Draws stretched RGB.
+	 *
+	 * @param __data The data to draw.
+	 * @param __off The offset into the array.
+	 * @param __scanlen The scan length.
+	 * @param __x X position.
+	 * @param __y Y position.
+	 * @param __wsrc Width of source.
+	 * @param __hsrc Height of source.
+	 * @param __alpha Use alpha channel?
+	 * @param __wdest Width of destination.
+	 * @param __hdest Height of destination.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/15
+	 */
+	private void __drawRGBStretched(int[] __data, int __off, int __scanlen,
+		int __x, int __y, int __wsrc, int __hsrc, boolean __alpha,
+		int __wdest, int __hdest)
+		throws NullPointerException
+	{
+		if (__data == null)
+			throw new NullPointerException("NARG");
+		
+		this.__unimplemented(__x, __y, "drawRGBStretched");
+	}
+	
+	/**
 	 * Draws the given text object.
 	 *
 	 * @param __t The text object to draw.
@@ -1531,6 +1606,94 @@ public class AdvancedGraphics
 			rv |= _CLIP_LEFT;
 		
 		return rv;
+	}
+	
+	/**
+	 * Transforms the data in the buffer.
+	 *
+	 * @param __trans The transformation to perform.
+	 * @param __data The input data.
+	 * @param __wsrc The width of the source.
+	 * @param __hsrc The width of the destination.
+	 * @param __dimout Output dimensions.
+	 * @return The resulting data is translated, this may be the same as
+	 * {@code __data}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/15
+	 */
+	private static final int[] __transform(int __trans, int[] __data,
+		int __wsrc, int __hsrc, int[] __dimout)
+		throws NullPointerException
+	{
+		if (__data == null)
+			throw new NullPointerException("NARG");
+		
+		// Destination width and height
+		boolean flipwh = false;
+		int wdest = __wsrc,
+			hdest = __hsrc;
+		
+		// Is mirroring to be used?
+		boolean mirror = false;
+		switch (__trans)
+		{
+			case Sprite.TRANS_MIRROR:
+				mirror = true;
+				__trans = Sprite.TRANS_NONE;
+				break;
+				
+			case Sprite.TRANS_MIRROR_ROT90:
+				mirror = true;
+				__trans = Sprite.TRANS_ROT90;
+				break;
+				
+			case Sprite.TRANS_MIRROR_ROT180:
+				mirror = true;
+				__trans = Sprite.TRANS_ROT180;
+				break;
+				
+			case Sprite.TRANS_MIRROR_ROT270:
+				mirror = true;
+				__trans = Sprite.TRANS_ROT270;
+				break;
+		}
+		
+		// Mirror the image
+		if (mirror)
+		{
+			todo.TODO.note("Mirror");
+		}
+		
+		// Perform translation
+		switch (__trans)
+		{
+			case Sprite.TRANS_ROT90:
+			case Sprite.TRANS_ROT180:
+			case Sprite.TRANS_ROT270:
+				todo.TODO.note("Transform %d", __trans);
+				
+				// Doing nothing
+			case Sprite.TRANS_NONE:
+			default:
+				break;
+		}
+		
+		// Flip width and height?
+		if (flipwh)
+		{
+			__dimout[0] = hdest;
+			__dimout[1] = wdest;
+		}
+		
+		// Keep the same
+		else
+		{
+			__dimout[0] = wdest;
+			__dimout[1] = hdest;
+		}
+		
+		// Return the data
+		return __data;
 	}
 }
 
