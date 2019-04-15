@@ -10,20 +10,32 @@
 
 package javax.microedition.media;
 
-
+/**
+ * This is thrown when there was a problem with the media.
+ *
+ * @since 2019/04/15
+ */
 public class MediaException
 	extends Exception
 {
+	/**
+	 * Initializes the exception with no message or cause.
+	 *
+	 * @since 2019/04/15
+	 */
 	public MediaException()
 	{
-		super();
-		throw new todo.TODO();
 	}
 	
-	public MediaException(String __a)
+	/**
+	 * Initializes the exception with the given message and no cause.
+	 *
+	 * @param __m The message to use.
+	 * @since 2019/04/15
+	 */
+	public MediaException(String __m)
 	{
-		super();
-		throw new todo.TODO();
+		super(__m);
 	}
 }
 

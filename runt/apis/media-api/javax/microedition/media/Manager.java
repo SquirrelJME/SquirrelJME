@@ -35,6 +35,9 @@ public final class Manager
 		throws IOException, MediaException
 	{
 		todo.DEBUG.note("createPlayer(%s, %s)%n", __a, __b);
+		if (true)
+			throw new MediaException("TODO");
+		
 		if (false)
 			throw new IOException();
 		if (false)
@@ -46,6 +49,9 @@ public final class Manager
 		throws IOException, MediaException
 	{
 		todo.DEBUG.note("createPlayer(%s)%n", __a);
+		if (true)
+			throw new MediaException("TODO");
+			
 		if (false)
 			throw new IOException();
 		if (false)
@@ -57,6 +63,9 @@ public final class Manager
 		throws IOException, MediaException
 	{
 		todo.DEBUG.note("createPlayer(%s)%n", __a);
+		if (true)
+			throw new MediaException("TODO");
+			
 		if (false)
 			throw new IOException();
 		if (false)
@@ -86,6 +95,9 @@ public final class Manager
 		throws MediaException
 	{
 		todo.DEBUG.note("playTone(%d, %d, %d)%n", __a, __b, __c);
+		if (true)
+			throw new MediaException("TODO");
+		
 		if (false)
 			throw new MediaException();
 		throw new todo.TODO();
