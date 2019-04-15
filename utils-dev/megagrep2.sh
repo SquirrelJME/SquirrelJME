@@ -34,8 +34,13 @@ __lastf=""
 __ldate="1970-01-01"
 echo "GET /bloblist?s=0&n=90000" | fossil http | 
 	html2text -width 1000 -style compact -ascii |
-	grep '^ *[0-9]\{1,\}  *[0-9a-fA-F]\{1,\}  *.*$' | sed 's/^ *//g' |
-	while read __line
+	grep '^ *[0-9]\{1,\}  *[0-9a-fA-F]\{1,\}  *.*$' | sed 's/^ *//g' > /tmp/$$
+
+# Count total lines
+__total="$(cat /tmp/$$ | wc -l)"
+
+# Massive line read
+cat /tmp/$$ | while read __line
 do
 	# Request was made?
 	if [ "$__requested" -eq "0" ]
@@ -63,9 +68,9 @@ do
 	fi
 	
 	# Indicate the number of files read
-	if [ "$(($__count % 500))" -eq "0" ]
+	if [ "$(($__count % 500))" -eq "0" ] || [ "$__count" -eq "1" ]
 	then
-		echo "...After $__ldate (counted $__count)..." 1>&2
+		echo "...After $__ldate (counted $__count/$__total)..." 1>&2
 	fi
 	__count="$(($__count + 1))"
 	
@@ -76,4 +81,7 @@ do
 		echo "$__uu:$__dd:$__match"
 	done
 done
+
+# Cleanup temporary
+rm -f /tmp/$$
 
