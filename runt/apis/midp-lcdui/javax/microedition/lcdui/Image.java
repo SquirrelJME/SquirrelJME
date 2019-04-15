@@ -188,6 +188,10 @@ public class Image
 		if (ex > iw || ey > ih)
 			throw new IllegalArgumentException("EB1u");
 		
+		// If the alpha channel is not used then all RGB data is forced to
+		// be fully opaque
+		int opqmask = (this._alpha ? 0 : 0xFF_000000);
+		
 		// Read image data
 		int[] data = this._data;
 		for (int sy = __y, wy = 0; sy < ey; sy++, wy++)
@@ -198,7 +202,7 @@ public class Image
 			
 			// Copy data
 			for (int sx = __x; sx < ex; sx++)
-				__b[dstoff++] = data[srcoff++];
+				__b[dstoff++] = data[srcoff++] | opqmask;
 		}
 	}
 	
