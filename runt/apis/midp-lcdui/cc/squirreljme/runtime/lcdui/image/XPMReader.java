@@ -73,7 +73,8 @@ public class XPMReader
 		// Read the color table
 		int[] codes = new int[numcolors];
 		int[] palette = new int[numcolors];
-		__readColorTable(cs, codes, palette, numcolors, pxchars);
+		boolean alpha = this.__readColorTable(
+			cs, codes, palette, numcolors, pxchars);
 		
 		// Target array
 		int area = width * height;
@@ -83,7 +84,7 @@ public class XPMReader
 		__readPixels(cs, width, height, data, pxchars, codes, palette);
 		
 		// Create image
-		return Image.createRGBImage(data, width, height, true);
+		return Image.createRGBImage(data, width, height, alpha);
 	}
 	
 	/**
@@ -181,13 +182,17 @@ public class XPMReader
 	 * @param __palette The output color palette.
 	 * @param __numcolors The number of colors used.
 	 * @param __pxchars The number of characters per pixel.
+	 * @return If an alpha channel was used.
 	 * @throws IOException On read errors.
 	 * @since 2016/05/22
 	 */
-	private void __readColorTable(Reader __cs, int[] __codes, int[] __palette,
-		int __numcolors, int __pxchars)
+	private boolean __readColorTable(Reader __cs, int[] __codes,
+		int[] __palette, int __numcolors, int __pxchars)
 		throws IOException
 	{
+		// Had alpha?
+		boolean hasalpha = false;
+		
 		// Decode the color palette
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < __numcolors; i++)
@@ -224,7 +229,10 @@ public class XPMReader
 				continue;
 			}
 			
+			// Decode color, detect if there is a transparent pixel
 			int col = __decodeColor(sb.subSequence(s + 1, e + 1));
+			if ((col & 0xFF_000000) != 0xFF_000000)
+				hasalpha = true;
 			
 			// Find the position to place the code at
 			int at = Arrays.binarySearch(__codes, 0, i, cx);
@@ -242,6 +250,9 @@ public class XPMReader
 			__codes[at] = cx;
 			__palette[at] = col;
 		}
+		
+		// Return the alpha channel status
+		return hasalpha;
 	}
 	
 	/**
