@@ -28,11 +28,11 @@ public final class TemporaryVinylRecord
 		new BasicVinylLock();
 	
 	/** Tracks which are available. */
-	private final Map<Integer, Track> _tracks =
+	private final Map<Integer, Volume> _volumes =
 		new LinkedHashMap<>();
 	
 	/** Next ID for storage. */
-	private final int _nextid =
+	private volatile int _nextvid =
 		1;
 	
 	/**
@@ -40,9 +40,29 @@ public final class TemporaryVinylRecord
 	 * @since 2019/04/14
 	 */
 	@Override
-	public final int[] listRecords()
+	public final int createVolume(long __sid, String __n, boolean __wo)
+		throws NullPointerException
 	{
-		Set<Integer> keys = this._tracks.keySet();
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		// Claim next ID
+		int rv = this._nextvid++;
+		
+		// Make the track and store it
+		this._volumes.put(rv, new Volume(rv, __sid, __n, __wo));
+		
+		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/14
+	 */
+	@Override
+	public final int[] listVolumes()
+	{
+		Set<Integer> keys = this._volumes.keySet();
 		
 		// Setup basic integer array
 		int n = keys.size();
@@ -71,7 +91,7 @@ public final class TemporaryVinylRecord
 	 * @since 2019/04/14
 	 */
 	@Override
-	public final String recordName(int __rid)
+	public final String volumeName(int __vid)
 	{
 		throw new todo.TODO();
 	}
@@ -81,7 +101,7 @@ public final class TemporaryVinylRecord
 	 * @since 2019/04/14
 	 */
 	@Override
-	public final long recordSuiteIdentifier(int __rid)
+	public final long volumeSuiteIdentifier(int __vid)
 	{
 		throw new todo.TODO();
 	}
@@ -91,8 +111,41 @@ public final class TemporaryVinylRecord
 	 *
 	 * @since 2019/04/14
 	 */
-	public static final class Track
+	public static final class Volume
 	{
+		/** The volume ID. */
+		protected final int vid;
+		
+		/** The suite identifier. */
+		protected final long sid;
+		
+		/** The suite name. */
+		protected final String name;
+		
+		/** Allow write by others? */
+		protected final boolean writeother;
+		
+		/**
+		 * Initializes the volume.
+		 *
+		 * @param __rid The volume ID.
+		 * @param __sid The suite identifier.
+		 * @param __name The name of the record.
+		 * @param __wo Allow write by others?
+		 * @throws NullPointerException On null arguments.
+		 * @since 2019/04/14
+		 */
+		public Volume(int __vid, long __sid, String __name, boolean __wo)
+			throws NullPointerException
+		{
+			if (__name == null)
+				throw new NullPointerException("NARG");
+			
+			this.vid = __vid;
+			this.sid = __sid;
+			this.name = __name;
+			this.writeother = __wo;
+		}
 	}
 }
 

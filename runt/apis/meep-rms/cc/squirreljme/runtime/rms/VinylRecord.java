@@ -15,18 +15,28 @@ package cc.squirreljme.runtime.rms;
  *
  * Vinyls have a single lock on them.
  *
- * @see VinylTrack
  * @since 2018/12/13
  */
 public abstract class VinylRecord
-{	
+{
 	/**
-	 * Returns the list of all available records.
+	 * Creates a new record.
 	 *
-	 * @return The list of available records.
+	 * @param __sid The suite identifier.
+	 * @param __n The name of the suite.
+	 * @param __wo Allow write other?
+	 * @return The identifier of the suite.
 	 * @since 2019/04/14
 	 */
-	public abstract int[] listRecords();
+	public abstract int createVolume(long __sid, String __n, boolean __wo);
+	
+	/**
+	 * Returns the list of all available stores.
+	 *
+	 * @return The list of available stores.
+	 * @since 2019/04/14
+	 */
+	public abstract int[] listVolumes();
 	
 	/**
 	 * Locks this record so only a single set of actions can be performed on
@@ -41,19 +51,19 @@ public abstract class VinylRecord
 	/**
 	 * Returns the name of the given record.
 	 *
-	 * @param __rid Record ID.
+	 * @param __vid Volume ID.
 	 * @return The name of the record or {@code null} if there is no name.
 	 * @since 2019/04/14
 	 */
-	public abstract String recordName(int __rid);
+	public abstract String volumeName(int __vid);
 	
 	/**
 	 * Returns the suite identifier for the given record.
 	 *
-	 * @param __rid Record ID.
+	 * @param __vid Volume ID.
 	 * @return The suite identifier or {@code 0} if it is not valid.
 	 * @since 2019/04/14
 	 */
-	public abstract long recordSuiteIdentifier(int __rid);
+	public abstract long volumeSuiteIdentifier(int __vid);
 }
 
