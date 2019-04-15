@@ -806,7 +806,21 @@ public class PNGReader
 			height = this._height,
 			limit = width * height;
 		
-		throw new todo.TODO();
+		// Keep reading in data
+		for (int o = 0; o < limit; o++)
+		{
+			// Read in all values, the mask is used to keep the sign bit in
+			// place but also cap the value to 255!
+			int a = __dis.read() & 0x800000FF,
+				y = __dis.read() & 0x800000FF;
+			
+			// Have any hit EOF? Just need to OR all the bits
+			if ((a | y) < 0)
+				break;
+			
+			// Write pixel
+			argb[o] = (a << 24) | (y << 16) | (y << 8) | y;
+		}
 	}
 	
 	/**
