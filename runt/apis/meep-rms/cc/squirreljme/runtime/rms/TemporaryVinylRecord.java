@@ -121,7 +121,10 @@ public final class TemporaryVinylRecord
 	@Override
 	public final String volumeName(int __vid)
 	{
-		throw new todo.TODO();
+		Volume vol = this._volumes.get(__vid);
+		if (vol == null)
+			return null;
+		return vol.name;
 	}
 	
 	/**
@@ -131,7 +134,10 @@ public final class TemporaryVinylRecord
 	@Override
 	public final boolean volumeOtherWritable(int __vid)
 	{
-		throw new todo.TODO();
+		Volume vol = this._volumes.get(__vid);
+		if (vol == null)
+			return false;
+		return vol.writeother;
 	}
 	
 	/**
@@ -141,7 +147,10 @@ public final class TemporaryVinylRecord
 	@Override
 	public final long volumeSuiteIdentifier(int __vid)
 	{
-		throw new todo.TODO();
+		Volume vol = this._volumes.get(__vid);
+		if (vol == null)
+			return 0L;
+		return vol.sid;
 	}
 	
 	/**
