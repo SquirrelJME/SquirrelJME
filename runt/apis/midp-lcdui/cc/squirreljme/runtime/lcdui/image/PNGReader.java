@@ -13,6 +13,7 @@ package cc.squirreljme.runtime.lcdui.image;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
+import java.io.InputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import javax.microedition.lcdui.Image;
@@ -170,8 +171,12 @@ public class PNGReader
 						// just smash them together
 						if (imagechunk != null)
 						{
-							// Read chunk data
-							byte[] xtrachunk = PNGReader.__chunkLater(data);
+							// Read chunk data, decompress the data
+							// additionally so that the decoder does not need
+							// to worry about the data being compressed at
+							// all...
+							byte[] xtrachunk = PNGReader.__chunkLater(
+								new ZLibDecompressor(data));
 							
 							// Setup new array which contains the original
 							// data but has more space
@@ -187,7 +192,8 @@ public class PNGReader
 						
 						// The first chunk
 						else
-							imagechunk = PNGReader.__chunkLater(data);
+							imagechunk = PNGReader.__chunkLater(
+								new ZLibDecompressor(data));
 						break;
 						
 						// Transparency information
@@ -221,12 +227,39 @@ public class PNGReader
 			for (int i = 0, n = argb.length; i < n; i++)
 				argb[i] = 0xFF000000;
 		
+		// {@squirreljme.error EB32 Unsupported bit-depth. (The bitdepth)}
+		int bitdepth = this._bitdepth;
+		if (Integer.bitCount(bitdepth) != 1 || bitdepth > 8)
+			throw new IOException("EB32 " + bitdepth);
+		
+		// {@squirreljme.error EB33 Adam7 interlacing not supported.}
+		if (this._adamseven)
+			throw new IOException("EB33");
+		
+		// {@squirreljme.error EB13 Paletted PNG image has no palette.}
+		if (this._colortype == 3 && this._palette == null)
+			throw new IOException("EB13");
+		
 		// Process the image chunk now that the other information was read
 		if (imagechunk != null)
-			try (DataInputStream data = new DataInputStream(
-				new ByteArrayInputStream(imagechunk)))
+			try (InputStream data = new ByteArrayInputStream(imagechunk))
 			{
-				this.__parseImage(data);
+				int colortype = this._colortype;
+				
+				// Grayscale or Indexed
+				if (colortype == 0 || colortype == 3)
+					this.__pixelIndexed(data, (colortype == 3));
+				
+				// RGB(A)
+				else if (colortype == 2 || colortype == 6)
+					this.__pixelsRGB(data, (colortype == 6));
+				
+				// YA (Grayscale + Alpha)
+				else
+					this.__pixelsYA(data);
+				
+				// Old image parse
+				/*this.__parseImage(data);*/
 			}
 		
 		// Create image
@@ -460,7 +493,8 @@ public class PNGReader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/28
 	 */
-	private void __parseImage(DataInputStream __in)
+	@Deprecated
+	private void __parseImage(InputStream __in)
 		throws IOException, NullPointerException
 	{
 		// Check
@@ -479,10 +513,6 @@ public class PNGReader
 			numpals = (palette != null ? palette.length : 0);
 		boolean adamseven = this._adamseven;
 		boolean hastransmap = (transmap != null);
-		
-		// {@squirreljme.error EB13 Paletted PNG image has no palette.}
-		if (colortype == 3 && palette == null)
-			throw new IOException("EB13");
 		
 		// Calculate the number of bytes that are used to represent the image
 		// pixel data.
@@ -514,8 +544,7 @@ public class PNGReader
 		int readbits = readcount * 8;
 		
 		// Input image data is compressed using deflate
-		try (DataInputStream data = new DataInputStream(
-			new ZLibDecompressor(__in)))
+		try (DataInputStream data = new DataInputStream(__in))
 		{
 			// Window used to pixel data, along with the remaining bits
 			long window = 0;
@@ -689,6 +718,98 @@ public class PNGReader
 	}
 	
 	/**
+	 * Decodes grayscale/indexed image data.
+	 *
+	 * @param __dis Input Stream.
+	 * @param __idx Indexed colors instead of just grayscale?
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/15
+	 */
+	private final void __pixelIndexed(InputStream __dis, boolean __idx)
+		throws IOException, NullPointerException
+	{
+		if (__dis == null)
+			throw new NullPointerException("NARG");
+			
+		int[] argb = this._argb;
+		int[] palette = this._palette;
+		int[] transmap = this._transmap;
+		int width = this._width,
+			height = this._height,
+			limit = width * height,
+			bitdepth = this._bitdepth,
+			bitmask = (1 << bitdepth) - 1,
+			numpals = (palette != null ? palette.length : 0);
+		boolean hastransmap = (transmap != null);
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Decodes RGB or RGBA image data.
+	 *
+	 * @param __dis Input Stream.
+	 * @param __alpha RGBA is used?
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/15
+	 */
+	private final void __pixelsRGB(InputStream __dis, boolean __alpha)
+		throws IOException, NullPointerException
+	{
+		if (__dis == null)
+			throw new NullPointerException("NARG");
+		
+		// Get output
+		int[] argb = this._argb;
+		int width = this._width,
+			height = this._height,
+			limit = width * height;
+		
+		// Keep reading in data
+		for (int o = 0; o < limit; o++)
+		{
+			// Read in all values, the mask is used to keep the sign bit in
+			// place but also cap the value to 255!
+			int a = __dis.read() & 0x800000FF,
+				r = __dis.read() & 0x800000FF,
+				g = __dis.read() & 0x800000FF,
+				b = (__alpha ? (__dis.read() & 0x800000FF) : 0xFF);
+			
+			// Have any hit EOF? Just need to OR all the bits
+			if ((r | g | b | a) < 0)
+				break;
+			
+			// Write pixel
+			argb[o] = (a << 24) | (r << 16) | (g << 8) | b;
+		}
+	}
+	
+	/**
+	 * Decodes image data.
+	 *
+	 * @param __dis Input Stream.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/15
+	 */
+	private final void __pixelsYA(InputStream __dis)
+		throws IOException, NullPointerException
+	{
+		if (__dis == null)
+			throw new NullPointerException("NARG");
+		
+		// Get output
+		int[] argb = this._argb;
+		int width = this._width,
+			height = this._height,
+			limit = width * height;
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Reads all the input data and returns a byte array for the data, so it
 	 * may be processed later.
 	 *
@@ -698,7 +819,7 @@ public class PNGReader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/14
 	 */
-	private static final byte[] __chunkLater(DataInputStream __dis)
+	private static final byte[] __chunkLater(InputStream __dis)
 		throws IOException, NullPointerException
 	{
 		if (__dis == null)
