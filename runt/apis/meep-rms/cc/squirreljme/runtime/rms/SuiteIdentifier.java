@@ -9,6 +9,9 @@
 
 package cc.squirreljme.runtime.rms;
 
+import cc.squirreljme.runtime.cldc.lang.ApiLevel;
+import cc.squirreljme.runtime.midlet.ActiveMidlet;
+import javax.microedition.midlet.MIDlet;
 import javax.microedition.swm.ManagerFactory;
 import javax.microedition.swm.Suite;
 import javax.microedition.swm.Task;
@@ -22,7 +25,13 @@ import javax.microedition.swm.TaskManager;
 public final class SuiteIdentifier
 {
 	/** The identifier for the current suite. */
-	private static long _CURRENTID;
+	private static long _CURRENT_ID;
+	
+	/** The current vendor. */
+	private static String _CURRENT_VENDOR;
+	
+	/** The current name. */
+	private static String _CURRENT_NAME;
 	
 	/**
 	 * Not used.
@@ -42,27 +51,96 @@ public final class SuiteIdentifier
 	public static long currentIdentifier()
 	{
 		// Already been cached?
-		long rv = _CURRENTID;
+		long rv = _CURRENT_ID;
 		if (rv != 0)
 			return rv;
 		
-		// Need to obtain the current suite
-		TaskManager tm = ManagerFactory.getTaskManager();
-		Task ct = tm.getCurrentTask();
-		Suite su = ct.getSuite();
+		// Set, cache, and store
+		_CURRENT_ID = (rv = SuiteIdentifier.identifier(
+			SuiteIdentifier.currentVendor(), SuiteIdentifier.currentName()));
+		return rv;
+	}
+	
+	/**
+	 * Returns the current name.
+	 *
+	 * @return The current name.
+	 * @since 2019/04/14
+	 */
+	public static String currentName()
+	{
+		String rv = _CURRENT_NAME;
+		if (rv != null)
+			return rv;
 		
-		// Get the name and vendor
-		String vend = su.getVendor(),
-			name = su.getName();
+		// Use task manager
+		if (ApiLevel.minimumLevel(ApiLevel.UNDEFINED))
+		{
+			// Need to obtain the current suite
+			TaskManager tm = ManagerFactory.getTaskManager();
+			Task ct = tm.getCurrentTask();
+			Suite su = ct.getSuite();
+			
+			// Get
+			rv = su.getName();
+		}
 		
-		// If these are not set, just make them set
-		if (vend == null)
-			vend = "UndefinedVendor";
-		if (name == null)
-			name = "UndefinedName";
+		// Try through the current MIDlet properties
+		if (rv == null)
+		{
+			MIDlet mid = ActiveMidlet.optional();
+			if (mid != null)
+				rv = mid.getAppProperty("MIDlet-Name");
+		}
 		
-		// Return the identifier for this suite
-		return (_CURRENTID = SuiteIdentifier.identifier(vend, name));
+		// Fallback
+		if (rv == null)
+			rv = "UndefinedName";
+		
+		// Cache and return
+		_CURRENT_NAME = rv;
+		return rv;
+	}
+	
+	/**
+	 * Returns the current vendor.
+	 *
+	 * @return The current vendor.
+	 * @since 2019/04/14
+	 */
+	public static String currentVendor()
+	{
+		String rv = _CURRENT_VENDOR;
+		if (rv != null)
+			return rv;
+		
+		// Use task manager
+		if (ApiLevel.minimumLevel(ApiLevel.UNDEFINED))
+		{
+			// Need to obtain the current suite
+			TaskManager tm = ManagerFactory.getTaskManager();
+			Task ct = tm.getCurrentTask();
+			Suite su = ct.getSuite();
+			
+			// Get
+			rv = su.getVendor();
+		}
+		
+		// Try through the current MIDlet properties
+		if (rv == null)
+		{
+			MIDlet mid = ActiveMidlet.optional();
+			if (mid != null)
+				rv = mid.getAppProperty("MIDlet-Vendor");
+		}
+		
+		// Fallback
+		if (rv == null)
+			rv = "UndefinedVendor";
+		
+		// Cache and return
+		_CURRENT_VENDOR = rv;
+		return rv;
 	}
 	
 	/**
