@@ -53,6 +53,15 @@ public class RecordStore
 	/** The vinyl record where everything is stored. */
 	static final VinylRecord _VINYL;
 	
+	/** The volume ID. */
+	private final int _vid;
+	
+	/** The name. */
+	private final String _name;
+	
+	/** Write to this? */
+	private final boolean _write;
+	
 	/**
 	 * Initializes the record store manager.
 	 *
@@ -84,12 +93,23 @@ public class RecordStore
 	}
 	
 	/**
-	 * Internally used.
+	 * Initializes the access to the record store.
 	 *
-	 * @since 2017/02/26
+	 * @param __vid The volume ID.
+	 * @param __name The name.
+	 * @param __w Write to this?
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/14
 	 */
-	private RecordStore()
+	private RecordStore(int __vid, String __name, boolean __w)
+		throws NullPointerException
 	{
+		if (__name == null)
+			throw new NullPointerException("NARG");
+		
+		this._vid = __vid;
+		this._name = __name;
+		this._write = __w;
 	}
 	
 	/**
@@ -266,7 +286,7 @@ public class RecordStore
 	public String getName()
 		throws RecordStoreNotOpenException
 	{
-		throw new todo.TODO();
+		return this._name;
 	}
 	
 	/**
@@ -559,13 +579,13 @@ public class RecordStore
 			List<String> rv = new ArrayList<>();
 			
 			// Go through all IDs and locate record store info
-			for (int rid : vinyl.listRecords())
+			for (int rid : vinyl.listVolumes())
 			{
 				// Do not add records which belong to another suite
-				if (mysid != vinyl.recordSuiteIdentifier(rid))
+				if (mysid != vinyl.volumeSuiteIdentifier(rid))
 					continue;
 				
-				rv.add(vinyl.recordName(rid));
+				rv.add(vinyl.volumeName(rid));
 			}
 			
 			return rv.<String>toArray(new String[rv.size()]);
@@ -783,30 +803,31 @@ public class RecordStore
 			throw new IllegalArgumentException("DC01 " + __name);
 		
 		// Get identifier, used to find the record
-		long sid = SuiteIdentifier.identifier(__vend, __suite);
+		long sid = SuiteIdentifier.identifier(__vend, __suite),
+			mysid = SuiteIdentifier.currentIdentifier();
 		
 		// Lock
 		VinylRecord vinyl = _VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
 			// Go through all records and try to find a pre-existing one
-			int existing = -1;
-			for (int rid : vinyl.listRecords())
+			int rv = -1;
+			for (int rid : vinyl.listVolumes())
 			{
 				// Belongs to another suite?
-				if (sid != vinyl.recordSuiteIdentifier(rid))
+				if (sid != vinyl.volumeSuiteIdentifier(rid))
 					continue;
 				
 				// Same name?
-				if (__name.equals(vinyl.recordName(rid)))
+				if (__name.equals(vinyl.volumeName(rid)))
 				{
-					existing = rid;
+					rv = rid;
 					break;
 				}
 			}
 			
 			// Open a record which already exists
-			if (existing >= 0)
+			if (rv >= 0)
 				throw new todo.TODO();
 			
 			// {@squirreljme.error DC02 Could not find the specified record
@@ -815,7 +836,14 @@ public class RecordStore
 				throw new RecordStoreNotFoundException(
 					String.format("DC02 %s %s %s", __name, __vend, __suite));
 			
-			throw new todo.TODO();
+			// {@squirreljme.error DC03 Could not create the record, it is
+			// likely that there is not enough space remaining.}
+			rv = vinyl.createVolume(sid, __name, __write);
+			if (rv < 0)
+				throw new RecordStoreFullException("DC03");
+			
+			// Since we created it, we can just return the info
+			return new RecordStore(rv, __name, sid == mysid || __write);
 		}
 	}
 }
