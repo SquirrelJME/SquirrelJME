@@ -10,7 +10,6 @@
 
 package javax.microedition.media;
 
-
 public interface Player
 	extends Controllable
 {
