@@ -99,7 +99,12 @@ public abstract class Displayable
 			if ((cd.getCapabilities() & Display.SUPPORTS_COMMANDS) == 0)
 				throw new DisplayCapabilityException("EB27");
 		
+		// Add the command
 		this._commands.addUniqueObjRef(__c);
+		
+		// Update the display if attached
+		if (cd != null)
+			cd.__updateUIStack();
 	}
 	
 	public Command getCommand(int __p)
@@ -178,9 +183,27 @@ public abstract class Displayable
 		return this._isshown && this._parent != null;
 	}
 	
-	public void removeCommand(Command __a)
+	/**
+	 * Removes the specified command. If the command is {@code null} or it
+	 * has never been added, this does nothing. If a command is removed then
+	 * the display will be updated.
+	 *
+	 * @param __c The command to remove.
+	 * @since 2019/04/15
+	 */
+	public void removeCommand(Command __c)
 	{
-		throw new todo.TODO();
+		if (__c == null)
+			return;
+		
+		// If the command was removed, then do an update
+		if (this._commands.remove(__c))
+		{
+			// Update if the display is attached
+			Display cd = this.__currentDisplay();
+			if (cd != null)
+				cd.__updateUIStack();
+		}
 	}
 	
 	public void removeCommandOrMenu(int __p)
