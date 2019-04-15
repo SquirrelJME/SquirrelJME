@@ -754,6 +754,7 @@ public class RecordStore
 	 * is already open then it will return the already open one.
 	 * @throws IllegalArgumentException If the name is not valid or the
 	 * authorization mode is not valid.
+	 * @throws NullPointerException On null arguments.
 	 * @throws RecordStoreException If it could not be opened for another
 	 * reason.
 	 * @throws RecordStoreFullException If there is no space remaining.
@@ -768,13 +769,52 @@ public class RecordStore
 	private static RecordStore __openRecordStore(String __name, String __vend,
 		String __suite, boolean __create, int __auth, boolean __write,
 		String __pass)
-		throws IllegalArgumentException, RecordStoreException,
-			RecordStoreFullException, RecordStoreNotFoundException,
-			SecureRecordStoreException, SecurityException
+		throws IllegalArgumentException, NullPointerException,
+			RecordStoreException, RecordStoreFullException,
+			RecordStoreNotFoundException, SecureRecordStoreException,
+			SecurityException
 	{
+		if (__name == null || __vend == null || __suite == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error DC01 The name is not valid.}
+		int namelen = __name.length();
+		if (namelen < 1 || namelen > 32)
+			throw new IllegalArgumentException("DC01 " + __name);
+		
+		// Get identifier, used to find the record
+		long sid = SuiteIdentifier.identifier(__vend, __suite);
+		
+		// Lock
 		VinylRecord vinyl = _VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
+			// Go through all records and try to find a pre-existing one
+			int existing = -1;
+			for (int rid : vinyl.listRecords())
+			{
+				// Belongs to another suite?
+				if (sid != vinyl.recordSuiteIdentifier(rid))
+					continue;
+				
+				// Same name?
+				if (__name.equals(vinyl.recordName(rid)))
+				{
+					existing = rid;
+					break;
+				}
+			}
+			
+			// Open a record which already exists
+			if (existing >= 0)
+				throw new todo.TODO();
+			
+			// {@squirreljme.error DC02 Could not find the specified record
+			// store. (The name; The vendor; The suite)}
+			if (!__create)
+				throw new RecordStoreNotFoundException(
+					String.format("DC02 %s %s %s", __name, __vend, __suite));
+			
 			throw new todo.TODO();
 		}
 	}
