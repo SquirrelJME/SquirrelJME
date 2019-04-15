@@ -42,7 +42,7 @@ public enum AdvancedFunction
 		 */
 		public void function(AdvancedGraphics __ag, int[] __vi, Object[] __va)
 		{
-			int pac = __ag.paintcolor;
+			int pac = __ag.paintcolorhigh;
 			int[] buffer = __ag.buffer;
 			int pitch = __ag.pitch,
 				offset = __ag.offset,
@@ -69,7 +69,7 @@ public enum AdvancedFunction
 		 */
 		public void function(AdvancedGraphics __ag, int[] __vi, Object[] __va)
 		{
-			int pac = __ag.paintcolor;
+			int pac = __ag.paintalphacolor;
 			int[] buffer = __ag.buffer;
 			int pitch = __ag.pitch,
 				offset = __ag.offset,
@@ -109,7 +109,7 @@ public enum AdvancedFunction
 		 */
 		public void function(AdvancedGraphics __ag, int[] __vi, Object[] __va)
 		{
-			int __color = __vi[0],
+			int __color = __vi[0] | 0xFF_000000,
 				__dsx = __vi[1],
 				__dsy = __vi[2],
 				__bytesperscan = __vi[3],
@@ -202,7 +202,7 @@ public enum AdvancedFunction
 			int sy = (__y1 < __y2 ? 1 : -1),
 				ssy = iw * sy,
 				err = (dx > dy ? dx : -dy) >> 2,
-				color = __ag.paintcolor,
+				color = __ag.paintcolorhigh,
 				dest = __ag.offset + (iw * __y1) + __x1;
 			
 			for (;;)
@@ -260,18 +260,20 @@ public enum AdvancedFunction
 			int sy = (__y1 < __y2 ? 1 : -1),
 				ssy = iw * sy,
 				err = (dx > dy ? dx : -dy) >> 2,
-				color = __ag.paintcolor,
+				color = __ag.paintcolorhigh,
 				dest = __ag.offset + (iw * __y1) + __x1;
 			
-			for (boolean blip = true;; blip = !blip)
+			/*for (boolean blip = true;; blip = !blip)*/
+			for (int blip = 0, nblip = ~0;; nblip = blip, blip = ~blip)
 			{
 				// Nothing left to draw?
 				if (__x1 >= __x2 &&
 					((neg && __y1 <= __y2) || (!neg && __y1 >= __y2)))
 					break;
 				
-				if (blip)
-					data[dest] = color;
+				/*if (blip)
+					data[dest] = color;*/
+				data[dest] = (data[dest] & blip) | (color & nblip);
 				
 				// Increase X
 				int brr = err;
@@ -326,7 +328,7 @@ public enum AdvancedFunction
 			int sy = (__y1 < __y2 ? 1 : -1),
 				ssy = iw * sy,
 				err = (dx > dy ? dx : -dy) >> 2,
-				color = __ag.paintcolor,
+				color = __ag.paintalphacolor,
 				dest = __ag.offset + (iw * __y1) + __x1;
 			
 			throw new todo.TODO();
@@ -366,7 +368,7 @@ public enum AdvancedFunction
 			int sy = (__y1 < __y2 ? 1 : -1),
 				ssy = iw * sy,
 				err = (dx > dy ? dx : -dy) >> 2,
-				color = __ag.paintcolor,
+				color = __ag.paintalphacolor,
 				dest = __ag.offset + (iw * __y1) + __x1;
 			
 			throw new todo.TODO();
@@ -402,7 +404,7 @@ public enum AdvancedFunction
 			for (; __y < ey; __y++, dest += iw, src += eosa)
 				for (int spend = src + __w, dp = dest; src < spend;
 					dp++, src++)
-					data[dp] = __b[src];
+					data[dp] = __b[src] | 0xFF_000000;
 		}
 	},
 	
@@ -415,8 +417,37 @@ public enum AdvancedFunction
 		 */
 		public void function(AdvancedGraphics __ag, int[] __vi, Object[] __va)
 		{
-			// Not implemented, use basic function
-			AdvancedFunction.RGBTILE_NOBLEND.function(__ag, __vi, __va);
+			int __o = __vi[0],
+				__l = __vi[1],
+				__x = __vi[2],
+				__y = __vi[3],
+				__w = __vi[4],
+				__h = __vi[5];
+			int[] __b = (int[])__va[0];
+			
+			int[] data = __ag.buffer;
+			int iw = __ag.pitch;
+			
+			// The distance from the end of a row to the scanline, this way the
+			// source variable does not need an extra copy
+			int eosa = __l - __w;
+			
+			// Draw tile data
+			int dest = __ag.offset + (__y * iw) + __x, src = 0, ey = __y + __h;
+			for (; __y < ey; __y++, dest += iw, src += eosa)
+				for (int spend = src + __w, dp = dest; src < spend;
+					dp++, src++)
+				{
+					int pac = __b[src] | 0xFF_000000,
+						srb = ((pac & 0xFF00FF) * 0xFF),
+						sgg = (((pac >>> 8) & 0xFF) * 0xFF),
+						dcc = data[dp],
+						xrb = (srb + ((dcc & 0xFF00FF) * 0x00)) >>> 8,
+						xgg = (((sgg +
+							(((dcc >>> 8) & 0xFF) * 0x00)) + 1) * 257) >>> 16;
+					
+					data[dp] = ((xrb & 0xFF00FF) | ((xgg & 0xFF) << 8));
+				}
 		}
 	},
 	
@@ -429,8 +460,39 @@ public enum AdvancedFunction
 		 */
 		public void function(AdvancedGraphics __ag, int[] __vi, Object[] __va)
 		{
-			// Not implemented, use basic function
-			AdvancedFunction.RGBTILE_NOBLEND.function(__ag, __vi, __va);
+			int __o = __vi[0],
+				__l = __vi[1],
+				__x = __vi[2],
+				__y = __vi[3],
+				__w = __vi[4],
+				__h = __vi[5];
+			int[] __b = (int[])__va[0];
+			
+			int[] data = __ag.buffer;
+			int iw = __ag.pitch;
+			
+			// The distance from the end of a row to the scanline, this way the
+			// source variable does not need an extra copy
+			int eosa = __l - __w;
+			
+			// Draw tile data
+			int dest = __ag.offset + (__y * iw) + __x, src = 0, ey = __y + __h;
+			for (; __y < ey; __y++, dest += iw, src += eosa)
+				for (int spend = src + __w, dp = dest; src < spend;
+					dp++, src++)
+				{
+					int pac = __b[src],
+						sa = pac >>> 24,
+						na = (sa ^ 0xFF),
+						srb = ((pac & 0xFF00FF) * sa),
+						sgg = (((pac >>> 8) & 0xFF) * sa),
+						dcc = data[dp] | 0xFF_000000,
+						xrb = (srb + ((dcc & 0xFF00FF) * na)) >>> 8,
+						xgg = (((sgg + (((dcc >>> 8) & 0xFF) * na)) + 1) * 257)
+							>>> 16;
+					
+					data[dp] = ((xrb & 0xFF00FF) | ((xgg & 0xFF) << 8));
+				}
 		}
 	},
 	
@@ -443,8 +505,39 @@ public enum AdvancedFunction
 		 */
 		public void function(AdvancedGraphics __ag, int[] __vi, Object[] __va)
 		{
-			// Not implemented, use basic function
-			AdvancedFunction.RGBTILE_NOBLEND.function(__ag, __vi, __va);
+			int __o = __vi[0],
+				__l = __vi[1],
+				__x = __vi[2],
+				__y = __vi[3],
+				__w = __vi[4],
+				__h = __vi[5];
+			int[] __b = (int[])__va[0];
+			
+			int[] data = __ag.buffer;
+			int iw = __ag.pitch;
+			
+			// The distance from the end of a row to the scanline, this way the
+			// source variable does not need an extra copy
+			int eosa = __l - __w;
+			
+			// Draw tile data
+			int dest = __ag.offset + (__y * iw) + __x, src = 0, ey = __y + __h;
+			for (; __y < ey; __y++, dest += iw, src += eosa)
+				for (int spend = src + __w, dp = dest; src < spend;
+					dp++, src++)
+				{
+					int pac = __b[src],
+						sa = pac >>> 24,
+						na = (sa ^ 0xFF),
+						srb = ((pac & 0xFF00FF) * sa),
+						sgg = (((pac >>> 8) & 0xFF) * sa),
+						dcc = data[dp],
+						xrb = (srb + ((dcc & 0xFF00FF) * na)) >>> 8,
+						xgg = (((sgg + (((dcc >>> 8) & 0xFF) * na)) + 1) * 257)
+							>>> 16;
+					
+					data[dp] = ((xrb & 0xFF00FF) | ((xgg & 0xFF) << 8));
+				}
 		}
 	},
 	
