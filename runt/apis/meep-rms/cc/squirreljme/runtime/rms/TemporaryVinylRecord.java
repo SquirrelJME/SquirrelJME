@@ -25,12 +25,42 @@ public final class TemporaryVinylRecord
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2019/04/14
+	 */
+	@Override
+	public final int[] listRecords()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/12/14
 	 */
 	@Override
 	public final VinylLock lock()
 	{
 		return this.lock.lock();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/14
+	 */
+	@Override
+	public final String recordName(int __rid)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/14
+	 */
+	@Override
+	public final long recordSuiteIdentifier(int __rid)
+	{
+		throw new todo.TODO();
 	}
 }
 
