@@ -60,14 +60,8 @@ public class PNGReader
 	/** Palette data. */
 	private int[] _palette;
 	
-	/** Full transparency color map. */
-	private int[] _transmap;
-	
 	/** Was an alpha channel used? */
 	private boolean _hasalpha;
-	
-	/** If this has been set, then do not force color sets. */
-	private boolean _blippedalpha;
 	
 	/** Initial value for read Y position, for multiple IDAT chunks. */
 	private int _initvy;
@@ -221,11 +215,19 @@ public class PNGReader
 		if (argb == null)
 			throw new IOException("EB0v");
 		
-		// If no alpha channel is set or there is no transparency info then
-		// make all pixels opaque
-		if (!this._hasalpha && !this._blippedalpha)
+		// Is an alpha channel being used?
+		if (!this._hasalpha)
+		{
+			// Force all pixels to opaque
 			for (int i = 0, n = argb.length; i < n; i++)
-				argb[i] = 0xFF000000;
+				argb[i] = 0xFF_000000;
+			
+			// Make all pixels opaque in the palette
+			int[] palette = this._palette;
+			if (palette != null)
+				for (int i = 0, n = palette.length; i < n; i++)
+					palette[i] |= 0xFF_000000;
+		}
 		
 		// {@squirreljme.error EB32 Unsupported bit-depth. (The bitdepth)}
 		int bitdepth = this._bitdepth;
@@ -257,9 +259,6 @@ public class PNGReader
 				// YA (Grayscale + Alpha)
 				else
 					this.__pixelsYA(data);
-				
-				// Old image parse
-				/*this.__parseImage(data);*/
 			}
 		
 		// Create image
@@ -282,128 +281,58 @@ public class PNGReader
 		// Check
 		if (__in == null)
 			throw new NullPointerException("NARG");
-			
-		// Get output
-		int[] argb = this._argb;
+		
 		int[] palette = this._palette;
-		int width = this._width,
-			height = this._height,
-			colortype = this._colortype,
-			bitdepth = this._bitdepth,
-			bitmask = (1 << bitdepth) - 1,
+		int colortype = this._colortype,
 			numpals = (palette != null ? palette.length : 0),
-			numcolors = this._numcolors,
-			maxcolors = this._maxcolors;
-		boolean adamseven = this._adamseven;
+			numcolors = this._numcolors;
 		
-		// For these color types, only a specified color in a list
-		if (colortype == 0 || colortype == 2)
-		{
-			// Fill all colors
-			for (int i = 0, n = argb.length; i < n; i++)
-				argb[i] |= 0xFF000000;
-				
-			// Do not touch later
-			this._blippedalpha = true;
-		}
-		
-		// Full transparency map
-		int[] transmap = null;
-		
-		// Depends on the color type
-		switch (colortype)
-		{
-				// Grayscale, this specified which color indexes are to be
-				// fully transparent
-			case 0:
-				{
-					// Allocate
-					transmap = new int[__dlen / 2];
-					
-					// Read double-byte values
-					for (int at = 0;;)
-					{
-						// Read in color
-						int col = __in.read();
-						__in.read();
-						
-						// EOF?
-						if (col < 0)
-							break;
-						
-						// Add color
-						col &= 0xFF;
-						transmap[at++] = (col << 16) | (col << 8) | col;
-					}
-				}
-				break;
-			
-				// True-color
-			case 2:
-				{
-					// Allocate
-					transmap = new int[__dlen / 6];
-					
-					// Read double-byte values
-					for (int at = 0;;)
-					{
-						// Read in color
-						int r = __in.read();
-						__in.read();
-						int g = __in.read();
-						__in.read();
-						int b = __in.read();
-						__in.read();
-						
-						// EOF?
-						if (r < 0 || g < 0 || b < 0)
-							break;
-						
-						// Add color
-						transmap[at++] = ((r & 0xFF) << 16) |
-							((g & 0xFF) << 8) | (g & 0xFF);
-					}
-				}
-				break;
-				
-				// Indexed color;
-			case 3:
-				{
-					// Read as many entries as possible
-					int i = 0;
-					for (; i < numcolors; i++)
-					{
-						int val = __in.read();
-						
-						// Reached end of data, the rest are implied opaque
-						if (val < 0)
-							break;
-						
-						// Fill in color
-						palette[i] |= ((val & 0xFF) << 24);
-					}
-					
-					// The palette data can be short, which means that all of
-					// the following colors are fully opaque
-					for (; i < numcolors; i++)
-						palette[i] |= 0xFF000000;
-				}
-				break;
-			
-				// Just ignore the chunk if the color type is not valid
-			default:
-				return;
-		}
-		
-		// Sort the transparency map so the colors can be found easier
-		if (transmap != null)
-		{
-			Arrays.sort(transmap);
-			this._transmap = transmap;
-		}
-		
-		// Alpha channel was read!
+		// Force alpha channel to be set
 		this._hasalpha = true;
+		
+		// Alpha values for grayscale or true-color
+		if (colortype == 0)
+		{
+			// Read double-byte values
+			for (int at = 0;;)
+			{
+				// Read in color
+				int col = __in.read(),
+					ign = __in.read();
+				
+				// EOF?
+				if ((col | ign) < 0)
+					break;
+				
+				// Find color to remove the alpha channel from the palette
+				for (int p = 0; p < numpals; p++)
+					if (palette[p] == col)
+						palette[p] &= 0xFFFFFF;
+			}
+		}
+		
+		// Alpha values for indexed values
+		else if (colortype == 3)
+		{
+			// Read as many entries as possible
+			int i = 0;
+			for (; i < numcolors; i++)
+			{
+				int val = __in.read();
+				
+				// Reached end of data, the rest are implied opaque
+				if (val < 0)
+					break;
+				
+				// Fill in color
+				palette[i] |= ((val & 0xFF) << 24);
+			}
+			
+			// The alpha data can be short, which means that all of
+			// the following colors are fully opaque
+			for (; i < numcolors; i++)
+				palette[i] |= 0xFF_000000;
+		}
 	}
 	
 	/**
@@ -483,192 +412,24 @@ public class PNGReader
 		
 		// Allocate image buffer
 		this._argb = new int[width * height];
-	}
-	
-	/**
-	 * Parses the PNG image data.
-	 *
-	 * @param __in The stream to read data from.
-	 * @throws IOException On parse errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2017/02/28
-	 */
-	@Deprecated
-	private void __parseImage(InputStream __in)
-		throws IOException, NullPointerException
-	{
-		// Check
-		if (__in == null)
-			throw new NullPointerException("NARG");
 		
-		// Get output
-		int[] argb = this._argb;
-		int[] palette = this._palette;
-		int[] transmap = this._transmap;
-		int width = this._width,
-			height = this._height,
-			colortype = this._colortype,
-			bitdepth = this._bitdepth,
-			bitmask = (1 << bitdepth) - 1,
-			numpals = (palette != null ? palette.length : 0);
-		boolean adamseven = this._adamseven;
-		boolean hastransmap = (transmap != null);
-		
-		// Calculate the number of bytes that are used to represent the image
-		// pixel data.
-		// Also the number of individual channels
-		int readcount = bitdepth / 8,
-			numchannels;
-		if (readcount < 1)
-			readcount = 1;
-			
-		// Image formats have multiple channels per set of data
-		// RGB
-		if (colortype == 2)
-			numchannels = 3;
-			
-		// YA
-		else if (colortype == 4)
-			numchannels = 2;
-		
-		// RGBA
-		else if (colortype == 6)
-			numchannels = 4;
-		
-		// Just one channel
-		else
-			numchannels = 1;
-		
-		// Need to read all channel data
-		readcount *= numchannels;
-		int readbits = readcount * 8;
-		
-		// Input image data is compressed using deflate
-		try (DataInputStream data = new DataInputStream(__in))
+		// If this is grayscale, then force a palette to be initialized so the
+		// colors are more easily read without needing to process them further
+		// So all values are treated as indexed
+		if (colortype == 0)
 		{
-			// Window used to pixel data, along with the remaining bits
-			long window = 0;
-			int valshift = 0;
+			// 2^d colors available
+			int numcolors = (1 << bitdepth);
 			
-			// Get initializing positions and clear, because multiple IDAT
-			// chunks are treated somewhat as a single data stream
-			int initvy = this._initvy,
-				initvx = this._initvx;
-			this._initvy = 0;
-			this._initvx = 0;
+			// Build palette, force everything to opaque, it will be cleared
+			// later
+			int[] palette = new int[numcolors];
+			for (int i = 0; i < numcolors; i++)
+				palette[i] = ((int)(((double)i / (double)numcolors) * 255.0)) |
+					0xFF_000000;
 			
-			// All pixels are stored on scanlines
-			int[] channels = new int[4];
-			for (int vy = initvy; vy < height; vy++, initvx = 0)
-			{
-				// Clear the window, since pixels are reset on scanlines
-				window = 0;
-				valshift = -1;
-				
-				// Where data goes on the output ARGB array, linearly speaking
-				int out = (vy * width);
-				
-				// Read in single line
-				for (int vx = initvx; vx < width; vx++)
-				{
-					// If the window is empty then read everything in
-					if (valshift < 0)
-					{
-						// Read pixel
-						for (int i = 0, sh = 0; i < readcount; i++)
-						{
-							// If the EOF is unexpected it is possible that
-							// the remaining image data is in another chunk
-							int rv = data.read();
-							if (rv < 0)
-							{
-								// Store the read parameters
-								this._initvx = vx;
-								this._initvy = vy;
-								
-								return;
-							}
-							
-							// Shift in
-							window |= ((long)rv) << sh;
-							sh += 8;
-						}
-						
-						// Initialize the rolling mask
-						valshift = (readbits - bitdepth);
-					}
-					
-					// Decode input channel data
-					for (int i = 0; i < numchannels; i++)
-					{
-						// Read next color
-						int v = ((int)(window >>> valshift)) & bitmask;
-						valshift -= bitdepth;
-						
-						// 16-bit pixels are in MSB order, but input bytes are
-						// read in little endian order
-						if (bitdepth == 16)
-							v = ((v >>> 8) & 0xFF) | ((v & 0xFF) << 8);
-						
-						// If not using paletted mode, adjust the colors so
-						// that they become normalized to [0, 255]
-						if (colortype != 3)
-							if (bitdepth == 1)
-								v = (v != 0 ? 255 : 0);
-							else
-								v = (v * 255) / bitmask;
-						
-						// Set
-						channels[i] = v;
-					}
-					
-					// Decode that information to ARGB
-					int color;
-					
-					// Grayscale pixel
-					if (colortype == 0 || colortype == 4)
-					{
-						int v = channels[0];
-						color = (v << 16) | (v << 8) | v;
-					}
-					
-					// Palette
-					else if (colortype == 3)
-						color = palette[channels[0]];
-					
-					// Triplet
-					else
-						color = (channels[0] << 16) | (channels[1] << 8) |
-							channels[2];
-					
-					// Alpha channel defined in the image data, if it is
-					// defined in another chunk then the ARGB will be set
-					// already
-					if (colortype == 4 || colortype == 6)
-						color |= (channels[numchannels - 1] << 24);
-					
-					// If there is a full transparency map then any colors
-					// which are not in the map will be opaque.
-					if (hastransmap)
-						if (Arrays.binarySearch(transmap, color) < 0)
-							color |= 0xFF000000;
-					
-					// Place the pixel on the output buffer
-					// Interlaced
-					if (adamseven)
-						throw new todo.TODO();
-					
-					// Linear
-					else
-						argb[out++] |= color;
-				}
-			}
-			
-			// Waste all remaining bytes until EOF so that the checksum is
-			// read in the source stream
-			int rc;
-			while ((rc = data.read()) >= 0)
-				;
+			// Set
+			this._palette = palette;
 		}
 	}
 	
@@ -734,16 +495,25 @@ public class PNGReader
 			
 		int[] argb = this._argb;
 		int[] palette = this._palette;
-		int[] transmap = this._transmap;
 		int width = this._width,
 			height = this._height,
 			limit = width * height,
 			bitdepth = this._bitdepth,
 			bitmask = (1 << bitdepth) - 1,
 			numpals = (palette != null ? palette.length : 0);
-		boolean hastransmap = (transmap != null);
 		
-		throw new todo.TODO();
+		// Read of multiple bits
+		for (int o = 0; o < limit;)
+		{
+			// Read and check EOF
+			int v = __dis.read();
+			if (v < 0)
+				break;
+			
+			// Handle each bit
+			for (int b = 0; b < 8; b += bitdepth, v >>>= bitdepth)
+				argb[o++] = palette[(v & bitmask) % numpals];
+		}
 	}
 	
 	/**
