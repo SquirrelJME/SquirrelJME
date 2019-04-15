@@ -39,10 +39,11 @@ More detailed changes:
        acceleration is used, previously only a subset of methods were
        implemented.
    * Additions
-     * `java.util.Vector`, was missing.
+     * Added basic support for record stores.
      * Added proprietary `ExtendedTaskManager` interface which can be used
        to specify arguments, system properties, and console output alternatives
        to launched tasks.
+     * `java.util.Vector`, was missing.
    * Changes
      * Moved the graphics drawing operations to another class.
      * Made all the graphics operations not throw a `TODO`, instead they will

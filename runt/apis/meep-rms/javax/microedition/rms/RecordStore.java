@@ -20,8 +20,12 @@ import cc.squirreljme.runtime.rms.TemporaryVinylRecord;
 import cc.squirreljme.runtime.swm.SuiteName;
 import cc.squirreljme.runtime.swm.SuiteVendor;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.microedition.midlet.MIDlet;
+import net.multiphasicapps.collections.IdentityLinkedHashSet;
 
 /**
  * This is a record store which may be used by an application to store
@@ -53,6 +57,14 @@ public class RecordStore
 	/** The vinyl record where everything is stored. */
 	static final VinylRecord _VINYL;
 	
+	/** Existing record stores. */
+	static final Map<Integer, RecordStore> _STORE_CACHE =
+		new LinkedHashMap<>();
+	
+	/** Identity map for listeners */
+	private final Set<RecordListener> _listeners =
+		new IdentityLinkedHashSet<>();
+	
 	/** The volume ID. */
 	private final int _vid;
 	
@@ -61,6 +73,9 @@ public class RecordStore
 	
 	/** Write to this? */
 	private final boolean _write;
+	
+	/** How many times has this been opened? */
+	private volatile int _opens;
 	
 	/**
 	 * Initializes the record store manager.
@@ -110,6 +125,7 @@ public class RecordStore
 		this._vid = __vid;
 		this._name = __name;
 		this._write = __w;
+		this._opens = 1;
 	}
 	
 	/**
@@ -144,12 +160,33 @@ public class RecordStore
 		if (!this._write)
 			throw new RecordStoreException("DC04");
 		
+		// Used for later
+		int rv;
+		RecordListener[] listeners = this.__listeners();
+		
 		// Lock
 		VinylRecord vinyl = _VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
-			throw new todo.TODO();
+			// Check open
+			this.__checkOpen();
+			
+			// {@squirreljme.error DC06 Could not add the record, there might
+			// not be enough free space available.}
+			rv = vinyl.pageAdd(this._vid, __b, __o, __l, __tag);
+			if (rv == VinylRecord.ERROR_NO_MEMORY)
+				throw new RecordStoreFullException("DC06");
+			
+			// {@squirreljme.error DC07 Could not add the record due to an
+			// error. (The error)}
+			else if (rv < 0)
+				throw new RecordStoreException("DC07 " + rv);
 		}
+		
+		// Report to the listeners
+		for (RecordListener l : listeners)
+			l.recordAdded(this, rv);
+		return rv;
 	}
 	
 	/**
@@ -186,7 +223,16 @@ public class RecordStore
 	 */
 	public void addRecordListener(RecordListener __l)
 	{
-		throw new todo.TODO();
+		// Lock
+		VinylRecord vinyl = _VINYL;
+		try (VinylLock lock = vinyl.lock())
+		{
+			// No effect if closed
+			if (this._opens <= 0)
+				return;
+			
+			throw new todo.TODO();
+		}
 	}
 	
 	/**
@@ -215,7 +261,18 @@ public class RecordStore
 	public void closeRecordStore()
 		throws RecordStoreNotOpenException, RecordStoreException
 	{
-		throw new todo.TODO();
+		// Lock the record, so that only a single thread is messing with the
+		// open counts and such
+		VinylRecord vinyl = _VINYL;
+		try (VinylLock lock = vinyl.lock())
+		{
+			// Check open
+			this.__checkOpen();
+			
+			// If closed then remove all the listeners
+			if ((--this._opens) <= 0)
+				this._listeners.clear();
+		}
 	}
 	
 	/**
@@ -232,6 +289,9 @@ public class RecordStore
 		throws InvalidRecordIDException, RecordStoreNotOpenException,
 			RecordStoreException, SecurityException
 	{
+		// Check open
+		this.__checkOpen();
+		
 		// Lock
 		VinylRecord vinyl = _VINYL;
 		try (VinylLock lock = vinyl.lock())
@@ -262,6 +322,9 @@ public class RecordStore
 		RecordComparator __c, boolean __ku, int[] __tags)
 		throws RecordStoreNotOpenException
 	{
+		// Check open
+		this.__checkOpen();
+		
 		// Lock
 		VinylRecord vinyl = _VINYL;
 		try (VinylLock lock = vinyl.lock())
@@ -284,7 +347,7 @@ public class RecordStore
 		RecordComparator __c, boolean __ku)
 		throws RecordStoreNotOpenException
 	{
-		return enumerateRecords(__f, __c, __ku, null);
+		return this.enumerateRecords(__f, __c, __ku, null);
 	}
 	
 	/**
@@ -297,6 +360,9 @@ public class RecordStore
 	public long getLastModified()
 		throws RecordStoreNotOpenException
 	{
+		// Check open
+		this.__checkOpen();
+		
 		// Lock
 		VinylRecord vinyl = _VINYL;
 		try (VinylLock lock = vinyl.lock())
@@ -315,6 +381,9 @@ public class RecordStore
 	public String getName()
 		throws RecordStoreNotOpenException
 	{
+		// Check open
+		this.__checkOpen();
+		
 		return this._name;
 	}
 	
@@ -334,6 +403,9 @@ public class RecordStore
 	public int getNextRecordID()
 		throws RecordStoreException, RecordStoreNotOpenException
 	{
+		// Check open
+		this.__checkOpen();
+		
 		// Lock
 		VinylRecord vinyl = _VINYL;
 		try (VinylLock lock = vinyl.lock())
@@ -358,6 +430,9 @@ public class RecordStore
 		throws InvalidRecordIDException, RecordStoreException,
 			RecordStoreNotOpenException
 	{
+		// Check open
+		this.__checkOpen();
+		
 		// Lock
 		VinylRecord vinyl = _VINYL;
 		try (VinylLock lock = vinyl.lock())
@@ -388,6 +463,9 @@ public class RecordStore
 			NullPointerException, RecordStoreException,
 			RecordStoreNotOpenException
 	{
+		// Check open
+		this.__checkOpen();
+		
 		// Lock
 		VinylRecord vinyl = _VINYL;
 		try (VinylLock lock = vinyl.lock())
@@ -411,6 +489,9 @@ public class RecordStore
 		throws InvalidRecordIDException, RecordStoreException,
 			RecordStoreNotOpenException
 	{
+		// Check open
+		this.__checkOpen();
+		
 		// Lock
 		VinylRecord vinyl = _VINYL;
 		try (VinylLock lock = vinyl.lock())
@@ -429,6 +510,9 @@ public class RecordStore
 	public RecordStoreInfo getRecordStoreInfo()
 		throws RecordStoreNotOpenException
 	{
+		// Check open
+		this.__checkOpen();
+		
 		// Lock
 		VinylRecord vinyl = _VINYL;
 		try (VinylLock lock = vinyl.lock())
@@ -483,6 +567,9 @@ public class RecordStore
 		throws InvalidRecordIDException, RecordStoreException,
 			RecordStoreNotOpenException
 	{
+		// Check open
+		this.__checkOpen();
+		
 		// Lock
 		VinylRecord vinyl = _VINYL;
 		try (VinylLock lock = vinyl.lock())
@@ -502,6 +589,9 @@ public class RecordStore
 	public int getVersion()
 		throws RecordStoreNotOpenException
 	{
+		// Check open
+		this.__checkOpen();
+		
 		// Lock
 		VinylRecord vinyl = _VINYL;
 		try (VinylLock lock = vinyl.lock())
@@ -576,6 +666,9 @@ public class RecordStore
 			NullPointerException, RecordStoreException,
 			RecordStoreFullException, RecordStoreNotOpenException
 	{
+		// Check open
+		this.__checkOpen();
+		
 		// Lock
 		VinylRecord vinyl = _VINYL;
 		try (VinylLock lock = vinyl.lock())
@@ -605,6 +698,33 @@ public class RecordStore
 			RecordStoreFullException, RecordStoreNotOpenException
 	{
 		this.setRecord(__id, __b, __o, __l, this.getTag(__id));
+	}
+	
+	/**
+	 * Checks that this record store is open.
+	 *
+	 * @throws RecordStoreNotOpenException If it is not open.
+	 * @since 2019/04/15
+	 */
+	private final void __checkOpen()
+		throws RecordStoreNotOpenException
+	{
+		// {@squirreljme.error DC05 This record store is not open.
+		if (this._opens <= 0)
+			throw new RecordStoreNotOpenException("DC05");
+	}
+	
+	/**
+	 * Returns all of the listeners for this record store.
+	 *
+	 * @return The listeners.
+	 * @since 2019/04/15
+	 */
+	private final RecordListener[] __listeners()
+	{
+		Set<RecordListener> listeners = this._listeners;
+		return listeners.<RecordListener>toArray(
+			new RecordListener[listeners.size()]);
 	}
 	
 	/**
@@ -653,7 +773,7 @@ public class RecordStore
 			List<String> rv = new ArrayList<>();
 			
 			// Go through all IDs and locate record store info
-			for (int rid : vinyl.listVolumes())
+			for (int rid : vinyl.volumeList())
 			{
 				// Do not add records which belong to another suite
 				if (mysid != vinyl.volumeSuiteIdentifier(rid))
@@ -886,7 +1006,7 @@ public class RecordStore
 		{
 			// Go through all records and try to find a pre-existing one
 			int rv = -1;
-			for (int rid : vinyl.listVolumes())
+			for (int rid : vinyl.volumeList())
 			{
 				// Belongs to another suite?
 				if (sid != vinyl.volumeSuiteIdentifier(rid))
@@ -902,7 +1022,18 @@ public class RecordStore
 			
 			// Open a record which already exists
 			if (rv >= 0)
-				throw new todo.TODO();
+			{
+				// Use a pre-cached store
+				Map<Integer, RecordStore> cache = _STORE_CACHE;
+				RecordStore rs = cache.get(rv);
+				if (rs == null)
+					cache.put(rv, (rs = new RecordStore(rv, __name,
+						sid == mysid || vinyl.volumeOtherWritable(rv))));
+				
+				// Increment the open count
+				rs._opens++;
+				return rs;
+			}
 			
 			// {@squirreljme.error DC02 Could not find the specified record
 			// store. (The name; The vendor; The suite)}
@@ -912,7 +1043,7 @@ public class RecordStore
 			
 			// {@squirreljme.error DC03 Could not create the record, it is
 			// likely that there is not enough space remaining.}
-			rv = vinyl.createVolume(sid, __name, __write);
+			rv = vinyl.volumeCreate(sid, __name, __write);
 			if (rv < 0)
 				throw new RecordStoreFullException("DC03");
 			
