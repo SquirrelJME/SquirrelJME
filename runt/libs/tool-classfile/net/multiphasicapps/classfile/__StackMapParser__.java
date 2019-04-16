@@ -301,8 +301,8 @@ final class __StackMapParser__
 			if (s.equals(StackMapTableEntry.NOTHING))
 				continue;
 			
-			// Clear top off
-			if (s.isTop())
+			// Clear top off, but only if it is not an undefined top
+			if (s.isTop() && !s.equals(StackMapTableEntry.TOP_UNDEFINED))
 				nextlocals[i--] = StackMapTableEntry.NOTHING;
 			
 			// Clear it

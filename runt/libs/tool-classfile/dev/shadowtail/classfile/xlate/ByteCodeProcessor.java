@@ -190,7 +190,15 @@ public final class ByteCodeProcessor
 					// and such
 					StackMapTableState smts = stackmaptable.get(addr);
 					if (smts != null)
+					{
+						// Debug
+						todo.DEBUG.note("SMT BEF: %s", stack);
+						
 						stack = stack.filterByStackMap(smts);
+						
+						// Debug
+						todo.DEBUG.note("SMT AFT: %s", stack);
+					}
 					
 					// If we are jumping back to this instruction at any point
 					// we need to flush the stack so that nothing is cached on
