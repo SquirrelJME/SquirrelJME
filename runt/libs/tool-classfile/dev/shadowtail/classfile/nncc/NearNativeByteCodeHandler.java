@@ -451,7 +451,20 @@ public final class NearNativeByteCodeHandler
 	public final void doLookupSwitch(JavaStackResult.Input __key,
 		LookupSwitch __ls)
 	{
-		throw new todo.TODO();
+		NativeCodeBuilder codebuilder = this.codebuilder;
+		
+		// The key register
+		int keyreg = __key.register;
+		
+		// Generate checks for all keys
+		int[] keys = __ls.keys();
+		InstructionJumpTarget[] jumps = __ls.jumps();
+		for (int i = 0, n = keys.length; i < n; i++)
+			codebuilder.add(NativeInstructionType.IFEQ_CONST,
+				keyreg, keys[i], this.__labelJava(jumps[i]));
+		
+		// Final case is the default jump
+		codebuilder.addGoto(this.__labelJava(__ls.defaultJump()));
 	}
 	
 	/**

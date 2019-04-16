@@ -476,7 +476,7 @@ public final class Minimizer
 					dos.writeShort(i.shortArgument(2));
 					break;
 				
-					// [u16, l32, u16]
+					// [u16, l64, u16]
 				case NativeInstructionType.MATH_CONST_LONG:
 					dos.writeShort(i.shortArgument(0));
 					
@@ -499,6 +499,18 @@ public final class Minimizer
 				case NativeInstructionType.IFARRAY_MISTYPE_REF_CLEAR:
 					dos.writeShort(i.shortArgument(0));
 					dos.writeShort(i.shortArgument(1));
+					
+					jumpreps.put(dos.size(), i.<InstructionJumpTarget>
+						argument(2, InstructionJumpTarget.class));
+					dos.writeShort(0);
+					break;
+				
+					// [u16, i32, j16]
+				case NativeInstructionType.IFEQ_CONST:
+					dos.writeShort(i.shortArgument(0));
+					
+					dos.writeInt(i.<Number>argument(1, Number.class).
+						intValue());
 					
 					jumpreps.put(dos.size(), i.<InstructionJumpTarget>
 						argument(2, InstructionJumpTarget.class));

@@ -302,6 +302,7 @@ public final class NativeInstruction
 			case NativeInstructionType.IFARRAY_MISTYPE_REF_CLEAR:
 			case NativeInstructionType.IFCLASS:
 			case NativeInstructionType.IFCLASS_REF_CLEAR:
+			case NativeInstructionType.IFEQ_CONST:
 			case NativeInstructionType.IFNOTCLASS:
 			case NativeInstructionType.IFNOTCLASS_REF_CLEAR:
 			case NativeInstructionType.MATH_REG_INT:
@@ -421,6 +422,7 @@ public final class NativeInstruction
 			case NativeInstructionType.IFCLASS:			return "IFCLASS";
 			case NativeInstructionType.IFCLASS_REF_CLEAR:
 				return "IFCLASS_REF_CLEAR";
+			case NativeInstructionType.IFEQ_CONST:		return "IFEQ_CONST";
 			case NativeInstructionType.INVOKE:			return "INVOKE";
 			case NativeInstructionType.LOAD_POOL:		return "LOAD_POOL";
 			case NativeInstructionType.MONITORENTER:	return "MONITORENTER";
