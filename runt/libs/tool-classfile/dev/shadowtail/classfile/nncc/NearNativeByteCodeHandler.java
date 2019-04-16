@@ -352,7 +352,7 @@ public final class NearNativeByteCodeHandler
 	@Override
 	public final void doInstanceOf(ClassName __cl,
 		JavaStackResult.Input __v, JavaStackResult.Output __o)
-	{	
+	{
 		// Push reference
 		this.__refPush();
 		
@@ -465,6 +465,25 @@ public final class NearNativeByteCodeHandler
 	{
 		this.codebuilder.addMathConst(__dt, __mt, __a.register, __b,
 			__c.register);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/16
+	 */
+	@Override
+	public void doMonitor(boolean __enter, JavaStackResult.Input __o)
+	{
+		// Push reference
+		this.__refPush();
+		
+		// Generate instruction
+		this.codebuilder.add((__enter ? NativeInstructionType.MONITORENTER :
+			NativeInstructionType.MONITOREXIT),
+			__o.register);
+		
+		// Clear reference
+		this.__refClear();
 	}
 	
 	/**
