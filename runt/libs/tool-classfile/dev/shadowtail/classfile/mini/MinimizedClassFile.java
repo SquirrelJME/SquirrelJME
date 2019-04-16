@@ -89,6 +89,10 @@ public final class MinimizedClassFile
 		MinimizedClassHeader header = MinimizedClassHeader.decode(
 			new ByteArrayInputStream(__is));
 		
+		// Read constant pool
+		MinimizedPool pool = MinimizedPool.decode(header.poolcount,
+			new ByteArrayInputStream(__is, header.pooloff, header.poolsize));
+		
 		throw new todo.TODO();
 	}
 }

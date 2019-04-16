@@ -162,9 +162,9 @@ public final class MinimizedClassHeader
 		this.filesize = __vx[at++];
 		this.datasize = __vx[at++];
 	}
-			
+	
 	/**
-	 * Decodes and returns the minimized representation of the class header.
+	 * Decodes the minimized class header.
 	 *
 	 * @param __is The bytes to decode from.
 	 * @return The resulting minimized class header.
