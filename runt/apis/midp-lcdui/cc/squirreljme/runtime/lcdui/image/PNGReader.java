@@ -672,7 +672,7 @@ public class PNGReader
 					x, a, b, c, dx, dy, this._width, this._height);
 				
 				// Depends on the decoding algorithm
-				int res = 170;
+				int res = 0;
 				switch (type)
 				{
 						// None
@@ -723,26 +723,6 @@ public class PNGReader
 				// Set result
 				rv[di] = (byte)res;
 			}
-		}
-		
-		// Extra bytes?
-		for (int dx = 0, dy = height;;)
-		{
-			int xtra = __in.read();
-			if (xtra < 0)
-				break;
-			
-			// Increment pixel
-			dx++;
-			if (dx > scanlen)
-			{
-				dy++;
-				dx = 0;
-			}
-			
-			todo.DEBUG.note("Extra: %3d " +
-					"(at %2dx%2d of %2dx%2d)", xtra & 0xFF,
-					dx, dy, this._width, this._height);
 		}
 		
 		return rv;
