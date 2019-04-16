@@ -654,10 +654,6 @@ public final class ByteCode
 					new InstructionJumpTarget[exe.size()])));
 		}
 		
-		// Debug
-		todo.DEBUG.note("normal jumps = %s", jumpmap);
-		todo.DEBUG.note("revers jumps = %s", rv);
-		
 		return rv;
 	}
 	
