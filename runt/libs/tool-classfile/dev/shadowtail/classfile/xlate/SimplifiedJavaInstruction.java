@@ -72,6 +72,14 @@ public final class SimplifiedJavaInstruction
 	public static final int STACKSHUFFLE =
 		-10;
 	
+	/** Convert. */
+	public static final int CONVERT =
+		-11;
+	
+	/** Perform math on constant. */
+	public static final int MATH_CONST =
+		-12;
+	
 	/** The operation. */
 	protected final int op;
 	
@@ -189,6 +197,33 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						PrimitiveType.CHARACTER,
+					};
+				break;
+			
+			case InstructionIndex.D2F:
+				op = SimplifiedJavaInstruction.CONVERT;
+				args = new Object[]
+					{
+						StackJavaType.DOUBLE,
+						StackJavaType.FLOAT,
+					};
+				break;
+			
+			case InstructionIndex.D2I:
+				op = SimplifiedJavaInstruction.CONVERT;
+				args = new Object[]
+					{
+						StackJavaType.DOUBLE,
+						StackJavaType.INTEGER,
+					};
+				break;
+			
+			case InstructionIndex.D2L:
+				op = SimplifiedJavaInstruction.CONVERT;
+				args = new Object[]
+					{
+						StackJavaType.DOUBLE,
+						StackJavaType.LONG,
 					};
 				break;
 			
@@ -371,6 +406,33 @@ public final class SimplifiedJavaInstruction
 					};
 				break;
 			
+			case InstructionIndex.F2D:
+				op = SimplifiedJavaInstruction.CONVERT;
+				args = new Object[]
+					{
+						StackJavaType.FLOAT,
+						StackJavaType.DOUBLE,
+					};
+				break;
+			
+			case InstructionIndex.F2I:
+				op = SimplifiedJavaInstruction.CONVERT;
+				args = new Object[]
+					{
+						StackJavaType.FLOAT,
+						StackJavaType.INTEGER,
+					};
+				break;
+			
+			case InstructionIndex.F2L:
+				op = SimplifiedJavaInstruction.CONVERT;
+				args = new Object[]
+					{
+						StackJavaType.FLOAT,
+						StackJavaType.LONG,
+					};
+				break;
+			
 			case InstructionIndex.FADD:
 				op = SimplifiedJavaInstruction.MATH;
 				args = new Object[]
@@ -504,6 +566,63 @@ public final class SimplifiedJavaInstruction
 			
 			case InstructionIndex.GOTO_W:
 				op = InstructionIndex.GOTO;
+				break;
+				
+			case InstructionIndex.I2B:
+				op = SimplifiedJavaInstruction.MATH_CONST;
+				args = new Object[]
+					{
+						DataType.INTEGER,
+						MathType.SIGN_X8,
+						0,
+					};
+				break;
+				
+			case InstructionIndex.I2C:
+				op = SimplifiedJavaInstruction.MATH_CONST;
+				args = new Object[]
+					{
+						DataType.INTEGER,
+						MathType.AND,
+						0xFFFF,
+					};
+				break;
+				
+			case InstructionIndex.I2D:
+				op = SimplifiedJavaInstruction.CONVERT;
+				args = new Object[]
+					{
+						StackJavaType.INTEGER,
+						StackJavaType.DOUBLE,
+					};
+				break;
+			
+			case InstructionIndex.I2F:
+				op = SimplifiedJavaInstruction.CONVERT;
+				args = new Object[]
+					{
+						StackJavaType.INTEGER,
+						StackJavaType.FLOAT,
+					};
+				break;
+			
+			case InstructionIndex.I2L:
+				op = SimplifiedJavaInstruction.CONVERT;
+				args = new Object[]
+					{
+						StackJavaType.INTEGER,
+						StackJavaType.LONG,
+					};
+				break;
+				
+			case InstructionIndex.I2S:
+				op = SimplifiedJavaInstruction.MATH_CONST;
+				args = new Object[]
+					{
+						DataType.INTEGER,
+						MathType.SIGN_HALF,
+						0,
+					};
 				break;
 				
 			case InstructionIndex.IADD:
@@ -850,6 +969,33 @@ public final class SimplifiedJavaInstruction
 					{
 						DataType.INTEGER,
 						MathType.XOR,
+					};
+				break;
+				
+			case InstructionIndex.L2D:
+				op = SimplifiedJavaInstruction.CONVERT;
+				args = new Object[]
+					{
+						StackJavaType.LONG,
+						StackJavaType.DOUBLE,
+					};
+				break;
+			
+			case InstructionIndex.L2F:
+				op = SimplifiedJavaInstruction.CONVERT;
+				args = new Object[]
+					{
+						StackJavaType.LONG,
+						StackJavaType.FLOAT,
+					};
+				break;
+			
+			case InstructionIndex.L2I:
+				op = SimplifiedJavaInstruction.CONVERT;
+				args = new Object[]
+					{
+						StackJavaType.LONG,
+						StackJavaType.INTEGER,
 					};
 				break;
 				
@@ -1259,6 +1405,8 @@ public final class SimplifiedJavaInstruction
 			case PASTORE:		return "PASTORE";
 			case PALOAD:		return "PALOAD";
 			case STACKSHUFFLE:	return "STACKSHUFFLE";
+			case CONVERT:		return "CONVERT";
+			case MATH_CONST:	return "MATH_CONST";
 			
 				// Fallback to standard stuff
 			default:
