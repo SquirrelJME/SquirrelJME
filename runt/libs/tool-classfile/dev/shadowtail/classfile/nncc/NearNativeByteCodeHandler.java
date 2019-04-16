@@ -347,6 +347,45 @@ public final class NearNativeByteCodeHandler
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2019/04/16
+	 */
+	@Override
+	public final void doInstanceOf(ClassName __cl,
+		JavaStackResult.Input __v, JavaStackResult.Output __o)
+	{	
+		// Push reference
+		this.__refPush();
+		
+		// Copy object to the temporary register because we will be placing
+		// a zero on the output spot
+		int tempreg = this.state.stack.usedregisters;
+		NativeCodeBuilder codebuilder = this.codebuilder;
+		codebuilder.addCopy(__v.register, tempreg);
+		
+		// Place zero on the target, there will be a branch which will either
+		// jump to a nothing spot or fall through to an add instruction
+		codebuilder.addCopy(0, __o.register);
+		
+		// If the object is not the given class, then jump to the following
+		// instruction
+		NativeCodeLabel jp = new NativeCodeLabel("instof", this.state.addr);
+		codebuilder.addIfNotClass(__cl, tempreg, jp, false);
+		
+		// In the case that it is, the if will fall through and add a value
+		// to the output
+		codebuilder.addMathConst(StackJavaType.INTEGER, MathType.OR,
+			__o.register, 1, __o.register);
+		
+		// The label to jump to if it is not an instance, in this case the
+		// output register will remain at zero
+		codebuilder.label(jp);
+		
+		// Clear references in the event it was overwritten
+		this.__refClear();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2019/04/10
 	 */
 	@Override
