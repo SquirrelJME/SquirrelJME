@@ -42,6 +42,9 @@ public class PNGReader
 	/** Image width. */
 	private int _width;
 	
+	/** Scanline length. */
+	private int _scanlen;
+	
 	/** Image height. */
 	private int _height;
 	
@@ -241,24 +244,24 @@ public class PNGReader
 			throw new IOException("EB13");
 		
 		// Process the image chunk now that the other information was read
-		if (imagechunk != null)
-			try (InputStream data = new ZLibDecompressor(
-				new ByteArrayInputStream(imagechunk)))
-			{
-				int colortype = this._colortype;
-				
-				// Grayscale or Indexed
-				if (colortype == 0 || colortype == 3)
-					this.__pixelIndexed(data, (colortype == 3));
-				
-				// RGB(A)
-				else if (colortype == 2 || colortype == 6)
-					this.__pixelsRGB(data, (colortype == 6));
-				
-				// YA (Grayscale + Alpha)
-				else
-					this.__pixelsYA(data);
-			}
+		// Note that the chunk needs to be unfiltered first
+		try (InputStream data = new ByteArrayInputStream(this.__unfilter(
+			new ZLibDecompressor(new ByteArrayInputStream(imagechunk)))))
+		{
+			int colortype = this._colortype;
+			
+			// Grayscale or Indexed
+			if (colortype == 0 || colortype == 3)
+				this.__pixelIndexed(data, (colortype == 3));
+			
+			// RGB(A)
+			else if (colortype == 2 || colortype == 6)
+				this.__pixelsRGB(data, (colortype == 6));
+			
+			// YA (Grayscale + Alpha)
+			else
+				this.__pixelsYA(data);
+		}
 		
 		// Create image
 		return Image.createRGBImage(argb, this._width, this._height,
@@ -388,7 +391,17 @@ public class PNGReader
 		
 		// These two color types have alpha, this field may be set later on
 		// if a transparency chunk was found
-		this._hasalpha = (colortype == 4 || colortype == 6);
+		boolean hasalpha;
+		this._hasalpha = (hasalpha = (colortype == 4 || colortype == 6));
+		
+		// Determine number of channels
+		int channels = (colortype == 0 || colortype == 3 ? 1 :
+			(colortype == 2 ? 3 :
+			(colortype == 4 ? 2 :
+			(colortype == 6 ? 4 : 1))));
+		
+		// Scan length
+		this._scanlen = width * ((channels * bitdepth) / 8);
 		
 		// {@squirreljme.error EB10 Only deflate compressed PNG images are
 		// supported. (The compression method)}
@@ -502,7 +515,7 @@ public class PNGReader
 			numpals = (palette != null ? palette.length : 0);
 		
 		// Read of multiple bits
-		for (int o = 0; o < limit;)
+		for (int o = 0;;)
 		{
 			// Read and check EOF
 			int v = __dis.read();
@@ -510,7 +523,7 @@ public class PNGReader
 				break;
 			
 			// Handle each bit
-			for (int b = 0; b < 8; b += bitdepth, v >>>= bitdepth)
+			for (int b = 0; b < 8 && o < limit; b += bitdepth, v >>>= bitdepth)
 				argb[o++] = palette[(v & bitmask) % numpals];
 		}
 	}
@@ -537,7 +550,7 @@ public class PNGReader
 			limit = width * height;
 		
 		// Keep reading in data
-		for (int o = 0; o < limit;)
+		for (int o = 0; o < limit; o++)
 		{
 			// Read in all values, the mask is used to keep the sign bit in
 			// place but also cap the value to 255!
@@ -551,7 +564,7 @@ public class PNGReader
 				break;
 			
 			// Write pixel
-			argb[o++] = (a << 24) | (r << 16) | (g << 8) | b;
+			argb[o] = (a << 24) | (r << 16) | (g << 8) | b;
 		}
 	}
 	
@@ -576,7 +589,7 @@ public class PNGReader
 			limit = width * height;
 		
 		// Keep reading in data
-		for (int o = 0; o < limit; o++)
+		for (int o = 0; o < limit;)
 		{
 			// Read in all values, the mask is used to keep the sign bit in
 			// place but also cap the value to 255!
@@ -588,8 +601,92 @@ public class PNGReader
 				break;
 			
 			// Write pixel
-			argb[o] = (a << 24) | (y << 16) | (y << 8) | y;
+			argb[o++] = (a << 24) | (y << 16) | (y << 8) | y;
 		}
+	}
+	
+	/**
+	 * Unfilters the PNG data.
+	 *
+	 * @param __in The stream to read from.
+	 * @return The unfiltered data.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/15
+	 */
+	private final byte[] __unfilter(InputStream __in)
+		throws IOException, NullPointerException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		// Need these
+		int scanlen = this._scanlen,
+			height = this._height;
+		
+		// Allocate buffer that will be returned, containing the unfiltered
+		// data
+		byte[] rv = new byte[scanlen * height];
+		
+		// Read the image scanline by scanline and process it
+		for (int dy = 0; dy < height; dy++)
+		{
+			// Base output for this scanline
+			int ibase = scanlen * dy;
+			
+			// Go through each byte in the scanline
+			for (int dx = 0; dx < scanlen; dx++)
+			{
+				// The current position in the buffer
+				int di = ibase + dx;
+				
+				// The filter algorithm is a bit confusing and it uses the
+				// prior and old pixel information, so according to the PNG
+				// spec just to be easier to use the variables will be named
+				// the same. Anywhere that bleeds off the image will always be
+				// treated as zero.
+				
+				// The current byte being filtered
+				int x = __in.read() & 0xFF,
+				
+				// The byte to the left of (x, y) [-1, 0]
+					a = (dx <= 0 ? 0 : rv[di - 1]) & 0xFF,
+				
+				// The byte to the top of (x, y) [0, -1]
+					b = (dy <= 0 ? 0 : rv[di - scanlen]) & 0xFF,
+				
+				// The byte to the top and left of (x, y) [-1, -1]
+					c = (dx <= 0 || dy <= 0 ? 0 :
+						rv[(di - scanlen) - 1]) & 0xFF;
+				
+				// Pixel debugging stuff
+				todo.DEBUG.note("x=%3d a=%3d b=%3d c=%3d " +
+					"(at %2dx%2d of %2dx%2d)",
+					x, a, b, c, dx, dy, this._width, this._height);
+			}
+		}
+		
+		// Extra bytes?
+		for (int dx = 0, dy = height;;)
+		{
+			int xtra = __in.read();
+			if (xtra < 0)
+				break;
+			
+			// Increment pixel
+			dx++;
+			if (dx > scanlen)
+			{
+				dy++;
+				dx = 0;
+			}
+			
+			todo.DEBUG.note("Extra: %3d " +
+					"(at %2dx%2d of %2dx%2d)", xtra & 0xFF,
+					dx, dy, this._width, this._height);
+		}
+		
+		return rv;
 	}
 	
 	/**
