@@ -134,8 +134,9 @@ public final class ByteCodeProcessor
 					new SimplifiedJavaInstruction(inst);
 				
 				// Debug
-				todo.DEBUG.note("%s %s (%s)", (dohandling ? "Handling" :
-					"Preprocessing"), sji, inst);
+				if (__Debug__.ENABLED)
+					todo.DEBUG.note("%s %s (%s)", (dohandling ? "Handling" :
+						"Preprocessing"), sji, inst);
 				
 				// Current instruction info
 				state.instruction = inst;
@@ -192,12 +193,14 @@ public final class ByteCodeProcessor
 					if (smts != null)
 					{
 						// Debug
-						todo.DEBUG.note("SMT BEF: %s", stack);
+						if (__Debug__.ENABLED)
+							todo.DEBUG.note("SMT BEF: %s", stack);
 						
 						stack = stack.filterByStackMap(smts);
 						
 						// Debug
-						todo.DEBUG.note("SMT AFT: %s", stack);
+						if (__Debug__.ENABLED)
+							todo.DEBUG.note("SMT AFT: %s", stack);
 					}
 					
 					// If we are jumping back to this instruction at any point
@@ -1405,10 +1408,13 @@ public final class ByteCodeProcessor
 				else if (jta > addr && !use.canTransition(dss))
 				{
 					// Debug
-					todo.DEBUG.note("Transition is required! %d -> %d",
-						addr, jta);
-					todo.DEBUG.note("From: %s", use);
-					todo.DEBUG.note("To  : %s", dss);
+					if (__Debug__.ENABLED)
+					{
+						todo.DEBUG.note("Transition is required! %d -> %d",
+							addr, jta);
+						todo.DEBUG.note("From: %s", use);
+						todo.DEBUG.note("To  : %s", dss);
+					}
 					
 					// Get pre-existing collision state here, if any
 					JavaStackEnqueueList preq = stackcollides.get(jta);
@@ -1423,7 +1429,8 @@ public final class ByteCodeProcessor
 					stacks.put(jta, (dss = dss.cacheClearState(mcol)));
 					
 					// Debug
-					todo.DEBUG.note("Coll: %s", dss);
+					if (__Debug__.ENABLED)
+						todo.DEBUG.note("Coll: %s", dss);
 				}
 			}
 	}

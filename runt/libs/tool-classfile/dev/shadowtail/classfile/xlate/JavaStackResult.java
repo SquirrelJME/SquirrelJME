@@ -109,16 +109,19 @@ public final class JavaStackResult
 		this.ops = (__ops == null ? new StateOperations() : __ops);
 		
 		// Debug
-		todo.DEBUG.note("*** Stack Result ***");
-		todo.DEBUG.note("BEF: %s", __bs);
-		todo.DEBUG.note("AFT: %s", __as);
-		if (__eq != null && !__eq.isEmpty())
-			todo.DEBUG.note("ENQ: %s", __eq);
-		todo.DEBUG.note("IN : %s", in);
-		todo.DEBUG.note("OUT: %s", out);
-		if (__ops != null && !__ops.isEmpty())
-			todo.DEBUG.note("OPS: %s", __ops);
-		todo.DEBUG.note("********************");
+		if (__Debug__.ENABLED)
+		{
+			todo.DEBUG.note("*** Stack Result ***");
+			todo.DEBUG.note("BEF: %s", __bs);
+			todo.DEBUG.note("AFT: %s", __as);
+			if (__eq != null && !__eq.isEmpty())
+				todo.DEBUG.note("ENQ: %s", __eq);
+			todo.DEBUG.note("IN : %s", in);
+			todo.DEBUG.note("OUT: %s", out);
+			if (__ops != null && !__ops.isEmpty())
+				todo.DEBUG.note("OPS: %s", __ops);
+			todo.DEBUG.note("********************");
+		}
 	}
 	
 	/**

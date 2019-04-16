@@ -791,7 +791,8 @@ public final class JavaStackState
 		}
 		
 		// Debug
-		todo.DEBUG.note("Source map: %s", source);
+		if (__Debug__.ENABLED)
+			todo.DEBUG.note("Source map: %s", source);
 		
 		// Number of entries to push
 		int pushcount = sout.max;
@@ -859,7 +860,8 @@ public final class JavaStackState
 				sops.add(StateOperation.copy(iswide, Math.abs(pre), useval));
 				
 				// Debug
-				todo.DEBUG.note("Pre %d -> %d", pre, useval);
+				if (__Debug__.ENABLED)
+					todo.DEBUG.note("Pre %d -> %d", pre, useval);
 			}
 			
 			// Set value as being stored here
@@ -905,9 +907,12 @@ public final class JavaStackState
 			return new JavaStackResult(this, this, null);
 		
 		// Debug
-		todo.DEBUG.note("Will transition the stack!");
-		todo.DEBUG.note("From: %s", this);
-		todo.DEBUG.note("To  : %s", __ts);
+		if (__Debug__.ENABLED)
+		{
+			todo.DEBUG.note("Will transition the stack!");
+			todo.DEBUG.note("From: %s", this);
+			todo.DEBUG.note("To  : %s", __ts);
+		}
 		
 		// {@squirreljme.error JC3f A transition cannot be made where the
 		// length of the stack differs. (The length of the source stack; The
@@ -1076,7 +1081,8 @@ public final class JavaStackState
 			throw new NullPointerException("NARG");
 		
 		// Debug
-		todo.DEBUG.note("SMTS: %s", __smts);
+		if (__Debug__.ENABLED)
+			todo.DEBUG.note("SMTS: %s", __smts);
 			
 		// Input stack properties
 		Info[] locals = this._locals.clone(),
