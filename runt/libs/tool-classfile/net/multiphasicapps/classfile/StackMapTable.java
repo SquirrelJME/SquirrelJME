@@ -15,8 +15,10 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Iterator;
 import java.util.Map;
 import net.multiphasicapps.collections.SortedTreeMap;
+import net.multiphasicapps.collections.UnmodifiableIterator;
 
 /**
  * This is the stack map table which is used for verification purposes.
@@ -24,6 +26,7 @@ import net.multiphasicapps.collections.SortedTreeMap;
  * @since 2017/10/09
  */
 public final class StackMapTable
+	implements Iterable<StackMapTableState>
 {
 	/** Stack map states. */
 	private final Map<Integer, StackMapTableState> _states;
@@ -58,6 +61,17 @@ public final class StackMapTable
 	public StackMapTableState get(int __a)
 	{
 		return this._states.get(__a);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/16
+	 */
+	@Override
+	public final Iterator<StackMapTableState> iterator()
+	{
+		return UnmodifiableIterator.<StackMapTableState>of(
+			this._states.values());
 	}
 	
 	/**

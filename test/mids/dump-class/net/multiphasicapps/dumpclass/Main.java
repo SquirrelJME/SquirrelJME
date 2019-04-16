@@ -10,6 +10,8 @@
 
 package net.multiphasicapps.dumpclass;
 
+import dev.shadowtail.classfile.nncc.NativeCode;
+import dev.shadowtail.classfile.nncc.NativeInstruction;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -20,6 +22,7 @@ import java.util.Map;
 import net.multiphasicapps.classfile.Annotation;
 import net.multiphasicapps.classfile.AnnotationTable;
 import net.multiphasicapps.classfile.AnnotationValue;
+import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassFlag;
 import net.multiphasicapps.classfile.ClassName;
@@ -27,10 +30,13 @@ import net.multiphasicapps.classfile.Field;
 import net.multiphasicapps.classfile.FieldFlag;
 import net.multiphasicapps.classfile.InnerClass;
 import net.multiphasicapps.classfile.InnerClasses;
+import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.Method;
 import net.multiphasicapps.classfile.MethodFlag;
 import net.multiphasicapps.classfile.MethodName;
+import net.multiphasicapps.classfile.StackMapTable;
+import net.multiphasicapps.classfile.StackMapTableState;
 import net.multiphasicapps.io.IndentedOutputStream;
 import net.multiphasicapps.zip.streamreader.ZipStreamEntry;
 import net.multiphasicapps.zip.streamreader.ZipStreamReader;
@@ -86,6 +92,29 @@ public class Main
 		
 		for (Annotation e : __in)
 			Main.dumpAnnotation(__i, __out, e);
+	}
+	
+	/**
+	 * Dumps byte code.
+	 *
+	 * @param __i The controller for indenting.
+	 * @param __out The output.
+	 * @param __in The input.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/16
+	 */
+	public static void dumpByteCode(IndentedOutputStream __i,
+		PrintStream __out, ByteCode __in)
+		throws NullPointerException
+	{
+		if (__i == null || __out == null || __in == null)
+			throw new NullPointerException("NARG");
+		
+		// Dump all instructions
+		__i.increment();
+		for (Instruction v : __in)
+			__out.printf("%s%n", v);
+		__i.decrement();
 	}
 		
 	/**
@@ -250,6 +279,86 @@ public class Main
 		__out.println("Annotations:");
 		__i.increment();
 		Main.dumpAnnotationTable(__i, __out, __in.annotationTable());
+		__i.decrement();
+		
+		// Print Code
+		ByteCode bc = __in.byteCode();
+		if (bc != null)
+		{
+			// Dump byte code
+			__out.println("Byte Code:");
+			__i.increment();
+			Main.dumpByteCode(__i, __out, bc);
+			__i.decrement();
+			
+			// Stack map table
+			StackMapTable smt = bc.stackMapTable();
+			if (smt != null)
+			{
+				__out.println("Stack Map Table:");
+				__i.increment();
+				Main.dumpStackMapTable(__i, __out, smt);
+				__i.decrement();
+			}
+			
+			// Dump native code
+			__out.println("Native Code:");
+			__i.increment();
+			try
+			{
+				Main.dumpNativeCode(__i, __out, __in.nativeCode());
+			}
+			catch (InvalidClassFormatException e)
+			{
+				__out.println("Failed to decode!");
+			}
+			__i.decrement();
+		}
+	}
+	
+	/**
+	 * Dumps native code.
+	 *
+	 * @param __i The controller for indenting.
+	 * @param __out The output.
+	 * @param __in The input.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/16
+	 */
+	public static void dumpNativeCode(IndentedOutputStream __i,
+		PrintStream __out, NativeCode __in)
+		throws NullPointerException
+	{
+		if (__i == null || __out == null || __in == null)
+			throw new NullPointerException("NARG");
+		
+		// Dump all instructions
+		__i.increment();
+		for (NativeInstruction v : __in)
+			__out.printf("%s%n", v);
+		__i.decrement();
+	}
+	
+	/**
+	 * Dumps stack map table.
+	 *
+	 * @param __i The controller for indenting.
+	 * @param __out The output.
+	 * @param __in The input.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/16
+	 */
+	public static void dumpStackMapTable(IndentedOutputStream __i,
+		PrintStream __out, StackMapTable __in)
+		throws NullPointerException
+	{
+		if (__i == null || __out == null || __in == null)
+			throw new NullPointerException("NARG");
+		
+		// Dump all instructions
+		__i.increment();
+		for (StackMapTableState v : __in)
+			__out.printf("%s%n", v);
 		__i.decrement();
 	}
 	
