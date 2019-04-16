@@ -346,6 +346,13 @@ public final class ByteCodeProcessor
 							sji.<MethodReference>argument(0,
 								MethodReference.class));
 						break;
+						
+						// Checks that the given class is an instance of an
+						// object.
+					case InstructionIndex.INSTANCEOF:
+						this.__doInstanceOf(sji.<ClassName>argument(0,
+							ClassName.class));
+						break;
 					
 						// Load constant
 					case InstructionIndex.LDC:
@@ -793,6 +800,31 @@ public final class ByteCodeProcessor
 		handler.doMath(StackJavaType.INTEGER, MathType.ADD,
 			result.out(0).asInput(), __v,
 			result.out(0));
+	}
+	
+	/**
+	 * Checks that the class is the given instance.
+	 *
+	 * @param __cl The class to check.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/16
+	 */
+	private final void __doInstanceOf(ClassName __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// [object] -> [int]
+		JavaStackResult result = this.state.stack.doStack(1, JavaType.INTEGER);
+		this.__update(result);
+		
+		// Stop pre-processing here
+		if (!this._dohandling)
+			return;
+		
+		// Handle
+		this.handler.doInstanceOf(__cl, result.in(0), result.out(0));
 	}
 	
 	/**

@@ -137,6 +137,17 @@ public interface ByteCodeHandler
 		JavaStackResult.Output __out, JavaStackResult.Input... __in);
 	
 	/**
+	 * Check that an object is of a given type and sets the stack if it is.
+	 *
+	 * @param __cl The class to check.
+	 * @param __v The object to check.
+	 * @param __o The output.
+	 * @since 2019/04/16
+	 */
+	public abstract void doInstanceOf(ClassName __cl,
+		JavaStackResult.Input __v, JavaStackResult.Output __o);
+	
+	/**
 	 * Performs math operation.
 	 *
 	 * @param __dt The type to operate on.
