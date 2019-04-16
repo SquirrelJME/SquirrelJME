@@ -68,7 +68,6 @@ public final class NullPlayer
 	@Override
 	public final void close()
 	{
-		throw new todo.TODO();
 	}
 	
 	/**
@@ -78,7 +77,8 @@ public final class NullPlayer
 	@Override
 	public final void deallocate()
 	{
-		throw new todo.TODO();
+		if (this._state == STARTED)
+			this._state = REALIZED;
 	}
 	
 	/**
@@ -234,7 +234,6 @@ public final class NullPlayer
 	public final void stop()
 		throws MediaException
 	{
-		throw new todo.TODO();
 	}
 }
 
