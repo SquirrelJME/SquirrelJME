@@ -625,7 +625,7 @@ public class AdvancedGraphics
 		__src.getRGB(data, 0, __wsrc, __xsrc, __ysrc, __wsrc, __hsrc);
 		
 		// Perform the transformation, possibly returning a new data buffer
-		int[] transdim = new int[2];
+		int[] transdim = new int[]{__wsrc, __hsrc};
 		data = this.__transform(__trans, data, __wsrc, __hsrc, transdim);
 		
 		// Re-read the new image sizes!
@@ -1625,7 +1625,7 @@ public class AdvancedGraphics
 		int __wsrc, int __hsrc, int[] __dimout)
 		throws NullPointerException
 	{
-		if (__data == null)
+		if (__data == null || __dimout == null)
 			throw new NullPointerException("NARG");
 		
 		// Destination width and height
@@ -1658,11 +1658,19 @@ public class AdvancedGraphics
 				break;
 		}
 		
-		// Mirror the image
+		// Mirror the image horizontally (across vertical axis)
 		if (mirror)
-		{
-			todo.TODO.note("Mirror");
-		}
+			for (int y = 0; y < hdest; y++)
+			{
+				int dx = wdest * y,
+					de = (dx + wdest) - 1;
+				for (int x = 0, n = (wdest >> 1); x < n; x++)
+				{
+					int t = __data[de];
+					__data[de--] = __data[dx];
+					__data[dx++] = t;
+				}
+			}
 		
 		// Perform translation
 		switch (__trans)
