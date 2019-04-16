@@ -86,6 +86,17 @@ public final class LookupSwitch
 	}
 	
 	/**
+	 * Returns the default jump.
+	 *
+	 * @return The default jump.
+	 * @since 2019/04/16
+	 */
+	public final InstructionJumpTarget defaultJump()
+	{
+		return this.defaultjump;
+	}
+	
+	/**
 	 * Returns the jumps.
 	 *
 	 * @return The jumps.

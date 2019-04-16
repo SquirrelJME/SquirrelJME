@@ -169,6 +169,10 @@ public interface NativeInstructionType
 	public static final int IFARRAY_MISTYPE_REF_CLEAR =
 		0xE5;
 	
+	/** If equal to constant. */
+	public static final int IFEQ_CONST =
+		0xE6;
+	
 	/**
 	 * New. 
 	 * {@code iiiixxxx, r2 = new p1}.
