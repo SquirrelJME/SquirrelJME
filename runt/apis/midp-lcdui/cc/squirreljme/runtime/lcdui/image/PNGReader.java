@@ -556,8 +556,8 @@ public class PNGReader
 			// place but also cap the value to 255!
 			int r = __dis.read() & 0x800000FF,
 				g = __dis.read() & 0x800000FF,
-				b = __dis.read() & 0x800000FF,
-				a = (__alpha ? (__dis.read() & 0x800000FF) : 0xFF);
+				b = __dis.read() & 0x800000FF;
+			int a = (__alpha ? (__dis.read() & 0x800000FF) : 0xFF);
 			
 			// Have any hit EOF? Just need to OR all the bits
 			if ((r | g | b | a) < 0)
@@ -641,6 +641,8 @@ public class PNGReader
 			if (type < 0 || type > 4)
 				throw new IOException("EB34 " + type);
 			
+			todo.DEBUG.note("Line %d: %d", dy, type);
+			
 			// Go through each byte in the scanline
 			for (int dx = 0; dx < scanlen; dx++)
 			{
@@ -663,13 +665,8 @@ public class PNGReader
 					b = (dy <= 0 ? 0 : rv[di - scanlen]) & 0xFF,
 				
 				// The byte to the top and left of (x, y) [-1, -1]
-					c = (dx <= 0 || dy <= 0 ? 0 :
+					c = ((dx <= 0 || dy <= 0) ? 0 :
 						rv[(di - scanlen) - 1]) & 0xFF;
-				
-				// Pixel debugging stuff
-				todo.DEBUG.note("x=%3d a=%3d b=%3d c=%3d " +
-					"(at %2dx%2d of %2dx%2d)",
-					x, a, b, c, dx, dy, this._width, this._height);
 				
 				// Depends on the decoding algorithm
 				int res = 0;
@@ -680,7 +677,7 @@ public class PNGReader
 						res = x;
 						break;
 						
-						// Subtract
+						// Sub
 					case 1:
 						res = x + a;
 						break;
@@ -711,11 +708,11 @@ public class PNGReader
 							
 							// Perform some checks
 							if (pa <= pb && pa <= pc)
-								res = a;
+								res = x + a;
 							else if (pb <= pc)
-								res = b;
+								res = x + b;
 							else
-								res = c;
+								res = x + c;
 						}
 						break;
 				}

@@ -24,7 +24,7 @@ public final class PNGDemo
 	 */
 	public PNGDemo()
 	{
-		super(PNGDemo.class.getResourceAsStream("image.png"));
+		super(PNGDemo.class.getResourceAsStream("heart.png"));
 	}
 }
 
