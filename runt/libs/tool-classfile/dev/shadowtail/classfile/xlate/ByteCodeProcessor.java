@@ -244,6 +244,11 @@ public final class ByteCodeProcessor
 						this.__doArrayStore(null);
 						break;
 						
+						// Null constant
+					case InstructionIndex.ACONST_NULL:
+						this.__doAConstNull();
+						break;
+						
 						// Allocate new array
 					case InstructionIndex.ANEWARRAY:
 						this.__doNewArray(sji.<ClassName>argument(0,
@@ -424,6 +429,25 @@ public final class ByteCodeProcessor
 					handler.instructionFinish();
 			}
 		}
+	}
+	
+	/**
+	 * Pushes a null constant to the stack.
+	 *
+	 * @since 2019/04/16
+	 */
+	private final void __doAConstNull()
+	{
+		// -> [ref]
+		JavaStackResult result = state.stack.doStack(0, JavaType.OBJECT);
+		this.__update(result);
+		
+		// Stop pre-processing here
+		if (!this._dohandling)
+			return;
+		
+		// Handle
+		this.handler.doCopy(JavaStackResult.INPUT_ZERO, result.out(0));
 	}
 	
 	/**
