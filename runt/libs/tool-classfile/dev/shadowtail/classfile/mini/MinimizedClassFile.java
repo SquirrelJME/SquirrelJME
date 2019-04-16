@@ -10,6 +10,8 @@
 
 package dev.shadowtail.classfile.mini;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,10 +26,6 @@ import net.multiphasicapps.classfile.InvalidClassFormatException;
  */
 public final class MinimizedClassFile
 {
-	/** The magic number for the files. */
-	public static final int MAGIC_NUMBER =
-		0x00586572;
-	
 	/**
 	 * Decodes and returns the minimized representation of the class file.
 	 *
@@ -45,12 +43,51 @@ public final class MinimizedClassFile
 		if (__is == null)
 			throw new NullPointerException("NARG");
 		
-		// Wrap stream for reading
-		DataInputStream dis = new DataInputStream(__is);
+		// Initialize byte array with guess to how many bytes can be read
+		byte[] mcdata;
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(
+			Math.max(4096, __is.available())))
+		{
+			// Copy data
+			byte[] buf = new byte[512];
+			for (;;)
+			{
+				int rc = __is.read(buf);
+				
+				if (rc < 0)
+					break;
+				
+				baos.write(buf, 0, rc);
+			}
+			
+			// Finish off
+			mcdata = baos.toByteArray();
+		}
 		
-		// {@squirreljme.error JC2l Invalid minimized class magic number.}
-		if (MAGIC_NUMBER != dis.readInt())
-			throw new InvalidClassFormatException("JC2l");
+		// Decode now
+		return MinimizedClassFile.decode(mcdata);
+	}
+	
+	/**
+	 * Decodes and returns the minimized representation of the class file.
+	 *
+	 * @param __is The bytes to decode from.
+	 * @return The resulting minimized class.
+	 * @throws InvalidClassFormatException If the class is not formatted
+	 * correctly.
+	 * @throws IOException On read errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/16
+	 */
+	public static final MinimizedClassFile decode(byte[] __is)
+		throws InvalidClassFormatException, IOException, NullPointerException
+	{
+		if (__is == null)
+			throw new NullPointerException("NARG");
+		
+		// Read class header
+		MinimizedClassHeader header = MinimizedClassHeader.decode(
+			new ByteArrayInputStream(__is));
 		
 		throw new todo.TODO();
 	}
