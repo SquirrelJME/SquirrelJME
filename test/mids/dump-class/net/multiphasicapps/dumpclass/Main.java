@@ -304,14 +304,7 @@ public class Main
 			// Dump native code
 			__out.println("Native Code:");
 			__i.increment();
-			try
-			{
-				Main.dumpNativeCode(__i, __out, __in.nativeCode());
-			}
-			catch (InvalidClassFormatException e)
-			{
-				__out.println("Failed to decode!");
-			}
+			Main.dumpNativeCode(__i, __out, __in.nativeCode());
 			__i.decrement();
 		}
 	}
@@ -332,10 +325,13 @@ public class Main
 		if (__i == null || __out == null || __in == null)
 			throw new NullPointerException("NARG");
 		
+		// Address
+		int addr = 0;
+		
 		// Dump all instructions
 		__i.increment();
 		for (NativeInstruction v : __in)
-			__out.printf("%s%n", v);
+			__out.printf("@%d#%s%n", addr++, v);
 		__i.decrement();
 	}
 	
@@ -357,8 +353,8 @@ public class Main
 		
 		// Dump all instructions
 		__i.increment();
-		for (StackMapTableState v : __in)
-			__out.printf("%s%n", v);
+		for (Map.Entry<Integer, StackMapTableState> v : __in)
+			__out.printf("%d=%s%n", v.getKey(), v.getValue());
 		__i.decrement();
 	}
 	
@@ -375,7 +371,7 @@ public class Main
 			__args = new String[0];
 		
 		// Indent to make the output nice
-		IndentedOutputStream i = new IndentedOutputStream(System.out);
+		IndentedOutputStream i = new IndentedOutputStream(System.out, ' ');
 		PrintStream out = new PrintStream(i, true);
 		
 		// Dump all of them

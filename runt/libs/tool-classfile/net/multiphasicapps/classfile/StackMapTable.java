@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.Map;
 import net.multiphasicapps.collections.SortedTreeMap;
 import net.multiphasicapps.collections.UnmodifiableIterator;
+import net.multiphasicapps.collections.UnmodifiableMap;
 
 /**
  * This is the stack map table which is used for verification purposes.
@@ -26,7 +27,7 @@ import net.multiphasicapps.collections.UnmodifiableIterator;
  * @since 2017/10/09
  */
 public final class StackMapTable
-	implements Iterable<StackMapTableState>
+	implements Iterable<Map.Entry<Integer, StackMapTableState>>
 {
 	/** Stack map states. */
 	private final Map<Integer, StackMapTableState> _states;
@@ -68,10 +69,11 @@ public final class StackMapTable
 	 * @since 2019/04/16
 	 */
 	@Override
-	public final Iterator<StackMapTableState> iterator()
+	public final Iterator<Map.Entry<Integer, StackMapTableState>> iterator()
 	{
-		return UnmodifiableIterator.<StackMapTableState>of(
-			this._states.values());
+		return UnmodifiableIterator.<Map.Entry<Integer, StackMapTableState>>of(
+			UnmodifiableMap.<Integer, StackMapTableState>of(
+				this._states).entrySet().iterator());
 	}
 	
 	/**
