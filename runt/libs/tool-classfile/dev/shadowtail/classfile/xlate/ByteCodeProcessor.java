@@ -271,6 +271,14 @@ public final class ByteCodeProcessor
 							ClassName.class));
 						break;
 						
+						// Convert data
+					case SimplifiedJavaInstruction.CONVERT:
+						this.__doConvert(sji.<StackJavaType>argument(0,
+								StackJavaType.class),
+							sji.<StackJavaType>argument(1,
+								StackJavaType.class));
+						break;
+						
 						// Get field
 					case InstructionIndex.GETFIELD:
 						this.__doFieldGet(sji.<FieldReference>argument(0,
@@ -573,6 +581,32 @@ public final class ByteCodeProcessor
 		
 		// Do check cast
 		this.handler.doCheckCast(__cn, result.in(0));
+	}
+	
+	/**
+	 * Converts from one Java type to another
+	 *
+	 * @param __from The source type.
+	 * @param __to The destination type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/16
+	 */
+	private final void __doConvert(StackJavaType __from, StackJavaType __to)
+		throws NullPointerException
+	{
+		if (__from == null || __to == null)
+			throw new NullPointerException("NARG");
+		
+		// [from] -> [to]
+		JavaStackResult result = state.stack.doStack(1, __to.toJavaType());
+		this.__update(result);
+		
+		// Stop pre-processing here
+		if (!this._dohandling)
+			return;
+		
+		// Forward
+		this.handler.doConvert(__from, result.in(0), __to, result.out(0));
 	}
 	
 	/**

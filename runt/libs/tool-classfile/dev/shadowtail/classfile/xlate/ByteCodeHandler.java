@@ -69,6 +69,19 @@ public interface ByteCodeHandler
 		JavaStackResult.Input __v);
 	
 	/**
+	 * Performs convert of value.
+	 *
+	 * @param __as The source type.
+	 * @param __a The input.
+	 * @param __bs The output type.
+	 * @param __b The output.
+	 * @since 2019/04/16
+	 */
+	public abstract void doConvert(StackJavaType __as,
+		JavaStackResult.Input __a, StackJavaType __bs,
+		JavaStackResult.Output __b);
+	
+	/**
 	 * Performs a copy operation.
 	 *
 	 * @param __in The input.
