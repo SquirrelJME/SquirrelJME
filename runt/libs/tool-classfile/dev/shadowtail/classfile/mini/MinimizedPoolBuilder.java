@@ -250,9 +250,13 @@ public final class MinimizedPoolBuilder
 		// Write data
 		try
 		{
-			// Table header information
+			// Table type information
 			ByteArrayOutputStream tbytes = new ByteArrayOutputStream();
 			DataOutputStream tdos = new DataOutputStream(tbytes);
+			
+			// Table offset information
+			ByteArrayOutputStream obytes = new ByteArrayOutputStream();
+			DataOutputStream odos = new DataOutputStream(obytes);
 			
 			// Actual table data
 			ByteArrayOutputStream dbytes = new ByteArrayOutputStream();
@@ -263,7 +267,12 @@ public final class MinimizedPoolBuilder
 			tdos.writeInt(poolcount);
 			
 			// Guess where all the data will be written in the pool
-			int reloff = 4 + (poolcount * 4) + 4;
+			// poolcount + tbytes + obytes + endmarkers
+			int reloff = 4 + (poolcount * 3) + 3;
+			
+			// Align the data table to the nearest 4-byte boundary
+			while (((reloff + ddos.size()) & 3) != 0)
+				ddos.write(0);
 			
 			// Write all the values in the pool, the value in the map is
 			// ignored because that just stores the index identifier
@@ -321,8 +330,7 @@ public final class MinimizedPoolBuilder
 				// the pool never exceeds 65K.
 				int dxo = reloff + ddos.size();
 				tdos.writeByte(faketype);
-				tdos.writeByte(dxo >>> 16);
-				tdos.writeShort(dxo & 0xFFFF);
+				odos.writeShort(Minimizer.__checkUShort(dxo & 0xFFFF));
 				
 				// Depends on the type used
 				switch (et)
@@ -414,11 +422,11 @@ public final class MinimizedPoolBuilder
 			// Write end of table marker and the table end area thing
 			int dxo = reloff + ddos.size();
 			tdos.writeByte(0xFF);
-			tdos.writeByte(dxo >>> 16);
-			tdos.writeShort(dxo & 0xFFFF);
+			odos.writeShort(0xFFFF);
 			
 			// Merge the data bytes into the table then use the completed
 			// table
+			tbytes.write(obytes.toByteArray());
 			tbytes.write(dbytes.toByteArray());
 			return tbytes.toByteArray();
 		}
