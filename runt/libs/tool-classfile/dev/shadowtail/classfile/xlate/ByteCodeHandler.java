@@ -12,6 +12,7 @@ package dev.shadowtail.classfile.xlate;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.InstructionJumpTarget;
+import net.multiphasicapps.classfile.LookupSwitch;
 import net.multiphasicapps.classfile.MethodReference;
 
 /**
@@ -146,6 +147,16 @@ public interface ByteCodeHandler
 	 */
 	public abstract void doInstanceOf(ClassName __cl,
 		JavaStackResult.Input __v, JavaStackResult.Output __o);
+	
+	/**
+	 * Generates a lookup on a lookup table then jumps to a target.
+	 *
+	 * @param __key The key to check against.
+	 * @param __ls The lookup switch.
+	 * @since 2019/04/16
+	 */
+	public abstract void doLookupSwitch(JavaStackResult.Input __key,
+		LookupSwitch __ls);
 	
 	/**
 	 * Performs math operation.
