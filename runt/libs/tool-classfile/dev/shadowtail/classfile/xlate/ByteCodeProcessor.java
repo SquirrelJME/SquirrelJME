@@ -535,7 +535,7 @@ public final class ByteCodeProcessor
 		// This is easily determined from the primitive type
 		JavaType faketype;
 		if (__pt != null)
-			faketype = new JavaType(__pt.toClassName());
+			faketype = __pt.stackJavaType();
 		
 		// Otherwise, pop twice and see what the array is and work from
 		// that
