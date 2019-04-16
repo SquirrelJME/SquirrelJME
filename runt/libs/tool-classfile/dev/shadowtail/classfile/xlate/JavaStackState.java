@@ -973,11 +973,20 @@ public final class JavaStackState
 			if (a.equals(b))
 				continue;
 			
-			// If the target is transitioning to nothing, then it will be
-			// removed
+			// The source is nothing
 			JavaType at = a.type,
 				bt = b.type;
-			if (bt.isNothing())
+			if (at.isNothing())
+			{
+				// Transition to a non-nothing type, just copy zero to it
+				if (!bt.isNothing())
+					ops.add(StateOperation.copy(
+						bt.isWide(), 0, b.value));
+			}
+			
+			// If the target is transitioning to nothing, then it will be
+			// removed
+			else if (bt.isNothing())
 			{
 				// If the A local is an object that is countable, then just
 				// uncount it
