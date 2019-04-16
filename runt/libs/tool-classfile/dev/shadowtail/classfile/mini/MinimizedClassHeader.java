@@ -130,8 +130,10 @@ public final class MinimizedClassHeader
 		this.unuseda = __vx[at++];
 		this.unusedb = __vx[at++];
 		
-		// Class information
+		// Constant pool
 		this.poolcount = __vx[at++];
+		
+		// Class information
 		this.classflags = __vx[at++];
 		this.classname = __vx[at++];
 		this.classsuper = __vx[at++];
@@ -199,11 +201,13 @@ public final class MinimizedClassHeader
 		// Read in all the data
 		return new MinimizedClassHeader(
 			// Unused
-			/* unuseda */ dis.readByte(),
-			/* unusedb */ dis.readByte(),
+			/* unuseda */ dis.readUnsignedShort(),
+			/* unusedb */ dis.readUnsignedShort(),
+			
+			// Constant pool
+			/* poolcount */ dis.readUnsignedShort(),
 			
 			// Class header
-			/* poolcount */ dis.readUnsignedShort(),
 			/* classflags */ dis.readInt(),
 			/* classname */ dis.readUnsignedShort(),
 			/* classsuper */ dis.readUnsignedShort(),
@@ -243,7 +247,6 @@ public final class MinimizedClassHeader
 			// File size
 			/* filesize */ dis.readInt(),
 			/* datasize */ dis.readInt());
-		
 	}	
 }
 
