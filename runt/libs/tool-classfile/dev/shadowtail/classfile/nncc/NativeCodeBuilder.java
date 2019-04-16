@@ -98,8 +98,9 @@ public final class NativeCodeBuilder
 		NativeInstruction rv = new NativeInstruction(__op, __args);
 		
 		// Debug
-		todo.DEBUG.note("@%d -> %s %s", atdx,
-			NativeInstruction.mnemonic(__op), Arrays.asList(__args));
+		if (__Debug__.ENABLED)
+			todo.DEBUG.note("@%d -> %s %s", atdx,
+				NativeInstruction.mnemonic(__op), Arrays.asList(__args));
 		
 		// Store and return the instruction, it will have the address
 		this._instructions.put(atdx, rv);
@@ -658,9 +659,12 @@ public final class NativeCodeBuilder
 			xlines[i] = lines.get(i).shortValue();
 		
 		// Debug
-		for (int i = 0, n = out.size(); i < n; i++)
-			todo.DEBUG.note("@%-2d L%d:%s", i, xlines[i] & 0xFFFF,
-				out.get(i));
+		if (__Debug__.ENABLED)
+		{
+			for (int i = 0, n = out.size(); i < n; i++)
+				todo.DEBUG.note("@%-2d L%d:%s", i, xlines[i] & 0xFFFF,
+					out.get(i));
+		}
 		
 		// Build
 		return new NativeCode(out, xlines);
@@ -716,7 +720,8 @@ public final class NativeCodeBuilder
 	public final NativeCodeLabel label(NativeCodeLabel __l, int __pc)
 	{
 		// Debug
-		todo.DEBUG.note("Label %s -> @%d", __l, __pc);
+		if (__Debug__.ENABLED)
+			todo.DEBUG.note("Label %s -> @%d", __l, __pc);
 		
 		// Add
 		this._labels.put(__l, __pc);
