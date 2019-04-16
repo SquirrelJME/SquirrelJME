@@ -641,8 +641,6 @@ public class PNGReader
 			if (type < 0 || type > 4)
 				throw new IOException("EB34 " + type);
 			
-			todo.DEBUG.note("Line %d: %d", dy, type);
-			
 			// Go through each byte in the scanline
 			for (int dx = 0; dx < scanlen; dx++)
 			{
@@ -692,7 +690,7 @@ public class PNGReader
 						res = x + ((a + b) >>> 2);
 						break;
 						
-						// Paeth
+						// Paeth, this probably is not correct
 					case 4:
 						{
 							// Calculate these
