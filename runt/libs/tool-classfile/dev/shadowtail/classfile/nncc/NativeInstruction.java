@@ -132,6 +132,17 @@ public final class NativeInstruction
 	}
 	
 	/**
+	 * Returns the argument format for the instruction.
+	 *
+	 * @return The argument format.
+	 * @since 2018/04/16
+	 */
+	public final ArgumentFormat[] argumentFormat()
+	{
+		return NativeInstruction.argumentFormat(this.op);
+	}
+	
+	/**
 	 * Returns all of the arguments.
 	 *
 	 * @return The arguments.
@@ -323,6 +334,144 @@ public final class NativeInstruction
 			default:
 				throw new IllegalArgumentException("JC2r " + __op);
 		}
+	}
+	
+	
+	/**
+	 * Returns the argument format for the instruction.
+	 *
+	 * @param __op The operation to get the encoding of.
+	 * @return The argument format.
+	 * @since 2018/04/16
+	 */
+	public static final ArgumentFormat[] argumentFormat(int __op)
+	{
+		switch (NativeInstruction.encoding(__op))
+		{
+				// []
+			case NativeInstructionType.BREAKPOINT:
+			case NativeInstructionType.RETURN:
+			case NativeInstructionType.REF_CLEAR:
+			case NativeInstructionType.REF_RESET:
+				return ArgumentFormat.of();
+				
+				// [u16]
+			case NativeInstructionType.COUNT:
+			case NativeInstructionType.MONITORENTER:
+			case NativeInstructionType.MONITOREXIT:
+			case NativeInstructionType.UNCOUNT:
+				return ArgumentFormat.of(
+					ArgumentFormat.VUINT);
+				
+				// [u16, u16]
+			case NativeInstructionType.ARRAYLEN:
+			case NativeInstructionType.CONVERSION:
+				return ArgumentFormat.of(
+					ArgumentFormat.VUINT,
+					ArgumentFormat.VUINT);
+				
+				// [p16, u16]
+			case NativeInstructionType.LOAD_POOL:
+			case NativeInstructionType.NEW:
+				return ArgumentFormat.of(
+					ArgumentFormat.VPOOL,
+					ArgumentFormat.VUINT);
+				
+				// [u16, u16, u16]
+			case NativeInstructionType.ARRAY_ACCESS:
+			case NativeInstructionType.MATH_REG_DOUBLE:
+			case NativeInstructionType.MATH_REG_FLOAT:
+			case NativeInstructionType.MATH_REG_INT:
+			case NativeInstructionType.MATH_REG_LONG:
+			case NativeInstructionType.MEMORY_OFF_REG:
+				return ArgumentFormat.of(
+					ArgumentFormat.VUINT,
+					ArgumentFormat.VUINT,
+					ArgumentFormat.VUINT);
+				
+				// [u16, d64, u16]
+			case NativeInstructionType.MATH_CONST_DOUBLE:
+				return ArgumentFormat.of(
+					ArgumentFormat.VUINT,
+					ArgumentFormat.FLOAT64,
+					ArgumentFormat.VUINT);
+			
+				// [u16, f32, u16]
+			case NativeInstructionType.MATH_CONST_FLOAT:
+				return ArgumentFormat.of(
+					ArgumentFormat.VUINT,
+					ArgumentFormat.FLOAT32,
+					ArgumentFormat.VUINT);
+			
+				// [u16, i32, u16]
+			case NativeInstructionType.MATH_CONST_INT:
+				return ArgumentFormat.of(
+					ArgumentFormat.VUINT,
+					ArgumentFormat.INT32,
+					ArgumentFormat.VUINT);
+			
+				// [u16, l64, u16]
+			case NativeInstructionType.MATH_CONST_LONG:
+				return ArgumentFormat.of(
+					ArgumentFormat.VUINT,
+					ArgumentFormat.INT64,
+					ArgumentFormat.VUINT);
+				
+				// [u16, u16, i32]
+			case NativeInstructionType.MEMORY_OFF_ICONST:
+				return ArgumentFormat.of(
+					ArgumentFormat.VUINT,
+					ArgumentFormat.VUINT,
+					ArgumentFormat.INT32);
+				
+				// [u16, u16, j16]
+			case NativeInstructionType.IF_ICMP:
+			case NativeInstructionType.IFARRAY_INDEX_OOB_REF_CLEAR:
+			case NativeInstructionType.IFARRAY_MISTYPE_REF_CLEAR:
+				return ArgumentFormat.of(
+					ArgumentFormat.VUINT,
+					ArgumentFormat.VUINT,
+					ArgumentFormat.VJUMP);
+			
+				// [u16, i32, j16]
+			case NativeInstructionType.IFEQ_CONST:
+				return ArgumentFormat.of(
+					ArgumentFormat.VUINT,
+					ArgumentFormat.INT32,
+					ArgumentFormat.VJUMP);
+				
+				// [p16, u16, u16]
+			case NativeInstructionType.NEWARRAY:
+				return ArgumentFormat.of(
+					ArgumentFormat.VPOOL,
+					ArgumentFormat.VUINT,
+					ArgumentFormat.VUINT);
+				
+				// [p16, u16, j16]
+			case NativeInstructionType.IFCLASS:
+			case NativeInstructionType.IFCLASS_REF_CLEAR:
+			case NativeInstructionType.IFNOTCLASS:
+			case NativeInstructionType.IFNOTCLASS_REF_CLEAR:
+				return ArgumentFormat.of(
+					ArgumentFormat.VPOOL,
+					ArgumentFormat.VUINT,
+					ArgumentFormat.VJUMP);
+				
+				// [reglist]
+			case NativeInstructionType.REF_PUSH:
+				return ArgumentFormat.of(
+					ArgumentFormat.REGLIST);
+				
+				// [p16, reglist]
+			case NativeInstructionType.INVOKE:
+				return ArgumentFormat.of(
+					ArgumentFormat.VPOOL,
+					ArgumentFormat.REGLIST);
+		}
+		
+		// {@squirreljme.error JC3r Invalid operation. (The operation)}
+		throw new IllegalArgumentException("JC3r " +
+			NativeInstruction.mnemonic(__op));
 	}
 	
 	/**

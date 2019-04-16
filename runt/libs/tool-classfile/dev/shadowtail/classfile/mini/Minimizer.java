@@ -10,6 +10,7 @@
 
 package dev.shadowtail.classfile.mini;
 
+import dev.shadowtail.classfile.nncc.ArgumentFormat;
 import dev.shadowtail.classfile.nncc.NativeCode;
 import dev.shadowtail.classfile.nncc.NativeInstruction;
 import dev.shadowtail.classfile.nncc.NativeInstructionType;
@@ -400,173 +401,126 @@ public final class Minimizer
 			int op = i.operation();
 			dos.write(op);
 			
-			// Most instructions use a pre-defined format, so doing it this way
-			// simplifies handling various instructions as they will just use
-			// a common layout.
-			switch (i.encoding())
+			// Encode arguments
+			ArgumentFormat[] format = i.argumentFormat();
+			for (int a = 0, an = i.argumentCount(); a < an; a++)
 			{
-					// []
-				case NativeInstructionType.BREAKPOINT:
-				case NativeInstructionType.RETURN:
-				case NativeInstructionType.REF_CLEAR:
-				case NativeInstructionType.REF_RESET:
-					break;
-					
-					// [u16]
-				case NativeInstructionType.COUNT:
-				case NativeInstructionType.MONITORENTER:
-				case NativeInstructionType.MONITOREXIT:
-				case NativeInstructionType.UNCOUNT:
-					dos.writeShort(i.shortArgument(0));
-					break;
-					
-					// [u16, u16]
-				case NativeInstructionType.ARRAYLEN:
-				case NativeInstructionType.CONVERSION:
-					dos.writeShort(i.shortArgument(0));
-					dos.writeShort(i.shortArgument(1));
-					break;
-					
-					// [p16, u16]
-				case NativeInstructionType.LOAD_POOL:
-				case NativeInstructionType.NEW:
-					dos.writeShort(pool.add(i.argument(0)));
-					dos.writeShort(i.shortArgument(1));
-					break;
-					
-					// [u16, u16, u16]
-				case NativeInstructionType.ARRAY_ACCESS:
-				case NativeInstructionType.MATH_REG_DOUBLE:
-				case NativeInstructionType.MATH_REG_FLOAT:
-				case NativeInstructionType.MATH_REG_INT:
-				case NativeInstructionType.MATH_REG_LONG:
-				case NativeInstructionType.MEMORY_OFF_REG:
-					dos.writeShort(i.shortArgument(0));
-					dos.writeShort(i.shortArgument(1));
-					dos.writeShort(i.shortArgument(2));
-					break;
-					
-					// [u16, d64, u16]
-				case NativeInstructionType.MATH_CONST_DOUBLE:
-					dos.writeShort(i.shortArgument(0));
-					
-					dos.writeLong(Double.doubleToRawLongBits(
-						i.<Number>argument(1, Number.class).doubleValue()));
-					
-					dos.writeShort(i.shortArgument(2));
-					break;
+				// Read argument
+				Object v = i.argument(a);
 				
-					// [u16, f32, u16]
-				case NativeInstructionType.MATH_CONST_FLOAT:
-					dos.writeShort(i.shortArgument(0));
-					
-					dos.writeInt(Float.floatToRawIntBits(
-						i.<Number>argument(1, Number.class).floatValue()));
+				// Write the format
+				switch (format[a])
+				{
+						// Variable 16-bit unsigned integer
+					case VUINT:
+					case VPOOL:
+					case VJUMP:
+						// Remap value
+						int vm = 0;
+						switch (format[a])
+						{
+							case VPOOL:
+								vm = pool.add(v);
+								break;
+								
+							case VJUMP:
+								jumpreps.put(dos.size(),
+									(InstructionJumpTarget)v);
+								vm = ((InstructionJumpTarget)v).target();
+								break;
+							
+							case VUINT:
+								vm = ((Number)v).intValue();
+								break;
+						}
 						
-					dos.writeShort(i.shortArgument(2));
-					break;
-				
-					// [u16, i32, u16]
-				case NativeInstructionType.MATH_CONST_INT:
-					dos.writeShort(i.shortArgument(0));
-					
-					dos.writeInt(i.<Number>argument(1, Number.class).
-						intValue());
-					
-					dos.writeShort(i.shortArgument(2));
-					break;
-				
-					// [u16, l64, u16]
-				case NativeInstructionType.MATH_CONST_LONG:
-					dos.writeShort(i.shortArgument(0));
-					
-					dos.writeLong(i.<Number>argument(1, Number.class).
-						longValue());
-					
-					dos.writeInt(i.intArgument(1));
-					break;
-					
-					// [u16, u16, i32]
-				case NativeInstructionType.MEMORY_OFF_ICONST:
-					dos.writeShort(i.shortArgument(0));
-					dos.writeShort(i.shortArgument(1));
-					dos.writeInt(i.intArgument(2));
-					break;
-					
-					// [u16, u16, j16]
-				case NativeInstructionType.IF_ICMP:
-				case NativeInstructionType.IFARRAY_INDEX_OOB_REF_CLEAR:
-				case NativeInstructionType.IFARRAY_MISTYPE_REF_CLEAR:
-					dos.writeShort(i.shortArgument(0));
-					dos.writeShort(i.shortArgument(1));
-					
-					jumpreps.put(dos.size(), i.<InstructionJumpTarget>
-						argument(2, InstructionJumpTarget.class));
-					dos.writeShort(0);
-					break;
-				
-					// [u16, i32, j16]
-				case NativeInstructionType.IFEQ_CONST:
-					dos.writeShort(i.shortArgument(0));
-					
-					dos.writeInt(i.<Number>argument(1, Number.class).
-						intValue());
-					
-					jumpreps.put(dos.size(), i.<InstructionJumpTarget>
-						argument(2, InstructionJumpTarget.class));
-					dos.writeShort(0);
-					break;
-					
-					// [p16, u16, u16]
-				case NativeInstructionType.NEWARRAY:
-					dos.writeShort(pool.add(i.argument(0)));
-					dos.writeShort(i.shortArgument(1));
-					dos.writeShort(i.shortArgument(2));
-					break;
-					
-					// [p16, u16, j16]
-				case NativeInstructionType.IFCLASS:
-				case NativeInstructionType.IFCLASS_REF_CLEAR:
-				case NativeInstructionType.IFNOTCLASS:
-				case NativeInstructionType.IFNOTCLASS_REF_CLEAR:
-					dos.writeShort(pool.add(i.argument(0)));
-					dos.writeShort(i.shortArgument(1));
-					
-					jumpreps.put(dos.size(), i.<InstructionJumpTarget>
-						argument(2, InstructionJumpTarget.class));
-					dos.writeShort(0);
-					break;
-					
-					// [reglist]
-				case NativeInstructionType.REF_PUSH:
-					{
-						// Write register list
-						RegisterList rl = i.<RegisterList>argument(0,
-							RegisterList.class);
-						int rn = rl.size();
-						dos.writeShort(rn);
-						for (int r = 0; r < rn; r++)
-							dos.writeShort(rl.get(r));
-					}
-					break;
-					
-					// [p16, reglist]
-				case NativeInstructionType.INVOKE:
-					{
-						dos.writeShort(pool.add(i.argument(0)));
+						// Fits in 7-bit value
+						if (vm >= 0 && vm <= 127)
+							dos.write(vm);
 						
-						// Write register list
-						RegisterList rl = i.<RegisterList>argument(1,
-							RegisterList.class);
-						int rn = rl.size();
-						dos.writeShort(rn);
-						for (int r = 0; r < rn; r++)
-							dos.writeShort(rl.get(r));
-					}
-					break;
-				
-				default:
-					throw new todo.OOPS();
+						// Fits in 15-bit value
+						else if (vm >= 128 && vm <= 32767)
+						{
+							dos.write(0x80 | (vm >> 8));
+							dos.write(vm & 0xFF);
+						}
+						
+						// {@squirreljme.error JC3r 15-bit integer out of
+						// range. (The value)}
+						else
+							throw new InvalidClassFormatException(
+								"JC3r " + vm);
+						break;
+						
+						// Register List
+					case REGLIST:
+						{
+							// Scan register list to see if it is "wide", if
+							// it is then the wide format is used
+							RegisterList rl = (RegisterList)v;
+							int rn = rl.size();
+							boolean wide = (rn > 127);
+							for (int r = 0; r < rn; r++)
+							{
+								int rv = rl.get(r);
+								if (rv < 0 || rv > 127)
+								{
+									wide = true;
+									break;
+								}
+							}
+							
+							// Wide
+							if (wide)
+							{
+								// Count
+								dos.write(0x80 | (rn >> 8));
+								dos.write(rn & 0xFF);
+								
+								// Write as shorts
+								for (int r = 0; r < rn; r++)
+									dos.writeShort(rl.get(r));
+							}
+							
+							// Narrow
+							else
+							{
+								// Count
+								dos.write(rn);
+								
+								// Write as bytes
+								for (int r = 0; r < rn; r++)
+									dos.write(rl.get(r));
+							}
+						}
+						break;
+						
+						// 32-bit int
+					case INT32:
+						dos.writeInt(((Number)v).intValue());
+						break;
+					
+						// 64-bit long
+					case INT64:
+						dos.writeLong(((Number)v).longValue());
+						break;
+					
+						// 32-bit float
+					case FLOAT32:
+						dos.writeInt(Float.floatToRawIntBits(
+							((Number)v).floatValue()));
+						break;
+					
+						// 64-bit double
+					case FLOAT64:
+						dos.writeLong(Double.doubleToRawLongBits(
+							((Number)v).doubleValue()));
+						break;
+					
+						// Unknown
+					default:
+						throw new todo.OOPS();
+				}
 			}
 		}
 		
@@ -579,9 +533,16 @@ public final class Minimizer
 			int ai = e.getKey(),
 				jt = e.getValue().target();
 			
-			// Remember that values are big endian
-			rv[ai + 0] = (byte)(jt >>> 8);
-			rv[ai + 1] = (byte)(jt);
+			// Wide
+			if ((rv[ai] & 0x80) != 0)
+			{
+				rv[ai] = (byte)(0x80 | (jt >> 8));
+				rv[ai + 1] = (byte)(jt & 0xFF);
+			}
+			
+			// Narrow
+			else
+				rv[ai] = (byte)jt;
 		}
 		
 		// Debug
