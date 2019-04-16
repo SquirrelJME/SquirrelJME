@@ -1,0 +1,21 @@
+# 2019/04/15
+
+## 08:14
+
+Now to continue this side work on the record store.
+
+## 20:25
+
+The PNG format has this really complex filter thing which for the most part
+is rather confusing right now. But it is needed to properly decoded images
+and such.
+
+## 20:27
+
+Seems filtering does not actually add or remove bytes, it just modifies the
+bytes around it. So maybe reading as a stream would work?
+
+## 20:39
+
+WAIT! THERE ARE EXACTLY 16 EXTRA BYTES FOR THE SCANLINE. This I think is
+where the type comes in!
