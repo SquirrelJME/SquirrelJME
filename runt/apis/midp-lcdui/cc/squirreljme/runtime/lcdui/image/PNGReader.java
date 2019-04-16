@@ -671,7 +671,33 @@ public class PNGReader
 					"(at %2dx%2d of %2dx%2d)",
 					x, a, b, c, dx, dy, this._width, this._height);
 				
-				//
+				// Depends on the decoding algorithm
+				int res = 170;
+				switch (type)
+				{
+						// None
+					case 0:
+						throw new todo.TODO();
+					
+						// Sub
+					case 1:
+						throw new todo.TODO();
+						
+						// Up
+					case 2:
+						throw new todo.TODO();
+						
+						// Average
+					case 3:
+						throw new todo.TODO();
+						
+						// Paeth
+					case 4:
+						throw new todo.TODO();
+				}
+				
+				// Set result
+				rv[di] = (byte)res;
 			}
 		}
 		
