@@ -692,7 +692,7 @@ public class PNGReader
 						
 						// Average
 					case 3:
-						res = x + ((a + b) / 2);
+						res = x + ((a + b) >>> 2);
 						break;
 						
 						// Paeth
