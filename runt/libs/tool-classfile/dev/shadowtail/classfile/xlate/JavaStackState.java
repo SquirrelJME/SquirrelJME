@@ -753,9 +753,6 @@ public final class JavaStackState
 		if (__t == null)
 			throw new NullPointerException("NARG");
 		
-		// Note this!
-		todo.TODO.note("Implement proper stack shuffle with StateOps!");
-		
 		// Input stack properties
 		Info[] stack = this._stack;
 		int stacktop = this.stacktop;
