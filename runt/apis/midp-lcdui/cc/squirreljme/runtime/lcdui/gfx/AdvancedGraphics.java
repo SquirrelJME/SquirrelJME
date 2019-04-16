@@ -599,8 +599,8 @@ public class AdvancedGraphics
 		if (__src == null)
 			throw new NullPointerException("NARG");
 		
-		this.drawRegion(__src, __xsrc, __ysrc, __wsrc, __hsrc, __trans,
-			__xdest, __ydest, __anch, __wsrc, __hsrc);
+		this.__drawRegion(__src, __xsrc, __ysrc, __wsrc, __hsrc, __trans,
+			__xdest, __ydest, __anch, __wsrc, __hsrc, true);
 	}
 	
 	/**
@@ -616,48 +616,8 @@ public class AdvancedGraphics
 		if (__src == null)
 			throw new NullPointerException("NARG");
 		
-		// Is alpha used?
-		boolean alpha = __src.hasAlpha();
-		
-		// Extract image pixel data
-		int numpixels = __wsrc * __hsrc;
-		int[] data = new int[numpixels];
-		__src.getRGB(data, 0, __wsrc, __xsrc, __ysrc, __wsrc, __hsrc);
-		
-		// Perform the transformation, possibly returning a new data buffer
-		int[] transdim = new int[]{__wsrc, __hsrc};
-		data = this.__transform(__trans, data, __wsrc, __hsrc, transdim);
-		
-		// Re-read the new image sizes!
-		__wsrc = transdim[0];
-		__hsrc = transdim[1];
-		
-		// Anchor horizontally?
-		if ((__anch & HCENTER) == HCENTER)
-			__xdest -= __wsrc >>> 1;
-		
-		// Anchor right?
-		else if ((__anch & RIGHT) == RIGHT)
-			__xdest -= __wsrc;
-		
-		// Anchor middle?
-		if ((__anch & VCENTER) == VCENTER)
-			__ydest -= __hsrc >>> 1;
-		
-		// Anchor bottom?
-		else if ((__anch & BOTTOM) == BOTTOM)
-			__ydest -= __hsrc;
-		
-		// If this is non-stretched we can just use the standard RGB
-		// drawing function!
-		if (__wsrc == __wdest && __hsrc == __hdest)
-			this.drawRGB(data, 0, __wsrc, __xdest, __ydest, __wsrc, __hsrc,
-				alpha);
-		
-		// Use stretchy draw
-		else
-			this.__drawRGBStretched(data, 0, __wsrc, __xdest, __ydest,
-				__wsrc, __hsrc, alpha, __wdest, __hdest);
+		this.__drawRegion(__src, __xsrc, __ysrc, __wsrc, __hsrc, __trans,
+			__xdest, __ydest, __anch, __wdest, __hdest, false);
 	}
 	
 	/**
@@ -1316,6 +1276,80 @@ public class AdvancedGraphics
 	}
 	
 	/**
+	 * Draws region.
+	 *
+	 * @param __src Source image.
+	 * @param __xsrc X source.
+	 * @param __ysrc Y source.
+	 * @param __wsrc W source.
+	 * @param __hsrc H source.
+	 * @param __trans Translation.
+	 * @param __xdest X destination.
+	 * @param __ydest Y destination.
+	 * @param __anch Anchor.
+	 * @param __wdest W destination.
+	 * @param __hdest H destination.
+	 * @param __dswap Swap destinations on rotate?
+	 * @throws IllegalArgumentException If the input is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/18
+	 */
+	private final void __drawRegion(Image __src, int __xsrc, int __ysrc,
+		int __wsrc, int __hsrc, int __trans, int __xdest, int __ydest,
+		int __anch, int __wdest, int __hdest, boolean __dswap)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__src == null)
+			throw new NullPointerException("NARG");
+		
+		// Is alpha used?
+		boolean alpha = __src.hasAlpha();
+		
+		// Extract image pixel data
+		int numpixels = __wsrc * __hsrc;
+		int[] data = new int[numpixels];
+		__src.getRGB(data, 0, __wsrc, __xsrc, __ysrc, __wdest, __hdest);
+		
+		// Perform the transformation, possibly returning a new data buffer
+		int[] transdim = new int[]{__wsrc, __hsrc, __wdest, __hdest};
+		data = this.__transform(__trans, data, __wsrc, __hsrc, transdim,
+			__dswap);
+		
+		// Re-read the new image sizes!
+		__wsrc = transdim[0];
+		__hsrc = transdim[1];
+		__wdest = transdim[2];
+		__hdest = transdim[3];
+		
+		// Anchor horizontally?
+		if ((__anch & HCENTER) == HCENTER)
+			__xdest -= __wsrc >>> 1;
+		
+		// Anchor right?
+		else if ((__anch & RIGHT) == RIGHT)
+			__xdest -= __wsrc;
+		
+		// Anchor middle?
+		if ((__anch & VCENTER) == VCENTER)
+			__ydest -= __hsrc >>> 1;
+		
+		// Anchor bottom?
+		else if ((__anch & BOTTOM) == BOTTOM)
+			__ydest -= __hsrc;
+		
+		// If this is non-stretched we can just use the standard RGB
+		// drawing function!
+		if (__wsrc == __wdest && __hsrc == __hdest)
+			this.drawRGB(data, 0, __wsrc, __xdest, __ydest, __wsrc, __hsrc,
+				alpha);
+		
+		// Use stretchy draw
+		else
+			this.__drawRGBStretched(data, 0, __wsrc, __xdest, __ydest,
+				__wsrc, __hsrc, alpha, __wdest, __hdest);
+	}
+	
+	/**
 	 * Draws stretched RGB.
 	 *
 	 * @param __data The data to draw.
@@ -1616,13 +1650,14 @@ public class AdvancedGraphics
 	 * @param __wsrc The width of the source.
 	 * @param __hsrc The width of the destination.
 	 * @param __dimout Output dimensions.
+	 * @param __dswap Swap destinations?
 	 * @return The resulting data is translated, this may be the same as
 	 * {@code __data}.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/15
 	 */
 	private static final int[] __transform(int __trans, int[] __data,
-		int __wsrc, int __hsrc, int[] __dimout)
+		int __wsrc, int __hsrc, int[] __dimout, boolean __dswap)
 		throws NullPointerException
 	{
 		if (__data == null || __dimout == null)
@@ -1701,6 +1736,14 @@ public class AdvancedGraphics
 			// The output width and height are flipped
 			__dimout[0] = hdest;
 			__dimout[1] = wdest;
+			
+			// Swap destinations as well?
+			if (__dswap)
+			{
+				int t = __dimout[2];
+				__dimout[2] = __dimout[3];
+				__dimout[3] = t;
+			}
 		}
 		
 		// Otherwise use the same target dimensions
