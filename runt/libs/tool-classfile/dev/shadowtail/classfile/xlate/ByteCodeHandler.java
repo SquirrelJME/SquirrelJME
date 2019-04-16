@@ -175,6 +175,15 @@ public interface ByteCodeHandler
 		JavaStackResult.Input __a, Number __b, JavaStackResult.Output __c);
 	
 	/**
+	 * Enter or exit the monitor.
+	 *
+	 * @param __enter Being entered?
+	 * @param __o The object to enter or exit.
+	 * @since 2019/04/16
+	 */
+	public abstract void doMonitor(boolean __enter, JavaStackResult.Input __o);
+	
+	/**
 	 * Allocates new class.
 	 *
 	 * @param __cn The class to allocate.

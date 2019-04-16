@@ -380,6 +380,16 @@ public final class ByteCodeProcessor
 								MathType.class), sji.<Number>argument(2,
 									Number.class));
 						break;
+						
+						// Enter monitor
+					case InstructionIndex.MONITORENTER:
+						this.__doMonitor(true);
+						break;
+						
+						// Exit monitor
+					case InstructionIndex.MONITOREXIT:
+						this.__doMonitor(false);
+						break;
 					
 						// Create new instance of something
 					case InstructionIndex.NEW:
@@ -1016,6 +1026,29 @@ public final class ByteCodeProcessor
 		// Perform the math
 		this.handler.doMath(__pt.toStackJavaType(), __mot, result.in(0),
 			__c, result.out(0));
+	}
+	
+	/**
+	 * Enters or exits the monitor.
+	 *
+	 * @param __enter If the monitor is to be entered.
+	 * @since 2019/04/16
+	 */
+	private final void __doMonitor(boolean __enter)
+	{
+		// Can toss exception
+		this._canexception  =true;
+		
+		// [object] ->
+		JavaStackResult result = this.state.stack.doStack(1);
+		this.__update(result);
+		
+		// Stop pre-processing here
+		if (!this._dohandling)
+			return;
+		
+		// Perform the math
+		this.handler.doMonitor(__enter, result.in(0));
 	}
 	
 	/**
