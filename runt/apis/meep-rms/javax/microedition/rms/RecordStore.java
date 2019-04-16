@@ -463,13 +463,13 @@ public class RecordStore
 			NullPointerException, RecordStoreException,
 			RecordStoreNotOpenException
 	{
-		// Check open
-		this.__checkOpen();
-		
 		// Lock
 		VinylRecord vinyl = _VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
+			// Check open
+			this.__checkOpen();
+			
 			throw new todo.TODO();
 		}
 	}
