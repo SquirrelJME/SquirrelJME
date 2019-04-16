@@ -35,6 +35,7 @@ import net.multiphasicapps.classfile.ExceptionHandler;
 import net.multiphasicapps.classfile.ExceptionHandlerTable;
 import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.InstructionJumpTarget;
+import net.multiphasicapps.classfile.LookupSwitch;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodHandle;
 import net.multiphasicapps.classfile.MethodName;
@@ -440,6 +441,17 @@ public final class NearNativeByteCodeHandler
 			else
 				codebuilder.addCopy(NativeCode.RETURN_REGISTER,
 					__out.register);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/16
+	 */
+	@Override
+	public final void doLookupSwitch(JavaStackResult.Input __key,
+		LookupSwitch __ls)
+	{
+		throw new todo.TODO();
 	}
 	
 	/**

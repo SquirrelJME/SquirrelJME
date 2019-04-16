@@ -24,6 +24,7 @@ import net.multiphasicapps.classfile.InstructionIndex;
 import net.multiphasicapps.classfile.InstructionJumpTarget;
 import net.multiphasicapps.classfile.InstructionJumpTargets;
 import net.multiphasicapps.classfile.JavaType;
+import net.multiphasicapps.classfile.LookupSwitch;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodHandle;
 import net.multiphasicapps.classfile.MethodName;
@@ -364,6 +365,12 @@ public final class ByteCodeProcessor
 					case SimplifiedJavaInstruction.LOAD:
 						this.__doLoad(sji.<DataType>argument(0,
 							DataType.class), sji.intArgument(1));
+						break;
+						
+						// Lookup switch
+					case InstructionIndex.LOOKUPSWITCH:
+						this.__doLookupSwitch(sji.<LookupSwitch>argument(0,
+							LookupSwitch.class));
 						break;
 						
 						// Math
@@ -969,6 +976,31 @@ public final class ByteCodeProcessor
 		// it would have just been cached
 		if (result.in(0).register != result.out(0).register)
 			handler.doCopy(result.in(0), result.out(0));
+	}
+	
+	/**
+	 * Handles lookup switch.
+	 *
+	 * @param __ls The switch.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/16
+	 */
+	private final void __doLookupSwitch(LookupSwitch __ls)
+		throws NullPointerException
+	{
+		if (__ls == null)
+			throw new NullPointerException("NARG");
+		
+		// [key] ->
+		JavaStackResult result = this.state.stack.doStack(1);
+		this.__update(result);
+		
+		// Stop pre-processing here
+		if (!this._dohandling)
+			return;
+		
+		// Handle
+		this.handler.doLookupSwitch(result.in(0), __ls);
 	}
 	
 	/**
