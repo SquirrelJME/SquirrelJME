@@ -1629,37 +1629,30 @@ public class AdvancedGraphics
 			throw new NullPointerException("NARG");
 		
 		// Destination width and height
-		boolean flipwh = false;
 		int wdest = __wsrc,
 			hdest = __hsrc;
 		
-		// Is mirroring to be used?
-		boolean mirror = false;
+		// Determine the transformation functions to use. There are just three
+		// primitive transformation functions: flip horizontally, then
+		// flip vertically, then rotate 90 degrees clockwise. This handles
+		// every transformation which fill every single bit.
+		byte xform = 0;
 		switch (__trans)
 		{
-			case Sprite.TRANS_MIRROR:
-				mirror = true;
-				__trans = Sprite.TRANS_NONE;
-				break;
-				
-			case Sprite.TRANS_MIRROR_ROT90:
-				mirror = true;
-				__trans = Sprite.TRANS_ROT90;
-				break;
-				
-			case Sprite.TRANS_MIRROR_ROT180:
-				mirror = true;
-				__trans = Sprite.TRANS_ROT180;
-				break;
-				
-			case Sprite.TRANS_MIRROR_ROT270:
-				mirror = true;
-				__trans = Sprite.TRANS_ROT270;
-				break;
+			// These bits represent the stuff to do! == 0b9VH;
+			case Sprite.TRANS_NONE:				xform = 0b000; break;
+			case Sprite.TRANS_MIRROR:			xform = 0b001; break;
+			case Sprite.TRANS_MIRROR_ROT180:	xform = 0b010; break;
+			case Sprite.TRANS_ROT180:			xform = 0b011; break;
+			case Sprite.TRANS_ROT90:			xform = 0b100; break;
+			case Sprite.TRANS_MIRROR_ROT90:		xform = 0b101; break;
+			case Sprite.TRANS_MIRROR_ROT270:	xform = 0b110; break;
+			case Sprite.TRANS_ROT270:			xform = 0b111; break;
+			// These bits represent the stuff to do! == 0b9VH;
 		}
 		
-		// Mirror the image horizontally (across vertical axis)
-		if (mirror)
+		// Mirror horizontally?
+		if ((xform & 0b001) != 0)
 			for (int y = 0; y < hdest; y++)
 			{
 				int dx = wdest * y,
@@ -1672,28 +1665,45 @@ public class AdvancedGraphics
 				}
 			}
 		
-		// Perform translation
-		switch (__trans)
-		{
-			case Sprite.TRANS_ROT90:
-			case Sprite.TRANS_ROT180:
-			case Sprite.TRANS_ROT270:
-				todo.TODO.note("Transform %d", __trans);
+		// Mirror vertically?
+		if ((xform & 0b010) != 0)
+			for (int ya = 0, yn = __hsrc >> 1; ya < yn; ya++)
+			{
+				int ra = __wsrc * ya,
+					rb = (__wsrc * (__hsrc - ya)) - __wsrc;
 				
-				// Doing nothing
-			case Sprite.TRANS_NONE:
-			default:
-				break;
-		}
+				// Flip
+				for (int x = 0; x < __wsrc; x++)
+				{
+					int t = __data[rb];
+					__data[rb++] = __data[ra];
+					__data[ra++] = t;
+				}
+			}
 		
-		// Flip width and height?
-		if (flipwh)
+		// Rotate 90 degrees clockwise
+		if ((xform & 0b100) != 0)
 		{
+			// Original copy
+			int[] orig = __data.clone();
+			
+			// Swap the X and Y pixels first
+			int ttop = hdest - 1;
+			for (int y = 0; y < hdest; y++)
+				for (int x = 0; x < wdest; x++)
+				{
+					int ps = (wdest * y) + x,
+						pd = (hdest * x) + (ttop - y);
+					
+					__data[pd] = orig[ps];
+				}
+			
+			// The output width and height are flipped
 			__dimout[0] = hdest;
 			__dimout[1] = wdest;
 		}
 		
-		// Keep the same
+		// Otherwise use the same target dimensions
 		else
 		{
 			__dimout[0] = wdest;
