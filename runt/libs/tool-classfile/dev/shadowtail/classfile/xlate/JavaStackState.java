@@ -804,6 +804,11 @@ public final class JavaStackState
 		List<Integer> enqs = new ArrayList<>();
 		List<StateOperation> sops = new ArrayList<>();
 		
+		// For registers which have a value collision, they must be
+		// pre-copied to temporary space
+		int tempbase = this.usedregisters;
+		Map<Integer, Integer> precopy = new LinkedHashMap<>();
+		
 		// Setup the new stack by pushing around
 		for (int at = basetop, ldx = 0; ldx < pushcount; at++, ldx++)
 		{
@@ -824,6 +829,9 @@ public final class JavaStackState
 			// Also the original destination
 			Info ssl = source.get(vardx),
 				ods = newstack[at];
+				
+			// Is this type wide?
+			boolean iswide = ssl.type.isWide();
 			
 			// If the value was never used before, try to use the original
 			// register for it
@@ -834,7 +842,25 @@ public final class JavaStackState
 			// Using the value position would violate the strict no-aliasing
 			// of future registers
 			if (useval > ods.register)
-				throw new todo.TODO();
+			{
+				// Try to use an already copied value, if it has not yet had
+				// a pre-copy then map it to the copied source instead
+				Integer pre = precopy.get(useval);
+				if (pre == null)
+				{
+					precopy.put(useval,
+						(pre = (iswide ? -tempbase : tempbase)));
+					tempbase += (iswide ? 2 : 1);
+				}
+				
+				// The value to use is the destination register because it
+				// will be copied
+				useval = ods.register;
+				sops.add(StateOperation.copy(iswide, Math.abs(pre), useval));
+				
+				// Debug
+				todo.DEBUG.note("Pre %d -> %d", pre, useval);
+			}
 			
 			// Set value as being stored here
 			storedat.put(vardx, useval);
@@ -843,6 +869,14 @@ public final class JavaStackState
 			newstack[at] = newstack[at].newTypeValue(ssl.type, useval,
 				ssl.nocounting);
 		}
+		
+		// Pre-copies which are needed, but make sure that the original
+		// link order is maintained, negative premaps are treated as
+		// being wide
+		int vdat = 0;
+		for (Map.Entry<Integer, Integer> e : precopy.entrySet())
+			sops.add(vdat++, StateOperation.copy(
+				e.getValue() < 0, e.getKey(), Math.abs(e.getValue())));
 		
 		// Build
 		return new JavaStackResult(this,
