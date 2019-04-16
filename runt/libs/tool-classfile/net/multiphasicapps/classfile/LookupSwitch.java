@@ -86,6 +86,28 @@ public final class LookupSwitch
 	}
 	
 	/**
+	 * Returns the jumps.
+	 *
+	 * @return The jumps.
+	 * @since 2019/04/16
+	 */
+	public final InstructionJumpTarget[] jumps()
+	{
+		return this._jumps.clone();
+	}
+	
+	/**
+	 * Returns the keys.
+	 *
+	 * @return The keys.
+	 * @since 2019/04/16
+	 */
+	public final int[] keys()
+	{
+		return this._keys.clone();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/09/20
 	 */
@@ -101,6 +123,17 @@ public final class LookupSwitch
 		
 		// Not found
 		return this.defaultjump;
+	}
+	
+	/**
+	 * Returns the size of the switch.
+	 *
+	 * @return The size.
+	 * @since 2019/04/16
+	 */
+	public final int size()
+	{
+		return this._jumps.length;
 	}
 	
 	/**

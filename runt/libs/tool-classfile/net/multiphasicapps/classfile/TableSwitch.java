@@ -75,6 +75,41 @@ public final class TableSwitch
 	}
 	
 	/**
+	 * Converts this to a lookup switch.
+	 *
+	 * @return This table switch as a lookup switch.
+	 * @since 2019/04/16
+	 */
+	public final LookupSwitch asLookupSwitch()
+	{
+		// These are needed to build keys
+		InstructionJumpTarget[] jumps = this._jumps;
+		int low = this.low,
+			high = this.high,
+			n = jumps.length;
+		
+		// Setup new key map, the jumps do not need to be adjusted because
+		// they will map the same!
+		int[] newkeys = new int[n];
+		for (int o = 0, k = low; k <= high; k++, o++)
+			newkeys[o] = k;
+		
+		// Build
+		return new LookupSwitch(this.defaultjump, newkeys, jumps);
+	}
+	
+	/**
+	 * Returns the jumps.
+	 *
+	 * @return The jumps.
+	 * @since 2019/04/16
+	 */
+	public final InstructionJumpTarget[] jumps()
+	{
+		return this._jumps.clone();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2018/09/20
 	 */
@@ -88,6 +123,17 @@ public final class TableSwitch
 			return this.defaultjump;
 		
 		return this._jumps[__k - low];
+	}
+	
+	/**
+	 * Returns the size of the switch.
+	 *
+	 * @return The size.
+	 * @since 2019/04/16
+	 */
+	public final int size()
+	{
+		return this._jumps.length;
 	}
 	
 	/**

@@ -21,8 +21,10 @@ import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
 import net.multiphasicapps.classfile.InstructionJumpTarget;
 import net.multiphasicapps.classfile.InstructionMnemonics;
+import net.multiphasicapps.classfile.LookupSwitch;
 import net.multiphasicapps.classfile.JavaType;
 import net.multiphasicapps.classfile.PrimitiveType;
+import net.multiphasicapps.classfile.TableSwitch;
 
 /**
  * This represents a simplified Java instruction which modifies the operation
@@ -1234,6 +1236,17 @@ public final class SimplifiedJavaInstruction
 				args = new Object[]
 					{
 						JavaStackShuffleType.SWAP,
+					};
+				break;
+			
+				// To reduce the number of handlers, convert table switches
+				// to lookup switches
+			case InstructionIndex.TABLESWITCH:
+				op = InstructionIndex.LOOKUPSWITCH;
+				args = new Object[]
+					{
+						__inst.<TableSwitch>argument(0, TableSwitch.class).
+							asLookupSwitch(),
 					};
 				break;
 			
