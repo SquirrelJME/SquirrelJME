@@ -89,7 +89,7 @@ public final class Minimizer
 			throw new NullPointerException("NARG");
 		
 		// Write magic number to specify this format
-		__dos.writeInt(MinimizedClassFile.MAGIC_NUMBER);
+		__dos.writeInt(MinimizedClassHeader.MAGIC_NUMBER);
 		
 		// Unused, may be used later when needed
 		__dos.writeShort(0);
