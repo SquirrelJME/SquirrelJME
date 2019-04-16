@@ -1031,6 +1031,9 @@ public final class JavaStackState
 	{
 		if (__smts == null)
 			throw new NullPointerException("NARG");
+		
+		// Debug
+		todo.DEBUG.note("SMTS: %s", __smts);
 			
 		// Input stack properties
 		Info[] locals = this._locals.clone(),
