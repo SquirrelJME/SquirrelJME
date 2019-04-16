@@ -9,6 +9,8 @@
 
 package dev.shadowtail.classfile.xlate;
 
+import net.multiphasicapps.classfile.JavaType;
+
 /**
  * This represents a Java type as it would appear on the stack.
  *
@@ -31,6 +33,24 @@ public enum StackJavaType
 	/** End. */
 	;
 	
+	/**
+	 * Returns this as a basic Java type.
+	 *
+	 * @return The Java type of this.
+	 * @since 2019/04/16
+	 */
+	public final JavaType toJavaType()
+	{
+		switch (this)
+		{
+			case INTEGER:	return JavaType.INTEGER;
+			case FLOAT:		return JavaType.FLOAT;
+			case LONG:		return JavaType.LONG;
+			case DOUBLE:	return JavaType.DOUBLE;
+		}
+		
+		throw new todo.OOPS(this.name());
+	}
 	
 	/**
 	 * Returns the stack type for the given index.

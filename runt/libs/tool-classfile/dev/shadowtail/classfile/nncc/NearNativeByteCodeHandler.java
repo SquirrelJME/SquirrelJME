@@ -218,6 +218,19 @@ public final class NearNativeByteCodeHandler
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2019/04/16
+	 */
+	@Override
+	public final void doConvert(StackJavaType __as,
+		JavaStackResult.Input __a, StackJavaType __bs,
+		JavaStackResult.Output __b)
+	{
+		this.codebuilder.addConversion(__as, __a.register,
+			__bs, __b.register);
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2019/04/07
 	 */
 	@Override
