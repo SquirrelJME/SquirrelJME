@@ -37,13 +37,6 @@ public class TestMinimizer
 				ByteArrayOutputStream out = new ByteArrayOutputStream())
 			{
 				Minimizer.minimize(ClassFile.decode(in), out);
-				
-				// Debug
-				byte[] b = out.toByteArray();
-				todo.DEBUG.note("Class hexdump:");
-				net.multiphasicapps.io.HexDumpOutputStream.dump(System.err, b);
-				todo.DEBUG.note("Size: %d bytes (%d KiB)",
-					b.length, b.length / 1024);
 			}
 	}
 }
