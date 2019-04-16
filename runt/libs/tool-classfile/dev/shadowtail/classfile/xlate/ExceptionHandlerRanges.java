@@ -54,7 +54,8 @@ public final class ExceptionHandlerRanges
 		this._ranges = full.mappedUniqueRanges();
 		
 		// Debug
-		todo.DEBUG.note("EHRanges: %s", this._ranges);
+		if (__Debug__.ENABLED)
+			todo.DEBUG.note("EHRanges: %s", this._ranges);
 	}
 	
 	/**
