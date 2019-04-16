@@ -26,6 +26,12 @@ public final class MinimizedClassHeader
 	public static final int MAGIC_NUMBER =
 		0x00586572;
 	
+	/** Unused A. */
+	public final int unuseda;
+	
+	/** Unused B. */
+	public final int unusedb;
+	
 	/** Number of entries in constant pool. */
 	public final int poolcount;
 	
@@ -120,6 +126,10 @@ public final class MinimizedClassHeader
 	{
 		int at = 0;
 		
+		// Unused
+		this.unuseda = __vx[at++];
+		this.unusedb = __vx[at++];
+		
 		// Class information
 		this.poolcount = __vx[at++];
 		this.classflags = __vx[at++];
@@ -188,6 +198,10 @@ public final class MinimizedClassHeader
 		
 		// Read in all the data
 		return new MinimizedClassHeader(
+			// Unused
+			/* unuseda */ dis.readByte(),
+			/* unusedb */ dis.readByte(),
+			
 			// Class header
 			/* poolcount */ dis.readUnsignedShort(),
 			/* classflags */ dis.readInt(),
