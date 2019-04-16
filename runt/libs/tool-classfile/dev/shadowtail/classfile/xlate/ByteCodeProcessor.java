@@ -365,6 +365,14 @@ public final class ByteCodeProcessor
 							DataType.class), sji.<MathType>argument(1,
 								MathType.class));
 						break;
+						
+						// Math with constant
+					case SimplifiedJavaInstruction.MATH_CONST:
+						this.__doMathConst(sji.<DataType>argument(0,
+							DataType.class), sji.<MathType>argument(1,
+								MathType.class), sji.<Number>argument(2,
+									Number.class));
+						break;
 					
 						// Create new instance of something
 					case InstructionIndex.NEW:
@@ -947,6 +955,35 @@ public final class ByteCodeProcessor
 		// Perform the math
 		this.handler.doMath(__pt.toStackJavaType(), __mot, result.in(0),
 			result.in(1), result.out(0));
+	}
+	
+	/**
+	 * Performs math operation with constant.
+	 *
+	 * @param __pt The primitive type.
+	 * @param __mot The math operation type.
+	 * @param __c The constant.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/06
+	 */
+	private final void __doMathConst(DataType __pt, MathType __mot, Number __c)
+		throws NullPointerException
+	{
+		if (__pt == null || __mot == null || __c == null)
+			throw new NullPointerException("NARG");
+		
+		// [a, b] -> [result]
+		JavaStackResult result = this.state.stack.doStack(1,
+			__pt.toJavaType());
+		this.__update(result);
+		
+		// Stop pre-processing here
+		if (!this._dohandling)
+			return;
+		
+		// Perform the math
+		this.handler.doMath(__pt.toStackJavaType(), __mot, result.in(0),
+			__c, result.out(0));
 	}
 	
 	/**
