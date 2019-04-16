@@ -54,10 +54,13 @@ final class __StackMapParser__
 	private final StackMapTableEntry[] _nextlocals;
 	
 	/** The placement address. */
-	private volatile int _placeaddr;
+	private int _placeaddr;
 	
 	/** The top of the stack. */
-	private volatile int _stacktop;
+	private int _stacktop;
+	
+	/** Is the first entry done, changes if the delta gets +1ed? */
+	private boolean _didfirst;
 	
 	/**
 	 * Initializes the stack map parser.
@@ -460,8 +463,9 @@ final class __StackMapParser__
 	 */
 	StackMapTableState __next(int __au, boolean __abs, int __type)
 	{
-		// Where are we?
+		// Where are we? And is this the first entry?
 		int naddr = this._placeaddr;
+		boolean didfirst = this._didfirst;
 		
 		// Generate it
 		StackMapTableState rv;
@@ -480,9 +484,10 @@ final class __StackMapParser__
 				"JC2h %d %b %d %d", __au, __abs, naddr, __type), e);
 		}
 		
-		// Set new placement address
+		// Set new placement address, the first entry is always absolute while
+		// everything is relative
 		int pp = (__abs ? __au :
-			naddr + (__au + (naddr == 0 ? 0 : 1)));
+			naddr + (__au + (!didfirst ? 0 : 1)));
 		this._placeaddr = pp;
 	
 		// {@squirreljme.error JC2i A duplicate stack map information for the
@@ -499,6 +504,9 @@ final class __StackMapParser__
 				"JC2i %d %s %s %b %d %d %d",
 				pp, targets.get(pp), rv, __abs, naddr, __au, __type));
 		targets.put(pp, rv);
+		
+		// Not the first entry now
+		this._didfirst = true;
 		
 		// Debug
 		/*todo.DEBUG.note("Read state @%d: %s%n", pp, rv);*/
