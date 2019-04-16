@@ -59,9 +59,6 @@ final class __StackMapParser__
 	/** The top of the stack. */
 	private int _stacktop;
 	
-	/** Is the first entry done, changes if the delta gets +1ed? */
-	private boolean _didfirst;
-	
 	/**
 	 * Initializes the stack map parser.
 	 *
@@ -137,7 +134,7 @@ final class __StackMapParser__
 		this._targets = targets;
 		
 		// Record state
-		__next(0, true, -1);
+		__next(0, true, -1, -1);
 		
 		// Parse the stack map table
 		try (DataInputStream in = xin)
@@ -150,7 +147,7 @@ final class __StackMapParser__
 			
 				// All entries in the table are full frames
 				for (int i = 0; i < ne; i++)
-					__next(__oldStyle(), true, -1);
+					__next(__oldStyle(), true, -1, i);
 			}
 		
 			// The modern stack map table
@@ -201,7 +198,7 @@ final class __StackMapParser__
 							String.format("JC2b %d", type));
 					
 					// Setup next
-					__next(addr, false, type);
+					__next(addr, false, type, i);
 				}
 			}
 		}
@@ -458,14 +455,14 @@ final class __StackMapParser__
 	 * @param __abs Absolute position?
 	 * @param __type The type of entry that was just handled, this is for
 	 * debug purposes.
+	 * @param __ne The entry number of this index.
 	 * @return The state for the next address.
 	 * @since 2016/05/20
 	 */
-	StackMapTableState __next(int __au, boolean __abs, int __type)
+	StackMapTableState __next(int __au, boolean __abs, int __type, int __ne)
 	{
-		// Where are we? And is this the first entry?
+		// Where are we?
 		int naddr = this._placeaddr;
-		boolean didfirst = this._didfirst;
 		
 		// Generate it
 		StackMapTableState rv;
@@ -484,10 +481,9 @@ final class __StackMapParser__
 				"JC2h %d %b %d %d", __au, __abs, naddr, __type), e);
 		}
 		
-		// Set new placement address, the first entry is always absolute while
-		// everything is relative
+		// Set new placement address, the first is always absolute
 		int pp = (__abs ? __au :
-			naddr + (__au + (!didfirst ? 0 : 1)));
+			naddr + (__au + (__ne == 0 ? 0 : 1)));
 		this._placeaddr = pp;
 	
 		// {@squirreljme.error JC2i A duplicate stack map information for the
@@ -504,9 +500,6 @@ final class __StackMapParser__
 				"JC2i %d %s %s %b %d %d %d",
 				pp, targets.get(pp), rv, __abs, naddr, __au, __type));
 		targets.put(pp, rv);
-		
-		// Not the first entry now
-		this._didfirst = true;
 		
 		// Debug
 		/*todo.DEBUG.note("Read state @%d: %s%n", pp, rv);*/
