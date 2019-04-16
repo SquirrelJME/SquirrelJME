@@ -634,6 +634,13 @@ public class PNGReader
 			// Base output for this scanline
 			int ibase = scanlen * dy;
 			
+			// At the start of every scanline is the filter type, which
+			// describes how the data should be treated
+			// {@squirreljme.error EB34 Unknown filter type. (The type)}
+			int type = __in.read();
+			if (type < 0 || type > 4)
+				throw new IOException("EB34 " + type);
+			
 			// Go through each byte in the scanline
 			for (int dx = 0; dx < scanlen; dx++)
 			{
@@ -663,6 +670,8 @@ public class PNGReader
 				todo.DEBUG.note("x=%3d a=%3d b=%3d c=%3d " +
 					"(at %2dx%2d of %2dx%2d)",
 					x, a, b, c, dx, dy, this._width, this._height);
+				
+				//
 			}
 		}
 		
