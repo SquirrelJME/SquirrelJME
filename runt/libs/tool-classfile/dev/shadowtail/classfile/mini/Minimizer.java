@@ -552,11 +552,6 @@ public final class Minimizer
 							dos.writeShort(rl.get(r));
 					}
 					break;
-					
-					// ???
-				case NativeInstructionType.LOOKUPSWITCH:
-				case NativeInstructionType.TABLESWITCH:
-					throw new todo.TODO();
 				
 				default:
 					throw new todo.OOPS();

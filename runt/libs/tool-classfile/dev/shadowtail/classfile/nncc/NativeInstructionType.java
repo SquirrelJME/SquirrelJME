@@ -198,17 +198,17 @@ public interface NativeInstructionType
 		0xF3;
 	
 	/**
-	 * Lookup Switch. 
+	 * Unused.
 	 * {@code iiiixxxx}.
 	 */
-	public static final int LOOKUPSWITCH =
+	public static final int UNUSED_F4 =
 		0xF4;
 	
 	/**
-	 * Table Switch. 
+	 * Unused.
 	 * {@code iiiixxxx}.
 	 */
-	public static final int TABLESWITCH =
+	public static final int UNUSED_F5 =
 		0xF5;
 	
 	/**

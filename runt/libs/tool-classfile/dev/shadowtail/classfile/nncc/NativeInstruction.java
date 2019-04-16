@@ -293,9 +293,7 @@ public final class NativeInstruction
 			case NativeInstructionType.CONVERSION:
 			case NativeInstructionType.INVOKE:
 			case NativeInstructionType.LOAD_POOL:
-			case NativeInstructionType.LOOKUPSWITCH:
 			case NativeInstructionType.NEW:
-			case NativeInstructionType.TABLESWITCH:
 				return 2;
 			
 			case NativeInstructionType.ARRAY_ACCESS:
@@ -425,7 +423,6 @@ public final class NativeInstruction
 				return "IFCLASS_REF_CLEAR";
 			case NativeInstructionType.INVOKE:			return "INVOKE";
 			case NativeInstructionType.LOAD_POOL:		return "LOAD_POOL";
-			case NativeInstructionType.LOOKUPSWITCH:	return "LOOKUPSWITCH";
 			case NativeInstructionType.MONITORENTER:	return "MONITORENTER";
 			case NativeInstructionType.MONITOREXIT:		return "MONITOREXIT";
 			case NativeInstructionType.NEW:				return "NEW";
@@ -434,7 +431,6 @@ public final class NativeInstruction
 			case NativeInstructionType.REF_PUSH:		return "REF_PUSH";
 			case NativeInstructionType.REF_RESET:		return "REF_RESET";
 			case NativeInstructionType.RETURN:			return "RETURN";
-			case NativeInstructionType.TABLESWITCH:		return "TABLESWITCH";
 			case NativeInstructionType.UNCOUNT:			return "UNCOUNT";
 			
 			default:
