@@ -677,23 +677,47 @@ public class PNGReader
 				{
 						// None
 					case 0:
-						throw new todo.TODO();
-					
-						// Sub
+						res = x;
+						break;
+						
+						// Subtract
 					case 1:
-						throw new todo.TODO();
+						res = x + a;
+						break;
 						
 						// Up
 					case 2:
-						throw new todo.TODO();
+						res = x + b;
+						break;
 						
 						// Average
 					case 3:
-						throw new todo.TODO();
+						res = x + ((a + b) / 2);
+						break;
 						
 						// Paeth
 					case 4:
-						throw new todo.TODO();
+						{
+							// Calculate these
+							int p = a + b - c,
+								pa = p - a,
+								pb = p - b,
+								pc = p - c;
+							
+							// Absolute values
+							pa = (pa < 0 ? -pa : pa);
+							pb = (pb < 0 ? -pb : pb);
+							pc = (pc < 0 ? -pc : pc);
+							
+							// Perform some checks
+							if (pa <= pb && pa <= pc)
+								res = a;
+							else if (pb <= pc)
+								res = b;
+							else
+								res = c;
+						}
+						break;
 				}
 				
 				// Set result
