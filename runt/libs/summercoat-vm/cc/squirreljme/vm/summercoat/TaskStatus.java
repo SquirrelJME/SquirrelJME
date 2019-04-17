@@ -37,6 +37,10 @@ public class TaskStatus
 	/** The profiler information output. */
 	protected final ProfilerSnapshot profiler;
 	
+	/** Class initializing lock for this task. */
+	protected final Object classinitlock =
+		new Object();
+	
 	/** System properties. */
 	private final Map<String, String> _sysprops;
 	
