@@ -273,7 +273,7 @@ public final class MinimizedPoolBuilder
 			// Guess where all the data will be written in the pool
 			// tbytes + obytes + tdospadding
 			int poolcount = pool.size();
-			int reloff = (poolcount * 3) + (((poolcount & 1) != 0) ? 1 : 0);
+			int reloff = (poolcount * 3) + (poolcount & 1);
 			
 			// Align the data table to the nearest 4-byte boundary
 			while (((reloff + ddos.size()) & 3) != 0)
@@ -418,7 +418,7 @@ public final class MinimizedPoolBuilder
 			}
 			
 			// End of table padding for the type table?
-			if ((tdos.size() & 1) != 0)
+			if ((poolcount & 1) != 0)
 				tdos.writeByte(0xFF);
 			
 			// Merge the data bytes into the table then use the completed
