@@ -148,9 +148,8 @@ public final class Minimizer
 		
 		// Relative offset where all the data will end up being, starts at
 		// the constant pool address. Size is calculated as:
-		// written + field headers + method headers + data areas, plus total
-		// data area size and end address!
-		int reloff = __dos.size() + 12 + 4 + (5 * 8) + 8,
+		// written + pooloff/len + fieldoff/len + methodoff/len + fileoff/len
+		int reloff = __dos.size() + 8 + 16 + 16 + 8,
 			baserel = reloff;
 		
 		// Constant pool locator
