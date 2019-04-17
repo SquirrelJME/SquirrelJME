@@ -104,6 +104,11 @@ public final class Minimizer
 		// The pool
 		MinimizedPoolBuilder pool = this.pool;
 		
+		// Class names
+		int thisname = pool.add(input.thisName()),
+			supername = pool.add(input.superName()),
+			inames = pool.add(input.interfaceNames());
+		
 		// The source file name
 		String sfn = input.sourceFile();
 		int snfid = (sfn == null ? 0 : Minimizer.__checkUShort(pool.add(sfn)));
@@ -115,12 +120,9 @@ public final class Minimizer
 		// interfaces, class type, and version
 		ClassFile input = this.input;
 		__dos.writeInt(input.flags().toJavaBits());
-		__dos.writeShort(Minimizer.__checkUShort(
-			pool.add(input.thisName())));
-		__dos.writeShort(Minimizer.__checkUShort(
-			pool.add(input.superName())));
-		__dos.writeShort(Minimizer.__checkUShort(
-			pool.add(input.interfaceNames())));
+		__dos.writeShort(Minimizer.__checkUShort(thisname));
+		__dos.writeShort(Minimizer.__checkUShort(supername));
+		__dos.writeShort(Minimizer.__checkUShort(inames));
 		__dos.writeByte(input.type().ordinal());
 		__dos.writeByte(input.version().ordinal());
 		
