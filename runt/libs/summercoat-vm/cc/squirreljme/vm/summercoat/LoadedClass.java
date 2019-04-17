@@ -155,12 +155,17 @@ public final class LoadedClass
 		if (__static || __lut == MethodLookupType.STATIC)
 		{
 			if (__static)
-				return _smethods.get(__nat);
+				return this._smethods.get(__nat);
 			else
-				return _imethods.get(__nat);
+				return this._imethods.get(__nat);
 		}
 		
-		throw new todo.TODO();
+		// This depends on the instance, so only the class and method name
+		// are used as it is looked up on load
+		else if (__lut == MethodLookupType.INSTANCE)
+			return new InstanceMethodHandle(this.miniclass.thisName(), __nat);
+		
+		throw new todo.OOPS(__lut.name());
 	}
 	
 	/**
