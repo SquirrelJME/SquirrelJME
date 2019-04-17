@@ -22,6 +22,9 @@ public final class RuntimeConstantPool
 	/** The pool this references. */
 	protected final MinimizedPool minipool;
 	
+	/** Realized pool entries with references and such. */
+	private volatile Object[] _realized;
+	
 	/**
 	 * Initializes the runtime constant pool.
 	 *
