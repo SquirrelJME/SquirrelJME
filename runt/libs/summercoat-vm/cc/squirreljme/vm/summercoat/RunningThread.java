@@ -238,6 +238,12 @@ public final class RunningThread
 					case NULL:
 						v = null;
 						break;
+						
+						// Strings are interned on demand when they are
+						// needed
+					case STRING:
+						v = orig;
+						break;
 					
 						// Unhandled
 					default:
@@ -250,6 +256,26 @@ public final class RunningThread
 			
 			throw new todo.TODO();
 		}
+	}
+	
+	/**
+	 * Interns the string so that only a single instance is available.
+	 *
+	 * @param __s The string to intern.
+	 * @return The single intern instance.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/17
+	 */
+	public final Instance vmInternString(String __s)
+		throws NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Must be the same thread
+		this.__checkSameThread();
+		
+		throw new todo.TODO();
 	}
 	
 	/**
