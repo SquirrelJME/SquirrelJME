@@ -69,5 +69,27 @@ public class ByteCodeState
 	
 	/** Reverse jump targets for this instruction. */
 	public InstructionJumpTargets reversejumptargets;
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/07
+	 */
+	@Override
+	public String toString()
+	{
+		return String.format("{i=%s, si=%s, jss=%s, jsr=%s, ce=%b, " +
+			"ln=%d, la=%d, a=%d, fa=%d, jt=%s, rjt=%s}",
+			this.instruction,
+			this.simplified,
+			this.stack,
+			this.result,
+			this.canexception,
+			this.line,
+			this.lastaddr,
+			this.addr,
+			this.followaddr,
+			this.jumptargets,
+			this.reversejumptargets);
+	}
 }
 

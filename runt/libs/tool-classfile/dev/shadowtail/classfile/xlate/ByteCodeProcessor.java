@@ -23,6 +23,7 @@ import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionIndex;
 import net.multiphasicapps.classfile.InstructionJumpTarget;
 import net.multiphasicapps.classfile.InstructionJumpTargets;
+import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.JavaType;
 import net.multiphasicapps.classfile.LookupSwitch;
 import net.multiphasicapps.classfile.MethodDescriptor;
@@ -104,6 +105,27 @@ public final class ByteCodeProcessor
 	 * @since 2019/04/06
 	 */
 	public final void process()
+	{
+		// Run process
+		try
+		{
+			this.__aaaProcess();
+		}
+		
+		// {@squirreljme.error JC48 Failed to process the byte code. (The
+		// last processed instruction)}
+		catch (InvalidClassFormatException|IllegalArgumentException e)
+		{
+			throw new InvalidClassFormatException("JC48 " + this.state, e);
+		}
+	}
+	
+	/**
+	 * Processes the byte code and calls the destination handler.
+	 *
+	 * @since 2019/04/06
+	 */
+	private final void __aaaProcess()
 	{
 		ByteCode bytecode = this.bytecode;
 		ByteCodeState state = this.state;
