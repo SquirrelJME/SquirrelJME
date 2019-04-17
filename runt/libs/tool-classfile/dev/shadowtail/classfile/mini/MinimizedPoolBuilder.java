@@ -82,7 +82,7 @@ public final class MinimizedPoolBuilder
 				af.type().ordinal(),
 				this.add(fr.className()),
 				this.add(fr.memberName().toString()),
-				this.add(fr.memberType()));
+				this.add(fr.memberType().className()));
 		}
 		
 		// Class name
@@ -131,10 +131,10 @@ public final class MinimizedPoolBuilder
 		}
 		
 		// Field descriptor
-		else if (__v instanceof FieldDescriptor)
+		/*else if (__v instanceof FieldDescriptor)
 			return this.__add(__v,
 				this.add(__v.toString()), this.add(
-					((FieldDescriptor)__v).className()));
+					((FieldDescriptor)__v).className()));*/
 		
 		// Field/Method name
 		/*else if (__v instanceof FieldName ||
@@ -167,12 +167,12 @@ public final class MinimizedPoolBuilder
 			
 			// Add return value
 			FieldDescriptor rv = md.returnValue();
-			sub.add((rv == null ? 0 : this.add(rv)));
+			sub.add((rv == null ? 0 : this.add(rv.className())));
 			
 			// Fill in arguments
 			FieldDescriptor[] margs = md.arguments();
 			for (FieldDescriptor marg : margs)
-				sub.add(this.add(marg));
+				sub.add(this.add(marg.className()));
 			
 			// Convert to integer
 			int n = sub.size();

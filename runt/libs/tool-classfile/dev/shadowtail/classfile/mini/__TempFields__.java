@@ -67,7 +67,8 @@ final class __TempFields__
 				ddos.writeShort(Minimizer.__checkUShort(m.size));
 				ddos.writeShort(Minimizer.__checkUShort(
 					__pool.get(m.name.toString())));
-				ddos.writeShort(Minimizer.__checkUShort(__pool.get(m.type)));
+				ddos.writeShort(Minimizer.__checkUShort(
+					__pool.get(m.type.className())));
 				ddos.writeShort(Minimizer.__checkUShort(__pool.get(m.value)));
 				ddos.writeByte(m.datatype.ordinal());
 				ddos.writeByte(0);
