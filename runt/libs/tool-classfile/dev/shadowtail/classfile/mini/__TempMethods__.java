@@ -58,7 +58,8 @@ final class __TempMethods__
 			int count = this._count;
 			
 			// Merge all the code data
-			int[] offcode = new int[count];
+			int[] offcode = new int[count],
+				lencode = new int[count];
 			ByteArrayOutputStream cbytes = new ByteArrayOutputStream();
 			DataOutputStream cdos = new DataOutputStream(cbytes);
 			for (int i = 0; i < count; i++)
@@ -72,6 +73,7 @@ final class __TempMethods__
 				
 				// Offset to this code
 				offcode[i] = cdos.size();
+				lencode[i] = code.length;
 				
 				// Write all the data
 				cdos.write(code);
@@ -82,7 +84,8 @@ final class __TempMethods__
 			}
 			
 			// Merge all of the line data
-			int[] offline = new int[count];
+			int[] offline = new int[count],
+				lenline = new int[count];
 			ByteArrayOutputStream lbytes = new ByteArrayOutputStream();
 			DataOutputStream ldos = new DataOutputStream(lbytes);
 			for (int i = 0; i < count; i++)
@@ -96,6 +99,7 @@ final class __TempMethods__
 				
 				// Offset to these lines
 				offline[i] = ldos.size();
+				lenline[i] = lines.length;
 				
 				// Write all the data
 				ldos.write(lines);
@@ -114,16 +118,16 @@ final class __TempMethods__
 			{
 				MinimizedMethod m = methods.get(i);
 				
-				// 16-bytes
+				// 18-bytes
 				ddos.writeInt(m.flags);
 				ddos.writeShort(Minimizer.__checkUShort(m.index));
 				ddos.writeShort(Minimizer.__checkUShort(
 					__pool.get(m.name.toString())));
 				ddos.writeShort(Minimizer.__checkUShort(__pool.get(m.type)));
 				ddos.writeShort(Minimizer.__checkUShort(codeoff + offcode[i]));
+				ddos.writeShort(Minimizer.__checkUShort(lencode[i]));
 				ddos.writeShort(Minimizer.__checkUShort(lineoff + offline[i]));
-				ddos.writeByte(0);
-				ddos.writeByte(0);
+				ddos.writeShort(Minimizer.__checkUShort(lenline[i]));
 			}
 			
 			// Write end of table

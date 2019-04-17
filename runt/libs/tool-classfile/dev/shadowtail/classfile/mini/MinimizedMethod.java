@@ -106,7 +106,37 @@ public final class MinimizedMethod
 		{
 			for (int i = 0; i < __n; i++)
 			{
-				throw new todo.TODO();
+				// Read in method information
+				int flags = dis.readInt(),
+					offset = dis.readUnsignedShort();
+				MethodName name = new MethodName(
+					(String)__p._values[dis.readUnsignedShort()]);
+				MethodDescriptor type =
+					(MethodDescriptor)__p._values[dis.readUnsignedShort()];
+				int offcode = dis.readUnsignedShort(), 
+					lencode = dis.readUnsignedShort(),
+					offline = dis.readUnsignedShort(),
+					lenline = dis.readUnsignedShort();
+				
+				// Read code?
+				byte[] code = null;
+				if (offcode > 0)
+				{
+					code = new byte[lencode];
+					System.arraycopy(__b, offcode, code, 0, lencode);
+				}
+				
+				// Read lines?
+				byte[] line = null;
+				if (offline > 0)
+				{
+					line = new byte[lenline];
+					System.arraycopy(__b, offline, line, 0, lenline);
+				}
+				
+				// Build method
+				rv[i] = new MinimizedMethod(flags, offset, name, type,
+					code, line);
 			}
 		}
 		
