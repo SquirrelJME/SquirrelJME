@@ -548,10 +548,6 @@ public final class Minimizer
 				rv[ai] = (byte)jt;
 		}
 		
-		// Debug
-		todo.DEBUG.note("Code hexdump:");
-		net.multiphasicapps.io.HexDumpOutputStream.dump(System.err, rv);
-		
 		// Return array
 		return rv;
 	}
