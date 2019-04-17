@@ -43,7 +43,7 @@ public final class ApiLevel
 	
 	/** SquirrelJME 0.4.0 (May 5, 2019). */
 	public static final int LEVEL_SQUIRRELJME_0_4_0_20190505 =
-		4_0_19111;
+		4_0_19125;
 	
 	/**
 	 * Not used.
