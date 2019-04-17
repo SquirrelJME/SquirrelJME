@@ -11,8 +11,13 @@
 package dev.shadowtail.classfile.mini;
 
 import dev.shadowtail.classfile.xlate.DataType;
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.FieldDescriptor;
 import net.multiphasicapps.classfile.FieldName;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
@@ -98,7 +103,7 @@ public final class MinimizedField
 	 * Decodes the field data.
 	 *
 	 * @param __n The number of fields.
-	 * @param __pool The constant pool.
+	 * @param __p The constant pool.
 	 * @param __b Input data.
 	 * @param __o Offset into array.
 	 * @param __l Length of data rea.
@@ -110,16 +115,48 @@ public final class MinimizedField
 	 * @since 2019/04/17
 	 */
 	public static final MinimizedField[] decodeFields(int __n,
-		MinimizedPool __pool, byte[] __b, int __o, int __l)
+		MinimizedPool __p, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, InvalidClassFormatException,
 			NullPointerException
 	{
-		if (__b == null)
+		if (__b == null || __p == null)
 			throw new NullPointerException("NARG");
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		throw new todo.TODO();
+		// Setup return value
+		MinimizedField[] rv = new MinimizedField[__n];
+		
+		// Read field data
+		try (DataInputStream dis = new DataInputStream(
+			new ByteArrayInputStream(__b, __o, __l)))
+		{
+			for (int i = 0; i < __n; i++)
+			{
+				rv[i] = new MinimizedField(
+					dis.readInt(),
+					dis.readUnsignedShort(),
+					dis.readUnsignedShort(),
+					new FieldName(
+						(String)__p._values[dis.readUnsignedShort()]),
+					((ClassName)__p._values[dis.readUnsignedShort()]).field(),
+					__p._values[dis.readUnsignedShort()]);
+				
+				// Data type and padding, the data type here is determined by
+				// the field so we do not need to use this pre-calculated
+				// value
+				dis.readUnsignedByte();
+				dis.readUnsignedByte();
+			}
+		}
+		
+		// {@squirreljme.error JC40 Could not read field data.}
+		catch (ClassCastException|IOException|IndexOutOfBoundsException e)
+		{
+			throw new InvalidClassFormatException("JC40");
+		}
+		
+		return rv;
 	}
 }
 
