@@ -106,6 +106,9 @@ public final class ClassLoader
 			if (rv != null)
 				return rv;
 			
+			// Note
+			todo.DEBUG.note("Loading %s...", __n);
+			
 			// Resulting minimized class and the library it is within
 			MinimizedClassFile cf;
 			CachingClassLibrary inlib;
