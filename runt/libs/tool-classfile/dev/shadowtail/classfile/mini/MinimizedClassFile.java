@@ -26,6 +26,60 @@ import net.multiphasicapps.classfile.InvalidClassFormatException;
  */
 public final class MinimizedClassFile
 {
+	/** Header. */
+	public final MinimizedClassHeader header;
+	
+	/** Pool. */
+	public final MinimizedPool pool;
+	
+	/** Static fields. */
+	private final MinimizedField[] _sfields;
+	
+	/** Instance fields. */
+	private final MinimizedField[] _ifields;
+	
+	/** Static methods. */
+	private final MinimizedMethod[] _smethods;
+	
+	/** Instance methods. */
+	private final MinimizedMethod[] _imethods;
+	
+	/**
+	 * Initializes the minimized class file.
+	 *
+	 * @param __h The header.
+	 * @param __p The pool.
+	 * @param __sf Static fields.
+	 * @param __if Instance fields.
+	 * @param __sm Static methods.
+	 * @param __im Instance methods.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/17
+	 */
+	public MinimizedClassFile(MinimizedClassHeader __h, MinimizedPool __p,
+		MinimizedField[] __sf, MinimizedField[] __if,
+		MinimizedMethod[] __sm, MinimizedMethod[] __im)
+		throws NullPointerException
+	{
+		if (__h == null || __p == null || __sf == null || __if == null ||
+			__sm == null || __im == null)
+			throw new NullPointerException("NARG");
+		
+		// Set
+		this.header = __h;
+		this.pool = __p;
+		this._sfields = (__sf = __sf.clone());
+		this._ifields = (__if = __if.clone());
+		this._smethods = (__sm = __sm.clone());
+		this._imethods = (__im = __im.clone());
+		
+		// Check for nulls
+		for (Object[] va : new Object[][]{__sf, __if, __sm, __im})
+			for (Object v : va)
+				if (v == null)
+					throw new NullPointerException("NARG");
+	}
+	
 	/**
 	 * Decodes and returns the minimized representation of the class file.
 	 *
@@ -105,7 +159,9 @@ public final class MinimizedClassFile
 			imethods = MinimizedMethod.decodeMethods(
 				header.imcount, pool, __is, header.imoff, header.imsize);
 		
-		throw new todo.TODO();
+		// Build final class
+		return new MinimizedClassFile(header, pool,
+			sfields, ifields, smethods, imethods);
 	}
 }
 
