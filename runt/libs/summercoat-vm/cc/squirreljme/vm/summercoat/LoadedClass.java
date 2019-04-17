@@ -27,6 +27,9 @@ public final class LoadedClass
 	/** The super class. */
 	protected final LoadedClass superclass;
 	
+	/** Runtime constant pool, which is initialized when it is needed. */
+	protected final RuntimeConstantPool runpool;
+	
 	/** Interface classes. */
 	final LoadedClass[] _interfaces;
 	
@@ -51,6 +54,7 @@ public final class LoadedClass
 				throw new NullPointerException("NARG");
 		
 		this.miniclass = __cf;
+		this.runpool = new RuntimeConstantPool(__cf.pool());
 		this.superclass = __sn;
 		this._interfaces = __in;
 	}

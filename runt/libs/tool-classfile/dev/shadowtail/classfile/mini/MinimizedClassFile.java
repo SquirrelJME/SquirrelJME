@@ -95,6 +95,17 @@ public final class MinimizedClassFile
 	}
 	
 	/**
+	 * Returns the minimized constant pool.
+	 *
+	 * @return The minimized constant pool.
+	 * @since 2019/04/17
+	 */
+	public final MinimizedPool pool()
+	{
+		return this.pool;
+	}
+	
+	/**
 	 * Returns the super name of the current class.
 	 *
 	 * @return The class super name or {@code null} if there is none.
