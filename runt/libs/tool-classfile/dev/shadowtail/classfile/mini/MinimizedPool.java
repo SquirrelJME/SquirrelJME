@@ -118,6 +118,9 @@ public final class MinimizedPool
 		if (__o < 0 || __l < 0 || (__o + __l) > __is.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
+		net.multiphasicapps.io.HexDumpOutputStream.dump(System.err,
+			__is, __o, __l);
+		
 		// Types and offsets
 		byte[] types = new byte[__n];
 		int[] offsets = new int[__n];
@@ -133,13 +136,19 @@ public final class MinimizedPool
 			for (int i = 0; i < __n; i++)
 				types[i] = dis.readByte();
 			
+			// {@squirreljme.error JC47 First pool entry type is not zero.
+			// (The type that was read)}
+			if (types[0] != 0)
+				throw new InvalidClassFormatException("JC47 " + types[0]);
+			
 			// {@squirreljme.error JC44 Pool uneven padding byte was not
-			// 255. (The value it was)}
+			// 255. (The value it was; The following byte)}
 			if ((__n & 1) != 0)
 			{
 				int val;
 				if ((val = dis.readUnsignedByte()) != 0xFF)
-					throw new InvalidClassFormatException("JC44 " + val);
+					throw new InvalidClassFormatException("JC44 " + val + " " +
+						dis.read());
 			}
 			
 			// Read offsets into the structure

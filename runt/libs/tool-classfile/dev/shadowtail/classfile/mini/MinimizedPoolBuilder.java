@@ -271,19 +271,17 @@ public final class MinimizedPoolBuilder
 			DataOutputStream ddos = new DataOutputStream(dbytes);
 			
 			// Guess where all the data will be written in the pool
-			// tbytes + obytes + tdospadding
+			// tbytes + tdospadding + obytes
 			int poolcount = pool.size();
-			int reloff = (poolcount * 3) + (poolcount & 1);
-			
-			// Align the data table to the nearest 4-byte boundary
-			while (((reloff + ddos.size()) & 3) != 0)
-				ddos.write(0);
+			int reloff = poolcount + (poolcount & 1) + (poolcount * 2);
 			
 			// Write all the values in the pool, the value in the map is
 			// ignored because that just stores the index identifier
 			int pdx = 0;
-			for (Object value : pool.keySet())
+			for (Map.Entry<Object, Integer> e: pool.entrySet())
 			{
+				Object value = e.getKey();
+				
 				// Get type and part information
 				MinimizedPoolEntryType et = (pdx == 0 ?
 					MinimizedPoolEntryType.NULL :
@@ -329,6 +327,10 @@ public final class MinimizedPoolBuilder
 				// Write entry type
 				tdos.writeByte(faketype);
 				
+				// Align the data table to the nearest 4-byte boundary
+				while (((reloff + ddos.size()) & 3) != 0)
+					ddos.write(0);
+				
 				// Write position of the pool entry
 				int dxo = reloff + ddos.size();
 				odos.writeShort(Minimizer.__checkUShort(dxo));
@@ -337,9 +339,9 @@ public final class MinimizedPoolBuilder
 				boolean iswide = ((faketype & 0x80) != 0);
 				switch (et)
 				{
-					// Just write a zero for null, just in case!
+					// This value should not be read
 					case NULL:
-						ddos.writeInt(0);
+						ddos.writeInt(0xFEFEFEFE);
 						break;
 					
 						// String are special because they have actual
@@ -420,10 +422,6 @@ public final class MinimizedPoolBuilder
 			// End of table padding for the type table?
 			if ((poolcount & 1) != 0)
 				tdos.writeByte(0xFF);
-			
-			// Debug
-			todo.DEBUG.note("Pool Sizes: t=%d o=%d d=%d",
-				tdos.size(), odos.size(), ddos.size());
 			
 			// Merge the data bytes into the table then use the completed
 			// table
