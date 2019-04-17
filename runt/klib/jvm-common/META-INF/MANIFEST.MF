@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+X-SquirrelJME-UUID: 168b5beb-a0a5-2e4f-09e0-2b89bf8bac69
+X-SquirrelJME-Error: BC
+X-SquirrelJME-Name: Common JVM Functions
+X-SquirrelJME-Vendor: Stephanie Gawroriski
+X-SquirrelJME-Version: 0.3.0
+X-SquirrelJME-Description: This library contains functions which are 
+ common to JVMs but which are not part of the standard library.
+Microedition-Configuration: CLDC-1.8-Compact
+
