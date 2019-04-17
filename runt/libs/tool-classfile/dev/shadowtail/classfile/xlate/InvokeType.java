@@ -42,5 +42,28 @@ public enum InvokeType
 	{
 		return this != STATIC;
 	}
+	
+	/**
+	 * Returns the invocation type for the given ordinal.
+	 *
+	 * @param __i The ordinal.
+	 * @return The invocation type.
+	 * @throws IllegalArgumentException If it is not valid.
+	 * @since 2019/04/17
+	 */
+	public static final InvokeType of(int __i)
+		throws IllegalArgumentException
+	{
+		switch (__i)
+		{
+			case 0:	return STATIC;
+			case 1: return SPECIAL;
+			case 2: return VIRTUAL;
+			case 3: return INTERFACE;
+		}
+		
+		// {@squirreljme.error JC3w Unknown invocation type. (The index)}
+		throw new IllegalArgumentException("JC3w " + __i);
+	}
 }
 

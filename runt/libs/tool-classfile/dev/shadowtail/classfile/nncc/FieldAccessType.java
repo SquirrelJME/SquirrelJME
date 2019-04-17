@@ -25,5 +25,26 @@ public enum FieldAccessType
 	
 	/** End. */
 	;
+	
+	/**
+	 * Returns the access type for the given ordinal.
+	 *
+	 * @param __i The ordinal.
+	 * @return The access type.
+	 * @throws IllegalArgumentException If it is not valid.
+	 * @since 2019/04/17
+	 */
+	public static final FieldAccessType of(int __i)
+		throws IllegalArgumentException
+	{
+		switch (__i)
+		{
+			case 0:	return STATIC;
+			case 1: return INSTANCE;
+		}
+		
+		// {@squirreljme.error JC3v Unknown access type. (The index)}
+		throw new IllegalArgumentException("JC3v " + __i);
+	}
 }
 

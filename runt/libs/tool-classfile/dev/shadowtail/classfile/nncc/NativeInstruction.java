@@ -469,8 +469,8 @@ public final class NativeInstruction
 					ArgumentFormat.REGLIST);
 		}
 		
-		// {@squirreljme.error JC3r Invalid operation. (The operation)}
-		throw new IllegalArgumentException("JC3r " +
+		// {@squirreljme.error JC3t Invalid operation. (The operation)}
+		throw new IllegalArgumentException("JC3t " +
 			NativeInstruction.mnemonic(__op));
 	}
 	
