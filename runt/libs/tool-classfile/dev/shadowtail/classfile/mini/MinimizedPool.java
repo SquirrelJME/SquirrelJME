@@ -342,9 +342,6 @@ public final class MinimizedPool
 				throw new InvalidClassFormatException("JC3x", e);
 			}
 			
-			// Debug
-			todo.DEBUG.note("Read %s", v);
-			
 			// Set data
 			parts[i] = (part == null ? nopart : part);
 			values[i] = v;
