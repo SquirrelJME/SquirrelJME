@@ -12,10 +12,13 @@ package cc.squirreljme.vm.summercoat;
 
 import dev.shadowtail.classfile.mini.MinimizedPool;
 import dev.shadowtail.classfile.mini.MinimizedPoolEntryType;
+import dev.shadowtail.classfile.nncc.InvokedMethod;
+import dev.shadowtail.classfile.xlate.InvokeType;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodDescriptor;
+import net.multiphasicapps.classfile.MethodHandle;
 import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**
@@ -253,17 +256,22 @@ public final class RunningThread
 						v = orig;
 						break;
 						
-						// Classes just point to loaded classes
-					case CLASS_NAME:
-						v = classloader.loadClass((ClassName)orig);
-						break;
-						
 						// These do not actually contain any information that
 						// is useful for SummerCoat because it has classes to
 						// represent these easily. These are just here to make
 						// writing the C based VM easier.
 					case METHOD_DESCRIPTOR:
 						v = orig;
+						break;
+						
+						// Classes just point to loaded classes
+					case CLASS_NAME:
+						v = classloader.loadClass((ClassName)orig);
+						break;
+						
+						// Method to be invoked, is referenced by handle
+					case INVOKED_METHOD:
+						v = this.__getInvokeHandle(__cl, (InvokedMethod)orig);
 						break;
 					
 						// Unhandled
@@ -477,6 +485,30 @@ public final class RunningThread
 		if (didstart && this != Thread.currentThread())
 			throw new IllegalStateException("AE01");
 		return didstart;
+	}
+	
+	/**
+	 * Obtains the invocation handle for the given class.
+	 *
+	 * @param __from The calling class.
+	 * @param __im The invoked method.
+	 * @return The handle to call this method.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/17
+	 */
+	private final MethodHandle __getInvokeHandle(LoadedClass __from,
+		InvokedMethod __m)
+		throws NullPointerException
+	{
+		if (__from == null || __im == null)
+			throw new NullPointerException("NARG");
+		
+		// Get all the various parts
+		InvokeType mty = __m.type();
+		MethodHandle mhn = __m.handle();
+		LoadedClass mcl = this.state.classloader.loadClass(mhn.className());
+		
+		throw new todo.TODO();
 	}
 }
 
