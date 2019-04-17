@@ -104,9 +104,12 @@ public final class Minimizer
 		// The pool
 		MinimizedPoolBuilder pool = this.pool;
 		
+		// This may be null for Object
+		ClassName supernamecn = input.superName();
+		
 		// Class names
 		int thisname = pool.add(input.thisName()),
-			supername = pool.add(input.superName()),
+			supername = (supernamecn == null ? 0 : pool.add(supernamecn)),
 			inames = pool.add(input.interfaceNames());
 		
 		// The source file name
