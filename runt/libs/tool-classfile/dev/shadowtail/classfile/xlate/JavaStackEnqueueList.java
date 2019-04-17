@@ -215,6 +215,18 @@ public final class JavaStackEnqueueList
 	}
 	
 	/**
+	 * Checks if the given index refers to a local.
+	 *
+	 * @param __i The index to check.
+	 * @return If it refers to a local.
+	 * @since 2019/04/17
+	 */
+	public final boolean isLocal(int __i)
+	{
+		return __i < this.stackstart;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2019/03/30
 	 */
@@ -358,6 +370,29 @@ public final class JavaStackEnqueueList
 	}
 	
 	/**
+	 * Trims the top entry from the enqueue list and returns the new list
+	 * with the top missing.
+	 *
+	 * @return The resulting list.
+	 * @since 2019/03/30
+	 */
+	public final JavaStackEnqueueList trimTop()
+	{
+		// Do not trim empty pieces
+		int[] from = this._registers;
+		int n = from.length - 1;
+		if (n < 0)
+			return this;
+		
+		// Copy bits
+		int[] rv = new int[n];
+		for (int i = 0; i < n; i++)
+			rv[i] = from[i];
+		
+		return new JavaStackEnqueueList(this.stackstart, rv);
+	}
+	
+	/**
 	 * Merges both of these stack enqueue lists into one.
 	 *
 	 * @param __a The first.
@@ -379,30 +414,25 @@ public final class JavaStackEnqueueList
 		else if (__b.isEmpty())
 			return __a;
 		
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * Trims the top entry from the enqueue list and returns the new list
-	 * with the top missing.
-	 *
-	 * @return The resulting list.
-	 * @since 2019/03/30
-	 */
-	public final JavaStackEnqueueList trimTop()
-	{
-		// Do not trim empty pieces
-		int[] from = this._registers;
-		int n = from.length - 1;
-		if (n < 0)
-			return this;
+		// Locals and stack entries
+		List<Integer> locals = new ArrayList<>(),
+			stack = new ArrayList<>();
 		
-		// Copy bits
-		int[] rv = new int[n];
-		for (int i = 0; i < n; i++)
-			rv[i] = from[i];
+		// Sort through them all
+		for (JavaStackEnqueueList eq : new JavaStackEnqueueList[]{__a, __b})
+			for (int i = 0, n = eq.size(); i < n; i++)
+			{
+				Integer r = eq.get(i);
+				if (eq.isLocal(i))
+					locals.add(r);
+				else
+					stack.add(r);
+			}
 		
-		return new JavaStackEnqueueList(this.stackstart, rv);
+		// Append stack entries to the locals
+		int numlocals = locals.size();
+		locals.addAll(stack);
+		return new JavaStackEnqueueList(numlocals, locals);
 	}
 	
 	/**
