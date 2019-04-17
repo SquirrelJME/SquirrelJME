@@ -93,6 +93,18 @@ public final class MinimizedClassFile
 		MinimizedPool pool = MinimizedPool.decode(header.poolcount,
 			__is, header.pooloff, header.poolsize);
 		
+		// Read static and instance fields
+		MinimizedField[] sfields = MinimizedField.decodeFields(
+				header.sfcount, pool, __is, header.sfoff, header.sfsize),
+			ifields = MinimizedField.decodeFields(
+				header.ifcount, pool, __is, header.ifoff, header.ifsize);
+		
+		// Read static and instance methods
+		MinimizedMethod[] smethods = MinimizedMethod.decodeMethods(
+				header.smcount, pool, __is, header.smoff, header.smsize),
+			imethods = MinimizedMethod.decodeMethods(
+				header.imcount, pool, __is, header.imoff, header.imsize);
+		
 		throw new todo.TODO();
 	}
 }
