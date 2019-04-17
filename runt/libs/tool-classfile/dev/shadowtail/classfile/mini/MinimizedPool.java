@@ -118,15 +118,9 @@ public final class MinimizedPool
 		if (__o < 0 || __l < 0 || (__o + __l) > __is.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		net.multiphasicapps.io.HexDumpOutputStream.dump(System.err,
-			__is, __o, __l);
-		
 		// Types and offsets
 		byte[] types = new byte[__n];
 		int[] offsets = new int[__n];
-		
-		// Debug
-		todo.DEBUG.note("Decode %d (%d bytes @ %d)", __n, __l, __o);
 		
 		// Read the type and offset table
 		try (DataInputStream dis = new DataInputStream(
