@@ -117,7 +117,8 @@ final class __TempMethods__
 				// 16-bytes
 				ddos.writeInt(m.flags);
 				ddos.writeShort(Minimizer.__checkUShort(m.index));
-				ddos.writeShort(Minimizer.__checkUShort(__pool.get(m.name)));
+				ddos.writeShort(Minimizer.__checkUShort(
+					__pool.get(m.name.toString())));
 				ddos.writeShort(Minimizer.__checkUShort(__pool.get(m.type)));
 				ddos.writeShort(Minimizer.__checkUShort(codeoff + offcode[i]));
 				ddos.writeShort(Minimizer.__checkUShort(lineoff + offline[i]));

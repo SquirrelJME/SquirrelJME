@@ -76,9 +76,13 @@ public final class MinimizedPoolBuilder
 		if (__v instanceof AccessedField)
 		{
 			AccessedField af = (AccessedField)__v;
+			FieldReference fr = af.field();
 			return this.__add(__v,
-				af.time().ordinal(), af.type().ordinal(),
-				this.add(af.field()));
+				af.time().ordinal(),
+				af.type().ordinal(),
+				this.add(fr.className()),
+				this.add(fr.memberName().toString()),
+				this.add(fr.memberType()));
 		}
 		
 		// Class name
@@ -117,9 +121,13 @@ public final class MinimizedPoolBuilder
 		else if (__v instanceof InvokedMethod)
 		{
 			InvokedMethod iv = (InvokedMethod)__v;
+			MethodHandle mh = iv.handle();
 			
 			return this.__add(__v,
-				iv.type().ordinal(), this.add(iv.handle()));
+				iv.type().ordinal(),
+				this.add(mh.outerClass()),
+				this.add(mh.name().toString()),
+				this.add(mh.descriptor()));
 		}
 		
 		// Field descriptor
@@ -129,20 +137,20 @@ public final class MinimizedPoolBuilder
 					((FieldDescriptor)__v).className()));
 		
 		// Field/Method name
-		else if (__v instanceof FieldName ||
+		/*else if (__v instanceof FieldName ||
 			__v instanceof MethodName)
 			return this.__add(__v,
-				this.add(__v.toString()));
+				this.add(__v.toString()));*/
 		
 		// Field reference
-		else if (__v instanceof FieldReference)
+		/*else if (__v instanceof FieldReference)
 		{
 			FieldReference v = (FieldReference)__v;
 			return this.__add(__v,
 				this.add(v.className()),
 				this.add(v.memberName()),
 				this.add(v.memberType()));
-		}
+		}*/
 		
 		// Method descriptor, add parts of the descriptor naturally
 		else if (__v instanceof MethodDescriptor)
@@ -178,14 +186,14 @@ public final class MinimizedPoolBuilder
 		}
 		
 		// Method handle
-		else if (__v instanceof MethodHandle)
+		/*else if (__v instanceof MethodHandle)
 		{
 			MethodHandle v = (MethodHandle)__v;
 			return this.__add(__v,
 				this.add(v.outerClass()),
 				this.add(v.name()),
 				this.add(v.descriptor()));
-		}
+		}*/
 		
 		// String
 		else if (__v instanceof String)
