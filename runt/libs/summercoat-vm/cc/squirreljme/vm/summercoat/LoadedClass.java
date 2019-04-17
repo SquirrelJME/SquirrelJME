@@ -125,14 +125,41 @@ public final class LoadedClass
 	 * @param __desc The method descriptor.
 	 * @return The handle to the method.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2019/01/10
+	 * @since 2019/04/17
 	 */
 	public final MethodHandle lookupMethod(MethodLookupType __lut, 
 		boolean __static, MethodName __name, MethodDescriptor __desc)
 		throws NullPointerException
 	{
-		if (__lut == MethodLookupType.STATIC)
-			return _smethods.get(new MethodNameAndType(__name, __desc));
+		return this.lookupMethod(__lut, __static,
+			new MethodNameAndType(__name, __desc));
+	}
+	
+	/**
+	 * Looks up the given method.
+	 *
+	 * @param __lut The type of lookup to perform.
+	 * @param __static Is the specified method static?
+	 * @param __name The name of the method.
+	 * @param __desc The method descriptor.
+	 * @return The handle to the method.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/01/10
+	 */
+	public final MethodHandle lookupMethod(MethodLookupType __lut, 
+		boolean __static, MethodNameAndType __nat)
+		throws NullPointerException
+	{
+		// Static lookup always returns the discovered method so it is called
+		// directly rather than virtually
+		if (__static || __lut == MethodLookupType.STATIC)
+		{
+			if (__static)
+				return _smethods.get(__nat);
+			else
+				return _imethods.get(__nat);
+		}
+		
 		throw new todo.TODO();
 	}
 	

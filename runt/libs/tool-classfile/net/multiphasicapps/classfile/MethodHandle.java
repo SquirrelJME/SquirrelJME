@@ -30,6 +30,9 @@ public final class MethodHandle
 	/** The descriptor of the method. */
 	protected final MethodDescriptor descriptor;
 	
+	/** Method name and type. */
+	private Reference<MethodNameAndType> _nat;
+	
 	/** String representation. */
 	private Reference<String> _string;
 	
@@ -153,6 +156,24 @@ public final class MethodHandle
 	public MethodName name()
 	{
 		return this.name;
+	}
+	
+	/**
+	 * Returns the name and type of the method.
+	 *
+	 * @return The method name and type.
+	 * @since 2019/04/17
+	 */
+	public final MethodNameAndType nameAndType()
+	{
+		Reference<MethodNameAndType> ref = this._nat;
+		MethodNameAndType rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._nat = new WeakReference<>((rv = new MethodNameAndType(
+				this.name, this.descriptor)));
+		
+		return rv;
 	}
 	
 	/**
