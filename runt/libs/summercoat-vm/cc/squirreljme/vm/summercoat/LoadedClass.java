@@ -10,6 +10,7 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import dev.shadowtail.classfile.mini.MinimizedClassFile;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodName;
 
@@ -20,6 +21,40 @@ import net.multiphasicapps.classfile.MethodName;
  */
 public final class LoadedClass
 {
+	/** The minimized class. */
+	protected final MinimizedClassFile miniclass;
+	
+	/** The super class. */
+	protected final LoadedClass superclass;
+	
+	/** Interface classes. */
+	final LoadedClass[] _interfaces;
+	
+	/**
+	 * Initializes the loaded class.
+	 *
+	 * @param __cf The minimized class file.
+	 * @param __sn The super class.
+	 * @param __in The interfaces.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/17
+	 */
+	public LoadedClass(MinimizedClassFile __cf, LoadedClass __sn,
+		LoadedClass[] __in)
+		throws NullPointerException
+	{
+		if (__cf == null || __sn == null || __in == null)
+			throw new NullPointerException("NARG");
+		
+		for (LoadedClass o : (__in = __in.clone()))
+			if (o == null)
+				throw new NullPointerException("NARG");
+		
+		this.miniclass = __cf;
+		this.superclass = __sn;
+		this._interfaces = __in;
+	}
+	
 	/**
 	 * Looks up the given method.
 	 *

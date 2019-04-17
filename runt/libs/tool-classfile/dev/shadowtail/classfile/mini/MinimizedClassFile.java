@@ -15,6 +15,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.ClassNames;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 
 /**
@@ -78,6 +80,43 @@ public final class MinimizedClassFile
 			for (Object v : va)
 				if (v == null)
 					throw new NullPointerException("NARG");
+	}
+	
+	/**
+	 * Returns the names of all the interfaces.
+	 *
+	 * @return The interface names.
+	 * @since 2019/04/17
+	 */
+	public final ClassNames interfaceNames()
+	{
+		return this.pool.<ClassNames>get(this.header.classints,
+			ClassNames.class);
+	}
+	
+	/**
+	 * Returns the super name of the current class.
+	 *
+	 * @return The class super name or {@code null} if there is none.
+	 * @since 2019/04/17
+	 */
+	public final ClassName superName()
+	{
+		int id = this.header.classsuper;
+		return (id == 0 ? null :
+			this.pool.<ClassName>get(id, ClassName.class));
+	}
+	
+	/**
+	 * Returns the name of the current class.
+	 *
+	 * @return The name of the current class.
+	 * @since 2019/04/17
+	 */
+	public final ClassName thisName()
+	{
+		return this.pool.<ClassName>get(
+			this.header.classname, ClassName.class);
 	}
 	
 	/**
