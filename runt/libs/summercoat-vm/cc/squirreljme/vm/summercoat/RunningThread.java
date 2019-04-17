@@ -16,6 +16,7 @@ import dev.shadowtail.classfile.nncc.InvokedMethod;
 import dev.shadowtail.classfile.xlate.InvokeType;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.classfile.ClassFlags;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodNameAndType;
@@ -511,6 +512,24 @@ public final class RunningThread
 		// Calling method in another class, need to check access
 		if (__from != mcl)
 		{
+			// Debug
+			todo.DEBUG.note("Access check: %s -> %s", __from, mcl);
+			
+			// Are these in the same package?
+			boolean samepkg = __from.miniclass.thisName().isInSamePackage(
+				mcl.miniclass.thisName());
+			
+			// Get both flags
+			ClassFlags acf = __from.miniclass.flags(),
+				bcf = mcl.miniclass.flags();
+			
+			// {@squirreljme.error AE06 Cannot access other class because it
+			// is package private and the source class is not in the same
+			// package. (This class; The other class)}
+			if (!samepkg && bcf.isPackagePrivate())
+				throw new VMRuntimeException(
+					String.format("AE06 %s %s", __from, mcl));
+			
 			throw new todo.TODO();
 		}
 		
