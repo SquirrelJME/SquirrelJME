@@ -1,0 +1,109 @@
+# 2019/04/16
+
+## 10:27
+
+Next will be `TABLESWITCH` but I think what I will do there is just transform
+that into code rather than having gigantic instructions because that will be
+a bit complicated to implement and it would put it on the VM to implement it
+correctly. I think it is just too much to be really that worth it. Since I do
+not really want to dual handle these two cases I will just simplify
+`TABLESWITCH` into `LOOKUPSWITCH` since the previous is a linear set of values
+while the second has multiple sorted pairs. Then I need only worry about doing
+just a single format.
+
+## 10:32
+
+I think the only instructions remaining following doing all of this would be
+`instanceof`, so I can do that quickly.
+
+## 11:37
+
+For lookup switches I am going to need an if compare to constant, but this can
+just be a single instruction.
+
+## 14:47
+
+Need to check if `DUP_X2` is done correctly and such.
+
+## 15:18
+
+Seems to be correct, should hopefully be fine. However the stack map table
+deltas seem to be wrong, they are according to my decoder:
+
+ * 0, 26!, 34, 62!, 86 -- 26 and 62 are not valid!
+
+According to javap, they are:
+
+ * frame_type = 0 /* same */
+ * frame_type = 252 /* append */, offset_delta = 26, locals = [ int ]
+ * frame_type = 7 /* same */
+ * frame_type = 27 /* same */
+ * frame_type = 250 /* chop */, offset_delta = 23
+
+There is a definite size difference here. Mine says there are 5 when there
+are 6. So something is being read incorrectly, likely a type.
+
+## 15:26
+
+Okay in the stack map parse I found an off by one for appended frames. It
+is subtracting 251, but I checked JVMS and it was correct.
+
+## 15:33
+
+Actually it is correct, just the offset delta is off by one.
+
+## 15:37
+
+It might have to do with implicit and explicit frames.
+
+## 15:39
+
+Definitely is this.
+
+## 15:44
+
+Okay so I cannot check against placeaddr, I need another variable to
+determine if this is an address which gets incremented by one.
+
+## 16:18
+
+Okay so this next one is a append top top int, followed by a chop frame. It
+chops off 3 locals. So the only logical thing I can think of is that those
+extra top-undefined types are considered for chopping which I believe I am
+doing.
+
+## 16:59
+
+So it seems that jumping to a state, unless my stack map table code is still
+wrong, can add more types onto the target. More bugs in the stack map table
+have been ironed out, it is a rather clunky format. So perhaps transitions can
+happen.... let me seee.... maybe I could check if a value is placed there or
+something. I suppose I can just assume that it means a zero register
+transition or similar.
+
+## 17:33
+
+Definitely want to refactor the instruction writing and such so it is a bit
+more compact.
+
+## 18:32
+
+I will definitely see how much more compact the classes are.
+
+## 18:42
+
+Still like 26K...
+
+ * w/ Lines: 27180 bytes (26 KiB)
+ * No Lines: 25628 bytes (25 KiB)
+
+So the lines do not really matter much.
+
+## 18:46
+
+I could shave some bytes off the constant pool.
+
+## 20:54
+
+There are in the range of 300 pool entries, what if I could reduce that by
+making it so handles are not their own thing.
