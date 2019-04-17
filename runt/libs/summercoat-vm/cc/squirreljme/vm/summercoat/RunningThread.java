@@ -197,7 +197,7 @@ public final class RunningThread
 			throw new NullPointerException("NARG");
 		
 		// Must be the same thread
-		__checkSameThread();
+		this.__checkSameThread();
 		
 		throw new todo.TODO();
 	}
@@ -238,7 +238,7 @@ public final class RunningThread
 			throw new NullPointerException("NARG");
 		
 		// Must be the same thread
-		__checkSameThread();
+		this.__checkSameThread();
 		
 		// Defensive copy
 		__args = (__args == null ? new Value[0] : __args.clone());
@@ -247,7 +247,8 @@ public final class RunningThread
 	}
 	
 	/**
-	 * Returns a {@code StaticMethod} to execute the given method.
+	 * Returns an in virtual machine {@code StaticMethod} which when is
+	 * executed will execute the given method handle.
 	 *
 	 * @param __mh The method handle.
 	 * @return The virtual static method.
@@ -257,10 +258,14 @@ public final class RunningThread
 	public final Instance vmStaticMethod(MethodHandle __mh)
 		throws NullPointerException
 	{
-		// Must be the same thread
-		__checkSameThread();
+		if (__mh == null)
+			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Must be the same thread
+		this.__checkSameThread();
+		
+		// Just return a specialized instance
+		return new StaticMethodInstance(__mh);
 	}
 	
 	/**
@@ -273,7 +278,7 @@ public final class RunningThread
 	public final Instance vmTranslateString(String __in)
 	{
 		// Must be the same thread
-		__checkSameThread();
+		this.__checkSameThread();
 		
 		throw new todo.TODO();
 	}

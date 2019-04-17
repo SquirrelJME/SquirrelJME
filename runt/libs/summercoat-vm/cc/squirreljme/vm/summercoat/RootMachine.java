@@ -129,6 +129,7 @@ public final class RootMachine
 		Instance entryarg;
 		if (__ismid)
 		{
+			// Get static method reference to call
 			vmsm = thr.vmStaticMethod(cl.
 				loadClass("javax/microedition/midlet/MIDlet").lookupMethod(
 				MethodLookupType.INSTANCE, false, "startApp", "()V"));
@@ -136,6 +137,7 @@ public final class RootMachine
 		}
 		else
 		{
+			// Get static method reference to call
 			vmsm = thr.vmStaticMethod(cl.loadClass(__maincl).
 				lookupMethod(MethodLookupType.STATIC, true, "main",
 				"([Ljava/lang/String;)V"));
