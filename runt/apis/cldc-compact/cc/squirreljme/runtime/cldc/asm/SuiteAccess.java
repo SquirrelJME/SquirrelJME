@@ -21,6 +21,20 @@ import cc.squirreljme.runtime.cldc.lang.ApiLevel;
 public class SuiteAccess
 {
 	/**
+	 * Compile/install using data which was passed directly to the given
+	 * byte array.
+	 */
+	public static final int WHERE_DIRECT =
+		1;
+	
+	/**
+	 * Compile/install using the given JAR suite specified as a string, this
+	 * may be the same as a classpath value.
+	 */
+	public static final int WHERE_SUITE =
+		2;
+	
+	/**
 	 * Returns the suites which are available for usage.
 	 *
 	 * @return The suites which are available for usage.
@@ -30,6 +44,18 @@ public class SuiteAccess
 	public static final native String[] availableSuites();
 	
 	/**
+	 * Specifies that the given JAR should be compiled.
+	 *
+	 * @param __wh Where is this JAR located?
+	 * @param __data Data which depends on the where parameter.
+	 * @return The compiled result of the JAR, will be {@code null} on
+	 * compilation failure.
+	 * @since 2019/04/17
+	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
+	public static final native byte[] compileJar(int __wh, byte[] __data);
+	
+	/**
 	 * Returns the current classpath that is being used.
 	 *
 	 * @return The current classpath.
@@ -37,5 +63,26 @@ public class SuiteAccess
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
 	public static final native String[] currentClassPath();
+	
+	/**
+	 * Specifies that the given native JAR should be installed into the suite
+	 * manager.
+	 *
+	 * @param __wh Where is this JAR located?
+	 * @param __data Data which depends on the where parameter.
+	 * @return The install status.
+	 * @since 2019/04/17
+	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
+	public static final native int installNativeJar(int __wh, byte[] __data);
+	
+	/**
+	 * Returns the last compile error which was set.
+	 *
+	 * @return The last compile error.
+	 * @since 2019/04/17
+	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
+	public static final native int lastCompileError();
 }
 
