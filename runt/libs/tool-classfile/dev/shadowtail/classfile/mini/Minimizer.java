@@ -271,7 +271,7 @@ public final class Minimizer
 				f.flags().toJavaBits(),
 				basep,
 				fsz,
-				pool.<FieldName>addSelf(f.name()),
+				new FieldName(pool.<String>addSelf(f.name().toString())),
 				pool.<FieldDescriptor>addSelf(f.type()),
 				(cval == null ? null :
 					pool.<Object>addSelf(cval.boxedValue())))));
@@ -347,7 +347,7 @@ public final class Minimizer
 			MinimizedMethod q;
 			temp._methods.add((q = new MinimizedMethod(mf.toJavaBits(),
 				temp._count,
-				pool.<MethodName>addSelf(m.name()),
+				new MethodName(pool.<String>addSelf(m.name().toString())),
 				pool.<MethodDescriptor>addSelf(m.type()),
 				transcode,
 				lnt)));
