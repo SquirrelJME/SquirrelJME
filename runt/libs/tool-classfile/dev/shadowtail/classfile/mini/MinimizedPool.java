@@ -279,8 +279,8 @@ public final class MinimizedPool
 									
 									// Read class names
 									ClassName[] names = new ClassName[ncn];
-									for (int j = 0, k = 1; j < ncn; j++, k++)
-										names[j] = (ClassName)values[part[k]];
+									for (int j = 0; j < ncn; j++)
+										names[j] = (ClassName)values[part[j]];
 									
 									// Build names
 									v = new ClassNames(names);
