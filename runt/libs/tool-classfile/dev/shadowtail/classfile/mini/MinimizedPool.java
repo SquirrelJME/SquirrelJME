@@ -123,7 +123,7 @@ public final class MinimizedPool
 		int[] offsets = new int[__n];
 		
 		// Debug
-		todo.DEBUG.note("Decode %d (%d bytes)", __n, __l);
+		todo.DEBUG.note("Decode %d (%d bytes @ %d)", __n, __l, __o);
 		
 		// Read the type and offset table
 		try (DataInputStream dis = new DataInputStream(
@@ -132,9 +132,11 @@ public final class MinimizedPool
 			// Read type table
 			dis.readFully(types);
 			
-			// Skip padding?
+			// {@squirreljme.error JC44 Pool uneven padding byte was not
+			// 0xFF.}
 			if ((__n & 1) != 0)
-				dis.read();
+				if (dis.readUnsignedByte() != 0xFF)
+					throw new InvalidClassFormatException("JC44");
 			
 			// Read offsets into the structure
 			for (int i = 0; i < __n; i++)

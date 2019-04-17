@@ -143,6 +143,12 @@ public final class MinimizedClassFile
 		MinimizedClassHeader header = MinimizedClassHeader.decode(
 			new ByteArrayInputStream(__is));
 		
+		// {@squirreljme.error JC45 Length of class file does not match
+		// length of array. (The file length; The array length)}
+		if (header.filesize != __is.length)
+			throw new InvalidClassFormatException("JC45 " + header.filesize +
+				" " + __is.length);
+		
 		// Read constant pool
 		MinimizedPool pool = MinimizedPool.decode(header.poolcount,
 			__is, header.pooloff, header.poolsize);
