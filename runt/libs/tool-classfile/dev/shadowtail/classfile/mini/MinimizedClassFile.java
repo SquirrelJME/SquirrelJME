@@ -145,9 +145,21 @@ public final class MinimizedClassFile
 		
 		// {@squirreljme.error JC45 Length of class file does not match
 		// length of array. (The file length; The array length)}
-		if (header.filesize != __is.length)
-			throw new InvalidClassFormatException("JC45 " + header.filesize +
+		int fsz = header.filesize;
+		if (fsz != __is.length)
+			throw new InvalidClassFormatException("JC45 " + fsz +
 				" " + __is.length);
+		
+		// {@squirreljme.error JC46 End of file magic number is invalid.
+		// (The read magic number)}
+		int endmagic;
+		if (MinimizedClassHeader.END_MAGIC_NUMBER !=
+			(endmagic = (((__is[fsz - 4] & 0xFF) << 24) |
+			((__is[fsz - 3] & 0xFF) << 16) |
+			((__is[fsz - 2] & 0xFF) << 8) |
+			(__is[fsz - 1] & 0xFF))))
+			throw new InvalidClassFormatException(
+				String.format("JC46 %08x", endmagic));
 		
 		// Read constant pool
 		MinimizedPool pool = MinimizedPool.decode(header.poolcount,
