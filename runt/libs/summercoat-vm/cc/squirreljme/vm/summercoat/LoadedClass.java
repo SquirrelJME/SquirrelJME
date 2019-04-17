@@ -11,8 +11,12 @@
 package cc.squirreljme.vm.summercoat;
 
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
+import dev.shadowtail.classfile.mini.MinimizedMethod;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodName;
+import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**
  * This represents a class which has been loaded.
@@ -32,6 +36,12 @@ public final class LoadedClass
 	
 	/** Interface classes. */
 	final LoadedClass[] _interfaces;
+	
+	/** Static methods. */
+	private final Map<MethodNameAndType, MethodHandle> _smethods;
+	
+	/** Instance methods, note that these are initialized as static! */
+	private final Map<MethodNameAndType, MethodHandle> _imethods;
 	
 	/**
 	 * Initializes the loaded class.
@@ -54,9 +64,29 @@ public final class LoadedClass
 				throw new NullPointerException("NARG");
 		
 		this.miniclass = __cf;
-		this.runpool = new RuntimeConstantPool(__cf.pool());
 		this.superclass = __sn;
 		this._interfaces = __in;
+		
+		// Run-time constant pool
+		RuntimeConstantPool runpool;
+		this.runpool = (runpool = new RuntimeConstantPool(__cf.pool()));
+		
+		// Initialize static methods
+		Map<MethodNameAndType, MethodHandle> smethods = new LinkedHashMap<>();
+		for (MinimizedMethod mm : __cf.methods(true))
+			smethods.put(new MethodNameAndType(mm.name, mm.type),
+				new StaticMethodHandle(runpool, mm));
+		this._smethods = smethods;
+		
+		// Initialize instance methods
+		// Note that these are initialized as static handles to refer to them
+		// directly, just instance based lookup will use a different handle
+		// type...
+		Map<MethodNameAndType, MethodHandle> imethods = new LinkedHashMap<>();
+		for (MinimizedMethod mm : __cf.methods(false))
+			smethods.put(new MethodNameAndType(mm.name, mm.type),
+				new StaticMethodHandle(runpool, mm));
+		this._imethods = imethods;
 	}
 	
 	/**
@@ -93,6 +123,8 @@ public final class LoadedClass
 		boolean __static, MethodName __name, MethodDescriptor __desc)
 		throws NullPointerException
 	{
+		if (__lut == MethodLookupType.STATIC)
+			return _smethods.get(new MethodNameAndType(__name, __desc));
 		throw new todo.TODO();
 	}
 }
