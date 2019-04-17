@@ -35,6 +35,63 @@ import net.multiphasicapps.classfile.MethodName;
  */
 public final class MinimizedPool
 {
+	/** Entry types. */
+	private final byte[] _types;
+	
+	/** Parts. */
+	private final int[][] _parts;
+	
+	/** Values. */
+	private final Object[] _values;
+	
+	/**
+	 * Initializes the minimized pool.
+	 *
+	 * @param __ts Types.
+	 * @param __ps Parts.
+	 * @param __vs Values.
+	 * @throws IllegalArgumentException If the arrays are of a different size.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/17
+	 */
+	public MinimizedPool(byte[] __ts, int[][] __ps, Object[] __vs)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__ts == null || __ps == null || __vs == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error JC3y  Input arrays are of a different length.
+		// (The expected length)}
+		int n = __ts.length;
+		if (__ps.length != n || __vs.length != n)
+			throw new IllegalArgumentException("JC3y " + n);
+		
+		// Defensive copy each
+		__ts = __ts.clone();
+		__ps = __ps.clone();
+		__vs = __vs.clone();
+		
+		// Clone all elements in the parts
+		for (int i = 0; i < n; i++)
+		{
+			int[] p = __ps[i];
+			
+			if (p == null)
+				throw new NullPointerException("NARG");
+			
+			__ps[i] = p.clone();
+		}
+		
+		// Check values for null, skip entry 0
+		for (int i = 1; i < n; i++)
+			if (__vs[i] == null)
+				throw new NullPointerException("NARG");
+		
+		// Set
+		this._types = __ts;
+		this._parts = __ps;
+		this._values = __vs;
+	}
 	
 	/**
 	 * Decodes the minimized constant pool.
@@ -254,6 +311,12 @@ public final class MinimizedPool
 				}
 			}
 			
+			// {@squirreljme.error JC3x Invalid read of pool data.}
+			catch (IllegalArgumentException e)
+			{
+				throw new InvalidClassFormatException("JC3x", e);
+			}
+			
 			// Debug
 			todo.DEBUG.note("Read %s", v);
 			
@@ -262,7 +325,8 @@ public final class MinimizedPool
 			values[i] = v;
 		}
 		
-		throw new todo.TODO();
+		// Build
+		return new MinimizedPool(types, parts, values);
 	}
 }
 
