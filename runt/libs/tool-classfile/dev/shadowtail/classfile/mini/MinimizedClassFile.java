@@ -95,6 +95,18 @@ public final class MinimizedClassFile
 	}
 	
 	/**
+	 * Returns the methods in the class.
+	 *
+	 * @param __is If true then static methods are returned.
+	 * @return The methods.
+	 * @since 2019/04/17
+	 */
+	public final MinimizedMethod[] methods(boolean __is)
+	{
+		return (__is ? this._smethods.clone() : this._imethods.clone());
+	}
+	
+	/**
 	 * Returns the minimized constant pool.
 	 *
 	 * @return The minimized constant pool.

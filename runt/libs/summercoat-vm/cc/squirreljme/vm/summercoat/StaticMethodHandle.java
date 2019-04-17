@@ -10,6 +10,8 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import dev.shadowtail.classfile.mini.MinimizedMethod;
+
 /**
  * This is a method handle which is bound to a single method and one where the
  * execution uses the exactly specified method, no lookups are performed.
@@ -19,5 +21,28 @@ package cc.squirreljme.vm.summercoat;
 public final class StaticMethodHandle
 	implements MethodHandle
 {
+	/** Runtime constant pool. */
+	protected final RuntimeConstantPool runpool;
+	
+	/** The method to use. */
+	protected final MinimizedMethod minimethod;
+	
+	/**
+	 * Initializes the static method handle.
+	 *
+	 * @param __rp The run-time constant pool.
+	 * @param __m The minimized method.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/17
+	 */
+	public StaticMethodHandle(RuntimeConstantPool __rp, MinimizedMethod __m)
+		throws NullPointerException
+	{
+		if (__rp == null || __m == null)
+			throw new NullPointerException("NARG");
+		
+		this.runpool = __rp;
+		this.minimethod = __m;
+	}
 }
 
