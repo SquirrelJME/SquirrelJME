@@ -521,6 +521,12 @@ public final class RunningThread
 			case STATIC:
 				return mcl.lookupMethod(MethodLookupType.STATIC, true, mnt);
 			
+				// Virtual methods, interface methods are treated as virtual
+				// because no interface lookup optimization is available.
+			case INTERFACE:
+			case VIRTUAL:
+				return mcl.lookupMethod(MethodLookupType.INSTANCE, false, mnt);
+			
 			default:
 				throw new todo.TODO(mty.name());
 		}
