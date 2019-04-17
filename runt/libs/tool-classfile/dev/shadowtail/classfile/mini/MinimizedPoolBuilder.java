@@ -270,14 +270,10 @@ public final class MinimizedPoolBuilder
 			ByteArrayOutputStream dbytes = new ByteArrayOutputStream();
 			DataOutputStream ddos = new DataOutputStream(dbytes);
 			
-			// Write the number of entries in the pool
-			int poolcount = pool.size();
-			tdos.writeInt(poolcount);
-			
 			// Guess where all the data will be written in the pool
-			// poolcount + tbytes + obytes + tdospadding
-			int reloff = 4 + (poolcount * 3) +
-				(((poolcount & 1) != 0) ? 1 : 0);
+			// tbytes + obytes + tdospadding
+			int poolcount = pool.size();
+			int reloff = (poolcount * 3) + (((poolcount & 1) != 0) ? 1 : 0);
 			
 			// Align the data table to the nearest 4-byte boundary
 			while (((reloff + ddos.size()) & 3) != 0)
@@ -330,18 +326,15 @@ public final class MinimizedPoolBuilder
 						break;
 				}
 				
-				// Is wide being used?
-				boolean iswide = ((faketype & 0x80) != 0);
-				
-				// Write position and the entry type, use 24-bits for the
-				// entry offset just to use the space since maybe the pool
-				// will get pretty big? It is Java ME though so hopefully
-				// the pool never exceeds 65K.
-				int dxo = reloff + ddos.size();
+				// Write entry type
 				tdos.writeByte(faketype);
-				odos.writeShort(Minimizer.__checkUShort(dxo & 0xFFFF));
+				
+				// Write position of the pool entry
+				int dxo = reloff + ddos.size();
+				odos.writeShort(Minimizer.__checkUShort(dxo));
 				
 				// Depends on the type used
+				boolean iswide = ((faketype & 0x80) != 0);
 				switch (et)
 				{
 					// Just write a zero for null, just in case!
