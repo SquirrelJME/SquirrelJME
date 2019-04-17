@@ -416,8 +416,7 @@ public final class NearNativeByteCodeHandler
 		
 		// Fill in call arguments
 		List<Integer> callargs = new ArrayList<>(__in.length * 2);
-		for (int i = 0, n = __r.handle().javaStack(__t.hasInstance()).length;
-			i < n; i++)
+		for (int i = 0, n = __in.length; i < n; i++)
 		{
 			// Add the input register
 			JavaStackResult.Input in = __in[i];
