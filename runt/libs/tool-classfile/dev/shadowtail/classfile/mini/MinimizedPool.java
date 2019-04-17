@@ -42,7 +42,7 @@ public final class MinimizedPool
 	private final int[][] _parts;
 	
 	/** Values. */
-	private final Object[] _values;
+	final Object[] _values;
 	
 	/**
 	 * Initializes the minimized pool.

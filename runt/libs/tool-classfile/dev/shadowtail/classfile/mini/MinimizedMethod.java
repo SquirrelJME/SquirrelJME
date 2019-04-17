@@ -10,6 +10,10 @@
 
 package dev.shadowtail.classfile.mini;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
@@ -72,7 +76,7 @@ public final class MinimizedMethod
 	 * Decodes the method data.
 	 *
 	 * @param __n The number of methods.
-	 * @param __pool The constant pool.
+	 * @param __p The constant pool.
 	 * @param __b Input data.
 	 * @param __o Offset into array.
 	 * @param __l Length of data rea.
@@ -84,16 +88,35 @@ public final class MinimizedMethod
 	 * @since 2019/04/17
 	 */
 	public static final MinimizedMethod[] decodeMethods(int __n,
-		MinimizedPool __pool, byte[] __b, int __o, int __l)
+		MinimizedPool __p, byte[] __b, int __o, int __l)
 		throws IndexOutOfBoundsException, InvalidClassFormatException,
 			NullPointerException
 	{
-		if (__b == null)
+		if (__b == null || __p == null)
 			throw new NullPointerException("NARG");
 		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
-		throw new todo.TODO();
+		// Setup return value
+		MinimizedMethod[] rv = new MinimizedMethod[__n];
+		
+		// Read method data
+		try (DataInputStream dis = new DataInputStream(
+			new ByteArrayInputStream(__b, __o, __l)))
+		{
+			for (int i = 0; i < __n; i++)
+			{
+				throw new todo.TODO();
+			}
+		}
+		
+		// {@squirreljme.error JC41 Could not read method data.}
+		catch (ClassCastException|IOException|IndexOutOfBoundsException e)
+		{
+			throw new InvalidClassFormatException("JC41");
+		}
+		
+		return rv;
 	}
 }
 
