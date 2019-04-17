@@ -899,8 +899,10 @@ public final class ByteCodeProcessor
 		FieldDescriptor rv = mf.descriptor().returnValue();
 		boolean hasrv = (rv != null);
 		
-		// Number of argument to pop
-		int popcount = mf.javaStack(__t.hasInstance()).length;
+		// The number of arguments to pop is the instance (if non-static) and
+		// the number of arguments taken
+		int popcount = (__t.hasInstance() ? 1 : 0) +
+			mf.descriptor().argumentCount();
 		
 		// Perform stack operation
 		ByteCodeState state = this.state;
