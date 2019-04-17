@@ -280,8 +280,8 @@ public final class MinimizedPool
 								// Names of classes
 							case CLASS_NAMES:
 								{
-									// Read class count
-									int ncn = part[0];
+									// Number of class names
+									int ncn = part.length;
 									
 									// Read class names
 									ClassName[] names = new ClassName[ncn];
