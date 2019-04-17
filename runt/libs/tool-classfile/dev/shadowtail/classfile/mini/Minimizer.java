@@ -210,9 +210,6 @@ public final class Minimizer
 		// Constant pool is rounded
 		Minimizer.__dosRound(__dos);
 		
-		// Debug
-		todo.DEBUG.note("Writing pool at %d", __dos.size());
-		
 		// Write constant pool
 		__dos.write(pooldata);
 		Minimizer.__dosRound(__dos);
@@ -289,9 +286,6 @@ public final class Minimizer
 				(cval == null ? null :
 					pool.<Object>addSelf(cval.boxedValue())))));
 			
-			// Debug
-			todo.DEBUG.note("Add field %s", q);
-			
 			// Handle table sizes
 			temp._bytes = basep + fsz;
 			temp._count++;
@@ -364,9 +358,6 @@ public final class Minimizer
 				pool.<MethodDescriptor>addSelf(m.type()),
 				transcode,
 				lnt)));
-			
-			// Debug
-			todo.DEBUG.note("Add method %s", q);
 			
 			// Quick count for used methods
 			temp._count++;
@@ -753,9 +744,6 @@ public final class Minimizer
 	 */
 	static final int __relAdd(int __rel, int __v)
 	{
-		// Debug
-		todo.DEBUG.note("%d + %d", __rel, __v);
-		
 		__rel += __v;
 		return (__rel + 3) & (~3);
 	}
