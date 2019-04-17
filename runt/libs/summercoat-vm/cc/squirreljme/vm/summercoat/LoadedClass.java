@@ -36,14 +36,14 @@ public final class LoadedClass
 	 * @param __cf The minimized class file.
 	 * @param __sn The super class.
 	 * @param __in The interfaces.
-	 * @throws NullPointerException On null arguments.
+	 * @throws NullPointerException On null arguments, except for {@code __sn}.
 	 * @since 2019/04/17
 	 */
 	public LoadedClass(MinimizedClassFile __cf, LoadedClass __sn,
 		LoadedClass[] __in)
 		throws NullPointerException
 	{
-		if (__cf == null || __sn == null || __in == null)
+		if (__cf == null || __in == null)
 			throw new NullPointerException("NARG");
 		
 		for (LoadedClass o : (__in = __in.clone()))
