@@ -15,6 +15,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import net.multiphasicapps.classfile.ClassFlags;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ClassNames;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
@@ -45,6 +48,9 @@ public final class MinimizedClassFile
 	
 	/** Instance methods. */
 	private final MinimizedMethod[] _imethods;
+	
+	/** Class flags. */
+	private Reference<ClassFlags> _flags;
 	
 	/**
 	 * Initializes the minimized class file.
@@ -80,6 +86,24 @@ public final class MinimizedClassFile
 			for (Object v : va)
 				if (v == null)
 					throw new NullPointerException("NARG");
+	}
+	
+	/**
+	 * The class flags.
+	 *
+	 * @return The class flags.
+	 * @since 2019/04/17
+	 */
+	public final ClassFlags flags()
+	{
+		Reference<ClassFlags> ref = this._flags;
+		ClassFlags rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._flags = new WeakReference<>((rv =
+				new ClassFlags(this.header.classflags)));
+		
+		return rv;
 	}
 	
 	/**

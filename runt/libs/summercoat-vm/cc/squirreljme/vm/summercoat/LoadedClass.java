@@ -40,10 +40,10 @@ public final class LoadedClass
 	final LoadedClass[] _interfaces;
 	
 	/** Static methods. */
-	private final Map<MethodNameAndType, MethodHandle> _smethods;
+	private final Map<MethodNameAndType, StaticMethodHandle> _smethods;
 	
 	/** Instance methods, note that these are initialized as static! */
-	private final Map<MethodNameAndType, MethodHandle> _imethods;
+	private final Map<MethodNameAndType, StaticMethodHandle> _imethods;
 	
 	/** String form. */
 	private Reference<String> _string;
@@ -80,7 +80,8 @@ public final class LoadedClass
 		this.runpool = (runpool = new RuntimeConstantPool(__cf.pool()));
 		
 		// Initialize static methods
-		Map<MethodNameAndType, MethodHandle> smethods = new LinkedHashMap<>();
+		Map<MethodNameAndType, StaticMethodHandle> smethods =
+			new LinkedHashMap<>();
 		for (MinimizedMethod mm : __cf.methods(true))
 			smethods.put(new MethodNameAndType(mm.name, mm.type),
 				new StaticMethodHandle(runpool, mm));
@@ -90,7 +91,8 @@ public final class LoadedClass
 		// Note that these are initialized as static handles to refer to them
 		// directly, just instance based lookup will use a different handle
 		// type...
-		Map<MethodNameAndType, MethodHandle> imethods = new LinkedHashMap<>();
+		Map<MethodNameAndType, StaticMethodHandle> imethods =
+			new LinkedHashMap<>();
 		for (MinimizedMethod mm : __cf.methods(false))
 			smethods.put(new MethodNameAndType(mm.name, mm.type),
 				new StaticMethodHandle(runpool, mm));
@@ -154,10 +156,23 @@ public final class LoadedClass
 		// directly rather than virtually
 		if (__static || __lut == MethodLookupType.STATIC)
 		{
+			StaticMethodHandle rv;
+			
+			// Use static method handle
 			if (__static)
-				return this._smethods.get(__nat);
+				rv = this._smethods.get(__nat);
 			else
-				return this._imethods.get(__nat);
+				rv = this._imethods.get(__nat);
+			
+			// {@squirreljme.error AE07 The target method does not exist
+			// in the class. (This class; The lookup type; Is this a static
+			// lookup?; The name and type)}
+			if (rv == null)
+				throw new VMRuntimeException(
+					String.format("AE07 %s %s %b %s",
+						this.miniclass.thisName(), __lut, __static, __nat));
+			
+			return rv;
 		}
 		
 		// This depends on the instance, so only the class and method name
