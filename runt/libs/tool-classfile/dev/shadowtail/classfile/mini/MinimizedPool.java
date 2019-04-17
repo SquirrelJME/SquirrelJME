@@ -140,7 +140,7 @@ public final class MinimizedPool
 			for (int i = 0; i < __n; i++)
 				offsets[i] = dis.readUnsignedShort();
 			
-			// Read of all the various entries
+			// Debug
 			for (int i = 0; i < __n; i++)
 				todo.DEBUG.note("%3d: %02x (@%d)", i,
 					(types[i] & 0xFF), offsets[i]);
@@ -191,6 +191,11 @@ public final class MinimizedPool
 				{
 						// Null is nothing, so do not bother
 					case NULL:
+						// {@squirreljme.error JC42 NULL pool entry is only
+						// permitted as the first type, the class file is
+						// corrupt.}
+						if (i != 0)
+							throw new InvalidClassFormatException("JC42");
 						break;
 						
 						// Strings
