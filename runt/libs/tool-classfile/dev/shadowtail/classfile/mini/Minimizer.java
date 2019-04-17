@@ -101,8 +101,14 @@ public final class Minimizer
 		// Process all methods
 		__TempMethods__[] methods = this.__doMethods();
 		
-		// Store the pool size
+		// The pool
 		MinimizedPoolBuilder pool = this.pool;
+		
+		// The source file name
+		String sfn = input.sourceFile();
+		int snfid = (sfn == null ? 0 : Minimizer.__checkUShort(pool.add(sfn)));
+		
+		// Store the pool size
 		__dos.writeShort(Minimizer.__checkUShort(pool.size()));
 		
 		// Store class information, such as the flags, name, superclass,
@@ -120,9 +126,7 @@ public final class Minimizer
 		
 		// Needed for debugging to figure out what file the class is in,
 		// will be very useful
-		String sfn = input.sourceFile();
-		__dos.writeShort((sfn == null ? 0 : Minimizer.__checkUShort(
-			pool.add(sfn))));
+		__dos.writeShort(snfid);
 		
 		// Write static and instance field counts
 		for (int i = 0; i < 2; i++)
