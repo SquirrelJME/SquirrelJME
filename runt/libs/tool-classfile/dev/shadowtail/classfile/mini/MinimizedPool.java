@@ -154,11 +154,6 @@ public final class MinimizedPool
 			// Read offsets into the structure
 			for (int i = 0; i < __n; i++)
 				offsets[i] = dis.readUnsignedShort();
-			
-			// Debug
-			for (int i = 0; i < __n; i++)
-				todo.DEBUG.note("%3d: %02x (@%d)", i,
-					(types[i] & 0xFF), offsets[i]);
 		}
 		
 		// {@squirreljme.error JC3z Invalid read of pool data.}
