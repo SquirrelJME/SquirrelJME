@@ -152,8 +152,11 @@ public final class Minimizer
 		int reloff = __dos.size() + 8 + 16 + 16 + 8,
 			baserel = reloff;
 		
-		// Constant pool locator
+		// Base round to pool data
+		reloff = Minimizer.__relAdd(reloff, 0);
 		byte[] pooldata = pool.getBytes();
+		
+		// Constant pool locator
 		__dos.writeInt(reloff);
 		__dos.writeInt(pooldata.length);
 		

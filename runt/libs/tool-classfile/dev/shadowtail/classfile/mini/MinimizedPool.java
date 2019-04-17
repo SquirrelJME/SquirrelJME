@@ -133,10 +133,13 @@ public final class MinimizedPool
 			dis.readFully(types);
 			
 			// {@squirreljme.error JC44 Pool uneven padding byte was not
-			// 0xFF.}
+			// 255. (The value it was)}
 			if ((__n & 1) != 0)
-				if (dis.readUnsignedByte() != 0xFF)
-					throw new InvalidClassFormatException("JC44");
+			{
+				int val;
+				if ((val = dis.readUnsignedByte()) != 0xFF)
+					throw new InvalidClassFormatException("JC44 " + val);
+			}
 			
 			// Read offsets into the structure
 			for (int i = 0; i < __n; i++)
