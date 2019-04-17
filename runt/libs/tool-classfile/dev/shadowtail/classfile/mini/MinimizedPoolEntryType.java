@@ -22,29 +22,26 @@ public enum MinimizedPoolEntryType
 	/** String. */
 	STRING,
 	
-	/** Accessed Field. */
-	ACCESSED_FIELD,
-	
 	/** Name of class. */
 	CLASS_NAME,
 	
 	/** Class names (used for interfaces). */
 	CLASS_NAMES,
 	
-	/** Double. */
-	DOUBLE,
-	
-	/** Invoked Method. */
-	INVOKED_METHOD,
+	/** Accessed Field. */
+	ACCESSED_FIELD,
 	
 	/** Field Descriptor. */
 	FIELD_DESCRIPTOR,
 	
-	/** Field Name. */
-	FIELD_NAME,
+	/** Invoked Method. */
+	INVOKED_METHOD,
 	
-	/** Field Reference. */
-	FIELD_REFERENCE,
+	/** Method Descriptor. */
+	METHOD_DESCRIPTOR,
+	
+	/** Double. */
+	DOUBLE,
 	
 	/** Float. */
 	FLOAT,
@@ -55,24 +52,46 @@ public enum MinimizedPoolEntryType
 	/** Long. */
 	LONG,
 	
-	/** Method Descriptor. */
-	METHOD_DESCRIPTOR,
-	
-	/** Method Handle. */
-	METHOD_HANDLE,
-	
-	/** Method name, */
-	METHOD_NAME,
-	
 	/** End. */
 	;
+	
+	/**
+	 * Returns the type for the specified index.
+	 *
+	 * @param __i The index to get.
+	 * @return The type for this index.
+	 * @throws IllegalArgumentException If the type is not valid.
+	 * @since 2019/04/17
+	 */
+	public static final MinimizedPoolEntryType of(int __i)
+		throws IllegalArgumentException
+	{
+		switch (__i)
+		{
+			case 0:		return NULL;
+			case 1:		return STRING;
+			case 2:		return CLASS_NAME;
+			case 3:		return CLASS_NAMES;
+			case 4:		return ACCESSED_FIELD;
+			case 5:		return FIELD_DESCRIPTOR;
+			case 6:		return INVOKED_METHOD;
+			case 7:		return METHOD_DESCRIPTOR;
+			case 8:		return DOUBLE;
+			case 9:		return FLOAT;
+			case 10:	return INTEGER;
+			case 11:	return LONG;
+		}
+		
+		// {@squirreljme.error JC3s Unknown pool type. (The type)}
+		throw new IllegalArgumentException("JC3s " + __i);
+	}
 	
 	/**
 	 * Returns the entry type that is used for the specified class.
 	 *
 	 * @param __cl The class to check.
 	 * @return The entry type for the class.
-	 * @throws IllegalArgumentException On null arguments.
+	 * @throws IllegalArgumentException If the class is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/14
 	 */
@@ -107,16 +126,9 @@ public enum MinimizedPoolEntryType
 				return CLASS_NAMES;
 			case "net.multiphasicapps.classfile.FieldDescriptor":
 				return FIELD_DESCRIPTOR;
-			case "net.multiphasicapps.classfile.FieldName":
-				return FIELD_NAME;
-			case "net.multiphasicapps.classfile.FieldReference":
-				return FIELD_REFERENCE;
 			case "net.multiphasicapps.classfile.MethodDescriptor":
 				return METHOD_DESCRIPTOR;
 			case "net.multiphasicapps.classfile.MethodHandle":
-				return METHOD_HANDLE;
-			case "net.multiphasicapps.classfile.MethodName":
-				return METHOD_NAME;
 		}
 		
 		// {@squirreljme.error JC2o Class does not map to a pool entry

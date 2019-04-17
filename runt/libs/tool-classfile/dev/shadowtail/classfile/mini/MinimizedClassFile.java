@@ -91,7 +91,7 @@ public final class MinimizedClassFile
 		
 		// Read constant pool
 		MinimizedPool pool = MinimizedPool.decode(header.poolcount,
-			new ByteArrayInputStream(__is, header.pooloff, header.poolsize));
+			__is, header.pooloff, header.poolsize);
 		
 		throw new todo.TODO();
 	}
