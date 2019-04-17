@@ -12,6 +12,8 @@ package cc.squirreljme.vm.summercoat;
 
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
 import dev.shadowtail.classfile.mini.MinimizedMethod;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import net.multiphasicapps.classfile.MethodDescriptor;
@@ -42,6 +44,9 @@ public final class LoadedClass
 	
 	/** Instance methods, note that these are initialized as static! */
 	private final Map<MethodNameAndType, MethodHandle> _imethods;
+	
+	/** String form. */
+	private Reference<String> _string;
 	
 	/** Has this class been initialized? */
 	volatile boolean _beeninit;
@@ -129,6 +134,23 @@ public final class LoadedClass
 		if (__lut == MethodLookupType.STATIC)
 			return _smethods.get(new MethodNameAndType(__name, __desc));
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/17
+	 */
+	@Override
+	public final String toString()
+	{
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>((rv = "Class " +
+				this.miniclass.thisName()));
+		
+		return rv;
 	}
 }
 

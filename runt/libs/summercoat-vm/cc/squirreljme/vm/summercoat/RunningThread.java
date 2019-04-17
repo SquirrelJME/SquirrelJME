@@ -186,9 +186,13 @@ public final class RunningThread
 		if (__cl._beeninit)
 			return;
 		
+		// Used by the initializer
+		TaskStatus status = this.status;
+		ClassLoader classloader = status.classloader;
+		
 		// Lock on the class initialization lock as only a single class can
 		// initialize at once
-		synchronized (this.status.classinitlock)
+		synchronized (status.classinitlock)
 		{
 			// Check again if this has been initialized, even though this
 			// should never happen it just might
@@ -239,9 +243,26 @@ public final class RunningThread
 						v = null;
 						break;
 						
-						// Strings are interned on demand when they are
-						// needed
+						// These are used as is, strings are interned when
+						// they are demanded
 					case STRING:
+					case INTEGER:
+					case LONG:
+					case FLOAT:
+					case DOUBLE:
+						v = orig;
+						break;
+						
+						// Classes just point to loaded classes
+					case CLASS_NAME:
+						v = classloader.loadClass((ClassName)orig);
+						break;
+						
+						// These do not actually contain any information that
+						// is useful for SummerCoat because it has classes to
+						// represent these easily. These are just here to make
+						// writing the C based VM easier.
+					case METHOD_DESCRIPTOR:
 						v = orig;
 						break;
 					
