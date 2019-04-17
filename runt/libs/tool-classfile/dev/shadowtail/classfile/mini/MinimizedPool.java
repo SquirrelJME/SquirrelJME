@@ -59,6 +59,11 @@ public final class MinimizedPool
 		for (int i = 0; i < __n; i++)
 			offsets[i] = dis.readUnsignedShort();
 		
+		// Read of all the various entries
+		for (int i = 0; i < __n; i++)
+			todo.DEBUG.note("%3d: %02x (@%d)", i,
+				(types[i] & 0xFF), offsets[i]);
+		
 		throw new todo.TODO();
 	}
 }
