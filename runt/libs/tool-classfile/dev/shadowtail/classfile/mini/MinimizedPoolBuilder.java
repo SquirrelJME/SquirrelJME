@@ -468,11 +468,6 @@ public final class MinimizedPoolBuilder
 		if (pre != null)
 			return pre;
 		
-		// Debug
-		todo.DEBUG.note("Pool add %s %s (%d parts: %s)",
-			__v.getClass().getName(), __v, __parts.length,
-			new IntegerList(__parts));
-		
 		// Otherwise it gets added at the end
 		int rv = pool.size();
 		pool.put(__v, rv);
