@@ -101,18 +101,22 @@ public final class MinimizedPool
 	 * @param __o The offset into the array.
 	 * @param __l The length of the array.
 	 * @return The resulting minimized pool.
+	 * @throws IndexOutOfBoundsException If the offset and/or length are
+	 * negative or exceed the array bounds.
 	 * @throws InvalidClassFormatException If the class is not formatted
 	 * correctly.
-	 * @throws IOException On read errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/16
 	 */
 	public static final MinimizedPool decode(int __n, byte[] __is, int __o,
 		int __l)
-		throws InvalidClassFormatException, IOException, NullPointerException
+		throws IndexOutOfBoundsException, InvalidClassFormatException,
+			NullPointerException
 	{
 		if (__is == null)
 			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __is.length)
+			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Types and offsets
 		byte[] types = new byte[__n];
@@ -140,6 +144,12 @@ public final class MinimizedPool
 			for (int i = 0; i < __n; i++)
 				todo.DEBUG.note("%3d: %02x (@%d)", i,
 					(types[i] & 0xFF), offsets[i]);
+		}
+		
+		// {@squirreljme.error JC3z Invalid read of pool data.}
+		catch (IOException e)
+		{
+			throw new InvalidClassFormatException("JC3z", e);
 		}
 		
 		// Output pool entry types, values, and parts
@@ -312,7 +322,7 @@ public final class MinimizedPool
 			}
 			
 			// {@squirreljme.error JC3x Invalid read of pool data.}
-			catch (IllegalArgumentException e)
+			catch (IllegalArgumentException|IOException e)
 			{
 				throw new InvalidClassFormatException("JC3x", e);
 			}

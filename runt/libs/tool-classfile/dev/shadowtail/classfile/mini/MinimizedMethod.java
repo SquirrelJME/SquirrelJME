@@ -12,6 +12,7 @@ package dev.shadowtail.classfile.mini;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodName;
 
@@ -65,6 +66,34 @@ public final class MinimizedMethod
 		this.type = __t;
 		this._code = (__tc == null ? new byte[0] : __tc.clone());
 		this._lines = (__ln == null ? new byte[0] : __ln.clone());
+	}
+	
+	/**
+	 * Decodes the method data.
+	 *
+	 * @param __n The number of methods.
+	 * @param __pool The constant pool.
+	 * @param __b Input data.
+	 * @param __o Offset into array.
+	 * @param __l Length of data rea.
+	 * @return The decoded methods.
+	 * @throws IndexOutOfBoundsException If the offset and/or length are
+	 * negative or exceed the array bounds.
+	 * @throws InvalidClassFormatException If the methods could not be decoded.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/17
+	 */
+	public static final MinimizedMethod[] decodeMethods(int __n,
+		MinimizedPool __pool, byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, InvalidClassFormatException,
+			NullPointerException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		throw new todo.TODO();
 	}
 }
 
