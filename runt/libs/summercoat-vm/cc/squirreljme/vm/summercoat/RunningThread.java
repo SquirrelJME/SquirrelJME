@@ -165,6 +165,89 @@ public final class RunningThread
 	}
 	
 	/**
+	 * Initializes the specified class within the virtual machine.
+	 *
+	 * @param __cl The class to initialize.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/17
+	 */
+	public final void vmInitializeClass(LoadedClass __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// Must be the same thread
+		this.__checkSameThread();
+		
+		// If this class has been initialized, do not do it again!
+		if (__cl._beeninit)
+			return;
+		
+		// Lock on the class initialization lock as only a single class can
+		// initialize at once
+		synchronized (this.status.classinitlock)
+		{
+			// Check again if this has been initialized, even though this
+			// should never happen it just might
+			if (__cl._beeninit)
+				return;
+			
+			// Set class as initialized since there might be recursive
+			// initialization at play
+			__cl._beeninit = true;
+			
+			// Initialize the super class first
+			LoadedClass slc = __cl.superclass;
+			if (slc != null)
+				this.vmInitializeClass(slc);
+			
+			// Then initialize any interfaces
+			for (LoadedClass ilc : __cl._interfaces)
+				this.vmInitializeClass(ilc);
+			
+			// Debug
+			todo.DEBUG.note("Initializing %s...", __cl.miniclass.thisName());
+			
+			throw new todo.TODO();
+		}
+	}
+	
+	/**
+	 * Creates a new instance of the given object.
+	 *
+	 * @param __cl The instance to create.
+	 * @return The newly created instance.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/17
+	 */
+	public final Instance vmNew(String __cl)
+		throws NullPointerException
+	{
+		return this.vmNew(this.status.classloader.loadClass(__cl));
+	}
+	
+	/**
+	 * Creates a new instance of the given object.
+	 *
+	 * @param __cl The instance to create.
+	 * @return The newly created instance.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/17
+	 */
+	public final Instance vmNew(LoadedClass __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// Must be the same thread
+		this.__checkSameThread();
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Creates a new array instance.
 	 *
 	 * @param __cl The class to create an array of, this is not the component
@@ -198,6 +281,12 @@ public final class RunningThread
 		
 		// Must be the same thread
 		this.__checkSameThread();
+		
+		// Potentially initialize this class
+		this.vmInitializeClass(__cl);
+		
+		// Create instance of object
+		ArrayInstance rv = new PlainArray(__cl, __len);
 		
 		throw new todo.TODO();
 	}

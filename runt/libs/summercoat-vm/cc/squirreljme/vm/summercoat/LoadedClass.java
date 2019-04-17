@@ -43,6 +43,9 @@ public final class LoadedClass
 	/** Instance methods, note that these are initialized as static! */
 	private final Map<MethodNameAndType, MethodHandle> _imethods;
 	
+	/** Has this class been initialized? */
+	volatile boolean _beeninit;
+	
 	/**
 	 * Initializes the loaded class.
 	 *
