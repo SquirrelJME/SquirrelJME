@@ -199,8 +199,11 @@ public final class Minimizer
 		// Write absolute file size! This saves time in calculating how big
 		// a file we have and we can just read that many bytes for all the
 		// data areas or similar if needed
-		__dos.writeInt(reloff);
-		__dos.writeInt(reloff - baserel);
+		__dos.writeInt(reloff + 4);
+		__dos.writeInt((reloff - baserel) + 4);
+		
+		// Constant pool is rounded
+		Minimizer.__dosRound(__dos);
 		
 		// Write constant pool
 		__dos.write(pooldata);
@@ -219,6 +222,9 @@ public final class Minimizer
 			__dos.write(methoddata[i]);
 			Minimizer.__dosRound(__dos);
 		}
+		
+		// Write end magic number
+		__dos.writeInt(MinimizedClassHeader.END_MAGIC_NUMBER);
 	}
 	
 	/**
@@ -726,12 +732,8 @@ public final class Minimizer
 			throw new NullPointerException("NARG");
 		
 		// Add padding
-		int at = __dos.size();
-		while ((at & 3) != 0)
-		{
+		while ((__dos.size() & 3) != 0)
 			__dos.write(0);
-			at++;
-		}
 	}
 	
 	/**

@@ -26,6 +26,10 @@ public final class MinimizedClassHeader
 	public static final int MAGIC_NUMBER =
 		0x00586572;
 	
+	/** Magic number for the end of file. */
+	public static final int END_MAGIC_NUMBER =
+		0x42796521;
+	
 	/** Unused A. */
 	public final int unuseda;
 	
