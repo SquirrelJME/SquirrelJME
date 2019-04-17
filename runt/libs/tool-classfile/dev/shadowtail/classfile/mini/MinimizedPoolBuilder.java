@@ -388,11 +388,7 @@ public final class MinimizedPoolBuilder
 					case CLASS_NAMES:
 					case INVOKED_METHOD:
 					case FIELD_DESCRIPTOR:
-					case FIELD_NAME:
-					case FIELD_REFERENCE:
 					case METHOD_DESCRIPTOR:
-					case METHOD_HANDLE:
-					case METHOD_NAME:
 						{
 							// Write number of parts
 							int npart = part.length;
