@@ -272,7 +272,7 @@ public final class Minimizer
 				basep,
 				fsz,
 				new FieldName(pool.<String>addSelf(f.name().toString())),
-				pool.<FieldDescriptor>addSelf(f.type()),
+				pool.<ClassName>addSelf(f.type().className()).field(),
 				(cval == null ? null :
 					pool.<Object>addSelf(cval.boxedValue())))));
 			
