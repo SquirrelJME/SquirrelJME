@@ -10,6 +10,8 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import dev.shadowtail.classfile.mini.MinimizedPool;
+import dev.shadowtail.classfile.mini.MinimizedPoolEntryType;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.classfile.ClassName;
@@ -208,6 +210,43 @@ public final class RunningThread
 			
 			// Debug
 			todo.DEBUG.note("Initializing %s...", __cl.miniclass.thisName());
+			
+			// Before any code can be run in the the class, the constant pool
+			// need to be initialized with references and positions
+			RuntimeConstantPool rpool = __cl.runpool;
+			MinimizedPool mpool = rpool.minipool;
+			
+			// Allocate array of realized pool entries
+			int nmp = mpool.size();
+			Object[] rzp = new Object[nmp];
+			
+			// Initialize each pool entry
+			for (int p = 0; p < nmp; p++)
+			{
+				// Type and original value
+				MinimizedPoolEntryType type = mpool.type(p);
+				Object orig = mpool.get(p);
+				
+				// Debug
+				todo.DEBUG.note("Pool %s: %s", type, orig);
+				
+				// Obtain its true value
+				Object v;
+				switch (type)
+				{
+						// Ignore null
+					case NULL:
+						v = null;
+						break;
+					
+						// Unhandled
+					default:
+						throw new todo.OOPS(type.name());
+				}
+				
+				// Set
+				rzp[p] = v;
+			}
 			
 			throw new todo.TODO();
 		}

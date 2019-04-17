@@ -96,6 +96,17 @@ public final class MinimizedPool
 	/**
 	 * Gets the specified pool entry.
 	 *
+	 * @param __i The entry to get.
+	 * @since 2019/04/17
+	 */
+	public final Object get(int __i)
+	{
+		return this._values[__i];
+	}
+	
+	/**
+	 * Gets the specified pool entry.
+	 *
 	 * @param <V> The type to get.
 	 * @param __i The index of the entry.
 	 * @param __cl The type to get.
@@ -111,6 +122,29 @@ public final class MinimizedPool
 			throw new NullPointerException("NARG");
 		
 		return __cl.cast(this._values[__i]);
+	}
+	
+	/**
+	 * Returns the number of entries in the pool.
+	 *
+	 * @return The number of pool entries.
+	 * @since 2019/04/17
+	 */
+	public final int size()
+	{
+		return this._types.length;
+	}
+	
+	/**
+	 * Returns the constant pool type.
+	 *
+	 * @param __i The index of the entry.
+	 * @return The pool type.
+	 * @since 2019/04/17
+	 */
+	public final MinimizedPoolEntryType type(int __i)
+	{
+		return MinimizedPoolEntryType.of(this._types[__i]);
 	}
 	
 	/**
