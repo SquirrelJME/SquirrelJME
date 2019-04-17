@@ -25,5 +25,26 @@ public enum FieldAccessTime
 	
 	/** End. */
 	;
+	
+	/**
+	 * Returns the access time for the given ordinal.
+	 *
+	 * @param __i The ordinal.
+	 * @return The access time.
+	 * @throws IllegalArgumentException If it is not valid.
+	 * @since 2019/04/17
+	 */
+	public static final FieldAccessTime of(int __i)
+		throws IllegalArgumentException
+	{
+		switch (__i)
+		{
+			case 0:	return INITIALIZER;
+			case 1: return NORMAL;
+		}
+		
+		// {@squirreljme.error JC3u Unknown access time. (The index)}
+		throw new IllegalArgumentException("JC3u " + __i);
+	}
 }
 

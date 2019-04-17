@@ -198,7 +198,7 @@ public final class MinimizedPoolBuilder
 		// String
 		else if (__v instanceof String)
 			return this.__add(__v,
-				__v.hashCode(),
+				__v.hashCode() & 0xFFFF,
 				((String)__v).length());
 		
 		// Primitives
