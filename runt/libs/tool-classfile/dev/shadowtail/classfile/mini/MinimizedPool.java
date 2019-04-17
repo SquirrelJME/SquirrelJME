@@ -94,6 +94,26 @@ public final class MinimizedPool
 	}
 	
 	/**
+	 * Gets the specified pool entry.
+	 *
+	 * @param <V> The type to get.
+	 * @param __i The index of the entry.
+	 * @param __cl The type to get.
+	 * @return The pool entry value.
+	 * @throws ClassCastException If the class is not compatible.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/17
+	 */
+	public final <V> V get(int __i, Class<V> __cl)
+		throws ClassCastException, NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		return __cl.cast(this._values[__i]);
+	}
+	
+	/**
 	 * Decodes the minimized constant pool.
 	 *
 	 * @param __n Number of entries in the pool.

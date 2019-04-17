@@ -19,14 +19,18 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 
 /**
- * This is a class loader which manages and can cache multiple classes.
+ * This is a class loader which manages and can cache multiple classes. Each
+ * class loader is unique to a given task and is not shared with multiple
+ * tasks.
  *
  * @since 2019/01/05
  */
@@ -139,7 +143,27 @@ public final class ClassLoader
 					throw new VMClassNotFoundException("AE03 " + __n);
 			}
 			
-			throw new todo.TODO();
+			// Load super-class if any
+			LoadedClass superclass = null;
+			ClassName rawsupername = cf.superName();
+			if (rawsupername != null)
+				superclass = this.loadClass(rawsupername);
+			
+			// Load interface classes as well
+			List<LoadedClass> intclasses = new ArrayList<>();
+			for (ClassName icn : cf.interfaceNames())
+				intclasses.add(this.loadClass(icn));
+			
+			// Build loaded class with other class references
+			rv = new LoadedClass(cf, superclass,
+				intclasses.<LoadedClass>toArray(
+					new LoadedClass[intclasses.size()]));
+			
+			// Cache it
+			classes.put(__n, rv);
+			
+			// And use it!
+			return rv;
 		}
 	}
 }
