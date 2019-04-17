@@ -312,6 +312,15 @@ public final class SimplifiedJavaInstruction
 						baseop - InstructionIndex.DLOAD_0,
 					};
 				break;
+			
+			case InstructionIndex.DMUL:
+				op = SimplifiedJavaInstruction.MATH;
+				args = new Object[]
+					{
+						DataType.DOUBLE,
+						MathType.MUL,
+					};
+				break;
 				
 			case InstructionIndex.DREM:
 				op = SimplifiedJavaInstruction.MATH;
@@ -516,6 +525,15 @@ public final class SimplifiedJavaInstruction
 					{
 						DataType.FLOAT,
 						baseop - InstructionIndex.FLOAD_0,
+					};
+				break;
+			
+			case InstructionIndex.FMUL:
+				op = SimplifiedJavaInstruction.MATH;
+				args = new Object[]
+					{
+						DataType.FLOAT,
+						MathType.MUL,
 					};
 				break;
 				
@@ -881,6 +899,15 @@ public final class SimplifiedJavaInstruction
 						baseop - InstructionIndex.ILOAD_0,
 					};
 				break;
+			
+			case InstructionIndex.IMUL:
+				op = SimplifiedJavaInstruction.MATH;
+				args = new Object[]
+					{
+						DataType.INTEGER,
+						MathType.MUL,
+					};
+				break;
 				
 			case InstructionIndex.IOR:
 				op = SimplifiedJavaInstruction.MATH;
@@ -1086,6 +1113,15 @@ public final class SimplifiedJavaInstruction
 					{
 						DataType.LONG,
 						baseop - InstructionIndex.LLOAD_0,
+					};
+				break;
+			
+			case InstructionIndex.LMUL:
+				op = SimplifiedJavaInstruction.MATH;
+				args = new Object[]
+					{
+						DataType.LONG,
+						MathType.MUL,
 					};
 				break;
 				
