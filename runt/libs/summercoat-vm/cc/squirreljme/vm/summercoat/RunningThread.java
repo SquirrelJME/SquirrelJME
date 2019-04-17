@@ -18,7 +18,6 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodDescriptor;
-import net.multiphasicapps.classfile.MethodHandle;
 import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**
@@ -491,7 +490,7 @@ public final class RunningThread
 	 * Obtains the invocation handle for the given class.
 	 *
 	 * @param __from The calling class.
-	 * @param __im The invoked method.
+	 * @param __m The invoked method.
 	 * @return The handle to call this method.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/17
@@ -500,15 +499,31 @@ public final class RunningThread
 		InvokedMethod __m)
 		throws NullPointerException
 	{
-		if (__from == null || __im == null)
+		if (__from == null || __m == null)
 			throw new NullPointerException("NARG");
 		
 		// Get all the various parts
 		InvokeType mty = __m.type();
-		MethodHandle mhn = __m.handle();
-		LoadedClass mcl = this.state.classloader.loadClass(mhn.className());
+		LoadedClass mcl = this.status.classloader.loadClass(
+			__m.handle().outerClass());
+		MethodNameAndType mnt = __m.handle().nameAndType();
 		
-		throw new todo.TODO();
+		// Calling method in another class, need to check access
+		if (__from != mcl)
+		{
+			throw new todo.TODO();
+		}
+		
+		// The returned handle depends on the invocation type
+		switch (mty)
+		{
+				// Static methods just point directly to the target method
+			case STATIC:
+				return mcl.lookupMethod(MethodLookupType.STATIC, true, mnt);
+			
+			default:
+				throw new todo.TODO(mty.name());
+		}
 	}
 }
 
