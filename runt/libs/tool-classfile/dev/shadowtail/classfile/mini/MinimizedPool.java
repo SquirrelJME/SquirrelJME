@@ -130,7 +130,8 @@ public final class MinimizedPool
 			new ByteArrayInputStream(__is, __o, __l)))
 		{
 			// Read type table
-			dis.readFully(types);
+			for (int i = 0; i < __n; i++)
+				types[i] = dis.readByte();
 			
 			// {@squirreljme.error JC44 Pool uneven padding byte was not
 			// 255. (The value it was)}

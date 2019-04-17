@@ -208,6 +208,9 @@ public final class Minimizer
 		// Constant pool is rounded
 		Minimizer.__dosRound(__dos);
 		
+		// Debug
+		todo.DEBUG.note("Writing pool at %d", __dos.size());
+		
 		// Write constant pool
 		__dos.write(pooldata);
 		Minimizer.__dosRound(__dos);

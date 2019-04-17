@@ -421,10 +421,14 @@ public final class MinimizedPoolBuilder
 			if ((poolcount & 1) != 0)
 				tdos.writeByte(0xFF);
 			
+			// Debug
+			todo.DEBUG.note("Pool Sizes: t=%d o=%d d=%d",
+				tdos.size(), odos.size(), ddos.size());
+			
 			// Merge the data bytes into the table then use the completed
 			// table
-			tbytes.write(obytes.toByteArray());
-			tbytes.write(dbytes.toByteArray());
+			tdos.write(obytes.toByteArray());
+			tdos.write(dbytes.toByteArray());
 			return tbytes.toByteArray();
 		}
 		
