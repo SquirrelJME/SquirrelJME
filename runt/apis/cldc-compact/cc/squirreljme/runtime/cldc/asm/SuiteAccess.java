@@ -44,18 +44,6 @@ public class SuiteAccess
 	public static final native String[] availableSuites();
 	
 	/**
-	 * Specifies that the given JAR should be compiled.
-	 *
-	 * @param __wh Where is this JAR located?
-	 * @param __data Data which depends on the where parameter.
-	 * @return The compiled result of the JAR, will be {@code null} on
-	 * compilation failure.
-	 * @since 2019/04/17
-	 */
-	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
-	public static final native byte[] compileJar(int __wh, byte[] __data);
-	
-	/**
 	 * Returns the current classpath that is being used.
 	 *
 	 * @return The current classpath.
@@ -65,8 +53,8 @@ public class SuiteAccess
 	public static final native String[] currentClassPath();
 	
 	/**
-	 * Specifies that the given native JAR should be installed into the suite
-	 * manager.
+	 * Specifies that the given JAR should be installed into the suite
+	 * manager, it may be compiled first.
 	 *
 	 * @param __wh Where is this JAR located?
 	 * @param __data Data which depends on the where parameter.
@@ -74,7 +62,7 @@ public class SuiteAccess
 	 * @since 2019/04/17
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
-	public static final native int installNativeJar(int __wh, byte[] __data);
+	public static final native int installJar(int __wh, byte[] __data);
 	
 	/**
 	 * Returns the last compile error which was set.
