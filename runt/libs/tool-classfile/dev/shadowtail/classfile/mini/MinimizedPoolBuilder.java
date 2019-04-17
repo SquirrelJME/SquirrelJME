@@ -267,8 +267,9 @@ public final class MinimizedPoolBuilder
 			tdos.writeInt(poolcount);
 			
 			// Guess where all the data will be written in the pool
-			// poolcount + tbytes + obytes + endmarkers
-			int reloff = 4 + (poolcount * 3) + 3;
+			// poolcount + tbytes + obytes + tdospadding
+			int reloff = 4 + (poolcount * 3) +
+				(((poolcount & 1) != 0) ? 1 : 0);
 			
 			// Align the data table to the nearest 4-byte boundary
 			while (((reloff + ddos.size()) & 3) != 0)
@@ -419,10 +420,9 @@ public final class MinimizedPoolBuilder
 				Minimizer.__dosRound(ddos);
 			}
 			
-			// Write end of table marker and the table end area thing
-			int dxo = reloff + ddos.size();
-			tdos.writeByte(0xFF);
-			odos.writeShort(0xFFFF);
+			// End of table padding for the type table?
+			if ((tdos.size() & 1) != 0)
+				tdos.writeByte(0xFF);
 			
 			// Merge the data bytes into the table then use the completed
 			// table
