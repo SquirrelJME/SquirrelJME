@@ -47,10 +47,11 @@ public final class MinimizedPool
 		todo.DEBUG.note("Decode %d (%d bytes)", __n, __is.available());
 		
 		// Read type table
-		byte[] types = dis.readFully(__n);
+		byte[] types = new byte[__n];
+		dis.readFully(types);
 		
 		// Skip padding?
-		if ((poolcount & 1) != 0)
+		if ((__n & 1) != 0)
 			dis.read();
 		
 		// Read offsets into the structure
