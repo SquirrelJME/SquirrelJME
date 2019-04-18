@@ -9,6 +9,9 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * This contains the memory space that is used for a task, it contains the
  * instance space and the static field space.
@@ -17,35 +20,19 @@ package cc.squirreljme.vm.summercoat;
  */
 public final class MemorySpace
 {
-	/** Default size of the static field area. */
-	@Deprecated
-	public static final int DEFAULT_STATIC_SIZE =
-		65536;
+	/** The default size of memory. */
+	public static final int DEFAULT_MEMORY_SIZE =
+		16777216;
 	
-	/** Maximum limit of how many objects can be allocated at once. */
-	@Deprecated
-	public static final int DEFAULT_OBJECT_SIZE =
-		65536;
+	/** The total amount of memory available. */
+	public final int total;
 	
-	/** The static field size. */
-	@Deprecated
-	public final int staticfieldsize;
+	/** The memory bytes. */
+	public final byte[] memory;
 	
-	/** The object size. */
-	@Deprecated
-	public final int objectsize;
-	
-	/** The current object space. */
-	@Deprecated
-	private final Instance[] _objectspace;
-	
-	/** Current size of static field space. */
-	@Deprecated
-	private volatile int _cursfsize;
-	
-	/** The total number of objects. */
-	@Deprecated
-	private volatile int _numobjects;
+	/** Partitions within memory. */
+	private final LinkedList<Partition> _parts =
+		new LinkedList<>();
 	
 	/**
 	 * Intializes the memory space with default settings.
@@ -54,126 +41,89 @@ public final class MemorySpace
 	 */
 	public MemorySpace()
 	{
-		this(DEFAULT_STATIC_SIZE, DEFAULT_OBJECT_SIZE);
+		this(DEFAULT_MEMORY_SIZE);
 	}
 	
 	/**
 	 * Initializes the memory space with the given settings.
 	 *
-	 * @param __sfs The space to allocate for static fields.
-	 * @param __ojs The number of objects which can be allocated at once.
+	 * @param __msz The amount of memory to allocate for the VM.
 	 * @since 2019/04/17
 	 */
-	@Deprecated
-	public MemorySpace(int __sfs, int __ojs)
+	public MemorySpace(int __msz)
 	{
-		// Set sizes
-		this.staticfieldsize =
-			(__sfs = (__sfs <= 0 ? DEFAULT_STATIC_SIZE : __sfs));
-		this.objectsize = (__ojs = (__ojs <= 0 ? DEFAULT_OBJECT_SIZE : __ojs));
+		// Determine total to use
+		this.total = (__msz <= 0 ? DEFAULT_MEMORY_SIZE : __msz);
 		
-		// Allocate regions
-		this._objectspace = new Instance[__ojs];
+		// Allocate memory chunk
+		this.memory = new byte[__msz];
+		
+		// Initial memory partition is all of the free space
+		this._parts.add(new Partition(0, __msz));
 	}
 	
 	/**
-	 * Allocates permanent static field space.
-	 *
-	 * @param __v The volume of space to allocate.
+	 * Allocates the specified amount of memory.
+	 * 
+	 * @param __sz The number of bytes to allocate.
 	 * @return The address of the allocation.
-	 * @throws IllegalArgumentException On null arguments.
-	 * @throws VMOutOfMemoryException If no memory remains.
+	 * @throws IllegalArgumentException If the size is zero or negative.
 	 * @since 2019/04/18
 	 */
-	@Deprecated
-	public final int allocateStaticSpace(int __v)
-		throws IllegalArgumentException, VMOutOfMemoryException
+	public final int allocate(int __sz)
+		throws IllegalArgumentException
 	{
-		// {@squirreljme.error AE0b Cannot claim negative amount of static
-		// field space.}
-		if (__v <= 0)
-			throw new IllegalArgumentException("AE0b");
+		// {@squirreljme.error AE0k Cannot allocate a zero or negative
+		// amount of memory.}
+		if (__sz <= 0)
+			throw new IllegalArgumentException("AE0k");
 		
-		// Lock on self since this is an important operation
+		// Lock on self since only a single thread should be allocating at
+		// a time
 		synchronized (this)
 		{
-			// {@squirreljme.error AE0c Not enough static field memory space.
-			// (The amount requested; The would be size of the space; The
-			// size limit of the space)}
-			int cursfsize = this._cursfsize,
-				nextsize = cursfsize + __v;
-			if (nextsize > this.staticfieldsize)
-				throw new VMOutOfMemoryException(String.format("AE0c %d %d %d",
-					__v, nextsize, this.staticfieldsize));
-			
-			// Set new size
-			this._cursfsize = nextsize;
-			
-			// Use the old current size
-			return cursfsize;
+			throw new todo.TODO();
 		}
 	}
 	
 	/**
-	 * Registers the specified object into the object table.
+	 * This represents a single partition within memory, generally
+	 * representing free space.
 	 *
-	 * @param __o The instance of the object.
-	 * @return The index of the object, which is its pointer.
 	 * @since 2019/04/18
 	 */
-	@Deprecated
-	public final int registerInstance(Instance __obj)
-		throws NullPointerException, VMOutOfMemoryException
+	public static final class Partition
 	{
-		if (__obj == null)
-			throw new NullPointerException("NARG");
+		/** Start, inclusive. */
+		public final int start;
 		
-		Instance[] objectspace = this._objectspace;
+		/** End, exclusive. */
+		public final int end;
 		
-		// Lock on self since this is an important operation
-		synchronized (this)
+		/** The partition size. */
+		public final int size;
+		
+		/**
+		 * Initializes the parition.
+		 *
+		 * @param __s The start.
+		 * @param __e The end.
+		 * @throws IllegalArgumentException If the end is at the start or
+		 * is before it.
+		 * @since 2019/04/18
+		 */
+		public Partition(int __s, int __e)
+			throws IllegalArgumentException
 		{
-			// Scan through space, object zero indicates null pointer
-			boolean retried = false;
-			for (int i = 1, n = objectspace.length; i <= n; i++)
-			{
-				// If the end is reach, potentially try again
-				if (i == n)
-				{
-					// This was our second try, so fail
-					if (retried)
-						break;
-					
-					// Only try once more
-					retried = true;
-					i = 0;
-				}
-				
-				// Object has no counts to it, it may be garbage collected now
-				Instance at = objectspace[i];
-				if (at != null)
-				{
-					// Still has counts
-					if (at.currentCount() > 0)
-						continue;
-					
-					// Un-count references for object and clear it
-					throw new todo.TODO();
-				}
-				
-				// If this point was reached then use this slot for the object
-				objectspace[i] = __obj;
-				
-				// Increase object count
-				this._numobjects++;
-				
-				// Use this index pointer
-				return i;
-			}
+			// {@squirreljme.error AE0j End of partition cannot be at or
+			// before the start of a partition.}
+			if (__e <= __s)
+				throw new IllegalArgumentException("AE0j");
+			
+			this.start = __s;
+			this.end = __e;
+			this.size = __e - __s;
 		}
-		
-		// {@squirreljme.error AE0j Out of object space.}
-		throw new VMOutOfMemoryException("AE0j");
 	}
 }
 
