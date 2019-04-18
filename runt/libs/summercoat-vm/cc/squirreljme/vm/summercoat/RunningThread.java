@@ -86,7 +86,7 @@ public final class RunningThread
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/01/10
 	 */
-	public void execEnterMethod(MethodHandle __mh, Value... __args)
+	public void execEnterMethod(MethodHandle __mh, Object... __args)
 		throws IllegalStateException, NullPointerException
 	{
 		// Must be the same thread
@@ -117,14 +117,14 @@ public final class RunningThread
 	 *
 	 * @param __mh The method handle.
 	 * @param __args The arguments to the call.
-	 * @return The return value of the method, will be {@code null} on void
-	 * types.
+	 * @return The return value of the method, will just be the value which
+	 * was grabbed from the return register.
 	 * @throws IllegalStateException If this thread has been run and the
 	 * thread calling this method is not itself.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/01/10
 	 */
-	public Value runMethod(MethodHandle __mh, Value... __args)
+	public long runMethod(MethodHandle __mh, Object... __args)
 		throws IllegalStateException, NullPointerException
 	{
 		if (__mh == null)
