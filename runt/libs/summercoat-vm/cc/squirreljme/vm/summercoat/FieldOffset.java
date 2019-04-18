@@ -9,6 +9,8 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import dev.shadowtail.classfile.nncc.NativeCode;
+
 /**
  * This contains an offset to a field, either static or otherwise.
  *
@@ -16,5 +18,19 @@ package cc.squirreljme.vm.summercoat;
  */
 public final class FieldOffset
 {
+	/** The memory access offset. */
+	public final int offset;
+	
+	/**
+	 * Initializes the field offset.
+	 *
+	 * @param __vol Is this volatile?
+	 * @param __off The target offset.
+	 * @since 2019/04/18
+	 */
+	public FieldOffset(boolean __vol, int __off)
+	{
+		this.offset = __off ^ (__vol ? NativeCode.MEMORY_OFF_VOLATILE_BIT : 0);
+	}
 }
 

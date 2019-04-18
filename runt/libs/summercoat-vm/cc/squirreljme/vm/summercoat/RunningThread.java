@@ -22,6 +22,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.classfile.ClassFlags;
 import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.ClassNames;
 import net.multiphasicapps.classfile.FieldDescriptor;
 import net.multiphasicapps.classfile.FieldFlags;
 import net.multiphasicapps.classfile.FieldReference;
@@ -288,6 +289,23 @@ public final class RunningThread
 						v = classloader.loadClass((ClassName)orig);
 						break;
 						
+						// List of loaded class names
+					case CLASS_NAMES:
+						{
+							// Get class names
+							ClassNames cns = (ClassNames)orig;
+							int ncn = cns.size();
+							
+							// Build new values
+							LoadedClass[] lcs = new LoadedClass[ncn];
+							for (int x = 0; x < ncn; x++)
+								lcs[x] = classloader.loadClass(cns.get(x));
+							
+							// Set
+							v = lcs;
+						}
+						break;
+						
 						// Method to be invoked, is referenced by handle
 					case INVOKED_METHOD:
 						v = this.__getInvokeHandle(__cl, (InvokedMethod)orig);
@@ -302,6 +320,7 @@ public final class RunningThread
 				rzp[p] = v;
 			}
 			
+			// Execute static constructor
 			throw new todo.TODO();
 		}
 	}
@@ -582,14 +601,45 @@ public final class RunningThread
 		// Perform access checks
 		if (__src != fclass)
 		{
-			throw new todo.TODO();
+			// Are these in the same package?
+			boolean samepkg = __src.miniclass.thisName().isInSamePackage(
+				fclass.miniclass.thisName());
+			
+			// Get both flags
+			ClassFlags acf = __src.miniclass.flags(),
+				bcf = fclass.miniclass.flags();
+			
+			// {@squirreljme.error AE0f Cannot access other class because it
+			// is package private and the source class is not in the same
+			// package. (This class; The other class)}
+			if (!samepkg && bcf.isPackagePrivate())
+				throw new VMIncompatibleClassChangeException(
+					String.format("AE0f %s %s", __src, fclass));
+			
+			// {@squirreljme.error AE0g Cannot access private field of
+			// another class. (This class; The other class; The field)}
+			else if (fflag.isPrivate())
+				throw new VMIncompatibleClassChangeException(
+					String.format("AE0g %s %s %s", __src, fclass, fnat));
+			
+			// {@squirreljme.error AE0h Cannot access package private field of
+			// another class in another package. (This class; The other class;
+			// The field)}
+			else if (fflag.isPackagePrivate() && !samepkg)
+				throw new VMIncompatibleClassChangeException(
+					String.format("AE0h %s %s %s", __src, fclass, fnat));
+			
+			// {@squirreljme.error AE0i Cannot access protected field of
+			// another class that is not a super class of this class.
+			// (This class; The other class; The field)}
+			else if (fflag.isProtected() &&
+				(!samepkg && !__src.isSuperClass(fclass)))
+				throw new VMIncompatibleClassChangeException(
+					String.format("AE0i %s %s %s", __src, fclass, fnat));
 		}
 		
-		throw new todo.TODO();
-		
-		// If static field space has not been claimed then claim it now
-		/*if (!__cl._claimedsfspace)
-			this.__claimStaticFieldSpace(__cl);*/
+		// Return offset to field
+		return new FieldOffset(isvolatile, fmin.offset);
 	}
 	
 	/**
@@ -617,9 +667,6 @@ public final class RunningThread
 		// Calling method in another class, need to check access
 		if (__from != mcl)
 		{
-			// Debug
-			todo.DEBUG.note("Access check: %s -> %s", __from, mcl);
-			
 			// Are these in the same package?
 			boolean samepkg = __from.miniclass.thisName().isInSamePackage(
 				mcl.miniclass.thisName());
@@ -658,7 +705,8 @@ public final class RunningThread
 			// {@squirreljme.error AE0a Cannot access protected method of
 			// another class that is not a super class of this class.
 			// (This class; The other class; The method)}
-			else if (omf.isProtected() && !__from.isSuperClass(mcl))
+			else if (omf.isProtected() &&
+				(!samepkg && !__from.isSuperClass(mcl)))
 				throw new VMIncompatibleClassChangeException(
 					String.format("AE0a %s %s %s", __from, mcl, mnt));
 		}
