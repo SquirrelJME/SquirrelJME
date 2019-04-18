@@ -538,7 +538,25 @@ public final class RunningThread
 			// Get the flags of the remote method
 			MethodFlags omf = smh.minimethod.flags();
 			
-			throw new todo.TODO();
+			// {@squirreljme.error AE08 Cannot access private method of
+			// another class. (This class; The other class; The method)}
+			if (omf.isPrivate())
+				throw new VMRuntimeException(
+					String.format("AE08 %s %s %s", __from, mcl, mnt));
+			
+			// {@squirreljme.error AE09 Cannot access package private method of
+			// another class in another package. (This class; The other class;
+			// The method)}
+			else if (omf.isPackagePrivate() && !samepkg)
+				throw new VMRuntimeException(
+					String.format("AE09 %s %s %s", __from, mcl, mnt));
+			
+			// {@squirreljme.error AE0a Cannot access protected method of
+			// another class that is not a super class of this class.
+			// (This class; The other class; The method)}
+			else if (omf.isProtected() && !__from.isSuperClassOf(mcl))
+				throw new VMRuntimeException(
+					String.format("AE0a %s %s %s", __from, mcl, mnt));
 		}
 		
 		// The returned handle depends on the invocation type
