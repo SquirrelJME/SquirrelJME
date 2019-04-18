@@ -325,7 +325,11 @@ public final class RunningThread
 				}
 			
 			// Execute static constructor
-			throw new todo.TODO();
+			MethodHandle staticinit = __cl.staticinit;
+			if (staticinit != null)
+			{
+				throw new todo.TODO();
+			}
 		}
 	}
 	
