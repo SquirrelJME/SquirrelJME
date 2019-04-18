@@ -259,7 +259,7 @@ public final class Minimizer
 		for (Field f : sorted)
 		{
 			// These are stored in their own rows
-			__TempFields__ temp = rv[(f.flags().isStatic() ? 1 : 0)];
+			__TempFields__ temp = rv[(f.flags().isStatic() ? 0 : 1)];
 			
 			// Determine the size of this entry (and its alignment)
 			PrimitiveType pt = f.type().primitiveType();
@@ -323,7 +323,7 @@ public final class Minimizer
 		for (Method m : this.input.methods())
 		{
 			// These are stored in their own rows
-			__TempMethods__ temp = rv[(m.flags().isStatic() ? 1 : 0)];
+			__TempMethods__ temp = rv[(m.flags().isStatic() ? 0 : 1)];
 			
 			// Need to translate and serialize the byte code into a register
 			// form and remap any used references.
