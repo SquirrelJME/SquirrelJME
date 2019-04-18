@@ -180,6 +180,25 @@ public final class RunningThread
 	}
 	
 	/**
+	 * Sets the value in the specified array.
+	 *
+	 * @param __tp The typed pointer.
+	 * @param __dx The index to set.
+	 * @param __v The value to store.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/18
+	 */
+	public final TypedPointer vmArraySet(TypedPointer __tp, int __dx,
+		Object __v)
+		throws NullPointerException
+	{
+		if (__tp == null || __v == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Initializes the specified class within the virtual machine.
 	 *
 	 * @param __cl The class to initialize.
@@ -341,7 +360,7 @@ public final class RunningThread
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/17
 	 */
-	public final AllocationPoint vmInternString(String __s)
+	public final TypedPointer vmInternString(String __s)
 		throws NullPointerException
 	{
 		if (__s == null)
@@ -361,7 +380,7 @@ public final class RunningThread
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/17
 	 */
-	public final AllocationPoint vmNew(String __cl)
+	public final TypedPointer vmNew(String __cl)
 		throws NullPointerException
 	{
 		return this.vmNew(this.status.classloader.loadClass(__cl));
@@ -375,7 +394,7 @@ public final class RunningThread
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/17
 	 */
-	public final AllocationPoint vmNew(LoadedClass __cl)
+	public final TypedPointer vmNew(LoadedClass __cl)
 		throws NullPointerException
 	{
 		if (__cl == null)
@@ -395,7 +414,7 @@ public final class RunningThread
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/01/10
 	 */
-	public final AllocationPoint vmNewArray(String __cl, int __len)
+	public final TypedPointer vmNewArray(String __cl, int __len)
 		throws NullPointerException
 	{
 		return this.vmNewArray(this.status.classloader.loadClass(__cl), __len);
@@ -411,7 +430,7 @@ public final class RunningThread
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/01/10
 	 */
-	public final AllocationPoint vmNewArray(LoadedClass __cl, int __len)
+	public final TypedPointer vmNewArray(LoadedClass __cl, int __len)
 		throws NullPointerException
 	{
 		if (__cl == null)
@@ -452,8 +471,8 @@ public final class RunningThread
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/01/10
 	 */
-	public final Instance vmNewInstance(String __cl, String __desc,
-		Value... __args)
+	public final TypedPointer vmNewInstance(String __cl, String __desc,
+		Object... __args)
 		throws NullPointerException
 	{
 		return this.vmNewInstance(this.status.classloader.loadClass(__cl),
@@ -470,8 +489,8 @@ public final class RunningThread
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/01/10
 	 */
-	public final Instance vmNewInstance(LoadedClass __cl,
-		MethodDescriptor __desc, Value... __args)
+	public final TypedPointer vmNewInstance(LoadedClass __cl,
+		MethodDescriptor __desc, Object... __args)
 		throws NullPointerException
 	{
 		if (__cl == null || __desc == null)
@@ -481,7 +500,7 @@ public final class RunningThread
 		this.__checkSameThread();
 		
 		// Defensive copy
-		__args = (__args == null ? new Value[0] : __args.clone());
+		__args = (__args == null ? new Object[0] : __args.clone());
 		
 		throw new todo.TODO();
 	}
@@ -495,7 +514,7 @@ public final class RunningThread
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/01/10
 	 */
-	public final Instance vmStaticMethod(MethodHandle __mh)
+	public final TypedPointer vmStaticMethod(MethodHandle __mh)
 		throws NullPointerException
 	{
 		if (__mh == null)
@@ -505,7 +524,10 @@ public final class RunningThread
 		this.__checkSameThread();
 		
 		// Just return a specialized instance
+		throw new todo.TODO();
+		/*
 		return new StaticMethodInstance(__mh);
+		*/
 	}
 	
 	/**
@@ -516,17 +538,18 @@ public final class RunningThread
 	 * @return The instance of the string or the associated {@code null}.
 	 * @since 2019/01/10
 	 */
-	public final AllocationPoint vmTranslateString(String __in)
+	public final TypedPointer vmTranslateString(String __in)
 	{
 		// Must be the same thread
 		this.__checkSameThread();
 		
-		// If null just make a null allocation point
+		// If null just make a null pointer
 		if (__in == null)
-			return new AllocationPoint();
+			return new TypedPointer(this.status.classloader.
+				loadClass("java/lang/String"), 0);
 		
 		// Allocate new character array sequence
-		AllocationPoint casap = this.vmNew(
+		TypedPointer casap = this.vmNew(
 			"cc/squirreljme/runtime/cldc/string/CharArraySequence");
 		
 		throw new todo.TODO();

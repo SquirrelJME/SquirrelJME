@@ -125,15 +125,15 @@ public final class RootMachine
 		LoadedClass thrclass = cl.loadClass("java/lang/Thread");
 		
 		// Determine the entry method and the entry arguments to use
-		Instance vmsm;
-		Instance entryarg;
+		TypedPointer vmsm;
+		TypedPointer entryarg;
 		if (__ismid)
 		{
 			// Get static method reference to call
 			vmsm = thr.vmStaticMethod(cl.
 				loadClass("javax/microedition/midlet/MIDlet").lookupMethod(
 				MethodLookupType.INSTANCE, false, "startApp", "()V"));
-			entryarg = thr.vmTranslateString(__maincl).instance;
+			entryarg = thr.vmTranslateString(__maincl);
 		}
 		else
 		{
@@ -144,23 +144,19 @@ public final class RootMachine
 			
 			// Setup array that is the same size as the input arguments
 			int n = __args.length;
-			AllocationPoint aip = thr.vmNewArray("[Ljava/lang/String;", n);
+			entryarg = thr.vmNewArray("[Ljava/lang/String;", n);
 			
 			// Translate string arguments
-			ArrayInstance ai = (ArrayInstance)aip.instance;
 			for (int i = 0; i < n; i++)
-				ai.set(i, thr.vmTranslateString(__args[i]).instance);
-			
-			// We just pass this to the thread
-			entryarg = ai;
+				thr.vmArraySet(entryarg, i, thr.vmTranslateString(__args[i]));
 		}
 		
 		// Create main thread instance which uses our given starting points
 		// accordingly so it knows which method to invoke
-		Instance threadobj = thr.vmNewInstance("java/lang/Thread",
+		TypedPointer threadobj = thr.vmNewInstance("java/lang/Thread",
 			"(Ljava/lang/String;ILcc/squirreljme/runtime/cldc/asm/" +
 			"StaticMethod;Ljava/lang/Object;)V",
-			thr.vmTranslateString("Main").instance,
+			thr.vmTranslateString("Main"),
 			IntegerValue.of((__ismid ? 3 : 4)), vmsm, entryarg);
 		
 		// Enter the __start() method for Thread
