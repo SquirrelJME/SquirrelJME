@@ -53,14 +53,6 @@ import java.util.WeakHashMap;
 public final class String
 	implements Comparable<String>, CharSequence
 {
-	/** The ISO encoding. */
-	private static final String _ENCODING_ISO =
-		"iso-8859-1";
-	
-	/** The UTF-8 encoding. */
-	private static final String _ENCODING_UTF =
-		"utf-8";
-	
 	/** The minumum trim character. */
 	private static final char _MIN_TRIM_CHAR =
 		' ';
