@@ -248,9 +248,6 @@ public final class RunningThread
 				MinimizedPoolEntryType type = mpool.type(p);
 				Object orig = mpool.get(p);
 				
-				// Debug
-				todo.DEBUG.note("Pool %s: %s", type, orig);
-				
 				// Obtain its true value
 				Object v;
 				switch (type)
@@ -319,6 +316,13 @@ public final class RunningThread
 				// Set
 				rzp[p] = v;
 			}
+			
+			// Initialize static fields with a constant value
+			for (MinimizedField ff : __cl.miniclass.fields(true))
+				if (ff.flags().isStatic() && ff.value != null)
+				{
+					throw new todo.TODO();
+				}
 			
 			// Execute static constructor
 			throw new todo.TODO();
