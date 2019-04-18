@@ -12,6 +12,9 @@ package cc.squirreljme.vm.summercoat;
 
 import dev.shadowtail.classfile.mini.MinimizedPool;
 import dev.shadowtail.classfile.mini.MinimizedPoolEntryType;
+import dev.shadowtail.classfile.nncc.AccessedField;
+import dev.shadowtail.classfile.nncc.FieldAccessTime;
+import dev.shadowtail.classfile.nncc.FieldAccessType;
 import dev.shadowtail.classfile.nncc.InvokedMethod;
 import dev.shadowtail.classfile.xlate.InvokeType;
 import java.lang.ref.Reference;
@@ -207,6 +210,10 @@ public final class RunningThread
 			// initialization at play
 			__cl._beeninit = true;
 			
+			// If static field space has not been claimed then claim it now
+			if (!__cl._claimedsfspace)
+				this.__claimStaticFieldSpace(__cl);
+			
 			// Initialize the super class first
 			LoadedClass slc = __cl.superclass;
 			if (slc != null)
@@ -267,7 +274,9 @@ public final class RunningThread
 						
 						// Access to a field, offset is used
 					case ACCESSED_FIELD:
-						throw new todo.TODO();
+						v = this.__getAccessedField(__cl,
+							(AccessedField)orig);
+						break;
 						
 						// Classes just point to loaded classes
 					case CLASS_NAME:
@@ -490,6 +499,63 @@ public final class RunningThread
 		if (didstart && this != Thread.currentThread())
 			throw new IllegalStateException("AE01");
 		return didstart;
+	}
+	
+	/**
+	 * Claims the static field space for this class.
+	 *
+	 * @param __cl The space to claim.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/18
+	 */
+	private final void __claimStaticFieldSpace(LoadedClass __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// Do not claim twice!
+		if (__cl._claimedsfspace)
+			return;
+		
+		// If no space is needed by static then
+		int spaceneeded = __cl.miniclass.header.sfbytes;
+		if (spaceneeded > 0)
+		{
+			// Allocate
+			int addr;
+			__cl._startsfbytes = (addr = this.status.memory.
+				allocateStaticSpace(spaceneeded));
+			
+			// Debug
+			todo.DEBUG.note("Claimed static space for %s at %d", __cl, addr);
+		}
+		
+		// Set as claimed!
+		__cl._claimedsfspace = true;
+	}
+	
+	/**
+	 * Reads from a field.
+	 *
+	 * @param __from The doing the loading.
+	 * @param __f The field to access
+	 * @return The field offset.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/18
+	 */
+	private final FieldOffset __getAccessedField(LoadedClass __from,
+		AccessedField __f)
+		throws NullPointerException
+	{
+		if (__from == null || __f == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+		
+		// If static field space has not been claimed then claim it now
+		/*if (!__cl._claimedsfspace)
+			this.__claimStaticFieldSpace(__cl);*/
 	}
 	
 	/**
