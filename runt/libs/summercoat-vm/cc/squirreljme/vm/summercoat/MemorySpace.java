@@ -18,26 +18,33 @@ package cc.squirreljme.vm.summercoat;
 public final class MemorySpace
 {
 	/** Default size of the static field area. */
+	@Deprecated
 	public static final int DEFAULT_STATIC_SIZE =
 		65536;
 	
 	/** Maximum limit of how many objects can be allocated at once. */
+	@Deprecated
 	public static final int DEFAULT_OBJECT_SIZE =
 		65536;
 	
 	/** The static field size. */
+	@Deprecated
 	public final int staticfieldsize;
 	
 	/** The object size. */
+	@Deprecated
 	public final int objectsize;
 	
 	/** The current object space. */
+	@Deprecated
 	private final Instance[] _objectspace;
 	
 	/** Current size of static field space. */
+	@Deprecated
 	private volatile int _cursfsize;
 	
 	/** The total number of objects. */
+	@Deprecated
 	private volatile int _numobjects;
 	
 	/**
@@ -57,6 +64,7 @@ public final class MemorySpace
 	 * @param __ojs The number of objects which can be allocated at once.
 	 * @since 2019/04/17
 	 */
+	@Deprecated
 	public MemorySpace(int __sfs, int __ojs)
 	{
 		// Set sizes
@@ -77,6 +85,7 @@ public final class MemorySpace
 	 * @throws VMOutOfMemoryException If no memory remains.
 	 * @since 2019/04/18
 	 */
+	@Deprecated
 	public final int allocateStaticSpace(int __v)
 		throws IllegalArgumentException, VMOutOfMemoryException
 	{
@@ -112,6 +121,7 @@ public final class MemorySpace
 	 * @return The index of the object, which is its pointer.
 	 * @since 2019/04/18
 	 */
+	@Deprecated
 	public final int registerInstance(Instance __obj)
 		throws NullPointerException, VMOutOfMemoryException
 	{

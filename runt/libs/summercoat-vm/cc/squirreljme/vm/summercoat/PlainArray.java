@@ -14,6 +14,7 @@ package cc.squirreljme.vm.summercoat;
  *
  * @since 2019/04/17
  */
+@Deprecated
 public class PlainArray
 	extends PlainObject
 	implements ArrayInstance
