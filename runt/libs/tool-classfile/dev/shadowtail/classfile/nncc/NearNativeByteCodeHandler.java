@@ -282,7 +282,7 @@ public final class NearNativeByteCodeHandler
 		// Read of field memory
 		int tempreg = state.stack.usedregisters;
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			this.__fieldAccess(FieldAccessType.INSTANCE, __fr), tempreg);
+			this.__fieldAccess(FieldAccessType.INSTANCE, __fr, true), tempreg);
 		codebuilder.addMemoryOffReg(
 			DataType.of(__fr.memberType().primitiveType()), true,
 			__v.register, ireg, tempreg);
@@ -318,7 +318,8 @@ public final class NearNativeByteCodeHandler
 		// Read of field memory
 		int tempreg = state.stack.usedregisters;
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			this.__fieldAccess(FieldAccessType.INSTANCE, __fr), tempreg);
+			this.__fieldAccess(FieldAccessType.INSTANCE, __fr, false),
+			tempreg);
 		codebuilder.addMemoryOffReg(
 			DataType.of(__fr.memberType().primitiveType()), false,
 			__v.register, ireg, tempreg);
@@ -637,7 +638,7 @@ public final class NearNativeByteCodeHandler
 		// Read of static memory
 		int tempreg = state.stack.usedregisters;
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			this.__fieldAccess(FieldAccessType.STATIC, __fr), tempreg);
+			this.__fieldAccess(FieldAccessType.STATIC, __fr, true), tempreg);
 		codebuilder.addMemoryOffReg(
 			DataType.of(__fr.memberType().primitiveType()), true,
 			__v.register, NativeCode.STATIC_FIELD_REGISTER, tempreg);
@@ -662,7 +663,7 @@ public final class NearNativeByteCodeHandler
 		// Write of static memory
 		int tempreg = state.stack.usedregisters;
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			this.__fieldAccess(FieldAccessType.STATIC, __fr), tempreg);
+			this.__fieldAccess(FieldAccessType.STATIC, __fr, false), tempreg);
 		codebuilder.addMemoryOffReg(
 			DataType.of(__fr.memberType().primitiveType()), false,
 			__v.register, NativeCode.STATIC_FIELD_REGISTER, tempreg);
@@ -910,12 +911,13 @@ public final class NearNativeByteCodeHandler
 	 *
 	 * @param __at The type of access to perform.
 	 * @param __fr The reference to the field.
+	 * @param __read Is a read being performed?
 	 * @return The accessed field.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/24
 	 */
 	private final AccessedField __fieldAccess(FieldAccessType __at,
-		FieldReference __fr)
+		FieldReference __fr, boolean __read)
 		throws NullPointerException
 	{
 		if (__at == null || __fr == null)
@@ -924,8 +926,10 @@ public final class NearNativeByteCodeHandler
 		// Accessing final fields of another class will always be treated as
 		// normal despite being in the constructor of a class
 		if (!thistype.equals(__fr.className()))
-			return new AccessedField(FieldAccessTime.NORMAL, __at, __fr);
-		return new AccessedField(this.defaultfieldaccesstime, __at, __fr);
+			return new AccessedField((__read ? FieldAccessTime.READ :
+				FieldAccessTime.NORMAL), __at, __fr);
+		return new AccessedField((__read ? FieldAccessTime.READ :
+			this.defaultfieldaccesstime), __at, __fr);
 	}
 	
 	/**

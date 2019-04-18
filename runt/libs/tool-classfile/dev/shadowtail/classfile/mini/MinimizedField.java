@@ -19,6 +19,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.FieldDescriptor;
+import net.multiphasicapps.classfile.FieldFlags;
 import net.multiphasicapps.classfile.FieldName;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 
@@ -53,6 +54,9 @@ public final class MinimizedField
 	/** String representation. */
 	private Reference<String> _string;
 	
+	/** Field flags. */
+	private Reference<FieldFlags> _flags;
+	
 	/**
 	 * Initializes the minimized field.
 	 *
@@ -79,6 +83,24 @@ public final class MinimizedField
 		this.type = __t;
 		this.value = __v;
 		this.datatype = DataType.of(__t);
+	}
+	
+	/**
+	 * Returns the flags for this field.
+	 *
+	 * @return The flags for the field.
+	 * @since 2019/04/18
+	 */
+	public final FieldFlags flags()
+	{
+		Reference<FieldFlags> ref = this._flags;
+		FieldFlags rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._flags = new WeakReference<>((rv =
+				new FieldFlags(this.flags)));
+		
+		return rv;
 	}
 	
 	/**

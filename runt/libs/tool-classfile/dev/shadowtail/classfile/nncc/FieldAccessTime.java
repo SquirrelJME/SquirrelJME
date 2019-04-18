@@ -17,11 +17,14 @@ package dev.shadowtail.classfile.nncc;
  */
 public enum FieldAccessTime
 {
-	/** Accessed by constructor or static initializer. */
+	/** Written by constructor or static initializer. */
 	INITIALIZER,
 	
-	/** Normal non-constructor access. */
+	/** Written by non-constructor. */
 	NORMAL,
+	
+	/** Read access. */
+	READ,
 	
 	/** End. */
 	;
@@ -41,6 +44,7 @@ public enum FieldAccessTime
 		{
 			case 0:	return INITIALIZER;
 			case 1: return NORMAL;
+			case 2: return READ;
 		}
 		
 		// {@squirreljme.error JC3u Unknown access time. (The index)}
