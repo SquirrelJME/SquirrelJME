@@ -1,0 +1,8 @@
+# 2019/04/17
+
+## 20:46
+
+So have been working on the VM again which is nice, definitely is much
+simpler this time around compared to when I did SpringCoat. I just hope
+that the compiled code actually works. It should work for the most part
+I believe unless I really messed up.
