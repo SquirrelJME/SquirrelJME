@@ -18,6 +18,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
 import net.multiphasicapps.classfile.MethodDescriptor;
+import net.multiphasicapps.classfile.MethodFlags;
 import net.multiphasicapps.classfile.MethodName;
 
 /**
@@ -45,6 +46,9 @@ public final class MinimizedMethod
 	/** Line number table. */
 	final byte[] _lines;
 	
+	/** Method flags. */
+	private Reference<MethodFlags> _flags;
+	
 	/**
 	 * Initializes the minimized method.
 	 *
@@ -70,6 +74,24 @@ public final class MinimizedMethod
 		this.type = __t;
 		this._code = (__tc == null ? new byte[0] : __tc.clone());
 		this._lines = (__ln == null ? new byte[0] : __ln.clone());
+	}
+	
+	/**
+	 * Returns the flags for this method.
+	 *
+	 * @return The flags for the method.
+	 * @since 2019/04/17
+	 */
+	public final MethodFlags flags()
+	{
+		Reference<MethodFlags> ref = this._flags;
+		MethodFlags rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._flags = new WeakReference<>((rv =
+				new MethodFlags(this.flags)));
+		
+		return rv;
 	}
 	
 	/**
