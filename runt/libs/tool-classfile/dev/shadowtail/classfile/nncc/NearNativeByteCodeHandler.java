@@ -640,7 +640,7 @@ public final class NearNativeByteCodeHandler
 			this.__fieldAccess(FieldAccessType.STATIC, __fr), tempreg);
 		codebuilder.addMemoryOffReg(
 			DataType.of(__fr.memberType().primitiveType()), true,
-			__v.register, STATIC_FIELD_REGISTER, tempreg);
+			__v.register, NativeCode.STATIC_FIELD_REGISTER, tempreg);
 			
 		// Clear references as needed
 		this.__refClear();

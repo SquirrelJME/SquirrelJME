@@ -34,15 +34,23 @@ public final class NativeCode
 	
 	/** Static field area register. */
 	public static final int STATIC_FIELD_REGISTER =
-		16384;
+		8192;
 	
 	/** The return value register. */
 	public static final int RETURN_REGISTER =
-		16386;
+		8194;
 	
 	/** The thrown exception register. */
 	public static final int EXCEPTION_REGISTER =
-		16388;
+		8196;
+	
+	/** When this bit is set, the access to memory is volatile. */
+	public static final int MEMORY_OFF_VOLATILE_BIT =
+		32768;
+	
+	/** Mask to access the offset value. */
+	public static final int MEMORY_OFF_VALUE_MASK =
+		16383;
 	
 	/** Instructions for this code. */
 	private final NativeInstruction[] _instructions;
