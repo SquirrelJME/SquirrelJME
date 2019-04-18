@@ -31,6 +31,9 @@ public final class MemorySpace
 	/** The object size. */
 	public final int objectsize;
 	
+	/** Current size of static field space. */
+	private volatile int _cursfsize;
+	
 	/**
 	 * Intializes the memory space with default settings.
 	 *
@@ -53,6 +56,42 @@ public final class MemorySpace
 		// Set sizes
 		this.staticfieldsize = (__sfs <= 0 ? DEFAULT_STATIC_SIZE : __sfs);
 		this.objectsize = (__ojs <= 0 ? DEFAULT_OBJECT_SIZE : __ojs);
+	}
+	
+	/**
+	 * Allocates permanent static field space.
+	 *
+	 * @param __v The volume of space to allocate.
+	 * @return The address of the allocation.
+	 * @throws IllegalArgumentException On null arguments.
+	 * @since 2019/04/18
+	 */
+	public final int allocateStaticSpace(int __v)
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error AE0b Cannot claim negative amount of static
+		// field space.}
+		if (__v <= 0)
+			throw new IllegalArgumentException("AE0b");
+		
+		// Lock on self since this is an important operation
+		synchronized (this)
+		{
+			// {@squirreljme.error AE0c Not enough static field memory space.
+			// (The amount requested; The would be size of the space; The
+			// size limit of the space)}
+			int cursfsize = this._cursfsize,
+				nextsize = cursfsize + __v;
+			if (nextsize > this.staticfieldsize)
+				throw new VMOutOfMemoryException(String.format("AE0c %d %d %d",
+					__v, nextsize, this.staticfieldsize));
+			
+			// Set new size
+			this._cursfsize = nextsize;
+			
+			// Use the old current size
+			return cursfsize;
+		}
 	}
 }
 
