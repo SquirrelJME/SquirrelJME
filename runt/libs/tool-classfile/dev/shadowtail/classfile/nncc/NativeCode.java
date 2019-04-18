@@ -44,13 +44,21 @@ public final class NativeCode
 	public static final int EXCEPTION_REGISTER =
 		8196;
 	
-	/** When this bit is set, the access to memory is volatile. */
+	/** This bit XORed NEG bit == set, means memory access is volatile. */
 	public static final int MEMORY_OFF_VOLATILE_BIT =
-		32768;
+		0x80000000;
+	
+	/**
+	 * This bit is just used to signal that the offset is negative. After the
+	 * volatility has been determined, the volatile bit is set to the value
+	 * of this bit then execution continues.
+	 */
+	public static final int MEMORY_OFF_NEG_BIT =
+		0x40000000;
 	
 	/** Mask to access the offset value. */
 	public static final int MEMORY_OFF_VALUE_MASK =
-		16383;
+		0x7FFFFFFF;
 	
 	/** Instructions for this code. */
 	private final NativeInstruction[] _instructions;

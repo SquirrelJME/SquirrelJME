@@ -20,6 +20,18 @@ public final class FieldFlags
 	implements AccessibleFlags
 {
 	/**
+	 * Decodes field flags from the bit field and performs no checking.
+	 *
+	 * @param __i The bitfield to decode.
+	 * @since 2019/04/18
+	 */
+	public FieldFlags(int __i)
+	{
+		super(FieldFlag.class,
+			Flags.<FieldFlag>__decode(__i, FieldFlag.values()));
+	}
+	
+	/**
 	 * Initializes the field flags.
 	 *
 	 * @param __oc The outer class.

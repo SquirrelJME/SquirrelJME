@@ -10,6 +10,7 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import dev.shadowtail.classfile.mini.MinimizedField;
 import dev.shadowtail.classfile.mini.MinimizedPool;
 import dev.shadowtail.classfile.mini.MinimizedPoolEntryType;
 import dev.shadowtail.classfile.nncc.AccessedField;
@@ -21,6 +22,10 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import net.multiphasicapps.classfile.ClassFlags;
 import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.FieldDescriptor;
+import net.multiphasicapps.classfile.FieldFlags;
+import net.multiphasicapps.classfile.FieldReference;
+import net.multiphasicapps.classfile.FieldNameAndType;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodFlags;
 import net.multiphasicapps.classfile.MethodNameAndType;
@@ -538,18 +543,47 @@ public final class RunningThread
 	/**
 	 * Reads from a field.
 	 *
-	 * @param __from The doing the loading.
+	 * @param __src The class doing the loading.
 	 * @param __f The field to access
 	 * @return The field offset.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/18
 	 */
-	private final FieldOffset __getAccessedField(LoadedClass __from,
+	private final FieldOffset __getAccessedField(LoadedClass __src,
 		AccessedField __f)
 		throws NullPointerException
 	{
-		if (__from == null || __f == null)
+		if (__src == null || __f == null)
 			throw new NullPointerException("NARG");
+		
+		TaskStatus status = this.status;
+		
+		// Get the various parts
+		FieldAccessTime ftime = __f.time();
+		FieldAccessType ftype = __f.type();
+		LoadedClass fclass = status.classloader.loadClass(
+			__f.field().className());
+		FieldNameAndType fnat = __f.field().memberNameAndType();
+		
+		// Locate the field first
+		MinimizedField fmin = fclass.lookupField(
+			ftype == FieldAccessType.STATIC, fnat);
+		
+		// Get field flags, determine if quickly volatile
+		FieldFlags fflag = fmin.flags();
+		boolean isvolatile = fflag.isVolatile();
+		
+		// {@squirreljme.error AE0e Cannot write to final field. (The source
+		// class; The target class; The target field)}
+		if (ftime == FieldAccessTime.NORMAL && fflag.isFinal())
+			throw new VMIncompatibleClassChangeException(
+				String.format("AE0e %s %s %s", __src, fclass, fnat));
+		
+		// Perform access checks
+		if (__src != fclass)
+		{
+			throw new todo.TODO();
+		}
 		
 		throw new todo.TODO();
 		

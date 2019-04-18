@@ -11,11 +11,15 @@
 package cc.squirreljme.vm.summercoat;
 
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
+import dev.shadowtail.classfile.mini.MinimizedField;
 import dev.shadowtail.classfile.mini.MinimizedMethod;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import net.multiphasicapps.classfile.FieldDescriptor;
+import net.multiphasicapps.classfile.FieldName;
+import net.multiphasicapps.classfile.FieldNameAndType;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodName;
 import net.multiphasicapps.classfile.MethodNameAndType;
@@ -50,6 +54,12 @@ public final class LoadedClass
 	
 	/** Instance methods. */
 	private final Map<MethodNameAndType, StaticMethodHandle> _imethods;
+	
+	/** Static fields, minimized form is used for linking. */
+	private final Map<FieldNameAndType, MinimizedField> _sfields;
+	
+	/** Instance fields, minimized form is used for linking. */
+	private final Map<FieldNameAndType, MinimizedField> _ifields;
 	
 	/** String form. */
 	private Reference<String> _string;
@@ -114,6 +124,18 @@ public final class LoadedClass
 			imethods.put(new MethodNameAndType(mm.name, mm.type),
 				new StaticMethodHandle(runpool, mm));
 		this._imethods = imethods;
+		
+		// Get static field info
+		Map<FieldNameAndType, MinimizedField> sfields = new LinkedHashMap<>();
+		for (MinimizedField ff : __cf.fields(true))
+			sfields.put(new FieldNameAndType(ff.name, ff.type), ff);
+		this._sfields = sfields;
+		
+		// Get instance field info
+		Map<FieldNameAndType, MinimizedField> ifields = new LinkedHashMap<>();
+		for (MinimizedField ff : __cf.fields(false))
+			ifields.put(new FieldNameAndType(ff.name, ff.type), ff);
+		this._ifields = ifields;
 	}
 	
 	/**
@@ -131,6 +153,75 @@ public final class LoadedClass
 				return true;
 		
 		return false;
+	}
+	
+	/**
+	 * Looks up the given field.
+	 *
+	 * @param __static Lookup static field?
+	 * @param __n The name.
+	 * @param __t The type.
+	 * @return The field information.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/18
+	 */
+	public final MinimizedField lookupField(boolean __static,
+		String __n, String __t)
+		throws NullPointerException
+	{
+		return this.lookupField(__static,
+			new FieldName(__n), new FieldDescriptor(__t));
+	}
+	
+	/**
+	 * Looks up the given field.
+	 *
+	 * @param __static Lookup static field?
+	 * @param __n The name.
+	 * @param __t The type.
+	 * @return The field information.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/18
+	 */
+	public final MinimizedField lookupField(boolean __static,
+		FieldName __n, FieldDescriptor __t)
+		throws NullPointerException
+	{
+		return this.lookupField(__static,
+			new FieldNameAndType(__n, __t));
+	}
+	
+	/**
+	 * Looks up the given field.
+	 *
+	 * @param __static Lookup static field?
+	 * @param __nat The name and type.
+	 * @return The field information.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/18
+	 */
+	public final MinimizedField lookupField(boolean __static,
+		FieldNameAndType __nat)
+		throws NullPointerException
+	{
+		if (__nat == null)
+			throw new NullPointerException("NARG");
+		
+		MinimizedField rv;
+		
+		// Use static method handle
+		if (__static)
+			rv = this._sfields.get(__nat);
+		else
+			rv = this._ifields.get(__nat);
+		
+		// {@squirreljme.error AE0d No such field exists. (Is static?; The
+		// name and type of the field)}
+		if (rv == null)
+			throw new VMIncompatibleClassChangeException(String.format(
+				"AE0d %b %s", __static, __nat));
+		
+		return rv;
 	}
 	
 	/**
@@ -202,7 +293,7 @@ public final class LoadedClass
 			// in the class. (This class; The lookup type; Is this a static
 			// lookup?; The name and type)}
 			if (rv == null)
-				throw new VMRuntimeException(
+				throw new VMIncompatibleClassChangeException(
 					String.format("AE07 %s %s %b %s",
 						this.miniclass.thisName(), __lut, __static, __nat));
 			
