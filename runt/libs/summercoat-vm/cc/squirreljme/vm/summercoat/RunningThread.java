@@ -423,6 +423,8 @@ public final class RunningThread
 		// Potentially initialize this class
 		this.vmInitializeClass(__cl);
 		
+		throw new todo.TODO();
+		/*
 		// Create instance of object
 		boolean isarray;
 		Instance rv = ((isarray = __cl.isArray()) ?
@@ -437,6 +439,7 @@ public final class RunningThread
 		
 		// Done with it
 		return new AllocationPoint(rv, vptr);
+		*/
 	}
 	
 	/**
@@ -571,6 +574,8 @@ public final class RunningThread
 		int spaceneeded = __cl.miniclass.header.sfbytes;
 		if (spaceneeded > 0)
 		{
+			throw new todo.TODO();
+			/*
 			// Allocate
 			int addr;
 			__cl._startsfbytes = (addr = this.status.memory.
@@ -578,6 +583,7 @@ public final class RunningThread
 			
 			// Debug
 			todo.DEBUG.note("Claimed static space for %s at %d", __cl, addr);
+			*/
 		}
 		
 		// Set as claimed!
