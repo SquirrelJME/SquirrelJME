@@ -265,6 +265,10 @@ public final class RunningThread
 						v = orig;
 						break;
 						
+						// Access to a field
+					case ACCESSED_FIELD:
+						throw new todo.TODO();
+						
 						// Classes just point to loaded classes
 					case CLASS_NAME:
 						v = classloader.loadClass((ClassName)orig);
