@@ -157,7 +157,7 @@ public final class RootMachine
 			"(Ljava/lang/String;ILcc/squirreljme/runtime/cldc/asm/" +
 			"StaticMethod;Ljava/lang/Object;)V",
 			thr.vmTranslateString("Main"),
-			IntegerValue.of((__ismid ? 3 : 4)), vmsm, entryarg);
+			(__ismid ? 3 : 4), vmsm, entryarg);
 		
 		// Enter the __start() method for Thread
 		thr.execEnterMethod(thrclass.lookupMethod(
