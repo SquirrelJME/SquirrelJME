@@ -10,31 +10,34 @@
 package cc.squirreljme.vm.summercoat;
 
 /**
- * This is an instance which provides execution access to statically execute
- * a method handle.
+ * DESCRIBE THIS.
  *
- * @since 2019/04/17
+ * @since 2019/04/18
  */
-public final class StaticMethodInstance
-	extends PlainObject
+public final class AllocationPoint
 {
-	/** The handle to execute. */
-	protected final MethodHandle handle;
+	/** The allocated instance. */
+	public final Instance instance;
+	
+	/** The pointer it was allocated at. */
+	public final int vptr;
 	
 	/**
-	 * Initializes the static method instance.
+	 * Initializes the allocation point.
 	 *
-	 * @param __mh The method handle to use.
+	 * @param __i The instance.
+	 * @param __vptr The virtual pointer.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2019/04/17
+	 * @since 2019/04/18
 	 */
-	public StaticMethodInstance(MethodHandle __mh)
+	public AllocationPoint(Instance __i, int __vptr)
 		throws NullPointerException
 	{
-		if (__mh == null)
+		if (__i == null)
 			throw new NullPointerException("NARG");
 		
-		this.handle = __mh;
+		this.instance = __i;
+		this.vptr = __vptr;
 	}
 }
 

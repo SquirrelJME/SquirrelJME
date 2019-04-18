@@ -20,6 +20,24 @@ public class PlainObject
 	/** The loaded class this is. */
 	public final LoadedClass loadedclass;
 	
+	/** This object's count, starts at 1. */
+	volatile int _count =
+		1;
+	
+	/** The object's virtual pointer. */
+	volatile int _vptr;
+	
+	/**
+	 * Initializes the plain with no class.
+	 *
+	 * @since 2019/04/18
+	 */
+	public PlainObject()
+	{
+		// Set
+		this.loadedclass = null;
+	}
+	
 	/**
 	 * Initializes the plain object.
 	 *
@@ -33,7 +51,28 @@ public class PlainObject
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
+		// Set
 		this.loadedclass = __cl;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/18
+	 */
+	@Override
+	public final boolean count(boolean __up)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/18
+	 */
+	@Override
+	public final int currentCount()
+	{
+		return this._count;
 	}
 }
 

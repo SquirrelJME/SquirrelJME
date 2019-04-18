@@ -37,6 +37,9 @@ public final class LoadedClass
 	/** The super class. */
 	protected final LoadedClass superclass;
 	
+	/** The component type. */
+	protected final LoadedClass componentclass;
+	
 	/** Runtime constant pool, which is initialized when it is needed. */
 	protected final RuntimeConstantPool runpool;
 	
@@ -82,11 +85,13 @@ public final class LoadedClass
 	 * @param __cf The minimized class file.
 	 * @param __sn The super class.
 	 * @param __in The interfaces.
-	 * @throws NullPointerException On null arguments, except for {@code __sn}.
+	 * @param __ct The component type, for arrays.
+	 * @throws NullPointerException On null arguments, except for {@code __sn}
+	 * and {@code __ct}.
 	 * @since 2019/04/17
 	 */
 	public LoadedClass(MinimizedClassFile __cf, LoadedClass __sn,
-		LoadedClass[] __in)
+		LoadedClass[] __in, LoadedClass __ct)
 		throws NullPointerException
 	{
 		if (__cf == null || __in == null)
@@ -98,6 +103,7 @@ public final class LoadedClass
 		
 		this.miniclass = __cf;
 		this.superclass = __sn;
+		this.componentclass = __ct;
 		this._interfaces = __in;
 		
 		// Calculate byte size for fields in this class
@@ -143,6 +149,17 @@ public final class LoadedClass
 		for (MinimizedField ff : __cf.fields(false))
 			ifields.put(new FieldNameAndType(ff.name, ff.type), ff);
 		this._ifields = ifields;
+	}
+	
+	/**
+	 * Is this an array?
+	 *
+	 * @return If this is an array or not.
+	 * @since 2019/04/18
+	 */
+	public final boolean isArray()
+	{
+		return this.componentclass != null;
 	}
 	
 	/**
