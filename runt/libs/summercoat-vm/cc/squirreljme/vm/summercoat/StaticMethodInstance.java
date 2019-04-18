@@ -15,6 +15,7 @@ package cc.squirreljme.vm.summercoat;
  *
  * @since 2019/04/17
  */
+@Deprecated
 public final class StaticMethodInstance
 	extends PlainObject
 {

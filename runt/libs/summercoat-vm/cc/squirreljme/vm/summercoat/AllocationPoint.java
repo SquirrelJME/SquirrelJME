@@ -10,10 +10,11 @@
 package cc.squirreljme.vm.summercoat;
 
 /**
- * DESCRIBE THIS.
+ * Represents a point in memory which points to an instance for allocation.
  *
  * @since 2019/04/18
  */
+@Deprecated
 public final class AllocationPoint
 {
 	/** The allocated instance. */
