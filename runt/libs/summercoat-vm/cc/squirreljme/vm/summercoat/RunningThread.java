@@ -554,7 +554,7 @@ public final class RunningThread
 			// {@squirreljme.error AE0a Cannot access protected method of
 			// another class that is not a super class of this class.
 			// (This class; The other class; The method)}
-			else if (omf.isProtected() && !__from.isSuperClassOf(mcl))
+			else if (omf.isProtected() && !__from.isSuperClass(mcl))
 				throw new VMRuntimeException(
 					String.format("AE0a %s %s %s", __from, mcl, mnt));
 		}
@@ -572,6 +572,18 @@ public final class RunningThread
 			case VIRTUAL:
 				return mcl.lookupMethod(MethodLookupType.INSTANCE, false, mnt);
 			
+				// Special calls are non-virtual and are used for private and
+				// constructor calls. They also have some confusing logic as
+				// to how they should be linked as well.
+				// If the target class is a super class of this one and
+				// the target method is not an instance initializer then we
+				// will call the super method instead
+			case SPECIAL:
+				boolean superlu = (__from.isSuperClass(mcl) &&
+					!mnt.name().isInstanceInitializer());
+				return mcl.lookupMethod((superlu ? MethodLookupType.SUPER :
+					MethodLookupType.STATIC), false, mnt);
+				
 			default:
 				throw new todo.TODO(mty.name());
 		}

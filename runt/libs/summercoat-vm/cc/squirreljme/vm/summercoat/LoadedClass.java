@@ -106,10 +106,10 @@ public final class LoadedClass
 	 * @return If this class is a super class of the given class.
 	 * @since 2019/04/17
 	 */
-	public final boolean isSuperClassOf(LoadedClass __cl)
+	public final boolean isSuperClass(LoadedClass __cl)
 	{
 		// Only need to check super classes
-		for (LoadedClass at = this; at != null; at = at.superclass)
+		for (LoadedClass at = this.superclass; at != null; at = at.superclass)
 			if (at == __cl)
 				return true;
 		
@@ -196,6 +196,10 @@ public final class LoadedClass
 		// are used as it is looked up on load
 		else if (__lut == MethodLookupType.INSTANCE)
 			return new InstanceMethodHandle(this.miniclass.thisName(), __nat);
+		
+		// Similar to instance lookup but starts at the super-class instead
+		else if (__lut == MethodLookupType.SUPER)
+			return new SuperMethodHandle(this.miniclass.superName(), __nat);
 		
 		throw new todo.OOPS(__lut.name());
 	}
