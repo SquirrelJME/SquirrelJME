@@ -321,6 +321,16 @@ public final class SimplifiedJavaInstruction
 						MathType.MUL,
 					};
 				break;
+			
+			case InstructionIndex.DNEG:
+				op = SimplifiedJavaInstruction.MATH_CONST;
+				args = new Object[]
+					{
+						DataType.DOUBLE,
+						MathType.NEG,
+						Double.valueOf(0),
+					};
+				break;
 				
 			case InstructionIndex.DREM:
 				op = SimplifiedJavaInstruction.MATH;
@@ -543,6 +553,16 @@ public final class SimplifiedJavaInstruction
 					{
 						DataType.FLOAT,
 						MathType.REM,
+					};
+				break;
+			
+			case InstructionIndex.FNEG:
+				op = SimplifiedJavaInstruction.MATH_CONST;
+				args = new Object[]
+					{
+						DataType.FLOAT,
+						MathType.NEG,
+						Float.valueOf(0),
 					};
 				break;
 				
@@ -908,6 +928,16 @@ public final class SimplifiedJavaInstruction
 						MathType.MUL,
 					};
 				break;
+			
+			case InstructionIndex.INEG:
+				op = SimplifiedJavaInstruction.MATH_CONST;
+				args = new Object[]
+					{
+						DataType.INTEGER,
+						MathType.NEG,
+						Integer.valueOf(0),
+					};
+				break;
 				
 			case InstructionIndex.IOR:
 				op = SimplifiedJavaInstruction.MATH;
@@ -1122,6 +1152,16 @@ public final class SimplifiedJavaInstruction
 					{
 						DataType.LONG,
 						MathType.MUL,
+					};
+				break;
+			
+			case InstructionIndex.LNEG:
+				op = SimplifiedJavaInstruction.MATH_CONST;
+				args = new Object[]
+					{
+						DataType.LONG,
+						MathType.NEG,
+						Long.valueOf(0),
 					};
 				break;
 				
