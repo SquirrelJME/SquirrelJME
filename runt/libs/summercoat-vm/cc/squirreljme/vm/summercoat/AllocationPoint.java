@@ -23,6 +23,17 @@ public final class AllocationPoint
 	public final int vptr;
 	
 	/**
+	 * Initializes a null allocation point.
+	 *
+	 * @since 2019/04/18
+	 */
+	public AllocationPoint()
+	{
+		this.instance = null;
+		this.vptr = 0;
+	}
+	
+	/**
 	 * Initializes the allocation point.
 	 *
 	 * @param __i The instance.

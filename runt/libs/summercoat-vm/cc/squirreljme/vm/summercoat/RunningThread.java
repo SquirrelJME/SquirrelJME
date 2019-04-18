@@ -506,16 +506,25 @@ public final class RunningThread
 	}
 	
 	/**
-	 * Translates the specified string to an in VM string.
+	 * Translates the specified string to an in VM string. This does not
+	 * intern the string, it just creates a new string.
 	 *
 	 * @param __in The input string.
 	 * @return The instance of the string or the associated {@code null}.
 	 * @since 2019/01/10
 	 */
-	public final Instance vmTranslateString(String __in)
+	public final AllocationPoint vmTranslateString(String __in)
 	{
 		// Must be the same thread
 		this.__checkSameThread();
+		
+		// If null just make a null allocation point
+		if (__in == null)
+			return new AllocationPoint();
+		
+		// Allocate new character array sequence
+		AllocationPoint casap = this.vmNew(
+			"cc/squirreljme/runtime/cldc/string/CharArraySequence");
 		
 		throw new todo.TODO();
 	}

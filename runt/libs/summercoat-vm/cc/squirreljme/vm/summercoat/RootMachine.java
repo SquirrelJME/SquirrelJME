@@ -133,7 +133,7 @@ public final class RootMachine
 			vmsm = thr.vmStaticMethod(cl.
 				loadClass("javax/microedition/midlet/MIDlet").lookupMethod(
 				MethodLookupType.INSTANCE, false, "startApp", "()V"));
-			entryarg = thr.vmTranslateString(__maincl);
+			entryarg = thr.vmTranslateString(__maincl).instance;
 		}
 		else
 		{
@@ -149,7 +149,7 @@ public final class RootMachine
 			// Translate string arguments
 			ArrayInstance ai = (ArrayInstance)aip.instance;
 			for (int i = 0; i < n; i++)
-				ai.set(i, thr.vmTranslateString(__args[i]));
+				ai.set(i, thr.vmTranslateString(__args[i]).instance);
 			
 			// We just pass this to the thread
 			entryarg = ai;
@@ -159,7 +159,8 @@ public final class RootMachine
 		// accordingly so it knows which method to invoke
 		Instance threadobj = thr.vmNewInstance("java/lang/Thread",
 			"(Ljava/lang/String;ILcc/squirreljme/runtime/cldc/asm/" +
-			"StaticMethod;Ljava/lang/Object;)V", thr.vmTranslateString("Main"),
+			"StaticMethod;Ljava/lang/Object;)V",
+			thr.vmTranslateString("Main").instance,
 			IntegerValue.of((__ismid ? 3 : 4)), vmsm, entryarg);
 		
 		// Enter the __start() method for Thread
