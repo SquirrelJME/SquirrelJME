@@ -89,6 +89,18 @@ public final class MinimizedClassFile
 	}
 	
 	/**
+	 * Returns the fields in the class.
+	 *
+	 * @param __is If true then static fields are returned.
+	 * @return The fields.
+	 * @since 2019/04/17
+	 */
+	public final MinimizedField[] fields(boolean __is)
+	{
+		return (__is ? this._sfields.clone() : this._ifields.clone());
+	}
+	
+	/**
 	 * The class flags.
 	 *
 	 * @return The class flags.

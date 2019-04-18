@@ -36,20 +36,32 @@ public final class LoadedClass
 	/** Runtime constant pool, which is initialized when it is needed. */
 	protected final RuntimeConstantPool runpool;
 	
+	/** The number of bytes into an object where this class starts. */
+	protected final int startifbytes;
+	
+	/** Total instance size so far for fields. */
+	protected final int totalifbytes;
+	
 	/** Interface classes. */
 	final LoadedClass[] _interfaces;
 	
 	/** Static methods. */
 	private final Map<MethodNameAndType, StaticMethodHandle> _smethods;
 	
-	/** Instance methods, note that these are initialized as static! */
+	/** Instance methods. */
 	private final Map<MethodNameAndType, StaticMethodHandle> _imethods;
 	
 	/** String form. */
 	private Reference<String> _string;
 	
+	/** The position in the static field area, determined on load. */
+	volatile int _startsfbytes;
+	
 	/** Has this class been initialized? */
 	volatile boolean _beeninit;
+	
+	/** Claimed static field space yet? */
+	volatile boolean _claimedsfspace;
 	
 	/**
 	 * Initializes the loaded class.
@@ -74,6 +86,11 @@ public final class LoadedClass
 		this.miniclass = __cf;
 		this.superclass = __sn;
 		this._interfaces = __in;
+		
+		// Calculate byte size for fields in this class
+		int startifbytes = (__sn == null ? 0 : __sn.totalifbytes);
+		this.startifbytes = startifbytes;
+		this.totalifbytes = startifbytes + __cf.header.ifbytes;
 		
 		// Run-time constant pool
 		RuntimeConstantPool runpool;

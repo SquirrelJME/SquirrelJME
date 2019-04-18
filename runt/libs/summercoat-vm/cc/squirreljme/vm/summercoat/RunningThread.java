@@ -528,7 +528,7 @@ public final class RunningThread
 			// is package private and the source class is not in the same
 			// package. (This class; The other class)}
 			if (!samepkg && bcf.isPackagePrivate())
-				throw new VMRuntimeException(
+				throw new VMIncompatibleClassChangeException(
 					String.format("AE06 %s %s", __from, mcl));
 			
 			// Lookup static method handle
@@ -541,21 +541,21 @@ public final class RunningThread
 			// {@squirreljme.error AE08 Cannot access private method of
 			// another class. (This class; The other class; The method)}
 			if (omf.isPrivate())
-				throw new VMRuntimeException(
+				throw new VMIncompatibleClassChangeException(
 					String.format("AE08 %s %s %s", __from, mcl, mnt));
 			
 			// {@squirreljme.error AE09 Cannot access package private method of
 			// another class in another package. (This class; The other class;
 			// The method)}
 			else if (omf.isPackagePrivate() && !samepkg)
-				throw new VMRuntimeException(
+				throw new VMIncompatibleClassChangeException(
 					String.format("AE09 %s %s %s", __from, mcl, mnt));
 			
 			// {@squirreljme.error AE0a Cannot access protected method of
 			// another class that is not a super class of this class.
 			// (This class; The other class; The method)}
 			else if (omf.isProtected() && !__from.isSuperClass(mcl))
-				throw new VMRuntimeException(
+				throw new VMIncompatibleClassChangeException(
 					String.format("AE0a %s %s %s", __from, mcl, mnt));
 		}
 		
