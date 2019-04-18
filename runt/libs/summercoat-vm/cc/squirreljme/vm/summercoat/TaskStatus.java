@@ -37,6 +37,10 @@ public class TaskStatus
 	/** The profiler information output. */
 	protected final ProfilerSnapshot profiler;
 	
+	/** The memory space for this task. */
+	protected final MemorySpace memory =
+		new MemorySpace();
+	
 	/** Class initializing lock for this task. */
 	protected final Object classinitlock =
 		new Object();
