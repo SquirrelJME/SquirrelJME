@@ -144,9 +144,10 @@ public final class RootMachine
 			
 			// Setup array that is the same size as the input arguments
 			int n = __args.length;
-			ArrayInstance ai = thr.vmNewArray("[Ljava/lang/String;", n);
+			AllocationPoint aip = thr.vmNewArray("[Ljava/lang/String;", n);
 			
 			// Translate string arguments
+			ArrayInstance ai = (ArrayInstance)aip.instance;
 			for (int i = 0; i < n; i++)
 				ai.set(i, thr.vmTranslateString(__args[i]));
 			

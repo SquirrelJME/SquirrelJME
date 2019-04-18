@@ -31,8 +31,14 @@ public final class MemorySpace
 	/** The object size. */
 	public final int objectsize;
 	
+	/** The current object space. */
+	private final Instance[] _objectspace;
+	
 	/** Current size of static field space. */
 	private volatile int _cursfsize;
+	
+	/** The total number of objects. */
+	private volatile int _numobjects;
 	
 	/**
 	 * Intializes the memory space with default settings.
@@ -54,8 +60,12 @@ public final class MemorySpace
 	public MemorySpace(int __sfs, int __ojs)
 	{
 		// Set sizes
-		this.staticfieldsize = (__sfs <= 0 ? DEFAULT_STATIC_SIZE : __sfs);
-		this.objectsize = (__ojs <= 0 ? DEFAULT_OBJECT_SIZE : __ojs);
+		this.staticfieldsize =
+			(__sfs = (__sfs <= 0 ? DEFAULT_STATIC_SIZE : __sfs));
+		this.objectsize = (__ojs = (__ojs <= 0 ? DEFAULT_OBJECT_SIZE : __ojs));
+		
+		// Allocate regions
+		this._objectspace = new Instance[__ojs];
 	}
 	
 	/**
@@ -64,10 +74,11 @@ public final class MemorySpace
 	 * @param __v The volume of space to allocate.
 	 * @return The address of the allocation.
 	 * @throws IllegalArgumentException On null arguments.
+	 * @throws VMOutOfMemoryException If no memory remains.
 	 * @since 2019/04/18
 	 */
 	public final int allocateStaticSpace(int __v)
-		throws IllegalArgumentException
+		throws IllegalArgumentException, VMOutOfMemoryException
 	{
 		// {@squirreljme.error AE0b Cannot claim negative amount of static
 		// field space.}
@@ -92,6 +103,67 @@ public final class MemorySpace
 			// Use the old current size
 			return cursfsize;
 		}
+	}
+	
+	/**
+	 * Registers the specified object into the object table.
+	 *
+	 * @param __o The instance of the object.
+	 * @return The index of the object, which is its pointer.
+	 * @since 2019/04/18
+	 */
+	public final int registerInstance(Instance __obj)
+		throws NullPointerException, VMOutOfMemoryException
+	{
+		if (__obj == null)
+			throw new NullPointerException("NARG");
+		
+		Instance[] objectspace = this._objectspace;
+		
+		// Lock on self since this is an important operation
+		synchronized (this)
+		{
+			// Scan through space, object zero indicates null pointer
+			boolean retried = false;
+			for (int i = 1, n = objectspace.length; i <= n; i++)
+			{
+				// If the end is reach, potentially try again
+				if (i == n)
+				{
+					// This was our second try, so fail
+					if (retried)
+						break;
+					
+					// Only try once more
+					retried = true;
+					i = 0;
+				}
+				
+				// Object has no counts to it, it may be garbage collected now
+				Instance at = objectspace[i];
+				if (at != null)
+				{
+					// Still has counts
+					if (at.currentCount() > 0)
+						continue;
+					
+					// Un-count references for object and clear it
+					throw new todo.TODO();
+				}
+				
+				// If this point was reached then use this slot for the object
+				objectspace[i] = __obj;
+				
+				// Increase object count
+				this._numobjects++;
+				
+				// Use this index pointer
+				return i;
+			}
+		}
+		
+		// {@squirreljme.error AE0j Out of object space.}
+		throw new VMOutOfMemoryException("AE0j");
 	}
 }
 

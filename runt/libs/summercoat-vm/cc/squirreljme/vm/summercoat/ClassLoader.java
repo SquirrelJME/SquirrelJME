@@ -160,7 +160,8 @@ public final class ClassLoader
 			// Build loaded class with other class references
 			rv = new LoadedClass(cf, superclass,
 				intclasses.<LoadedClass>toArray(
-					new LoadedClass[intclasses.size()]));
+					new LoadedClass[intclasses.size()]),
+				(__n.isArray() ? this.loadClass(__n.componentType()) : null));
 			
 			// Cache it
 			classes.put(__n, rv);

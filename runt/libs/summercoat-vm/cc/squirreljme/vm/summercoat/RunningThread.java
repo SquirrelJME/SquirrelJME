@@ -341,7 +341,7 @@ public final class RunningThread
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/17
 	 */
-	public final Instance vmInternString(String __s)
+	public final AllocationPoint vmInternString(String __s)
 		throws NullPointerException
 	{
 		if (__s == null)
@@ -361,7 +361,7 @@ public final class RunningThread
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/17
 	 */
-	public final Instance vmNew(String __cl)
+	public final AllocationPoint vmNew(String __cl)
 		throws NullPointerException
 	{
 		return this.vmNew(this.status.classloader.loadClass(__cl));
@@ -375,16 +375,14 @@ public final class RunningThread
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/17
 	 */
-	public final Instance vmNew(LoadedClass __cl)
+	public final AllocationPoint vmNew(LoadedClass __cl)
 		throws NullPointerException
 	{
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		// Must be the same thread
-		this.__checkSameThread();
-		
-		throw new todo.TODO();
+		// Uses virtually the same logic as arrays
+		return this.vmNewArray(__cl, 0);
 	}
 	
 	/**
@@ -397,7 +395,7 @@ public final class RunningThread
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/01/10
 	 */
-	public final ArrayInstance vmNewArray(String __cl, int __len)
+	public final AllocationPoint vmNewArray(String __cl, int __len)
 		throws NullPointerException
 	{
 		return this.vmNewArray(this.status.classloader.loadClass(__cl), __len);
@@ -413,7 +411,7 @@ public final class RunningThread
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/01/10
 	 */
-	public final ArrayInstance vmNewArray(LoadedClass __cl, int __len)
+	public final AllocationPoint vmNewArray(LoadedClass __cl, int __len)
 		throws NullPointerException
 	{
 		if (__cl == null)
@@ -426,9 +424,19 @@ public final class RunningThread
 		this.vmInitializeClass(__cl);
 		
 		// Create instance of object
-		ArrayInstance rv = new PlainArray(__cl, __len);
+		boolean isarray;
+		Instance rv = ((isarray = __cl.isArray()) ?
+			new PlainArray(__cl, __len) : new PlainObject(__cl));
 		
-		throw new todo.TODO();
+		// Register the instance into the object table
+		int vptr = this.status.memory.registerInstance(rv);
+		((PlainObject)rv)._vptr = vptr;
+		
+		// Debug
+		todo.DEBUG.note("Registered new %s at %d", __cl, vptr);
+		
+		// Done with it
+		return new AllocationPoint(rv, vptr);
 	}
 	
 	/**
