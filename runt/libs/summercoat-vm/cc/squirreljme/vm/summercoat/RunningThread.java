@@ -265,7 +265,7 @@ public final class RunningThread
 						v = orig;
 						break;
 						
-						// Access to a field
+						// Access to a field, offset is used
 					case ACCESSED_FIELD:
 						throw new todo.TODO();
 						
