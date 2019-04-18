@@ -638,9 +638,9 @@ public final class NearNativeByteCodeHandler
 		int tempreg = state.stack.usedregisters;
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
 			this.__fieldAccess(FieldAccessType.STATIC, __fr), tempreg);
-		codebuilder.addMemoryOffConst(
+		codebuilder.addMemoryOffReg(
 			DataType.of(__fr.memberType().primitiveType()), true,
-			__v.register, tempreg, 0);
+			__v.register, STATIC_FIELD_REGISTER, tempreg);
 			
 		// Clear references as needed
 		this.__refClear();
@@ -663,9 +663,9 @@ public final class NearNativeByteCodeHandler
 		int tempreg = state.stack.usedregisters;
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
 			this.__fieldAccess(FieldAccessType.STATIC, __fr), tempreg);
-		codebuilder.addMemoryOffConst(
+		codebuilder.addMemoryOffReg(
 			DataType.of(__fr.memberType().primitiveType()), false,
-			__v.register, tempreg, 0);
+			__v.register, NativeCode.STATIC_FIELD_REGISTER, tempreg);
 			
 		// Clear references as needed
 		this.__refClear();
