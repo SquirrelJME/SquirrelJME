@@ -32,13 +32,17 @@ public final class NativeCode
 	public static final int ZERO_REGISTER =
 		0;
 	
+	/** Static field area register. */
+	public static final int STATIC_FIELD_REGISTER =
+		16384;
+	
 	/** The return value register. */
 	public static final int RETURN_REGISTER =
-		16384;
+		16386;
 	
 	/** The thrown exception register. */
 	public static final int EXCEPTION_REGISTER =
-		16386;
+		16388;
 	
 	/** Instructions for this code. */
 	private final NativeInstruction[] _instructions;
