@@ -17,11 +17,14 @@ package cc.squirreljme.vm.summercoat;
  */
 public enum MethodLookupType
 {
-	/** As instance method, if it is one. */
+	/** As instance method, invocation starts at the object class. */
 	INSTANCE,
 	
 	/** As purely static method. */
 	STATIC,
+	
+	/** Super method, start at the specified class in the chain and go down. */
+	SUPER,
 	
 	/** End. */
 	;
