@@ -19,6 +19,18 @@ public final class MethodFlags
 	extends MemberFlags<MethodFlag>
 {
 	/**
+	 * Initializes the method flags, with no checks performed on them.
+	 *
+	 * @param __i The method flags.
+	 * @since 2016/04/23
+	 */
+	public MethodFlags(int __i)
+	{
+		super(MethodFlag.class,
+			Flags.<MethodFlag>__decode(__i, MethodFlag.values()));
+	}
+	
+	/**
 	 * Initializes the method flags.
 	 *
 	 * @param __oc The outer class.

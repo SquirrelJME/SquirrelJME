@@ -94,7 +94,7 @@ public final class LoadedClass
 		Map<MethodNameAndType, StaticMethodHandle> imethods =
 			new LinkedHashMap<>();
 		for (MinimizedMethod mm : __cf.methods(false))
-			smethods.put(new MethodNameAndType(mm.name, mm.type),
+			imethods.put(new MethodNameAndType(mm.name, mm.type),
 				new StaticMethodHandle(runpool, mm));
 		this._imethods = imethods;
 	}

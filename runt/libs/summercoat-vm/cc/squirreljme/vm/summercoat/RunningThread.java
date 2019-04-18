@@ -19,6 +19,7 @@ import java.lang.ref.WeakReference;
 import net.multiphasicapps.classfile.ClassFlags;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.MethodDescriptor;
+import net.multiphasicapps.classfile.MethodFlags;
 import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**
@@ -529,6 +530,13 @@ public final class RunningThread
 			if (!samepkg && bcf.isPackagePrivate())
 				throw new VMRuntimeException(
 					String.format("AE06 %s %s", __from, mcl));
+			
+			// Lookup static method handle
+			StaticMethodHandle smh = (StaticMethodHandle)mcl.lookupMethod(
+				MethodLookupType.STATIC, mty == InvokeType.STATIC, mnt);
+			
+			// Get the flags of the remote method
+			MethodFlags omf = smh.minimethod.flags();
 			
 			throw new todo.TODO();
 		}
