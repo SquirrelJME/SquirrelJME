@@ -46,6 +46,9 @@ public final class LoadedClass
 	/** Total instance size so far for fields. */
 	protected final int totalifbytes;
 	
+	/** Static initializer, if any. */
+	protected final StaticMethodHandle staticinit;
+	
 	/** Interface classes. */
 	final LoadedClass[] _interfaces;
 	
@@ -113,6 +116,10 @@ public final class LoadedClass
 			smethods.put(new MethodNameAndType(mm.name, mm.type),
 				new StaticMethodHandle(runpool, mm));
 		this._smethods = smethods;
+		
+		// Static initializer
+		this.staticinit = smethods.get(new MethodNameAndType(
+			new MethodName("<clinit>"), new MethodDescriptor("()V")));
 		
 		// Initialize instance methods
 		// Note that these are initialized as static handles to refer to them
