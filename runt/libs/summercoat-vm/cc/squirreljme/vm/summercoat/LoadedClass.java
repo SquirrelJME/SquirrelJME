@@ -100,6 +100,23 @@ public final class LoadedClass
 	}
 	
 	/**
+	 * Checks if this class is a super class of the given class.
+	 *
+	 * @param __cl The class to check.
+	 * @return If this class is a super class of the given class.
+	 * @since 2019/04/17
+	 */
+	public final boolean isSuperClassOf(LoadedClass __cl)
+	{
+		// Only need to check super classes
+		for (LoadedClass at = this; at != null; at = at.superclass)
+			if (at == __cl)
+				return true;
+		
+		return false;
+	}
+	
+	/**
 	 * Looks up the given method.
 	 *
 	 * @param __lut The type of lookup to perform.
