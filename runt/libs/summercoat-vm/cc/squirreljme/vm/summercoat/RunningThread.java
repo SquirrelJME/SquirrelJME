@@ -14,10 +14,13 @@ import dev.shadowtail.classfile.mini.MinimizedField;
 import dev.shadowtail.classfile.mini.MinimizedPool;
 import dev.shadowtail.classfile.mini.MinimizedPoolEntryType;
 import dev.shadowtail.classfile.nncc.AccessedField;
+import dev.shadowtail.classfile.nncc.ArgumentFormat;
 import dev.shadowtail.classfile.nncc.FieldAccessTime;
 import dev.shadowtail.classfile.nncc.FieldAccessType;
 import dev.shadowtail.classfile.nncc.InvokedMethod;
 import dev.shadowtail.classfile.nncc.NativeCode;
+import dev.shadowtail.classfile.nncc.NativeInstruction;
+import dev.shadowtail.classfile.nncc.NativeInstructionType;
 import dev.shadowtail.classfile.xlate.InvokeType;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -33,6 +36,7 @@ import net.multiphasicapps.classfile.FieldNameAndType;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodFlags;
 import net.multiphasicapps.classfile.MethodNameAndType;
+import net.multiphasicapps.collections.IntegerList;
 import net.multiphasicapps.profiler.ProfiledThread;
 import net.multiphasicapps.profiler.ProfilerSnapshot;
 
@@ -783,7 +787,9 @@ public final class RunningThread
 		boolean reload = true;
 		
 		// Globally used stuff
-		final int[] grs = this._globalregs;
+		final int[] grs = this._globalregs,
+			args = new int[3];
+		final long[] largs = new long[3];
 
 		// Used per frame
 		int[] lrs = null;
@@ -820,7 +826,81 @@ public final class RunningThread
 				reload = false;
 			}
 			
-			throw new todo.TODO();
+			// Instruction to execute
+			int op = (code[pc] & 0xFF);
+			
+			// Clear arguments, just in case
+			for (int i = 0, n = args.length; i < n; i++)
+			{
+				args[i] = 0;
+				largs[i] = 0;
+			}
+			
+			// Load arguments for this instruction
+			ArgumentFormat[] af = NativeInstruction.argumentFormat(op);
+			int rargp = op + 1;
+			for (int i = 0, n = af.length; i < n; i++)
+				switch (af[i])
+				{
+					// Variable sized entries, may be pool values
+					case VUINT:
+					case VPOOL:
+					case VJUMP:
+						{
+							// Long value?
+							int base = (code[rargp++] & 0xFF);
+							if ((base & 0x80) != 0)
+							{
+								base <<= 8;
+								base |= (code[rargp++] & 0xFF);
+							}
+							
+							// Set
+							args[i] = base;
+						}
+						break;
+					
+					// Register list.
+					case REGLIST:
+						throw new todo.TODO();
+					
+					// 32-bit integer/float
+					case INT32:
+					case FLOAT32:
+						args[i] = ((code[rargp++] & 0xFF) << 24) |
+							((code[rargp++] & 0xFF) << 16) |
+							((code[rargp++] & 0xFF) << 8) |
+							((code[rargp++] & 0xFF));
+						break;
+					
+					// 64-bit long/double
+					case INT64:
+					case FLOAT64:
+						largs[i] = ((code[rargp++] & 0xFFL) << 56L) |
+							((code[rargp++] & 0xFFL) << 48L) |
+							((code[rargp++] & 0xFFL) << 40L) |
+							((code[rargp++] & 0xFFL) << 32L) |
+							((code[rargp++] & 0xFFL) << 24L) |
+							((code[rargp++] & 0xFFL) << 16L) |
+							((code[rargp++] & 0xFFL) << 8L) |
+							((code[rargp++] & 0xFFL));
+						break;
+					
+					default:
+						throw new todo.OOPS(af[i].name());
+				}
+			
+			// Debug
+			todo.DEBUG.note("exec %s %s", NativeInstruction.mnemonic(op),
+				new IntegerList(args));
+			
+			// Handle operations byte by byte, depending on the encoding
+			switch (NativeInstruction.encoding(op))
+			{
+					// Unknown operation
+				default:
+					throw new todo.OOPS(NativeInstruction.mnemonic(op));
+			}
 		}
 	}
 	
