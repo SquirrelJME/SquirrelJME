@@ -89,8 +89,11 @@ public final class RunningThread
 	public void execEnterMethod(MethodHandle __mh, Object... __args)
 		throws IllegalStateException, NullPointerException
 	{
+		if (__mh == null)
+			throw new NullPointerException("NARG");
+		
 		// Must be the same thread
-		__checkSameThread();
+		this.__checkSameThread();
 		
 		throw new todo.TODO();
 	}
@@ -131,7 +134,7 @@ public final class RunningThread
 			throw new NullPointerException("NARG");
 		
 		// Must be the same thread
-		boolean didstart = __checkSameThread();
+		boolean didstart = this.__checkSameThread();
 		if (!didstart)
 			synchronized (this)
 			{
@@ -509,7 +512,20 @@ public final class RunningThread
 		// Allocate new object before we call the constructor on it
 		TypedPointer rv = this.vmNew(__cl);
 		
-		throw new todo.TODO();
+		// The arguments to the call must get the instance put in there so that
+		// the constructor actually works
+		int nargs = __args.length;
+		Object[] xargs = new Object[nargs + 1];
+		for (int i = 0, o = 1; i < nargs; i++, o++)
+			xargs[i] = __args[i];
+		xargs[0] = rv;
+		
+		// Execute constructor
+		this.runMethod(__cl.lookupMethod(MethodLookupType.STATIC, false,
+			new MethodNameAndType("<init>", __desc)), xargs);
+		
+		// Return the initialized value
+		return rv;
 	}
 	
 	/**
