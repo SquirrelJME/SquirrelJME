@@ -442,23 +442,14 @@ public final class RunningThread
 		// Potentially initialize this class
 		this.vmInitializeClass(__cl);
 		
-		throw new todo.TODO();
-		/*
-		// Create instance of object
-		boolean isarray;
-		Instance rv = ((isarray = __cl.isArray()) ?
-			new PlainArray(__cl, __len) : new PlainObject(__cl));
+		// Determine the number of bytes to allocate
+		int allocsz = __cl.totalifbytes;
+		if (__cl.isArray())
+			throw new todo.TODO();
 		
-		// Register the instance into the object table
-		int vptr = this.status.memory.registerInstance(rv);
-		((PlainObject)rv)._vptr = vptr;
-		
-		// Debug
-		todo.DEBUG.note("Registered new %s at %d", __cl, vptr);
-		
-		// Done with it
-		return new AllocationPoint(rv, vptr);
-		*/
+		// Allocate and return the typed pointer
+		return new TypedPointer(__cl,
+			this.status.memory.allocate(true, allocsz));
 	}
 	
 	/**
