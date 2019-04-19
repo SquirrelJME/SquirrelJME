@@ -47,6 +47,22 @@ public final class MethodNameAndType
 	}
 	
 	/**
+	 * Initializes the method anme and type.
+	 *
+	 * @param __n The name of the method.
+	 * @param __t The type of the method.
+	 * @throws InvalidClassFormatException If the method name and type are not
+	 * valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/19
+	 */
+	public MethodNameAndType(String __n, MethodDescriptor __t)
+		throws InvalidClassFormatException, NullPointerException
+	{
+		this(new MethodName(__n), __t);
+	}
+	
+	/**
 	 * Initializes the method name and type.
 	 *
 	 * @param __n The name of the method.
