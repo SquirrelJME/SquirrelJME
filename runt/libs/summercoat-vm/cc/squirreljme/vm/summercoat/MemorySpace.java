@@ -70,13 +70,15 @@ public final class MemorySpace
 	
 	/**
 	 * Allocates the specified amount of memory.
-	 * 
+	 *
+	 * @param __isobj Is this an allocation for an object? This is so that
+	 * finding objects is easier for emergency garbage collection.
 	 * @param __sz The number of bytes to allocate.
 	 * @return The address of the allocation.
 	 * @throws IllegalArgumentException If the size is zero or negative.
 	 * @since 2019/04/18
 	 */
-	public final int allocate(int __sz)
+	public final int allocate(boolean __isobj, int __sz)
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error AE0k Cannot allocate a zero or negative
