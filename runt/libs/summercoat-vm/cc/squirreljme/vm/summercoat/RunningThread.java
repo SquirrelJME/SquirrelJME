@@ -59,6 +59,10 @@ public final class RunningThread
 	private final LinkedList<ThreadFrame> _frames =
 		new LinkedList<>();
 	
+	/** Global registers that are available. */
+	private final int[] _globalregs =
+		new int[ThreadFrame.MAX_REGISTERS];
+	
 	/** Has this thread been started via the run method. */
 	private volatile boolean _didstart;
 	
@@ -99,12 +103,13 @@ public final class RunningThread
 	 *
 	 * @param __mh The method handle.
 	 * @param __args The method arguments.
+	 * @return The index of the added frame.
 	 * @throws IllegalStateException If the thread has been started and this
 	 * is not the current thread.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/01/10
 	 */
-	public void execEnterMethod(MethodHandle __mh, int... __args)
+	public int execEnterMethod(MethodHandle __mh, int... __args)
 		throws IllegalStateException, NullPointerException
 	{
 		if (__mh == null)
@@ -140,7 +145,16 @@ public final class RunningThread
 		for (int i = 0, n = __args.length, o = 1; i < n; i++, o++)
 			ra[o] = __args[i];
 		
-		throw new todo.TODO();
+		// Get this frame index, this will be used by code that is just
+		// executing the current frame until the frame has exited
+		LinkedList<ThreadFrame> frames = this._frames;
+		int framedx = frames.size();
+		
+		// Register this frame
+		frames.addLast(nf);
+		
+		// And return the frame index
+		return framedx;
 	}
 	
 	/**
@@ -149,13 +163,14 @@ public final class RunningThread
 	 *
 	 * @param __mh The method handle.
 	 * @param __args The method arguments.
+	 * @return The index of the added frame.
 	 * @throws IllegalArgumentException If the argument is not valid.
 	 * @throws IllegalStateException If the thread has been started and this
 	 * is not the current thread.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/01/10
 	 */
-	public void execEnterMethod(MethodHandle __mh, Object... __args)
+	public int execEnterMethod(MethodHandle __mh, Object... __args)
 		throws IllegalStateException, NullPointerException
 	{
 		if (__mh == null)
@@ -201,7 +216,7 @@ public final class RunningThread
 		}
 		
 		// Use the fast version, trim array accordingly
-		this.execEnterMethod(__mh, (o == iargs.length ? iargs :
+		return this.execEnterMethod(__mh, (o == iargs.length ? iargs :
 			Arrays.copyOf(iargs, o)));
 	}
 	
@@ -271,8 +286,9 @@ public final class RunningThread
 		// Needed to clear the current thread
 		try
 		{
-			// Setup thread frame for method handle
-			this.execEnterMethod(__mh, __args);
+			// Setup thread frame for method handle and execute the frames
+			// until its termination point is reached
+			this.__doExecution(this.execEnterMethod(__mh, __args));
 			
 			throw new todo.TODO();
 		}
