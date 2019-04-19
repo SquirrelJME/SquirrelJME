@@ -126,7 +126,7 @@ public final class LoadedClass
 			new LinkedHashMap<>();
 		for (MinimizedMethod mm : __cf.methods(true))
 			smethods.put((nat = new MethodNameAndType(mm.name, mm.type)),
-				new StaticMethodHandle(runpool, mm, tc, nat));
+				new StaticMethodHandle(runpool, mm, tc, nat, mm.code()));
 		this._smethods = smethods;
 		
 		// Static initializer
@@ -141,7 +141,7 @@ public final class LoadedClass
 			new LinkedHashMap<>();
 		for (MinimizedMethod mm : __cf.methods(false))
 			imethods.put((nat = new MethodNameAndType(mm.name, mm.type)),
-				new StaticMethodHandle(runpool, mm, tc, nat));
+				new StaticMethodHandle(runpool, mm, tc, nat, mm.code()));
 		this._imethods = imethods;
 		
 		// Get static field info

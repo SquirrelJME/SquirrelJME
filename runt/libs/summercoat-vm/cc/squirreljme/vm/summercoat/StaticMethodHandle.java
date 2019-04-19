@@ -40,16 +40,20 @@ public final class StaticMethodHandle
 	/** The method's type. */
 	protected final MethodDescriptor inmethodtype;
 	
+	/** The method code. */
+	final byte[] _code;
+	
 	/**
 	 * Initializes the static method handle.
 	 *
 	 * @param __rp The run-time constant pool.
 	 * @param __m The minimized method.
+	 * @param __c The method code.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/17
 	 */
 	public StaticMethodHandle(RuntimeConstantPool __rp, MinimizedMethod __m,
-		ClassName __icl, MethodNameAndType __nat)
+		ClassName __icl, MethodNameAndType __nat, byte[] __c)
 		throws NullPointerException
 	{
 		if (__rp == null || __m == null || __icl == null || __nat == null)
@@ -60,6 +64,7 @@ public final class StaticMethodHandle
 		this.inclass = __icl;
 		this.inmethodname = __nat.name();
 		this.inmethodtype = __nat.type();
+		this._code = __c;
 	}
 	
 	/**

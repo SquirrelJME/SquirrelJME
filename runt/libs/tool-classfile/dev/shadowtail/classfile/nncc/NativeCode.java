@@ -32,6 +32,10 @@ public final class NativeCode
 	public static final int ZERO_REGISTER =
 		0;
 	
+	/** Base global registers. */
+	public static final int BASE_GLOBAL_REGISTER =
+		8192;
+	
 	/** Static field area register. */
 	public static final int STATIC_FIELD_REGISTER =
 		8192;
