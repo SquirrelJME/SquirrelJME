@@ -288,6 +288,7 @@ public final class NativeInstruction
 		// Depends on the encoding
 		switch (NativeInstruction.encoding(__op))
 		{
+			case NativeInstructionType.ENTRY_MARKER:
 			case NativeInstructionType.REF_CLEAR:
 			case NativeInstructionType.REF_RESET:
 			case NativeInstructionType.RETURN:
@@ -350,6 +351,7 @@ public final class NativeInstruction
 		{
 				// []
 			case NativeInstructionType.BREAKPOINT:
+			case NativeInstructionType.ENTRY_MARKER:
 			case NativeInstructionType.RETURN:
 			case NativeInstructionType.REF_CLEAR:
 			case NativeInstructionType.REF_RESET:
@@ -561,6 +563,7 @@ public final class NativeInstruction
 			case NativeInstructionType.ARRAYLEN:		return "ARRAYLEN";
 			case NativeInstructionType.BREAKPOINT:		return "BREAKPOINT";
 			case NativeInstructionType.COUNT:			return "COUNT";
+			case NativeInstructionType.ENTRY_MARKER:	return "ENTRY_MARKER";
 			case NativeInstructionType.IFARRAY_INDEX_OOB_REF_CLEAR:
 				return "IFARRAY_INDEX_OOB_REF_CLEAR";
 			case NativeInstructionType.IFARRAY_MISTYPE_REF_CLEAR:

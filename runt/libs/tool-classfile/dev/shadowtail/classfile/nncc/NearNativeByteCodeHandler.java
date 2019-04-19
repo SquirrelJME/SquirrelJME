@@ -746,6 +746,10 @@ public final class NearNativeByteCodeHandler
 		ByteCodeState state = this.state;
 		int addr = state.addr;
 		
+		// Add entry marker to debug that entry of methods is being hit
+		if (addr == 0)
+			codebuilder.add(NativeInstructionType.ENTRY_MARKER);
+		
 		// Set source line
 		codebuilder.setSourceLine(state.line);
 		
