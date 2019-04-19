@@ -502,6 +502,9 @@ public final class RunningThread
 		// Defensive copy
 		__args = (__args == null ? new Object[0] : __args.clone());
 		
+		// Allocate new object before we call the constructor on it
+		TypedPointer rv = this.vmNew(__cl);
+		
 		throw new todo.TODO();
 	}
 	
