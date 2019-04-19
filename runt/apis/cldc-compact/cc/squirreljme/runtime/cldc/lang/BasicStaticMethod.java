@@ -20,15 +20,17 @@ public final class BasicStaticMethod
 	implements StaticMethod
 {
 	/** The method index this refers to. */
-	private int _index;
+	private final int _index;
 	
 	/**
 	 * Internally initialized.
 	 *
+	 * @param __dx The method index.
 	 * @since 2019/04/19
 	 */
-	private BasicStaticMethod()
+	private BasicStaticMethod(int __dx)
 	{
+		this._index = __dx;
 	}
 }
 
