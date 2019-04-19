@@ -34,6 +34,7 @@ import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ConstantValue;
 import net.multiphasicapps.classfile.Field;
 import net.multiphasicapps.classfile.FieldDescriptor;
+import net.multiphasicapps.classfile.FieldFlags;
 import net.multiphasicapps.classfile.FieldName;
 import net.multiphasicapps.classfile.InstructionJumpTarget;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
@@ -250,10 +251,40 @@ public final class Minimizer
 		__TempFields__[] rv = new __TempFields__[]{
 			new __TempFields__(), new __TempFields__()};
 		
+		// Check if this is object or an array, so that special fields are
+		// added
+		boolean isobject = this.input.thisName().toString().
+				equals("java/lang/Object"),
+			isarray = this.input.thisName().isArray();
+		
 		// Perform some sorting to optimize slightly and make the layout a
 		// bit friendlier
 		List<Field> sorted = new ArrayList<>(this.input.fields());
 		Collections.sort(sorted, new __MinimizerFieldSort__());
+		
+		// If this is an object, add the special class type (internal class
+		// pointer) and the reference count
+		if (isobject)
+		{
+			// Synthetic + Transient + Final
+			sorted.add(0, new Field(new FieldFlags(0x1090),
+				new FieldName("_class"),
+				FieldDescriptor.INTEGER, null, null));
+			
+			// Synthetic + Transient + Volatile
+			sorted.add(1, new Field(new FieldFlags(0x10c0),
+				new FieldName("_refcount"),
+				FieldDescriptor.INTEGER, null, null));
+		}
+		
+		// If an array, add the length of the array
+		if (isarray)
+		{
+			// Synthetic + Transient + Final
+			sorted.add(0, new Field(new FieldFlags(0x1090),
+				new FieldName("_length"),
+				FieldDescriptor.INTEGER, null, null));
+		}
 		
 		// Process each field
 		for (Field f : sorted)
@@ -267,7 +298,8 @@ public final class Minimizer
 			
 			// If this is an object increase the object count, this is needed
 			// by the garbage collector to determine the addresses to scan
-			if (pt == null)
+			// However, the object class always has no objects in it
+			if (!isobject && pt == null)
 				temp._objects++;
 			
 			// Determine the base position and check if any alignment is needed
