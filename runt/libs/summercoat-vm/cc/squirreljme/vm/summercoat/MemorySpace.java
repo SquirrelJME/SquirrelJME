@@ -9,8 +9,10 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This contains the memory space that is used for a task, it contains the
@@ -33,6 +35,10 @@ public final class MemorySpace
 	/** Partitions within memory. */
 	private final LinkedList<Partition> _parts =
 		new LinkedList<>();
+	
+	/** Method handles currently registered. */
+	private Map<MethodHandle, Integer> _handles =
+		new HashMap<>();
 	
 	/**
 	 * Intializes the memory space with default settings.
@@ -83,6 +89,35 @@ public final class MemorySpace
 		synchronized (this)
 		{
 			throw new todo.TODO();
+		}
+	}
+	
+	/**
+	 * Registers the method handle.
+	 *
+	 * @param __mh The handle to register.
+	 * @return The index of the handle.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/19
+	 */
+	public final int registerHandle(MethodHandle __mh)
+		throws NullPointerException
+	{
+		if (__mh == null)
+			throw new NullPointerException("NARG");
+		
+		Map<MethodHandle, Integer> handles = this._handles;
+		synchronized (handles)
+		{
+			// Use pre-existing index
+			Integer rv = handles.get(__mh);
+			if (rv != null)
+				return rv;
+			
+			// Store
+			int dx = handles.size();
+			handles.put(__mh, dx);
+			return dx;
 		}
 	}
 	
