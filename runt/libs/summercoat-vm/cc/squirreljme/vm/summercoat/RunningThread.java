@@ -20,6 +20,8 @@ import dev.shadowtail.classfile.nncc.InvokedMethod;
 import dev.shadowtail.classfile.xlate.InvokeType;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
+import java.util.LinkedList;
 import net.multiphasicapps.classfile.ClassFlags;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ClassNames;
@@ -47,6 +49,10 @@ public final class RunningThread
 	
 	/** The task status this reports on. */
 	protected final TaskStatus status;
+	
+	/** Thread frames of what is being run. */
+	private final LinkedList<ThreadFrame> _frames =
+		new LinkedList<>();
 	
 	/** Has this thread been started via the run method. */
 	private volatile boolean _didstart;
@@ -77,10 +83,53 @@ public final class RunningThread
 	
 	/**
 	 * Sets up the thread so that the given method is entered from this
+	 * thread, it is not started. This version is faster as the arguments
+	 * are all integers.
+	 *
+	 * @param __mh The method handle.
+	 * @param __args The method arguments.
+	 * @throws IllegalStateException If the thread has been started and this
+	 * is not the current thread.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/01/10
+	 */
+	public void execEnterMethod(MethodHandle __mh, int... __args)
+		throws IllegalStateException, NullPointerException
+	{
+		if (__mh == null)
+			throw new NullPointerException("NARG");
+		
+		// Must be the same thread
+		this.__checkSameThread();
+		
+		// Defensive copy
+		__args = (__args == null ? new int[0] : __args.clone());
+		
+		// Need to resolve the method handle for the given pointer's class
+		// Note that if the method handle is already a method handle then that
+		// resolver will do nothing
+		int iptr = (__args.length >= 1 ? __args[0] : 0);
+		StaticMethodHandle smh = __mh.resolve(
+			this.status.memory.readClassOptional(iptr));
+		
+		// Setup basic frame
+		ThreadFrame nf = new ThreadFrame(smh.runpool);
+		
+		// Load arguments into the argument registers
+		int[] ra = nf.r;
+		for (int i = 0, n = __args.length, o = 1; i < n; i++, o++)
+			ra[o] = __args[i];
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Sets up the thread so that the given method is entered from this
 	 * thread, it is not started.
 	 *
 	 * @param __mh The method handle.
 	 * @param __args The method arguments.
+	 * @throws IllegalArgumentException If the argument is not valid.
 	 * @throws IllegalStateException If the thread has been started and this
 	 * is not the current thread.
 	 * @throws NullPointerException On null arguments.
@@ -92,10 +141,48 @@ public final class RunningThread
 		if (__mh == null)
 			throw new NullPointerException("NARG");
 		
-		// Must be the same thread
-		this.__checkSameThread();
+		// Need to convert arguments to integers since everything is based
+		// on registers, this ends up being far faster for calls accordingly
+		// within the VM since everything is purely register based
+		int n = __args.length,
+			o = 0;
+		int[] iargs = new int[n * 2];
+		for (int i = 0; i < n; i++)
+		{
+			Object a = __args[i];
+			
+			// Convert argument accordingly
+			if (a == null)
+				iargs[o++] = 0;
+			else if (a instanceof TypedPointer)
+				iargs[o++] = ((TypedPointer)a).pointer;
+			else if (a instanceof Integer)
+				iargs[o++] = ((Integer)a).intValue();
+			else if (a instanceof Float)
+				iargs[o++] = Float.floatToRawIntBits((Float)a);
+			else if (a instanceof Long)
+			{
+				long l = ((Long)a).longValue();
+				iargs[o++] = (int)(l >>> 32);
+				iargs[o++] = (int)l;
+			}
+			else if (a instanceof Double)
+			{
+				long l = Double.doubleToRawLongBits((Double)a);
+				iargs[o++] = (int)(l >>> 32);
+				iargs[o++] = (int)l;
+			}
+			
+			// {@squirreljme.error AE0o Do not know how to convert value of
+			// the given type to an integer form. (The value; The class type)}
+			else
+				throw new IllegalArgumentException(
+					String.format("AE0o %s %s", a, a.getClass()));
+		}
 		
-		throw new todo.TODO();
+		// Use the fast version, trim array accordingly
+		this.execEnterMethod(__mh, (o == iargs.length ? iargs :
+			Arrays.copyOf(iargs, o)));
 	}
 	
 	/**
@@ -164,6 +251,9 @@ public final class RunningThread
 		// Needed to clear the current thread
 		try
 		{
+			// Setup thread frame for method handle
+			this.execEnterMethod(__mh, __args);
+			
 			throw new todo.TODO();
 		}
 		

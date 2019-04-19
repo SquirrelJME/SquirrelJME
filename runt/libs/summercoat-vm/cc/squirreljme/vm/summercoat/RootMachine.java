@@ -161,7 +161,7 @@ public final class RootMachine
 		
 		// Enter the __start() method for Thread
 		thr.execEnterMethod(thrclass.lookupMethod(
-			MethodLookupType.STATIC, false, "__start", "()V"));
+			MethodLookupType.STATIC, false, "__start", "()V"), new int[0]);
 		
 		// Now that the thread has been initialized it must be started, it
 		// will keep running executing the method it starts in until
