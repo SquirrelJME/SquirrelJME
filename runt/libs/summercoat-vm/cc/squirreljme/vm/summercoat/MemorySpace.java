@@ -12,6 +12,7 @@ package cc.squirreljme.vm.summercoat;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 /**
@@ -24,21 +25,24 @@ public final class MemorySpace
 {
 	/** The default size of memory. */
 	public static final int DEFAULT_MEMORY_SIZE =
-		16777216;
+		8388608;
 	
 	/** The total amount of memory available. */
 	public final int total;
 	
 	/** The memory bytes. */
-	public final byte[] memory;
+	protected final byte[] memory;
 	
 	/** Partitions within memory. */
 	private final LinkedList<Partition> _parts =
 		new LinkedList<>();
 	
 	/** Method handles currently registered. */
-	private Map<MethodHandle, Integer> _handles =
+	private final Map<MethodHandle, Integer> _handles =
 		new HashMap<>();
+	
+	/** Used space. */
+	private volatile int _used;
 	
 	/**
 	 * Intializes the memory space with default settings.
@@ -64,8 +68,9 @@ public final class MemorySpace
 		// Allocate memory chunk
 		this.memory = new byte[__msz];
 		
-		// Initial memory partition is all of the free space
-		this._parts.add(new Partition(0, __msz));
+		// Initial memory partition is all of the free space minus the first
+		// portion of memory which is used for null pointers
+		this._parts.add(new Partition(16, __msz));
 	}
 	
 	/**
@@ -86,11 +91,39 @@ public final class MemorySpace
 		if (__sz <= 0)
 			throw new IllegalArgumentException("AE0k");
 		
+		// Make sure all allocations are rounded so that they occur at
+		// even boundaries
+		if ((__sz & 3) != 0)
+			__sz = (__sz + 3) & (~3);
+		
 		// Lock on self since only a single thread should be allocating at
 		// a time
+		LinkedList<Partition> parts = this._parts;
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			// Retry loop
+			for (boolean second = false;; second = true)
+			{
+				// Scan through and find a partition to allocate in
+				ListIterator<Partition> li = parts.listIterator();
+				while (li.hasNext())
+				{
+					Partition part = li.next();
+					
+					// Allocate in this part?
+					if (__sz <= part.size)
+						return this.__allocate(li, part, true, __sz);
+				}
+				
+				// {@squirreljme.error AE0l Could not find a sufficient free
+				// space span for allocation. (The amount of space requested
+				// for allocation)}
+				if (second)
+					throw new VMOutOfMemoryException("AE0l " + __sz);
+				
+				// Perform some emergency garbage collection
+				throw new todo.TODO();
+			}
 		}
 	}
 	
@@ -121,6 +154,50 @@ public final class MemorySpace
 			handles.put(__mh, dx);
 			return dx;
 		}
+	}
+	
+	/**
+	 * Performs the actual allocation work.
+	 *
+	 * @param __li The list iterator for partition splitting.
+	 * @param __p The current partition.
+	 * @param __isobj Is an object being allocated?
+	 * @param __sz The number of bytes to allocate.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/19
+	 */
+	private final int __allocate(ListIterator<Partition> __li, Partition __p,
+		boolean __isobj, int __sz)
+		throws NullPointerException
+	{
+		if (__li == null || __p == null)
+			throw new NullPointerException("NARG");
+		
+		// The address to use is the starting point
+		int rv = __p.start;
+		
+		// Clear the memory so that anything that any created objects are
+		// auto zero-initialized
+		byte[] memory = this.memory;
+		for (int i = rv, n = rv + __sz; i < n; i++)
+			memory[i] = 0;
+		
+		// Claim partition space, either replace the last index with the
+		// new partition or drop it
+		Partition np = __p.claimStart(__sz);
+		if (np == null)
+			__li.remove();
+		else
+			__li.set(np);
+		
+		// Claim used space
+		this._used += __sz;
+		
+		// Debug
+		todo.DEBUG.note("Alloc %d @ %08x", __sz, rv);
+		
+		// Use this pointer
+		return rv;
 	}
 	
 	/**
@@ -160,6 +237,25 @@ public final class MemorySpace
 			this.start = __s;
 			this.end = __e;
 			this.size = __e - __s;
+		}
+		
+		/**
+		 * Claim the start of the partition for the given bytes and return
+		 * a new partition to replace the current one with.
+		 *
+		 * @param __sz The number of bytes to claim.
+		 * @return The new partition, or {@code null} if there is no space
+		 * remaining.
+		 * @since 2019/04/19
+		 */
+		public final Partition claimStart(int __sz)
+		{
+			// Claimed all the space? Will be removed
+			if (__sz >= this.size)
+				return null;
+			
+			// New partition to be used instead
+			return new Partition(this.start + __sz, this.end);
 		}
 	}
 }
