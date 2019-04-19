@@ -1,0 +1,20 @@
+# 2019/04/18
+
+## 15:34
+
+Okay so the compiled code I wrote is going to be interesting to say the least
+because it is more akin as to how a native machine would run the code rather
+than say a virtual machine based in Java. I mean I want this because the later
+points of where SquirrelJME runs in RatufaCoat or native binaries is going to
+produce the thing I want. SpringCoat purely acts in the Java space. I know
+what has to be done to initialize the code processes though as I pretty much
+have that code. Just that I see problems within the virtual machine. So this
+means SummerCoat is going to have to be more like RatufaCoat in implementation
+which means RatufaCoat is going to be easier to write once things are
+translated. So this pretty much is going to be a native like virtual machine.
+It effectively is going to be RatufaCoat but in Java. But since I am most
+comfortable in Java (I do know C and have used it for like 18 years but I
+would not want to write something from scratch in it really). So this
+basically is what will become of SummerCoat, it has to be more like what I
+would envision RatufaCoat. Effectively just a bunch of memory and CPU code
+execution using the register setup I envisioned.
