@@ -107,9 +107,10 @@ public final class LoadedClass
 		this._interfaces = __in;
 		
 		// Calculate byte size for fields in this class
-		int startifbytes = (__sn == null ? 0 : __sn.totalifbytes);
+		int ifbytes = __cf.header.ifbytes,
+			startifbytes = (__sn == null ? 0 : __sn.totalifbytes);
 		this.startifbytes = startifbytes;
-		this.totalifbytes = startifbytes + __cf.header.ifbytes;
+		this.totalifbytes = startifbytes + ifbytes;
 		
 		// Run-time constant pool
 		RuntimeConstantPool runpool;

@@ -60,11 +60,11 @@ public final class Field
 	 * @throws NullPointerException On null arguments, except for {@code __cv}.
 	 * @since 2017/10/02
 	 */
-	Field(FieldFlags __f, FieldName __n, FieldDescriptor __t,
+	public Field(FieldFlags __f, FieldName __n, FieldDescriptor __t,
 		ConstantValue __cv, AnnotationTable __avs)
 		throws InvalidClassFormatException, NullPointerException
 	{
-		if (__f == null || __n == null || __t == null || __avs == null)
+		if (__f == null || __n == null || __t == null)
 			throw new NullPointerException("NARG");
 		
 		// {@squirreljme.error JC0w The constant value is not compatible with
@@ -77,7 +77,7 @@ public final class Field
 		this.name = __n;
 		this.type = __t;
 		this.constval = __cv;
-		this.annotations = __avs;
+		this.annotations = (__avs == null ? new AnnotationTable() : __avs);
 	}
 	
 	/**
