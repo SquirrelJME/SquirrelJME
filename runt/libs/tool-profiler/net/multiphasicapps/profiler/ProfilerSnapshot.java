@@ -66,6 +66,23 @@ public final class ProfilerSnapshot
 	}
 	
 	/**
+	 * Exits all threads and all frames.
+	 *
+	 * @param __ns The current time.
+	 * @since 2019/04/19
+	 */
+	public final void exitAll(long __ns)
+	{
+		// Exit every single thread
+		Map<String, ProfiledThread> threads = this._threads;
+		synchronized (threads)
+		{
+			for (ProfiledThread thread : threads.values())
+				thread.exitAll(__ns);
+		}
+	}
+	
+	/**
 	 * Writes snapshot information to the given stream.
 	 *
 	 * @param __ps The resulting stream.

@@ -32,6 +32,8 @@ import net.multiphasicapps.classfile.FieldNameAndType;
 import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodFlags;
 import net.multiphasicapps.classfile.MethodNameAndType;
+import net.multiphasicapps.profiler.ProfiledThread;
+import net.multiphasicapps.profiler.ProfilerSnapshot;
 
 /**
  * This represents a thread which is running in the virtual machine.
@@ -49,6 +51,9 @@ public final class RunningThread
 	
 	/** The task status this reports on. */
 	protected final TaskStatus status;
+	
+	/** The profiler for this thread. */
+	protected final ProfiledThread profiler;
 	
 	/** Thread frames of what is being run. */
 	private final LinkedList<ThreadFrame> _frames =
@@ -79,6 +84,12 @@ public final class RunningThread
 		
 		this.id = __id;
 		this.status = __s;
+		
+		// Create profiled thread for this
+		ProfilerSnapshot psnap = __s.profiler;
+		this.profiler = (psnap == null ? null :
+			psnap.measureThread(String.format("Task:%d[%s],%d",
+				__s.id, __s.name, __id)));
 	}
 	
 	/**
@@ -109,8 +120,17 @@ public final class RunningThread
 		// Note that if the method handle is already a method handle then that
 		// resolver will do nothing
 		int iptr = (__args.length >= 1 ? __args[0] : 0);
+		TaskStatus status = this.status;
 		StaticMethodHandle smh = __mh.resolve(
-			this.status.memory.readClassOptional(iptr));
+			status.memory.readClassOptional(iptr));
+		
+		// If the profiler is available, enter the frame so we do get to
+		// profile it
+		ProfiledThread profiler = this.profiler;
+		if (profiler != null)
+			profiler.enterFrame(smh.inclass.toString(),
+				smh.inmethodname.toString(), smh.inmethodtype.toString(),
+				System.nanoTime());
 		
 		// Setup basic frame
 		ThreadFrame nf = new ThreadFrame(smh.runpool);

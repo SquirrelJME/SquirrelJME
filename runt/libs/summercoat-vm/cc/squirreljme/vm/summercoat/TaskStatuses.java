@@ -111,7 +111,7 @@ public final class TaskStatuses
 			// Setup new task with this ID
 			int tid;
 			TaskStatus rv = new TaskStatus(monitor, (tid = this._nextid++),
-				__cl, __sp, __ps);
+				__cl.bootname, __cl, __sp, __ps);
 			
 			// Need to keep track of this task, so we know when it exits
 			this._statuses.put(tid, rv);

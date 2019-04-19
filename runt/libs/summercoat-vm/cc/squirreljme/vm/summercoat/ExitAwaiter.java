@@ -12,6 +12,7 @@ package cc.squirreljme.vm.summercoat;
 
 import cc.squirreljme.vm.VirtualMachine;
 import cc.squirreljme.vm.VMException;
+import net.multiphasicapps.profiler.ProfilerSnapshot;
 
 /**
  * This class runs a running task and then just awaits until all all tasks
@@ -29,16 +30,21 @@ public final class ExitAwaiter
 	/** The main task being run. */
 	protected final TaskStatus maintask;
 	
+	/** Profile used. */
+	protected final ProfilerSnapshot profiler;
+	
 	/**
 	 * Initializes the exit awaiter, when the running task ends it will wait
 	 * until the root machine has no running tasks.
 	 *
 	 * @param __ts The statuses for each task, to determine if any are running.
 	 * @param __t The main task status.
+	 * @param __ps Profiler snapshot, used to ensure it stops properly.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/01/02
 	 */
-	public ExitAwaiter(TaskStatuses __ts, TaskStatus __t)
+	public ExitAwaiter(TaskStatuses __ts, TaskStatus __t,
+		ProfilerSnapshot __ps)
 		throws NullPointerException
 	{
 		if (__ts == null || __t == null)
@@ -46,6 +52,7 @@ public final class ExitAwaiter
 		
 		this.statuses = __ts;
 		this.maintask = __t;
+		this.profiler = __ps;
 	}
 	
 	/**
@@ -67,6 +74,12 @@ public final class ExitAwaiter
 			{
 				// Do not care if we get interrupted, just try again
 			}
+		
+		// If a profiler is being used, make sure everything is exited before
+		// termination
+		ProfilerSnapshot profiler = this.profiler;
+		if (profiler != null)
+			profiler.exitAll(System.nanoTime());
 		
 		// Return the exit code for the main task
 		return this.maintask._exitcode;

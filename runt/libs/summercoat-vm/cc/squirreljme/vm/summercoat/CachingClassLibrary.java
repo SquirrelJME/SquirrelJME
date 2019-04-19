@@ -120,5 +120,16 @@ public final class CachingClassLibrary
 			return rv;
 		}
 	}
+	
+	/**
+	 * Returns the name of this library.
+	 *
+	 * @return The library name.
+	 * @since 2019/04/19
+	 */
+	public final String name()
+	{
+		return this.library.name();
+	}
 }
 
