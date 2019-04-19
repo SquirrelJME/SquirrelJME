@@ -156,7 +156,7 @@ public final class MinimizedMethod
 				if (offcode > 0)
 				{
 					code = new byte[lencode];
-					System.arraycopy(__b, offcode, code, 0, lencode);
+					System.arraycopy(__b, __o + offcode, code, 0, lencode);
 				}
 				
 				// Read lines?
@@ -164,7 +164,7 @@ public final class MinimizedMethod
 				if (offline > 0)
 				{
 					line = new byte[lenline];
-					System.arraycopy(__b, offline, line, 0, lenline);
+					System.arraycopy(__b, __o + offline, line, 0, lenline);
 				}
 				
 				// Build method
