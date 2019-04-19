@@ -110,8 +110,8 @@ final class __TempMethods__
 			}
 			
 			// Offset to code and line regions
-			int codeoff = 4 + (count * 16),
-				lineoff = codeoff + ldos.size();
+			int codeoff = 4 + (count * 18),
+				lineoff = codeoff + cdos.size();
 			
 			// Write field information
 			for (int i = 0; i < count; i++)
