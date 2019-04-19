@@ -153,6 +153,9 @@ public final class MemorySpace
 			throw new VMVirtualMachineException(
 				String.format("AE0m %08x %d", __addr, __v));
 		
+		// Debug
+		todo.DEBUG.note("*%08x = %d", __addr, __v);
+		
 		// Write into memory
 		byte[] memory = this.memory;
 		if (__atmc)
