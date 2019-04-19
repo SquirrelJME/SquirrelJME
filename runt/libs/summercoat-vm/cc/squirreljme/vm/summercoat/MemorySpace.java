@@ -41,6 +41,10 @@ public final class MemorySpace
 	private final Map<MethodHandle, Integer> _handles =
 		new HashMap<>();
 	
+	/** Classes currently registered. */
+	private final Map<LoadedClass, Integer> _classids =
+		new HashMap<>();
+	
 	/** Used space. */
 	private volatile int _used;
 	
@@ -71,6 +75,10 @@ public final class MemorySpace
 		// Initial memory partition is all of the free space minus the first
 		// portion of memory which is used for null pointers
 		this._parts.add(new Partition(16, __msz));
+		
+		// The first of these are considered as nothing
+		this._handles.put(null, 0);
+		this._classids.put(null, 0);
 	}
 	
 	/**
@@ -124,6 +132,72 @@ public final class MemorySpace
 				// Perform some emergency garbage collection
 				throw new todo.TODO();
 			}
+		}
+	}
+	
+	/**
+	 * Writes memory to the given address.
+	 *
+	 * @param __atmc Is this an atomic operation?
+	 * @param __addr The address to write to.
+	 * @param __v The value to write.
+	 * @throws VMVirtualMachineException If the address is not aligned.
+	 * @since 2019/04/19
+	 */
+	public final void memWriteInt(boolean __atmc, int __addr, int __v)
+		throws VMVirtualMachineException
+	{
+		// {@squirreljme.error AE0m Unaligned write of 32-bit value. (The
+		// address; The value)}
+		if ((__addr & 3) != 0)
+			throw new VMVirtualMachineException(
+				String.format("AE0m %08x %d", __addr, __v));
+		
+		// Write into memory
+		byte[] memory = this.memory;
+		if (__atmc)
+			synchronized (memory)
+			{
+				memory[__addr++] = (byte)(__v >>> 24);
+				memory[__addr++] = (byte)(__v >>> 16);
+				memory[__addr++] = (byte)(__v >>> 8);
+				memory[__addr++] = (byte)__v;
+			}
+		else
+		{
+			memory[__addr++] = (byte)(__v >>> 24);
+			memory[__addr++] = (byte)(__v >>> 16);
+			memory[__addr++] = (byte)(__v >>> 8);
+			memory[__addr++] = (byte)__v;
+		}
+	}
+	
+	/**
+	 * Registers the given class to a unique index.
+	 *
+	 * @param __cl The class to register.
+	 * @return The class index.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/19
+	 */
+	public final int registerClass(LoadedClass __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		Map<LoadedClass, Integer> classids = this._classids;
+		synchronized (classids)
+		{
+			// Use pre-existing index
+			Integer rv = classids.get(__cl);
+			if (rv != null)
+				return rv;
+			
+			// Store
+			int dx = classids.size();
+			classids.put(__cl, dx);
+			return dx;
 		}
 	}
 	
