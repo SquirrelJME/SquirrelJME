@@ -524,10 +524,9 @@ public final class RunningThread
 		this.__checkSameThread();
 		
 		// Just return a specialized instance
-		throw new todo.TODO();
-		/*
-		return new StaticMethodInstance(__mh);
-		*/
+		return this.vmNewInstance(
+			"cc/squirreljme/runtime/cldc/lang/BasicStaticMethod", "(I)V",
+			this.status.memory.registerHandle(__mh));
 	}
 	
 	/**
