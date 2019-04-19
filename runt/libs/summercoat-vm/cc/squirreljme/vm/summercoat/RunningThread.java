@@ -444,12 +444,25 @@ public final class RunningThread
 		
 		// Determine the number of bytes to allocate
 		int allocsz = __cl.totalifbytes;
-		if (__cl.isArray())
+		boolean isarray;
+		if ((isarray = __cl.isArray()))
 			throw new todo.TODO();
 		
+		// Allocate object
+		MemorySpace memory = this.status.memory;
+		int ptr = memory.allocate(true, allocsz);
+		
+		// Write the class ID and the initial count of 1 (so the object is
+		// not just garbage collected out of nowhere
+		memory.memWriteInt(true, ptr, memory.registerClass(__cl));
+		memory.memWriteInt(true, ptr + 4, 1);
+		
+		// Write the length of the array as well
+		if (isarray)
+			memory.memWriteInt(true, ptr + 8, __len);
+		
 		// Allocate and return the typed pointer
-		return new TypedPointer(__cl,
-			this.status.memory.allocate(true, allocsz));
+		return new TypedPointer(__cl, ptr);
 	}
 	
 	/**
