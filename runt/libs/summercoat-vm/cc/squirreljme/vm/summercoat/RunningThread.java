@@ -22,6 +22,7 @@ import dev.shadowtail.classfile.nncc.NativeCode;
 import dev.shadowtail.classfile.nncc.NativeInstruction;
 import dev.shadowtail.classfile.nncc.NativeInstructionType;
 import dev.shadowtail.classfile.xlate.InvokeType;
+import dev.shadowtail.classfile.xlate.MathType;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
@@ -137,6 +138,10 @@ public final class RunningThread
 		TaskStatus status = this.status;
 		StaticMethodHandle smh = __mh.resolve(
 			status.memory.readClassOptional(iptr));
+		
+		// Debug
+		todo.DEBUG.note("Enter %s::%s:%s", smh.inclass,
+			smh.inmethodname, smh.inmethodtype);
 		
 		// If the profiler is available, enter the frame so we do get to
 		// profile it
@@ -838,7 +843,7 @@ public final class RunningThread
 			
 			// Load arguments for this instruction
 			ArgumentFormat[] af = NativeInstruction.argumentFormat(op);
-			int rargp = op + 1;
+			int rargp = pc + 1;
 			for (int i = 0, n = af.length; i < n; i++)
 				switch (af[i])
 				{
@@ -891,16 +896,63 @@ public final class RunningThread
 				}
 			
 			// Debug
-			todo.DEBUG.note("exec %s %s", NativeInstruction.mnemonic(op),
-				new IntegerList(args));
+			todo.DEBUG.note("exec @%d %s %s", pc,
+				NativeInstruction.mnemonic(op), new IntegerList(args));
+			
+			// By default the next instruction is the address after all
+			// arguments have been read
+			int nextpc = rargp;
 			
 			// Handle operations byte by byte, depending on the encoding
 			switch (NativeInstruction.encoding(op))
 			{
+					// Integer register math
+				case NativeInstructionType.MATH_REG_INT:
+					{
+						// Parts
+						int a = lrs[args[0]],
+							b = lrs[args[1]],
+							c;
+						
+						// Operation to execute
+						switch (MathType.of(op & 0xF))
+						{
+							case ADD:		c = a + b; break;
+							case SUB:		c = a - b; break;
+							case MUL:		c = a * b; break;
+							case DIV:		c = a / b; break;
+							case REM:		c = a % b; break;
+							case NEG:		c = -a; break;
+							case SHL:		c = a << b; break;
+							case SHR:		c = a >> b; break;
+							case USHR:		c = a >>> b; break;
+							case AND:		c = a & b; break;
+							case OR:		c = a | b; break;
+							case XOR:		c = a ^ b; break;
+							case SIGN_X8:	c = (byte)a; break;
+							case SIGN_HALF:	c = (short)a; break;
+							
+							case CMPL:
+							case CMPG:
+								c = (a < b ? -1 : (a == b ? 0 : 1));
+								break;
+							
+							default:
+								throw new todo.OOPS();
+						}
+						
+						// Set result
+						lrs[args[2]] = c;
+					}
+					break;
+					
 					// Unknown operation
 				default:
 					throw new todo.OOPS(NativeInstruction.mnemonic(op));
 			}
+			
+			// Go to next address
+			pc = nextpc;
 		}
 	}
 	
