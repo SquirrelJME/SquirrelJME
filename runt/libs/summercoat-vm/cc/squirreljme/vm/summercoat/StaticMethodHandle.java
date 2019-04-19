@@ -44,5 +44,15 @@ public final class StaticMethodHandle
 		this.runpool = __rp;
 		this.minimethod = __m;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/19
+	 */
+	@Override
+	public final StaticMethodHandle resolve(LoadedClass __ctxcl)
+	{
+		return this;
+	}
 }
 

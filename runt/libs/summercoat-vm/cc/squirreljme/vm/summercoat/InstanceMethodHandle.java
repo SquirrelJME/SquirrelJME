@@ -47,5 +47,15 @@ public final class InstanceMethodHandle
 		this.classname = __cn;
 		this.nameandtype = __nat;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/19
+	 */
+	@Override
+	public final StaticMethodHandle resolve(LoadedClass __ctxcl)
+	{
+		throw new todo.TODO();
+	}
 }
 

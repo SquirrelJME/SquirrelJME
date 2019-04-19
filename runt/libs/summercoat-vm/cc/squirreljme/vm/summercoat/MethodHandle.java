@@ -18,5 +18,15 @@ package cc.squirreljme.vm.summercoat;
  */
 public interface MethodHandle
 {
+	/**
+	 * Resolves the handle for the given context class (if there is one) and
+	 * returns the handle to actually execute.
+	 *
+	 * @param __ctxcl The context class, this will be {@code null} if the
+	 * invocation is static.
+	 * @return The actual handle to execute.
+	 * @since 2019/04/19
+	 */
+	public abstract StaticMethodHandle resolve(LoadedClass __ctxcl);
 }
 

@@ -77,6 +77,17 @@ public final class MinimizedMethod
 	}
 	
 	/**
+	 * Returns the method code.
+	 *
+	 * @return The method code.
+	 * @since 2019/04/19
+	 */
+	public final byte[] code()
+	{
+		return this._code.clone();
+	}
+	
+	/**
 	 * Returns the flags for this method.
 	 *
 	 * @return The flags for the method.

@@ -41,9 +41,9 @@ public final class MemorySpace
 	private final Map<MethodHandle, Integer> _handles =
 		new HashMap<>();
 	
-	/** Classes currently registered. */
-	private final Map<LoadedClass, Integer> _classids =
-		new HashMap<>();
+	/** Classes currently registered, mapped to ID. */
+	private final List<LoadedClass> _classids =
+		new LinkedList<>();
 	
 	/** Used space. */
 	private volatile int _used;
@@ -78,7 +78,7 @@ public final class MemorySpace
 		
 		// The first of these are considered as nothing
 		this._handles.put(null, 0);
-		this._classids.put(null, 0);
+		this._classids.add(null);
 	}
 	
 	/**
@@ -136,25 +136,95 @@ public final class MemorySpace
 	}
 	
 	/**
+	 * Returns the class for the given index.
+	 *
+	 * @param __cli The class index.
+	 * @return The class used or {@code null} if no class is registered with
+	 * the given index.
+	 * @since 2019/04/19
+	 */
+	public final LoadedClass classByIndex(int __cli)
+	{
+		if (__cli <= 0)
+			return null;
+		
+		List<LoadedClass> classids = this._classids;
+		synchronized (classids)
+		{
+			// Out of range
+			if (__cli >= classids.size())
+				return null;
+			
+			// Return class for this
+			return classids.get(__cli);
+		}
+	}
+	
+	/**
+	 * Reads from the given address.
+	 *
+	 * @param __atmc Is this an atomic operation?
+	 * @param __addr The address to read from.
+	 * @return The read value.
+	 * @throws VMVirtualMachineException If the address is not aligned or is
+	 * out of bounds of memory.
+	 * @since 2019/04/19
+	 */
+	public final int memReadInt(boolean __atmc, int __addr)
+		throws VMVirtualMachineException
+	{
+		// {@squirreljme.error AE0n Illegal memory access.
+		// (The address)}
+		if (__addr < 0 || __addr >= this.total - 3 || (__addr & 3) != 0)
+			throw new VMVirtualMachineException(
+				String.format("AE0n %08x", __addr));
+		
+		// Read from memory
+		int rv;
+		byte[] memory = this.memory;
+		if (__atmc)
+			synchronized (memory)
+			{
+				rv = ((memory[__addr++] & 0xFF) << 24) |
+					((memory[__addr++] & 0xFF) << 16) |
+					((memory[__addr++] & 0xFF) << 8) |
+					(memory[__addr++] & 0xFF);
+			}
+		else
+		{
+			rv = ((memory[__addr++] & 0xFF) << 24) |
+				((memory[__addr++] & 0xFF) << 16) |
+				((memory[__addr++] & 0xFF) << 8) |
+				(memory[__addr++] & 0xFF);
+		}
+		
+		// Debug
+		todo.DEBUG.note("*%08x -> %d", __addr, rv);
+		
+		return rv;
+	}
+	
+	/**
 	 * Writes memory to the given address.
 	 *
 	 * @param __atmc Is this an atomic operation?
 	 * @param __addr The address to write to.
 	 * @param __v The value to write.
-	 * @throws VMVirtualMachineException If the address is not aligned.
+	 * @throws VMVirtualMachineException If the address is not aligned or is
+	 * out of bounds of memory.
 	 * @since 2019/04/19
 	 */
 	public final void memWriteInt(boolean __atmc, int __addr, int __v)
 		throws VMVirtualMachineException
 	{
-		// {@squirreljme.error AE0m Unaligned write of 32-bit value. (The
-		// address; The value)}
-		if ((__addr & 3) != 0)
+		// {@squirreljme.error AE0m Illegal memory access.
+		// (The address; The value)}
+		if (__addr < 0 || __addr >= this.total - 3 || (__addr & 3) != 0)
 			throw new VMVirtualMachineException(
 				String.format("AE0m %08x %d", __addr, __v));
 		
 		// Debug
-		todo.DEBUG.note("*%08x = %d", __addr, __v);
+		todo.DEBUG.note("*%08x <- %d", __addr, __v);
 		
 		// Write into memory
 		byte[] memory = this.memory;
@@ -176,6 +246,24 @@ public final class MemorySpace
 	}
 	
 	/**
+	 * Attempts to read the class for the given pointer.
+	 *
+	 * @param __p The pointer to read.
+	 * @return The class for the pointer or {@code null} if it is unknown or
+	 * the pointer is not valid.
+	 * @since 2019/04/19
+	 */
+	public final LoadedClass readClassOptional(int __p)
+	{
+		// If this breaks memory restrictions then do not do any reads
+		if (__p < 0 || __p >= this.total - 3 || (__p & 3) != 0)
+			return null;
+		
+		// Locate class from read memory
+		return this.classByIndex(this.memReadInt(false, __p));
+	}
+	
+	/**
 	 * Registers the given class to a unique index.
 	 *
 	 * @param __cl The class to register.
@@ -189,18 +277,18 @@ public final class MemorySpace
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		Map<LoadedClass, Integer> classids = this._classids;
+		List<LoadedClass> classids = this._classids;
 		synchronized (classids)
 		{
-			// Use pre-existing index
-			Integer rv = classids.get(__cl);
-			if (rv != null)
+			// Use pre-existing index?
+			int rv = classids.indexOf(__cl);
+			if (rv >= 0)
 				return rv;
 			
-			// Store
-			int dx = classids.size();
-			classids.put(__cl, dx);
-			return dx;
+			// Register the class
+			rv = classids.size();
+			classids.add(__cl);
+			return rv;
 		}
 	}
 	
