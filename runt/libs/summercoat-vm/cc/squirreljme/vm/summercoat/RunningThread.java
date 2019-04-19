@@ -17,6 +17,7 @@ import dev.shadowtail.classfile.nncc.AccessedField;
 import dev.shadowtail.classfile.nncc.FieldAccessTime;
 import dev.shadowtail.classfile.nncc.FieldAccessType;
 import dev.shadowtail.classfile.nncc.InvokedMethod;
+import dev.shadowtail.classfile.nncc.NativeCode;
 import dev.shadowtail.classfile.xlate.InvokeType;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -46,6 +47,10 @@ import net.multiphasicapps.profiler.ProfilerSnapshot;
 public final class RunningThread
 	extends Thread
 {
+	/** The global return register. */
+	public static final int GLOBAL_RETURN =
+		NativeCode.RETURN_REGISTER - NativeCode.BASE_GLOBAL_REGISTER;
+	
 	/** The ID of this thread. */
 	protected final int id;
 	
@@ -138,10 +143,10 @@ public final class RunningThread
 				System.nanoTime());
 		
 		// Setup basic frame
-		ThreadFrame nf = new ThreadFrame(smh.runpool);
+		ThreadFrame nf = new ThreadFrame(smh.runpool, smh._code);
 		
 		// Load arguments into the argument registers
-		int[] ra = nf.r;
+		int[] ra = nf.registers;
 		for (int i = 0, n = __args.length, o = 1; i < n; i++, o++)
 			ra[o] = __args[i];
 		
@@ -290,7 +295,10 @@ public final class RunningThread
 			// until its termination point is reached
 			this.__doExecution(this.execEnterMethod(__mh, __args));
 			
-			throw new todo.TODO();
+			// Build return value from the globals
+			int[] gr = this._globalregs;
+			return ((((long)gr[GLOBAL_RETURN]) << 32L) |
+				(gr[GLOBAL_RETURN + 1] & 0xFFFFFFFFL));
 		}
 		
 		// Make sure this is always run
@@ -759,6 +767,61 @@ public final class RunningThread
 		
 		// Set as claimed!
 		__cl._claimedsfspace = true;
+	}
+	
+	/**
+	 * Performs actual execution of the engine.
+	 *
+	 * @param __fl The frame limit, once the frame count drops below this
+	 * amount execution will terminate.
+	 * @since 2019/04/19
+	 */
+	private final void __doExecution(int __fl)
+	{
+		// This is set when all the various parameters should be reloaded
+		// and initialized
+		boolean reload = true;
+		
+		// Globally used stuff
+		final int[] grs = this._globalregs;
+
+		// Used per frame
+		int[] lrs = null;
+		ThreadFrame nowframe = null;
+		RuntimeConstantPool pool = null;
+		byte[] code = null;
+		int pc = 0;
+		
+		// Execution is effectively an infinite loop
+		LinkedList<ThreadFrame> frames = this._frames;
+		for (int frameat = frames.size(), lastframe = -1; frameat >= __fl;
+			frameat = frames.size())
+		{
+			// Reload parameters?
+			if ((reload |= (lastframe != frameat)))
+			{
+				// Before dumping this frame, store the PC address
+				if (nowframe != null)
+					nowframe.pc = pc;
+				
+				// Get current frame
+				nowframe = frames.getLast();
+				
+				// Load stuff needed for execution
+				lrs = nowframe.registers;
+				pool = nowframe.pool;
+				code = nowframe.code;
+				pc = nowframe.pc;
+				
+				// Used to auto-detect frame change
+				lastframe = frameat;
+				
+				// No longer reload information
+				reload = false;
+			}
+			
+			throw new todo.TODO();
+		}
 	}
 	
 	/**

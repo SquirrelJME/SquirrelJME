@@ -25,26 +25,31 @@ public final class ThreadFrame
 	public final RuntimeConstantPool pool;
 	
 	/** Registers. */
-	public final int[] r =
+	public final int[] registers =
 		new int[MAX_REGISTERS];
 	
+	/** The method code. */
+	public final byte[] code;
+	
 	/** The PC address. */
-	public int pc;
+	public volatile int pc;
 	
 	/**
 	 * Initializes the thread frame.
 	 *
 	 * @param __cp The constant pool to use.
+	 * @param __cd The method code.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/19
 	 */
-	public ThreadFrame(RuntimeConstantPool __cp)
+	public ThreadFrame(RuntimeConstantPool __cp, byte[] __cd)
 		throws NullPointerException
 	{
-		if (__cp == null)
+		if (__cp == null || __cd == null)
 			throw new NullPointerException("NARG");
 		
 		this.pool = __cp;
+		this.code = __cd;
 	}
 }
 
