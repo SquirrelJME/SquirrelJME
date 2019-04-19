@@ -31,6 +31,9 @@ public class TaskStatus
 	/** The ID of this task. */
 	protected final int id;
 	
+	/** The name of this task. */
+	protected final String name;
+	
 	/** The class loader. */
 	protected final ClassLoader classloader;
 	
@@ -75,13 +78,14 @@ public class TaskStatus
 	 *
 	 * @param __m The monitor to notify when the task changes state.
 	 * @param __id The ID of the task.
+	 * @param __n The name of this task.
 	 * @param __cl The class loader used.
 	 * @param __sp System properties for this task.
 	 * @param __ps Snapshot for the profiler, is optional.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/01/05
 	 */
-	public TaskStatus(Object __m, int __id, ClassLoader __cl,
+	public TaskStatus(Object __m, int __id, String __n, ClassLoader __cl,
 		Map<String, String> __sp, ProfilerSnapshot __ps)
 		throws NullPointerException
 	{
@@ -100,6 +104,8 @@ public class TaskStatus
 		this.classloader = __cl;
 		this.profiler = __ps;
 		this._sysprops = __sp;
+		this.name = (__n != null ? __n :
+			String.format("Task-%08x", System.identityHashCode(this)));
 	}
 	
 	/**

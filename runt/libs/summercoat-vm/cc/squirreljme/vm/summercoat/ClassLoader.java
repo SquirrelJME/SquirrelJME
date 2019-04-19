@@ -39,6 +39,9 @@ public final class ClassLoader
 	/** The suite manager. */
 	protected final CachingSuiteManager suites;
 	
+	/** The name of the boot class. */
+	protected final String bootname;
+	
 	/** Loaded class cache. */
 	private final Map<ClassName, LoadedClass> _classes =
 		new HashMap<>();
@@ -61,7 +64,10 @@ public final class ClassLoader
 			throw new NullPointerException("NARG");
 		
 		this.suites = __sm;
-		this._classpath = __cp.clone();
+		this._classpath = (__cp = __cp.clone());
+		
+		// Determine the boot class name
+		this.bootname = __cp[__cp.length - 1].name();
 	}
 	
 	/**

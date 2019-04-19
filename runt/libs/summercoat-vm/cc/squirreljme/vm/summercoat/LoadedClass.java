@@ -17,6 +17,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.FieldDescriptor;
 import net.multiphasicapps.classfile.FieldName;
 import net.multiphasicapps.classfile.FieldNameAndType;
@@ -116,12 +117,16 @@ public final class LoadedClass
 		RuntimeConstantPool runpool;
 		this.runpool = (runpool = new RuntimeConstantPool(__cf.pool()));
 		
+		// This information is used by the profiler;
+		ClassName tc = __cf.thisName();
+		MethodNameAndType nat;
+		
 		// Initialize static methods
 		Map<MethodNameAndType, StaticMethodHandle> smethods =
 			new LinkedHashMap<>();
 		for (MinimizedMethod mm : __cf.methods(true))
-			smethods.put(new MethodNameAndType(mm.name, mm.type),
-				new StaticMethodHandle(runpool, mm));
+			smethods.put((nat = new MethodNameAndType(mm.name, mm.type)),
+				new StaticMethodHandle(runpool, mm, tc, nat));
 		this._smethods = smethods;
 		
 		// Static initializer
@@ -135,8 +140,8 @@ public final class LoadedClass
 		Map<MethodNameAndType, StaticMethodHandle> imethods =
 			new LinkedHashMap<>();
 		for (MinimizedMethod mm : __cf.methods(false))
-			imethods.put(new MethodNameAndType(mm.name, mm.type),
-				new StaticMethodHandle(runpool, mm));
+			imethods.put((nat = new MethodNameAndType(mm.name, mm.type)),
+				new StaticMethodHandle(runpool, mm, tc, nat));
 		this._imethods = imethods;
 		
 		// Get static field info

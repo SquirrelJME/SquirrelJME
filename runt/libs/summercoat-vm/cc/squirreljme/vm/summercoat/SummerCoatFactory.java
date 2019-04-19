@@ -60,8 +60,8 @@ public class SummerCoatFactory
 			libs[i] = suites.loadLibrary(__cp[i]);
 		
 		// Now create the starting main task
-		return new ExitAwaiter(rm.statuses,
-			rm.createTask(libs, __maincl, __ismid, __sprops, __args).status);
+		return new ExitAwaiter(rm.statuses, rm.createTask(libs, __maincl,
+			__ismid, __sprops, __args).status, __ps);
 	}
 }
 
