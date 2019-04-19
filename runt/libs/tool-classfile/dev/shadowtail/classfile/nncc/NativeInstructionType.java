@@ -175,6 +175,10 @@ public interface NativeInstructionType
 	public static final int IFEQ_CONST =
 		0xE6;
 	
+	/** Method entry marker. */
+	public static final int ENTRY_MARKER =
+		0xE7;
+	
 	/**
 	 * New. 
 	 * {@code iiiixxxx, r2 = new p1}.
