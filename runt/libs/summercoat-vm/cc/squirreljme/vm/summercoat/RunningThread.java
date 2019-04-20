@@ -549,9 +549,7 @@ public final class RunningThread
 			// Execute static constructor
 			MethodHandle staticinit = __cl.staticinit;
 			if (staticinit != null)
-			{
-				throw new todo.TODO();
-			}
+				this.runMethod(staticinit);
 		}
 	}
 	
