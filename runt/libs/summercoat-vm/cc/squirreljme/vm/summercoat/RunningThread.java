@@ -1401,8 +1401,12 @@ public final class RunningThread
 			case SPECIAL:
 				boolean superlu = (__from.isSuperClass(mcl) &&
 					!mnt.name().isInstanceInitializer());
-				return mcl.lookupMethod((superlu ? MethodLookupType.SUPER :
-					MethodLookupType.STATIC), false, mnt);
+				if (superlu)
+					return __from.superclass.lookupMethod(
+						MethodLookupType.SUPER, false, mnt);
+				else
+					return mcl.lookupMethod(
+						MethodLookupType.STATIC, false, mnt);
 				
 			default:
 				throw new todo.TODO(mty.name());
