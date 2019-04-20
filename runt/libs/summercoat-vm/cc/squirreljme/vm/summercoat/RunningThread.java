@@ -906,6 +906,10 @@ public final class RunningThread
 			// Handle operations byte by byte, depending on the encoding
 			switch (NativeInstruction.encoding(op))
 			{
+					// Entry argument
+				case NativeInstructionType.ENTRY_MARKER:
+					break;
+				
 					// Integer register math
 				case NativeInstructionType.MATH_REG_INT:
 					{
