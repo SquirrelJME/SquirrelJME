@@ -49,6 +49,17 @@ public enum DataType
 	;
 	
 	/**
+	 * Is this a wide data type?
+	 *
+	 * @return If this is wide.
+	 * @since 2019/04/20
+	 */
+	public final boolean isWide()
+	{
+		return (this == LONG || this == DOUBLE);
+	}
+	
+	/**
 	 * Returns this as a basic Java type.
 	 *
 	 * @return The Java type of this.

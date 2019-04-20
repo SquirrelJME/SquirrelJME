@@ -329,6 +329,8 @@ public final class NativeInstruction
 				return 3;
 				
 			case NativeInstructionType.CONVERSION_WIDE:
+			case NativeInstructionType.MEMORY_OFF_ICONST_WIDE:
+			case NativeInstructionType.MEMORY_OFF_REG_WIDE:
 				return 4;
 				
 			case NativeInstructionType.MATH_CONST_LONG:
@@ -418,6 +420,14 @@ public final class NativeInstruction
 					ArgumentFormat.VUINT,
 					ArgumentFormat.VUINT,
 					ArgumentFormat.VUINT);
+				
+				// [u16|u16, u16, u16]
+			case NativeInstructionType.MEMORY_OFF_REG_WIDE:
+				return ArgumentFormat.of(
+					ArgumentFormat.VUINT,
+					ArgumentFormat.VUINT,
+					ArgumentFormat.VUINT,
+					ArgumentFormat.VUINT);
 					
 				// [u16|u16, u16|u16, u16|u16]
 			case NativeInstructionType.MATH_REG_DOUBLE:
@@ -465,6 +475,14 @@ public final class NativeInstruction
 				// [u16, u16, i32]
 			case NativeInstructionType.MEMORY_OFF_ICONST:
 				return ArgumentFormat.of(
+					ArgumentFormat.VUINT,
+					ArgumentFormat.VUINT,
+					ArgumentFormat.INT32);
+				
+				// [u16|u16, u16, i32]
+			case NativeInstructionType.MEMORY_OFF_ICONST_WIDE:
+				return ArgumentFormat.of(
+					ArgumentFormat.VUINT,
 					ArgumentFormat.VUINT,
 					ArgumentFormat.VUINT,
 					ArgumentFormat.INT32);
@@ -556,6 +574,20 @@ public final class NativeInstruction
 					return NativeInstructionType.CONVERSION_WIDE;
 			}
 		}
+		
+		// Memory offset register
+		else if (upper == NativeInstructionType.MEMORY_OFF_REG)
+			if ((__op & 0b110) == 0b110)
+				return NativeInstructionType.MEMORY_OFF_REG_WIDE;
+			else
+				return NativeInstructionType.MEMORY_OFF_REG;
+		
+		// Memory offset constant
+		else if (upper == NativeInstructionType.MEMORY_OFF_ICONST)
+			if ((__op & 0b110) == 0b110)
+				return NativeInstructionType.MEMORY_OFF_ICONST_WIDE;
+			else
+				return NativeInstructionType.MEMORY_OFF_ICONST;
 		
 		// Plain
 		return upper;
