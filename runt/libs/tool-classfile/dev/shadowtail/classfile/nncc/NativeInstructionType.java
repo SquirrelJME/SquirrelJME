@@ -79,6 +79,10 @@ public interface NativeInstructionType
 	public static final int ARRAY_ACCESS =
 		0x70;
 	
+	/** Wide array access. */
+	public static final int ARRAY_ACCESS_WIDE =
+		0b0111_1100;
+	
 	/**
 	 * Math, R=RC, Integer.
 	 * {@code iiiiMMMM, r3 = r1 ? c2}.
