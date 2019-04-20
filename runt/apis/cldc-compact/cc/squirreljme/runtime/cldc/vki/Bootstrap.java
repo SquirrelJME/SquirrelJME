@@ -30,11 +30,14 @@ public final class Bootstrap
 	 * This is the booting point for the SquirrelJME kernel, it is
 	 *
 	 * @param __int The pointer which contains the ROM address.
+	 * @param __cfg Kernel configuration space, this configures the VM and
+	 * how it is to enter.
 	 * @param __mbp The memory base pointer.
 	 * @param __msz The amount of memory which is available.
 	 * @since 2019/04/20
 	 */
-	private static final void __boot(int __rom, int __mbp, int __msz)
+	private static final void __boot(int __rom, int __cfg,
+		int __mbp, int __msz)
 	{
 		Assembly.fatalExit();
 	}
