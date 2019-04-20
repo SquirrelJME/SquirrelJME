@@ -965,6 +965,17 @@ public final class RunningThread
 						}
 					}
 					break;
+					
+					// Check class type
+				case NativeInstructionType.IFNOTCLASS:
+				case NativeInstructionType.IFNOTCLASS_REF_CLEAR:
+				case NativeInstructionType.IFCLASS:
+				case NativeInstructionType.IFCLASS_REF_CLEAR:
+					{
+						if (true)
+							throw new todo.TODO();
+					}
+					break;
 				
 					// Integer register math
 				case NativeInstructionType.MATH_REG_INT:
