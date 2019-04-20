@@ -1220,6 +1220,12 @@ public final class RunningThread
 						}
 					}
 					break;
+				
+					// New instance of object
+				case NativeInstructionType.NEW:
+					lrs[args[1]] = this.vmNew((LoadedClass)pool.get(args[0])).
+						pointer;
+					break;
 					
 					// Return from call
 				case NativeInstructionType.RETURN:
