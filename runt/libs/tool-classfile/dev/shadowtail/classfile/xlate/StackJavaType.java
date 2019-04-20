@@ -21,17 +21,28 @@ public enum StackJavaType
 	/** Integer. */
 	INTEGER,
 	
-	/** Float. */
-	FLOAT,
-	
 	/** Long. */
 	LONG,
+	
+	/** Float. */
+	FLOAT,
 	
 	/** Double. */
 	DOUBLE,
 	
 	/** End. */
 	;
+	
+	/**
+	 * Is this a wide type?
+	 *
+	 * @return If this is wide.
+	 * @since 2019/04/20
+	 */
+	public final boolean isWide()
+	{
+		return (this == LONG || this == DOUBLE);
+	}
 	
 	/**
 	 * Returns this as a basic Java type.
