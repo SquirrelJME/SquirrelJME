@@ -41,6 +41,9 @@ public final class LoadedClass
 	/** The component type. */
 	protected final LoadedClass componentclass;
 	
+	/** The root component type. */
+	protected final LoadedClass rootcomponentclass;
+	
 	/** Runtime constant pool, which is initialized when it is needed. */
 	protected final RuntimeConstantPool runpool;
 	
@@ -107,6 +110,25 @@ public final class LoadedClass
 		this.componentclass = __ct;
 		this._interfaces = __in;
 		
+		// Find the root component type
+		if (__ct == null)
+			this.rootcomponentclass = null;
+		else
+		{
+			// Find root type
+			LoadedClass at = __ct;
+			for (; at != null;)
+			{
+				LoadedClass sub = at.componentclass;
+				if (sub == null)
+					break;
+				at = sub;
+			}
+			
+			// Set
+			this.rootcomponentclass = at;
+		}
+		
 		// Calculate byte size for fields in this class
 		int ifbytes = __cf.header.ifbytes,
 			startifbytes = (__sn == null ? 0 : __sn.totalifbytes);
@@ -158,6 +180,17 @@ public final class LoadedClass
 	}
 	
 	/**
+	 * Returns the number of dimensions this class uses.
+	 *
+	 * @return The number of used dimensions.
+	 * @since 2019/04/20
+	 */
+	public final int dimensions()
+	{
+		return this.miniclass.thisName().dimensions();
+	}
+	
+	/**
 	 * Is this an array?
 	 *
 	 * @return If this is an array or not.
@@ -166,6 +199,70 @@ public final class LoadedClass
 	public final boolean isArray()
 	{
 		return this.componentclass != null;
+	}
+	
+	/**
+	 * Checks if this class can be assigned from the target class, that is
+	 * {@code this = (ThisClass)__o}.
+	 *
+	 * This is the same as {@link Class#isInstance(Object)} except it works
+	 * only on class representations.
+	 *
+	 * @param __o The other class to check.
+	 * @return If the other class can be assigned as this class.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/20
+	 */
+	public final boolean isAssignableFrom(LoadedClass __o)
+		throws NullPointerException
+	{
+		if (__o == null)
+			throw new NullPointerException("NARG");
+		
+		// Go through target superclasses to find this class
+		for (LoadedClass r = __o; r != null; r = r.superclass)
+		{
+			if (r == this)
+				return true;
+		
+			// Go through interfaces for the class to find this class
+			for (LoadedClass i : r._interfaces)
+				if (this.isAssignableFrom(i))
+					return true;
+		}
+		
+		// Need to cast from one array type to another
+		int thisdims = this.dimensions(),
+			otherdims = __o.dimensions();
+		if (thisdims > 0)
+		{
+			LoadedClass root = this.rootcomponentclass;
+			
+			// If this is an array and the other type is an array with the same
+			// number of dimensions, then compare the base type so that say
+			// Number[] is assignable from Integer[].
+			if (otherdims == thisdims)
+				if (root.isAssignableFrom(__o.rootcomponentclass))
+					return true;
+			
+			// We can cast down to Object array types if there are less
+			// dimensions ([[[[Integer -> [Object)
+			if (root.isObjectClass() && thisdims < otherdims)
+				return true;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Is this the object class?
+	 *
+	 * @return If this is the object class.
+	 * @since 2019/04/20
+	 */
+	public final boolean isObjectClass()
+	{
+		return this.superclass == null;
 	}
 	
 	/**

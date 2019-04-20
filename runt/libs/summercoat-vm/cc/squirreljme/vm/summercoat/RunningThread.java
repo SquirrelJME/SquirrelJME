@@ -496,6 +496,9 @@ public final class RunningThread
 				rzp[p] = v;
 			}
 			
+			// The pool is now realized!
+			rpool._realized = rzp;
+			
 			// Initialize static fields with a constant value
 			for (MinimizedField ff : __cl.miniclass.fields(true))
 				if (ff.flags().isStatic() && ff.value != null)
@@ -805,6 +808,9 @@ public final class RunningThread
 		// and initialized
 		boolean reload = true;
 		
+		// Used for memory access
+		final MemorySpace memory = this.status.memory;
+		
 		// Instruction arguments
 		final int[] args = new int[6];
 		final long[] largs = new long[6];
@@ -984,8 +990,37 @@ public final class RunningThread
 				case NativeInstructionType.IFCLASS:
 				case NativeInstructionType.IFCLASS_REF_CLEAR:
 					{
-						if (true)
-							throw new todo.TODO();
+						// How are we comparing?
+						boolean not = ((op & 0b01) != 0),
+							refcl = ((op & 0b10) != 0);
+						
+						// Get the object pointer and try to read the class
+						// from it
+						LoadedClass ocl = memory.readClassOptional(
+								lrs[args[1]]),
+							want = (LoadedClass)pool.get(args[0]);
+						
+						// Is this assignable?
+						boolean assignable = (ocl != null && want != null ?
+							want.isAssignableFrom(ocl) : false);
+						
+						// Debug
+						todo.DEBUG.note("Object %s instanceof %s = %b, " +
+							"not=%b", ocl, want, assignable, not);
+						
+						// Do we branch?
+						boolean branch = (not ? !assignable : assignable);
+						
+						// Branching?
+						if (branch)
+						{
+							// Refclear?
+							if (refp != 0 && refcl)
+								throw new todo.TODO();
+							
+							// Go to the given address
+							nextpc = args[2];
+						}
 					}
 					break;
 				
