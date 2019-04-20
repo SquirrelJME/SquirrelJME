@@ -814,6 +814,7 @@ public final class RunningThread
 		// Instruction arguments
 		final int[] args = new int[6];
 		final long[] largs = new long[6];
+		final ProfiledThread profiler = this.profiler;
 
 		// Used per frame
 		int[] lrs = null,
@@ -1110,6 +1111,35 @@ public final class RunningThread
 						
 						// Set result
 						lrs[args[2]] = c;
+					}
+					break;
+					
+					// Return from call
+				case NativeInstructionType.RETURN:
+					{
+						// Exit the current frame
+						if (profiler != null)
+							profiler.exitFrame(System.nanoTime());
+						
+						// Remove the last frame
+						ThreadFrame pop = frames.removeLast();
+						
+						// If we are landing on another frame, copy our
+						// globals into that frame
+						ThreadFrame now = frames.peekLast();
+						if (now != null)
+						{
+							int[] from = pop.registers,
+								to = now.registers;
+							
+							// Copy up to the base, skip the zero register
+							for (int i = 1; i < NativeCode.LOCAL_REGISTER_BASE;
+								i++)
+								to[i] = from[i];
+						}
+						
+						// Old state will be getting destroyed
+						reload = true;
 					}
 					break;
 					
