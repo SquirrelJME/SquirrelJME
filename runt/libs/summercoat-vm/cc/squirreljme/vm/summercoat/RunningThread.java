@@ -1143,11 +1143,12 @@ public final class RunningThread
 					break;
 				
 					// Integer register math
+				case NativeInstructionType.MATH_CONST_INT:
 				case NativeInstructionType.MATH_REG_INT:
 					{
 						// Parts
 						int a = lrs[args[0]],
-							b = lrs[args[1]],
+							b = (((op & 0x80) != 0) ? args[1] : lrs[args[1]]),
 							c;
 						
 						// Operation to execute
