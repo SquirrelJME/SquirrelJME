@@ -794,8 +794,8 @@ public final class RunningThread
 		
 		// Globally used stuff
 		final int[] grs = this._globalregs,
-			args = new int[3];
-		final long[] largs = new long[3];
+			args = new int[6];
+		final long[] largs = new long[6];
 
 		// Used per frame
 		int[] lrs = null,
