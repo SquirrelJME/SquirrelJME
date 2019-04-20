@@ -21,6 +21,9 @@ import net.multiphasicapps.classfile.PrimitiveType;
  */
 public enum DataType
 {
+	/** Object. */
+	OBJECT,
+	
 	/** Byte. */
 	BYTE,
 	
@@ -33,17 +36,14 @@ public enum DataType
 	/** Integer. */
 	INTEGER,
 	
-	/** Long. */
-	LONG,
-	
 	/** Float. */
 	FLOAT,
 	
+	/** Long. */
+	LONG,
+	
 	/** Double. */
 	DOUBLE,
-	
-	/** Object. */
-	OBJECT,
 	
 	/** End. */
 	;
@@ -105,14 +105,14 @@ public enum DataType
 	{
 		switch (__i)
 		{
-			case 0:		return BYTE;
-			case 1:		return SHORT;
-			case 2:		return CHARACTER;
-			case 3:		return INTEGER;
-			case 4:		return LONG;
+			case 0:		return OBJECT;
+			case 1:		return BYTE;
+			case 2:		return SHORT;
+			case 3:		return CHARACTER;
+			case 4:		return INTEGER;
 			case 5:		return FLOAT;
-			case 6:		return DOUBLE;
-			case 7:		return OBJECT;
+			case 6:		return LONG;
+			case 7:		return DOUBLE;
 		}
 		
 		// {@squirreljme.error JC3b Invalid data type.}
