@@ -307,8 +307,10 @@ public final class NativeInstruction
 			case NativeInstructionType.LOAD_POOL:
 			case NativeInstructionType.NEW:
 				return 2;
-			
+					
 			case NativeInstructionType.ARRAY_ACCESS:
+			case NativeInstructionType.CONVERSION_TO_WIDE:
+			case NativeInstructionType.CONVERSION_FROM_WIDE:
 			case NativeInstructionType.IF_ICMP:
 			case NativeInstructionType.IFARRAY_INDEX_OOB_REF_CLEAR:
 			case NativeInstructionType.IFARRAY_MISTYPE_REF_CLEAR:
@@ -325,6 +327,9 @@ public final class NativeInstruction
 			case NativeInstructionType.MEMORY_OFF_ICONST:
 			case NativeInstructionType.NEWARRAY:
 				return 3;
+				
+			case NativeInstructionType.CONVERSION_WIDE:
+				return 4;
 				
 			case NativeInstructionType.MATH_CONST_LONG:
 			case NativeInstructionType.MATH_CONST_DOUBLE:
@@ -371,8 +376,29 @@ public final class NativeInstruction
 				
 				// [u16, u16]
 			case NativeInstructionType.ARRAYLEN:
+				return ArgumentFormat.of(
+					ArgumentFormat.VUINT,
+					ArgumentFormat.VUINT);
+					
+				// [u16, u16]
 			case NativeInstructionType.CONVERSION:
 				return ArgumentFormat.of(
+					ArgumentFormat.VUINT,
+					ArgumentFormat.VUINT);
+			
+				// [u16, u16|u16]
+			case NativeInstructionType.CONVERSION_TO_WIDE:
+			case NativeInstructionType.CONVERSION_FROM_WIDE:
+				return ArgumentFormat.of(
+					ArgumentFormat.VUINT,
+					ArgumentFormat.VUINT,
+					ArgumentFormat.VUINT);
+				
+				// [u16|u16, u16|u16]
+			case NativeInstructionType.CONVERSION_WIDE:
+				return ArgumentFormat.of(
+					ArgumentFormat.VUINT,
+					ArgumentFormat.VUINT,
 					ArgumentFormat.VUINT,
 					ArgumentFormat.VUINT);
 				
@@ -509,6 +535,29 @@ public final class NativeInstruction
 		if (upper == NativeInstructionType.SPECIAL_A ||
 			upper == NativeInstructionType.SPECIAL_B)
 			return __op;
+		
+		// Conversion types might be going to a wide type, from a wide type,
+		// or between wide types (so they need more registers
+		else if (upper == NativeInstructionType.CONVERSION)
+		{
+			// Use specific set of operations
+			switch (__op & NativeInstructionType.CONVERSION_WIDE)
+			{
+				case NativeInstructionType.CONVERSION:
+					return NativeInstructionType.CONVERSION;
+				
+				case NativeInstructionType.CONVERSION_TO_WIDE:
+					return NativeInstructionType.CONVERSION_TO_WIDE;
+					
+				case NativeInstructionType.CONVERSION_FROM_WIDE:
+					return NativeInstructionType.CONVERSION_FROM_WIDE;
+					
+				case NativeInstructionType.CONVERSION_WIDE:
+					return NativeInstructionType.CONVERSION_WIDE;
+			}
+		}
+		
+		// Plain
 		return upper;
 	}
 	

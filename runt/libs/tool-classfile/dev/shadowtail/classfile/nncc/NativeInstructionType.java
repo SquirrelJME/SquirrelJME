@@ -104,11 +104,32 @@ public interface NativeInstructionType
 		0xB0;
 	
 	/**
-	 * Conversion.
+	 * Conversion (narrow to narrow).
 	 * {@code iiiiFFTT, r2 <= r1}.
 	 */
 	public static final int CONVERSION =
-		0xC0;
+		0b1100_00_00;
+	
+	/**
+	 * Conversion (narrow to wide).
+	 * {@code iiiiFFTT, r2 <= r1}.
+	 */
+	public static final int CONVERSION_TO_WIDE =
+		0b1100_00_01;
+	
+	/**
+	 * Conversion (wide to narrow).
+	 * {@code iiiiFFTT, r2 <= r1}.
+	 */
+	public static final int CONVERSION_FROM_WIDE =
+		0b1100_01_00;
+	
+	/**
+	 * Conversion (wide to wide).
+	 * {@code iiiiFFTT, r2 <= r1}.
+	 */
+	public static final int CONVERSION_WIDE =
+		0b1100_01_01;
 	
 	/**
 	 * Memory access, offset is a constant.
