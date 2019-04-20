@@ -10,32 +10,23 @@
 package cc.squirreljme.runtime.cldc.vki;
 
 /**
- * This class is responsible for bootstrapping the SquirrelJME environment
- * and initializing everything properly.
+ * This class contains the configuration of the virtual machine.
+ *
+ * Due to the way the kernel initialization works this class might not
+ * actually be initialized through it constructors and as such it should not
+ * have any code within it.
  *
  * @since 2019/04/20
  */
-public final class Bootstrap
+public final class JVMConfiguration
 {
-	/**
-	 * Not used.
-	 *
-	 * @since 2019/04/20
-	 */
-	private Bootstrap()
-	{
-	}
+	/** The address of the ROM file containing definitions and code. */
+	public int romaddr;
 	
-	/**
-	 * This is the booting point for the SquirrelJME kernel, it is
-	 *
-	 * @param __cfg Kernel configuration space, this configures the VM and
-	 * all of the various properties needed to initialize it properly.
-	 * @since 2019/04/20
-	 */
-	private static final void __boot(JVMConfiguration __cfg)
-	{
-		Assembly.fatalExit();
-	}
+	/** The starting address of free memory. */
+	public int memaddr;
+	
+	/** The amount of memory that is available for the VM to use. */
+	public int memsize;
 }
 
