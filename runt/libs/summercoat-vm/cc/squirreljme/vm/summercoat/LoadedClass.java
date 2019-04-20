@@ -414,7 +414,17 @@ public final class LoadedClass
 			if (__static)
 				rv = this._smethods.get(__nat);
 			else
+			{
 				rv = this._imethods.get(__nat);
+				
+				// If there is no method found, but we have a super class
+				// then check for an instance there because technically all
+				// the methods exist for the sub-class anyway
+				LoadedClass scl = this.superclass;
+				if (rv == null && scl != null)
+					rv = (StaticMethodHandle)scl.lookupMethod(
+						__lut, false, __nat);
+			}
 			
 			// {@squirreljme.error AE07 The target method does not exist
 			// in the class. (This class; The lookup type; Is this a static
