@@ -53,10 +53,6 @@ import net.multiphasicapps.profiler.ProfilerSnapshot;
 public final class RunningThread
 	extends Thread
 {
-	/** The global return register. */
-	public static final int GLOBAL_RETURN =
-		NativeCode.RETURN_REGISTER - NativeCode.BASE_GLOBAL_REGISTER;
-	
 	/** The ID of this thread. */
 	protected final int id;
 	
@@ -69,10 +65,6 @@ public final class RunningThread
 	/** Thread frames of what is being run. */
 	private final LinkedList<ThreadFrame> _frames =
 		new LinkedList<>();
-	
-	/** Global registers that are available. */
-	private final int[] _globalregs =
-		new int[ThreadFrame.MAX_REGISTERS];
 	
 	/** Has this thread been started via the run method. */
 	private volatile boolean _didstart;
@@ -120,7 +112,7 @@ public final class RunningThread
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/01/10
 	 */
-	public int execEnterMethod(MethodHandle __mh, int... __args)
+	public ThreadFrame execEnterMethod(MethodHandle __mh, int... __args)
 		throws IllegalStateException, NullPointerException
 	{
 		if (__mh == null)
@@ -152,24 +144,43 @@ public final class RunningThread
 				smh.inmethodname.toString(), smh.inmethodtype.toString(),
 				System.nanoTime());
 		
+		// Get this frame index, this will be used by code that is just
+		// executing the current frame until the frame has exited
+		LinkedList<ThreadFrame> frames = this._frames;
+		int framedx = frames.size();
+		
 		// Setup basic frame
-		ThreadFrame nf = new ThreadFrame(smh.runpool, smh._code);
+		ThreadFrame nf = new ThreadFrame(smh.runpool, smh._code, framedx);
 		
 		// Load arguments into the argument registers
 		int[] ra = nf.registers;
 		for (int i = 0, n = __args.length, o = 1; i < n; i++, o++)
 			ra[o] = __args[i];
 		
-		// Get this frame index, this will be used by code that is just
-		// executing the current frame until the frame has exited
-		LinkedList<ThreadFrame> frames = this._frames;
-		int framedx = frames.size();
+		// Copy global registers from the previous frame
+		ThreadFrame prev = frames.peekLast();
+		if (prev != null)
+		{
+			int[] prevra = prev.registers;
+			
+			ra[NativeCode.STATIC_FIELD_REGISTER] =
+				prevra[NativeCode.STATIC_FIELD_REGISTER];
+			ra[NativeCode.UNUSED_REGISTER] =
+				prevra[NativeCode.UNUSED_REGISTER];
+		}
+		
+		// Otherwise do an initial seed of them
+		else
+		{
+			ra[NativeCode.STATIC_FIELD_REGISTER] = status.memory.staticfptr;
+			ra[NativeCode.UNUSED_REGISTER] = 0;
+		}
 		
 		// Register this frame
 		frames.addLast(nf);
 		
-		// And return the frame index
-		return framedx;
+		// And return the frame
+		return nf;
 	}
 	
 	/**
@@ -185,7 +196,7 @@ public final class RunningThread
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/01/10
 	 */
-	public int execEnterMethod(MethodHandle __mh, Object... __args)
+	public ThreadFrame execEnterMethod(MethodHandle __mh, Object... __args)
 		throws IllegalStateException, NullPointerException
 	{
 		if (__mh == null)
@@ -303,12 +314,13 @@ public final class RunningThread
 		{
 			// Setup thread frame for method handle and execute the frames
 			// until its termination point is reached
-			this.__doExecution(this.execEnterMethod(__mh, __args));
+			ThreadFrame frame = this.execEnterMethod(__mh, __args);
+			this.__doExecution(frame.index);
 			
-			// Build return value from the globals
-			int[] gr = this._globalregs;
-			return ((((long)gr[GLOBAL_RETURN]) << 32L) |
-				(gr[GLOBAL_RETURN + 1] & 0xFFFFFFFFL));
+			// Build return value from the locals
+			int[] lrs = frame.registers;
+			return ((((long)lrs[NativeCode.RETURN_REGISTER]) << 32L) |
+				(lrs[NativeCode.RETURN_REGISTER + 1] & 0xFFFFFFFFL));
 		}
 		
 		// Make sure this is always run
@@ -792,9 +804,8 @@ public final class RunningThread
 		// and initialized
 		boolean reload = true;
 		
-		// Globally used stuff
-		final int[] grs = this._globalregs,
-			args = new int[6];
+		// Instruction arguments
+		final int[] args = new int[6];
 		final long[] largs = new long[6];
 
 		// Used per frame

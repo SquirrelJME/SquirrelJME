@@ -24,6 +24,9 @@ public final class ThreadFrame
 	/** The constant pool of the method. */
 	public final RuntimeConstantPool pool;
 	
+	/** The frame index. */
+	public final int index;
+	
 	/** Registers. */
 	public final int[] registers =
 		new int[MAX_REGISTERS];
@@ -46,10 +49,11 @@ public final class ThreadFrame
 	 *
 	 * @param __cp The constant pool to use.
 	 * @param __cd The method code.
+	 * @param __fdx The frame index.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/19
 	 */
-	public ThreadFrame(RuntimeConstantPool __cp, byte[] __cd)
+	public ThreadFrame(RuntimeConstantPool __cp, byte[] __cd, int __fdx)
 		throws NullPointerException
 	{
 		if (__cp == null || __cd == null)
@@ -57,6 +61,7 @@ public final class ThreadFrame
 		
 		this.pool = __cp;
 		this.code = __cd;
+		this.index = __fdx;
 	}
 }
 
