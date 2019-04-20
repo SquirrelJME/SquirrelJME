@@ -405,8 +405,8 @@ public final class LoadedClass
 		throws NullPointerException
 	{
 		// Debug
-		todo.DEBUG.note("Lookup %s %b %s in %s", __lut, __static, __nat,
-			this.miniclass.thisName());
+		/*todo.DEBUG.note("Lookup %s %b %s in %s", __lut, __static, __nat,
+			this.miniclass.thisName());*/
 		
 		// Static lookup always returns the discovered method so it is called
 		// directly rather than virtually
