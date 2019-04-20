@@ -207,45 +207,10 @@ public final class RunningThread
 		// Need to convert arguments to integers since everything is based
 		// on registers, this ends up being far faster for calls accordingly
 		// within the VM since everything is purely register based
-		int n = __args.length,
-			o = 0;
-		int[] iargs = new int[n * 2];
-		for (int i = 0; i < n; i++)
-		{
-			Object a = __args[i];
-			
-			// Convert argument accordingly
-			if (a == null)
-				iargs[o++] = 0;
-			else if (a instanceof TypedPointer)
-				iargs[o++] = ((TypedPointer)a).pointer;
-			else if (a instanceof Integer)
-				iargs[o++] = ((Integer)a).intValue();
-			else if (a instanceof Float)
-				iargs[o++] = Float.floatToRawIntBits((Float)a);
-			else if (a instanceof Long)
-			{
-				long l = ((Long)a).longValue();
-				iargs[o++] = (int)(l >>> 32);
-				iargs[o++] = (int)l;
-			}
-			else if (a instanceof Double)
-			{
-				long l = Double.doubleToRawLongBits((Double)a);
-				iargs[o++] = (int)(l >>> 32);
-				iargs[o++] = (int)l;
-			}
-			
-			// {@squirreljme.error AE0o Do not know how to convert value of
-			// the given type to an integer form. (The value; The class type)}
-			else
-				throw new IllegalArgumentException(
-					String.format("AE0o %s %s", a, a.getClass()));
-		}
+		int[] iargs = this.argumentConvertToInt(__args);
 		
 		// Use the fast version, trim array accordingly
-		return this.execEnterMethod(__mh, (o == iargs.length ? iargs :
-			Arrays.copyOf(iargs, o)));
+		return this.execEnterMethod(__mh, iargs);
 	}
 	
 	/**
@@ -349,14 +314,49 @@ public final class RunningThread
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/18
 	 */
-	public final TypedPointer vmArraySet(TypedPointer __tp, int __dx,
-		Object __v)
+	public final void vmArraySet(TypedPointer __tp, int __dx, Object __v)
 		throws NullPointerException
 	{
 		if (__tp == null || __v == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Must be the same thread
+		this.__checkSameThread();
+		
+		// Data type used for the array and component area size
+		DataType dt = __tp.type.componentclass.miniclass.header.datatype;
+		
+		// Determine the address to write to
+		int ptr = __tp.pointer + 12 + (__dx * dt.size());
+		
+		// Get integer form of the data
+		int[] nt = RunningThread.argumentConvertToInt(__v);
+		
+		// Write according to the data type
+		MemorySpace memory = this.status.memory;
+		switch (dt)
+		{
+			case BYTE:
+				throw new todo.TODO();
+			
+			case SHORT:
+			case CHARACTER:
+				memory.memWriteShort(false, ptr, (short)nt[0]);
+				break;
+			
+			case INTEGER:
+			case FLOAT:
+			case OBJECT:
+				memory.memWriteInt(false, ptr, nt[0]);
+				break;
+			
+			case LONG:
+			case DOUBLE:
+				throw new todo.TODO();
+			
+			default:
+				throw new todo.OOPS();
+		}
 	}
 	
 	/**
@@ -731,11 +731,16 @@ public final class RunningThread
 			return new TypedPointer(this.status.classloader.
 				loadClass("java/lang/String"), 0);
 		
-		// Allocate new character array sequence
-		TypedPointer casap = this.vmNew(
-			"cc/squirreljme/runtime/cldc/string/CharArraySequence");
+		// Create character array
+		int strlen = __in.length();
+		TypedPointer cha = this.vmNewArray("[C", strlen);
 		
-		throw new todo.TODO();
+		// Store into the array
+		for (int i = 0; i < strlen; i++)
+			this.vmArraySet(cha, i, __in.charAt(i));
+		
+		// Create string with this character array
+		return this.vmNewInstance("java/lang/String", "([C)V", cha);
 	}
 	
 	/**
@@ -1411,6 +1416,63 @@ public final class RunningThread
 			default:
 				throw new todo.TODO(mty.name());
 		}
+	}
+	
+	/**
+	 * Converts input arguments to an array of integer values.
+	 *
+	 * @param __args The arguments to convert.
+	 * @return The resulting integer value.
+	 * @throws IllegalArgumentException If it cannot be converted.
+	 * @since 2019/04/20
+	 */
+	public static final int[] argumentConvertToInt(Object... __args)
+		throws IllegalArgumentException
+	{
+		if (__args == null || __args.length == 0)
+			return new int[0];
+		
+		// Convert
+		int n = __args.length,
+			o = 0;
+		int[] iargs = new int[n * 2];
+		for (int i = 0; i < n; i++)
+		{
+			Object a = __args[i];
+			
+			// Convert argument accordingly
+			if (a == null)
+				iargs[o++] = 0;
+			else if (a instanceof TypedPointer)
+				iargs[o++] = ((TypedPointer)a).pointer;
+			else if (a instanceof Character)
+				iargs[o++] = ((Character)a).charValue();
+			else if (a instanceof Integer)
+				iargs[o++] = ((Integer)a).intValue();
+			else if (a instanceof Float)
+				iargs[o++] = Float.floatToRawIntBits((Float)a);
+			else if (a instanceof Long)
+			{
+				long l = ((Long)a).longValue();
+				iargs[o++] = (int)(l >>> 32);
+				iargs[o++] = (int)l;
+			}
+			else if (a instanceof Double)
+			{
+				long l = Double.doubleToRawLongBits((Double)a);
+				iargs[o++] = (int)(l >>> 32);
+				iargs[o++] = (int)l;
+			}
+			
+			// {@squirreljme.error AE0o Do not know how to convert value of
+			// the given type to an integer form. (The value; The class type)}
+			else
+				throw new IllegalArgumentException(
+					String.format("AE0o %s %s", a, a.getClass()));
+		}
+		
+		// Return snipped array
+		return (o == iargs.length ? iargs : Arrays.copyOf(iargs, o));
 	}
 }
 

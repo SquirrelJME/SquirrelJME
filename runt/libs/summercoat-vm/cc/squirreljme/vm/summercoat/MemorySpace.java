@@ -257,6 +257,43 @@ public final class MemorySpace
 	}
 	
 	/**
+	 * Writes memory to the given address.
+	 *
+	 * @param __atmc Is this an atomic operation?
+	 * @param __addr The address to write to.
+	 * @param __v The value to write.
+	 * @throws VMVirtualMachineException If the address is not aligned or is
+	 * out of bounds of memory.
+	 * @since 2019/04/20
+	 */
+	public final void memWriteShort(boolean __atmc, int __addr, short __v)
+		throws VMVirtualMachineException
+	{
+		// {@squirreljme.error AE0p Illegal memory access.
+		// (The address; The value)}
+		if (__addr < 0 || __addr >= this.total - 1 || (__addr & 1) != 0)
+			throw new VMVirtualMachineException(
+				String.format("AE0p %08x %d", __addr, __v));
+		
+		// Debug
+		todo.DEBUG.note("*%08x <- %d (%c)", __addr, __v, (char)__v);
+		
+		// Write into memory
+		byte[] memory = this.memory;
+		if (__atmc)
+			synchronized (memory)
+			{
+				memory[__addr++] = (byte)(__v >>> 8);
+				memory[__addr++] = (byte)__v;
+			}
+		else
+		{
+			memory[__addr++] = (byte)(__v >>> 8);
+			memory[__addr++] = (byte)__v;
+		}
+	}
+	
+	/**
 	 * Attempts to read the class for the given pointer.
 	 *
 	 * @param __p The pointer to read.
