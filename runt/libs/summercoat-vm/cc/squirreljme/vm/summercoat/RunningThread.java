@@ -1335,7 +1335,8 @@ public final class RunningThread
 		MethodNameAndType mnt = __m.handle().nameAndType();
 		
 		// Calling method in another class, need to check access
-		if (__from != mcl)
+		// Ignore for interfaces
+		if (__from != mcl && mty != InvokeType.INTERFACE)
 		{
 			// Are these in the same package?
 			boolean samepkg = __from.miniclass.thisName().isInSamePackage(
