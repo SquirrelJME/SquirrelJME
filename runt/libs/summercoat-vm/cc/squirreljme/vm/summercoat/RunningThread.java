@@ -1073,6 +1073,29 @@ public final class RunningThread
 						reload = true;
 					}
 					break;
+					
+					// Load value from pool
+				case NativeInstructionType.LOAD_POOL:
+					{
+						// Get value to load
+						Object pv = pool.get(args[0]);
+						
+						// Debug
+						todo.DEBUG.note("LoadPool %s", pv);
+						
+						// Get integer value to use
+						int use;
+						if (pv instanceof FieldOffset)
+							use = ((FieldOffset)pv).offset;
+						
+						// Should not occur
+						else
+							throw new todo.OOPS(pv.getClass().getName());
+						
+						// Set value
+						lrs[args[1]] = use;
+					}
+					break;
 				
 					// Integer register math
 				case NativeInstructionType.MATH_REG_INT:
