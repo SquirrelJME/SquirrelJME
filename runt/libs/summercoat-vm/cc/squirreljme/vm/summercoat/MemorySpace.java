@@ -55,6 +55,9 @@ public final class MemorySpace
 	/** Used space. */
 	private volatile int _used;
 	
+	/** Current static field pointer area. */
+	private volatile int _staticat;
+	
 	/**
 	 * Intializes the memory space with default settings.
 	 *
@@ -143,6 +146,43 @@ public final class MemorySpace
 				// Perform some emergency garbage collection
 				throw new todo.TODO();
 			}
+		}
+	}
+	
+	/**
+	 * Allocates static space, once allocated it cannot be freed.
+	 *
+	 * @param __sz The number of bytes to statically allocate.
+	 * @return The address of the allocation.
+	 * @since 2019/04/20
+	 */
+	public final int allocateStaticSpace(int __sz)
+	{
+		// Not claiming anything?
+		int staticfptr = this.staticfptr;
+		if (__sz <= 0)
+			return staticfptr;
+		
+		// Always claim a multiple of 4
+		__sz = (__sz + 3) & (~3);
+		
+		// Prevent multiple threads from trying to claim space at once
+		synchronized (this)
+		{
+			// {@squirreljme.error AE0q Static memory space exhausted.
+			// (The number of bytes attempted to allocate; The current size
+			// of the space)}
+			int staticat = this._staticat,
+				newsat = staticat + __sz;
+			if (newsat >= this.total)
+				throw new VMOutOfMemoryException("AE0q " + __sz + " " +
+					staticat);
+			
+			// Move position up
+			this._staticat = newsat;
+			
+			// Use old space
+			return staticat;
 		}
 	}
 	

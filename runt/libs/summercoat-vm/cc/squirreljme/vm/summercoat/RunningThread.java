@@ -785,8 +785,6 @@ public final class RunningThread
 		int spaceneeded = __cl.miniclass.header.sfbytes;
 		if (spaceneeded > 0)
 		{
-			throw new todo.TODO();
-			/*
 			// Allocate
 			int addr;
 			__cl._startsfbytes = (addr = this.status.memory.
@@ -794,7 +792,6 @@ public final class RunningThread
 			
 			// Debug
 			todo.DEBUG.note("Claimed static space for %s at %d", __cl, addr);
-			*/
 		}
 		
 		// Set as claimed!
