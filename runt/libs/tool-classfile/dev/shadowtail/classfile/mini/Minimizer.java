@@ -446,7 +446,8 @@ public final class Minimizer
 			
 			// Encode arguments
 			ArgumentFormat[] format = i.argumentFormat();
-			for (int a = 0, an = i.argumentCount(); a < an; a++)
+			for (int a = 0, an = i.argumentCount(),
+				afn = format.length; a < an; a++)
 			{
 				// Read argument
 				Object v = i.argument(a);
@@ -469,7 +470,9 @@ public final class Minimizer
 							case VJUMP:
 								jumpreps.put(dos.size(),
 									(InstructionJumpTarget)v);
-								vm = ((InstructionJumpTarget)v).target();
+								
+								// Do not know if the full address can fit
+								vm = 32767;
 								break;
 							
 							case VUINT:

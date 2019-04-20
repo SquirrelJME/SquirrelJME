@@ -878,7 +878,7 @@ public final class RunningThread
 							int base = (code[rargp++] & 0xFF);
 							if ((base & 0x80) != 0)
 							{
-								base <<= 8;
+								base = ((base & 0x7F) << 8);
 								base |= (code[rargp++] & 0xFF);
 							}
 							
