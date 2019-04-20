@@ -1051,6 +1051,27 @@ public final class RunningThread
 						}
 					}
 					break;
+					
+					// Invoke method
+				case NativeInstructionType.INVOKE:
+					{
+						// Get method handle to execute
+						MethodHandle mh = (MethodHandle)pool.get(args[0]);
+						
+						// Load values from registers
+						int nr = reglist.length;
+						int[] vals = new int[nr];
+						for (int r = 0; r < nr; r++)
+							vals[r] = lrs[reglist[r]];
+						
+						// Enter invoked method
+						this.execEnterMethod(mh, vals);
+						
+						// We are invoking so, the frame will be reloaded and
+						// execution continues in this method loop
+						reload = true;
+					}
+					break;
 				
 					// Integer register math
 				case NativeInstructionType.MATH_REG_INT:
