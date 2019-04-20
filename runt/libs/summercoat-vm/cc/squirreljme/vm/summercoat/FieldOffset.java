@@ -10,6 +10,8 @@
 package cc.squirreljme.vm.summercoat;
 
 import dev.shadowtail.classfile.nncc.NativeCode;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 
 /**
  * This contains an offset to a field, either static or otherwise.
@@ -21,6 +23,9 @@ public final class FieldOffset
 	/** The memory access offset. */
 	public final int offset;
 	
+	/** String form. */
+	private Reference<String> _string;
+	
 	/**
 	 * Initializes the field offset.
 	 *
@@ -31,6 +36,23 @@ public final class FieldOffset
 	public FieldOffset(boolean __vol, int __off)
 	{
 		this.offset = __off ^ (__vol ? NativeCode.MEMORY_OFF_VOLATILE_BIT : 0);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/20
+	 */
+	@Override
+	public final String toString()
+	{
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+			this._string = new WeakReference<>(
+				(rv = "FieldOff@" + this.offset));
+		
+		return rv;
 	}
 }
 

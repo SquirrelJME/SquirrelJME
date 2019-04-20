@@ -22,6 +22,7 @@ import dev.shadowtail.classfile.nncc.NativeCode;
 import dev.shadowtail.classfile.nncc.NativeInstruction;
 import dev.shadowtail.classfile.nncc.NativeInstructionType;
 import dev.shadowtail.classfile.xlate.CompareType;
+import dev.shadowtail.classfile.xlate.DataType;
 import dev.shadowtail.classfile.xlate.InvokeType;
 import dev.shadowtail.classfile.xlate.MathType;
 import java.lang.ref.Reference;
@@ -840,8 +841,11 @@ public final class RunningThread
 					nowframe.refp = refp;
 				}
 				
-				// Get current frame
-				nowframe = frames.getLast();
+				// Get current frame, stop execution if there is nothing
+				// left to execute
+				nowframe = frames.peekLast();
+				if (nowframe == null)
+					return;
 				
 				// Load stuff needed for execution
 				lrs = nowframe.registers;
@@ -1136,6 +1140,44 @@ public final class RunningThread
 						lrs[args[2]] = c;
 					}
 					break;
+				
+					// Memory offset via register (not wide)
+				case NativeInstructionType.MEMORY_OFF_REG:
+					{
+						// Determine if access is volatile
+						int off = lrs[args[2]];
+						boolean vol = ((off >>> 31) != (off >>> 30));
+						if (vol)
+							off ^= NativeCode.MEMORY_OFF_VOLATILE_BIT;
+						
+						// The pointer to access
+						int ptr = lrs[args[1]] + off,
+							vop = args[0];
+						
+						// Load
+						if ((op & 0b1000) != 0)
+						{
+							throw new todo.TODO();
+						}
+						
+						// Store
+						else
+						{
+							int v = lrs[vop];
+							switch (DataType.of(op & 0x7))
+							{
+								case OBJECT:
+								case INTEGER:
+								case FLOAT:
+									memory.memWriteInt(vol, ptr, v);
+									break;
+								
+								default:
+									throw new todo.OOPS();
+							}
+						}
+					}
+					break;
 					
 					// Return from call
 				case NativeInstructionType.RETURN:
@@ -1202,8 +1244,13 @@ public final class RunningThread
 		FieldNameAndType fnat = __f.field().memberNameAndType();
 		
 		// Locate the field first
-		MinimizedField fmin = fclass.lookupField(
-			ftype == FieldAccessType.STATIC, fnat);
+		boolean iss = (ftype == FieldAccessType.STATIC);
+		MinimizedField fmin = fclass.lookupField(iss, fnat);
+		
+		// Make sure the static field space for the target class is claimed
+		// so we can actually locate the correct field!
+		if (iss && !fclass._claimedsfspace)
+			this.__claimStaticFieldSpace(fclass);
 		
 		// Get field flags, determine if quickly volatile
 		FieldFlags fflag = fmin.flags();
@@ -1256,7 +1303,8 @@ public final class RunningThread
 		}
 		
 		// Return offset to field
-		return new FieldOffset(isvolatile, fmin.offset);
+		return new FieldOffset(isvolatile,
+			(iss ? fclass._startsfbytes : fclass.startifbytes) + fmin.offset);
 	}
 	
 	/**
