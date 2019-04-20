@@ -1323,6 +1323,9 @@ public final class RunningThread
 		if (__from == null || __m == null)
 			throw new NullPointerException("NARG");
 		
+		// Debug
+		todo.DEBUG.note("From %s : %s", __from, __m);
+		
 		// Get all the various parts
 		InvokeType mty = __m.type();
 		LoadedClass mcl = this.status.classloader.loadClass(

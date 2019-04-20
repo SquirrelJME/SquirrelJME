@@ -404,6 +404,10 @@ public final class LoadedClass
 		boolean __static, MethodNameAndType __nat)
 		throws NullPointerException
 	{
+		// Debug
+		todo.DEBUG.note("Lookup %s %b %s in %s", __lut, __static, __nat,
+			this.miniclass.thisName());
+		
 		// Static lookup always returns the discovered method so it is called
 		// directly rather than virtually
 		if (__static || __lut == MethodLookupType.STATIC)
@@ -422,8 +426,16 @@ public final class LoadedClass
 				// the methods exist for the sub-class anyway
 				LoadedClass scl = this.superclass;
 				if (rv == null && scl != null)
+				{
+					// Lookup in super class
 					rv = (StaticMethodHandle)scl.lookupMethod(
 						__lut, false, __nat);
+					
+					// However cancel it out if it is private, because we
+					// are not allowed to reference it!
+					if (rv.minimethod.flags().isPrivate())
+						rv = null;
+				}
 			}
 			
 			// {@squirreljme.error AE07 The target method does not exist
@@ -442,9 +454,9 @@ public final class LoadedClass
 		else if (__lut == MethodLookupType.INSTANCE)
 			return new InstanceMethodHandle(this.miniclass.thisName(), __nat);
 		
-		// Similar to instance lookup but starts at the super-class instead
+		// Similar to instance lookup but scans from this class down
 		else if (__lut == MethodLookupType.SUPER)
-			return new SuperMethodHandle(this.miniclass.superName(), __nat);
+			return new SuperMethodHandle(this.miniclass.thisName(), __nat);
 		
 		throw new todo.OOPS(__lut.name());
 	}
