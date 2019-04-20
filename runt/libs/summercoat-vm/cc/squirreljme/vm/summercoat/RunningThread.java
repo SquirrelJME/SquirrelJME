@@ -501,10 +501,49 @@ public final class RunningThread
 			rpool._realized = rzp;
 			
 			// Initialize static fields with a constant value
+			int startsfbytes = __cl._startsfbytes;
+			MemorySpace memory = status.memory;
 			for (MinimizedField ff : __cl.miniclass.fields(true))
 				if (ff.flags().isStatic() && ff.value != null)
 				{
-					throw new todo.TODO();
+					// Make intern string from it?
+					Object usev;
+					if (ff.value instanceof String)
+						throw new todo.TODO();
+					
+					// Otherwise use given value
+					else
+						usev = ff.value;
+					
+					// Convert
+					int[] vs = RunningThread.argumentConvertToInt(usev);
+					
+					// Set
+					switch (ff.datatype)
+					{
+						case BYTE:
+							throw new todo.TODO();
+						
+						case SHORT:
+						case CHARACTER:
+							memory.memWriteShort(false,
+								startsfbytes + ff.offset, (short)vs[0]);
+							break;
+						
+						case INTEGER:
+						case FLOAT:
+						case OBJECT:
+							memory.memWriteInt(false,
+								startsfbytes + ff.offset, vs[0]);
+							break;
+						
+						case LONG:
+						case DOUBLE:
+							throw new todo.TODO();
+						
+						default:
+							throw new todo.OOPS(ff.datatype.name());
+					}
 				}
 			
 			// Execute static constructor
