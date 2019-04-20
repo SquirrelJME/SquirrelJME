@@ -570,7 +570,22 @@ public final class RunningThread
 		// Must be the same thread
 		this.__checkSameThread();
 		
+		// Get class loader
+		ClassLoader classloader = this.status.classloader;
+		
 		throw new todo.TODO();
+		/*
+		// Translate and build interned type
+		return new TypedPointer(classloader.loadClass("java/lang/String"),
+			this.runMethod(classloader.loadClass(
+			"cc.squirreljme.runtime.cldc.lang.StringIntern")
+		long rv = this.runMethod(this.status.classloader.loadClass(__cl),
+			this.vmTranslateString(__s)
+		
+		this.vmTranslateString(__s))
+		
+		throw new todo.TODO();
+		*/
 	}
 	
 	/**
@@ -1131,6 +1146,10 @@ public final class RunningThread
 						if (pv instanceof FieldOffset)
 							use = ((FieldOffset)pv).offset;
 						
+						// String, which needs to be interned
+						else if (pv instanceof String)
+							use = this.vmInternString((String)pv).pointer;
+						
 						// Should not occur
 						else
 							throw new todo.OOPS(pv.getClass().getName());
@@ -1370,7 +1389,7 @@ public final class RunningThread
 			throw new NullPointerException("NARG");
 		
 		// Debug
-		todo.DEBUG.note("From %s : %s", __from, __m);
+		/*todo.DEBUG.note("From %s : %s", __from, __m);*/
 		
 		// Get all the various parts
 		InvokeType mty = __m.type();
