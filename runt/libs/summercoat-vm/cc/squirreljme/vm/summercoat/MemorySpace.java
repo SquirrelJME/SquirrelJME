@@ -27,8 +27,15 @@ public final class MemorySpace
 	public static final int DEFAULT_MEMORY_SIZE =
 		8388608;
 	
+	/** Static field area size. */
+	public static final int STATIC_FIELD_SIZE =
+		65536;
+	
 	/** The total amount of memory available. */
 	public final int total;
+	
+	/** Pointer to the static field storage. */
+	public final int staticfptr;
 	
 	/** The memory bytes. */
 	protected final byte[] memory;
@@ -72,9 +79,13 @@ public final class MemorySpace
 		// Allocate memory chunk
 		this.memory = new byte[__msz];
 		
+		// Reserve an area for static fields to be stored in
+		int staticfptr = ((__msz - STATIC_FIELD_SIZE) + 3) & (~3);
+		this.staticfptr = staticfptr;
+		
 		// Initial memory partition is all of the free space minus the first
 		// portion of memory which is used for null pointers
-		this._parts.add(new Partition(16, __msz));
+		this._parts.add(new Partition(16, staticfptr));
 		
 		// The first of these are considered as nothing
 		this._handles.put(null, 0);
