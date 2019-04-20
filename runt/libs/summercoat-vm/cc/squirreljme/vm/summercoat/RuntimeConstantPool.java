@@ -23,7 +23,7 @@ public final class RuntimeConstantPool
 	protected final MinimizedPool minipool;
 	
 	/** Realized pool entries with references and such. */
-	private volatile Object[] _realized;
+	volatile Object[] _realized;
 	
 	/**
 	 * Initializes the runtime constant pool.
@@ -39,6 +39,18 @@ public final class RuntimeConstantPool
 			throw new NullPointerException("NARG");
 		
 		this.minipool = __mp;
+	}
+	
+	/**
+	 * Gets the pool value.
+	 *
+	 * @param __i The index.
+	 * @return The realized value.
+	 * @since 2019/04/20
+	 */
+	public final Object get(int __i)
+	{
+		return this._realized[__i];
 	}
 }
 
