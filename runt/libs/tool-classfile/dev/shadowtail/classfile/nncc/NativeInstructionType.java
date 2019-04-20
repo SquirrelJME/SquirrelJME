@@ -25,17 +25,17 @@ public interface NativeInstructionType
 		0x00;
 	
 	/**
-	 * Math, R=RR, Long.
-	 * {@code iiiiMMMM, r3 = r1 ? r2}.
-	 */
-	public static final int MATH_REG_LONG =
-		0x10;
-	
-	/**
 	 * Math, R=RR, Float.
 	 * {@code iiiiMMMM, r3 = r1 ? r2}.
 	 */
 	public static final int MATH_REG_FLOAT =
+		0x10;
+	
+	/**
+	 * Math, R=RR, Long.
+	 * {@code iiiiMMMM, r3 = r1 ? r2}.
+	 */
+	public static final int MATH_REG_LONG =
 		0x20;
 	
 	/**
@@ -83,17 +83,17 @@ public interface NativeInstructionType
 		0x80;
 	
 	/**
-	 * Math, R=RC, Long.
-	 * {@code iiiiMMMM, r3 = r1 ? c2}.
-	 */
-	public static final int MATH_CONST_LONG =
-		0x90;
-	
-	/**
 	 * Math, R=RC, Float.
 	 * {@code iiiiMMMM, r3 = r1 ? c2}.
 	 */
 	public static final int MATH_CONST_FLOAT =
+		0x90;
+	
+	/**
+	 * Math, R=RC, Long.
+	 * {@code iiiiMMMM, r3 = r1 ? c2}.
+	 */
+	public static final int MATH_CONST_LONG =
 		0xA0;
 	
 	/**

@@ -617,6 +617,9 @@ public final class NativeInstruction
 					DataType.of(__op & 0x07).name();
 			
 			case NativeInstructionType.CONVERSION:
+			case NativeInstructionType.CONVERSION_TO_WIDE:
+			case NativeInstructionType.CONVERSION_FROM_WIDE:
+			case NativeInstructionType.CONVERSION_WIDE:
 				{
 					StackJavaType a = StackJavaType.of((__op >> 2) & 0x3),
 						b = StackJavaType.of(__op & 0x03);

@@ -149,8 +149,30 @@ public final class NativeCodeBuilder
 		if (__fromt == null || __tot == null)
 			throw new NullPointerException("NARG");
 		
-		return this.add(NativeInstructionType.CONVERSION |
-			(__fromt.ordinal() << 2) | (__tot.ordinal()), __from, __to);
+		// Build operation to use
+		int rop = NativeInstructionType.CONVERSION |
+			(__fromt.ordinal() << 2) | (__tot.ordinal());
+		
+		// Convert from wide (then to wide, or to narrow)
+		if (__fromt.isWide())
+			if (__tot.isWide())
+				return this.add(rop,
+					__from, (__from == 0 ? 0 : __from + 1),
+					__to, (__to == 0 ? 0 : __to + 1));
+			else
+				return this.add(rop,
+					__from, (__from == 0 ? 0 : __from + 1),
+					__to);
+		
+		// Convert to wide
+		else if (__tot.isWide())
+			return this.add(rop,
+				__from,
+				__to, (__to == 0 ? 0 : __to + 1));
+		
+		// narrow to narrow
+		else
+			return this.add(rop, __from, __to);
 	}
 	
 	/**
@@ -413,22 +435,27 @@ public final class NativeCodeBuilder
 			throw new NullPointerException("NARG");
 		
 		int op;
+		boolean wide;
 		switch (__jt)
 		{
 			case INTEGER:
 				op = NativeInstructionType.MATH_CONST_INT;
+				wide = false;
 				break;
 				
 			case LONG:
 				op = NativeInstructionType.MATH_CONST_LONG;
+				wide = true;
 				break;
 				
 			case FLOAT:
 				op = NativeInstructionType.MATH_CONST_FLOAT;
+				wide = false;
 				break;
 				
 			case DOUBLE:
 				op = NativeInstructionType.MATH_CONST_DOUBLE;
+				wide = true;
 				break;
 			
 			default:
@@ -436,7 +463,13 @@ public final class NativeCodeBuilder
 		}
 		
 		// Build operation
-		return this.add(op | __mf.ordinal(), __a, __b, __c);
+		int rop = op | __mf.ordinal();
+		if (wide)
+			return this.add(rop,
+				__a, (__a == 0 ? 0 : __a + 1),
+				__b,
+				__c, (__c == 0 ? 0 : __c + 1));
+		return this.add(rop, __a, __b, __c);
 	}
 	
 	/**
@@ -459,22 +492,27 @@ public final class NativeCodeBuilder
 			throw new NullPointerException("NARG");
 		
 		int op;
+		boolean wide;
 		switch (__jt)
 		{
 			case INTEGER:
 				op = NativeInstructionType.MATH_REG_INT;
+				wide = false;
 				break;
 				
 			case LONG:
 				op = NativeInstructionType.MATH_REG_LONG;
+				wide = true;
 				break;
 				
 			case FLOAT:
 				op = NativeInstructionType.MATH_REG_FLOAT;
+				wide = false;
 				break;
 				
 			case DOUBLE:
 				op = NativeInstructionType.MATH_REG_DOUBLE;
+				wide = true;
 				break;
 			
 			default:
@@ -482,7 +520,13 @@ public final class NativeCodeBuilder
 		}
 		
 		// Build operation
-		return this.add(op | __mf.ordinal(), __a, __b, __c);
+		int rop = op | __mf.ordinal();
+		if (wide)
+			return this.add(rop,
+				__a, (__a == 0 ? 0 : __a + 1),
+				__b, (__b == 0 ? 0 : __b + 1),
+				__c, (__c == 0 ? 0 : __c + 1));
+		return this.add(rop, __a, __b, __c);
 	}
 	
 	/**
