@@ -870,6 +870,9 @@ public final class RunningThread
 				largs[i] = 0;
 			}
 			
+			// Register list, just one is used everywhere
+			int[] reglist = null;
+			
 			// Load arguments for this instruction
 			ArgumentFormat[] af = NativeInstruction.argumentFormat(op);
 			int rargp = pc + 1;
@@ -896,7 +899,32 @@ public final class RunningThread
 					
 					// Register list.
 					case REGLIST:
-						throw new todo.TODO();
+						{
+							// Wide
+							int count = (code[rargp++] & 0xFF);
+							if ((count & 0x80) != 0)
+							{
+								count = ((count & 0x7F) << 8) |
+									(code[rargp++] & 0xFF);
+								
+								// Read values
+								reglist = new int[count];
+								for (int r = 0; r < count; r++)
+									reglist[r] =
+										((code[rargp++] & 0xFF) << 8) |
+										(code[rargp++] & 0xFF);
+							}
+							// Narrow
+							else
+							{
+								reglist = new int[count];
+								
+								// Read values
+								for (int r = 0; r < count; r++)
+									reglist[r] = (code[rargp++] & 0xFF);
+							}
+						}
+						break;
 					
 					// 32-bit integer/float
 					case INT32:
