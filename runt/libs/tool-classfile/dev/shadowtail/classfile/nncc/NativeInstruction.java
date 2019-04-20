@@ -327,7 +327,8 @@ public final class NativeInstruction
 			case NativeInstructionType.MEMORY_OFF_ICONST:
 			case NativeInstructionType.NEWARRAY:
 				return 3;
-				
+			
+			case NativeInstructionType.ARRAY_ACCESS_WIDE:
 			case NativeInstructionType.CONVERSION_WIDE:
 			case NativeInstructionType.MEMORY_OFF_ICONST_WIDE:
 			case NativeInstructionType.MEMORY_OFF_REG_WIDE:
@@ -422,6 +423,7 @@ public final class NativeInstruction
 					ArgumentFormat.VUINT);
 				
 				// [u16|u16, u16, u16]
+			case NativeInstructionType.ARRAY_ACCESS_WIDE:
 			case NativeInstructionType.MEMORY_OFF_REG_WIDE:
 				return ArgumentFormat.of(
 					ArgumentFormat.VUINT,
@@ -589,6 +591,13 @@ public final class NativeInstruction
 			else
 				return NativeInstructionType.MEMORY_OFF_ICONST;
 		
+		// Array access
+		else if (upper == NativeInstructionType.ARRAY_ACCESS)
+			if ((__op & 0b110) == 0b110)
+				return NativeInstructionType.ARRAY_ACCESS_WIDE;
+			else
+				return NativeInstructionType.ARRAY_ACCESS;
+		
 		// Plain
 		return upper;
 	}
@@ -643,6 +652,7 @@ public final class NativeInstruction
 					(((__op & 0x80) != 0) ? "ICONST" : "REG");
 				
 			case NativeInstructionType.ARRAY_ACCESS:
+			case NativeInstructionType.ARRAY_ACCESS_WIDE:
 				return "ARRAY_" +
 					(((__op & 0x08) != 0) ? "LOAD" : "STORE") +
 					"_" +
