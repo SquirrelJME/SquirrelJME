@@ -34,7 +34,7 @@ public final class JavaStackState
 {
 	/** The base register where locals start. */
 	public static final int BASE_REGISTER =
-		1;
+		6;
 	
 	/** The top of the stack. */
 	public final int stacktop;

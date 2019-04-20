@@ -32,21 +32,25 @@ public final class NativeCode
 	public static final int ZERO_REGISTER =
 		0;
 	
-	/** Base global registers. */
-	public static final int BASE_GLOBAL_REGISTER =
-		8192;
-	
-	/** Static field area register. */
-	public static final int STATIC_FIELD_REGISTER =
-		8192;
-	
-	/** The return value register. */
+	/** The return value register (two slots, 1 + 2). */
 	public static final int RETURN_REGISTER =
-		8194;
+		1;
 	
-	/** The thrown exception register. */
+	/** The exception register. */
 	public static final int EXCEPTION_REGISTER =
-		8196;
+		3;
+	
+	/** The pointer containing static field data. */
+	public static final int STATIC_FIELD_REGISTER =
+		4;
+	
+	/** Unused global. */
+	public static final int UNUSED_REGISTER =
+		5;
+	
+	/** Base for local registers. */
+	public static final int LOCAL_REGISTER_BASE =
+		6;
 	
 	/** This bit XORed NEG bit == set, means memory access is volatile. */
 	public static final int MEMORY_OFF_VOLATILE_BIT =
