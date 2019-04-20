@@ -577,7 +577,7 @@ public final class Minimizer
 		for (Map.Entry<Integer, InstructionJumpTarget> e : jumpreps.entrySet())
 		{
 			int ai = e.getKey(),
-				jt = e.getValue().target();
+				jt = indexpos[e.getValue().target()];
 			
 			// Wide
 			if ((rv[ai] & 0x80) != 0)
