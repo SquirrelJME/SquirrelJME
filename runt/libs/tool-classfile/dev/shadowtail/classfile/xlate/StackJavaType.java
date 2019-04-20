@@ -21,11 +21,11 @@ public enum StackJavaType
 	/** Integer. */
 	INTEGER,
 	
-	/** Long. */
-	LONG,
-	
 	/** Float. */
 	FLOAT,
+	
+	/** Long. */
+	LONG,
 	
 	/** Double. */
 	DOUBLE,
