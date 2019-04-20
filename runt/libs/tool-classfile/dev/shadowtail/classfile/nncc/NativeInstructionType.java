@@ -60,6 +60,10 @@ public interface NativeInstructionType
 	public static final int MEMORY_OFF_REG =
 		0x50;
 	
+	/** Memory access, off a register using long value. */
+	public static final int MEMORY_OFF_REG_WIDE =
+		0x57;
+	
 	/**
 	 * Unused.
 	 * {@code iiii????}.
@@ -137,6 +141,10 @@ public interface NativeInstructionType
 	 */
 	public static final int MEMORY_OFF_ICONST =
 		0xD0;
+	
+	/** Memory access, offset is a constant, long value. */
+	public static final int MEMORY_OFF_ICONST_WIDE =
+		0xD7;
 	
 	/**
 	 * Unused.
