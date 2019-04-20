@@ -256,16 +256,16 @@ public final class Pool
 						Double.valueOf(__in.readDouble()));
 					break;
 					
-					// {@squirreljme.error JC1z Java ME does not support dynamic
-					// invocation (such as method handles or lambda
+					// {@squirreljme.error JC1z Java ME does not support
+					// dynamic invocation (such as method handles or lambda
 					// expressions).}
 				case TAG_METHODHANDLE:
 				case TAG_METHODTYPE:
 				case TAG_INVOKEDYNAMIC:
 					throw new InvalidClassFormatException("JC1z");
 				
-					// {@squirreljme.error JC20 Unknown tag type in the constant
-					// pool. (The constant pool tag)}
+					// {@squirreljme.error JC20 Unknown tag type in the
+					// constant pool. (The constant pool tag)}
 				default:
 					throw new InvalidClassFormatException(
 						String.format("JC20 %d", tag));

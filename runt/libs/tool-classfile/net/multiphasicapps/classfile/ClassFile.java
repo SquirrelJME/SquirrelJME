@@ -10,7 +10,9 @@
 
 package net.multiphasicapps.classfile;
 
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.Collection;
@@ -269,6 +271,11 @@ public final class ClassFile
 		if (!__d.isArray() && !__d.isPrimitive())
 			throw new IllegalArgumentException(String.format("JC0i %s", __d));
 		
+		// Pre-composed parts to fake things
+		ClassFlags cflags = new ClassFlags(ClassFlag.PUBLIC, ClassFlag.FINAL,
+			ClassFlag.SUPER, ClassFlag.SYNTHETIC);
+		Method[] methods = new Method[0];
+		
 		// Use the names of the types in the language
 		ClassName name;
 		boolean isprimitive;
@@ -277,15 +284,71 @@ public final class ClassFile
 		
 		// Treat array as normal class name
 		else
+		{
 			name = __d.className();
+			
+			// Create fake constant pool
+			Pool fakepool = new Pool(
+					null,
+					new MethodReference(
+						new ClassName("java/lang/Object"),
+						new MethodName("clone"),
+						new MethodDescriptor("()Ljava/lang/Object;"), false));
+			
+			// Faked Code attribute for the clone method
+			byte[] fakeattr;
+			try (ByteArrayOutputStream baos = new ByteArrayOutputStream(128);
+				DataOutputStream dos = new DataOutputStream(baos))
+			{
+				// Max stack
+				dos.writeShort(1);
+				
+				// Max locals
+				dos.writeShort(1);
+				
+				// Code length
+				dos.writeInt(5);
+				
+				// ALOAD_0
+				dos.writeByte(0x2A);
+				
+				// INVOKESPECIAL : Object.clone()
+				dos.writeByte(0xB7);
+				dos.writeShort(1);
+				
+				// ARETURN
+				dos.writeByte(0xB0);
+				
+				// No exceptions
+				dos.writeShort(0);
+				
+				// No attributes
+				dos.writeShort(0);
+				
+				// Build
+				fakeattr = baos.toByteArray();
+			}
+			catch (IOException e)
+			{
+				throw new RuntimeException(e);
+			}
+			
+			// Need to make virtual method called clone
+			methods = new Method[]
+				{
+					new Method(ClassVersion.CLDC_8, cflags, __d.className(),
+						fakepool, new MethodFlags(0x1001),
+						new MethodName("clone"),
+						new MethodDescriptor("()Ljava/lang/Object;"),
+						fakeattr, new AnnotationTable()),
+				};
+		}
 		
 		// Build
-		return new ClassFile(ClassVersion.MAX_VERSION,
-			new ClassFlags(ClassFlag.PUBLIC, ClassFlag.FINAL, ClassFlag.SUPER,
-			ClassFlag.SYNTHETIC), name, (isprimitive ? null :
-			new ClassName("java/lang/Object")), new ClassName[0], new Field[0],
-			new Method[0], new InnerClasses(), new AnnotationTable(),
-			"<special>");
+		return new ClassFile(ClassVersion.MAX_VERSION, cflags, name,
+			(isprimitive ? null : new ClassName("java/lang/Object")),
+			new ClassName[0], new Field[0], methods, new InnerClasses(),
+			new AnnotationTable(), "<special>");
 	}
 	
 	/**
