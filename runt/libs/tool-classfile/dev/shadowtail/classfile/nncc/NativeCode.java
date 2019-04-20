@@ -48,7 +48,7 @@ public final class NativeCode
 	public static final int UNUSED_REGISTER =
 		5;
 	
-	/** Base for local registers. */
+	/** Base for local registers (arguments start here). */
 	public static final int LOCAL_REGISTER_BASE =
 		6;
 	
