@@ -154,7 +154,8 @@ public final class RunningThread
 		
 		// Load arguments into the argument registers
 		int[] ra = nf.registers;
-		for (int i = 0, n = __args.length, o = 1; i < n; i++, o++)
+		for (int i = 0, n = __args.length, o = NativeCode.LOCAL_REGISTER_BASE;
+			i < n; i++, o++)
 			ra[o] = __args[i];
 		
 		// Copy global registers from the previous frame
