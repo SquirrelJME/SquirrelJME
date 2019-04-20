@@ -28,11 +28,18 @@ public final class ThreadFrame
 	public final int[] registers =
 		new int[MAX_REGISTERS];
 	
+	/** Reference queue. */
+	public final int[] refq =
+		new int[MAX_REGISTERS];
+	
 	/** The method code. */
 	public final byte[] code;
 	
 	/** The PC address. */
 	public volatile int pc;
+	
+	/** Reference pointer. */
+	public volatile int refp;
 	
 	/**
 	 * Initializes the thread frame.

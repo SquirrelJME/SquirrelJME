@@ -21,6 +21,7 @@ import dev.shadowtail.classfile.nncc.InvokedMethod;
 import dev.shadowtail.classfile.nncc.NativeCode;
 import dev.shadowtail.classfile.nncc.NativeInstruction;
 import dev.shadowtail.classfile.nncc.NativeInstructionType;
+import dev.shadowtail.classfile.xlate.CompareType;
 import dev.shadowtail.classfile.xlate.InvokeType;
 import dev.shadowtail.classfile.xlate.MathType;
 import java.lang.ref.Reference;
@@ -797,11 +798,13 @@ public final class RunningThread
 		final long[] largs = new long[3];
 
 		// Used per frame
-		int[] lrs = null;
+		int[] lrs = null,
+			refq = null;
 		ThreadFrame nowframe = null;
 		RuntimeConstantPool pool = null;
 		byte[] code = null;
-		int pc = 0;
+		int pc = 0,
+			refp = 0;
 		
 		// Execution is effectively an infinite loop
 		LinkedList<ThreadFrame> frames = this._frames;
@@ -811,18 +814,23 @@ public final class RunningThread
 			// Reload parameters?
 			if ((reload |= (lastframe != frameat)))
 			{
-				// Before dumping this frame, store the PC address
+				// Before dumping this frame, store old info
 				if (nowframe != null)
+				{
 					nowframe.pc = pc;
+					nowframe.refp = refp;
+				}
 				
 				// Get current frame
 				nowframe = frames.getLast();
 				
 				// Load stuff needed for execution
 				lrs = nowframe.registers;
+				refq = nowframe.refq;
 				pool = nowframe.pool;
 				code = nowframe.code;
 				pc = nowframe.pc;
+				refp = nowframe.refp;
 				
 				// Used to auto-detect frame change
 				lastframe = frameat;
@@ -833,6 +841,9 @@ public final class RunningThread
 			
 			// Instruction to execute
 			int op = (code[pc] & 0xFF);
+			
+			// Reset the value of the zero register, it is always zero
+			lrs[0] = 0;
 			
 			// Clear arguments, just in case
 			for (int i = 0, n = args.length; i < n; i++)
@@ -908,6 +919,51 @@ public final class RunningThread
 			{
 					// Entry argument
 				case NativeInstructionType.ENTRY_MARKER:
+					break;
+					
+					// Compare integers and possibly jump
+				case NativeInstructionType.IF_ICMP:
+					{
+						// Parts
+						int a = lrs[args[0]],
+							b = lrs[args[1]];
+						
+						// Compare
+						boolean branch;
+						switch (CompareType.of(op & 0b111))
+						{
+							case EQUALS:
+								branch = (a == b); break;
+							case NOT_EQUALS:
+								branch = (a != b); break;
+							case LESS_THAN:
+								branch = (a < b); break;
+							case LESS_THAN_OR_EQUALS:
+								branch = (a <= b); break;
+							case GREATER_THAN:
+								branch = (a > b); break;
+							case GREATER_THAN_OR_EQUALS:
+								branch = (a >= b); break;
+							case TRUE:
+								branch = true; break;
+							case FALSE:
+								branch = false; break;
+							
+							default:
+								throw new todo.OOPS();
+						}
+						
+						// Branching?
+						if (branch)
+						{
+							// Refclear?
+							if (refp != 0 && ((op & 0x08) != 0))
+								throw new todo.TODO();
+							
+							// Go to the given address
+							nextpc = args[2];
+						}
+					}
 					break;
 				
 					// Integer register math
