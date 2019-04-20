@@ -610,7 +610,7 @@ public final class RunningThread
 		int allocsz = __cl.totalifbytes;
 		boolean isarray;
 		if ((isarray = __cl.isArray()))
-			throw new todo.TODO();
+			allocsz += (__len * __cl.miniclass.header.datatype.size());
 		
 		// Allocate object
 		MemorySpace memory = this.status.memory;

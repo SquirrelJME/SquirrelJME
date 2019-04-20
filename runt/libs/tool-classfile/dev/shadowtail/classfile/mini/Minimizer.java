@@ -94,7 +94,10 @@ public final class Minimizer
 		
 		// Unused, may be used later when needed
 		__dos.writeShort(0);
-		__dos.writeShort(0);
+		__dos.writeByte(0);
+		
+		// Data type of the class
+		__dos.writeByte(DataType.of(input.thisName().field()).ordinal());
 		
 		// Process all fields
 		__TempFields__[] fields = this.__doFields(); 

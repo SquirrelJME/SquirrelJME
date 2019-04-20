@@ -60,6 +60,29 @@ public enum DataType
 	}
 	
 	/**
+	 * Returns the size of the data type.
+	 *
+	 * @return The data size type.
+	 * @since 2019/04/20
+	 */
+	public final int size()
+	{
+		switch (this)
+		{
+			case BYTE:		return 1;
+			case SHORT:
+			case CHARACTER:	return 2;
+			case INTEGER:
+			case FLOAT:
+			case OBJECT:	return 4;
+			case LONG:
+			case DOUBLE:	return 8;
+		}
+		
+		throw new todo.OOPS(this.name());
+	}
+	
+	/**
 	 * Returns this as a basic Java type.
 	 *
 	 * @return The Java type of this.

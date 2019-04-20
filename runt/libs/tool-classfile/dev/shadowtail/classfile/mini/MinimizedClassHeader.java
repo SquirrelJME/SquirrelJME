@@ -9,6 +9,7 @@
 
 package dev.shadowtail.classfile.mini;
 
+import dev.shadowtail.classfile.xlate.DataType;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -35,6 +36,9 @@ public final class MinimizedClassHeader
 	
 	/** Unused B. */
 	public final int unusedb;
+	
+	/** The data type of the class. */
+	public final DataType datatype;
 	
 	/** Number of entries in constant pool. */
 	public final int poolcount;
@@ -134,6 +138,9 @@ public final class MinimizedClassHeader
 		this.unuseda = __vx[at++];
 		this.unusedb = __vx[at++];
 		
+		// Data Type
+		this.datatype = DataType.of(__vx[at++]);
+		
 		// Constant pool
 		this.poolcount = __vx[at++];
 		
@@ -206,7 +213,10 @@ public final class MinimizedClassHeader
 		return new MinimizedClassHeader(
 			// Unused
 			/* unuseda */ dis.readUnsignedShort(),
-			/* unusedb */ dis.readUnsignedShort(),
+			/* unusedb */ dis.readUnsignedByte(),
+			
+			// Data Type
+			/* datatype */ dis.readUnsignedByte(),
 			
 			// Constant pool
 			/* poolcount */ dis.readUnsignedShort(),
