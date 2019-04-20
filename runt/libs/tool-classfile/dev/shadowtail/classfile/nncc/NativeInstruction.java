@@ -318,17 +318,21 @@ public final class NativeInstruction
 			case NativeInstructionType.IFNOTCLASS:
 			case NativeInstructionType.IFNOTCLASS_REF_CLEAR:
 			case NativeInstructionType.MATH_REG_INT:
-			case NativeInstructionType.MATH_REG_LONG:
 			case NativeInstructionType.MATH_REG_FLOAT:
-			case NativeInstructionType.MATH_REG_DOUBLE:
 			case NativeInstructionType.MATH_CONST_INT:
-			case NativeInstructionType.MATH_CONST_LONG:
 			case NativeInstructionType.MATH_CONST_FLOAT:
-			case NativeInstructionType.MATH_CONST_DOUBLE:
 			case NativeInstructionType.MEMORY_OFF_REG:
 			case NativeInstructionType.MEMORY_OFF_ICONST:
 			case NativeInstructionType.NEWARRAY:
 				return 3;
+				
+			case NativeInstructionType.MATH_CONST_LONG:
+			case NativeInstructionType.MATH_CONST_DOUBLE:
+				return 5;
+				
+			case NativeInstructionType.MATH_REG_LONG:
+			case NativeInstructionType.MATH_REG_DOUBLE:
+				return 6;
 				
 				// {@squirreljme.error JC2r Unknown instruction argument
 				// count.}
@@ -381,28 +385,23 @@ public final class NativeInstruction
 				
 				// [u16, u16, u16]
 			case NativeInstructionType.ARRAY_ACCESS:
-			case NativeInstructionType.MATH_REG_DOUBLE:
 			case NativeInstructionType.MATH_REG_FLOAT:
 			case NativeInstructionType.MATH_REG_INT:
-			case NativeInstructionType.MATH_REG_LONG:
 			case NativeInstructionType.MEMORY_OFF_REG:
 				return ArgumentFormat.of(
 					ArgumentFormat.VUINT,
 					ArgumentFormat.VUINT,
 					ArgumentFormat.VUINT);
-				
-				// [u16, d64, u16]
-			case NativeInstructionType.MATH_CONST_DOUBLE:
+					
+				// [u16|u16, u16|u16, u16|u16]
+			case NativeInstructionType.MATH_REG_DOUBLE:
+			case NativeInstructionType.MATH_REG_LONG:
 				return ArgumentFormat.of(
 					ArgumentFormat.VUINT,
-					ArgumentFormat.FLOAT64,
-					ArgumentFormat.VUINT);
-			
-				// [u16, f32, u16]
-			case NativeInstructionType.MATH_CONST_FLOAT:
-				return ArgumentFormat.of(
 					ArgumentFormat.VUINT,
-					ArgumentFormat.FLOAT32,
+					ArgumentFormat.VUINT,
+					ArgumentFormat.VUINT,
+					ArgumentFormat.VUINT,
 					ArgumentFormat.VUINT);
 			
 				// [u16, i32, u16]
@@ -412,11 +411,29 @@ public final class NativeInstruction
 					ArgumentFormat.INT32,
 					ArgumentFormat.VUINT);
 			
-				// [u16, l64, u16]
+				// [u16, f32, u16]
+			case NativeInstructionType.MATH_CONST_FLOAT:
+				return ArgumentFormat.of(
+					ArgumentFormat.VUINT,
+					ArgumentFormat.FLOAT32,
+					ArgumentFormat.VUINT);
+			
+				// [u16|u16, l64, u16|u16]
 			case NativeInstructionType.MATH_CONST_LONG:
 				return ArgumentFormat.of(
 					ArgumentFormat.VUINT,
+					ArgumentFormat.VUINT,
 					ArgumentFormat.INT64,
+					ArgumentFormat.VUINT,
+					ArgumentFormat.VUINT);
+				
+				// [u16|u16, d64, u16|u16]
+			case NativeInstructionType.MATH_CONST_DOUBLE:
+				return ArgumentFormat.of(
+					ArgumentFormat.VUINT,
+					ArgumentFormat.VUINT,
+					ArgumentFormat.FLOAT64,
+					ArgumentFormat.VUINT,
 					ArgumentFormat.VUINT);
 				
 				// [u16, u16, i32]
