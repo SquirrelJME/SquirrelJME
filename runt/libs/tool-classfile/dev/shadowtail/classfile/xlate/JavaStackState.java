@@ -1378,6 +1378,11 @@ public final class JavaStackState
 			maxstack = __s.maxStack(),
 			stacktop = __s.depth();
 		
+		// Force the stack to have at least a single entry for exception
+		// handlers
+		if (maxstack == 0)
+			maxstack++;
+		
 		// Setup output infos
 		Info[] locals = new Info[maxlocals],
 			stack = new Info[maxstack];
