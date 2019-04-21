@@ -211,15 +211,6 @@ public class SummerCoatFactory
 			throw new RuntimeException("AE0y", e);
 		}
 		
-		// Dump some memory
-		todo.DEBUG.note("KOBJ");
-		HexDumpOutputStream.dump(System.err,
-			new ReadableMemoryInputStream(vmem, kernaddr, 1024));
-		
-		todo.DEBUG.note("BOOT");
-		HexDumpOutputStream.dump(System.err,
-			new ReadableMemoryInputStream(vmem, bootaddr, 1024));
-		
 		// Setup virtual CPU to execute
 		NativeCPU cpu = new NativeCPU(vmem);
 		cpu.enterFrame(bootaddr);
