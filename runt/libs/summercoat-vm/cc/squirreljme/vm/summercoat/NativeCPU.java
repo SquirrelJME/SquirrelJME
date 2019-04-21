@@ -260,7 +260,19 @@ public final class NativeCPU
 			// arguments have been read
 			int nextpc = lasticache + rargp;
 			
-			throw new todo.TODO();
+			// Handle the operation
+			switch (op)
+			{
+					// Entry marker used for debug
+				case NativeInstructionType.ENTRY_MARKER:
+					break;
+				
+				default:
+					throw new todo.OOPS(NativeInstruction.mnemonic(op));
+			}
+			
+			// Set next PC address
+			pc = nextpc;
 		}
 	}
 	
