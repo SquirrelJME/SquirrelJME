@@ -23,6 +23,9 @@ public final class Kernel
 	/** Kernel object base. */
 	public int kobjbase;
 	
+	/** Static memory size. */
+	public int staticmemsize;
+	
 	/** The starting address of free memory. */
 	public int memaddr;
 	
@@ -36,16 +39,16 @@ public final class Kernel
 	public int guestdepth;
 	
 	/** The current classpath, NUL split. */
-	public char[] classpath;
+	public byte[] classpath;
 	
 	/** The current system properties, key NUL value NUL. */
-	public char[] sysprops;
+	public byte[] sysprops;
 	
 	/** The main class to execute. */
-	public char[] mainclass;
+	public byte[] mainclass;
 	
 	/** Main entry arguments. */
-	public char[] mainargs;
+	public byte[] mainargs;
 	
 	/**
 	 * Not used.

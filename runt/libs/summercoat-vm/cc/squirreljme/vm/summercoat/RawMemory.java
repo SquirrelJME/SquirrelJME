@@ -107,5 +107,60 @@ public final class RawMemory
 	{
 		return this.size;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/21
+	 */
+	@Override
+	public void memWriteByte(int __addr, int __v)
+	{
+		// {@squirreljme.error AE15 Cannot write to the specified address.
+		// (The address to write to)}
+		if (__addr < 0 || __addr >= this.size - 1)
+			throw new VMRuntimeException(String.format("AE15 %08x",
+				this.offset + __addr));
+		
+		byte[] bytes = this.bytes;
+		bytes[__addr++] = (byte)(__v);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/21
+	 */
+	@Override
+	public final void memWriteInt(int __addr, int __v)
+	{
+		// {@squirreljme.error AE10 Cannot write to the specified address.
+		// (The address to write to)}
+		if (__addr < 0 || __addr >= this.size - 3)
+			throw new VMRuntimeException(String.format("AE10 %08x",
+				this.offset + __addr));
+		
+		byte[] bytes = this.bytes;
+		bytes[__addr++] = (byte)(__v >>> 24);
+		bytes[__addr++] = (byte)(__v >>> 16);
+		bytes[__addr++] = (byte)(__v >>> 8);
+		bytes[__addr++] = (byte)(__v);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/21
+	 */
+	@Override
+	public final void memWriteShort(int __addr, int __v)
+	{
+		// {@squirreljme.error AE13 Cannot write to the specified address.
+		// (The address to write to)}
+		if (__addr < 0 || __addr >= this.size - 2)
+			throw new VMRuntimeException(String.format("AE13 %08x",
+				this.offset + __addr));
+		
+		byte[] bytes = this.bytes;
+		bytes[__addr++] = (byte)(__v >>> 8);
+		bytes[__addr++] = (byte)(__v);
+	}
 }
 
