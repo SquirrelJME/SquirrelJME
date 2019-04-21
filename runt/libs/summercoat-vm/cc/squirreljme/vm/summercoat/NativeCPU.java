@@ -15,6 +15,7 @@ import dev.shadowtail.classfile.nncc.NativeInstruction;
 import dev.shadowtail.classfile.nncc.NativeInstructionType;
 import java.util.LinkedList;
 import java.util.List;
+import net.multiphasicapps.collections.IntegerList;
 
 /**
  * This represents a native CPU which may run within its own thread to
@@ -104,11 +105,12 @@ public final class NativeCPU
 		
 		// Frame specific info
 		Frame nowframe = null;
-		int[] r = null;
+		int[] lr = null;
 		int pc = -1;
 		
 		// Per operation handling
 		final int[] args = new int[6];
+		final long[] largs = new long[6];
 		
 		// Method cache to reduce tons of method reads
 		final byte[] icache = new byte[METHOD_CACHE];
@@ -133,7 +135,7 @@ public final class NativeCPU
 					return;
 				
 				// Load stuff needed for execution
-				r = nowframe._registers;
+				lr = nowframe._registers;
 				pc = nowframe._pc;
 				
 				// Used to auto-detect frame change
@@ -148,7 +150,7 @@ public final class NativeCPU
 			// the method calls to read single bytes of memory is a bit so, so
 			// this should hopefully improve performance slightly.
 			int pcdiff = pc - lasticache;
-			if (pcdiff < 0 || pcdiff > METHOD_CACHE_SPILL)
+			if (pcdiff < 0 || pcdiff >= METHOD_CACHE_SPILL)
 			{
 				memory.memReadBytes(pc, icache, 0, METHOD_CACHE);
 				lasticache = pc;
@@ -161,9 +163,102 @@ public final class NativeCPU
 			nowframe._lastpc = pc;
 			int op = icache[bpc] & 0xFF;
 			
+			// Reset all input arguments
+			for (int i = 0, n = args.length; i < n; i++)
+			{
+				args[i] = 0;
+				largs[i] = 0;
+			}
+			
+			// Register list, just one is used everywhere
+			int[] reglist = null;
+			
+			// Load arguments for this instruction
+			ArgumentFormat[] af = NativeInstruction.argumentFormat(op);
+			int rargp = bpc + 1;
+			for (int i = 0, n = af.length; i < n; i++)
+				switch (af[i])
+				{
+					// Variable sized entries, may be pool values
+					case VUINT:
+					case VPOOL:
+					case VJUMP:
+						{
+							// Long value?
+							int base = (icache[rargp++] & 0xFF);
+							if ((base & 0x80) != 0)
+							{
+								base = ((base & 0x7F) << 8);
+								base |= (icache[rargp++] & 0xFF);
+							}
+							
+							// Set
+							args[i] = base;
+						}
+						break;
+					
+					// Register list.
+					case REGLIST:
+						{
+							// Wide
+							int count = (icache[rargp++] & 0xFF);
+							if ((count & 0x80) != 0)
+							{
+								count = ((count & 0x7F) << 8) |
+									(icache[rargp++] & 0xFF);
+								
+								// Read values
+								reglist = new int[count];
+								for (int r = 0; r < count; r++)
+									reglist[r] =
+										((icache[rargp++] & 0xFF) << 8) |
+										(icache[rargp++] & 0xFF);
+							}
+							// Narrow
+							else
+							{
+								reglist = new int[count];
+								
+								// Read values
+								for (int r = 0; r < count; r++)
+									reglist[r] = (icache[rargp++] & 0xFF);
+							}
+						}
+						break;
+					
+					// 32-bit integer/float
+					case INT32:
+					case FLOAT32:
+						args[i] = ((icache[rargp++] & 0xFF) << 24) |
+							((icache[rargp++] & 0xFF) << 16) |
+							((icache[rargp++] & 0xFF) << 8) |
+							((icache[rargp++] & 0xFF));
+						break;
+					
+					// 64-bit long/double
+					case INT64:
+					case FLOAT64:
+						largs[i] = ((icache[rargp++] & 0xFFL) << 56L) |
+							((icache[rargp++] & 0xFFL) << 48L) |
+							((icache[rargp++] & 0xFFL) << 40L) |
+							((icache[rargp++] & 0xFFL) << 32L) |
+							((icache[rargp++] & 0xFFL) << 24L) |
+							((icache[rargp++] & 0xFFL) << 16L) |
+							((icache[rargp++] & 0xFFL) << 8L) |
+							((icache[rargp++] & 0xFFL));
+						break;
+					
+					default:
+						throw new todo.OOPS(af[i].name());
+				}
+			
 			// Debug
-			todo.DEBUG.note("@%08x -> (%02x) %s", pc,
-				op, NativeInstruction.mnemonic(op));
+			todo.DEBUG.note("@%08x -> (%02x) %s %s", pc,
+				op, NativeInstruction.mnemonic(op), new IntegerList(args));
+			
+			// By default the next instruction is the address after all
+			// arguments have been read
+			int nextpc = lasticache + rargp;
 			
 			throw new todo.TODO();
 		}
