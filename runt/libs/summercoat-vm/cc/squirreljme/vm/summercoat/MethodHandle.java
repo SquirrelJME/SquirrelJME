@@ -16,6 +16,7 @@ package cc.squirreljme.vm.summercoat;
  *
  * @since 2019/01/10
  */
+@Deprecated
 public interface MethodHandle
 {
 	/**

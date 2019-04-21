@@ -25,6 +25,7 @@ import net.multiphasicapps.profiler.ProfilerSnapshot;
  *
  * @since 2019/01/01
  */
+@Deprecated
 public final class RootMachine
 {
 	/** The manager for suites. */

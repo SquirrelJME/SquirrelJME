@@ -14,6 +14,7 @@ package cc.squirreljme.vm.summercoat;
  *
  * @since 2019/04/18
  */
+@Deprecated
 public final class TypedPointer
 {
 	/** The class type. */

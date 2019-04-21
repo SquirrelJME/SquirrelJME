@@ -17,6 +17,7 @@ import cc.squirreljme.vm.VMException;
  *
  * @since 2019/04/19
  */
+@Deprecated
 public class VMVirtualMachineException
 	extends VMException
 {

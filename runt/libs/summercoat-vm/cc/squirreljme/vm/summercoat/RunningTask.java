@@ -23,6 +23,7 @@ import net.multiphasicapps.profiler.ProfilerSnapshot;
  *
  * @since 2019/01/01
  */
+@Deprecated
 public final class RunningTask
 {
 	/** The status of this task. */

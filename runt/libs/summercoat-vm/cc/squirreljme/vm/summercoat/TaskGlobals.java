@@ -15,6 +15,7 @@ package cc.squirreljme.vm.summercoat;
  *
  * @since 2019/01/06
  */
+@Deprecated
 public final class TaskGlobals
 {
 }

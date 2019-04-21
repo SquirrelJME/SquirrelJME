@@ -20,6 +20,7 @@ import java.util.Map;
  *
  * @since 2019/03/09
  */
+@Deprecated
 public final class CachingSuiteManager
 {
 	/** The base suite manager. */

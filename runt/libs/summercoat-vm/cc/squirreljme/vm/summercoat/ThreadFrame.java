@@ -15,6 +15,7 @@ package cc.squirreljme.vm.summercoat;
  *
  * @since 2019/04/19
  */
+@Deprecated
 public final class ThreadFrame
 {
 	/** Maximum number of used registers. */

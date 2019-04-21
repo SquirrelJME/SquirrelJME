@@ -21,6 +21,7 @@ import java.util.Map;
  *
  * @since 2019/04/17
  */
+@Deprecated
 public final class MemorySpace
 {
 	/** The default size of memory. */
