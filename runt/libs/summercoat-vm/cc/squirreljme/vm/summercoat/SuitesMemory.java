@@ -187,6 +187,18 @@ public final class SuitesMemory
 			throw new RuntimeException("AE0t", e);
 		}
 		
+		// {@squirreljme.error AE0w The bootstrap class address is not known.}
+		int bootmcaddr = cldc._bootmcaddr;
+		if (bootmcaddr == 0)
+			throw new RuntimeException("AE0w");
+		
+		// Need to get the position of the bootstrap class from how this chunk
+		// sees its own memory
+		bootmcaddr += cldc.offset;
+		
+		// Debug
+		todo.DEBUG.note("Bootstrap class at %08x", bootmcaddr);
+		
 		if (true)
 			throw new todo.TODO();
 		
