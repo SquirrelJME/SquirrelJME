@@ -61,6 +61,12 @@ public class SummerCoatFactory
 		// Read the address where the bootstrap is located
 		int bootaddr = vmem.memReadInt(SUITE_BASE_ADDR + 4);
 		
+		// Setup virtual CPU to execute
+		NativeCPU cpu = new NativeCPU(vmem, bootaddr);
+		
+		// Execute the CPU to boot the machine
+		cpu.run();
+		
 		if (true)
 			throw new todo.TODO();
 		
