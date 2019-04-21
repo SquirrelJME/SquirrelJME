@@ -21,6 +21,10 @@ import java.lang.ref.WeakReference;
 public final class FieldDescriptor
 	implements Comparable<FieldDescriptor>, MemberDescriptor
 {
+	/** The short type. */
+	public static final FieldDescriptor SHORT =
+		new FieldDescriptor("S");
+	
 	/** The integer type. */
 	public static final FieldDescriptor INTEGER =
 		new FieldDescriptor("I");

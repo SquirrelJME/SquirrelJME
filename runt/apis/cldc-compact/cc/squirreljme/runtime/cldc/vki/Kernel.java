@@ -20,11 +20,32 @@ public final class Kernel
 	/** The address of the ROM file containing definitions and code. */
 	public int romaddr;
 	
+	/** Kernel object base. */
+	public int kobjbase;
+	
 	/** The starting address of free memory. */
 	public int memaddr;
 	
 	/** The amount of memory that is available for the VM to use. */
 	public int memsize;
+	
+	/** Is a MIDlet being ran? */
+	public int ismidlet;
+	
+	/** The guest depth. */
+	public int guestdepth;
+	
+	/** The current classpath, NUL split. */
+	public char[] classpath;
+	
+	/** The current system properties, key NUL value NUL. */
+	public char[] sysprops;
+	
+	/** The main class to execute. */
+	public char[] mainclass;
+	
+	/** Main entry arguments. */
+	public char[] mainargs;
 	
 	/**
 	 * Not used.

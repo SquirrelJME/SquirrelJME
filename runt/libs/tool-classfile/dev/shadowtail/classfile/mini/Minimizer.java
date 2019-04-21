@@ -101,9 +101,9 @@ public final class Minimizer
 		// Unused, may be used later when needed
 		__dos.writeShort(0);
 		
-		// The index of the static method named __start
+		// The index of the instance method named __start
 		int startdx = 0;
-		for (MinimizedMethod mm : methods[0]._methods)
+		for (MinimizedMethod mm : methods[1]._methods)
 		{
 			if (mm.name.toString().equals("__start"))
 				break;
@@ -281,12 +281,12 @@ public final class Minimizer
 			// Synthetic + Transient + Final
 			sorted.add(0, new Field(new FieldFlags(0x1090),
 				new FieldName("_class"),
-				FieldDescriptor.INTEGER, null, null));
+				FieldDescriptor.SHORT, null, null));
 			
 			// Synthetic + Transient + Volatile
 			sorted.add(1, new Field(new FieldFlags(0x10c0),
 				new FieldName("_refcount"),
-				FieldDescriptor.INTEGER, null, null));
+				FieldDescriptor.SHORT, null, null));
 		}
 		
 		// If an array, add the length of the array
