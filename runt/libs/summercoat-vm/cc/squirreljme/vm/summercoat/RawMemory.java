@@ -46,13 +46,13 @@ public final class RawMemory
 	 * @since 2019/04/21
 	 */
 	@Override
-	public byte memReadByte(int __addr)
+	public int memReadByte(int __addr)
 	{
 		// Treat out of region reads as invalid data
 		if (__addr < 0 || __addr >= this.size)
 			return -1;
 		
-		return this._bytes[__addr];
+		return (this._bytes[__addr] & 0xFF);
 	}
 	
 	/**
@@ -78,14 +78,14 @@ public final class RawMemory
 	 * @since 2019/04/21
 	 */
 	@Override
-	public short memReadShort(int __addr)
+	public int memReadShort(int __addr)
 	{
 		// Treat out of region reads as invalid data
 		if (__addr < 0 || __addr >= this.size - 1)
 			return -1;
 		
 		byte[] bytes = this._bytes;
-		return (short)(((bytes[__addr++] & 0xFF) << 8) |
+		return (((bytes[__addr++] & 0xFF) << 8) |
 			(bytes[__addr++] & 0xFF));
 	}
 	

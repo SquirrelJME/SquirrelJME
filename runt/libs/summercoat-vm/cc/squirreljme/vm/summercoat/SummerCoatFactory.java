@@ -55,11 +55,13 @@ public class SummerCoatFactory
 		throws IllegalArgumentException, NullPointerException, VMException
 	{
 		// Setup virtual memory
+		SuitesMemory sm;
 		VirtualMemory vmem = new VirtualMemory(
-			new SuitesMemory(SUITE_BASE_ADDR, __sm));
+			(sm = new SuitesMemory(SUITE_BASE_ADDR, __sm)));
 		
-		// Read the address where the bootstrap is located
-		int bootaddr = vmem.memReadInt(SUITE_BASE_ADDR + 4);
+		// Initialize the suite space and load the boot address
+		sm.__init();
+		int bootaddr = sm._bootaddr;
 		
 		// Setup virtual CPU to execute
 		NativeCPU cpu = new NativeCPU(vmem, bootaddr);

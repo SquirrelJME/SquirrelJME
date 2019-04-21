@@ -75,13 +75,13 @@ public final class ByteArrayMemory
 	 * @since 2019/04/21
 	 */
 	@Override
-	public byte memReadByte(int __addr)
+	public int memReadByte(int __addr)
 	{
 		// Treat out of region reads as invalid data
 		if (__addr < 0 || __addr >= this.size)
 			return -1;
 		
-		return this._bytes[this.boff + __addr];
+		return this._bytes[this.boff + __addr] & 0xFF;
 	}
 	
 	/**
@@ -108,7 +108,7 @@ public final class ByteArrayMemory
 	 * @since 2019/04/21
 	 */
 	@Override
-	public short memReadShort(int __addr)
+	public int memReadShort(int __addr)
 	{
 		// Treat out of region reads as invalid data
 		if (__addr < 0 || __addr >= this.size - 1)
