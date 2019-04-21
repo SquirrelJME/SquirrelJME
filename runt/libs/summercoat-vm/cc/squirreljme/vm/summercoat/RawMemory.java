@@ -25,7 +25,7 @@ public final class RawMemory
 	protected final int size;
 	
 	/** The memory data. */
-	private final byte[] _data;
+	private final byte[] _bytes;
 	
 	/**
 	 * Raw memory space.
@@ -38,7 +38,7 @@ public final class RawMemory
 	{
 		this.offset = __off;
 		this.size = __sz;
-		this._data = new byte[__sz];
+		this._bytes = new byte[__sz];
 	}
 	
 	/**
@@ -46,9 +46,47 @@ public final class RawMemory
 	 * @since 2019/04/21
 	 */
 	@Override
-	public final int memReadInt(int __addr)
+	public byte memReadByte(int __addr)
 	{
-		throw new todo.TODO();
+		// Treat out of region reads as invalid data
+		if (__addr < 0 || __addr >= this.size)
+			return -1;
+		
+		return this._bytes[__addr];
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/21
+	 */
+	@Override
+	public int memReadInt(int __addr)
+	{
+		// Treat out of region reads as invalid data
+		if (__addr < 0 || __addr >= this.size - 3)
+			return -1;
+		
+		byte[] bytes = this._bytes;
+		return ((bytes[__addr++] & 0xFF) << 24) |
+			((bytes[__addr++] & 0xFF) << 16) |
+			((bytes[__addr++] & 0xFF) << 8) |
+			(bytes[__addr++] & 0xFF);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/21
+	 */
+	@Override
+	public short memReadShort(int __addr)
+	{
+		// Treat out of region reads as invalid data
+		if (__addr < 0 || __addr >= this.size - 1)
+			return -1;
+		
+		byte[] bytes = this._bytes;
+		return (short)(((bytes[__addr++] & 0xFF) << 8) |
+			(bytes[__addr++] & 0xFF));
 	}
 	
 	/**

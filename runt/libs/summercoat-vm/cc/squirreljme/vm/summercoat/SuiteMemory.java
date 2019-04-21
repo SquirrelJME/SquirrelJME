@@ -70,9 +70,65 @@ public final class SuiteMemory
 	 * @since 2019/04/21
 	 */
 	@Override
+	public byte memReadByte(int __addr)
+	{
+		// Initialize?
+		if (!this._didinit)
+			try
+			{
+				this.__init();
+			}
+			catch (IOException e)
+			{
+				throw new RuntimeException(e);
+			}
+		
+		// Forward
+		return this._memory.memReadByte(__addr);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/21
+	 */
+	@Override
 	public int memReadInt(int __addr)
 	{
-		throw new todo.TODO();
+		// Initialize?
+		if (!this._didinit)
+			try
+			{
+				this.__init();
+			}
+			catch (IOException e)
+			{
+				throw new RuntimeException(e);
+			}
+		
+		// Forward
+		return this._memory.memReadInt(__addr);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/21
+	 */
+	@Override
+	public short memReadShort(int __addr)
+	{
+		// Initialize?
+		if (!this._didinit)
+			try
+			{
+				this.__init();
+			}
+			catch (IOException e)
+			{
+				throw new RuntimeException(e);
+			}
+		
+		// Forward
+		return this._memory.memReadShort(__addr);
 	}
 	
 	/**
@@ -107,6 +163,7 @@ public final class SuiteMemory
 		// Do not initialize twice!
 		if (this._didinit)
 			return;
+		this._didinit = true;
 		
 		// Load the class library
 		String libname = this.libname;
@@ -203,9 +260,6 @@ public final class SuiteMemory
 		// (The chunk size)}
 		if (idos.size() > SuitesMemory.SUITE_CHUNK_SIZE)
 			throw new RuntimeException("AE0u " + idos.size());
-		
-		// Was initialized
-		this._didinit = true;
 	}
 }
 

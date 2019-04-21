@@ -50,7 +50,7 @@ public abstract class AbstractReadableMemory
 			rv = this.memReadInt(ra);
 		
 		// Return only the desired part of it
-		return (short)(rv >>> (16 - (16 * (__addr & 1))));
+		return (short)(rv >>> (16 - (16 * ((__addr & 2) >> 1))));
 	}
 }
 

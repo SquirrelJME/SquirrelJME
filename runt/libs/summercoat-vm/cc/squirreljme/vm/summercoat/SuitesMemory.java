@@ -15,6 +15,7 @@ import cc.squirreljme.vm.VMSuiteManager;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import net.multiphasicapps.classfile.MethodFlags;
 
 /**
  * This class contains the memory information for every single suite which
@@ -174,6 +175,7 @@ public final class SuitesMemory
 		// Do not initialize twice!
 		if (this._didconfiginit)
 			return;
+		this._didconfiginit = true;
 		
 		// The bootstrap is in CLDC compact
 		SuiteMemory cldc = this._suitemap.get("cldc-compact.jar");
@@ -198,15 +200,42 @@ public final class SuitesMemory
 		bootmcaddr += cldc.offset;
 		
 		// Debug
-		todo.DEBUG.note("Bootstrap class at %08x", bootmcaddr);
+		todo.DEBUG.note("Bootstrap class at %08x (%08x)", bootmcaddr,
+			this.memReadInt(bootmcaddr));
 		
+		// Need to determine the actual pointer to the bootstrap code for
+		// the initial PC set
+		int bootsdx = this.memReadByte(bootmcaddr + 6),
+			smtboff = this.memReadInt(bootmcaddr + 64),
+			bootsmo = bootmcaddr + smtboff + (bootsdx * 18),
+			mmflags = this.memReadInt(bootsmo + 0),
+			mmcdoff = this.memReadShort(bootsmo + 10),
+			bootcdo = bootsmo + mmcdoff;
 		
+		// Debug
+		net.multiphasicapps.io.HexDumpOutputStream.dump(System.err,
+			new ReadableMemoryInputStream(this, bootsmo, 18));
+		
+		// Debug
+		net.multiphasicapps.io.HexDumpOutputStream.dump(System.err,
+			new ReadableMemoryInputStream(this, bootcdo, 512));
+		
+		todo.DEBUG.note("bootsdx=%d smtboff=%d bootsmo=%d bootcdo=%d",
+			bootsdx, smtboff, bootsmo, bootcdo);
+		
+		todo.DEBUG.note("%s %d %d %d %d %d %d",
+			new MethodFlags(this.memReadInt(bootsmo)),
+			this.memReadShort(bootsmo + 4),
+			this.memReadShort(bootsmo + 6),
+			this.memReadShort(bootsmo + 8),
+			this.memReadShort(bootsmo + 10),
+			this.memReadShort(bootsmo + 12),
+			this.memReadShort(bootsmo + 14));
+		
+		// Store it in the config space
 		
 		if (true)
 			throw new todo.TODO();
-		
-		// Did initialize
-		this._didconfiginit = true;
 	}
 }
 
