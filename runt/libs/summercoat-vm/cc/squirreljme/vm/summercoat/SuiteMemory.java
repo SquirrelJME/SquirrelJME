@@ -92,6 +92,29 @@ public final class SuiteMemory
 	 * @since 2019/04/21
 	 */
 	@Override
+	public void memReadBytes(int __addr, byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		// Initialize?
+		if (!this._didinit)
+			try
+			{
+				this.__init();
+			}
+			catch (IOException e)
+			{
+				throw new RuntimeException(e);
+			}
+		
+		// Forward
+		this._memory.memReadBytes(__addr, __b, __o, __l);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/21
+	 */
+	@Override
 	public int memReadInt(int __addr)
 	{
 		// Initialize?

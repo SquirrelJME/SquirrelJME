@@ -42,6 +42,28 @@ public final class VirtualMemory
 	 * @since 2019/04/21
 	 */
 	@Override
+	public void memReadBytes(int __addr, byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		// Reading from entirely suite memory?
+		SuitesMemory suites = this.suites;
+		int sbas = suites.offset,
+			soff = __addr - sbas;
+		if (soff >= 0 && soff + __l < suites.size)
+		{
+			suites.memReadBytes(soff, __b, __o, __l);
+			return;
+		}
+		
+		// Some other region
+		super.memReadBytes(__addr, __b, __o, __l);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/21
+	 */
+	@Override
 	public int memReadInt(int __addr)
 	{
 		// {@squirreljme.error AE0r Unaligned memory access.}
