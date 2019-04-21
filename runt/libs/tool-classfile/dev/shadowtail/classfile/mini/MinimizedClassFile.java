@@ -198,18 +198,31 @@ public final class MinimizedClassFile
 		// Initialize byte array with guess to how many bytes can be read
 		byte[] mcdata;
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(
-			Math.max(4096, __is.available())))
+			Math.min(1048576, __is.available())))
 		{
-			// Copy data
+			// Read the entire header for the class
+			for (int i = 0; i < 88; i++)
+				baos.write(__is.read());
+			
+			// Read the data size to determine how much to read
+			byte[] xhead = baos.toByteArray();
+			int datasize = ((xhead[84] & 0xFF) << 24) |
+				((xhead[85] & 0xFF) << 16) |
+				((xhead[86] & 0xFF) << 8) |
+				((xhead[87] & 0xFF));
+			
+			// Read all the data size bytes
 			byte[] buf = new byte[512];
-			for (;;)
+			for (int left = datasize; left > 0;)
 			{
-				int rc = __is.read(buf);
+				int rc = __is.read(buf, 0, (512 < left ? 512 : left));
 				
+				// EOF?
 				if (rc < 0)
 					break;
 				
 				baos.write(buf, 0, rc);
+				left -= rc;
 			}
 			
 			// Finish off

@@ -56,8 +56,11 @@ public final class SuitesMemory
 	/** Was the config table initialized? */
 	private volatile boolean _didconfiginit;
 	
-	/** The address of the code containing the boostrap. */
-	volatile int _bootaddr;
+	/** Kernel class address. */
+	volatile int _kernelmcaddr;
+	
+	/** The start address of the kernel. */
+	volatile int _kernelbootaddr;
 	
 	/**
 	 * Initializes the suites memory.
@@ -214,7 +217,7 @@ public final class SuitesMemory
 		}
 		
 		// {@squirreljme.error AE0w The bootstrap class address is not known.}
-		int bootmcaddr = cldc._bootmcaddr;
+		int bootmcaddr = cldc._kernelmcaddr;
 		if (bootmcaddr == 0)
 			throw new RuntimeException("AE0w");
 		
@@ -231,8 +234,9 @@ public final class SuitesMemory
 			mmcdoff = this.memReadShort(bootsmo + 10),
 			bootcdo = bootsmo + mmcdoff;
 		
-		// Store the boot address
-		this._bootaddr = this.offset + bootcdo;
+		// Store the kernel address
+		this._kernelmcaddr = this.offset + bootmcaddr;
+		this._kernelbootaddr = this.offset + bootcdo;
 		
 		// Debug
 		todo.DEBUG.note("Bootstrap class at %08x (code=%08x)",

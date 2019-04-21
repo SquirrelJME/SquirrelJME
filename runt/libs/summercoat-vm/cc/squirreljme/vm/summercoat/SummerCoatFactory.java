@@ -10,12 +10,15 @@
 
 package cc.squirreljme.vm.summercoat;
 
-import cc.squirreljme.runtime.cldc.vki.Bootstrap;
+import dev.shadowtail.classfile.mini.MinimizedClassFile;
+import cc.squirreljme.runtime.cldc.vki.Kernel;
 import cc.squirreljme.vm.VirtualMachine;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.VMException;
 import cc.squirreljme.vm.VMFactory;
 import cc.squirreljme.vm.VMSuiteManager;
+import java.io.InputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import net.multiphasicapps.profiler.ProfilerSnapshot;
@@ -57,11 +60,27 @@ public class SummerCoatFactory
 		// Setup virtual memory
 		SuitesMemory sm;
 		VirtualMemory vmem = new VirtualMemory(
-			(sm = new SuitesMemory(SUITE_BASE_ADDR, __sm)));
+			(sm = new SuitesMemory(SUITE_BASE_ADDR, __sm)), 0);
 		
 		// Initialize the suite space and load the boot address
 		sm.__init();
-		int bootaddr = sm._bootaddr;
+		int kernaddr = sm._kernelmcaddr,
+			bootaddr = sm._kernelbootaddr;
+		
+		// Read the information on the boot class into memory, we need to
+		// initialize and setup a bunch of fields for it
+		try (InputStream kin = new ReadableMemoryInputStream(vmem,
+			kernaddr, 1048576))
+		{
+			MinimizedClassFile minikern = MinimizedClassFile.decode(kin);
+		}
+		
+		// {@squirreljme.error AE0y Could not read the kernel class for
+		// initialization}.
+		catch (IOException e)
+		{
+			throw new RuntimeException("AE0y", e);
+		}
 		
 		// Setup virtual CPU to execute
 		NativeCPU cpu = new NativeCPU(vmem);

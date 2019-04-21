@@ -57,7 +57,7 @@ public final class ReadableMemoryInputStream
 	@Override
 	public final int available()
 	{
-		return this.length - (this._at - this.address);
+		return this.length - this._at;
 	}
 	
 	/**
