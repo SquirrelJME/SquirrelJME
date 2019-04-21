@@ -11,6 +11,8 @@
 package cc.squirreljme.vm.summercoat;
 
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
+import dev.shadowtail.classfile.mini.MinimizedField;
+import cc.squirreljme.runtime.cldc.vki.FixedClassIDs;
 import cc.squirreljme.runtime.cldc.vki.Kernel;
 import cc.squirreljme.vm.VirtualMachine;
 import cc.squirreljme.vm.VMClassLibrary;
@@ -67,12 +69,72 @@ public class SummerCoatFactory
 		int kernaddr = sm._kernelmcaddr,
 			bootaddr = sm._kernelbootaddr;
 		
+		// The base address of the kernel object
+		int kobjbase = vmem.RAM_START_ADDRESS;
+		
+		// Write fixed class ID into object base
+		if (true)
+			throw new todo.TODO();// FixedClassIDs
+		
 		// Read the information on the boot class into memory, we need to
 		// initialize and setup a bunch of fields for it
 		try (InputStream kin = new ReadableMemoryInputStream(vmem,
 			kernaddr, 1048576))
 		{
+			// Decode the class file so we can access the fields
 			MinimizedClassFile minikern = MinimizedClassFile.decode(kin);
+			
+			// Base for fields, note that the object includes its class ID
+			// and the reference count!
+			int kfldbase = kobjbase + 4;
+			
+			// Go through instance fields and set their data fields
+			for (MinimizedField mf : minikern.fields(false))
+				switch (mf.name.toString())
+				{
+						// ROM address
+					case "romaddr":
+						throw new todo.TODO();
+						
+						// Kernel object base
+					case "kobjbase":
+						throw new todo.TODO();
+						
+						// Starting memory address
+					case "memaddr":
+						throw new todo.TODO();
+					
+						// Size of memory
+					case "memsize":
+						throw new todo.TODO();
+						
+						// Is this a MIDlet?
+					case "ismidlet":
+						throw new todo.TODO();
+						
+						// The guest depth
+					case "guestdepth":
+						throw new todo.TODO();
+						
+						// The classpath
+					case "classpath":
+						throw new todo.TODO();
+						
+						// System properties
+					case "sysprops":
+						throw new todo.TODO();
+						
+						// Main class
+					case "mainclass":
+						throw new todo.TODO();
+						
+						// Main arguments
+					case "mainargs":
+						throw new todo.TODO();
+					
+					default:
+						throw new todo.OOPS(mf.name.toString());
+				}
 		}
 		
 		// {@squirreljme.error AE0y Could not read the kernel class for

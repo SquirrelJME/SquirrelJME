@@ -100,5 +100,13 @@ public interface FixedClassIDs
 	/** String. */
 	public static final int STRING =
 		20;
+	
+	/** Kernel. */
+	public static final int KERNEL =
+		21;
+	
+	/** Number of fixed IDs. */
+	public static final int MAX_FIXED =
+		22;
 }
 
