@@ -59,9 +59,6 @@ public final class SuitesMemory
 	/** Kernel class address. */
 	volatile int _kernelmcaddr;
 	
-	/** The start address of the kernel. */
-	volatile int _kernelbootaddr;
-	
 	/**
 	 * Initializes the suites memory.
 	 *
@@ -196,23 +193,8 @@ public final class SuitesMemory
 		// sees its own memory
 		bootmcaddr += cldc.offset;
 		
-		// Need to determine the actual pointer to the bootstrap code for
-		// the initial PC set
-		int bootsdx = this.memReadByte(bootmcaddr + 6),
-			smiboff = this.memReadInt(bootmcaddr + 68),
-			bootsmo = bootmcaddr + smiboff + (bootsdx * 18),
-			mmflags = this.memReadInt(bootsmo + 0),
-			mmcdoff = this.memReadShort(bootsmo + 10),
-			bootcdo = bootsmo + mmcdoff;
-		
 		// Store the kernel address
 		this._kernelmcaddr = this.offset + bootmcaddr;
-		this._kernelbootaddr = this.offset + bootcdo;
-		
-		// Debug
-		todo.DEBUG.note("Bootstrap class at %08x (code=%08x)",
-			this.offset + bootmcaddr,
-			this.offset + bootcdo);
 	}
 }
 
