@@ -9,6 +9,8 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import net.multiphasicapps.collections.SortedTreeMap;
+
 /**
  * This class contains the entirety of virtual memory, this includes access
  * to the various on-demand minification of suites and classes.
@@ -18,13 +20,8 @@ package cc.squirreljme.vm.summercoat;
 public final class VirtualMemory
 	extends AbstractWritableMemory
 {
-	/** The starting address for RAM. */
-	public static final int RAM_START_ADDRESS =
-		1048576;
-	
-	/** Default RAM size. */
-	public static final int DEFAULT_RAM_SIZE =
-		16777216;
+	private final Map<Region, ReadableMemory> regions =
+		this.SortedTreeMap
 	
 	/** The suites memory space. */
 	protected final SuitesMemory suites;
@@ -58,6 +55,21 @@ public final class VirtualMemory
 	}
 	
 	/**
+	 * Maps the given region of memory.
+	 *
+	 * @param __mem The region to map.
+	 * @param __off The region offset.
+	 * @param __len Th
+	 * @since 2019/04/21
+	 */
+	public final void mapRegion(ReadableMemory __mem, int __off, int __len)
+		throws NullPointerException
+	{
+		if (__mem == null)
+			throw new NullPointerException("NARG");
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2019/04/21
 	 */
@@ -76,14 +88,7 @@ public final class VirtualMemory
 		}
 		
 		// From RAM
-		if (__addr >= RAM_START_ADDRESS)
-		{
-			this.ram.memReadBytes(__addr - RAM_START_ADDRESS, __b, __o, __l);
-			return;
-		}
-		
-		// Some other region
-		super.memReadBytes(__addr, __b, __o, __l);
+		this.ram.memReadBytes(__addr - RAM_START_ADDRESS, __b, __o, __l);
 	}
 	
 	/**
@@ -104,15 +109,8 @@ public final class VirtualMemory
 		if (soff >= 0 && soff < suites.size)
 			return suites.memReadInt(soff);
 		
-		// Writable region?
-		if (__addr < 0x80000000)
-		{
-			// From RAM
-			if (__addr >= RAM_START_ADDRESS)
-				return this.ram.memReadInt(__addr - RAM_START_ADDRESS);
-		}
-		
-		throw new todo.TODO();
+		// Considered from the rest of RAM
+		return this.ram.memReadInt(__addr - RAM_START_ADDRESS);
 	}
 	
 	/**
@@ -147,15 +145,7 @@ public final class VirtualMemory
 			throw new VMRuntimeException("AE0z");
 		
 		// To RAM
-		if (__addr >= RAM_START_ADDRESS && __addr < 0x80000000)
-		{
-			this.ram.memWriteInt(__addr - RAM_START_ADDRESS, __v);
-			return;
-		}
-		
-		// {@squirreljme.error AE11 Cannot write to the specified address,
-		// it is not mapped to writable memory. (The address to write to)}
-		throw new VMRuntimeException(String.format("AE11 %08x", __addr));
+		this.ram.memWriteInt(__addr - RAM_START_ADDRESS, __v);
 	}
 	
 	/**
@@ -178,6 +168,50 @@ public final class VirtualMemory
 		
 		// Use standard method
 		super.memWriteShort(__addr, __v);
+	}
+	
+	/**
+	 * Represents a region within memory.
+	 *
+	 * @since 2019/04/21
+	 */
+	public static final class Region
+		implements Comparable
+	{
+		/** The start address. */
+		public final int start;
+		
+		/**
+		 * Initializes the region.
+		 *
+		 * @param __s The start address.
+		 * @since 2019/04/21
+		 */
+		public Region(int __s)
+		{
+			this.start = __s;
+		}
+		
+		/**
+		 * {@inheritDoc}
+		 * @since 2019/04/21
+		 */
+		@Override
+		public final int compareTo(Region __b)
+		{
+			int a = this.start,
+				b = __b.start;
+			
+			if (a < 0)
+				if (b < 0)
+					return a - b;
+				else
+					return 1;
+			else if (b < 0)
+				return -1;
+			else
+				return a - b;
+		}
 	}
 }
 

@@ -39,6 +39,14 @@ public class SummerCoatFactory
 	public static final int SUITE_BASE_ADDR =
 		0x80000000;
 	
+	/** The starting address for RAM. */
+	public static final int RAM_START_ADDRESS =
+		1048576;
+	
+	/** Default RAM size. */
+	public static final int DEFAULT_RAM_SIZE =
+		16777216;
+	
 	/**
 	 * Initializes the factory.
 	 *
@@ -60,10 +68,13 @@ public class SummerCoatFactory
 		String[] __args)
 		throws IllegalArgumentException, NullPointerException, VMException
 	{
-		// Setup virtual memory
-		SuitesMemory sm;
-		VirtualMemory vmem = new VirtualMemory(
-			(sm = new SuitesMemory(SUITE_BASE_ADDR, __sm)), 0);
+		// Initialize suite memory
+		SuitesMemory sm = new SuitesMemory(SUITE_BASE_ADDR, __sm);
+		
+		// Initialize and map virtual memory
+		VirtualMemory vmem = new VirtualMemory();
+		vmem.mapRegion(sm, SUITE_BASE_ADDR);
+		vmem.mapRegion(new RawMemory(RAM_START_ADDRESS, DEFAULT_RAM_SIZE));
 		
 		// Initialize the suite space and load the boot address
 		sm.__init();
