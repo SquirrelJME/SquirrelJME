@@ -16,6 +16,7 @@ import cc.squirreljme.vm.VMException;
  *
  * @since 2019/04/17
  */
+@Deprecated
 public class VMOutOfMemoryException
 	extends VMException
 {

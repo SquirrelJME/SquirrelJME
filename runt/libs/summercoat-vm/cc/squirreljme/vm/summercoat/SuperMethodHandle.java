@@ -20,6 +20,7 @@ import net.multiphasicapps.classfile.MethodNameAndType;
  *
  * @since 2019/04/17
  */
+@Deprecated
 public final class SuperMethodHandle
 	implements MethodHandle
 {

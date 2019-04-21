@@ -15,6 +15,7 @@ package cc.squirreljme.vm.summercoat;
  *
  * @since 2019/01/05
  */
+@Deprecated
 public enum TaskState
 {
 	/** Task is starting. */

@@ -23,6 +23,7 @@ import net.multiphasicapps.profiler.ProfilerSnapshot;
  *
  * @since 2019/01/05
  */
+@Deprecated
 public class TaskStatus
 {
 	/** The monitor or the task statuses, used to signal state changes. */

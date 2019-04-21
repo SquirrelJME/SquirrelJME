@@ -27,6 +27,7 @@ import net.multiphasicapps.classfile.InvalidClassFormatException;
  *
  * @since 2019/03/09
  */
+@Deprecated
 public final class CachingClassLibrary
 {
 	/** The library to wrap around. */

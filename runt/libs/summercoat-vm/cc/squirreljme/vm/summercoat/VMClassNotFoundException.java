@@ -15,6 +15,7 @@ package cc.squirreljme.vm.summercoat;
  *
  * @since 2019/01/11
  */
+@Deprecated
 public class VMClassNotFoundException
 	extends VMRuntimeException
 {

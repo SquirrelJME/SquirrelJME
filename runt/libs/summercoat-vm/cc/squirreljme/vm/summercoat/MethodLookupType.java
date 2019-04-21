@@ -15,6 +15,7 @@ package cc.squirreljme.vm.summercoat;
  *
  * @since 2019/01/10
  */
+@Deprecated
 public enum MethodLookupType
 {
 	/** As instance method, invocation starts at the object class. */

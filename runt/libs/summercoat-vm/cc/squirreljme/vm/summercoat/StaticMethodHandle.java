@@ -22,6 +22,7 @@ import net.multiphasicapps.classfile.MethodNameAndType;
  *
  * @since 2019/01/10
  */
+@Deprecated
 public final class StaticMethodHandle
 	implements MethodHandle
 {

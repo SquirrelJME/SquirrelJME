@@ -18,6 +18,7 @@ import java.lang.ref.WeakReference;
  *
  * @since 2019/04/18
  */
+@Deprecated
 public final class FieldOffset
 {
 	/** The memory access offset. */

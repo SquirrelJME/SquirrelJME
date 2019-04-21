@@ -34,6 +34,7 @@ import net.multiphasicapps.classfile.InvalidClassFormatException;
  *
  * @since 2019/01/05
  */
+@Deprecated
 public final class ClassLoader
 {
 	/** The suite manager. */

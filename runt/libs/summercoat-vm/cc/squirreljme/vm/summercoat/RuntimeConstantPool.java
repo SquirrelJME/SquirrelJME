@@ -17,6 +17,7 @@ import dev.shadowtail.classfile.mini.MinimizedPool;
  *
  * @since 2019/04/17
  */
+@Deprecated
 public final class RuntimeConstantPool
 {
 	/** The pool this references. */

@@ -21,6 +21,7 @@ import net.multiphasicapps.profiler.ProfilerSnapshot;
  *
  * @since 2019/01/02
  */
+@Deprecated
 public final class ExitAwaiter
 	implements VirtualMachine
 {

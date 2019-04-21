@@ -30,6 +30,7 @@ import net.multiphasicapps.classfile.MethodNameAndType;
  *
  * @since 2019/01/06
  */
+@Deprecated
 public final class LoadedClass
 {
 	/** The minimized class. */
