@@ -275,7 +275,8 @@ public final class Minimizer
 		Collections.sort(sorted, new __MinimizerFieldSort__());
 		
 		// If this is an object, add the special class type (internal class
-		// pointer) and the reference count
+		// pointer) and the reference count. These are always in a fixed
+		// order.
 		if (isobject)
 		{
 			// Synthetic + Transient + Final

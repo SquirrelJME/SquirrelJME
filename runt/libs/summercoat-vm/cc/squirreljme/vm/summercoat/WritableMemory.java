@@ -17,5 +17,31 @@ package cc.squirreljme.vm.summercoat;
 public interface WritableMemory
 	extends ReadableMemory
 {
+	/**
+	 * Writes a value to memory.
+	 *
+	 * @param __addr The address to write to.
+	 * @param __v The value to write.
+	 * @since 2019/04/21
+	 */
+	public abstract void memWriteByte(int __addr, int __v);
+	
+	/**
+	 * Writes a value to memory.
+	 *
+	 * @param __addr The address to write to.
+	 * @param __v The value to write.
+	 * @since 2019/04/21
+	 */
+	public abstract void memWriteInt(int __addr, int __v);
+	
+	/**
+	 * Writes a value to memory.
+	 *
+	 * @param __addr The address to write to.
+	 * @param __v The value to write.
+	 * @since 2019/04/21
+	 */
+	public abstract void memWriteShort(int __addr, int __v);
 }
 

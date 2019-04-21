@@ -78,7 +78,7 @@ public final class VirtualMemory
 		// From RAM
 		if (__addr >= RAM_START_ADDRESS)
 		{
-			this.ram.memReadBytes(__addr, __b, __o, __l);
+			this.ram.memReadBytes(__addr - RAM_START_ADDRESS, __b, __o, __l);
 			return;
 		}
 		
@@ -104,9 +104,13 @@ public final class VirtualMemory
 		if (soff >= 0 && soff < suites.size)
 			return suites.memReadInt(soff);
 		
-		// From RAM
-		if (__addr >= RAM_START_ADDRESS)
-			return this.ram.memReadInt(__addr);
+		// Writable region?
+		if (__addr < 0x80000000)
+		{
+			// From RAM
+			if (__addr >= RAM_START_ADDRESS)
+				return this.ram.memReadInt(__addr - RAM_START_ADDRESS);
+		}
 		
 		throw new todo.TODO();
 	}
@@ -129,6 +133,51 @@ public final class VirtualMemory
 	public final int memRegionSize()
 	{
 		return 0xFFFFFFFF;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/21
+	 */
+	@Override
+	public final void memWriteInt(int __addr, int __v)
+	{
+		// {@squirreljme.error AE0z Unaligned memory access.}
+		if ((__addr & 3) != 0)
+			throw new VMRuntimeException("AE0z");
+		
+		// To RAM
+		if (__addr >= RAM_START_ADDRESS && __addr < 0x80000000)
+		{
+			this.ram.memWriteInt(__addr - RAM_START_ADDRESS, __v);
+			return;
+		}
+		
+		// {@squirreljme.error AE11 Cannot write to the specified address,
+		// it is not mapped to writable memory. (The address to write to)}
+		throw new VMRuntimeException(String.format("AE11 %08x", __addr));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/21
+	 */
+	@Override
+	public final void memWriteShort(int __addr, int __v)
+	{
+		// {@squirreljme.error AE14 Unaligned memory access.}
+		if ((__addr & 1) != 0)
+			throw new VMRuntimeException("AE14");
+		
+		// To RAM
+		if (__addr >= RAM_START_ADDRESS && __addr < 0x80000000)
+		{
+			this.ram.memWriteShort(__addr - RAM_START_ADDRESS, __v);
+			return;
+		}
+		
+		// Use standard method
+		super.memWriteShort(__addr, __v);
 	}
 }
 
