@@ -44,7 +44,7 @@ public final class SuitesMemory
 	/** The size of this memory region. */
 	protected final int size;
 	
-	/** The suite configuration table. */
+	/** The suite configuration table (addresses of suites). */
 	protected final RawMemory configtable;
 	
 	/** The individual regions of suite memory. */
@@ -55,6 +55,9 @@ public final class SuitesMemory
 	
 	/** Was the config table initialized? */
 	private volatile boolean _didconfiginit;
+	
+	/** The address of the code containing the boostrap. */
+	private volatile int _bootaddr;
 	
 	/**
 	 * Initializes the suites memory.
@@ -199,10 +202,6 @@ public final class SuitesMemory
 		// sees its own memory
 		bootmcaddr += cldc.offset;
 		
-		// Debug
-		todo.DEBUG.note("Bootstrap class at %08x (%08x)", bootmcaddr,
-			this.memReadInt(bootmcaddr));
-		
 		// Need to determine the actual pointer to the bootstrap code for
 		// the initial PC set
 		int bootsdx = this.memReadByte(bootmcaddr + 6),
@@ -212,30 +211,13 @@ public final class SuitesMemory
 			mmcdoff = this.memReadShort(bootsmo + 10),
 			bootcdo = bootsmo + mmcdoff;
 		
-		// Debug
-		net.multiphasicapps.io.HexDumpOutputStream.dump(System.err,
-			new ReadableMemoryInputStream(this, bootsmo, 18));
+		// Store the boot address
+		this._bootaddr = this.offset + bootcdo;
 		
 		// Debug
-		net.multiphasicapps.io.HexDumpOutputStream.dump(System.err,
-			new ReadableMemoryInputStream(this, bootcdo, 512));
-		
-		todo.DEBUG.note("bootsdx=%d smtboff=%d bootsmo=%d bootcdo=%d",
-			bootsdx, smtboff, bootsmo, bootcdo);
-		
-		todo.DEBUG.note("%s %d %d %d %d %d %d",
-			new MethodFlags(this.memReadInt(bootsmo)),
-			this.memReadShort(bootsmo + 4),
-			this.memReadShort(bootsmo + 6),
-			this.memReadShort(bootsmo + 8),
-			this.memReadShort(bootsmo + 10),
-			this.memReadShort(bootsmo + 12),
-			this.memReadShort(bootsmo + 14));
-		
-		// Store it in the config space
-		
-		if (true)
-			throw new todo.TODO();
+		todo.DEBUG.note("Bootstrap class at %08x (code=%08x)",
+			this.offset + bootmcaddr,
+			this.offset + bootcdo);
 	}
 }
 
