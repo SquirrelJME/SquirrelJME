@@ -131,6 +131,15 @@ public final class SuitesMemory
 			return this.configtable.memReadInt(__addr);
 		}
 		
+		// Determine the suite index we are wanting to look in memory
+		int si = (__addr - CONFIG_TABLE_SIZE) / SUITE_CHUNK_SIZE;
+		
+		// {@squirreljme.error AE0v Attempt to read from an invalid
+		// suite reference. (The suite index)}
+		SuiteMemory[] suitemem = this._suitemem;
+		if (si < 0 || si >= suitemem.length)
+			throw new VMRuntimeException("AE0v " + si);
+		
 		throw new todo.TODO();
 	}
 	
