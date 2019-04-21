@@ -93,6 +93,12 @@ public final class SuiteMemory
 		if (this._didinit)
 			return;
 		
+		// Load the class library
+		VMClassLibrary clib = this.suites.loadLibrary(this.libname);
+		
+		// Need to build a resource index
+		String[] lsr = clib.listResources();
+		
 		throw new todo.TODO();
 	}
 }
