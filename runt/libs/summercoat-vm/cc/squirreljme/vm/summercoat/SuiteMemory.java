@@ -190,6 +190,11 @@ public final class SuiteMemory
 		idos.write(dbytes.toByteArray());
 		this._memory = new ByteArrayMemory(this.offset, ibytes.toByteArray());
 		
+		// {@squirreljme.error AE0u Suite chunk size limit was exceeded.
+		// (The chunk size)}
+		if (idos.size() > SuitesMemory.SUITE_CHUNK_SIZE)
+			throw new RuntimeException("AE0u " + idos.size());
+		
 		// Was initialized
 		this._didinit = true;
 	}
