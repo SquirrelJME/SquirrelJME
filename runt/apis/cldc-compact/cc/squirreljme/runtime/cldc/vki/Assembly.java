@@ -32,11 +32,10 @@ public final class Assembly
 	}
 	
 	/**
-	 * Exits the host hypervisor with a fatal error. Execution does not
-	 * continue after this point.
+	 * Trigger breakpoint within the virtual machine.
 	 *
-	 * @since 2019/04/20
+	 * @since 2019/04/21
 	 */
-	public static native void fatalExit();
+	public static native void breakpoint();
 }
 
