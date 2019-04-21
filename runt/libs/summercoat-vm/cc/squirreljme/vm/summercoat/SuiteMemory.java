@@ -9,9 +9,15 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import dev.shadowtail.classfile.mini.Minimizer;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.InputStream;
+import java.io.IOException;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.VMException;
 import cc.squirreljme.vm.VMSuiteManager;
+import net.multiphasicapps.classfile.ClassFile;
 
 /**
  * This represents the single virtual memory space for suite memory.
@@ -32,6 +38,9 @@ public final class SuiteMemory
 	
 	/** Was this initialized? */
 	private volatile boolean _didinit;
+	
+	/** Memory for this suite. */
+	private volatile ByteArrayMemory _memory;
 	
 	/**
 	 * Initializes the suite memory.
@@ -85,21 +94,104 @@ public final class SuiteMemory
 	/**
 	 * Initializes all the memory and suites here.
 	 *
+	 * @throws IOException On read/write errors.
 	 * @since 2019/04/21
 	 */
 	final void __init()
+		throws IOException
 	{
 		// Do not initialize twice!
 		if (this._didinit)
 			return;
 		
 		// Load the class library
-		VMClassLibrary clib = this.suites.loadLibrary(this.libname);
+		String libname = this.libname;
+		VMClassLibrary clib = this.suites.loadLibrary(libname);
 		
 		// Need to build a resource index
 		String[] lsr = clib.listResources();
+		int rn = lsr.length;
 		
-		throw new todo.TODO();
+		// Resource table
+		ByteArrayOutputStream ibytes = new ByteArrayOutputStream();
+		DataOutputStream idos = new DataOutputStream(ibytes);
+		
+		// Data table containing minified classes and such
+		ByteArrayOutputStream dbytes = new ByteArrayOutputStream();
+		DataOutputStream ddos = new DataOutputStream(dbytes);
+		
+		// Relative offset to the stream data, just to fit the resource table
+		int reloff = (rn * 12) + 12;
+		
+		// Build all table regions
+		for (int i = 0; i < rn; i++)
+		{
+			String en = lsr[i];
+			
+			// Base string start position
+			int srs = ddos.size();
+			
+			// Write null terminated entry name, ignore Unicode
+			for (int s = 0, sn = en.length(); s < sn; s++)
+				ddos.write(en.charAt(s));
+			ddos.write(0);
+			
+			// Write padding
+			while ((ddos.size() & 3) != 0)
+				ddos.write(0);
+			
+			// Base data start position
+			int drs = ddos.size();
+			
+			// Copy resource data or convert class file
+			try (InputStream in = clib.resourceAsStream(en))
+			{
+				// Debug
+				todo.DEBUG.note("Loading %s:%s", libname, en);
+				
+				// Load, compile, and minimize class
+				if (en.endsWith(".class"))
+				{
+					Minimizer.minimize(ClassFile.decode(in), ddos);
+				}
+				
+				// Copy resource
+				else
+				{
+					byte[] buf = new byte[512];
+					for (;;)
+					{
+						int rc = in.read(buf);
+						
+						if (rc < 0)
+							break;
+						
+						ddos.write(buf, 0, rc);
+					}
+				}
+			}
+			
+			// Write table information
+			idos.writeInt(reloff + srs);
+			idos.writeInt(reloff + drs);
+			idos.writeInt(ddos.size() - drs);
+			
+			// Write padding
+			while ((ddos.size() & 3) != 0)
+				ddos.write(0);
+		}
+		
+		// End padding
+		idos.writeInt(0xFFFFFFFF);
+		idos.writeInt(0xFFFFFFFF);
+		idos.writeInt(0xFFFFFFFF);
+		
+		// Append data area to the index area and build the memory region
+		idos.write(dbytes.toByteArray());
+		this._memory = new ByteArrayMemory(this.offset, ibytes.toByteArray());
+		
+		// Was initialized
+		this._didinit = true;
 	}
 }
 
