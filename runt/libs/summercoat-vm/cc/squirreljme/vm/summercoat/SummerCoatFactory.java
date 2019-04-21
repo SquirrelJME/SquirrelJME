@@ -49,8 +49,9 @@ public class SummerCoatFactory
 		String[] __args)
 		throws IllegalArgumentException, NullPointerException, VMException
 	{
-		// Setup virtual and suite memory
-		VirtualMemory vmem = new VirtualMemory(new SuitesMemory(__sm));
+		// Setup virtual memory
+		VirtualMemory vmem = new VirtualMemory(
+			new SuitesMemory(0x80000000, __sm));
 		
 		if (true)
 			throw new todo.TODO();
