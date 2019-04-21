@@ -18,5 +18,13 @@ package cc.squirreljme.vm.summercoat;
 public interface ReadableMemory
 	extends Memory
 {
+	/**
+	 * Reads the memory at the specified address.
+	 *
+	 * @param __addr The address to read from.
+	 * @return The read value.
+	 * @since 2019/04/21
+	 */
+	public abstract int memReadInt(int __addr);
 }
 

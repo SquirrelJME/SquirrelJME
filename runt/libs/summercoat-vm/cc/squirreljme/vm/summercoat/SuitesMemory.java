@@ -91,6 +91,16 @@ public final class SuitesMemory
 	 * @since 2019/04/21
 	 */
 	@Override
+	public int memReadInt(int __addr)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/21
+	 */
+	@Override
 	public int memRegionOffset()
 	{
 		return this.offset;

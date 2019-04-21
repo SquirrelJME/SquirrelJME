@@ -10,6 +10,7 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import cc.squirreljme.runtime.cldc.vki.Bootstrap;
 import cc.squirreljme.vm.VirtualMachine;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.VMException;
@@ -28,6 +29,10 @@ import net.multiphasicapps.profiler.ProfilerSnapshot;
 public class SummerCoatFactory
 	extends VMFactory
 {
+	/** The base address for suites. */
+	public static final int SUITE_BASE_ADDR =
+		0x80000000;
+	
 	/**
 	 * Initializes the factory.
 	 *
@@ -51,7 +56,10 @@ public class SummerCoatFactory
 	{
 		// Setup virtual memory
 		VirtualMemory vmem = new VirtualMemory(
-			new SuitesMemory(0x80000000, __sm));
+			new SuitesMemory(SUITE_BASE_ADDR, __sm));
+		
+		// Read the address where the bootstrap is located
+		int bootaddr = vmem.memReadInt(SUITE_BASE_ADDR + 4);
 		
 		if (true)
 			throw new todo.TODO();
