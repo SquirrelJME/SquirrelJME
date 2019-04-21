@@ -43,8 +43,8 @@ public final class SuiteMemory
 	/** Memory for this suite. */
 	private volatile ByteArrayMemory _memory;
 	
-	/** Bootstrap miniclass address, if any. */
-	volatile int _bootmcaddr;
+	/** Kernel miniclass address, if any. */
+	volatile int _kernelmcaddr;
 	
 	/**
 	 * Initializes the suite memory.
@@ -260,10 +260,9 @@ public final class SuiteMemory
 			idos.writeInt(reloff + drs);
 			idos.writeInt(ddos.size() - drs);
 			
-			// If this is the bootstrap class then set the class data as
-			// being from here
-			if (en.equals("cc/squirreljme/runtime/cldc/vki/Bootstrap.class"))
-				this._bootmcaddr = reloff + drs;
+			// This represents the kernel class
+			if (en.equals("cc/squirreljme/runtime/cldc/vki/Kernel.class"))
+				this._kernelmcaddr = reloff + drs;
 			
 			// Write padding
 			while ((ddos.size() & 3) != 0)

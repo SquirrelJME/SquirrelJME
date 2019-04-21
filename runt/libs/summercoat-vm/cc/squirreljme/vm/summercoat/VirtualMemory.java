@@ -18,23 +18,43 @@ package cc.squirreljme.vm.summercoat;
 public final class VirtualMemory
 	extends AbstractWritableMemory
 {
+	/** The starting address for RAM. */
+	public static final int RAM_START_ADDRESS =
+		1048576;
+	
+	/** Default RAM size. */
+	public static final int DEFAULT_RAM_SIZE =
+		16777216;
+	
 	/** The suites memory space. */
 	protected final SuitesMemory suites;
+	
+	/** RAM. */
+	protected final RawMemory ram;
+	
+	/** The size of RAM. */
+	protected final int ramsize;
 	
 	/**
 	 * Initializes the virtual memory space.
 	 *
 	 * @param __sm The suite memory.
+	 * @param __ram The amount of RAM to be made available.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/21
 	 */
-	public VirtualMemory(SuitesMemory __sm)
+	public VirtualMemory(SuitesMemory __sm, int __ram)
 		throws NullPointerException
 	{
 		if (__sm == null)
 			throw new NullPointerException("NARG");
 		
 		this.suites = __sm;
+		
+		// Initialize RAM
+		int ramsize = (__ram < 1048576 ? DEFAULT_RAM_SIZE : __ram);
+		this.ramsize = ramsize;
+		this.ram = new RawMemory(RAM_START_ADDRESS, ramsize);
 	}
 	
 	/**
@@ -55,6 +75,13 @@ public final class VirtualMemory
 			return;
 		}
 		
+		// From RAM
+		if (__addr >= RAM_START_ADDRESS)
+		{
+			this.ram.memReadBytes(__addr, __b, __o, __l);
+			return;
+		}
+		
 		// Some other region
 		super.memReadBytes(__addr, __b, __o, __l);
 	}
@@ -70,15 +97,16 @@ public final class VirtualMemory
 		if ((__addr & 3) != 0)
 			throw new VMRuntimeException("AE0r");
 		
-		// Debug
-		todo.DEBUG.note("Read %08x", __addr);
-		
 		// Reading from suite memory?
 		SuitesMemory suites = this.suites;
 		int sbas = suites.offset,
 			soff = __addr - sbas;
 		if (soff >= 0 && soff < suites.size)
 			return suites.memReadInt(soff);
+		
+		// From RAM
+		if (__addr >= RAM_START_ADDRESS)
+			return this.ram.memReadInt(__addr);
 		
 		throw new todo.TODO();
 	}
