@@ -12,6 +12,8 @@ package cc.squirreljme.vm.summercoat;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.VMException;
 import cc.squirreljme.vm.VMSuiteManager;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * This class contains the memory information for every single suite which
@@ -22,13 +24,13 @@ import cc.squirreljme.vm.VMSuiteManager;
 public final class SuitesMemory
 	implements ReadableMemory
 {
+	/** Configuration and table space size. */
+	public static final int CONFIG_TABLE_SIZE =
+		1048576;
+	
 	/** The suite chunk size. */
 	public static final int SUITE_CHUNK_SIZE =
 		4194304;
-	
-	/** The address where suite chunks start. */
-	public static final int SUITE_CHUNK_START =
-		0x8000;
 	
 	/** The suite manage to base from. */
 	protected final VMSuiteManager suites;
@@ -39,8 +41,17 @@ public final class SuitesMemory
 	/** The size of this memory region. */
 	protected final int size;
 	
+	/** The suite configuration table. */
+	protected final RawMemory configtable;
+	
 	/** The individual regions of suite memory. */
 	private final SuiteMemory[] _suitemem;
+	
+	/** This is the mapping of suite names to memory. */
+	private final Map<String, SuiteMemory> _suitemap;
+	
+	/** Was the config table initialized? */
+	private volatile boolean _didconfiginit;
 	
 	/**
 	 * Initializes the suites memory.
@@ -62,24 +73,33 @@ public final class SuitesMemory
 		// All the libraries which are available for usage
 		String[] libnames = __sm.listLibraryNames();
 		
+		// Setup configuration space
+		this.configtable = new RawMemory(__off, CONFIG_TABLE_SIZE);
+		
 		// Setup suite memory area
 		int n = libnames.length;
 		SuiteMemory[] suitemem = new SuiteMemory[n];
+		Map<String, SuiteMemory> suitemap = new LinkedHashMap<>();
 		
 		// Setup memory regions for the various suites
-		int off = SUITE_CHUNK_START;
+		int off = CONFIG_TABLE_SIZE;
 		for (int i = 0; i < n; i++, off += SUITE_CHUNK_SIZE)
 		{
 			// Set
-			suitemem[i] = new SuiteMemory(off, __sm, libnames[i]);
+			String ln = libnames[i];
+			SuiteMemory sm;
+			suitemem[i] = (sm = new SuiteMemory(off, __sm, ln));
+			
+			// Also use map for quick access
+			suitemap.put(ln, sm);
 			
 			// Debug
-			todo.DEBUG.note("MMap Suite %s -> %08x", libnames[i],
-				__off + off);
+			todo.DEBUG.note("MMap Suite %s -> %08x", ln, __off + off);
 		}
 		
 		// Store all the various suite memories
 		this._suitemem = suitemem;
+		this._suitemap = suitemap;
 		
 		// Store final memory parameters
 		this.offset = __off;
@@ -93,6 +113,23 @@ public final class SuitesMemory
 	@Override
 	public int memReadInt(int __addr)
 	{
+		// Reading from the config table?
+		if (__addr < CONFIG_TABLE_SIZE)
+		{
+			// Needs to be initialized
+			if (!this._didconfiginit)
+			{
+				// Initialize config space memory
+				this.__initConfigSpace();
+				
+				// Set to initialized
+				this._didconfiginit = true;
+			}
+			
+			// Read from memory
+			return this.configtable.memReadInt(__addr);
+		}
+		
 		throw new todo.TODO();
 	}
 	
@@ -114,6 +151,28 @@ public final class SuitesMemory
 	public final int memRegionSize()
 	{
 		return 0x7FFFFFFF;
+	}
+	
+	/**
+	 * Initializes the configuration space.
+	 *
+	 * @since 2019/04/21
+	 */
+	private final void __initConfigSpace()
+	{
+		// Do not initialize twice!
+		if (this._didconfiginit)
+			return;
+		
+		// The bootstrap is in CLDC compact
+		SuiteMemory cldc = this._suitemap.get("cldc-compact.jar");
+		cldc.__init();
+		
+		if (true)
+			throw new todo.TODO();
+		
+		// Did initialize
+		this._didconfiginit = true;
 	}
 }
 

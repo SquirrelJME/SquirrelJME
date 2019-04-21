@@ -30,6 +30,9 @@ public final class SuiteMemory
 	/** The offset to this memory region. */
 	protected final int offset;
 	
+	/** Was this initialized? */
+	private volatile boolean _didinit;
+	
 	/**
 	 * Initializes the suite memory.
 	 *
@@ -77,6 +80,20 @@ public final class SuiteMemory
 	public final int memRegionSize()
 	{
 		return SuitesMemory.SUITE_CHUNK_SIZE;
+	}
+	
+	/**
+	 * Initializes all the memory and suites here.
+	 *
+	 * @since 2019/04/21
+	 */
+	final void __init()
+	{
+		// Do not initialize twice!
+		if (this._didinit)
+			return;
+		
+		throw new todo.TODO();
 	}
 }
 
