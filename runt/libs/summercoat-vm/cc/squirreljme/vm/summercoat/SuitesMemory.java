@@ -57,7 +57,7 @@ public final class SuitesMemory
 	private volatile boolean _didconfiginit;
 	
 	/** The address of the code containing the boostrap. */
-	private volatile int _bootaddr;
+	volatile int _bootaddr;
 	
 	/**
 	 * Initializes the suites memory.
@@ -122,15 +122,9 @@ public final class SuitesMemory
 		// Reading from the config table?
 		if (__addr < CONFIG_TABLE_SIZE)
 		{
-			// Needs to be initialized
+			// Needs to be initialized?
 			if (!this._didconfiginit)
-			{
-				// Initialize config space memory
-				this.__initConfigSpace();
-				
-				// Set to initialized
-				this._didconfiginit = true;
-			}
+				this.__init();
 			
 			// Read from memory
 			return this.configtable.memReadInt(__addr);
@@ -173,7 +167,7 @@ public final class SuitesMemory
 	 *
 	 * @since 2019/04/21
 	 */
-	private final void __initConfigSpace()
+	final void __init()
 	{
 		// Do not initialize twice!
 		if (this._didconfiginit)

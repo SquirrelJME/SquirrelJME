@@ -24,14 +24,14 @@ public abstract class AbstractReadableMemory
 	 * @since 2019/04/21
 	 */
 	@Override
-	public byte memReadByte(int __addr)
+	public int memReadByte(int __addr)
 	{
 		// Read entire integer chunk
 		int ra = __addr & (~3),
 			rv = this.memReadInt(ra);
 		
 		// Return only the desired part of it
-		return (byte)(rv >>> (24 - (8 * (__addr & 3))));
+		return (rv >>> (24 - (8 * (__addr & 3)))) & 0xFF;
 	}
 	
 	/**
@@ -39,7 +39,7 @@ public abstract class AbstractReadableMemory
 	 * @since 2019/04/21
 	 */
 	@Override
-	public short memReadShort(int __addr)
+	public int memReadShort(int __addr)
 	{
 		// {@squirreljme.error AE0x Unaligned memory access.}
 		if ((__addr & 1) != 0)
@@ -50,7 +50,7 @@ public abstract class AbstractReadableMemory
 			rv = this.memReadInt(ra);
 		
 		// Return only the desired part of it
-		return (short)(rv >>> (16 - (16 * ((__addr & 2) >> 1))));
+		return (rv >>> (16 - (16 * ((__addr & 2) >> 1)))) & 0xFFFF;
 	}
 }
 

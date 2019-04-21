@@ -48,11 +48,14 @@ public final class VirtualMemory
 		if ((__addr & 3) != 0)
 			throw new VMRuntimeException("AE0r");
 		
+		// Debug
+		todo.DEBUG.note("Read %08x", __addr);
+		
 		// Reading from suite memory?
 		SuitesMemory suites = this.suites;
 		int sbas = suites.offset,
-			soff = sbas - __addr;
-		if (__addr >= sbas && soff < suites.size)
+			soff = __addr - sbas;
+		if (soff >= 0 && soff < suites.size)
 			return suites.memReadInt(soff);
 		
 		throw new todo.TODO();

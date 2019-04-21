@@ -127,7 +127,7 @@ public final class ReadableMemoryInputStream
 			}
 			
 			// Read in
-			__b[__o++] = memory.memReadByte(address + at + i);
+			__b[__o++] = (byte)memory.memReadByte(address + at + i);
 		}
 		
 		// Count

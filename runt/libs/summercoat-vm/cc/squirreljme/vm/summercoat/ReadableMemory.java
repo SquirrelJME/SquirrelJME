@@ -25,7 +25,7 @@ public interface ReadableMemory
 	 * @return The read value.
 	 * @since 2019/04/21
 	 */
-	public abstract byte memReadByte(int __addr);
+	public abstract int memReadByte(int __addr);
 	
 	/**
 	 * Reads the memory at the specified address.
@@ -43,6 +43,6 @@ public interface ReadableMemory
 	 * @return The read value.
 	 * @since 2019/04/21
 	 */
-	public abstract short memReadShort(int __addr);
+	public abstract int memReadShort(int __addr);
 }
 

@@ -9,6 +9,9 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import dev.shadowtail.classfile.nncc.NativeInstruction;
+import dev.shadowtail.classfile.nncc.NativeInstructionType;
+
 /**
  * This represents a native CPU which may run within its own thread to
  * execute code that is running from within the virtual machine.
@@ -49,7 +52,31 @@ public final class NativeCPU
 	@Override
 	public final void run()
 	{
-		throw new todo.TODO();
+		WritableMemory memory = this.memory;
+		int pc = this._pc;
+		
+		// Run execution in a loop
+		try
+		{
+			// Handle instructions
+			for (;;)
+			{
+				// Read operation
+				int op = memory.memReadByte(pc);
+				
+				// Debug
+				todo.DEBUG.note("@%08x -> (%02x) %s", pc,
+					op, NativeInstruction.mnemonic(op));
+				
+				throw new todo.TODO();
+			}
+		}
+		
+		// Make sure the PC address is always stored
+		finally
+		{
+			this._pc = pc;
+		}
 	}
 }
 

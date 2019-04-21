@@ -70,7 +70,7 @@ public final class SuiteMemory
 	 * @since 2019/04/21
 	 */
 	@Override
-	public byte memReadByte(int __addr)
+	public int memReadByte(int __addr)
 	{
 		// Initialize?
 		if (!this._didinit)
@@ -114,7 +114,7 @@ public final class SuiteMemory
 	 * @since 2019/04/21
 	 */
 	@Override
-	public short memReadShort(int __addr)
+	public int memReadShort(int __addr)
 	{
 		// Initialize?
 		if (!this._didinit)
