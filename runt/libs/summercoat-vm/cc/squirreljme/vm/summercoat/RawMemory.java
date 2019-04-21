@@ -15,8 +15,7 @@ package cc.squirreljme.vm.summercoat;
  * @since 2019/04/21
  */
 public final class RawMemory
-	extends AbstractReadableMemory
-	implements ReadableMemory
+	extends AbstractWritableMemory
 {
 	/** The memory offset. */
 	protected final int offset;
@@ -25,7 +24,7 @@ public final class RawMemory
 	protected final int size;
 	
 	/** The memory data. */
-	private final byte[] _bytes;
+	protected final byte[] bytes;
 	
 	/**
 	 * Raw memory space.
@@ -38,7 +37,7 @@ public final class RawMemory
 	{
 		this.offset = __off;
 		this.size = __sz;
-		this._bytes = new byte[__sz];
+		this.bytes = new byte[__sz];
 	}
 	
 	/**
@@ -46,13 +45,13 @@ public final class RawMemory
 	 * @since 2019/04/21
 	 */
 	@Override
-	public int memReadByte(int __addr)
+	public final int memReadByte(int __addr)
 	{
 		// Treat out of region reads as invalid data
 		if (__addr < 0 || __addr >= this.size)
 			return -1;
 		
-		return (this._bytes[__addr] & 0xFF);
+		return (this.bytes[__addr] & 0xFF);
 	}
 	
 	/**
@@ -60,13 +59,13 @@ public final class RawMemory
 	 * @since 2019/04/21
 	 */
 	@Override
-	public int memReadInt(int __addr)
+	public final int memReadInt(int __addr)
 	{
 		// Treat out of region reads as invalid data
 		if (__addr < 0 || __addr >= this.size - 3)
 			return -1;
 		
-		byte[] bytes = this._bytes;
+		byte[] bytes = this.bytes;
 		return ((bytes[__addr++] & 0xFF) << 24) |
 			((bytes[__addr++] & 0xFF) << 16) |
 			((bytes[__addr++] & 0xFF) << 8) |
@@ -78,13 +77,13 @@ public final class RawMemory
 	 * @since 2019/04/21
 	 */
 	@Override
-	public int memReadShort(int __addr)
+	public final int memReadShort(int __addr)
 	{
 		// Treat out of region reads as invalid data
 		if (__addr < 0 || __addr >= this.size - 1)
 			return -1;
 		
-		byte[] bytes = this._bytes;
+		byte[] bytes = this.bytes;
 		return (((bytes[__addr++] & 0xFF) << 8) |
 			(bytes[__addr++] & 0xFF));
 	}
