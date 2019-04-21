@@ -67,7 +67,7 @@ public final class Kernel
 	 */
 	private final void __start()
 	{
-		Assembly.fatalExit();
+		Assembly.breakpoint();
 	}
 }
 
