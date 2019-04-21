@@ -33,7 +33,7 @@ public final class Bootstrap
 	 * all of the various properties needed to initialize it properly.
 	 * @since 2019/04/20
 	 */
-	private static final void __boot(JVMConfiguration __cfg)
+	private static final strictfp void __start(JVMConfiguration __cfg)
 	{
 		Assembly.fatalExit();
 	}

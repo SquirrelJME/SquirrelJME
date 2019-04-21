@@ -11,6 +11,7 @@
 package net.multiphasicapps.io;
 
 import java.io.Closeable;
+import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -249,6 +250,46 @@ public class HexDumpOutputStream
 		{
 			this._at = 0;
 		}
+	}
+	
+	/**
+	 * Dumps the resulting input stream to the given stream.
+	 *
+	 * @param __dump The target stream.
+	 * @param __in The stream to dump.
+	 * @return If the dump completed without an {@link IOException}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/021
+	 */
+	public static final boolean dump(PrintStream __dump, InputStream __in)
+		throws NullPointerException
+	{
+		if (__dump == null || __in == null)
+			throw new NullPointerException("NARG");
+		
+		// Open dump output
+		try (HexDumpOutputStream hdos = new HexDumpOutputStream(__dump))
+		{
+			byte[] buf = new byte[24];
+			for (;;)
+			{
+				int rc = __in.read(buf);
+				
+				if (rc < 0)
+					break;
+				
+				hdos.write(buf, 0, rc);
+			}
+		}
+		
+		// Failed
+		catch (IOException e)
+		{
+			return false;
+		}
+		
+		// Okay
+		return true;
 	}
 	
 	/**

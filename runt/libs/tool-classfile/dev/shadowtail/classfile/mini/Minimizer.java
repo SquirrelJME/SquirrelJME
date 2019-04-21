@@ -92,18 +92,27 @@ public final class Minimizer
 		// Write magic number to specify this format
 		__dos.writeInt(MinimizedClassHeader.MAGIC_NUMBER);
 		
-		// Unused, may be used later when needed
-		__dos.writeShort(0);
-		__dos.writeByte(0);
-		
-		// Data type of the class
-		__dos.writeByte(DataType.of(input.thisName().field()).ordinal());
-		
 		// Process all fields
 		__TempFields__[] fields = this.__doFields(); 
 		
 		// Process all methods
 		__TempMethods__[] methods = this.__doMethods();
+		
+		// Unused, may be used later when needed
+		__dos.writeShort(0);
+		
+		// The index of the static method named __start
+		int startdx = 0;
+		for (MinimizedMethod mm : methods[0]._methods)
+		{
+			if (mm.name.toString().equals("__start"))
+				break;
+			startdx++;
+		}
+		__dos.writeByte(startdx);
+		
+		// Data type of the class
+		__dos.writeByte(DataType.of(input.thisName().field()).ordinal());
 		
 		// The pool
 		MinimizedPoolBuilder pool = this.pool;

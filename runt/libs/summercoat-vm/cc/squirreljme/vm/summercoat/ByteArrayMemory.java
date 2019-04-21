@@ -65,9 +65,23 @@ public final class ByteArrayMemory
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		this.offset = __mo;
-		this.size = __l;
-		this.boff = __o;
 		this._bytes = __b;
+		this.boff = __o;
+		this.size = __l;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/21
+	 */
+	@Override
+	public byte memReadByte(int __addr)
+	{
+		// Treat out of region reads as invalid data
+		if (__addr < 0 || __addr >= this.size)
+			return -1;
+		
+		return this._bytes[this.boff + __addr];
 	}
 	
 	/**
@@ -77,7 +91,33 @@ public final class ByteArrayMemory
 	@Override
 	public int memReadInt(int __addr)
 	{
-		throw new todo.TODO();
+		// Treat out of region reads as invalid data
+		if (__addr < 0 || __addr >= this.size - 3)
+			return -1;
+		
+		byte[] bytes = this._bytes;
+		int rp = this.boff + __addr;
+		return ((bytes[rp++] & 0xFF) << 24) |
+			((bytes[rp++] & 0xFF) << 16) |
+			((bytes[rp++] & 0xFF) << 8) |
+			(bytes[rp++] & 0xFF);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/21
+	 */
+	@Override
+	public short memReadShort(int __addr)
+	{
+		// Treat out of region reads as invalid data
+		if (__addr < 0 || __addr >= this.size - 1)
+			return -1;
+		
+		byte[] bytes = this._bytes;
+		int rp = this.boff + __addr;
+		return (short)(((bytes[rp++] & 0xFF) << 8) |
+			(bytes[rp++] & 0xFF));
 	}
 	
 	/**

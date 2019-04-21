@@ -34,8 +34,8 @@ public final class MinimizedClassHeader
 	/** Unused A. */
 	public final int unuseda;
 	
-	/** Unused B. */
-	public final int unusedb;
+	/** The index of the method which is __start. */
+	public final int startmethodindex;
 	
 	/** The data type of the class. */
 	public final DataType datatype;
@@ -136,7 +136,9 @@ public final class MinimizedClassHeader
 		
 		// Unused
 		this.unuseda = __vx[at++];
-		this.unusedb = __vx[at++];
+		
+		// Start method index
+		this.startmethodindex = __vx[at++];
 		
 		// Data Type
 		this.datatype = DataType.of(__vx[at++]);
@@ -213,7 +215,9 @@ public final class MinimizedClassHeader
 		return new MinimizedClassHeader(
 			// Unused
 			/* unuseda */ dis.readUnsignedShort(),
-			/* unusedb */ dis.readUnsignedByte(),
+			
+			// Start method index
+			/* startmethodindex */ dis.readUnsignedByte(),
 			
 			// Data Type
 			/* datatype */ dis.readUnsignedByte(),
