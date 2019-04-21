@@ -1,0 +1,53 @@
+# 2019/04/20
+
+## 08:28
+
+I think having global registers way out of range would complicate the design
+of the code executor since it will have to handle these branches and such.
+Also another idea is that for long values split the "long" value into another
+argument as well in the encoding. So like for anything using long, there is
+the high register to use and the high constant.
+
+## 08:31
+
+I can just copy down the static area, return value, and exception register.
+
+## 19:01
+
+I was thinking... what if instead of writing a bunch of the stuff in the VM
+based code, it could be running within the VM itself. So there is no
+`MONITORENTER` instruction... it is just `invoke` and whatnot. I think this is
+very intriguing. And I would only need to write things once, then RatufaCoat
+would basically get a simple CPU execution engine. So I could take the native
+code instructions and simplify the instructions that are used. Basically these
+would be called into the VM layer and such. I would of course need special
+methods and a means of doing special assembly like things in Java. I could do
+it by replacing invokes and registers lists. At least to the native byte code
+handler it does not really make that much of a difference really.
+
+## 19:19
+
+So basically method arguments and such, just become their actual register
+values which are then mapped to instruction primitives.
+
+## 19:30
+
+So basically, I will have to strip the VM down some and just turn it into a
+very plain execution engine and such. Then whatever SquirrelJME is executed
+will just end up being in this vki space.
+
+## 19:33
+
+At this point, threads and tasks are exactly the same they just have their
+own specific special pointers to indicate the current process. Effectively
+the code will just be a global. The code would be pretty much the same
+regardless of the CPU and the target architecture, just VM code running and
+such. I can slowly meld what I have in SummerCoat into this new way of
+doing things. Of course the main thing I have to do first is to initialize
+the configuration space. Without the configuration space I will not really
+be able to effectively and reliable determine how to acess things. Of course
+the configuration space can just be a pointer to an object. So this
+configuration space is just a plain old object. Then I just pass that object
+to the VM and this describes everything. Of course this object would be
+special in that it was never constructed, it just magically had all of the
+needed fields set and such for it to work.
