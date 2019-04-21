@@ -25,6 +25,7 @@ import net.multiphasicapps.classfile.ClassFile;
  * @since 2019/04/21
  */
 public final class SuiteMemory
+	extends AbstractReadableMemory
 	implements ReadableMemory
 {
 	/** The suite manager. */

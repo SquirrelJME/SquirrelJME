@@ -10,35 +10,28 @@
 package cc.squirreljme.vm.summercoat;
 
 /**
- * Raw memory access.
+ * This is a class which handles reading of memory by using pure integers
+ * instead of forcing all implementations to implement short and byte
+ * readers.
  *
  * @since 2019/04/21
  */
-public final class RawMemory
-	extends AbstractReadableMemory
+public abstract class AbstractReadableMemory
 	implements ReadableMemory
 {
-	/** The memory offset. */
-	protected final int offset;
-	
-	/** The memory size. */
-	protected final int size;
-	
-	/** The memory data. */
-	private final byte[] _data;
-	
 	/**
-	 * Raw memory space.
-	 *
-	 * @param __off The offset.
-	 * @param __sz The size of this region.
+	 * {@inheritDoc}
 	 * @since 2019/04/21
 	 */
-	public RawMemory(int __off, int __sz)
+	@Override
+	public byte memReadByte(int __addr)
 	{
-		this.offset = __off;
-		this.size = __sz;
-		this._data = new byte[__sz];
+		// Read entire integer chunk
+		int ra = __addr & (~3),
+			rv = this.memReadInt(ra);
+		
+		// Return only the desired part of it
+		return (byte)(rv >>> (24 - (8 * (__addr & 3))));
 	}
 	
 	/**
@@ -46,29 +39,18 @@ public final class RawMemory
 	 * @since 2019/04/21
 	 */
 	@Override
-	public final int memReadInt(int __addr)
+	public short memReadShort(int __addr)
 	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/04/21
-	 */
-	@Override
-	public final int memRegionOffset()
-	{
-		return this.offset;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/04/21
-	 */
-	@Override
-	public final int memRegionSize()
-	{
-		return this.size;
+		// {@squirreljme.error AE0x Unaligned memory access.}
+		if ((__addr & 1) != 0)
+			throw new VMRuntimeException("AE0x");
+		
+		// Read entire integer chunk
+		int ra = __addr & (~3),
+			rv = this.memReadInt(ra);
+		
+		// Return only the desired part of it
+		return (short)(rv >>> (16 - (16 * (__addr & 1))));
 	}
 }
 
