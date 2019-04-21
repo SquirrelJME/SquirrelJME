@@ -89,6 +89,42 @@ public final class ByteArrayMemory
 	 * @since 2019/04/21
 	 */
 	@Override
+	public void memReadBytes(int __addr, byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Get properties
+		byte[] bytes = this._bytes;
+		int offset = this.offset,
+			size = this.size;
+		
+		// The end index where we are reading
+		int enddx = __addr + __l;
+		
+		// The limiting index, which never exceeds the size
+		int limdx = (enddx > size ? size : enddx);
+		
+		// The real address to read from
+		int ai = this.boff + __addr;
+		
+		// Copy all data
+		while (ai < limdx)
+			__b[__o++] = bytes[ai++];
+		
+		// If there is anything left over, pour in -1s
+		while ((ai++) < enddx)
+			__b[__o++] = -1;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/21
+	 */
+	@Override
 	public int memReadInt(int __addr)
 	{
 		// Treat out of region reads as invalid data

@@ -28,6 +28,21 @@ public interface ReadableMemory
 	public abstract int memReadByte(int __addr);
 	
 	/**
+	 * Bulk read of memory bytes.
+	 *
+	 * @param __ad The address to read from.
+	 * @param __b The output bytes.
+	 * @param __o The offset.
+	 * @param __l The length.
+	 * @throws IndexOutOfBoundsException If the offset and/or length are
+	 * negative or exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/21
+	 */
+	public abstract void memReadBytes(int __ad, byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException;
+	
+	/**
 	 * Reads the memory at the specified address.
 	 *
 	 * @param __addr The address to read from.

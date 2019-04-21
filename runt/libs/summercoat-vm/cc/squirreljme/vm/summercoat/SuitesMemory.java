@@ -117,6 +117,32 @@ public final class SuitesMemory
 	 * @since 2019/04/21
 	 */
 	@Override
+	public void memReadBytes(int __addr, byte[] __b, int __o, int __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		// Reading completely from a single suite?
+		if (__addr >= CONFIG_TABLE_SIZE)
+		{
+			SuiteMemory[] suitemem = this._suitemem;
+			int si = (__addr - CONFIG_TABLE_SIZE) / SUITE_CHUNK_SIZE,
+				sie = ((__addr + __l) - CONFIG_TABLE_SIZE) / SUITE_CHUNK_SIZE;
+			if (si == sie && si >= 0 && si < suitemem.length)
+			{
+				suitemem[si].memReadBytes(__addr - suitemem[si].offset,
+					__b, __o, __l);
+				return;
+			}
+		}
+		
+		// Between suites or similar
+		super.memReadBytes(__addr, __b, __o, __l);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/21
+	 */
+	@Override
 	public int memReadInt(int __addr)
 	{
 		// Reading from the config table?

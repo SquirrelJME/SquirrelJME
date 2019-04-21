@@ -29,6 +29,14 @@ public final class NativeCPU
 	public static final int MAX_REGISTERS =
 		64;
 	
+	/** The size of the method cache. */
+	public static final int METHOD_CACHE =
+		1024;
+	
+	/** Spill over protection for the cache. */
+	public static final int METHOD_CACHE_SPILL =
+		512;
+	
 	/** The memory to read/write from. */
 	protected final WritableMemory memory;
 	
@@ -91,13 +99,20 @@ public final class NativeCPU
 	public final void run(int __fl)
 	{
 		// Read the CPU stuff
+		final WritableMemory memory = this.memory;
 		boolean reload = true;
-		WritableMemory memory = this.memory;
 		
 		// Frame specific info
 		Frame nowframe = null;
 		int[] r = null;
 		int pc = -1;
+		
+		// Per operation handling
+		final int[] args = new int[6];
+		
+		// Method cache to reduce tons of method reads
+		final byte[] icache = new byte[METHOD_CACHE];
+		int lasticache = -(METHOD_CACHE_SPILL + 1);
 		
 		// Execution is effectively an infinite loop
 		LinkedList<Frame> frames = this._frames;
@@ -128,9 +143,23 @@ public final class NativeCPU
 				reload = false;
 			}
 			
+			// For a bit faster execution of the method, cache a bunch of
+			// the code that is being executed in memory. Constantly performing
+			// the method calls to read single bytes of memory is a bit so, so
+			// this should hopefully improve performance slightly.
+			int pcdiff = pc - lasticache;
+			if (pcdiff < 0 || pcdiff > METHOD_CACHE_SPILL)
+			{
+				memory.memReadBytes(pc, icache, 0, METHOD_CACHE);
+				lasticache = pc;
+			}
+			
+			// Calculate last PC base address
+			int bpc = pc - lasticache;
+			
 			// Read operation
 			nowframe._lastpc = pc;
-			int op = memory.memReadByte(pc);
+			int op = icache[bpc] & 0xFF;
 			
 			// Debug
 			todo.DEBUG.note("@%08x -> (%02x) %s", pc,
