@@ -120,44 +120,15 @@ public final class SuitesMemory
 	 * @since 2019/04/21
 	 */
 	@Override
-	public void memReadBytes(int __addr, byte[] __b, int __o, int __l)
-		throws IndexOutOfBoundsException, NullPointerException
+	public int memReadByte(int __addr)
 	{
-		// Reading completely from a single suite?
-		if (__addr >= CONFIG_TABLE_SIZE)
-		{
-			SuiteMemory[] suitemem = this._suitemem;
-			int si = (__addr - CONFIG_TABLE_SIZE) / SUITE_CHUNK_SIZE,
-				sie = ((__addr + __l) - CONFIG_TABLE_SIZE) / SUITE_CHUNK_SIZE;
-			if (si == sie && si >= 0 && si < suitemem.length)
-			{
-				suitemem[si].memReadBytes(__addr - suitemem[si].offset,
-					__b, __o, __l);
-				return;
-			}
-		}
+		// Needs to be initialized?
+		if (!this._didconfiginit)
+			this.__init();
 		
-		// Between suites or similar
-		super.memReadBytes(__addr, __b, __o, __l);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/04/21
-	 */
-	@Override
-	public int memReadInt(int __addr)
-	{
 		// Reading from the config table?
 		if (__addr < CONFIG_TABLE_SIZE)
-		{
-			// Needs to be initialized?
-			if (!this._didconfiginit)
-				this.__init();
-			
-			// Read from memory
 			return this.configtable.memReadInt(__addr);
-		}
 		
 		// Determine the suite index we are wanting to look in memory
 		int si = (__addr - CONFIG_TABLE_SIZE) / SUITE_CHUNK_SIZE;
@@ -165,10 +136,10 @@ public final class SuitesMemory
 		// Instead of failing, return some invalid values
 		SuiteMemory[] suitemem = this._suitemem;
 		if (si < 0 || si >= suitemem.length)
-			return 0xFFFFFFFF;
+			return 0xFF;
 		
 		// Read from suite memory
-		return suitemem[si].memReadInt(__addr - suitemem[si].offset);
+		return suitemem[si].memReadByte(__addr - suitemem[si].offset);
 	}
 	
 	/**
@@ -188,7 +159,7 @@ public final class SuitesMemory
 	@Override
 	public final int memRegionSize()
 	{
-		return 0x7FFFFFFF;
+		return this.size;
 	}
 	
 	/**
@@ -228,8 +199,8 @@ public final class SuitesMemory
 		// Need to determine the actual pointer to the bootstrap code for
 		// the initial PC set
 		int bootsdx = this.memReadByte(bootmcaddr + 6),
-			smtboff = this.memReadInt(bootmcaddr + 64),
-			bootsmo = bootmcaddr + smtboff + (bootsdx * 18),
+			smiboff = this.memReadInt(bootmcaddr + 68),
+			bootsmo = bootmcaddr + smiboff + (bootsdx * 18),
 			mmflags = this.memReadInt(bootsmo + 0),
 			mmcdoff = this.memReadShort(bootsmo + 10),
 			bootcdo = bootsmo + mmcdoff;
