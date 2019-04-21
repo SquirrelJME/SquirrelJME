@@ -12,6 +12,7 @@ package cc.squirreljme.vm.summercoat;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.VMException;
 import cc.squirreljme.vm.VMSuiteManager;
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -166,7 +167,16 @@ public final class SuitesMemory
 		
 		// The bootstrap is in CLDC compact
 		SuiteMemory cldc = this._suitemap.get("cldc-compact.jar");
-		cldc.__init();
+		try
+		{
+			cldc.__init();
+		}
+		
+		// {@squirreljme.error AE0t Could not initialize CLDC library.}
+		catch (IOException e)
+		{
+			throw new RuntimeException("AE0t", e);
+		}
 		
 		if (true)
 			throw new todo.TODO();
