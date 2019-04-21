@@ -76,7 +76,7 @@ public final class VirtualMemory
 		}
 		
 		// Missed Read
-		return 0xFF;
+		return 0xF0 | (__addr & 0x0F);
 	}
 	
 	/**
