@@ -16,6 +16,7 @@ package cc.squirreljme.vm.summercoat;
  * @since 2019/04/21
  */
 public final class VirtualMemory
+	extends AbstractReadableMemory
 	implements ReadableMemory
 {
 	/** The suites memory space. */

@@ -23,6 +23,7 @@ import java.util.Map;
  * @since 2019/04/21
  */
 public final class SuitesMemory
+	extends AbstractReadableMemory
 	implements ReadableMemory
 {
 	/** Configuration and table space size. */
