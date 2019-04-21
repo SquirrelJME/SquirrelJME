@@ -12,6 +12,7 @@ package cc.squirreljme.vm.summercoat;
 
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
 import dev.shadowtail.classfile.mini.MinimizedField;
+import dev.shadowtail.classfile.mini.MinimizedMethod;
 import cc.squirreljme.runtime.cldc.vki.FixedClassIDs;
 import cc.squirreljme.runtime.cldc.vki.Kernel;
 import cc.squirreljme.vm.VirtualMachine;
@@ -24,6 +25,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
+import net.multiphasicapps.io.HexDumpOutputStream;
 import net.multiphasicapps.profiler.ProfilerSnapshot;
 
 /**
@@ -82,7 +84,7 @@ public class SummerCoatFactory
 		// Initialize the suite space and load the boot address
 		sm.__init();
 		int kernaddr = sm._kernelmcaddr,
-			bootaddr = sm._kernelbootaddr;
+			bootaddr = -1;
 		
 		// Write raw strings into memory which describe the various VM
 		// arguments and such. This mostly refers to the class to start once
@@ -117,6 +119,16 @@ public class SummerCoatFactory
 		{
 			// Decode the class file so we can access the fields
 			MinimizedClassFile minikern = MinimizedClassFile.decode(kin);
+			
+			// Find the kernel boot address
+			for (MinimizedMethod mm : minikern.methods(false))
+				if (mm.name.toString().equals("__start"))
+				{
+					// We can use the offsets from the image file
+					bootaddr = kernaddr + minikern.header.imoff +
+						mm.codeoffset;
+					break;
+				}
 			
 			// Base for fields, note that the object includes its class ID
 			// and the reference count!
@@ -198,6 +210,15 @@ public class SummerCoatFactory
 		{
 			throw new RuntimeException("AE0y", e);
 		}
+		
+		// Dump some memory
+		todo.DEBUG.note("KOBJ");
+		HexDumpOutputStream.dump(System.err,
+			new ReadableMemoryInputStream(vmem, kernaddr, 1024));
+		
+		todo.DEBUG.note("BOOT");
+		HexDumpOutputStream.dump(System.err,
+			new ReadableMemoryInputStream(vmem, bootaddr, 1024));
 		
 		// Setup virtual CPU to execute
 		NativeCPU cpu = new NativeCPU(vmem);

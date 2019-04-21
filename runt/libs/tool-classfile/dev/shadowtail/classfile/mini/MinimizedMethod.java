@@ -40,6 +40,12 @@ public final class MinimizedMethod
 	/** The type of the method. */
 	public final MethodDescriptor type;
 	
+	/** The code offset. */
+	public final int codeoffset;
+	
+	/** The line offset. */
+	public final int lineoffset;
+	
 	/** Translated method code. */
 	final byte[] _code;
 	
@@ -59,10 +65,32 @@ public final class MinimizedMethod
 	 * @param __tc Transcoded instructions.
 	 * @param __ln Line number table.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2019/03/14
+	 * @since 2019/04/21
 	 */
 	public MinimizedMethod(int __f, int __o,
 		MethodName __n, MethodDescriptor __t, byte[] __tc, byte[] __ln)
+		throws NullPointerException
+	{
+		this(__f, __o, __n, __t, __tc, __ln, -1, -1);
+	}
+	
+	/**
+	 * Initializes the minimized method.
+	 *
+	 * @param __f The method flags.
+	 * @param __o Index in the method table for instances.
+	 * @param __n The method name.
+	 * @param __t The method type.
+	 * @param __tc Transcoded instructions.
+	 * @param __ln Line number table.
+	 * @param __co The code offset.
+	 * @param __lo The line offset.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/14
+	 */
+	public MinimizedMethod(int __f, int __o,
+		MethodName __n, MethodDescriptor __t, byte[] __tc, byte[] __ln,
+		int __co, int __lo)
 		throws NullPointerException
 	{
 		if (__n == null || __t == null)
@@ -72,6 +100,8 @@ public final class MinimizedMethod
 		this.index = __o;
 		this.name = __n;
 		this.type = __t;
+		this.codeoffset = __co;
+		this.lineoffset = __lo;
 		this._code = (__tc == null ? new byte[0] : __tc.clone());
 		this._lines = (__ln == null ? new byte[0] : __ln.clone());
 	}
@@ -169,7 +199,7 @@ public final class MinimizedMethod
 				
 				// Build method
 				rv[i] = new MinimizedMethod(flags, offset, name, type,
-					code, line);
+					code, line, offcode, offline);
 			}
 		}
 		
