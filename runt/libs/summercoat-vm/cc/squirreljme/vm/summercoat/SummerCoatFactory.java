@@ -64,7 +64,8 @@ public class SummerCoatFactory
 		int bootaddr = sm._bootaddr;
 		
 		// Setup virtual CPU to execute
-		NativeCPU cpu = new NativeCPU(vmem, bootaddr);
+		NativeCPU cpu = new NativeCPU(vmem);
+		cpu.enterFrame(bootaddr);
 		
 		// Execute the CPU to boot the machine
 		cpu.run();
