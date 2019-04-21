@@ -22,6 +22,14 @@ import java.io.IOException;
 public interface VMClassLibrary
 {
 	/**
+	 * Lists the names of the resources in this library.
+	 *
+	 * @return The resource names.
+	 * @since 2019/04/21
+	 */
+	public abstract String[] listResources();
+	
+	/**
 	 * Returns the name of this library.
 	 *
 	 * @return The library name.

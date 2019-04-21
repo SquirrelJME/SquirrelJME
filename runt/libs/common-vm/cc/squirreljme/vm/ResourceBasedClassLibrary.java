@@ -53,6 +53,16 @@ public final class ResourceBasedClassLibrary
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2019/04/21
+	 */
+	@Override
+	public final String[] listResources()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2018/11/14
 	 */
 	@Override

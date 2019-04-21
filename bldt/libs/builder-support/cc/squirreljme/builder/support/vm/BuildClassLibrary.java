@@ -16,6 +16,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import net.multiphasicapps.zip.blockreader.ZipBlockReader;
 import net.multiphasicapps.zip.blockreader.ZipBlockEntry;
 import net.multiphasicapps.zip.blockreader.ZipEntryNotFoundException;
@@ -46,6 +48,31 @@ public final class BuildClassLibrary
 			throw new NullPointerException("NARG");
 		
 		this.binary = __b;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/21
+	 */
+	@Override
+	public final String[] listResources()
+	{
+		// Build name list
+		List<String> rv = new ArrayList<>();
+		try (ZipBlockReader zip = this.binary.zipBlock())
+		{
+			for (ZipBlockEntry e : zip)
+				rv.add(e.name());
+		}
+		
+		// Failed read
+		catch (IOException e)
+		{
+			throw new RuntimeException(e);
+		}
+		
+		// Return it
+		return rv.<String>toArray(new String[rv.size()]);
 	}
 	
 	/**

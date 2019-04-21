@@ -14,6 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import net.multiphasicapps.zip.streamreader.ZipStreamEntry;
@@ -49,6 +50,17 @@ public final class InMemoryClassLibrary
 		
 		this.name = __n;
 		this._cache = __m;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/21
+	 */
+	@Override
+	public final String[] listResources()
+	{
+		Collection<String> names = this._cache.keySet();
+		return names.<String>toArray(new String[names.size()]);
 	}
 	
 	/**
