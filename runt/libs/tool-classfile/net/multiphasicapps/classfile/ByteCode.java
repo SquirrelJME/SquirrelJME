@@ -763,7 +763,7 @@ public final class ByteCode
 				case InstructionIndex.DSTORE_1:
 				case InstructionIndex.DSTORE_2:
 				case InstructionIndex.DSTORE_3:
-					hit = op = InstructionIndex.DSTORE_0;
+					hit = op - InstructionIndex.DSTORE_0;
 					wide = true;
 					break;
 				
