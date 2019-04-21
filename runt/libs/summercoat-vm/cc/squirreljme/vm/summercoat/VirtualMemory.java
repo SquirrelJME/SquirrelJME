@@ -42,6 +42,27 @@ public final class VirtualMemory
 	 * @since 2019/04/21
 	 */
 	@Override
+	public int memReadInt(int __addr)
+	{
+		// {@squirreljme.error AE0r Unaligned memory access.}
+		if ((__addr & 3) != 0)
+			throw new VMRuntimeException("AE0r");
+		
+		// Reading from suite memory?
+		SuitesMemory suites = this.suites;
+		int sbas = suites.offset,
+			soff = sbas - __addr;
+		if (__addr >= sbas && soff < suites.size)
+			return suites.memReadInt(soff);
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/21
+	 */
+	@Override
 	public int memRegionOffset()
 	{
 		return 0x00000000;
