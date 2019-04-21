@@ -37,7 +37,7 @@ public class SummerCoatFactory
 {
 	/** The base address for suites. */
 	public static final int SUITE_BASE_ADDR =
-		0x80000000;
+		0x40000000;
 	
 	/** The starting address for RAM. */
 	public static final int RAM_START_ADDRESS =
@@ -71,10 +71,13 @@ public class SummerCoatFactory
 		// Initialize suite memory
 		SuitesMemory sm = new SuitesMemory(SUITE_BASE_ADDR, __sm);
 		
+		// Size of RAM
+		int ramsize = DEFAULT_RAM_SIZE;
+		
 		// Initialize and map virtual memory
 		VirtualMemory vmem = new VirtualMemory();
-		vmem.mapRegion(sm, SUITE_BASE_ADDR);
-		vmem.mapRegion(new RawMemory(RAM_START_ADDRESS, DEFAULT_RAM_SIZE));
+		vmem.mapRegion(sm);
+		vmem.mapRegion(new RawMemory(RAM_START_ADDRESS, ramsize));
 		
 		// Initialize the suite space and load the boot address
 		sm.__init();
@@ -84,7 +87,7 @@ public class SummerCoatFactory
 		// Write raw strings into memory which describe the various VM
 		// arguments and such. This mostly refers to the class to start once
 		// the VM has initialized itself
-		int[] sssp = new int[]{vmem.RAM_START_ADDRESS};
+		int[] sssp = new int[]{RAM_START_ADDRESS};
 		int xxclasspth = this.__memString(vmem, sssp,
 				SummerCoatFactory.stringArrayToString(
 				SummerCoatFactory.classPathToStringArray(__cp))),
@@ -145,12 +148,12 @@ public class SummerCoatFactory
 						
 						// Starting memory address
 					case "memaddr":
-						vmem.memWriteInt(kfo, vmem.RAM_START_ADDRESS);
+						vmem.memWriteInt(kfo, RAM_START_ADDRESS);
 						break;
 					
 						// Size of memory
 					case "memsize":
-						vmem.memWriteInt(kfo, vmem.ramsize);
+						vmem.memWriteInt(kfo, ramsize);
 						break;
 						
 						// Is this a MIDlet?

@@ -24,26 +24,28 @@ public abstract class AbstractWritableMemory
 	 * @since 2019/04/21
 	 */
 	@Override
-	public void memWriteByte(int __addr, int __v)
+	public void memWriteBytes(int __a, byte[] __b, int __o, int __l)
 	{
-		// Read entire integer chunk
-		int ra = __addr & (~3),
-			rv = this.memReadInt(ra);
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException("IOOB");
 		
-		// Clip value
-		__v &= 0xFF;
-		
-		// Replace one of the chunks
-		switch (__v & 3)
-		{
-			case 0: rv = (rv & 0x00FFFFFF) | (__v << 24); break;
-			case 1: rv = (rv & 0xFF00FFFF) | (__v << 16); break;
-			case 2: rv = (rv & 0xFFFF00FF) | (__v << 8); break;
-			case 3: rv = (rv & 0xFFFFFF00) | (__v); break;
-		}
-		
-		// Store integer chunk
-		this.memWriteInt(ra, rv);
+		for (int i = 0; i < __l; i++)
+			this.memWriteByte(__a++, __b[__o++] & 0xFF);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/21
+	 */
+	@Override
+	public void memWriteInt(int __addr, int __v)
+	{
+		this.memWriteByte(__addr++, __v >>> 24);
+		this.memWriteByte(__addr++, __v >>> 16);
+		this.memWriteByte(__addr++, __v >>> 8);
+		this.memWriteByte(__addr++, __v);
 	}
 	
 	/**
@@ -53,26 +55,8 @@ public abstract class AbstractWritableMemory
 	@Override
 	public void memWriteShort(int __addr, int __v)
 	{
-		// {@squirreljme.error AE12 Unaligned memory access.}
-		if ((__addr & 1) != 0)
-			throw new VMRuntimeException("AE12");
-		
-		// Read entire integer chunk
-		int ra = __addr & (~3),
-			rv = this.memReadInt(ra);
-		
-		// Clip value
-		__v &= 0xFFFF;
-		
-		// Replace one of the chunks
-		switch (__v & 0b10)
-		{
-			case 0:		rv = (rv & 0x0000FFFF) | (__v << 16); break;
-			default:	rv = (rv & 0xFFFF0000) | __v; break;
-		}
-		
-		// Store integer chunk
-		this.memWriteInt(ra, rv);
+		this.memWriteByte(__addr++, __v >>> 8);
+		this.memWriteByte(__addr++, __v);
 	}
 }
 
