@@ -51,3 +51,9 @@ configuration space is just a plain old object. Then I just pass that object
 to the VM and this describes everything. Of course this object would be
 special in that it was never constructed, it just magically had all of the
 needed fields set and such for it to work.
+
+## 19:46
+
+This of course means that I need an actual ROM which contains all the classes
+to use within SquirrelJME. Since the VM itself will have to operate on this
+ROM.
