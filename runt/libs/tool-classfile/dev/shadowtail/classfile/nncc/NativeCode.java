@@ -56,6 +56,10 @@ public final class NativeCode
 	public static final int POOL_REGISTER =
 		6;
 	
+	/** The register which contains the next pool pointer to use. */
+	public static final int NEXT_POOL_REGISTER =
+		7;
+	
 	/** The register of the first argument. */
 	public static final int ARGUMENT_REGISTER_BASE =
 		8;

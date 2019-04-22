@@ -89,13 +89,18 @@ public final class NativeCPU
 		// Add to frame list
 		frames.addLast(rv);
 		
-		// Seed initial globals, if valid
+		// Seed initial registers, if valid
 		int[] dest = rv._registers;
 		if (lastframe != null)
 		{
+			// Copy globals
 			int[] src = lastframe._registers;
 			for (int i = 0; i < NativeCode.LOCAL_REGISTER_BASE; i++)
 				dest[i] = src[i];
+			
+			// Set the pool register to the next pool register value
+			dest[NativeCode.POOL_REGISTER] =
+				src[NativeCode.NEXT_POOL_REGISTER];
 		}
 		
 		// Copy the arguments to the argument slots
