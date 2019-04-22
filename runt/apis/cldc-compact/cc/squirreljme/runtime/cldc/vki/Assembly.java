@@ -37,5 +37,23 @@ public final class Assembly
 	 * @since 2019/04/21
 	 */
 	public static native void breakpoint();
+	
+	/**
+	 * Used to convert an object to a pointer.
+	 *
+	 * @param __o The object.
+	 * @return The pointer of the object.
+	 * @since 2019/04/21
+	 */
+	public static native int objectToPointer(Object __o);
+	
+	/**
+	 * Used to convert a pointer to an object.
+	 *
+	 * @param __p The pointer.
+	 * @return The object of the pointer.
+	 * @since 2019/04/21
+	 */
+	public static native Object pointerToObject(int __p);
 }
 
