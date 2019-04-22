@@ -396,9 +396,6 @@ public final class NearNativeByteCodeHandler
 	{
 		NativeCodeBuilder codebuilder = this.codebuilder;
 		
-		// Push references
-		this.__refPush();
-		
 		// Assembly method
 		if ("cc/squirreljme/runtime/cldc/vki/Assembly".equals(
 			__r.handle().outerClass().toString()))
@@ -427,6 +424,9 @@ public final class NearNativeByteCodeHandler
 		// Normal invoke
 		else
 		{
+			// Push references
+			this.__refPush();
+			
 			// Checks on the instance
 			if (__t.hasInstance())
 			{
@@ -470,10 +470,10 @@ public final class NearNativeByteCodeHandler
 				else
 					codebuilder.addCopy(NativeCode.RETURN_REGISTER,
 						__out.register);
+			
+			// Clear references
+			this.__refClear();
 		}
-		
-		// Clear reference
-		this.__refClear();
 	}
 	
 	/**
