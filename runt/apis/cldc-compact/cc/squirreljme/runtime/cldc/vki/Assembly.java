@@ -83,5 +83,12 @@ public final class Assembly
 	 * @since 2019/04/21
 	 */
 	public static native Object pointerToObject(int __p);
+	
+	/**
+	 * Return from the current frame.
+	 *
+	 * @since 2019/04/21
+	 */
+	public static native void returnFrame();
 }
 
