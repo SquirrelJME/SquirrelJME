@@ -10,7 +10,8 @@
 
 import javax.microedition.rms.RecordStore;
 
-import cc.squirreljme.runtime.cldc.lang.ApiLevel;
+import javax.microedition.rms.RecordStore;
+import javax.microedition.rms.RecordStoreException;
 
 /**
  * Tests that nothing is done on the record.
@@ -26,9 +27,11 @@ public class TestNothing
 	 */
 	@Override
 	public Object test(RecordStore __rs)
+		throws RecordStoreException
 	{
-		// Needs RMS support first
-		this.checkApiLevel(ApiLevel.UNDEFINED);
+		try (RecordStore rs = RecordStore.openRecordStore("rmstest", true))
+		{
+		}
 		
 		return null;
 	}
