@@ -258,7 +258,11 @@ public class SummerCoatFactory
 				}
 				
 				// Store into pool area
-				vmem.memWriteInt(spoolbase + (4 * i), cv);
+				int sld;
+				vmem.memWriteInt((sld = spoolbase + (4 * i)), cv);
+				
+				// Debug
+				todo.DEBUG.note("Pool %08x = %d", sld, cv);
 			}
 			
 			// Find pointers to methods within the kernel
@@ -287,6 +291,9 @@ public class SummerCoatFactory
 			{
 				// Memory field offer
 				int kfo = kfldbase + mf.offset;
+				
+				// Debug
+				todo.DEBUG.note("kfo = @%08x", kfo);
 				
 				// Value depends on the field
 				switch (mf.name.toString())
