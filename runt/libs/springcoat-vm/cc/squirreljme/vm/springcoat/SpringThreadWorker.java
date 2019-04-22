@@ -4041,11 +4041,11 @@ public final class SpringThreadWorker
 			
 		// {@squirreljme.error BK2f Cannot invoke the method in the object
 		// because it is of the wrong type. (The reference class; The class
-		// of the target object)}
+		// of the target object; The first argument)}
 		SpringClass objclass = ((SpringObject)args[0]).type();
-		if (!refclass.isAssignableFrom(objclass))
+		if (objclass == null || !refclass.isAssignableFrom(objclass))
 			throw new SpringClassCastException(
-				String.format("BK2f %s %s", refclass, objclass));
+				String.format("BK2f %s %s %s", refclass, objclass, args[0]));
 		
 		// Relookup the method since we need to the right one! Then invoke it
 		__t.enterFrame(objclass.lookupMethod(false, ref.memberNameAndType()),
