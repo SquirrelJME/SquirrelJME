@@ -518,10 +518,10 @@ public final class NativeInstruction
 				return ArgumentFormat.of(
 					ArgumentFormat.REGLIST);
 				
-				// [p16, reglist]
+				// [reg w/ memaddr, reglist]
 			case NativeInstructionType.INVOKE:
 				return ArgumentFormat.of(
-					ArgumentFormat.VPOOL,
+					ArgumentFormat.VUINT,
 					ArgumentFormat.REGLIST);
 		}
 		
