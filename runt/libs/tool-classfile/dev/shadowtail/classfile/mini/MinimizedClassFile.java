@@ -20,7 +20,13 @@ import java.lang.ref.WeakReference;
 import net.multiphasicapps.classfile.ClassFlags;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ClassNames;
+import net.multiphasicapps.classfile.FieldDescriptor;
+import net.multiphasicapps.classfile.FieldName;
+import net.multiphasicapps.classfile.FieldNameAndType;
 import net.multiphasicapps.classfile.InvalidClassFormatException;
+import net.multiphasicapps.classfile.MethodDescriptor;
+import net.multiphasicapps.classfile.MethodName;
+import net.multiphasicapps.classfile.MethodNameAndType;
 
 /**
  * This contains the minimized class file which is a smaller format of the
@@ -89,6 +95,46 @@ public final class MinimizedClassFile
 	}
 	
 	/**
+	 * Searches for a field by the given name and type.
+	 *
+	 * @param __is Search for static field?
+	 * @param __n The name.
+	 * @param __t The type.
+	 * @return The field or {@code null} if not found.
+	 * @since 2019/04/22
+	 */
+	public final MinimizedField field(boolean __is, FieldName __n,
+		FieldDescriptor __t)
+		throws NullPointerException
+	{
+		if (__n == null || __t == null)
+			throw new NullPointerException("NARG");
+		
+		return this.field(__is, new FieldNameAndType(__n, __t));
+	}
+	
+	/**
+	 * Searches for a field by the given name and type.
+	 *
+	 * @param __is Search for static field?
+	 * @param __nat The name and type.
+	 * @return The field or {@code null} if not found.
+	 * @since 2019/04/22
+	 */
+	public final MinimizedField field(boolean __is, FieldNameAndType __nat)
+		throws NullPointerException
+	{
+		if (__nat == null)
+			throw new NullPointerException("NARG");
+		
+		for (MinimizedField mf : (__is ? this._sfields : this._ifields))
+			if (mf.name.equals(__nat.name()) && mf.type.equals(__nat.type()))
+				return mf;
+		
+		return null;
+	}
+	
+	/**
 	 * Returns the fields in the class.
 	 *
 	 * @param __is If true then static fields are returned.
@@ -128,6 +174,46 @@ public final class MinimizedClassFile
 	{
 		return this.pool.<ClassNames>get(this.header.classints,
 			ClassNames.class);
+	}
+	
+	/**
+	 * Searches for a method by the given name and type.
+	 *
+	 * @param __is Search for static method?
+	 * @param __n The name.
+	 * @param __t The type.
+	 * @return The method or {@code null} if not found.
+	 * @since 2019/04/22
+	 */
+	public final MinimizedMethod method(boolean __is, MethodName __n,
+		MethodDescriptor __t)
+		throws NullPointerException
+	{
+		if (__n == null || __t == null)
+			throw new NullPointerException("NARG");
+		
+		return this.method(__is, new MethodNameAndType(__n, __t));
+	}
+	
+	/**
+	 * Searches for a method by the given name and type.
+	 *
+	 * @param __is Search for static method?
+	 * @param __nat The name and type.
+	 * @return The method or {@code null} if not found.
+	 * @since 2019/04/22
+	 */
+	public final MinimizedMethod method(boolean __is, MethodNameAndType __nat)
+		throws NullPointerException
+	{
+		if (__nat == null)
+			throw new NullPointerException("NARG");
+		
+		for (MinimizedMethod mm : (__is ? this._smethods : this._imethods))
+			if (mm.name.equals(__nat.name()) && mm.type.equals(__nat.type()))
+				return mm;
+		
+		return null;
 	}
 	
 	/**
