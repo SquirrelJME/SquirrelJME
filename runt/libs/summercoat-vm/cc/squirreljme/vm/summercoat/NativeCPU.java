@@ -77,6 +77,10 @@ public final class NativeCPU
 	 */
 	public final Frame enterFrame(int __pc, int... __args)
 	{
+		// Debug
+		todo.DEBUG.note("Entering frame @%08x %s", __pc,
+			new IntegerList(__args));
+		
 		// Setup new frame
 		Frame rv = new Frame();
 		rv._pc = __pc;
@@ -381,6 +385,15 @@ public final class NativeCPU
 								(args[2] | ((args[2] & 0x4000) << 1));
 						}
 					}
+					break;
+					
+					// Invoke a pointer
+				case NativeInstructionType.INVOKE:
+					// Enter the frame
+					this.enterFrame(lr[args[0]], reglist);
+					
+					// Entering some other frame
+					reload = true;
 					break;
 					
 					// Integer math
