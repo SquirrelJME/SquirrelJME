@@ -315,11 +315,7 @@ public final class NativeInstruction
 			case NativeInstructionType.IF_ICMP:
 			case NativeInstructionType.IFARRAY_INDEX_OOB_REF_CLEAR:
 			case NativeInstructionType.IFARRAY_MISTYPE_REF_CLEAR:
-			case NativeInstructionType.IFCLASS:
-			case NativeInstructionType.IFCLASS_REF_CLEAR:
 			case NativeInstructionType.IFEQ_CONST:
-			case NativeInstructionType.IFNOTCLASS:
-			case NativeInstructionType.IFNOTCLASS_REF_CLEAR:
 			case NativeInstructionType.MATH_REG_INT:
 			case NativeInstructionType.MATH_REG_FLOAT:
 			case NativeInstructionType.MATH_CONST_INT:
@@ -517,16 +513,6 @@ public final class NativeInstruction
 					ArgumentFormat.VUINT,
 					ArgumentFormat.VUINT);
 				
-				// [p16, u16, j16]
-			case NativeInstructionType.IFCLASS:
-			case NativeInstructionType.IFCLASS_REF_CLEAR:
-			case NativeInstructionType.IFNOTCLASS:
-			case NativeInstructionType.IFNOTCLASS_REF_CLEAR:
-				return ArgumentFormat.of(
-					ArgumentFormat.VPOOL,
-					ArgumentFormat.VUINT,
-					ArgumentFormat.VJUMP);
-				
 				// [reglist]
 			case NativeInstructionType.REF_PUSH:
 				return ArgumentFormat.of(
@@ -698,12 +684,6 @@ public final class NativeInstruction
 				return "IFARRAY_INDEX_OOB_REF_CLEAR";
 			case NativeInstructionType.IFARRAY_MISTYPE_REF_CLEAR:
 				return "IFARRAY_MISTYPE_REF_CLEAR";
-			case NativeInstructionType.IFNOTCLASS:		return "IFNOTCLASS";
-			case NativeInstructionType.IFNOTCLASS_REF_CLEAR:
-				return "IFNOTCLASS_REF_CLEAR";
-			case NativeInstructionType.IFCLASS:			return "IFCLASS";
-			case NativeInstructionType.IFCLASS_REF_CLEAR:
-				return "IFCLASS_REF_CLEAR";
 			case NativeInstructionType.IFEQ_CONST:		return "IFEQ_CONST";
 			case NativeInstructionType.INVOKE:			return "INVOKE";
 			case NativeInstructionType.LOAD_POOL:		return "LOAD_POOL";

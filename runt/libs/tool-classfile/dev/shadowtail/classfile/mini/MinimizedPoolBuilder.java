@@ -11,6 +11,7 @@
 package dev.shadowtail.classfile.mini;
 
 import dev.shadowtail.classfile.nncc.AccessedField;
+import dev.shadowtail.classfile.nncc.ClassPool;
 import dev.shadowtail.classfile.nncc.InvokedMethod;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -130,28 +131,6 @@ public final class MinimizedPoolBuilder
 				this.add(mh.descriptor()));
 		}
 		
-		// Field descriptor
-		/*else if (__v instanceof FieldDescriptor)
-			return this.__add(__v,
-				this.add(__v.toString()), this.add(
-					((FieldDescriptor)__v).className()));*/
-		
-		// Field/Method name
-		/*else if (__v instanceof FieldName ||
-			__v instanceof MethodName)
-			return this.__add(__v,
-				this.add(__v.toString()));*/
-		
-		// Field reference
-		/*else if (__v instanceof FieldReference)
-		{
-			FieldReference v = (FieldReference)__v;
-			return this.__add(__v,
-				this.add(v.className()),
-				this.add(v.memberName()),
-				this.add(v.memberType()));
-		}*/
-		
 		// Method descriptor, add parts of the descriptor naturally
 		else if (__v instanceof MethodDescriptor)
 		{
@@ -185,15 +164,10 @@ public final class MinimizedPoolBuilder
 				isubs);
 		}
 		
-		// Method handle
-		/*else if (__v instanceof MethodHandle)
-		{
-			MethodHandle v = (MethodHandle)__v;
+		// Reference to constant pool table
+		else if (__v instanceof ClassPool)
 			return this.__add(__v,
-				this.add(v.outerClass()),
-				this.add(v.name()),
-				this.add(v.descriptor()));
-		}*/
+				this.add(((ClassPool)__v).name));
 		
 		// String
 		else if (__v instanceof String)
@@ -203,10 +177,26 @@ public final class MinimizedPoolBuilder
 		
 		// Primitives
 		else if (__v instanceof Integer ||
-			__v instanceof Long ||
-			__v instanceof Float ||
-			__v instanceof Double)
+			__v instanceof Float)
 			return this.__add(__v);
+		
+		// Long
+		else if (__v instanceof Long)
+		{
+			long v = (Long)__v;
+			return this.__add(__v,
+				this.add((int)(v >>> 32)),
+				this.add((int)(v & 0xFFFFFFFF)));
+		}
+		
+		// Double
+		else if (__v instanceof Double)
+		{
+			long v = Double.doubleToRawLongBits((Double)__v);
+			return this.__add(__v,
+				this.add((int)(v >>> 32)),
+				this.add((int)(v & 0xFFFFFFFF)));
+		}
 		
 		// {@squirreljme.error JC3p Cannot add the specified entry to the
 		// constant pool. (The class type)}
@@ -301,9 +291,7 @@ public final class MinimizedPoolBuilder
 						// wide
 					case STRING:
 					case INTEGER:
-					case LONG:
 					case FLOAT:
-					case DOUBLE:
 						break;
 					
 						// If any reference part is outside of this basic
@@ -366,21 +354,10 @@ public final class MinimizedPoolBuilder
 						ddos.writeInt((Integer)value);
 						break;
 						
-						// Long
-					case LONG:
-						ddos.writeLong((Long)value);
-						break;
-						
 						// Float
 					case FLOAT:
 						ddos.writeInt(
 							Float.floatToRawIntBits((Float)value));
-						break;
-						
-						// Double
-					case DOUBLE:
-						ddos.writeLong(
-							Double.doubleToRawLongBits((Double)value));
 						break;
 						
 						// Everything else just consists of parts which are
@@ -389,8 +366,10 @@ public final class MinimizedPoolBuilder
 					case CLASS_NAME:
 					case CLASS_NAMES:
 					case INVOKED_METHOD:
-					case FIELD_DESCRIPTOR:
+					case CLASS_POOL:
 					case METHOD_DESCRIPTOR:
+					case LONG:
+					case DOUBLE:
 						{
 							// Write number of parts
 							int npart = part.length;

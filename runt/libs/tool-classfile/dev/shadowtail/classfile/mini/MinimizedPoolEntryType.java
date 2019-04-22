@@ -28,11 +28,11 @@ public enum MinimizedPoolEntryType
 	/** Class names (used for interfaces). */
 	CLASS_NAMES,
 	
+	/** The constant pool for the given class. */
+	CLASS_POOL,
+	
 	/** Accessed Field. */
 	ACCESSED_FIELD,
-	
-	/** Field Descriptor. */
-	FIELD_DESCRIPTOR,
 	
 	/** Invoked Method. */
 	INVOKED_METHOD,
@@ -40,19 +40,17 @@ public enum MinimizedPoolEntryType
 	/** Method Descriptor. */
 	METHOD_DESCRIPTOR,
 	
-	/** Double. */
-	@Deprecated
-	DOUBLE,
+	/** Integer. */
+	INTEGER,
 	
 	/** Float. */
 	FLOAT,
 	
-	/** Integer. */
-	INTEGER,
-	
 	/** Long. */
-	@Deprecated
 	LONG,
+	
+	/** Double. */
+	DOUBLE,
 	
 	/** End. */
 	;
@@ -74,14 +72,14 @@ public enum MinimizedPoolEntryType
 			case 1:		return STRING;
 			case 2:		return CLASS_NAME;
 			case 3:		return CLASS_NAMES;
-			case 4:		return ACCESSED_FIELD;
-			case 5:		return FIELD_DESCRIPTOR;
+			case 4:		return CLASS_POOL;
+			case 5:		return ACCESSED_FIELD;
 			case 6:		return INVOKED_METHOD;
 			case 7:		return METHOD_DESCRIPTOR;
-			case 8:		return DOUBLE;
+			case 8:		return INTEGER;
 			case 9:		return FLOAT;
-			case 10:	return INTEGER;
-			case 11:	return LONG;
+			case 10:	return LONG;
+			case 11:	return DOUBLE;
 		}
 		
 		// {@squirreljme.error JC3s Unknown pool type. (The type)}
@@ -110,14 +108,16 @@ public enum MinimizedPoolEntryType
 				return STRING;
 			case "java.lang.Integer":
 				return INTEGER;
-			case "java.lang.Long":
-				return LONG;
 			case "java.lang.Float":
 				return FLOAT;
+			case "java.lang.Long":
+				return LONG;
 			case "java.lang.Double":
 				return DOUBLE;
 			case "dev.shadowtail.classfile.nncc.AccessedField":
 				return ACCESSED_FIELD;
+			case "dev.shadowtail.classfile.nncc.ClassPool":
+				return CLASS_POOL;
 			case "dev.shadowtail.classfile.nncc.InvokedMethod":
 				return INVOKED_METHOD;
 			case "net.multiphasicapps.classfile.ClassName":
@@ -126,8 +126,6 @@ public enum MinimizedPoolEntryType
 				return CLASS_NAMES;
 			case "List net.multiphasicapps.classfile.ClassName":
 				return CLASS_NAMES;
-			case "net.multiphasicapps.classfile.FieldDescriptor":
-				return FIELD_DESCRIPTOR;
 			case "net.multiphasicapps.classfile.MethodDescriptor":
 				return METHOD_DESCRIPTOR;
 			case "net.multiphasicapps.classfile.MethodHandle":

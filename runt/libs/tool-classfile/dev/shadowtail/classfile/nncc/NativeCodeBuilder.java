@@ -208,45 +208,6 @@ public final class NativeCodeBuilder
 	}
 	
 	/**
-	 * Adds jump if the given register is an instance of the given class.
-	 *
-	 * @param __cn The class name to check.
-	 * @param __a The register to check.
-	 * @param __jt The target of the jump.
-	 * @return The resulting instruction.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/04/10
-	 */
-	public final NativeInstruction addIfClass(ClassName __cn, int __a,
-		NativeCodeLabel __jt)
-		throws NullPointerException
-	{
-		return this.addIfClass(__cn, __a, __jt, false);
-	}
-	
-	/**
-	 * Adds jump if the given register is an instance of the given class.
-	 *
-	 * @param __cn The class name to check.
-	 * @param __a The register to check.
-	 * @param __jt The target of the jump.
-	 * @param __rc Reference clear.
-	 * @return The resulting instruction.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/04/10
-	 */
-	public final NativeInstruction addIfClass(ClassName __cn, int __a,
-		NativeCodeLabel __jt, boolean __rc)
-		throws NullPointerException
-	{
-		if (__cn == null || __jt == null)
-			throw new NullPointerException("NARG");
-		
-		return this.add((__rc ? NativeInstructionType.IFCLASS_REF_CLEAR :
-			NativeInstructionType.IFCLASS), __cn, __a, __jt);
-	}
-	
-	/**
 	 * Adds an integer comparison instruction. No references will ever be
 	 * cleared if the comparison succeeds.
 	 *
@@ -324,45 +285,6 @@ public final class NativeCodeBuilder
 		
 		return this.addIfICmp(CompareType.NOT_EQUALS, __a,
 			NativeCode.ZERO_REGISTER, __jt, __rc);
-	}
-	
-	/**
-	 * Adds jump if the given register is not an instance of the given class.
-	 *
-	 * @param __cn The class name to check.
-	 * @param __a The register to check.
-	 * @param __jt The target of the jump.
-	 * @return The resulting instruction.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/04/10
-	 */
-	public final NativeInstruction addIfNotClass(ClassName __cn, int __a,
-		NativeCodeLabel __jt)
-		throws NullPointerException
-	{
-		return this.addIfNotClass(__cn, __a, __jt, false);
-	}
-	
-	/**
-	 * Adds jump if the given register is not an instance of the given class.
-	 *
-	 * @param __cn The class name to check.
-	 * @param __a The register to check.
-	 * @param __jt The target of the jump.
-	 * @param __rc Reference clear.
-	 * @return The resulting instruction.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/04/10
-	 */
-	public final NativeInstruction addIfNotClass(ClassName __cn, int __a,
-		NativeCodeLabel __jt, boolean __rc)
-		throws NullPointerException
-	{
-		if (__cn == null || __jt == null)
-			throw new NullPointerException("NARG");
-		
-		return this.add((__rc ? NativeInstructionType.IFNOTCLASS_REF_CLEAR :
-			NativeInstructionType.IFNOTCLASS), __cn, __a, __jt);
 	}
 	
 	/**
@@ -626,17 +548,6 @@ public final class NativeCodeBuilder
 					refclear = ((ri.operation() & 0b1000) != 0);
 					break;
 					
-				case NativeInstructionType.IFNOTCLASS:
-				case NativeInstructionType.IFCLASS:
-					jt = (NativeCodeLabel)ri.argument(2);
-					break;
-					
-				case NativeInstructionType.IFNOTCLASS_REF_CLEAR:
-				case NativeInstructionType.IFCLASS_REF_CLEAR:
-					jt = (NativeCodeLabel)ri.argument(2);
-					refclear = true;
-					break;
-				
 					// Not a jump
 				default:
 					continue;

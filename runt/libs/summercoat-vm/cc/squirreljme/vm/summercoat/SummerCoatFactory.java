@@ -15,6 +15,7 @@ import dev.shadowtail.classfile.mini.MinimizedField;
 import dev.shadowtail.classfile.mini.MinimizedMethod;
 import dev.shadowtail.classfile.mini.MinimizedPool;
 import dev.shadowtail.classfile.nncc.AccessedField;
+import dev.shadowtail.classfile.nncc.ClassPool;
 import dev.shadowtail.classfile.nncc.InvokedMethod;
 import dev.shadowtail.classfile.nncc.NativeCode;
 import cc.squirreljme.runtime.cldc.vki.FixedClassIDs;
@@ -157,9 +158,8 @@ public class SummerCoatFactory
 				Object pv = pool.get(i);
 				switch (pool.type(i))
 				{
-						// Just map to null, they do not fully exist yet
+						// Just map strings to null
 					case STRING:
-					case CLASS_NAME:
 						cv = 0;
 						break;
 						
@@ -180,6 +180,38 @@ public class SummerCoatFactory
 							cv = 0;
 						break;
 						
+						// Try to map a class index to a pre-existing ID
+					case CLASS_NAME:
+						switch (pv.toString())
+						{
+								// char array
+							case "[C":
+								cv = FixedClassIDs.PRIMITIVE_CHARACTER_ARRAY;
+								break;
+							
+								// Kernel
+							case "cc/squirreljme/runtime/cldc/vki/Kernel":
+								cv = FixedClassIDs.KERNEL;
+								break;
+							
+								// Unknown class, ignore
+							default:
+								cv = 0;
+								break;
+						}
+						break;
+						
+						// The pointer to the run-time pool for the given
+						// class
+					case CLASS_POOL:
+						if (((ClassPool)pv).name.toString().equals(
+							"cc/squirreljme/runtime/cldc/vki/Kernel"))
+							cv = spoolbase;
+						else
+							cv = 0;
+						break;
+						
+						// Invoked method
 					case INVOKED_METHOD:
 						InvokedMethod iv = (InvokedMethod)pv;
 						
@@ -198,18 +230,25 @@ public class SummerCoatFactory
 							cv = 0;
 						break;
 						
-						// Float
-					case FLOAT:
-						cv = Float.floatToRawIntBits((Float)pv);
-						break;
-						
 						// Integer
 					case INTEGER:
 						cv = (Integer)pv;
 						break;
 						
+						// Float
+					case FLOAT:
+						cv = Float.floatToRawIntBits((Float)pv);
+						break;
+						
+						// Long
+					case LONG:
+						throw new todo.TODO();
+						
+						// Double
+					case DOUBLE:
+						throw new todo.TODO();
+						
 						// These are just informational, ignore for now
-					case FIELD_DESCRIPTOR:
 					case METHOD_DESCRIPTOR:
 					case CLASS_NAMES:
 						continue;

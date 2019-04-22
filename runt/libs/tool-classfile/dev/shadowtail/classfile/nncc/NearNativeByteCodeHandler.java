@@ -49,6 +49,10 @@ import net.multiphasicapps.classfile.MethodReference;
 public final class NearNativeByteCodeHandler
 	implements ByteCodeHandler
 {
+	/** The kernel class. */
+	public static final ClassName KERNEL_CLASS =
+		new ClassName("cc/squirreljme/runtime/cldc/vki/Kernel");
+	
 	/** State of the byte code. */
 	public final ByteCodeState state =
 		new ByteCodeState();
@@ -119,8 +123,7 @@ public final class NearNativeByteCodeHandler
 		this.__refPush();
 		
 		// Cannot be null
-		codebuilder.addIfZero(__in.register, this.__labelMakeException(
-			"java/lang/NullPointerException"), true);
+		this.__basicCheckNPE(__in.register);
 		
 		// Read length
 		codebuilder.add(NativeInstructionType.ARRAYLEN,
@@ -145,8 +148,7 @@ public final class NearNativeByteCodeHandler
 		this.__refPush();
 		
 		// Cannot be null
-		codebuilder.addIfZero(__in.register, this.__labelMakeException(
-			"java/lang/NullPointerException"), true);
+		this.__basicCheckNPE(__in.register);
 		
 		// Check bounds
 		codebuilder.add(NativeInstructionType.IFARRAY_INDEX_OOB_REF_CLEAR,
@@ -176,8 +178,7 @@ public final class NearNativeByteCodeHandler
 		this.__refPush();
 		
 		// Cannot be null
-		codebuilder.addIfZero(__in.register, this.__labelMakeException(
-			"java/lang/NullPointerException"), true);
+		this.__basicCheckNPE(__in.register);
 		
 		// Check bounds
 		codebuilder.add(NativeInstructionType.IFARRAY_INDEX_OOB_REF_CLEAR,
@@ -210,8 +211,7 @@ public final class NearNativeByteCodeHandler
 		this.__refPush();
 		
 		// Add cast check
-		this.codebuilder.addIfNotClass(__cl, __v.register,
-			this.__labelMakeException("java/lang/ClassCastException"), true);
+		this.__basicCheckCCE(__v.register, __cl);
 		
 		// Clear references in the event it was overwritten
 		this.__refClear();
@@ -272,12 +272,10 @@ public final class NearNativeByteCodeHandler
 		int ireg = __i.register;
 		
 		// Cannot be null
-		codebuilder.addIfZero(ireg, this.__labelMakeException(
-			"java/lang/NullPointerException"), true);
+		this.__basicCheckNPE(ireg);
 		
 		// Must be the given class
-		codebuilder.addIfNotClass(__fr.className(), ireg,
-			this.__labelMakeException("java/lang/ClassCastException"), true);
+		this.__basicCheckCCE(ireg, __fr.className());
 		
 		// Read of field memory
 		int tempreg = state.stack.usedregisters;
@@ -308,12 +306,10 @@ public final class NearNativeByteCodeHandler
 		int ireg = __i.register;
 		
 		// Cannot be null
-		codebuilder.addIfZero(ireg, this.__labelMakeException(
-			"java/lang/NullPointerException"), true);
+		this.__basicCheckNPE(ireg);
 		
 		// Must be the given class
-		codebuilder.addIfNotClass(__fr.className(), ireg,
-			this.__labelMakeException("java/lang/ClassCastException"), true);
+		this.__basicCheckCCE(ireg, __fr.className());
 		
 		// Read of field memory
 		int tempreg = state.stack.usedregisters;
@@ -358,29 +354,26 @@ public final class NearNativeByteCodeHandler
 		// Push reference
 		this.__refPush();
 		
-		// Copy object to the temporary register because we will be placing
-		// a zero on the output spot
-		int tempreg = this.state.stack.usedregisters;
-		NativeCodeBuilder codebuilder = this.codebuilder;
-		codebuilder.addCopy(__v.register, tempreg);
+		// Use the return address register as a temporary
+		int tempreg = NativeCode.RETURN_REGISTER;
 		
-		// Place zero on the target, there will be a branch which will either
-		// jump to a nothing spot or fall through to an add instruction
-		codebuilder.addCopy(0, __o.register);
+		// The method we are going to call is in the kernel so we need to
+		// load its pool identifier
+		codebuilder.add(NativeInstructionType.LOAD_POOL,
+			new ClassPool(KERNEL_CLASS), NativeCode.NEXT_POOL_REGISTER);
 		
-		// If the object is not the given class, then jump to the following
-		// instruction
-		NativeCodeLabel jp = new NativeCodeLabel("instof", this.state.addr);
-		codebuilder.addIfNotClass(__cl, tempreg, jp, false);
+		// Load the class index into the temporary
+		codebuilder.add(NativeInstructionType.LOAD_POOL,
+			__cl, tempreg);
 		
-		// In the case that it is, the if will fall through and add a value
-		// to the output
-		codebuilder.addMathConst(StackJavaType.INTEGER, MathType.OR,
-			__o.register, 1, __o.register);
+		// Call the instance checker (__ir, checkclassid)
+		codebuilder.add(NativeInstructionType.INVOKE,
+			new InvokedMethod(InvokeType.STATIC, new MethodHandle(KERNEL_CLASS,
+			new MethodName("jvmIsInstance"), new MethodDescriptor("(II)I"))),
+			new RegisterList(__v.register, tempreg));
 		
-		// The label to jump to if it is not an instance, in this case the
-		// output register will remain at zero
-		codebuilder.label(jp);
+		// Copy value over
+		codebuilder.addCopy(NativeCode.RETURN_REGISTER, __o.register);
 		
 		// Clear references in the event it was overwritten
 		this.__refClear();
@@ -420,6 +413,13 @@ public final class NearNativeByteCodeHandler
 					// Read int memory
 				case "memReadInt":
 					codebuilder.addMemoryOffReg(DataType.INTEGER,
+						true, __out.register,
+						__in[0].register, __in[1].register);
+					break;
+					
+					// Read short memory
+				case "memReadShort":
+					codebuilder.addMemoryOffReg(DataType.SHORT,
 						true, __out.register,
 						__in[0].register, __in[1].register);
 					break;
@@ -466,13 +466,10 @@ public final class NearNativeByteCodeHandler
 				int ireg = __in[0].register;
 				
 				// Cannot be null
-				codebuilder.addIfZero(ireg, this.__labelMakeException(
-					"java/lang/NullPointerException"), true);
+				this.__basicCheckNPE(ireg);
 				
 				// Must be the given class
-				codebuilder.addIfNotClass(__r.handle().outerClass(), ireg,
-					this.__labelMakeException("java/lang/ClassCastException"),
-					true);
+				this.__basicCheckCCE(ireg, __r.handle().outerClass());
 			}
 			
 			// Fill in call arguments
@@ -750,8 +747,7 @@ public final class NearNativeByteCodeHandler
 		this.__refPush();
 		
 		// Cannot be null
-		codebuilder.addIfZero(__in.register, this.__labelMakeException(
-			"java/lang/NullPointerException"), true);
+		this.__basicCheckNPE(__in.register);
 		
 		// Copy into the exception register
 		codebuilder.addCopy(__in.register, NativeCode.EXCEPTION_REGISTER);
@@ -924,10 +920,40 @@ public final class NearNativeByteCodeHandler
 			
 			// Go through and build the exception handler table
 			for (ExceptionHandler eh : ehtable)
+			{
+				// Use the return address register as a temporary
+				int chkreg = NativeCode.RETURN_REGISTER;
+				
+				// The method we are going to call is in the kernel so we need
+				// to load its pool identifier
+				codebuilder.add(NativeInstructionType.LOAD_POOL,
+					new ClassPool(KERNEL_CLASS),
+					NativeCode.NEXT_POOL_REGISTER);
+				
+				// Load the class index into the temporary
+				codebuilder.add(NativeInstructionType.LOAD_POOL,
+					eh.type(), chkreg);
+				
+				// Call the instance checker (__ir, checkclassid)
+				codebuilder.add(NativeInstructionType.INVOKE,
+					new InvokedMethod(InvokeType.STATIC, new MethodHandle(
+					KERNEL_CLASS, new MethodName("jvmIsInstance"),
+					new MethodDescriptor("(II)I"))), new RegisterList(
+					NativeCode.EXCEPTION_REGISTER, chkreg));
+				
+				// Jump to handler if it is met
+				codebuilder.addIfZero(NativeCode.RETURN_REGISTER,
+					this.__labelJavaTransition(sops,
+						new InstructionJumpTarget(eh.handlerAddress())));
+				
+				/*
+				// OLD CODE
 				codebuilder.addIfClass(eh.type(),
 					NativeCode.EXCEPTION_REGISTER,
 					this.__labelJavaTransition(sops,
 						new InstructionJumpTarget(eh.handlerAddress())));
+				*/
+			}
 			
 			// No exception handler is available so, just fall through to the
 			// caller as needed
@@ -973,6 +999,61 @@ public final class NearNativeByteCodeHandler
 	public final ByteCodeState state()
 	{
 		return this.state;
+	}
+	
+	/**
+	 * Basic check if the instance is null.
+	 *
+	 * @param __ir The register to check.
+	 * @since 2019/04/22
+	 */
+	private final void __basicCheckNPE(int __ir)
+	{
+		NativeCodeBuilder codebuilder = this.codebuilder;
+		
+		// Just a plain zero check
+		codebuilder.addIfZero(__ir, this.__labelMakeException(
+			"java/lang/NullPointerException"), true);
+	}
+	
+	/**
+	 * Basic check if the instance is of the given class.
+	 *
+	 * @param __ir The register to check.
+	 * @param __cl The class to check.
+	 * @since 2019/04/22
+	 */
+	private final void __basicCheckCCE(int __ir, ClassName __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+			
+		NativeCodeBuilder codebuilder = this.codebuilder;
+		
+		// Use the return address register as a temporary
+		int tempreg = NativeCode.RETURN_REGISTER;
+		
+		// The method we are going to call is in the kernel so we need to
+		// load its pool identifier
+		codebuilder.add(NativeInstructionType.LOAD_POOL,
+			new ClassPool(KERNEL_CLASS), NativeCode.NEXT_POOL_REGISTER);
+		
+		// Load the class index into the temporary
+		codebuilder.add(NativeInstructionType.LOAD_POOL,
+			__cl, tempreg);
+		
+		// Call the instance checker (__ir, checkclassid)
+		codebuilder.add(NativeInstructionType.INVOKE,
+			new InvokedMethod(InvokeType.STATIC, new MethodHandle(KERNEL_CLASS,
+			new MethodName("jvmIsInstance"), new MethodDescriptor("(II)I"))),
+			new RegisterList(__ir, tempreg));
+		
+		// If the resulting method call returns zero then it is not an instance
+		// of the given class. The return register is checked because the
+		// value of that method will be placed there.
+		codebuilder.addIfZero(NativeCode.RETURN_REGISTER,
+			this.__labelMakeException("java/lang/ClassCastException"), true);
 	}
 	
 	/**

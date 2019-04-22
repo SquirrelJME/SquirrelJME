@@ -453,8 +453,32 @@ public final class Minimizer
 			// Record that the instruction is at this position
 			indexpos[cdx] = dos.size();
 			
-			// Write operation
+			// Is the operation going to be aliased to something else?
+			// This is so that the execution system is as simple as possible
 			int op = i.operation();
+			switch (op)
+			{
+					// Load of constant pool value, this is used because the
+					// index of the entry to load is not yet known until
+					// byte code construction time
+				case NativeInstructionType.LOAD_POOL:
+					{
+						// Add entry to the pool
+						int pdx = pool.add(i.argument(0));
+						
+						// Turn the instruction into a memory constant read
+						i = new NativeInstruction(
+							NativeInstructionType.MEMORY_OFF_ICONST |
+							0b1000 | DataType.INTEGER.ordinal(),
+							i.argument(1), NativeCode.POOL_REGISTER, pdx * 4);
+					}
+					break;
+			}
+			
+			// Reload operation if it changed
+			op = i.operation();
+			
+			// Write operation
 			dos.write(op);
 			
 			// Encode arguments

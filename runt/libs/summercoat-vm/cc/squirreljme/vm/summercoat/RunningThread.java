@@ -445,9 +445,7 @@ public final class RunningThread
 						// they are demanded
 					case STRING:
 					case INTEGER:
-					case LONG:
 					case FLOAT:
-					case DOUBLE:
 						v = orig;
 						break;
 						
@@ -1074,7 +1072,7 @@ public final class RunningThread
 						}
 					}
 					break;
-					
+					/*
 					// Check class type
 				case NativeInstructionType.IFNOTCLASS:
 				case NativeInstructionType.IFNOTCLASS_REF_CLEAR:
@@ -1114,7 +1112,7 @@ public final class RunningThread
 						}
 					}
 					break;
-					
+					*/
 					// Invoke method
 				case NativeInstructionType.INVOKE:
 					{
