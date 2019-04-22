@@ -13,6 +13,7 @@ package cc.squirreljme.vm.summercoat;
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
 import dev.shadowtail.classfile.mini.MinimizedField;
 import dev.shadowtail.classfile.mini.MinimizedMethod;
+import dev.shadowtail.classfile.nncc.NativeCode;
 import cc.squirreljme.runtime.cldc.vki.FixedClassIDs;
 import cc.squirreljme.runtime.cldc.vki.Kernel;
 import cc.squirreljme.vm.VirtualMachine;
@@ -114,21 +115,52 @@ public class SummerCoatFactory
 		
 		// Read the information on the boot class into memory, we need to
 		// initialize and setup a bunch of fields for it
+		int spoolbase;
 		try (InputStream kin = new ReadableMemoryInputStream(vmem,
 			kernaddr, 1048576))
 		{
-			// Decode the class file so we can access the fields
+			// Decode the class file so we can perform some primitive
+			// pre-initialization of the kernel. This is needed because the
+			// bootstrap needs access to fields and other methods in the
+			// bootstrap class.
 			MinimizedClassFile minikern = MinimizedClassFile.decode(kin);
 			
-			// Find the kernel boot address
+			// The base address of the static pool along with its size
+			int poolcount = minikern.header.poolcount,
+				spoolsize = poolcount * 4;
+			spoolbase = (kobjbase + minikern.header.ifbytes + 8 + 3) & ~(3);
+			
+			// Is the static memory size too small? grow it
+			int spoolend = spoolbase + spoolsize;
+			if (spoolend >= staticmemsize)
+				staticmemsize = (spoolend + 1023) & (~1023);
+			
+			// Initialize the static pool
+			for (int i = 1; i < poolcount; i++)
+			{
+				throw new todo.TODO();
+			}
+			
+			// Find pointers to methods within the kernel
 			for (MinimizedMethod mm : minikern.methods(false))
-				if (mm.name.toString().equals("__start"))
+			{
+				// Offset to the code here
+				int codeoff = kernaddr + minikern.header.imoff +
+					mm.codeoffset;
+				
+				// Depends on the name
+				switch (mm.name.toString())
 				{
-					// We can use the offsets from the image file
-					bootaddr = kernaddr + minikern.header.imoff +
-						mm.codeoffset;
-					break;
+						// The starting point of the kernel (boot)
+					case "__start":
+						bootaddr = codeoff;
+						break;
+					
+						// Ignore
+					default:
+						continue;
 				}
+			}
 			
 			// Base for fields, note that the object includes its class ID
 			// and the reference count!
@@ -147,6 +179,10 @@ public class SummerCoatFactory
 					case "romaddr":
 						vmem.memWriteInt(kfo, SUITE_BASE_ADDR);
 						break;
+						
+						// Kernel class definition (miniform)
+					case "kernaddr":
+						vmem.memWriteInt(kfo, kernaddr);
 						
 						// Kernel object base
 					case "kobjbase":
@@ -198,8 +234,9 @@ public class SummerCoatFactory
 						vmem.memWriteInt(kfo, xxmainargs);
 						break;
 					
+						// Ignore
 					default:
-						throw new todo.OOPS(mf.name.toString());
+						continue;
 				}
 			}
 		}
@@ -213,7 +250,10 @@ public class SummerCoatFactory
 		
 		// Setup virtual CPU to execute
 		NativeCPU cpu = new NativeCPU(vmem);
-		cpu.enterFrame(bootaddr, kobjbase);
+		NativeCPU.Frame iframe = cpu.enterFrame(bootaddr, kobjbase);
+		
+		// Seed initial frame registers
+		iframe._registers[NativeCode.POOL_REGISTER] = spoolbase;
 		
 		// Execute the CPU to boot the machine
 		cpu.run();
