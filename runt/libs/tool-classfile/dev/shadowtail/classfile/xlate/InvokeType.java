@@ -44,6 +44,17 @@ public enum InvokeType
 	}
 	
 	/**
+	 * Is this a static invocation?
+	 *
+	 * @return If this is a static invocation.
+	 * @since 2019/04/22
+	 */
+	public final boolean isStatic()
+	{
+		return this == STATIC;
+	}
+	
+	/**
 	 * Returns the invocation type for the given ordinal.
 	 *
 	 * @param __i The ordinal.

@@ -41,6 +41,7 @@ public enum MinimizedPoolEntryType
 	METHOD_DESCRIPTOR,
 	
 	/** Double. */
+	@Deprecated
 	DOUBLE,
 	
 	/** Float. */
@@ -50,6 +51,7 @@ public enum MinimizedPoolEntryType
 	INTEGER,
 	
 	/** Long. */
+	@Deprecated
 	LONG,
 	
 	/** End. */
