@@ -13,6 +13,10 @@ import dev.shadowtail.classfile.nncc.ArgumentFormat;
 import dev.shadowtail.classfile.nncc.NativeCode;
 import dev.shadowtail.classfile.nncc.NativeInstruction;
 import dev.shadowtail.classfile.nncc.NativeInstructionType;
+import dev.shadowtail.classfile.xlate.CompareType;
+import dev.shadowtail.classfile.xlate.DataType;
+import dev.shadowtail.classfile.xlate.InvokeType;
+import dev.shadowtail.classfile.xlate.MathType;
 import dev.shadowtail.classfile.xlate.StackJavaType;
 import java.util.LinkedList;
 import java.util.List;
@@ -294,6 +298,47 @@ public final class NativeCPU
 						
 						// Set destination
 						lr[args[1]] = va;
+					}
+					break;
+					
+					// Integer math
+				case NativeInstructionType.MATH_CONST_INT:
+				case NativeInstructionType.MATH_REG_INT:
+					{
+						// Parts
+						int a = lr[args[0]],
+							b = (((op & 0x80) != 0) ? args[1] : lr[args[1]]),
+							c;
+						
+						// Operation to execute
+						switch (MathType.of(op & 0xF))
+						{
+							case ADD:		c = a + b; break;
+							case SUB:		c = a - b; break;
+							case MUL:		c = a * b; break;
+							case DIV:		c = a / b; break;
+							case REM:		c = a % b; break;
+							case NEG:		c = -a; break;
+							case SHL:		c = a << b; break;
+							case SHR:		c = a >> b; break;
+							case USHR:		c = a >>> b; break;
+							case AND:		c = a & b; break;
+							case OR:		c = a | b; break;
+							case XOR:		c = a ^ b; break;
+							case SIGN_X8:	c = (byte)a; break;
+							case SIGN_HALF:	c = (short)a; break;
+							
+							case CMPL:
+							case CMPG:
+								c = (a < b ? -1 : (a == b ? 0 : 1));
+								break;
+							
+							default:
+								throw new todo.OOPS();
+						}
+						
+						// Set result
+						lr[args[2]] = c;
 					}
 					break;
 				
