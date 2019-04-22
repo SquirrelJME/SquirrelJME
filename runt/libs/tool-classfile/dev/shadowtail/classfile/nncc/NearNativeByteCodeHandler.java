@@ -412,6 +412,13 @@ public final class NearNativeByteCodeHandler
 					codebuilder.add(NativeInstructionType.BREAKPOINT);
 					break;
 				
+					// object -> pointer OR pointer -> object
+				case "objectToPointer":
+				case "pointerToObject":
+					if (__in[0].register != __out.register)
+						codebuilder.addCopy(__in[0].register, __out.register);
+					break;
+				
 				default:
 					throw new todo.OOPS(asmfunc);
 			}
