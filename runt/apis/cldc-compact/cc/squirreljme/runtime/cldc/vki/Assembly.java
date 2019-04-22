@@ -39,6 +39,23 @@ public final class Assembly
 	public static native void breakpoint();
 	
 	/**
+	 * Entry point marker (no op).
+	 *
+	 * @since 2019/04/21
+	 */
+	public static native void entryMarker();
+	
+	/**
+	 * Reads integer from address.
+	 *
+	 * @param __p The pointer.
+	 * @param __o The offset.
+	 * @return The result of the read.
+	 * @since 2019/04/21
+	 */
+	public static native int memReadInt(int __p, int __o);
+	
+	/**
 	 * Used to convert an object to a pointer.
 	 *
 	 * @param __o The object.
@@ -46,6 +63,17 @@ public final class Assembly
 	 * @since 2019/04/21
 	 */
 	public static native int objectToPointer(Object __o);
+	
+	/**
+	 * Used to convert an object to a pointer, do use reference queing for it
+	 * so that if the object is a candidate for reference counting it will
+	 * be uncounted.
+	 *
+	 * @param __o The object.
+	 * @return The pointer of the object.
+	 * @since 2019/04/21
+	 */
+	public static native int objectToPointerRefQueue(Object __o);
 	
 	/**
 	 * Used to convert a pointer to an object.

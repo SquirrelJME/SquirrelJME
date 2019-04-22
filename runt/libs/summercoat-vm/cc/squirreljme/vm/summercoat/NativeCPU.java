@@ -13,9 +13,11 @@ import dev.shadowtail.classfile.nncc.ArgumentFormat;
 import dev.shadowtail.classfile.nncc.NativeCode;
 import dev.shadowtail.classfile.nncc.NativeInstruction;
 import dev.shadowtail.classfile.nncc.NativeInstructionType;
+import dev.shadowtail.classfile.xlate.StackJavaType;
 import java.util.LinkedList;
 import java.util.List;
 import net.multiphasicapps.collections.IntegerList;
+import net.multiphasicapps.io.HexDumpOutputStream;
 
 /**
  * This represents a native CPU which may run within its own thread to
@@ -154,6 +156,9 @@ public final class NativeCPU
 			{
 				memory.memReadBytes(pc, icache, 0, METHOD_CACHE);
 				lasticache = pc;
+				
+				// Dump the cache
+				HexDumpOutputStream.dump(System.err, icache);
 			}
 			
 			// Calculate last PC base address
@@ -253,7 +258,7 @@ public final class NativeCPU
 				}
 			
 			// Debug
-			todo.DEBUG.note("@%08x -> (%02x) %s %s", pc,
+			todo.DEBUG.note("@%08x/%d -> (%02x) %s %s", pc, bpc,
 				op, NativeInstruction.mnemonic(op), new IntegerList(args));
 			
 			// By default the next instruction is the address after all
@@ -261,10 +266,35 @@ public final class NativeCPU
 			int nextpc = lasticache + rargp;
 			
 			// Handle the operation
-			switch (op)
+			switch (NativeInstruction.encoding(op))
 			{
 					// Entry marker used for debug
 				case NativeInstructionType.ENTRY_MARKER:
+					break;
+					
+					// Conversion (Narrow)
+				case NativeInstructionType.CONVERSION:
+					{
+						StackJavaType a = StackJavaType.of((op >> 2) & 0x3),
+							b = StackJavaType.of(op & 0x03);
+						
+						// The value to convert
+						int va = lr[args[0]];
+						
+						if (a == StackJavaType.INTEGER)
+						{
+							if (b == StackJavaType.FLOAT)
+								va = Float.floatToRawIntBits((float)va);
+						}
+						else
+						{
+							if (b == StackJavaType.INTEGER)
+								va = (int)Float.intBitsToFloat(va);
+						}
+						
+						// Set destination
+						lr[args[1]] = va;
+					}
 					break;
 				
 				default:

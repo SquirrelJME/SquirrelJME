@@ -67,6 +67,8 @@ public final class Kernel
 	 */
 	private final void __start()
 	{
+		Assembly.objectToPointer(this);
+		Assembly.memReadInt(2134, 17);
 		Assembly.breakpoint();
 	}
 }
