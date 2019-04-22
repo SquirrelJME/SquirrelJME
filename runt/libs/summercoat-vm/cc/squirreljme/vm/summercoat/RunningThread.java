@@ -160,6 +160,8 @@ public final class RunningThread
 			i < n; i++, o++)
 			ra[o] = __args[i];
 		
+		throw new todo.TODO();
+		/*
 		// Copy global registers from the previous frame
 		ThreadFrame prev = frames.peekLast();
 		if (prev != null)
@@ -184,6 +186,7 @@ public final class RunningThread
 		
 		// And return the frame
 		return nf;
+		*/
 	}
 	
 	/**
