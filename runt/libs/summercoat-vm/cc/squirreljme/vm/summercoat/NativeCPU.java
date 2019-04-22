@@ -321,7 +321,8 @@ public final class NativeCPU
 							b = StackJavaType.of(op & 0x03);
 						
 						// The value to convert
-						int va = lr[args[0]];
+						int va = lr[args[0]],
+							old = va;
 						
 						if (a == StackJavaType.INTEGER)
 						{
@@ -336,6 +337,9 @@ public final class NativeCPU
 						
 						// Set destination
 						lr[args[1]] = va;
+						
+						// Debug
+						todo.DEBUG.note("%s -> %s", old, va);
 					}
 					break;
 					
@@ -348,7 +352,8 @@ public final class NativeCPU
 						
 						// Compare
 						boolean branch;
-						switch (CompareType.of(op & 0b111))
+						CompareType ct;
+						switch ((ct = CompareType.of(op & 0b111)))
 						{
 							case EQUALS:
 								branch = (a == b); break;
@@ -384,16 +389,25 @@ public final class NativeCPU
 							nextpc = pc +
 								(args[2] | ((args[2] & 0x4000) << 1));
 						}
+						
+						// Debug
+						todo.DEBUG.note("%d %s %d = %b", a, ct, b, branch);
 					}
 					break;
 					
 					// Invoke a pointer
 				case NativeInstructionType.INVOKE:
-					// Enter the frame
-					this.enterFrame(lr[args[0]], reglist);
-					
-					// Entering some other frame
-					reload = true;
+					{
+						// Enter the frame
+						this.enterFrame(lr[args[0]], reglist);
+						
+						// Entering some other frame
+						reload = true;
+						
+						// Debug
+						todo.DEBUG.note("invoke @%08x %s", lr[args[0]],
+							new IntegerList(reglist));
+					}
 					break;
 					
 					// Integer math
@@ -406,7 +420,8 @@ public final class NativeCPU
 							c;
 						
 						// Operation to execute
-						switch (MathType.of(op & 0xF))
+						MathType mt;
+						switch ((mt = MathType.of(op & 0xF)))
 						{
 							case ADD:		c = a + b; break;
 							case SUB:		c = a - b; break;
@@ -434,6 +449,9 @@ public final class NativeCPU
 						
 						// Set result
 						lr[args[2]] = c;
+						
+						// Debug
+						todo.DEBUG.note("%d = %d %s %s", c, a, mt, b);
 					}
 					break;
 				
@@ -479,6 +497,10 @@ public final class NativeCPU
 							
 							// Set value
 							lr[args[0]] = v;
+							
+							// Debug
+							todo.DEBUG.note("@%08x = %s %d -> r%d", addr, dt,
+								v, args[0]);
 						}
 						
 						// Stores
