@@ -111,6 +111,7 @@ public final class Kernel
 		if (pcl == __cldx)
 			return 1;
 		
+		// Need to go through and check a bunch of things
 		throw new todo.TODO();
 	}
 }
