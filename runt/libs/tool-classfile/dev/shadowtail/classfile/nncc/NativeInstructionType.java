@@ -53,8 +53,7 @@ public interface NativeInstructionType
 		0x40;
 	
 	/**
-	 * Memory access, offset is in register. The offset is limited to 14-bits
-	 * of signed values, bit 15 represents volatile access.
+	 * Memory access, offset is in register.
 	 * {@code iiiiLddd, L=T load r1 = *(r2 + r3), L=F set *(r2 + r3) = r1}.
 	 */
 	public static final int MEMORY_OFF_REG =
@@ -65,11 +64,15 @@ public interface NativeInstructionType
 		0x57;
 	
 	/**
-	 * Unused.
-	 * {@code iiii????}.
+	 * Memory access, atomic, offset is in register.
+	 * {@code iiiiLddd, L=T load r1 = *(r2 + r3), L=F set *(r2 + r3) = r1}.
 	 */
-	public static final int UNUSED_6 =
+	public static final int MEMORY_OFF_REG_ATOMIC =
 		0x60;
+	
+	/** Memory access, atomic, off a register using long value. */
+	public static final int MEMORY_OFF_REG_ATOMIC_WIDE =
+		0x67;
 	
 	/**
 	 * Array access. The offset is limited to 14-bits

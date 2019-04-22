@@ -325,6 +325,7 @@ public final class NativeInstruction
 			case NativeInstructionType.MATH_CONST_INT:
 			case NativeInstructionType.MATH_CONST_FLOAT:
 			case NativeInstructionType.MEMORY_OFF_REG:
+			case NativeInstructionType.MEMORY_OFF_REG_ATOMIC:
 			case NativeInstructionType.MEMORY_OFF_ICONST:
 			case NativeInstructionType.NEWARRAY:
 				return 3;
@@ -333,6 +334,7 @@ public final class NativeInstruction
 			case NativeInstructionType.CONVERSION_WIDE:
 			case NativeInstructionType.MEMORY_OFF_ICONST_WIDE:
 			case NativeInstructionType.MEMORY_OFF_REG_WIDE:
+			case NativeInstructionType.MEMORY_OFF_REG_ATOMIC_WIDE:
 				return 4;
 				
 			case NativeInstructionType.MATH_CONST_LONG:
@@ -418,6 +420,7 @@ public final class NativeInstruction
 			case NativeInstructionType.MATH_REG_FLOAT:
 			case NativeInstructionType.MATH_REG_INT:
 			case NativeInstructionType.MEMORY_OFF_REG:
+			case NativeInstructionType.MEMORY_OFF_REG_ATOMIC:
 				return ArgumentFormat.of(
 					ArgumentFormat.VUINT,
 					ArgumentFormat.VUINT,
@@ -426,6 +429,7 @@ public final class NativeInstruction
 				// [u16|u16, u16, u16]
 			case NativeInstructionType.ARRAY_ACCESS_WIDE:
 			case NativeInstructionType.MEMORY_OFF_REG_WIDE:
+			case NativeInstructionType.MEMORY_OFF_REG_ATOMIC_WIDE:
 				return ArgumentFormat.of(
 					ArgumentFormat.VUINT,
 					ArgumentFormat.VUINT,
@@ -585,6 +589,13 @@ public final class NativeInstruction
 			else
 				return NativeInstructionType.MEMORY_OFF_REG;
 		
+		// Memory offset register (atomic)
+		else if (upper == NativeInstructionType.MEMORY_OFF_REG_ATOMIC)
+			if ((__op & 0b110) == 0b110)
+				return NativeInstructionType.MEMORY_OFF_REG_ATOMIC_WIDE;
+			else
+				return NativeInstructionType.MEMORY_OFF_REG_ATOMIC;
+		
 		// Memory offset constant
 		else if (upper == NativeInstructionType.MEMORY_OFF_ICONST)
 			if ((__op & 0b110) == 0b110)
@@ -651,6 +662,13 @@ public final class NativeInstruction
 					DataType.of(__op & 0x07).name() +
 					"_" +
 					(((__op & 0x80) != 0) ? "ICONST" : "REG");
+				
+			case NativeInstructionType.MEMORY_OFF_REG_ATOMIC:
+				return "MEM_ATOMIC_" +
+					(((__op & 0x08) != 0) ? "LOAD" : "STORE") +
+					"_" +
+					DataType.of(__op & 0x07).name() +
+					"_REG";
 				
 			case NativeInstructionType.ARRAY_ACCESS:
 			case NativeInstructionType.ARRAY_ACCESS_WIDE:
