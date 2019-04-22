@@ -98,9 +98,9 @@ public final class NativeCPU
 				dest[i] = src[i];
 		}
 		
-		// Copy registers to the locals
-		for (int i = 0, o = NativeCode.LOCAL_REGISTER_BASE, n = __args.length;
-			i < n; i++, o++)
+		// Copy the arguments to the argument slots
+		for (int i = 0, o = NativeCode.ARGUMENT_REGISTER_BASE,
+			n = __args.length; i < n; i++, o++)
 			dest[o] = __args[i];
 		
 		// Clear zero

@@ -44,13 +44,21 @@ public final class NativeCode
 	public static final int STATIC_FIELD_REGISTER =
 		4;
 	
-	/** Unused global. */
-	public static final int UNUSED_REGISTER =
+	/** Global class table. */
+	public static final int CLASS_TABLE_REGISTER =
 		5;
 	
 	/** Base for local registers (arguments start here). */
 	public static final int LOCAL_REGISTER_BASE =
 		6;
+	
+	/** The register containing the constant pool. */
+	public static final int POOL_REGISTER =
+		6;
+	
+	/** The register of the first argument. */
+	public static final int ARGUMENT_REGISTER_BASE =
+		8;
 	
 	/** This bit XORed NEG bit == set, means memory access is volatile. */
 	public static final int MEMORY_OFF_VOLATILE_BIT =

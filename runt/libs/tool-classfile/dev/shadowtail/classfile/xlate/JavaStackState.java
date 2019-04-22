@@ -32,9 +32,9 @@ import net.multiphasicapps.classfile.StackMapTableState;
  */
 public final class JavaStackState
 {
-	/** The base register where locals start. */
+	/** The base register where arguments start. */
 	public static final int BASE_REGISTER =
-		6;
+		8;
 	
 	/** The top of the stack. */
 	public final int stacktop;
