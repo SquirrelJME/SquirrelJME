@@ -43,9 +43,9 @@ public abstract class AbstractReadableMemory
 	@Override
 	public int memReadInt(int __addr)
 	{
-		return (this.memReadByte(__addr) << 24) |
-			(this.memReadByte(__addr) << 16) |
-			(this.memReadByte(__addr) << 8) |
+		return (this.memReadByte(__addr++) << 24) |
+			(this.memReadByte(__addr++) << 16) |
+			(this.memReadByte(__addr++) << 8) |
 			this.memReadByte(__addr);
 	}
 	
@@ -56,7 +56,7 @@ public abstract class AbstractReadableMemory
 	@Override
 	public int memReadShort(int __addr)
 	{
-		return (this.memReadByte(__addr) << 8) |
+		return (this.memReadByte(__addr++) << 8) |
 			this.memReadByte(__addr);
 	}
 }
