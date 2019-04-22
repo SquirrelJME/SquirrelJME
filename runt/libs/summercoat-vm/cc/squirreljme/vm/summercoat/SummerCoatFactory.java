@@ -213,7 +213,7 @@ public class SummerCoatFactory
 		
 		// Setup virtual CPU to execute
 		NativeCPU cpu = new NativeCPU(vmem);
-		cpu.enterFrame(bootaddr);
+		cpu.enterFrame(bootaddr, kobjbase);
 		
 		// Execute the CPU to boot the machine
 		cpu.run();
