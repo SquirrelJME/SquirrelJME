@@ -71,19 +71,42 @@ public final class NativeCPU
 	 * Enters the given frame for the given address.
 	 *
 	 * @param __pc The address of the frame.
+	 * @param __args Arguments to the frame
 	 * @return The newly created frame.
 	 * @since 2019/04/21
 	 */
-	public final Frame enterFrame(int __pc)
+	public final Frame enterFrame(int __pc, int... __args)
 	{
 		// Setup new frame
 		Frame rv = new Frame();
 		rv._pc = __pc;
 		rv._lastpc = __pc;
 		
-		// Add to frame list
-		this._frames.addLast(rv);
+		// Old frame, to source globals from
+		LinkedList<Frame> frames = this._frames;
+		Frame lastframe = frames.peekLast();
 		
+		// Add to frame list
+		frames.addLast(rv);
+		
+		// Seed initial globals, if valid
+		int[] dest = rv._registers;
+		if (lastframe != null)
+		{
+			int[] src = lastframe._registers;
+			for (int i = 0; i < NativeCode.LOCAL_REGISTER_BASE; i++)
+				dest[i] = src[i];
+		}
+		
+		// Copy registers to the locals
+		for (int i = 0, o = NativeCode.LOCAL_REGISTER_BASE, n = __args.length;
+			i < n; i++, o++)
+			dest[o] = __args[i];
+		
+		// Clear zero
+		dest[0] = 0;
+		
+		// Use this frame
 		return rv;
 	}
 	
