@@ -481,7 +481,7 @@ public final class Minimizer
 								break;
 								
 							case VJUMP:
-								jumpreps.put(dos.size(),
+								jumpreps.put((cdx << 16) | dos.size(),
 									(InstructionJumpTarget)v);
 								
 								// Do not know if the full address can fit
@@ -589,8 +589,9 @@ public final class Minimizer
 		// Replace jumps
 		for (Map.Entry<Integer, InstructionJumpTarget> e : jumpreps.entrySet())
 		{
-			int ai = e.getKey(),
-				jt = indexpos[e.getValue().target()];
+			int cdx = e.getKey() >>> 16,
+				ai = e.getKey() & 0xFFFF,
+				jt = indexpos[e.getValue().target()] - indexpos[cdx];
 			
 			// Wide
 			if ((rv[ai] & 0x80) != 0)
