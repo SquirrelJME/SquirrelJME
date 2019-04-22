@@ -400,6 +400,9 @@ public final class NearNativeByteCodeHandler
 		if ("cc/squirreljme/runtime/cldc/vki/Assembly".equals(
 			__r.handle().outerClass().toString()))
 		{
+			// Force exception cancel for these operations
+			this.state.canexception = false;
+			
 			// Depends on the assembly function
 			String asmfunc;
 			switch ((asmfunc = __r.handle().name().toString()))
