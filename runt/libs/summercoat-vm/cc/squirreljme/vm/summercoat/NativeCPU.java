@@ -512,6 +512,49 @@ public final class NativeCPU
 							throw new todo.TODO();
 					}
 					break;
+					
+					// Return from method call
+				case NativeInstructionType.RETURN:
+					{
+						// Go up frame
+						Frame was = frames.removeLast(),
+							now = frames.peekLast();
+						
+						// If we are going back onto a frame then copy all
+						// the globals which were set since they are meant to
+						// be global!
+						if (now != null)
+						{
+							int[] wr = was._registers,
+								nr = now._registers;
+							
+							// Copy globals
+							for (int i = 0; i < NativeCode.LOCAL_REGISTER_BASE;
+								i++)
+							{
+								// Ignore the pool register because if it is
+								// replaced then it will just explode and
+								// cause issues for the parent method
+								if (i == NativeCode.POOL_REGISTER)
+									continue;
+								
+								// Reset the next pool register
+								else if (i == NativeCode.NEXT_POOL_REGISTER)
+								{
+									nr[i] = 0;
+									break;
+								}
+								
+								// Copy otherwise
+								else
+									nr[i] = wr[i];
+							}
+						}
+						
+						// A reload is done as the frame has changed
+						reload = true;
+					}
+					break;
 				
 				default:
 					throw new todo.OOPS(NativeInstruction.mnemonic(op));
