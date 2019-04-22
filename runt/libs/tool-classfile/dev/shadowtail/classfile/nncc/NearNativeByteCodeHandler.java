@@ -442,6 +442,11 @@ public final class NearNativeByteCodeHandler
 					// Clear references
 					this.__refClear();
 					break;
+					
+					// Return from frame
+				case "returnFrame":
+					codebuilder.add(NativeInstructionType.RETURN);
+					break;
 				
 				default:
 					throw new todo.OOPS(asmfunc);
