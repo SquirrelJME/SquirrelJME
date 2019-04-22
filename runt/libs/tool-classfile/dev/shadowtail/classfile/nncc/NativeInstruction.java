@@ -288,6 +288,7 @@ public final class NativeInstruction
 		// Depends on the encoding
 		switch (NativeInstruction.encoding(__op))
 		{
+			case NativeInstructionType.BREAKPOINT:
 			case NativeInstructionType.ENTRY_MARKER:
 			case NativeInstructionType.REF_CLEAR:
 			case NativeInstructionType.REF_RESET:
