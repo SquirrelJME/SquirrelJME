@@ -20,6 +20,9 @@ public final class Kernel
 	/** The address of the ROM file containing definitions and code. */
 	public int romaddr;
 	
+	/** The address of the kernel mini class. */
+	public int kernaddr;
+	
 	/** Kernel object base. */
 	public int kobjbase;
 	
@@ -57,6 +60,21 @@ public final class Kernel
 	 */
 	private Kernel()
 	{
+	}
+	
+	/**
+	 * Allocates a space within memory of the given size and then returns
+	 * it.
+	 *
+	 * @param __sz The number of bytes to allocate.
+	 * @return The allocated object or {@code 0} if allocation has failed.
+	 * @since 2019/04/22
+	 */
+	public final int kernelNew(int __sz)
+	{
+		Assembly.breakpoint();
+		
+		return 0;
 	}
 	
 	/**
