@@ -46,15 +46,15 @@ jobs:
       - initialize_buildenv
       - run:
           name: Clear old test results and snapshot
-          command: rm -f jut/springcoat/results.xml springcoat.nps
+          command: rm -f spjut/springcoat/results.xml springcoat.nps
       - run:
           name: Create test directory
-          command: mkdir -p jut/springcoat
+          command: mkdir -p spjut/springcoat
       - run:
           name: Running SpringCoat VM
-          command: ~/squirreljme/build.sh launch -v springcoat -n springcoat.nps -Dcc.squirreljme.debug=false tac-runner > jut/springcoat/results.xml
+          command: ~/squirreljme/build.sh launch -v springcoat -n springcoat.nps -Dcc.squirreljme.debug=false tac-runner > spjut/springcoat/results.xml
       - store_test_results:
-          path: jut
+          path: spjut
       - store_artifacts:
           path: springcoat.nps
           destination: /nps/summercoat.nps
@@ -64,15 +64,15 @@ jobs:
       - initialize_buildenv
       - run:
           name: Clear old test results and snapshot
-          command: rm -f jut/summercoat/results.xml summercoat.nps
+          command: rm -f sujut/summercoat/results.xml summercoat.nps
       - run:
           name: Create test directory
-          command: mkdir -p jut/summercoat
+          command: mkdir -p sujut/summercoat
       - run:
           name: Running SummerCoat VM
-          command: ~/squirreljme/build.sh launch -v summercoat -n summercoat.nps -Dcc.squirreljme.debug=false tac-runner > jut/summercoat/results.xml
+          command: ~/squirreljme/build.sh launch -v summercoat -n summercoat.nps -Dcc.squirreljme.debug=false tac-runner > sujut/summercoat/results.xml
       - store_test_results:
-          path: jut
+          path: sujut
       - store_artifacts:
           path: summercoat.nps
           destination: /nps/summercoat.nps
