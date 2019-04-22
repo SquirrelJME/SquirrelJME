@@ -75,8 +75,7 @@ public interface NativeInstructionType
 		0x67;
 	
 	/**
-	 * Array access. The offset is limited to 14-bits
-	 * of signed values, bit 15 represents volatile access.
+	 * Array access.
 	 * {@code iiiiLddd, L=T load r1 = r2[r3], L=F set r2[r3] = r1}.
 	 */
 	public static final int ARRAY_ACCESS =
@@ -171,6 +170,7 @@ public interface NativeInstructionType
 	 * If not class.
 	 * {@code 1110000ir}.
 	 */
+	@Deprecated
 	public static final int IFNOTCLASS =
 		0xE0;
 	
@@ -178,6 +178,7 @@ public interface NativeInstructionType
 	 * If not class, refclear.
 	 * {@code 1110000ir}.
 	 */
+	@Deprecated
 	public static final int IFNOTCLASS_REF_CLEAR =
 		0xE1;
 	
@@ -185,6 +186,7 @@ public interface NativeInstructionType
 	 * If class.
 	 * {@code 1110000ir}.
 	 */
+	@Deprecated
 	public static final int IFCLASS =
 		0xE2;
 	
@@ -192,6 +194,7 @@ public interface NativeInstructionType
 	 * If class, refclear.
 	 * {@code 1110000ir}.
 	 */
+	@Deprecated
 	public static final int IFCLASS_REF_CLEAR =
 		0xE3;
 	
