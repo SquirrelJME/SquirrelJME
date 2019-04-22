@@ -277,10 +277,12 @@ public final class NearNativeByteCodeHandler
 		// Must be the given class
 		this.__basicCheckCCE(ireg, __fr.className());
 		
-		// Read of field memory
-		int tempreg = state.stack.usedregisters;
+		// Read field offset
+		int tempreg = NativeCode.RETURN_REGISTER;
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
 			this.__fieldAccess(FieldAccessType.INSTANCE, __fr, true), tempreg);
+		
+		// Read from memory
 		codebuilder.addMemoryOffReg(
 			DataType.of(__fr.memberType().primitiveType()), true,
 			__v.register, ireg, tempreg);
@@ -311,11 +313,13 @@ public final class NearNativeByteCodeHandler
 		// Must be the given class
 		this.__basicCheckCCE(ireg, __fr.className());
 		
-		// Read of field memory
-		int tempreg = state.stack.usedregisters;
+		// Read field offset
+		int tempreg = NativeCode.RETURN_REGISTER;
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
 			this.__fieldAccess(FieldAccessType.INSTANCE, __fr, false),
 			tempreg);
+		
+		// Write to memory
 		codebuilder.addMemoryOffReg(
 			DataType.of(__fr.memberType().primitiveType()), false,
 			__v.register, ireg, tempreg);
@@ -366,11 +370,15 @@ public final class NearNativeByteCodeHandler
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
 			__cl, tempreg);
 		
-		// Call the instance checker (__ir, checkclassid)
-		codebuilder.add(NativeInstructionType.INVOKE,
+		// Load method pointer
+		codebuilder.add(NativeInstructionType.LOAD_POOL,
 			new InvokedMethod(InvokeType.STATIC, new MethodHandle(KERNEL_CLASS,
 			new MethodName("jvmIsInstance"), new MethodDescriptor("(II)I"))),
-			new RegisterList(__v.register, tempreg));
+			tempreg + 1);
+		
+		// Call the instance checker (__ir, checkclassid)
+		codebuilder.add(NativeInstructionType.INVOKE,
+			tempreg + 1, new RegisterList(__v.register, tempreg));
 		
 		// Copy value over
 		codebuilder.addCopy(NativeCode.RETURN_REGISTER, __o.register);
@@ -486,10 +494,14 @@ public final class NearNativeByteCodeHandler
 					callargs.add(in.register + 1);
 			}
 			
+			// Load method pointer
+			int tempreg = NativeCode.RETURN_REGISTER;
+			codebuilder.add(NativeInstructionType.LOAD_POOL,
+				new InvokedMethod(__t, __r.handle()), tempreg);
+			
 			// Add invocation
 			codebuilder.add(NativeInstructionType.INVOKE,
-				new InvokedMethod(__t, __r.handle()),
-				new RegisterList(callargs));
+				tempreg, new RegisterList(callargs));
 			
 			// Read in return value, it is just a copy
 			if (__out != null)
@@ -697,10 +709,12 @@ public final class NearNativeByteCodeHandler
 		// Push references
 		this.__refPush();
 		
-		// Read of static memory
-		int tempreg = state.stack.usedregisters;
+		// Read static offset
+		int tempreg = NativeCode.RETURN_REGISTER;
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
 			this.__fieldAccess(FieldAccessType.STATIC, __fr, true), tempreg);
+		
+		// Read from memory
 		codebuilder.addMemoryOffReg(
 			DataType.of(__fr.memberType().primitiveType()), true,
 			__v.register, NativeCode.STATIC_FIELD_REGISTER, tempreg);
@@ -722,10 +736,12 @@ public final class NearNativeByteCodeHandler
 		// Push references
 		this.__refPush();
 		
-		// Write of static memory
-		int tempreg = state.stack.usedregisters;
+		// Read field offset
+		int tempreg = NativeCode.RETURN_REGISTER;
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
 			this.__fieldAccess(FieldAccessType.STATIC, __fr, false), tempreg);
+		
+		// Write to memory
 		codebuilder.addMemoryOffReg(
 			DataType.of(__fr.memberType().primitiveType()), false,
 			__v.register, NativeCode.STATIC_FIELD_REGISTER, tempreg);
@@ -867,12 +883,17 @@ public final class NearNativeByteCodeHandler
 			// as a temporary
 			codebuilder.add(NativeInstructionType.NEW, exn,
 				NativeCode.EXCEPTION_REGISTER);
+				
+			// Load invocation pointer
+			int chkreg = NativeCode.RETURN_REGISTER + 1;
+			codebuilder.add(NativeInstructionType.LOAD_POOL,
+				new InvokedMethod(InvokeType.SPECIAL, new MethodHandle(exn,
+					new MethodName("<init>"), new MethodDescriptor("()V"))),
+				chkreg);
 			
 			// Initialize object with constructor
 			codebuilder.add(NativeInstructionType.INVOKE,
-				new InvokedMethod(InvokeType.SPECIAL, new MethodHandle(exn,
-				new MethodName("<init>"), new MethodDescriptor("()V"))),
-				new RegisterList(NativeCode.EXCEPTION_REGISTER));
+				chkreg, new RegisterList(NativeCode.EXCEPTION_REGISTER));
 			
 			// Generate jump to exception handler
 			codebuilder.addGoto(csl.label);
@@ -934,11 +955,15 @@ public final class NearNativeByteCodeHandler
 				codebuilder.add(NativeInstructionType.LOAD_POOL,
 					eh.type(), chkreg);
 				
-				// Call the instance checker (__ir, checkclassid)
-				codebuilder.add(NativeInstructionType.INVOKE,
+				// Load address of target method
+				codebuilder.add(NativeInstructionType.LOAD_POOL,
 					new InvokedMethod(InvokeType.STATIC, new MethodHandle(
 					KERNEL_CLASS, new MethodName("jvmIsInstance"),
-					new MethodDescriptor("(II)I"))), new RegisterList(
+					new MethodDescriptor("(II)I"))), chkreg + 1);
+				
+				// Call the instance checker (__ir, checkclassid)
+				codebuilder.add(NativeInstructionType.INVOKE,
+					chkreg + 1, new RegisterList(
 					NativeCode.EXCEPTION_REGISTER, chkreg));
 				
 				// Jump to handler if it is met
@@ -1043,11 +1068,15 @@ public final class NearNativeByteCodeHandler
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
 			__cl, tempreg);
 		
-		// Call the instance checker (__ir, checkclassid)
-		codebuilder.add(NativeInstructionType.INVOKE,
+		// Load method pointer
+		codebuilder.add(NativeInstructionType.LOAD_POOL,
 			new InvokedMethod(InvokeType.STATIC, new MethodHandle(KERNEL_CLASS,
 			new MethodName("jvmIsInstance"), new MethodDescriptor("(II)I"))),
-			new RegisterList(__ir, tempreg));
+			tempreg + 1);
+		
+		// Call the instance checker (__ir, checkclassid)
+		codebuilder.add(NativeInstructionType.INVOKE,
+			tempreg + 1, new RegisterList(__ir, tempreg));
 		
 		// If the resulting method call returns zero then it is not an instance
 		// of the given class. The return register is checked because the
