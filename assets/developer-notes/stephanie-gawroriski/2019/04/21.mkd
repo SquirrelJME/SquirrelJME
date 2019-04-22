@@ -1,0 +1,13 @@
+# 2019/04/21
+
+## 15:54
+
+Actually I had an idea. I know I had the JVM configuration stuff but what I
+could do is just have it in a single class. I would really just need to
+execute that class for the most part. That could contain the config data
+and it would be very simple because it would just be that object.
+
+## 17:52
+
+The memory code works but is very ugly for the most part, it needs to be
+simplified greatly!
