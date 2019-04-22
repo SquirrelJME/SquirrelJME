@@ -399,48 +399,74 @@ public final class NearNativeByteCodeHandler
 		// Push references
 		this.__refPush();
 		
-		// Checks on the instance
-		if (__t.hasInstance())
+		// Assembly method
+		if ("cc/squirreljme/runtime/cldc/vki/Assembly".equals(
+			__r.handle().outerClass().toString()))
 		{
-			// The instance register
-			int ireg = __in[0].register;
-			
-			// Cannot be null
-			codebuilder.addIfZero(ireg, this.__labelMakeException(
-				"java/lang/NullPointerException"), true);
-			
-			// Must be the given class
-			codebuilder.addIfNotClass(__r.handle().outerClass(), ireg,
-				this.__labelMakeException("java/lang/ClassCastException"),
-				true);
+			// Depends on the assembly function
+			String asmfunc;
+			switch ((asmfunc = __r.handle().name().toString()))
+			{
+					// Breakpoint
+				case "breakpoint":
+					codebuilder.add(NativeInstructionType.BREAKPOINT);
+					break;
+				
+				default:
+					throw new todo.OOPS(asmfunc);
+			}
 		}
 		
-		// Fill in call arguments
-		List<Integer> callargs = new ArrayList<>(__in.length * 2);
-		for (int i = 0, n = __in.length; i < n; i++)
+		// Normal invoke
+		else
 		{
-			// Add the input register
-			JavaStackResult.Input in = __in[i];
-			callargs.add(in.register);
+			// Checks on the instance
+			if (__t.hasInstance())
+			{
+				// The instance register
+				int ireg = __in[0].register;
+				
+				// Cannot be null
+				codebuilder.addIfZero(ireg, this.__labelMakeException(
+					"java/lang/NullPointerException"), true);
+				
+				// Must be the given class
+				codebuilder.addIfNotClass(__r.handle().outerClass(), ireg,
+					this.__labelMakeException("java/lang/ClassCastException"),
+					true);
+			}
 			
-			// But also if it is wide, we need to pass the other one or else
-			// the value will be clipped
-			if (in.type.isWide())
-				callargs.add(in.register + 1);
+			// Fill in call arguments
+			List<Integer> callargs = new ArrayList<>(__in.length * 2);
+			for (int i = 0, n = __in.length; i < n; i++)
+			{
+				// Add the input register
+				JavaStackResult.Input in = __in[i];
+				callargs.add(in.register);
+				
+				// But also if it is wide, we need to pass the other one or
+				// else the value will be clipped
+				if (in.type.isWide())
+					callargs.add(in.register + 1);
+			}
+			
+			// Add invocation
+			codebuilder.add(NativeInstructionType.INVOKE,
+				new InvokedMethod(__t, __r.handle()),
+				new RegisterList(callargs));
+			
+			// Read in return value, it is just a copy
+			if (__out != null)
+				if (__out.type.isWide())
+					codebuilder.addCopyWide(NativeCode.RETURN_REGISTER,
+						__out.register);
+				else
+					codebuilder.addCopy(NativeCode.RETURN_REGISTER,
+						__out.register);
 		}
 		
-		// Add invocation
-		codebuilder.add(NativeInstructionType.INVOKE,
-			new InvokedMethod(__t, __r.handle()), new RegisterList(callargs));
-		
-		// Read in return value, it is just a copy
-		if (__out != null)
-			if (__out.type.isWide())
-				codebuilder.addCopyWide(NativeCode.RETURN_REGISTER,
-					__out.register);
-			else
-				codebuilder.addCopy(NativeCode.RETURN_REGISTER,
-					__out.register);
+		// Clear reference
+		this.__refClear();
 	}
 	
 	/**
