@@ -4039,10 +4039,16 @@ public final class SpringThreadWorker
 		for (int i = nargs - 1; i >= 0; i--)
 			args[i] = __f.popFromStack();
 			
+		// {@squirreljme.error BK3c Instance object for interface invoke is
+		// null.}
+		SpringObject onthis = (SpringObject)args[0];
+		if (onthis == null || onthis == SpringNullObject.NULL)
+			throw new SpringNullPointerException("BK3c");
+			
 		// {@squirreljme.error BK2f Cannot invoke the method in the object
 		// because it is of the wrong type. (The reference class; The class
 		// of the target object; The first argument)}
-		SpringClass objclass = ((SpringObject)args[0]).type();
+		SpringClass objclass = onthis.type();
 		if (objclass == null || !refclass.isAssignableFrom(objclass))
 			throw new SpringClassCastException(
 				String.format("BK2f %s %s %s", refclass, objclass, args[0]));
