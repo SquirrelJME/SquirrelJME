@@ -85,6 +85,10 @@ workflows:
       - build_javame
   tests:
     jobs:
-      - tests_springcoat
+      - tests_springcoat:
+        requires:
+          - build_javase
       - tests_summercoat
+        requires:
+          - build_javase
 
