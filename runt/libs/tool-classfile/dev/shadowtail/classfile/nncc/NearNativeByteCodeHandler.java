@@ -418,6 +418,13 @@ public final class NearNativeByteCodeHandler
 					codebuilder.add(NativeInstructionType.ENTRY_MARKER);
 					break;
 					
+					// Read byte memory
+				case "memReadByte":
+					codebuilder.addMemoryOffReg(DataType.BYTE,
+						true, __out.register,
+						__in[0].register, __in[1].register);
+					break;
+					
 					// Read int memory
 				case "memReadInt":
 					codebuilder.addMemoryOffReg(DataType.INTEGER,
@@ -429,6 +436,27 @@ public final class NearNativeByteCodeHandler
 				case "memReadShort":
 					codebuilder.addMemoryOffReg(DataType.SHORT,
 						true, __out.register,
+						__in[0].register, __in[1].register);
+					break;
+					
+					// Write byte memory
+				case "memWriteByte":
+					codebuilder.addMemoryOffReg(DataType.BYTE,
+						false, __in[2].register,
+						__in[0].register, __in[1].register);
+					break;
+					
+					// Write int memory
+				case "memWriteInt":
+					codebuilder.addMemoryOffReg(DataType.INTEGER,
+						false, __in[2].register,
+						__in[0].register, __in[1].register);
+					break;
+					
+					// Write short memory
+				case "memWriteShort":
+					codebuilder.addMemoryOffReg(DataType.SHORT,
+						false, __in[2].register,
 						__in[0].register, __in[1].register);
 					break;
 				

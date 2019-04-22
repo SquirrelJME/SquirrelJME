@@ -46,6 +46,16 @@ public final class Assembly
 	public static native void entryMarker();
 	
 	/**
+	 * Reads byte from address.
+	 *
+	 * @param __p The pointer.
+	 * @param __o The offset.
+	 * @return The result of the read.
+	 * @since 2019/04/22
+	 */
+	public static native int memReadByte(int __p, int __o);
+	
+	/**
 	 * Reads integer from address.
 	 *
 	 * @param __p The pointer.
@@ -64,6 +74,36 @@ public final class Assembly
 	 * @since 2019/04/22
 	 */
 	public static native int memReadShort(int __p, int __o);
+	
+	/**
+	 * Writes byte to address.
+	 *
+	 * @param __p The pointer.
+	 * @param __o The offset.
+	 * @param __v The value to write.
+	 * @since 2019/04/21
+	 */
+	public static native void memWriteByte(int __p, int __o, int __v);
+	
+	/**
+	 * Writes integer to address.
+	 *
+	 * @param __p The pointer.
+	 * @param __o The offset.
+	 * @param __v The value to write.
+	 * @since 2019/04/21
+	 */
+	public static native void memWriteInt(int __p, int __o, int __v);
+	
+	/**
+	 * Writes short to address.
+	 *
+	 * @param __p The pointer.
+	 * @param __o The offset.
+	 * @param __v The value to write.
+	 * @since 2019/04/21
+	 */
+	public static native void memWriteShort(int __p, int __o, int __v);
 	
 	/**
 	 * Used to convert an object to a pointer.
