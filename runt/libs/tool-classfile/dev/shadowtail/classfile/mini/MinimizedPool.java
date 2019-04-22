@@ -10,6 +10,7 @@
 package dev.shadowtail.classfile.mini;
 
 import dev.shadowtail.classfile.nncc.AccessedField;
+import dev.shadowtail.classfile.nncc.ClassPool;
 import dev.shadowtail.classfile.nncc.FieldAccessTime;
 import dev.shadowtail.classfile.nncc.FieldAccessType;
 import dev.shadowtail.classfile.nncc.InvokedMethod;
@@ -270,28 +271,20 @@ public final class MinimizedPool
 						v = dis.readInt();
 						break;
 						
-						// Long
-					case LONG:
-						v = dis.readLong();
-						break;
-						
 						// Float
 					case FLOAT:
 						v = Float.intBitsToFloat(dis.readInt());
 						break;
 						
-						// Double
-					case DOUBLE:
-						v = Double.longBitsToDouble(dis.readLong());
-						break;
-						
 						// Types which consist of parts
 					case CLASS_NAME:
 					case CLASS_NAMES:
+					case CLASS_POOL:
 					case ACCESSED_FIELD:
-					case FIELD_DESCRIPTOR:
 					case INVOKED_METHOD:
 					case METHOD_DESCRIPTOR:
+					case LONG:
+					case DOUBLE:
 						// Wide parts
 						if (iswide)
 						{
@@ -340,6 +333,11 @@ public final class MinimizedPool
 									v = new ClassNames(names);
 								}
 								break;
+							
+								// The constant pool of a class
+							case CLASS_POOL:
+								v = new ClassPool((ClassName)values[part[0]]);
+								break;
 								
 								// Field which was accessed
 							case ACCESSED_FIELD:
@@ -350,11 +348,6 @@ public final class MinimizedPool
 										(ClassName)values[part[2]],
 										new FieldName((String)values[part[3]]),
 										((ClassName)values[part[4]]).field()));
-								break;
-								
-								// Field descriptor
-							case FIELD_DESCRIPTOR:
-								v = ((ClassName)values[part[0]]).field();
 								break;
 								
 								// Invoked method
@@ -372,6 +365,23 @@ public final class MinimizedPool
 							case METHOD_DESCRIPTOR:
 								v = new MethodDescriptor(
 									(String)values[part[0]]);
+								break;
+								
+								// Long
+							case LONG:
+								v = (((long)(((Integer)values[part[0]])
+										<< 32L)) |
+									(((long)(((Integer)values[part[1]]) &
+										0xFFFFFFFFL))));
+								break;
+								
+								// Double
+							case DOUBLE:
+								v = Double.longBitsToDouble(
+									(((long)(((Integer)values[part[0]])
+										<< 32L)) |
+									(((long)(((Integer)values[part[1]]) &
+										0xFFFFFFFFL)))));
 								break;
 								
 							default:

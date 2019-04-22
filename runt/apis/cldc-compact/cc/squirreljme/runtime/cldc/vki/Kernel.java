@@ -90,5 +90,28 @@ public final class Kernel
 		Assembly.memReadInt(Assembly.objectToPointer(this), 17);
 		Assembly.breakpoint();
 	}
+	
+	/**
+	 * Checks whether the given pointer is an instance of the given class.
+	 *
+	 * @param __p The pointer to check.
+	 * @param __cldx The class index.
+	 * @return Either {@code 1} if the class is an instance or {@code 0} if
+	 * it is not.
+	 * @since 2019/04/22
+	 */
+	public static final int jvmIsInstance(int __p, int __cldx)
+	{
+		if (__p == 0)
+			return 0;
+		
+		// If the class exactly matches the given type then no further
+		// checking is needed
+		int pcl = Assembly.memReadShort(__p, 0);
+		if (pcl == __cldx)
+			return 1;
+		
+		throw new todo.TODO();
+	}
 }
 

@@ -303,7 +303,8 @@ public final class NativeCPU
 			int nextpc = lasticache + rargp;
 			
 			// Handle the operation
-			switch (NativeInstruction.encoding(op))
+			int encoding;
+			switch ((encoding = NativeInstruction.encoding(op)))
 			{
 					// Entry marker used for debug
 				case NativeInstructionType.ENTRY_MARKER:
@@ -420,6 +421,56 @@ public final class NativeCPU
 						
 						// Set result
 						lr[args[2]] = c;
+					}
+					break;
+				
+					// Read off memory
+				case NativeInstructionType.MEMORY_OFF_REG:
+				case NativeInstructionType.MEMORY_OFF_ICONST:
+					{
+						// Is this a load operation?
+						boolean load = ((op & 0b1000) != 0);
+						
+						// The address to load from/store to
+						int addr = lr[args[1]] +
+							(((op & 0x80) != 0) ? args[2] : lr[args[2]]);
+						
+						// Loads
+						DataType dt = DataType.of(op & 0b0111);
+						if (load)
+						{
+							// Load value
+							int v;
+							switch (dt)
+							{
+								case BYTE:
+									v = (byte)memory.memReadByte(addr);
+									break;
+									
+								case SHORT:
+									v = (short)memory.memReadShort(addr);
+									break;
+									
+								case CHARACTER:
+									v = memory.memReadShort(addr) & 0xFFFF;
+									break;
+									
+								case INTEGER:
+									v = memory.memReadInt(addr);
+									break;
+									
+									// Unknown
+								default:
+									throw new todo.OOPS(dt.name());
+							}
+							
+							// Set value
+							lr[args[0]] = v;
+						}
+						
+						// Stores
+						else
+							throw new todo.TODO();
 					}
 					break;
 				

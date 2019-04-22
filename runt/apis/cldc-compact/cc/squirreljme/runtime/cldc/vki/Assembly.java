@@ -56,6 +56,16 @@ public final class Assembly
 	public static native int memReadInt(int __p, int __o);
 	
 	/**
+	 * Reads short from address.
+	 *
+	 * @param __p The pointer.
+	 * @param __o The offset.
+	 * @return The result of the read.
+	 * @since 2019/04/22
+	 */
+	public static native int memReadShort(int __p, int __o);
+	
+	/**
 	 * Used to convert an object to a pointer.
 	 *
 	 * @param __o The object.

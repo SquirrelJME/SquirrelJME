@@ -167,38 +167,6 @@ public interface NativeInstructionType
 		0xF0;
 	
 	/**
-	 * If not class.
-	 * {@code 1110000ir}.
-	 */
-	@Deprecated
-	public static final int IFNOTCLASS =
-		0xE0;
-	
-	/**
-	 * If not class, refclear.
-	 * {@code 1110000ir}.
-	 */
-	@Deprecated
-	public static final int IFNOTCLASS_REF_CLEAR =
-		0xE1;
-	
-	/**
-	 * If class.
-	 * {@code 1110000ir}.
-	 */
-	@Deprecated
-	public static final int IFCLASS =
-		0xE2;
-	
-	/**
-	 * If class, refclear.
-	 * {@code 1110000ir}.
-	 */
-	@Deprecated
-	public static final int IFCLASS_REF_CLEAR =
-		0xE3;
-	
-	/**
 	 * Reference clear and jump if array index is out of bounds.
 	 */
 	public static final int IFARRAY_INDEX_OOB_REF_CLEAR =
@@ -308,7 +276,7 @@ public interface NativeInstructionType
 		0xFC;
 	
 	/**
-	 * Load from pool. 
+	 * Load from pool, note that at code gen time this is aliased.
 	 * {@code iiiixxxx}.
 	 */
 	public static final int LOAD_POOL =
