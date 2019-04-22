@@ -408,12 +408,36 @@ public final class NearNativeByteCodeHandler
 				case "breakpoint":
 					codebuilder.add(NativeInstructionType.BREAKPOINT);
 					break;
+					
+					// Entry point marker (nop)
+				case "entryMarker":
+					codebuilder.add(NativeInstructionType.ENTRY_MARKER);
+					break;
+					
+					// Read int memory
+				case "memReadInt":
+					codebuilder.addMemoryOffReg(DataType.INTEGER,
+						true, __out.register,
+						__in[0].register, __in[1].register);
+					break;
 				
 					// object -> pointer OR pointer -> object
 				case "objectToPointer":
 				case "pointerToObject":
 					if (__in[0].register != __out.register)
 						codebuilder.addCopy(__in[0].register, __out.register);
+					break;
+					
+					// object -> pointer, with ref clear
+				case "objectToPointerRefQueue":
+					// Push references
+					this.__refPush();
+					
+					if (__in[0].register != __out.register)
+						codebuilder.addCopy(__in[0].register, __out.register);
+					
+					// Clear references
+					this.__refClear();
 					break;
 				
 				default:
