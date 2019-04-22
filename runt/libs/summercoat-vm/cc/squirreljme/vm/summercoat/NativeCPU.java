@@ -398,6 +398,10 @@ public final class NativeCPU
 					// Invoke a pointer
 				case NativeInstructionType.INVOKE:
 					{
+						// Load values into the register list
+						for (int i = 0, n = reglist.length; i < n; i++)
+							reglist[i] = lr[reglist[i]];
+						
 						// Enter the frame
 						this.enterFrame(lr[args[0]], reglist);
 						
