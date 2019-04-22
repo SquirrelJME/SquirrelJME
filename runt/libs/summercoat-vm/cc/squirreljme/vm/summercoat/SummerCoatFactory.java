@@ -13,6 +13,7 @@ package cc.squirreljme.vm.summercoat;
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
 import dev.shadowtail.classfile.mini.MinimizedField;
 import dev.shadowtail.classfile.mini.MinimizedMethod;
+import dev.shadowtail.classfile.mini.MinimizedPool;
 import dev.shadowtail.classfile.nncc.NativeCode;
 import cc.squirreljme.runtime.cldc.vki.FixedClassIDs;
 import cc.squirreljme.runtime.cldc.vki.Kernel;
@@ -136,6 +137,7 @@ public class SummerCoatFactory
 				staticmemsize = (spoolend + 1023) & (~1023);
 			
 			// Initialize the static pool
+			MinimizedPool pool = minikern.pool;
 			for (int i = 1; i < poolcount; i++)
 			{
 				throw new todo.TODO();
