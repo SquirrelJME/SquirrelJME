@@ -14,6 +14,8 @@ import dev.shadowtail.classfile.mini.MinimizedClassFile;
 import dev.shadowtail.classfile.mini.MinimizedField;
 import dev.shadowtail.classfile.mini.MinimizedMethod;
 import dev.shadowtail.classfile.mini.MinimizedPool;
+import dev.shadowtail.classfile.nncc.AccessedField;
+import dev.shadowtail.classfile.nncc.InvokedMethod;
 import dev.shadowtail.classfile.nncc.NativeCode;
 import cc.squirreljme.runtime.cldc.vki.FixedClassIDs;
 import cc.squirreljme.runtime.cldc.vki.Kernel;
@@ -105,6 +107,10 @@ public class SummerCoatFactory
 		// The base address of the kernel object
 		int kobjbase = (sssp[0] + 3) & (~3);
 		
+		// Base for fields, note that the object includes its class ID
+		// and the reference count!
+		int kfldbase = kobjbase + 4;
+		
 		// Write fixed class ID into object base and an initial reference
 		// count of 1
 		vmem.memWriteShort(kobjbase, FixedClassIDs.KERNEL);
@@ -131,6 +137,10 @@ public class SummerCoatFactory
 				spoolsize = poolcount * 4;
 			spoolbase = (kobjbase + minikern.header.ifbytes + 8 + 3) & ~(3);
 			
+			// Offset to the code area in this minimized method
+			int scodebase = kernaddr + minikern.header.smoff,
+				icodebase = kernaddr + minikern.header.imoff;
+			
 			// Is the static memory size too small? grow it
 			int spoolend = spoolbase + spoolsize;
 			if (spoolend >= staticmemsize)
@@ -140,14 +150,83 @@ public class SummerCoatFactory
 			MinimizedPool pool = minikern.pool;
 			for (int i = 1; i < poolcount; i++)
 			{
-				throw new todo.TODO();
+				// The resulting converted value
+				int cv;
+				
+				// Handle the type and value
+				Object pv = pool.get(i);
+				switch (pool.type(i))
+				{
+						// Just map to null, they do not fully exist yet
+					case STRING:
+					case CLASS_NAME:
+						cv = 0;
+						break;
+						
+						// Read of another field, will be the field offset
+					case ACCESSED_FIELD:
+						AccessedField af = (AccessedField)pv;
+						
+						// The kernel class
+						if (af.field().className().equals(minikern.thisName()))
+							if (af.type().isStatic())
+								cv = 0;
+							else
+								cv = kfldbase + minikern.field(false, af.
+									field().memberNameAndType()).offset;
+						
+						// Some other class
+						else
+							cv = 0;
+						break;
+						
+					case INVOKED_METHOD:
+						InvokedMethod iv = (InvokedMethod)pv;
+						
+						// The kernel class
+						if (iv.handle().outerClass().equals(
+							minikern.thisName()))
+							if (iv.type().isStatic())
+								cv = scodebase + minikern.method(true, iv.
+									handle().nameAndType()).codeoffset;
+							else
+								cv = icodebase + minikern.method(false, iv.
+									handle().nameAndType()).codeoffset;
+						
+						// Some other class
+						else
+							cv = 0;
+						break;
+						
+						// Float
+					case FLOAT:
+						cv = Float.floatToRawIntBits((Float)pv);
+						break;
+						
+						// Integer
+					case INTEGER:
+						cv = (Integer)pv;
+						break;
+						
+						// These are just informational, ignore for now
+					case FIELD_DESCRIPTOR:
+					case METHOD_DESCRIPTOR:
+					case CLASS_NAMES:
+						continue;
+						
+					default:
+						throw new todo.OOPS(pool.type(i).name());
+				}
+				
+				// Store into pool area
+				vmem.memWriteInt(spoolbase + (4 * i), cv);
 			}
 			
 			// Find pointers to methods within the kernel
 			for (MinimizedMethod mm : minikern.methods(false))
 			{
-				// Offset to the code here
-				int codeoff = kernaddr + minikern.header.imoff +
+				// Where this method is located
+				int codeoff = (mm.flags().isStatic() ? scodebase : icodebase) +
 					mm.codeoffset;
 				
 				// Depends on the name
@@ -163,10 +242,6 @@ public class SummerCoatFactory
 						continue;
 				}
 			}
-			
-			// Base for fields, note that the object includes its class ID
-			// and the reference count!
-			int kfldbase = kobjbase + 4;
 			
 			// Go through instance fields and set their data fields
 			for (MinimizedField mf : minikern.fields(false))

@@ -27,6 +27,17 @@ public enum FieldAccessType
 	;
 	
 	/**
+	 * Is this field access static?
+	 *
+	 * @return If this is a static field access.
+	 * @since 2019/04/22
+	 */
+	public final boolean isStatic()
+	{
+		return this == STATIC;
+	}
+	
+	/**
 	 * Returns the access type for the given ordinal.
 	 *
 	 * @param __i The ordinal.
