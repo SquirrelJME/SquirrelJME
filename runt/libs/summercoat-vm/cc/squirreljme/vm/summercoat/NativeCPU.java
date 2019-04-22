@@ -140,7 +140,8 @@ public final class NativeCPU
 		// Frame specific info
 		Frame nowframe = null;
 		int[] lr = null;
-		int pc = -1;
+		int pc = -1,
+			rp = -1;
 		
 		// Per operation handling
 		final int[] args = new int[6];
@@ -160,7 +161,10 @@ public final class NativeCPU
 			{
 				// Before dumping this frame, store old info
 				if (nowframe != null)
+				{
 					nowframe._pc = pc;
+					nowframe._rp = rp;
+				}
 				
 				// Get current frame, stop execution if there is nothing
 				// left to execute
@@ -171,6 +175,7 @@ public final class NativeCPU
 				// Load stuff needed for execution
 				lr = nowframe._registers;
 				pc = nowframe._pc;
+				rp = nowframe._rp;
 				
 				// Used to auto-detect frame change
 				lastframe = frameat;
@@ -329,6 +334,54 @@ public final class NativeCPU
 					}
 					break;
 					
+					// Compare integers and possibly jump
+				case NativeInstructionType.IF_ICMP:
+					{
+						// Parts
+						int a = lr[args[0]],
+							b = lr[args[1]];
+						
+						// Compare
+						boolean branch;
+						switch (CompareType.of(op & 0b111))
+						{
+							case EQUALS:
+								branch = (a == b); break;
+							case NOT_EQUALS:
+								branch = (a != b); break;
+							case LESS_THAN:
+								branch = (a < b); break;
+							case LESS_THAN_OR_EQUALS:
+								branch = (a <= b); break;
+							case GREATER_THAN:
+								branch = (a > b); break;
+							case GREATER_THAN_OR_EQUALS:
+								branch = (a >= b); break;
+							case TRUE:
+								branch = true; break;
+							case FALSE:
+								branch = false; break;
+							
+							default:
+								throw new todo.OOPS();
+						}
+						
+						// Branching?
+						if (branch)
+						{
+							// Refclear?
+							if (rp != 0 && ((op & 0x08) != 0))
+								throw new todo.TODO();
+							
+							// Go to the given address, note that jumps are
+							// relative and are 15-bit so we need to move the
+							// sign up if there is one
+							nextpc = pc +
+								(args[2] | ((args[2] & 0x4000) << 1));
+						}
+					}
+					break;
+					
 					// Integer math
 				case NativeInstructionType.MATH_CONST_INT:
 				case NativeInstructionType.MATH_REG_INT:
@@ -392,6 +445,9 @@ public final class NativeCPU
 		
 		/** The PC address for this frame. */
 		volatile int _pc;
+		
+		/** The reference queue positoin. */
+		volatile int _rp;
 		
 		/** Last executed address. */
 		int _lastpc;
