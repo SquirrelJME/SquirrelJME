@@ -88,7 +88,7 @@ workflows:
       - tests_springcoat:
         requires:
           - build_javase
-      - tests_summercoat
+      - tests_summercoat:
         requires:
           - build_javase
 
