@@ -38,11 +38,11 @@ public final class NativeCPU
 	
 	/** The size of the method cache. */
 	public static final int METHOD_CACHE =
-		1024;
+		2048;
 	
 	/** Spill over protection for the cache. */
 	public static final int METHOD_CACHE_SPILL =
-		512;
+		1024;
 	
 	/** The memory to read/write from. */
 	protected final WritableMemory memory;
