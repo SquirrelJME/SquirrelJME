@@ -82,8 +82,8 @@ public final class NativeCPU
 	public final Frame enterFrame(int __pc, int... __args)
 	{
 		// Debug
-		todo.DEBUG.note("Entering frame @%08x %s", __pc,
-			new IntegerList(__args));
+		System.err.printf(">>>> %08x >>>>>>>>>>>>>>>>>>>>>>%n", __pc);
+		System.err.printf(" > %s", new IntegerList(__args));
 		
 		// Setup new frame
 		Frame rv = new Frame();
@@ -567,6 +567,10 @@ public final class NativeCPU
 						
 						// A reload is done as the frame has changed
 						reload = true;
+						
+						// Debug
+						System.err.printf("<<<< %08x <<<<<<<<<<<<<<<<<<<<<<%n",
+							(now != null ? now._pc : 0));
 					}
 					break;
 				
