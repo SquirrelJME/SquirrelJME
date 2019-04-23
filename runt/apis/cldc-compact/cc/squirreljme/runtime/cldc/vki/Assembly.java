@@ -140,5 +140,21 @@ public final class Assembly
 	 * @since 2019/04/21
 	 */
 	public static native void returnFrame();
+	
+	/**
+	 * Reads the value of the static field register.
+	 *
+	 * @return The value of the static field register.
+	 * @since 2019/04/22
+	 */
+	public static native int specialGetStaticFieldRegister();
+	
+	/**
+	 * Sets the value of the static field register.
+	 *
+	 * @param __v The new value of the static field register.
+	 * @since 2019/04/22
+	 */
+	public static native void specialSetStaticFieldRegister(int __v);
 }
 

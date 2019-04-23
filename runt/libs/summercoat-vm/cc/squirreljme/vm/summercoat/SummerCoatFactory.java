@@ -18,6 +18,7 @@ import dev.shadowtail.classfile.nncc.AccessedField;
 import dev.shadowtail.classfile.nncc.ClassPool;
 import dev.shadowtail.classfile.nncc.InvokedMethod;
 import dev.shadowtail.classfile.nncc.NativeCode;
+import cc.squirreljme.runtime.cldc.vki.DefaultConfiguration;
 import cc.squirreljme.runtime.cldc.vki.FixedClassIDs;
 import cc.squirreljme.runtime.cldc.vki.Kernel;
 import cc.squirreljme.vm.VirtualMachine;
@@ -50,10 +51,6 @@ public class SummerCoatFactory
 	public static final int RAM_START_ADDRESS =
 		1048576;
 	
-	/** Default RAM size. */
-	public static final int DEFAULT_RAM_SIZE =
-		16777216;
-	
 	/**
 	 * Initializes the factory.
 	 *
@@ -79,7 +76,8 @@ public class SummerCoatFactory
 		SuitesMemory sm = new SuitesMemory(SUITE_BASE_ADDR, __sm);
 		
 		// Size of RAM
-		int ramsize = DEFAULT_RAM_SIZE;
+		int ramsize = DefaultConfiguration.DEFAULT_RAM_SIZE,
+			sfspace = DefaultConfiguration.DEFAULT_STATIC_FIELD_SIZE;
 		
 		// Initialize and map virtual memory
 		VirtualMemory vmem = new VirtualMemory();
@@ -355,6 +353,11 @@ public class SummerCoatFactory
 						// Main arguments
 					case "mainargs":
 						vmem.memWriteInt(kfo, xxmainargs);
+						break;
+						
+						// Static field space
+					case "sfspace":
+						vmem.memWriteInt(kfo, sfspace);
 						break;
 					
 						// Ignore

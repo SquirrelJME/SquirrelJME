@@ -483,6 +483,18 @@ public final class NearNativeByteCodeHandler
 				case "returnFrame":
 					codebuilder.add(NativeInstructionType.RETURN);
 					break;
+					
+					// Get static field register
+				case "specialGetStaticFieldRegister":
+					codebuilder.addCopy(NativeCode.STATIC_FIELD_REGISTER,
+						__out.register);
+					break;
+					
+					// Set static field register
+				case "specialSetStaticFieldRegister":
+					codebuilder.addCopy(__in[0].register,
+						NativeCode.STATIC_FIELD_REGISTER);
+					break;
 				
 				default:
 					throw new todo.OOPS(asmfunc);
