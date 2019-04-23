@@ -388,10 +388,11 @@ public final class Minimizer
 					DataOutputStream lbd = new DataOutputStream(lnb))
 				{
 					// Translate code
-					transcode = this.__translateCode(rc);
+					short[][] lntable = new short[1][];
+					transcode = this.__translateCode(rc, lntable);
 					
 					// Translate lines
-					this.__translateLines(rc.lines(), lbd);
+					this.__translateLines(lntable[0], lbd);
 					lnt = lnb.toByteArray();
 				}
 				catch (IOException e)
@@ -421,15 +422,16 @@ public final class Minimizer
 	 *
 	 * @param __rc The register code used.
 	 * @param __dos The stream to write to.
+	 * @param __lno Line output table.
 	 * @return The resulting stream.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/23
 	 */
-	private final byte[] __translateCode(NativeCode __rc)
+	private final byte[] __translateCode(NativeCode __rc, short[][] __lno)
 		throws IOException, NullPointerException
 	{
-		if (__rc == null)
+		if (__rc == null || __lno == null)
 			throw new NullPointerException("NARG");
 		
 		// Where stuff gets written to
@@ -611,6 +613,7 @@ public final class Minimizer
 		
 		// Generate array
 		byte[] rv = baos.toByteArray();
+		int codesize = rv.length;
 		
 		// Replace jumps
 		for (Map.Entry<Integer, InstructionJumpTarget> e : jumpreps.entrySet())
@@ -629,6 +632,26 @@ public final class Minimizer
 			// Narrow
 			else
 				rv[ai] = (byte)jt;
+		}
+		
+		// Go through the input lines and seed the line number positions with
+		// the line for each known address
+		short[] inlines = __rc.lines(),
+			outlines = new short[codesize];
+		__lno[0] = outlines;
+		for (int cdx = 0; cdx < cdn; cdx++)
+			outlines[indexpos[cdx]] = inlines[cdx];
+		
+		// Go through and smear all the entries so that every address
+		// regardless has line information stored for it
+		short lastline = 0;
+		for (int i = 0; i < codesize; i++)
+		{
+			short nowline = outlines[i];
+			if (nowline == 0)
+				outlines[i] = lastline;
+			else
+				lastline = nowline;
 		}
 		
 		// Return array

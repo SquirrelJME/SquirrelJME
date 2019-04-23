@@ -87,6 +87,7 @@ public final class NativeCPU
 		// Setup new frame
 		Frame rv = new Frame();
 		rv._pc = __pc;
+		rv._entrypc = __pc;
 		rv._lastpc = __pc;
 		
 		// Old frame, to source globals from
@@ -638,6 +639,8 @@ public final class NativeCPU
 			pc = __f._pc;
 		if (lineoff != 0)
 		{
+			// Calculate relative PC to frame start
+			int relpc = pc - __f._entrypc;
 		}
 		
 		// Read values
@@ -673,6 +676,9 @@ public final class NativeCPU
 		/** Registers for this frame. */
 		final int[] _registers =
 			new int[MAX_REGISTERS];
+		
+		/** The entry PC address. */
+		int _entrypc;
 		
 		/** The PC address for this frame. */
 		volatile int _pc;
