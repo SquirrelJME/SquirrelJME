@@ -83,7 +83,7 @@ public final class NativeCPU
 	{
 		// Debug
 		System.err.printf(">>>> %08x >>>>>>>>>>>>>>>>>>>>>>%n", __pc);
-		System.err.printf(" > %s", new IntegerList(__args));
+		System.err.printf(" > %s%n", new IntegerList(__args));
 		
 		// Setup new frame
 		Frame rv = new Frame();
