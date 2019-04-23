@@ -684,7 +684,8 @@ public final class Minimizer
 			// If there is a really long stretch of instructions which point
 			// to the same exact line, force it to be reset so that way the
 			// number table after this point is not complete garbage
-			boolean force = ((i - lastpc) >= 255);
+			// Note that 255 is the end of line marker
+			boolean force = ((i == 0) || ((i - lastpc) >= 254));
 			
 			// Line number has changed, need to encode the information
 			if (force || nowline != lastline)
@@ -707,6 +708,9 @@ public final class Minimizer
 				lastpc = i;
 			}
 		}
+		
+		// A difference of 255 means end of line data
+		__dos.write(0xFF);
 	}
 	
 	/**
