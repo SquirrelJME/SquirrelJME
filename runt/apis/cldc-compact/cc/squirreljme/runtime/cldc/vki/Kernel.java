@@ -210,6 +210,11 @@ public final class Kernel
 		int sfspace = this.sfspace,
 			sfptr = this.kernelNew(sfspace);
 		this.sfptr = sfptr;
+		if (sfptr == 0)
+		{
+			Assembly.breakpoint();
+			return;
+		}
 		
 		// Set static field pointer since everything using static fields will
 		// now use this information
