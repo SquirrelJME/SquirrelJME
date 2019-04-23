@@ -155,13 +155,6 @@ public final class Kernel
 							nextseeker);
 					}
 					
-					// Break
-					Assembly.entryMarker();
-					Assembly.entryMarker();
-					Assembly.entryMarker();
-					Assembly.entryMarker();
-					Assembly.breakpoint();
-					
 					// Clear the memory here since it is expected that
 					// everything in Java has been initialized to zero, this
 					// is also much safer than C's malloc().
@@ -226,6 +219,8 @@ public final class Kernel
 		// needed, by any system call or otherwise
 		Assembly.memWriteInt(sfptr, 8, Assembly.objectToPointer(this));
 		
+		// Break
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
