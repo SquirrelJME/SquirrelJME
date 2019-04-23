@@ -127,6 +127,19 @@ public final class MinimizedPool
 	}
 	
 	/**
+	 * Returns the part at the given index.
+	 *
+	 * @param __i The pool entry to get.
+	 * @param __p The part index.
+	 * @return The part for this index.
+	 * @since 2019/04/22
+	 */
+	public final int part(int __i, int __p)
+	{
+		return this._parts[__i][__p];
+	}
+	
+	/**
 	 * Returns the number of entries in the pool.
 	 *
 	 * @return The number of pool entries.
@@ -386,12 +399,13 @@ public final class MinimizedPool
 										0xFFFFFFFFL)))));
 								break;
 								
-								// Where is this?
+								// Where is this? The first value is special
+								// and indicates the method index
 							case WHERE_IS_THIS:
 								v = new WhereIsThis(
-									(ClassName)values[part[0]],
-									new MethodName((String)values[part[1]]),
-									(MethodDescriptor)values[part[2]]);
+									(ClassName)values[part[1]],
+									new MethodName((String)values[part[2]]),
+									(MethodDescriptor)values[part[3]]);
 								break;
 								
 							default:

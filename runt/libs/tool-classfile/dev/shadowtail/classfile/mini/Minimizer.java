@@ -172,7 +172,7 @@ public final class Minimizer
 		
 		// Base round to pool data
 		reloff = Minimizer.__relAdd(reloff, 0);
-		byte[] pooldata = pool.getBytes();
+		byte[] pooldata = pool.getBytes(methods);
 		
 		// Constant pool locator
 		__dos.writeInt(reloff);
@@ -358,14 +358,16 @@ public final class Minimizer
 	private final __TempMethods__[] __doMethods()
 	{
 		MinimizedPoolBuilder pool = this.pool;
+		ClassFile input = this.input;
 		
 		// Split static and instance methods to make them easier to locate
 		// accordingly
 		__TempMethods__[] rv = new __TempMethods__[]{
-			new __TempMethods__(), new __TempMethods__()};
+			new __TempMethods__(input.thisName()),
+			new __TempMethods__(input.thisName())};
 		
 		// Process each method
-		for (Method m : this.input.methods())
+		for (Method m : input.methods())
 		{
 			// These are stored in their own rows
 			__TempMethods__ temp = rv[(m.flags().isStatic() ? 0 : 1)];

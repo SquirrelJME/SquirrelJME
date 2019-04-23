@@ -18,6 +18,7 @@ import dev.shadowtail.classfile.nncc.AccessedField;
 import dev.shadowtail.classfile.nncc.ClassPool;
 import dev.shadowtail.classfile.nncc.InvokedMethod;
 import dev.shadowtail.classfile.nncc.NativeCode;
+import dev.shadowtail.classfile.nncc.WhereIsThis;
 import cc.squirreljme.runtime.cldc.vki.DefaultConfiguration;
 import cc.squirreljme.runtime.cldc.vki.FixedClassIDs;
 import cc.squirreljme.runtime.cldc.vki.Kernel;
@@ -245,6 +246,26 @@ public class SummerCoatFactory
 						// Double
 					case DOUBLE:
 						throw new todo.TODO();
+						
+						// Where is this information
+					case WHERE_IS_THIS:
+						{
+							// Get method index part
+							int id = pool.part(i, 0);
+							
+							// Instance method? And get the index
+							boolean isinstance = ((id &
+								WhereIsThis.INSTANCE_BIT) != 0);
+							int mdx = (id & (~WhereIsThis.INSTANCE_BIT));
+							
+							// Debug
+							todo.DEBUG.note("Where %b %d", isinstance, mdx);
+							
+							// Set this to the where offset
+							cv = (!isinstance ? scodebase : icodebase) +
+								minikern.methods(!isinstance)[mdx].whereoffset;
+						}
+						break;
 						
 						// These are just informational, ignore for now
 					case METHOD_DESCRIPTOR:

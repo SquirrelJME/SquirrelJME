@@ -22,6 +22,10 @@ import net.multiphasicapps.classfile.MethodName;
  */
 public final class WhereIsThis
 {
+	/** The bit used to indicate an instance method for where is this. */
+	public static final int INSTANCE_BIT =
+		0x4000;
+	
 	/** The name of the class. */
 	public final ClassName inclass;
 	
