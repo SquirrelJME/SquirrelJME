@@ -175,7 +175,8 @@ final class __TempMethods__
 				ddos.writeShort(Minimizer.__checkUShort(lencode[i]));
 				ddos.writeShort(Minimizer.__checkUShort(lineoff + offline[i]));
 				ddos.writeShort(Minimizer.__checkUShort(lenline[i]));
-				ddos.writeShort(Minimizer.__checkUShort(offwhere[i]));
+				ddos.writeShort(Minimizer.__checkUShort(
+					lineoff + offwhere[i]));
 			}
 			
 			// Write end of table
