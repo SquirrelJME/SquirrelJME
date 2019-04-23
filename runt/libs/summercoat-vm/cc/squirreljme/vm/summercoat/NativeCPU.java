@@ -715,7 +715,7 @@ public final class NativeCPU
 			trace.methodName() + ":" + trace.methodDescriptor());
 		
 		// Print out arguments to the call
-		out.printf("  A: [");
+		out.printf("  A:[");
 		for (int i = 0, n = __af.length; i < n; i++)
 		{
 			if (i > 0)
@@ -723,10 +723,10 @@ public final class NativeCPU
 			
 			out.printf("%10d", __args[i]);
 		}
-		out.println("]");
+		out.print("] | ");
 		
 		// And register value
-		out.printf("  V: [");
+		out.printf("V:[");
 		int[] registers = __nf._registers;
 		for (int i = 0, n = __af.length; i < n; i++)
 		{
