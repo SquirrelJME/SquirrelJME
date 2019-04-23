@@ -43,6 +43,9 @@ public final class CallTraceElement
 	/** String representation. */
 	private Reference<String> _string;
 	
+	/** Hash code. */
+	private int _hash;
+	
 	/**
 	 * Initializes an empty call trace element.
 	 *
@@ -146,6 +149,9 @@ public final class CallTraceElement
 		if (__o == this)
 			return true;
 		
+		if (this.hashCode() != __o.hashCode())
+			return false;
+		
 		if (!(__o instanceof CallTraceElement))
 			return false;
 		
@@ -176,13 +182,18 @@ public final class CallTraceElement
 	@Override
 	public final int hashCode()
 	{
-		long address = this.address;
-		return Objects.hashCode(this.classname) ^
-			Objects.hashCode(this.methodname) ^
-			Objects.hashCode(this.methoddescriptor) ^
-			Objects.hashCode(this.file) ^
-			(int)((address >>> 32) | address) ^
-			~this.line;
+		int rv = this._hash;
+		if (rv == 0)
+		{
+			long address = this.address;
+			this._hash = (rv = Objects.hashCode(this.classname) ^
+				Objects.hashCode(this.methodname) ^
+				Objects.hashCode(this.methoddescriptor) ^
+				Objects.hashCode(this.file) ^
+				(int)((address >>> 32) | address) ^
+				~this.line);
+		}
+		return rv;
 	}
 	
 	/**
@@ -254,7 +265,19 @@ public final class CallTraceElement
 			if (address != Long.MIN_VALUE)
 			{
 				sb.append(" @ ");
-				sb.append(address);
+				
+				// If the address is really high then it is very likely that
+				// this is some RAM/ROM address rather than some easily read
+				// index. This makes them more readable and understandable
+				if (address > 4096)
+				{
+					sb.append(Long.toString(address, 16).toUpperCase());
+					sb.append('h');
+				}
+				
+				// Otherwise use an index
+				else
+					sb.append(address);
 			}
 			
 			if (file != null || line >= 0)
