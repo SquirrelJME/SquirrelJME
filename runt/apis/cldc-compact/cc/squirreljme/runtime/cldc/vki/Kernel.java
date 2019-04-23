@@ -53,6 +53,12 @@ public final class Kernel
 	/** Main entry arguments. */
 	public byte[] mainargs;
 	
+	/** Static field space. */
+	public int sfspace;
+	
+	/** Static field pointer. */
+	public int sfptr;
+	
 	/**
 	 * Not used.
 	 *
@@ -85,10 +91,43 @@ public final class Kernel
 	 */
 	private final void __start()
 	{
-		Assembly.memReadInt(this.memaddr, 0);
+		// Currently all of the memory exists as a bunch of bytes of nothing
+		// with no structure. So this will initialize the region of memory into
+		// a single gigantic partition.
+		int memaddr = this.memaddr;
 		
-		Assembly.memReadInt(Assembly.objectToPointer(this), 17);
-		Assembly.breakpoint();
+		// The actual size of memory that can be used, cut off from the static
+		// memory size which just contains the config properties and the
+		// kernel object itself
+		int memsize = this.memsize - this.staticmemsize;
+		
+		// Write memory size at this position, the highest bit indicates
+		// that it is free memory
+		Assembly.memWriteInt(memaddr, 0, memsize);
+		
+		// This is the next chunk in memory, zero means that there is no
+		// remaining chunk (at end of memory)
+		Assembly.memWriteInt(memaddr, 4, 0);
+		
+		// Now that we have some kind of memory, the static field space can
+		// be initialized.
+		int sfspace = this.sfspace,
+			sfptr = this.kernelNew(sfspace);
+		this.sfptr = sfptr;
+		
+		// Set static field pointer since everything using static fields will
+		// now use this information
+		Assembly.specialSetStaticFieldRegister(sfptr);
+		
+		// Current write address in the field space and the space remaining
+		Assembly.memWriteInt(sfptr, 0, sfptr + 12);
+		Assembly.memWriteInt(sfptr, 4, sfspace - 12);
+		
+		// Write the kernel object so we can call back into it whenever it is
+		// needed, by any system call or otherwise
+		Assembly.memWriteInt(sfptr, 8, Assembly.objectToPointer(this));
+		
+		throw new todo.TODO();
 	}
 	
 	/**
