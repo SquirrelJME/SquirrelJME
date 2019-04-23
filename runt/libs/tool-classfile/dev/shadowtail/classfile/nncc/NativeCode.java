@@ -50,19 +50,23 @@ public final class NativeCode
 	
 	/** Base for local registers (arguments start here). */
 	public static final int LOCAL_REGISTER_BASE =
-		6;
+		8;
 	
 	/** The register containing the constant pool. */
 	public static final int POOL_REGISTER =
-		6;
+		9;
 	
 	/** The register which contains the next pool pointer to use. */
 	public static final int NEXT_POOL_REGISTER =
-		7;
+		10;
+	
+	/** Contains the information address of the current method. */
+	public static final int WHERE_IS_THIS =
+		11;
 	
 	/** The register of the first argument. */
 	public static final int ARGUMENT_REGISTER_BASE =
-		8;
+		12;
 	
 	/** This bit XORed NEG bit == set, means memory access is volatile. */
 	public static final int MEMORY_OFF_VOLATILE_BIT =

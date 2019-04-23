@@ -60,6 +60,9 @@ public final class ByteCode
 	/** The name of this method. */
 	protected final MethodName methodname;
 	
+	/** Method type. */
+	protected final MethodDescriptor methodtype;
+	
 	/** The input attribute code, used for instruction lookup. */
 	private final byte[] _rawattributedata;
 	
@@ -115,6 +118,7 @@ public final class ByteCode
 		
 		// Is this an initializer method?
 		this.methodname = method.name();
+		this.methodtype = method.type();
 		
 		// If any IOExceptions are generated then the attribute is not valid
 		Pool pool = method.pool();
@@ -556,6 +560,17 @@ public final class ByteCode
 	}
 	
 	/**
+	 * Returns the name of this method.
+	 *
+	 * @return The method name.
+	 * @since 2019/04/22
+	 */
+	public final MethodName name()
+	{
+		return this.methodname;
+	}
+	
+	/**
 	 * Returns the constant pool being used.
 	 *
 	 * @return The constant pool the method uses.
@@ -719,6 +734,17 @@ public final class ByteCode
 		}
 		
 		return rv;
+	}
+	
+	/**
+	 * Returns the method type.
+	 *
+	 * @return The method type.
+	 * @since 2019/04/22
+	 */
+	public final MethodDescriptor type()
+	{
+		return this.methodtype;
 	}
 	
 	/**

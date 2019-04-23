@@ -14,6 +14,7 @@ import dev.shadowtail.classfile.nncc.ClassPool;
 import dev.shadowtail.classfile.nncc.FieldAccessTime;
 import dev.shadowtail.classfile.nncc.FieldAccessType;
 import dev.shadowtail.classfile.nncc.InvokedMethod;
+import dev.shadowtail.classfile.nncc.WhereIsThis;
 import dev.shadowtail.classfile.xlate.InvokeType;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -285,6 +286,7 @@ public final class MinimizedPool
 					case METHOD_DESCRIPTOR:
 					case LONG:
 					case DOUBLE:
+					case WHERE_IS_THIS:
 						// Wide parts
 						if (iswide)
 						{
@@ -382,6 +384,14 @@ public final class MinimizedPool
 										<< 32L)) |
 									(((long)(((Integer)values[part[1]]) &
 										0xFFFFFFFFL)))));
+								break;
+								
+								// Where is this?
+							case WHERE_IS_THIS:
+								v = new WhereIsThis(
+									(ClassName)values[part[0]],
+									new MethodName((String)values[part[1]]),
+									(MethodDescriptor)values[part[2]]);
 								break;
 								
 							default:
