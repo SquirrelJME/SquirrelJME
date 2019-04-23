@@ -206,6 +206,9 @@ public final class NativeCPU
 			// Calculate last PC base address
 			int bpc = pc - lasticache;
 			
+			// Always set PC address for debugging frames
+			nowframe._pc = pc;
+			
 			// Read operation
 			nowframe._lastpc = pc;
 			int op = icache[bpc] & 0xFF;
