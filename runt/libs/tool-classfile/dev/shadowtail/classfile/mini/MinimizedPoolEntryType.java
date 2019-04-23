@@ -52,6 +52,9 @@ public enum MinimizedPoolEntryType
 	/** Double. */
 	DOUBLE,
 	
+	/** Where is this? */
+	WHERE_IS_THIS,
+	
 	/** End. */
 	;
 	
@@ -80,6 +83,7 @@ public enum MinimizedPoolEntryType
 			case 9:		return FLOAT;
 			case 10:	return LONG;
 			case 11:	return DOUBLE;
+			case 12:	return WHERE_IS_THIS;
 		}
 		
 		// {@squirreljme.error JC3s Unknown pool type. (The type)}
@@ -128,7 +132,8 @@ public enum MinimizedPoolEntryType
 				return CLASS_NAMES;
 			case "net.multiphasicapps.classfile.MethodDescriptor":
 				return METHOD_DESCRIPTOR;
-			case "net.multiphasicapps.classfile.MethodHandle":
+			case "dev.shadowtail.classfile.nncc.WhereIsThis":
+				return WHERE_IS_THIS;
 		}
 		
 		// {@squirreljme.error JC2o Class does not map to a pool entry

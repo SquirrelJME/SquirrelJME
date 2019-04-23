@@ -70,6 +70,9 @@ public final class NearNativeByteCodeHandler
 	/** The type of the current class being processed. */
 	protected final ClassName thistype;
 	
+	/** Where is this method? */
+	protected final WhereIsThis whereisthis;
+	
 	/** Standard exception handler table. */
 	private final Map<ExceptionHandlerTransition, __EData__> _ehtable =
 		new LinkedHashMap<>();
@@ -107,6 +110,10 @@ public final class NearNativeByteCodeHandler
 			__bc.isStaticInitializer()) ? FieldAccessTime.INITIALIZER :
 			FieldAccessTime.NORMAL);
 		this.thistype = __bc.thisType();
+		
+		// Use for debugging and stack traces
+		this.whereisthis = new WhereIsThis(__bc.thisType(),
+			__bc.name(), __bc.type());
 	}
 	
 	/**
@@ -413,7 +420,7 @@ public final class NearNativeByteCodeHandler
 					codebuilder.add(NativeInstructionType.BREAKPOINT);
 					break;
 					
-					// Entry point marker (nop)
+					// Entry Marker
 				case "entryMarker":
 					codebuilder.add(NativeInstructionType.ENTRY_MARKER);
 					break;
@@ -863,9 +870,16 @@ public final class NearNativeByteCodeHandler
 		ByteCodeState state = this.state;
 		int addr = state.addr;
 		
-		// Add entry marker to debug that entry of methods is being hit
+		// Entry point debugging
 		if (addr == 0)
+		{
+			// Entry point which
 			codebuilder.add(NativeInstructionType.ENTRY_MARKER);
+			
+			// Load the location of this
+			codebuilder.add(NativeInstructionType.LOAD_POOL,
+				this.whereisthis, NativeCode.WHERE_IS_THIS);
+		}
 		
 		// Set source line
 		codebuilder.setSourceLine(state.line);

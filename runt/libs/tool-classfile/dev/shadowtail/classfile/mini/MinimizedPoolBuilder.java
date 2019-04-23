@@ -13,6 +13,7 @@ package dev.shadowtail.classfile.mini;
 import dev.shadowtail.classfile.nncc.AccessedField;
 import dev.shadowtail.classfile.nncc.ClassPool;
 import dev.shadowtail.classfile.nncc.InvokedMethod;
+import dev.shadowtail.classfile.nncc.WhereIsThis;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -198,6 +199,16 @@ public final class MinimizedPoolBuilder
 				this.add((int)(v & 0xFFFFFFFF)));
 		}
 		
+		// Where is this information
+		else if (__v instanceof WhereIsThis)
+		{
+			WhereIsThis v = (WhereIsThis)__v;
+			return this.__add(__v,
+				this.add(v.inclass),
+				this.add(v.name.toString()),
+				this.add(v.type));
+		}
+		
 		// {@squirreljme.error JC3p Cannot add the specified entry to the
 		// constant pool. (The class type)}
 		else
@@ -370,6 +381,7 @@ public final class MinimizedPoolBuilder
 					case METHOD_DESCRIPTOR:
 					case LONG:
 					case DOUBLE:
+					case WHERE_IS_THIS:
 						{
 							// Write number of parts
 							int npart = part.length;
