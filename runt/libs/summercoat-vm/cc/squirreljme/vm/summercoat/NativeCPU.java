@@ -731,7 +731,56 @@ public final class NativeCPU
 			if (i > 0)
 				out.print(", ");
 			
-			out.printf("%10d", iv);
+			// Is this a special register?
+			String spec = null;
+			switch (iv)
+			{
+				case NativeCode.ZERO_REGISTER:
+					spec = "zero";
+					break;
+				
+				case NativeCode.RETURN_REGISTER:
+					spec = "return1";
+					break;
+				
+				case NativeCode.RETURN_REGISTER + 1:
+					spec = "return2";
+					break;
+				
+				case NativeCode.EXCEPTION_REGISTER:
+					spec = "exception";
+					break;
+				
+				case NativeCode.STATIC_FIELD_REGISTER:
+					spec = "sfieldptr";
+					break;
+				
+				case NativeCode.CLASS_TABLE_REGISTER:
+					spec = "ctableptr";
+					break;
+				
+				case NativeCode.POOL_REGISTER:
+					spec = "pool";
+					break;
+				
+				case NativeCode.NEXT_POOL_REGISTER:
+					spec = "nextpool";
+					break;
+				
+				case NativeCode.WHERE_IS_THIS:
+					spec = "whereis";
+					break;
+				
+				case NativeCode.ARGUMENT_REGISTER_BASE:
+					spec = "a0/this";
+					break;
+			}
+			
+			// Print special register
+			if (spec != null)
+				out.printf("%10.10s", spec);
+			else
+				out.printf("%10d", iv);
 		}
 		out.print("] | ");
 		
