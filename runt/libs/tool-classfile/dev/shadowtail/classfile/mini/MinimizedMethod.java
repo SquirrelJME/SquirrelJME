@@ -46,6 +46,9 @@ public final class MinimizedMethod
 	/** The line offset. */
 	public final int lineoffset;
 	
+	/** The where offset. */
+	public final int whereoffset;
+	
 	/** Translated method code. */
 	final byte[] _code;
 	
@@ -71,7 +74,7 @@ public final class MinimizedMethod
 		MethodName __n, MethodDescriptor __t, byte[] __tc, byte[] __ln)
 		throws NullPointerException
 	{
-		this(__f, __o, __n, __t, __tc, __ln, -1, -1);
+		this(__f, __o, __n, __t, __tc, __ln, 0, 0, 0);
 	}
 	
 	/**
@@ -85,12 +88,13 @@ public final class MinimizedMethod
 	 * @param __ln Line number table.
 	 * @param __co The code offset.
 	 * @param __lo The line offset.
+	 * @param __wh The where offset.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/14
 	 */
 	public MinimizedMethod(int __f, int __o,
 		MethodName __n, MethodDescriptor __t, byte[] __tc, byte[] __ln,
-		int __co, int __lo)
+		int __co, int __lo, int __wh)
 		throws NullPointerException
 	{
 		if (__n == null || __t == null)
@@ -102,6 +106,7 @@ public final class MinimizedMethod
 		this.type = __t;
 		this.codeoffset = __co;
 		this.lineoffset = __lo;
+		this.whereoffset = __wh;
 		this._code = (__tc == null ? new byte[0] : __tc.clone());
 		this._lines = (__ln == null ? new byte[0] : __ln.clone());
 	}
@@ -179,7 +184,8 @@ public final class MinimizedMethod
 				int offcode = dis.readUnsignedShort(), 
 					lencode = dis.readUnsignedShort(),
 					offline = dis.readUnsignedShort(),
-					lenline = dis.readUnsignedShort();
+					lenline = dis.readUnsignedShort(),
+					offwher = dis.readUnsignedShort();
 				
 				// Read code?
 				byte[] code = null;
@@ -199,7 +205,7 @@ public final class MinimizedMethod
 				
 				// Build method
 				rv[i] = new MinimizedMethod(flags, offset, name, type,
-					code, line, offcode, offline);
+					code, line, offcode, offline, offwher);
 			}
 		}
 		

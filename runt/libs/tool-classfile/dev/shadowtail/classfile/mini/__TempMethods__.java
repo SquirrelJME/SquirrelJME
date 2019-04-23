@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import net.multiphasicapps.classfile.ClassName;
 
 /**
  * Contains temporary method information.
@@ -24,12 +25,31 @@ import java.util.List;
  */
 final class __TempMethods__
 {
+	/** The name of this class. */
+	protected final ClassName classname;
+	
 	/** The methods in this table. */
 	final List<MinimizedMethod> _methods =
 		new ArrayList<>();
 	
 	/** The number of methods that are available. */
 	int _count;
+	
+	/**
+	 * Initializes.
+	 *
+	 * @param __cn The class name.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/22
+	 */
+	__TempMethods__(ClassName __cn)
+		throws NullPointerException
+	{
+		if (__cn == null)
+			throw new NullPointerException("NARG");
+		
+		this.classname = __cn;
+	}
 	
 	/**
 	 * Returns the byte representation of the data here.
@@ -110,15 +130,42 @@ final class __TempMethods__
 			}
 			
 			// Offset to code and line regions
-			int codeoff = 4 + (count * 18),
+			int codeoff = 4 + (count * 20),
 				lineoff = codeoff + cdos.size();
+			
+			// Build the offsets where the where is this are
+			ClassName classname = this.classname;
+			int[] offwhere = new int[count];
+			for (int i = 0; i < count; i++)
+			{
+				MinimizedMethod m = methods.get(i);
+				
+				// Record only the size
+				offwhere[i] = ldos.size();
+				
+				// If this value were to be added to the absolute position
+				// of the where information here, then this will be where our
+				// lines are stored. Zero means no lines stored.
+				int mylines = offline[i];
+				ldos.writeShort((mylines == 0 ? 0 :
+					offwhere[i] - (lineoff + offline[i])));
+				
+				// Record the method class, name, and type
+				ldos.writeUTF(classname.toString());
+				ldos.writeUTF(m.name.toString());
+				ldos.writeUTF(m.type.toString());
+				
+				// Pad
+				while ((ldos.size() & 3) != 0)
+					ldos.write(0);
+			}
 			
 			// Write field information
 			for (int i = 0; i < count; i++)
 			{
 				MinimizedMethod m = methods.get(i);
 				
-				// 18-bytes
+				// 20-bytes
 				ddos.writeInt(m.flags);
 				ddos.writeShort(Minimizer.__checkUShort(m.index));
 				ddos.writeShort(Minimizer.__checkUShort(
@@ -128,6 +175,7 @@ final class __TempMethods__
 				ddos.writeShort(Minimizer.__checkUShort(lencode[i]));
 				ddos.writeShort(Minimizer.__checkUShort(lineoff + offline[i]));
 				ddos.writeShort(Minimizer.__checkUShort(lenline[i]));
+				ddos.writeShort(Minimizer.__checkUShort(offwhere[i]));
 			}
 			
 			// Write end of table

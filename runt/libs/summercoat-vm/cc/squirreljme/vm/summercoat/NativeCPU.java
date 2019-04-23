@@ -9,6 +9,7 @@
 
 package cc.squirreljme.vm.summercoat;
 
+import cc.squirreljme.runtime.cldc.debug.CallTraceElement;
 import dev.shadowtail.classfile.nncc.ArgumentFormat;
 import dev.shadowtail.classfile.nncc.NativeCode;
 import dev.shadowtail.classfile.nncc.NativeInstruction;
@@ -18,6 +19,8 @@ import dev.shadowtail.classfile.xlate.DataType;
 import dev.shadowtail.classfile.xlate.InvokeType;
 import dev.shadowtail.classfile.xlate.MathType;
 import dev.shadowtail.classfile.xlate.StackJavaType;
+import java.io.DataInputStream;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import net.multiphasicapps.collections.IntegerList;
@@ -296,7 +299,8 @@ public final class NativeCPU
 				}
 			
 			// Debug
-			todo.DEBUG.note("@%08x/%d -> (%02x) %s %s", pc, bpc,
+			todo.DEBUG.note("@%08x/%d [%s] -> (%02x) %s %s", pc, bpc,
+				this.trace(nowframe),
 				op, NativeInstruction.mnemonic(op), new IntegerList(args));
 			
 			// By default the next instruction is the address after all
@@ -591,6 +595,72 @@ public final class NativeCPU
 			// Set next PC address
 			pc = nextpc;
 		}
+	}
+	
+	/**
+	 * Returns the trace of the current execution.
+	 *
+	 * @return The current trace.
+	 * @since 2019/04/22
+	 */
+	public final CallTraceElement[] trace()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the trace for the given frame.
+	 *
+	 * @param __f The frame to trace.
+	 * @return The trace of this frame.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/22
+	 */
+	public final CallTraceElement trace(Frame __f)
+		throws NullPointerException
+	{
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
+		// If the where is this is not set, no idea where this is
+		int wit = __f._registers[NativeCode.WHERE_IS_THIS];
+		if (wit == 0)
+			return new CallTraceElement();
+		
+		// Need memory to access the where information
+		ReadableMemory memory = this.memory;
+		
+		// The memory address where lines are located
+		int lineoff = (short)memory.memReadShort(wit);
+		
+		// Try to find the line where we should be at?
+		int online = -1,
+			pc = __f._pc;
+		if (lineoff != 0)
+		{
+		}
+		
+		// Read values
+		String cname = null,
+			mname = null,
+			mtype = null;
+		
+		// Read class, method name, and method type
+		try (DataInputStream dis = new DataInputStream(
+			new ReadableMemoryInputStream(memory, wit + 2, 1024)))
+		{
+			cname = dis.readUTF();
+			mname = dis.readUTF();
+			mtype = dis.readUTF();
+		}
+		
+		// Just ignore
+		catch (IOException e)
+		{
+		}
+		
+		// Build
+		return new CallTraceElement(cname, mname, mtype, pc, null, online);
 	}
 	
 	/**

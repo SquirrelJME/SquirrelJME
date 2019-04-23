@@ -9,6 +9,7 @@
 
 package dev.shadowtail.classfile.xlate;
 
+import dev.shadowtail.classfile.nncc.NativeCode;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public final class JavaStackState
 {
 	/** The base register where arguments start. */
 	public static final int BASE_REGISTER =
-		8;
+		NativeCode.ARGUMENT_REGISTER_BASE;
 	
 	/** The top of the stack. */
 	public final int stacktop;
