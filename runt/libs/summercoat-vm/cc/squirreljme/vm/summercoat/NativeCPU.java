@@ -725,6 +725,9 @@ public final class NativeCPU
 		int naf = (isinvoke ? 1 + __reglist.length:
 			__af.length);
 		
+		// Used to modify some calls
+		int encoding = NativeInstruction.encoding(__op);
+		
 		// Print out arguments to the call
 		out.printf("  A:[");
 		for (int i = 0, n = naf; i < n; i++)
@@ -732,53 +735,60 @@ public final class NativeCPU
 			int iv = (isinvoke ? (i == 0 ? __args[i] : __reglist[i - 1]) :
 				__args[i]);
 			
+			// Comma
 			if (i > 0)
 				out.print(", ");
 			
+			// Can be special?
+			boolean canspec = true;
+			if (i == 2 && encoding == NativeInstructionType.IF_ICMP)
+				canspec = false;
+			
 			// Is this a special register?
 			String spec = null;
-			switch (iv)
-			{
-				case NativeCode.ZERO_REGISTER:
-					spec = "zero";
-					break;
-				
-				case NativeCode.RETURN_REGISTER:
-					spec = "return1";
-					break;
-				
-				case NativeCode.RETURN_REGISTER + 1:
-					spec = "return2";
-					break;
-				
-				case NativeCode.EXCEPTION_REGISTER:
-					spec = "exception";
-					break;
-				
-				case NativeCode.STATIC_FIELD_REGISTER:
-					spec = "sfieldptr";
-					break;
-				
-				case NativeCode.CLASS_TABLE_REGISTER:
-					spec = "ctableptr";
-					break;
-				
-				case NativeCode.POOL_REGISTER:
-					spec = "pool";
-					break;
-				
-				case NativeCode.NEXT_POOL_REGISTER:
-					spec = "nextpool";
-					break;
-				
-				case NativeCode.WHERE_IS_THIS:
-					spec = "whereis";
-					break;
-				
-				case NativeCode.ARGUMENT_REGISTER_BASE:
-					spec = "a0/this";
-					break;
-			}
+			if (canspec)
+				switch (iv)
+				{
+					case NativeCode.ZERO_REGISTER:
+						spec = "zero";
+						break;
+					
+					case NativeCode.RETURN_REGISTER:
+						spec = "return1";
+						break;
+					
+					case NativeCode.RETURN_REGISTER + 1:
+						spec = "return2";
+						break;
+					
+					case NativeCode.EXCEPTION_REGISTER:
+						spec = "exception";
+						break;
+					
+					case NativeCode.STATIC_FIELD_REGISTER:
+						spec = "sfieldptr";
+						break;
+					
+					case NativeCode.CLASS_TABLE_REGISTER:
+						spec = "ctableptr";
+						break;
+					
+					case NativeCode.POOL_REGISTER:
+						spec = "pool";
+						break;
+					
+					case NativeCode.NEXT_POOL_REGISTER:
+						spec = "nextpool";
+						break;
+					
+					case NativeCode.WHERE_IS_THIS:
+						spec = "whereis";
+						break;
+					
+					case NativeCode.ARGUMENT_REGISTER_BASE:
+						spec = "a0/this";
+						break;
+				}
 			
 			// Print special register
 			if (spec != null)
