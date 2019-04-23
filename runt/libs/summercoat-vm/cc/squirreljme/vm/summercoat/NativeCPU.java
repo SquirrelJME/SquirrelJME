@@ -714,31 +714,43 @@ public final class NativeCPU
 			cname,
 			trace.methodName() + ":" + trace.methodDescriptor());
 		
+		// Is this an invoke?
+		boolean isinvoke = (__op == NativeInstructionType.INVOKE);
+		
+		// Arguments to print, invocations get 1 (pc) + register list
+		int naf = (isinvoke ? 1 + __reglist.length:
+			__af.length);
+		
 		// Print out arguments to the call
 		out.printf("  A:[");
-		for (int i = 0, n = __af.length; i < n; i++)
+		for (int i = 0, n = naf; i < n; i++)
 		{
+			int iv = (isinvoke ? (i == 0 ? __args[i] : __reglist[i - 1]) :
+				__args[i]);
+			
 			if (i > 0)
 				out.print(", ");
 			
-			out.printf("%10d", __args[i]);
+			out.printf("%10d", iv);
 		}
 		out.print("] | ");
 		
 		// And register value
 		out.printf("V:[");
 		int[] registers = __nf._registers;
-		for (int i = 0, n = __af.length; i < n; i++)
+		for (int i = 0, n = naf; i < n; i++)
 		{
+			int iv = (isinvoke ? (i == 0 ? __args[i] : __reglist[i - 1]) :
+				__args[i]);
+				
 			if (i > 0)
 				out.print(", ");
 			
 			// Load register value
-			int a = __args[i];
-			if (a < 0 || a >= registers.length)
+			if (iv < 0 || iv >= registers.length)
 				out.print("----------");
 			else
-				out.printf("%+10d", registers[__args[i]]);
+				out.printf("%+10d", registers[iv]);
 		}
 		out.println("]");
 	}
