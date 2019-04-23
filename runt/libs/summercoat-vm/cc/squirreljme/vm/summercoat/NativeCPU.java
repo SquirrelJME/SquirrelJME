@@ -509,7 +509,38 @@ public final class NativeCPU
 						
 						// Stores
 						else
-							throw new todo.TODO();
+						{
+							// Value to store
+							int v = lr[args[0]];
+							
+							// Store
+							switch (dt)
+							{
+								case BYTE:
+									memory.memWriteByte(addr, v);
+									break;
+									
+								case SHORT:
+									memory.memWriteShort(addr, v);
+									break;
+									
+								case CHARACTER:
+									memory.memWriteShort(addr, v);
+									break;
+									
+								case INTEGER:
+									memory.memWriteInt(addr, v);
+									break;
+									
+									// Unknown
+								default:
+									throw new todo.OOPS(dt.name());
+							}
+							
+							// Debug
+							todo.DEBUG.note("r%d -> @%08x = %s %d", args[0],
+								addr, dt, v);
+						}
 					}
 					break;
 					
