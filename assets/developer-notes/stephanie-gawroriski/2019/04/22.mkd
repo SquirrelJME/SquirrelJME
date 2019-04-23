@@ -1,0 +1,29 @@
+# 2019/04/22
+
+## 08:32
+
+I need to initialize the constant pool for the bootstrap class. It does not
+have to be fancy, it just has to be able to call the methods and fields in
+itself. Otherwise if this is not done the assembly for the bootstrap will be
+very complicated and very likely messy.
+
+## 14:47
+
+Okay so, there is going to have to be JVM specific in the kernel class.
+Effectively statics which are used to check things and such, such if something
+is a given instance. This would get rid of the `IFCLASS` stuff. It would just
+return some value after doing the check and such.
+
+## 21:16
+
+Definitely NEED TO A WAY TO FIGURE OUT WHERE I AM IN THE CODE BECAUSE THIS IS
+VERY CONFUSING.
+
+## 21:53
+
+I believe I am going to need to put the where information somewhere. Perhaps I
+can just inline it with the line data since not like that is really that
+important, well it is useful to say the least. I mean the line stuff contains
+debugging anyway, so the where stuff can be stored there anyway. Then for the
+where is, it can contain a special point which points to the method index so
+that way the where information can quickly be determined.
