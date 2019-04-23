@@ -186,7 +186,7 @@ public final class Kernel
 		// Currently all of the memory exists as a bunch of bytes of nothing
 		// with no structure. So this will initialize the region of memory into
 		// a single gigantic partition.
-		int allocbase = this.memaddr + this.staticmemsize;
+		int allocbase = (this.memaddr + this.staticmemsize + 3) & (~3);
 		this.allocbase = allocbase;
 		
 		// The actual size of memory that can be used, cut off from the static
