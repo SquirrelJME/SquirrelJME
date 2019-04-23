@@ -93,6 +93,10 @@ public final class Kernel
 	 */
 	public final int kernelNew(int __sz)
 	{
+		// Cannot allocate zero bytes
+		if (__sz == 0)
+			return 0;
+		
 		// This is the seeker which scans through the memory links to find
 		// free space somewhere
 		int seeker = this.allocbase;
