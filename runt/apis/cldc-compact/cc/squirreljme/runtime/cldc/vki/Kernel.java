@@ -17,6 +17,18 @@ package cc.squirreljme.runtime.cldc.vki;
  */
 public final class Kernel
 {
+	/** Offset to size of memory partition. */
+	public static final int OFF_MEMPART_SIZE =
+		0;
+	
+	/** Bit to indicate memory partition is free. */
+	public static final int MEMPART_FREE_BIT =
+		0x80000000;
+	
+	/** Offset to next link in memory partition. */
+	public static final int OFF_MEMPART_NEXT =
+		4;
+	
 	/** The address of the ROM file containing definitions and code. */
 	public int romaddr;
 	
@@ -78,9 +90,113 @@ public final class Kernel
 	 */
 	public final int kernelNew(int __sz)
 	{
-		Assembly.breakpoint();
+		// Debug
+		Assembly.entryMarker();
+		Assembly.entryMarker();
 		
-		return 0;
+		// This is the seeker which scans through the memory links to find
+		// free space somewhere
+		int seeker = this.memaddr;
+		
+		// Debug
+		Assembly.entryMarker();
+		Assembly.entryMarker();
+		
+		// Round allocations to nearest 4 bytes since the VM expects this
+		// alignment be used
+		__sz = (__sz + 3) & (~3);
+		
+		// Debug
+		Assembly.entryMarker();
+		Assembly.entryMarker();
+		
+		// We will be going through every chain
+		for (;;)
+		{
+			// Debug
+			Assembly.entryMarker();
+			Assembly.entryMarker();
+			
+			// If the seeker ever ends up at the null pointer then we just
+			// ran off the end of the chain
+			if (seeker == 0)
+				return 0;
+				
+			// Debug
+			Assembly.entryMarker();
+			Assembly.entryMarker();
+			
+			// Read size and next address
+			int size = Assembly.memReadInt(seeker, OFF_MEMPART_SIZE),
+				next = Assembly.memReadInt(seeker, OFF_MEMPART_NEXT);
+				
+			// Debug
+			Assembly.entryMarker();
+			Assembly.entryMarker();
+			
+			// This region of memory is free for use
+			if ((size & MEMPART_FREE_BIT) != 0)
+			{
+				// Determine the actual size available by clipping the bit
+				// of and then. The block size is the size of this region
+				// with the partition info
+				int blocksize = (size ^ MEMPART_FREE_BIT),
+					actsize = blocksize - 8;
+				
+				// There is enough space to use this partition
+				if (__sz <= actsize)
+				{
+					// The return pointer is the region start address
+					int rv = seeker + 8;
+					
+					// This is the new block size, if it does not match the
+					// current block size then we are not using an entire
+					// block (if it does match then we just claimed all the
+					// free space here).
+					int newblocksize = (__sz + 8);
+					if (blocksize != newblocksize)
+					{
+						// This is the address of the next block
+						int nextseeker = seeker + newblocksize;
+						
+						// The size of this block is free and it has the
+						// remaining size of the current block's old size
+						// minute the new block size
+						Assembly.memWriteInt(nextseeker, OFF_MEMPART_SIZE,
+							(blocksize - newblocksize) | MEMPART_FREE_BIT);
+						
+						// The next link of the next block because our
+						// current link (since it is a linked list)
+						Assembly.memWriteInt(nextseeker, OFF_MEMPART_NEXT,
+							next);
+						
+						// The next link of our current block (the one we
+						// are claiming)
+						Assembly.memWriteInt(seeker, OFF_MEMPART_NEXT,
+							nextseeker);
+					}
+					
+					// Break
+					Assembly.entryMarker();
+					Assembly.entryMarker();
+					Assembly.entryMarker();
+					Assembly.entryMarker();
+					Assembly.breakpoint();
+					
+					// Clear the memory here since it is expected that
+					// everything in Java has been initialized to zero, this
+					// is also much safer than C's malloc().
+					for (int i = 0; i < __sz; i += 4)
+						Assembly.memWriteInt(rv, i, 0);
+					
+					// Return pointer
+					return rv;
+				}
+			}
+			
+			// If this point was reached, we need to try the next link
+			seeker = next;
+		}
 	}
 	
 	/**
@@ -98,16 +214,19 @@ public final class Kernel
 		
 		// The actual size of memory that can be used, cut off from the static
 		// memory size which just contains the config properties and the
-		// kernel object itself
-		int memsize = this.memsize - this.staticmemsize;
+		// kernel object itself. Make sure it is always rounded down to
+		// 4 bytes because that would really mess with things in the
+		// allocator
+		int memsize = (this.memsize - this.staticmemsize) & (~3);
 		
 		// Write memory size at this position, the highest bit indicates
 		// that it is free memory
-		Assembly.memWriteInt(memaddr, 0, memsize);
+		Assembly.memWriteInt(memaddr, OFF_MEMPART_SIZE,
+			memsize | MEMPART_FREE_BIT);
 		
 		// This is the next chunk in memory, zero means that there is no
 		// remaining chunk (at end of memory)
-		Assembly.memWriteInt(memaddr, 4, 0);
+		Assembly.memWriteInt(memaddr, OFF_MEMPART_NEXT, 0);
 		
 		// Now that we have some kind of memory, the static field space can
 		// be initialized.

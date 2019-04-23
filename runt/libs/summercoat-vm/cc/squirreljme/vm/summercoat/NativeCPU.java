@@ -197,9 +197,6 @@ public final class NativeCPU
 			{
 				memory.memReadBytes(pc, icache, 0, METHOD_CACHE);
 				lasticache = pc;
-				
-				// Dump the cache
-				HexDumpOutputStream.dump(System.err, icache);
 			}
 			
 			// Calculate last PC base address
