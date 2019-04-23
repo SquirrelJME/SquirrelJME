@@ -209,12 +209,16 @@ public final class Kernel
 		// be initialized.
 		int sfspace = this.sfspace,
 			sfptr = this.kernelNew(sfspace);
-		this.sfptr = sfptr;
+		
+		// If this is zero then allocation has failed
 		if (sfptr == 0)
 		{
 			Assembly.breakpoint();
 			return;
 		}
+		
+		// Store static field pointer
+		this.sfptr = sfptr;
 		
 		// Set static field pointer since everything using static fields will
 		// now use this information
