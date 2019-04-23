@@ -71,6 +71,9 @@ public final class Kernel
 	/** Static field pointer. */
 	public int sfptr;
 	
+	/** Allocation base address. */
+	public int allocbase;
+	
 	/**
 	 * Not used.
 	 *
@@ -92,7 +95,7 @@ public final class Kernel
 	{
 		// This is the seeker which scans through the memory links to find
 		// free space somewhere
-		int seeker = this.memaddr;
+		int seeker = this.allocbase;
 		
 		// Round allocations to nearest 4 bytes since the VM expects this
 		// alignment be used
@@ -186,7 +189,8 @@ public final class Kernel
 		// Currently all of the memory exists as a bunch of bytes of nothing
 		// with no structure. So this will initialize the region of memory into
 		// a single gigantic partition.
-		int memaddr = this.memaddr;
+		int allocbase = this.memaddr + this.staticmemsize;
+		this.allocbase = allocbase;
 		
 		// The actual size of memory that can be used, cut off from the static
 		// memory size which just contains the config properties and the
@@ -197,12 +201,12 @@ public final class Kernel
 		
 		// Write memory size at this position, the highest bit indicates
 		// that it is free memory
-		Assembly.memWriteInt(memaddr, OFF_MEMPART_SIZE,
+		Assembly.memWriteInt(allocbase, OFF_MEMPART_SIZE,
 			memsize | MEMPART_FREE_BIT);
 		
 		// This is the next chunk in memory, zero means that there is no
 		// remaining chunk (at end of memory)
-		Assembly.memWriteInt(memaddr, OFF_MEMPART_NEXT, 0);
+		Assembly.memWriteInt(allocbase, OFF_MEMPART_NEXT, 0);
 		
 		// Now that we have some kind of memory, the static field space can
 		// be initialized.
