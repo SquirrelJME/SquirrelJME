@@ -90,50 +90,26 @@ public final class Kernel
 	 */
 	public final int kernelNew(int __sz)
 	{
-		// Debug
-		Assembly.entryMarker();
-		Assembly.entryMarker();
-		
 		// This is the seeker which scans through the memory links to find
 		// free space somewhere
 		int seeker = this.memaddr;
-		
-		// Debug
-		Assembly.entryMarker();
-		Assembly.entryMarker();
 		
 		// Round allocations to nearest 4 bytes since the VM expects this
 		// alignment be used
 		__sz = (__sz + 3) & (~3);
 		
-		// Debug
-		Assembly.entryMarker();
-		Assembly.entryMarker();
-		
 		// We will be going through every chain
 		for (;;)
 		{
-			// Debug
-			Assembly.entryMarker();
-			Assembly.entryMarker();
-			
 			// If the seeker ever ends up at the null pointer then we just
 			// ran off the end of the chain
 			if (seeker == 0)
 				return 0;
-				
-			// Debug
-			Assembly.entryMarker();
-			Assembly.entryMarker();
 			
 			// Read size and next address
 			int size = Assembly.memReadInt(seeker, OFF_MEMPART_SIZE),
 				next = Assembly.memReadInt(seeker, OFF_MEMPART_NEXT);
 				
-			// Debug
-			Assembly.entryMarker();
-			Assembly.entryMarker();
-			
 			// This region of memory is free for use
 			if ((size & MEMPART_FREE_BIT) != 0)
 			{
