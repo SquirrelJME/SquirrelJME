@@ -21,6 +21,7 @@ import dev.shadowtail.classfile.xlate.MathType;
 import dev.shadowtail.classfile.xlate.StackJavaType;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.LinkedList;
 import java.util.List;
 import net.multiphasicapps.collections.IntegerList;
@@ -302,10 +303,8 @@ public final class NativeCPU
 						throw new todo.OOPS(af[i].name());
 				}
 			
-			// Debug
-			todo.DEBUG.note("@%08x/%d [%s] -> (%02x) %s %s", pc, bpc,
-				this.trace(nowframe),
-				op, NativeInstruction.mnemonic(op), new IntegerList(args));
+			// Print CPU debug info
+			this.__cpuDebugPrint(nowframe, op, af, args, largs, reglist);
 			
 			// By default the next instruction is the address after all
 			// arguments have been read
@@ -342,9 +341,6 @@ public final class NativeCPU
 						
 						// Set destination
 						lr[args[1]] = va;
-						
-						// Debug
-						todo.DEBUG.note("%s -> %s", old, va);
 					}
 					break;
 					
@@ -394,9 +390,6 @@ public final class NativeCPU
 							nextpc = pc +
 								(args[2] | ((args[2] & 0x4000) << 1));
 						}
-						
-						// Debug
-						todo.DEBUG.note("%d %s %d = %b", a, ct, b, branch);
 					}
 					break;
 					
@@ -412,10 +405,6 @@ public final class NativeCPU
 						
 						// Entering some other frame
 						reload = true;
-						
-						// Debug
-						todo.DEBUG.note("invoke @%08x %s", lr[args[0]],
-							new IntegerList(reglist));
 					}
 					break;
 					
@@ -458,9 +447,6 @@ public final class NativeCPU
 						
 						// Set result
 						lr[args[2]] = c;
-						
-						// Debug
-						todo.DEBUG.note("%d = %d %s %s", c, a, mt, b);
 					}
 					break;
 				
@@ -506,10 +492,6 @@ public final class NativeCPU
 							
 							// Set value
 							lr[args[0]] = v;
-							
-							// Debug
-							todo.DEBUG.note("@%08x = %s %d -> r%d", addr, dt,
-								v, args[0]);
 						}
 						
 						// Stores
@@ -541,10 +523,6 @@ public final class NativeCPU
 								default:
 									throw new todo.OOPS(dt.name());
 							}
-							
-							// Debug
-							todo.DEBUG.note("r%d -> @%08x = %s %d", args[0],
-								addr, dt, v);
 						}
 					}
 					break;
@@ -703,6 +681,66 @@ public final class NativeCPU
 		
 		// Build
 		return new CallTraceElement(cname, mname, mtype, pc, null, online);
+	}
+	
+	/**
+	 * Performs some nice printing of CPU information.
+	 *
+	 * @param __nf The current frame.
+	 * @param __op The operation.
+	 * @param __af The argument format.
+	 * @param __args Argument values.
+	 * @param __largs Long argument values.
+	 * @param __reglist The register list.
+	 * @since 2019/04/23
+	 */
+	private final void __cpuDebugPrint(Frame __nf, int __op,
+		ArgumentFormat[] __af, int[] __args, long[] __largs, int[] __reglist)
+	{
+		PrintStream out = System.err;
+		
+		// Limit class name
+		CallTraceElement trace = this.trace(__nf);
+		String cname = "" + trace.className();
+		int nl;
+		if ((nl = cname.length()) > 20)
+			cname = cname.substring(nl - 20, nl);
+		
+		// Print Header (with location info)
+		out.printf("****** @%08x %-20.20s | L%-4d %20.20s::%s %n",
+			__nf._pc,
+			NativeInstruction.mnemonic(__op),
+			trace.line(),
+			cname,
+			trace.methodName() + ":" + trace.methodDescriptor());
+		
+		// Print out arguments to the call
+		out.printf("  A: [");
+		for (int i = 0, n = __af.length; i < n; i++)
+		{
+			if (i > 0)
+				out.print(", ");
+			
+			out.printf("%10d", __args[i]);
+		}
+		out.println("]");
+		
+		// And register value
+		out.printf("  V: [");
+		int[] registers = __nf._registers;
+		for (int i = 0, n = __af.length; i < n; i++)
+		{
+			if (i > 0)
+				out.print(", ");
+			
+			// Load register value
+			int a = __args[i];
+			if (a < 0 || a >= registers.length)
+				out.print("----------");
+			else
+				out.printf("%+10d", registers[__args[i]]);
+		}
+		out.println("]");
 	}
 	
 	/**
