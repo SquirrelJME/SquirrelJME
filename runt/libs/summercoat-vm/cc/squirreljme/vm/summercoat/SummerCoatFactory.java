@@ -52,6 +52,10 @@ public class SummerCoatFactory
 	public static final int RAM_START_ADDRESS =
 		1048576;
 	
+	/** Bad pool value. */
+	private static final int _BAD_POOL_VALUE =
+		13371234;
+	
 	/**
 	 * Initializes the factory.
 	 *
@@ -169,14 +173,15 @@ public class SummerCoatFactory
 						// The kernel class
 						if (af.field().className().equals(minikern.thisName()))
 							if (af.type().isStatic())
-								cv = 0;
+								cv = minikern.field(true, af.
+									field().memberNameAndType()).offset;
 							else
-								cv = kfldbase + minikern.field(false, af.
+								cv = minikern.field(false, af.
 									field().memberNameAndType()).offset;
 						
 						// Some other class
 						else
-							cv = 0;
+							cv = _BAD_POOL_VALUE;
 						break;
 						
 						// Try to map a class index to a pre-existing ID
@@ -195,7 +200,7 @@ public class SummerCoatFactory
 							
 								// Unknown class, ignore
 							default:
-								cv = 0;
+								cv = _BAD_POOL_VALUE;
 								break;
 						}
 						break;
@@ -207,7 +212,7 @@ public class SummerCoatFactory
 							"cc/squirreljme/runtime/cldc/vki/Kernel"))
 							cv = spoolbase;
 						else
-							cv = 0;
+							cv = _BAD_POOL_VALUE;
 						break;
 						
 						// Invoked method
@@ -226,7 +231,7 @@ public class SummerCoatFactory
 						
 						// Some other class
 						else
-							cv = 0;
+							cv = _BAD_POOL_VALUE;
 						break;
 						
 						// Integer
@@ -270,7 +275,8 @@ public class SummerCoatFactory
 						// These are just informational, ignore for now
 					case METHOD_DESCRIPTOR:
 					case CLASS_NAMES:
-						continue;
+						cv = _BAD_POOL_VALUE;
+						break;
 						
 					default:
 						throw new todo.OOPS(pool.type(i).name());
