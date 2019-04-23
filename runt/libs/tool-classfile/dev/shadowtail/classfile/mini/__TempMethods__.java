@@ -103,11 +103,18 @@ final class __TempMethods__
 					cdos.write(0xFF);
 			}
 			
+			// Output line data
+			ByteArrayOutputStream lbytes = new ByteArrayOutputStream();
+			DataOutputStream ldos = new DataOutputStream(lbytes);
+			
+			// Write this so that way all lines are offset by 4 instead of
+			// starting at zero, otherwise the first method will never have
+			// line
+			ldos.writeInt(0xFFFFFFFF);
+			
 			// Merge all of the line data
 			int[] offline = new int[count],
 				lenline = new int[count];
-			ByteArrayOutputStream lbytes = new ByteArrayOutputStream();
-			DataOutputStream ldos = new DataOutputStream(lbytes);
 			for (int i = 0; i < count; i++)
 			{
 				MinimizedMethod m = methods.get(i);
@@ -141,14 +148,14 @@ final class __TempMethods__
 				MinimizedMethod m = methods.get(i);
 				
 				// Record only the size
-				offwhere[i] = ldos.size();
+				int wa;
+				offwhere[i] = (wa = ldos.size());
 				
 				// If this value were to be added to the absolute position
 				// of the where information here, then this will be where our
 				// lines are stored. Zero means no lines stored.
 				int mylines = offline[i];
-				ldos.writeShort((mylines == 0 ? 0 :
-					offwhere[i] - (lineoff + offline[i])));
+				ldos.writeShort((mylines == 0 ? 0 : (mylines - wa)));
 				
 				// Record the method class, name, and type
 				ldos.writeUTF(classname.toString());

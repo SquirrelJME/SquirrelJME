@@ -641,6 +641,42 @@ public final class NativeCPU
 		{
 			// Calculate relative PC to frame start
 			int relpc = pc - __f._entrypc;
+			
+			// Try to find our line
+			try (DataInputStream dis = new DataInputStream(
+				new ReadableMemoryInputStream(memory, wit + lineoff, 4096)))
+			{
+				// Constant try to read lines
+				for (int nowpc = 0;;)
+				{
+					// Read offset code
+					int off = dis.read() & 0xFF;
+					
+					// End of line marker (or just EOF)
+					if (off == 255)
+						break;
+					
+					// Read actual line
+					int nowline = dis.readUnsignedShort();
+					
+					// If our current address is within this range then this
+					// means that our line is in this range
+					int respc = nowpc + off;
+					if (relpc >= nowpc && relpc < respc)
+					{
+						online = nowline;
+						break;
+					}
+					
+					// Try again at future address
+					nowpc = respc;
+				}
+			}
+			
+			// Just ignore
+			catch (IOException e)
+			{
+			}
 		}
 		
 		// Read values
