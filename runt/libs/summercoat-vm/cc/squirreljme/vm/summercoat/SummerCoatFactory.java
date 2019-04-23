@@ -262,7 +262,7 @@ public class SummerCoatFactory
 							todo.DEBUG.note("Where %b %d", isinstance, mdx);
 							
 							// Set this to the where offset
-							cv = (!isinstance ? scodebase : icodebase) +
+							cv = (isinstance ? icodebase : scodebase) +
 								minikern.methods(!isinstance)[mdx].whereoffset;
 						}
 						break;
