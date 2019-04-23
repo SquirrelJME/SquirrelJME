@@ -23,5 +23,9 @@ public interface DefaultConfiguration
 	/** Default static field space. */
 	public static final int DEFAULT_STATIC_FIELD_SIZE =
 		8192;
+	
+	/** Minimum static field size. */
+	public static final int MINIMUM_STATIC_FIELD_SIZE =
+		1024;
 }
 

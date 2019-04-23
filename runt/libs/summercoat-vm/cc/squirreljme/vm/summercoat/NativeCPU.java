@@ -244,7 +244,11 @@ public final class NativeCPU
 							}
 							
 							// Set
-							args[i] = base;
+							if (af[i] == ArgumentFormat.VJUMP)
+								args[i] = (short)(base |
+									((base & 0x4000) << 1));
+							else
+								args[i] = base;
 						}
 						break;
 					
@@ -387,8 +391,7 @@ public final class NativeCPU
 							// Go to the given address, note that jumps are
 							// relative and are 15-bit so we need to move the
 							// sign up if there is one
-							nextpc = pc +
-								(args[2] | ((args[2] & 0x4000) << 1));
+							nextpc = pc + args[2];
 						}
 					}
 					break;
@@ -741,7 +744,12 @@ public final class NativeCPU
 			
 			// Can be special?
 			boolean canspec = true;
-			if (i == 2 && encoding == NativeInstructionType.IF_ICMP)
+			if ((encoding == NativeInstructionType.IF_ICMP &&
+					i == 2) ||
+				(encoding == NativeInstructionType.MATH_CONST_INT &&
+					i == 1) ||
+				(encoding == NativeInstructionType.MATH_CONST_FLOAT &&
+					i == 1))
 				canspec = false;
 			
 			// Is this a special register?

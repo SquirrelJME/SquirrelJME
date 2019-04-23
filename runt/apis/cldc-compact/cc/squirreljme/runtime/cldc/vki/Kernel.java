@@ -206,9 +206,11 @@ public final class Kernel
 		Assembly.memWriteInt(allocbase, OFF_MEMPART_NEXT, 0);
 		
 		// Now that we have some kind of memory, the static field space can
-		// be initialized.
-		int sfspace = this.sfspace,
-			sfptr = this.kernelNew(sfspace);
+		// be initialized. Make sure it is a minimum size
+		int sfspace = this.sfspace;
+		if (sfspace < DefaultConfiguration.MINIMUM_STATIC_FIELD_SIZE)
+			sfspace = DefaultConfiguration.MINIMUM_STATIC_FIELD_SIZE;
+		int sfptr = this.kernelNew(sfspace);
 		
 		// If this is zero then allocation has failed
 		if (sfptr == 0)
