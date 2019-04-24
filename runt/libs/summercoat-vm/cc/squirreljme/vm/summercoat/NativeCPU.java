@@ -396,6 +396,15 @@ public final class NativeCPU
 					}
 					break;
 					
+					// If value equal to constant
+				case NativeInstructionType.IFEQ_CONST:
+					{
+						// Branching? Remember that jumps are relative
+						if (lr[args[0]] == args[1])
+							nextpc = pc + args[2];
+					}
+					break;
+					
 					// Invoke a pointer
 				case NativeInstructionType.INVOKE:
 					{
@@ -749,6 +758,8 @@ public final class NativeCPU
 				(encoding == NativeInstructionType.MATH_CONST_INT &&
 					i == 1) ||
 				(encoding == NativeInstructionType.MATH_CONST_FLOAT &&
+					i == 1) ||
+				(encoding == NativeInstructionType.IFEQ_CONST &&
 					i == 1))
 				canspec = false;
 			
