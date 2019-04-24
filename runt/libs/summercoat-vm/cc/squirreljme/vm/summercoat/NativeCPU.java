@@ -383,16 +383,7 @@ public final class NativeCPU
 						
 						// Branching?
 						if (branch)
-						{
-							// Refclear?
-							if (rp != 0 && ((op & 0x08) != 0))
-								throw new todo.TODO();
-							
-							// Go to the given address, note that jumps are
-							// relative and are 15-bit so we need to move the
-							// sign up if there is one
 							nextpc = pc + args[2];
-						}
 					}
 					break;
 					
