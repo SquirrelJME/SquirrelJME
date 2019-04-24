@@ -29,6 +29,18 @@ public final class Kernel
 	public static final int OFF_MEMPART_NEXT =
 		4;
 	
+	/** The offset for the object's class type. */
+	public static final int OBJECT_CLASS_OFFSET =
+		0;
+	
+	/** The offset for the object's reference count. */
+	public static final int OBJECT_COUNT_OFFSET =
+		2;
+	
+	/** The offset for array length. */
+	public static final int ARRAY_LENGTH_OFFSET =
+		4;
+	
 	/** The address of the ROM file containing definitions and code. */
 	public int romaddr;
 	
@@ -227,8 +239,8 @@ public final class Kernel
 		Assembly.specialSetStaticFieldRegister(sfptr);
 		
 		// Current write address in the field space and the space remaining
-		Assembly.memWriteInt(sfptr, 0, sfptr + 12);
-		Assembly.memWriteInt(sfptr, 4, sfspace - 12);
+		Assembly.memWriteInt(sfptr, 0, sfptr + 16);
+		Assembly.memWriteInt(sfptr, 4, sfspace - 16);
 		
 		// Write the kernel object so we can call back into it whenever it is
 		// needed, by any system call or otherwise
@@ -255,12 +267,89 @@ public final class Kernel
 		
 		// If the class exactly matches the given type then no further
 		// checking is needed
-		int pcl = Assembly.memReadShort(__p, 0);
+		int pcl = Assembly.memReadShort(__p, OBJECT_CLASS_OFFSET);
 		if (pcl == __cldx)
 			return 1;
 		
 		// Need to go through and check a bunch of things
+		Assembly.breakpoint();
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Allocates a new array.
+	 *
+	 * @param __at The array type.
+	 * @param __len The length of the array.
+	 * @return The resulting array pointer.
+	 * @throws NegativeArraySizeException If the array length is negative.
+	 * @throws OutOfMemoryError If there is not enough memory to allocate the
+	 * array.
+	 * @since 2019/04/24
+	 */
+	public static final int jvmNewArray(int __at, int __len)
+		throws NegativeArraySizeException, OutOfMemoryError
+	{
+		// {@squirreljme.error ZZ3u Cannot allocate an array which is of a
+		// negative length.}
+		if (__len < 0)
+			throw new NegativeArraySizeException("ZZ3u");
+		
+		// Determine the allocation size according to the type
+		int cellsize;
+		switch (__at)
+		{
+				// Boolean, Byte
+			case FixedClassIDs.PRIMITIVE_BOOLEAN_ARRAY:
+			case FixedClassIDs.PRIMITIVE_BYTE_ARRAY:
+				cellsize = 1;
+				break;
+				
+				// Short, Character
+			case FixedClassIDs.PRIMITIVE_SHORT_ARRAY:
+			case FixedClassIDs.PRIMITIVE_CHARACTER_ARRAY:
+				cellsize = 2;
+				break;
+				
+				// Integer, Float
+			case FixedClassIDs.PRIMITIVE_INTEGER_ARRAY:
+			case FixedClassIDs.PRIMITIVE_FLOAT_ARRAY:
+				cellsize = 4;
+				break;
+				
+				// Long, Double
+			case FixedClassIDs.PRIMITIVE_LONG_ARRAY:
+			case FixedClassIDs.PRIMITIVE_DOUBLE_ARRAY:
+				cellsize = 8;
+				break;
+				
+				// Non-default type
+			default:
+				if (true)
+				{
+					Assembly.breakpoint();
+					throw new todo.TODO();
+				}
+				break;
+		}
+		
+		// Determine the allocation size
+		int allocsize = 8 + (cellsize * __len);
+		
+		// {@squirreljme.error ZZ3v Not enough memory to allocate array.}
+		int rv = ((Kernel)Assembly.pointerToObject(
+			Assembly.memReadInt(Assembly.specialGetStaticFieldRegister(), 0))).
+			kernelNew(allocsize);
+		if (rv == 0)
+			throw new OutOfMemoryError("ZZ3v");
+		
+		// Class type, initial count, and length
+		Assembly.memWriteShort(__at, OBJECT_CLASS_OFFSET, __at);
+		Assembly.memWriteShort(__at, OBJECT_COUNT_OFFSET, 1);
+		Assembly.memWriteInt(__at, ARRAY_LENGTH_OFFSET, __len);
+		
+		// Return the array
+		return rv;
 	}
 }
 

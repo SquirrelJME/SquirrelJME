@@ -9,6 +9,7 @@
 
 package dev.shadowtail.classfile.nncc;
 
+import cc.squirreljme.runtime.cldc.vki.FixedClassIDs;
 import dev.shadowtail.classfile.xlate.ByteCodeHandler;
 import dev.shadowtail.classfile.xlate.ByteCodeState;
 import dev.shadowtail.classfile.xlate.CompareType;
@@ -653,14 +654,40 @@ public final class NearNativeByteCodeHandler
 	{
 		NativeCodeBuilder codebuilder = this.codebuilder;
 		
-		// Cannot be negative
-		codebuilder.addIfICmp(CompareType.LESS_THAN, __len.register, 0,
-			this.__labelMakeException("java/lang/NegativeArraySizeException"),
-			true);
+		// Primitive types always have a fixed array type
+		int ctype = 0;
+		switch (__at.toString())
+		{
+			case "[Z":	ctype = FixedClassIDs.PRIMITIVE_BOOLEAN_ARRAY; break;
+			case "[B":	ctype = FixedClassIDs.PRIMITIVE_BYTE_ARRAY; break;
+			case "[S":	ctype = FixedClassIDs.PRIMITIVE_SHORT_ARRAY; break;
+			case "[C":	ctype = FixedClassIDs.PRIMITIVE_CHARACTER_ARRAY; break;
+			case "[I":	ctype = FixedClassIDs.PRIMITIVE_INTEGER_ARRAY; break;
+			case "[J":	ctype = FixedClassIDs.PRIMITIVE_LONG_ARRAY; break;
+			case "[F":	ctype = FixedClassIDs.PRIMITIVE_FLOAT_ARRAY; break;
+			case "[D":	ctype = FixedClassIDs.PRIMITIVE_DOUBLE_ARRAY; break;
+		}
 		
-		// Allocate array
-		codebuilder.add(NativeInstructionType.NEWARRAY,
-			__at, __len.register, __out.register);
+		// If not a primitive then the type depends on the pool value
+		if (ctype == 0)
+			codebuilder.add(NativeInstructionType.LOAD_POOL,
+				__at, NativeCode.RETURN_REGISTER + 1);
+		
+		// Otherwise use pre-determined ID
+		else
+			codebuilder.addMathConst(StackJavaType.INTEGER, MathType.OR,
+				0, ctype, NativeCode.RETURN_REGISTER + 1);
+		
+		// Call kernel method for array creation
+		codebuilder.add(NativeInstructionType.LOAD_POOL,
+			new InvokedMethod(InvokeType.STATIC, KERNEL_CLASS.toString(),
+			"jvmNewArray", "(II)I"), NativeCode.RETURN_REGISTER);
+		codebuilder.add(NativeInstructionType.INVOKE,
+			NativeCode.RETURN_REGISTER,
+			new RegisterList(NativeCode.RETURN_REGISTER + 1, __len.register));
+		
+		// Copy result
+		codebuilder.addCopy(NativeCode.RETURN_REGISTER, __out.register);
 	}
 	
 	/**

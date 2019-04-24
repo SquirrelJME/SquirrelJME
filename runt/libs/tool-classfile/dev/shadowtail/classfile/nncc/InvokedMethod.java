@@ -13,7 +13,10 @@ package dev.shadowtail.classfile.nncc;
 import dev.shadowtail.classfile.xlate.InvokeType;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.MethodDescriptor;
 import net.multiphasicapps.classfile.MethodHandle;
+import net.multiphasicapps.classfile.MethodName;
 
 /**
  * Represents a method to be invoked.
@@ -30,6 +33,23 @@ public final class InvokedMethod
 	
 	/** String representation. */
 	private Reference<String> _string;
+	
+	/**
+	 * Initializes the invoked method.
+	 *
+	 * @param __t The type of method to invoke.
+	 * @param __cl The class.
+	 * @param __mn The method name.
+	 * @param __mt The method type.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/24
+	 */
+	public InvokedMethod(InvokeType __t, String __cl, String __mn, String __mt)
+		throws NullPointerException
+	{
+		this(__t, new MethodHandle(new ClassName(__cl),
+			new MethodName(__mn), new MethodDescriptor(__mt)));
+	}
 	
 	/**
 	 * Initializes the invoked method.
