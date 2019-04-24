@@ -94,35 +94,24 @@ public class SummerCoatFactory
 		int kernaddr = sm._kernelmcaddr,
 			bootaddr = -1;
 		
+		// Static memory allocation
+		StaticAllocator statalloc = new StaticAllocator(RAM_START_ADDRESS);
+		
 		// Write raw strings into memory which describe the various VM
 		// arguments and such. This mostly refers to the class to start once
 		// the VM has initialized itself
-		int[] sssp = new int[]{RAM_START_ADDRESS};
-		int xxclasspth = this.__memString(vmem, sssp,
+		int xxclasspth = this.__memString(vmem, statalloc,
 				SummerCoatFactory.stringArrayToString(
 				SummerCoatFactory.classPathToStringArray(__cp))),
-			xxsysprops = this.__memString(vmem, sssp,
+			xxsysprops = this.__memString(vmem, statalloc,
 				SummerCoatFactory.stringArrayToString(
 				SummerCoatFactory.stringMapToString(__sprops))),
-			xxmainclss = this.__memString(vmem, sssp, __maincl),
-			xxmainargs = this.__memString(vmem, sssp,
+			xxmainclss = this.__memString(vmem, statalloc, __maincl),
+			xxmainargs = this.__memString(vmem, statalloc,
 				SummerCoatFactory.stringArrayToString(__args));
 		
 		// The base address of the kernel object
-		int kobjbase = (sssp[0] + 3) & (~3);
-		
-		// Base for fields, note that the object includes its class ID
-		// and the reference count!
-		int kfldbase = kobjbase + 4;
-		
-		// Write fixed class ID into object base and an initial reference
-		// count of 1
-		vmem.memWriteShort(kobjbase, FixedClassIDs.KERNEL);
-		vmem.memWriteShort(kobjbase + 2, 1);
-		
-		// Static memory size, small region of starting memory for the boot
-		// strings and such
-		int staticmemsize = ((sssp[0] + 128 + 1024) + 1023) & (~1023);
+		int kobjbase;
 		
 		// Read the information on the boot class into memory, we need to
 		// initialize and setup a bunch of fields for it
@@ -136,19 +125,28 @@ public class SummerCoatFactory
 			// bootstrap class.
 			MinimizedClassFile minikern = MinimizedClassFile.decode(kin);
 			
+			// Allocate the kernel object
+			kobjbase = statalloc.allocate(8 + minikern.header.ifbytes);
+			
+			// Write fixed class ID into object base and an initial reference
+			// count of 1
+			vmem.memWriteInt(kobjbase + Kernel.OBJECT_CLASS_OFFSET,
+				FixedClassIDs.KERNEL);
+			vmem.memWriteInt(kobjbase + Kernel.OBJECT_COUNT_OFFSET,
+				1);
+			
+			// Base for fields, note that the object includes its class ID
+			// and the reference count!
+			int kfldbase = kobjbase + 8;
+			
 			// The base address of the static pool along with its size
 			int poolcount = minikern.header.poolcount,
 				spoolsize = poolcount * 4;
-			spoolbase = (kobjbase + minikern.header.ifbytes + 8 + 3) & ~(3);
+			spoolbase = statalloc.allocate(spoolsize);
 			
 			// Offset to the code area in this minimized method
 			int scodebase = kernaddr + minikern.header.smoff,
 				icodebase = kernaddr + minikern.header.imoff;
-			
-			// Is the static memory size too small? grow it
-			int spoolend = spoolbase + spoolsize;
-			if (spoolend >= staticmemsize)
-				staticmemsize = (spoolend + 1023) & (~1023);
 			
 			// Initialize the static pool
 			MinimizedPool pool = minikern.pool;
@@ -339,7 +337,7 @@ public class SummerCoatFactory
 						
 						// Static memory size
 					case "staticmemsize":
-						vmem.memWriteInt(kfo, staticmemsize);
+						vmem.memWriteInt(kfo, statalloc.size());
 						break;
 						
 						// Starting memory address
@@ -433,20 +431,18 @@ public class SummerCoatFactory
 	 * This writes a string to memory somewhere.
 	 *
 	 * @param __wm Memory that can be written to.
-	 * @param __wp The write pointer of the string.
+	 * @param __sa Static allocator.
 	 * @param __s The string to encode.
 	 * @return The address the string was stored at.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/21
 	 */
-	private int __memString(WritableMemory __wm, int[] __wp, String __s)
+	private int __memString(WritableMemory __wm, StaticAllocator __sa,
+		String __s)
 		throws NullPointerException
 	{
-		if (__wm == null || __wp == null || __s == null)
+		if (__wm == null || __sa == null || __s == null)
 			throw new NullPointerException("NARG");
-		
-		int ptr = __wp[0],
-			base = ptr;
 		
 		// Encode bytes
 		byte[] encode;
@@ -459,24 +455,23 @@ public class SummerCoatFactory
 			encode = __s.getBytes();
 		}
 		
-		// Write fixed ID, initial refcount, and length
-		__wm.memWriteShort(ptr, FixedClassIDs.PRIMITIVE_BYTE_ARRAY);
-		__wm.memWriteShort(ptr + 2, 1);
-		__wm.memWriteInt(ptr + 4, encode.length);
+		// Allocate data
+		int rv = __sa.allocate(12 + encode.length);
 		
-		// Move pointer up
-		ptr += 6;
+		// Write fixed ID, initial refcount, and length
+		__wm.memWriteInt(rv + Kernel.OBJECT_CLASS_OFFSET,
+			FixedClassIDs.PRIMITIVE_BYTE_ARRAY);
+		__wm.memWriteInt(rv + Kernel.OBJECT_COUNT_OFFSET,
+			1);
+		__wm.memWriteInt(rv + Kernel.ARRAY_LENGTH_OFFSET,
+			encode.length);
 		
 		// Write byte data
 		for (int i = 0, n = encode.length; i < n; i++)
-			__wm.memWriteByte(ptr++, encode[i]);
+			__wm.memWriteByte(rv + 12 + i, encode[i]);
 		
-		// Round pointer
-		ptr = (ptr + 3) & (~3);
-		
-		// Store for next read
-		__wp[0] = ptr;
-		return base;
+		// Return pointer
+		return rv;
 	}
 	
 	/**
