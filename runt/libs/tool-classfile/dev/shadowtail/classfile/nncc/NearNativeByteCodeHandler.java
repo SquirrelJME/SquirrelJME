@@ -842,6 +842,11 @@ public final class NearNativeByteCodeHandler
 		// Copy into the exception register
 		codebuilder.addCopy(__in.register, NativeCode.EXCEPTION_REGISTER);
 		
+		// Clear the reference queue because this results in a net reference
+		// count if this point is reached, however this is still needed for
+		// the NPE check even though null values will never be counted
+		this._lastenqueue = null;
+		
 		// Do not jump at this point, just return the exception check will be
 		// flagged which will start the exception handling
 		return;
