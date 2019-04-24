@@ -215,18 +215,6 @@ public final class JavaStackEnqueueList
 	}
 	
 	/**
-	 * Checks if the given index refers to a local.
-	 *
-	 * @param __i The index to check.
-	 * @return If it refers to a local.
-	 * @since 2019/04/17
-	 */
-	public final boolean isLocal(int __i)
-	{
-		return __i < this.stackstart;
-	}
-	
-	/**
 	 * {@inheritDoc}
 	 * @since 2019/03/30
 	 */
@@ -254,6 +242,18 @@ public final class JavaStackEnqueueList
 	public final boolean isEmpty()
 	{
 		return this._registers.length == 0;
+	}
+	
+	/**
+	 * Checks if the given index refers to a local.
+	 *
+	 * @param __i The index to check.
+	 * @return If it refers to a local.
+	 * @since 2019/04/17
+	 */
+	public final boolean isLocal(int __i)
+	{
+		return __i < this.stackstart;
 	}
 	
 	/**
