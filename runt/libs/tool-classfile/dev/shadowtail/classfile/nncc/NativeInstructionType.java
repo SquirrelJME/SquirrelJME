@@ -197,6 +197,7 @@ public interface NativeInstructionType
 	 * New array. 
 	 * {@code iiiixxxx, r2 = new p1[r3]}.
 	 */
+	@Deprecated
 	public static final int NEWARRAY =
 		0xF1;
 	
