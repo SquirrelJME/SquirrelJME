@@ -112,9 +112,11 @@ public final class ByteCodeProcessor
 			this.__aaaProcess();
 		}
 		
-		// {@squirreljme.error JC48 Failed to process the byte code. (The
+		// {@squirreljme.error JC48 Failed to process the byte code, this may
+		// be due to an invalid class or an internal compiler error. (The
 		// last processed instruction)}
-		catch (InvalidClassFormatException|IllegalArgumentException e)
+		catch (InvalidClassFormatException|IllegalArgumentException|
+			 IllegalStateException|IndexOutOfBoundsException e)
 		{
 			throw new InvalidClassFormatException("JC48 " + this.state, e);
 		}
