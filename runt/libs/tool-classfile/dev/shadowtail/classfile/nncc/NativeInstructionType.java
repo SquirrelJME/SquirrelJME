@@ -245,6 +245,7 @@ public interface NativeInstructionType
 	
 	/**
 	 * Reference push. */
+	@Deprecated
 	public static final int REF_PUSH =
 		0xF8;
 	
@@ -252,6 +253,7 @@ public interface NativeInstructionType
 	 * Reference clear. 
 	 * {@code iiiixxxx}.
 	 */
+	@Deprecated
 	public static final int REF_CLEAR =
 		0xF9;
 	
@@ -259,6 +261,7 @@ public interface NativeInstructionType
 	 * Reference reset. 
 	 * {@code iiiixxxx}.
 	 */
+	@Deprecated
 	public static final int REF_RESET =
 		0xFA;
 	
