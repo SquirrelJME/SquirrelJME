@@ -528,7 +528,6 @@ public final class NativeCodeBuilder
 		
 		// If there are any jump points which refer to the instruction index
 		// directly following it, then remove the jump.
-		// If these jumps are ref clearing ones, then replace with a refclear
 		// Also possibly perform other modifications
 		List<NativeInstruction> in = new ArrayList<>(
 			this._instructions.values());
@@ -540,14 +539,12 @@ public final class NativeCodeBuilder
 			int rie = ri.encoding();
 			
 			NativeCodeLabel jt = null;
-			boolean refclear = false;
 			
 			// Depends on the encoding
 			switch (rie)
 			{
 				case NativeInstructionType.IF_ICMP:
 					jt = (NativeCodeLabel)ri.argument(2);
-					refclear = ((ri.operation() & 0b1000) != 0);
 					break;
 					
 					// Not a jump
@@ -556,36 +553,25 @@ public final class NativeCodeBuilder
 			}
 			
 			// Check if this points to the instruction directly following
-			// this. Do not consider refclears since with that logic it is
-			// only cleared when the condition is met
-			boolean ptonext = (!refclear && jt != null &&
-				(i + 1) == labels.get(jt));
+			// this.
+			boolean ptonext = (jt != null && (i + 1) == labels.get(jt));
 			
 			// If it does point to the next instruction, we either delete it
 			// or replace the instruction with another depending on ref_clear
 			// and such
 			if (ptonext)
 			{
-				// Replace with a ref_clear
-				if (refclear)
-					in.set(i, new NativeInstruction(
-						NativeInstructionType.REF_CLEAR));
+				// Remove this instruction, it is pointless
+				in.remove(i);
+				lines.remove(i);
 				
-				// Delete and move all down
-				else
+				// Move all of the label values down
+				for (Map.Entry<NativeCodeLabel, Integer> e :
+					labels.entrySet())
 				{
-					// Remove this instruction, it is pointless
-					in.remove(i);
-					lines.remove(i);
-					
-					// Move all of the label values down
-					for (Map.Entry<NativeCodeLabel, Integer> e :
-						labels.entrySet())
-					{
-						int val = e.getValue();
-						if (val > i)
-							e.setValue(val - 1);
-					}
+					int val = e.getValue();
+					if (val > i)
+						e.setValue(val - 1);
 				}
 			}
 		}

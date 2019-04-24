@@ -244,28 +244,6 @@ public interface NativeInstructionType
 		0xF7;
 	
 	/**
-	 * Reference push. */
-	@Deprecated
-	public static final int REF_PUSH =
-		0xF8;
-	
-	/**
-	 * Reference clear. 
-	 * {@code iiiixxxx}.
-	 */
-	@Deprecated
-	public static final int REF_CLEAR =
-		0xF9;
-	
-	/**
-	 * Reference reset. 
-	 * {@code iiiixxxx}.
-	 */
-	@Deprecated
-	public static final int REF_RESET =
-		0xFA;
-	
-	/**
 	 * Count. 
 	 * {@code iiiixxxx}.
 	 */
