@@ -1,6 +1,6 @@
 # Changelog
 
-# 0.4.0 (May 5, 2019)
+# 0.4.0 (May 19, 2019)
 
 Now SquirrelJME has the SummerCoat virtual machine which is much lighter and
 faster than SpringCoat. There should definitely be very noticable performance
@@ -73,9 +73,10 @@ More detailed changes:
      * Generate JUnit output which can be used in test environments.
      * Performed some refactoring on the deserialization/serialization code.
  * Compiler Backend
-   * `MergedPathSet` can be initialized by iterables now.
-   * Implemented a new tree based unit system for packages and classes.
    * Added a bunch of string representations for class structures.
+   * Created a stack-cached register based compiler for Java byte code.
+   * Implemented a new tree based unit system for packages and classes.
+   * `MergedPathSet` can be initialized by iterables now.
  * Virtual Machines
    * General
      * Adjusted the Shaded JAR directory layout and added a dash in the path
