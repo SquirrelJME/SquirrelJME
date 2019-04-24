@@ -290,13 +290,10 @@ public final class NativeInstruction
 		{
 			case NativeInstructionType.BREAKPOINT:
 			case NativeInstructionType.ENTRY_MARKER:
-			case NativeInstructionType.REF_CLEAR:
-			case NativeInstructionType.REF_RESET:
 			case NativeInstructionType.RETURN:
 				return 0;
 			
 			case NativeInstructionType.COUNT:
-			case NativeInstructionType.REF_PUSH:
 			case NativeInstructionType.MONITORENTER:
 			case NativeInstructionType.MONITOREXIT:
 			case NativeInstructionType.UNCOUNT:
@@ -364,8 +361,6 @@ public final class NativeInstruction
 			case NativeInstructionType.BREAKPOINT:
 			case NativeInstructionType.ENTRY_MARKER:
 			case NativeInstructionType.RETURN:
-			case NativeInstructionType.REF_CLEAR:
-			case NativeInstructionType.REF_RESET:
 				return ArgumentFormat.of();
 				
 				// [u16]
@@ -513,11 +508,6 @@ public final class NativeInstruction
 					ArgumentFormat.VUINT,
 					ArgumentFormat.VUINT);
 				
-				// [reglist]
-			case NativeInstructionType.REF_PUSH:
-				return ArgumentFormat.of(
-					ArgumentFormat.REGLIST);
-				
 				// [reg w/ memaddr, reglist]
 			case NativeInstructionType.INVOKE:
 				return ArgumentFormat.of(
@@ -627,17 +617,13 @@ public final class NativeInstruction
 			
 			case NativeInstructionType.IF_ICMP:
 				{
-					boolean refclear = ((__op & 0x08) != 0);
-					
 					CompareType ct = CompareType.of(__op & 0x07);
 					if (ct == CompareType.TRUE)
-						return "GOTO" + (refclear ? "_REF_CLEAR" : "");
+						return "GOTO";
 					else if (ct == CompareType.FALSE)
 						return "NOP";
-					
-					return "IF_ICMP_" +
-						ct.name() +
-						(refclear ? "_REF_CLEAR" : "");
+					else
+						return "IF_ICMP_" + ct.name();
 				}
 				
 			case NativeInstructionType.MEMORY_OFF_REG:
@@ -691,9 +677,6 @@ public final class NativeInstruction
 			case NativeInstructionType.MONITOREXIT:		return "MONITOREXIT";
 			case NativeInstructionType.NEW:				return "NEW";
 			case NativeInstructionType.NEWARRAY:		return "NEWARRAY";
-			case NativeInstructionType.REF_CLEAR:		return "REF_CLEAR";
-			case NativeInstructionType.REF_PUSH:		return "REF_PUSH";
-			case NativeInstructionType.REF_RESET:		return "REF_RESET";
 			case NativeInstructionType.RETURN:			return "RETURN";
 			case NativeInstructionType.UNCOUNT:			return "UNCOUNT";
 			
