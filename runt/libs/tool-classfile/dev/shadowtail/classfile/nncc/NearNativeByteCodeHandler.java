@@ -90,6 +90,10 @@ public final class NearNativeByteCodeHandler
 	private final Map<StateOperationsAndTarget, __EData__> _transits =
 		new LinkedHashMap<>();
 	
+	/** Reference clearing and jumping to label. */
+	private final Map<EnqueueAndLabel, __EData__> _refcljumps =
+		new LinkedHashMap<>();
+	
 	/** Last registers enqueued. */
 	private JavaStackEnqueueList _lastenqueue;
 	
@@ -873,7 +877,7 @@ public final class NearNativeByteCodeHandler
 		// register and jump if there is something there
 		if (state.canexception)
 			codebuilder.addIfNonZero(NativeCode.EXCEPTION_REGISTER,
-				this.__labelException(), false);
+				this.__labelException());
 		
 		// If this instruction naturally flows into another, determine we
 		// need to transition to that stack state in order to work properly
@@ -953,6 +957,23 @@ public final class NearNativeByteCodeHandler
 		
 		// Was an exception handler generated?
 		boolean didehfall = false;
+		
+		// Generate reference clear jumps
+		Map<EnqueueAndLabel, __EData__> refcljumps = this._refcljumps;
+		for (Map.Entry<EnqueueAndLabel, __EData__> e : refcljumps.entrySet())
+		{
+			EnqueueAndLabel eql = e.getKey();
+			__EData__ ed = e.getValue();
+			
+			// Set line/address info
+			state.addr = ed.addr;
+			int line = ed.line;
+			state.line = line;
+			codebuilder.setSourceLine(line);
+			
+			// Clear references
+			throw new todo.TODO();
+		}
 		
 		// Generate make exception code
 		Map<ClassAndLabel, __EData__> metable = this._metable;
@@ -1131,8 +1152,8 @@ public final class NearNativeByteCodeHandler
 		NativeCodeBuilder codebuilder = this.codebuilder;
 		
 		// Just a plain zero check
-		codebuilder.addIfZero(__ir, this.__labelMakeException(
-			"java/lang/NullPointerException"), true);
+		codebuilder.addIfZero(__ir, this.__labelRefClearJump(
+			this.__labelMakeException("java/lang/NullPointerException")));
 	}
 	
 	/**
@@ -1176,7 +1197,8 @@ public final class NearNativeByteCodeHandler
 		// of the given class. The return register is checked because the
 		// value of that method will be placed there.
 		codebuilder.addIfZero(NativeCode.RETURN_REGISTER,
-			this.__labelMakeException("java/lang/ClassCastException"), true);
+			this.__labelRefClearJump(this.__labelMakeException(
+			"java/lang/ClassCastException")));
 	}
 	
 	/**
@@ -1430,6 +1452,53 @@ public final class NearNativeByteCodeHandler
 		
 		// Return the created label (where the caller jumps to)
 		return rv.label;
+	}
+	
+	/**
+	 * Creates a label to potentially reference clear and jumps to the given
+	 * label. This uses the current ref queue table.
+	 *
+	 * @param __tl The target label.
+	 * @return The transition label for reference clearing or {@code __tl}
+	 * if there are no references to clear.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/24
+	 */
+	private final NativeCodeLabel __labelRefClearJump(NativeCodeLabel __tl)
+		throws NullPointerException
+	{
+		if (__tl == null)
+			throw new NullPointerException("NARG");
+		
+		return this.__labelRefClearJump(this._lastenqueue, __tl);
+	}
+	
+	/**
+	 * Creates a label to potentially reference clear and jumps to the given
+	 * label.
+	 *
+	 * @param __eql The reference queue label.
+	 * @param __tl The target label.
+	 * @return The transition label for reference clearing or {@code __tl}
+	 * if there are no references to clear.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/24
+	 */
+	private final NativeCodeLabel __labelRefClearJump(
+		JavaStackEnqueueList __eql, NativeCodeLabel __tl)
+		throws NullPointerException
+	{
+		if (__tl == null)
+			throw new NullPointerException("NARG");
+		
+		// If not clearing anything, just return the target label
+		if (__eql == null || __eql.isEmpty())
+			return __tl;
+		
+		throw new todo.TODO();
+		/*
+		Map<EnqueueAndLabel, __EData__> refcljumps
+		*/
 	}
 	
 	/**
