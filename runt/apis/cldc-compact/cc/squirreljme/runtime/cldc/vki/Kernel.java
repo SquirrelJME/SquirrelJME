@@ -246,6 +246,10 @@ public final class Kernel
 		// needed, by any system call or otherwise
 		Assembly.memWriteInt(sfptr, 8, Assembly.objectToPointer(this));
 		
+		// Test
+		byte[] boop = new byte[127];
+		Assembly.objectToPointer(boop);
+		
 		// Break
 		Assembly.breakpoint();
 		throw new todo.TODO();
