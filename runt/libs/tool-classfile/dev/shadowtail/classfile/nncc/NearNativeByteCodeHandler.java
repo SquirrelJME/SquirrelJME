@@ -93,6 +93,9 @@ public final class NearNativeByteCodeHandler
 	/** Last registers enqueued. */
 	private JavaStackEnqueueList _lastenqueue;
 	
+	/** Reference queue base, register wise. */
+	private int _refqbase;
+	
 	/**
 	 * Initializes the byte code handler.
 	 *
@@ -1441,11 +1444,17 @@ public final class NearNativeByteCodeHandler
 		if (lastenqueue == null)
 			return;
 		
-		// Generate instruction to clear the enqueue
-		this.codebuilder.add(NativeInstructionType.REF_CLEAR);
-		
 		// No need to clear anymore
 		this._lastenqueue = null;
+		
+		// Position where all the enqueued values were stored
+		int refqbase = this._refqbase;
+		
+		// Un-count all of them accordingly
+		NativeCodeBuilder codebuilder = this.codebuilder;
+		for (int i = 0, n = lastenqueue.size(); i < n; i++)
+			codebuilder.add(NativeInstructionType.UNCOUNT,
+				refqbase + i);
 	}
 	
 	/**
@@ -1482,9 +1491,16 @@ public final class NearNativeByteCodeHandler
 			return false;
 		}
 		
-		// Generate code to push all the given registers
-		this.codebuilder.add(NativeInstructionType.REF_PUSH,
-			new RegisterList(__r.registers()));
+		// Register base to use for the reference queue
+		int refqbase = this.state.stack.usedregisters + 4;
+		this._refqbase = refqbase;
+		
+		// Copy all references to the temporary spots
+		NativeCodeBuilder codebuilder = this.codebuilder;
+		for (int i = 0, n = __r.size(); i < n; i++)
+			codebuilder.addCopy(__r.get(i), refqbase + i);
+		
+		// These will be uncounted accordingly
 		this._lastenqueue = __r;
 		
 		// Did enqueue something
