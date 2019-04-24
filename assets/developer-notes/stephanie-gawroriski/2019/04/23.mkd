@@ -1,0 +1,33 @@
+# 2019/04/23
+
+## 09:52
+
+Seems I have a bad read of a field or similar.
+
+## 09:53
+
+The argument call uses register 15 but that is not set to anything the
+closest is ...
+
+## 09:58
+
+Okay so at L210 there is a read off pool 224 (entry 56) and it seems the pool
+offset is like 1048728 which is like way out off the object to some other
+memory. So either the field slot is incorrect or the offset is calculated
+incorrectly. This is at PC @4161fb5a.
+
+## 10:01
+
+Okay so for fields I am actually doing plus kfieldbase which is totally wrong
+so this is why it messes up. And it works now but now the field class base is
+written or read wrong. 
+
+## 10:06
+
+Actually there is memory corruption somewhere because the value was right
+before, but I have things to do.
+
+## 16:06
+
+It seems the store for the allocation base is never done, like I see no store
+to fields.
