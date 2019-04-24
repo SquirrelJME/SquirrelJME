@@ -208,8 +208,7 @@ public final class NativeCodeBuilder
 	}
 	
 	/**
-	 * Adds an integer comparison instruction. No references will ever be
-	 * cleared if the comparison succeeds.
+	 * Adds an integer comparison instruction.
 	 *
 	 * @param __ct The type of comparison to make
 	 * @param __a The first register.
@@ -239,6 +238,7 @@ public final class NativeCodeBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/10
 	 */
+	@Deprecated
 	public final NativeInstruction addIfICmp(CompareType __ct, int __a,
 		int __b, NativeCodeLabel __jt, boolean __rc)
 		throws NullPointerException
@@ -276,6 +276,7 @@ public final class NativeCodeBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/11
 	 */
+	@Deprecated
 	public final NativeInstruction addIfNonZero(int __a, NativeCodeLabel __jt,
 		boolean __rc)
 		throws NullPointerException
@@ -312,6 +313,7 @@ public final class NativeCodeBuilder
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/10
 	 */
+	@Deprecated
 	public final NativeInstruction addIfZero(int __a, NativeCodeLabel __jt,
 		boolean __rc)
 		throws NullPointerException
