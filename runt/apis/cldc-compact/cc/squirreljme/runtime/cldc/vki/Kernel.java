@@ -35,11 +35,11 @@ public final class Kernel
 	
 	/** The offset for the object's reference count. */
 	public static final int OBJECT_COUNT_OFFSET =
-		2;
+		4;
 	
 	/** The offset for array length. */
 	public static final int ARRAY_LENGTH_OFFSET =
-		4;
+		8;
 	
 	/** The address of the ROM file containing definitions and code. */
 	public int romaddr;
@@ -198,7 +198,9 @@ public final class Kernel
 		// Currently all of the memory exists as a bunch of bytes of nothing
 		// with no structure. So this will initialize the region of memory into
 		// a single gigantic partition.
-		int allocbase = (this.memaddr + this.staticmemsize + 3) & (~3);
+		int memaddr = this.memaddr,
+			staticmemsize = this.staticmemsize,
+			allocbase = (memaddr + staticmemsize + 3) & (~3);
 		this.allocbase = allocbase;
 		
 		// The actual size of memory that can be used, cut off from the static
@@ -206,12 +208,12 @@ public final class Kernel
 		// kernel object itself. Make sure it is always rounded down to
 		// 4 bytes because that would really mess with things in the
 		// allocator
-		int memsize = (this.memsize - this.staticmemsize) & (~3);
+		int allocmemsize = (this.memsize - staticmemsize) & (~3);
 		
 		// Write memory size at this position, the highest bit indicates
 		// that it is free memory
 		Assembly.memWriteInt(allocbase, OFF_MEMPART_SIZE,
-			memsize | MEMPART_FREE_BIT);
+			allocmemsize | MEMPART_FREE_BIT);
 		
 		// This is the next chunk in memory, zero means that there is no
 		// remaining chunk (at end of memory)
@@ -271,7 +273,7 @@ public final class Kernel
 		
 		// If the class exactly matches the given type then no further
 		// checking is needed
-		int pcl = Assembly.memReadShort(__p, OBJECT_CLASS_OFFSET);
+		int pcl = Assembly.memReadInt(__p, OBJECT_CLASS_OFFSET);
 		if (pcl == __cldx)
 			return 1;
 		
@@ -338,7 +340,7 @@ public final class Kernel
 		}
 		
 		// Determine the allocation size
-		int allocsize = 8 + (cellsize * __len);
+		int allocsize = 12 + (cellsize * __len);
 		
 		// {@squirreljme.error ZZ3v Not enough memory to allocate array.}
 		int rv = ((Kernel)Assembly.pointerToObject(
@@ -348,8 +350,8 @@ public final class Kernel
 			throw new OutOfMemoryError("ZZ3v");
 		
 		// Class type, initial count, and length
-		Assembly.memWriteShort(__at, OBJECT_CLASS_OFFSET, __at);
-		Assembly.memWriteShort(__at, OBJECT_COUNT_OFFSET, 1);
+		Assembly.memWriteInt(__at, OBJECT_CLASS_OFFSET, __at);
+		Assembly.memWriteInt(__at, OBJECT_COUNT_OFFSET, 1);
 		Assembly.memWriteInt(__at, ARRAY_LENGTH_OFFSET, __len);
 		
 		// Return the array
