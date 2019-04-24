@@ -135,10 +135,6 @@ public class SummerCoatFactory
 			vmem.memWriteInt(kobjbase + Kernel.OBJECT_COUNT_OFFSET,
 				1);
 			
-			// Base for fields, note that the object includes its class ID
-			// and the reference count!
-			int kfldbase = kobjbase + 8;
-			
 			// The base address of the static pool along with its size
 			int poolcount = minikern.header.poolcount,
 				spoolsize = poolcount * 4;
@@ -171,10 +167,10 @@ public class SummerCoatFactory
 						// The kernel class
 						if (af.field().className().equals(minikern.thisName()))
 							if (af.type().isStatic())
-								cv = minikern.field(true, af.
+								cv = 8 + minikern.field(true, af.
 									field().memberNameAndType()).offset;
 							else
-								cv = minikern.field(false, af.
+								cv = 8 + minikern.field(false, af.
 									field().memberNameAndType()).offset;
 						
 						// Some other class
@@ -285,7 +281,8 @@ public class SummerCoatFactory
 				vmem.memWriteInt((sld = spoolbase + (4 * i)), cv);
 				
 				// Debug
-				todo.DEBUG.note("Pool %08x = %d", sld, cv);
+				todo.DEBUG.note("Pool %08x:%d = %d (%s)", sld, (4 * i),
+					cv, pv);
 			}
 			
 			// Find pointers to methods within the kernel
@@ -313,10 +310,11 @@ public class SummerCoatFactory
 			for (MinimizedField mf : minikern.fields(false))
 			{
 				// Memory field offer
-				int kfo = kfldbase + mf.offset;
+				int kfo = kobjbase + 8 + mf.offset;
 				
 				// Debug
-				todo.DEBUG.note("kfo = @%08x", kfo);
+				todo.DEBUG.note("kfo = @%08x (%s, +%d)", kfo, mf.name,
+					8 + mf.offset);
 				
 				// Value depends on the field
 				switch (mf.name.toString())
