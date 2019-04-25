@@ -783,6 +783,10 @@ public final class NativeCPU
 						spec = "ctableptr";
 						break;
 					
+					case NativeCode.THREAD_REGISTER:
+						spec = "thread";
+						break;
+					
 					case NativeCode.POOL_REGISTER:
 						spec = "pool";
 						break;
