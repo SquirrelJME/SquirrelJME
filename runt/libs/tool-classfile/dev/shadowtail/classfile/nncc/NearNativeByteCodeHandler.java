@@ -475,9 +475,8 @@ public final class NearNativeByteCodeHandler
 						__in[0].register, __in[1].register);
 					break;
 				
-					// object -> pointer OR pointer -> object
+					// object -> pointer
 				case "objectToPointer":
-				case "pointerToObject":
 					if (__in[0].register != __out.register)
 						codebuilder.addCopy(__in[0].register, __out.register);
 					break;
@@ -492,6 +491,18 @@ public final class NearNativeByteCodeHandler
 					
 					// Clear references
 					this.__refClear();
+					break;
+				
+					// pointer -> object
+				case "pointerToObject":
+					if (__in[0].register != __out.register)
+						codebuilder.addCopy(__in[0].register, __out.register);
+					
+					// The returned object is electable for reference
+					// counting so we need to count it up otherwise it will
+					// be just freed (this is just a plain copy)
+					codebuilder.add(NativeInstructionType.COUNT,
+						__out.register);
 					break;
 					
 					// Return from frame
