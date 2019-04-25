@@ -247,6 +247,7 @@ public interface NativeInstructionType
 	 * Count. 
 	 * {@code iiiixxxx}.
 	 */
+	@Deprecated
 	public static final int COUNT =
 		0xFB;
 	
@@ -254,6 +255,7 @@ public interface NativeInstructionType
 	 * Uncount. 
 	 * {@code iiiixxxx}.
 	 */
+	@Deprecated
 	public static final int UNCOUNT =
 		0xFC;
 	

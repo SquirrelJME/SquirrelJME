@@ -271,6 +271,28 @@ public final class Kernel
 	}
 	
 	/**
+	 * Performs aggressive garbage collection of the JVM heap to free as much
+	 * memory as possible.
+	 *
+	 * @since 2019/04/25
+	 */
+	public static final void jvmGarbageCollect()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Garbage collects a single object.
+	 *
+	 * @param __p The object to garbage collect.
+	 * @since 2019/04/25
+	 */
+	public static final void jvmGarbageCollectObject(int __p)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Checks whether the given pointer is an instance of the given class.
 	 *
 	 * @param __p The pointer to check.
@@ -355,12 +377,38 @@ public final class Kernel
 		// Determine the allocation size
 		int allocsize = 12 + (cellsize * __len);
 		
-		// {@squirreljme.error ZZ3v Not enough memory to allocate array.}
-		int rv = ((Kernel)Assembly.pointerToObject(
-			Assembly.memReadInt(Assembly.specialGetStaticFieldRegister(),
-				SF_KERNEL_OFFSET))).kernelNew(allocsize);
-		if (rv == 0)
-			throw new OutOfMemoryError("ZZ3v");
+		// Grab kernel object
+		Kernel kernel = ((Kernel)Assembly.pointerToObject(Assembly.memReadInt(
+			Assembly.specialGetStaticFieldRegister(), SF_KERNEL_OFFSET)));
+		
+		// Try to allocate twice
+		int rv;
+		boolean retry = false;
+		for (;;)
+		{
+			// Attempt allocation
+			rv = kernel.kernelNew(allocsize);
+			
+			// Allocation has failed
+			if (rv == 0)
+			{
+				// {@squirreljme.error ZZ3v Not enough memory to allocate
+				// array.}
+				if (retry)
+					throw new OutOfMemoryError("ZZ3v");
+				
+				// Perform aggressive garbage collection to free as much
+				// memory as possible
+				Kernel.jvmGarbageCollect();
+				
+				// Try again
+				retry = true;
+				continue;
+			}
+			
+			// Stop otherwise
+			break;
+		}
 		
 		// Class type, initial count, and length
 		Assembly.memWriteInt(__at, OBJECT_CLASS_OFFSET, __at);

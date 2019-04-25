@@ -486,6 +486,7 @@ public final class NearNativeByteCodeHandler
 					// Push references
 					this.__refPush();
 					
+					// Do the copy
 					if (__in[0].register != __out.register)
 						codebuilder.addCopy(__in[0].register, __out.register);
 					
