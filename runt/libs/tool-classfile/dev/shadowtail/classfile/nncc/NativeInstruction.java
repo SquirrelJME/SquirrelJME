@@ -320,7 +320,6 @@ public final class NativeInstruction
 			case NativeInstructionType.MEMORY_OFF_REG:
 			case NativeInstructionType.MEMORY_OFF_REG_ATOMIC:
 			case NativeInstructionType.MEMORY_OFF_ICONST:
-			case NativeInstructionType.NEWARRAY:
 				return 3;
 			
 			case NativeInstructionType.ARRAY_ACCESS_WIDE:
@@ -501,13 +500,6 @@ public final class NativeInstruction
 					ArgumentFormat.INT32,
 					ArgumentFormat.VJUMP);
 				
-				// [p16, u16, u16]
-			case NativeInstructionType.NEWARRAY:
-				return ArgumentFormat.of(
-					ArgumentFormat.VPOOL,
-					ArgumentFormat.VUINT,
-					ArgumentFormat.VUINT);
-				
 				// [reg w/ memaddr, reglist]
 			case NativeInstructionType.INVOKE:
 				return ArgumentFormat.of(
@@ -676,7 +668,6 @@ public final class NativeInstruction
 			case NativeInstructionType.MONITORENTER:	return "MONITORENTER";
 			case NativeInstructionType.MONITOREXIT:		return "MONITOREXIT";
 			case NativeInstructionType.NEW:				return "NEW";
-			case NativeInstructionType.NEWARRAY:		return "NEWARRAY";
 			case NativeInstructionType.RETURN:			return "RETURN";
 			case NativeInstructionType.UNCOUNT:			return "UNCOUNT";
 			
