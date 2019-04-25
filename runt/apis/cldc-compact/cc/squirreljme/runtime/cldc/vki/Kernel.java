@@ -37,9 +37,21 @@ public final class Kernel
 	public static final int OBJECT_COUNT_OFFSET =
 		4;
 	
+	/** Object monitor owner offset. */
+	public static final int OBJECT_MONITOR_OFFSET =
+		8;
+	
+	/** Base size for object types. */
+	public static final int OBJECT_BASE_SIZE =
+		12;
+	
 	/** The offset for array length. */
 	public static final int ARRAY_LENGTH_OFFSET =
-		8;
+		12;
+	
+	/** The base size for arrays. */
+	public static final int ARRAY_BASE_SIZE =
+		16;
 	
 	/** Offset in static field space for the size. */
 	public static final int SF_WRITE_POINTER_OFFSET =
@@ -375,7 +387,7 @@ public final class Kernel
 		}
 		
 		// Determine the allocation size
-		int allocsize = 12 + (cellsize * __len);
+		int allocsize = ARRAY_BASE_SIZE + (cellsize * __len);
 		
 		// Grab kernel object
 		Kernel kernel = ((Kernel)Assembly.pointerToObject(Assembly.memReadInt(

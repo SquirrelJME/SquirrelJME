@@ -126,7 +126,8 @@ public class SummerCoatFactory
 			MinimizedClassFile minikern = MinimizedClassFile.decode(kin);
 			
 			// Allocate the kernel object
-			kobjbase = statalloc.allocate(8 + minikern.header.ifbytes);
+			kobjbase = statalloc.allocate(Kernel.OBJECT_BASE_SIZE +
+				minikern.header.ifbytes);
 			
 			// Write fixed class ID into object base and an initial reference
 			// count of 1
@@ -167,11 +168,13 @@ public class SummerCoatFactory
 						// The kernel class
 						if (af.field().className().equals(minikern.thisName()))
 							if (af.type().isStatic())
-								cv = 8 + minikern.field(true, af.
-									field().memberNameAndType()).offset;
+								cv = Kernel.OBJECT_BASE_SIZE + minikern.field(
+									true, af.field().memberNameAndType()).
+									offset;
 							else
-								cv = 8 + minikern.field(false, af.
-									field().memberNameAndType()).offset;
+								cv = Kernel.OBJECT_BASE_SIZE + minikern.field(
+									false, af.field().memberNameAndType()).
+									offset;
 						
 						// Some other class
 						else
@@ -310,11 +313,7 @@ public class SummerCoatFactory
 			for (MinimizedField mf : minikern.fields(false))
 			{
 				// Memory field offer
-				int kfo = kobjbase + 8 + mf.offset;
-				
-				// Debug
-				todo.DEBUG.note("kfo = @%08x (%s, +%d)", kfo, mf.name,
-					8 + mf.offset);
+				int kfo = kobjbase + Kernel.OBJECT_BASE_SIZE + mf.offset;
 				
 				// Value depends on the field
 				switch (mf.name.toString())
@@ -454,7 +453,7 @@ public class SummerCoatFactory
 		}
 		
 		// Allocate data
-		int rv = __sa.allocate(12 + encode.length);
+		int rv = __sa.allocate(Kernel.ARRAY_BASE_SIZE + encode.length);
 		
 		// Write fixed ID, initial refcount, and length
 		__wm.memWriteInt(rv + Kernel.OBJECT_CLASS_OFFSET,
@@ -465,8 +464,9 @@ public class SummerCoatFactory
 			encode.length);
 		
 		// Write byte data
-		for (int i = 0, n = encode.length; i < n; i++)
-			__wm.memWriteByte(rv + 12 + i, encode[i]);
+		int vbase = rv + Kernel.ARRAY_BASE_SIZE;
+		for (int i = 0, n = encode.length; i < n; i++, vbase++)
+			__wm.memWriteByte(vbase, encode[i]);
 		
 		// Return pointer
 		return rv;
