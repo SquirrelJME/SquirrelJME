@@ -963,13 +963,9 @@ public final class NearNativeByteCodeHandler
 		for (Map.Entry<EnqueueAndLabel, __EData__> e : refcljumps.entrySet())
 		{
 			EnqueueAndLabel eql = e.getKey();
-			__EData__ ed = e.getValue();
 			
-			// Set line/address info
-			state.addr = ed.addr;
-			int line = ed.line;
-			state.line = line;
-			codebuilder.setSourceLine(line);
+			// Setup EData
+			NativeCodeLabel lab = this.__useEDataAndGetLabel(e.getValue());
 			
 			// Clear references
 			throw new todo.TODO();
@@ -980,16 +976,9 @@ public final class NearNativeByteCodeHandler
 		for (Map.Entry<ClassAndLabel, __EData__> e : metable.entrySet())
 		{
 			ClassAndLabel csl = e.getKey();
-			__EData__ ed = e.getValue();
-			
-			// Set line/address info
-			state.addr = ed.addr;
-			int line = ed.line;
-			state.line = line;
-			codebuilder.setSourceLine(line);
 			
 			// Set label target for this one
-			codebuilder.label(ed.label);
+			codebuilder.label(this.__useEDataAndGetLabel(e.getValue()));
 			
 			// The class name used
 			ClassName exn = csl.classname;
@@ -1023,13 +1012,9 @@ public final class NearNativeByteCodeHandler
 			StateOperations sops = ehtran.handled;
 			JavaStackEnqueueList enq = ehtran.nothandled;
 			ExceptionHandlerTable ehtable = ehtran.table;
-			__EData__ ed = e.getValue();
 			
-			// Set line/address info
-			state.addr = ed.addr;
-			int line = ed.line;
-			state.line = line;
-			codebuilder.setSourceLine(line);
+			// Label used for the jump target
+			NativeCodeLabel lab = this.__useEDataAndGetLabel(e.getValue());
 			
 			// If the table is empty, just return
 			if (ehtable.isEmpty())
@@ -1038,13 +1023,13 @@ public final class NearNativeByteCodeHandler
 				// generate one here to be used for later points
 				int rdx = returns.indexOf(enq);
 				if (rdx < 0)
-					codebuilder.label(ed.label,
+					codebuilder.label(lab,
 						codebuilder.labelTarget(this.__generateReturn(enq)));
 				
 				// We can just alias this exception to the return point to
 				// cleanup everything
 				else
-					codebuilder.label(ed.label,
+					codebuilder.label(lab,
 						codebuilder.labelTarget("return", rdx));
 				
 				// Generate the next handler
@@ -1052,7 +1037,7 @@ public final class NearNativeByteCodeHandler
 			}
 			
 			// Set label target for this one
-			codebuilder.label(ed.label);
+			codebuilder.label(lab);
 			
 			// Go through and build the exception handler table
 			for (ExceptionHandler eh : ehtable)
@@ -1110,16 +1095,9 @@ public final class NearNativeByteCodeHandler
 			StateOperationsAndTarget sot = e.getKey();
 			StateOperations ops = sot.operations;
 			InstructionJumpTarget target = sot.target;
-			__EData__ ed = e.getValue();
-			
-			// Set line/address info
-			state.addr = ed.addr;
-			int line = ed.line;
-			state.line = line;
-			codebuilder.setSourceLine(line);
 			
 			// Set label target for this one
-			codebuilder.label(ed.label);
+			codebuilder.label(this.__useEDataAndGetLabel(e.getValue()));
 			
 			// Generate operations
 			this.doStateOperations(ops);
@@ -1574,6 +1552,32 @@ public final class NearNativeByteCodeHandler
 		
 		// Did enqueue something
 		return true;
+	}
+	
+	/**
+	 * Uses the given EData and returns the used label.
+	 *
+	 * @param __ed The data to use.
+	 * @return The label.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/25
+	 */
+	private final NativeCodeLabel __useEDataAndGetLabel(__EData__ __ed)
+		throws NullPointerException
+	{
+		if (__ed == null)
+			throw new NullPointerException("NARG");
+		
+		// Setup state
+		ByteCodeState state = this.state;
+		state.addr = __ed.addr;
+		state.line = __ed.line;
+		
+		// Setup code builder
+		this.codebuilder.setSourceLine(__ed.line);
+		
+		// And return the label
+		return __ed.label;
 	}
 }
 
