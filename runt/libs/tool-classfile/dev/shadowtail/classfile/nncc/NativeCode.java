@@ -48,6 +48,10 @@ public final class NativeCode
 	public static final int CLASS_TABLE_REGISTER =
 		5;
 	
+	/** Register which represents the current thread of execution. */
+	public static final int THREAD_REGISTER =
+		6;
+	
 	/** Base for local registers (arguments start here). */
 	public static final int LOCAL_REGISTER_BASE =
 		8;
