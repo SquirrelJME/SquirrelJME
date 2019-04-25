@@ -194,14 +194,6 @@ public interface NativeInstructionType
 		0xF0;
 	
 	/**
-	 * New array. 
-	 * {@code iiiixxxx, r2 = new p1[r3]}.
-	 */
-	@Deprecated
-	public static final int NEWARRAY =
-		0xF1;
-	
-	/**
 	 * Array length. 
 	 * {@code iiiixxxx, r2 = r1.length}.
 	 */
