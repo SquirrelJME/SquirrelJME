@@ -1,0 +1,36 @@
+# 2019/04/24
+
+## 08:04
+
+Okay so the release of SquirrelJME has been pushed back another two weeks. I
+definitely need it since otherwise there would be lots to do in a week and a
+half and I definitely do not want to cut out RetroArch or similar. I just
+implemented array allocation as well. I do however need to implement the
+reference queue stuff and such and any logic to uncount as needed. Actually
+I do not need any extra instructions or otherwise, I can just internally
+track the reference queue for clearing. Like it only has to be handled
+locally. Reference queues for the most part are only done for single
+instructions at a time. So I just have to make copies and then uncount
+when cleared. Completely removing this from the VM side simplifies things
+because it means less instruction types to handle.
+
+## 08:13
+
+This means all the reference clear instructions go away as well and for any
+jumps which do reference clears will just be turned into special
+reference clearing handlers then jumping. So this means there is a new
+`EnqueueAndLabel` type along with generators for that.
+
+## 08:28
+
+Actually for like PowerPC atomics only operate on words, so that will be an
+important thing. This means objects need to get integer alignment for things
+so this means that objects are just 4 bytes bigger now. Not too bad.
+
+## 11:05
+
+Seems the wrong pool values are being read. So will need to fix that.
+
+## 11:13
+
+I was not loading the field offset correctly, so I was off by 8!
