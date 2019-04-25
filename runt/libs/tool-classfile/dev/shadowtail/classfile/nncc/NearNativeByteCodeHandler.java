@@ -964,11 +964,16 @@ public final class NearNativeByteCodeHandler
 		{
 			EnqueueAndLabel eql = e.getKey();
 			
-			// Setup EData
-			NativeCodeLabel lab = this.__useEDataAndGetLabel(e.getValue());
+			// Set label target for this one
+			codebuilder.label(this.__useEDataAndGetLabel(e.getValue()));
 			
 			// Clear references
-			throw new todo.TODO();
+			JavaStackEnqueueList enq = eql.enqueue;
+			for (int i = 0, n = enq.size(); i < n; i++)
+				codebuilder.add(NativeInstructionType.UNCOUNT, enq.get(i));
+			
+			// Then go to the target
+			codebuilder.addGoto(eql.label);
 		}
 		
 		// Generate make exception code
@@ -1106,7 +1111,7 @@ public final class NearNativeByteCodeHandler
 			codebuilder.addGoto(new NativeCodeLabel("java", target.target()));
 		}
 		
-		return this.codebuilder.build();
+		return codebuilder.build();
 	}
 	
 	/**
@@ -1473,10 +1478,23 @@ public final class NearNativeByteCodeHandler
 		if (__eql == null || __eql.isEmpty())
 			return __tl;
 		
-		throw new todo.TODO();
-		/*
-		Map<EnqueueAndLabel, __EData__> refcljumps
-		*/
+		// Setup key
+		EnqueueAndLabel key = new EnqueueAndLabel(__eql, __tl);
+		
+		// Did we make this before?
+		Map<EnqueueAndLabel, __EData__> refcljumps = this._refcljumps;
+		__EData__ rv = refcljumps.get(key);
+		if (rv != null)
+			return rv.label;
+		
+		// Setup new record
+		ByteCodeState state = this.state;
+		rv = new __EData__(state.addr, state.line,
+			new NativeCodeLabel("refclear", refcljumps.size()));
+		refcljumps.put(key, rv);
+		
+		// Use the created label
+		return rv.label;
 	}
 	
 	/**
