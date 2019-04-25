@@ -41,6 +41,18 @@ public final class Kernel
 	public static final int ARRAY_LENGTH_OFFSET =
 		8;
 	
+	/** Offset in static field space for the size. */
+	public static final int SF_WRITE_POINTER_OFFSET =
+		0;
+	
+	/** Amount of space left in the static field area. */
+	public static final int SF_SPACE_LEFT_OFFSET =
+		4;
+	
+	/** Offset in static field space for the kernel. */
+	public static final int SF_KERNEL_OFFSET =
+		8;
+	
 	/** The address of the ROM file containing definitions and code. */
 	public int romaddr;
 	
@@ -241,12 +253,13 @@ public final class Kernel
 		Assembly.specialSetStaticFieldRegister(sfptr);
 		
 		// Current write address in the field space and the space remaining
-		Assembly.memWriteInt(sfptr, 0, sfptr + 16);
-		Assembly.memWriteInt(sfptr, 4, sfspace - 16);
+		Assembly.memWriteInt(sfptr, SF_WRITE_POINTER_OFFSET, sfptr + 16);
+		Assembly.memWriteInt(sfptr, SF_SPACE_LEFT_OFFSET, sfspace - 16);
 		
 		// Write the kernel object so we can call back into it whenever it is
 		// needed, by any system call or otherwise
-		Assembly.memWriteInt(sfptr, 8, Assembly.objectToPointer(this));
+		Assembly.memWriteInt(sfptr, SF_KERNEL_OFFSET,
+			Assembly.objectToPointer(this));
 		
 		// Test
 		byte[] boop = new byte[127];
@@ -344,8 +357,8 @@ public final class Kernel
 		
 		// {@squirreljme.error ZZ3v Not enough memory to allocate array.}
 		int rv = ((Kernel)Assembly.pointerToObject(
-			Assembly.memReadInt(Assembly.specialGetStaticFieldRegister(), 0))).
-			kernelNew(allocsize);
+			Assembly.memReadInt(Assembly.specialGetStaticFieldRegister(),
+				SF_KERNEL_OFFSET))).kernelNew(allocsize);
 		if (rv == 0)
 			throw new OutOfMemoryError("ZZ3v");
 		
