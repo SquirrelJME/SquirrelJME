@@ -64,9 +64,17 @@ public final class NativeCode
 	public static final int WHERE_IS_THIS =
 		11;
 	
+	/** Volatile A register. */
+	public static final int VOLATILE_A_REGISTER =
+		12;
+	
+	/** Volatile B register. */
+	public static final int VOLATILE_B_REGISTER =
+		13;
+	
 	/** The register of the first argument. */
 	public static final int ARGUMENT_REGISTER_BASE =
-		12;
+		16;
 	
 	/** This bit XORed NEG bit == set, means memory access is volatile. */
 	public static final int MEMORY_OFF_VOLATILE_BIT =

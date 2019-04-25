@@ -293,13 +293,12 @@ public final class NativeInstruction
 			case NativeInstructionType.RETURN:
 				return 0;
 			
-			case NativeInstructionType.COUNT:
 			case NativeInstructionType.MONITORENTER:
 			case NativeInstructionType.MONITOREXIT:
-			case NativeInstructionType.UNCOUNT:
 				return 1;
 				
 			case NativeInstructionType.ARRAYLEN:
+			case NativeInstructionType.ATOMIC_INT_INCREMENT:
 			case NativeInstructionType.CONVERSION:
 			case NativeInstructionType.INVOKE:
 			case NativeInstructionType.LOAD_POOL:
@@ -307,6 +306,7 @@ public final class NativeInstruction
 				return 2;
 					
 			case NativeInstructionType.ARRAY_ACCESS:
+			case NativeInstructionType.ATOMIC_INT_DECREMENT_AND_GET:
 			case NativeInstructionType.CONVERSION_TO_WIDE:
 			case NativeInstructionType.CONVERSION_FROM_WIDE:
 			case NativeInstructionType.IF_ICMP:
@@ -318,7 +318,6 @@ public final class NativeInstruction
 			case NativeInstructionType.MATH_CONST_INT:
 			case NativeInstructionType.MATH_CONST_FLOAT:
 			case NativeInstructionType.MEMORY_OFF_REG:
-			case NativeInstructionType.MEMORY_OFF_REG_ATOMIC:
 			case NativeInstructionType.MEMORY_OFF_ICONST:
 				return 3;
 			
@@ -326,7 +325,6 @@ public final class NativeInstruction
 			case NativeInstructionType.CONVERSION_WIDE:
 			case NativeInstructionType.MEMORY_OFF_ICONST_WIDE:
 			case NativeInstructionType.MEMORY_OFF_REG_WIDE:
-			case NativeInstructionType.MEMORY_OFF_REG_ATOMIC_WIDE:
 				return 4;
 				
 			case NativeInstructionType.MATH_CONST_LONG:
@@ -363,10 +361,8 @@ public final class NativeInstruction
 				return ArgumentFormat.of();
 				
 				// [u16]
-			case NativeInstructionType.COUNT:
 			case NativeInstructionType.MONITORENTER:
 			case NativeInstructionType.MONITOREXIT:
-			case NativeInstructionType.UNCOUNT:
 				return ArgumentFormat.of(
 					ArgumentFormat.VUINT);
 				
@@ -377,12 +373,14 @@ public final class NativeInstruction
 					ArgumentFormat.VUINT);
 					
 				// [u16, u16]
+			case NativeInstructionType.ATOMIC_INT_INCREMENT:
 			case NativeInstructionType.CONVERSION:
 				return ArgumentFormat.of(
 					ArgumentFormat.VUINT,
 					ArgumentFormat.VUINT);
 			
 				// [u16, u16|u16]
+			case NativeInstructionType.ATOMIC_INT_DECREMENT_AND_GET:
 			case NativeInstructionType.CONVERSION_TO_WIDE:
 			case NativeInstructionType.CONVERSION_FROM_WIDE:
 				return ArgumentFormat.of(
@@ -410,7 +408,6 @@ public final class NativeInstruction
 			case NativeInstructionType.MATH_REG_FLOAT:
 			case NativeInstructionType.MATH_REG_INT:
 			case NativeInstructionType.MEMORY_OFF_REG:
-			case NativeInstructionType.MEMORY_OFF_REG_ATOMIC:
 				return ArgumentFormat.of(
 					ArgumentFormat.VUINT,
 					ArgumentFormat.VUINT,
@@ -419,7 +416,6 @@ public final class NativeInstruction
 				// [u16|u16, u16, u16]
 			case NativeInstructionType.ARRAY_ACCESS_WIDE:
 			case NativeInstructionType.MEMORY_OFF_REG_WIDE:
-			case NativeInstructionType.MEMORY_OFF_REG_ATOMIC_WIDE:
 				return ArgumentFormat.of(
 					ArgumentFormat.VUINT,
 					ArgumentFormat.VUINT,
@@ -557,13 +553,6 @@ public final class NativeInstruction
 			else
 				return NativeInstructionType.MEMORY_OFF_REG;
 		
-		// Memory offset register (atomic)
-		else if (upper == NativeInstructionType.MEMORY_OFF_REG_ATOMIC)
-			if ((__op & 0b110) == 0b110)
-				return NativeInstructionType.MEMORY_OFF_REG_ATOMIC_WIDE;
-			else
-				return NativeInstructionType.MEMORY_OFF_REG_ATOMIC;
-		
 		// Memory offset constant
 		else if (upper == NativeInstructionType.MEMORY_OFF_ICONST)
 			if ((__op & 0b110) == 0b110)
@@ -627,13 +616,6 @@ public final class NativeInstruction
 					"_" +
 					(((__op & 0x80) != 0) ? "ICONST" : "REG");
 				
-			case NativeInstructionType.MEMORY_OFF_REG_ATOMIC:
-				return "MEM_ATOMIC_" +
-					(((__op & 0x08) != 0) ? "LOAD" : "STORE") +
-					"_" +
-					DataType.of(__op & 0x07).name() +
-					"_REG";
-				
 			case NativeInstructionType.ARRAY_ACCESS:
 			case NativeInstructionType.ARRAY_ACCESS_WIDE:
 				return "ARRAY_" +
@@ -655,8 +637,11 @@ public final class NativeInstruction
 				}
 
 			case NativeInstructionType.ARRAYLEN:		return "ARRAYLEN";
+			case NativeInstructionType.ATOMIC_INT_DECREMENT_AND_GET:
+				return "ATOMIC_INT_DECREMENT_AND_GET";
+			case NativeInstructionType.ATOMIC_INT_INCREMENT:
+				return "ATOMIC_INT_INCREMENT";
 			case NativeInstructionType.BREAKPOINT:		return "BREAKPOINT";
-			case NativeInstructionType.COUNT:			return "COUNT";
 			case NativeInstructionType.ENTRY_MARKER:	return "ENTRY_MARKER";
 			case NativeInstructionType.IFARRAY_INDEX_OOB_REF_CLEAR:
 				return "IFARRAY_INDEX_OOB_REF_CLEAR";
@@ -669,7 +654,6 @@ public final class NativeInstruction
 			case NativeInstructionType.MONITOREXIT:		return "MONITOREXIT";
 			case NativeInstructionType.NEW:				return "NEW";
 			case NativeInstructionType.RETURN:			return "RETURN";
-			case NativeInstructionType.UNCOUNT:			return "UNCOUNT";
 			
 			default:
 				return String.format("UNKNOWN_%02x", __op);

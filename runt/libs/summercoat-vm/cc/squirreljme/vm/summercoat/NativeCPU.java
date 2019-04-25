@@ -795,6 +795,14 @@ public final class NativeCPU
 						spec = "whereis";
 						break;
 					
+					case NativeCode.VOLATILE_A_REGISTER:
+						spec = "vola";
+						break;
+					
+					case NativeCode.VOLATILE_B_REGISTER:
+						spec = "vola";
+						break;
+					
 					case NativeCode.ARGUMENT_REGISTER_BASE:
 						spec = "a0/this";
 						break;
