@@ -10,6 +10,7 @@
 package dev.shadowtail.classfile.nncc;
 
 import cc.squirreljme.runtime.cldc.vki.FixedClassIDs;
+import cc.squirreljme.runtime.cldc.vki.Kernel;
 import dev.shadowtail.classfile.xlate.ByteCodeHandler;
 import dev.shadowtail.classfile.xlate.ByteCodeState;
 import dev.shadowtail.classfile.xlate.CompareType;
@@ -99,6 +100,9 @@ public final class NearNativeByteCodeHandler
 	
 	/** Reference queue base, register wise. */
 	private int _refqbase;
+	
+	/** Next reference count/uncount ID number for jump. */
+	private int _refclunk;
 	
 	/**
 	 * Initializes the byte code handler.
@@ -293,7 +297,7 @@ public final class NearNativeByteCodeHandler
 		this.__basicCheckCCE(ireg, __fr.className());
 		
 		// Read field offset
-		int tempreg = NativeCode.RETURN_REGISTER;
+		int tempreg = NativeCode.VOLATILE_A_REGISTER;
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
 			this.__fieldAccess(FieldAccessType.INSTANCE, __fr, true), tempreg);
 		
@@ -329,15 +333,14 @@ public final class NearNativeByteCodeHandler
 		this.__basicCheckCCE(ireg, __fr.className());
 		
 		// Read field offset
-		int tempreg = NativeCode.RETURN_REGISTER;
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
 			this.__fieldAccess(FieldAccessType.INSTANCE, __fr, false),
-			tempreg);
+			NativeCode.VOLATILE_A_REGISTER);
 		
 		// Write to memory
 		codebuilder.addMemoryOffReg(
 			DataType.of(__fr.memberType().primitiveType()), false,
-			__v.register, ireg, tempreg);
+			__v.register, ireg, NativeCode.VOLATILE_A_REGISTER);
 			
 		// Clear references as needed
 		this.__refClear();
@@ -373,9 +376,6 @@ public final class NearNativeByteCodeHandler
 		// Push reference
 		this.__refPush();
 		
-		// Use the return address register as a temporary
-		int tempreg = NativeCode.RETURN_REGISTER;
-		
 		// The method we are going to call is in the kernel so we need to
 		// load its pool identifier
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
@@ -383,17 +383,18 @@ public final class NearNativeByteCodeHandler
 		
 		// Load the class index into the temporary
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			__cl, tempreg);
+			__cl, NativeCode.VOLATILE_A_REGISTER);
 		
 		// Load method pointer
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
 			new InvokedMethod(InvokeType.STATIC, new MethodHandle(KERNEL_CLASS,
 			new MethodName("jvmIsInstance"), new MethodDescriptor("(II)I"))),
-			tempreg + 1);
+			NativeCode.VOLATILE_B_REGISTER);
 		
 		// Call the instance checker (__ir, checkclassid)
 		codebuilder.add(NativeInstructionType.INVOKE,
-			tempreg + 1, new RegisterList(__v.register, tempreg));
+			NativeCode.VOLATILE_B_REGISTER,
+			new RegisterList(__v.register, NativeCode.VOLATILE_A_REGISTER));
 		
 		// Copy value over
 		codebuilder.addCopy(NativeCode.RETURN_REGISTER, __o.register);
@@ -502,8 +503,7 @@ public final class NearNativeByteCodeHandler
 					// The returned object is electable for reference
 					// counting so we need to count it up otherwise it will
 					// be just freed (this is just a plain copy)
-					codebuilder.add(NativeInstructionType.COUNT,
-						__out.register);
+					this.__refCount(__out.register);
 					break;
 					
 					// Return from frame
@@ -562,13 +562,13 @@ public final class NearNativeByteCodeHandler
 			}
 			
 			// Load method pointer
-			int tempreg = NativeCode.RETURN_REGISTER;
 			codebuilder.add(NativeInstructionType.LOAD_POOL,
-				new InvokedMethod(__t, __r.handle()), tempreg);
+				new InvokedMethod(__t, __r.handle()),
+				NativeCode.VOLATILE_A_REGISTER);
 			
 			// Add invocation
 			codebuilder.add(NativeInstructionType.INVOKE,
-				tempreg, new RegisterList(callargs));
+				NativeCode.VOLATILE_A_REGISTER, new RegisterList(callargs));
 			
 			// Read in return value, it is just a copy
 			if (__out != null)
@@ -690,20 +690,20 @@ public final class NearNativeByteCodeHandler
 		// If not a primitive then the type depends on the pool value
 		if (ctype == 0)
 			codebuilder.add(NativeInstructionType.LOAD_POOL,
-				__at, NativeCode.RETURN_REGISTER + 1);
+				__at, NativeCode.VOLATILE_A_REGISTER);
 		
 		// Otherwise use pre-determined ID
 		else
 			codebuilder.addMathConst(StackJavaType.INTEGER, MathType.OR,
-				0, ctype, NativeCode.RETURN_REGISTER + 1);
+				0, ctype, NativeCode.VOLATILE_A_REGISTER);
 		
 		// Call kernel method for array creation
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
 			new InvokedMethod(InvokeType.STATIC, KERNEL_CLASS.toString(),
-			"jvmNewArray", "(II)I"), NativeCode.RETURN_REGISTER);
+			"jvmNewArray", "(II)I"), NativeCode.VOLATILE_B_REGISTER);
 		codebuilder.add(NativeInstructionType.INVOKE,
-			NativeCode.RETURN_REGISTER,
-			new RegisterList(NativeCode.RETURN_REGISTER + 1, __len.register));
+			NativeCode.VOLATILE_B_REGISTER,
+			new RegisterList(NativeCode.VOLATILE_A_REGISTER, __len.register));
 		
 		// Copy result
 		codebuilder.addCopy(NativeCode.RETURN_REGISTER, __out.register);
@@ -740,7 +740,7 @@ public final class NearNativeByteCodeHandler
 		
 		// Uncount anything which was enqueued
 		for (int q : this.state.result.enqueue())
-			codebuilder.add(NativeInstructionType.UNCOUNT, q);
+			this.__refUncount(q);
 		
 		// Do the return
 		this.__generateReturn();
@@ -767,13 +767,11 @@ public final class NearNativeByteCodeHandler
 			switch (op.type)
 			{
 				case UNCOUNT:
-					codebuilder.add(NativeInstructionType.UNCOUNT,
-						op.a);
+					this.__refUncount(op.a);
 					break;
 				
 				case COUNT:
-					codebuilder.add(NativeInstructionType.COUNT,
-						op.a);
+					this.__refCount(op.a);
 					break;
 				
 				case COPY:
@@ -803,14 +801,15 @@ public final class NearNativeByteCodeHandler
 		this.__refPush();
 		
 		// Read static offset
-		int tempreg = NativeCode.RETURN_REGISTER;
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			this.__fieldAccess(FieldAccessType.STATIC, __fr, true), tempreg);
+			this.__fieldAccess(FieldAccessType.STATIC, __fr, true),
+			NativeCode.VOLATILE_A_REGISTER);
 		
 		// Read from memory
 		codebuilder.addMemoryOffReg(
 			DataType.of(__fr.memberType().primitiveType()), true,
-			__v.register, NativeCode.STATIC_FIELD_REGISTER, tempreg);
+			__v.register, NativeCode.STATIC_FIELD_REGISTER,
+			NativeCode.VOLATILE_A_REGISTER);
 			
 		// Clear references as needed
 		this.__refClear();
@@ -830,14 +829,15 @@ public final class NearNativeByteCodeHandler
 		this.__refPush();
 		
 		// Read field offset
-		int tempreg = NativeCode.RETURN_REGISTER;
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			this.__fieldAccess(FieldAccessType.STATIC, __fr, false), tempreg);
+			this.__fieldAccess(FieldAccessType.STATIC, __fr, false),
+			NativeCode.VOLATILE_A_REGISTER);
 		
 		// Write to memory
 		codebuilder.addMemoryOffReg(
 			DataType.of(__fr.memberType().primitiveType()), false,
-			__v.register, NativeCode.STATIC_FIELD_REGISTER, tempreg);
+			__v.register, NativeCode.STATIC_FIELD_REGISTER,
+			NativeCode.VOLATILE_A_REGISTER);
 			
 		// Clear references as needed
 		this.__refClear();
@@ -982,7 +982,7 @@ public final class NearNativeByteCodeHandler
 			// Clear references
 			JavaStackEnqueueList enq = eql.enqueue;
 			for (int i = 0, n = enq.size(); i < n; i++)
-				codebuilder.add(NativeInstructionType.UNCOUNT, enq.get(i));
+				this.__refUncount(enq.get(i));
 			
 			// Then go to the target
 			codebuilder.addGoto(eql.label);
@@ -1006,15 +1006,15 @@ public final class NearNativeByteCodeHandler
 				NativeCode.EXCEPTION_REGISTER);
 				
 			// Load invocation pointer
-			int chkreg = NativeCode.RETURN_REGISTER + 1;
 			codebuilder.add(NativeInstructionType.LOAD_POOL,
 				new InvokedMethod(InvokeType.SPECIAL, new MethodHandle(exn,
 					new MethodName("<init>"), new MethodDescriptor("()V"))),
-				chkreg);
+				NativeCode.VOLATILE_A_REGISTER);
 			
 			// Initialize object with constructor
 			codebuilder.add(NativeInstructionType.INVOKE,
-				chkreg, new RegisterList(NativeCode.EXCEPTION_REGISTER));
+				NativeCode.VOLATILE_A_REGISTER,
+				new RegisterList(NativeCode.EXCEPTION_REGISTER));
 			
 			// Generate jump to exception handler
 			codebuilder.addGoto(csl.label);
@@ -1059,9 +1059,6 @@ public final class NearNativeByteCodeHandler
 			// Go through and build the exception handler table
 			for (ExceptionHandler eh : ehtable)
 			{
-				// Use the return address register as a temporary
-				int chkreg = NativeCode.RETURN_REGISTER;
-				
 				// The method we are going to call is in the kernel so we need
 				// to load its pool identifier
 				codebuilder.add(NativeInstructionType.LOAD_POOL,
@@ -1070,31 +1067,25 @@ public final class NearNativeByteCodeHandler
 				
 				// Load the class index into the temporary
 				codebuilder.add(NativeInstructionType.LOAD_POOL,
-					eh.type(), chkreg);
+					eh.type(), NativeCode.VOLATILE_A_REGISTER);
 				
 				// Load address of target method
 				codebuilder.add(NativeInstructionType.LOAD_POOL,
 					new InvokedMethod(InvokeType.STATIC, new MethodHandle(
 					KERNEL_CLASS, new MethodName("jvmIsInstance"),
-					new MethodDescriptor("(II)I"))), chkreg + 1);
+					new MethodDescriptor("(II)I"))),
+					NativeCode.VOLATILE_B_REGISTER);
 				
 				// Call the instance checker (__ir, checkclassid)
 				codebuilder.add(NativeInstructionType.INVOKE,
-					chkreg + 1, new RegisterList(
-					NativeCode.EXCEPTION_REGISTER, chkreg));
+					NativeCode.VOLATILE_B_REGISTER, new RegisterList(
+					NativeCode.EXCEPTION_REGISTER,
+					NativeCode.VOLATILE_A_REGISTER));
 				
 				// Jump to handler if it is met
 				codebuilder.addIfZero(NativeCode.RETURN_REGISTER,
 					this.__labelJavaTransition(sops,
 						new InstructionJumpTarget(eh.handlerAddress())));
-				
-				/*
-				// OLD CODE
-				codebuilder.addIfClass(eh.type(),
-					NativeCode.EXCEPTION_REGISTER,
-					this.__labelJavaTransition(sops,
-						new InstructionJumpTarget(eh.handlerAddress())));
-				*/
 			}
 			
 			// No exception handler is available so, just fall through to the
@@ -1166,9 +1157,6 @@ public final class NearNativeByteCodeHandler
 			
 		NativeCodeBuilder codebuilder = this.codebuilder;
 		
-		// Use the return address register as a temporary
-		int tempreg = NativeCode.RETURN_REGISTER;
-		
 		// The method we are going to call is in the kernel so we need to
 		// load its pool identifier
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
@@ -1176,17 +1164,18 @@ public final class NearNativeByteCodeHandler
 		
 		// Load the class index into the temporary
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			__cl, tempreg);
+			__cl, NativeCode.VOLATILE_A_REGISTER);
 		
 		// Load method pointer
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
 			new InvokedMethod(InvokeType.STATIC, new MethodHandle(KERNEL_CLASS,
 			new MethodName("jvmIsInstance"), new MethodDescriptor("(II)I"))),
-			tempreg + 1);
+			NativeCode.VOLATILE_B_REGISTER);
 		
 		// Call the instance checker (__ir, checkclassid)
 		codebuilder.add(NativeInstructionType.INVOKE,
-			tempreg + 1, new RegisterList(__ir, tempreg));
+			NativeCode.VOLATILE_B_REGISTER,
+			new RegisterList(__ir, NativeCode.VOLATILE_A_REGISTER));
 		
 		// If the resulting method call returns zero then it is not an instance
 		// of the given class. The return register is checked because the
@@ -1285,7 +1274,7 @@ public final class NearNativeByteCodeHandler
 		// Since the enqueue list is not empty, we can just trim a register
 		// from the top and recursively go down
 		// So uncount the top
-		codebuilder.add(NativeInstructionType.UNCOUNT, __eq.top());
+		this.__refUncount(__eq.top());
 		
 		// Recursively go down since the enqueues may possibly be shared, if
 		// any of these enqueues were previously made then the recursive
@@ -1530,8 +1519,31 @@ public final class NearNativeByteCodeHandler
 		// Un-count all of them accordingly
 		NativeCodeBuilder codebuilder = this.codebuilder;
 		for (int i = 0, n = lastenqueue.size(); i < n; i++)
-			codebuilder.add(NativeInstructionType.UNCOUNT,
-				refqbase + i);
+			this.__refUncount(refqbase + i);
+	}
+	
+	/**
+	 * Generates code to reference count the given register.
+	 *
+	 * @param __r The register to reference to count.
+	 * @since 2019/04/25
+	 */
+	private final void __refCount(int __r)
+	{
+		// If the object is null then it will not be counted, this is skipped
+		NativeCodeLabel ncj = new NativeCodeLabel("refnocount",
+			this._refclunk++);
+		
+		// Do not do any counting if this is zero
+		NativeCodeBuilder codebuilder = this.codebuilder;
+		codebuilder.addIfZero(__r, ncj);
+		
+		// Add count
+		codebuilder.add(NativeInstructionType.ATOMIC_INT_INCREMENT,
+			__r, Kernel.OBJECT_COUNT_OFFSET);
+		
+		// No count is jumped here
+		codebuilder.label(ncj);
 	}
 	
 	/**
@@ -1582,6 +1594,41 @@ public final class NearNativeByteCodeHandler
 		
 		// Did enqueue something
 		return true;
+	}
+	
+	/**
+	 * Generates code to reference uncount the given register.
+	 *
+	 * @param __r The register to reference to uncount.
+	 * @since 2019/04/25
+	 */
+	private final void __refUncount(int __r)
+	{
+		// If the object is null then it will not be uncounted, this is skipped
+		NativeCodeLabel ncj = new NativeCodeLabel("refnouncount",
+			this._refclunk++);
+		
+		// Do not do any uncounting if this is zero
+		NativeCodeBuilder codebuilder = this.codebuilder;
+		codebuilder.addIfZero(__r, ncj);
+		
+		// Add uncount
+		codebuilder.add(NativeInstructionType.ATOMIC_INT_DECREMENT_AND_GET,
+			NativeCode.VOLATILE_A_REGISTER, __r, Kernel.OBJECT_COUNT_OFFSET);
+		
+		// If the count is still positive, we do not GC
+		codebuilder.addIfNonZero(NativeCode.VOLATILE_A_REGISTER, ncj);
+		
+		// But here we will be garbage collecting this object
+		codebuilder.add(NativeInstructionType.LOAD_POOL,
+			new InvokedMethod(InvokeType.STATIC, KERNEL_CLASS.toString(),
+			"jvmGarbageCollectObject", "(I)V"),
+			NativeCode.VOLATILE_A_REGISTER);
+		codebuilder.add(NativeInstructionType.INVOKE,
+			NativeCode.VOLATILE_A_REGISTER, new RegisterList(__r));
+		
+		// No uncount or not GCed are jumped here
+		codebuilder.label(ncj);
 	}
 	
 	/**

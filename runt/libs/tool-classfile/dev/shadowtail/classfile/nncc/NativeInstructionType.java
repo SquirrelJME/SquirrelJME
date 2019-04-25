@@ -64,17 +64,6 @@ public interface NativeInstructionType
 		0x57;
 	
 	/**
-	 * Memory access, atomic, offset is in register.
-	 * {@code iiiiLddd, L=T load r1 = *(r2 + r3), L=F set *(r2 + r3) = r1}.
-	 */
-	public static final int MEMORY_OFF_REG_ATOMIC =
-		0x60;
-	
-	/** Memory access, atomic, off a register using long value. */
-	public static final int MEMORY_OFF_REG_ATOMIC_WIDE =
-		0x67;
-	
-	/**
 	 * Array access.
 	 * {@code iiiiLddd, L=T load r1 = r2[r3], L=F set r2[r3] = r1}.
 	 */
@@ -169,12 +158,14 @@ public interface NativeInstructionType
 	/**
 	 * Reference clear and jump if array index is out of bounds.
 	 */
+	@Deprecated
 	public static final int IFARRAY_INDEX_OOB_REF_CLEAR =
 		0xE4;
 	
 	/**
 	 * Reference clear and jump if array type is mismatched.
 	 */
+	@Deprecated
 	public static final int IFARRAY_MISTYPE_REF_CLEAR =
 		0xE5;
 	
@@ -235,21 +226,13 @@ public interface NativeInstructionType
 	public static final int INVOKE =
 		0xF7;
 	
-	/**
-	 * Count. 
-	 * {@code iiiixxxx}.
-	 */
-	@Deprecated
-	public static final int COUNT =
-		0xFB;
+	/** Atomically decrements a memory addres and gets the value. */
+	public static final int ATOMIC_INT_DECREMENT_AND_GET =
+		0xF9;
 	
-	/**
-	 * Uncount. 
-	 * {@code iiiixxxx}.
-	 */
-	@Deprecated
-	public static final int UNCOUNT =
-		0xFC;
+	/** Atomically increments a memory address. */
+	public static final int ATOMIC_INT_INCREMENT =
+		0xFA;
 	
 	/**
 	 * Load from pool, note that at code gen time this is aliased.
