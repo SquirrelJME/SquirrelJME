@@ -110,6 +110,9 @@ public final class Kernel
 	/** Allocation base address. */
 	public int allocbase;
 	
+	/** Did the kernel initialize? */
+	private boolean _kdidinit;
+	
 	/**
 	 * Not used.
 	 *
@@ -128,6 +131,28 @@ public final class Kernel
 	 * @since 2019/04/22
 	 */
 	public final int kernelNew(int __sz)
+	{
+		// If the kernel was initialize then use it as a lock
+		if (this._kdidinit)
+			synchronized (this)
+			{
+				return this.kernelNewLockFree(__sz);
+			}
+		
+		// Otherwise use plain allocation
+		else
+			return this.kernelNewLockFree(__sz);
+	}
+	
+	/**
+	 * Allocates a space within memory of the given size and then returns
+	 * it, the kernel is not locked.
+	 *
+	 * @param __sz The number of bytes to allocate.
+	 * @return The allocated object or {@code 0} if allocation has failed.
+	 * @since 2019/04/22
+	 */
+	protected final int kernelNewLockFree(int __sz)
 	{
 		// Cannot allocate zero bytes
 		if (__sz == 0)
