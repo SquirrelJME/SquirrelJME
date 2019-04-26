@@ -232,8 +232,11 @@ public final class NearNativeByteCodeHandler
 		// Add cast check
 		this.__basicCheckCCE(__v.register, __cl);
 		
-		// Clear references in the event it was overwritten
-		this.__refClear();
+		// We do not need to uncount whatever was pushed in because it would
+		// be immediately pushed back onto the stack. The counts should only
+		// be lowered if ClassCastException is to be thrown. Because otherwise
+		// we will just end up collecting things on a normal refclear
+		this._lastenqueue = null;
 	}
 	
 	/**
