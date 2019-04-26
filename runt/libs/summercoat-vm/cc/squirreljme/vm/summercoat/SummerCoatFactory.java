@@ -134,7 +134,7 @@ public class SummerCoatFactory
 			vmem.memWriteInt(kobjbase + Kernel.OBJECT_CLASS_OFFSET,
 				FixedClassIDs.KERNEL);
 			vmem.memWriteInt(kobjbase + Kernel.OBJECT_COUNT_OFFSET,
-				1);
+				999999);
 			
 			// The base address of the static pool along with its size
 			int poolcount = minikern.header.poolcount,
@@ -459,7 +459,7 @@ public class SummerCoatFactory
 		__wm.memWriteInt(rv + Kernel.OBJECT_CLASS_OFFSET,
 			FixedClassIDs.PRIMITIVE_BYTE_ARRAY);
 		__wm.memWriteInt(rv + Kernel.OBJECT_COUNT_OFFSET,
-			1);
+			999999);
 		__wm.memWriteInt(rv + Kernel.ARRAY_LENGTH_OFFSET,
 			encode.length);
 		
