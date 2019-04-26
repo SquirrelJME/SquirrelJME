@@ -76,6 +76,10 @@ public final class NativeCode
 	public static final int VOLATILE_B_REGISTER =
 		13;
 	
+	/** Copy of this for synchronized method purposes. */
+	public static final int MONITOR_TARGET_REGISTER =
+		14;
+	
 	/** The register of the first argument. */
 	public static final int ARGUMENT_REGISTER_BASE =
 		16;

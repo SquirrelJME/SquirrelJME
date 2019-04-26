@@ -75,6 +75,12 @@ public final class NearNativeByteCodeHandler
 	/** Where is this method? */
 	protected final WhereIsThis whereisthis;
 	
+	/** Is this method synchronized? */
+	protected final boolean issynchronized;
+	
+	/** Is this an instance method? */
+	protected final boolean isinstance;
+	
 	/** Standard exception handler table. */
 	private final Map<ExceptionHandlerTransition, __EData__> _ehtable =
 		new LinkedHashMap<>();
@@ -122,6 +128,8 @@ public final class NearNativeByteCodeHandler
 			__bc.isStaticInitializer()) ? FieldAccessTime.INITIALIZER :
 			FieldAccessTime.NORMAL);
 		this.thistype = __bc.thisType();
+		this.issynchronized = __bc.isSynchronized();
+		this.isinstance = __bc.isInstance();
 		
 		// Use for debugging and stack traces
 		this.whereisthis = new WhereIsThis(__bc.thisType(),
@@ -237,6 +245,17 @@ public final class NearNativeByteCodeHandler
 		// be lowered if ClassCastException is to be thrown. Because otherwise
 		// we will just end up collecting things on a normal refclear
 		this._lastenqueue = null;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/04/26
+	 */
+	@Override
+	public final void doClassObjectLoad(ClassName __cl,
+		JavaStackResult.Output __out)
+	{
+		this.__loadClassObject(__cl, __out.register);
 	}
 	
 	/**
@@ -511,7 +530,7 @@ public final class NearNativeByteCodeHandler
 					
 					// Return from frame
 				case "returnFrame":
-					codebuilder.add(NativeInstructionType.RETURN);
+					this.__generateReturn();
 					break;
 					
 					// Get static field register
@@ -647,9 +666,7 @@ public final class NearNativeByteCodeHandler
 		this.__refPush();
 		
 		// Generate instruction
-		this.codebuilder.add((__enter ? NativeInstructionType.MONITORENTER :
-			NativeInstructionType.MONITOREXIT),
-			__o.register);
+		this.__monitor(__enter, __o.register);
 		
 		// Clear reference
 		this.__refClear();
@@ -932,12 +949,27 @@ public final class NearNativeByteCodeHandler
 		// Entry point debugging
 		if (addr == 0)
 		{
-			// Entry point which
-			codebuilder.add(NativeInstructionType.ENTRY_MARKER);
-			
 			// Load the location of this
 			codebuilder.add(NativeInstructionType.LOAD_POOL,
 				this.whereisthis, NativeCode.WHERE_IS_THIS);
+			
+			// Setup monitor entry
+			if (this.issynchronized)
+			{
+				// Copy instance to monitor target
+				if (this.isinstance)
+					codebuilder.addCopy(state.stack.getLocal(0).register,
+						NativeCode.MONITOR_TARGET_REGISTER);
+				
+				// Load class object to monitor
+				else
+					this.__loadClassObject(this.thistype,
+						NativeCode.MONITOR_TARGET_REGISTER);
+				
+				// Enter monitor on this
+				this.__refCount(NativeCode.MONITOR_TARGET_REGISTER);
+				this.__monitor(true, NativeCode.MONITOR_TARGET_REGISTER);
+			}
 		}
 		
 		// Set source line and instruction operation
@@ -1279,6 +1311,13 @@ public final class NearNativeByteCodeHandler
 		NativeCodeBuilder codebuilder = this.codebuilder;
 		if (__eq.isEmpty())
 		{
+			// If this is synchronized, we need to exit the monitor
+			if (this.issynchronized)
+			{
+				this.__monitor(false, NativeCode.MONITOR_TARGET_REGISTER);
+				this.__refUncount(NativeCode.MONITOR_TARGET_REGISTER);
+			}
+			
 			// Since there is nothing to uncount, just return
 			codebuilder.add(NativeInstructionType.RETURN);
 			
@@ -1517,6 +1556,49 @@ public final class NearNativeByteCodeHandler
 		
 		// Use the created label
 		return rv.label;
+	}
+	
+	/**
+	 * Loads the Class object for the given class into the given register.
+	 *
+	 * @param __cl The class to load.
+	 * @param __r The register to place it in.
+	 * @since 2019/04/26
+	 */
+	private final void __loadClassObject(ClassName __cl, int __r)
+	{
+		// Need to calculate the offset of the class in the class table
+		codebuilder.add(NativeInstructionType.LOAD_POOL,
+			__cl, __r);
+		
+		// Multiply by 4
+		codebuilder.addMathConst(StackJavaType.INTEGER, MathType.MUL,
+			__r, 4, __r);
+		
+		// Read from the class table the class object
+		codebuilder.addMemoryOffReg(DataType.OBJECT, true,
+			__r, NativeCode.CLASS_TABLE_REGISTER, __r);
+	}
+	
+	/**
+	 * Enters the monitor.
+	 *
+	 * @param __enter Is the monitor being entered? 
+	 * @param __r The register to enter a monitor for.
+	 * @since 2019/04/26
+	 */
+	private final void __monitor(boolean __enter, int __r)
+	{
+		// Load address of target method
+		codebuilder.add(NativeInstructionType.LOAD_POOL,
+			new InvokedMethod(InvokeType.STATIC, new MethodHandle(
+			KERNEL_CLASS, new MethodName((__enter ? "jvmMonitorEnter" :
+				"jvmMonitorExit")), new MethodDescriptor("(I)V"))),
+			NativeCode.VOLATILE_A_REGISTER);
+		
+		// Call the monitor function
+		codebuilder.add(NativeInstructionType.INVOKE,
+			NativeCode.VOLATILE_A_REGISTER, new RegisterList(__r));
 	}
 	
 	/**

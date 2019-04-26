@@ -293,10 +293,6 @@ public final class NativeInstruction
 			case NativeInstructionType.RETURN:
 				return 0;
 			
-			case NativeInstructionType.MONITORENTER:
-			case NativeInstructionType.MONITOREXIT:
-				return 1;
-				
 			case NativeInstructionType.ARRAYLEN:
 			case NativeInstructionType.ATOMIC_INT_INCREMENT:
 			case NativeInstructionType.CONVERSION:
@@ -359,12 +355,6 @@ public final class NativeInstruction
 			case NativeInstructionType.ENTRY_MARKER:
 			case NativeInstructionType.RETURN:
 				return ArgumentFormat.of();
-				
-				// [u16]
-			case NativeInstructionType.MONITORENTER:
-			case NativeInstructionType.MONITOREXIT:
-				return ArgumentFormat.of(
-					ArgumentFormat.VUINT);
 				
 				// [u16, u16]
 			case NativeInstructionType.ARRAYLEN:
@@ -650,8 +640,6 @@ public final class NativeInstruction
 			case NativeInstructionType.IFEQ_CONST:		return "IFEQ_CONST";
 			case NativeInstructionType.INVOKE:			return "INVOKE";
 			case NativeInstructionType.LOAD_POOL:		return "LOAD_POOL";
-			case NativeInstructionType.MONITORENTER:	return "MONITORENTER";
-			case NativeInstructionType.MONITOREXIT:		return "MONITOREXIT";
 			case NativeInstructionType.NEW:				return "NEW";
 			case NativeInstructionType.RETURN:			return "RETURN";
 			

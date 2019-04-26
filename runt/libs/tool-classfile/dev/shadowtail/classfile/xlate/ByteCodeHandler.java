@@ -70,6 +70,16 @@ public interface ByteCodeHandler
 		JavaStackResult.Input __v);
 	
 	/**
+	 * Loads the class object of a class.
+	 *
+	 * @param __cl The class object to load.
+	 * @param __out The output register.
+	 * @since 2019/04/26
+	 */
+	public abstract void doClassObjectLoad(ClassName __cl,
+		JavaStackResult.Output __out);
+	
+	/**
 	 * Performs convert of value.
 	 *
 	 * @param __as The source type.
