@@ -103,37 +103,73 @@ final class __TempMethods__
 					cdos.write(0xFF);
 			}
 			
-			// Output line data
+			// Output line/debug data
 			ByteArrayOutputStream lbytes = new ByteArrayOutputStream();
 			DataOutputStream ldos = new DataOutputStream(lbytes);
 			
 			// Write this so that way all lines are offset by 4 instead of
 			// starting at zero, otherwise the first method will never have
-			// line
+			// debug information
 			ldos.writeInt(0xFFFFFFFF);
 			
-			// Merge all of the line data
+			// Merge all of the debug data
 			int[] offline = new int[count],
-				lenline = new int[count];
+				lenline = new int[count],
+				offjops = new int[count],
+				lenjops = new int[count],
+				offjpcs = new int[count],
+				lenjpcs = new int[count];
 			for (int i = 0; i < count; i++)
 			{
 				MinimizedMethod m = methods.get(i);
 				
-				// Ignore if there are no lines
+				// Write line data?
 				byte[] lines = m._lines;
-				if (lines == null)
-					continue;
+				if (lines != null)
+				{
+					// Offset to these lines
+					offline[i] = ldos.size();
+					lenline[i] = lines.length;
+					
+					// Write all the data
+					ldos.write(lines);
+					
+					// Pad
+					while ((ldos.size() & 1) != 0)
+						ldos.write(0);
+				}
 				
-				// Offset to these lines
-				offline[i] = ldos.size();
-				lenline[i] = lines.length;
+				// Write Java operations?
+				byte[] jops = m._jops;
+				if (jops != null)
+				{
+					// Offset to these lines
+					offjops[i] = ldos.size();
+					lenjops[i] = lines.length;
+					
+					// Write all the data
+					ldos.write(jops);
+					
+					// Pad
+					while ((ldos.size() & 1) != 0)
+						ldos.write(0);
+				}
 				
-				// Write all the data
-				ldos.write(lines);
-				
-				// Pad
-				while ((ldos.size() & 3) != 0)
-					ldos.write(0);
+				// Write Java PCs?
+				byte[] jpcs = m._jpcs;
+				if (jpcs != null)
+				{
+					// Offset to these lines
+					offjpcs[i] = ldos.size();
+					lenjpcs[i] = lines.length;
+					
+					// Write all the data
+					ldos.write(jpcs);
+					
+					// Pad
+					while ((ldos.size() & 1) != 0)
+						ldos.write(0);
+				}
 			}
 			
 			// Offset to code and line regions
@@ -153,9 +189,13 @@ final class __TempMethods__
 				
 				// If this value were to be added to the absolute position
 				// of the where information here, then this will be where our
-				// lines are stored. Zero means no lines stored.
-				int mylines = offline[i];
+				// debug infos are stored. Zero means no debug info stored.
+				int mylines = offline[i],
+					myjops = offjops[i],
+					myjpcs = offjpcs[i];
 				ldos.writeShort((mylines == 0 ? 0 : (mylines - wa)));
+				ldos.writeShort((myjops == 0 ? 0 : (myjops - wa)));
+				ldos.writeShort((myjpcs == 0 ? 0 : (myjpcs - wa)));
 				
 				// Record the method class, name, and type
 				ldos.writeUTF(classname.toString());
@@ -178,10 +218,24 @@ final class __TempMethods__
 				ddos.writeShort(Minimizer.__checkUShort(
 					__pool.get(m.name.toString())));
 				ddos.writeShort(Minimizer.__checkUShort(__pool.get(m.type)));
+				
+				// Code
 				ddos.writeShort(Minimizer.__checkUShort(codeoff + offcode[i]));
 				ddos.writeShort(Minimizer.__checkUShort(lencode[i]));
+				
+				// Lines
 				ddos.writeShort(Minimizer.__checkUShort(lineoff + offline[i]));
 				ddos.writeShort(Minimizer.__checkUShort(lenline[i]));
+				
+				// Java operations
+				ddos.writeShort(Minimizer.__checkUShort(lineoff + offjops[i]));
+				ddos.writeShort(Minimizer.__checkUShort(lenjops[i]));
+				
+				// Java PCs
+				ddos.writeShort(Minimizer.__checkUShort(lineoff + offjpcs[i]));
+				ddos.writeShort(Minimizer.__checkUShort(lenjpcs[i]));
+				
+				// Where
 				ddos.writeShort(Minimizer.__checkUShort(
 					lineoff + offwhere[i]));
 			}

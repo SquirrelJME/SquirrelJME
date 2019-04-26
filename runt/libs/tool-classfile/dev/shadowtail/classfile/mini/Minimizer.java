@@ -375,25 +375,28 @@ public final class Minimizer
 			// Need to translate and serialize the byte code into a register
 			// form and remap any used references.
 			MethodFlags mf = m.flags();
-			byte[] transcode = null;
-			byte[] lnt = null;
+			byte[] transcode = null,
+				tabln = null,
+				tabjo = null,
+				tabjp = null;
 			if (!mf.isAbstract() && !mf.isNative())
 			{
 				// The minified classes use register code since it is easier
 				// to handle by the VM
 				NativeCode rc = m.nativeCode();
 				
-				// Encode to bytes
-				try (ByteArrayOutputStream lnb = new ByteArrayOutputStream();
-					DataOutputStream lbd = new DataOutputStream(lnb))
+				// Encode data to bytes
+				try
 				{
 					// Translate code
-					short[][] lntable = new short[1][];
-					transcode = this.__translateCode(rc, lntable);
+					__MappedDebugInfo__[] mdebugs = new __MappedDebugInfo__[1];
+					transcode = this.__translateCode(rc, mdebugs);
 					
-					// Translate lines
-					this.__translateLines(lntable[0], lbd);
-					lnt = lnb.toByteArray();
+					// Compact debug information
+					__MappedDebugInfo__ mdebug = mdebugs[0];
+					tabln = Minimizer.__compact(mdebug._lintable, null);
+					tabjo = Minimizer.__compact(null, mdebug._joptable);
+					tabjp = Minimizer.__compact(null, mdebug._jpctable);
 				}
 				catch (IOException e)
 				{
@@ -408,7 +411,9 @@ public final class Minimizer
 				new MethodName(pool.<String>addSelf(m.name().toString())),
 				pool.<MethodDescriptor>addSelf(m.type()),
 				transcode,
-				lnt)));
+				tabln,
+				tabjo,
+				tabjp)));
 			
 			// Quick count for used methods
 			temp._count++;
@@ -422,16 +427,17 @@ public final class Minimizer
 	 *
 	 * @param __rc The register code used.
 	 * @param __dos The stream to write to.
-	 * @param __lno Line output table.
+	 * @param __mdbg Debug table information
 	 * @return The resulting stream.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/23
 	 */
-	private final byte[] __translateCode(NativeCode __rc, short[][] __lno)
+	private final byte[] __translateCode(NativeCode __rc,
+		__MappedDebugInfo__[] __mdbg)
 		throws IOException, NullPointerException
 	{
-		if (__rc == null || __lno == null)
+		if (__rc == null || __mdbg == null)
 			throw new NullPointerException("NARG");
 		
 		// Where stuff gets written to
@@ -442,11 +448,22 @@ public final class Minimizer
 		int cdn = __rc.length();
 		int[] indexpos = new int[cdn];
 		
+		// Debug line and Java PC+Addr information
+		ByteArrayOutputStream dlinbaos = new ByteArrayOutputStream(256);
+		ByteArrayOutputStream djopbaos = new ByteArrayOutputStream(256);
+		ByteArrayOutputStream djpcbaos = new ByteArrayOutputStream(256);
+		DataOutputStream dlindos = new DataOutputStream(dlinbaos);
+		
 		// Locations which have jump targets to be replaced
 		Map<Integer, InstructionJumpTarget> jumpreps = new HashMap<>();
 		
 		// Operations will reference this constant pool
 		MinimizedPoolBuilder pool = this.pool;
+		
+		// Debug line and Java PC+Addr tables
+		short[] tablin = __rc.lines();
+		byte[] tabjop = __rc.javaOperations(),
+			tabjpc = __rc.javaAddresses();
 		
 		// Go through each instruction
 		for (int cdx = 0; cdx < cdn; cdx++)
@@ -455,7 +472,8 @@ public final class Minimizer
 			NativeInstruction i = __rc.get(cdx);
 			
 			// Record that the instruction is at this position
-			indexpos[cdx] = dos.size();
+			int baseaddr;
+			indexpos[cdx] = (baseaddr = dos.size());
 			
 			// Is the operation going to be aliased to something else?
 			// This is so that the execution system is as simple as possible
@@ -609,9 +627,35 @@ public final class Minimizer
 						throw new todo.OOPS();
 				}
 			}
+			
+			// Write output debugging information to the streams accordingly
+			// for each point, the table data can just be spanned across
+			// as well reducing later processing
+			short uselin = tablin[cdx];
+			byte usejop = tabjop[cdx],
+				usejpc = tabjpc[cdx];
+			for (int s = 0, sn = dos.size() - baseaddr; s < sn; s++)
+			{
+				dlindos.writeShort(uselin);
+				djopbaos.write(usejop);
+				djpcbaos.write(usejpc);
+			}
 		}
 		
-		// Generate array
+		// The line number info is stored in a byte array so it must be
+		// retranslated
+		byte[] rawlines = dlinbaos.toByteArray();
+		int numlines = rawlines.length / 2;
+		short[] dunlin = new short[numlines];
+		for (int i = 0, o = 0; o < numlines; i += 2, o++)
+			dunlin[o] = (short)(((rawlines[i] & 0xFF) << 8) |
+				(rawlines[i + 1] & 0xFF));
+		
+		// Generate debug information
+		__mdbg[0] = new __MappedDebugInfo__(dunlin, djopbaos.toByteArray(),
+			djpcbaos.toByteArray());
+		
+		// Generate code array
 		byte[] rv = baos.toByteArray();
 		int codesize = rv.length;
 		
@@ -634,83 +678,8 @@ public final class Minimizer
 				rv[ai] = (byte)jt;
 		}
 		
-		// Go through the input lines and seed the line number positions with
-		// the line for each known address
-		short[] inlines = __rc.lines(),
-			outlines = new short[codesize];
-		__lno[0] = outlines;
-		for (int cdx = 0; cdx < cdn; cdx++)
-			outlines[indexpos[cdx]] = inlines[cdx];
-		
-		// Go through and smear all the entries so that every address
-		// regardless has line information stored for it
-		short lastline = 0;
-		for (int i = 0; i < codesize; i++)
-		{
-			short nowline = outlines[i];
-			if (nowline == 0)
-				outlines[i] = lastline;
-			else
-				lastline = nowline;
-		}
-		
 		// Return array
 		return rv;
-	}
-	
-	/**
-	 * Encodes the line number table for operations. This compacts the line
-	 * number table to a more compact format.
-	 *
-	 * @param __ln The input table.
-	 * @param __dos The output stream.
-	 * @throws IOException On write errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/03/24
-	 */
-	private final void __translateLines(short[] __ln, DataOutputStream __dos)
-		throws IOException, NullPointerException
-	{
-		if (__ln == null || __dos == null)
-			throw new NullPointerException("NARG");
-		
-		// Go through every entry, compacting it accordingly
-		int lastline = -1,
-			lastpc = 0;
-		for (int i = 0, n = __ln.length; i < n; i++)
-		{
-			int nowline = __ln[i];
-			
-			// If there is a really long stretch of instructions which point
-			// to the same exact line, force it to be reset so that way the
-			// number table after this point is not complete garbage
-			// Note that 255 is the end of line marker
-			boolean force = ((i == 0) || ((i - lastpc) >= 254));
-			
-			// Line number has changed, need to encode the information
-			if (force || nowline != lastline)
-			{
-				// Since multiple instruction addresses can share line info,
-				// to reduce the size of the table just record an offset from
-				// the last PC address
-				// Just a single byte is used for the difference since in
-				// general these ranges will be small
-				int diff = i - lastpc;
-				__dos.write(diff);
-				
-				// Write line position here, just as a 16-bit value without
-				// any different encoding since values can jump all over the
-				// place
-				__dos.writeShort(nowline);
-				
-				// For next time
-				lastline = nowline;
-				lastpc = i;
-			}
-		}
-		
-		// A difference of 255 means end of line data
-		__dos.write(0xFF);
 	}
 	
 	/**
@@ -819,6 +788,75 @@ public final class Minimizer
 		if (__v < 0 || __v > 65535)
 			throw new InvalidClassFormatException("JC3n " + __v);
 		return __v;
+	}
+	
+	/**
+	 * Compacts a table of shorts or bytes to a run-length encoded form.
+	 *
+	 * @param __st The input table.
+	 * @param __bt The byte table.
+	 * @return The resulting RLE encoded byte data.
+	 * @throws IOException On write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/24
+	 */
+	private static final byte[] __compact(short[] __st, byte[] __bt)
+		throws IOException, NullPointerException
+	{
+		if (__st == null && __bt == null)
+			throw new NullPointerException("NARG");
+		
+		// Using shorts or bytes
+		boolean shorts = (__st != null);
+		int len = (shorts ? __st.length : __bt.length);
+		
+		// Target stream
+		ByteArrayOutputStream baos = new ByteArrayOutputStream(len);
+		DataOutputStream dos = new DataOutputStream(baos);
+		
+		// Go through every entry, compacting it accordingly
+		int lastline = -1,
+			lastpc = 0;
+		for (int i = 0, n = len; i < n; i++)
+		{
+			int nowline = (shorts ? __st[i] : __bt[i]);
+			
+			// If there is a really long stretch of instructions which point
+			// to the same exact data, force it to be reset so that way the
+			// number table after this point is not complete garbage
+			// Note that 255 is the end of data marker
+			boolean force = ((i == 0) || ((i - lastpc) >= 254));
+			
+			// Line number has changed, need to encode the information
+			if (force || nowline != lastline)
+			{
+				// Since multiple instruction addresses can share data info,
+				// to reduce the size of the table just record an offset from
+				// the last PC address
+				// Just a single byte is used for the difference since in
+				// general these ranges will be small
+				int diff = i - lastpc;
+				dos.write(diff);
+				
+				// Write data position here, just as a 16-bit value without
+				// any different encoding since values can jump all over the
+				// place
+				if (shorts)
+					dos.writeShort(nowline);
+				else
+					dos.writeByte(nowline);
+				
+				// For next time
+				lastline = nowline;
+				lastpc = i;
+			}
+		}
+		
+		// A difference of 255 means end of data
+		dos.write(0xFF);
+		
+		// Return result
+		return baos.toByteArray();
 	}
 	
 	/**
