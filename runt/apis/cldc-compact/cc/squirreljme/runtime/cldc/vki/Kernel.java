@@ -273,10 +273,6 @@ public final class Kernel
 		Assembly.memWriteInt(sfptr, SF_KERNEL_OFFSET,
 			Assembly.objectToPointer(this));
 		
-		// Test
-		byte[] boop = new byte[127];
-		Assembly.objectToPointer(boop);
-		
 		// Break
 		Assembly.breakpoint();
 		throw new todo.TODO();
