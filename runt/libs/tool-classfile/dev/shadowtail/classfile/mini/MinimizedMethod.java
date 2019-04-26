@@ -28,6 +28,10 @@ import net.multiphasicapps.classfile.MethodName;
  */
 public final class MinimizedMethod
 {
+	/** The size of encoded entries. */
+	public static final int ENCODE_ENTRY_SIZE =
+		28;
+	
 	/** Flags that are used for the method. */
 	public final int flags;
 	
