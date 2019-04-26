@@ -318,18 +318,6 @@ public final class NativeCPU
 			int encoding;
 			switch ((encoding = NativeInstruction.encoding(op)))
 			{
-					// Atomic increment
-				case NativeInstructionType.ATOMIC_INT_INCREMENT:
-					synchronized (memory)
-					{
-						// The address to load from/store to
-						int addr = lr[args[0]] + args[1];
-						
-						// Read, increment, and store
-						memory.memWriteInt(addr, memory.memReadInt(addr) + 1);
-					}
-					break;
-					
 					// Atomic decrement and get
 				case NativeInstructionType.ATOMIC_INT_DECREMENT_AND_GET:
 					synchronized (memory)
@@ -344,6 +332,18 @@ public final class NativeCPU
 						
 						// Store the value after the decrement
 						lr[args[0]] = newval;
+					}
+					break;
+					
+					// Atomic increment
+				case NativeInstructionType.ATOMIC_INT_INCREMENT:
+					synchronized (memory)
+					{
+						// The address to load from/store to
+						int addr = lr[args[0]] + args[1];
+						
+						// Read, increment, and store
+						memory.memWriteInt(addr, memory.memReadInt(addr) + 1);
 					}
 					break;
 				
