@@ -539,6 +539,12 @@ public final class NearNativeByteCodeHandler
 						__out.register);
 					break;
 					
+					// Get thread register
+				case "specialGetThreadRegister":
+					codebuilder.addCopy(NativeCode.THREAD_REGISTER,
+						__out.register);
+					break;
+					
 					// Set static field register
 				case "specialSetStaticFieldRegister":
 					codebuilder.addCopy(__in[0].register,

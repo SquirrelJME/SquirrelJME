@@ -150,6 +150,14 @@ public final class Assembly
 	public static native int specialGetStaticFieldRegister();
 	
 	/**
+	 * Returns the register representing the current thread.
+	 *
+	 * @return The current thread register.
+	 * @since 2019/04/22
+	 */
+	public static native int specialGetThreadRegister();
+	
+	/**
 	 * Sets the value of the static field register.
 	 *
 	 * @param __v The new value of the static field register.
