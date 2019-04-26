@@ -40,6 +40,9 @@ public final class CallTraceElement
 	/** The line in the file. */
 	protected final int line;
 	
+	/** The Java byte code instruction. */
+	protected final int jbcinst;
+	
 	/** String representation. */
 	private Reference<String> _string;
 	
@@ -109,12 +112,31 @@ public final class CallTraceElement
 	public CallTraceElement(String __cl, String __mn, String __md, long __addr,
 		String __file, int __line)
 	{
+		this(__cl, __mn, __md, __addr, __file, __line, -1);
+	}
+	
+	/**
+	 * Initializes a call trace element.
+	 *
+	 * @param __cl The class name.
+	 * @param __mn The method name.
+	 * @param __md The method descriptor.
+	 * @param __addr The address the method executes at.
+	 * @param __file The file.
+	 * @param __line The line in the file.
+	 * @param __jbc The Java byte code instruction used.
+	 * @since 2018/04/02
+	 */
+	public CallTraceElement(String __cl, String __mn, String __md, long __addr,
+		String __file, int __line, int __jbc)
+	{
 		this.classname = __cl;
 		this.methodname = __mn;
 		this.methoddescriptor = __md;
 		this.address = __addr;
 		this.file = __file;
 		this.line = __line;
+		this.jbcinst = __jbc;
 	}
 	
 	/**
@@ -126,6 +148,18 @@ public final class CallTraceElement
 	public final long address()
 	{
 		return this.address;
+	}
+	
+	/**
+	 * Returns the byte code instruction that was used for this.
+	 *
+	 * @return The used byte code instruction or {@code 0xFF} if it is not
+	 * valid or specified.
+	 * @since 2019/04/26
+	 */
+	public final int byteCodeInstruction()
+	{
+		return this.jbcinst & 0xFF;
 	}
 	
 	/**
@@ -248,6 +282,7 @@ public final class CallTraceElement
 				file = this.file;
 			long address = this.address;
 			int line = this.line;
+			int jbcinst = this.jbcinst & 0xFF;
 			
 			// Format it nicely
 			StringBuilder sb = new StringBuilder();
@@ -264,7 +299,7 @@ public final class CallTraceElement
 			
 			if (address != Long.MIN_VALUE)
 			{
-				sb.append(" @ ");
+				sb.append(" @");
 				
 				// If the address is really high then it is very likely that
 				// this is some RAM/ROM address rather than some easily read
@@ -278,6 +313,13 @@ public final class CallTraceElement
 				// Otherwise use an index
 				else
 					sb.append(address);
+			}
+			
+			// Java byte code instruction used
+			if (jbcinst != 0xFF)
+			{
+				sb.append(" J");
+				sb.append(Integer.toString(jbcinst, 16));
 			}
 			
 			if (file != null || line >= 0)
