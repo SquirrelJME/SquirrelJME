@@ -592,11 +592,13 @@ public final class JavaStackState
 		JavaStackResult stacksto = stackpop.after().doLocalSet(
 			popped.type, __l);
 		
-		// Then combine these two states into a new result, make sure the
-		// enqueues are merged
+		// Then combine these two states into a new result
+		// The enqueue of the stored stack result is used and do not count
+		// the popped value because it would just be uncounted and counted for
+		// the copy (has a net zero count).
 		return new JavaStackResult(this,
 			stacksto.after,
-			JavaStackEnqueueList.merge(stackpop.enqueue, stacksto.enqueue),
+			stacksto.enqueue,
 			stacksto.operations(),
 			popped, stacksto.out(0));
 	}
