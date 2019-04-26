@@ -30,23 +30,27 @@ import net.multiphasicapps.classfile.InstructionJumpTarget;
  */
 public final class NativeCodeBuilder
 {
-	/** Temporary instruction layout. */
-	final Map<Integer, NativeInstruction> _instructions =
-		new LinkedHashMap<>();
-	
 	/** Label positions. */
 	final Map<NativeCodeLabel, Integer> _labels =
 		new LinkedHashMap<>();
 	
-	/** Current line number table. */
-	final List<Integer> _lines =
-		new ArrayList<>();
+	/** Temporary instruction layout. */
+	final Map<Integer, Point> _points =
+		new LinkedHashMap<>();
 	
 	/** Next address to use. */
 	int _nextaddr;
 	
 	/** Current line address. */
 	int _cursrcline =
+		-1;
+	
+	/** Current Java instruction type. */
+	int _cursrcjop =
+		-1;
+	
+	/** Current Java PC address. */
+	int _cursrcjpc =
 		-1;
 	
 	/**
@@ -101,10 +105,10 @@ public final class NativeCodeBuilder
 		if (__Debug__.ENABLED)
 			todo.DEBUG.note("@%d -> %s %s", atdx,
 				NativeInstruction.mnemonic(__op), Arrays.asList(__args));
-		
-		// Store and return the instruction, it will have the address
-		this._instructions.put(atdx, rv);
-		this._lines.add(this._cursrcline);
+			
+		// Store all information
+		this._points.put(atdx, new Point(rv, this._cursrcline,
+			this._cursrcjop, this._cursrcjpc));
 		return rv;
 	}
 	
@@ -463,22 +467,18 @@ public final class NativeCodeBuilder
 	 */
 	public final NativeCode build()
 	{
-		// Working area for arguments
-		List<Object> workargs = new ArrayList<>();
-
 		// Labels which point to addresses
 		Map<NativeCodeLabel, Integer> labels = this._labels;
 		
 		// If there are any jump points which refer to the instruction index
 		// directly following it, then remove the jump.
 		// Also possibly perform other modifications
-		List<NativeInstruction> in = new ArrayList<>(
-			this._instructions.values());
-		List<Integer> lines = new ArrayList<>(this._lines);
+		List<Point> in = new ArrayList<>(this._points.values());
 		for (int i = in.size() - 1; i >= 0; i--)
 		{
 			// Get the instruction and its various properties
-			NativeInstruction ri = in.get(i);
+			Point point = in.get(i);
+			NativeInstruction ri = point.instruction;
 			int rie = ri.encoding();
 			
 			NativeCodeLabel jt = null;
@@ -495,8 +495,7 @@ public final class NativeCodeBuilder
 					continue;
 			}
 			
-			// Check if this points to the instruction directly following
-			// this.
+			// Check if this points to the instruction directly following this.
 			boolean ptonext = (jt != null && (i + 1) == labels.get(jt));
 			
 			// If it does point to the next instruction, we either delete it
@@ -506,7 +505,6 @@ public final class NativeCodeBuilder
 			{
 				// Remove this instruction, it is pointless
 				in.remove(i);
-				lines.remove(i);
 				
 				// Move all of the label values down
 				for (Map.Entry<NativeCodeLabel, Integer> e :
@@ -519,18 +517,38 @@ public final class NativeCodeBuilder
 			}
 		}
 		
-		// Output instructions
-		List<NativeInstruction> out = new ArrayList<>();
+		// Resulting tables of instructions, line, JIs, and JPCs
+		int n = in.size();
+		NativeInstruction[] tabni = new NativeInstruction[n];
+		short[] tabjl = new short[n];
+		byte[] tabji = new byte[n];
+		byte[] tabjp = new byte[n];
 		
 		// Go through input instructions and map them to real instructions
-		for (NativeInstruction i : in)
+		for (int i = 0; i < n; i++)
 		{
-			// Fill in working arguments, with translated labels
-			workargs.clear();
-			for (Object a : i._args)
+			// Get input point
+			Point point = in.get(i);
+			
+			// Initialize debug table information
+			tabjl[i] = (short)point.line;
+			tabji[i] = (byte)point.jop;
+			tabjp[i] = (byte)point.jpc;
+			
+			// The instruction is re-processed potentially
+			NativeInstruction inst = point.instruction;
+			
+			// Used to detect if the instruction actually changed
+			boolean didchange = false;
+			
+			// Arguments may be re-translated if they contain jumps
+			Object[] args = inst.arguments();
+			for (int j = 0, jn = args.length; j < jn; j++)
 			{
+				Object a = args[j];
+				
 				// Map any labels to indexes
-				if (a instanceof NativeCodeLabel)
+				if ((didchange |= (a instanceof NativeCodeLabel)))
 				{
 					// {@squirreljme.error JC35 The specified label was
 					// never defined. (The label)}
@@ -538,32 +556,17 @@ public final class NativeCodeBuilder
 					if (rlp == null)
 						throw new IllegalArgumentException("JC35 " + a);
 					
-					a = new InstructionJumpTarget(rlp);
+					args[j] = new InstructionJumpTarget(rlp);
 				}
-				
-				workargs.add(a);
 			}
 			
-			// Build instruction
-			out.add(new NativeInstruction(i.op, workargs));
-		}
-		
-		// Translate line number table
-		int no = Math.min(out.size(), lines.size());
-		short[] xlines = new short[no];
-		for (int i = 0; i < no; i++)
-			xlines[i] = lines.get(i).shortValue();
-		
-		// Debug
-		if (__Debug__.ENABLED)
-		{
-			for (int i = 0, n = out.size(); i < n; i++)
-				todo.DEBUG.note("@%-2d L%d:%s", i, xlines[i] & 0xFFFF,
-					out.get(i));
+			// If the instruction changed, use the new one
+			tabni[i] = (didchange ? new NativeInstruction(inst.op, args) :
+				inst);
 		}
 		
 		// Build
-		return new NativeCode(out, xlines);
+		return new NativeCode(tabni, tabjl, tabji, tabjp);
 	}
 	
 	/**
@@ -663,6 +666,28 @@ public final class NativeCodeBuilder
 	}
 	
 	/**
+	 * Sets the current byte code address.
+	 *
+	 * @param __jpc The byte code address to use.
+	 * @since 2019/04/26
+	 */
+	public final void setByteCodeAddress(int __jpc)
+	{
+		this._cursrcjpc = __jpc;
+	}
+	
+	/**
+	 * Sets the current byte code operation.
+	 *
+	 * @param __jo The byte code operation to use.
+	 * @since 2019/04/26
+	 */
+	public final void setByteCodeOperation(int __jo)
+	{
+		this._cursrcjop = __jo;
+	}
+	
+	/**
 	 * Sets the current source line.
 	 *
 	 * @param __l The line to set.
@@ -671,6 +696,48 @@ public final class NativeCodeBuilder
 	public final void setSourceLine(int __l)
 	{
 		this._cursrcline = __l;
+	}
+	
+	/**
+	 * This stores the information for a single point in the native code.
+	 *
+	 * @since 2019/04/26
+	 */
+	public static final class Point
+	{
+		/** The instruction used. */
+		public final NativeInstruction instruction;
+		
+		/** Current line. */
+		public final int line;
+		
+		/** Current Java operation. */
+		public final int jop;
+		
+		/** Current Java address. */
+		public final int jpc;
+		
+		/**
+		 * Initializes the instruction point.
+		 *
+		 * @param __i The instruction.
+		 * @param __line The line.
+		 * @param __jop The Java operation.
+		 * @param __jpc The Java PC address.
+		 * @throws NullPointerException On null arguments.
+		 * @since 2019/04/26
+		 */
+		public Point(NativeInstruction __i, int __line, int __jop, int __jpc)
+			throws NullPointerException
+		{
+			if (__i == null)
+				throw new NullPointerException("NARG");
+			
+			this.instruction = __i;
+			this.line = __line;
+			this.jop = __jop;
+			this.jpc = __jpc;
+		}
 	}
 }
 

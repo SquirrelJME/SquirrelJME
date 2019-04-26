@@ -937,8 +937,10 @@ public final class NearNativeByteCodeHandler
 				this.whereisthis, NativeCode.WHERE_IS_THIS);
 		}
 		
-		// Set source line
+		// Set source line and instruction operation
 		codebuilder.setSourceLine(state.line);
+		codebuilder.setByteCodeAddress(state.instruction.address());
+		codebuilder.setByteCodeOperation(state.instruction.operation());
 		
 		// Check if there are operations that need to be performed to make
 		// sure the stack state is morphed into correctly
@@ -1186,6 +1188,25 @@ public final class NearNativeByteCodeHandler
 	}
 	
 	/**
+	 * Makes an EData for the current position and label.
+	 *
+	 * @param __lab The stored label.
+	 * @return The made EData.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/26
+	 */
+	private final __EData__ __eData(NativeCodeLabel __lab)
+		throws NullPointerException
+	{
+		if (__lab == null)
+			throw new NullPointerException("NARG");
+		
+		ByteCodeState state = this.state;
+		return new __EData__(state.addr, state.line,
+			state.instruction.address(), state.instruction.operation(), __lab);
+	}
+	
+	/**
 	 * Generates an access to a field.
 	 *
 	 * @param __at The type of access to perform.
@@ -1320,8 +1341,7 @@ public final class NearNativeByteCodeHandler
 			return rv.label;
 			
 		// Build new data to record this point
-		rv = new __EData__(state.addr, state.line,
-			new NativeCodeLabel("exception", ehtable.size()));
+		rv = this.__eData(new NativeCodeLabel("exception", ehtable.size()));
 		ehtable.put(key, rv);
 		
 		// Return the created label (where the caller jumps to)
@@ -1395,8 +1415,7 @@ public final class NearNativeByteCodeHandler
 		
 		// Setup transition for later
 		ByteCodeState state = this.state;
-		rv = new __EData__(state.addr, state.line,
-			new NativeCodeLabel("transit", transits.size()));
+		rv = this.__eData(new NativeCodeLabel("transit", transits.size()));
 		transits.put(key, rv);
 		
 		return rv.label;
@@ -1430,8 +1449,8 @@ public final class NearNativeByteCodeHandler
 			return rv.label;
 		
 		// Build new data to record this point
-		rv = new __EData__(state.addr, state.line,
-			new NativeCodeLabel("makeexception", metable.size()));
+		rv = this.__eData(new NativeCodeLabel("makeexception",
+			metable.size()));
 		metable.put(key, rv);
 		
 		// Return the created label (where the caller jumps to)
@@ -1490,8 +1509,7 @@ public final class NearNativeByteCodeHandler
 		
 		// Setup new record
 		ByteCodeState state = this.state;
-		rv = new __EData__(state.addr, state.line,
-			new NativeCodeLabel("refclear", refcljumps.size()));
+		rv = this.__eData(new NativeCodeLabel("refclear", refcljumps.size()));
 		refcljumps.put(key, rv);
 		
 		// Use the created label
@@ -1651,7 +1669,10 @@ public final class NearNativeByteCodeHandler
 		state.line = __ed.line;
 		
 		// Setup code builder
-		this.codebuilder.setSourceLine(__ed.line);
+		NativeCodeBuilder codebuilder = this.codebuilder;
+		codebuilder.setSourceLine(__ed.line);
+		codebuilder.setByteCodeAddress(__ed.jpc);
+		codebuilder.setByteCodeOperation(__ed.jop);
 		
 		// And return the label
 		return __ed.label;

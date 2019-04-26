@@ -102,15 +102,24 @@ public final class NativeCode
 	/** Line number table. */
 	private final short[] _lines;
 	
+	/** Java operation table. */
+	private final byte[] _jops;
+	
+	/** Java PC table. */
+	private final byte[] _jpcs;
+	
 	/**
 	 * Initializes the register code.
 	 *
 	 * @param __i The associated instructions.
 	 * @param __l The lines for each instruction.
+	 * @param __jo Java operation index.
+	 * @param __jp Java PC addresses.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/22
 	 */
-	public NativeCode(NativeInstruction[] __i, short[] __l)
+	public NativeCode(NativeInstruction[] __i, short[] __l, byte[] __jo,
+		byte[] __jp)
 		throws NullPointerException
 	{
 		__i = (__i == null ? new NativeInstruction[0] : __i.clone());
@@ -120,30 +129,8 @@ public final class NativeCode
 		
 		this._instructions = __i;
 		this._lines = (__l == null ? new short[0] : __l.clone());
-	}
-	
-	/**
-	 * Initializes the register code.
-	 *
-	 * @param __i The associated instructions.
-	 * @param __l The lines for each instruction.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/03/22
-	 */
-	public NativeCode(Collection<NativeInstruction> __i, short[] __l)
-		throws NullPointerException
-	{
-		if (__i == null)
-			throw new NullPointerException("NARG");
-		
-		NativeInstruction[] ii = __i.<NativeInstruction>toArray(
-			new NativeInstruction[__i.size()]);
-		for (NativeInstruction i : ii)
-			if (i == null)
-				throw new NullPointerException("NARG");
-		
-		this._instructions = ii;
-		this._lines = (__l == null ? new short[0] : __l.clone());
+		this._jops = (__jo == null ? new byte[0] : __jo.clone());
+		this._jpcs = (__jp == null ? new byte[0] : __jp.clone());
 	}
 	
 	/**
@@ -167,6 +154,29 @@ public final class NativeCode
 	{
 		return UnmodifiableIterator.<NativeInstruction>of(
 			this._instructions);
+	}
+	
+	/**
+	 * The table containing which instructions map to which Java address.
+	 *
+	 * @return The Java address table.
+	 * @since 2019/04/26
+	 */
+	public final byte[] javaAddresses()
+	{
+		return this._jpcs.clone();
+	}
+	
+	/**
+	 * The table containing the table of instructions that map to which
+	 * Java instruction.
+	 *
+	 * @return The Java operation table.
+	 * @since 2019/04/26
+	 */
+	public final byte[] javaOperations()
+	{
+		return this._jops.clone();
 	}
 	
 	/**
