@@ -874,6 +874,10 @@ public final class NativeCPU
 						spec = "vola";
 						break;
 					
+					case NativeCode.MONITOR_TARGET_REGISTER:
+						spec = "monitor";
+						break;
+					
 					case NativeCode.ARGUMENT_REGISTER_BASE:
 						spec = "a0/this";
 						break;

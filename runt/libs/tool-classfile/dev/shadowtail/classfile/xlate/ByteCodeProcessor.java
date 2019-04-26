@@ -978,8 +978,12 @@ public final class ByteCodeProcessor
 				break;
 			
 			case STRING:
-			case CLASS:
 				handler.doPoolLoad(__v.boxedValue(), result.out(0));
+				break;
+				
+			case CLASS:
+				handler.doClassObjectLoad((ClassName)__v.boxedValue(),
+					result.out(0));
 				break;
 			
 			default:

@@ -326,6 +326,30 @@ public final class Kernel
 	}
 	
 	/**
+	 * Enters the monitor for the given object.
+	 *
+	 * @param __p The object to enter.
+	 * @since 2019/04/26
+	 */
+	public static final void jvmMonitorEnter(int __p)
+	{
+		Assembly.breakpoint();
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Exits the monitor for the given object.
+	 *
+	 * @param __p The object to exit.
+	 * @since 2019/04/26
+	 */
+	public static final void jvmMonitorExit(int __p)
+	{
+		Assembly.breakpoint();
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Allocates a new array.
 	 *
 	 * @param __at The array type.

@@ -63,6 +63,12 @@ public final class ByteCode
 	/** Method type. */
 	protected final MethodDescriptor methodtype;
 	
+	/** Is this method synchronized? */
+	protected final boolean issynchronized;
+	
+	/** Is this an instance method? */
+	protected final boolean isinstance;
+	
 	/** The input attribute code, used for instruction lookup. */
 	private final byte[] _rawattributedata;
 	
@@ -99,14 +105,16 @@ public final class ByteCode
 	 * @param __mr The owning method reference.
 	 * @param __ca The raw code attribute data.
 	 * @param __tt The this type.
+	 * @param __mf Method flags.
 	 * @throws InvalidClassFormatException If the byte code is not valid.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/10/09
 	 */
-	ByteCode(Reference<Method> __mr, byte[] __ca, ClassName __tt)
+	ByteCode(Reference<Method> __mr, byte[] __ca, ClassName __tt,
+		MethodFlags __mf)
 		throws InvalidClassFormatException, NullPointerException
 	{
-		if (__mr == null || __ca == null || __tt == null)
+		if (__mr == null || __ca == null || __tt == null || __mf == null)
 			throw new NullPointerException("NARG");
 		
 		// Needed
@@ -115,6 +123,8 @@ public final class ByteCode
 		// Set
 		this._methodref = __mr;
 		this._rawattributedata = __ca;
+		this.issynchronized = __mf.isSynchronized();
+		this.isinstance = !__mf.isStatic();
 		
 		// Is this an initializer method?
 		this.methodname = method.name();
@@ -420,6 +430,17 @@ public final class ByteCode
 	}
 	
 	/**
+	 * Returns if this is an instance or not.
+	 *
+	 * @return If this is an instance.
+	 * @since 2019/04/26
+	 */
+	public final boolean isInstance()
+	{
+		return this.isinstance;
+	}
+	
+	/**
 	 * Returns whether this is a constructor or not.
 	 *
 	 * @return Whether this is a constructor or not.
@@ -439,6 +460,17 @@ public final class ByteCode
 	public final boolean isStaticInitializer()
 	{
 		return this.methodname.isStaticInitializer();
+	}
+	
+	/**
+	 * Is this method synchronized?
+	 *
+	 * @return If this is synchronized.
+	 * @since 2019/04/26
+	 */
+	public final boolean isSynchronized()
+	{
+		return this.issynchronized;
 	}
 	
 	/**

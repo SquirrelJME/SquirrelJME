@@ -144,7 +144,7 @@ public final class Method
 		if (ref == null || null == (rv = ref.get()))
 			this._bytecode = new WeakReference<>((rv = new ByteCode(
 				new WeakReference<>(this), this._rawcodeattr,
-				this.classname)));
+				this.classname, this.methodflags)));
 		
 		return rv;
 	}

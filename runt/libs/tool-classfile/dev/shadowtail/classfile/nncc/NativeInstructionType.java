@@ -199,27 +199,6 @@ public interface NativeInstructionType
 		0xF3;
 	
 	/**
-	 * Unused.
-	 * {@code iiiixxxx}.
-	 */
-	public static final int UNUSED_F4 =
-		0xF4;
-	
-	/**
-	 * Unused.
-	 * {@code iiiixxxx}.
-	 */
-	public static final int UNUSED_F5 =
-		0xF5;
-	
-	/**
-	 * Monitor enter. 
-	 * {@code iiiixxxx}.
-	 */
-	public static final int MONITORENTER =
-		0xF6;
-	
-	/**
 	 * Invoke. 
 	 * {@code iiiixxxx}.
 	 */
@@ -240,13 +219,6 @@ public interface NativeInstructionType
 	 */
 	public static final int LOAD_POOL =
 		0xFD;
-	
-	/**
-	 * Monitor exit. 
-	 * {@code iiiixxxx}.
-	 */
-	public static final int MONITOREXIT =
-		0xFE;
 	
 	/**
 	 * Compare and exchange. 
