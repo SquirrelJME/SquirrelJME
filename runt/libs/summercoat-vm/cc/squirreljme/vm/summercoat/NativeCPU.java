@@ -775,10 +775,10 @@ public final class NativeCPU
 			cname = cname.substring(nl - 20, nl);
 		
 		// Print Header (with location info)
-		out.printf("****** @%08x %-30.30s | L%-4d/J%-3d %20.20s::%s %n",
+		out.printf("***** @%08x %-19.19s/%10.10s | L%-4d/J%-3d %20.20s::%s %n",
 			__nf._pc,
-			NativeInstruction.mnemonic(__op) + "/" +
-				InstructionMnemonics.toString(trace.byteCodeInstruction()),
+			NativeInstruction.mnemonic(__op),
+			InstructionMnemonics.toString(trace.byteCodeInstruction()),
 			trace.line(),
 			trace.byteCodeAddress(),
 			cname,
