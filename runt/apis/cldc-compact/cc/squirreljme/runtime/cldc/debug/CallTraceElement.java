@@ -43,6 +43,9 @@ public final class CallTraceElement
 	/** The Java byte code instruction. */
 	protected final int jbcinst;
 	
+	/** The Java byte code address. */
+	protected final int jbcaddr;
+	
 	/** String representation. */
 	private Reference<String> _string;
 	
@@ -112,7 +115,7 @@ public final class CallTraceElement
 	public CallTraceElement(String __cl, String __mn, String __md, long __addr,
 		String __file, int __line)
 	{
-		this(__cl, __mn, __md, __addr, __file, __line, -1);
+		this(__cl, __mn, __md, __addr, __file, __line, -1, -1);
 	}
 	
 	/**
@@ -125,10 +128,11 @@ public final class CallTraceElement
 	 * @param __file The file.
 	 * @param __line The line in the file.
 	 * @param __jbc The Java byte code instruction used.
-	 * @since 2018/04/02
+	 * @param __jpc The Java PC address.
+	 * @since 2019/04/26
 	 */
 	public CallTraceElement(String __cl, String __mn, String __md, long __addr,
-		String __file, int __line, int __jbc)
+		String __file, int __line, int __jbc, int __jpc)
 	{
 		this.classname = __cl;
 		this.methodname = __mn;
@@ -137,6 +141,7 @@ public final class CallTraceElement
 		this.file = __file;
 		this.line = __line;
 		this.jbcinst = __jbc;
+		this.jbcaddr = __jpc;
 	}
 	
 	/**
@@ -148,6 +153,17 @@ public final class CallTraceElement
 	public final long address()
 	{
 		return this.address;
+	}
+	
+	/**
+	 * Returns the address of the instruction at the Java byte code position.
+	 *
+	 * @return The address of the instruction in Java byte code.
+	 * @since 2019/04/26
+	 */
+	public final int byteCodeAddress()
+	{
+		return this.jbcaddr;
 	}
 	
 	/**
@@ -195,7 +211,9 @@ public final class CallTraceElement
 			Objects.equals(this.methoddescriptor, o.methoddescriptor) &&
 			Objects.equals(this.file, o.file) &&
 			this.address == o.address &&
-			this.line == o.line;
+			this.line == o.line &&
+			this.jbcinst == o.jbcinst &&
+			this.jbcaddr == o.jbcaddr;
 	}
 	
 	/**
@@ -225,7 +243,9 @@ public final class CallTraceElement
 				Objects.hashCode(this.methoddescriptor) ^
 				Objects.hashCode(this.file) ^
 				(int)((address >>> 32) | address) ^
-				~this.line);
+				~this.line +
+				~this.jbcinst +
+				~this.jbcaddr);
 		}
 		return rv;
 	}
@@ -283,6 +303,7 @@ public final class CallTraceElement
 			long address = this.address;
 			int line = this.line;
 			int jbcinst = this.jbcinst & 0xFF;
+			int jbcaddr = this.jbcaddr;
 			
 			// Format it nicely
 			StringBuilder sb = new StringBuilder();
@@ -315,24 +336,47 @@ public final class CallTraceElement
 					sb.append(address);
 			}
 			
-			// Java byte code instruction used
-			if (jbcinst != 0xFF)
-			{
-				sb.append(" J");
-				sb.append(Integer.toString(jbcinst, 16));
-			}
-			
-			if (file != null || line >= 0)
+			// File, Line, and/or Java instruction/address
+			boolean hasfile = (file != null),
+				hasline = (line >= 0),
+				hasjbcinst = (jbcinst != 0xFF),
+				hasjbcaddr = (jbcaddr >= 0);
+			if (hasfile || hasline || hasjbcinst || hasjbcaddr)
 			{
 				sb.append(" (");
 				
-				if (file != null)
+				// File
+				boolean sp = false;
+				if ((sp |= hasfile))
 					sb.append(file);
 				
-				if (line >= 0)
+				// Line
+				if ((sp |= hasline))
 				{
 					sb.append(':');
 					sb.append(line);
+				}
+				
+				// Java instruction info
+				if (hasjbcinst || hasjbcaddr)
+				{
+					// Using space?
+					if (sp)
+						sb.append(' ');
+					
+					// Used to indicate Java specific stuff
+					sb.append('J');
+					
+					// Write instruction
+					if (hasjbcinst)
+						sb.append(Integer.toString(jbcinst, 16));
+					
+					// Write address of Java operation
+					if (hasjbcaddr)
+					{
+						sb.append('@');
+						sb.append(jbcaddr);
+					}
 				}
 				
 				sb.append(')');
