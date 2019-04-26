@@ -318,6 +318,35 @@ public final class NativeCPU
 			int encoding;
 			switch ((encoding = NativeInstruction.encoding(op)))
 			{
+					// Atomic increment
+				case NativeInstructionType.ATOMIC_INT_INCREMENT:
+					synchronized (memory)
+					{
+						// The address to load from/store to
+						int addr = lr[args[0]] + args[1];
+						
+						// Read, increment, and store
+						memory.memWriteInt(addr, memory.memReadInt(addr) + 1);
+					}
+					break;
+					
+					// Atomic decrement and get
+				case NativeInstructionType.ATOMIC_INT_DECREMENT_AND_GET:
+					synchronized (memory)
+					{
+						// The address to load from/store to
+						int addr = lr[args[1]] + args[2];
+						
+						// Read, increment, and store
+						int newval;
+						memory.memWriteInt(addr,
+							(newval = memory.memReadInt(addr) - 1));
+						
+						// Store the value after the decrement
+						lr[args[0]] = newval;
+					}
+					break;
+				
 					// Entry marker used for debug
 				case NativeInstructionType.ENTRY_MARKER:
 					break;
@@ -751,7 +780,11 @@ public final class NativeCPU
 				(encoding == NativeInstructionType.MATH_CONST_FLOAT &&
 					i == 1) ||
 				(encoding == NativeInstructionType.IFEQ_CONST &&
-					i == 1))
+					i == 1) ||
+				(encoding == NativeInstructionType.ATOMIC_INT_INCREMENT &&
+					i == 1) ||
+				(encoding == NativeInstructionType.
+					ATOMIC_INT_DECREMENT_AND_GET && i == 2))
 				canspec = false;
 			
 			// Is this a special register?
