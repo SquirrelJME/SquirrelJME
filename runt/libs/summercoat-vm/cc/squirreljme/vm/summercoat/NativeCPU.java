@@ -654,49 +654,16 @@ public final class NativeCPU
 			jpcsoff = (short)memory.memReadShort(wit + 4);
 		
 		// Try to find the line where we should be at?
-		int online = -1,
-			pc = __f._pc;
-		if (lineoff != 0)
-		{
-			// Calculate relative PC to frame start
-			int relpc = pc - __f._entrypc;
-			
-			// Try to find our line
-			try (DataInputStream dis = new DataInputStream(
-				new ReadableMemoryInputStream(memory, wit + lineoff, 4096)))
-			{
-				// Constant try to read lines
-				for (int nowpc = 0;;)
-				{
-					// Read offset code
-					int off = dis.read() & 0xFF;
-					
-					// End of line marker (or just EOF)
-					if (off == 255)
-						break;
-					
-					// Read actual line
-					int nowline = dis.readUnsignedShort();
-					
-					// If our current address is within this range then this
-					// means that our line is in this range
-					int respc = nowpc + off;
-					if (relpc >= nowpc && relpc < respc)
-					{
-						online = nowline;
-						break;
-					}
-					
-					// Try again at future address
-					nowpc = respc;
-				}
-			}
-			
-			// Just ignore
-			catch (IOException e)
-			{
-			}
-		}
+		int pc = __f._pc,
+			relpc = pc - __f._entrypc;
+		
+		// Try to find where the code is on the debug tables
+		int online = (lineoff == 0 ? -1 :
+				this.__cpuDebugFindTabIndex(true, wit + lineoff, relpc)),
+			onjop = (jopsoff == 0 ? -1 :
+				this.__cpuDebugFindTabIndex(false, wit + jopsoff, relpc)),
+			onjpc = (jpcsoff == 0 ? -1 :
+				this.__cpuDebugFindTabIndex(false, wit + jpcsoff, relpc));
 		
 		// Read values
 		String cname = null,
@@ -718,7 +685,69 @@ public final class NativeCPU
 		}
 		
 		// Build
-		return new CallTraceElement(cname, mname, mtype, pc, null, online);
+		return new CallTraceElement(cname, mname, mtype, pc, null,
+			online, onjop, onjpc);
+	}
+	
+	/**
+	 * Find index within debug table.
+	 *
+	 * @param __sh Are shorts being used?
+	 * @param __ad The address to the table.
+	 * @param __pc The desired PC address.
+	 * @return The resulting index or {@code -1} if not found.
+	 * @since 2019/04/26
+	 */
+	private final int __cpuDebugFindTabIndex(boolean __sh, int __ad, int __pc)
+	{
+		// The last at index, if the index is not found this will be
+		// returned at the end.
+		int lastat = -1;
+		
+		// Try to find our line
+		try (DataInputStream dis = new DataInputStream(
+			new ReadableMemoryInputStream(this.memory, __ad, 4096)))
+		{
+			// Constant try to read the index
+			for (int nowpc = 0;;)
+			{
+				// Read offset code
+				int off = dis.read() & 0xFF;
+				
+				// End of line marker (or just EOF)
+				if (off == 255)
+					break;
+				
+				// Read value
+				int nowat = (__sh ? dis.readUnsignedShort() :
+					dis.readUnsignedByte());
+				
+				// If the resulting PC address is after this one then this
+				// means the last value is used. Otherwise the values will
+				// point to the following indexes and be a bit hard to debug
+				int respc = nowpc + off;
+				if (respc > __pc)
+					return lastat;
+				
+				// However if this matches the index directly we know it is
+				// here
+				else if (respc == __pc)
+					return nowat;
+				
+				// Try again at future address
+				lastat = nowat;
+				nowpc = respc;
+			}
+		}
+		
+		// Just ignore
+		catch (IOException e)
+		{
+		}
+		
+		// Not found, use the last index since maybe the table was
+		// truncated or not written enough?
+		return lastat;
 	}
 	
 	/**
