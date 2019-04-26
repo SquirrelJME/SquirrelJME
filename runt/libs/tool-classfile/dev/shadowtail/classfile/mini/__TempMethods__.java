@@ -173,7 +173,7 @@ final class __TempMethods__
 			}
 			
 			// Offset to code and line regions
-			int codeoff = 4 + (count * 20),
+			int codeoff = 4 + (count * MinimizedMethod.ENCODE_ENTRY_SIZE),
 				lineoff = codeoff + cdos.size();
 			
 			// Build the offsets where the where is this are
