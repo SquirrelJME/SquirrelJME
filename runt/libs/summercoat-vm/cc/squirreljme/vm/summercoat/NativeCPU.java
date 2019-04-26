@@ -648,8 +648,10 @@ public final class NativeCPU
 		// Need memory to access the where information
 		ReadableMemory memory = this.memory;
 		
-		// The memory address where lines are located
-		int lineoff = (short)memory.memReadShort(wit);
+		// The memory address where debug info is located
+		int lineoff = (short)memory.memReadShort(wit),
+			jopsoff = (short)memory.memReadShort(wit + 2),
+			jpcsoff = (short)memory.memReadShort(wit + 4);
 		
 		// Try to find the line where we should be at?
 		int online = -1,
@@ -703,7 +705,7 @@ public final class NativeCPU
 		
 		// Read class, method name, and method type
 		try (DataInputStream dis = new DataInputStream(
-			new ReadableMemoryInputStream(memory, wit + 2, 1024)))
+			new ReadableMemoryInputStream(memory, wit + 6, 1024)))
 		{
 			cname = dis.readUTF();
 			mname = dis.readUTF();
