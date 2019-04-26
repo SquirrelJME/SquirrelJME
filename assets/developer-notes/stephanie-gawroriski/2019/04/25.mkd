@@ -1,0 +1,6 @@
+# 2019/04/25
+
+## 21:53
+
+Reference counts are off and I am extra uncounting objects when they should
+not be extra uncounted, seems it might be related to loops?
