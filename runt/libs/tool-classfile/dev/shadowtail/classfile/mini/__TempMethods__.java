@@ -207,12 +207,12 @@ final class __TempMethods__
 					ldos.write(0);
 			}
 			
-			// Write field information
+			// Write method information
 			for (int i = 0; i < count; i++)
 			{
 				MinimizedMethod m = methods.get(i);
 				
-				// 20-bytes
+				// Flags, name, and type
 				ddos.writeInt(m.flags);
 				ddos.writeShort(Minimizer.__checkUShort(m.index));
 				ddos.writeShort(Minimizer.__checkUShort(
