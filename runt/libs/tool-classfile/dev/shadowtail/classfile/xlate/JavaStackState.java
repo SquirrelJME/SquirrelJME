@@ -948,19 +948,19 @@ public final class JavaStackState
 				throw new InvalidClassFormatException(
 					"JC3m " + a + " " + b);
 			
+			// Transitioning from no-counting to counting means that A
+			// was never counted
+			if (!a.canEnqueue() && b.canEnqueue())
+				ops.add(StateOperation.count(a.value));
+			
 			// Copy to destination, if the values differ
 			if (a.value != b.value)
 				ops.add(StateOperation.copy(
 					at.isWide(), a.value, b.value));
 			
-			// Transitioning from no-counting to counting means that A
-			// was never counted
-			if (!a.canEnqueue() && b.canEnqueue())
-				ops.add(StateOperation.count(b.value));
-			
 			// Going from counting to no counting means we probably have
 			// an extra count somewhere
-			else if (a.canEnqueue() && !b.canEnqueue())
+			if (a.canEnqueue() && !b.canEnqueue())
 				ops.add(StateOperation.uncount(b.value));
 		}
 		
@@ -996,8 +996,7 @@ public final class JavaStackState
 				if (a.canEnqueue())
 				{
 					localenq.add(a.value);
-					ops.add(new StateOperation(StateOperation.Type.UNCOUNT,
-						a.value));
+					ops.add(StateOperation.uncount(a.value));
 				}
 			}
 			
@@ -1012,19 +1011,19 @@ public final class JavaStackState
 					throw new InvalidClassFormatException(
 						"JC3g " + a + " " + b);
 				
+				// Transitioning from no-counting to counting means that A
+				// was never counted
+				if (!a.canEnqueue() && b.canEnqueue())
+					ops.add(StateOperation.count(a.value));
+				
 				// Copy to destination, if the values differ
 				if (a.value != b.value)
 					ops.add(StateOperation.copy(
 						at.isWide(), a.value, b.value));
 				
-				// Transitioning from no-counting to counting means that A
-				// was never counted
-				if (!a.canEnqueue() && b.canEnqueue())
-					ops.add(StateOperation.count(b.value));
-				
 				// Going from counting to no counting means we probably have
 				// an extra count somewhere
-				else if (a.canEnqueue() && !b.canEnqueue())
+				if (a.canEnqueue() && !b.canEnqueue())
 					ops.add(StateOperation.uncount(b.value));
 			}
 		}
