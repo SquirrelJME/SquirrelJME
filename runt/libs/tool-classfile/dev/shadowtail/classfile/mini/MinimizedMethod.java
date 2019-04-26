@@ -46,6 +46,12 @@ public final class MinimizedMethod
 	/** The line offset. */
 	public final int lineoffset;
 	
+	/** Java operation offset. */
+	public final int jopsoffset;
+	
+	/** Java PC offset. */
+	public final int jpcsoffset;
+	
 	/** The where offset. */
 	public final int whereoffset;
 	
@@ -54,6 +60,12 @@ public final class MinimizedMethod
 	
 	/** Line number table. */
 	final byte[] _lines;
+	
+	/** Java operation table. */
+	final byte[] _jops;
+	
+	/** Java address table. */
+	final byte[] _jpcs;
 	
 	/** Method flags. */
 	private Reference<MethodFlags> _flags;
@@ -67,14 +79,17 @@ public final class MinimizedMethod
 	 * @param __t The method type.
 	 * @param __tc Transcoded instructions.
 	 * @param __ln Line number table.
+	 * @param __jo Java operation table.
+	 * @param __jp Java PC table.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/21
 	 */
 	public MinimizedMethod(int __f, int __o,
-		MethodName __n, MethodDescriptor __t, byte[] __tc, byte[] __ln)
+		MethodName __n, MethodDescriptor __t, byte[] __tc, byte[] __ln,
+		byte[] __jo, byte[] __jp)
 		throws NullPointerException
 	{
-		this(__f, __o, __n, __t, __tc, __ln, 0, 0, 0);
+		this(__f, __o, __n, __t, __tc, __ln, __jo, __jp, 0, 0, 0, 0, 0);
 	}
 	
 	/**
@@ -86,15 +101,20 @@ public final class MinimizedMethod
 	 * @param __t The method type.
 	 * @param __tc Transcoded instructions.
 	 * @param __ln Line number table.
+	 * @param __jo Java operation table.
+	 * @param __jp Java PC table.
 	 * @param __co The code offset.
 	 * @param __lo The line offset.
+	 * @param __ojo Java operations offset.
+	 * @param __ojp Java addresses offset.
 	 * @param __wh The where offset.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/14
 	 */
 	public MinimizedMethod(int __f, int __o,
 		MethodName __n, MethodDescriptor __t, byte[] __tc, byte[] __ln,
-		int __co, int __lo, int __wh)
+		byte[] __jo, byte[] __jp, int __co, int __lo, int __ojo, int __ojp, 
+		int __wh)
 		throws NullPointerException
 	{
 		if (__n == null || __t == null)
@@ -104,11 +124,15 @@ public final class MinimizedMethod
 		this.index = __o;
 		this.name = __n;
 		this.type = __t;
-		this.codeoffset = __co;
-		this.lineoffset = __lo;
-		this.whereoffset = __wh;
 		this._code = (__tc == null ? new byte[0] : __tc.clone());
 		this._lines = (__ln == null ? new byte[0] : __ln.clone());
+		this._jops = (__jo == null ? new byte[0] : __jo.clone());
+		this._jpcs = (__jp == null ? new byte[0] : __jp.clone());
+		this.codeoffset = __co;
+		this.lineoffset = __lo;
+		this.jopsoffset = __ojo;
+		this.jpcsoffset = __ojp;
+		this.whereoffset = __wh;
 	}
 	
 	/**
@@ -185,6 +209,10 @@ public final class MinimizedMethod
 					lencode = dis.readUnsignedShort(),
 					offline = dis.readUnsignedShort(),
 					lenline = dis.readUnsignedShort(),
+					offjops = dis.readUnsignedShort(),
+					lenjops = dis.readUnsignedShort(),
+					offjpcs = dis.readUnsignedShort(),
+					lenjpcs = dis.readUnsignedShort(),
 					offwher = dis.readUnsignedShort();
 				
 				// Read code?
@@ -203,9 +231,26 @@ public final class MinimizedMethod
 					System.arraycopy(__b, __o + offline, line, 0, lenline);
 				}
 				
+				// Read Java operations
+				byte[] jops = null;
+				if (offjops > 0)
+				{
+					jops = new byte[lenjops];
+					System.arraycopy(__b, __o + offjops, jops, 0, lenjops);
+				}
+				
+				// Read Java addresses
+				byte[] jpcs = null;
+				if (offjpcs > 0)
+				{
+					jpcs = new byte[lenjpcs];
+					System.arraycopy(__b, __o + offjpcs, jpcs, 0, lenjpcs);
+				}
+				
 				// Build method
 				rv[i] = new MinimizedMethod(flags, offset, name, type,
-					code, line, offcode, offline, offwher);
+					code, line, jops, jpcs, offcode, offline, offjops,
+					offjpcs, offwher);
 			}
 		}
 		
