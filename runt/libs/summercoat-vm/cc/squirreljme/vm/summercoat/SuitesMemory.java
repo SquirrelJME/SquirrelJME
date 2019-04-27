@@ -109,6 +109,8 @@ public final class SuitesMemory
 		
 		// Write end of suite table
 		configtable.memWriteInt(4 * n, 0xFFFFFFFF);
+		configtable.memWriteInt(4 * (n + 1), 0xFFFFFFFF);
+		configtable.memWriteInt(4 * (n + 2), 0xFFFFFFFF);
 		
 		// Store all the various suite memories
 		this._suitemem = suitemem;

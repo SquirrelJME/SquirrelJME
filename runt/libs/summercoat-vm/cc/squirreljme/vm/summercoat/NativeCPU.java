@@ -39,7 +39,7 @@ public final class NativeCPU
 {
 	/** Is debugging enabled? */
 	public static final boolean ENABLE_DEBUG =
-		true;
+		false;
 	
 	/** Maximum amount of CPU registers. */
 	public static final int MAX_REGISTERS =
