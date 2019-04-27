@@ -301,13 +301,10 @@ public final class NativeInstruction
 			case NativeInstructionType.NEW:
 				return 2;
 					
-			case NativeInstructionType.ARRAY_ACCESS:
 			case NativeInstructionType.ATOMIC_INT_DECREMENT_AND_GET:
 			case NativeInstructionType.CONVERSION_TO_WIDE:
 			case NativeInstructionType.CONVERSION_FROM_WIDE:
 			case NativeInstructionType.IF_ICMP:
-			case NativeInstructionType.IFARRAY_INDEX_OOB_REF_CLEAR:
-			case NativeInstructionType.IFARRAY_MISTYPE_REF_CLEAR:
 			case NativeInstructionType.IFEQ_CONST:
 			case NativeInstructionType.MATH_REG_INT:
 			case NativeInstructionType.MATH_REG_FLOAT:
@@ -317,7 +314,6 @@ public final class NativeInstruction
 			case NativeInstructionType.MEMORY_OFF_ICONST:
 				return 3;
 			
-			case NativeInstructionType.ARRAY_ACCESS_WIDE:
 			case NativeInstructionType.CONVERSION_WIDE:
 			case NativeInstructionType.MEMORY_OFF_ICONST_WIDE:
 			case NativeInstructionType.MEMORY_OFF_REG_WIDE:
@@ -394,7 +390,6 @@ public final class NativeInstruction
 					ArgumentFormat.VUINT);
 				
 				// [u16, u16, u16]
-			case NativeInstructionType.ARRAY_ACCESS:
 			case NativeInstructionType.MATH_REG_FLOAT:
 			case NativeInstructionType.MATH_REG_INT:
 			case NativeInstructionType.MEMORY_OFF_REG:
@@ -404,7 +399,6 @@ public final class NativeInstruction
 					ArgumentFormat.VUINT);
 				
 				// [u16|u16, u16, u16]
-			case NativeInstructionType.ARRAY_ACCESS_WIDE:
 			case NativeInstructionType.MEMORY_OFF_REG_WIDE:
 				return ArgumentFormat.of(
 					ArgumentFormat.VUINT,
@@ -472,8 +466,6 @@ public final class NativeInstruction
 				
 				// [u16, u16, j16]
 			case NativeInstructionType.IF_ICMP:
-			case NativeInstructionType.IFARRAY_INDEX_OOB_REF_CLEAR:
-			case NativeInstructionType.IFARRAY_MISTYPE_REF_CLEAR:
 				return ArgumentFormat.of(
 					ArgumentFormat.VUINT,
 					ArgumentFormat.VUINT,
@@ -550,13 +542,6 @@ public final class NativeInstruction
 			else
 				return NativeInstructionType.MEMORY_OFF_ICONST;
 		
-		// Array access
-		else if (upper == NativeInstructionType.ARRAY_ACCESS)
-			if ((__op & 0b110) == 0b110)
-				return NativeInstructionType.ARRAY_ACCESS_WIDE;
-			else
-				return NativeInstructionType.ARRAY_ACCESS;
-		
 		// Plain
 		return upper;
 	}
@@ -606,13 +591,6 @@ public final class NativeInstruction
 					"_" +
 					(((__op & 0x80) != 0) ? "ICONST" : "REG");
 				
-			case NativeInstructionType.ARRAY_ACCESS:
-			case NativeInstructionType.ARRAY_ACCESS_WIDE:
-				return "ARRAY_" +
-					(((__op & 0x08) != 0) ? "LOAD" : "STORE") +
-					"_" +
-					DataType.of(__op & 0x07).name();
-			
 			case NativeInstructionType.CONVERSION:
 			case NativeInstructionType.CONVERSION_TO_WIDE:
 			case NativeInstructionType.CONVERSION_FROM_WIDE:
@@ -633,10 +611,6 @@ public final class NativeInstruction
 				return "ATOMIC_INT_INCREMENT";
 			case NativeInstructionType.BREAKPOINT:		return "BREAKPOINT";
 			case NativeInstructionType.ENTRY_MARKER:	return "ENTRY_MARKER";
-			case NativeInstructionType.IFARRAY_INDEX_OOB_REF_CLEAR:
-				return "IFARRAY_INDEX_OOB_REF_CLEAR";
-			case NativeInstructionType.IFARRAY_MISTYPE_REF_CLEAR:
-				return "IFARRAY_MISTYPE_REF_CLEAR";
 			case NativeInstructionType.IFEQ_CONST:		return "IFEQ_CONST";
 			case NativeInstructionType.INVOKE:			return "INVOKE";
 			case NativeInstructionType.LOAD_POOL:		return "LOAD_POOL";
