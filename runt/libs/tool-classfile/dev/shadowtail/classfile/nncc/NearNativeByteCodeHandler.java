@@ -35,6 +35,8 @@ import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ExceptionHandler;
 import net.multiphasicapps.classfile.ExceptionHandlerTable;
+import net.multiphasicapps.classfile.FieldDescriptor;
+import net.multiphasicapps.classfile.FieldName;
 import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.InstructionJumpTarget;
 import net.multiphasicapps.classfile.LookupSwitch;
@@ -1577,13 +1579,26 @@ public final class NearNativeByteCodeHandler
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
 			__cl, __r);
 		
-		// Multiply by 4
+		// Multiply by 4 (the cell size)
 		codebuilder.addMathConst(StackJavaType.INTEGER, MathType.MUL,
 			__r, 4, __r);
 		
-		// Read from the class table the class object
+		// Read from the class table the ClassDataV2 object
 		codebuilder.addMemoryOffReg(DataType.OBJECT, true,
 			__r, NativeCode.CLASS_TABLE_REGISTER, __r);
+		
+		// Load field offset from the pool
+		codebuilder.add(NativeInstructionType.LOAD_POOL,
+			new AccessedField(FieldAccessTime.NORMAL, FieldAccessType.STATIC,
+			new FieldReference(
+				new ClassName("cc/squirreljme/runtime/cldc/lang/ClassDataV2"),
+				new FieldName("classobjptr"), FieldDescriptor.INTEGER)),
+			NativeCode.VOLATILE_A_REGISTER);
+		
+		// Read from the field into the register
+		codebuilder.addMemoryOffReg(
+			DataType.OBJECT, true,
+			__r, __r, NativeCode.VOLATILE_A_REGISTER);
 	}
 	
 	/**

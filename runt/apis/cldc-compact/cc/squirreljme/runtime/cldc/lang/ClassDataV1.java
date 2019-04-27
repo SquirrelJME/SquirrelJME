@@ -66,7 +66,7 @@ public class ClassDataV1
 	 * @param __dcm Default constructor method.
 	 * @param __efm The method used to fill enumerations.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2016/04/12
+	 * @since 2018/12/04
 	 */
 	public ClassDataV1(int __csi, String __bn, Class<?> __sc, Class<?>[] __ic,
 		Class<?> __ct, String __ij, int __flags, int __dcf, StaticMethod __dcm,
