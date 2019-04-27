@@ -113,8 +113,20 @@ public interface FixedClassIDs
 	public static final int CLASSDATAV2 =
 		23;
 	
+	/** Thread. */
+	public static final int THREAD =
+		24;
+	
+	/** Object array. */
+	public static final int OBJECT_ARRAY =
+		25;
+	
+	/** String array. */
+	public static final int STRING_ARRAY =
+		26;
+	
 	/** Number of fixed IDs. */
 	public static final int MAX_FIXED =
-		24;
+		27;
 }
 

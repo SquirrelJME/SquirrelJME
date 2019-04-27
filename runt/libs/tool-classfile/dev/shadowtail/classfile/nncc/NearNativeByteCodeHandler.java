@@ -154,9 +154,12 @@ public final class NearNativeByteCodeHandler
 		// Cannot be null
 		this.__basicCheckNPE(__in.register);
 		
+		// Must be an array
+		this.__basicCheckIsArray(__in.register);
+		
 		// Read length
-		codebuilder.add(NativeInstructionType.ARRAYLEN,
-			__in.register, __len.register);
+		codebuilder.addMemoryOffConst(DataType.INTEGER, true, __len.register,
+			__in.register, Kernel.ARRAY_LENGTH_OFFSET);
 		
 		// Clear references
 		this.__refClear();
@@ -178,6 +181,9 @@ public final class NearNativeByteCodeHandler
 		
 		// Cannot be null
 		this.__basicCheckNPE(__in.register);
+		
+		// Must be an array
+		this.__basicCheckIsArray(__in.register);
 		
 		// Check bounds
 		codebuilder.add(NativeInstructionType.IFARRAY_INDEX_OOB_REF_CLEAR,
@@ -208,6 +214,9 @@ public final class NearNativeByteCodeHandler
 		
 		// Cannot be null
 		this.__basicCheckNPE(__in.register);
+		
+		// Must be an array
+		this.__basicCheckIsArray(__in.register);
 		
 		// Check bounds
 		codebuilder.add(NativeInstructionType.IFARRAY_INDEX_OOB_REF_CLEAR,
@@ -1191,21 +1200,6 @@ public final class NearNativeByteCodeHandler
 	}
 	
 	/**
-	 * Basic check if the instance is null.
-	 *
-	 * @param __ir The register to check.
-	 * @since 2019/04/22
-	 */
-	private final void __basicCheckNPE(int __ir)
-	{
-		NativeCodeBuilder codebuilder = this.codebuilder;
-		
-		// Just a plain zero check
-		codebuilder.addIfZero(__ir, this.__labelRefClearJump(
-			this.__labelMakeException("java/lang/NullPointerException")));
-	}
-	
-	/**
 	 * Basic check if the instance is of the given class.
 	 *
 	 * @param __ir The register to check.
@@ -1246,6 +1240,46 @@ public final class NearNativeByteCodeHandler
 		codebuilder.addIfZero(NativeCode.RETURN_REGISTER,
 			this.__labelRefClearJump(this.__labelMakeException(
 			"java/lang/ClassCastException")));
+	}
+	
+	/**
+	 * Checks that the given object is an array.
+	 *
+	 * @param __ir The type to check.
+	 * @since 2019/04/27
+	 */
+	private final void __basicCheckIsArray(int __ir)
+	{
+		// Load method pointer
+		codebuilder.add(NativeInstructionType.LOAD_POOL,
+			new InvokedMethod(InvokeType.STATIC, new MethodHandle(KERNEL_CLASS,
+			new MethodName("jvmIsArray"), new MethodDescriptor("(II)I"))),
+			NativeCode.VOLATILE_B_REGISTER);
+		
+		// Call the instance checker (__ir, checkclassid)
+		codebuilder.add(NativeInstructionType.INVOKE,
+			NativeCode.VOLATILE_B_REGISTER,
+			new RegisterList(__ir));
+		
+		// If this is not an array, throw a class cast exception
+		codebuilder.addIfZero(NativeCode.RETURN_REGISTER,
+			this.__labelRefClearJump(this.__labelMakeException(
+			"java/lang/ClassCastException")));
+	}
+	
+	/**
+	 * Basic check if the instance is null.
+	 *
+	 * @param __ir The register to check.
+	 * @since 2019/04/22
+	 */
+	private final void __basicCheckNPE(int __ir)
+	{
+		NativeCodeBuilder codebuilder = this.codebuilder;
+		
+		// Just a plain zero check
+		codebuilder.addIfZero(__ir, this.__labelRefClearJump(
+			this.__labelMakeException("java/lang/NullPointerException")));
 	}
 	
 	/**

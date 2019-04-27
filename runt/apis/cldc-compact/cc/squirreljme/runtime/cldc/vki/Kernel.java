@@ -311,6 +311,19 @@ public final class Kernel
 		// Set class table pointer
 		Assembly.specialSetClassTableRegister(ctptr);
 		
+		// Setup main task now, which does class initialization and such per
+		// task because it is different for every running thing
+		int maintask = Kernel.taskNew((this.ismidlet == 0 ? false : true),
+			this.guestdepth, this.classpath, this.sysprops, this.mainclass,
+			this.mainargs);
+		
+		// Could not create main task
+		if (maintask == 0)
+		{
+			Assembly.breakpoint();
+			return;
+		}
+		
 		// Break
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -335,6 +348,61 @@ public final class Kernel
 	 */
 	public static final void jvmGarbageCollectObject(int __p)
 	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Checks whether the given pointer is an array.
+	 *
+	 * @param __p The pointer to check.
+	 * @return Either {@code 1} if it is an array or {@code 0} if it is not.
+	 * @since 2019/04/27
+	 */
+	public static final int jvmIsArray(int __p)
+	{
+		if (__p == 0)
+			return 0;
+		
+		// There are a bunch of fixed IDs which can be used to quickly
+		// determine if this is an array
+		int pcl = Assembly.memReadInt(__p, OBJECT_CLASS_OFFSET);
+		switch (pcl)
+		{
+				// These are arrays
+			case FixedClassIDs.PRIMITIVE_BOOLEAN_ARRAY:
+			case FixedClassIDs.PRIMITIVE_BYTE_ARRAY:
+			case FixedClassIDs.PRIMITIVE_SHORT_ARRAY:
+			case FixedClassIDs.PRIMITIVE_CHARACTER_ARRAY:
+			case FixedClassIDs.PRIMITIVE_INTEGER_ARRAY:
+			case FixedClassIDs.PRIMITIVE_LONG_ARRAY:
+			case FixedClassIDs.PRIMITIVE_FLOAT_ARRAY:
+			case FixedClassIDs.PRIMITIVE_DOUBLE_ARRAY:
+			case FixedClassIDs.OBJECT_ARRAY:
+			case FixedClassIDs.STRING_ARRAY:
+				return 1;
+				
+				// These are not arrays
+			case FixedClassIDs.PRIMITIVE_BOOLEAN:
+			case FixedClassIDs.PRIMITIVE_BYTE:
+			case FixedClassIDs.PRIMITIVE_SHORT:
+			case FixedClassIDs.PRIMITIVE_CHARACTER:
+			case FixedClassIDs.PRIMITIVE_INTEGER:
+			case FixedClassIDs.PRIMITIVE_LONG:
+			case FixedClassIDs.PRIMITIVE_FLOAT:
+			case FixedClassIDs.PRIMITIVE_DOUBLE:
+			case FixedClassIDs.OBJECT:
+			case FixedClassIDs.THROWABLE:
+			case FixedClassIDs.CLASS:
+			case FixedClassIDs.STRING:
+			case FixedClassIDs.KERNEL:
+			case FixedClassIDs.CLASSDATA:
+			case FixedClassIDs.CLASSDATAV2:
+			case FixedClassIDs.THREAD:
+				return 0;
+		}
+		
+		// Need to go through and check a bunch of things
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -497,6 +565,24 @@ public final class Kernel
 		
 		// Return the array
 		return rv;
+	}
+	
+	/**
+	 * Creates a new task.
+	 *
+	 * @param __ismid Is it a midlet?
+	 * @param __gd The guest depth.
+	 * @param __cp The classpath.
+	 * @param __sprops System properties.
+	 * @param __maincl Main class.
+	 * @param __mainargs Main arguments.
+	 * @return The newly created task.
+	 * @since 2019/04/27
+	 */
+	public static final int taskNew(boolean __ismid, int __gd, byte[] __cp,
+		byte[] __sprops, byte[] __maincl, byte[] __mainargs)
+	{
+		throw new todo.TODO();
 	}
 }
 
