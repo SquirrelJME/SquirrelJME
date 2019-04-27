@@ -1293,12 +1293,11 @@ public final class NearNativeByteCodeHandler
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
 			new InvokedMethod(InvokeType.STATIC, new MethodHandle(KERNEL_CLASS,
 			new MethodName("jvmIsArray"), new MethodDescriptor("(I)I"))),
-			NativeCode.VOLATILE_B_REGISTER);
+			NativeCode.VOLATILE_A_REGISTER);
 		
 		// Call the instance checker (__ir, checkclassid)
 		codebuilder.add(NativeInstructionType.INVOKE,
-			NativeCode.VOLATILE_B_REGISTER,
-			new RegisterList(__ir));
+			NativeCode.VOLATILE_A_REGISTER, new RegisterList(__ir));
 		
 		// If this is not an array, throw a class cast exception
 		codebuilder.addIfZero(NativeCode.RETURN_REGISTER,
