@@ -196,7 +196,7 @@ public final class NearNativeByteCodeHandler
 			NativeCode.VOLATILE_A_REGISTER);
 		
 		// Do the memory read
-		codebuilder.addMemoryOffReg(DataType.INTEGER, true,
+		codebuilder.addMemoryOffReg(__dt, true,
 			__v.register,
 			__in.register, NativeCode.VOLATILE_A_REGISTER);
 		
@@ -231,21 +231,35 @@ public final class NearNativeByteCodeHandler
 		// Check array bounds
 		this.__basicCheckArrayBound(__in.register, __dx.register);
 		
-		// Check bounds
-		codebuilder.add(NativeInstructionType.IFARRAY_INDEX_OOB_REF_CLEAR,
-			__dx.register, __in.register, this.__labelMakeException(
-			"java/lang/ArrayIndexOutOfBoundsException"));
+		// Determine array index position (use sticky register)
+		codebuilder.addMathConst(StackJavaType.INTEGER, MathType.MUL,
+			__dx.register, __dt.size(), NativeCode.VOLATILE_S_REGISTER);
+		codebuilder.addMathConst(StackJavaType.INTEGER, MathType.ADD,
+			NativeCode.VOLATILE_S_REGISTER, Kernel.ARRAY_BASE_SIZE,
+			NativeCode.VOLATILE_S_REGISTER);
 		
-		// Check that the target type is compatible, but only if the source
-		// appears to be an object
+		// If we are storing an object....
 		if (__v.type.isObject())
-			codebuilder.add(NativeInstructionType.IFARRAY_MISTYPE_REF_CLEAR,
-				__v.register, __in.register, this.__labelMakeException(
-				"java/lang/ArrayStoreException"));
+		{
+			// Check if the array type is compatible
+			this.__basicCheckArrayStore(__in.register, __v.register);
+			
+			// Read existing object so it can be uncounted
+			codebuilder.addMemoryOffReg(DataType.INTEGER, true,
+				NativeCode.RETURN_REGISTER + 1,
+				__in.register, NativeCode.VOLATILE_S_REGISTER);
+			
+			// Uncount this object
+			this.__refUncount(NativeCode.RETURN_REGISTER + 1);
+			
+			// Count the object being stored
+			this.__refCount(__v.register);
+		}
 		
-		// Store
-		codebuilder.addArrayAccess(__dt, false, __v.register, __in.register,
-			__dx.register);
+		// Store value (volatile S is index offset)
+		codebuilder.addMemoryOffReg(__dt, false,
+			__v.register,
+			__in.register, NativeCode.VOLATILE_S_REGISTER);
 		
 		// Clear references
 		this.__refClear();
@@ -1236,6 +1250,34 @@ public final class NearNativeByteCodeHandler
 		// is invalid
 		codebuilder.addIfICmp(CompareType.GREATER_THAN_OR_EQUALS,
 			__dxr, NativeCode.VOLATILE_A_REGISTER, lab);
+	}
+	
+	/**
+	 * Checks if the target array can store this value.
+	 *
+	 * @param __ir The instance register.
+	 * @param __vr The value register.
+	 * @since 2019/04/27
+	 */
+	private final void __basicCheckArrayStore(int __ir, int __vr)
+	{
+		NativeCodeBuilder codebuilder = this.codebuilder;
+		
+		// Load method pointer
+		codebuilder.add(NativeInstructionType.LOAD_POOL,
+			new InvokedMethod(InvokeType.STATIC, new MethodHandle(KERNEL_CLASS,
+			new MethodName("jvmCanArrayStore"),
+			new MethodDescriptor("(II)I"))),
+			NativeCode.VOLATILE_B_REGISTER);
+		
+		// Call the instance checker (__ir, checkclassid)
+		codebuilder.add(NativeInstructionType.INVOKE,
+			NativeCode.VOLATILE_B_REGISTER,
+			new RegisterList(__ir, __vr));
+		
+		// Was it invalid?
+		codebuilder.addIfZero(NativeCode.RETURN_REGISTER,
+			this.__labelMakeException("java/lang/ArrayStoreException"));
 	}
 	
 	/**
