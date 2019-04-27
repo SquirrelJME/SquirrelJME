@@ -55,6 +55,9 @@ public enum MinimizedPoolEntryType
 	/** Where is this? */
 	WHERE_IS_THIS,
 	
+	/** A plain string that was used. */
+	USED_STRING,
+	
 	/** End. */
 	;
 	
@@ -84,6 +87,7 @@ public enum MinimizedPoolEntryType
 			case 10:	return LONG;
 			case 11:	return DOUBLE;
 			case 12:	return WHERE_IS_THIS;
+			case 13:	return USED_STRING;
 		}
 		
 		// {@squirreljme.error JC3s Unknown pool type. (The type)}
@@ -134,6 +138,8 @@ public enum MinimizedPoolEntryType
 				return METHOD_DESCRIPTOR;
 			case "dev.shadowtail.classfile.nncc.WhereIsThis":
 				return WHERE_IS_THIS;
+			case "dev.shadowtail.classfile.nncc.UsedString":
+				return USED_STRING;
 		}
 		
 		// {@squirreljme.error JC2o Class does not map to a pool entry

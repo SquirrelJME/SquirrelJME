@@ -197,10 +197,13 @@ public final class JarMinimizer
 			{
 					// Do nothing
 				case NULL:
+				case STRING:
 					break;
 					
-					// String
-				case STRING:
+					// String that is used in code
+				case USED_STRING:
+					if (true)
+						throw new todo.TODO();
 					this.__memWriteInt(MemoryOperationType.OFFSET_RAM, pvaddr,
 						this.__stringIntern((String)pval));
 					break;
