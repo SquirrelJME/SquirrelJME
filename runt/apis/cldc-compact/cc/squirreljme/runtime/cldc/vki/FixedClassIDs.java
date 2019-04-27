@@ -105,8 +105,16 @@ public interface FixedClassIDs
 	public static final int KERNEL =
 		21;
 	
+	/** ClassData. */
+	public static final int CLASSDATA =
+		22;
+	
+	/** ClassDataV2. */
+	public static final int CLASSDATAV2 =
+		23;
+	
 	/** Number of fixed IDs. */
 	public static final int MAX_FIXED =
-		22;
+		24;
 }
 
