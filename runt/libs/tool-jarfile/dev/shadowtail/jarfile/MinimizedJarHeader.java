@@ -31,7 +31,7 @@ public final class MinimizedJarHeader
 	
 	/** The size of the header without the magic number. */
 	public static final int HEADER_SIZE_WITHOUT_MAGIC =
-		0;
+		28;
 	
 	/** The size of the header with the magic number. */
 	public static final int HEADER_SIZE_WITH_MAGIC =
@@ -42,6 +42,9 @@ public final class MinimizedJarHeader
 	
 	/** Table of contents offset. */
 	public final int tocoffset;
+	
+	/** Boot Pool offset. */
+	public final int bootpooloff;
 	
 	/** Boot RAM offset. */
 	public final int bootramoff;
@@ -75,6 +78,7 @@ public final class MinimizedJarHeader
 		this.tocoffset = __fs[at++];
 		
 		// Boot RAM
+		this.bootpooloff = __fs[at++];
 		this.bootramoff = __fs[at++];
 		this.bootramsize = __fs[at++];
 		this.initramoff = __fs[at++];
@@ -108,6 +112,7 @@ public final class MinimizedJarHeader
 			/* numrc */ din.readInt(),
 			/* tocoffset */ din.readInt(),
 			
+			/* bootpooloff */ din.readInt(),
 			/* bootramoff */ din.readInt(),
 			/* bootramlen */ din.readInt(),
 			/* initramoff */ din.readInt(),
