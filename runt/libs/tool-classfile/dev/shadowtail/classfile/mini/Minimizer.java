@@ -170,10 +170,8 @@ public final class Minimizer
 		}
 		
 		// Relative offset where all the data will end up being, starts at
-		// the constant pool address. Size is calculated as:
-		// written + pooloff/len + fieldoff/len + methodoff/len + uuidhi/lo +
-		// fileoff/len
-		int reloff = __dos.size() + 8 + 16 + 16 + 8 + 8,
+		// the constant pool address.
+		int reloff = MinimizedClassHeader.HEADER_SIZE_WITH_MAGIC,
 			baserel = reloff;
 		
 		// Base round to pool data
