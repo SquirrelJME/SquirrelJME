@@ -45,7 +45,7 @@ public final class SuitesMemory
 	protected final int size;
 	
 	/** The suite configuration table (addresses of suites). */
-	protected final RawMemory configtable;
+	protected final WritableMemory configtable;
 	
 	/** The individual regions of suite memory. */
 	private final SuiteMemory[] _suitemem;
@@ -80,7 +80,8 @@ public final class SuitesMemory
 		String[] libnames = __sm.listLibraryNames();
 		
 		// Setup configuration space
-		this.configtable = new RawMemory(__off, CONFIG_TABLE_SIZE);
+		WritableMemory configtable = new RawMemory(__off, CONFIG_TABLE_SIZE);
+		this.configtable = configtable;
 		
 		// Setup suite memory area
 		int n = libnames.length;
@@ -99,9 +100,15 @@ public final class SuitesMemory
 			// Also use map for quick access
 			suitemap.put(ln, sm);
 			
+			// Write offset to the suite memory's position
+			configtable.memWriteInt(4 * i, off);
+			
 			// Debug
 			todo.DEBUG.note("MMap Suite %s -> %08x", ln, __off + off);
 		}
+		
+		// Write end of suite table
+		configtable.memWriteInt(4 * n, 0xFFFFFFFF);
 		
 		// Store all the various suite memories
 		this._suitemem = suitemem;
