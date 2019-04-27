@@ -7,6 +7,6 @@ X-SquirrelJME-Version: 0.3.0
 X-SquirrelJME-Description: This project takes input Jar files and 
  compiles/converts them into a format that is more easily used by 
  SummerCoat and RatufaCoat.
-X-SquirrelJME-Depends: tool-classfile tool-compiler
+X-SquirrelJME-Depends: tool-classfile common-vm
 Microedition-Configuration: CLDC-1.8-Compact
 
