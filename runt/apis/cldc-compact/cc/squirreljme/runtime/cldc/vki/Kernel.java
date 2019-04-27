@@ -316,10 +316,6 @@ public final class Kernel
 		// Set class table pointer
 		Assembly.specialSetClassTableRegister(ctptr);
 		
-		// Read test byte
-		byte[] b = new byte[12];
-		int q = b[12];
-		
 		// Setup main task now, which does class initialization and such per
 		// task because it is different for every running thing
 		int maintask = Kernel.taskNew((this.ismidlet == 0 ? false : true),
@@ -339,6 +335,87 @@ public final class Kernel
 	}
 	
 	/**
+	 * Checks if the given object can be stored in the array.
+	 *
+	 * @param __p The array pointer.
+	 * @param __v The value to check.
+	 * @return If this object can be stored in the array then {@code 1} will
+	 * be returned, otherwise {@code 0} will.
+	 * @since 2019/04/27
+	 */
+	public static final int jvmCanArrayStore(int __p, int __v)
+	{
+		// Cannot store into null array
+		if (__p == 0)
+			return 0;
+		
+		// Null is always valid
+		if (__v == 0)
+			return 1;
+		
+		// Anything being stored in an object array is valid
+		int pcl = Assembly.memReadInt(__p, OBJECT_CLASS_OFFSET);
+		if (pcl == FixedClassIDs.OBJECT_ARRAY)
+			return 1;
+			
+		// Get the component types of both
+		int ccl = Kernel.jvmComponentType(pcl),
+			vcl = Assembly.memReadInt(__v, OBJECT_CLASS_OFFSET);
+		
+		// Same class type for storage?
+		if (ccl == vcl)
+			return 1;
+			
+		// Need to go through and check a bunch of things
+		Assembly.breakpoint();
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the component type of the array
+	 *
+	 * @param __clid The class ID
+	 * @return The component type of the array or {@code 0} if it is not an
+	 * array.
+	 * @since 2019/04/27
+	 */
+	public static final int jvmComponentType(int __clid)
+	{
+		// Null object has no component type
+		if (__clid == 0)
+			return 0;
+		
+		// Fixed array types?
+		switch (__clid)
+		{
+			case FixedClassIDs.PRIMITIVE_BOOLEAN_ARRAY:
+				return FixedClassIDs.PRIMITIVE_BOOLEAN;
+			case FixedClassIDs.PRIMITIVE_BYTE_ARRAY:
+				return FixedClassIDs.PRIMITIVE_BYTE;
+			case FixedClassIDs.PRIMITIVE_SHORT_ARRAY:
+				return FixedClassIDs.PRIMITIVE_SHORT;
+			case FixedClassIDs.PRIMITIVE_CHARACTER_ARRAY:
+				return FixedClassIDs.PRIMITIVE_CHARACTER;
+			case FixedClassIDs.PRIMITIVE_INTEGER_ARRAY:
+				return FixedClassIDs.PRIMITIVE_INTEGER;
+			case FixedClassIDs.PRIMITIVE_LONG_ARRAY:
+				return FixedClassIDs.PRIMITIVE_LONG;
+			case FixedClassIDs.PRIMITIVE_FLOAT_ARRAY:
+				return FixedClassIDs.PRIMITIVE_FLOAT;
+			case FixedClassIDs.PRIMITIVE_DOUBLE_ARRAY:
+				return FixedClassIDs.PRIMITIVE_DOUBLE;
+			case FixedClassIDs.OBJECT_ARRAY:
+				return FixedClassIDs.OBJECT;
+			case FixedClassIDs.STRING_ARRAY:
+				return FixedClassIDs.STRING;
+		}
+			
+		// Need to go through and check a bunch of things
+		Assembly.breakpoint();
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Performs aggressive garbage collection of the JVM heap to free as much
 	 * memory as possible.
 	 *
@@ -346,6 +423,7 @@ public final class Kernel
 	 */
 	public static final void jvmGarbageCollect()
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -357,6 +435,7 @@ public final class Kernel
 	 */
 	public static final void jvmGarbageCollectObject(int __p)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
