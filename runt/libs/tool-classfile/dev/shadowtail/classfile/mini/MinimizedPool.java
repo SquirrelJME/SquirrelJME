@@ -14,6 +14,7 @@ import dev.shadowtail.classfile.nncc.ClassPool;
 import dev.shadowtail.classfile.nncc.FieldAccessTime;
 import dev.shadowtail.classfile.nncc.FieldAccessType;
 import dev.shadowtail.classfile.nncc.InvokedMethod;
+import dev.shadowtail.classfile.nncc.UsedString;
 import dev.shadowtail.classfile.nncc.WhereIsThis;
 import dev.shadowtail.classfile.xlate.InvokeType;
 import java.io.ByteArrayInputStream;
@@ -300,6 +301,7 @@ public final class MinimizedPool
 					case LONG:
 					case DOUBLE:
 					case WHERE_IS_THIS:
+					case USED_STRING:
 						// Wide parts
 						if (iswide)
 						{
@@ -406,6 +408,11 @@ public final class MinimizedPool
 									(ClassName)values[part[1]],
 									new MethodName((String)values[part[2]]),
 									(MethodDescriptor)values[part[3]]);
+								break;
+								
+								// Used string
+							case USED_STRING:
+								v = new UsedString((String)values[part[0]]);
 								break;
 								
 							default:

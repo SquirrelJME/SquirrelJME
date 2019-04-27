@@ -792,7 +792,8 @@ public final class NearNativeByteCodeHandler
 	public final void doPoolLoad(Object __v, JavaStackResult.Output __out)
 	{
 		this.codebuilder.add(NativeInstructionType.LOAD_POOL,
-			__v, __out.register);
+			(__v instanceof String ? new UsedString(__v.toString()) : __v),
+			__out.register);
 	}
 	
 	/**
