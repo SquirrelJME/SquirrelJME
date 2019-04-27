@@ -10,6 +10,7 @@
 package cc.squirreljme.vm.summercoat;
 
 import dev.shadowtail.classfile.mini.Minimizer;
+import dev.shadowtail.jarfile.JarMinimizer;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.InputStream;
@@ -192,6 +193,22 @@ public final class SuiteMemory
 		String libname = this.libname;
 		VMClassLibrary clib = this.suites.loadLibrary(libname);
 		
+		// Minimize and format the JAR
+		byte[] jf = JarMinimizer.minimize((libname.equals("cldc-compact") ||
+			libname.equals("cldc-compact.jar")), clib);
+		
+		// {@squirreljme.error AE0u Suite chunk size limit was exceeded.
+		// (The chunk size)}
+		if (jf.length > SuitesMemory.SUITE_CHUNK_SIZE)
+			throw new RuntimeException("AE0u " + jf.length);
+		
+		// Set memory using this byte array
+		this._memory = new ByteArrayMemory(this.offset, jf);
+		
+		/*
+		if (true)
+			throw new todo.TODO();
+		
 		// Need to build a resource index
 		String[] lsr = clib.listResources();
 		int rn = lsr.length;
@@ -297,6 +314,7 @@ public final class SuiteMemory
 		// (The chunk size)}
 		if (idos.size() > SuitesMemory.SUITE_CHUNK_SIZE)
 			throw new RuntimeException("AE0u " + idos.size());
+		*/
 	}
 }
 
