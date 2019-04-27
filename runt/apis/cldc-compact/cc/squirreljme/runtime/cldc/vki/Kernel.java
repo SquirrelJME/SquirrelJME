@@ -251,6 +251,56 @@ public final class Kernel
 		// The number of libraries that will be active
 		int libcount = __cp.length;
 		
+		// Need to search through the ROM suites for the suites to use
+		int romaddr = this.romaddr;
+		int[] cpsubroms = new int[libcount];
+		for (int i = 0; i < libcount; i++)
+		{
+			// Which suite do we want?
+			byte[] wantlib = __cp[i];
+			int wln = wantlib.length;
+			
+			// Scan through all suites
+			int userom = -1;
+			for (int r = 0;; r++)
+			{
+				// ROM relative address
+				int rreladdr = Assembly.memReadInt(romaddr, r * 4);
+				
+				// No more ROMs to read
+				if (rreladdr == 0xFFFFFFFF)
+					break;
+				
+				// Absolute address of the ROM
+				int rabsaddr = romaddr + rreladdr;
+				
+				// Read address of the relative library name offset
+				int rellibname = Assembly.memReadInt(rabsaddr, 0),
+					abslibname = rabsaddr + rellibname;
+				
+				// Perform a name match to see if this is the one
+				int q;
+				for (q = 0; q < wln; q++)
+					if (wantlib[q] != Assembly.memReadByte(abslibname, q))
+						break;
+				
+				// Is this a match???
+				if (q == wln)
+				{
+					userom = rabsaddr;
+					Assembly.breakpoint();
+					break;
+				}
+			}
+			
+			// {@squirreljme.error ZZ3w Could not locate suite in ROM.}
+			if (userom < 0)
+				throw new VirtualMachineError("ZZ3w");
+			
+			// Use this
+			cpsubroms[i] = userom;
+		}
+		
 		throw new todo.TODO();
 	}
 	
