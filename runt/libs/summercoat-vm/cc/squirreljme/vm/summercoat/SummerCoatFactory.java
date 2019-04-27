@@ -183,23 +183,9 @@ public class SummerCoatFactory
 						
 						// Try to map a class index to a pre-existing ID
 					case CLASS_NAME:
-						switch (pv.toString())
-						{
-								// char array
-							case "[C":
-								cv = FixedClassIDs.PRIMITIVE_CHARACTER_ARRAY;
-								break;
-							
-								// Kernel
-							case "cc/squirreljme/runtime/cldc/vki/Kernel":
-								cv = FixedClassIDs.KERNEL;
-								break;
-							
-								// Unknown class, ignore
-							default:
-								cv = _BAD_POOL_VALUE;
-								break;
-						}
+						cv = FixedClassIDs.of(pv.toString());
+						if (cv < 0)
+							cv = _BAD_POOL_VALUE;
 						break;
 						
 						// The pointer to the run-time pool for the given

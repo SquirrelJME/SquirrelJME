@@ -871,7 +871,7 @@ public final class NativeCPU
 						break;
 					
 					case NativeCode.VOLATILE_B_REGISTER:
-						spec = "vola";
+						spec = "volb";
 						break;
 					
 					case NativeCode.MONITOR_TARGET_REGISTER:

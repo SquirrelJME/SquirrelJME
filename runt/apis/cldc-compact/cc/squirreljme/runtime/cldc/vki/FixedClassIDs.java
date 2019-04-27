@@ -15,7 +15,7 @@ package cc.squirreljme.runtime.cldc.vki;
  *
  * @since 2019/04/21
  */
-public interface FixedClassIDs
+public final class FixedClassIDs
 {
 	/** No Class. */
 	public static final int NONE =
@@ -128,5 +128,82 @@ public interface FixedClassIDs
 	/** Number of fixed IDs. */
 	public static final int MAX_FIXED =
 		27;
+	
+	/**
+	 * Not used.
+	 *
+	 * @since 2019/04/27
+	 */
+	private FixedClassIDs()
+	{
+	}
+	
+	/**
+	 * Returns the fixed ID of the given class or {@code -1} if not one.
+	 *
+	 * @return The fixed ID or {@code -1} if it is not one.
+	 * @since 2019/04/27
+	 */
+	public static final int of(String __cl)
+	{
+		switch (__cl)
+		{
+			case "boolean":
+				return PRIMITIVE_BOOLEAN;
+			case "byte":
+				return PRIMITIVE_BYTE;
+			case "short":
+				return PRIMITIVE_SHORT;
+			case "char":
+				return PRIMITIVE_CHARACTER;
+			case "int":
+				return PRIMITIVE_INTEGER;
+			case "long":
+				return PRIMITIVE_LONG;
+			case "float":
+				return PRIMITIVE_FLOAT;
+			case "double":
+				return PRIMITIVE_DOUBLE;
+			case "[Z":
+				return PRIMITIVE_BOOLEAN_ARRAY;
+			case "[B":
+				return PRIMITIVE_BYTE_ARRAY;
+			case "[S":
+				return PRIMITIVE_SHORT_ARRAY;
+			case "[C":
+				return PRIMITIVE_CHARACTER_ARRAY;
+			case "[I":
+				return PRIMITIVE_INTEGER_ARRAY;
+			case "[J":
+				return PRIMITIVE_LONG_ARRAY;
+			case "[F":
+				return PRIMITIVE_FLOAT_ARRAY;
+			case "[D":
+				return PRIMITIVE_DOUBLE_ARRAY;
+			case "java/lang/Object":
+				return OBJECT;
+			case "java/lang/Throwable":
+				return THROWABLE;
+			case "java/lang/Class":
+				return CLASS;
+			case "java/lang/String":
+				return STRING;
+			case "cc/squirreljme/runtime/cldc/vki/Kernel":
+				return KERNEL;
+			case "cc/squirreljme/runtime/cldc/lang/ClassData":
+				return CLASSDATA;
+			case "cc/squirreljme/runtime/cldc/lang/ClassDataV2":
+				return CLASSDATAV2;
+			case "Ljava/lang/Thread;":
+				return THREAD;
+			case "[Ljava/lang/Object;":
+				return OBJECT_ARRAY;
+			case "[Ljava/lang/String;":
+				return STRING_ARRAY;
+		}
+		
+		// Not a fixed type
+		return -1;
+	}
 }
 
