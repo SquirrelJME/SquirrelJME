@@ -592,15 +592,26 @@ public final class JavaStackState
 		JavaStackResult stacksto = stackpop.after().doLocalSet(
 			popped.type, __l);
 		
-		// Then combine these two states into a new result
-		// The enqueue of the stored stack result is used and do not count
-		// the popped value because it would just be uncounted and counted for
-		// the copy (has a net zero count).
+		// Copy old operations over to add more potentially
+		List<StateOperation> lsops = new ArrayList<>();
+		for (StateOperation sop : stacksto.operations())
+			lsops.add(sop);
+		
+		// If the stack entry is not counting then we need to count it
+		// when it stored in the local because all locals are not cachable
+		// Make sure it is counted before the copy just in case there are
+		// any kludge operation
+		JavaStackResult.Output out = stacksto.out(0);
+		if (popped.nocounting && !out.nocounting)
+			lsops.add(0, StateOperation.count(popped.register));
+		
+		// The two states are nearly combined but most of the result comes
+		// from the actual push
 		return new JavaStackResult(this,
 			stacksto.after,
 			stacksto.enqueue,
-			stacksto.operations(),
-			popped, stacksto.out(0));
+			new StateOperations(lsops),
+			popped, out);
 	}
 	
 	/**
