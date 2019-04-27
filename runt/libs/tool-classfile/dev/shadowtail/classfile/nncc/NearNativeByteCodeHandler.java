@@ -185,14 +185,24 @@ public final class NearNativeByteCodeHandler
 		// Must be an array
 		this.__basicCheckIsArray(__in.register);
 		
-		// Check bounds
-		codebuilder.add(NativeInstructionType.IFARRAY_INDEX_OOB_REF_CLEAR,
-			__dx.register, __in.register, this.__labelMakeException(
-			"java/lang/ArrayIndexOutOfBoundsException"));
+		// Check array bounds
+		this.__basicCheckArrayBound(__in.register, __dx.register);
 		
-		// Load
-		codebuilder.addArrayAccess(__dt, true, __v.register, __in.register,
-			__dx.register);
+		// Determine array index position
+		codebuilder.addMathConst(StackJavaType.INTEGER, MathType.MUL,
+			__dx.register, __dt.size(), NativeCode.VOLATILE_A_REGISTER);
+		codebuilder.addMathConst(StackJavaType.INTEGER, MathType.ADD,
+			NativeCode.VOLATILE_A_REGISTER, Kernel.ARRAY_BASE_SIZE,
+			NativeCode.VOLATILE_A_REGISTER);
+		
+		// Do the memory read
+		codebuilder.addMemoryOffReg(DataType.INTEGER, true,
+			__v.register,
+			__in.register, NativeCode.VOLATILE_A_REGISTER);
+		
+		// If reading an object reference count up!
+		if (__dt == DataType.OBJECT)
+			this.__refCount(__v.register);
 		
 		// Clear references
 		this.__refClear();
@@ -217,6 +227,9 @@ public final class NearNativeByteCodeHandler
 		
 		// Must be an array
 		this.__basicCheckIsArray(__in.register);
+		
+		// Check array bounds
+		this.__basicCheckArrayBound(__in.register, __dx.register);
 		
 		// Check bounds
 		codebuilder.add(NativeInstructionType.IFARRAY_INDEX_OOB_REF_CLEAR,
@@ -338,6 +351,10 @@ public final class NearNativeByteCodeHandler
 		codebuilder.addMemoryOffReg(
 			DataType.of(__fr.memberType().primitiveType()), true,
 			__v.register, ireg, tempreg);
+		
+		// Count it up?
+		if (__fr.memberType().isObject())
+			this.__refCount(__v.register);
 			
 		// Clear references as needed
 		this.__refClear();
@@ -728,22 +745,11 @@ public final class NearNativeByteCodeHandler
 	{
 		NativeCodeBuilder codebuilder = this.codebuilder;
 		
-		// Primitive types always have a fixed array type
-		int ctype = 0;
-		switch (__at.toString())
-		{
-			case "[Z":	ctype = FixedClassIDs.PRIMITIVE_BOOLEAN_ARRAY; break;
-			case "[B":	ctype = FixedClassIDs.PRIMITIVE_BYTE_ARRAY; break;
-			case "[S":	ctype = FixedClassIDs.PRIMITIVE_SHORT_ARRAY; break;
-			case "[C":	ctype = FixedClassIDs.PRIMITIVE_CHARACTER_ARRAY; break;
-			case "[I":	ctype = FixedClassIDs.PRIMITIVE_INTEGER_ARRAY; break;
-			case "[J":	ctype = FixedClassIDs.PRIMITIVE_LONG_ARRAY; break;
-			case "[F":	ctype = FixedClassIDs.PRIMITIVE_FLOAT_ARRAY; break;
-			case "[D":	ctype = FixedClassIDs.PRIMITIVE_DOUBLE_ARRAY; break;
-		}
+		// Determine fixed class type
+		int ctype = FixedClassIDs.of(__at.toString());
 		
-		// If not a primitive then the type depends on the pool value
-		if (ctype == 0)
+		// If not fixed, then rely on the value in the pool
+		if (ctype < 0)
 			codebuilder.add(NativeInstructionType.LOAD_POOL,
 				__at, NativeCode.VOLATILE_A_REGISTER);
 		
@@ -865,6 +871,10 @@ public final class NearNativeByteCodeHandler
 			DataType.of(__fr.memberType().primitiveType()), true,
 			__v.register, NativeCode.STATIC_FIELD_REGISTER,
 			NativeCode.VOLATILE_A_REGISTER);
+		
+		// Count it up?
+		if (__fr.memberType().isObject())
+			this.__refCount(__v.register);
 			
 		// Clear references as needed
 		this.__refClear();
@@ -1200,6 +1210,35 @@ public final class NearNativeByteCodeHandler
 	}
 	
 	/**
+	 * Checks if an array access is within bounds.
+	 *
+	 * @param __ir The instance register.
+	 * @param __dxr The index register.
+	 * @since 2019/04/27
+	 */
+	private final void __basicCheckArrayBound(int __ir, int __dxr)
+	{
+		NativeCodeBuilder codebuilder = this.codebuilder;
+		
+		// This label is shared across many conditions
+		NativeCodeLabel lab = this.__labelMakeException(
+			"java/lang/ArrayIndexOutOfBoundsException");
+		
+		// If the index is negative then it is out of bounds
+		codebuilder.addIfICmp(CompareType.LESS_THAN, __dxr, 0, lab);
+		
+		// Read length of array
+		codebuilder.addMemoryOffConst(DataType.INTEGER,
+			true, NativeCode.VOLATILE_A_REGISTER,
+			__ir, Kernel.ARRAY_LENGTH_OFFSET);
+		
+		// If the index is greater or equal to the length then the access
+		// is invalid
+		codebuilder.addIfICmp(CompareType.GREATER_THAN_OR_EQUALS,
+			__dxr, NativeCode.VOLATILE_A_REGISTER, lab);
+	}
+	
+	/**
 	 * Basic check if the instance is of the given class.
 	 *
 	 * @param __ir The register to check.
@@ -1253,7 +1292,7 @@ public final class NearNativeByteCodeHandler
 		// Load method pointer
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
 			new InvokedMethod(InvokeType.STATIC, new MethodHandle(KERNEL_CLASS,
-			new MethodName("jvmIsArray"), new MethodDescriptor("(II)I"))),
+			new MethodName("jvmIsArray"), new MethodDescriptor("(I)I"))),
 			NativeCode.VOLATILE_B_REGISTER);
 		
 		// Call the instance checker (__ir, checkclassid)

@@ -205,6 +205,11 @@ public final class Kernel
 								nextseeker);
 						}
 						
+						// Write the new block properties and its used
+						// indication
+						Assembly.memWriteInt(seeker, OFF_MEMPART_SIZE,
+							newblocksize);
+						
 						// Clear the memory here since it is expected that
 						// everything in Java has been initialized to zero,
 						// this is also much safer than C's malloc().
@@ -310,6 +315,10 @@ public final class Kernel
 		
 		// Set class table pointer
 		Assembly.specialSetClassTableRegister(ctptr);
+		
+		// Read test byte
+		byte[] b = new byte[12];
+		int q = b[12];
 		
 		// Setup main task now, which does class initialization and such per
 		// task because it is different for every running thing
@@ -426,6 +435,29 @@ public final class Kernel
 		if (pcl == __cldx)
 			return 1;
 		
+		// If we are checking if this is an object, it very much will be
+		// unless a primitive type is used
+		if (__cldx == FixedClassIDs.OBJECT)
+		{
+			// Primitive types are not objects
+			switch (pcl)
+			{
+				case FixedClassIDs.NONE:
+				case FixedClassIDs.PRIMITIVE_BOOLEAN:
+				case FixedClassIDs.PRIMITIVE_BYTE:
+				case FixedClassIDs.PRIMITIVE_SHORT:
+				case FixedClassIDs.PRIMITIVE_CHARACTER:
+				case FixedClassIDs.PRIMITIVE_INTEGER:
+				case FixedClassIDs.PRIMITIVE_LONG:
+				case FixedClassIDs.PRIMITIVE_FLOAT:
+				case FixedClassIDs.PRIMITIVE_DOUBLE:
+					return 0;
+			}
+			
+			// Otherwise, everything is an object
+			return 1;
+		}
+		
 		// Need to go through and check a bunch of things
 		Assembly.breakpoint();
 		throw new todo.TODO();
@@ -500,9 +532,11 @@ public final class Kernel
 				cellsize = 2;
 				break;
 				
-				// Integer, Float
+				// Integer, Float, Object, String
 			case FixedClassIDs.PRIMITIVE_INTEGER_ARRAY:
 			case FixedClassIDs.PRIMITIVE_FLOAT_ARRAY:
+			case FixedClassIDs.OBJECT_ARRAY:
+			case FixedClassIDs.STRING_ARRAY:
 				cellsize = 4;
 				break;
 				
