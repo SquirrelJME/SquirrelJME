@@ -205,7 +205,22 @@ public final class SuiteMemory
 		DataOutputStream ddos = new DataOutputStream(dbytes);
 		
 		// Relative offset to the stream data, just to fit the resource table
-		int reloff = (rn * 12) + 12;
+		int reloff = 12 + (rn * 12) + 12;
+		
+		// Write the name of this library in the first slot and the number
+		// entries it contains
+		idos.writeInt(reloff);
+		idos.writeInt(reloff);
+		idos.writeInt(rn);
+		
+		// Write null terminated library name, ignore unicode
+		for (int s = 0, sn = libname.length(); s < sn; s++)
+			ddos.write(libname.charAt(s));
+		ddos.write(0);
+		
+		// Write padding
+		while ((ddos.size() & 3) != 0)
+			ddos.write(0);
 		
 		// Build all table regions
 		for (int i = 0; i < rn; i++)
