@@ -53,17 +53,9 @@ public final class Kernel
 	public static final int ARRAY_BASE_SIZE =
 		16;
 	
-	/** Offset in static field space for the size. */
-	public static final int SF_WRITE_POINTER_OFFSET =
-		0;
-	
-	/** Amount of space left in the static field area. */
-	public static final int SF_SPACE_LEFT_OFFSET =
-		4;
-	
 	/** Offset in static field space for the kernel. */
 	public static final int SF_KERNEL_OFFSET =
-		8;
+		0;
 	
 	/** The address of the ROM file containing definitions and code. */
 	public int romaddr;
@@ -106,6 +98,18 @@ public final class Kernel
 	
 	/** Static field pointer. */
 	public int sfptr;
+	
+	/** Current static field size. */
+	public int sfcursize;
+	
+	/** Class table size. */
+	public int ctcount;
+	
+	/** Class table pointer. */
+	public int ctptr;
+	
+	/** Current class table size. */
+	public int ctcurcount;
 	
 	/** Allocation base address. */
 	public int allocbase;
@@ -166,10 +170,10 @@ public final class Kernel
 					// of and then. The block size is the size of this region
 					// with the partition info
 					int blocksize = (size ^ MEMPART_FREE_BIT),
-						actsize = blocksize - 8;
+						actcount = blocksize - 8;
 					
 					// There is enough space to use this partition
-					if (__sz <= actsize)
+					if (__sz <= actcount)
 					{
 						// The return pointer is the region start address
 						int rv = seeker + 8;
@@ -253,8 +257,11 @@ public final class Kernel
 		// Now that we have some kind of memory, the static field space can
 		// be initialized. Make sure it is a minimum size
 		int sfspace = this.sfspace;
-		if (sfspace < DefaultConfiguration.MINIMUM_STATIC_FIELD_SIZE)
+		if (sfspace <= 0)
+			sfspace = DefaultConfiguration.DEFAULT_STATIC_FIELD_SIZE;
+		else if (sfspace < DefaultConfiguration.MINIMUM_STATIC_FIELD_SIZE)
 			sfspace = DefaultConfiguration.MINIMUM_STATIC_FIELD_SIZE;
+		this.sfspace = sfspace;
 		int sfptr = this.kernelNew(sfspace);
 		
 		// If this is zero then allocation has failed
@@ -271,14 +278,38 @@ public final class Kernel
 		// now use this information
 		Assembly.specialSetStaticFieldRegister(sfptr);
 		
-		// Current write address in the field space and the space remaining
-		Assembly.memWriteInt(sfptr, SF_WRITE_POINTER_OFFSET, sfptr + 16);
-		Assembly.memWriteInt(sfptr, SF_SPACE_LEFT_OFFSET, sfspace - 16);
-		
 		// Write the kernel object so we can call back into it whenever it is
 		// needed, by any system call or otherwise
 		Assembly.memWriteInt(sfptr, SF_KERNEL_OFFSET,
 			Assembly.objectToPointer(this));
+		
+		// Space remaining in the static field area
+		this.sfcursize = sfspace - 4;
+		
+		// Make sure the class table is a minimum size
+		int ctcount = this.ctcount;
+		if (ctcount <= 0)
+			ctcount = DefaultConfiguration.DEFAULT_CLASS_TABLE_SIZE;
+		else if (ctcount < DefaultConfiguration.MINIMUM_CLASS_TABLE_SIZE)
+			ctcount = DefaultConfiguration.MINIMUM_CLASS_TABLE_SIZE;
+		
+		// Allocate the class table
+		int ctptr = this.kernelNew(ctcount * 4);
+		this.ctptr = ctptr;
+		
+		// Failed to allocate the class table
+		if (ctptr == 0)
+		{
+			Assembly.breakpoint();
+			return;
+		}
+		
+		// Set the class table count to be at the base of all fixed
+		// addresses
+		this.ctcurcount = FixedClassIDs.MAX_FIXED;
+		
+		// Set class table pointer
+		Assembly.specialSetClassTableRegister(ctptr);
 		
 		// Break
 		Assembly.breakpoint();

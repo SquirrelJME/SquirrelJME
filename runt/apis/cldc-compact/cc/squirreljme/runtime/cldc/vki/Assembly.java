@@ -142,6 +142,14 @@ public final class Assembly
 	public static native void returnFrame();
 	
 	/**
+	 * Gets the value of the class table.
+	 *
+	 * @return The value of the class table register.
+	 * @since 2019/04/27
+	 */
+	public static native int specialGetClassTableRegister();
+	
+	/**
 	 * Reads the value of the static field register.
 	 *
 	 * @return The value of the static field register.
@@ -158,11 +166,27 @@ public final class Assembly
 	public static native int specialGetThreadRegister();
 	
 	/**
+	 * Sets the current class table pointer.
+	 *
+	 * @param __v The value to use.
+	 * @since 2019/04/27
+	 */
+	public static native void specialSetClassTableRegister(int __v);
+	
+	/**
 	 * Sets the value of the static field register.
 	 *
 	 * @param __v The new value of the static field register.
 	 * @since 2019/04/22
 	 */
 	public static native void specialSetStaticFieldRegister(int __v);
+	
+	/**
+	 * Sets the current thread pointer.
+	 *
+	 * @param __v The value to use.
+	 * @since 2019/04/27
+	 */
+	public static native void specialSetThreadRegister(int __v);
 }
 
