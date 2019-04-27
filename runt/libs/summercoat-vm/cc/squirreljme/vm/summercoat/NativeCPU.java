@@ -37,6 +37,10 @@ import net.multiphasicapps.io.HexDumpOutputStream;
 public final class NativeCPU
 	implements Runnable
 {
+	/** Is debugging enabled? */
+	public static final boolean ENABLE_DEBUG =
+		true;
+	
 	/** Maximum amount of CPU registers. */
 	public static final int MAX_REGISTERS =
 		64;
@@ -83,8 +87,11 @@ public final class NativeCPU
 	public final Frame enterFrame(int __pc, int... __args)
 	{
 		// Debug
-		System.err.printf(">>>> %08x >>>>>>>>>>>>>>>>>>>>>>%n", __pc);
-		System.err.printf(" > %s%n", new IntegerList(__args));
+		if (ENABLE_DEBUG)
+		{
+			System.err.printf(">>>> %08x >>>>>>>>>>>>>>>>>>>>>>%n", __pc);
+			System.err.printf(" > %s%n", new IntegerList(__args));
+		}
 		
 		// Setup new frame
 		Frame rv = new Frame();
@@ -309,7 +316,8 @@ public final class NativeCPU
 				}
 			
 			// Print CPU debug info
-			this.__cpuDebugPrint(nowframe, op, af, args, largs, reglist);
+			if (ENABLE_DEBUG)
+				this.__cpuDebugPrint(nowframe, op, af, args, largs, reglist);
 			
 			// By default the next instruction is the address after all
 			// arguments have been read
@@ -606,8 +614,10 @@ public final class NativeCPU
 						reload = true;
 						
 						// Debug
-						System.err.printf("<<<< %08x <<<<<<<<<<<<<<<<<<<<<<%n",
-							(now != null ? now._pc : 0));
+						if (ENABLE_DEBUG)
+							System.err.printf(
+								"<<<< %08x <<<<<<<<<<<<<<<<<<<<<<%n",
+								(now != null ? now._pc : 0));
 					}
 					break;
 				
