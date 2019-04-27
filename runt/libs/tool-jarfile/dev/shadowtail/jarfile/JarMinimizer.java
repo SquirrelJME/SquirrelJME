@@ -11,6 +11,8 @@ package dev.shadowtail.jarfile;
 
 import cc.squirreljme.vm.VMClassLibrary;
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
+import dev.shadowtail.classfile.mini.MinimizedPool;
+import dev.shadowtail.classfile.mini.MinimizedPoolEntryType;
 import dev.shadowtail.classfile.mini.Minimizer;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -50,6 +52,9 @@ public final class JarMinimizer
 	/** Classes which have been booted. */
 	private final Map<ClassName, __BootClass__> _bootclasses;
 	
+	/** Intern string pointer table. */
+	private final Map<String, Integer> _stringintern;
+	
 	/** Allocator for boot memory. */
 	private final StaticAllocator _alloc;
 	
@@ -78,6 +83,7 @@ public final class JarMinimizer
 		{
 			this._minicl = new HashMap<>();
 			this._minicloff = new HashMap<>();
+			this._stringintern = new HashMap<>();
 			this._bootclasses = new HashMap<>();
 			this._alloc = new StaticAllocator(0);
 			this._bram = new byte[MAXIMUM_BOOT_RAM_SIZE];
@@ -88,6 +94,7 @@ public final class JarMinimizer
 		{
 			this._minicl = null;
 			this._minicloff = null;
+			this._stringintern = null;
 			this._bootclasses = null;
 			this._alloc = null;
 			this._bram = null;
@@ -170,6 +177,93 @@ public final class JarMinimizer
 		rv.interfaces = interfaces;
 		for (int i = 0; i < numinterfaces; i++)
 			interfaces[i] = this.__bootClass(interfacenames.get(i));
+		
+		// Initialize all the various pool entries
+		MinimizedPool pool = minicf.pool;
+		for (int i = 1; i < numpool; i++)
+		{
+			// Type and original value
+			MinimizedPoolEntryType type = pool.type(i);
+			Object pval = pool.get(i);
+			
+			// Debug
+			todo.DEBUG.note("Init pool %d %s: %s", i, type, pval);
+			
+			// The address where this will write to
+			int pvaddr = poolptr + (4 * i);
+			
+			// Depends on the type
+			switch (type)
+			{
+					// Do nothing
+				case NULL:
+					break;
+					
+					// String
+				case STRING:
+					this.__memWriteInt(MemoryOperationType.OFFSET_RAM, pvaddr,
+						this.__stringIntern((String)pval));
+					break;
+				
+				default:
+					throw new todo.OOPS(type.name());
+			}
+			
+			throw new todo.TODO();
+		}
+		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Writes to memory.
+	 *
+	 * @param __t The operation type.
+	 * @param __a The address to write to.
+	 * @param __v The value to write
+	  *@since 2019/04/27
+	 */
+	private final void __memWriteInt(MemoryOperationType __t, int __a, int __v)
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Interns the given string.
+	 *
+	 * @param __s The string to intern.
+	 * @return The pointer to the string intern.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/27
+	 */
+	private final int __stringIntern(String __s)
+		throws IOException, NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// If the string has already been interned then use that
+		Map<String, Integer> stringintern = this._stringintern;
+		Integer rv = stringintern.get(__s);
+		if (rv != null)
+			return rv;
+		
+		// Determine if we need to store this as characters?
+		boolean ischar = false;
+		int strlen = __s.length();
+		for (int i = 0; i < strlen; i++)
+			if (__s.charAt(i) > 255)
+			{
+				ischar = true;
+				break;
+			}
+		
+		// Need the sequence class to know where to put this string
+		__BootClass__ aascl = this.__bootClass((ischar ?
+			"cc/squirreljme/runtime/cldc/string/CharArraySequence" :
+			"cc/squirreljme/runtime/cldc/string/ByteArraySequence")),
+			strcl = this.__bootClass("java/lang/String");
 		
 		throw new todo.TODO();
 	}
