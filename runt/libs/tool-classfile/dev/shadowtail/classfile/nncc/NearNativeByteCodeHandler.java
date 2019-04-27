@@ -535,6 +535,12 @@ public final class NearNativeByteCodeHandler
 					this.__generateReturn();
 					break;
 					
+					// Get class table register
+				case "specialGetClassTableRegister":
+					codebuilder.addCopy(NativeCode.CLASS_TABLE_REGISTER,
+						__out.register);
+					break;
+					
 					// Get static field register
 				case "specialGetStaticFieldRegister":
 					codebuilder.addCopy(NativeCode.STATIC_FIELD_REGISTER,
@@ -547,10 +553,22 @@ public final class NearNativeByteCodeHandler
 						__out.register);
 					break;
 					
+					// Set class table register
+				case "specialSetClassTableRegister":
+					codebuilder.addCopy(__in[0].register,
+						NativeCode.CLASS_TABLE_REGISTER);
+					break;
+					
 					// Set static field register
 				case "specialSetStaticFieldRegister":
 					codebuilder.addCopy(__in[0].register,
 						NativeCode.STATIC_FIELD_REGISTER);
+					break;
+					
+					// Set thread register
+				case "specialSetThreadRegister":
+					codebuilder.addCopy(__in[0].register,
+						NativeCode.THREAD_REGISTER);
 					break;
 				
 				default:
