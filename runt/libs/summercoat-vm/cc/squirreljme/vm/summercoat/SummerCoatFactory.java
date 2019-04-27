@@ -246,9 +246,6 @@ public class SummerCoatFactory
 								WhereIsThis.INSTANCE_BIT) != 0);
 							int mdx = (id & (~WhereIsThis.INSTANCE_BIT));
 							
-							// Debug
-							todo.DEBUG.note("Where %b %d", isinstance, mdx);
-							
 							// Set this to the where offset
 							cv = (isinstance ? icodebase : scodebase) +
 								minikern.methods(!isinstance)[mdx].whereoffset;
@@ -268,10 +265,6 @@ public class SummerCoatFactory
 				// Store into pool area
 				int sld;
 				vmem.memWriteInt((sld = spoolbase + (4 * i)), cv);
-				
-				// Debug
-				todo.DEBUG.note("Pool %08x:%d = %d (%s)", sld, (4 * i),
-					cv, pv);
 			}
 			
 			// Find pointers to methods within the kernel
