@@ -30,6 +30,10 @@ import net.multiphasicapps.classfile.ClassName;
  */
 public final class JarMinimizer
 {
+	/** Maximum permitted boot RAM size. */
+	public static final int MAXIMUM_BOOT_RAM_SIZE =
+		1048576;
+	
 	/** Is this a boot JAR? */
 	protected final boolean boot;
 	
@@ -38,6 +42,15 @@ public final class JarMinimizer
 	
 	/** Mini-classes, if this is a boot Jar. */
 	private final Map<ClassName, MinimizedClassFile> _minicl;
+	
+	/** Classes which have been booted. */
+	private final Map<ClassName, __BootClass__> _bootclasses;
+	
+	/** Allocator for boot memory. */
+	private final StaticAllocator _alloc;
+	
+	/** Actual boot RAM. */
+	private final byte[] _bram;
 	
 	/**
 	 * Initializes the minimizer worker.
@@ -57,7 +70,75 @@ public final class JarMinimizer
 		this.input = __in;
 		
 		// Only used if this is a boot JAR
-		this._minicl = new HashMap<>();
+		if (__boot)
+		{
+			this._minicl = new HashMap<>();
+			this._bootclasses = new HashMap<>();
+			this._alloc = new StaticAllocator(0);
+			this._bram = new byte[MAXIMUM_BOOT_RAM_SIZE];
+		}
+		
+		// Not used
+		else
+		{
+			this._minicl = null;
+			this._bootclasses = null;
+			this._alloc = null;
+			this._bram = null;
+		}
+	}
+	
+	/**
+	 * Boots the given class and returns the offset to the class constant
+	 * pool.
+	 *
+	 * @param __cn The class to initialize.
+	 * @return The boot class information.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/27
+	 */
+	private final __BootClass__ __bootClass(String __cn)
+		throws IOException, NullPointerException
+	{
+		if (__cn == null)
+			throw new NullPointerException("NARG");
+		
+		return this.__bootClass(new ClassName(__cn));
+	}
+	
+	/**
+	 * Boots the given class and returns the offset to the class constant
+	 * pool.
+	 *
+	 * @param __cn The class to initialize.
+	 * @return The boot class information.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/27
+	 */
+	private final __BootClass__ __bootClass(ClassName __cn)
+		throws IOException, NullPointerException
+	{
+		if (__cn == null)
+			throw new NullPointerException("NARG");
+		
+		// If the class has already been booted, then use it!
+		Map<ClassName, __BootClass__> bootclasses = this._bootclasses;
+		__BootClass__ rv = bootclasses.get(__cn);
+		if (rv != null)
+			return rv;
+		
+		// Load minimized class information
+		MinimizedClassFile minicf = (__cn.isPrimitive() || __cn.isArray() ?
+			Minimizer.minimizeAndDecode(ClassFile.special(__cn.field())) :
+			this._minicl.get(__cn));
+		
+		// Quickly setup boot information for recursive purposes
+		rv = new __BootClass__();
+		bootclasses.put(__cn, rv);
+		
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -180,16 +261,15 @@ public final class JarMinimizer
 		// Offset to table of contents
 		__dos.writeInt(MinimizedJarHeader.HEADER_SIZE_WITH_MAGIC);
 		
-		// Byte arrays for boot RAM and init RAM
-		ByteArrayOutputStream bbaos = null,
-			ibaos = null;
+		// Boot RAM and Init RAM
+		byte[] bram = this._bram;
 		
 		// Building pre-boot state
 		if (minicl != null)
 		{
-			// Allocate byte arrays for boot and init RAM
-			bbaos = new ByteArrayOutputStream(1048576);
-			ibaos = new ByteArrayOutputStream(4096);
+			// The most important class is the kernel so that will get booted
+			__BootClass__ kboot = this.__bootClass(
+				"cc/squirreljme/runtime/cldc/vki/Kernel");
 			
 			throw new todo.TODO();
 		}
@@ -197,8 +277,14 @@ public final class JarMinimizer
 		// No boot data
 		else
 		{
+			// Boot pool offset
+			__dos.writeInt(0);
+			
+			// Boot RAM off+size
 			__dos.writeInt(0);
 			__dos.writeInt(0);
+			
+			// Init RAM off+size
 			__dos.writeInt(0);
 			__dos.writeInt(0);
 		}
@@ -207,11 +293,15 @@ public final class JarMinimizer
 		__dos.write(tbaos.toByteArray());
 		__dos.write(jbaos.toByteArray());
 		
-		// Write boot RAM?
-		if (bbaos != null)
-			__dos.write(bbaos.toByteArray());
-		if (ibaos != null)
-			__dos.write(ibaos.toByteArray());
+		// Write boot RAM and init RMA?
+		if (bram != null)
+		{
+			// Boot RAM
+			__dos.write(bram);
+			
+			// Init RAM
+			throw new todo.TODO();
+		}
 	}
 	
 	/**
