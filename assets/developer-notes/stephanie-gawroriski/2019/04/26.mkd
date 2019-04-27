@@ -1,0 +1,39 @@
+# 2019/04/26
+
+## 10:07
+
+Since I do not know which code comes from where, I am going to add into the
+debug information the source Java instruction similar to how lines are laid
+out, except this will be just Java instructions. I think this will help me
+pin-point where these issues might be since just doing line resolution
+alone is a bit difficult. Of course CallTraceElement can be given this
+information accordingly.
+
+## 13:39
+
+Okay so it seems my counts are off. Pretty sure there is an interaction with
+the pointer to object. The `Kernel` object is stored into a local via `ASTORE`
+then that local gets garbage collected. The `pointerToObject` does get a count
+up which is good. This is all in `jvmNewArray()`. So the kernel object is in
+register 23 (@416776b0, mem load from sfieldp). This is counted up. Then
+checkcast copies 23 to 31 for ref queue. It performs the invoke. Counts are
+not checked in `jvmIsInstance` at all. Then checkcast will clear the reference
+queue so 31 gets uncounted. 23 is then stored into 20 via ASTORE. Then is
+instance of done on 20. Then kernelNew is invoked off it. At @41677743 23
+contains our newly allocated object. Then on IRETURN, register 20 is garbage
+collected. So it seems refclear for the CHECKCAST is clearing the object
+extra. But the array allocation is done in a loop as well. So it is very
+possible that the transition code is off. Even if something might not change
+because this means .... Taking a look at checkcast I can see how checkcast
+might have an issue. It uses nocounting... but checkcast uses pop which the
+input object is reference countable so that is why it is added to the enqueue.
+Normally the stack is untouched. So this means a refclear should NOT be
+done unless there is an exception where the object will be lost. Yeah and I
+see checkcast doing the final ref clear, removing that should fix the
+issues.
+
+## 21:05
+
+Added monitors and now I get the extra garbage collection. It is still related
+to ASTORE, thing time being ASTORE_3. Okay I just noticed that stores are
+doing exception checks. That definitely is an error.
