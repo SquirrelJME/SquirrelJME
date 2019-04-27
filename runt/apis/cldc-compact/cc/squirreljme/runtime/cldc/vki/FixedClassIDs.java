@@ -125,9 +125,13 @@ public final class FixedClassIDs
 	public static final int STRING_ARRAY =
 		26;
 	
+	/** Array of byte arrays. */
+	public static final int PRIMITIVE_BYTE_ARRAY_ARRAY =
+		27;
+	
 	/** Number of fixed IDs. */
 	public static final int MAX_FIXED =
-		27;
+		28;
 	
 	/**
 	 * Not used.
@@ -168,6 +172,8 @@ public final class FixedClassIDs
 				return PRIMITIVE_BOOLEAN_ARRAY;
 			case "[B":
 				return PRIMITIVE_BYTE_ARRAY;
+			case "[[B":
+				return PRIMITIVE_BYTE_ARRAY_ARRAY;
 			case "[S":
 				return PRIMITIVE_SHORT_ARRAY;
 			case "[C":
