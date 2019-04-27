@@ -593,9 +593,9 @@ public final class Kernel
 		}
 		
 		// Class type, initial count, and length
-		Assembly.memWriteInt(__at, OBJECT_CLASS_OFFSET, __at);
-		Assembly.memWriteInt(__at, OBJECT_COUNT_OFFSET, 1);
-		Assembly.memWriteInt(__at, ARRAY_LENGTH_OFFSET, __len);
+		Assembly.memWriteInt(rv, OBJECT_CLASS_OFFSET, __at);
+		Assembly.memWriteInt(rv, OBJECT_COUNT_OFFSET, 1);
+		Assembly.memWriteInt(rv, ARRAY_LENGTH_OFFSET, __len);
 		
 		// Return the array
 		return rv;
