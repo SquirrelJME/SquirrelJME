@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ConstantValue;
@@ -52,6 +53,10 @@ import net.multiphasicapps.classfile.PrimitiveType;
  */
 public final class Minimizer
 {
+	/** Counter for UUIDs. */
+	private static volatile int _UUID_COUNTER =
+		17;
+	
 	/** The class file to minimize. */
 	protected final ClassFile input;
 	
@@ -166,8 +171,9 @@ public final class Minimizer
 		
 		// Relative offset where all the data will end up being, starts at
 		// the constant pool address. Size is calculated as:
-		// written + pooloff/len + fieldoff/len + methodoff/len + fileoff/len
-		int reloff = __dos.size() + 8 + 16 + 16 + 8,
+		// written + pooloff/len + fieldoff/len + methodoff/len + uuidhi/lo +
+		// fileoff/len
+		int reloff = __dos.size() + 8 + 16 + 16 + 8 + 8,
 			baserel = reloff;
 		
 		// Base round to pool data
@@ -216,6 +222,11 @@ public final class Minimizer
 			// Round
 			reloff = Minimizer.__relAdd(reloff, data.length);
 		}
+		
+		// Generate a UUID and write it
+		long uuid = Minimizer.generateUUID();
+		__dos.writeInt((int)(uuid >>> 32));
+		__dos.writeInt((int)uuid);
 		
 		// Write absolute file size! This saves time in calculating how big
 		// a file we have and we can just read that many bytes for all the
@@ -680,6 +691,26 @@ public final class Minimizer
 		
 		// Return array
 		return rv;
+	}
+	
+	/**
+	 * Generates a UUID to identify the minimized class.
+	 *
+	 * @return The generated UUID.
+	 * @since 2019/04/27
+	 */
+	public static final long generateUUID()
+	{
+		// Hopefully this seed is good enough?
+		Random rand = new Random(System.nanoTime() +
+			(System.currentTimeMillis() << 24) + (++_UUID_COUNTER));
+		
+		// Skip a random amount of values to run it for a bit
+		for (int i = 0, n = rand.nextInt(32 + rand.nextInt(32)); i < n; i++)
+			rand.nextInt();
+		
+		// Just use the next long value
+		return rand.nextLong();
 	}
 	
 	/**

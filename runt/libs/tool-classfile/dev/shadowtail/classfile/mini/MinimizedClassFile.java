@@ -13,6 +13,7 @@ package dev.shadowtail.classfile.mini;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.Reference;
@@ -287,15 +288,16 @@ public final class MinimizedClassFile
 			Math.min(1048576, __is.available())))
 		{
 			// Read the entire header for the class
-			for (int i = 0; i < 88; i++)
+			for (int i = 0; i < MinimizedClassHeader.HEADER_SIZE_WITH_MAGIC;
+				i++)
 				baos.write(__is.read());
 			
 			// Read the data size to determine how much to read
 			byte[] xhead = baos.toByteArray();
-			int datasize = ((xhead[84] & 0xFF) << 24) |
-				((xhead[85] & 0xFF) << 16) |
-				((xhead[86] & 0xFF) << 8) |
-				((xhead[87] & 0xFF));
+			int datasize = ((xhead[92] & 0xFF) << 24) |
+				((xhead[93] & 0xFF) << 16) |
+				((xhead[94] & 0xFF) << 8) |
+				((xhead[95] & 0xFF));
 			
 			// Read all the data size bytes
 			byte[] buf = new byte[512];
@@ -336,47 +338,57 @@ public final class MinimizedClassFile
 		if (__is == null)
 			throw new NullPointerException("NARG");
 		
-		// Read class header
-		MinimizedClassHeader header = MinimizedClassHeader.decode(
-			new ByteArrayInputStream(__is));
+		try
+		{
+			// Read class header
+			MinimizedClassHeader header = MinimizedClassHeader.decode(
+				new ByteArrayInputStream(__is));
+			
+			// {@squirreljme.error JC45 Length of class file does not match
+			// length of array. (The file length; The array length)}
+			int fsz = header.filesize;
+			if (fsz != __is.length)
+				throw new InvalidClassFormatException("JC45 " + fsz +
+					" " + __is.length);
+			
+			// {@squirreljme.error JC46 End of file magic number is invalid.
+			// (The read magic number)}
+			int endmagic;
+			if (MinimizedClassHeader.END_MAGIC_NUMBER !=
+				(endmagic = (((__is[fsz - 4] & 0xFF) << 24) |
+				((__is[fsz - 3] & 0xFF) << 16) |
+				((__is[fsz - 2] & 0xFF) << 8) |
+				(__is[fsz - 1] & 0xFF))))
+				throw new InvalidClassFormatException(
+					String.format("JC46 %08x", endmagic));
+			
+			// Read constant pool
+			MinimizedPool pool = MinimizedPool.decode(header.poolcount,
+				__is, header.pooloff, header.poolsize);
+			
+			// Read static and instance fields
+			MinimizedField[] sfields = MinimizedField.decodeFields(
+					header.sfcount, pool, __is, header.sfoff, header.sfsize),
+				ifields = MinimizedField.decodeFields(
+					header.ifcount, pool, __is, header.ifoff, header.ifsize);
+			
+			// Read static and instance methods
+			MinimizedMethod[] smethods = MinimizedMethod.decodeMethods(
+					header.smcount, pool, __is, header.smoff, header.smsize),
+				imethods = MinimizedMethod.decodeMethods(
+					header.imcount, pool, __is, header.imoff, header.imsize);
+			
+			// Build final class
+			return new MinimizedClassFile(header, pool,
+				sfields, ifields, smethods, imethods);
+		}
 		
-		// {@squirreljme.error JC45 Length of class file does not match
-		// length of array. (The file length; The array length)}
-		int fsz = header.filesize;
-		if (fsz != __is.length)
-			throw new InvalidClassFormatException("JC45 " + fsz +
-				" " + __is.length);
-		
-		// {@squirreljme.error JC46 End of file magic number is invalid.
-		// (The read magic number)}
-		int endmagic;
-		if (MinimizedClassHeader.END_MAGIC_NUMBER !=
-			(endmagic = (((__is[fsz - 4] & 0xFF) << 24) |
-			((__is[fsz - 3] & 0xFF) << 16) |
-			((__is[fsz - 2] & 0xFF) << 8) |
-			(__is[fsz - 1] & 0xFF))))
-			throw new InvalidClassFormatException(
-				String.format("JC46 %08x", endmagic));
-		
-		// Read constant pool
-		MinimizedPool pool = MinimizedPool.decode(header.poolcount,
-			__is, header.pooloff, header.poolsize);
-		
-		// Read static and instance fields
-		MinimizedField[] sfields = MinimizedField.decodeFields(
-				header.sfcount, pool, __is, header.sfoff, header.sfsize),
-			ifields = MinimizedField.decodeFields(
-				header.ifcount, pool, __is, header.ifoff, header.ifsize);
-		
-		// Read static and instance methods
-		MinimizedMethod[] smethods = MinimizedMethod.decodeMethods(
-				header.smcount, pool, __is, header.smoff, header.smsize),
-			imethods = MinimizedMethod.decodeMethods(
-				header.imcount, pool, __is, header.imoff, header.imsize);
-		
-		// Build final class
-		return new MinimizedClassFile(header, pool,
-			sfields, ifields, smethods, imethods);
+		// {@squirreljme.error JC4a End of file reached before parsing the
+		// file.}
+		catch (EOFException e)
+		{
+			throw new InvalidClassFormatException("JC4a", e); 
+		}
 	}
 }
 

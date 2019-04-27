@@ -31,6 +31,14 @@ public final class MinimizedClassHeader
 	public static final int END_MAGIC_NUMBER =
 		0x42796521;
 	
+	/** The size of the header without the magic number. */
+	public static final int HEADER_SIZE_WITHOUT_MAGIC =
+		92;
+	
+	/** The size of the header with the magic number. */
+	public static final int HEADER_SIZE_WITH_MAGIC =
+		HEADER_SIZE_WITHOUT_MAGIC + 4;
+	
 	/** Unused A. */
 	public final int unuseda;
 	
@@ -118,6 +126,12 @@ public final class MinimizedClassHeader
 	/** Instance method data size. */
 	public final int imsize;
 	
+	/** High bits for UUID. */
+	public final int uuidhi;
+	
+	/** Low bits for UUID. */
+	public final int uuidlo;
+	
 	/** File size. */
 	public final int filesize;
 	
@@ -182,6 +196,10 @@ public final class MinimizedClassHeader
 		this.smsize = __vx[at++];
 		this.imoff = __vx[at++];
 		this.imsize = __vx[at++];
+		
+		// UUID
+		this.uuidhi = __vx[at++];
+		this.uuidlo = __vx[at++];
 			
 		// File size
 		this.filesize = __vx[at++];
@@ -261,6 +279,10 @@ public final class MinimizedClassHeader
 			/* smbytes */ dis.readInt(),
 			/* imoff */ dis.readInt(),
 			/* imbytes */ dis.readInt(),
+			
+			// UUID
+			/* uuidhi */ dis.readInt(),
+			/* uuidlo */ dis.readInt(),
 			
 			// File size
 			/* filesize */ dis.readInt(),
