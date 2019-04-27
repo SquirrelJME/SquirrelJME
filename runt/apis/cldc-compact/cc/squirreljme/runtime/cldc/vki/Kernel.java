@@ -81,17 +81,17 @@ public final class Kernel
 	/** The guest depth. */
 	public int guestdepth;
 	
-	/** The current classpath, NUL split. */
-	public byte[] classpath;
+	/** The current classpath, of byte arrays. */
+	public byte[][] classpath;
 	
-	/** The current system properties, key NUL value NUL. */
-	public byte[] sysprops;
+	/** The current system properties, of byte arrays. */
+	public byte[][] sysprops;
 	
 	/** The main class to execute. */
 	public byte[] mainclass;
 	
 	/** Main entry arguments. */
-	public byte[] mainargs;
+	public byte[][] mainargs;
 	
 	/** Static field space. */
 	public int sfspace;
@@ -228,6 +228,33 @@ public final class Kernel
 	}
 	
 	/**
+	 * Creates a new task.
+	 *
+	 * @param __ismid Is it a midlet?
+	 * @param __gd The guest depth.
+	 * @param __cp The classpath.
+	 * @param __sprops System properties.
+	 * @param __maincl Main class.
+	 * @param __mainargs Main arguments.
+	 * @throws NullPointerException On null arguments.
+	 * @return The newly created task.
+	 * @since 2019/04/27
+	 */
+	public final int taskNew(boolean __ismid, int __gd, byte[][] __cp,
+		byte[][] __sprops, byte[] __maincl, byte[][] __mainargs)
+		throws NullPointerException
+	{
+		if (__cp == null || __sprops == null || __maincl == null ||
+			__mainargs == null)
+			throw new NullPointerException("NARG");
+		
+		// The number of libraries that will be active
+		int libcount = __cp.length;
+		
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * This is the booting point for the SquirrelJME kernel, it will initialize
 	 * some classes and then prepare the virtual machine for proper execution.
 	 *
@@ -318,7 +345,7 @@ public final class Kernel
 		
 		// Setup main task now, which does class initialization and such per
 		// task because it is different for every running thing
-		int maintask = Kernel.taskNew((this.ismidlet == 0 ? false : true),
+		int maintask = this.taskNew((this.ismidlet == 0 ? false : true),
 			this.guestdepth, this.classpath, this.sysprops, this.mainclass,
 			this.mainargs);
 		
@@ -392,6 +419,8 @@ public final class Kernel
 				return FixedClassIDs.PRIMITIVE_BOOLEAN;
 			case FixedClassIDs.PRIMITIVE_BYTE_ARRAY:
 				return FixedClassIDs.PRIMITIVE_BYTE;
+			case FixedClassIDs.PRIMITIVE_BYTE_ARRAY_ARRAY:
+				return FixedClassIDs.PRIMITIVE_BYTE_ARRAY;
 			case FixedClassIDs.PRIMITIVE_SHORT_ARRAY:
 				return FixedClassIDs.PRIMITIVE_SHORT;
 			case FixedClassIDs.PRIMITIVE_CHARACTER_ARRAY:
@@ -459,6 +488,7 @@ public final class Kernel
 				// These are arrays
 			case FixedClassIDs.PRIMITIVE_BOOLEAN_ARRAY:
 			case FixedClassIDs.PRIMITIVE_BYTE_ARRAY:
+			case FixedClassIDs.PRIMITIVE_BYTE_ARRAY_ARRAY:
 			case FixedClassIDs.PRIMITIVE_SHORT_ARRAY:
 			case FixedClassIDs.PRIMITIVE_CHARACTER_ARRAY:
 			case FixedClassIDs.PRIMITIVE_INTEGER_ARRAY:
@@ -612,6 +642,7 @@ public final class Kernel
 				break;
 				
 				// Integer, Float, Object, String
+			case FixedClassIDs.PRIMITIVE_BYTE_ARRAY_ARRAY:
 			case FixedClassIDs.PRIMITIVE_INTEGER_ARRAY:
 			case FixedClassIDs.PRIMITIVE_FLOAT_ARRAY:
 			case FixedClassIDs.OBJECT_ARRAY:
@@ -678,24 +709,6 @@ public final class Kernel
 		
 		// Return the array
 		return rv;
-	}
-	
-	/**
-	 * Creates a new task.
-	 *
-	 * @param __ismid Is it a midlet?
-	 * @param __gd The guest depth.
-	 * @param __cp The classpath.
-	 * @param __sprops System properties.
-	 * @param __maincl Main class.
-	 * @param __mainargs Main arguments.
-	 * @return The newly created task.
-	 * @since 2019/04/27
-	 */
-	public static final int taskNew(boolean __ismid, int __gd, byte[] __cp,
-		byte[] __sprops, byte[] __maincl, byte[] __mainargs)
-	{
-		throw new todo.TODO();
 	}
 }
 

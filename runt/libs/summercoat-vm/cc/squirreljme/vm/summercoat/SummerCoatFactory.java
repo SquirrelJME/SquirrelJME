@@ -100,15 +100,12 @@ public class SummerCoatFactory
 		// Write raw strings into memory which describe the various VM
 		// arguments and such. This mostly refers to the class to start once
 		// the VM has initialized itself
-		int xxclasspth = this.__memString(vmem, statalloc,
-				SummerCoatFactory.stringArrayToString(
-				SummerCoatFactory.classPathToStringArray(__cp))),
-			xxsysprops = this.__memString(vmem, statalloc,
-				SummerCoatFactory.stringArrayToString(
-				SummerCoatFactory.stringMapToString(__sprops))),
+		int xxclasspth = this.__memStrings(vmem, statalloc,
+				SummerCoatFactory.classPathToStringArray(__cp)),
+			xxsysprops = this.__memStrings(vmem, statalloc,
+				SummerCoatFactory.stringMapToStrings(__sprops)),
 			xxmainclss = this.__memString(vmem, statalloc, __maincl),
-			xxmainargs = this.__memString(vmem, statalloc,
-				SummerCoatFactory.stringArrayToString(__args));
+			xxmainargs = this.__memStrings(vmem, statalloc, __args);
 		
 		// The base address of the kernel object
 		int kobjbase;
@@ -452,6 +449,54 @@ public class SummerCoatFactory
 	}
 	
 	/**
+	 * Creates an array which is an array of bytes containing all of the
+	 * various strings.
+	 *
+	 * @param __wm The memory to write to.
+	 * @param __sa The allocator used.
+	 * @param __ss The strings to convert.
+	 * @return The memory address of the {@code byte[][]} array.
+	 * @since 2019/04/27
+	 */
+	private int __memStrings(WritableMemory __wm, StaticAllocator __sa,
+		String... __ss)
+		throws NullPointerException
+	{
+		if (__sa == null)
+			throw new NullPointerException("NARG");
+		
+		// Force to exist
+		if (__ss == null)
+			__ss = new String[0];
+		
+		// The number of elements to store
+		int n = __ss.length;
+		
+		// Allocate data
+		int rv = __sa.allocate(Kernel.ARRAY_BASE_SIZE + (n * 4));
+		
+		// Write fixed ID, initial refcount, and length
+		__wm.memWriteInt(rv + Kernel.OBJECT_CLASS_OFFSET,
+			FixedClassIDs.PRIMITIVE_BYTE_ARRAY_ARRAY);
+		__wm.memWriteInt(rv + Kernel.OBJECT_COUNT_OFFSET,
+			1);
+		__wm.memWriteInt(rv + Kernel.ARRAY_LENGTH_OFFSET,
+			n);
+		
+		// Write byte data
+		int vbase = rv + Kernel.ARRAY_BASE_SIZE;
+		for (int i = 0; i < n; i++, vbase += 4)
+		{
+			String s = __ss[i];
+			__wm.memWriteInt(vbase, (s == null ? 0 : this.__memString(__wm,
+				__sa, s)));
+		}
+		
+		// Return pointer
+		return rv;
+	}
+	
+	/**
 	 * Converts a class path to a string array.
 	 *
 	 * @param __cp The class path to convert.
@@ -474,59 +519,33 @@ public class SummerCoatFactory
 	}
 	
 	/**
-	 * Converts a string array to a single string.
+	 * Converts a string array to a string array.
 	 *
 	 * @param __s The strings to convert.
 	 * @return The resulting string.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/21
 	 */
-	public static final String stringArrayToString(String... __s)
+	public static final String[] stringMapToStrings(Map<String, String> __s)
 		throws NullPointerException
 	{
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		StringBuilder sb = new StringBuilder();
+		// Setup
+		int n = __s.size();
+		String[] rv = new String[n];
 		
-		for (String s : __s)
-		{
-			if (sb.length() > 0)
-				sb.append((char)0);
-			sb.append(s);
-		}
-		
-		return sb.toString();
-	}
-	
-	/**
-	 * Converts a string array to a single string.
-	 *
-	 * @param __s The strings to convert.
-	 * @return The resulting string.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/04/21
-	 */
-	public static final String stringMapToString(Map<String, String> __s)
-		throws NullPointerException
-	{
-		if (__s == null)
-			throw new NullPointerException("NARG");
-		
-		StringBuilder sb = new StringBuilder();
-		
+		// Map in keys and values
+		int i = 0;
 		for (Map.Entry<String, String> s : __s.entrySet())
 		{
-			if (sb.length() > 0)
-				sb.append((char)0);
-			
-			// Key and value pair
-			sb.append(s.getKey());
-			sb.append((char)0);
-			sb.append(s.getValue());
+			rv[i++] = s.getKey();
+			rv[i++] = s.getValue();
 		}
 		
-		return sb.toString();
+		// Done
+		return rv;
 	}
 }
 
