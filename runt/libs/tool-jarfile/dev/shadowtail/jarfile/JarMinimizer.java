@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
+import net.multiphasicapps.classfile.ClassNames;
 
 /**
  * This class is responsible for creating minimized Jar files which will then
@@ -42,6 +43,9 @@ public final class JarMinimizer
 	
 	/** Mini-classes, if this is a boot Jar. */
 	private final Map<ClassName, MinimizedClassFile> _minicl;
+	
+	/** The offset to the mini-class data. */
+	private final Map<ClassName, Integer> _minicloff;
 	
 	/** Classes which have been booted. */
 	private final Map<ClassName, __BootClass__> _bootclasses;
@@ -73,6 +77,7 @@ public final class JarMinimizer
 		if (__boot)
 		{
 			this._minicl = new HashMap<>();
+			this._minicloff = new HashMap<>();
 			this._bootclasses = new HashMap<>();
 			this._alloc = new StaticAllocator(0);
 			this._bram = new byte[MAXIMUM_BOOT_RAM_SIZE];
@@ -82,6 +87,7 @@ public final class JarMinimizer
 		else
 		{
 			this._minicl = null;
+			this._minicloff = null;
 			this._bootclasses = null;
 			this._alloc = null;
 			this._bram = null;
@@ -123,11 +129,17 @@ public final class JarMinimizer
 		if (__cn == null)
 			throw new NullPointerException("NARG");
 		
+		// Allocator for static things
+		StaticAllocator alloc = this._alloc;
+		
 		// If the class has already been booted, then use it!
 		Map<ClassName, __BootClass__> bootclasses = this._bootclasses;
 		__BootClass__ rv = bootclasses.get(__cn);
 		if (rv != null)
 			return rv;
+		
+		// Debug
+		todo.DEBUG.note("Pre-Loading %s...", __cn);
 		
 		// Load minimized class information
 		MinimizedClassFile minicf = (__cn.isPrimitive() || __cn.isArray() ?
@@ -135,8 +147,29 @@ public final class JarMinimizer
 			this._minicl.get(__cn));
 		
 		// Quickly setup boot information for recursive purposes
-		rv = new __BootClass__();
+		Integer moff = this._minicloff.get(__cn);
+		rv = new __BootClass__(minicf, (moff == null ? 0 : moff));
 		bootclasses.put(__cn, rv);
+		
+		// Allocate memory for the constant pool
+		int numpool = minicf.header.poolcount,
+			poolptr = alloc.allocate(4 * numpool);
+		
+		// Set pool pointer
+		rv.poolptr = poolptr;
+		
+		// Load super class
+		ClassName supername = minicf.superName();
+		if (supername != null)
+			rv.superclass = this.__bootClass(supername); 
+		
+		// Load interfaces
+		ClassNames interfacenames = minicf.interfaceNames();
+		int numinterfaces = interfacenames.size();
+		__BootClass__[] interfaces = new __BootClass__[numinterfaces];
+		rv.interfaces = interfaces;
+		for (int i = 0; i < numinterfaces; i++)
+			interfaces[i] = this.__bootClass(interfacenames.get(i));
 		
 		throw new todo.TODO();
 	}
@@ -161,6 +194,7 @@ public final class JarMinimizer
 		// If this is a boot JAR, this will later be used and pre-initialized
 		// boot memory will be setup accordingly
 		Map<ClassName, MinimizedClassFile> minicl = this._minicl;
+		Map<ClassName, Integer> minicloff = this._minicloff;
 		
 		// Need list of resources to determine
 		String[] rcnames = input.listResources();
@@ -182,6 +216,7 @@ public final class JarMinimizer
 		for (int i = 0; i < numrc; i++)
 		{
 			String rc = rcnames[i];
+			ClassName ofclass = null;
 			
 			// The resulting byte array containing data
 			byte[] bytes;
@@ -204,7 +239,7 @@ public final class JarMinimizer
 							MinimizedClassFile.decode(bytes);
 						
 						// And cache it for later
-						minicl.put(cf.thisName(), cf);
+						minicl.put((ofclass = cf.thisName()), cf);
 					}
 				}
 				
@@ -245,8 +280,13 @@ public final class JarMinimizer
 				jdos.write(0);
 			
 			// Write offset to data stream and size
-			tdos.writeInt(reloff + jdos.size());
+			int clpos;
+			tdos.writeInt((clpos = (reloff + jdos.size())));
 			tdos.writeInt(bytes.length);
+			
+			// Store offset to mini class data in the Jar
+			if (minicloff != null)
+				minicloff.put(ofclass, clpos);
 			
 			// Then write the actual data stream
 			jdos.write(bytes);
