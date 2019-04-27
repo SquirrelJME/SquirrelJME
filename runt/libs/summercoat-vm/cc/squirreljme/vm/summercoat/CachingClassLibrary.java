@@ -100,7 +100,8 @@ public final class CachingClassLibrary
 						__bn + ".class"))
 					{
 						if (in != null)
-							rv = Minimizer.minimize(ClassFile.decode(in));
+							rv = Minimizer.minimizeAndDecode(
+								ClassFile.decode(in));
 					}
 			}
 			catch (InvalidClassFormatException e)
