@@ -125,7 +125,8 @@ public final class ClassLoader
 			if (__n.isPrimitive() || __n.isArray())
 			{
 				// Just minimize these dynamically generated classes
-				cf = Minimizer.minimize(ClassFile.special(__n.field()));
+				cf = Minimizer.minimizeAndDecode(
+					ClassFile.special(__n.field()));
 				inlib = null;
 			}
 			

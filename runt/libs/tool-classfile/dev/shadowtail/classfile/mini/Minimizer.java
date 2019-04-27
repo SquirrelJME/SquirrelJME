@@ -715,37 +715,27 @@ public final class Minimizer
 	 * Minimizes the given class and returns the minimized version of it.
 	 *
 	 * @param __cf The class to minimize.
-	 * @return The resulting minimized class.
+	 * @return The resulting minimized class as a byte array.
 	 * @throws InvalidClassFormatException If the class is not formatted
 	 * correctly.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/10
 	 */
-	public static final MinimizedClassFile minimize(ClassFile __cf)
-		throws InvalidClassFormatException, NullPointerException
+	public static final byte[] minimize(ClassFile __cf)
+		throws InvalidClassFormatException, IOException, NullPointerException
 	{
 		if (__cf == null)
 			throw new NullPointerException("NARG");
 		
 		// Minimization is straight to a byte format so just read that in
 		// again
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(8192))
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(1048576))
 		{
 			// Output minimized code to the byte array
 			Minimizer.minimize(__cf, baos);
 			
-			// Just feed this back into the decoder for reading
-			try (InputStream is = new ByteArrayInputStream(baos.toByteArray()))
-			{
-				return MinimizedClassFile.decode(is);
-			}
-		}
-		
-		// {@squirreljme.error JC2k Could not minimize class due to a read
-		// or write error.}
-		catch (IOException e)
-		{
-			throw new RuntimeException("JC2k", e);
+			// The class data is in the resulting byte array
+			return baos.toByteArray();
 		}
 	}
 	
@@ -767,6 +757,36 @@ public final class Minimizer
 			throw new NullPointerException("NARG");
 		
 		new Minimizer(__cf).__run(new DataOutputStream(__os));
+	}
+	
+	/**
+	 * Minimizes the given class and returns the minimized version of it.
+	 *
+	 * @param __cf The class to minimize.
+	 * @return The resulting minimized class.
+	 * @throws InvalidClassFormatException If the class is not formatted
+	 * correctly.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/03/10
+	 */
+	public static final MinimizedClassFile minimizeAndDecode(ClassFile __cf)
+		throws InvalidClassFormatException, NullPointerException
+	{
+		if (__cf == null)
+			throw new NullPointerException("NARG");
+		
+		// Minimize raw byte array
+		try
+		{
+			return MinimizedClassFile.decode(Minimizer.minimize(__cf));
+		}
+		
+		// {@squirreljme.error JC2k Could not minimize class due to a read
+		// or write error.}
+		catch (IOException e)
+		{
+			throw new RuntimeException("JC2k", e);
+		}
 	}
 	
 	/**

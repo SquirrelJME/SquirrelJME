@@ -9,11 +9,15 @@
 
 package dev.shadowtail.jarfile;
 
+import cc.squirreljme.vm.VMClassLibrary;
+import dev.shadowtail.classfile.mini.MinimizedClassFile;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import cc.squirreljme.vm.VMClassLibrary;
+import java.util.HashMap;
+import java.util.Map;
+import net.multiphasicapps.classfile.ClassName;
 
 /**
  * This class is responsible for creating minimized Jar files which will then
@@ -23,6 +27,96 @@ import cc.squirreljme.vm.VMClassLibrary;
  */
 public final class JarMinimizer
 {
+	/** Is this a boot JAR? */
+	protected final boolean boot;
+	
+	/** The input JAR. */
+	protected final VMClassLibrary input;
+	
+	/** Mini-classes, if this is a boot Jar. */
+	private final Map<ClassName, MinimizedClassFile> _minicl;
+	
+	/**
+	 * Initializes the minimizer worker.
+	 *
+	 * @param __boot Is this a boot JAR?
+	 * @param __in The input library.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/27
+	 */
+	private JarMinimizer(boolean __boot, VMClassLibrary __in)
+		throws NullPointerException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		this.boot = __boot;
+		this.input = __in;
+		
+		// Only used if this is a boot JAR
+		this._minicl = new HashMap<>();
+	}
+	
+	/**
+	 * Processes the input JAR.
+	 *
+	 * @param __dos The output.
+	 * @throws IOException On read/write errors.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/27
+	 */
+	private final void __process(DataOutputStream __dos)
+		throws IOException, NullPointerException
+	{
+		if (__dos == null)
+			throw new NullPointerException("NARG");
+		
+		// Jar Magic Number
+		__dos.writeInt(MinimizedJarHeader.MAGIC_NUMBER);
+		
+		// This is processed for all entries
+		VMClassLibrary input = this.input;
+		
+		// If this is a boot JAR, this will later be used and pre-initialized
+		// boot memory will be setup accordingly
+		Map<ClassName, MinimizedClassFile> minicl = this._minicl;
+		
+		// Need list of resources to determine
+		String[] rcnames = input.listResources();
+		int numrc = rcnames.length;
+		
+		// Go through and minimize/concat all resources
+		for (int i = 0; i < numrc; i++)
+		{
+			String rc = rcnames[i];
+			
+			// Minimizing class
+			if (rc.endsWith(".class"))
+			{
+				// Straight through processing
+				if (minicl == null)
+				{
+					throw new todo.TODO();
+				}
+				
+				// Need to keep the class file loaded so that boot information
+				// can be made from it
+				else
+				{
+					throw new todo.TODO();
+				}
+			}
+			
+			// Plain resource, sent straight through
+			else
+			{
+				throw new todo.TODO();
+			}
+		}
+		
+		throw new todo.TODO();
+	}
+	
 	/**
 	 * Minimizes the specified Jar file.
 	 *
@@ -69,6 +163,7 @@ public final class JarMinimizer
 		if (__in == null || __out == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Use helper class
+		new JarMinimizer(__boot, __in).__process(new DataOutputStream(__out));
 	}
 }
