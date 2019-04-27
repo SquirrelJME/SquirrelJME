@@ -113,33 +113,6 @@ public final class NativeCodeBuilder
 	}
 	
 	/**
-	 * Adds array access.
-	 *
-	 * @param __dt The data type.
-	 * @param __ld Is a load being done?
-	 * @param __v The value to read/write.
-	 * @param __in The array instance.
-	 * @param __dx The array index.
-	 * @return The resulting instruction.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/04/12
-	 */
-	public final NativeInstruction addArrayAccess(DataType __dt, boolean __ld,
-		int __v, int __in, int __dx)
-		throws NullPointerException
-	{
-		if (__dt == null)
-			throw new NullPointerException("NARG");
-		
-		// Add extra value for wide?
-		int op = NativeInstructionType.ARRAY_ACCESS | __dt.ordinal() |
-			(__ld ? 0b1000 : 0);
-		if (__dt.isWide())
-			return this.add(op, __v, (__v == 0 ? 0 : __v + 1), __in, __dx);
-		return this.add(op, __v, __in, __dx);
-	}
-	
-	/**
 	 * Adds conversion from one type to another.
 	 *
 	 * @param __fromt The source type.

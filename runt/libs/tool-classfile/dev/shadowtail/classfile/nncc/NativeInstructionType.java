@@ -63,13 +63,6 @@ public interface NativeInstructionType
 	public static final int MEMORY_OFF_REG_WIDE =
 		0x57;
 	
-	/**
-	 * Array access.
-	 * {@code iiiiLddd, L=T load r1 = r2[r3], L=F set r2[r3] = r1}.
-	 */
-	public static final int ARRAY_ACCESS =
-		0x70;
-	
 	/** Wide array access. */
 	public static final int ARRAY_ACCESS_WIDE =
 		0b0111_1100;
@@ -154,20 +147,6 @@ public interface NativeInstructionType
 	 */
 	public static final int SPECIAL_B =
 		0xF0;
-	
-	/**
-	 * Reference clear and jump if array index is out of bounds.
-	 */
-	@Deprecated
-	public static final int IFARRAY_INDEX_OOB_REF_CLEAR =
-		0xE4;
-	
-	/**
-	 * Reference clear and jump if array type is mismatched.
-	 */
-	@Deprecated
-	public static final int IFARRAY_MISTYPE_REF_CLEAR =
-		0xE5;
 	
 	/** If equal to constant. */
 	public static final int IFEQ_CONST =
