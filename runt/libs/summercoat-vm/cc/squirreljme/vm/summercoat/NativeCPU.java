@@ -514,7 +514,9 @@ public final class NativeCPU
 									v = memory.memReadShort(addr) & 0xFFFF;
 									break;
 									
+								case OBJECT:
 								case INTEGER:
+								case FLOAT:
 									v = memory.memReadInt(addr);
 									break;
 									
@@ -547,8 +549,10 @@ public final class NativeCPU
 								case CHARACTER:
 									memory.memWriteShort(addr, v);
 									break;
-									
+								
+								case OBJECT:
 								case INTEGER:
+								case FLOAT:
 									memory.memWriteInt(addr, v);
 									break;
 									
