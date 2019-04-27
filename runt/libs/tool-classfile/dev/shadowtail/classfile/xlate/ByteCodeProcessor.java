@@ -1110,7 +1110,7 @@ public final class ByteCodeProcessor
 	private final void __doMonitor(boolean __enter)
 	{
 		// Can toss exception
-		this._canexception  =true;
+		this._canexception = true;
 		
 		// [object] ->
 		JavaStackResult result = this.state.stack.doStack(1);
@@ -1318,9 +1318,6 @@ public final class ByteCodeProcessor
 	{
 		if (__jt == null)
 			throw new NullPointerException("NARG");
-		
-		// An exception may be thrown
-		this._canexception = true;
 		
 		// Store onto the stack, locals are never cached
 		JavaStackResult result = this.state.stack.doLocalStore(__to);
