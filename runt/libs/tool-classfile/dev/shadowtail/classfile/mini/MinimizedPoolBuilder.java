@@ -13,6 +13,7 @@ package dev.shadowtail.classfile.mini;
 import dev.shadowtail.classfile.nncc.AccessedField;
 import dev.shadowtail.classfile.nncc.ClassPool;
 import dev.shadowtail.classfile.nncc.InvokedMethod;
+import dev.shadowtail.classfile.nncc.MethodDispatchTable;
 import dev.shadowtail.classfile.nncc.UsedString;
 import dev.shadowtail.classfile.nncc.WhereIsThis;
 import java.io.ByteArrayOutputStream;
@@ -164,6 +165,16 @@ public final class MinimizedPoolBuilder
 			// Put in descriptor with all the pieces
 			return this.__add(__v,
 				isubs);
+		}
+		
+		// Method dispatch table
+		else if (__v instanceof MethodDispatchTable)
+		{
+			MethodDispatchTable v = (MethodDispatchTable)__v;
+			
+			return this.__add(__v,
+				v.type.ordinal(),
+				this.add(v.name));
 		}
 		
 		// Reference to constant pool table
@@ -427,6 +438,7 @@ __outer_witlut:
 					case DOUBLE:
 					case WHERE_IS_THIS:
 					case USED_STRING:
+					case METHOD_DISPATCH_TABLE:
 						{
 							// Write number of parts
 							int npart = part.length;
