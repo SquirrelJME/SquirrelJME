@@ -42,6 +42,14 @@ import net.multiphasicapps.classfile.ClassNames;
  */
 public final class JarMinimizer
 {
+	/** The kernel's class. */
+	private static final String _KERNEL_CLASS =
+		"cc/squirreljme/runtime/cldc/vki/Kernel";
+	
+	/** The C class. */
+	private static final String _C_CLASS =
+		"cc/squirreljme/runtime/cldc/vki/C";
+	
 	/** Is this a boot JAR? */
 	protected final boolean boot;
 	
@@ -264,8 +272,7 @@ public final class JarMinimizer
 			// Write integers which represent offsets to all the various
 			// classes and methods
 			jdos.writeInt(this.__addressOfMethod(
-				"cc/squirreljme/runtime/cldc/vki/Kernel",
-				"__start", null));
+				KERNEL_CLASS, "__start", null));
 			
 			// Write length of the boot function table
 			__dos.writeInt(jdos.size() - baseaddr);
