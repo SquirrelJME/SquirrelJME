@@ -498,6 +498,14 @@ public final class NearNativeByteCodeHandler
 					codebuilder.add(NativeInstructionType.ENTRY_MARKER);
 					break;
 					
+					// Exception handling
+				case "exceptionHandle":
+					// This generates no actual codes to check the exception,
+					// it just makes the exception check run so that they are
+					// checked
+					this.state.canexception = true;
+					break;
+					
 					// Invoke method, no return value is read
 				case "invoke":
 					{
@@ -540,6 +548,28 @@ public final class NearNativeByteCodeHandler
 						codebuilder.addCopy(NativeCode.RETURN_REGISTER,
 							__out.register);
 					}
+					break;
+					
+					// Load value from class table, this just multiplies by
+					// 4 and just reads from class table
+				case "loadClass":
+					codebuilder.addMathConst(StackJavaType.INTEGER,
+						MathType.MUL, __in[0].register, 4,
+						NativeCode.VOLATILE_B_REGISTER);
+					codebuilder.addMemoryOffReg(DataType.INTEGER, true,
+						__out.register, NativeCode.CLASS_TABLE_REGISTER,
+						NativeCode.VOLATILE_B_REGISTER);
+					break;
+					
+					// Load value from constant pool, this just multiplies by
+					// 4 and just reads from the pool
+				case "loadPool":
+					codebuilder.addMathConst(StackJavaType.INTEGER,
+						MathType.MUL, __in[0].register, 4,
+						NativeCode.VOLATILE_B_REGISTER);
+					codebuilder.addMemoryOffReg(DataType.INTEGER, true,
+						__out.register, NativeCode.POOL_REGISTER,
+						NativeCode.VOLATILE_B_REGISTER);
 					break;
 					
 					// Read byte memory

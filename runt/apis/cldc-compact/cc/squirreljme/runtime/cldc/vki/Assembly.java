@@ -46,6 +46,13 @@ public final class Assembly
 	public static native void entryMarker();
 	
 	/**
+	 * Performs explicit exception handling.
+	 *
+	 * @since 2019/04/28
+	 */
+	public static native void exceptionHandle();
+	
+	/**
 	 * Invoke method at pointer.
 	 *
 	 * @param __addr The address to invoke.
@@ -279,6 +286,22 @@ public final class Assembly
 	 */
 	public static native int invokeV(int __addr, int __a, int __b, int __c,
 		int __d, int __e, int __f, int __g, int __h);
+	
+	/**
+	 * Loads a value from the class table at the given index.
+	 *
+	 * @return The index of the value in the class table.
+	 * @since 2019/04/28
+	 */
+	public static native int loadClass(int __i);
+	
+	/**
+	 * Loads a value from the constant pool at the given index.
+	 *
+	 * @return The index of the value in the constant pool.
+	 * @since 2019/04/28
+	 */
+	public static native int loadPool(int __i);
 	
 	/**
 	 * Reads byte from address.
