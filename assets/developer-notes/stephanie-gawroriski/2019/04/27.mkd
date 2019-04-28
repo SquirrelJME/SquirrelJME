@@ -1,0 +1,33 @@
+# 2019/04/27
+
+## 13:52
+
+Actually operating with just the kernel class having a pool and being
+initialized is a bit difficult. I want something that will allow me to use
+any class I want very easily. I should actually have some kind of ROM
+initialization. I really do need to build the ROM, or at least ROMlets. I
+want ROMs at the JAR level then all those JARs. So what I really need to
+do now is to build the actual things. Then at least for like CLDC compact
+I can have completley setup bootstrap constant pools which allow for CLDC
+compact to be fully handled with a full kind of fake VM state, so that way
+I can actually use every available class. It would only be handling CLDC
+compact so it would only know about it and all the related classes. So it
+would act like a really faked virtual environment that should heopfully end
+up reducing the amount of initial work the kernel needs to do as it has
+already been pre-calculated in the ROM.
+
+## 18:01
+
+Since I do not want to obviously duplicate the work that the kernel is doing
+when pre-booting classes, it will just be light stuff. I think all I need is
+pool data, strings, and `ClassDataV2` to be initialized for the most part.
+
+## 20:06
+
+So I have more of the classes loaded. One thing I need to consider are
+instance methods and such. How do I effectively handle these method calls in
+a quick and efficient manner? I could do like a double dispatch of invocations
+so that they are chained while using internal pool stuff and such. To be
+honest I have not solved instance invocations yet. They should be static but
+it is not entirely possible for them to be static for example, there will need
+to be a dispatch of sorts.
