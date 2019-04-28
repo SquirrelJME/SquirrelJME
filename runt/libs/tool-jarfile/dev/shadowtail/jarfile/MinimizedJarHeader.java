@@ -31,7 +31,7 @@ public final class MinimizedJarHeader
 	
 	/** The size of the header without the magic number. */
 	public static final int HEADER_SIZE_WITHOUT_MAGIC =
-		28;
+		16;
 	
 	/** The size of the header with the magic number. */
 	public static final int HEADER_SIZE_WITH_MAGIC =
@@ -43,20 +43,11 @@ public final class MinimizedJarHeader
 	/** Table of contents offset. */
 	public final int tocoffset;
 	
-	/** Boot Pool offset. */
-	public final int bootpooloff;
+	/** Boot hardcoded functions offset. */
+	public final int hardcodefuncoff;
 	
-	/** Boot RAM offset. */
-	public final int bootramoff;
-	
-	/** Boot RAM size. */
-	public final int bootramsize;
-	
-	/** Initialize RAM offset. */
-	public final int initramoff;
-	
-	/** Initialize RAM size. */
-	public final int initramsize;
+	/** Number of hardcoded boot functions. */
+	public final int hardcodefunclen;
 	
 	/**
 	 * Initializes the Jar header.
@@ -77,12 +68,9 @@ public final class MinimizedJarHeader
 		this.numrc = __fs[at++];
 		this.tocoffset = __fs[at++];
 		
-		// Boot RAM
-		this.bootpooloff = __fs[at++];
-		this.bootramoff = __fs[at++];
-		this.bootramsize = __fs[at++];
-		this.initramoff = __fs[at++];
-		this.initramsize = __fs[at++];
+		// Hardcoded functions (if booting)
+		this.hardcodefuncoff = __fs[at++];
+		this.hardcodefunclen = __fs[at++];
 	}
 	
 	/**
@@ -112,11 +100,9 @@ public final class MinimizedJarHeader
 			/* numrc */ din.readInt(),
 			/* tocoffset */ din.readInt(),
 			
-			/* bootpooloff */ din.readInt(),
-			/* bootramoff */ din.readInt(),
-			/* bootramlen */ din.readInt(),
-			/* initramoff */ din.readInt(),
-			/* initramlen */ din.readInt());
+			// Hardcoded functions
+			/* hardcodefuncoff */ din.readInt(),
+			/* hardcodefunclen */ din.readInt());
 	}
 }
 
