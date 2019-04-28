@@ -649,10 +649,34 @@ public final class NearNativeByteCodeHandler
 					callargs.add(in.register + 1);
 			}
 			
-			// Load method pointer
-			codebuilder.add(NativeInstructionType.LOAD_POOL,
-				new InvokedMethod(__t, __r.handle()),
-				NativeCode.VOLATILE_A_REGISTER);
+			// Static invocations always have direct pointers
+			if (__t == InvokeType.STATIC)
+			{
+				// Load method pointer
+				codebuilder.add(NativeInstructionType.LOAD_POOL,
+					new InvokedMethod(__t, __r.handle()),
+					NativeCode.VOLATILE_A_REGISTER);
+			}
+			
+			// Need to load the correct method to execute off the vtable
+			else
+			{
+				// Load VTable
+				codebuilder.add(NativeInstructionType.LOAD_POOL,
+					new MethodDispatchTable(__t, __r.handle().outerClass()),
+					NativeCode.VOLATILE_A_REGISTER);
+				
+				// Read method offset into the vtable
+				codebuilder.add(NativeInstructionType.LOAD_POOL,
+					new InvokedMethod(__t, __r.handle()),
+					NativeCode.VOLATILE_B_REGISTER);
+				
+				// Read the pointer in the VTable
+				codebuilder.addMemoryOffReg(DataType.OBJECT, true,
+					NativeCode.VOLATILE_A_REGISTER,
+					NativeCode.VOLATILE_A_REGISTER,
+					NativeCode.VOLATILE_B_REGISTER);
+			}
 			
 			// Add invocation
 			codebuilder.add(NativeInstructionType.INVOKE,
