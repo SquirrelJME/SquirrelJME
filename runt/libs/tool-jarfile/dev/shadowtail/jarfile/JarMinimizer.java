@@ -17,7 +17,9 @@ import dev.shadowtail.classfile.mini.MinimizedPool;
 import dev.shadowtail.classfile.mini.MinimizedPoolEntryType;
 import dev.shadowtail.classfile.mini.Minimizer;
 import dev.shadowtail.classfile.nncc.ClassPool;
+import dev.shadowtail.classfile.nncc.InvokedMethod;
 import dev.shadowtail.classfile.nncc.WhereIsThis;
+import dev.shadowtail.classfile.xlate.InvokeType;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.InputStream;
@@ -290,6 +292,29 @@ public final class JarMinimizer
 						// Write address of table
 						this.__memWriteInt(MemoryOperationType.OFFSET_RAM,
 							pvaddr, cnsp);
+					}
+					break;
+					
+					// Invoked Method
+				case INVOKED_METHOD:
+					{
+						// Invoked method
+						InvokedMethod iv = (InvokedMethod)pval;
+						
+						// Target class
+						__BootClass__ ivbc = this.__bootClass(iv.handle.
+							outerClass());
+						
+						// Static invocation is direct to the method pointer
+						if (iv.type == InvokeType.STATIC)
+							this.__memWriteInt(MemoryOperationType.OFFSET_JAR,
+								pvaddr, ivbc.jaroffset + ivbc.minicf.header.
+								smoff + ivbc.minicf.method(true, iv.
+									handle().nameAndType()).codeoffset);
+						
+						// Need to figure out how to do this
+						else
+							throw new todo.TODO();
 					}
 					break;
 					
