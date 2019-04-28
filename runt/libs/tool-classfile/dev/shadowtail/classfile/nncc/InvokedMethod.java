@@ -26,10 +26,10 @@ import net.multiphasicapps.classfile.MethodName;
 public final class InvokedMethod
 {
 	/** The type of method to invoke. */
-	protected final InvokeType type;
+	public final InvokeType type;
 	
 	/** The handle of the method being invoke. */
-	protected final MethodHandle handle;
+	public final MethodHandle handle;
 	
 	/** String representation. */
 	private Reference<String> _string;
