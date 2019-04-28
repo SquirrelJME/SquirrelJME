@@ -7,25 +7,18 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package dev.shadowtail.jarfile;
+package cc.squirreljme.runtime.cldc.vki;
 
 /**
- * This represents the type of memory operation to perform.
+ * This is used to represent an index of hardcoded function addresses in
+ * the boot part of the JAR. Represents classes and methods.
  *
- * @since 2019/04/27
+ * @since 2019/04/28
  */
-public enum MemoryOperationType
+public interface HardcodedFunctions
 {
-	/** Normal non-modified write. */
-	NORMAL,
-	
-	/** Offset by RAM. */
-	OFFSET_RAM,
-	
-	/** Offset by boot JAR. */
-	OFFSET_JAR,
-	
-	/** End. */
-	;
+	/** Kernel Start Method. */
+	public static final int KERNEL_START =
+		0;
 }
 
