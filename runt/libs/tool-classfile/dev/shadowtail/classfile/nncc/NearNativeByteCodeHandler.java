@@ -498,6 +498,50 @@ public final class NearNativeByteCodeHandler
 					codebuilder.add(NativeInstructionType.ENTRY_MARKER);
 					break;
 					
+					// Invoke method, no return value is read
+				case "invoke":
+					{
+						// Invoked methods can thrown an exception, so do
+						// checks! Otherwise the behavior we expect might not
+						// happen
+						this.state.canexception = true;
+						
+						// Build the register List
+						List<Integer> args = new ArrayList<>();
+						int n = __in.length;
+						for (int i = 1; i < n; i++)
+							args.add(__in[i].register);
+						
+						// Invoke pointer with arguments
+						codebuilder.add(NativeInstructionType.INVOKE,
+							__in[0].register, new RegisterList(args));
+					}
+					break;
+					
+					// Invoke method, then read return value
+				case "invokeV":
+					{
+						// Invoked methods can thrown an exception, so do
+						// checks! Otherwise the behavior we expect might not
+						// happen
+						this.state.canexception = true;
+						
+						// Build the register List
+						List<Integer> args = new ArrayList<>();
+						int n = __in.length;
+						for (int i = 1; i < n; i++)
+							args.add(__in[i].register);
+						
+						// Invoke pointer with arguments
+						codebuilder.add(NativeInstructionType.INVOKE,
+							__in[0].register, new RegisterList(args));
+						
+						// Copy return value
+						codebuilder.addCopy(NativeCode.RETURN_REGISTER,
+							__out.register);
+					}
+					break;
+					
 					// Read byte memory
 				case "memReadByte":
 					codebuilder.addMemoryOffReg(DataType.BYTE,
@@ -572,12 +616,48 @@ public final class NearNativeByteCodeHandler
 					
 					// Return from frame
 				case "returnFrame":
+					// This may be a variant which returns multiple values
+					switch (__r.handle().descriptor().toString())
+					{
+						case "(II)V":
+							codebuilder.addCopy(__in[0].register,
+								NativeCode.RETURN_REGISTER);
+							codebuilder.addCopy(__in[1].register,
+								NativeCode.RETURN_REGISTER + 1);
+							break;
+							
+						case "(I)V":
+							codebuilder.addCopy(__in[0].register,
+								NativeCode.RETURN_REGISTER);
+							break;
+					}
+					
+					// Always return at the end
 					this.__generateReturn();
 					break;
 					
 					// Get class table register
 				case "specialGetClassTableRegister":
 					codebuilder.addCopy(NativeCode.CLASS_TABLE_REGISTER,
+						__out.register);
+					break;
+					
+					// Get the exception register
+				case "specialGetExceptionRegister":
+					codebuilder.addCopy(NativeCode.EXCEPTION_REGISTER,
+						__out.register);
+					break;
+					
+					// Read return register
+				case "specialGetReturnRegister":
+				case "specialGetReturnHighRegister":
+					codebuilder.addCopy(NativeCode.RETURN_REGISTER,
+						__out.register);
+					break;
+					
+					// Read return register (low value)
+				case "specialGetReturnLowRegister":
+					codebuilder.addCopy(NativeCode.RETURN_REGISTER + 1,
 						__out.register);
 					break;
 					
@@ -597,6 +677,12 @@ public final class NearNativeByteCodeHandler
 				case "specialSetClassTableRegister":
 					codebuilder.addCopy(__in[0].register,
 						NativeCode.CLASS_TABLE_REGISTER);
+					break;
+					
+					// Set the exception register
+				case "specialSetExceptionRegister":
+					codebuilder.addCopy(__in[0].register,
+						NativeCode.EXCEPTION_REGISTER);
 					break;
 					
 					// Set static field register
