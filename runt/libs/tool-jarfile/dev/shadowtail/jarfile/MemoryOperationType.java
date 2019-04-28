@@ -16,6 +16,9 @@ package dev.shadowtail.jarfile;
  */
 public enum MemoryOperationType
 {
+	/** Normal non-modified write. */
+	NORMAL,
+	
 	/** Offset by RAM. */
 	OFFSET_RAM,
 	
