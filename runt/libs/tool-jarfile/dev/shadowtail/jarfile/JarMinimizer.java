@@ -272,7 +272,7 @@ public final class JarMinimizer
 			// Write integers which represent offsets to all the various
 			// classes and methods
 			jdos.writeInt(this.__addressOfMethod(
-				KERNEL_CLASS, "__start", null));
+				_KERNEL_CLASS, "__start", null));
 			
 			// Write length of the boot function table
 			__dos.writeInt(jdos.size() - baseaddr);
