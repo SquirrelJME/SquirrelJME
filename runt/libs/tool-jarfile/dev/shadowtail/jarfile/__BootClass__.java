@@ -33,6 +33,15 @@ final class __BootClass__
 	/** The location of the pool pointer. */
 	public int poolptr;
 	
+	/** Class table spot. */
+	public int ctablespot;
+	
+	/** Instance field base size. */
+	public int ifieldbase;
+	
+	/** Instance field size. */
+	public int ifieldsize;
+	
 	/**
 	 * Initializes the boot class.
 	 *

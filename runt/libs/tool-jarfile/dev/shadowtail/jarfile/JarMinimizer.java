@@ -9,17 +9,23 @@
 
 package dev.shadowtail.jarfile;
 
+import cc.squirreljme.runtime.cldc.vki.FixedClassIDs;
+import cc.squirreljme.runtime.cldc.vki.Kernel;
 import cc.squirreljme.vm.VMClassLibrary;
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
 import dev.shadowtail.classfile.mini.MinimizedPool;
 import dev.shadowtail.classfile.mini.MinimizedPoolEntryType;
 import dev.shadowtail.classfile.mini.Minimizer;
+import dev.shadowtail.classfile.nncc.ClassPool;
+import dev.shadowtail.classfile.nncc.WhereIsThis;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
@@ -36,6 +42,10 @@ public final class JarMinimizer
 	/** Maximum permitted boot RAM size. */
 	public static final int MAXIMUM_BOOT_RAM_SIZE =
 		1048576;
+	
+	/** Maximum number of boot classes. */
+	public static final int MAX_BOOT_CLASSES =
+		128;
 	
 	/** Is this a boot JAR? */
 	protected final boolean boot;
@@ -55,11 +65,21 @@ public final class JarMinimizer
 	/** Intern string pointer table. */
 	private final Map<String, Integer> _stringintern;
 	
+	/** Memory operations. */
+	private final List<MemoryOperation> _mops;
+	
 	/** Allocator for boot memory. */
 	private final StaticAllocator _alloc;
 	
 	/** Actual boot RAM. */
 	private final byte[] _bram;
+	
+	/** Class table pointer. */
+	private int _ctableptr;
+	
+	/** Next CTable position. */
+	private int _ctablenext =
+		FixedClassIDs.MAX_FIXED;
 	
 	/**
 	 * Initializes the minimizer worker.
@@ -87,6 +107,7 @@ public final class JarMinimizer
 			this._bootclasses = new HashMap<>();
 			this._alloc = new StaticAllocator(0);
 			this._bram = new byte[MAXIMUM_BOOT_RAM_SIZE];
+			this._mops = new ArrayList<>();
 		}
 		
 		// Not used
@@ -98,6 +119,7 @@ public final class JarMinimizer
 			this._bootclasses = null;
 			this._alloc = null;
 			this._bram = null;
+			this._mops = null;
 		}
 	}
 	
@@ -154,9 +176,32 @@ public final class JarMinimizer
 			this._minicl.get(__cn));
 		
 		// Quickly setup boot information for recursive purposes
-		Integer moff = this._minicloff.get(__cn);
-		rv = new __BootClass__(minicf, (moff == null ? 0 : moff));
+		Integer xmoff = this._minicloff.get(__cn);
+		int moff;
+		rv = new __BootClass__(minicf, (moff = (xmoff == null ? 0 : xmoff)));
 		bootclasses.put(__cn, rv);
+		
+		// Allocate class table?
+		int ctableptr = this._ctableptr;
+		if (ctableptr == 0)
+		{
+			ctableptr = alloc.allocate(4 * MAX_BOOT_CLASSES);
+			this._ctableptr = ctableptr;
+		}
+		
+		// Find spot where this class belongs in the class table
+		int ctablespot = FixedClassIDs.of(__cn.toString());
+		if (ctablespot <= 0)
+		{
+			ctablespot = this._ctablenext++;
+			
+			// {@squirreljme.error BC02 Out of class table index.}
+			if (ctablespot >= MAX_BOOT_CLASSES)
+				throw new RuntimeException("BC02");
+		}
+		
+		// Set spot
+		rv.ctablespot = ctablespot;
 		
 		// Allocate memory for the constant pool
 		int numpool = minicf.header.poolcount,
@@ -168,7 +213,19 @@ public final class JarMinimizer
 		// Load super class
 		ClassName supername = minicf.superName();
 		if (supername != null)
-			rv.superclass = this.__bootClass(supername); 
+		{
+			// Find the Class
+			__BootClass__ superclass;
+			rv.superclass = (superclass = this.__bootClass(supername));
+			
+			// Field base is based on super's size
+			rv.ifieldbase = superclass.ifieldsize;
+			rv.ifieldsize = rv.ifieldbase + minicf.header.ifbytes;
+		}
+		
+		// Use base size for Object class
+		else
+			rv.ifieldsize = 12;
 		
 		// Load interfaces
 		ClassNames interfacenames = minicf.interfaceNames();
@@ -178,6 +235,10 @@ public final class JarMinimizer
 		for (int i = 0; i < numinterfaces; i++)
 			interfaces[i] = this.__bootClass(interfacenames.get(i));
 		
+		// Offset to the code area in this minimized method
+		int scodebase = moff + minicf.header.smoff,
+			icodebase = moff + minicf.header.imoff;
+		
 		// Initialize all the various pool entries
 		MinimizedPool pool = minicf.pool;
 		for (int i = 1; i < numpool; i++)
@@ -185,6 +246,7 @@ public final class JarMinimizer
 			// Type and original value
 			MinimizedPoolEntryType type = pool.type(i);
 			Object pval = pool.get(i);
+			int numpart = pool.partCount(i);
 			
 			// Debug
 			todo.DEBUG.note("Init pool %d %s: %s", i, type, pval);
@@ -198,6 +260,37 @@ public final class JarMinimizer
 					// Do nothing
 				case NULL:
 				case STRING:
+				case METHOD_DESCRIPTOR:
+					break;
+					
+					// Name of class, refer to class index
+				case CLASS_NAME:
+					this.__memWriteInt(null, pvaddr, this.__bootClass(
+						(ClassName)pval).ctablespot);
+					break;
+					
+					// The pool of another classe
+				case CLASS_POOL:
+					this.__memWriteInt(MemoryOperationType.OFFSET_RAM, pvaddr,
+						this.__bootClass(((ClassPool)pval).name).poolptr);
+					break;
+					
+					// Names of classes
+				case CLASS_NAMES:
+					{
+						// Allocate pointer where class IDs are
+						int cnsp = alloc.allocate(2 * (numpart + 1));
+						
+						// Write class IDs
+						for (int j = 0; j < numpart; j++)
+							this.__memWriteShort(null, cnsp + (2 * j),
+								this.__bootClass(((ClassNames)pval).get(j)).
+								ctablespot);
+						
+						// Write address of table
+						this.__memWriteInt(MemoryOperationType.OFFSET_RAM,
+							pvaddr, cnsp);
+					}
 					break;
 					
 					// String that is used in code
@@ -207,15 +300,32 @@ public final class JarMinimizer
 					this.__memWriteInt(MemoryOperationType.OFFSET_RAM, pvaddr,
 						this.__stringIntern((String)pval));
 					break;
+					
+					// Where is this method?
+				case WHERE_IS_THIS:
+					{
+						// Get method index part
+						int id = pool.part(i, 0);
+						
+						// Instance method? And get the index
+						boolean isinstance = ((id &
+							WhereIsThis.INSTANCE_BIT) != 0);
+						int mdx = (id & (~WhereIsThis.INSTANCE_BIT));
+						
+						// Set this to the where offset
+						this.__memWriteInt(MemoryOperationType.OFFSET_JAR,
+							pvaddr, (isinstance ? icodebase : scodebase) +
+							minicf.methods(!isinstance)[mdx].whereoffset);
+					}
+					break;
 				
 				default:
 					throw new todo.OOPS(type.name());
 			}
-			
-			throw new todo.TODO();
 		}
 		
-		throw new todo.TODO();
+		// Initialized okay, return the used info
+		return rv;
 	}
 	
 	/**
@@ -228,7 +338,44 @@ public final class JarMinimizer
 	 */
 	private final void __memWriteInt(MemoryOperationType __t, int __a, int __v)
 	{
-		throw new todo.TODO();
+		// Force normal write
+		if (__t == null)
+			__t = MemoryOperationType.NORMAL;
+		
+		// Store init operation needed
+		if (__t != MemoryOperationType.NORMAL)
+			this._mops.add(new MemoryOperation(__t, 4, __a));
+		
+		// Write value at address
+		byte[] bram = this._bram;
+		bram[__a++] = (byte)(__v >>> 24);
+		bram[__a++] = (byte)(__v >>> 16);
+		bram[__a++] = (byte)(__v >>> 8);
+		bram[__a++] = (byte)(__v);
+	}
+	
+	/**
+	 * Writes to memory.
+	 *
+	 * @param __t The operation type.
+	 * @param __a The address to write to.
+	 * @param __v The value to write
+	  *@since 2019/04/27
+	 */
+	private final void __memWriteShort(MemoryOperationType __t, int __a, int __v)
+	{
+		// Force normal write
+		if (__t == null)
+			__t = MemoryOperationType.NORMAL;
+		
+		// Store init operation needed
+		if (__t != MemoryOperationType.NORMAL)
+			this._mops.add(new MemoryOperation(__t, 2, __a));
+		
+		// Write value at address
+		byte[] bram = this._bram;
+		bram[__a++] = (byte)(__v >>> 8);
+		bram[__a++] = (byte)(__v);
 	}
 	
 	/**

@@ -141,6 +141,18 @@ public final class MinimizedPool
 	}
 	
 	/**
+	 * Returns the number of used parts.
+	 *
+	 * @param __i The index.
+	 * @return The number of used parts.
+	 * @since 2019/04/27
+	 */
+	public final int partCount(int __i)
+	{
+		return this._parts[__i].length;
+	}
+	
+	/**
 	 * Returns the number of entries in the pool.
 	 *
 	 * @return The number of pool entries.
