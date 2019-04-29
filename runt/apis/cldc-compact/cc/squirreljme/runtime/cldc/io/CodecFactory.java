@@ -65,6 +65,10 @@ public final class CodecFactory
 			case "iso-8859-1":
 				return new ISO88591Decoder();
 				
+				// ISO-8859-15
+			case "iso-8859-15":
+				return new ISO885915Decoder();
+				
 				// UTF-8
 			case "utf-8":
 				return new UTF8Decoder();
@@ -179,6 +183,10 @@ public final class CodecFactory
 				// ISO-8859-1
 			case "iso-8859-1":
 				return new ISO88591Encoder();
+				
+				// ISO-8859-15
+			case "iso-8859-15":
+				return new ISO885915Encoder();
 				
 				// UTF-8
 			case "utf-8":
