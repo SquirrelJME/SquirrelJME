@@ -51,6 +51,9 @@ More detailed changes:
        to specify arguments, system properties, and console output alternatives
        to launched tasks.
    * `midp-lcdui`
+     * Corrected mapping of characters since SQFs are ISO-8859-1 and most games
+       may be ISO-8859-1, since some characters may be missing in the font
+       use similar graphics for them.
      * Fully added `cc.squirreljme.runtime.lcdui.gfx.SerializedGraphics`, This
        allows all of the graphics drawing functions to be forwarded when
        graphics acceleration is used, previously only a subset of methods were
