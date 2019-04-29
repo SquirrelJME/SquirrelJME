@@ -52,6 +52,7 @@ More detailed changes:
        to launched tasks.
    * `midp-lcdui`
      * Added a 12 strike font.
+     * Adjusted the style of the lowercase A character in the sans-serif font.
      * Changed 16 strike font to be the large size font and made the 12 strike
        font the medium size font.
      * Corrected mapping of characters since SQFs are ISO-8859-1 and most games
