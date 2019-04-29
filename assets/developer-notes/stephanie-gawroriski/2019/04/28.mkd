@@ -1,0 +1,28 @@
+# 2019/04/28
+
+## 08:53
+
+Okay so, I think I can do something far simpler when it comes to the bootstrap
+from within the JAR. Initializing all of the class stuff is for the most part
+complicated, especially for every single class. The most important part to
+initialize is the link table for say the kernel and such. But it would be very
+useful for the kernel to have access to a pre-initialized ROM of sorts. Or
+even just boot code from within the kernel itself or similar. Maybe I just
+need to flesh out all the assembly operations to see what is available from
+within the VM, but it will not be much.
+
+## 15:03
+
+Okay how about this, just a simple basic table of pointers for the library. I
+can just change how `Kernel.__start()` works with it being a static method and
+all the other stuff being static methods. As long as I have enough basic
+methods and such, I should be able to initialize the current classpath. I just
+need a pointer to the various methods because now I can invoke them
+statically.
+
+## 21:58
+
+Okay so a font size of 24 pixels is insane! And it definitley feels so out of
+place. So I think what I will do is remove the 24 and make a 12 point instead
+so it is 8, 12, 16. I think that will be the more sane choice since 16 pixels
+is pretty tall.

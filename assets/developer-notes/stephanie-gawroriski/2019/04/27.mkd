@@ -31,3 +31,14 @@ so that they are chained while using internal pool stuff and such. To be
 honest I have not solved instance invocations yet. They should be static but
 it is not entirely possible for them to be static for example, there will need
 to be a dispatch of sorts.
+
+## 21:18
+
+Okay so I have method dispatch tables in the pool now, which will be used for
+instance methods. Is the simplest way to handle them. The only thing is that
+initializing the virtual machine from within itself is pretty complex. Also it
+is pretty messy as well. The bootstrap stuff in the JAR seems heavy, and the
+very heavy SummerCoat initialization is also heavy as well. So I just had this
+idea, what if I instead of doing pre-initialized methods have instead like a
+modified byte code form for the boot method. Java is a complex machine and this
+stuff could easily be done in C. So how could this be simplified?
