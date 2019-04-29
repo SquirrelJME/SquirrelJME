@@ -29,22 +29,30 @@ More detailed changes:
      be within a 1 ulp range, however the test framework only supports
      exact values.
    * Added the missing _mimemessage_ file for the MIME file decoding test.
- * Classes
-   * Implemented
-     * `java.io.InputStream`
-     * `java.util.EventObject`
-     * `java.util.LinkedList`
-     * `cc.squirreljme.runtime.lcdui.gfx.Serialized Graphics` -- This allows
-       all of the graphics drawing functions to be forwarded when graphics
-       acceleration is used, previously only a subset of methods were
-       implemented.
-   * Additions
+ * Programs and Libraries
+   * `cldc-compact`
+     * Added `java.util.Vector`, it was missing.
+     * Implemented `java.io.InputStream`.
+     * Implemented `java.util.EventObject`.
+     * Implemented `java.util.LinkedList`.
+   * `demo-hello`
+     * Made the system properties array `final`.
+   * `launcher`
+     * Added the system property `cc.squirreljme.autolaunch` to automatically
+       launch a program once the program list is read.
+     * When a program is launched, instead of saying just "Loading..." instead
+       allow show the program which is being loaded in the title.
+   * `meep-rms`
      * Added basic support for record stores.
+   * `meep-swm`
      * Added proprietary `ExtendedTaskManager` interface which can be used
        to specify arguments, system properties, and console output alternatives
        to launched tasks.
-     * `java.util.Vector`, was missing.
-   * Changes
+   * `midp-lcdui`
+     * Fully added `cc.squirreljme.runtime.lcdui.gfx.SerializedGraphics`, This
+       allows all of the graphics drawing functions to be forwarded when
+       graphics acceleration is used, previously only a subset of methods were
+       implemented.
      * Made all the graphics operations not throw a `TODO`, instead they will
        just draw a placeholder graphic.
      * Moved the graphics drawing operations to another class.
@@ -55,16 +63,6 @@ More detailed changes:
      * When a `Displayable` is made current and it is already the current
        displayed item, always set the title since it may have been placed in
        the background by another application calling `setCurrent()`.
-   * Removals
-     * `net.multiphasicapps.classfile.ExecutableCode` was not used.
- * Programs and Libraries
-   * `demo-hello`
-     * Made the system properties array `final`.
-   * `launcher`
-     * Added the system property `cc.squirreljme.autolaunch` to automatically
-       launch a program once the program list is read.
-     * When a program is launched, instead of saying just "Loading..." instead
-       allow show the program which is being loaded in the title.
    * `tac`
      * Override standard output and forward to standard error while a test is
        running, so things are not kludged.
@@ -72,6 +70,8 @@ More detailed changes:
      * Allow specific tests to be ran via the main arguments.
      * Generate JUnit output which can be used in test environments.
      * Performed some refactoring on the deserialization/serialization code.
+   * `tool-classfile`
+     * Removed `net.multiphasicapps.classfile.ExecutableCode`, it was not used.
  * Compiler Backend
    * Added a bunch of string representations for class structures.
    * Created a stack-cached register based compiler for Java byte code.
