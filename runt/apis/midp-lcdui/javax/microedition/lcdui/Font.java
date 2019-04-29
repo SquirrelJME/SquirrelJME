@@ -151,7 +151,7 @@ public final class Font
 	 */
 	public int charWidth(char __c)
 	{
-		return this._sqf.charWidth(__c);
+		return this._sqf.charWidth(SQFFont.mapChar(__c));
 	}
 	
 	public int charsWidth(char[] __a, int __b, int __c)
@@ -454,7 +454,7 @@ public final class Font
 				}
 				
 				// Add the character's width
-				curwidth += sqf.charWidth(c);
+				curwidth += sqf.charWidth(SQFFont.mapChar(c));
 			}
 			
 			// Use the greater width

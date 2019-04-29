@@ -1484,9 +1484,12 @@ public class AdvancedGraphics
 					dsy >= clipey || dey <= 0)
 					continue;
 				
+				// Map character index to the SQF
+				char mc = SQFFont.mapChar(c);
+				
 				// Base scan offsets and such
 				int scanoff = 0,
-					scanlen = sqf.charWidth(c),
+					scanlen = sqf.charWidth(mc),
 					lineoff = 0,
 					linelen = pixelheight;
 				
@@ -1521,7 +1524,7 @@ public class AdvancedGraphics
 					linelen -= (dey - clipey);
 				
 				// Draw the bitmap for the character
-				int bps = sqf.loadCharBitmap(c, bmp);
+				int bps = sqf.loadCharBitmap(mc, bmp);
 				this.funccharbmp.function(this,
 					new int[]{color, dsx, dsy, bps, scanoff, scanlen,
 						lineoff, linelen},

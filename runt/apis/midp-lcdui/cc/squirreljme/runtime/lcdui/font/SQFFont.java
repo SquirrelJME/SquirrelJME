@@ -377,5 +377,46 @@ public final class SQFFont
 		return new SQFFont(pixelheight, ascent, descent, bytesperscan,
 			charwidths, isvalidchar, charbmp);
 	}
+	
+	/**
+	 * This maps the given character to the SQF character map.
+	 *
+	 * Since SQFs are ISO-8859-15, they do not map exactly to ISO-8859-1
+	 * which may be the default encoding.
+	 *
+	 * @param __c The character to map.
+	 * @return The mapped character.
+	 * @since 2019/04/29
+	 */
+	public static final char mapChar(char __c)
+	{
+		switch (__c)
+		{
+				// Convert
+			case 0x20AC:	return (char)0x00A4;
+			case 0x0160:	return (char)0x00A6;
+			case 0x0161:	return (char)0x00A8;
+			case 0x017D:	return (char)0x00B4;
+			case 0x017E:	return (char)0x00B8;
+			case 0x0152:	return (char)0x00BC;
+			case 0x0153:	return (char)0x00BD;
+			case 0x0178:	return (char)0x00BE;
+			
+				// Map similar characters to others
+			case 0x00A4:	return (char)0x20AC;
+			case 0x00B4:	return '\'';
+			case 0x00A6:	return '|';
+			case 0x00A8:	return '"';
+				
+				// Cannot be mapped
+			case 0x00B8:
+			case 0x00BC:
+			case 0x00BD:
+			case 0x00BE:	return (char)0xFFFD;
+		}
+		
+		// Mapped the same
+		return __c;
+	}
 }
 
