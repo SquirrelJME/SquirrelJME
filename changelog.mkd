@@ -51,6 +51,9 @@ More detailed changes:
        to specify arguments, system properties, and console output alternatives
        to launched tasks.
    * `midp-lcdui`
+     * Added a 12 strike font.
+     * Changed 16 strike font to be the large size font and made the 12 strike
+       font the medium size font.
      * Corrected mapping of characters since SQFs are ISO-8859-1 and most games
        may be ISO-8859-1, since some characters may be missing in the font
        use similar graphics for them.
@@ -61,6 +64,7 @@ More detailed changes:
      * Made all the graphics operations not throw a `TODO`, instead they will
        just draw a placeholder graphic.
      * Moved the graphics drawing operations to another class.
+     * Removed the 24 strike font, it was too large.
      * Update the `Display` when a command is added or removed.
      * Use a default title for a `Displayable` if one has not been set, this
        will be in the order of the suite name, the main class, and if those
