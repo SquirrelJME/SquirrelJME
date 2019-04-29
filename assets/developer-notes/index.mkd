@@ -2154,7 +2154,7 @@
 [**`25`**](stephanie-gawroriski/2019/04/25.mkd)
 [**`26`**](stephanie-gawroriski/2019/04/26.mkd)
 [**`27`**](stephanie-gawroriski/2019/04/27.mkd)
- * `28`
+ * [**`28`**](stephanie-gawroriski/2019/04/28.mkd)
 `29`
 `30`
  `--` `--` `--` `--`
