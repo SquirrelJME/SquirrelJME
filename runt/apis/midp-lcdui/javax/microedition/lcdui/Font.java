@@ -85,7 +85,7 @@ public final class Font
 	
 	/** The default font size. */
 	private static final int _DEFAULT_FONT_SIZE =
-		16;
+		12;
 	
 	/** Built-in available fonts. */
 	private static Font[] _BUILTIN_FONTS;

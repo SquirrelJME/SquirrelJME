@@ -46,10 +46,10 @@ public final class FontSizeConversion
 				return 8;
 			
 			case Font.SIZE_MEDIUM:
-				return 16;
+				return 12;
 			
 			case Font.SIZE_LARGE:
-				return 24;
+				return 16;
 			
 				// {@squirreljme.error EB2e Invalid logical font size.}
 			default:
@@ -60,15 +60,15 @@ public final class FontSizeConversion
 	/**
 	 * Converts the pixel size to a logical font size.
 	 *
-	 * @praam __psz The pixel font size.
+	 * @param __psz The pixel font size.
 	 * @return The logical size.
 	 * @since 2018/11/24
 	 */
 	public static final int pixelSizeToLogicalSize(int __psz)
 	{
-		if (__psz < 12)
+		if (__psz < 10)
 			return Font.SIZE_SMALL;
-		else if (__psz < 20)
+		else if (__psz < 14)
 			return Font.SIZE_MEDIUM;
 		return Font.SIZE_LARGE;
 	}
