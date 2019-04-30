@@ -125,7 +125,12 @@ public final class JarMinimizer
 		// Use fixed ID if there is one, otherwise assign a new one
 		rv = FixedClassIDs.of(__cl.toString());
 		if (rv <= 0)
+		{
 			rv = this._nextid++;
+			
+			// Debug
+			todo.DEBUG.note("Class %s id=%d", __cl, rv);
+		}
 		
 		// Store for later
 		bi._id = rv;
