@@ -17,6 +17,11 @@ import cc.squirreljme.runtime.cldc.asm.StaticMethod;
  * This does not extend {@link ClassDataV1} because it is intended to be
  * used by SummerCoat and RatufaCoat which are more native machines and such.
  *
+ * VTables just reference only instance methods and similarly to instance
+ * fields, their IDs and tables build upon each other. For example if Class A
+ * contains 5 methods and Class B contains 7 methods, then Class A will have
+ * a VTable size of 5 while Class B will have a VTable size of 12.
+ *
  * @since 2019/04/26
  */
 public class ClassDataV2
