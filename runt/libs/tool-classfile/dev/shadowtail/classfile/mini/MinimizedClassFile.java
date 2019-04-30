@@ -180,6 +180,25 @@ public final class MinimizedClassFile
 	/**
 	 * Searches for a method by the given name and type.
 	 *
+	 * @param __n The name.
+	 * @param __t The type.
+	 * @return The method or {@code null} if not found.
+	 * @since 2019/04/22
+	 */
+	public final MinimizedMethod method(MethodName __n, MethodDescriptor __t)
+		throws NullPointerException
+	{
+		if (__n == null || __t == null)
+			throw new NullPointerException("NARG");
+		
+		// Static first, then instance methods
+		MinimizedMethod rv = this.method(true, __n, __t);
+		return (rv == null ? this.method(false, __n, __t) : rv);
+	}
+	
+	/**
+	 * Searches for a method by the given name and type.
+	 *
 	 * @param __is Search for static method?
 	 * @param __n The name.
 	 * @param __t The type.
