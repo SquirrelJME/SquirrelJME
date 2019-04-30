@@ -784,7 +784,8 @@ public final class NearNativeByteCodeHandler
 				
 				// Read method offset into the vtable
 				codebuilder.add(NativeInstructionType.LOAD_POOL,
-					new InvokedMethod(__t, __r.handle()),
+					new MethodIndex(__r.handle().outerClass(),
+						__r.handle().name(), __r.handle().descriptor()),
 					NativeCode.VOLATILE_B_REGISTER);
 				
 				// Read the pointer in the VTable

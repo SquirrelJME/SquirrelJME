@@ -15,6 +15,7 @@ import dev.shadowtail.classfile.nncc.FieldAccessTime;
 import dev.shadowtail.classfile.nncc.FieldAccessType;
 import dev.shadowtail.classfile.nncc.InvokedMethod;
 import dev.shadowtail.classfile.nncc.MethodDispatchTable;
+import dev.shadowtail.classfile.nncc.MethodIndex;
 import dev.shadowtail.classfile.nncc.UsedString;
 import dev.shadowtail.classfile.nncc.WhereIsThis;
 import dev.shadowtail.classfile.xlate.InvokeType;
@@ -328,6 +329,7 @@ public final class MinimizedPool
 					case WHERE_IS_THIS:
 					case USED_STRING:
 					case METHOD_DISPATCH_TABLE:
+					case METHOD_INDEX:
 						// Wide parts
 						if (iswide)
 						{
@@ -415,6 +417,14 @@ public final class MinimizedPool
 								v = new MethodDispatchTable(
 										InvokeType.of(part[0]),
 										(ClassName)values[part[1]]);
+								break;
+								
+								// The method index
+							case METHOD_INDEX:
+								v = new MethodIndex(
+									(ClassName)values[part[1]],
+									new MethodName((String)values[part[2]]),
+									(MethodDescriptor)values[part[3]]);
 								break;
 								
 								// Long
