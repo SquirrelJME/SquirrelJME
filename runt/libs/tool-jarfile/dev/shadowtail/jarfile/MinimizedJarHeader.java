@@ -43,11 +43,11 @@ public final class MinimizedJarHeader
 	/** Table of contents offset. */
 	public final int tocoffset;
 	
-	/** Boot hardcoded functions offset. */
-	public final int hardcodefuncoff;
+	/** Boot initializer offset. */
+	public final int bootoffset;
 	
-	/** Number of hardcoded boot functions. */
-	public final int hardcodefunclen;
+	/** Boot initializer size. */
+	public final int bootsize;
 	
 	/**
 	 * Initializes the Jar header.
@@ -68,9 +68,9 @@ public final class MinimizedJarHeader
 		this.numrc = __fs[at++];
 		this.tocoffset = __fs[at++];
 		
-		// Hardcoded functions (if booting)
-		this.hardcodefuncoff = __fs[at++];
-		this.hardcodefunclen = __fs[at++];
+			// Boot initializer
+		this.bootoffset = __fs[at++];
+		this.bootsize = __fs[at++];
 	}
 	
 	/**
@@ -100,9 +100,9 @@ public final class MinimizedJarHeader
 			/* numrc */ din.readInt(),
 			/* tocoffset */ din.readInt(),
 			
-			// Hardcoded functions
-			/* hardcodefuncoff */ din.readInt(),
-			/* hardcodefunclen */ din.readInt());
+			// Boot initializer
+			/* bootoffset */ din.readInt(),
+			/* bootsize */ din.readInt());
 	}
 }
 

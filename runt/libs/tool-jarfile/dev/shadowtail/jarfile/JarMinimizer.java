@@ -10,7 +10,6 @@
 package dev.shadowtail.jarfile;
 
 import cc.squirreljme.runtime.cldc.vki.FixedClassIDs;
-import cc.squirreljme.runtime.cldc.vki.HardcodedFunctions;
 import cc.squirreljme.runtime.cldc.vki.Kernel;
 import cc.squirreljme.vm.VMClassLibrary;
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
@@ -42,14 +41,6 @@ import net.multiphasicapps.classfile.ClassNames;
  */
 public final class JarMinimizer
 {
-	/** The kernel's class. */
-	private static final String _KERNEL_CLASS =
-		"cc/squirreljme/runtime/cldc/vki/Kernel";
-	
-	/** The C class. */
-	private static final String _C_CLASS =
-		"cc/squirreljme/runtime/cldc/vki/C";
-	
 	/** Is this a boot JAR? */
 	protected final boolean boot;
 	
@@ -128,6 +119,17 @@ public final class JarMinimizer
 		if (__cl == null || __mn == null)
 			throw new NullPointerException("NARG");
 		
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the initialize sequence that is needed for execution.
+	 *
+	 * @return The initialization sequence needed to start the kernel properly.
+	 * @since 2019/04/30
+	 */
+	private final Initializer __init()
+	{
 		throw new todo.TODO();
 	}
 	
@@ -269,10 +271,9 @@ public final class JarMinimizer
 			int baseaddr;
 			__dos.writeInt(reloff + (baseaddr = jdos.size()));
 			
-			// Write integers which represent offsets to all the various
-			// classes and methods
-			jdos.writeInt(this.__addressOfMethod(
-				_KERNEL_CLASS, "__start", null));
+			// Initialize and write startup memory
+			Initializer init = this.__init();
+			jdos.write(init.toByteArray());
 			
 			// Write length of the boot function table
 			__dos.writeInt(jdos.size() - baseaddr);
