@@ -331,7 +331,9 @@ public final class JarMinimizer
 					
 					// Class constant pool
 				case CLASS_POOL:
-					throw new todo.TODO();
+					__init.memWriteInt(Modifier.RAM_OFFSET,
+						ep, this.__initPool(__init, ((ClassPool)pv).name));
+					break;
 					
 					// A method to be invoked
 					// Static methods are direct pointers
