@@ -129,9 +129,41 @@ public final class FixedClassIDs
 	public static final int PRIMITIVE_BYTE_ARRAY_ARRAY =
 		27;
 	
+	/** Boolean. */
+	public static final int BOXED_BOOLEAN =
+		28;
+	
+	/** Byte. */
+	public static final int BOXED_BYTE =
+		29;
+	
+	/** Short. */
+	public static final int BOXED_SHORT =
+		30;
+	
+	/** Character. */
+	public static final int BOXED_CHARACTER =
+		31;
+	
+	/** Integer. */
+	public static final int BOXED_INTEGER =
+		32;
+	
+	/** Long. */
+	public static final int BOXED_LONG =
+		33;
+	
+	/** Float. */
+	public static final int BOXED_FLOAT =
+		34;
+	
+	/** Double. */
+	public static final int BOXED_DOUBLE =
+		35;
+	
 	/** Number of fixed IDs. */
 	public static final int MAX_FIXED =
-		28;
+		48;
 	
 	/**
 	 * Not used.
@@ -194,18 +226,37 @@ public final class FixedClassIDs
 				return CLASS;
 			case "java/lang/String":
 				return STRING;
+			case "Ljava/lang/Thread;":
+				return THREAD;
+				
+			case "Ljava/lang/Boolean;":
+				return BOXED_BOOLEAN;
+			case "Ljava/lang/Byte;":
+				return BOXED_BYTE;
+			case "Ljava/lang/Short;":
+				return BOXED_SHORT;
+			case "Ljava/lang/Character;":
+				return BOXED_CHARACTER;
+			case "Ljava/lang/Integer;":
+				return BOXED_INTEGER;
+			case "Ljava/lang/Long;":
+				return BOXED_LONG;
+			case "Ljava/lang/Float;":
+				return BOXED_FLOAT;
+			case "Ljava/lang/Double;":
+				return BOXED_DOUBLE;
+				
+			case "[Ljava/lang/Object;":
+				return OBJECT_ARRAY;
+			case "[Ljava/lang/String;":
+				return STRING_ARRAY;
+				
 			case "cc/squirreljme/runtime/cldc/vki/Kernel":
 				return KERNEL;
 			case "cc/squirreljme/runtime/cldc/lang/ClassData":
 				return CLASSDATA;
 			case "cc/squirreljme/runtime/cldc/lang/ClassDataV2":
 				return CLASSDATAV2;
-			case "Ljava/lang/Thread;":
-				return THREAD;
-			case "[Ljava/lang/Object;":
-				return OBJECT_ARRAY;
-			case "[Ljava/lang/String;":
-				return STRING_ARRAY;
 		}
 		
 		// Not a fixed type

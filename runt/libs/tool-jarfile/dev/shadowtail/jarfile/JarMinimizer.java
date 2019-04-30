@@ -50,6 +50,10 @@ public final class JarMinimizer
 	/** Boot information for classes. */
 	private final Map<ClassName, __BootInfo__> _boots;
 	
+	/** Next ID to give. */
+	private int _nextid =
+		FixedClassIDs.MAX_FIXED;
+	
 	/**
 	 * Initializes the minimizer worker.
 	 *
@@ -79,7 +83,7 @@ public final class JarMinimizer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/28
 	 */
-	public final int __addressOfClass(String __cl)
+	public final int __classAddress(String __cl)
 		throws NullPointerException
 	{
 		if (__cl == null)
@@ -89,23 +93,44 @@ public final class JarMinimizer
 	}
 	
 	/**
-	 * Returns the address of the given method.
+	 * Returns the ID of the class.
 	 *
-	 * @param __cl The class to look in.
-	 * @param __mn The method name.
-	 * @param __mt The method type, if {@code null} then the type is
-	 * disregarded.
-	 * @return The address of the given method.
+	 * @param __cl The class to get the ID of.
+	 * @return The ID of the class.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2019/04/28
+	 * @since 2019/04/30
 	 */
-	public final int __addressOfMethod(String __cl, String __mn, String __mt)
+	private final int __classId(ClassName __cl)
 		throws NullPointerException
 	{
-		if (__cl == null || __mn == null)
+		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Try to find the boot info
+		Map<ClassName, __BootInfo__> boots = this._boots;
+		__BootInfo__ bi = boots.get(__cl);
+		
+		// If there is no boot info this is probably a special class like
+		// a primitive type or array
+		if (bi == null)
+			boots.put(__cl, (bi = new __BootInfo__(
+				Minimizer.minimizeAndDecode(ClassFile.special(
+					__cl.field())), 0)));
+		
+		// Already gave an ID?
+		int rv = bi._id;
+		if (rv != 0)
+			return rv;
+		
+		// Use fixed ID if there is one, otherwise assign a new one
+		rv = FixedClassIDs.of(__cl.toString());
+		if (rv <= 0)
+			rv = this._nextid++;
+		
+		// Store for later
+		bi._id = rv;
+		
+		return rv;
 	}
 	
 	/**
@@ -116,7 +141,7 @@ public final class JarMinimizer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/30
 	 */
-	public final int __classInstanceSize(ClassName __cl)
+	private final int __classInstanceSize(ClassName __cl)
 		throws NullPointerException
 	{
 		if (__cl == null)
@@ -140,6 +165,27 @@ public final class JarMinimizer
 		
 		// Return this object size
 		return rv;
+	}
+	
+	/**
+	 * Returns the address of the given method.
+	 *
+	 * @param __cl The class to look in.
+	 * @param __mn The method name.
+	 * @param __mt The method type, if {@code null} then the type is
+	 * disregarded.
+	 * @return The address of the given method.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/28
+	 */
+	public final int __classMethodAddress(String __cl, String __mn,
+		String __mt)
+		throws NullPointerException
+	{
+		if (__cl == null || __mn == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 	
 	/**
@@ -235,6 +281,9 @@ public final class JarMinimizer
 			Object pv = pool.get(i);
 			int[] pp = pool.parts(i);
 			
+			// The pointer to this entry
+			int ep = rv + (4 * i);
+			
 			// Depends on the part
 			switch (pt)
 			{
@@ -247,10 +296,12 @@ public final class JarMinimizer
 				case FLOAT:
 				case LONG:
 				case DOUBLE:
+					break;
 				
 					// Class ID
 				case CLASS_NAME:
-					throw new todo.TODO();
+					__init.memWriteInt(ep, this.__classId((ClassName)pv));
+					break;
 					
 					// Class constant pool
 				case CLASS_POOL:
@@ -425,7 +476,7 @@ public final class JarMinimizer
 			// Pool pointer for bootstrap and the kernel entry point
 			__dos.writeInt(poolptr[0]);
 			__dos.writeInt(kernelobj[0]);
-			__dos.writeInt(this.__addressOfMethod(
+			__dos.writeInt(this.__classMethodAddress(
 				"cc/squirreljme/runtime/cldc/vki/Kernel",
 				"__start",
 				null));
