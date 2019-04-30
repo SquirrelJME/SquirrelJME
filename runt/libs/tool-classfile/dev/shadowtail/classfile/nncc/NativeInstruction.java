@@ -306,6 +306,7 @@ public final class NativeInstruction
 			case NativeInstructionType.CONVERSION_FROM_WIDE:
 			case NativeInstructionType.IF_ICMP:
 			case NativeInstructionType.IFEQ_CONST:
+			case NativeInstructionType.LOAD_TABLE:
 			case NativeInstructionType.MATH_REG_INT:
 			case NativeInstructionType.MATH_REG_FLOAT:
 			case NativeInstructionType.MATH_CONST_INT:
@@ -390,6 +391,7 @@ public final class NativeInstruction
 					ArgumentFormat.VUINT);
 				
 				// [u16, u16, u16]
+			case NativeInstructionType.LOAD_TABLE:
 			case NativeInstructionType.MATH_REG_FLOAT:
 			case NativeInstructionType.MATH_REG_INT:
 			case NativeInstructionType.MEMORY_OFF_REG:
@@ -614,6 +616,7 @@ public final class NativeInstruction
 			case NativeInstructionType.IFEQ_CONST:		return "IFEQ_CONST";
 			case NativeInstructionType.INVOKE:			return "INVOKE";
 			case NativeInstructionType.LOAD_POOL:		return "LOAD_POOL";
+			case NativeInstructionType.LOAD_TABLE:		return "LOAD_TABLE";
 			case NativeInstructionType.NEW:				return "NEW";
 			case NativeInstructionType.RETURN:			return "RETURN";
 			

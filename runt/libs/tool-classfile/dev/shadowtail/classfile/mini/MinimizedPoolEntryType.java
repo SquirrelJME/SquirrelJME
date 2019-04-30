@@ -58,9 +58,6 @@ public enum MinimizedPoolEntryType
 	/** A plain string that was used. */
 	USED_STRING,
 	
-	/** Method Dispatch Table. */
-	METHOD_DISPATCH_TABLE,
-	
 	/** The index of a method. */
 	METHOD_INDEX,
 	
@@ -94,8 +91,7 @@ public enum MinimizedPoolEntryType
 			case 11:	return DOUBLE;
 			case 12:	return WHERE_IS_THIS;
 			case 13:	return USED_STRING;
-			case 14:	return METHOD_DISPATCH_TABLE;
-			case 15:	return METHOD_INDEX;
+			case 14:	return METHOD_INDEX;
 		}
 		
 		// {@squirreljme.error JC3s Unknown pool type. (The type)}
@@ -148,8 +144,6 @@ public enum MinimizedPoolEntryType
 				return WHERE_IS_THIS;
 			case "dev.shadowtail.classfile.nncc.UsedString":
 				return USED_STRING;
-			case "dev.shadowtail.classfile.nncc.MethodDispatchTable":
-				return METHOD_DISPATCH_TABLE;
 			case "dev.shadowtail.classfile.nncc.MethodIndex":
 				return METHOD_INDEX;
 		}

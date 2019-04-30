@@ -550,26 +550,16 @@ public final class NearNativeByteCodeHandler
 					}
 					break;
 					
-					// Load value from class table, this just multiplies by
-					// 4 and just reads from class table
+					// Load value from class table
 				case "loadClass":
-					codebuilder.addMathConst(StackJavaType.INTEGER,
-						MathType.MUL, __in[0].register, 4,
-						NativeCode.VOLATILE_B_REGISTER);
-					codebuilder.addMemoryOffReg(DataType.INTEGER, true,
-						__out.register, NativeCode.CLASS_TABLE_REGISTER,
-						NativeCode.VOLATILE_B_REGISTER);
+					codebuilder.addLoadTable(__out.register,
+						NativeCode.CLASS_TABLE_REGISTER, __in[0].register);
 					break;
 					
-					// Load value from constant pool, this just multiplies by
-					// 4 and just reads from the pool
+					// Load value from constant pool
 				case "loadPool":
-					codebuilder.addMathConst(StackJavaType.INTEGER,
-						MathType.MUL, __in[0].register, 4,
-						NativeCode.VOLATILE_B_REGISTER);
-					codebuilder.addMemoryOffReg(DataType.INTEGER, true,
-						__out.register, NativeCode.POOL_REGISTER,
-						NativeCode.VOLATILE_B_REGISTER);
+					codebuilder.addLoadTable(__out.register,
+						NativeCode.POOL_REGISTER, __in[0].register);
 					break;
 					
 					// Read byte memory
@@ -774,22 +764,61 @@ public final class NearNativeByteCodeHandler
 					NativeCode.VOLATILE_A_REGISTER);
 			}
 			
-			// Need to load the correct method to execute off the vtable
+			// Invocation of interface method
+			else if (__t == InvokeType.INTERFACE)
+			{
+				throw new todo.TODO();
+			}
+			
+			// Need to load the correct method to execute off a vtable
 			else
 			{
-				// Load VTable
-				codebuilder.add(NativeInstructionType.LOAD_POOL,
-					new MethodDispatchTable(__t, __r.handle().outerClass()),
+				// Use special invoke table for the instance
+				String vtablename;
+				if (__t == InvokeType.SPECIAL)
+					vtablename = "vtablespecial";
+				
+				// Use virtual invoke table for the instance
+				else
+					vtablename = "vtablevirtual";
+				
+				// Load the Class ID into A
+				codebuilder.addMemoryOffReg(DataType.INTEGER, true,
+					NativeCode.VOLATILE_A_REGISTER,
+					__in[0].register, Kernel.OBJECT_CLASS_OFFSET);
+				
+				// Load the ClassDataV2 pointer into A
+				codebuilder.addLoadTable(
+					NativeCode.VOLATILE_A_REGISTER,
+					NativeCode.CLASS_TABLE_REGISTER,
 					NativeCode.VOLATILE_A_REGISTER);
 				
-				// Read method offset into the vtable
+				// Read the offset to the vtable into B
+				codebuilder.add(NativeInstructionType.LOAD_POOL,
+					new AccessedField(FieldAccessTime.NORMAL,
+						FieldAccessType.INSTANCE,
+					new FieldReference(
+						new ClassName(
+							"cc/squirreljme/runtime/cldc/lang/ClassDataV2"),
+						new FieldName(vtablename),
+						FieldDescriptor.INTEGER)),
+					NativeCode.VOLATILE_B_REGISTER);
+				
+				// Read the address of the VTable from A+B into A
+				codebuilder.addMemoryOffReg(DataType.INTEGER, true,
+					NativeCode.VOLATILE_A_REGISTER,
+					NativeCode.VOLATILE_A_REGISTER,
+					NativeCode.VOLATILE_B_REGISTER);
+				
+				// Read the method index for the vtable into B
 				codebuilder.add(NativeInstructionType.LOAD_POOL,
 					new MethodIndex(__r.handle().outerClass(),
 						__r.handle().name(), __r.handle().descriptor()),
 					NativeCode.VOLATILE_B_REGISTER);
 				
-				// Read the pointer in the VTable
-				codebuilder.addMemoryOffReg(DataType.OBJECT, true,
+				// Read from the vtable using the table index for B
+				// This is our invocation pointer
+				codebuilder.addLoadTable(
 					NativeCode.VOLATILE_A_REGISTER,
 					NativeCode.VOLATILE_A_REGISTER,
 					NativeCode.VOLATILE_B_REGISTER);
@@ -1853,12 +1882,8 @@ public final class NearNativeByteCodeHandler
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
 			__cl, __r);
 		
-		// Multiply by 4 (the cell size)
-		codebuilder.addMathConst(StackJavaType.INTEGER, MathType.MUL,
-			__r, 4, __r);
-		
 		// Read from the class table the ClassDataV2 object
-		codebuilder.addMemoryOffReg(DataType.OBJECT, true,
+		codebuilder.addLoadTable(
 			__r, NativeCode.CLASS_TABLE_REGISTER, __r);
 		
 		// Load field offset from the pool
