@@ -519,6 +519,23 @@ public final class Kernel
 	}
 	
 	/**
+	 * Searches the interface vtables for the class of object {@code __p}
+	 * and searches for an interface implementation of class {@code __icl} and
+	 * if one is found then the pointer for index {@code __mdx} is returned.
+	 *
+	 * @param __p The object to do a interface lookup on.
+	 * @param __icl The interface class to find.
+	 * @param __mdx The method index to relate to, of the interface class.
+	 * @return The pointer to the code to be invoked.
+	 * @since 2019/04/30
+	 */
+	public static final int jvmInterfacePointer(int __p, int __icl, int __mdx)
+	{
+		Assembly.breakpoint();
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Checks whether the given pointer is an array.
 	 *
 	 * @param __p The pointer to check.

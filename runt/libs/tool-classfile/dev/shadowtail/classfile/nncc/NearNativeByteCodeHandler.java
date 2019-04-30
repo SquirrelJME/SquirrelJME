@@ -767,7 +767,36 @@ public final class NearNativeByteCodeHandler
 			// Invocation of interface method
 			else if (__t == InvokeType.INTERFACE)
 			{
-				throw new todo.TODO();
+				// Load the interface class into A
+				codebuilder.add(NativeInstructionType.LOAD_POOL,
+					__r.handle().outerClass(),
+					NativeCode.VOLATILE_A_REGISTER);
+				
+				// Load the method index for the interface method into B
+				codebuilder.add(NativeInstructionType.LOAD_POOL,
+					new MethodIndex(__r.handle().outerClass(),
+						__r.handle().name(), __r.handle().descriptor()),
+					NativeCode.VOLATILE_B_REGISTER);
+				
+				// We can load the direct pointer into the S register
+				codebuilder.add(NativeInstructionType.LOAD_POOL,
+					new InvokedMethod(InvokeType.STATIC, new MethodHandle(
+						new ClassName(
+							"cc/squirreljme/runtime/cldc/vki/Kernel"),
+						new MethodName("jvmInterfacePointer"),
+						new MethodDescriptor("(III)I"))),
+					NativeCode.VOLATILE_S_REGISTER);
+				
+				// Call kernel method to help with interface method lookup
+				codebuilder.add(NativeInstructionType.INVOKE,
+					NativeCode.VOLATILE_S_REGISTER,
+					new RegisterList(__in[0].register, 
+						NativeCode.VOLATILE_A_REGISTER,
+						NativeCode.VOLATILE_B_REGISTER));
+				
+				// Copy it into volatile A since invoke is done on that.
+				codebuilder.addCopy(NativeCode.RETURN_REGISTER,
+					NativeCode.VOLATILE_A_REGISTER);
 			}
 			
 			// Need to load the correct method to execute off a vtable
