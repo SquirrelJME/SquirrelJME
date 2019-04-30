@@ -34,6 +34,6 @@ public interface DefaultConfiguration
 	
 	/** Minimum class table size. */
 	public static final int MINIMUM_CLASS_TABLE_SIZE =
-		32;
+		56;
 }
 

@@ -30,6 +30,9 @@ final class __BootInfo__
 	/** The instance size of the class. */
 	int _isize;
 	
+	/** The ID of this class. */
+	int _id;
+	
 	/**
 	 * Initializes the boot info.
 	 *
