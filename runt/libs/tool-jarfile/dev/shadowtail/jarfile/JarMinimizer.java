@@ -32,6 +32,8 @@ import java.util.Map;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ClassNames;
+import net.multiphasicapps.classfile.MethodDescriptor;
+import net.multiphasicapps.classfile.MethodName;
 
 /**
  * This class is responsible for creating minimized Jar files which will then
@@ -183,8 +185,30 @@ public final class JarMinimizer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/28
 	 */
-	private final int __classMethodAddress(String __cl, String __mn,
+	private final int __classMethodCodeAddress(String __cl, String __mn,
 		String __mt)
+		throws NullPointerException
+	{
+		if (__cl == null || __mn == null)
+			throw new NullPointerException("NARG");
+		
+		return this.__classMethodCodeAddress(new ClassName(__cl),
+			new MethodName(__mn), new MethodDescriptor(__mt));
+	}
+	
+	/**
+	 * Returns the address of the given method.
+	 *
+	 * @param __cl The class to look in.
+	 * @param __mn The method name.
+	 * @param __mt The method type, if {@code null} then the type is
+	 * disregarded.
+	 * @return The address of the given method.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/30
+	 */
+	private final int __classMethodCodeAddress(ClassName __cl, MethodName __mn,
+		MethodDescriptor __mt)
 		throws NullPointerException
 	{
 		if (__cl == null || __mn == null)
@@ -335,14 +359,24 @@ public final class JarMinimizer
 						ep, this.__initPool(__init, ((ClassPool)pv).name));
 					break;
 					
-					// A method to be invoked
-					// Static methods are direct pointers
-					// Instance methods are offsets into method dispatch table
+					// A method to be invoked, these are always direct pointer
+					// references to methods
 				case INVOKED_METHOD:
-					throw new todo.TODO();
+					{
+						// Static invocation?
+						InvokedMethod im = (InvokedMethod)pv;
+						
+						if (true)
+							throw new todo.TODO();
+					}
+					break;
 					
 					// The instance method dispatch table
 				case METHOD_DISPATCH_TABLE:
+					throw new todo.TODO();
+					
+					// The index to an instance method
+				case METHOD_INDEX:
 					throw new todo.TODO();
 					
 					// Where is this class? Used for tracing
@@ -506,7 +540,7 @@ public final class JarMinimizer
 			// Pool pointer for bootstrap and the kernel entry point
 			__dos.writeInt(poolptr[0]);
 			__dos.writeInt(kernelobj[0]);
-			__dos.writeInt(this.__classMethodAddress(
+			__dos.writeInt(this.__classMethodCodeAddress(
 				"cc/squirreljme/runtime/cldc/vki/Kernel",
 				"__start",
 				null));

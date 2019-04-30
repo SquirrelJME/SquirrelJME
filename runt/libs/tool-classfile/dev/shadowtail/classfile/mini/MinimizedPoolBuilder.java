@@ -14,6 +14,7 @@ import dev.shadowtail.classfile.nncc.AccessedField;
 import dev.shadowtail.classfile.nncc.ClassPool;
 import dev.shadowtail.classfile.nncc.InvokedMethod;
 import dev.shadowtail.classfile.nncc.MethodDispatchTable;
+import dev.shadowtail.classfile.nncc.MethodIndex;
 import dev.shadowtail.classfile.nncc.UsedString;
 import dev.shadowtail.classfile.nncc.WhereIsThis;
 import java.io.ByteArrayOutputStream;
@@ -175,6 +176,17 @@ public final class MinimizedPoolBuilder
 			return this.__add(__v,
 				v.type.ordinal(),
 				this.add(v.name));
+		}
+		
+		// Index of method
+		else if (__v instanceof MethodIndex)
+		{
+			MethodIndex v = (MethodIndex)__v;
+			return this.__add(__v,
+				0x7FFF,
+				this.add(v.inclass),
+				this.add(v.name.toString()),
+				this.add(v.type));
 		}
 		
 		// Reference to constant pool table
@@ -439,6 +451,7 @@ __outer_witlut:
 					case WHERE_IS_THIS:
 					case USED_STRING:
 					case METHOD_DISPATCH_TABLE:
+					case METHOD_INDEX:
 						{
 							// Write number of parts
 							int npart = part.length;
