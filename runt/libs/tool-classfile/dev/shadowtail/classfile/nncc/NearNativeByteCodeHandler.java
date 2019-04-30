@@ -1862,7 +1862,7 @@ public final class NearNativeByteCodeHandler
 		
 		// Load field offset from the pool
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new AccessedField(FieldAccessTime.NORMAL, FieldAccessType.STATIC,
+			new AccessedField(FieldAccessTime.NORMAL, FieldAccessType.INSTANCE,
 			new FieldReference(
 				new ClassName("cc/squirreljme/runtime/cldc/lang/ClassDataV2"),
 				new FieldName("classobjptr"), FieldDescriptor.INTEGER)),

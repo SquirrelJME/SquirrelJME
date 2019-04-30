@@ -9,6 +9,8 @@
 
 package dev.shadowtail.jarfile;
 
+import java.util.Arrays;
+
 /**
  * This is used to build the initialization sequence accordingly. It is used
  * determine the initial amount of memory needed along with all the various
@@ -40,7 +42,21 @@ public final class Initializer
 		// Round allocation to 4-bytes
 		__sz = (__sz + 3) & (~3);
 		
-		throw new todo.TODO();
+		// Calculate the next size of the boot area
+		int nowsize = this._size,
+			nextsize = nowsize + __sz;
+		
+		// If the memory space is too small, grow it
+		byte[] bytes = this._bytes;
+		if (nextsize > bytes.length)
+			this._bytes = (bytes = Arrays.copyOf(bytes, nextsize + 2048));
+		
+		// Debug
+		todo.DEBUG.note("%d + %d => %d", nowsize, __sz, nextsize);
+		
+		// Continue at the end
+		this._size = nextsize;
+		return nowsize;
 	}
 	
 	/**
