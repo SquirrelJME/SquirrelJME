@@ -238,6 +238,42 @@ public final class JarMinimizer
 			// Depends on the part
 			switch (pt)
 			{
+					// These have no effect on runtime
+				case NULL:
+				case CLASS_NAMES:
+				case STRING:
+				case METHOD_DESCRIPTOR:
+				case INTEGER:
+				case FLOAT:
+				case LONG:
+				case DOUBLE:
+				
+					// Class ID
+				case CLASS_NAME:
+					throw new todo.TODO();
+					
+					// Class constant pool
+				case CLASS_POOL:
+					throw new todo.TODO();
+					
+					// A method to be invoked
+					// Static methods are direct pointers
+					// Instance methods are offsets into method dispatch table
+				case INVOKED_METHOD:
+					throw new todo.TODO();
+					
+					// The instance method dispatch table
+				case METHOD_DISPATCH_TABLE:
+					throw new todo.TODO();
+					
+					// Where is this class? Used for tracing
+				case WHERE_IS_THIS:
+					throw new todo.TODO();
+				
+					// A string that is actually used
+				case USED_STRING:
+					throw new todo.TODO();
+				
 				default:
 					throw new todo.OOPS(pt.name());
 			}
