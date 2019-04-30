@@ -152,7 +152,7 @@ public final class JarMinimizer
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		// Was already pre-calculated
+		// Was already pre-calculated?
 		__BootInfo__ bi = this._boots.get(__cl);
 		int rv = bi._isize;
 		if (rv != 0)
@@ -183,7 +183,7 @@ public final class JarMinimizer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/28
 	 */
-	public final int __classMethodAddress(String __cl, String __mn,
+	private final int __classMethodAddress(String __cl, String __mn,
 		String __mt)
 		throws NullPointerException
 	{
@@ -191,6 +191,24 @@ public final class JarMinimizer
 			throw new NullPointerException("NARG");
 		
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the pointer where the class where information is stored.
+	 *
+	 * @param __wit Where is this?
+	 * @return The offset to the information from the JAR.
+	 * @since 2019/04/30
+	 */
+	private final int __classWhere(WhereIsThis __wit)
+		throws NullPointerException
+	{
+		if (__wit == null)
+			throw new NullPointerException("NARG");
+		
+		// Use the where of any found method
+		return this._boots.get(__wit.inclass)._class.
+			method(__wit.name, __wit.type).whereoffset;
 	}
 	
 	/**
@@ -270,6 +288,9 @@ public final class JarMinimizer
 		if (rv != 0)
 			return rv;
 		
+		// Debug
+		todo.DEBUG.note("Building %s", __cl);
+		
 		// Get constant pool
 		MinimizedClassFile mcl = bi._class;
 		MinimizedPool pool = mcl.pool;
@@ -324,7 +345,9 @@ public final class JarMinimizer
 					
 					// Where is this class? Used for tracing
 				case WHERE_IS_THIS:
-					throw new todo.TODO();
+					__init.memWriteInt(Modifier.JAR_OFFSET,
+						ep, this.__classWhere((WhereIsThis)pv));
+					break;
 				
 					// A string that is actually used
 				case USED_STRING:

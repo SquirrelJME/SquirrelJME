@@ -9,7 +9,9 @@
 
 package dev.shadowtail.jarfile;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * This is used to build the initialization sequence accordingly. It is used
@@ -23,6 +25,10 @@ import java.util.Arrays;
  */
 public final class Initializer
 {
+	/** Operations. */
+	private final List<Operation> _ops =
+		new ArrayList<>();
+	
 	/** Current allocated temporary space. */
 	private byte[] _bytes = new byte[65536];
 	
@@ -83,7 +89,7 @@ public final class Initializer
 	{
 		// Record action?
 		if (__m != null && __m != Modifier.NONE)
-			throw new todo.TODO();
+			this._ops.add(new Operation(__m, 1, __addr));
 		
 		// Write data
 		byte[] bytes = this._bytes;
@@ -114,7 +120,7 @@ public final class Initializer
 	{
 		// Record action?
 		if (__m != null && __m != Modifier.NONE)
-			throw new todo.TODO();
+			this._ops.add(new Operation(__m, 4, __addr));
 		
 		// Write data
 		byte[] bytes = this._bytes;
@@ -148,7 +154,7 @@ public final class Initializer
 	{
 		// Record action?
 		if (__m != null && __m != Modifier.NONE)
-			throw new todo.TODO();
+			this._ops.add(new Operation(__m, 2, __addr));
 		
 		// Write data
 		byte[] bytes = this._bytes;

@@ -71,10 +71,10 @@ public final class WhereIsThis
 		if (this == __o)
 			return true;
 		
-		if (this.hashCode() != __o.hashCode())
+		if (!(__o instanceof WhereIsThis))
 			return false;
 		
-		if (!(__o instanceof WhereIsThis))
+		if (this.hashCode() != __o.hashCode())
 			return false;
 		
 		WhereIsThis o = (WhereIsThis)__o;
