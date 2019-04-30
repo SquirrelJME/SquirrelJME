@@ -192,6 +192,10 @@ public interface NativeInstructionType
 	public static final int ATOMIC_INT_INCREMENT =
 		0xFA;
 	
+	/** Load from table that is of native int/pointer size. */
+	public static final int LOAD_TABLE =
+		0xFC;
+	
 	/**
 	 * Load from pool, note that at code gen time this is aliased.
 	 * {@code iiiixxxx}.

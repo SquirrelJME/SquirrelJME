@@ -371,10 +371,6 @@ public final class JarMinimizer
 					}
 					break;
 					
-					// The instance method dispatch table
-				case METHOD_DISPATCH_TABLE:
-					throw new todo.TODO();
-					
 					// The index to an instance method
 				case METHOD_INDEX:
 					throw new todo.TODO();

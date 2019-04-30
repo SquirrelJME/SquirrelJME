@@ -264,6 +264,21 @@ public final class NativeCodeBuilder
 	}
 	
 	/**
+	 * Adds a load of a table.
+	 *
+	 * @param __d The destination register.
+	 * @param __tr The table register.
+	 * @param __i The index of that table.
+	 * @return The resulting instruction.
+	 * @since 2019/04/30
+	 */
+	public final NativeInstruction addLoadTable(int __d, int __tr, int __i)
+	{
+		return this.add(NativeInstructionType.LOAD_TABLE,
+			__d, __tr, __i);
+	}
+	
+	/**
 	 * Adds a math via constant operation.
 	 *
 	 * @param __jt The Java type.

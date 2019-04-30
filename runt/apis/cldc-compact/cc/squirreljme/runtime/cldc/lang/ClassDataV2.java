@@ -25,18 +25,28 @@ public class ClassDataV2
 	/** Pointer to the class object. */
 	public final int classobjptr;
 	
+	/** Virtual invoke VTable. */
+	public final int vtablevirtual;
+	
+	/** Special invoke VTable. */
+	public final int vtablespecial;
+	
 	/**
 	 * Version 2 constructor.
 	 *
 	 * @param __cop Pointer to the class object.
+	 * @param __vtv Virtual invoke VTable address.
+	 * @param __vts Special invoke VTable address.
 	 * @since 2019/04/26
 	 */
-	public ClassDataV2(int __cop)
+	public ClassDataV2(int __cop, int __vtv, int __vts)
 	{
 		super(2);
 		
 		// Set
 		this.classobjptr = __cop;
+		this.vtablevirtual = __vtv;
+		this.vtablespecial = __vts;
 	}
 	
 	/**
