@@ -31,7 +31,7 @@ public final class MinimizedJarHeader
 	
 	/** The size of the header without the magic number. */
 	public static final int HEADER_SIZE_WITHOUT_MAGIC =
-		16;
+		24;
 	
 	/** The size of the header with the magic number. */
 	public static final int HEADER_SIZE_WITH_MAGIC =
@@ -48,6 +48,15 @@ public final class MinimizedJarHeader
 	
 	/** Boot initializer size. */
 	public final int bootsize;
+	
+	/** The boot pool offset. */
+	public final int bootpool;
+	
+	/** Boot kernel object offset. */
+	public final int bootobject;
+	
+	/** The start method offset. */
+	public final int bootstart;
 	
 	/**
 	 * Initializes the Jar header.
@@ -68,9 +77,12 @@ public final class MinimizedJarHeader
 		this.numrc = __fs[at++];
 		this.tocoffset = __fs[at++];
 		
-			// Boot initializer
+		// Boot initializer
 		this.bootoffset = __fs[at++];
 		this.bootsize = __fs[at++];
+		this.bootpool = __fs[at++];
+		this.bootobject = __fs[at++];
+		this.bootstart = __fs[at++];
 	}
 	
 	/**
@@ -102,7 +114,10 @@ public final class MinimizedJarHeader
 			
 			// Boot initializer
 			/* bootoffset */ din.readInt(),
-			/* bootsize */ din.readInt());
+			/* bootsize */ din.readInt(),
+			/* bootpool */ din.readInt(),
+			/* bootobject */ din.readInt(),
+			/* bootstart */ din.readInt());
 	}
 }
 
