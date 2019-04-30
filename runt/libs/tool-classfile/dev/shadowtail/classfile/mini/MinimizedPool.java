@@ -154,6 +154,18 @@ public final class MinimizedPool
 	}
 	
 	/**
+	 * Returns all of the available parts.
+	 *
+	 * @param __i The index.
+	 * @return The parts for this index.
+	 * @since 2019/04/30
+	 */
+	public final int[] parts(int __i)
+	{
+		return this._parts[__i].clone();
+	}
+	
+	/**
 	 * Returns the number of entries in the pool.
 	 *
 	 * @return The number of pool entries.

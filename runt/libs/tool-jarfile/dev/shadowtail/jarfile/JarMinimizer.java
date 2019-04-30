@@ -47,11 +47,8 @@ public final class JarMinimizer
 	/** The input JAR. */
 	protected final VMClassLibrary input;
 	
-	/** Mini-classes, if this is a boot Jar. */
-	private final Map<ClassName, MinimizedClassFile> _minicl;
-	
-	/** The offset to the mini-class data, within the JAR itself. */
-	private final Map<ClassName, Integer> _minicloff;
+	/** Boot information for classes. */
+	private final Map<ClassName, __BootInfo__> _boots;
 	
 	/**
 	 * Initializes the minimizer worker.
@@ -71,18 +68,7 @@ public final class JarMinimizer
 		this.input = __in;
 		
 		// Only used if this is a boot JAR
-		if (__boot)
-		{
-			this._minicl = new HashMap<>();
-			this._minicloff = new HashMap<>();
-		}
-		
-		// Not used
-		else
-		{
-			this._minicl = null;
-			this._minicloff = null;
-		}
+		this._boots = (__boot ? new HashMap<ClassName, __BootInfo__>() : null);
 	}
 	
 	/**
@@ -99,7 +85,7 @@ public final class JarMinimizer
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		return this._minicloff.get(new ClassName(__cl));
+		return this._boots.get(new ClassName(__cl))._classoffset;
 	}
 	
 	/**
@@ -123,14 +109,142 @@ public final class JarMinimizer
 	}
 	
 	/**
+	 * Returns the instance size of the class.
+	 *
+	 * @param __cl The class to get the size of.
+	 * @return The instance size of the class.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/30
+	 */
+	public final int __classInstanceSize(ClassName __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// Was already pre-calculated
+		__BootInfo__ bi = this._boots.get(__cl);
+		int rv = bi._isize;
+		if (rv != 0)
+			return rv;
+		
+		// Need to know the super class
+		MinimizedClassFile mcf = bi._class;
+		ClassName supername = mcf.superName();
+		
+		// Object is always 12 bytes, otherwise it is just more bytes from
+		// the base object size
+		rv = (supername == null ? 12 :
+			this.__classInstanceSize(supername) + mcf.header.ifbytes);
+		bi._isize = rv;
+		
+		// Return this object size
+		return rv;
+	}
+	
+	/**
 	 * Returns the initialize sequence that is needed for execution.
 	 *
+	 * @param __poolp The output pointer of the initial constant pool.
+	 * @param __kobj The output pointer of the initial kernel object.
 	 * @return The initialization sequence needed to start the kernel properly.
 	 * @since 2019/04/30
 	 */
-	private final Initializer __init()
+	private final Initializer __init(int[] __poolp, int[] __kobj)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__poolp == null || __kobj == null)
+			throw new NullPointerException("NARG");
+		
+		Map<ClassName, __BootInfo__> boots = this._boots;
+		ClassName kn = new ClassName("cc/squirreljme/runtime/cldc/vki/Kernel");
+		
+		// Initializer used for memory purposes
+		Initializer rv = new Initializer();
+		
+		// Initialize the bootstrap pool, which may recursively initialize
+		// more constant pools in order for other methods to be executed
+		// properly
+		int poolptr = this.__initPool(rv, kn);
+		__poolp[0] = poolptr;
+		
+		// Allocate and setup kernel object pointer
+		int kobjptr = rv.allocate(this.__classInstanceSize(kn));
+		__kobj[0] = kobjptr;
+		
+		// Write in class ID
+		rv.memWriteInt(kobjptr, FixedClassIDs.KERNEL);
+		
+		// Done with initialization, the ROM writer will dump the data needed
+		// for the kernel to start properly
+		return rv;
+	}
+	
+	/**
+	 * Initializes the constant pool for the given class.
+	 *
+	 * @param __init The initializer for the memory.
+	 * @param __cl The class to initialize.
+	 * @return The pointer of the class constant pool.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/30
+	 */
+	private final int __initPool(Initializer __init, String __cl)
+		throws NullPointerException
+	{
+		if (__init == null || __cl == null)
+			throw new NullPointerException("NARG");
+		
+		return this.__initPool(__init, new ClassName(__cl));
+	}
+	
+	/**
+	 * Initializes the constant pool for the given class.
+	 *
+	 * @param __init The initializer for the memory.
+	 * @param __cl The class to initialize.
+	 * @return The pointer of the class constant pool.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/30
+	 */
+	private final int __initPool(Initializer __init, ClassName __cl)
+		throws NullPointerException
+	{
+		if (__init == null || __cl == null)
+			throw new NullPointerException("NARG");
+		
+		// Only calculate it once
+		__BootInfo__ bi = this._boots.get(__cl);
+		int rv = bi._pooloffset;
+		if (rv != 0)
+			return rv;
+		
+		// Get constant pool
+		MinimizedClassFile mcl = bi._class;
+		MinimizedPool pool = mcl.pool;
+		
+		// Allocate and store space needed for the active pool contents
+		int n = pool.size();
+		bi._pooloffset = (rv = __init.allocate(n * 4));
+		
+		// Process the constant pool
+		for (int i = 1; i < n; i++)
+		{
+			// Get pool type and value
+			MinimizedPoolEntryType pt = pool.type(i);
+			Object pv = pool.get(i);
+			int[] pp = pool.parts(i);
+			
+			// Depends on the part
+			switch (pt)
+			{
+				default:
+					throw new todo.OOPS(pt.name());
+			}
+		}
+		
+		// Return the pointer where the pool was allocated
+		return rv;
 	}
 	
 	/**
@@ -152,8 +266,7 @@ public final class JarMinimizer
 		
 		// If this is a boot JAR, this will later be used and pre-initialized
 		// boot memory will be setup accordingly
-		Map<ClassName, MinimizedClassFile> minicl = this._minicl;
-		Map<ClassName, Integer> minicloff = this._minicloff;
+		Map<ClassName, __BootInfo__> boots = this._boots;
 		
 		// Need list of resources to determine
 		String[] rcnames = input.listResources();
@@ -181,26 +294,12 @@ public final class JarMinimizer
 			byte[] bytes;
 			
 			// Open resource
+			boolean isclass = false;
 			try (InputStream in = input.resourceAsStream(rc))
 			{
 				// Minimizing class
-				if (rc.endsWith(".class"))
-				{
-					// Minimize file data
+				if ((isclass = rc.endsWith(".class")))
 					bytes = Minimizer.minimize(ClassFile.decode(in));
-					
-					// If boot processing is going to be done, we need to
-					// know about this class file
-					if (minicl != null)
-					{
-						// Decode it
-						MinimizedClassFile cf =
-							MinimizedClassFile.decode(bytes);
-						
-						// And cache it for later
-						minicl.put((ofclass = cf.thisName()), cf);
-					}
-				}
 				
 				// Plain resource, sent straight through
 				else
@@ -243,9 +342,16 @@ public final class JarMinimizer
 			tdos.writeInt((clpos = (reloff + jdos.size())));
 			tdos.writeInt(bytes.length);
 			
-			// Store offset to mini class data in the Jar
-			if (minicloff != null)
-				minicloff.put(ofclass, clpos);
+			// If boot processing is going to be done, we need to
+			// know about this class file if it is one
+			if (boots != null && isclass)
+			{
+				// Decode it
+				MinimizedClassFile cf = MinimizedClassFile.decode(bytes);
+				
+				// Store loaded for later boot usage
+				boots.put(cf.thisName(), new __BootInfo__(cf, clpos));
+			}
 			
 			// Then write the actual data stream
 			jdos.write(bytes);
@@ -261,7 +367,7 @@ public final class JarMinimizer
 		__dos.writeInt(MinimizedJarHeader.HEADER_SIZE_WITH_MAGIC);
 		
 		// Building pre-boot state
-		if (minicl != null)
+		if (boots != null)
 		{
 			// Round data stream to 4 bytes
 			while ((jdos.size() & 3) != 0)
@@ -272,18 +378,37 @@ public final class JarMinimizer
 			__dos.writeInt(reloff + (baseaddr = jdos.size()));
 			
 			// Initialize and write startup memory
-			Initializer init = this.__init();
+			int[] poolptr = new int[1],
+				kernelobj = new int[1];
+			Initializer init = this.__init(poolptr, kernelobj);
 			jdos.write(init.toByteArray());
 			
 			// Write length of the boot function table
 			__dos.writeInt(jdos.size() - baseaddr);
+			
+			// Pool pointer for bootstrap and the kernel entry point
+			__dos.writeInt(poolptr[0]);
+			__dos.writeInt(kernelobj[0]);
+			__dos.writeInt(this.__addressOfMethod(
+				"cc/squirreljme/runtime/cldc/vki/Kernel",
+				"__start",
+				null));
 		}
 		
 		// No boot data
 		else
 		{
-			// Hard coded function table
+			// Boot memory offset and size
 			__dos.writeInt(0);
+			__dos.writeInt(0);
+			
+			// Boot pool pointer
+			__dos.writeInt(0);
+			
+			// Boot instance pointer
+			__dos.writeInt(0);
+			
+			// Boot entry point
 			__dos.writeInt(0);
 		}
 		

@@ -21,6 +21,9 @@ package dev.shadowtail.jarfile;
  */
 public final class Initializer
 {
+	/** Current allocated temporary space. */
+	private byte[] _bytes = new byte[65536];
+	
 	/** Current size of the initializer, includes mem link for freeing. */
 	private int _size =
 		8;
