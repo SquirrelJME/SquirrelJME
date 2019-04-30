@@ -363,11 +363,11 @@ public final class JarMinimizer
 					// references to methods
 				case INVOKED_METHOD:
 					{
-						// Static invocation?
 						InvokedMethod im = (InvokedMethod)pv;
-						
-						if (true)
-							throw new todo.TODO();
+						__init.memWriteInt(Modifier.JAR_OFFSET,
+							ep, this.__classMethodCodeAddress(im.handle.
+								outerClass(), im.handle.name(),
+								im.handle.descriptor()));
 					}
 					break;
 					
