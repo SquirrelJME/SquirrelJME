@@ -1,0 +1,6 @@
+# 2019/04/29
+
+## 12:23
+
+The wrong characters are drawn because SQFs are ISO-8859-15 which does not map
+exactly the lowest Unicode table.
