@@ -81,11 +81,13 @@ public final class Initializer
 	 */
 	public final void memWriteByte(Modifier __m, int __addr, int __v)
 	{
-		// Default modifier
-		if (__m == null)
-			__m = Modifier.NONE;
+		// Record action?
+		if (__m != null && __m != Modifier.NONE)
+			throw new todo.TODO();
 		
-		throw new todo.TODO();
+		// Write data
+		byte[] bytes = this._bytes;
+		bytes[__addr] = (byte)__v;
 	}
 	
 	/**
@@ -110,11 +112,16 @@ public final class Initializer
 	 */
 	public final void memWriteInt(Modifier __m, int __addr, int __v)
 	{
-		// Default modifier
-		if (__m == null)
-			__m = Modifier.NONE;
+		// Record action?
+		if (__m != null && __m != Modifier.NONE)
+			throw new todo.TODO();
 		
-		throw new todo.TODO();
+		// Write data
+		byte[] bytes = this._bytes;
+		bytes[__addr++] = (byte)(__v >>> 24);
+		bytes[__addr++] = (byte)(__v >>> 16);
+		bytes[__addr++] = (byte)(__v >>> 8);
+		bytes[__addr++] = (byte)(__v);
 	}
 	
 	/**
@@ -139,11 +146,14 @@ public final class Initializer
 	 */
 	public final void memWriteShort(Modifier __m, int __addr, int __v)
 	{
-		// Default modifier
-		if (__m == null)
-			__m = Modifier.NONE;
+		// Record action?
+		if (__m != null && __m != Modifier.NONE)
+			throw new todo.TODO();
 		
-		throw new todo.TODO();
+		// Write data
+		byte[] bytes = this._bytes;
+		bytes[__addr++] = (byte)(__v >>> 8);
+		bytes[__addr++] = (byte)(__v);
 	}
 	
 	/**
@@ -155,26 +165,6 @@ public final class Initializer
 	public final byte[] toByteArray()
 	{
 		throw new todo.TODO();
-	}
-	
-	/**
-	 * Represents the action modifier that is available.
-	 *
-	 * @since 2019/04/30
-	 */
-	public static enum Modifier
-	{
-		/** No modification to be done. */
-		NONE,
-		
-		/** Offset by RAM address. */
-		RAM_OFFSET,
-		
-		/** Offset by JAR address. */
-		JAR_OFFSET,
-		
-		/** End. */
-		;
 	}
 }
 
