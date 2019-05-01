@@ -60,6 +60,16 @@ public interface VinylRecord
 		throws IndexOutOfBoundsException, NullPointerException;
 	
 	/**
+	 * Returns the size of the given page.
+	 *
+	 * @param __vid The volume ID.
+	 * @param __pid The page ID.
+	 * @return The size of the page or an error otherwise.
+	 * @since 2019/05/01
+	 */
+	public abstract int pageSize(int __vid, int __pid);
+	
+	/**
 	 * Creates a new record.
 	 *
 	 * @param __sid The suite identifier.

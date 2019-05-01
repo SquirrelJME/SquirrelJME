@@ -171,16 +171,9 @@ public class RecordStore
 			// Check open
 			this.__checkOpen();
 			
-			// {@squirreljme.error DC06 Could not add the record, there might
-			// not be enough free space available.}
+			// Add the page
 			rv = vinyl.pageAdd(this._vid, __b, __o, __l, __tag);
-			if (rv == VinylRecord.ERROR_NO_MEMORY)
-				throw new RecordStoreFullException("DC06");
-			
-			// {@squirreljme.error DC07 Could not add the record due to an
-			// error. (The error)}
-			else if (rv < 0)
-				throw new RecordStoreException("DC07 " + rv);
+			RecordStore.__checkError(rv);
 		}
 		
 		// Report to the listeners
@@ -433,11 +426,24 @@ public class RecordStore
 		// Check open
 		this.__checkOpen();
 		
+		// This volume
+		int vid = this._vid;
+		
 		// Lock
 		VinylRecord vinyl = _VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
-			throw new todo.TODO();
+			// Need to know the size of the record
+			int size = vinyl.pageSize(vid, __id);
+			RecordStore.__checkError(size);
+			
+			// Allocate data to read from it
+			byte[] rv = new byte[size];
+			
+			if (true)
+				throw new todo.TODO();
+			
+			return rv;
 		}
 	}
 	
@@ -942,6 +948,37 @@ public class RecordStore
 			SecurityException
 	{
 		return RecordStore.openRecordStore(__n, __vend, __suite, "");
+	}
+	
+	/**
+	 * Checks for an error and throws an exception potentially.
+	 *
+	 * @param __id The ID to check, negative indicates error.
+	 * @throws RecordStoreException If there is an error.
+	 * @since 2019/05/01
+	 */
+	private static final void __checkError(int __id)
+		throws RecordStoreException
+	{
+		// Error was detected
+		if (__id < 0)
+		{
+			// {@squirreljme.error DC06 Could not add the record, there might
+			// not be enough free space available.}
+			if (__id == VinylRecord.ERROR_NO_MEMORY)
+				throw new RecordStoreFullException("DC06");
+			
+			// {@squirreljme.error DC07 No such record store exists.}
+			if (__id == VinylRecord.ERROR_NO_VOLUME)
+				throw new RecordStoreNotFoundException("DC07");
+			
+			// {@squirreljme.error DC08 No such record exists.}
+			if (__id == VinylRecord.ERROR_NO_PAGE)
+				throw new InvalidRecordIDException("DC08");
+			
+			// {@squirreljme.error DC09 Unknown record store error. (Error)}
+			throw new RecordStoreException("DC09 " + __id);
+		}
 	}
 	
 	/**
