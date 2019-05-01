@@ -17,7 +17,7 @@ package dev.shadowtail.classfile.nncc;
 public final class UsedString
 {
 	/** The used string. */
-	protected final String string;
+	public final String string;
 	
 	/**
 	 * Initializes the used string.
