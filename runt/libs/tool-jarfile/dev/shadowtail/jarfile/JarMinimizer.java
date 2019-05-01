@@ -553,7 +553,8 @@ public final class JarMinimizer
 					// A string that is actually used
 				case USED_STRING:
 					__init.memWriteInt(Modifier.RAM_OFFSET,
-						ep, this.__initString(((UsedString)pv).string));
+						ep, this.__initString(__init,
+							((UsedString)pv).string));
 					break;
 				
 				default:
@@ -568,25 +569,33 @@ public final class JarMinimizer
 	/**
 	 * Initializes a string in memory and returns it.
 	 *
-	 * @param __s The string.
+	 * @param __init The initialized string.
+	 * @param __s The string to map.
 	 * @return The pointer to the string.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/30
 	 */
-	private final int __initString(String __s)
+	private final int __initString(Initializer __init, String __s)
 		throws NullPointerException
 	{
-		if (__s == null)
+		if (__init == null || __s == null)
 			throw new NullPointerException("NARG");
+			
+		Map<ClassName, __BootInfo__> boots = this._boots;
 		
-		// If a string was already initialized then use it
-		Map<String, Integer> strings = this._strings;
-		Integer irv = strings.get(__s);
-		if (irv != null)
-			return irv;
+		// Use in-memory UTF string
+		ClassName utfn = new ClassName(
+			"cc/squirreljme/runtime/cldc/string/MemoryUTFSequence");
+		__BootInfo__ utfbi = boots.get(utfn);
+		MinimizedClassFile utfcl = utfbi._class;
 		
-		// Init UTF string
-		// cc.squirreljme.runtime.cldc.string.MemoryUTFString
+		// Allocate string object
+		int utfobj = __init.allocate(this.__classInstanceSize(utfn));
+		
+		// Store class Id
+		__init.memWriteInt(utfobj + Kernel.OBJECT_CLASS_OFFSET,
+			this.__classId(utfn));
+		
 		throw new todo.TODO();
 	}
 	
