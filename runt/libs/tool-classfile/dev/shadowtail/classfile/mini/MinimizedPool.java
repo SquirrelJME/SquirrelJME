@@ -39,6 +39,9 @@ import net.multiphasicapps.classfile.MethodName;
  */
 public final class MinimizedPool
 {
+	/** Pool value offsets. */
+	private final int[] _offsets;
+	
 	/** Entry types. */
 	private final byte[] _types;
 	
@@ -51,6 +54,7 @@ public final class MinimizedPool
 	/**
 	 * Initializes the minimized pool.
 	 *
+	 * @param __os Offsets to the individual pool entries.
 	 * @param __ts Types.
 	 * @param __ps Parts.
 	 * @param __vs Values.
@@ -58,19 +62,20 @@ public final class MinimizedPool
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/17
 	 */
-	public MinimizedPool(byte[] __ts, int[][] __ps, Object[] __vs)
+	public MinimizedPool(int[] __os, byte[] __ts, int[][] __ps, Object[] __vs)
 		throws IllegalArgumentException, NullPointerException
 	{
-		if (__ts == null || __ps == null || __vs == null)
+		if (__os == null || __ts == null || __ps == null || __vs == null)
 			throw new NullPointerException("NARG");
 		
 		// {@squirreljme.error JC3y  Input arrays are of a different length.
 		// (The expected length)}
 		int n = __ts.length;
-		if (__ps.length != n || __vs.length != n)
+		if (__os.length != n || __ps.length != n || __vs.length != n)
 			throw new IllegalArgumentException("JC3y " + n);
 		
 		// Defensive copy each
+		__os = __os.clone();
 		__ts = __ts.clone();
 		__ps = __ps.clone();
 		__vs = __vs.clone();
@@ -92,6 +97,7 @@ public final class MinimizedPool
 				throw new NullPointerException("NARG");
 		
 		// Set
+		this._offsets = __os;
 		this._types = __ts;
 		this._parts = __ps;
 		this._values = __vs;
@@ -126,6 +132,18 @@ public final class MinimizedPool
 			throw new NullPointerException("NARG");
 		
 		return __cl.cast(this._values[__i]);
+	}
+	
+	/**
+	 * Returns the offset to the value of the entry within the pool.
+	 *
+	 * @param __i The index.
+	 * @return The offset.
+	 * @since 2019/05/01
+	 */
+	public final int offset(int __i)
+	{
+		return this._offsets[__i];
 	}
 	
 	/**
@@ -471,7 +489,7 @@ public final class MinimizedPool
 		}
 		
 		// Build
-		return new MinimizedPool(types, parts, values);
+		return new MinimizedPool(offsets, types, parts, values);
 	}
 }
 

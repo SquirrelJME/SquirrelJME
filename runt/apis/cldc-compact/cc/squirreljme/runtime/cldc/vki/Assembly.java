@@ -433,6 +433,14 @@ public final class Assembly
 	public static native int specialGetExceptionRegister();
 	
 	/**
+	 * Returns the value of the current pool register.
+	 *
+	 * @return The value of the pool register.
+	 * @since 2019/05/01
+	 */
+	public static native int specialGetPoolRegister();
+	
+	/**
 	 * Returns the value of the return register, for long return values this
 	 * is the first high register.
 	 *
@@ -488,6 +496,14 @@ public final class Assembly
 	 * @since 2019/04/28
 	 */
 	public static native void specialSetExceptionRegister(int __v);
+	
+	/**
+	 * Sets the value of the constant pool register.
+	 *
+	 * @param __v The new value of the constant pool register.
+	 * @since 2019/05/01
+	 */
+	public static native void specialSetPoolRegister(int __v);
 	
 	/**
 	 * Sets the value of the static field register.

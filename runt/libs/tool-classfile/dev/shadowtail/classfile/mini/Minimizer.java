@@ -11,6 +11,7 @@
 package dev.shadowtail.classfile.mini;
 
 import dev.shadowtail.classfile.nncc.ArgumentFormat;
+import dev.shadowtail.classfile.nncc.ClassPool;
 import dev.shadowtail.classfile.nncc.NativeCode;
 import dev.shadowtail.classfile.nncc.NativeInstruction;
 import dev.shadowtail.classfile.nncc.NativeInstructionType;
@@ -93,6 +94,27 @@ public final class Minimizer
 	{
 		if (__dos == null)
 			throw new NullPointerException("NARG");
+			
+		ClassFile input = this.input;
+		
+		// {@squirreljme.error JC4b Class name string was not the first entry
+		// in the pool.}
+		int pidx;
+		MinimizedPoolBuilder pool = this.pool;
+		if (1 != (pidx = pool.add(input.thisName().toString())))
+			throw new IllegalArgumentException("JC4b " + pidx);
+		
+		// {@squirreljme.error JC4c Class name as class was not the second
+		// entry in the pool.}
+		if (2 != (pidx = pool.add(input.thisName())))
+			throw new IllegalArgumentException("JC4c " + pidx);
+		
+		// For the first entry in the pool, always have it be a reference to
+		// the current class pool
+		// {@squirreljme.error JC4d Reference to the current class pool was
+		// not the third entry of the pool.}
+		if (3 != (pidx = pool.add(new ClassPool(input.thisName()))))
+			throw new IllegalArgumentException("JC4d " + pidx);
 		
 		// Write magic number to specify this format
 		__dos.writeInt(MinimizedClassHeader.MAGIC_NUMBER);
@@ -119,9 +141,6 @@ public final class Minimizer
 		// Data type of the class
 		__dos.writeByte(DataType.of(input.thisName().field()).ordinal());
 		
-		// The pool
-		MinimizedPoolBuilder pool = this.pool;
-		
 		// This may be null for Object
 		ClassName supernamecn = input.superName();
 		
@@ -139,7 +158,6 @@ public final class Minimizer
 		
 		// Store class information, such as the flags, name, superclass,
 		// interfaces, class type, and version
-		ClassFile input = this.input;
 		__dos.writeInt(input.flags().toJavaBits());
 		__dos.writeShort(Minimizer.__checkUShort(thisname));
 		__dos.writeShort(Minimizer.__checkUShort(supername));

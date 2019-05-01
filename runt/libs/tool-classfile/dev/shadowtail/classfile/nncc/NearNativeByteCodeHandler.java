@@ -668,6 +668,12 @@ public final class NearNativeByteCodeHandler
 						__out.register);
 					break;
 					
+					// Gets the pool register
+				case "specialGetPoolRegister":
+					codebuilder.addCopy(NativeCode.POOL_REGISTER,
+						__out.register);
+					break;
+					
 					// Read return register
 				case "specialGetReturnRegister":
 				case "specialGetReturnHighRegister":
@@ -703,6 +709,12 @@ public final class NearNativeByteCodeHandler
 				case "specialSetExceptionRegister":
 					codebuilder.addCopy(__in[0].register,
 						NativeCode.EXCEPTION_REGISTER);
+					break;
+					
+					// Set pool register
+				case "specialSetPoolRegister":
+					codebuilder.addCopy(__in[0].register,
+						NativeCode.POOL_REGISTER);
 					break;
 					
 					// Set static field register
