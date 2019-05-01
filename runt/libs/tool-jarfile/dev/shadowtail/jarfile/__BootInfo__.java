@@ -27,11 +27,20 @@ final class __BootInfo__
 	/** The offset to the constant pool allocation. */
 	int _pooloffset;
 	
+	/** The base of the class. */
+	int _ibase;
+	
 	/** The instance size of the class. */
 	int _isize;
 	
 	/** The ID of this class. */
 	int _id;
+	
+	/** The base of the vtable. */
+	int _mbase;
+	
+	/** The size of the vtable. */
+	int _msize;
 	
 	/**
 	 * Initializes the boot info.

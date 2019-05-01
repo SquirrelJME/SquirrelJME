@@ -13,11 +13,15 @@ import cc.squirreljme.runtime.cldc.vki.FixedClassIDs;
 import cc.squirreljme.runtime.cldc.vki.Kernel;
 import cc.squirreljme.vm.VMClassLibrary;
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
+import dev.shadowtail.classfile.mini.MinimizedField;
+import dev.shadowtail.classfile.mini.MinimizedMethod;
 import dev.shadowtail.classfile.mini.MinimizedPool;
 import dev.shadowtail.classfile.mini.MinimizedPoolEntryType;
 import dev.shadowtail.classfile.mini.Minimizer;
+import dev.shadowtail.classfile.nncc.AccessedField;
 import dev.shadowtail.classfile.nncc.ClassPool;
 import dev.shadowtail.classfile.nncc.InvokedMethod;
+import dev.shadowtail.classfile.nncc.MethodIndex;
 import dev.shadowtail.classfile.nncc.WhereIsThis;
 import dev.shadowtail.classfile.xlate.InvokeType;
 import java.io.ByteArrayOutputStream;
@@ -29,6 +33,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import net.multiphasicapps.classfile.FieldDescriptor;
+import net.multiphasicapps.classfile.FieldName;
 import net.multiphasicapps.classfile.ClassFile;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.ClassNames;
@@ -92,6 +98,32 @@ public final class JarMinimizer
 			throw new NullPointerException("NARG");
 		
 		return this._boots.get(new ClassName(__cl))._classoffset;
+	}
+	
+	/**
+	 * Returns the offset of the field.
+	 *
+	 * @param __is This a static field?
+	 * @param __cl The class name.
+	 * @param __fn The field name.
+	 * @param __ft The field type.
+	 * @return The offset of the field.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/30
+	 */
+	private final int __classFieldOffset(boolean __is, ClassName __cl,
+		FieldName __fn, FieldDescriptor __ft)
+		throws NullPointerException
+	{
+		if (__cl == null || __fn == null || __ft == null)
+			throw new NullPointerException("NARG");
+		
+		// Get class the field might be in
+		__BootInfo__ bi = this._boots.get(__cl);
+		
+		// Lookup field and calculate offset
+		return (__is ? 0 : bi._ibase) + bi._class.
+			field(__is, __fn, __ft).offset;
 	}
 	
 	/**
@@ -166,11 +198,43 @@ public final class JarMinimizer
 		
 		// Object is always 12 bytes, otherwise it is just more bytes from
 		// the base object size
-		rv = (supername == null ? 12 :
-			this.__classInstanceSize(supername) + mcf.header.ifbytes);
-		bi._isize = rv;
+		bi._ibase = (rv = (supername == null ? 12 :
+			this.__classInstanceSize(supername)));
+		bi._isize = (rv += mcf.header.ifbytes);
 		
 		// Return this object size
+		return rv;
+	}
+	
+	/**
+	 * Returns the method base of the class (VTable).
+	 *
+	 * @param __cl The class to look in.
+	 * @return The method base.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/30
+	 */
+	private final int __classMethodBase(ClassName __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// Was already pre-calculated?
+		__BootInfo__ bi = this._boots.get(__cl);
+		int rv = bi._mbase;
+		if (rv != 0)
+			return rv;
+		
+		// Need to know the super class
+		MinimizedClassFile mcf = bi._class;
+		ClassName supername = mcf.superName();
+		
+		// Depends on the size of the super class vtable
+		bi._mbase = (rv = (supername == null ? 0 :
+			this.__classMethodSize(supername)));
+		
+		// Return the base of the vtable
 		return rv;
 	}
 	
@@ -214,7 +278,82 @@ public final class JarMinimizer
 		if (__cl == null || __mn == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Get class method might be in
+		__BootInfo__ bi = this._boots.get(__cl);
+		MinimizedClassFile mcf = bi._class;
+		
+		// Lookup static first
+		MinimizedMethod mm = mcf.method(true, __mn, __mt);
+		if (mm != null)
+			return bi._classoffset + mcf.header.smoff + mm.codeoffset;
+		
+		// Otherwise fallback to instance methods
+		return bi._classoffset + mcf.header.imoff +
+			mcf.method(false, __mn, __mt).codeoffset;
+	}
+	
+	/**
+	 * Returns the index of the method.
+	 *
+	 * @param __cl The class to look in.
+	 * @param __mn The method name.
+	 * @param __mt The method type.
+	 * @return The method index.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/30
+	 */
+	private final int __classMethodIndex(ClassName __cl, MethodName __mn,
+		MethodDescriptor __mt)
+		throws NullPointerException
+	{
+		if (__cl == null || __mn == null || __mt == null)
+			throw new NullPointerException("NARG");
+		
+		// Get class method might be in
+		__BootInfo__ bi = this._boots.get(__cl);
+		MinimizedClassFile mcf = bi._class;
+		
+		// Lookup static first
+		MinimizedMethod mm = mcf.method(true, __mn, __mt);
+		if (mm != null)
+			return bi._classoffset + mcf.header.smoff + mm.codeoffset;
+		
+		// Otherwise fallback to instance methods
+		return bi._classoffset + mcf.header.imoff +
+			mcf.method(false, __mn, __mt).codeoffset;
+	}
+	
+	/**
+	 * Returns the size of the method VTable.
+	 *
+	 * @param __cl The class to look in.
+	 * @return The method table size.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/30
+	 */
+	private final int __classMethodSize(ClassName __cl)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+		
+		// Was already pre-calculated?
+		__BootInfo__ bi = this._boots.get(__cl);
+		int rv = bi._msize;
+		if (rv != 0)
+			return rv;
+		
+		// Need to know the super class
+		MinimizedClassFile mcf = bi._class;
+		ClassName supername = mcf.superName();
+		
+		// Depends on the size of the super method and our instance method
+		// count
+		bi._msize = (rv = ((supername == null ? 0 :
+			this.__classInstanceSize(supername)) + mcf.header.imcount));
+		
+		// Return this object size
+		return rv;
 	}
 	
 	/**
@@ -347,6 +486,18 @@ public final class JarMinimizer
 				case LONG:
 				case DOUBLE:
 					break;
+					
+					// Field being accessed
+				case ACCESSED_FIELD:
+					{
+						AccessedField af = (AccessedField)pv;
+						__init.memWriteInt(ep, this.__classFieldOffset(
+							af.type.isStatic(),
+							af.field.className(),
+							af.field.memberName(),
+							af.field.memberType()));
+					}
+					break;
 				
 					// Class ID
 				case CLASS_NAME:
@@ -373,7 +524,12 @@ public final class JarMinimizer
 					
 					// The index to an instance method
 				case METHOD_INDEX:
-					throw new todo.TODO();
+					{
+						MethodIndex mi = (MethodIndex)pv;
+						__init.memWriteInt(ep, this.__classMethodIndex(
+							mi.inclass, mi.name, mi.type));
+					}
+					break;
 					
 					// Where is this class? Used for tracing
 				case WHERE_IS_THIS:

@@ -22,13 +22,13 @@ import net.multiphasicapps.classfile.FieldReference;
 public final class AccessedField
 {
 	/** The field reference. */
-	protected final FieldReference field;
+	public final FieldReference field;
 	
 	/** The access time. */
-	protected final FieldAccessTime time;
+	public final FieldAccessTime time;
 	
 	/** The access type. */
-	protected final FieldAccessType type;
+	public final FieldAccessType type;
 	
 	/** String representation. */
 	private Reference<String> _string;
