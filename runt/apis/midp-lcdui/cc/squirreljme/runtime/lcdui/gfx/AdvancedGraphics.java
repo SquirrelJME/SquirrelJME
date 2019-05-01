@@ -1323,19 +1323,19 @@ public class AdvancedGraphics
 		
 		// Anchor horizontally?
 		if ((__anch & HCENTER) == HCENTER)
-			__xdest -= __wsrc >>> 1;
+			__xdest -= __wdest >>> 1;
 		
 		// Anchor right?
 		else if ((__anch & RIGHT) == RIGHT)
-			__xdest -= __wsrc;
+			__xdest -= __wdest;
 		
 		// Anchor middle?
 		if ((__anch & VCENTER) == VCENTER)
-			__ydest -= __hsrc >>> 1;
+			__ydest -= __hdest >>> 1;
 		
 		// Anchor bottom?
 		else if ((__anch & BOTTOM) == BOTTOM)
-			__ydest -= __hsrc;
+			__ydest -= __hdest;
 		
 		// If this is non-stretched we can just use the standard RGB
 		// drawing function!
