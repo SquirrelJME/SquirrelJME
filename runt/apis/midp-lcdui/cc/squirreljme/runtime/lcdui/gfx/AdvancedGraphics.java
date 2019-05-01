@@ -1308,7 +1308,7 @@ public class AdvancedGraphics
 		// Extract image pixel data
 		int numpixels = __wsrc * __hsrc;
 		int[] data = new int[numpixels];
-		__src.getRGB(data, 0, __wsrc, __xsrc, __ysrc, __wdest, __hdest);
+		__src.getRGB(data, 0, __wsrc, __xsrc, __ysrc, __wsrc, __hsrc);
 		
 		// Perform the transformation, possibly returning a new data buffer
 		int[] transdim = new int[]{__wsrc, __hsrc, __wdest, __hdest};
