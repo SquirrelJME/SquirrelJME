@@ -1,0 +1,33 @@
+# 2019/04/30
+
+## 10:26
+
+Okay so I am going to do idea simplification and combination. My idea now
+consists of doing the simple pool-only with statics references for the
+bootstrap pool initialization the same as it is done in SummerCoat's
+initialization sequence. But it will have it be stored in the ROM instead
+as an initial memory boot sequence. It will effectively be both but it
+will instead just involve static memory and a sequence of instructions
+used to initialize it, either based off the RAM offset or JAR offset. So it
+will end up being much simpler but a combination of the two. There is no
+need to have an insanely complex boot initialization process when I have
+proven that just the constant pool being initialized with pointers is
+enough. This initialization could be done by the bootstrap as well.
+
+## 16:54
+
+It is too complex to have to multiply by 4 to get the class pointer.
+
+## 17:23
+
+So I simplified VTables for special and instance invokes. The only thing for
+me to do are interface invocations. These are a bit complex because I will
+have to do some lookup to figure out what is what. So the lookup will be
+done much and very often, so how is it made fast and rather constant? How
+about if there were a known interface index. Basically what would happen is
+that... well it might not work because the object might not be known at
+compile time and it would be complicated otherwise. I think it would be best
+to have a helper method instead of having this sit in the code compiler
+somewhere. But it should have three arguments: the class of the object
+being invoked, the interface to be invoked, and the method index of the
+interface method being invoked. I think that is the simplest way.
