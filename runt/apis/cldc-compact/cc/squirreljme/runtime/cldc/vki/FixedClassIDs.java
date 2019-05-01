@@ -161,6 +161,10 @@ public final class FixedClassIDs
 	public static final int BOXED_DOUBLE =
 		35;
 	
+	/** Memory UTF Sequence. */
+	public static final int MEMORY_UTF_SEQUENCE =
+		36;
+	
 	/** Number of fixed IDs. */
 	public static final int MAX_FIXED =
 		48;
@@ -257,6 +261,9 @@ public final class FixedClassIDs
 				return CLASSDATA;
 			case "cc/squirreljme/runtime/cldc/lang/ClassDataV2":
 				return CLASSDATAV2;
+			
+			case "cc/squirreljme/runtime/cldc/string/MemoryUTFSequence":
+				return MEMORY_UTF_SEQUENCE;
 		}
 		
 		// Not a fixed type
