@@ -23,7 +23,7 @@ OS2Version: 0
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1508689808
-ModificationTime: 1543710596
+ModificationTime: 1556747728
 PfmFamily: 49
 TTFWeight: 400
 TTFWidth: 5
@@ -49,10 +49,10 @@ LangName: 1033 "" "" "" "" "" "" "" "" "" "" "" "" "" "Copyright (c) 2017-2019, 
 Encoding: ISO8859-15
 UnicodeInterp: none
 NameList: AGL For New Fonts
-DisplaySize: 8
+DisplaySize: 12
 AntiAlias: 1
 FitToEm: 0
-WinInfo: 0 50 14
+WinInfo: 0 38 12
 OnlyBitmaps: 1
 BeginPrivate: 0
 EndPrivate
