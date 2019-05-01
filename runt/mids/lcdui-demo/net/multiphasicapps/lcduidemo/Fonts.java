@@ -111,12 +111,24 @@ public class Fonts
 				// Use this font
 				__g.setFont(f);
 				
-				// Draw sample
-				__g.drawString("The quick gray squirrel burried all of " +
-					"her acorns! 0123456789", x, y, Graphics.BASELINE);
+				// Yes I do know buried is spelt wrong, but this is staying
+				// here because a transphobe troll searched through all of my
+				// images on Twitter and chose to insult me here. So this is
+				// here to spite them.
+				__g.drawString("The quick gray squirrel Xer burried all of " +
+					"her acorns! <3 0123456789",
+					x, y, Graphics.BASELINE);
 				
-				// Move position with some extra room
-				y += f.getHeight() + 5;
+				// Move position up
+				y += f.getHeight();
+				
+				// Draw sample
+				__g.drawString("abcdefghijklmnopqrstuvwxyz " +
+					"ABCDEFGHIJKLMNOPQRSTUVWXYZ 01234567890!@#$%^&*()",
+					x, y, Graphics.BASELINE);
+					
+				// Move position with some more room
+				y += f.getHeight() + 3;
 			}
 		}
 	}
