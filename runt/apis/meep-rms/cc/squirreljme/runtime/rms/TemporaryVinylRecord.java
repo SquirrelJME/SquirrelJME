@@ -75,6 +75,27 @@ public final class TemporaryVinylRecord
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2019/05/01
+	 */
+	@Override
+	public final int pageSize(int __vid, int __pid)
+	{
+		// Locate the volume
+		Volume vol = this._volumes.get(__vid);
+		if (vol == null)
+			return ERROR_NO_VOLUME;
+		
+		// Locate the page
+		Page page = vol._pages.get(__pid);
+		if (page == null)
+			return ERROR_NO_PAGE;
+		
+		// Return data length
+		return page._data.length;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2019/04/14
 	 */
 	@Override
