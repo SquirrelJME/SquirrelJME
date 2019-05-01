@@ -23,6 +23,7 @@ import dev.shadowtail.classfile.nncc.ClassPool;
 import dev.shadowtail.classfile.nncc.InvokedMethod;
 import dev.shadowtail.classfile.nncc.MethodIndex;
 import dev.shadowtail.classfile.nncc.WhereIsThis;
+import dev.shadowtail.classfile.nncc.UsedString;
 import dev.shadowtail.classfile.xlate.InvokeType;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -58,6 +59,9 @@ public final class JarMinimizer
 	/** Boot information for classes. */
 	private final Map<ClassName, __BootInfo__> _boots;
 	
+	/** String table. */
+	private final Map<String, Integer> _strings;
+	
 	/** Next ID to give. */
 	private int _nextid =
 		FixedClassIDs.MAX_FIXED;
@@ -80,7 +84,16 @@ public final class JarMinimizer
 		this.input = __in;
 		
 		// Only used if this is a boot JAR
-		this._boots = (__boot ? new HashMap<ClassName, __BootInfo__>() : null);
+		if (__boot)
+		{
+			this._boots = new HashMap<>();
+			this._strings = new HashMap<>();
+		}
+		else
+		{
+			this._boots = null;
+			this._strings = null;
+		}
 	}
 	
 	/**
@@ -539,7 +552,9 @@ public final class JarMinimizer
 				
 					// A string that is actually used
 				case USED_STRING:
-					throw new todo.TODO();
+					__init.memWriteInt(Modifier.RAM_OFFSET,
+						ep, this.__initString(((UsedString)pv).string));
+					break;
 				
 				default:
 					throw new todo.OOPS(pt.name());
@@ -548,6 +563,31 @@ public final class JarMinimizer
 		
 		// Return the pointer where the pool was allocated
 		return rv;
+	}
+	
+	/**
+	 * Initializes a string in memory and returns it.
+	 *
+	 * @param __s The string.
+	 * @return The pointer to the string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/04/30
+	 */
+	private final int __initString(String __s)
+		throws NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// If a string was already initialized then use it
+		Map<String, Integer> strings = this._strings;
+		Integer irv = strings.get(__s);
+		if (irv != null)
+			return irv;
+		
+		// Init UTF string
+		// cc.squirreljme.runtime.cldc.string.MemoryUTFString
+		throw new todo.TODO();
 	}
 	
 	/**
