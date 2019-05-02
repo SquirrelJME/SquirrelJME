@@ -12,6 +12,7 @@ package cc.squirreljme.builder.support.vmshader;
 
 import cc.squirreljme.builder.support.Binary;
 import cc.squirreljme.builder.support.BinaryManager;
+import cc.squirreljme.builder.support.NoSourceAvailableException;
 import cc.squirreljme.builder.support.ProjectManager;
 import cc.squirreljme.builder.support.TimeSpaceType;
 import cc.squirreljme.runtime.cldc.asm.SystemProperties;
@@ -360,7 +361,16 @@ public class Shader
 		for (Binary bin : __bm)
 		{
 			// Compile the binary
-			__bm.compile(bin);
+			try
+			{
+				__bm.compile(bin);
+			}
+			
+			// If no source code available, just ignore because it would
+			// already be in binary form
+			catch (NoSourceAvailableException e)
+			{
+			}
 			
 			// Use the name for this JAR
 			String name = bin.name().toString();
@@ -376,6 +386,12 @@ public class Shader
 			{
 				// Copy every single entry to the output
 				for (ZipBlockEntry e : zbr)
+				{
+					// Ignore directories
+					if (e.isDirectory())
+						continue;
+					
+					// Copy the data
 					try (InputStream is = e.open();
 						OutputStream os = __zsw.nextEntry(base + e.name()))
 					{
@@ -389,6 +405,7 @@ public class Shader
 							os.write(buf, 0, rc);
 						}
 					}
+				}
 			}
 		}
 		

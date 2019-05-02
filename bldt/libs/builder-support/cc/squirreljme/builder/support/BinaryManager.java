@@ -197,8 +197,17 @@ public final class BinaryManager
 		// entire class path being determined aslso for compilation
 		for (Binary dep : this.matchDependencies(
 			__b.suiteInfo().dependencies(), false))
-			for (Binary c : this.compile(dep))
-				rv.add(c);
+			try
+			{
+				for (Binary c : this.compile(dep))
+					rv.add(c);
+			}
+			catch (NoSourceAvailableException e)
+			{
+				// For no source, just add the class path for the binary
+				for (Binary c : this.classPath(dep))
+					rv.add(c);
+			}
 		
 		// Always recompile if the source is newer, but go through all
 		// dependencies and recompile if any dependency is newer than this
@@ -228,7 +237,7 @@ public final class BinaryManager
 			// because it has no source code. (The name of the project)}
 			Source src = __b.source();
 			if (src == null)
-				throw new InvalidBinaryException(
+				throw new NoSourceAvailableException(
 					String.format("AU06 %s", __b.name()));
 			
 			// Need to close everything that is opened
