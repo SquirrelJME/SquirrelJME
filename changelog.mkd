@@ -18,6 +18,14 @@ _SquirrelJME will always be an improvement over the older versions._
 More detailed changes:
 
  * Build system
+   * Builder
+     * Handle cases during compilation if a dependency has no source code.
+     * If an attempt is made to compile a binary with no source code, throw a
+       new exception type indicating this rather than the generic failure
+       exception because this case can be handled.
+     * When shading JARs for distribution, ignore entries in JARs which are
+       directories. Directories do not need to appear in the JAR, however they
+       may still be implicit within ZIPs.
    * Launching
      * An alternative VM may be specified.
      * The profiler snapshot can be written to a specific file.
