@@ -1,0 +1,94 @@
+# 2019/05/01
+
+## 09:14
+
+New month today!
+
+## 10:04
+
+Okay, so I keep getting stuck with the class initialization. It is very
+complex and the initialization work is just going to be duplicated twice
+in the kernel itself. I think what I need is a generic `ClassLoader` which
+can use any kind of interface to access stored JAR data or something in
+memory. I think this would be the best solution... have an interface for
+the `ClassLoader` which can read raw memory. Then it could be shared within
+the kernel itself for loading and a bootstrap.
+
+## 10:47
+
+I think what I need to do is actually take advantage of the Java compiler
+and such. I need to have annotations on code instructions.
+
+## 10:53
+
+Java 7 lacks annotations on type parameters though and it would violate the
+specification to have them, but there are other ways to do it.
+
+## 11:27
+
+I was walking and I was thinking. The main question I asked was:
+"How do you dynamically initialize the kernel and the run-time to be as
+simple as possible and not require heavy VM lifting on it?". So I just had
+this idea, I know my current work is trying to initialize a ROM that is
+built from single parts. It is looking rather complicated to initialize the
+class data, to initialize any strings, and to initialize the constant pools
+recursively for every possible class that might be used by the kernel's
+execution path. I do know that going through the constant pool and doing
+lookups is quite complicated. I need to initialize the VTables, the pools,
+and everything else about the class. I think it would be easiest to
+pre-initialize everything I absolutely know about a class within the JAR at
+its combination time. Due to how libraries and such work, this information
+cannot be included in every JAR. So this begs the question, how do I reduce
+the very big and complex potential duplication of everything. I got past the
+compiler and it works, but I am rather stuck with it and how it works. I would
+very very likely end up exactly where I am now with the same result. So how
+do I solve this problem? How do I get through this?
+
+## 11:44
+
+Okay I had an idea. What if I did staged dynamic linking. Basically like a
+rocket going off... The rocket cannot reach space on a single stage so it
+needs multiple stages in order to work. What if just in the boot ROM the only
+thing that was initialized was the constant pool of every class. If I know
+where something is statically method wise, like I know its position within
+the JAR file. But when it comes to fields and such, I do not exactly know
+where the offsets are. The main important thing that I know that must exist
+are the static methods. I think I might be able to get away with a sweeping
+initialization of sorts for the constant pool. So this means that there must
+always be at the start of the constant pool, a reference to the pool pointer
+for the current class. Not sure how to integrate it since it is kind of an
+egde though but it is something popping into my head. But effectively once I
+know the positions of all the static methods. I can perform more
+initialization routines as needed.
+
+## 11:55
+
+So in the boot class, there must be initialized constant pools with all the
+various values and such. However instead of going crazy and initializing
+every possible thing about the constant pool at JAR link time, instead it will
+only handle `STRING` which will just be pointers in the ROM to the string data
+and not used strings (too complicated), then the other initialized thing will
+be class indexes, or like {@code -1} if they are not defined yet, and then
+finally any `InvokedMethod` will have a pointer to it as well. Of course all
+the pool entries need to be recursively initialized but I can use the same
+strategy I was thinking of for the super complex initialization with the
+memory values and what is written where. Of course, field accesses for statics
+is going to be very important because I will want to store variables somewhere
+and I do want that to exist for the bootstrap process. So this just makes these
+things:
+
+ * CLASS_NAME, the index of the class will be kept as -1 if unknown.
+ * CLASS_POOL, a pointer to the constant pool of whatever class (in bootRAM).
+ * STRING, just a raw pointer to the UTF string contents in memory somewhere.
+ * FIELD_OFFSET, static only, instances will be set to -1.
+ * INVOKED_METHOD, direct pointer reference to the code area.
+ * WHERE_IS_THIS, the where information will be pre-included to help debug the
+   sweeping linker initializer.
+
+Not going to initialize `INDEXED_METHOD` because I do not exactly know where
+it could end up even though it would be known statically. So this will keep
+everything at the limitation of statics only.
+
+## 18:55
+
+The fonts are complete after two years!
