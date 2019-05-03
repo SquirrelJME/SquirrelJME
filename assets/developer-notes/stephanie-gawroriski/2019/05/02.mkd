@@ -1,0 +1,6 @@
+# 2019/05/02
+
+## 08:56
+
+A binary snuck into the binaries used for distribution and it failed to build
+because there is no source code, fixed this so that will be nice.
