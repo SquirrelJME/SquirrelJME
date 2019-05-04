@@ -9,6 +9,7 @@
 
 package dev.shadowtail.jarfile;
 
+import cc.squirreljme.runtime.cldc.vki.DefaultConfiguration;
 import cc.squirreljme.runtime.cldc.vki.FixedClassIDs;
 import cc.squirreljme.runtime.cldc.vki.Kernel;
 import cc.squirreljme.vm.VMClassLibrary;
@@ -59,12 +60,11 @@ public final class JarMinimizer
 	/** Boot information for classes. */
 	private final Map<ClassName, __BootInfo__> _boots;
 	
-	/** String table. */
-	private final Map<String, Integer> _strings;
+	/** Static field pointer area. */
+	private int _sfieldarea;
 	
-	/** Next ID to give. */
-	private int _nextid =
-		FixedClassIDs.MAX_FIXED;
+	/** Static field area next pointer. */
+	private int _sfieldnext;
 	
 	/**
 	 * Initializes the minimizer worker.
@@ -85,15 +85,9 @@ public final class JarMinimizer
 		
 		// Only used if this is a boot JAR
 		if (__boot)
-		{
 			this._boots = new HashMap<>();
-			this._strings = new HashMap<>();
-		}
 		else
-		{
 			this._boots = null;
-			this._strings = null;
-		}
 	}
 	
 	/**
@@ -116,7 +110,7 @@ public final class JarMinimizer
 	/**
 	 * Returns the offset of the field.
 	 *
-	 * @param __is This a static field?
+	 * @param __init The initializer used.
 	 * @param __cl The class name.
 	 * @param __fn The field name.
 	 * @param __ft The field type.
@@ -124,19 +118,41 @@ public final class JarMinimizer
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/30
 	 */
-	private final int __classFieldOffset(boolean __is, ClassName __cl,
-		FieldName __fn, FieldDescriptor __ft)
+	private final int __classFieldStaticOffset(Initializer __init,
+		ClassName __cl, FieldName __fn, FieldDescriptor __ft)
 		throws NullPointerException
 	{
 		if (__cl == null || __fn == null || __ft == null)
 			throw new NullPointerException("NARG");
 		
-		// Get class the field might be in
+		// Allocate area for static fields
+		int sfieldarea = this._sfieldarea;
+		if (sfieldarea == 0)
+			this._sfieldarea = (sfieldarea = __init.allocate(
+				DefaultConfiguration.MINIMUM_STATIC_FIELD_SIZE));
+		
+		// Get the class for the field
 		__BootInfo__ bi = this._boots.get(__cl);
 		
-		// Lookup field and calculate offset
-		return (__is ? 0 : bi._ibase) + bi._class.
-			field(__is, __fn, __ft).offset;
+		// Need to allocate static field area?
+		int smemoff = bi._smemoff;
+		if (smemoff == 0)
+		{
+			// Use next pointer area
+			int sfieldnext = this._sfieldnext;
+			bi._smemoff = (smemoff = sfieldnext);
+			
+			// Set next pointer area
+			this._sfieldnext = sfieldnext + bi._class.header.sfsize;
+		}
+		
+		// Try to get static field
+		MinimizedField mf = bi._class.field(true, __fn, __ft);
+		if (mf == null)
+			return -1;
+		
+		// Return offset to it
+		return smemoff + mf.offset;
 	}
 	
 	/**
@@ -152,102 +168,12 @@ public final class JarMinimizer
 	{
 		if (__cl == null)
 			throw new NullPointerException("NARG");
-		
-		// Try to find the boot info
-		Map<ClassName, __BootInfo__> boots = this._boots;
-		__BootInfo__ bi = boots.get(__cl);
-		
-		// If there is no boot info this is probably a special class like
-		// a primitive type or array
-		if (bi == null)
-			boots.put(__cl, (bi = new __BootInfo__(
-				Minimizer.minimizeAndDecode(ClassFile.special(
-					__cl.field())), 0)));
-		
-		// Already gave an ID?
-		int rv = bi._id;
-		if (rv != 0)
-			return rv;
-		
-		// Use fixed ID if there is one, otherwise assign a new one
-		rv = FixedClassIDs.of(__cl.toString());
-		if (rv <= 0)
-		{
-			rv = this._nextid++;
 			
-			// Debug
-			todo.DEBUG.note("Class %s id=%d", __cl, rv);
-		}
-		
-		// Store for later
-		bi._id = rv;
-		
-		return rv;
-	}
-	
-	/**
-	 * Returns the instance size of the class.
-	 *
-	 * @param __cl The class to get the size of.
-	 * @return The instance size of the class.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/04/30
-	 */
-	private final int __classInstanceSize(ClassName __cl)
-		throws NullPointerException
-	{
-		if (__cl == null)
-			throw new NullPointerException("NARG");
-		
-		// Was already pre-calculated?
-		__BootInfo__ bi = this._boots.get(__cl);
-		int rv = bi._isize;
-		if (rv != 0)
-			return rv;
-		
-		// Need to know the super class
-		MinimizedClassFile mcf = bi._class;
-		ClassName supername = mcf.superName();
-		
-		// Object is always 12 bytes, otherwise it is just more bytes from
-		// the base object size
-		bi._ibase = (rv = (supername == null ? 12 :
-			this.__classInstanceSize(supername)));
-		bi._isize = (rv += mcf.header.ifbytes);
-		
-		// Return this object size
-		return rv;
-	}
-	
-	/**
-	 * Returns the method base of the class (VTable).
-	 *
-	 * @param __cl The class to look in.
-	 * @return The method base.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/04/30
-	 */
-	private final int __classMethodBase(ClassName __cl)
-		throws NullPointerException
-	{
-		if (__cl == null)
-			throw new NullPointerException("NARG");
-		
-		// Was already pre-calculated?
-		__BootInfo__ bi = this._boots.get(__cl);
-		int rv = bi._mbase;
-		if (rv != 0)
-			return rv;
-		
-		// Need to know the super class
-		MinimizedClassFile mcf = bi._class;
-		ClassName supername = mcf.superName();
-		
-		// Depends on the size of the super class vtable
-		bi._mbase = (rv = (supername == null ? 0 :
-			this.__classMethodSize(supername)));
-		
-		// Return the base of the vtable
+		// Use a fixed class ID, if there is none then this is normalized to
+		// -1 which means it must be handled later
+		int rv = FixedClassIDs.of(__cl.toString());
+		if (rv <= 0)
+			return -1;
 		return rv;
 	}
 	
@@ -306,70 +232,6 @@ public final class JarMinimizer
 	}
 	
 	/**
-	 * Returns the index of the method.
-	 *
-	 * @param __cl The class to look in.
-	 * @param __mn The method name.
-	 * @param __mt The method type.
-	 * @return The method index.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/04/30
-	 */
-	private final int __classMethodIndex(ClassName __cl, MethodName __mn,
-		MethodDescriptor __mt)
-		throws NullPointerException
-	{
-		if (__cl == null || __mn == null || __mt == null)
-			throw new NullPointerException("NARG");
-		
-		// Get class method might be in
-		__BootInfo__ bi = this._boots.get(__cl);
-		MinimizedClassFile mcf = bi._class;
-		
-		// Lookup static first
-		MinimizedMethod mm = mcf.method(true, __mn, __mt);
-		if (mm != null)
-			return bi._classoffset + mcf.header.smoff + mm.codeoffset;
-		
-		// Otherwise fallback to instance methods
-		return bi._classoffset + mcf.header.imoff +
-			mcf.method(false, __mn, __mt).codeoffset;
-	}
-	
-	/**
-	 * Returns the size of the method VTable.
-	 *
-	 * @param __cl The class to look in.
-	 * @return The method table size.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/04/30
-	 */
-	private final int __classMethodSize(ClassName __cl)
-		throws NullPointerException
-	{
-		if (__cl == null)
-			throw new NullPointerException("NARG");
-		
-		// Was already pre-calculated?
-		__BootInfo__ bi = this._boots.get(__cl);
-		int rv = bi._msize;
-		if (rv != 0)
-			return rv;
-		
-		// Need to know the super class
-		MinimizedClassFile mcf = bi._class;
-		ClassName supername = mcf.superName();
-		
-		// Depends on the size of the super method and our instance method
-		// count
-		bi._msize = (rv = ((supername == null ? 0 :
-			this.__classInstanceSize(supername)) + mcf.header.imcount));
-		
-		// Return this object size
-		return rv;
-	}
-	
-	/**
 	 * Returns the pointer where the class where information is stored.
 	 *
 	 * @param __wit Where is this?
@@ -381,28 +243,38 @@ public final class JarMinimizer
 	{
 		if (__wit == null)
 			throw new NullPointerException("NARG");
+			
+		// Get base class
+		__BootInfo__ bi = this._boots.get(__wit.inclass);
+		MinimizedClassFile mcf = bi._class;
+		
+		// Find method
+		MinimizedMethod mm = bi._class.method(__wit.name, __wit.type);
+		if (mm == null)
+			return 0;
 		
 		// Use the where of any found method
-		return this._boots.get(__wit.inclass)._class.
-			method(__wit.name, __wit.type).whereoffset;
+		return bi._classoffset + (mm.flags().isStatic() ? bi._class.header.
+			sfoff : bi._class.header.ifoff) + mm.whereoffset;
 	}
 	
 	/**
 	 * Returns the initialize sequence that is needed for execution.
 	 *
 	 * @param __poolp The output pointer of the initial constant pool.
-	 * @param __kobj The output pointer of the initial kernel object.
+	 * @param __ksfa Output static field area.
 	 * @return The initialization sequence needed to start the kernel properly.
 	 * @since 2019/04/30
 	 */
-	private final Initializer __init(int[] __poolp, int[] __kobj)
+	private final Initializer __init(int[] __poolp, int[] __ksfa)
 		throws NullPointerException
 	{
-		if (__poolp == null || __kobj == null)
+		if (__poolp == null || __ksfa == null)
 			throw new NullPointerException("NARG");
 		
 		Map<ClassName, __BootInfo__> boots = this._boots;
-		ClassName kn = new ClassName("cc/squirreljme/runtime/cldc/vki/Kernel");
+		ClassName kn = new ClassName(
+			"cc/squirreljme/runtime/cldc/vki/__Bootstrap__");
 		
 		// Initializer used for memory purposes
 		Initializer rv = new Initializer();
@@ -414,11 +286,7 @@ public final class JarMinimizer
 		__poolp[0] = poolptr;
 		
 		// Allocate and setup kernel object pointer
-		int kobjptr = rv.allocate(this.__classInstanceSize(kn));
-		__kobj[0] = kobjptr;
-		
-		// Write in class ID
-		rv.memWriteInt(kobjptr, FixedClassIDs.KERNEL);
+		__ksfa[0] = this._sfieldarea;
 		
 		// Done with initialization, the ROM writer will dump the data needed
 		// for the kernel to start properly
@@ -471,6 +339,9 @@ public final class JarMinimizer
 		MinimizedClassFile mcl = bi._class;
 		MinimizedPool pool = mcl.pool;
 		
+		// The JAR offset for the actual pool area
+		int jarpooloff = bi._classoffset + mcl.header.pooloff;
+		
 		// Allocate and store space needed for the active pool contents
 		int n = pool.size();
 		bi._pooloffset = (rv = __init.allocate(n * 4));
@@ -491,24 +362,44 @@ public final class JarMinimizer
 			{
 					// These have no effect on runtime
 				case NULL:
-				case CLASS_NAMES:
-				case STRING:
 				case METHOD_DESCRIPTOR:
+					break;
+					
+					// These are initialized at the second stage bootstrap
+				case CLASS_NAMES:
 				case INTEGER:
 				case FLOAT:
 				case LONG:
 				case DOUBLE:
+				case METHOD_INDEX:
+				case USED_STRING:
+					__init.memWriteInt(ep, -1);
+					break;
+					
+					// Write the pointer to the UTF data
+				case STRING:
+					{
+						__init.memWriteInt(Modifier.JAR_OFFSET,
+							ep, jarpooloff + pool.offset(i));
+					}
 					break;
 					
 					// Field being accessed
 				case ACCESSED_FIELD:
 					{
+						// Static field offsets are always known
 						AccessedField af = (AccessedField)pv;
-						__init.memWriteInt(ep, this.__classFieldOffset(
-							af.type.isStatic(),
-							af.field.className(),
-							af.field.memberName(),
-							af.field.memberType()));
+						if (af.type().isStatic())
+							__init.memWriteInt(ep,
+								this.__classFieldStaticOffset(
+									__init,
+									af.field.className(),
+									af.field.memberName(),
+									af.field.memberType()));
+						
+						// Instance fields are not yet known
+						else
+							__init.memWriteInt(ep, -1);
 					}
 					break;
 				
@@ -535,26 +426,10 @@ public final class JarMinimizer
 					}
 					break;
 					
-					// The index to an instance method
-				case METHOD_INDEX:
-					{
-						MethodIndex mi = (MethodIndex)pv;
-						__init.memWriteInt(ep, this.__classMethodIndex(
-							mi.inclass, mi.name, mi.type));
-					}
-					break;
-					
 					// Where is this class? Used for tracing
 				case WHERE_IS_THIS:
 					__init.memWriteInt(Modifier.JAR_OFFSET,
 						ep, this.__classWhere((WhereIsThis)pv));
-					break;
-				
-					// A string that is actually used
-				case USED_STRING:
-					__init.memWriteInt(Modifier.RAM_OFFSET,
-						ep, this.__initString(__init,
-							((UsedString)pv).string));
 					break;
 				
 				default:
@@ -564,39 +439,6 @@ public final class JarMinimizer
 		
 		// Return the pointer where the pool was allocated
 		return rv;
-	}
-	
-	/**
-	 * Initializes a string in memory and returns it.
-	 *
-	 * @param __init The initialized string.
-	 * @param __s The string to map.
-	 * @return The pointer to the string.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/04/30
-	 */
-	private final int __initString(Initializer __init, String __s)
-		throws NullPointerException
-	{
-		if (__init == null || __s == null)
-			throw new NullPointerException("NARG");
-			
-		Map<ClassName, __BootInfo__> boots = this._boots;
-		
-		// Use in-memory UTF string
-		ClassName utfn = new ClassName(
-			"cc/squirreljme/runtime/cldc/string/MemoryUTFSequence");
-		__BootInfo__ utfbi = boots.get(utfn);
-		MinimizedClassFile utfcl = utfbi._class;
-		
-		// Allocate string object
-		int utfobj = __init.allocate(this.__classInstanceSize(utfn));
-		
-		// Store class Id
-		__init.memWriteInt(utfobj + Kernel.OBJECT_CLASS_OFFSET,
-			this.__classId(utfn));
-		
-		throw new todo.TODO();
 	}
 	
 	/**
@@ -731,16 +573,17 @@ public final class JarMinimizer
 			
 			// Initialize and write startup memory
 			int[] poolptr = new int[1],
-				kernelobj = new int[1];
-			Initializer init = this.__init(poolptr, kernelobj);
+				ksfa = new int[1];
+			Initializer init = this.__init(poolptr, ksfa);
 			jdos.write(init.toByteArray());
 			
 			// Write length of the boot function table
 			__dos.writeInt(jdos.size() - baseaddr);
 			
-			// Pool pointer for bootstrap and the kernel entry point
+			// Bootstrap pool, static field pointer offset, and the offset
+			// to the bootstrap's code
 			__dos.writeInt(poolptr[0]);
-			__dos.writeInt(kernelobj[0]);
+			__dos.writeInt(ksfa[0]);
 			__dos.writeInt(this.__classMethodCodeAddress(
 				"cc/squirreljme/runtime/cldc/vki/__Bootstrap__",
 				"__start",
