@@ -1140,6 +1140,10 @@ public final class NearNativeByteCodeHandler
 	{
 		NativeCodeBuilder codebuilder = this.codebuilder;
 		
+		// Ignore thrown exceptions because field access is checked at link
+		// time
+		this._canexception = false;
+		
 		// Push references
 		this.__refPush();
 		
@@ -1171,6 +1175,10 @@ public final class NearNativeByteCodeHandler
 		JavaStackResult.Input __v)
 	{
 		NativeCodeBuilder codebuilder = this.codebuilder;
+		
+		// Ignore thrown exceptions because field access is checked at link
+		// time
+		this._canexception = false;
 		
 		// Push references
 		this.__refPush();
