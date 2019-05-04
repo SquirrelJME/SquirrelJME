@@ -767,6 +767,10 @@ public final class NearNativeByteCodeHandler
 					callargs.add(in.register + 1);
 			}
 			
+			// Load target pool entry
+			codebuilder.add(NativeInstructionType.LOAD_POOL,
+				__r.handle().outerClass(), NativeCode.NEXT_POOL_REGISTER);
+			
 			// Static invocations always have direct pointers
 			if (__t == InvokeType.STATIC)
 			{
@@ -980,6 +984,11 @@ public final class NearNativeByteCodeHandler
 		rl.add(0);
 		for (int i = 0; i < __numdims; i++)
 			rl.add(__dims[i].register);
+		
+		// Load target pool entry
+		codebuilder.add(NativeInstructionType.LOAD_POOL,
+			new ClassName("cc/squirreljme/runtime/cldc/lang/ArrayUtils"),
+			NativeCode.NEXT_POOL_REGISTER);
 		
 		// Perform the invoke
 		codebuilder.add(NativeInstructionType.INVOKE,
