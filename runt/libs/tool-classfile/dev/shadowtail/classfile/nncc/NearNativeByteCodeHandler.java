@@ -1142,7 +1142,7 @@ public final class NearNativeByteCodeHandler
 		
 		// Ignore thrown exceptions because field access is checked at link
 		// time
-		this._canexception = false;
+		state.canexception = false;
 		
 		// Push references
 		this.__refPush();
@@ -1178,8 +1178,8 @@ public final class NearNativeByteCodeHandler
 		
 		// Ignore thrown exceptions because field access is checked at link
 		// time
-		this._canexception = false;
-		
+		state.canexception = false;
+
 		// Push references
 		this.__refPush();
 		
