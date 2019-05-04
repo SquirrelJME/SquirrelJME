@@ -118,7 +118,7 @@ public class SummerCoatFactory
 			for (int i = 0; i < n; i++)
 			{
 				int key = dis.readUnsignedByte(),
-					addr = dis.readUnsignedShort() + ramstart,
+					addr = dis.readInt() + ramstart,
 					mod = (key & 0x0F),
 					siz = ((key & 0xF0) >>> 4);
 				

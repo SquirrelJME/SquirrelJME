@@ -327,6 +327,10 @@ public final class JarMinimizer
 		if (__init == null || __cl == null)
 			throw new NullPointerException("NARG");
 		
+		// Treat as invalid for these
+		if (__cl.isPrimitive() || __cl.isArray())
+			return -1;
+		
 		// Only calculate it once
 		__BootInfo__ bi = this._boots.get(__cl);
 		int rv = bi._pooloffset;
