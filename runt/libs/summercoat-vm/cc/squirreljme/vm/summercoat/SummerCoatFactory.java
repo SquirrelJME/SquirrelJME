@@ -186,8 +186,8 @@ public class SummerCoatFactory
 		
 		// Setup virtual execution CPU
 		NativeCPU cpu = new NativeCPU(vmem);
-		NativeCPU.Frame iframe = cpu.enterFrame(
-			bjo + bjh.bootstart);
+		NativeCPU.Frame iframe = cpu.enterFrame(bjo + bjh.bootstart,
+			ramstart, ramsize, bjh.bootsize);
 		
 		// Seed initial frame registers
 		iframe._registers[NativeCode.POOL_REGISTER] =
