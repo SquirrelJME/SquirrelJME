@@ -113,8 +113,60 @@ public class SummerCoatFactory
 			// Write into memory
 			vmem.memWriteBytes(ramstart, bram, 0, lram);
 			
-			if (true)
-				throw new todo.TODO();
+			// Handle RAM initializers
+			int n = dis.readInt();
+			for (int i = 0; i < n; i++)
+			{
+				int key = dis.readUnsignedByte(),
+					addr = dis.readUnsignedShort() + ramstart;
+				
+				// Which offset is used?
+				int off;
+				switch (key & 0xF)
+				{
+						// RAM
+					case 1:
+						off = ramstart;
+						break;
+					
+						// JAR
+					case 2:
+						off = bjo;
+						break;
+					
+						// {@squirreljme.error AE02 Corrupt Boot RAM with
+						// invalid value modifier.}
+					default:
+						throw new VMException("AE02");
+				}
+				
+				// Depends on operation size
+				switch ((key & 0xF0) >>> 8)
+				{
+						// Byte
+					case 1:
+						vmem.memWriteByte(addr,
+							vmem.memReadByte(addr) + off);
+						break;
+					
+						// Short
+					case 2:
+						vmem.memWriteShort(addr,
+							vmem.memReadShort(addr) + off);
+						break;
+					
+						// Integer
+					case 4:
+						vmem.memWriteInt(addr,
+							vmem.memReadInt(addr) + off);
+						break;
+					
+						// {@squirreljme.error AE03 Corrupt Boot RAM with
+						// invalid size.}
+					default:
+						throw new VMException("AE03");
+				}
+			}
 		}
 		
 		// {@squirreljme.error AE01 Could not initialize the boot RAM for
