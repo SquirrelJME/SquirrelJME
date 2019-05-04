@@ -212,6 +212,9 @@ public final class Initializer
 			// End mark
 			dos.writeInt(-1);
 			
+			// Debug
+			todo.DEBUG.note("Wrote %d bytes, %d ops", dos.size(), n);
+			
 			// Done!
 			return baos.toByteArray();
 		}
