@@ -19,6 +19,9 @@ public final class Operation
 	/** The value modifier. */
 	public final Modifier mod;
 	
+	/** Operation size. */
+	public final int size;
+	
 	/** The address. */
 	public final int addr;
 	
@@ -38,6 +41,7 @@ public final class Operation
 			throw new NullPointerException("NARG");
 		
 		this.mod = __m;
+		this.size = __s;
 		this.addr = __a;
 	}
 }
