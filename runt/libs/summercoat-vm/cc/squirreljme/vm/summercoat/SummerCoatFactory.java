@@ -176,6 +176,23 @@ public class SummerCoatFactory
 			throw new VMException("AE01", e);
 		}
 		
+		// Setup virtual execution CPU
+		NativeCPU cpu = new NativeCPU(vmem);
+		NativeCPU.Frame iframe = cpu.enterFrame(
+			bjo + bjh.bootstart);
+		
+		// Seed initial frame registers
+		iframe._registers[NativeCode.POOL_REGISTER] =
+			ramstart + bjh.bootpool;
+		iframe._registers[NativeCode.STATIC_FIELD_REGISTER] =
+			ramstart + bjh.bootsfieldbase;
+		
+		// Execute the CPU to boot the machine
+		cpu.run();
+		
+		if (true)
+			throw new todo.TODO();
+		
 		throw new todo.TODO();
 		/*
 		// Size of RAM
