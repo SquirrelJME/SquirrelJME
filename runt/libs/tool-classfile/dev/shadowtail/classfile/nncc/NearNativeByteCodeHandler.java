@@ -775,7 +775,7 @@ public final class NearNativeByteCodeHandler
 			// class).
 			if (!targetclass.equals(this.thistype))
 				codebuilder.add(NativeInstructionType.LOAD_POOL,
-					targetclass, NativeCode.NEXT_POOL_REGISTER);
+					new ClassPool(targetclass), NativeCode.NEXT_POOL_REGISTER);
 			
 			// Static invocations always have direct pointers
 			if (__t == InvokeType.STATIC)
@@ -993,7 +993,8 @@ public final class NearNativeByteCodeHandler
 		
 		// Load target pool entry
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new ClassName("cc/squirreljme/runtime/cldc/lang/ArrayUtils"),
+			new ClassPool(
+				new ClassName("cc/squirreljme/runtime/cldc/lang/ArrayUtils")),
 			NativeCode.NEXT_POOL_REGISTER);
 		
 		// Perform the invoke
