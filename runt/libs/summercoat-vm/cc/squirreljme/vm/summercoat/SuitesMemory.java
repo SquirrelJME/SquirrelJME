@@ -12,6 +12,7 @@ package cc.squirreljme.vm.summercoat;
 import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.VMException;
 import cc.squirreljme.vm.VMSuiteManager;
+import dev.shadowtail.jarfile.MinimizedJarHeader;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -56,8 +57,11 @@ public final class SuitesMemory
 	/** Was the config table initialized? */
 	private volatile boolean _didconfiginit;
 	
-	/** Kernel class address. */
-	volatile int _kernelmcaddr;
+	/** Boot JAR header. */
+	volatile MinimizedJarHeader _bootjarheader;
+	
+	/** The offset to the boot JAR. */
+	volatile int _bootjaroff;
 	
 	/**
 	 * Initializes the suites memory.
@@ -193,17 +197,9 @@ public final class SuitesMemory
 			throw new RuntimeException("AE0t", e);
 		}
 		
-		// {@squirreljme.error AE0w The bootstrap class address is not known.}
-		int bootmcaddr = cldc._kernelmcaddr;
-		if (bootmcaddr == 0)
-			throw new RuntimeException("AE0w");
-		
-		// Need to get the position of the bootstrap class from how this chunk
-		// sees its own memory
-		bootmcaddr += cldc.offset;
-		
-		// Store the kernel address
-		this._kernelmcaddr = this.offset + bootmcaddr;
+		// Get and initialize boot JAR header
+		this._bootjarheader = cldc._jarheader;
+		this._bootjaroff = cldc.offset;
 	}
 }
 
