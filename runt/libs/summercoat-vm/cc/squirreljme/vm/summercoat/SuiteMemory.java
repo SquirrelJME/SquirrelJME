@@ -11,6 +11,7 @@ package cc.squirreljme.vm.summercoat;
 
 import dev.shadowtail.classfile.mini.Minimizer;
 import dev.shadowtail.jarfile.JarMinimizer;
+import dev.shadowtail.jarfile.MinimizedJarHeader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.InputStream;
@@ -42,10 +43,10 @@ public final class SuiteMemory
 	private volatile boolean _didinit;
 	
 	/** Memory for this suite. */
-	private volatile ByteArrayMemory _memory;
+	private volatile ReadableMemory _memory;
 	
-	/** Kernel miniclass address, if any. */
-	volatile int _kernelmcaddr;
+	/** Header for this JAR. */
+	volatile MinimizedJarHeader _jarheader;
 	
 	/**
 	 * Initializes the suite memory.
@@ -203,118 +204,13 @@ public final class SuiteMemory
 			throw new RuntimeException("AE0u " + jf.length);
 		
 		// Set memory using this byte array
-		this._memory = new ByteArrayMemory(this.offset, jf);
+		ReadableMemory rm;
+		this._memory = (rm = new ByteArrayMemory(this.offset, jf));
 		
-		/*
-		if (true)
-			throw new todo.TODO();
-		
-		// Need to build a resource index
-		String[] lsr = clib.listResources();
-		int rn = lsr.length;
-		
-		// Resource table
-		ByteArrayOutputStream ibytes = new ByteArrayOutputStream();
-		DataOutputStream idos = new DataOutputStream(ibytes);
-		
-		// Data table containing minified classes and such
-		ByteArrayOutputStream dbytes = new ByteArrayOutputStream();
-		DataOutputStream ddos = new DataOutputStream(dbytes);
-		
-		// Relative offset to the stream data, just to fit the resource table
-		int reloff = 12 + (rn * 12) + 12;
-		
-		// Write the name of this library in the first slot and the number
-		// entries it contains
-		idos.writeInt(reloff);
-		idos.writeInt(reloff);
-		idos.writeInt(rn);
-		
-		// Write null terminated library name, ignore unicode
-		for (int s = 0, sn = libname.length(); s < sn; s++)
-			ddos.write(libname.charAt(s));
-		ddos.write(0);
-		
-		// Write padding
-		while ((ddos.size() & 3) != 0)
-			ddos.write(0);
-		
-		// Build all table regions
-		for (int i = 0; i < rn; i++)
-		{
-			String en = lsr[i];
-			
-			// Base string start position
-			int srs = ddos.size();
-			
-			// Write null terminated entry name, ignore Unicode
-			for (int s = 0, sn = en.length(); s < sn; s++)
-				ddos.write(en.charAt(s));
-			ddos.write(0);
-			
-			// Write padding
-			while ((ddos.size() & 3) != 0)
-				ddos.write(0);
-			
-			// Base data start position
-			int drs = ddos.size();
-			
-			// Copy resource data or convert class file
-			try (InputStream in = clib.resourceAsStream(en))
-			{
-				// Debug
-				todo.DEBUG.note("Loading %s:%s", libname, en);
-				
-				// Load, compile, and minimize class
-				if (en.endsWith(".class"))
-				{
-					Minimizer.minimize(ClassFile.decode(in), ddos);
-				}
-				
-				// Copy resource
-				else
-				{
-					byte[] buf = new byte[512];
-					for (;;)
-					{
-						int rc = in.read(buf);
-						
-						if (rc < 0)
-							break;
-						
-						ddos.write(buf, 0, rc);
-					}
-				}
-			}
-			
-			// Write table information
-			idos.writeInt(reloff + srs);
-			idos.writeInt(reloff + drs);
-			idos.writeInt(ddos.size() - drs);
-			
-			// This represents the kernel class
-			if (en.equals("cc/squirreljme/runtime/cldc/vki/Kernel.class"))
-				this._kernelmcaddr = reloff + drs;
-			
-			// Write padding
-			while ((ddos.size() & 3) != 0)
-				ddos.write(0);
-		}
-		
-		// End padding
-		idos.writeInt(0xFFFFFFFF);
-		idos.writeInt(0xFFFFFFFF);
-		idos.writeInt(0xFFFFFFFF);
-		
-		// Append data area to the index area and build the memory region
-		idos.write(dbytes.toByteArray());
-		this._memory = new ByteArrayMemory(this.offset, ibytes.toByteArray());
-		
-		// {@squirreljme.error AE0u Suite chunk size limit was exceeded.
-		// (The chunk size)}
-		if (idos.size() > SuitesMemory.SUITE_CHUNK_SIZE)
-			throw new RuntimeException("AE0u " + idos.size());
-		*/
+		// Load the JAR header
+		this._jarheader = MinimizedJarHeader.decode(
+			new ReadableMemoryInputStream(rm, 0,
+				MinimizedJarHeader.HEADER_SIZE_WITH_MAGIC));
 	}
 }
 

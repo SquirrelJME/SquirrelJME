@@ -91,7 +91,7 @@ public class SummerCoatFactory
 		
 		// Initialize the suite space and load the boot address
 		sm.__init();
-		int kernaddr = sm._kernelmcaddr,
+		int kernaddr = sm._bootjaroff,
 			bootaddr = -1;
 		
 		// Static memory allocation
