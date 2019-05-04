@@ -1016,21 +1016,20 @@ public final class JavaStackState
 			// Check if the types and values are compatible
 			else
 			{
-				// {@squirreljme.error JC3g A transition cannot be made
-				// to the target type because the types are not compatible.
-				// (The source; The target)}
-				if (at.isObject() != bt.isObject() ||
-					(!at.isObject() && !at.equals(bt)))
-					throw new InvalidClassFormatException(
-						"JC3g " + a + " " + b);
-				
 				// Transitioning from no-counting to counting means that A
 				// was never counted
 				if (!a.canEnqueue() && b.canEnqueue())
 					ops.add(StateOperation.count(a.value));
 				
+				// Transition from non-compatible types means that a copy
+				// from zero is performed
+				if (at.isObject() != bt.isObject() ||
+					(!at.isObject() && !at.equals(bt)))
+					ops.add(StateOperation.copy(
+						bt.isWide(), 0, b.value));
+				
 				// Copy to destination, if the values differ
-				if (a.value != b.value)
+				else if (a.value != b.value)
 					ops.add(StateOperation.copy(
 						at.isWide(), a.value, b.value));
 				
