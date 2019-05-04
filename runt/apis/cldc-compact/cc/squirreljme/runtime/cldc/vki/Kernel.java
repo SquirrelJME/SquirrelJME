@@ -17,18 +17,6 @@ package cc.squirreljme.runtime.cldc.vki;
  */
 public final class Kernel
 {
-	/** Offset to size of memory partition. */
-	public static final int OFF_MEMPART_SIZE =
-		0;
-	
-	/** Bit to indicate memory partition is free. */
-	public static final int MEMPART_FREE_BIT =
-		0x80000000;
-	
-	/** Offset to next link in memory partition. */
-	public static final int OFF_MEMPART_NEXT =
-		4;
-	
 	/** The offset for the object's class type. */
 	public static final int OBJECT_CLASS_OFFSET =
 		0;
@@ -124,107 +112,6 @@ public final class Kernel
 	 */
 	private Kernel()
 	{
-	}
-	
-	/**
-	 * Allocates a space within memory of the given size and then returns
-	 * it.
-	 *
-	 * @param __sz The number of bytes to allocate.
-	 * @return The allocated object or {@code 0} if allocation has failed.
-	 * @since 2019/04/22
-	 */
-	public final int kernelNew(int __sz)
-	{
-		// Cannot allocate zero bytes
-		if (__sz == 0)
-			return 0;
-		
-		// This is the seeker which scans through the memory links to find
-		// free space somewhere
-		int seeker = this.allocbase;
-		
-		// Round allocations to nearest 4 bytes since the VM expects this
-		// alignment be used
-		__sz = (__sz + 3) & (~3);
-		
-		// Lock on the kernel, as only a single thread may perform allocations
-		synchronized (this)
-		{
-			// We will be going through every chain
-			for (;;)
-			{
-				// If the seeker ever ends up at the null pointer then we just
-				// ran off the end of the chain
-				if (seeker == 0)
-					return 0;
-				
-				// Read size and next address
-				int size = Assembly.memReadInt(seeker, OFF_MEMPART_SIZE),
-					next = Assembly.memReadInt(seeker, OFF_MEMPART_NEXT);
-					
-				// This region of memory is free for use
-				if ((size & MEMPART_FREE_BIT) != 0)
-				{
-					// Determine the actual size available by clipping the bit
-					// of and then. The block size is the size of this region
-					// with the partition info
-					int blocksize = (size ^ MEMPART_FREE_BIT),
-						actcount = blocksize - 8;
-					
-					// There is enough space to use this partition
-					if (__sz <= actcount)
-					{
-						// The return pointer is the region start address
-						int rv = seeker + 8;
-						
-						// This is the new block size, if it does not match the
-						// current block size then we are not using an entire
-						// block (if it does match then we just claimed all the
-						// free space here).
-						int newblocksize = (__sz + 8);
-						if (blocksize != newblocksize)
-						{
-							// This is the address of the next block
-							int nextseeker = seeker + newblocksize;
-							
-							// The size of this block is free and it has the
-							// remaining size of the current block's old size
-							// minute the new block size
-							Assembly.memWriteInt(nextseeker, OFF_MEMPART_SIZE,
-								(blocksize - newblocksize) | MEMPART_FREE_BIT);
-							
-							// The next link of the next block because our
-							// current link (since it is a linked list)
-							Assembly.memWriteInt(nextseeker, OFF_MEMPART_NEXT,
-								next);
-							
-							// The next link of our current block (the one we
-							// are claiming)
-							Assembly.memWriteInt(seeker, OFF_MEMPART_NEXT,
-								nextseeker);
-						}
-						
-						// Write the new block properties and its used
-						// indication
-						Assembly.memWriteInt(seeker, OFF_MEMPART_SIZE,
-							newblocksize);
-						
-						// Clear the memory here since it is expected that
-						// everything in Java has been initialized to zero,
-						// this is also much safer than C's malloc().
-						for (int i = 0; i < __sz; i += 4)
-							Assembly.memWriteInt(rv, i, 0);
-						
-						// Return pointer
-						return rv;
-					}
-				}
-				
-				// If this point was reached, we need to try the next link
-				seeker = next;
-			}
-		}
 	}
 	
 	/**
@@ -329,12 +216,12 @@ public final class Kernel
 		
 		// Write memory size at this position, the highest bit indicates
 		// that it is free memory
-		Assembly.memWriteInt(allocbase, OFF_MEMPART_SIZE,
-			allocmemsize | MEMPART_FREE_BIT);
+		Assembly.memWriteInt(allocbase, Allocator.OFF_MEMPART_SIZE,
+			allocmemsize | Allocator.MEMPART_FREE_BIT);
 		
 		// This is the next chunk in memory, zero means that there is no
 		// remaining chunk (at end of memory)
-		Assembly.memWriteInt(allocbase, OFF_MEMPART_NEXT, 0);
+		Assembly.memWriteInt(allocbase, Allocator.OFF_MEMPART_NEXT, 0);
 		
 		// Now that we have some kind of memory, the static field space can
 		// be initialized. Make sure it is a minimum size
@@ -344,7 +231,7 @@ public final class Kernel
 		else if (sfspace < DefaultConfiguration.MINIMUM_STATIC_FIELD_SIZE)
 			sfspace = DefaultConfiguration.MINIMUM_STATIC_FIELD_SIZE;
 		this.sfspace = sfspace;
-		int sfptr = this.kernelNew(sfspace);
+		int sfptr = Allocator.allocate(sfspace);
 		
 		// If this is zero then allocation has failed
 		if (sfptr == 0)
@@ -376,7 +263,7 @@ public final class Kernel
 			ctcount = DefaultConfiguration.MINIMUM_CLASS_TABLE_SIZE;
 		
 		// Allocate the class table
-		int ctptr = this.kernelNew(ctcount * 4);
+		int ctptr = Allocator.allocate(ctcount * 4);
 		this.ctptr = ctptr;
 		
 		// Failed to allocate the class table
@@ -746,7 +633,7 @@ public final class Kernel
 		for (;;)
 		{
 			// Attempt allocation
-			rv = kernel.kernelNew(allocsize);
+			rv = Allocator.allocate(allocsize);
 			
 			// Allocation has failed
 			if (rv == 0)

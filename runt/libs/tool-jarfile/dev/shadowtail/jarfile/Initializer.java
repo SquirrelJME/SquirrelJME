@@ -9,6 +9,10 @@
 
 package dev.shadowtail.jarfile;
 
+import cc.squirreljme.runtime.cldc.vki.Allocator;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -170,7 +174,46 @@ public final class Initializer
 	 */
 	public final byte[] toByteArray()
 	{
-		throw new todo.TODO();
+		List<Operation> ops = this._ops;
+		byte[] bytes = this._bytes;
+		int size = this._size;
+		
+		// The initializer memory is actually a chunk of allocated memory so
+		// store the block information for usage.
+		this.memWriteInt(null, Allocator.OFF_MEMPART_SIZE,
+			size);
+		this.memWriteInt(Modifier.RAM_OFFSET, Allocator.OFF_MEMPART_NEXT,
+			size);
+		
+		// Write initializer RAM
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(4096);
+			DataOutputStream dos = new DataOutputStream(baos))
+		{
+			// Write initializer memory chunk
+			dos.writeInt(size);
+			dos.write(bytes);
+			
+			// Write out operations
+			int n = ops.size();
+			dos.writeInt(n);
+			for (int i = 0; i < n; i++)
+			{
+				Operation op = ops.get(i);
+				
+				// Write operation tag and address offset
+				dos.writeByte((op.size << 4) | (op.mod.ordinal()));
+				dos.writeInt(op.addr);
+			}
+			
+			// Done!
+			return baos.toByteArray();
+		}
+		
+		// {@squirreljme.error BC02 Could not export boot area.}
+		catch (IOException e)
+		{
+			throw new RuntimeException("BC02", e);
+		}
 	}
 }
 

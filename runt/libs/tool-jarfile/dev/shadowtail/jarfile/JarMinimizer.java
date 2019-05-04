@@ -196,7 +196,8 @@ public final class JarMinimizer
 			throw new NullPointerException("NARG");
 		
 		return this.__classMethodCodeAddress(new ClassName(__cl),
-			new MethodName(__mn), new MethodDescriptor(__mt));
+			new MethodName(__mn),
+			(__mt == null ? null : new MethodDescriptor(__mt)));
 	}
 	
 	/**

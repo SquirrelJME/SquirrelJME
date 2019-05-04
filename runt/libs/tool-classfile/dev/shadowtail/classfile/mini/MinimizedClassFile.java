@@ -181,7 +181,7 @@ public final class MinimizedClassFile
 	 * Searches for a method by the given name and type.
 	 *
 	 * @param __n The name.
-	 * @param __t The type.
+	 * @param __t The type, if {@code null} the type is ignored.
 	 * @return The method or {@code null} if not found.
 	 * @since 2019/04/22
 	 */
@@ -201,7 +201,7 @@ public final class MinimizedClassFile
 	 *
 	 * @param __is Search for static method?
 	 * @param __n The name.
-	 * @param __t The type.
+	 * @param __t The type, if {@code null} the type is ignored.
 	 * @return The method or {@code null} if not found.
 	 * @since 2019/04/22
 	 */
@@ -209,10 +209,15 @@ public final class MinimizedClassFile
 		MethodDescriptor __t)
 		throws NullPointerException
 	{
-		if (__n == null || __t == null)
+		if (__n == null)
 			throw new NullPointerException("NARG");
 		
-		return this.method(__is, new MethodNameAndType(__n, __t));
+		for (MinimizedMethod mm : (__is ? this._smethods : this._imethods))
+			if (mm.name.equals(__n) && (__t == null || mm.type.equals(__t)))
+				return mm;
+		
+		// Not found
+		return null;
 	}
 	
 	/**
