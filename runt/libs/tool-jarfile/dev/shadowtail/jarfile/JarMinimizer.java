@@ -256,7 +256,7 @@ public final class JarMinimizer
 		
 		// Use the where of any found method
 		return bi._classoffset + (mm.flags().isStatic() ? bi._class.header.
-			sfoff : bi._class.header.ifoff) + mm.whereoffset;
+			smoff : bi._class.header.imoff) + mm.whereoffset;
 	}
 	
 	/**
