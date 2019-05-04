@@ -93,7 +93,8 @@ public class SummerCoatFactory
 		// Load the boot RAM
 		MinimizedJarHeader bjh = sm._bootjarheader;
 		int bjo = sm.offset + sm._bootjaroff,
-			bra = bjo + bjh.bootoffset;
+			bra = bjo + bjh.bootoffset,
+			lram;
 		todo.DEBUG.note("Header %s (off %08x, boot %08x)", bjh, bjo, bra);
 		try (DataInputStream dis = new DataInputStream(
 			new ReadableMemoryInputStream(vmem, bra, bjh.bootsize)))
@@ -103,7 +104,7 @@ public class SummerCoatFactory
 				bjh.bootsize);
 			
 			// Read entire RAM space
-			int lram = dis.readInt();
+			lram = dis.readInt();
 			byte[] bram = new byte[lram];
 			dis.readFully(bram);
 			
@@ -187,7 +188,7 @@ public class SummerCoatFactory
 		// Setup virtual execution CPU
 		NativeCPU cpu = new NativeCPU(vmem);
 		NativeCPU.Frame iframe = cpu.enterFrame(bjo + bjh.bootstart,
-			ramstart, ramsize, bjh.bootsize);
+			ramstart, ramsize, lram);
 		
 		// Seed initial frame registers
 		iframe._registers[NativeCode.POOL_REGISTER] =
