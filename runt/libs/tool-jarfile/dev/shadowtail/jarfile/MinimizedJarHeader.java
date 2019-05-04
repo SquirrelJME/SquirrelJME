@@ -52,8 +52,8 @@ public final class MinimizedJarHeader
 	/** The boot pool offset. */
 	public final int bootpool;
 	
-	/** Boot kernel object offset. */
-	public final int bootobject;
+	/** Static field basein RAM. */
+	public final int bootsfieldbase;
 	
 	/** The start method offset. */
 	public final int bootstart;
@@ -81,7 +81,7 @@ public final class MinimizedJarHeader
 		this.bootoffset = __fs[at++];
 		this.bootsize = __fs[at++];
 		this.bootpool = __fs[at++];
-		this.bootobject = __fs[at++];
+		this.bootsfieldbase = __fs[at++];
 		this.bootstart = __fs[at++];
 	}
 	
@@ -116,7 +116,7 @@ public final class MinimizedJarHeader
 			/* bootoffset */ din.readInt(),
 			/* bootsize */ din.readInt(),
 			/* bootpool */ din.readInt(),
-			/* bootobject */ din.readInt(),
+			/* bootsfieldbase */ din.readInt(),
 			/* bootstart */ din.readInt());
 	}
 }
