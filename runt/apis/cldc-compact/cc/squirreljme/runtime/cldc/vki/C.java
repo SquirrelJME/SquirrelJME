@@ -31,6 +31,7 @@ public final class C
 	 */
 	public static final int memcmp(int __s1, int __s2, int __n)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -45,6 +46,7 @@ public final class C
 	 */
 	public static final int memmove(int __dest, int __src, int __n)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -59,6 +61,7 @@ public final class C
 	 */
 	public static final int memset(int __s, int __c, int __n)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -72,6 +75,7 @@ public final class C
 	 */
 	public static final int strcasecmp(int __s1, int __s2)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -86,6 +90,7 @@ public final class C
 	 */
 	public static final int strcat(int __dest, int __src)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -99,6 +104,7 @@ public final class C
 	 */
 	public static final int strchr(int __s, int __c)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -112,6 +118,20 @@ public final class C
 	 */
 	public static final int strcmp(int __s1, int __s2)
 	{
+		Assembly.breakpoint();
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the length of the given string.
+	 *
+	 * @param __s The string pointer.
+	 * @return The length of the string.
+	 * @since 2019/05/04
+	 */
+	public static final int strlen(int __s)
+	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -126,6 +146,7 @@ public final class C
 	 */
 	public static final int strncasecmp(int __s1, int __s2, int __n)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -141,6 +162,7 @@ public final class C
 	 */
 	public static final int strncat(int __dest, int __src, int __n)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
@@ -155,20 +177,50 @@ public final class C
 	 */
 	public static final int strncmp(int __s1, int __s2, int __n)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 	
 	/**
-	 * Compares two UTF encoded in the {@link java.io.DataInputStream} and
-	 * {@link java.io.DataOutputStream} format.
+	 * Returns the length of the given string, up to the maximum number of
+	 * bytes.
+	 *
+	 * @param __s The string pointer.
+	 * @param __lim The string limit.
+	 * @return The length of the string, this will never exceed {@code __lim}.
+	 * @since 2019/05/04
+	 */
+	public static final int strnlen(int __s, int __lim)
+	{
+		Assembly.breakpoint();
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Compares two UTF encoded strings without regards to case.
+	 *
+	 * @param __s1 String 1.
+	 * @param __s2 String 2.
+	 * @return The result of the comparison in Java terms.
+	 * @since 2019/05/04
+	 */
+	public static final int utfcasecmp(int __s1, int __s2)
+	{
+		Assembly.breakpoint();
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Compares two UTF encoded strings.
 	 *
 	 * @param __s1 String 1.
 	 * @param __s2 String 2.
 	 * @return The result of the comparison in Java terms.
 	 * @since 2019/04/28
 	 */
-	public static final int utfstrcmp(int __s1, int __s2)
+	public static final int utfcmp(int __s1, int __s2)
 	{
+		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
 }
