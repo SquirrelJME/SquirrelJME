@@ -742,7 +742,7 @@ public final class JarMinimizer
 			__dos.writeInt(poolptr[0]);
 			__dos.writeInt(kernelobj[0]);
 			__dos.writeInt(this.__classMethodCodeAddress(
-				"cc/squirreljme/runtime/cldc/vki/Kernel",
+				"cc/squirreljme/runtime/cldc/vki/__Bootstrap__",
 				"__start",
 				null));
 		}
