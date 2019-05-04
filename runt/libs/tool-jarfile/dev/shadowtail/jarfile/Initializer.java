@@ -191,7 +191,7 @@ public final class Initializer
 		{
 			// Write initializer memory chunk
 			dos.writeInt(size);
-			dos.write(bytes);
+			dos.write(bytes, 0, size);
 			
 			// Write out operations
 			int n = ops.size();
@@ -208,6 +208,9 @@ public final class Initializer
 				dos.writeByte((op.size << 4) | (op.mod.ordinal()));
 				dos.writeShort(op.addr);
 			}
+			
+			// End mark
+			dos.writeInt(-1);
 			
 			// Done!
 			return baos.toByteArray();
