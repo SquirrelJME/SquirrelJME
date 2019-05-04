@@ -200,13 +200,9 @@ public final class Initializer
 			{
 				Operation op = ops.get(i);
 				
-				// {@squirreljme.error BC03 Exceeded boot RAM limit.}
-				if (op.addr < 0 || op.addr > 65535)
-					throw new RuntimeException("BC03");
-				
 				// Write operation tag and address offset
 				dos.writeByte((op.size << 4) | (op.mod.ordinal()));
-				dos.writeShort(op.addr);
+				dos.writeInt(op.addr);
 			}
 			
 			// End mark
