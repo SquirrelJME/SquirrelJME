@@ -167,6 +167,11 @@ public class SummerCoatFactory
 						throw new VMException("AE03");
 				}
 			}
+			
+			// {@squirreljme.AE04 Expected value at end of initializer
+			// memory, the Boot RAM is corrupt.}
+			if (-1 != dis.readInt())
+				throw new VMException("AE04");
 		}
 		
 		// {@squirreljme.error AE01 Could not initialize the boot RAM for
