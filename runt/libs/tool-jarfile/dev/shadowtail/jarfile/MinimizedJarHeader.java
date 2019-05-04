@@ -25,10 +25,6 @@ public final class MinimizedJarHeader
 	public static final int MAGIC_NUMBER =
 		0x00456570;
 	
-	/** Magic number for the end of file. */
-	public static final int END_MAGIC_NUMBER =
-		0x51756161;
-	
 	/** The size of the header without the magic number. */
 	public static final int HEADER_SIZE_WITHOUT_MAGIC =
 		28;

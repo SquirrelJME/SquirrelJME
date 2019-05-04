@@ -92,13 +92,14 @@ public class SummerCoatFactory
 		
 		// Load the boot RAM
 		MinimizedJarHeader bjh = sm._bootjarheader;
-		int bjo = sm.offset + sm._bootjaroff;
-		todo.DEBUG.note("Header %s (off %08x)", bjh, bjo);
+		int bjo = sm.offset + sm._bootjaroff,
+			bra = bjo + bjh.bootoffset;
+		todo.DEBUG.note("Header %s (off %08x, boot %08x)", bjh, bjo, bra);
 		try (DataInputStream dis = new DataInputStream(
-			new ReadableMemoryInputStream(vmem, bjo, bjh.bootsize)))
+			new ReadableMemoryInputStream(vmem, bra, bjh.bootsize)))
 		{
 			// Debug
-			todo.DEBUG.note("Loading boot RAM @%08x (len %d)", bjo,
+			todo.DEBUG.note("Loading boot RAM @%08x (len %d)", bra,
 				bjh.bootsize);
 			
 			// Read entire RAM space
