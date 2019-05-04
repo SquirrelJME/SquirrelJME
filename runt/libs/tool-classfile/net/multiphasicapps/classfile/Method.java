@@ -261,11 +261,24 @@ public final class Method
 			ByteCode bc = this.byteCode();
 			
 			// Process Code
-			NearNativeByteCodeHandler nnbc = new NearNativeByteCodeHandler(bc);
-			new ByteCodeProcessor(bc, nnbc).process();
+			try
+			{
+				NearNativeByteCodeHandler nnbc =
+					new NearNativeByteCodeHandler(bc);
+				new ByteCodeProcessor(bc, nnbc).process();
+				
+				// Cache the result of it
+				this._regcode = new WeakReference<>((rv = nnbc.result()));
+			}
 			
-			// Cache the result of it
-			this._regcode = new WeakReference<>((rv = nnbc.result()));
+			// {@squirreljme.error JC4e Could not compile the native code for
+			// the given method. (The class; Method name; Method type)}
+			catch (InvalidClassFormatException e)
+			{
+				throw new InvalidClassFormatException(
+					String.format("JC4e %s %s %s", this.classname,
+						this.methodname, this.methodtype), e);
+			}
 		}
 		
 		return rv;
