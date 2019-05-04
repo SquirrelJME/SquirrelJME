@@ -23,6 +23,7 @@ final class __Bootstrap__
 	 */
 	static final void __start()
 	{
+		Assembly.entryMarker();
 		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
