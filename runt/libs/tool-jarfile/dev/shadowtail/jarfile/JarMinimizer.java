@@ -477,7 +477,7 @@ public final class JarMinimizer
 		
 		// Relative offset from header and table of contents
 		int reloff = MinimizedJarHeader.HEADER_SIZE_WITH_MAGIC +
-			(4 * 12);
+			(numrc * 12);
 		
 		// Go through and minimize/concat all resources
 		for (int i = 0; i < numrc; i++)
@@ -569,17 +569,24 @@ public final class JarMinimizer
 				jdos.write(0);
 			
 			// Write address to the boot table
-			int baseaddr;
-			__dos.writeInt(reloff + (baseaddr = jdos.size()));
+			int baseaddr,
+				injaraddr;
+			__dos.writeInt((injaraddr = (reloff + (baseaddr = jdos.size()))));
+			
+			// Debug
+			todo.DEBUG.note("Boot RAM written at @%08x", injaraddr);
 			
 			// Initialize and write startup memory
 			int[] poolptr = new int[1],
 				ksfa = new int[1];
 			Initializer init = this.__init(poolptr, ksfa);
-			jdos.write(init.toByteArray());
 			
-			// Write length of the boot function table
-			__dos.writeInt(jdos.size() - baseaddr);
+			// Write boot memory
+			byte[] bootmem = init.toByteArray();
+			jdos.write(bootmem);
+			
+			// Write length of the boot RAM initialize area
+			__dos.writeInt(bootmem.length);
 			
 			// Bootstrap pool, static field pointer offset, and the offset
 			// to the bootstrap's code
@@ -598,13 +605,9 @@ public final class JarMinimizer
 			__dos.writeInt(0);
 			__dos.writeInt(0);
 			
-			// Boot pool pointer
+			// Boot pool, sfa, and code
 			__dos.writeInt(0);
-			
-			// Boot instance pointer
 			__dos.writeInt(0);
-			
-			// Boot entry point
 			__dos.writeInt(0);
 		}
 		
