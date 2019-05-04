@@ -937,7 +937,7 @@ public final class NearNativeByteCodeHandler
 	 * @since 2019/04/16
 	 */
 	@Override
-	public void doMonitor(boolean __enter, JavaStackResult.Input __o)
+	public final void doMonitor(boolean __enter, JavaStackResult.Input __o)
 	{
 		// Push reference
 		this.__refPush();
@@ -947,6 +947,46 @@ public final class NearNativeByteCodeHandler
 		
 		// Clear reference
 		this.__refClear();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/04
+	 */
+	@Override
+	public final void doMultiANewArray(ClassName __cl, int __numdims,
+		JavaStackResult.Output __o, JavaStackResult.Input... __dims)
+	{
+		// Load class object into S
+		this.__loadClassObject(__cl, NativeCode.VOLATILE_S_REGISTER);
+		
+		// Determine the number of integer arguments to use
+		StringBuilder sb = new StringBuilder(__numdims);
+		for (int i = 0; i < __numdims; i++)
+			sb.append('I');
+		
+		// Load array allocation helper into B
+		codebuilder.add(NativeInstructionType.LOAD_POOL,
+			new InvokedMethod(InvokeType.STATIC, new MethodHandle(
+				new ClassName("cc/squirreljme/runtime/cldc/lang/ArrayUtils"),
+				new MethodName("multiANewArray"),
+				new MethodDescriptor(
+					"(Ljava/lang/Class;I" + sb + ")Ljava/lang/Object;"))),
+			NativeCode.VOLATILE_B_REGISTER);
+		
+		// Need to builder register list (class, skip, args);
+		List<Integer> rl = new ArrayList<>();
+		rl.add(NativeCode.VOLATILE_S_REGISTER);
+		rl.add(0);
+		for (int i = 0; i < __numdims; i++)
+			rl.add(__dims[i].register);
+		
+		// Perform the invoke
+		codebuilder.add(NativeInstructionType.INVOKE,
+			NativeCode.VOLATILE_B_REGISTER, new RegisterList(rl));
+		
+		// Copy result
+		codebuilder.addCopy(NativeCode.RETURN_REGISTER, __o.register);
 	}
 	
 	/**

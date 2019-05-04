@@ -205,6 +205,18 @@ public interface ByteCodeHandler
 	public abstract void doMonitor(boolean __enter, JavaStackResult.Input __o);
 	
 	/**
+	 * Allocates multi-dimensional array.
+	 *
+	 * @param __cl The class name.
+	 * @param __numdim The number of dimensions.
+	 * @param __o The output value.
+	 * @param __dims The input dimensions.
+	 * @since 2019/05/04
+	 */
+	public abstract void doMultiANewArray(ClassName __cl, int __numdims,
+		JavaStackResult.Output __o, JavaStackResult.Input... __dims);
+	
+	/**
 	 * Allocates new class.
 	 *
 	 * @param __cn The class to allocate.

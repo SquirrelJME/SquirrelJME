@@ -193,6 +193,264 @@ public final class ArrayUtils
 	 * @param __type The type with minimum dimension sizes specified.
 	 * @param __skip The initial number of dimensions to skip in the initial
 	 * array.
+	 * @param __a Length of dimension.
+	 * @return The allocated multi-dimensional array.
+	 * @throws NegativeArraySizeException If an allocated array would be
+	 * of a negative size.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/04
+	 */
+	public static final Object multiANewArray(Class<?> __type, int __skip,
+		int __a)
+		throws NegativeArraySizeException, NullPointerException
+	{
+		return ArrayUtils.multiANewArray(__type, __skip,
+			new int[]{__a});
+	}
+	
+	/**
+	 * Allocates a new multi-dimensional array.
+	 *
+	 * @param __type The type with minimum dimension sizes specified.
+	 * @param __skip The initial number of dimensions to skip in the initial
+	 * array.
+	 * @param __a Length of dimension.
+	 * @param __b Length of dimension.
+	 * @return The allocated multi-dimensional array.
+	 * @throws NegativeArraySizeException If an allocated array would be
+	 * of a negative size.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/04
+	 */
+	public static final Object multiANewArray(Class<?> __type, int __skip,
+		int __a, int __b)
+		throws NegativeArraySizeException, NullPointerException
+	{
+		return ArrayUtils.multiANewArray(__type, __skip,
+			new int[]{__a, __b});
+	}
+	
+	/**
+	 * Allocates a new multi-dimensional array.
+	 *
+	 * @param __type The type with minimum dimension sizes specified.
+	 * @param __skip The initial number of dimensions to skip in the initial
+	 * array.
+	 * @param __a Length of dimension.
+	 * @param __b Length of dimension.
+	 * @param __c Length of dimension.
+	 * @return The allocated multi-dimensional array.
+	 * @throws NegativeArraySizeException If an allocated array would be
+	 * of a negative size.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/04
+	 */
+	public static final Object multiANewArray(Class<?> __type, int __skip,
+		int __a, int __b, int __c)
+		throws NegativeArraySizeException, NullPointerException
+	{
+		return ArrayUtils.multiANewArray(__type, __skip,
+			new int[]{__a, __b, __c});
+	}
+	
+	/**
+	 * Allocates a new multi-dimensional array.
+	 *
+	 * @param __type The type with minimum dimension sizes specified.
+	 * @param __skip The initial number of dimensions to skip in the initial
+	 * array.
+	 * @param __a Length of dimension.
+	 * @param __b Length of dimension.
+	 * @param __c Length of dimension.
+	 * @param __d Length of dimension.
+	 * @return The allocated multi-dimensional array.
+	 * @throws NegativeArraySizeException If an allocated array would be
+	 * of a negative size.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/04
+	 */
+	public static final Object multiANewArray(Class<?> __type, int __skip,
+		int __a, int __b, int __c, int __d)
+		throws NegativeArraySizeException, NullPointerException
+	{
+		return ArrayUtils.multiANewArray(__type, __skip,
+			new int[]{__a, __b, __c, __d});
+	}
+	
+	/**
+	 * Allocates a new multi-dimensional array.
+	 *
+	 * @param __type The type with minimum dimension sizes specified.
+	 * @param __skip The initial number of dimensions to skip in the initial
+	 * array.
+	 * @param __a Length of dimension.
+	 * @param __b Length of dimension.
+	 * @param __c Length of dimension.
+	 * @param __d Length of dimension.
+	 * @param __e Length of dimension.
+	 * @return The allocated multi-dimensional array.
+	 * @throws NegativeArraySizeException If an allocated array would be
+	 * of a negative size.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/04
+	 */
+	public static final Object multiANewArray(Class<?> __type, int __skip,
+		int __a, int __b, int __c, int __d, int __e)
+		throws NegativeArraySizeException, NullPointerException
+	{
+		return ArrayUtils.multiANewArray(__type, __skip,
+			new int[]{__a, __b, __c, __d, __e});
+	}
+	
+	/**
+	 * Allocates a new multi-dimensional array.
+	 *
+	 * @param __type The type with minimum dimension sizes specified.
+	 * @param __skip The initial number of dimensions to skip in the initial
+	 * array.
+	 * @param __a Length of dimension.
+	 * @param __b Length of dimension.
+	 * @param __c Length of dimension.
+	 * @param __d Length of dimension.
+	 * @param __e Length of dimension.
+	 * @param __f Length of dimension.
+	 * @return The allocated multi-dimensional array.
+	 * @throws NegativeArraySizeException If an allocated array would be
+	 * of a negative size.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/04
+	 */
+	public static final Object multiANewArray(Class<?> __type, int __skip,
+		int __a, int __b, int __c, int __d, int __e, int __f)
+		throws NegativeArraySizeException, NullPointerException
+	{
+		return ArrayUtils.multiANewArray(__type, __skip,
+			new int[]{__a, __b, __c, __d, __e, __f});
+	}
+	
+	/**
+	 * Allocates a new multi-dimensional array.
+	 *
+	 * @param __type The type with minimum dimension sizes specified.
+	 * @param __skip The initial number of dimensions to skip in the initial
+	 * array.
+	 * @param __a Length of dimension.
+	 * @param __b Length of dimension.
+	 * @param __c Length of dimension.
+	 * @param __d Length of dimension.
+	 * @param __e Length of dimension.
+	 * @param __f Length of dimension.
+	 * @param __g Length of dimension.
+	 * @return The allocated multi-dimensional array.
+	 * @throws NegativeArraySizeException If an allocated array would be
+	 * of a negative size.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/04
+	 */
+	public static final Object multiANewArray(Class<?> __type, int __skip,
+		int __a, int __b, int __c, int __d, int __e, int __f, int __g)
+		throws NegativeArraySizeException, NullPointerException
+	{
+		return ArrayUtils.multiANewArray(__type, __skip,
+			new int[]{__a, __b, __c, __d, __e, __f, __g});
+	}
+	
+	/**
+	 * Allocates a new multi-dimensional array.
+	 *
+	 * @param __type The type with minimum dimension sizes specified.
+	 * @param __skip The initial number of dimensions to skip in the initial
+	 * array.
+	 * @param __a Length of dimension.
+	 * @param __b Length of dimension.
+	 * @param __c Length of dimension.
+	 * @param __d Length of dimension.
+	 * @param __e Length of dimension.
+	 * @param __f Length of dimension.
+	 * @param __g Length of dimension.
+	 * @param __h Length of dimension.
+	 * @return The allocated multi-dimensional array.
+	 * @throws NegativeArraySizeException If an allocated array would be
+	 * of a negative size.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/04
+	 */
+	public static final Object multiANewArray(Class<?> __type, int __skip,
+		int __a, int __b, int __c, int __d, int __e, int __f, int __g,
+		int __h)
+		throws NegativeArraySizeException, NullPointerException
+	{
+		return ArrayUtils.multiANewArray(__type, __skip,
+			new int[]{__a, __b, __c, __d, __e, __f, __g, __h});
+	}
+	
+	/**
+	 * Allocates a new multi-dimensional array.
+	 *
+	 * @param __type The type with minimum dimension sizes specified.
+	 * @param __skip The initial number of dimensions to skip in the initial
+	 * array.
+	 * @param __a Length of dimension.
+	 * @param __b Length of dimension.
+	 * @param __c Length of dimension.
+	 * @param __d Length of dimension.
+	 * @param __e Length of dimension.
+	 * @param __f Length of dimension.
+	 * @param __g Length of dimension.
+	 * @param __h Length of dimension.
+	 * @param __i Length of dimension.
+	 * @return The allocated multi-dimensional array.
+	 * @throws NegativeArraySizeException If an allocated array would be
+	 * of a negative size.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/04
+	 */
+	public static final Object multiANewArray(Class<?> __type, int __skip,
+		int __a, int __b, int __c, int __d, int __e, int __f, int __g,
+		int __h, int __i)
+		throws NegativeArraySizeException, NullPointerException
+	{
+		return ArrayUtils.multiANewArray(__type, __skip,
+			new int[]{__a, __b, __c, __d, __e, __f, __g, __h, __i});
+	}
+	
+	/**
+	 * Allocates a new multi-dimensional array.
+	 *
+	 * @param __type The type with minimum dimension sizes specified.
+	 * @param __skip The initial number of dimensions to skip in the initial
+	 * array.
+	 * @param __a Length of dimension.
+	 * @param __b Length of dimension.
+	 * @param __c Length of dimension.
+	 * @param __d Length of dimension.
+	 * @param __e Length of dimension.
+	 * @param __f Length of dimension.
+	 * @param __g Length of dimension.
+	 * @param __h Length of dimension.
+	 * @param __i Length of dimension.
+	 * @param __j Length of dimension.
+	 * @return The allocated multi-dimensional array.
+	 * @throws NegativeArraySizeException If an allocated array would be
+	 * of a negative size.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/04
+	 */
+	public static final Object multiANewArray(Class<?> __type, int __skip,
+		int __a, int __b, int __c, int __d, int __e, int __f, int __g,
+		int __h, int __i, int __j)
+		throws NegativeArraySizeException, NullPointerException
+	{
+		return ArrayUtils.multiANewArray(__type, __skip,
+			new int[]{__a, __b, __c, __d, __e, __f, __g, __h, __i, __j});
+	}
+	
+	/**
+	 * Allocates a new multi-dimensional array.
+	 *
+	 * @param __type The type with minimum dimension sizes specified.
+	 * @param __skip The initial number of dimensions to skip in the initial
+	 * array.
 	 * @param __dims The dimensions and the number of them to use.
 	 * @return The allocated multi-dimensional array.
 	 * @throws NegativeArraySizeException If an allocated array would be
@@ -201,7 +459,7 @@ public final class ArrayUtils
 	 * @since 2018/11/03
 	 */
 	public static final Object multiANewArray(Class<?> __type, int __skip,
-		int... __dims)
+		int[] __dims)
 		throws NegativeArraySizeException, NullPointerException
 	{
 		if (__type == null || __dims == null)
