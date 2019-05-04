@@ -657,7 +657,6 @@ public final class NativeCPU
 		
 		// If the where is this is not set, no idea where this is
 		int wit = __f._registers[NativeCode.WHERE_IS_THIS];
-		todo.DEBUG.note("wit = %08x", wit);
 		if (wit == 0)
 			return new CallTraceElement();
 		
