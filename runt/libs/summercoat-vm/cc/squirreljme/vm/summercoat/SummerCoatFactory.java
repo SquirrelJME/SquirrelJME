@@ -19,6 +19,7 @@ import dev.shadowtail.classfile.nncc.ClassPool;
 import dev.shadowtail.classfile.nncc.InvokedMethod;
 import dev.shadowtail.classfile.nncc.NativeCode;
 import dev.shadowtail.classfile.nncc.WhereIsThis;
+import dev.shadowtail.jarfile.MinimizedJarHeader;
 import cc.squirreljme.runtime.cldc.vki.DefaultConfiguration;
 import cc.squirreljme.runtime.cldc.vki.FixedClassIDs;
 import cc.squirreljme.runtime.cldc.vki.Kernel;
@@ -27,6 +28,7 @@ import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.VMException;
 import cc.squirreljme.vm.VMFactory;
 import cc.squirreljme.vm.VMSuiteManager;
+import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -73,8 +75,53 @@ public class SummerCoatFactory
 		String[] __args)
 		throws IllegalArgumentException, NullPointerException, VMException
 	{
+		// Virtual memory which provides access to many parts of memory
+		VirtualMemory vmem = new VirtualMemory();
+		
 		// Initialize suite memory
 		SuitesMemory sm = new SuitesMemory(SUITE_BASE_ADDR, __sm);
+		vmem.mapRegion(sm);
+		
+		// Initialize RAM
+		int ramsize = DefaultConfiguration.DEFAULT_RAM_SIZE,
+			ramstart = RAM_START_ADDRESS;
+		vmem.mapRegion(new RawMemory(ramstart, ramsize));
+		
+		// Initialize suite memory explicitly since we need it!
+		sm.__init();
+		
+		// Load the boot RAM
+		MinimizedJarHeader bjh = sm._bootjarheader;
+		int bjo = sm.offset + sm._bootjaroff;
+		todo.DEBUG.note("Header %s (off %08x)", bjh, bjo);
+		try (DataInputStream dis = new DataInputStream(
+			new ReadableMemoryInputStream(vmem, bjo, bjh.bootsize)))
+		{
+			// Debug
+			todo.DEBUG.note("Loading boot RAM @%08x (len %d)", bjo,
+				bjh.bootsize);
+			
+			// Read entire RAM space
+			int lram = dis.readInt();
+			byte[] bram = new byte[lram];
+			dis.readFully(bram);
+			
+			// Debug
+			todo.DEBUG.note("Boot RAM length %d", lram);
+			
+			// Write into memory
+			vmem.memWriteBytes(ramstart, bram, 0, lram);
+			
+			if (true)
+				throw new todo.TODO();
+		}
+		
+		// {@squirreljme.error AE01 Could not initialize the boot RAM for
+		// the virtual machine.}
+		catch (IOException e)
+		{
+			throw new VMException("AE01", e);
+		}
 		
 		throw new todo.TODO();
 		/*
