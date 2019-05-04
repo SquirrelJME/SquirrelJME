@@ -52,10 +52,6 @@ public class SummerCoatFactory
 	public static final int RAM_START_ADDRESS =
 		1048576;
 	
-	/** Bad pool value. */
-	private static final int _BAD_POOL_VALUE =
-		13371234;
-	
 	/**
 	 * Initializes the factory.
 	 *
@@ -80,6 +76,8 @@ public class SummerCoatFactory
 		// Initialize suite memory
 		SuitesMemory sm = new SuitesMemory(SUITE_BASE_ADDR, __sm);
 		
+		throw new todo.TODO();
+		/*
 		// Size of RAM
 		int ramsize = DefaultConfiguration.DEFAULT_RAM_SIZE,
 			sfspace = DefaultConfiguration.DEFAULT_STATIC_FIELD_SIZE;
@@ -398,6 +396,7 @@ public class SummerCoatFactory
 		// Now create the starting main task
 		return new ExitAwaiter(rm.statuses, rm.createTask(libs, __maincl,
 			__ismid, __sprops, __args).status, __ps);
+		*/
 	}
 	
 	/**
