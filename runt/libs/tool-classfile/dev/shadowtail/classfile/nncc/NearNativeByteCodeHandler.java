@@ -477,9 +477,12 @@ public final class NearNativeByteCodeHandler
 	{
 		NativeCodeBuilder codebuilder = this.codebuilder;
 		
+		// Target class
+		ClassName targetclass = __r.handle().outerClass();
+		
 		// Assembly method
 		if ("cc/squirreljme/runtime/cldc/vki/Assembly".equals(
-			__r.handle().outerClass().toString()))
+			targetclass.toString()))
 		{
 			// Force exception cancel for these operations
 			this.state.canexception = false;
@@ -767,9 +770,12 @@ public final class NearNativeByteCodeHandler
 					callargs.add(in.register + 1);
 			}
 			
-			// Load target pool entry
-			codebuilder.add(NativeInstructionType.LOAD_POOL,
-				__r.handle().outerClass(), NativeCode.NEXT_POOL_REGISTER);
+			// Load target pool entry, but only if the class has actually
+			// changed (there is no point in loading the pool for another
+			// class).
+			if (!targetclass.equals(this.thistype))
+				codebuilder.add(NativeInstructionType.LOAD_POOL,
+					targetclass, NativeCode.NEXT_POOL_REGISTER);
 			
 			// Static invocations always have direct pointers
 			if (__t == InvokeType.STATIC)
