@@ -118,11 +118,13 @@ public class SummerCoatFactory
 			for (int i = 0; i < n; i++)
 			{
 				int key = dis.readUnsignedByte(),
-					addr = dis.readUnsignedShort() + ramstart;
+					addr = dis.readUnsignedShort() + ramstart,
+					mod = (key & 0x0F),
+					siz = ((key & 0xF0) >>> 4);
 				
 				// Which offset is used?
 				int off;
-				switch (key & 0xF)
+				switch (mod)
 				{
 						// RAM
 					case 1:
@@ -135,13 +137,13 @@ public class SummerCoatFactory
 						break;
 					
 						// {@squirreljme.error AE02 Corrupt Boot RAM with
-						// invalid value modifier.}
+						// invalid value modifier. (Modifier)}
 					default:
-						throw new VMException("AE02");
+						throw new VMException("AE02 " + mod);
 				}
 				
 				// Depends on operation size
-				switch ((key & 0xF0) >>> 8)
+				switch (siz)
 				{
 						// Byte
 					case 1:
@@ -162,16 +164,17 @@ public class SummerCoatFactory
 						break;
 					
 						// {@squirreljme.error AE03 Corrupt Boot RAM with
-						// invalid size.}
+						// invalid size. (Size)}
 					default:
-						throw new VMException("AE03");
+						throw new VMException("AE03 " + siz);
 				}
 			}
 			
 			// {@squirreljme.AE04 Expected value at end of initializer
-			// memory, the Boot RAM is corrupt.}
-			if (-1 != dis.readInt())
-				throw new VMException("AE04");
+			// memory, the Boot RAM is corrupt. (Key value)}
+			int key;
+			if (-1 != (key = dis.readInt()))
+				throw new VMException("AE04 " + key);
 		}
 		
 		// {@squirreljme.error AE01 Could not initialize the boot RAM for
