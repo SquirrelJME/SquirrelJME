@@ -194,6 +194,9 @@ public final class SuiteMemory
 		String libname = this.libname;
 		VMClassLibrary clib = this.suites.loadLibrary(libname);
 		
+		// Debug
+		todo.DEBUG.note("Initialize suite %s @%08d", libname, this.offset);
+		
 		// Minimize and format the JAR
 		byte[] jf = JarMinimizer.minimize((libname.equals("cldc-compact") ||
 			libname.equals("cldc-compact.jar")), clib);

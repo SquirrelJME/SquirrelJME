@@ -433,6 +433,13 @@ public final class ByteCodeProcessor
 						this.__doMonitor(false);
 						break;
 					
+						// Multiple new array
+					case InstructionIndex.MULTIANEWARRAY:
+						this.__doMultiANewArray(
+							sji.<ClassName>argument(0, ClassName.class),
+							sji.intArgument(1));
+						break;
+					
 						// Create new instance of something
 					case InstructionIndex.NEW:
 						this.__doNew(sji.<ClassName>argument(0,
@@ -1096,7 +1103,7 @@ public final class ByteCodeProcessor
 		if (!this._dohandling)
 			return;
 		
-		// Perform the math
+		// Monitor operation
 		this.handler.doMath(__pt.toStackJavaType(), __mot, result.in(0),
 			__c, result.out(0));
 	}
@@ -1120,8 +1127,39 @@ public final class ByteCodeProcessor
 		if (!this._dohandling)
 			return;
 		
-		// Perform the math
+		// Monitor operation
 		this.handler.doMonitor(__enter, result.in(0));
+	}
+	
+	/**
+	 * Allocate multi-dimensional array.
+	 *
+	 * @param __cl The class to allocate.
+	 * @param __dims The number of dimensions to allocate.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/04
+	 */
+	private final void __doMultiANewArray(ClassName __cl, int __dims)
+		throws NullPointerException
+	{
+		if (__cl == null)
+			throw new NullPointerException("NARG");
+			
+		// Can toss exception
+		this._canexception = true;
+		
+		// [__dims, ...] -> [object]
+		JavaStackResult result = this.state.stack.doStack(__dims,
+			new JavaType(__cl));
+		this.__update(result);
+		
+		// Stop pre-processing here
+		if (!this._dohandling)
+			return;
+		
+		// Handle array creation
+		this.handler.doMultiANewArray(__cl, __dims, result.out(0),
+			result.in());
 	}
 	
 	/**
