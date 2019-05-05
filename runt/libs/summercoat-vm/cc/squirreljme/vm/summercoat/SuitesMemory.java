@@ -172,7 +172,7 @@ public final class SuitesMemory
 		
 		// Reading from the config table?
 		if (__addr < CONFIG_TABLE_SIZE)
-			return this.configtable.memReadInt(__addr);
+			return this.configtable.memReadByte(__addr);
 		
 		// Determine the suite index we are wanting to look in memory
 		int si = (__addr - CONFIG_TABLE_SIZE) / SUITE_CHUNK_SIZE;
