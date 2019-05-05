@@ -22,7 +22,11 @@ public final class Allocator
 	
 	/** Bits which are used to detect start of chain corruption. */
 	public static final int PROTECTION_BITS =
-		0x50000000;
+		0x50000001;
+	
+	/** Bits which cannot be set on allocation. */
+	public static final int BAD_BITS =
+		MEMPART_FREE_BIT | PROTECTION_BITS;
 	
 	/** Offset to size of memory partition. */
 	public static final int OFF_MEMPART_SIZE =
@@ -52,14 +56,19 @@ public final class Allocator
 		// Cannot allocate zero bytes
 		if (__sz == 0)
 			return 0;
+		// Round allocations to nearest 4 bytes since the VM expects this
+		// alignment be used
+		__sz = (__sz + 3) & (~3);
+		
+		// If any bad bits are set then attempting to allocate this will
+		// cause the links to not be sized correctly, so just fail to
+		// allocate these
+		if ((__sz & BAD_BITS) != 0)
+			return 0;
 		
 		// This is the seeker which scans through the memory links to find
 		// free space somewhere
 		int seeker = Allocator._allocbase;
-		
-		// Round allocations to nearest 4 bytes since the VM expects this
-		// alignment be used
-		__sz = (__sz + 3) & (~3);
 		
 		// We will be going through every chain
 		for (;;)
@@ -76,6 +85,7 @@ public final class Allocator
 			// {@squirreljme.error ZZ44 Memory link has been corrupted.}
 			if ((size & PROTECTION_BITS) != PROTECTION_BITS)
 				throw new VirtualMachineError("ZZ44");
+			size ^= PROTECTION_BITS;
 			
 			// This region of memory is free for use
 			if ((size & MEMPART_FREE_BIT) != 0)
@@ -123,7 +133,7 @@ public final class Allocator
 					// Write the new block properties and its used
 					// indication
 					Assembly.memWriteInt(seeker, OFF_MEMPART_SIZE,
-						needblock);
+						needblock | PROTECTION_BITS);
 					
 					// Clear the memory here since it is expected that
 					// everything in Java has been initialized to zero,
@@ -155,6 +165,11 @@ public final class Allocator
 		// Read size and next address
 		int size = Assembly.memReadInt(blockptr, OFF_MEMPART_SIZE),
 			next = Assembly.memReadInt(blockptr, OFF_MEMPART_NEXT);
+		
+		// {@squirreljme.error ZZ45 Memory link block is corrupted.}
+		if ((size & PROTECTION_BITS) != PROTECTION_BITS)
+			throw new VirtualMachineError("ZZ45");
+		size ^= PROTECTION_BITS;
 		
 		// {@squirreljme.error ZZ42 Linked block points to a previous address
 		// in memory.}
