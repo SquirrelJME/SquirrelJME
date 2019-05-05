@@ -311,10 +311,11 @@ public final class JavaStackState
 		// Return value?
 		List<JavaStackResult.InputOutput> io = new ArrayList<>();
 		int newstacktop = stacktop;
+		Info popped = null;
 		if (__rv)
 		{
 			// Pop top item
-			Info popped = stack[--newstacktop];
+			popped = stack[--newstacktop];
 			if (popped.type.isWide())
 				popped = stack[--newstacktop];
 			
@@ -334,6 +335,12 @@ public final class JavaStackState
 			if (inf.canEnqueue())
 				enqueue.add(inf.value);
 		}
+		
+		// If we are popping something, make sure the value that was popped
+		// is never enqueued because if it was a cached local or stack entry
+		// then it would have been hit by an uncount
+		if (popped != null)
+			enqueue.remove((Object)popped.value);
 		
 		// Create result
 		return new JavaStackResult(this,
