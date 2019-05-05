@@ -401,6 +401,10 @@ public final class Kernel
 	 */
 	public static final void jvmGarbageCollectObject(int __p)
 	{
+		// {@squirreljme.error ZZ40 Cannot garbage collect a null pointer.}
+		if (__p == 0)
+			throw new VirtualMachineError("ZZ40");
+		
 		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
