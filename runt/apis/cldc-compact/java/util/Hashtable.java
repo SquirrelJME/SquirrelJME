@@ -38,22 +38,52 @@ public class Hashtable<K, V>
 		this._map = new __BucketMap__<K, V>(false, false, __cap, __load);
 	}
 	
-	public Hashtable(int __a)
+	/**
+	 * Initializes the map with the given capacity and the default load factor.
+	 *
+	 * @param __cap The capacity used.
+	 * @throws IllegalArgumentException If the capacity is negative.
+	 * @since 2019/05/05
+	 */
+	public Hashtable(int __cap)
+		throws IllegalArgumentException
 	{
-		super();
-		throw new todo.TODO();
+		this._map = new __BucketMap__<K, V>(false, __cap);
 	}
 	
+	/**
+	 * Initializes the map with the default capacity and load factor.
+	 *
+	 * @since 2019/05/05
+	 */
 	public Hashtable()
 	{
-		super();
-		throw new todo.TODO();
+		this._map = new __BucketMap__<K, V>(false);
 	}
 	
-	public Hashtable(Map<? extends K, ? extends V> __a)
+	/**
+	 * Initializes a map which is a copy of the other map.
+	 *
+	 * The default load factor is used and the capacity is set to the
+	 * capacity of the input map.
+	 *
+	 * @param __m The map to copy from.
+	 * @throws NullPointerException If {@code __m} is null or it contains
+	 * null keys or values.
+	 * @since 2018/10/07
+	 */
+	public Hashtable(Map<? extends K, ? extends V> __m)
+		throws NullPointerException
 	{
-		super();
-		throw new todo.TODO();
+		if (__m == null)
+			throw new NullPointerException("NARG");
+		
+		// Capacity is just the number of entries in the map
+		this._map = new __BucketMap__<K, V>(false,
+			Math.max(__BucketMap__._DEFAULT_CAPACITY, __m.size()));
+		
+		// Put all entries
+		this.putAll(__m);
 	}
 	
 	public void clear()
@@ -192,9 +222,17 @@ public class Hashtable<K, V>
 		}
 	}
 	
+	/**
+	 * This reorganizes and reorders the entries internally in the hash map,
+	 * this is called automatically when the map has been reordered.
+	 *
+	 * @since 2019/05/05
+	 */
+	@ImplementationNote("In SquirrelJME this has no actual effect because " +
+		"it is internally handled, however code might rely on overriding " +
+		"this method to determine when the map has been rehashed.")
 	protected void rehash()
 	{
-		throw new todo.TODO();
 	}
 	
 	@Override

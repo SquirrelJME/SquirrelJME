@@ -70,6 +70,9 @@ final class __BucketMap__<K, V>
 	/** Modification count. */
 	int _modcount;
 	
+	/** The rehash count. */
+	int _numrehash;
+	
 	/**
 	 * Initializes the map with the default capacity and load factor.
 	 *
@@ -210,6 +213,9 @@ final class __BucketMap__<K, V>
 		{
 			// Indicate re-balance
 			todo.DEBUG.note("Rebalancing bucket map");
+			
+			// Increase rehash count
+			this._numrehash++;
 			
 			// Double the number of buckets
 			int newbucketdiv = (bucketdiv * 2);

@@ -41,6 +41,8 @@ More detailed changes:
    * Added the missing _mimemessage_ file for the MIME file decoding test.
  * Programs and Libraries
    * `cldc-compact`
+     * Added a rehash indicator for the internal `__BucketMap__` so that
+       `java.util.Hashtable` knows when a reorder was performed.
      * Added `java.util.Vector`, it was missing.
      * Added support for ISO-8859-15, this is the newer encoding with the
        Euro symbol.
