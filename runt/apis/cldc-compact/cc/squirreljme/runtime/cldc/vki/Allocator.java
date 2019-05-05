@@ -28,6 +28,10 @@ public final class Allocator
 	public static final int OFF_MEMPART_NEXT =
 		4;
 	
+	/** Size of the block information. */
+	public static final int BLOCK_SIZE =
+		8;
+	
 	/** Allocation base. */
 	static int _allocbase;
 	
@@ -72,19 +76,19 @@ public final class Allocator
 				// of and then. The block size is the size of this region
 				// with the partition info
 				int blocksize = (size ^ MEMPART_FREE_BIT),
-					actcount = blocksize - 8;
+					actcount = blocksize - BLOCK_SIZE;
 				
 				// There is enough space to use this partition
 				if (__sz <= actcount)
 				{
 					// The return pointer is the region start address
-					int rv = seeker + 8;
+					int rv = seeker + BLOCK_SIZE;
 					
 					// This is the new block size, if it does not match the
 					// current block size then we are not using an entire
 					// block (if it does match then we just claimed all the
 					// free space here).
-					int newblocksize = (__sz + 8);
+					int newblocksize = (__sz + BLOCK_SIZE);
 					if (blocksize != newblocksize)
 					{
 						// This is the address of the next block
@@ -126,6 +130,32 @@ public final class Allocator
 			// If this point was reached, we need to try the next link
 			seeker = next;
 		}
+	}
+	
+	/**
+	 * Frees the given pointer from memory and makes it available for usage.
+	 *
+	 * @param __p The pointer to free.
+	 * @since 2019/05/05
+	 */
+	public static final void free(int __p)
+	{
+		// Calculate the base of the block
+		int blockptr = __p - BLOCK_SIZE;
+		
+		// Read size and next address
+		int size = Assembly.memReadInt(blockptr, OFF_MEMPART_SIZE),
+			next = Assembly.memReadInt(blockptr, OFF_MEMPART_NEXT);
+		
+		// Invalidate the memory that was here to make sure nothing uses it
+		// or it just leads to corruption
+		int allocsize = size - BLOCK_SIZE;
+		for (int i = 0; i < allocsize; i += 4)
+			Assembly.memWriteInt(__p, i, 0xE7E5E7E4);
+		
+		// Mark this block as free
+		Assembly.memWriteInt(blockptr, OFF_MEMPART_SIZE,
+			size | MEMPART_FREE_BIT);
 	}
 }
 
