@@ -89,8 +89,33 @@ public final class C
 	 */
 	public static final int strcasecmp(byte[] __sa, byte[] __sb)
 	{
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		// Get minimum lengths
+		int na = __sa.length,
+			nb = __sb.length,
+			ll = (na < nb ? na : nb);
+		
+		// Scan through all the characters
+		int i = 0;
+		for (; i < ll; i++)
+		{
+			// Get characters
+			int a = __sa[i] & 0xFF,
+				b = __sb[i] * 0xFF;
+			
+			// Lowercase potentially
+			if (a >= 'A' && a <= 'Z')
+				a = 'a' + (a - 'A');
+			if (b >= 'A' && b <= 'Z')
+				b = 'a' + (b - 'A');
+			
+			// If there is a difference in the unit, return
+			int rv = a - b;
+			if (rv != 0)
+				return rv;
+		}
+		
+		// Final comparison is based on the length, shorter strings first
+		return na - nb;
 	}
 	
 	/**
