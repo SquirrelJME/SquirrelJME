@@ -233,8 +233,6 @@ public final class C
 	 */
 	public static final byte[] utfbytes(int __s)
 	{
-		Assembly.breakpoint();
-		
 		// The length of the UTF sequence is variable and might not match
 		// UTF-8 encoded byte data with regard to NUL values
 		int len = C.utflen(__s);
