@@ -211,6 +211,67 @@ public final class ProjectManager
 	}
 	
 	/**
+	 * Returns the class path for the given projects.
+	 *
+	 * @param __p The projects to lookup.
+	 * @return The class path for the projects.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/05
+	 */
+	public final Binary[] classPath(String... __p)
+		throws NullPointerException
+	{
+		return this.classPath(this.deftimespace, __p);
+	}
+	
+	/**
+	 * Returns the class path for the given projects in the given timespace.
+	 *
+	 * @param __t The timespace to use.
+	 * @param __p The projects to lookup.
+	 * @return The class path for the projects.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/05
+	 */
+	public final Binary[] classPath(TimeSpaceType __t, String... __p)
+		throws NullPointerException
+	{
+		if (__t == null || __p == null)
+			throw new NullPointerException("NARG");
+		
+		// Need the binary manager to get the class path for these
+		BinaryManager bm;
+		try
+		{
+			bm = this.binaryManager(__t);
+		}
+		
+		// {@squirreljme.error AU9g Could not obtain the binary manager.}
+		catch (IOException e)
+		{
+			throw new RuntimeException("AU9g", e);
+		}
+		
+		// Get binaries
+		int n = __p.length;
+		Binary[] bins = new Binary[n];
+		for (int i = 0; i < n; i++)
+			bins[i] = bm.get(__p[i]);
+		
+		// Do not return duplicate binaries
+		Set<Binary> rv = new LinkedHashSet<>();
+		
+		// Compile all of the project and return required class path for
+		// it to operate
+		for (Binary i : bins)
+			for (Binary b : bm.classPath(i))
+				rv.add(b);
+		
+		// Return the completed set
+		return rv.<Binary>toArray(new Binary[rv.size()]);
+	}
+	
+	/**
 	 * Opens the given root file from the source tree. This also handles MIME
 	 * encoded files if they exist and decodes them accordingly.
 	 *

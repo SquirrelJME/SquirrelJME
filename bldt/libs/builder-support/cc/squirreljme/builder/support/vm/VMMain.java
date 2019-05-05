@@ -11,6 +11,7 @@
 package cc.squirreljme.builder.support.vm;
 
 import cc.squirreljme.builder.support.Binary;
+import cc.squirreljme.builder.support.NoSourceAvailableException;
 import cc.squirreljme.builder.support.ProjectManager;
 import cc.squirreljme.builder.support.TimeSpaceType;
 import cc.squirreljme.vm.VirtualMachine;
@@ -118,7 +119,17 @@ public class VMMain
 		// Get the project and all of its dependencies built which forms
 		// the class path
 		Set<Binary> xclasspath = new LinkedHashSet<>();
-		Binary[] vclasspath = __pm.build(project);
+		Binary[] vclasspath;
+		try
+		{
+			vclasspath = __pm.build(project);
+		}
+		
+		// If there is no source for this, just use the classpath then
+		catch (NoSourceAvailableException e)
+		{
+			vclasspath = __pm.classPath(project);
+		}
 		
 		// The boot entry always must be last
 		Binary bootp = vclasspath[vclasspath.length - 1];
