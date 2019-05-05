@@ -44,9 +44,10 @@ final class __Bootstrap__
 		Assembly.memWriteInt(nextblock, Allocator.OFF_MEMPART_NEXT,
 			0);
 		
-		__mainclass[0] = __mainclass[0];
+		// Create initial kernel task
+		int tid = KernelTask.createTask(__classpath, __sysprops, __mainclass,
+			__mainargs, __ismidlet, __gd);
 		
-		Assembly.entryMarker();
 		Assembly.breakpoint();
 		throw new todo.TODO();
 	}
