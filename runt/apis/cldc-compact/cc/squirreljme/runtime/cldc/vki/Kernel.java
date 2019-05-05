@@ -623,10 +623,6 @@ public final class Kernel
 		// Determine the allocation size
 		int allocsize = ARRAY_BASE_SIZE + (cellsize * __len);
 		
-		// Grab kernel object
-		Kernel kernel = ((Kernel)Assembly.pointerToObject(Assembly.memReadInt(
-			Assembly.specialGetStaticFieldRegister(), SF_KERNEL_OFFSET)));
-		
 		// Try to allocate twice
 		int rv;
 		boolean retry = false;

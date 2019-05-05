@@ -28,11 +28,14 @@ final class __Bootstrap__
 	 * @param __mainargs Main arguments.
 	 * @param __ismidlet Is this a MIDlet?
 	 * @param __gd The current guest depth.
+	 * @param __rombase Base address of the ROM (for offset calculation).
+	 * @param __romtoc The address of the table of contents.
 	 * @since 2019/05/04
 	 */
 	static final void __start(int __rambase, int __ramsize, int __bootsize,
 		byte[][] __classpath, byte[][] __sysprops, byte[] __mainclass,
-		byte[][] __mainargs, boolean __ismidlet, int __gd)
+		byte[][] __mainargs, boolean __ismidlet, int __gd, int __rombase,
+		int __romtoc)
 	{
 		// Allocation base is set to the base of RAM
 		Allocator._allocbase = __rambase;
@@ -44,9 +47,20 @@ final class __Bootstrap__
 		Assembly.memWriteInt(nextblock, Allocator.OFF_MEMPART_NEXT,
 			0);
 		
+		// Store ROM TOC and such
+		KernelTask._rombase = __rombase;
+		KernelTask._romtoc = __romtoc;
+		
 		// Create initial kernel task
 		int tid = KernelTask.createTask(__classpath, __sysprops, __mainclass,
 			__mainargs, __ismidlet, __gd);
+		if (tid == 0)
+		{
+			Assembly.breakpoint();
+			
+			// {@squirreljme.error ZZ3x Could not start the main task.}
+			throw new RuntimeException("ZZ3x");
+		}
 		
 		Assembly.breakpoint();
 		throw new todo.TODO();

@@ -775,12 +775,9 @@ public final class NearNativeByteCodeHandler
 					callargs.add(in.register + 1);
 			}
 			
-			// Load target pool entry, but only if the class has actually
-			// changed (there is no point in loading the pool for another
-			// class).
-			if (!targetclass.equals(this.thistype))
-				codebuilder.add(NativeInstructionType.LOAD_POOL,
-					new ClassPool(targetclass), NativeCode.NEXT_POOL_REGISTER);
+			// Load pool of target class
+			codebuilder.add(NativeInstructionType.LOAD_POOL,
+				new ClassPool(targetclass), NativeCode.NEXT_POOL_REGISTER);
 			
 			// Static invocations always have direct pointers
 			if (__t == InvokeType.STATIC)

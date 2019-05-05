@@ -211,6 +211,21 @@ public final class C
 	}
 	
 	/**
+	 * Compares a UTF encoded string to a string encoded as UTF-8 bytes without
+	 * regards to case.
+	 *
+	 * @param __s1 String 1.
+	 * @param __s2 String 2.
+	 * @return The result of the comparison in Java terms.
+	 * @since 2019/05/05
+	 */
+	public static final int utfcasecmp(int __s1, byte[] __s2)
+	{
+		Assembly.breakpoint();
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Compares two UTF encoded strings.
 	 *
 	 * @param __s1 String 1.
@@ -219,6 +234,20 @@ public final class C
 	 * @since 2019/04/28
 	 */
 	public static final int utfcmp(int __s1, int __s2)
+	{
+		Assembly.breakpoint();
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Compares a UTF encoded string to a string encoded as UTF-8 bytes.
+	 *
+	 * @param __s1 String 1.
+	 * @param __s2 String 2.
+	 * @return The result of the comparison in Java terms.
+	 * @since 2019/05/05
+	 */
+	public static final int utfcmp(int __s1, byte[] __s2)
 	{
 		Assembly.breakpoint();
 		throw new todo.TODO();
