@@ -405,8 +405,46 @@ public final class Kernel
 		if (__p == 0)
 			throw new VirtualMachineError("ZZ40");
 		
-		Assembly.breakpoint();
-		throw new todo.TODO();
+		// {@squirreljme.error ZZ41 Cannot garbage collect an object which
+		// is locked by a thread.}
+		int lock = Assembly.memReadInt(__p, OBJECT_MONITOR_OFFSET);
+		if (lock != 0)
+			throw new VirtualMachineError("ZZ41");
+		
+		// Determine if scanning needs to be done (to free all the field
+		// references and such)
+		int pcl = Assembly.memReadInt(__p, OBJECT_CLASS_OFFSET);
+		boolean scan;
+		switch (pcl)
+		{
+				// These have nothing to be cleared
+			case FixedClassIDs.PRIMITIVE_BOOLEAN_ARRAY:
+			case FixedClassIDs.PRIMITIVE_BYTE_ARRAY:
+			case FixedClassIDs.PRIMITIVE_SHORT_ARRAY:
+			case FixedClassIDs.PRIMITIVE_CHARACTER_ARRAY:
+			case FixedClassIDs.PRIMITIVE_INTEGER_ARRAY:
+			case FixedClassIDs.PRIMITIVE_LONG_ARRAY:
+			case FixedClassIDs.PRIMITIVE_FLOAT_ARRAY:
+			case FixedClassIDs.PRIMITIVE_DOUBLE_ARRAY:
+			case FixedClassIDs.OBJECT:
+				scan = false;
+				break;
+			
+				// These do need to be cleared
+			default:
+				scan = true;
+				break;
+		}
+		
+		// Scan the object for fields and such to clear out
+		if (scan)
+		{
+			Assembly.breakpoint();
+			throw new todo.TODO();
+		}
+		
+		// Free the object in the memory chain
+		Allocator.free(__p);
 	}
 	
 	/**
