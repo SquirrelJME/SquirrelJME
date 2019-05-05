@@ -68,7 +68,7 @@ public final class Allocator
 			// Read size and next address
 			int size = Assembly.memReadInt(seeker, OFF_MEMPART_SIZE),
 				next = Assembly.memReadInt(seeker, OFF_MEMPART_NEXT);
-				
+			
 			// This region of memory is free for use
 			if ((size & MEMPART_FREE_BIT) != 0)
 			{
@@ -76,7 +76,8 @@ public final class Allocator
 				// of and then. The block size is the size of this region
 				// with the partition info
 				int blocksize = (size ^ MEMPART_FREE_BIT),
-					actcount = blocksize - BLOCK_SIZE;
+					actcount = blocksize - BLOCK_SIZE,
+					needblock = (__sz + BLOCK_SIZE);
 				
 				// There is enough space to use this partition
 				if (__sz <= actcount)
@@ -88,17 +89,16 @@ public final class Allocator
 					// current block size then we are not using an entire
 					// block (if it does match then we just claimed all the
 					// free space here).
-					int newblocksize = (__sz + BLOCK_SIZE);
-					if (blocksize != newblocksize)
+					if (blocksize != needblock)
 					{
 						// This is the address of the next block
-						int nextseeker = seeker + newblocksize;
+						int nextseeker = seeker + needblock;
 						
 						// The size of this block is free and it has the
 						// remaining size of the current block's old size
 						// minute the new block size
 						Assembly.memWriteInt(nextseeker, OFF_MEMPART_SIZE,
-							(blocksize - newblocksize) | MEMPART_FREE_BIT);
+							(blocksize - needblock) | MEMPART_FREE_BIT);
 						
 						// The next link of the next block because our
 						// current link (since it is a linked list)
@@ -114,7 +114,7 @@ public final class Allocator
 					// Write the new block properties and its used
 					// indication
 					Assembly.memWriteInt(seeker, OFF_MEMPART_SIZE,
-						newblocksize);
+						needblock);
 					
 					// Clear the memory here since it is expected that
 					// everything in Java has been initialized to zero,
@@ -146,6 +146,15 @@ public final class Allocator
 		// Read size and next address
 		int size = Assembly.memReadInt(blockptr, OFF_MEMPART_SIZE),
 			next = Assembly.memReadInt(blockptr, OFF_MEMPART_NEXT);
+		
+		// {@squirreljme.error ZZ42 Linked block points to a previous address
+		// in memory.}
+		if (next != 0 && (next - blockptr) < 0)
+			throw new VirtualMachineError("ZZ42");
+		
+		// {@squirreljme.error ZZ43 Double free of memory.}
+		if ((size & MEMPART_FREE_BIT) != 0)
+			throw new VirtualMachineError("ZZ43");
 		
 		// Invalidate the memory that was here to make sure nothing uses it
 		// or it just leads to corruption
