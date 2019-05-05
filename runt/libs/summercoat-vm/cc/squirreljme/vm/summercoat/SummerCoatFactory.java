@@ -83,7 +83,9 @@ public class SummerCoatFactory
 		VirtualMemory vmem = new VirtualMemory();
 		
 		// Initialize suite memory
-		SuitesMemory sm = new SuitesMemory(SUITE_BASE_ADDR, __sm);
+		int rombase = SUITE_BASE_ADDR,
+			romtoc = SUITE_BASE_ADDR;
+		SuitesMemory sm = new SuitesMemory(rombase, __sm);
 		vmem.mapRegion(sm);
 		
 		// Initialize RAM
@@ -206,7 +208,7 @@ public class SummerCoatFactory
 		NativeCPU cpu = new NativeCPU(vmem);
 		NativeCPU.Frame iframe = cpu.enterFrame(bjo + bjh.bootstart,
 			ramstart, ramsize, lram, xxclasspth, xxsysprops, xxmainclss,
-			xxmainargs, (__ismid ? 1 : 0), __gd);
+			xxmainargs, (__ismid ? 1 : 0), __gd, rombase, romtoc);
 		
 		// Seed initial frame registers
 		iframe._registers[NativeCode.POOL_REGISTER] =

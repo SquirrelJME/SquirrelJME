@@ -13,6 +13,8 @@ import cc.squirreljme.vm.VMClassLibrary;
 import cc.squirreljme.vm.VMException;
 import cc.squirreljme.vm.VMSuiteManager;
 import dev.shadowtail.jarfile.MinimizedJarHeader;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -46,7 +48,7 @@ public final class SuitesMemory
 	protected final int size;
 	
 	/** The suite configuration table (addresses of suites). */
-	protected final WritableMemory configtable;
+	protected final ReadableMemory configtable;
 	
 	/** The individual regions of suite memory. */
 	private final SuiteMemory[] _suitemem;
@@ -82,39 +84,71 @@ public final class SuitesMemory
 		
 		// All the libraries which are available for usage
 		String[] libnames = __sm.listLibraryNames();
+		int n = libnames.length;
 		
-		// Setup configuration space
-		WritableMemory configtable = new RawMemory(__off, CONFIG_TABLE_SIZE);
-		this.configtable = configtable;
+		// Output stream for table of contents
+		ByteArrayOutputStream tbaos = new ByteArrayOutputStream(4096);
+		DataOutputStream tdos = new DataOutputStream(tbaos);
+		
+		// Jar name fills
+		ByteArrayOutputStream sbaos = new ByteArrayOutputStream(4096);
+		DataOutputStream sdos = new DataOutputStream(sbaos);
+		
+		// Relative offset for the string table
+		int reloff = (n * 8) + 8;
 		
 		// Setup suite memory area
-		int n = libnames.length;
 		SuiteMemory[] suitemem = new SuiteMemory[n];
 		Map<String, SuiteMemory> suitemap = new LinkedHashMap<>();
 		
-		// Setup memory regions for the various suites
+		// Write table of contents and memory map suites
 		int off = CONFIG_TABLE_SIZE;
-		for (int i = 0; i < n; i++, off += SUITE_CHUNK_SIZE)
+		try
 		{
-			// Set
-			String ln = libnames[i];
-			SuiteMemory sm;
-			suitemem[i] = (sm = new SuiteMemory(off, __sm, ln));
+			// Setup memory regions for the various suites
+			for (int i = 0; i < n; i++, off += SUITE_CHUNK_SIZE)
+			{
+				// Set
+				String ln = libnames[i];
+				SuiteMemory sm;
+				suitemem[i] = (sm = new SuiteMemory(off, __sm, ln));
+				
+				// Also use map for quick access
+				suitemap.put(ln, sm);
+				
+				// Write offset to suite ROM
+				tdos.writeInt(off);
+				
+				// Write name of suite
+				tdos.writeInt(sdos.size());
+				sdos.writeUTF(ln);
+				
+				// Round table data
+				while ((sdos.size() & 1) != 0)
+					sdos.write(0);
+				
+				// Debug
+				todo.DEBUG.note("MMap Suite %s -> %08x", ln, __off + off);
+			}
 			
-			// Also use map for quick access
-			suitemap.put(ln, sm);
+			// End of table
+			tdos.writeInt(-1);
+			tdos.writeInt(-1);
 			
-			// Write offset to the suite memory's position
-			configtable.memWriteInt(4 * i, off);
-			
-			// Debug
-			todo.DEBUG.note("MMap Suite %s -> %08x", ln, __off + off);
+			// Build configuration space
+			tdos.write(sbaos.toByteArray());
 		}
 		
-		// Write end of suite table
-		configtable.memWriteInt(4 * n, 0xFFFFFFFF);
-		configtable.memWriteInt(4 * (n + 1), 0xFFFFFFFF);
-		configtable.memWriteInt(4 * (n + 2), 0xFFFFFFFF);
+		// {@squirreljme.error AE04 Could not build the table of contents.}
+		catch (IOException e)
+		{
+			throw new RuntimeException("AE04", e);
+		}
+		
+		// Store memory
+		ReadableMemory configtable = new ByteArrayMemory(__off,
+			tbaos.toByteArray());
+		this.configtable = configtable;
 		
 		// Store all the various suite memories
 		this._suitemem = suitemem;
