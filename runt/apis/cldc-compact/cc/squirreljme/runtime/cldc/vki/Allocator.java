@@ -20,6 +20,10 @@ public final class Allocator
 	public static final int MEMPART_FREE_BIT =
 		0x80000000;
 	
+	/** Bits which are used to detect start of chain corruption. */
+	public static final int PROTECTION_BITS =
+		0x50000000;
+	
 	/** Offset to size of memory partition. */
 	public static final int OFF_MEMPART_SIZE =
 		0;
@@ -69,6 +73,10 @@ public final class Allocator
 			int size = Assembly.memReadInt(seeker, OFF_MEMPART_SIZE),
 				next = Assembly.memReadInt(seeker, OFF_MEMPART_NEXT);
 			
+			// {@squirreljme.error ZZ44 Memory link has been corrupted.}
+			if ((size & PROTECTION_BITS) != PROTECTION_BITS)
+				throw new VirtualMachineError("ZZ44");
+			
 			// This region of memory is free for use
 			if ((size & MEMPART_FREE_BIT) != 0)
 			{
@@ -98,7 +106,8 @@ public final class Allocator
 						// remaining size of the current block's old size
 						// minute the new block size
 						Assembly.memWriteInt(nextseeker, OFF_MEMPART_SIZE,
-							(blocksize - needblock) | MEMPART_FREE_BIT);
+							(blocksize - needblock) | MEMPART_FREE_BIT |
+							PROTECTION_BITS);
 						
 						// The next link of the next block because our
 						// current link (since it is a linked list)
@@ -164,7 +173,7 @@ public final class Allocator
 		
 		// Mark this block as free
 		Assembly.memWriteInt(blockptr, OFF_MEMPART_SIZE,
-			size | MEMPART_FREE_BIT);
+			size | MEMPART_FREE_BIT | PROTECTION_BITS);
 	}
 }
 

@@ -40,10 +40,20 @@ final class __Bootstrap__
 		// Allocation base is set to the base of RAM
 		Allocator._allocbase = __rambase;
 		
-		// Setup the next RAM block following the base bootstrap RAM block
+		// Round the bootsize to 4 bytes, just in case!
+		__bootsize = (__bootsize + 3) & (~3);
+		
+		// Rework the initial block base
 		int nextblock = __rambase + __bootsize;
+		Assembly.memWriteInt(__rambase, Allocator.OFF_MEMPART_SIZE,
+			__bootsize | Allocator.PROTECTION_BITS);
+		Assembly.memWriteInt(__rambase, Allocator.OFF_MEMPART_NEXT,
+			nextblock);
+		
+		// Setup the next RAM block following the base bootstrap RAM block
 		Assembly.memWriteInt(nextblock, Allocator.OFF_MEMPART_SIZE,
-			(__ramsize - __bootsize) | Allocator.MEMPART_FREE_BIT);
+			(__ramsize - __bootsize) | Allocator.MEMPART_FREE_BIT |
+			Allocator.PROTECTION_BITS);
 		Assembly.memWriteInt(nextblock, Allocator.OFF_MEMPART_NEXT,
 			0);
 		
