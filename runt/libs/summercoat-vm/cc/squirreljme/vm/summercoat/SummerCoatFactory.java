@@ -50,6 +50,10 @@ public class SummerCoatFactory
 	public static final int SUITE_BASE_ADDR =
 		0x40000000;
 	
+	/** Base address for configuration data. */
+	public static final int CONFIG_BASE_ADDR =
+		0x30000000;
+	
 	/** The starting address for RAM. */
 	public static final int RAM_START_ADDRESS =
 		1048576;
@@ -86,6 +90,19 @@ public class SummerCoatFactory
 		int ramsize = DefaultConfiguration.DEFAULT_RAM_SIZE,
 			ramstart = RAM_START_ADDRESS;
 		vmem.mapRegion(new RawMemory(ramstart, ramsize));
+		
+		// Initialize configuration memory
+		WritableMemory cmem = new RawMemory(CONFIG_BASE_ADDR, 8192);
+		vmem.mapRegion(cmem);
+		
+		// Allocate and initialize configuration data
+		StaticAllocator confalloc = new StaticAllocator(CONFIG_BASE_ADDR);
+		int xxclasspth = this.__memStrings(vmem, confalloc,
+				SummerCoatFactory.classPathToStringArray(__cp)),
+			xxsysprops = this.__memStrings(vmem, confalloc,
+				SummerCoatFactory.stringMapToStrings(__sprops)),
+			xxmainclss = this.__memString(vmem, confalloc, __maincl),
+			xxmainargs = this.__memStrings(vmem, confalloc, __args);
 		
 		// Initialize suite memory explicitly since we need it!
 		sm.__init();
@@ -188,7 +205,8 @@ public class SummerCoatFactory
 		// Setup virtual execution CPU
 		NativeCPU cpu = new NativeCPU(vmem);
 		NativeCPU.Frame iframe = cpu.enterFrame(bjo + bjh.bootstart,
-			ramstart, ramsize, lram);
+			ramstart, ramsize, lram, xxclasspth, xxsysprops, xxmainclss,
+			xxmainargs, (__ismid ? 1 : 0), __gd);
 		
 		// Seed initial frame registers
 		iframe._registers[NativeCode.POOL_REGISTER] =

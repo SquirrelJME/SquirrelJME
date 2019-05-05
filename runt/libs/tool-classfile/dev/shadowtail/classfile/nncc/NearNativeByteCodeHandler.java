@@ -454,6 +454,11 @@ public final class NearNativeByteCodeHandler
 			new InvokedMethod(InvokeType.STATIC, new MethodHandle(KERNEL_CLASS,
 			new MethodName("jvmIsInstance"), new MethodDescriptor("(II)I"))),
 			NativeCode.VOLATILE_B_REGISTER);
+			
+		// Load kernel pool
+		codebuilder.add(NativeInstructionType.LOAD_POOL,
+			new ClassPool(KERNEL_CLASS),
+			NativeCode.NEXT_POOL_REGISTER);
 		
 		// Call the instance checker (__ir, checkclassid)
 		codebuilder.add(NativeInstructionType.INVOKE,
@@ -1448,6 +1453,11 @@ public final class NearNativeByteCodeHandler
 					new MethodDescriptor("(II)I"))),
 					NativeCode.VOLATILE_B_REGISTER);
 				
+				// Load kernel pool
+				codebuilder.add(NativeInstructionType.LOAD_POOL,
+					new ClassPool(KERNEL_CLASS),
+					NativeCode.NEXT_POOL_REGISTER);
+				
 				// Call the instance checker (__ir, checkclassid)
 				codebuilder.add(NativeInstructionType.INVOKE,
 					NativeCode.VOLATILE_B_REGISTER, new RegisterList(
@@ -1546,6 +1556,11 @@ public final class NearNativeByteCodeHandler
 			new MethodDescriptor("(II)I"))),
 			NativeCode.VOLATILE_B_REGISTER);
 		
+		// Load kernel pool
+		codebuilder.add(NativeInstructionType.LOAD_POOL,
+			new ClassPool(KERNEL_CLASS),
+			NativeCode.NEXT_POOL_REGISTER);
+		
 		// Call the instance checker (__ir, checkclassid)
 		codebuilder.add(NativeInstructionType.INVOKE,
 			NativeCode.VOLATILE_B_REGISTER,
@@ -1586,6 +1601,11 @@ public final class NearNativeByteCodeHandler
 			new MethodName("jvmIsInstance"), new MethodDescriptor("(II)I"))),
 			NativeCode.VOLATILE_B_REGISTER);
 		
+		// Load kernel pool
+		codebuilder.add(NativeInstructionType.LOAD_POOL,
+			new ClassPool(KERNEL_CLASS),
+			NativeCode.NEXT_POOL_REGISTER);
+		
 		// Call the instance checker (__ir, checkclassid)
 		codebuilder.add(NativeInstructionType.INVOKE,
 			NativeCode.VOLATILE_B_REGISTER,
@@ -1612,6 +1632,11 @@ public final class NearNativeByteCodeHandler
 			new InvokedMethod(InvokeType.STATIC, new MethodHandle(KERNEL_CLASS,
 			new MethodName("jvmIsArray"), new MethodDescriptor("(I)I"))),
 			NativeCode.VOLATILE_A_REGISTER);
+		
+		// Load kernel pool
+		codebuilder.add(NativeInstructionType.LOAD_POOL,
+			new ClassPool(KERNEL_CLASS),
+			NativeCode.NEXT_POOL_REGISTER);
 		
 		// Call the instance checker (__ir, checkclassid)
 		codebuilder.add(NativeInstructionType.INVOKE,
@@ -2021,6 +2046,11 @@ public final class NearNativeByteCodeHandler
 				"jvmMonitorExit")), new MethodDescriptor("(I)V"))),
 			NativeCode.VOLATILE_A_REGISTER);
 		
+		// Load kernel pool
+		codebuilder.add(NativeInstructionType.LOAD_POOL,
+			new ClassPool(KERNEL_CLASS),
+			NativeCode.NEXT_POOL_REGISTER);
+		
 		// Call the monitor function
 		codebuilder.add(NativeInstructionType.INVOKE,
 			NativeCode.VOLATILE_A_REGISTER, new RegisterList(__r));
@@ -2152,6 +2182,13 @@ public final class NearNativeByteCodeHandler
 			new InvokedMethod(InvokeType.STATIC, KERNEL_CLASS.toString(),
 			"jvmGarbageCollectObject", "(I)V"),
 			NativeCode.VOLATILE_A_REGISTER);
+		
+		// Load kernel pool
+		codebuilder.add(NativeInstructionType.LOAD_POOL,
+			new ClassPool(KERNEL_CLASS),
+			NativeCode.NEXT_POOL_REGISTER);
+		
+		// Call GC method
 		codebuilder.add(NativeInstructionType.INVOKE,
 			NativeCode.VOLATILE_A_REGISTER, new RegisterList(__r));
 		
