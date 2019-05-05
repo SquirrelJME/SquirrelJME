@@ -22,9 +22,17 @@ final class __Bootstrap__
 	 * @param __rambase The base RAM address.
 	 * @param __ramsize The size of RAM.
 	 * @param __bootsize Boot memory size.
+	 * @param __classpath The class path.
+	 * @param __sysprops System properties.
+	 * @param __mainclass Main class.
+	 * @param __mainargs Main arguments.
+	 * @param __ismidlet Is this a MIDlet?
+	 * @param __gd The current guest depth.
 	 * @since 2019/05/04
 	 */
-	static final void __start(int __rambase, int __ramsize, int __bootsize)
+	static final void __start(int __rambase, int __ramsize, int __bootsize,
+		byte[][] __classpath, byte[][] __sysprops, byte[] __mainclass,
+		byte[][] __mainargs, boolean __ismidlet, int __gd)
 	{
 		// Allocation base is set to the base of RAM
 		Allocator._allocbase = __rambase;
@@ -36,8 +44,7 @@ final class __Bootstrap__
 		Assembly.memWriteInt(nextblock, Allocator.OFF_MEMPART_NEXT,
 			0);
 		
-		// Test allocation
-		Allocator.allocate(1);
+		__mainclass[0] = __mainclass[0];
 		
 		Assembly.entryMarker();
 		Assembly.breakpoint();
