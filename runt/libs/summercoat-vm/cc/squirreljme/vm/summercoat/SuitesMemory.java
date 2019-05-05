@@ -120,7 +120,7 @@ public final class SuitesMemory
 				tdos.writeInt(off);
 				
 				// Write name of suite
-				tdos.writeInt(sdos.size());
+				tdos.writeInt(reloff + sdos.size());
 				sdos.writeUTF(ln);
 				
 				// Round table data

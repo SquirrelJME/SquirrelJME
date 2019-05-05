@@ -1045,6 +1045,12 @@ public final class NearNativeByteCodeHandler
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
 			new InvokedMethod(InvokeType.STATIC, KERNEL_CLASS.toString(),
 			"jvmNewArray", "(II)I"), NativeCode.VOLATILE_B_REGISTER);
+		
+		// Pool for the kernel
+		codebuilder.add(NativeInstructionType.LOAD_POOL,
+			new ClassPool(KERNEL_CLASS), NativeCode.NEXT_POOL_REGISTER);
+		
+		// Invoke method
 		codebuilder.add(NativeInstructionType.INVOKE,
 			NativeCode.VOLATILE_B_REGISTER,
 			new RegisterList(NativeCode.VOLATILE_A_REGISTER, __len.register));
