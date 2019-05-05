@@ -178,6 +178,9 @@ public final class Initializer
 		byte[] bytes = this._bytes;
 		int size = this._size;
 		
+		// Round up
+		size = (size + 3) & (~3);
+		
 		// The initializer memory is actually a chunk of allocated memory so
 		// store the block information for usage.
 		this.memWriteInt(null, Allocator.OFF_MEMPART_SIZE,

@@ -142,8 +142,13 @@ public final class JarMinimizer
 			int sfieldnext = this._sfieldnext;
 			bi._smemoff = (smemoff = sfieldnext);
 			
+			// {@squirreljme.error BC03 Ran out of static field space.}
+			int snext = sfieldnext + bi._class.header.sfsize;
+			if (snext >= DefaultConfiguration.MINIMUM_STATIC_FIELD_SIZE)
+				throw new RuntimeException("BC03");
+			
 			// Set next pointer area
-			this._sfieldnext = sfieldnext + bi._class.header.sfsize;
+			this._sfieldnext = snext;
 		}
 		
 		// Try to get static field

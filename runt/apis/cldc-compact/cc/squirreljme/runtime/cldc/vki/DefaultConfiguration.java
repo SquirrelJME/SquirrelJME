@@ -26,7 +26,7 @@ public interface DefaultConfiguration
 	
 	/** Minimum static field size. */
 	public static final int MINIMUM_STATIC_FIELD_SIZE =
-		1024;
+		4096;
 	
 	/** Default class table size. */
 	public static final int DEFAULT_CLASS_TABLE_SIZE =
