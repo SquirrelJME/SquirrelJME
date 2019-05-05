@@ -13,6 +13,7 @@ package cc.squirreljme.builder.support.vm;
 import cc.squirreljme.builder.support.Binary;
 import cc.squirreljme.builder.support.BinaryManager;
 import cc.squirreljme.builder.support.ProjectManager;
+import cc.squirreljme.builder.support.NoSourceAvailableException;
 import cc.squirreljme.builder.support.Source;
 import cc.squirreljme.builder.support.TimeSpaceType;
 import cc.squirreljme.vm.VMClassLibrary;
@@ -113,12 +114,40 @@ public final class BuildSuiteManager
 				return rv;
 			
 			// Build the binaries for this finding the matching one
-			for (Binary b : this.manager.build(__s))
-				if (__s.equals(b.name().toString()))
+			try
+			{
+				for (Binary b : this.manager.build(__s))
+					if (__s.equals(b.name().toString()))
+					{
+						rv = new BuildClassLibrary(b);
+						break;
+					}
+			}
+			
+			// If no source exists then just use it directly
+			catch (NoSourceAvailableException e)
+			{
+				try
 				{
-					libraries.put(__s, (rv = new BuildClassLibrary(b)));
-					return rv;
+					rv = new BuildClassLibrary(this.manager.binaryManager().
+						get(__s));
 				}
+				
+				// {@squirreljme.error AU9h Could not load the binary manager.}
+				catch (IOException x)
+				{
+					RuntimeException t = new RuntimeException("AU9h", x);
+					t.addSuppressed(e);
+					throw t;
+				}
+			}
+			
+			// Library was found?
+			if (rv != null)
+			{
+				libraries.put(__s, rv);
+				return rv;
+			}
 			
 			// {@squirreljme.error AU1b No such library exists. (The requested
 			// library)}

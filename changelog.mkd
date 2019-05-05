@@ -19,6 +19,8 @@ More detailed changes:
 
  * Build system
    * Builder
+     * Allow the build system to launch binaries in a VM even if they have no
+       source code.
      * Handle cases during compilation if a dependency has no source code.
      * If an attempt is made to compile a binary with no source code, throw a
        new exception type indicating this rather than the generic failure
