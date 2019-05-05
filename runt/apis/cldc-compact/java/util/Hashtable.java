@@ -10,13 +10,32 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+
+/**
+ * This is similar to {@link HashMap} except that it is thread safe and does
+ * not permit null keys or values.
+ *
+ * @since 2019/05/05
+ */
 public class Hashtable<K, V>
 	implements Map<K, V>, Cloneable
 {
-	public Hashtable(int __a, float __b)
+	/** Internal map. */
+	private final __BucketMap__<K, V> _map;
+	
+	/**
+	 * Initializes the map with the given capacity and load factor.
+	 *
+	 * @param __cap The capacity used.
+	 * @param __load The load factor used.
+	 * @throws IllegalArgumentException If the capacity is negative or the
+	 * load factor is not positive.
+	 * @since 2019/05/05
+	 */
+	public Hashtable(int __cap, float __load)
 	{
-		super();
-		throw new todo.TODO();
+		this._map = new __BucketMap__<K, V>(false, false, __cap, __load);
 	}
 	
 	public Hashtable(int __a)
@@ -46,6 +65,9 @@ public class Hashtable<K, V>
 	}
 	
 	@Override
+	@SuppressWarnings({"unchecked"})
+	@ImplementationNote("This creates a new instance of this class and " +
+		"then places all the entries into it.")
 	public Object clone()
 	{
 		synchronized (this)
