@@ -24,6 +24,10 @@ public final class KernelTask
 	public static final int TOC_OFFSET_STRING_OFFSET =
 		4;
 	
+	/** Size of table of contents entry. */
+	public static final int TOC_ENTRY_SIZE =
+		8;
+	
 	/** Base address of the ROM. */
 	static int _rombase;
 	
@@ -99,7 +103,7 @@ public final class KernelTask
 			romtoc = KernelTask._romtoc;
 		
 		// Scan through ROM
-		for (int i = 0;; i += 8)
+		for (int i = 0;; i += TOC_ENTRY_SIZE)
 		{
 			// Read Offsets
 			int liboff = Assembly.memReadInt(romtoc,
