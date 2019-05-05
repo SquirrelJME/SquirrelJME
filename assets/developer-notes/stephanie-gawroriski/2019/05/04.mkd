@@ -1,0 +1,9 @@
+# 2019/05/04
+
+## 14:38
+
+Okay so back to bootstrapping and this is nice, I have acces to everything
+static including fields and otherwise. The only thing now to do is to
+continue the class loading and such. But with all the static stuff it will
+be rather useful.
+
