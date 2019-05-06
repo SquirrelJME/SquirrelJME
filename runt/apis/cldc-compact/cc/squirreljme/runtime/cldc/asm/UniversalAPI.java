@@ -31,6 +31,15 @@ public final class UniversalAPI
 	}
 	
 	/**
+	 * Returns the type of packages the VM uses.
+	 *
+	 * @return The package type.
+	 * @since 2019/05/06
+	 */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
+	public static native int packageType();
+	
+	/**
 	 * Performs a universal API call.
 	 *
 	 * @param __func The function to call.
