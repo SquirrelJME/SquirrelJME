@@ -65,6 +65,9 @@ More detailed changes:
        to launched tasks.
    * `midp-lcdui`
      * Added a 12 strike font.
+     * Added support for getting the number of display colors which depends on
+       the pixel format of the display.
+     * Added support to get the number of alpha levels.
      * Adjusted the style of the lowercase A character in the sans-serif font.
      * Changed 16 strike font to be the large size font and made the 12 strike
        font the medium size font.

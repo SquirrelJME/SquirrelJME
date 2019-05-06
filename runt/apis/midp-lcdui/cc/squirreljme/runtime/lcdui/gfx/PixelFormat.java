@@ -168,6 +168,78 @@ public enum PixelFormat
 	}
 	
 	/**
+	 * Returns the number of alpha levels.
+	 *
+	 * @return The number of alpha levels.
+	 * @since 2019/05/05
+	 */
+	public final int numAlphaLevels()
+	{
+		switch (this)
+		{
+			case BYTE_INDEXED1:
+			case BYTE_INDEXED2:
+			case BYTE_INDEXED4:
+			case BYTE_INDEXED8:
+			case SHORT_INDEXED16:
+			case BYTE_RGB332:
+			case SHORT_RGB565:
+			case INTEGER_RGB888:
+				return 0;
+				
+			case SHORT_ARGB4444:
+				return 16;
+				
+			case INTEGER_ARGB8888:
+				return 256;
+			
+				// Unknown
+			default:
+				throw new todo.OOPS(this.name());
+		}
+	}
+	
+	/**
+	 * Returns the number of possible colors.
+	 *
+	 * @return The number of possible colors.
+	 * @since 2019/05/05
+	 */
+	public final int numColors()
+	{
+		switch (this)
+		{
+			case BYTE_INDEXED1:
+				return 2;
+				
+			case BYTE_INDEXED2:
+				return 4;
+				
+			case BYTE_INDEXED4:
+				return 16;
+				
+			case BYTE_INDEXED8:
+			case BYTE_RGB332:
+				return 256;
+				
+			case SHORT_ARGB4444:
+				return 4096;
+				
+			case SHORT_INDEXED16:
+			case SHORT_RGB565:
+				return 65536;
+				
+			case INTEGER_ARGB8888:
+			case INTEGER_RGB888:
+				return 16777216;
+			
+				// Unknown
+			default:
+				throw new todo.OOPS(this.name());
+		}
+	}
+	
+	/**
 	 * Maps the pixel format ID to the pixel format type.
 	 *
 	 * @param __id The input ID.
