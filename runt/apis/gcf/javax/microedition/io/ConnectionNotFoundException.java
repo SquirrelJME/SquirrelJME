@@ -12,19 +12,32 @@ package javax.microedition.io;
 
 import java.io.IOException;
 
+/**
+ * This is thrown when the connection was not available.
+ *
+ * @since 2019/05/06
+ */
 public class ConnectionNotFoundException
 	extends IOException
 {
+	/**
+	 * Initializes the exception with no message or cause.
+	 *
+	 * @since 2019/05/06
+	 */
 	public ConnectionNotFoundException()
 	{
-		super();
-		throw new todo.TODO();
 	}
 	
-	public ConnectionNotFoundException(String __a)
+	/**
+	 * Initializes the exception with the given message and no cause.
+	 *
+	 * @param __m The message.
+	 * @since 2019/05/06
+	 */
+	public ConnectionNotFoundException(String __m)
 	{
-		super();
-		throw new todo.TODO();
+		super(__m);
 	}
 }
 

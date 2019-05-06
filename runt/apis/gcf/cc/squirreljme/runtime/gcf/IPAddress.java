@@ -9,6 +9,9 @@
 
 package cc.squirreljme.runtime.gcf;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+
 /**
  * This is an immutable class which represents an IP address and possibly the
  * port.
@@ -27,6 +30,9 @@ public final class IPAddress
 	
 	/** The port. */
 	public final int port;
+	
+	/** The string reference. */
+	private Reference<String> _string;
 	
 	/**
 	 * Initializes the address.
@@ -127,7 +133,26 @@ public final class IPAddress
 	@Override
 	public final String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+		{
+			String hostname = this.hostname;
+			int port = this.port;
+			
+			// Include the port or not?
+			if (hostname == null)
+				rv = ":" + port;
+			else if (port == ASSIGNED_PORT)
+				rv = hostname;
+			else
+				rv = hostname + ":" + port;
+			
+			this._string = new WeakReference<>(rv);
+		}
+		
+		return rv;
 	}
 	
 	/**
