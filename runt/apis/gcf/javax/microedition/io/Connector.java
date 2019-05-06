@@ -10,7 +10,10 @@
 
 package javax.microedition.io;
 
+import cc.squirreljme.runtime.gcf.HTTPAddress;
+import cc.squirreljme.runtime.gcf.HTTPClientConnection;
 import cc.squirreljme.runtime.gcf.IPAddress;
+import cc.squirreljme.runtime.gcf.TCPClientConnection;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.InputStream;
@@ -253,7 +256,37 @@ public class Connector
 				
 				// HTTP
 			case "http":
-				throw new todo.TODO();
+				{
+					// Decode HTTP address
+					HTTPAddress addr = HTTPAddress.fromUriPart(part);
+					
+					// Need to connect to the 
+					IPAddress ipaddr = addr.ipAddress();
+					StreamConnection stream = null;
+					try
+					{
+						// Open stream connection since HTTP is backed off it
+						stream = (StreamConnection)open("socket://" + ipaddr,
+							__mode, __timeouts, __opts);
+						
+						// Create connection
+						return HTTPClientConnection.connect(addr, stream);
+					}
+					
+					// Close the stream connection if the HTTP connect failed
+					catch (IOException e)
+					{
+						if (stream != null)
+							try
+							{
+								stream.close();
+							}
+							catch (Throwable t)
+							{
+								e.addSuppressed(t);
+							}
+					}
+				}
 				
 				// HTTPS
 			case "https":
@@ -273,8 +306,14 @@ public class Connector
 					// Decode address
 					IPAddress addr = IPAddress.fromUriPart(part);
 					
+					// Creating server
+					if (addr.isServer())
+						throw new todo.TODO();
+					
+					// Creating client
+					else
+						return TCPClientConnection.connect(addr);
 				}
-				throw new todo.TODO();
 				
 				// SSL/TLS TCP Socket
 			case "ssl":

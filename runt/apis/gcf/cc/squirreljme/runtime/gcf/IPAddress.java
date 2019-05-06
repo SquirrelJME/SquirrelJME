@@ -110,6 +110,17 @@ public final class IPAddress
 	}
 	
 	/**
+	 * Is this a server connection?
+	 *
+	 * @return If this is a server connection.
+	 * @since 2019/05/06
+	 */
+	public final boolean isServer()
+	{
+		return this.hostname == null;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2019/05/06
 	 */

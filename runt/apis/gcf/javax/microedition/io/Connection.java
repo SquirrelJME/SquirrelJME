@@ -13,9 +13,19 @@ package javax.microedition.io;
 import java.io.Closeable;
 import java.io.IOException;
 
+/**
+ * This is the base class for all connection types.
+ *
+ * @since 2019/05/06
+ */
 public interface Connection
 	extends Closeable
 {
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/06
+	 */
+	@Override
 	public abstract void close()
 		throws IOException;
 }
