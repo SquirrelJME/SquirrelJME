@@ -17,6 +17,41 @@ package cc.squirreljme.runtime.gcf;
 public final class HTTPAddress
 	implements SocketAddress
 {
+	/** The IP Address. */
+	protected final IPAddress ipaddr;
+	
+	/** The file. */
+	protected final FileAddress file;
+	
+	/** The query. */
+	protected final String query;
+	
+	/** The fragment. */
+	protected final String fragment;
+	
+	/**
+	 * Initializes the HTTP Address.
+	 *
+	 * @param __ip The IP address.
+	 * @param __file The file.
+	 * @param __query The query, may be {@code null}.
+	 * @param __frag The fragment, may be {@code null}.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/06
+	 */
+	public HTTPAddress(IPAddress __ip, FileAddress __file, String __query,
+		String __frag)
+		throws NullPointerException
+	{
+		if (__ip == null || __file == null)
+			throw new NullPointerException("NARG");
+		
+		this.ipaddr = __ip;
+		this.file = __file;
+		this.query = __query;
+		this.fragment = __frag;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2019/05/06
@@ -75,7 +110,7 @@ public final class HTTPAddress
 		
 		// {@squirreljme.error EC0b HTTP address must start with double
 		// slash. (The URI part)}
-		if (__p.startsWith("//"))
+		if (!__p.startsWith("//"))
 			throw new IllegalArgumentException("EC0b " + __p);
 		__p = __p.substring(2);
 		
@@ -85,9 +120,37 @@ public final class HTTPAddress
 		// Only contains the host part
 		int sl = __p.indexOf('/');
 		if (sl < 0)
+			return new HTTPAddress(IPAddress.of(__p), FileAddress.of("/"),
+				null, null);
+		
+		// Parse host portion
+		IPAddress ipaddr = IPAddress.of(__p.substring(0, sl));
+		
+		// Parse remaining part, but keep the slash
+		__p = __p.substring(sl);
+		
+		// Parse fragment
+		String fragment;
+		int fl = __p.indexOf('#');
+		if (fl >= 0)
 			throw new todo.TODO();
 		
-		throw new todo.TODO();
+		// No fragment used
+		else
+			fragment = null;
+		
+		// Parse query
+		String query;
+		int ql = __p.indexOf('?');
+		if (ql >= 0)
+			throw new todo.TODO();
+		
+		// No query used
+		else
+			query = null;
+		
+		// Build remaining address
+		return new HTTPAddress(ipaddr, FileAddress.of(__p), query, fragment);
 	}
 }
 

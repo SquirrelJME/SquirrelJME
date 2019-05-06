@@ -79,7 +79,7 @@ public final class IPAddress
 				// {@squirreljme.error EC0a Hostname has an invalid
 				// character. (The hostname)}
 				if (!((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') ||
-					c == '-' || (isvsix && c == ':')))
+					c == '-' || c == '.' || (isvsix && c == ':')))
 					throw new IllegalArgumentException("EC0a " + __h);
 			}
 		}
@@ -147,7 +147,7 @@ public final class IPAddress
 		
 		// {@squirreljme.error EC05 IP Address must start with double
 		// slash. (The URI part)}
-		if (__part.startsWith("//"))
+		if (!__part.startsWith("//"))
 			throw new IllegalArgumentException("EC05 " + __part);
 		
 		// Parse
