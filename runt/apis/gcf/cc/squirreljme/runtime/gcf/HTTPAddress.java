@@ -80,7 +80,7 @@ public final class HTTPAddress
 	 */
 	public final IPAddress ipAddress()
 	{
-		throw new todo.TODO();
+		return this.ipaddr;
 	}
 	
 	/**
