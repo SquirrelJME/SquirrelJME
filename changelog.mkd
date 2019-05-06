@@ -30,6 +30,8 @@ More detailed changes:
        may still be implicit within ZIPs.
    * Launching
      * An alternative VM may be specified.
+     * Correct cases where `NullPointerException` is thrown when a `Display`
+       was initialized but was not yet claimed by any program.
      * The profiler snapshot can be written to a specific file.
      * System properties may be defined and passed to the launched program.
    * Started work on JavaDoc generation.
@@ -116,6 +118,8 @@ More detailed changes:
      * Added string representation for the stack map table.
      * Add ability to start tasks with command line arguments, system
        properties, and alternative console redirection (to capture output).
+     * Correct cases where `NullPointerException` is thrown when a `Display`
+       was initialized but was not yet claimed by any program.
    * SpringCoat
      * Add support for system properties being based to virtual machine
        instances.
