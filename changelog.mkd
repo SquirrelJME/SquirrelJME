@@ -65,6 +65,7 @@ More detailed changes:
        to launched tasks.
    * `midp-lcdui`
      * Added a 12 strike font.
+     * Added capability flag for pointer events.
      * Added support for getting the number of display colors which depends on
        the pixel format of the display.
      * Added support to get the number of alpha levels.

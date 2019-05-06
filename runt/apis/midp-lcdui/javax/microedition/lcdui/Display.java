@@ -17,6 +17,7 @@ import cc.squirreljme.runtime.lcdui.common.CommonMetrics;
 import cc.squirreljme.runtime.lcdui.DisplayOrientation;
 import cc.squirreljme.runtime.lcdui.DisplayState;
 import cc.squirreljme.runtime.lcdui.event.NonStandardKey;
+import cc.squirreljme.runtime.lcdui.ExtendedCapabilities;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.ui.UIDisplayState;
 import cc.squirreljme.runtime.lcdui.ui.UIFramebuffer;
@@ -565,7 +566,8 @@ public class Display
 		if (this._nid != 0)
 			return false;
 		
-		throw new todo.TODO();
+		return 0 != (this.getCapabilities() &
+			ExtendedCapabilities.SUPPORTS_POINTER_EVENTS);
 	}
 	
 	/**
@@ -580,7 +582,8 @@ public class Display
 		if (this._nid != 0)
 			return false;
 		
-		throw new todo.TODO();
+		return 0 != (this.getCapabilities() &
+			ExtendedCapabilities.SUPPORTS_POINTER_EVENTS);
 	}
 	
 	/**
