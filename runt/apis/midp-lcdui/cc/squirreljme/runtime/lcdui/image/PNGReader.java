@@ -85,7 +85,7 @@ public class PNGReader
 	 * @throws NullPointerException On null arguments.
 	 * @since 2017/02/28
 	 */
-	PNGReader(DataInputStream __in)
+	public PNGReader(InputStream __in)
 		throws NullPointerException
 	{
 		// Check
@@ -93,7 +93,7 @@ public class PNGReader
 			throw new NullPointerException("NARG");
 		
 		// Set
-		this.in = __in;
+		this.in = new DataInputStream(__in);
 	}
 	
 	/**
@@ -102,13 +102,14 @@ public class PNGReader
 	 * @return The read image.
 	 * @since 2017/02/28
 	 */
-	Image __parse()
+	public Image parse()
 		throws IOException
 	{
 		DataInputStream in = this.in;
 		
 		// {@squirreljme.error EB0t Illegal PNG magic number.}
-		if (in.readUnsignedByte() != 80 ||
+		if (in.readUnsignedByte() != 137 ||
+			in.readUnsignedByte() != 80 ||
 			in.readUnsignedByte() != 78 ||
 			in.readUnsignedByte() != 71 ||
 			in.readUnsignedByte() != 13 ||

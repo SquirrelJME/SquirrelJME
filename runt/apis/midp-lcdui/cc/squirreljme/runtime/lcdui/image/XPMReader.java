@@ -31,13 +31,21 @@ import javax.microedition.lcdui.Image;
  */
 public class XPMReader
 {
+	/** Source stream. */
+	protected final InputStream in;
+	
 	/**
 	 * Initializes the XPM image reader.
 	 *
 	 * @since 2016/05/08
 	 */
-	public XPMReader()
+	public XPMReader(InputStream __is)
+		throws NullPointerException
 	{
+		if (__is == null)
+			throw new NullPointerException("NARG");
+		
+		this.in = __is;
 	}
 	
 	/**
@@ -48,15 +56,13 @@ public class XPMReader
 	 * @throws IOException If the XPM is not valid.
 	 * @since 2017/02/10
 	 */
-	public Image readImage(InputStream __is)
-		throws IOException, NullPointerException
+	public Image parse()
+		throws IOException
 	{
-		// Check
-		if (__is == null)
-			throw new NullPointerException("NARG");
+		InputStream in = this.in;
 		
 		// Create character stripper
-		__CharStripper__ cs = new __CharStripper__(new InputStreamReader(__is,
+		__CharStripper__ cs = new __CharStripper__(new InputStreamReader(in,
 			"utf-8"));
 		
 		// Read the XPM header

@@ -14,6 +14,7 @@ import cc.squirreljme.runtime.lcdui.gfx.AdvancedGraphics;
 import cc.squirreljme.runtime.lcdui.image.ImageReaderDispatcher;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.IOException;
@@ -363,8 +364,33 @@ public class Image
 		if (__is == null)
 			throw new NullPointerException("NARG");
 		
-		// Parse
-		return ImageReaderDispatcher.parse(new DataInputStream(__is));
+		// If marking is supported, directly use the stream
+		if (__is.markSupported())
+			return ImageReaderDispatcher.parse(__is);
+		
+		// Load the entire image data into a buffer so that we can mark it
+		byte[] copy;
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(
+			Math.max(__is.available(), 4096)))
+		{
+			// Copy the image data
+			byte[] buf = new byte[512];
+			for (;;)
+			{
+				int rc = __is.read(buf);
+				
+				if (rc < 0)
+					break;
+				
+				baos.write(buf, 0, rc);
+			}
+			
+			// Use copied data
+			copy = baos.toByteArray();
+		}
+		
+		// Parse the data now that it can be marked
+		return ImageReaderDispatcher.parse(new ByteArrayInputStream(copy));
 	}
 	
 	/**
