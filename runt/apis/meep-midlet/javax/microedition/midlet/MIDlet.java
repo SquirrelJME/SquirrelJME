@@ -62,6 +62,10 @@ public abstract class MIDlet
 	public final int checkPermission(String __p)
 		throws IllegalStateException
 	{
+		// Ignore if null
+		if (__p == null)
+			return 1;
+		
 		// Not permitted on MIDP 3 or MEEP
 		String profile = this.getAppProperty("microedition-profile");
 		if (profile != null)
@@ -78,8 +82,14 @@ public abstract class MIDlet
 		// Do security check
 		try
 		{
-			System.getSecurityManager().checkPermission(
-				new RuntimePermission(__p));
+			// If there is no security manager, just assume everything is
+			// okay
+			SecurityManager sm = System.getSecurityManager();
+			if (sm == null)
+				return 1;
+			
+			// Check it now
+			sm.checkPermission(new RuntimePermission(__p));
 			return 1;
 		}
 		catch (SecurityException e)
