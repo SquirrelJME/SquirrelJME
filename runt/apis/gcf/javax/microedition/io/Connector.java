@@ -219,110 +219,22 @@ public class Connector
 		throws ConnectionNotFoundException, IllegalArgumentException,
 			IOException, NullPointerException, SecurityException
 	{
-		// Check
-		if (__uri == null)
-			throw new NullPointerException("NARG");
+		// Debug
+		todo.DEBUG.note("Open %s", __uri);
 		
-		// If missing, create
-		if (__opts == null)
-			__opts = new ConnectionOption<?>[0];
-		
-		// {@squirreljme.error EC01 The URI does not have a scheme. (The URI)}
-		int fc = __uri.indexOf(':');
-		if (fc < 0)
-			throw new IllegalArgumentException(String.format("EC01 %s",
-				__uri));
-		String scheme = __uri.substring(0, fc),
-			part = __uri.substring(fc + 1);
-		
-		// Sockets of a given protocol must be of a given class type
-		switch (scheme)
+		// Used to debug connections
+		try
 		{
-				// Communication port, which may be a modem
-			case "comm":
-				throw new todo.TODO();
-				
-				// UDP datagrams
-			case "datagram":
-				throw new todo.TODO();
-				
-				// SSL UDP datagrams
-			case "dtls":
-				throw new todo.TODO();
-				
-				// Local Files
-			case "file":
-				throw new todo.TODO();
-				
-				// HTTP
-			case "http":
-				{
-					// Decode HTTP address
-					HTTPAddress addr = HTTPAddress.fromUriPart(part);
-					
-					// Need to connect to the 
-					IPAddress ipaddr = addr.ipAddress();
-					StreamConnection stream = null;
-					try
-					{
-						// Open stream connection since HTTP is backed off it
-						stream = (StreamConnection)open("socket://" + ipaddr,
-							__mode, __timeouts, __opts);
-						
-						// Create connection
-						return HTTPClientConnection.connect(addr, stream);
-					}
-					
-					// Close the stream connection if the HTTP connect failed
-					catch (IOException e)
-					{
-						if (stream != null)
-							try
-							{
-								stream.close();
-							}
-							catch (Throwable t)
-							{
-								e.addSuppressed(t);
-							}
-					}
-				}
-				
-				// HTTPS
-			case "https":
-				throw new todo.TODO();
-				
-				// Intermidlet communication
-			case "imc":
-				throw new todo.TODO();
-				
-				// UDP Multicast
-			case "multicast":
-				throw new todo.TODO();
-				
-				// TCP Socket
-			case "socket":
-				{
-					// Decode address
-					IPAddress addr = IPAddress.fromUriPart(part);
-					
-					// Creating server
-					if (addr.isServer())
-						throw new todo.TODO();
-					
-					// Creating client
-					else
-						return TCPClientConnection.connect(addr);
-				}
-				
-				// SSL/TLS TCP Socket
-			case "ssl":
-				throw new todo.TODO();
-				
-				// {@squirreljme.error EC02 Unhandled URI protocol. (The URI)}.
-			default:
-				throw new ConnectionNotFoundException(String.format("EC02 %s",
-					__uri));
+			return Connector.__open(__uri, __mode, __timeouts, __opts);
+		}
+		
+		// Print the exception
+		catch (IllegalArgumentException|
+			IOException|NullPointerException|SecurityException e)
+		{
+			e.printStackTrace();
+			
+			throw e;
 		}
 	}
 	
@@ -405,6 +317,140 @@ public class Connector
 			
 			// Open it
 			return ((OutputConnection)c).openOutputStream();
+		}
+	}
+	
+	/**
+	 * This opens and creates a connection to the specified resource which is
+	 * named by the URI.
+	 *
+	 * @param __uri The URI to open.
+	 * @param __mode The open mode of the socket.
+	 * @param __timeouts This is a hint to the connection system that it is
+	 * acceptable for {@link InterruptedIOException}s to be generated. This
+	 * is not required to be followed.
+	 * @param __opts Options which modify the properties of a stream.
+	 * @throws ConnectionNotFoundException Either the protocol is not supported
+	 * or the target to connect to could not be located.
+	 * @throws IllegalArgumentException If a parameter is not valid.
+	 * @throws IOException On other unspecified exceptions.
+	 * @throws NullPointerException If no URI was specified.
+	 * @throws SecurityException If access to the protocol is not permitted.
+	 * @since 2016/10/12
+	 */
+	private static Connection __open(String __uri, int __mode,
+		boolean __timeouts, ConnectionOption<?>... __opts)
+		throws ConnectionNotFoundException, IllegalArgumentException,
+			IOException, NullPointerException, SecurityException
+	{
+		// Check
+		if (__uri == null)
+			throw new NullPointerException("NARG");
+		
+		// If missing, create
+		if (__opts == null)
+			__opts = new ConnectionOption<?>[0];
+		
+		// {@squirreljme.error EC01 The URI does not have a scheme. (The URI)}
+		int fc = __uri.indexOf(':');
+		if (fc < 0)
+			throw new IllegalArgumentException(String.format("EC01 %s",
+				__uri));
+		String scheme = __uri.substring(0, fc),
+			part = __uri.substring(fc + 1);
+		
+		// Sockets of a given protocol must be of a given class type
+		switch (scheme)
+		{
+				// Communication port, which may be a modem
+			case "comm":
+				throw new todo.TODO();
+				
+				// UDP datagrams
+			case "datagram":
+				throw new todo.TODO();
+				
+				// SSL UDP datagrams
+			case "dtls":
+				throw new todo.TODO();
+				
+				// Local Files
+			case "file":
+				throw new todo.TODO();
+				
+				// HTTP
+			case "http":
+				{
+					// Decode HTTP address
+					HTTPAddress addr = HTTPAddress.fromUriPart(part);
+					
+					// Need to connect to the 
+					IPAddress ipaddr = addr.ipAddress();
+					StreamConnection stream = null;
+					try
+					{
+						// Open stream connection since HTTP is backed off it
+						stream = (StreamConnection)open("socket://" + ipaddr,
+							__mode, __timeouts, __opts);
+						
+						// Create connection
+						return HTTPClientConnection.connect(addr, stream);
+					}
+					
+					// Close the stream connection if the HTTP connect failed
+					catch (IOException e)
+					{
+						// Close stream
+						if (stream != null)
+							try
+							{
+								stream.close();
+							}
+							catch (Throwable t)
+							{
+								e.addSuppressed(t);
+							}
+						
+						// Rethrow
+						throw e;
+					}
+				}
+				
+				// HTTPS
+			case "https":
+				throw new todo.TODO();
+				
+				// Intermidlet communication
+			case "imc":
+				throw new todo.TODO();
+				
+				// UDP Multicast
+			case "multicast":
+				throw new todo.TODO();
+				
+				// TCP Socket
+			case "socket":
+				{
+					// Decode address
+					IPAddress addr = IPAddress.fromUriPart(part);
+					
+					// Creating server
+					if (addr.isServer())
+						throw new todo.TODO();
+					
+					// Creating client
+					else
+						return TCPClientConnection.connect(addr);
+				}
+				
+				// SSL/TLS TCP Socket
+			case "ssl":
+				throw new todo.TODO();
+				
+				// {@squirreljme.error EC02 Unhandled URI protocol. (The URI)}.
+			default:
+				throw new ConnectionNotFoundException(String.format("EC02 %s",
+					__uri));
 		}
 	}
 }
