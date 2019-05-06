@@ -12,6 +12,7 @@ package cc.squirreljme.runtime.cldc.asm;
 
 import cc.squirreljme.runtime.javase.lcdui.ColorInfo;
 import cc.squirreljme.runtime.lcdui.event.NonStandardKey;
+import cc.squirreljme.runtime.lcdui.ExtendedCapabilities;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -162,7 +163,8 @@ public final class NativeDisplayAccess
 		return Display.SUPPORTS_INPUT_EVENTS |
 			Display.SUPPORTS_TITLE |
 			Display.SUPPORTS_ORIENTATION_PORTRAIT |
-			Display.SUPPORTS_ORIENTATION_LANDSCAPE;
+			Display.SUPPORTS_ORIENTATION_LANDSCAPE |
+			ExtendedCapabilities.SUPPORTS_POINTER_EVENTS;
 	}
 	
 	/**

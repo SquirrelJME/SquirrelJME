@@ -47,11 +47,45 @@ public abstract class MIDlet
 	protected abstract void startApp()
 		throws MIDletStateChangeException;
 	
+	/**
+	 * Checks if the given permission is valid.
+	 *
+	 * Do not use this to check permissions.
+	 *
+	 * @param __p The permission to check.
+	 * @return {@code 0} if permission is denied, {@code 1} if permitted,
+	 * and {@code -1} if unknown.
+	 * @throws IllegalStateException If this is a MIDP 3.0 application.
+	 * @since 2019/05/05
+	 */
 	@Deprecated
 	public final int checkPermission(String __p)
 		throws IllegalStateException
 	{
-		throw new todo.TODO();
+		// Not permitted on MIDP 3 or MEEP
+		String profile = this.getAppProperty("microedition-profile");
+		if (profile != null)
+		{
+			// Makes it easier to use
+			profile = profile.toLowerCase();
+			
+			// {@squirreljme.error AD03 Cannot use check permission on
+			// MIDP 3.0 or MEEP suite profiles.}
+			if (profile.contains("midp-3") || profile.contains("meep"))
+				throw new IllegalStateException("AD03");
+		}
+		
+		// Do security check
+		try
+		{
+			System.getSecurityManager().checkPermission(
+				new RuntimePermission(__p));
+			return 1;
+		}
+		catch (SecurityException e)
+		{
+			return 0;
+		}
 	}
 	
 	/**
