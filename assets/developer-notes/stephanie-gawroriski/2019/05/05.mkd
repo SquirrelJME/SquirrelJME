@@ -1,0 +1,26 @@
+# 2019/05/05
+
+## 11:33
+
+I am going to add instructions to mark for profiler usage, will be useful for
+hard and soft profiling. Also need to implement garbage collecting objects!
+
+## 17:28
+
+Okay so it seems my memory gets corrupted somehow since I now have more added
+checks in place. It always fails at the same location which is like 68k bytes
+in. And I am pretty sure that is the initial memory space.
+
+## 18:20
+
+Okay, so a debugger for SquirrelJME would be very useful. So I definitely do
+need support for TCP so I can attach via JDB or another debugger. I am likely
+to also write my own GUI in Swing as well.
+
+## 20:42
+
+That was a big mess of synchronized wrapper classes!
+
+## 22:15
+
+To support Opera, I need to implement support for reading JPEGs.
