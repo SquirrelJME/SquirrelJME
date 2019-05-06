@@ -13,6 +13,7 @@ package java.util;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.util.IteratorToEnumeration;
 import cc.squirreljme.runtime.cldc.util.SynchronizedEntrySet;
+import cc.squirreljme.runtime.cldc.util.SynchronizedEntrySetNotNull;
 import cc.squirreljme.runtime.cldc.util.SynchronizedSet;
 
 /**
@@ -200,7 +201,8 @@ public class Hashtable<K, V>
 	{
 		synchronized (this)
 		{
-			return new SynchronizedEntrySet<K, V>(this, this._map.entrySet());
+			return new SynchronizedEntrySetNotNull<K, V>(this,
+				this._map.entrySet());
 		}
 	}
 	

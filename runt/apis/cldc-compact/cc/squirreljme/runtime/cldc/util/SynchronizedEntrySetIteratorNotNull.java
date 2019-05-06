@@ -9,40 +9,44 @@
 
 package cc.squirreljme.runtime.cldc.util;
 
+import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 /**
- * This is a synchronized map entry.
+ * This is a synchronized iterator over entry set iterators, null values are
+ * not permitted.
  *
  * @param <K> The key.
  * @param <V> The value.
  * @since 2019/05/05
  */
-public final class SynchronizedMapEntry<K, V>
-	implements Map.Entry<K, V>
+public class SynchronizedEntrySetIteratorNotNull<K, V>
+	implements Iterator<Map.Entry<K, V>>
 {
 	/** The locking object. */
 	protected final Object lock;
 	
-	/** The backing entry. */
-	protected final Map.Entry<K, V> entry;
+	/** The backing iterator. */
+	protected final Iterator<Map.Entry<K, V>> iterator;
 	
 	/**
-	 * Initializes the synchronized entry.
+	 * Initializes the synchronized iterator.
 	 *
 	 * @param __lock The locking object.
-	 * @param __ent The entry object.
+	 * @param __it The iterator object.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/05
 	 */
-	public SynchronizedMapEntry(Object __lock, Map.Entry<K, V> __ent)
+	public SynchronizedEntrySetIteratorNotNull(Object __lock,
+		Iterator<Map.Entry<K, V>> __it)
 		throws NullPointerException
 	{
-		if (__lock == null || __ent == null)
+		if (__lock == null || __it == null)
 			throw new NullPointerException("NARG");
 		
 		this.lock = __lock;
-		this.entry = __ent;
+		this.iterator = __it;
 	}
 	
 	/**
@@ -50,11 +54,11 @@ public final class SynchronizedMapEntry<K, V>
 	 * @since 2019/05/05
 	 */
 	@Override
-	public final boolean equals(Object __o)
+	public final boolean hasNext()
 	{
 		synchronized (this.lock)
 		{
-			return this.entry.equals(__o);
+			return this.iterator.hasNext();
 		}
 	}
 	
@@ -63,11 +67,14 @@ public final class SynchronizedMapEntry<K, V>
 	 * @since 2019/05/05
 	 */
 	@Override
-	public final K getKey()
+	public final Map.Entry<K, V> next()
+		throws NoSuchElementException
 	{
-		synchronized (this.lock)
+		Object lock = this.lock;
+		synchronized (lock)
 		{
-			return this.entry.getKey();
+			return new SynchronizedMapEntryNotNull<K, V>(lock,
+				this.iterator.next());
 		}
 	}
 	
@@ -76,50 +83,12 @@ public final class SynchronizedMapEntry<K, V>
 	 * @since 2019/05/05
 	 */
 	@Override
-	public final V getValue()
+	public final void remove()
+		throws IllegalStateException, UnsupportedOperationException
 	{
 		synchronized (this.lock)
 		{
-			return this.entry.getValue();
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/05/05
-	 */
-	@Override
-	public final int hashCode()
-	{
-		synchronized (this.lock)
-		{
-			return this.entry.hashCode();
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/05/05
-	 */
-	@Override
-	public final V setValue(V __v)
-	{
-		synchronized (this.lock)
-		{
-			return this.entry.setValue(__v);
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2019/05/05
-	 */
-	@Override
-	public final String toString()
-	{
-		synchronized (this.lock)
-		{
-			return this.entry.toString();
+			this.iterator.remove();
 		}
 	}
 }
