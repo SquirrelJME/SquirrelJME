@@ -749,11 +749,40 @@ public class RecordStore
 	 * @since 2017/02/26
 	 */
 	public static void deleteRecordStore(String __n)
-		throws RecordStoreException, RecordStoreNotFoundException
+		throws NullPointerException, RecordStoreException,
+			RecordStoreNotFoundException
 	{
+		if (__n == null)
+			throw new NullPointerException("NARG");
+		
+		// Our suite identifier to find our own records
+		long mysid = SuiteIdentifier.currentIdentifier();
+		
+		// Lock
 		VinylRecord vinyl = _VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
+			// Try to locate our record
+			int got = -1;
+			for (int rid : vinyl.volumeList())
+			{
+				// Another suite's volume
+				if (mysid != vinyl.volumeSuiteIdentifier(rid))
+					continue;
+				
+				// Found the record?
+				if (__n.equals(vinyl.volumeName(rid)))
+				{
+					got = -1;
+					break;
+				}
+			}
+			
+			// {@squirreljme.error DC0a Cannot delete the specified record
+			// store because it does not exist. (The name of the store)}
+			if (got == -1)
+				throw new RecordStoreNotFoundException("DC0a " + __n);
+			
 			throw new todo.TODO();
 		}
 	}
