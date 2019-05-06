@@ -76,11 +76,11 @@ public final class IPAddress
 			{
 				int c = checkpart.charAt(i);
 				
-				// {@squirreljme.error EC09 Hostname has an invalid
+				// {@squirreljme.error EC0a Hostname has an invalid
 				// character. (The hostname)}
 				if (!((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') ||
 					c == '-' || (isvsix && c == ':')))
-					throw new IllegalArgumentException("EC09 " + __h);
+					throw new IllegalArgumentException("EC0a " + __h);
 			}
 		}
 		
@@ -135,6 +135,9 @@ public final class IPAddress
 	 *
 	 * @param __part The URI part.
 	 * @return The resulting IP address.
+	 * @throws IllegalArgumentException If the address is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/06
 	 */
 	public static final IPAddress fromUriPart(String __part)
 		throws IllegalArgumentException, NullPointerException
@@ -147,37 +150,53 @@ public final class IPAddress
 		if (__part.startsWith("//"))
 			throw new IllegalArgumentException("EC05 " + __part);
 		
-		// Cut off
-		__part = __part.substring(2);
+		// Parse
+		return IPAddress.of(__part.substring(2));
+	}
+	
+	/**
+	 * Creates an address from the given string.
+	 *
+	 * @param __s The input string
+	 * @return The resulting IP address.
+	 * @throws IllegalArgumentException If the address is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/06
+	 */
+	public static final IPAddress of(String __s)
+		throws IllegalArgumentException, NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
 		
 		// The port could be weird
 		try
 		{
 			// Need to detect that an IPv6 address is being used
-			int col = __part.lastIndexOf(':'),
-				eb = __part.lastIndexOf(']');
+			int col = __s.lastIndexOf(':'),
+				eb = __s.lastIndexOf(']');
 			if (eb >= 0 && eb > col)
 				col = -1;
 			
 			// Just has a hostname?
 			if (col < 0)
-				return new IPAddress(__part, ASSIGNED_PORT);
+				return new IPAddress(__s, ASSIGNED_PORT);
 			
 			// Just has the port
 			else if (col == 0)
 				return new IPAddress(null,
-					Integer.parseInt(__part.substring(1), 10));
+					Integer.parseInt(__s.substring(1), 10));
 			
 			// Has both
 			else
-				return new IPAddress(__part.substring(0, col),
-					Integer.parseInt(__part.substring(col + 1), 10));
+				return new IPAddress(__s.substring(0, col),
+					Integer.parseInt(__s.substring(col + 1), 10));
 		}
 		
 		// {@squirreljme.error EC08 Invalid port number. (The URI part)}
 		catch (NumberFormatException e)
 		{
-			throw new IllegalArgumentException("EC08 " + __part, e);
+			throw new IllegalArgumentException("EC08 " + __s, e);
 		}
 	}
 }

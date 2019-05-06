@@ -73,6 +73,20 @@ public final class HTTPAddress
 		if (__p == null)
 			throw new NullPointerException("NARG");
 		
+		// {@squirreljme.error EC0b HTTP address must start with double
+		// slash. (The URI part)}
+		if (__p.startsWith("//"))
+			throw new IllegalArgumentException("EC0b " + __p);
+		__p = __p.substring(2);
+		
+		// Debug
+		todo.DEBUG.note("Decode %s", __p);
+		
+		// Only contains the host part
+		int sl = __p.indexOf('/');
+		if (sl < 0)
+			throw new todo.TODO();
+		
 		throw new todo.TODO();
 	}
 }
