@@ -68,7 +68,7 @@ public class ImageReaderDispatcher
 		
 		// JPEG?
 		else if ((magic & 0xFFFFFF00) == 0xFFD8FF00)
-			throw new todo.TODO();
+			return new JPEGReader(__is).parse();
 		
 		// SVG?
 		else if (first == '<')
