@@ -520,7 +520,9 @@ public final class NativeDisplayAccess
 			}
 			
 			// Indicate that the size changed
-			NativeDisplayAccess._CALLBACK.sizeChanged(0, xw, xh);
+			NativeDisplayEventCallback cbx = NativeDisplayAccess._CALLBACK;
+			if (cbx != null)
+				cbx.sizeChanged(0, xw, xh);
 		}
 		
 		/**
@@ -530,7 +532,9 @@ public final class NativeDisplayAccess
 		@Override
 		public void componentHidden(ComponentEvent __e)
 		{
-			NativeDisplayAccess._CALLBACK.shown(0, 0);
+			NativeDisplayEventCallback cbx = NativeDisplayAccess._CALLBACK;
+			if (cbx != null)
+				cbx.shown(0, 0);
 		}
 		
 		/**
@@ -566,7 +570,9 @@ public final class NativeDisplayAccess
 		@Override
 		public void componentShown(ComponentEvent __e)
 		{
-			NativeDisplayAccess._CALLBACK.shown(0, 1);
+			NativeDisplayEventCallback cbx = NativeDisplayAccess._CALLBACK;
+			if (cbx != null)
+				cbx.shown(0, 1);
 		}
 		
 		/**
@@ -576,10 +582,11 @@ public final class NativeDisplayAccess
 		@Override
 		public void keyPressed(KeyEvent __e)
 		{
-			NativeDisplayAccess._CALLBACK.keyEvent(0,
-				NativeDisplayEventCallback.KEY_PRESSED,
-				__KeyMap__.__map(__e), __KeyMap__.__char(__e),
-				(int)__e.getWhen());
+			NativeDisplayEventCallback cbx = NativeDisplayAccess._CALLBACK;
+			if (cbx != null)
+				cbx.keyEvent(0, NativeDisplayEventCallback.KEY_PRESSED,
+					__KeyMap__.__map(__e), __KeyMap__.__char(__e),
+					(int)__e.getWhen());
 		}
 		
 		/**
@@ -589,10 +596,11 @@ public final class NativeDisplayAccess
 		@Override
 		public void keyReleased(KeyEvent __e)
 		{
-			NativeDisplayAccess._CALLBACK.keyEvent(0,
-				NativeDisplayEventCallback.KEY_RELEASED,
-				__KeyMap__.__map(__e), __KeyMap__.__char(__e),
-				(int)__e.getWhen());
+			NativeDisplayEventCallback cbx = NativeDisplayAccess._CALLBACK;
+			if (cbx != null)
+				cbx.keyEvent(0, NativeDisplayEventCallback.KEY_RELEASED,
+					__KeyMap__.__map(__e), __KeyMap__.__char(__e),
+					(int)__e.getWhen());
 		}
 		
 		/**
@@ -602,10 +610,11 @@ public final class NativeDisplayAccess
 		@Override
 		public void keyTyped(KeyEvent __e)
 		{
-			NativeDisplayAccess._CALLBACK.keyEvent(0,
-				NativeDisplayEventCallback.KEY_PRESSED,
-				__KeyMap__.__map(__e), __KeyMap__.__char(__e),
-				(int)__e.getWhen());
+			NativeDisplayEventCallback cbx = NativeDisplayAccess._CALLBACK;
+			if (cbx != null)
+				cbx.keyEvent(0, NativeDisplayEventCallback.KEY_PRESSED,
+					__KeyMap__.__map(__e), __KeyMap__.__char(__e),
+					(int)__e.getWhen());
 		}
 		
 		/**
@@ -704,9 +713,9 @@ public final class NativeDisplayAccess
 			// Have the display client draw whatever is on this display, but
 			// only in the region we are drawing!
 			Rectangle rect = __g.getClipBounds();
-			NativeDisplayAccess._CALLBACK.paintDisplay(0,
-				rect.x, rect.y,
-				rect.width, rect.height);
+			NativeDisplayEventCallback cbx = NativeDisplayAccess._CALLBACK;
+			if (cbx != null)
+				cbx.paintDisplay(0, rect.x, rect.y, rect.width, rect.height);
 			
 			// Draw the backed buffered image
 			__g.drawImage(image, 0, 0, xw, xh,
@@ -741,7 +750,9 @@ public final class NativeDisplayAccess
 			todo.DEBUG.note("Window is closing!");
 			
 			// Post close event
-			NativeDisplayAccess._CALLBACK.exitRequest(0);
+			NativeDisplayEventCallback cbx = NativeDisplayAccess._CALLBACK;
+			if (cbx != null)
+				cbx.exitRequest(0);
 		}
 		
 		/**
@@ -817,8 +828,10 @@ public final class NativeDisplayAccess
 			}
 			
 			// Post event
-			NativeDisplayAccess._CALLBACK.pointerEvent(0,
-				__t, __e.getX(), __e.getY(), (int)__e.getWhen());
+			NativeDisplayEventCallback cbx = NativeDisplayAccess._CALLBACK;
+			if (cbx != null)
+				cbx.pointerEvent(0, __t, __e.getX(), __e.getY(),
+					(int)__e.getWhen());
 		}
 	}
 }

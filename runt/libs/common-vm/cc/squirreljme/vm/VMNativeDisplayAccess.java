@@ -421,14 +421,18 @@ public class VMNativeDisplayAccess
 		@Override
 		public void commandAction(Command __c, Displayable __d)
 		{
+			NativeDisplayEventCallback cb =
+				VMNativeDisplayAccess.this._callback;
+			if (cb == null)
+				return;
+			
 			// Exiting the VM?
 			if (__c.getCommandType() == Command.EXIT)
-				VMNativeDisplayAccess.this._callback.exitRequest(0);
+				cb.exitRequest(0);
 			
 			// Function menu key
 			else if (__c.getLabel().startsWith("F"))
-				VMNativeDisplayAccess.this._callback.command(0,
-					__c.getPriority());
+				cb.command(0, __c.getPriority());
 		}
 	}
 	
@@ -450,7 +454,12 @@ public class VMNativeDisplayAccess
 		@Override
 		public void hideNotify()
 		{
-			VMNativeDisplayAccess.this._callback.shown(0, 0);
+			NativeDisplayEventCallback cb =
+				VMNativeDisplayAccess.this._callback;
+			if (cb == null)
+				return;
+			
+			cb.shown(0, 0);
 		}
 		
 		/**
@@ -490,14 +499,18 @@ public class VMNativeDisplayAccess
 		@Override
 		public void paint(Graphics __g)
 		{
+			NativeDisplayEventCallback cb =
+				VMNativeDisplayAccess.this._callback;
+			if (cb == null)
+				return;
+			
 			int x = __g.getClipX(),
 				y = __g.getClipY(),
 				w = __g.getClipWidth(),
 				h = __g.getClipHeight();
 			
 			// Call paint code
-			VMNativeDisplayAccess.this._callback.paintDisplay(0,
-				x, y, w, h);
+			cb.paintDisplay(0, x, y, w, h);
 			
 			// Just draw the raw RGB data
 			int fbw = VMNativeDisplayAccess.this._fbw;
@@ -518,7 +531,12 @@ public class VMNativeDisplayAccess
 		@Override
 		public void pointerDragged(int __x, int __y)
 		{
-			VMNativeDisplayAccess.this._callback.pointerEvent(0,
+			NativeDisplayEventCallback cb =
+				VMNativeDisplayAccess.this._callback;
+			if (cb == null)
+				return;
+			
+			cb.pointerEvent(0,
 				NativeDisplayEventCallback.POINTER_DRAGGED, __x, __y,
 				++this._keyindex);
 		}
@@ -530,7 +548,12 @@ public class VMNativeDisplayAccess
 		@Override
 		public void pointerPressed(int __x, int __y)
 		{
-			VMNativeDisplayAccess.this._callback.pointerEvent(0,
+			NativeDisplayEventCallback cb =
+				VMNativeDisplayAccess.this._callback;
+			if (cb == null)
+				return;
+			
+			cb.pointerEvent(0,
 				NativeDisplayEventCallback.POINTER_PRESSED, __x, __y,
 				++this._keyindex);
 		}
@@ -542,7 +565,12 @@ public class VMNativeDisplayAccess
 		@Override
 		public void pointerReleased(int __x, int __y)
 		{
-			VMNativeDisplayAccess.this._callback.pointerEvent(0,
+			NativeDisplayEventCallback cb =
+				VMNativeDisplayAccess.this._callback;
+			if (cb == null)
+				return;
+			
+			cb.pointerEvent(0,
 				NativeDisplayEventCallback.POINTER_RELEASED, __x, __y,
 				++this._keyindex);
 		}
@@ -554,7 +582,12 @@ public class VMNativeDisplayAccess
 		@Override
 		public void showNotify()
 		{
-			VMNativeDisplayAccess.this._callback.shown(0, 1);
+			NativeDisplayEventCallback cb =
+				VMNativeDisplayAccess.this._callback;
+			if (cb == null)
+				return;
+			
+			cb.shown(0, 1);
 		}
 		
 		/**
@@ -567,9 +600,13 @@ public class VMNativeDisplayAccess
 			// The framebuffer will need to be redone
 			VMNativeDisplayAccess.this.__checkFramebuffer();
 			
+			NativeDisplayEventCallback cb =
+				VMNativeDisplayAccess.this._callback;
+			if (cb == null)
+				return;
+			
 			// Post
-			VMNativeDisplayAccess.this._callback.sizeChanged(0,
-				__w, __h);
+			cb.sizeChanged(0, __w, __h);
 		}
 		
 		/**
@@ -583,6 +620,11 @@ public class VMNativeDisplayAccess
 		final void __postKey(int __et, int __kc)
 			throws NullPointerException
 		{
+			NativeDisplayEventCallback cb =
+				VMNativeDisplayAccess.this._callback;
+			if (cb == null)
+				return;
+			
 			// Try to map to a game key if possible
 			try
 			{
@@ -636,8 +678,7 @@ public class VMNativeDisplayAccess
 			}
 			
 			// Post event
-			VMNativeDisplayAccess.this._callback.keyEvent(0,
-				__et, __kc, 0, ++this._keyindex);
+			cb.keyEvent(0, __et, __kc, 0, ++this._keyindex);
 		}
 	}
 }
