@@ -48,6 +48,7 @@ More detailed changes:
        Euro symbol.
      * Implemented `java.io.InputStream`.
      * Implemented `java.util.EventObject`.
+     * Implemented `java.util.Hashtable`.
      * Implemented `java.util.LinkedList`.
    * `demo-hello`
      * Made the system properties array `final`.
