@@ -154,9 +154,55 @@ public final class Font
 		return this._sqf.charWidth(SQFFont.mapChar(__c));
 	}
 	
-	public int charsWidth(char[] __a, int __b, int __c)
+	/**
+	 * Returns the width of the specified charaters, as if it were drawn
+	 * on the screen.
+	 *
+	 * @param __c The characters to check.
+	 * @param __o The offset.
+	 * @param __l The length.
+	 * @return The width of the string.
+	 * @throws ArrayIndexOutOfBoundsException If the offset and/or length are
+	 * negative or exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/06
+	 */
+	public int charsWidth(char[] __c, int __o, int __l)
+		throws ArrayIndexOutOfBoundsException, NullPointerException
 	{
-		throw new todo.TODO();
+		if (__c == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __c.length)
+			throw new ArrayIndexOutOfBoundsException("IOOB");
+		
+		SQFFont sqf = this._sqf;
+		
+		// Calculate width
+		int x = 0,
+			max = 0;
+		for (int i = 0; i < __l; i++)
+		{
+			char c = __c[__o++];
+			
+			// Ignore carriage returns
+			if (c == '\r')
+				continue;
+			
+			// Next line?
+			else if (c == '\n')
+			{
+				if (x > max)
+					max = x;
+				x = 0;
+			}
+			
+			// Add character
+			else
+				x += sqf.charWidth(SQFFont.mapChar(c));
+		}
+		
+		// Return the higher of the two
+		return (x > max ? x : max);
 	}
 	
 	/**
