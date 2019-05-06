@@ -10,6 +10,7 @@
 
 package javax.microedition.io;
 
+import cc.squirreljme.runtime.gcf.IPAddress;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.InputStream;
@@ -196,6 +197,8 @@ public class Connector
 	 * This opens and creates a connection to the specified resource which is
 	 * named by the URI.
 	 *
+	 * @param __uri The URI to open.
+	 * @param __mode The open mode of the socket.
 	 * @param __timeouts This is a hint to the connection system that it is
 	 * acceptable for {@link InterruptedIOException}s to be generated. This
 	 * is not required to be followed.
@@ -226,7 +229,8 @@ public class Connector
 		if (fc < 0)
 			throw new IllegalArgumentException(String.format("EC01 %s",
 				__uri));
-		String scheme = __uri.substring(0, fc), part = __uri.substring(fc + 1);
+		String scheme = __uri.substring(0, fc),
+			part = __uri.substring(fc + 1);
 		
 		// Sockets of a given protocol must be of a given class type
 		switch (scheme)
@@ -265,6 +269,11 @@ public class Connector
 				
 				// TCP Socket
 			case "socket":
+				{
+					// Decode address
+					IPAddress addr = IPAddress.fromUriPart(part);
+					
+				}
 				throw new todo.TODO();
 				
 				// SSL/TLS TCP Socket
