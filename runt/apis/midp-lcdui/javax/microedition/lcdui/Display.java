@@ -619,7 +619,10 @@ public class Display
 	 */
 	public int numAlphaLevels()
 	{
-		throw new todo.TODO();
+		int rv = this._state.framebuffer().pixelformat.numAlphaLevels();
+		if (rv <= 2)
+			return 2;
+		return rv;
 	}
 	
 	/**
@@ -634,9 +637,7 @@ public class Display
 	 */
 	public int numColors()
 	{
-		throw new todo.TODO();
-		/*
-		return this._head.numColors();*/
+		return this._state.framebuffer().pixelformat.numColors();
 	}
 	
 	public void removeCurrent()

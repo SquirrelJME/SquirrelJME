@@ -22,7 +22,7 @@ import javax.microedition.lcdui.Graphics;
 public final class UIFramebuffer
 {
 	/** The pixel format of the buffer. */
-	protected final PixelFormat pixelformat;
+	public final PixelFormat pixelformat;
 	
 	/** The buffer data. */
 	protected final Object buffer;
