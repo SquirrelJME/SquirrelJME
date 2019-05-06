@@ -11,6 +11,9 @@
 package java.util;
 
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
+import cc.squirreljme.runtime.cldc.util.IteratorToEnumeration;
+import cc.squirreljme.runtime.cldc.util.SynchronizedEntrySet;
+import cc.squirreljme.runtime.cldc.util.SynchronizedSet;
 
 /**
  * This is similar to {@link HashMap} except that it is thread safe and does
@@ -86,14 +89,23 @@ public class Hashtable<K, V>
 		this.putAll(__m);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/05
+	 */
+	@Override
 	public void clear()
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			this._map.clear();
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/05
+	 */
 	@Override
 	@SuppressWarnings({"unchecked"})
 	@ImplementationNote("This creates a new instance of this class and " +
@@ -102,42 +114,94 @@ public class Hashtable<K, V>
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			try
+			{
+				// Create a new instance of this class to put into, since the
+				// class is always of the same type
+				Map<K, V> copy = (Map<K, V>)this.getClass().newInstance();
+				
+				// Copy all the elements over
+				copy.putAll(this);
+				
+				return copy;
+			}
+			
+			// Oops
+			catch (IllegalAccessException|InstantiationException e)
+			{
+				// {@squirreljme.error ZZ46 Could not clone the hashtable.}
+				throw new RuntimeException("ZZ46", e);
+			}
 		}
 	}
 	
-	public boolean contains(Object __a)
+	/**
+	 * Checks if the map contains the specified value.
+	 *
+	 * @param __v The value to check.
+	 * @return If the map contains the value or not.
+	 * @since 2019/05/05
+	 */
+	public boolean contains(Object __v)
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			return this.values().contains(__v);
 		}
 	}
 	
-	public boolean containsKey(Object __a)
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/05
+	 */
+	@Override
+	public boolean containsKey(Object __k)
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			return null != this._map.getEntry(__k);
 		}
 	}
 	
-	public boolean containsValue(Object __a)
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/05
+	 */
+	@Override
+	public boolean containsValue(Object __v)
 	{
-		throw new todo.TODO();
+		synchronized (this)
+		{
+			return this.values().contains(__v);
+		}
 	}
 	
+	/**
+	 * Returns an enumeration over the elements.
+	 *
+	 * @return The enumerator over the elements.
+	 * @sine 2019/05/05
+	 */
 	public Enumeration<V> elements()
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			return new IteratorToEnumeration<V>(this.values().iterator());
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/05
+	 */
+	@Override
+	@SuppressWarnings({"unchecked"})
 	public Set<Map.Entry<K, V>> entrySet()
 	{
-		throw new todo.TODO();
+		synchronized (this)
+		{
+			return new SynchronizedEntrySet<K, V>(this, this._map.entrySet());
+		}
 	}
 	
 	@Override
@@ -149,23 +213,31 @@ public class Hashtable<K, V>
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @throws NullPointerException If the requested key is null.
+	 * @since 2019/05/05
+	 */
 	@Override
-	public V get(Object __a)
+	public V get(Object __k)
+		throws NullPointerException
 	{
+		if (__k == null)
+			throw new NullPointerException("NARG");
+		
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			__BucketMapEntry__<K, V> e = this._map.getEntry(__k);
+			if (e == null)
+				return null;
+			return e.getValue();
 		}
 	}
 	
-	public V getOrDefault(Object __a, V __b)
-	{
-		synchronized (this)
-		{
-			throw new todo.TODO();
-		}
-	}
-	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/05
+	 */
 	@Override
 	public int hashCode()
 	{
@@ -175,50 +247,89 @@ public class Hashtable<K, V>
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/05
+	 */
 	@Override
 	public boolean isEmpty()
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			return this._map.isEmpty();
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/05
+	 */
+	@Override
 	public Set<K> keySet()
 	{
-		throw new todo.TODO();
+		return new __AbstractMapKeySet__<K, V>(this);
 	}
 	
+	/**
+	 * Returns an enumeration over the keys.
+	 *
+	 * @return The key enumeration.
+	 * @since 2019/05/05
+	 */
 	public Enumeration<K> keys()
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			return new IteratorToEnumeration<K>(this.keySet().iterator());
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @throws NullPointerException If the key or value is null.
+	 * @since 2019/05/05
+	 */
 	@Override
-	public V put(K __a, V __b)
+	public V put(K __k, V __v)
+		throws NullPointerException
 	{
+		if (__k == null || __v == null)
+			throw new NullPointerException("NARG");
+		
+		__BucketMap__<K, V> map = this._map;
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			// To detect rehashing
+			int numrehash = map._numrehash;
+			
+			// Set value, remember old one
+			V rv = this._map.putEntry(__k).setValue(__v);
+			
+			// If the map was ever rehashed, then call this method
+			if (map._numrehash != numrehash)
+				this.rehash();
+			
+			// Done
+			return rv;
 		}
 	}
 	
-	public void putAll(Map<? extends K, ? extends V> __a)
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/05
+	 */
+	@Override
+	public void putAll(Map<? extends K, ? extends V> __m)
+		throws NullPointerException
 	{
+		if (__m == null)
+			throw new NullPointerException("NARG");
+		
 		synchronized (this)
 		{
-			throw new todo.TODO();
-		}
-	}
-	
-	public V putIfAbsent(K __a, V __b)
-	{
-		synchronized (this)
-		{
-			throw new todo.TODO();
+			// Copy everything
+			for (Map.Entry<? extends K, ? extends V> e : __m.entrySet())
+				this.put(e.getKey(), e.getValue());
 		}
 	}
 	
@@ -235,60 +346,88 @@ public class Hashtable<K, V>
 	{
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @throws NullPointerException If a null key was specified.
+	 * @since 2019/05/05
+	 */
 	@Override
-	public V remove(Object __a)
+	public V remove(Object __k)
+		throws NullPointerException
 	{
+		if (__k == null)
+			throw new NullPointerException("NARG");
+		
+		__BucketMap__<K, V> map = this._map;
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			// To detect rehashing
+			int numrehash = map._numrehash;
+			
+			// Remove key
+			V rv = this._map.remove(__k);
+			
+			// If the map was ever rehashed, then call this method
+			if (map._numrehash != numrehash)
+				this.rehash();
+			
+			// Done
+			return rv;
 		}
 	}
 	
-	public boolean remove(Object __a, Object __b)
-	{
-		synchronized (this)
-		{
-			throw new todo.TODO();
-		}
-	}
-	
-	public boolean replace(K __a, V __b, V __c)
-	{
-		synchronized (this)
-		{
-			throw new todo.TODO();
-		}
-	}
-	
-	public V replace(K __a, V __b)
-	{
-		synchronized (this)
-		{
-			throw new todo.TODO();
-		}
-	}
-	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/05
+	 */
 	@Override
 	public int size()
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			return this._map.size();
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/05
+	 */
 	@Override
 	public String toString()
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			StringBuilder sb = new StringBuilder("{");
+			
+			// Go through and append
+			boolean comma = false;
+			for (Map.Entry<?, ?> e : this.entrySet())
+			{
+				// Space comma
+				if (comma)
+					sb.append(", ");
+				comma = true;
+				
+				// Key is equal to the value
+				sb.append(e.getKey());
+				sb.append('=');
+				sb.append(e.getValue());
+			}
+			
+			sb.append('}');
+			return sb.toString();
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/05
+	 */
+	@Override
 	public Collection<V> values()
 	{
-		throw new todo.TODO();
+		return new __AbstractMapValues__<K, V>(this);
 	}
 }
 
