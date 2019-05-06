@@ -12,13 +12,13 @@ package cc.squirreljme.runtime.cldc.util;
 import java.util.Map;
 
 /**
- * This is a synchronized map entry.
+ * This is a synchronized map entry, null values are not permitted.
  *
  * @param <K> The key.
  * @param <V> The value.
  * @since 2019/05/05
  */
-public final class SynchronizedMapEntry<K, V>
+public final class SynchronizedMapEntryNotNull<K, V>
 	implements Map.Entry<K, V>
 {
 	/** The locking object. */
@@ -35,7 +35,7 @@ public final class SynchronizedMapEntry<K, V>
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/05
 	 */
-	public SynchronizedMapEntry(Object __lock, Map.Entry<K, V> __ent)
+	public SynchronizedMapEntryNotNull(Object __lock, Map.Entry<K, V> __ent)
 		throws NullPointerException
 	{
 		if (__lock == null || __ent == null)
@@ -99,11 +99,16 @@ public final class SynchronizedMapEntry<K, V>
 	
 	/**
 	 * {@inheritDoc}
+	 * @throws NullPointerException If this value is null.
 	 * @since 2019/05/05
 	 */
 	@Override
 	public final V setValue(V __v)
+		throws NullPointerException
 	{
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
 		synchronized (this.lock)
 		{
 			return this.entry.setValue(__v);
