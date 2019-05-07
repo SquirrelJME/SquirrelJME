@@ -4,20 +4,20 @@
 
 _Please note that this information may change over time._
 
-## 1.0.0 (TBD - January 2021?)
+## 1.0.0 (TBD - April 2021?)
 
  * Add support for more programs.
 
-## 0.12.0 (TBD - September 2020?)
+## 0.12.0 (TBD - December 2020?)
 
  * Virtual Machine: WinterCoat
    * Native code generation.
 
-## 0.10.0 (TBD - May 2020?)
+## 0.10.0 (TBD - August 2020?)
 
  * Add support for more programs.
 
-## 0.8.0 (TBD - January 2020?)
+## 0.8.0 (TBD - April 2020?)
 
  * Virtual Machine: AutumnCoat
    * Native code generation.
@@ -25,14 +25,14 @@ _Please note that this information may change over time._
    * Note that it will not fully be removed, it will only exist within the
      build system so it cannot be used normally.
 
-## 0.6.0 (TBD - September 2019?)
+## 0.6.0 (TBD - December 2019?)
 
 This is a future release and the specified changes are proposed.
 
  * Add support for more programs.
  * SpringCoat becomes deprecated.
 
-## 0.4.0 (May 19, 2019)
+## 0.4.0 (July 4, 2019)
 
 This is the second version of SquirrelJME which provides virtual machine
 improvements.
