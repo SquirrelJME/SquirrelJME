@@ -1,0 +1,27 @@
+# 2019/05/06
+
+## 10:32
+
+Actually I believe I have an URI implementation in k8, so time to go digging.
+
+## 17:35
+
+I think I might need an easier to port means for native access since there are
+so many functions available for usage.
+
+## 17:40
+
+Definitely need like a universal API that can handle many things and such. But
+I need to make it compatible with Java SE and also have it optimial to how
+SummerCoat would do it. I think what I can do is have an API number and then
+also use some kind of packaging. When an API call is made the packaging will
+depend on the arguments used. Since I want to keep references and such the
+same across VMs and such, I think this is the best option. API calls will just
+take the API number and `Object`. Object will either be `Object[]` if it is
+packaged as boxed objects or `int[]` if it is packaged as raw integer register
+variables (like used in method invoke).
+
+## 18:25
+
+I do hope this universal API is workable! I think it would greatly simplify
+how the base SquirrelJME API is implemented and such.
