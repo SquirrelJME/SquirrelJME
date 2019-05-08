@@ -69,6 +69,9 @@ public class TestLinkedHashSet
 			ittotal += i;
 		}
 		
+		// Hashcode
+		this.secondary("hashcode", links.hashCode());
+		
 		return ittotal;
 	}
 }

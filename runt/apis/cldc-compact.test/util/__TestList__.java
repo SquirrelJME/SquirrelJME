@@ -66,7 +66,19 @@ abstract class __TestList__
 			this.secondary("initialioob", t);
 		}
 		
-		throw new todo.TODO();
+		if (true)
+			throw new todo.TODO();
+		
+		// Hashcode
+		this.secondary("hashcode", list.hashCode());
+		
+		// As array form
+		this.secondary("array",
+			list.<String>toArray(new String[list.size()]));
+		this.secondary("arrowgrow",
+			list.<String>toArray(new String[list.size() / 2]));
+		this.secondary("arrayover",
+			list.<String>toArray(new String[list.size() + 17]));
 	}
 }
 
