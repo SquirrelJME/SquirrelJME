@@ -19,7 +19,7 @@ import net.multiphasicapps.tac.TestRunnable;
  * @since 2019/05/08
  */
 abstract class __TestList__
-	implements TestRunnable
+	extends TestRunnable
 {
 	/** The list being tested. */
 	protected final List<String> list;
