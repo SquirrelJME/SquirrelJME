@@ -66,8 +66,41 @@ abstract class __TestList__
 			this.secondary("initialioob", t);
 		}
 		
-		if (true)
-			throw new todo.TODO();
+		// Add various entries to the list
+		this.secondary("add1", list.add("Hello!"));
+		this.secondary("add2", list.add("Squirrels!"));
+		this.secondary("add3", list.add("Are!"));
+		this.secondary("add4", list.add("Cute!"));
+		
+		// Must be the correct size
+		this.secondary("addempty", list.isEmpty());
+		this.secondary("addsize", list.size());
+		
+		// Remove the second element
+		this.secondary("removeindex", list.remove(2));
+		
+		// Remove by value
+		this.secondary("hascutebefore", list.contains("Cute!"));
+		this.secondary("removevalue", list.remove("Cute!"));
+		this.secondary("hascuteafter", list.contains("Cute!"));
+		
+		// Remove size
+		this.secondary("removeempty", list.isEmpty());
+		this.secondary("removesize", list.size());
+		
+		// Add a bunch of entries
+		for (int i = 1; i <= 17; i++)
+			this.secondary("add" + i, Integer.toString(i));
+			
+		// Count sizes more
+		this.secondary("bulkempty", list.isEmpty());
+		this.secondary("bulksize", list.size());
+		
+		// Add another squirrels, then remove it
+		this.secondary("moresquirrels", list.add("Squirrels!"));
+		this.secondary("hasmoresquirrels", list.contains("Squirrels!"));
+		this.secondary("removemoresquirrels", list.remove("Squirrels!"));
+		this.secondary("hasmoresquirrels", list.contains("Squirrels!"));
 		
 		// Hashcode
 		this.secondary("hashcode", list.hashCode());
@@ -79,6 +112,9 @@ abstract class __TestList__
 			list.<String>toArray(new String[list.size() / 2]));
 		this.secondary("arrayover",
 			list.<String>toArray(new String[list.size() + 17]));
+		
+		// Check string result
+		this.secondary("stringform", list.toString());
 	}
 }
 
