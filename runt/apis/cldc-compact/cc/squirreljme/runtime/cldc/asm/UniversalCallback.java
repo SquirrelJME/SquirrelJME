@@ -37,6 +37,6 @@ public final class UniversalCallback
 	 * @since 2019/05/06
 	 */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
-	public static native Object universalCall(int __func, Object __pkg);
+	public static native Object universalCallback(int __func, Object __pkg);
 }
 
