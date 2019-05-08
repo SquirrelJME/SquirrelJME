@@ -100,7 +100,23 @@ public final class DataSerialization
 				sb.append(a[i]);
 			}
 			return sb.toString();
-			
+		}
+		
+		// String array
+		else if (__o instanceof String[])
+		{
+			// Print values
+			String[] a = (String[])__o;
+			int n = a.length;
+			StringBuilder sb = new StringBuilder(
+				String.format("string[%d]:", n));
+			for (int i = 0; i < n; i++)
+			{
+				if (i > 0)
+					sb.append(",");
+				sb.append(DataSerialization.serializeString(a[i]));
+			}
+			return sb.toString();
 		}
 		
 		// Throwable, meta data is used
@@ -172,19 +188,17 @@ public final class DataSerialization
 	 * Encodes the given string to a manifest safe format.
 	 *
 	 * @param __s The string to encode.
-	 * @return The encoded string.
-	 * @throws NullPointerException On null arguments.
+	 * @return The encoded string, {@code null} has a special value.
 	 * @since 2018/10/06
 	 */
 	public static final String serializeString(String __s)
-		throws NullPointerException
 	{
+		// Special value for null strings
 		if (__s == null)
-			throw new NullPointerException("NARG");
-		
-		StringBuilder sb = new StringBuilder(__s.length());
+			return "\\NULL";
 		
 		// Encode characters to normalize them
+		StringBuilder sb = new StringBuilder(__s.length());
 		for (int i = 0, n = __s.length(); i < n; i++)
 		{
 			char c = __s.charAt(i);
