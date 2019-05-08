@@ -101,7 +101,7 @@ abstract class __TestList__
 		this.secondary("moresquirrels", list.add("Squirrels!"));
 		this.secondary("hasmoresquirrels", list.contains("Squirrels!"));
 		this.secondary("removemoresquirrels", list.remove("Squirrels!"));
-		this.secondary("hasmoresquirrels", list.contains("Squirrels!"));
+		this.secondary("hasmoresquirrelsstill", list.contains("Squirrels!"));
 		
 		// Hashcode
 		this.secondary("hashcode", list.hashCode());
