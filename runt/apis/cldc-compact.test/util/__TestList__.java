@@ -11,6 +11,7 @@ package util;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import net.multiphasicapps.tac.TestRunnable;
 
 /**
@@ -90,7 +91,7 @@ abstract class __TestList__
 		
 		// Add a bunch of entries
 		for (int i = 1; i <= 17; i++)
-			this.secondary("add" + i, Integer.toString(i));
+			this.secondary("add" + i, list.add(Integer.toString(i)));
 			
 		// Count sizes more
 		this.secondary("bulkempty", list.isEmpty());
@@ -105,6 +106,29 @@ abstract class __TestList__
 		// Hashcode
 		this.secondary("hashcode", list.hashCode());
 		
+		// Go through and check iteration sequence
+		Object[] array = list.toArray();
+		Iterator<String> it = list.iterator();
+		for (int i = 0, n = array.length; i < n; i++)
+		{
+			// Must be equal
+			this.secondary("itequal" + i, Objects.equals(array[i], it.next()));
+			
+			// Remove some elements
+			if (i == 3 || i == 7 || i == 12)
+				it.remove();
+		}
+		
+		// The iterator should be at the end
+		try
+		{
+			this.secondary("noneleft", it.next());
+		}
+		catch (Throwable t)
+		{
+			this.secondary("noneleft", t);
+		}
+		
 		// As array form
 		this.secondary("array",
 			list.<String>toArray(new String[list.size()]));
@@ -115,6 +139,11 @@ abstract class __TestList__
 		
 		// Check string result
 		this.secondary("stringform", list.toString());
+		
+		// Clear and count size
+		list.clear();
+		this.secondary("clearempty", list.isEmpty());
+		this.secondary("clearsize", list.size());
 	}
 }
 
