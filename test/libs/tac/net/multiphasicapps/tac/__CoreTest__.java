@@ -99,33 +99,44 @@ abstract class __CoreTest__
 		Class<?> self = this.getClass();
 		
 		// Get the basename of the class, used to refer to resources
-		String classname = self.getName(),
-			basename = classname;
-		int ld = basename.lastIndexOf('.');
-		if (ld >= 0)
-			basename = basename.substring(ld + 1);
+		String classname = self.getName();
 		
-		// Read input and output parameters
-		JavaManifest man;
-		try (InputStream in = self.getResourceAsStream(basename + ".in"))
+		// Find result, look in super classes as needed
+		JavaManifest man = null;
+		for (Class<?> cl = self; cl != null; cl = cl.getSuperclass())
 		{
-			if (in == null)
+			// Use basename of this form,
+			String basename = cl.getName();
+			int ld = basename.lastIndexOf('.');
+			if (ld >= 0)
+				basename = basename.substring(ld + 1);
+			
+			// Read input and output parameters
+			try (InputStream in = self.getResourceAsStream(basename + ".in"))
 			{
-				// Warn that it is missing
-				System.err.printf("WARN: No .in for %s (%s.in)%n",
-					classname, basename);
-				
-				// Use a blank manifest instead
-				man = new JavaManifest();
+				if (in == null)
+				{
+					// Warn that it is missing
+					System.err.printf("WARN: No .in for %s (%s.in)%n",
+						classname, basename);
+				}
+				else
+					man = new JavaManifest(in);
 			}
-			else
-				man = new JavaManifest(in);
+			catch (IOException e)
+			{
+				// {@squirreljme.error BU07 Could not read the argument input.}
+				throw new InvalidTestException("BU07", e);
+			}
+			
+			// Stop if a manifest was read
+			if (man != null)
+				break;
 		}
-		catch (IOException e)
-		{
-			// {@squirreljme.error BU07 Could not read the argument input.}
-			throw new InvalidTestException("BU07", e);
-		}
+					
+		// Use a blank manifest instead
+		if (man == null)
+			man = new JavaManifest();
 		
 		// The main attributes contain the arguments
 		JavaManifestAttributes attr = man.getMainAttributes();
