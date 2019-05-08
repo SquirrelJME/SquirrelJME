@@ -107,6 +107,9 @@ public class TestHashMap
 		for (int i = 0; i < 128; i++)
 			map.put(i, "" + i);
 		
+		// Hash map
+		this.secondary("hashcode", map.hashCode());
+		
 		// Check the size
 		this.secondary("dumpsize", map.size());
 		

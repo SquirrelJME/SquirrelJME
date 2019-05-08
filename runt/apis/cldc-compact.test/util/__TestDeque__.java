@@ -84,8 +84,15 @@ abstract class __TestDeque__
 			ita[i] = it.next().intValue();
 		this.secondary("iterator-descending", ita);
 		
+		// Hashcode
+		this.secondary("hashcode", q.hashCode());
+		
 		// As array form
 		this.secondary("array", q.<Integer>toArray(new Integer[q.size()]));
+		this.secondary("arrowgrow",
+			q.<Integer>toArray(new Integer[q.size() / 2]));
+		this.secondary("arrayover",
+			q.<Integer>toArray(new Integer[q.size() + 17]));
 		
 		// Do removals
 		this.secondary("removefirst", q.removeFirst());
