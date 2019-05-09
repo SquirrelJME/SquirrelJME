@@ -106,7 +106,7 @@ public final class TestResult
 		TestResult o = (TestResult)__o;
 		return this.rvalue.equals(o.rvalue) &&
 			this.tvalue.equals(o.tvalue) &&
-			this._secondary.equals(o._secondary);
+			TestResult.__equals(this._secondary, o._secondary);
 	}
 	
 	/**
@@ -385,6 +385,48 @@ public final class TestResult
 		
 		// Use normal string comparison
 		return __exp.equals(__act);
+	}
+	
+	/**
+	 * Compares the map of strings to see that they are equal.
+	 *
+	 * @param __act The actual values.
+	 * @param __exp The expected values.
+	 * @return If the maps are a match.
+	 * @throws InvalidTestParameterException If a throwable is not formatted
+	 * correctly.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/10/07
+	 */
+	private static boolean __equals(Map<String, String> __act,
+		Map<String, String> __exp)
+		throws InvalidTestParameterException, NullPointerException
+	{
+		if (__act == null || __exp == null)
+			throw new NullPointerException("NARG");
+		
+		// Compare from the first map
+		for (Map.Entry<String, String> a : __act.entrySet())
+		{
+			String key = a.getKey();
+			
+			// Second is missing key
+			if (!__exp.containsKey(key))
+				return false;
+			
+			// Match value
+			if (!TestResult.valueEquals(a.getValue(), __exp.get(key)))
+				return false;
+		}
+		
+		// Just scan through the keys in the second map, if any keys are
+		// missing then extra keys were added
+		for (String k : __exp.keySet())
+			if (!__act.containsKey(k))
+				return false;
+		
+		// Is a match
+		return true;
 	}
 	
 	/**
