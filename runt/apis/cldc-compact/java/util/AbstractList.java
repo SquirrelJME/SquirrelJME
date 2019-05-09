@@ -497,7 +497,7 @@ public abstract class AbstractList<E>
 			
 			// Next element would be moved down
 			int next = this._next;
-			if (rmdx > next)
+			if (next > rmdx)
 				this._next = next - 1;
 			
 			// Set new modification count
