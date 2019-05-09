@@ -223,7 +223,8 @@ public final class TestResult
 		attr.putValue("result", this.rvalue);
 		attr.putValue("thrown", this.tvalue);
 		for (Map.Entry<String, String> e : this._secondary.entrySet())
-			attr.putValue(DataSerialization.encodeKey(e.getKey()),
+			attr.putValue(
+				"secondary-" + DataSerialization.encodeKey(e.getKey()),
 				e.getValue());
 		
 		// Write it
