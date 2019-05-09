@@ -57,7 +57,7 @@ jobs:
           path: spjut
       - store_artifacts:
           path: springcoat.nps
-          destination: /nps/summercoat.nps
+          destination: /nps/springcoat.nps
   tests_summercoat:
     executor: buildenv
     steps:
