@@ -17,5 +17,191 @@ package net.multiphasicapps.tac;
  */
 public final class DataDeserialization
 {
+	
+	/**
+	 * Decodes the given string from a manifest safe format to a string.
+	 *
+	 * @param __s The string to decode.
+	 * @return The decoded string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/10/06
+	 */
+	public static final String decodeString(String __s)
+		throws NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		StringBuilder sb = new StringBuilder(__s.length());
+		
+		// Decode all input characters
+		for (int i = 0, n = __s.length(); i < n; i++)
+		{
+			char c = __s.charAt(i);
+			
+			// Ignore whitespace, since this could be an artifact of whitespace
+			// used in the manifest
+			if (c == ' ' || c == '\r' || c == '\n' || c == '\t')
+				continue;
+			
+			// Escaped sequence requires parsing
+			else if (c == '\\')
+			{
+				// Read the next character
+				c = __s.charAt(++i);
+				
+				// Hex sequence for any character
+				if (c == '@')
+				{
+					// Build string to decode hex sequence from
+					StringBuilder sub = new StringBuilder(4);
+					sub.append(__s.charAt(++i));
+					sub.append(__s.charAt(++i));
+					sub.append(__s.charAt(++i));
+					sub.append(__s.charAt(++i));
+					
+					// Decode character
+					c = (char)(Integer.valueOf(sub.toString(), 16).intValue());
+				}
+				
+				// Code for specific characters
+				else
+					switch (c)
+					{
+							// Unchanged
+						case '\\':
+						case '\"':
+							break;
+							
+							// Space
+						case '_':
+							c = ' ';
+							break;
+							
+							// Newline
+						case 'n':
+							c = '\n';
+							break;
+							
+							// Carriage return
+						case 'r':
+							c = '\r';
+							break;
+							
+							// Tab
+						case 't':
+							c = '\t';
+							break;
+							
+							// Delete
+						case 'd':
+							c = (char)0x7F;
+							break;
+						
+							// Used to represent all the other upper
+							// sequences
+						default:
+							if (c >= '0' && c <= '9')
+								c = (char)(c - '0');
+							else if (c >= 'A' && c <= 'Z')
+								c = (char)((c - 'A') + 10);
+							break;
+					}
+				
+				// Append normalized
+				sb.append(c);
+			}
+			
+			// Not escaped
+			else
+				sb.append(c);
+		}
+		
+		return sb.toString();
+	}
+	
+	/**
+	 * Converts the given string to an object.
+	 *
+	 * @param __s The object to convert.
+	 * @return The converted object.
+	 * @throws InvalidTestParameterException If the input could not be
+	 * converted.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2018/10/06
+	 */
+	public static final Object deserialize(String __s)
+		throws InvalidTestParameterException, NullPointerException
+	{
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Basic conversions
+		switch (__s)
+		{
+			case "null":
+				return null;
+			
+			case "NoResult":
+				return new __NoResult__();
+			
+			case "UndefinedResult":
+				return new __UndefinedResult__();
+			
+			case "ExceptionThrown":
+				return new __ExceptionThrown__();
+			
+			case "NoExceptionThrown":
+				return new __NoExceptionThrown__();
+			
+			case "true":
+				return Boolean.TRUE;
+			
+			case "false":
+				return Boolean.FALSE;
+			
+			default:
+				break;
+		}
+		
+		// A string
+		if (__s.startsWith("string:"))
+			return DataDeserialization.decodeString(__s.substring(7));
+		
+		// Byte
+		else if (__s.startsWith("byte:"))
+			return Byte.valueOf(__s.substring(5));
+			
+		// Short
+		else if (__s.startsWith("short:"))
+			return Short.valueOf(__s.substring(6));
+			
+		// Char
+		else if (__s.startsWith("char:"))
+			return Character.valueOf(
+				(char)Integer.valueOf(__s.substring(5)).intValue());
+		
+		// Integer
+		else if (__s.startsWith("int:"))
+			return Integer.valueOf(__s.substring(4));
+		
+		// Long
+		else if (__s.startsWith("long:"))
+			return Long.valueOf(__s.substring(5));
+		
+		// {@squirreljme.error BU09 The specified string cannot be converted
+		// to an object because it an unknown representation, the conversion
+		// is only one way. (The encoded data)}
+		else if (__s.startsWith("other:"))
+			throw new InvalidTestParameterException(
+				String.format("BU09 %s", __s));
+		
+		// {@squirreljme.error BU0a The specified object cannot be
+		// decoded because it is not known or does not support decoding.
+		// (The encoded data)}
+		else
+			throw new InvalidTestParameterException(
+				String.format("BU0a %s", __s));
+	}
 }
 

@@ -18,170 +18,52 @@ package net.multiphasicapps.tac;
 public final class DataSerialization
 {
 	/**
-	 * Serialize the given object to a string.
+	 * Encodes key value.
 	 *
-	 * @param __o The value to serialize.
-	 * @return The resulting serialization.
-	 * @since 2019/01/20
+	 * @param __key The key to encode.
+	 * @return The resulting key.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/09
 	 */
-	public static final String serialize(Object __o)
+	public static final String encodeKey(String __key)
+		throws NullPointerException
 	{
-		// Null
-		if (__o == null)
-			return "null";
-		
-		// No result generated
-		else if (__o instanceof __NoResult__)
-			return "NoResult";
-		
-		// Undefined
-		else if (__o instanceof __UndefinedResult__)
-			return "UndefinedResult";
-		
-		// Exception was thrown
-		else if (__o instanceof __ExceptionThrown__)
-			return "ExceptionThrown";
-		
-		// No exception was thrown
-		else if (__o instanceof __NoExceptionThrown__)
-			return "NoExceptionThrown";
-		
-		// Boolean values
-		else if (__o instanceof Boolean)
-			return __o.toString();
-		
-		// String
-		else if (__o instanceof String)
-			return "string:" + DataSerialization.serializeString((String)__o);
-		
-		// Byte
-		else if (__o instanceof Byte)
-			return "byte:" + __o;
-		
-		// Short
-		else if (__o instanceof Short)
-			return "short:" + __o;
-		
-		// Character
-		else if (__o instanceof Character)
-			return "char:" + (int)((Character)__o).charValue();
-		
-		// Integer
-		else if (__o instanceof Integer)
-			return "int:" + __o;
-		
-		// Long
-		else if (__o instanceof Long)
-			return "long:" + __o;
-		
-		// Integer array
-		else if ((__o instanceof int[]) || __o instanceof Integer[])
+		if (__key == null)
+			throw new NullPointerException("NARG");
+			
+		// Encode the key to allow for valid characters
+		int n;
+		StringBuilder sb = new StringBuilder((n = __key.length()));
+		for (int i = 0; i < n; i++)
 		{
-			// Convert first
-			if (__o instanceof Integer[])
-			{
-				Integer[] a = (Integer[])__o;
-				int n = a.length;
-				int[] b = new int[n];
-				for (int i = 0; i < n; i++)
-					b[i] = a[i].intValue();
-				__o = b;
-			}
+			char c = __key.charAt(i);
 			
-			// Print values
-			int[] a = (int[])__o;
-			int n = a.length;
-			StringBuilder sb = new StringBuilder(
-				String.format("int[%d]:", n));
-			for (int i = 0; i < n; i++)
+			// Possibly re-encoded?
+			boolean enc = false;
+			if (c >= 'A' && c <= 'Z')
+				c = Character.toLowerCase(c);
+			else
 			{
-				if (i > 0)
-					sb.append(",");
-				sb.append(a[i]);
-			}
-			return sb.toString();
-		}
-		
-		// String array
-		else if (__o instanceof String[])
-		{
-			// Print values
-			String[] a = (String[])__o;
-			int n = a.length;
-			StringBuilder sb = new StringBuilder(
-				String.format("string[%d]:", n));
-			for (int i = 0; i < n; i++)
-			{
-				if (i > 0)
-					sb.append(",");
-				sb.append(DataSerialization.serializeString(a[i]));
-			}
-			return sb.toString();
-		}
-		
-		// Throwable, meta data is used
-		else if (__o instanceof Throwable)
-		{
-			Throwable t = (Throwable)__o;
-			
-			StringBuilder sb = new StringBuilder("throwable:");
-			
-			// The last package to shorten the classes
-			String lastpkg = "java.lang.";
-			
-			// Throwables may be of multiple class types and it usually is
-			// expected that they are some base class. For example a class
-			// can thrown some FooIndexOutOfBoundsException which is based
-			// off IndexOutOfBoundsException, if the result expects the
-			// base class then it must still pass. So store the entire class
-			// tree.
-			boolean comma = false;
-			for (Class<?> x = t.getClass(); x != null && x != Object.class;
-				x = x.getSuperclass())
-			{
-				// Clip off the package if it matches
-				String clname = x.getName();
-				if (clname.startsWith(lastpkg))
-					clname = clname.substring(lastpkg.length());
-				
-				// Otherwise remember the package used
-				else
+				// Re-encode?
+				char redo = 0;
+				switch (c)
 				{
-					int ld = clname.lastIndexOf('.');
-					if (ld >= 0)
-						lastpkg = clname.substring(0, ld + 1);
-					
-					// Maybe default package?
-					else
-						lastpkg = "";
+					case '+':	redo = 'p'; break;
+					case '#':	redo = 'h'; break;
+					case '.':	redo = '.'; break;
+					case '-':	redo = '-'; break;
 				}
 				
-				// Split to encode multiple classes
-				if (comma)
-					sb.append(',');
-				comma = true;
-				
-				// Append class name here
-				sb.append(clname);
+				// Was this value being re-encoded
+				if (redo != 0)
+					sb.append('-');
 			}
 			
-			// For debug purposes, encode the message information
-			String msg = t.getMessage();
-			if (msg != null)
-			{
-				sb.append(':');
-				sb.append(DataSerialization.serializeString(msg));
-			}
-			
-			// Now metadata is included for this
-			return sb.toString();
+			sb.append(c);
 		}
 		
-		// Unrepresented object, just use its string representation in an
-		// encoded form
-		else
-			return "other:" + __o.getClass().getName() + ":" +
-				DataSerialization.serializeString(__o.toString());
+		// Use the encoded key
+		return sb.toString();
 	}
 	
 	/**
@@ -191,7 +73,7 @@ public final class DataSerialization
 	 * @return The encoded string, {@code null} has a special value.
 	 * @since 2018/10/06
 	 */
-	public static final String serializeString(String __s)
+	public static final String encodeString(String __s)
 	{
 		// Special value for null strings
 		if (__s == null)
@@ -295,6 +177,173 @@ public final class DataSerialization
 		}
 		
 		return sb.toString();
+	}
+	
+	/**
+	 * Serialize the given object to a string.
+	 *
+	 * @param __o The value to serialize.
+	 * @return The resulting serialization.
+	 * @since 2019/01/20
+	 */
+	public static final String serialize(Object __o)
+	{
+		// Null
+		if (__o == null)
+			return "null";
+		
+		// No result generated
+		else if (__o instanceof __NoResult__)
+			return "NoResult";
+		
+		// Undefined
+		else if (__o instanceof __UndefinedResult__)
+			return "UndefinedResult";
+		
+		// Exception was thrown
+		else if (__o instanceof __ExceptionThrown__)
+			return "ExceptionThrown";
+		
+		// No exception was thrown
+		else if (__o instanceof __NoExceptionThrown__)
+			return "NoExceptionThrown";
+		
+		// Boolean values
+		else if (__o instanceof Boolean)
+			return __o.toString();
+		
+		// String
+		else if (__o instanceof String)
+			return "string:" + DataSerialization.encodeString((String)__o);
+		
+		// Byte
+		else if (__o instanceof Byte)
+			return "byte:" + __o;
+		
+		// Short
+		else if (__o instanceof Short)
+			return "short:" + __o;
+		
+		// Character
+		else if (__o instanceof Character)
+			return "char:" + (int)((Character)__o).charValue();
+		
+		// Integer
+		else if (__o instanceof Integer)
+			return "int:" + __o;
+		
+		// Long
+		else if (__o instanceof Long)
+			return "long:" + __o;
+		
+		// Integer array
+		else if ((__o instanceof int[]) || __o instanceof Integer[])
+		{
+			// Convert first
+			if (__o instanceof Integer[])
+			{
+				Integer[] a = (Integer[])__o;
+				int n = a.length;
+				int[] b = new int[n];
+				for (int i = 0; i < n; i++)
+					b[i] = a[i].intValue();
+				__o = b;
+			}
+			
+			// Print values
+			int[] a = (int[])__o;
+			int n = a.length;
+			StringBuilder sb = new StringBuilder(
+				String.format("int[%d]:", n));
+			for (int i = 0; i < n; i++)
+			{
+				if (i > 0)
+					sb.append(",");
+				sb.append(a[i]);
+			}
+			return sb.toString();
+		}
+		
+		// String array
+		else if (__o instanceof String[])
+		{
+			// Print values
+			String[] a = (String[])__o;
+			int n = a.length;
+			StringBuilder sb = new StringBuilder(
+				String.format("string[%d]:", n));
+			for (int i = 0; i < n; i++)
+			{
+				if (i > 0)
+					sb.append(",");
+				sb.append(DataSerialization.encodeString(a[i]));
+			}
+			return sb.toString();
+		}
+		
+		// Throwable, meta data is used
+		else if (__o instanceof Throwable)
+		{
+			Throwable t = (Throwable)__o;
+			
+			StringBuilder sb = new StringBuilder("throwable:");
+			
+			// The last package to shorten the classes
+			String lastpkg = "java.lang.";
+			
+			// Throwables may be of multiple class types and it usually is
+			// expected that they are some base class. For example a class
+			// can thrown some FooIndexOutOfBoundsException which is based
+			// off IndexOutOfBoundsException, if the result expects the
+			// base class then it must still pass. So store the entire class
+			// tree.
+			boolean comma = false;
+			for (Class<?> x = t.getClass(); x != null && x != Object.class;
+				x = x.getSuperclass())
+			{
+				// Clip off the package if it matches
+				String clname = x.getName();
+				if (clname.startsWith(lastpkg))
+					clname = clname.substring(lastpkg.length());
+				
+				// Otherwise remember the package used
+				else
+				{
+					int ld = clname.lastIndexOf('.');
+					if (ld >= 0)
+						lastpkg = clname.substring(0, ld + 1);
+					
+					// Maybe default package?
+					else
+						lastpkg = "";
+				}
+				
+				// Split to encode multiple classes
+				if (comma)
+					sb.append(',');
+				comma = true;
+				
+				// Append class name here
+				sb.append(clname);
+			}
+			
+			// For debug purposes, encode the message information
+			String msg = t.getMessage();
+			if (msg != null)
+			{
+				sb.append(':');
+				sb.append(DataSerialization.encodeString(msg));
+			}
+			
+			// Now metadata is included for this
+			return sb.toString();
+		}
+		
+		// Unrepresented object, just use its string representation in an
+		// encoded form
+		else
+			return "other:" + __o.getClass().getName() + ":" +
+				DataSerialization.encodeString(__o.toString());
 	}
 }
 
