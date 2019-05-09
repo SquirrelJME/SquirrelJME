@@ -146,7 +146,7 @@ public final class TestResultBuilder
 			throw new NullPointerException("NARG");
 		
 		// Encode the values
-		this.putSecondaryValue(__key, DataSerialization.serialize(__val));
+		this.putSecondaryEncoded(__key, DataSerialization.serialize(__val));
 	}
 	
 	/**

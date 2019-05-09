@@ -18,7 +18,10 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import net.multiphasicapps.collections.SortedTreeMap;
+import net.multiphasicapps.collections.SortedTreeSet;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestKey;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
@@ -121,45 +124,39 @@ public final class TestResult
 	/**
 	 * Prints the comparison of this result and the other result.
 	 *
-	 * @param __o The result to compare against.
 	 * @param __ps The stream to write to.
+	 * @param __o The result to compare against.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/09
 	 */
-	public final void printComparison(TestResult __o, PrintStream __ps)
+	public final void printComparison(PrintStream __ps, TestResult __o)
 		throws NullPointerException
 	{
 		if (__o == null || __ps == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
-		/*
-		// Print base values
-		out.printf("%s: FAIL%n", classname);
-		out.printf("\tRV %s %s%n", rvstr, expectrv);
-		out.printf("\tTH %s %s%n", thstr, expectth);
+		// Return value
+		TestResult.__printSingleCompare(__ps, "return",
+			this.rvalue, __o.rvalue);
 		
-		// Merge the two key sets
+		// Thrown exception
+		TestResult.__printSingleCompare(__ps, "thrown",
+			this.tvalue, __o.tvalue);
+		
+		// Secondary value comparison, more complex since both maps might not
+		// contain the same values
+		Map<String, String> as = this._secondary,
+			bs = __o._secondary;
+		
+		// Create merged key set so that all keys from both maps are used
 		Set<String> merged = new SortedTreeSet<>();
-		merged.addAll(secondary.keySet());
-		merged.addAll(expectse.keySet());
+		merged.addAll(as.keySet());
+		merged.addAll(bs.keySet());
 		
-		// Secondary values are more complex to handle
-		String valueform = "\t%" + longskeylen + "s %c %s %s%n";
+		// Do comparisons on all values
 		for (String k : merged)
-		{
-			String a = secondary.get(k),
-				b = expectse.get(k);
-			
-			boolean isequal = (a != null && b != null &&
-				__CoreTest__.__equals(a, b));
-			
-			out.printf(valueform, k,
-				(isequal ? '=' : '!'),
-				a,
-				b);
-		}
-		*/
+			TestResult.__printSingleCompare(__ps, k,
+				as.get(k), bs.get(k));
 	}
 	
 	/**
@@ -319,7 +316,7 @@ public final class TestResult
 		if (__act == null || __exp == null)
 			throw new NullPointerException("NARG");
 		
-		// Throwables are special cases
+		// Throwables are special cases since they represent multiple classes
 		if (__act.startsWith("throwable:") && __exp.startsWith("throwable:"))
 		{
 			// Snip off the throwable portions
@@ -374,5 +371,42 @@ public final class TestResult
 		// Use normal string comparison
 		return __exp.equals(__act);
 	}
+	
+	/**
+	 * Prints single comparison.
+	 *
+	 * @param __ps The stream to print to.
+	 * @param __key The key being printed.
+	 * @param __a The first value.
+	 * @param __b The second value.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/09
+	 */
+	private static final void __printSingleCompare(PrintStream __ps,
+		String __key, String __a, String __b)
+		throws NullPointerException
+	{
+		if (__ps == null || __key == null)
+			throw new NullPointerException("NARG");
+		
+		// Not the same?
+		boolean equals;
+		if (__a == null || (__a == null) != (__b == null))
+			equals = Objects.equals(__a, __b);
+		
+		// Compare values otherwise
+		else
+			equals = TestResult.valueEquals(__a, __b);
+		
+		// Do not print null as is because it can be confused for actual null
+		// values
+		if (__a == null)
+			__a = "-???-";
+		if (__b == null)
+			__b = "-???-";
+		
+		// Print out
+		__ps.printf("\t%-15s %c %s %s%n", __key, (equals ? '=' : '!'),
+			__a, __b);
+	}
 }
-
