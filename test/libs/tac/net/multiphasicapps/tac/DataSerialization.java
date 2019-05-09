@@ -259,7 +259,10 @@ public final class DataSerialization
 				int n = a.length;
 				int[] b = new int[n];
 				for (int i = 0; i < n; i++)
-					b[i] = a[i].intValue();
+				{
+					Integer v = a[i];
+					b[i] = (v == null ? 0 : v.intValue());
+				}
 				__o = b;
 			}
 			
