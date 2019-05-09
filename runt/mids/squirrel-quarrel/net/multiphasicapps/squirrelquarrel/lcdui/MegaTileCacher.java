@@ -31,10 +31,6 @@ import net.multiphasicapps.squirrelquarrel.world.Tile;
  */
 public class MegaTileCacher
 {
-	/** The single image reader instance. */
-	private static final XPMReader _XPM_READER =
-		new XPMReader();
-	
 	/** The cache of terrain tiles. */
 	private static final Map<TerrainType, Reference<Image>> _TILE_CACHE =
 		new HashMap<>();
@@ -161,7 +157,7 @@ public class MegaTileCacher
 			try
 			{
 				_TILE_CACHE.put(__t, new WeakReference<>(
-					(rv = _XPM_READER.readImage(__t.imageStream()))));
+					(rv = new XPMReader(__t.imageStream()).parse())));
 			}
 			
 			// {@squirreljme.error BE03 Failed to read the image data for the
