@@ -31,7 +31,34 @@ public final class DataDeserialization
 		if (__key == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Go through string and decode it
+		int n;
+		StringBuilder sb = new StringBuilder((n = __key.length()));
+		boolean escaped = false;
+		for (int i = 0; i < n; i++)
+		{
+			char c = __key.charAt(i);
+			
+			// Escaping?
+			if (escaped)
+				switch (c)
+				{
+					case 'p':	c = '+'; break;
+					case 'h':	c = '#'; break;
+					case '.':	c = '.'; break;
+					case '-':	c = '-'; break;
+				}
+			
+			// Going to escape?
+			else if (c == '-')
+				escaped = true;
+			
+			// Pass as is
+			else
+				sb.append(c);
+		}
+		
+		return sb.toString();
 	}
 	
 	/**
