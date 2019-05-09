@@ -47,7 +47,7 @@ public final class DataDeserialization
 				{
 					case 'p':	c = '+'; break;
 					case 'h':	c = '#'; break;
-					case '.':	c = '.'; break;
+					case 'd':	c = '.'; break;
 					case '-':	c = '-'; break;
 				}
 				sb.append(c);
