@@ -495,6 +495,11 @@ public abstract class AbstractList<E>
 			this._rmdx = -1;
 			AbstractList.this.remove(rmdx);
 			
+			// Next element would be moved down
+			int next = this._next;
+			if (rmdx > next)
+				this._next = next - 1;
+			
 			// Set new modification count
 			this._atmod = AbstractList.this.modCount;
 		}
