@@ -17,6 +17,22 @@ package net.multiphasicapps.tac;
  */
 public final class DataDeserialization
 {
+	/**
+	 * Decodes a key for a given secondary value.
+	 *
+	 * @param __key The key to decode.
+	 * @return The decoded key.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/09
+	 */
+	public static final String decodeKey(String __key)
+		throws NullPointerException
+	{
+		if (__key == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
+	}
 	
 	/**
 	 * Decodes the given string from a manifest safe format to a string.
