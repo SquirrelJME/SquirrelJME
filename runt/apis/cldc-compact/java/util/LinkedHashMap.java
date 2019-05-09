@@ -96,6 +96,28 @@ public class LinkedHashMap<K, V>
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/09
+	 */
+	@Override
+	public V put(K __k, V __v)
+	{
+		__BucketMap__<K, V> map = this._map;
+		
+		// Put entry into the map and store the old value
+		__BucketMapEntry__<K, V> entry = map.putEntry(__k);
+		V rv = entry.setValue(__v);
+		
+		// Remove the eldest entry (which is the oldest/first item in the map)
+		__BucketMapEntry__<K, V> eldest = map._links.peekFirst();
+		if (eldest != null && this.removeEldestEntry(eldest))
+			map.remove(map.removeEntry(eldest.getKey(), false));
+		
+		// Return the former value
+		return rv;
+	}
+	
+	/**
 	 * After a {@code put} or {@code putAll} operation this will be called with
 	 * the eldest entry to determine if it should be removed or not. This may
 	 * be used for cache purposes.

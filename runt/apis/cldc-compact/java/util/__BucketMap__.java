@@ -50,7 +50,7 @@ final class __BucketMap__<K, V>
 	protected final float loadfactor;
 	
 	/** Linked order of entries. */
-	private final LinkedList<__BucketMapEntry__<K, V>> _links;
+	final LinkedList<__BucketMapEntry__<K, V>> _links;
 	
 	/** The entry chains for each element. */
 	__BucketMapEntry__<K, V>[][] _buckets;
