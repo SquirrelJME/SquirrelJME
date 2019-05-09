@@ -24,14 +24,14 @@ public class TestFont
 	private static final String[] _FONTS =
 		{
 			"monospace-8.sqf",
+			"monospace-12.sqf",
 			"monospace-16.sqf",
-			"monospace-24.sqf",
 			"sansserif-8.sqf",
+			"sansserif-12.sqf",
 			"sansserif-16.sqf",
-			"sansserif-24.sqf",
 			"serif-8.sqf",
+			"serif-12.sqf",
 			"serif-16.sqf",
-			"serif-24.sqf",
 		};
 	
 	/**
