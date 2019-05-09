@@ -37,9 +37,9 @@ import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 abstract class __CoreTest__
 	extends MIDlet
 {
-	/** Secondary results. */
-	final Map<String, String> _secondary =
-		new SortedTreeMap<>();
+	/** Final result of the test. */
+	final TestResultBuilder _runresult =
+		new TestResultBuilder();
 	
 	/** The status of the test. */
 	volatile TestStatus _status =
@@ -95,54 +95,15 @@ abstract class __CoreTest__
 		if (__mainargs == null)
 			__mainargs = new String[0];
 		
-		// Used to refer to resources for parameters and default results
+		// Use to name this test
 		Class<?> self = this.getClass();
-		
-		// Get the basename of the class, used to refer to resources
 		String classname = self.getName();
 		
-		// Find result, look in super classes as needed
-		JavaManifest man = null;
-		for (Class<?> cl = self; cl != null; cl = cl.getSuperclass())
-		{
-			// Use basename of this form,
-			String basename = cl.getName();
-			int ld = basename.lastIndexOf('.');
-			if (ld >= 0)
-				basename = basename.substring(ld + 1);
-			
-			// Read input and output parameters
-			try (InputStream in = self.getResourceAsStream(basename + ".in"))
-			{
-				if (in == null)
-				{
-					// Warn that it is missing
-					System.err.printf("WARN: No .in for %s (%s.in)%n",
-						classname, basename);
-				}
-				else
-					man = new JavaManifest(in);
-			}
-			catch (IOException e)
-			{
-				// {@squirreljme.error BU07 Could not read the argument input.}
-				throw new InvalidTestException("BU07", e);
-			}
-			
-			// Stop if a manifest was read
-			if (man != null)
-				break;
-		}
-					
-		// Use a blank manifest instead
-		if (man == null)
-			man = new JavaManifest();
-		
-		// The main attributes contain the arguments
-		JavaManifestAttributes attr = man.getMainAttributes();
+		// Decode the expected result
+		TestResult expected = TestResult.loadForClass(self);
 		
 		// Read the inputs for the test
-		Object[] args = this.__parseInput(classname, __mainargs, attr);
+		Object[] args = this.__parseInput(self, __mainargs);
 		
 		// Remember the old output stream because it will be replaced with
 		// stderr, this way when tests run they do not inadvertently output
@@ -150,8 +111,11 @@ abstract class __CoreTest__
 		// the test results generated at the end of tac-runner
 		PrintStream oldout = System.out;
 		
+		// This is the result of the test
+		TestResultBuilder runresult = this._runresult;
+		
 		// Run the test, catch any exception to report it
-		Object rv, thrown;
+		Object thrown;
 		try
 		{
 			// Set the output stream to standard error as noted above
@@ -165,8 +129,8 @@ abstract class __CoreTest__
 			}
 			
 			// Run the test
-			rv = this.__runTest(args);
-			thrown = new __NoExceptionThrown__();
+			runresult.setReturnValue(this.__runTest(args));
+			runresult.setThrownValue((thrown = new __NoExceptionThrown__()));
 		}
 		
 		// Cannot be tested
@@ -199,8 +163,8 @@ abstract class __CoreTest__
 			}
 			
 			// Indicate an exception was thrown
-			rv = new __ExceptionThrown__();
-			thrown = t;
+			runresult.setReturnValue(new __ExceptionThrown__());
+			runresult.setThrownValue((thrown = t));
 		}
 		finally
 		{
@@ -215,84 +179,24 @@ abstract class __CoreTest__
 			}
 		}
 		
-		// Get string result representation and the expected value from the
-		// manifest
-		String rvstr = __CoreTest__.__convertToString(rv),
-			thstr = __CoreTest__.__convertToString(thrown),
-			expectrv = attr.getValue("result", "ResultWasNotSpecified"),
-			expectth = attr.getValue("thrown", "ExceptionWasNotSpecified");
+		// Return actual result
+		TestResult actual = runresult.build();
 		
-		// Longest string, used for secondary value formatting when failure
-		// happens
-		int longskeylen = 1;
-		
-		// Find the longest secondary value and make a copy of it
-		Map<String, String> secondary = this._secondary;
-		synchronized (secondary)
-		{
-			for (Map.Entry<String, String> e : secondary.entrySet())
-				longskeylen = Math.max(e.getKey().length(), longskeylen);
-			
-			// Make copy of it for usage
-			secondary = new SortedTreeMap<>(secondary);
-		}
-		
-		// Read in secondary values from the manifest
-		Map<String, String> expectse = new SortedTreeMap<>();
-		for (Map.Entry<JavaManifestKey, String> e : attr.entrySet())
-		{
-			String k = e.getKey().toString().toLowerCase();
-			if (k.startsWith("secondary-"))
-				expectse.put(k.substring(10), e.getValue());
-		}
-		
-		// Is the test a success or failure?
-		boolean passedrv = __CoreTest__.__equals(rvstr, expectrv),
-			passedth = __CoreTest__.__equals(thstr, expectth),
-			passedse = __CoreTest__.__equals(secondary, expectse);
-		
-		// Print the throwable stack since this was not expected
-		if (!passedth && (thrown instanceof Throwable))
-			((Throwable)thrown).printStackTrace();
-		
-		// Print test result, the passed format is shorter as expected values
-		// are not needed
-		// Just print to standard error instead of standard output since these
-		// are just keys to be used.
-		boolean passed = passedrv && passedth && passedse;
-		PrintStream out = System.err;
+		// The test result is exactly the same!
+		boolean passed = expected.equals(actual);
 		if (passed)
-			out.printf("%s: PASS %s %s %s%n",
-				classname, rvstr, thstr, secondary);
+			oldout.printf("%s: PASS %s%n",
+				classname, actual);
 		
-		// Failures print more information so that bugs may be found, etc.
+		// Otherwise print information on what has differed within the test
+		// so that bugs may potentially be found
 		else
 		{
-			// Print base values
-			out.printf("%s: FAIL%n", classname);
-			out.printf("\tRV %s %s%n", rvstr, expectrv);
-			out.printf("\tTH %s %s%n", thstr, expectth);
-			
-			// Merge the two key sets
-			Set<String> merged = new SortedTreeSet<>();
-			merged.addAll(secondary.keySet());
-			merged.addAll(expectse.keySet());
-			
-			// Secondary values are more complex to handle
-			String valueform = "\t%" + longskeylen + "s %c %s %s%n";
-			for (String k : merged)
-			{
-				String a = secondary.get(k),
-					b = expectse.get(k);
-				
-				boolean isequal = (a != null && b != null &&
-					__CoreTest__.__equals(a, b));
-				
-				out.printf(valueform, k,
-					(isequal ? '=' : '!'),
-					a,
-					b);
-			}
+			expected.printComparison(actual, oldout);
+		
+			// Print the throwable stack since this was not expected
+			if (thrown instanceof Throwable)
+				((Throwable)thrown).printStackTrace();
 		}
 		
 		// Set test status
@@ -311,40 +215,7 @@ abstract class __CoreTest__
 	public final void secondary(String __key, Object __v)
 		throws NullPointerException
 	{
-		if (__key == null)
-			throw new NullPointerException("NARG");
-		
-		// Make it thread safe
-		Map<String, String> secondary = this._secondary;
-		synchronized (secondary)
-		{
-			int n;
-			StringBuilder sb = new StringBuilder((n = __key.length()));
-			for (int i = 0; i < n; i++)
-			{
-				char c = __key.charAt(i);
-				
-				if (c >= 'A' && c <= 'Z')
-					c = Character.toLowerCase(c);
-				else if (c == '+')
-					c = 'p';
-				else if (c == '#')
-					c = 'h';
-				else if (c == '.')
-					c = 'd';
-				
-				sb.append(c);
-			}
-			
-			// Use this formatted key instead
-			String keyval,
-				strval;
-			secondary.put((keyval = sb.toString()),
-				(strval = __convertToString(__v)));
-			
-			// Debug
-			todo.DEBUG.note("%s=%s", keyval, strval);
-		}
+		this._runresult.putSecondaryValue(__key, __v);
 	}
 	
 	/**
@@ -376,28 +247,50 @@ abstract class __CoreTest__
 	/**
 	 * Parses the input file for arguments.
 	 *
-	 * @param __sysprefix System property prefix.
+	 * @param __class The class for this test, used to load off manifests.
 	 * @param __mainargs Main program arguments.
-	 * @param __attr Test attributes.
 	 * @return The input arguments.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/10/06
 	 */
-	private Object[] __parseInput(String __sysprefix, String[] __mainargs,
-		JavaManifestAttributes __attr)
+	private Object[] __parseInput(Class<?> __class, String[] __mainargs)
 		throws NullPointerException
 	{
-		if (__mainargs == null)
-			__mainargs = new String[0];
-		
-		if (__sysprefix == null || __mainargs == null || __attr == null)
+		if (__class == null)
 			throw new NullPointerException("NARG");
 		
-		List<Object> rv = new ArrayList<>();
+		__mainargs = (__mainargs == null ? new String[0] : __mainargs.clone());
+		
+		// This is used to determine the system property prefix along with
+		// which class to use
+		String classname = __class.getName();
+		
+		// Determine the base name which is used for resources
+		int ld = classname.lastIndexOf('.');
+		String basename = (ld < 0 ? classname : classname.substring(ld + 1));
+		
+		// The system property prefix is just the class name but lowercased
+		String sysprefix = classname.toLowerCase();
+		
+		// Try to see if there are any arguments in the test file
+		JavaManifestAttributes attr = null;
+		try (InputStream in = __class.getResourceAsStream(basename + ".in"))
+		{
+			// If the input exists parse and extract the manifest attributes
+			if (in != null)
+				attr = new JavaManifest(in).getMainAttributes();
+		}
+		
+		// Ignore
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 		
 		// Read argument values in this order, to allow new ones to be
 		// specified accordingly: main arguments, system properties, the
 		// default input manifest
+		List<Object> rv = new ArrayList<>();
 		for (int i = 1; i >= 1; i++)
 		{
 			String parse;
@@ -406,200 +299,32 @@ abstract class __CoreTest__
 			if (__mainargs != null && (i - 1) < __mainargs.length)
 				parse = __mainargs[i - 1];
 			
-			// Then system properties
+			// Use other default sources instead
 			else
 			{
-				String maybe = System.getProperty(__sysprefix + "." + i);
+				// System property
+				String maybe = System.getProperty(sysprefix + "." + i);
 				if (maybe != null)
 					parse = maybe;
 				
 				// Otherwise just read a value from the manifest
+				else if (attr != null)
+					parse = attr.getValue("argument-" + i);
+				
+				// Nothing
 				else
-					parse = __attr.getValue("argument-" + i);
+					parse = null;
 			}
 			
 			// Nothing to parse
 			if (parse == null)
 				break;
 			
-			// Parse the value
-			rv.add(__CoreTest__.__convertToObject(parse));
+			// Deserialize the argument value
+			rv.add(DataDeserialization.deserialize(parse));
 		}
 		
 		return rv.<Object>toArray(new Object[rv.size()]);
-	}
-	
-	/**
-	 * Converts the given string to an object.
-	 *
-	 * @param __s The object to convert.
-	 * @return The converted object.
-	 * @throws InvalidTestParameterException If the input could not be
-	 * converted.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/10/06
-	 */
-	private static Object __convertToObject(String __s)
-		throws InvalidTestParameterException, NullPointerException
-	{
-		if (__s == null)
-			throw new NullPointerException("NARG");
-		
-		// Basic conversions
-		switch (__s)
-		{
-			case "null":
-				return null;
-			
-			case "NoResult":
-				return new __NoResult__();
-			
-			case "UndefinedResult":
-				return new __UndefinedResult__();
-			
-			case "ExceptionThrown":
-				return new __ExceptionThrown__();
-			
-			case "NoExceptionThrown":
-				return new __NoExceptionThrown__();
-			
-			case "true":
-				return Boolean.TRUE;
-			
-			case "false":
-				return Boolean.FALSE;
-			
-			default:
-				break;
-		}
-		
-		// A string
-		if (__s.startsWith("string:"))
-			return __CoreTest__.__stringDecode(__s.substring(7));
-		
-		// Byte
-		else if (__s.startsWith("byte:"))
-			return Byte.valueOf(__s.substring(5));
-			
-		// Short
-		else if (__s.startsWith("short:"))
-			return Short.valueOf(__s.substring(6));
-			
-		// Char
-		else if (__s.startsWith("char:"))
-			return Character.valueOf(
-				(char)Integer.valueOf(__s.substring(5)).intValue());
-		
-		// Integer
-		else if (__s.startsWith("int:"))
-			return Integer.valueOf(__s.substring(4));
-		
-		// Long
-		else if (__s.startsWith("long:"))
-			return Long.valueOf(__s.substring(5));
-		
-		// {@squirreljme.error BU09 The specified string cannot be converted
-		// to an object because it an unknown representation, the conversion
-		// is only one way. (The encoded data)}
-		else if (__s.startsWith("other:"))
-			throw new InvalidTestParameterException(
-				String.format("BU09 %s", __s));
-		
-		// {@squirreljme.error BU0a The specified object cannot be
-		// decoded because it is not known or does not support decoding.
-		// (The encoded data)}
-		else
-			throw new InvalidTestParameterException(
-				String.format("BU0a %s", __s));
-	}
-	
-	/**
-	 * Converts the specified object to a string.
-	 *
-	 * @param __o The object to convert.
-	 * @return The resulting string.
-	 * @throws InvalidTestParameterException If the object cannot be
-	 * converted.
-	 * @since 2018/10/06
-	 */
-	private static String __convertToString(Object __o)
-		throws InvalidTestParameterException
-	{
-		return DataSerialization.serialize(__o);
-	}
-	
-	/**
-	 * Compares the strings together, handling the special case of thrown
-	 * exception to match the class tree.
-	 *
-	 * @param __act The actual value.
-	 * @param __exp The expected value.
-	 * @return If the strings are a match.
-	 * @throws InvalidTestParameterException If a throwable is not formatted
-	 * correctly.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/10/06
-	 */
-	private static boolean __equals(String __act, String __exp)
-		throws InvalidTestParameterException, NullPointerException
-	{
-		if (__act == null || __exp == null)
-			throw new NullPointerException("NARG");
-		
-		// Throwables are special cases
-		if (__act.startsWith("throwable:") && __exp.startsWith("throwable:"))
-		{
-			// Snip off the throwable portions
-			__act = __act.substring(10);
-			__exp = __exp.substring(10);
-			
-			// Snip off the optional message in the actual
-			int ld = __act.indexOf(':');
-			if (ld >= 0)
-				__act = __act.substring(0, ld);
-			
-			// Snip off the optional message in the expected
-			ld = __exp.indexOf(':');
-			if (ld >= 0)
-				__exp = __exp.substring(0, ld);
-			
-			// Find the base expected class to find
-			ld = __exp.indexOf(',');
-			if (ld >= 0)
-				__exp = __exp.substring(0, ld);
-			
-			// Only use the basename
-			ld = __exp.lastIndexOf('.');
-			if (ld >= 0)
-				__exp = __exp.substring(ld + 1);
-			
-			// Go through the actual classes to find the class to match
-			for (int i = 0, n = __act.length(); i < n;)
-			{
-				// Get sequence
-				ld = __act.indexOf(',', i);
-				if (ld < 0)
-					ld = __act.length();
-				
-				// Snip off fragment
-				String snip = __act.substring(i, ld);
-				
-				// Only consider the base name
-				int xld = snip.lastIndexOf('.');
-				if (xld >= 0)
-					snip = snip.substring(xld + 1);
-				
-				// Is a match
-				if (snip.equals(__exp))
-					return true;
-				
-				// Skip
-				i = ld + 1;
-			}
-		}
-		
-		// Use normal string comparison
-		return __exp.equals(__act);
 	}
 	
 	/**
@@ -630,7 +355,7 @@ abstract class __CoreTest__
 				return false;
 			
 			// Match value
-			if (!__CoreTest__.__equals(a.getValue(), __exp.get(key)))
+			if (!TestResult.valueEquals(a.getValue(), __exp.get(key)))
 				return false;
 		}
 		
@@ -642,122 +367,6 @@ abstract class __CoreTest__
 		
 		// Is a match
 		return true;
-	}
-	
-	/**
-	 * Decodes the given string from a manifest safe format to a string.
-	 *
-	 * @param __s The string to decode.
-	 * @return The decoded string.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/10/06
-	 */
-	private static String __stringDecode(String __s)
-		throws NullPointerException
-	{
-		if (__s == null)
-			throw new NullPointerException("NARG");
-		
-		StringBuilder sb = new StringBuilder(__s.length());
-		
-		// Decode all input characters
-		for (int i = 0, n = __s.length(); i < n; i++)
-		{
-			char c = __s.charAt(i);
-			
-			// Ignore whitespace, since this could be an artifact of whitespace
-			// used in the manifest
-			if (c == ' ' || c == '\r' || c == '\n' || c == '\t')
-				continue;
-			
-			// Escaped sequence requires parsing
-			else if (c == '\\')
-			{
-				// Read the next character
-				c = __s.charAt(++i);
-				
-				// Hex sequence for any character
-				if (c == '@')
-				{
-					// Build string to decode hex sequence from
-					StringBuilder sub = new StringBuilder(4);
-					sub.append(__s.charAt(++i));
-					sub.append(__s.charAt(++i));
-					sub.append(__s.charAt(++i));
-					sub.append(__s.charAt(++i));
-					
-					// Decode character
-					c = (char)(Integer.valueOf(sub.toString(), 16).intValue());
-				}
-				
-				// Code for specific characters
-				else
-					switch (c)
-					{
-							// Unchanged
-						case '\\':
-						case '\"':
-							break;
-							
-							// Space
-						case '_':
-							c = ' ';
-							break;
-							
-							// Newline
-						case 'n':
-							c = '\n';
-							break;
-							
-							// Carriage return
-						case 'r':
-							c = '\r';
-							break;
-							
-							// Tab
-						case 't':
-							c = '\t';
-							break;
-							
-							// Delete
-						case 'd':
-							c = (char)0x7F;
-							break;
-						
-							// Used to represent all the other upper
-							// sequences
-						default:
-							if (c >= '0' && c <= '9')
-								c = (char)(c - '0');
-							else if (c >= 'A' && c <= 'Z')
-								c = (char)((c - 'A') + 10);
-							break;
-					}
-				
-				// Append normalized
-				sb.append(c);
-			}
-			
-			// Not escaped
-			else
-				sb.append(c);
-		}
-		
-		return sb.toString();
-	}
-	
-	/**
-	 * Encodes the given string to a manifest safe format.
-	 *
-	 * @param __s The string to encode.
-	 * @return The encoded string.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/10/06
-	 */
-	private static String __stringEncode(String __s)
-		throws NullPointerException
-	{
-		return DataSerialization.serializeString(__s);
 	}
 }
 
