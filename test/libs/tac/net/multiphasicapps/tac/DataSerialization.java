@@ -50,7 +50,7 @@ public final class DataSerialization
 				{
 					case '+':	redo = 'p'; break;
 					case '#':	redo = 'h'; break;
-					case '.':	redo = '.'; break;
+					case '.':	redo = 'd'; break;
 					case '-':	redo = '-'; break;
 				}
 				
