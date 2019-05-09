@@ -128,6 +128,7 @@ More detailed changes:
      * Correct cases where `NullPointerException` is thrown when a `Display`
        was initialized but was not yet claimed by any program.
    * SpringCoat
+     * Add limit to stack frame depth.
      * Add support for system properties being based to virtual machine
        instances.
      * Profiler thread lists are easier to read because the main suite is
