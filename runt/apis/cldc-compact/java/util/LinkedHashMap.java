@@ -10,60 +10,107 @@
 
 package java.util;
 
+/**
+ * This is a map which is backed by a hash table except that the iterator
+ * order is in the order of which elements were added first.
+ *
+ * Otherwise this class is exactly the same as {@link HashMap}.
+ *
+ * @param <K> The key type.
+ * @param <V> The value type.
+ * @see HashMap
+ * @since 2019/05/09
+ */
 public class LinkedHashMap<K, V>
 	extends HashMap<K, V>
 	implements Map<K, V>
 {
-	public LinkedHashMap(int __a, float __b)
+	/**
+	 * Initializes the set with the given capacity and load factor.
+	 *
+	 * @param __cap The capacity used.
+	 * @param __load The load factor used.
+	 * @throws IllegalArgumentException If the capacity is negative or the
+	 * load factor is not positive.
+	 * @since 2019/05/09
+	 */
+	public LinkedHashMap(int __cap, float __load)
+		throws IllegalArgumentException
 	{
-		super(0, 0);
-		throw new todo.TODO();
+		super(__cap, __load);
 	}
 	
-	public LinkedHashMap(int __a)
+	/**
+	 * Initializes the set with the given capacity and the default load factor.
+	 *
+	 * @param __initcap The capacity used.
+	 * @throws IllegalArgumentException If the capacity is negative.
+	 * @since 2019/05/09
+	 */
+	public LinkedHashMap(int __initcap)
+		throws IllegalArgumentException
 	{
-		super(0, 0);
-		throw new todo.TODO();
+		super(__initcap);
 	}
 	
+	/**
+	 * Initializes an empty map.
+	 *
+	 * @since 2019/05/09
+	 */
 	public LinkedHashMap()
 	{
-		super(0, 0);
-		throw new todo.TODO();
 	}
 	
-	public LinkedHashMap(Map<? extends K, ? extends V> __a)
+	/**
+	 * Initializes a map which is a copy of the other map.
+	 *
+	 * The default load factor is used and the capacity is set to the
+	 * capacity of the input map.
+	 *
+	 * @param __m The map to copy from.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/09
+	 */
+	public LinkedHashMap(Map<? extends K, ? extends V> __m)
+		throws NullPointerException
 	{
-		super(0, 0);
-		throw new todo.TODO();
+		super(__m);
 	}
 	
+	/**
+	 * Initializes the set with the given capacity and load factor, but the
+	 * may be ordered based on what is first accessed.
+	 *
+	 * @param __cap The capacity used.
+	 * @param __load The load factor used.
+	 * @param __ao If the iterator should always return the same order for
+	 * accesses.
+	 * @throws IllegalArgumentException If the capacity is negative or the
+	 * load factor is not positive.
+	 * @since 2019/05/09
+	 */
 	public LinkedHashMap(int __cap, float __load, boolean __ao)
 	{
 		super(__cap, __load, __ao);
 	}
 	
-	@Override
-	public void clear()
+	/**
+	 * After a {@code put} or {@code putAll} operation this will be called with
+	 * the eldest entry to determine if it should be removed or not. This may
+	 * be used for cache purposes.
+	 *
+	 * The default implementation returns {@code false}.
+	 *
+	 * If the implementation of this method modifies the map then this should
+	 * always return {@code null}.
+	 *
+	 * @param __e The entry being 
+	 * @since 2019/05/09
+	 */
+	protected boolean removeEldestEntry(Map.Entry<K, V> __e)
 	{
-		throw new todo.TODO();
-	}
-	
-	@Override
-	public boolean containsValue(Object __a)
-	{
-		throw new todo.TODO();
-	}
-	
-	@Override
-	public V get(Object __a)
-	{
-		throw new todo.TODO();
-	}
-	
-	protected boolean removeEldestEntry(Map.Entry<K, V> __a)
-	{
-		throw new todo.TODO();
+		return false;
 	}
 }
 

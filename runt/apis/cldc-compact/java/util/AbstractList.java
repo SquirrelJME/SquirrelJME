@@ -491,7 +491,12 @@ public abstract class AbstractList<E>
 			if (rmdx < 0)
 				throw new IllegalStateException("ZZ1k");
 			
-			throw new todo.TODO();
+			// Remove this index
+			this._rmdx = -1;
+			AbstractList.this.remove(rmdx);
+			
+			// Set new modification count
+			this._atmod = AbstractList.this.modCount;
 		}
 		
 		/**

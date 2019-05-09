@@ -34,6 +34,7 @@ public class LinkedHashSet<E>
 	 * @since 2018/11/01
 	 */
 	public LinkedHashSet(int __initcap, float __load)
+		throws IllegalArgumentException
 	{
 		super(__initcap, __load);
 	}
@@ -46,6 +47,7 @@ public class LinkedHashSet<E>
 	 * @since 2018/11/01
 	 */
 	public LinkedHashSet(int __initcap)
+		throws IllegalArgumentException
 	{
 		super(__initcap);
 	}
@@ -61,7 +63,7 @@ public class LinkedHashSet<E>
 	}
 	
 	/**
-	 * Initializes a set which is a copy of the other map.
+	 * Initializes a set which is a copy of the other set.
 	 *
 	 * The default load factor is used and the capacity is set to the
 	 * capacity of the input set.
