@@ -51,6 +51,9 @@ More detailed changes:
      * Added `java.util.Vector`, it was missing.
      * Added support for ISO-8859-15, this is the newer encoding with the
        Euro symbol.
+     * Corrected bug in `__CanSetPrintStream__` where if it were set to itself
+       then it could lead to infinite recursion, instead if this kind of
+       stream is attempted to be set it will use the target.
      * Implemented `java.io.InputStream`.
      * Implemented `java.util.EventObject`.
      * Implemented `java.util.Hashtable`.
