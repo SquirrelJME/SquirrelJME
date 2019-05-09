@@ -473,6 +473,12 @@ final class __CanSetPrintStream__
 		if (__ps == null)
 			throw new NullPointerException("NARG");
 		
+		// If this is a can set stream then we likely tried to restore the
+		// old output stream, so if we ever print anything again this will
+		// fail completely with infinite recursion.
+		while (__ps instanceof __CanSetPrintStream__)
+			__ps = ((__CanSetPrintStream__)__ps)._target;
+		
 		// Lock
 		synchronized (lock)
 		{
@@ -481,7 +487,7 @@ final class __CanSetPrintStream__
 			// trickery could be done which causes flush to fail.
 			try
 			{
-				flush();
+				this.flush();
 			}
 			
 			// Completely ignore, also do not try printing the stack trace
@@ -491,7 +497,7 @@ final class __CanSetPrintStream__
 			}
 		
 			// Change it
-			_target = __ps;
+			this._target = __ps;
 		}
 	}
 }
