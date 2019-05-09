@@ -245,7 +245,10 @@ public class Hashtable<K, V>
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			int rv = 0;
+			for (Map.Entry<K, V> e : this.entrySet())
+				rv += e.hashCode();
+			return rv;
 		}
 	}
 	
