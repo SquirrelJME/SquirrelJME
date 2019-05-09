@@ -86,7 +86,8 @@ final class __BucketMapEntry__<K, V>
 	@Override
 	public final int hashCode()
 	{
-		throw new todo.TODO();
+		V value = this._value;
+		return this._keyhash ^ (value == null ? 0 : value.hashCode());
 	}
 	
 	/**

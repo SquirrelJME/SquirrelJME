@@ -27,7 +27,7 @@ public class HashMap<K, V>
 	implements Map<K, V>, Cloneable
 {
 	/** Internal map. */
-	private final __BucketMap__<K, V> _map;
+	final __BucketMap__<K, V> _map;
 	
 	/**
 	 * Initializes the map with the given capacity and load factor.
