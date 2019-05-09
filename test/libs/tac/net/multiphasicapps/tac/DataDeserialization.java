@@ -41,6 +41,7 @@ public final class DataDeserialization
 			
 			// Escaping?
 			if (escaped)
+			{
 				switch (c)
 				{
 					case 'p':	c = '+'; break;
@@ -48,6 +49,10 @@ public final class DataDeserialization
 					case '.':	c = '.'; break;
 					case '-':	c = '-'; break;
 				}
+				
+				// Do not escape anymore
+				escaped = false;
+			}
 			
 			// Going to escape?
 			else if (c == '-')
