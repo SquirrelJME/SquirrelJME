@@ -47,7 +47,7 @@ public final class TestResultBuilder
 				rvalue = "ResultWasNotSpecified";
 				
 			// Fallback throw value
-			String tvalue = this._rvalue;
+			String tvalue = this._tvalue;
 			if (tvalue == null)
 				tvalue = "ExceptionWasNotSpecified";
 			
