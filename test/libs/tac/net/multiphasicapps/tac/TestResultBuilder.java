@@ -124,9 +124,6 @@ public final class TestResultBuilder
 		{
 			// Use formatted values
 			secondary.put(__key.toLowerCase(), __val);
-			
-			// Debug
-			todo.DEBUG.note("%s=%s", __key, __val);
 		}
 	}
 	
