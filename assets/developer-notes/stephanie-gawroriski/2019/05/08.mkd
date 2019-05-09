@@ -1,0 +1,12 @@
+# 2019/05/08
+
+## 11:34
+
+Actually I will just do the universal call API for the TCP/IP stuff for now so
+that way I can get a feel for how it would work rather than changing
+everything directly.
+
+## 17:24
+
+Need to refactor my tests a bit and make all that secondary and enumeration
+stuff a bit more friendly.

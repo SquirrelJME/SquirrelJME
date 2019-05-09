@@ -2169,7 +2169,7 @@
  * [**`05`**](stephanie-gawroriski/2019/05/05.mkd)
 [**`06`**](stephanie-gawroriski/2019/05/06.mkd)
 `07`
-`08`
+[**`08`**](stephanie-gawroriski/2019/05/08.mkd)
 `09`
 `10`
 `11`
