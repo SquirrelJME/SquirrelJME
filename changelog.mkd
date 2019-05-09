@@ -41,6 +41,8 @@ More detailed changes:
      be within a 1 ulp range, however the test framework only supports
      exact values.
    * Added the missing _mimemessage_ file for the MIME file decoding test.
+   * Allow tests to timeout so that they do not run forever in the event of
+     some kind of deadlock.
    * Refactored the test framework to be easier to maintain.
  * Programs and Libraries
    * `cldc-compact`
