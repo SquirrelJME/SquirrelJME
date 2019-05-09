@@ -26,6 +26,10 @@ import net.multiphasicapps.profiler.ProfiledThread;
  */
 public final class SpringThread
 {
+	/** Maximum depth of the stack. */
+	public static final int MAX_STACK_DEPTH =
+		64;
+	
 	/** The thread ID. */
 	protected final int id;
 	
@@ -105,16 +109,20 @@ public final class SpringThread
 		// Setup blank frame
 		SpringThread.Frame rv = new SpringThread.Frame();
 		
-		// Profile for this frame
-		this.profiler.enterFrame("<blank>", "<blank>", "()V",
-			System.nanoTime());
+		// {@squirreljme.error BK4c Stack overflow.}
+		List<SpringThread.Frame> frames = this._frames;
+		if (frames.size() >= MAX_STACK_DEPTH)
+			throw new SpringVirtualMachineException("BK4c");
 		
 		// Lock on frames as a new one is added
-		List<SpringThread.Frame> frames = this._frames;
 		synchronized (frames)
 		{
 			frames.add(rv);
 		}
+		
+		// Profile for this frame
+		this.profiler.enterFrame("<blank>", "<blank>", "()V",
+			System.nanoTime());
 		
 		// Had one frame (started)
 		this._hadoneframe = true;
