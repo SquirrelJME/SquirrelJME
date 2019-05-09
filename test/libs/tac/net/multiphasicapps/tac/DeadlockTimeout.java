@@ -19,7 +19,7 @@ public final class DeadlockTimeout
 {
 	/** Default deadlock time in milliseconds. */
 	public static final int DEFAULT_TIMEOUT =
-		10_000;
+		30_000;
 	
 	/** The timeout time. */
 	protected final long timeoutnano;
