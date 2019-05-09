@@ -113,6 +113,16 @@ public final class DataDeserialization
 						case 'd':
 							c = (char)0x7F;
 							break;
+							
+							// Open brace
+						case '(':
+							c = '{';
+							break;
+							
+							// Closing brace
+						case ')':
+							c = '}';
+							break;
 						
 							// Used to represent all the other upper
 							// sequences

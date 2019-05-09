@@ -120,6 +120,18 @@ public final class DataSerialization
 					c = 't';
 					break;
 					
+					// Opening brace
+				case '{':
+					escape = true;
+					c = '(';
+					break;
+					
+					// Closing brace
+				case '}':
+					escape = true;
+					c = ')';
+					break;
+					
 					// Delete
 				case 0x7F:
 					escape = true;
