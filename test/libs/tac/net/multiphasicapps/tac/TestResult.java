@@ -104,8 +104,8 @@ public final class TestResult
 			return false;
 		
 		TestResult o = (TestResult)__o;
-		return this.rvalue.equals(o.rvalue) &&
-			this.tvalue.equals(o.tvalue) &&
+		return TestResult.valueEquals(this.rvalue, o.rvalue) &&
+			TestResult.valueEquals(this.tvalue, o.tvalue) &&
 			TestResult.__equals(this._secondary, o._secondary);
 	}
 	
