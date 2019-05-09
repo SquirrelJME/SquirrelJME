@@ -31,8 +31,8 @@ secondary-pop: int:1
 secondary-remove: int:100
 secondary-removefirst: int:1234
 secondary-removelast: int:600
-secondary-size-a: int:12
-secondary-size-b: int:17
+secondary-size--a: int:12
+secondary-size--b: int:17
 secondary-remove--first--0: true
 secondary-remove--first--10: false
 secondary-remove--first--12: false
@@ -65,4 +65,7 @@ secondary-array3: int[20]:2,3,4,5,6,7,8,9,300,400,0,1,2,3,4,5,6,7,8,9
 secondary-array4: int[15]:3,5,7,9,300,400,1,2,3,4,5,6,7,8,9
 secondary-array5: int[10]:3,5,7,9,300,400,2,4,6,8
 secondary-array6: int[0]:
-
+secondary-arrayover: int[34]:1234,200,100,0,1,2,3,4,5,6,7,8,
+ 9,300,400,500,600,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+secondary-arraygrow: int[17]:1234,200,100,0,1,2,3,4,5,6,7,8,
+ 9,300,400,500,600

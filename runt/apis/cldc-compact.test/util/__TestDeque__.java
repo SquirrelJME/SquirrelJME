@@ -89,7 +89,7 @@ abstract class __TestDeque__
 		
 		// As array form
 		this.secondary("array", q.<Integer>toArray(new Integer[q.size()]));
-		this.secondary("arrowgrow",
+		this.secondary("arraygrow",
 			q.<Integer>toArray(new Integer[q.size() / 2]));
 		this.secondary("arrayover",
 			q.<Integer>toArray(new Integer[q.size() + 17]));
