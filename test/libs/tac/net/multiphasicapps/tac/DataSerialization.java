@@ -42,24 +42,25 @@ public final class DataSerialization
 			boolean enc = false;
 			if (c >= 'A' && c <= 'Z')
 				c = Character.toLowerCase(c);
-			else
+			
+			// Re-encode?
+			char redo = 0;
+			switch (c)
 			{
-				// Re-encode?
-				char redo = 0;
-				switch (c)
-				{
-					case '+':	redo = 'p'; break;
-					case '#':	redo = 'h'; break;
-					case '.':	redo = 'd'; break;
-					case '-':	redo = '-'; break;
-				}
-				
-				// Was this value being re-encoded
-				if (redo != 0)
-					sb.append('-');
+				case '+':	redo = 'p'; break;
+				case '#':	redo = 'h'; break;
+				case '.':	redo = 'd'; break;
+				case '-':	redo = '-'; break;
 			}
 			
-			sb.append(c);
+			// Was this value being re-encoded?
+			if (redo != 0)
+			{
+				sb.append('-');
+				sb.append(redo);
+			}
+			else
+				sb.append(c);
 		}
 		
 		// Use the encoded key
