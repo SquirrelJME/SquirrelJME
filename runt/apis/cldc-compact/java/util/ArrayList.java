@@ -117,18 +117,6 @@ public class ArrayList<E>
 		this.modCount++;
 	}
 	
-	@Override
-	public boolean addAll(Collection<? extends E> __a)
-	{
-		throw new todo.TODO();
-	}
-	
-	@Override
-	public boolean addAll(int __a, Collection<? extends E> __b)
-	{
-		throw new todo.TODO();
-	}
-	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/10/29
@@ -159,12 +147,6 @@ public class ArrayList<E>
 		return new ArrayList<>(this);
 	}
 	
-	@Override
-	public boolean contains(Object __a)
-	{
-		throw new todo.TODO();
-	}
-	
 	public void ensureCapacity(int __a)
 	{
 		throw new todo.TODO();
@@ -182,30 +164,6 @@ public class ArrayList<E>
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		return this._elements[__i];
-	}
-	
-	@Override
-	public int indexOf(Object __a)
-	{
-		throw new todo.TODO();
-	}
-	
-	@Override
-	public int lastIndexOf(Object __a)
-	{
-		throw new todo.TODO();
-	}
-	
-	@Override
-	public ListIterator<E> listIterator(int __a)
-	{
-		throw new todo.TODO();
-	}
-	
-	@Override
-	public ListIterator<E> listIterator()
-	{
-		throw new todo.TODO();
 	}
 	
 	/**

@@ -41,6 +41,7 @@ More detailed changes:
      be within a 1 ulp range, however the test framework only supports
      exact values.
    * Added the missing _mimemessage_ file for the MIME file decoding test.
+   * Refactored the test framework to be easier to maintain.
  * Programs and Libraries
    * `cldc-compact`
      * Added a rehash indicator for the internal `__BucketMap__` so that
@@ -51,6 +52,7 @@ More detailed changes:
      * Implemented `java.io.InputStream`.
      * Implemented `java.util.EventObject`.
      * Implemented `java.util.Hashtable`.
+     * Implemented `java.util.LinkedHashMap`.
      * Implemented `java.util.LinkedList`.
    * `demo-hello`
      * Made the system properties array `final`.
