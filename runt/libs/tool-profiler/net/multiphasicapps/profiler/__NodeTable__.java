@@ -47,6 +47,7 @@ final class __NodeTable__
 	 * Parses the frames and loads into a node table.
 	 *
 	 * @param __fs The input frames to map.
+	 * @param __depth The depth of the stack.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/11
 	 */
@@ -66,6 +67,10 @@ final class __NodeTable__
 		__Position__ at = this._at;
 		for (ProfiledFrame f : __fs)
 		{
+			// Too deep?
+			if (f._depth >= ProfiledFrame.MAX_STACK_DEPTH)
+				continue;
+			
 			// Will need to know how many sub-frames there are
 			Collection<ProfiledFrame> sub = f._frames.values();
 			
@@ -104,7 +109,8 @@ final class __NodeTable__
 		// Create virtual frame since the root actually can have multiple
 		// methods forking from it and the profiler format can only handle
 		// a single root
-		ProfiledFrame vframe = new ProfiledFrame(FrameLocation.ENTRY_POINT);
+		ProfiledFrame vframe = new ProfiledFrame(FrameLocation.ENTRY_POINT,
+			0);
 		
 		// Only ever called once
 		vframe._numcalls = 1;
@@ -171,9 +177,23 @@ final class __NodeTable__
 			
 			// Write offsets to the sub-frame nodes
 			Collection<ProfiledFrame> sub = f._frames.values();
-			dos.writeShort(sub.size());
+			
+			// Determine and write the actual number of sub-frames used
+			int actsubs = 0;
+			for (ProfiledFrame sf : sub)
+				if (sf._depth >= ProfiledFrame.MAX_STACK_DEPTH)
+					continue;
+				else
+					actsubs++;
+			dos.writeShort(actsubs);
+			
+			// Write sub-frame table
 			for (ProfiledFrame sf : sub)
 			{
+				// Too deep
+				if (sf._depth >= ProfiledFrame.MAX_STACK_DEPTH)
+					continue;
+				
 				__Position__ p = offsets.get(sf);
 				
 				// Nodes will either be wide or narrow

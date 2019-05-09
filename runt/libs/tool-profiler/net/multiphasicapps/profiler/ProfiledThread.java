@@ -95,7 +95,7 @@ public final class ProfiledThread
 			this._frames : top._frames);
 		ProfiledFrame rv = frames.get(loc);
 		if (rv == null)
-			frames.put(loc, (rv = new ProfiledFrame(loc)));
+			frames.put(loc, (rv = new ProfiledFrame(loc, stack.size() + 1)));
 		
 		// Tell the top-most frame that we are in an invoke, so this removes
 		// self time accordingly
