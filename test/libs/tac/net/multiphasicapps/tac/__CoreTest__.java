@@ -37,6 +37,10 @@ import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
 abstract class __CoreTest__
 	extends MIDlet
 {
+	/** {@squirreljme.error test.dump=bool Dump test result manifests?} */
+	public static final String DUMP_ACTUAL =
+		"test.dump";
+	
 	/** Final result of the test. */
 	final TestResultBuilder _runresult =
 		new TestResultBuilder();
@@ -206,6 +210,16 @@ abstract class __CoreTest__
 		
 		// Set test status
 		this._status = (passed ? TestStatus.SUCCESS : TestStatus.FAILED);
+		
+		// Dump test result
+		try
+		{
+			if (Boolean.getBoolean(DUMP_ACTUAL))
+				actual.writeAsManifest(System.err);
+		}
+		catch (IOException|SecurityException e)
+		{
+		}
 	}
 	
 	/**
