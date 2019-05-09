@@ -24,6 +24,9 @@ public class TestLinkedHashMapEldest
 	/** Maximum entries in the map. */
 	public static final int MAX_ENTRIES = 10;
 	
+	/** Eldest order. */
+	int _order;
+	
 	/**
 	 * {@inheritDoc}
 	 * @since 2019/05/09
@@ -35,11 +38,20 @@ public class TestLinkedHashMapEldest
 		
 		// Add a bunch of values
 		for (int i = 0; i < MAX_ENTRIES * 5; i++)
+		{
+			// Used for ordering
+			int order = TestLinkedHashMapEldest.this._order++;
+			this.secondary("eldest" + order + "add", i);
+			
+			// Put in value
 			map.put(i, "Value" + i);
+		}
 		
 		// Array should be in same order!
-		this.secondary("ordkeys", map.keySet().toArray());
-		this.secondary("ordvals", map.values().toArray());
+		this.secondary("ordkeys",
+			map.keySet().<Integer>toArray(new Integer[map.size()]));
+		this.secondary("ordvals",
+			map.values().<String>toArray(new String[map.size()]));
 	}
 	
 	/**
@@ -50,9 +62,6 @@ public class TestLinkedHashMapEldest
 	public final class EldestMap
 		extends LinkedHashMap<Integer, String>
 	{
-		/** Eldest order. */
-		private int _order;
-		
 		/**
 		 * {@inheritDoc}
 		 * @since 2019/05/09
@@ -61,7 +70,7 @@ public class TestLinkedHashMapEldest
 		protected boolean removeEldestEntry(Map.Entry<Integer, String> __e)
 		{
 			// Used to make sure the order is correct
-			int order = this._order++;
+			int order = TestLinkedHashMapEldest.this._order++;
 			TestLinkedHashMapEldest.this.secondary(
 				"eldest" + order + "key", __e.getKey());
 			TestLinkedHashMapEldest.this.secondary(
