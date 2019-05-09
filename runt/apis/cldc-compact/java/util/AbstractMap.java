@@ -61,10 +61,17 @@ public abstract class AbstractMap<K, V>
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/09
+	 */
 	@Override
 	public int hashCode()
 	{
-		throw new todo.TODO();
+		int rv = 0;
+		for (Map.Entry<K, V> e : this.entrySet())
+			rv += e.hashCode();
+		return rv;
 	}
 	
 	/**
