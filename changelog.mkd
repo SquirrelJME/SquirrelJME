@@ -108,6 +108,9 @@ More detailed changes:
      * Performed some refactoring on the deserialization/serialization code.
    * `tool-classfile`
      * Removed `net.multiphasicapps.classfile.ExecutableCode`, it was not used.
+   * `tool-profiler`
+     * When writing the NPS snapshot, set a limit on how deep the stack can
+       traverse in the event an infinite recursive method was profiled.
  * Compiler Backend
    * Added a bunch of string representations for class structures.
    * Created a stack-cached register based compiler for Java byte code.

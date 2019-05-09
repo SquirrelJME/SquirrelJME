@@ -29,6 +29,10 @@ import net.multiphasicapps.io.ZLibCompressor;
  */
 public final class ProfilerSnapshot
 {
+	/** Maximum stack depth. */
+	private static final int _MAX_STACK_DEPTH =
+		128;
+	
 	/** The start time of the snapshot. */
 	protected final long startmillis =
 		System.currentTimeMillis();
@@ -250,7 +254,10 @@ public final class ProfilerSnapshot
 		{
 			// Go through all threads
 			for (ProfiledThread t : threads.values())
-				this.__doMethodTableSub(rv, next, t._frames.values());
+			{
+				int[] depth = new int[1];
+				this.__doMethodTableSub(rv, next, t._frames.values(), depth);
+			}
 		}
 		
 		return rv;
@@ -262,17 +269,24 @@ public final class ProfilerSnapshot
 	 * @param __rv The table to write to.
 	 * @param __nid The next ID.
 	 * @param __fs The frames to process.
+	 * @param __depth Depth tracker, to stop if the frames get too deep.
 	 * @return The table of instrumented methods.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/11
 	 */
 	private final Map<FrameLocation, Integer> __doMethodTableSub(
 		Map<FrameLocation, Integer> __rv,
-		int[] __nid, Iterable<ProfiledFrame> __fs)
+		int[] __nid, Iterable<ProfiledFrame> __fs, int[] __depth)
 		throws NullPointerException
 	{
-		if (__rv == null || __nid == null || __fs == null)
+		if (__rv == null || __nid == null || __fs == null || __depth == null)
 			throw new NullPointerException("NARG");
+		
+		// Has the stack depth limit been reached?
+		int depth = __depth[0];
+		if (depth >= _MAX_STACK_DEPTH)
+			return __rv;
+		__depth[0] = depth + 1;
 		
 		// Handle each frame
 		for (ProfiledFrame f : __fs)
@@ -289,8 +303,11 @@ public final class ProfilerSnapshot
 			}
 			
 			// Go into this frame's sub-frames
-			this.__doMethodTableSub(__rv, __nid, f._frames.values());
+			this.__doMethodTableSub(__rv, __nid, f._frames.values(), __depth);
 		}
+		
+		// Decrease depth
+		__depth[0]--;
 		
 		return __rv;
 	}
