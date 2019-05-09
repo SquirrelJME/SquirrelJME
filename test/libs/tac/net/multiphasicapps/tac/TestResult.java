@@ -89,44 +89,19 @@ public final class TestResult
 	@Override
 	public final boolean equals(Object __o)
 	{
-		throw new todo.TODO();
-		/*
-		// Get string result representation and the expected value from the
-		// manifest
-		String rvstr = DataSerialization.serialize(rv),
-			thstr = DataSerialization.serialize(thrown),
-			expectrv = attr.getValue("result", "ResultWasNotSpecified"),
-			expectth = attr.getValue("thrown", "ExceptionWasNotSpecified");
+		if (__o == this)
+			return true;
 		
-		// Longest string, used for secondary value formatting when failure
-		// happens
-		int longskeylen = 1;
+		if (!(__o instanceof TestResult))
+			return false;
 		
-		// Find the longest secondary value and make a copy of it
-		Map<String, String> secondary = this._secondary;
-		synchronized (secondary)
-		{
-			for (Map.Entry<String, String> e : secondary.entrySet())
-				longskeylen = Math.max(e.getKey().length(), longskeylen);
-			
-			// Make copy of it for usage
-			secondary = new SortedTreeMap<>(secondary);
-		}
+		if (this.hashCode() != __o.hashCode())
+			return false;
 		
-		// Read in secondary values from the manifest
-		Map<String, String> expectse = new SortedTreeMap<>();
-		for (Map.Entry<JavaManifestKey, String> e : attr.entrySet())
-		{
-			String k = e.getKey().toString().toLowerCase();
-			if (k.startsWith("secondary-"))
-				expectse.put(k.substring(10), e.getValue());
-		}
-		
-		// Is the test a success or failure?
-		boolean passedrv = TestResult.valueEquals(rvstr, expectrv),
-			passedth = TestResult.valueEquals(thstr, expectth),
-			passedse = TestResult.valueEquals(secondary, expectse);
-		*/
+		TestResult o = (TestResult)__o;
+		return this.rvalue.equals(o.rvalue) &&
+			this.tvalue.equals(o.tvalue) &&
+			this._secondary.equals(o._secondary);
 	}
 	
 	/**
@@ -136,7 +111,11 @@ public final class TestResult
 	@Override
 	public final int hashCode()
 	{
-		throw new todo.TODO();
+		int rv = this._hash;
+		if (rv == 0)
+			this._hash = (rv = this.rvalue.hashCode() ^
+				this.tvalue.hashCode() ^ this._secondary.hashCode());
+		return rv;
 	}
 	
 	/**
@@ -190,7 +169,37 @@ public final class TestResult
 	@Override
 	public final String toString()
 	{
-		throw new todo.TODO();
+		Reference<String> ref = this._string;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+		{
+			StringBuilder sb = new StringBuilder();
+			
+			// Return value
+			sb.append("{rv=");
+			sb.append(this.rvalue);
+			
+			// Thrown values
+			sb.append(", tv=");
+			sb.append(this.tvalue);
+			
+			// Only add secondaries if they exist
+			Map<String, String> secondary = this._secondary;
+			if (!secondary.isEmpty())
+			{
+				sb.append(", sv=");
+				sb.append(secondary);
+			}
+			
+			// Done
+			sb.append('}');
+			
+			// Build and cache
+			this._string = new WeakReference<>((rv = sb.toString()));
+		}
+		
+		return rv;
 	}
 	
 	/**
