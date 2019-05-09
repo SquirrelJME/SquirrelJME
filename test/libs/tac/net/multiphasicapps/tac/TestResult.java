@@ -15,8 +15,10 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -98,9 +100,6 @@ public final class TestResult
 			return true;
 		
 		if (!(__o instanceof TestResult))
-			return false;
-		
-		if (this.hashCode() != __o.hashCode())
 			return false;
 		
 		TestResult o = (TestResult)__o;
@@ -315,6 +314,62 @@ public final class TestResult
 	}
 	
 	/**
+	 * Decodes a list of throwable and returns them.
+	 *
+	 * @param __ts The throwables to decode.
+	 * @return The list of used throwables.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/09 
+	 */
+	public static final List<String> throwableList(String __ts)
+		throws NullPointerException
+	{
+		if (__ts == null)
+			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error BU0e Not a throwable.}
+		if (!__ts.startsWith("throwable:"))
+			throw new IllegalArgumentException("BU0e");
+		__ts = __ts.substring(10);
+		
+		// Snip off the optional debug message
+		int lm = __ts.indexOf(':');
+		if (lm >= 0)
+			__ts = __ts.substring(0, lm);
+		
+		// Snip into string list, note that java.lang is initially implicit
+		// and remaining values use a shortened form
+		List<String> rv = new ArrayList<>();
+		String baseform = "java.lang";
+		for (int i = 0, n = __ts.length(); i < n;)
+		{
+			// Find split or where this ends
+			int lc = __ts.indexOf(',', i);
+			if (lc < 0)
+				lc = n;
+			
+			// Snip this part out
+			String sub = __ts.substring(i, lc);
+			
+			// Change of base?
+			int ld = sub.lastIndexOf('.');
+			if (ld >= 0)
+			{
+				baseform = sub.substring(0, ld);
+				sub = sub.substring(ld + 1);
+			}
+			
+			// Add full form
+			rv.add(baseform + "." + sub);
+			
+			// Process next split
+			i = lc + 1;
+		}
+		
+		return rv;
+	}
+	
+	/**
 	 * Compares two value strings against each other.
 	 *
 	 * @param __act The actual value.
@@ -334,53 +389,15 @@ public final class TestResult
 		// Throwables are special cases since they represent multiple classes
 		if (__act.startsWith("throwable:") && __exp.startsWith("throwable:"))
 		{
-			// Snip off the throwable portions
-			__act = __act.substring(10);
-			__exp = __exp.substring(10);
+			// Get all elements for both
+			List<String> la = TestResult.throwableList(__act),
+				lb = TestResult.throwableList(__exp);
 			
-			// Snip off the optional message in the actual
-			int ld = __act.indexOf(':');
-			if (ld >= 0)
-				__act = __act.substring(0, ld);
+			todo.DEBUG.note("%s ~~= %s", la, lb);
 			
-			// Snip off the optional message in the expected
-			ld = __exp.indexOf(':');
-			if (ld >= 0)
-				__exp = __exp.substring(0, ld);
-			
-			// Find the base expected class to find
-			ld = __exp.indexOf(',');
-			if (ld >= 0)
-				__exp = __exp.substring(0, ld);
-			
-			// Only use the basename
-			ld = __exp.lastIndexOf('.');
-			if (ld >= 0)
-				__exp = __exp.substring(ld + 1);
-			
-			// Go through the actual classes to find the class to match
-			for (int i = 0, n = __act.length(); i < n;)
-			{
-				// Get sequence
-				ld = __act.indexOf(',', i);
-				if (ld < 0)
-					ld = __act.length();
-				
-				// Snip off fragment
-				String snip = __act.substring(i, ld);
-				
-				// Only consider the base name
-				int xld = snip.lastIndexOf('.');
-				if (xld >= 0)
-					snip = snip.substring(xld + 1);
-				
-				// Is a match
-				if (snip.equals(__exp))
-					return true;
-				
-				// Skip
-				i = ld + 1;
-			}
+			// These are considered equal if they have anything in common
+			la.retainAll(lb);
+			return !la.isEmpty();
 		}
 		
 		// Use normal string comparison

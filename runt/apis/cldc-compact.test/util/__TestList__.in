@@ -35,8 +35,7 @@ secondary-hascutebefore: true
 secondary-hashcode: int:-947633668
 secondary-hasmoresquirrels: true
 secondary-hasmoresquirrelsstill: true
-secondary-initialioob: throwable:IndexOutOfBoundsException,RuntimeExce
- ption,Exception,Throwable:Index:\_29,\_Size:\_0
+secondary-initialioob: throwable:IndexOutOfBoundsException
 secondary-initialisempty: true
 secondary-initialnocont: false
 secondary-initialzerosize: int:0
@@ -60,8 +59,7 @@ secondary-itequal7: true
 secondary-itequal8: true
 secondary-itequal9: true
 secondary-moresquirrels: true
-secondary-noneleft: throwable:java.util.NoSuchElementException,java.la
- ng.RuntimeException,Exception,Throwable
+secondary-noneleft: throwable:java.util.NoSuchElementException
 secondary-removeempty: false
 secondary-removeindex: string:Are!
 secondary-removemoresquirrels: true
