@@ -21,8 +21,15 @@ import java.util.Map;
  */
 public final class ProfiledFrame
 {
+	/** Maximum stack depth. */
+	public static final int MAX_STACK_DEPTH =
+		64;
+	
 	/** The location of this frame. */
 	protected final FrameLocation location;
+	
+	/** The depth of this frame. */
+	final int _depth;
 	
 	/** The sub-frames of this frame. */
 	final Map<FrameLocation, ProfiledFrame> _frames =
@@ -58,16 +65,18 @@ public final class ProfiledFrame
 	 * Initializes this frame.
 	 *
 	 * @param __l The frame location.
+	 * @param __d The depth of this frame.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/11
 	 */
-	public ProfiledFrame(FrameLocation __l)
+	public ProfiledFrame(FrameLocation __l, int __d)
 		throws NullPointerException
 	{
 		if (__l == null)
 			throw new NullPointerException("NARG");
 		
 		this.location = __l;
+		this._depth = __d;
 	}
 	
 	/**
