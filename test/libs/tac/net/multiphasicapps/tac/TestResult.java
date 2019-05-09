@@ -9,11 +9,13 @@
 
 package net.multiphasicapps.tac;
 
+import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import net.multiphasicapps.collections.SortedTreeMap;
@@ -222,54 +224,73 @@ public final class TestResult
 		if (__cl == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
-		/*
-		// Used to refer to resources for parameters and default results
-		Class<?> self = this.getClass();
-		
-		// Get the basename of the class, used to refer to resources
-		String classname = self.getName();
-		
-		// Find result, look in super classes as needed
-		JavaManifest man = null;
-		for (Class<?> cl = self; cl != null; cl = cl.getSuperclass())
+		// We are going to recursively go up the class chain and load values
+		// from the manifest into our result
+		TestResultBuilder rv = new TestResultBuilder();
+		for (Class<?> at = __cl; at != null; at = at.getSuperclass())
 		{
-			// Use basename of this form,
-			String basename = cl.getName();
-			int ld = basename.lastIndexOf('.');
-			if (ld >= 0)
-				basename = basename.substring(ld + 1);
+			// Determine base name of the class
+			String atname = at.getName();
+			int ld = atname.lastIndexOf('.');
+			String atbase = (ld < 0 ? atname : atname.substring(ld + 1));
 			
-			// Read input and output parameters
-			try (InputStream in = self.getResourceAsStream(basename + ".in"))
+			// Parse and handle manifest
+			JavaManifest man;
+			try (InputStream in = at.getResourceAsStream(atbase + ".in"))
 			{
+				// No manifest here, ignore
 				if (in == null)
-				{
-					// Warn that it is missing
-					System.err.printf("WARN: No .in for %s (%s.in)%n",
-						classname, basename);
-				}
-				else
-					man = new JavaManifest(in);
+					continue;
+				
+				// Parse
+				man = new JavaManifest(in);
 			}
+			
+			// Ignore
 			catch (IOException e)
 			{
-				// {@squirreljme.error BU07 Could not read the argument input.}
-				throw new InvalidTestException("BU07", e);
+				continue;
 			}
 			
-			// Stop if a manifest was read
-			if (man != null)
-				break;
-		}
+			// Work with attributes and decode them
+			JavaManifestAttributes attr = man.getMainAttributes();
+			for (Map.Entry<JavaManifestKey, String> e : attr.entrySet())
+			{
+				String ekey = e.getKey().toString().toLowerCase(),
+					eval = e.getValue();
+				
+				// Depends on the encoded key
+				switch (ekey)
+				{
+						// Returned value
+					case "result":
+						if (rv.getReturn() == null)
+							rv.setReturnEncoded(eval);
+						break;
 					
-		// Use a blank manifest instead
-		if (man == null)
-			man = new JavaManifest();
+						// Thrown value
+					case "thrown":
+						if (rv.getThrown() == null)
+							rv.setThrownEncoded(eval);
+						break;
+						
+						// Possibly handle secondary values
+					default:
+						if (ekey.startsWith("secondary-"))
+						{
+							String skey = DataDeserialization.decodeKey(
+								ekey.substring(10));
+							
+							if (rv.getSecondary(skey) == null)
+								rv.putSecondaryEncoded(skey, eval);
+						}
+						break;
+				}
+			}
+		}
 		
-		// The main attributes contain the arguments
-		JavaManifestAttributes attr = man.getMainAttributes();
-		*/
+		// Done
+		return rv.build();
 	}
 	
 	/**

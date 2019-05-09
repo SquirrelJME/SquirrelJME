@@ -25,12 +25,10 @@ public final class TestResultBuilder
 		new SortedTreeMap<>();
 	
 	/** Returned value. */
-	private volatile String _rvalue =
-		"ResultWasNotSpecified";
+	private volatile String _rvalue;
 	
 	/** Thrown value. */
-	private volatile String _tvalue =
-		"ExceptionWasNotSpecified";
+	private volatile String _tvalue;
 	
 	/**
 	 * Builds the actual test result.
@@ -43,7 +41,66 @@ public final class TestResultBuilder
 		// Lock
 		synchronized (this)
 		{
-			return new TestResult(this._rvalue, this._tvalue, this._secondary);
+			// Fallback return value
+			String rvalue = this._rvalue;
+			if (rvalue == null)
+				rvalue = "ResultWasNotSpecified";
+				
+			// Fallback throw value
+			String tvalue = this._rvalue;
+			if (tvalue == null)
+				tvalue = "ExceptionWasNotSpecified";
+			
+			// Build result
+			return new TestResult(rvalue, tvalue, this._secondary);
+		}
+	}
+	
+	/**
+	 * Gets the return value.
+	 *
+	 * @return The return value.
+	 * @since 2019/05/09
+	 */
+	public final String getReturn()
+	{
+		synchronized (this)
+		{
+			return this._rvalue;
+		}
+	}
+	
+	/**
+	 * Returns the secondary value.
+	 *
+	 * @param __key The key to get.
+	 * @return The value of the secondary or {@code null} if it was not set.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/09
+	 */
+	public final String getSecondary(String __key)
+		throws NullPointerException
+	{
+		if (__key == null)
+			throw new NullPointerException("NARG");
+		
+		synchronized (this)
+		{
+			return this._secondary.get(__key);
+		}
+	}
+	
+	/**
+	 * Gets the exception value.
+	 *
+	 * @return The exception value.
+	 * @since 2019/05/09
+	 */
+	public final String getThrown()
+	{
+		synchronized (this)
+		{
+			return this._tvalue;
 		}
 	}
 	
@@ -66,7 +123,7 @@ public final class TestResultBuilder
 		synchronized (this)
 		{
 			// Use formatted values
-			secondary.put(DataSerialization.encodeKey(__key), __val);
+			secondary.put(__key, __val);
 			
 			// Debug
 			todo.DEBUG.note("%s=%s", __key, __val);
