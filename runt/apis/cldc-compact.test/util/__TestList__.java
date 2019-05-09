@@ -11,6 +11,7 @@ package util;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Objects;
 import net.multiphasicapps.tac.TestRunnable;
 
@@ -108,7 +109,7 @@ abstract class __TestList__
 		
 		// Go through and check iteration sequence
 		Object[] array = list.toArray();
-		Iterator<String> it = list.iterator();
+		ListIterator<String> it = list.listIterator();
 		for (int i = 0, n = array.length; i < n; i++)
 		{
 			// Must be equal
@@ -127,6 +128,29 @@ abstract class __TestList__
 		catch (Throwable t)
 		{
 			this.secondary("noneleft", t);
+		}
+		
+		// Go back down the iterator
+		array = list.toArray();
+		for (int i = array.length - 1; i >= 0; i--)
+		{
+			// Must be equal
+			this.secondary("previtequal" + i,
+				Objects.equals(array[i], it.previous()));
+			
+			// Remove some elements
+			if (i == 3 || i == 7 || i == 12)
+				it.remove();
+		}
+		
+		// The iterator should be at the end
+		try
+		{
+			this.secondary("prevnoneleft", it.previous());
+		}
+		catch (Throwable t)
+		{
+			this.secondary("prevnoneleft", t);
 		}
 		
 		// As array form
