@@ -86,7 +86,7 @@ public final class TestResultBuilder
 		
 		synchronized (this)
 		{
-			return this._secondary.get(__key);
+			return this._secondary.get(__key.toLowerCase());
 		}
 	}
 	
@@ -123,7 +123,7 @@ public final class TestResultBuilder
 		synchronized (this)
 		{
 			// Use formatted values
-			secondary.put(__key, __val);
+			secondary.put(__key.toLowerCase(), __val);
 			
 			// Debug
 			todo.DEBUG.note("%s=%s", __key, __val);
