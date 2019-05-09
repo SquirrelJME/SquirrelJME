@@ -25,6 +25,8 @@ import net.multiphasicapps.collections.SortedTreeSet;
 import net.multiphasicapps.tool.manifest.JavaManifest;
 import net.multiphasicapps.tool.manifest.JavaManifestKey;
 import net.multiphasicapps.tool.manifest.JavaManifestAttributes;
+import net.multiphasicapps.tool.manifest.writer.MutableJavaManifest;
+import net.multiphasicapps.tool.manifest.writer.MutableJavaManifestAttributes;
 
 /**
  * This class contains an immutable result of the test.
@@ -213,7 +215,19 @@ public final class TestResult
 		if (__os == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Setup manifest
+		MutableJavaManifest man = new MutableJavaManifest();
+		MutableJavaManifestAttributes attr = man.getMainAttributes();
+		
+		// Add values to it
+		attr.putValue("result", this.rvalue);
+		attr.putValue("thrown", this.tvalue);
+		for (Map.Entry<String, String> e : this._secondary.entrySet())
+			attr.putValue(DataSerialization.encodeKey(e.getKey()),
+				e.getValue());
+		
+		// Write it
+		man.write(__os);
 	}
 	
 	/**
