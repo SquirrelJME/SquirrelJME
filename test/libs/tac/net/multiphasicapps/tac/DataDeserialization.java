@@ -42,6 +42,7 @@ public final class DataDeserialization
 			// Escaping?
 			if (escaped)
 			{
+				// Determine replacement character
 				switch (c)
 				{
 					case 'p':	c = '+'; break;
@@ -49,6 +50,7 @@ public final class DataDeserialization
 					case '.':	c = '.'; break;
 					case '-':	c = '-'; break;
 				}
+				sb.append(c);
 				
 				// Do not escape anymore
 				escaped = false;
