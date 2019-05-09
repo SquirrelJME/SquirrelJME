@@ -11,10 +11,12 @@
 package java.util;
 
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
+import cc.squirreljme.runtime.cldc.util.ByteIntegerArray;
 import cc.squirreljme.runtime.cldc.util.CharacterIntegerArray;
 import cc.squirreljme.runtime.cldc.util.IntegerArray;
 import cc.squirreljme.runtime.cldc.util.IntegerArrays;
 import cc.squirreljme.runtime.cldc.util.IntegerIntegerArray;
+import cc.squirreljme.runtime.cldc.util.ShortIntegerArray;
 
 /**
  * This class contains utility methods which operate on arrays.
@@ -111,14 +113,48 @@ public class Arrays
 			__from, __to, __key);
 	}
 	
-	public static int binarySearch(short[] __a, short __b)
+	/**
+	 * Searches the given sorted array for the given element.
+	 *
+	 * @param __a The sorted array to search.
+	 * @param __key The key to locate.
+	 * @return The index of the given key or {@code (-(insertion point) - 1)}
+	 * indicating where the element would be found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/09
+	 */
+	public static int binarySearch(short[] __a, short __key)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
+		return Arrays.binarySearch(__a, 0, __a.length, __key);
 	}
 	
-	public static int binarySearch(short[] __a, int __b, int __c, short __d)
+	/**
+	 * Searches the given sorted array for the given element.
+	 *
+	 * @param __a The sorted array to search.
+	 * @param __from The from index.
+	 * @param __to The to index.
+	 * @param __key The key to locate.
+	 * @return The index of the given key or {@code (-(insertion point) - 1)}
+	 * indicating where the element would be found.
+	 * @throws ArrayIndexOutOfBoundsException If the from or to index exceed
+	 * the bounds of the array.
+	 * @throws IllegalArgumentException If the from index is higher than the
+	 * to index.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/09
+	 */
+	public static int binarySearch(short[] __a, int __from, int __to,
+		short __key)
+		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+			NullPointerException
 	{
-		throw new todo.TODO();
+		return IntegerArrays.binarySearch(new ShortIntegerArray(__a),
+			__from, __to, __key);
 	}
 	
 	/**
@@ -165,14 +201,48 @@ public class Arrays
 			__from, __to, __key);
 	}
 	
-	public static int binarySearch(byte[] __a, byte __b)
+	/**
+	 * Searches the given sorted array for the given element.
+	 *
+	 * @param __a The sorted array to search.
+	 * @param __key The key to locate.
+	 * @return The index of the given key or {@code (-(insertion point) - 1)}
+	 * indicating where the element would be found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/09
+	 */
+	public static int binarySearch(byte[] __a, byte __key)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
+		return Arrays.binarySearch(__a, 0, __a.length, __key);
 	}
 	
-	public static int binarySearch(byte[] __a, int __b, int __c, byte __d)
+	/**
+	 * Searches the given sorted array for the given element.
+	 *
+	 * @param __a The sorted array to search.
+	 * @param __from The from index.
+	 * @param __to The to index.
+	 * @param __key The key to locate.
+	 * @return The index of the given key or {@code (-(insertion point) - 1)}
+	 * indicating where the element would be found.
+	 * @throws ArrayIndexOutOfBoundsException If the from or to index exceed
+	 * the bounds of the array.
+	 * @throws IllegalArgumentException If the from index is higher than the
+	 * to index.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/09
+	 */
+	public static int binarySearch(byte[] __a, int __from, int __to,
+		byte __key)
+		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+			NullPointerException
 	{
-		throw new todo.TODO();
+		return IntegerArrays.binarySearch(new ByteIntegerArray(__a),
+			__from, __to, __key);
 	}
 	
 	public static int binarySearch(double[] __a, double __b)
@@ -814,27 +884,27 @@ public class Arrays
 		if (__a == null)
 			throw new NullPointerException("NARG");
 		
-		sort(__a, 0, __a.length);
+		Arrays.sort(__a, 0, __a.length);
 	}
 	
+	/**
+	 * Sorts the specified array.
+	 *
+	 * @param __a The array to sort.
+	 * @param __from The from index.
+	 * @param __to The to index.
+	 * @throws ArrayIndexOutOfBoundsException If the from or to index are
+	 * outside of bounds.
+	 * @throws IllegalArgumentException If the from address is greater than
+	 * the to address.
+	 * @throws NullPointerException If no array was specified.
+	 * @since 2019/05/09
+	 */
 	public static void sort(int[] __a, int __from, int __to)
 		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
 			NullPointerException
 	{
-		// Check
-		if (__a == null)
-			throw new NullPointerException("NARG");
-		int an = __a.length;
-		if (__from < 0 || __to > an)
-			throw new ArrayIndexOutOfBoundsException("ZZ04");
-		if (__from > __to)
-			throw new IllegalArgumentException("ZZ1o");
-		
-		// Pointless sort?
-		if (__from == __to)
-			return;
-		
-		throw new todo.TODO();
+		IntegerArrays.sort(new IntegerIntegerArray(__a), __from, __to);
 	}
 	
 	/**
@@ -851,7 +921,7 @@ public class Arrays
 		if (__a == null)
 			throw new NullPointerException("NARG");	
 		
-		sort(__a, 0, __a.length);
+		Arrays.sort(__a, 0, __a.length);
 	}
 	
 	public static void sort(long[] __a, int __from, int __to)
@@ -891,24 +961,25 @@ public class Arrays
 		sort(__a, 0, __a.length);
 	}
 	
+	/**
+	 * Sorts the specified array.
+	 *
+	 * @param __a The array to sort.
+	 * @param __from The from index.
+	 * @param __to The to index.
+	 * @throws ArrayIndexOutOfBoundsException If the from or to index are
+	 * outside of bounds.
+	 * @throws IllegalArgumentException If the from address is greater than
+	 * the to address.
+	 * @throws NullPointerException If no array was specified.
+	 * @since 2019/05/09
+	 */
 	public static void sort(short[] __a, int __from, int __to)
 		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
 			NullPointerException
 	{
-		// Check
-		if (__a == null)
-			throw new NullPointerException("NARG");
-		int an = __a.length;
-		if (__from < 0 || __to > an)
-			throw new ArrayIndexOutOfBoundsException("ZZ04");
-		if (__from > __to)
-			throw new IllegalArgumentException("ZZ1o");
-		
-		// Pointless sort?
-		if (__from == __to)
-			return;
-		
-		throw new todo.TODO();
+		// Use common sorting code
+		IntegerArrays.sort(new ShortIntegerArray(__a), __from, __to);
 	}
 	
 	/**
@@ -966,24 +1037,25 @@ public class Arrays
 		sort(__a, 0, __a.length);
 	}
 	
+	/**
+	 * Sorts the specified array.
+	 *
+	 * @param __a The array to sort.
+	 * @param __from The from index.
+	 * @param __to The to index.
+	 * @throws ArrayIndexOutOfBoundsException If the from or to index are
+	 * outside of bounds.
+	 * @throws IllegalArgumentException If the from address is greater than
+	 * the to address.
+	 * @throws NullPointerException If no array was specified.
+	 * @since 2019/05/09
+	 */
 	public static void sort(byte[] __a, int __from, int __to)
 		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
 			NullPointerException
 	{
-		// Check
-		if (__a == null)
-			throw new NullPointerException("NARG");
-		int an = __a.length;
-		if (__from < 0 || __to > an)
-			throw new ArrayIndexOutOfBoundsException("ZZ04");
-		if (__from > __to)
-			throw new IllegalArgumentException("ZZ1o");
-		
-		// Pointless sort?
-		if (__from == __to)
-			return;
-		
-		throw new todo.TODO();
+		// Use common sorting code
+		IntegerArrays.sort(new ByteIntegerArray(__a), __from, __to);
 	}
 	
 	/**
@@ -1074,16 +1146,43 @@ public class Arrays
 		if (__a == null)
 			throw new NullPointerException("NARG");	
 		
-		sort(__a, 0, __a.length, null);
+		Arrays.sort(__a, 0, __a.length, null);
 	}
 	
+	/**
+	 * Sorts the specified array.
+	 *
+	 * @param __a The array to sort.
+	 * @param __from The from index.
+	 * @param __to The to index.
+	 * @throws ArrayIndexOutOfBoundsException If the from or to index are
+	 * outside of bounds.
+	 * @throws IllegalArgumentException If the from address is greater than
+	 * the to address.
+	 * @throws NullPointerException If no array was specified.
+	 * @since 2019/05/09
+	 */
 	public static void sort(Object[] __a, int __from, int __to)
 		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
 			NullPointerException
 	{
-		sort(__a, __from, __to, null);
+		Arrays.sort(__a, __from, __to, null);
 	}
 	
+	/**
+	 * Sorts the specified array.
+	 *
+	 * @param __a The array to sort.
+	 * @param __from The from index.
+	 * @param __to The to index.
+	 * @param __comp The comparator to use.
+	 * @throws ArrayIndexOutOfBoundsException If the from or to index are
+	 * outside of bounds.
+	 * @throws IllegalArgumentException If the from address is greater than
+	 * the to address.
+	 * @throws NullPointerException If no array was specified.
+	 * @since 2019/05/09
+	 */
 	public static <T> void sort(T[] __a, Comparator<? super T> __comp)
 		throws NullPointerException
 	{
@@ -1091,28 +1190,29 @@ public class Arrays
 		if (__a == null)
 			throw new NullPointerException("NARG");
 		
-		sort(__a, 0, __a.length, __comp);
+		Arrays.sort(__a, 0, __a.length, __comp);
 	}
 	
+	/**
+	 * Sorts the specified array.
+	 *
+	 * @param __a The array to sort.
+	 * @param __from The from index.
+	 * @param __to The to index.
+	 * @param __comp The comparator to use.
+	 * @throws ArrayIndexOutOfBoundsException If the from or to index are
+	 * outside of bounds.
+	 * @throws IllegalArgumentException If the from address is greater than
+	 * the to address.
+	 * @throws NullPointerException If no array was specified.
+	 * @since 2019/05/09
+	 */
 	public static <T> void sort(T[] __a, int __from, int __to,
 		Comparator<? super T> __comp)
 		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
 			NullPointerException
 	{
-		// Check
-		if (__a == null)
-			throw new NullPointerException("NARG");
-		int an = __a.length;
-		if (__from < 0 || __to > an)
-			throw new ArrayIndexOutOfBoundsException("ZZ04");
-		if (__from > __to)
-			throw new IllegalArgumentException("ZZ1o");
-		
-		// Pointless sort?
-		if (__from == __to)
-			return;
-		
-		throw new todo.TODO();
+		Collections.<T>__sort(Arrays.<T>asList(__a), __from, __to, __comp);
 	}
 }
 
