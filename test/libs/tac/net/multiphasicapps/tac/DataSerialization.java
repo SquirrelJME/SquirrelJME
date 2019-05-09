@@ -249,6 +249,99 @@ public final class DataSerialization
 		else if (__o instanceof Long)
 			return "long:" + __o;
 		
+		// Byte array
+		else if ((__o instanceof byte[]) || __o instanceof Byte[])
+		{
+			// Convert first
+			if (__o instanceof Byte[])
+			{
+				Byte[] a = (Byte[])__o;
+				int n = a.length;
+				byte[] b = new byte[n];
+				for (int i = 0; i < n; i++)
+				{
+					Byte v = a[i];
+					b[i] = (v == null ? 0 : v.byteValue());
+				}
+				__o = b;
+			}
+			
+			// Print values
+			byte[] a = (byte[])__o;
+			int n = a.length;
+			StringBuilder sb = new StringBuilder(
+				String.format("byte[%d]:", n));
+			for (int i = 0; i < n; i++)
+			{
+				if (i > 0)
+					sb.append(",");
+				sb.append(a[i]);
+			}
+			return sb.toString();
+		}
+		
+		// Short array
+		else if ((__o instanceof short[]) || __o instanceof Short[])
+		{
+			// Convert first
+			if (__o instanceof Short[])
+			{
+				Short[] a = (Short[])__o;
+				int n = a.length;
+				short[] b = new short[n];
+				for (int i = 0; i < n; i++)
+				{
+					Short v = a[i];
+					b[i] = (v == null ? 0 : v.shortValue());
+				}
+				__o = b;
+			}
+			
+			// Print values
+			short[] a = (short[])__o;
+			int n = a.length;
+			StringBuilder sb = new StringBuilder(
+				String.format("short[%d]:", n));
+			for (int i = 0; i < n; i++)
+			{
+				if (i > 0)
+					sb.append(",");
+				sb.append(a[i]);
+			}
+			return sb.toString();
+		}
+		
+		// Character array
+		else if ((__o instanceof char[]) || __o instanceof Character[])
+		{
+			// Convert first
+			if (__o instanceof Character[])
+			{
+				Character[] a = (Character[])__o;
+				int n = a.length;
+				char[] b = new char[n];
+				for (int i = 0; i < n; i++)
+				{
+					Character v = a[i];
+					b[i] = (v == null ? 0 : v.charValue());
+				}
+				__o = b;
+			}
+			
+			// Print values
+			char[] a = (char[])__o;
+			int n = a.length;
+			StringBuilder sb = new StringBuilder(
+				String.format("char[%d]:", n));
+			for (int i = 0; i < n; i++)
+			{
+				if (i > 0)
+					sb.append(",");
+				sb.append((int)a[i]);
+			}
+			return sb.toString();
+		}
+		
 		// Integer array
 		else if ((__o instanceof int[]) || __o instanceof Integer[])
 		{
