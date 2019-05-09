@@ -149,5 +149,27 @@ public class Collections
 	{
 		throw new todo.TODO();
 	}
+	
+	/**
+	 * Sorts the specified collection.
+	 *
+	 * @param __a The collection to sort.
+	 * @param __from The from index.
+	 * @param __to The to index.
+	 * @param __comp The comparator to use.
+	 * @throws ArrayIndexOutOfBoundsException If the from or to index are
+	 * outside of bounds.
+	 * @throws IllegalArgumentException If the from address is greater than
+	 * the to address.
+	 * @throws NullPointerException If no collection was specified.
+	 * @since 2019/05/09
+	 */
+	static <T> void __sort(List<T> __a,
+		int __from, int __to, Comparator<? super T> __comp)
+		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+			NullPointerException
+	{
+		throw new todo.TODO();
+	}
 }
 
