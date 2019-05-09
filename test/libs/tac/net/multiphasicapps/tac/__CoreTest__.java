@@ -99,6 +99,10 @@ abstract class __CoreTest__
 		if (__mainargs == null)
 			__mainargs = new String[0];
 		
+		// Set a watchdog in case our test takes a very long time to execute
+		DeadlockTimeout dtimeout = new DeadlockTimeout();
+		dtimeout.start();
+		
 		// Use to name this test
 		Class<?> self = this.getClass();
 		String classname = self.getName();
@@ -220,6 +224,9 @@ abstract class __CoreTest__
 		catch (IOException|SecurityException e)
 		{
 		}
+		
+		// Stop the watchdog so we do not exit
+		dtimeout.expire();
 	}
 	
 	/**
