@@ -192,7 +192,12 @@ abstract class __CoreTest__
 		// so that bugs may potentially be found
 		else
 		{
-			expected.printComparison(actual, oldout);
+			// Failure notice
+			oldout.printf("%s: FAIL %s%n",
+				classname, actual);
+			
+			// Print comparison on another stream so it is not used in output
+			expected.printComparison(System.err, actual);
 		
 			// Print the throwable stack since this was not expected
 			if (thrown instanceof Throwable)
