@@ -145,40 +145,21 @@ public final class IntegerArrays
 	private static void __sort(IntegerArray __a, int __from, int __to)
 	{
 		// Pointless sort?
-		int len = __from - __to;
+		int len = __to - __from;
 		if (len <= 1)
 			return;
 		
-		// Split array in half, it may be slightly lopsided
-		int pivot = len >> 1,
-			a = pivot,
-			ai = __from + a,
-			b = len - pivot,
-			bi = __from + b;
+		// Determine the left and right sides
+		int lf = __from,
+			lp = __from + (len >> 1),
+			lt = __from + len;
 		
-		// Sort these halves
-		IntegerArrays.__sort(__a, ai, bi);
+		// Sort both halves of the array
+		IntegerArrays.__sort(__a, lf, lp);
+		IntegerArrays.__sort(__a, lp, lt);
 		
 		// Merge elements from both sides in
-		int drain = (a < b ? a : b),
-			drainkeep = drain;
-		while (drain > 0)
-		{
-			throw new todo.TODO();
-		}
-		
-		// Since both arrays had elements, 
-		a -= drainkeep;
-		b -= drainkeep;
-		
-		// Add left elements
-		while (a > 0)
-		{
-			throw new todo.TODO();
-		}
-		
-		// Add right elements
-		while (b > 0)
+		for (int at = __from, pl = lf, pr = lp;;)
 		{
 			throw new todo.TODO();
 		}
