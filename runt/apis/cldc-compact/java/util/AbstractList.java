@@ -458,7 +458,21 @@ public abstract class AbstractList<E>
 			// Check modification
 			this.__checkConcurrent();
 			
-			throw new todo.TODO();
+			// End of list?
+			int next = this._next;
+			if (this._next <= 0)
+				throw new NoSuchElementException("NSEE");
+			
+			// Get this element
+			int eldx = next - 1;
+			E rv = AbstractList.this.get(eldx);
+			
+			// The element to remove is the one we just got and the next one
+			// is one down the list
+			this._rmdx = eldx;
+			this._next = eldx;
+			
+			return rv;
 		}
 		
 		/**
