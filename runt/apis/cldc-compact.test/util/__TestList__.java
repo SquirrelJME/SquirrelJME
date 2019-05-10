@@ -93,6 +93,32 @@ abstract class __TestList__
 		// Add a bunch of entries
 		for (int i = 1; i <= 17; i++)
 			this.secondary("add" + i, list.add(Integer.toString(i)));
+		
+		// Set some element values
+		this.secondary("set6", list.set(6, "Xer!"));
+		this.secondary("set13", list.set(13, "Is!"));
+		try
+		{
+			this.secondary("set29", list.set(29, "Cute!"));
+		}
+		catch (Throwable t)
+		{
+			this.secondary("set29", t);
+		}
+		
+		// Get some values
+		this.secondary("get2", list.get(2));
+		this.secondary("get6", list.get(6));
+		this.secondary("get13", list.get(13));
+		this.secondary("get17", list.get(17));
+		try
+		{
+			this.secondary("get29", list.get(29));
+		}
+		catch (Throwable t)
+		{
+			this.secondary("get29", t);
+		}
 			
 		// Count sizes more
 		this.secondary("bulkempty", list.isEmpty());
