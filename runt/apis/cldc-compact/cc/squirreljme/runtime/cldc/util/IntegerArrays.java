@@ -146,36 +146,52 @@ public final class IntegerArrays
 	private static void __sort(IntegerArray __a, int __from, int __to)
 	{
 		// Pointless sort?
-		int len = __to - __from;
-		if (len == 0 || len == 1)
+		int n = __to - __from;
+		if (n == 0 || n == 1)
 			return;
 		
 		// {@squirreljme.error ZZ48 Sort length cannot be negative.}
-		if (len < 0)
+		if (n < 0)
 			throw new ArrayIndexOutOfBoundsException("ZZ48");
 		
-		// Determine the left and right sides
-		int lf = __from,
-			lp = __from + (len >> 1),
-			lt = __from + len;
-		
-		// Sort both halves of the array
-		IntegerArrays.__sort(__a, lf, lp);
-		IntegerArrays.__sort(__a, lp, lt);
-		
-		// There are only two entries, so they can be swapped
-		if (len == 2)
+		// If only two values are being sorted, it is a simple swap check
+		if (n == 2)
 		{
-			int a = __a.get(lf),
-				b = __a.get(lt);
+			int ia = __from,
+				ib = __from + 1;
+				
+			// Get both values
+			int a = __a.get(ia),
+				b = __a.get(ib);
 			
-			throw new todo.TODO();
+			// If the second is lower than the first, we need to swap
+			if (b < a)
+			{
+				__a.set(ia, b);
+				__a.set(ib, a);
+			}
+			
+			// Nothing else needs to be done
+			return;
 		}
 		
-		// Merge elements from both sides in
-		for (int at = __from, pl = lf, pr = lp;;)
+		// Work down from the highest gap to the lowest
+		for (int gap : ShellSort._GAPS)
 		{
-			throw new todo.TODO();
+			// Gapped insertion sort
+			for (int i = gap; i < n; i++)
+			{
+				// Use this to make a hole
+				int temp = __a.get(i);
+				
+				// Shift earlier gap elements down
+				int j;
+				for (j = i; j >= gap && __a.get(j - gap) > temp; j -= gap)
+					__a.set(j, __a.get(j - gap));
+				
+				// Put in the correct position
+				__a.set(j, temp);
+			}
 		}
 	}
 }
