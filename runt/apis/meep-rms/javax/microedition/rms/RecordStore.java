@@ -408,6 +408,51 @@ public class RecordStore
 	}
 	
 	/**
+	 * Returns the number of records in this store.
+	 *
+	 * @return The number of records in this store.
+	 * @throws RecordStoreNotOpenException If the record store is not open.
+	 * @since 2019/05/09
+	 */
+	public int getNumRecords()
+		throws RecordStoreNotOpenException
+	{
+		// Check open
+		this.__checkOpen();
+		
+		// Lock
+		VinylRecord vinyl = _VINYL;
+		try (VinylLock lock = vinyl.lock())
+		{
+			// Get record list
+			int[] pages = vinyl.pageList(this._vid);
+			
+			// Check for error
+			if (pages.length > 0)
+				try
+				{
+					RecordStore.__checkError(pages[0]);
+				}
+				catch (RecordStoreNotOpenException e)
+				{
+					throw e;
+				}
+				catch (RecordStoreException e)
+				{
+					// {@squirreljme.error DC0b Error getting list of
+					// records.}
+					RecordStoreNotOpenException t =
+						new RecordStoreNotOpenException("DC0b");
+					t.initCause(e);
+					throw t;
+				}
+			
+			// Return array size
+			return pages.length;
+		}
+	}
+	
+	/**
 	 * Returns a copy of the data which is stored in the given record.
 	 *
 	 * @param __id The ID of the record to get.

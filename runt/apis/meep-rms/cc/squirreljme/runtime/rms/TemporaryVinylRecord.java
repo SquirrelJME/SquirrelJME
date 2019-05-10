@@ -75,6 +75,29 @@ public final class TemporaryVinylRecord
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2019/04/15
+	 */
+	@Override
+	public final int[] pageList(int __vid)
+	{
+		// Locate the volume
+		Volume vol = this._volumes.get(__vid);
+		if (vol == null)
+			return new int[]{ERROR_NO_VOLUME};
+		
+		// Get page IDs
+		Set<Integer> keys = vol._pages.keySet();
+		int n = keys.size(),
+			i = 0;
+		int[] rv = new int[n];
+		for (Integer v : keys)
+			rv[i++] = v;
+		
+		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2019/05/01
 	 */
 	@Override
