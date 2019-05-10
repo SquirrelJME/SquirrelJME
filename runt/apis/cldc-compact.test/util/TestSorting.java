@@ -26,6 +26,10 @@ import net.multiphasicapps.tac.TestRunnable;
 public class TestSorting
 	extends TestRunnable
 {
+	/** Random seed. */
+	public static final int SEED =
+		123456789;
+	
 	/** The number of elements to sort through. */
 	private static final int[] _COUNTS =
 		new int[]{1, 2, 3, 4, 8, 13, 26};
@@ -37,14 +41,15 @@ public class TestSorting
 	@Override
 	public void test()
 	{
-		Random rand = new Random(123456789);
-		
 		for (int c = 0, cn = _COUNTS.length; c < cn; c++)
 		{
+			Random rand;
+			
 			int count = _COUNTS[c];
 			String cid = String.format("%02d", count);
 		
 			// Byte
+			rand = new Random(SEED);
 			byte[] ab = new byte[count];
 			for (int i = 0; i < count; i++)
 				ab[i] = (byte)rand.nextInt();
@@ -52,6 +57,7 @@ public class TestSorting
 			this.secondary("arraybyte" + cid, ab);
 			
 			// Short
+			rand = new Random(SEED);
 			short[] as = new short[count];
 			for (int i = 0; i < count; i++)
 				as[i] = (short)rand.nextInt();
@@ -59,6 +65,7 @@ public class TestSorting
 			this.secondary("arrayshort" + cid, as);
 			
 			// Char
+			rand = new Random(SEED);
 			char[] ac = new char[count];
 			for (int i = 0; i < count; i++)
 				ac[i] = (char)rand.nextInt();
@@ -66,6 +73,7 @@ public class TestSorting
 			this.secondary("arraychar" + cid, ac);
 			
 			// Integer
+			rand = new Random(SEED);
 			int[] ai = new int[count];
 			for (int i = 0; i < count; i++)
 				ai[i] = rand.nextInt();
@@ -73,6 +81,7 @@ public class TestSorting
 			this.secondary("arrayint" + cid, ai);
 			
 			// Object (just integers)
+			rand = new Random(SEED);
 			Integer[] ao = new Integer[count];
 			for (int i = 0; i < count; i++)
 				ao[i] = rand.nextInt();
@@ -80,6 +89,7 @@ public class TestSorting
 			this.secondary("arrayobject" + cid, ao);
 			
 			// Array List
+			rand = new Random(SEED);
 			List<Integer> la = new ArrayList<>(count);
 			for (int i = 0; i < count; i++)
 				la.add(rand.nextInt());
@@ -88,6 +98,7 @@ public class TestSorting
 				la.<Integer>toArray(new Integer[count]));
 			
 			// Linked List
+			rand = new Random(SEED);
 			List<Integer> ll = new LinkedList<>();
 			for (int i = 0; i < count; i++)
 				ll.add(rand.nextInt());

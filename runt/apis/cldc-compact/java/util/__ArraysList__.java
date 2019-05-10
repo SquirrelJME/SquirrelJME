@@ -59,6 +59,19 @@ final class __ArraysList__<T>
 	 * @since 2016/08/31
 	 */
 	@Override
+	public T set(int __i, T __v)
+	{
+		T[] wrapped = this._wrapped;
+		T rv = wrapped[__i];
+		wrapped[__i] = __v;
+		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2016/08/31
+	 */
+	@Override
 	public int size()
 	{
 		return this.length;

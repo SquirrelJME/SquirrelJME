@@ -65,7 +65,7 @@ public class ShellSort
 		
 		// If the list is not random access, then there will be a great
 		// penalty sorting it and this may result in quadratic performance loss
-		if (!(__a instanceof RandomAccess))
+		if (false && !(__a instanceof RandomAccess))
 		{
 			// Setup duplicate
 			List<T> dup = new ArrayList<>(n);
