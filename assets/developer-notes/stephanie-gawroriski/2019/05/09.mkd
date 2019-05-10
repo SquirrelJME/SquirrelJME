@@ -1,0 +1,5 @@
+# 2019/05/09
+
+## 08:23
+
+Just refactoring the test code to make it much cleaner and nicer.
