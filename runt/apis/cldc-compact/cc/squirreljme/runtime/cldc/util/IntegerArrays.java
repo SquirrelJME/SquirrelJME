@@ -140,14 +140,19 @@ public final class IntegerArrays
 	 * @param __a The array to sort.
 	 * @param __from The source array.
 	 * @param __to The destination array.
+	 * @throws ArrayIndexOutOfBoundsException If the length is negative.
 	 * @since 2018/10/28
 	 */
 	private static void __sort(IntegerArray __a, int __from, int __to)
 	{
 		// Pointless sort?
 		int len = __to - __from;
-		if (len <= 1)
+		if (len == 0 || len == 1)
 			return;
+		
+		// {@squirreljme.error ZZ48 Sort length cannot be negative.}
+		if (len < 0)
+			throw new ArrayIndexOutOfBoundsException("ZZ48");
 		
 		// Determine the left and right sides
 		int lf = __from,
@@ -157,6 +162,15 @@ public final class IntegerArrays
 		// Sort both halves of the array
 		IntegerArrays.__sort(__a, lf, lp);
 		IntegerArrays.__sort(__a, lp, lt);
+		
+		// There are only two entries, so they can be swapped
+		if (len == 2)
+		{
+			int a = __a.get(lf),
+				b = __a.get(lt);
+			
+			throw new todo.TODO();
+		}
 		
 		// Merge elements from both sides in
 		for (int at = __from, pl = lf, pr = lp;;)
