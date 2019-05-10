@@ -22,8 +22,8 @@ public class TestSorting
 	extends TestRunnable
 {
 	/** The number of elements to sort through. */
-	public static final int COUNT =
-		27;
+	private static final int[] _COUNTS =
+		new int[]{1, 2, 3, 4, 8, 13, 26};
 	
 	/**
 	 * {@inheritDoc}
@@ -34,33 +34,39 @@ public class TestSorting
 	{
 		Random rand = new Random(123456789);
 		
-		// Byte
-		byte[] ab = new byte[COUNT];
-		for (int i = 0; i < COUNT; i++)
-			ab[i] = (byte)rand.nextInt();
-		Arrays.sort(ab);
-		this.secondary("byte", ab);
+		for (int c = 0, cn = _COUNTS.length; c < cn; c++)
+		{
+			int count = _COUNTS[c];
+			String cid = String.format("%02d", count);
 		
-		// Short
-		short[] as = new short[COUNT];
-		for (int i = 0; i < COUNT; i++)
-			as[i] = (short)rand.nextInt();
-		Arrays.sort(as);
-		this.secondary("short", as);
-		
-		// Char
-		char[] ac = new char[COUNT];
-		for (int i = 0; i < COUNT; i++)
-			ac[i] = (char)rand.nextInt();
-		Arrays.sort(ac);
-		this.secondary("char", ac);
-		
-		// Integer
-		int[] ai = new int[COUNT];
-		for (int i = 0; i < COUNT; i++)
-			ai[i] = rand.nextInt();
-		Arrays.sort(ai);
-		this.secondary("int", ai);
+			// Byte
+			byte[] ab = new byte[count];
+			for (int i = 0; i < count; i++)
+				ab[i] = (byte)rand.nextInt();
+			Arrays.sort(ab);
+			this.secondary("byte" + cid, ab);
+			
+			// Short
+			short[] as = new short[count];
+			for (int i = 0; i < count; i++)
+				as[i] = (short)rand.nextInt();
+			Arrays.sort(as);
+			this.secondary("short" + cid, as);
+			
+			// Char
+			char[] ac = new char[count];
+			for (int i = 0; i < count; i++)
+				ac[i] = (char)rand.nextInt();
+			Arrays.sort(ac);
+			this.secondary("char" + cid, ac);
+			
+			// Integer
+			int[] ai = new int[count];
+			for (int i = 0; i < count; i++)
+				ai[i] = rand.nextInt();
+			Arrays.sort(ai);
+			this.secondary("int" + cid, ai);
+		}
 	}
 }
 
