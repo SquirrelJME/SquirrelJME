@@ -1212,7 +1212,22 @@ public class Arrays
 		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
 			NullPointerException
 	{
-		Collections.<T>__sort(Arrays.<T>asList(__a), __from, __to, __comp);
+		// The thrown exception may need to be remapped
+		try
+		{
+			Collections.<T>__sort(Arrays.<T>asList(__a), __from, __to, __comp);
+		}
+		
+		// {@squirreljme.error ZZ47 Out of bounds access when sorting array.}
+		catch (IndexOutOfBoundsException e)
+		{
+			if (e instanceof ArrayIndexOutOfBoundsException)
+				throw e;
+			
+			RuntimeException t = new ArrayIndexOutOfBoundsException("ZZ47");
+			t.initCause(e);
+			throw t;
+		}
 	}
 }
 

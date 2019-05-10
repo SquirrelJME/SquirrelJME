@@ -157,7 +157,7 @@ public class Collections
 	 * @param __from The from index.
 	 * @param __to The to index.
 	 * @param __comp The comparator to use.
-	 * @throws ArrayIndexOutOfBoundsException If the from or to index are
+	 * @throws IndexOutOfBoundsException If the from or to index are
 	 * outside of bounds.
 	 * @throws IllegalArgumentException If the from address is greater than
 	 * the to address.
@@ -166,7 +166,7 @@ public class Collections
 	 */
 	static <T> void __sort(List<T> __a,
 		int __from, int __to, Comparator<? super T> __comp)
-		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
+		throws IndexOutOfBoundsException, IllegalArgumentException,
 			NullPointerException
 	{
 		throw new todo.TODO();
