@@ -60,6 +60,16 @@ public interface VinylRecord
 		throws IndexOutOfBoundsException, NullPointerException;
 	
 	/**
+	 * Returns the list of pages in the volume.
+	 *
+	 * @param __vid The volume ID.
+	 * @return The list of records, if the volume is not valid then
+	 * the first entry will be the error code.
+	 * @since 2019/04/15
+	 */
+	public abstract int[] pageList(int __vid);
+	
+	/**
 	 * Returns the size of the given page.
 	 *
 	 * @param __vid The volume ID.
