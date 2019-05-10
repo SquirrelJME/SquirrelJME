@@ -10,6 +10,8 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.util.ShellSort;
+
 public class Collections
 {
 	private Collections()
@@ -135,39 +137,42 @@ public class Collections
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Sorts the specified list.
+	 *
+	 * @param <T> The type of values to sort.
+	 * @param __a The list to sort.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/10
+	 */
 	public static <T extends Comparable<? super T>> void sort(List<T> __a)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
-	}
-	
-	public static <T> void sort(List<T> __a, Comparator<? super T> __b)
-	{
-		throw new todo.TODO();
-	}
-	
-	public static void swap(List<?> __a, int __b, int __c)
-	{
-		throw new todo.TODO();
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
+		ShellSort.<T>sort(__a, 0, __a.size(), null);
 	}
 	
 	/**
-	 * Sorts the specified collection.
+	 * Sorts the specified list.
 	 *
-	 * @param __a The collection to sort.
-	 * @param __from The from index.
-	 * @param __to The to index.
+	 * @param <T> The type of values to sort.
+	 * @param __a The list to sort.
 	 * @param __comp The comparator to use.
-	 * @throws IndexOutOfBoundsException If the from or to index are
-	 * outside of bounds.
-	 * @throws IllegalArgumentException If the from address is greater than
-	 * the to address.
-	 * @throws NullPointerException If no collection was specified.
-	 * @since 2019/05/09
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/10
 	 */
-	static <T> void __sort(List<T> __a,
-		int __from, int __to, Comparator<? super T> __comp)
-		throws IndexOutOfBoundsException, IllegalArgumentException,
-			NullPointerException
+	public static <T> void sort(List<T> __a, Comparator<? super T> __comp)
+		throws NullPointerException
+	{
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
+		ShellSort.<T>sort(__a, 0, __a.size(), __comp);
+	}
+	
+	public static void swap(List<?> __a, int __b, int __c)
 	{
 		throw new todo.TODO();
 	}
