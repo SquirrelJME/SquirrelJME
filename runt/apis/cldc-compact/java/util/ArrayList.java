@@ -66,9 +66,26 @@ public class ArrayList<E>
 		this._elements = (E[])new Object[__cap];
 	}
 	
-	public ArrayList(Collection<? extends E> __a)
+	/**
+	 * Initializes a list which has all the elements of the given collection
+	 * in its iteration order.
+	 *
+	 * @param __o The other collection.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/10
+	 */
+	@SuppressWarnings({"unchecked"})
+	public ArrayList(Collection<? extends E> __o)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__o == null)
+			throw new NullPointerException("NARG");
+		
+		// Initial capacity is the size of the other collection
+		this._elements = (E[])new Object[__o.size()];
+		
+		// And then add everything
+		this.addAll(__o);
 	}
 	
 	/**
@@ -201,10 +218,27 @@ public class ArrayList<E>
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/10
+	 */
 	@Override
-	public E set(int __a, E __b)
+	public E set(int __i, E __v)
 	{
-		throw new todo.TODO();
+		// Out of bounds?
+		int size = this._size;
+		if (__i < 0 || __i >= size)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Read old value
+		E[] elements = this._elements;
+		E rv = elements[__i];
+		
+		// Set new value
+		elements[__i] = __v;
+		
+		// Return old
+		return rv;
 	}
 	
 	/**

@@ -64,9 +64,14 @@ public final class Integer
 		throw new todo.TODO();
 	}
 	
-	public int compareTo(Integer __a)
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/10
+	 */
+	@Override
+	public int compareTo(Integer __b)
 	{
-		throw new todo.TODO();
+		return this._value - __b._value;
 	}
 	
 	@Override

@@ -16,6 +16,7 @@ import cc.squirreljme.runtime.cldc.util.CharacterIntegerArray;
 import cc.squirreljme.runtime.cldc.util.IntegerArray;
 import cc.squirreljme.runtime.cldc.util.IntegerArrays;
 import cc.squirreljme.runtime.cldc.util.IntegerIntegerArray;
+import cc.squirreljme.runtime.cldc.util.ShellSort;
 import cc.squirreljme.runtime.cldc.util.ShortIntegerArray;
 
 /**
@@ -1212,10 +1213,13 @@ public class Arrays
 		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
 			NullPointerException
 	{
+		if (__a == null)
+			throw new NullPointerException("NARG");
+		
 		// The thrown exception may need to be remapped
 		try
 		{
-			Collections.<T>__sort(Arrays.<T>asList(__a), __from, __to, __comp);
+			ShellSort.<T>sort(Arrays.<T>asList(__a), __from, __to, __comp);
 		}
 		
 		// {@squirreljme.error ZZ47 Out of bounds access when sorting array.}

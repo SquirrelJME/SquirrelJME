@@ -130,29 +130,10 @@ public final class IntegerArrays
 		if (__from > __to)
 			throw new IllegalArgumentException("IOOB");
 		
-		// Call sort
-		IntegerArrays.__sort(__a, __from, __to);
-	}
-	
-	/**
-	 * Sorts the specified array, this is unchecked.
-	 *
-	 * @param __a The array to sort.
-	 * @param __from The source array.
-	 * @param __to The destination array.
-	 * @throws ArrayIndexOutOfBoundsException If the length is negative.
-	 * @since 2018/10/28
-	 */
-	private static void __sort(IntegerArray __a, int __from, int __to)
-	{
 		// Pointless sort?
 		int n = __to - __from;
 		if (n == 0 || n == 1)
 			return;
-		
-		// {@squirreljme.error ZZ48 Sort length cannot be negative.}
-		if (n < 0)
-			throw new ArrayIndexOutOfBoundsException("ZZ48");
 		
 		// If only two values are being sorted, it is a simple swap check
 		if (n == 2)
@@ -182,15 +163,16 @@ public final class IntegerArrays
 			for (int i = gap; i < n; i++)
 			{
 				// Use this to make a hole
-				int temp = __a.get(i);
+				int temp = __a.get(__from + i);
 				
 				// Shift earlier gap elements down
 				int j;
-				for (j = i; j >= gap && __a.get(j - gap) > temp; j -= gap)
-					__a.set(j, __a.get(j - gap));
+				for (j = i; j >= gap &&
+						__a.get(__from + (j - gap)) > temp; j -= gap)
+					__a.set(__from + j, __a.get(__from + (j - gap)));
 				
 				// Put in the correct position
-				__a.set(j, temp);
+				__a.set(__from + j, temp);
 			}
 		}
 	}
