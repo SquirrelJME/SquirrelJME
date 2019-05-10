@@ -65,7 +65,7 @@ public class ShellSort
 		
 		// If the list is not random access, then there will be a great
 		// penalty sorting it and this may result in quadratic performance loss
-		if (false && !(__a instanceof RandomAccess))
+		if (!(__a instanceof RandomAccess))
 		{
 			// Setup duplicate
 			List<T> dup = new ArrayList<>(n);
@@ -73,7 +73,7 @@ public class ShellSort
 			// Copy values using source iterator (less CPU intensive)
 			ListIterator<T> it = __a.listIterator(__from);
 			for (int o = 0; o < n; o++)
-				dup.set(o, it.next());
+				dup.add(it.next());
 			
 			// Sort this array
 			ShellSort.<T>sort(dup, 0, n, __comp);
@@ -82,8 +82,8 @@ public class ShellSort
 			// setting all the values in it
 			for (int i = n - 1; i >= 0; i--)
 			{
-				it.set(dup.get(i));
 				it.previous();
+				it.set(dup.get(i));
 			}
 			
 			// Stop

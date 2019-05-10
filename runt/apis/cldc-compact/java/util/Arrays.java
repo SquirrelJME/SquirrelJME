@@ -1147,7 +1147,7 @@ public class Arrays
 		if (__a == null)
 			throw new NullPointerException("NARG");	
 		
-		Arrays.sort(__a, 0, __a.length, null);
+		Arrays.<Object>sort(__a, 0, __a.length, null);
 	}
 	
 	/**
@@ -1167,7 +1167,7 @@ public class Arrays
 		throws ArrayIndexOutOfBoundsException, IllegalArgumentException,
 			NullPointerException
 	{
-		Arrays.sort(__a, __from, __to, null);
+		Arrays.<Object>sort(__a, __from, __to, null);
 	}
 	
 	/**
@@ -1191,7 +1191,7 @@ public class Arrays
 		if (__a == null)
 			throw new NullPointerException("NARG");
 		
-		Arrays.sort(__a, 0, __a.length, __comp);
+		Arrays.<T>sort(__a, 0, __a.length, __comp);
 	}
 	
 	/**
