@@ -71,7 +71,15 @@ public final class Integer
 	@Override
 	public int compareTo(Integer __b)
 	{
-		return this._value - __b._value;
+		int a = this._value,
+			b = __b._value;
+			
+		if (a == b)
+			return 0;
+		else if (a < b)
+			return -1;
+		else
+			return 1;
 	}
 	
 	@Override
