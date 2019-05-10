@@ -123,7 +123,7 @@ public class ShellSort
 				// Shift earlier gap elements down
 				int j;
 				for (j = i; j >= gap && __comp.compare(
-						__a.get(__from + (j - gap)), temp) > 0; j -= gap)
+					__a.get(__from + (j - gap)), temp) > 0; j -= gap)
 					__a.set(__from + j, __a.get(__from + (j - gap)));
 				
 				// Put in the correct position
