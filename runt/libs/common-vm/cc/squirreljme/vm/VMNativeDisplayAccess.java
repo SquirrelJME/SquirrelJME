@@ -344,9 +344,8 @@ public class VMNativeDisplayAccess
 		VMCanvas canvas = this._canvas;
 		if (canvas == null)
 		{
-			// Display this canvas
+			// Setup canvas to use
 			this._canvas = (canvas = new VMCanvas());
-			this._usedisplay.setCurrent(canvas);
 			
 			// Listener for function commands
 			canvas.setCommandListener(new __CommandListener__());
@@ -368,6 +367,9 @@ public class VMNativeDisplayAccess
 			// if the client has this done with a false, then the client will
 			// clear the framebuffer while drawing over it.
 			canvas.setPaintMode(true);
+			
+			// Display the canvas now that all the properties are known
+			this.__display().setCurrent(canvas);
 		}
 		
 		// Properties have changed? Recreate the buffer data
