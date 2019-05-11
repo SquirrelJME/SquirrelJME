@@ -616,7 +616,7 @@ public class LinkedList<E>
 			
 			// We are at the head node, do nothing
 			__Link__<E> next = this._next;
-			if (next == LinkedList.this._head)
+			if (next._prev == LinkedList.this._head)
 				throw new NoSuchElementException("NSEE");
 			
 			// Move to previous
