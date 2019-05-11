@@ -401,8 +401,9 @@ public class PNGReader
 			(colortype == 4 ? 2 :
 			(colortype == 6 ? 4 : 1))));
 		
-		// Scan length
-		this._scanlen = (width * channels * bitdepth) / 8;
+		// Scan length, 7 extra bits are added for any needed padding if there
+		// is any
+		this._scanlen = ((width * channels * bitdepth) + 7) / 8;
 		
 		// {@squirreljme.error EB10 Only deflate compressed PNG images are
 		// supported. (The compression method)}
@@ -637,10 +638,13 @@ public class PNGReader
 			
 			// At the start of every scanline is the filter type, which
 			// describes how the data should be treated
-			// {@squirreljme.error EB34 Unknown filter type. (The type)}
+			// {@squirreljme.error EB34 Unknown filter type. (The type; The
+			// scanline base coordinate; The scan line length; Image size)}
 			int type = __in.read();
 			if (type < 0 || type > 4)
-				throw new IOException("EB34 " + type);
+				throw new IOException(String.format(
+					"EB34 %d (%d, %d) %d [%d, %d]",
+					type, 0, dy, scanlen, this._width, height));
 			
 			// Go through each byte in the scanline
 			for (int dx = 0; dx < scanlen; dx++)
