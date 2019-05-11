@@ -369,7 +369,7 @@ public final class CallTraceElement
 					
 					// Write instruction
 					if (hasjbcinst)
-						sb.append(Integer.toString(jbcinst, 16));
+						sb.append(jbcinst);
 					
 					// Write address of Java operation
 					if (hasjbcaddr)
