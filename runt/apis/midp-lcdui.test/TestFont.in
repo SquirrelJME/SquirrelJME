@@ -1,12 +1,12 @@
 result: NoResult
 thrown: NoExceptionThrown
-secondary-monospace-16-_sqf: true
-secondary-monospace-12-_sqf: true
-secondary-monospace-8-_sqf: true
-secondary-sansserif-16-_sqf: true
-secondary-sansserif-12-_sqf: true
-secondary-sansserif-8-_sqf: true
-secondary-serif-16-_sqf: true
-secondary-serif-12-_sqf: true
-secondary-serif-8-_sqf: true
+secondary-monospace--16-dsqf: true
+secondary-monospace--12-dsqf: true
+secondary-monospace--8-dsqf: true
+secondary-sansserif--16-dsqf: true
+secondary-sansserif--12-dsqf: true
+secondary-sansserif--8-dsqf: true
+secondary-serif--16-dsqf: true
+secondary-serif--12-dsqf: true
+secondary-serif--8-dsqf: true
 
