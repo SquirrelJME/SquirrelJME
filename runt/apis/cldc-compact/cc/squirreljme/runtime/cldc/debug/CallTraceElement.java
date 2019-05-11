@@ -49,6 +49,12 @@ public final class CallTraceElement
 	/** String representation. */
 	private Reference<String> _string;
 	
+	/** At line form. */
+	private Reference<String> _stringatl;
+	
+	/** Class header form. */
+	private Reference<String> _stringclh;
+	
 	/** Hash code. */
 	private int _hash;
 	
@@ -281,6 +287,151 @@ public final class CallTraceElement
 	public final String methodName()
 	{
 		return this.methodname;
+	}
+	
+	/**
+	 * Formats the call trace element but having it only represent the method
+	 * point without the class information.
+	 *
+	 * @return The at line string.
+	 * @since 2019/05/11
+	 */
+	public final String toAtLineString()
+	{
+		Reference<String> ref = this._stringatl;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+		{
+			// Get all fields to determine how to print it pretty
+			String methodname = this.methodname,
+				methoddescriptor = this.methoddescriptor;
+			long address = this.address;
+			int line = this.line;
+			int jbcinst = this.jbcinst & 0xFF;
+			int jbcaddr = this.jbcaddr;
+			
+			// Format it nicely
+			StringBuilder sb = new StringBuilder();
+			
+			// Method name
+			sb.append('.');
+			sb.append((methodname == null ? "<unknown>" : methodname));
+			
+			// Method type
+			if (methoddescriptor != null)
+			{
+				sb.append(':');
+				sb.append(methoddescriptor);
+			}
+			
+			// Execution address
+			if (address != Long.MIN_VALUE)
+			{
+				sb.append(" @");
+				
+				// If the address is really high then it is very likely that
+				// this is some RAM/ROM address rather than some easily read
+				// index. This makes them more readable and understandable
+				if (address > 4096)
+				{
+					sb.append(Long.toString(address, 16).toUpperCase());
+					sb.append('h');
+				}
+				
+				// Otherwise use an index
+				else
+					sb.append(address);
+			}
+			
+			// File, Line, and/or Java instruction/address
+			boolean hasline = (line >= 0),
+				hasjbcinst = (jbcinst != 0xFF),
+				hasjbcaddr = (jbcaddr >= 0);
+			if (hasline || hasjbcinst || hasjbcaddr)
+			{
+				sb.append(" (");
+				
+				// Line
+				boolean sp = false;
+				if ((sp |= hasline))
+				{
+					sb.append(':');
+					sb.append(line);
+				}
+				
+				// Java instruction info
+				if (hasjbcinst || hasjbcaddr)
+				{
+					// Using space?
+					if (sp)
+						sb.append(' ');
+					
+					// Used to indicate Java specific stuff
+					sb.append('J');
+					
+					// Write instruction
+					if (hasjbcinst)
+						sb.append(jbcinst);
+					
+					// Write address of Java operation
+					if (hasjbcaddr)
+					{
+						sb.append('@');
+						sb.append(jbcaddr);
+					}
+				}
+				
+				sb.append(')');
+			}
+			
+			this._stringatl = new WeakReference<>((rv = sb.toString()));
+		}
+		
+		return rv;
+	}
+	
+	/**
+	 * Formats the call trace element but having it only represent the class.
+	 *
+	 * @return The class header string.
+	 * @since 2019/05/11
+	 */
+	public final String toClassHeaderString()
+	{
+		Reference<String> ref = this._stringclh;
+		String rv;
+		
+		if (ref == null || null == (rv = ref.get()))
+		{
+			// Get all fields to determine how to print it pretty
+			String classname = this.classname,
+				file = this.file;
+			
+			// Format it nicely
+			StringBuilder sb = new StringBuilder();
+			
+			// Class name
+			sb.append((classname == null ? "<unknown>" : classname));
+			
+			// Is this in a file?
+			boolean hasfile = (file != null);
+			if (hasfile)
+			{
+				sb.append(" (");
+				
+				// File
+				boolean sp = false;
+				if ((sp |= hasfile))
+					sb.append(file);
+				
+				sb.append(')');
+			}
+			
+			this._stringclh = new WeakReference<>((rv = sb.toString()));
+		}
+		
+		return rv;
 	}
 	
 	/**
