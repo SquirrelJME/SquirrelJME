@@ -15,16 +15,24 @@ import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
+/**
+ * This represents a boxed {@code int} value.
+ *
+ * @since 2019/05/11
+ */
 public final class Integer
 	extends Number
 	implements Comparable<Integer>
 {
+	/** The maximum value. */
 	public static final int MAX_VALUE =
 		2147483647;
 	
+	/** The minimum value. */
 	public static final int MIN_VALUE =
 		-2147483648;
 	
+	/** The number of bits this uses. */
 	public static final int SIZE =
 		32;
 	
@@ -49,19 +57,32 @@ public final class Integer
 		this._value = __v;
 	}
 	
-	public Integer(String __a)
-		throws NumberFormatException
+	/**
+	 * Parses the given string and initializes the integer value, it is
+	 * parsed the same as {@code Integer.parseInt(__v, 10)}.
+	 *
+	 * @param __v The value to parse.
+	 * @throws NullPointerException On null arguments.
+	 * @throws NumberFormatException If the number is not valid.
+	 * @since 2019/05/11
+	 */
+	public Integer(String __v)
+		throws NullPointerException, NumberFormatException
 	{
-		super();
-		if (false)
-			throw new NumberFormatException();
-		throw new todo.TODO();
+		if (__v == null)
+			throw new NullPointerException("NARG");
+		
+		this._value = Integer.parseInt(__v, 10);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/11
+	 */
 	@Override
 	public byte byteValue()
 	{
-		throw new todo.TODO();
+		return (byte)this._value;
 	}
 	
 	/**
@@ -82,10 +103,14 @@ public final class Integer
 			return 1;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/11
+	 */
 	@Override
 	public double doubleValue()
 	{
-		throw new todo.TODO();
+		return (double)this._value;
 	}
 	
 	/**
@@ -104,10 +129,14 @@ public final class Integer
 		return this._value == ((Integer)__o)._value;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/11
+	 */
 	@Override
 	public float floatValue()
 	{
-		throw new todo.TODO();
+		return (float)this._value;
 	}
 	
 	/**
@@ -140,10 +169,14 @@ public final class Integer
 		return this._value;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/11
+	 */
 	@Override
 	public short shortValue()
 	{
-		throw new todo.TODO();
+		return (short)this._value;
 	}
 	
 	/**
@@ -484,9 +517,23 @@ public final class Integer
 		throw new todo.TODO();
 	}
 	
-	public static int signum(int __a)
+	/**
+	 * Returns the sign of the given integer value, this will be {@code -1}
+	 * for negative values, {@code 0} for zero, and {@code 1} for positive
+	 * values.
+	 *
+	 * @param __v The value to get the sign for.
+	 * @return The sign of the given value.
+	 * @since 2019/05/11
+	 */
+	public static int signum(int __v)
 	{
-		throw new todo.TODO();
+		if (__v < 0)
+			return -1;
+		else if (__v > 1)
+			return 1;
+		else
+			return 0;
 	}
 	
 	public static String toBinaryString(int __a)
