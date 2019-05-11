@@ -402,7 +402,7 @@ public class PNGReader
 			(colortype == 6 ? 4 : 1))));
 		
 		// Scan length
-		this._scanlen = width * ((channels * bitdepth) / 8);
+		this._scanlen = (width * channels * bitdepth) / 8;
 		
 		// {@squirreljme.error EB10 Only deflate compressed PNG images are
 		// supported. (The compression method)}
