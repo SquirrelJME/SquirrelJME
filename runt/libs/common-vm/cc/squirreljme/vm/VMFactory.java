@@ -188,6 +188,11 @@ public abstract class VMFactory
 			throw new VMException("AK05", e);
 		}
 		
+		// Print them out for debug
+		System.err.println("Entry points:");
+		for (int i = 0, n = entries.size(); i < n; i++)
+			System.err.printf("    %d: %s%n", i, entries.get(i));
+		
 		// If a class was specified and not a boot ID, we must search through
 		// the boot JAR's (the last one) entry points for a match
 		if (__bootid < 0)
