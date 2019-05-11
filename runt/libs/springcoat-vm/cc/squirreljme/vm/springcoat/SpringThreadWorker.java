@@ -1574,7 +1574,7 @@ public final class SpringThreadWorker
 				return false;
 				
 				// Returns the number of bytes available in the resource.
-			case "cc/squirreljme/runtime/clcdc/asm/ResourceAccess::" +
+			case "cc/squirreljme/runtime/cldc/asm/ResourceAccess::" +
 				"available:(I)I":
 				return this.machine.resourceAccess().available(
 					(Integer)__args[0]);
