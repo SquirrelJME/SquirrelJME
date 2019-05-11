@@ -58,6 +58,13 @@ public class TestLinkedHashSet
 		// Mark expected value
 		this.secondary("intotal", intotal);
 		
+		// Go through and re-add the same values which should result in the
+		// same order
+		rand = new Random(KEY);
+		for (int i = 0; i < COUNT; i++)
+			if (links.add(rand.nextInt()))
+				this.secondary("readd" + i, true);
+		
 		// Go through iterator and match
 		rand = new Random(KEY);
 		int ittotal = 0;
