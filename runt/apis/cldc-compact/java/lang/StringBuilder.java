@@ -673,19 +673,62 @@ public final class StringBuilder
 		this._at = __nl;
 	}
 	
-	public CharSequence subSequence(int __a, int __b)
+	/**
+	 * Invokes {@code this.substring(__s, __e)}.
+	 *
+	 * @param __s The start.
+	 * @param __e The end.
+	 * @return The sub-sequence.
+	 * @throws IndexOutOfBoundsException If the index is out of bounds.
+	 * @since 2019/05/11
+	 */
+	public CharSequence subSequence(int __s, int __e)
+		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		return this.substring(__s, __e);
 	}
 	
-	public String substring(int __a)
+	/**
+	 * Returns a string which is a substring of the given portion of the
+	 * string.
+	 *
+	 * @param __s The start.
+	 * @return The resulting sub-string.
+	 * @throws StringIndexOutOfBoundsException If the specified positions
+	 * are not within the string bounds.
+	 * @since 2019/05/11
+	 */
+	public String substring(int __s)
+		throws StringIndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		return this.substring(__s, this.length());
 	}
 	
-	public String substring(int __a, int __b)
+	/**
+	 * Returns a string which is a substring of the given portion of the
+	 * string.
+	 *
+	 * @param __s The start.
+	 * @param __e The end.
+	 * @return The resulting sub-string.
+	 * @throws StringIndexOutOfBoundsException If the specified positions
+	 * are not within the string bounds.
+	 * @since 2019/05/11
+	 */
+	public String substring(int __s, int __e)
+		throws StringIndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error ZZ48 String index out of bounds.}
+		int len = this._at;
+		if (__s < 0 || __e < 0 || __s > __e || __s > len || __e > len)
+			throw new StringIndexOutOfBoundsException("ZZ48");
+		
+		// Would be an empty string
+		if (__s == __e)
+			return "";
+		
+		// Build string and operate directly on the buffer
+		return new String(this._buffer, __s, __e - __s);
 	}
 	
 	/**
