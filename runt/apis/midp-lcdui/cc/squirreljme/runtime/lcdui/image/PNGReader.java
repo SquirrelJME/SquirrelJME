@@ -514,7 +514,9 @@ public class PNGReader
 			limit = width * height,
 			bitdepth = this._bitdepth,
 			bitmask = (1 << bitdepth) - 1,
-			numpals = (palette != null ? palette.length : 0);
+			numpals = (palette != null ? palette.length : 0),
+			hishift = (8 - bitdepth),
+			himask = bitmask << hishift;
 		
 		// Read of multiple bits
 		for (int o = 0;;)
@@ -525,8 +527,8 @@ public class PNGReader
 				break;
 			
 			// Handle each bit
-			for (int b = 0; b < 8 && o < limit; b += bitdepth, v >>>= bitdepth)
-				argb[o++] = palette[(v & bitmask) % numpals];
+			for (int b = 0; b < 8 && o < limit; b += bitdepth, v <<= bitdepth)
+				argb[o++] = palette[((v & himask) >>> hishift) % numpals];
 		}
 	}
 	
