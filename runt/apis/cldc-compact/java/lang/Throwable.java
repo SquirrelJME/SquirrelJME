@@ -33,7 +33,20 @@ import java.util.List;
 public class Throwable
 {
 	/** String ID for the throwable. */
-	private static final int _THROWABLE_ID_HI, _THROWABLE_ID_LO;
+	private static final int _THROWABLE_ID_HI,
+		_THROWABLE_ID_LO;
+	
+	/** Exception message. */
+	private static final int _TYPE_EXCEPTION =
+		0;
+	
+	/** Caused by message. */
+	private static final int _TYPE_CAUSED_BY =
+		1;
+	
+	/** Suppressed message. */
+	private static final int _TYPE_SUPPRESSED =
+		2;
 	
 	/** The message for this exception. */
 	private final String _message;
@@ -293,7 +306,7 @@ public class Throwable
 	 */
 	public void printStackTrace()
 	{
-		Throwable.__printStackTrace(this, System.err, 0);
+		Throwable.__printStackTrace(this, System.err, 0, _TYPE_EXCEPTION);
 	}
 	
 	/**
@@ -309,7 +322,7 @@ public class Throwable
 		if (__ps == null)
 			throw new NullPointerException("NARG");
 		
-		Throwable.__printStackTrace(this, __ps, 0);
+		Throwable.__printStackTrace(this, __ps, 0, _TYPE_EXCEPTION);
 	}
 	
 	/**
@@ -433,6 +446,32 @@ public class Throwable
 	}
 	
 	/**
+	 * Prints the indentation of the stack trace.
+	 *
+	 * @param __ps The stream to print to.
+	 * @param __indent The current indentation.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/11
+	 */
+	private static void __printStackIndent(PrintStream __ps, int __indent)
+		throws NullPointerException
+	{
+		if (__ps == null)
+			throw new NullPointerException("NARG");
+		
+		// Doing nothing
+		if (__indent == 0)
+			return;
+		
+		// Base space indent
+		__ps.print("  ");
+		
+		// Print bars for indentation level
+		for (int i = 0; i < __indent; i++)
+			__ps.print('|');
+	}
+	
+	/**
 	 * Prints the stack trace to the specified stream. This is internal so that
 	 * one stack printing does not call the other since it is not specified if
 	 * it actually does it.
@@ -440,11 +479,12 @@ public class Throwable
 	 * @param __t The throwable to print for.
 	 * @param __ps The stream to print to.
 	 * @param __indent The indentation level.
+	 * @param __type The string type to use for the message base.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/09/15
 	 */
 	private static void __printStackTrace(Throwable __t, PrintStream __ps,
-		int __indent)
+		int __indent, int __type)
 		throws NullPointerException
 	{
 		if (__t == null || __ps == null)
@@ -463,10 +503,32 @@ public class Throwable
 		// Resolve the stack trace so it is easier to work with
 		CallTraceElement[] stack = DebugAccess.resolveRawCallTrace(rawstack);
 		
-		// The first thing is the string representation of this throwable
+		// Indent and print exception type
+		Throwable.__printStackIndent(__ps, __indent);
+		switch (__type)
+		{
+			case _TYPE_CAUSED_BY:
+				__ps.print("> CAUSED BY ");
+				break;
+			
+			case _TYPE_SUPPRESSED:
+				__ps.print("> SUPPRESSED ");
+				break;
+			
+			case _TYPE_EXCEPTION:
+			default:
+				__ps.print("EXCEPTION ");
+				break;
+		}
+		
+		// Then the string representation of it, which may be replaced
 		__ps.println(__t.toString());
 		
+		// Increase indentation to get more bars
+		__indent++;
+		
 		// The first entry is the top of the stack so it gets printed first 
+		String wasclass = null;
 		for (int i = 0, n = stack.length; i < n; i++)
 		{
 			// Ignore any elements that may happen to be null
@@ -474,29 +536,36 @@ public class Throwable
 			if (e == null)
 				continue;
 			
-			// Add indentation
-			for (int p = 0; p <= __indent; p++)
-				__ps.print("  ");
+			// If the class changed, specify that it has
+			String nowclass = e.className();
+			if (!nowclass.equals(wasclass))
+			{
+				// Indent
+				Throwable.__printStackIndent(__ps, __indent);
+				
+				__ps.print(" IN ");
+				__ps.println(e.toClassHeaderString());
+				
+				// Changed
+				wasclass = nowclass;
+			}
 			
-			// Use string representation of the element
-			__ps.print("at ");
-			__ps.println(e.toString());
+			// Indent and print the at line
+			Throwable.__printStackIndent(__ps, __indent);
+			__ps.print("- ");
+			__ps.println(e.toAtLineString());
 		}
 		
 		// Print cause of the exception
 		Throwable cause = __t.getCause();
 		if (cause != null)
-		{
-			__ps.print("  Caused by:");
-			Throwable.__printStackTrace(cause, __ps, __indent + 1);
-		}
+			Throwable.__printStackTrace(cause, __ps, __indent,
+				_TYPE_CAUSED_BY);
 		
 		// Print suppressed exceptions
 		for (Throwable sup : __t.getSuppressed())
-		{
-			__ps.print("  Suppressed:");
-			Throwable.__printStackTrace(sup, __ps, __indent + 2);
-		}
+			Throwable.__printStackTrace(sup, __ps, __indent,
+				_TYPE_SUPPRESSED);
 	}
 }
 
