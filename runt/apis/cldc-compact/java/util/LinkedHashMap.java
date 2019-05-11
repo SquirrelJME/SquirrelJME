@@ -111,7 +111,7 @@ public class LinkedHashMap<K, V>
 		// Remove the eldest entry (which is the oldest/first item in the map)
 		__BucketMapEntry__<K, V> eldest = map._links.peekFirst();
 		if (eldest != null && this.removeEldestEntry(eldest))
-			map.remove(map.removeEntry(eldest.getKey(), false));
+			map.removeEntry(eldest.getKey(), false);
 		
 		// Return the former value
 		return rv;
