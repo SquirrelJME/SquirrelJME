@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.gcf;
 
 import cc.squirreljme.runtime.cldc.asm.SystemProperties;
 import java.io.IOException;
+import java.util.ServiceLoader;
 import javax.microedition.io.AccessPoint;
 import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.SocketConnection;
@@ -72,6 +73,15 @@ public abstract class IPConnectionFactory
 						IllegalAccessException e)
 					{
 						e.printStackTrace();
+					}
+				
+				// Use the first found service
+				if (rv == null)
+					for (IPConnectionFactory mb : ServiceLoader.
+						<IPConnectionFactory>load(IPConnectionFactory.class))
+					{
+						rv = mb;
+						break;
 					}
 				
 				// Fallback to no connection factory (IP not supported)
