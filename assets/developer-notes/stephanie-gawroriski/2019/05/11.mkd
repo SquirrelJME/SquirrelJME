@@ -1,0 +1,6 @@
+# 2019/05/11
+
+## 13:25
+
+Going to change the stack trace format to a bit more condensed and quite
+possibly more readible. Since it is quite messy and such.
