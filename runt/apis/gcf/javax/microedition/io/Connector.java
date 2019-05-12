@@ -13,6 +13,7 @@ package javax.microedition.io;
 import cc.squirreljme.runtime.gcf.HTTPAddress;
 import cc.squirreljme.runtime.gcf.HTTPClientConnection;
 import cc.squirreljme.runtime.gcf.IPAddress;
+import cc.squirreljme.runtime.gcf.IPConnectionFactory;
 import cc.squirreljme.runtime.gcf.TCPClientConnection;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -440,7 +441,8 @@ public class Connector
 					
 					// Creating client
 					else
-						return TCPClientConnection.connect(addr);
+						return IPConnectionFactory.factory().
+							tcpClientConnect(addr);
 				}
 				
 				// SSL/TLS TCP Socket

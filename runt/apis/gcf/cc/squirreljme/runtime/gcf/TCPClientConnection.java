@@ -23,7 +23,7 @@ import javax.microedition.io.SocketConnection;
  *
  * @since 2019/05/06
  */
-public final class TCPClientConnection
+public abstract class TCPClientConnection
 	implements SocketConnection
 {
 	/**
@@ -156,25 +156,6 @@ public final class TCPClientConnection
 		throws IllegalArgumentException, IOException
 	{
 		throw new todo.TODO();
-	}
-	
-	/**
-	 * Opens a client connection to the server.
-	 *
-	 * @param __addr The address to connect to.
-	 * @return The connection.
-	 * @throws ConnectionNotFoundException If the connection was not found.
-	 * @throws IOException On connection issues.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/05/06
-	 */
-	public static final TCPClientConnection connect(IPAddress __addr)
-		throws ConnectionNotFoundException, IOException, NullPointerException
-	{
-		if (__addr == null)
-			throw new NullPointerException("NARG");
-		
-		throw new ConnectionNotFoundException("TODO " + __addr);
 	}
 }
 
