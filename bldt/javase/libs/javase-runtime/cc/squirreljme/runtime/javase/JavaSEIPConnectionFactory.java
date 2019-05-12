@@ -14,6 +14,7 @@ import cc.squirreljme.runtime.gcf.IPConnectionFactory;
 import cc.squirreljme.runtime.gcf.TCPClientConnection;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.Socket;
 import java.net.UnknownHostException;
 import javax.microedition.io.AccessPoint;
 import javax.microedition.io.ConnectionNotFoundException;
@@ -67,7 +68,9 @@ public class JavaSEIPConnectionFactory
 		if (__addr == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		// Create and wrap socket
+		return new JavaSETCPClientConnection(__addr,
+			new Socket(__addr.hostname, __addr.port));
 	}
 }
 
