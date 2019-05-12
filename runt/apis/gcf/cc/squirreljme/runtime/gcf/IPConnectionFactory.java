@@ -28,6 +28,18 @@ public abstract class IPConnectionFactory
 	private static volatile IPConnectionFactory _FACTORY;
 	
 	/**
+	 * Resolves the specified IP address.
+	 *
+	 * @param __addr The IP address.
+	 * @throws ConnectionNotFoundException If the host was not found.
+	 * @throws IOException If the address could not resolved.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/12
+	 */
+	public abstract IPAddress resolveAddress(IPAddress __addr)
+		throws ConnectionNotFoundException, IOException, NullPointerException;
+	
+	/**
 	 * Opens a TCP client connection to the remote address.
 	 *
 	 * @param __addr The address to connect to.

@@ -441,8 +441,10 @@ public class Connector
 					
 					// Creating client
 					else
-						return IPConnectionFactory.factory().
-							tcpClientConnect(addr);
+					{
+						IPConnectionFactory pf = IPConnectionFactory.factory();
+						return pf.tcpClientConnect(pf.resolveAddress(addr));
+					}
 				}
 				
 				// SSL/TLS TCP Socket

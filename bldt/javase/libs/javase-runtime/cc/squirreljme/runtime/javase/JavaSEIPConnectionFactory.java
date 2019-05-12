@@ -7,21 +7,25 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.gcf;
+package cc.squirreljme.runtime.javase;
 
+import cc.squirreljme.runtime.gcf.IPAddress;
+import cc.squirreljme.runtime.gcf.IPConnectionFactory;
+import cc.squirreljme.runtime.gcf.TCPClientConnection;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import javax.microedition.io.AccessPoint;
 import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.SocketConnection;
 
 /**
- * This is a connection factory which does not support any IP based
- * connections. Any attempt to open any kind of connection will result in
- * a connection not being made.
+ * This is a connection factory for IP based connection which is built on top
+ * of Java SE's networking support.
  *
  * @since 2019/05/12
  */
-public final class NullIPConnectionFactory
+public class JavaSEIPConnectionFactory
 	extends IPConnectionFactory
 {
 	/**
@@ -32,8 +36,24 @@ public final class NullIPConnectionFactory
 	public final IPAddress resolveAddress(IPAddress __addr)
 		throws ConnectionNotFoundException, IOException, NullPointerException
 	{
-		// {@squirreljme.error EC0e Host name resolution not supported.}
-		throw new ConnectionNotFoundException("EC0e");
+		if (__addr == null)
+			throw new NullPointerException("NARG");
+		
+		// Try to resolve it
+		try
+		{
+			// Resolve and build new address
+			return new IPAddress(InetAddress.getByName(__addr.hostname).
+				getHostAddress(), __addr.port);
+		}
+		
+		// {@squirreljme.error AF0g Unknown host.}
+		catch (UnknownHostException e)
+		{
+			IOException t = new ConnectionNotFoundException("AF0g");
+			t.initCause(e);
+			throw t;
+		}
 	}
 	
 	/**
@@ -44,9 +64,10 @@ public final class NullIPConnectionFactory
 	public final TCPClientConnection tcpClientConnect(IPAddress __addr)
 		throws ConnectionNotFoundException, IOException, NullPointerException
 	{
-		// {@squirreljme.error EC0d TCP client connections are not
-		// supported.}
-		throw new ConnectionNotFoundException("EC0d");
+		if (__addr == null)
+			throw new NullPointerException("NARG");
+		
+		throw new todo.TODO();
 	}
 }
 
