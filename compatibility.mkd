@@ -16,14 +16,21 @@ buttons, mice, and touchscreen. Any secondary displays which are attached
 will not have events handled for them at all. This is to make it easier to
 implement.
 
-## `Reader`'s `lock` is initialized to `null` instead of `this`
+## Limited Network Interface Support
+
+The Generic Connection Framework (GCF) has API to provide access to various
+system interfaces, WiFi devices, 3GPP/CDMA (Mobile data), and dial-up
+connections. Since supporting all of these are complicated, support for these
+across systems will be limited to an as needed basis.
+
+## `Reader`'s `lock` Is `null`
 
 Since SquirrelJME uses a reference counted garbage collector the `Reader`'s
 `lock` object in the default constructor is set to `null` instead of `this`.
 This is so that readers do not remain in memory unable to be freed because
 objects still refer to them and such.
 
-## `SUPER` is always assumed to be set.
+## `SUPER` Is Always Set
 
 In all clases the `SUPER` flag is assumed to be set, this flag just modifies
 the behavior of `invokespecial`. When it is not set then that instruction
