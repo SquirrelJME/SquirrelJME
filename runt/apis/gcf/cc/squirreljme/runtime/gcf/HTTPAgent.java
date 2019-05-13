@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import javax.microedition.io.Connector;
 import javax.microedition.io.SocketConnection;
-import net.multiphasicapps.io.HexDumpOutputStream;
 
 /**
  * This class manages the HTTP connection data and is able to encode and
@@ -64,11 +63,6 @@ public final class HTTPAgent
 		if (__data == null)
 			throw new NullPointerException("NARG");
 		
-		// Debug
-		todo.DEBUG.note(">>> REQUEST:");
-		HexDumpOutputStream.dump(System.err, __data);
-		todo.DEBUG.note("<<<<<<<<<<<<");
-		
 		// Open connection to remote server
 		byte[] response;
 		try (SocketConnection socket = (SocketConnection)Connector.open(
@@ -113,11 +107,6 @@ public final class HTTPAgent
 			
 			throw e;
 		}
-		
-		// Read the input
-		todo.DEBUG.note(">>> RESPONSE:");
-		HexDumpOutputStream.dump(System.err, response);
-		todo.DEBUG.note("<<<<<<<<<<<<");
 		
 		// Parse the input
 		this._response = HTTPResponse.parse(response);
