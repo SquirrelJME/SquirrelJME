@@ -69,6 +69,9 @@ public final class TemporaryVinylRecord
 		Page page;
 		vol._pages.put(pid, (page = new Page(pid)));
 		
+		// Volume modified
+		vol._modcount++;
+		
 		// Store page data, will return the PID or error
 		return page.setData(__b, __o, __l, __tag);
 	}
@@ -160,6 +163,27 @@ public final class TemporaryVinylRecord
 	 * @since 2019/05/13
 	 */
 	@Override
+	public final int pageTag(int __vid, int __pid)
+	{
+		// Locate the volume
+		Volume vol = this._volumes.get(__vid);
+		if (vol == null)
+			return ERROR_NO_VOLUME;
+		
+		// Locate the page
+		Page page = vol._pages.get(__pid);
+		if (page == null)
+			return ERROR_NO_PAGE;
+		
+		// Return page tag
+		return page._tag;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/13
+	 */
+	@Override
 	public final int vinylSizeAvailable()
 	{
 		// This is technically limited by memory
@@ -206,6 +230,21 @@ public final class TemporaryVinylRecord
 			rv[at++] = v;
 		
 		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/13
+	 */
+	@Override
+	public final int volumeModCount(int __vid)
+	{
+		// Locate the volume
+		Volume vol = this._volumes.get(__vid);
+		if (vol == null)
+			return ERROR_NO_VOLUME;
+		
+		return vol._modcount;
 	}
 	
 	/**
@@ -348,6 +387,10 @@ public final class TemporaryVinylRecord
 		/** The next page ID. */
 		volatile int _nextpid =
 			1;
+		
+		/** Modification count. */
+		volatile int _modcount =
+			0;
 		
 		/**
 		 * Initializes the volume.
