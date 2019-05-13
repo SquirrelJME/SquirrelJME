@@ -32,12 +32,12 @@ public abstract class OutputStream
 	 * 0 and 255. If the byte exceeds that range, then it must take the low
 	 * order value and write that {@code __a & 0xFF}.
 	 *
-	 * @param __a The value the low order byte is derived from for output to
+	 * @param __b The value the low order byte is derived from for output to
 	 * this stream.
 	 * @throws IOException On write errors.
 	 * @since 2016/04/16
 	 */
-	public abstract void write(int __a)
+	public abstract void write(int __b)
 		throws IOException;
 	
 	/**
@@ -108,7 +108,7 @@ public abstract class OutputStream
 		// Check
 		if (__a == null)
 			throw new NullPointerException("NARG");
-		if (__o < 0 || __l < 0 || (__o + __l) >= __a.length)
+		if (__o < 0 || __l < 0 || (__o + __l) > __a.length)
 			throw new IndexOutOfBoundsException("IOOB");
 		
 		// Write all bytes
