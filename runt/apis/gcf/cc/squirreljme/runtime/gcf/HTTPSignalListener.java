@@ -10,11 +10,12 @@
 package cc.squirreljme.runtime.gcf;
 
 /**
- * This represents an HTTP request.
+ * This interface is used to signal changes in the HTTP state such as
+ * when a connection should be made.
  *
- * @since 2019/05/12
+ * @since 2019/05/13
  */
-final class __HTTPRequest__
+public interface HTTPSignalListener
 {
 }
 
