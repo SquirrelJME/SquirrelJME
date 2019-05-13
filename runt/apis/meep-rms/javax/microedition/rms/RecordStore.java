@@ -780,6 +780,26 @@ public class RecordStore
 	}
 	
 	/**
+	 * Lists the pages that exist within this record store.
+	 *
+	 * @return The page IDs.
+	 * @since 2019/05/13
+	 */
+	final int[] __listPages()
+		throws RecordStoreNotOpenException
+	{
+		// Check open
+		this.__checkOpen();
+		
+		// Lock
+		VinylRecord vinyl = _VINYL;
+		try (VinylLock lock = vinyl.lock())
+		{
+			return vinyl.pageList(this._vid);
+		}
+	}
+	
+	/**
 	 * Returns all of the listeners for this record store.
 	 *
 	 * @return The listeners.
