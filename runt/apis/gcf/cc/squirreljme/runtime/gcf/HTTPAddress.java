@@ -18,16 +18,16 @@ public final class HTTPAddress
 	implements SocketAddress
 {
 	/** The IP Address. */
-	protected final IPAddress ipaddr;
+	public final IPAddress ipaddr;
 	
 	/** The file. */
-	protected final FileAddress file;
+	public final FileAddress file;
 	
 	/** The query. */
-	protected final String query;
+	public final String query;
 	
 	/** The fragment. */
-	protected final String fragment;
+	public final String fragment;
 	
 	/**
 	 * Initializes the HTTP Address.
@@ -70,17 +70,6 @@ public final class HTTPAddress
 	public final int hashCode()
 	{
 		throw new todo.TODO();
-	}
-	
-	/**
-	 * Returns the IP address of this HTTP address.
-	 *
-	 * @return The IP Address.
-	 * @since 2019/05/06
-	 */
-	public final IPAddress ipAddress()
-	{
-		return this.ipaddr;
 	}
 	
 	/**

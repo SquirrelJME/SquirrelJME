@@ -9,6 +9,8 @@
 
 package cc.squirreljme.runtime.gcf;
 
+import java.io.IOException;
+
 /**
  * This class manages the HTTP connection data and is able to encode and
  * establish a connection.
@@ -40,6 +42,25 @@ public final class HTTPAgent
 		
 		this.address = __addr;
 		this.tracker = __t;
-	}	
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/13
+	 */
+	@Override
+	public final void requestReady(byte[] __data)
+		throws IOException, NullPointerException
+	{
+		if (__data == null)
+			throw new NullPointerException("NARG");
+		
+		// Debug
+		todo.DEBUG.note(">>> REQUEST:");
+		System.err.write(__data);
+		todo.DEBUG.note("<<<<<<<<<<<<");
+		
+		throw new todo.TODO();
+	}
 }
 
