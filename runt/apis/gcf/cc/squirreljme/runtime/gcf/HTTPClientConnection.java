@@ -36,13 +36,15 @@ public class HTTPClientConnection
 	/** The remote address. */
 	protected final HTTPAddress address;
 	
-	/** The state of this connection. */
-	private HTTPState _state =
-		HTTPState.SETUP;
+	/** Tracker for the HTTP state. */
+	protected final HTTPStateTracker tracker =
+		new HTTPStateTracker();
 	
-	/** The request builder. */
-	__HTTPRequestBuilder__ _rqbuilder =
-		new __HTTPRequestBuilder__();
+	/** The target HTTP agent which contains the response. */
+	protected final HTTPAgent agent;
+	
+	/** Request builder for outgoing connections. */
+	private HTTPRequestBuilder _request;
 	
 	/**
 	 * Initializes the HTTP connection.
@@ -58,6 +60,14 @@ public class HTTPClientConnection
 			throw new NullPointerException("NARG");
 		
 		this.address = __addr;
+		
+		// Setup agents and handlers
+		HTTPStateTracker tracker = this.tracker;
+		HTTPAgent agent = new HTTPAgent(__addr, tracker);
+		this.agent = agent;
+		
+		// Setup builder for the requests
+		this._request = new HTTPRequestBuilder(__addr, tracker, agent);
 	}
 	
 	/**
@@ -353,13 +363,8 @@ public class HTTPClientConnection
 	public final OutputStream openOutputStream()
 		throws IOException
 	{
-		// {@squirreljme.error EC0l May only write to the HTTP connection
-		// when in the setup phase.}
-		if (this._state != HTTPState.SETUP)
-			throw new IOException("EC0l");
-		
-		// The request builder is the output stream
-		return this._rqbuilder;
+		// This is the request stream directly
+		return this.__request();
 	}
 	
 	/**
@@ -373,16 +378,8 @@ public class HTTPClientConnection
 		if (__m == null)
 			throw new NullPointerException("NARG");
 		
-		// Debug
-		todo.DEBUG.note("%s", __m);
-		
-		// {@squirreljme.error EC0j The HTTP method may only be set before the
-		// connection has been made.}
-		if (this._state != HTTPState.SETUP)
-			throw new IOException("EC0j");
-		
-		// Set
-		this._rqbuilder._rqmethod = __m.toUpperCase();
+		// Forward
+		this.__request().setRequestMethod(__m);
 	}
 	
 	/**
@@ -396,25 +393,33 @@ public class HTTPClientConnection
 		if (__k == null)
 			throw new NullPointerException("NARG");
 		
-		// Debug
-		todo.DEBUG.note("%s = %s", __k, __v);
-		
-		// {@squirreljme.error EC0k Request properties may only be sent
-		// when the connection is being setup.}
-		if (this._state != HTTPState.SETUP)
+		// Forward
+		this.__request().setRequestProperty(__k, __v);
+	}
+	
+	/**
+	 * Attempts to obtain the request.
+	 *
+	 * @return The request information.
+	 * @throws IOException If the connection was closed or is in connected
+	 * state.
+	 * @since 2019/05/13
+	 */
+	private HTTPRequestBuilder __request()
+		throws IOException
+	{
+		// {@squirreljme.error EC0k Cannot access the request
+		if (this.tracker._state != HTTPState.SETUP)
+		{
+			// Clear before it is thrown
+			this._request = null;
+			
+			// Toss
 			throw new IOException("EC0k");
+		}
 		
-		// All fields are case insensitive, so lowercase them!
-		__k = __k.toLowerCase();
-		
-		// Clear?
-		Map<String, String> rqprops = this._rqbuilder._rqprops;
-		if (__v == null)
-			rqprops.remove(__k);
-		
-		// Otherwise add
-		else
-			rqprops.put(__k, __v);
+		// Return the request value
+		return this._request;
 	}
 	
 	/**
