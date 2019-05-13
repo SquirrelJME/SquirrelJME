@@ -485,8 +485,9 @@ public class RecordStore
 			// Allocate data to read from it
 			byte[] rv = new byte[size];
 			
-			if (true)
-				throw new todo.TODO();
+			// Read data
+			int read = vinyl.pageRead(vid, __id, rv, 0, size);
+			RecordStore.__checkError(read);
 			
 			return rv;
 		}

@@ -98,6 +98,44 @@ public final class TemporaryVinylRecord
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2019/05/13
+	 */
+	@Override
+	public final int pageRead(int __vid, int __pid, byte[] __b, int __o,
+		int __l)
+		throws IndexOutOfBoundsException, NullPointerException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		if (__o < 0 || __l < 0 || (__o + __l) > __b.length)
+			throw new IndexOutOfBoundsException("IOOB");
+		
+		// Locate the volume
+		Volume vol = this._volumes.get(__vid);
+		if (vol == null)
+			return ERROR_NO_VOLUME;
+		
+		// Locate the page
+		Page page = vol._pages.get(__pid);
+		if (page == null)
+			return ERROR_NO_PAGE;
+		
+		// Determine read limit
+		byte[] data = page._data;
+		int pagelen = data.length;
+		if (__l > pagelen)
+			__l = pagelen;
+		
+		// Copy data
+		for (int i = 0; i < __l; i++, __o++)
+			__b[__o] = data[i];
+		
+		// All would have been read
+		return __l;
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2019/05/01
 	 */
 	@Override

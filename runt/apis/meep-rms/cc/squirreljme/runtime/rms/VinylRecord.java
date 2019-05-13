@@ -70,6 +70,24 @@ public interface VinylRecord
 	public abstract int[] pageList(int __vid);
 	
 	/**
+	 * Returns the data of the given page.
+	 *
+	 * @param __vid The volume ID.
+	 * @param __pid The page ID.
+	 * @param __b The output buffer.
+	 * @param __o The offset.
+	 * @param __l The length.
+	 * @return The number of bytes read or an error otherwise.
+	 * @throws IndexOutOfBoundsException If the offset and/or length are
+	 * negative or exceed the array bounds.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/13
+	 */
+	public abstract int pageRead(int __vid, int __pid, byte[] __b, int __o,
+		int __l)
+		throws IndexOutOfBoundsException, NullPointerException;
+	
+	/**
 	 * Returns the size of the given page.
 	 *
 	 * @param __vid The volume ID.
