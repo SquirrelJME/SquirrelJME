@@ -9,9 +9,11 @@
 
 package cc.squirreljme.runtime.gcf;
 
+import cc.squirreljme.runtime.cldc.SquirrelJME;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -24,6 +26,13 @@ import java.util.Map;
 public final class HTTPRequestBuilder
 	extends OutputStream
 {
+	/** The user agent SquirrelJME uses. */
+	public static final String USER_AGENT =
+		"SquirrelJME/" + SquirrelJME.RUNTIME_VERSION + " " +
+		"Configuration/CLDC-1.0 Configuration/CLDC-1.1 " +
+		"Configuration/CLDC-1.8 Profile/MIDP-1.0 Profile/MIDP-2.0 " +
+		"Profile/MIDP-2.1 Profile/MIDP-3.0 Profile/MEEP-8.0";
+	
 	/** The remote address. */
 	protected final HTTPAddress address;
 	
@@ -78,7 +87,8 @@ public final class HTTPRequestBuilder
 		if (this.tracker._state != HTTPState.SETUP)
 			return;
 		
-		throw new todo.TODO();
+		// Send the agent out request bytes
+		this.listener.requestReady(this.getBytes());
 	}
 	
 	/**
@@ -95,6 +105,65 @@ public final class HTTPRequestBuilder
 		
 		// Note
 		todo.TODO.note("Implement HTTP Flush");
+	}
+	
+	/**
+	 * Builds the bytes for the request.
+	 *
+	 * @return The bytes to send down the stream.
+	 * @throws IOException If they could not be set.
+	 * @since 2019/05/13
+	 */
+	public final byte[] getBytes()
+		throws IOException
+	{
+		HTTPAddress address = this.address;
+		
+		// Build output
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(1024))
+		{
+			// Get any written data
+			byte[] bytes = this._bytes.toByteArray();
+			
+			// Print header data, note that CRLF is used everywhere regardless
+			// of whether the system uses it or not
+			try (PrintStream ps = new PrintStream(baos, true, "utf-8"))
+			{
+				// HTTP header
+				ps.printf("%s %s HTTP/1.1\r\n",
+					this._rqmethod, address.file);
+				
+				// Add some implicit properties
+				Map<String, String> rqp = new LinkedHashMap<>(this._rqprops);
+				rqp.put("host", address.ipaddr.hostname);
+				
+				// If the user agent was specified, add to it or set one
+				String ua = rqp.get("user-agent");
+				rqp.put("user-agent", (ua == null ? USER_AGENT :
+					ua + USER_AGENT));
+				
+				// Is content being specified?
+				if (bytes != null)
+					rqp.put("content-length", Integer.toString(bytes.length));
+				
+				// Write headers
+				for (Map.Entry<String, String> e : rqp.entrySet())
+					ps.printf("%s: %s\r\n", e.getKey(), e.getValue());
+				
+				// End of header
+				ps.print("\r\n");
+				
+				// Flush to make sure nothing is buffered
+				ps.flush();
+			}
+			
+			// Write any data
+			if (bytes != null)
+				baos.write(bytes);
+			
+			// Build
+			return baos.toByteArray();
+		}
 	}
 	
 	/**

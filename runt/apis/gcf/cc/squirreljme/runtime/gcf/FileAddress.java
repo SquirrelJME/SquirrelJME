@@ -39,6 +39,16 @@ public final class FileAddress
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/13
+	 */
+	@Override
+	public final String toString()
+	{
+		return this.file;
+	}
+	
+	/**
 	 * Decodes the specified string to handle the path.
 	 *
 	 * @param __p The path.

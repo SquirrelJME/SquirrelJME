@@ -9,6 +9,8 @@
 
 package cc.squirreljme.runtime.gcf;
 
+import java.io.IOException;
+
 /**
  * This interface is used to signal changes in the HTTP state such as
  * when a connection should be made.
@@ -17,5 +19,15 @@ package cc.squirreljme.runtime.gcf;
  */
 public interface HTTPSignalListener
 {
+	/**
+	 * Tells the other end that the HTTP request data is ready.
+	 *
+	 * @param __data The data of the request.
+	 * @throws IOException If the request could not be sent.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/13
+	 */
+	public abstract void requestReady(byte[] __data)
+		throws IOException, NullPointerException;
 }
 
