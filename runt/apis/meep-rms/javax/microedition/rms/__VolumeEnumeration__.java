@@ -11,6 +11,8 @@ package javax.microedition.rms;
 
 import cc.squirreljme.runtime.rms.VinylLock;
 import cc.squirreljme.runtime.rms.VinylRecord;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This is the internal enumeration over records.
@@ -41,6 +43,9 @@ final class __VolumeEnumeration__
 	/** Last modification count. */
 	private int _lastmod =
 		-1;
+	
+	/** Built page list. */
+	private List<__Page__> _pages;
 	
 	/**
 	 * Initializes the record store enumeration.
@@ -239,15 +244,59 @@ final class __VolumeEnumeration__
 		// Check for destruction
 		this.__checkDestroy();
 		
+		// Used in the rebuild
+		RecordStore store = this.store;
+		RecordFilter filter = this.filter;
+		RecordComparator comparator = this.comparator;
+		int[] tags = this._tags;
+		
 		// Could fail
 		try
 		{
 			// Record store has not been modified, ignore
-			RecordStore store = this.store;
-			if (store.getVersion() == this._lastmod)
+			int nowmod = store.getVersion();
+			if (this._pages != null && nowmod == this._lastmod)
 				return;
 			
-			throw new todo.TODO();
+			// Get all the page IDs
+			int[] pageids = store.__listPages();
+			
+			// Build an initial page table
+			List<__Page__> pages = new ArrayList<>(pageids.length);
+			for (int pid : pageids)
+			{
+				// Quick filter by tag?
+				if (tags != null)
+				{
+					// Get page tag
+					int ptag = store.getTag(pid);
+					
+					// Only accept tags in this array
+					boolean got = false;
+					for (int mt : tags)
+						if (ptag == mt)
+						{
+							got = true;
+							break;
+						}
+					
+					// Completely missed?
+					if (!got)
+						continue;
+				}
+				
+				// Filter this?
+				if (filter != null)
+					throw new todo.TODO();
+			}
+			
+			// Sort the input pages by their data?
+			if (comparator != null)
+				throw new todo.TODO();
+			
+			// Set new version
+			this._pages = pages;
+			this._lastmod = nowmod;
 		}
 		
 		// {@squirreljme.error DC0f Could not rebuild the enumeration.}
@@ -300,13 +349,36 @@ final class __VolumeEnumeration__
 		// Could fail
 		try
 		{
-			if (this._keepupdated && this.store.getVersion() != this._lastmod)
+			if (this._pages == null || (this._keepupdated &&
+				this.store.getVersion() != this._lastmod))
 				this.rebuild();
 		}
 		catch (RecordStoreException e)
 		{
 			// {@squirreljme.error DC0d Could not check for updates.}
 			throw new IllegalStateException("DC0d", e);
+		}
+	}
+	
+	/**
+	 * Represents a raw page ID.
+	 *
+	 * @since 2019/05/13
+	 */
+	private static final class __Page__
+	{
+		/** The ID. */
+		public final int id;
+		
+		/**
+		 * Initializes the page reference.
+		 *
+		 * @param __id The page ID.
+		 * @since 2019/05/13
+		 */
+		public __Page__(int __id)
+		{
+			this.id = __id;
 		}
 	}
 }
