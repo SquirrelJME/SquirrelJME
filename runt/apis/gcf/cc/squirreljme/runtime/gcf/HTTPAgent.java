@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.gcf;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -30,6 +31,9 @@ public final class HTTPAgent
 	
 	/** The state tracker. */
 	protected final HTTPStateTracker tracker;
+	
+	/** The HTTP response. */
+	HTTPResponse _response;
 	
 	/**
 	 * Initializes the HTTP agent.
@@ -66,21 +70,60 @@ public final class HTTPAgent
 		todo.DEBUG.note("<<<<<<<<<<<<");
 		
 		// Open connection to remote server
+		byte[] response;
 		try (SocketConnection socket = (SocketConnection)Connector.open(
 			"socket://" + this.address.ipaddr))
 		{
-			// Connect to remote system and send all the HTTP data
-			try (OutputStream out = socket.openOutputStream())
+			// Connect to remote system and send all the HTTP data and
+			// read it as well
+			try (OutputStream out = socket.openOutputStream();
+				InputStream in = socket.openInputStream())
 			{
+				// Write and send data
 				out.write(__data, 0, __data.length);
 				out.flush();
+				
+				// Read response data
+				try (ByteArrayOutputStream baos = new ByteArrayOutputStream(
+					Math.max(1024, in.available())))
+				{
+					// Copy all input data
+					byte[] buf = new byte[512];
+					for (;;)
+					{
+						int rc = in.read(buf);
+						
+						if (rc < 0)
+							break;
+						
+						baos.write(buf, 0, rc);
+					}
+					
+					// Store for later decode
+					response = baos.toByteArray();
+				}
 			}
-			
-			if (true)
-				throw new todo.TODO();
 		}
 		
-		throw new todo.TODO();
+		// Failed read/write
+		catch (IOException e)
+		{
+			// Debug
+			e.printStackTrace();
+			
+			throw e;
+		}
+		
+		// Read the input
+		todo.DEBUG.note(">>> RESPONSE:");
+		HexDumpOutputStream.dump(System.err, response);
+		todo.DEBUG.note("<<<<<<<<<<<<");
+		
+		// Parse the input
+		this._response = HTTPResponse.parse(response);
+		
+		// Enter the connected state
+		this.tracker._state = HTTPState.CONNECTED;
 	}
 }
 

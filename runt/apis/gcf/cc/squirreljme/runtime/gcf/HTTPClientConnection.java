@@ -78,7 +78,8 @@ public class HTTPClientConnection
 	public final void close()
 		throws IOException
 	{
-		throw new todo.TODO();
+		// Transition to the closed state
+		this.tracker._state = HTTPState.CLOSED;
 	}
 	
 	/**
@@ -288,7 +289,7 @@ public class HTTPClientConnection
 	public final int getResponseCode()
 		throws IOException
 	{
-		throw new todo.TODO();
+		return this.__response().header.code;
 	}
 	
 	/**
@@ -299,7 +300,7 @@ public class HTTPClientConnection
 	public final String getResponseMessage()
 		throws IOException
 	{
-		throw new todo.TODO();
+		return this.__response().header.message;
 	}
 	
 	/**
@@ -352,7 +353,8 @@ public class HTTPClientConnection
 	public final InputStream openInputStream()
 		throws IOException
 	{
-		throw new todo.TODO();
+		// The response is the direct stream of the body
+		return this.__response().inputStream();
 	}
 	
 	/**
@@ -405,7 +407,7 @@ public class HTTPClientConnection
 	 * state.
 	 * @since 2019/05/13
 	 */
-	private HTTPRequestBuilder __request()
+	private final HTTPRequestBuilder __request()
 		throws IOException
 	{
 		// {@squirreljme.error EC0k Cannot access the request
@@ -420,6 +422,39 @@ public class HTTPClientConnection
 		
 		// Return the request value
 		return this._request;
+	}
+	
+	/**
+	 * Returns the response.
+	 *
+	 * @return The response.
+	 * @throws IOException If the response could not be returned.
+	 * @since 2019/05/13
+	 */
+	private HTTPResponse __response()
+		throws IOException
+	{
+		HTTPAgent agent = this.agent;
+		
+		// Depends on the state
+		HTTPStateTracker tracker = this.tracker;
+		switch (tracker._state)
+		{
+				// Need to connect to the server, fall through to get the
+				// agent response. Closing the request will send the HTTP
+				// data over and load the server response
+			case SETUP:
+				this.__request().close();
+			
+				// Agent already has the response
+			case CONNECTED:
+			case CLOSED:
+				return agent._response;
+			
+				// Should not occur
+			default:
+				throw new todo.OOPS();
+		}
 	}
 	
 	/**

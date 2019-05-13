@@ -1,0 +1,133 @@
+// -*- Mode: Java; indent-tabs-mode: t; tab-width: 4 -*-
+// ---------------------------------------------------------------------------
+// Multi-Phasic Applications: SquirrelJME
+//     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
+// ---------------------------------------------------------------------------
+// SquirrelJME is under the GNU General Public License v3+, or later.
+// See license.mkd for licensing and copyright information.
+// ---------------------------------------------------------------------------
+
+package cc.squirreljme.runtime.gcf;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.IOException;
+
+/**
+ * This contains the response of the HTTP request.
+ *
+ * @since 2019/05/13
+ */
+public final class HTTPResponse
+{
+	/** The header. */
+	public final HTTPResponseHeader header;
+	
+	/** The data bytes. */
+	private final byte[] _data;
+	
+	/**
+	 * Initializes the response.
+	 *
+	 * @param __h The header.
+	 * @param __d The data.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/13
+	 */
+	public HTTPResponse(HTTPResponseHeader __h, byte[] __d)
+		throws NullPointerException
+	{
+		if (__h == null || __d == null)
+			throw new NullPointerException("NARG");
+		
+		this.header = __h;
+		this._data = __d.clone();
+	}
+	
+	/**
+	 * Returns the input stream of the body data.
+	 *
+	 * @return The input stream for the body.
+	 * @since 2019/05/13
+	 */
+	public final InputStream inputStream()
+	{
+		return new ByteArrayInputStream(this._data);
+	}
+	
+	/**
+	 * Parses the HTTP response.
+	 *
+	 * @param __b The input bytes.
+	 * @return The parsed response.
+	 * @throws IOException If the response is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/13
+	 */
+	public static final HTTPResponse parse(byte[] __b)
+		throws IOException, NullPointerException
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		return HTTPResponse.parse(new ByteArrayInputStream(__b));
+	}
+	
+	/**
+	 * Parses the HTTP response.
+	 *
+	 * @param __in The input bytes.
+	 * @return The parsed response.
+	 * @throws IOException If the response is not valid.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/13
+	 */
+	public static final HTTPResponse parse(InputStream __in)
+		throws IOException, NullPointerException
+	{
+		if (__in == null)
+			throw new NullPointerException("NARG");
+		
+		// Parse the header first
+		HTTPResponseHeader header = HTTPResponseHeader.parse(__in);
+		
+		// Decode content length
+		int length;
+		try
+		{
+			// Decode length
+			String rl = header.header("content-length");
+			if (rl != null)
+				length = Integer.parseInt(rl, 10);
+			
+			// Just treat as no length
+			else
+				length = 0;
+		}
+		
+		// {@squirreljme.error EC12 Invalid content length.}
+		catch (NumberFormatException e)
+		{
+			throw new IOException("EC12", e);
+		}
+		
+		// Read in all the data
+		byte[] bytes = new byte[length];
+		for (int at = 0; at < length;)
+		{
+			int rc = __in.read(bytes, at, length - at);
+			
+			// {@squirreljme.error EC13 The HTTP body was too small. (The
+			// read length; The expected size)}
+			if (rc < 0)
+				throw new IOException("EC13 " + at + " " + length);
+			
+			// Move at up
+			at += rc;
+		}
+		
+		// Build response
+		return new HTTPResponse(header, bytes);
+	}
+}
+
