@@ -12,7 +12,9 @@ package cc.squirreljme.runtime.javase;
 import cc.squirreljme.runtime.gcf.IPAddress;
 import cc.squirreljme.runtime.gcf.IPConnectionFactory;
 import cc.squirreljme.runtime.gcf.TCPClientConnection;
+import java.io.InputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
@@ -77,6 +79,28 @@ public class JavaSETCPClientConnection
 		this.defrbs = defrbs;
 		this.defsbs = defsbs;
 		this.deftim = deftim;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/13
+	 */
+	@Override
+	protected final InputStream doOpenInputStream()
+		throws IOException
+	{
+		return socket.getInputStream();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/13
+	 */
+	@Override
+	protected final OutputStream doOpenOutputStream()
+		throws IOException
+	{
+		return socket.getOutputStream();
 	}
 	
 	/**

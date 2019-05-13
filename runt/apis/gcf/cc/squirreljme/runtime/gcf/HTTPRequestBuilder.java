@@ -232,6 +232,17 @@ public final class HTTPRequestBuilder
 		
 	/**
 	 * {@inheritDoc}
+	 * @since 2019/05/13
+	 */
+	@Override
+	public final void write(byte[] __a)
+		throws IOException, NullPointerException
+	{
+		this.write(__a, 0, __a.length);
+	}
+		
+	/**
+	 * {@inheritDoc}
 	 * @since 2019/05/12
 	 */
 	@Override
