@@ -10,6 +10,7 @@
 package cc.squirreljme.runtime.gcf;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 
@@ -100,9 +101,9 @@ public final class HTTPResponse
 			if (rl != null)
 				length = Integer.parseInt(rl, 10);
 			
-			// Just treat as no length
+			// Variable length...
 			else
-				length = 0;
+				length = -1;
 		}
 		
 		// {@squirreljme.error EC12 Invalid content length.}
@@ -111,20 +112,49 @@ public final class HTTPResponse
 			throw new IOException("EC12", e);
 		}
 		
-		// Read in all the data
-		byte[] bytes = new byte[length];
-		for (int at = 0; at < length;)
+		// Length of specific size
+		byte[] bytes;
+		if (length >= 0)
 		{
-			int rc = __in.read(bytes, at, length - at);
-			
-			// {@squirreljme.error EC13 The HTTP body was too small. (The
-			// read length; The expected size)}
-			if (rc < 0)
-				throw new IOException("EC13 " + at + " " + length);
-			
-			// Move at up
-			at += rc;
+			bytes = new byte[length];
+			for (int at = 0; at < length;)
+			{
+				int rc = __in.read(bytes, at, length - at);
+				
+				// {@squirreljme.error EC13 The HTTP body was too small. (The
+				// read length; The expected size)}
+				if (rc < 0)
+					throw new IOException("EC13 " + at + " " + length);
+				
+				// Move at up
+				at += rc;
+			}
 		}
+		
+		// Variable length
+		else
+		{
+			// Read in all the data
+			byte[] buf = new byte[512];
+			try (ByteArrayOutputStream baos = new ByteArrayOutputStream(1024))
+			{
+				for (;;)
+				{
+					int rc = __in.read(buf);
+					
+					if (rc < 0)
+						break;
+					
+					baos.write(buf, 0, rc);
+				}
+				
+				// Done
+				bytes = baos.toByteArray();
+			}
+		}
+		
+		// Debug
+		todo.DEBUG.note(" <- %d", bytes.length);
 		
 		// Build response
 		return new HTTPResponse(header, bytes);

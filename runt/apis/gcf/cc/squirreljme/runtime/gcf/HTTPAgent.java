@@ -63,6 +63,9 @@ public final class HTTPAgent
 		if (__data == null)
 			throw new NullPointerException("NARG");
 		
+		// Debug
+		todo.DEBUG.note(" -> %d", __data.length);
+		
 		// Open connection to remote server
 		byte[] response;
 		try (SocketConnection socket = (SocketConnection)Connector.open(
