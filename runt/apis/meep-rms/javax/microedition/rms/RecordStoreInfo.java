@@ -10,6 +10,9 @@
 
 package javax.microedition.rms;
 
+import cc.squirreljme.runtime.rms.VinylLock;
+import cc.squirreljme.runtime.rms.VinylRecord;
+
 /**
  * This stores information on a record store.
  *
@@ -17,14 +20,18 @@ package javax.microedition.rms;
  */
 public final class RecordStoreInfo
 {
+	/** The volume ID. */
+	private final int _vid;
+	
 	/**
 	 * Used internally.
 	 *
+	 * @param __vid The volume ID.
 	 * @since 2017/02/26
 	 */
-	RecordStoreInfo()
+	RecordStoreInfo(int __vid)
 	{
-		throw new todo.TODO();
+		this._vid = __vid;
 	}
 	
 	/**
@@ -70,7 +77,12 @@ public final class RecordStoreInfo
 	public long getSizeAvailable()
 		throws RecordStoreNotOpenException
 	{
-		throw new todo.TODO();
+		// Lock
+		VinylRecord vinyl = RecordStore._VINYL;
+		try (VinylLock lock = vinyl.lock())
+		{
+			return vinyl.vinylSizeAvailable();
+		}
 	}
 	
 	/**

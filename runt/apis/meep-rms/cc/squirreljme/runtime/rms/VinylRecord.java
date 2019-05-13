@@ -80,6 +80,14 @@ public interface VinylRecord
 	public abstract int pageSize(int __vid, int __pid);
 	
 	/**
+	 * Returns the amount of space available for this record.
+	 *
+	 * @return The available space count.
+	 * @since 2019/05/13
+	 */
+	public abstract int vinylSizeAvailable();
+	
+	/**
 	 * Creates a new record.
 	 *
 	 * @param __sid The suite identifier.

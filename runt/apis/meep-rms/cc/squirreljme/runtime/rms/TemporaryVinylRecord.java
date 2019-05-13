@@ -119,6 +119,18 @@ public final class TemporaryVinylRecord
 	
 	/**
 	 * {@inheritDoc}
+	 * @since 2019/05/13
+	 */
+	@Override
+	public final int vinylSizeAvailable()
+	{
+		// This is technically limited by memory
+		return (int)Math.min(Integer.MAX_VALUE,
+			Runtime.getRuntime().freeMemory());
+	}
+	
+	/**
+	 * {@inheritDoc}
 	 * @since 2019/04/14
 	 */
 	@Override

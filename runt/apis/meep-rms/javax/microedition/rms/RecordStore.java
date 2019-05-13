@@ -564,12 +564,8 @@ public class RecordStore
 		// Check open
 		this.__checkOpen();
 		
-		// Lock
-		VinylRecord vinyl = _VINYL;
-		try (VinylLock lock = vinyl.lock())
-		{
-			throw new todo.TODO();
-		}
+		// Just quickly create
+		return new RecordStoreInfo(this._vid);
 	}
 	
 	/**
