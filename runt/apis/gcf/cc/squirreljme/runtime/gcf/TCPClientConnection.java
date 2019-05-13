@@ -50,6 +50,15 @@ public abstract class TCPClientConnection
 	}
 	
 	/**
+	 * Performs connection close.
+	 *
+	 * @throws IOException If it could not be closed.
+	 * @since 2019/05/13
+	 */
+	protected abstract void doClose()
+		throws IOException;
+	
+	/**
 	 * Performs the actual input stream open.
 	 *
 	 * @return The resulting stream.
@@ -116,12 +125,23 @@ public abstract class TCPClientConnection
 				supout = e;
 			}
 		
+		// Forward close
+		IOException supclo = null;
+		try
+		{
+			this.doClose();
+		}
+		catch (IOException e)
+		{
+			supclo = e;
+		}
+		
 		// Set tracker as closed
 		tracker._inclosed = true;
 		tracker._outclosed = true;
 		
 		// Exceptions were thrown?
-		if (supin != null || supout != null)
+		if (supin != null || supout != null || supclo != null)
 		{
 			// {@squirreljme.error EC0x The connection could not be closed
 			// properly.}
@@ -132,6 +152,8 @@ public abstract class TCPClientConnection
 				t.addSuppressed(supin);
 			if (supout != null)
 				t.addSuppressed(supout);
+			if (supclo != null)
+				t.addSuppressed(supclo);
 			
 			// Toss it
 			throw t;
@@ -234,10 +256,10 @@ public abstract class TCPClientConnection
 	public final InputStream openInputStream()
 		throws IOException
 	{
-		// {@squirreljme.error EC0w The output has been closed.}
+		// {@squirreljme.error EC0y The input has been closed.}
 		ConnectionStateTracker tracker = this.tracker;
-		if (tracker._outclosed)
-			throw new IOException("EC0w");
+		if (tracker._inclosed)
+			throw new IOException("EC0y");
 		return new TrackedInputStream(tracker, this.doOpenInputStream());
 	}
 	

@@ -82,6 +82,18 @@ public class JavaSETCPClientConnection
 	}
 	
 	/**
+	 * Performs connection close.
+	 *
+	 * @throws IOException If it could not be closed.
+	 * @since 2019/05/13
+	 */
+	protected final void doClose()
+		throws IOException
+	{
+		this.socket.close();
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * @since 2019/05/13
 	 */
