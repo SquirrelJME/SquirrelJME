@@ -159,7 +159,7 @@ public final class HTTPRequestBuilder
 			
 			// Write any data
 			if (bytes != null)
-				baos.write(bytes);
+				baos.write(bytes, 0, bytes.length);
 			
 			// Build
 			return baos.toByteArray();

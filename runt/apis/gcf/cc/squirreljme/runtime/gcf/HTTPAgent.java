@@ -9,7 +9,12 @@
 
 package cc.squirreljme.runtime.gcf;
 
+import java.io.InputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import javax.microedition.io.Connector;
+import javax.microedition.io.SocketConnection;
+import net.multiphasicapps.io.HexDumpOutputStream;
 
 /**
  * This class manages the HTTP connection data and is able to encode and
@@ -57,8 +62,23 @@ public final class HTTPAgent
 		
 		// Debug
 		todo.DEBUG.note(">>> REQUEST:");
-		System.err.write(__data);
+		HexDumpOutputStream.dump(System.err, __data);
 		todo.DEBUG.note("<<<<<<<<<<<<");
+		
+		// Open connection to remote server
+		try (SocketConnection socket = (SocketConnection)Connector.open(
+			"socket://" + this.address.ipaddr))
+		{
+			// Connect to remote system and send all the HTTP data
+			try (OutputStream out = socket.openOutputStream())
+			{
+				out.write(__data, 0, __data.length);
+				out.flush();
+			}
+			
+			if (true)
+				throw new todo.TODO();
+		}
 		
 		throw new todo.TODO();
 	}
