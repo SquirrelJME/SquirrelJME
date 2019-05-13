@@ -10,32 +10,66 @@
 
 package java.util;
 
+/**
+ * This is similar to {@link ArrayList} except that it is synchronized and
+ * thread-safe by default.
+ *
+ * @see ArrayList
+ * @since 2019/05/13
+ */
 public class Vector<E>
 	extends AbstractList<E>
 	implements RandomAccess, Cloneable
 {
+	/** The number of elements to add if the size is too small. */
 	protected int capacityIncrement;
 	
+	/** The number of elements in the vector. */
 	protected int elementCount;
 	
+	/** The elements in the vector. */
 	protected Object[] elementData;
 	
-	public Vector(int __a, int __b)
+	/**
+	 * Initializes the vector using the specified initial capacity.
+	 *
+	 * @param __cap The initial capacity.
+	 * @param __inc The capacity increment.
+	 * @throws IllegalArgumentException If the capacity is negative.
+	 * @since 2019/05/13
+	 */
+	public Vector(int __cap, int __inc)
+		throws IllegalArgumentException
 	{
-		super();
-		throw new todo.TODO();
+		// {@squirreljme.error ZZ49 Initial capacity cannot be negative.
+		if (__cap < 0)
+			throw new IllegalArgumentException("ZZ49");
+		
+		this.elementData = new Object[__cap];
+		this.capacityIncrement = (__inc < 0 ? 0 : __inc);
 	}
 	
-	public Vector(int __a)
+	/**
+	 * Initializes the vector using the specified initial capacity.
+	 *
+	 * @param __cap The initial capacity.
+	 * @throws IllegalArgumentException If the capacity is negative.
+	 * @since 2019/05/13
+	 */
+	public Vector(int __cap)
+		throws IllegalArgumentException
 	{
-		super();
-		throw new todo.TODO();
+		this(__cap, 0);
 	}
 	
+	/**
+	 * Initializes the vector.
+	 *
+	 * @since 2019/05/13
+	 */
 	public Vector()
 	{
-		super();
-		throw new todo.TODO();
+		this(10, 0);
 	}
 	
 	public Vector(Collection<? extends E> __a)
@@ -343,12 +377,16 @@ public class Vector<E>
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/13
+	 */
 	@Override
 	public int size()
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			return this.elementCount;
 		}
 	}
 	
