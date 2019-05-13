@@ -1,0 +1,14 @@
+# 2019/05/12
+
+## 17:10
+
+Making a decision, `AccessPoint` allows access to stuff like 3GPP, CDMA,
+WiFi, Wireless, Dial-up, and other such things. This would be really
+complicated.
+
+## 17:27
+
+I think I want to limit the number of system calls that exist and put it
+solely in just services. Because otherwise I might be making a number of
+complicated APIs. Also means I want to simplify the API set as well and have
+it a much more lower and limited stance.
