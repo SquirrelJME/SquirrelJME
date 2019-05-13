@@ -318,12 +318,13 @@ public class RecordStore
 		// Check open
 		this.__checkOpen();
 		
-		// Lock
-		VinylRecord vinyl = _VINYL;
-		try (VinylLock lock = vinyl.lock())
-		{
-			throw new todo.TODO();
-		}
+		// Build one and perform a rebuild to initialize it
+		__VolumeEnumeration__ rv = new __VolumeEnumeration__(this, __f,
+			__c, __ku, __tags);
+		rv.rebuild();
+		
+		// Use it
+		return rv;
 	}
 	
 	/**
@@ -644,7 +645,23 @@ public class RecordStore
 		VinylRecord vinyl = _VINYL;
 		try (VinylLock lock = vinyl.lock())
 		{
-			throw new todo.TODO();
+			int rv = vinyl.volumeModCount(this._vid);
+			
+			try
+			{
+				RecordStore.__checkError(rv);
+			}
+			catch (RecordStoreException e)
+			{
+				if (e instanceof RecordStoreNotOpenException)
+					throw (RecordStoreNotOpenException)e;
+				
+				// {@squirreljme.error DC0e Could not get the record store
+				// version.}
+				throw new RuntimeException("DC0e", e);
+			}
+			
+			return rv;
 		}
 	}
 	

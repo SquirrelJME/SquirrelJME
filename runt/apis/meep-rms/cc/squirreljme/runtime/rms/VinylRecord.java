@@ -98,6 +98,16 @@ public interface VinylRecord
 	public abstract int pageSize(int __vid, int __pid);
 	
 	/**
+	 * Returns the tag of the page.
+	 *
+	 * @param __vid The volume ID.
+	 * @param __pid The page ID.
+	 * @return The tag identifier.
+	 * @since 2019/05/13
+	 */
+	public abstract int pageTag(int __vid, int __pid);
+	
+	/**
 	 * Returns the amount of space available for this record.
 	 *
 	 * @return The available space count.
@@ -123,6 +133,15 @@ public interface VinylRecord
 	 * @since 2019/04/14
 	 */
 	public abstract int[] volumeList();
+	
+	/**
+	 * Returns the modification count of the volume.
+	 *
+	 * @param __vid The volume ID.
+	 * @return The modification count or an error.
+	 * @since 2019/05/13
+	 */
+	public abstract int volumeModCount(int __vid);
 	
 	/**
 	 * Returns the name of the given record.
