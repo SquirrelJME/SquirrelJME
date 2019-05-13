@@ -381,41 +381,8 @@ public class Connector
 				
 				// HTTP
 			case "http":
-				{
-					// Decode HTTP address
-					HTTPAddress addr = HTTPAddress.fromUriPart(part);
-					
-					// Need to connect to the 
-					IPAddress ipaddr = addr.ipAddress();
-					StreamConnection stream = null;
-					try
-					{
-						// Open stream connection since HTTP is backed off it
-						stream = (StreamConnection)open("socket://" + ipaddr,
-							__mode, __timeouts, __opts);
-						
-						// Create connection
-						return HTTPClientConnection.connect(addr, stream);
-					}
-					
-					// Close the stream connection if the HTTP connect failed
-					catch (IOException e)
-					{
-						// Close stream
-						if (stream != null)
-							try
-							{
-								stream.close();
-							}
-							catch (Throwable t)
-							{
-								e.addSuppressed(t);
-							}
-						
-						// Rethrow
-						throw e;
-					}
-				}
+				return HTTPClientConnection.connect(
+					HTTPAddress.fromUriPart(part));
 				
 				// HTTPS
 			case "https":

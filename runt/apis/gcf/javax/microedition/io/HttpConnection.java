@@ -12,6 +12,22 @@ package javax.microedition.io;
 
 import java.io.IOException;
 
+/**
+ * This is a connection which enables HTTP based API access.
+ *
+ * This connection is within three states:
+ *  - SETUP where the connection is being setup.
+ *  - CONNECTED where the connection has been made.
+ *  - CLOSED where the connection has been completed and closed.
+ *
+ * The {@link openOutputStream} and {@link openDataOutputStream} may only be
+ * called when in the SETUP state, when either of these streams are closed
+ * the connection will transition to the connected state. Additionally if
+ * the state transitions to the CONNECTED state for any reason then the stream
+ * will be implicitly closed and its data will be used.
+ *
+ * @since 2019/05/12
+ */
 public interface HttpConnection
 	extends ContentConnection
 {
@@ -204,10 +220,29 @@ public interface HttpConnection
 	
 	public abstract String getURL();
 	
-	public abstract void setRequestMethod(String __a)
-		throws IOException;
+	/**
+	 * Sets the request method to use.
+	 *
+	 * @param __m The method to use.
+	 * @throws IOException If this is not in the setup phase.
+	 * @throws NullPointerException If no method was specified.
+	 * @since 2019/05/12
+	 */
+	public abstract void setRequestMethod(String __m)
+		throws IOException, NullPointerException;
 	
-	public abstract void setRequestProperty(String __a, String __b)
+	/**
+	 * Adds or replaces an existing request property, note that for multiple
+	 * request property specifications they need to manually be comma
+	 * separated.
+	 *
+	 * @param __k The request header key.
+	 * @param __v The value to use, {@code null} clears.
+	 * @throws IOException If this is not in the setup phase.
+	 * @throws NullPointerException If the key was null.
+	 * @since 2019/05/12
+	 */
+	public abstract void setRequestProperty(String __k, String __v)
 		throws IOException;
 }
 
