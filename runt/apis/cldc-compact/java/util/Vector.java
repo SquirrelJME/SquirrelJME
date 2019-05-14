@@ -10,6 +10,9 @@
 
 package java.util;
 
+import cc.squirreljme.runtime.cldc.util.IteratorToEnumeration;
+import cc.squirreljme.runtime.cldc.util.SynchronizedIterator;
+
 /**
  * This is similar to {@link ArrayList} except that it is synchronized and
  * thread-safe by default.
@@ -174,10 +177,23 @@ public class Vector<E>
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/14
+	 */
 	@Override
 	public void clear()
 	{
-		throw new todo.TODO();
+		synchronized (this)
+		{
+			// Wipe the length
+			this.elementCount = 0;
+			
+			// And wipe the array
+			Object[] elements = this.elementData;
+			for (int i = 0, n = elements.length; i < n; i++)
+				elements[i] = null;
+		}
 	}
 	
 	@Override
@@ -212,17 +228,27 @@ public class Vector<E>
 		}
 	}
 	
-	public E elementAt(int __a)
+	/**
+	 * Returns the element at the given index.
+	 *
+	 * @param __i The element index.
+	 * @return The element.
+	 * @since 2019/05/14
+	 */
+	public E elementAt(int __i)
 	{
-		synchronized (this)
-		{
-			throw new todo.TODO();
-		}
+		return this.get(__i);
 	}
 	
+	/**
+	 * Returns an enumeration over the elements.
+	 *
+	 * @return The element enumeration.
+	 * @since 2019/05/14
+	 */
 	public Enumeration<E> elements()
 	{
-		throw new todo.TODO();
+		return new IteratorToEnumeration<E>(this.iterator());
 	}
 	
 	public void ensureCapacity(int __a)
@@ -262,12 +288,20 @@ public class Vector<E>
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/14
+	 */
 	@Override
-	public E get(int __a)
+	@SuppressWarnings({"unchecked"})
+	public E get(int __i)
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			if (__i < 0 || __i >= this.elementCount)
+				throw new ArrayIndexOutOfBoundsException("IOOB");
+			
+			return (E)this.elementData[__i];
 		}
 	}
 	
@@ -311,12 +345,16 @@ public class Vector<E>
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/14
+	 */
 	@Override
 	public Iterator<E> iterator()
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			return new SynchronizedIterator<E>(this, super.iterator());
 		}
 	}
 	
@@ -369,11 +407,16 @@ public class Vector<E>
 		}
 	}
 	
+	/**
+	 * Removes all elements in the vector.
+	 *
+	 * @since 2019/05/14
+	 */
 	public void removeAllElements()
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			this.clear();
 		}
 	}
 	
