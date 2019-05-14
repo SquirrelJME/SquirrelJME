@@ -58,6 +58,24 @@ jobs:
       - store_artifacts:
           path: springcoat.nps
           destination: /nps/springcoat.nps
+  tests_flowercoat:
+    executor: buildenv
+    steps:
+      - initialize_buildenv
+      - run:
+          name: Clear old test results and snapshot
+          command: rm -f fljut/flowercoat/results.xml flowercoat.nps
+      - run:
+          name: Create test directory
+          command: mkdir -p fljut/flowercoat
+      - run:
+          name: Running FlowerCoat VM
+          command: ~/squirreljme/build.sh launch -v flowercoat -n flowercoat.nps -Dcc.squirreljme.debug=false tac-runner > fljut/flowercoat/results.xml
+      - store_test_results:
+          path: fljut
+      - store_artifacts:
+          path: flowercoat.nps
+          destination: /nps/flowercoat.nps
   tests_summercoat:
     executor: buildenv
     steps:
