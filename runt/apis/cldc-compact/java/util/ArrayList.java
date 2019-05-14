@@ -164,9 +164,32 @@ public class ArrayList<E>
 		return new ArrayList<>(this);
 	}
 	
-	public void ensureCapacity(int __a)
+	/**
+	 * Ensures that the given number of elements can fit in the list.
+	 *
+	 * @param __n The number of elements.
+	 * @since 2019/05/14
+	 */
+	@SuppressWarnings({"unchecked"})
+	public void ensureCapacity(int __n)
 	{
-		throw new todo.TODO();
+		// Pointless
+		if (__n <= 0)
+			return;
+		
+		// Meets or exceeds the desired capacity?
+		E[] elements = this._elements;
+		int nowl = elements.length;
+		if (__n <= nowl)
+			return;
+		
+		// Copy values over
+		E[] extra = (E[])new Object[__n];
+		for (int i = 0; i < nowl; i++)
+			extra[i] = elements[i];
+		
+		// Set
+		this._elements = extra;
 	}
 	
 	/**
