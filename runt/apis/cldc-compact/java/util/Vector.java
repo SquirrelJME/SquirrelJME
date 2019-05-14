@@ -251,11 +251,33 @@ public class Vector<E>
 		return new IteratorToEnumeration<E>(this.iterator());
 	}
 	
-	public void ensureCapacity(int __a)
+	/**
+	 * Ensures that the vector can store the given number of elements.
+	 *
+	 * @param __n The element capacity.
+	 * @since 2019/05/14
+	 */
+	public void ensureCapacity(int __n)
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			// Pointless
+			if (__n <= 0)
+				return;
+			
+			// Meets or exceeds the desired capacity?
+			Object[] elements = this.elementData;
+			int nowl = elements.length;
+			if (__n <= nowl)
+				return;
+			
+			// Copy values over
+			Object[] extra = new Object[__n];
+			for (int i = 0; i < nowl; i++)
+				extra[i] = elements[i];
+			
+			// Set
+			this.elementData = extra;
 		}
 	}
 	
@@ -471,11 +493,36 @@ public class Vector<E>
 		}
 	}
 	
-	public void setSize(int __a)
+	/**
+	 * Sets the size of this vector so that it has the given number of
+	 * elements.
+	 *
+	 * @param __n The number of elements the vector should be.
+	 * @throws ArrayIndexOutOfBoundsException If the size is negative.
+	 * @since 2019/05/14
+	 */
+	public void setSize(int __n)
+		throws ArrayIndexOutOfBoundsException
 	{
+		if (__n < 0)
+			throw new ArrayIndexOutOfBoundsException("IOOB");
+		
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			// Ensure elements can fit first
+			this.ensureCapacity(__n);
+			
+			// Null out any extra elements
+			int count = this.elementCount;
+			Object[] elements = this.elementData;
+			for (int i = count; i < __n; i++)
+				elements[i] = null;
+			
+			// Set new count
+			this.elementCount = __n;
+			
+			// Modified
+			this.modCount++;
 		}
 	}
 	
