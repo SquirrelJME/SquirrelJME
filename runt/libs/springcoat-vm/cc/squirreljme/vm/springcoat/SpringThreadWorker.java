@@ -1445,9 +1445,16 @@ public final class SpringThreadWorker
 				// Get the class by the name of whatever is input
 			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
 				"classByName:(Ljava/lang/String;)Ljava/lang/Class;":
-				return this.asVMObject(new ClassName(
-					this.<String>asNativeObject(String.class,
-					(SpringObject)__args[0])), true);
+				try
+				{
+					return this.asVMObject(new ClassName(
+						this.<String>asNativeObject(String.class,
+						(SpringObject)__args[0])), true);
+				}
+				catch (SpringClassNotFoundException e)
+				{
+					return this.asVMObject(null);
+				}
 				
 				// Returns the class data for a class object
 			case "cc/squirreljme/runtime/cldc/asm/ObjectAccess::" +
