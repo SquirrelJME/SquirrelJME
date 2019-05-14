@@ -534,16 +534,28 @@ final class __StackMapParser__
 				String.format("JC2j %d %d", nl, maxlocals));
 		StackMapTableEntry[] nextlocals = this._nextlocals;
 		int i = 0;
-		for (i = 0; i < nl; i++)
-			nextlocals[i] = __loadInfo();
+		for (i = 0; i < nl;)
+		{
+			StackMapTableEntry e = this.__loadInfo();
+			nextlocals[i++] = e;
+			
+			if (e.isWide())
+				nextlocals[i++] = e.topType();
+		}
 		for (;i < maxlocals; i++)
 			nextlocals[i] = null;
 		
 		// Read in stack variables
 		StackMapTableEntry[] nextstack = this._nextstack;
 		int ns = in.readUnsignedShort();
-		for (i = 0; i < ns; i++)
-			nextstack[i] = __loadInfo();
+		for (i = 0; i < ns;)
+		{
+			StackMapTableEntry e = this.__loadInfo();
+			nextstack[i++] = e;
+			
+			if (e.isWide())
+				nextstack[i++] = e.topType();
+		}
 		this._stacktop = ns;
 		
 		return rv;
