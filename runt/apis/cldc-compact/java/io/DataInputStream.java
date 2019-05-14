@@ -189,10 +189,10 @@ public class DataInputStream
 			((b & 0xFF) << 16) |
 			((c & 0xFF) << 8) |
 			(d & 0xFF))) << 32L) |
-			((long)(((e & 0xFF) << 24) |
+			(((long)((((e & 0xFF) << 24) |
 			((f & 0xFF) << 16) |
 			((g & 0xFF) << 8) |
-			(h & 0xFF))));
+			(h & 0xFF)))) & 0xFFFFFFFFL));
 	}
 	
 	@Override
@@ -335,10 +335,10 @@ public class DataInputStream
 			((b & 0xFF) << 16) |
 			((c & 0xFF) << 8) |
 			(d & 0xFF))) << 32L) |
-			((long)(((e & 0xFF) << 24) |
+			(((long)(((e & 0xFF) << 24) |
 			((f & 0xFF) << 16) |
 			((g & 0xFF) << 8) |
-			(h & 0xFF))));
+			(h & 0xFF))) & 0xFFFFFFFFL));
 	}
 	
 	/**
