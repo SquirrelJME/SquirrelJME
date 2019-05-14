@@ -78,44 +78,91 @@ public class Vector<E>
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/14
+	 */
 	@Override
-	public boolean add(E __a)
+	@SuppressWarnings({"unchecked"})
+	public void add(int __i, E __v)
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			int size = this.elementCount;
+			if (__i < 0 || __i > size)
+				throw new IndexOutOfBoundsException("IOOB");
+			
+			Object[] elements = this.elementData;
+			int cap = elements.length,
+				nextsize = size + 1;
+			
+			// Cannot fit in this array
+			Object[] source = elements;
+			if (nextsize > cap)
+			{
+				// Grow the list by a bit
+				int newcap = nextsize + Math.max(1, this.capacityIncrement);
+				elements = new Object[newcap];
+				
+				// Copy old stuff over, but only up to the index as needed
+				for (int i = 0; i < __i; i++)
+					elements[i] = source[i];
+			}
+			
+			// Move down to fit
+			for (int i = size - 1, o = size; o > __i; i--, o--)
+				elements[o] = source[i];
+			
+			// Store data here
+			elements[__i] = __v;
+			
+			// Store new information
+			this.elementCount = nextsize;
+			if (elements != source)
+				this.elementData = elements;
+			
+			// Structurally modified
+			this.modCount++;
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/14
+	 */
 	@Override
-	public void add(int __a, E __b)
-	{
-		throw new todo.TODO();
-	}
-	
-	@Override
-	public boolean addAll(Collection<? extends E> __a)
+	public boolean addAll(Collection<? extends E> __c)
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			return super.addAll(__c);
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/14
+	 */
 	@Override
-	public boolean addAll(int __a, Collection<? extends E> __b)
+	public boolean addAll(int __i, Collection<? extends E> __c)
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			return super.addAll(__i, __c);
 		}
 	}
 	
-	public void addElement(E __a)
+	/**
+	 * Adds an element to the end of the vector.
+	 *
+	 * @param __v The element to add.
+	 * @since 2019/05/14
+	 */
+	public void addElement(E __v)
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			this.add(__v);
 		}
 	}
 	
@@ -195,11 +242,23 @@ public class Vector<E>
 		}
 	}
 	
+	/**
+	 * Returns the first element in the vector.
+	 *
+	 * @return The first element.
+	 * @throws NoSuchElementException If the vector is empty.
+	 * @since 2019/05/14
+	 */
+	@SuppressWarnings({"unchecked"})
 	public E firstElement()
+		throws NoSuchElementException
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			if (this.elementCount <= 0)
+				throw new NoSuchElementException("NSEE");
+			
+			return (E)this.elementData[0];
 		}
 	}
 	
