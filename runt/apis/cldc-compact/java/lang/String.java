@@ -445,9 +445,22 @@ public final class String
 		return sb.toString();
 	}
 	
-	public boolean contains(CharSequence __s)
+	/**
+	 * Returns {@code true} if the string contains the given sequence.
+	 *
+	 * @param __b The sequence to find.
+	 * @return If the string contains the given sequence or not.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/14
+	 */
+	public boolean contains(CharSequence __b)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		// This is the same operation
+		return this.__indexOf(__b, 0) >= 0;
 	}
 	
 	/**
@@ -742,14 +755,37 @@ public final class String
 		return -1;
 	}
 	
-	public int indexOf(String __a)
+	/**
+	 * Returns the position where the given string is found.
+	 *
+	 * @param __b The sequence to find.
+	 * @return The index of the sequence or {@code -1} if it is not found.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/14
+	 */
+	public int indexOf(String __b)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		return this.__indexOf(__b, 0);
 	}
 	
-	public int indexOf(String __a, int __b)
+	/**
+	 * Returns the position where the given string is found.
+	 *
+	 * @param __b The sequence to find.
+	 * @param __i The starting index.
+	 * @return The index of the sequence or {@code -1} if it is not found.
+	 * @since 2019/05/14
+	 */
+	public int indexOf(String __b, int __i)
 	{
-		throw new todo.TODO();
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		return this.__indexOf(__b, __i);
 	}
 	
 	/**
@@ -1248,6 +1284,53 @@ public final class String
 		{
 			throw new todo.OOPS();
 		}
+	}
+	
+	/**
+	 * Returns the position where the given string is found.
+	 *
+	 * @param __b The sequence to find.
+	 * @param __i The starting index.
+	 * @return The index of the sequence or {@code -1} if it is not found.
+	 * @since 2019/05/14
+	 */
+	private final int __indexOf(CharSequence __b, int __i)
+	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		// Normalize position
+		if (__i < 0)
+			__i = 0;
+		
+		// If the sequence is empty, then it will always be a match
+		BasicSequence as = this._sequence;
+		int an = as.length(),
+			bn = __b.length();
+		if (bn <= 0)
+			return __i;
+		
+		// If the string is longer than ours, then it will never be a match
+		if (bn > an - __i)
+			return -1;
+		
+		// Do a long complicated loop matching, but we only need to check
+		// for as long as the sequence can actually fit
+__outer:
+		for (int a = __i, lim = an - bn; a < lim; a++)
+		{
+			// Check sequence characters
+			for (int x = a, b = 0; b < bn; x++, b++)
+				if (as.charAt(x) != __b.charAt(b))
+					continue __outer;
+			
+			// Since the inner loop continues to the outer, if this was reached
+			// then we know the full sequence was matched
+			return a;
+		}
+		
+		// Otherwise nothing was found because we tried every character
+		return -1;
 	}
 	
 	/**
