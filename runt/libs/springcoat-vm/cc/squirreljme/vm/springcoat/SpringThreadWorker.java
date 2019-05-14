@@ -937,17 +937,33 @@ public final class SpringThreadWorker
 			method = cl.lookupMethod(false, __nat);
 		} 
 		
-		// Add blank frame for protection, this is used to hold the return
-		// value on the stack
+		// Overflow or exceptions might occur
+		int framelimit;
+		SpringThread.Frame blank, execframe;
 		SpringThread thread = this.thread;
-		SpringThread.Frame blank = thread.enterBlankFrame();
+		try
+		{
+			// Add blank frame for protection, this is used to hold the return
+			// value on the stack
+			blank = thread.enterBlankFrame();
+			
+			// Enter the method we really want to execute
+			framelimit = thread.numFrames();
+			execframe = thread.enterFrame(method, __args);
+			
+			// Execute this method
+			this.run(framelimit);
+		}
 		
-		// Enter the method we really want to execute
-		int framelimit = thread.numFrames();
-		SpringThread.Frame execframe = thread.enterFrame(method, __args);
-		
-		// Execute this method
-		this.run(framelimit);
+		// Exception when running which was not caught
+		catch (SpringVirtualMachineException e)
+		{
+			// Print the thread trace
+			thread.printStackTrace(System.err);
+			
+			// Propogate up
+			throw e;
+		}
 		
 		// This is an error unless the thread signaled exit
 		SpringThread.Frame currentframe = thread.currentFrame();

@@ -524,39 +524,60 @@ final class __StackMapParser__
 		
 		// Read in local variables
 		int nl = in.readUnsignedShort();
-		
-		// {@squirreljme.error JC2j Old-style full frame specified more local
-		// variables than there are in the method. (The number of locals; The
-		// maximum number of locals)}
-		int maxlocals = this.maxlocals;
-		if (nl > maxlocals)
-			throw new InvalidClassFormatException(
-				String.format("JC2j %d %d", nl, maxlocals));
-		StackMapTableEntry[] nextlocals = this._nextlocals;
-		int i = 0;
-		for (i = 0; i < nl;)
-		{
-			StackMapTableEntry e = this.__loadInfo();
-			nextlocals[i++] = e;
-			
-			if (e.isWide())
-				nextlocals[i++] = e.topType();
-		}
-		for (;i < maxlocals; i++)
-			nextlocals[i] = null;
+		StackMapTableEntry[] inlocals = new StackMapTableEntry[nl];
+		for (int i = 0; i < nl; i++)
+			inlocals[i] = this.__loadInfo();
 		
 		// Read in stack variables
-		StackMapTableEntry[] nextstack = this._nextstack;
 		int ns = in.readUnsignedShort();
-		for (i = 0; i < ns;)
+		StackMapTableEntry[] instack = new StackMapTableEntry[ns];
+		for (int i = 0; i < ns; i++)
+			instack[i] = this.__loadInfo();
+		
+		// Assign read local variables
+		int lat = 0;
+		StackMapTableEntry[] nextlocals = this._nextlocals;
+		for (int i = 0; i < nl; i++)
 		{
-			StackMapTableEntry e = this.__loadInfo();
-			nextstack[i++] = e;
+			// Copy in
+			StackMapTableEntry e = inlocals[i];
+			nextlocals[lat++] = e;
 			
+			// Handling wide type?
 			if (e.isWide())
-				nextstack[i++] = e.topType();
+			{
+				// Set top
+				nextlocals[lat++] = e.topType();
+				
+				// If the top is explicit, then skip it
+				if (i + 1 < nl && inlocals[i + 1].isTop())
+					i++;
+			}
 		}
-		this._stacktop = ns;
+		
+		// Assign read stack variables
+		int sat = 0;
+		StackMapTableEntry[] nextstack = this._nextstack;
+		for (int i = 0; i < ns; i++)
+		{
+			// Copy in
+			StackMapTableEntry e = instack[i];
+			nextstack[sat++] = e;
+			
+			// Handling wide type?
+			if (e.isWide())
+			{
+				// Set top
+				nextstack[sat++] = e.topType();
+				
+				// If the top is explicit, then skip it
+				if (i + 1 < ns && instack[i + 1].isTop())
+					i++;
+			}
+		}
+		
+		// Stack depth is where the next stack would have been placed
+		this._stacktop = sat;
 		
 		return rv;
 	}

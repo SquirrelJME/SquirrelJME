@@ -28,7 +28,7 @@ public final class SpringThread
 {
 	/** Maximum depth of the stack. */
 	public static final int MAX_STACK_DEPTH =
-		128;
+		64;
 	
 	/** The thread ID. */
 	protected final int id;
