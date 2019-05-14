@@ -476,20 +476,48 @@ public class Vector<E>
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/14
+	 */
 	@Override
-	public E set(int __a, E __b)
+	@SuppressWarnings({"unchecked"})
+	public E set(int __i, E __v)
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			// Out of bounds?
+			int size = this.elementCount;
+			if (__i < 0 || __i >= size)
+				throw new ArrayIndexOutOfBoundsException("IOOB");
+			
+			// Read old value
+			Object[] elements = this.elementData;
+			E rv = (E)elements[__i];
+			
+			// Set new value
+			elements[__i] = __v;
+			
+			// Return old
+			return rv;
 		}
 	}
 	
-	public void setElementAt(E __a, int __b)
+	/**
+	 * Sets the element at the given index, note that compared to
+	 * {@link #set(int, E)} the parameters are reversed.
+	 *
+	 * @param __v The value to set.
+	 * @param __i The index to set.
+	 * @throws ArrayIndexOutOfBoundsException If the index is out of bounds.
+	 * @since 2019/05/14
+	 */
+	public void setElementAt(E __v, int __i)
+		throws ArrayIndexOutOfBoundsException
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			this.set(__i, __v);
 		}
 	}
 	
