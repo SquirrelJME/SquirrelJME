@@ -84,7 +84,7 @@ public final class System
 		int srclen = ObjectAccess.arrayLength(__src),
 			destlen = ObjectAccess.arrayLength(__dest);
 		if (__srcoff + __copylen > srclen ||
-			__destoff + __copylen > srclen)
+			__destoff + __copylen > destlen)
 			throw new IndexOutOfBoundsException(String.format(
 				"ZZ19 %d %d %d %d %d", __srcoff, srclen, __destoff, destlen,
 				__copylen));

@@ -112,6 +112,7 @@ More detailed changes:
      * Generate JUnit output which can be used in test environments.
      * Performed some refactoring on the deserialization/serialization code.
    * `tool-classfile`
+     * Corrected parsing of the stack map table.
      * Removed `net.multiphasicapps.classfile.ExecutableCode`, it was not used.
    * `tool-profiler`
      * When writing the NPS snapshot, set a limit on how deep the stack can
