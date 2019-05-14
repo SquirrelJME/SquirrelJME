@@ -361,13 +361,18 @@ public class DataInputStream
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/13
+	 */
 	@Override
-	public long skip(long __b)
+	public long skip(long __n)
 		throws IOException
 	{
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
+		if (__n < 0)
+			return 0;
+		
+		return this.in.skip(__n);
 	}
 	
 	@Override
