@@ -168,18 +168,54 @@ public class DataInputStream
 	public final double readDouble()
 		throws EOFException, IOException
 	{
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
+		InputStream in = this.in;
+		
+		// Read all values
+		int a = in.read(),
+			b = in.read(),
+			c = in.read(),
+			d = in.read(),
+			e = in.read(),
+			f = in.read(),
+			g = in.read(),
+			h = in.read();
+		
+		// If any were negative then all will be with OR
+		if ((a | b | c | d | e | f | g | h) < 0)
+			throw new EOFException("EOFF");
+		
+		// Remap values
+		return Double.longBitsToDouble((((long)(((a & 0xFF) << 24) |
+			((b & 0xFF) << 16) |
+			((c & 0xFF) << 8) |
+			(d & 0xFF))) << 32L) |
+			((long)(((e & 0xFF) << 24) |
+			((f & 0xFF) << 16) |
+			((g & 0xFF) << 8) |
+			(h & 0xFF))));
 	}
 	
 	@Override
 	public final float readFloat()
 		throws EOFException, IOException
 	{
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
+		InputStream in = this.in;
+		
+		// Read all values
+		int a = in.read(),
+			b = in.read(),
+			c = in.read(),
+			d = in.read();
+		
+		// If any were negative then all will be with OR
+		if ((a | b | c | d) < 0)
+			throw new EOFException("EOFF");
+		
+		// Remap values
+		return Float.intBitsToFloat(((a & 0xFF) << 24) |
+			((b & 0xFF) << 16) |
+			((c & 0xFF) << 8) |
+			(d & 0xFF));
 	}
 	
 	/**
@@ -270,13 +306,39 @@ public class DataInputStream
 			(d & 0xFF);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/14
+	 */
 	@Override
 	public final long readLong()
 		throws EOFException, IOException
 	{
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
+		InputStream in = this.in;
+		
+		// Read all values
+		int a = in.read(),
+			b = in.read(),
+			c = in.read(),
+			d = in.read(),
+			e = in.read(),
+			f = in.read(),
+			g = in.read(),
+			h = in.read();
+		
+		// If any were negative then all will be with OR
+		if ((a | b | c | d | e | f | g | h) < 0)
+			throw new EOFException("EOFF");
+		
+		// Remap values
+		return ((((long)(((a & 0xFF) << 24) |
+			((b & 0xFF) << 16) |
+			((c & 0xFF) << 8) |
+			(d & 0xFF))) << 32L) |
+			((long)(((e & 0xFF) << 24) |
+			((f & 0xFF) << 16) |
+			((g & 0xFF) << 8) |
+			(h & 0xFF))));
 	}
 	
 	/**

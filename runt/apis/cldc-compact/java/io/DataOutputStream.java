@@ -179,9 +179,18 @@ public class DataOutputStream
 	public final void writeDouble(double __v)
 		throws IOException
 	{
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
+		long v = Double.doubleToRawLongBits(__v);
+		
+		OutputStream out = this.out;
+		out.write((int)(v >> 56));
+		out.write((int)(v >> 48));
+		out.write((int)(v >> 40));
+		out.write((int)(v >> 32));
+		out.write((int)(v >> 24));
+		out.write((int)(v >> 16));
+		out.write((int)(v >> 8));
+		out.write((int)(v));
+		this.written += 8;
 	}
 	
 	/**
@@ -192,9 +201,14 @@ public class DataOutputStream
 	public final void writeFloat(float __v)
 		throws IOException
 	{
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
+		int v = Float.floatToRawIntBits(__v);
+		
+		OutputStream out = this.out;
+		out.write(v >> 24);
+		out.write(v >> 16);
+		out.write(v >> 8);
+		out.write(v);
+		this.written += 4;
 	}
 	
 	/**
@@ -221,9 +235,16 @@ public class DataOutputStream
 	public final void writeLong(long __v)
 		throws IOException
 	{
-		if (false)
-			throw new IOException();
-		throw new todo.TODO();
+		OutputStream out = this.out;
+		out.write((int)(__v >> 56));
+		out.write((int)(__v >> 48));
+		out.write((int)(__v >> 40));
+		out.write((int)(__v >> 32));
+		out.write((int)(__v >> 24));
+		out.write((int)(__v >> 16));
+		out.write((int)(__v >> 8));
+		out.write((int)(__v));
+		this.written += 8;
 	}
 	
 	/**
