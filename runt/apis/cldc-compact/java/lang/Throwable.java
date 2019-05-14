@@ -147,6 +147,7 @@ public class Throwable
 		
 		// Debug to catch which throwable was made
 		todo.DEBUG.note("new Throwable(`%s`)", __m);
+		this.printStackTrace();
 	}
 	
 	/**
