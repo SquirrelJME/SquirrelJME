@@ -289,6 +289,7 @@ public final class NativeInstruction
 		switch (NativeInstruction.encoding(__op))
 		{
 			case NativeInstructionType.BREAKPOINT:
+			case NativeInstructionType.DEBUG_EXIT:
 			case NativeInstructionType.ENTRY_MARKER:
 			case NativeInstructionType.RETURN:
 				return 0;
@@ -304,6 +305,8 @@ public final class NativeInstruction
 			case NativeInstructionType.ATOMIC_INT_DECREMENT_AND_GET:
 			case NativeInstructionType.CONVERSION_TO_WIDE:
 			case NativeInstructionType.CONVERSION_FROM_WIDE:
+			case NativeInstructionType.DEBUG_ENTRY:
+			case NativeInstructionType.DEBUG_POINT:
 			case NativeInstructionType.IF_ICMP:
 			case NativeInstructionType.IFEQ_CONST:
 			case NativeInstructionType.LOAD_TABLE:

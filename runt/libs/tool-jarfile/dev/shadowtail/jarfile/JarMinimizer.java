@@ -390,7 +390,7 @@ public final class JarMinimizer
 				case STRING:
 					{
 						__init.memWriteInt(Modifier.JAR_OFFSET,
-							ep, jarpooloff + pool.offset(i));
+							ep, jarpooloff + pool.offset(i) + 4);
 					}
 					break;
 					

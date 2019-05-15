@@ -9,8 +9,11 @@
 
 package dev.shadowtail.classfile.xlate;
 
+import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.Instruction;
 import net.multiphasicapps.classfile.InstructionJumpTargets;
+import net.multiphasicapps.classfile.MethodDescriptor;
+import net.multiphasicapps.classfile.MethodName;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -48,6 +51,15 @@ public class ByteCodeState
 	/** Can an exception handler be called? */
 	public boolean canexception;
 	
+	/** Class name. */
+	public ClassName classname;
+	
+	/** The method descriptor. */
+	public MethodDescriptor methodtype;
+	
+	/** The method name. */
+	public MethodName methodname;
+	
 	/** The current source line being processed. */
 	public int line =
 		-1;
@@ -78,7 +90,7 @@ public class ByteCodeState
 	public String toString()
 	{
 		return String.format("{i=%s, si=%s, jss=%s, jsr=%s, ce=%b, " +
-			"ln=%d, la=%d, a=%d, fa=%d, jt=%s, rjt=%s}",
+			"ln=%d, la=%d, a=%d, fa=%d, jt=%s, rjt=%s, cl=%s, mn=%s, mt=%s}",
 			this.instruction,
 			this.simplified,
 			this.stack,
@@ -89,7 +101,10 @@ public class ByteCodeState
 			this.addr,
 			this.followaddr,
 			this.jumptargets,
-			this.reversejumptargets);
+			this.reversejumptargets,
+			this.classname,
+			this.methodname,
+			this.methodtype);
 	}
 }
 

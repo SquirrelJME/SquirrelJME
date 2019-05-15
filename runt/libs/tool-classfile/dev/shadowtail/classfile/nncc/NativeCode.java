@@ -65,6 +65,7 @@ public final class NativeCode
 		10;
 	
 	/** Contains the information address of the current method. */
+	@Deprecated
 	public static final int WHERE_IS_THIS =
 		11;
 	
@@ -89,6 +90,7 @@ public final class NativeCode
 		16;
 	
 	/** This bit XORed NEG bit == set, means memory access is volatile. */
+	@Deprecated
 	public static final int MEMORY_OFF_VOLATILE_BIT =
 		0x80000000;
 	
