@@ -1,0 +1,10 @@
+# 2019/05/14
+
+## 18:52
+
+I have an idea to start a new virtual machine which I call FlowerCoat. it will
+basically be an optimization of SpringCoat. Pretty much the same pure
+interpreter but will allow me to evolve it in a way which fits better with
+SummerCoat. Then I can back-port those to SpringCoat. Testing things in
+SpringCoat is too slow and SummerCoat although it has a compiler needs a bunch
+of supporting VM code and such.
