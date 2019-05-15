@@ -349,6 +349,7 @@ public final class NativeInstruction
 		{
 				// []
 			case NativeInstructionType.BREAKPOINT:
+			case NativeInstructionType.DEBUG_EXIT:
 			case NativeInstructionType.ENTRY_MARKER:
 			case NativeInstructionType.RETURN:
 				return ArgumentFormat.of();
@@ -389,8 +390,16 @@ public final class NativeInstruction
 				return ArgumentFormat.of(
 					ArgumentFormat.VPOOL,
 					ArgumentFormat.VUINT);
+					
+				// [p16, p16, p16]
+			case NativeInstructionType.DEBUG_ENTRY:
+				return ArgumentFormat.of(
+					ArgumentFormat.VPOOL,
+					ArgumentFormat.VPOOL,
+					ArgumentFormat.VPOOL);
 				
 				// [u16, u16, u16]
+			case NativeInstructionType.DEBUG_POINT:
 			case NativeInstructionType.LOAD_TABLE:
 			case NativeInstructionType.MATH_REG_FLOAT:
 			case NativeInstructionType.MATH_REG_INT:
@@ -612,6 +621,9 @@ public final class NativeInstruction
 			case NativeInstructionType.ATOMIC_INT_INCREMENT:
 				return "ATOMIC_INT_INCREMENT";
 			case NativeInstructionType.BREAKPOINT:		return "BREAKPOINT";
+			case NativeInstructionType.DEBUG_ENTRY:		return "DEBUG_ENTRY";
+			case NativeInstructionType.DEBUG_EXIT:		return "DEBUG_EXIT";
+			case NativeInstructionType.DEBUG_POINT:		return "DEBUG_POINT";
 			case NativeInstructionType.ENTRY_MARKER:	return "ENTRY_MARKER";
 			case NativeInstructionType.IFEQ_CONST:		return "IFEQ_CONST";
 			case NativeInstructionType.INVOKE:			return "INVOKE";

@@ -153,8 +153,21 @@ public interface NativeInstructionType
 		0xE6;
 	
 	/** Method entry marker. */
+	@Deprecated
 	public static final int ENTRY_MARKER =
 		0xE7;
+	
+	/** Debug entry to method. */
+	public static final int DEBUG_ENTRY =
+		0xE8;
+	
+	/** Debug exit from method. */
+	public static final int DEBUG_EXIT =
+		0xE9;
+	
+	/** Debug single point in method. */
+	public static final int DEBUG_POINT =
+		0xEA;
 	
 	/**
 	 * New. 
