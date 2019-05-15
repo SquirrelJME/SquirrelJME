@@ -108,12 +108,15 @@ public final class NativeCode
 	private final NativeInstruction[] _instructions;
 	
 	/** Line number table. */
+	@Deprecated
 	private final short[] _lines;
 	
 	/** Java operation table. */
+	@Deprecated
 	private final byte[] _jops;
 	
 	/** Java PC table. */
+	@Deprecated
 	private final byte[] _jpcs;
 	
 	/**
@@ -170,6 +173,7 @@ public final class NativeCode
 	 * @return The Java address table.
 	 * @since 2019/04/26
 	 */
+	@Deprecated
 	public final byte[] javaAddresses()
 	{
 		return this._jpcs.clone();
@@ -182,6 +186,7 @@ public final class NativeCode
 	 * @return The Java operation table.
 	 * @since 2019/04/26
 	 */
+	@Deprecated
 	public final byte[] javaOperations()
 	{
 		return this._jops.clone();
@@ -204,6 +209,7 @@ public final class NativeCode
 	 * @return The line number table.
 	 * @since 2018/03/24
 	 */
+	@Deprecated
 	public final short[] lines()
 	{
 		return this._lines.clone();

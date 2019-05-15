@@ -53,6 +53,7 @@ public enum MinimizedPoolEntryType
 	DOUBLE,
 	
 	/** Where is this? */
+	@Deprecated
 	WHERE_IS_THIS,
 	
 	/** A plain string that was used. */
