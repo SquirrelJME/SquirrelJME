@@ -20,6 +20,7 @@ import net.multiphasicapps.classfile.MethodName;
  *
  * @since 2019/04/22
  */
+@Deprecated
 public final class WhereIsThis
 {
 	/** The bit used to indicate an instance method for where is this. */

@@ -42,14 +42,17 @@ public final class NativeCodeBuilder
 	int _nextaddr;
 	
 	/** Current line address. */
+	@Deprecated
 	int _cursrcline =
 		-1;
 	
 	/** Current Java instruction type. */
+	@Deprecated
 	int _cursrcjop =
 		-1;
 	
 	/** Current Java PC address. */
+	@Deprecated
 	int _cursrcjpc =
 		-1;
 	
@@ -659,6 +662,7 @@ public final class NativeCodeBuilder
 	 * @param __jpc The byte code address to use.
 	 * @since 2019/04/26
 	 */
+	@Deprecated
 	public final void setByteCodeAddress(int __jpc)
 	{
 		this._cursrcjpc = __jpc;
@@ -670,6 +674,7 @@ public final class NativeCodeBuilder
 	 * @param __jo The byte code operation to use.
 	 * @since 2019/04/26
 	 */
+	@Deprecated
 	public final void setByteCodeOperation(int __jo)
 	{
 		this._cursrcjop = __jo;
@@ -681,6 +686,7 @@ public final class NativeCodeBuilder
 	 * @param __l The line to set.
 	 * @since 2019/03/23
 	 */
+	@Deprecated
 	public final void setSourceLine(int __l)
 	{
 		this._cursrcline = __l;
