@@ -48,27 +48,34 @@ public final class MinimizedMethod
 	public final int codeoffset;
 	
 	/** The line offset. */
+	@Deprecated
 	public final int lineoffset;
 	
 	/** Java operation offset. */
+	@Deprecated
 	public final int jopsoffset;
 	
 	/** Java PC offset. */
+	@Deprecated
 	public final int jpcsoffset;
 	
 	/** The where offset. */
+	@Deprecated
 	public final int whereoffset;
 	
 	/** Translated method code. */
 	final byte[] _code;
 	
 	/** Line number table. */
+	@Deprecated
 	final byte[] _lines;
 	
 	/** Java operation table. */
+	@Deprecated
 	final byte[] _jops;
 	
 	/** Java address table. */
+	@Deprecated
 	final byte[] _jpcs;
 	
 	/** Method flags. */

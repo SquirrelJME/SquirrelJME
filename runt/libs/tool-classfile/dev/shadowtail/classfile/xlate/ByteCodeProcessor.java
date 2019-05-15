@@ -97,6 +97,11 @@ public final class ByteCodeProcessor
 		
 		// Reverse jump table to detect jump backs
 		this._revjumps = __bc.reverseJumpTargets();
+		
+		// Get details and names of the stuff
+		state.classname = __bc.thisType();
+		state.methodname = __bc.name();
+		state.methodtype = __bc.type();
 	}
 	
 	/**

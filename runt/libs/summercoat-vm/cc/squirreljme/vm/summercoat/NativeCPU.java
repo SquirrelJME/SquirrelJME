@@ -316,7 +316,11 @@ public final class NativeCPU
 				}
 			
 			// Print CPU debug info
-			if (ENABLE_DEBUG)
+			int encoding = NativeInstruction.encoding(op);
+			if (ENABLE_DEBUG &&
+				encoding != NativeInstructionType.DEBUG_ENTRY &&
+				encoding != NativeInstructionType.DEBUG_EXIT &&
+				encoding != NativeInstructionType.DEBUG_POINT)
 				this.__cpuDebugPrint(nowframe, op, af, args, largs, reglist);
 			
 			// By default the next instruction is the address after all
@@ -324,9 +328,22 @@ public final class NativeCPU
 			int nextpc = lasticache + rargp;
 			
 			// Handle the operation
-			int encoding;
-			switch ((encoding = NativeInstruction.encoding(op)))
+			switch (encoding)
 			{
+					// Debug entry point of method
+				case NativeInstructionType.DEBUG_ENTRY:
+					this.__debugEntry(nowframe, args[0], args[1], args[2]);
+					break;
+					
+					// Debug exit of method
+				case NativeInstructionType.DEBUG_EXIT:
+					break;
+					
+					// Debug point in method.
+				case NativeInstructionType.DEBUG_POINT:
+					this.__debugPoint(nowframe, args[0], args[1], args[2]);
+					break;
+				
 					// Atomic decrement and get
 				case NativeInstructionType.ATOMIC_INT_DECREMENT_AND_GET:
 					synchronized (memory)
@@ -655,114 +672,15 @@ public final class NativeCPU
 		if (__f == null)
 			throw new NullPointerException("NARG");
 		
-		// If the where is this is not set, no idea where this is
-		int wit = __f._registers[NativeCode.WHERE_IS_THIS];
-		if (wit == 0)
-			return new CallTraceElement();
-		
-		// Need memory to access the where information
-		ReadableMemory memory = this.memory;
-		
-		// The memory address where debug info is located
-		int lineoff = (short)memory.memReadShort(wit),
-			jopsoff = (short)memory.memReadShort(wit + 2),
-			jpcsoff = (short)memory.memReadShort(wit + 4);
-		
-		// Try to find the line where we should be at?
-		int pc = __f._pc,
-			relpc = pc - __f._entrypc;
-		
-		// Try to find where the code is on the debug tables
-		int online = (lineoff == 0 ? -1 :
-				this.__cpuDebugFindTabIndex(true, wit + lineoff, relpc)),
-			onjop = (jopsoff == 0 ? -1 :
-				this.__cpuDebugFindTabIndex(false, wit + jopsoff, relpc)),
-			onjpc = (jpcsoff == 0 ? -1 :
-				this.__cpuDebugFindTabIndex(false, wit + jpcsoff, relpc));
-		
-		// Read values
-		String cname = null,
-			mname = null,
-			mtype = null;
-		
-		// Read class, method name, and method type
-		try (DataInputStream dis = new DataInputStream(
-			new ReadableMemoryInputStream(memory, wit + 6, 1024)))
-		{
-			cname = dis.readUTF();
-			mname = dis.readUTF();
-			mtype = dis.readUTF();
-		}
-		
-		// Just ignore
-		catch (IOException e)
-		{
-		}
-		
-		// Build
-		return new CallTraceElement(cname, mname, mtype, pc, null,
-			online, onjop, onjpc);
-	}
-	
-	/**
-	 * Find index within debug table.
-	 *
-	 * @param __sh Are shorts being used?
-	 * @param __ad The address to the table.
-	 * @param __pc The desired PC address.
-	 * @return The resulting index or {@code -1} if not found.
-	 * @since 2019/04/26
-	 */
-	private final int __cpuDebugFindTabIndex(boolean __sh, int __ad, int __pc)
-	{
-		// The last at index, if the index is not found this will be
-		// returned at the end.
-		int lastat = -1;
-		
-		// Try to find our line
-		try (DataInputStream dis = new DataInputStream(
-			new ReadableMemoryInputStream(this.memory, __ad, 4096)))
-		{
-			// Constant try to read the index
-			for (int nowpc = 0;;)
-			{
-				// Read offset code
-				int off = dis.read() & 0xFF;
-				
-				// End of line marker (or just EOF)
-				if (off == 255)
-					break;
-				
-				// Read value
-				int nowat = (__sh ? dis.readUnsignedShort() :
-					dis.readUnsignedByte());
-				
-				// If the resulting PC address is after this one then this
-				// means the last value is used. Otherwise the values will
-				// point to the following indexes and be a bit hard to debug
-				int respc = nowpc + off;
-				if (respc > __pc)
-					return lastat;
-				
-				// However if this matches the index directly we know it is
-				// here
-				else if (respc == __pc)
-					return nowat;
-				
-				// Try again at future address
-				lastat = nowat;
-				nowpc = respc;
-			}
-		}
-		
-		// Just ignore
-		catch (IOException e)
-		{
-		}
-		
-		// Not found, use the last index since maybe the table was
-		// truncated or not written enough?
-		return lastat;
+		// Build trace
+		return new CallTraceElement(
+			__f._inclass,
+			__f._inmethodname,
+			__f._inmethodtype,
+			__f._pc, null,
+			__f._inline,
+			__f._injop,
+			__f._injpc);
 	}
 	
 	/**
@@ -821,7 +739,9 @@ public final class NativeCPU
 			
 			// Can be special?
 			boolean canspec = true;
-			if ((encoding == NativeInstructionType.IF_ICMP &&
+			if (encoding == NativeInstructionType.DEBUG_ENTRY ||
+				encoding == NativeInstructionType.DEBUG_POINT ||
+				(encoding == NativeInstructionType.IF_ICMP &&
 					i == 2) ||
 				(encoding == NativeInstructionType.MATH_CONST_INT &&
 					i == 1) ||
@@ -932,6 +852,88 @@ public final class NativeCPU
 	}
 	
 	/**
+	 * Sets the frame information string from the given pool entries.
+	 *
+	 * @param __f The frame.
+	 * @param __pcl The class string from the pool.
+	 * @param __pmn The method name from the pool.
+	 * @param __pmt The method type from the pool.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/15
+	 */
+	private final void __debugEntry(Frame __f, int __pcl, int __pmn, int __pmt)
+		throws NullPointerException
+	{
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
+		// Get the pool address
+		int pooladdr = __f._registers[NativeCode.POOL_REGISTER];
+		
+		// Load strings
+		WritableMemory memory = this.memory;
+		__f._inclass = this.__loadUtfString(
+			memory.memReadInt(pooladdr + (__pcl * 4)));
+		__f._inmethodname = this.__loadUtfString(
+			memory.memReadInt(pooladdr + (__pmn * 4)));
+		__f._inmethodtype = this.__loadUtfString(
+			memory.memReadInt(pooladdr + (__pmt * 4)));
+	}
+	
+	/**
+	 * Sets the debug point in the frame.
+	 *
+	 * @param __f The frame.
+	 * @param __sln The source line.
+	 * @param __jop The Java operation.
+	 * @param __jpc The Java address.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/15
+	 */
+	private final void __debugPoint(Frame __f, int __sln, int __jop, int __jpc)
+		throws NullPointerException
+	{
+		if (__f == null)
+			throw new NullPointerException("NARG");
+		
+		__f._inline = __sln;
+		__f._injop = __jop;
+		__f._injpc = __jpc;
+	}
+	
+	/**
+	 * Loads a UTF string from the given memory address.
+	 *
+	 * @param __addr The address to read from.
+	 * @return The resulting string.
+	 * @since 2019/05/15
+	 */
+	private final String __loadUtfString(int __addr)
+	{
+		// Read length to figure out how long the string is
+		WritableMemory memory = this.memory;
+		int strlen = memory.memReadShort(__addr) & 0xFFFF;
+		
+		// Decode string data
+		try (DataInputStream dis = new DataInputStream(
+			new ReadableMemoryInputStream(memory, __addr, strlen + 2)))
+		{
+			return dis.readUTF();
+		}
+		
+		// Could not read string, just try and decode some UTF-8 from it
+		catch (IOException e)
+		{
+			// Read in raw bytes
+			byte[] raw = new byte[strlen];
+			memory.memReadBytes(__addr + 2, raw, 0, strlen);
+			
+			// Decode it as some string
+			return new String(raw);
+		}
+	}
+	
+	/**
 	 * This represents a single frame in the execution stack.
 	 *
 	 * @since 2019/04/21
@@ -953,6 +955,24 @@ public final class NativeCPU
 		
 		/** Last executed address. */
 		int _lastpc;
+		
+		/** The executing class. */
+		String _inclass;
+		
+		/** The executing method name. */
+		String _inmethodname;
+		
+		/** The executing method type. */
+		String _inmethodtype;
+		
+		/** The current line. */
+		int _inline;
+		
+		/** The current Java operation. */
+		int _injop;
+		
+		/** The current Java address. */
+		int _injpc;
 	}
 }
 

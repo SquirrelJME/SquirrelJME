@@ -72,9 +72,11 @@ public final class NearNativeByteCodeHandler
 	protected final FieldAccessTime defaultfieldaccesstime;
 	
 	/** The type of the current class being processed. */
+	@Deprecated
 	protected final ClassName thistype;
 	
 	/** Where is this method? */
+	@Deprecated
 	protected final WhereIsThis whereisthis;
 	
 	/** Is this method synchronized? */
@@ -1292,9 +1294,11 @@ public final class NearNativeByteCodeHandler
 		// Entry point debugging
 		if (addr == 0)
 		{
-			// Load the location of this
-			codebuilder.add(NativeInstructionType.LOAD_POOL,
-				this.whereisthis, NativeCode.WHERE_IS_THIS);
+			// Debug entry point
+			codebuilder.add(NativeInstructionType.DEBUG_ENTRY,
+				state.classname.toString(),
+				state.methodname.toString(),
+				state.methodtype.toString());
 			
 			// Setup monitor entry
 			if (this.issynchronized)
@@ -1314,6 +1318,11 @@ public final class NearNativeByteCodeHandler
 				this.__monitor(true, NativeCode.MONITOR_TARGET_REGISTER);
 			}
 		}
+		
+		// Debug single instruction point
+		codebuilder.add(NativeInstructionType.DEBUG_POINT,
+			state.line & 0x7FFF, state.instruction.operation() & 0xFF,
+			state.instruction.address() & 0x7FFF);
 		
 		// Set source line and instruction operation
 		codebuilder.setSourceLine(state.line);
@@ -1761,6 +1770,9 @@ public final class NearNativeByteCodeHandler
 				this.__monitor(false, NativeCode.MONITOR_TARGET_REGISTER);
 				this.__refUncount(NativeCode.MONITOR_TARGET_REGISTER);
 			}
+			
+			// Debug exit
+			codebuilder.add(NativeInstructionType.DEBUG_EXIT);
 			
 			// Since there is nothing to uncount, just return
 			codebuilder.add(NativeInstructionType.RETURN);
