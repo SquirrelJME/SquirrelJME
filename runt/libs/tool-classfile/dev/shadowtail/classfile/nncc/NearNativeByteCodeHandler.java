@@ -503,11 +503,6 @@ public final class NearNativeByteCodeHandler
 					codebuilder.add(NativeInstructionType.BREAKPOINT);
 					break;
 					
-					// Entry Marker
-				case "entryMarker":
-					codebuilder.add(NativeInstructionType.ENTRY_MARKER);
-					break;
-					
 					// Exception handling
 				case "exceptionHandle":
 					// This generates no actual codes to check the exception,

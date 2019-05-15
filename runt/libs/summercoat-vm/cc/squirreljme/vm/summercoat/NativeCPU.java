@@ -373,10 +373,6 @@ public final class NativeCPU
 					}
 					break;
 				
-					// Entry marker used for debug
-				case NativeInstructionType.ENTRY_MARKER:
-					break;
-					
 					// Conversion (Narrow)
 				case NativeInstructionType.CONVERSION:
 					{

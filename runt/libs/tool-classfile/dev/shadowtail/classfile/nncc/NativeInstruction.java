@@ -290,7 +290,6 @@ public final class NativeInstruction
 		{
 			case NativeInstructionType.BREAKPOINT:
 			case NativeInstructionType.DEBUG_EXIT:
-			case NativeInstructionType.ENTRY_MARKER:
 			case NativeInstructionType.RETURN:
 				return 0;
 			
@@ -353,7 +352,6 @@ public final class NativeInstruction
 				// []
 			case NativeInstructionType.BREAKPOINT:
 			case NativeInstructionType.DEBUG_EXIT:
-			case NativeInstructionType.ENTRY_MARKER:
 			case NativeInstructionType.RETURN:
 				return ArgumentFormat.of();
 				
@@ -627,7 +625,6 @@ public final class NativeInstruction
 			case NativeInstructionType.DEBUG_ENTRY:		return "DEBUG_ENTRY";
 			case NativeInstructionType.DEBUG_EXIT:		return "DEBUG_EXIT";
 			case NativeInstructionType.DEBUG_POINT:		return "DEBUG_POINT";
-			case NativeInstructionType.ENTRY_MARKER:	return "ENTRY_MARKER";
 			case NativeInstructionType.IFEQ_CONST:		return "IFEQ_CONST";
 			case NativeInstructionType.INVOKE:			return "INVOKE";
 			case NativeInstructionType.LOAD_POOL:		return "LOAD_POOL";
