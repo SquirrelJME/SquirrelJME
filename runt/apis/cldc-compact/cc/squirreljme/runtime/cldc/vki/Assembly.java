@@ -39,13 +39,6 @@ public final class Assembly
 	public static native void breakpoint();
 	
 	/**
-	 * Entry point marker (no op).
-	 *
-	 * @since 2019/04/21
-	 */
-	public static native void entryMarker();
-	
-	/**
 	 * Performs explicit exception handling.
 	 *
 	 * @since 2019/04/28

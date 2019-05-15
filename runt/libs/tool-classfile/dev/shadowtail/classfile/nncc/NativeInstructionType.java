@@ -152,11 +152,6 @@ public interface NativeInstructionType
 	public static final int IFEQ_CONST =
 		0xE6;
 	
-	/** Method entry marker. */
-	@Deprecated
-	public static final int ENTRY_MARKER =
-		0xE7;
-	
 	/** Debug entry to method. */
 	public static final int DEBUG_ENTRY =
 		0xE8;
