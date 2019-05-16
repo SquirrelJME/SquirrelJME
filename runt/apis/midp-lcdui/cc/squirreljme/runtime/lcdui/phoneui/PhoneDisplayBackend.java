@@ -23,6 +23,7 @@ public interface PhoneDisplayBackend
 	 * Activates the display.
 	 *
 	 * @param __ad The active display to draw into.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/16
 	 */
 	public abstract void activate(ActiveDisplay __ad)
