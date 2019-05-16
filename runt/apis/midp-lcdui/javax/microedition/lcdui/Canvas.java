@@ -210,10 +210,7 @@ public abstract class Canvas
 	@Override
 	public int getHeight()
 	{
-		throw new todo.TODO();
-		/*
-		return this.__defaultHeight();
-		*/
+		return Displayable.__getHeight(this, this._isfullscreen);
 	}
 	
 	/**
@@ -260,10 +257,7 @@ public abstract class Canvas
 	@Override
 	public int getWidth()
 	{
-		throw new todo.TODO();
-		/*
-		return this.__defaultWidth();
-		*/
+		return Displayable.__getWidth(this, this._isfullscreen);
 	}
 	
 	/**

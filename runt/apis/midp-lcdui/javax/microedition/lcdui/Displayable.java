@@ -333,6 +333,57 @@ public abstract class Displayable
 		// Fallback to just using SquirrelJME
 		return "SquirrelJME";
 	}
+	
+	/**
+	 * Returns the displayable height.
+	 *
+	 * @param __d The displayable.
+	 * @param __full Return the full screen?
+	 * @return The height.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/16
+	 */
+	static final int __getHeight(Displayable __d, boolean __full)
+		throws NullPointerException
+	{
+		if (__d == null)
+			throw new NullPointerException("NARG");
+		
+		// Use dimension from default display
+		Display display = __d._display;
+		if (display == null)
+			return Display.getDisplays(0)[0].getHeight();
+		
+		// Use content area size
+		if (__full)
+			return display._phoneui.height;
+		return display._phoneui.contentHeight();
+	}
+	
+	/**
+	 * Returns the displayable width.
+	 *
+	 * @param __d The displayable.
+	 * @param __full Return the full screen?
+	 * @return The width.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/16
+	 */
+	static final int __getWidth(Displayable __d, boolean __full)
+	{
+		if (__d == null)
+			throw new NullPointerException("NARG");
+			
+		// Use dimension from default display
+		Display display = __d._display;
+		if (display == null)
+			return Display.getDisplays(0)[0].getWidth();
+		
+		// Use content area size
+		if (__full)
+			return display._phoneui.width;
+		return display._phoneui.contentWidth();
+	}
 }
 
 

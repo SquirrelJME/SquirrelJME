@@ -491,7 +491,7 @@ public class Display
 	 */
 	public int getHeight()
 	{
-		return this._phoneui.screenheight;
+		return this._phoneui.height;
 	}
 	
 	public IdleItem getIdleItem()
@@ -542,7 +542,7 @@ public class Display
 	 */
 	public int getWidth()
 	{
-		return this._phoneui.screenwidth;
+		return this._phoneui.width;
 	}
 	
 	/**

@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.lcdui.phoneui;
 
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
 
 /**
  * This class contains the definition and holders for the phone based user
@@ -29,19 +30,25 @@ public final class PhoneUI
 		320;
 	
 	/** The width of the phone screen. */
-	public final int screenwidth;
+	public final int width;
 	
 	/** The height of the phone screen. */
-	public final int screenheight;
+	public final int height;
 	
 	/** The backend this UI uses. */
 	protected final PhoneDisplayBackend backend;
+	
+	/** The buffer which represents the display itself. */
+	protected final Image buffer;
 	
 	/** The current displayable to show. */
 	private Displayable _current;
 	
 	/** The title to use. */
 	private String _title;
+	
+	/** Should the display be repainted? */
+	private volatile boolean _repaint;
 	
 	/**
 	 * Initializes the base UI using the default screen size.
@@ -72,18 +79,44 @@ public final class PhoneUI
 			throw new NullPointerException("NARG");
 		
 		this.backend = __b;
-		this.screenwidth = (__sw <= 0 ? DEFAULT_SCREEN_WIDTH : __sw);
-		this.screenheight = (__sh <= 0 ? DEFAULT_SCREEN_HEIGHT : __sh);
+		this.width = (__sw = (__sw <= 0 ? DEFAULT_SCREEN_WIDTH : __sw));
+		this.height = (__sh = (__sh <= 0 ? DEFAULT_SCREEN_HEIGHT : __sh));
+		
+		// The screen is drawn into this buffer, which is then draw on the
+		// actual display (using possible scaling, or otherwise)
+		this.buffer = Image.createImage(__sw, __sh);
 	}
 	
 	/**
-	 * Repaints the display.
+	 * Returns the height of the content area.
+	 *
+	 * @return The content area height.
+	 * @since 2019/05/16
+	 */
+	public final int contentHeight()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Returns the width of the content area.
+	 *
+	 * @return The content area width.
+	 * @since 2019/05/16
+	 */
+	public final int contentWidth()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Signals that the display should be repainted on the next draw loop.
 	 *
 	 * @since 2019/05/16
 	 */
 	public final void repaint()
 	{
-		throw new todo.TODO();
+		this._repaint = true;
 	}
 	
 	/**
