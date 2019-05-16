@@ -765,12 +765,11 @@ public class Display
 		// Enter background state?
 		if (__show == null)
 		{
-			/*head.setState(DisplayState.BACKGROUND);
-			return;*/
+			todo.TODO.note("Enter background state.");
+			/*head.setState(DisplayState.BACKGROUND);*/
+			return;
 		}
 		
-		throw new todo.TODO();
-		/*
 		// If we are trying to show the same display, do nothing
 		Displayable current = this._current;
 		if (current == __show)
@@ -779,26 +778,10 @@ public class Display
 			// our callback is the one which is registered so that way we
 			// take control of the screen
 			if (__show != null)
-			{
-				__EventCallback__._CALLBACK.__register();
-				
-				// Use the title of this thing
-				NativeDisplayAccess.setDisplayTitle(this._state.nativeid,
-					__show._dtitle);
-				
-				// Since we took over, we should recalculate the entire display
-				// because we would have missed resize events and other such
-				// things
-				this.__updateUIStack(this._uipersist, null);
-			}
+				this.__doShowCurrent(__show);
 			
 			return;
 		}
-		
-		// {@squirreljme.error EB29 The display does not support this type
-		// of displayable.}
-		if ((this.getCapabilities() & __show.__supportBit()) == 0)
-			throw new DisplayCapabilityException("EB29");
 		
 		// If showing an alert, it gets displayed instead
 		if (__show instanceof Alert)
@@ -809,37 +792,22 @@ public class Display
 		
 		// {@squirreljme.error EB28 The displayable to be displayed is already
 		// being displayed.}
-		if (__show._parent != null)
+		if (__show._display != null)
 			throw new IllegalStateException("EB28");
 		
 		// Clear current's parent
 		if (current != null)
 		{
-			current._parent = null;
-			
-			// Clear the shown state for this widget
+			current._display = null;
 			current._isshown = false;
 		}
+		
 		// Set new parent
-		__show._parent = this;
+		__show._display = this;
 		this._current = __show;
 		
-		// For the displayable, inherit the shown state from this display
-		// since if the display is not being shown then the widget will not
-		// be shown until it happens to be shown.
-		__show._isshown = this._isshown;
-		
-		// Register the callback so events can be executed in the LCDUI event
-		// loop, if it is lost then
-		__EventCallback__._CALLBACK.__register();
-		
-		// Use the title of this thing
-		NativeDisplayAccess.setDisplayTitle(this._state.nativeid,
-			__show._dtitle);
-		
-		// Update the UI stack
-		this.__updateUIStack(this._uipersist, null);
-		*/
+		// Do common showing stuff
+		this.__doShowCurrent(__show);
 	}
 	
 	public void setCurrentItem(Item __a)
@@ -1251,6 +1219,29 @@ public class Display
 			t.printStackTrace();
 		}
 		*/
+	}
+	
+	/**
+	 * Do current show logic.
+	 *
+	 * @param __show The displayable to show.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/16
+	 */
+	final void __doShowCurrent(Displayable __show)
+		throws NullPointerException
+	{
+		// For the displayable, inherit the shown state from this display
+		// since if the display is not being shown then the widget will not
+		// be shown until it happens to be shown.
+		__show._isshown = this._isshown;
+		
+		// Set title of our display to the title of the Displayable
+		PhoneUI phoneui = this._phoneui;
+		phoneui.setTitle(__show._dtitle);
+		
+		// Set current drawn displayable
+		phoneui.setCurrent(__show);
 	}
 	
 	/**

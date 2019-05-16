@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.lcdui.phoneui;
 
+import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
 
 /**
@@ -35,6 +36,12 @@ public final class PhoneUI
 	
 	/** The backend this UI uses. */
 	protected final PhoneDisplayBackend backend;
+	
+	/** The current displayable to show. */
+	private Displayable _current;
+	
+	/** The title to use. */
+	private String _title;
 	
 	/**
 	 * Initializes the base UI using the default screen size.
@@ -80,6 +87,21 @@ public final class PhoneUI
 	}
 	
 	/**
+	 * Sets the current displayable to be drawn.
+	 *
+	 * @param __d The displayable to draw.
+	 * @since 2019/05/16
+	 */
+	public final void setCurrent(Displayable __d)
+	{
+		// Set
+		this._current = __d;
+		
+		// Repaint
+		this.repaint();
+	}
+	
+	/**
 	 * Sets the title of what is displayed on the screen.
 	 *
 	 * @param __t The title to use, {@code null} uses a default title.
@@ -87,6 +109,16 @@ public final class PhoneUI
 	 */
 	public final void setTitle(String __t)
 	{
+		// Default title?
+		if (__t == null)
+			__t = "SquirrelJME";
+		
+		// Set
+		this._title = __t;
+		
+		// Repaint
+		if (this._current != null)
+			this.repaint();
 	}
 }
 
