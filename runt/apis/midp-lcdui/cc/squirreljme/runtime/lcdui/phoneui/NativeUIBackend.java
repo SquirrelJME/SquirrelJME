@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.lcdui.phoneui;
 
+import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
 import cc.squirreljme.runtime.lcdui.gfx.PixelFormat;
 
 /**
@@ -23,6 +24,36 @@ public final class NativeUIBackend
 	/** The native display ID. */
 	protected final int nid;
 	
+	/** The pixel format of the buffer. */
+	protected final PixelFormat pixelformat;
+		
+	/** The buffer data. */
+	protected final Object buffer;
+	
+	/** The palette. */
+	protected final int[] palette;
+	
+	/** The buffer width. */
+	public final int width;
+	
+	/** The buffer height. */
+	public final int height;
+	
+	/** Is the alpha channel used? */
+	protected final boolean alpha;
+	
+	/** The pitch. */
+	protected final int pitch;
+	
+	/** The offset into the buffer. */
+	protected final int offset;
+	
+	/** The virtual X origin. */
+	protected final int virtxorig;
+	
+	/** The virtual Y origin. */
+	protected final int virtyorig;
+	
 	/**
 	 * Initializes the native UI backend using the given display ID.
 	 *
@@ -32,6 +63,24 @@ public final class NativeUIBackend
 	public NativeUIBackend(int __nid)
 	{
 		this.nid = __nid;
+		
+		// Get data buffers and properties
+		Object buf = NativeDisplayAccess.framebufferObject(__nid);
+		int[] pal = NativeDisplayAccess.framebufferPalette(__nid);
+		int[] params = NativeDisplayAccess.framebufferParameters(__nid);
+		
+		// Set parameters
+		this.pixelformat = PixelFormat.of(
+			params[NativeDisplayAccess.PARAMETER_PIXELFORMAT]);
+		this.buffer = buf;
+		this.palette = pal;
+		this.width = params[NativeDisplayAccess.PARAMETER_BUFFERWIDTH];
+		this.height = params[NativeDisplayAccess.PARAMETER_BUFFERHEIGHT];
+		this.alpha = params[NativeDisplayAccess.PARAMETER_ALPHA] != 0;
+		this.pitch = params[NativeDisplayAccess.PARAMETER_PITCH];
+		this.offset = params[NativeDisplayAccess.PARAMETER_OFFSET];
+		this.virtxorig = params[NativeDisplayAccess.PARAMETER_VIRTXOFF];
+		this.virtyorig = params[NativeDisplayAccess.PARAMETER_VIRTYOFF];
 	}
 	
 	/**
@@ -41,10 +90,7 @@ public final class NativeUIBackend
 	@Override
 	public final boolean isUpsidedown()
 	{
-		throw new todo.TODO();
-		/*
-		NativeDisplayAccess.isUpsideDown(this._nid)
-		*/
+		return NativeDisplayAccess.isUpsideDown(this.nid);
 	}
 	
 	/**
@@ -54,10 +100,7 @@ public final class NativeUIBackend
 	@Override
 	public final PixelFormat pixelFormat()
 	{
-		throw new todo.TODO();
-		/*
-		this._state.framebuffer().pixelformat
-		*/
+		return this.pixelFormat();
 	}
 	
 	/*

@@ -127,13 +127,26 @@ public final class PhoneUI
 	}
 	
 	/**
-	 * Signals that the display should be repainted on the next draw loop.
+	 * Signals that the display should be repainted.
 	 *
 	 * @since 2019/05/16
 	 */
 	public final void repaint()
 	{
-		this._repaint = true;
+		this.repaint(0, 0, this.width, this.height);
+	}
+	
+	/**
+	 * Signals that the display should be repainted.
+	 *
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @since 2019/05/16
+	 */
+	public final void repaint(int __x, int __y, int __w, int __h)
+	{
 	}
 	
 	/**

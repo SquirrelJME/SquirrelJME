@@ -454,20 +454,9 @@ public abstract class Canvas
 		if (__w <= 0 || __h <= 0)
 			return;
 		
-		throw new todo.TODO();
-		/*
-		// Tell the display to repaint itself
-		Display display = this.getCurrentDisplay();
-		if (display != null)
-		{
-			// Used for service repaints
-			this._paintwanted = true;
-			
-			// Call paint
-			NativeDisplayAccess.displayRepaint(
-				display._state.nativeid, __x, __y, __w, __h);
-		}
-		*/
+		Display d = this._display;
+		if (d != null)
+			d._phoneui.repaint(__x, __y, __w, __h);
 	}
 	
 	/**
