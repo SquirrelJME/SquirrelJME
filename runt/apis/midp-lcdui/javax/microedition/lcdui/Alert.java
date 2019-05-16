@@ -64,8 +64,10 @@ public class Alert
 		this._image = __icon;
 		this._type = __type;
 		
-		// Call internal title set
-		this.__setTitle(__title);
+		// Set titles
+		this._title = __title;
+		if (__title != null)
+			this._dtitle = __title;
 	}
 	
 	@Override
