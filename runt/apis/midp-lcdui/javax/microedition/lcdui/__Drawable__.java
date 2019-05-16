@@ -19,6 +19,7 @@ import cc.squirreljme.runtime.lcdui.ui.UIStack;
  *
  * @since 2018/12/08
  */
+@Deprecated
 public abstract class __Drawable__
 	implements UIDrawable
 {

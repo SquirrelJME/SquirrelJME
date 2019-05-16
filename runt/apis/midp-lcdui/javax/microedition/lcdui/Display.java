@@ -18,6 +18,8 @@ import cc.squirreljme.runtime.lcdui.DisplayOrientation;
 import cc.squirreljme.runtime.lcdui.DisplayState;
 import cc.squirreljme.runtime.lcdui.event.NonStandardKey;
 import cc.squirreljme.runtime.lcdui.ExtendedCapabilities;
+import cc.squirreljme.runtime.lcdui.phoneui.NativeUIBackend;
+import cc.squirreljme.runtime.lcdui.phoneui.PhoneDisplayBackend;
 import cc.squirreljme.runtime.lcdui.phoneui.PhoneUI;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.ui.UIDisplayState;
@@ -40,7 +42,6 @@ import java.util.Set;
 import javax.microedition.midlet.MIDlet;
 
 public class Display
-	extends __Widget__
 {
 	public static final int ALERT =
 		3;
@@ -213,22 +214,11 @@ public class Display
 	/** Quick reference to the 0th display without needing a lock. */
 	private static volatile Display _DISPLAY_ZERO;
 	
+	/** The backend for the phone interface. */
+	final PhoneDisplayBackend _backend;
+	
 	/** The phone user interface for this display. */
-	final PhoneUI _phoneui =
-		new PhoneUI();
-	
-	/** The display state for this Display. */
-	@Deprecated
-	final UIDisplayState _state;
-	
-	/** Persistent UI state. */
-	@Deprecated
-	final UIPersist _uipersist =
-		new UIPersist();
-	
-	/** The Native ID of this display. */
-	@Deprecated
-	final int _nid;
+	final PhoneUI _phoneui;
 	
 	/** Set of keys which are down already, used to detect repeats on press. */
 	@Deprecated
@@ -244,10 +234,6 @@ public class Display
 	/** Is this display being shown? */
 	private volatile boolean _isshown;
 	
-	/** The draw stack of this display. */
-	@Deprecated
-	volatile UIStack _uistack;
-	
 	/**
 	 * Initializes the probe.
 	 *
@@ -262,13 +248,18 @@ public class Display
 	/**
 	 * Initializes the display instance.
 	 *
-	 * @param __id The native ID of the display.
+	 * @param __b The backend for the display.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2018/03/16
 	 */
-	Display(int __id)
+	Display(PhoneDisplayBackend __b)
+		throws NullPointerException
 	{
-		this._state = new UIDisplayState(__id);
-		this._nid = __id;
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		this._backend = __b;
+		this._phoneui = new PhoneUI(__b);
 	}
 	
 	public void callSerially(Runnable __a)
@@ -509,7 +500,7 @@ public class Display
 	 */
 	public int getHeight()
 	{
-		return this._state.framebuffer().bufferheight;
+		return this._phoneui.screenheight;
 	}
 	
 	public IdleItem getIdleItem()
@@ -540,7 +531,7 @@ public class Display
 		
 		// If it is detected that the display is upsidedown, just say that
 		// it was rotated 180 degrees
-		if (NativeDisplayAccess.isUpsideDown(this._nid))
+		if (this._backend.isUpsidedown())
 			if (landscape)
 				return ORIENTATION_LANDSCAPE_180;
 			else
@@ -560,7 +551,7 @@ public class Display
 	 */
 	public int getWidth()
 	{
-		return this._state.framebuffer().bufferwidth;
+		return this._phoneui.screenwidth;
 	}
 	
 	/**
@@ -631,7 +622,7 @@ public class Display
 	 */
 	public int numAlphaLevels()
 	{
-		int rv = this._state.framebuffer().pixelformat.numAlphaLevels();
+		int rv = this._backend.pixelFormat().numAlphaLevels();
 		if (rv <= 2)
 			return 2;
 		return rv;
@@ -649,7 +640,7 @@ public class Display
 	 */
 	public int numColors()
 	{
-		return this._state.framebuffer().pixelformat.numColors();
+		return this._backend.pixelFormat().numColors();
 	}
 	
 	public void removeCurrent()
@@ -781,6 +772,8 @@ public class Display
 			return;*/
 		}
 		
+		throw new todo.TODO();
+		/*
 		// If we are trying to show the same display, do nothing
 		Displayable current = this._current;
 		if (current == __show)
@@ -849,6 +842,7 @@ public class Display
 		
 		// Update the UI stack
 		this.__updateUIStack(this._uipersist, null);
+		*/
 	}
 	
 	public void setCurrentItem(Item __a)
@@ -889,8 +883,6 @@ public class Display
 	public boolean vibrate(int __d)
 		throws IllegalArgumentException
 	{
-		if (true)
-			return false;
 		throw new todo.TODO();
 		/*
 		// {@squirreljme.error EB1h Cannot vibrate for a negative duration.}
@@ -963,26 +955,6 @@ public class Display
 		// Get
 		return this._properties[p.ordinal()];
 		*/
-	}
-	
-	/**
-	 * Checks that a repaint needs to be done.
-	 *
-	 * @since 2018/12/09
-	 */
-	final void __checkRepaint()
-	{
-		UIPersist uipersist = this._uipersist;
-		if (uipersist.repaint)
-		{
-			// Do not repaint
-			uipersist.repaint = false;
-			
-			// Request it
-			NativeDisplayAccess.displayRepaint(
-				this._state.nativeid, 0, 0,
-				this.getWidth(), this.getHeight());
-		}
 	}
 	
 	/**
@@ -1170,9 +1142,6 @@ public class Display
 			// Forward
 			current.__doKeyAction(__kt, __kc, __ch, __time);
 		}
-		
-		// Check repaint
-		this.__checkRepaint();
 	}
 	
 	/**
@@ -1193,9 +1162,6 @@ public class Display
 		Displayable current = this._current;
 		if (current != null)
 			current.__doPointerAction(__t, __x, __y, __time);
-		
-		// Check repaint
-		this.__checkRepaint();
 	}
 	
 	/**
@@ -1210,6 +1176,8 @@ public class Display
 	@SerializedEvent
 	final void __doRepaint(int __x, int __y, int __w, int __h)
 	{
+		throw new todo.TODO();
+		/*
 		// Reclaulcate the draw stack?
 		UIPersist uipersist = this._uipersist;
 		if (uipersist.recalc)
@@ -1267,6 +1235,7 @@ public class Display
 		{
 			t.printStackTrace();
 		}
+		*/
 	}
 	
 	/**
@@ -1278,84 +1247,6 @@ public class Display
 		Graphics __g)
 	{
 		// Nothing needed at all
-	}
-	
-	/**
-	 * Updates the UI stack.
-	 *
-	 * @since 2018/12/13
-	 */
-	@Deprecated
-	final void __updateUIStack()
-	{
-		this.__updateUIStack(null, null);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/12/08
-	 */
-	@Override
-	@Deprecated
-	final void __updateUIStack(UIPersist __keep, UIStack __parent)
-	{
-		// Just use this!
-		UIPersist uipersist = this._uipersist;
-		__keep = uipersist;
-		
-		// Clear the old focal item
-		uipersist.focalstack = null;
-		
-		// Need these
-		UIDisplayState state = this._state;
-		UIFramebuffer fb = state.framebuffer();
-		int w = fb.bufferwidth,
-			h = fb.bufferheight;
-		
-		// The current thing to be drawn
-		Displayable current = this._current;
-		
-		// This will be initialized depending on if there are commands or not
-		UIStack stack;
-		
-		// If there are no commands or if we are showing a full-screen canvas
-		// then there will be no command buttons
-		Object[] commands = (current == null ? null :
-			current._commands.values());
-		int numcommands = (current == null ? 0 : commands.length);
-		if (numcommands == 0 || ((current instanceof Canvas) &&
-			((Canvas)current)._isfullscreen))
-			stack = new UIStack(null, w, h);
-		else
-		{
-			int hw = w / 2,
-				ph = h - CommonMetrics.COMMANDBAR_HEIGHT;
-			stack = new UIStack(null, w, ph);
-			
-			// Add the first two commands to be drawn
-			for (int i = 0, n = (numcommands == 1 ? 1 : 2); i < n; i++)
-			{
-				// Calculation position
-				UIStack s;
-				stack.addExact((s = new UIStack((Command)commands[i],
-					hw, CommonMetrics.COMMANDBAR_HEIGHT)),
-					0 + (i * hw), ph,
-					hw, CommonMetrics.COMMANDBAR_HEIGHT);
-				
-				// Do not clip to the parent
-				s.noclip = true;
-			}
-		}
-		
-		// Update the stack of the widget accordingly
-		if (current != null)
-			current.__updateUIStack(__keep, stack);
-		
-		// Store the stack for drawing
-		this._uistack = stack;
-		
-		// Tell everything to repaint since everything was calculated
-		NativeDisplayAccess.displayRepaint(state.nativeid, 0, 0, w, h);
 	}
 	
 	/**
@@ -1543,7 +1434,8 @@ public class Display
 			// Create mapping for this display?
 			if (rv == null)
 			{
-				displays.put(k, (rv = new Display(__did)));
+				displays.put(k, (rv = new Display(
+					new NativeUIBackend(__did))));
 				
 				// Cache display zero?
 				if (__did == 0)
