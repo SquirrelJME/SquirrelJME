@@ -11,7 +11,10 @@ package cc.squirreljme.runtime.lcdui.phoneui;
 
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayEventCallback;
+import cc.squirreljme.runtime.lcdui.gfx.AcceleratedGraphics;
 import cc.squirreljme.runtime.lcdui.gfx.PixelFormat;
+import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
 
 /**
  * This is a backend which utilizes the SquirrelJME UI interface for all of
@@ -22,38 +25,21 @@ import cc.squirreljme.runtime.lcdui.gfx.PixelFormat;
 public final class NativeUIBackend
 	implements NativeDisplayEventCallback, PhoneDisplayBackend
 {
+	/**
+	 * {@squirreljme.property cc.squirreljme.lcdui.acceleration=bool
+	 * Should accelerated graphics be used if it is available? This defaults
+	 * to {@code true} and it is recommended it be used, otherwise it may be
+	 * disabled if it causes issues with some software.}
+	 */
+	public static boolean USE_ACCELERATION =
+		Boolean.valueOf(System.getProperty("cc.squirreljme.lcdui.acceleration",
+		"true"));
+	
 	/** The native display ID. */
 	protected final int nid;
 	
 	/** The pixel format of the buffer. */
 	protected final PixelFormat pixelformat;
-		
-	/** The buffer data. */
-	protected final Object buffer;
-	
-	/** The palette. */
-	protected final int[] palette;
-	
-	/** The buffer width. */
-	public final int width;
-	
-	/** The buffer height. */
-	public final int height;
-	
-	/** Is the alpha channel used? */
-	protected final boolean alpha;
-	
-	/** The pitch. */
-	protected final int pitch;
-	
-	/** The offset into the buffer. */
-	protected final int offset;
-	
-	/** The virtual X origin. */
-	protected final int virtxorig;
-	
-	/** The virtual Y origin. */
-	protected final int virtyorig;
 	
 	/** The active display to use. */
 	private volatile ActiveDisplay _activedisplay;
@@ -69,22 +55,11 @@ public final class NativeUIBackend
 		this.nid = __nid;
 		
 		// Get data buffers and properties
-		Object buf = NativeDisplayAccess.framebufferObject(__nid);
-		int[] pal = NativeDisplayAccess.framebufferPalette(__nid);
 		int[] params = NativeDisplayAccess.framebufferParameters(__nid);
 		
 		// Set parameters
 		this.pixelformat = PixelFormat.of(
 			params[NativeDisplayAccess.PARAMETER_PIXELFORMAT]);
-		this.buffer = buf;
-		this.palette = pal;
-		this.width = params[NativeDisplayAccess.PARAMETER_BUFFERWIDTH];
-		this.height = params[NativeDisplayAccess.PARAMETER_BUFFERHEIGHT];
-		this.alpha = params[NativeDisplayAccess.PARAMETER_ALPHA] != 0;
-		this.pitch = params[NativeDisplayAccess.PARAMETER_PITCH];
-		this.offset = params[NativeDisplayAccess.PARAMETER_OFFSET];
-		this.virtxorig = params[NativeDisplayAccess.PARAMETER_VIRTXOFF];
-		this.virtyorig = params[NativeDisplayAccess.PARAMETER_VIRTYOFF];
 	}
 	
 	/**
@@ -112,6 +87,10 @@ public final class NativeUIBackend
 	@Override
 	public final void command(int __d, int __c)
 	{
+		// Not our display?
+		if (__d != this.nid)
+			return;
+		
 		todo.TODO.note("Implement");
 	}
 	
@@ -122,7 +101,48 @@ public final class NativeUIBackend
 	@Override
 	public final void exitRequest(int __d)
 	{
+		// Not our display?
+		if (__d != this.nid)
+			return;
+		
 		todo.TODO.note("Implement");
+	}
+	
+	/**
+	 * Returns the native display graphics.
+	 *
+	 * @since 2019/05/16
+	 */
+	public final Graphics graphics()
+	{
+		// If acceleration is enabled, try to get accelerated graphics
+		int nid = this.nid;
+		if (USE_ACCELERATION)
+			try
+			{
+				return AcceleratedGraphics.instance(nid);
+			}
+			catch (UnsupportedOperationException e)
+			{
+			}
+			
+		// Get data buffers and properties
+		Object buf = NativeDisplayAccess.framebufferObject(nid);
+		int[] pal = NativeDisplayAccess.framebufferPalette(nid);
+		int[] params = NativeDisplayAccess.framebufferParameters(nid);
+		
+		// Set parameters
+		int width = params[NativeDisplayAccess.PARAMETER_BUFFERWIDTH];
+		int height = params[NativeDisplayAccess.PARAMETER_BUFFERHEIGHT];
+		boolean alpha = params[NativeDisplayAccess.PARAMETER_ALPHA] != 0;
+		int pitch = params[NativeDisplayAccess.PARAMETER_PITCH];
+		int offset = params[NativeDisplayAccess.PARAMETER_OFFSET];
+		int virtxorig = params[NativeDisplayAccess.PARAMETER_VIRTXOFF];
+		int virtyorig = params[NativeDisplayAccess.PARAMETER_VIRTYOFF];
+		
+		// Create graphics from it
+		return this.pixelformat.createGraphics(buf, pal, width, height,
+			alpha, pitch, offset, virtxorig, virtyorig);
 	}
 	
 	/**
@@ -143,6 +163,10 @@ public final class NativeUIBackend
 	public final void keyEvent(int __d, int __ty, int __kc, int __ch,
 		int __time)
 	{
+		// Not our display?
+		if (__d != this.nid)
+			return;
+		
 		todo.TODO.note("Implement");
 	}
 	
@@ -164,7 +188,26 @@ public final class NativeUIBackend
 	public final void paintDisplay(int __d, int __x, int __y,
 		int __w, int __h)
 	{
-		todo.TODO.note("Implement");
+		// Not our display?
+		if (__d != this.nid)
+			return;
+		
+		// Paint whatever is in the active display
+		ActiveDisplay ad = this._activedisplay;
+		if (ad != null)
+		{
+			// Do painting operations (UI stuff)
+			ad.paint(__x, __y, __w, __h);
+			
+			// This image will be drawn onto the screen
+			Image image = ad.image;
+			
+			// Get screen graphics
+			Graphics g = this.graphics();
+			
+			// Draw our image on the screen
+			g.drawImage(image, 0, 0, Graphics.TOP | Graphics.LEFT);
+		}
 	}
 	
 	/**
@@ -185,6 +228,10 @@ public final class NativeUIBackend
 	public final void pointerEvent(int __d, int __ty, int __x, int __y,
 		int __time)
 	{
+		// Not our display?
+		if (__d != this.nid)
+			return;
+		
 		todo.TODO.note("Implement");
 	}
 	
@@ -205,6 +252,10 @@ public final class NativeUIBackend
 	@Override
 	public final void shown(int __d, int __shown)
 	{
+		// Not our display?
+		if (__d != this.nid)
+			return;
+		
 		todo.TODO.note("Implement");
 	}
 	
@@ -215,6 +266,10 @@ public final class NativeUIBackend
 	@Override
 	public final void sizeChanged(int __d, int __w, int __h)
 	{
+		// Not our display?
+		if (__d != this.nid)
+			return;
+		
 		todo.TODO.note("Implement");
 	}
 }
