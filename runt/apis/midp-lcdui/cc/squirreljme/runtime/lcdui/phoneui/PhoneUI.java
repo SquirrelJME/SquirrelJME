@@ -70,6 +70,16 @@ public final class PhoneUI
 	}
 	
 	/**
+	 * Repaints the display.
+	 *
+	 * @since 2019/05/16
+	 */
+	public final void repaint()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Sets the title of what is displayed on the screen.
 	 *
 	 * @param __t The title to use, {@code null} uses a default title.
