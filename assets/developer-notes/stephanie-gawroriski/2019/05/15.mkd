@@ -1,0 +1,7 @@
+# 2019/05/15
+
+## 15:37
+
+Going to rework the debugging info and put it in the code itself. That way it
+is actual instructions. Would be easier to handle for debugging and
+determining where things are and such.

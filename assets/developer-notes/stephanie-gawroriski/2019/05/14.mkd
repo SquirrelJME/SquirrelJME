@@ -8,3 +8,42 @@ interpreter but will allow me to evolve it in a way which fits better with
 SummerCoat. Then I can back-port those to SpringCoat. Testing things in
 SpringCoat is too slow and SummerCoat although it has a compiler needs a bunch
 of supporting VM code and such.
+
+## 19:56
+
+Actually I think I will take what I have in SummerCoat right now and take it a
+step back. The NNCC is very immediate but it is missing a bunch of information
+such as debugging, the original instruction, any generalized parameters of it
+and such. I know the compiler should technically work but it is of course
+complicated. I think I need to take a step from VLIW and instead encode lots
+more information into the native code areas. I can use this as the basis for
+FlowerCoat. I know I am effectively rewriting the compiler but the byte code
+processor is completely standalone for the most part. Basically I really need
+to chunk individual Java instructions into a format where each one is handled
+individually. Basically at this point there would be a major Java block for
+some code but then individual sub-blocks which represent translation units
+of sorts. I think this way I could truly make it more optimizing so to speak
+because there would be inputs and outputs as such. But yes, definitely
+NNCC is a step too far and too quickly because I am having a hard time
+running it. So, the instruction layouts will effectively be:
+
+ * L0: Java Byte Code
+ * L1: HLCC
+ * L2: NNCC
+
+At this point, there would be both HLCC and NNCC code in the instructions and
+the VM could use either of the two. Of course they be packaged in the same
+native code format since I already have that down. It would make for bigger
+ROM files though because more information would be stored. But I think this
+would be too much really, I think I really do need to make NNCC a bit more
+complicated if I want to target more systems.
+
+## 20:07
+
+But also thinking that I have NNCC, and it is a bit ugly. Form past experience
+I have performed some refactors and liked the result. So I think such a
+refactor would be in order and would be the best way to continue. So I need to
+figure out what I hate about it. Currently what I do not like is the pool
+access and such, like it uses direct integers and such. I really should
+make generic instructions for this to be easier to use. I do have a working
+iteration of the compiler, it just needs a refactor.
