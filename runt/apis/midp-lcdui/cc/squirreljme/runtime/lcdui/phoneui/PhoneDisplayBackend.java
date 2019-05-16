@@ -20,6 +20,15 @@ import cc.squirreljme.runtime.lcdui.gfx.PixelFormat;
 public interface PhoneDisplayBackend
 {
 	/**
+	 * Activates the display.
+	 *
+	 * @param __ad The active display to draw into.
+	 * @since 2019/05/16
+	 */
+	public abstract void activate(ActiveDisplay __ad)
+		throws NullPointerException;
+	
+	/**
 	 * Returns if the display is upside-down, this is used for orientation
 	 * purposes.
 	 *
@@ -35,5 +44,16 @@ public interface PhoneDisplayBackend
 	 * @since 2019/05/16
 	 */
 	public abstract PixelFormat pixelFormat();
+	
+	/**
+	 * Specifies that the display should be repainted now.
+	 *
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __w The width.
+	 * @param __h The height.
+	 * @since 2019/05/16
+	 */
+	public abstract void repaint(int __x, int __y, int __w, int __h);
 }
 
