@@ -18,6 +18,7 @@ import cc.squirreljme.runtime.lcdui.DisplayOrientation;
 import cc.squirreljme.runtime.lcdui.DisplayState;
 import cc.squirreljme.runtime.lcdui.event.NonStandardKey;
 import cc.squirreljme.runtime.lcdui.ExtendedCapabilities;
+import cc.squirreljme.runtime.lcdui.phoneui.PhoneUI;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.lcdui.ui.UIDisplayState;
 import cc.squirreljme.runtime.lcdui.ui.UIFramebuffer;
@@ -212,10 +213,16 @@ public class Display
 	/** Quick reference to the 0th display without needing a lock. */
 	private static volatile Display _DISPLAY_ZERO;
 	
+	/** The phone user interface for this display. */
+	final PhoneUI _phoneui =
+		new PhoneUI();
+	
 	/** The display state for this Display. */
+	@Deprecated
 	final UIDisplayState _state;
 	
 	/** Persistent UI state. */
+	@Deprecated
 	final UIPersist _uipersist =
 		new UIPersist();
 	
@@ -224,6 +231,7 @@ public class Display
 	final int _nid;
 	
 	/** Set of keys which are down already, used to detect repeats on press. */
+	@Deprecated
 	private final int[] _downkeys =
 		new int[_NUM_DOWNKEYS];
 	
@@ -237,6 +245,7 @@ public class Display
 	private volatile boolean _isshown;
 	
 	/** The draw stack of this display. */
+	@Deprecated
 	volatile UIStack _uistack;
 	
 	/**
@@ -1276,6 +1285,7 @@ public class Display
 	 *
 	 * @since 2018/12/13
 	 */
+	@Deprecated
 	final void __updateUIStack()
 	{
 		this.__updateUIStack(null, null);
@@ -1286,6 +1296,7 @@ public class Display
 	 * @since 2018/12/08
 	 */
 	@Override
+	@Deprecated
 	final void __updateUIStack(UIPersist __keep, UIStack __parent)
 	{
 		// Just use this!

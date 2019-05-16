@@ -2,26 +2,20 @@
 // ---------------------------------------------------------------------------
 // Multi-Phasic Applications: SquirrelJME
 //     Copyright (C) Stephanie Gawroriski <xer@multiphasicapps.net>
-//     Copyright (C) Multi-Phasic Applications <multiphasicapps.net>
 // ---------------------------------------------------------------------------
 // SquirrelJME is under the GNU General Public License v3+, or later.
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package cc.squirreljme.runtime.lcdui.ui;
+package cc.squirreljme.runtime.lcdui.phoneui;
 
 /**
- * This represents a bound of a view.
+ * This class is used to signal that the user interface should be refreshed
+ * and redrawn.
  *
- * @since 2018/12/08
+ * @since 2019/05/16
  */
-@Deprecated
-public final class UIViewBound
+public final class RefreshSignal
 {
-	/** Width. */
-	public int width;
-	
-	/** Height. */
-	public int height;
 }
 

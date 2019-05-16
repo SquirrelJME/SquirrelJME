@@ -25,6 +25,7 @@ import java.util.List;
  *
  * @since 2018/12/08
  */
+@Deprecated
 public final class UIStack
 {
 	/** The drawable thing. */

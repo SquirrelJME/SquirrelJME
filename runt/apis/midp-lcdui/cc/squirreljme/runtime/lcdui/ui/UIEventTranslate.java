@@ -18,6 +18,7 @@ import javax.microedition.lcdui.Canvas;
  *
  * @since 2018/12/09
  */
+@Deprecated
 public final class UIEventTranslate
 {
 	/**

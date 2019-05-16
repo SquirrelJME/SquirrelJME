@@ -39,6 +39,7 @@ abstract class __Widget__
 	 * @param __parent The parent draw stack.
 	 * @since 2018/12/08
 	 */
+	@Deprecated
 	abstract void __updateUIStack(UIPersist __keep, UIStack __parent);
 	
 	/**
