@@ -30,6 +30,9 @@ public abstract class Displayable
 	final __VolatileList__<Command> _commands =
 		new __VolatileList__<>();
 	
+	/** The display this is attached to, if any. */
+	volatile Display _display;
+	
 	/** The command listener to call into when commands are generated. */
 	volatile CommandListener _cmdlistener;
 	
@@ -53,7 +56,7 @@ public abstract class Displayable
 	Displayable()
 	{
 		// Use a default title for now
-		this.__setTitle(null);
+		this._dtitle = Displayable.__defaultTitle();
 	}
 	
 	/**
@@ -127,15 +130,12 @@ public abstract class Displayable
 	/**
 	 * Returns the display that is associated with this displayable.
 	 *
-	 * @return The owning display.
+	 * @return The owning display or {@code null} if not found.
 	 * @since 2016/10/08
 	 */
 	public Display getCurrentDisplay()
 	{
-		throw new todo.TODO();
-		/*
-		return this.__currentDisplay();
-		*/
+		return this._display;
 	}
 	
 	public Menu getMenu(int __p)
@@ -278,8 +278,21 @@ public abstract class Displayable
 	 */
 	public void setTitle(String __t)
 	{
-		// Call internal title set
-		this.__setTitle(__t);
+		// Cache it for later return
+		this._title = __t;
+		
+		// If no title is being set, fallback to a default one (derived from
+		// the suite)
+		if (__t == null)
+			__t = Displayable.__defaultTitle();
+		
+		// Store this
+		this._dtitle = __t;
+		
+		// Set the title of the display
+		Display d = this._display;
+		if (d != null)
+			d._phoneui.setTitle(__t);
 	}
 	
 	/**
@@ -296,48 +309,31 @@ public abstract class Displayable
 	}
 	
 	/**
-	 * Sets the title of this displayable, internal logic to.
+	 * Returns a default title to use for the application.
 	 *
-	 * @param __t The title to use, {@code null} clears it.
-	 * @since 2019/04/14
+	 * @return Application default title.
+	 * @since 2019/05/16
 	 */
-	void __setTitle(String __t)
+	private static final String __defaultTitle()
 	{
-		// Cache it for later return
-		this._title = __t;
-		
-		// If no title is being set, fallback to a default one (derived from
-		// the suite)
-		if (__t == null)
+		// Try getting a sensible name from a system property
+		MIDlet amid = ActiveMidlet.optional();
+		if (amid != null)
 		{
-			// Try getting a sensible name from a system property
-			MIDlet amid = ActiveMidlet.optional();
-			if (amid != null)
-			{
-				// MIDlet Name
-				__t = amid.getAppProperty("midlet-name");
-				
-				// Otherwise this might not be a MIDlet, so just use the main
-				// class instead
-				if (__t == null)
-					__t = amid.getAppProperty("main-class");
-			}
+			// MIDlet Name
+			String midname = amid.getAppProperty("midlet-name");
+			if (midname != null)
+				return midname;
 			
-			// Fallback to just using SquirrelJME
-			if (__t == null)
-				__t = "SquirrelJME";
+			// Otherwise this might not be a MIDlet, so just use the main
+			// class instead
+			String midclass = amid.getAppProperty("main-class");
+			if (midclass != null)
+				return midclass;
 		}
 		
-		// Store this
-		this._dtitle = __t;
-		
-		// Set the title of the display
-		throw new todo.TODO();
-		/*
-		Display d = this.__currentDisplay();
-		if (d != null)
-			d._phoneui.setTitle(__t);
-		*/
+		// Fallback to just using SquirrelJME
+		return "SquirrelJME";
 	}
 }
 
