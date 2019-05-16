@@ -104,12 +104,10 @@ public abstract class Displayable
 		// Add the command
 		this._commands.addUniqueObjRef(__c);
 		
-		throw new todo.TODO();
-		/*
-		// Update the display if attached
-		if (cd != null)
-			cd.__updateUIStack();
-		*/
+		// Repaint display?
+		Display d = this._display;
+		if (d != null)
+			d._phoneui.repaint();
 	}
 	
 	public Command getCommand(int __p)
