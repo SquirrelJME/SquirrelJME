@@ -47,17 +47,8 @@ public final class PhoneUI
 	/** The current displayable to show. */
 	private Displayable _current;
 	
-	/** The title to use. */
-	private String _title;
-	
 	/** Should the display be repainted? */
 	private volatile boolean _repaint;
-	
-	/** Width of the content area. */
-	private int _contentwidth;
-	
-	/** Height of the content area. */
-	private int _contentheight;
 	
 	/**
 	 * Initializes the base UI using the default screen size.
@@ -97,11 +88,6 @@ public final class PhoneUI
 		
 		// All screen operations are done on a secondary buffer
 		this.buffer = activedisplay.image;
-		
-		// Default content area size
-		this._contentwidth = __sw;
-		this._contentheight = __sh - (StandardMetrics.TITLE_BAR_HEIGHT +
-			StandardMetrics.COMMAND_BAR_HEIGHT);
 	}
 	
 	/**
@@ -112,7 +98,7 @@ public final class PhoneUI
 	 */
 	public final int contentHeight()
 	{
-		return this._contentheight;
+		return this.activedisplay._contentheight;
 	}
 	
 	/**
@@ -123,7 +109,7 @@ public final class PhoneUI
 	 */
 	public final int contentWidth()
 	{
-		return this._contentwidth;
+		return this.activedisplay._contentwidth;
 	}
 	
 	/**
@@ -162,7 +148,9 @@ public final class PhoneUI
 		this._current = __d;
 		
 		// Activate the display
-		this.backend.activate(this.activedisplay);
+		ActiveDisplay ad = this.activedisplay;
+		ad.activate(__d);
+		this.backend.activate(ad);
 		
 		// Repaint
 		this.repaint();
@@ -181,7 +169,7 @@ public final class PhoneUI
 			__t = "SquirrelJME";
 		
 		// Set
-		this._title = __t;
+		this.activedisplay._title = __t;
 		
 		// Repaint
 		if (this._current != null)
