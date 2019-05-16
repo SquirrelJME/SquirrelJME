@@ -11,7 +11,6 @@
 package javax.microedition.lcdui;
 
 public abstract class CanvasItem
-	extends __Widget__
 {
 	public int getHeight()
 	{

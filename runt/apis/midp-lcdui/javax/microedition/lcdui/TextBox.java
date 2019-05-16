@@ -12,8 +12,6 @@ package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.lcdui.common.EditableText;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
-import cc.squirreljme.runtime.lcdui.ui.UIPersist;
-import cc.squirreljme.runtime.lcdui.ui.UIStack;
 
 public class TextBox
 	extends Screen
@@ -72,7 +70,10 @@ public class TextBox
 	@Override
 	public int getHeight()
 	{
+		throw new todo.TODO();
+		/*
 		return this.__defaultHeight();
+		*/
 	}
 	
 	public int getMaxSize()
@@ -92,7 +93,10 @@ public class TextBox
 	@Override
 	public int getWidth()
 	{
+		throw new todo.TODO();
+		/*
 		return this.__defaultWidth();
+		*/
 	}
 	
 	public void insert(char[] __a, int __b, int __c, int __d)
@@ -141,28 +145,6 @@ public class TextBox
 	}
 	
 	public int size()
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/12/08
-	 */
-	@Override
-	final void __draw(UIPersist __persist, UIStack __parent, UIStack __self,
-		Graphics __g)
-	{
-		__g.drawString(this.getClass().getName().toString(),
-			__g.getClipX(), __g.getClipY(), 0);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/12/08
-	 */
-	@Override
-	final void __updateUIStack(UIPersist __keep, UIStack __parent)
 	{
 		throw new todo.TODO();
 	}

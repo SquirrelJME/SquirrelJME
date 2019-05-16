@@ -13,8 +13,6 @@ package javax.microedition.lcdui;
 import java.io.IOException;
 import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.StreamConnection;
-import cc.squirreljme.runtime.lcdui.ui.UIPersist;
-import cc.squirreljme.runtime.lcdui.ui.UIStack;
 
 public class FileSelector
 	extends Screen
@@ -59,7 +57,10 @@ public class FileSelector
 	@Override
 	public int getHeight()
 	{
+		throw new todo.TODO();
+		/*
 		return this.__defaultHeight();
+		*/
 	}
 	
 	public int getMode()
@@ -79,7 +80,10 @@ public class FileSelector
 	@Override
 	public int getWidth()
 	{
+		throw new todo.TODO();
+		/*
 		return this.__defaultWidth();
+		*/
 	}
 	
 	public StreamConnection open(int __mode, boolean __to)
@@ -100,28 +104,6 @@ public class FileSelector
 	
 	public void setURL(String __u)
 		throws IOException
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/12/08
-	 */
-	@Override
-	final void __draw(UIPersist __persist, UIStack __parent, UIStack __self,
-		Graphics __g)
-	{
-		__g.drawString(this.getClass().getName().toString(),
-			__g.getClipX(), __g.getClipY(), 0);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/12/08
-	 */
-	@Override
-	final void __updateUIStack(UIPersist __keep, UIStack __parent)
 	{
 		throw new todo.TODO();
 	}

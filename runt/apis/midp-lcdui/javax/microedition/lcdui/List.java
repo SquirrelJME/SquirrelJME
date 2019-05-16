@@ -14,9 +14,6 @@ import cc.squirreljme.runtime.cldc.asm.NativeDisplayEventCallback;
 import cc.squirreljme.runtime.lcdui.common.CommonColors;
 import cc.squirreljme.runtime.lcdui.common.CommonMetrics;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
-import cc.squirreljme.runtime.lcdui.ui.UIEventTranslate;
-import cc.squirreljme.runtime.lcdui.ui.UIPersist;
-import cc.squirreljme.runtime.lcdui.ui.UIStack;
 
 public class List
 	extends Screen
@@ -32,9 +29,6 @@ public class List
 	
 	/** The type of list this is. */
 	private final int _type;
-	
-	/** Last persist. */
-	UIPersist _lastpersist;
 	
 	/** The focal index. */
 	volatile int _focalindex;
@@ -110,12 +104,15 @@ public class List
 		if (items.size() == 1 && this._type == Choice.EXCLUSIVE)
 			e._selected = true;
 		
+		throw new todo.TODO();
+		/*
 		// Visual changed, need to recalculate
 		UIPersist lastpersist = this._lastpersist;
 		if (lastpersist != null)
 			lastpersist.visualUpdate(true);
 		
 		return rv;
+		*/
 	}
 	
 	public void delete(int __a)
@@ -150,7 +147,10 @@ public class List
 	@Override
 	public int getHeight()
 	{
+		throw new todo.TODO();
+		/*
 		return this.__defaultHeight();
+		*/
 	}
 	
 	public Image getImage(int __a)
@@ -199,7 +199,10 @@ public class List
 	@Override
 	public int getWidth()
 	{
+		throw new todo.TODO();
+		/*
 		return this.__defaultWidth();
+		*/
 	}
 	
 	public void insert(int __a, String __b, Image __c)
@@ -239,10 +242,13 @@ public class List
 	{
 		this._items.get(__i)._disabled = !__e;
 		
+		throw new todo.TODO();
+		/*
 		// Visual changed, need to update
 		UIPersist lastpersist = this._lastpersist;
 		if (lastpersist != null)
 			lastpersist.visualUpdate(false);
+		*/
 	}
 	
 	public void setFitPolicy(int __a)
@@ -275,10 +281,13 @@ public class List
 	{
 		this._items.get(__i)._selected = true;
 		
+		throw new todo.TODO();
+		/*
 		// Visual changed, need to update
 		UIPersist lastpersist = this._lastpersist;
 		if (lastpersist != null)
 			lastpersist.visualUpdate(false);
+		*/
 	}
 	
 	/**
@@ -289,182 +298,6 @@ public class List
 	public int size()
 	{
 		return this._items.size();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/12/09
-	 */
-	@SerializedEvent
-	@Override
-	void __doKeyAction(int __type, int __kc, char __ch, int __time)
-	{
-		// Ignore these
-		if (__type != NativeDisplayEventCallback.KEY_PRESSED &&
-			__type != NativeDisplayEventCallback.KEY_REPEATED)
-			return;
-		
-		// Flag for repaint?
-		boolean repaint = false;
-		
-		// Depends on the game action used
-		int ga;
-		switch ((ga = UIEventTranslate.keyCodeToGameAction(__kc)))
-		{
-				// Focus up/down
-			case Canvas.UP:
-			case Canvas.DOWN:
-				{
-					__VolatileList__<__ChoiceEntry__> items = this._items;
-					int nlen = items.size(),
-						oldfocalindex = this._focalindex,
-						newfocalindex = oldfocalindex +
-							(ga == Canvas.UP ? -1 : 1);
-					
-					// If in range, adjust
-					if (newfocalindex >= 0 && newfocalindex < nlen)
-					{
-						// Set new focal
-						this._focalindex = newfocalindex;
-						
-						// Implicit items always follow the focal index
-						if (this._type == Choice.IMPLICIT &&
-							oldfocalindex != newfocalindex &&
-							oldfocalindex >= 0 && oldfocalindex < nlen &&
-							newfocalindex >= 0 && newfocalindex < nlen)
-						{
-							items.get(oldfocalindex)._selected = false;
-							items.get(newfocalindex)._selected = true;
-						}
-						
-						// Do a repaint!
-						repaint = true;
-					}
-				}
-				break;
-				
-				// Select item (or toggle select, depends on the list type)
-			case Canvas.FIRE:
-				{
-					// Get items and the current selected item
-					__VolatileList__<__ChoiceEntry__> items = this._items;
-					int nlen = items.size(),
-						focalindex = this._focalindex;
-					
-					// Depends on the list type
-					switch (this._type)
-					{
-							// Only a single item
-						case Choice.EXCLUSIVE:
-							if (focalindex >= 0 && focalindex < nlen)
-							{
-								__ChoiceEntry__ e = items.get(focalindex);
-								
-								// Disabled items cannot be selected
-								if (!e._disabled)
-								{
-									// Clear all items
-									int at = 0;
-									for (__ChoiceEntry__ f : items)
-										f._selected = ((at++) == focalindex);
-									
-									// Is updated
-									repaint = true;
-								}
-							}
-							break;
-						
-							// Multiple choice
-						case Choice.MULTIPLE:
-							if (focalindex >= 0 && focalindex < nlen)
-							{
-								__ChoiceEntry__ e = items.get(focalindex);
-								
-								// If this is disabled then it cannot be
-								// selected
-								if (!e._disabled)
-								{
-									e._selected = !e._selected;
-									repaint = true;
-								}
-							}
-							break;
-						
-							// Do nothing
-						default:
-							break;
-					}
-				}
-				
-				break;
-				
-				// Nothing
-			default:
-				break;
-		}
-		
-		// Visually update if there were changes
-		UIPersist lastpersist = this._lastpersist;
-		if (lastpersist != null)
-			lastpersist.visualUpdate(false);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/12/08
-	 */
-	@Override
-	final void __draw(UIPersist __persist, UIStack __parent, UIStack __self,
-		Graphics __g)
-	{
-		// Draw background of the list
-		__g.setAlphaColor(CommonColors.BACKGROUND);
-		__g.fillRect(0, 0, __self.drawwidth, __self.drawheight);
-		
-		// Focus on this item
-		int focalindex = this._focalindex;
-		java.util.List<UIStack> kids = __self.kids;
-		int klen = kids.size();
-		if (focalindex >= 0 && focalindex < klen - 1)
-			__persist.focalstack = kids.get(1 + focalindex);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/11/17
-	 */
-	@Override
-	int __supportBit()
-	{
-		return Display.SUPPORTS_LISTS;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/12/08
-	 */
-	@Override
-	final void __updateUIStack(UIPersist __keep, UIStack __parent)
-	{
-		// We need this for future updates
-		this._lastpersist = __keep;
-		
-		// Setup our list stack
-		int rw = __parent.reservedwidth;
-		UIStack stack = new UIStack(this, rw, __parent.reservedheight);
-		__parent.add(stack);
-		
-		// Add each item in the list to be drawn
-		for (__ChoiceEntry__ e : this._items)
-		{
-			// Need the height of the font to draw this item
-			Font f = e._font;
-			int fh = (f == null ? Font.getDefaultFont() : f).getHeight();
-			
-			// Add to the stack
-			UIStack s;
-			stack.add((s = new UIStack(e, rw, fh)));
-		}
 	}
 }
 

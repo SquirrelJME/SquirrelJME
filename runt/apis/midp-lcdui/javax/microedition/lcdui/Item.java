@@ -13,7 +13,6 @@ package javax.microedition.lcdui;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 
 public abstract class Item
-	extends __Widget__
 {
 	public static final int BUTTON =
 		2;
