@@ -10,6 +10,7 @@
 package cc.squirreljme.runtime.lcdui.phoneui;
 
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
+import cc.squirreljme.runtime.cldc.asm.NativeDisplayEventCallback;
 import cc.squirreljme.runtime.lcdui.gfx.PixelFormat;
 
 /**
@@ -19,7 +20,7 @@ import cc.squirreljme.runtime.lcdui.gfx.PixelFormat;
  * @since 2019/05/16
  */
 public final class NativeUIBackend
-	implements PhoneDisplayBackend
+	implements NativeDisplayEventCallback, PhoneDisplayBackend
 {
 	/** The native display ID. */
 	protected final int nid;
@@ -53,6 +54,9 @@ public final class NativeUIBackend
 	
 	/** The virtual Y origin. */
 	protected final int virtyorig;
+	
+	/** The active display to use. */
+	private volatile ActiveDisplay _activedisplay;
 	
 	/**
 	 * Initializes the native UI backend using the given display ID.
@@ -88,9 +92,79 @@ public final class NativeUIBackend
 	 * @since 2019/05/16
 	 */
 	@Override
+	public final void activate(ActiveDisplay __ad)
+		throws NullPointerException
+	{
+		if (__ad == null)
+			throw new NullPointerException("NARG");
+		
+		// Set the active display
+		this._activedisplay = __ad;
+		
+		// Register self for event callbacks
+		NativeDisplayAccess.registerEventCallback(this);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/16
+	 */
+	@Override
+	public final void command(int __d, int __c)
+	{
+		todo.TODO.note("Implement");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/16
+	 */
+	@Override
+	public final void exitRequest(int __d)
+	{
+		todo.TODO.note("Implement");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/16
+	 */
+	@Override
 	public final boolean isUpsidedown()
 	{
 		return NativeDisplayAccess.isUpsideDown(this.nid);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/16
+	 */
+	@Override
+	public final void keyEvent(int __d, int __ty, int __kc, int __ch,
+		int __time)
+	{
+		todo.TODO.note("Implement");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/16
+	 */
+	@Override
+	public final void lostCallback()
+	{
+		todo.TODO.note("Implement");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/16
+	 */
+	@Override
+	public final void paintDisplay(int __d, int __x, int __y,
+		int __w, int __h)
+	{
+		todo.TODO.note("Implement");
 	}
 	
 	/**
@@ -103,8 +177,45 @@ public final class NativeUIBackend
 		return this.pixelFormat();
 	}
 	
-	/*
-	NativeDisplayAccess.displayRepaint(state.nativeid, 0, 0, w, h);
-	*/
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/16
+	 */
+	@Override
+	public final void pointerEvent(int __d, int __ty, int __x, int __y,
+		int __time)
+	{
+		todo.TODO.note("Implement");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/16
+	 */
+	@Override
+	public final void repaint(int __x, int __y, int __w, int __h)
+	{
+		NativeDisplayAccess.displayRepaint(this.nid, __x, __y, __w, __h);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/16
+	 */
+	@Override
+	public final void shown(int __d, int __shown)
+	{
+		todo.TODO.note("Implement");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/16
+	 */
+	@Override
+	public final void sizeChanged(int __d, int __w, int __h)
+	{
+		todo.TODO.note("Implement");
+	}
 }
 

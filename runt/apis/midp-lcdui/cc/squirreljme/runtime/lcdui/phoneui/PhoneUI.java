@@ -147,6 +147,7 @@ public final class PhoneUI
 	 */
 	public final void repaint(int __x, int __y, int __w, int __h)
 	{
+		this.backend.repaint(__x, __y, __w, __h);
 	}
 	
 	/**
@@ -159,6 +160,9 @@ public final class PhoneUI
 	{
 		// Set
 		this._current = __d;
+		
+		// Activate the display
+		this.backend.activate(this.activedisplay);
 		
 		// Repaint
 		this.repaint();
