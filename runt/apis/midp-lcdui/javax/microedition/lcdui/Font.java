@@ -545,6 +545,7 @@ public final class Font
 				new Font("sansserif", 0, _DEFAULT_FONT_SIZE),
 				new Font("serif", 0, _DEFAULT_FONT_SIZE),
 				new Font("monospace", 0, _DEFAULT_FONT_SIZE),
+				new Font("symbol", 0, _DEFAULT_FONT_SIZE),
 			});
 		return rv.clone();
 	}
