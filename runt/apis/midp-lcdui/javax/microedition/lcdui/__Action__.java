@@ -17,7 +17,6 @@ package javax.microedition.lcdui;
  * @since 2018/03/31
  */
 abstract class __Action__
-	extends __Drawable__
 {
 	/** The image used. */
 	volatile Image _image;

@@ -10,9 +10,6 @@
 
 package javax.microedition.lcdui;
 
-import cc.squirreljme.runtime.lcdui.ui.UIPersist;
-import cc.squirreljme.runtime.lcdui.ui.UIStack;
-
 public class Alert
 	extends Screen
 {
@@ -89,7 +86,10 @@ public class Alert
 	@Override
 	public int getHeight()
 	{
+		throw new todo.TODO();
+		/*
 		return this.__defaultHeight();
+		*/
 	}
 	
 	public Image getImage()
@@ -124,7 +124,10 @@ public class Alert
 	@Override
 	public int getWidth()
 	{
+		throw new todo.TODO();
+		/*
 		return this.__defaultWidth();
+		*/
 	}
 	
 	@Override
@@ -217,28 +220,6 @@ public class Alert
 		/*
 		this._type = __t;
 		*/
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/12/08
-	 */
-	@Override
-	final void __draw(UIPersist __persist, UIStack __parent, UIStack __self,
-		Graphics __g)
-	{
-		__g.drawString(this.getClass().getName().toString(),
-			__g.getClipX(), __g.getClipY(), 0);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/12/08
-	 */
-	@Override
-	final void __updateUIStack(UIPersist __keep, UIStack __parent)
-	{
-		throw new todo.TODO();
 	}
 }
 

@@ -101,9 +101,12 @@ public abstract class Displayable
 		// Add the command
 		this._commands.addUniqueObjRef(__c);
 		
+		throw new todo.TODO();
+		/*
 		// Update the display if attached
 		if (cd != null)
 			cd.__updateUIStack();
+		*/
 	}
 	
 	public Command getCommand(int __p)
@@ -129,7 +132,10 @@ public abstract class Displayable
 	 */
 	public Display getCurrentDisplay()
 	{
+		throw new todo.TODO();
+		/*
 		return this.__currentDisplay();
+		*/
 	}
 	
 	public Menu getMenu(int __p)
@@ -177,9 +183,12 @@ public abstract class Displayable
 	 */
 	public boolean isShown()
 	{
+		throw new todo.TODO();
+		/*
 		// Must be shown and have a parent, because anything without a
 		// parent is invisible
 		return this._isshown && this._parent != null;
+		*/
 	}
 	
 	/**
@@ -195,6 +204,8 @@ public abstract class Displayable
 		if (__c == null)
 			return;
 		
+		throw new todo.TODO();
+		/*
 		// If the command was removed, then do an update
 		if (this._commands.remove(__c))
 		{
@@ -203,6 +214,7 @@ public abstract class Displayable
 			if (cd != null)
 				cd.__updateUIStack();
 		}
+		*/
 	}
 	
 	public void removeCommandOrMenu(int __p)
@@ -284,16 +296,6 @@ public abstract class Displayable
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 * @since 2018/12/02
-	 */
-	@Override
-	void __doShown(boolean __shown)
-	{
-		this._isshown = __shown;
-	}
-	
-	/**
 	 * Sets the title of this displayable, internal logic to.
 	 *
 	 * @param __t The title to use, {@code null} clears it.
@@ -330,9 +332,12 @@ public abstract class Displayable
 		this._dtitle = __t;
 		
 		// Set the title of the display
+		throw new todo.TODO();
+		/*
 		Display d = this.__currentDisplay();
 		if (d != null)
 			d._phoneui.setTitle(__t);
+		*/
 	}
 }
 

@@ -11,8 +11,6 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
-import cc.squirreljme.runtime.lcdui.ui.UIPersist;
-import cc.squirreljme.runtime.lcdui.ui.UIStack;
 
 public class StringItem
 	extends Item
@@ -50,28 +48,6 @@ public class StringItem
 	}
 	
 	public void setText(String __a)
-	{
-		throw new todo.TODO();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/12/08
-	 */
-	@Override
-	final void __draw(UIPersist __persist, UIStack __parent, UIStack __self,
-		Graphics __g)
-	{
-		__g.drawString(this.getClass().getName().toString(),
-			__g.getClipX(), __g.getClipY(), 0);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/12/08
-	 */
-	@Override
-	final void __updateUIStack(UIPersist __keep, UIStack __parent)
 	{
 		throw new todo.TODO();
 	}

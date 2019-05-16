@@ -22,10 +22,6 @@ import cc.squirreljme.runtime.lcdui.phoneui.NativeUIBackend;
 import cc.squirreljme.runtime.lcdui.phoneui.PhoneDisplayBackend;
 import cc.squirreljme.runtime.lcdui.phoneui.PhoneUI;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
-import cc.squirreljme.runtime.lcdui.ui.UIDisplayState;
-import cc.squirreljme.runtime.lcdui.ui.UIFramebuffer;
-import cc.squirreljme.runtime.lcdui.ui.UIPersist;
-import cc.squirreljme.runtime.lcdui.ui.UIStack;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -235,17 +231,6 @@ public class Display
 	private volatile boolean _isshown;
 	
 	/**
-	 * Initializes the probe.
-	 *
-	 * @since 2018/12/02
-	 */
-	static
-	{
-		// Setup the probe that accesses LCDUI internals
-		new __LCDUIProbe__();
-	}
-	
-	/**
 	 * Initializes the display instance.
 	 *
 	 * @param __b The backend for the display.
@@ -352,6 +337,8 @@ public class Display
 	 */
 	public int getCapabilities()
 	{
+		throw new todo.TODO();
+		/*
 		// For simplicity only the first display supports input events of
 		// any kind
 		int mask = 0xFFFF_FFFF;
@@ -366,6 +353,7 @@ public class Display
 			SUPPORTS_ALERTS | SUPPORTS_LISTS | SUPPORTS_TEXTBOXES |
 			SUPPORTS_FILESELECTORS | SUPPORTS_TABBEDPANES |
 			SUPPORTS_MENUS) & mask;
+		*/
 	}
 	
 	/**
@@ -487,9 +475,12 @@ public class Display
 	 */
 	public int getHardwareState()
 	{
+		throw new todo.TODO();
+		/*
 		if (__EventCallback__._CALLBACK._registered)
 			return DISPLAY_HARDWARE_ENABLED;
 		return DISPLAY_HARDWARE_DISABLED;
+		*/
 	}
 	
 	/**
@@ -562,12 +553,15 @@ public class Display
 	 */
 	public boolean hasPointerEvents()
 	{
+		throw new todo.TODO();
+		/*
 		// Only the first display supports this
 		if (this._nid != 0)
 			return false;
 		
 		return 0 != (this.getCapabilities() &
 			ExtendedCapabilities.SUPPORTS_POINTER_EVENTS);
+		*/
 	}
 	
 	/**
@@ -578,12 +572,15 @@ public class Display
 	 */
 	public boolean hasPointerMotionEvents()
 	{
+		throw new todo.TODO();
+		/*
 		// Only the first display supports this
 		if (this._nid != 0)
 			return false;
 		
 		return 0 != (this.getCapabilities() &
 			ExtendedCapabilities.SUPPORTS_POINTER_EVENTS);
+		*/
 	}
 	
 	/**
@@ -966,6 +963,8 @@ public class Display
 	@SerializedEvent
 	final void __doCommandAction(int __i)
 	{
+		throw new todo.TODO();
+		/*
 		// No current, do nothing
 		Displayable current = this._current;
 		if (current == null)
@@ -983,6 +982,7 @@ public class Display
 		
 		// Otherwise execute the command
 		cmdlistener.commandAction((Command)rawcommands[__i], current);
+		*/
 	}
 	
 	/**
@@ -993,6 +993,8 @@ public class Display
 	@SerializedEvent
 	final void __doDisplayShown(boolean __shown)
 	{
+		throw new todo.TODO();
+		/*
 		// If this is being shown, load the framebuffer
 		if (__shown)
 			this._state.framebuffer();
@@ -1010,6 +1012,7 @@ public class Display
 		Displayable current = this._current;
 		if (current != null)
 			current.__doShown(__shown);
+		*/
 	}
 	
 	/**
@@ -1022,6 +1025,8 @@ public class Display
 	@SerializedEvent
 	final void __doDisplaySizeChanged(int __w, int __h)
 	{
+		throw new todo.TODO();
+		/*
 		// Update the framebuffer because everything relies on it
 		UIDisplayState state = this._state;
 		state.framebuffer();
@@ -1037,6 +1042,7 @@ public class Display
 		
 		// Update the UI stack
 		this.__updateUIStack(this._uipersist, null);
+		*/
 	}
 	
 	/**
@@ -1049,6 +1055,8 @@ public class Display
 	@SerializedEvent
 	final void __doExitRequest()
 	{
+		throw new todo.TODO();
+		/*
 		// If an exit command is found, run it
 		Displayable d = this.getCurrent();
 		if (d != null)
@@ -1066,6 +1074,7 @@ public class Display
 		
 		// Otherwise just exit the VM
 		System.exit(0);
+		*/
 	}
 	
 	/**
@@ -1082,6 +1091,8 @@ public class Display
 	final void __doKeyAction(int __kt, int __kc, char __ch, int __time)
 		throws IllegalArgumentException
 	{
+		throw new todo.TODO();
+		/*
 		// If a function key is pressed, just treat it as a command which
 		// has been executed
 		if (__kc >= NonStandardKey.F1 && __kc <= NonStandardKey.F24)
@@ -1142,6 +1153,7 @@ public class Display
 			// Forward
 			current.__doKeyAction(__kt, __kc, __ch, __time);
 		}
+		*/
 	}
 	
 	/**
@@ -1158,10 +1170,13 @@ public class Display
 	final void __doPointerAction(int __t, int __x, int __y, int __time)
 		throws IllegalArgumentException
 	{
+		throw new todo.TODO();
+		/*
 		// Forward to the displayable
 		Displayable current = this._current;
 		if (current != null)
 			current.__doPointerAction(__t, __x, __y, __time);
+		*/
 	}
 	
 	/**
@@ -1236,17 +1251,6 @@ public class Display
 			t.printStackTrace();
 		}
 		*/
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/12/08
-	 */
-	@Override
-	final void __draw(UIPersist __persist, UIStack __parent, UIStack __self,
-		Graphics __g)
-	{
-		// Nothing needed at all
 	}
 	
 	/**

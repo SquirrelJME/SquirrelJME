@@ -13,13 +13,11 @@ package javax.microedition.lcdui;
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayEventCallback;
 import cc.squirreljme.runtime.lcdui.common.CommonColors;
+import cc.squirreljme.runtime.lcdui.event.EventTranslate;
 import cc.squirreljme.runtime.lcdui.event.KeyNames;
 import cc.squirreljme.runtime.lcdui.event.NonStandardKey;
 import cc.squirreljme.runtime.lcdui.gfx.EnforcedDrawingAreaGraphics;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
-import cc.squirreljme.runtime.lcdui.ui.UIEventTranslate;
-import cc.squirreljme.runtime.lcdui.ui.UIPersist;
-import cc.squirreljme.runtime.lcdui.ui.UIStack;
 
 /**
  * The canvas acts as the base class for primary display interfaces that
@@ -202,7 +200,7 @@ public abstract class Canvas
 	public int getGameAction(int __kc)
 		throws IllegalArgumentException
 	{
-		return UIEventTranslate.keyCodeToGameAction(__kc);
+		return EventTranslate.keyCodeToGameAction(__kc);
 	}
 	
 	/**
@@ -212,7 +210,10 @@ public abstract class Canvas
 	@Override
 	public int getHeight()
 	{
+		throw new todo.TODO();
+		/*
 		return this.__defaultHeight();
+		*/
 	}
 	
 	/**
@@ -227,7 +228,7 @@ public abstract class Canvas
 		throws IllegalArgumentException
 	{
 		// {@squirreljme.error EB31 The specified game action is not valid.}
-		int rv = UIEventTranslate.gameActionToKeyCode(__gc);
+		int rv = EventTranslate.gameActionToKeyCode(__gc);
 		if (rv == 0)
 			throw new IllegalArgumentException("EB31 " + __gc);
 		return rv;
@@ -259,7 +260,10 @@ public abstract class Canvas
 	@Override
 	public int getWidth()
 	{
+		throw new todo.TODO();
+		/*
 		return this.__defaultWidth();
+		*/
 	}
 	
 	/**
@@ -272,8 +276,11 @@ public abstract class Canvas
 	@Deprecated
 	public boolean hasPointerEvents()
 	{
+		throw new todo.TODO();
+		/*
 		Display d = __currentDisplay();
 		return (d != null ? d : Display.getDisplays(0)[0]).hasPointerEvents();
+		*/
 	}
 	
 	/**
@@ -286,9 +293,12 @@ public abstract class Canvas
 	@Deprecated
 	public boolean hasPointerMotionEvents()
 	{
+		throw new todo.TODO();
+		/*
 		Display d = __currentDisplay();
 		return (d != null ? d : Display.getDisplays(0)[0]).
 			hasPointerMotionEvents();
+		*/
 	}
 	
 	/**
@@ -450,6 +460,8 @@ public abstract class Canvas
 		if (__w <= 0 || __h <= 0)
 			return;
 		
+		throw new todo.TODO();
+		/*
 		// Tell the display to repaint itself
 		Display display = this.getCurrentDisplay();
 		if (display != null)
@@ -461,6 +473,7 @@ public abstract class Canvas
 			NativeDisplayAccess.displayRepaint(
 				display._state.nativeid, __x, __y, __w, __h);
 		}
+		*/
 	}
 	
 	/**
@@ -510,6 +523,8 @@ public abstract class Canvas
 		// Set new mode
 		this._isfullscreen = __f;
 		
+		throw new todo.TODO();
+		/*
 		// If we are the child of a display then we need to update the draw
 		// slice of the display so that way stuff like command buttons and
 		// such are chopped off
@@ -519,6 +534,7 @@ public abstract class Canvas
 			Display d = (Display)parent;
 			d.__updateUIStack(d._uipersist, null);
 		}
+		*/
 	}
 	
 	/**
@@ -586,7 +602,7 @@ public abstract class Canvas
 	 * {@inheritDoc}
 	 * @since 2018/12/02
 	 */
-	@Override
+	@Deprecated
 	@SerializedEvent
 	void __doKeyAction(int __type, int __kc, char __ch, int __time)
 	{
@@ -629,10 +645,12 @@ public abstract class Canvas
 	 * {@inheritDoc}
 	 * @since 2018/12/02
 	 */
-	@Override
+	@Deprecated
 	@SerializedEvent
 	void __doPointerAction(int __type, int __x, int __y, int __time)
 	{
+		throw new todo.TODO();
+		/*
 		switch (__type)
 		{
 			case NativeDisplayEventCallback.POINTER_DRAGGED:
@@ -650,16 +668,19 @@ public abstract class Canvas
 			default:
 				break;
 		}
+		*/
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @since 2018/12/01
 	 */
-	@Override
+	@Deprecated
 	@SerializedEvent
 	void __doShown(boolean __shown)
 	{
+		throw new todo.TODO();
+		/*
 		// Needed for isShown()
 		super.__doShown(__shown);	
 		
@@ -667,82 +688,7 @@ public abstract class Canvas
 			this.showNotify();
 		else
 			this.hideNotify();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/12/08
-	 */
-	@Override
-	final void __draw(UIPersist __persist, UIStack __parent, UIStack __self,
-		Graphics __g)
-	{
-		// Setup an enforced draw region to prevent programs from drawing
-		// outside of the canvas
-		int dw = __self.drawwidth,
-			dh = __self.drawheight;
-		EnforcedDrawingAreaGraphics ed = new EnforcedDrawingAreaGraphics(
-			__g, __self.xoffset, __self.yoffset, dw, dh);
-		
-		// Transparent is set when the widget does not draw every pixel
-		if (this._transparent)
-		{
-			// The graphics object gets the color pre-initialized so make sure
-			// to restore it after the paint
-			int old = ed.getAlphaColor();
-			
-			// Fill the area accordingly
-			ed.setAlphaColor(CommonColors.CANVAS_BACKGROUND);
-			ed.fillRect(0, 0, dw, dh);
-			
-			// Restore old color
-			ed.setAlphaColor(old);
-		}
-		
-		// Draw whatever the canvas wants drawn on this
-		try
-		{
-			this.paint(ed);
-		}
-		
-		// Ignore any exceptions user code makes here
-		catch (Throwable t)
-		{
-			t.printStackTrace();
-		}
-		
-		// Increase paint service count and say that the paint was done
-		finally
-		{
-			this._paintservice++;
-			this._paintwanted = false;
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/11/18
-	 */
-	@Override
-	int __supportBit()
-	{
-		// Canvases are always supported
-		return 0xFFFFFFFF;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 2018/12/08
-	 */
-	@Override
-	final void __updateUIStack(UIPersist __keep, UIStack __parent)
-	{
-		// Just use the entire screen space
-		UIStack stack = new UIStack(this, __parent.reservedwidth,
-			__parent.reservedheight);
-		
-		// Add to the parent
-		__parent.add(stack);
+		*/
 	}
 }
 
