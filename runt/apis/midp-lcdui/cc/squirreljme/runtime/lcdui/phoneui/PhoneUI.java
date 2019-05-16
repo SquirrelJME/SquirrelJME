@@ -38,6 +38,9 @@ public final class PhoneUI
 	/** The backend this UI uses. */
 	protected final PhoneDisplayBackend backend;
 	
+	/** Active display image. */
+	protected final ActiveDisplay activedisplay;
+	
 	/** The buffer which represents the display itself. */
 	protected final Image buffer;
 	
@@ -49,6 +52,12 @@ public final class PhoneUI
 	
 	/** Should the display be repainted? */
 	private volatile boolean _repaint;
+	
+	/** Width of the content area. */
+	private int _contentwidth;
+	
+	/** Height of the content area. */
+	private int _contentheight;
 	
 	/**
 	 * Initializes the base UI using the default screen size.
@@ -82,9 +91,17 @@ public final class PhoneUI
 		this.width = (__sw = (__sw <= 0 ? DEFAULT_SCREEN_WIDTH : __sw));
 		this.height = (__sh = (__sh <= 0 ? DEFAULT_SCREEN_HEIGHT : __sh));
 		
-		// The screen is drawn into this buffer, which is then draw on the
-		// actual display (using possible scaling, or otherwise)
-		this.buffer = Image.createImage(__sw, __sh);
+		// Set active display
+		ActiveDisplay activedisplay = new ActiveDisplay(__sw, __sh);
+		this.activedisplay = activedisplay;
+		
+		// All screen operations are done on a secondary buffer
+		this.buffer = activedisplay.image;
+		
+		// Default content area size
+		this._contentwidth = __sw;
+		this._contentheight = __sh - (StandardMetrics.TITLE_BAR_HEIGHT +
+			StandardMetrics.COMMAND_BAR_HEIGHT);
 	}
 	
 	/**
@@ -95,7 +112,7 @@ public final class PhoneUI
 	 */
 	public final int contentHeight()
 	{
-		throw new todo.TODO();
+		return this._contentheight;
 	}
 	
 	/**
@@ -106,7 +123,7 @@ public final class PhoneUI
 	 */
 	public final int contentWidth()
 	{
-		throw new todo.TODO();
+		return this._contentwidth;
 	}
 	
 	/**
