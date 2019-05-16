@@ -56,6 +56,7 @@ public final class Allocator
 		// Cannot allocate zero bytes
 		if (__sz == 0)
 			return 0;
+		
 		// Round allocations to nearest 4 bytes since the VM expects this
 		// alignment be used
 		__sz = (__sz + 3) & (~3);

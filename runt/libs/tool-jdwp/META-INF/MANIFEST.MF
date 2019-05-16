@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+X-SquirrelJME-UUID: 837556ab-1eda-9b6a-56d1-5386e3c80cd2
+X-SquirrelJME-Error: BH
+X-SquirrelJME-Name: Java Debug Wire Protocol
+X-SquirrelJME-Vendor: Stephanie Gawroriski
+X-SquirrelJME-Version: 0.3.0
+X-SquirrelJME-Description: This contains the implementation of the JDWP 
+ which enables JDWP-complaint debuggers to connect with SquirrelJME to 
+ enable its debugging.
+X-SquirrelJME-Depends: gcf
+Microedition-Configuration: CLDC-1.8-Compact
+
