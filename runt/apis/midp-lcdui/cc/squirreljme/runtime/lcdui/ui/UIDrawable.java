@@ -15,6 +15,7 @@ package cc.squirreljme.runtime.lcdui.ui;
  *
  * @since 2018/12/08
  */
+@Deprecated
 public interface UIDrawable
 {
 }
