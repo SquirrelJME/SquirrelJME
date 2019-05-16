@@ -9,13 +9,31 @@
 
 package cc.squirreljme.runtime.lcdui.phoneui;
 
+import cc.squirreljme.runtime.lcdui.gfx.PixelFormat;
+
 /**
- * This class is used to signal that the user interface should be refreshed
- * and redrawn.
+ * This interface is used to represent the backend that the UI uses to draw
+ * onto the target device. This may be an image or an actual UI.
  *
  * @since 2019/05/16
  */
-public final class RefreshSignal
+public interface PhoneDisplayBackend
 {
+	/**
+	 * Returns if the display is upside-down, this is used for orientation
+	 * purposes.
+	 *
+	 * @return If the display is upside-down.
+	 * @since 2019/05/16
+	 */
+	public abstract boolean isUpsidedown();
+	
+	/**
+	 * Returns the pixel format of the display.
+	 *
+	 * @return The display pixel format.
+	 * @since 2019/05/16
+	 */
+	public abstract PixelFormat pixelFormat();
 }
 

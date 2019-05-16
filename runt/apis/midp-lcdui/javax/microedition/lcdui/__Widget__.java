@@ -27,9 +27,11 @@ abstract class __Widget__
 	volatile __Widget__ _parent;
 	
 	/** The last UI width. */
+	@Deprecated
 	volatile int _lastuiwidth;
 	
 	/** The last UI height. */
+	@Deprecated
 	volatile int _lastuiheight;
 	
 	/**

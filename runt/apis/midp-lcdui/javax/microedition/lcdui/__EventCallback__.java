@@ -19,6 +19,7 @@ import cc.squirreljme.runtime.cldc.asm.NativeDisplayEventCallback;
  *
  * @since 2018/12/03
  */
+@Deprecated
 final class __EventCallback__
 	implements NativeDisplayEventCallback
 {

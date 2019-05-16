@@ -25,7 +25,6 @@ import javax.microedition.midlet.MIDlet;
  * @since 2016/10/08
  */
 public abstract class Displayable
-	extends __Widget__
 {
 	/** Commands which have been added to the displayable. */
 	final __VolatileList__<Command> _commands =
@@ -333,13 +332,7 @@ public abstract class Displayable
 		// Set the title of the display
 		Display d = this.__currentDisplay();
 		if (d != null)
-		{
-			// Set title there
-			d._state.setTitle(__t);
-			
-			// Set as needing repaint
-			d._uipersist.repaint = true;
-		}
+			d._phoneui.setTitle(__t);
 	}
 }
 

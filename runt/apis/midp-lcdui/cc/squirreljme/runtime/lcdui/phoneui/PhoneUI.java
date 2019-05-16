@@ -33,45 +33,50 @@ public final class PhoneUI
 	/** The height of the phone screen. */
 	public final int screenheight;
 	
+	/** The backend this UI uses. */
+	protected final PhoneDisplayBackend backend;
+	
 	/**
 	 * Initializes the base UI using the default screen size.
 	 *
+	 * @param __b The display backend to use.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/16
 	 */
-	public PhoneUI()
+	public PhoneUI(PhoneDisplayBackend __b)
+		throws NullPointerException
 	{
-		this(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT);
+		this(__b, DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT);
 	}
 	
 	/**
 	 * Initializes the UI with the given screen width and height.
 	 *
+	 * @param __b The display backend to use.
 	 * @param __sw The screen width.
 	 * @param __sh The screen height.
+	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/15
 	 */
-	public PhoneUI(int __sw, int __sh)
+	public PhoneUI(PhoneDisplayBackend __b, int __sw, int __sh)
+		throws NullPointerException
 	{
+		if (__b == null)
+			throw new NullPointerException("NARG");
+		
+		this.backend = __b;
 		this.screenwidth = (__sw <= 0 ? DEFAULT_SCREEN_WIDTH : __sw);
 		this.screenheight = (__sh <= 0 ? DEFAULT_SCREEN_HEIGHT : __sh);
 	}
 	
 	/**
-	 * Paints the actual phone interface to the given graphics target.
+	 * Sets the title of what is displayed on the screen.
 	 *
-	 * @param __g The graphics to draw on.
-	 * @param __bw The buffer width.
-	 * @param __bh The buffer height.
-	 * @throws NullPointerException On null arguments.
+	 * @param __t The title to use, {@code null} uses a default title.
 	 * @since 2019/05/16
 	 */
-	public final void paint(Graphics __g, int __bw, int __bh)
-		throws NullPointerException
+	public final void setTitle(String __t)
 	{
-		if (__g == null)
-			throw new NullPointerException("NARG");
-		
-		throw new todo.TODO();
 	}
 }
 

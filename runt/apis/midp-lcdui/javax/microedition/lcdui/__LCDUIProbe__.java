@@ -21,6 +21,7 @@ import cc.squirreljme.runtime.lcdui.ui.UIStack;
  *
  * @since 2018/12/02
  */
+@Deprecated
 final class __LCDUIProbe__
 	extends LCDUIProbe
 {
