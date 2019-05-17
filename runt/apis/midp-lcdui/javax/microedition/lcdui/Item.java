@@ -65,11 +65,11 @@ public abstract class Item
 	public static final int PLAIN =
 		0;
 	
-	/** The owning form. */
-	volatile Form _form;
+	/** The owning displayable. */
+	volatile Displayable _displayable;
 	
 	/** The current layout of the item. */
-	private volatile int _layout =
+	volatile int _layout =
 		LAYOUT_DEFAULT;
 	
 	/** The label of this item. */
@@ -170,37 +170,31 @@ public abstract class Item
 	 *
 	 * @param __l The label of the item to set, may be {@code null} to clear
 	 * the label.
-	 * @throws IllegalArgumentException If this item is contained within an
-	 * alert.
 	 * @since 2017/08/20
 	 */
 	public void setLabel(String __l)
-		throws IllegalArgumentException
 	{
-		if (true)
-			throw new todo.TODO();
-		/*
-		// {@squirreljme.error EB20 Cannot set the label of an item which is
-		// contained within an Alert.}
-		if (this._screen instanceof Alert)
-			throw new IllegalArgumentException("EB20");
-		*/
+		this._label = __l;
 		
-		throw new todo.TODO();
-		/*
-		// Set if it has changed
-		String oldlabel = this._label;
-		if (oldlabel != __l)
+		// Repaint the display
+		Displayable displayable = this._displayable;
+		if (displayable != null)
 		{
-			LcdServiceCall.voidCall(LcdFunction.SET_LABEL, this._handle, __l);
-			this._label = __l;
+			Display display = displayable._display;
+			if (display != null)
+				display._phoneui.repaint();
 		}
-		*/
 	}
 	
-	public void setLayout(int __a)
+	/**
+	 * Sets the layout.
+	 *
+	 * @param __lay The layout.
+	 * @since 2019/05/17
+	 */
+	public void setLayout(int __lay)
 	{
-		throw new todo.TODO();
+		this._layout = __lay;
 	}
 	
 	public void setLayoutHint(ItemLayoutHint __h)
