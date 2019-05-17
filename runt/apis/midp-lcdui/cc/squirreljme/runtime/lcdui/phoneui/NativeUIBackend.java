@@ -270,7 +270,7 @@ public final class NativeUIBackend
 	@Override
 	public final PixelFormat pixelFormat()
 	{
-		return this.pixelFormat();
+		return this.pixelformat;
 	}
 	
 	/**

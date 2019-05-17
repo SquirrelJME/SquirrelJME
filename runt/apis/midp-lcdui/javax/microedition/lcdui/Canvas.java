@@ -271,11 +271,8 @@ public abstract class Canvas
 	@Deprecated
 	public boolean hasPointerEvents()
 	{
-		throw new todo.TODO();
-		/*
-		Display d = __currentDisplay();
+		Display d = this._display;
 		return (d != null ? d : Display.getDisplays(0)[0]).hasPointerEvents();
-		*/
 	}
 	
 	/**
@@ -288,12 +285,9 @@ public abstract class Canvas
 	@Deprecated
 	public boolean hasPointerMotionEvents()
 	{
-		throw new todo.TODO();
-		/*
-		Display d = __currentDisplay();
+		Display d = this._display;
 		return (d != null ? d : Display.getDisplays(0)[0]).
 			hasPointerMotionEvents();
-		*/
 	}
 	
 	/**
