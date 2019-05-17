@@ -175,5 +175,19 @@ public final class PhoneUI
 		if (this._current != null)
 			this.repaint();
 	}
+	
+	/**
+	 * Vibrates the display for the given number of milliseconds.
+	 *
+	 * @param __ms The number of milliseconds to vibrate for.
+	 * @since 2019/05/17
+	 */
+	public final void vibrate(int __ms)
+	{
+		// If the backend does not support vibration then simulate it via
+		// the display interface
+		if (!this.backend.vibrate(__ms))
+			this.activedisplay.vibrate(__ms);
+	}
 }
 

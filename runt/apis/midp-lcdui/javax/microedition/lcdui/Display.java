@@ -848,21 +848,18 @@ public class Display
 	public boolean vibrate(int __d)
 		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
-		/*
 		// {@squirreljme.error EB1h Cannot vibrate for a negative duration.}
 		if (__d < 0)
 			throw new IllegalArgumentException("EB1h");
 		
-		// Send vibrate call
-		LcdServiceCall.<VoidType>call(VoidType.class,
-			LcdFunction.DISPLAY_VIBRATE, this._handle, __d);
+		// Send vibration
+		this._phoneui.vibrate(__d);
 		
-		// Always return true because it is faster to just return as quickly
-		// as possible than it is to vibrate the display and to see if it is
-		// supported or not
+		// Repaint the display since a vibration is happening
+		this._phoneui.repaint();
+		
+		// Vibrate is always supported
 		return true;
-		*/
 	}
 	
 	/**
