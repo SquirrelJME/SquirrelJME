@@ -595,7 +595,6 @@ public abstract class Canvas
 	@SerializedEvent
 	protected void sizeChanged(int __w, int __h)
 	{
-		super.sizeChanged(__w, __h);
 	}
 	
 	/**

@@ -73,7 +73,8 @@ public final class EventTranslate
 			case Canvas.KEY_RIGHT:	return Canvas.RIGHT;
 			
 				// Map these character keys to specific keys
-			case ' ':			return Canvas.FIRE;
+			case ' ':
+			case '\n':			return Canvas.FIRE;
 			case 'a': case 'A':
 			case 'h': case 'H':	return Canvas.GAME_A;
 			case 's': case 'S':

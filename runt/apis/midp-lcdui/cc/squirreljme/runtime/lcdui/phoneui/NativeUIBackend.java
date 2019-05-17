@@ -11,8 +11,11 @@ package cc.squirreljme.runtime.lcdui.phoneui;
 
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayEventCallback;
+import cc.squirreljme.runtime.lcdui.event.NonStandardKey;
 import cc.squirreljme.runtime.lcdui.gfx.AcceleratedGraphics;
 import cc.squirreljme.runtime.lcdui.gfx.PixelFormat;
+import javax.microedition.lcdui.Canvas;
+import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
@@ -78,6 +81,16 @@ public final class NativeUIBackend
 		
 		// Register self for event callbacks
 		NativeDisplayAccess.registerEventCallback(this);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/17
+	 */
+	@Override
+	public final int capabilities()
+	{
+		return NativeDisplayAccess.capabilities(this.nid);
 	}
 	
 	/**
@@ -167,7 +180,47 @@ public final class NativeUIBackend
 		if (__d != this.nid)
 			return;
 		
-		todo.TODO.note("Implement");
+		// No display active?
+		ActiveDisplay activedisplay = this._activedisplay;
+		if (activedisplay == null)
+			return;
+		
+		// No displayable shown?
+		Displayable current = activedisplay._current;
+		if (current == null)
+			return;
+		
+		// Normalize all key types to mobile cell phone format, if not
+		// specified
+		if (__ch == '#')
+			__kc = Canvas.KEY_POUND;
+		else if (__ch == '*')
+			__kc = Canvas.KEY_STAR;
+		else if (__ch >= '0' && __ch <= '9')
+			__kc = Canvas.KEY_NUM0 + (__ch - '0');
+			
+		// If the key-code is not valid then ignore
+		if (__kc == NonStandardKey.UNKNOWN)
+			return;
+		
+		// Depends on the action
+		switch (__ty)
+		{
+			case NativeDisplayEventCallback.KEY_PRESSED:
+				current.keyPressed(__kc);
+				break;
+			
+			case NativeDisplayEventCallback.KEY_REPEATED:
+				current.keyRepeated(__kc);
+				break;
+			
+			case NativeDisplayEventCallback.KEY_RELEASED:
+				current.keyReleased(__kc);
+				break;
+			
+			default:
+				break;
+		}
 	}
 	
 	/**

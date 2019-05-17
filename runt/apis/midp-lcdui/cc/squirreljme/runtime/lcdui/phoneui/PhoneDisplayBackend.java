@@ -30,6 +30,14 @@ public interface PhoneDisplayBackend
 		throws NullPointerException;
 	
 	/**
+	 * Returns the capabilities of the display.
+	 *
+	 * @return The display capabilities.
+	 * @since 2019/05/17
+	 */
+	public abstract int capabilities();
+	
+	/**
 	 * Returns if the display is upside-down, this is used for orientation
 	 * purposes.
 	 *

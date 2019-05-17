@@ -10,6 +10,7 @@
 package cc.squirreljme.runtime.lcdui.phoneui;
 
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
+import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Graphics;
 
 /**
@@ -20,6 +21,17 @@ import javax.microedition.lcdui.Graphics;
  */
 public abstract class ExposedDisplayable
 {
+	/**
+	 * Gets the commands which are available to use.
+	 *
+	 * @return The available commands.
+	 * @since 2019/05/17
+	 */
+	public Command[] getCommands()
+	{
+		return new Command[0];
+	}
+	
 	/**
 	 * Is this widget a full-screen one?
 	 *
@@ -43,6 +55,39 @@ public abstract class ExposedDisplayable
 	}
 	
 	/**
+	 * This is called when a key has been pressed.
+	 *
+	 * @param __code The key code, the character is not modified by modifiers.
+	 * @since 2019/05/17
+	 */
+	@SerializedEvent
+	protected void keyPressed(int __code)
+	{
+	}
+	
+	/**
+	 * This is called when a key has been released.
+	 *
+	 * @param __code The key code, the character is not modified by modifiers.
+	 * @since 2019/05/17
+	 */
+	@SerializedEvent
+	protected void keyReleased(int __code)
+	{
+	}
+	
+	/**
+	 * This is called when a key has been repeated.
+	 *
+	 * @param __code The key code, the character is not modified by modifiers.
+	 * @since 2019/05/17
+	 */
+	@SerializedEvent
+	protected void keyRepeated(int __code)
+	{
+	}
+	
+	/**
 	 * This is called when the displayable needs to be painted onto the
 	 * screen.
 	 *
@@ -51,6 +96,18 @@ public abstract class ExposedDisplayable
 	 */
 	@SerializedEvent
 	protected void paint(Graphics __g)
+	{
+	}
+	
+	/**
+	 * This is called when the size of the displayable has changed.
+	 *
+	 * @param __w The new width of the displayable.
+	 * @param __h The new heigh of the displayable.
+	 * @since 2019/05/17
+	 */
+	@SerializedEvent
+	protected void sizeChanged(int __w, int __h)
 	{
 	}
 }
