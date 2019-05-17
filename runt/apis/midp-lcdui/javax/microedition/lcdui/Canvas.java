@@ -531,18 +531,10 @@ public abstract class Canvas
 		// Set new mode
 		this._isfullscreen = __f;
 		
-		throw new todo.TODO();
-		/*
-		// If we are the child of a display then we need to update the draw
-		// slice of the display so that way stuff like command buttons and
-		// such are chopped off
-		__Widget__ parent = this._parent;
-		if (parent != null && parent instanceof Display)
-		{
-			Display d = (Display)parent;
-			d.__updateUIStack(d._uipersist, null);
-		}
-		*/
+		// Repaint the display if we have one so that it actually is used
+		Display d = this._display;
+		if (d != null)
+			d._phoneui.repaint();
 	}
 	
 	/**
