@@ -11,6 +11,7 @@
 package javax.microedition.lcdui;
 
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
+import cc.squirreljme.runtime.lcdui.phoneui.ExposedDisplayable;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import java.lang.ref.Reference;
@@ -25,6 +26,7 @@ import javax.microedition.midlet.MIDlet;
  * @since 2016/10/08
  */
 public abstract class Displayable
+	extends ExposedDisplayable
 {
 	/** Commands which have been added to the displayable. */
 	final __VolatileList__<Command> _commands =
@@ -120,9 +122,15 @@ public abstract class Displayable
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Gets the commands which are available to use.
+	 *
+	 * @return The available commands.
+	 * @since 2019/05/17
+	 */
 	public Command[] getCommands()
 	{
-		throw new todo.TODO();
+		return this._commands.toArray(new Command[0]);
 	}
 	
 	/**

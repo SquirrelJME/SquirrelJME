@@ -10,6 +10,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayEventCallback;
 import cc.squirreljme.runtime.lcdui.common.CommonColors;
@@ -330,6 +331,30 @@ public abstract class Canvas
 	public boolean isDoubleBuffered()
 	{
 		return true;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/17
+	 */
+	@Override
+	@ImplementationNote("This is in SquirrelJME only and is used to provide " +
+		"access to this flag.")
+	protected boolean isFullscreen()
+	{
+		return this._isfullscreen;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/17
+	 */
+	@Override
+	@ImplementationNote("This is in SquirrelJME only and is used to provide " +
+		"access to this flag.")
+	protected boolean isTransparent()
+	{
+		return this._transparent;
 	}
 	
 	/**

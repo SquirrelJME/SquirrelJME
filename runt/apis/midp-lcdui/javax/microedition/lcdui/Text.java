@@ -1105,6 +1105,9 @@ public class Text
 				
 				// Set the previously calculated Y position
 				y = nexty;
+				
+				// Move X back
+				x = startx;
 			}
 		}
 		
