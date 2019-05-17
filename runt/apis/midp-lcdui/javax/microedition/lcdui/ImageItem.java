@@ -33,19 +33,58 @@ public class ImageItem
 	public static final int LAYOUT_RIGHT =
 		2;
 	
+	/** Apperance mode. */
+	final int _amode;
+	
 	/** Cache of the used image. */
 	private volatile Image _image;
 	
-	public ImageItem(String __a, Image __b, int __c, String __d)
+	/** Alternative text. */
+	private volatile String _alt;
+	
+	/**
+	 * Initializes the image item.
+	 *
+	 * @param __l The label.
+	 * @param __i The image.
+	 * @param __lay The layout.
+	 * @param __alt The alternative text.
+	 * @throws IllegalArgumentException If the layout is not valid.
+	 * @since 2019/05/17
+	 */
+	public ImageItem(String __l, Image __i, int __lay, String __alt)
+		throws IllegalArgumentException
 	{
-		super();
-		throw new todo.TODO();
+		this(__l, __i, __lay, __alt, PLAIN);
 	}
 	
-	public ImageItem(String __a, Image __b, int __c, String __d, int __e)
+	/**
+	 * Initializes the image item.
+	 *
+	 * @param __l The label.
+	 * @param __i The image.
+	 * @param __lay The layout.
+	 * @param __alt The alternative text.
+	 * @param __am The appearance mode.
+	 * @throws IllegalArgumentException If the layout is not valid.
+	 * @since 2019/05/17
+	 */
+	public ImageItem(String __l, Image __i, int __lay, String __alt, int __am)
+		throws IllegalArgumentException
 	{
-		super();
-		throw new todo.TODO();
+		super(__l);
+		
+		// {@squirreljme.error EB3a The appearance mode is not valid.
+		// (The appearance mode)}
+		if (__am != PLAIN && __am != BUTTON && __am != HYPERLINK)
+			throw new IllegalArgumentException("EB3a " + __am);
+		
+		this._image = __i;
+		this._alt = __alt;
+		this._amode = __am;
+		
+		// Set the layout
+		this.setLayout(__lay);
 	}
 	
 	public String getAltText()
@@ -59,12 +98,6 @@ public class ImageItem
 	}
 	
 	public Image getImage()
-	{
-		throw new todo.TODO();
-	}
-	
-	@Override
-	public int getLayout()
 	{
 		throw new todo.TODO();
 	}
@@ -98,10 +131,15 @@ public class ImageItem
 		*/
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/17
+	 */
 	@Override
-	public void setLayout(int __a)
+	public void setLayout(int __lay)
+		throws IllegalArgumentException
 	{
-		throw new todo.TODO();
+		super.setLayout(__lay);
 	}
 }
 

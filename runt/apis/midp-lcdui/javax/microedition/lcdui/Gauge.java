@@ -108,6 +108,25 @@ public class Gauge
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @throws IllegalArgumentException If this gauge is associated with an
+	 * alert.
+	 * @since 2019/05/17
+	 */
+	@Override
+	public void setLabel(String __l)
+		throws IllegalArgumentException
+	{
+		// {@squirreljme.error EB3c Cannot set the label of a gauge associated
+		// with an alert.}
+		if (this._displayable instanceof Alert)
+			throw new IllegalArgumentException("EB3c");
+		
+		// Use super logic
+		super.setLabel(__l);
+	}
+	
 	public void setMaxValue(int __a)
 	{
 		throw new todo.TODO();

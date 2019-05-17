@@ -107,6 +107,8 @@ public class Form
 	 *
 	 * @param __i The item to append.
 	 * @return The index of the item.
+	 * @throws IllegalStateException If the item is already associated with
+	 * a form.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/05/17
 	 */
@@ -115,6 +117,12 @@ public class Form
 	{
 		if (__i == null)
 			throw new NullPointerException("NARG");
+		
+		// {@squirreljme.error EB3b Cannot append an item which has already
+		// be associated with a form.}
+		if (__i._displayable != null)
+			throw new IllegalStateException("EB3b");
+		__i._displayable = this;
 		
 		// Append item
 		__VolatileList__<Item> items = this._items;
