@@ -13,6 +13,10 @@ package javax.microedition.lcdui;
 public class Form
 	extends Screen
 {
+	/** Items on the form. */
+	final __VolatileList__<Item> _items =
+		new __VolatileList__<>();
+	
 	/**
 	 * Initializes an empty form with an optionally specified title.
 	 *
@@ -59,23 +63,69 @@ public class Form
 				if (i == null)
 					throw new NullPointerException("NARG");
 				
-				append(i);
+				this.append(i);
 			}
 	}
 	
-	public int append(String __a)
+	/**
+	 * Appends the given string.
+	 *
+	 * @param __s The string.
+	 * @return The index of the item.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/17
+	 */
+	public int append(String __s)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		return this.append(new StringItem(null, __s));
 	}
 	
-	public int append(Image __a)
+	/**
+	 * Appends the given image.
+	 *
+	 * @param __i The image.
+	 * @return The index of the item.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/17
+	 */
+	public int append(Image __i)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__i == null)
+			throw new NullPointerException("NARG");
+		
+		return this.append(new ImageItem(null, __i, ImageItem.LAYOUT_DEFAULT,
+			null));
 	}
 	
-	public int append(Item __a)
+	/**
+	 * Appends the given item to the form.
+	 *
+	 * @param __i The item to append.
+	 * @return The index of the item.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/17
+	 */
+	public int append(Item __i)
+		throws NullPointerException
 	{
-		throw new todo.TODO();
+		if (__i == null)
+			throw new NullPointerException("NARG");
+		
+		// Append item
+		__VolatileList__<Item> items = this._items;
+		int rv = items.append(__i);
+		
+		// Update display
+		Display d = this._display;
+		if (d != null)
+			d._phoneui.repaint();
+		
+		return rv;
 	}
 	
 	public void delete(int __a)
@@ -100,10 +150,7 @@ public class Form
 	@Override
 	public int getHeight()
 	{
-		throw new todo.TODO();
-		/*
-		return this.__defaultHeight();
-		*/
+		return Displayable.__getHeight(this, false);
 	}
 	
 	public FormLayoutPolicy getLayoutPolicy()
@@ -118,10 +165,7 @@ public class Form
 	@Override
 	public int getWidth()
 	{
-		throw new todo.TODO();
-		/*
-		return this.__defaultWidth();
-		*/
+		return Displayable.__getWidth(this, false);
 	}
 	
 	public void insert(int __a, Item __b)

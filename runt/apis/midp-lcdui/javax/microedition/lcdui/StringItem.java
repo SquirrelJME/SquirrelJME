@@ -15,16 +15,44 @@ import cc.squirreljme.runtime.lcdui.SerializedEvent;
 public class StringItem
 	extends Item
 {
-	public StringItem(String __a, String __b)
+	/** Apperance mode. */
+	final int _amode;
+	
+	/** The item text. */
+	volatile String _text;
+	
+	/**
+	 * Initializes the string item with the plain style.
+	 *
+	 * @param __l The label.
+	 * @param __t The text.
+	 * @since 2019/05/17
+	 */
+	public StringItem(String __l, String __t)
 	{
-		super();
-		throw new todo.TODO();
+		this(__l, __t, PLAIN);
 	}
 	
-	public StringItem(String __a, String __b, int __c)
+	/**
+	 * Initializes the string item with the plain style.
+	 *
+	 * @param __l The label.
+	 * @param __t The text.
+	 * @throws IllegalArgumentException If the appearance mode is not valid.
+	 * @since 2019/05/17
+	 */
+	public StringItem(String __l, String __t, int __am)
+		throws IllegalArgumentException
 	{
-		super();
-		throw new todo.TODO();
+		super(__l);
+		
+		// {@squirreljme.error EB36 The appearance mode is not valid.
+		// (The appearance mode)}
+		if (__am != PLAIN && __am != BUTTON && __am != HYPERLINK)
+			throw new IllegalArgumentException("EB36 " + __am);
+		
+		this._text = __t;
+		this._amode = __am;
 	}
 	
 	public int getAppearanceMode()

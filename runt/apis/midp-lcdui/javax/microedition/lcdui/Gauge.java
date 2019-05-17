@@ -30,10 +30,52 @@ public class Gauge
 	public static final int INDEFINITE =
 		-1;
 	
-	public Gauge(String __a, boolean __b, int __c, int __d)
+	/** Is this interactive? */
+	final boolean _interactive;
+	
+	/** Maximum value. */
+	volatile int _maxvalue;
+	
+	/** Current value. */
+	volatile int _value;
+	
+	/**
+	 * Initializes the gauge.
+	 *
+	 * @param __l The label.
+	 * @param __int Can the user change the value?
+	 * @param __max The maximum value.
+	 * @param __iv The initial value.
+	 * @throws IllegalArgumentException If the max value is not positive for
+	 * interactive ranges, if the max value is not positive or
+	 * {@link #INDEFINITE} for non-interactive ranges, or the initial value
+	 * is not one of the special values if it is {@link #INDEFINITE}.
+	 * @since 2019/05/17
+	 */
+	public Gauge(String __l, boolean __int, int __max, int __iv)
+		throws IllegalArgumentException
 	{
-		super();
-		throw new todo.TODO();
+		super(__l);
+		
+		// {@squirreljme.error EB37 An interactive gauge cannot have a negative
+		// maximum value.}
+		if (__int && __max < 0)
+			throw new IllegalArgumentException("EB37");
+		
+		// {@squirreljme.error EB38 A non-interactive gauge cannot have a
+		// negative value that is not indefinite.}
+		if (!__int && !(__max >= 0 || __max == INDEFINITE))
+			throw new IllegalArgumentException("EB38");
+		
+		// {@squirreljme.error EB39 Invalid symbolism for indefinite range.}
+		if (__max == INDEFINITE && __iv != CONTINUOUS_IDLE &&
+			__iv != CONTINUOUS_RUNNING && __iv != INCREMENTAL_IDLE &&
+			__iv != INCREMENTAL_UPDATING)
+			throw new IllegalArgumentException("EB39");
+		
+		this._interactive = __int;
+		this._value = __iv;
+		this._maxvalue = __max;
 	}
 	
 	public int getIncrementValue()

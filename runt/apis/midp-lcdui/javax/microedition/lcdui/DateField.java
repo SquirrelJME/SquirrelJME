@@ -26,16 +26,42 @@ public class DateField
 	public static final int TIME =
 		2;
 	
-	public DateField(String __a, int __b)
+	/** The timezone to use. */
+	private final TimeZone _zone;
+	
+	/**
+	 * Initializes the date field with the default timezone.
+	 *
+	 * @param __l The label to use.
+	 * @param __m The mode used.
+	 * @throws IllegalArgumentException If the mode is not valid.
+	 * @since 2019/05/17
+	 */
+	public DateField(String __l, int __m)
+		throws IllegalArgumentException
 	{
-		super();
-		throw new todo.TODO();
+		this(__l, __m, null);
 	}
 	
-	public DateField(String __a, int __b, TimeZone __c)
+	/**
+	 * Initializes the date field with the default timezone.
+	 *
+	 * @param __l The label to use.
+	 * @param __m The mode used.
+	 * @param __z The time zone to use, {@code null} is the default.
+	 * @throws IllegalArgumentException If the mode is not valid.
+	 * @since 2019/05/17
+	 */
+	public DateField(String __l, int __m, TimeZone __z)
+		throws IllegalArgumentException
 	{
-		super();
-		throw new todo.TODO();
+		super(__l);
+		
+		// {@squirreljme.error EB35 Invalid date field mode. (The mode)}
+		if (__m != DATE && __m != DATE_TIME && __m != TIME)
+			throw new IllegalArgumentException("EB35 " + __m);
+		
+		this._zone = __z;
 	}
 	
 	public Date getDate()

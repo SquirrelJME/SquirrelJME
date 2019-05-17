@@ -122,12 +122,9 @@ public class ChoiceGroup
 			throw new NullPointerException("NARG");
 		
 		// Just insert at the end
-		synchronized (this._lock)
-		{
-			int rv;
-			insert((rv = size()), __s, __i);
-			return rv;
-		}
+		int rv;
+		this.insert((rv = size()), __s, __i);
+		return rv;
 	}
 	
 	public void delete(int __a)
@@ -191,19 +188,15 @@ public class ChoiceGroup
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		// Insert wherever
-		synchronized (this._lock)
-		{
-			// {@squirreljme.error EB19 Cannot insert choice at the specified
-			// index because it is not within bounds. (The index to add at)}
-			List<__ChoiceEntry__> entries = this._entries;
-			if (__v < 0 || __v > entries.size())
-				throw new IndexOutOfBoundsException(String.format("EB19 %d",
-					__v));
-			
-			// Insert
-			entries.add(__v, new __ChoiceEntry__(__s, __i));
-		}
+		// {@squirreljme.error EB19 Cannot insert choice at the specified
+		// index because it is not within bounds. (The index to add at)}
+		List<__ChoiceEntry__> entries = this._entries;
+		if (__v < 0 || __v > entries.size())
+			throw new IndexOutOfBoundsException(String.format("EB19 %d",
+				__v));
+		
+		// Insert
+		entries.add(__v, new __ChoiceEntry__(__s, __i));
 	}
 	
 	public boolean isEnabled(int __i)
@@ -254,10 +247,7 @@ public class ChoiceGroup
 	 */
 	public int size()
 	{
-		synchronized (this._lock)
-		{
-			return this._entries.size();
-		}
+		return this._entries.size();
 	}
 }
 
