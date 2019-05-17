@@ -157,12 +157,7 @@ public abstract class Displayable
 	 */
 	public Ticker getTicker()
 	{
-		throw new todo.TODO();
-		/*
-		return __Queue__.INSTANCE.<Ticker>__get(Ticker.class,
-			LcdServiceCall.<Integer>call(Integer.class,
-			LcdFunction.WIDGET_GET_TICKER, this._handle));
-		*/
+		return this._ticker;
 	}
 	
 	/**
@@ -264,16 +259,34 @@ public abstract class Displayable
 	 */
 	public void setTicker(Ticker __t)
 	{
-		if (true)
-			throw new todo.TODO();
-		/*
-		LcdServiceCall.<VoidType>call(VoidType.class,
-			LcdFunction.WIDGET_SET_TICKER, this._handle, (__t == null ?
-				Integer.MIN_VALUE : __t._handle));
-		*/
+		// Removing old ticker?
+		Ticker old = this._ticker;
+		if (__t == null)
+		{
+			// Nothing to do?
+			if (old == null)
+				return;
+			
+			// Clear
+			this._ticker = null;
+			
+			// Remove from display list
+			old._displayables.remove(this);
+		}
 		
-		// Cache it
-		this._ticker = __t;
+		// Setting the same ticker?
+		else if (old == __t)
+			return;
+		
+		// Add new ticker, note they can be associated with many displays
+		else
+		{
+			// Add to displayable list
+			__t._displayables.addUniqueObjRef(this);
+			
+			// Set
+			this._ticker = __t;
+		}
 	}
 	
 	/**

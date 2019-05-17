@@ -15,17 +15,21 @@ package cc.squirreljme.runtime.lcdui.common;
  *
  * @since 2018/12/02
  */
+@Deprecated
 public interface CommonMetrics
 {
 	/** Width of the scroll bar. */
+	@Deprecated
 	public static final int SCROLLBAR_WIDTH =
 		8;
 	
 	/** Command bar height. */
+	@Deprecated
 	public static final int COMMANDBAR_HEIGHT =
 		18;
 	
 	/** Command bar font size. */
+	@Deprecated
 	public static final int COMMANDBAR_FONT_SIZE =
 		16;
 }

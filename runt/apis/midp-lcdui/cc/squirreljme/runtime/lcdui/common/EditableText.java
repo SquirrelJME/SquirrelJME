@@ -222,7 +222,43 @@ public final class EditableText
 		if (type == TextField.ANY || n == 0)
 			return true;
 		
-		throw new todo.TODO();
+		// Depends on the type
+		switch (type)
+		{
+				// Decimal value
+			case TextField.CURRENCY:
+			case TextField.DECIMAL:
+				try
+				{
+					Double.valueOf(__cs.toString());
+					return true;
+				}
+				catch (NumberFormatException e)
+				{
+					return false;
+				}
+				
+				// Integer values only
+			case TextField.NUMERIC:
+				try
+				{
+					Integer.parseInt(__cs.toString());
+					return true;
+				}
+				catch (NumberFormatException e)
+				{
+					return false;
+				}
+				
+				// E-mail addresses and URLs allow everything
+			case TextField.EMAILADDR:
+			case TextField.URL:
+				return true;
+			
+				// Unknown
+			default:
+				throw new todo.TODO();
+		}
 	}
 }
 

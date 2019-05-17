@@ -23,6 +23,13 @@ import cc.squirreljme.runtime.lcdui.SerializedEvent;
  */
 public class Ticker
 {
+	/** Displayables this ticker is attached to. */
+	final __VolatileList__<Displayable> _displayables =
+		new __VolatileList__<>();
+	
+	/** The text used. */
+	volatile String _text;
+	
 	/**
 	 * Initializes the ticker with the given string.
 	 *
@@ -37,7 +44,7 @@ public class Ticker
 			throw new NullPointerException("NARG");
 		
 		// Use internal title set
-		this.setString(__s);
+		this._text = __s;
 	}
 	
 	/**
@@ -48,10 +55,7 @@ public class Ticker
 	 */
 	public String getString()
 	{
-		throw new todo.TODO();
-		/*
-		return LcdServiceCall.<String>call(String.class,
-			LcdFunction.TICKER_GET_STRING, this._handle);*/
+		return this._text;
 	}
 	
 	/**
@@ -64,9 +68,19 @@ public class Ticker
 	public void setString(String __s)
 		throws NullPointerException
 	{
-		throw new todo.TODO();
-		/*LcdServiceCall.<VoidType>call(VoidType.class,
-			LcdFunction.TICKER_SET_STRING, this._handle, __s);*/
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Set new
+		this._text = __s;
+		
+		// Repaint for any displays which are using this ticker
+		for (Displayable di : this._displayables)
+		{
+			Display d = di._display;
+			if (d != null)
+				d._phoneui.repaint();
+		}
 	}
 }
 
