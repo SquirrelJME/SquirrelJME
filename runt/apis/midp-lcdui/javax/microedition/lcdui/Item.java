@@ -65,16 +65,15 @@ public abstract class Item
 	public static final int PLAIN =
 		0;
 	
-	/** Thread safe lock. */
-	final Object _lock =
-		new Object();
+	/** The owning form. */
+	volatile Form _form;
 	
 	/** The current layout of the item. */
 	private volatile int _layout =
 		LAYOUT_DEFAULT;
 	
 	/** The label of this item. */
-	private volatile String _label;
+	volatile String _label;
 	
 	/**
 	 * Initializes the base item.
@@ -83,6 +82,17 @@ public abstract class Item
 	 */
 	Item()
 	{
+	}
+	
+	/**
+	 * Initializes the base item with some parameters.
+	 *
+	 * @param __l The label to use.
+	 * @since 2019/05/17
+	 */
+	Item(String __l)
+	{
+		this._label = __l;
 	}
 	
 	public void addCommand(Command __a)

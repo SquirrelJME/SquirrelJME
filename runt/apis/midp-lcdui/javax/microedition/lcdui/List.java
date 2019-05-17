@@ -104,15 +104,12 @@ public class List
 		if (items.size() == 1 && this._type == Choice.EXCLUSIVE)
 			e._selected = true;
 		
-		throw new todo.TODO();
-		/*
-		// Visual changed, need to recalculate
-		UIPersist lastpersist = this._lastpersist;
-		if (lastpersist != null)
-			lastpersist.visualUpdate(true);
+		// Update display
+		Display d = this._display;
+		if (d != null)
+			d._phoneui.repaint();
 		
 		return rv;
-		*/
 	}
 	
 	public void delete(int __a)
@@ -147,10 +144,7 @@ public class List
 	@Override
 	public int getHeight()
 	{
-		throw new todo.TODO();
-		/*
-		return this.__defaultHeight();
-		*/
+		return Displayable.__getHeight(this, false);
 	}
 	
 	public Image getImage(int __a)
@@ -199,10 +193,7 @@ public class List
 	@Override
 	public int getWidth()
 	{
-		throw new todo.TODO();
-		/*
-		return this.__defaultWidth();
-		*/
+		return Displayable.__getWidth(this, false);
 	}
 	
 	public void insert(int __a, String __b, Image __c)
