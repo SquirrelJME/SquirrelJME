@@ -690,7 +690,7 @@ public final class EnforcedDrawingAreaGraphics
 			height = this.height;
 		
 		// Set new clipping area
-		g.clipRect(x, y, width, height);
+		g.setClip(x, y, width, height);
 		this._clipx = 0;
 		this._clipy = 0;
 		this._clipw = width;

@@ -147,7 +147,7 @@ public final class ActiveDisplay
 			drawtitlebar = true;
 			
 			// The command bar is only drawn if we have actual commands
-			drawcommandbar = (numcommands > 0);
+			drawcommandbar = false;//(numcommands > 0);
 			
 			// Draw area is shortened in height
 			uw = dw;

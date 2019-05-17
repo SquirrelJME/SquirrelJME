@@ -273,17 +273,17 @@ public class AdvancedGraphics
 		
 		// Only set the clipping bounds if they exceed the previous ones
 		if (__x > oldclipsx)
-			this.clipsx = __x;
+			this.clipsx = (oldclipsx = __x);
 		if (__y > oldclipsy)
-			this.clipsy = __y;
-		if (ex < clipex)
-			this.clipex = ex;
-		if (ey < clipey)
-			this.clipey = ey;
+			this.clipsy = (oldclipsy = __y);
+		if (ex < oldclipex)
+			this.clipex = (oldclipex = ex);
+		if (ey < oldclipey)
+			this.clipey = (oldclipey = ey);
 		
 		// Set width/height
-		this.clipw = ex - __x;
-		this.cliph = ey - __y;
+		this.clipw = clipex - oldclipsx;
+		this.cliph = clipey - oldclipsy;
 	}
 	
 	/**
