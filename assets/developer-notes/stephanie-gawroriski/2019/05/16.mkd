@@ -1,0 +1,16 @@
+# 2019/05/16
+
+## 11:51
+
+Doing a refactor of the LCDUI code to hopefully make all of it better. I hope
+that this is the final refactor of it to be honest because it has been
+rewritten so many times. My goal though is to make it work as much as possible
+across many applications since the current stuff confuses everything with the
+sizes and such.
+
+## 12:22
+
+Actually I do not believe I need any kind of drawing stuff in all of the
+widgets because pretty much everything that can be obtained from a displayable
+and the widgets is effectively accessible. So the widgets themselves need not
+handle drawing really.
