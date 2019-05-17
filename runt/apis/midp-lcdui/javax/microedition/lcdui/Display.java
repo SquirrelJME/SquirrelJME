@@ -544,15 +544,8 @@ public class Display
 	 */
 	public boolean hasPointerEvents()
 	{
-		throw new todo.TODO();
-		/*
-		// Only the first display supports this
-		if (this._nid != 0)
-			return false;
-		
 		return 0 != (this.getCapabilities() &
 			ExtendedCapabilities.SUPPORTS_POINTER_EVENTS);
-		*/
 	}
 	
 	/**
@@ -563,15 +556,8 @@ public class Display
 	 */
 	public boolean hasPointerMotionEvents()
 	{
-		throw new todo.TODO();
-		/*
-		// Only the first display supports this
-		if (this._nid != 0)
-			return false;
-		
 		return 0 != (this.getCapabilities() &
 			ExtendedCapabilities.SUPPORTS_POINTER_EVENTS);
-		*/
 	}
 	
 	/**
