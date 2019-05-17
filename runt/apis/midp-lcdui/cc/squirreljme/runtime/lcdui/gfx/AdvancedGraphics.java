@@ -1398,6 +1398,18 @@ public class AdvancedGraphics
 		__x += this.transx;
 		__y += this.transy;
 		
+		// Anchoring
+		int textw = __t.getWidth(),
+			texth = __t.getHeight();
+		if ((__anchor & Graphics.RIGHT) != 0)
+			__x -= textw;
+		else if ((__anchor & Graphics.HCENTER) != 0)
+			__x -= (textw >> 1);
+		if ((__anchor & Graphics.BOTTOM) != 0)
+			__y -= texth;
+		else if ((__anchor & Graphics.VCENTER) != 0)
+			__y -= (texth >> 1);
+		
 		// Get clipping region
 		int clipsx = this.clipsx,
 			clipsy = this.clipsy,
@@ -1409,9 +1421,7 @@ public class AdvancedGraphics
 			return;
 		
 		// Trying to draw the text completely out of the clip as well?
-		int textw = __t.getWidth(),
-			texth = __t.getHeight(),
-			tex = __x + textw,
+		int tex = __x + textw,
 			tey = __y + texth;
 		if (tex < clipsx || tey < clipsy)
 			return;

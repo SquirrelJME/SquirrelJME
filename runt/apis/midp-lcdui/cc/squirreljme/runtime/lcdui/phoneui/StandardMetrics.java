@@ -36,6 +36,10 @@ public final class StandardMetrics
 	public static final int TRANSPARENT_COLOR =
 		0xFFFFFF;
 	
+	/** Vibration symbol color. */
+	public static final int VIBRATE_COLOR =
+		0xFF00FF;
+	
 	/**
 	 * Not used.
 	 *
