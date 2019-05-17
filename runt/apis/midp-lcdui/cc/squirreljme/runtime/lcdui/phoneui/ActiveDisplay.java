@@ -46,6 +46,12 @@ public final class ActiveDisplay
 	/** Vibration cycle. */
 	private volatile boolean _vibratecycle;
 	
+	/** Content X Area. */
+	int _contentx;
+	
+	/** Content Y Area. */
+	int _contenty;
+	
 	/** Width of the content area. */
 	int _contentwidth;
 	
@@ -90,7 +96,11 @@ public final class ActiveDisplay
 		if (__d == null)
 			throw new NullPointerException("NARG");
 		
+		// Set
 		this._current = __d;
+		
+		// Realize the dimensions
+		this.realize(new int[4]);
 	}
 	
 	/**
@@ -112,61 +122,24 @@ public final class ActiveDisplay
 		// Current displayable to draw
 		ExposedDisplayable current = (ExposedDisplayable)this._current;
 		
-		// Get commands that are used, this is used to figure out if the
-		// command bar needs to be drawn
-		Command[] commands = (current == null ? new Command[0] :
-			current.getCommands());
-		int numcommands = commands.length;
+		// Realize new content area coordinates
+		int[] ua = new int[4];
+		if (this.realize(ua))
+			current.sizeChanged(ua[2], ua[3]);
 		
-		// Is the command bar and title bar to be drawn maybe?
-		boolean drawcommandbar,
-			drawtitlebar;
+		// Extract coordinates
+		int ux = ua[0],
+			uy = ua[1],
+			uw = ua[2],
+			uh = ua[3];
 		
-		// Drawing full-screen graphics so do not draw the title bar or the
-		// command bar at all. But since it is full-screen we can just draw
-		// directly on the image without using a wrapper (is faster)
-		// This becomes the user drawing area
-		Graphics ug;
-		int uw, uh;
-		if (current != null && current.isFullscreen())
+		// If not full-screen, then draw title bar and maybe the command bar
+		if (uh != dh)
 		{
-			// Display is the whole screen
-			ug = dg;
-			uw = dw;
-			uh = dh;
+			// Remember default parameters
+			Font oldfont = dg.getFont();
+			int oldcolor = dg.getColor();
 			
-			// These are never drawn
-			drawtitlebar = false;
-			drawcommandbar = false;
-		}
-		
-		// Otherwise, we draw the title bar and the command bar
-		else
-		{
-			// Title bar is always drawn
-			drawtitlebar = true;
-			
-			// The command bar is only drawn if we have actual commands
-			drawcommandbar = (numcommands > 0);
-			
-			// Draw area is shortened in height
-			uw = dw;
-			uh = (dh - StandardMetrics.TITLE_BAR_HEIGHT) -
-				(drawcommandbar ? StandardMetrics.COMMAND_BAR_HEIGHT : 0);
-			
-			// Use 
-			ug = new EnforcedDrawingAreaGraphics(dg,
-				0, StandardMetrics.TITLE_BAR_HEIGHT,
-				uw, uh);
-		}
-		
-		// Remember default parameters
-		Font oldfont = dg.getFont();
-		int oldcolor = dg.getColor();
-		
-		// Draw title bar
-		if (drawtitlebar)
-		{
 			// Draw background
 			dg.setColor(StandardMetrics.BACKGROUND_BAR_COLOR);
 			dg.fillRect(0, 0, dw, StandardMetrics.TITLE_BAR_HEIGHT);
@@ -180,36 +153,30 @@ public final class ActiveDisplay
 			dg.setColor(StandardMetrics.FOREGROUND_BAR_COLOR);
 			dg.drawString(title, 0, 0, Graphics.TOP | Graphics.LEFT);
 			dg.drawString(title, 1, 0, Graphics.TOP | Graphics.LEFT);
-		}
-		
-		// Draw the command bar?
-		if (drawcommandbar)
-		{
-			// Base Y position
-			int cy = dh - StandardMetrics.COMMAND_BAR_HEIGHT;
 			
-			// Draw background
-			dg.setColor(StandardMetrics.BACKGROUND_BAR_COLOR);
-			dg.fillRect(0, cy, dw, StandardMetrics.COMMAND_BAR_HEIGHT);
-		}
-		
-		// Restore parameters
-		dg.setFont(oldfont);
-		dg.setColor(oldcolor);
-		
-		// Send resize to the display before drawing it?
-		int oldcw = this._contentwidth,
-			oldch = this._contentheight;
-		if (oldcw != uw || oldch != uh)
-		{
-			// Set new size
-			this._contentwidth = uw;
-			this._contentheight = uh;
+			// Get commands that are used, this is used to figure out if the
+			// command bar needs to be drawn
+			Command[] commands = (current == null ? new Command[0] :
+				current.getCommands());
+			int numcommands = commands.length;
+			if (numcommands > 0)
+			{
+				// Base Y position
+				int cy = dh - StandardMetrics.COMMAND_BAR_HEIGHT;
+				
+				// Draw background
+				dg.setColor(StandardMetrics.BACKGROUND_BAR_COLOR);
+				dg.fillRect(0, cy, dw, StandardMetrics.COMMAND_BAR_HEIGHT);
+			}
 			
-			// And send it now
-			if (current != null)
-				current.sizeChanged(uw, uh);
+			// Restore parameters
+			dg.setFont(oldfont);
+			dg.setColor(oldcolor);
 		}
+		
+		// Setup enforced graphics
+		Graphics ug = new EnforcedDrawingAreaGraphics(dg,
+			ux, uy, uw, uh);
 		
 		// If nothing is being shown, just show the version info
 		if (current == null)
@@ -235,7 +202,7 @@ public final class ActiveDisplay
 			if (current.isTransparent())
 			{
 				// Use background color instead
-				oldcolor = ug.getColor();
+				int oldcolor = ug.getColor();
 				ug.setColor(StandardMetrics.TRANSPARENT_COLOR);
 				
 				// Fill
@@ -279,6 +246,84 @@ public final class ActiveDisplay
 				sx -= xa;
 			}
 		}
+	}
+	
+	/**
+	 * Realizes the size of the content area.
+	 *
+	 * @param __dims The output content area dimensions.
+	 * @return {@code true} if the area has been resized.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/17
+	 */
+	public final boolean realize(int[] __dims)
+		throws NullPointerException
+	{
+		if (__dims == null)
+			throw new NullPointerException("NARG");
+		
+		// Screen size
+		int dw = this.width,
+			dh = this.height;
+		
+		// User area
+		int ux, uy, uw, uh;
+		
+		// Current displayable to draw
+		ExposedDisplayable current = (ExposedDisplayable)this._current;
+		
+		// Full-screen uses the entire screen
+		if (current != null && current.isFullscreen())
+		{
+			ux = 0;
+			uy = 0;
+			uw = dw;
+			uh = dh;
+		}
+		
+		// Otherwise, space is lost to the title bar and commands
+		else
+		{
+			// Get commands that are used, this is used to figure out if the
+			// command bar needs to be drawn
+			Command[] commands = (current == null ? new Command[0] :
+				current.getCommands());
+			int numcommands = commands.length;
+			
+			// Clip dimensions
+			ux = 0;
+			uy = StandardMetrics.TITLE_BAR_HEIGHT;
+			uw = dw;
+			uh = (dh - StandardMetrics.TITLE_BAR_HEIGHT) -
+				(numcommands > 0 ? StandardMetrics.COMMAND_BAR_HEIGHT : 0);
+		}
+		
+		// Has the area changed?
+		boolean rv = false;
+		int oldux = this._contentx,
+			olduy = this._contenty,
+			olduw = this._contentwidth,
+			olduh = this._contentheight;
+		if (ux != oldux || uy != olduy || uw != olduw || uh != olduh)
+		{
+			// Did change
+			rv = true;
+			
+			// Set new fields
+			this._contentx = ux;
+			this._contenty = uy;
+			this._contentwidth = uw;
+			this._contentheight = uh;
+		}
+		
+		// Set output user area dimensions
+		__dims[0] = ux;
+		__dims[1] = uy;
+		__dims[2] = uw;
+		__dims[3] = uh;
+		
+		// Has this changed at all?
+		return rv;
 	}
 	
 	/**
