@@ -35,7 +35,7 @@ public final class ActiveDisplay
 	protected final Image image;
 	
 	/** The displayable to draw. */
-	private volatile Displayable _current;
+	volatile Displayable _current;
 	
 	/** Vibrate the display? */
 	private volatile boolean _invibrate;
@@ -110,7 +110,7 @@ public final class ActiveDisplay
 			dh = this.height;
 		
 		// Current displayable to draw
-		Displayable current = this._current;
+		ExposedDisplayable current = (ExposedDisplayable)this._current;
 		
 		// Get commands that are used, this is used to figure out if the
 		// command bar needs to be drawn
@@ -196,6 +196,20 @@ public final class ActiveDisplay
 		// Restore parameters
 		dg.setFont(oldfont);
 		dg.setColor(oldcolor);
+		
+		// Send resize to the display before drawing it?
+		int oldcw = this._contentwidth,
+			oldch = this._contentheight;
+		if (oldcw != uw || oldch != uh)
+		{
+			// Set new size
+			this._contentwidth = uw;
+			this._contentheight = uh;
+			
+			// And send it now
+			if (current != null)
+				current.sizeChanged(uw, uh);
+		}
 		
 		// If nothing is being shown, just show the version info
 		if (current == null)

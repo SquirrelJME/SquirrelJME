@@ -337,23 +337,14 @@ public class Display
 	 */
 	public int getCapabilities()
 	{
-		throw new todo.TODO();
-		/*
-		// For simplicity only the first display supports input events of
-		// any kind
-		int mask = 0xFFFF_FFFF;
-		if (this._nid != 0)
-			mask &= ~(SUPPORTS_INPUT_EVENTS);
-		
 		// Use the capabilities of the native display, but since SquirrelJME
 		// manages pretty much everything in a framebuffer every display will
 		// always have certain capabilities
-		return (NativeDisplayAccess.capabilities(this._nid) |
+		return (this._backend.capabilities() |
 			SUPPORTS_COMMANDS | SUPPORTS_FORMS | SUPPORTS_TICKER |
 			SUPPORTS_ALERTS | SUPPORTS_LISTS | SUPPORTS_TEXTBOXES |
 			SUPPORTS_FILESELECTORS | SUPPORTS_TABBEDPANES |
-			SUPPORTS_MENUS) & mask;
-		*/
+			SUPPORTS_MENUS);
 	}
 	
 	/**
