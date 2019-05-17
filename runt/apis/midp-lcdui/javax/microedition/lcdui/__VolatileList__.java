@@ -176,6 +176,38 @@ final class __VolatileList__<T>
 	}
 	
 	/**
+	 * Converts the values to an array of the specific type.
+	 *
+	 * @param __ov The output array.
+	 * @return The output array, may be recreated if too small.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/17
+	 */
+	@SuppressWarnings({"unchecked"})
+	public final T[] toArray(T[] __ov)
+		throws NullPointerException
+	{
+		if (__ov == null)
+			throw new NullPointerException("NARG");
+		
+		// Get input values
+		Object[] iv = this._values;
+		int in = iv.length;
+		
+		// Too short of an array? Grow it
+		int on = __ov.length;
+		if (on < in)
+			__ov = Arrays.<T>copyOf(__ov, in);
+		
+		// Copy values
+		for (int i = 0; i < in; i++)
+			__ov[i] = (T)iv[i];
+		
+		// And use the passed or recreated array
+		return __ov;
+	}
+	
+	/**
 	 * Returns the values in the list.
 	 *
 	 * @return The list values.

@@ -24,6 +24,18 @@ public final class StandardMetrics
 	public static final int COMMAND_BAR_HEIGHT =
 		12;
 	
+	/** The background bar color. */
+	public static final int BACKGROUND_BAR_COLOR =
+		0x000000;
+	
+	/** The foreground bar color. */
+	public static final int FOREGROUND_BAR_COLOR =
+		0xFFFFFF;
+	
+	/** Transparent background color. */
+	public static final int TRANSPARENT_COLOR =
+		0xFFFFFF;
+	
 	/**
 	 * Not used.
 	 *

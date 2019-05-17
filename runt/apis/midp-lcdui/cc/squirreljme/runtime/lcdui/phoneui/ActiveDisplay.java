@@ -9,7 +9,11 @@
 
 package cc.squirreljme.runtime.lcdui.phoneui;
 
+import cc.squirreljme.runtime.cldc.SquirrelJME;
+import cc.squirreljme.runtime.lcdui.gfx.EnforcedDrawingAreaGraphics;
+import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import java.util.Arrays;
@@ -96,21 +100,130 @@ public final class ActiveDisplay
 		int dw = this.width,
 			dh = this.height;
 		
-		// If there is no displayable then draw a blank screen
+		// Current displayable to draw
 		Displayable current = this._current;
+		
+		// Get commands that are used, this is used to figure out if the
+		// command bar needs to be drawn
+		Command[] commands = (current == null ? new Command[0] :
+			current.getCommands());
+		int numcommands = commands.length;
+		
+		// Is the command bar and title bar to be drawn maybe?
+		boolean drawcommandbar,
+			drawtitlebar;
+		
+		// Drawing full-screen graphics so do not draw the title bar or the
+		// command bar at all. But since it is full-screen we can just draw
+		// directly on the image without using a wrapper (is faster)
+		// This becomes the user drawing area
+		Graphics ug;
+		int uw, uh;
+		if (current != null && current.isFullscreen())
+		{
+			// Display is the whole screen
+			ug = dg;
+			uw = dw;
+			uh = dh;
+			
+			// These are never drawn
+			drawtitlebar = false;
+			drawcommandbar = false;
+		}
+		
+		// Otherwise, we draw the title bar and the command bar
+		else
+		{
+			// Title bar is always drawn
+			drawtitlebar = true;
+			
+			// The command bar is only drawn if we have actual commands
+			drawcommandbar = (numcommands > 0);
+			
+			// Draw area is shortened in height
+			uw = dw;
+			uh = (dh - StandardMetrics.TITLE_BAR_HEIGHT) -
+				(drawcommandbar ? StandardMetrics.COMMAND_BAR_HEIGHT : 0);
+			
+			// Use 
+			ug = new EnforcedDrawingAreaGraphics(dg,
+				0, StandardMetrics.TITLE_BAR_HEIGHT,
+				uw, uh);
+		}
+		
+		// Remember default parameters
+		Font oldfont = dg.getFont();
+		int oldcolor = dg.getColor();
+		
+		// Draw title bar
+		if (drawtitlebar)
+		{
+			// Draw background
+			dg.setColor(StandardMetrics.BACKGROUND_BAR_COLOR);
+			dg.fillRect(0, 0, dw, StandardMetrics.TITLE_BAR_HEIGHT);
+			
+			// Set font
+			dg.setFont(Font.getFont("sansserif", 0,
+				StandardMetrics.TITLE_BAR_HEIGHT));
+			
+			// Draw title text
+			String title = this._title;
+			dg.setColor(StandardMetrics.FOREGROUND_BAR_COLOR);
+			dg.drawString(title, 0, 0, Graphics.TOP | Graphics.LEFT);
+			dg.drawString(title, 1, 0, Graphics.TOP | Graphics.LEFT);
+		}
+		
+		// Draw the command bar?
+		if (drawcommandbar)
+		{
+			// Base Y position
+			int cy = dh - StandardMetrics.COMMAND_BAR_HEIGHT;
+			
+			// Draw background
+			dg.setColor(StandardMetrics.BACKGROUND_BAR_COLOR);
+			dg.fillRect(0, cy, dw, StandardMetrics.COMMAND_BAR_HEIGHT);
+		}
+		
+		// Restore parameters
+		dg.setFont(oldfont);
+		dg.setColor(oldcolor);
+		
+		// If nothing is being shown, just show the version info
 		if (current == null)
 		{
 			// Draw box
-			dg.setColor(0x0000FF);
-			dg.fillRect(0, 0, dw, dh);
+			ug.setColor(0x0000FF);
+			ug.fillRect(0, 0, uw, uh);
 			
-			// Draw an X
-			dg.setColor(0xFFFF00);
-			dg.drawLine(0, 0, dw, dh);
-			dg.drawLine(0, dh, dw, 0);
+			// Draw some layout text
+			ug.setColor(0xFFFF00);
+			ug.setFont(Font.getFont("sansserif", 0, 16));
+			ug.drawString("SquirrelJME " + SquirrelJME.RUNTIME_VERSION + "\n" +
+				"(C) Stephanie Gawroriski\n" +
+				"https://squirreljme.cc/\nLicensed w/ the GPLv3!", 0, 0, 0);
+			ug.drawString("SquirrelJME", 1, 0, 0);
+		}
+		
+		// Normal painting
+		else
+		{
+			// If the displayable is transparent then, we fill in the
+			// background for the application
+			if (current.isTransparent())
+			{
+				// Use background color instead
+				oldcolor = ug.getColor();
+				ug.setColor(StandardMetrics.TRANSPARENT_COLOR);
+				
+				// Fill
+				ug.fillRect(0, 0, uw, uh);
+				
+				// Restore
+				ug.setColor(oldcolor);
+			}
 			
-			// Stop
-			return;
+			// Paint
+			current.paint(ug);
 		}
 	}
 }
