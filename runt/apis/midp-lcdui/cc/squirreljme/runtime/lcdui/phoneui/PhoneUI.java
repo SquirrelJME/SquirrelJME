@@ -45,9 +45,6 @@ public final class PhoneUI
 	/** Active display image. */
 	protected final ActiveDisplay activedisplay;
 	
-	/** The buffer which represents the display itself. */
-	protected final Image buffer;
-	
 	/** The current displayable to show. */
 	private Displayable _current;
 	
@@ -89,9 +86,6 @@ public final class PhoneUI
 		// Set active display
 		ActiveDisplay activedisplay = new ActiveDisplay(__sw, __sh);
 		this.activedisplay = activedisplay;
-		
-		// All screen operations are done on a secondary buffer
-		this.buffer = activedisplay.image;
 	}
 	
 	/**
