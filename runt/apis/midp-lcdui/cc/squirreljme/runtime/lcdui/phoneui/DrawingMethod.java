@@ -14,8 +14,10 @@ import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.FileSelector;
+import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.List;
 import javax.microedition.lcdui.TabbedPane;
 import javax.microedition.lcdui.TextBox;
@@ -101,7 +103,63 @@ public enum DrawingMethod
 		{
 			List list = (List)__d;
 			
-			__g.drawString("LIST", 0, 0, 0);
+			// Working base coordinates for each item
+			int dx = 0,
+				dy = 0;
+			
+			// Selected index
+			int sel = list.getSelectedIndex();
+			
+			// Draw all list items
+			int n = list.size();
+			for (int i = 0; i < n; i++)
+			{
+				// Reset X draw
+				dx = 0;
+				
+				// Get item properties
+				String vs = list.getString(i);
+				Image vi = list.getImage(i);
+				Font vf = list.getFont(i);
+				boolean ve = list.isEnabled(i);
+				boolean vl = list.isSelected(i);
+				
+				// Use a default fallback font?
+				if (vf == null)
+					vf = Font.getFont(StandardMetrics.LIST_ITEM_FONT, 0,
+						StandardMetrics.LIST_ITEM_HEIGHT);
+				
+				// Height of this item
+				int ih = vf.getPixelSize();
+				
+				// Increase height for the image size?
+				if (vi != null)
+				{
+					int mh = vi.getHeight();
+					if (mh > ih)
+						ih = mh;
+				}
+				
+				// Draw background
+				__g.setColor(StandardMetrics.itemBackgroundColor(ve, vl));
+				__g.fillRect(dx, dy,
+					__w, ih);
+				
+				// Draw image?
+				if (vi != null)
+				{
+					__g.drawImage(vi, dx, dy, Graphics.TOP | Graphics.LEFT);
+					dx += vi.getWidth();
+				}
+				
+				// Draw text
+				__g.setColor(StandardMetrics.itemForegroundColor(ve, vl));
+				__g.setFont(vf);
+				__g.drawString(vs, dx, dy, Graphics.TOP | Graphics.LEFT);
+				
+				// Move to next item
+				dy += ih;
+			}
 		}
 	},
 	

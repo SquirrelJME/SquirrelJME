@@ -52,6 +52,46 @@ public final class StandardMetrics
 	public static final int FOREGROUND_TICKER_COLOR =
 		0x000000;
 	
+	/** The font used for list items. */
+	public static final String LIST_ITEM_FONT =
+		"sansserif";
+	
+	/** The height of list items. */
+	public static final int LIST_ITEM_HEIGHT =
+		12;
+	
+	/** Enabled normal foreground. */
+	public static final int ENABLED_NORMAL_FOREGROUND =
+		0x000000;
+	
+	/** Enabled normal background. */
+	public static final int ENABLED_NORMAL_BACKGROUND =
+		0xFFFFFF;
+	
+	/** Enabled selected foreground. */
+	public static final int ENABLED_SELECTED_FOREGROUND =
+		0xFFFFFF;
+	
+	/** Enable selected background. */
+	public static final int ENABLED_SELECTED_BACKGROUND =
+		0x000088;
+	
+	/** Disabled normal foreground. */
+	public static final int DISABLED_NORMAL_FOREGROUND =
+		0x888888;
+	
+	/** Disabled normal background. */
+	public static final int DISABLED_NORMAL_BACKGROUND =
+		0xFFFFFF;
+	
+	/** Disabled selected foreground. */
+	public static final int DISABLED_SELECTED_FOREGROUND =
+		0xAAAAAA;
+	
+	/** Disabled selected background. */
+	public static final int DISABLED_SELECTED_BACKGROUND =
+		0x888888;
+	
 	/**
 	 * Not used.
 	 *
@@ -59,6 +99,50 @@ public final class StandardMetrics
 	 */
 	private StandardMetrics()
 	{
+	}
+	
+	/**
+	 * Returns the background color.
+	 *
+	 * @param __en Is this enabled?
+	 * @param __sl Is this selected?
+	 * @return The color to use.
+	 * @since 2019/05/18
+	 */
+	public static final int itemBackgroundColor(boolean __en, boolean __sl)
+	{
+		if (__en)
+			if (__sl)
+				return ENABLED_SELECTED_BACKGROUND;
+			else
+				return ENABLED_NORMAL_BACKGROUND;
+		else
+			if (__sl)
+				return DISABLED_SELECTED_BACKGROUND;
+			else
+				return DISABLED_NORMAL_BACKGROUND;
+	}
+	
+	/**
+	 * Returns the foreground color.
+	 *
+	 * @param __en Is this enabled?
+	 * @param __sl Is this selected?
+	 * @return The color to use.
+	 * @since 2019/05/18
+	 */
+	public static final int itemForegroundColor(boolean __en, boolean __sl)
+	{
+		if (__en)
+			if (__sl)
+				return ENABLED_SELECTED_FOREGROUND;
+			else
+				return ENABLED_NORMAL_FOREGROUND;
+		else
+			if (__sl)
+				return DISABLED_SELECTED_FOREGROUND;
+			else
+				return DISABLED_NORMAL_FOREGROUND;
 	}
 }
 
