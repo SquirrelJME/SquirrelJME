@@ -199,8 +199,8 @@ public final class ActiveDisplay
 			{
 				// Background
 				__g.setColor(StandardMetrics.BACKGROUND_TICKER_COLOR);
-				__g.fillRect(0, 0,
-					dw, StandardMetrics.TITLE_BAR_HEIGHT);
+				__g.fillRect(0, StandardMetrics.TITLE_BAR_HEIGHT,
+					dw, StandardMetrics.TICKER_BAR_HEIGHT);
 				
 				// Draw ticker text
 				__g.setColor(StandardMetrics.FOREGROUND_TICKER_COLOR);
