@@ -125,6 +125,16 @@ public abstract class Displayable
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/18
+	 */
+	@Override
+	protected CommandListener getCommandListener()
+	{
+		return this._cmdlistener;
+	}
+	
+	/**
 	 * Gets the commands which are available to use.
 	 *
 	 * @return The available commands.

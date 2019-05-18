@@ -118,7 +118,8 @@ public final class NativeUIBackend
 		if (__d != this.nid)
 			return;
 		
-		todo.TODO.note("Implement");
+		// Forward
+		this._activedisplay.exitRequest();
 	}
 	
 	/**

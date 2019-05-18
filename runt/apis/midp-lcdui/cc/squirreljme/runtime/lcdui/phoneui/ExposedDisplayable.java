@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.lcdui.phoneui;
 
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Ticker;
 
@@ -23,12 +24,23 @@ import javax.microedition.lcdui.Ticker;
 public abstract class ExposedDisplayable
 {
 	/**
+	 * Returns the command listener.
+	 *
+	 * @return The command listener.
+	 * @since 2019/05/18
+	 */
+	protected CommandListener getCommandListener()
+	{
+		return null;
+	}
+	
+	/**
 	 * Gets the commands which are available to use.
 	 *
 	 * @return The available commands.
 	 * @since 2019/05/17
 	 */
-	public Command[] getCommands()
+	protected Command[] getCommands()
 	{
 		return new Command[0];
 	}
@@ -39,7 +51,7 @@ public abstract class ExposedDisplayable
 	 * @return The ticker being shown or {@code null} if there is none.
 	 * @since 2019/05/18
 	 */
-	public Ticker getTicker()
+	protected Ticker getTicker()
 	{
 		return null;
 	}
