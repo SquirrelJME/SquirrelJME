@@ -29,6 +29,10 @@ public final class PhoneUI
 	public static final int DEFAULT_SCREEN_HEIGHT =
 		320;
 	
+	/** Used to ignore realization. */
+	static final int[] _IGNORE_REALIZATION =
+		new int[4];
+	
 	/** The width of the phone screen. */
 	public final int width;
 	
@@ -133,6 +137,10 @@ public final class PhoneUI
 	 */
 	public final void repaint(int __x, int __y, int __w, int __h)
 	{
+		// Realize active display size
+		this.activedisplay.realize(PhoneUI._IGNORE_REALIZATION);
+		
+		// Repaint
 		this.backend.repaint(__x, __y, __w, __h);
 	}
 	

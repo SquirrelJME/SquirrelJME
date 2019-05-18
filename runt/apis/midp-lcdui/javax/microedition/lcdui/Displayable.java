@@ -286,6 +286,11 @@ public abstract class Displayable
 			
 			// Set
 			this._ticker = __t;
+			
+			// Update display
+			Display d = this._display;
+			if (d != null)
+				d._phoneui.repaint();
 		}
 	}
 	

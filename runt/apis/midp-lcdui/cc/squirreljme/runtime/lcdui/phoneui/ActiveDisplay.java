@@ -16,6 +16,7 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
+import javax.microedition.lcdui.Ticker;
 import java.util.Arrays;
 
 /**
@@ -80,7 +81,8 @@ public final class ActiveDisplay
 		// Default content area size
 		this._contentwidth = __w;
 		this._contentheight = __h - (StandardMetrics.TITLE_BAR_HEIGHT +
-			StandardMetrics.COMMAND_BAR_HEIGHT);
+			StandardMetrics.COMMAND_BAR_HEIGHT +
+			StandardMetrics.TICKER_BAR_HEIGHT);
 	}
 	
 	/**
@@ -100,7 +102,7 @@ public final class ActiveDisplay
 		this._current = __d;
 		
 		// Realize the dimensions
-		this.realize(new int[4]);
+		this.realize(PhoneUI._IGNORE_REALIZATION);
 	}
 	
 	/**
@@ -153,6 +155,22 @@ public final class ActiveDisplay
 			dg.setColor(StandardMetrics.FOREGROUND_BAR_COLOR);
 			dg.drawString(title, 0, 0, Graphics.TOP | Graphics.LEFT);
 			dg.drawString(title, 1, 0, Graphics.TOP | Graphics.LEFT);
+			
+			// Draw the ticker?
+			Ticker ticker = (current == null ? null : current.getTicker());
+			if (ticker != null)
+			{
+				// Background
+				dg.setColor(StandardMetrics.BACKGROUND_TICKER_COLOR);
+				dg.fillRect(0, 0,
+					dw, StandardMetrics.TITLE_BAR_HEIGHT);
+				
+				// Draw ticker text
+				dg.setColor(StandardMetrics.FOREGROUND_TICKER_COLOR);
+				dg.drawString(ticker.getString(),
+					0, StandardMetrics.TITLE_BAR_HEIGHT,
+					Graphics.TOP | Graphics.LEFT);
+			}
 			
 			// Get commands that are used, this is used to figure out if the
 			// command bar needs to be drawn
@@ -290,12 +308,17 @@ public final class ActiveDisplay
 				current.getCommands());
 			int numcommands = commands.length;
 			
+			// Drawing the ticker?
+			int drawticker = (current != null && current.getTicker() != null ?
+				StandardMetrics.TICKER_BAR_HEIGHT : 0);
+			
 			// Clip dimensions
 			ux = 0;
-			uy = StandardMetrics.TITLE_BAR_HEIGHT;
+			uy = StandardMetrics.TITLE_BAR_HEIGHT + drawticker;
 			uw = dw;
-			uh = (dh - StandardMetrics.TITLE_BAR_HEIGHT) -
-				(numcommands > 0 ? StandardMetrics.COMMAND_BAR_HEIGHT : 0);
+			uh = dh - (StandardMetrics.TITLE_BAR_HEIGHT +
+				(numcommands > 0 ? StandardMetrics.COMMAND_BAR_HEIGHT : 0) +
+				drawticker);
 		}
 		
 		// Has the area changed?

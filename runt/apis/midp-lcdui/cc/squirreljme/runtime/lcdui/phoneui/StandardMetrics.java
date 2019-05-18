@@ -40,6 +40,18 @@ public final class StandardMetrics
 	public static final int VIBRATE_COLOR =
 		0xFF00FF;
 	
+	/** Height of the ticker bar. */
+	public static final int TICKER_BAR_HEIGHT =
+		12;
+	
+	/** Background color of the ticker bar. */
+	public static final int BACKGROUND_TICKER_COLOR =
+		0xA6F6FF;
+	
+	/** Foreground color of the ticker bar. */
+	public static final int FOREGROUND_TICKER_COLOR =
+		0x000000;
+	
 	/**
 	 * Not used.
 	 *
