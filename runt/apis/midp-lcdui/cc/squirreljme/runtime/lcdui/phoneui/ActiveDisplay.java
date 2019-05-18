@@ -244,7 +244,7 @@ public final class ActiveDisplay
 			}
 			
 			// Paint
-			this._method.paint(this._state, ug, uw, uh);
+			this._method.paint((Displayable)current, this._state, ug, uw, uh);
 		}
 		
 		// Clear clip for status symbols

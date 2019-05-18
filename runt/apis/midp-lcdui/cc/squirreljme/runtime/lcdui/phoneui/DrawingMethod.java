@@ -11,6 +11,8 @@ package cc.squirreljme.runtime.lcdui.phoneui;
 
 import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.Canvas;
+import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.FileSelector;
 import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.Graphics;
@@ -34,7 +36,8 @@ public enum DrawingMethod
 		 * @since 2019/05/18
 		 */
 		@Override
-		public final void paint(State __s, Graphics __g, int __w, int __h)
+		public final void paint(Displayable __d, State __s, Graphics __g,
+			int __w, int __h)
 		{
 			__g.drawString("ALERT", 0, 0, 0);
 		}
@@ -48,7 +51,8 @@ public enum DrawingMethod
 		 * @since 2019/05/18
 		 */
 		@Override
-		public final void paint(State __s, Graphics __g, int __w, int __h)
+		public final void paint(Displayable __d, State __s, Graphics __g,
+			int __w, int __h)
 		{
 			__g.drawString("CANVAS", 0, 0, 0);
 		}
@@ -62,7 +66,8 @@ public enum DrawingMethod
 		 * @since 2019/05/18
 		 */
 		@Override
-		public final void paint(State __s, Graphics __g, int __w, int __h)
+		public final void paint(Displayable __d, State __s, Graphics __g,
+			int __w, int __h)
 		{
 			__g.drawString("FILE_SELECTOR", 0, 0, 0);
 		}
@@ -76,7 +81,8 @@ public enum DrawingMethod
 		 * @since 2019/05/18
 		 */
 		@Override
-		public final void paint(State __s, Graphics __g, int __w, int __h)
+		public final void paint(Displayable __d, State __s, Graphics __g,
+			int __w, int __h)
 		{
 			__g.drawString("FORM", 0, 0, 0);
 		}
@@ -90,8 +96,11 @@ public enum DrawingMethod
 		 * @since 2019/05/18
 		 */
 		@Override
-		public final void paint(State __s, Graphics __g, int __w, int __h)
+		public final void paint(Displayable __d, State __s, Graphics __g,
+			int __w, int __h)
 		{
+			List list = (List)__d;
+			
 			__g.drawString("LIST", 0, 0, 0);
 		}
 	},
@@ -104,7 +113,8 @@ public enum DrawingMethod
 		 * @since 2019/05/18
 		 */
 		@Override
-		public final void paint(State __s, Graphics __g, int __w, int __h)
+		public final void paint(Displayable __d, State __s, Graphics __g,
+			int __w, int __h)
 		{
 			__g.drawString("TABBED_PANE", 0, 0, 0);
 		}
@@ -118,7 +128,8 @@ public enum DrawingMethod
 		 * @since 2019/05/18
 		 */
 		@Override
-		public final void paint(State __s, Graphics __g, int __w, int __h)
+		public final void paint(Displayable __d, State __s, Graphics __g,
+			int __w, int __h)
 		{
 			__g.drawString("TEXT_BOX", 0, 0, 0);
 		}
@@ -130,13 +141,15 @@ public enum DrawingMethod
 	/**
 	 * Paints the method.
 	 *
+	 * @param __d The displayable to be drawn.
 	 * @param __s The draw state.
 	 * @param __g The graphics to draw to.
 	 * @param __w The display width.
 	 * @param __h The display height.
 	 * @since 2019/05/18
 	 */
-	public abstract void paint(State __s, Graphics __g, int __w, int __h);
+	public abstract void paint(Displayable __d, State __s, Graphics __g,
+		int __w, int __h);
 	
 	/**
 	 * Returns the drawing method for the given class.

@@ -16,6 +16,8 @@ import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import cc.squirreljme.runtime.midlet.ActiveMidlet;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 import javax.microedition.midlet.MIDlet;
 
 /**
@@ -28,8 +30,8 @@ import javax.microedition.midlet.MIDlet;
 public abstract class Displayable
 	extends ExposedDisplayable
 {
-	/** Commands which have been added to the displayable. */
-	final __VolatileList__<Command> _commands =
+	/** Commands/Menus which have been added to the displayable. */
+	final __VolatileList__<__Action__> _actions =
 		new __VolatileList__<>();
 	
 	/** The display this is attached to, if any. */
@@ -104,7 +106,7 @@ public abstract class Displayable
 				throw new DisplayCapabilityException("EB27");
 		
 		// Add the command
-		this._commands.addUniqueObjRef(__c);
+		this._actions.addUniqueObjRef(__c);
 		
 		// Repaint display?
 		Display d = this._display;
@@ -130,7 +132,11 @@ public abstract class Displayable
 	 */
 	public Command[] getCommands()
 	{
-		return this._commands.toArray(new Command[0]);
+		List<Command> rv = new ArrayList<>();
+		for (__Action__ a : this._actions)
+			if (a instanceof Command)
+				rv.add((Command)a);
+		return rv.<Command>toArray(new Command[rv.size()]);
 	}
 	
 	/**
