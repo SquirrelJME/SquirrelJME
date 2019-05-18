@@ -12,6 +12,7 @@ package cc.squirreljme.runtime.lcdui.phoneui;
 import cc.squirreljme.runtime.lcdui.SerializedEvent;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Ticker;
 
 /**
  * This is a base class for items which need to be exposed action wise and
@@ -30,6 +31,17 @@ public abstract class ExposedDisplayable
 	public Command[] getCommands()
 	{
 		return new Command[0];
+	}
+	
+	/**
+	 * Gets the ticker which is being shown on this displayable.
+	 *
+	 * @return The ticker being shown or {@code null} if there is none.
+	 * @since 2019/05/18
+	 */
+	public Ticker getTicker()
+	{
+		return null;
 	}
 	
 	/**
