@@ -54,7 +54,7 @@ public enum DrawingMethod
 		public final void paint(Displayable __d, State __s, Graphics __g,
 			int __w, int __h)
 		{
-			__g.drawString("CANVAS", 0, 0, 0);
+			((ExposedDisplayable)__d).paint(__g);
 		}
 	},
 	
@@ -162,19 +162,19 @@ public enum DrawingMethod
 	public static final DrawingMethod of(Class<?> __cl)
 		throws NullPointerException
 	{
-		if (__cl.isAssignableFrom(Alert.class))
+		if (Alert.class.isAssignableFrom(__cl))
 			return ALERT;
-		else if (__cl.isAssignableFrom(Canvas.class))
+		else if (Canvas.class.isAssignableFrom(__cl))
 			return CANVAS;
-		else if (__cl.isAssignableFrom(FileSelector.class))
+		else if (FileSelector.class.isAssignableFrom(__cl))
 			return FILE_SELECTOR;
-		else if (__cl.isAssignableFrom(Form.class))
+		else if (Form.class.isAssignableFrom(__cl))
 			return FORM;
-		else if (__cl.isAssignableFrom(List.class))
+		else if (List.class.isAssignableFrom(__cl))
 			return LIST;
-		else if (__cl.isAssignableFrom(TabbedPane.class))
+		else if (TabbedPane.class.isAssignableFrom(__cl))
 			return TABBED_PANE;
-		else if (__cl.isAssignableFrom(TextBox.class))
+		else if (TextBox.class.isAssignableFrom(__cl))
 			return TEXT_BOX;
 		
 		// {@squirreljme.error EB3d Could not get the drawing method of the
