@@ -132,9 +132,18 @@ public class List
 		throw new todo.TODO();
 	}
 	
-	public Font getFont(int __a)
+	/**
+	 * Gets the font for the given index.
+	 *
+	 * @param __i The index to get.
+	 * @return The font of the index.
+	 * @throws IndexOutOfBoundsException On null arguments.
+	 * @since 2019/05/18
+	 */
+	public Font getFont(int __i)
+		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		return this._items.get(__i)._font;
 	}
 	
 	/**
@@ -147,9 +156,18 @@ public class List
 		return Displayable.__getHeight(this, false);
 	}
 	
-	public Image getImage(int __a)
+	/**
+	 * Returns the image of the given index.
+	 *
+	 * @param __i The index to get.
+	 * @return The image for this index.
+	 * @throws IndexOutOfBoundsException If the index is not valid.
+	 * @since 2019/05/18
+	 */
+	public Image getImage(int __i)
+		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		return this._items.get(__i)._image;
 	}
 	
 	public int getSelectedFlags(boolean[] __a)
@@ -181,9 +199,18 @@ public class List
 		return -1;
 	}
 	
-	public String getString(int __a)
+	/**
+	 * Returns the string at the given index.
+	 *
+	 * @param __i The string to get.
+	 * @return The string.
+	 * @throws IndexOutOfBoundsException If the index is out of bounds.
+	 * @since 2019/05/18
+	 */
+	public String getString(int __i)
+		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		return this._items.get(__i)._string;
 	}
 	
 	/**
@@ -201,16 +228,26 @@ public class List
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/18
+	 */
 	@Override
 	public boolean isEnabled(int __i)
+		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		return !this._items.get(__i)._disabled;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/18
+	 */
 	@Override
-	public boolean isSelected(int __a)
+	public boolean isSelected(int __i)
+		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		return this._items.get(__i)._selected;
 	}
 	
 	@Override
