@@ -92,6 +92,14 @@ public final class StandardMetrics
 	public static final int DISABLED_SELECTED_BACKGROUND =
 		0x888888;
 	
+	/** The focus box color (A). */
+	public static final int FOCUS_A_COLOR =
+		0xFF0000;
+	
+	/** The focus box color (B). */
+	public static final int FOCUS_B_COLOR =
+		0xFFFF00;
+	
 	/**
 	 * Not used.
 	 *
