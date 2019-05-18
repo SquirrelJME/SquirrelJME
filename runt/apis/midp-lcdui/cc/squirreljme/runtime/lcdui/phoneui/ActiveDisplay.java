@@ -12,6 +12,7 @@ package cc.squirreljme.runtime.lcdui.phoneui;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
 import cc.squirreljme.runtime.lcdui.gfx.EnforcedDrawingAreaGraphics;
 import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
@@ -116,6 +117,35 @@ public final class ActiveDisplay
 		
 		// Realize the dimensions
 		this.realize(PhoneUI._IGNORE_REALIZATION);
+	}
+	
+	/**
+	 * Requests that the program be terminated.
+	 *
+	 * @since 2019/05/18
+	 */
+	public final void exitRequest()
+	{
+		// Ignore if nothing is set
+		Displayable current = this._current;
+		if (current == null)
+			return;
+		
+		// Search through commands for an exit one to execute
+		CommandListener l = ((ExposedDisplayable)current).getCommandListener();
+		if (l != null)
+			for (Command c : current.getCommands())
+				if (c.getCommandType() == Command.EXIT)
+				{
+					// Execute command
+					l.commandAction(c, current);
+					
+					// Done
+					return;
+				}
+		
+		// Otherwise just terminate the application
+		System.exit(0);
 	}
 	
 	/**
