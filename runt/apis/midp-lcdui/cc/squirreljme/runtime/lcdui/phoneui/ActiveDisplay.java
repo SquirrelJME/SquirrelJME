@@ -268,10 +268,31 @@ public final class ActiveDisplay
 			}
 			
 			// Paint
-			this._method.paint((Displayable)current, this._state, ug, uw, uh);
+			State state = this._state;
+			this._method.paint((Displayable)current, state, ug, uw, uh);
+			
+			// Draw the focus box
+			State.Box focusbox = state.focusbox;
+			if (focusbox.x >= 0)
+			{
+				// Draw primary color
+				ug.setColor(StandardMetrics.FOCUS_A_COLOR);
+				ug.setAlpha(0x7F);
+				ug.setStrokeStyle(Graphics.SOLID);
+				ug.drawRect(focusbox.x, focusbox.y, focusbox.w, focusbox.h);
+				
+				// Draw secondary color
+				ug.setColor(StandardMetrics.FOCUS_B_COLOR);
+				ug.setAlpha(0xFF);
+				ug.setStrokeStyle(Graphics.DOTTED);
+				ug.drawRect(focusbox.x, focusbox.y, focusbox.w, focusbox.h);
+				
+				// Restore stroke
+				ug.setStrokeStyle(Graphics.SOLID);
+			}
 		}
 		
-		// Clear clip for status symbols
+		// Clear clip for status symbols and focus
 		__g.setClip(0, 0, dw, dh);
 		
 		// Switch to the symbol font

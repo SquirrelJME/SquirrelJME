@@ -110,8 +110,15 @@ public enum DrawingMethod
 			// Selected index
 			int sel = list.getSelectedIndex();
 			
-			// Draw all list items
+			// Make sure focus is in bounds
+			int focusdx = __s.focusdx;
 			int n = list.size();
+			if (focusdx < 0)
+				focusdx = 0;
+			else if (focusdx >= n)
+				focusdx = n - 1;
+			
+			// Draw all list items
 			for (int i = 0; i < n; i++)
 			{
 				// Reset X draw
@@ -156,6 +163,10 @@ public enum DrawingMethod
 				__g.setColor(StandardMetrics.itemForegroundColor(ve, vl));
 				__g.setFont(vf);
 				__g.drawString(vs, dx, dy, Graphics.TOP | Graphics.LEFT);
+				
+				// Is this item being focused?
+				if (focusdx == i)
+					__s.focusbox.set(0, dy, __w - 2, ih - 2);
 				
 				// Move to next item
 				dy += ih;
