@@ -16,13 +16,17 @@ package cc.squirreljme.runtime.lcdui.phoneui;
  */
 public final class StandardMetrics
 {
+	/** UI Font size. */
+	public static final int UI_FONT_SIZE =
+		16;
+	
 	/** Height of the title bar. */
 	public static final int TITLE_BAR_HEIGHT =
-		12;
+		UI_FONT_SIZE;
 	
 	/** Height of the command bar. */
 	public static final int COMMAND_BAR_HEIGHT =
-		12;
+		UI_FONT_SIZE;
 	
 	/** The background bar color. */
 	public static final int BACKGROUND_BAR_COLOR =
@@ -42,7 +46,7 @@ public final class StandardMetrics
 	
 	/** Height of the ticker bar. */
 	public static final int TICKER_BAR_HEIGHT =
-		12;
+		UI_FONT_SIZE;
 	
 	/** Background color of the ticker bar. */
 	public static final int BACKGROUND_TICKER_COLOR =
@@ -58,7 +62,7 @@ public final class StandardMetrics
 	
 	/** The height of list items. */
 	public static final int LIST_ITEM_HEIGHT =
-		12;
+		UI_FONT_SIZE;
 	
 	/** Enabled normal foreground. */
 	public static final int ENABLED_NORMAL_FOREGROUND =
