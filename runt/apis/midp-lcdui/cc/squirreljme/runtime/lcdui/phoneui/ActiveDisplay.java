@@ -33,9 +33,6 @@ public final class ActiveDisplay
 	/** The height of the display. */
 	protected final int height;
 	
-	/** The backing buffer image. */
-	protected final Image image;
-	
 	/** The displayable to draw. */
 	volatile Displayable _current;
 	
@@ -81,9 +78,6 @@ public final class ActiveDisplay
 		// Set sizes
 		this.width = __w;
 		this.height = __h;
-		
-		// Setup buffer
-		this.image = Image.createImage(__w, __h);
 		
 		// Default content area size
 		this._contentwidth = __w;
@@ -151,16 +145,16 @@ public final class ActiveDisplay
 	/**
 	 * Paints whatever is in the active display.
 	 *
+	 * @param __g The backend graphics to draw on.
 	 * @param __x The X coordinate.
 	 * @param __y The Y coordinate.
 	 * @param __w The width.
 	 * @param __h The height.
 	 * @since 2019/05/16
 	 */
-	public final void paint(int __x, int __y, int __w, int __h)
+	public final void paint(Graphics __g, int __x, int __y, int __w, int __h)
 	{
 		// Get display details
-		Graphics dg = this.image.getGraphics();
 		int dw = this.width,
 			dh = this.height;
 		
@@ -182,35 +176,35 @@ public final class ActiveDisplay
 		if (uh != dh)
 		{
 			// Remember default parameters
-			Font oldfont = dg.getFont();
-			int oldcolor = dg.getColor();
+			Font oldfont = __g.getFont();
+			int oldcolor = __g.getColor();
 			
 			// Draw background
-			dg.setColor(StandardMetrics.BACKGROUND_BAR_COLOR);
-			dg.fillRect(0, 0, dw, StandardMetrics.TITLE_BAR_HEIGHT);
+			__g.setColor(StandardMetrics.BACKGROUND_BAR_COLOR);
+			__g.fillRect(0, 0, dw, StandardMetrics.TITLE_BAR_HEIGHT);
 			
 			// Set font
-			dg.setFont(Font.getFont("sansserif", 0,
+			__g.setFont(Font.getFont("sansserif", 0,
 				StandardMetrics.TITLE_BAR_HEIGHT));
 			
 			// Draw title text
 			String title = this._title;
-			dg.setColor(StandardMetrics.FOREGROUND_BAR_COLOR);
-			dg.drawString(title, 0, 0, Graphics.TOP | Graphics.LEFT);
-			dg.drawString(title, 1, 0, Graphics.TOP | Graphics.LEFT);
+			__g.setColor(StandardMetrics.FOREGROUND_BAR_COLOR);
+			__g.drawString(title, 0, 0, Graphics.TOP | Graphics.LEFT);
+			__g.drawString(title, 1, 0, Graphics.TOP | Graphics.LEFT);
 			
 			// Draw the ticker?
 			Ticker ticker = (current == null ? null : current.getTicker());
 			if (ticker != null)
 			{
 				// Background
-				dg.setColor(StandardMetrics.BACKGROUND_TICKER_COLOR);
-				dg.fillRect(0, 0,
+				__g.setColor(StandardMetrics.BACKGROUND_TICKER_COLOR);
+				__g.fillRect(0, 0,
 					dw, StandardMetrics.TITLE_BAR_HEIGHT);
 				
 				// Draw ticker text
-				dg.setColor(StandardMetrics.FOREGROUND_TICKER_COLOR);
-				dg.drawString(ticker.getString(),
+				__g.setColor(StandardMetrics.FOREGROUND_TICKER_COLOR);
+				__g.drawString(ticker.getString(),
 					0, StandardMetrics.TITLE_BAR_HEIGHT,
 					Graphics.TOP | Graphics.LEFT);
 			}
@@ -226,17 +220,17 @@ public final class ActiveDisplay
 				int cy = dh - StandardMetrics.COMMAND_BAR_HEIGHT;
 				
 				// Draw background
-				dg.setColor(StandardMetrics.BACKGROUND_BAR_COLOR);
-				dg.fillRect(0, cy, dw, StandardMetrics.COMMAND_BAR_HEIGHT);
+				__g.setColor(StandardMetrics.BACKGROUND_BAR_COLOR);
+				__g.fillRect(0, cy, dw, StandardMetrics.COMMAND_BAR_HEIGHT);
 			}
 			
 			// Restore parameters
-			dg.setFont(oldfont);
-			dg.setColor(oldcolor);
+			__g.setFont(oldfont);
+			__g.setColor(oldcolor);
 		}
 		
 		// Setup enforced graphics
-		Graphics ug = new EnforcedDrawingAreaGraphics(dg,
+		Graphics ug = new EnforcedDrawingAreaGraphics(__g,
 			ux, uy, uw, uh);
 		
 		// If nothing is being shown, just show the version info
@@ -278,11 +272,11 @@ public final class ActiveDisplay
 		}
 		
 		// Clear clip for status symbols
-		dg.setClip(0, 0, dw, dh);
+		__g.setClip(0, 0, dw, dh);
 		
 		// Switch to the symbol font
 		Font sf = Font.getFont("symbol", 0, StandardMetrics.TITLE_BAR_HEIGHT);
-		dg.setFont(sf);
+		__g.setFont(sf);
 		int xa = sf.charWidth('#'),
 			sx = dw - 2;
 		
@@ -298,12 +292,12 @@ public final class ActiveDisplay
 			else
 			{
 				// Switch to symbol font
-				dg.setFont(Font.getFont("symbol", 0, 
+				__g.setFont(Font.getFont("symbol", 0, 
 					StandardMetrics.TITLE_BAR_HEIGHT));
 				
 				// Draw vibrate symbol
-				dg.setColor(StandardMetrics.VIBRATE_COLOR);
-				dg.drawChar('#', sx, 0, Graphics.RIGHT | Graphics.TOP);
+				__g.setColor(StandardMetrics.VIBRATE_COLOR);
+				__g.drawChar('#', sx, 0, Graphics.RIGHT | Graphics.TOP);
 				sx -= xa;
 			}
 		}

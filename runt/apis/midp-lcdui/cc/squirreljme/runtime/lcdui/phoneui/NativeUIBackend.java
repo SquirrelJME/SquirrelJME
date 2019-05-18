@@ -13,6 +13,7 @@ import cc.squirreljme.runtime.cldc.asm.NativeDisplayAccess;
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayEventCallback;
 import cc.squirreljme.runtime.lcdui.event.NonStandardKey;
 import cc.squirreljme.runtime.lcdui.gfx.AcceleratedGraphics;
+import cc.squirreljme.runtime.lcdui.gfx.EnforcedDrawingAreaGraphics;
 import cc.squirreljme.runtime.lcdui.gfx.PixelFormat;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Displayable;
@@ -125,16 +126,38 @@ public final class NativeUIBackend
 	/**
 	 * Returns the native display graphics.
 	 *
+	 * @param __a Output boolean if this is accelerated.
+	 * @param __dims Screen dimensions.
 	 * @since 2019/05/16
 	 */
-	public final Graphics graphics()
+	public final Graphics graphics(boolean[] __a, int[] __dims)
+		throws NullPointerException
 	{
+		if (__dims == null)
+			throw new NullPointerException("NARG");
+		
+		// Read width and height
+		int[] params = NativeDisplayAccess.framebufferParameters(nid);
+		int width = params[NativeDisplayAccess.PARAMETER_BUFFERWIDTH];
+		int height = params[NativeDisplayAccess.PARAMETER_BUFFERHEIGHT];
+		
+		// Set
+		__dims[0] = width;
+		__dims[1] = height;
+		
 		// If acceleration is enabled, try to get accelerated graphics
 		int nid = this.nid;
 		if (USE_ACCELERATION)
 			try
 			{
-				return AcceleratedGraphics.instance(nid);
+				// Try to get it
+				Graphics rv = AcceleratedGraphics.instance(nid);
+				
+				// Set acceleration flag
+				if (__a != null && __a.length > 1)
+					__a[0] = true;
+				
+				return rv;
 			}
 			catch (UnsupportedOperationException e)
 			{
@@ -143,11 +166,8 @@ public final class NativeUIBackend
 		// Get data buffers and properties
 		Object buf = NativeDisplayAccess.framebufferObject(nid);
 		int[] pal = NativeDisplayAccess.framebufferPalette(nid);
-		int[] params = NativeDisplayAccess.framebufferParameters(nid);
 		
 		// Set parameters
-		int width = params[NativeDisplayAccess.PARAMETER_BUFFERWIDTH];
-		int height = params[NativeDisplayAccess.PARAMETER_BUFFERHEIGHT];
 		boolean alpha = params[NativeDisplayAccess.PARAMETER_ALPHA] != 0;
 		int pitch = params[NativeDisplayAccess.PARAMETER_PITCH];
 		int offset = params[NativeDisplayAccess.PARAMETER_OFFSET];
@@ -250,17 +270,24 @@ public final class NativeUIBackend
 		ActiveDisplay ad = this._activedisplay;
 		if (ad != null)
 		{
-			// Do painting operations (UI stuff)
-			ad.paint(__x, __y, __w, __h);
+			// Get screen graphics and dimensions
+			int[] dims = new int[2];
+			Graphics g = this.graphics(null, dims);
 			
-			// This image will be drawn onto the screen
-			Image image = ad.image;
+			// Get display size and desired display size
+			int gw = dims[0],
+				gh = dims[1],
+				dw = ad.width,
+				dh = ad.height;
 			
-			// Get screen graphics
-			Graphics g = this.graphics();
+			// Perform potential centering?
+			if (gw > dw && gh > dh)
+				g = new EnforcedDrawingAreaGraphics(g,
+					(gw >> 1) - (dw >> 1), (gh >> 1) - (dh >> 1),
+					dw, dh);
 			
-			// Draw our image on the screen
-			g.drawImage(image, 0, 0, Graphics.TOP | Graphics.LEFT);
+			// Perform painting operation
+			ad.paint(g, __x, __y, __w, __h);
 		}
 	}
 	
