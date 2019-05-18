@@ -38,6 +38,12 @@ public final class ActiveDisplay
 	/** The displayable to draw. */
 	volatile Displayable _current;
 	
+	/** The drawing method to use. */
+	volatile DrawingMethod _method;
+	
+	/** Current drawing state. */
+	volatile State _state;
+	
 	/** Vibrate the display? */
 	private volatile boolean _invibrate;
 	
@@ -98,8 +104,15 @@ public final class ActiveDisplay
 		if (__d == null)
 			throw new NullPointerException("NARG");
 		
+		// If the displayable has not changed, ignore
+		Displayable current = this._current;
+		if (current == __d)
+			return;
+		
 		// Set
 		this._current = __d;
+		this._method = DrawingMethod.of(__d.getClass());
+		this._state = new State();
 		
 		// Realize the dimensions
 		this.realize(PhoneUI._IGNORE_REALIZATION);
@@ -231,7 +244,7 @@ public final class ActiveDisplay
 			}
 			
 			// Paint
-			current.paint(ug);
+			this._method.paint(this._state, ug, uw, uh);
 		}
 		
 		// Clear clip for status symbols
