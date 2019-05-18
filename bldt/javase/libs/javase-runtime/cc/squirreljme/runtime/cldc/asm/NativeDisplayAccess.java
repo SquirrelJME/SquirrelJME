@@ -720,6 +720,9 @@ public final class NativeDisplayAccess
 			// Draw the backed buffered image
 			__g.drawImage(image, 0, 0, xw, xh,
 				0, 0, xw, xh, null);
+			
+			__g.drawLine(240, 0, 240, 320);
+			__g.drawLine(0, 320, 240, 320);
 		}
 		
 		/**
