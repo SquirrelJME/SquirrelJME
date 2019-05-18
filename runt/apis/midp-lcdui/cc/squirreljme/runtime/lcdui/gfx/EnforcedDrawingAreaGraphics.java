@@ -119,31 +119,52 @@ public final class EnforcedDrawingAreaGraphics
 		__y += this._transy;
 		
 		// Our viewing area
-		int vx = this.x,
-			vy = this.y,
-			vw = this.width,
+		int vw = this.width,
 			vh = this.height;
 		
-		// Calculate start area
-		int cx = vx + __x,
-			cy = vy + __y;
-		if (cx < vx)
-			cx = vx;
-		if (cy < vy)
-			cy = vy;
-			
-		// Calculate and snap end area
-		int ex = (cx + __w),
-			ey = (cy + __h),
-			vex = vx + vw,
-			vey = vy + vh;
-		if (ex > vex)
-			ex = vex;
-		if (ey > vey)
-			ey = vey;
+		// Calculate logical viewing area coordinates
+		int lsx = __x,
+			lsy = __y,
+			lex = lsx + __w,
+			ley = lsy + __h;
 		
-		// Set the clip
-		this.graphics.clipRect(cx, cy, ex - cx, ey - cy);
+		// Get the original clipping bounds
+		int csx = this._clipx,
+			csy = this._clipy,
+			cex = csx + this._clipw,
+			cey = csy + this._cliph;
+		
+		// Clip coordinates via the old bounds
+		if (lsx < csx)
+			lsx = csx;
+		if (lsy < csy)
+			lsy = csy;
+		if (lex > cex)
+			lex = cex;
+		if (ley > cey)
+			ley = cey;
+		
+		// Determine logical clipping coordinates
+		int clipx = lsx,
+			clipy = lsy,
+			clipw = lex - lsx,
+			cliph = ley - lsy;
+		
+		// Store these for later clipRect() calls
+		this._clipx = clipx;
+		this._clipy = clipy;
+		this._clipw = clipw;
+		this._cliph = cliph;
+		
+		// Determine physical start coordinates
+		int px = this.x + clipx,
+			py = this.y + clipy;
+		
+		// Set the clipping area
+		Graphics graphics = this.graphics;
+		graphics.setClip(
+			px - graphics.getTranslateX(), py - graphics.getTranslateY(),
+			clipw, cliph);
 	}
 	
 	/**
@@ -765,31 +786,46 @@ public final class EnforcedDrawingAreaGraphics
 		__y += this._transy;
 		
 		// Our viewing area
-		int vx = this.x,
-			vy = this.y,
-			vw = this.width,
+		int vw = this.width,
 			vh = this.height;
 		
-		// Calculate start area
-		int cx = vx + __x,
-			cy = vy + __y;
-		if (cx < vx)
-			cx = vx;
-		if (cy < vy)
-			cy = vy;
-			
-		// Calculate and snap end area
-		int ex = (cx + __w),
-			ey = (cy + __h),
-			vex = vx + vw,
-			vey = vy + vh;
-		if (ex > vex)
-			ex = vex;
-		if (ey > vey)
-			ey = vey;
+		// Calculate logical viewing area coordinates
+		int lsx = __x,
+			lsy = __y,
+			lex = lsx + __w,
+			ley = lsy + __h;
 		
-		// Set the clip
-		this.graphics.setClip(cx, cy, ex - cx, ey - cy);
+		// Clip these coordinates into the logical viewing space
+		if (lsx < 0)
+			lsx = 0;
+		if (lsy < 0)
+			lsy = 0;
+		if (lex > vw)
+			lex = vw;
+		if (ley > vh)
+			ley = vh;
+		
+		// Determine logical clipping coordinates
+		int clipx = lsx,
+			clipy = lsy,
+			clipw = lex - lsx,
+			cliph = ley - lsy;
+		
+		// Store these for later clipRect() calls
+		this._clipx = clipx;
+		this._clipy = clipy;
+		this._clipw = clipw;
+		this._cliph = cliph;
+		
+		// Determine physical start coordinates
+		int px = this.x + clipx,
+			py = this.y + clipy;
+		
+		// Set the clipping area
+		Graphics graphics = this.graphics;
+		graphics.setClip(
+			px - graphics.getTranslateX(), py - graphics.getTranslateY(),
+			clipw, cliph);
 	}
 	
 	/**
