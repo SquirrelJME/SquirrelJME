@@ -281,10 +281,13 @@ public final class NativeUIBackend
 				dh = ad.height;
 			
 			// Perform potential centering?
-			if (gw > dw && gh > dh)
+			/*if (gw > dw && gh > dh)
 				g = new EnforcedDrawingAreaGraphics(g,
 					(gw >> 1) - (dw >> 1), (gh >> 1) - (dh >> 1),
-					dw, dh);
+					dw, dh);*/
+			
+			// Set clipping area
+			g.setClip(0, 0, dw, dh);
 			
 			// Perform painting operation
 			ad.paint(g, __x, __y, __w, __h);
@@ -351,7 +354,13 @@ public final class NativeUIBackend
 		if (__d != this.nid)
 			return;
 		
-		todo.TODO.note("Implement");
+		ActiveDisplay ad = this._activedisplay;
+		if (ad != null)
+		{
+			int[] dm = new int[4];
+			if (ad.realize(dm))
+				((ExposedDisplayable)ad._current).sizeChanged(dm[2], dm[3]);
+		}
 	}
 	
 	/**
