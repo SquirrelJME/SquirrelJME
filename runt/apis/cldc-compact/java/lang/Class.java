@@ -202,6 +202,10 @@ public final class Class<T>
 		if (__name == null)
 			throw new NullPointerException("NARG");
 		
+		// Do not lookup blank resources
+		if (__name.isEmpty())
+			return null;
+		
 		// This is not within any JAR, so nothing will ever be found
 		String injar = this._data.inJar();
 		if (injar == null)
