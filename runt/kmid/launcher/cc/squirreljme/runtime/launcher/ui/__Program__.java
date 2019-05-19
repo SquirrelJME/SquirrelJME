@@ -130,7 +130,7 @@ final class __Program__
 		
 		// No image is here at all
 		String iconrc = this.iconrc;
-		if (iconrc == null)
+		if (iconrc == null || iconrc.isEmpty())
 			return null;
 		
 		// Load image from JAR resource
