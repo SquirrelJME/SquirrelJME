@@ -54,6 +54,11 @@ More detailed changes:
      * Corrected bug in `__CanSetPrintStream__` where if it were set to itself
        then it could lead to infinite recursion, instead if this kind of
        stream is attempted to be set it will use the target.
+     * If a resource was not found, do a traditional search of the classpath
+       for the given resource. This technically is not valid, however some
+       games use the wrong class when looking up resources. Note that the
+       current suite will always be searched first to maintain the correct
+       behavior.
      * Implemented `java.io.InputStream`.
      * Implemented `java.util.EventObject`.
      * Implemented `java.util.Hashtable`.
