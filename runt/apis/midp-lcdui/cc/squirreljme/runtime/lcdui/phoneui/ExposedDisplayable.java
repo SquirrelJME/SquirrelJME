@@ -23,6 +23,10 @@ import javax.microedition.lcdui.Ticker;
  */
 public abstract class ExposedDisplayable
 {
+	/** Drawing/action state. */
+	final State _dstate =
+		new State();
+	
 	/**
 	 * Returns the command listener.
 	 *

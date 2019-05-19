@@ -56,15 +56,11 @@ public class MidletMain
 	
 	/** The list which contains all of the programs we can run. */
 	protected final List programlist =
-		new List("SquirrelJME Launcher", Choice.EXCLUSIVE);
-	
-	/** Command used to launch a program. */
-	protected final Command launchcommand =
-		new Command("Launch", Command.OK, 1);
+		new List("SquirrelJME Launcher", Choice.IMPLICIT);
 	
 	/** Command used to exit the launcher and terminate. */
 	protected final Command exitcommand =
-		new Command("Exit", Command.EXIT, 2);
+		new Command("Exit", Command.EXIT, 1);
 	
 	/** The active task. */
 	private final __ActiveTask__ _activetask =
@@ -238,11 +234,11 @@ public class MidletMain
 		
 		// Add commands to the list so things can be done with them
 		List programlist = this.programlist;
-		programlist.addCommand(this.launchcommand);
 		programlist.addCommand(this.exitcommand);
 		
 		// Need to handle commands and such
-		programlist.setCommandListener(new __CommandHandler__());
+		__CommandHandler__ ch = new __CommandHandler__();
+		programlist.setCommandListener(ch);
 		
 		// Display the program list
 		disp.setCurrent(programlist);
@@ -293,7 +289,7 @@ public class MidletMain
 		__Program__[] programs = this._programs;
 		
 		// Do nothing if out of bounds
-		if (__p < 0 || __p >= programs.length)
+		if (programs == null || __p < 0 || __p >= programs.length)
 			return;
 		
 		// Launch
@@ -368,7 +364,7 @@ public class MidletMain
 		public final void commandAction(Command __c, Displayable __d)
 		{
 			// Launching a program?
-			if (__c == MidletMain.this.launchcommand)
+			if (__c == List.SELECT_COMMAND)
 			{
 				// If the list is empty then do nothing because it will NPE
 				// or out of bounds if the selection is off
