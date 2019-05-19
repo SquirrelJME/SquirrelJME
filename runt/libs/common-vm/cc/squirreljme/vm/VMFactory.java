@@ -148,7 +148,7 @@ public abstract class VMFactory
 		{
 			// If no name was specified then use the first one, otherwise
 			// use the one which matches the name
-			if (__vm == null || __vm.equals(f.name))
+			if (__vm == null || __vm.equalsIgnoreCase(f.name))
 			{
 				factory = f;
 				break;
