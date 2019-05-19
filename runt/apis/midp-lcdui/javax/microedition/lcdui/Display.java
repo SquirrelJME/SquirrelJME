@@ -227,9 +227,6 @@ public class Display
 	/** The displayable to show on exit. */
 	private volatile Displayable _exit;
 	
-	/** Is this display being shown? */
-	private volatile boolean _isshown;
-	
 	/**
 	 * Initializes the display instance.
 	 *
@@ -775,8 +772,12 @@ public class Display
 		// Clear current's parent
 		if (current != null)
 		{
-			current._display = null;
+			// Stop showing
 			current._isshown = false;
+			current.hideNotify();
+			
+			// Not used anymore
+			current._display = null;
 		}
 		
 		// Set new parent
@@ -1205,10 +1206,8 @@ public class Display
 	final void __doShowCurrent(Displayable __show)
 		throws NullPointerException
 	{
-		// For the displayable, inherit the shown state from this display
-		// since if the display is not being shown then the widget will not
-		// be shown until it happens to be shown.
-		__show._isshown = this._isshown;
+		// Always set as shown, easier to work with
+		__show._isshown = true;
 		
 		// Set title of our display to the title of the Displayable
 		PhoneUI phoneui = this._phoneui;
@@ -1216,6 +1215,9 @@ public class Display
 		
 		// Set current drawn displayable
 		phoneui.setCurrent(__show);
+		
+		// Callback when it is made visible
+		__show.showNotify();
 	}
 	
 	/**
