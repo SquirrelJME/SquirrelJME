@@ -302,7 +302,13 @@ projects.
 ## The First Release
 
 The first version of SquirrelJME was released along with Mu on
-December 25, 2018.
+December 25, 2018. The repository had 10,571 commits.
+
+This release was mostly just a demo to show that SquirrelJME exists and that
+it is being worked on. It is very primitive and not much can be done with it.
+From the release though there has been slowly increasing interest in the
+project since there are not many emulators that support J2ME that exist and
+are actively worked on.
 
 ## The Second Release
 
