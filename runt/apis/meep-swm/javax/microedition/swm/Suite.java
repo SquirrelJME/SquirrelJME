@@ -159,6 +159,11 @@ public class Suite
 		if (this._name == null)
 			return null;
 		
+		// Requesting the JAR file this is associated with, this might be
+		// used for an icon
+		if ("x-squirreljme-jarfile".equalsIgnoreCase(__a))
+			return this._name;
+		
 		// Just need to read the value from the manifest
 		return this.__manifest().getMainAttributes().getValue(__a);
 	}
