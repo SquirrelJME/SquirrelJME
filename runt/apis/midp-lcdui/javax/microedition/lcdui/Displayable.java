@@ -193,6 +193,18 @@ public abstract class Displayable
 	}
 	
 	/**
+	 * This method is called after this has been hidden from the display,
+	 * whether it was removed or concealed. This can be used to stop timers
+	 * for example since they might not be needed when this is not visible.
+	 *
+	 * @since 2019/05/18
+	 */
+	@SerializedEvent
+	void hideNotify()
+	{
+	}
+	
+	/**
 	 * Returns if this displayable is currently being shown.
 	 *
 	 * @return If the displayable is being shown.
@@ -200,12 +212,9 @@ public abstract class Displayable
 	 */
 	public boolean isShown()
 	{
-		throw new todo.TODO();
-		/*
 		// Must be shown and have a parent, because anything without a
 		// parent is invisible
-		return this._isshown && this._parent != null;
-		*/
+		return this._isshown && this._display != null;
 	}
 	
 	/**
@@ -333,6 +342,16 @@ public abstract class Displayable
 		Display d = this._display;
 		if (d != null)
 			d._phoneui.setTitle(__t);
+	}
+	
+	/**
+	 * This is called when the canvas has been shown.
+	 *
+	 * @since 2018/05/18
+	 */
+	@SerializedEvent
+	void showNotify()
+	{
 	}
 	
 	/**
