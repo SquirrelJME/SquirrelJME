@@ -529,7 +529,7 @@ public class Throwable
 		__indent++;
 		
 		// The first entry is the top of the stack so it gets printed first 
-		String wasclass = null;
+		String wasclass = "<Unknown>";
 		for (int i = 0, n = stack.length; i < n; i++)
 		{
 			// Ignore any elements that may happen to be null
@@ -537,8 +537,13 @@ public class Throwable
 			if (e == null)
 				continue;
 			
-			// If the class changed, specify that it has
+			// Get the element class, always make sure the class is valid
+			// even if it is not known
 			String nowclass = e.className();
+			if (nowclass == null)
+				nowclass = "<Unknown>";
+			
+			// If the class changed, specify that it has
 			if (!nowclass.equals(wasclass))
 			{
 				// Indent
