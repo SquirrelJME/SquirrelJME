@@ -161,8 +161,14 @@ final class __NodeTable__
 		Map<ProfiledFrame, __Position__> offsets = this._offsets;
 		for (ProfiledFrame f : linear)
 		{
+			// Too deep or missing location ID?
+			FrameLocation location = f.location;
+			Integer flid = __mids.get(f.location);
+			if (f._depth >= ProfiledFrame.MAX_STACK_DEPTH || flid == null)
+				continue;
+			
 			// The frame location ID, this is data stored in a previous table
-			dos.writeShort(__mids.get(f.location));
+			dos.writeShort(flid);
 			
 			// Number of calls
 			dos.writeInt((int)Math.min(Integer.MAX_VALUE, f._numcalls));
