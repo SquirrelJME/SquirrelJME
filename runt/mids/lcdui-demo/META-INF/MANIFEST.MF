@@ -8,11 +8,17 @@ X-SquirrelJME-Description: This is a demo which is used to demonstrate
  how the graphic operations operate.
 X-SquirrelJME-Depends: midp-lcdui
 Microedition-Configuration: CLDC-1.8-Compact
-MIDlet-1: LCDUI Demo (Fonts), , net.multiphasicapps.lcduidemo.Fonts
-MIDlet-2: LCDUI Demo (Mystify), , net.multiphasicapps.lcduidemo.Mystify
-MIDlet-3: LCDUI Demo (Events), , net.multiphasicapps.lcduidemo.Events
-MIDlet-4: LCDUI Demo (Lists), , net.multiphasicapps.lcduidemo.Lists
-MIDlet-5: LCDUI Demo (XPM Image), , net.multiphasicapps.lcduidemo.XPMDemo
-MIDlet-6: LCDUI Demo (PNG Image), , net.multiphasicapps.lcduidemo.PNGDemo
-MIDlet-7: LCDUI Demo (JPEG Image), , net.multiphasicapps.lcduidemo.JPEGDemo
+MIDlet-1: LCDUI Demo (Fonts), fonts.xpm, net.multiphasicapps.lcduidemo.Fonts
+MIDlet-2: LCDUI Demo (Mystify), mystify.xpm, 
+ net.multiphasicapps.lcduidemo.Mystify
+MIDlet-3: LCDUI Demo (Events), event.xpm, 
+ net.multiphasicapps.lcduidemo.Events
+MIDlet-4: LCDUI Demo (Lists), list.xpm, 
+ net.multiphasicapps.lcduidemo.Lists
+MIDlet-5: LCDUI Demo (XPM Image), image.xpm, 
+ net.multiphasicapps.lcduidemo.XPMDemo
+MIDlet-6: LCDUI Demo (PNG Image), image.xpm, 
+ net.multiphasicapps.lcduidemo.PNGDemo
+MIDlet-7: LCDUI Demo (JPEG Image), image.xpm, 
+ net.multiphasicapps.lcduidemo.JPEGDemo
 
