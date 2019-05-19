@@ -113,8 +113,10 @@ public final class NativeDisplayAccess
 	{
 		try
 		{
-			// But doing this, speed is increased greatly!
-			JFrame.setDefaultLookAndFeelDecorated(true);
+			// Setting this to true greatly increases the speed of the canvas
+			// however this breaks on Windows 10 with pointer coordinates
+			// being way off when scaling is used. So this must be false.
+			JFrame.setDefaultLookAndFeelDecorated(false);
 		}
 		catch (Throwable t)
 		{
