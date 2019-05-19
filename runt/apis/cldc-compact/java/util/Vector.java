@@ -237,7 +237,10 @@ public class Vector<E>
 	 */
 	public E elementAt(int __i)
 	{
-		return this.get(__i);
+		synchronized (this)
+		{
+			return this.get(__i);
+		}
 	}
 	
 	/**
@@ -281,12 +284,16 @@ public class Vector<E>
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/19
+	 */
 	@Override
-	public boolean equals(Object __a)
+	public boolean equals(Object __o)
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			return super.equals(__o);
 		}
 	}
 	
@@ -336,10 +343,17 @@ public class Vector<E>
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/19
+	 */
 	@Override
-	public int indexOf(Object __a)
+	public int indexOf(Object __v)
 	{
-		throw new todo.TODO();
+		synchronized (this)
+		{
+			return super.indexOf(__v);
+		}
 	}
 	
 	public int indexOf(Object __a, int __b)
@@ -351,15 +365,6 @@ public class Vector<E>
 	}
 	
 	public void insertElementAt(E __a, int __b)
-	{
-		synchronized (this)
-		{
-			throw new todo.TODO();
-		}
-	}
-	
-	@Override
-	public boolean isEmpty()
 	{
 		synchronized (this)
 		{
@@ -405,18 +410,49 @@ public class Vector<E>
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/19
+	 */
 	@Override
-	public boolean remove(Object __a)
-	{
-		throw new todo.TODO();
-	}
-	
-	@Override
-	public E remove(int __a)
+	public boolean remove(Object __v)
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			return super.remove(__v);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/19
+	 */
+	@Override
+	@SuppressWarnings({"unchecked"})
+	public E remove(int __i)
+		throws ArrayIndexOutOfBoundsException
+	{
+		synchronized (this)
+		{
+			// Out of bounds?
+			int size = this.elementCount;
+			if (__i < 0 || __i >= size)
+				throw new ArrayIndexOutOfBoundsException("IOOB");
+			
+			// Get the old element first
+			Object[] elements = this.elementData;
+			Object rv = elements[__i];
+			
+			// Copy all of the elements down
+			for (int o = __i, i = __i + 1; i < size; o++, i++)
+				elements[o] = elements[i];
+			elements[size - 1] = null;
+			
+			// Set new size
+			this.elementCount = size - 1;
+			
+			// And the old element
+			return (E)rv;
 		}
 	}
 	
@@ -442,37 +478,60 @@ public class Vector<E>
 		}
 	}
 	
-	public boolean removeElement(Object __a)
+	/**
+	 * Removes the given value from the list.
+	 *
+	 * @param __v The value to remove.
+	 * @return If it was removed.
+	 * @since 2019/05/19
+	 */
+	public boolean removeElement(Object __v)
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			return this.remove(__v);
 		}
 	}
 	
-	public void removeElementAt(int __a)
+	/**
+	 * Removes the element at the given index.
+	 *
+	 * @param __i The index to remove.
+	 * @throws ArrayIndexOutOfBoundsException If the index is out of bounds.
+	 * @since 2019/05/19
+	 */
+	public void removeElementAt(int __i)
+		throws ArrayIndexOutOfBoundsException
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			this.remove(__i);
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/19
+	 */
 	@Override
 	protected void removeRange(int __a, int __b)
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			super.removeRange(__a, __b);
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @since 2019/05/19
+	 */
 	@Override
-	public boolean retainAll(Collection<?> __a)
+	public boolean retainAll(Collection<?> __c)
 	{
 		synchronized (this)
 		{
-			throw new todo.TODO();
+			return super.retainAll(__c);
 		}
 	}
 	
