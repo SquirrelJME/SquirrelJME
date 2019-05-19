@@ -48,6 +48,12 @@ public final class NativeUIBackend
 	/** The active display to use. */
 	private volatile ActiveDisplay _activedisplay;
 	
+	/** The display width. */
+	private int _width;
+	
+	/** The display height. */
+	private int _height;
+	
 	/**
 	 * Initializes the native UI backend using the given display ID.
 	 *
@@ -111,7 +117,8 @@ public final class NativeUIBackend
 			return;
 		
 		// Forward
-		activedisplay.command(__c);
+		if (activedisplay.command(__c))
+			this.repaint();
 	}
 	
 	/**
@@ -150,6 +157,10 @@ public final class NativeUIBackend
 		// Set
 		__dims[0] = width;
 		__dims[1] = height;
+		
+		// Remember size
+		this._width = width;
+		this._height = height;
 		
 		// If acceleration is enabled, try to get accelerated graphics
 		int nid = this.nid;
@@ -213,7 +224,8 @@ public final class NativeUIBackend
 			return;
 		
 		// Forward
-		activedisplay.keyEvent(__ty, __kc, __ch, __time);
+		if (activedisplay.keyEvent(__ty, __kc, __ch, __time))
+			this.repaint();
 	}
 	
 	/**
@@ -294,7 +306,19 @@ public final class NativeUIBackend
 			return;
 		
 		// Forward
-		activedisplay.pointerEvent(__ty, __x, __y, __time);
+		if (activedisplay.pointerEvent(__ty, __x, __y, __time))
+			this.repaint();
+	}
+	
+	/**
+	 * Repaints the entire display.
+	 *
+	 * @since 2019/05/18
+	 */
+	public final void repaint()
+	{
+		NativeDisplayAccess.displayRepaint(this.nid,
+			0, 0, this._width, this._height);
 	}
 	
 	/**

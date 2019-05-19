@@ -628,6 +628,7 @@ public class VMNativeDisplayAccess
 				return;
 			
 			// Try to map to a game key if possible
+			/*
 			try
 			{
 				switch (this.getGameAction(__kc))
@@ -677,7 +678,7 @@ public class VMNativeDisplayAccess
 			// Ignore unknown game keys
 			catch (IllegalArgumentException e)
 			{
-			}
+			}*/
 			
 			// Post event
 			cb.keyEvent(0, __et, __kc, 0, ++this._keyindex);

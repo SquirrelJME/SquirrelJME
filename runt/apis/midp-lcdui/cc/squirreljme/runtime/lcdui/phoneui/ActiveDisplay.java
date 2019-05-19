@@ -122,14 +122,15 @@ public final class ActiveDisplay
 	 * Executes the numbered command on the given display.
 	 *
 	 * @param __c The command to execute.
+	 * @return If the display should be repainted.
 	 * @since 2019/05/18
 	 */
-	public final void command(int __c)
+	public final boolean command(int __c)
 	{
 		// Display must be active
 		Displayable current = this._current;
 		if (current == null)
-			return;
+			return false;
 		
 		// Forward action, if it was not handled by this display then fallback
 		// to the displayable commands
@@ -142,8 +143,17 @@ public final class ActiveDisplay
 			
 			// Call command function
 			if (__c >= 0 && __c < numcommands)
+			{
+				// Run command
 				l.commandAction(commands[__c], current);
+				
+				// Always redraw it
+				return true;
+			}
 		}
+		
+		// Not handled
+		return false;
 	}
 	
 	/**
@@ -183,17 +193,19 @@ public final class ActiveDisplay
 	 * @param __kc The key code.
 	 * @param __ch The key character, {@code -1} is not valid.
 	 * @param __time Timecode.
+	 * @return If the display should be repainted.
 	 * @since 2019/05/18
 	 */
-	public final void keyEvent(int __ty, int __kc, int __ch, int __time)
+	public final boolean keyEvent(int __ty, int __kc, int __ch, int __time)
 	{
 		// Display must be active
 		Displayable current = this._current;
 		if (current == null)
-			return;
+			return false;
 		
 		// Forward action
-		this._action.keyEvent(current, this._state, __ty, __kc, __ch, __time);
+		return this._action.keyEvent(current, this._state, __ty, __kc, __ch,
+			__time);
 	}
 	
 	/**
@@ -385,17 +397,18 @@ public final class ActiveDisplay
 	 * @param __x The X coordinate.
 	 * @param __y The Y coordinate.
 	 * @param __time Timecode.
+	 * @return If the display should be repainted.
 	 * @since 2019/05/18
 	 */
-	public final void pointerEvent(int __ty, int __x, int __y, int __time)
+	public final boolean pointerEvent(int __ty, int __x, int __y, int __time)
 	{
 		// Display must be active
 		Displayable current = this._current;
 		if (current == null)
-			return;
+			return false;
 		
 		// Forward action
-		this._action.pointerEvent(current, this._state, __ty, __x, __y,
+		return this._action.pointerEvent(current, this._state, __ty, __x, __y,
 			__time);
 	}
 	
