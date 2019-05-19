@@ -294,6 +294,16 @@ public final class ActiveDisplay
 				// Draw background
 				__g.setColor(StandardMetrics.BACKGROUND_BAR_COLOR);
 				__g.fillRect(0, cy, dw, StandardMetrics.COMMAND_BAR_HEIGHT);
+				
+				// Draw the first added command
+				__g.setColor(StandardMetrics.FOREGROUND_BAR_COLOR);
+				__g.drawString(commands[0].getLabel(), 0, cy,
+					Graphics.TOP | Graphics.LEFT);
+				
+				// Draw second command?
+				if (numcommands > 1)
+					__g.drawString((numcommands == 2 ? commands[1].getLabel() :
+						"Menu"), dw >> 1, cy, Graphics.TOP | Graphics.LEFT);
 			}
 			
 			// Restore parameters

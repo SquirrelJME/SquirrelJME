@@ -106,7 +106,9 @@ public class List
 		int rv = items.append((e = new __ChoiceEntry__(__s, __i)));
 		
 		// If this is the only item and this is an exclusive list, select it
-		if (items.size() == 1 && this._type == Choice.EXCLUSIVE)
+		int ltype = this._type;
+		if (items.size() == 1 && (ltype == Choice.EXCLUSIVE ||
+			ltype == Choice.IMPLICIT))
 			e._selected = true;
 		
 		// Update display
@@ -184,10 +186,7 @@ public class List
 	@ImplementationNote("This is a SquirrelJME specific method.")
 	public Command getSelectCommand()
 	{
-		Command rv = this._selcommand;
-		if (rv == List.SELECT_COMMAND)
-			return null;
-		return rv;
+		return this._selcommand;
 	}
 	
 	public int getSelectedFlags(boolean[] __a)

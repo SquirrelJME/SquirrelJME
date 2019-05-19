@@ -146,32 +146,19 @@ public enum ActionMethod
 		{
 			List list = (List)__d;
 			int n = list.size();
+			int ltype = list.getType();
 			
 			// Ignore released keys
 			if (__ty == NativeDisplayEventCallback.KEY_RELEASED)
 				return false;
 			
 			// Quickly focus an item?
-			if (__kc >= Canvas.KEY_NUM1 && __kc <= Canvas.KEY_NUM9)
-			{
-				// Focus in bounds?
-				int wantdx = __kc - Canvas.KEY_NUM1;
-				if (wantdx < n)
-				{
-					// Set new focus
-					__s.focusdx = wantdx;
-					
-					// Redraw
-					return true;
-				}
-				
-				// Not quick selected
-				return false;
-			}
-			
-			// Focusing a new item?
 			int focusdx = __s.focusdx,
 				wantdx = focusdx;
+			if (__kc >= Canvas.KEY_NUM1 && __kc <= Canvas.KEY_NUM9)
+				wantdx = __kc - Canvas.KEY_NUM1;
+			
+			// Focusing a new item?
 			switch (EventTranslate.keyCodeToGameAction(__kc))
 			{
 					// Move up
@@ -193,13 +180,14 @@ public enum ActionMethod
 						// Set new selection state, exclusive lists always
 						// set a new element
 						boolean nowsel = (!list.isSelected(focusdx) ||
-							list.getType() == Choice.EXCLUSIVE);
+							ltype == Choice.EXCLUSIVE ||
+							ltype == Choice.IMPLICIT);
 						
 						// Set new state
 						list.setSelectedIndex(focusdx, nowsel);
 						
 						// Implicit lists need their item to be specified
-						if (list.getType() == Choice.IMPLICIT)
+						if (ltype == Choice.IMPLICIT)
 						{
 							// Execute command when selection was changed?
 							Command sc = list.getSelectCommand();
@@ -226,10 +214,10 @@ public enum ActionMethod
 				// Set new focus
 				__s.focusdx = wantdx;
 				
-				// If this is an exclusive list then automatically select
+				// If this is an implicit list then automatically select
 				// the given focused item
-				if (list.getType() == Choice.EXCLUSIVE)
-					list.setSelectedIndex(focusdx, true);
+				if (list.getType() == Choice.IMPLICIT)
+					list.setSelectedIndex(wantdx, true);
 				
 				// Repaint
 				return true;
