@@ -113,7 +113,7 @@ public final class ActiveDisplay
 		this._current = __d;
 		this._drawing = DrawingMethod.of(__d.getClass());
 		this._action = ActionMethod.of(__d.getClass());
-		this._state = new State();
+		this._state = ((ExposedDisplayable)__d)._dstate;
 		
 		// Realize the dimensions
 		this.realize(PhoneUI._IGNORE_REALIZATION);
