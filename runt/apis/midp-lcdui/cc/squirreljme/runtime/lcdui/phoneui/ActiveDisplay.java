@@ -423,9 +423,10 @@ public final class ActiveDisplay
 		if (current == null)
 			return false;
 		
-		// Forward action
-		return this._action.pointerEvent(current, this._state, __ty, __x, __y,
-			__time);
+		// Forward action, un-offset the coordinates so that they are within
+		// the bounds of the content instead of just absolutely on the screen
+		return this._action.pointerEvent(current, this._state, __ty,
+			__x - this._contentx, __y - this._contenty, __time);
 	}
 	
 	/**
