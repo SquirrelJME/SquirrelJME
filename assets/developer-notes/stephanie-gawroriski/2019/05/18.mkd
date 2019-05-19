@@ -1,0 +1,6 @@
+# 2019/05/18
+
+## 14:56
+
+So anything outside of the 240x320 area just seems to not be drawn at all on
+the base display.
