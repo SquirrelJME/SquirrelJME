@@ -15,6 +15,9 @@ import cc.squirreljme.runtime.lcdui.event.KeyNames;
 import cc.squirreljme.runtime.lcdui.event.NonStandardKey;
 import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.Canvas;
+import javax.microedition.lcdui.Choice;
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.FileSelector;
@@ -144,6 +147,10 @@ public enum ActionMethod
 			List list = (List)__d;
 			int n = list.size();
 			
+			// Ignore released keys
+			if (__ty == NativeDisplayEventCallback.KEY_RELEASED)
+				return false;
+			
 			// Quickly focus an item?
 			if (__kc >= Canvas.KEY_NUM1 && __kc <= Canvas.KEY_NUM9)
 			{
@@ -179,7 +186,38 @@ public enum ActionMethod
 					
 					// Select item
 				case Canvas.FIRE:
-					throw new todo.TODO();
+					// Only allow enabled items to have their selection state
+					// adjusted
+					if (focusdx >= 0 && focusdx < n && list.isEnabled(focusdx))
+					{
+						// Set new selection state, exclusive lists always
+						// set a new element
+						boolean nowsel = (!list.isSelected(focusdx) ||
+							list.getType() == Choice.EXCLUSIVE);
+						
+						// Set new state
+						list.setSelectedIndex(focusdx, nowsel);
+						
+						// Implicit lists need their item to be specified
+						if (list.getType() == Choice.IMPLICIT)
+						{
+							// Execute command when selection was changed?
+							Command sc = list.getSelectCommand();
+							if (sc != null)
+							{
+								CommandListener l = ((ExposedDisplayable)__d).
+									getCommandListener();
+								if (l != null)
+									l.commandAction(sc, __d);
+							}
+						}
+						
+						// Should be repainted
+						return true;
+					}
+					
+					// Not to be repainted
+					return false;
 			}
 			
 			// Change of focus and it is valid?
@@ -187,6 +225,11 @@ public enum ActionMethod
 			{
 				// Set new focus
 				__s.focusdx = wantdx;
+				
+				// If this is an exclusive list then automatically select
+				// the given focused item
+				if (list.getType() == Choice.EXCLUSIVE)
+					list.setSelectedIndex(focusdx, true);
 				
 				// Repaint
 				return true;

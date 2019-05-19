@@ -10,6 +10,7 @@
 
 package javax.microedition.lcdui;
 
+import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayEventCallback;
 import cc.squirreljme.runtime.lcdui.common.CommonColors;
 import cc.squirreljme.runtime.lcdui.common.CommonMetrics;
@@ -32,6 +33,10 @@ public class List
 	
 	/** The focal index. */
 	volatile int _focalindex;
+	
+	/** Selection command. */
+	volatile Command _selcommand =
+		List.SELECT_COMMAND;
 	
 	/**
 	 * Initializes the list.
@@ -170,6 +175,21 @@ public class List
 		return this._items.get(__i)._image;
 	}
 	
+	/**
+	 * Returns the command to use when an item is selected.
+	 *
+	 * @return The select command.
+	 * @since 2019/05/18
+	 */
+	@ImplementationNote("This is a SquirrelJME specific method.")
+	public Command getSelectCommand()
+	{
+		Command rv = this._selcommand;
+		if (rv == List.SELECT_COMMAND)
+			return null;
+		return rv;
+	}
+	
 	public int getSelectedFlags(boolean[] __a)
 	{
 		throw new todo.TODO();
@@ -211,6 +231,18 @@ public class List
 		throws IndexOutOfBoundsException
 	{
 		return this._items.get(__i)._string;
+	}
+	
+	/**
+	 * Returns the list type.
+	 *
+	 * @return The list type.
+	 * @since 2019/05/18
+	 */
+	@ImplementationNote("This is a SquirrelJME specific method.")
+	public int getType()
+	{
+		return this._type;
 	}
 	
 	/**
@@ -270,13 +302,10 @@ public class List
 	{
 		this._items.get(__i)._disabled = !__e;
 		
-		throw new todo.TODO();
-		/*
-		// Visual changed, need to update
-		UIPersist lastpersist = this._lastpersist;
-		if (lastpersist != null)
-			lastpersist.visualUpdate(false);
-		*/
+		// Update display
+		Display d = this._display;
+		if (d != null)
+			d._phoneui.repaint();
 	}
 	
 	public void setFitPolicy(int __a)
@@ -307,15 +336,27 @@ public class List
 	public void setSelectedIndex(int __i, boolean __e)
 		throws IndexOutOfBoundsException
 	{
-		this._items.get(__i)._selected = true;
+		// Check bounds
+		__VolatileList__<__ChoiceEntry__> items = this._items;
+		int n = items.size();
+		if (__i < 0 || __i >= n)
+			throw new IndexOutOfBoundsException("IOOB");
 		
-		throw new todo.TODO();
-		/*
-		// Visual changed, need to update
-		UIPersist lastpersist = this._lastpersist;
-		if (lastpersist != null)
-			lastpersist.visualUpdate(false);
-		*/
+		// If deselecting or using this on multiple lists, just direct set
+		if (!__e || this._type == MULTIPLE)
+			items.get(__i)._selected = __e;
+		
+		// Otherwise only select the item that matches the index
+		else
+		{
+			for (int i = 0; i < n; i++)
+				this._items.get(i)._selected = (__i == i);
+		}
+		
+		// Update display
+		Display d = this._display;
+		if (d != null)
+			d._phoneui.repaint();
 	}
 	
 	/**
