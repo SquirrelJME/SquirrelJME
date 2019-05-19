@@ -13,6 +13,7 @@ package java.lang;
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import cc.squirreljme.runtime.cldc.asm.ResourceAccess;
 import cc.squirreljme.runtime.cldc.asm.StaticMethod;
+import cc.squirreljme.runtime.cldc.asm.SuiteAccess;
 import cc.squirreljme.runtime.cldc.io.ResourceInputStream;
 import cc.squirreljme.runtime.cldc.lang.ClassData;
 import java.io.InputStream;
@@ -226,7 +227,19 @@ public final class Class<T>
 		}
 		
 		// Open the resource, perhaps
-		return ResourceInputStream.open(injar, want);
+		InputStream rv = ResourceInputStream.open(injar, want);
+		if (rv != null)
+			return rv;
+		
+		// Otherwise, do a traditional back to front search for the resource
+		// since it might be in another JAR
+		String[] classpath = SuiteAccess.currentClassPath();
+		for (int i = classpath.length - 1; i >= 0; i--)
+			if (null != (rv = ResourceInputStream.open(classpath[i], want)))
+				return rv;
+		
+		// Not found
+		return null;
 	}
 	
 	/**

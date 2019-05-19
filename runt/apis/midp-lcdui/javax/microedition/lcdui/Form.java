@@ -146,9 +146,18 @@ public class Form
 		throw new todo.TODO();
 	}
 	
-	public Item get(int __a)
+	/**
+	 * Returns the given form item.
+	 *
+	 * @param __i The index to get.
+	 * @return The item.
+	 * @throws IndexOutOfBoundsException If the index is not within range.
+	 * @since 2019/05/19
+	 */
+	public Item get(int __i)
+		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		return this._items.get(__i);
 	}
 	
 	/**
@@ -201,9 +210,15 @@ public class Form
 		throw new todo.TODO();
 	}
 	
+	/**
+	 * Returns the number of items in the form.
+	 *
+	 * @return The number of form items.
+	 * @since 2109/05/19
+	 */
 	public int size()
 	{
-		throw new todo.TODO();
+		return this._items.size();
 	}
 }
 

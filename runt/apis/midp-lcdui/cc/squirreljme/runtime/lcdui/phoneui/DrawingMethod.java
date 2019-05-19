@@ -18,6 +18,7 @@ import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
+import javax.microedition.lcdui.Item;
 import javax.microedition.lcdui.List;
 import javax.microedition.lcdui.TabbedPane;
 import javax.microedition.lcdui.TextBox;
@@ -86,7 +87,22 @@ public enum DrawingMethod
 		public final void paint(Displayable __d, State __s, Graphics __g,
 			int __w, int __h)
 		{
-			__g.drawString("FORM", 0, 0, 0);
+			Form form = (Form)__d;
+			
+			// Number of entries
+			int n = form.size();
+			
+			// Working base coordinates for each item
+			int dx = 0,
+				dy = 0;
+			
+			// Draw each entry
+			for (int i = 0; i < n; i++)
+			{
+				// Get item here
+				Item item = form.get(i);
+				
+			}
 		}
 	},
 	
