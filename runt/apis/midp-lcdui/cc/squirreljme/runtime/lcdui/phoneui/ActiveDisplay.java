@@ -11,6 +11,7 @@ package cc.squirreljme.runtime.lcdui.phoneui;
 
 import cc.squirreljme.runtime.cldc.asm.NativeDisplayEventCallback;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
+import cc.squirreljme.runtime.lcdui.event.NonStandardKey;
 import cc.squirreljme.runtime.lcdui.gfx.EnforcedDrawingAreaGraphics;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
@@ -202,6 +203,11 @@ public final class ActiveDisplay
 		Displayable current = this._current;
 		if (current == null)
 			return false;
+		
+		// Execute command via function key?
+		if (__ty == NativeDisplayEventCallback.KEY_PRESSED &&
+			__kc >= NonStandardKey.F1 && __kc <= NonStandardKey.F24)
+			return this.command(__kc - NonStandardKey.F1);
 		
 		// Forward action
 		return this._action.keyEvent(current, this._state, __ty, __kc, __ch,
