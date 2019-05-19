@@ -16,8 +16,10 @@ import cc.squirreljme.builder.support.NoSourceAvailableException;
 import cc.squirreljme.builder.support.ProjectManager;
 import cc.squirreljme.builder.support.TimeSpaceType;
 import cc.squirreljme.runtime.cldc.asm.SystemProperties;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -29,8 +31,10 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import net.multiphasicapps.tool.manifest.writer.MutableJavaManifest;
@@ -134,6 +138,9 @@ public class Shader
 		if (__zsw == null || __bm == null || __bins == null || __putin == null)
 			throw new NullPointerException("NARG");
 		
+		// Services that are available
+		Map<String, ServicesMerge> services = new LinkedHashMap<>();
+		
 		// We want to write and merge all the entries
 		byte[] buf = new byte[512];
 		for (Binary bin : __bins)
@@ -144,8 +151,37 @@ public class Shader
 				// Copy every single entry to the output
 				for (ZipBlockEntry e : zbr)
 				{
-					// Only add entries once!
+					// Merge in services?
 					String name = e.name();
+					if (name.startsWith("META-INF/services/"))
+					{
+						// Get just the name of the class
+						name = name.substring(18);
+						
+						// Setup merge for services
+						ServicesMerge merge = services.get(name);
+						if (merge == null)
+							services.put(name, (merge = new ServicesMerge()));
+						
+						// Merge in service implementations
+						try (BufferedReader br = new BufferedReader(
+							new InputStreamReader(e.open())))
+						{
+							for (;;)
+							{
+								String ln = br.readLine();
+								if (ln == null)
+									break;
+								
+								merge._implementations.add(ln);
+							}
+						}
+						
+						// Do not process any further
+						continue;
+					}
+					
+					// Only add entries once!
 					if (__putin.contains(name))
 						continue;
 					
@@ -228,6 +264,16 @@ public class Shader
 		{
 			man.write(os);
 		}
+		
+		// Write in any services
+		for (Map.Entry<String, ServicesMerge> e : services.entrySet())
+			try (PrintStream os = new PrintStream(__zsw.nextEntry(
+				"META-INF/services/" + e.getKey()), true))
+			{
+				for (String s : e.getValue().implementations())
+					os.println(s);
+				os.flush();
+			}
 	}
 	
 	/**
