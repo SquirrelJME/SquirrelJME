@@ -203,8 +203,9 @@ public class MidletMain
 		// All done so, return the title back
 		programlist.setTitle("SquirrelJME Launcher");
 		
-		// Re-flip on this display
-		if (_MAIN_DISPLAY.getCurrent() == programlist)
+		// Make sure the program list is showing
+		Displayable current = _MAIN_DISPLAY.getCurrent();
+		if (current == null || (current instanceof SplashScreen))
 			_MAIN_DISPLAY.setCurrent(programlist);
 		
 		// Automatically launch a program?
@@ -240,19 +241,28 @@ public class MidletMain
 		__CommandHandler__ ch = new __CommandHandler__();
 		programlist.setCommandListener(ch);
 		
-		// Display the program list
-		disp.setCurrent(programlist);
+		// Used to ensure the splash screen is visible for at least a second
+		long endtime = System.nanoTime() + 1_000_000_000L;
 		
-		// Only load the programs when the list is on the screen so that way
-		// if the user is impatient and thinks nothing is happening when
-		// something is.  Loading the program list can take awhile because
-		// it checks through everything, so best to have an indicator of it.
-		// Yield thread to give another a chance
-		while (!programlist.isShown())
-			Thread.yield();
+		// Refresh the list in another thread
+		Thread refresher = new Thread("LauncherRefresh")
+			{
+				/**
+				 * {@inheritDoc}
+				 * @since 2019/05/19
+				 */
+				public final void run()
+				{
+					MidletMain.this.refresh();
+				}
+			};
+		refresher.start();
 		
-		// Do the refresh now that it has been displayed
-		this.refresh();
+		// Instead of showing the program list early, just show a splash screen
+		// with a handsome Lex and the version information
+		SplashScreen spl = new SplashScreen(disp.getWidth(), disp.getHeight());
+		if (disp.getCurrent() == null)
+			disp.setCurrent(spl);
 	}
 	
 	/**
