@@ -47,7 +47,7 @@ public enum ActionMethod
 		 * @since 2019/05/18
 		 */
 		@Override
-		public final void keyEvent(Displayable __d, State __s, int __ty,
+		public final boolean keyEvent(Displayable __d, State __s, int __ty,
 			int __kc, int __ch, int __time)
 		{
 			// Normalize all key types to mobile cell phone format, if not
@@ -61,7 +61,7 @@ public enum ActionMethod
 				
 			// If the key-code is not valid then ignore
 			if (__kc == NonStandardKey.UNKNOWN)
-				return;
+				return false;
 			
 			// Depends on the action
 			switch (__ty)
@@ -81,6 +81,9 @@ public enum ActionMethod
 				default:
 					break;
 			}
+			
+			// Do not force a repaint, up to the canvas
+			return false;
 		}
 		
 		/**
@@ -88,7 +91,7 @@ public enum ActionMethod
 		 * @since 2019/05/18
 		 */
 		@Override
-		public final void pointerEvent(Displayable __d, State __s, int __ty,
+		public final boolean pointerEvent(Displayable __d, State __s, int __ty,
 			int __x, int __y, int __time)
 		{
 			ExposedDisplayable displayable = (ExposedDisplayable)__d;
@@ -111,6 +114,9 @@ public enum ActionMethod
 				default:
 					break;
 			}
+			
+			// Do not force a repaint, up to the canvas
+			return false;
 		}
 	},
 	
@@ -127,6 +133,68 @@ public enum ActionMethod
 	/** List. */
 	LIST
 	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2019/05/18
+		 */
+		@Override
+		public final boolean keyEvent(Displayable __d, State __s, int __ty,
+			int __kc, int __ch, int __time)
+		{
+			List list = (List)__d;
+			int n = list.size();
+			
+			// Quickly focus an item?
+			if (__kc >= Canvas.KEY_NUM1 && __kc <= Canvas.KEY_NUM9)
+			{
+				// Focus in bounds?
+				int wantdx = __kc - Canvas.KEY_NUM1;
+				if (wantdx < n)
+				{
+					// Set new focus
+					__s.focusdx = wantdx;
+					
+					// Redraw
+					return true;
+				}
+				
+				// Not quick selected
+				return false;
+			}
+			
+			// Focusing a new item?
+			int focusdx = __s.focusdx,
+				wantdx = focusdx;
+			switch (EventTranslate.keyCodeToGameAction(__kc))
+			{
+					// Move up
+				case Canvas.UP:
+					wantdx--;
+					break;
+				
+					// Move down
+				case Canvas.DOWN:
+					wantdx++;
+					break;
+					
+					// Select item
+				case Canvas.FIRE:
+					throw new todo.TODO();
+			}
+			
+			// Change of focus and it is valid?
+			if (focusdx != wantdx && wantdx >= 0 && wantdx < n)
+			{
+				// Set new focus
+				__s.focusdx = wantdx;
+				
+				// Repaint
+				return true;
+			}
+			
+			// Nothing happened
+			return false;
+		}
 	},
 	
 	/** Tabbed Pane. */
@@ -166,11 +234,13 @@ public enum ActionMethod
 	 * @param __kc The key code.
 	 * @param __ch The key character, {@code -1} is not valid.
 	 * @param __time Timecode.
+	 * @return {@code true} if the display should be repainted.
 	 * @since 2019/05/18
 	 */
-	public void keyEvent(Displayable __d, State __s, int __ty, int __kc,
+	public boolean keyEvent(Displayable __d, State __s, int __ty, int __kc,
 		int __ch, int __time)
 	{
+		return false;
 	}
 	
 	/**
@@ -182,11 +252,13 @@ public enum ActionMethod
 	 * @param __x The X coordinate.
 	 * @param __y The Y coordinate.
 	 * @param __time Timecode.
+	 * @return {@code true} if the display should be repainted.
 	 * @since 2019/05/18
 	 */
-	public void pointerEvent(Displayable __d, State __s, int __ty, int __x,
+	public boolean pointerEvent(Displayable __d, State __s, int __ty, int __x,
 		int __y, int __time)
 	{
+		return false;
 	}
 	
 	/**
