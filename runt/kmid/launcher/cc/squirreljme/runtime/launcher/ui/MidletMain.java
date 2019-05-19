@@ -174,7 +174,8 @@ public class MidletMain
 					main = value.substring(sc + 1).trim();
 				
 				// Build program
-				programs.add(new __Program__(suite, main, title, activetask));
+				programs.add(new __Program__(suite, main, title, activetask,
+					iconrc));
 				
 				// Say it was found via the title
 				programlist.setTitle(String.format(

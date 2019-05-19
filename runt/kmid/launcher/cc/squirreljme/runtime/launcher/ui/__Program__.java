@@ -10,6 +10,9 @@
 
 package cc.squirreljme.runtime.launcher.ui;
 
+import cc.squirreljme.runtime.cldc.io.ResourceInputStream;
+import java.io.InputStream;
+import java.io.IOException;
 import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.AlertType;
 import javax.microedition.lcdui.Image;
@@ -40,8 +43,17 @@ final class __Program__
 	/** The SquirrelJME name. */
 	protected final String squirreljmename;
 	
+	/** The name of the JAR (SquirrelJME specific). */
+	protected final String jarfile;
+	
+	/** The icon resource to use. */
+	protected final String iconrc;
+	
 	/** The active task. */
 	final __ActiveTask__ _activetask;
+	
+	/** The icon to show for this program. */
+	Image _icon;
 	
 	/**
 	 * Initializes the program.
@@ -50,11 +62,12 @@ final class __Program__
 	 * @param __main The main class.
 	 * @param __dn The display name of this suite.
 	 * @param __at The active task.
+	 * @param __iconrc The icon resource used, may be {@code null}.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/11/16
 	 */
 	__Program__(Suite __suite, String __main, String __dn,
-		__ActiveTask__ __at)
+		__ActiveTask__ __at, String __iconrc)
 		throws NullPointerException
 	{
 		if (__suite == null || __main == null || __at == null)
@@ -62,6 +75,7 @@ final class __Program__
 		
 		this.suite = __suite;
 		this.main = __main;
+		this.iconrc = __iconrc;
 		
 		String suitename = __suite.getName();
 		this.suitename = suitename;
@@ -90,7 +104,15 @@ final class __Program__
 			sjn = sb.toString();
 		}
 		
-		this.squirreljmename = sjn.toLowerCase();
+		// SquirrelJME special name
+		String squirreljmename = sjn.toLowerCase();
+		this.squirreljmename = squirreljmename;
+		
+		// SquirrelJME specific name for the JAR file this belongs to,
+		// note that this is only valid within SquirrelJME itself as the
+		// property is set from the launcher
+		String jarfile = __suite.getAttributeValue("x-squirreljme-jarfile");
+		this.jarfile = (jarfile == null ? squirreljmename : jarfile);
 	}
 	
 	/**
@@ -101,9 +123,36 @@ final class __Program__
 	 */
 	public final Image displayImage()
 	{
-		// Not currently implemented
-		todo.TODO.note("Implement launch icon display.");
-		return null;
+		// Image already known?
+		Image rv = this._icon;
+		if (rv != null)
+			return rv;
+		
+		// No image is here at all
+		String iconrc = this.iconrc;
+		if (iconrc == null)
+			return null;
+		
+		// Load image from JAR resource
+		try (InputStream in = ResourceInputStream.open(this.jarfile, iconrc))
+		{
+			// No resource exists
+			if (in == null)
+				return null;
+			
+			// Load image data
+			rv = Image.createImage(in);
+		}
+		
+		// Not a valid image, ignore
+		catch (IOException e)
+		{
+			return null;
+		}
+		
+		// Cache and use
+		this._icon = rv;
+		return rv;
 	}
 	
 	/**
