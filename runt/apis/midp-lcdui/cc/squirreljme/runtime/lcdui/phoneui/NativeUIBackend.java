@@ -105,7 +105,13 @@ public final class NativeUIBackend
 		if (__d != this.nid)
 			return;
 		
-		todo.TODO.note("Implement");
+		// No display active?
+		ActiveDisplay activedisplay = this._activedisplay;
+		if (activedisplay == null)
+			return;
+		
+		// Forward
+		activedisplay.command(__c);
 	}
 	
 	/**
@@ -206,42 +212,8 @@ public final class NativeUIBackend
 		if (activedisplay == null)
 			return;
 		
-		// No displayable shown?
-		Displayable current = activedisplay._current;
-		if (current == null)
-			return;
-		
-		// Normalize all key types to mobile cell phone format, if not
-		// specified
-		if (__ch == '#')
-			__kc = Canvas.KEY_POUND;
-		else if (__ch == '*')
-			__kc = Canvas.KEY_STAR;
-		else if (__ch >= '0' && __ch <= '9')
-			__kc = Canvas.KEY_NUM0 + (__ch - '0');
-			
-		// If the key-code is not valid then ignore
-		if (__kc == NonStandardKey.UNKNOWN)
-			return;
-		
-		// Depends on the action
-		switch (__ty)
-		{
-			case NativeDisplayEventCallback.KEY_PRESSED:
-				current.keyPressed(__kc);
-				break;
-			
-			case NativeDisplayEventCallback.KEY_REPEATED:
-				current.keyRepeated(__kc);
-				break;
-			
-			case NativeDisplayEventCallback.KEY_RELEASED:
-				current.keyReleased(__kc);
-				break;
-			
-			default:
-				break;
-		}
+		// Forward
+		activedisplay.keyEvent(__ty, __kc, __ch, __time);
 	}
 	
 	/**
@@ -316,7 +288,13 @@ public final class NativeUIBackend
 		if (__d != this.nid)
 			return;
 		
-		todo.TODO.note("Implement");
+		// No display active?
+		ActiveDisplay activedisplay = this._activedisplay;
+		if (activedisplay == null)
+			return;
+		
+		// Forward
+		activedisplay.pointerEvent(__ty, __x, __y, __time);
 	}
 	
 	/**

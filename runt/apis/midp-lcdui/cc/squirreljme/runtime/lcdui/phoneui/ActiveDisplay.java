@@ -9,6 +9,7 @@
 
 package cc.squirreljme.runtime.lcdui.phoneui;
 
+import cc.squirreljme.runtime.cldc.asm.NativeDisplayEventCallback;
 import cc.squirreljme.runtime.cldc.SquirrelJME;
 import cc.squirreljme.runtime.lcdui.gfx.EnforcedDrawingAreaGraphics;
 import javax.microedition.lcdui.Command;
@@ -37,7 +38,10 @@ public final class ActiveDisplay
 	volatile Displayable _current;
 	
 	/** The drawing method to use. */
-	volatile DrawingMethod _method;
+	volatile DrawingMethod _drawing;
+	
+	/** The action method to use. */
+	volatile ActionMethod _action;
 	
 	/** Current drawing state. */
 	volatile State _state;
@@ -106,11 +110,40 @@ public final class ActiveDisplay
 		
 		// Set
 		this._current = __d;
-		this._method = DrawingMethod.of(__d.getClass());
+		this._drawing = DrawingMethod.of(__d.getClass());
+		this._action = ActionMethod.of(__d.getClass());
 		this._state = new State();
 		
 		// Realize the dimensions
 		this.realize(PhoneUI._IGNORE_REALIZATION);
+	}
+	
+	/**
+	 * Executes the numbered command on the given display.
+	 *
+	 * @param __c The command to execute.
+	 * @since 2019/05/18
+	 */
+	public final void command(int __c)
+	{
+		// Display must be active
+		Displayable current = this._current;
+		if (current == null)
+			return;
+		
+		// Forward action, if it was not handled by this display then fallback
+		// to the displayable commands
+		CommandListener l = ((ExposedDisplayable)current).getCommandListener();
+		if (!this._action.command(current, this._state, __c))
+		{
+			// Get all commands
+			Command[] commands = current.getCommands();
+			int numcommands = commands.length;
+			
+			// Call command function
+			if (__c >= 0 && __c < numcommands)
+				l.commandAction(commands[__c], current);
+		}
 	}
 	
 	/**
@@ -140,6 +173,27 @@ public final class ActiveDisplay
 		
 		// Otherwise just terminate the application
 		System.exit(0);
+	}
+	
+	/**
+	 * Key action has been performed.
+	 *
+	 * @param __d The display ID.
+	 * @param __ty The type of key event.
+	 * @param __kc The key code.
+	 * @param __ch The key character, {@code -1} is not valid.
+	 * @param __time Timecode.
+	 * @since 2019/05/18
+	 */
+	public final void keyEvent(int __ty, int __kc, int __ch, int __time)
+	{
+		// Display must be active
+		Displayable current = this._current;
+		if (current == null)
+			return;
+		
+		// Forward action
+		this._action.keyEvent(current, this._state, __ty, __kc, __ch, __time);
 	}
 	
 	/**
@@ -269,7 +323,7 @@ public final class ActiveDisplay
 			
 			// Paint
 			State state = this._state;
-			this._method.paint((Displayable)current, state, ug, uw, uh);
+			this._drawing.paint((Displayable)current, state, ug, uw, uh);
 			
 			// Draw the focus box
 			State.Box focusbox = state.focusbox;
@@ -322,6 +376,27 @@ public final class ActiveDisplay
 				sx -= xa;
 			}
 		}
+	}
+	
+	/**
+	 * Pointer event has occured.
+	 *
+	 * @param __ty The type of pointer event.
+	 * @param __x The X coordinate.
+	 * @param __y The Y coordinate.
+	 * @param __time Timecode.
+	 * @since 2019/05/18
+	 */
+	public final void pointerEvent(int __ty, int __x, int __y, int __time)
+	{
+		// Display must be active
+		Displayable current = this._current;
+		if (current == null)
+			return;
+		
+		// Forward action
+		this._action.pointerEvent(current, this._state, __ty, __x, __y,
+			__time);
 	}
 	
 	/**
