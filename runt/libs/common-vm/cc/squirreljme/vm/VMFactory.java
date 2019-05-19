@@ -138,6 +138,10 @@ public abstract class VMFactory
 			{
 			}
 		
+		// If none specified, default to SpringCoat
+		if (__vm == null)
+			__vm = "springcoat";
+		
 		// Determine the virtual machine to use
 		VMFactory factory = null;
 		for (VMFactory f : ServiceLoader.<VMFactory>load(VMFactory.class))
