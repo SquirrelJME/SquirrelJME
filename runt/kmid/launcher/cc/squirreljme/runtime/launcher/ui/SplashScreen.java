@@ -75,8 +75,8 @@ public final class SplashScreen
 				
 				// Translate RGB byte pixels to RGB int pixels
 				for (int o = 0, i = 0; o < np; o++)
-					image[o] = ((raw[i++] & 0xFF) << 24) |
-						((raw[i++] & 0xFF) << 16) |
+					image[o] = ((raw[i++] & 0xFF) << 16) |
+						((raw[i++] & 0xFF) << 8) |
 						(raw[i++] & 0xFF);
 			}
 		}
