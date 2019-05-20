@@ -295,6 +295,41 @@ public class AdvancedGraphics
 		int __dx, int __dy, int __anchor)
 		throws IllegalArgumentException, IllegalStateException
 	{
+		// Need translation coordinates
+		int tx = this.transx,
+			ty = this.transy;
+		
+		// Image size
+		int iw = this.width,
+			ih = this.height;
+		
+		// Translate all coordinates
+		__sx += tx;
+		__sy += ty;
+		__dx += tx;
+		__dy += ty;
+		
+		// Perform needed anchoring
+		if ((__anchor & Graphics.HCENTER) != 0)
+			__dx -= (__w >> 1);
+		else if ((__anchor & Graphics.RIGHT) != 0)
+			__dx -= __w;
+		if ((__anchor & Graphics.VCENTER) != 0)
+			__dy -= (__h >> 1);
+		else if ((__anchor & Graphics.BOTTOM) != 0)
+			__dy -= __h;
+		
+		// End coordinates for both
+		int sex = __sx + __w,
+			sey = __sx + __h,
+			dex = __dx + __w,
+			dey = __dx + __h;
+		
+		// {@squirreljme.error EB3f Source region for area copy is out of
+		// bounds.}
+		if (__sx < 0 || __sy < 0 || sex > iw || sey > ih)
+			throw new IllegalArgumentException("EB3f");
+		
 		this.__unimplemented(__dx, __dy, "copyArea");
 	}
 	
