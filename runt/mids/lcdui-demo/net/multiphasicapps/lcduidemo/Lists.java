@@ -11,6 +11,7 @@
 package net.multiphasicapps.lcduidemo;
 
 import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.List;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
@@ -78,6 +79,16 @@ public class Lists
 		list.append("Sciurus variegatoides", null);
 		list.append("Sciurus vulgaris", null);
 		list.append("Sciurus yucatanensis", null);
+		
+		// Use a certain font for some items
+		list.setFont(2,
+			Font.getFont(Font.FACE_SYSTEM, 0, Font.SIZE_SMALL));
+		list.setFont(4,
+			Font.getFont(Font.FACE_MONOSPACE, 0, Font.SIZE_MEDIUM));
+		list.setFont(6,
+			Font.getFont(Font.FACE_PROPORTIONAL, 0, Font.SIZE_MEDIUM));
+		list.setFont(8,
+			Font.getFont(Font.FACE_MONOSPACE, 0, Font.SIZE_SMALL));
 		
 		// Select some items for us
 		list.setSelectedIndex(1, true);

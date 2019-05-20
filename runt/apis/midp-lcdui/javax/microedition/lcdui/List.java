@@ -298,6 +298,7 @@ public class List
 	 */
 	@Override
 	public void setEnabled(int __i, boolean __e)
+		throws IndexOutOfBoundsException
 	{
 		this._items.get(__i)._disabled = !__e;
 		
@@ -312,9 +313,23 @@ public class List
 		throw new todo.TODO();
 	}
 	
-	public void setFont(int __a, Font __b)
+	/**
+	 * Sets the font of the given item.
+	 *
+	 * @param __i The item to set.
+	 * @param __f The font to use, {@code null} clears it and uses the default.
+	 * @throws IndexOutOfBoundsException If the item is not within bounds.
+	 * @since 2019/05/20
+	 */
+	public void setFont(int __i, Font __f)
+		throws IndexOutOfBoundsException
 	{
-		throw new todo.TODO();
+		this._items.get(__i)._font = __f;
+		
+		// Update display
+		Display d = this._display;
+		if (d != null)
+			d._phoneui.repaint();
 	}
 	
 	public void setSelectCommand(Command __a)
