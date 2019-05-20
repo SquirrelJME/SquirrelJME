@@ -134,6 +134,10 @@ public enum DrawingMethod
 			else if (focusdx >= n)
 				focusdx = n - 1;
 			
+			// Default font
+			Font dfont = Font.getFont(StandardMetrics.LIST_ITEM_FONT, 0,
+				StandardMetrics.LIST_ITEM_HEIGHT);
+			
 			// Draw all list items
 			for (int i = 0; i < n; i++)
 			{
@@ -149,8 +153,7 @@ public enum DrawingMethod
 				
 				// Use a default fallback font?
 				if (vf == null)
-					vf = Font.getFont(StandardMetrics.LIST_ITEM_FONT, 0,
-						StandardMetrics.LIST_ITEM_HEIGHT);
+					vf = dfont;
 				
 				// Height of this item
 				int ih = vf.getPixelSize();
