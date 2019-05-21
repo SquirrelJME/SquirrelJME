@@ -27,6 +27,7 @@ __out="$__exedir/../runt/apis/midp-lcdui/cc/squirreljme/runtime/lcdui/font/"
 
 # Where temporary files go
 mkdir -p "/tmp/$$"
+cd /tmp/$$
 
 # Generate a bunch of fonts first
 for __dir in "$__exedir/../assets/font/"*.sfdir
