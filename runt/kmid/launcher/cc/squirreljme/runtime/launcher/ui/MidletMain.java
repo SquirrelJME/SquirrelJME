@@ -47,6 +47,14 @@ public class MidletMain
 	public static final String AUTOLAUNCH_PROPERTY =
 		"cc.squirreljme.autolaunch";
 	
+	/** Command used to exit the launcher and terminate. */
+	public static final Command EXIT_COMMAND =
+		new Command("Exit", Command.EXIT, 1);
+	
+	/** The about command. */
+	public static final Command ABOUT_COMMAND =
+		new Command("About", Command.HELP, 2);
+	
 	/** Timer used to reschedule things. */
 	static final Timer _TIMER =
 		new Timer("LauncherRecoverThread");
@@ -57,10 +65,6 @@ public class MidletMain
 	/** The list which contains all of the programs we can run. */
 	protected final List programlist =
 		new List("SquirrelJME Launcher", Choice.IMPLICIT);
-	
-	/** Command used to exit the launcher and terminate. */
-	protected final Command exitcommand =
-		new Command("Exit", Command.EXIT, 1);
 	
 	/** The active task. */
 	private final __ActiveTask__ _activetask =
@@ -236,7 +240,8 @@ public class MidletMain
 		
 		// Add commands to the list so things can be done with them
 		List programlist = this.programlist;
-		programlist.addCommand(this.exitcommand);
+		programlist.addCommand(EXIT_COMMAND);
+		programlist.addCommand(ABOUT_COMMAND);
 		
 		// Need to handle commands and such
 		__CommandHandler__ ch = new __CommandHandler__();
@@ -389,12 +394,17 @@ public class MidletMain
 			}
 			
 			// Exiting the VM?
-			else if (__c == MidletMain.this.exitcommand)
+			else if (__c == EXIT_COMMAND)
 			{
 				// Indication that something is happening
 				MidletMain.this.programlist.setTitle("Exiting...");
 				
 				System.exit(0);
+			}
+			
+			// About SquirrelJME
+			else if (__c == ABOUT_COMMAND)
+			{
 			}
 		}
 	}
