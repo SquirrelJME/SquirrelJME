@@ -1660,11 +1660,6 @@ public final class SpringThreadWorker
 				"longBitsToDouble:(J)D":
 				return Double.longBitsToDouble((Long)__args[0]);
 				
-				// Is the registry present?
-			case "cc/squirreljme/runtime/cldc/asm/RegistryAccess::" +
-				"present:()Z":
-				return false;
-				
 				// Returns the number of bytes available in the resource.
 			case "cc/squirreljme/runtime/cldc/asm/ResourceAccess::" +
 				"available:(I)I":
