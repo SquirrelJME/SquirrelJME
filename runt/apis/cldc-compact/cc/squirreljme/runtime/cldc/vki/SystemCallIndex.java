@@ -9,6 +9,9 @@
 
 package cc.squirreljme.runtime.cldc.vki;
 
+import cc.squirreljme.runtime.cldc.annotation.Api;
+import cc.squirreljme.runtime.cldc.lang.ApiLevel;
+
 /**
  * This contains the index of system calls.
  *
@@ -17,30 +20,37 @@ package cc.squirreljme.runtime.cldc.vki;
 public interface SystemCallIndex
 {
 	/** Checks if the system call is supported. */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
 	public static final short QUERY_INDEX =
 		0;
 	
 	/** Gets the last error state. */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
 	public static final short ERROR_GET =
 		1;
 	
 	/** Sets the last error state. */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
 	public static final short ERROR_SET =
 		2;
 	
 	/** Current wall clock milliseconds (low). */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
 	public static final short TIME_LO_MILLI_WALL =
 		3;
 	
 	/** Current wall clock milliseconds (high). */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
 	public static final short TIME_HI_MILLI_WALL =
 		4;
 	
 	/** Current monotonic clock nanoseconds (low). */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
 	public static final short TIME_LO_NANO_MONO =
 		5;
 	
 	/** Current monotonic clock nanoseconds (high). */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
 	public static final short TIME_HI_NANO_MONO =
 		6;
 	
