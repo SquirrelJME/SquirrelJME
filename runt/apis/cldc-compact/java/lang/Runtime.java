@@ -12,6 +12,9 @@ package java.lang;
 
 import cc.squirreljme.runtime.cldc.asm.SystemAccess;
 import cc.squirreljme.runtime.cldc.asm.MemoryAccess;
+import cc.squirreljme.runtime.cldc.vki.Assembly;
+import cc.squirreljme.runtime.cldc.vki.SystemCallError;
+import cc.squirreljme.runtime.cldc.vki.SystemCallIndex;
 
 /**
  * This class contains information about the host memory environment along
@@ -62,7 +65,10 @@ public class Runtime
 	 */
 	public long freeMemory()
 	{
-		return MemoryAccess.freeMemory();
+		int rv = Assembly.sysCallV(SystemCallIndex.VMI_MEM_FREE);
+		if (0 != SystemCallError.getError(SystemCallIndex.VMI_MEM_FREE))
+			return Integer.MAX_VALUE;
+		return rv;
 	}
 	
 	/**
@@ -86,7 +92,10 @@ public class Runtime
 	 */
 	public long maxMemory()
 	{
-		return MemoryAccess.maxMemory();
+		int rv = Assembly.sysCallV(SystemCallIndex.VMI_MEM_MAX);
+		if (0 != SystemCallError.getError(SystemCallIndex.VMI_MEM_MAX))
+			return Integer.MAX_VALUE;
+		return rv;
 	}
 	
 	/**
@@ -99,7 +108,10 @@ public class Runtime
 	 */
 	public long totalMemory()
 	{
-		return MemoryAccess.totalMemory();
+		int rv = Assembly.sysCallV(SystemCallIndex.VMI_MEM_USED);
+		if (0 != SystemCallError.getError(SystemCallIndex.VMI_MEM_USED))
+			return 0;
+		return rv;
 	}
 	
 	/**

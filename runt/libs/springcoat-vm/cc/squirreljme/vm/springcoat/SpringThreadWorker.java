@@ -1368,26 +1368,11 @@ public final class SpringThreadWorker
 				return this.machine.debugUnresolveString(
 					this.<String>asNativeObject(String.class, __args[0]));
 				
-				// Free memory
-			case "cc/squirreljme/runtime/cldc/asm/MemoryAccess::" +
-				"freeMemory:()J":
-				return Runtime.getRuntime().freeMemory();
-				
 				// Garbage collect suggestion
 			case "cc/squirreljme/runtime/cldc/asm/MemoryAccess::" +
 				"gc:()V":
 				Runtime.getRuntime().gc();
 				return null;
-				
-				// Max memory
-			case "cc/squirreljme/runtime/cldc/asm/MemoryAccess::" +
-				"maxMemory:()J":
-				return Runtime.getRuntime().maxMemory();
-				
-				// Max memory
-			case "cc/squirreljme/runtime/cldc/asm/MemoryAccess::" +
-				"totalMemory:()J":
-				return Runtime.getRuntime().totalMemory();
 				
 				// Accelerated graphics
 			case "cc/squirreljme/runtime/cldc/asm/NativeDisplayAccess::" +
@@ -4217,6 +4202,33 @@ public final class SpringThreadWorker
 			case SystemCallIndex.TIME_HI_NANO_MONO:
 				{
 					rv = (int)(System.nanoTime() >>> 32);
+					err = 0;
+				}
+				break;
+			
+				// VM information: Memory free bytes
+			case SystemCallIndex.VMI_MEM_FREE:
+				{
+					rv = (int)Math.min(Integer.MAX_VALUE,
+						Runtime.getRuntime().freeMemory());
+					err = 0;
+				}
+				break;
+			
+				// VM information: Memory used bytes
+			case SystemCallIndex.VMI_MEM_USED:
+				{
+					rv = (int)Math.min(Integer.MAX_VALUE,
+						Runtime.getRuntime().totalMemory());
+					err = 0;
+				}
+				break;
+			
+				// VM information: Memory max bytes
+			case SystemCallIndex.VMI_MEM_MAX:
+				{
+					rv = (int)Math.min(Integer.MAX_VALUE,
+						Runtime.getRuntime().maxMemory());
 					err = 0;
 				}
 				break;

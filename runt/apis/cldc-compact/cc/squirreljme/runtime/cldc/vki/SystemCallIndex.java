@@ -54,9 +54,24 @@ public final class SystemCallIndex
 	public static final short TIME_HI_NANO_MONO =
 		6;
 	
+	/** VM Information: Free memory in bytes. */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
+	public static final short VMI_MEM_FREE =
+		7;
+	
+	/** VM Information: Used memory in bytes. */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
+	public static final short VMI_MEM_USED =
+		8;
+	
+	/** VM Information: Max memory in bytes. */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
+	public static final short VMI_MEM_MAX =
+		9;
+	
 	/** System call count. */
 	public static final int NUM_SYSCALLS =
-		7;
+		10;
 	
 	/**
 	 * Not used.

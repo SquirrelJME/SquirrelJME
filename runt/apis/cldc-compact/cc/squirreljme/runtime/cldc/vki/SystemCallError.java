@@ -32,5 +32,17 @@ public final class SystemCallError
 	private SystemCallError()
 	{
 	}
+	
+	/**
+	 * Returns the error state.
+	 *
+	 * @param __si The system call index.
+	 * @return The error, 0 will be on success.
+	 * @since 2019/05/23
+	 */
+	public static final int getError(short __si)
+	{
+		return Assembly.sysCallV(SystemCallIndex.ERROR_GET, __si);
+	}
 }
 
