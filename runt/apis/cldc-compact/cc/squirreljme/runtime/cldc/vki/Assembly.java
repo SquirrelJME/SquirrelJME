@@ -39,11 +39,38 @@ public final class Assembly
 	public static native void breakpoint();
 	
 	/**
+	 * Double to raw long bits.
+	 *
+	 * @param __d The input double.
+	 * @return The raw long bits.
+	 * @since 2018/11/03
+	 */
+	public static final native long doubleToRawLongBits(double __d);
+	
+	/**
 	 * Performs explicit exception handling.
 	 *
 	 * @since 2019/04/28
 	 */
 	public static native void exceptionHandle();
+	
+	/**
+	 * Float to raw int bits.
+	 *
+	 * @param __d The input float.
+	 * @return The raw int bits.
+	 * @since 2018/11/04
+	 */
+	public static final native int floatToRawIntBits(float __f);
+	
+	/**
+	 * Integer bits to float.
+	 *
+	 * @param __b The input bits.
+	 * @return The resulting float.
+	 * @since 2018/11/04
+	 */
+	public static final native float intBitsToFloat(int __b);
 	
 	/**
 	 * Invoke method at pointer.
@@ -295,6 +322,15 @@ public final class Assembly
 	 * @since 2019/04/28
 	 */
 	public static native int loadPool(int __i);
+	
+	/**
+	 * Long bits to double.
+	 *
+	 * @param __b The input bits.
+	 * @return The resulting double.
+	 * @since 2018/11/03
+	 */
+	public static final native double longBitsToDouble(long __b);
 	
 	/**
 	 * Reads byte from address.

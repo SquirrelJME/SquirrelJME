@@ -1134,6 +1134,26 @@ public final class SpringThreadWorker
 		// Depends on the function
 		switch (__func)
 		{
+				// Gets the raw bits for the given double value
+			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+				"doubleToRawLongBits:(D)J":
+				return Double.doubleToRawLongBits((Double)__args[0]);
+				
+				// Float to raw int bits
+			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+				"floatToRawIntBits:(F)I":
+				return Float.floatToRawIntBits((Float)__args[0]);
+				
+				// Int bits to float
+			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+				"intBitsToFloat:(I)F":
+				return Float.intBitsToFloat((Integer)__args[0]);
+				
+				// Convert long bits to double
+			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+				"longBitsToDouble:(J)D":
+				return Double.longBitsToDouble((Long)__args[0]);
+				
 				// System calls (no return value)
 			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
 				"sysCall:(S)V":
@@ -1613,26 +1633,6 @@ public final class SpringThreadWorker
 				((SpringPrimitiveReference)__args[0]).set(
 					(SpringObject)__args[1]);
 				return null;
-				
-				// Gets the raw bits for the given double value
-			case "cc/squirreljme/runtime/cldc/asm/PrimitiveAccess::" +
-				"doubleToRawLongBits:(D)J":
-				return Double.doubleToRawLongBits((Double)__args[0]);
-				
-				// Float to raw int bits
-			case "cc/squirreljme/runtime/cldc/asm/PrimitiveAccess::" +
-				"floatToRawIntBits:(F)I":
-				return Float.floatToRawIntBits((Float)__args[0]);
-				
-				// Int bits to float
-			case "cc/squirreljme/runtime/cldc/asm/PrimitiveAccess::" +
-				"intBitsToFloat:(I)F":
-				return Float.intBitsToFloat((Integer)__args[0]);
-				
-				// Convert long bits to double
-			case "cc/squirreljme/runtime/cldc/asm/PrimitiveAccess::" +
-				"longBitsToDouble:(J)D":
-				return Double.longBitsToDouble((Long)__args[0]);
 				
 				// Returns the number of bytes available in the resource.
 			case "cc/squirreljme/runtime/cldc/asm/ResourceAccess::" +

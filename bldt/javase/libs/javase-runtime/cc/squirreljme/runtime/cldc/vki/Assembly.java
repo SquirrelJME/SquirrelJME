@@ -46,6 +46,18 @@ public final class Assembly
 	}
 	
 	/**
+	 * Double to raw long bits.
+	 *
+	 * @param __d The input double.
+	 * @return The raw long bits.
+	 * @since 2018/11/03
+	 */
+	public static final long doubleToRawLongBits(double __d)
+	{
+		return Double.doubleToRawLongBits(__d);
+	}
+	
+	/**
 	 * Performs explicit exception handling.
 	 *
 	 * @since 2019/04/28
@@ -53,6 +65,30 @@ public final class Assembly
 	public static final void exceptionHandle()
 	{
 		throw new todo.TODO();
+	}
+	
+	/**
+	 * Float to raw int bits.
+	 *
+	 * @param __d The input float.
+	 * @return The raw int bits.
+	 * @since 2018/11/04
+	 */
+	public static final int floatToRawIntBits(float __f)
+	{
+		return Float.floatToRawIntBits(__f);
+	}
+	
+	/**
+	 * Integer bits to float.
+	 *
+	 * @param __b The input bits.
+	 * @return The resulting float.
+	 * @since 2018/11/04
+	 */
+	public static final float intBitsToFloat(int __b)
+	{
+		return Float.intBitsToFloat(__b);
 	}
 	
 	/**
@@ -365,6 +401,18 @@ public final class Assembly
 	public static final int loadPool(int __i)
 	{
 		throw new todo.OOPS();
+	}
+	
+	/**
+	 * Long bits to double.
+	 *
+	 * @param __b The input bits.
+	 * @return The resulting double.
+	 * @since 2018/11/03
+	 */
+	public static final double longBitsToDouble(long __b)
+	{
+		return Double.longBitsToDouble(__b);
 	}
 	
 	/**
