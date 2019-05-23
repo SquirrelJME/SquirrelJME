@@ -1090,6 +1090,16 @@ public final class Assembly
 					err = 0;
 				}
 				break;
+				
+				// Exit the VM
+			case SystemCallIndex.EXIT:
+				{
+					System.exit(__args[0]);
+					
+					rv = 0;
+					err = 0;
+				}
+				break;
 			
 			default:
 				// Returns no value but sets an error

@@ -70,12 +70,18 @@ public final class SystemCallIndex
 		9;
 	
 	/** Invoke the garbage collector. */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
 	public static final short GARBAGE_COLLECT =
 		10;
 	
+	/** Exit the VM. */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
+	public static final short EXIT =
+		11;
+	
 	/** System call count. */
 	public static final int NUM_SYSCALLS =
-		11;
+		12;
 	
 	/**
 	 * Not used.

@@ -10,7 +10,6 @@
 
 package java.lang;
 
-import cc.squirreljme.runtime.cldc.asm.SystemAccess;
 import cc.squirreljme.runtime.cldc.vki.Assembly;
 import cc.squirreljme.runtime.cldc.vki.SystemCallError;
 import cc.squirreljme.runtime.cldc.vki.SystemCallIndex;
@@ -53,7 +52,7 @@ public class Runtime
 		System.getSecurityManager().checkExit(__v);
 		
 		// Then do the exit if no exception was thrown
-		SystemAccess.exit(__v);
+		Assembly.sysCall(SystemCallIndex.EXIT, __v);
 	}
 	
 	/**

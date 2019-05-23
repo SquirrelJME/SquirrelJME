@@ -16,6 +16,9 @@ import cc.squirreljme.runtime.cldc.asm.StaticMethod;
 import cc.squirreljme.runtime.cldc.asm.SystemAccess;
 import cc.squirreljme.runtime.cldc.asm.TaskAccess;
 import cc.squirreljme.runtime.cldc.lang.UncaughtExceptionHandler;
+import cc.squirreljme.runtime.cldc.vki.Assembly;
+import cc.squirreljme.runtime.cldc.vki.SystemCallError;
+import cc.squirreljme.runtime.cldc.vki.SystemCallIndex;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -815,7 +818,7 @@ public class Thread
 			
 			// Exit the VM with our normal exit code, since no other
 			// thread called exit at all for this point
-			SystemAccess.exit(exitcode);
+			Assembly.sysCall(SystemCallIndex.EXIT, exitcode);
 		}
 	}
 }
