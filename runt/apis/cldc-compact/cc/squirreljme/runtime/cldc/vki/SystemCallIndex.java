@@ -17,7 +17,7 @@ import cc.squirreljme.runtime.cldc.lang.ApiLevel;
  *
  * @since 2019/05/23
  */
-public interface SystemCallIndex
+public final class SystemCallIndex
 {
 	/** Checks if the system call is supported. */
 	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
@@ -57,5 +57,14 @@ public interface SystemCallIndex
 	/** System call count. */
 	public static final int NUM_SYSCALLS =
 		7;
+	
+	/**
+	 * Not used.
+	 *
+	 * @since 2019/05/23
+	 */
+	private SystemCallIndex()
+	{
+	}
 }
 

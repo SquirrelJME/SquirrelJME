@@ -14,9 +14,11 @@ import cc.squirreljme.runtime.cldc.asm.ConsoleOutput;
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import cc.squirreljme.runtime.cldc.asm.SystemAccess;
 import cc.squirreljme.runtime.cldc.asm.SystemProperties;
-import cc.squirreljme.runtime.cldc.asm.TimeAccess;
 import cc.squirreljme.runtime.cldc.io.ConsoleOutputStream;
 import cc.squirreljme.runtime.cldc.lang.ApiLevel;
+import cc.squirreljme.runtime.cldc.vki.Assembly;
+import cc.squirreljme.runtime.cldc.vki.SystemCallError;
+import cc.squirreljme.runtime.cldc.vki.SystemCallIndex;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.security.Permission;
@@ -156,7 +158,10 @@ public final class System
 	public static long currentTimeMillis()
 	{
 		// Returns the current time in UTC, not local time zone.
-		return TimeAccess.currentTimeMillis();
+		return ((Assembly.sysCallV(
+				SystemCallIndex.TIME_LO_MILLI_WALL) & 0xFFFFFFFFL) |
+			(((long)Assembly.sysCallV(
+				SystemCallIndex.TIME_HI_MILLI_WALL)) << 32L));
 	}
 	
 	/**
@@ -439,7 +444,11 @@ public final class System
 	 */
 	public static long nanoTime()
 	{
-		return TimeAccess.nanoTime();
+		// Returns the current monotonic clock time
+		return ((Assembly.sysCallV(
+				SystemCallIndex.TIME_LO_NANO_MONO) & 0xFFFFFFFFL) |
+			(((long)Assembly.sysCallV(
+				SystemCallIndex.TIME_HI_NANO_MONO)) << 32L));
 	}
 	
 	/**

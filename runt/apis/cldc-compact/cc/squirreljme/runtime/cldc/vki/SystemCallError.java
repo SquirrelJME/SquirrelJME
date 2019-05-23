@@ -14,7 +14,7 @@ package cc.squirreljme.runtime.cldc.vki;
  *
  * @since 2019/05/23
  */
-public interface SystemCallError
+public final class SystemCallError
 {
 	/** No error, or success. */
 	public static final short NO_ERROR =
@@ -23,5 +23,14 @@ public interface SystemCallError
 	/** The system call is not supported. */
 	public static final short UNSUPPORTED_SYSTEM_CALL =
 		-1;
+	
+	/**
+	 * Not used.
+	 *
+	 * @since 2019/05/23
+	 */
+	private SystemCallError()
+	{
+	}
 }
 
