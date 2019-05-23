@@ -1022,7 +1022,7 @@ public final class Assembly
 				}
 				break;
 			
-			// Current wall clock milliseconds (low).
+				// Current wall clock milliseconds (low).
 			case SystemCallIndex.TIME_LO_MILLI_WALL:
 				{
 					rv = (int)(System.currentTimeMillis());
@@ -1030,7 +1030,7 @@ public final class Assembly
 				}
 				break;
 
-			// Current wall clock milliseconds (high).
+				// Current wall clock milliseconds (high).
 			case SystemCallIndex.TIME_HI_MILLI_WALL:
 				{
 					rv = (int)(System.currentTimeMillis() >>> 32);
@@ -1038,7 +1038,7 @@ public final class Assembly
 				}
 				break;
 
-			// Current monotonic clock nanoseconds (low).
+				// Current monotonic clock nanoseconds (low).
 			case SystemCallIndex.TIME_LO_NANO_MONO:
 				{
 					rv = (int)(System.nanoTime());
@@ -1046,10 +1046,37 @@ public final class Assembly
 				}
 				break;
 
-			// Current monotonic clock nanoseconds (high).
+				// Current monotonic clock nanoseconds (high).
 			case SystemCallIndex.TIME_HI_NANO_MONO:
 				{
 					rv = (int)(System.nanoTime() >>> 32);
+					err = 0;
+				}
+				break;
+			
+				// VM information: Memory free bytes
+			case SystemCallIndex.VMI_MEM_FREE:
+				{
+					rv = (int)Math.min(Integer.MAX_VALUE,
+						Runtime.getRuntime().freeMemory());
+					err = 0;
+				}
+				break;
+			
+				// VM information: Memory used bytes
+			case SystemCallIndex.VMI_MEM_USED:
+				{
+					rv = (int)Math.min(Integer.MAX_VALUE,
+						Runtime.getRuntime().totalMemory());
+					err = 0;
+				}
+				break;
+			
+				// VM information: Memory max bytes
+			case SystemCallIndex.VMI_MEM_MAX:
+				{
+					rv = (int)Math.min(Integer.MAX_VALUE,
+						Runtime.getRuntime().maxMemory());
 					err = 0;
 				}
 				break;
