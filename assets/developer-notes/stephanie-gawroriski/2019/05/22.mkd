@@ -1,0 +1,8 @@
+# 2019/05/22
+
+## 07:22
+
+I want to add tests to make sure all the drawing functions are accurate for
+the most part. This is per-pixel accuracy! Of course fonts will be not
+accurate at all so they cannot be tested since they vary per system. But the
+other stuff such as lines and rectangles definitely can be.
