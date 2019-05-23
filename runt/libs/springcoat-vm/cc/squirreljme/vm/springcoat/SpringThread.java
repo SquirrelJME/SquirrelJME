@@ -10,6 +10,7 @@
 
 package cc.squirreljme.vm.springcoat;
 
+import cc.squirreljme.runtime.cldc.vki.SystemCallIndex;
 import java.io.PrintStream;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -38,6 +39,10 @@ public final class SpringThread
 	
 	/** Profiler information. */
 	protected final ProfiledThread profiler;
+	
+	/** System call errors. */
+	final int[] _syscallerrors =
+		new int[SystemCallIndex.NUM_SYSCALLS];
 	
 	/** The stack frames. */
 	private final List<SpringThread.Frame> _frames =

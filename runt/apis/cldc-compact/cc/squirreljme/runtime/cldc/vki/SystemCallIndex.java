@@ -27,5 +27,25 @@ public interface SystemCallIndex
 	/** Sets the last error state. */
 	public static final short ERROR_SET =
 		2;
+	
+	/** Current wall clock milliseconds (low). */
+	public static final short TIME_LO_MILLI_WALL =
+		3;
+	
+	/** Current wall clock milliseconds (high). */
+	public static final short TIME_HI_MILLI_WALL =
+		4;
+	
+	/** Current monotonic clock nanoseconds (low). */
+	public static final short TIME_LO_NANO_MONO =
+		5;
+	
+	/** Current monotonic clock nanoseconds (high). */
+	public static final short TIME_HI_NANO_MONO =
+		6;
+	
+	/** System call count. */
+	public static final int NUM_SYSCALLS =
+		7;
 }
 
