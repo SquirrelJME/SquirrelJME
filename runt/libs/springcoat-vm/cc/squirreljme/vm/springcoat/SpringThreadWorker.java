@@ -1368,12 +1368,6 @@ public final class SpringThreadWorker
 				return this.machine.debugUnresolveString(
 					this.<String>asNativeObject(String.class, __args[0]));
 				
-				// Garbage collect suggestion
-			case "cc/squirreljme/runtime/cldc/asm/MemoryAccess::" +
-				"gc:()V":
-				Runtime.getRuntime().gc();
-				return null;
-				
 				// Accelerated graphics
 			case "cc/squirreljme/runtime/cldc/asm/NativeDisplayAccess::" +
 				"accelGfx:(I)Z":
@@ -4229,6 +4223,16 @@ public final class SpringThreadWorker
 				{
 					rv = (int)Math.min(Integer.MAX_VALUE,
 						Runtime.getRuntime().maxMemory());
+					err = 0;
+				}
+				break;
+				
+				// Invoke the garbage collector
+			case SystemCallIndex.GARBAGE_COLLECT:
+				{
+					Runtime.getRuntime().gc();
+					
+					rv = 0;
 					err = 0;
 				}
 				break;

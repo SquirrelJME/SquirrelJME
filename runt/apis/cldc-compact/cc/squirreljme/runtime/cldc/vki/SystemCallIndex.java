@@ -69,9 +69,13 @@ public final class SystemCallIndex
 	public static final short VMI_MEM_MAX =
 		9;
 	
+	/** Invoke the garbage collector. */
+	public static final short GARBAGE_COLLECT =
+		10;
+	
 	/** System call count. */
 	public static final int NUM_SYSCALLS =
-		10;
+		11;
 	
 	/**
 	 * Not used.
