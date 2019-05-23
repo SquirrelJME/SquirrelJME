@@ -1080,6 +1080,16 @@ public final class Assembly
 					err = 0;
 				}
 				break;
+				
+				// Invoke the garbage collector
+			case SystemCallIndex.GARBAGE_COLLECT:
+				{
+					Runtime.getRuntime().gc();
+					
+					rv = 0;
+					err = 0;
+				}
+				break;
 			
 			default:
 				// Returns no value but sets an error

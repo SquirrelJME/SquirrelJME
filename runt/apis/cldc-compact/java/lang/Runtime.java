@@ -11,7 +11,6 @@
 package java.lang;
 
 import cc.squirreljme.runtime.cldc.asm.SystemAccess;
-import cc.squirreljme.runtime.cldc.asm.MemoryAccess;
 import cc.squirreljme.runtime.cldc.vki.Assembly;
 import cc.squirreljme.runtime.cldc.vki.SystemCallError;
 import cc.squirreljme.runtime.cldc.vki.SystemCallIndex;
@@ -79,7 +78,7 @@ public class Runtime
 	 */
 	public void gc()
 	{
-		MemoryAccess.gc();
+		Assembly.sysCall(SystemCallIndex.GARBAGE_COLLECT);
 	}
 	
 	/**
