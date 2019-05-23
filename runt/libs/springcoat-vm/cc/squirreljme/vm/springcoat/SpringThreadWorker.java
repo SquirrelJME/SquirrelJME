@@ -17,6 +17,8 @@ import cc.squirreljme.runtime.cldc.asm.SystemProperties;
 import cc.squirreljme.runtime.cldc.lang.ApiLevel;
 import cc.squirreljme.runtime.cldc.lang.GuestDepth;
 import cc.squirreljme.runtime.cldc.lang.OperatingSystemType;
+import cc.squirreljme.runtime.cldc.vki.SystemCallError;
+import cc.squirreljme.runtime.cldc.vki.SystemCallIndex;
 import cc.squirreljme.vm.VMClassLibrary;
 import java.io.PrintStream;
 import java.util.Formatter;
@@ -1132,6 +1134,73 @@ public final class SpringThreadWorker
 		// Depends on the function
 		switch (__func)
 		{
+				// System calls (no return value)
+			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+				"sysCall:(S)V":
+			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+				"sysCall:(SI)V":
+			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+				"sysCall:(SII)V":
+			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+				"sysCall:(SIII)V":
+			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+				"sysCall:(SIIII)V":
+			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+				"sysCall:(SIIIII)V":
+			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+				"sysCall:(SIIIIII)V":
+			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+				"sysCall:(SIIIIIII)V":
+			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+				"sysCall:(SIIIIIIII)V":
+				{
+					// System call index and number of arguments used
+					int si = (Integer)__args[0],
+						na = __args.length - 1;
+					
+					// Copy argument values to integers
+					int[] ta = new int[na];
+					for (int i = 1, o = 0; o < na; i++, o++)
+						ta[o] = (Integer)__args[i];
+					
+					// Do system call handler
+					this.systemCall((short)si, ta);
+					return null;
+				}
+				
+				// System calls (returns value)
+			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+				"sysCallV:(S)I":
+			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+				"sysCallV:(SI)I":
+			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+				"sysCallV:(SII)I":
+			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+				"sysCallV:(SIII)I":
+			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+				"sysCallV:(SIIII)I":
+			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+				"sysCallV:(SIIIII)I":
+			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+				"sysCallV:(SIIIIII)I":
+			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+				"sysCallV:(SIIIIIII)I":
+			case "cc/squirreljme/runtime/cldc/vki/Assembly::" +
+				"sysCallV:(SIIIIIIII)I":
+				{
+					// System call index and number of arguments used
+					int si = (Integer)__args[0],
+						na = __args.length - 1;
+					
+					// Copy argument values to integers
+					int[] ta = new int[na];
+					for (int i = 1, o = 0; o < na; i++, o++)
+						ta[o] = (Integer)__args[i];
+					
+					// Do system call handler
+					return this.systemCall((short)si, ta);
+				}
+			
 				// Read console buffer
 			case "cc/squirreljme/runtime/cldc/asm/ConsoleOutput::" +
 				"displayRead:([I[BII)I":
@@ -4079,6 +4148,118 @@ public final class SpringThreadWorker
 		// Relookup the method since we need to the right one! Then invoke it
 		__t.enterFrame(objclass.lookupMethod(false, ref.memberNameAndType()),
 			args);
+	}
+	
+	/**
+	 * Internal system call handling.
+	 *
+	 * @param __si System call index.
+	 * @param __args Arguments.
+	 * @return The result.
+	 * @since 2019/05/23
+	 */
+	public final int systemCall(short __si, int... __args)
+	{
+		// Error state for the last call of this type
+		int[] errors = this.thread._syscallerrors;
+		
+		// Return value with error value, to set if any
+		int rv,
+			err;
+		
+		// Depends on the system call type
+		switch (__si)
+		{
+				// Get error
+			case SystemCallIndex.ERROR_GET:
+				{
+					// If the ID is valid then a bad array access will be used
+					int dx = __args[0];
+					if (dx < 0 || dx >= SystemCallIndex.NUM_SYSCALLS)
+						dx = SystemCallIndex.QUERY_INDEX;
+					
+					// Return the stored error code
+					synchronized (errors)
+					{
+						rv = errors[dx];
+					}
+					
+					// Always succeeds
+					err = 0;
+				}
+				break;
+				
+				// Set error
+			case SystemCallIndex.ERROR_SET:
+				{
+					// If the ID is valid then a bad array access will be used
+					int dx = __args[0];
+					if (dx < 0 || dx >= SystemCallIndex.NUM_SYSCALLS)
+						dx = SystemCallIndex.QUERY_INDEX;
+					
+					// Return last error code, and set new one
+					synchronized (errors)
+					{
+						rv = errors[dx];
+						errors[dx] = __args[0];
+					}
+					
+					// Always succeeds
+					err = 0;
+				}
+				break;
+			
+			// Current wall clock milliseconds (low).
+			case SystemCallIndex.TIME_LO_MILLI_WALL:
+				{
+					rv = (int)(System.currentTimeMillis());
+					err = 0;
+				}
+				break;
+
+			// Current wall clock milliseconds (high).
+			case SystemCallIndex.TIME_HI_MILLI_WALL:
+				{
+					rv = (int)(System.currentTimeMillis() >>> 32);
+					err = 0;
+				}
+				break;
+
+			// Current monotonic clock nanoseconds (low).
+			case SystemCallIndex.TIME_LO_NANO_MONO:
+				{
+					rv = (int)(System.nanoTime());
+					err = 0;
+				}
+				break;
+
+			// Current monotonic clock nanoseconds (high).
+			case SystemCallIndex.TIME_HI_NANO_MONO:
+				{
+					rv = (int)(System.nanoTime() >>> 32);
+					err = 0;
+				}
+				break;
+			
+			default:
+				// Returns no value but sets an error
+				rv = -1;
+				err = SystemCallError.UNSUPPORTED_SYSTEM_CALL;
+				
+				// If the ID is valid then a bad array access will be used
+				if (__si < 0 || __si >= SystemCallIndex.NUM_SYSCALLS)
+					__si = SystemCallIndex.QUERY_INDEX;
+				break;
+		}
+		
+		// Set error state as needed
+		synchronized (errors)
+		{
+			errors[__si] = err;
+		}
+		
+		// Use returning value
+		return rv;
 	}
 	
 	/**
