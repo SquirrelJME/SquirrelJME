@@ -10,8 +10,9 @@
 
 package java.lang;
 
+import cc.squirreljme.runtime.cldc.annotation.ProgrammerTip;
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
-import cc.squirreljme.runtime.cldc.asm.PrimitiveAccess;
+import cc.squirreljme.runtime.cldc.vki.Assembly;
 
 public final class Double
 	extends Number
@@ -178,7 +179,7 @@ public final class Double
 	 */
 	public static long doubleToRawLongBits(double __v)
 	{
-		return PrimitiveAccess.doubleToRawLongBits(__v);
+		return Assembly.doubleToRawLongBits(__v);
 	}
 	
 	public static boolean isInfinite(double __a)
@@ -204,7 +205,7 @@ public final class Double
 	 */
 	public static double longBitsToDouble(long __b)
 	{
-		return PrimitiveAccess.longBitsToDouble(__b);
+		return Assembly.longBitsToDouble(__b);
 	}
 	
 	public static double parseDouble(String __a)

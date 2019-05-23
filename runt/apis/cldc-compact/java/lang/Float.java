@@ -12,7 +12,7 @@ package java.lang;
 
 import cc.squirreljme.runtime.cldc.annotation.ProgrammerTip;
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
-import cc.squirreljme.runtime.cldc.asm.PrimitiveAccess;
+import cc.squirreljme.runtime.cldc.vki.Assembly;
 
 public final class Float
 	extends Number
@@ -225,7 +225,7 @@ public final class Float
 	 */
 	public static int floatToRawIntBits(float __v)
 	{
-		return PrimitiveAccess.floatToRawIntBits(__v);
+		return Assembly.floatToRawIntBits(__v);
 	}
 	
 	/**
@@ -241,7 +241,7 @@ public final class Float
 	 */
 	public static float intBitsToFloat(int __b)
 	{
-		return PrimitiveAccess.intBitsToFloat(__b);
+		return Assembly.intBitsToFloat(__b);
 	}
 	
 	public static boolean isInfinite(float __a)
