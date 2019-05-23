@@ -30,15 +30,6 @@ public final class SystemAccess
 	}
 	
 	/**
-	 * Exits the process with the system exit code.
-	 *
-	 * @param __code The exit code.
-	 * @since 2018/10/13
-	 */
-	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
-	public static final native void exit(int __code);
-	
-	/**
 	 * Returns the specified environment variable, it is unspecified and
 	 * system dependent if variables are case sensitive or not. Locale may
 	 * be considered by the host system additionally. If environment variables

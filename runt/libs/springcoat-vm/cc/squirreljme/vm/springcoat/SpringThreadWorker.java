@@ -1678,13 +1678,6 @@ public final class SpringThreadWorker
 						rv[i] = vp[i].name();
 					return this.asVMObject(rv);
 				}
-			
-				// Exit the virtual machine
-			case "cc/squirreljme/runtime/cldc/asm/SystemAccess::" +
-				"exit:(I)V":
-				this.thread.profiler.exitAll(System.nanoTime());
-				this.machine.exit((Integer)__args[0]);
-				return null;
 				
 				// Get environment variable
 			case "cc/squirreljme/runtime/cldc/asm/SystemAccess::" +
@@ -4231,6 +4224,18 @@ public final class SpringThreadWorker
 			case SystemCallIndex.GARBAGE_COLLECT:
 				{
 					Runtime.getRuntime().gc();
+					
+					rv = 0;
+					err = 0;
+				}
+				break;
+				
+				// Exit the VM
+			case SystemCallIndex.EXIT:
+				{
+					// Tell everything to cleanup and exit
+					this.thread.profiler.exitAll(System.nanoTime());
+					this.machine.exit((Integer)__args[0]);
 					
 					rv = 0;
 					err = 0;
