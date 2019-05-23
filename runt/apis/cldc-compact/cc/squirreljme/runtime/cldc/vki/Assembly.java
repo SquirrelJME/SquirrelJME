@@ -525,7 +525,7 @@ public final class Assembly
 	/**
 	 * Invoke system call at the given index, with arguments.
 	 *
-	 * @param __addr The address to invoke.
+	 * @param __si System call index.
 	 * @param __a Argument.
 	 * @since 2019/05/23
 	 */
@@ -534,7 +534,7 @@ public final class Assembly
 	/**
 	 * Invoke system call at the given index, with arguments.
 	 *
-	 * @param __addr The address to invoke.
+	 * @param __si System call index.
 	 * @param __a Argument.
 	 * @param __b Argument.
 	 * @since 2019/05/23
@@ -544,7 +544,7 @@ public final class Assembly
 	/**
 	 * Invoke system call at the given index, with arguments.
 	 *
-	 * @param __addr The address to invoke.
+	 * @param __si System call index.
 	 * @param __a Argument.
 	 * @param __b Argument.
 	 * @param __c Argument.
@@ -555,7 +555,7 @@ public final class Assembly
 	/**
 	 * Invoke system call at the given index, with arguments.
 	 *
-	 * @param __addr The address to invoke.
+	 * @param __si System call index.
 	 * @param __a Argument.
 	 * @param __b Argument.
 	 * @param __c Argument.
@@ -568,7 +568,7 @@ public final class Assembly
 	/**
 	 * Invoke system call at the given index, with arguments.
 	 *
-	 * @param __addr The address to invoke.
+	 * @param __si System call index.
 	 * @param __a Argument.
 	 * @param __b Argument.
 	 * @param __c Argument.
@@ -582,7 +582,7 @@ public final class Assembly
 	/**
 	 * Invoke system call at the given index, with arguments.
 	 *
-	 * @param __addr The address to invoke.
+	 * @param __si System call index.
 	 * @param __a Argument.
 	 * @param __b Argument.
 	 * @param __c Argument.
@@ -597,7 +597,7 @@ public final class Assembly
 	/**
 	 * Invoke system call at the given index, with arguments.
 	 *
-	 * @param __addr The address to invoke.
+	 * @param __si System call index.
 	 * @param __a Argument.
 	 * @param __b Argument.
 	 * @param __c Argument.
@@ -613,7 +613,7 @@ public final class Assembly
 	/**
 	 * Invoke system call at the given index, with arguments.
 	 *
-	 * @param __addr The address to invoke.
+	 * @param __si System call index.
 	 * @param __a Argument.
 	 * @param __b Argument.
 	 * @param __c Argument.
@@ -630,7 +630,7 @@ public final class Assembly
 	/**
 	 * Invoke system call at the given index.
 	 *
-	 * @param __addr The address to invoke.
+	 * @param __si System call index.
 	 * @return The result of the invocation.
 	 * @since 2019/05/23
 	 */
@@ -639,7 +639,7 @@ public final class Assembly
 	/**
 	 * Invoke system call at the given index, with arguments.
 	 *
-	 * @param __addr The address to invoke.
+	 * @param __si System call index.
 	 * @param __a Argument.
 	 * @return The result of the invocation.
 	 * @since 2019/05/23
@@ -649,7 +649,7 @@ public final class Assembly
 	/**
 	 * Invoke system call at the given index, with arguments.
 	 *
-	 * @param __addr The address to invoke.
+	 * @param __si System call index.
 	 * @param __a Argument.
 	 * @param __b Argument.
 	 * @return The result of the invocation.
@@ -660,7 +660,7 @@ public final class Assembly
 	/**
 	 * Invoke system call at the given index, with arguments.
 	 *
-	 * @param __addr The address to invoke.
+	 * @param __si System call index.
 	 * @param __a Argument.
 	 * @param __b Argument.
 	 * @param __c Argument.
@@ -672,7 +672,7 @@ public final class Assembly
 	/**
 	 * Invoke system call at the given index, with arguments.
 	 *
-	 * @param __addr The address to invoke.
+	 * @param __si System call index.
 	 * @param __a Argument.
 	 * @param __b Argument.
 	 * @param __c Argument.
@@ -686,7 +686,7 @@ public final class Assembly
 	/**
 	 * Invoke system call at the given index, with arguments.
 	 *
-	 * @param __addr The address to invoke.
+	 * @param __si System call index.
 	 * @param __a Argument.
 	 * @param __b Argument.
 	 * @param __c Argument.
@@ -701,7 +701,7 @@ public final class Assembly
 	/**
 	 * Invoke system call at the given index, with arguments.
 	 *
-	 * @param __addr The address to invoke.
+	 * @param __si System call index.
 	 * @param __a Argument.
 	 * @param __b Argument.
 	 * @param __c Argument.
@@ -717,7 +717,7 @@ public final class Assembly
 	/**
 	 * Invoke system call at the given index, with arguments.
 	 *
-	 * @param __addr The address to invoke.
+	 * @param __si System call index.
 	 * @param __a Argument.
 	 * @param __b Argument.
 	 * @param __c Argument.
@@ -734,7 +734,7 @@ public final class Assembly
 	/**
 	 * Invoke system call at the given index, with arguments.
 	 *
-	 * @param __addr The address to invoke.
+	 * @param __si System call index.
 	 * @param __a Argument.
 	 * @param __b Argument.
 	 * @param __c Argument.
