@@ -1266,11 +1266,6 @@ public final class SpringThreadWorker
 						return ConsoleOutput.ERROR_INVALIDFD;
 				}
 				
-				// Access to database
-			case "cc/squirreljme/runtime/cldc/asm/DatabaseAccess::" +
-				"present:()Z":
-				return false;
-			
 				// Fatal report of a raw call trace in early TODO code
 			case "cc/squirreljme/runtime/cldc/asm/DebugAccess::" +
 				"fatalTodoReport:([I)V":
