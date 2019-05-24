@@ -498,9 +498,22 @@ public final class NearNativeByteCodeHandler
 			String asmfunc;
 			switch ((asmfunc = __r.handle().name().toString()))
 			{
+					// Read lenght of array
+				case "arrayLength":
+					this.doArrayLength(__in[0], __out);
+					break;
+					
 					// Breakpoint
 				case "breakpoint":
 					codebuilder.add(NativeInstructionType.BREAKPOINT);
+					break;
+					
+					// Long/Double bits
+				case "doubleToRawLongBits":
+				case "longBitsToDouble":
+					if (__in[0].register != __out.register)
+						codebuilder.addCopyWide(__in[0].register,
+							__out.register);
 					break;
 					
 					// Exception handling
@@ -509,6 +522,13 @@ public final class NearNativeByteCodeHandler
 					// it just makes the exception check run so that they are
 					// checked
 					this.state.canexception = true;
+					break;
+					
+					// Integer/Float bits
+				case "floatToRawIntBits":
+				case "intBitsToFloat":
+					if (__in[0].register != __out.register)
+						codebuilder.addCopy(__in[0].register, __out.register);
 					break;
 					
 					// Invoke method, no return value is read
@@ -732,6 +752,50 @@ public final class NearNativeByteCodeHandler
 				case "specialSetThreadRegister":
 					codebuilder.addCopy(__in[0].register,
 						NativeCode.THREAD_REGISTER);
+					break;
+					
+					// System call
+				case "sysCall":
+					{
+						// Invoked methods can thrown an exception, so do
+						// checks! Otherwise the behavior we expect might not
+						// happen
+						this.state.canexception = true;
+						
+						// Build the register List
+						List<Integer> args = new ArrayList<>();
+						int n = __in.length;
+						for (int i = 1; i < n; i++)
+							args.add(__in[i].register);
+						
+						// Invoke pointer with arguments
+						codebuilder.add(NativeInstructionType.SYSTEM_CALL,
+							__in[0].register, new RegisterList(args));
+					}
+					break;
+					
+					// System call with return value
+				case "sysCallV":
+					{
+						// Invoked methods can thrown an exception, so do
+						// checks! Otherwise the behavior we expect might not
+						// happen
+						this.state.canexception = true;
+						
+						// Build the register List
+						List<Integer> args = new ArrayList<>();
+						int n = __in.length;
+						for (int i = 1; i < n; i++)
+							args.add(__in[i].register);
+						
+						// Invoke pointer with arguments
+						codebuilder.add(NativeInstructionType.SYSTEM_CALL,
+							__in[0].register, new RegisterList(args));
+						
+						// Copy return value
+						codebuilder.addCopy(NativeCode.RETURN_REGISTER,
+							__out.register);
+					}
 					break;
 				
 				default:

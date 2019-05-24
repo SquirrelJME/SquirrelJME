@@ -200,6 +200,10 @@ public interface NativeInstructionType
 	public static final int ATOMIC_INT_INCREMENT =
 		0xFA;
 	
+	/** System call. */
+	public static final int SYSTEM_CALL =
+		0xFB;
+	
 	/** Load from table that is of native int/pointer size. */
 	public static final int LOAD_TABLE =
 		0xFC;

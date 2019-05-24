@@ -299,6 +299,7 @@ public final class NativeInstruction
 			case NativeInstructionType.INVOKE:
 			case NativeInstructionType.LOAD_POOL:
 			case NativeInstructionType.NEW:
+			case NativeInstructionType.SYSTEM_CALL:
 				return 2;
 					
 			case NativeInstructionType.ATOMIC_INT_DECREMENT_AND_GET:
@@ -354,6 +355,12 @@ public final class NativeInstruction
 			case NativeInstructionType.DEBUG_EXIT:
 			case NativeInstructionType.RETURN:
 				return ArgumentFormat.of();
+				
+				// System call
+			case NativeInstructionType.SYSTEM_CALL:
+				return ArgumentFormat.of(
+					ArgumentFormat.VUINT,
+					ArgumentFormat.REGLIST);
 				
 				// [u16, u16]
 			case NativeInstructionType.ARRAYLEN:
@@ -631,6 +638,7 @@ public final class NativeInstruction
 			case NativeInstructionType.LOAD_TABLE:		return "LOAD_TABLE";
 			case NativeInstructionType.NEW:				return "NEW";
 			case NativeInstructionType.RETURN:			return "RETURN";
+			case NativeInstructionType.SYSTEM_CALL:		return "SYSTEM_CALL";
 			
 			default:
 				return String.format("UNKNOWN_%02x", __op);
