@@ -794,10 +794,6 @@ public final class NativeCPU
 						spec = "nextpool";
 						break;
 					
-					case NativeCode.WHERE_IS_THIS:
-						spec = "whereis";
-						break;
-					
 					case NativeCode.VOLATILE_A_REGISTER:
 						spec = "vola";
 						break;

@@ -402,10 +402,7 @@ public final class Minimizer
 			// Need to translate and serialize the byte code into a register
 			// form and remap any used references.
 			MethodFlags mf = m.flags();
-			byte[] transcode = null,
-				tabln = null,
-				tabjo = null,
-				tabjp = null;
+			byte[] transcode = null;
 			if (!mf.isAbstract() && !mf.isNative())
 			{
 				// The minified classes use register code since it is easier
@@ -416,14 +413,7 @@ public final class Minimizer
 				try
 				{
 					// Translate code
-					__MappedDebugInfo__[] mdebugs = new __MappedDebugInfo__[1];
-					transcode = this.__translateCode(rc, mdebugs);
-					
-					// Compact debug information
-					__MappedDebugInfo__ mdebug = mdebugs[0];
-					tabln = Minimizer.__compact(mdebug._lintable, null);
-					tabjo = Minimizer.__compact(null, mdebug._joptable);
-					tabjp = Minimizer.__compact(null, mdebug._jpctable);
+					transcode = this.__translateCode(rc);
 				}
 				catch (IOException e)
 				{
@@ -437,10 +427,7 @@ public final class Minimizer
 				temp._count,
 				new MethodName(pool.<String>addSelf(m.name().toString())),
 				pool.<MethodDescriptor>addSelf(m.type()),
-				transcode,
-				tabln,
-				tabjo,
-				tabjp)));
+				transcode)));
 			
 			// Quick count for used methods
 			temp._count++;
@@ -454,17 +441,15 @@ public final class Minimizer
 	 *
 	 * @param __rc The register code used.
 	 * @param __dos The stream to write to.
-	 * @param __mdbg Debug table information
 	 * @return The resulting stream.
 	 * @throws IOException On write errors.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/23
 	 */
-	private final byte[] __translateCode(NativeCode __rc,
-		__MappedDebugInfo__[] __mdbg)
+	private final byte[] __translateCode(NativeCode __rc)
 		throws IOException, NullPointerException
 	{
-		if (__rc == null || __mdbg == null)
+		if (__rc == null)
 			throw new NullPointerException("NARG");
 		
 		// Where stuff gets written to
@@ -475,22 +460,11 @@ public final class Minimizer
 		int cdn = __rc.length();
 		int[] indexpos = new int[cdn];
 		
-		// Debug line and Java PC+Addr information
-		ByteArrayOutputStream dlinbaos = new ByteArrayOutputStream(256);
-		ByteArrayOutputStream djopbaos = new ByteArrayOutputStream(256);
-		ByteArrayOutputStream djpcbaos = new ByteArrayOutputStream(256);
-		DataOutputStream dlindos = new DataOutputStream(dlinbaos);
-		
 		// Locations which have jump targets to be replaced
 		Map<Integer, InstructionJumpTarget> jumpreps = new HashMap<>();
 		
 		// Operations will reference this constant pool
 		MinimizedPoolBuilder pool = this.pool;
-		
-		// Debug line and Java PC+Addr tables
-		short[] tablin = __rc.lines();
-		byte[] tabjop = __rc.javaOperations(),
-			tabjpc = __rc.javaAddresses();
 		
 		// Go through each instruction
 		for (int cdx = 0; cdx < cdn; cdx++)
@@ -654,33 +628,7 @@ public final class Minimizer
 						throw new todo.OOPS();
 				}
 			}
-			
-			// Write output debugging information to the streams accordingly
-			// for each point, the table data can just be spanned across
-			// as well reducing later processing
-			short uselin = tablin[cdx];
-			byte usejop = tabjop[cdx],
-				usejpc = tabjpc[cdx];
-			for (int s = 0, sn = dos.size() - baseaddr; s < sn; s++)
-			{
-				dlindos.writeShort(uselin);
-				djopbaos.write(usejop);
-				djpcbaos.write(usejpc);
-			}
 		}
-		
-		// The line number info is stored in a byte array so it must be
-		// retranslated
-		byte[] rawlines = dlinbaos.toByteArray();
-		int numlines = rawlines.length / 2;
-		short[] dunlin = new short[numlines];
-		for (int i = 0, o = 0; o < numlines; i += 2, o++)
-			dunlin[o] = (short)(((rawlines[i] & 0xFF) << 8) |
-				(rawlines[i + 1] & 0xFF));
-		
-		// Generate debug information
-		__mdbg[0] = new __MappedDebugInfo__(dunlin, djopbaos.toByteArray(),
-			djpcbaos.toByteArray());
 		
 		// Generate code array
 		byte[] rv = baos.toByteArray();

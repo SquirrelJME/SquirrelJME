@@ -15,7 +15,6 @@ import dev.shadowtail.classfile.nncc.ClassPool;
 import dev.shadowtail.classfile.nncc.InvokedMethod;
 import dev.shadowtail.classfile.nncc.MethodIndex;
 import dev.shadowtail.classfile.nncc.UsedString;
-import dev.shadowtail.classfile.nncc.WhereIsThis;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -212,17 +211,6 @@ public final class MinimizedPoolBuilder
 				this.add((int)(v & 0xFFFFFFFF)));
 		}
 		
-		// Where is this information
-		else if (__v instanceof WhereIsThis)
-		{
-			WhereIsThis v = (WhereIsThis)__v;
-			return this.__add(__v,
-				0x7FFF,
-				this.add(v.inclass),
-				this.add(v.name.toString()),
-				this.add(v.type));
-		}
-		
 		// Used String
 		else if (__v instanceof UsedString)
 			return this.__add(__v,
@@ -312,38 +300,6 @@ public final class MinimizedPoolBuilder
 					MinimizedPoolEntryType.NULL :
 					MinimizedPoolEntryType.ofClass(value.getClass()));
 				int[] part = parts.get(pdx++);
-				
-				// It is easiest to point to the actual method in the where
-				// is this table for quick load of debugging info, so try
-				// to locate the method
-				if (et == MinimizedPoolEntryType.WHERE_IS_THIS)
-				{
-					// Load where is this info
-					WhereIsThis wit = (WhereIsThis)value;
-					MethodName wmname = wit.name;
-					MethodDescriptor wmtype = wit.type;
-					
-					// Statics then instances
-__outer_witlut:
-					for (int z = 0; z < 2; z++)
-					{
-						// Go through methods
-						List<MinimizedMethod> tms = __methods[z]._methods;
-						for (int y = 0, yn = tms.size(); y < yn; y++)
-						{
-							// Get method
-							MinimizedMethod xmm = tms.get(y);
-							
-							// Match?
-							if (wmname.equals(xmm.name) &&
-								wmtype.equals(xmm.type))
-							{
-								part[0] = y | (z * WhereIsThis.INSTANCE_BIT);
-								break __outer_witlut;
-							}
-						}
-					}
-				}
 				
 				// Have two pool entry formats, a wide one and a narrow one
 				// This is to reduce the size of the constant pool in classes
@@ -437,7 +393,6 @@ __outer_witlut:
 					case METHOD_DESCRIPTOR:
 					case LONG:
 					case DOUBLE:
-					case WHERE_IS_THIS:
 					case USED_STRING:
 					case METHOD_INDEX:
 						{
