@@ -102,6 +102,9 @@ public final class ByteCodeProcessor
 		state.classname = __bc.thisType();
 		state.methodname = __bc.name();
 		state.methodtype = __bc.type();
+		
+		// Store info
+		state.exceptionranges = new ExceptionHandlerRanges(__bc);
 	}
 	
 	/**
