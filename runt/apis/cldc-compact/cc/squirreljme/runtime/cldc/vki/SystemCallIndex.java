@@ -79,6 +79,11 @@ public final class SystemCallIndex
 	public static final short EXIT =
 		11;
 	
+	/** The API Level of the VM. */
+	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV)
+	public static final short API_LEVEL =
+		12;
+	
 	/** System call count. */
 	public static final int NUM_SYSCALLS =
 		12;
