@@ -514,6 +514,7 @@ public final class NearNativeByteCodeHandler
 		
 		// Code generator
 		NativeCodeBuilder codebuilder = this.codebuilder;
+		VolatileRegisterStack volatiles = this.volatiles;
 		
 		// Push references
 		this.__refPush();
@@ -554,41 +555,31 @@ public final class NearNativeByteCodeHandler
 			// Invoking interface method
 			if (__t == InvokeType.INTERFACE)
 			{
-				if (true)
-					throw new todo.TODO();
-				
-				/*
-				// Load the interface class into A
+				// Load the interface we are looking in
+				int voliclass = volatiles.get();
 				codebuilder.add(NativeInstructionType.LOAD_POOL,
-					__r.handle().outerClass(),
-					NativeCode.VOLATILE_A_REGISTER);
+					__r.handle().outerClass(), voliclass);
 				
-				// Load the method index for the interface method into B
+				// Load the method index of the volatile method in question
+				int volimethdx = volatiles.get();
 				codebuilder.add(NativeInstructionType.LOAD_POOL,
 					new MethodIndex(__r.handle().outerClass(),
 						__r.handle().name(), __r.handle().descriptor()),
-					NativeCode.VOLATILE_B_REGISTER);
+					volimethdx);
 				
-				// We can load the direct pointer into the S register
-				codebuilder.add(NativeInstructionType.LOAD_POOL,
-					new InvokedMethod(InvokeType.STATIC, new MethodHandle(
-						new ClassName(
-							"cc/squirreljme/runtime/cldc/vki/Kernel"),
-						new MethodName("jvmInterfacePointer"),
-						new MethodDescriptor("(III)I"))),
-					NativeCode.VOLATILE_S_REGISTER);
+				// Use helper method to find the method pointer to invoke
+				// for this interface
+				this.__invokeStatic(InvokeType.STATIC, KERNEL_CLASS,
+					"jvmInterfacePointer", "(III)I",
+					ireg, voliclass, volimethdx);
 				
-				// Call kernel method to help with interface method lookup
+				// Invoke the pointer that this method returned
 				codebuilder.add(NativeInstructionType.INVOKE,
-					NativeCode.VOLATILE_S_REGISTER,
-					new RegisterList(__in[0].register, 
-						NativeCode.VOLATILE_A_REGISTER,
-						NativeCode.VOLATILE_B_REGISTER));
+					NativeCode.RETURN_REGISTER, reglist);
 				
-				// Copy it into volatile A since invoke is done on that.
-				codebuilder.addCopy(NativeCode.RETURN_REGISTER,
-					NativeCode.VOLATILE_A_REGISTER);
-				*/
+				// Cleanup
+				volatiles.remove(voliclass);
+				volatiles.remove(volimethdx);
 			}
 			
 			// Special or virtual
