@@ -9,6 +9,8 @@
 
 package cc.squirreljme.runtime.cldc.vki;
 
+import cc.squirreljme.runtime.cldc.lang.ClassDataV2;
+
 /**
  * This class is the main SquirrelJME kernel and is used to initialize and
  * manage all of the various aspects of the JVM.
@@ -460,52 +462,12 @@ public final class Kernel
 		if (__p == 0)
 			return 0;
 		
-		Assembly.breakpoint();
-		throw new todo.TODO();
-		/*
-		// There are a bunch of fixed IDs which can be used to quickly
-		// determine if this is an array
-		int pcl = Assembly.memReadInt(__p, OBJECT_CLASS_OFFSET);
-		switch (pcl)
-		{
-				// These are arrays
-			case FixedClassIDs.PRIMITIVE_BOOLEAN_ARRAY:
-			case FixedClassIDs.PRIMITIVE_BYTE_ARRAY:
-			case FixedClassIDs.PRIMITIVE_BYTE_ARRAY_ARRAY:
-			case FixedClassIDs.PRIMITIVE_SHORT_ARRAY:
-			case FixedClassIDs.PRIMITIVE_CHARACTER_ARRAY:
-			case FixedClassIDs.PRIMITIVE_INTEGER_ARRAY:
-			case FixedClassIDs.PRIMITIVE_LONG_ARRAY:
-			case FixedClassIDs.PRIMITIVE_FLOAT_ARRAY:
-			case FixedClassIDs.PRIMITIVE_DOUBLE_ARRAY:
-			case FixedClassIDs.OBJECT_ARRAY:
-			case FixedClassIDs.STRING_ARRAY:
-				return 1;
-				
-				// These are not arrays
-			case FixedClassIDs.PRIMITIVE_BOOLEAN:
-			case FixedClassIDs.PRIMITIVE_BYTE:
-			case FixedClassIDs.PRIMITIVE_SHORT:
-			case FixedClassIDs.PRIMITIVE_CHARACTER:
-			case FixedClassIDs.PRIMITIVE_INTEGER:
-			case FixedClassIDs.PRIMITIVE_LONG:
-			case FixedClassIDs.PRIMITIVE_FLOAT:
-			case FixedClassIDs.PRIMITIVE_DOUBLE:
-			case FixedClassIDs.OBJECT:
-			case FixedClassIDs.THROWABLE:
-			case FixedClassIDs.CLASS:
-			case FixedClassIDs.STRING:
-			case FixedClassIDs.KERNEL:
-			case FixedClassIDs.CLASSDATA:
-			case FixedClassIDs.CLASSDATAV2:
-			case FixedClassIDs.THREAD:
-				return 0;
-		}
+		// Get the ClassDataV2 for this object
+		ClassDataV2 cd = (ClassDataV2)Assembly.pointerToObject(
+			Assembly.memReadInt(__p, OBJECT_CLASS_OFFSET));
 		
-		// Need to go through and check a bunch of things
-		Assembly.breakpoint();
-		throw new todo.TODO();
-		*/
+		// Is considered an array if it has more than zero dimensions
+		return (cd.dimensions > 0 ? 1 : 0);
 	}
 	
 	/**
