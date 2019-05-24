@@ -1,0 +1,24 @@
+# 2019/05/23
+
+## 11:03
+
+I have an idea. I am going to rework the "Access" classes into system calls
+which do the same thing. Then also I am going to integrate `Assembly` with
+them as well. I will have an index of system calls which take `short` and they
+can be made with integer arguments. At least for SpringCoat, doing
+`objectToPointer` will create a unique object ID that can be used for the
+reverse operation. Then also the double/float bits will be done using the
+assembly stuff as well. But with a single unified interface for making system
+calls and IDs, that will make it so less classes have to be implemented. It
+will be limited to integer values only so stuff such as `nanoTime()` will have
+to be done in two calls to get the lower and higher values. But this should
+actually work.
+
+## 13:25
+
+I had another idea for the LCDUI stuff. I can have two kinds of refreshes,
+just a repaint and a layout update.
+
+## 18:44
+
+Okay, so I am going to slowly replace all the system call stuff.
