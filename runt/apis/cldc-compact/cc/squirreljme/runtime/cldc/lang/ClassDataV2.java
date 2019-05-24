@@ -27,6 +27,12 @@ import cc.squirreljme.runtime.cldc.asm.StaticMethod;
 public class ClassDataV2
 	extends ClassData
 {
+	/** The flags for this class. */
+	public final short flags;
+	
+	/** The dimensions this class uses, if it is an array. */
+	public final byte dimensions;
+	
 	/** Pointer to the class object. */
 	public final int classobjptr;
 	
@@ -39,16 +45,20 @@ public class ClassDataV2
 	/**
 	 * Version 2 constructor.
 	 *
+	 * @param __fl Class flags.
+	 * @param __dim Dimensions.
 	 * @param __cop Pointer to the class object.
 	 * @param __vtv Virtual invoke VTable address.
 	 * @param __vts Special invoke VTable address.
 	 * @since 2019/04/26
 	 */
-	public ClassDataV2(int __cop, int __vtv, int __vts)
+	public ClassDataV2(short __fl, byte __dim, int __cop, int __vtv, int __vts)
 	{
 		super(2);
 		
 		// Set
+		this.flags = __fl;
+		this.dimensions = __dim;
 		this.classobjptr = __cop;
 		this.vtablevirtual = __vtv;
 		this.vtablespecial = __vts;
