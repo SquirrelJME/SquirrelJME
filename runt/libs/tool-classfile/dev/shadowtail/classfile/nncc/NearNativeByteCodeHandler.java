@@ -65,14 +65,8 @@ public final class NearNativeByteCodeHandler
 	protected final NativeCodeBuilder codebuilder =
 		new NativeCodeBuilder();
 	
-	/** Exception tracker. */
-	protected final ExceptionHandlerRanges exceptionranges;
-	
 	/** Default field access type, to determine how fields are accessed. */
 	protected final FieldAccessTime defaultfieldaccesstime;
-	
-	/** The type of the current class being processed (needed for monitor). */
-	protected final ClassName thistype;
 	
 	/** Is this method synchronized? */
 	protected final boolean issynchronized;
@@ -128,11 +122,9 @@ public final class NearNativeByteCodeHandler
 		if (__bc == null)
 			throw new NullPointerException("NARG");
 		
-		this.exceptionranges = new ExceptionHandlerRanges(__bc);
 		this.defaultfieldaccesstime = ((__bc.isInstanceInitializer() ||
 			__bc.isStaticInitializer()) ? FieldAccessTime.INITIALIZER :
 			FieldAccessTime.NORMAL);
-		this.thistype = __bc.thisType();
 		this.issynchronized = __bc.isSynchronized();
 		this.isinstance = __bc.isInstance();
 		
@@ -1372,7 +1364,7 @@ public final class NearNativeByteCodeHandler
 				
 				// Load class object to monitor
 				else
-					this.__loadClassObject(this.thistype,
+					this.__loadClassObject(state.classname,
 						this.monitortarget);
 				
 				// Enter monitor on this
@@ -1770,7 +1762,7 @@ public final class NearNativeByteCodeHandler
 		
 		// Accessing final fields of another class will always be treated as
 		// normal despite being in the constructor of a class
-		if (!thistype.equals(__fr.className()))
+		if (!state.classname.equals(__fr.className()))
 			return new AccessedField((__read ? FieldAccessTime.READ :
 				FieldAccessTime.NORMAL), __at, __fr);
 		return new AccessedField((__read ? FieldAccessTime.READ :
@@ -1887,7 +1879,7 @@ public final class NearNativeByteCodeHandler
 		// Setup key
 		ExceptionHandlerTransition key = new ExceptionHandlerTransition(
 			new StateOperations(newsop), nothandled.enqueue(),
-			this.exceptionranges.tableOf(state.addr));
+			state.exceptionranges.tableOf(state.addr));
 		
 		// Try to use an already existing point
 		Map<ExceptionHandlerTransition, __EData__> ehtable = this._ehtable;

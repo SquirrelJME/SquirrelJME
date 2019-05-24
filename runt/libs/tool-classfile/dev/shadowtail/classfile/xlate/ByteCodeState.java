@@ -60,6 +60,9 @@ public class ByteCodeState
 	/** The method name. */
 	public MethodName methodname;
 	
+	/** Exception ranges. */
+	public ExceptionHandlerRanges exceptionranges;
+	
 	/** The current source line being processed. */
 	public int line =
 		-1;
