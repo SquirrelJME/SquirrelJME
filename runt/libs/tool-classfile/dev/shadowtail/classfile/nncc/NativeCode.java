@@ -65,20 +65,19 @@ public final class NativeCode
 		10;
 	
 	/** Volatile A register. */
+	@Deprecated
 	public static final int VOLATILE_A_REGISTER =
 		12;
 	
 	/** Volatile B register. */
+	@Deprecated
 	public static final int VOLATILE_B_REGISTER =
 		13;
 	
 	/** Volatile S register (sticky). */
+	@Deprecated
 	public static final int VOLATILE_S_REGISTER =
 		14;
-	
-	/** Copy of this for synchronized method purposes. */
-	public static final int MONITOR_TARGET_REGISTER =
-		15;
 	
 	/** The register of the first argument. */
 	public static final int ARGUMENT_REGISTER_BASE =
