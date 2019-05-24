@@ -93,9 +93,6 @@ public final class Kernel
 	/** Class table size. */
 	public int ctcount;
 	
-	/** Class table pointer. */
-	public int ctptr;
-	
 	/** Current class table size. */
 	public int ctcurcount;
 	
@@ -255,31 +252,6 @@ public final class Kernel
 		// Space remaining in the static field area
 		this.sfcursize = sfspace - 4;
 		
-		// Make sure the class table is a minimum size
-		int ctcount = this.ctcount;
-		if (ctcount <= 0)
-			ctcount = DefaultConfiguration.DEFAULT_CLASS_TABLE_SIZE;
-		else if (ctcount < DefaultConfiguration.MINIMUM_CLASS_TABLE_SIZE)
-			ctcount = DefaultConfiguration.MINIMUM_CLASS_TABLE_SIZE;
-		
-		// Allocate the class table
-		int ctptr = Allocator.allocate(ctcount * 4);
-		this.ctptr = ctptr;
-		
-		// Failed to allocate the class table
-		if (ctptr == 0)
-		{
-			Assembly.breakpoint();
-			return;
-		}
-		
-		// Set the class table count to be at the base of all fixed
-		// addresses
-		this.ctcurcount = FixedClassIDs.MAX_FIXED;
-		
-		// Set class table pointer
-		Assembly.specialSetClassTableRegister(ctptr);
-		
 		// Setup main task now, which does class initialization and such per
 		// task because it is different for every running thing
 		int maintask = this.taskNew((this.ismidlet == 0 ? false : true),
@@ -316,7 +288,10 @@ public final class Kernel
 		// Null is always valid
 		if (__v == 0)
 			return 1;
-		
+			
+		Assembly.breakpoint();
+		throw new todo.TODO();
+		/*
 		// Anything being stored in an object array is valid
 		int pcl = Assembly.memReadInt(__p, OBJECT_CLASS_OFFSET);
 		if (pcl == FixedClassIDs.OBJECT_ARRAY)
@@ -333,6 +308,7 @@ public final class Kernel
 		// Need to go through and check a bunch of things
 		Assembly.breakpoint();
 		throw new todo.TODO();
+		*/
 	}
 	
 	/**
@@ -349,6 +325,9 @@ public final class Kernel
 		if (__clid == 0)
 			return 0;
 		
+		Assembly.breakpoint();
+		throw new todo.TODO();
+		/*
 		// Fixed array types?
 		switch (__clid)
 		{
@@ -379,6 +358,7 @@ public final class Kernel
 		// Need to go through and check a bunch of things
 		Assembly.breakpoint();
 		throw new todo.TODO();
+		*/
 	}
 	
 	/**
@@ -411,6 +391,9 @@ public final class Kernel
 		if (lock != 0)
 			throw new VirtualMachineError("ZZ41");
 		
+		Assembly.breakpoint();
+		throw new todo.TODO();
+		/*
 		// Determine if scanning needs to be done (to free all the field
 		// references and such)
 		int pcl = Assembly.memReadInt(__p, OBJECT_CLASS_OFFSET);
@@ -445,6 +428,7 @@ public final class Kernel
 		
 		// Free the object in the memory chain
 		Allocator.free(__p);
+		*/
 	}
 	
 	/**
@@ -476,6 +460,9 @@ public final class Kernel
 		if (__p == 0)
 			return 0;
 		
+		Assembly.breakpoint();
+		throw new todo.TODO();
+		/*
 		// There are a bunch of fixed IDs which can be used to quickly
 		// determine if this is an array
 		int pcl = Assembly.memReadInt(__p, OBJECT_CLASS_OFFSET);
@@ -518,6 +505,7 @@ public final class Kernel
 		// Need to go through and check a bunch of things
 		Assembly.breakpoint();
 		throw new todo.TODO();
+		*/
 	}
 	
 	/**
@@ -540,6 +528,9 @@ public final class Kernel
 		if (pcl == __cldx)
 			return 1;
 		
+		Assembly.breakpoint();
+		throw new todo.TODO();
+		/*
 		// If we are checking if this is an object, it very much will be
 		// unless a primitive type is used
 		if (__cldx == FixedClassIDs.OBJECT)
@@ -566,6 +557,7 @@ public final class Kernel
 		// Need to go through and check a bunch of things
 		Assembly.breakpoint();
 		throw new todo.TODO();
+		*/
 	}
 	
 	/**
@@ -621,6 +613,9 @@ public final class Kernel
 		if (__len < 0)
 			throw new NegativeArraySizeException("ZZ3u");
 		
+		Assembly.breakpoint();
+		throw new todo.TODO();
+		/*
 		// Determine the allocation size according to the type
 		int cellsize;
 		switch (__at)
@@ -701,6 +696,7 @@ public final class Kernel
 		
 		// Return the array
 		return rv;
+		*/
 	}
 }
 

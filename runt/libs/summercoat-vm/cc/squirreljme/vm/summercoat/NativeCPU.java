@@ -777,10 +777,6 @@ public final class NativeCPU
 						spec = "sfieldptr";
 						break;
 					
-					case NativeCode.CLASS_TABLE_REGISTER:
-						spec = "ctableptr";
-						break;
-					
 					case NativeCode.THREAD_REGISTER:
 						spec = "thread";
 						break;
