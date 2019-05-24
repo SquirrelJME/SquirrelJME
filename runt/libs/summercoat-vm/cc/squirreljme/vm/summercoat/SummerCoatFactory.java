@@ -17,7 +17,6 @@ import dev.shadowtail.classfile.mini.MinimizedPool;
 import dev.shadowtail.classfile.nncc.NativeCode;
 import dev.shadowtail.jarfile.MinimizedJarHeader;
 import cc.squirreljme.runtime.cldc.vki.DefaultConfiguration;
-import cc.squirreljme.runtime.cldc.vki.FixedClassIDs;
 import cc.squirreljme.runtime.cldc.vki.Kernel;
 import cc.squirreljme.vm.VirtualMachine;
 import cc.squirreljme.vm.VMClassLibrary;
@@ -572,6 +571,9 @@ public class SummerCoatFactory
 		// Allocate data
 		int rv = __sa.allocate(Kernel.ARRAY_BASE_SIZE + encode.length);
 		
+		if (true)
+			throw new todo.TODO();
+		/*
 		// Write fixed ID, initial refcount, and length
 		__wm.memWriteInt(rv + Kernel.OBJECT_CLASS_OFFSET,
 			FixedClassIDs.PRIMITIVE_BYTE_ARRAY);
@@ -579,6 +581,7 @@ public class SummerCoatFactory
 			1);
 		__wm.memWriteInt(rv + Kernel.ARRAY_LENGTH_OFFSET,
 			encode.length);
+		*/
 		
 		// Write byte data
 		int vbase = rv + Kernel.ARRAY_BASE_SIZE;
@@ -616,6 +619,9 @@ public class SummerCoatFactory
 		// Allocate data
 		int rv = __sa.allocate(Kernel.ARRAY_BASE_SIZE + (n * 4));
 		
+		if (true)
+			throw new todo.TODO();
+		/*
 		// Write fixed ID, initial refcount, and length
 		__wm.memWriteInt(rv + Kernel.OBJECT_CLASS_OFFSET,
 			FixedClassIDs.PRIMITIVE_BYTE_ARRAY_ARRAY);
@@ -623,6 +629,7 @@ public class SummerCoatFactory
 			1);
 		__wm.memWriteInt(rv + Kernel.ARRAY_LENGTH_OFFSET,
 			n);
+		*/
 		
 		// Write byte data
 		int vbase = rv + Kernel.ARRAY_BASE_SIZE;

@@ -44,10 +44,6 @@ public final class NativeCode
 	public static final int STATIC_FIELD_REGISTER =
 		4;
 	
-	/** Global class table. */
-	public static final int CLASS_TABLE_REGISTER =
-		5;
-	
 	/** Register which represents the current thread of execution. */
 	public static final int THREAD_REGISTER =
 		6;

@@ -9,7 +9,6 @@
 
 package dev.shadowtail.classfile.nncc;
 
-import cc.squirreljme.runtime.cldc.vki.FixedClassIDs;
 import cc.squirreljme.runtime.cldc.vki.Kernel;
 import dev.shadowtail.classfile.pool.AccessedField;
 import dev.shadowtail.classfile.pool.ClassPool;
@@ -748,16 +747,10 @@ public final class NearNativeByteCodeHandler
 		VolatileRegisterStack volatiles = this.volatiles;
 		int volclassdx = volatiles.get();
 		
+		// Load the class data for the array type
 		// If not a fixed class index, then rely on the value in the pool
-		int wantfixedtype = FixedClassIDs.of(__at.toString());
-		if (wantfixedtype < 0)
-			codebuilder.add(NativeInstructionType.LOAD_POOL,
-				__at, volclassdx);
-		
-		// Otherwise use the fixed class identifier
-		else
-			codebuilder.addMathConst(StackJavaType.INTEGER, MathType.OR,
-				0, wantfixedtype, volclassdx);
+		codebuilder.add(NativeInstructionType.LOAD_POOL,
+			__at, volclassdx);
 		
 		// Call internal handler
 		this.__invokeStatic(InvokeType.STATIC, KERNEL_CLASS, "jvmNewArray",
@@ -1616,12 +1609,6 @@ public final class NearNativeByteCodeHandler
 				}
 				break;
 				
-				// Load value from class table
-			case "loadClass":
-				codebuilder.addLoadTable(__out.register,
-					NativeCode.CLASS_TABLE_REGISTER, __in[0].register);
-				break;
-				
 				// Load value from constant pool
 			case "loadPool":
 				codebuilder.addLoadTable(__out.register,
@@ -1722,12 +1709,6 @@ public final class NearNativeByteCodeHandler
 				this.__generateReturn();
 				break;
 				
-				// Get class table register
-			case "specialGetClassTableRegister":
-				codebuilder.addCopy(NativeCode.CLASS_TABLE_REGISTER,
-					__out.register);
-				break;
-				
 				// Get the exception register
 			case "specialGetExceptionRegister":
 				codebuilder.addCopy(NativeCode.EXCEPTION_REGISTER,
@@ -1763,12 +1744,6 @@ public final class NearNativeByteCodeHandler
 			case "specialGetThreadRegister":
 				codebuilder.addCopy(NativeCode.THREAD_REGISTER,
 					__out.register);
-				break;
-				
-				// Set class table register
-			case "specialSetClassTableRegister":
-				codebuilder.addCopy(__in[0].register,
-					NativeCode.CLASS_TABLE_REGISTER);
 				break;
 				
 				// Set the exception register

@@ -397,17 +397,6 @@ public final class Assembly
 	}
 	
 	/**
-	 * Loads a value from the class table at the given index.
-	 *
-	 * @return The index of the value in the class table.
-	 * @since 2019/04/28
-	 */
-	public static final int loadClass(int __i)
-	{
-		throw new todo.OOPS();
-	}
-	
-	/**
 	 * Loads a value from the constant pool at the given index.
 	 *
 	 * @return The index of the value in the constant pool.
@@ -580,17 +569,6 @@ public final class Assembly
 	}
 	
 	/**
-	 * Gets the value of the class table.
-	 *
-	 * @return The value of the class table register.
-	 * @since 2019/04/27
-	 */
-	public static final int specialGetClassTableRegister()
-	{
-		throw new todo.OOPS();
-	}
-	
-	/**
 	 * Returns the exception register.
 	 *
 	 * @return The exception register.
@@ -664,17 +642,6 @@ public final class Assembly
 	 * @since 2019/04/22
 	 */
 	public static final int specialGetThreadRegister()
-	{
-		throw new todo.OOPS();
-	}
-	
-	/**
-	 * Sets the current class table pointer.
-	 *
-	 * @param __v The value to use.
-	 * @since 2019/04/27
-	 */
-	public static final void specialSetClassTableRegister(int __v)
 	{
 		throw new todo.OOPS();
 	}

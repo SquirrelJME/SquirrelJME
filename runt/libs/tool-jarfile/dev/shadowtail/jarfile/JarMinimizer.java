@@ -10,7 +10,6 @@
 package dev.shadowtail.jarfile;
 
 import cc.squirreljme.runtime.cldc.vki.DefaultConfiguration;
-import cc.squirreljme.runtime.cldc.vki.FixedClassIDs;
 import cc.squirreljme.runtime.cldc.vki.Kernel;
 import cc.squirreljme.vm.VMClassLibrary;
 import dev.shadowtail.classfile.mini.MinimizedClassFile;
@@ -172,13 +171,16 @@ public final class JarMinimizer
 	{
 		if (__cl == null)
 			throw new NullPointerException("NARG");
-			
+		
+		throw new todo.TODO();
+		/*
 		// Use a fixed class ID, if there is none then this is normalized to
 		// -1 which means it must be handled later
 		int rv = FixedClassIDs.of(__cl.toString());
 		if (rv <= 0)
 			return -1;
 		return rv;
+		*/
 	}
 	
 	/**
@@ -387,7 +389,8 @@ public final class JarMinimizer
 				
 					// Class ID
 				case CLASS_NAME:
-					__init.memWriteInt(ep, this.__classId((ClassName)pv));
+					__init.memWriteInt(Modifier.RAM_OFFSET,
+						ep, this.__classId((ClassName)pv));
 					break;
 					
 					// Class constant pool
