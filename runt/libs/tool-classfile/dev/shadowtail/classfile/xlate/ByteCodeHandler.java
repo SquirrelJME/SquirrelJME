@@ -9,6 +9,7 @@
 
 package dev.shadowtail.classfile.xlate;
 
+import dev.shadowtail.classfile.pool.InvokeType;
 import net.multiphasicapps.classfile.ClassName;
 import net.multiphasicapps.classfile.FieldReference;
 import net.multiphasicapps.classfile.InstructionJumpTarget;

@@ -11,11 +11,11 @@
 package dev.shadowtail.classfile.mini;
 
 import dev.shadowtail.classfile.nncc.ArgumentFormat;
-import dev.shadowtail.classfile.nncc.ClassPool;
 import dev.shadowtail.classfile.nncc.NativeCode;
 import dev.shadowtail.classfile.nncc.NativeInstruction;
 import dev.shadowtail.classfile.nncc.NativeInstructionType;
 import dev.shadowtail.classfile.nncc.RegisterList;
+import dev.shadowtail.classfile.pool.ClassPool;
 import dev.shadowtail.classfile.xlate.CompareType;
 import dev.shadowtail.classfile.xlate.DataType;
 import dev.shadowtail.classfile.xlate.MathType;

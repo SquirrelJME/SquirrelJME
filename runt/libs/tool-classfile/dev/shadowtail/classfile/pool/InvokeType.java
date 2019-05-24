@@ -8,7 +8,7 @@
 // See license.mkd for licensing and copyright information.
 // ---------------------------------------------------------------------------
 
-package dev.shadowtail.classfile.xlate;
+package dev.shadowtail.classfile.pool;
 
 /**
  * This represents the type of invocation that is performed.

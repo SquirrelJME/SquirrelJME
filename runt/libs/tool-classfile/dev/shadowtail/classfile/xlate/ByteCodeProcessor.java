@@ -9,6 +9,7 @@
 
 package dev.shadowtail.classfile.xlate;
 
+import dev.shadowtail.classfile.pool.InvokeType;
 import java.util.Map;
 import net.multiphasicapps.classfile.ByteCode;
 import net.multiphasicapps.classfile.ClassName;

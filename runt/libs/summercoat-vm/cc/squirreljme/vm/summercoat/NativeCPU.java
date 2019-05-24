@@ -16,7 +16,6 @@ import dev.shadowtail.classfile.nncc.NativeInstruction;
 import dev.shadowtail.classfile.nncc.NativeInstructionType;
 import dev.shadowtail.classfile.xlate.CompareType;
 import dev.shadowtail.classfile.xlate.DataType;
-import dev.shadowtail.classfile.xlate.InvokeType;
 import dev.shadowtail.classfile.xlate.MathType;
 import dev.shadowtail.classfile.xlate.StackJavaType;
 import java.io.DataInputStream;
