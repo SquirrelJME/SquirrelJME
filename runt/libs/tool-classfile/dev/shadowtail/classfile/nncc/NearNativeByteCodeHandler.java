@@ -1975,26 +1975,27 @@ public final class NearNativeByteCodeHandler
 			__args == null)
 			throw new NullPointerException("NARG");
 		
-		throw new todo.TODO();
+		NativeCodeBuilder codebuilder = this.codebuilder;
 		
+		// Need volatile
+		VolatileRegisterStack volatiles = this.volatiles;
+		int volsmp = volatiles.get();
 		
-		/*
-		// Load address of target method
+		// Load address of the target method
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new InvokedMethod(InvokeType.STATIC, new MethodHandle(
-			KERNEL_CLASS, new MethodName((__enter ? "jvmMonitorEnter" :
-				"jvmMonitorExit")), new MethodDescriptor("(I)V"))),
-			NativeCode.VOLATILE_A_REGISTER);
+			new InvokedMethod(__it, new MethodHandle(__cl, __mn, __mt)),
+			volsmp);
 		
-		// Load kernel pool
+		// Load constant pool of the target class
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new ClassPool(KERNEL_CLASS),
-			NativeCode.NEXT_POOL_REGISTER);
+			new ClassPool(__cl), NativeCode.NEXT_POOL_REGISTER);
 		
-		// Call the monitor function
+		// Invoke the static pointer
 		codebuilder.add(NativeInstructionType.INVOKE,
-			NativeCode.VOLATILE_A_REGISTER, new RegisterList(__r));
-		*/
+			volsmp, __args);
+		
+		// Not needed
+		volatiles.remove(volsmp);
 	}
 	
 	/**
