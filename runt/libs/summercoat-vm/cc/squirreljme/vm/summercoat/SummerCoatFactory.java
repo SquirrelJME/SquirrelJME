@@ -92,23 +92,27 @@ public class SummerCoatFactory
 		WritableMemory cmem = new RawMemory(CONFIG_BASE_ADDR, 8192);
 		vmem.mapRegion(cmem);
 		
-		// Allocate and initialize configuration data
-		StaticAllocator confalloc = new StaticAllocator(CONFIG_BASE_ADDR);
-		int xxclasspth = this.__memStrings(vmem, confalloc,
-				SummerCoatFactory.classPathToStringArray(__cp)),
-			xxsysprops = this.__memStrings(vmem, confalloc,
-				SummerCoatFactory.stringMapToStrings(__sprops)),
-			xxmainclss = this.__memString(vmem, confalloc, __maincl),
-			xxmainargs = this.__memStrings(vmem, confalloc, __args);
-		
 		// Initialize suite memory explicitly since we need it!
 		sm.__init();
 		
-		// Load the boot RAM
+		// Load the bootstrap JAR header
 		MinimizedJarHeader bjh = sm._bootjarheader;
 		int bjo = sm.offset + sm._bootjaroff,
 			bra = bjo + bjh.bootoffset,
 			lram;
+		
+		// Allocate and initialize configuration data
+		StaticAllocator confalloc = new StaticAllocator(CONFIG_BASE_ADDR);
+		int xxclasspth = this.__memStrings(bjh, ramstart, vmem, confalloc,
+				SummerCoatFactory.classPathToStringArray(__cp)),
+			xxsysprops = this.__memStrings(bjh, ramstart, vmem, confalloc,
+				SummerCoatFactory.stringMapToStrings(__sprops)),
+			xxmainclss = this.__memString(bjh, ramstart, vmem, confalloc,
+				__maincl),
+			xxmainargs = this.__memStrings(bjh, ramstart, vmem, confalloc,
+				__args);
+		
+		// Load the boot RAM
 		todo.DEBUG.note("Header %s (off %08x, boot %08x)", bjh, bjo, bra);
 		try (DataInputStream dis = new DataInputStream(
 			new ReadableMemoryInputStream(vmem, bra, bjh.bootsize)))
@@ -543,6 +547,8 @@ public class SummerCoatFactory
 	/**
 	 * This writes a string to memory somewhere.
 	 *
+	 * @param __mjh Minimized JAR header.
+	 * @param __rams RAM start address.
 	 * @param __wm Memory that can be written to.
 	 * @param __sa Static allocator.
 	 * @param __s The string to encode.
@@ -550,8 +556,8 @@ public class SummerCoatFactory
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/04/21
 	 */
-	private int __memString(WritableMemory __wm, StaticAllocator __sa,
-		String __s)
+	private int __memString(MinimizedJarHeader __mjh, int __rams,
+		WritableMemory __wm, StaticAllocator __sa, String __s)
 		throws NullPointerException
 	{
 		if (__wm == null || __sa == null || __s == null)
@@ -571,17 +577,13 @@ public class SummerCoatFactory
 		// Allocate data
 		int rv = __sa.allocate(Kernel.ARRAY_BASE_SIZE + encode.length);
 		
-		if (true)
-			throw new todo.TODO();
-		/*
-		// Write fixed ID, initial refcount, and length
+		// Write class ID, initial refcount, and length
 		__wm.memWriteInt(rv + Kernel.OBJECT_CLASS_OFFSET,
-			FixedClassIDs.PRIMITIVE_BYTE_ARRAY);
+			__rams + __mjh.bootclassidba);
 		__wm.memWriteInt(rv + Kernel.OBJECT_COUNT_OFFSET,
 			1);
 		__wm.memWriteInt(rv + Kernel.ARRAY_LENGTH_OFFSET,
 			encode.length);
-		*/
 		
 		// Write byte data
 		int vbase = rv + Kernel.ARRAY_BASE_SIZE;
@@ -596,14 +598,16 @@ public class SummerCoatFactory
 	 * Creates an array which is an array of bytes containing all of the
 	 * various strings.
 	 *
+	 * @param __mjh Minimized JAR header.
+	 * @param __rams RAM start address.
 	 * @param __wm The memory to write to.
 	 * @param __sa The allocator used.
 	 * @param __ss The strings to convert.
 	 * @return The memory address of the {@code byte[][]} array.
 	 * @since 2019/04/27
 	 */
-	private int __memStrings(WritableMemory __wm, StaticAllocator __sa,
-		String... __ss)
+	private int __memStrings(MinimizedJarHeader __mjh, int __rams,
+		WritableMemory __wm, StaticAllocator __sa, String... __ss)
 		throws NullPointerException
 	{
 		if (__sa == null)
@@ -619,25 +623,21 @@ public class SummerCoatFactory
 		// Allocate data
 		int rv = __sa.allocate(Kernel.ARRAY_BASE_SIZE + (n * 4));
 		
-		if (true)
-			throw new todo.TODO();
-		/*
-		// Write fixed ID, initial refcount, and length
+		// Write class ID, initial refcount, and length
 		__wm.memWriteInt(rv + Kernel.OBJECT_CLASS_OFFSET,
-			FixedClassIDs.PRIMITIVE_BYTE_ARRAY_ARRAY);
+			__rams + __mjh.bootclassidbaa);
 		__wm.memWriteInt(rv + Kernel.OBJECT_COUNT_OFFSET,
 			1);
 		__wm.memWriteInt(rv + Kernel.ARRAY_LENGTH_OFFSET,
 			n);
-		*/
 		
 		// Write byte data
 		int vbase = rv + Kernel.ARRAY_BASE_SIZE;
 		for (int i = 0; i < n; i++, vbase += 4)
 		{
 			String s = __ss[i];
-			__wm.memWriteInt(vbase, (s == null ? 0 : this.__memString(__wm,
-				__sa, s)));
+			__wm.memWriteInt(vbase, (s == null ? 0 :
+				this.__memString(__mjh, __rams, __wm, __sa, s)));
 		}
 		
 		// Return pointer

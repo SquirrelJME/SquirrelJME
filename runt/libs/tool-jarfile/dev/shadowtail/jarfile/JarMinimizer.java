@@ -574,6 +574,8 @@ public final class JarMinimizer
 				"cc/squirreljme/runtime/cldc/vki/__Bootstrap__",
 				"__start",
 				null));
+			__dos.writeInt(this.__classId(new ClassName("[B")));
+			__dos.writeInt(this.__classId(new ClassName("[[B")));
 		}
 		
 		// No boot data
@@ -583,7 +585,10 @@ public final class JarMinimizer
 			__dos.writeInt(0);
 			__dos.writeInt(0);
 			
-			// Boot pool, sfa, and code
+			// Boot offset, pool, sfa, code, classidba, classidbaa
+			__dos.writeInt(0);
+			__dos.writeInt(0);
+			__dos.writeInt(0);
 			__dos.writeInt(0);
 			__dos.writeInt(0);
 			__dos.writeInt(0);
