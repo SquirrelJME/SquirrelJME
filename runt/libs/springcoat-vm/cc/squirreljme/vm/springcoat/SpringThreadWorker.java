@@ -442,19 +442,12 @@ public final class SpringThreadWorker
 			// this is the simplest thing to do right now
 			SpringObject array = (SpringObject)this.asVMObject(
 				s.toString().toCharArray());
-				
-			// Setup character array sequence which wraps our array
-			SpringObject cas = this.newInstance(new ClassName(
-				"cc/squirreljme/runtime/cldc/string/" +
-					"ClassConstantCharArraySequence"),
-				new MethodDescriptor("([C)V"), array);
 			
 			// Setup string which uses this sequence
 			SpringObject rv = this.newInstance(
 				new ClassName("java/lang/String"),
-				new MethodDescriptor(
-				"(Lcc/squirreljme/runtime/cldc/string/BasicSequence;)V"),
-				cas);
+				new MethodDescriptor("([CS)V"),
+				array, 0);
 			
 			return rv;
 		}
@@ -485,17 +478,13 @@ public final class SpringThreadWorker
 				SpringObject array = (SpringObject)this.asVMObject(
 					cvs.toString().toCharArray());
 				
-				// Setup character array sequence which wraps our array
-				SpringObject cas = this.newInstance(new ClassName(
-					"cc/squirreljme/runtime/cldc/string/" +
-						"ClassConstantCharArraySequence"),
-					new MethodDescriptor("([C)V"), array);
-				
-				// Setup string which uses this sequence
-				rv = this.newInstance(new ClassName("java/lang/String"),
-					new MethodDescriptor(
-					"(Lcc/squirreljme/runtime/cldc/string/BasicSequence;)V"),
-					cas);
+				// Setup string which uses this sequence, but it also needs
+				// to be interned!
+				ClassName strclass = new ClassName("java/lang/String");
+				rv = (SpringObject)this.invokeMethod(false, strclass,
+					new MethodNameAndType("intern", "()Ljava/lang/String;"),
+					this.newInstance(strclass, new MethodDescriptor("([CS)V"),
+						array, 0));
 				
 				// Cache
 				stringmap.put(cvs, rv);
