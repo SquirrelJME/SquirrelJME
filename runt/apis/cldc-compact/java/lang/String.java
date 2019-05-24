@@ -58,18 +58,18 @@ public final class String
 		' ';
 	
 	/** Is this string already lowercased? */
-	private static final int _QUICK_ISLOWER =
-		0b0000_0000__0000_0000___0000_0000__0000_0001;
+	private static final short _QUICK_ISLOWER =
+		0b0000_0000__0000_0001;
 	
 	/** Is this string already uppercased? */
-	private static final int _QUICK_ISUPPER =
-		0b0000_0000__0000_0000___0000_0000__0000_0010;
+	private static final short _QUICK_ISUPPER =
+		0b0000_0000__0000_0010;
 	
 	/** The basic character sequence data. */
 	private final BasicSequence _sequence;
 	
 	/** Quick determination flags for speedy operations. */
-	private volatile int _quickflags;
+	private volatile short _quickflags;
 	
 	/** The hash code for this string, is cached. */
 	private int _hashcode;
@@ -286,7 +286,7 @@ public final class String
 	String(BasicSequence __bs)
 		throws NullPointerException
 	{
-		this(__bs, 0);
+		this(__bs, (short)0);
 	}
 	
 	/**
@@ -297,7 +297,7 @@ public final class String
 	 * @throws NullPointerException On null arguments.
 	 * @since 2018/02/24
 	 */
-	private String(BasicSequence __bs, int __qf)
+	private String(BasicSequence __bs, short __qf)
 		throws NullPointerException
 	{
 		if (__bs == null)
