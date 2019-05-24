@@ -1841,107 +1841,42 @@ public final class NearNativeByteCodeHandler
 		
 		NativeCodeBuilder codebuilder = this.codebuilder;
 		
-		throw new todo.TODO();
-		/*
 		// Need volatiles to work with
 		VolatileRegisterStack volatiles = this.volatiles;
 		int volclassid = volatiles.get(),
-			volclassdvt = volatiles.get(),
-			volvtablefo = volatiles.get(),
-			volmethodptr = volatiles.get();
+			volvtable = volatiles.get(),
+			methodptr = volatiles.get();
 		
-		// Load class ID instance
+		// Load the class ID
 		codebuilder.addMemoryOffReg(DataType.INTEGER, true,
-			volclassid, __in[0].register, Kernel.OBJECT_CLASS_OFFSET);
-			
-		// Load the ClassDataV2 for the instance
-		codebuilder.addLoadTable(
-			volclassdvt,
-			NativeCode.CLASS_TABLE_REGISTER, volclassid);
+			volclassid, __args.get(0), Kernel.OBJECT_CLASS_OFFSET);
 		
-		// Read the field offset of the vtable
+		// Load the VTable
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
 			new AccessedField(FieldAccessTime.NORMAL,
 				FieldAccessType.INSTANCE,
 			new FieldReference(
-				new ClassName(
-					"cc/squirreljme/runtime/cldc/lang/ClassDataV2"),
-				new FieldName((__t == InvokeType.SPECIAL ? "vtablespecial" :
+				new ClassName("cc/squirreljme/runtime/cldc/lang/ClassDataV2"),
+				new FieldName((__it == InvokeType.SPECIAL ? "vtablespecial" :
 					"vtablevirtual")),
 				FieldDescriptor.INTEGER)),
-			volvtablefo);
-		
-		// Read the pointer address from the vtable
-		codebuilder.addLoadTable(
-			volmethodptr,
-			volclassdvt, volvtablefo);
-		
-		// Read the method index for the vtable into B
-		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new MethodIndex(__r.handle().outerClass(),
-				__r.handle().name(), __r.handle().descriptor()),
-			NativeCode.VOLATILE_B_REGISTER);
-		
-		// Read from the vtable using the table index for B
-		// This is our invocation pointer
-		codebuilder.addLoadTable(
-			NativeCode.VOLATILE_A_REGISTER,
-			NativeCode.VOLATILE_A_REGISTER,
-			NativeCode.VOLATILE_B_REGISTER);
-		
-		throw new todo.TODO();
-		*/
-		/*
-		// Use special invoke table for the instance
-		String vtablename;
-		if (__t == InvokeType.SPECIAL)
-			vtablename = "vtablespecial";
-		
-		// Use virtual invoke table for the instance
-		else
-			vtablename = "vtablevirtual";
-		
-		// Load the Class ID into A
+			volvtable);
 		codebuilder.addMemoryOffReg(DataType.INTEGER, true,
-			NativeCode.VOLATILE_A_REGISTER,
-			__in[0].register, Kernel.OBJECT_CLASS_OFFSET);
+			volvtable, volclassid, volvtable);
 		
-		// Load the ClassDataV2 pointer into A
-		codebuilder.addLoadTable(
-			NativeCode.VOLATILE_A_REGISTER,
-			NativeCode.CLASS_TABLE_REGISTER,
-			NativeCode.VOLATILE_A_REGISTER);
-		
-		// Read the offset to the vtable into B
+		// Load method pointer
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new AccessedField(FieldAccessTime.NORMAL,
-				FieldAccessType.INSTANCE,
-			new FieldReference(
-				new ClassName(
-					"cc/squirreljme/runtime/cldc/lang/ClassDataV2"),
-				new FieldName(vtablename),
-				FieldDescriptor.INTEGER)),
-			NativeCode.VOLATILE_B_REGISTER);
+			new MethodIndex(__cl, __mn, __mt), methodptr);
+		codebuilder.addLoadTable(methodptr, volvtable, methodptr);
 		
-		// Read the address of the VTable from A+B into A
-		codebuilder.addMemoryOffReg(DataType.INTEGER, true,
-			NativeCode.VOLATILE_A_REGISTER,
-			NativeCode.VOLATILE_A_REGISTER,
-			NativeCode.VOLATILE_B_REGISTER);
+		// Invoke the method pointer
+		codebuilder.add(NativeInstructionType.INVOKE,
+			methodptr, __args);
 		
-		// Read the method index for the vtable into B
-		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			new MethodIndex(__r.handle().outerClass(),
-				__r.handle().name(), __r.handle().descriptor()),
-			NativeCode.VOLATILE_B_REGISTER);
-		
-		// Read from the vtable using the table index for B
-		// This is our invocation pointer
-		codebuilder.addLoadTable(
-			NativeCode.VOLATILE_A_REGISTER,
-			NativeCode.VOLATILE_A_REGISTER,
-			NativeCode.VOLATILE_B_REGISTER);
-		*/
+		// Cleanup volatiles
+		volatiles.remove(volclassid);
+		volatiles.remove(volvtable);
+		volatiles.remove(methodptr);
 	}
 	
 	/**
