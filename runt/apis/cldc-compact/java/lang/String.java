@@ -65,6 +65,10 @@ public final class String
 	private static final short _QUICK_ISUPPER =
 		0b0000_0000__0000_0010;
 	
+	/** String is already interned? */
+	private static final short _QUICK_INTERN =
+		0b0000_0000__0000_0100;
+	
 	/** The basic character sequence data. */
 	@Deprecated
 	private final BasicSequence _sequence;
@@ -808,6 +812,11 @@ public final class String
 	 */
 	public String intern()
 	{
+		// If this string is already interned then use this one instead
+		// of searching through the map
+		if ((this._quickflags & _QUICK_INTERN) != 0)
+			return this;
+		
 		throw new todo.TODO();
 	}
 	
