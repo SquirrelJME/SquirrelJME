@@ -71,8 +71,7 @@ public final class NearNativeByteCodeHandler
 	/** Default field access type, to determine how fields are accessed. */
 	protected final FieldAccessTime defaultfieldaccesstime;
 	
-	/** The type of the current class being processed. */
-	@Deprecated
+	/** The type of the current class being processed (needed for monitor). */
 	protected final ClassName thistype;
 	
 	/** Is this method synchronized? */
@@ -80,6 +79,12 @@ public final class NearNativeByteCodeHandler
 	
 	/** Is this an instance method? */
 	protected final boolean isinstance;
+	
+	/** Monitor target register used. */
+	protected final int monitortarget;
+	
+	/** Volatile registers to use. */
+	protected final VolatileRegisterStack volatiles;
 	
 	/** Standard exception handler table. */
 	private final Map<ExceptionHandlerTransition, __EData__> _ehtable =
@@ -130,6 +135,12 @@ public final class NearNativeByteCodeHandler
 		this.thistype = __bc.thisType();
 		this.issynchronized = __bc.isSynchronized();
 		this.isinstance = __bc.isInstance();
+		
+		// Determine monitor target register and the volatile base
+		int volbase = NativeCode.ARGUMENT_REGISTER_BASE + 2 +
+			__bc.maxLocals() + __bc.maxStack();
+		this.monitortarget = volbase;
+		this.volatiles = new VolatileRegisterStack(volbase + 1);
 	}
 	
 	/**
@@ -1357,16 +1368,16 @@ public final class NearNativeByteCodeHandler
 				// Copy instance to monitor target
 				if (this.isinstance)
 					codebuilder.addCopy(state.stack.getLocal(0).register,
-						NativeCode.MONITOR_TARGET_REGISTER);
+						this.monitortarget);
 				
 				// Load class object to monitor
 				else
 					this.__loadClassObject(this.thistype,
-						NativeCode.MONITOR_TARGET_REGISTER);
+						this.monitortarget);
 				
 				// Enter monitor on this
-				this.__refCount(NativeCode.MONITOR_TARGET_REGISTER);
-				this.__monitor(true, NativeCode.MONITOR_TARGET_REGISTER);
+				this.__refCount(this.monitortarget);
+				this.__monitor(true, this.monitortarget);
 			}
 		}
 		
@@ -1813,8 +1824,8 @@ public final class NearNativeByteCodeHandler
 			// If this is synchronized, we need to exit the monitor
 			if (this.issynchronized)
 			{
-				this.__monitor(false, NativeCode.MONITOR_TARGET_REGISTER);
-				this.__refUncount(NativeCode.MONITOR_TARGET_REGISTER);
+				this.__monitor(false, this.monitortarget);
+				this.__refUncount(this.monitortarget);
 			}
 			
 			// Debug exit
@@ -2275,12 +2286,6 @@ public final class NearNativeByteCodeHandler
 		ByteCodeState state = this.state;
 		state.addr = __ed.addr;
 		state.line = __ed.line;
-		
-		// Setup code builder
-		NativeCodeBuilder codebuilder = this.codebuilder;
-		/*codebuilder.setSourceLine(__ed.line);
-		codebuilder.setByteCodeAddress(__ed.jpc);
-		codebuilder.setByteCodeOperation(__ed.jop);*/
 		
 		// And return the label
 		return __ed.label;

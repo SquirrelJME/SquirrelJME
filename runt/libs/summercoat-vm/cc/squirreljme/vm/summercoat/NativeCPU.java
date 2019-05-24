@@ -806,10 +806,6 @@ public final class NativeCPU
 						spec = "vols";
 						break;
 					
-					case NativeCode.MONITOR_TARGET_REGISTER:
-						spec = "monitor";
-						break;
-					
 					case NativeCode.ARGUMENT_REGISTER_BASE:
 						spec = "a0/this";
 						break;
