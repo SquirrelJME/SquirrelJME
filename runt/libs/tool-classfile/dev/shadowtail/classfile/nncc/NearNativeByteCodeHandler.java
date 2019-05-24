@@ -75,10 +75,6 @@ public final class NearNativeByteCodeHandler
 	@Deprecated
 	protected final ClassName thistype;
 	
-	/** Where is this method? */
-	@Deprecated
-	protected final WhereIsThis whereisthis;
-	
 	/** Is this method synchronized? */
 	protected final boolean issynchronized;
 	
@@ -134,10 +130,6 @@ public final class NearNativeByteCodeHandler
 		this.thistype = __bc.thisType();
 		this.issynchronized = __bc.isSynchronized();
 		this.isinstance = __bc.isInstance();
-		
-		// Use for debugging and stack traces
-		this.whereisthis = new WhereIsThis(__bc.thisType(),
-			__bc.name(), __bc.type());
 	}
 	
 	/**
@@ -1383,11 +1375,6 @@ public final class NearNativeByteCodeHandler
 			state.line & 0x7FFF, state.instruction.operation() & 0xFF,
 			state.instruction.address() & 0x7FFF);
 		
-		// Set source line and instruction operation
-		codebuilder.setSourceLine(state.line);
-		codebuilder.setByteCodeAddress(state.instruction.address());
-		codebuilder.setByteCodeOperation(state.instruction.operation());
-		
 		// Check if there are operations that need to be performed to make
 		// sure the stack state is morphed into correctly
 		StateOperations poison = state.stackpoison.get(addr);
@@ -2291,9 +2278,9 @@ public final class NearNativeByteCodeHandler
 		
 		// Setup code builder
 		NativeCodeBuilder codebuilder = this.codebuilder;
-		codebuilder.setSourceLine(__ed.line);
+		/*codebuilder.setSourceLine(__ed.line);
 		codebuilder.setByteCodeAddress(__ed.jpc);
-		codebuilder.setByteCodeOperation(__ed.jop);
+		codebuilder.setByteCodeOperation(__ed.jop);*/
 		
 		// And return the label
 		return __ed.label;

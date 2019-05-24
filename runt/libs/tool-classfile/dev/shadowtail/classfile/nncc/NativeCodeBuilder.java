@@ -41,21 +41,6 @@ public final class NativeCodeBuilder
 	/** Next address to use. */
 	int _nextaddr;
 	
-	/** Current line address. */
-	@Deprecated
-	int _cursrcline =
-		-1;
-	
-	/** Current Java instruction type. */
-	@Deprecated
-	int _cursrcjop =
-		-1;
-	
-	/** Current Java PC address. */
-	@Deprecated
-	int _cursrcjpc =
-		-1;
-	
 	/**
 	 * Initializes the code builder at the default start address.
 	 *
@@ -110,8 +95,7 @@ public final class NativeCodeBuilder
 				NativeInstruction.mnemonic(__op), Arrays.asList(__args));
 			
 		// Store all information
-		this._points.put(atdx, new Point(rv, this._cursrcline,
-			this._cursrcjop, this._cursrcjpc));
+		this._points.put(atdx, new Point(rv));
 		return rv;
 	}
 	
@@ -508,23 +492,15 @@ public final class NativeCodeBuilder
 			}
 		}
 		
-		// Resulting tables of instructions, line, JIs, and JPCs
+		// Resulting tables of instructions
 		int n = in.size();
 		NativeInstruction[] tabni = new NativeInstruction[n];
-		short[] tabjl = new short[n];
-		byte[] tabji = new byte[n];
-		byte[] tabjp = new byte[n];
 		
 		// Go through input instructions and map them to real instructions
 		for (int i = 0; i < n; i++)
 		{
 			// Get input point
 			Point point = in.get(i);
-			
-			// Initialize debug table information
-			tabjl[i] = (short)point.line;
-			tabji[i] = (byte)point.jop;
-			tabjp[i] = (byte)point.jpc;
 			
 			// The instruction is re-processed potentially
 			NativeInstruction inst = point.instruction;
@@ -557,7 +533,7 @@ public final class NativeCodeBuilder
 		}
 		
 		// Build
-		return new NativeCode(tabni, tabjl, tabji, tabjp);
+		return new NativeCode(tabni);
 	}
 	
 	/**
@@ -657,42 +633,6 @@ public final class NativeCodeBuilder
 	}
 	
 	/**
-	 * Sets the current byte code address.
-	 *
-	 * @param __jpc The byte code address to use.
-	 * @since 2019/04/26
-	 */
-	@Deprecated
-	public final void setByteCodeAddress(int __jpc)
-	{
-		this._cursrcjpc = __jpc;
-	}
-	
-	/**
-	 * Sets the current byte code operation.
-	 *
-	 * @param __jo The byte code operation to use.
-	 * @since 2019/04/26
-	 */
-	@Deprecated
-	public final void setByteCodeOperation(int __jo)
-	{
-		this._cursrcjop = __jo;
-	}
-	
-	/**
-	 * Sets the current source line.
-	 *
-	 * @param __l The line to set.
-	 * @since 2019/03/23
-	 */
-	@Deprecated
-	public final void setSourceLine(int __l)
-	{
-		this._cursrcline = __l;
-	}
-	
-	/**
 	 * This stores the information for a single point in the native code.
 	 *
 	 * @since 2019/04/26
@@ -702,35 +642,20 @@ public final class NativeCodeBuilder
 		/** The instruction used. */
 		public final NativeInstruction instruction;
 		
-		/** Current line. */
-		public final int line;
-		
-		/** Current Java operation. */
-		public final int jop;
-		
-		/** Current Java address. */
-		public final int jpc;
-		
 		/**
 		 * Initializes the instruction point.
 		 *
 		 * @param __i The instruction.
-		 * @param __line The line.
-		 * @param __jop The Java operation.
-		 * @param __jpc The Java PC address.
 		 * @throws NullPointerException On null arguments.
 		 * @since 2019/04/26
 		 */
-		public Point(NativeInstruction __i, int __line, int __jop, int __jpc)
+		public Point(NativeInstruction __i)
 			throws NullPointerException
 		{
 			if (__i == null)
 				throw new NullPointerException("NARG");
 			
 			this.instruction = __i;
-			this.line = __line;
-			this.jop = __jop;
-			this.jpc = __jpc;
 		}
 	}
 }

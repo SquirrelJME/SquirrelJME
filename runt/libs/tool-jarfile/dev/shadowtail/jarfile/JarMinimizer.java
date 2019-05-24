@@ -23,7 +23,6 @@ import dev.shadowtail.classfile.nncc.AccessedField;
 import dev.shadowtail.classfile.nncc.ClassPool;
 import dev.shadowtail.classfile.nncc.InvokedMethod;
 import dev.shadowtail.classfile.nncc.MethodIndex;
-import dev.shadowtail.classfile.nncc.WhereIsThis;
 import dev.shadowtail.classfile.nncc.UsedString;
 import dev.shadowtail.classfile.xlate.InvokeType;
 import java.io.ByteArrayOutputStream;
@@ -238,33 +237,6 @@ public final class JarMinimizer
 	}
 	
 	/**
-	 * Returns the pointer where the class where information is stored.
-	 *
-	 * @param __wit Where is this?
-	 * @return The offset to the information from the JAR.
-	 * @since 2019/04/30
-	 */
-	private final int __classWhere(WhereIsThis __wit)
-		throws NullPointerException
-	{
-		if (__wit == null)
-			throw new NullPointerException("NARG");
-			
-		// Get base class
-		__BootInfo__ bi = this._boots.get(__wit.inclass);
-		MinimizedClassFile mcf = bi._class;
-		
-		// Find method
-		MinimizedMethod mm = bi._class.method(__wit.name, __wit.type);
-		if (mm == null)
-			return 0;
-		
-		// Use the where of any found method
-		return bi._classoffset + (mm.flags().isStatic() ? bi._class.header.
-			smoff : bi._class.header.imoff) + mm.whereoffset;
-	}
-	
-	/**
 	 * Returns the initialize sequence that is needed for execution.
 	 *
 	 * @param __poolp The output pointer of the initial constant pool.
@@ -434,12 +406,6 @@ public final class JarMinimizer
 								outerClass(), im.handle.name(),
 								im.handle.descriptor()));
 					}
-					break;
-					
-					// Where is this class? Used for tracing
-				case WHERE_IS_THIS:
-					__init.memWriteInt(Modifier.JAR_OFFSET,
-						ep, this.__classWhere((WhereIsThis)pv));
 					break;
 				
 				default:

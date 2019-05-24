@@ -64,11 +64,6 @@ public final class NativeCode
 	public static final int NEXT_POOL_REGISTER =
 		10;
 	
-	/** Contains the information address of the current method. */
-	@Deprecated
-	public static final int WHERE_IS_THIS =
-		11;
-	
 	/** Volatile A register. */
 	public static final int VOLATILE_A_REGISTER =
 		12;
@@ -109,30 +104,14 @@ public final class NativeCode
 	/** Instructions for this code. */
 	private final NativeInstruction[] _instructions;
 	
-	/** Line number table. */
-	@Deprecated
-	private final short[] _lines;
-	
-	/** Java operation table. */
-	@Deprecated
-	private final byte[] _jops;
-	
-	/** Java PC table. */
-	@Deprecated
-	private final byte[] _jpcs;
-	
 	/**
 	 * Initializes the register code.
 	 *
 	 * @param __i The associated instructions.
-	 * @param __l The lines for each instruction.
-	 * @param __jo Java operation index.
-	 * @param __jp Java PC addresses.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2019/03/22
 	 */
-	public NativeCode(NativeInstruction[] __i, short[] __l, byte[] __jo,
-		byte[] __jp)
+	public NativeCode(NativeInstruction[] __i)
 		throws NullPointerException
 	{
 		__i = (__i == null ? new NativeInstruction[0] : __i.clone());
@@ -141,9 +120,6 @@ public final class NativeCode
 				throw new NullPointerException("NARG");
 		
 		this._instructions = __i;
-		this._lines = (__l == null ? new short[0] : __l.clone());
-		this._jops = (__jo == null ? new byte[0] : __jo.clone());
-		this._jpcs = (__jp == null ? new byte[0] : __jp.clone());
 	}
 	
 	/**
@@ -170,31 +146,6 @@ public final class NativeCode
 	}
 	
 	/**
-	 * The table containing which instructions map to which Java address.
-	 *
-	 * @return The Java address table.
-	 * @since 2019/04/26
-	 */
-	@Deprecated
-	public final byte[] javaAddresses()
-	{
-		return this._jpcs.clone();
-	}
-	
-	/**
-	 * The table containing the table of instructions that map to which
-	 * Java instruction.
-	 *
-	 * @return The Java operation table.
-	 * @since 2019/04/26
-	 */
-	@Deprecated
-	public final byte[] javaOperations()
-	{
-		return this._jops.clone();
-	}
-	
-	/**
 	 * Returns the length of the register code.
 	 *
 	 * @return The register code length.
@@ -203,18 +154,6 @@ public final class NativeCode
 	public final int length()
 	{
 		return this._instructions.length;
-	}
-	
-	/**
-	 * The line number table.
-	 *
-	 * @return The line number table.
-	 * @since 2018/03/24
-	 */
-	@Deprecated
-	public final short[] lines()
-	{
-		return this._lines.clone();
 	}
 }
 

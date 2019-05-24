@@ -18,7 +18,6 @@ import dev.shadowtail.classfile.nncc.AccessedField;
 import dev.shadowtail.classfile.nncc.ClassPool;
 import dev.shadowtail.classfile.nncc.InvokedMethod;
 import dev.shadowtail.classfile.nncc.NativeCode;
-import dev.shadowtail.classfile.nncc.WhereIsThis;
 import dev.shadowtail.jarfile.MinimizedJarHeader;
 import cc.squirreljme.runtime.cldc.vki.DefaultConfiguration;
 import cc.squirreljme.runtime.cldc.vki.FixedClassIDs;
