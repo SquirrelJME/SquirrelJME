@@ -793,18 +793,6 @@ public final class NativeCPU
 						spec = "nextpool";
 						break;
 					
-					case NativeCode.VOLATILE_A_REGISTER:
-						spec = "vola";
-						break;
-					
-					case NativeCode.VOLATILE_B_REGISTER:
-						spec = "volb";
-						break;
-					
-					case NativeCode.VOLATILE_S_REGISTER:
-						spec = "vols";
-						break;
-					
 					case NativeCode.ARGUMENT_REGISTER_BASE:
 						spec = "a0/this";
 						break;
