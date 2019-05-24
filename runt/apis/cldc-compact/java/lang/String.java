@@ -69,9 +69,8 @@ public final class String
 	private static final short _QUICK_INTERN =
 		0b0000_0000__0000_0100;
 	
-	/** The basic character sequence data. */
-	@Deprecated
-	private final BasicSequence _sequence;
+	/** String character data. */
+	private final char[] _chars;
 	
 	/** Quick determination flags for speedy operations. */
 	private volatile short _quickflags;
@@ -134,7 +133,7 @@ public final class String
 			copy[o] = __c[i];
 		
 		// Just use the copied buffer
-		this._sequence = new CharArraySequence(copy);
+		this._chars = copy;
 	}
 	
 	/**
@@ -278,7 +277,25 @@ public final class String
 		// Just allocate an exact buffer since the estimate could have been off
 		if (at != cap)
 			out = Arrays.copyOf(out, at);
-		this._sequence = new CharArraySequence(out);
+		this._chars = out;
+	}
+	
+	/**
+	 * Initializes the string using the given character data.
+	 *
+	 * @param __c Character data.
+	 * @param __qf The quick flags to use.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/24
+	 */
+	String(char[] __c, short __qf)
+		throws NullPointerException
+	{
+		if (__c == null)
+			throw new NullPointerException("NARG");
+		
+		this._chars = __c;
+		this._quickflags = __qf;
 	}
 	
 	/**
@@ -307,11 +324,7 @@ public final class String
 	private String(BasicSequence __bs, short __qf)
 		throws NullPointerException
 	{
-		if (__bs == null)
-			throw new NullPointerException("NARG");
-		
-		this._sequence = __bs;
-		this._quickflags = __qf;
+		this(__bs.toCharArray(), __qf);
 	}
 	
 	/**
@@ -322,8 +335,10 @@ public final class String
 	public char charAt(int __i)
 		throws IndexOutOfBoundsException
 	{
-		// Bounds checking is handled by the sequence
-		return this._sequence.charAt(__i);
+		char[] chars = this._chars;
+		if (__i < 0 || __i >= chars.length)
+			throw new IndexOutOfBoundsException("IOOB " + __i);
+		return chars[__i];
 	}
 	
 	/**
@@ -338,23 +353,31 @@ public final class String
 	 * Internally this does not handle the special variants of this class and
 	 * is a general purpose method.
 	 *
-	 * @param __os The string to compare against.
+	 * @param __o The string to compare against.
 	 * @return A negative value if this string precedes the other string, a
 	 * positive value if this string procedes the other string, or zero if the
 	 * strings are equal.
 	 * @throws NullPointerException On null arguments.
 	 * @since 2016/04/02
 	 */
-	public int compareTo(String __os)
+	public int compareTo(String __o)
 		throws NullPointerException
 	{
 		// Check
-		if (__os == null)
+		if (__o == null)
 			throw new NullPointerException("NARG");
 		
+		// Refers to the same exact string?
+		if (this == __o)
+			return 0;
+		
+		// Characters of both
+		char[] ac = this._chars,
+			bc = __o._chars;
+		
 		// Get both string lengths
-		int an = this.length();
-		int bn = __os.length();
+		int an = ac.length;
+		int bn = bc.length;
 		
 		// Max comparison length
 		int max = Math.min(an, bn);
@@ -363,7 +386,7 @@ public final class String
 		for (int i = 0; i < max; i++)
 		{
 			// Get character difference
-			int diff = ((int)this.charAt(i)) - ((int)__os.charAt(i));
+			int diff = ((int)ac[i]) - ((int)bc[i]);
 			
 			// If there is a difference, then return it
 			if (diff != 0)
@@ -390,9 +413,17 @@ public final class String
 		if (__o == null)
 			throw new NullPointerException("NARG");
 		
+		// Refers to the same exact string?
+		if (this == __o)
+			return 0;
+		
+		// Characters of both
+		char[] ac = this._chars,
+			bc = __o._chars;
+		
 		// Get both string lengths
-		int an = this.length();
-		int bn = __o.length();
+		int an = ac.length;
+		int bn = bc.length;
 		
 		// Max comparison length
 		int max = Math.min(an, bn);
@@ -401,10 +432,8 @@ public final class String
 		for (int i = 0; i < max; i++)
 		{
 			// Get both characters and normalize case
-			char ca = Character.toLowerCase(
-					Character.toUpperCase(this.charAt(i))),
-				cb = Character.toLowerCase(
-					Character.toUpperCase(__o.charAt(i)));
+			char ca = Character.toLowerCase(Character.toUpperCase(ac[i])),
+				cb = Character.toLowerCase(Character.toUpperCase(bc[i]));
 			
 			// Get character difference
 			int diff = ca - cb;
@@ -437,19 +466,36 @@ public final class String
 		// Check
 		if (__s == null)
 			throw new NullPointerException("NARG");
+			
+		// Get both character sources
+		char[] ac = this._chars,
+			bc = __s._chars;
 		
-		// Short circuits to not do anything
-		if (this.length() == 0)
+		// Lengths
+		int an = ac.length,
+			bn = bc.length;
+		
+		// One of the strings has no length, which means it will be a no-op
+		if (an == 0)
 			return __s;
-		else if (__s.length() == 0)
+		else if (bn == 0)
 			return this;
 		
-		// Just build a new string this way because it is much simpler than
-		// having to mess with an internal representation of specially
-		// encoded strings
-		StringBuilder sb = new StringBuilder(this);
-		sb.append(__s);
-		return sb.toString();
+		// Setup result
+		int nl = an + bn;
+		char[] rv = new char[nl];
+		
+		// Copy first part
+		int o = 0;
+		for (int i = 0; i < an; i++)
+			rv[o++] = ac[i];
+		
+		// Copy second
+		for (int i = 0; i < bn; i++)
+			rv[o++] = bc[i];
+		
+		// Build string
+		return new String(rv, (short)0);
 	}
 	
 	/**
@@ -532,25 +578,27 @@ public final class String
 		if (__s == null)
 			throw new NullPointerException("NARG");
 		
-		// Empty string is always a match
-		if (__s.equals(""))
+		// Character data
+		char[] ac = this._chars,
+			bc = __s._chars;
+		
+		// Lengths
+		int na = ac.length,
+			nb = bc.length;
+		
+		// If the other string is empty, it is always a match
+		if (nb == 0)
 			return true;
 		
-		// Work on sequences
-		BasicSequence sa = this._sequence,
-			sb = __s._sequence;
-		
 		// If our string is smaller than the other string then it will not
-		// fit and as such, will not work
-		int na = sa.length(),
-			nb = sb.length();
+		// fit and as such, will not match
 		if (na < nb)
 			return false;
 		
 		// Check all characters at the end of the string, we fail if there is
 		// a mismatch
 		for (int ia = na - nb, ib = 0; ia < na; ia++, ib++)
-			if (sa.charAt(ia) != sb.charAt(ib))
+			if (ac[ia] != bc[ib])
 				return false;
 		
 		// Is a match since nothing failed!
@@ -583,23 +631,18 @@ public final class String
 		if (an != bn)
 			return false;
 		
-		// Work on sequences now
-		BasicSequence sa = this._sequence,
-			sb = o._sequence;
-		
-		// If the sequence is the same then this represents the same string
-		if (sa == sb)
-			return true;
+		// Character data
+		char[] ac = this._chars,
+			bc = o._chars;
 		
 		// If the length differs, they are not equal
-		an = sa.length();
-		bn = sb.length();
-		if (an != bn)
+		int n = ac.length;
+		if (n != bc.length)
 			return false;
 		
 		// Compare individual characters
-		for (int i = 0; i < an; i++)
-			if (sa.charAt(i) != sb.charAt(i))
+		for (int i = 0; i < n; i++)
+			if (ac[i] != bc[i])
 				return false;
 		
 		// Would be a match!
@@ -625,25 +668,23 @@ public final class String
 		if (__o == null)
 			return false;
 		
-		// Directly use sequences, is faster
-		BasicSequence sa = this._sequence,
-			sb = __o._sequence;
+		// Character data
+		char[] ac = this._chars,
+			bc = __o._chars;
 		
 		// Two strings of inequal length will never be the same
-		int n = sa.length();
-		if (n != sb.length())
+		int n = ac.length;
+		if (n != bc.length)
 			return false;
 		
 		// Check characters
 		for (int i = 0; i < n; i++)
 		{
-			char a = sa.charAt(i),
-				b = sb.charAt(i);
+			char a = Character.toLowerCase(Character.toUpperCase(ac[i])),
+				b = Character.toLowerCase(Character.toUpperCase(bc[i]));
 			
 			// Is a different character?
-			if (a != b &&
-				Character.toUpperCase(a) != Character.toUpperCase(b) &&
-				Character.toLowerCase(b) != Character.toLowerCase(b))
+			if (a != b)
 				return false;
 		}
 		
@@ -713,9 +754,9 @@ public final class String
 		
 		// Calculate the hashCode(), the JavaDoc gives the following formula:
 		// == s[0]*31^(n-1) + s[1]*31^(n-2) + ... + s[n-1] .... yikes!
-		BasicSequence sequence = this._sequence;
-		for (int i = 0, n = sequence.length(); i < n; i++)
-			rv = ((rv << 5) - rv) + sequence.charAt(i);
+		char[] ch = this._chars;
+		for (int i = 0, n = ch.length; i < n; i++)
+			rv = ((rv << 5) - rv) + ch[i];
 		
 		// Cache hashcode for later
 		this._hashcode = rv;
@@ -747,15 +788,15 @@ public final class String
 	 */
 	public int indexOf(int __c, int __i)
 	{
-		BasicSequence sequence = this._sequence;
+		char[] ch = this._chars;
 		
 		// Cap index
-		int n = sequence.length();
+		int n = ch.length;
 		if (__i < 0)
 			__i = 0;
 		
 		for (int i = __i; i < n; i++)
-			if (__c == sequence.charAt(i))
+			if (__c == ch[i])
 				return i;
 		
 		// Not found
@@ -828,7 +869,7 @@ public final class String
 	 */
 	public boolean isEmpty()
 	{
-		return this.length() == 0;
+		return this._chars.length == 0;
 	}
 	
 	/**
@@ -863,13 +904,13 @@ public final class String
 			return -1;
 		
 		// Cap index
-		BasicSequence sequence = this._sequence;
-		int n = sequence.length();
+		char[] ch = this._chars;
+		int n = ch.length;
 		if (__dx >= n)
 			__dx = n - 1;
 		
 		for (; __dx >= 0; __dx--)
-			if (__c == sequence.charAt(__dx))
+			if (__c == ch[__dx])
 				return __dx;
 		
 		// Not found
@@ -894,7 +935,7 @@ public final class String
 	 */
 	public int length()
 	{
-		return this._sequence.length();
+		return this._chars.length;
 	}
 	
 	public boolean regionMatches(int __a, String __b, int __c, int __d)
@@ -925,21 +966,21 @@ public final class String
 			return this;
 		
 		// Get source sequence
-		BasicSequence bs = this._sequence;
-		int n = bs.length();
+		char[] ch = this._chars;
+		int n = ch.length;
 		
 		// Copy data into an array with translated characters
 		char[] rv = new char[n];
 		for (int i = 0; i < n; i++)
 		{
-			char c = bs.charAt(i);
+			char c = ch[i];
 			if (c == __a)
 				c = __b;
 			rv[i] = c;
 		}
 		
 		// Build new string
-		return new String(new CharArraySequence(rv));
+		return new String(rv, (short)0);
 	}
 	
 	/**
@@ -965,12 +1006,12 @@ public final class String
 				String.format("ZZ0y %d", __sdx));
 		
 		// Need to work on both sequences
-		BasicSequence sa = this._sequence,
-			sb = __s._sequence;
+		char[] ca = this._chars,
+			cb = __s._chars;
 		
 		// If the second string is empty then it will always match
-		int na = sa.length(),
-			nb = sb.length();
+		int na = ca.length,
+			nb = cb.length;
 		if (nb == 0)
 			return true;
 		
@@ -981,7 +1022,7 @@ public final class String
 		
 		// Find false match
 		for (int ia = __sdx, ib = 0; ib < nb; ia++, ib++)
-			if (sa.charAt(ia) != sb.charAt(ib))
+			if (ca[ia] != cb[ib])
 				return false;
 		
 		// False not found, so it matches
@@ -1045,8 +1086,8 @@ public final class String
 		throws IndexOutOfBoundsException
 	{
 		// The entire string region requires no new string
-		BasicSequence sequence = this._sequence;
-		int n = sequence.length();
+		char[] ch = this._chars;
+		int n = ch.length;
 		if (__s == 0 && __e == n)
 			return this;
 		
@@ -1061,7 +1102,13 @@ public final class String
 				" " + n);
 		
 		// Derive sub-sequence
-		return new String(sequence.subSequence(__s, __e));
+		int nl = __e - __s;
+		char[] rv = new char[nl];
+		for (int o = 0; o < nl; o++, __s++)
+			rv[o] = ch[__s];
+		
+		// Build
+		return new String(rv, (short)0);
 	}
 	
 	/**
@@ -1073,8 +1120,8 @@ public final class String
 	 */
 	public char[] toCharArray()
 	{
-		// The sequence may have a faster way to setup a char array
-		return this._sequence.toCharArray();
+		// Direct copy of the character array
+		return this._chars.clone();
 	}
 	
 	/**
@@ -1092,18 +1139,18 @@ public final class String
 			return this;
 		
 		// Needed for case conversion
-		BasicSequence sequence = this._sequence;
+		char[] ch = this._chars;
 		Locale locale = DefaultLocale.defaultLocale();
 		
 		// Setup new character array for the conversion
-		int n = this.length();
+		int n = ch.length;
 		char[] rv = new char[n];
 		
 		// Copy and convert characters
 		boolean changed = false;
 		for (int i = 0; i < n; i++)
 		{
-			char a = sequence.charAt(i),
+			char a = ch[i],
 				b = locale.toLowerCase(a);
 			
 			// Detect if the string actually changed
@@ -1122,7 +1169,7 @@ public final class String
 		}
 		
 		// New string will be lowercase, so ignore this operation
-		return new String(new CharArraySequence(rv), String._QUICK_ISLOWER);
+		return new String(rv, String._QUICK_ISLOWER);
 	}
 	
 	/**
@@ -1152,18 +1199,18 @@ public final class String
 			return this;
 		
 		// Needed for case conversion
-		BasicSequence sequence = this._sequence;
+		char[] ch = this._chars;
 		Locale locale = DefaultLocale.defaultLocale();
 		
 		// Setup new character array for the conversion
-		int n = this.length();
+		int n = ch.length;
 		char[] rv = new char[n];
 		
 		// Copy and convert characters
 		boolean changed = false;
 		for (int i = 0; i < n; i++)
 		{
-			char a = sequence.charAt(i),
+			char a = ch[i],
 				b = locale.toUpperCase(a);
 			
 			// Detect if the string actually changed
@@ -1182,7 +1229,7 @@ public final class String
 		}
 		
 		// New string will be uppercase, so ignore this operation
-		return new String(new CharArraySequence(rv), String._QUICK_ISUPPER);
+		return new String(rv, String._QUICK_ISUPPER);
 	}
 	
 	/**
@@ -1201,23 +1248,23 @@ public final class String
 	public String trim()
 	{
 		// Empty strings do not need trimming
-		BasicSequence sequence = this._sequence;
-		int n = sequence.length();
+		char[] ch = this._chars;
+		int n = ch.length;
 		if (n <= 0)
 			return this;
 		
 		// Find starting trim position
 		int s;
-		for (s = 0; s < n && sequence.charAt(s) <= _MIN_TRIM_CHAR; s++)
+		for (s = 0; s < n && ch[s] <= _MIN_TRIM_CHAR; s++)
 			;
 		
 		// Find ending trim position
 		int e;
-		for (e = n; e > s && sequence.charAt(e - 1) <= _MIN_TRIM_CHAR; e--)
+		for (e = n; e > s && ch[e - 1] <= _MIN_TRIM_CHAR; e--)
 			;
 		
 		// Return trimmed variant of it
-		return substring(s, e);
+		return this.substring(s, e);
 	}
 	
 	/**
@@ -1236,14 +1283,15 @@ public final class String
 			throw new NullPointerException("NARG");
 		
 		// If the two have different lengths they will never be equal
-		int al = this.length(),
+		char[] ca = this._chars;
+		int al = ca.length,
 			bl = __s.length();
 		if (al != bl)
 			return false;
 		
 		// Check each character
 		for (int i = 0; i < al; i++)
-			if (this.charAt(i) != __s.charAt(i))
+			if (ca[i] != __s.charAt(i))
 				return false;
 		
 		// If reached, they are equal
@@ -1269,8 +1317,8 @@ public final class String
 		byte[] seq = new byte[(msl = __e.maximumSequenceLength())];
 		
 		// We operate directly on the sequence
-		BasicSequence sequence = this._sequence;
-		int n = sequence.length();
+		char[] ch = this._chars;
+		int n = ch.length;
 		
 		// Write here
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(
@@ -1279,7 +1327,7 @@ public final class String
 			// Encode every character!
 			for (int i = 0; i < n; i++)
 			{
-				int sz = __e.encode(sequence.charAt(i), seq, 0, msl);
+				int sz = __e.encode(ch[i], seq, 0, msl);
 				
 				// Should not occur
 				if (sz < 0)
@@ -1317,8 +1365,8 @@ public final class String
 			__i = 0;
 		
 		// If the sequence is empty, then it will always be a match
-		BasicSequence as = this._sequence;
-		int an = as.length(),
+		char[] ca = this._chars;
+		int an = ca.length,
 			bn = __b.length();
 		if (bn <= 0)
 			return __i;
@@ -1334,7 +1382,7 @@ __outer:
 		{
 			// Check sequence characters
 			for (int x = a, b = 0; b < bn; x++, b++)
-				if (as.charAt(x) != __b.charAt(b))
+				if (ca[x] != __b.charAt(b))
 					continue __outer;
 			
 			// Since the inner loop continues to the outer, if this was reached
