@@ -165,13 +165,6 @@ public interface NativeInstructionType
 		0xEA;
 	
 	/**
-	 * New. 
-	 * {@code iiiixxxx, r2 = new p1}.
-	 */
-	public static final int NEW =
-		0xF0;
-	
-	/**
 	 * Array length. 
 	 * {@code iiiixxxx, r2 = r1.length}.
 	 */

@@ -298,7 +298,6 @@ public final class NativeInstruction
 			case NativeInstructionType.CONVERSION:
 			case NativeInstructionType.INVOKE:
 			case NativeInstructionType.LOAD_POOL:
-			case NativeInstructionType.NEW:
 			case NativeInstructionType.SYSTEM_CALL:
 				return 2;
 					
@@ -394,7 +393,6 @@ public final class NativeInstruction
 				
 				// [p16, u16]
 			case NativeInstructionType.LOAD_POOL:
-			case NativeInstructionType.NEW:
 				return ArgumentFormat.of(
 					ArgumentFormat.VPOOL,
 					ArgumentFormat.VUINT);
@@ -636,7 +634,6 @@ public final class NativeInstruction
 			case NativeInstructionType.INVOKE:			return "INVOKE";
 			case NativeInstructionType.LOAD_POOL:		return "LOAD_POOL";
 			case NativeInstructionType.LOAD_TABLE:		return "LOAD_TABLE";
-			case NativeInstructionType.NEW:				return "NEW";
 			case NativeInstructionType.RETURN:			return "RETURN";
 			case NativeInstructionType.SYSTEM_CALL:		return "SYSTEM_CALL";
 			

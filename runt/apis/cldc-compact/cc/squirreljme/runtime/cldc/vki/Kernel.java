@@ -595,6 +595,21 @@ public final class Kernel
 	}
 	
 	/**
+	 * Allocates a new object.
+	 *
+	 * @param __cl The class type.
+	 * @return The resulting class pointer.
+	 * @throws OutOfMemoryError If there is not enough memory to allocate the
+	 * class.
+	 * @since 2019/05/24
+	 */
+	public static final int jvmNew(int __cl)
+		throws OutOfMemoryError
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
 	 * Allocates a new array.
 	 *
 	 * @param __at The array type.
