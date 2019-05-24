@@ -537,9 +537,9 @@ public final class NearNativeByteCodeHandler
 		RegisterList reglist = new RegisterList(callargs);
 		
 		// If invoking static method, use our helper method
+		MethodHandle mh = __r.handle();
 		if (__t == InvokeType.STATIC)
 		{
-			MethodHandle mh = __r.handle();
 			this.__invokeStatic(__t, mh.outerClass(), mh.name(),
 				mh.descriptor(), reglist);
 		}
@@ -595,60 +595,9 @@ public final class NearNativeByteCodeHandler
 			// Special or virtual
 			else
 			{
-				if (true)
-					throw new todo.TODO();
-				
-				/*
-				// Use special invoke table for the instance
-				String vtablename;
-				if (__t == InvokeType.SPECIAL)
-					vtablename = "vtablespecial";
-				
-				// Use virtual invoke table for the instance
-				else
-					vtablename = "vtablevirtual";
-				
-				// Load the Class ID into A
-				codebuilder.addMemoryOffReg(DataType.INTEGER, true,
-					NativeCode.VOLATILE_A_REGISTER,
-					__in[0].register, Kernel.OBJECT_CLASS_OFFSET);
-				
-				// Load the ClassDataV2 pointer into A
-				codebuilder.addLoadTable(
-					NativeCode.VOLATILE_A_REGISTER,
-					NativeCode.CLASS_TABLE_REGISTER,
-					NativeCode.VOLATILE_A_REGISTER);
-				
-				// Read the offset to the vtable into B
-				codebuilder.add(NativeInstructionType.LOAD_POOL,
-					new AccessedField(FieldAccessTime.NORMAL,
-						FieldAccessType.INSTANCE,
-					new FieldReference(
-						new ClassName(
-							"cc/squirreljme/runtime/cldc/lang/ClassDataV2"),
-						new FieldName(vtablename),
-						FieldDescriptor.INTEGER)),
-					NativeCode.VOLATILE_B_REGISTER);
-				
-				// Read the address of the VTable from A+B into A
-				codebuilder.addMemoryOffReg(DataType.INTEGER, true,
-					NativeCode.VOLATILE_A_REGISTER,
-					NativeCode.VOLATILE_A_REGISTER,
-					NativeCode.VOLATILE_B_REGISTER);
-				
-				// Read the method index for the vtable into B
-				codebuilder.add(NativeInstructionType.LOAD_POOL,
-					new MethodIndex(__r.handle().outerClass(),
-						__r.handle().name(), __r.handle().descriptor()),
-					NativeCode.VOLATILE_B_REGISTER);
-				
-				// Read from the vtable using the table index for B
-				// This is our invocation pointer
-				codebuilder.addLoadTable(
-					NativeCode.VOLATILE_A_REGISTER,
-					NativeCode.VOLATILE_A_REGISTER,
-					NativeCode.VOLATILE_B_REGISTER);
-				*/
+				// Invoke instance method
+				this.__invokeInstance(__t, mh.outerClass(), mh.name(),
+					mh.descriptor(), reglist);
 			}
 		}
 		
@@ -1893,6 +1842,131 @@ public final class NearNativeByteCodeHandler
 			default:
 				throw new todo.OOPS(asmfunc);
 		}
+	}
+	
+	/**
+	 * Invokes instance method, doing the needed pool loading and all the
+	 * complicated stuff in a simple point of code.
+	 *
+	 * @param __it The invocation type.
+	 * @param __cl The class name.
+	 * @param __mn The method name.
+	 * @param __mt The method type.
+	 * @param __args The arguments to the call.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/24
+	 */
+	private final void __invokeInstance(InvokeType __it, ClassName __cl,
+		MethodName __mn, MethodDescriptor __mt, RegisterList __args)
+		throws NullPointerException
+	{
+		if (__it == null || __cl == null || __mn == null || __mt == null ||
+			__args == null)
+			throw new NullPointerException("NARG");
+		
+		NativeCodeBuilder codebuilder = this.codebuilder;
+		
+		throw new todo.TODO();
+		/*
+		// Need volatiles to work with
+		VolatileRegisterStack volatiles = this.volatiles;
+		int volclassid = volatiles.get(),
+			volclassdvt = volatiles.get(),
+			volvtablefo = volatiles.get(),
+			volmethodptr = volatiles.get();
+		
+		// Load class ID instance
+		codebuilder.addMemoryOffReg(DataType.INTEGER, true,
+			volclassid, __in[0].register, Kernel.OBJECT_CLASS_OFFSET);
+			
+		// Load the ClassDataV2 for the instance
+		codebuilder.addLoadTable(
+			volclassdvt,
+			NativeCode.CLASS_TABLE_REGISTER, volclassid);
+		
+		// Read the field offset of the vtable
+		codebuilder.add(NativeInstructionType.LOAD_POOL,
+			new AccessedField(FieldAccessTime.NORMAL,
+				FieldAccessType.INSTANCE,
+			new FieldReference(
+				new ClassName(
+					"cc/squirreljme/runtime/cldc/lang/ClassDataV2"),
+				new FieldName((__t == InvokeType.SPECIAL ? "vtablespecial" :
+					"vtablevirtual")),
+				FieldDescriptor.INTEGER)),
+			volvtablefo);
+		
+		// Read the pointer address from the vtable
+		codebuilder.addLoadTable(
+			volmethodptr,
+			volclassdvt, volvtablefo);
+		
+		// Read the method index for the vtable into B
+		codebuilder.add(NativeInstructionType.LOAD_POOL,
+			new MethodIndex(__r.handle().outerClass(),
+				__r.handle().name(), __r.handle().descriptor()),
+			NativeCode.VOLATILE_B_REGISTER);
+		
+		// Read from the vtable using the table index for B
+		// This is our invocation pointer
+		codebuilder.addLoadTable(
+			NativeCode.VOLATILE_A_REGISTER,
+			NativeCode.VOLATILE_A_REGISTER,
+			NativeCode.VOLATILE_B_REGISTER);
+		
+		throw new todo.TODO();
+		*/
+		/*
+		// Use special invoke table for the instance
+		String vtablename;
+		if (__t == InvokeType.SPECIAL)
+			vtablename = "vtablespecial";
+		
+		// Use virtual invoke table for the instance
+		else
+			vtablename = "vtablevirtual";
+		
+		// Load the Class ID into A
+		codebuilder.addMemoryOffReg(DataType.INTEGER, true,
+			NativeCode.VOLATILE_A_REGISTER,
+			__in[0].register, Kernel.OBJECT_CLASS_OFFSET);
+		
+		// Load the ClassDataV2 pointer into A
+		codebuilder.addLoadTable(
+			NativeCode.VOLATILE_A_REGISTER,
+			NativeCode.CLASS_TABLE_REGISTER,
+			NativeCode.VOLATILE_A_REGISTER);
+		
+		// Read the offset to the vtable into B
+		codebuilder.add(NativeInstructionType.LOAD_POOL,
+			new AccessedField(FieldAccessTime.NORMAL,
+				FieldAccessType.INSTANCE,
+			new FieldReference(
+				new ClassName(
+					"cc/squirreljme/runtime/cldc/lang/ClassDataV2"),
+				new FieldName(vtablename),
+				FieldDescriptor.INTEGER)),
+			NativeCode.VOLATILE_B_REGISTER);
+		
+		// Read the address of the VTable from A+B into A
+		codebuilder.addMemoryOffReg(DataType.INTEGER, true,
+			NativeCode.VOLATILE_A_REGISTER,
+			NativeCode.VOLATILE_A_REGISTER,
+			NativeCode.VOLATILE_B_REGISTER);
+		
+		// Read the method index for the vtable into B
+		codebuilder.add(NativeInstructionType.LOAD_POOL,
+			new MethodIndex(__r.handle().outerClass(),
+				__r.handle().name(), __r.handle().descriptor()),
+			NativeCode.VOLATILE_B_REGISTER);
+		
+		// Read from the vtable using the table index for B
+		// This is our invocation pointer
+		codebuilder.addLoadTable(
+			NativeCode.VOLATILE_A_REGISTER,
+			NativeCode.VOLATILE_A_REGISTER,
+			NativeCode.VOLATILE_B_REGISTER);
+		*/
 	}
 	
 	/**
