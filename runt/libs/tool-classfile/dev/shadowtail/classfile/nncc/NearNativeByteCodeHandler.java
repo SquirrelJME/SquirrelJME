@@ -2211,30 +2211,25 @@ public final class NearNativeByteCodeHandler
 	 */
 	private final void __loadClassObject(ClassName __cl, int __r)
 	{
-		throw new todo.TODO();
+		VolatileRegisterStack volatiles = this.volatiles;
 		
-		/*
-		// Need to calculate the offset of the class in the class table
+		// Load the ClassDataV2 for the class
+		int volcdvt = volatiles.get();
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
-			__cl, __r);
+			__cl, volcdvt);
 		
-		// Read from the class table the ClassDataV2 object
-		codebuilder.addLoadTable(
-			__r, NativeCode.CLASS_TABLE_REGISTER, __r);
-		
-		// Load field offset from the pool
+		// Load the class object pointer from the class data
 		codebuilder.add(NativeInstructionType.LOAD_POOL,
 			new AccessedField(FieldAccessTime.NORMAL, FieldAccessType.INSTANCE,
 			new FieldReference(
 				new ClassName("cc/squirreljme/runtime/cldc/lang/ClassDataV2"),
 				new FieldName("classobjptr"), FieldDescriptor.INTEGER)),
-			NativeCode.VOLATILE_A_REGISTER);
+			__r);
+		codebuilder.addMemoryOffReg(DataType.OBJECT, true,
+			__r, volcdvt, __r);
 		
-		// Read from the field into the register
-		codebuilder.addMemoryOffReg(
-			DataType.OBJECT, true,
-			__r, __r, NativeCode.VOLATILE_A_REGISTER);
-		*/
+		// Cleanup
+		volatiles.remove(volcdvt);
 	}
 	
 	/**
