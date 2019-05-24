@@ -1685,11 +1685,6 @@ public final class SpringThreadWorker
 				return this.asVMObject(SystemAccess.getEnv(
 					this.<String>asNativeObject(String.class, __args[0])));
 			
-				// Returns the API level of the VM
-			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
-				"apiLevel:()I":
-				return ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225;
-				
 				// Approximated executable path
 			case "cc/squirreljme/runtime/cldc/asm/SystemProperties::" +
 				"executablePath:()Ljava/lang/String;":
@@ -4238,6 +4233,14 @@ public final class SpringThreadWorker
 					this.machine.exit((Integer)__args[0]);
 					
 					rv = 0;
+					err = 0;
+				}
+				break;
+				
+				// API level
+			case SystemCallIndex.API_LEVEL:
+				{
+					rv = ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV;
 					err = 0;
 				}
 				break;

@@ -10,7 +10,9 @@
 
 package cc.squirreljme.runtime.cldc.lang;
 
-import cc.squirreljme.runtime.cldc.asm.SystemProperties;
+import cc.squirreljme.runtime.cldc.vki.Assembly;
+import cc.squirreljme.runtime.cldc.vki.SystemCallError;
+import cc.squirreljme.runtime.cldc.vki.SystemCallIndex;
 
 /**
  * Provides access to the current API level.
@@ -27,7 +29,7 @@ public final class ApiLevel
 {
 	/** The current API level. */
 	public static final int CURRENT_LEVEL =
-		SystemProperties.apiLevel();
+		Assembly.sysCallV(SystemCallIndex.API_LEVEL);
 	
 	/** Undefined. */
 	public static final int UNDEFINED =
@@ -80,7 +82,7 @@ public final class ApiLevel
 	 */
 	public static boolean minimumLevel(int __l)
 	{
-		return (SystemProperties.apiLevel() >= __l);
+		return (CURRENT_LEVEL >= __l);
 	}
 }
 

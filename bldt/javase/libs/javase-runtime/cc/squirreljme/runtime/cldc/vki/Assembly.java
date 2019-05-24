@@ -9,6 +9,8 @@
 
 package cc.squirreljme.runtime.cldc.vki;
 
+import cc.squirreljme.runtime.cldc.lang.ApiLevel;
+
 /**
  * This class is used special by the compiler to transform all the various
  * operations into regular instructions rather than method calls.
@@ -1145,6 +1147,14 @@ public final class Assembly
 					System.exit(__args[0]);
 					
 					rv = 0;
+					err = 0;
+				}
+				break;
+				
+				// API level
+			case SystemCallIndex.API_LEVEL:
+				{
+					rv = ApiLevel.LEVEL_SQUIRRELJME_0_3_0_DEV;
 					err = 0;
 				}
 				break;

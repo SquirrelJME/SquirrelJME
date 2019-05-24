@@ -32,15 +32,6 @@ public final class SystemProperties
 	}
 	
 	/**
-	 * Returns the API level of the virtual machine.
-	 *
-	 * @return The API level.
-	 * @since 2018/12/05
-	 */
-	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
-	public static native int apiLevel();
-	
-	/**
 	 * Returns the approximated path where the VM's executable exists. This
 	 * will be the actual JVM's JAR or EXE file.
 	 *
