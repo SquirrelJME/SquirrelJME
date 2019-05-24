@@ -46,5 +46,29 @@ public final class VolatileRegisterStack
 	{
 		this._used.clear();
 	}
+	
+	/**
+	 * Returns the next volatile register.
+	 *
+	 * @return The next volatile register.
+	 * @since 2019/05/24
+	 */
+	public final int get()
+	{
+		throw new todo.TODO();
+	}
+	
+	/**
+	 * Removes the given volatile register from usage.
+	 *
+	 * @param __r The register to remove.
+	 * @throws IllegalStateException If it was never used.
+	 * @since 2019/05/24
+	 */
+	public final void remove(int __r)
+		throws IllegalStateException
+	{
+		throw new todo.TODO();
+	}
 }
 
