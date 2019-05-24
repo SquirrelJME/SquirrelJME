@@ -28,8 +28,11 @@ import java.io.UnsupportedEncodingException;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Formatter;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -42,14 +45,6 @@ import java.util.WeakHashMap;
  *
  * @since 2018/09/16
  */
-@ImplementationNote("The internal representation of characters in this " +
-	"class is not a concrete character array, instead the strings are " +
-	"handled by classes which represent sequences and such. This allows " +
-	"for potential compression or representation of different strings " +
-	"without needing to up the complexity of this class greatly. There " +
-	"is slight overhead, but it will allow for Strings to be for the most " +
-	"part be directly mapped into memory which will be the case when " +
-	"stuff from the string table is to be used.")
 public final class String
 	implements Comparable<String>, CharSequence
 {
@@ -68,6 +63,10 @@ public final class String
 	/** String is already interned? */
 	private static final short _QUICK_INTERN =
 		0b0000_0000__0000_0100;
+	
+	/** Intern string table, weakly cached to reduce memory use. */
+	private static final Collection<Reference<String>> _INTERNS =
+		new LinkedList<>();
 	
 	/** String character data. */
 	private final char[] _chars;
@@ -851,6 +850,13 @@ public final class String
 	 * @return The unique string instance.
 	 * @since 2016/04/01
 	 */
+	@ImplementationNote("This method is a bit slow in SquirrelJME as it " +
+		"will search a list of weak reference to string. So despite this " +
+		"being a O(n) search it will allow any strings to be garbage " +
+		"collected when no longer used. Also the collection is a LinkedList " +
+		"since the __BucketMap__ is a complicated class. But do note that " +
+		"String.equals() checks the hashCode() so in-depth searches will " +
+		"only be performed for strings with the same hashCode().")
 	public String intern()
 	{
 		// If this string is already interned then use this one instead
@@ -858,7 +864,38 @@ public final class String
 		if ((this._quickflags & _QUICK_INTERN) != 0)
 			return this;
 		
-		throw new todo.TODO();
+		// Search for string in the collection
+		Collection<Reference<String>> interns = _INTERNS;
+		synchronized (interns)
+		{
+			// Same string that was internalized?
+			Iterator<Reference<String>> it = interns.iterator();
+			while (it.hasNext())
+			{
+				Reference<String> ref = it.next();
+				
+				// If the reference has been cleared, then delete it
+				String oth = ref.get();
+				if (oth == null)
+				{
+					it.remove();
+					continue;
+				}
+				
+				// If this matches the string, use that one
+				if (this.equals(oth))
+					return oth;
+			}
+			
+			// Not in the table, so add it
+			interns.add(new WeakReference<>(this));
+			
+			// Also flag that this has been interned
+			this._quickflags |= _QUICK_INTERN;
+			
+			// This will be the intern string
+			return this;
+		}
 	}
 	
 	/**
