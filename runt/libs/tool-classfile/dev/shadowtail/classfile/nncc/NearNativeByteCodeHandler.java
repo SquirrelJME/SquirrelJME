@@ -1339,6 +1339,9 @@ public final class NearNativeByteCodeHandler
 				this.codebuilder.addGoto(
 					this.__labelJava(new InstructionJumpTarget(followaddr)));
 		}
+		
+		// Clear volatiles
+		this.volatiles.clear();
 	}
 	
 	/**
@@ -1351,6 +1354,9 @@ public final class NearNativeByteCodeHandler
 		NativeCodeBuilder codebuilder = this.codebuilder;
 		ByteCodeState state = this.state;
 		int addr = state.addr;
+		
+		// Clear volatiles
+		this.volatiles.clear();
 		
 		// Entry point debugging
 		if (addr == 0)
