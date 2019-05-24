@@ -10,6 +10,7 @@
 package cc.squirreljme.runtime.cldc.vki;
 
 import cc.squirreljme.runtime.cldc.lang.ApiLevel;
+import java.lang.reflect.Array;
 
 /**
  * This class is used special by the compiler to transform all the various
@@ -35,6 +36,18 @@ public final class Assembly
 	 */
 	private Assembly()
 	{
+	}
+	
+	/**
+	 * Returns the array length of the given object.
+	 *
+	 * @param __o The object to get the length of.
+	 * @return The length of the array.
+	 * @since 2019/05/24
+	 */
+	public static final int arrayLength(Object __o)
+	{
+		return Array.getLength(__o);
 	}
 	
 	/**

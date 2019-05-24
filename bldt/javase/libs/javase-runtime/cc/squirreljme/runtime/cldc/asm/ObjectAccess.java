@@ -60,20 +60,6 @@ public final class ObjectAccess
 	}
 	
 	/**
-	 * Returns the length of the given array.
-	 *
-	 * @param __a The array to get the length of.
-	 * @return The length of the array or {@code -1} if it is not an
-	 * array.
-	 * @since 2018/09/25
-	 */
-	@Api(ApiLevel.LEVEL_SQUIRRELJME_0_2_0_20181225)
-	public static final int arrayLength(Object __a)
-	{
-		return Array.getLength(__a);
-	}
-	
-	/**
 	 * Creates a new array of the given type, this is the actual array and
 	 * not the component.
 	 *

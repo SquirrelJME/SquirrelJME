@@ -12,6 +12,7 @@ package java.lang;
 
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
+import cc.squirreljme.runtime.cldc.vki.Assembly;
 
 /**
  * This class is the root of all class trees in Java.
@@ -53,7 +54,7 @@ public class Object
 		if (cl.isArray())
 		{
 			// Need length of this array to recreate!
-			int len = ObjectAccess.arrayLength(this);
+			int len = Assembly.arrayLength(this);
 			
 			// Allocate new array
 			Object dest = ObjectAccess.arrayNew(cl, len);
