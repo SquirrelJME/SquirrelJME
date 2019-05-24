@@ -10,6 +10,7 @@
 package dev.shadowtail.classfile.nncc;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -23,7 +24,7 @@ public final class VolatileRegisterStack
 	protected final int base;
 	
 	/** Registers being used. */
-	private final List<Integer> _used =
+	private final Collection<Integer> _used =
 		new ArrayList<>();
 	
 	/**
@@ -55,7 +56,16 @@ public final class VolatileRegisterStack
 	 */
 	public final int get()
 	{
-		throw new todo.TODO();
+		// Find next register to use from the base, use any register which
+		// was not previously recorded
+		int at = this.base;
+		Collection<Integer> used = this._used;
+		while (used.contains(at))
+			at++;
+		
+		// Record it
+		used.add(at);
+		return at;
 	}
 	
 	/**
@@ -68,7 +78,10 @@ public final class VolatileRegisterStack
 	public final void remove(int __r)
 		throws IllegalStateException
 	{
-		throw new todo.TODO();
+		// {@squirreljme.error JC4f Register to remove was never previously
+		// returned or was removed multiple times. (The register)}
+		if (!this._used.remove(__r))
+			throw new IllegalStateException("JC4f " + __r);
 	}
 }
 
