@@ -13,7 +13,6 @@ package java.lang;
 import cc.squirreljme.runtime.cldc.annotation.ImplementationNote;
 import cc.squirreljme.runtime.cldc.asm.ObjectAccess;
 import cc.squirreljme.runtime.cldc.i18n.DefaultLocale;
-import cc.squirreljme.runtime.cldc.string.SingleCharacterSequence;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
@@ -135,7 +134,7 @@ public final class Character
 		// just to store a single character or creating some kind of array.
 		if (ref == null || null == (rv = ref.get()))
 			this._string = new WeakReference<>(
-				(rv = new String(new SingleCharacterSequence(this._value))));
+				(rv = new String(new char[]{this._value}, (short)0)));
 		
 		return rv;
 	}
@@ -317,7 +316,7 @@ public final class Character
 	 */
 	public static String toString(char __c)
 	{
-		return new String(new SingleCharacterSequence(__c));
+		return new String(new char[]{__c}, (short)0);
 	}
 	
 	/**

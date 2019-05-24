@@ -17,11 +17,6 @@ import cc.squirreljme.runtime.cldc.i18n.Locale;
 import cc.squirreljme.runtime.cldc.io.CodecFactory;
 import cc.squirreljme.runtime.cldc.io.Decoder;
 import cc.squirreljme.runtime.cldc.io.Encoder;
-import cc.squirreljme.runtime.cldc.string.BasicSequence;
-import cc.squirreljme.runtime.cldc.string.CharArraySequence;
-import cc.squirreljme.runtime.cldc.string.CharSequenceSequence;
-import cc.squirreljme.runtime.cldc.string.EmptySequence;
-import cc.squirreljme.runtime.cldc.string.SubBasicSequenceSequence;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -84,12 +79,28 @@ public final class String
 	 */
 	public String()
 	{
-		this(EmptySequence.INSTANCE);
+		this._chars = new char[0];
+		this._quickflags = _QUICK_ISLOWER | _QUICK_ISUPPER;
+		this._hashcode = 0;
 	}
 	
-	public String(String __a)
+	/**
+	 * Initializes a string which is an exact copy of the other string.
+	 *
+	 * @param __s The other string.
+	 * @throws NullPointerException On null arguments.
+	 * @since 2019/05/24
+	 */
+	public String(String __s)
+		throws NullPointerException
 	{
-		this(new CharSequenceSequence(__a));
+		if (__s == null)
+			throw new NullPointerException("NARG");
+		
+		// Just copies all the fields since they were pre-calculated already
+		this._chars = __s._chars;
+		this._quickflags = ((short)(__s._quickflags & (~_QUICK_INTERN)));
+		this._hashcode = __s._hashcode;
 	}
 	
 	/**
@@ -295,35 +306,6 @@ public final class String
 		
 		this._chars = __c;
 		this._quickflags = __qf;
-	}
-	
-	/**
-	 * Initializes the string using the given sequence for characters.
-	 *
-	 * @param __bs The sequence of characters to use.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/02/24
-	 */
-	@Deprecated
-	String(BasicSequence __bs)
-		throws NullPointerException
-	{
-		this(__bs, (short)0);
-	}
-	
-	/**
-	 * Initializes the string using the given sequence for characters.
-	 *
-	 * @param __bs The sequence of characters to use.
-	 * @param __qf Quick determination flags.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2018/02/24
-	 */
-	@Deprecated
-	private String(BasicSequence __bs, short __qf)
-		throws NullPointerException
-	{
-		this(__bs.toCharArray(), __qf);
 	}
 	
 	/**
